@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
+subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
                   proldr, prolga, istop, base, ier)
     implicit none
 #include "asterf_types.h"
@@ -112,7 +112,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     if (iacces .eq. 0) then
         ier = 20
         goto 998
-    endif
+    end if
 !
     call jeveuo(jexnum(noms2//'.TAVA', iacces), 'L', iatava)
     nomobj = zk8(iatava-1+1)
@@ -120,11 +120,11 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     call lxliis(k8debu, idebu, ier1)
     k8maxi = zk8(iatava-1+3)
     call lxliis(k8maxi, imaxi, ier2)
-    ASSERT((abs(ier1)+abs(ier2)).eq.0)
+    ASSERT((abs(ier1)+abs(ier2)) .eq. 0)
     if (ier2 .ne. 0) then
         ier = 20
         goto 998
-    endif
+    end if
 !
     call jelira(noms2//nomobj, 'TYPE', cval=type)
     call jelira(noms2//nomobj, 'LTYP', iloty)
@@ -133,7 +133,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     if (tysca .ne. 'R8  ') then
         ier = 20
         goto 998
-    endif
+    end if
 !
     call rslipa(noms2, acces, '&&RSINCH.LIR8', iaobj, nbordr)
 !
@@ -144,7 +144,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     if (inomch .eq. 0) then
         ier = 21
         goto 998
-    endif
+    end if
 !
 !     -- ON INTERPOLE :
 !     -----------------
@@ -153,32 +153,32 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     AS_ALLOCATE(vl=lexi, size=nbordr)
     call jenonu(jexnom(noms2//'.DESC', nomc2), ibid)
     call jeveuo(jexnum(noms2//'.TACH', ibid), 'L', iatach)
-    nbord2=0
+    nbord2 = 0
     do i = 1, nbordr
         if (zk24(iatach-1+i) (1:1) .eq. ' ') then
             lexi(i) = .false.
         else
             lexi(i) = .true.
-            nbord2=nbord2+1
-        endif
+            nbord2 = nbord2+1
+        end if
     end do
 !
-    call rsbary(zr(iaobj), nbordr, .false._1, lexi, rval,&
+    call rsbary(zr(iaobj), nbordr, .false._1, lexi, rval, &
                 i1, i2, iposit)
     if (iposit .eq. -2) then
         ier = 10
         goto 998
-    endif
+    end if
     call rsutro(nomsd, i1, ip1, ierr1)
     call rsutro(nomsd, i2, ip2, ierr2)
-    ASSERT(ierr1+ierr2.le.0)
-    rbase = zr(iaobj-1+i2) - zr(iaobj-1+i1)
+    ASSERT(ierr1+ierr2 .le. 0)
+    rbase = zr(iaobj-1+i2)-zr(iaobj-1+i1)
 !
-    call rsexch(' ', nomsd, nomc2, ip1, ch1,&
+    call rsexch(' ', nomsd, nomc2, ip1, ch1, &
                 l1)
-    call rsexch(' ', nomsd, nomc2, ip2, ch2,&
+    call rsexch(' ', nomsd, nomc2, ip2, ch2, &
                 l2)
-    ASSERT(l1+l2.le.0)
+    ASSERT(l1+l2 .le. 0)
 !
 !     -- SI LES 2 POINTS IP1 ET IP2 ONT MEME ABSCISSE, ON RECOPIE
 !     -- SIMPLEMENT LE CHAMP(IP1) DANS CHEXT2.
@@ -190,21 +190,21 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         else
 !         -- CAS DE L'EVOL_XXX QUI N'A QU'UN SEUL INSTANT :
 !            ON AUTORISE LE PROLONGEMENT CONSTANT ET ON ALARME
-            ASSERT(nbord2.eq.1)
-            r1=1.d0
-            r2=0.d0
-            if ((prold2.ne.'CONSTANT') .or. (prolg2.ne.'CONSTANT')) then
+            ASSERT(nbord2 .eq. 1)
+            r1 = 1.d0
+            r2 = 0.d0
+            if ((prold2 .ne. 'CONSTANT') .or. (prolg2 .ne. 'CONSTANT')) then
                 prold2 = 'CONSTANT'
                 prolg2 = 'CONSTANT'
                 if (rval .ne. zr(iaobj-1+i1)) then
                     call utmess('A', 'CALCULEL_28', sk=nomsd)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     else
         r1 = (zr(iaobj-1+i2)-rval)/rbase
         r2 = (rval-zr(iaobj-1+i1))/rbase
-    endif
+    end if
 !
 !     -- INTERPOLATION VRAIE:
 !     -----------------------
@@ -215,66 +215,66 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 !
 !        -- PROLONGEMENT A GAUCHE:
 !        -------------------------
-    else if (iposit.eq.-1) then
+    else if (iposit .eq. -1) then
         ier = 1
         if (prolg2(1:8) .eq. 'LINEAIRE') then
             call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
-        else if (prolg2(1:8).eq.'CONSTANT') then
+        else if (prolg2(1:8) .eq. 'CONSTANT') then
             call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
         else
             ier = 11
-        endif
+        end if
         goto 998
 !
 !        -- PROLONGEMENT A DROITE:
 !        -------------------------
-    else if (iposit.eq.1) then
+    else if (iposit .eq. 1) then
         ier = 2
         if (prold2(1:8) .eq. 'LINEAIRE') then
             call barych(ch1, ch2, r1, r2, chext2, base2, nomsd)
-        else if (prold2(1:8).eq.'CONSTANT') then
+        else if (prold2(1:8) .eq. 'CONSTANT') then
             call copisd('CHAMP_GD', base2, ch2(1:19), chext2(1:19))
         else
             ier = 12
-        endif
+        end if
         goto 998
 !
-    endif
+    end if
 998 continue
 !
 !     -- MESSAGES, ARRET?
 !     -------------------
     if (istop .eq. 0) then
         goto 999
-    else if (istop.eq.1) then
+    else if (istop .eq. 1) then
         stp = 'A'
-    else if (istop.eq.2) then
+    else if (istop .eq. 2) then
         stp = 'F'
-    endif
+    end if
 !
 !
     if (ier .eq. 11) then
         call utmess(stp//'+', 'UTILITAI8_32')
-    else if (ier.eq.12) then
+    else if (ier .eq. 12) then
         call utmess(stp//'+', 'UTILITAI8_33')
-    else if (ier.eq.10) then
-        valk (1)= nomc2
+    else if (ier .eq. 10) then
+        valk(1) = nomc2
         call utmess(stp//'+', 'UTILITAI8_34', sk=valk(1))
-    else if (ier.eq.20) then
-        valk (1)= acce2
+    else if (ier .eq. 20) then
+        valk(1) = acce2
         call utmess(stp//'+', 'UTILITAI8_35', sk=valk(1))
-    else if (ier.eq.21) then
-        valk (1)= nomc2
+    else if (ier .eq. 21) then
+        valk(1) = nomc2
         call utmess(stp//'+', 'UTILITAI8_36', sk=valk(1))
-    endif
+    end if
 !
     if (ier .ge. 10) then
-        valk (1) = nomsd
-        valk (2) = nomch
-        valk (3) = acces
+        valk(1) = nomsd
+        valk(2) = nomch
+        valk(3) = acces
         valr = rval
         call utmess(stp, 'UTILITAI8_37', nk=3, valk=valk, sr=valr)
-    endif
+    end if
 !
 !
 999 continue

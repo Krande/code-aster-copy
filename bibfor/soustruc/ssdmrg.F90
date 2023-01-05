@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,8 +69,8 @@ subroutine ssdmrg(mag)
 !     -- ON RECUPERE CERTAINES DIMENSIONS:
 !     ------------------------------------
     call jeveuo(mag//'.DIME', 'L', vi=dime)
-    nbsma=dime(4)
-    nnnoe=dime(1)
+    nbsma = dime(4)
+    nnnoe = dime(1)
 !
     call jeveuo(mag//'.NOEUD_CONF', 'E', vi=noeud_conf)
 !
@@ -89,57 +89,57 @@ subroutine ssdmrg(mag)
 !     -----------------------------------------------
         call getvtx('RECO_GLOBAL', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
         if (n1 .eq. 1) then
-            nbsmar= nbsma
+            nbsmar = nbsma
             do i = 1, nbsmar
-                liis(i)=i
+                liis(i) = i
             end do
         else
-            call getvem(mag, 'MAILLE', 'RECO_GLOBAL', 'SUPER_MAILLE', iocc,&
+            call getvem(mag, 'MAILLE', 'RECO_GLOBAL', 'SUPER_MAILLE', iocc, &
                         nbsma, lik8, n1)
             if (n1 .lt. 0) then
                 call utmess('F', 'SOUSTRUC_63')
-            endif
-            nbsmar= n1
+            end if
+            nbsmar = n1
             do i = 1, nbsmar
                 call jenonu(jexnom(mag//'.SUPMAIL', lik8(i)), isma)
-                liis(i)=isma
+                liis(i) = isma
             end do
-        endif
+        end if
 !
         call getvr8('RECO_GLOBAL', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
         call getvtx('RECO_GLOBAL', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
         do i = 1, nbsmar
-            isma=liis(i)
+            isma = liis(i)
             call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupi)
-            nbnoi=dime_2(4*(isma-1)+1)+dime_2(4*(isma-1)+2)
-            di=para_r(14*(isma-1)+13)
+            nbnoi = dime_2(4*(isma-1)+1)+dime_2(4*(isma-1)+2)
+            di = para_r(14*(isma-1)+13)
             do j = i+1, nbsmar
-                jsma=liis(j)
+                jsma = liis(j)
                 call jeveuo(jexnum(mag//'.SUPMAIL', jsma), 'L', iasupj)
-                nbnoj=dime_2(4*(jsma-1)+1)+dime_2(4*(jsma-1)&
-                +2)
-                dj=para_r(14*(jsma-1)+13)
-                dj=min(di,dj)
+                nbnoj = dime_2(4*(jsma-1)+1)+dime_2(4*(jsma-1) &
+                                                    +2)
+                dj = para_r(14*(jsma-1)+13)
+                dj = min(di, dj)
                 do ii = 1, nbnoi
-                    inoi=zi(iasupi-1+ii)
+                    inoi = zi(iasupi-1+ii)
 !               -- SI C'EST UN NOEUD DE LAGRANGE, ON SAUTE :
                     if (inoi .gt. nnnoe) goto 7
                     do jj = 1, nbnoj
-                        inoj=zi(iasupj-1+jj)
+                        inoj = zi(iasupj-1+jj)
                         if (inoj .gt. nnnoe) goto 8
-                        call ssdmu1(dj, crit, prec, zr(iacoo2+3*(inoi-1)), zr(iacoo2+3*(inoj-1)),&
+                        call ssdmu1(dj, crit, prec, zr(iacoo2+3*(inoi-1)), zr(iacoo2+3*(inoj-1)), &
                                     iconf)
                         if (iconf .eq. 0) then
                             if (inoi .lt. inoj) then
-                                noeud_conf(inoj)=inoi
+                                noeud_conf(inoj) = inoi
                             else
-                                noeud_conf(inoi)=inoj
-                            endif
-                        endif
-  8                     continue
+                                noeud_conf(inoi) = inoj
+                            end if
+                        end if
+8                       continue
                     end do
-  7                 continue
+7                   continue
                 end do
             end do
         end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,13 +67,13 @@ subroutine te0153(option, nomte)
 !
 !   Longueur de l'élément
     if (nomte .eq. 'MECA_BARRE') then
-        xl =  lonele()
-    else if (nomte.eq.'MECA_2D_BARRE') then
+        xl = lonele()
+    else if (nomte .eq. 'MECA_2D_BARRE') then
         xl = lonele(dime=2)
     else
         xl = 0.0d0
-        ASSERT( ASTER_FALSE )
-    endif
+        ASSERT(ASTER_FALSE)
+    end if
 !
 !   recuperation des orientations alpha,beta,gamma
     call jevech('PCAORIE', 'L', lorien)
@@ -82,43 +82,43 @@ subroutine te0153(option, nomte)
         call jevech('PACCELR', 'L', iacce)
     else
         call jevech('PMATUUR', 'E', lmat)
-    endif
+    end if
 !
 !   calcul des matrices elementaires
     mat(:) = 0.d0
     call jevech('PMATERC', 'L', imate)
     if (option .eq. 'RIGI_MECA') then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b], &
                     1, 'E', e, codres, 1)
-        xrig = e(1) * a / xl
-        mat( 1) =  xrig
-        mat( 7) = -xrig
-        mat(10) =  xrig
+        xrig = e(1)*a/xl
+        mat(1) = xrig
+        mat(7) = -xrig
+        mat(10) = xrig
 !
-    else if (option.eq.'MASS_MECA' .or. option.eq.'M_GAMMA') then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b],&
+    else if (option .eq. 'MASS_MECA' .or. option .eq. 'M_GAMMA') then
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b], &
                     1, 'RHO', rho, codres, 1)
         matr(:) = 0.d0
 !
-        xmas = rho(1) * a * xl / 6.d0
-        mat( 1) = xmas * 2.d0
-        mat( 3) = xmas * 2.d0
-        mat( 6) = xmas * 2.d0
-        mat( 10) = xmas * 2.d0
-        mat( 15) = xmas * 2.d0
-        mat( 21) = xmas * 2.d0
+        xmas = rho(1)*a*xl/6.d0
+        mat(1) = xmas*2.d0
+        mat(3) = xmas*2.d0
+        mat(6) = xmas*2.d0
+        mat(10) = xmas*2.d0
+        mat(15) = xmas*2.d0
+        mat(21) = xmas*2.d0
 !
-        mat( 7) = xmas
-        mat( 12) = xmas
-        mat( 18) = xmas
+        mat(7) = xmas
+        mat(12) = xmas
+        mat(18) = xmas
 !
-    else if ( (option.eq.'MASS_MECA_DIAG').or.(option.eq.'MASS_MECA_EXPLI') ) then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b],&
+    else if ((option .eq. 'MASS_MECA_DIAG') .or. (option .eq. 'MASS_MECA_EXPLI')) then
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b], &
                     1, 'RHO', rho, codres, 1)
-        xmas = rho(1) * a * xl / 2.d0
-        mat( 1) = xmas
-        mat( 3) = xmas
-        mat( 6) = xmas
+        xmas = rho(1)*a*xl/2.d0
+        mat(1) = xmas
+        mat(3) = xmas
+        mat(6) = xmas
         mat(10) = xmas
         mat(15) = xmas
         mat(21) = xmas
@@ -126,7 +126,7 @@ subroutine te0153(option, nomte)
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
+    end if
 !
 !   passage du repere local au repere global
     call matrot(zr(lorien), pgl)
@@ -134,7 +134,7 @@ subroutine te0153(option, nomte)
 !
     if (option .eq. 'M_GAMMA') then
         if (nomte .eq. 'MECA_BARRE') then
-            matp(:,:)=0.d+0
+            matp(:, :) = 0.d+0
             call vecma(matr, 21, matp, 6)
             call pmavec('ZERO', 6, matp, zr(iacce), zr(lvec))
         else
@@ -148,18 +148,18 @@ subroutine te0153(option, nomte)
             mat2dv(8) = matr(12)
             mat2dv(9) = matr(14)
             mat2dv(10) = matr(15)
-            mat2dm(:,:)=0.d+0
+            mat2dm(:, :) = 0.d+0
             call vecma(mat2dv, 10, mat2dm, 4)
             call pmavec('ZERO', 4, mat2dm, zr(iacce), zr(lvec))
-        endif
+        end if
     else
 !       ecriture dans le vecteur pmattur suivant l'element
         if (nomte .eq. 'MECA_BARRE') then
             do i = 1, 21
                 zr(lmat+i-1) = matr(i)
-            enddo
-        else if (nomte.eq.'MECA_2D_BARRE') then
-            zr(lmat)   = matr(1)
+            end do
+        else if (nomte .eq. 'MECA_2D_BARRE') then
+            zr(lmat) = matr(1)
             zr(lmat+1) = matr(2)
             zr(lmat+2) = matr(3)
             zr(lmat+3) = matr(7)
@@ -169,7 +169,7 @@ subroutine te0153(option, nomte)
             zr(lmat+7) = matr(12)
             zr(lmat+8) = matr(14)
             zr(lmat+9) = matr(15)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

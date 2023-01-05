@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,41 +59,41 @@ subroutine jeccta(colle1)
     call jelira(colle1, 'MODELONG', cval=modelo)
     call jelira(colle1, 'STOCKAGE', cval=stock)
     call jelira(colle1, 'LONT', lont1)
-    ASSERT(type.ne.'K')
-    ASSERT(stock.eq.'CONTIG')
-    ASSERT(modelo.eq.'VARIABLE')
-    ASSERT(acces.eq.'NU')
+    ASSERT(type .ne. 'K')
+    ASSERT(stock .eq. 'CONTIG')
+    ASSERT(modelo .eq. 'VARIABLE')
+    ASSERT(acces .eq. 'NU')
 !
     call jeveuo(jexatr(colle1, 'LONCUM'), 'L', jloncu)
-    lont2=zi(jloncu-1+nbobj+1)
+    lont2 = zi(jloncu-1+nbobj+1)
 !
 !
 !     -- ALLOCATION ET REMPLISAGE DE COLLE2 :
 !     ------------------------------------------------
-    colle2='&&JECCTA.COLLEC2'
-    call jecrec(colle2, 'V V '//type, acces, stock, modelo,&
+    colle2 = '&&JECCTA.COLLEC2'
+    call jecrec(colle2, 'V V '//type, acces, stock, modelo, &
                 nbobj)
     call jeecra(colle2, 'LONT', lont2)
     call jeveuo(colle1, 'L', jcoll1)
     call jeveuo(colle2, 'E', jcoll2)
     if (type .eq. 'I') then
         do k = 1, lont2
-            zi(jcoll2-1+k)=zi(jcoll1-1+k)
+            zi(jcoll2-1+k) = zi(jcoll1-1+k)
         end do
-    else if (type.eq.'R') then
+    else if (type .eq. 'R') then
         do k = 1, lont2
-            zr(jcoll2-1+k)=zr(jcoll1-1+k)
+            zr(jcoll2-1+k) = zr(jcoll1-1+k)
         end do
-    else if (type.eq.'C') then
+    else if (type .eq. 'C') then
         do k = 1, lont2
-            zc(jcoll2-1+k)=zc(jcoll1-1+k)
+            zc(jcoll2-1+k) = zc(jcoll1-1+k)
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     do k = 1, nbobj
-        n1=zi(jloncu-1+k+1)-zi(jloncu-1+k)
+        n1 = zi(jloncu-1+k+1)-zi(jloncu-1+k)
         call jecroc(jexnum(colle2, k))
         call jeecra(jexnum(colle2, k), 'LONMAX', n1)
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,14 +50,14 @@ subroutine lglnvi(mod, ndt, ndi, nvi)
 ! =================================================================
         ndt = 6
         ndi = 3
-        else if ( mod(1:6).eq.'D_PLAN'.or. mod(1:4).eq.'AXIS' .or.&
-    mod(1:6).eq.'C_PLAN' ) then
+    else if (mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS' .or. &
+             mod(1:6) .eq. 'C_PLAN') then
 ! =================================================================
 ! - D_PLAN AXIS C_PLAN --------------------------------------------
 ! =================================================================
         ndt = 4
         ndi = 3
-    else if (mod(1:2).eq.'1D') then
+    else if (mod(1:2) .eq. '1D') then
 ! =================================================================
 ! - MODELISATION DE TYPE 1D NON AUTORISEE -------------------------
 ! =================================================================
@@ -67,7 +67,7 @@ subroutine lglnvi(mod, ndt, ndi, nvi)
 ! - MODELISATION INCONNUE -----------------------------------------
 ! =================================================================
         call utmess('F', 'ALGORITH2_20')
-    endif
+    end if
 ! =================================================================
 ! - NOMBRE DE VARIABLES INTERNES ET DES CONDITIONS NON-LINEAIRES --
 ! =================================================================

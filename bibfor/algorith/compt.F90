@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine compt(nbpt, fn, offset, t, elapse,&
-                 nbchoc, tchocm, tchmax, tchmin, nbrebo,&
+subroutine compt(nbpt, fn, offset, t, elapse, &
+                 nbchoc, tchocm, tchmax, tchmin, nbrebo, &
                  trebom, tchoct, nbinst)
 !        COMPTAGE DES CHOCS AMV
 !
@@ -57,8 +57,8 @@ subroutine compt(nbpt, fn, offset, t, elapse,&
     idebut = 1
     idebur = 1
     ifin = 1
-    dt = t(4) - t(3)
-    nbpas = max(1, nint ( elapse / dt ) )
+    dt = t(4)-t(3)
+    nbpas = max(1, nint(elapse/dt))
 !
     do i = 1, nbpt
 !
@@ -66,33 +66,33 @@ subroutine compt(nbpt, fn, offset, t, elapse,&
 !
             if (irebo .eq. 1) then
                 ifinr = i
-                trebo = t(ifinr) - t(idebur)
-                trebom = trebom + trebo
-                nbrebo = nbrebo + 1
-            endif
+                trebo = t(ifinr)-t(idebur)
+                trebom = trebom+trebo
+                nbrebo = nbrebo+1
+            end if
 !
             idech = 0
-            jfin=min(i+nbpas,nbinst)
+            jfin = min(i+nbpas, nbinst)
             if (jfin .gt. (i+1)) then
                 do j = i+1, jfin
-                    if (abs(fn(j)) .gt. offset) idech =1
+                    if (abs(fn(j)) .gt. offset) idech = 1
                 end do
-            endif
+            end if
 !
             if (idech .eq. 0 .and. ichoc .eq. 1) then
 !
                 ifin = i
-                tchoc = t(ifin) - t(idebut)
-                tchocm = tchocm + tchoc
+                tchoc = t(ifin)-t(idebut)
+                tchocm = tchocm+tchoc
 !
                 if (tchoc .gt. tchmax) tchmax = tchoc
 !
                 if (tchoc .lt. tchmin) tchmin = tchoc
 !
-                nbchoc = nbchoc + 1
+                nbchoc = nbchoc+1
                 ichoc = 0
 !
-            endif
+            end if
 !
             irebo = 0
 !
@@ -104,21 +104,21 @@ subroutine compt(nbpt, fn, offset, t, elapse,&
             irebo = 1
             ichoc = 1
 !
-        endif
+        end if
 !
     end do
 !
     tchoct = tchocm
     if (nbchoc .ne. 0) then
-        tchocm=tchocm/nbchoc
+        tchocm = tchocm/nbchoc
     else
         tchocm = zero
-    endif
+    end if
 !
     if (nbrebo .ne. 0) then
-        trebom = trebom / nbrebo
+        trebom = trebom/nbrebo
     else
         trebom = zero
-    endif
+    end if
 !
 end subroutine

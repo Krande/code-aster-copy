@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_mfront_vname(nbVariMeca , &
-                             libr_name  , subr_name  , model_mfront, model_dim,&
+subroutine comp_mfront_vname(nbVariMeca, &
+                             libr_name, subr_name, model_mfront, model_dim, &
                              infoVari)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,11 +32,11 @@ implicit none
 #include "asterc/mfront_get_internal_state_variables.h"
 #include "asterc/mfront_get_internal_state_variables_types.h"
 !
-integer, intent(in) :: nbVariMeca
-character(len=255), intent(in) :: libr_name, subr_name
-character(len=16), intent(in) :: model_mfront
-integer, intent(in) :: model_dim
-character(len=16), pointer :: infoVari(:)
+    integer, intent(in) :: nbVariMeca
+    character(len=255), intent(in) :: libr_name, subr_name
+    character(len=16), intent(in) :: model_mfront
+    integer, intent(in) :: model_dim
+    character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,32 +59,32 @@ character(len=16), pointer :: infoVari(:)
     character(len=16) :: vari_name, variName, variType
     character(len=80), pointer :: variNameList(:) => null()
     character(len=80), pointer :: variTypeList(:) => null()
-    character(len=2), parameter :: cmpv_name(6) = (/'XX','YY','ZZ','XY','XZ','YZ'/)
+    character(len=2), parameter :: cmpv_name(6) = (/'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ'/)
     character(len=2), parameter :: cmpt_name(9) = (/'F0','F1','F2','F3','F4','F5','F6','F7','F8'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call mfront_get_number_of_internal_state_variables(libr_name   , subr_name,&
+    call mfront_get_number_of_internal_state_variables(libr_name, subr_name, &
                                                        model_mfront, nbVariType)
-    if ( nbVariMeca .ne. 0 ) then
-        if ( nbVariType .eq. 0 ) then
+    if (nbVariMeca .ne. 0) then
+        if (nbVariType .eq. 0) then
             iVari = 1
             infoVari(iVari) = 'VIDE'
         else
-            AS_ALLOCATE(vk80 = variNameList, size = nbVariType)
-            AS_ALLOCATE(vk80 = variTypeList, size = nbVariType)
-            call mfront_get_internal_state_variables(libr_name, subr_name,&
-                                                     model_mfront, variNameList,&
+            AS_ALLOCATE(vk80=variNameList, size=nbVariType)
+            AS_ALLOCATE(vk80=variTypeList, size=nbVariType)
+            call mfront_get_internal_state_variables(libr_name, subr_name, &
+                                                     model_mfront, variNameList, &
                                                      nbVariType)
-            call mfront_get_internal_state_variables_types(libr_name, subr_name,&
-                                                       model_mfront, variTypeList)
+            call mfront_get_internal_state_variables_types(libr_name, subr_name, &
+                                                           model_mfront, variTypeList)
             iVari = 0
             do iVariType = 1, nbVariType
-                variName = variNameList(iVariType)(1:16)
-                variType = variTypeList(iVariType)(1:16)
-                leng     = lxlgut(variName)
+                variName = variNameList(iVariType) (1:16)
+                variType = variTypeList(iVariType) (1:16)
+                leng = lxlgut(variName)
                 if (variType .eq. 'scalar') then
-                    iVari = iVari + 1
+                    iVari = iVari+1
                     infoVari(iVari) = variName
                 elseif (variType .eq. 'vector') then
                     do iTens = 1, 2*model_dim
@@ -92,8 +92,8 @@ character(len=16), pointer :: infoVari(:)
                             vari_name = variName(1:leng)//cmpv_name(iTens)
                         else
                             vari_name = variName(1:14)//cmpv_name(iTens)
-                        endif
-                        iVari = iVari + 1
+                        end if
+                        iVari = iVari+1
                         infoVari(iVari) = vari_name
                     end do
                 elseif (variType .eq. 'tensor') then
@@ -102,18 +102,18 @@ character(len=16), pointer :: infoVari(:)
                             vari_name = variName(1:leng)//cmpt_name(iTens)
                         else
                             vari_name = variName(1:14)//cmpt_name(iTens)
-                        endif
-                        iVari = iVari + 1
+                        end if
+                        iVari = iVari+1
                         infoVari(iVari) = vari_name
                     end do
                 else
                     ASSERT(ASTER_FALSE)
-                endif
+                end if
             end do
-            AS_DEALLOCATE(vk80 = variNameList)
-            AS_DEALLOCATE(vk80 = variTypeList)
-        endif
+            AS_DEALLOCATE(vk80=variNameList)
+            AS_DEALLOCATE(vk80=variTypeList)
+        end if
         ASSERT(nbVariMeca .eq. iVari)
-    endif
+    end if
 !
 end subroutine

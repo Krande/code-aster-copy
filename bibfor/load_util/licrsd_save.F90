@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 subroutine licrsd_save(list_load)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/gnomsd.h"
 !
-character(len=19), intent(out) :: list_load
+    character(len=19), intent(out) :: list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,6 +43,6 @@ character(len=19), intent(out) :: list_load
     list_load = ' '
     noobj = '12345678'//'.1234'//'.EXCIT'
     call gnomsd(' ', noobj, 10, 13)
-    list_load  = noobj(1:19)
+    list_load = noobj(1:19)
 !
 end subroutine

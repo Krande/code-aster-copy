@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_cycl_erase(ds_contact, cycl_type, point_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -72,30 +72,30 @@ implicit none
 !
 ! - Access to cycling objects
 !
-    call jeveuo(sdcont_cyclis, 'E', vi = p_sdcont_cyclis)
-    call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
-    call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
+    call jeveuo(sdcont_cyclis, 'E', vi=p_sdcont_cyclis)
+    call jeveuo(sdcont_cycnbr, 'E', vi=p_sdcont_cycnbr)
+    call jeveuo(sdcont_cyceta, 'E', vi=p_sdcont_cyceta)
 !
 ! - Get contact parameters
 !
-    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
 !
 ! - Erasing cycling information
 !
     if (cycl_type .eq. 0) then
-        ASSERT(point_curr.eq.0)
+        ASSERT(point_curr .eq. 0)
         do cycl_index = 1, 4
             do i_cont_poin = 1, nt_cont_poin
                 p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_index) = 0
                 p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_index) = 0
                 p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = -1
-            enddo
+            end do
         end do
-    else if (cycl_type.gt.0) then
-        ASSERT(point_curr.le.nt_cont_poin)
-        ASSERT(point_curr.ge.1)
-        ASSERT(cycl_type.ge.1)
-        ASSERT(cycl_type.le.4)
+    else if (cycl_type .gt. 0) then
+        ASSERT(point_curr .le. nt_cont_poin)
+        ASSERT(point_curr .ge. 1)
+        ASSERT(cycl_type .ge. 1)
+        ASSERT(cycl_type .le. 4)
         cycl_index = cycl_type
         i_cont_poin = point_curr
         p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_index) = 0
@@ -103,7 +103,7 @@ implicit none
         p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = -1
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

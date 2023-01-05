@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
+subroutine lcmzcp(fami, kpg, ksp, ndim, imate, &
                   epsm, deps, vim, &
                   option, sig, vip, dsidep)
     implicit none
@@ -74,10 +74,10 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 ! --- ------------------------------------------------------------------
 !     INDEX DES VARIABLES INTERNES
     integer :: itemp
-    parameter     (itemp=7)
+    parameter(itemp=7)
 !
     integer :: nbval
-    parameter     (nbval=8)
+    parameter(nbval=8)
     integer :: icodre(nbval)
     character(len=16) :: nomres(nbval)
     character(len=8) :: mazars(nbval)
@@ -93,8 +93,8 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: nompar
     character(len=30) :: valkm(3)
 !
-    data mazars /'EPSD0','K','AC','BC','AT','BT',&
-     &             'SIGM_LIM','EPSI_LIM'/
+    data mazars/'EPSD0', 'K', 'AC', 'BC', 'AT', 'BT',&
+     &             'SIGM_LIM', 'EPSI_LIM'/
 !
 !
 ! ----------------------------------------------------------------------
@@ -102,27 +102,27 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 !
 ! - Get temperatures
 !
-    call get_varc(fami , kpg  , ksp , 'T',&
+    call get_varc(fami, kpg, ksp, 'T', &
                   tm, tp, tref)
 
 !       RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
 !
     ndimsi = 2*ndim
 !
 !     DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET
 !     DES CONDITIONS D HYDRATATION OU DE SECHAGE
     tmaxm = vim(itemp)
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sref, iret)
     if (iret .ne. 0) sref = 0.0d0
     if (resi) then
         temp = tp
-        call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+        call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                     ksp, hydr, iret)
         if (iret .ne. 0) hydr = 0.0d0
-        poum='+'
-        call rcvarc(' ', 'SECH', '+', fami, kpg,&
+        poum = '+'
+        call rcvarc(' ', 'SECH', '+', fami, kpg, &
                     ksp, sech, iret)
         if (iret .ne. 0) sech = 0.0d0
         if (isnan(tp)) then
@@ -131,18 +131,18 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
         else
             tmax = max(tmaxm, tp)
             if (tmax .gt. tmaxm) vip(itemp) = tmax
-        endif
+        end if
     else
         temp = tm
-        call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+        call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                     ksp, hydr, iret)
         if (iret .ne. 0) hydr = 0.0d0
-        call rcvarc(' ', 'SECH', '-', fami, kpg,&
+        call rcvarc(' ', 'SECH', '-', fami, kpg, &
                     ksp, sech, iret)
         if (iret .ne. 0) sech = 0.0d0
-        poum='-'
+        poum = '-'
         tmax = tmaxm
-    endif
+    end if
 !
 !     RECUPERATION DES CARACTERISTIQUES MATERIAUX QUI PEUVENT VARIER
 !     AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
@@ -152,30 +152,30 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'ELAS', 1, nompar, [valpar], &
                 2, nomres, valres, icodre, 1)
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'ELAS', 1, nompar, [valpar], &
                 1, nomres(3), valres(3), icodre(3), 0)
-    if ((.not.isnan(tp)) .and. (.not.isnan(tm))) then
-        if ((isnan(tref)) .or. (icodre(3).ne.0)) then
+    if ((.not. isnan(tp)) .and. (.not. isnan(tm))) then
+        if ((isnan(tref)) .or. (icodre(3) .ne. 0)) then
             call utmess('F', 'CALCULEL_15')
         else
             epsthe = valres(3)*(temp-tref)
-        endif
+        end if
     else
         valres(3) = 0.0d0
         epsthe = 0.0d0
-    endif
+    end if
     ee = valres(1)
     nu = valres(2)
 !
 !     LECTURE DU RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
-    nomres(1)='B_ENDOGE'
-    nomres(2)='K_DESSIC'
-    call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.0d0], 2, nomres, valres, icodre,&
+    nomres(1) = 'B_ENDOGE'
+    nomres(2) = 'K_DESSIC'
+    call rcvala(imate, ' ', 'ELAS', 0, ' ', &
+                [0.0d0], 2, nomres, valres, icodre, &
                 0)
     if (icodre(1) .ne. 0) valres(1) = 0.0d0
     if (icodre(2) .ne. 0) valres(2) = 0.0d0
@@ -186,19 +186,19 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 !
 ! --- ON RECUPERE LES PARAMETRES MATERIAU
     call r8inir(nbval, 0.d0, valres, 1)
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'MAZARS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'MAZARS', 1, nompar, [valpar], &
                 nbval, mazars, valres, icodre, 1)
     if (icodre(7)+icodre(8) .ne. 0) then
-        valkm(1)='MAZARS_GC'
-        valkm(2)=mazars(7)
-        valkm(3)=mazars(8)
+        valkm(1) = 'MAZARS_GC'
+        valkm(2) = mazars(7)
+        valkm(3) = mazars(8)
         call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
-    endif
+    end if
 ! --- AJOUT DE NU DANS VALRES
     valres(nbval+1) = nu
 !     LOI DE MAZARS EN CONTRAINTES PLANES
-    call mazacp(option, ndimsi, epsm, deps, epsane,&
-                ee, valres, vim, vip, sig,&
+    call mazacp(option, ndimsi, epsm, deps, epsane, &
+                ee, valres, vim, vip, sig, &
                 dsidep)
 end subroutine

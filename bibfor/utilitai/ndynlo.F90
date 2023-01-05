@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 function ndynlo(sddyna, chainz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,9 +28,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynin.h"
 !
-aster_logical :: ndynlo
-character(len=19) :: sddyna
-character(len=*) :: chainz
+    aster_logical :: ndynlo
+    character(len=19) :: sddyna
+    character(len=*) :: chainz
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,12 +69,12 @@ character(len=*) :: chainz
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
-        endif
+        end if
         goto 999
     else
         typesch = sddyna(1:15)//'.TYPE_SCH'
-        call jeveuo(typesch, 'L', vk16 = v_typesch)
-    endif
+        call jeveuo(typesch, 'L', vk16=v_typesch)
+    end if
     typsch = v_typesch(1)
 !
     if (typsch .eq. 'STATIQUE') then
@@ -82,59 +82,59 @@ character(len=*) :: chainz
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
-        endif
+        end if
         goto 999
     else
-        if (chaine  .eq. 'DYNAMIQUE') then
+        if (chaine .eq. 'DYNAMIQUE') then
             ndynlo = ASTER_TRUE
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
     infosd = sddyna(1:15)//'.INFO_SD'
-    call jeveuo(infosd, 'L', vl = v_infosd)
+    call jeveuo(infosd, 'L', vl=v_infosd)
 !
     if (chaine .eq. 'STATIQUE') then
         ndynlo = ASTER_FALSE
     else if (chaine .eq. 'DIFF_CENT') then
         if (v_typesch(7) .eq. 'DIFF_CENTREE') then
             ndynlo = ASTER_TRUE
-        endif
+        end if
     else if (chaine .eq. 'TCHAMWA') then
         if (v_typesch(8) .eq. 'TCHAMWA') then
             ndynlo = ASTER_TRUE
-        endif
+        end if
     else if (chaine .eq. 'NEWMARK') then
         if (v_typesch(2) .eq. 'NEWMARK') then
             ndynlo = ASTER_TRUE
-        endif
+        end if
     else if (chaine .eq. 'FAMILLE_NEWMARK') then
-        if ((v_typesch(2) .eq. 'NEWMARK') .or.&
-            (v_typesch(7) .eq. 'DIFF_CENTREE') .or.&
-            (v_typesch(8) .eq. 'TCHAMWA') .or.&
-            (v_typesch(5) .eq. 'HHT_COMPLET') .or. (v_typesch(3)(1:3).eq.'HHT')) then
+        if ((v_typesch(2) .eq. 'NEWMARK') .or. &
+            (v_typesch(7) .eq. 'DIFF_CENTREE') .or. &
+            (v_typesch(8) .eq. 'TCHAMWA') .or. &
+            (v_typesch(5) .eq. 'HHT_COMPLET') .or. (v_typesch(3) (1:3) .eq. 'HHT')) then
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
-        endif
+        end if
     else if (chaine .eq. 'HHT_COMPLET') then
         if (v_typesch(5) .eq. 'HHT_COMPLET') then
             ndynlo = ASTER_TRUE
-        endif
+        end if
     else if (chaine .eq. 'HHT') then
-        if (v_typesch(3)(1:3) .eq. 'HHT') then
+        if (v_typesch(3) (1:3) .eq. 'HHT') then
             ndynlo = ASTER_TRUE
-        endif
+        end if
     else if (chaine .eq. 'IMPLICITE') then
         if (v_typesch(2) .eq. 'NEWMARK' .or. &
-            v_typesch(5) .eq. 'HHT_COMPLET' .or.&
-            v_typesch(3)(1:3) .eq. 'HHT') then
+            v_typesch(5) .eq. 'HHT_COMPLET' .or. &
+            v_typesch(3) (1:3) .eq. 'HHT') then
             ndynlo = ASTER_TRUE
-        endif
+        end if
     else if (chaine .eq. 'EXPLICITE') then
         if (v_typesch(7) .eq. 'DIFF_CENTREE' .or. v_typesch(8) .eq. 'TCHAMWA') then
             ndynlo = ASTER_TRUE
-        endif
+        end if
     else if (chaine .eq. 'MAT_AMORT') then
         ndynlo = v_infosd(1)
     else if (chaine .eq. 'MULTI_APPUI') then
@@ -162,32 +162,32 @@ character(len=*) :: chainz
     else if (chaine .eq. 'AMOR_RAYLEIGH') then
         ndynlo = v_infosd(16)
     else if (chaine .eq. 'FORMUL_DEPL') then
-        if (ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 1) then
+        if (ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1) then
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
-        endif
+        end if
     else if (chaine .eq. 'FORMUL_VITE') then
-        if (ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 2) then
+        if (ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 2) then
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
-        endif
+        end if
     else if (chaine .eq. 'FORMUL_ACCE') then
-        if (ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 3) then
+        if (ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3) then
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
-        endif
-    else if (chaine.eq.'MULTI_PAS') then
+        end if
+    else if (chaine .eq. 'MULTI_PAS') then
         if (v_typesch(5) .eq. 'HHT_COMPLET') then
             ndynlo = ASTER_TRUE
         else
             ndynlo = ASTER_FALSE
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
+subroutine adlivo(mv, is, nvtot, nvoima, nscoma, &
                   touvoi, nomail)
     implicit none
 #include "asterf_types.h"
@@ -41,41 +41,41 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
 !     TOUVOI(IV,2) : NOMBRE DE SOMMETS COMMUNS
 !     TOUVOI(IV,2+IS) : CES SOMMETS COMMUNS DANS NUMEROTATION DE M0
 !
-    trma=.false.
+    trma = .false.
     do iv = 1, nvtot
-        if (mv .eq. touvoi(iv,1)) then
-            trma=.true.
-            trso=.false.
-            nsco=touvoi(iv,2)
+        if (mv .eq. touvoi(iv, 1)) then
+            trma = .true.
+            trso = .false.
+            nsco = touvoi(iv, 2)
             do isco = 1, nsco
-                if (touvoi(iv,2+isco) .eq. is) then
-                    trso=.true.
+                if (touvoi(iv, 2+isco) .eq. is) then
+                    trso = .true.
                     goto 20
 !
-                endif
+                end if
             end do
- 20         continue
-            if (.not.trso) then
-                nsco=nsco+1
+20          continue
+            if (.not. trso) then
+                nsco = nsco+1
                 if (nsco .gt. nscoma) then
                     call utmess('F', 'VOLUFINI_4', si=nsco)
-                endif
-                touvoi(iv,2)=nsco
-                touvoi(iv,2+nsco)=is
-            endif
+                end if
+                touvoi(iv, 2) = nsco
+                touvoi(iv, 2+nsco) = is
+            end if
             goto 40
 !
-        endif
+        end if
     end do
- 40 continue
-    if (.not.trma) then
-        nvtot=nvtot+1
+40  continue
+    if (.not. trma) then
+        nvtot = nvtot+1
         if (nvtot .gt. nvoima) then
             call utmess('F', 'VOLUFINI_3', sk=nomail)
-        endif
-        touvoi(nvtot,1)=mv
-        touvoi(nvtot,2)=1
-        touvoi(nvtot,3)=is
-    endif
+        end if
+        touvoi(nvtot, 1) = mv
+        touvoi(nvtot, 2) = 1
+        touvoi(nvtot, 3) = is
+    end if
 !
 end subroutine

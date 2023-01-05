@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmnoli(sddisc       , sderro, ds_print  , sdcrit     ,&
-                  fonact       , sddyna, modele    , ds_material,&
-                  carele       , sdpilo, ds_measure, ds_energy  , ds_inout,&
+subroutine nmnoli(sddisc, sderro, ds_print, sdcrit, &
+                  fonact, sddyna, modele, ds_material, &
+                  carele, sdpilo, ds_measure, ds_energy, ds_inout, &
                   ds_errorindic)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,16 +36,16 @@ implicit none
 #include "asterfort/rsrusd.h"
 #include "asterfort/utmess.h"
 !
-character(len=19) :: sddisc, sdcrit, sddyna, sdpilo
-type(NL_DS_Energy), intent(in) :: ds_energy
-character(len=24) :: sderro
-character(len=24) :: modele, carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_InOut), intent(inout) :: ds_inout
-integer :: fonact(*)
-type(NL_DS_Print), intent(in) :: ds_print
+    character(len=19) :: sddisc, sdcrit, sddyna, sdpilo
+    type(NL_DS_Energy), intent(in) :: ds_energy
+    character(len=24) :: sderro
+    character(len=24) :: modele, carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    integer :: fonact(*)
+    type(NL_DS_Print), intent(in) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,11 +86,11 @@ type(NL_DS_Print), intent(in) :: ds_print
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_25')
-    endif
+    end if
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lreuse = isfonc(fonact,'REUSE')
+    lreuse = isfonc(fonact, 'REUSE')
 !
 ! --- INSTANT INITIAL
 !
@@ -102,32 +102,32 @@ type(NL_DS_Print), intent(in) :: ds_print
 !
 ! --- ACCES SD ARCHIVAGE
 !
-    sdarch      = sddisc(1:14)//'.ARCH'
+    sdarch = sddisc(1:14)//'.ARCH'
     sdarch_ainf = sdarch(1:19)//'.AINF'
 !
 ! - Current storing index
 !
-    call jeveuo(sdarch_ainf, 'L', vi = v_sdarch_ainf)
+    call jeveuo(sdarch_ainf, 'L', vi=v_sdarch_ainf)
     numarc = v_sdarch_ainf(1)
 !
 ! --- CREATION DE LA SD EVOL_NOLI OU NETTOYAGE DES ANCIENS NUMEROS
 !
     if (lreuse) then
-        ASSERT(numarc.ne.0)
+        ASSERT(numarc .ne. 0)
         call rsrusd(result, numarc)
     else
-        ASSERT(numarc.eq.0)
+        ASSERT(numarc .eq. 0)
         call rscrsd('G', result, 'EVOL_NOLI', 100)
-    endif
+    end if
 !
 ! --- ARCHIVAGE ETAT INITIAL
 !
-    if (.not.lreuse) then
+    if (.not. lreuse) then
         call utmess('I', 'ARCHIVAGE_4')
-        call nmarch(numins    , modele       , ds_material, carele, fonact   ,&
-                    ds_print  , sddisc       , sdcrit,&
-                    ds_measure, sderro       , sddyna     , sdpilo, ds_energy,&
-                    ds_inout  , ds_errorindic)
-    endif
+        call nmarch(numins, modele, ds_material, carele, fonact, &
+                    ds_print, sddisc, sdcrit, &
+                    ds_measure, sderro, sddyna, sdpilo, ds_energy, &
+                    ds_inout, ds_errorindic)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
-                  suropt, lpain, lchin, nbopt, typcoe,&
+subroutine mechpo(souche, charge, modele, chdep2, chdynr, &
+                  suropt, lpain, lchin, nbopt, typcoe, &
                   alpha, calpha)
     implicit none
 #include "jeveux.h"
@@ -54,15 +54,15 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
 !-----------------------------------------------------------------------
     integer :: i, iret
 !-----------------------------------------------------------------------
-    data         ncmppe/ 'G' , 'AG' , 'BG' , 'CG' /
-    data         ncmpfo/ 'FX' , 'FY' , 'FZ' , 'MX' , 'MY' , 'MZ' ,&
-     &                     'BX' , 'REP' , 'ALPHA' , 'BETA' , 'GAMMA' /
+    data ncmppe/'G', 'AG', 'BG', 'CG'/
+    data ncmpfo/'FX', 'FY', 'FZ', 'MX', 'MY', 'MZ',&
+     &                     'BX', 'REP', 'ALPHA', 'BETA', 'GAMMA'/
 !    -------------------------------------------------------------------
     call jemarq()
     do i = 1, 11
         tps(i) = 0.d0
         tpf(i) = '&FOZERO'
-        tpc(i) = ( 0.d0 , 0.d0 )
+        tpc(i) = (0.d0, 0.d0)
     end do
     ligrmo = modele(1:8)//'.MODELE'
     chdepl = chdep2
@@ -73,15 +73,15 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
         nbopt = nbopt+1
         lpain(nbopt) = 'PCOEFFR'
         lchin(nbopt) = souche(1:8)//ch5//'.COEFF'
-        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'IMPE_R',&
+        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'IMPE_R', &
                     ncmp=1, nomcmp='IMPE', sr=alpha)
-    else if (typcoe.eq.'C') then
+    else if (typcoe .eq. 'C') then
         nbopt = nbopt+1
         lpain(nbopt) = 'PCOEFFC'
         lchin(nbopt) = souche(1:8)//ch5//'.COEFF'
-        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'IMPE_C',&
+        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'IMPE_C', &
                     ncmp=1, nomcmp='IMPE', sc=calpha)
-    endif
+    end if
 !
     nbopt = nbopt+1
     lpain(nbopt) = 'PPESANR'
@@ -90,9 +90,9 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
     if (iret .eq. 0) then
         call codent(nbopt, 'D0', ch5(2:5))
         lchin(nbopt) = souche(1:8)//ch5//'.PESAN.DESC'
-        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'PESA_R  ',&
+        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'PESA_R  ', &
                     ncmp=4, lnomcmp=ncmppe, vr=tps)
-    endif
+    end if
 !
     nbopt = nbopt+1
     lchin(nbopt) = charge(1:8)//'.CHME.F1D1D.DESC'
@@ -102,21 +102,21 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
         call codent(nbopt, 'D0', ch5(2:5))
         lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
         call fozero(tpf(1))
-        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ',&
+        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ', &
                     ncmp=11, lnomcmp=ncmpfo, vk=tpf)
 !
         nbopt = nbopt+1
         lpain(nbopt) = 'PFR1D1D'
         call codent(nbopt, 'D0', ch5(2:5))
         lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
-        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ',&
+        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ', &
                     ncmp=11, lnomcmp=ncmpfo, vr=tps)
 !
         nbopt = nbopt+1
         lpain(nbopt) = 'PFC1D1D'
         call codent(nbopt, 'D0', ch5(2:5))
         lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
-        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ',&
+        call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ', &
                     ncmp=11, lnomcmp=ncmpfo, vc=tpc)
 !
     else
@@ -128,14 +128,14 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             lpain(nbopt) = 'PFR1D1D'
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
-            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ',&
+            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ', &
                         ncmp=11, lnomcmp=ncmpfo, vr=tps)
 !
             nbopt = nbopt+1
             lpain(nbopt) = 'PFC1D1D'
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
-            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ',&
+            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ', &
                         ncmp=11, lnomcmp=ncmpfo, vc=tpc)
         else if (k8b(5:6) .eq. '_RI') then
             lpain(nbopt) = 'PFC1D1D'
@@ -144,7 +144,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             lpain(nbopt) = 'PFR1D1D'
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
-            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ',&
+            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ', &
                         ncmp=11, lnomcmp=ncmpfo, vr=tps)
 !
             nbopt = nbopt+1
@@ -152,7 +152,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call fozero(tpf(1))
-            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ',&
+            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ', &
                         ncmp=11, lnomcmp=ncmpfo, vk=tpf)
         else
             lpain(nbopt) = 'PFR1D1D'
@@ -162,17 +162,17 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call fozero(tpf(1))
-            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ',&
+            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ', &
                         ncmp=11, lnomcmp=ncmpfo, vk=tpf)
 !
             nbopt = nbopt+1
             lpain(nbopt) = 'PFC1D1D'
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
-            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ',&
+            call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ', &
                         ncmp=11, lnomcmp=ncmpfo, vc=tpc)
-        endif
-    endif
+        end if
+    end if
 !
     nbopt = nbopt+1
     lpain(nbopt) = 'PCHDYNR'
@@ -184,13 +184,13 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
         lchin(nbopt) = souche(1:8)//ch5//'.PCHDY'
 !
         call copisd('CHAMP_GD', 'V', chdepl, lchin(nbopt))
-    endif
+    end if
 !
     nbopt = nbopt+1
     lpain(nbopt) = 'PSUROPT'
     call codent(nbopt, 'D0', ch5(2:5))
     lchin(nbopt) = souche(1:8)//ch5//'.SUR_OPTION'
-    call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'NEUT_K24',&
+    call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'NEUT_K24', &
                 ncmp=1, nomcmp='Z1', sk=suropt)
 !
     call jedema()

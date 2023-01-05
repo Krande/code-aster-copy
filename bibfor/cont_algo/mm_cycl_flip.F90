@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_cycl_flip(ds_contact, cycl_flip)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
@@ -57,11 +57,11 @@ implicit none
 ! - Cycling objects
 !
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
-    call jeveuo(sdcont_cyceta, 'L', vi = p_sdcont_cyceta)
+    call jeveuo(sdcont_cyceta, 'L', vi=p_sdcont_cyceta)
 !
 ! - Flip-flop dectected ?
 !
-    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     do i_cont_poin = 1, nb_cont_poin
         cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index)
         if (cycl_stat .eq. -10) cycl_flip = .true.

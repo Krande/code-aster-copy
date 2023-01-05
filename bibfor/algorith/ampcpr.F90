@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
-                  n2, i, j, fac, npar,&
+subroutine ampcpr(cmat, nb1, nb2, bmat, n1, &
+                  n2, i, j, fac, npar, &
                   nsym)
     implicit none
 #include "asterfort/utmess.h"
@@ -60,23 +60,23 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !-----------------------------------------------------------------------
     if (nsym .eq. 1) then
 !
-        jdeb=j
-        jfin=min(j+n2-1,nb2)
+        jdeb = j
+        jfin = min(j+n2-1, nb2)
         if ((j+n2-1) .gt. nb2) then
             call utmess('F', 'ALGORITH11_88')
-        endif
+        end if
         if (jfin .lt. jdeb) goto 999
-        jjdeb=jdeb-j+1
-        jjfin=jfin-j+1
+        jjdeb = jdeb-j+1
+        jjfin = jfin-j+1
 !
-        ideb=i
+        ideb = i
         if ((i+n1-1) .gt. nb1) then
             call utmess('F', 'ALGORITH11_88')
-        endif
-        ifin=min(i+n1-1,nb1)
+        end if
+        ifin = min(i+n1-1, nb1)
         if (ifin .lt. ideb) goto 999
-        iideb=ideb-i+1
-        iifin=ifin-i+1
+        iideb = ideb-i+1
+        iifin = ifin-i+1
 !
 !    PARTIE RELLE
 !
@@ -88,9 +88,9 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                     icol = j+jj-1
                     if (icol .ge. ilig) then
                         iterme = icol*(icol-1)/2+1+icol-ilig
-                        cmat(iterme)=cmat(iterme)+dcmplx(bmat(ii,jj)*&
-                        fac,0.d0)
-                    endif
+                        cmat(iterme) = cmat(iterme)+dcmplx(bmat(ii, jj)* &
+                                                           fac, 0.d0)
+                    end if
                 end do
             end do
 !
@@ -104,37 +104,37 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                     icol = j+jj-1
                     if (icol .ge. ilig) then
                         iterme = icol*(icol-1)/2+1+icol-ilig
-                        cmat(iterme)=cmat(iterme)+dcmplx(0.d0,bmat(ii,&
-                        jj)*fac)
-                    endif
+                        cmat(iterme) = cmat(iterme)+dcmplx(0.d0, bmat(ii, &
+                                                                      jj)*fac)
+                    end if
                 end do
             end do
 !
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     CAS AVEC TRANSPOSITION
 !
     if (nsym .eq. -1) then
 !
-        jdeb=j
-        jfin=min(j+n1-1,nb2)
+        jdeb = j
+        jfin = min(j+n1-1, nb2)
         if ((j+n1-1) .gt. nb2) then
             call utmess('F', 'ALGORITH11_90')
-        endif
+        end if
         if (jfin .lt. jdeb) goto 999
-        jjdeb=jdeb-j+1
-        jjfin=jfin-j+1
+        jjdeb = jdeb-j+1
+        jjfin = jfin-j+1
 !
-        ideb=i
-        ifin=min(i+n2-1,nb1)
+        ideb = i
+        ifin = min(i+n2-1, nb1)
         if ((i+n2-1) .gt. nb1) then
             call utmess('F', 'ALGORITH11_88')
-        endif
+        end if
         if (ifin .lt. ideb) goto 999
-        iideb=ideb-i+1
-        iifin=ifin-i+1
+        iideb = ideb-i+1
+        iifin = ifin-i+1
 !
 !    PARTIE RELLE
 !
@@ -146,9 +146,9 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                     icol = j+jj-1
                     if (icol .ge. ilig) then
                         iterme = icol*(icol-1)/2+1+icol-ilig
-                        cmat(iterme)=cmat(iterme)+dcmplx(bmat(jj,ii)*&
-                        fac,0.d0)
-                    endif
+                        cmat(iterme) = cmat(iterme)+dcmplx(bmat(jj, ii)* &
+                                                           fac, 0.d0)
+                    end if
                 end do
             end do
 !
@@ -162,14 +162,14 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                     icol = j+jj-1
                     if (icol .ge. ilig) then
                         iterme = icol*(icol-1)/2+1+icol-ilig
-                        cmat(iterme)=cmat(iterme)+dcmplx(0.d0,bmat(jj,&
-                        ii)*fac)
-                    endif
+                        cmat(iterme) = cmat(iterme)+dcmplx(0.d0, bmat(jj, &
+                                                                      ii)*fac)
+                    end if
                 end do
             end do
 !
-        endif
-    endif
+        end if
+    end if
 !
 !
 999 continue

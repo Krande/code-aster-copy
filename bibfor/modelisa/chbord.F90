@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
+subroutine chbord(nomo, nbmail, listma, mabord, nbmapr, &
                   nbmabo)
     implicit none
 #include "jeveux.h"
@@ -64,28 +64,28 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
     do igrel = 1, nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
         call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
-        itypel = zi(ialiel -1 +nel)
+        itypel = zi(ialiel-1+nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
         do ima = 1, nbmail
             numail = listma(ima)
             do iel = 1, nel-1
                 if (numail .eq. zi(ialiel-1+iel)) then
-                    traite = traite + 1
+                    traite = traite+1
                     call teattr('S', 'DIM_TOPO_MODELI', dmo, ier, typel=nomte)
                     call teattr('S', 'DIM_TOPO_MAILLE', dma, ier, typel=nomte)
                     if (dmo .eq. dma) then
 !                    on a un element principal
                         mabord(ima) = 0
-                        nbmapr = nbmapr + 1
+                        nbmapr = nbmapr+1
                     else
 !                    on a un element de bord
                         mabord(ima) = 1
-                        nbmabo = nbmabo + 1
-                    endif
+                        nbmabo = nbmabo+1
+                    end if
                     goto 20
-                endif
+                end if
             end do
- 20         continue
+20          continue
         end do
         if (traite .eq. nbmail) goto 999
     end do

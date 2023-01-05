@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,11 +40,11 @@ subroutine dismrc(questi, nomobz, repi, repk, ierd)
 !
     if (questi .eq. 'NB_CHAMP_MAX') then
         call jelira(jexnum(nomob//'.TACH', 1), 'LONMAX', repi)
-    else if (questi.eq.'NB_CHAMP_UTI') then
+    else if (questi .eq. 'NB_CHAMP_UTI') then
         call jelira(nomob//'.ORDR', 'LONUTI', repi)
     else
         ierd = 1
-    endif
+    end if
 !
-    repk=' '
+    repk = ' '
 end subroutine

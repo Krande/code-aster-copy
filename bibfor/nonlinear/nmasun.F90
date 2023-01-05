@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmasun(ds_contact, matass)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -65,13 +65,13 @@ implicit none
 !
 !   A modifier dans une version plus aboutie
     lmodim = .true.
-    nbliac = cudisd(ds_contact%sdunil_solv,'NBLIAC')
+    nbliac = cudisd(ds_contact%sdunil_solv, 'NBLIAC')
     if (nbliac .eq. 0) then
         goto 999
-    endif
-    if (.not.lmodim) then
+    end if
+    if (.not. lmodim) then
         goto 999
-    endif
+    end if
     matrcu = ds_contact%sdunil_solv(1:14)//'.MATR'
 !
 ! - Get numbering object

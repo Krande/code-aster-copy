@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 subroutine lcquma(mat, fami, kpg, ksp, poum)
     implicit none
 #include "asterfort/rcvalb.h"
-    integer,intent(in) :: mat, kpg, ksp
-    character(len=1),intent(in) :: poum
-    character(len=*),intent(in) :: fami
+    integer, intent(in) :: mat, kpg, ksp
+    character(len=1), intent(in) :: poum
+    character(len=*), intent(in) :: fami
 ! --------------------------------------------------------------------------------------------------
 !   ENDOMMAGEMENT FRAGILE A GRADIENT DE VARIABLE INTERNE ENDO_SCALAIRE
 !            LECTURE DES PARAMETRES DU CRITERE QUADRATIQUE
@@ -33,39 +33,39 @@ subroutine lcquma(mat, fami, kpg, ksp, poum)
 ! IN  POUM   LECTURE DES PARAMETRES EN DEBUT '-' OU FIN '+' DU PAS
 ! --------------------------------------------------------------------------------------------------
     integer         :: iok(7)
-    real(kind=8)    :: valer(7), coef, cc, cv, e, nu,rdum(1)
+    real(kind=8)    :: valer(7), coef, cc, cv, e, nu, rdum(1)
     character(len=8):: nomdum(1)
     character(len=16):: nomer(7)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
+    common/lcee/lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp, pq
-    common /lces/ pk,pm,pp,pq
+    common/lces/pk, pm, pp, pq
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pct, pch, pcs
-    common /lcmqu/ pch,pct,pcs
+    common/lcmqu/pch, pct, pcs
 ! --------------------------------------------------------------------------------------------------
-    data nomer /'K','M','P','Q','COEF_RIGI_MINI','C_VOLU','C_COMP'/
+    data nomer/'K', 'M', 'P', 'Q', 'COEF_RIGI_MINI', 'C_VOLU', 'C_COMP'/
 ! --------------------------------------------------------------------------------------------------
 
-    call rcvalb(fami, kpg, ksp, poum, mat,' ', 'ENDO_SCALAIRE', 0, nomdum, rdum, &
+    call rcvalb(fami, kpg, ksp, poum, mat, ' ', 'ENDO_SCALAIRE', 0, nomdum, rdum, &
                 7, nomer, valer, iok, 2)
 !
-    pk     = valer(1)
-    pm     = valer(2)
-    pp     = valer(3)
-    pq     = valer(4)
+    pk = valer(1)
+    pm = valer(2)
+    pp = valer(3)
+    pq = valer(4)
     rigmin = valer(5)
-    cv     = valer(6)
-    cc     = valer(7)
+    cv = valer(6)
+    cc = valer(7)
 !
-    coef   = troisk/(2*deuxmu)
-    nu     = (2*coef-1)/(4*coef+1)
-    e      = deuxmu*(1+nu)
+    coef = troisk/(2*deuxmu)
+    nu = (2*coef-1)/(4*coef+1)
+    e = deuxmu*(1+nu)
 !
-    pcs    = 0.5d0*e / ( (1-2*nu)*cc + sqrt(coef*cv*(1-2*nu)**2 + (1+nu)**2) )**2
-    pch    = cv*coef*pcs
-    pct    = cc*sqrt(pcs)
+    pcs = 0.5d0*e/((1-2*nu)*cc+sqrt(coef*cv*(1-2*nu)**2+(1+nu)**2))**2
+    pch = cv*coef*pcs
+    pct = cc*sqrt(pcs)
 !
 end subroutine

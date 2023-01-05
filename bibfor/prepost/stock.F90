@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine stock(resu, chs, nocham, ligrel, tychas,&
-                 numord, iouf, numode, masgen, amrge,&
+subroutine stock(resu, chs, nocham, ligrel, tychas, &
+                 numord, iouf, numode, masgen, amrge, &
                  prchno)
     implicit none
 #include "jeveux.h"
@@ -63,23 +63,23 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
 !- RECHERCHE DU NOM DU CHAMP RESULTAT
     depi = r8depi()
 !
-    call rsexch(' ', resu, nocham, numord, nomch,&
+    call rsexch(' ', resu, nocham, numord, nomch, &
                 iret)
 !
     if (iret .eq. 100) then
-    else if (iret.eq.0) then
-    else if (iret.eq.110) then
+    else if (iret .eq. 0) then
+    else if (iret .eq. 110) then
         call rsagsd(resu, 0)
-        call rsexch(' ', resu, nocham, numord, nomch,&
+        call rsexch(' ', resu, nocham, numord, nomch, &
                     iret)
     else
-        valk (1) = resu
-        valk (2) = nomch
-        vali (1) = numord
-        vali (2) = iret
-        call utmess('F', 'PREPOST5_73', nk=2, valk=valk, ni=2,&
+        valk(1) = resu
+        valk(2) = nomch
+        vali(1) = numord
+        vali(2) = iret
+        call utmess('F', 'PREPOST5_73', nk=2, valk=valk, ni=2, &
                     vali=vali)
-    endif
+    end if
 !
 ! - TRANSFERT DU CHAMP SIMPLE VERS LE CHAMP VRAI
 !
@@ -87,20 +87,20 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
 !      CALL UTIMSD('MESSAGE',1,.TRUE.,.TRUE.,
 !     &             PRCHNO//".PRNO",1,' ')
     if (tychas .eq. 'NOEU') then
-        call cnscno(chs, prchno, 'NON', 'G', nomch,&
+        call cnscno(chs, prchno, 'NON', 'G', nomch, &
                     'F', ibid)
     else
-        call cescel(chs, ligrel, ' ', ' ', 'OUI',&
+        call cescel(chs, ligrel, ' ', ' ', 'OUI', &
                     nncp, 'G', nomch, 'F', ibid)
-    endif
+    end if
 !
 !
 !-    ON NOTE LE CHAMP
 !     ---------------------------------
     call infniv(ifm, nivinf)
     if (nivinf .ge. 1) then
-        write (ifm,*) '<LRIDEA> LECTURE DU CHAMP  : ',nocham,numord
-    endif
+        write (ifm, *) '<LRIDEA> LECTURE DU CHAMP  : ', nocham, numord
+    end if
     call rsnoch(resu, nocham, numord)
 !
 !
@@ -114,8 +114,8 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     if (iret .gt. 0) acce = 'FREQ'
 !
     call rsexpa(resu, 0, acce, iret)
-    ASSERT(iret.gt.0)
-    call rsadpa(resu, 'E', 1, acce, numord,&
+    ASSERT(iret .gt. 0)
+    call rsadpa(resu, 'E', 1, acce, numord, &
                 0, sjv=jiouf, styp=k8b)
     zr(jiouf) = iouf
 !
@@ -124,58 +124,58 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     param = 'NUME_MODE'
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
-        call rsadpa(resu, 'E', 1, param, numord,&
+        call rsadpa(resu, 'E', 1, param, numord, &
                     0, sjv=iad, styp=k8b)
         zi(iad) = numode
-    endif
+    end if
 !
     param = 'MASS_GENE'
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
-        call rsadpa(resu, 'E', 1, param, numord,&
+        call rsadpa(resu, 'E', 1, param, numord, &
                     0, sjv=iad, styp=k8b)
         zr(iad) = masgen
-    endif
+    end if
 !
     param = 'AMOR_REDUIT'
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
-        call rsadpa(resu, 'E', 1, param, numord,&
+        call rsadpa(resu, 'E', 1, param, numord, &
                     0, sjv=iad, styp=k8b)
         zr(iad) = amrge
-    endif
+    end if
 !
     param = 'AMOR_GENE'
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
-        call rsadpa(resu, 'E', 1, param, numord,&
+        call rsadpa(resu, 'E', 1, param, numord, &
                     0, sjv=iad, styp=k8b)
         if (amrge .lt. 1.d92) then
             zr(iad) = 2*amrge*masgen*depi*iouf
         else
             zr(iad) = 0.d0
-        endif
-    endif
+        end if
+    end if
 !
     param = 'RIGI_GENE'
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
-        call rsadpa(resu, 'E', 1, param, numord,&
+        call rsadpa(resu, 'E', 1, param, numord, &
                     0, sjv=iad, styp=k8b)
         if (masgen .lt. 1.d92) then
             zr(iad) = masgen*(depi*iouf)**2
         else
             zr(iad) = 0.d0
-        endif
-    endif
+        end if
+    end if
 !
     param = 'OMEGA2'
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
-        call rsadpa(resu, 'E', 1, param, numord,&
+        call rsadpa(resu, 'E', 1, param, numord, &
                     0, sjv=iad, styp=k8b)
         zr(iad) = (depi*iouf)**2
-    endif
+    end if
 !
 !
 !

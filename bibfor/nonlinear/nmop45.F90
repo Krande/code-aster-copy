@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine nmop45(eigsol, l_hpp, mod45, modes, modes2, ds_posttimestep_, nfreq_calibr_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,12 +43,12 @@ implicit none
 #include "asterfort/vpvers.h"
 #include "asterfort/wkvect.h"
 !
-aster_logical     , intent(in) :: l_hpp
-character(len=4)  , intent(in) :: mod45
-character(len=8)  , intent(in) :: modes, modes2
-character(len=19) , intent(in) :: eigsol
-type(NL_DS_PostTimeStep), optional, intent(in) :: ds_posttimestep_
-integer, optional, intent(out) :: nfreq_calibr_
+    aster_logical, intent(in) :: l_hpp
+    character(len=4), intent(in) :: mod45
+    character(len=8), intent(in) :: modes, modes2
+    character(len=19), intent(in) :: eigsol
+    type(NL_DS_PostTimeStep), optional, intent(in) :: ds_posttimestep_
+    integer, optional, intent(out) :: nfreq_calibr_
 !
 ! ======================================================================
 !        ROUTINE DE CALCUL DE CRITERE DE STABILITE VIA UNE RESOLUTION
@@ -66,9 +66,9 @@ integer, optional, intent(out) :: nfreq_calibr_
 !
 !
     integer :: nbpari, nbparr, nbpark
-    parameter (nbpari=8,nbparr=16,nbpark=3)
+    parameter(nbpari=8, nbparr=16, nbpark=3)
 !
-    integer           :: iret, ibid, npivot, neqact, mxresf, nblagr,nbddl, nbddl2, un, lresur
+    integer           :: iret, ibid, npivot, neqact, mxresf, nblagr, nbddl, nbddl2, un, lresur
     integer           :: nconv, neq, lraide, eddl, eddl2, jstab, iauxr
     integer           :: nsta, nddle, nfreq_calibr
     real(kind=8)      :: omemin, omemax, omeshi, vpinf, vpmax, r8bid, csta
@@ -85,31 +85,31 @@ integer, optional, intent(out) :: nfreq_calibr_
 !
 ! DIVERS
     call jemarq()
-    cbid=(0.d0,0.d0)
-    nconv=0
-    nsta  = 0
+    cbid = (0.d0, 0.d0)
+    nconv = 0
+    nsta = 0
     nddle = 0
     if (present(ds_posttimestep_)) then
-        nddle  = ds_posttimestep_%stab_para%nb_dof_excl
-        nsta   = ds_posttimestep_%stab_para%nb_dof_stab
-    endif
+        nddle = ds_posttimestep_%stab_para%nb_dof_excl
+        nsta = ds_posttimestep_%stab_para%nb_dof_stab
+    end if
 !
 ! --- CALCUL MODAL NON PARALLELISE (SEUL EVENTUELLEMENT LE SOLVEUR LINEAIRE SOUS-JACENT)
 !
-    lcomod=.false.
+    lcomod = .false.
 !
 ! --- LECTURE DES PARAMETRES SOLVEUR LINEAIRE
 !
     call vpleci(eigsol, 'K', 2, k24bid, r8bid, ibid)
-    raide=trim(k24bid)
+    raide = trim(k24bid)
     call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
     if ((solveu(1:8) .ne. '&&NUME91') .and. (solveu(1:8) .ne. '&&DTM&&&')) then
-        solveu='&&OP00XX.SOLVER'
-    endif
+        solveu = '&&OP00XX.SOLVER'
+    end if
 !
 ! --- VERIFICATION FR LA COHERENCE DE LA SD EIGSOL ET DES OBJETS SOUS-JACENTS
 !
-    checksd=.true.
+    checksd = .true.
     call vpvers(eigsol, modes, checksd)
     call vpvers(eigsol, modes2, checksd)
 
@@ -117,22 +117,21 @@ integer, optional, intent(out) :: nfreq_calibr_
 ! ---  BORNES DE TRAVAIL EFFECTIVES, CALCUL DU NOMBRE DE MODES, FACTO. MATRICE SHIFTEE
 ! ---  DETERMINATION TAILLE DE L'ESPACE DE PROJECTION)
     if (mod45(1:4) .eq. 'VIBR') then
-      typcon = 'MODE_MECA'
+        typcon = 'MODE_MECA'
     else
-      typcon = 'MODE_FLAMB'
-    endif
-    vecblo='&&NMOP45.POSITION.DDL'
-    veclag='&&NMOP45.DDL.BLOQ.CINE'
-    matopa='&&NMOP45.DYN_FAC_C '
-    call vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, k24bid, matopa, matopa, iret,&
+        typcon = 'MODE_FLAMB'
+    end if
+    vecblo = '&&NMOP45.POSITION.DDL'
+    veclag = '&&NMOP45.DDL.BLOQ.CINE'
+    matopa = '&&NMOP45.DYN_FAC_C '
+    call vpini1(eigsol, modes, solveu, typcon, vecblo, veclag, k24bid, matopa, matopa, iret, &
                 nblagr, neqact, npivot, ibid, omemax, omemin, omeshi, cbid, mod45, nfreq_calibr)
 
     if (present(nfreq_calibr_)) then
         nfreq_calibr_ = nfreq_calibr
-    endif
+    end if
 
-
-    if (iret.ne.0) goto 80
+    if (iret .ne. 0) goto 80
 
 !
 ! --- CREATION ET INITIALISATION DES SDS RESULTATS
@@ -140,29 +139,29 @@ integer, optional, intent(out) :: nfreq_calibr_
     vecrer = '&&NMOP45.RESU_'
     vecrei = '&&NMOP45.RESU_I'
     vecrek = '&&NMOP45.RESU_K'
-    vecvp  = '&&NMOP45.VECTEUR_PROPRE'
-    call vpini2(eigsol, lcomod, ibid, ibid, nbpark,&
+    vecvp = '&&NMOP45.VECTEUR_PROPRE'
+    call vpini2(eigsol, lcomod, ibid, ibid, nbpark, &
                 nbpari, nbparr, vecrer, vecrei, vecrek, vecvp, mxresf)
 
 ! --- LECTURE TYPE DE SOLVEUR MODAL
     call vpleci(eigsol, 'K', 6, k24bid, r8bid, ibid)
-    method=''
-    method=trim(k24bid)
-    if (((mod45(1:4).eq.'FLAM').and.l_hpp).or.(mod45(1:4).ne.'FLAM')) then
+    method = ''
+    method = trim(k24bid)
+    if (((mod45(1:4) .eq. 'FLAM') .and. l_hpp) .or. (mod45(1:4) .ne. 'FLAM')) then
 ! ========================================================================
 ! --- FLAMBEMENT AVEC MATRICE GEOMETRIQUE OU DYNAMIQUE TOUT CAS DE FIGURE
 ! ========================================================================
 !
 ! ------ CALCUL MODAL STANDARD
 !
-        mod45b=mod45
+        mod45b = mod45
         select case (method)
-        case('SORENSEN')
-            call vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                    matopa, mxresf, neqact, nblagr, omemax,&
-                    omemin, omeshi, solveu, vecblo, veclag,&
-                    cbid, npivot, flage, nconv, vpinf, vpmax, mod45b,&
-                    k24bid, k24bid, ibid, K24bid, ibid, r8bid)
+        case ('SORENSEN')
+            call vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                        matopa, mxresf, neqact, nblagr, omemax, &
+                        omemin, omeshi, solveu, vecblo, veclag, &
+                        cbid, npivot, flage, nconv, vpinf, vpmax, mod45b, &
+                        k24bid, k24bid, ibid, K24bid, ibid, r8bid)
         case default
             ASSERT(.false.)
         end select
@@ -170,13 +169,13 @@ integer, optional, intent(out) :: nfreq_calibr_
 ! ------ POST-TRAITEMENTS SANS VERIFICATION (NI STURM, NI SEUIL, NI BANDE) +
 ! ------ PAS DE NETTOYAGE EXPLICITE DES OBJETS JEVEUX GLOBAUX LIES AU MODAL
 !
-        mod45b=mod45
-        call vppost(vecrer, vecrei, vecrek, vecvp, nbpark,&
-                nbpari, nbparr, mxresf, nconv, nblagr,&
-                ibid, modes, typcon, k16bid, eigsol,&
-                matopa, matopa, solveu, vecblo, veclag,&
-                flage, ibid, ibid, mpibid, mpibid,&
-                omemax, omemin, vpinf, vpmax, lcomod, mod45b)
+        mod45b = mod45
+        call vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
+                    nbpari, nbparr, mxresf, nconv, nblagr, &
+                    ibid, modes, typcon, k16bid, eigsol, &
+                    matopa, matopa, solveu, vecblo, veclag, &
+                    flage, ibid, ibid, mpibid, mpibid, &
+                    omemax, omemin, vpinf, vpmax, lcomod, mod45b)
 
     else
 ! ========================================================================
@@ -188,35 +187,35 @@ integer, optional, intent(out) :: nfreq_calibr_
 !
         call jeveuo(raide(1:19)//'.&INT', 'L', lraide)
         neq = zi(lraide+2)
-        vecstb='&&NMOP45.VEC.STAB'
-        call wkvect(vecstb,'V V R', neq, jstab)
+        vecstb = '&&NMOP45.VEC.STAB'
+        call wkvect(vecstb, 'V V R', neq, jstab)
 
-        vecedd='&&NMOP45.POSI.EDDL'
-        call wkvect(vecedd,'V V I', neq, eddl)
-        if (nddle.ne.0) then
-            call elmddl(raide, 'DDL_EXCLUS    ', neq, ds_posttimestep_%stab_para%list_dof_excl,&
+        vecedd = '&&NMOP45.POSI.EDDL'
+        call wkvect(vecedd, 'V V I', neq, eddl)
+        if (nddle .ne. 0) then
+            call elmddl(raide, 'DDL_EXCLUS    ', neq, ds_posttimestep_%stab_para%list_dof_excl, &
                         nddle, nbddl, zi(eddl))
         else
             nbddl = 0
-        endif
-        vecsdd='&&NMOP45.POSI.SDDL'
+        end if
+        vecsdd = '&&NMOP45.POSI.SDDL'
         call wkvect(vecsdd, 'V V I', neq, eddl2)
-        if (nsta.ne.0) then
-            call elmddl(raide, 'DDL_STAB      ', neq, ds_posttimestep_%stab_para%list_dof_stab,&
+        if (nsta .ne. 0) then
+            call elmddl(raide, 'DDL_STAB      ', neq, ds_posttimestep_%stab_para%list_dof_stab, &
                         nsta, nbddl2, zi(eddl2))
         else
             nbddl2 = 0
-        endif
+        end if
 !
 ! ------ CALCUL MODAL ADAPTE
-        mod45b='SOR1'
+        mod45b = 'SOR1'
         select case (method)
-        case('SORENSEN')
-            call vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                    matopa, mxresf, neqact, nblagr, omemax,&
-                    omemin, omeshi, solveu, vecblo, veclag,&
-                    cbid, npivot, flage, nconv, vpinf, vpmax, mod45b,&
-                    vecstb, vecedd, nbddl, vecsdd, nbddl2, csta)
+        case ('SORENSEN')
+            call vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                        matopa, mxresf, neqact, nblagr, omemax, &
+                        omemin, omeshi, solveu, vecblo, veclag, &
+                        cbid, npivot, flage, nconv, vpinf, vpmax, mod45b, &
+                        vecstb, vecedd, nbddl, vecsdd, nbddl2, csta)
         case default
             ASSERT(.false.)
         end select
@@ -225,34 +224,34 @@ integer, optional, intent(out) :: nfreq_calibr_
 ! ------ PAS DE NETTOYAGE EXPLICITE DES OBJETS JEVEUX GLOBAUX LIES AU MODAL
 
 !
-        mod45b=mod45
-        call vppost(vecrer, vecrei, vecrek, vecvp, nbpark,&
-                nbpari, nbparr, mxresf, nconv, nblagr,&
-                ibid, modes, typcon, k16bid, eigsol,&
-                matopa, matopa, solveu, vecblo, veclag,&
-                flage, ibid, ibid, mpibid, mpibid,&
-                omemax, omemin, vpinf, vpmax, lcomod, mod45b)
+        mod45b = mod45
+        call vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
+                    nbpari, nbparr, mxresf, nconv, nblagr, &
+                    ibid, modes, typcon, k16bid, eigsol, &
+                    matopa, matopa, solveu, vecblo, veclag, &
+                    flage, ibid, ibid, mpibid, mpibid, &
+                    omemax, omemin, vpinf, vpmax, lcomod, mod45b)
         if (nsta .ne. 0) then
-            typco2='MODE_STAB'
-            mod45b='STAB'
-            un=1
+            typco2 = 'MODE_STAB'
+            mod45b = 'STAB'
+            un = 1
             call jeveuo(vecrer, 'E', lresur)
             call jelira(vecrer, 'LONMAX', iauxr)
             call vecini(iauxr, csta, zr(lresur))
-            call vppost(vecrer, vecrei, vecrek, vecstb, nbpark,&
-                    nbpari, nbparr, un, un, nblagr,&
-                    ibid, modes2, typco2, k16bid, eigsol,&
-                    matopa, matopa, solveu, vecblo, veclag,&
-                    flage, ibid, ibid, mpibid, mpibid,&
-                    omemax, omemin, vpinf, vpmax, lcomod, mod45b)
-        endif
+            call vppost(vecrer, vecrei, vecrek, vecstb, nbpark, &
+                        nbpari, nbparr, un, un, nblagr, &
+                        ibid, modes2, typco2, k16bid, eigsol, &
+                        matopa, matopa, solveu, vecblo, veclag, &
+                        flage, ibid, ibid, mpibid, mpibid, &
+                        omemax, omemin, vpinf, vpmax, lcomod, mod45b)
+        end if
         call jedetr(vecstb)
         call jedetr(vecedd)
         call jedetr(vecsdd)
 
-    endif
+    end if
 !
- 80 continue
+80  continue
 !
 ! ---  ON AJUSTE LA VALEURS NFREQ DE LA SD EIGENSOLVER
     call vpecri(eigsol, 'I', 1, k24bid, r8bid, nconv)
@@ -260,7 +259,7 @@ integer, optional, intent(out) :: nfreq_calibr_
 ! --- NETTOYAGE EXPLICITE DES OBJETS JEVEUX GLOBAUX
     call jedetr(vecblo)
     call jedetr(veclag)
-    if (iret.ne.0) then
+    if (iret .ne. 0) then
         call detrsd('MATR_ASSE', matopa)
         call jedetr(matopa(1:19)//'.&INT')
         call jedetr(matopa(1:19)//'.&IN2')
@@ -269,7 +268,7 @@ integer, optional, intent(out) :: nfreq_calibr_
         call jedetr(vecrei)
         call jedetr(vecrek)
         call jedetr(vecvp)
-    endif
+    end if
 !
     call jedema()
 !

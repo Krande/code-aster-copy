@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoNLTherResidual(ds_algorom, vec2nd   , cnvabt, cnresi, cn2mbr,&
-                                 resi_rela , resi_maxi)
+subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
+                                 resi_rela, resi_maxi)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "blas/ddot.h"
 !
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-character(len=24), intent(in) :: vec2nd, cnvabt, cnresi, cn2mbr
-real(kind=8)     , intent(out):: resi_rela, resi_maxi
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    character(len=24), intent(in) :: vec2nd, cnvabt, cnresi, cn2mbr
+    real(kind=8), intent(out):: resi_rela, resi_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ real(kind=8)     , intent(out):: resi_rela, resi_maxi
     character(len=24) :: fieldName
     integer :: iEqua, nbEqua, nbMode, iMode, iret
     real(kind=8) :: vnorm, resi
-    real(kind=8), pointer :: v_mode(:)=> null()
+    real(kind=8), pointer :: v_mode(:) => null()
     real(kind=8), pointer :: v_cn2mbr(:) => null()
     real(kind=8), pointer :: v_cn2mbrr(:) => null()
     real(kind=8), pointer :: v_vec2nd(:) => null()
@@ -74,30 +74,30 @@ real(kind=8)     , intent(out):: resi_rela, resi_maxi
 !
     resi_rela = 0.d0
     resi_maxi = 0.d0
-    vnorm     = 0.d0
-    resi      = 0.d0
+    vnorm = 0.d0
+    resi = 0.d0
 !
 ! - Get parameters
 !
-    l_hrom     = ds_algorom%l_hrom
+    l_hrom = ds_algorom%l_hrom
     resultName = ds_algorom%ds_empi%resultName
-    nbEqua     = ds_algorom%ds_empi%mode%nbEqua
-    nbMode     = ds_algorom%ds_empi%nbMode
-    fieldName  = ds_algorom%ds_empi%mode%fieldName
+    nbEqua = ds_algorom%ds_empi%mode%nbEqua
+    nbMode = ds_algorom%ds_empi%nbMode
+    fieldName = ds_algorom%ds_empi%mode%fieldName
     ASSERT(ds_algorom%ds_empi%mode%fieldSupp .eq. 'NOEU')
 !
 ! - Access to vectors
 !
-    call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr = v_cn2mbr)
-    call jeveuo(vec2nd(1:19)//'.VALE', 'L', vr = v_vec2nd)
-    call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr = v_cnvabt)
-    call jeveuo(cnresi(1:19)//'.VALE', 'L', vr = v_cnresi)
+    call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr=v_cn2mbr)
+    call jeveuo(vec2nd(1:19)//'.VALE', 'L', vr=v_vec2nd)
+    call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=v_cnvabt)
+    call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=v_cnresi)
 !
 ! - Create residual
 !
     do iEqua = 1, nbEqua
-        v_cn2mbr(iEqua)  = v_vec2nd(iEqua) - v_cnresi(iEqua) - v_cnvabt(iEqua)
-    enddo
+        v_cn2mbr(iEqua) = v_vec2nd(iEqua)-v_cnresi(iEqua)-v_cnvabt(iEqua)
+    end do
 !
 ! - Truncation of residual
 !
@@ -107,9 +107,9 @@ real(kind=8)     , intent(out):: resi_rela, resi_maxi
                 v_vec2nd(iEqua) = 0.d0
                 v_cnvabt(iEqua) = 0.d0
                 v_cnresi(iEqua) = 0.d0
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
 ! - Product of modes by second member
 !
@@ -119,26 +119,26 @@ real(kind=8)     , intent(out):: resi_rela, resi_maxi
     AS_ALLOCATE(vr=v_cnvabtr, size=nbMode)
     do iMode = 1, nbMode
         call rsexch(' ', resultName, fieldName, iMode, mode, iret)
-        call jeveuo(mode(1:19)//'.VALE', 'E', vr = v_mode)
+        call jeveuo(mode(1:19)//'.VALE', 'E', vr=v_mode)
         v_vec2ndr(iMode) = ddot(nbEqua, v_mode, 1, v_vec2nd, 1)
         v_cnvabtr(iMode) = ddot(nbEqua, v_mode, 1, v_cnvabt, 1)
         v_cnresir(iMode) = ddot(nbEqua, v_mode, 1, v_cnresi, 1)
-    enddo
+    end do
 !
 ! - Compute maximum
 !
     do iMode = 1, nbMode
-        v_cn2mbrr(iMode) = v_vec2ndr(iMode) - v_cnresir(iMode) - v_cnvabtr(iMode)
-        resi             = resi + ( v_cn2mbrr(iMode) )**2
-        vnorm            = vnorm + ( v_vec2ndr(iMode) - v_cnvabtr(iMode) )**2
-        resi_maxi        = max( resi_maxi,abs( v_cn2mbrr(iMode) ) )
+        v_cn2mbrr(iMode) = v_vec2ndr(iMode)-v_cnresir(iMode)-v_cnvabtr(iMode)
+        resi = resi+(v_cn2mbrr(iMode))**2
+        vnorm = vnorm+(v_vec2ndr(iMode)-v_cnvabtr(iMode))**2
+        resi_maxi = max(resi_maxi, abs(v_cn2mbrr(iMode)))
     end do
 !
 ! - Compute relative
 !
     if (vnorm .gt. 0.d0) then
-        resi_rela = sqrt( resi / vnorm )
-    endif
+        resi_rela = sqrt(resi/vnorm)
+    end if
 !
 ! - Cleaning
 !

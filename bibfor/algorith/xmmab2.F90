@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
-                  hpg, ffc, ffe,&
-                  ffm, jacobi, lambda, coefcr,&
-                  coeffr, jeu, coeffp,&
-                  lpenaf, coefff, tau1, tau2, rese,&
-                  nrese, mproj, norm, nsinge,&
-                  nsingm, fk_escl, fk_mait, nvit, nconta,&
-                  jddle, jddlm, nfhe,nfhm, heavn, mmat)
+subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm, &
+                  hpg, ffc, ffe, &
+                  ffm, jacobi, lambda, coefcr, &
+                  coeffr, jeu, coeffp, &
+                  lpenaf, coefff, tau1, tau2, rese, &
+                  nrese, mproj, norm, nsinge, &
+                  nsingm, fk_escl, fk_mait, nvit, nconta, &
+                  jddle, jddlm, nfhe, nfhm, heavn, mmat)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/indent.h"
@@ -43,7 +43,7 @@ implicit none
     real(kind=8) :: tau1(3), tau2(3), rese(3), nrese, mmat(336, 336)
     real(kind=8) :: mproj(3, 3)
     real(kind=8) :: jeu
-    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3)
+    real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3)
     aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
@@ -114,27 +114,27 @@ implicit none
     jmait(1) = 1
     jmait(2) = 1
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
-    hea_fa(1)=xcalc_code(1,he_inte=[-1])
-    hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    hea_fa(1) = xcalc_code(1, he_inte=[-1])
+    hea_fa(2) = xcalc_code(1, he_inte=[+1])
 !
-    nne=jnne(1)
-    nnes=jnne(2)
-    nnm=jnnm(1)
-    nnms=jnnm(2)
-    ddles=jddle(1)
-    ddlem=jddle(2)
-    ddlms=jddlm(1)
-    ddlmm=jddlm(2)
+    nne = jnne(1)
+    nnes = jnne(2)
+    nnm = jnnm(1)
+    nnms = jnnm(2)
+    ddles = jddle(1)
+    ddlem = jddle(2)
+    ddlms = jddlm(1)
+    ddlmm = jddlm(2)
 !
-    g(:,:) = 0.d0
-    d(:,:) = 0.d0
-    b(:,:) = 0.d0
-    r(:,:) = 0.d0
-    tt(:,:)=0.d0
+    g(:, :) = 0.d0
+    d(:, :) = 0.d0
+    b(:, :) = 0.d0
+    r(:, :) = 0.d0
+    tt(:, :) = 0.d0
     do k = 1, 3
-        c1(k) = mproj(k,1)
-        c2(k) = mproj(k,2)
-        c3(k) = mproj(k,3)
+        c1(k) = mproj(k, 1)
+        c2(k) = mproj(k, 2)
+        c3(k) = mproj(k, 3)
     end do
     d1(:) = 0.d0
     d2(:) = 0.d0
@@ -149,9 +149,9 @@ implicit none
     call mkkvec(rese, nrese, ndim, c3, d3)
 !
     do k = 1, ndim
-        g(k,1) = d1(k)
-        g(k,2) = d2(k)
-        g(k,3) = d3(k)
+        g(k, 1) = d1(k)
+        g(k, 2) = d2(k)
+        g(k, 3) = d3(k)
     end do
 !
 ! --- D = [P_TAU]*[K]*[P_TAU]
@@ -159,7 +159,7 @@ implicit none
     do i = 1, ndim
         do j = 1, ndim
             do k = 1, ndim
-                d(i,j) = g(k,i)*mproj(k,j) + d(i,j)
+                d(i, j) = g(k, i)*mproj(k, j)+d(i, j)
             end do
         end do
     end do
@@ -172,9 +172,9 @@ implicit none
     call normev(rese, nrese)
     do i = 1, ndim
         do k = 1, ndim
-            b(1,i) = rese(k)*mproj(k,i)+b(1,i)
-            b(2,i) = h1(k)*mproj(k,i)+b(2,i)
-            b(3,i) = h2(k)*mproj(k,i)+b(3,i)
+            b(1, i) = rese(k)*mproj(k, i)+b(1, i)
+            b(2, i) = h1(k)*mproj(k, i)+b(2, i)
+            b(3, i) = h2(k)*mproj(k, i)+b(3, i)
         end do
     end do
 !
@@ -182,33 +182,33 @@ implicit none
 !
     do i = 1, ndim
         do j = 1, ndim
-            c(i,j) = b(1,i)*norm(j)
+            c(i, j) = b(1, i)*norm(j)
         end do
     end do
 !
 ! --- R = [TAU1,TAU2][ID-K][TAU1,TAU2]
 !
     do k = 1, ndim
-        r(1,1) = (tau1(k)-h1(k))*tau1(k) + r(1,1)
-        r(1,2) = (tau1(k)-h1(k))*tau2(k) + r(1,2)
-        r(2,1) = (tau2(k)-h2(k))*tau1(k) + r(2,1)
-        r(2,2) = (tau2(k)-h2(k))*tau2(k) + r(2,2)
+        r(1, 1) = (tau1(k)-h1(k))*tau1(k)+r(1, 1)
+        r(1, 2) = (tau1(k)-h1(k))*tau2(k)+r(1, 2)
+        r(2, 1) = (tau2(k)-h2(k))*tau1(k)+r(2, 1)
+        r(2, 2) = (tau2(k)-h2(k))*tau2(k)+r(2, 2)
     end do
 !
 !---- TT = [TAU1,TAU2][ID][TAU1,TAU2]
 !
     do i = 1, ndim
-        tt(1,1) = tau1(i)*tau1(i) + tt(1,1)
-        tt(1,2) = tau1(i)*tau2(i) + tt(1,2)
-        tt(2,1) = tau2(i)*tau1(i) + tt(2,1)
-        tt(2,2) = tau2(i)*tau2(i) + tt(2,2)
+        tt(1, 1) = tau1(i)*tau1(i)+tt(1, 1)
+        tt(1, 2) = tau1(i)*tau2(i)+tt(1, 2)
+        tt(2, 1) = tau2(i)*tau1(i)+tt(2, 1)
+        tt(2, 2) = tau2(i)*tau2(i)+tt(2, 2)
     end do
 !
     if (nconta .eq. 3 .and. ndim .eq. 3) then
         mp = (lambda-coefcr*jeu)*coefff*hpg*jacobi
     else
         mp = lambda*coefff*hpg*jacobi
-    endif
+    end if
 !
     ddle = ddles*nnes+ddlem*(nne-nnes)
 !
@@ -222,64 +222,64 @@ implicit none
 ! SUPPRESSION DU TERME EN AT DANS LE CAS DU GLISSEMENT
                     mb = 0.d0
                     if (nconta .eq. 3 .and. ndim .eq. 3) then
-                        mbt = coefff*hpg*jacobi*b(l,k)
+                        mbt = coefff*hpg*jacobi*b(l, k)
                     else
                         mbt = 0.d0
-                    endif
+                    end if
                 else
-                    if (.not.lpenaf) then
+                    if (.not. lpenaf) then
                         if (nconta .eq. 3 .and. ndim .eq. 3) then
-                            mb = nvit*hpg*jacobi*b(l,k)
+                            mb = nvit*hpg*jacobi*b(l, k)
                         else
-                            mb = nvit*mp*b(l,k)
-                        endif
-                    endif
+                            mb = nvit*mp*b(l, k)
+                        end if
+                    end if
                     if (lpenaf) mb = 0.d0
-                    if (.not.lpenaf) mbt = mp*b(l,k)
+                    if (.not. lpenaf) mbt = mp*b(l, k)
                     if (lpenaf) mbt = 0.d0
-                endif
+                end if
                 do i = 1, nnc
-                    call xplma2(ndim, nne, nnes, ddles, i,&
+                    call xplma2(ndim, nne, nnes, ddles, i, &
                                 nfhe, pli)
                     ii = pli+l-1
                     do j = 1, ndeple
 ! --- BLOCS ES:CONT, CONT:ES
                         mm = mb*ffc(i)*ffe(j)
-                        mmt= mbt*ffc(i)*ffe(j)
+                        mmt = mbt*ffc(i)*ffe(j)
                         call indent(j, ddles, ddlem, nnes, jjn)
                         jj = jjn+k
-                        jescl(2)=xcalc_heav(heavn(j),&
-                                            hea_fa(1),&
-                                            heavn(nfhe*nne+nfhm*nnm+j))
-                        mmat(ii,jj) = mmat(ii,jj)-jescl(1)*mm
-                        mmat(jj,ii) = mmat(jj,ii)-jescl(1)*mmt
-                        jj = jj + ndim
-                        mmat(ii,jj) = mmat(ii,jj)-jescl(2)*mm
-                        mmat(jj,ii) = mmat(jj,ii)-jescl(2)*mmt
+                        jescl(2) = xcalc_heav(heavn(j), &
+                                              hea_fa(1), &
+                                              heavn(nfhe*nne+nfhm*nnm+j))
+                        mmat(ii, jj) = mmat(ii, jj)-jescl(1)*mm
+                        mmat(jj, ii) = mmat(jj, ii)-jescl(1)*mmt
+                        jj = jj+ndim
+                        mmat(ii, jj) = mmat(ii, jj)-jescl(2)*mm
+                        mmat(jj, ii) = mmat(jj, ii)-jescl(2)*mmt
                         do alpj = 1, nsinge*ndim
-                            jj = jjn + (1+nfhe+1-1)*ndim + alpj
-                            mmat(ii,jj) = mmat(ii,jj)+mb*ffc(i)*fk_escl(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)+mbt*ffc(i)*fk_escl(j,alpj,k)
+                            jj = jjn+(1+nfhe+1-1)*ndim+alpj
+                            mmat(ii, jj) = mmat(ii, jj)+mb*ffc(i)*fk_escl(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)+mbt*ffc(i)*fk_escl(j, alpj, k)
                         end do
                     end do
                     do j = 1, nnm
 ! --- BLOCS MA:CONT, CONT:MA
                         mm = mb*ffc(i)*ffm(j)
-                        mmt= mbt*ffc(i)*ffm(j)
+                        mmt = mbt*ffc(i)*ffm(j)
                         call indent(j, ddlms, ddlmm, nnms, jjn)
-                        jj = ddle + jjn + k
-                        jmait(2)=xcalc_heav(heavn(nne+j),&
-                                            hea_fa(2),&
-                                            heavn((1+nfhe)*nne+nfhm*nnm+j))
-                        mmat(ii,jj) = mmat(ii,jj)+jmait(1)*mm
-                        mmat(jj,ii) = mmat(jj,ii)+jmait(1)*mmt
-                        jj = jj + ndim
-                        mmat(ii,jj) = mmat(ii,jj)+jmait(2)*mm
-                        mmat(jj,ii) = mmat(jj,ii)+jmait(2)*mmt
+                        jj = ddle+jjn+k
+                        jmait(2) = xcalc_heav(heavn(nne+j), &
+                                              hea_fa(2), &
+                                              heavn((1+nfhe)*nne+nfhm*nnm+j))
+                        mmat(ii, jj) = mmat(ii, jj)+jmait(1)*mm
+                        mmat(jj, ii) = mmat(jj, ii)+jmait(1)*mmt
+                        jj = jj+ndim
+                        mmat(ii, jj) = mmat(ii, jj)+jmait(2)*mm
+                        mmat(jj, ii) = mmat(jj, ii)+jmait(2)*mmt
                         do alpj = 1, nsingm*ndim
-                            jj = jjn + (1+nfhm+1-1)*ndim + alpj
-                            mmat(ii,jj) = mmat(ii,jj)+mb*ffc(i)*fk_mait(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)+mbt*ffc(i)*fk_mait(j,alpj,k)
+                            jj = jjn+(1+nfhm+1-1)*ndim+alpj
+                            mmat(ii, jj) = mmat(ii, jj)+mb*ffc(i)*fk_mait(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)+mbt*ffc(i)*fk_mait(j, alpj, k)
                         end do
                     end do
                 end do
@@ -291,135 +291,135 @@ implicit none
         do k = 1, ndim
             do l = 1, ndim
                 if (lpenaf) then
-                    mb = -mp*coeffp*d(l,k)
-                    mbt = -mp*coeffp*d(l,k)
+                    mb = -mp*coeffp*d(l, k)
+                    mbt = -mp*coeffp*d(l, k)
                 else
                     if (nconta .eq. 3 .and. ndim .eq. 3) then
-                        mb = -mp*coeffr*d(l,k)+coefcr*coefff*hpg* jacobi*c(l,k)
-                        mbt = -mp*coeffr*d(l,k)+coefcr*coefff*hpg* jacobi*c(l,k)
+                        mb = -mp*coeffr*d(l, k)+coefcr*coefff*hpg*jacobi*c(l, k)
+                        mbt = -mp*coeffr*d(l, k)+coefcr*coefff*hpg*jacobi*c(l, k)
                     else
-                        mb = -mp*coeffr*d(l,k)
-                        mbt = -mp*coeffr*d(l,k)
-                    endif
-                endif
+                        mb = -mp*coeffr*d(l, k)
+                        mbt = -mp*coeffr*d(l, k)
+                    end if
+                end if
                 do i = 1, ndeple
-                    iescl(2)=xcalc_heav(heavn(i),&
-                                        hea_fa(1),&
-                                        heavn(nfhe*nne+nfhm*nnm+i))
+                    iescl(2) = xcalc_heav(heavn(i), &
+                                          hea_fa(1), &
+                                          heavn(nfhe*nne+nfhm*nnm+i))
                     do j = 1, ndeple
-                        jescl(2)=xcalc_heav(heavn(j),&
-                                            hea_fa(1),&
-                                            heavn(nfhe*nne+nfhm*nnm+j))
+                        jescl(2) = xcalc_heav(heavn(j), &
+                                              hea_fa(1), &
+                                              heavn(nfhe*nne+nfhm*nnm+j))
 ! --- BLOCS ES:ES
-                        mm = mb *ffe(i)*ffe(j)
-                        mmt= mbt*ffe(i)*ffe(j)
+                        mm = mb*ffe(i)*ffe(j)
+                        mmt = mbt*ffe(i)*ffe(j)
                         call indent(i, ddles, ddlem, nnes, iin)
                         call indent(j, ddles, ddlem, nnes, jjn)
-                        ii = iin + l
-                        jj = jjn + k
-                        mmat(ii,jj) = mmat(ii,jj)+iescl(1)*jescl(1)*mm
-                        jj = jj + ndim
-                        mmat(ii,jj) = mmat(ii,jj)+iescl(1)*jescl(2)*mm
-                        mmat(jj,ii) = mmat(jj,ii)+iescl(1)*jescl(2)*mmt
-                        ii = ii + ndim
-                        mmat(ii,jj) = mmat(ii,jj)+iescl(2)*jescl(2)*mm
+                        ii = iin+l
+                        jj = jjn+k
+                        mmat(ii, jj) = mmat(ii, jj)+iescl(1)*jescl(1)*mm
+                        jj = jj+ndim
+                        mmat(ii, jj) = mmat(ii, jj)+iescl(1)*jescl(2)*mm
+                        mmat(jj, ii) = mmat(jj, ii)+iescl(1)*jescl(2)*mmt
+                        ii = ii+ndim
+                        mmat(ii, jj) = mmat(ii, jj)+iescl(2)*jescl(2)*mm
                         do alpj = 1, nsinge*ndim
-                            jj = jjn + (1+nfhe+1-1)*ndim + alpj
-                            ii = iin + l
-                            mmat(ii,jj) = mmat(ii,jj)-iescl(1)*mb*ffe(i)*fk_escl(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)-iescl(1)*mbt*ffe(i)*fk_escl(j,alpj,k)
-                            ii = ii + ndim
-                            mmat(ii,jj) = mmat(ii,jj)-iescl(2)*mb*ffe(i)*fk_escl(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)-iescl(2)*mbt*ffe(i)*fk_escl(j,alpj,k)
+                            jj = jjn+(1+nfhe+1-1)*ndim+alpj
+                            ii = iin+l
+                            mmat(ii, jj) = mmat(ii, jj)-iescl(1)*mb*ffe(i)*fk_escl(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)-iescl(1)*mbt*ffe(i)*fk_escl(j, alpj, k)
+                            ii = ii+ndim
+                            mmat(ii, jj) = mmat(ii, jj)-iescl(2)*mb*ffe(i)*fk_escl(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)-iescl(2)*mbt*ffe(i)*fk_escl(j, alpj, k)
                             do alpi = 1, nsinge*ndim
-                                ii = iin + (1+nfhe+1-1)*ndim + alpi
-                                mmat(ii,jj) = mmat(ii,jj)+mb*fk_escl(i,alpi,l)*fk_escl(j,alpj,k)
-                            enddo
+                                ii = iin+(1+nfhe+1-1)*ndim+alpi
+                              mmat(ii, jj) = mmat(ii, jj)+mb*fk_escl(i, alpi, l)*fk_escl(j, alpj, k)
+                            end do
                         end do
                     end do
                     do j = 1, nnm
-                        jmait(2)=xcalc_heav(heavn(nne+j),&
-                                            hea_fa(2),&
-                                            heavn((1+nfhe)*nne+nfhm*nnm+j))
+                        jmait(2) = xcalc_heav(heavn(nne+j), &
+                                              hea_fa(2), &
+                                              heavn((1+nfhe)*nne+nfhm*nnm+j))
 ! --- BLOCS ES:MA, MA:ES
-                        mm = mb *ffe(i)*ffm(j)
-                        mmt= mbt*ffe(i)*ffm(j)
+                        mm = mb*ffe(i)*ffm(j)
+                        mmt = mbt*ffe(i)*ffm(j)
                         call indent(i, ddles, ddlem, nnes, iin)
                         call indent(j, ddlms, ddlmm, nnms, jjn)
-                        ii = iin + l
-                        jj = ddle + jjn + k
-                        mmat(ii,jj) = mmat(ii,jj)-iescl(1)*jmait(1)*mm
-                        mmat(jj,ii) = mmat(jj,ii)-iescl(1)*jmait(1)*mmt
-                        jj = jj + ndim
-                        mmat(ii,jj) = mmat(ii,jj)-iescl(1)*jmait(2)*mm
-                        mmat(jj,ii) = mmat(jj,ii)-iescl(1)*jmait(2)*mmt
-                        ii = ii + ndim
-                        jj = jj - ndim
-                        mmat(ii,jj) = mmat(ii,jj)-iescl(2)*jmait(1)*mm
-                        mmat(jj,ii) = mmat(jj,ii)-iescl(2)*jmait(1)*mmt
-                        jj = jj + ndim
-                        mmat(ii,jj) = mmat(ii,jj)-iescl(2)*jmait(2)*mm
-                        mmat(jj,ii) = mmat(jj,ii)-iescl(2)*jmait(2)*mmt
+                        ii = iin+l
+                        jj = ddle+jjn+k
+                        mmat(ii, jj) = mmat(ii, jj)-iescl(1)*jmait(1)*mm
+                        mmat(jj, ii) = mmat(jj, ii)-iescl(1)*jmait(1)*mmt
+                        jj = jj+ndim
+                        mmat(ii, jj) = mmat(ii, jj)-iescl(1)*jmait(2)*mm
+                        mmat(jj, ii) = mmat(jj, ii)-iescl(1)*jmait(2)*mmt
+                        ii = ii+ndim
+                        jj = jj-ndim
+                        mmat(ii, jj) = mmat(ii, jj)-iescl(2)*jmait(1)*mm
+                        mmat(jj, ii) = mmat(jj, ii)-iescl(2)*jmait(1)*mmt
+                        jj = jj+ndim
+                        mmat(ii, jj) = mmat(ii, jj)-iescl(2)*jmait(2)*mm
+                        mmat(jj, ii) = mmat(jj, ii)-iescl(2)*jmait(2)*mmt
                         do alpj = 1, nsingm*ndim
-                            ii = iin + l
-                            jj = ddle + jjn + (1+nfhm+1-1)*ndim + alpj
-                            mmat(ii,jj) = mmat(ii,jj)-iescl(1)*mb*ffe(i)*fk_mait(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)-iescl(1)*mbt*ffe(i)*fk_mait(j,alpj,k)
-                            ii = ii + ndim
-                            mmat(ii,jj) = mmat(ii,jj)-iescl(2)*mb*ffe(i)*fk_mait(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)-iescl(2)*mbt*ffe(i)*fk_mait(j,alpj,k)
+                            ii = iin+l
+                            jj = ddle+jjn+(1+nfhm+1-1)*ndim+alpj
+                            mmat(ii, jj) = mmat(ii, jj)-iescl(1)*mb*ffe(i)*fk_mait(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)-iescl(1)*mbt*ffe(i)*fk_mait(j, alpj, k)
+                            ii = ii+ndim
+                            mmat(ii, jj) = mmat(ii, jj)-iescl(2)*mb*ffe(i)*fk_mait(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)-iescl(2)*mbt*ffe(i)*fk_mait(j, alpj, k)
                         end do
                         do alpi = 1, nsinge*ndim
-                            ii = iin + (1+nfhm+1-1)*ndim + alpi
-                            jj = ddle + jjn + k
-                            mmat(ii,jj) = mmat(ii,jj)+jmait(1)*mb*ffm(j)*fk_escl(i,alpi,l)
-                            mmat(jj,ii) = mmat(jj,ii)+jmait(1)*mbt*ffm(j)*fk_escl(i,alpi,l)
-                            jj = jj + ndim
-                            mmat(ii,jj) = mmat(ii,jj)+jmait(2)*mb*ffm(j)*fk_escl(i,alpi,l)
-                            mmat(jj,ii) = mmat(jj,ii)+jmait(2)*mbt*ffm(j)*fk_escl(i,alpi,l)
+                            ii = iin+(1+nfhm+1-1)*ndim+alpi
+                            jj = ddle+jjn+k
+                            mmat(ii, jj) = mmat(ii, jj)+jmait(1)*mb*ffm(j)*fk_escl(i, alpi, l)
+                            mmat(jj, ii) = mmat(jj, ii)+jmait(1)*mbt*ffm(j)*fk_escl(i, alpi, l)
+                            jj = jj+ndim
+                            mmat(ii, jj) = mmat(ii, jj)+jmait(2)*mb*ffm(j)*fk_escl(i, alpi, l)
+                            mmat(jj, ii) = mmat(jj, ii)+jmait(2)*mbt*ffm(j)*fk_escl(i, alpi, l)
                         end do
                         do alpi = 1, nsinge*ndim
                             do alpj = 1, nsingm*ndim
-                                ii = iin + (1+nfhm+1-1)*ndim + alpi
-                                jj = ddle + jjn + (1+nfhm+1-1)*ndim + alpj
-                                mmat(ii,jj) = mmat(ii,jj)+mb*fk_escl(i,alpi,l)*fk_mait(j,alpj,k)
-                                mmat(jj,ii) = mmat(jj,ii)+mbt*fk_escl(i,alpi,l)*fk_mait(j,alpj,k)
-                            enddo
+                                ii = iin+(1+nfhm+1-1)*ndim+alpi
+                                jj = ddle+jjn+(1+nfhm+1-1)*ndim+alpj
+                              mmat(ii, jj) = mmat(ii, jj)+mb*fk_escl(i, alpi, l)*fk_mait(j, alpj, k)
+                             mmat(jj, ii) = mmat(jj, ii)+mbt*fk_escl(i, alpi, l)*fk_mait(j, alpj, k)
+                            end do
                         end do
                     end do
                 end do
                 do i = 1, nnm
-                    imait(2)=xcalc_heav(heavn(nne+i),&
-                                        hea_fa(2),&
-                                        heavn((1+nfhe)*nne+nfhm*nnm+i))
+                    imait(2) = xcalc_heav(heavn(nne+i), &
+                                          hea_fa(2), &
+                                          heavn((1+nfhe)*nne+nfhm*nnm+i))
                     do j = 1, nnm
-                        jmait(2)=xcalc_heav(heavn(nne+j),&
-                                            hea_fa(2),&
-                                            heavn((1+nfhe)*nne+nfhm*nnm+j))
+                        jmait(2) = xcalc_heav(heavn(nne+j), &
+                                              hea_fa(2), &
+                                              heavn((1+nfhe)*nne+nfhm*nnm+j))
 ! --- BLOCS MA:MA
-                        mm = mb *ffm(i)*ffm(j)
-                        mmt= mbt*ffm(i)*ffm(j)
+                        mm = mb*ffm(i)*ffm(j)
+                        mmt = mbt*ffm(i)*ffm(j)
                         call indent(i, ddlms, ddlmm, nnms, iin)
                         call indent(j, ddlms, ddlmm, nnms, jjn)
-                        ii = ddle + iin + l
-                        jj = ddle + jjn + k
-                        mmat(ii,jj) = mmat(ii,jj)+imait(1)*jmait(1)*mm
-                        jj = jj + ndim
-                        mmat(ii,jj) = mmat(ii,jj)+imait(1)*jmait(2)*mm
-                        mmat(jj,ii) = mmat(jj,ii)+imait(1)*jmait(2)*mmt
-                        ii = ii + ndim
-                        mmat(ii,jj) = mmat(ii,jj)+imait(2)*jmait(2)*mm
+                        ii = ddle+iin+l
+                        jj = ddle+jjn+k
+                        mmat(ii, jj) = mmat(ii, jj)+imait(1)*jmait(1)*mm
+                        jj = jj+ndim
+                        mmat(ii, jj) = mmat(ii, jj)+imait(1)*jmait(2)*mm
+                        mmat(jj, ii) = mmat(jj, ii)+imait(1)*jmait(2)*mmt
+                        ii = ii+ndim
+                        mmat(ii, jj) = mmat(ii, jj)+imait(2)*jmait(2)*mm
                         do alpj = 1, nsingm*ndim
-                            jj = ddle + jjn + (1+nfhm+1-1)*ndim + alpj
-                            ii = ddle + iin + l
-                            mmat(ii,jj) = mmat(ii,jj)+imait(1)*mb*ffm(i)*fk_mait(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)+imait(1)*mbt*ffm(i)*fk_mait(j,alpj,k)
-                            ii = ii + ndim
-                            mmat(ii,jj) = mmat(ii,jj)+imait(2)*mb*ffm(i)*fk_mait(j,alpj,k)
-                            mmat(jj,ii) = mmat(jj,ii)+imait(2)*mbt*ffm(i)*fk_mait(j,alpj,k)
+                            jj = ddle+jjn+(1+nfhm+1-1)*ndim+alpj
+                            ii = ddle+iin+l
+                            mmat(ii, jj) = mmat(ii, jj)+imait(1)*mb*ffm(i)*fk_mait(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)+imait(1)*mbt*ffm(i)*fk_mait(j, alpj, k)
+                            ii = ii+ndim
+                            mmat(ii, jj) = mmat(ii, jj)+imait(2)*mb*ffm(i)*fk_mait(j, alpj, k)
+                            mmat(jj, ii) = mmat(jj, ii)+imait(2)*mbt*ffm(i)*fk_mait(j, alpj, k)
                             do alpi = 1, nsingm*ndim
-                                ii = ddle + iin + (1+nfhm+1-1)*ndim + alpi
-                                mmat(ii,jj) = mmat(ii,jj)+mb*fk_mait(i,alpi,l)*fk_mait(j,alpj,k)
+                                ii = ddle+iin+(1+nfhm+1-1)*ndim+alpi
+                              mmat(ii, jj) = mmat(ii, jj)+mb*fk_mait(i, alpi, l)*fk_mait(j, alpj, k)
                             end do
                         end do
                     end do
@@ -436,36 +436,36 @@ implicit none
                 if (l .eq. 1) then
                     mb = 0.d0
                     if (nconta .eq. 3 .and. ndim .eq. 3) then
-                        mbt = coefff*hpg*jacobi*b(l,k)
+                        mbt = coefff*hpg*jacobi*b(l, k)
                     else
                         mbt = 0.d0
-                    endif
+                    end if
                 else
-                    if (.not.lpenaf) then
+                    if (.not. lpenaf) then
                         if (nconta .eq. 3 .and. ndim .eq. 3) then
-                            mb = nvit*hpg*jacobi*b(l,k)
+                            mb = nvit*hpg*jacobi*b(l, k)
                         else
-                            mb = nvit*mp*b(l,k)
-                        endif
-                    endif
+                            mb = nvit*mp*b(l, k)
+                        end if
+                    end if
                     if (lpenaf) mb = 0.d0
-                    if (.not.lpenaf) mbt = mp*b(l,k)
+                    if (.not. lpenaf) mbt = mp*b(l, k)
                     if (lpenaf) mbt = 0.d0
-                endif
+                end if
                 do i = 1, nnc
-                    call xplma2(ndim, nne, nnes, ddles, i,&
+                    call xplma2(ndim, nne, nnes, ddles, i, &
                                 nfhe, pli)
                     ii = pli+l-1
                     do j = 1, ndeple
 ! --- BLOCS ES:CONT, CONT:ES
-                        mm = mb *ffc(i)
-                        mmt= mbt*ffc(i)
+                        mm = mb*ffc(i)
+                        mmt = mbt*ffc(i)
                         call indent(j, ddles, ddlem, nnes, jjn)
                         do alpj = 1, nsinge*ndim
-                           jj = jjn + alpj
-                           mmat(ii,jj) = mmat(ii,jj)-mm*fk_escl(j,alpj,k)
-                           if (.not.lpenaf) mmat(jj,ii) = mmat(jj,ii)+mmt*fk_escl(j,alpj,k)
-                        enddo
+                            jj = jjn+alpj
+                            mmat(ii, jj) = mmat(ii, jj)-mm*fk_escl(j, alpj, k)
+                            if (.not. lpenaf) mmat(jj, ii) = mmat(jj, ii)+mmt*fk_escl(j, alpj, k)
+                        end do
                     end do
                 end do
             end do
@@ -476,80 +476,80 @@ implicit none
         do k = 1, ndim
             do l = 1, ndim
                 if (lpenaf) then
-                    mb = -mp*coeffp*d(l,k)
+                    mb = -mp*coeffp*d(l, k)
                 else
                     if (nconta .eq. 3 .and. ndim .eq. 3) then
-                        mb = -mp*coeffr*d(l,k)+coefcr*coefff*hpg* jacobi*c(l,k)
+                        mb = -mp*coeffr*d(l, k)+coefcr*coefff*hpg*jacobi*c(l, k)
                     else
-                        mb = -mp*coeffr*d(l,k)
-                    endif
-                endif
+                        mb = -mp*coeffr*d(l, k)
+                    end if
+                end if
                 do i = 1, ndeple
                     do j = 1, ndeple
 ! --- BLOCS ES:ES
-                        mm = mb *ffe(i)*ffe(j)
+                        mm = mb*ffe(i)*ffe(j)
                         call indent(i, ddles, ddlem, nnes, iin)
                         call indent(j, ddles, ddlem, nnes, jjn)
                         do alpj = 1, nsinge*ndim
                             do alpi = 1, nsinge*ndim
-                                ii = iin + alpi
-                                jj = jjn + alpj
-                                mmat(ii,jj) = mmat(ii,jj)+mb * fk_escl(i,alpi,l)*fk_escl(j,alpj,k)
-                            enddo
-                        enddo
+                                ii = iin+alpi
+                                jj = jjn+alpj
+                              mmat(ii, jj) = mmat(ii, jj)+mb*fk_escl(i, alpi, l)*fk_escl(j, alpj, k)
+                            end do
+                        end do
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! --------------------- CALCUL DE [F] ----------------------------------
 !
     if (nvit .eq. 1) then
         do i = 1, nnc
             do j = 1, nnc
-                call xplma2(ndim, nne, nnes, ddles, i,&
+                call xplma2(ndim, nne, nnes, ddles, i, &
                             nfhe, pli)
-                call xplma2(ndim, nne, nnes, ddles, j,&
+                call xplma2(ndim, nne, nnes, ddles, j, &
                             nfhe, plj)
                 do l = 1, ndim-1
                     do k = 1, ndim-1
                         ii = pli+k
                         jj = plj+l
                         if (lpenaf) then
-                            mmat(ii,jj) = mmat(ii,jj)+hpg*jacobi*ffc(i)*ffc(j)*tt( k,l)
+                            mmat(ii, jj) = mmat(ii, jj)+hpg*jacobi*ffc(i)*ffc(j)*tt(k, l)
                         else
                             if (nconta .eq. 3 .and. ndim .eq. 3) then
-                                mmat(ii,jj) = mmat(ii,jj)+jacobi*hpg*ffc(i)*ffc(j) *r(k,l)/coeffr
+                                mmat(ii, jj) = mmat(ii, jj)+jacobi*hpg*ffc(i)*ffc(j)*r(k, l)/coeffr
                             else
-                                mmat(ii,jj) = mmat(ii,jj)+mp*ffc(i)*ffc(j)*r(k,l)/ coeffr
-                            endif
-                        endif
+                                mmat(ii, jj) = mmat(ii, jj)+mp*ffc(i)*ffc(j)*r(k, l)/coeffr
+                            end if
+                        end if
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 ! ------------------- CALCUL DE [E] ------------------------------------
 !
 ! ------------- COUPLAGE MULTIPLICATEURS CONTACT-FROTTEMENT ------------
     if (nvit .eq. 1) then
         do i = 1, nnc
             do j = 1, nnc
-                call xplma2(ndim, nne, nnes, ddles, i,&
+                call xplma2(ndim, nne, nnes, ddles, i, &
                             nfhe, pli)
-                call xplma2(ndim, nne, nnes, ddles, j,&
+                call xplma2(ndim, nne, nnes, ddles, j, &
                             nfhe, plj)
                 do k = 1, ndim-1
                     ii = pli+k
                     jj = plj
                     if (lpenaf) then
-                        mmat(ii,jj) = mmat(ii,jj)+0.d0
+                        mmat(ii, jj) = mmat(ii, jj)+0.d0
                     else
-                        mmat(ii,jj) = mmat(ii,jj)+0.d0
-                    endif
+                        mmat(ii, jj) = mmat(ii, jj)+0.d0
+                    end if
                 end do
             end do
         end do
-    endif
+    end if
 end subroutine

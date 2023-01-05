@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irgene(iocc, resultName, fileFormat, fileUnit, nbnosy,&
-                  nosy, nbcmpg, cmpg, paraInNb, paraInName,&
-                  nbordr, ordr, nbdisc, disc, nume,&
+subroutine irgene(iocc, resultName, fileFormat, fileUnit, nbnosy, &
+                  nosy, nbcmpg, cmpg, paraInNb, paraInName, &
+                  nbordr, ordr, nbdisc, disc, nume, &
                   lhist)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,13 +41,13 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-integer :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
-integer, intent(in) :: paraInNb, fileUnit
-character(len=*), intent(out) :: resultName
-character(len=*), intent(in) :: paraInName(*), fileFormat
-real(kind=8) :: disc(*)
-character(len=*) :: nosy(*)
-aster_logical :: lhist
+    integer :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
+    integer, intent(in) :: paraInNb, fileUnit
+    character(len=*), intent(out) :: resultName
+    character(len=*), intent(in) :: paraInName(*), fileFormat
+    real(kind=8) :: disc(*)
+    character(len=*) :: nosy(*)
+    aster_logical :: lhist
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,30 +91,30 @@ aster_logical :: lhist
         call irparb(resultName, paraInNb, paraInName, '&&IRGENE.PARAMETRE', paraNb)
         call jeexin('&&IRGENE.PARAMETRE', iret)
         if (iret .gt. 0) then
-            call jeveuo('&&IRGENE.PARAMETRE', 'L', vk16 = paraName)
+            call jeveuo('&&IRGENE.PARAMETRE', 'L', vk16=paraName)
         else
             paraNb = 0
-        endif
+        end if
         do iord = 1, nbordr
-            write(fileUnit,200)
+            write (fileUnit, 200)
             if (fileFormat .eq. 'RESULTAT') then
-            call irpara(resultName, fileUnit  ,&
-                        1         , ordr(iord),&
-                        paraNb    , paraName  ,&
-                        'L')
-            endif
+                call irpara(resultName, fileUnit, &
+                            1, ordr(iord), &
+                            paraNb, paraName, &
+                            'L')
+            end if
             do isy = 1, nbnosy
-                call rsexch(' ', resultName, nosy(isy), ordr(iord), noch19,&
+                call rsexch(' ', resultName, nosy(isy), ordr(iord), noch19, &
                             iret)
                 if (iret .eq. 0) then
-                    call titre2(resultName, noch19, nomst, 'GENE', iocc,&
+                    call titre2(resultName, noch19, nomst, 'GENE', iocc, &
                                 '(1PE12.5)', nosy(isy), ordr(iord))
-                    write(fileUnit,201)
+                    write (fileUnit, 201)
                     call jeveuo(nomst, 'L', jtitr)
                     call jelira(nomst, 'LONMAX', nbtitr)
-                    write(fileUnit,'(1X,A)') (zk80(jtitr+i-1),i=1,nbtitr)
+                    write (fileUnit, '(1X,A)') (zk80(jtitr+i-1), i=1, nbtitr)
                     call irvgen(noch19, fileUnit, nbcmpg, cmpg, lhist)
-                endif
+                end if
             end do
         end do
         call jedetr('&&IRGENE.PARAMETRE')
@@ -126,14 +126,14 @@ aster_logical :: lhist
 !             --- IMPRESSION D'UNE SD DYNA_GENE ---
 !
 !=======================================================================
-        elseif ((resultType .eq. 'TRAN_GENE' ) .or.&
-                 (resultType .eq.'HARM_GENE')) then
+    elseif ((resultType .eq. 'TRAN_GENE') .or. &
+            (resultType .eq. 'HARM_GENE')) then
         lordr = .false.
         call jeexin(resultName(1:19)//'.ORDR', iret)
         if (iret .ne. 0) then
             call jeveuo(resultName(1:19)//'.ORDR', 'L', jordr)
             lordr = .true.
-        endif
+        end if
         call jeveuo(resultName(1:19)//'.DESC', 'L', vi=desc)
         nbmode = desc(2)
         noch19 = '&&IRGENE_VECTEUR'
@@ -144,20 +144,20 @@ aster_logical :: lhist
             itcal = 1
         else
             itcal = 0
-        endif
+        end if
 !
         if (itcal .eq. 1) then
 !        --- CAS D'UNE SD HARM_GENE => VALEURS COMPLEXES
             call wkvect(noch19//'.VALE', 'V V C', nbmode, kvale)
         else
             call wkvect(noch19//'.VALE', 'V V R', nbmode, kvale)
-        endif
+        end if
 !
         zi(kdesc+1) = nbmode
 !
         call dismoi('NUME_DDL', resultName, 'RESU_DYNA', repk=nuddl)
         call jeexin(nuddl(1:14)//'.NUME.DESC', iret)
-        call dismoi('BASE_MODALE', resultName, 'RESU_DYNA', repk=basemo, arret='C',&
+        call dismoi('BASE_MODALE', resultName, 'RESU_DYNA', repk=basemo, arret='C', &
                     ier=ibid)
 !
 !       -- TEST POUR LE CAS DE LA SOUS-STRUCTURATION : EXISTENCE DE NUME_DDL_GENE  --
@@ -167,35 +167,35 @@ aster_logical :: lhist
 !
         do i = 1, nbdisc
             iord = nume(i)
-            write(fileUnit,200)
+            write (fileUnit, 200)
             do isy = 1, nbnosy
-                call jeexin(resultName(1:19)//'.'//nosy(isy)(1:4), iret)
+                call jeexin(resultName(1:19)//'.'//nosy(isy) (1:4), iret)
                 if (iret .ne. 0) then
-                    write(fileUnit,201)
-                    write(fileUnit,301) nosy(isy)
+                    write (fileUnit, 201)
+                    write (fileUnit, 301) nosy(isy)
                     if (lordr) then
                         if (itcal .eq. 1) then
-                            write(fileUnit,321) zi(jordr+iord-1), disc(i)
+                            write (fileUnit, 321) zi(jordr+iord-1), disc(i)
                         else
-                            write(fileUnit,302) zi(jordr+iord-1), disc(i)
-                        endif
+                            write (fileUnit, 302) zi(jordr+iord-1), disc(i)
+                        end if
                     else
                         if (itcal .eq. 1) then
-                            write(fileUnit,321) iord, disc(i)
+                            write (fileUnit, 321) iord, disc(i)
                         else
-                            write(fileUnit,302) iord, disc(i)
-                        endif
-                    endif
-                    call jeveuo(resultName(1:19)//'.'//nosy(isy)(1:4), 'L', itresu)
+                            write (fileUnit, 302) iord, disc(i)
+                        end if
+                    end if
+                    call jeveuo(resultName(1:19)//'.'//nosy(isy) (1:4), 'L', itresu)
                     do im = 0, nbmode-1
                         if (itcal .eq. 1) then
                             zc(kvale+im) = zc(itresu+(iord-1)*nbmode+im)
                         else
                             zr(kvale+im) = zr(itresu+(iord-1)*nbmode+im)
-                        endif
+                        end if
                     end do
                     call irvgen(noch19, fileUnit, nbcmpg, cmpg, lhist)
-                endif
+                end if
             end do
         end do
         call jedetr(noch19//'.DESC')
@@ -204,14 +204,14 @@ aster_logical :: lhist
 !
     else
         call utmess('F', 'PREPOST2_51', sk=resultType)
-    endif
+    end if
 !
 !
-200 format(/,1x,'======>')
-201 format(/,1x,'------>')
-301 format(' VECTEUR GENERALISE DE NOM SYMBOLIQUE  ',a)
-302 format(1p,' NUMERO D''ORDRE: ',i8,' INSTANT: ',d12.5)
-321 format(1p,' NUMERO D''ORDRE: ',i8,' FREQUENCE: ',d12.5)
+200 format(/, 1x, '======>')
+201 format(/, 1x, '------>')
+301 format(' VECTEUR GENERALISE DE NOM SYMBOLIQUE  ', a)
+302 format(1p, ' NUMERO D''ORDRE: ', i8, ' INSTANT: ', d12.5)
+321 format(1p, ' NUMERO D''ORDRE: ', i8, ' FREQUENCE: ', d12.5)
 !
     call jedema()
 end subroutine

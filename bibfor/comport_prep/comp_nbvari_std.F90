@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
-                           kit_comp, post_iter, regu_visc,&
+subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
+                           kit_comp, post_iter, regu_visc, &
                            nbVari, numeLaw)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcinfo.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_code.h"
 !
-character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc
-integer, intent(out) :: nbVari, numeLaw
+    character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
+    character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc
+    integer, intent(out) :: nbVari, numeLaw
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ integer, intent(out) :: nbVari, numeLaw
     numeLaw = 0
 
 ! - Coding composite comportment (Python)
-    call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
+    call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
                         post_iter, regu_visc, &
                         comp_code_py)
 

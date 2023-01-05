@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
     cns = '&&CNOMAX.CNS'
     numno = 0
     call cnocns(cno, 'V', cns1)
-    call cnsred(cns1, 0, [0], ncmp, licmp,&
+    call cnsred(cns1, 0, [0], ncmp, licmp, &
                 'V', cns)
 !
     call jeveuo(cns//'.CNSD', 'L', vi=cnsd)
@@ -72,16 +72,16 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
 !
     nbno = cnsd(1)
     do ino = 1, nbno
-        norme=0.d0
+        norme = 0.d0
         do k = 1, ncmp
-            if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
-                norme=norme+cnsv((ino-1)*ncmp+k)**2
-            endif
+            if (zl(jcnsl-1+(ino-1)*ncmp+k)) then
+                norme = norme+cnsv((ino-1)*ncmp+k)**2
+            end if
         end do
         if (sqrt(norme) .ge. rmax) then
             rmax = sqrt(norme)
             numno = ino
-        endif
+        end if
     end do
 !
 !

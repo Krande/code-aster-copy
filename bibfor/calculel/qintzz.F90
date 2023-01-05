@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine qintzz(modele, ligrel, matecoz, sigmap, sigmad,&
+subroutine qintzz(modele, ligrel, matecoz, sigmap, sigmad, &
                   signop, signod, resu)
     implicit none
 #include "asterfort/calcul.h"
@@ -62,7 +62,7 @@ subroutine qintzz(modele, ligrel, matecoz, sigmap, sigmad,&
 ! DEB-------------------------------------------------------------------
 !
     chtemp = '&&TEMP'
-    call mecact('V', chtemp, 'LIGREL', ligrel, 'TEMP_R',&
+    call mecact('V', chtemp, 'LIGREL', ligrel, 'TEMP_R', &
                 ncmp=1, nomcmp='TEMP', sr=0.0d0)
 !
     mateco = matecoz
@@ -70,7 +70,7 @@ subroutine qintzz(modele, ligrel, matecoz, sigmap, sigmad,&
 !
     if (mateco .eq. ' ') then
         call utmess('F', 'CALCULEL4_66')
-    endif
+    end if
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
@@ -90,8 +90,8 @@ subroutine qintzz(modele, ligrel, matecoz, sigmap, sigmad,&
     lpaout(1) = 'PERREUR'
     lchout(1) = resu
     option = 'ERRE_QIZZ'
-    call calcul('S', option, ligrel, 7, lchin,&
-                lpain, 1, lchout, lpaout, 'G',&
+    call calcul('S', option, ligrel, 7, lchin, &
+                lpain, 1, lchout, lpaout, 'G', &
                 'OUI')
 !
 end subroutine

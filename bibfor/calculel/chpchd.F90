@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chpchd(chin, type, celmod, prol0, base,&
+subroutine chpchd(chin, type, celmod, prol0, base, &
                   chou, model_)
     implicit none
 #include "asterf_types.h"
@@ -41,7 +41,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 #include "asterfort/xnpgxx.h"
 
     character(len=*) :: chin, chou, base, celmod, type
-character(len=8), optional, intent(in) :: model_
+    character(len=8), optional, intent(in) :: model_
 
 ! -----------------------------------------------------------------
 !  BUT : CHANGER LE SUPPORT GEOMETRIQUE D'UN CHAMP
@@ -106,7 +106,7 @@ character(len=8), optional, intent(in) :: model_
     model = ' '
     if (present(model_)) then
         model = model_
-    endif
+    end if
 !
 !
 ! 1- CALCUL DE:
@@ -118,7 +118,7 @@ character(len=8), optional, intent(in) :: model_
     call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma)
     call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tychi)
     call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
-    bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' .or. tychi .eq. 'ELGA'&
+    bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' .or. tychi .eq. 'ELGA' &
            .or. tychi .eq. 'ELEM' .or. tychi .eq. 'CESE'
     ASSERT(bool)
 !
@@ -127,16 +127,16 @@ character(len=8), optional, intent(in) :: model_
 !         LIGREL: NOM DU LIGREL ASSOCIE A CHOU
 ! ---------------------------------------------------------------
     if (type(1:2) .eq. 'EL') then
-        ASSERT(celmod.ne.' ')
+        ASSERT(celmod .ne. ' ')
         call dismoi('NOM_LIGREL', celmod, 'CHAM_ELEM', repk=ligrel)
         call dismoi('NOM_OPTION', celmod, 'CHAM_ELEM', repk=option)
         call dismoi('NOM_PARAM', celmod, 'CHAM_ELEM', repk=param)
         call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma2)
         if (ma .ne. ma2) then
             call utmess('F', 'CALCULEL4_59')
-        endif
+        end if
         call celces(celmod, 'V', cesmod)
-    endif
+    end if
 !
 !
 ! 3.  -- CALCUL DE CAS :
@@ -178,7 +178,7 @@ character(len=8), optional, intent(in) :: model_
         call manopg(model, ligrel, option, param, mnoga)
 !
         call cnocns(chin, 'V', cns1)
-        call cnsces(cns1, 'ELGA', cesmod, mnoga, 'V',&
+        call cnsces(cns1, 'ELGA', cesmod, mnoga, 'V', &
                     ces1)
         call detrsd('CHAM_NO_S', cns1)
         call detrsd('CHAM_ELEM_S', mnoga)
@@ -189,70 +189,70 @@ character(len=8), optional, intent(in) :: model_
         chsnpg = '&&CHPCHD.CHSNPG'
         call xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 !
-        if (exixfm.eq.'OUI') then
+        if (exixfm .eq. 'OUI') then
 !            si le champ ELGA s'appuie sur la famille "XFEM", on
 !            desaffecte toutes les composantes associes aux points
 !            de Gauss inutilises
-             call xcesrd(ces1, chsnpg)
-        endif
+            call xcesrd(ces1, chsnpg)
+        end if
 !
         call detrsd('CHAM_ELEM_S', chsnpg)
 !
-        call cescel(ces1, ligrel, option, param, prol0,&
+        call cescel(ces1, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
 !
 !
-    else if (cas.eq.'ELNO->ELGA') then
+    else if (cas .eq. 'ELNO->ELGA') then
 !     ----------------------------------
         call manopg(model, ligrel, option, param, mnoga)
 !
         call celces(chin, 'V', ces1)
-        call cesces(ces1, 'ELGA', cesmod, mnoga, ' ',&
+        call cesces(ces1, 'ELGA', cesmod, mnoga, ' ', &
                     'V', ces2)
         call detrsd('CHAM_ELEM_S', ces1)
         call detrsd('CHAM_ELEM_S', mnoga)
 !
-        call cescel(ces2, ligrel, option, param, prol0,&
+        call cescel(ces2, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces2)
 !
 !
-    else if (cas.eq.'NOEU->ELNO') then
+    else if (cas .eq. 'NOEU->ELNO') then
 !     ----------------------------------------------------------------
 !
         call cnocns(chin, 'V', cns1)
-        call cnsces(cns1, 'ELNO', cesmod, ' ', 'V',&
+        call cnsces(cns1, 'ELNO', cesmod, ' ', 'V', &
                     ces1)
         call detrsd('CHAM_NO_S', cns1)
 !
-        call cescel(ces1, ligrel, option, param, prol0,&
+        call cescel(ces1, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
 !
 !
-        elseif ((cas.eq.'ELNO->NOEU') .or. (cas.eq.'ELGA->NOEU') .or.&
-                (cas.eq.'CART->NOEU')) then
+    elseif ((cas .eq. 'ELNO->NOEU') .or. (cas .eq. 'ELGA->NOEU') .or. &
+            (cas .eq. 'CART->NOEU')) then
 !     ----------------------------------------------------------------
 !
         if (cas(1:4) .eq. 'ELNO') then
             call celces(chin, 'V', ces1)
 !
-        else if (cas(1:4).eq.'ELGA') then
+        else if (cas(1:4) .eq. 'ELGA') then
             call celces(chin, 'V', ces1)
             call celfpg(chin, '&&CHPCHD.CELFPG', iret)
 !
-        else if (cas(1:4).eq.'CART') then
-            call carces(chin, 'ELNO', ' ', 'V', ces1,&
+        else if (cas(1:4) .eq. 'CART') then
+            call carces(chin, 'ELNO', ' ', 'V', ces1, &
                         'A', iret)
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-        call cescns(ces1, '&&CHPCHD.CELFPG', 'V', cns1, ' ',&
+        call cescns(ces1, '&&CHPCHD.CELFPG', 'V', cns1, ' ', &
                     iret)
-        call cnscno(cns1, ' ', 'NON', base, chou,&
+        call cnscno(cns1, ' ', 'NON', base, chou, &
                     'F', ibid)
 !
         call detrsd('CHAM_NO_S', cns1)
@@ -260,37 +260,37 @@ character(len=8), optional, intent(in) :: model_
         call jedetr('&&CHPCHD.CELFPG')
 !
 !
-    else if (cas(1:8).eq.'CART->EL' .or. cas(1:8).eq.'ELEM->EL') then
+    else if (cas(1:8) .eq. 'CART->EL' .or. cas(1:8) .eq. 'ELEM->EL') then
 !     ----------------------------------------------------------------
-        ASSERT(ligrel.ne.' ')
-        if (cas(1:4).eq.'CART') then
-            call carces(chin, cas(7:10), cesmod, 'V', ces1,&
-                    'A', ib)
+        ASSERT(ligrel .ne. ' ')
+        if (cas(1:4) .eq. 'CART') then
+            call carces(chin, cas(7:10), cesmod, 'V', ces1, &
+                        'A', ib)
         else
-            ASSERT(cas(1:4).eq.'ELEM')
+            ASSERT(cas(1:4) .eq. 'ELEM')
             call celces(chin, 'V', ces2)
-            call cesces(ces2, cas(7:10), cesmod, ' ', ' ','V', ces1)
+            call cesces(ces2, cas(7:10), cesmod, ' ', ' ', 'V', ces1)
             call detrsd('CHAM_ELEM_S', ces2)
-        endif
+        end if
 !
-        if (type.eq.'ELGA') then
+        if (type .eq. 'ELGA') then
 !           construction du CHAM_ELEM_S conteant le nombre de points
 !           de Gauss reellement utilises par chaque element, dans le
 !           cas d'un champs ELGA, base sur la famille "XFEM"
             chsnpg = '&&CHPCHD.CHSNPG'
             call xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 !
-            if (exixfm.eq.'OUI') then
+            if (exixfm .eq. 'OUI') then
 !                si le champ ELGA s'appuie sur la famille "XFEM", on
 !                desaffecte toutes les composantes associes aux points
 !                de Gauss inutilises
-                 call xcesrd(ces1, chsnpg)
-            endif
+                call xcesrd(ces1, chsnpg)
+            end if
 !
             call detrsd('CHAM_ELEM_S', chsnpg)
-        endif
+        end if
 !
-        call cescel(ces1, ligrel, option, param, prol0,&
+        call cescel(ces1, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
 !
@@ -301,15 +301,15 @@ character(len=8), optional, intent(in) :: model_
                 valk(2) = option
                 valk(3) = param
                 call utmess('A', 'CALCULEL6_77', nk=3, valk=valk)
-            endif
-        endif
+            end if
+        end if
 !
 !
-    else if (cas(1:8).eq.'CESE->EL') then
+    else if (cas(1:8) .eq. 'CESE->EL') then
 !     ----------------------------------------------------------------
-        ASSERT(ligrel.ne.' ')
-        call cesces(chin, cas(7:10), cesmod, ' ', ' ','V', ces1)
-        call cescel(ces1, ligrel, option, param, prol0,&
+        ASSERT(ligrel .ne. ' ')
+        call cesces(chin, cas(7:10), cesmod, ' ', ' ', 'V', ces1)
+        call cescel(ces1, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
 !
@@ -320,19 +320,19 @@ character(len=8), optional, intent(in) :: model_
                 valk(2) = option
                 valk(3) = param
                 call utmess('A', 'CALCULEL6_77', nk=3, valk=valk)
-            endif
-        endif
+            end if
+        end if
 !
 !
-    else if (cas.eq.'ELGA->ELNO') then
+    else if (cas .eq. 'ELGA->ELNO') then
 !     ----------------------------------------------------------------
 !
         call celces(chin, 'V', ces1)
         call celfpg(chin, '&&CHPCHD.CELFPG', iret)
-        ASSERT(iret.eq.0)
-        call cesces(ces1, 'ELNO', cesmod, ' ', '&&CHPCHD.CELFPG',&
+        ASSERT(iret .eq. 0)
+        call cesces(ces1, 'ELNO', cesmod, ' ', '&&CHPCHD.CELFPG', &
                     'V', ces2)
-        call cescel(ces2, ligrel, option, param, prol0,&
+        call cescel(ces2, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
 !
         call detrsd('CHAM_ELEM_S', ces1)
@@ -340,31 +340,31 @@ character(len=8), optional, intent(in) :: model_
         call jedetr('&&CHPCHD.CELFPG')
 !
 !
-    else if (cas.eq.'NOEU->ELEM') then
+    else if (cas .eq. 'NOEU->ELEM') then
 !     ----------------------------------------------------------------
 !
         call cnocns(chin, 'V', cns1)
-        call cnsces(cns1, 'ELEM', cesmod, ' ', 'V',&
+        call cnsces(cns1, 'ELEM', cesmod, ' ', 'V', &
                     ces1)
         call detrsd('CHAM_NO_S', cns1)
 !
-        call cescel(ces1, ligrel, option, param, prol0,&
+        call cescel(ces1, ligrel, option, param, prol0, &
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
 !
 !
-    else if (cas.eq.'ELEM->NOEU') then
+    else if (cas .eq. 'ELEM->NOEU') then
         call celces(chin, 'V', ces1)
         call cescns(ces1, ' ', 'V', cns1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
-        call cnscno(cns1, ' ', 'NON', base, chou,&
+        call cnscno(cns1, ' ', 'NON', base, chou, &
                     'F', ibid)
         call detrsd('CHAM_NO_S', cns1)
 
     else
 !       CAS NON ENCORE PROGRAMME
         call utmess('F', 'CALCULEL_5', sk=cas)
-    endif
+    end if
 !
 !
 !

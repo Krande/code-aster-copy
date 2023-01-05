@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
-                  ipoids, ivf, idfde, xyz, depl,&
+subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
+                  ipoids, ivf, idfde, xyz, depl, &
                   instan, repere, mater, nharm, sigma)
 !.======================================================================
     implicit none
@@ -72,9 +72,9 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
     zero = 0.0d0
     nbinco = ndim*nno
     ndim2 = ndim
-    if (lteatt('FOURIER','OUI')) then
+    if (lteatt('FOURIER', 'OUI')) then
         ndim2 = 2
-    endif
+    end if
 !
     sigma(1:nbsig*npg) = zero
 !
@@ -92,7 +92,7 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
 !
         do i = 1, nno
             do idim = 1, ndim2
-                xyzgau(idim) = xyzgau(idim) + zr(ivf+i+nno*(igau-1)-1) *xyz(idim+ndim2*(i-1))
+                xyzgau(idim) = xyzgau(idim)+zr(ivf+i+nno*(igau-1)-1)*xyz(idim+ndim2*(i-1))
             end do
         end do
 !
@@ -100,19 +100,19 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 !  --      COURANT : (EPS_1) = (B)*(UN)
 !          ----------------------------
-        call bmatmc(igau, nbsig, xyz, ipoids, ivf,&
+        call bmatmc(igau, nbsig, xyz, ipoids, ivf, &
                     idfde, nno, nharm, jacgau, b)
 !
 !  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
-        call dmatmc(fami, mater, instan, '+',&
-                    igau, 1, repere, xyzgau, nbsig,&
+        call dmatmc(fami, mater, instan, '+', &
+                    igau, 1, repere, xyzgau, nbsig, &
                     d)
 !
 !  --      CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT
 !          ------------------------------------------------------
-        call dbudef(depl, b, d, nbsig, nbinco,&
+        call dbudef(depl, b, d, nbsig, nbinco, &
                     sigma(1+nbsig*(igau-1)))
     end do
 !

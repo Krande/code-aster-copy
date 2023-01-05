@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine nonlinDSVectCombAddAny(vect_name_, vect_coef, ds_vectcomb)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-character(len=*), intent(in) :: vect_name_
-real(kind=8), intent(in) :: vect_coef
-type(NL_DS_VectComb), intent(inout) :: ds_vectcomb
+    character(len=*), intent(in) :: vect_name_
+    real(kind=8), intent(in) :: vect_coef
+    type(NL_DS_VectComb), intent(inout) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ type(NL_DS_VectComb), intent(inout) :: ds_vectcomb
 !
     ASSERT(ds_vectcomb%nb_vect .lt. 20)
     vect_name = vect_name_
-    ds_vectcomb%nb_vect = ds_vectcomb%nb_vect + 1
+    ds_vectcomb%nb_vect = ds_vectcomb%nb_vect+1
     ds_vectcomb%vect_coef(ds_vectcomb%nb_vect) = vect_coef
     ds_vectcomb%vect_name(ds_vectcomb%nb_vect) = vect_name
 !

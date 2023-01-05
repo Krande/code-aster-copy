@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine te0028(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,10 +53,10 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShapeX)
-    jvDShapeY = jvDShapeX + 1
+    jvDShapeY = jvDShapeX+1
 
 ! - Get input fields
     call jevech('PGEOMER', 'L', jvGeom)
@@ -70,12 +70,12 @@ character(len=16), intent(in) :: option, nomte
 
 ! - Compute exterior product of face
     do iNode = 1, nno
-        idec = jvGeom + 3*(iNode-1) -1
+        idec = jvGeom+3*(iNode-1)-1
         do jNode = 1, nno
-            jdec = jvGeom + 3*(jNode-1) -1
-            sx(iNode,jNode) = zr(idec+2) * zr(jdec+3) - zr(idec+3) * zr(jdec+2)
-            sy(iNode,jNode) = zr(idec+3) * zr(jdec+1) - zr(idec+1) * zr(jdec+3)
-            sz(iNode,jNode) = zr(idec+1) * zr(jdec+2) - zr(idec+2) * zr(jdec+1)
+            jdec = jvGeom+3*(jNode-1)-1
+            sx(iNode, jNode) = zr(idec+2)*zr(jdec+3)-zr(idec+3)*zr(jdec+2)
+            sy(iNode, jNode) = zr(idec+3)*zr(jdec+1)-zr(idec+1)*zr(jdec+3)
+            sz(iNode, jNode) = zr(idec+1)*zr(jdec+2)-zr(idec+2)*zr(jdec+1)
         end do
     end do
 
@@ -92,15 +92,15 @@ character(len=16), intent(in) :: option, nomte
             idec = (iNode-1)*ndimCell
             do jNode = 1, nno
                 jdec = (jNode-1)*ndimCell
-                nx = nx + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sx(iNode,jNode)
-                ny = ny + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sy(iNode,jNode)
-                nz = nz + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sz(iNode,jNode)
+                nx = nx+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sx(iNode, jNode)
+                ny = ny+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sy(iNode, jNode)
+                nz = nz+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sz(iNode, jNode)
             end do
         end do
 
 ! ----- Compute jacobian
-        jac       = sqrt(nx*nx + ny*ny + nz*nz)
-        jacWeight = jac * zr(jvWeight+kpg-1)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
+        jacWeight = jac*zr(jvWeight+kpg-1)
 
 ! ----- Compute force at Gauss point from node value
         fx = 0.d0
@@ -108,15 +108,15 @@ character(len=16), intent(in) :: option, nomte
         fz = 0.d0
         do iNode = 1, nno
             kdec = ndimSpace*(iNode-1)
-            fx = fx + zr(jvShape+ldec+iNode-1) * zr(jvForc+kdec)
-            fy = fy + zr(jvShape+ldec+iNode-1) * zr(jvForc+kdec+1)
-            fz = fz + zr(jvShape+ldec+iNode-1) * zr(jvForc+kdec+2)
+            fx = fx+zr(jvShape+ldec+iNode-1)*zr(jvForc+kdec)
+            fy = fy+zr(jvShape+ldec+iNode-1)*zr(jvForc+kdec+1)
+            fz = fz+zr(jvShape+ldec+iNode-1)*zr(jvForc+kdec+2)
         end do
         do iNode = 1, nno
             kdec = ndimSpace*(iNode-1)
-            zr(jvVect+kdec  ) = zr(jvVect+kdec  ) + jacWeight * fx * zr(jvShape+ldec+iNode-1)
-            zr(jvVect+kdec+1) = zr(jvVect+kdec+1) + jacWeight * fy * zr(jvShape+ldec+iNode-1)
-            zr(jvVect+kdec+2) = zr(jvVect+kdec+2) + jacWeight * fz * zr(jvShape+ldec+iNode-1)
+            zr(jvVect+kdec) = zr(jvVect+kdec)+jacWeight*fx*zr(jvShape+ldec+iNode-1)
+            zr(jvVect+kdec+1) = zr(jvVect+kdec+1)+jacWeight*fy*zr(jvShape+ldec+iNode-1)
+            zr(jvVect+kdec+2) = zr(jvVect+kdec+2)+jacWeight*fz*zr(jvShape+ldec+iNode-1)
         end do
     end do
 !

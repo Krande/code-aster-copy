@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcsp01(nbm, adrm, ipt, sp3, sp4,&
-                  sp5, alphaa, alphab, nbth, iocs,&
+subroutine rcsp01(nbm, adrm, ipt, sp3, sp4, &
+                  sp5, alphaa, alphab, nbth, iocs, &
                   sp6)
     implicit none
 #include "jeveux.h"
@@ -58,36 +58,36 @@ subroutine rcsp01(nbm, adrm, ipt, sp3, sp4,&
     decal = cesd(5+4*(adrm(1)-1)+4)
 !
     icmp = 1
-    iad = decal + (ipt-1)*nbcmp + icmp
-    if (.not.zl(jcesl-1+iad)) then
+    iad = decal+(ipt-1)*nbcmp+icmp
+    if (.not. zl(jcesl-1+iad)) then
         vali(1) = iocs
         vali(2) = adrm(1)
         call utmess('F', 'POSTRCCM_15', sk='RESU_THER', ni=2, vali=vali)
-    endif
+    end if
     call jeveuo(cesv(iad), 'L', jther)
     call jelira(cesv(iad), 'LONMAX', nbinst)
-    nbinst = nbinst / 2
+    nbinst = nbinst/2
 !
     icmp = 2
-    iad = decal + (ipt-1)*nbcmp + icmp
-    if (.not.zl(jcesl-1+iad)) then
+    iad = decal+(ipt-1)*nbcmp+icmp
+    if (.not. zl(jcesl-1+iad)) then
         vali(1) = iocs
         vali(2) = adrm(1)
         call utmess('F', 'POSTRCCM_15', sk='RESU_THER_MOYE', ni=2, vali=vali)
-    endif
+    end if
     call jeveuo(cesv(iad), 'L', jmoye)
 !
     if (nbm .gt. 1) then
         decal = cesd(5+4*(adrm(2)-1)+4)
         icmp = 2
-        iad = decal + (ipt-1)*nbcmp + icmp
-        if (.not.zl(jcesl-1+iad)) then
+        iad = decal+(ipt-1)*nbcmp+icmp
+        if (.not. zl(jcesl-1+iad)) then
             vali(1) = iocs
             vali(2) = adrm(2)
             call utmess('F', 'POSTRCCM_15', sk='RESU_THER_MOYE', ni=2, vali=vali)
-        endif
+        end if
         call jeveuo(cesv(iad), 'L', jmoy2)
-    endif
+    end if
 !
 ! --- ON BOUCLE SUR LES INSTANTS :
 !
@@ -117,25 +117,25 @@ subroutine rcsp01(nbm, adrm, ipt, sp3, sp4,&
 !             DE PAROI DE L'AMPLITUDE DE VARIATION DE LA TEMPERATURE
 !             ENTRE LES 2 ETATS STABILISES
 !
-        term1 = abs(text-ta) - abs(0.5d0*dt1)
-        term2 = abs(tint-ta) - abs(0.5d0*dt1)
-        dt2 = max( term1, term2, 0.d0 )
+        term1 = abs(text-ta)-abs(0.5d0*dt1)
+        term2 = abs(tint-ta)-abs(0.5d0*dt1)
+        dt2 = max(term1, term2, 0.d0)
 !
-        dt1max = max ( dt1max, abs( dt1 ) )
+        dt1max = max(dt1max, abs(dt1))
 !
-        dt2max = max ( dt2max, abs( dt2 ) )
+        dt2max = max(dt2max, abs(dt2))
 !
         if (nbm .gt. 1) then
             tb = zr(jmoy2-1+2*(i-1)+1)
-            tab = ( alphaa * ta ) - ( alphab * tb )
-            tabmax = max ( tabmax, abs( tab ) )
-        endif
+            tab = (alphaa*ta)-(alphab*tb)
+            tabmax = max(tabmax, abs(tab))
+        end if
 !
     end do
 !
-    sp6 = sp6 + ( sp3 * dt1max )
-    sp6 = sp6 + ( sp5 * dt2max )
-    if (nbm .gt. 1) sp6 = sp6 + ( sp4 * tabmax )
+    sp6 = sp6+(sp3*dt1max)
+    sp6 = sp6+(sp5*dt2max)
+    if (nbm .gt. 1) sp6 = sp6+(sp4*tabmax)
 !
 999 continue
 !

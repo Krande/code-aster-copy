@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine resuReadGetStorePara(resultName, storePara)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/rsexpa.h"
 #include "asterfort/assert.h"
 !
-character(len=8), intent(in) :: resultName
-character(len=4), intent(out) :: storePara
+    character(len=8), intent(in) :: resultName
+    character(len=4), intent(out) :: storePara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ character(len=4), intent(out) :: storePara
             storePara = 'FREQ'
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

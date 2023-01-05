@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,10 +37,10 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-character(len=19), intent(in) :: list_load
-aster_logical, optional, intent(in) :: l_load_user_
-character(len=19), optional, intent(in) :: list_load_resu
-character(len=1), optional, intent(in) :: basez
+    character(len=19), intent(in) :: list_load
+    aster_logical, optional, intent(in) :: l_load_user_
+    character(len=19), optional, intent(in) :: list_load_resu
+    character(len=1), optional, intent(in) :: basez
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ character(len=1), optional, intent(in) :: basez
 !
     integer, parameter :: nb_info_maxi = 99
     character(len=24) :: list_info_type(nb_info_maxi)
-    integer, parameter :: nb_type_neum  = 11
+    integer, parameter :: nb_type_neum = 11
     aster_logical :: list_load_keyw(nb_type_neum)
     aster_logical :: l_func_mult, l_load_user, l_zero_allowed
     aster_logical :: l_func_c
@@ -80,32 +80,32 @@ character(len=1), optional, intent(in) :: basez
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_load        = 0
-    i_excit        = 0
-    const_func     = '&&NTDOCH'
-    l_func_c       = .false.
-    l_load_user    = .true.
+    nb_load = 0
+    i_excit = 0
+    const_func = '&&NTDOCH'
+    l_func_c = .false.
+    l_load_user = .true.
     l_zero_allowed = .true.
     if (present(l_load_user_)) then
         l_load_user = l_load_user_
-    endif
+    end if
     base = 'V'
-    if( present(basez)) then
+    if (present(basez)) then
         base = basez
     end if
 !
 ! - Get number of loads for loads datastructure
 !
-    call nmdoch_nbload(l_load_user , list_load_resu, l_zero_allowed, nb_load,&
+    call nmdoch_nbload(l_load_user, list_load_resu, l_zero_allowed, nb_load, &
                        load_keyword)
 !
 ! - Access to saved list of loads datastructure
 !
-    if (.not.l_load_user) then
-        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi   = v_llresu_info)
-        call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24 = v_llresu_name)
-        call jeveuo(list_load_resu(1:19)//'.FCHA', 'L', vk24 = v_llresu_func)
-    endif
+    if (.not. l_load_user) then
+        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi=v_llresu_info)
+        call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24=v_llresu_name)
+        call jeveuo(list_load_resu(1:19)//'.FCHA', 'L', vk24=v_llresu_func)
+    end if
 !
     if (nb_load .ne. 0) then
         ASSERT(load_keyword .ne. 'None')
@@ -116,36 +116,36 @@ character(len=1), optional, intent(in) :: basez
 !
 ! ----- List of loads to avoid same loads
 !
-        AS_ALLOCATE(vk8 = v_list_dble, size = nb_load)
+        AS_ALLOCATE(vk8=v_list_dble, size=nb_load)
 !
 ! ----- Loop on loads
 !
-        do i_load = 1 , nb_load
+        do i_load = 1, nb_load
 !
 ! --------- Get parameters for construct list of loads
 !
-            call load_list_getp('THER'      , l_load_user , v_llresu_info, v_llresu_name,&
-                                v_list_dble , load_keyword, i_load       , nb_load      ,&
-                                i_excit     , load_name   , load_type    , ligrch)
+            call load_list_getp('THER', l_load_user, v_llresu_info, v_llresu_name, &
+                                v_list_dble, load_keyword, i_load, nb_load, &
+                                i_excit, load_name, load_type, ligrch)
 !
 ! --------- Dirichlet loads (AFFE_CHAR_CINE)
 !
             nb_info_type = 0
-            info_type    = 'RIEN'
+            info_type = 'RIEN'
             if (load_type(1:5) .eq. 'CITH_') then
                 if (load_type(5:7) .eq. '_FT') then
                     info_type = 'CINE_FT'
-                else if (load_type(5:7).eq.'_FO') then
+                else if (load_type(5:7) .eq. '_FO') then
                     info_type = 'CINE_FO'
                 else
                     info_type = 'CINE_CSTE'
-                endif
-            endif
+                end if
+            end if
             if (info_type .ne. 'RIEN') then
-                nb_info_type = nb_info_type + 1
-                ASSERT(nb_info_type.lt.nb_info_maxi)
+                nb_info_type = nb_info_type+1
+                ASSERT(nb_info_type .lt. nb_info_maxi)
                 list_info_type(nb_info_type) = info_type
-            endif
+            end if
 !
 ! --------- Dirichlet loads (AFFE_CHAR_THER)
 !
@@ -158,21 +158,21 @@ character(len=1), optional, intent(in) :: basez
                     call dismoi('PARA_INST', cart_name, 'CARTE', repk=load_para)
                     if (load_para(1:3) .eq. 'OUI') then
                         info_type = 'DIRI_FT'
-                    endif
+                    end if
                 else
                     info_type = 'DIRI_CSTE'
-                endif
-            endif
+                end if
+            end if
             if (info_type .ne. 'RIEN') then
-                nb_info_type = nb_info_type + 1
-                ASSERT(nb_info_type.lt.nb_info_maxi)
+                nb_info_type = nb_info_type+1
+                ASSERT(nb_info_type .lt. nb_info_maxi)
                 list_info_type(nb_info_type) = info_type
-            endif
+            end if
 !
 ! --------- Get function applied to load
 !
-            call lislfc(list_load_resu, i_load      , i_excit   , l_load_user,&
-                        l_func_c      , load_keyword, const_func, load_func, base)
+            call lislfc(list_load_resu, i_load, i_excit, l_load_user, &
+                        l_func_c, load_keyword, const_func, load_func, base)
             ASSERT(load_func .ne. ' ')
             l_func_mult = load_func(1:2) .ne. '&&'
 !
@@ -185,21 +185,21 @@ character(len=1), optional, intent(in) :: basez
             do i_type_neum = 1, nb_type_neum
                 info_type = 'RIEN'
                 if (list_load_keyw(i_type_neum)) then
-                    call load_neut_data(i_type_neum, nb_type_neum, '2MBR',&
-                                        load_opti_f_ = load_opti_f,&
-                                        load_obje_   = load_obje,&
-                                        load_keyw_   = load_keyw)
-                    cart_name  = load_name(1:8)//'.CHTH'//load_obje(1)
+                    call load_neut_data(i_type_neum, nb_type_neum, '2MBR', &
+                                        load_opti_f_=load_opti_f, &
+                                        load_obje_=load_obje, &
+                                        load_keyw_=load_keyw)
+                    cart_name = load_name(1:8)//'.CHTH'//load_obje(1)
                     if ((load_opti_f .eq. 'No_load') .and. l_func_mult) then
                         call utmess('F', 'CHARGES_20', sk=load_name)
-                    endif
-                    if (load_keyw.eq.'ECHANGE') then
+                    end if
+                    if (load_keyw .eq. 'ECHANGE') then
                         if (l_func_mult) then
                             call utmess('F', 'CHARGES_32', sk=load_name)
-                        endif
-                    endif
-                    if (load_keyw.eq.'EVOL_CHAR') then
-                        ASSERT (load_type(5:7) .ne. '_FO')
+                        end if
+                    end if
+                    if (load_keyw .eq. 'EVOL_CHAR') then
+                        ASSERT(load_type(5:7) .ne. '_FO')
                         info_type = 'NEUM_CSTE'
                     else
                         if (load_type(5:7) .eq. '_FO') then
@@ -207,28 +207,28 @@ character(len=1), optional, intent(in) :: basez
                             call dismoi('PARA_INST', cart_name, 'CARTE', repk=load_para)
                             if (load_para(1:3) .eq. 'OUI') then
                                 info_type = 'NEUM_FT'
-                            endif
+                            end if
                         else
-                           info_type = 'NEUM_CSTE'
-                        endif
-                    endif
-                endif
+                            info_type = 'NEUM_CSTE'
+                        end if
+                    end if
+                end if
                 if (info_type .ne. 'RIEN') then
-                    nb_info_type = nb_info_type + 1
-                    ASSERT(nb_info_type.lt.nb_info_maxi)
+                    nb_info_type = nb_info_type+1
+                    ASSERT(nb_info_type .lt. nb_info_maxi)
                     list_info_type(nb_info_type) = info_type
-                endif
+                end if
             end do
 !
 ! --------- Add new load(s) in list
 !
             if (nb_info_type .gt. 0) then
-                call liscad('THER'      , list_load     , i_load, load_name, load_func, &
+                call liscad('THER', list_load, i_load, load_name, load_func, &
                             nb_info_type, list_info_type)
-            endif
+            end if
         end do
-    endif
+    end if
 !
-    AS_DEALLOCATE(vk8 = v_list_dble)
+    AS_DEALLOCATE(vk8=v_list_dble)
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmextr_read_1(ds_inout, keyw_fact    , nb_keyw_fact, list_field, rela_field_keyw,&
+subroutine nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_field_keyw, &
                          nb_field, nb_field_comp)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -61,57 +61,57 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_field      = 0
+    nb_field = 0
     nb_field_comp = 0
-    if (nb_keyw_fact.eq.0) then
+    if (nb_keyw_fact .eq. 0) then
         goto 99
-    endif
+    end if
 !
 ! - List of field to extract
 !
-    AS_ALLOCATE(vk24 = list_field, size = nb_keyw_fact)
+    AS_ALLOCATE(vk24=list_field, size=nb_keyw_fact)
 !
 ! - Relation between field index and keyword index
 !
-    AS_ALLOCATE(vi   = rela_field_keyw, size = nb_keyw_fact)
+    AS_ALLOCATE(vi=rela_field_keyw, size=nb_keyw_fact)
 !
     do i_keyw_fact = 1, nb_keyw_fact
 !
 ! ----- Read field type
 !
         call nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
-        if (.not.l_extr) then
+        if (.not. l_extr) then
             field_type = 'NONE'
-        endif
+        end if
 !
 ! ----- Add field in list to extract
 !
         l_find = .false.
-        do i_list_field = 1, nb_keyw_fact - 1
+        do i_list_field = 1, nb_keyw_fact-1
             field_old = list_field(i_list_field)
             if (field_old .eq. field_type) then
                 i_field = i_list_field
-                l_find  = .true.
-            endif
+                l_find = .true.
+            end if
         end do
-        if (.not.l_find) then
-            nb_field = nb_field + 1
-            i_field  = nb_field
+        if (.not. l_find) then
+            nb_field = nb_field+1
+            i_field = nb_field
             list_field(i_field) = field_type
-            if (field_type.eq.'EPSI_ELGA') then
-                nb_field_comp = nb_field_comp + 1
-            endif
-        endif
+            if (field_type .eq. 'EPSI_ELGA') then
+                nb_field_comp = nb_field_comp+1
+            end if
+        end if
 !
 ! ----- Set relation between field index and keyword index
 !
-        if (field_type.eq.'EPSI_ELGA') then
+        if (field_type .eq. 'EPSI_ELGA') then
             rela_field_keyw(i_keyw_fact) = -i_field
         else
             rela_field_keyw(i_keyw_fact) = i_field
-        endif
+        end if
     end do
 !
- 99 continue
+99  continue
 !
 end subroutine

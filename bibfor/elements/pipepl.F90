@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipepl(ndim, compor, typmod, tau, mate,&
-                  sigm, vim, epsp, epsd, a0,&
+subroutine pipepl(ndim, compor, typmod, tau, mate, &
+                  sigm, vim, epsp, epsd, a0, &
                   a1, a2, a3, etas)
 !
 !
@@ -64,7 +64,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbres
-    parameter   (nbres=4)
+    parameter(nbres=4)
     integer :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     character(len=8) :: fami, poum
@@ -77,22 +77,22 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     real(kind=8) :: p0, p1, p2, eta, rac(2)
     real(kind=8) :: young, nu, deuxmu, rp, h, et, sy
 !
-    data        kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 ! ----------------------------------------------------------------------
 !
 !
 ! -- OPTION ET MODELISATION
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     ndimsi = 2*ndim
-    cplan = (typmod(1).eq.'C_PLAN  ')
+    cplan = (typmod(1) .eq. 'C_PLAN  ')
 !
     if (cplan) then
         call utmess('F', 'PILOTAGE_1')
-    endif
+    end if
 !
 ! -- LECTURE DES CARACTERISTIQUES
 !
@@ -102,29 +102,29 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         nomres(2) = 'NU'
         nomres(3) = 'SY'
         nomres(4) = 'D_SIGM_EPSI'
-        call rcvalb(fami, kpg, spt, poum, mate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, mate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 2)
-        call rcvalb(fami, kpg, spt, poum, mate,&
-                    ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, mate, &
+                    ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                     2, nomres(3), valres(3), icodre(3), 2)
         young = valres(1)
         nu = valres(2)
         sy = valres(3)
         et = valres(4)
         h = young*et/(young-et)
-        rp = sy + h*vim(1)
+        rp = sy+h*vim(1)
 !
     else
-        call rcvalb(fami, kpg, spt, poum, mate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, mate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'NU', valres, icodre, 2)
-        nu=valres(1)
-        call rctrac(mate, 1, 'SIGM', 0.d0, jprol,&
+        nu = valres(1)
+        call rctrac(mate, 1, 'SIGM', 0.d0, jprol, &
                     jvale, nbvale, young)
-        call rcfonc('V', 1, jprol, jvale, nbvale,&
-                    p = vim(1), rp = rp)
-    endif
+        call rcfonc('V', 1, jprol, jvale, nbvale, &
+                    p=vim(1), rp=rp)
+    end if
 !
     deuxmu = young/(1.d0+nu)
 !
@@ -138,20 +138,20 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     epsph = (epsp(1)+epsp(2)+epsp(3))/3
     epsdh = (epsd(1)+epsd(2)+epsd(3))/3
 !
-    s0h = deuxmu*epsph + sigmh
+    s0h = deuxmu*epsph+sigmh
     s1h = deuxmu*epsdh
     do k = 1, ndimsi
-        s0(k) = sigm(k) + deuxmu*epsp(k) - s0h*kron(k)
-        s1(k) = deuxmu*epsd(k) - s1h*kron(k)
+        s0(k) = sigm(k)+deuxmu*epsp(k)-s0h*kron(k)
+        s1(k) = deuxmu*epsd(k)-s1h*kron(k)
     end do
 !
 !
 !    COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
 !      FEL = SQRT(P0 + 2P1 ETA + P2 ETA**2) - 1
 !
-    p0 = ddot(ndimsi,s0,1,s0,1) * (1.5d0 / rp**2)
-    p1 = ddot(ndimsi,s0,1,s1,1) * (1.5d0 / rp**2)
-    p2 = ddot(ndimsi,s1,1,s1,1) * (1.5d0 / rp**2)
+    p0 = ddot(ndimsi, s0, 1, s0, 1)*(1.5d0/rp**2)
+    p1 = ddot(ndimsi, s0, 1, s1, 1)*(1.5d0/rp**2)
+    p2 = ddot(ndimsi, s1, 1, s1, 1)*(1.5d0/rp**2)
 !
 !
 !    POINT A DEVIATEUR NUL : PAS DE PILOTAGE POSSIBLE
@@ -161,30 +161,30 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         a2 = 0.d0
         a3 = 0.d0
         goto 999
-    endif
+    end if
 !
 !    RECHERCHE DES INTERSECTIONS ELLIPSE / DROITE
     call zerop2(2*p1/p2, (p0-(1+tau)**2)/p2, rac, nrac)
 !
 !    PAS DE SOLUTION : POINT LE PLUS PROCHE
     if (nrac .eq. 0) then
-        etas = - p1/p2
+        etas = -p1/p2
 !
 !    UNE OU DEUX SOLUTIONS : ON LINEARISE AUTOUR DES DEUX
-    else if (nrac.eq.1) then
+    else if (nrac .eq. 1) then
         eta = rac(1)
         a1 = (p2*eta+p1)/(1+tau)
-        a0 = tau - a1*eta
+        a0 = tau-a1*eta
         a2 = r8vide()
         a3 = r8vide()
     else
         eta = rac(1)
         a1 = (p2*eta+p1)/(1+tau)
-        a0 = tau - a1*eta
+        a0 = tau-a1*eta
         eta = rac(2)
         a3 = (p2*eta+p1)/(1+tau)
-        a2 = tau - a3*eta
-    endif
+        a2 = tau-a3*eta
+    end if
 !
 999 continue
 end subroutine

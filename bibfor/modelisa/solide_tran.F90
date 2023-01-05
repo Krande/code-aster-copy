@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine solide_tran(type_geo , noma  , type_vale, dist_mini, nb_node, list_node,&
+subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node, &
                        lisrel, nom_noeuds, dim)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -72,9 +72,9 @@ implicit none
     character(len=8) :: nomnoe_m, nomnoe_a, nomnoe_b
     integer ::    jlino
 
-    integer :: nb_maxi, nb_term, linocara(4),nbnot
+    integer :: nb_maxi, nb_term, linocara(4), nbnot
     real(kind=8) :: un, cobary(4)
-    real(kind=8) :: xa,ya,xb,yb,za,zb
+    real(kind=8) :: xa, ya, xb, yb, za, zb
     real(kind=8) :: vale_real
     complex(kind=8) :: vale_cplx
     character(len=8) :: vale_fonc
@@ -99,18 +99,18 @@ implicit none
 !
     vale_fonc = '&FOZERO'
     vale_real = 0.d0
-    vale_cplx = (0.d0,0.d0)
+    vale_cplx = (0.d0, 0.d0)
     un = 1.d0
     type_coef = 'REEL'
-    ASSERT(type_vale.ne.'COMP')
+    ASSERT(type_vale .ne. 'COMP')
     ASSERT(dist_mini .gt. 0.d0)
-    ASSERT(type_geo.eq.'2D' .or. type_geo.eq.'3D')
-    l3d= type_geo.eq.'3D'
+    ASSERT(type_geo .eq. '2D' .or. type_geo .eq. '3D')
+    l3d = type_geo .eq. '3D'
 !
 ! - Nodes coordinates
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coor)
-    nbnot=size(coor)/3
+    nbnot = size(coor)/3
 !
 ! - List of nodes to apply linear relation
 !
@@ -126,28 +126,26 @@ implicit none
     AS_ALLOCATE(vr=direct, size=3*nb_maxi)
     AS_ALLOCATE(vi=dime, size=nb_maxi)
 
-
 !   -- Quelle est la situation geometrique ?
 !   -----------------------------------------
-    call getcara_lisno(noma,nb_node,zi(jlino),dist_mini,dim,linocara)
-    ASSERT(dim.le.3)
+    call getcara_lisno(noma, nb_node, zi(jlino), dist_mini, dim, linocara)
+    ASSERT(dim .le. 3)
 
 !   -- 1) Les relations potentiellement non-lineaires sont celles traduisant
 !         l'indeformabilite des dim+1 noeuds de linocara
 !   ----------------------------------------------------------------------
 
-
 !   -- boucle sur les couples de points A, B de linocara :
 !   ---------------------------------------------------------
-    do ka=1,dim
-        numnoe_a=linocara(ka)
+    do ka = 1, dim
+        numnoe_a = linocara(ka)
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
         xa = coor(3*(numnoe_a-1)+1)
         ya = coor(3*(numnoe_a-1)+2)
         if (l3d) za = coor(3*(numnoe_a-1)+3)
 
-        do kb=ka+1,dim+1
-            numnoe_b=linocara(kb)
+        do kb = ka+1, dim+1
+            numnoe_b = linocara(kb)
             call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
             xb = coor(3*(numnoe_b-1)+1)
             yb = coor(3*(numnoe_b-1)+2)
@@ -157,7 +155,7 @@ implicit none
                 nb_term = 6
             else
                 nb_term = 4
-            endif
+            end if
 
 !           -- Relation: AB^2 = cste
 
@@ -171,7 +169,7 @@ implicit none
             if (l3d) then
                 lisno(5) = nomnoe_a
                 lisno(6) = nomnoe_b
-            endif
+            end if
 
             lisddl(1) = 'DX'
             lisddl(2) = 'DX'
@@ -180,33 +178,30 @@ implicit none
             if (l3d) then
                 lisddl(5) = 'DZ'
                 lisddl(6) = 'DZ'
-            endif
+            end if
 
-            coer(1) =  -2*(xb-xa)
-            coer(2) =   2*(xb-xa)
-            coer(3) =  -2*(yb-ya)
-            coer(4) =   2*(yb-ya)
+            coer(1) = -2*(xb-xa)
+            coer(2) = 2*(xb-xa)
+            coer(3) = -2*(yb-ya)
+            coer(4) = 2*(yb-ya)
             if (l3d) then
                 coer(5) = -2*(zb-za)
-                coer(6) =  2*(zb-za)
-            endif
+                coer(6) = 2*(zb-za)
+            end if
 !
 ! --------- Add new linear relation
 ! --------- Warning epsi=-1.d0 to keep ALL coefficients even there are zero ! (see issue23299)
 !
-            call afrela(coer, coec, lisddl, lisno, dime,&
-                        direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+            call afrela(coer, coec, lisddl, lisno, dime, &
+                        direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                         type_coef, type_vale, -1.d0, lisrel)
-        enddo
+        end do
 
-    enddo
-    if (nb_node.eq.dim+1) goto 999
-
-
+    end do
+    if (nb_node .eq. dim+1) goto 999
 
 !   -- 2) Les relations restantes sont toujours lineaires.
 !   ----------------------------------------------------------------------
-
 
 !   -- boucle sur les noeuds M n'appartenant pas a linocara :
 !      On exprime que M est relie aux dim+1 noeuds de linocara
@@ -214,64 +209,61 @@ implicit none
     nb_term = dim+2
 
     AS_ALLOCATE(vi=nunocara, size=nbnot)
-    nunocara=0
-    do k=1,dim+1
-        numnoe_a=linocara(k)
+    nunocara = 0
+    do k = 1, dim+1
+        numnoe_a = linocara(k)
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
         lisno(1+k) = nomnoe_a
-        nunocara(numnoe_a)=1
-    enddo
+        nunocara(numnoe_a) = 1
+    end do
 
-    do km=1,nb_node
-        numnoe_m=zi(jlino-1+km)
-        if (nunocara(numnoe_m).eq.1) cycle
+    do km = 1, nb_node
+        numnoe_m = zi(jlino-1+km)
+        if (nunocara(numnoe_m) .eq. 1) cycle
 
         xm(1:3) = coor(3*(numnoe_m-1)+1:3*(numnoe_m-1)+3)
 
-        call coor_bary(coor,xm,dim,linocara,cobary)
+        call coor_bary(coor, xm, dim, linocara, cobary)
 
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
         lisno(1) = nomnoe_m
 
-        coer(1)=-1.d0
-        do k=1,dim+1
-            coer(1+k)=cobary(k)
-        enddo
+        coer(1) = -1.d0
+        do k = 1, dim+1
+            coer(1+k) = cobary(k)
+        end do
 
 !       -- relation pour DX :
-        lisddl(1:dim+2)='DX'
-        call afrela(coer, coec, lisddl, lisno, dime,&
-                        direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, 0.d0, lisrel)
+        lisddl(1:dim+2) = 'DX'
+        call afrela(coer, coec, lisddl, lisno, dime, &
+                    direct, nb_term, vale_real, vale_cplx, vale_fonc, &
+                    type_coef, type_vale, 0.d0, lisrel)
 
 !       -- relation pour DY :
-        lisddl(1:dim+2)='DY'
-        call afrela(coer, coec, lisddl, lisno, dime,&
-                        direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, 0.d0, lisrel)
+        lisddl(1:dim+2) = 'DY'
+        call afrela(coer, coec, lisddl, lisno, dime, &
+                    direct, nb_term, vale_real, vale_cplx, vale_fonc, &
+                    type_coef, type_vale, 0.d0, lisrel)
 
 !       -- relation pour DZ :
         if (l3d) then
-            lisddl(1:dim+2)='DZ'
-            call afrela(coer, coec, lisddl, lisno, dime,&
-                        direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+            lisddl(1:dim+2) = 'DZ'
+            call afrela(coer, coec, lisddl, lisno, dime, &
+                        direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                         type_coef, type_vale, 0.d0, lisrel)
-        endif
+        end if
 
-    enddo
-
+    end do
 
 999 continue
 
 !   -- remplissage de nom_noeuds :
 !   ----------------------------------------------
-    ASSERT(size(nom_noeuds).ge.dim+1)
-    do k=1,dim+1
+    ASSERT(size(nom_noeuds) .ge. dim+1)
+    do k = 1, dim+1
         call jenuno(jexnum(noma//'.NOMNOE', linocara(k)), nomnoe_a)
-        nom_noeuds(k)=nomnoe_a
-    enddo
-
-
+        nom_noeuds(k) = nomnoe_a
+    end do
 
     AS_DEALLOCATE(vi=nunocara)
     AS_DEALLOCATE(vk8=lisno)

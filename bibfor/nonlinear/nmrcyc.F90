@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ function nmrcyc(sddisc, iterat, prec)
     real(kind=8) :: res1, res2
     character(len=24) :: residu
 ! ----------------------------------------------------------------------
-    data residu /'&&NMRCYC.RESIDU'/
+    data residu/'&&NMRCYC.RESIDU'/
 ! ----------------------------------------------------------------------
 !
 !    INITIALISATION
@@ -66,11 +66,11 @@ function nmrcyc(sddisc, iterat, prec)
             do offset = 0, lenseq-1
                 res1 = zr(jres+itemax-offset)
                 res2 = zr(jres+finseq-offset)
-                if (abs(res1-res2)/max(res1,res2) .gt. prec) goto 1000
+                if (abs(res1-res2)/max(res1, res2) .gt. prec) goto 1000
             end do
             nmrcyc = .true.
             goto 2000
-1000         continue
+1000        continue
         end do
     end do
 2000 continue

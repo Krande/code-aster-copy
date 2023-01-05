@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine nmlssv(list_load)
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/wkvect.h"
 !
-character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,17 +46,17 @@ character(len=19), intent(in) :: list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbsst      = 0
+    nbsst = 0
     lload_fcss = list_load(1:19)//'.FCSS'
     call getfac('SOUS_STRUC', nbsst)
     if (nbsst .gt. 0) then
-        call wkvect(lload_fcss, 'V V K24', nbsst, vk24 = v_lload_fcss)
+        call wkvect(lload_fcss, 'V V K24', nbsst, vk24=v_lload_fcss)
         do i = 1, nbsst
             call getvid('SOUS_STRUC', 'FONC_MULT', iocc=i, scal=v_lload_fcss(i), nbret=iret)
             if (iret .eq. 0) then
                 v_lload_fcss(i) = '&&CONSTA'
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine cormgi(basez, ligrez)
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -72,36 +72,36 @@ implicit none
 !
     call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
     nmaila = lgrf(1)
-    ASSERT(nmaila.ne.' ')
+    ASSERT(nmaila .ne. ' ')
 !
     call jeexin(nmaila//'.CONNEX', iret)
     if (iret .eq. 0) then
         goto 999
-    endif
+    end if
 !
     call jelira(nmaila//'.CONNEX', 'NMAXOC', nbmail)
     call jeexin(ligrel//'.LIEL', iret)
     if (iret .eq. 0) then
         call utmess('F', 'MODELE1_5')
-    endif
+    end if
     call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
     if (nbmail*nbgrel .eq. 0) then
         goto 999
-    endif
+    end if
 !
     call wkvect(ligtmp//'.REPE', 'V V I', 2*nbmail, jrepe)
 !
-    exima=.false.
+    exima = .false.
     do i = 1, nbgrel, 1
         call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nbmgre)
         call jeveuo(jexnum(ligrel//'.LIEL', i), 'L', jgrel)
-        do j = 1, nbmgre - 1, 1
+        do j = 1, nbmgre-1, 1
             if (zi(jgrel+j-1) .gt. 0) then
-                exima=.true.
-                pt = 2* (zi(jgrel+j-1)-1) + 1
+                exima = .true.
+                pt = 2*(zi(jgrel+j-1)-1)+1
                 zi(jrepe+pt-1) = i
                 zi(jrepe+pt) = j
-            endif
+            end if
         end do
     end do
 !
@@ -109,7 +109,7 @@ implicit none
 !         SONT AFFECTEES
     if (exima) then
         call jedup1(ligtmp//'.REPE', base, ligrel//'.REPE')
-    endif
+    end if
 !
 !
 999 continue

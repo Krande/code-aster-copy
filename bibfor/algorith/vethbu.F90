@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vethbu(modele, matasz, charge, infcha, carele,&
+subroutine vethbu(modele, matasz, charge, infcha, carele, &
                   mate, chtni, vebtem)
     implicit none
 #include "jeveux.h"
@@ -51,7 +51,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=3)
+    parameter(nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -74,7 +74,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
         call jeveuo(charge, 'L', jchar)
     else
         nchar = 0
-    endif
+    end if
 !
 ! --- ALLOCATION DU VECT_ELEM RESULTAT :
 !
@@ -82,12 +82,12 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
     vecel = '&&VEBUEE           '
     if (iret .eq. 0) then
         vebtem = vecel//'.RELR'
-        call memare('V', vecel, modele(1:8), mate, carele,&
+        call memare('V', vecel, modele(1:8), mate, carele, &
                     'CHAR_THER')
         call wkvect(vebtem, 'V V K24', nchar, jdir)
     else
         call jeveuo(vebtem, 'E', jdir)
-    endif
+    end if
     call jeecra(vebtem, 'LONUTI', 0)
 !
 ! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
@@ -95,7 +95,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
     matass = matasz
     call conlag(matass, alpha)
     chalph = '&&VETHBU.CH_NEUT_R'
-    call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ',&
+    call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ', &
                 ncmp=1, nomcmp='X1', sr=alpha)
 !
 ! --- CALCUL DE L'OPTION B.T
@@ -118,18 +118,18 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
                 lchout(1) = '&&VETHBU.???????'
                 call gcncon('.', newnom)
                 lchout(1) (10:16) = newnom(2:8)
-                call corich('E', lchout(1), ichin_ = -1)
-                call calcul('S', option, ligrch, nbin, lchin,&
-                            lpain, nbout, lchout, lpaout, 'V',&
+                call corich('E', lchout(1), ichin_=-1)
+                call calcul('S', option, ligrch, nbin, lchin, &
+                            lpain, nbout, lchout, lpaout, 'V', &
                             'OUI')
-                ndir = ndir + 1
+                ndir = ndir+1
                 zk24(jdir+ndir-1) = lchout(1)
-            endif
+            end if
             call jeecra(vebtem, 'LONUTI', ndir)
 !
         end do
 !
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
     call jedema()
 end subroutine

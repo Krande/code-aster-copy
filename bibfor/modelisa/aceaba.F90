@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
+subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
                   mclf, nbtel, ntyele, ivr, zjdlm)
 !
 !
@@ -110,10 +110,10 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     call jemarq()
 ! --- MAILLAGE DISTRIBUE OU PAS
     l_parallel_mesh = isParallelMesh(noma)
-    if (nbarre.eq.0.and.l_parallel_mesh) goto 999
-    if (nbarre.eq.0.and..not.l_parallel_mesh) then
+    if (nbarre .eq. 0 .and. l_parallel_mesh) goto 999
+    if (nbarre .eq. 0 .and. .not. l_parallel_mesh) then
         ASSERT(.false.)
-    endif
+    end if
 !
     call getres(nomu, concep, cmd)
 !
@@ -123,7 +123,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     nbo = tab_para(3)
     nbcar = tab_para(4)
     nbval = tab_para(5)
-    ndim = tab_para(7) * ntypse
+    ndim = tab_para(7)*ntypse
     AS_ALLOCATE(vk16=typ_sect, size=ntypse)
     AS_ALLOCATE(vk8=expbar, size=nbo)
     AS_ALLOCATE(vk8=tabbar, size=nbo)
@@ -171,35 +171,35 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
         call getvid('BARRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
         if (ntab .eq. 1) then
             call getvtx('BARRE', 'NOM_SEC', iocc=ioc, scal=nomsec, nbret=nnosec)
-            ASSERT(nnosec.eq.1)
+            ASSERT(nnosec .eq. 1)
             call jeveuo(tabcar//'.TBNP', 'L', vi=tbnp)
 !            NOMBRE DE CARACTERISTIQUES
             nbcolo = tbnp(1)
 !            ON RECHERCHE NOMSEC DANS LA 1ER COLONNE
             call jeveuo(tabcar//'.TBLP', 'L', vk24=tblp)
-            typca=tblp(2)
+            typca = tblp(2)
             if (typca(1:2) .ne. 'K8' .and. typca(1:3) .ne. 'K24') then
                 call utmess('F', 'MODELISA8_17', sk=tabcar)
-            endif
+            end if
             call jeveuo(tblp(3), 'L', itabl)
             nblign = tbnp(2)
             if (typca .eq. 'K8') then
                 do i = 1, nblign
                     if (zk8(itabl-1+i) .eq. nomsec) then
-                        iisec=i
+                        iisec = i
                         goto 97
-                    endif
-                enddo
+                    end if
+                end do
             else
                 do i = 1, nblign
-                    if (zk24(itabl-1+i)(1:8) .eq. nomsec) then
-                        iisec=i
+                    if (zk24(itabl-1+i) (1:8) .eq. nomsec) then
+                        iisec = i
                         goto 97
-                    endif
-                enddo
-            endif
-            vmessk(1)=tabcar(1:16)
-            vmessk(2)=nomsec(1:16)
+                    end if
+                end do
+            end if
+            vmessk(1) = tabcar(1:16)
+            vmessk(2) = nomsec(1:16)
             call utmess('F', 'MODELISA8_18', nk=2, valk=vmessk)
 97          continue
 !
@@ -208,20 +208,20 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                 if (tblp(1+4*i) .ne. 'A') then
                     cycle
                 else
-                    cara = tblp(1+4*i)(1:8)
+                    cara = tblp(1+4*i) (1:8)
                     call jeveuo(tblp(1+4*i+2), 'L', ivect)
-                    vale=zr(ivect-1+iisec)
+                    vale = zr(ivect-1+iisec)
                     exit
-                endif
-            enddo
+                end if
+            end do
         else
             call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=cara, nbret=ncar)
             call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=vale, nbret=nval)
-            ASSERT(ncar.gt.0)
-            if(ncar.ne.nval)then
-               call utmess('F','MODELISA10_19',si=ioc)
-            endif
-        endif
+            ASSERT(ncar .gt. 0)
+            if (ncar .ne. nval) then
+                call utmess('F', 'MODELISA10_19', si=ioc)
+            end if
+        end if
         fcx = '.'
         call getvid('BARRE', 'FCX', iocc=ioc, scal=fcx, nbret=nfcx)
 !
@@ -240,18 +240,18 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                     nutyel = zi(jdme+nummai-1)
                     do k = 1, nbtel
                         if (nutyel .eq. ntyele(k)) then
-                            call affbar(tmpgen, tmpgef, fcx, nommai, isec,&
-                                        cara, vale, expbar, nbcar, kioc,&
+                            call affbar(tmpgen, tmpgef, fcx, nommai, isec, &
+                                        cara, vale, expbar, nbcar, kioc, &
                                         ier)
                             cycle groupe
-                        endif
-                    enddo
+                        end if
+                    end do
                     vmessk(1) = mclf
                     vmessk(2) = nommai
                     call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
-                enddo groupe
-            enddo
-        endif
+                end do groupe
+            end do
+        end if
 !
 !       "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
         if (nm .gt. 0) then
@@ -261,22 +261,22 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                 nutyel = zi(jdme+nummai-1)
                 do j = 1, nbtel
                     if (nutyel .eq. ntyele(j)) then
-                        call affbar(tmpgen, tmpgef, fcx, nommai, isec,&
-                                    cara, vale, expbar, nbcar, kioc,&
+                        call affbar(tmpgen, tmpgef, fcx, nommai, isec, &
+                                    cara, vale, expbar, nbcar, kioc, &
                                     ier)
                         cycle maille
-                    endif
-                enddo
+                    end if
+                end do
                 vmessk(1) = mclf
                 vmessk(2) = nommai
                 call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
-            enddo maille
-        endif
+            end do maille
+        end if
 !
-    enddo
+    end do
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA_7')
-    endif
+    end if
 !
     call jelira(tmpgen, 'NUTIOC', nbaaff)
 !
@@ -285,13 +285,13 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     if (ivr(3) .eq. 2) then
         ifm = ivr(4)
 !       IMPRESSION DES DONNEES GENERALES
-        write(ifm,200)
+        write (ifm, 200)
         do i = 1, nbaaff
             call jenuno(jexnum(tmpgen, i), nommai)
             call jeveuo(jexnum(tmpgen, i), 'L', jdge)
             isec = nint(zr(jdge+nbo-1))
-            write(ifm,201)nommai,zr(jdge),isec
-        enddo
+            write (ifm, 201) nommai, zr(jdge), isec
+        end do
 !       IMPRESSION DES DONNEES GEOMETRIQUES
         idw = 0
         do i = 1, nbaaff
@@ -300,35 +300,35 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
             isec = nint(zr(jdge+nbo-1))
             if (isec .eq. 1) then
                 if (idw .eq. 0) then
-                    write(ifm,210)
+                    write (ifm, 210)
                     idw = 1
-                endif
-                write(ifm,212)nommai,(zr(jdge+j-1),j=2,5),isec
-            else if (isec.eq.2) then
+                end if
+                write (ifm, 212) nommai, (zr(jdge+j-1), j=2, 5), isec
+            else if (isec .eq. 2) then
                 if (idw .eq. 0) then
-                    write(ifm,220)
+                    write (ifm, 220)
                     idw = 1
-                endif
-                write(ifm,222)nommai,(zr(jdge+j-1),j=6,7),isec
-            endif
+                end if
+                write (ifm, 222) nommai, (zr(jdge+j-1), j=6, 7), isec
+            end if
             call jenuno(jexnum(tmpgef, i), nommai)
             call jeveuo(jexnum(tmpgef, i), 'L', jdgef)
-            write(ifm,*) 'CX : ', zk8(jdgef)
-        enddo
-    endif
-200 format(/,3x,&
-        '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES' &
-        ,//,3x,'MAILLE   A              TSEC')
-201 format(3x,a8,1x,1pd12.5,1x,i6)
-210 format(/,3x,&
-        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES' &
-        ,//,3x,'MAILLE   HY          HZ          EPY         EPZ', &
-        '            TSEC')
-212 format(3x,a8,1x,4(1pd12.5,1x),i6)
-220 format(/,3x,&
-        '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES' &
-        ,//,3x,'MAILLE   R           EP             TSEC')
-222 format(3x,a8,1x,2(1pd12.5,1x),i6)
+            write (ifm, *) 'CX : ', zk8(jdgef)
+        end do
+    end if
+200 format(/, 3x, &
+            '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES' &
+            , //, 3x, 'MAILLE   A              TSEC')
+201 format(3x, a8, 1x, 1pd12.5, 1x, i6)
+210 format(/, 3x, &
+            '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES' &
+            , //, 3x, 'MAILLE   HY          HZ          EPY         EPZ', &
+            '            TSEC')
+212 format(3x, a8, 1x, 4(1pd12.5, 1x), i6)
+220 format(/, 3x, &
+            '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES' &
+            , //, 3x, 'MAILLE   R           EP             TSEC')
+222 format(3x, a8, 1x, 2(1pd12.5, 1x), i6)
 !
 !   ALLOCATION DE LA CARTE
     call alcart('G', cartba, noma, 'CAGNBA')
@@ -351,7 +351,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
         zk8(jdvbaf) = zk8(jdgef)
         call nocart(cartba, 3, 1, mode='NOM', nma=1, limano=[nommai])
         call nocart(cartbf, 3, 1, mode='NOM', nma=1, limano=[nommai])
-    enddo
+    end do
 !
 !   NETTOYAGE
     AS_DEALLOCATE(vk24=barre)

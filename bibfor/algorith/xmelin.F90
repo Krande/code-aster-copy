@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,13 +67,13 @@ subroutine xmelin(typma, typint, nnint)
         if (typma(1:2) .eq. 'TR') nnint = 6
     else if (typint .eq. 23) then
         if (typma(1:2) .eq. 'SE') nnint = 5
-        if (typma(1:2) .eq. 'TR') nnint =15
+        if (typma(1:2) .eq. 'TR') nnint = 15
     else if (typint .eq. 34) then
         if (typma(1:2) .eq. 'SE') nnint = 4
-        if (typma(1:2) .eq. 'TR') nnint =10
+        if (typma(1:2) .eq. 'TR') nnint = 10
     else if (typint .eq. 54) then
         if (typma(1:2) .eq. 'SE') nnint = 6
-        if (typma(1:2) .eq. 'TR') nnint =21
+        if (typma(1:2) .eq. 'TR') nnint = 21
     else if (typint .eq. 84) then
         if (typma(1:2) .eq. 'SE') nnint = 9
         if (typma(1:2) .eq. 'TR') nnint = 45
@@ -109,5 +109,5 @@ subroutine xmelin(typma, typint, nnint)
         if (typma(1:2) .eq. 'TR') nnint = 25
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

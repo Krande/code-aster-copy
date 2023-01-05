@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0165(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/fpouli.h"
@@ -32,7 +32,7 @@ implicit none
 #include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,97 +84,97 @@ character(len=16), intent(in) :: option, nomte
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     if (rela_comp(1:4) .ne. 'ELAS') then
-        call utmess('F', 'CALCULEL4_92', sk = rela_comp)
-    endif
+        call utmess('F', 'CALCULEL4_92', sk=rela_comp)
+    end if
     if (defo_comp .ne. 'GROT_GDEP') then
-        call utmess('F', 'CALCULEL4_93', sk = defo_comp)
-    endif
+        call utmess('F', 'CALCULEL4_93', sk=defo_comp)
+    end if
 !
 ! - Get material properties
 !
     nomres(1) = 'E'
-    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', [0.d0],&
+    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                ' ', 'ELAS', 0, '  ', [0.d0], &
                 1, nomres, valres, icodre, 1)
     e = valres(1)
 !
 ! - Get section properties
 !
-    aire      = zr(lsect)
-    preten    = zr(lsect+1)
+    aire = zr(lsect)
+    preten = zr(lsect+1)
 !
 ! - Thermal dilation
 !
-    call verift('RIGI', 1, 1, '+', zi(imate),&
+    call verift('RIGI', 1, 1, '+', zi(imate), &
                 epsth_=epsthe)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Get output fields
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
 !
 ! - Update displacements
 !
     do i = 1, 9
-        w(i) = zr(idepla-1+i) + zr(ideplp-1+i)
-    enddo
+        w(i) = zr(idepla-1+i)+zr(ideplp-1+i)
+    end do
 !
     do kc = 1, 3
-        l1(kc) = w(kc ) + zr(igeom-1+kc) - w(6+kc) - zr(igeom+5+kc)
-        l10(kc) = zr(igeom-1+kc) - zr(igeom+5+kc)
+        l1(kc) = w(kc)+zr(igeom-1+kc)-w(6+kc)-zr(igeom+5+kc)
+        l10(kc) = zr(igeom-1+kc)-zr(igeom+5+kc)
     end do
     do kc = 1, 3
-        l2(kc) = w(3+kc) + zr(igeom+2+kc) - w(6+kc) - zr(igeom+5+kc)
-        l20(kc) = zr(igeom+2+kc) - zr(igeom+5+kc)
+        l2(kc) = w(3+kc)+zr(igeom+2+kc)-w(6+kc)-zr(igeom+5+kc)
+        l20(kc) = zr(igeom+2+kc)-zr(igeom+5+kc)
     end do
-    norml1=ddot(3,l1,1,l1,1)
-    norml2=ddot(3,l2,1,l2,1)
-    norl10=ddot(3,l10,1,l10,1)
-    norl20=ddot(3,l20,1,l20,1)
-    norml1 = sqrt (norml1)
-    norml2 = sqrt (norml2)
-    norl10 = sqrt (norl10)
-    norl20 = sqrt (norl20)
-    l0 = norl10 + norl20
-    allong = (norml1 + norml2 - l0) / l0
-    nx = e * aire * allong
+    norml1 = ddot(3, l1, 1, l1, 1)
+    norml2 = ddot(3, l2, 1, l2, 1)
+    norl10 = ddot(3, l10, 1, l10, 1)
+    norl20 = ddot(3, l20, 1, l20, 1)
+    norml1 = sqrt(norml1)
+    norml2 = sqrt(norml2)
+    norl10 = sqrt(norl10)
+    norl20 = sqrt(norl20)
+    l0 = norl10+norl20
+    allong = (norml1+norml2-l0)/l0
+    nx = e*aire*allong
 !
     if (abs(nx) .le. 1.d-6) then
         nx = preten
     else
-        nx = nx - e * aire * epsthe
-    endif
+        nx = nx-e*aire*epsthe
+    end if
 !
     if (lMatr) then
-        call kpouli(e, aire, nx, l0, l1,&
+        call kpouli(e, aire, nx, l0, l1, &
                     l2, norml1, norml2, zr(imatuu))
-    endif
+    end if
     if (lVect) then
         call fpouli(nx, l1, l2, norml1, norml2, zr(ivectu))
-    endif
+    end if
     if (lSigm) then
         zr(icontp) = nx
-    endif
+    end if
 !
 ! - Save return code
 !
     if (lSigm) then
         call jevech('PCODRET', 'E', icoret)
         zi(icoret) = codret
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0360(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,7 +37,7 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,17 +78,17 @@ character(len=16), intent(in) :: option, nomte
     icontp = 1
     ivarip = 1
     imatuu = 1
-    axi    = lteatt('AXIS','OUI')
+    axi = lteatt('AXIS', 'OUI')
     codret = 0
 !
 ! - Get element parameters
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, &
                      npg=npg, jpoids=iw, jvf=ivf1)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2,&
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2)
-    ndim = ndim + 1
+    ndim = ndim+1
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
     call eiinit(nomte, iu, im, it)
@@ -101,7 +101,7 @@ character(len=16), intent(in) :: option, nomte
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'
-    endif
+    end if
     typmod(2) = 'INTERFAC'
 !
 ! - Get input fields
@@ -120,9 +120,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! --- ORIENTATION DE L'ELEMENT D'INTERFACE : REPERE LOCAL
@@ -131,7 +131,7 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PCAMASS', 'L', icamas)
     if (zr(icamas) .eq. -1.d0) then
         call utmess('F', 'JOINT1_47')
-    endif
+    end if
 !
 !     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
 !
@@ -139,8 +139,8 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Total number of internal state variables on element
 !
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - VARIABLES DE COMMANDE
 !
@@ -151,37 +151,37 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
 !
 ! - FORCES INTERIEURES ET MATRICE TANGENTE
 !
     if (defo_comp(1:5) .eq. 'PETIT') then
-        call eifint(ndim, axi, nno1, nno2, npg,&
-                    zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom),&
-                    ang, typmod, option, zi(imate), zk16(icompo),&
-                    lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
-                    zr(iddld), iu, im, zr(ivarim), zr(icontp),&
-                    zr(ivarip), zr(imatuu), zr(ivectu),&
-                    lMatr, lVect, lSigm,&
+        call eifint(ndim, axi, nno1, nno2, npg, &
+                    zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom), &
+                    ang, typmod, option, zi(imate), zk16(icompo), &
+                    lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), &
+                    zr(iddld), iu, im, zr(ivarim), zr(icontp), &
+                    zr(ivarip), zr(imatuu), zr(ivectu), &
+                    lMatr, lVect, lSigm, &
                     codret)
     else
         call utmess('F', 'JOINT1_2', sk=defo_comp)
-    endif
+    end if
 !
     if (lSigm) then
         call jevech('PCODRET', 'E', jv_codret)
         zi(jv_codret) = codret
-    endif
+    end if
 !
 end subroutine

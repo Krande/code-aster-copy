@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ function jevtbl(questi)
 ! OUT JEVTBL  : VALEUR DU MOT CLE
 !     ------------------------------------------------------------------
     real(kind=8) :: tbloc, tgrel
-    common /rtblje/tbloc,tgrel
+    common/rtblje/tbloc, tgrel
 ! ----------------------------------------------------------------------
     if (questi .eq. 'TAILLE_BLOC') then
-        jevtbl=tbloc
-    else if (questi.eq.'TAILLE_GROUP_ELEM') then
-        jevtbl=tgrel
+        jevtbl = tbloc
+    else if (questi .eq. 'TAILLE_GROUP_ELEM') then
+        jevtbl = tgrel
     else
         ASSERT(.false.)
-    endif
+    end if
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine caform(cont_form)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -47,31 +47,31 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keywf     = 'ZONE'
+    keywf = 'ZONE'
     cont_form = 0
 !
 ! - Contact formulation
 !
     call getvtx(' ', 'FORMULATION', scal=s_formul, nbret=noc)
-    ASSERT(noc.ne.0)
+    ASSERT(noc .ne. 0)
 !
     if (s_formul .eq. 'DISCRETE') then
         cont_form = 1
-    else if (s_formul.eq.'CONTINUE') then
+    else if (s_formul .eq. 'CONTINUE') then
         call getvtx(keywf, 'ALGO_CONT', iocc=1, scal=s_algo_cont)
-        if (s_algo_cont.eq.'LAC') then
+        if (s_algo_cont .eq. 'LAC') then
             call getfac(keywf, nb_cont_zone)
-            call cazouu(keywf, nb_cont_zone, 'ALGO_CONT','T')
+            call cazouu(keywf, nb_cont_zone, 'ALGO_CONT', 'T')
             cont_form = 5
         else
             cont_form = 2
-        endif
-    else if (s_formul.eq.'XFEM') then
+        end if
+    else if (s_formul .eq. 'XFEM') then
         cont_form = 3
-    else if (s_formul.eq.'LIAISON_UNIL') then
+    else if (s_formul .eq. 'LIAISON_UNIL') then
         cont_form = 4
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

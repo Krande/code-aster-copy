@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine paligi(modelisa, ligrch, idx_grel, idx_nema, list_elem)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nmaxob
-    parameter (nmaxob=30)
+    parameter(nmaxob=30)
 !
     character(len=16) :: type_elem
     character(len=24) :: liel
@@ -82,62 +82,62 @@ subroutine paligi(modelisa, ligrch, idx_grel, idx_nema, list_elem)
 !
     nb_elem = list_elem(2)
     nb_node = list_elem(3)
-    liel    = ligrch(1:19)//'.LIEL'
-    nema    = ligrch(1:19)//'.NEMA'
+    liel = ligrch(1:19)//'.LIEL'
+    nema = ligrch(1:19)//'.NEMA'
 
     if (modelisa(1:2) .eq. 'PL') then
         if (nb_node .eq. 2) then
             type_elem = 'THPLSE22'
-        else if (nb_node.eq.3) then
+        else if (nb_node .eq. 3) then
             type_elem = 'THPLSE33'
         else
             call utmess('F', 'CHARGES6_1')
-        endif
-    else if (modelisa(1:2).eq.'AX') then
+        end if
+    else if (modelisa(1:2) .eq. 'AX') then
         type_elem(3:6) = 'PLSE'
         if (nb_node .eq. 2) then
             type_elem = 'THPLSE22'
-        else if (nb_node.eq.3) then
+        else if (nb_node .eq. 3) then
             type_elem = 'THPLSE33'
         else
             call utmess('F', 'CHARGES6_1')
-        endif
-    else if (modelisa(1:2).eq.'3D') then
+        end if
+    else if (modelisa(1:2) .eq. '3D') then
         type_elem(5:9) = '_FACE'
         if (nb_node .eq. 3) then
             type_elem = 'THER_FACE33'
-        else if (nb_node.eq.4) then
+        else if (nb_node .eq. 4) then
             type_elem = 'THER_FACE44'
-        else if (nb_node.eq.6) then
+        else if (nb_node .eq. 6) then
             type_elem = 'THER_FACE66'
-        else if (nb_node.eq.8) then
+        else if (nb_node .eq. 8) then
             type_elem = 'THER_FACE88'
-        else if (nb_node.eq.9) then
+        else if (nb_node .eq. 9) then
             type_elem = 'THER_FACE99'
         else
             call utmess('F', 'CHARGES6_1')
-        endif
+        end if
         call ini002(type_elem, nmaxob)
     else
         call utmess('F', 'CHARGES6_2')
-    endif
+    end if
     call jenonu(jexnom('&CATA.TE.NOMTE', type_elem), type_nume)
-    ASSERT(type_nume.ne.0)
+    ASSERT(type_nume .ne. 0)
 !
 ! - Create GREL
 !
     call jecroc(jexnum(liel, idx_grel))
     call jeecra(jexnum(liel, idx_grel), 'LONMAX', nb_elem+1)
-    call jeveuo(jexnum(liel, idx_grel), 'E', vi = p_liel)
+    call jeveuo(jexnum(liel, idx_grel), 'E', vi=p_liel)
     do ielem = 1, nb_elem
-        idx_nema = idx_nema + 1
-        jma = 3 + (ielem-1)*2*(nb_node+1)
+        idx_nema = idx_nema+1
+        jma = 3+(ielem-1)*2*(nb_node+1)
         p_liel(ielem) = -idx_nema
         call jecroc(jexnum(nema, idx_nema))
         call jeecra(jexnum(nema, idx_nema), 'LONMAX', 2*nb_node+1)
-        call jeveuo(jexnum(nema, idx_nema), 'E', vi = p_nema)
+        call jeveuo(jexnum(nema, idx_nema), 'E', vi=p_nema)
         do ino = 1, nb_node
-            p_nema(ino)         = list_elem(jma+2+2*ino-1)
+            p_nema(ino) = list_elem(jma+2+2*ino-1)
             p_nema(nb_node+ino) = list_elem(jma+2+2*ino)
         end do
         p_nema(2*nb_node+1) = list_elem(1)

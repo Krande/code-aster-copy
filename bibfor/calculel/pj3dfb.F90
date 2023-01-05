@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,26 +61,26 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 ! DEB ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
-    dbg=ASTER_FALSE
+    dbg = ASTER_FALSE
     maille = maillz
     if (maille(10:14) .eq. 'TRIA3') then
         ndec = 4
         nno = 3
-    else if (maille(10:14).eq.'TETR4') then
+    else if (maille(10:14) .eq. 'TETR4') then
         ndec = 6
         nno = 4
-    else if (maille(10:13).eq.'SEG2') then
+    else if (maille(10:13) .eq. 'SEG2') then
         ndec = 3
         nno = 2
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     call jeveuo(maille, 'L', iatr3)
     ntr3 = zi(iatr3-1+1)
     rbig = r8maem()
     if (ntr3 .eq. 0) then
         call utmess('F', 'CALCULEL4_57')
-    endif
+    end if
 !
     call jeveuo('&&PJXXCO.LINO1', 'L', vi=lino1)
     call jeveuo('&&PJXXCO.LINO2', 'L', vi=lino2)
@@ -98,63 +98,63 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     zmax = -rbig
     do i = 1, nno1
         if (lino1(i) .eq. 0) cycle
-        xmin = min(xmin,geom1(3* (i-1)+1))
-        xmax = max(xmax,geom1(3* (i-1)+1))
-        ymin = min(ymin,geom1(3* (i-1)+2))
-        ymax = max(ymax,geom1(3* (i-1)+2))
-        zmin = min(zmin,geom1(3* (i-1)+3))
-        zmax = max(zmax,geom1(3* (i-1)+3))
+        xmin = min(xmin, geom1(3*(i-1)+1))
+        xmax = max(xmax, geom1(3*(i-1)+1))
+        ymin = min(ymin, geom1(3*(i-1)+2))
+        ymax = max(ymax, geom1(3*(i-1)+2))
+        zmin = min(zmin, geom1(3*(i-1)+3))
+        zmax = max(zmax, geom1(3*(i-1)+3))
     end do
     do i = 1, nno2
         if (lino2(i) .eq. 0) cycle
-        xmin = min(xmin,geom2(3* (i-1)+1))
-        xmax = max(xmax,geom2(3* (i-1)+1))
-        ymin = min(ymin,geom2(3* (i-1)+2))
-        ymax = max(ymax,geom2(3* (i-1)+2))
-        zmin = min(zmin,geom2(3* (i-1)+3))
-        zmax = max(zmax,geom2(3* (i-1)+3))
+        xmin = min(xmin, geom2(3*(i-1)+1))
+        xmax = max(xmax, geom2(3*(i-1)+1))
+        ymin = min(ymin, geom2(3*(i-1)+2))
+        ymax = max(ymax, geom2(3*(i-1)+2))
+        zmin = min(zmin, geom2(3*(i-1)+3))
+        zmax = max(zmax, geom2(3*(i-1)+3))
     end do
 !
 !
     stotal = max((xmax-xmin), (ymax-ymin), (zmax-zmin))
     if (stotal .eq. 0.d0) then
         call utmess('F', 'CALCULEL4_58')
-    endif
-    dx = 2.d0*stotal/(dble(ntr3)** (1.d0/3.d0))
+    end if
+    dx = 2.d0*stotal/(dble(ntr3)**(1.d0/3.d0))
 !
     dy = dx
     dz = dx
 !
-    nx = int((xmax-xmin)*1.05d0/dx) + 1
-    ny = int((ymax-ymin)*1.05d0/dy) + 1
-    nz = int((zmax-zmin)*1.05d0/dz) + 1
-    ASSERT(nx*ny*nz.ne.0)
-    ddx = (nx*dx- (xmax-xmin))/2.d0
-    ddy = (ny*dy- (ymax-ymin))/2.d0
-    ddz = (nz*dz- (zmax-zmin))/2.d0
-    xmin = xmin - ddx
-    xmax = xmax + ddx
-    ymin = ymin - ddy
-    ymax = ymax + ddy
-    zmin = zmin - ddz
-    zmax = zmax + ddz
+    nx = int((xmax-xmin)*1.05d0/dx)+1
+    ny = int((ymax-ymin)*1.05d0/dy)+1
+    nz = int((zmax-zmin)*1.05d0/dz)+1
+    ASSERT(nx*ny*nz .ne. 0)
+    ddx = (nx*dx-(xmax-xmin))/2.d0
+    ddy = (ny*dy-(ymax-ymin))/2.d0
+    ddz = (nz*dz-(zmax-zmin))/2.d0
+    xmin = xmin-ddx
+    xmax = xmax+ddx
+    ymin = ymin-ddy
+    ymax = ymax+ddy
+    zmin = zmin-ddz
+    zmax = zmax+ddz
 !
     if (dbg) then
-        write (ifm,*)
-        write (ifm,*) '-----------------------------------------'
-        write (ifm,*) ' MISE EN BOITES DES ELEMENTS DU MODELE_1'
-        write (ifm,*) '-----------------------------------------'
-        write (ifm,*)
-        write (ifm,*)'ZONE DE TRAVAIL : XMIN,XMAX=',xmin,xmax
-        write (ifm,*)'                  YMIN,YMAX=',ymin,ymax
-        write (ifm,*)'                  ZMIN,ZMAX=',zmin,ymax
-        write (ifm,*)
-        write (ifm,*)'NOMBRE DE BOITES :'
-        write (ifm,*)'  DANS LES DIRECTIONS X,Y,Z :',nx,' ',ny,' ',nz
-        write (ifm,*)'  TOTAL                     :',nx*ny*nz
-        write (ifm,*)
-        write (ifm,*)'DIMENSIONS DES BOITES LX,LY,LZ=',dx,dy,dz
-    endif
+        write (ifm, *)
+        write (ifm, *) '-----------------------------------------'
+        write (ifm, *) ' MISE EN BOITES DES ELEMENTS DU MODELE_1'
+        write (ifm, *) '-----------------------------------------'
+        write (ifm, *)
+        write (ifm, *) 'ZONE DE TRAVAIL : XMIN,XMAX=', xmin, xmax
+        write (ifm, *) '                  YMIN,YMAX=', ymin, ymax
+        write (ifm, *) '                  ZMIN,ZMAX=', zmin, ymax
+        write (ifm, *)
+        write (ifm, *) 'NOMBRE DE BOITES :'
+        write (ifm, *) '  DANS LES DIRECTIONS X,Y,Z :', nx, ' ', ny, ' ', nz
+        write (ifm, *) '  TOTAL                     :', nx*ny*nz
+        write (ifm, *)
+        write (ifm, *) 'DIMENSIONS DES BOITES LX,LY,LZ=', dx, dy, dz
+    end if
 !
 !
 !     2. : ALLOCATION DE LA SD BOITE_3D :
@@ -191,25 +191,25 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
         yymax = -rbig
         zzmax = -rbig
         do k = 1, nno
-            ino = zi(iatr3+ndec* (i-1)+k)
-            xxmin = min(xxmin,geom1(3* (ino-1)+1))
-            xxmax = max(xxmax,geom1(3* (ino-1)+1))
-            yymin = min(yymin,geom1(3* (ino-1)+2))
-            yymax = max(yymax,geom1(3* (ino-1)+2))
-            zzmin = min(zzmin,geom1(3* (ino-1)+3))
-            zzmax = max(zzmax,geom1(3* (ino-1)+3))
+            ino = zi(iatr3+ndec*(i-1)+k)
+            xxmin = min(xxmin, geom1(3*(ino-1)+1))
+            xxmax = max(xxmax, geom1(3*(ino-1)+1))
+            yymin = min(yymin, geom1(3*(ino-1)+2))
+            yymax = max(yymax, geom1(3*(ino-1)+2))
+            zzmin = min(zzmin, geom1(3*(ino-1)+3))
+            zzmax = max(zzmax, geom1(3*(ino-1)+3))
         end do
-        p1 = int((xxmin-xmin)/dx) + 1
-        p2 = int((xxmax-xmin)/dx) + 1
-        q1 = int((yymin-ymin)/dy) + 1
-        q2 = int((yymax-ymin)/dy) + 1
-        r1 = int((zzmin-zmin)/dz) + 1
-        r2 = int((zzmax-zmin)/dz) + 1
+        p1 = int((xxmin-xmin)/dx)+1
+        p2 = int((xxmax-xmin)/dx)+1
+        q1 = int((yymin-ymin)/dy)+1
+        q2 = int((yymax-ymin)/dy)+1
+        r1 = int((zzmin-zmin)/dz)+1
+        r2 = int((zzmax-zmin)/dz)+1
         do p = p1, p2
             do q = q1, q2
                 do r = r1, r2
-                    zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p) = zi(iabtnb- 1+ (r-1)*nx*ny+ (q-1)*nx+p&
-                                                            ) + 1
+                    zi(iabtnb-1+(r-1)*nx*ny+(q-1)*nx+p) = zi(iabtnb-1+(r-1)*nx*ny+(q-1)*nx+p &
+                                                             )+1
                 end do
             end do
         end do
@@ -218,34 +218,34 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !
 !   3.2: calcul du nombre de tetraedres par boite :
 !   -----------------------------------------------
-    nbtot=0
-    nbmax=0
-    nbmin=ismaem()
+    nbtot = 0
+    nbmax = 0
+    nbmin = ismaem()
     do p = 1, nx
         do q = 1, ny
             do r = 1, nz
-                nbtet= zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p)
-                if (dbg) write (ifm,*)'P,Q,R,NBTET=',p,q,r,nbtet
-                nbtot=nbtot+ nbtet
-                nbmin=min(nbmin,nbtet)
-                nbmax=max(nbmax,nbtet)
+                nbtet = zi(iabtnb-1+(r-1)*nx*ny+(q-1)*nx+p)
+                if (dbg) write (ifm, *) 'P,Q,R,NBTET=', p, q, r, nbtet
+                nbtot = nbtot+nbtet
+                nbmin = min(nbmin, nbtet)
+                nbmax = max(nbmax, nbtet)
             end do
         end do
     end do
-    nbmoy=nbtot/(nx*ny*nz)
+    nbmoy = nbtot/(nx*ny*nz)
     if (dbg) then
-        write (ifm,*)
-        write (ifm,*)'NOMBRE DE TETRAEDRES PAR BOITE:'
-        write (ifm,*)'   EN MOYENNE :',nbmoy
-        write (ifm,*)'   MIN        :',nbmin
-        write (ifm,*)'   MAX        :',nbmax
-    endif
+        write (ifm, *)
+        write (ifm, *) 'NOMBRE DE TETRAEDRES PAR BOITE:'
+        write (ifm, *) '   EN MOYENNE :', nbmoy
+        write (ifm, *) '   MIN        :', nbmin
+        write (ifm, *) '   MAX        :', nbmax
+    end if
 
-    if (nbmax.gt.20*nbmoy) then
-        vali(1)=nbmoy
-        vali(2)=nbmax
+    if (nbmax .gt. 20*nbmoy) then
+        vali(1) = nbmoy
+        vali(2) = nbmax
         call utmess('I', 'CALCULEL5_79', ni=2, vali=vali)
-    endif
+    end if
 !
 !
 !
@@ -253,7 +253,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !   -------------------------------------------------------
     zi(iabtlc-1+1) = 0
     do ib = 1, nx*ny*nz
-        zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib) + zi(iabtnb-1+ib)
+        zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib)+zi(iabtnb-1+ib)
         zi(iabtnb-1+ib) = 0
     end do
 !
@@ -261,7 +261,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     lont = zi(iabtlc-1+1+nx*ny*nz)
     call wkvect(boite//'.BT3DCO', 'V V I', lont, iabtco)
 !
-    do  i = 1, ntr3
+    do i = 1, ntr3
         xxmin = rbig
         yymin = rbig
         zzmin = rbig
@@ -269,30 +269,30 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
         yymax = -rbig
         zzmax = -rbig
         do k = 1, nno
-            ino = zi(iatr3+ndec* (i-1)+k)
-            xxmin = min(xxmin,geom1(3* (ino-1)+1))
-            xxmax = max(xxmax,geom1(3* (ino-1)+1))
-            yymin = min(yymin,geom1(3* (ino-1)+2))
-            yymax = max(yymax,geom1(3* (ino-1)+2))
-            zzmin = min(zzmin,geom1(3* (ino-1)+3))
-            zzmax = max(zzmax,geom1(3* (ino-1)+3))
+            ino = zi(iatr3+ndec*(i-1)+k)
+            xxmin = min(xxmin, geom1(3*(ino-1)+1))
+            xxmax = max(xxmax, geom1(3*(ino-1)+1))
+            yymin = min(yymin, geom1(3*(ino-1)+2))
+            yymax = max(yymax, geom1(3*(ino-1)+2))
+            zzmin = min(zzmin, geom1(3*(ino-1)+3))
+            zzmax = max(zzmax, geom1(3*(ino-1)+3))
         end do
-        p1 = int((xxmin-xmin)/dx) + 1
-        p2 = int((xxmax-xmin)/dx) + 1
-        q1 = int((yymin-ymin)/dy) + 1
-        q2 = int((yymax-ymin)/dy) + 1
-        r1 = int((zzmin-zmin)/dz) + 1
-        r2 = int((zzmax-zmin)/dz) + 1
+        p1 = int((xxmin-xmin)/dx)+1
+        p2 = int((xxmax-xmin)/dx)+1
+        q1 = int((yymin-ymin)/dy)+1
+        q2 = int((yymax-ymin)/dy)+1
+        r1 = int((zzmin-zmin)/dz)+1
+        r2 = int((zzmax-zmin)/dz)+1
         do p = p1, p2
             do q = q1, q2
                 do r = r1, r2
-                    zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p) = zi(iabtnb- 1+ (r-1)*nx*ny+ (q-1)*nx+p&
-                                                            ) + 1
-                    iposi = zi(&
-                            iabtlc-1+ (r-1)*nx*ny+ (q-1)*nx+p) + zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*&
-                            &nx+p&
+                    zi(iabtnb-1+(r-1)*nx*ny+(q-1)*nx+p) = zi(iabtnb-1+(r-1)*nx*ny+(q-1)*nx+p &
+                                                             )+1
+                    iposi = zi( &
+                            iabtlc-1+(r-1)*nx*ny+(q-1)*nx+p)+zi(iabtnb-1+(r-1)*nx*ny+(q-1)*&
+                            &nx+p &
                             )
-                    ASSERT((iposi.ge.1) .and. (iposi.le.lont))
+                    ASSERT((iposi .ge. 1) .and. (iposi .le. lont))
                     zi(iabtco-1+iposi) = i
                 end do
             end do
@@ -300,7 +300,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !
     end do
 !
-    if (dbg) call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, boite,&
+    if (dbg) call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, boite, &
                          1, ' ')
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmener(valinc, veasse, measse, sddyna, eta        ,&
-                  ds_energy, fonact, numedd, numfix,&
-                  meelem, numins, modele, ds_material, carele   ,&
-                  ds_constitutive, ds_measure, sddisc, solalg,&
+subroutine nmener(valinc, veasse, measse, sddyna, eta, &
+                  ds_energy, fonact, numedd, numfix, &
+                  meelem, numins, modele, ds_material, carele, &
+                  ds_constitutive, ds_measure, sddisc, solalg, &
                   ds_contact, ds_system)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -45,17 +45,17 @@ implicit none
 #include "asterfort/nmmass.h"
 #include "asterfort/wkvect.h"
 !
-character(len=19) :: sddyna, valinc(*), veasse(*), measse(*)
-type(NL_DS_Energy), intent(inout) :: ds_energy
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=19) :: meelem(*), sddisc, solalg(*)
-character(len=24) :: numedd, numfix, modele, carele
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Measure), intent(inout) :: ds_measure
-real(kind=8) :: eta
-integer :: fonact(*), numins
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19) :: sddyna, valinc(*), veasse(*), measse(*)
+    type(NL_DS_Energy), intent(inout) :: ds_energy
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=19) :: meelem(*), sddisc, solalg(*)
+    character(len=24) :: numedd, numfix, modele, carele
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    real(kind=8) :: eta
+    integer :: fonact(*), numins
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,27 +123,27 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jemarq()
 !
     call nmchai('VEASSE', 'LONMAX', long)
-    ASSERT(long.eq.zveass)
+    ASSERT(long .eq. zveass)
 !
-    k8bid=' '
-    reassm=.false.
+    k8bid = ' '
+    reassm = .false.
     call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
     call jeveuo(depmoi//'.VALE', 'L', vr=epmo)
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
     call jeveuo(depplu//'.VALE', 'L', vr=eppl)
     call jelira(depmoi//'.VALE', 'LONMAX', ival=neq)
-    ldyna=ndynlo(sddyna,'DYNAMIQUE')
-    lamor=ndynlo(sddyna,'MAT_AMORT')
-    lexpl=ndynlo(sddyna,'EXPLICITE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lamor = ndynlo(sddyna, 'MAT_AMORT')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
     if (ldyna) then
         call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
         call jeveuo(vitmoi//'.VALE', 'L', ivitmo)
         call nmchex(valinc, 'VALINC', 'VITPLU', vitplu)
         call jeveuo(vitplu//'.VALE', 'L', ivitpl)
     else
-        ivitmo=1
-        ivitpl=1
-    endif
+        ivitmo = 1
+        ivitpl = 1
+    end if
     call nmchex(valinc, 'VALINC', 'FEXMOI', fexmoi)
     call nmchex(valinc, 'VALINC', 'FEXPLU', fexplu)
     call nmchex(valinc, 'VALINC', 'FAMMOI', fammoi)
@@ -158,24 +158,24 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jeveuo(ds_material%fvarc_curr(1:19)//'.VALE', 'L', vr=v_fvarc_curr)
     if (ds_contact%l_cnctdf) then
         call jeveuo(ds_contact%cnctdf(1:19)//'.VALE', 'L', vr=v_cnctdf)
-    endif
+    end if
     if (ds_contact%l_cnctdc) then
         call jeveuo(ds_contact%cnctdc(1:19)//'.VALE', 'L', vr=v_cnctdc)
-    endif
+    end if
     if (ds_contact%l_cnunil) then
         call jeveuo(ds_contact%cnunil(1:19)//'.VALE', 'L', vr=v_cnunil)
-    endif
+    end if
     if (ds_contact%l_cneltc) then
         call jeveuo(ds_contact%cneltc(1:19)//'.VALE', 'L', vr=v_cneltc)
-    endif
+    end if
     if (ds_contact%l_cneltf) then
         call jeveuo(ds_contact%cneltf(1:19)//'.VALE', 'L', vr=v_cneltf)
-    endif
+    end if
     call jeveuo(ds_system%cnfint(1:19)//'.VALE', 'L', vr=v_cnfint)
 !
 !
     do i = 1, zveass
-        iret(i)=0
+        iret(i) = 0
         call jeexin(veasse(i)//'.VALE', iret(i))
     end do
 !
@@ -207,25 +207,25 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! - Add discrete contact/friction contribution
 !
     if (ds_contact%l_cnctdf) then
-        flipl(:) = flipl(:) + v_cnctdf(:)
-    endif
+        flipl(:) = flipl(:)+v_cnctdf(:)
+    end if
     if (ds_contact%l_cnctdc) then
-        flipl(:) = flipl(:) + v_cnctdc(:)
-    endif
+        flipl(:) = flipl(:)+v_cnctdc(:)
+    end if
     if (ds_contact%l_cnunil) then
-        flipl(:) = flipl(:) + v_cnunil(:)
-    endif
+        flipl(:) = flipl(:)+v_cnunil(:)
+    end if
 !
 ! - Add continue contact/friction contribution
 !
     if (ds_contact%l_cneltc) then
-        flipl(:) = flipl(:) + v_cneltc(:)
-        fnopl(:) = fnopl(:) - v_cneltc(:)
-    endif
+        flipl(:) = flipl(:)+v_cneltc(:)
+        fnopl(:) = fnopl(:)-v_cneltc(:)
+    end if
     if (ds_contact%l_cneltf) then
-        flipl(:) = flipl(:) + v_cneltf(:)
-        fnopl(:) = fnopl(:) - v_cneltf(:)
-    endif
+        flipl(:) = flipl(:)+v_cneltf(:)
+        fnopl(:) = fnopl(:)-v_cneltf(:)
+    end if
 !
 ! - Add other contributions
 !
@@ -238,87 +238,87 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! 9  - CNFSDO : FORCES SUIVEUSES
 ! 12 - CNSSTF : FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
 ! --------------------------------------------------------------------
-            if ((i.eq.5) .or. (i.eq.7) .or. (i.eq.9) .or. (i.eq.12)) then
-                fexpl(:)=fexpl(:)+veass(:)
+            if ((i .eq. 5) .or. (i .eq. 7) .or. (i .eq. 9) .or. (i .eq. 12)) then
+                fexpl(:) = fexpl(:)+veass(:)
 ! --------------------------------------------------------------------
 ! 6  - CNFEPI : FORCES PILOTEES PARAMETRE ETA A PRENDRE EN COMPTE
 ! --------------------------------------------------------------------
-            else if (i.eq.6) then
-                fexpl(:)=fexpl(:)+eta*veass(:)
+            else if (i .eq. 6) then
+                fexpl(:) = fexpl(:)+eta*veass(:)
 ! --------------------------------------------------------------------
 ! 1  - CNDIRI : BtLAMBDA                : IL FAUT PRENDRE L OPPOSE
 ! 8  - CNONDP : CHARGEMENT ONDES PLANES : IL FAUT PRENDRE L OPPOSE
 ! --------------------------------------------------------------------
-            else if ((i.eq.1).or.(i.eq.8)) then
-                fexpl(:)=fexpl(:)-veass(:)
+            else if ((i .eq. 1) .or. (i .eq. 8)) then
+                fexpl(:) = fexpl(:)-veass(:)
 ! --------------------------------------------------------------------
 ! 17 - CNAMOD : FORCE D AMORTISSEMENT MODAL
 ! --------------------------------------------------------------------
-            else if (i.eq.17) then
-                fampl(:)=fampl(:)+veass(:)
+            else if (i .eq. 17) then
+                fampl(:) = fampl(:)+veass(:)
 ! --------------------------------------------------------------------
 ! 10 - CNIMPE : FORCES IMPEDANCE
 ! --------------------------------------------------------------------
-            else if (i.eq.10) then
-                flipl(:)=flipl(:)+veass(:)
+            else if (i .eq. 10) then
+                flipl(:) = flipl(:)+veass(:)
 ! --------------------------------------------------------------------
 ! 19 - CNVISS : CHARGEMENT VEC_ISS (FORCE_SOL)
 ! --------------------------------------------------------------------
-            else if (i.eq.19) then
+            else if (i .eq. 19) then
 ! CHARGEMENT FORCE_SOL CNVISS. SI ON COMPTE SA CONTRIBUTION EN TANT
 ! QUE FORCE DISSIPATIVE DE LIAISON, ON DOIT PRENDRE L OPPOSE.
-                flipl(:)=flipl(:)-veass(:)
+                flipl(:) = flipl(:)-veass(:)
 ! --------------------------------------------------------------------
 ! 14 - CNCINE : INCREMENTS DE DEPLACEMENT IMPOSES (AFFE_CHAR_CINE)
 ! --------------------------------------------------------------------
-            else if (i.eq.14) then
+            else if (i .eq. 14) then
 ! ON DOIT RECONSTRUIRE LA MATRICE DE MASSE CAR ELLE A ETE MODIFIEE
 ! POUR SUPPRIMER DES DEGRES DE LIBERTE EN RAISON DE AFFE_CHAR_CINE.
-                reassm=.true.
+                reassm = .true.
                 do j = 1, neq
-                    zr(ifcine-1+j)=zr(ifcine-1+j)+veass(j)
+                    zr(ifcine-1+j) = zr(ifcine-1+j)+veass(j)
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - Add internal forces
 !
-    fnopl(:) = fnopl(:) + v_cnfint(:)
+    fnopl(:) = fnopl(:)+v_cnfint(:)
 !
     if (reassm) then
 ! --- REASSEMBLAGE DE LA MATRICE DE MASSE.
-        lisbid=' '
-        call nmmass(lisbid, sddyna, numedd,&
+        lisbid = ' '
+        call nmmass(lisbid, sddyna, numedd, &
                     numfix, meelem, masse)
-    endif
+    end if
 !
 ! --- INITIALISATION DE LA FORCE EXTERIEURE ET DES FORCES INTERNES
 ! --- AU PREMIER PAS DE TEMPS.
 ! --- ON LE FAIT ICI AFIN DE DISPOSER D UNE MATRICE D AMORTISSEMENT.
 !
     if (numins .eq. 1) then
-        call nmfini(sddyna, valinc         , measse   , modele    , ds_material,&
-                    carele, ds_constitutive, ds_system, ds_measure, sddisc     , numins,&
-                    solalg, numedd         , fonact   )
-    endif
+        call nmfini(sddyna, valinc, measse, modele, ds_material, &
+                    carele, ds_constitutive, ds_system, ds_measure, sddisc, numins, &
+                    solalg, numedd, fonact)
+    end if
 !
 ! --- PREPARATION DES CHAMPS DE FORCE
 !
     do i = 1, neq
-        zr(ifexte-1+i+neq)=fexpl(i)
-        zr(ifexte-1+i)=fexmo(i)
-        zr(ifliai-1+i+neq)=flipl(i)
-        zr(ifliai-1+i)=flimo(i)
-        zr(ifamor-1+i+neq)=fampl(i)
-        zr(ifamor-1+i)=fammo(i)
-        zr(ifnoda-1+i+neq)=fnopl(i)
-        zr(ifnoda-1+i)=fnomo(i)
+        zr(ifexte-1+i+neq) = fexpl(i)
+        zr(ifexte-1+i) = fexmo(i)
+        zr(ifliai-1+i+neq) = flipl(i)
+        zr(ifliai-1+i) = flimo(i)
+        zr(ifamor-1+i+neq) = fampl(i)
+        zr(ifamor-1+i) = fammo(i)
+        zr(ifnoda-1+i+neq) = fnopl(i)
+        zr(ifnoda-1+i) = fnomo(i)
     end do
 !
-    call enerca(valinc, epmo, zr(ivitmo), eppl, zr(ivitpl),&
-                masse, amort, rigid, zr(ifexte), zr(ifamor),&
-                zr(ifliai), zr(ifnoda), zr(ifcine), lamor, ldyna,&
+    call enerca(valinc, epmo, zr(ivitmo), eppl, zr(ivitpl), &
+                masse, amort, rigid, zr(ifexte), zr(ifamor), &
+                zr(ifliai), zr(ifnoda), zr(ifcine), lamor, ldyna, &
                 lexpl, ds_energy, k8bid)
 !
 !     ON NE PEUT PAS UTILISER NMFPAS POUR METTRE LES CHAMPS PLUS

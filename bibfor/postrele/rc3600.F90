@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,10 +94,10 @@ subroutine rc3600()
             zi(jma+ima-1) = ima
         end do
     else
-        call reliem(' ', noma, 'NU_MAILLE', motclf, 1,&
+        call reliem(' ', noma, 'NU_MAILLE', motclf, 1, &
                     2, motcls, typmcs, mesmai, nbma)
         call jeveuo(mesmai, 'L', jma)
-    endif
+    end if
 !
     ncncin = '&&RC3600.CONNECINVERSE  '
     call jeexin(ncncin, ibid)
@@ -118,9 +118,9 @@ subroutine rc3600()
     call rc36ca(carael, noma, nbma, zi(jma), chcara)
 !
     if (niv .ge. 2) then
-        write(ifm,*)' LE CHAMP ', chcara
+        write (ifm, *) ' LE CHAMP ', chcara
         call cesimp(chcara, ifm, 0, [ibid])
-    endif
+    end if
 !
 !
 !     ------------------------------------------------------------------
@@ -132,9 +132,9 @@ subroutine rc3600()
     call rc36in(noma, nbma, zi(jma), chindi)
 !
     if (niv .ge. 2) then
-        write(ifm,*)' LE CHAMP ', chindi
+        write (ifm, *) ' LE CHAMP ', chindi
         call cesimp(chindi, ifm, 0, [ibid])
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !                 LES RESULTATS DES CALCULS MECANIQUES
@@ -165,26 +165,26 @@ subroutine rc3600()
     nocmp(5) = 'U_TOTAL'
 !
     chresu = 'RC3600.RESULTAT'
-    call rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
+    call rc36zz(noma, nomgd, nbcmp, nocmp, nbma, &
                 zi(jma), chresu)
 !
 ! --- CALCUL DES AMPLITUDES DE CONTRAINTES
 !     CALCUL DU FACTEUR D'USAGE
 !     -------------------------
 !
-    call rc36ac(noma, ncncin, chindi, chcara, nbma,&
+    call rc36ac(noma, ncncin, chindi, chcara, nbma, &
                 zi(jma), chresu)
 !
     if (niv .ge. 2) then
-        write(ifm,*)' LE CHAMP ', chresu
+        write (ifm, *) ' LE CHAMP ', chresu
         call cesimp(chresu, ifm, 0, [ibid])
-    endif
+    end if
 !
 !
 ! --- PASSAGE DU CHAM_ELEM A UNE TABLE
 !     --------------------------------
 !
-    call rc36rs(nomres, noma, nbma, zi(jma), chindi,&
+    call rc36rs(nomres, noma, nbma, zi(jma), chindi, &
                 chresu)
 !
     call detrsd('CHAM_ELEM_S', chindi)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vecind(mat, lvec, nbl, nbc, force,&
+subroutine vecind(mat, lvec, nbl, nbc, force, &
                   nindep)
     implicit none
 !
@@ -59,7 +59,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 #include "blas/ddot.h"
 #include "blas/dgemm.h"
 #include "blas/dgesvd.h"
-    integer :: lvec, nbl, nbc, nindep, lwork,  lmat, ltrav1
+    integer :: lvec, nbl, nbc, nindep, lwork, lmat, ltrav1
     integer ::   i1, k1, l1, iret, lcopy, force, indnz
     integer(kind=4) :: info
     real(kind=8) :: swork(1), norme, sqrt, rij
@@ -72,17 +72,17 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     integer, pointer :: vec_ind_nz(:) => null()
     integer, pointer :: deeq(:) => null()
 !
-    ortho =' '
-    iret  =0
+    ortho = ' '
+    iret = 0
     AS_ALLOCATE(vr=new_stat, size=nbc*nbc)
     call wkvect('&&VECIND.TRAV1', 'V V R', nbl, ltrav1)
     AS_ALLOCATE(vi=vec_ind_nz, size=nbc)
-    indnz=0
+    indnz = 0
     if (mat .ne. ' ') then
         call jeveuo(mat//'.&INT', 'L', lmat)
         call dismoi('NOM_NUME_DDL', mat(1:8), 'MATR_ASSE', repk=nume)
         call jeveuo(nume(1:8)//'      .NUME.DEEQ', 'L', vi=deeq)
-    endif
+    end if
 !
 !-- NORMER LES MODES DANS L2 AVANT DE CONSTRUIRE LA MATRICE
 !-- POUR PLUS DE ROBUSTESSE
@@ -93,38 +93,38 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     do i1 = 1, nbc
         if (mat .ne. ' ') then
             call zerlag(nbl, deeq, vectr=zr(lvec+nbl*(i1-1)))
-            call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1,&
+            call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1, &
                         .true._1)
             call zerlag(nbl, deeq, vectr=zr(ltrav1))
-            norme=ddot(nbl,zr(ltrav1),1,zr(lvec+nbl*(i1-1)),1)
+            norme = ddot(nbl, zr(ltrav1), 1, zr(lvec+nbl*(i1-1)), 1)
 !
         else
-            norme=ddot(nbl,zr(lvec+nbl*(i1-1)),1,zr(lvec+nbl*(i1-1)),&
-            1)
-        endif
-        norme=sqrt(norme)
+            norme = ddot(nbl, zr(lvec+nbl*(i1-1)), 1, zr(lvec+nbl*(i1-1)), &
+                         1)
+        end if
+        norme = sqrt(norme)
         if (norme .gt. 1.d-16) then
-            call daxpy(nbl, 1/norme, zr(lvec+nbl*(i1-1)), 1, zr(lcopy+ nbl*(i1-1)),&
+            call daxpy(nbl, 1/norme, zr(lvec+nbl*(i1-1)), 1, zr(lcopy+nbl*(i1-1)), &
                        1)
 !        ELSE
 !          CALL DAXPY(NBL,0.D0,ZR(LVEC+NBL*(I1-1)),1,
 !     &               ZR(LCOPY+NBL*(I1-1)),1)
-        endif
+        end if
     end do
 !
     do l1 = 1, nbc
         if (mat .ne. ' ') then
-            call mrmult('ZERO', lmat, zr(lcopy+nbl*(l1-1)), zr(ltrav1), 1,&
+            call mrmult('ZERO', lmat, zr(lcopy+nbl*(l1-1)), zr(ltrav1), 1, &
                         .true._1)
         else
             call lceqvn(nbl, zr(lcopy+nbl*(l1-1)), zr(ltrav1))
-        endif
-        norme=ddot(nbl,zr(ltrav1),1,zr(lcopy+nbl*(l1-1)),1)
-        new_stat(1+(l1-1)*(nbc+1))=norme
+        end if
+        norme = ddot(nbl, zr(ltrav1), 1, zr(lcopy+nbl*(l1-1)), 1)
+        new_stat(1+(l1-1)*(nbc+1)) = norme
         do k1 = l1+1, nbc
-            rij=ddot(nbl,zr(ltrav1),1,zr(lcopy+nbl*(k1-1)),1)
-            new_stat(1+(l1-1)*nbc+k1-1)=rij
-            new_stat(1+(k1-1)*nbc+l1-1)=rij
+            rij = ddot(nbl, zr(ltrav1), 1, zr(lcopy+nbl*(k1-1)), 1)
+            new_stat(1+(l1-1)*nbc+k1-1) = rij
+            new_stat(1+(k1-1)*nbc+l1-1) = rij
         end do
     end do
 !
@@ -133,46 +133,46 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !-- ELIMINER LES VECTEURS NON INDEPENDANTS
 !
         do l1 = 1, nbc
-            norme=new_stat(1+(l1-1)*(nbc+1))
+            norme = new_stat(1+(l1-1)*(nbc+1))
 !
             if (norme .gt. 1.d-16) then
                 do k1 = l1+1, nbc
-                    rij=abs(new_stat(1+(l1-1)*nbc+k1-1))
-                    rij=rij/norme
+                    rij = abs(new_stat(1+(l1-1)*nbc+k1-1))
+                    rij = rij/norme
                     if (rij .gt. 1.d-8) then
-                        write(6,*)' ... ANNULATION DU VECTEUR ',k1
+                        write (6, *) ' ... ANNULATION DU VECTEUR ', k1
                         do i1 = 1, nbl
-                            zr(lvec+((k1-1)*nbl)+i1-1)=0.d0
+                            zr(lvec+((k1-1)*nbl)+i1-1) = 0.d0
                         end do
                         do i1 = 1, nbc
-                            new_stat(1+((k1-1)*nbc)+i1-1)=0.d0
-                            new_stat(1+((i1-1)*nbc)+k1-1)=0.d0
+                            new_stat(1+((k1-1)*nbc)+i1-1) = 0.d0
+                            new_stat(1+((i1-1)*nbc)+k1-1) = 0.d0
                         end do
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
         end do
 !
-        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho,&
+        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho, &
                     nbret=iret)
-        if ((iret .eq. 1) .and. (ortho.eq.'OUI')) then
+        if ((iret .eq. 1) .and. (ortho .eq. 'OUI')) then
 !-- SELECTION DES VECTEURS NON NULS POUR REMPLIR LA BASE
             do i1 = 1, nbc
-                if (new_stat(1 + (i1-1)*(nbc+1) ) .gt. 1d-10) then
-                    vec_ind_nz(indnz+1)=i1
-                    indnz=indnz+1
-                endif
+                if (new_stat(1+(i1-1)*(nbc+1)) .gt. 1d-10) then
+                    vec_ind_nz(indnz+1) = i1
+                    indnz = indnz+1
+                end if
             end do
 !
             do i1 = 1, indnz
-                l1=vec_ind_nz(i1)
+                l1 = vec_ind_nz(i1)
                 if (i1 .ne. l1) then
-                    call lceqvn(nbl, zr(lvec+nbl*(l1-1)), zr(lvec+nbl*( i1-1)))
-                endif
+                    call lceqvn(nbl, zr(lvec+nbl*(l1-1)), zr(lvec+nbl*(i1-1)))
+                end if
             end do
-            nbc=indnz
-        endif
+            nbc = indnz
+        end if
     else
 !
 !-- ALLOCATION DES MATRICES DE TRAVAIL TEMPORAIRES
@@ -183,26 +183,26 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !-- DESACTIVATION DU TEST FPE
         call matfpe(-1)
 !
-        call dgesvd('A', 'N', nbc, nbc, new_stat,&
-                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v,&
+        call dgesvd('A', 'N', nbc, nbc, new_stat, &
+                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v, &
                     nbc, swork, -1, info)
-        lwork=int(swork(1))
+        lwork = int(swork(1))
         AS_ALLOCATE(vr=mat_svd_work, size=lwork)
 !
-        call dgesvd('A', 'N', nbc, nbc, new_stat,&
-                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v,&
+        call dgesvd('A', 'N', nbc, nbc, new_stat, &
+                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v, &
                     nbc, mat_svd_work, lwork, info)
 !
-        nindep=0
-        norme=(nbc+0.d0)*zr(ltrav1)*1.d-16
+        nindep = 0
+        norme = (nbc+0.d0)*zr(ltrav1)*1.d-16
         do k1 = 1, nbc
-            if (zr(ltrav1+k1-1) .gt. norme) nindep=nindep+1
+            if (zr(ltrav1+k1-1) .gt. norme) nindep = nindep+1
         end do
 !
         call wkvect('&&VECIND.MODE_INTF_DEPL', 'V V R', nbl*nbc, lmat)
 !
-        call dgemm('N', 'N', nbl, nindep, nbc,&
-                   1.d0, zr(lcopy), nbl, trav2_u, nbc,&
+        call dgemm('N', 'N', nbl, nindep, nbc, &
+                   1.d0, zr(lcopy), nbl, trav2_u, nbc, &
                    0.d0, zr(lvec), nbl)
 !
 !-- INUTILE D'ANNULER DES VECTEURS QUI NE SERVIRONT NUL PART...
@@ -218,7 +218,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         AS_DEALLOCATE(vr=trav3_v)
         call jedetr('&&VECIND.MODE_INTF_DEPL')
 !
-    endif
+    end if
 !
 !
 !

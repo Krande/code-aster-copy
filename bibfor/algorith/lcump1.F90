@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcump1(cmat, nmat, ambda1, ambda2, x1,&
+subroutine lcump1(cmat, nmat, ambda1, ambda2, x1, &
                   x2)
 !
 !
@@ -56,16 +56,16 @@ subroutine lcump1(cmat, nmat, ambda1, ambda2, x1,&
 !
 ! PARAMETRE INTERMEDIAIRE => EQUATION (3.10-2)
 !
-    delta = (urr - uii)**2 + 8*uri*(urr + uii) + 16*uri**2
+    delta = (urr-uii)**2+8*uri*(urr+uii)+16*uri**2
 !
 ! INVERSE DES TEMPS CARACTERISTIQUES => EQUATION (3.10-4)
 !
-    ambda1 = - (urr + 4*uri + uii + sqrt(delta))/2
-    ambda2 = - (urr + 4*uri + uii - sqrt(delta))/2
+    ambda1 = -(urr+4*uri+uii+sqrt(delta))/2
+    ambda2 = -(urr+4*uri+uii-sqrt(delta))/2
 !
 ! PARAMETRES INTERMEDIAIRES => EQUATION (3.10-3)
 !
-    x1 = (ambda1 + uii)/(2*uri)
-    x2 = 2*uri/(ambda2 + uii)
+    x1 = (ambda1+uii)/(2*uri)
+    x2 = 2*uri/(ambda2+uii)
 !
 end subroutine

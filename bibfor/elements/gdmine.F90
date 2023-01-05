@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gdmine(kp, nno, pjacob, en, grani,&
-                  alfnmk, delnmk, pas, rot0, rotm,&
-                  rotkm1, rotk, rmkm1, rmk, omgkm,&
+subroutine gdmine(kp, nno, pjacob, en, grani, &
+                  alfnmk, delnmk, pas, rot0, rotm, &
+                  rotkm1, rotk, rmkm1, rmk, omgkm, &
                   ompgkm, omgk, ompgk, rigi)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE LA
@@ -74,101 +74,101 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
     zero = 0.d0
     un = 1.d0
 !
-    call promat(rotk, 3, 3, 3, rot0,&
+    call promat(rotk, 3, 3, 3, rot0, &
                 3, 3, 3, rotabs)
 !
     do j = 1, 3
         do i = 1, 3
-            amat2(i,j) = grani(i) * rotabs(j,i)
+            amat2(i, j) = grani(i)*rotabs(j, i)
         end do
     end do
-    call promat(rotabs, 3, 3, 3, amat2,&
+    call promat(rotabs, 3, 3, 3, amat2, &
                 3, 3, 3, iro)
-    call promat(iro, 3, 3, 3, omgk,&
+    call promat(iro, 3, 3, 3, omgk, &
                 3, 3, 1, vect1)
     call antisy(vect1, un, iroomt)
 !
     call antisy(omgk, un, amat2)
-    call promat(amat2, 3, 3, 3, iro,&
+    call promat(amat2, 3, 3, 3, iro, &
                 3, 3, 3, omtiro)
     do j = 1, 3
         do i = 1, 3
-            amat5(i,j) = -iroomt(i,j) + omtiro(i,j)
-            amat1(i,j) = (iro(i,j) + delnmk*pas*amat5(i,j)) /alfnmk/ pas/pas
+            amat5(i, j) = -iroomt(i, j)+omtiro(i, j)
+            amat1(i, j) = (iro(i, j)+delnmk*pas*amat5(i, j))/alfnmk/pas/pas
         end do
     end do
 !
     do j = 1, 3
         do i = 1, 3
-            rotmt(i,j) = rotm(j,i)
-            rotkmt(i,j) = rotkm1(j,i)
+            rotmt(i, j) = rotm(j, i)
+            rotkmt(i, j) = rotkm1(j, i)
         end do
-        vect1(j) = rmk(j) - rmkm1(j)
+        vect1(j) = rmk(j)-rmkm1(j)
     end do
 !
-    call promat(rotmt, 3, 3, 3, vect1,&
+    call promat(rotmt, 3, 3, 3, vect1, &
                 3, 3, 1, vect2)
-    call promat(rotk, 3, 3, 3, vect2,&
+    call promat(rotk, 3, 3, 3, vect2, &
                 3, 3, 1, vect1)
     coef = -un
     call antisy(vect1, coef, amat2)
 !
     call gdt(rmk, amat3)
-    call promat(rotmt, 3, 3, 3, amat3,&
+    call promat(rotmt, 3, 3, 3, amat3, &
                 3, 3, 3, amat4)
-    call promat(rotk, 3, 3, 3, amat4,&
+    call promat(rotk, 3, 3, 3, amat4, &
                 3, 3, 3, amat3)
 !
     do j = 1, 3
         do i = 1, 3
-            amat2(i,j) = amat2(i,j) + amat3(i,j)
+            amat2(i, j) = amat2(i, j)+amat3(i, j)
         end do
     end do
 !
-    call promat(amat1, 3, 3, 3, amat2,&
+    call promat(amat1, 3, 3, 3, amat2, &
                 3, 3, 3, amat3)
 !C
-    call promat(rotkmt, 3, 3, 3, ompgkm,&
+    call promat(rotkmt, 3, 3, 3, ompgkm, &
                 3, 3, 1, vect1)
-    call promat(rotk, 3, 3, 3, vect1,&
+    call promat(rotk, 3, 3, 3, vect1, &
                 3, 3, 1, vect2)
     call antisy(vect2, coef, amat2)
-    call promat(iro, 3, 3, 3, amat2,&
+    call promat(iro, 3, 3, 3, amat2, &
                 3, 3, 3, amat1)
 !C
-    call promat(rotkmt, 3, 3, 3, omgkm,&
+    call promat(rotkmt, 3, 3, 3, omgkm, &
                 3, 3, 1, vect1)
-    call promat(rotk, 3, 3, 3, vect1,&
+    call promat(rotk, 3, 3, 3, vect1, &
                 3, 3, 1, vect2)
     call antisy(vect2, coef, amat4)
-    call promat(amat5, 3, 3, 3, amat4,&
+    call promat(amat5, 3, 3, 3, amat4, &
                 3, 3, 3, amat2)
 !CC
-    call promat(iro, 3, 3, 3, ompgk,&
+    call promat(iro, 3, 3, 3, ompgk, &
                 3, 3, 1, vect1)
     call antisy(vect1, un, amat4)
     call antisy(ompgk, un, amat5)
-    call promat(iro, 3, 3, 3, amat5,&
+    call promat(iro, 3, 3, 3, amat5, &
                 3, 3, 3, amat6)
     do j = 1, 3
         do i = 1, 3
-            amat4(i,j) = -amat4(i,j) + amat6(i,j)
+            amat4(i, j) = -amat4(i, j)+amat6(i, j)
         end do
     end do
     call antisy(omgk, un, amat5)
-    call promat(amat5, 3, 3, 3, iroomt,&
+    call promat(amat5, 3, 3, 3, iroomt, &
                 3, 3, 3, amat6)
-    call promat(omtiro, 3, 3, 3, amat5,&
+    call promat(omtiro, 3, 3, 3, amat5, &
                 3, 3, 3, amat7)
     do j = 1, 3
         do i = 1, 3
-            amat5(i,j) = -amat6(i,j) + amat7(i,j)
+            amat5(i, j) = -amat6(i, j)+amat7(i, j)
         end do
     end do
 !CC
     do j = 1, 6
         do i = 1, 6
-            inert(i,j) = zero
+            inert(i, j) = zero
         end do
     end do
 !
@@ -176,17 +176,17 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
 !* POUR LE RETRANCHER ICI.
     do j = 1, 3
         do i = 1, 3
-            amat6(i,j) = grani(i) * rot0(j,i)
+            amat6(i, j) = grani(i)*rot0(j, i)
         end do
     end do
-    call promat(rot0, 3, 3, 3, amat6,&
+    call promat(rot0, 3, 3, 3, amat6, &
                 3, 3, 3, amat7)
 !
     coef = un/alfnmk/pas/pas
     do j = 1, 3
         do i = 1, 3
-            inert(3+i,3+j) = amat3(i,j) + amat1(i,j) + amat2(i,j) + amat4(i,j) + amat5(i,j) - coe&
-                             &f*amat7(i,j)
+            inert(3+i, 3+j) = amat3(i, j)+amat1(i, j)+amat2(i, j)+amat4(i, j)+amat5(i, j)-coe&
+                             &f*amat7(i, j)
 !C    INERT(3+I,3+J) = COEF * ( AMAT3(I,J) + AMAT1(I,J) + AMAT2(I,J) +
 !C   &                          AMAT4(I,J) + AMAT5(I,J) - AMAT7(I,J) )
 !    &                          AMAT4(I,J) + AMAT5(I,J)              )
@@ -194,7 +194,7 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
     end do
     do j = 1, nno
         do i = 1, nno
-            coef = pjacob * en(i,kp) * en(j,kp)
+            coef = pjacob*en(i, kp)*en(j, kp)
             call cumuma(i, j, inert, coef, rigi)
         end do
     end do

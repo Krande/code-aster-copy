@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
-                  tempe, enrmec, dimdef, dimcon, nmec,&
+subroutine xgrdhm(nomte, ndim, mecani, press1, press2, &
+                  tempe, enrmec, dimdef, dimcon, nmec, &
                   np1, np2, nenr, dimenr, enrhyd, nfh)
-implicit none
+    implicit none
 !
 #include "asterfort/teattr.h"
 #include "asterfort/assert.h"
@@ -87,18 +87,18 @@ implicit none
 ! --- EN HM-XFEM ----------------------------------------------------------
 !======================================================================
     do i = 1, 5
-        mecani(i)=0
-        tempe(i)=0
+        mecani(i) = 0
+        tempe(i) = 0
     end do
     do i = 1, 7
-        press1(i)=0
-        press2(i)=0
+        press1(i) = 0
+        press2(i) = 0
     end do
     do i = 1, 3
-        enrmec(i)=0
-        enrhyd(i)=0
+        enrmec(i) = 0
+        enrhyd(i) = 0
     end do
-    np2=0
+    np2 = 0
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
@@ -120,9 +120,9 @@ implicit none
 ! =====================================================================
     call teattr('S', 'XFEM', enr, ier, typel=nomte)
     if (enr(1:2) .eq. 'XH') then
-        enrmec(1)=1
-        enrhyd(1)=1
-    endif
+        enrmec(1) = 1
+        enrhyd(1) = 1
+    end if
 !
 ! 2. CALCUL PREALABLE DES ADRESSES LOCALES DES VARIABLES
 ! =====================================================================
@@ -136,27 +136,27 @@ implicit none
 !  DANS LE CAS ISOTROPE SIP EST UN TENSEUR ISOTROPE
 !
     if (mecani(1) .eq. 1) then
-        mecani(4) = ndim + 6
+        mecani(4) = ndim+6
         mecani(5) = 6+6
         nmec = ndim
-    endif
+    end if
 !
     iaux = 1
 !
     if (press1(1) .eq. 1) then
-        press1(6) = 1 + ndim
-        press1(7) = iaux + ndim
+        press1(6) = 1+ndim
+        press1(7) = iaux+ndim
         np1 = 1
-    endif
+    end if
 !
     if (enrmec(1) .eq. 1) then
         enrmec(3) = nfh*ndim
-        nenr=ndim*nfh
-    endif
+        nenr = ndim*nfh
+    end if
 !
-    if (enrhyd(1).eq.1) then
+    if (enrhyd(1) .eq. 1) then
         enrhyd(3) = nfh
-    endif
+    end if
 !
 ! =====================================================================
 ! 2.2. ADRESSE DES SOUS-TABLEAUX DANS LES DEFORMATIONS PHYSIQUES, LES -
@@ -168,34 +168,34 @@ implicit none
     if (mecani(1) .eq. 1) then
         mecani(2) = 1
         mecani(3) = 1
-    endif
+    end if
 !
 ! 2.2.2. ==> DEFORMATIONS ET CONTRAINTES POUR LA PREMIERE PRESSION
 !
     if (press1(1) .eq. 1) then
-        press1(3) = mecani(4) + 1
-        press1(4) = mecani(5) + 1
-    endif
+        press1(3) = mecani(4)+1
+        press1(4) = mecani(5)+1
+    end if
 !
 ! 2.2.3. ==> DEFORMATIONS POUR L'ENRICHISSEMENT HEAVISIDE (MECA)
 !
     if (enrmec(1) .eq. 1) then
-        enrmec(2) = mecani(4) + press1(6) + 1
-    endif
+        enrmec(2) = mecani(4)+press1(6)+1
+    end if
 !
 ! 2.2.4. ==> DEFORMATIONS POUR L'ENRICHISSEMENT HEAVISIDE (HYDRO)
 !
-      if (enrhyd(1).eq.1) then
-         enrhyd(2) = mecani(4) + press1(6) + nmec + 1
-      endif
+    if (enrhyd(1) .eq. 1) then
+        enrhyd(2) = mecani(4)+press1(6)+nmec+1
+    end if
 !
 ! =====================================================================
 ! 2.3. DIMENSION DES DEFORMATIONS ET CONTRAINTES ----------------------
 ! =====================================================================
-    dimdef = mecani(4) + press1(6)
-    dimcon = mecani(5) + press1(2)*press1(7)
+    dimdef = mecani(4)+press1(6)
+    dimcon = mecani(5)+press1(2)*press1(7)
 ! DIMENSION INTERMEDIAIRE UTILISEE POUR L'ASSEMBLAGE EN XFEM
-    dimenr = mecani(4) + press1(6) + enrmec(3) + enrhyd(3)
+    dimenr = mecani(4)+press1(6)+enrmec(3)+enrhyd(3)
 !=====================================================================
 !
 ! =====================================================================

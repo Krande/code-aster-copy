@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine epslmc(nno  , ndim  , nbsig,&
-                  npg  , ipoids, ivf  ,&
-                  idfde, xyz   , depl ,&
-                  epsi )
+subroutine epslmc(nno, ndim, nbsig, &
+                  npg, ipoids, ivf, &
+                  idfde, xyz, depl, &
+                  epsi)
     implicit none
 !
 !      epslmc --- compute logarithmic strain at integration points
@@ -42,13 +42,13 @@ subroutine epslmc(nno  , ndim  , nbsig,&
 #include "asterfort/lteatt.h"
 #include "asterfort/deflog.h"
 !
-    integer     , intent(in)    :: nno
-    integer     , intent(in)    :: ndim
-    integer     , intent(in)    :: nbsig
-    integer     , intent(in)    :: npg
-    integer     , intent(in)    :: ipoids
-    integer     , intent(in)    :: ivf
-    integer     , intent(in)    :: idfde
+    integer, intent(in)    :: nno
+    integer, intent(in)    :: ndim
+    integer, intent(in)    :: nbsig
+    integer, intent(in)    :: npg
+    integer, intent(in)    :: ipoids
+    integer, intent(in)    :: ivf
+    integer, intent(in)    :: idfde
     real(kind=8), intent(in)    :: xyz(1)
     real(kind=8), intent(in)    :: depl(1)
     real(kind=8), intent(inout) :: epsi(1)
@@ -62,26 +62,26 @@ subroutine epslmc(nno  , ndim  , nbsig,&
     aster_logical :: axi, grand
     real(kind=8), parameter :: zero = 0.0d0, sqrt2 = sqrt(2.0d0)
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         axi = .true.
     else
         axi = .false.
-    endif
+    end if
     grand = .true.
     do igau = 1, npg
         r = zero
         k = (igau-1)*nno
-        call dfdmip(ndim, nno, axi, xyz, igau,&
-                    ipoids, zr(ivf+k), idfde, r, w,&
+        call dfdmip(ndim, nno, axi, xyz, igau, &
+                    ipoids, zr(ivf+k), idfde, r, w, &
                     dfdi)
 !
-        call nmepsi(ndim, nno, axi, grand, zr(ivf+k),&
+        call nmepsi(ndim, nno, axi, grand, zr(ivf+k), &
                     r, dfdi, depl, f)
 !
-        call deflog(ndim, f, epsl, gn, lamb,&
+        call deflog(ndim, f, epsl, gn, lamb, &
                     logl, iret)
-        epsl(4:6) = epsl(4:6) / sqrt2
+        epsl(4:6) = epsl(4:6)/sqrt2
         epsi(nbsig*(igau-1)+1:nbsig*igau) = epsl(1:nbsig)
 !
-    enddo
+    end do
 end subroutine

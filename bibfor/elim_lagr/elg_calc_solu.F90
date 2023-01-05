@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use elg_data_module
+    use aster_petsc_module
+    use elg_data_module
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
 !
@@ -79,8 +79,8 @@ use elg_data_module
     call jemarq()
 !
     call jeveuo(matas1//'.REFA', 'L', vk24=refa)
-    matas2=refa(19)(1:19)
-    ASSERT(matas2.ne.' ')
+    matas2 = refa(19) (1:19)
+    ASSERT(matas2 .ne. ' ')
 !
     call dismoi('NOM_NUME_DDL', matas1, 'MATR_ASSE', repk=nu1)
     call dismoi('NOM_NUME_DDL', matas2, 'MATR_ASSE', repk=nu2)
@@ -91,40 +91,40 @@ use elg_data_module
     call jeveuo(nu1//'.NUME.DLG2', 'L', vi=dlg2)
 !
 ! à faire ....
-    ASSERT(nsecm.eq.1)
+    ASSERT(nsecm .eq. 1)
 !
 !     -- dimensions n1, n2, n3 :
     call MatGetSize(elg_context(ke)%tfinal, n1, n3, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call MatGetSize(elg_context(ke)%matc, n2, n1, ierr)
-    ASSERT( ierr==0 )
-    ASSERT(neq2.eq.n3)
-    ASSERT(neq1.eq.n1+2*n2)
+    ASSERT(ierr == 0)
+    ASSERT(neq2 .eq. n3)
+    ASSERT(neq1 .eq. n1+2*n2)
 !
 !
 !     allocation et remplissage de Y = RSOLU2
     call elg_allocvr(y, to_aster_int(n3))
     call VecGetArray(y, xx, xidx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     do ieq2 = 1, neq2
-        xx(xidx+ieq2)=rsolu2(ieq2)
+        xx(xidx+ieq2) = rsolu2(ieq2)
     end do
     call VecRestoreArray(y, xx, xidx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
 !
 !     Calcul de TMP1 =  T*Y :
     call elg_allocvr(tmp1, to_aster_int(n1))
     call MatMult(elg_context(ke)%tfinal, y, tmp1, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
 !     Calcul de X1= x0 + T*Y :
     call elg_allocvr(x1, int(n1))
     call VecCopy(elg_context(ke)%vx0, x1, ierr)
-    ASSERT( ierr==0 )
-    p1=1.
+    ASSERT(ierr == 0)
+    p1 = 1.
     call VecAXPY(x1, p1, tmp1, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
 !     calcul des coefficients de Lagrange :
     call elg_allocvr(vlag, to_aster_int(n2))
@@ -133,17 +133,17 @@ use elg_data_module
 !
 !     -- on recopie X1 dans RSOLU1 :
     call VecGetArray(x1, xx, xidx, ierr)
-    ASSERT( ierr==0 )
-    ico=0
+    ASSERT(ierr == 0)
+    ico = 0
     do k1 = 1, neq1
         if (delg(k1) .eq. 0) then
-            ico=ico+1
-            rsolu1(k1)=xx(xidx+ico)
-        endif
-    enddo
-    ASSERT(ico.eq.n1)
+            ico = ico+1
+            rsolu1(k1) = xx(xidx+ico)
+        end if
+    end do
+    ASSERT(ico .eq. n1)
     call VecRestoreArray(x1, xx, xidx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
 !
 !     -- on recopie VLAG dans RSOLU1 :
@@ -151,32 +151,32 @@ use elg_data_module
 !                   Lagrange "1"  et "2" :
     call jeveuo(matas1//'.CONL', 'L', vr=conl)
     call VecGetArray(vlag, xx, xidx, ierr)
-    ASSERT( ierr==0 )
-    ico=0
+    ASSERT(ierr == 0)
+    ico = 0
     do k1 = 1, neq1
         if (delg(k1) .eq. -1) then
-            ico=ico+1
-            val=xx(xidx+ico)*conl(k1)/2.d0
-            rsolu1(k1)=val
+            ico = ico+1
+            val = xx(xidx+ico)*conl(k1)/2.d0
+            rsolu1(k1) = val
 ! k2 lagrange "2" associé au lagrange "1" k1
-            k2=dlg2(k1)
-            ASSERT(k2.gt.0)
-            rsolu1(k2)=val
-        endif
-    enddo
-    ASSERT(ico.eq.n2)
+            k2 = dlg2(k1)
+            ASSERT(k2 .gt. 0)
+            rsolu1(k2) = val
+        end if
+    end do
+    ASSERT(ico .eq. n2)
     call VecRestoreArray(vlag, xx, xidx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
 !     -- ménage :
     call VecDestroy(y, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call VecDestroy(tmp1, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call VecDestroy(x1, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call VecDestroy(tmp1, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
     call jedema()
 #else
@@ -185,7 +185,7 @@ use elg_data_module
     real(kind=8) :: rdummy
     kdummy = matas1(1:1)
     idummy = nsecm
-    rdummy = rsolu1(1) + rsolu2(1)
+    rdummy = rsolu1(1)+rsolu2(1)
     call utmess('F', 'ELIMLAGR_1')
 #endif
 !

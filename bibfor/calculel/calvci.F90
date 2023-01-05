@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calvci(nomci, nume_ddlz, nbchci   , lchci, inst,&
-                  base , l_hho    , hhoField_)
+subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst, &
+                  base, l_hho, hhoField_)
 !
-use HHO_type
-use HHO_Dirichlet_module
+    use HHO_type
+    use HHO_Dirichlet_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -45,12 +45,12 @@ implicit none
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*) :: nomci, lchci(*), nume_ddlz
-character(len=1) :: base
-real(kind=8) :: inst
-integer :: nbchci
-aster_logical, intent(in) :: l_hho
-type(HHO_Field), intent(in), optional :: hhoField_
+    character(len=*) :: nomci, lchci(*), nume_ddlz
+    character(len=1) :: base
+    real(kind=8) :: inst
+    integer :: nbchci
+    aster_logical, intent(in) :: l_hho
+    type(HHO_Field), intent(in), optional :: hhoField_
 ! ----------------------------------------------------------------------
 ! BUT  :  CALCUL DU CHAM_NO CONTENANT UN VECTEUR LE CINEMATIQUE
 ! ---     ASSOCIE A UNE LISTE DE CHAR_CINE_* A UN INSTANT INST
@@ -82,11 +82,11 @@ type(HHO_Field), intent(in), optional :: hhoField_
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: iddes, nec, ivvale,  jprno,  ichcin
+    integer :: iddes, nec, ivvale, jprno, ichcin
     integer :: jafcv, nb_affe_cine, i_affe_cine, i_node, i_cmp, i_eq, ier
-    integer :: neq, numgd,  jdlci, i_nueq
+    integer :: neq, numgd, jdlci, i_nueq
     integer :: jcn1l, i_cmp_gran, i_cmp_gran1, jnocmp
-    integer :: nbcmp1,  i_ligr_mesh, vali(1)
+    integer :: nbcmp1, i_ligr_mesh, vali(1)
     character(len=1) :: typval
     character(len=4) :: phen
     aster_logical :: fonc
@@ -113,37 +113,37 @@ type(HHO_Field), intent(in), optional :: hhoField_
     vcine = nomci
     nume_ddl = nume_ddlz
     vvale = vcine//'.VALE'
-    valr(1)=inst
-    cnoimp='&&CALVCI.CNOIMP'
-    cnsimp='&&CALVCI.CNSIMP'
+    valr(1) = inst
+    cnoimp = '&&CALVCI.CNOIMP'
+    cnsimp = '&&CALVCI.CNSIMP'
 !
 ! - For HHO
 !
     if (l_hho) then
         ASSERT(present(hhoField_))
-    endif
+    end if
 !
 ! - Get informations about NUME_DDL
 !
-    call dismoi('NOM_GD'    , nume_ddl, 'NUME_DDL', repk=gd)
+    call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=gd)
     call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=mesh)
-    call dismoi('PROF_CHNO' , nume_ddl, 'NUME_DDL', repk=prof_chno)
+    call dismoi('PROF_CHNO', nume_ddl, 'NUME_DDL', repk=prof_chno)
 !
 ! - Get informations about GRANDEUR
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
     call jeveuo('&CATA.GD.TYPEGD', 'L', vk8=typegd)
-    typval = typegd(numgd)(1:1)
+    typval = typegd(numgd) (1:1)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', numgd), 'L', iddes)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', jnocmp)
-    nec = zi(iddes+2 )
+    nec = zi(iddes+2)
 !
 ! - Create CHAM_NO
 !
     call detrsd('CHAMP_GD', vcine)
-    call vtcreb(vcine, base, typval,&
-                nume_ddlz = nume_ddl,&
-                nb_equa_outz = neq)
+    call vtcreb(vcine, base, typval, &
+                nume_ddlz=nume_ddl, &
+                nb_equa_outz=neq)
 !
 ! - Create DLCI object (see nmcvci.F90)
 !
@@ -162,13 +162,13 @@ type(HHO_Field), intent(in), optional :: hhoField_
     do ichcin = 1, nbchci
         charci = lchci(ichcin)
         call jeveuo(charci//'.AFCK', 'L', vk8=afck)
-        phen=afck(1)(1:4)
-        fonc=afck(1)(5:7).eq.'_FT'
-        evoim=afck(3)
-        call jeveuo(charci//'.AFCI', 'L', vi = afci)
+        phen = afck(1) (1:4)
+        fonc = afck(1) (5:7) .eq. '_FT'
+        evoim = afck(3)
+        call jeveuo(charci//'.AFCI', 'L', vi=afci)
         if (evoim .eq. ' ') then
             call jeveuo(charci//'.AFCV', 'L', jafcv)
-        endif
+        end if
 !
 !
 !       -- CAS DE EVOL_IMPO : ON PREPARE ...
@@ -176,25 +176,25 @@ type(HHO_Field), intent(in), optional :: hhoField_
         if (evoim .ne. ' ') then
 !         -- IL FAUT INTERPOLER EVOIM A L'INSTANT: INST :
             if (gd .eq. 'DEPL_R') then
-                nomch='DEPL'
-            else if (gd.eq.'TEMP_R') then
-                nomch='TEMP'
+                nomch = 'DEPL'
+            else if (gd .eq. 'TEMP_R') then
+                nomch = 'TEMP'
             else
                 ASSERT(.false.)
-            endif
+            end if
             ASSERT(fonc)
-            call rsinch(evoim, nomch, 'INST', inst, cnoimp,&
+            call rsinch(evoim, nomch, 'INST', inst, cnoimp, &
                         'EXCLU', 'EXCLU', 2, 'V', ier)
             call cnocns(cnoimp, 'V', cnsimp)
             call detrsd('CHAMP', cnoimp)
             call jeveuo(cnsimp//'.CNSD', 'L', vi=cnsd)
             call jeveuo(cnsimp//'.CNSC', 'L', vk8=cnsc)
             call jelira(cnsimp//'.CNSC', 'LONMAX', nbcmp1)
-            ASSERT(nbcmp1.eq.cnsd(2))
+            ASSERT(nbcmp1 .eq. cnsd(2))
             call jeveuo(cnsimp//'.CNSV', 'L', vr=cnsv)
             call jeveuo(cnsimp//'.CNSL', 'L', jcn1l)
-            valk(1)=evoim
-        endif
+            valk(1) = evoim
+        end if
 !
 !
 !       -- AFFECTATION DES VALEURS IMPOSEES
@@ -210,29 +210,29 @@ type(HHO_Field), intent(in), optional :: hhoField_
 ! ------------- i_node: index of node
 ! ------------- i_cmp : index of component for LOCAL grandeur for current node
                 i_node = afci(3*(i_affe_cine-1)+2)
-                i_cmp  = afci(3*(i_affe_cine-1)+3)
+                i_cmp = afci(3*(i_affe_cine-1)+3)
                 i_nueq = zi(jprno+(nec+2)*(i_node-1))
-                i_eq   = p_nueq(i_nueq+i_cmp-1)
+                i_eq = p_nueq(i_nueq+i_cmp-1)
 !
 !           -- CAS EVOL_IMPO (CNSIMP):
 !           ----------------------------------
                 if (evoim .ne. ' ') then
                     i_cmp_gran = deeq(2*(i_eq-1)+2)
-                    cmp_name   = zk8(jnocmp-1+i_cmp_gran)
-                    vali(1)    = i_node
-                    valk(2)    = cmp_name
-                    i_cmp_gran1=indik8(cnsc,cmp_name,1,nbcmp1)
-                    ASSERT(i_cmp_gran1.gt.0)
-                    if (.not.zl(jcn1l-1+(i_node-1)*nbcmp1+i_cmp_gran1)) then
-                        call utmess('F', 'CALCULEL_2', nk=2, valk=valk, si=vali(1),&
+                    cmp_name = zk8(jnocmp-1+i_cmp_gran)
+                    vali(1) = i_node
+                    valk(2) = cmp_name
+                    i_cmp_gran1 = indik8(cnsc, cmp_name, 1, nbcmp1)
+                    ASSERT(i_cmp_gran1 .gt. 0)
+                    if (.not. zl(jcn1l-1+(i_node-1)*nbcmp1+i_cmp_gran1)) then
+                        call utmess('F', 'CALCULEL_2', nk=2, valk=valk, si=vali(1), &
                                     sr=valr(1))
-                    endif
+                    end if
                     zr(ivvale-1+i_eq) = cnsv((i_node-1)*nbcmp1+i_cmp_gran1)
 !
 !
 !           -- CAS "NORMAL" (OBJET .AFCV) :
 !           ----------------------------------
-                else if (.not.fonc) then
+                else if (.not. fonc) then
                     zr(ivvale-1+i_eq) = zr(jafcv-1+i_affe_cine)
 !
 !
@@ -244,21 +244,21 @@ type(HHO_Field), intent(in), optional :: hhoField_
                         zr(ivvale-1+i_eq) = res
                     else
                         nomf = zk8(jafcv-1+i_affe_cine)
-                        nomp(1)='INST'
-                        nomp(2)='X'
-                        nomp(3)='Y'
-                        nomp(4)='Z'
-                        valp(1)=inst
-                        valp(2)=vale(1+3*(i_node-1)+0)
-                        valp(3)=vale(1+3*(i_node-1)+1)
-                        valp(4)=vale(1+3*(i_node-1)+2)
-                        call fointe('F ', nomf, 4, nomp, valp,&
+                        nomp(1) = 'INST'
+                        nomp(2) = 'X'
+                        nomp(3) = 'Y'
+                        nomp(4) = 'Z'
+                        valp(1) = inst
+                        valp(2) = vale(1+3*(i_node-1)+0)
+                        valp(3) = vale(1+3*(i_node-1)+1)
+                        valp(4) = vale(1+3*(i_node-1)+2)
+                        call fointe('F ', nomf, 4, nomp, valp, &
                                     res, ier)
                         zr(ivvale-1+i_eq) = res
-                    endif
+                    end if
                 else
                     call utmess('F', 'CALCULEL_37')
-                endif
+                end if
 !
                 zi(jdlci-1+i_eq) = 1
             end do
@@ -267,16 +267,16 @@ type(HHO_Field), intent(in), optional :: hhoField_
 !
 !       -- CAS DES VALEURS COMPLEXES :
 !       ---------------------------------
-        else if (typval.eq.'C') then
-            ASSERT(phen.eq.'CIAC')
-            ASSERT(.not.fonc)
+        else if (typval .eq. 'C') then
+            ASSERT(phen .eq. 'CIAC')
+            ASSERT(.not. fonc)
             do i_affe_cine = 1, nb_affe_cine
 ! ------------- i_node: index of node
 ! ------------- i_cmp : index of component for LOCAL grandeur for current node
                 i_node = afci(3*(i_affe_cine-1)+2)
-                i_cmp  = afci(3*(i_affe_cine-1)+3)
+                i_cmp = afci(3*(i_affe_cine-1)+3)
                 i_nueq = zi(jprno+(nec+2)*(i_node-1))
-                i_eq   = p_nueq(i_nueq+i_cmp-1)
+                i_eq = p_nueq(i_nueq+i_cmp-1)
 
                 zc(ivvale-1+i_eq) = zc(jafcv-1+i_affe_cine)
                 zi(jdlci-1+i_eq) = 1
@@ -285,7 +285,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
 !
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 999 continue

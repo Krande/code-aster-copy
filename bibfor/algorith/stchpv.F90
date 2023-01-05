@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
-                  vgli, iadh, wk1, wk2, wk3,&
-                  iwk4, tdebut, tfin, nbloc, offset,&
+subroutine stchpv(nbobst, nbpt, temps, dloc, fcho, &
+                  vgli, iadh, wk1, wk2, wk3, &
+                  iwk4, tdebut, tfin, nbloc, offset, &
                   noecho, intitu, nomres)
     implicit none
 #include "asterc/r8rddg.h"
@@ -68,44 +68,44 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
     real(kind=8) :: trebmy, trebog, trebom, trebot, ttot, txchoc, xtetyp
     real(kind=8) :: xtmoy, xtrms, zero
 !-----------------------------------------------------------------------
-    parameter     ( nbpara=20, ndepl=8, nusur=4, nforn=8, nstch=10 )
+    parameter(nbpara=20, ndepl=8, nusur=4, nforn=8, nstch=10)
     real(kind=8) :: para(7)
     character(len=8) :: noeud, tpara(nbpara)
     character(len=16) :: tdepl(ndepl), tforn(nforn), tstch(nstch), tusur(nusur)
     character(len=16) :: tvar(10), npara(nbpara)
     character(len=24) :: valek(3)
     complex(kind=8) :: c16b
-    data tvar  / 'DEPL_X' , 'DEPL_Y' , 'DEPL_Z' , 'DEPL_RADIAL',&
-     &             'DEPL_ANGULAIRE' , 'FORCE_NORMALE' , 'FORCE_TANG_1',&
-     &             'FORCE_TANG_2' , 'STAT_CHOC' , 'PUIS_USURE' /
-    data npara / 'INTITULE','NOEUD', 'CALCUL'        , 'MOYEN'        ,&
-     &             'ECART_TYPE'    , 'RMS'           , 'MAXI'         ,&
-     &             'MINI'          , 'MOYEN_T_TOTAL' , 'MOYEN_T_CHOC' ,&
-     &             'RMS_T_TOTAL'   , 'RMS_T_CHOC'    , 'NB_CHOC_S'    ,&
-     &             'NB_REBON_CHOC' , 'T_CHOC_MOYEN'  , 'T_CHOC_MAXI'  ,&
-     &             'T_CHOC_MINI'   , 'T_REBON_MOYEN' , '%_T_CHOC'     ,&
-     &             'PUIS_USURE'    /
-    data tpara / 'K24', 'K8'      , 'K16'           , 'R'            ,&
-     &             'R'             , 'R'             , 'R'            ,&
-     &             'R'             , 'R'             , 'R'            ,&
-     &             'R'             , 'R'             , 'I'            ,&
-     &             'I'             , 'R'             , 'R'            ,&
-     &             'R'             , 'R'             , 'I'            ,&
-     &             'R'             /
-    data tdepl / 'INTITULE','NOEUD', 'CALCUL'        , 'MOYEN'        ,&
-     &             'ECART_TYPE'    , 'RMS'           , 'MAXI'         ,&
-     &             'MINI'          /
-    data tforn / 'INTITULE','NOEUD', 'CALCUL'        , 'MOYEN_T_TOTAL',&
-     &             'MOYEN_T_CHOC'  , 'RMS_T_TOTAL'   , 'RMS_T_CHOC'   ,&
-     &             'MAXI'          /
-    data tstch / 'INTITULE','NOEUD', 'CALCUL'        , 'NB_CHOC_S'    ,&
-     &             'NB_REBON_CHOC' , 'T_CHOC_MOYEN'  , 'T_CHOC_MAXI'  ,&
-     &             'T_CHOC_MINI'   , 'T_REBON_MOYEN' , '%_T_CHOC'     /
-    data tusur / 'INTITULE','NOEUD', 'CALCUL'        , 'PUIS_USURE'   /
+    data tvar/'DEPL_X', 'DEPL_Y', 'DEPL_Z', 'DEPL_RADIAL',&
+     &             'DEPL_ANGULAIRE', 'FORCE_NORMALE', 'FORCE_TANG_1',&
+     &             'FORCE_TANG_2', 'STAT_CHOC', 'PUIS_USURE'/
+    data npara/'INTITULE', 'NOEUD', 'CALCUL', 'MOYEN',&
+     &             'ECART_TYPE', 'RMS', 'MAXI',&
+     &             'MINI', 'MOYEN_T_TOTAL', 'MOYEN_T_CHOC',&
+     &             'RMS_T_TOTAL', 'RMS_T_CHOC', 'NB_CHOC_S',&
+     &             'NB_REBON_CHOC', 'T_CHOC_MOYEN', 'T_CHOC_MAXI',&
+     &             'T_CHOC_MINI', 'T_REBON_MOYEN', '%_T_CHOC',&
+     &             'PUIS_USURE'/
+    data tpara/'K24', 'K8', 'K16', 'R',&
+     &             'R', 'R', 'R',&
+     &             'R', 'R', 'R',&
+     &             'R', 'R', 'I',&
+     &             'I', 'R', 'R',&
+     &             'R', 'R', 'I',&
+     &             'R'/
+    data tdepl/'INTITULE', 'NOEUD', 'CALCUL', 'MOYEN',&
+     &             'ECART_TYPE', 'RMS', 'MAXI',&
+     &             'MINI'/
+    data tforn/'INTITULE', 'NOEUD', 'CALCUL', 'MOYEN_T_TOTAL',&
+     &             'MOYEN_T_CHOC', 'RMS_T_TOTAL', 'RMS_T_CHOC',&
+     &             'MAXI'/
+    data tstch/'INTITULE', 'NOEUD', 'CALCUL', 'NB_CHOC_S',&
+     &             'NB_REBON_CHOC', 'T_CHOC_MOYEN', 'T_CHOC_MAXI',&
+     &             'T_CHOC_MINI', 'T_REBON_MOYEN', '%_T_CHOC'/
+    data tusur/'INTITULE', 'NOEUD', 'CALCUL', 'PUIS_USURE'/
 !-----------------------------------------------------------------------
 !
-    c16b=(0.d0,0.d0)
-    ibid=0
+    c16b = (0.d0, 0.d0)
+    ibid = 0
     zero = 0.0d0
     rad = r8rddg()
     call infniv(ifires, impr)
@@ -114,35 +114,35 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         if (tdebut .le. temps(i)) then
             idebut = i
             goto 2
-        endif
+        end if
     end do
-  2 continue
+2   continue
     if (tfin .ge. temps(nbpt)) then
         ifin = nbpt
         goto 4
-    endif
+    end if
     do i = 1, nbpt
         if (temps(i) .ge. tfin) then
             ifin = i
             goto 4
-        endif
+        end if
     end do
-  4 continue
+4   continue
 !
-    nbpas = ifin - idebut + 1
+    nbpas = ifin-idebut+1
     if (nbloc .eq. 0) nbloc = 1
-    nbval = nbpas / nbloc
-    ttot = temps((nbval*nbloc)+idebut-1) - temps(idebut)
+    nbval = nbpas/nbloc
+    ttot = temps((nbval*nbloc)+idebut-1)-temps(idebut)
 !
     if (impr .eq. 2) then
-        write(ifires,1000)
-        write(ifires,1010) nbloc, nbval
-        write(ifires,1000)
+        write (ifires, 1000)
+        write (ifires, 1010) nbloc, nbval
+        write (ifires, 1000)
         do i = 1, nbloc
-            write(ifires,1020) i, temps(idebut+nbval*(i-1)), temps(&
-            idebut+nbval*i-1)
+            write (ifires, 1020) i, temps(idebut+nbval*(i-1)), temps( &
+                idebut+nbval*i-1)
         end do
-    endif
+    end if
 !
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, nbpara, npara, tpara)
@@ -153,14 +153,14 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         valek(2) = noeud
 !
         if (impr .eq. 2) then
-            write(ifires,*) '   '
-            write(ifires,1030)
-            write(ifires,1040)
-            write(ifires,1050)
-            write(ifires,1060) noeud
-            write(ifires,1040)
-            write(ifires,1030)
-        endif
+            write (ifires, *) '   '
+            write (ifires, 1030)
+            write (ifires, 1040)
+            write (ifires, 1050)
+            write (ifires, 1060) noeud
+            write (ifires, 1040)
+            write (ifires, 1030)
+        end if
 !
 !       --------------------------------
 !       --- ANALYSE DES DEPLACEMENTS ---
@@ -175,7 +175,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             dxmaxt = -1.d30
             dxmint = -dxmaxt
 !
-            idec=3*(i-1)+j
+            idec = 3*(i-1)+j
             call dcopy(nbpt, dloc(idec), 3*nbobst, wk1(1), 1)
 !
             do ibl = 1, nbloc
@@ -188,33 +188,33 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
                 dxmax = -1.d30
                 dxmin = -dxmax
 !
-                call dstapv(nbval, wk1((ibl-1)*nbval+idebut), temps(( ibl-1)*nbval+idebut), dmin,&
-                            dmax, dxmoy, dxetyp, dxrms, xtmoy,&
+                call dstapv(nbval, wk1((ibl-1)*nbval+idebut), temps((ibl-1)*nbval+idebut), dmin, &
+                            dmax, dxmoy, dxetyp, dxrms, xtmoy, &
                             xtetyp, xtrms)
-                dxmoyt = dxmoyt + xtmoy
-                dxetyt = dxetyt + xtetyp
-                dxrmst = dxrmst + xtrms
-                dxmax = max( dxmax , dmax )
-                dxmaxt = max( dxmaxt , dxmax )
-                dxmin = min( dxmin , dmin )
-                dxmint = min( dxmint , dxmin )
-                if (impr .eq. 2) call impdep(ifires, j, ibl, dxmoy, dxetyp,&
+                dxmoyt = dxmoyt+xtmoy
+                dxetyt = dxetyt+xtetyp
+                dxrmst = dxrmst+xtrms
+                dxmax = max(dxmax, dmax)
+                dxmaxt = max(dxmaxt, dxmax)
+                dxmin = min(dxmin, dmin)
+                dxmint = min(dxmint, dxmin)
+                if (impr .eq. 2) call impdep(ifires, j, ibl, dxmoy, dxetyp, &
                                              dxrms, dxmax, dxmin)
             end do
-            dxmoyt = dxmoyt / ttot
-            dxrmst = sqrt( dxrmst / ttot )
-            dxetyt = sqrt( dxetyt / ttot )
+            dxmoyt = dxmoyt/ttot
+            dxrmst = sqrt(dxrmst/ttot)
+            dxetyt = sqrt(dxetyt/ttot)
             if (ibl .gt. 1) then
                 ibl = 0
-                if (impr .eq. 2) call impdep(ifires, j, ibl, dxmoyt, dxetyt,&
+                if (impr .eq. 2) call impdep(ifires, j, ibl, dxmoyt, dxetyt, &
                                              dxrmst, dxmaxt, dxmint)
-            endif
+            end if
             para(1) = dxmoyt
             para(2) = dxetyt
             para(3) = dxrmst
             para(4) = dxmaxt
             para(5) = dxmint
-            call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+            call tbajli(nomres, ndepl, tdepl, [ibid], para, &
                         [c16b], valek, 0)
         end do
 !
@@ -225,7 +225,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         call dcopy(nbpt, dloc(3*(i-1)+2), 3*nbobst, wk1, 1)
         call dcopy(nbpt, dloc(3*(i-1)+3), 3*nbobst, wk2, 1)
         do in = 1, nbpt
-            wk3(in) = sqrt( wk1(in)*wk1(in) + wk2(in)*wk2(in) )
+            wk3(in) = sqrt(wk1(in)*wk1(in)+wk2(in)*wk2(in))
         end do
 !
         dxmoyt = zero
@@ -242,34 +242,34 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             dxrms = zero
             dxmax = -1.d30
             dxmin = -dxmax
-            call dstapv(nbval, wk3((ibl-1)*nbval+idebut), temps((ibl- 1)*nbval+idebut), dmin,&
-                        dmax, dxmoy, dxetyp, dxrms, xtmoy,&
+            call dstapv(nbval, wk3((ibl-1)*nbval+idebut), temps((ibl-1)*nbval+idebut), dmin, &
+                        dmax, dxmoy, dxetyp, dxrms, xtmoy, &
                         xtetyp, xtrms)
-            dxmoyt = dxmoyt + xtmoy
-            dxetyt = dxetyt + xtetyp
-            dxrmst = dxrmst + xtrms
-            dxmin = min(dxmin,dmin)
-            dxmax = max(dxmax,dmax)
-            dxmaxt = max(dxmaxt,dxmax)
-            dxmint = min(dxmint,dxmin)
-            if (impr .eq. 2) call impdep(ifires, 4, ibl, dxmoy, dxetyp,&
+            dxmoyt = dxmoyt+xtmoy
+            dxetyt = dxetyt+xtetyp
+            dxrmst = dxrmst+xtrms
+            dxmin = min(dxmin, dmin)
+            dxmax = max(dxmax, dmax)
+            dxmaxt = max(dxmaxt, dxmax)
+            dxmint = min(dxmint, dxmin)
+            if (impr .eq. 2) call impdep(ifires, 4, ibl, dxmoy, dxetyp, &
                                          dxrms, dxmax, dxmin)
         end do
-        dxmoyt = dxmoyt / ttot
-        dxrmst = sqrt( dxrmst / ttot )
-        dxetyt = sqrt( dxetyt / ttot )
+        dxmoyt = dxmoyt/ttot
+        dxrmst = sqrt(dxrmst/ttot)
+        dxetyt = sqrt(dxetyt/ttot)
         if (ibl .gt. 1) then
             ibl = 0
-            if (impr .eq. 2) call impdep(ifires, 4, ibl, dxmoyt, dxetyt,&
+            if (impr .eq. 2) call impdep(ifires, 4, ibl, dxmoyt, dxetyt, &
                                          dxrmst, dxmaxt, dxmint)
-        endif
+        end if
         valek(3) = tvar(4)
         para(1) = dxmoyt
         para(2) = dxetyt
         para(3) = dxrmst
         para(4) = dxmaxt
         para(5) = dxmint
-        call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+        call tbajli(nomres, ndepl, tdepl, [ibid], para, &
                     [c16b], valek, 0)
 !
 !       ----------------------------------
@@ -277,11 +277,11 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
 !       ----------------------------------
 !
         do in = 1, nbpt
-            if ((wk1(in).ne.zero) .or. (wk2(in).ne.zero)) then
-                wk3(in) = rad*atan2(wk2(in),wk1(in))
+            if ((wk1(in) .ne. zero) .or. (wk2(in) .ne. zero)) then
+                wk3(in) = rad*atan2(wk2(in), wk1(in))
             else
                 wk3(in) = zero
-            endif
+            end if
         end do
 !
         dxmoyt = zero
@@ -298,34 +298,34 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             dxrms = zero
             dxmax = -1.d30
             dxmin = -dxmax
-            call dstapv(nbval, wk3((ibl-1)*nbval+idebut), temps((ibl- 1)*nbval+idebut), dmin,&
-                        dmax, dxmoy, dxetyp, dxrms, xtmoy,&
+            call dstapv(nbval, wk3((ibl-1)*nbval+idebut), temps((ibl-1)*nbval+idebut), dmin, &
+                        dmax, dxmoy, dxetyp, dxrms, xtmoy, &
                         xtetyp, xtrms)
-            dxmoyt = dxmoyt + xtmoy
-            dxetyt = dxetyt + xtetyp
-            dxrmst = dxrmst + xtrms
-            dxmin = min(dxmin,dmin)
-            dxmax = max(dxmax,dmax)
-            dxmaxt = max(dxmaxt,dxmax)
-            dxmint = min(dxmint,dxmin)
-            if (impr .eq. 2) call impdep(ifires, 5, ibl, dxmoy, dxetyp,&
+            dxmoyt = dxmoyt+xtmoy
+            dxetyt = dxetyt+xtetyp
+            dxrmst = dxrmst+xtrms
+            dxmin = min(dxmin, dmin)
+            dxmax = max(dxmax, dmax)
+            dxmaxt = max(dxmaxt, dxmax)
+            dxmint = min(dxmint, dxmin)
+            if (impr .eq. 2) call impdep(ifires, 5, ibl, dxmoy, dxetyp, &
                                          dxrms, dxmax, dxmin)
         end do
-        dxmoyt = dxmoyt / ttot
-        dxrmst = sqrt( dxrmst / ttot )
-        dxetyt = sqrt( dxetyt / ttot )
+        dxmoyt = dxmoyt/ttot
+        dxrmst = sqrt(dxrmst/ttot)
+        dxetyt = sqrt(dxetyt/ttot)
         if (ibl .gt. 1) then
-            ibl=0
-            if (impr .eq. 2) call impdep(ifires, 5, ibl, dxmoyt, dxetyt,&
+            ibl = 0
+            if (impr .eq. 2) call impdep(ifires, 5, ibl, dxmoyt, dxetyt, &
                                          dxrmst, dxmaxt, dxmint)
-        endif
+        end if
         valek(3) = tvar(5)
         para(1) = dxmoyt
         para(2) = dxetyt
         para(3) = dxrmst
         para(4) = dxmaxt
         para(5) = dxmint
-        call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+        call tbajli(nomres, ndepl, tdepl, [ibid], para, &
                     [c16b], valek, 0)
 !
 !       ------------------------------------------------------------
@@ -354,28 +354,28 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             fnmaxm = fnmax
             nbmafn = 0
             nbmifn = 0
-            call fstapv(nbval, wk1((ibl-1)*nbval+idebut), temps((ibl-1) *nbval+idebut), offset,&
-                        fnmoyt, fnmoyc, fnrmst, fnrmsc, fnmax,&
-                        fnmin, fnmaxm, fnminm, sfn, sfn2,&
+            call fstapv(nbval, wk1((ibl-1)*nbval+idebut), temps((ibl-1)*nbval+idebut), offset, &
+                        fnmoyt, fnmoyc, fnrmst, fnrmsc, fnmax, &
+                        fnmin, fnmaxm, fnminm, sfn, sfn2, &
                         tchoc, nbmafn, nbmifn)
-            fxmoyt = fxmoyt + sfn
-            fxrmst = fxrmst + sfn2
-            txchoc = txchoc + tchoc
-            fxmaxt = max(fxmaxt,fnmax)
-            fxmint = min(fxmint,fnmin)
-            if (impr .eq. 2) call impfn0(ifires, ibl, fnmoyt, fnmoyc, fnrmst,&
+            fxmoyt = fxmoyt+sfn
+            fxrmst = fxrmst+sfn2
+            txchoc = txchoc+tchoc
+            fxmaxt = max(fxmaxt, fnmax)
+            fxmint = min(fxmint, fnmin)
+            if (impr .eq. 2) call impfn0(ifires, ibl, fnmoyt, fnmoyc, fnrmst, &
                                          fnrmsc, fnmax)
         end do
-        fxmoyt = fxmoyt / ttot
-        fxrmst = sqrt( fxrmst / ttot )
+        fxmoyt = fxmoyt/ttot
+        fxrmst = sqrt(fxrmst/ttot)
         if (txchoc .ne. zero) then
-            fxmoyc = fxmoyt / txchoc
-            fxrmsc = sqrt( fxrmst / txchoc )
+            fxmoyc = fxmoyt/txchoc
+            fxrmsc = sqrt(fxrmst/txchoc)
         else
             fxmoyc = zero
             fxrmsc = zero
-        endif
-        if (ibl .gt. 1 .and. impr .eq. 2) call impfn0(ifires, 0, fxmoyt, fxmoyc, fxrmst,&
+        end if
+        if (ibl .gt. 1 .and. impr .eq. 2) call impfn0(ifires, 0, fxmoyt, fxmoyc, fxrmst, &
                                                       fxrmsc, fxmaxt)
         valek(3) = tvar(6)
         para(1) = fxmoyt
@@ -383,7 +383,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
         para(3) = fxrmst
         para(4) = fxrmsc
         para(5) = fxmaxt
-        call tbajli(nomres, nforn, tforn, [ibid], para,&
+        call tbajli(nomres, nforn, tforn, [ibid], para, &
                     [c16b], valek, 0)
 !
 !       ----------------------------------------------------------------
@@ -409,33 +409,33 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
                 frms = zero
                 ftmax = -1.d30
                 ftmin = -ftmax
-                call dstapv(nbval, wk1((ibl-1)*nbval+idebut), temps(( ibl-1)*nbval+idebut),&
-                            ftmin, ftmax, ftmoye, ftetyp, ftrms,&
+                call dstapv(nbval, wk1((ibl-1)*nbval+idebut), temps((ibl-1)*nbval+idebut), &
+                            ftmin, ftmax, ftmoye, ftetyp, ftrms, &
                             ftmoy, fetyp, frms)
                 fymoyt = fymoyt+ftmoy
                 fyetyt = fyetyt+fetyp
                 fyrmst = fyrmst+frms
-                fymaxt = max(fymaxt,ftmax)
-                fymint = min(fymint,ftmin)
+                fymaxt = max(fymaxt, ftmax)
+                fymint = min(fymint, ftmin)
                 indic = j-1
-                if (impr .eq. 2) call impftv(ifires, indic, ibl, ftmoye, ftetyp,&
-                                             ftrms, ftmoye, ftetyp, ftrms, ftmax,&
+                if (impr .eq. 2) call impftv(ifires, indic, ibl, ftmoye, ftetyp, &
+                                             ftrms, ftmoye, ftetyp, ftrms, ftmax, &
                                              ftmin)
             end do
-            fymoyt = fymoyt / ttot
-            fyetyt = sqrt( fyetyt / ttot )
-            fyrmst = sqrt( fyrmst / ttot )
+            fymoyt = fymoyt/ttot
+            fyetyt = sqrt(fyetyt/ttot)
+            fyrmst = sqrt(fyrmst/ttot)
             if (txchoc .ne. zero) then
-                fymoyc = fymoyt / txchoc
-                fyetyc = sqrt( fyetyt / txchoc )
-                fyrmsc = sqrt( fyrmst / txchoc )
+                fymoyc = fymoyt/txchoc
+                fyetyc = sqrt(fyetyt/txchoc)
+                fyrmsc = sqrt(fyrmst/txchoc)
             else
                 fymoyc = zero
                 fyetyc = zero
                 fyrmsc = zero
-            endif
-            if (ibl .gt. 1 .and. impr .eq. 2) call impftv(ifires, indic, 0, fymoyt, fyetyt,&
-                                                          fyrmst, fymoyc, fyetyc, fyrmsc, fymaxt,&
+            end if
+            if (ibl .gt. 1 .and. impr .eq. 2) call impftv(ifires, indic, 0, fymoyt, fyetyt, &
+                                                          fyrmst, fymoyc, fyetyc, fyrmsc, fymaxt, &
                                                           fymint)
             valek(3) = tvar(5+j)
             para(1) = fymoyt
@@ -443,7 +443,7 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             para(3) = fyrmst
             para(4) = fymaxt
             para(5) = fymint
-            call tbajli(nomres, ndepl, tdepl, [ibid], para,&
+            call tbajli(nomres, ndepl, tdepl, [ibid], para, &
                         [c16b], valek, 0)
         end do
 !
@@ -468,70 +468,70 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
             tchmin = zero
             nbchoc = 0
             nbrebo = 0
-            call comptv(nbval, wk1((ibl-1)*nbval+idebut), offset, temps((ibl-1)*nbval+idebut),&
-                        nbchoc, tchmin, tchmax, tchoct, tchocm,&
+            call comptv(nbval, wk1((ibl-1)*nbval+idebut), offset, temps((ibl-1)*nbval+idebut), &
+                        nbchoc, tchmin, tchmax, tchoct, tchocm, &
                         nbrebo, trebot, trebom)
-            tchoma = max(tchoma,tchmax)
-            tchomi = min(tchomi,tchmin)
-            tchocg = tchocg + tchoct
-            trebog = trebog + trebot
-            nbchot = nbchot + nbchoc
-            nbrebt = nbrebt + nbrebo
-            if (impr .eq. 2) call impc0(ifires, ibl, nbchoc, tchocm, tchmax,&
-                                        tchmin, nbrebo, trebom, tchoct, temps,&
+            tchoma = max(tchoma, tchmax)
+            tchomi = min(tchomi, tchmin)
+            tchocg = tchocg+tchoct
+            trebog = trebog+trebot
+            nbchot = nbchot+nbchoc
+            nbrebt = nbrebt+nbrebo
+            if (impr .eq. 2) call impc0(ifires, ibl, nbchoc, tchocm, tchmax, &
+                                        tchmin, nbrebo, trebom, tchoct, temps, &
                                         nbval)
         end do
         if (nbchot .ne. 0) then
-            tchomy = tchocg / nbchot
+            tchomy = tchocg/nbchot
         else
             tchomy = zero
-        endif
+        end if
         if (nbrebt .ne. 0) then
-            trebmy = trebog / nbrebt
+            trebmy = trebog/nbrebt
         else
             trebmy = zero
-        endif
+        end if
         if (ibl .gt. 1 .and. impr .eq. 2) then
-            call impc0(ifires, 0, nbchot, tchomy, tchoma,&
-                       tchomi, nbrebt, trebmy, tchocg, temps,&
+            call impc0(ifires, 0, nbchot, tchomy, tchoma, &
+                       tchomi, nbrebt, trebmy, tchocg, temps, &
                        nbloc*nbval)
-        endif
+        end if
         valek(3) = tvar(9)
         if (nbchot .ne. 0) then
-            nrepc = nbrebt / nbchot
+            nrepc = nbrebt/nbchot
         else
             nrepc = 0
-        endif
-        valei(1) = int( nbchot / ttot )
+        end if
+        valei(1) = int(nbchot/ttot)
         valei(2) = nrepc
         para(1) = tchomy
         para(2) = tchoma
         para(3) = tchomi
         para(4) = trebmy
-        valei(3) = int( 100.d0 * tchocg / ttot )
-        call tbajli(nomres, nstch, tstch, [valei], para,&
+        valei(3) = int(100.d0*tchocg/ttot)
+        call tbajli(nomres, nstch, tstch, [valei], para, &
                     [c16b], valek, 0)
 !
 !       --------------------------------------------------------
 !       --- CALCUL DE LA PUISSANCE D'USURE AU SENS D'ARCHARD ---
 !       --------------------------------------------------------
 !
-        call statpu(nbobst, nbpt, temps, fcho, vgli,&
-                    iadh, wk1, wk2, wk3, iwk4,&
-                    idebut, nbloc, nbval, ifires, i,&
+        call statpu(nbobst, nbpt, temps, fcho, vgli, &
+                    iadh, wk1, wk2, wk3, iwk4, &
+                    idebut, nbloc, nbval, ifires, i, &
                     impr, pusurn)
         valek(3) = tvar(10)
-        call tbajli(nomres, nusur, tusur, [ibid], [pusurn],&
+        call tbajli(nomres, nusur, tusur, [ibid], [pusurn], &
                     [c16b], valek, 0)
 !
     end do
 !
-    1000 format(7x,'---------------------------------------------------')
-    1010 format(9x,'STATISTIQUES SUR ',i3,' BLOC(S) DE ',i7,' VALEURS')
-    1020 format(8x,1p,'BLOC NO: ',i3,' DE T= ',e12.5,' A T= ',e12.5)
-    1030 format(14x,'****************************************')
-    1040 format(14x,'*                                      *')
-    1050 format(14x,'*        TRAITEMENT STATISTIQUE        *')
-    1060 format(14x,'*         NOEUD DE CHOC: ',a8,'      *')
+1000 format(7x, '---------------------------------------------------')
+1010 format(9x, 'STATISTIQUES SUR ', i3, ' BLOC(S) DE ', i7, ' VALEURS')
+1020 format(8x, 1p, 'BLOC NO: ', i3, ' DE T= ', e12.5, ' A T= ', e12.5)
+1030 format(14x, '****************************************')
+1040 format(14x, '*                                      *')
+1050 format(14x, '*        TRAITEMENT STATISTIQUE        *')
+1060 format(14x, '*         NOEUD DE CHOC: ', a8, '      *')
 !
 end subroutine

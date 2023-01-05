@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pipeex(mat, sup, sud, mup, mud,&
+subroutine pipeex(mat, sup, sud, mup, mud, &
                   vim, tau, copilo)
 !
 !
@@ -45,52 +45,52 @@ subroutine pipeex(mat, sup, sud, mup, mud,&
     character(len=16) :: nom(3)
     character(len=8) ::  fami, poum
 !
-    data nom /'GC','SIGM_C','PENA_LAGR'/
+    data nom/'GC', 'SIGM_C', 'PENA_LAGR'/
 ! ----------------------------------------------------------------------
 !
 !
 ! -- CAS DE L'ENDOMMAGEMENT SATURE
 !
-    ga = vim(4) + tau
+    ga = vim(4)+tau
     if (ga .gt. 1.d0) goto 9999
 !
 ! -- RECUPERATION DES PARAMETRES PHYSIQUES
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, mat,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, mat, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 3, nom, val, cod, 2)
     gc = val(1)
     sc = val(2)
     dc = 3.2*gc/sc
     h = sc/dc
-    r = h * val(3)
+    r = h*val(3)
 !
 !    CALCUL DE KAPPA : KA = DC*(1-SQRT(1-GA))
 !
-    tmp = sqrt(max(0.d0,1.d0-ga))
+    tmp = sqrt(max(0.d0, 1.d0-ga))
     tmp = dc*(1.d0-tmp)
-    tmp = max(0.d0,tmp)
-    tmp = min(dc,tmp)
+    tmp = max(0.d0, tmp)
+    tmp = min(dc, tmp)
     ka = tmp
-    sk = max(0.d0,sc - h*ka)
+    sk = max(0.d0, sc-h*ka)
 !
 !   CALCUL DU SEUIL
 !
-    tt = r*ka + sk
+    tt = r*ka+sk
     tauref = tau/tt
 !
 ! -- CALCUL DU SECOND MEMBRE
 !
-    tpn = mup(1) + r*sup(1)
-    tdn = mud(1) + r*sud(1)
+    tpn = mup(1)+r*sup(1)
+    tdn = mud(1)+r*sud(1)
 !
 ! -- PILOTAGE DU POINT
 !
-    copilo(1) = tauref * tpn
-    copilo(2) = tauref * tdn
+    copilo(1) = tauref*tpn
+    copilo(2) = tauref*tdn
 !
-9999  continue
+9999 continue
 end subroutine

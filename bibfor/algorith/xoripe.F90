@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine xoripe(modele)
     integer :: ifiss, nfiss, mailvo(1)
     character(len=8) :: noma, typbo, fiss
     character(len=6) :: nompro
-    parameter (nompro = 'XORIPE')
+    parameter(nompro='XORIPE')
     character(len=2) :: kdim
     character(len=19) :: ligrel, chs(5), chlsn
     character(len=24) :: grmape, nomob, vecnor, grp(3)
@@ -93,7 +93,7 @@ subroutine xoripe(modele)
     call infdbg('XFEM', ifm, niv)
 !
 !     INITIALISATION DU NOMBRE DE SOUS-ELEMENTS RE-ORIENTES
-    nseori=0
+    nseori = 0
 !
     ligrel = modele//'.MODELE'
 !
@@ -123,25 +123,25 @@ subroutine xoripe(modele)
 !     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
 !     ------------------------------------------------------------------
 !
-    grmape='&&XORIPE.GRMAPE'
+    grmape = '&&XORIPE.GRMAPE'
     call wkvect(grmape, 'V V I', nbma, jmail)
 !
 !     INITIALISATION DU NOMBRE DE MAILLES DE LA LISTE
-    nbmail=0
+    nbmail = 0
 !
     do ifis = 1, nfis
 !
         fiss = vfiss(ifis)
 !
 !       REMPLISSAGE DE LA LISTE
-        elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
-        elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
-        elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
-        call xelfis_lists(fiss, modele, elfis_heav,&
-                              elfis_ctip, elfis_hect)
-        grp(1)=elfis_heav
-        grp(2)=elfis_ctip
-        grp(3)=elfis_hect
+        elfis_heav = '&&'//nompro//'.ELEMFISS.HEAV'
+        elfis_ctip = '&&'//nompro//'.ELEMFISS.CTIP'
+        elfis_hect = '&&'//nompro//'.ELEMFISS.HECT'
+        call xelfis_lists(fiss, modele, elfis_heav, &
+                          elfis_ctip, elfis_hect)
+        grp(1) = elfis_heav
+        grp(2) = elfis_ctip
+        grp(3) = elfis_hect
 !
 !       BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT
         do kk = 1, 3
@@ -155,16 +155,16 @@ subroutine xoripe(modele)
                 do i = 1, nmaenr
                     ima = zi(jgrp-1+i)
 !             NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-                    ndime= tmdim(typmail(ima))
+                    ndime = tmdim(typmail(ima))
                     if (ndim .eq. ndime+1) then
-                        nbmail=nbmail+1
-                        zi(jmail-1+nbmail)=ima
-                    endif
+                        nbmail = nbmail+1
+                        zi(jmail-1+nbmail) = ima
+                    end if
                 end do
 !               menage
                 call jedetr(grp(kk))
 !
-            endif
+            end if
         end do
 !
     end do
@@ -173,62 +173,62 @@ subroutine xoripe(modele)
 !     ------------------------------------------------------------------
 !     II°) RECHERCHE DES MAILLES SUPPORT
 !     ------------------------------------------------------------------
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
-    if (ndim .eq. 2) kdim='2D'
-    if (ndim .eq. 3) kdim='3D'
+    ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
+    if (ndim .eq. 2) kdim = '2D'
+    if (ndim .eq. 3) kdim = '3D'
 !
     nomob = '&&XORIPE.NU_MAILLE_3D'
 !
-    call utmasu(noma, kdim, nbmail, zi(jmail), nomob,&
+    call utmasu(noma, kdim, nbmail, zi(jmail), nomob, &
                 vale, 0, mailvo, .false._1)
     call jeveuo(nomob, 'L', jm3d)
 !
     do ima = 1, nbmail
-        if ( zi(jm3d-1+ima) .eq. 0 ) then
+        if (zi(jm3d-1+ima) .eq. 0) then
             call utmess('F', 'XFEM2_59')
-        endif
-    enddo
+        end if
+    end do
 !
 !     ------------------------------------------------------------------
 !     III°) CREATION DU VECTEUR DES NORMALES SORTANTES
 !     ------------------------------------------------------------------
 !
-    vecnor='&&XORIPE.VECNOR'
+    vecnor = '&&XORIPE.VECNOR'
     call wkvect(vecnor, 'V V R', nbmail*ndim, jvecno)
 !
     do ima = 1, nbmail
 !       NUMEROS DES MAILLES PRINCIPALE ET DE BORD
-        numab=zi(jmail-1+ima)
-        numapr=zi(jm3d-1+ima)
+        numab = zi(jmail-1+ima)
+        numapr = zi(jm3d-1+ima)
 !
 !       NOMBRES DE NOEUDS DES MAILLES PRINCIPALE ET DE BORD
-        nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
-        nbnopr=zi(jconx2+numapr) - zi(jconx2+numapr-1)
+        nbnobo = zi(jconx2+numab)-zi(jconx2+numab-1)
+        nbnopr = zi(jconx2+numapr)-zi(jconx2+numapr-1)
 !
 !       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
         gbo = 0.d0
         do ino = 1, nbnobo
-            nuno=connex(zi(jconx2+numab-1)+ino-1)
+            nuno = connex(zi(jconx2+numab-1)+ino-1)
             do j = 1, ndim
-                gbo(j)=gbo(j)+vale(3*(nuno-1)+j)/nbnobo
+                gbo(j) = gbo(j)+vale(3*(nuno-1)+j)/nbnobo
             end do
         end do
 !
 !     GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
         gpr = 0.d0
         do ino = 1, nbnopr
-            nuno=connex(zi(jconx2+numapr-1)+ino-1)
+            nuno = connex(zi(jconx2+numapr-1)+ino-1)
             do j = 1, ndim
-                gpr(j)=gpr(j)+vale(3*(nuno-1)+j)/nbnopr
+                gpr(j) = gpr(j)+vale(3*(nuno-1)+j)/nbnopr
             end do
         end do
 !
 !       NORMALE EXTERIEURE : NEXT = GBO - GPR
-        next = gbo - gpr
+        next = gbo-gpr
         call normev(next, norme)
 !
         do j = 1, ndim
-            zr(jvecno-1+ndim*(ima-1)+j)=next(j)
+            zr(jvecno-1+ndim*(ima-1)+j) = next(j)
         end do
 !
     end do
@@ -263,164 +263,164 @@ subroutine xoripe(modele)
 !
     do ima = 1, nbmail
         do j = 1, ndim
-            next(j)=zr(jvecno-1+ndim*(ima-1)+j)
+            next(j) = zr(jvecno-1+ndim*(ima-1)+j)
         end do
 !
-        numab =zi(jmail-1+ima)
+        numab = zi(jmail-1+ima)
 ! --- CA NE SERT A RIEN DE RECUPERER NDIME CAR ON A SELECTIONNÉ NUMAB
 ! --- TEL QUE NDIME = NDIM-1 (BOUCLE 120)
-        ndime= tmdim(typmail(numab))
+        ndime = tmdim(typmail(numab))
         nfiss = zi(jcesd(4)-1+5+4*(numab-1)+2)
-        numapr=zi(jm3d-1+ima)
-        nbnopr=zi(jconx2+numapr) - zi(jconx2+numapr-1)
+        numapr = zi(jm3d-1+ima)
+        nbnopr = zi(jconx2+numapr)-zi(jconx2+numapr-1)
 !
-        itypma=typmail(numapr)
+        itypma = typmail(numapr)
         call panbno(itypma, nbnott)
-        quadratique=.false.
+        quadratique = .false.
         if (ndim .eq. 2) then
-            itypbo=typmail(numab)
+            itypbo = typmail(numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypbo), typbo)
-            nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
-            nbnose=nbnobo
-            nbnos=nbnobo
+            nbnobo = zi(jconx2+numab)-zi(jconx2+numab-1)
+            nbnose = nbnobo
+            nbnos = nbnobo
         else
-            itypbo=typmail(numab)
+            itypbo = typmail(numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypbo), typbo)
-            nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
+            nbnobo = zi(jconx2+numab)-zi(jconx2+numab-1)
             if (nbnobo .gt. 4) then
-                nbnose=6
-                quadratique=.true.
+                nbnose = 6
+                quadratique = .true.
             else
-                nbnose=3
-                quadratique=.false.
-            endif
-            nbnos=3
-        endif
+                nbnose = 3
+                quadratique = .false.
+            end if
+            nbnos = 3
+        end if
 !
 !       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT
 !       SOUS-ELEMENTS
-        call cesexi('S', jcesd(3), jcesl(3), numab, 1,&
+        call cesexi('S', jcesd(3), jcesl(3), numab, 1, &
                     1, 1, iad)
-        nse=zi(jcesv(3)-1+iad)
+        nse = zi(jcesv(3)-1+iad)
 !
 !         BOUCLE SUR LES NSE SOUS-ELEMENTS
         do ise = 1, nse
 !
 !         CO(J,IN) : JEME COORDONNEE DU INEME SOMMET DU SOUS-ELEMENT
             do in = 1, nbnos
-                icmp=nbnose*(ise-1)+in
-                call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
-                            1, icmp, id( in))
-                ino=zi(jcesv(2)-1+id(in))
+                icmp = nbnose*(ise-1)+in
+                call cesexi('S', jcesd(2), jcesl(2), numab, 1, &
+                            1, icmp, id(in))
+                ino = zi(jcesv(2)-1+id(in))
                 if (ino .lt. 1000) then
-                    nuno=connex(zi(jconx2+numab-1)+ino-1)
+                    nuno = connex(zi(jconx2+numab-1)+ino-1)
 !
                     do j = 1, ndim
-                        co(j,in)=vale(3*(nuno-1)+j)
+                        co(j, in) = vale(3*(nuno-1)+j)
                     end do
-                else if (ino.gt.1000 .and. ino.lt.2000) then
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
                     do j = 1, ndim
-                        icmp=ndim*(ino-1000-1)+j
-                        call cesexi('S', jcesd(1), jcesl(1), numab, 1,&
+                        icmp = ndim*(ino-1000-1)+j
+                        call cesexi('S', jcesd(1), jcesl(1), numab, 1, &
                                     1, icmp, iad)
-                        co(j,in)=zr(jcesv(1)-1+iad)
+                        co(j, in) = zr(jcesv(1)-1+iad)
                     end do
-                endif
+                end if
             end do
 !
             do j = 1, ndim
-                a(j) = co(j,1)
-                b(j) = co(j,2)
-                if (ndim .eq. 3) c(j) = co(j,3)
+                a(j) = co(j, 1)
+                b(j) = co(j, 2)
+                if (ndim .eq. 3) c(j) = co(j, 3)
             end do
             if (ndim .eq. 2) then
                 a(3) = 0.d0
                 b(3) = 0.d0
-            endif
+            end if
 !
 !         NORMALE AU SOUS-ELEMENT 2D
             ab = 0.d0
-            ab = b - a
+            ab = b-a
             n2d = 0.d0
             if (ndim .eq. 3) then
                 ac = 0.d0
-                ac = c - a
+                ac = c-a
                 call provec(ab, ac, n2d)
-            else if (ndim.eq.2) then
+            else if (ndim .eq. 2) then
                 n2d(1) = ab(2)
                 n2d(2) = -ab(1)
                 n2d(3) = 0
-            endif
+            end if
             call normev(n2d, norme)
 !
 !
 !         PRODUIT SCALAIRE DES NORMALES : N2D.NEXT
-            if (ddot(ndim,n2d,1,next,1) .lt. 0.d0) then
+            if (ddot(ndim, n2d, 1, next, 1) .lt. 0.d0) then
 !           ON INVERSE LES SOMMETS S1 ET S2
 !           (ON INVERSE 1 ET 2 EN 2D
                 s1 = ndim-1
                 s2 = ndim
 !            ON INVERSE 2 ET 3 EN 3D)
-                nseori=nseori+1
-                intemp=zi(jcesv(2)-1+id(s1))
-                zi(jcesv(2)-1+id(s1))=zi(jcesv(2)-1+id(s2))
-                zi(jcesv(2)-1+id(s2))=intemp
+                nseori = nseori+1
+                intemp = zi(jcesv(2)-1+id(s1))
+                zi(jcesv(2)-1+id(s1)) = zi(jcesv(2)-1+id(s2))
+                zi(jcesv(2)-1+id(s2)) = intemp
                 if (quadratique) then
 !            ON INVERSE LES NOEUDS MILIEUX 4 ET 6 EN 3D)
 !               RECUPERATION DE LA CONNECTIVITE :
-                    icmp=nbnose*(ise-1)+4
-                    call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
+                    icmp = nbnose*(ise-1)+4
+                    call cesexi('S', jcesd(2), jcesl(2), numab, 1, &
                                 1, icmp, id4)
-                    icmp=nbnose*(ise-1)+6
-                    call cesexi('S', jcesd(2), jcesl(2), numab, 1,&
+                    icmp = nbnose*(ise-1)+6
+                    call cesexi('S', jcesd(2), jcesl(2), numab, 1, &
                                 1, icmp, id6)
 !               INVERSION  DE LA CONNECTIVITE :
-                    intemp=zi(jcesv(2)-1+id4)
-                    zi(jcesv(2)-1+id4)=zi(jcesv(2)-1+id6)
-                    zi(jcesv(2)-1+id6)=intemp
-                endif
-            endif
+                    intemp = zi(jcesv(2)-1+id4)
+                    zi(jcesv(2)-1+id4) = zi(jcesv(2)-1+id6)
+                    zi(jcesv(2)-1+id6) = intemp
+                end if
+            end if
 !
 !         ON MODIFIE HEAVISIDE SI BORD COINCIDANT AVEC INTERFACE
 !         RECUPERATION DE LA VALEUR DE LA FONCTION HEAVISIDE
             do ifiss = 1, nfiss
                 ihe = ise
-                call cesexi('S', jcesd(4), jcesl(4), numab, 1,&
+                call cesexi('S', jcesd(4), jcesl(4), numab, 1, &
                             ifiss, ihe, iad)
-                he=zi(jcesv(4)-1+iad)
-                ASSERT(he.eq.- 1.or.he.eq.1.or.he.eq.0.or.he.eq.99)
+                he = zi(jcesv(4)-1+iad)
+                ASSERT(he .eq. -1 .or. he .eq. 1 .or. he .eq. 0 .or. he .eq. 99)
                 if (he .eq. 99) then
 !             VERIF QUE C'EST NORMAL
-                    if ( (typbo(1:4).eq.'TRIA') .or. (typbo(1:3).eq.'SEG') ) then
-                        ASSERT(nse.eq.1)
-                    elseif (typbo(1:4).eq.'QUAD') then
-                        ASSERT(nse.eq.2)
+                    if ((typbo(1:4) .eq. 'TRIA') .or. (typbo(1:3) .eq. 'SEG')) then
+                        ASSERT(nse .eq. 1)
+                    elseif (typbo(1:4) .eq. 'QUAD') then
+                        ASSERT(nse .eq. 2)
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
 !             SIGNE LEVEL SET SUR LA MAILLE PRINCIPALE
-                    nsignp=0
-                    nsignm=0
-                    nsignz=0
+                    nsignp = 0
+                    nsignm = 0
+                    nsignz = 0
 !             LSN SUR LES NOEUDS SOMMETS DE LA MAILLE PRINCIPALE
                     do ino = 1, nbnott(1)
-                        call cesexi('S', jlsnd, jlsnl, numapr, ino,&
+                        call cesexi('S', jlsnd, jlsnl, numapr, ino, &
                                     ifiss, 1, iad2)
 !                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
                         lsn = cesv(iad2)
-                        if (lsn .gt. 0.d0) nsignp = nsignp +1
-                        if (lsn .eq. 0.d0) nsignz = nsignz +1
-                        if (lsn .lt. 0.d0) nsignm = nsignm +1
+                        if (lsn .gt. 0.d0) nsignp = nsignp+1
+                        if (lsn .eq. 0.d0) nsignz = nsignz+1
+                        if (lsn .lt. 0.d0) nsignm = nsignm+1
                     end do
-                    ASSERT(nsignz.ne.0)
+                    ASSERT(nsignz .ne. 0)
 !             REMARQUE : LES DEUX TESTS SUIVANTS NE SONT PAS CORRECTS
 !             VOIR FICHE 13265
 !              ASSERT(NSIGNP+NSIGNM.NE.0)
 !              ASSERT(NSIGNP*NSIGNM.EQ.0)
 !             ON ECRIT HE
-                    if (nsignp .gt. 0) zi(jcesv(4)-1+iad)= 1
-                    if (nsignm .gt. 0) zi(jcesv(4)-1+iad)=-1
-                endif
+                    if (nsignp .gt. 0) zi(jcesv(4)-1+iad) = 1
+                    if (nsignm .gt. 0) zi(jcesv(4)-1+iad) = -1
+                end if
             end do
 !
         end do
@@ -428,9 +428,9 @@ subroutine xoripe(modele)
     end do
 !
 !     ON SAUVE LES NOUVEAUX CHAM_ELEM MODIFIES A LA PLACE DES ANCIENS
-    call cescel(chs(2), ligrel, 'TOPOSE', 'PCNSETO', 'OUI',&
+    call cescel(chs(2), ligrel, 'TOPOSE', 'PCNSETO', 'OUI', &
                 nncp, 'G', cnseto, 'F', ibid)
-    call cescel(chs(4), ligrel, 'TOPOSE', 'PHEAVTO', 'OUI',&
+    call cescel(chs(4), ligrel, 'TOPOSE', 'PHEAVTO', 'OUI', &
                 nncp, 'G', heav, 'F', ibid)
 !     ------------------------------------------------------------------
 !     FIN
@@ -441,7 +441,7 @@ subroutine xoripe(modele)
 !
 999 continue
 !
-    write(ifm,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES :',nseori
+    write (ifm, *) 'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES :', nseori
 !
     call jedetr('&&XORIPE.GRMAPE')
 !

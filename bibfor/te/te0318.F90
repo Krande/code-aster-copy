@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine te0318(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate, npg, jgano
 ! DEB ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -59,53 +59,53 @@ subroutine te0318(option, nomte)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemp)],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemp)], &
                     1, nomres, valres, icodre, 1)
         lambda = valres(1)
-    else if (phenom.eq.'THER_ORTH') then
+    else if (phenom .eq. 'THER_ORTH') then
         call utmess('F', 'ELEMENTS2_67')
-    else if (phenom.eq.'THER_NL_ORTH') then
+    else if (phenom .eq. 'THER_NL_ORTH') then
         call utmess('F', 'ELEMENTS2_67')
-    else if (phenom.ne.'THER_NL') then
+    else if (phenom .ne. 'THER_NL') then
         call utmess('F', 'ELEMENTS2_63')
-    endif
+    end if
 !
     a = 0.d0
     b = 0.d0
 !
     do kp = 1, npg
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         tpg = 0.0d0
         fluxx = 0.0d0
         fluxy = 0.0d0
 !
         do j = 1, nno
-            tpg = tpg + zr(itempe+j-1)*zr(ivf+k+j-1)
-            fluxx = fluxx + zr(itempe+j-1)*dfdx(j)
-            fluxy = fluxy + zr(itempe+j-1)*dfdy(j)
+            tpg = tpg+zr(itempe+j-1)*zr(ivf+k+j-1)
+            fluxx = fluxx+zr(itempe+j-1)*dfdx(j)
+            fluxy = fluxy+zr(itempe+j-1)*dfdy(j)
         end do
 !
         if (phenom .eq. 'THER_NL') then
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA', valres, icodre, 1)
             lambda = valres(1)
-        endif
+        end if
 !
-        a = a - lambda*fluxx / npg
-        b = b - lambda*fluxy / npg
+        a = a-lambda*fluxx/npg
+        b = b-lambda*fluxy/npg
     end do
     do kp = 1, npg
-        zr(iflux+(kp-1)) = ( a**2 + b**2 ) / lambda
+        zr(iflux+(kp-1)) = (a**2+b**2)/lambda
     end do
 end subroutine

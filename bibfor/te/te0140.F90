@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine te0140(option, nomte)
 !
     integer :: imate, lmat, lorien
     integer :: nbpar, nbres, nc, nno, iret
-    parameter (nbres=2)
+    parameter(nbres=2)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: deux, e
     real(kind=8) :: valpar, xnu, g, un, zero
@@ -58,43 +58,43 @@ subroutine te0140(option, nomte)
     character(len=16) :: opti
     real(kind=8) :: pgl(3, 3), klv(105)
 !     ------------------------------------------------------------------
-    data nomres/'E','NU'/
+    data nomres/'E', 'NU'/
 !     ------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !     ------------------------------------------------------------------
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 !
     if (option(1:9) .eq. 'RIGI_MECA') then
         opti = 'ELAS'
-    else if (option(1:14).eq.'RIGI_FLUI_STRU') then
+    else if (option(1:14) .eq. 'RIGI_FLUI_STRU') then
         opti = 'ELAS_FLUI'
     else
 ! OPTION NON PROGRAMMEE
         ASSERT(.false.)
-    endif
+    end if
     if (nomte .ne. 'MECA_POU_D_TG' .and. nomte .ne. 'MECA_POU_D_TGM') then
         call moytem('NOEU', 2, 1, '+', valpar, iret)
     else
         call moytem('RIGI', 3, 1, '+', valpar, iret)
-    endif
+    end if
     nbpar = 1
     nompar = 'TEMP'
 !
     call jevech('PMATERC', 'L', imate)
-    if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
-        call rcvalb(fami, kpg, spt, poum, zi(imate),' ', opti, nbpar, nompar, [valpar],&
+    if ((nomte .ne. 'MECA_POU_D_EM') .and. (nomte .ne. 'MECA_POU_D_TGM')) then
+        call rcvalb(fami, kpg, spt, poum, zi(imate), ' ', opti, nbpar, nompar, [valpar], &
                     nbres, nomres, valres, codres, 1)
         e = valres(1)
         xnu = valres(2)
-        g = e/ (deux* (un+xnu))
-    endif
+        g = e/(deux*(un+xnu))
+    end if
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
@@ -102,16 +102,16 @@ subroutine te0140(option, nomte)
     klv(:) = 0.d0
 !
 !     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
-    if ((nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TGM')) then
+    if ((nomte .eq. 'MECA_POU_D_EM') .or. (nomte .eq. 'MECA_POU_D_TGM')) then
         call pmfrig(nomte, zi(imate), klv)
     else
         call porigi(nomte, e, xnu, -1.d0, klv)
-    endif
+    end if
 !
     call jevech('PMATUUR', 'E', lmat)
     nno = 2
     nc = 6
-    if (nomte(1:13).eq.'MECA_POU_D_TG') nc = 7
+    if (nomte(1:13) .eq. 'MECA_POU_D_TG') nc = 7
 !
     call matrot(zr(lorien), pgl)
     call utpslg(nno, nc, pgl, klv, zr(lmat))

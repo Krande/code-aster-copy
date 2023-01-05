@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
 #include "asterc/r8prem.h"
 !
     integer :: ndim, istano
-    real(kind=8) :: r, theta, dfkdpo(ndim,ndim,2), kappa, mu
+    real(kind=8) :: r, theta, dfkdpo(ndim, ndim, 2), kappa, mu
     character(len=*) :: option
 !
 !
@@ -47,32 +47,32 @@ subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
 !
     character(len=8) :: pref
 !
-    pref=option
+    pref = option
 !    if (istano.eq.-2) pref='SMOOTH'
 !
     call xderfk(kappa, mu, r, theta, ndim, dfkdpo)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if     (pref.eq.'DEFAULT') then
-      goto 999
+    if (pref .eq. 'DEFAULT') then
+        goto 999
 !
-    elseif (pref.eq.'BASIC') then
-      dfkdpo(1:ndim,1:ndim,1:2)=0.
-      dfkdpo(1,1,1:2)=[1/sqrt(r)*cos(theta/2.d0),-0.5*sqrt(r)*sin(theta/2.d0)]
-      dfkdpo(1,2,1:2)=[1/sqrt(r)*sin(theta/2.d0),0.5*sqrt(r)*cos(theta/2.d0)]
-      dfkdpo(2,1,1:2)=[1/sqrt(r)*sin(theta/2.d0),0.5*sqrt(r)*cos(theta/2.d0)]
-      dfkdpo(2,2,1:2)=[1/sqrt(r)*cos(theta/2.d0),-0.5*sqrt(r)*sin(theta/2.d0)]
-      if (ndim.eq.3) dfkdpo(3,3,1:2)=[1/sqrt(r)*sin(theta/2.d0),0.5*sqrt(r)*cos(theta/2.d0)]
+    elseif (pref .eq. 'BASIC') then
+        dfkdpo(1:ndim, 1:ndim, 1:2) = 0.
+        dfkdpo(1, 1, 1:2) = [1/sqrt(r)*cos(theta/2.d0), -0.5*sqrt(r)*sin(theta/2.d0)]
+        dfkdpo(1, 2, 1:2) = [1/sqrt(r)*sin(theta/2.d0), 0.5*sqrt(r)*cos(theta/2.d0)]
+        dfkdpo(2, 1, 1:2) = [1/sqrt(r)*sin(theta/2.d0), 0.5*sqrt(r)*cos(theta/2.d0)]
+        dfkdpo(2, 2, 1:2) = [1/sqrt(r)*cos(theta/2.d0), -0.5*sqrt(r)*sin(theta/2.d0)]
+       if (ndim .eq. 3) dfkdpo(3, 3, 1:2) = [1/sqrt(r)*sin(theta/2.d0), 0.5*sqrt(r)*cos(theta/2.d0)]
 !
-    elseif (pref.eq.'SMOOTH') then
-      dfkdpo(1:ndim,1:ndim,1)=0.
-      if (r.gt.r8prem()) then
-         dfkdpo(1:ndim,1:ndim,2)=dfkdpo(1:ndim,1:ndim,2)/sqrt(r)
-      endif
+    elseif (pref .eq. 'SMOOTH') then
+        dfkdpo(1:ndim, 1:ndim, 1) = 0.
+        if (r .gt. r8prem()) then
+            dfkdpo(1:ndim, 1:ndim, 2) = dfkdpo(1:ndim, 1:ndim, 2)/sqrt(r)
+        end if
 !
-    elseif (pref.eq.'JUMP') then
-      dfkdpo=2.d0*mu*sqrt(r8depi())*dfkdpo/(kappa+1)
-      !dfkdpo(1:2,1:2,1:2)=2.d0*mu*sqrt(r8depi())*dfkdpo(1:2,1:2,1:2)/(kappa+1)
-    endif
+    elseif (pref .eq. 'JUMP') then
+        dfkdpo = 2.d0*mu*sqrt(r8depi())*dfkdpo/(kappa+1)
+        !dfkdpo(1:2,1:2,1:2)=2.d0*mu*sqrt(r8depi())*dfkdpo(1:2,1:2,1:2)/(kappa+1)
+    end if
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 999 continue

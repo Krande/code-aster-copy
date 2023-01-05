@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
-                 iscal, rscal, cscal, kvect, ivect,&
+subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal, &
+                 iscal, rscal, cscal, kvect, ivect, &
                  rvect, cvect, buffer)
     implicit none
 ! Save a parameter in the temporary data structure for the nonlinear
@@ -60,18 +60,18 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
 !   ====================================================================
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_nl_
-    integer                   , intent(in) :: ip
-    integer                   , intent(in) :: lonvec
-    integer,          optional, intent(in) :: iocc
+    character(len=*), intent(in) :: sd_nl_
+    integer, intent(in) :: ip
+    integer, intent(in) :: lonvec
+    integer, optional, intent(in) :: iocc
     character(len=*), optional, intent(in) :: kscal
-    integer,          optional, intent(in) :: iscal
-    real(kind=8),     optional, intent(in) :: rscal
-    complex(kind=8),  optional, intent(in) :: cscal
+    integer, optional, intent(in) :: iscal
+    real(kind=8), optional, intent(in) :: rscal
+    complex(kind=8), optional, intent(in) :: cscal
     character(len=*), optional, intent(in) :: kvect(lonvec)
-    integer,          optional, intent(in) :: ivect(lonvec)
-    real(kind=8),     optional, intent(in) :: rvect(lonvec)
-    complex(kind=8),  optional, intent(in) :: cvect(lonvec)
+    integer, optional, intent(in) :: ivect(lonvec)
+    real(kind=8), optional, intent(in) :: rvect(lonvec)
+    complex(kind=8), optional, intent(in) :: cvect(lonvec)
     integer, pointer, optional :: buffer(:)
 !
 !   -0.2- Local variables
@@ -80,7 +80,6 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
     character(len=24):: kscal_
     character(len=24):: savejv
     character(len=24), pointer :: kvect_(:) => null()
-
 
 !   --- For general usage
     aster_logical     :: input_test
@@ -99,7 +98,7 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
     if (present(kvect)) then
         AS_ALLOCATE(vk24=kvect_, size=lonvec)
         do i = 1, lonvec
-            kvect_(i)=kvect(i)
+            kvect_(i) = kvect(i)
         end do
     end if
 !
@@ -112,36 +111,36 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
 
     ASSERT(input_test)
 
-    if (lonvec.gt.1) then
+    if (lonvec .gt. 1) then
         input_test = UN_PARMI4(kvect, ivect, rvect, cvect)
         ASSERT(input_test)
     end if
 
 !   The parameter to be saved was not found in the predefined list
-    if (ip.gt._NL_NBPAR) then
+    if (ip .gt. _NL_NBPAR) then
         ASSERT(.false.)
     end if
 !   Some verifications on parameter
-    ASSERT(params(ip).ne.'XXXXXXXX')
-    ASSERT(partyp(ip).ne.'XXX')
-    ASSERT(parind(ip).ne.0 )
+    ASSERT(params(ip) .ne. 'XXXXXXXX')
+    ASSERT(partyp(ip) .ne. 'XXX')
+    ASSERT(parind(ip) .ne. 0)
 !
     if (present(buffer)) then
 
         dec = 0
         if (present(iocc)) then
             level = size(buffer)/(2*_NL_NBPAR)
-            if (iocc.le.level) then
+            if (iocc .le. level) then
                 dec = (iocc-1)*2*_NL_NBPAR
             else
                 goto 20
-            endif
+            end if
         end if
 
         addr = buffer(dec+ip)
         lvec = buffer(dec+_NL_NBPAR+ip)
 
-        if ((addr.ne.0).and.(lonvec.eq.lvec)) then
+        if ((addr .ne. 0) .and. (lonvec .eq. lvec)) then
             if (present(iscal)) then
                 zi(addr) = iscal
             elseif (present(rscal)) then
@@ -149,9 +148,9 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
             elseif (present(cscal)) then
                 zc(addr) = cscal
             elseif (present(kscal)) then
-                if (partyp(ip).eq.'K8 ') zk8(addr)  = kscal
-                if (partyp(ip).eq.'K16') zk16(addr) = kscal
-                if (partyp(ip).eq.'K24') zk24(addr) = kscal
+                if (partyp(ip) .eq. 'K8 ') zk8(addr) = kscal
+                if (partyp(ip) .eq. 'K16') zk16(addr) = kscal
+                if (partyp(ip) .eq. 'K24') zk24(addr) = kscal
             elseif (present(ivect)) then
                 do i = 1, lvec
                     zi(addr+i-1) = ivect(i)
@@ -161,20 +160,20 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
             elseif (present(cvect)) then
                 call zcopy(lvec, cvect, 1, zc(addr), 1)
             elseif (present(kvect)) then
-                if (partyp(ip).eq.'K8 ') then
+                if (partyp(ip) .eq. 'K8 ') then
                     do i = 1, lvec
                         zk8(addr+i-1) = kvect(i)
                     end do
-                elseif (partyp(ip).eq.'K16') then
+                elseif (partyp(ip) .eq. 'K16') then
                     do i = 1, lvec
                         zk16(addr+i-1) = kvect(i)
                     end do
-                elseif (partyp(ip).eq.'K24') then
+                elseif (partyp(ip) .eq. 'K24') then
                     do i = 1, lvec
                         zk24(addr+i-1) = kvect(i)
                     end do
-                endif
-            endif
+                end if
+            end if
             goto 99
         end if
     end if
@@ -184,78 +183,78 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal,&
     savejv(1:8) = sd_nl
     if (present(iocc)) then
 !       The parameter to be saved is global but an occurence index was given
-        ASSERT(parind(ip).gt.0)
+        ASSERT(parind(ip) .gt. 0)
         call codent(iocc, 'G', k_iocc)
         savejv(9:15) = '.'//k_iocc(1:6)
-    endif
-    savejv(16:24)='.'//params(ip)
+    end if
+    savejv(16:24) = '.'//params(ip)
 
 !   ====================================================================
 !   = 2 = Saving data
 !   ====================================================================
 
 !   --- Vectors
-    if (abs(parind(ip)).eq.2) then
+    if (abs(parind(ip)) .eq. 2) then
 !
 !       The parameter to be saved is a vector but no vector input was found
         input_test = UN_PARMI4(kvect, ivect, rvect, cvect)
         ASSERT(input_test)
-        ASSERT(lonvec.ge.1)
+        ASSERT(lonvec .ge. 1)
 !
         call jeexin(savejv, iret)
-        if (iret.gt.0) then
+        if (iret .gt. 0) then
             call jeveuo(savejv, 'E', jvect)
         else
             call wkvect(savejv, 'V V '//partyp(ip), lonvec, jvect)
-        endif
+        end if
 !
-        if (partyp(ip).eq.'K8') then
+        if (partyp(ip) .eq. 'K8') then
             do i = 1, lonvec
-                zk8(jvect+i-1) = kvect_(i)(1:8)
+                zk8(jvect+i-1) = kvect_(i) (1:8)
             end do
-        elseif (partyp(ip).eq.'K16') then
+        elseif (partyp(ip) .eq. 'K16') then
             do i = 1, lonvec
-                zk16(jvect+i-1) = kvect_(i)(1:16)
+                zk16(jvect+i-1) = kvect_(i) (1:16)
             end do
-        elseif (partyp(ip).eq.'K24') then
+        elseif (partyp(ip) .eq. 'K24') then
             do i = 1, lonvec
                 zk24(jvect+i-1) = kvect_(i)
             end do
-        else if (partyp(ip).eq.'R') then
+        else if (partyp(ip) .eq. 'R') then
             call dcopy(lonvec, rvect, 1, zr(jvect), 1)
-        else if (partyp(ip).eq.'C') then
+        else if (partyp(ip) .eq. 'C') then
             call zcopy(lonvec, cvect, 1, zc(jvect), 1)
-        else if (partyp(ip).eq.'I') then
+        else if (partyp(ip) .eq. 'I') then
             do i = 1, lonvec
                 zi(jvect+i-1) = ivect(i)
             end do
         end if
 !
 !   --- Scalars
-    else if (abs(parind(ip)).eq.1) then
+    else if (abs(parind(ip)) .eq. 1) then
 !
 !       The parameter to be saved is a scalar but no scalar input was found
         input_test = UN_PARMI4(kscal, iscal, rscal, cscal)
         ASSERT(input_test)
 !
         call jeexin(savejv, iret)
-        if (iret.gt.0) then
+        if (iret .gt. 0) then
             call jeveuo(savejv, 'E', jscal)
         else
             call wkvect(savejv, 'V V '//partyp(ip), 1, jscal)
-        endif
+        end if
 !
-        if (partyp(ip).eq.'K8 ') then
+        if (partyp(ip) .eq. 'K8 ') then
             zk8(jscal) = kscal_(1:8)
-        else if (partyp(ip).eq.'K16') then
+        else if (partyp(ip) .eq. 'K16') then
             zk16(jscal) = kscal_(1:16)
-        else if (partyp(ip).eq.'K24') then
+        else if (partyp(ip) .eq. 'K24') then
             zk24(jscal) = kscal_
-        elseif (partyp(ip).eq.'R') then
+        elseif (partyp(ip) .eq. 'R') then
             zr(jscal) = rscal
-        elseif (partyp(ip).eq.'C') then
+        elseif (partyp(ip) .eq. 'C') then
             zc(jscal) = cscal
-        elseif (partyp(ip).eq.'I')  then
+        elseif (partyp(ip) .eq. 'I') then
             zi(jscal) = iscal
         end if
 !

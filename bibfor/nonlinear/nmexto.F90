@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmexto(type_count, field_disc, type_extr_cmp, type_extr_elem, type_extr,&
-                  nb_node   , nb_elem   , nb_cmp       , nb_poin       , nb_spoi  ,&
+subroutine nmexto(type_count, field_disc, type_extr_cmp, type_extr_elem, type_extr, &
+                  nb_node, nb_elem, nb_cmp, nb_poin, nb_spoi, &
                   nb_count)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -71,53 +71,53 @@ implicit none
             nb_count = nb_cmp
         else
             nb_count = 1
-        endif
-    else if (type_count.eq.'POIN') then
-        if (field_disc .eq. 'ELGA' .or. field_disc.eq.'ELEM') then
+        end if
+    else if (type_count .eq. 'POIN') then
+        if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
             if (type_extr_elem .eq. 'VALE') then
                 nb_count = nb_poin*nb_spoi
-            elseif ((type_extr_elem.eq.'MIN').or.&
-                    (type_extr_elem.eq.'MAX').or.&
-                    (type_extr_elem.eq.'MOY')) then
+            elseif ((type_extr_elem .eq. 'MIN') .or. &
+                    (type_extr_elem .eq. 'MAX') .or. &
+                    (type_extr_elem .eq. 'MOY')) then
                 nb_count = 1
             else
                 ASSERT(.false.)
-            endif
-        else if (field_disc.eq.'NOEU') then
+            end if
+        else if (field_disc .eq. 'NOEU') then
             nb_count = 1
         else
             ASSERT(.false.)
-        endif
-    else if (type_count.eq.'LIEU') then
+        end if
+    else if (type_count .eq. 'LIEU') then
         if (field_disc .eq. 'NOEU') then
             if (type_extr .eq. 'VALE') then
                 nb_count = nb_node
-            elseif ((type_extr.eq.'MIN').or.&
-                    (type_extr.eq.'MAX').or.&
-                    (type_extr.eq.'MAXI_ABS').or.&
-                    (type_extr.eq.'MINI_ABS').or.&
-                    (type_extr.eq.'MOY')) then
+            elseif ((type_extr .eq. 'MIN') .or. &
+                    (type_extr .eq. 'MAX') .or. &
+                    (type_extr .eq. 'MAXI_ABS') .or. &
+                    (type_extr .eq. 'MINI_ABS') .or. &
+                    (type_extr .eq. 'MOY')) then
                 nb_count = 1
             else
                 ASSERT(.false.)
-            endif
-        else if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
+            end if
+        else if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
             if (type_extr .eq. 'VALE') then
                 nb_count = nb_elem
-            elseif ((type_extr.eq.'MIN').or.&
-                    (type_extr.eq.'MAX').or.&
-                    (type_extr.eq.'MAXI_ABS').or.&
-                    (type_extr.eq.'MINI_ABS').or.&
-                    (type_extr.eq.'MOY')) then
+            elseif ((type_extr .eq. 'MIN') .or. &
+                    (type_extr .eq. 'MAX') .or. &
+                    (type_extr .eq. 'MAXI_ABS') .or. &
+                    (type_extr .eq. 'MINI_ABS') .or. &
+                    (type_extr .eq. 'MOY')) then
                 nb_count = 1
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

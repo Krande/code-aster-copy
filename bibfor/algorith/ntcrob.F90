@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntcrob(meshz  , modelz, result, sddisc, ds_inout,&
+subroutine ntcrob(meshz, modelz, result, sddisc, ds_inout, &
                   sd_obsv)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -69,29 +69,29 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_obsv   = 0
-    sd_obsv   = '&&NMCROB.OBSV'
+    nb_obsv = 0
+    sd_obsv = '&&NMCROB.OBSV'
     keyw_fact = 'OBSERVATION'
     call getfac(keyw_fact, nb_keyw_fact)
-    ASSERT(nb_keyw_fact.le.99)
+    ASSERT(nb_keyw_fact .le. 99)
 !
 ! - Access to storage datastructure
 !
-    sdarch    = sddisc(1:14)//'.ARCH'
+    sdarch = sddisc(1:14)//'.ARCH'
     arch_info = sdarch(1:19)//'.AINF'
-    call jeveuo(arch_info, 'L', vi = v_arch_info)
+    call jeveuo(arch_info, 'L', vi=v_arch_info)
 !
 ! - Read datas for extraction
 !
     sdextr_obsv = sd_obsv(1:14)
-    call nmextr(meshz       , modelz , sdextr_obsv, ds_inout, keyw_fact,&
+    call nmextr(meshz, modelz, sdextr_obsv, ds_inout, keyw_fact, &
                 nb_keyw_fact, nb_obsv)
 !
 ! - Set reuse index in OBSERVATION table
 !
     nume_reuse = v_arch_info(3)
-    extr_info  = sdextr_obsv(1:14)//'     .INFO'
-    call jeveuo(extr_info, 'E', vi = v_extr_info)
+    extr_info = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'E', vi=v_extr_info)
     v_extr_info(4) = nume_reuse
 !
 ! - Read parameters
@@ -111,6 +111,6 @@ implicit none
 ! ----- Create table
 !
         call nmcrot(result, sd_obsv)
-    endif
+    end if
 !
 end subroutine

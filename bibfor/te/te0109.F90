@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine te0109(option, nomte)
 !
 !
     integer :: nbres
-    parameter (nbres=3)
+    parameter(nbres=3)
 !
     integer :: icodre(nbres)
     integer :: i, kp, itempe, icacoq, imate, iflupg, inbspi
@@ -60,14 +60,14 @@ subroutine te0109(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    valres(1)=0.d0
-    valres(2)=0.d0
-    valres(3)=0.d0
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    nbcmp=9
+    valres(1) = 0.d0
+    valres(2) = 0.d0
+    valres(3) = 0.d0
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    nbcmp = 9
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PGEOMER', 'L', igeom)
@@ -78,7 +78,7 @@ subroutine te0109(option, nomte)
     call jevech('PFLUXPG', 'E', iflupg)
 !
     nbcou = zi(inbspi)
-    ASSERT(nbcou.eq.1)
+    ASSERT(nbcou .eq. 1)
 !
 ! --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !     -------------------------------------------------
@@ -91,8 +91,8 @@ subroutine te0109(option, nomte)
     if (phenom .eq. 'THER') then
 !
         nomres(1) = 'LAMBDA'
-        call rcvalb(fami, kpg, spt, poum, mater,&
-                    ' ', 'THER', 1, 'INST', [zr(itemps)],&
+        call rcvalb(fami, kpg, spt, poum, mater, &
+                    ' ', 'THER', 1, 'INST', [zr(itemps)], &
                     1, nomres, valres, icodre, 1)
         conduc = valres(1)
         h = zr(icacoq)/2.d0
@@ -100,13 +100,13 @@ subroutine te0109(option, nomte)
         ep = 2.d0*h
     else
         call utmess('F', 'ELEMENTS3_18', sk=phenom)
-    endif
+    end if
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     do i = 1, 3
-        va1a2(i) = zr(igeom+i+2) - zr(igeom+i-1)
+        va1a2(i) = zr(igeom+i+2)-zr(igeom+i-1)
     end do
     na1a2 = sqrt(va1a2(1)**2+va1a2(2)**2+va1a2(3)**2)
     do i = 1, 3
@@ -122,9 +122,9 @@ subroutine te0109(option, nomte)
     x3 = zr(igeom+6)
     y3 = zr(igeom+7)
     z3 = zr(igeom+8)
-    pvec1(1) = (y2-y1)* (z3-z1) - (z2-z1)* (y3-y1)
-    pvec1(2) = (z2-z1)* (x3-x1) - (z3-z1)* (x2-x1)
-    pvec1(3) = (x2-x1)* (y3-y1) - (x3-x1)* (y2-y1)
+    pvec1(1) = (y2-y1)*(z3-z1)-(z2-z1)*(y3-y1)
+    pvec1(2) = (z2-z1)*(x3-x1)-(z3-z1)*(x2-x1)
+    pvec1(3) = (x2-x1)*(y3-y1)-(x3-x1)*(y2-y1)
     npvec1 = sqrt(pvec1(1)**2+pvec1(2)**2+pvec1(3)**2)
     do i = 1, 3
         pvec1(i) = pvec1(i)/npvec1
@@ -139,19 +139,19 @@ subroutine te0109(option, nomte)
     do nivc = -1, 1
 !
         if (nivc .lt. 0) then
-            px3 = ord - ep/2.d0
+            px3 = ord-ep/2.d0
             cdec = 3
-        else if (nivc.gt.0) then
-            px3 = ord + ep/2.d0
+        else if (nivc .gt. 0) then
+            px3 = ord+ep/2.d0
             cdec = 6
         else
             px3 = ord
             cdec = 0
-        endif
+        end if
 !
         do kp = 1, npg
             k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+            call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                         poids, dfdx, dfdy)
             dtmdx = 0.d0
             dtidx = 0.d0
@@ -164,30 +164,30 @@ subroutine te0109(option, nomte)
             ts = 0.d0
 !
             do i = 1, nno
-                dtmdx = dtmdx + zr(itempe+3*i-3)*dfdx(i)
-                dtmdy = dtmdy + zr(itempe+3*i-3)*dfdy(i)
-                dtidx = dtidx + zr(itempe+3*i-2)*dfdx(i)
-                dtidy = dtidy + zr(itempe+3*i-2)*dfdy(i)
-                dtsdx = dtsdx + zr(itempe+3*i-1)*dfdx(i)
-                dtsdy = dtsdy + zr(itempe+3*i-1)*dfdy(i)
-                tm = tm + zr(itempe+3*i-3)*zr(ivf+k+i-1)
-                ti = ti + zr(itempe+3*i-2)*zr(ivf+k+i-1)
-                ts = ts + zr(itempe+3*i-1)*zr(ivf+k+i-1)
+                dtmdx = dtmdx+zr(itempe+3*i-3)*dfdx(i)
+                dtmdy = dtmdy+zr(itempe+3*i-3)*dfdy(i)
+                dtidx = dtidx+zr(itempe+3*i-2)*dfdx(i)
+                dtidy = dtidy+zr(itempe+3*i-2)*dfdy(i)
+                dtsdx = dtsdx+zr(itempe+3*i-1)*dfdx(i)
+                dtsdy = dtsdy+zr(itempe+3*i-1)*dfdy(i)
+                tm = tm+zr(itempe+3*i-3)*zr(ivf+k+i-1)
+                ti = ti+zr(itempe+3*i-2)*zr(ivf+k+i-1)
+                ts = ts+zr(itempe+3*i-1)*zr(ivf+k+i-1)
             end do
-            fac1 = (1.d0- (px3/h)**2)
-            fac2 = -px3* (1.d0-px3/h)/ (2.d0*h)
-            fac3 = px3* (1.d0+px3/h)/ (2.d0*h)
-            dtdx = dtmdx*fac1 + dtidx*fac2 + dtsdx*fac3
-            dtdy = dtmdy*fac1 + dtidy*fac2 + dtsdy*fac3
-            dtdz = ts* (.5d0+px3/h)/h-2.d0*tm*px3/h**2-ti*(.5d0-px3/h) /h
+            fac1 = (1.d0-(px3/h)**2)
+            fac2 = -px3*(1.d0-px3/h)/(2.d0*h)
+            fac3 = px3*(1.d0+px3/h)/(2.d0*h)
+            dtdx = dtmdx*fac1+dtidx*fac2+dtsdx*fac3
+            dtdy = dtmdy*fac1+dtidy*fac2+dtsdy*fac3
+            dtdz = ts*(.5d0+px3/h)/h-2.d0*tm*px3/h**2-ti*(.5d0-px3/h)/h
 !
             fx = -conduc*dtdx
             fy = -conduc*dtdy
             fz = -conduc*dtdz
 !
-            zr(iflupg+(kp-1)*nbcmp-1+cdec+1) = fx*va1a2(1) + fy*pvec2( 1) + fz*pvec1(1)
-            zr(iflupg+(kp-1)*nbcmp-1+cdec+2) = fx*va1a2(2) + fy*pvec2( 2) + fz*pvec1(2)
-            zr(iflupg+(kp-1)*nbcmp-1+cdec+3) = fx*va1a2(3) + fy*pvec2( 3) + fz*pvec1(3)
+            zr(iflupg+(kp-1)*nbcmp-1+cdec+1) = fx*va1a2(1)+fy*pvec2(1)+fz*pvec1(1)
+            zr(iflupg+(kp-1)*nbcmp-1+cdec+2) = fx*va1a2(2)+fy*pvec2(2)+fz*pvec1(2)
+            zr(iflupg+(kp-1)*nbcmp-1+cdec+3) = fx*va1a2(3)+fy*pvec2(3)+fz*pvec1(3)
 !
         end do
 !

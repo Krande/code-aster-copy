@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,52 +50,52 @@ subroutine te0178(option, nomte)
 !-----------------------------------------------------------------------
     integer :: jgano, mater, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PIMPEDC', 'L', iimpe)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTC', 'E', imattt)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     mater = zi(imate)
-    call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mater, &
+                ' ', 'FLUIDE', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
-    if (zc(iimpe) .ne. (0.d0,0.d0)) then
+    if (zc(iimpe) .ne. (0.d0, 0.d0)) then
         rhosz = rho(1)/zc(iimpe)
     else
         goto 50
-    endif
+    end if
 !
     do kp = 1, npg
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
         if (laxi) then
             r = 0.d0
             do i = 1, nno
-                l = (kp-1)*nno + i
-                r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
+                l = (kp-1)*nno+i
+                r = r+zr(igeom+2*i-2)*zr(ivf+l-1)
             end do
             poids = poids*r
-        endif
-        ij = imattt - 1
+        end if
+        ij = imattt-1
         do i = 1, nno
-            li = ivf + (kp-1)*nno + i - 1
+            li = ivf+(kp-1)*nno+i-1
             do j = 1, i
-                lj = ivf + (kp-1)*nno + j - 1
-                ij = ij + 1
-                zc(ij) = zc(ij) + poids*rhosz*zr(li)*zr(lj)
+                lj = ivf+(kp-1)*nno+j-1
+                ij = ij+1
+                zc(ij) = zc(ij)+poids*rhosz*zr(li)*zr(lj)
             end do
         end do
     end do
- 50 continue
+50  continue
 end subroutine

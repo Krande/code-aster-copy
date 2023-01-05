@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,33 +78,33 @@ subroutine te0141(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbres=6
+    integer, parameter :: nbres = 6
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
-    data nomres/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
+    data nomres/'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'R1','EP1'/
+    data noms_cara1/'R1', 'EP1'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   caracteristiques des elements
     nno = 2
     nc = 6
-    fami='FPG1'
-    kpg =1
-    spt =1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     mator = ' '
-    if ((nomte.eq.'MECA_POU_D_TG').or.(nomte .eq. 'MECA_POU_D_TGM')) then
+    if ((nomte .eq. 'MECA_POU_D_TG') .or. (nomte .eq. 'MECA_POU_D_TGM')) then
         nno = 2
         nc = 7
-    endif
+    end if
     ntc = nc*nno
     nbv = ntc*(ntc+1)/2
 !   recuperation des caracteristiques materiaux
@@ -121,10 +121,10 @@ subroutine te0141(option, nomte)
         absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/2.0d0
         if (nomte .eq. 'MECA_POU_D_TGM') then
             call jevech('PNBSP_I', 'L', inbf)
-            nbgf=zi(inbf+1)
-            if (nbgf.ne.1) call utmess('F', 'ELEMENTS3_3')
-        endif
-        call rcvalb(fami, kpg, spt, poum, zi(lmater), mator, 'ELAS_FLUI', 1, 'ABSC', [absmoy],&
+            nbgf = zi(inbf+1)
+            if (nbgf .ne. 1) call utmess('F', 'ELEMENTS3_3')
+        end if
+        call rcvalb(fami, kpg, spt, poum, zi(lmater), mator, 'ELAS_FLUI', 1, 'ABSC', [absmoy], &
                     nbres, nomres, valres, codres, 1)
         e = valres(1)
         xnu = valres(2)
@@ -133,27 +133,27 @@ subroutine te0141(option, nomte)
         rhofe = valres(5)
         cm = valres(6)
         phie = vale_cara1(1)*2.0d0
-        g = e / ( 2.0d0 * ( 1.0d0 + xnu ) )
+        g = e/(2.0d0*(1.0d0+xnu))
         if (phie .eq. 0.d0) then
             call utmess('F', 'ELEMENTS3_26')
-        endif
+        end if
         phii = (phie-2.0d0*vale_cara1(2))
         call rhoequ(rho, rhos, rhofi, rhofe, cm, phii, phie)
 !
-    else if ( (option.eq.'MASS_MECA').or.(option.eq.'MASS_MECA_DIAG').or.&
-              (option.eq.'MASS_MECA_EXPLI').or.(option.eq.'M_GAMMA') ) then
-        if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
-            call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
+    else if ((option .eq. 'MASS_MECA') .or. (option .eq. 'MASS_MECA_DIAG') .or. &
+             (option .eq. 'MASS_MECA_EXPLI') .or. (option .eq. 'M_GAMMA')) then
+        if ((nomte .ne. 'MECA_POU_D_EM') .and. (nomte .ne. 'MECA_POU_D_TGM')) then
+            call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar], &
                         3, nomres, valres, codres, 1)
             e = valres(1)
             xnu = valres(2)
             rho = valres(3)
-            g = e / ( 2.0d0 * ( 1.0d0 + xnu ) )
-        endif
+            g = e/(2.0d0*(1.0d0+xnu))
+        end if
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
+    end if
 !   coordonnees des noeuds
     xl = lonele()
 !   recuperation des orientations
@@ -162,12 +162,12 @@ subroutine te0141(option, nomte)
     kanl = 1
     if (option .eq. 'MASS_MECA_DIAG' .or. option .eq. 'MASS_MECA_EXPLI') then
         kanl = 0
-    endif
-    if ((nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TGM')) then
+    end if
+    if ((nomte .eq. 'MECA_POU_D_EM') .or. (nomte .eq. 'MECA_POU_D_TGM')) then
         call pmfmas(nomte, option, rho, zi(lmater), kanl, mlv)
     else
         call pomass(nomte, e, xnu, rho, kanl, mlv)
-    endif
+    end if
 !
     if (option .eq. 'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
@@ -180,6 +180,6 @@ subroutine te0141(option, nomte)
         call jevech('PMATUUR', 'E', lmat)
         call matrot(zr(lorien), pgl)
         call utpslg(nno, nc, pgl, mlv, zr(lmat))
-    endif
+    end if
 !
 end subroutine

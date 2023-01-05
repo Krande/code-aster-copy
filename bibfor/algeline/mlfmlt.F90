@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlfmlt(b, f, y, ldb, n,&
+subroutine mlfmlt(b, f, y, ldb, n, &
                   p, l, opta, optb, nb)
 !
 !     B = B - F*Y PAR BLOCS
@@ -30,47 +30,47 @@ subroutine mlfmlt(b, f, y, ldb, n,&
     integer :: opta, optb
     character(len=1) :: tra, trb
 !
-    tra='T'
-    if (opta .eq. 1) tra='N'
-    trb='T'
-    if (optb .eq. 1) trb='N'
+    tra = 'T'
+    if (opta .eq. 1) tra = 'N'
+    trb = 'T'
+    if (optb .eq. 1) trb = 'N'
     alpha = -1.d0
     beta = 1.d0
-    m= n - p
-    npb=p/nb
-    nlb=l/nb
-    restp = p - (nb*npb)
-    restl= l - (nb*nlb)
+    m = n-p
+    npb = p/nb
+    nlb = l/nb
+    restp = p-(nb*npb)
+    restl = l-(nb*nlb)
     if (nlb .gt. 0) then
         do j = 1, nlb
-            jb= nb*(j-1)+1
+            jb = nb*(j-1)+1
             do i = 1, npb
-                ib= nb*(i-1)+1
-                call dgemm(tra, trb, nb, nb, m,&
-                           alpha, f(1, ib), n, y(1, jb), ldb,&
+                ib = nb*(i-1)+1
+                call dgemm(tra, trb, nb, nb, m, &
+                           alpha, f(1, ib), n, y(1, jb), ldb, &
                            beta, b(ib, jb), ldb)
             end do
             if (restp .gt. 0) then
-                ib=nb*npb+1
-                call dgemm(tra, trb, restp, nb, m,&
-                           alpha, f(1, ib), n, y(1, jb), ldb,&
+                ib = nb*npb+1
+                call dgemm(tra, trb, restp, nb, m, &
+                           alpha, f(1, ib), n, y(1, jb), ldb, &
                            beta, b(ib, jb), ldb)
-            endif
+            end if
         end do
-    endif
+    end if
     if (restl .gt. 0) then
-        jb=nb*nlb+1
+        jb = nb*nlb+1
         do i = 1, npb
-            ib= nb*(i-1)+1
-            call dgemm(tra, trb, nb, restl, m,&
-                       alpha, f(1, ib), n, y(1, jb), ldb,&
+            ib = nb*(i-1)+1
+            call dgemm(tra, trb, nb, restl, m, &
+                       alpha, f(1, ib), n, y(1, jb), ldb, &
                        beta, b(ib, jb), ldb)
         end do
         if (restp .gt. 0) then
-            ib=nb*npb+1
-            call dgemm(tra, trb, restp, restl, m,&
-                       alpha, f(1, ib), n, y(1, jb), ldb,&
+            ib = nb*npb+1
+            call dgemm(tra, trb, restp, restl, m, &
+                       alpha, f(1, ib), n, y(1, jb), ldb, &
                        beta, b(ib, jb), ldb)
-        endif
-    endif
+        end if
+    end if
 end subroutine

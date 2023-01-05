@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcresa(fami, kpg, ksp, typmod, imat,&
-                  nmat, materd, materf, rela_comp, nr,&
-                  nvi, timed, timef, deps, epsd,&
-                  yf, dy, r, iret, yd,&
+subroutine lcresa(fami, kpg, ksp, typmod, imat, &
+                  nmat, materd, materf, rela_comp, nr, &
+                  nvi, timed, timef, deps, epsd, &
+                  yf, dy, r, iret, yd, &
                   crit)
 !
 ! aslint: disable=W1306,W1504
-    implicit   none
+    implicit none
 !     CALCUL DES TERMES DU SYSTEME NL A RESOUDRE = R(DY)
 !     IN  FAMI   :  FAMILLE DU POINT DE GAUSS
 !         KPG    :  POINT DE GAUSS
@@ -62,24 +62,24 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
     character(len=*) :: fami
     character(len=3) :: matcst
     character(len=16) :: rela_comp
-    common /tdim/   ndt,    ndi
+    common/tdim/ndt, ndi
 !----------------------------------------------------------------
 !
-    iret=0
-    dtime=timef-timed
-    theta=crit(4)
+    iret = 0
+    dtime = timef-timed
+    theta = crit(4)
 !
 !     INVERSE DE L'OPERATEUR D'ELASTICITE DE HOOKE
-    if (materf(nmat,1) .eq. 0) then
+    if (materf(nmat, 1) .eq. 0) then
         call lcopil('ISOTROPE', typmod, materd, dkooh)
         call lcopil('ISOTROPE', typmod, materf, fkooh)
-    else if (materf(nmat,1).eq.1) then
+    else if (materf(nmat, 1) .eq. 1) then
         call lcopil('ORTHOTRO', typmod, materd, dkooh)
         call lcopil('ORTHOTRO', typmod, materf, fkooh)
-    endif
+    end if
 !
-    x=dtime
-    matcst='OUI'
+    x = dtime
+    matcst = 'OUI'
 !
 !     CALCUL DE DSIG AVEC THETA
     call dcopy(ndt, dy, 1, dsig, 1)
@@ -90,9 +90,9 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
     call daxpy(nvi, theta, dy, 1, vini, 1)
 !
 !     CALCUL DES DERIVEES DES VARIABLES INTERNES AU POINT T+THETA*DT
-    call lcdvin(fami, kpg, ksp, rela_comp, typmod,&
-                imat, matcst, nvi, nmat, vini,&
-                materf(1, 2), x, dtime, smx, dvin,&
+    call lcdvin(fami, kpg, ksp, rela_comp, typmod, &
+                imat, matcst, nvi, nmat, vini, &
+                materf(1, 2), x, dtime, smx, dvin, &
                 iret)
 !
     call dscal(nvi, dtime, dvin, 1)
@@ -106,15 +106,15 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
     end do
 !
 !     CALCUL DES CONTRAINTES AU POINT T+DT
-    call calsig(fami, kpg, ksp, evi, typmod,&
-                rela_comp, vini, x, dtime, epsd,&
+    call calsig(fami, kpg, ksp, evi, typmod, &
+                rela_comp, vini, x, dtime, epsd, &
                 deps, nmat, materf(1, 1), sigi)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
     call dcopy(ndt, yf, 1, sigf, 1)
-    epsef(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigi(1:ndt))
-    h1sigf(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
-    r(1:ndt) = epsef(1:ndt) - h1sigf(1:ndt)
+    epsef(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigi(1:ndt))
+    h1sigf(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
+    r(1:ndt) = epsef(1:ndt)-h1sigf(1:ndt)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
 !

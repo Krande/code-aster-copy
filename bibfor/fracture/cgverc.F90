@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine cgverc(resu, nexci)
 !       LE MOT-CLE EXCIT EST DONC OBLIGATOIRE
         if (nexci .eq. 0) then
             call utmess('F', 'RUPTURE0_9')
-        endif
+        end if
 !
     else
 !
@@ -58,9 +58,9 @@ subroutine cgverc(resu, nexci)
 !       (SAUF SI LE RESU PROVIENT DE CREA_RESU, VOIR TEXTE ALARME)
         if (nexci .ne. 0) then
             call utmess('A', 'RUPTURE0_55')
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedema()
 !

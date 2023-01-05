@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine afvarc(chmate, mesh, model)
 !
-use Material_Datastructure_type
+    use Material_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/afvarc_free.h"
 #include "asterfort/afvarc_obje_affe.h"
@@ -64,7 +64,7 @@ implicit none
         call afvarc_obje_affe('G', chmate, mesh, model, varc_cata, varc_affe)
 !       Shrink number of components to save memory
         call afvarc_shrink(chmate, varc_affe)
-    endif
+    end if
 
 !   Free objects allocated in 'afvarc_read'
     call afvarc_free(varc_cata, varc_affe)

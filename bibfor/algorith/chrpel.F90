@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     real(kind=8)                    :: valr, xnormr, tmp
     real(kind=8), dimension(3)      :: xbary, angnot
     real(kind=8), dimension(3)      :: orig, axez, vectx, vecty, angrep
-    real(kind=8), dimension(3,3)    :: pgl, pgcyl, pgu, pglelem
+    real(kind=8), dimension(3, 3)    :: pgl, pgcyl, pgu, pglelem
     real(kind=8), dimension(3, nptmax), target :: xno, xpg
     character(len=3)    :: tsca
 
@@ -127,12 +127,12 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     integer             :: nbptii, nbspii, ncmpii, jmodemailsupp, mailtypel
     character(len=19)   :: chrel(3), chres(3), nomte
 !
-    integer, pointer                        :: connex(:)    => null()
-    real(kind=8), pointer                   :: vale(:)      => null()
+    integer, pointer                        :: connex(:) => null()
+    real(kind=8), pointer                   :: vale(:) => null()
     real(kind=8), pointer                   :: coo_gauss(:) => null()
-    real(kind=8), dimension(:,:), pointer   :: xpt          => null()
-    character(len=8), pointer               :: nom_cmp(:)   => null()
-    character(len=8), pointer               :: cesk(:)      => null()
+    real(kind=8), dimension(:, :), pointer   :: xpt => null()
+    character(len=8), pointer               :: nom_cmp(:) => null()
+    character(len=8), pointer               :: cesk(:) => null()
 !
     aster_logical :: exi_cmp, exi_local, okelem, effort_elno
 ! --------------------------------------------------------------------------------------------------
@@ -151,13 +151,13 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
         call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=nom_cmp, nbret=ibid)
     else
         call utmess('F', 'ALGORITH2_6')
-    endif
+    end if
 !
     call dismoi('NOM_LIGREL', champ1, 'CHAM_ELEM', repk=ligrel)
 !
 !   DEFINITION ET CREATION DU CHAM_ELEM SIMPLE CHAMS1 A PARTIR DU CHAM_ELEM CHAMP1
-    chams0='&&CHRPEL.CHAMS0'
-    chams1='&&CHRPEL.CHAMS1'
+    chams0 = '&&CHRPEL.CHAMS0'
+    chams1 = '&&CHRPEL.CHAMS1'
     call celces(champ1, 'V', chams0)
     call cesred(chams0, 0, [0], nbcmp, nom_cmp, 'V', chams1)
     call detrsd('CHAM_ELEM_S', chams0)
@@ -177,14 +177,14 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
         call wkvect('&&CHRPEL.GROUP_NO', 'V V K24', nbgno, igno)
         call getvtx('AFFE', 'GROUP_NO', iocc=icham, nbval=0, nbret=iret1)
     else
-        iret1=0
-    endif
-    if ( (iret0.lt.0) .or. (iret1.lt.0) ) then
+        iret1 = 0
+    end if
+    if ((iret0 .lt. 0) .or. (iret1 .lt. 0)) then
         valk(1) = 'NOEUD ou GROUP_NO'
         valk(2) = nomch
         valk(3) = ' '
         call utmess('F', 'ALGORITH12_42', nk=3, valk=valk)
-    endif
+    end if
     call jedetr('&&CHRPEL.NOEUDS')
     call jedetr('&&CHRPEL.GROUP_NO')
 !   nombre total de mailles dans le maillage
@@ -192,50 +192,50 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
 !   nombre de composantes du champ simple chams1
     ncmp = zi(jcesd-1+2)
 !   chams1 a été créé à partir des composantes sélectionnées par l'utilisateur, on doit avoir:
-    ASSERT( ncmp == nbcmp )
+    ASSERT(ncmp == nbcmp)
 !   Détermination de la dimension à partir du maillage
     ndim = 3
     call dismoi('Z_CST', ma, 'MAILLAGE', repk=k8b)
     if (k8b .eq. 'OUI') ndim = 2
 !
     call jeexin(ma//'.CONNEX', iret)
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
     call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jeveuo(chams1//'.CESV', 'E', jcesv)
     call jeveuo(chams1//'.CESL', 'L', jcesl)
 !
-    effort_elno = (nomch.eq.'EFGE_ELNO').or.(nomch.eq.'SIEF_ELNO')
+    effort_elno = (nomch .eq. 'EFGE_ELNO') .or. (nomch .eq. 'SIEF_ELNO')
 !
-    if ( effort_elno.and.((type_cham.ne.'VECTR_3D').and.(type_cham.ne.'COQUE_GENE')) ) then
+    if (effort_elno .and. ((type_cham .ne. 'VECTR_3D') .and. (type_cham .ne. 'COQUE_GENE'))) then
         call utmess('F', 'ALGORITH2_35', sk=type_cham)
-    endif
+    end if
 !   Si le champ est exprimé dans le repère local des éléments
 !       Construction du champ des repère locaux
     exi_local = .false.
-    if ( effort_elno.and.(type_cham.eq.'VECTR_3D') ) then
+    if (effort_elno .and. (type_cham .eq. 'VECTR_3D')) then
 !       Les noms des composantes : N, VX, VY, MT, MFY, MFZ DANS CETTE ORDRE
-        if ( (nom_cmp(1).ne.'N') .or.(nom_cmp(2).ne.'VY') .or.(nom_cmp(3).ne.'VZ') .or. &
-             (nom_cmp(4).ne.'MT').or.(nom_cmp(5).ne.'MFY').or.(nom_cmp(6).ne.'MFZ') ) then
+        if ((nom_cmp(1) .ne. 'N') .or. (nom_cmp(2) .ne. 'VY') .or. (nom_cmp(3) .ne. 'VZ') .or. &
+            (nom_cmp(4) .ne. 'MT') .or. (nom_cmp(5) .ne. 'MFY') .or. (nom_cmp(6) .ne. 'MFZ')) then
             call utmess('F', 'ALGORITH2_33')
-        endif
+        end if
         chrel(1) = '&&CHRPEL.REPLO_1'; chrel(2) = '&&CHRPEL.REPLO_2'; chrel(3) = '&&CHRPEL.REPLO_3'
         chres(1) = '&&CHRPEL.REPSO_1'; chres(2) = '&&CHRPEL.REPSO_2'; chres(3) = '&&CHRPEL.REPSO_3'
         call carelo(model, carele, 'V', chrel(1), chrel(2), chrel(3))
         exi_local = .true.
 !
-        do ii = 1 , 3
+        do ii = 1, 3
             call celces(chrel(ii), 'V', chres(ii))
             call jeveuo(chres(ii)//'.CESV', 'L', jcesvrepso(ii))
             call jeveuo(chres(ii)//'.CESD', 'L', jcesdrepso(ii))
             call detrsd('CHAM_ELEM', chrel(ii))
-        enddo
+        end do
         ! Seulement pour les POU_D_E, POU_D_T
         call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), elem_supp_num(1))
         call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_E'), elem_supp_num(2))
         ! Pointeur sur les éléments supports du modèle
         call jeveuo(model//'.MAILLE', 'L', jmodemailsupp)
-    endif
+    end if
 !   Le mot-clé AFFE définit les caractéristiques du nouveau repère
 !   On peut définir un repère variable en définissant ces paramètres par mailles/groupes de mailles
     call getfac('AFFE', nocc)
@@ -249,7 +249,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
             call jeveuo(mesmai, 'L', idmail)
         else
             nbmail = nbma
-        endif
+        end if
 !       Remise à zéro des tableaux stockant les caractéristiques du repère
         axez(:) = 0.0d0; orig(:) = 0.0d0; angnot(:) = 0.0d0
 !       Changement de repère "UTILISATEUR"
@@ -260,29 +260,29 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                 call getvr8('AFFE', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, nbret=ibid)
                 if (ndim .ne. 3) then
                     call utmess('F', 'ALGORITH2_4')
-                endif
+                end if
                 call angvxy(vectx, vecty, angnot)
             else
                 if (ndim .eq. 3) then
                     call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot, nbret=ibid)
                     if (ibid .ne. 3) then
                         call utmess('F', 'ALGORITH2_7')
-                    endif
+                    end if
                 else
                     call getvr8('AFFE', 'ANGL_NAUT', iocc=iocc, scal=angnot(1), nbret=ibid)
                     if (ibid .ne. 1) then
                         valr = angnot(1)
                         call utmess('A', 'ALGORITH12_43', sr=valr)
-                    endif
-                endif
+                    end if
+                end if
                 angnot(:) = angnot(:)*r8dgrd()
-            endif
+            end if
 !
 !           Matrice de passage du repère global vers le repère utilisateur
             call matrot(angnot, pgl)
 !           Matrot retourne la transposée de la matrice de passage : on transpose pour avoir
 !           la matrice de passage
-            pgu=transpose(pgl)
+            pgu = transpose(pgl)
 !
 !           Appliquer le changement de repère pour les mailles sélectionnées
 !
@@ -291,52 +291,52 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                     imai = zi(idmail+inel-1)
                 else
                     imai = inel
-                endif
+                end if
 !               Si le champ est dans le repère local de l'élément on va chercher la matrice
 !               de passage du repére local au global
-                if ( exi_local ) then
+                if (exi_local) then
 !                   Est-ce un élément autorisé ?
                     okelem = .false.
                     mailtypel = zi(jmodemailsupp-1+imai)
                     cii: do ii = 1, 2
-                        if ( mailtypel.eq.elem_supp_num(ii) ) then
+                        if (mailtypel .eq. elem_supp_num(ii)) then
                             okelem = .true.
                             exit cii
-                        endif
-                    enddo cii
-                    if ( .not. okelem ) then
+                        end if
+                    end do cii
+                    if (.not. okelem) then
                         call jenuno(jexnum('&CATA.TE.NOMTE', mailtypel), nomte)
                         call utmess('A', 'ALGORITH2_34', sk=nomte)
                         exit cinel
-                    endif
+                    end if
 !                   Vérification du nombre : de point, de sous points, des composantes
 !                   Récupération de l'adresse des valeurs des composantes
-                    do ii = 1 , 3
+                    do ii = 1, 3
                         nbptii = zi(jcesdrepso(ii)-1+5+4*(imai-1)+1)
                         nbspii = zi(jcesdrepso(ii)-1+5+4*(imai-1)+2)
                         ncmpii = zi(jcesdrepso(ii)-1+5+4*(imai-1)+3)
-                        ASSERT( (nbptii.eq.1).and.(nbspii.eq.1).and.(ncmpii.eq.3) )
-                        adressev(ii) = jcesvrepso(ii)-1 + zi(jcesdrepso(ii)-1+5+4*(imai-1)+4)
-                    enddo
+                        ASSERT((nbptii .eq. 1) .and. (nbspii .eq. 1) .and. (ncmpii .eq. 3))
+                        adressev(ii) = jcesvrepso(ii)-1+zi(jcesdrepso(ii)-1+5+4*(imai-1)+4)
+                    end do
 !                   La matrice de changement de repère lié à l'élément (optenu par matrot)
                     do ii = 1, 3
-                        pglelem(1,ii)  = zr(adressev(1)+ii)
-                        pglelem(2,ii)  = zr(adressev(2)+ii)
-                        pglelem(3,ii)  = zr(adressev(3)+ii)
-                    enddo
+                        pglelem(1, ii) = zr(adressev(1)+ii)
+                        pglelem(2, ii) = zr(adressev(2)+ii)
+                        pglelem(3, ii) = zr(adressev(3)+ii)
+                    end do
 !                   Passage dans le repère Global           Fglob = transpose(pglelem) . Floc
 !                   Passage dans le repère utilisateur      Futil = pgl . Fglob
 !                   Au Final                                Futil = pgl . transpose(pglelem) . Floc
-                    do ii = 1,3
-                        do jj = 1,3
+                    do ii = 1, 3
+                        do jj = 1, 3
                             tmp = 0.0
-                            do kk=1,3
-                                tmp = tmp + pgl(ii,kk)*pglelem(jj,kk)
-                            enddo
-                            pgu(ii,jj) = tmp
-                        enddo
-                    enddo
-                endif
+                            do kk = 1, 3
+                                tmp = tmp+pgl(ii, kk)*pglelem(jj, kk)
+                            end do
+                            pgu(ii, jj) = tmp
+                        end do
+                    end do
+                end if
                 nbpt = zi(jcesd-1+5+4*(imai-1)+1)
                 nbsp = zi(jcesd-1+5+4*(imai-1)+2)
                 cipt1: do ipt = 1, nbpt
@@ -346,98 +346,98 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                             call cesexi('S', jcesd, jcesl, imai, ipt, isp, ii, iad)
                             if (iad .gt. 0) then
                                 exi_cmp = .true.
-                            endif
-                        enddo
+                            end if
+                        end do
                         if (exi_cmp) then
                             call chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
                                        ipt, isp, type_cham, tsca, pgu)
                         else
                             cycle cipt1
-                        endif
-                    enddo
-                enddo cipt1
-            enddo cinel
+                        end if
+                    end do
+                end do cipt1
+            end do cinel
 !
 !       Changement de repère "CYLINDRIQUE"
-        else if (repere(1:11).eq.'CYLINDRIQUE') then
+        else if (repere(1:11) .eq. 'CYLINDRIQUE') then
 !
-            if (type_cham.eq.'VECTR_3D') then
+            if (type_cham .eq. 'VECTR_3D') then
                 call utmess('F', 'ALGORITH2_31')
-            endif
+            end if
 !
             call dismoi('TYPE_CHAMP', champ1, 'CHAMP', repk=tych, arret='C', ier=iret)
             if (ndim .eq. 3) then
-                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig,nbret=ibid)
+                call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=3, vect=orig, nbret=ibid)
                 if (ibid .ne. 3) then
                     call utmess('F', 'ALGORITH2_8')
-                endif
+                end if
                 call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=3, vect=axez, nbret=ibid)
                 if (ibid .eq. 0) then
                     call utmess('F', 'ALGORITH2_9')
-                endif
+                end if
             else
                 call getvr8('AFFE', 'ORIGINE', iocc=iocc, nbval=2, vect=orig, nbret=ibid)
                 if (ibid .ne. 2) then
                     call utmess('A', 'ALGORITH2_10')
-                endif
+                end if
                 call getvr8('AFFE', 'AXE_Z', iocc=iocc, nbval=0, nbret=ibid)
                 if (ibid .ne. 0) then
                     call utmess('A', 'ALGORITH2_11')
-                endif
+                end if
                 axez(1) = 0.0d0
                 axez(2) = 0.0d0
                 axez(3) = 1.0d0
-            endif
+            end if
             xnormr = 0.0d0
             call normev(axez, xnormr)
             call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !           Permutation des composantes en dimension 2
 !           Initialisation à l'identité
-            permvec(:)=(/(ii,ii=1,6)/)
+            permvec(:) = (/(ii, ii=1, 6)/)
             if (ndim == 2) then
                 select case (type_cham(1:4))
-                    case('TENS')
-                        permvec(4) = 5
-                    case('VECT')
-                        permvec(2) = 3
-                        permvec(3) = 2
+                case ('TENS')
+                    permvec(4) = 5
+                case ('VECT')
+                    permvec(2) = 3
+                    permvec(3) = 2
                 end select
-            endif
+            end if
 !
 !           Localisation du champ : noeuds/pts de Gauss
             type_pt = type_unknown
             if (tych(1:4) == 'VECT') then
                 type_pt = type_noeud
-            endif
+            end if
             if (tych(1:4) == 'ELNO') then
                 type_pt = type_noeud
             else if (tych(1:4) == 'ELGA') then
                 type_pt = type_gauss
-            endif
-            ASSERT(type_pt /= type_unknown )
+            end if
+            ASSERT(type_pt /= type_unknown)
 !
 !           Si le champ est un champ 'ELGA', on a besoin des
 !           coordonnées des points de Gauss dans chaque élément
-            if ( type_pt == type_gauss) then
+            if (type_pt == type_gauss) then
                 if (lModelVariable) then
                     call utmess('F', 'RESULT4_90')
-                endif
+                end if
 !               On utilise calc_coor_elga qui retourne un champ par élément
 !               contenant les coordonnées des points de Gauss
-                celgauss='&&CHRPEL.CEL_GAUSS'
+                celgauss = '&&CHRPEL.CEL_GAUSS'
                 call exisd('CHAMP', celgauss, iexist)
                 if (iexist .eq. 0) then
                     call megeom(model, chgeom)
                     call calc_coor_elga(model, ligrel, chgeom, celgauss)
-                endif
+                end if
 !               On transforme ce champ en champ simple
-                cesgauss='&&CHRPEL.CES_GAUSS'
-                call celces( celgauss, 'V', cesgauss)
-                call jeveuo(cesgauss//'.CESD','L', jcesd_gauss)
-                call jeveuo(cesgauss//'.CESL','L', jcesl_gauss)
-                call jeveuo(cesgauss//'.CESV','L', vr=coo_gauss)
-            endif
+                cesgauss = '&&CHRPEL.CES_GAUSS'
+                call celces(celgauss, 'V', cesgauss)
+                call jeveuo(cesgauss//'.CESD', 'L', jcesd_gauss)
+                call jeveuo(cesgauss//'.CESL', 'L', jcesl_gauss)
+                call jeveuo(cesgauss//'.CESV', 'L', vr=coo_gauss)
+            end if
 
 !           Boucle sur les mailles à transformer
             do inel = 1, nbmail
@@ -447,45 +447,45 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                     imai = zi(idmail+inel-1)
                 else
                     imai = inel
-                endif
-                nbno = zi(ilcnx1+imai) - zi(ilcnx1-1+imai)
+                end if
+                nbno = zi(ilcnx1+imai)-zi(ilcnx1-1+imai)
 !               Quelques caractéristiques du champ simple à transformer sur cette maille :
 !               nbpg : nombre de points de Gauss
-                nbpg = zi(jcesd-1+5+4* (imai-1)+1)
+                nbpg = zi(jcesd-1+5+4*(imai-1)+1)
 !               nbsp : nombre de sous-points
-                nbsp = zi(jcesd-1+5+4* (imai-1)+2)
+                nbsp = zi(jcesd-1+5+4*(imai-1)+2)
 !               nbcmp : nombre de composantes
-                nbcmp = zi(jcesd-1+5+4* (imai-1)+3)
+                nbcmp = zi(jcesd-1+5+4*(imai-1)+3)
 !
 !               Coordonnées des noeuds de la maille courante
-                xno(:,:) = 0.d0
+                xno(:, :) = 0.d0
                 do ino = 1, nbno
                     nuno = connex(zi(ilcnx1+imai-1)+ino-1)
-                    xno(1,ino) = vale(1+3*(nuno-1)-1+1)
-                    xno(2,ino) = vale(1+3*(nuno-1)-1+2)
+                    xno(1, ino) = vale(1+3*(nuno-1)-1+1)
+                    xno(2, ino) = vale(1+3*(nuno-1)-1+2)
                     if (ndim == 3) then
-                        xno(3,ino) = vale(1+3*(nuno-1)-1+3)
-                    endif
-                enddo
+                        xno(3, ino) = vale(1+3*(nuno-1)-1+3)
+                    end if
+                end do
 !
                 select case (type_pt)
-                    case (type_noeud)
+                case (type_noeud)
 !                       Noeuds de la maille
-                        nbpt=nbno
-                        xpt => xno(:,:)
-                    case (type_gauss)
+                    nbpt = nbno
+                    xpt => xno(:, :)
+                case (type_gauss)
 !                       Points de Gauss de la maille, dont il faut récupérer les coordonnées
-                        do ipg = 1, nbpg
-                            do icoo = 1, 3
-                                call cesexi('S', jcesd_gauss, jcesl_gauss, imai, ipg, 1, icoo, iad)
-                                xpg(icoo,ipg) = coo_gauss(iad)
-                            enddo
-                        enddo
-                        nbpt = nbpg
-                        xpt => xpg(:,:)
-                    case default
-                        nbpt = 0
-                        ASSERT(.false.)
+                    do ipg = 1, nbpg
+                        do icoo = 1, 3
+                            call cesexi('S', jcesd_gauss, jcesl_gauss, imai, ipg, 1, icoo, iad)
+                            xpg(icoo, ipg) = coo_gauss(iad)
+                        end do
+                    end do
+                    nbpt = nbpg
+                    xpt => xpg(:, :)
+                case default
+                    nbpt = 0
+                    ASSERT(.false.)
                 end select
 !
 !               Boucle sur les points (cette partie est commune aux champs ELNO et ELGA)
@@ -496,15 +496,15 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                     if (ipaxe > 0) then
                         call utmess('A', 'ALGORITH2_13')
 !                       Calcul de la matrice de passage au centre de gravité de l'élément
-                        xbary(:)=sum(xno(:,1:nbno), dim=2)
+                        xbary(:) = sum(xno(:, 1:nbno), dim=2)
                         xbary(:) = xbary(:)/nbno
                         ipaxe2 = 0
                         call cylrep(ndim, xbary, axez, orig, pgcyl, ipaxe2)
 !                       Si le centre de gravité de l'élément est aussi sur l'axe, on s'arrête
                         if (ipaxe2 > 0) then
                             call utmess('F', 'ALGORITH2_13')
-                        endif
-                    endif
+                        end if
+                    end if
 !                   Boucle sur les sous-points
                     do isp = 1, nbsp
                         exi_cmp = .true.
@@ -514,80 +514,80 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                             call cesexi('S', jcesd, jcesl, imai, ipt, isp, ii, iad)
                             if (iad .gt. 0) then
                                 exi_cmp = .true.
-                            endif
-                        enddo
+                            end if
+                        end do
                         if (exi_cmp) then
                             call chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
                                        ipt, isp, type_cham, tsca, pgcyl, permvec)
                         else
                             cycle cipt2
-                        endif
-                    enddo
-                enddo cipt2
-            enddo
+                        end if
+                    end do
+                end do cipt2
+            end do
 !
             if (ipaxe .ne. 0) then
                 call utmess('A', 'ALGORITH17_22', si=ipaxe)
-            endif
-        endif
+            end if
+        end if
 !
         call jeexin(mesmai, iret)
         if (iret .ne. 0) call jedetr(mesmai)
-    enddo
+    end do
 !
-    if ( (repere(1:11).eq.'CYLINDRIQUE') .or. &
-         (repere(1:11).eq.'UTILISATEUR') ) then
+    if ((repere(1:11) .eq. 'CYLINDRIQUE') .or. &
+        (repere(1:11) .eq. 'UTILISATEUR')) then
 !       Champ simple -> Cham_elem
         call dismoi('NOM_OPTION', champ1, 'CHAM_ELEM', repk=option)
         call cescel(chams1, ligrel, option, ' ', 'OUI', nncp, 'G', champ1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chams1)
-        if ( exi_local ) then
-            do ii= 1, 3
+        if (exi_local) then
+            do ii = 1, 3
                 call detrsd('CHAM_ELEM_S', chres(ii))
-            enddo
-        endif
-    endif
+            end do
+        end if
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   Changement de repère sur une coque
-    if ( (repere(1:5) .eq.'COQUE')           .or. &
-         (repere(1:15).eq.'COQUE_INTR_UTIL') .or. &
-         (repere(1:15).eq.'COQUE_UTIL_INTR') .or. &
-         (repere(1:14).eq.'COQUE_UTIL_CYL') )  then
+    if ((repere(1:5) .eq. 'COQUE') .or. &
+        (repere(1:15) .eq. 'COQUE_INTR_UTIL') .or. &
+        (repere(1:15) .eq. 'COQUE_UTIL_INTR') .or. &
+        (repere(1:14) .eq. 'COQUE_UTIL_CYL')) then
 !       Pour l'instant on ne traite pas le cas de plusieurs occurrences du mot-clé AFFE
-        if ( nocc /= 1  ) then
+        if (nocc /= 1) then
             call utmess('F', 'ALGORITH17_23', sk=repere, si=nocc)
-        endif
+        end if
 !
         call megeom(model, chgeom)
         call mecara(carele, chcara)
 !
-        if ( (type_cham(1:10).eq.'COQUE_GENE') .and. &
-             (repere(1:14).eq.'COQUE_UTIL_CYL') ) then
+        if ((type_cham(1:10) .eq. 'COQUE_GENE') .and. &
+            (repere(1:14) .eq. 'COQUE_UTIL_CYL')) then
             call utmess('F', 'ELEMENTS5_55', nk=2, valk=(/'COQUE_UTIL_CYL', 'COQUE_GENE    '/))
-        endif
-        if (type_cham(1:10).eq.'COQUE_GENE') then
+        end if
+        if (type_cham(1:10) .eq. 'COQUE_GENE') then
             option = 'REPE_GENE'
 !           Nb de paramètres en entrée de l'option
             npain = 4
-        else if (type_cham(1:7).eq.'TENS_3D') then
+        else if (type_cham(1:7) .eq. 'TENS_3D') then
             option = 'REPE_TENS'
             npain = 5
         else
             call utmess('F', 'ELEMENTS5_53', sk=type_cham)
-        endif
+        end if
 !
 !       GENERATION D UN CHAMP D'ANGLES (CARTE CONSTANTE)
         carte = '&&CHRPEL.ANGL_REP'
         angrep(:) = 0.0d0
 !
         if (repere .eq. 'COQUE_INTR_UTIL') then
-            angrep(3)=1.d0
-        else if (repere.eq.'COQUE_UTIL_INTR') then
-            angrep(3)=2.d0
-        else if (repere.eq.'COQUE_UTIL_CYL') then
-            angrep(3)=3.d0
-        endif
+            angrep(3) = 1.d0
+        else if (repere .eq. 'COQUE_UTIL_INTR') then
+            angrep(3) = 2.d0
+        else if (repere .eq. 'COQUE_UTIL_CYL') then
+            angrep(3) = 3.d0
+        end if
         licmp(1) = 'ALPHA'
         licmp(2) = 'BETA'
         licmp(3) = 'REP'
@@ -620,43 +620,43 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                 lpain(4) = 'PEFGAIN'
                 paout = 'PEFGAOUT'
                 if (nomgdr(5:6) .eq. '_C') paoutc = 'PEFGAOUC'
-            else if (nomch.eq.'EFGE_ELNO') then
+            else if (nomch .eq. 'EFGE_ELNO') then
                 lpain(4) = 'PEFNOIN'
                 paout = 'PEFNOOUT'
                 if (nomgdr(5:6) .eq. '_C') paoutc = 'PEFNOOUC'
-            else if (nomch.eq.'DEGE_ELGA') then
+            else if (nomch .eq. 'DEGE_ELGA') then
                 lpain(4) = 'PDGGAIN'
                 paout = 'PDGGAOUT'
                 if (nomgdr(5:6) .eq. '_C') paoutc = 'PDGGAOUC'
-            else if (nomch.eq.'DEGE_ELNO') then
+            else if (nomch .eq. 'DEGE_ELNO') then
                 lpain(4) = 'PDGNOIN'
                 paout = 'PDGNOOUT'
                 if (nomgdr(5:6) .eq. '_C') paoutc = 'PDGNOOUC'
-            else if (nomch.eq.'SIEF_ELGA') then
+            else if (nomch .eq. 'SIEF_ELGA') then
                 lpain(4) = 'PEFGAIN'
                 paout = 'PEFGAOUT'
                 if (nomgdr(5:6) .eq. '_C') paoutc = 'PEFGAOUC'
             else
                 call utmess('F', 'ELEMENTS5_51', sk=nomch)
-            endif
-        else if (type_cham.eq.'TENS_3D') then
+            end if
+        else if (type_cham .eq. 'TENS_3D') then
             if (nomch .eq. 'SIGM_ELGA') then
                 lpain(4) = 'PCOGAIN'
                 paout = 'PCOGAOUT'
-            else if (nomch.eq.'SIGM_ELNO') then
+            else if (nomch .eq. 'SIGM_ELNO') then
                 lpain(4) = 'PCONOIN'
                 paout = 'PCONOOUT'
-            else if (nomch.eq.'EPSI_ELGA') then
+            else if (nomch .eq. 'EPSI_ELGA') then
                 lpain(4) = 'PDEGAIN'
                 paout = 'PDEGAOUT'
-            else if (nomch.eq.'EPSI_ELNO') then
+            else if (nomch .eq. 'EPSI_ELNO') then
                 lpain(4) = 'PDENOIN'
                 paout = 'PDENOOUT'
             else
                 call utmess('F', 'ELEMENTS5_52', sk=nomch)
-            endif
+            end if
             !
-        endif
+        end if
         call exisd('CHAM_ELEM_S', canbsp, iret1)
         if (iret1 .ne. 1) then
             call dismoi('MXNBSP', champ1(1:19), 'CHAM_ELEM', repi=nbsp)
@@ -666,22 +666,22 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
                 call cesvar(champ1(1:19), ' ', ligrel, canbsp)
             else
                 call cesvar(carele, ' ', ligrel, canbsp)
-            endif
-        endif
+            end if
+        end if
         chaout = chams1
         call copisd('CHAM_ELEM_S', 'V', canbsp, chaout)
 !
         if (nomgdr(5:6) .eq. '_C') then
-            chr='&&CHRPEL.CHR'
-            chi='&&CHRPEL.CHI'
-            ch1='&&CHRPEL.CH1'
-            ch2='&&CHRPEL.CH2'
+            chr = '&&CHRPEL.CHR'
+            chi = '&&CHRPEL.CHI'
+            ch1 = '&&CHRPEL.CH1'
+            ch2 = '&&CHRPEL.CH2'
             call sepach(carele, lchin(4), 'V', chr, chi)
-            lchin(4)=chr
+            lchin(4) = chr
             call calcul('S', option, ligrel, npain, lchin(1:npain), &
                         lpain(1:npain), 1, ch1, paout, 'V', 'OUI')
-            lchin(4)=chi
-            call calcul('S', option, ligrel, npain, lchin(1:npain),&
+            lchin(4) = chi
+            call calcul('S', option, ligrel, npain, lchin(1:npain), &
                         lpain(1:npain), 1, ch2, paout, 'V', 'OUI')
             call assach(ch1, ch2, 'V', chaout, parout=paoutc)
             call detrsd('CHAMP', chr)
@@ -689,12 +689,12 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
             call detrsd('CHAMP', ch1)
             call detrsd('CHAMP', ch2)
         else
-            call calcul('S', option, ligrel, npain, lchin(1:npain),&
+            call calcul('S', option, ligrel, npain, lchin(1:npain), &
                         lpain(1:npain), 1, chaout, paout, 'V', 'OUI')
-        endif
+        end if
         call detrsd('CHAM_ELEM_S', chaout)
         call copisd('CHAMP_GD', 'G', chaout, champ1)
-    endif
+    end if
 !
     AS_DEALLOCATE(vk8=nom_cmp)
     call exisd('CHAM_ELEM_S', canbsp, iret1)

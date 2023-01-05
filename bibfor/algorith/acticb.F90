@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acticb(nbcmp, nbno, nbec, mcoddl, icono,&
+subroutine acticb(nbcmp, nbno, nbec, mcoddl, icono, &
                   icodac)
     implicit none
 !
@@ -45,8 +45,8 @@ subroutine acticb(nbcmp, nbno, nbec, mcoddl, icono,&
 #include "asterfort/isgeco.h"
     integer :: i, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !-----------------------------------------------------------------------
-    parameter (nbcpmx = 300)
-    parameter (nbecmx =  10)
+    parameter(nbcpmx=300)
+    parameter(nbecmx=10)
     integer :: mcoddl(nbno*nbec, 2), icono(nbno*nbec), icodac(nbno*nbec)
     integer :: idec(nbcpmx), itout(nbecmx), icoco(nbecmx), icici(nbecmx)
 !
@@ -60,7 +60,7 @@ subroutine acticb(nbcmp, nbno, nbec, mcoddl, icono,&
     end do
 !
     do i = 1, nbcmp
-        idec(i)=1
+        idec(i) = 1
     end do
     call iscode(idec, itout, nbcmp)
 !
@@ -70,7 +70,7 @@ subroutine acticb(nbcmp, nbno, nbec, mcoddl, icono,&
         call isgeco(itout, mcoddl((i-1)*nbec+1, 2), nbcmp, -1, icoco)
         call isgeco(icodac((i-1)*nbec+1), icoco, nbcmp, -1, icici)
         call isgeco(icici, mcoddl((i-1)*nbec+1, 2), nbcmp, -1, icoco)
-        call isgeco(icoco, icono((i-1)*nbec+1), nbcmp, 1, icodac((i-1)* nbec+1))
+        call isgeco(icoco, icono((i-1)*nbec+1), nbcmp, 1, icodac((i-1)*nbec+1))
     end do
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
     integer :: izone
 !
 !   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
-    real(kind=8), parameter :: atol=1.e-12
-    real(kind=8), parameter :: rtol=1.e-12
+    real(kind=8), parameter :: atol = 1.e-12
+    real(kind=8), parameter :: rtol = 1.e-12
     aster_logical :: near
 !
 ! ----------------------------------------------------------------------
@@ -64,8 +64,8 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
     ecart = -1.d0
 !
 !   calcul de ksi1 + ksi2 et ksi2 - ksi1 (utilises pour le cas du triangle)
-    k1pk2 = ksi1 + ksi2
-    k2mk1 = ksi2 - ksi1
+    k1pk2 = ksi1+ksi2
+    k2mk1 = ksi2-ksi1
 !
     if (alias(1:2) .eq. 'SE') then
 !
@@ -73,13 +73,13 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
 !       le bord, s'il est à une distance (normalisee) inférieure a atol du bord
 !
 !       ksi1 = -1 ?
-        if (abs(ksi1+1.d0).le.atol) ksi1=-1.d0
+        if (abs(ksi1+1.d0) .le. atol) ksi1 = -1.d0
 !       ksi1 = +1 ?
-        if (abs(ksi1-1.d0).le.atol) ksi1=+1.d0
+        if (abs(ksi1-1.d0) .le. atol) ksi1 = +1.d0
 !
-        if ((ksi1.ge.-1.d0) .and. (ksi1.le.1.d0)) then
+        if ((ksi1 .ge. -1.d0) .and. (ksi1 .le. 1.d0)) then
             goto 999
-        endif
+        end if
 !
 ! --- CALCUL DE L'ECART
 !
@@ -91,36 +91,36 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
 !
         if (ksi1 .lt. -1.d0) then
             ksi1 = -1.d0
-        else if (ksi1.gt.1.d0) then
+        else if (ksi1 .gt. 1.d0) then
             ksi1 = 1.d0
-        endif
+        end if
 !
 !       ecart est-il egal a toleou ?
-        near = abs(ecart-toleou) .le. (atol + toleou*rtol)
+        near = abs(ecart-toleou) .le. (atol+toleou*rtol)
 !
         if (ecart .gt. toleou .and. .not. near) then
             iproj = 2
-        endif
+        end if
 !
-    else if (alias(1:2).eq.'TR') then
+    else if (alias(1:2) .eq. 'TR') then
 !
 !       premier ajustement : on positionne le point de coordonnees (ksi1, ksi2) sur
 !       le bord, s'il est à une distance (normalisee) inférieure a atol du bord
 !
 !       ksi1 = 0 ?
-        if (abs(ksi1).le.atol) ksi1=0.d0
+        if (abs(ksi1) .le. atol) ksi1 = 0.d0
 !       ksi2 = 0 ?
-        if (abs(ksi2).le.atol) ksi2=0.d0
+        if (abs(ksi2) .le. atol) ksi2 = 0.d0
 !       ksi1 + ksi2 = 1 ?
-        if (abs(k1pk2-1.d0).le.atol) k1pk2=+1.d0
+        if (abs(k1pk2-1.d0) .le. atol) k1pk2 = +1.d0
 !       ksi2 - ksi1 = -1 ?
-        if (abs(k2mk1+1.d0).le.atol) k2mk1=-1.d0
+        if (abs(k2mk1+1.d0) .le. atol) k2mk1 = -1.d0
 !       ksi2 - ksi1 = 1 ?
-        if (abs(k2mk1-1.d0).le.atol) k2mk1=+1.d0
+        if (abs(k2mk1-1.d0) .le. atol) k2mk1 = +1.d0
 !
-        if ((ksi1.ge.0.d0) .and. (ksi2.ge.0.d0) .and. (k1pk2 .le.1.d0)) then
+        if ((ksi1 .ge. 0.d0) .and. (ksi2 .ge. 0.d0) .and. (k1pk2 .le. 1.d0)) then
             goto 999
-        endif
+        end if
 !
 ! --- SECTEUR CONCERNE
 !
@@ -128,55 +128,55 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
         if (ksi1 .lt. 0.d0) then
             if (ksi2 .lt. 0.d0) then
                 izone = 1
-            else if ((ksi2.ge.0.d0).and.(ksi2.le.1.d0)) then
+            else if ((ksi2 .ge. 0.d0) .and. (ksi2 .le. 1.d0)) then
                 izone = 2
-            else if (ksi2.gt.1.d0) then
+            else if (ksi2 .gt. 1.d0) then
                 izone = 3
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
         if (ksi2 .lt. 0.d0) then
             if (ksi1 .lt. 0.d0) then
                 izone = 1
-            else if ((ksi1.ge.0.d0).and.(ksi1.le.1.d0)) then
+            else if ((ksi1 .ge. 0.d0) .and. (ksi1 .le. 1.d0)) then
                 izone = 8
-            else if (ksi1.gt.1.d0) then
+            else if (ksi1 .gt. 1.d0) then
                 izone = 7
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
         if (ksi1 .ge. 0.d0) then
             if (k2mk1 .gt. 1.d0) then
                 izone = 4
-                elseif ((k1pk2.gt.1.d0).and. (k2mk1.ge.-1.d0)&
-            .and. (k2mk1.le.1.d0)) then
+            elseif ((k1pk2 .gt. 1.d0) .and. (k2mk1 .ge. -1.d0) &
+                    .and. (k2mk1 .le. 1.d0)) then
                 izone = 5
                 ksi1e = 5.d-1*(1.d0+ksi1-ksi2)
                 ksi2e = 5.d-1*(1.d0-ksi1+ksi2)
-            else if ((ksi2.ge.0.d0).and. (k2mk1.lt.-1.d0)) then
+            else if ((ksi2 .ge. 0.d0) .and. (k2mk1 .lt. -1.d0)) then
                 izone = 6
-            endif
-        endif
+            end if
+        end if
 !
 ! --- CALCUL DE L'ECART
 !
         if (izone .eq. 1) then
-            ecart = sqrt(abs(ksi1)*abs(ksi1)+ abs(ksi2)*abs(ksi2))
-        else if (izone.eq.2) then
+            ecart = sqrt(abs(ksi1)*abs(ksi1)+abs(ksi2)*abs(ksi2))
+        else if (izone .eq. 2) then
             ecart = sqrt(abs(ksi1)*abs(ksi1))
-        else if (izone.eq.3.or.izone.eq.4) then
-            ecart = sqrt(abs(ksi1)*abs(ksi1)+ (ksi2-1.d0)*(ksi2-1.d0))
-        else if (izone.eq.5) then
-            ecart = sqrt((ksi1-ksi1e)*(ksi1-ksi1e)+ (ksi2-ksi2e)*( ksi2-ksi2e))
-        else if (izone.eq.6.or.izone.eq.7) then
-            ecart = sqrt(abs(ksi2)*abs(ksi2)+ (ksi1-1.d0)*(ksi1-1.d0))
-        else if (izone.eq.8) then
+        else if (izone .eq. 3 .or. izone .eq. 4) then
+            ecart = sqrt(abs(ksi1)*abs(ksi1)+(ksi2-1.d0)*(ksi2-1.d0))
+        else if (izone .eq. 5) then
+            ecart = sqrt((ksi1-ksi1e)*(ksi1-ksi1e)+(ksi2-ksi2e)*(ksi2-ksi2e))
+        else if (izone .eq. 6 .or. izone .eq. 7) then
+            ecart = sqrt(abs(ksi2)*abs(ksi2)+(ksi1-1.d0)*(ksi1-1.d0))
+        else if (izone .eq. 8) then
             ecart = sqrt(abs(ksi2)*abs(ksi2))
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! --- RABATTEMENT
 !
@@ -185,47 +185,47 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
         if (izone .eq. 1) then
             ksi1 = 0.d0
             ksi2 = 0.d0
-        else if (izone.eq.2) then
+        else if (izone .eq. 2) then
             ksi1 = 0.d0
-        else if (izone.eq.3.or.izone.eq.4) then
+        else if (izone .eq. 3 .or. izone .eq. 4) then
             ksi1 = 0.d0
             ksi2 = 1.d0
-        else if (izone.eq.5) then
+        else if (izone .eq. 5) then
             ksi1 = ksi1e
             ksi2 = ksi2e
-        else if (izone.eq.6.or.izone.eq.7) then
+        else if (izone .eq. 6 .or. izone .eq. 7) then
             ksi1 = 1.d0
             ksi2 = 0.d0
-        else if (izone.eq.8) then
+        else if (izone .eq. 8) then
             ksi2 = 0.d0
-        endif
+        end if
 !
 !       ecart est-il egal a toleou ?
-        near = abs(ecart-toleou) .le. (atol + toleou*rtol)
+        near = abs(ecart-toleou) .le. (atol+toleou*rtol)
 !
         if (ecart .gt. toleou .and. .not. near) then
             iproj = 2
-        endif
+        end if
 !
-    else if (alias(1:2).eq.'QU') then
+    else if (alias(1:2) .eq. 'QU') then
 !
 !       premier ajustement : on positionne le point de coordonnees (ksi1, ksi2) sur
 !       le bord, s'il est à une distance (normalisee) inférieure a atol du bord
 !
 !       ksi1 = -1 ?
-        if (abs(ksi1+1.d0).le.atol) ksi1=-1.d0
+        if (abs(ksi1+1.d0) .le. atol) ksi1 = -1.d0
 !       ksi1 = +1 ?
-        if (abs(ksi1-1.d0).le.atol) ksi1=+1.d0
+        if (abs(ksi1-1.d0) .le. atol) ksi1 = +1.d0
 !       ksi2 = -1 ?
-        if (abs(ksi2+1.d0).le.atol) ksi2=-1.d0
+        if (abs(ksi2+1.d0) .le. atol) ksi2 = -1.d0
 !       ksi2 = +1 ?
-        if (abs(ksi2-1.d0).le.atol) ksi2=+1.d0
+        if (abs(ksi2-1.d0) .le. atol) ksi2 = +1.d0
 !
 !        if ((abs(ksi1).le.1.d0) .and. (abs(ksi2).le.1.d0)) then
-        if ((ksi1.ge.-1.d0) .and. (ksi1.le.1.d0) .and. &
-            (ksi2.ge.-1.d0) .and. (ksi2.le.1.d0)) then
+        if ((ksi1 .ge. -1.d0) .and. (ksi1 .le. 1.d0) .and. &
+            (ksi2 .ge. -1.d0) .and. (ksi2 .le. 1.d0)) then
             goto 999
-        endif
+        end if
 !
 ! --- SECTEUR CONCERNE
 !
@@ -234,54 +234,54 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             if (ksi2 .lt. -1.d0) then
                 izone = 1
 !
-            else if ((ksi2.ge.-1.d0).and.(ksi2.le.1.d0)) then
+            else if ((ksi2 .ge. -1.d0) .and. (ksi2 .le. 1.d0)) then
                 izone = 2
-            else if (ksi2.gt.1.d0) then
+            else if (ksi2 .gt. 1.d0) then
                 izone = 3
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
         if (ksi1 .gt. 1.d0) then
             if (ksi2 .lt. -1.d0) then
                 izone = 7
-            else if ((ksi2.ge.-1.d0).and.(ksi2.le.1.d0)) then
+            else if ((ksi2 .ge. -1.d0) .and. (ksi2 .le. 1.d0)) then
                 izone = 6
-            else if (ksi2.gt.1.d0) then
+            else if (ksi2 .gt. 1.d0) then
                 izone = 5
             else
                 ASSERT(.false.)
-            endif
-        endif
-        if ((ksi1.ge.-1.d0) .and. (ksi1.le.1.d0)) then
+            end if
+        end if
+        if ((ksi1 .ge. -1.d0) .and. (ksi1 .le. 1.d0)) then
             if (ksi2 .lt. -1.d0) then
                 izone = 8
-            else if (ksi2.gt.1.d0) then
+            else if (ksi2 .gt. 1.d0) then
                 izone = 4
-            endif
-        endif
+            end if
+        end if
 !
 ! --- CALCUL DE L'ECART
 !
         if (izone .eq. 1) then
-            ecart = sqrt(( abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+ (abs(ksi2) -1.d0)*(abs(ksi2)-1.d0 ))
-        else if (izone.eq.2) then
+            ecart = sqrt((abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+(abs(ksi2)-1.d0)*(abs(ksi2)-1.d0))
+        else if (izone .eq. 2) then
             ecart = sqrt((abs(ksi1)-1.d0)*(abs(ksi1)-1.d0))
-        else if (izone.eq.3) then
-            ecart = sqrt(( abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+ (abs(ksi2) -1.d0)*(abs(ksi2)-1.d0 ))
-        else if (izone.eq.4) then
+        else if (izone .eq. 3) then
+            ecart = sqrt((abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+(abs(ksi2)-1.d0)*(abs(ksi2)-1.d0))
+        else if (izone .eq. 4) then
             ecart = sqrt((abs(ksi2)-1.d0)*(abs(ksi2)-1.d0))
-        else if (izone.eq.5) then
-            ecart = sqrt(( abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+ (abs(ksi2) -1.d0)*(abs(ksi2)-1.d0 ))
-        else if (izone.eq.6) then
+        else if (izone .eq. 5) then
+            ecart = sqrt((abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+(abs(ksi2)-1.d0)*(abs(ksi2)-1.d0))
+        else if (izone .eq. 6) then
             ecart = sqrt((abs(ksi1)-1.d0)*(abs(ksi1)-1.d0))
-        else if (izone.eq.7) then
-            ecart = sqrt(( abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+ (abs(ksi2) -1.d0)*(abs(ksi2)-1.d0 ))
-        else if (izone.eq.8) then
+        else if (izone .eq. 7) then
+            ecart = sqrt((abs(ksi1)-1.d0)*(abs(ksi1)-1.d0)+(abs(ksi2)-1.d0)*(abs(ksi2)-1.d0))
+        else if (izone .eq. 8) then
             ecart = sqrt((abs(ksi2)-1.d0)*(abs(ksi2)-1.d0))
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! --- RABATTEMENT
 !
@@ -290,36 +290,36 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
         if (izone .eq. 1) then
             ksi1 = -1.d0
             ksi2 = -1.d0
-        else if (izone.eq.2) then
+        else if (izone .eq. 2) then
             ksi1 = -1.d0
-        else if (izone.eq.3) then
+        else if (izone .eq. 3) then
             ksi1 = -1.d0
             ksi2 = 1.d0
-        else if (izone.eq.4) then
+        else if (izone .eq. 4) then
             ksi2 = 1.d0
-        else if (izone.eq.5) then
+        else if (izone .eq. 5) then
             ksi1 = 1.d0
             ksi2 = 1.d0
-        else if (izone.eq.6) then
+        else if (izone .eq. 6) then
             ksi1 = 1.d0
-        else if (izone.eq.7) then
+        else if (izone .eq. 7) then
             ksi1 = 1.d0
             ksi2 = -1.d0
-        else if (izone.eq.8) then
+        else if (izone .eq. 8) then
             ksi2 = -1.d0
-        endif
+        end if
 !
 !       ecart est-il egal a toleou ?
-        near = abs(ecart-toleou) .le. (atol + toleou*rtol)
+        near = abs(ecart-toleou) .le. (atol+toleou*rtol)
 !
         if (ecart .gt. toleou .and. .not. near) then
             iproj = 2
-        endif
+        end if
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-999  continue
+999 continue
 !
 end subroutine

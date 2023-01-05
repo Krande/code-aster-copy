@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,17 +36,17 @@ subroutine jermxd(rval, iret)
 !
 ! DEB ------------------------------------------------------------------
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
     real(kind=8) :: rv(2)
 !
     if (rval .le. 0) then
-        rv(1)=mcdyn*lois/(1024*1024)
-        rv(2)=rval/(1024*1024)
+        rv(1) = mcdyn*lois/(1024*1024)
+        rv(2) = rval/(1024*1024)
         call utmess('F', 'JEVEUX1_72', nr=2, valr=rv)
-    endif
+    end if
 ! ON EVALUE LA VALEUR PASSEE EN ARGUMENT PAR RAPPORT A L'OCCUPATION
 ! TOTALE COURANTE JEVEUX (OBJETS UTILISÉS)
 !
@@ -55,6 +55,6 @@ subroutine jermxd(rval, iret)
         iret = 0
     else
         iret = max(1, int(mcdyn))
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

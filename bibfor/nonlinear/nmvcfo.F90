@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmvcfo(type_comp, model    , mater     , mateco, cara_elem, compor,&
+subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
                   varc_refe, hval_incr, vect_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -67,7 +67,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: mxchin, mxchout, nbin, nbout
-    parameter    (mxchout=2, mxchin=32)
+    parameter(mxchout=2, mxchin=32)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
@@ -88,40 +88,40 @@ implicit none
 !
 ! - Command variables affected
 !
-    call nmvcd2('HYDR'   , mater, exis_hydr)
-    call nmvcd2('PTOT'   , mater, exis_ptot)
-    call nmvcd2('SECH'   , mater, exis_sech)
-    call nmvcd2('EPSA'   , mater, exis_epsa)
-    call nmvcd2('M_ZIRC' , mater, exis_meta_zirc)
+    call nmvcd2('HYDR', mater, exis_hydr)
+    call nmvcd2('PTOT', mater, exis_ptot)
+    call nmvcd2('SECH', mater, exis_sech)
+    call nmvcd2('EPSA', mater, exis_epsa)
+    call nmvcd2('M_ZIRC', mater, exis_meta_zirc)
     call nmvcd2('M_ACIER', mater, exis_meta_acier)
-    call nmvcd2('TEMP'   , mater, exis_temp)
-    exis_meta = exis_temp .and. (exis_meta_zirc.or.exis_meta_acier)
+    call nmvcd2('TEMP', mater, exis_temp)
+    exis_meta = exis_temp .and. (exis_meta_zirc .or. exis_meta_acier)
     calc_meta = .false.
-    if (exis_meta.and.type_comp.eq.'+') then
+    if (exis_meta .and. type_comp .eq. '+') then
         calc_meta = .true.
-    endif
+    end if
 !
 ! - Prepare elementary vectors
 !
     call jeexin(vect_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
         call memare('V', vect_elem, model, mater, cara_elem, 'CHAR_MECA')
-    endif
-    call jedetr(vect_elem(1:19)// '.RELR')
+    end if
+    call jedetr(vect_elem(1:19)//'.RELR')
     call reajre(vect_elem, ' ', 'V')
 !
 ! - Fields preparation of elementary vectors
 !
     nume_harm = 0
-    call nmvarc_prep(type_comp, model    , cara_elem, mateco   , varc_refe,&
-                     compor   , exis_temp, mxchin   , nbin     , lpain    ,&
-                     lchin    , mxchout  , nbout    , lpaout   , lchout   ,&
+    call nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
+                     compor, exis_temp, mxchin, nbin, lpain, &
+                     lchin, mxchout, nbout, lpaout, lchout, &
                      sigm_prev, vari_prev, varc_prev, varc_curr, nume_harm)
 !
 ! - Computation of elementary vectors
 !
-    call nmvccc(model    , nbin     , nbout    , lpain    , lchin    ,&
-                lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
-                exis_sech, exis_epsa, calc_meta, 'V'      , vect_elem)
+    call nmvccc(model, nbin, nbout, lpain, lchin, &
+                lpaout, lchout, exis_temp, exis_hydr, exis_ptot, &
+                exis_sech, exis_epsa, calc_meta, 'V', vect_elem)
 !
 end subroutine

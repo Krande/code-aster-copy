@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,25 +43,25 @@ subroutine vdxrep(nomte, epais, xi)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
-    nb1  =zi(lzi-1+1)
-    nb2  =zi(lzi-1+2)
-    npgsr=zi(lzi-1+3)
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    npgsr = zi(lzi-1+3)
 !
 !     -- POUR REMPLIR LZR+1090+...  ET CALCULER VECTN :
-    call vectan(nb1, nb2, xi, zr(lzr), vecta,&
+    call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
 !
 !     -- POUR REMPLIR LZR+2000+... :
 !     -- QUELLE VALEUR POUR IND ? FICHE ???
-    ind =0
+    ind = 0
     k = 0
     do intsr = 1, npgsr
-        call vectgt(ind, nb1, xi, zero, intsr,&
+        call vectgt(ind, nb1, xi, zero, intsr, &
                     zr(lzr), epais, vectn, vectg, vectt)
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                zr(lzr+2000+k-1) = vectt(i,j)
+                k = k+1
+                zr(lzr+2000+k-1) = vectt(i, j)
             end do
         end do
     end do

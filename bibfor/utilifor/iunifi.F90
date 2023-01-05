@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,24 +40,24 @@ function iunifi(name)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     character(len=16) :: name16
     integer :: i
 !     ------------------------------------------------------------------
 !     CONSERVER LA COHERENCE AVEC IBIMPR
     integer :: mximpr
-    parameter   ( mximpr = 3)
-    character(len=16) :: nompr (mximpr)
-    integer :: unitpr (mximpr)
-    data          nompr  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
-    data          unitpr /    6      ,     6     ,      6  /
+    parameter(mximpr=3)
+    character(len=16) :: nompr(mximpr)
+    integer :: unitpr(mximpr)
+    data nompr/'MESSAGE', 'RESULTAT', 'ERREUR'/
+    data unitpr/6, 6, 6/
 !     ------------------------------------------------------------------
 !
     if (first .ne. 17111990) call ulinit()
@@ -70,15 +70,15 @@ function iunifi(name)
         if (name16 .eq. nompr(i)) then
             iunifi = unitpr(i)
             goto 99
-        endif
+        end if
     end do
 !
     do i = 1, nbfile
         if (name16 .eq. ddname(i)) then
             iunifi = unitfi(i)
             goto 99
-        endif
+        end if
     end do
 !
- 99 continue
+99  continue
 end function

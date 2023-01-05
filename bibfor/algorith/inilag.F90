@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,13 +54,13 @@ subroutine inilag(fmli, icar)
 !-----------------------------------------------------------------------
     integer :: i, iblo, ldmat, nblig
 !-----------------------------------------------------------------------
-    data moinun /-1.0d+00/
-    data zero5 /0.5d+00/
+    data moinun/-1.0d+00/
+    data zero5/0.5d+00/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    nblig=icar(1)
-    iblo=icar(3)
+    nblig = icar(1)
+    iblo = icar(3)
 !
 !
     call jecroc(jexnum(fmli, iblo))
@@ -71,8 +71,8 @@ subroutine inilag(fmli, icar)
 !-- DANS LA LIAISON. LA MULTIPLICATION DE LA MATRICE
 !-- LAGRANGE / LAGRANGE PAR UN REEL NE CHANGE PAS LE RESULTAT
     do i = 1, nblig
-        zr(ldmat+i-1)=moinun*icar(4)
-        zr(ldmat+nblig+i-1)=zero5*icar(4)
+        zr(ldmat+i-1) = moinun*icar(4)
+        zr(ldmat+nblig+i-1) = zero5*icar(4)
     end do
 !
 !

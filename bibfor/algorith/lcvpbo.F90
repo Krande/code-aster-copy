@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcvpbo(a, b, l0, l1, etamin,&
+subroutine lcvpbo(a, b, l0, l1, etamin, &
                   etamax, vide, nsol, sol, sgn)
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
-    aster_logical,intent(out) :: vide
+    aster_logical, intent(out) :: vide
     integer, intent(out) :: nsol, sgn(2)
     real(kind=8), intent(in) :: a, b, l0, l1, etamin, etamax
     real(kind=8), intent(out) :: sol(2)
@@ -45,8 +45,8 @@ subroutine lcvpbo(a, b, l0, l1, etamin,&
 !
 !  INITIALISATION
     small = sqrt(1.d0/r8gaem())
-    qmin = (a*etamin+b)**2 + l0 + etamin*l1
-    qmax = (a*etamax+b)**2 + l0 + etamax*l1
+    qmin = (a*etamin+b)**2+l0+etamin*l1
+    qmax = (a*etamax+b)**2+l0+etamax*l1
 !
 !
 !  FONCTION NEGATIVE PARTOUT
@@ -54,20 +54,20 @@ subroutine lcvpbo(a, b, l0, l1, etamin,&
         vide = .false.
         nsol = 0
         goto 999
-    endif
+    end if
 !
 !
-    m0 = l0 + b**2
-    m1 = l1 + 2*a*b
-    lmin = m0 + m1*etamin
-    lmax = m0 + m1*etamax
+    m0 = l0+b**2
+    m1 = l1+2*a*b
+    lmin = m0+m1*etamin
+    lmax = m0+m1*etamax
 !
 !  TERME LINEAIRE POSITIF PARTOUT (DONC Q EGALEMENT)
     if (lmin .ge. 0 .and. lmax .ge. 0) then
         vide = .true.
         nsol = 0
         goto 999
-    endif
+    end if
 !
 !
 !  CAS DES VALEURS POSITIVES AUX BORDS
@@ -80,17 +80,17 @@ subroutine lcvpbo(a, b, l0, l1, etamin,&
             vide = .true.
             nsol = 0
             goto 999
-        endif
+        end if
 !
 !      SINON LE MINIMUM EST ATTEINT DANS L'INTERVALLE
-        qopt = m0 - (m1/(2*a))**2
+        qopt = m0-(m1/(2*a))**2
 !
 !      SI LE MINIMUM EST POSITIF: LA FONCTION EST POSITIVE PARTOUT
         if (qopt .ge. 0) then
             vide = .true.
             nsol = 0
             goto 999
-        endif
+        end if
 !
 !      SINON, EXISTENCE DE DEUX SOLUTIONS
         mr0 = m0/a**2
@@ -103,7 +103,7 @@ subroutine lcvpbo(a, b, l0, l1, etamin,&
         sgn(1) = -1
         sgn(2) = +1
         goto 999
-    endif
+    end if
 !
 !
 !  CAS DES VALEURS DE Q OPPOSEES AUX BORDS
@@ -117,9 +117,9 @@ subroutine lcvpbo(a, b, l0, l1, etamin,&
             sgn(1) = 1
         else
             sgn(1) = -1
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 !  SINON: RESOLUTION PAR LE POLYNOME P2
     mr0 = m0/a**2
@@ -134,7 +134,7 @@ subroutine lcvpbo(a, b, l0, l1, etamin,&
     else
         sol(1) = -mr1-rac
         sgn(1) = -1
-    endif
+    end if
 !
 !
 999 continue

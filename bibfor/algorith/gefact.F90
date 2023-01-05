@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ subroutine gefact(duree, nominf)
     call getvid(' ', 'INTE_SPEC', scal=nomint, nbret=l)
 !
     call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n1)
-    linter = (interp.eq.'NON')
+    linter = (interp .eq. 'NON')
 !
     call getvis(' ', 'NB_POIN', scal=nbpoin, nbret=l)
     lnbpn = l .ne. 0
@@ -124,7 +124,7 @@ subroutine gefact(duree, nominf)
     abscisse = zk16(lrefe+2)
     if (abscisse .ne. 'FREQ') then
         call utmess('F', 'UTILITAI8_72')
-    endif
+    end if
 !
     chnumi = intesp//'.NUMI'
     chnumj = intesp//'.NUMJ'
@@ -147,9 +147,9 @@ subroutine gefact(duree, nominf)
     zi(inuor) = zi(jnuor)
     do i = 2, nbmr
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 10
-        nnn = nnn + 1
+        nnn = nnn+1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
- 10     continue
+10      continue
     end do
 !
 !=====
@@ -157,35 +157,35 @@ subroutine gefact(duree, nominf)
 !     MANQUANTES (POUR RESPECTER ENTRE AUTRE LE TH. DE SHANNON)
 !=====
     dim = nnn
-    nbfc = dim * ( dim + 1 ) / 2
-    ASSERT(nbfc.eq.nbmr)
+    nbfc = dim*(dim+1)/2
+    ASSERT(nbfc .eq. nbmr)
 !
 ! 1.2.1 CAS OU ON UTILISE LA DISCRETISATION DE L INTERSPECTRE :
 !     VERIFICATION DE LA COHERENCE DE LA DISCRETISATION DES FONCTIONS
 !     DANS LE CAS OU CETTE DISCRETISATION EST CONSERVEE
     if (linter) then
         nbval = nbfreq
-        pas = (zr(lfreq+nbval-1)-zr(lfreq))/ (nbval-1)
+        pas = (zr(lfreq+nbval-1)-zr(lfreq))/(nbval-1)
         prec = 1.d-06
         do ii = 1, nbval-1
-            pas1 = zr(lfreq+ii) - zr(lfreq+ii-1)
+            pas1 = zr(lfreq+ii)-zr(lfreq+ii-1)
             difpas = abs(pas1-pas)
             if (difpas .gt. prec) then
                 call utmess('F', 'ALGORITH3_78')
-            endif
+            end if
         end do
 !
-        if (( lnbpn ) .and. (nbpini.lt.nbval)) then
+        if ((lnbpn) .and. (nbpini .lt. nbval)) then
             freqf = zr(lfreq+nbpini-1)
             valr = freqf
             call utmess('A', 'ALGORITH15_11', sr=valr)
         else
             freqf = zr(lfreq+nbval-1)
-        endif
+        end if
         dfreq = pas
-        duree = 1.d0 / dfreq
+        duree = 1.d0/dfreq
         freqi = zr(lfreq)
-        frinit = mod(freqi,dfreq)
+        frinit = mod(freqi, dfreq)
 !
         nbpoin = 2**(int(log(freqf/dfreq)/log(2.d0))+1)
         if (lnbpn) then
@@ -195,15 +195,15 @@ subroutine gefact(duree, nominf)
                 call utmess('A', 'ALGORITH15_12', si=vali)
             else
                 pui2 = log(dble(nbpini))/log(2.d0)
-                pui2d = abs( pui2 - aint( pui2 ))
-                pui3d = abs( 1.d0 - pui2d )
+                pui2d = abs(pui2-aint(pui2))
+                pui3d = abs(1.d0-pui2d)
                 if (pui2d .ge. 1.d-06 .and. pui3d .ge. 1.d-06) then
                     nbpini = 2**(int(pui2)+1)
                     call utmess('A', 'ALGORITH3_80')
-                endif
+                end if
                 nbpoin = nbpini
-            endif
-        endif
+            end if
+        end if
 !
     else
 ! 1.2.2 CAS OU ON PEUT INTERPOLER L INTERSPECTRE
@@ -216,12 +216,12 @@ subroutine gefact(duree, nominf)
 !
 !      RECHERCHE DES FREQUENCES MIN ET MAX ET DU PAS EN FREQUENCE MIN
 !      DE L INTERSPECTRE
-        pmin=1.d+10
+        pmin = 1.d+10
         fmax = 0.d0
         fmin = 1.d+10
         nbval = nbfreq
         do j = 1, nbval-1
-            pas= abs(zr(lfreq+j) - zr(lfreq+j-1))
+            pas = abs(zr(lfreq+j)-zr(lfreq+j-1))
             if (pas .lt. pmin) pmin = pas
         end do
         freq = zr(lfreq+nbval-1)
@@ -235,7 +235,7 @@ subroutine gefact(duree, nominf)
 !     DETERMINATION DES PARAMETRES DE L ALGO.
         if (duree .gt. 0.d0) then
 !     LA DUREE EST UNE DONNEE
-            dfreq = 1.d0 / duree
+            dfreq = 1.d0/duree
             if (lnbpn) then
                 dt = duree/nbpoin/2.d0
                 if (1.d0/dt .lt. 2.d0*freqf) then
@@ -243,52 +243,52 @@ subroutine gefact(duree, nominf)
                     vali = nbpoin
                     r8b = 0.d0
                     call utmess('A', 'ALGORITH15_13', si=vali)
-                endif
+                end if
             else
                 nbpoin = 2**(int(log(2.d0*freqf*duree)/log(2.d0)))
-                if (( dfreq.gt. 2*pmin) .and. (pmin.gt.0.d0)) then
+                if ((dfreq .gt. 2*pmin) .and. (pmin .gt. 0.d0)) then
                     valr = 1.d0/pmin
                     call utmess('A', 'ALGORITH15_14', sr=valr)
-                endif
-            endif
+                end if
+            end if
         else
 !     LA DUREE EST UNE INCONNUE
             if (lnbpn) then
                 pui2 = log(dble(nbpoin))/log(2.d0)
-                pui2d = abs( pui2 - aint( pui2 ))
-                pui3d = abs( 1.d0 - pui2d )
+                pui2d = abs(pui2-aint(pui2))
+                pui3d = abs(1.d0-pui2d)
                 if (pui2d .ge. 1.d-06 .and. pui3d .ge. 1.d-06) then
                     call utmess('A', 'ALGORITH3_80')
                     nbpoin = 2**(int(pui2)+1)
-                endif
-                dfreq=freqf/(nbpoin-1)
-                frinit = freqf - dble(nbpoin)*dfreq
-                if (frinit .lt. 0.d0) frinit =0.d0
-                if ((dfreq .gt. pmin ) .and. (pmin.gt.0.d0)) then
+                end if
+                dfreq = freqf/(nbpoin-1)
+                frinit = freqf-dble(nbpoin)*dfreq
+                if (frinit .lt. 0.d0) frinit = 0.d0
+                if ((dfreq .gt. pmin) .and. (pmin .gt. 0.d0)) then
                     vali = nbpoin
                     valr = (freqf-freqi)/pmin+1
                     call utmess('A', 'ALGORITH15_15', si=vali, sr=valr)
-                endif
+                end if
             else
                 if (pmin .gt. 0.d0) then
-                    dfreq=pmin
+                    dfreq = pmin
                     nbpoin = 2**(int(log(2.d0*freqf/pmin)/log(2.d0)))
-                    if (nbpoin .lt. 256) nbpoin =256
+                    if (nbpoin .lt. 256) nbpoin = 256
                 else
-                    nbpoin =256
+                    nbpoin = 256
                     dfreq = (freqf-freqi)/dble(nbpoin-1)
-                endif
-            endif
-            duree = 1.d0 / dfreq
-        endif
+                end if
+            end if
+            duree = 1.d0/dfreq
+        end if
 !
         if (dble(nbpoin-1)*dfreq .gt. (freqf-freqi)) then
-            frinit = freqf - dble(nbpoin)*dfreq
-            if (frinit .lt. 0.d0) frinit =0.d0
+            frinit = freqf-dble(nbpoin)*dfreq
+            if (frinit .lt. 0.d0) frinit = 0.d0
         else
             frinit = freqi
-        endif
-    endif
+        end if
+    end if
 !
 !
 !===============
@@ -297,8 +297,8 @@ subroutine gefact(duree, nominf)
 !
     nbpt1 = nbpoin
     nbpt2 = nbpoin*2
-    long = nbfc*nbpt2 + nbpt1
-    longh = dim*dim*nbpt2 + nbpt1
+    long = nbfc*nbpt2+nbpt1
+    longh = dim*dim*nbpt2+nbpt1
 !
 !     --- CREATION D'UN VECTEUR TEMP.VALE POUR STOCKER LES VALEURS
 !           DES FONCTIONS  ---
@@ -312,19 +312,19 @@ subroutine gefact(duree, nominf)
     iinf = 0
     isup = nbpt1+1
     do k = 1, nbpt1
-        freq = frinit + (k-1)*dfreq
+        freq = frinit+(k-1)*dfreq
         zr(lval+k-1) = freq
-        if (freq .lt. freqi) iinf= k
-        if ((freq.gt.freqf) .and. lprem) then
+        if (freq .lt. freqi) iinf = k
+        if ((freq .gt. freqf) .and. lprem) then
             isup = k
             lprem = .false.
-        endif
+        end if
     end do
 !     ------------------------------------------------------------------
 !     --- CHANGER LA FREQ INIT. A 0 HZ POUR LE CAS SANS INTERPOL
-    if (linter) zr(lval)=0.d0
+    if (linter) zr(lval) = 0.d0
 !     ------------------------------------------------------------------
-    lval1 = lval + nbpt1
+    lval1 = lval+nbpt1
 !
 !     --- POUR CHAQUE FONCTION CALCUL DE X,Y POUR CHAQUE FREQ.
 !     (ON PROLONGE PAR 0 EN DEHORS DE (FREQI,FREQF)), PUIS ON STOCKE ---
@@ -335,10 +335,10 @@ subroutine gefact(duree, nominf)
 !
         k8b = ' '
         do ipas = 1, nbpt1
-            freq = frinit + (ipas-1)*dfreq
-            ix = lval1 + (kf-1)*nbpt2 + ipas - 1
-            iy = lval1 + (kf-1)*nbpt2 + ipas - 1 + nbpt1
-            if ((ipas.le.iinf) .or. (ipas.ge.isup)) then
+            freq = frinit+(ipas-1)*dfreq
+            ix = lval1+(kf-1)*nbpt2+ipas-1
+            iy = lval1+(kf-1)*nbpt2+ipas-1+nbpt1
+            if ((ipas .le. iinf) .or. (ipas .ge. isup)) then
                 zr(ix) = 0.d0
                 zr(iy) = 0.d0
             else
@@ -349,44 +349,44 @@ subroutine gefact(duree, nominf)
                     else
                         resure = zr(lval2+2*(ipas-iinf-1))
                         resuim = zr(lval2+2*(ipas-iinf-1)+1)
-                    endif
+                    end if
                 else
 ! ON INTERPOLLE
                     prolgd = 'CC      '
-                    epsi = sqrt ( r8prem() )
-                    call folocx(zr(lfreq), nbfreq, freq, prolgd, indice,&
+                    epsi = sqrt(r8prem())
+                    call folocx(zr(lfreq), nbfreq, freq, prolgd, indice, &
                                 epsi, coli, ier)
                     if (coli .eq. 'C') then
                         if (diag) then
-                            resure=zr(lval2+indice-1)
+                            resure = zr(lval2+indice-1)
                             resuim = 0.d0
                         else
-                            resure=zr(lval2+2*(indice-1))
-                            resuim=zr(lval2+2*(indice-1)+1)
-                        endif
-                    else if ((coli.eq.'I') .or. (coli.eq.'E')) then
+                            resure = zr(lval2+2*(indice-1))
+                            resuim = zr(lval2+2*(indice-1)+1)
+                        end if
+                    else if ((coli .eq. 'I') .or. (coli .eq. 'E')) then
                         x1 = zr(lfreq+indice-1)
                         x2 = zr(lfreq+indice)
                         if (diag) then
                             y1 = zr(lval2+indice-1)
                             y2 = zr(lval2+indice)
-                            resure= y1+(freq-x1)*(y2-y1)/(x2-x1)
+                            resure = y1+(freq-x1)*(y2-y1)/(x2-x1)
                             resuim = 0.d0
                         else
                             y1 = zr(lval2+2*(indice-1))
                             y2 = zr(lval2+2*indice)
-                            resure= y1+(freq-x1)*(y2-y1)/(x2-x1)
+                            resure = y1+(freq-x1)*(y2-y1)/(x2-x1)
                             y1 = zr(lval2+2*(indice-1)+1)
                             y2 = zr(lval2+2*indice+1)
-                            resuim= y1+(freq-x1)*(y2-y1)/(x2-x1)
-                        endif
+                            resuim = y1+(freq-x1)*(y2-y1)/(x2-x1)
+                        end if
                     else
                         call utmess('A', 'PREPOST3_6', sk=coli)
-                    endif
-                endif
+                    end if
+                end if
                 zr(ix) = resure
                 zr(iy) = resuim
-            endif
+            end if
         end do
     end do
     nbval1 = nbpt1
@@ -418,7 +418,7 @@ subroutine gefact(duree, nominf)
     end do
 !
     dim2 = dim*dim
-    dim3 = dim2 + dim
+    dim3 = dim2+dim
     dim4 = 2*dim
     call wkvect('&&GEFACT.TEMP.VALS', 'V V C', dim2, ls)
     call wkvect('&&GEFACT.TEMP.VALR', 'V V C', dim2, lr)
@@ -427,8 +427,8 @@ subroutine gefact(duree, nominf)
     call wkvect('&&GEFACT.TEMP.VALV', 'V V R', dim3, lv)
     call wkvect('&&GEFACT.TEMP.VALW', 'V V C', dim4, lw)
 !
-    call facint(nbval1, dim, longh, zr(lval), zr(lvalc),&
-                long, zc(ls), zc(lr), zr(ld), zc(lu),&
+    call facint(nbval1, dim, longh, zr(lval), zr(lvalc), &
+                long, zc(ls), zc(lr), zr(ld), zc(lu), &
                 zr(lv), zc(lw))
 !
     nbpt1 = nbval1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine xtopoh(noma, modele)
 !  IN  MODELE : NOM DE L'OBJET MODELE
 !
     integer :: nbout, nbin
-    parameter    (nbout=3, nbin=8)
+    parameter(nbout=3, nbin=8)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -84,11 +84,11 @@ subroutine xtopoh(noma, modele)
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- RECUPERATION DES DONNEES XFEM (TOPOSE)
@@ -140,30 +140,30 @@ subroutine xtopoh(noma, modele)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
-    call cescre('V', heavtf, 'ELEM', noma, 'DCEL_I',&
-                    2, licmp, [0], [-1], [-2])
+    call cescre('V', heavtf, 'ELEM', noma, 'DCEL_I', &
+                2, licmp, [0], [-1], [-2])
     call jeveuo(heavtf//'.CESD', 'L', jcesd)
     call jeveuo(heavtf//'.CESV', 'E', vi=cesv)
     call jeveuo(heavtf//'.CESL', 'E', jcesl)
 !
 ! --- REMPLISSAGE DES SOUS-POINTS
     do ima = 1, nbma
-       call cesexi('S', jcesd, jcesl, ima, 1,&
-                        1, 1, iad)
-       zl(jcesl-1-iad) = .true.
-       cesv(1-1-iad) = nbsp(ima)
+        call cesexi('S', jcesd, jcesl, ima, 1, &
+                    1, 1, iad)
+        zl(jcesl-1-iad) = .true.
+        cesv(1-1-iad) = nbsp(ima)
     end do
 !
 ! --- APPEL A CALCUL
 !
-    call calcul('C', option, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'G',&
+    call calcul('C', option, ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'G', &
                 'OUI')
 !
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
 ! --- CONCATENATION DU CHAMP ELNO
 !        CONSTRUCTION DE LA LISTE DE DOMAINES VU PAR UN NOEU XFEM

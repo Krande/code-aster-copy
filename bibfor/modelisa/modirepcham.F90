@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine modirepcham(resuou, resuin )
+subroutine modirepcham(resuou, resuin)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,12 +51,12 @@ subroutine modirepcham(resuou, resuin )
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv, nret, iret
-    character(len= 8) :: maillage, modele, carelem, caramail, caramodel
+    character(len=8) :: maillage, modele, carelem, caramail, caramodel
     character(len=16) :: repere
     character(len=19) :: chpass
     character(len=24) :: ligrel, option
 !   Pour calcul
-    character(len= 8) :: lpain(4), lpaou(4)
+    character(len=8) :: lpain(4), lpaou(4)
     character(len=24) :: lchin(4), lchou(4), chgeom
 !   Pour les messages
 !     integer ::  vali(2)
@@ -73,20 +73,20 @@ subroutine modirepcham(resuou, resuin )
     lreuse = .false.
     if (resuin .eq. resuou) then
         lreuse = .true.
-    endif
+    end if
 !
 !   Définition du repère utilisé
     call getvtx(' ', 'REPERE', scal=repere, nbret=nret)
     if (nret .eq. 0 .and. .not. lreuse) then
         call utmess('F', 'MODELISA3_2')
-    else if ( repere .ne. 'GLOBAL_UTIL' .and. .not. lreuse) then
+    else if (repere .ne. 'GLOBAL_UTIL' .and. .not. lreuse) then
         call utmess('F', 'MODELISA3_3')
-    endif
+    end if
 !   Lecture du concept CARA_ELEM
     call getvid(' ', 'CARA_ELEM', scal=carelem, nbret=nret)
     if (nret .eq. 0 .and. .not. lreuse) then
         call utmess('F', 'MODELISA3_7')
-    endif
+    end if
 !
 !   Informations sur le champ en entrée.
 !    call dismoi('TYPE_CHAMP', resuin, 'CHAMP', repk=tychamp)
@@ -96,43 +96,43 @@ subroutine modirepcham(resuou, resuin )
     call dismoi('NOM_MAILLA', resuin, 'CHAMP', repk=maillage)
     call dismoi('NOM_MODELE', resuin, 'CHAMP', repk=modele)
 !   Le champ doit être crée avec INI_SP_RIGI
-    if ( option.ne.'INI_SP_RIGI' ) then
+    if (option .ne. 'INI_SP_RIGI') then
         call utmess('F', 'MODELISA3_1')
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   Vérification que CARCOQUE existe
     call exisd('CARTE', carelem//'.CARCOQUE', iret)
-    if ( iret.eq.0 ) then
+    if (iret .eq. 0) then
         valk(1) = carelem
         valk(2) = 'EP, ALPHA, BETA'
         call utmess('F', 'MODELISA3_4', nk=2, valk=valk)
-    endif
+    end if
 !   Vérification que CANBSP existe
     call exisd('CHAM_ELEM', carelem//'.CANBSP', iret)
-    if ( iret.eq.0 ) then
+    if (iret .eq. 0) then
         valk(1) = carelem
         valk(2) = 'COQ_NCOU'
         call utmess('F', 'MODELISA3_4', nk=2, valk=valk)
-    endif
+    end if
 !   Nom du maillage sous-jacent à la carte. Le même que celui du champ.
-    call dismoi('NOM_MAILLA',carelem,'CARA_ELEM',repk=caramail)
-    if ( maillage .ne. caramail ) then
+    call dismoi('NOM_MAILLA', carelem, 'CARA_ELEM', repk=caramail)
+    if (maillage .ne. caramail) then
         valk(1) = maillage
         valk(2) = caramail
         call utmess('F', 'MODELISA3_5', nk=2, valk=valk)
-    endif
+    end if
 !   Nom du modèle sous-jacent à CARA_ELEM. Le même que celui du champ.
-    call dismoi('NOM_MODELE',carelem,'CARA_ELEM',repk=caramodel)
-    if ( modele .ne. caramodel ) then
+    call dismoi('NOM_MODELE', carelem, 'CARA_ELEM', repk=caramodel)
+    if (modele .ne. caramodel) then
         valk(1) = modele
         valk(2) = caramodel
         call utmess('F', 'MODELISA3_6', nk=2, valk=valk)
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   Matrice de passage du repère global vers le repère utilisateur
-    chpass   = '&&REPCHA.MATPASS'
+    chpass = '&&REPCHA.MATPASS'
 !
     call megeom(modele, chgeom)
     lchin(1) = chgeom
@@ -143,7 +143,7 @@ subroutine modirepcham(resuou, resuin )
     lchou(1) = chpass
     lpaou(1) = 'PMATPASS'
 !
-    call calcul('C', 'REPERE_LOCAL', ligrel, 2, lchin,&
+    call calcul('C', 'REPERE_LOCAL', ligrel, 2, lchin, &
                 lpain, 1, lchou, lpaou, 'V', 'NON')
 ! --------------------------------------------------------------------------------------------------
 !   Changement de repère
@@ -156,7 +156,7 @@ subroutine modirepcham(resuou, resuin )
     lpaou(1) = 'PCONTPR'
 !
     call cesvar(carelem, ' ', ligrel, lchou(1))
-    call calcul('C', 'MODI_REPERE', ligrel, 2, lchin,&
+    call calcul('C', 'MODI_REPERE', ligrel, 2, lchin, &
                 lpain, 1, lchou, lpaou, 'G', 'NON')
 !
 ! --------------------------------------------------------------------------------------------------

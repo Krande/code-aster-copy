@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmvexi(sigi, grj2, dj2ds, nb, mate,&
+subroutine nmvexi(sigi, grj2, dj2ds, nb, mate, &
                   nmat, xhi, dxhids)
     implicit none
 !
@@ -49,38 +49,38 @@ subroutine nmvexi(sigi, grj2, dj2ds, nb, mate,&
     real(kind=8) :: grj0, grj1, valp(3)
     real(kind=8) :: sedvp1, sedvp2, zero
 !
-    data kron  /1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !-----------------------------------------------------------------------
 !-- 1- INITIALISATIONS:
-    tole = 1.d0 / r8gaem()
+    tole = 1.d0/r8gaem()
     zero = 0.d0
     call r8inir(nb, 0.d0, dj0ds, 1)
     call r8inir(nb, 0.d0, dj1ds, 1)
 !-- COEFFICIENTS MATERIAU
-    sedvp1 = mate(2,2)
-    sedvp2 = mate(3,2)
+    sedvp1 = mate(2, 2)
+    sedvp2 = mate(3, 2)
 !     ----------------------------------------------------------------
 !     KD VA SERA CALCULEE PLUS LOIN UNE FOIS QUE XHI
 !     (CONTRAINTE EQUIVALENTE D ENDOMMAGEMENT VISCOPLASTIQUE)
 !     SERA CALCULEE
 !     ----------------------------------------------------------------
-    trsig=(sigi(1)+sigi(2)+sigi(3))
+    trsig = (sigi(1)+sigi(2)+sigi(3))
 !
 !-- CALCUL DE GRJ0(SIGI) : MAX DES CONTRAINTES PRINCIPALES
     if (sedvp1 .le. tole) then
-        grj0 =zero
-        valp(1)=zero
-        valp(2)=zero
-        valp(3)=zero
+        grj0 = zero
+        valp(1) = zero
+        valp(2) = zero
+        valp(3) = zero
     else
         call calcj0(sigi, grj0, valp)
-    endif
+    end if
 !
 !-- CALCUL DE GRJ1(SIGI) : PREMIER INVARIANT (TRACE)
-    grj1= trsig
+    grj1 = trsig
 !
 !-- CALCUL DE LA CONTRAINTE EQUIVALENTE DE FLUAGE
-    xhi=sedvp1*grj0+sedvp2*grj1+(1-sedvp1-sedvp2)*grj2
+    xhi = sedvp1*grj0+sedvp2*grj1+(1-sedvp1-sedvp2)*grj2
 !
 !-- DERIVEE DE LA CONTRAINTE EQUIVALENTE DE FLUAGE / CONTRAINTE
     do ivec = 1, 3
@@ -89,7 +89,7 @@ subroutine nmvexi(sigi, grj2, dj2ds, nb, mate,&
 !
     do itens = 1, nb
         dj1ds(itens) = kron(itens)
-        dxhids(itens)=sedvp1*dj0ds(itens)+sedvp2*dj1ds(itens)+&
-        (1-sedvp1-sedvp2)*dj2ds(itens)
+        dxhids(itens) = sedvp1*dj0ds(itens)+sedvp2*dj1ds(itens)+ &
+                        (1-sedvp1-sedvp2)*dj2ds(itens)
     end do
 end subroutine

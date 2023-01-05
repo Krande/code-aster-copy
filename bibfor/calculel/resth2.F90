@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resth2(modele, ligrel, lchar, nchar, ma,&
-                  cartef, nomgdf, carteh, nomgdh, cartet,&
-                  nomgdt, cartes, nomgds, chgeom, chsour,&
+subroutine resth2(modele, ligrel, lchar, nchar, ma, &
+                  cartef, nomgdf, carteh, nomgdh, cartet, &
+                  nomgdt, cartes, nomgds, chgeom, chsour, &
                   psourc)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -81,7 +81,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 ! DEBUT DE LA SUBROUTINE
     call jemarq()
 !
-    ASSERT(ligrel(1:8).eq.modele)
+    ASSERT(ligrel(1:8) .eq. modele)
 !
 ! RECHERCHE DU NOM DU CHAMP GEOMETRIE DANS LA SD MODELE OU CHARGE -----
 ! SURCOUCHE DE LA REQUETE D'EXISTENCE JEEXIN/JEVEUO DU DESCRIPTEUR DE
@@ -92,7 +92,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 !   RECHERCHE DES ELTS FINIS CONTIGUS ET REMPLISSAGE DU CHAMELEM DE TYPE
 !   VOISIN VIA L'OPTION DE CALCUL 'INIT_MAIL_VOIS'.
-    call alchml(ligrel,'INIT_MAIL_VOIS','PVOISIN',base,'&&RESTHER.VOISIN',iret,' ')
+    call alchml(ligrel, 'INIT_MAIL_VOIS', 'PVOISIN', base, '&&RESTHER.VOISIN', iret, ' ')
 !
 ! SURCOUCHE DE DISMMO RENVOYANT LE NOM DU MAILLAGE (MA) VIA UN JEVEUO
 ! SUR MODELE//'.MODELE.NOMA'
@@ -123,7 +123,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     iretsc = 0
     iretep = 0
 ! OPTION DE CALCUL PAR DEFAUT
-    psourc='PSOURCR'
+    psourc = 'PSOURCR'
 !
 ! BOUCLE SUR LES AFFE_CHAR_THER
     do i = 1, nchar
@@ -143,10 +143,10 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         call exisd('CHAMP_GD', cartep, iretep)
         if (iretep .ne. 0) then
             call utmess('A', 'CALCULEL6_42')
-        endif
-        if (((ireth.eq.0).and.(irett.ne.0)) .or. ((irett.eq.0).and.( ireth.ne.0))) then
+        end if
+        if (((ireth .eq. 0) .and. (irett .ne. 0)) .or. ((irett .eq. 0) .and. (ireth .ne. 0))) then
             ASSERT(.false.)
-        endif
+        end if
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE FLUX_REP/FLUN
         if (iretf .ne. 0) then
@@ -156,27 +156,27 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 ! EXTENSION DE LA CARTE CARTEF VIA CARTEF//'.PTMA' ET '.PTMS' SUR 'V'
             call etenca(cartf, ligrel, ier)
-            ASSERT(ier.eq.0)
+            ASSERT(ier .eq. 0)
 !
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (cartef .ne. ' ') then
                 call utmess('I', 'CALCULEL6_43', sk='FLUX LINEAIRE')
                 call jedetr(cartef//'.PTMA')
                 call jedetr(cartef//'.PTMS')
-            endif
+            end if
             cartef = cartf
-        endif
+        end if
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE ECHANGE/COEF_H
         if (ireth .ne. 0) then
             call dismoi('NOM_GD', carth, 'CARTE', repk=nomgdh)
             call etenca(carth, ligrel, ier)
-            ASSERT(ier.eq.0)
+            ASSERT(ier .eq. 0)
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE ECHANGE/TEMP_EXT
             call dismoi('NOM_GD', cartt, 'CARTE', repk=nomgdt)
             call etenca(cartt, ligrel, ier)
-            ASSERT(ier.eq.0)
+            ASSERT(ier .eq. 0)
 !
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (carteh .ne. ' ') then
@@ -185,10 +185,10 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
                 call jedetr(carteh//'.PTMS')
                 call jedetr(cartet//'.PTMA')
                 call jedetr(cartet//'.PTMS')
-            endif
+            end if
             carteh = carth
             cartet = cartt
-        endif
+        end if
 !
 ! TRAITEMENT DES SOURCES VOLUMIQUES
         if (irets .ne. 0) then
@@ -197,11 +197,11 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (cartes .ne. ' ') then
                 call utmess('A', 'CALCULEL6_43', sk='SOURCE')
-            endif
+            end if
 ! OPTION DE CALCUL POUR SOURCE VARIABLE
-            if (nomgds(1:6) .eq. 'SOUR_F') psourc='PSOURCF'
+            if (nomgds(1:6) .eq. 'SOUR_F') psourc = 'PSOURCF'
             cartes = carts
-        endif
+        end if
 !
 ! TRAITEMENT DES SOURCES VOLUMIQUES CALCULEES
         if (iretsc .ne. 0) then
@@ -210,13 +210,13 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (cartesc .ne. ' ') then
                 call utmess('A', 'CALCULEL6_43', sk='SOURCE')
-            endif
+            end if
 ! OPTION DE CALCUL POUR SOURCE VARIABLE INTERDITE
             if (nomgds(1:6) .eq. 'SOUR_F') then
-               ASSERT(.false.)
-            endif
+                ASSERT(.false.)
+            end if
             cartesc = carts
-        endif
+        end if
 !
 ! FIN BOUCLE AFFE_CHAR_THER
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,11 +70,11 @@ subroutine te0282(option, nomte)
 ! =====================================================================
     call elref1(elrefe)
     epsi = r8prem()
-    axis=lteatt('AXIS','OUI')
+    axis = lteatt('AXIS', 'OUI')
 !
 ! RECUPERATION DES DONNEES GEOMETRIQUES LIEES AU CALCUL ELEMENTAIRE
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2, &
                      jgano=jgano)
 !
 !
@@ -89,11 +89,11 @@ subroutine te0282(option, nomte)
 ! TEST SUR LA NULLITE DE THETA_FISSURE
     compt = 0
     do i = 1, nno
-        thx = zr(ithet + 2*(i - 1) )
-        thy = zr(ithet + 2*(i - 1) + 1 )
-        if ((abs(thx).lt.epsi) .and. (abs(thy).lt.epsi)) then
-            compt = compt + 1
-        endif
+        thx = zr(ithet+2*(i-1))
+        thy = zr(ithet+2*(i-1)+1)
+        if ((abs(thx) .lt. epsi) .and. (abs(thy) .lt. epsi)) then
+            compt = compt+1
+        end if
     end do
     if (compt .eq. nno) goto 999
 !
@@ -113,10 +113,10 @@ subroutine te0282(option, nomte)
         nompar(3) = 'INST'
         valpar(3) = zr(itemps)
     else
-        fonc =.false.
+        fonc = .false.
         call jevech('PFR1D2D', 'L', iforc)
         call jevech('PPRESSR', 'L', ipres)
-    endif
+    end if
 !
 ! =====================================================================
 ! - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
@@ -128,13 +128,13 @@ subroutine te0282(option, nomte)
                 valpar(j) = zr(igeom+2*(i-1)+j-1)
             end do
             do j = 1, 2
-                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar, &
                             presn(2*(i-1)+j), icode)
-                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar, &
                             forcn(2*(i-1)+j), icode)
             end do
         end do
-    endif
+    end if
 !
 ! ======================================================================
 ! BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
@@ -169,18 +169,18 @@ subroutine te0282(option, nomte)
 ! DEPLACEMENT (UX,UY), DU CHAMP THETA FISSURE (THX,THY) ET DE SON
 ! GRADIENT (DTHXDE,DTHYDE).
         do i = 1, nno
-            vf = zr(ivf +k+i-1)
+            vf = zr(ivf+k+i-1)
             dfde = zr(idfdk+k+i-1)
-            dxde = dxde + dfde*zr(igeom+2*(i-1))
-            dyde = dyde + dfde*zr(igeom+2*(i-1)+1)
-            xg = xg + vf *zr(igeom+2*(i-1) )
-            yg = yg + vf *zr(igeom+2*(i-1)+1)
-            ux = ux + vf *zr(idepl+2*(i-1) )
-            uy = uy + vf *zr(idepl+2*(i-1)+1)
-            thx = thx + vf *zr(ithet+2*(i-1) )
-            thy = thy + vf *zr(ithet+2*(i-1)+1)
-            dthxde = dthxde + dfde*zr(ithet+2*(i-1) )
-            dthyde = dthyde + dfde*zr(ithet+2*(i-1)+1)
+            dxde = dxde+dfde*zr(igeom+2*(i-1))
+            dyde = dyde+dfde*zr(igeom+2*(i-1)+1)
+            xg = xg+vf*zr(igeom+2*(i-1))
+            yg = yg+vf*zr(igeom+2*(i-1)+1)
+            ux = ux+vf*zr(idepl+2*(i-1))
+            uy = uy+vf*zr(idepl+2*(i-1)+1)
+            thx = thx+vf*zr(ithet+2*(i-1))
+            thy = thy+vf*zr(ithet+2*(i-1)+1)
+            dthxde = dthxde+dfde*zr(ithet+2*(i-1))
+            dthyde = dthyde+dfde*zr(ithet+2*(i-1)+1)
         end do
 !
 ! ===========================================
@@ -191,9 +191,9 @@ subroutine te0282(option, nomte)
             valpar(1) = xg
             valpar(2) = yg
             do j = 1, 2
-                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar, &
                             presg(j), icode)
-                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
+                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar, &
                             forcg(j), icode)
             end do
         else
@@ -203,11 +203,11 @@ subroutine te0282(option, nomte)
             forcg(2) = 0.d0
             do i = 1, nno
                 do j = 1, 2
-                    presg(j) = presg(j) + zr(ipres+2*(i-1)+j-1)*zr( ivf+k+i-1)
-                    forcg(j) = forcg(j) + zr(iforc+2*(i-1)+j-1)*zr( ivf+k+i-1)
+                    presg(j) = presg(j)+zr(ipres+2*(i-1)+j-1)*zr(ivf+k+i-1)
+                    forcg(j) = forcg(j)+zr(iforc+2*(i-1)+j-1)*zr(ivf+k+i-1)
                 end do
             end do
-        endif
+        end if
 !
 ! VALEURS DU CHARGEMENT AUX POINTS DE GAUSS (FX,FY)
         dsde = sqrt(dxde*dxde+dyde*dyde)
@@ -224,18 +224,18 @@ subroutine te0282(option, nomte)
                 dfde = zr(idfdk+k+i-1)
                 presno = presn(2*(i-1)+1)
                 cisano = presn(2*(i-1)+2)
-                fxno = forcn(2*(i-1)+1)-(dyde*presno-dxde*cisano)/ dsde
-                fyno = forcn(2*(i-1)+2)+(dxde*presno+dyde*cisano)/ dsde
-                dfxde = dfxde + dfde*fxno
-                dfyde = dfyde + dfde*fyno
+                fxno = forcn(2*(i-1)+1)-(dyde*presno-dxde*cisano)/dsde
+                fyno = forcn(2*(i-1)+2)+(dxde*presno+dyde*cisano)/dsde
+                dfxde = dfxde+dfde*fxno
+                dfyde = dfyde+dfde*fyno
             end do
-        endif
+        end if
 !
 ! TESTS SUR LA NULLITE DES CHARGEMENTS ET DE LEURS GRADIENTS POUR EVITER
 ! DE FAIRE DES CALCULS INUTILES ET DETECTER LES VRAIS PROBLEMES
-        if ((fx.eq.0.d0) .and. (fy.eq.0.d0) .and. (dfxde.eq.0.d0) .and. (dfyde.eq.0.d0)) then
+       if ((fx .eq. 0.d0) .and. (fy .eq. 0.d0) .and. (dfxde .eq. 0.d0) .and. (dfyde .eq. 0.d0)) then
             chargn = .true.
-        endif
+        end if
 !
 ! CAS PARTICULIER D'UN CALCUL SUR L'AXE
         if (xg .eq. 0.d0) then
@@ -245,19 +245,19 @@ subroutine te0282(option, nomte)
                 goto 799
             else if (axis) then
                 call utmess('F', 'RUPTURE1_23')
-            endif
+            end if
         else
 !
 ! CAS GENERAL AVEC CHARGEMENTS NULS DONC G (ET DG) = 0
             if (chargn) goto 799
-        endif
+        end if
 !
 ! CALCUL DU TERME ELEMENTAIRE
         if (axis) then
             poids = zr(ipoids+kp-1)*dsde*xg
         else
             poids = zr(ipoids+kp-1)*dsde
-        endif
+        end if
         the = (thx*dxde+thy*dyde)/dsde2
         divthe = (dthxde*dxde+dthyde*dyde)/dsde2
 !
@@ -271,9 +271,9 @@ subroutine te0282(option, nomte)
 ! CALCUL DU TAUX DE RESTITUTION G
 ! =======================================================
 !
-        prod = (divthe*fx+dfxde*the)*ux + (divthe*fy+dfyde*the)*uy
+        prod = (divthe*fx+dfxde*the)*ux+(divthe*fy+dfyde*the)*uy
 !
-        tcla = tcla + prod*poids
+        tcla = tcla+prod*poids
 !
 ! BRANCHEMENT POUR F=0 ET DF=0
 799     continue
@@ -287,7 +287,7 @@ subroutine te0282(option, nomte)
 999 continue
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G
-    tsom = tcla + tsurf + tsurp
+    tsom = tcla+tsurf+tsurp
     zr(igthet) = tsom
 !
 end subroutine

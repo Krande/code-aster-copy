@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine te0372(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,18 +68,18 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get element parameters
 !
-    l_axis = (lteatt('AXIS','OUI'))
+    l_axis = (lteatt('AXIS', 'OUI'))
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndi = nno*(2*nno+1)
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndi = nno*(nno+1)/2
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 ! - Get material properties for fluid
 !
@@ -101,45 +101,45 @@ character(len=16), intent(in) :: option, nomte
 ! --------- Compute normal
             nx = 0.d0
             ny = 0.d0
-            call vff2dn(ndim, nno, ipg, ipoids, idfde,&
+            call vff2dn(ndim, nno, ipg, ipoids, idfde, &
                         zr(jv_geom), nx, ny, poids)
             if (l_axis) then
                 r = 0.d0
                 do i = 1, nno
-                    r = r + zr(jv_geom+2* (i-1))*zr(ivf+ldec+i-1)
+                    r = r+zr(jv_geom+2*(i-1))*zr(ivf+ldec+i-1)
                 end do
                 poids = poids*r
-            endif
+            end if
             if (fsi_form .eq. 'FSI_UPPHI') then
                 do i = 1, nno
                     do j = 1, i
                         ii = 2*i
                         jj = 2*j
-                        ij = (ii-1)*ii/2 + jj
-                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1) -&
+                        ij = (ii-1)*ii/2+jj
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)- &
                                            poids*zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)*rho/celer
                     end do
                 end do
             elseif (fsi_form .eq. 'FSI_UP') then
                 do i = 1, nno
                     do j = 1, i
-                        ij = (i-1)*i/2 + j
-                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1) +&
+                        ij = (i-1)*i/2+j
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
                                            poids*zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)/celer
                     end do
                 end do
             elseif (fsi_form .eq. 'FSI_UPSI') then
                 do i = 1, nno
                     do j = 1, i
-                        ij = (i-1)*i/2 + j
-                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1) -&
+                        ij = (i-1)*i/2+j
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)- &
                                            poids*zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)*rho/celer
                     end do
                 end do
             else
-                call utmess('F', 'FLUID1_2', sk = fsi_form)
-            endif
+                call utmess('F', 'FLUID1_2', sk=fsi_form)
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

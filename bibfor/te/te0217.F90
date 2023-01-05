@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,18 +53,18 @@ subroutine te0217(option, nomte)
 !-----------------------------------------------------------------------
     integer :: ier, itemps, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PVECTTR', 'E', ivectt)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THER', 0, ' ', [0.d0], &
                 1, 'LAMBDA', valres, icodre, 1)
 !
     if (option .eq. 'CHAR_THER_GRAI_R') then
@@ -73,7 +73,7 @@ subroutine te0217(option, nomte)
         grx = zr(igrai)
         gry = zr(igrai+1)
         grz = zr(igrai+2)
-    else if (option.eq.'CHAR_THER_GRAI_F') then
+    else if (option .eq. 'CHAR_THER_GRAI_F') then
         fonc = .true.
         call jevech('PTEMPSR', 'L', itemps)
         call jevech('PGRAINF', 'L', igrai)
@@ -85,20 +85,20 @@ subroutine te0217(option, nomte)
         nompar(3) = 'Z'
         nompar(4) = 'INST'
         valpar(4) = zr(itemps)
-    endif
+    end if
 !
     do kp = 1, npg1
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy, dfdz)
 !
         x = 0.d0
         y = 0.d0
         z = 0.d0
         do i = 1, nno
-            x = x + zr(igeom-1+3* (i-1)+1)*zr(ivf+l+i-1)
-            y = y + zr(igeom-1+3* (i-1)+2)*zr(ivf+l+i-1)
-            z = z + zr(igeom-1+3* (i-1)+3)*zr(ivf+l+i-1)
+            x = x+zr(igeom-1+3*(i-1)+1)*zr(ivf+l+i-1)
+            y = y+zr(igeom-1+3*(i-1)+2)*zr(ivf+l+i-1)
+            z = z+zr(igeom-1+3*(i-1)+3)*zr(ivf+l+i-1)
         end do
 !
         poids = poids*valres(1)
@@ -107,16 +107,16 @@ subroutine te0217(option, nomte)
             valpar(1) = x
             valpar(2) = y
             valpar(3) = z
-            call fointe('FM', grxf, 4, nompar, valpar,&
+            call fointe('FM', grxf, 4, nompar, valpar, &
                         grx, ier)
-            call fointe('FM', gryf, 4, nompar, valpar,&
+            call fointe('FM', gryf, 4, nompar, valpar, &
                         gry, ier)
-            call fointe('FM', grzf, 4, nompar, valpar,&
+            call fointe('FM', grzf, 4, nompar, valpar, &
                         grz, ier)
-        endif
+        end if
 !
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids* (+grx*dfdx(i)+ gry*dfdy(i)+grz*dfdz(i))
+            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*(+grx*dfdx(i)+gry*dfdy(i)+grz*dfdz(i))
         end do
 !
     end do

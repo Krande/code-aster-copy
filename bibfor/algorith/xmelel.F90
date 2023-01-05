@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
+subroutine xmelel(ndim, jmail, jtymai, numae, numam, &
                   imod, iatt, imail, nno)
 !
     implicit none
@@ -58,15 +58,15 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     character(len=16) :: att, mod
     integer :: nbno(2, 8), k, ibid, ier
 !
-    data (mode(k),k=1,3) /'C_','D_','3D'/
-    data (attr(k),k=1,7) /&
-     &      'XHC','XHTC','XTC','XH2C','XH3C','XH4C','ARETE'/
-    data (mail(1,k),k=1,8) /'TRIA3','QUAD4','TRIA6','QUAD8',&
-     &                         ' ',' ',' ',' '/
-    data (mail(2,k),k=1,8) /'TETRA4','PYRAM5','PENTA6','HEXA8',&
-     &                         'TETRA10','PYRAM13','PENTA15','HEXA20'/
-    data (nbno(1,k),k=1,8) /3,4,6,8,-1,-1,-1,-1/
-    data (nbno(2,k),k=1,8) /4,5,6,8,10,13,15,20/
+    data(mode(k), k=1, 3)/'C_', 'D_', '3D'/
+    data(attr(k), k=1, 7)/&
+     &      'XHC', 'XHTC', 'XTC', 'XH2C', 'XH3C', 'XH4C', 'ARETE'/
+    data(mail(1, k), k=1, 8)/'TRIA3', 'QUAD4', 'TRIA6', 'QUAD8',&
+     &                         ' ', ' ', ' ', ' '/
+    data(mail(2, k), k=1, 8)/'TETRA4', 'PYRAM5', 'PENTA6', 'HEXA8',&
+     &                         'TETRA10', 'PYRAM13', 'PENTA15', 'HEXA20'/
+    data(nbno(1, k), k=1, 8)/3, 4, 6, 8, -1, -1, -1, -1/
+    data(nbno(2, k), k=1, 8)/4, 5, 6, 8, 10, 13, 15, 20/
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,20 +86,20 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     do k = 1, 3
         if (mode(k) .eq. mod(1:2)) imod = k
     end do
-    ASSERT(imod.ne.0)
+    ASSERT(imod .ne. 0)
 ! --- RECUPERATION DES L'ATTRIBUT POUR L'ESCALVE
     call teattr('S', 'XFEM', att, ier, typel=typel)
     do k = 1, 7
         if (att .eq. attr(k)) iatt(1) = k
     end do
 
-    ASSERT(iatt(1).ne.0)
+    ASSERT(iatt(1) .ne. 0)
 ! --- RECUPERATION DU TYPE DE MAILLE POUR L'ESCALVE
     do k = 1, 8
-        if (typma .eq. mail(ndim-1,k)) imail(1) = k
+        if (typma .eq. mail(ndim-1, k)) imail(1) = k
     end do
-    ASSERT(imail(1).ne.0)
-    nno(1) = nbno(ndim-1,imail(1))
+    ASSERT(imail(1) .ne. 0)
+    nno(1) = nbno(ndim-1, imail(1))
 !
 !
 ! --- TYPE MAILLE ET ELEMENT MAITRE
@@ -108,25 +108,25 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     call jenuno(jexnum('&CATA.TE.NOMTE', zi(jmail-1+numam)), typel)
 ! --- RECUPERATION DE LA MODÉLISATION POUR LE MAITRE
     call dismte('MODELISATION', typel, ibid, mod, ier)
-    ASSERT(mod(1:2).eq.mode(imod))
+    ASSERT(mod(1:2) .eq. mode(imod))
 ! --- RECUPERATION DES L'ATTRIBUT POUR LE MAITRE
     call teattr('S', 'XFEM', att, ier, typel=typel)
     do k = 1, 7
         if (att .eq. attr(k)) iatt(2) = k
     end do
-    ASSERT(iatt(2).ne.0)
+    ASSERT(iatt(2) .ne. 0)
 ! --- RECUPERATION DU TYPE DE MAILLE
     do k = 1, 8
-        if (typma .eq. mail(ndim-1,k)) then
+        if (typma .eq. mail(ndim-1, k)) then
             imail(2) = k
-        endif
+        end if
     end do
-    ASSERT(imail(2).ne.0)
-    nno(2) = nbno(ndim-1,imail(2))
+    ASSERT(imail(2) .ne. 0)
+    nno(2) = nbno(ndim-1, imail(2))
 !
 ! ---POUR L'ELEMENT EXCLUSIVEEMENT CRACK-TIP
     if (iatt(2) .eq. 3) then
-        ASSERT(iatt(1).eq.3)
-        nno(2)=0
-    endif
+        ASSERT(iatt(1) .eq. 3)
+        nno(2) = 0
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine xlag2c(model, sdline_crack, jnbpt, mesh)
 !
 !
     integer :: ier, jliseq, neq, jlisla, i, nuno, ima, ino, ifiss, nbnoma
-    integer :: jcesd,  jcesl, iad, jmasup, nmasup, j, jconx2, k
+    integer :: jcesd, jcesl, iad, jmasup, nmasup, j, jconx2, k
     character(len=19) :: heavno, cnxinv
     integer, pointer :: cesv(:) => null()
     integer, pointer :: connex(:) => null()
@@ -104,22 +104,22 @@ subroutine xlag2c(model, sdline_crack, jnbpt, mesh)
 !
         do j = 1, nmasup
 !       BOUCLE SUR LES MAILLES CONTENANT LE NOEUD
-           ima = zi(jmasup-1+j)
-           nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
-           do k = 1, nbnoma
+            ima = zi(jmasup-1+j)
+            nbnoma = zi(jconx2+ima)-zi(jconx2+ima-1)
+            do k = 1, nbnoma
 !       BOUCLE SUR LES NOEUDS DE LA MAILLE
-              ino = connex(zi(jconx2+ima-1)+k-1)
-              if (ino.eq.nuno) then
-                 ifiss = zi(jnbpt-1+ima)
-                 call cesexi('C', jcesd, jcesl, ima, k,&
-                             ifiss, 1, iad)
-                 if (iad .gt. 0) then
-                    zi(jlisla-1+i) = cesv(iad)
-                 endif
-              endif
-           end do
+                ino = connex(zi(jconx2+ima-1)+k-1)
+                if (ino .eq. nuno) then
+                    ifiss = zi(jnbpt-1+ima)
+                    call cesexi('C', jcesd, jcesl, ima, k, &
+                                ifiss, 1, iad)
+                    if (iad .gt. 0) then
+                        zi(jlisla-1+i) = cesv(iad)
+                    end if
+                end if
+            end do
         end do
- 200    continue
+200     continue
     end do
 !
     call jedetr(cnxinv)

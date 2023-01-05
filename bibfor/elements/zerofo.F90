@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zerofo(func, x0, xap, epsi, nitmax,&
+subroutine zerofo(func, x0, xap, epsi, nitmax, &
                   solu, iret, n)
     implicit none
 !
@@ -60,9 +60,9 @@ subroutine zerofo(func, x0, xap, epsi, nitmax,&
     x = x0
     fx = func(x0)
     if (abs(fx) .lt. epsi) then
-        z=0.d0
+        z = 0.d0
         goto 800
-    endif
+    end if
     y = xap
     fy = func(y)
 !
@@ -74,12 +74,12 @@ subroutine zerofo(func, x0, xap, epsi, nitmax,&
         b = y
 20      continue
         if (fx .eq. fy) goto 999
-        z = y - (y-x)*fy/(fy-fx)
+        z = y-(y-x)*fy/(fy-fx)
         if (((z-a)*(z-b)) .gt. 0.d0) then
             z = (a+b)/2.d0
-        endif
+        end if
 !
-        n = n + 1
+        n = n+1
         fz = func(z)
         if (abs(fz) .lt. epsi) goto 800
         if (n .gt. nitmax) goto 999
@@ -87,7 +87,7 @@ subroutine zerofo(func, x0, xap, epsi, nitmax,&
             a = z
         else
             b = z
-        endif
+        end if
         x = y
         fx = fy
         y = z
@@ -96,8 +96,8 @@ subroutine zerofo(func, x0, xap, epsi, nitmax,&
     else
         if (fy .lt. fx) goto 999
         if (fx .eq. fy) goto 999
-        z = y - (y-x)*fy/(fy-fx)
-        n = n + 1
+        z = y-(y-x)*fy/(fy-fx)
+        n = n+1
         x = y
         fx = fy
         y = z
@@ -105,14 +105,14 @@ subroutine zerofo(func, x0, xap, epsi, nitmax,&
 !
         if (abs(fy) .lt. epsi) goto 800
         if (n .gt. nitmax) goto 999
-    endif
+    end if
     goto 10
 !
 !     SUCCES
-800  continue
-    solu=z
-    iret=0
+800 continue
+    solu = z
+    iret = 0
 !
 !     SORTIE
-999  continue
+999 continue
 end subroutine

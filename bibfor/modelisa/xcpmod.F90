@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine xcpmod(modmes, modthx, modmex)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret,   iret1, iret2, iret3, iret4, iret5
+    integer :: iret, iret1, iret2, iret3, iret4, iret5
     character(len=8) :: noma1, noma2, valk(4), k8cont
     character(len=19) :: ligr1, ligr2
     character(len=24) :: pheno
@@ -102,7 +102,7 @@ subroutine xcpmod(modmes, modthx, modmex)
         valk(3) = noma1
         valk(4) = noma2
         call utmess('F', 'XFEM_83', nk=4, valk=valk)
-    endif
+    end if
 !
 !   on interdit le contact
     call getvtx(' ', 'CONTACT', iocc=1, scal=k8cont)
@@ -116,14 +116,14 @@ subroutine xcpmod(modmes, modthx, modmex)
     call jeexin(ligr1//'.SSSA', iret4)
     call jeexin(ligr1//'.NVGE', iret5)
     iret1 = iret1+iret2+iret3+iret4+iret5
-    ASSERT(iret1.eq.0)
+    ASSERT(iret1 .eq. 0)
     call jeexin(ligr2//'.NEMA', iret1)
     call jeexin(ligr2//'.PRNS', iret2)
     call jeexin(ligr2//'.LGNS', iret3)
     call jeexin(ligr2//'.SSSA', iret4)
     call jeexin(ligr2//'.NVGE', iret5)
     iret1 = iret1+iret2+iret3+iret4+iret5
-    ASSERT(iret1.eq.0)
+    ASSERT(iret1 .eq. 0)
 !
 ! ----------------------------------------------------------------------
 !--- construction du modele out (modmex)

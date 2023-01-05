@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xfnoda(ds_thm, imate, mecani, press1, enrmec, dimenr,&
-                  dimcon, ndim, dt, fnoevo, congem,&
+subroutine xfnoda(ds_thm, imate, mecani, press1, enrmec, dimenr, &
+                  dimcon, ndim, dt, fnoevo, congem, &
                   r, enrhyd, nfh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/rcvalb.h"
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
     aster_logical :: fnoevo
     integer :: mecani(5), press1(7), enrmec(3), dimenr, dimcon
     integer :: ndim, imate, yaenrm, adenme
@@ -36,20 +36,20 @@ type(THM_DS), intent(inout) :: ds_thm
 ! ======================================================================
     integer :: nhom, addeme, adcome
     integer :: addep1, adcp11, i, ifh
-    parameter    (nhom=3)
+    parameter(nhom=3)
     real(kind=8) :: hom(nhom), pesa(3), rac2
     integer :: icodre(nhom)
     character(len=8) :: ncra5(nhom)
-    data ncra5 / 'PESA_X','PESA_Y','PESA_Z' /
+    data ncra5/'PESA_X', 'PESA_Y', 'PESA_Z'/
 ! ======================================================================
 ! --- RECUPERATION DE LA PESANTEUR DANS DEFI_MATERIAU ------------------
 ! ======================================================================
-    call rcvalb('FPG1', 1, 1, '+', imate,&
-                ' ', 'THM_DIFFU', 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', imate, &
+                ' ', 'THM_DIFFU', 0, ' ', [0.d0], &
                 nhom, ncra5, hom, icodre, 1)
-    pesa(1)=hom(1)
-    pesa(2)=hom(2)
-    pesa(3)=hom(3)
+    pesa(1) = hom(1)
+    pesa(2) = hom(2)
+    pesa(3) = hom(3)
     rac2 = sqrt(2.0d0)
 ! ======================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU --------------
@@ -72,23 +72,23 @@ type(THM_DS), intent(inout) :: ds_thm
             congem(adcome+6+i-1) = congem(adcome+6+i-1)*rac2
             congem(adcome+i-1) = congem(adcome+i-1)*rac2
         end do
-    endif
+    end if
 ! ======================================================================
 ! --- CALCUL DU RESIDU R (TERMES CLASSIQUES ) --------------------------
 ! ======================================================================
     if (ds_thm%ds_elem%l_dof_meca) then
         do i = 1, 6
-            r(addeme+ndim+i-1)= r(addeme+ndim+i-1)+congem(adcome-1+i)
+            r(addeme+ndim+i-1) = r(addeme+ndim+i-1)+congem(adcome-1+i)
         end do
         do i = 1, 6
-            r(addeme+ndim-1+i)=r(addeme+ndim-1+i)+congem(adcome+6+i-1)
+            r(addeme+ndim-1+i) = r(addeme+ndim-1+i)+congem(adcome+6+i-1)
         end do
         if (ds_thm%ds_elem%l_dof_pre1) then
             do i = 1, ndim
-                r(addeme+i-1)=r(addeme+i-1) - pesa(i)*congem(adcp11)
+                r(addeme+i-1) = r(addeme+i-1)-pesa(i)*congem(adcp11)
             end do
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! --- CALCUL DU RESIDU R (TERMES HEAVISIDE ) ---------------------------
 ! ======================================================================
@@ -97,13 +97,13 @@ type(THM_DS), intent(inout) :: ds_thm
             if (ds_thm%ds_elem%l_dof_pre1) then
                 do ifh = 1, nfh
                     do i = 1, ndim
-                        r(adenme+i-1+(ifh-1)*(ndim+1))=&
+                        r(adenme+i-1+(ifh-1)*(ndim+1)) = &
                             r(adenme+i-1+(ifh-1)*(ndim+1))-pesa(i)*congem(adcp11)
                     end do
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 ! ======================================================================
     if (fnoevo) then
 ! ======================================================================
@@ -111,9 +111,9 @@ type(THM_DS), intent(inout) :: ds_thm
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_pre1) then
             do i = 1, ndim
-                r(addep1+i)=r(addep1+i)+dt*congem(adcp11+i)
+                r(addep1+i) = r(addep1+i)+dt*congem(adcp11+i)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

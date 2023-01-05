@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmevcc(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,11 +35,11 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
 !
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-type(NL_DS_Contact), intent(in) :: ds_contact
-integer, intent(in) :: i_echec
-integer, intent(out) :: i_echec_acti
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: i_echec
+    integer, intent(out) :: i_echec_acti
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,28 +73,28 @@ integer, intent(out) :: i_echec_acti
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... COLLISION'
-    endif
+        write (ifm, *) '<MECANONLINE> ... COLLISION'
+    end if
 !
 ! - Initializations
 !
     i_echec_acti = 0
-    levent       = .false.
+    levent = .false.
 !
 ! - Get contact parameters
 !
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
+    ntpc = cfdisi(ds_contact%sdcont_defi, 'NTPC')
 !
 ! - Get time dicretization parameters
 !
-    ASSERT(nume_inst.gt.0)
-    instap = diinst(sddisc,nume_inst)
-    instam = diinst(sddisc,nume_inst-1)
+    ASSERT(nume_inst .gt. 0)
+    instap = diinst(sddisc, nume_inst)
+    instam = diinst(sddisc, nume_inst-1)
 !
 ! - Get event parameters
 !
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_DUREE', index_ = i_echec,&
-                valr_ = subdur)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_DUREE', index_=i_echec, &
+                valr_=subdur)
 !
 ! - Access to contact datastructures
 !
@@ -116,17 +116,17 @@ integer, intent(out) :: i_echec_acti
             if (instap .gt. fincol) then
                 etacol = 0.d0
                 fincol = 0.d0
-            endif
-        else if (etacol.eq.0.d0) then
+            end if
+        else if (etacol .eq. 0.d0) then
 !
 ! ------- COLLISION QUI S'ACTIVE: C'EST UN EVENEMENT
 !
-            if ((etacin.eq.1.d0) .or. (etacfi.eq.1.d0)) then
+            if ((etacin .eq. 1.d0) .or. (etacfi .eq. 1.d0)) then
                 etacol = 1.d0
                 fincol = instam+subdur
                 levent = .true.
-            endif
-        endif
+            end if
+        end if
         zr(jctevc+zeven*(iptc-1)+3-1) = etacol
         zr(jctevc+zeven*(iptc-1)+4-1) = fincol
     end do
@@ -135,7 +135,7 @@ integer, intent(out) :: i_echec_acti
 !
     if (levent) then
         i_echec_acti = i_echec
-    endif
+    end if
 !
     call jedema()
 end subroutine

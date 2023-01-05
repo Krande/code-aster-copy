@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
@@ -62,7 +62,7 @@ implicit none
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=v_mesh_typmail)
     elem_type_nume = v_mesh_typmail(elem_nume)
 !
 ! - Paramters
@@ -71,52 +71,52 @@ implicit none
 !
     if (elem_type_name .eq. 'POI1') then
         elem_type = 'PO1'
-        nb_node   = 1
-        nb_dim    = 1
+        nb_node = 1
+        nb_dim = 1
     else if (elem_type_name .eq. 'SEG2') then
         elem_type = 'SE2'
-        nb_node   = 2
-        nb_dim    = 2
+        nb_node = 2
+        nb_dim = 2
     else if (elem_type_name .eq. 'SEG3') then
         elem_type = 'SE3'
-        nb_node   = 3
-        nb_dim    = 2
+        nb_node = 3
+        nb_dim = 2
     else if (elem_type_name .eq. 'TRIA3') then
         elem_type = 'TR3'
-        nb_node   = 3
-        nb_dim    = 3
+        nb_node = 3
+        nb_dim = 3
     else if (elem_type_name .eq. 'TRIA6') then
         elem_type = 'TR6'
-        nb_node   = 6
-        nb_dim    = 3
+        nb_node = 6
+        nb_dim = 3
     else if (elem_type_name .eq. 'TRIA7') then
         elem_type = 'TR7'
-        nb_node   = 7
-        nb_dim    = 3
+        nb_node = 7
+        nb_dim = 3
     else if (elem_type_name .eq. 'QUAD4') then
         elem_type = 'QU4'
-        nb_node   = 4
-        nb_dim    = 3
+        nb_node = 4
+        nb_dim = 3
     else if (elem_type_name .eq. 'QUAD8') then
         elem_type = 'QU8'
-        nb_node   = 8
-        nb_dim    = 3
+        nb_node = 8
+        nb_dim = 3
     else if (elem_type_name .eq. 'QUAD9') then
         elem_type = 'QU9'
-        nb_node   = 9
-        nb_dim    = 3
+        nb_node = 9
+        nb_dim = 3
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (present(elem_type_)) then
         elem_type_ = elem_type
-    endif
+    end if
     if (present(nb_node_)) then
         nb_node_ = nb_node
-    endif
+    end if
     if (present(nb_dim_)) then
         nb_dim_ = nb_dim
-    endif
+    end if
 !
 end subroutine

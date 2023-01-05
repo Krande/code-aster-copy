@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfjefi(mesh, disp_iter, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -71,32 +71,32 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... CALCUL DES JEUX FINAUX'
-    endif
+        write (ifm, *) '<CONTACT> ...... CALCUL DES JEUX FINAUX'
+    end if
 !
 ! - Get contact parameters
 !
-    nbliai      = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
-    nb_equa     = cfdisd(ds_contact%sdcont_solv,'NEQ' )
-    model_ndim  = cfdisd(ds_contact%sdcont_solv,'NDIM' )
-    l_pena_cont = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
-    l_frot      = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
+    nb_equa = cfdisd(ds_contact%sdcont_solv, 'NEQ')
+    model_ndim = cfdisd(ds_contact%sdcont_solv, 'NDIM')
+    l_pena_cont = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
+    l_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
 !
 ! - Access to contact datastructures
 !
     sdcont_appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
-    sdcont_apddl  = ds_contact%sdcont_solv(1:14)//'.APDDL'
+    sdcont_apddl = ds_contact%sdcont_solv(1:14)//'.APDDL'
     sdcont_apcoef = ds_contact%sdcont_solv(1:14)//'.APCOEF'
     call jeveuo(sdcont_appoin, 'L', japptr)
-    call jeveuo(sdcont_apddl , 'L', japddl)
+    call jeveuo(sdcont_apddl, 'L', japddl)
     call jeveuo(sdcont_apcoef, 'L', japcoe)
     if (l_frot) then
         sdcont_apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
         call jeveuo(sdcont_apcofr, 'L', japcof)
-    endif
+    end if
     sdcont_jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
-    sdcont_jeux   = ds_contact%sdcont_solv(1:14)//'.JEUX'
-    call jeveuo(sdcont_jeux  , 'L', jjeux)
+    sdcont_jeux = ds_contact%sdcont_solv(1:14)//'.JEUX'
+    call jeveuo(sdcont_jeux, 'L', jjeux)
     call jeveuo(sdcont_jeuite, 'E', jjeuit)
 !
 ! - Access to displacements
@@ -111,19 +111,19 @@ implicit none
             zr(jjeuit+3*(iliai-1)+1-1) = jeuini
         else
             jdecal = zi(japptr+iliai-1)
-            nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-            call caladu(nb_equa, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
+            nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
+            call caladu(nb_equa, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale, &
                         jeuinc)
             jeuold = zr(jjeuit+3*(iliai-1)+1-1)
-            zr(jjeuit+3*(iliai-1)+1-1) = jeuold - jeuinc
-        endif
+            zr(jjeuit+3*(iliai-1)+1-1) = jeuold-jeuinc
+        end if
     end do
 !
 ! - Print
 !
     if (niv .ge. 2) then
         call cfimp1('FIN', mesh, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
-    endif
+    end if
 !
     call jedema()
 !

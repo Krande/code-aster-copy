@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0497(option, nomte)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -45,7 +45,7 @@ implicit none
 #include "asterfort/utjac.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
@@ -110,10 +110,10 @@ character(len=16), intent(in) :: option, nomte
     character(len=8) :: type_elem(2), fami, poum
 !
     integer :: nbre1, nbre2, nbre3, nbre4
-    parameter ( nbre1 = 2 , nbre2 = 2, nbre3 = 1 , nbre4 = 2 )
+    parameter(nbre1=2, nbre2=2, nbre3=1, nbre4=2)
 !
     integer :: nbr11, nbr12, nbr13, nbre5, nbre6
-    parameter (nbr11 = 1, nbr12 = 3, nbr13 = 4, nbre5 = 4, nbre6 = 5)
+    parameter(nbr11=1, nbr12=3, nbr13=4, nbre5=4, nbre6=5)
 !
     real(kind=8) :: valre1(nbre1), valre2(nbre2), valre3(nbre3), valre4(nbre4), valr11(nbr11)
     real(kind=8) :: valr12(nbr12), valre5(nbre5), valr13(nbr13), valre6(nbre6)
@@ -128,18 +128,18 @@ character(len=16), intent(in) :: option, nomte
     aster_logical :: yapr, yaro
     type(THM_DS) :: ds_thm
 !
-    data nomre1 / 'RHO','BIOT_COEF' /
-    data nomr13 / 'RHO','BIOT_L','BIOT_N','BIOT_T'/
-    data nomr11 / 'PERM_IN' /
-    data nomr12 / 'PERMIN_L','PERMIN_N','PERMIN_T' /
-    data nomre2 / 'RHO','VISC' /
-    data nomre3 / 'PORO'       /
-    data nomre4 / 'E', 'NU'    /
-    data nomre5 / 'E_L','E_N','NU_LT','NU_LN'/
-    data nomre6 / 'E_L','E_T','NU_LT','NU_LN','NU_TN'/
+    data nomre1/'RHO', 'BIOT_COEF'/
+    data nomr13/'RHO', 'BIOT_L', 'BIOT_N', 'BIOT_T'/
+    data nomr11/'PERM_IN'/
+    data nomr12/'PERMIN_L', 'PERMIN_N', 'PERMIN_T'/
+    data nomre2/'RHO', 'VISC'/
+    data nomre3/'PORO'/
+    data nomre4/'E', 'NU'/
+    data nomre5/'E_L', 'E_N', 'NU_LT', 'NU_LN'/
+    data nomre6/'E_L', 'E_T', 'NU_LT', 'NU_LN', 'NU_TN'/
 !
 ! ----------------------------------------------------------------------
-    100 format(a,' :',(6(1x,1pe17.10)))
+100 format(a, ' :', (6(1x, 1pe17.10)))
 ! ----------------------------------------------------------------------
 ! 1 -------------- GESTION DES DONNEES ---------------------------------
 ! ----------------------------------------------------------------------
@@ -153,15 +153,15 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get all parameters for current element
 !
-    call thmGetElemPara(ds_thm   , l_axi    , l_steady ,&
-                        type_elem, inte_type, ndim     ,&
-                        mecani   , press1   , press2   , tempe  ,&
-                        dimdep   , dimdef   , dimcon   , dimuel ,&
-                        nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2,&
-                        nno      , nnos     ,&
-                        npi      , npg      ,&
-                        jv_poids , jv_func  , jv_dfunc ,&
-                        jv_poids2, jv_func2 , jv_dfunc2,&
+    call thmGetElemPara(ds_thm, l_axi, l_steady, &
+                        type_elem, inte_type, ndim, &
+                        mecani, press1, press2, tempe, &
+                        dimdep, dimdef, dimcon, dimuel, &
+                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                        nno, nnos, &
+                        npi, npg, &
+                        jv_poids, jv_func, jv_dfunc, &
+                        jv_poids2, jv_func2, jv_dfunc2, &
                         jv_gano)
 !
 ! =====================================================================
@@ -184,14 +184,14 @@ character(len=16), intent(in) :: option, nomte
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itab(1))
     if (iret .eq. 0) then
         instpm(1) = zr(itab(1))
-        if (.not.l_steady) then
+        if (.not. l_steady) then
             deltat = zr(itab(1)+1)
             theta = zr(itab(1)+2)
             instpm(2) = instpm(1)-deltat
-        endif
+        end if
     else
         call utmess('F', 'INDICATEUR_11')
-    endif
+    end if
 !--------------------------------------------------------------------
 ! 2. RECUPERATION DE LA GEOMETRIE, DU MATERIAU ET DES CHAMPS LOCAUX
 !--------------------------------------------------------------------
@@ -210,24 +210,24 @@ character(len=16), intent(in) :: option, nomte
     if (.not. l_steady) then
         call jevech('PDEPLMR', 'L', ideplm)
     else
-        ideplm=1
-    endif
+        ideplm = 1
+    end if
 !
 ! 2.3. CONTRAINTES AUX NOEUDS PAR ELEMENTS A L'INSTANT ACTUEL
 !      1. TOUJOURS A L'INSTANT ACTUEL --> ISIENP
 !      2. SI TRANSITOIRE, A L'INSTANT PRECEDENT --> ISIENM
 !
-    call tecach('ONO', 'PCONTNO', 'L', iret, nval=3,&
+    call tecach('ONO', 'PCONTNO', 'L', iret, nval=3, &
                 itab=itab)
     isienp = itab(1)
     nbcmp = itab(2)/nno
     if (.not. l_steady) then
-        call tecach('ONO', 'PCONTNM', 'L', iret, nval=3,&
+        call tecach('ONO', 'PCONTNM', 'L', iret, nval=3, &
                     itab=itab)
         isienm = itab(1)
     else
         isienm = 1
-    endif
+    end if
 !
 ! 2.4. CARTES DE PESANTEUR ET ROTATION
 !
@@ -237,14 +237,14 @@ character(len=16), intent(in) :: option, nomte
         yapr = .true.
     else
         yapr = .false.
-    endif
+    end if
     call tecach('ONO', 'PROTATR', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATR', 'L', irot)
         yaro = .true.
     else
         yaro = .false.
-    endif
+    end if
 !
 ! 2.5. LES FORCES VOLUMIQUES EVENTUELLES :
 !          VALEURS REELLES ?
@@ -254,7 +254,7 @@ character(len=16), intent(in) :: option, nomte
         call tecach('ONO', 'PFFVOLU', 'L', iret, iad=ifovf)
     else
         ifovf = 0
-    endif
+    end if
 !GN      WRITE(IFM,2000) 'IFOVR', IFOVR
 !GN      WRITE(IFM,2000) 'IFOVF', IFOVF
 !--------------------------------------------------------------------
@@ -266,75 +266,75 @@ character(len=16), intent(in) :: option, nomte
 !--------------------------------------------------------------------
     nompar(1) = 'INST'
     valres(1) = instpm(1)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_DIFFU', 1, nompar, [valres],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THM_DIFFU', 1, nompar, [valres], &
                 nbre1, nomre1, valre1, codme1, 0)
 !
     if (codme1(1) .eq. 0 .and. codme1(2) .eq. 0) then
         rhohom = valre1(1)
         biot = valre1(2)
-    else if (codme1(2).eq.1) then
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_DIFFU', 1, nompar, [valres],&
+    else if (codme1(2) .eq. 1) then
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THM_DIFFU', 1, nompar, [valres], &
                     nbr13, nomr13, valr13, codm13, 0)
-        if ((codm13(1).eq.0) .and. (codm13(2).eq.0) .and. (codm13(3) .eq.0)) then
+        if ((codm13(1) .eq. 0) .and. (codm13(2) .eq. 0) .and. (codm13(3) .eq. 0)) then
             rhohom = valr13(1)
             biot = sqrt(valr13(2)**2+valr13(3)**2)
-        elseif ((codm13(1).eq.0).and.(codm13(2).eq.0).and. (codm13(4).eq.0)) then
+        elseif ((codm13(1) .eq. 0) .and. (codm13(2) .eq. 0) .and. (codm13(4) .eq. 0)) then
             rhohom = valr13(1)
             biot = sqrt(valr13(2)**2+valr13(4)**2)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         call utmess('F', 'ELEMENTS4_78', sk=nomre1(1)//nomre1(2))
-    endif
+    end if
 !
 ! ON RECUPERE LA PERMEABILITE INTRINSEQUE
 !
 ! => PERMIN SI ISOTROPE
 ! => PERMIN_X,PERMIN_Y ET PERMIN_Z SINON
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_DIFFU', 1, nompar, [valres],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THM_DIFFU', 1, nompar, [valres], &
                 nbr11, nomr11, valr11, codm11, 0)
 !
     if (codm11(1) .eq. 0) then
         permin = valr11(1)
-    else if (codm11(1).eq.1) then
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_DIFFU', 1, nompar, [valres],&
+    else if (codm11(1) .eq. 1) then
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THM_DIFFU', 1, nompar, [valres], &
                     nbr12, nomr12, valr12, codm12, 0)
-        if (( codm12(1).eq.0 ) .and. ( codm12(2).eq.0 )) then
+        if ((codm12(1) .eq. 0) .and. (codm12(2) .eq. 0)) then
             permin = sqrt(valr12(1)**2+valr12(2)**2+valr12(1)**2)
-        else if (( codm12(1).eq.0 ).and.( codm12(3).eq.0 )) then
+        else if ((codm12(1) .eq. 0) .and. (codm12(3) .eq. 0)) then
             permin = sqrt(valr12(1)**2+valr12(3)**2)
-        endif
+        end if
     else
         call utmess('F', 'ELEMENTS4_78', sk=nomr11(1))
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_LIQU', 1, nompar, [valres],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THM_LIQU', 1, nompar, [valres], &
                 nbre2, nomre2, valre2, codme2, 1)
 !
-    if (( codme2(1).eq.0 ) .and. ( codme2(2).eq.0 )) then
+    if ((codme2(1) .eq. 0) .and. (codme2(2) .eq. 0)) then
         rholiq = valre2(1)
         viscli = valre2(2)
     else
         call utmess('F', 'ELEMENTS4_69', sk=nomre2(1)//nomre2(2))
-    endif
+    end if
 !
     if (permin .gt. ovfl) then
         unsurk = viscli/permin
     else
         call utmess('F', 'INDICATEUR_20')
-    endif
+    end if
 !
 !--------------------------------------------------------------------
 ! 4. SI INSTATIONNAIRE, ON RECUPERE DES COEFFICIENTS SUPPLEMENTAIRES
@@ -346,58 +346,58 @@ character(len=16), intent(in) :: option, nomte
 !
 ! 4.1. RECHERCHE DE LA POROSITE INITIALE
 !
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_INIT', 1, nompar, [valres],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THM_INIT', 1, nompar, [valres], &
                     nbre3, nomre3, valre3, codme3, 1)
 !
         if (codme3(1) .eq. 0) then
             porosi = valre3(1)
         else
             call utmess('F', 'ELEMENTS4_70', sk=nomre3(1))
-        endif
+        end if
 !
 ! 4.2. RECHERCHE DU COEFFICIENT DE POISSON ET DU MODULE DE YOUNG
 !
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS', 1, nompar, [valres],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'ELAS', 1, nompar, [valres], &
                     nbre4, nomre4, valre4, codme4, 0)
 !
-        if (( codme4(1).eq.0 ) .and. ( codme4(2).eq.0 )) then
+        if ((codme4(1) .eq. 0) .and. (codme4(2) .eq. 0)) then
             cyoung = valre4(1)
             poisso = valre4(2)
-        else if ((codme4(1).eq.1).and.(codme4(2).eq.1)) then
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'ELAS_ISTR', 1, nompar, [valres],&
+        else if ((codme4(1) .eq. 1) .and. (codme4(2) .eq. 1)) then
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', 'ELAS_ISTR', 1, nompar, [valres], &
                         nbre5, nomre5, valre5, codme5, 0)
-            if ((codme5(1).eq.0) .and. (codme5(2).eq.0) .and. (codme5(3) .eq.0) .and.&
-                (codme5(4).eq.0)) then
+            if ((codme5(1) .eq. 0) .and. (codme5(2) .eq. 0) .and. (codme5(3) .eq. 0) .and. &
+                (codme5(4) .eq. 0)) then
                 cyoung = sqrt(valre5(1)**2+valre5(2)**2)
                 poisso = sqrt(valre5(3)**2+valre5(4)**2)
             else
-                call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                            ' ', 'ELAS_ORTH', 1, nompar, [valres],&
+                call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                            ' ', 'ELAS_ORTH', 1, nompar, [valres], &
                             nbre6, nomre6, valre6, codme6, 0)
-                if ((codme6(1).eq.0) .and. (codme6(2).eq.0) .and. (codme6(3).eq.0) .and.&
-                    (codme6(4).eq.0)) then
+                if ((codme6(1) .eq. 0) .and. (codme6(2) .eq. 0) .and. (codme6(3) .eq. 0) .and. &
+                    (codme6(4) .eq. 0)) then
                     cyoung = sqrt(valre6(1)**2+valre6(2)**2)
                     poisso = sqrt(valre6(3)**2+valre6(4)**2)
-                endif
+                end if
 !
-            endif
+            end if
         else
             call utmess('F', 'ELEMENTS4_71', sk=nomre4(1)//nomre4(2))
-        endif
+        end if
 !
 ! 4.4. ON CALCULE L'INVERSE DU MODULE DE BIOT
 !
         if (cyoung .gt. ovfl) then
-            unsurm = 3.d0*(biot-porosi)*(1.d0-biot)*(1.d0-2*poisso)/ cyoung
+            unsurm = 3.d0*(biot-porosi)*(1.d0-biot)*(1.d0-2*poisso)/cyoung
 !
         else
             call utmess('F', 'ELEMENTS4_67')
-        endif
+        end if
 !
-    endif
+    end if
 !
 !--------------------------------------------------------------------
 ! 5. RECUPERATION DES GRANDEURS CARACTERISTIQUES
@@ -410,14 +410,14 @@ character(len=16), intent(in) :: option, nomte
     if (presc .le. ovfl) then
         iaux = 1
         valk(1) = 'pression'
-    else if (longc.le.ovfl) then
+    else if (longc .le. ovfl) then
         iaux = 1
         valk(1) = 'longueur'
-    endif
+    end if
 !
     if (iaux .ne. 0) then
         call utmess('F', 'INDICATEUR_21', sk=valk(1))
-    endif
+    end if
 !
 ! =====================================================================
 ! D. --- CALCUL DES INDICATEURS ---------------------------------------
@@ -434,18 +434,18 @@ character(len=16), intent(in) :: option, nomte
 ! 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
 !
     if (yapr) then
-        fpx = rhohom * zr(ipes) * zr(ipes+1)
-        fpy = rhohom * zr(ipes) * zr(ipes+2)
+        fpx = rhohom*zr(ipes)*zr(ipes+1)
+        fpy = rhohom*zr(ipes)*zr(ipes+2)
     else
         fpx = 0.d0
         fpy = 0.d0
-    endif
+    end if
 !GN      WRITE(IFM,100) 'P',FPX,FPY,FPZ
 !
 ! 2.3. --- CALCUL DE LA FORCE DE ROTATION ---
 !
     if (yaro) then
-        call resrot(zr(irot), zr(igeom), zr(jv_func), rhohom, nno,&
+        call resrot(zr(irot), zr(igeom), zr(jv_func), rhohom, nno, &
                     npg, frx, fry)
     else
 !
@@ -454,27 +454,27 @@ character(len=16), intent(in) :: option, nomte
             fry(ipg) = 0.d0
         end do
 !
-    endif
+    end if
 !
 ! 2.4. --- CALCUL DE LA FORCE VOLUMIQUE EVENTUELLE ---
 !
     if (ifovr .ne. 0) then
-        fovo(1) = zr(ifovr )
+        fovo(1) = zr(ifovr)
         fovo(2) = zr(ifovr+1)
 !
-    else if (ifovf.ne.0) then
+    else if (ifovf .ne. 0) then
         nompar(1) = 'INST'
         r8bid3(1) = instpm(1)
 !       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
 !       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
 !       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
         do ibid = 1, ndim
-            if (zk8(ifovf+ibid-1)(1:7) .eq. '&FOZERO') then
+            if (zk8(ifovf+ibid-1) (1:7) .eq. '&FOZERO') then
                 fovo(ibid) = 0.d0
             else
-                call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3,&
+                call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3, &
                             fovo(ibid), iret)
-            endif
+            end if
         end do
 !GN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
 !GN        WRITE(IFM,*) 'F Y : ',ZK8(IFOVF+1),FOVO(2)
@@ -482,30 +482,30 @@ character(len=16), intent(in) :: option, nomte
     else
         fovo(1) = 0.d0
         fovo(2) = 0.d0
-    endif
+    end if
 !
 ! 2.3. --- TERME VOLUMIQUE ---
 !
-    call erhmv2(ds_thm, l_axi, l_steady, deltat, dimdep, dimdef,&
-                nddl_meca, nddl_p1, nddl_p2, ndim, nno,&
-                nnos, npg, nddls, nddlm,&
-                dimuel, jv_poids, jv_func, jv_dfunc, jv_poids2,&
-                jv_func2, jv_dfunc2, zr(igeom), fovo, zr(ideplp),&
-                zr(ideplm), zr(isienp), zr(isienm), nbcmp, biot,&
-                unsurm, fpx, fpy, frx, fry,&
-                addeme, addep1,&
+    call erhmv2(ds_thm, l_axi, l_steady, deltat, dimdep, dimdef, &
+                nddl_meca, nddl_p1, nddl_p2, ndim, nno, &
+                nnos, npg, nddls, nddlm, &
+                dimuel, jv_poids, jv_func, jv_dfunc, jv_poids2, &
+                jv_func2, jv_dfunc2, zr(igeom), fovo, zr(ideplp), &
+                zr(ideplm), zr(isienp), zr(isienm), nbcmp, biot, &
+                unsurm, fpx, fpy, frx, fry, &
+                addeme, addep1, &
                 addep2, addete, tm2h1v)
 !
 ! ON ADIMENSIONNE LES INDICATEURS VOLUMIQUES
 !
     admec = 1.d0/(presc**2*longc**ndim)
-    tsivom = hk**2 * admec * tm2h1v(1)
+    tsivom = hk**2*admec*tm2h1v(1)
 !
     if (.not. l_steady) then
-        tdevom = hk**2 * admec * tm2h1v(2)
+        tdevom = hk**2*admec*tm2h1v(2)
         adv1h = cyoung*unsurk*admec
-        tsivoh = deltat * hk**2 * adv1h * tm2h1v(3)
-    endif
+        tsivoh = deltat*hk**2*adv1h*tm2h1v(3)
+    end if
 !
 !------------------------------------------------------------------
 ! 2. CALCUL DES TERMES SURFACIQUES
@@ -533,7 +533,7 @@ character(len=16), intent(in) :: option, nomte
     if (iade2 .ne. 0) then
         igd2 = zi(iade2)
         ncmpm2 = zi(iacmp-1+igd2)
-    endif
+    end if
 !
     iade3 = zi(iref2+8)
     iava3 = zi(iref2+9)
@@ -541,7 +541,7 @@ character(len=16), intent(in) :: option, nomte
     if (iade3 .ne. 0) then
         igd3 = zi(iade3)
         ncmpm3 = zi(iacmp-1+igd3)
-    endif
+    end if
 !
 !------------------------------------------------------------------
 ! 2.2. CARACTERISATIONS DE LA MAILLE COURANTE
@@ -563,7 +563,7 @@ character(len=16), intent(in) :: option, nomte
         nbs = 3
     else
         nbs = 4
-    endif
+    end if
 !
     noeu = typema(5:5)
 !
@@ -575,14 +575,14 @@ character(len=16), intent(in) :: option, nomte
         nbna = 3
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! CALCUL DE L'ORIENTATION DE LA MAILLE 2D
 !     REMARQUE : ON APPELLE LE PROGRAMME GENERIQUE POUR LE PREMIER POINT
 !                DE GAUSS, SACHANT QUE L'ORIENTATION NE DOIT PAS CHANGER
 !
     jkp = 1
-    call utjac(.true._1, zr(igeom), jkp, jv_dfunc, 0,&
+    call utjac(.true._1, zr(igeom), jkp, jv_dfunc, 0, &
                ibid, nno, orien)
 !
 !------------------------------------------------------------------
@@ -608,7 +608,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! ------TEST DU TYPE DE VOISIN -----------------------------------------
 !
-        tyv=zi(ivois+7+ifa)
+        tyv = zi(ivois+7+ifa)
 !
         if (tyv .ne. 0) then
 !
@@ -619,9 +619,9 @@ character(len=16), intent(in) :: option, nomte
 ! --- CALCUL DES NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 !
             iaux = ifa
-            call calnor('2D', zr(igeom), iaux, nbs, nbna,&
-                        orien, ibid, ibid, noe, ibid,&
-                        ibid, ibid, jaco, nx, ny,&
+            call calnor('2D', zr(igeom), iaux, nbs, nbna, &
+                        orien, ibid, ibid, noe, ibid, &
+                        ibid, ibid, jaco, nx, ny, &
                         nz, tx, ty, hf)
 !
 ! ------- SI L'ARRETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
@@ -630,21 +630,21 @@ character(len=16), intent(in) :: option, nomte
 !
             if (typmav(1:4) .eq. 'TRIA' .or. typmav(1:4) .eq. 'QUAD') then
 !
-                call erhms2(l_steady, ifa, nbs, theta, jaco,&
-                            nx, ny, zr(isienp), adsip, zr(isienm),&
-                            nbcmp, typmav, zi(iref1), zi(iref2), ivois,&
+                call erhms2(l_steady, ifa, nbs, theta, jaco, &
+                            nx, ny, zr(isienp), adsip, zr(isienm), &
+                            nbcmp, typmav, zi(iref1), zi(iref2), ivois, &
                             tm2h1s)
 !
 ! ------- SI L'ARRETE EST SUR LA FRONTIERE DE LA STRUCTURE...
 !         CALCUL DES TERMES DE VERIFICATION DES CONDITIONS DE BORD
 !
-            else if (typmav(1:2).eq.'SE') then
+            else if (typmav(1:2) .eq. 'SE') then
 !
-                call erhmb2(l_steady, ifa, nbs, ndim, theta,&
-                            instpm, jaco, nx, ny, tx,&
-                            ty, nbcmp, zr(igeom), ivois, zr(isienp),&
-                            zr(isienm), adsip, iagd, zi(iref2), iade2,&
-                            iava2, ncmpm2, iaptm2, iade3, iava3,&
+                call erhmb2(l_steady, ifa, nbs, ndim, theta, &
+                            instpm, jaco, nx, ny, tx, &
+                            ty, nbcmp, zr(igeom), ivois, zr(isienp), &
+                            zr(isienm), adsip, iagd, zi(iref2), iade2, &
+                            iava2, ncmpm2, iaptm2, iade3, iava3, &
                             ncmpm3, iaptm3, tm2h1b)
 ! ----------------------------------------------------------------
 !
@@ -654,19 +654,19 @@ character(len=16), intent(in) :: option, nomte
 !
             else
 !
-                valk(1)=typmav(1:4)
+                valk(1) = typmav(1:4)
                 call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !
-            endif
+            end if
 !
             if (niv .ge. 2) then
-                write(ifm,103) ifa, zi(ivois+ifa), typmav
-                103 format (i2,'-EME FACE DE NUMERO',i10,' ==> TYPMAV = ', a)
-                write(ifm,100) 'TM2H1B', tm2h1b
-                write(ifm,100) 'TM2H1S', tm2h1s
-            endif
+                write (ifm, 103) ifa, zi(ivois+ifa), typmav
+103             format(i2, '-EME FACE DE NUMERO', i10, ' ==> TYPMAV = ', a)
+                write (ifm, 100) 'TM2H1B', tm2h1b
+                write (ifm, 100) 'TM2H1S', tm2h1s
+            end if
 !
-        endif
+        end if
 !
     end do
 !
@@ -680,29 +680,29 @@ character(len=16), intent(in) :: option, nomte
     adhy0 = unsurk**2/denomi
     adhy1 = adhy0/(longc**2)
 !
-    tsisam = hk * admec * tm2h1s(1)
-    tsibom = hk * admec * tm2h1b(1)
+    tsisam = hk*admec*tm2h1s(1)
+    tsibom = hk*admec*tm2h1b(1)
 !
     if (l_steady) then
 !
-        tsibsh = hk * adhy0 * tm2h1b(3)
-        tsibbh = hk**3 * adhy1 * tm2h1b(3)
+        tsibsh = hk*adhy0*tm2h1b(3)
+        tsibbh = hk**3*adhy1*tm2h1b(3)
 !
-        tsissh = hk * adhy0 * tm2h1s(3)
-        tsisbh = hk**3 * adhy1 * tm2h1s(3)
+        tsissh = hk*adhy0*tm2h1s(3)
+        tsisbh = hk**3*adhy1*tm2h1s(3)
 !
     else
 !
         call jevech('PERREM', 'L', ierrm)
 !
-        tdebom = hk * admec * tm2h1b(2)
-        tdesam = hk * admec * tm2h1s(2)
+        tdebom = hk*admec*tm2h1b(2)
+        tdesam = hk*admec*tm2h1s(2)
 !
-        adhymd = deltat * hk * cyoung * permin/viscli * adhy1
-        tsibsh = adhymd * tm2h1b(3)
-        tsissh = adhymd * tm2h1s(3)
+        adhymd = deltat*hk*cyoung*permin/viscli*adhy1
+        tsibsh = adhymd*tm2h1b(3)
+        tsissh = adhymd*tm2h1s(3)
 !
-    endif
+    end if
 !
 ! ON STOCKE LES INDICATEURS
 !
@@ -710,24 +710,24 @@ character(len=16), intent(in) :: option, nomte
 !
     if (l_steady) then
 !
-        zr(ierr ) = sqrt(tsivom + tsibom + tsisam) + sqrt(tsibsh + tsissh)
-        zr(ierr+1) = sqrt(tsivom + tsibom + tsisam) + sqrt(tsibbh + tsisbh)
-        zr(ierr+2) = tsibsh + tsissh
-        zr(ierr+3) = tsivom + tsibom + tsisam
-        zr(ierr+4) = tsibbh + tsisbh
+        zr(ierr) = sqrt(tsivom+tsibom+tsisam)+sqrt(tsibsh+tsissh)
+        zr(ierr+1) = sqrt(tsivom+tsibom+tsisam)+sqrt(tsibbh+tsisbh)
+        zr(ierr+2) = tsibsh+tsissh
+        zr(ierr+3) = tsivom+tsibom+tsisam
+        zr(ierr+4) = tsibbh+tsisbh
 !
     else
 !
-        zr(ierr+1) = tsivom + tsisam + tsibom
-        zr(ierr+2) = tdevom + tdebom + tdesam
-        zr(ierr+3) = tsivoh + tsibsh + tsissh
+        zr(ierr+1) = tsivom+tsisam+tsibom
+        zr(ierr+2) = tdevom+tdebom+tdesam
+        zr(ierr+3) = tsivoh+tsibsh+tsissh
 !
-        zr(ierr+4) = max(zr(ierrm+4),sqrt(zr(ierr+1)))
-        zr(ierr+5) = zr(ierrm+5) + sqrt(zr(ierr+2))
+        zr(ierr+4) = max(zr(ierrm+4), sqrt(zr(ierr+1)))
+        zr(ierr+5) = zr(ierrm+5)+sqrt(zr(ierr+2))
         zr(ierr+6) = sqrt(zr(ierrm+6)**2+zr(ierr+3))
         zr(ierr) = zr(ierr+4)+zr(ierr+5)+zr(ierr+6)
 !
-    endif
+    end if
 !
     call jedema()
 !

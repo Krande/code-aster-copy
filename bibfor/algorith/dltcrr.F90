@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
-                  t0, lcrea, typres, masse, rigid,&
-                  amort, dep0, vit0, acc0, fexte,&
-                  famor, fliai, numedd, nume, nbtyar,&
+subroutine dltcrr(result, neq, nbordr, iarchi, texte, &
+                  t0, lcrea, typres, masse, rigid, &
+                  amort, dep0, vit0, acc0, fexte, &
+                  famor, fliai, numedd, nume, nbtyar, &
                   typear)
 !
 !
@@ -84,10 +84,10 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 ! 2.1. ==> CREATION DE LA STRUCTURE DE DONNEE RESULTAT
 !
         call rscrsd('G', result, typres, nbordr)
-        matric (1) = rigid
-        matric (2) = masse
-        matric (3) = amort
-        call refdaj('F', result, nbordr, numedd, 'DYNAMIQUE',&
+        matric(1) = rigid
+        matric(2) = masse
+        matric(3) = amort
+        call refdaj('F', result, nbordr, numedd, 'DYNAMIQUE', &
                     matric, ir)
 !
 ! 2.2. ==> ARCHIVAGE INITIAL
@@ -95,13 +95,13 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
         iarchi = -1
         istoc = 0
 !
-        call dlarch(result, neq, istoc, iarchi, texte,&
-                    1, t0, nbtyar, typear, masse,&
-                    dep0, vit0, acc0, fexte(neq+1), famor( neq+1),&
+        call dlarch(result, neq, istoc, iarchi, texte, &
+                    1, t0, nbtyar, typear, masse, &
+                    dep0, vit0, acc0, fexte(neq+1), famor(neq+1), &
                     fliai(neq+1))
 !
-        call utmess('I', 'PROGRESS_1', ni=2, vali=[0, 0],&
-                                       nr=2, valr=[t0, t0])
+        call utmess('I', 'PROGRESS_1', ni=2, vali=[0, 0], &
+                    nr=2, valr=[t0, t0])
 
 !
         iarchi = 0
@@ -110,9 +110,9 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 ! 3. RECUPERATION
 !====
     else
-        nbordr = nbordr + nume
+        nbordr = nbordr+nume
         call rsagsd(result, nbordr)
-    endif
+    end if
 !
 !====
 ! 4. TITRE

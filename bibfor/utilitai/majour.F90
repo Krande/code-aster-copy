@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
+subroutine majour(neq, lgrot, lendo, sdnume, chaini, &
                   chadel, coef, chamaj, ordre)
 !
 !
@@ -69,7 +69,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
     real(kind=8) :: stok
     real(kind=8) :: zero
     integer, pointer :: ndro(:) => null()
-    parameter   (zero = 0.0d+0)
+    parameter(zero=0.0d+0)
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,16 +81,16 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 !
     if (lgrot) then
         call jeveuo(sdnume//'.NDRO', 'L', vi=ndro)
-    endif
+    end if
 !
     if (lendo) then
         call jeveuo(sdnume(1:19)//'.ENDO', 'E', endo)
-    endif
+    end if
 !
-    if (.not.lgrot .and. lendo) then
+    if (.not. lgrot .and. lendo) then
         do i = 1, neq
             stok = chaini(i)
-            chamaj(i) = chaini(i) + coef*chadel(i)
+            chamaj(i) = chaini(i)+coef*chadel(i)
             if (zi(endo+i-1) .ne. 0) then
 !
 !           ON IMPOSE L'ACCROISSEMENT DE L'ENDO
@@ -99,13 +99,13 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
                     if (chamaj(i) .le. zero) then
                         indic1 = indic1+1
                         chamaj(i) = 0.d0
-                        chadel(i) = - stok/coef
-                        zi(endo+i-1)=2
+                        chadel(i) = -stok/coef
+                        zi(endo+i-1) = 2
                     else
-                        zi(endo+i-1)=1
+                        zi(endo+i-1) = 1
                         ptdo = ptdo+1
-                    endif
-                endif
+                    end if
+                end if
 !
 !           ON IMPOSE L'ENDO <= 1
 !
@@ -114,10 +114,10 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
                         indic2 = indic2+1
                         chamaj(i) = 1.d0
                         chadel(i) = (1.d0-stok)/coef
-                    endif
-                endif
+                    end if
+                end if
 !
-            endif
+            end if
 !
         end do
 !
@@ -127,29 +127,29 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 !          WRITE(6,*) 'INDIC2=', INDIC2
 !        ENDIF
 !
-    else if (.not.lgrot) then
+    else if (.not. lgrot) then
         do i = 1, neq
-            chamaj(i) = chaini(i) + coef*chadel(i)
+            chamaj(i) = chaini(i)+coef*chadel(i)
         end do
     else
         icomp = 0
         do i = 1, neq
             if (ndro(i) .eq. 0) then
-                chamaj(i) = chaini(i) + coef*chadel(i)
-            else if (ndro(i).eq.1) then
-                icomp = icomp + 1
+                chamaj(i) = chaini(i)+coef*chadel(i)
+            else if (ndro(i) .eq. 1) then
+                icomp = icomp+1
                 iran(icomp) = i
                 theta(icomp) = chaini(i)
                 deldet(icomp) = coef*chadel(i)
                 if (icomp .eq. 3) then
                     icomp = 0
                     call nmgrot(iran, deldet, theta, chamaj)
-                endif
+                end if
             else
                 ASSERT(.false.)
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

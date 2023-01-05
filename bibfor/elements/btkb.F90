@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine btkb(ndimc, ndimx, nddle, wmatc, btild,&
+subroutine btkb(ndimc, ndimx, nddle, wmatc, btild, &
                 wmatcb, ktildi)
     implicit none
 !
@@ -30,18 +30,18 @@ subroutine btkb(ndimc, ndimx, nddle, wmatc, btild,&
 !
     do i = 1, ndimc
         do j = 1, nddle
-            wmatcb(i,j)=0.d0
+            wmatcb(i, j) = 0.d0
             do k = 1, ndimc
-                wmatcb(i,j)=wmatcb(i,j)+wmatc(i,k)*btild(k,j)
+                wmatcb(i, j) = wmatcb(i, j)+wmatc(i, k)*btild(k, j)
             end do
         end do
     end do
 !
     do i = 1, nddle
         do j = 1, nddle
-            ktildi(i,j)=0.d0
+            ktildi(i, j) = 0.d0
             do k = 1, ndimc
-                ktildi(i,j)=ktildi(i,j)+btild(k,i)*wmatcb(k,j)
+                ktildi(i, j) = ktildi(i, j)+btild(k, i)*wmatcb(k, j)
             end do
         end do
     end do

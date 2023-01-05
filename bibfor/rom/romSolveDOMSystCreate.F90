@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine romSolveDOMSystCreate(syst_matr_type, syst_2mbr_type, syst_type,&
-                                 matr_repr     , ds_solve)
+subroutine romSolveDOMSystCreate(syst_matr_type, syst_2mbr_type, syst_type, &
+                                 matr_repr, ds_solve)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -66,7 +66,7 @@ implicit none
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_27')
-    endif
+    end if
 !
 ! - Get parameters
 !
@@ -95,8 +95,8 @@ implicit none
 !
 ! - Save parameters
 !
-    ds_solve%syst_size      = syst_size
-    ds_solve%syst_type      = syst_type
+    ds_solve%syst_size = syst_size
+    ds_solve%syst_type = syst_type
     ds_solve%syst_matr_type = syst_matr_type
     ds_solve%syst_2mbr_type = syst_2mbr_type
 !

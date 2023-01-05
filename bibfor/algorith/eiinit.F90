@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,25 +36,25 @@ subroutine eiinit(nomte, iu, il, it)
     integer :: up15(12), lp15(3)
     integer :: uq8(6), lq8(2)
 ! ----------------------------------------------------------------------
-    data uh20 /1,2,3,4,9,10,11,12,5,6,7,8,17,18,19,20/
-    data lh20 /13,14,15,16/
-    data up15 /1,2,3,7,8,9,4,5,6,13,14,15/
-    data lp15 /10,11,12/
-    data uq8  /1,2,5,4,3,7/
-    data lq8  /8,6/
+    data uh20/1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8, 17, 18, 19, 20/
+    data lh20/13, 14, 15, 16/
+    data up15/1, 2, 3, 7, 8, 9, 4, 5, 6, 13, 14, 15/
+    data lp15/10, 11, 12/
+    data uq8/1, 2, 5, 4, 3, 7/
+    data lq8/8, 6/
 ! ----------------------------------------------------------------------
 !
-    if ((nomte.eq.'MEEI_HEXA20') .or. (nomte.eq.'MEEI_HEXS20')) then
+    if ((nomte .eq. 'MEEI_HEXA20') .or. (nomte .eq. 'MEEI_HEXS20')) then
         do n = 1, 16
-            iu(1,n) = 1 + (uh20(n)-1)*3
-            iu(2,n) = 2 + (uh20(n)-1)*3
-            iu(3,n) = 3 + (uh20(n)-1)*3
+            iu(1, n) = 1+(uh20(n)-1)*3
+            iu(2, n) = 2+(uh20(n)-1)*3
+            iu(3, n) = 3+(uh20(n)-1)*3
         end do
 !
         do n = 1, 4
-            il(1,n) = 1 + (lh20(n)-1)*3
-            il(2,n) = 2 + (lh20(n)-1)*3
-            il(3,n) = 3 + (lh20(n)-1)*3
+            il(1, n) = 1+(lh20(n)-1)*3
+            il(2, n) = 2+(lh20(n)-1)*3
+            il(3, n) = 3+(lh20(n)-1)*3
         end do
 !
         do n = 1, 16
@@ -62,35 +62,35 @@ subroutine eiinit(nomte, iu, il, it)
         end do
 !
 !
-        else if ((nomte.eq.'MEEI_PENTA15') .or.(nomte.eq.'MEEI_PENTS15'))&
-    then
+    else if ((nomte .eq. 'MEEI_PENTA15') .or. (nomte .eq. 'MEEI_PENTS15')) &
+        then
         do n = 1, 12
-            iu(1,n) = 1 + (up15(n)-1)*3
-            iu(2,n) = 2 + (up15(n)-1)*3
-            iu(3,n) = 3 + (up15(n)-1)*3
+            iu(1, n) = 1+(up15(n)-1)*3
+            iu(2, n) = 2+(up15(n)-1)*3
+            iu(3, n) = 3+(up15(n)-1)*3
         end do
 !
         do n = 1, 3
-            il(1,n) = 1 + (lp15(n)-1)*3
-            il(2,n) = 2 + (lp15(n)-1)*3
-            il(3,n) = 3 + (lp15(n)-1)*3
+            il(1, n) = 1+(lp15(n)-1)*3
+            il(2, n) = 2+(lp15(n)-1)*3
+            il(3, n) = 3+(lp15(n)-1)*3
         end do
 !
         do n = 1, 12
             it(n) = up15(n)
         end do
 !
-        else if ((nomte.eq.'EIPLQU8') .or.(nomte.eq.'EIPLQS8') .or.(&
-    nomte.eq.'EIAXQU8') .or.(nomte.eq.'EIAXQS8')) then
+    else if ((nomte .eq. 'EIPLQU8') .or. (nomte .eq. 'EIPLQS8') .or. ( &
+             nomte .eq. 'EIAXQU8') .or. (nomte .eq. 'EIAXQS8')) then
 !
         do n = 1, 6
-            iu(1,n) = 1 + (uq8(n)-1)*2
-            iu(2,n) = 2 + (uq8(n)-1)*2
+            iu(1, n) = 1+(uq8(n)-1)*2
+            iu(2, n) = 2+(uq8(n)-1)*2
         end do
 !
         do n = 1, 2
-            il(1,n) = 1 + (lq8(n)-1)*2
-            il(2,n) = 2 + (lq8(n)-1)*2
+            il(1, n) = 1+(lq8(n)-1)*2
+            il(2, n) = 2+(lq8(n)-1)*2
         end do
 !
         do n = 1, 6
@@ -99,6 +99,6 @@ subroutine eiinit(nomte, iu, il, it)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

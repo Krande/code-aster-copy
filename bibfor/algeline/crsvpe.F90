@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crsvpe(motfac, solveu,  kellag )
+subroutine crsvpe(motfac, solveu, kellag)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -60,20 +60,20 @@ subroutine crsvpe(motfac, solveu,  kellag )
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
 !     PARAMETRES FORCEMENT PRESENTS
     call getvtx(motfac, 'ALGORITHME', iocc=1, scal=kalgo, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvtx(motfac, 'PRE_COND', iocc=1, scal=kprec, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvr8(motfac, 'RESI_RELA', iocc=1, scal=epsmax, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvis(motfac, 'NMAX_ITER', iocc=1, scal=nmaxit, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvr8(motfac, 'RESI_RELA_PC', iocc=1, scal=resipc, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvtx('SOLVEUR', 'OPTION_PETSC', iocc=1, nbval=1, scal=myopt, nbret=iret)
-    ASSERT(iret.eq.1)
-    redmpi=-9999
+    ASSERT(iret .eq. 1)
+    redmpi = -9999
 ! a finir de tester avant restitution
 !    call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=iret)
 !
@@ -88,35 +88,35 @@ subroutine crsvpe(motfac, solveu,  kellag )
     kacmum = 'XXXX'
 !
     select case (kprec)
-    case('LDLT_INC')
+    case ('LDLT_INC')
         call getvis(motfac, 'NIVE_REMPLISSAGE', iocc=1, scal=niremp, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvr8(motfac, 'REMPLISSAGE', iocc=1, scal=fillin, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
 
 !   PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR LDLT_SP/LDLT_DP
-    case ('LDLT_SP','LDLT_DP')
+    case ('LDLT_SP', 'LDLT_DP')
         call getvis(motfac, 'REAC_PRECOND', iocc=1, scal=reacpr, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=usersm, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
 
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
         call gcncon('.', solvbd)
 !
-        if (nmaxit==0) nmaxit=100
-        if (( kprec.eq.'LDLT_SP' ).or.( kprec .eq. 'LDLT_DP')) then
+        if (nmaxit == 0) nmaxit = 100
+        if ((kprec .eq. 'LDLT_SP') .or. (kprec .eq. 'LDLT_DP')) then
             call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=iret)
-            ASSERT(iret.eq.1)
-            if ( abs(blreps) < r8prem() ) then
-               kacmum = 'AUTO'
+            ASSERT(iret .eq. 1)
+            if (abs(blreps) < r8prem()) then
+                kacmum = 'AUTO'
             else
-               kacmum='LR'
-            endif
-        endif
+                kacmum = 'LR'
+            end if
+        end if
 !
 
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE ML
@@ -141,7 +141,7 @@ subroutine crsvpe(motfac, solveu,  kellag )
     case ('BLOC_LAGR')
 
 !   PAS DE PARAMETRES POUR LES AUTRES PRECONDITIONNEURS
-    case( 'JACOBI', 'SOR', 'FIELDSPLIT', 'UTILISATEUR', 'SANS')
+    case ('JACOBI', 'SOR', 'FIELDSPLIT', 'UTILISATEUR', 'SANS')
 !     RIEN DE PARTICULIER...
 !
     case default
@@ -156,11 +156,11 @@ subroutine crsvpe(motfac, solveu,  kellag )
 !
 ! ON REMPLIT LE VECTEUR SLVO AVEC LES OPTIONS DE PETSC
     lch = lxlgut(myopt)
-    ASSERT(lch.lt.2500)
-    lslvo = int(lch / 80) + 1
-    do i=1, lslvo
+    ASSERT(lch .lt. 2500)
+    lslvo = int(lch/80)+1
+    do i = 1, lslvo
         slvo(i) = myopt(80*(i-1)+1:80*i)
-    enddo
+    end do
 !
     slvk(1) = 'PETSC'
     slvk(2) = kprec
@@ -171,11 +171,11 @@ subroutine crsvpe(motfac, solveu,  kellag )
     slvk(7) = 'XXXX'
     slvk(8) = 'XXXX'
     slvk(9) = usersm
-    slvk(10)= 'XXXX'
-    slvk(11)= 'XXXX'
-    slvk(12)= 'XXXX'
-    slvk(13)= kellag
-    slvk(14)= 'XXXX'
+    slvk(10) = 'XXXX'
+    slvk(11) = 'XXXX'
+    slvk(12) = 'XXXX'
+    slvk(13) = kellag
+    slvk(14) = 'XXXX'
 !
 !
 !     POUR NEWTON_KRYLOV LE RESI_RELA VARIE A CHAQUE

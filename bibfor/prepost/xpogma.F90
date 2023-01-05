@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine xpogma(nbgma, nb, listgr, ima, jlogma)
 !       NUMERO DU GROUPE
         ig = zi(iagma-1+i)
 !       ON AUGMENTE DE NB
-        zi(jlogma-1+ig)=zi(jlogma-1+ig)+nb
+        zi(jlogma-1+ig) = zi(jlogma-1+ig)+nb
     end do
 !
 999 continue

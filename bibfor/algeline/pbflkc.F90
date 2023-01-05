@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pbflkc(umoy, rhof, hmoy, rmoy, long,&
-                  cf0, mcf0, icoq, imod, nbm,&
-                  rkip, tcoef, s1, s2, ki,&
+subroutine pbflkc(umoy, rhof, hmoy, rmoy, long, &
+                  cf0, mcf0, icoq, imod, nbm, &
+                  rkip, tcoef, s1, s2, ki, &
                   lambda, kcalcu, passag)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -74,25 +74,25 @@ subroutine pbflkc(umoy, rhof, hmoy, rmoy, long,&
     if (icoq .eq. 2) then
         itab = 5
         poids = 1.d0
-    endif
-    ln = tcoef(1+itab,imod)
-    a1 = tcoef(2+itab,imod) * poids
-    a2 = tcoef(3+itab,imod) * poids
-    a3 = tcoef(4+itab,imod) * poids
-    a4 = tcoef(5+itab,imod) * poids
-    b1 = tcoef(2+itab,imod) / 2.d0
-    b2 = tcoef(3+itab,imod) / 2.d0
-    b3 = tcoef(4+itab,imod) / 2.d0
-    b4 = tcoef(5+itab,imod) / 2.d0
+    end if
+    ln = tcoef(1+itab, imod)
+    a1 = tcoef(2+itab, imod)*poids
+    a2 = tcoef(3+itab, imod)*poids
+    a3 = tcoef(4+itab, imod)*poids
+    a4 = tcoef(5+itab, imod)*poids
+    b1 = tcoef(2+itab, imod)/2.d0
+    b2 = tcoef(3+itab, imod)/2.d0
+    b3 = tcoef(4+itab, imod)/2.d0
+    b4 = tcoef(5+itab, imod)/2.d0
 !
-    s = dcmplx(s1,s2)
-    j = dcmplx(0.d0,1.d0)
+    s = dcmplx(s1, s2)
+    j = dcmplx(0.d0, 1.d0)
 !
     p1 = dcmplx(ln/(long*hmoy))
     p2 = s/(umoy*hmoy)
     p3 = dcmplx(ln/(long*rmoy))
     p4 = s/(umoy*rmoy)
-    p5 = (dcmplx(cf0/hmoy) + s/umoy)/hmoy
+    p5 = (dcmplx(cf0/hmoy)+s/umoy)/hmoy
 !
     c1 = p1*a2+p2*a1+p3*b2+p4*b1
     c2 = -1.d0*p1*a1+p2*a2-p3*b1+p4*b2
@@ -104,57 +104,57 @@ subroutine pbflkc(umoy, rhof, hmoy, rmoy, long,&
     d3 = p1*a4+p5*a3+p3*b4+p4*b3
     d4 = p1*a3+p5*a4+p3*b3+p4*b4
 !
-    u = 0.5d0*((rkip/rmoy)**2) * (s + dcmplx((cf0/hmoy)*(mcf0+2.d0)*umoy))
+    u = 0.5d0*((rkip/rmoy)**2)*(s+dcmplx((cf0/hmoy)*(mcf0+2.d0)*umoy))
     v = -0.5d0*((rkip/rmoy)**2)*dcmplx(umoy)
 !
-    e1 = (u * (j*c2-c1)) + v*lambda(1)*(d1-j*d2)
-    e2 = (u * (-1.d0*j*c2-c1)) + v*lambda(1)*(d1+j*d2)
-    e3 = (-1.d0 * u * (c3+c4)) + v*lambda(1)*(d3+d4)
-    e4 = (u * (c4-c3)) + v*lambda(1)*(d3-d4)
+    e1 = (u*(j*c2-c1))+v*lambda(1)*(d1-j*d2)
+    e2 = (u*(-1.d0*j*c2-c1))+v*lambda(1)*(d1+j*d2)
+    e3 = (-1.d0*u*(c3+c4))+v*lambda(1)*(d3+d4)
+    e4 = (u*(c4-c3))+v*lambda(1)*(d3-d4)
 !
-    f1 = (u * (j*c2-c1)) + v*lambda(2)*(d1-j*d2)
-    f2 = (u * (-1.d0*j*c2-c1)) + v*lambda(2)*(d1+j*d2)
-    f3 = (-1.d0 * u * (c3+c4)) + v*lambda(2)*(d3+d4)
-    f4 = (u * (c4-c3)) + v*lambda(2)*(d3-d4)
+    f1 = (u*(j*c2-c1))+v*lambda(2)*(d1-j*d2)
+    f2 = (u*(-1.d0*j*c2-c1))+v*lambda(2)*(d1+j*d2)
+    f3 = (-1.d0*u*(c3+c4))+v*lambda(2)*(d3+d4)
+    f4 = (u*(c4-c3))+v*lambda(2)*(d3-d4)
 !
-    g1 = (u * (j*c2-c1)) + v*lambda(3)*(d1-j*d2)
-    g2 = (u * (-1.d0*j*c2-c1)) + v*lambda(3)*(d1+j*d2)
-    g3 = (-1.d0 * u * (c3+c4)) + v*lambda(3)*(d3+d4)
-    g4 = (u * (c4-c3)) + v*lambda(3)*(d3-d4)
+    g1 = (u*(j*c2-c1))+v*lambda(3)*(d1-j*d2)
+    g2 = (u*(-1.d0*j*c2-c1))+v*lambda(3)*(d1+j*d2)
+    g3 = (-1.d0*u*(c3+c4))+v*lambda(3)*(d3+d4)
+    g4 = (u*(c4-c3))+v*lambda(3)*(d3-d4)
 !
     t = -1.d0*(s/umoy+dcmplx(cf0/hmoy))
-    u = 3.d0*((rkip/rmoy)**2) * (s/umoy + dcmplx((cf0/hmoy)*(mcf0+2.d0)))
+    u = 3.d0*((rkip/rmoy)**2)*(s/umoy+dcmplx((cf0/hmoy)*(mcf0+2.d0)))
     v = dcmplx(2.d0*((rkip/rmoy)**2))
 !
-    q11 = (u + lambda(1)*(t*lambda(1)+v))**(-1.d0)
-    q12 = (u + lambda(2)*(t*lambda(2)+v))**(-1.d0)
-    q13 = (u + lambda(3)*(t*lambda(3)+v))**(-1.d0)
+    q11 = (u+lambda(1)*(t*lambda(1)+v))**(-1.d0)
+    q12 = (u+lambda(2)*(t*lambda(2)+v))**(-1.d0)
+    q13 = (u+lambda(3)*(t*lambda(3)+v))**(-1.d0)
 !
     w = ln/long
 !
-    ki(1,1) = q11*e1/(j*w-lambda(1))
-    ki(1,2) = q12*f1/(j*w-lambda(2))
-    ki(1,3) = q13*g1/(j*w-lambda(3))
-    ki(2,1) = -1.d0*q11*e2/(j*w+lambda(1))
-    ki(2,2) = -1.d0*q12*f2/(j*w+lambda(2))
-    ki(2,3) = -1.d0*q13*g2/(j*w+lambda(3))
-    ki(3,1) = q11*e3/(dcmplx(w)-lambda(1))
-    ki(3,2) = q12*f3/(dcmplx(w)-lambda(2))
-    ki(3,3) = q13*g3/(dcmplx(w)-lambda(3))
-    ki(4,1) = -1.d0*q11*e4/(dcmplx(w)+lambda(1))
-    ki(4,2) = -1.d0*q12*f4/(dcmplx(w)+lambda(2))
-    ki(4,3) = -1.d0*q13*g4/(dcmplx(w)+lambda(3))
+    ki(1, 1) = q11*e1/(j*w-lambda(1))
+    ki(1, 2) = q12*f1/(j*w-lambda(2))
+    ki(1, 3) = q13*g1/(j*w-lambda(3))
+    ki(2, 1) = -1.d0*q11*e2/(j*w+lambda(1))
+    ki(2, 2) = -1.d0*q12*f2/(j*w+lambda(2))
+    ki(2, 3) = -1.d0*q13*g2/(j*w+lambda(3))
+    ki(3, 1) = q11*e3/(dcmplx(w)-lambda(1))
+    ki(3, 2) = q12*f3/(dcmplx(w)-lambda(2))
+    ki(3, 3) = q13*g3/(dcmplx(w)-lambda(3))
+    ki(4, 1) = -1.d0*q11*e4/(dcmplx(w)+lambda(1))
+    ki(4, 2) = -1.d0*q12*f4/(dcmplx(w)+lambda(2))
+    ki(4, 3) = -1.d0*q13*g4/(dcmplx(w)+lambda(3))
 !
     do m2 = 1, 3
-        passag(1,m2) = dcmplx(1.d0,0.d0)
-        passag(2,m2) = -1.d0 * lambda(m2) * rmoy
-        passag(3,m2) = -1.d0 * lambda(m2) * (lambda(m2)-t) * (rmoy* rmoy*rhof*umoy)
+        passag(1, m2) = dcmplx(1.d0, 0.d0)
+        passag(2, m2) = -1.d0*lambda(m2)*rmoy
+        passag(3, m2) = -1.d0*lambda(m2)*(lambda(m2)-t)*(rmoy*rmoy*rhof*umoy)
     end do
 !
     do m2 = 1, 4
         do m1 = 1, 3
-            kcalcu(m1,m2) = passag(m1,1)*ki(m2,1)+passag(m1,2)*ki(m2, 2)
-            kcalcu(m1,m2) = kcalcu(m1,m2) + passag(m1,3)*ki(m2,3)
+            kcalcu(m1, m2) = passag(m1, 1)*ki(m2, 1)+passag(m1, 2)*ki(m2, 2)
+            kcalcu(m1, m2) = kcalcu(m1, m2)+passag(m1, 3)*ki(m2, 3)
         end do
     end do
 !

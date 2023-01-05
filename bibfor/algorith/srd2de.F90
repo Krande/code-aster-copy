@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,7 @@ subroutine srd2de(devsig, d2dets)
 ! OUT : D2DETS(6,6) : DERIVEE 2NDE DET(S) PAR RAPPORT A SIGMA (NDT X NDT)
 ! ===================================================================================
 
-    implicit   none
-
+    implicit none
 
     !!!
     !!! Variables globales
@@ -44,52 +43,52 @@ subroutine srd2de(devsig, d2dets)
 
     integer :: ndi, ndt
     real(kind=8) :: r2
-    common /tdim/   ndt,ndi
+    common/tdim/ndt, ndi
 
     !!!
     !!! Calcul de d2dets
     !!!
 
-    d2dets(:,:) = 0.d0
+    d2dets(:, :) = 0.d0
 
     r2 = sqrt(2.d0)
 
     if (ndt .eq. 6) then
 
-        d2dets(1,2)=devsig(3)
-        d2dets(1,3)=devsig(2)
-        d2dets(1,6)=-devsig(6)
-        d2dets(2,1)=devsig(3)
-        d2dets(2,3)=devsig(1)
-        d2dets(2,5)=-devsig(5)
-        d2dets(3,1)=devsig(2)
-        d2dets(3,2)=devsig(1)
-        d2dets(3,4)=-devsig(4)
-        d2dets(4,3)=-devsig(4)
-        d2dets(4,4)=-devsig(3)
-        d2dets(4,5)=devsig(6)/r2
-        d2dets(4,6)=devsig(5)/r2
-        d2dets(5,2)=-devsig(5)
-        d2dets(5,4)=devsig(6)/r2
-        d2dets(5,5)=-devsig(2)
-        d2dets(5,6)=devsig(4)/r2
-        d2dets(6,1)=-devsig(6)
-        d2dets(6,4)=devsig(5)/r2
-        d2dets(6,5)=devsig(4)/r2
-        d2dets(6,6)=-devsig(1)
+        d2dets(1, 2) = devsig(3)
+        d2dets(1, 3) = devsig(2)
+        d2dets(1, 6) = -devsig(6)
+        d2dets(2, 1) = devsig(3)
+        d2dets(2, 3) = devsig(1)
+        d2dets(2, 5) = -devsig(5)
+        d2dets(3, 1) = devsig(2)
+        d2dets(3, 2) = devsig(1)
+        d2dets(3, 4) = -devsig(4)
+        d2dets(4, 3) = -devsig(4)
+        d2dets(4, 4) = -devsig(3)
+        d2dets(4, 5) = devsig(6)/r2
+        d2dets(4, 6) = devsig(5)/r2
+        d2dets(5, 2) = -devsig(5)
+        d2dets(5, 4) = devsig(6)/r2
+        d2dets(5, 5) = -devsig(2)
+        d2dets(5, 6) = devsig(4)/r2
+        d2dets(6, 1) = -devsig(6)
+        d2dets(6, 4) = devsig(5)/r2
+        d2dets(6, 5) = devsig(4)/r2
+        d2dets(6, 6) = -devsig(1)
 
-    else if (ndt.eq.4) then
+    else if (ndt .eq. 4) then
 
-        d2dets(1,2)=devsig(3)
-        d2dets(2,1)=devsig(3)
-        d2dets(1,3)=devsig(2)
-        d2dets(3,1)=devsig(2)
-        d2dets(2,3)=devsig(1)
-        d2dets(3,2)=devsig(1)
-        d2dets(4,4)=-devsig(3)
-        d2dets(4,3)=-devsig(4)
-        d2dets(3,4)=-devsig(4)
+        d2dets(1, 2) = devsig(3)
+        d2dets(2, 1) = devsig(3)
+        d2dets(1, 3) = devsig(2)
+        d2dets(3, 1) = devsig(2)
+        d2dets(2, 3) = devsig(1)
+        d2dets(3, 2) = devsig(1)
+        d2dets(4, 4) = -devsig(3)
+        d2dets(4, 3) = -devsig(4)
+        d2dets(3, 4) = -devsig(4)
 
-    endif
+    end if
 
 end subroutine

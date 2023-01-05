@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
+subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
                   gamma, pgl, iret)
     implicit none
 #include "jeveux.h"
@@ -67,10 +67,10 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
     real(kind=8) :: mat1(3, 3), mat2(3, 3)
 !
     iret = 0
-    if ((typecp.eq.'P').or.(typecp.eq.'D')) then
-        ASSERT( (nbnolo.eq.2).or.(nbnolo.eq.3) )
+    if ((typecp .eq. 'P') .or. (typecp .eq. 'D')) then
+        ASSERT((nbnolo .eq. 2) .or. (nbnolo .eq. 3))
 !       CALCUL DE ALPHA ET BETA
-        xd = coordo(1:3) - coordo(4:6)
+        xd = coordo(1:3)-coordo(4:6)
         call angvx(xd, alphal, betal)
         angl(1) = alphal
         angl(2) = betal
@@ -78,42 +78,42 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
         call matrot(angl, pgl)
 !
     else if (typecp .eq. '1') then
-        ASSERT(nbnolo.eq.1)
+        ASSERT(nbnolo .eq. 1)
         angl(1) = alpha
         angl(2) = beta
         angl(3) = gamma
         call matrot(angl, pgl)
 !
-    else if (typecp.eq.'C') then
+    else if (typecp .eq. 'C') then
 !       CALCUL DE LA MATRICE DE PASSAGE GLOBAL -> INTRINSEQUE
         if (nbnolo .eq. 3) then
             call dxtpgl(coordo, pgl)
-        else if (nbnolo.eq.4) then
+        else if (nbnolo .eq. 4) then
             call dxqpgl(coordo, pgl, 'C', iret)
         else
             ASSERT(.false.)
-        endif
+        end if
 !       MODIFICATION DE LA MATRICE POUR PRENDRE EN COMPTE LA CARCOQUE UTILISATEUR
         call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
-        mat1(1,1) = pgl(1,1)
-        mat1(1,2) = pgl(2,1)
-        mat1(1,3) = pgl(3,1)
-        mat1(2,1) = pgl(1,2)
-        mat1(2,2) = pgl(2,2)
-        mat1(2,3) = pgl(3,2)
-        mat1(3,1) = pgl(1,3)
-        mat1(3,2) = pgl(2,3)
-        mat1(3,3) = pgl(3,3)
-        mat2(1,1) = t2ui(1,1)
-        mat2(1,2) = t2ui(2,1)
-        mat2(1,3) = 0.d0
-        mat2(2,1) = t2ui(1,2)
-        mat2(2,2) = t2ui(2,2)
-        mat2(2,3) = 0.d0
-        mat2(3,1) = 0.d0
-        mat2(3,2) = 0.d0
-        mat2(3,3) = 1.d0
-        pgl = matmul(mat1,mat2)
-    endif
+        mat1(1, 1) = pgl(1, 1)
+        mat1(1, 2) = pgl(2, 1)
+        mat1(1, 3) = pgl(3, 1)
+        mat1(2, 1) = pgl(1, 2)
+        mat1(2, 2) = pgl(2, 2)
+        mat1(2, 3) = pgl(3, 2)
+        mat1(3, 1) = pgl(1, 3)
+        mat1(3, 2) = pgl(2, 3)
+        mat1(3, 3) = pgl(3, 3)
+        mat2(1, 1) = t2ui(1, 1)
+        mat2(1, 2) = t2ui(2, 1)
+        mat2(1, 3) = 0.d0
+        mat2(2, 1) = t2ui(1, 2)
+        mat2(2, 2) = t2ui(2, 2)
+        mat2(2, 3) = 0.d0
+        mat2(3, 1) = 0.d0
+        mat2(3, 2) = 0.d0
+        mat2(3, 3) = 1.d0
+        pgl = matmul(mat1, mat2)
+    end if
 !
 end subroutine

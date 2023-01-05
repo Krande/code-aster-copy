@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dhrc_mat_tan(a, ap1, ap2, b,&
-                  bp1, bp2, bocaj, neta1, neta2,&
-                  indip, cstseu, eps, vint, dsidep)
+subroutine dhrc_mat_tan(a, ap1, ap2, b, &
+                        bp1, bp2, bocaj, neta1, neta2, &
+                        indip, cstseu, eps, vint, dsidep)
 !
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
@@ -70,7 +70,7 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !
     do k = 1, 6
         do i = 1, 6
-            dsidep(k,i)=a(k,i)
+            dsidep(k, i) = a(k, i)
         end do
     end do
 !
@@ -79,23 +79,23 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !     DIFFERENTIELLES DES CONTRAINTES N ET M PAR RAPPORT AUX VARI D ET EGLISS
 ! ---------------------------------------------------------------------------
 !     INITIALISATION
-    dsida(:,:) = 0.d0
+    dsida(:, :) = 0.d0
 !
     do k = 1, 6
         do i = 1, 2
-            dsida(k,1) = dsida(k,1)+ap1(k,i)*eps(i)
-            dsida(k,2) = dsida(k,2)+ap2(k,i)*eps(i)
-            dsida(k,1) = dsida(k,1)+bp1(k,i)*vint(i+2)
-            dsida(k,2) = dsida(k,2)+bp2(k,i)*vint(i+4)
+            dsida(k, 1) = dsida(k, 1)+ap1(k, i)*eps(i)
+            dsida(k, 2) = dsida(k, 2)+ap2(k, i)*eps(i)
+            dsida(k, 1) = dsida(k, 1)+bp1(k, i)*vint(i+2)
+            dsida(k, 2) = dsida(k, 2)+bp2(k, i)*vint(i+4)
         end do
         do i = 3, 6
-            dsida(k,1) = dsida(k,1)+ap1(k,i)*eps(i)
-            dsida(k,2) = dsida(k,2)+ap2(k,i)*eps(i)
+            dsida(k, 1) = dsida(k, 1)+ap1(k, i)*eps(i)
+            dsida(k, 2) = dsida(k, 2)+ap2(k, i)*eps(i)
         end do
-        dsida(k,3) = b(k,1,1)
-        dsida(k,4) = b(k,2,1)
-        dsida(k,5) = b(k,1,2)
-        dsida(k,6) = b(k,2,2)
+        dsida(k, 3) = b(k, 1, 1)
+        dsida(k, 4) = b(k, 2, 1)
+        dsida(k, 5) = b(k, 1, 2)
+        dsida(k, 6) = b(k, 2, 2)
     end do
 !
 !----------------------------------------------------------------------
@@ -104,12 +104,12 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !     INITIALISATION
 !
     do k = 1, 6
-        dsedep(1,k) = dsida(k,1)/cstseu(1)
-        dsedep(2,k) = dsida(k,2)/cstseu(2)
-        dsedep(3,k) = dsida(k,3)*2.d0*neta1(1)/(cstseu(3)**2.d0)
-        dsedep(4,k) = dsida(k,4)*2.d0*neta1(2)/(cstseu(4)**2.d0)
-        dsedep(5,k) = dsida(k,5)*2.d0*neta2(1)/(cstseu(5)**2.d0)
-        dsedep(6,k) = dsida(k,6)*2.d0*neta2(2)/(cstseu(6)**2.d0)
+        dsedep(1, k) = dsida(k, 1)/cstseu(1)
+        dsedep(2, k) = dsida(k, 2)/cstseu(2)
+        dsedep(3, k) = dsida(k, 3)*2.d0*neta1(1)/(cstseu(3)**2.d0)
+        dsedep(4, k) = dsida(k, 4)*2.d0*neta1(2)/(cstseu(4)**2.d0)
+        dsedep(5, k) = dsida(k, 5)*2.d0*neta2(1)/(cstseu(5)**2.d0)
+        dsedep(6, k) = dsida(k, 6)*2.d0*neta2(2)/(cstseu(6)**2.d0)
     end do
 !
 !----------------------------------------------------------------------
@@ -120,18 +120,18 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !
     do k = 1, 6
         do i = 1, 6
-            jb=0
+            jb = 0
             do j = 1, 6
-                lb=0
+                lb = 0
                 if (indip(j) .eq. j) then
-                    jb=jb+1
+                    jb = jb+1
                     do l = 1, 6
                         if (indip(l) .eq. l) then
-                            lb=lb+1
-                            dsidep(k,i)=dsidep(k,i)+ dsida(k,j)*bocaj(jb,lb)*dsedep(l,i)
-                        endif
+                            lb = lb+1
+                            dsidep(k, i) = dsidep(k, i)+dsida(k, j)*bocaj(jb, lb)*dsedep(l, i)
+                        end if
                     end do
-                endif
+                end if
             end do
         end do
     end do

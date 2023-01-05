@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine creaco(nbmato, ma, nblien)
     character(len=8) :: ma
     integer :: nbmano, idcoi, id1, typma, idno, nbno, idnoeu, nbnoeu, ima, i, j
     integer :: mail, ino, id, nbre, id2, temp, temp1, maxi, ifm, niv, coi
-    integer :: numno,  nbnoto
+    integer :: numno, nbnoto
     real(kind=8) :: tmps(7)
     character(len=8) :: nom, typma1, typma2
     integer, pointer :: typmail(:) => null()
@@ -70,15 +70,15 @@ subroutine creaco(nbmato, ma, nblien)
     if (niv .ge. 2) then
         call uttcpu('CPU.CREACO', 'INIT', ' ')
         call uttcpu('CPU.CREACO', 'DEBUT', ' ')
-    endif
+    end if
 !
     call jeveuo('&&FETSKP.RENUM', 'L', renum)
 !
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
 !
-    write(ifm,*)' -- NOMBRE DE MAILLES : ',nbmato
-    write(ifm,*)' -- NOMBRE DE NOEUDS  : ',nbnoto
-    write(ifm,*)' '
+    write (ifm, *) ' -- NOMBRE DE MAILLES : ', nbmato
+    write (ifm, *) ' -- NOMBRE DE NOEUDS  : ', nbnoto
+    write (ifm, *) ' '
 !
     call wkvect('&&FETSKP.NBMANO', 'V V I', nbnoto, nbmano)
     call wkvect('&&FETSKP.IDCOI', 'V V I', nbnoto+1, idcoi)
@@ -95,61 +95,61 @@ subroutine creaco(nbmato, ma, nblien)
     call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
 !
     do ima = 1, nbmato
-        mail=zi(renum-1+ima)
-        nbre=typmail(mail)
+        mail = zi(renum-1+ima)
+        nbre = typmail(mail)
         call jenuno(jexnum('&CATA.TM.NOMTM', nbre), nom)
         call jeveuo(jexnum(ma//'.CONNEX', mail), 'L', idnoeu)
         call jelira(jexnum(ma//'.CONNEX', mail), 'LONMAX', nbnoeu)
-        zi(idno-1+ima)=idnoeu
+        zi(idno-1+ima) = idnoeu
 !
 !      ------- ON LINEARISE LES ELEMENTS -------
         if (nom .eq. 'SEG3    ') then
-            zk8(typma-1+ima)= 'SEG2    '
-            zi(nbno-1+ima)=2
+            zk8(typma-1+ima) = 'SEG2    '
+            zi(nbno-1+ima) = 2
         else if (nom .eq. 'TRIA6   ') then
-            zk8(typma-1+ima)= 'TRIA3   '
-            zi(nbno-1+ima)=3
+            zk8(typma-1+ima) = 'TRIA3   '
+            zi(nbno-1+ima) = 3
         else if (nom .eq. 'QUAD8   ') then
-            zk8(typma-1+ima)= 'QUAD4   '
-            zi(nbno-1+ima)=4
+            zk8(typma-1+ima) = 'QUAD4   '
+            zi(nbno-1+ima) = 4
         else if (nom .eq. 'QUAD9   ') then
-            zk8(typma-1+ima)= 'QUAD4   '
-            zi(nbno-1+ima)=4
+            zk8(typma-1+ima) = 'QUAD4   '
+            zi(nbno-1+ima) = 4
         else if (nom .eq. 'TETRA10 ') then
-            zk8(typma-1+ima)= 'TETRA4  '
-            zi(nbno-1+ima)=4
+            zk8(typma-1+ima) = 'TETRA4  '
+            zi(nbno-1+ima) = 4
         else if (nom .eq. 'PENTA15 ') then
-            zk8(typma-1+ima)= 'PENTA6  '
-            zi(nbno-1+ima)=6
+            zk8(typma-1+ima) = 'PENTA6  '
+            zi(nbno-1+ima) = 6
         else if (nom .eq. 'PENTA18 ') then
-            zk8(typma-1+ima)= 'PENTA6  '
-            zi(nbno-1+ima)=6
+            zk8(typma-1+ima) = 'PENTA6  '
+            zi(nbno-1+ima) = 6
         else if (nom .eq. 'HEXA20  ') then
-            zk8(typma-1+ima)= 'HEXA8   '
-            zi(nbno-1+ima)=8
+            zk8(typma-1+ima) = 'HEXA8   '
+            zi(nbno-1+ima) = 8
         else if (nom .eq. 'HEXA27  ') then
-            zk8(typma-1+ima)= 'HEXA8   '
-            zi(nbno-1+ima)=8
+            zk8(typma-1+ima) = 'HEXA8   '
+            zi(nbno-1+ima) = 8
         else if (nom .eq. 'PYRAM13 ') then
-            zk8(typma-1+ima)= 'PYRAM5  '
-            zi(nbno-1+ima)=5
+            zk8(typma-1+ima) = 'PYRAM5  '
+            zi(nbno-1+ima) = 5
         else
-            zk8(typma-1+ima)= nom
-            zi(nbno-1+ima)=nbnoeu
-        endif
+            zk8(typma-1+ima) = nom
+            zi(nbno-1+ima) = nbnoeu
+        end if
 !      ------- FIN DE LA LINEARISATION -------
 !
         do ino = 1, zi(nbno-1+ima)
             numno = zi(idnoeu-1+ino)
-            zi(nbmano-1+numno)=zi(nbmano-1+numno)+1
+            zi(nbmano-1+numno) = zi(nbmano-1+numno)+1
         end do
     end do
 !
 ! ------- ON CREE LE TABLEAU D'INDEX POUR COI ------------------------
 !
-    zi(idcoi)=1
+    zi(idcoi) = 1
     do ino = 2, nbnoto+1
-        zi(idcoi-1+ino)=zi(idcoi-1+ino-1)+zi(nbmano-1+ino-1)
+        zi(idcoi-1+ino) = zi(idcoi-1+ino-1)+zi(nbmano-1+ino-1)
     end do
 !
 ! ------- ON CREE LE TABLEAU DE CONNECTIVITE INVERSE ( COI ) ---------
@@ -157,12 +157,12 @@ subroutine creaco(nbmato, ma, nblien)
     call wkvect('&&FETSKP.COI', 'V V I', zi(idcoi-1+nbnoto+1)-1, coi)
 !
     do ima = 1, nbmato
-        idnoeu=zi(idno-1+ima)
+        idnoeu = zi(idno-1+ima)
         do ino = 1, zi(nbno-1+ima)
-            numno=zi(idnoeu-1+ino)
-            id=zi(idcoi-1+numno)+zi(id1-1+numno)
-            zi(coi-1+id)=ima
-            zi(id1-1+numno)=zi(id1-1+numno)+1
+            numno = zi(idnoeu-1+ino)
+            id = zi(idcoi-1+numno)+zi(id1-1+numno)
+            zi(coi-1+id) = ima
+            zi(id1-1+numno) = zi(id1-1+numno)+1
         end do
     end do
 !
@@ -175,11 +175,11 @@ subroutine creaco(nbmato, ma, nblien)
     do ino = 1, nbnoto
         if (zi(nbmano-1+ino) .gt. 1) then
             do i = zi(idcoi-1+ino), zi(idcoi-1+ino+1)-1
-                nbre=zi(idcoi-1+ino+1)-1-zi(idcoi-1+ino)
-                mail=zi(coi-1+i)
-                zi(nbmama-1+mail)=zi(nbmama-1+mail)+nbre
+                nbre = zi(idcoi-1+ino+1)-1-zi(idcoi-1+ino)
+                mail = zi(coi-1+i)
+                zi(nbmama-1+mail) = zi(nbmama-1+mail)+nbre
             end do
-        endif
+        end if
     end do
 !
     call jedetr('&&FETSKP.NBMANO')
@@ -188,25 +188,25 @@ subroutine creaco(nbmato, ma, nblien)
 !
     call wkvect('&&FETSKP.IDCO', 'V V S', nbmato+1, idco)
 !
-    maxi=0
-    zi4(idco)=1
+    maxi = 0
+    zi4(idco) = 1
     do ima = 2, nbmato+1
-        if (zi(nbmama-1+ima-1) .gt. maxi) maxi=zi(nbmama-1+ima-1)
-        zi4(idco-1+ima)=zi4(idco-1+ima-1)+zi(nbmama-1+ima-1)
+        if (zi(nbmama-1+ima-1) .gt. maxi) maxi = zi(nbmama-1+ima-1)
+        zi4(idco-1+ima) = zi4(idco-1+ima-1)+zi(nbmama-1+ima-1)
     end do
 !
 ! ------------------------ JEVEUX ------------------------------------
 !
     call jedetr('&&FETSKP.NBMAMA')
-    call wkvect('&&FETSKP.TEMP', 'V V I', max(1,maxi), temp)
-    call wkvect('&&FETSKP.TEMP1', 'V V I', max(1,maxi), temp1)
+    call wkvect('&&FETSKP.TEMP', 'V V I', max(1, maxi), temp)
+    call wkvect('&&FETSKP.TEMP1', 'V V I', max(1, maxi), temp1)
 !
 
     call wkvect('&&FETSKP.RENUM2', 'V V I', nbmato, renum2)
     call wkvect('&&FETSKP.RENUM3', 'V V I', nbmato, renum3)
     do ima = 1, nbmato
-        zi(renum2-1+ima)=ima
-        zi(renum3-1+ima)=ima
+        zi(renum2-1+ima) = ima
+        zi(renum3-1+ima) = ima
     end do
 !
 ! ------------------------ JEVEUX ------------------------------------
@@ -216,32 +216,32 @@ subroutine creaco(nbmato, ma, nblien)
 !
 ! ------ ON COMPTE LES LIENS -----------------------------------------
 !
-    nblien=0
+    nblien = 0
     do ima = 1, nbmato
-        id=0
-        idnoeu=zi(idno-1+zi(renum2-1+ima))
-        typma1=zk8(typma-1+zi(renum2-1+ima))
+        id = 0
+        idnoeu = zi(idno-1+zi(renum2-1+ima))
+        typma1 = zk8(typma-1+zi(renum2-1+ima))
         do ino = 1, zi(nbno-1+zi(renum2-1+ima))
-            numno=zi(idnoeu-1+ino)
+            numno = zi(idnoeu-1+ino)
             do i = zi(idcoi-1+numno), zi(idcoi-1+numno+1)-1
-                mail=zi(coi-1+i)
-                mail=zi(renum3-1+mail)
+                mail = zi(coi-1+i)
+                mail = zi(renum3-1+mail)
                 if (mail .le. ima) goto 23
                 do j = 1, id
                     if (zi(temp-1+j) .eq. mail) then
-                        zi(temp1-1+j)=zi(temp1-1+j)+1
+                        zi(temp1-1+j) = zi(temp1-1+j)+1
                         goto 23
-                    endif
+                    end if
                 end do
-                zi(temp+id)=mail
-                zi(temp1+id)=1
-                id=id+1
- 23             continue
+                zi(temp+id) = mail
+                zi(temp1+id) = 1
+                id = id+1
+23              continue
             end do
         end do
 !
         do j = 1, id
-            typma2=zk8(typma-1+zi(renum2-1+zi(temp-1+j)))
+            typma2 = zk8(typma-1+zi(renum2-1+zi(temp-1+j)))
             if (zi(temp1-1+j) .eq. 1) then
                 if (typma1 .eq. 'POI1    ') goto 61
                 if (typma2 .eq. 'POI1    ') goto 61
@@ -274,7 +274,7 @@ subroutine creaco(nbmato, ma, nblien)
                     if (typma2 .eq. 'TETRA4  ') goto 61
                     if (typma2 .eq. 'PENTA6  ') goto 61
                     if (typma2 .eq. 'PYRAM5  ') goto 61
-                endif
+                end if
             else if (zi(temp1-1+j) .eq. 4) then
                 if (typma1 .eq. 'QUAD4   ') then
                     if (typma2 .eq. 'PENTA6  ') goto 61
@@ -294,56 +294,56 @@ subroutine creaco(nbmato, ma, nblien)
                     if (typma2 .eq. 'PENTA6  ') goto 61
                     if (typma2 .eq. 'HEXA8   ') goto 61
                     if (typma2 .eq. 'PYRAM5  ') goto 61
-                endif
-            endif
+                end if
+            end if
 !
             goto 24
 !
- 61         continue
-            zi(nbmama-1+ima)=zi(nbmama-1+ima)+1
-            zi(nbmama-1+zi(temp-1+j))=zi(nbmama-1+zi(temp-1+j))+1
-            nblien=nblien+2
+61          continue
+            zi(nbmama-1+ima) = zi(nbmama-1+ima)+1
+            zi(nbmama-1+zi(temp-1+j)) = zi(nbmama-1+zi(temp-1+j))+1
+            nblien = nblien+2
 !
- 24         continue
+24          continue
         end do
     end do
 !
 ! ------- ON RE-REMPLIT IDCO -----------------------------------------
 !
-    zi4(idco)=1
+    zi4(idco) = 1
     do ima = 2, nbmato+1
-        zi4(idco-1+ima)=zi4(idco-1+ima-1)+zi(nbmama-1+ima-1)
+        zi4(idco-1+ima) = zi4(idco-1+ima-1)+zi(nbmama-1+ima-1)
     end do
 !
 ! ------ CREATION DES CONNECTIVITES DES MAILLES ( CO ) ---------------
 !
-    call wkvect('&&FETSKP.CO', 'V V S', max(1,nblien), co)
+    call wkvect('&&FETSKP.CO', 'V V S', max(1, nblien), co)
 !
     do ima = 1, nbmato
-        nbre=0
-        idnoeu=zi(idno-1+zi(renum2-1+ima))
-        typma1=zk8(typma-1+zi(renum2-1+ima))
+        nbre = 0
+        idnoeu = zi(idno-1+zi(renum2-1+ima))
+        typma1 = zk8(typma-1+zi(renum2-1+ima))
         do ino = 1, zi(nbno-1+zi(renum2-1+ima))
-            numno=zi(idnoeu-1+ino)
+            numno = zi(idnoeu-1+ino)
             do i = zi(idcoi-1+numno), zi(idcoi-1+numno+1)-1
-                mail=zi(coi-1+i)
-                mail=zi(renum3-1+mail)
+                mail = zi(coi-1+i)
+                mail = zi(renum3-1+mail)
                 if (mail .le. ima) goto 29
                 do j = 1, nbre
                     if (zi(temp-1+j) .eq. mail) then
-                        zi(temp1-1+j)=zi(temp1-1+j)+1
+                        zi(temp1-1+j) = zi(temp1-1+j)+1
                         goto 29
-                    endif
+                    end if
                 end do
-                zi(temp+nbre)=mail
-                zi(temp1+nbre)=1
-                nbre=nbre+1
- 29             continue
+                zi(temp+nbre) = mail
+                zi(temp1+nbre) = 1
+                nbre = nbre+1
+29              continue
             end do
         end do
 !
         do j = 1, nbre
-            typma2=zk8(typma-1+zi(renum2-1+zi(temp-1+j)))
+            typma2 = zk8(typma-1+zi(renum2-1+zi(temp-1+j)))
             if (zi(temp1-1+j) .eq. 1) then
                 if (typma1 .eq. 'POI1    ') goto 31
                 if (typma2 .eq. 'POI1    ') goto 31
@@ -376,7 +376,7 @@ subroutine creaco(nbmato, ma, nblien)
                     if (typma2 .eq. 'TETRA4  ') goto 31
                     if (typma2 .eq. 'PENTA6  ') goto 31
                     if (typma2 .eq. 'PYRAM5  ') goto 31
-                endif
+                end if
             else if (zi(temp1-1+j) .eq. 4) then
                 if (typma1 .eq. 'QUAD4   ') then
                     if (typma2 .eq. 'PENTA6  ') goto 31
@@ -396,20 +396,20 @@ subroutine creaco(nbmato, ma, nblien)
                     if (typma2 .eq. 'PENTA6  ') goto 31
                     if (typma2 .eq. 'HEXA8   ') goto 31
                     if (typma2 .eq. 'PYRAM5  ') goto 31
-                endif
-            endif
+                end if
+            end if
 !
             goto 30
 !
- 31         continue
-            id=zi4(idco-1+ima)+zi(id1-1+ima)
-            id2=zi4(idco-1+zi(temp-1+j))+zi(id1-1+zi(temp-1+j))
-            zi4(co-1+id2)=ima
-            zi4(co-1+id)=zi(temp-1+j)
-            zi(id1-1+ima)=zi(id1-1+ima)+1
-            zi(id1-1+zi(temp-1+j))=zi(id1-1+zi(temp-1+j))+1
+31          continue
+            id = zi4(idco-1+ima)+zi(id1-1+ima)
+            id2 = zi4(idco-1+zi(temp-1+j))+zi(id1-1+zi(temp-1+j))
+            zi4(co-1+id2) = ima
+            zi4(co-1+id) = zi(temp-1+j)
+            zi(id1-1+ima) = zi(id1-1+ima)+1
+            zi(id1-1+zi(temp-1+j)) = zi(id1-1+zi(temp-1+j))+1
 !
- 30         continue
+30          continue
         end do
     end do
 !
@@ -426,9 +426,9 @@ subroutine creaco(nbmato, ma, nblien)
     if (niv .ge. 2) then
         call uttcpu('CPU.CREACO', 'FIN', ' ')
         call uttcpr('CPU.CREACO', 7, tmps)
-        write(ifm,*)'--- CONNECTIVITE DES MAILLES:',tmps(7)
-        write(ifm,*)'  '
-    endif
+        write (ifm, *) '--- CONNECTIVITE DES MAILLES:', tmps(7)
+        write (ifm, *) '  '
+    end if
 !
     call jedema()
 end subroutine

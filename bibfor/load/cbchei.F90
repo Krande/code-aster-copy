@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cbchei(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,9 +64,9 @@ character(len=4), intent(in) :: valeType
     character(len=8), pointer :: vncmp(:) => null()
     integer, parameter :: nbcmpdisp = 17
     character(len=8), parameter :: nomcmpdisp(nbcmpdisp) = (/ &
-    'EPXX', 'EPYY', 'EPZZ' ,'EPXY', 'EPXZ', 'EPYZ',&
-    'EPX ', 'KY  ', 'KZ  ', 'EXX ', 'EYY ', 'EXY ', 'KXX ', 'KYY ', 'KXY ',&
-    'GAX ', 'GAY '/)
+                                   'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ', &
+                           'EPX ', 'KY  ', 'KZ  ', 'EXX ', 'EYY ', 'EXY ', 'KXX ', 'KYY ', 'KXY ', &
+                                   'GAX ', 'GAY '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,12 +78,12 @@ character(len=4), intent(in) :: valeType
         iepsi = 0
         if (valeType .eq. 'REEL') then
             call getvid(keywordFact, 'EPSI', iocc=1, scal=chepsi, nbret=iepsi)
-        endif
+        end if
 
         if (iepsi .eq. 0) then
             call cachei(load, model, mesh, valeType, para, keywordFact)
         else
-            if (nbfac.gt.1) call utmess('F', 'CHARGES_5')
+            if (nbfac .gt. 1) call utmess('F', 'CHARGES_5')
 
 !
 ! ---       verification des composantes
@@ -93,30 +93,30 @@ character(len=4), intent(in) :: valeType
             call dismoi('TYPE_CHAMP', chepsi, 'CHAMP', repk=typch)
 
             if (typch .eq. 'CART') then
-                call carces(chepsi, 'ELEM', ' ', 'V', chames,&
+                call carces(chepsi, 'ELEM', ' ', 'V', chames, &
                             ' ', cret)
             elseif (typch .eq. 'ELGA') then
                 call celces(chepsi, 'V', chames)
             else
                 call utmess('F', 'CHARGES_8', sk=typch)
-            endif
+            end if
 
             call jeveuo(chames//'.CESD', 'L', jcesd)
             call jeveuo(chames//'.CESC', 'L', jcesc)
 
             nbcmpch = zi(jcesd+1)
-            do i=1, nbcmpch
+            do i = 1, nbcmpch
                 compok = ASTER_FALSE
-                do j=1, nbcmpdisp
-                    if(zk8(jcesc-1+i).eq.nomcmpdisp(j))then
+                do j = 1, nbcmpdisp
+                    if (zk8(jcesc-1+i) .eq. nomcmpdisp(j)) then
                         compok = ASTER_TRUE
                         exit
-                    endif
-                enddo
+                    end if
+                end do
                 if (.not. compok) then
                     call utmess('F', 'CHARGES_6', sk=zk8(jcesc-1+i))
-                endif
-            enddo
+                end if
+            end do
 
             call jedetr(chames)
 !
@@ -129,7 +129,7 @@ character(len=4), intent(in) :: valeType
             vncmp(1) = 'Z1'
             valv(1) = chepsi(1:8)
             call nocart(carte, 1, ncmp)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

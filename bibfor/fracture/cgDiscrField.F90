@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_absc, v_basf, v_cesv,&
-    jcesd, jcesl, i_theta, lpain, lchin, nchin)
+subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_absc, v_basf, v_cesv, &
+                        jcesd, jcesl, i_theta, lpain, lchin, nchin)
 !
-use calcG_type
+    use calcG_type
 !
     implicit none
 !
@@ -61,8 +61,8 @@ use calcG_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19), parameter :: chdeg   = '&&cgtheta.CHDEG'
-    character(len=19), parameter :: chlag   = '&&cgtheta.CHLAG'
+    character(len=19), parameter :: chdeg = '&&cgtheta.CHDEG'
+    character(len=19), parameter :: chlag = '&&cgtheta.CHLAG'
     character(len=16) :: nomte
     character(len=19) :: ligrmo
     integer :: igr, nbgrel, nel, nute, iel, iad, ima, nncp, iret
@@ -90,75 +90,75 @@ use calcG_type
 !
 !           Boucle sur les éléments du groupe
             do iel = 1, nel
-                ima=v_liel(iel)
+                ima = v_liel(iel)
                 if (ima .lt. 0) cycle
 !
-                if (cgTheta%discretization.eq.'LEGENDRE') then
+                if (cgTheta%discretization .eq. 'LEGENDRE') then
 !
                     call cesexi('C', jcesd, jcesl, ima, 1, 1, 1, iad)
                     iad = abs(iad)
-                    zl(jcesl-1+iad)=ASTER_TRUE
-                    v_cesv(iad)= i_theta - 1
+                    zl(jcesl-1+iad) = ASTER_TRUE
+                    v_cesv(iad) = i_theta-1
 !
-                elseif (cgtheta%discretization .eq.'LINEAIRE') then
+                elseif (cgtheta%discretization .eq. 'LINEAIRE') then
 !
                     call cesexi('C', jcesd, jcesl, ima, 1, 1, 1, iad)
                     iad = abs(iad)
-                    zl(jcesl-1+iad)=ASTER_TRUE
-                    if (i_theta .eq. 1 ) then
-                        v_absc(iad)= v_basf(i_theta)
+                    zl(jcesl-1+iad) = ASTER_TRUE
+                    if (i_theta .eq. 1) then
+                        v_absc(iad) = v_basf(i_theta)
 !---------------------- Cas fond fermé
                         if (cgtheta%l_closed) then
-                            v_absc(iad)= v_basf(cgTheta%nb_theta_field-1)
-                        endif
+                            v_absc(iad) = v_basf(cgTheta%nb_theta_field-1)
+                        end if
                     else
-                        v_absc(iad)= v_basf(i_theta-1)
-                    endif
+                        v_absc(iad) = v_basf(i_theta-1)
+                    end if
 !
                     call cesexi('C', jcesd, jcesl, ima, 1, 1, 2, iad)
                     iad = abs(iad)
-                    zl(jcesl-1+iad)=ASTER_TRUE
-                    v_absc(iad)= v_basf(i_theta)
+                    zl(jcesl-1+iad) = ASTER_TRUE
+                    v_absc(iad) = v_basf(i_theta)
 !
                     call cesexi('C', jcesd, jcesl, ima, 1, 1, 3, iad)
                     iad = abs(iad)
-                    zl(jcesl-1+iad)=ASTER_TRUE
-                    if (i_theta .eq. cgTheta%nb_theta_field ) then
-                        v_absc(iad)= v_basf(i_theta)
+                    zl(jcesl-1+iad) = ASTER_TRUE
+                    if (i_theta .eq. cgTheta%nb_theta_field) then
+                        v_absc(iad) = v_basf(i_theta)
                     else
-                        v_absc(iad)= v_basf(i_theta+1)
-                    endif
+                        v_absc(iad) = v_basf(i_theta+1)
+                    end if
 !
-                endif
-            enddo
-        enddo
+                end if
+            end do
+        end do
 !
-        if (cgTheta%discretization.eq.'LEGENDRE') then
+        if (cgTheta%discretization .eq. 'LEGENDRE') then
 !           Conversion du champ par élément simple en champ par éléments
-            call cescel(chsdeg, ligrmo, 'CALC_G', 'PDEG', 'NON',&
-                            nncp, 'V', chdeg, 'F', iret)
+            call cescel(chsdeg, ligrmo, 'CALC_G', 'PDEG', 'NON', &
+                        nncp, 'V', chdeg, 'F', iret)
 !
             lpain(nchin+1) = 'PDEG'
             lchin(nchin+1) = chdeg
 !
-        elseif (cgtheta%discretization .eq.'LINEAIRE') then
+        elseif (cgtheta%discretization .eq. 'LINEAIRE') then
 !           Conversion du champ par élément simple en champ par éléments
-            call cescel(chslag, ligrmo, 'CALC_G', 'PLAG', 'NON',&
-                            nncp, 'V', chlag, 'F', iret)
+            call cescel(chslag, ligrmo, 'CALC_G', 'PLAG', 'NON', &
+                        nncp, 'V', chlag, 'F', iret)
 !
             lpain(nchin+1) = 'PLAG'
             lchin(nchin+1) = chlag
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
-        nchin = nchin + 1
+        nchin = nchin+1
 !
-    endif
+    end if
 !
     call jedema()
     call cpu_time(finish)
-    cgStat%cgCmpGtheta_disc = cgStat%cgCmpGtheta_disc + finish - start
-    cgStat%nb_cgCmpGtheta_disc = cgStat%nb_cgCmpGtheta_disc + 1
+    cgStat%cgCmpGtheta_disc = cgStat%cgCmpGtheta_disc+finish-start
+    cgStat%nb_cgCmpGtheta_disc = cgStat%nb_cgCmpGtheta_disc+1
 !
 end subroutine

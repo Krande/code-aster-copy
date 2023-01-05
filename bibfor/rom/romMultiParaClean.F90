@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine romMultiParaClean(ds_multipara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/romMultiCoefClean.h"
 #include "asterfort/romVariParaClean.h"
 #include "asterfort/romFieldClean.h"
 #include "asterfort/as_deallocate.h"
 !
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,21 +52,21 @@ type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
     do i_matr = 1, nb_matr
         call romMultiCoefClean(ds_multipara%matr_coef(i_matr))
     end do
-    AS_DEALLOCATE(vk8 = ds_multipara%matr_name)
-    AS_DEALLOCATE(vk8 = ds_multipara%matr_type)
-    deallocate(ds_multipara%matr_coef)
-    AS_DEALLOCATE(vk24 = ds_multipara%matr_mode_curr)
-    AS_DEALLOCATE(vk24 = ds_multipara%prod_matr_mode)
-    AS_DEALLOCATE(vk24 = ds_multipara%matr_redu)
+    AS_DEALLOCATE(vk8=ds_multipara%matr_name)
+    AS_DEALLOCATE(vk8=ds_multipara%matr_type)
+    deallocate (ds_multipara%matr_coef)
+    AS_DEALLOCATE(vk24=ds_multipara%matr_mode_curr)
+    AS_DEALLOCATE(vk24=ds_multipara%prod_matr_mode)
+    AS_DEALLOCATE(vk24=ds_multipara%matr_redu)
 !
     nb_vect = ds_multipara%nb_vect
     do i_vect = 1, nb_vect
         call romMultiCoefClean(ds_multipara%vect_coef(i_vect))
     end do
-    AS_DEALLOCATE(vk8 = ds_multipara%vect_name)
-    AS_DEALLOCATE(vk8 = ds_multipara%vect_type)
-    deallocate(ds_multipara%vect_coef)
-    AS_DEALLOCATE(vk24 = ds_multipara%vect_redu)
+    AS_DEALLOCATE(vk8=ds_multipara%vect_name)
+    AS_DEALLOCATE(vk8=ds_multipara%vect_type)
+    deallocate (ds_multipara%vect_coef)
+    AS_DEALLOCATE(vk24=ds_multipara%vect_redu)
 !
     nb_vari_para = ds_multipara%nb_vari_para
     do i_vari_para = 1, nb_vari_para

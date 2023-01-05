@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrMainTrunc(paraTrunc, baseOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,8 +34,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 !
-type(ROM_DS_ParaDBR_Trunc), intent(in) :: paraTrunc
-type(ROM_DS_Empi), intent(in) :: baseOut
+    type(ROM_DS_ParaDBR_Trunc), intent(in) :: paraTrunc
+    type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,70 +65,70 @@ type(ROM_DS_Empi), intent(in) :: baseOut
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_63')
-    endif
+    end if
 !
 ! - Get parameters of operation
 !
     resultNameOut = baseOut%resultName
-    nbEquaRom     = paraTrunc%nbEquaRom
-    modelRom      = paraTrunc%modelRom
-    profChno      = paraTrunc%profChnoRom
-    physNume      = paraTrunc%physNume
-    baseIn        = paraTrunc%baseInit
+    nbEquaRom = paraTrunc%nbEquaRom
+    modelRom = paraTrunc%modelRom
+    profChno = paraTrunc%profChnoRom
+    physNume = paraTrunc%physNume
+    baseIn = paraTrunc%baseInit
 !
 ! - Get parameters of input base
 !
-    nbMode       = baseIn%nbMode
-    nbEquaDom    = baseIn%mode%nbEqua
+    nbMode = baseIn%nbMode
+    nbEquaDom = baseIn%mode%nbEqua
     resultNameIn = baseIn%resultName
-    mesh         = baseIn%mode%mesh
+    mesh = baseIn%mode%mesh
 !
 ! - Compute
 !
     do iMode = 1, nbMode
         numeMode = iMode
 ! ----- Read parameters
-        call romModeParaRead(resultNameIn, numeMode,&
-                             modeSymbName_ = modeSymbName,&
-                             modeSing_     = modeSing,&
-                             numeSlice_    = numeSlice,&
-                             nbSnap_       = nbSnap)
+        call romModeParaRead(resultNameIn, numeMode, &
+                             modeSymbName_=modeSymbName, &
+                             modeSing_=modeSing, &
+                             numeSlice_=numeSlice, &
+                             nbSnap_=nbSnap)
 
 ! ----- Access to complete mode
-        call rsexch(' '    , resultNameIn, modeSymbName, numeMode,&
+        call rsexch(' ', resultNameIn, modeSymbName, numeMode, &
                     modeDom, iret)
         ASSERT(iret .eq. 0)
-        call jeveuo(modeDom(1:19)//'.VALE', 'L', vr = valeDom)
+        call jeveuo(modeDom(1:19)//'.VALE', 'L', vr=valeDom)
 
 ! ----- Create new mode (reduced)
-        call rsexch(' '    , resultNameOut, modeSymbName, numeMode,&
+        call rsexch(' ', resultNameOut, modeSymbName, numeMode, &
                     modeRom, iret)
         ASSERT(iret .eq. 100)
-        call vtcreb(modeRom, 'G', 'R',&
-                    meshz       = mesh,&
-                    prof_chnoz  = profChno,&
-                    idx_gdz     = physNume,&
-                    nb_equa_inz = nbEquaRom)
-        call jeveuo(modeRom(1:19)//'.VALE', 'E', vr = valeRom)
+        call vtcreb(modeRom, 'G', 'R', &
+                    meshz=mesh, &
+                    prof_chnoz=profChno, &
+                    idx_gdz=physNume, &
+                    nb_equa_inz=nbEquaRom)
+        call jeveuo(modeRom(1:19)//'.VALE', 'E', vr=valeRom)
 
 ! ----- Truncation
         numeEquaRom = 0
         do iEqua = 1, nbEquaDom
             if (paraTrunc%equaRom(iEqua) .ne. 0) then
-                numeEquaRom = numeEquaRom + 1
+                numeEquaRom = numeEquaRom+1
                 ASSERT(numeEquaRom .le. nbEquaRom)
                 valeRom(numeEquaRom) = valeDom(iEqua)
-            endif
-        enddo
+            end if
+        end do
 
 ! ----- Save mode
         call rsnoch(resultNameOut, modeSymbName, numeMode)
 
 ! ----- Save parameters
-        call romModeParaSave(resultNameOut, numeMode    ,&
-                             modelRom     , modeSymbName,&
-                             modeSing     , numeSlice   ,&
+        call romModeParaSave(resultNameOut, numeMode, &
+                             modelRom, modeSymbName, &
+                             modeSing, numeSlice, &
                              nbSnap)
-    enddo
+    end do
 !
 end subroutine

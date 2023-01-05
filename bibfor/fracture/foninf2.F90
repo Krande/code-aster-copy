@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine foninf2(resu, typm, typfon, noma)
 !       TYPFON : TYPE DE FOND DE FISSURE (OUVERT ou FERME)
 !       TYPM   : TYPE DE MAILLE DU FOND DE FISSURE (SEG2 ou SEG3)
 !       NOMA   : NOM DU MAILLAGE
-! 
+!
 !
     integer ::  ibid, jinfo, n1, n2, n3
     character(len=8) :: syme, confin
@@ -56,21 +56,21 @@ subroutine foninf2(resu, typm, typfon, noma)
     call getvtx('LEVRE_SUP', 'GROUP_MA', iocc=1, nbval=0, nbret=n2)
     call getvtx('LEVRE_INF', 'GROUP_MA', iocc=1, nbval=0, nbret=n3)
 !
-    if (n2 .ne. 0) then    
-        call getvtx('LEVRE_SUP', 'GROUP_MA',iocc=1, scal=levsup)     
-    endif
+    if (n2 .ne. 0) then
+        call getvtx('LEVRE_SUP', 'GROUP_MA', iocc=1, scal=levsup)
+    end if
 !
-    if (n3 .ne. 0) then    
-        call getvtx('LEVRE_INF', 'GROUP_MA',iocc=1, scal=levinf)     
-    endif
+    if (n3 .ne. 0) then
+        call getvtx('LEVRE_INF', 'GROUP_MA', iocc=1, scal=levinf)
+    end if
 !
 !     RECUPERATION DU MOT-CLE SYME
     call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
-    ASSERT(syme.eq.'OUI'.or.syme.eq.'NON')
+    ASSERT(syme .eq. 'OUI' .or. syme .eq. 'NON')
 !
 !     RECUPERATION DU MOT-CLE CONFIG_INIT
     call getvtx(' ', 'CONFIG_INIT', scal=confin, nbret=ibid)
-    ASSERT(confin.eq.'DECOLLEE'.or.confin.eq.'COLLEE')
+    ASSERT(confin .eq. 'DECOLLEE' .or. confin .eq. 'COLLEE')
 !
 !     CREATION DE L'OBJET .INFO DANS LA SD FOND_FISS
     call wkvect(resu//'.INFO', 'G V K24', 7, jinfo)
@@ -88,11 +88,11 @@ subroutine foninf2(resu, typm, typfon, noma)
     zk24(jinfo-1+4) = noma
 
 !     STOCKAGE DU TYPE DE MAILLE EN FOND DE FISSURE (3D)
-    if (zi(n1-1+6).eq.3) then
+    if (zi(n1-1+6) .eq. 3) then
         zk24(jinfo-1+5) = typm
     else
         zk24(jinfo-1+5) = ''
-    endif
+    end if
 
 !     STOCKAGE DU NOM DE GROUPE DE MAIL LEVRESUP
     zk24(jinfo-1+6) = levsup

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine testvois(jv_geom       , elem_slav_type,&
-                    elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                    pair_tole     , inte_weight ,    v_mesh_connex,&
+subroutine testvois(jv_geom, elem_slav_type, &
+                    elem_mast_coor, elem_mast_code, elem_slav_nume, &
+                    pair_tole, inte_weight, v_mesh_connex, &
                     v_connex_lcum)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/apcoor.h"
@@ -30,15 +30,15 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/dctest.h"
 !
-integer, intent(in) :: jv_geom
-character(len=8), intent(in) :: elem_slav_type
-real(kind=8),intent(in) :: elem_mast_coor(27)
-character(len=8),intent(in) :: elem_mast_code
-integer,intent(in) :: elem_slav_nume
-real(kind=8),intent(in) :: pair_tole
-real(kind=8),intent(out) :: inte_weight
-integer, pointer :: v_mesh_connex(:)
-integer, pointer :: v_connex_lcum(:)
+    integer, intent(in) :: jv_geom
+    character(len=8), intent(in) :: elem_slav_type
+    real(kind=8), intent(in) :: elem_mast_coor(27)
+    character(len=8), intent(in) :: elem_mast_code
+    integer, intent(in) :: elem_slav_nume
+    real(kind=8), intent(in) :: pair_tole
+    real(kind=8), intent(out) :: inte_weight
+    integer, pointer :: v_mesh_connex(:)
+    integer, pointer :: v_connex_lcum(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,7 +63,7 @@ integer, pointer :: v_connex_lcum(:)
     integer :: elem_slav_nbnode, elem_dime
     real(kind=8) :: elem_slav_coor(27)
     character(len=8) :: elem_slav_code
-    integer :: elin_slav_sub(1,4), elin_mast_sub(1,4)
+    integer :: elin_slav_sub(1, 4), elin_mast_sub(1, 4)
     integer :: elin_slav_nbnode(1), elin_mast_nbnode(1)
     integer :: elin_slav_nbsub, elin_mast_nbsub
     real(kind=8) :: elin_slav_coor(27), elin_mast_coor(27)
@@ -78,26 +78,26 @@ integer, pointer :: v_connex_lcum(:)
 !
 ! ----- Get informations about slave element
 !
-        call aptype(elem_slav_type,&
+        call aptype(elem_slav_type, &
                     elem_slav_nbnode, elem_slav_code, elem_dime)
 !
 ! ----- Get coordinates of slave element
 !
-        call apcoor(v_mesh_connex , v_connex_lcum   , jv_geom  ,&
-                    elem_slav_nume, elem_slav_nbnode, elem_dime,&
+        call apcoor(v_mesh_connex, v_connex_lcum, jv_geom, &
+                    elem_slav_nume, elem_slav_nbnode, elem_dime, &
                     elem_slav_coor)
 !
 ! ----- Cut slave element in linearized sub-elements
 !
-        call dctest(elem_slav_code, elin_slav_sub, elin_slav_nbnode, elin_slav_nbsub,&
+        call dctest(elem_slav_code, elin_slav_sub, elin_slav_nbnode, elin_slav_nbsub, &
                     elin_slav_code)
 !
 ! ----- Cut master element in linearized sub-elements
 !
-        call dctest(elem_mast_code, elin_mast_sub, elin_mast_nbnode, elin_mast_nbsub,&
+        call dctest(elem_mast_code, elin_mast_sub, elin_mast_nbnode, elin_mast_nbsub, &
                     elin_mast_code)
 !
-        inte_weight=0.d0
+        inte_weight = 0.d0
 !
 ! ----- Loop on linearized slave sub-elements
 !
@@ -108,8 +108,8 @@ integer, pointer :: v_connex_lcum(:)
 !
             do i_node = 1, elin_slav_nbnode(i_elin_slav)
                 do i_dime = 1, elem_dime
-                    elin_slav_coor(3*(i_node-1)+i_dime) =&
-                        elem_slav_coor(3*(elin_slav_sub(i_elin_slav,i_node)-1)+i_dime)
+                    elin_slav_coor(3*(i_node-1)+i_dime) = &
+                        elem_slav_coor(3*(elin_slav_sub(i_elin_slav, i_node)-1)+i_dime)
                 end do
             end do
 !
@@ -122,20 +122,20 @@ integer, pointer :: v_connex_lcum(:)
 !
                 do i_node = 1, elin_mast_nbnode(i_elin_mast)
                     do i_dime = 1, elem_dime
-                        elin_mast_coor(3*(i_node-1)+i_dime) =&
-                            elem_mast_coor(3*(elin_mast_sub(i_elin_mast,i_node)-1)+i_dime)
+                        elin_mast_coor(3*(i_node-1)+i_dime) = &
+                            elem_mast_coor(3*(elin_mast_sub(i_elin_mast, i_node)-1)+i_dime)
                     end do
                 end do
 !
 ! ------------- Projection/intersection of elements in slave parametric space
 !
-                call prjint(pair_tole     , elem_dime,&
-                            elin_mast_nbnode(i_elin_mast), elin_mast_coor, elin_mast_code,&
-                            elin_slav_nbnode(i_elin_slav), elin_slav_coor, elin_slav_code,&
-                            poin_inte     , ints_weight                  , nb_poin_inte  )
+                call prjint(pair_tole, elem_dime, &
+                            elin_mast_nbnode(i_elin_mast), elin_mast_coor, elin_mast_code, &
+                            elin_slav_nbnode(i_elin_slav), elin_slav_coor, elin_slav_code, &
+                            poin_inte, ints_weight, nb_poin_inte)
 !
                 inte_weight = inte_weight+ints_weight
             end do
         end do
-    endif
+    end if
 end subroutine

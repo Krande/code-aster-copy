@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num,&
+subroutine dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num, &
                    gt, gc, syc, alpha_c)
 !
     implicit none
@@ -36,8 +36,8 @@ subroutine dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num,&
     alpha_c = 1.d0
     na = b/ea*sya
     dm = (na-syt)/(syt*gt)
-    nyu = h*fcj + b*epsi_c
-    if ((dm.gt.0.d0) .and. (gt.lt.1.d0))then
+    nyu = h*fcj+b*epsi_c
+    if ((dm .gt. 0.d0) .and. (gt .lt. 1.d0)) then
         dd = dm/(h*em*epsi_c-nyu)
         c0 = dd*num**2*(1-gt)
         c1 = (1-num)*(1+2*num)/c0
@@ -46,9 +46,9 @@ subroutine dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num,&
         call zerop3(c1, c2, c3, x, ns)
         do ii = 1, ns
             if ((x(ii) .gt. 0.d0)) then
-                syc=x(ii)
-            endif
-        enddo
+                syc = x(ii)
+            end if
+        end do
         gc = (nyu-syc)/(h*em*epsi_c-syc)
         alpha_c = dd*syc*(1-gc)
     else
@@ -62,11 +62,11 @@ subroutine dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num,&
         call zerop3(c1, c2, c3, x, ns)
         do ii = 1, ns
             if ((x(ii) .gt. 0.d0)) then
-                syc=x(ii)
-            endif
-        enddo
+                syc = x(ii)
+            end if
+        end do
         gc = (nyu-syc)/(h*em*epsi_c-syc)
         alpha_c = dd*syc*(1-gc)
-    endif
+    end if
 !
 end subroutine

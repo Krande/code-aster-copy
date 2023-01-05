@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srcaln(s,b,vecn,retcom)
+subroutine srcaln(s, b, vecn, retcom)
 
 !
 
@@ -38,42 +38,42 @@ subroutine srcaln(s,b,vecn,retcom)
     !!!
 
     integer :: retcom
-    real(kind=8) :: b,s(6),vecn(6)
+    real(kind=8) :: b, s(6), vecn(6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: i,ndt,ndi
-    real(kind=8) :: sii,racine,kron(6),ptit
-    common /tdim/ ndt, ndi
+    integer :: i, ndt, ndi
+    real(kind=8) :: sii, racine, kron(6), ptit
+    common/tdim/ndt, ndi
 
-    data kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 
     !!!
     !!! Calcul de sii et verif. qu'il n'est pas nul
     !!!
 
-    retcom=0
-    ptit=r8miem()
+    retcom = 0
+    ptit = r8miem()
 
     sii = norm2(s(1:ndt))
 
-    if (sii.lt.ptit) then
-        retcom=1
+    if (sii .lt. ptit) then
+        retcom = 1
         goto 100
-    endif
+    end if
 
     !!!
     !!! Calcul de n
     !!!
 
-    racine=sqrt(b*b+3.d0)
+    racine = sqrt(b*b+3.d0)
 
-    do i=1,ndt
-        vecn(i)=(b*s(i)/sii-kron(i))/racine
+    do i = 1, ndt
+        vecn(i) = (b*s(i)/sii-kron(i))/racine
     end do
 
-100  continue
+100 continue
 
 end subroutine

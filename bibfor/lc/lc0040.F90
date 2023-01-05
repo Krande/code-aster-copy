@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0040(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps, &
-                    epsm, deps, nsig, sigm, nvi, vim, &
-                    option, angmas, sigp, vip, typmod, icomp,&
-                    ndsde, dsidep, codret) 
+subroutine lc0040(fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, neps, &
+                  epsm, deps, nsig, sigm, nvi, vim, &
+                  option, angmas, sigp, vip, typmod, icomp, &
+                  ndsde, dsidep, codret)
 
 !
 !
@@ -28,10 +28,9 @@ subroutine lc0040(fami, kpg, ksp, ndim, imate,&
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/lcdp_wrap.h"
-    
-    
+
     integer      :: imate, ndim, kpg, ksp, codret, icomp
-    integer      :: nvi,neps,nsig,ndsde
+    integer      :: nvi, neps, nsig, ndsde
     real(kind=8) :: carcri(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(*), deps(*)
@@ -44,12 +43,12 @@ subroutine lc0040(fami, kpg, ksp, ndim, imate,&
 ! ----------------------------------------------------------------------
 !  Loi de comportement DRUCK_PRAG_N_A
 ! ----------------------------------------------------------------------
-        ASSERT (neps .eq. nint(sqrt(float(ndsde))))
-        ASSERT (neps .eq. nsig)
+    ASSERT(neps .eq. nint(sqrt(float(ndsde))))
+    ASSERT(neps .eq. nsig)
 
-        call lcdp_wrap(fami, kpg, ksp, ndim, imate,&
-                    carcri, instam, instap, neps, epsm,& 
-                    deps, vim, option, sigm, sigp, vip,& 
-                    typmod, dsidep, codret)
+    call lcdp_wrap(fami, kpg, ksp, ndim, imate, &
+                   carcri, instam, instap, neps, epsm, &
+                   deps, vim, option, sigm, sigp, vip, &
+                   typmod, dsidep, codret)
 
 end subroutine

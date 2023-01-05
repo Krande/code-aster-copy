@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine xfem_rel_lin(sdcont, mesh, model, nb_dim)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/aflrch.h"
@@ -52,7 +52,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_crack_max
-    parameter    (nb_crack_max=100)
+    parameter(nb_crack_max=100)
 !
     integer :: i_crack
     integer :: nb_crack, nb_rela_line, nb_edge
@@ -69,10 +69,10 @@ implicit none
 !
 ! - Initializations
 !
-    sdcont_defi    = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     list_rela_line = '&&CAXFEM.RLISTE'
-    nb_rela_line   = 0
-    l_edge_elim    = cfdisl(sdcont_defi,'ELIM_ARETE')
+    nb_rela_line = 0
+    l_edge_elim = cfdisl(sdcont_defi, 'ELIM_ARETE')
 !
 ! - Access to cracks datastructure
 !
@@ -80,29 +80,29 @@ implicit none
     nb_crack = v_crack_nb(1)
     if (nb_crack .gt. nb_crack_max) then
         call utmess('F', 'XFEM_2', si=nb_crack_max)
-    endif
+    end if
 !
 ! - Access to datastructure for linear relation
 !
     sdline = sdcont_defi(1:16)//'.XNRELL'
-    call jeveuo(sdline, 'L', vk24 = v_sdline)
+    call jeveuo(sdline, 'L', vk24=v_sdline)
 !
 ! - Create linear relation for "VITAL" edges
 !
     do i_crack = 1, nb_crack
-        sdline_crack = v_sdline(i_crack)(1:14)
-        call xrelco(mesh   , model, nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
+        sdline_crack = v_sdline(i_crack) (1:14)
+        call xrelco(mesh, model, nb_dim, sdline_crack, nb_rela_line, list_rela_line, &
                     nb_edge)
     end do
 !
 ! - Affectation of linear relations
 !
     if (nb_edge .ne. 0) then
-        call utmess('I','XFEM2_4', si = nb_edge)
-        if (.not.l_edge_elim) then
+        call utmess('I', 'XFEM2_4', si=nb_edge)
+        if (.not. l_edge_elim) then
             call aflrch(list_rela_line, sdcont, 'LIN')
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

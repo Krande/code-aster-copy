@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
-                  nnom, ddls, nddl, ddlm, nfiss,&
+subroutine xteini(nomte, nfh, nfe, singu, ddlc, &
+                  nnom, ddls, nddl, ddlm, nfiss, &
                   contac)
     implicit none
 !
@@ -59,7 +59,7 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
 ! ----------------------------------------------------------------------
 !
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
 ! --- INITIALISATIONS
 !
@@ -70,7 +70,7 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
     ddlm = 0
     nnom = 0
     nfiss = 1
-    contac= 0
+    contac = 0
 !
     call teattr('S', 'XFEM', enr, ier, typel=nomte)
 !
@@ -82,15 +82,15 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
         if (enr(1:3) .eq. 'XH3') nfh = 3
         if (enr(1:3) .eq. 'XH4') nfh = 4
 !       NOMBRE DE FISSURES
-        call tecach('NOO', 'PLST', 'L', iret, nval=7,&
+        call tecach('NOO', 'PLST', 'L', iret, nval=7, &
                     itab=jtab)
         nfiss = jtab(7)
-    endif
+    end if
 !
     if (enr(1:2) .eq. 'XT' .or. enr(3:3) .eq. 'T') then
         nfe = 1
         singu = 1
-    endif
+    end if
 !
 ! --- DDL DE CONTACT
 !
@@ -98,46 +98,46 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
         ddlc = 3*ndim
     else if (enr(1:3) .eq. 'XHC' .or. enr(1:3) .eq. 'XTC' .or. enr(1:4) .eq. 'XHTC') then
         ddlc = ndim
-    endif
+    end if
     if (enr(1:4) .eq. 'XH2C') ddlc = 2*ndim
     if (enr(1:4) .eq. 'XH3C') ddlc = 3*ndim
     if (enr(1:4) .eq. 'XH4C') ddlc = 4*ndim
 !
 ! --- NOMBRE DE DDL DE DEPLACEMENT
 !
-    ddld=ndim*(1+nfh+nfe)
+    ddld = ndim*(1+nfh+nfe)
 !
 ! --- NOMBRE DE DDL AUX NOEUDS SOMMETS
 !
-    ddls=ddld+ddlc
+    ddls = ddld+ddlc
 !
 ! --- NOMBRE DE DDL AUX NOEUDS MILIEUX
 !
     call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    typma = zk24(iazk24-1+3+zi(iadzi-1+2)+3) (1:8)
 !
     if (ier .eq. 0) then
         if (ismali(typma)) then
-            if(enr(1:4).eq.'XHC3') then
-                contac=2
+            if (enr(1:4) .eq. 'XHC3') then
+                contac = 2
             else
-                contac=1
-            endif
-            ddlm=0
+                contac = 1
+            end if
+            ddlm = 0
         else
-            contac=3
-            ddlm=ddld
-        endif
+            contac = 3
+            ddlm = ddld
+        end if
     else
-        if (.not.iselli(elrefp)) ddlm=ddld
-    endif
+        if (.not. iselli(elrefp)) ddlm = ddld
+    end if
 !
 ! --- NB DE NOEUDS MILIEUX
 !
-    nnom=nno-nnos
+    nnom = nno-nnos
 !
 ! --- NOMBRE DE DDLS (DEPL+CONTACT) SUR L'ELEMENT
 !
-    nddl=(nnos*ddls)+(nnom*ddlm)
+    nddl = (nnos*ddls)+(nnom*ddlm)
 !
 end subroutine

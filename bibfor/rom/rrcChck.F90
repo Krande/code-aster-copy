@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine rrcChck(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/rsGetAllFieldType.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaRRC), intent(in) :: cmdPara
+    type(ROM_DS_ParaRRC), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,55 +62,55 @@ type(ROM_DS_ParaRRC), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    modelRom      = cmdPara%modelRom
-    modelDom      = cmdPara%modelDom
+    modelRom = cmdPara%modelRom
+    modelDom = cmdPara%modelDom
     resultRomName = cmdPara%resultRom%resultName
-    nbFieldBuild  = cmdPara%nbFieldBuild
+    nbFieldBuild = cmdPara%nbFieldBuild
 !
 ! - Check mesh and model
 !
     meshRefe = cmdPara%mesh
-    call dismoi('NOM_MAILLA', modelRom, 'MODELE', repk = meshRom)
+    call dismoi('NOM_MAILLA', modelRom, 'MODELE', repk=meshRom)
     if (meshRefe .ne. meshRom) then
         call utmess('F', 'ROM16_25')
-    endif
+    end if
     if (modelRom .eq. modelDom) then
         call utmess('A', 'ROM16_23')
-    endif
+    end if
 !
 ! - Check bases
 !
     fieldBuild = cmdPara%fieldBuild(1)
-    mode       = fieldBuild%base%mode
+    mode = fieldBuild%base%mode
     call romModeChck(mode)
     if (modelDom .ne. mode%model) then
         call utmess('F', 'ROM16_22')
-    endif
+    end if
     modelRefe = mode%model
     do iFieldBuild = 2, nbFieldBuild
         fieldBuild = cmdPara%fieldBuild(iFieldBuild)
-        mode       = fieldBuild%base%mode
+        mode = fieldBuild%base%mode
         call romModeChck(mode)
         if (meshRefe .ne. mode%mesh) then
             call utmess('F', 'ROM16_20')
-        endif
+        end if
         if (modelRefe .ne. mode%model) then
             call utmess('F', 'ROM16_21')
-        endif
+        end if
         if (modelDom .ne. mode%model) then
             call utmess('F', 'ROM16_22')
-        endif
+        end if
     end do
 !
 ! - Checks list of fields option
 !
     do iFieldBuild = 1, nbFieldBuild
         fieldBuild = cmdPara%fieldBuild(iFieldBuild)
-        fieldSupp  = fieldBuild%fieldDom%fieldSupp
-        lRIDTrunc  = fieldBuild%lRIDTrunc
+        fieldSupp = fieldBuild%fieldDom%fieldSupp
+        lRIDTrunc = fieldBuild%lRIDTrunc
         if (lRIDTrunc .and. fieldSupp .ne. 'NOEU') then
-            call utmess('F', 'ROM16_26', sk = fieldSupp)
-        endif
+            call utmess('F', 'ROM16_26', sk=fieldSupp)
+        end if
     end do
 !
 ! - Get list of type of fields in a results datastructure (at least for ONE storing index)
@@ -126,11 +126,11 @@ type(ROM_DS_ParaRRC), intent(in) :: cmdPara
             if (fieldName .eq. resultField(iFieldResult)) then
                 lInResult = ASTER_TRUE
                 exit
-            endif
+            end if
         end do
         if (.not. lInResult) then
-            call utmess('F', 'ROM16_24', sk = fieldName)
-        endif
+            call utmess('F', 'ROM16_24', sk=fieldName)
+        end if
     end do
 !
 ! - Checks which fields should been reconstructed
@@ -138,35 +138,35 @@ type(ROM_DS_ParaRRC), intent(in) :: cmdPara
     call utmess('I', 'ROM16_30')
     do iFieldResult = 1, nbFieldResult
         fieldResultName = resultField(iFieldResult)
-        lBuild          = ASTER_FALSE
+        lBuild = ASTER_FALSE
         do iFieldBuild = 1, nbFieldBuild
             fieldName = cmdPara%fieldName(iFieldBuild)
             if (fieldName .eq. fieldResultName) then
                 lBuild = ASTER_TRUE
-            endif
+            end if
         end do
         if (lBuild) then
-            call utmess('I', 'ROM16_31', sk = fieldResultName)
+            call utmess('I', 'ROM16_31', sk=fieldResultName)
         else
-            call utmess('I', 'ROM16_32', sk = fieldResultName)
-        endif
+            call utmess('I', 'ROM16_32', sk=fieldResultName)
+        end if
     end do
 !
 ! - Check if COOR_REDUIT is OK (NB: no initial state => nbStore = nbStore - 1)
 !
     lTablFromResu = cmdPara%resultRom%lTablFromResu
-    nbStore       = cmdPara%resultRom%nbStore - 1
+    nbStore = cmdPara%resultRom%nbStore-1
     do iFieldBuild = 1, nbFieldBuild
         lLinearSolve = cmdPara%fieldBuild(iFieldBuild)%lLinearSolve
         if (lLinearSolve) then
-            nbMode        = cmdPara%fieldBuild(iFieldBuild)%base%nbMode
-            call romTableChck(cmdPara%tablReduCoor, lTablFromResu, nbMode, nbStoreIn_ = nbStore)
-        endif
+            nbMode = cmdPara%fieldBuild(iFieldBuild)%base%nbMode
+            call romTableChck(cmdPara%tablReduCoor, lTablFromResu, nbMode, nbStoreIn_=nbStore)
+        end if
     end do
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vk16 = resultField)
-    AS_DEALLOCATE(vi = resultFieldNume)
+    AS_DEALLOCATE(vk16=resultField)
+    AS_DEALLOCATE(vi=resultFieldNume)
 !
 end subroutine

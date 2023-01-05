@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irrcvg(dy, ddy, nr, nmat, mater,&
-                  itmax, toler, iter, r, rini,&
+subroutine irrcvg(dy, ddy, nr, nmat, mater, &
+                  itmax, toler, iter, r, rini, &
                   irteti)
     implicit none
 #include "asterfort/utmess.h"
@@ -52,23 +52,23 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
 !     CALCUL DE LA NORME DE RINI ET DE R(Y)
     er = 0.0d0
     do ii = 1, nr
-        er = er + r(ii)*r(ii)
+        er = er+r(ii)*r(ii)
     end do
     er = sqrt(er)
 !     ER < TOLER , ON A CONVERGE
     if (er .lt. toler) then
 !        VERIFICATION SUR LE FRANCHISSEMENT DU SEUIL
-        if (abs(mater(21,2)) .gt. mater(20,2)) then
-            valrm(1) = mater(20,2)
-            valrm(2) = mater(21,2)
+        if (abs(mater(21, 2)) .gt. mater(20, 2)) then
+            valrm(1) = mater(20, 2)
+            valrm(2) = mater(21, 2)
             call utmess('I', 'COMPOR1_58', nr=2, valr=valrm)
 !           REDECOUPAGE
             irteti = 3
             goto 999
-        endif
+        end if
         irteti = 0
         goto 999
-    endif
+    end if
 !
     if (iter .lt. itmax) then
 !         CALL LCNRVN(NR,RINI,ERINI)
@@ -103,7 +103,7 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
 !            IRTETI = 0
 !            GOTO 9999
 !         ENDIF
-    endif
+    end if
 ! -   NON CONVERGENCE ET ITMAX ATTEINT
     irteti = 3
 !

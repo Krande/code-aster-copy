@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine irecri(fileUnit   , dsName        , lResu         ,&
-                  titleKeywf , titleKeywfIocc,&
-                  storeNb    , storeListIndx ,&
-                  fieldListNb, fieldListType ,&
-                  paraNb     , paraName      , paraFormat,&
-                  cmpUserNb  , cmpUserName   ,&
-                  cellUserNb , cellUserNume  ,&
-                  nodeUserNb , nodeUserNume  ,&
-                  lMeshCoor  , lmax          , lmin,&
-                  lsup       , borsup        ,&
-                  linf       , borinf        ,&
-                  realFormat , cplxFormat)
+subroutine irecri(fileUnit, dsName, lResu, &
+                  titleKeywf, titleKeywfIocc, &
+                  storeNb, storeListIndx, &
+                  fieldListNb, fieldListType, &
+                  paraNb, paraName, paraFormat, &
+                  cmpUserNb, cmpUserName, &
+                  cellUserNb, cellUserNume, &
+                  nodeUserNb, nodeUserNume, &
+                  lMeshCoor, lmax, lmin, &
+                  lsup, borsup, &
+                  linf, borinf, &
+                  realFormat, cplxFormat)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dismoi.h"
@@ -48,27 +48,27 @@ implicit none
 #include "asterfort/titre2.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: fileUnit
-character(len=*), intent(in) :: dsName, titleKeywf
-integer, intent(in) :: titleKeywfIocc
-aster_logical, intent(in) :: lResu
-integer, intent(in) :: storeNb
-integer , pointer :: storeListIndx(:)
-integer, intent(in) :: fieldListNb
-character(len=*), pointer :: fieldListType(:)
-integer, intent(in) :: paraNb
-character(len=*), pointer :: paraName(:)
-character(len=1), intent(in) :: paraFormat
-integer, intent(in) :: cmpUserNb
-character(len=8), pointer :: cmpUserName(:)
-integer, intent(in) :: nodeUserNb
-integer , pointer :: nodeUserNume(:)
-integer, intent(in) :: cellUserNb
-integer , pointer :: cellUserNume(:)
-aster_logical, intent(in) :: lMeshCoor
-aster_logical, intent(in) :: lsup, linf, lmax, lmin
-real(kind=8), intent(in) :: borsup, borinf
-character(len=*), intent(in) :: realFormat, cplxFormat
+    integer, intent(in) :: fileUnit
+    character(len=*), intent(in) :: dsName, titleKeywf
+    integer, intent(in) :: titleKeywfIocc
+    aster_logical, intent(in) :: lResu
+    integer, intent(in) :: storeNb
+    integer, pointer :: storeListIndx(:)
+    integer, intent(in) :: fieldListNb
+    character(len=*), pointer :: fieldListType(:)
+    integer, intent(in) :: paraNb
+    character(len=*), pointer :: paraName(:)
+    character(len=1), intent(in) :: paraFormat
+    integer, intent(in) :: cmpUserNb
+    character(len=8), pointer :: cmpUserName(:)
+    integer, intent(in) :: nodeUserNb
+    integer, pointer :: nodeUserNume(:)
+    integer, intent(in) :: cellUserNb
+    integer, pointer :: cellUserNume(:)
+    aster_logical, intent(in) :: lMeshCoor
+    aster_logical, intent(in) :: lsup, linf, lmax, lmin
+    real(kind=8), intent(in) :: borsup, borinf
+    character(len=*), intent(in) :: realFormat, cplxFormat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -133,13 +133,13 @@ character(len=*), intent(in) :: realFormat, cplxFormat
         resultName = dsName
     else
         resultName = ' '
-    endif
+    end if
 !
 ! - Print list of parameters for all storing index
 !
-    call irpara(resultName, fileUnit     ,&
-                storeNb   , storeListIndx,&
-                paraNb    , paraName     ,&
+    call irpara(resultName, fileUnit, &
+                storeNb, storeListIndx, &
+                paraNb, paraName, &
                 paraFormat)
 !
 ! - Loop on storing slots
@@ -153,11 +153,11 @@ character(len=*), intent(in) :: realFormat, cplxFormat
         if (lResu) then
             call rsutrg(dsName, storeIndx, iret, ibid)
             if (iret .eq. 0) then
-                call utmess('A', 'RESULT3_46', si = storeIndx)
+                call utmess('A', 'RESULT3_46', si=storeIndx)
                 cycle
-            endif
+            end if
             lordr = ASTER_TRUE
-        endif
+        end if
 ! ----- Loop on fields
         if (fieldListNb .ne. 0) then
             do iField = 1, fieldListNb
@@ -168,11 +168,11 @@ character(len=*), intent(in) :: realFormat, cplxFormat
                     call rsexch(' ', resultName, fieldType, storeIndx, fieldName, iret)
                     if (iret .ne. 0) then
                         cycle
-                    endif
+                    end if
                     call dismoi('TYPE_RESU', resultName, 'RESULTAT', repk=resultType)
                 else
-                    fieldName  = dsName
-                endif
+                    fieldName = dsName
+                end if
 ! ------------- Check support
                 call dismoi('TYPE_CHAMP', fieldName, 'CHAMP', repk=fieldSupport)
                 if ((fieldSupport .eq. 'NOEU') .or. (fieldSupport(1:2) .eq. 'EL')) then
@@ -180,59 +180,59 @@ character(len=*), intent(in) :: realFormat, cplxFormat
                     if (.not. lResu) then
                         call utmess('A', 'RESULT3_3')
                         cycle
-                    endif
+                    end if
                 else
                     if (resultType .eq. 'MODE_GENE' .or. resultType .eq. 'HARM_GENE') then
-                        call utmess('A', 'RESULT3_2', sk = fieldType)
+                        call utmess('A', 'RESULT3_2', sk=fieldType)
                     else
-                        call utmess('A', 'RESULT3_1', sk = fieldType)
-                    endif
-                endif
+                        call utmess('A', 'RESULT3_1', sk=fieldType)
+                    end if
+                end if
 ! ------------- Print list of parameters for this storing index
                 if (lordr) then
-                    write(fileUnit,'(/,1X,A)') '======>'
-                    call irpara(resultName, fileUnit   ,&
-                                1         , [storeIndx],&
-                                paraNb    , paraName   ,&
+                    write (fileUnit, '(/,1X,A)') '======>'
+                    call irpara(resultName, fileUnit, &
+                                1, [storeIndx], &
+                                paraNb, paraName, &
                                 paraFormat)
                     lordr = ASTER_FALSE
-                endif
+                end if
 ! ------------- Create subtitle
                 if (lResu) then
-                    call titre2(dsName    , fieldName, subtitleJvName, titleKeywf, titleKeywfIocc,&
+                    call titre2(dsName, fieldName, subtitleJvName, titleKeywf, titleKeywfIocc, &
                                 realFormat, fieldType, storeIndx)
                 else
-                    call titre2(dsName    , fieldName, subtitleJvName, titleKeywf, titleKeywfIocc,&
+                    call titre2(dsName, fieldName, subtitleJvName, titleKeywf, titleKeywfIocc, &
                                 realFormat)
-                endif
+                end if
 ! ------------- Print subtitle
-                write(fileUnit,'(/,1X,A)') '------>'
-                call jeveuo(subtitleJvName, 'L', vk80 = titleLine)
+                write (fileUnit, '(/,1X,A)') '------>'
+                call jeveuo(subtitleJvName, 'L', vk80=titleLine)
                 call jelira(subtitleJvName, 'LONMAX', titleLineNb)
-                write(fileUnit,'(1X,A)') (titleLine(iLine),iLine=1,titleLineNb)
+                write (fileUnit, '(1X,A)') (titleLine(iLine), iLine=1, titleLineNb)
 ! ------------- Print field
                 if (fieldSupport .eq. 'NOEU' .and. nodeUserNb .ge. 0) then
-                    call irdepl(fileUnit  ,&
-                                fieldType , fieldName   ,&
-                                cmpUserNb , cmpUserName ,&
-                                nodeUserNb, nodeUserNume,&
-                                lMeshCoor , lmax        , lmin,&
-                                lsup      , borsup      ,&
-                                linf      , borinf      ,&
+                    call irdepl(fileUnit, &
+                                fieldType, fieldName, &
+                                cmpUserNb, cmpUserName, &
+                                nodeUserNb, nodeUserNume, &
+                                lMeshCoor, lmax, lmin, &
+                                lsup, borsup, &
+                                linf, borinf, &
                                 realFormat, cplxFormat)
                 else if (fieldSupport(1:2) .eq. 'EL' .and. cellUserNb .ge. 0) then
-                    call irchml(fileUnit  ,&
-                                fieldType , fieldName   , fieldSupport,&
-                                cmpUserNb , cmpUserName ,&
-                                cellUserNb, cellUserNume,&
-                                nodeUserNb, nodeUserNume,&
-                                lMeshCoor , lmax        , lmin,&
-                                lsup      , borsup      ,&
-                                linf      , borinf      ,&
+                    call irchml(fileUnit, &
+                                fieldType, fieldName, fieldSupport, &
+                                cmpUserNb, cmpUserName, &
+                                cellUserNb, cellUserNume, &
+                                nodeUserNb, nodeUserNume, &
+                                lMeshCoor, lmax, lmin, &
+                                lsup, borsup, &
+                                linf, borinf, &
                                 realFormat, cplxFormat)
-                endif
+                end if
             end do
-        endif
+        end if
         call jedema()
     end do
 !

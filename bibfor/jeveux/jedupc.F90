@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine jedupc(clain, schin, ipos, claout, schout,&
+subroutine jedupc(clain, schin, ipos, claout, schout, &
                   dupcol)
     implicit none
 #include "asterf_types.h"
@@ -41,20 +41,20 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
 !
 ! ----------------------------------------------------------------------
     character(len=6) :: pgma
-    common /kappje/  pgma
+    common/kappje/pgma
 !-----------------------------------------------------------------------
     integer :: jdocu, jgenr, jorig, jrnom, jtype, n, ncla1
     integer :: ncla2
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     integer :: l1, l2, j, icin
     character(len=32) :: nomin, nomout, schin2, schou2
     character(len=1) :: kclas
@@ -62,34 +62,34 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
 ! DEB ------------------------------------------------------------------
     pgma = 'JEDUPC'
 !
-    l1 = len ( schin )
-    if (ipos + l1 .gt. 25 .or. ipos .lt. 0 .or. l1 .eq. 0) then
+    l1 = len(schin)
+    if (ipos+l1 .gt. 25 .or. ipos .lt. 0 .or. l1 .eq. 0) then
         call utmess('F', 'JEVEUX_92', sk=schin)
-    endif
-    schin2=schin
-    l2 = len ( schout)
-    schou2=schout
+    end if
+    schin2 = schin
+    l2 = len(schout)
+    schou2 = schout
 !
     if (l1 .ne. l2) then
         call utmess('F', 'JEVEUX_93', sk=schou2//' '//schin2)
-    endif
+    end if
 !
-    if (ipos + l2 .gt. 25 .or. ipos .lt. 0 .or. l2 .eq. 0) then
+    if (ipos+l2 .gt. 25 .or. ipos .lt. 0 .or. l2 .eq. 0) then
         call utmess('F', 'JEVEUX_92', sk=schout)
-    endif
+    end if
     if (schin(1:l1) .eq. schout(1:l2)) then
         call utmess('F', 'JEVEUX_94', sk=schin2//' : '//schou2)
-    endif
+    end if
 !
-    kclas = clain (1:min(1,len(clain)))
+    kclas = clain(1:min(1, len(clain)))
     if (kclas .eq. ' ') then
         ncla1 = 1
-        ncla2 = index ( classe , '$' ) - 1
+        ncla2 = index(classe, '$')-1
         if (ncla2 .lt. 0) ncla2 = n
     else
-        ncla1 = index ( classe , kclas)
+        ncla1 = index(classe, kclas)
         ncla2 = ncla1
-    endif
+    end if
     do icin = ncla1, ncla2
         kclas = classe(icin:icin)
         do j = 1, nremax(icin)
@@ -97,9 +97,9 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
             if (nomin(1:1) .eq. '?' .or. nomin(25:32) .ne. '        ') goto 150
             if (schin .eq. nomin(ipos:ipos+l1-1)) then
                 nomout = nomin
-                nomout = nomout(1:ipos-1)//schou2(1:l2)//nomout(ipos+ l1:32)
+                nomout = nomout(1:ipos-1)//schou2(1:l2)//nomout(ipos+l1:32)
                 call jedupo(nomin, claout, nomout, dupcol)
-            endif
+            end if
 150         continue
         end do
     end do

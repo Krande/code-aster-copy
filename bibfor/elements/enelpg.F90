@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine enelpg(fami, iadmat, instan, igau, repere,&
-                  xyzgau, compor, f, sigma, nbvari,&
+subroutine enelpg(fami, iadmat, instan, igau, repere, &
+                  xyzgau, compor, f, sigma, nbvari, &
                   vari, enelas)
 !.......................................................................
     implicit none
@@ -67,45 +67,45 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
     real(kind=8) :: trbe, epsthe, kr(6), pdtsca(6), d1(36), valres(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2), compor(*)
-    data kr/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/
+    data kr/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
+    data pdtsca/1.d0, 1.d0, 1.d0, 2.d0, 2.d0, 2.d0/
 !-----------------------------------------------------------------------
 !
     zero = 0.0d0
-    deux=2.0d0
-    undemi=0.5d0
-    un=1.0d0
+    deux = 2.0d0
+    undemi = 0.5d0
+    un = 1.0d0
     nbsig = nbsigm()
-    enelas=0.d0
+    enelas = 0.d0
     nsol = 0
     jzero = zero
     uzero = zero
     ujac = zero
     mzero = zero
     mjac = zero
-    wbe =zero
+    wbe = zero
     do i = 1, 3
-        sol(i)=zero
+        sol(i) = zero
     end do
 !
 !
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-    if ((compor(3).eq.'SIMO_MIEHE') .and.&
-        ((compor(1)(1:9).eq.'VMIS_ISOT').or.(compor(1).eq.'ELAS'))) then
+    if ((compor(3) .eq. 'SIMO_MIEHE') .and. &
+        ((compor(1) (1:9) .eq. 'VMIS_ISOT') .or. (compor(1) .eq. 'ELAS'))) then
 !
 ! ---    RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
         nomres(1) = 'E'
         nomres(2) = 'NU'
-        call rcvalb(fami, igau, 1, '+', iadmat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, igau, 1, '+', iadmat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 2)
         e = valres(1)
         nu = valres(2)
-        mu = e/ (2.d0* (1.d0+nu))
-        troisk = e/ (1.d0-2.d0*nu)
+        mu = e/(2.d0*(1.d0+nu))
+        troisk = e/(1.d0-2.d0*nu)
 !
-        jac = f(1,1)* (f(2,2)*f(3,3)-f(2,3)*f(3,2)) - f(2,1)* (f(1,2)* f(3,3)-f(1,3)*f(3,2)) + f(&
-              &3,1)* (f(1,2)*f(2,3)-f(1,3)*f(2,2))
+       jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2))-f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2))+f(&
+               &3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
 !
 ! ---    CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
 !
@@ -118,34 +118,34 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !
 ! ---    CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
 !
-        trtau = tau(1) + tau(2) + tau(3)
+        trtau = tau(1)+tau(2)+tau(3)
         eqtau = 0.d0
         do i = 1, 6
-            dvtau(i) = tau(i) - kr(i)*trtau/3.d0
-            eqtau = eqtau + pdtsca(i)* (dvtau(i)**2.d0)
+            dvtau(i) = tau(i)-kr(i)*trtau/3.d0
+            eqtau = eqtau+pdtsca(i)*(dvtau(i)**2.d0)
         end do
         eqtau = sqrt(1.5d0*eqtau)
 !
 ! ---    CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
 !
         call dcopy(6, vari(3), 1, be, 1)
-        trbe=be(1)+be(2)+be(3)
-        trbe=jac**(-2.d0/3.d0)*(3.d0-2.d0*trbe)
+        trbe = be(1)+be(2)+be(3)
+        trbe = jac**(-2.d0/3.d0)*(3.d0-2.d0*trbe)
 !
 !  ---   DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
-        call verift(fami, igau, 1, '+', iadmat,&
+        call verift(fami, igau, 1, '+', iadmat, &
                     epsth_=epsthe)
 !
 !
 ! ---    ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...
         if (epsthe .ne. 0) then
             call zerop3(-3.d0*epsthe, -1.d0, -3.d0*epsthe, sol, nsol)
-            jzero=sol(1)
+            jzero = sol(1)
             call nrsmt1(troisk/3.d0, jzero, uzero)
             call nrsmtt(troisk, jzero, epsthe, mzero)
             call nrsmtt(troisk, jac, epsthe, mjac)
-        endif
+        end if
 !
 ! ---    CALCUL DES TERMES DE L'ENERGIE
         call nrsmt1(troisk/3.d0, jac, ujac)
@@ -156,13 +156,13 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !
 ! --- CAS EN GRANDES DEFORMATIONS GDEF_LOG
 !
-    else if ((compor(3)(1:8).eq.'GDEF_LOG')) then
+    else if ((compor(3) (1:8) .eq. 'GDEF_LOG')) then
 !
 ! ---    RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
         nomres(1) = 'E'
         nomres(2) = 'NU'
-        call rcvalb(fami, igau, 1, '+', iadmat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, igau, 1, '+', iadmat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 2)
         e = valres(1)
         nu = valres(2)
@@ -172,42 +172,42 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
         call dcopy(6, vari(nbvari-5), 1, tlog, 1)
 !
 !        CAS 3D
-        if (lteatt('DIM_TOPO_MAILLE','3')) then
+        if (lteatt('DIM_TOPO_MAILLE', '3')) then
 !
-            trt=tlog(1)+tlog(2)+tlog(3)
-            enelas = undemi* (&
-                     tlog(1)* (c1*tlog(1)-c2*trt)+ tlog(2)* ( c1*tlog(2)-c2*trt)+ tlog(3)* (c1*tl&
-                     &og(3)-c2*trt)+ (tlog(4) *c1*tlog(4)+tlog(5)*c1*tlog(5)+ tlog(6)*c1*tlog(6))&
+            trt = tlog(1)+tlog(2)+tlog(3)
+            enelas = undemi*( &
+                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tl&
+                     &og(3)-c2*trt)+(tlog(4)*c1*tlog(4)+tlog(5)*c1*tlog(5)+tlog(6)*c1*tlog(6)) &
                      )
 !
 !
 ! ---    CAS DES CONTRAINTES PLANES :
-        else if (lteatt('C_PLAN','OUI')) then
-            trt=tlog(1)+tlog(2)
+        else if (lteatt('C_PLAN', 'OUI')) then
+            trt = tlog(1)+tlog(2)
 !
-            enelas = undemi* (&
-                     tlog(1)*(c1*tlog(1)-c2*trt) + tlog(2)*( c1*tlog(2)-c2*trt) + deux*tlog(4)*c1&
-                     &*tlog(4)&
+            enelas = undemi*( &
+                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+deux*tlog(4)*c1&
+                    &*tlog(4) &
                      )
 ! ---    CAS AXI ET DEFORMATIONS PLANES :
         else
-            trt=tlog(1)+tlog(2)+tlog(3)
+            trt = tlog(1)+tlog(2)+tlog(3)
 !
-            enelas = undemi *(&
-                     tlog(1)*(c1*tlog(1)-c2*trt) +tlog(2)*( c1*tlog(2)-c2*trt) +tlog(3)*(c1*tlog(&
-                     &3)-c2*trt) +deux* tlog(4)*c1*tlog(4)&
+            enelas = undemi*( &
+                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tlog(&
+                     &3)-c2*trt)+deux*tlog(4)*c1*tlog(4) &
                      )
-        endif
+        end if
 ! --- EN HPP SI ON CONSIDERE LE MATERIAU ISOTROPE
 ! --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
 !
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-    elseif ((compor(3)(1:5).eq.'PETIT').or. (compor(3).eq.'GROT_GDEP')) then
+    elseif ((compor(3) (1:5) .eq. 'PETIT') .or. (compor(3) .eq. 'GROT_GDEP')) then
 !
 !  --    CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 !  --    POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !        ---------------------------------------------------------
-        call d1mamc(fami, iadmat, instan, '+', igau,&
+        call d1mamc(fami, iadmat, instan, '+', igau, &
                     1, repere, xyzgau, nbsig, d1)
 !
 !  --    DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
@@ -216,14 +216,14 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
         call r8inir(6, 0.d0, epsi, 1)
         do isig = 1, nbsig
             do jsig = 1, nbsig
-                epsi(isig)=epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigma(&
-                jsig)
+                epsi(isig) = epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigma( &
+                             jsig)
             end do
-            enelas = enelas + undemi*sigma(isig)*epsi(isig)
+            enelas = enelas+undemi*sigma(isig)*epsi(isig)
         end do
 !
     else
         call utmess('F', 'COMPOR1_77', sk=compor(3))
-    endif
+    end if
 !
 end subroutine

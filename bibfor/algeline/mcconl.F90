@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mcconl(oper, lmat, neq2, typev, cvect,&
+subroutine mcconl(oper, lmat, neq2, typev, cvect, &
                   nvect)
     implicit none
 #include "jeveux.h"
@@ -55,79 +55,79 @@ subroutine mcconl(oper, lmat, neq2, typev, cvect,&
     integer :: ieq, ii, ind, iret, ive, jconl, neq, neqc
     real(kind=8) :: realve, rimagv
 !     ------------------------------------------------------------------
-    data ftype/'R','C'/
+    data ftype/'R', 'C'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    ASSERT(oper.eq.'MULT' .or. oper.eq.'DIVI')
+    ASSERT(oper .eq. 'MULT' .or. oper .eq. 'DIVI')
     if (typev .eq. ' ') then
-        type=ftype(zi(lmat+3))
+        type = ftype(zi(lmat+3))
     else
-        type=typev
-    endif
-    neq=neq2
-    if (neq2 .le. 0) neq=zi(lmat+2)
+        type = typev
+    end if
+    neq = neq2
+    if (neq2 .le. 0) neq = zi(lmat+2)
 !
-    conl=zk24(zi(lmat+1))(1:19)//'.CONL'
+    conl = zk24(zi(lmat+1)) (1:19)//'.CONL'
     call jeexin(conl, iret)
     if (iret .ne. 0) then
         call jelira(conl, 'TYPE', cval=typecn)
         call jeveuo(conl, 'L', jconl)
-        jconl=jconl-1
-        neqc=neq/2
+        jconl = jconl-1
+        neqc = neq/2
         if (type .eq. 'R' .and. typecn .eq. 'R') then
             do ive = 1, nvect
-                ind=neqc*(ive-1)
-                ii=1
+                ind = neqc*(ive-1)
+                ii = 1
                 if (oper .eq. 'MULT') then
                     do ieq = 1, neqc
-                        realve=dble(cvect(ind+ieq))*zr(jconl+ii)
-                        rimagv=dimag(cvect(ind+ieq))*zr(jconl+ii+1)
-                        cvect(ind+ieq)=dcmplx(realve,rimagv)
-                        ii=ii+2
+                        realve = dble(cvect(ind+ieq))*zr(jconl+ii)
+                        rimagv = dimag(cvect(ind+ieq))*zr(jconl+ii+1)
+                        cvect(ind+ieq) = dcmplx(realve, rimagv)
+                        ii = ii+2
                     end do
                 else
                     do ieq = 1, neqc
-                        realve=dble(cvect(ind+ieq))/zr(jconl+ii)
-                        rimagv=dimag(cvect(ind+ieq))/zr(jconl+ii+1)
-                        cvect(ind+ieq)=dcmplx(realve,rimagv)
-                        ii=ii+2
+                        realve = dble(cvect(ind+ieq))/zr(jconl+ii)
+                        rimagv = dimag(cvect(ind+ieq))/zr(jconl+ii+1)
+                        cvect(ind+ieq) = dcmplx(realve, rimagv)
+                        ii = ii+2
                     end do
-                endif
+                end if
             end do
-        else if (type.eq.'C') then
+        else if (type .eq. 'C') then
             if (typecn .eq. 'R') then
                 do ive = 1, nvect
-                    ind=neq*(ive-1)
+                    ind = neq*(ive-1)
                     if (oper .eq. 'MULT') then
                         do ieq = 1, neq
-                            cvect(ind+ieq)=cvect(ind+ieq)*zr(jconl+&
-                            ieq)
+                            cvect(ind+ieq) = cvect(ind+ieq)*zr(jconl+ &
+                                                               ieq)
                         end do
                     else
                         do ieq = 1, neq
-                            cvect(ind+ieq)=cvect(ind+ieq)/zr(jconl+&
-                            ieq)
+                            cvect(ind+ieq) = cvect(ind+ieq)/zr(jconl+ &
+                                                               ieq)
                         end do
-                    endif
+                    end if
                 end do
-            else if (typecn.eq.'C') then
+            else if (typecn .eq. 'C') then
                 do ive = 1, nvect
-                    ind=neq*(ive-1)
+                    ind = neq*(ive-1)
                     if (oper .eq. 'MULT') then
                         do ieq = 1, neq
-                            cvect(ind+ieq)=cvect(ind+ieq)*zc(jconl+&
-                            ieq)
+                            cvect(ind+ieq) = cvect(ind+ieq)*zc(jconl+ &
+                                                               ieq)
                         end do
                     else
                         do ieq = 1, neq
-                            cvect(ind+ieq)=cvect(ind+ieq)/zc(jconl+&
-                            ieq)
+                            cvect(ind+ieq) = cvect(ind+ieq)/zc(jconl+ &
+                                                               ieq)
                         end do
-                    endif
+                    end if
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
     call jedema()
 end subroutine

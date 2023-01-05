@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnmpmc(main,nbma, lima,mpmc)
+subroutine cnmpmc(main, nbma, lima, mpmc)
 !
     implicit none
 #include "jeveux.h"
@@ -44,57 +44,55 @@ subroutine cnmpmc(main,nbma, lima,mpmc)
 ! OUT       MPMC    I  CONNECTIVITÉ
 ! ----------------------------------------------------------------------
 
-
 ! ----------------------------------------------------------------------
 !        CONSTRUCTION DE LA CONNECTIVITÉ INVERSE NOEUD MAILLE
 ! ----------------------------------------------------------------------
     call jeveuo(main//'.DIME', 'L', dima)
     aux = zi(dima-1+3)
-    lmat='&&CNMPMC.LISTE_MA_TOT'
-    conneo='&&CNMPMC.CONNEX_INV'
+    lmat = '&&CNMPMC.LISTE_MA_TOT'
+    conneo = '&&CNMPMC.CONNEX_INV'
     call wkvect(lmat, 'V V I', zi(dima-1+3), jlmat)
-    do inc1=1,aux
-        zi(jlmat+inc1-1)=inc1
+    do inc1 = 1, aux
+        zi(jlmat+inc1-1) = inc1
     end do
-    call cncinv(main, [0], 0,'V', conneo)
-
+    call cncinv(main, [0], 0, 'V', conneo)
 
 ! ----------------------------------------------------------------------
 !        CONSTRUCTION DE MPMC
 ! ----------------------------------------------------------------------
-    do inc1 = 1,nbma
-        macou=lima(inc1)
-        call jelira(jexnum(main//'.CONNEX',macou),'LONMAX',nbnoma)
-        call jeveuo(jexnum(main//'.CONNEX',macou),'L',jlino)
-        nocou=zi(jlino+1-1)
-        call jelira(jexnum(conneo,nocou),'LONMAX',nlico1)
-        ASSERT(nlico1.gt.1)
-        call jeveuo(jexnum(conneo,nocou),'L',lico1)
-        lico3='&&CNMPMC.LICO3'
-        lico4='&&CNMPMC.LICO4'
+    do inc1 = 1, nbma
+        macou = lima(inc1)
+        call jelira(jexnum(main//'.CONNEX', macou), 'LONMAX', nbnoma)
+        call jeveuo(jexnum(main//'.CONNEX', macou), 'L', jlino)
+        nocou = zi(jlino+1-1)
+        call jelira(jexnum(conneo, nocou), 'LONMAX', nlico1)
+        ASSERT(nlico1 .gt. 1)
+        call jeveuo(jexnum(conneo, nocou), 'L', lico1)
+        lico3 = '&&CNMPMC.LICO3'
+        lico4 = '&&CNMPMC.LICO4'
         call wkvect(lico3, 'V V I', nlico1, jlico3)
         call wkvect(lico4, 'V V I', nlico1, jlico4)
-        do inc3 = 1,nlico1
-            zi(jlico3+inc3-1)=zi(lico1+inc3-1)
+        do inc3 = 1, nlico1
+            zi(jlico3+inc3-1) = zi(lico1+inc3-1)
         end do
 !
-        do  inc2 = 2, nbnoma
-                nocou=zi(jlino+inc2-1)
-                call jelira(jexnum(conneo,nocou),'LONMAX',nlico2)
+        do inc2 = 2, nbnoma
+            nocou = zi(jlino+inc2-1)
+            call jelira(jexnum(conneo, nocou), 'LONMAX', nlico2)
 
-                call jeveuo(jexnum(conneo,nocou),'L',lico2)
-                call utlisi('INTER',zi(jlico3),nlico1,zi(lico2),nlico2,&
-                            zi(jlico4),nlico1,ntrou)
+            call jeveuo(jexnum(conneo, nocou), 'L', lico2)
+            call utlisi('INTER', zi(jlico3), nlico1, zi(lico2), nlico2, &
+                        zi(jlico4), nlico1, ntrou)
 !
-                do inc3 = 1,ntrou
-                        zi(jlico3+inc3-1)=zi(jlico4+inc3-1)
-                end do
-                nlico1 = ntrou
+            do inc3 = 1, ntrou
+                zi(jlico3+inc3-1) = zi(jlico4+inc3-1)
+            end do
+            nlico1 = ntrou
 !
         end do
         if (ntrou .gt. 0) then
-            call utlisi('DIFFE',zi(jlico3),nlico1,lima, nbma, var,1,ntrou)
-            mpmc(inc1)=var(1)
+            call utlisi('DIFFE', zi(jlico3), nlico1, lima, nbma, var, 1, ntrou)
+            mpmc(inc1) = var(1)
         else
             ASSERT(.false.)
         end if
@@ -102,11 +100,10 @@ subroutine cnmpmc(main,nbma, lima,mpmc)
         call jedetr(lico4)
     end do
 
-
 ! ---------------------------------------------------------------------
 !     DESTRUCTION DES VECTEUR AUXILIAIRES
 ! ---------------------------------------------------------------------
-   call jedetr(lmat)
-   call jedetr(conneo)
+    call jedetr(lmat)
+    call jedetr(conneo)
 
 end subroutine

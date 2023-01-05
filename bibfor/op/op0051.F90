@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine op0051()
 #include "asterfort/wkvect.h"
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'OP0051' )
+    parameter(nompro='OP0051')
 !
     integer :: ifm, niv
     integer :: ichef, iocc, iret, ivchf, jacc, jaccis, jaccr8, jchef, jtac
@@ -111,7 +111,7 @@ subroutine op0051()
     call getres(latabl, concep, nomcmd)
     if (niv .ge. 2) then
         call utmess('I', 'POSTRELE_1', sk=latabl)
-    endif
+    end if
 !
 ! 2.3. ==> PHASE DE VERIFICATIONS SUPPLEMENTAIRES
 !
@@ -140,17 +140,17 @@ subroutine op0051()
         if (k16 .eq. 'EXTREMA') then
             call rvmima(latabl, iocc)
             goto 3
-        endif
+        end if
         if (k16 .eq. 'MOYENNE_ARITH') then
             call rvmoye(latabl, iocc)
             goto 3
-        endif
+        end if
 
 !       RESULTANTE n'a de sens que pour EXTRACTION et pour des forces nodales :
         if (k16 .ne. 'EXTRACTION') then
             call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
-            if (n1.ne.0) call utmess('F','POSTRELE_67')
-        endif
+            if (n1 .ne. 0) call utmess('F', 'POSTRELE_67')
+        end if
 !
 ! 3.1. ==> VERIFICATION DE COHERENCE DES ARGUMENTS DE LA COMMANDE
 !
@@ -167,36 +167,36 @@ subroutine op0051()
 !           SAISIE DES CHAMPS EFFECTIFS A POST-TAITER ---
             if (nbresu .ne. 0) then
 !               CAS D' UN RESULTAT
-                call getvtx(mcf, 'NOM_CHAM',  iocc=iocc, scal=nchsym, nbret=n1)
-                call getvtx(mcf, 'CRITERE',   iocc=iocc, scal=criter, nbret=n1)
-                call getvr8(mcf, 'PRECISION', iocc=iocc, scal=epsi,   nbret=n1)
+                call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nchsym, nbret=n1)
+                call getvtx(mcf, 'CRITERE', iocc=iocc, scal=criter, nbret=n1)
+                call getvr8(mcf, 'PRECISION', iocc=iocc, scal=epsi, nbret=n1)
 !
                 call rvgacc(iocc, codacc, naccis, naccr8, nbacce)
 !
 !               Vérification sur la présence d'éléments de structure dans le modèle
-                call dismoi('MODELE',  resuco,    'RESULTAT', repk=nommodele)
-                if ( (nommodele.ne."#AUCUN").and.(nommodele.ne.'#PLUSIEURS') ) then
+                call dismoi('MODELE', resuco, 'RESULTAT', repk=nommodele)
+                if ((nommodele .ne. "#AUCUN") .and. (nommodele .ne. '#PLUSIEURS')) then
                     erdm = 'NON'
-                    call dismoi('EXI_RDM', nommodele, 'MODELE',   repk=erdm)
-                    if ((erdm.eq.'OUI').and. &
-                        ((nchsym(1:9).eq.'EPSI_NOEU').or. &
-                        (nchsym(1:9).eq.'SIGM_NOEU').or. &
-                        (nchsym(1:9).eq.'SIEF_NOEU').or. &
-                        (nchsym(1:9).eq.'DEGE_NOEU').or. &
-                        (nchsym(1:9).eq.'EFGE_NOEU'))) then
+                    call dismoi('EXI_RDM', nommodele, 'MODELE', repk=erdm)
+                    if ((erdm .eq. 'OUI') .and. &
+                        ((nchsym(1:9) .eq. 'EPSI_NOEU') .or. &
+                         (nchsym(1:9) .eq. 'SIGM_NOEU') .or. &
+                         (nchsym(1:9) .eq. 'SIEF_NOEU') .or. &
+                         (nchsym(1:9) .eq. 'DEGE_NOEU') .or. &
+                         (nchsym(1:9) .eq. 'EFGE_NOEU'))) then
                         repere = '   '
                         call getvtx(mcf, 'REPERE', iocc=iocc, scal=repere)
-                        if ( repere .ne. 'LOCAL' ) then
+                        if (repere .ne. 'LOCAL') then
                             valk(1) = nchsym
                             call utmess('A', 'POSTRELE_70', nk=1, valk=valk)
-                        endif
-                    endif
-                endif
+                        end if
+                    end if
+                end if
 
                 call jeveuo(naccis, 'L', jaccis)
                 call jeveuo(naccr8, 'L', jaccr8)
 !
-                call rvgchf(epsi, criter, resuco, nchsym, codacc,&
+                call rvgchf(epsi, criter, resuco, nchsym, codacc, &
                             zi(jaccis), zr(jaccr8), nbacce, ncheff)
 !
                 call jedetr(naccis)
@@ -220,9 +220,9 @@ subroutine op0051()
                 call dismoi('TYPE_CHAMP', zk24(jacc), 'CHAMP', repk=k8b)
                 if (k8b(1:4) .eq. 'ELNO') then
                     call dismoi('NOM_OPTION', zk24(jacc), 'CHAMP', repk=option)
-                endif
+                end if
 !
-            endif
+            end if
 !
 !        =====================================================
 !        I     ON DISPOSE MAINTENANT DE :                    I
@@ -262,7 +262,7 @@ subroutine op0051()
 300         continue
             if ((.not. trouve) .and. (ivchf .lt. nbvchf)) then
 !
-                ivchf = ivchf + 1
+                ivchf = ivchf+1
                 ichef = 0
 !
                 call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
@@ -271,19 +271,19 @@ subroutine op0051()
 310             continue
                 if ((.not. trouve) .and. (ichef .lt. nbchef)) then
 !
-                    ichef = ichef + 1
+                    ichef = ichef+1
 !
-                    nch24 = zk24(jchef + ichef-1)
+                    nch24 = zk24(jchef+ichef-1)
 !
                     if (nch24(1:1) .ne. '&') trouve = .true.
 !
                     goto 310
 !
-                endif
+                end if
 !
                 goto 300
 !
-            endif
+            end if
 !
             if (.not. trouve) then
                 call utmess('F', 'POSTRELE_2', si=iocc)
@@ -291,7 +291,7 @@ subroutine op0051()
 !
 !           --- SAISIE DU LIEU DU POST-TRAITEMENT DE L' OCCURENCE ---
 !
-                call rvouex(mcf, iocc, nch24, xnomcp, nlsmac,&
+                call rvouex(mcf, iocc, nch24, xnomcp, nlsmac, &
                             nlsnac, iret)
 !
                 if (iret .eq. 0) then
@@ -310,17 +310,17 @@ subroutine op0051()
 !
                         do ichef = 1, nbchef
 !
-                            nch19 = zk24(jchef + ichef-1)(1:19)
+                            nch19 = zk24(jchef+ichef-1) (1:19)
 !
-                            call rvpost(mcf, iocc, dim, ivchf, ichef,&
-                                        ncheff, xnomcp, resuco, nch19, nlsmac,&
+                            call rvpost(mcf, iocc, dim, ivchf, ichef, &
+                                        ncheff, xnomcp, resuco, nch19, nlsmac, &
                                         nlsnac, latabl, xnovar)
 !
                         end do
 !
                     end do
 !
-                endif
+                end if
 !
                 call jeexin(nlsmac, n1)
                 if (n1 .ne. 0) call jedetr(nlsmac)
@@ -328,7 +328,7 @@ subroutine op0051()
                 call jeexin(nlsnac, n1)
                 if (n1 .ne. 0) call jedetr(nlsnac)
 !
-            endif
+            end if
 !
             call jedetr(ncheff//'.NOMRESU')
             call jedetr(ncheff//'.TYPACCE')
@@ -338,10 +338,10 @@ subroutine op0051()
 !
 !
 !
-        endif
+        end if
 !
 !
-  3     continue
+3       continue
     end do
 !
 !============= FIN DE LA BOUCLE SUR LES POST-TRAITEMENTS ===============

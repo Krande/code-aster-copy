@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ function lcnrte(d)
 !       ----------------------------------------------------------------
     integer :: n, nd
     real(kind=8) :: d(6), lcnrte, d23
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     d23 = .66666666666666d0
 !
-    lcnrte = sqrt ( d23 * dot_product(d(1:n), d(1:n)) )
+    lcnrte = sqrt(d23*dot_product(d(1:n), d(1:n)))
 end function

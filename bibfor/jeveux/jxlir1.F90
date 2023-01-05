@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,23 +38,23 @@ subroutine jxlir1(ic, caralu)
 !-----------------------------------------------------------------------
     integer :: ierr, k
 !-----------------------------------------------------------------------
-    parameter      ( n = 5 )
+    parameter(n=5)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     character(len=8) :: nombas
-    common /kbasje/  nombas(n)
+    common/kbasje/nombas(n)
     character(len=128) :: repglo, repvol
-    common /banvje/  repglo,repvol
+    common/banvje/repglo, repvol
     integer :: lrepgl, lrepvo
-    common /balvje/  lrepgl,lrepvo
+    common/balvje/lrepgl, lrepvo
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
     integer :: ncar, np2
-    parameter ( ncar = 13, np2 = ncar + 3 )
+    parameter(ncar=13, np2=ncar+3)
     integer :: tampon(np2), mode
     aster_logical :: lexist
     character(len=8) :: nom
@@ -62,20 +62,20 @@ subroutine jxlir1(ic, caralu)
 ! DEB ------------------------------------------------------------------
     ierr = 0
     mode = 1
-    if ( kstout(ic) == 'LIBERE' .and. kstini(ic) == 'POURSUIT' ) then
+    if (kstout(ic) == 'LIBERE' .and. kstini(ic) == 'POURSUIT') then
         mode = 0
-    endif
-    if ( kstini(ic) == 'DEBUT' ) then
+    end if
+    if (kstini(ic) == 'DEBUT') then
         mode = 2
-    endif
-    nom = nomfic(ic)(1:4)//'.   '
-    call get_jvbasename(nomfic(ic)(1:4), 1, nom512)
-    inquire (file=nom512,exist=lexist)
+    end if
+    nom = nomfic(ic) (1:4)//'.   '
+    call get_jvbasename(nomfic(ic) (1:4), 1, nom512)
+    inquire (file=nom512, exist=lexist)
     if (.not. lexist) then
         valk(1) = nombas(ic)
         valk(2) = nom512
         call utmess('F', 'JEVEUX_12', nk=2, valk=valk)
-    endif
+    end if
     call opendr(nom512, mode, ierr)
 !
 !   SUR CRAY L'APPEL A READDR EST EFFECTUE AVEC UNE LONGUEUR EN
@@ -84,11 +84,11 @@ subroutine jxlir1(ic, caralu)
     call readdr(nom512, tampon, np2*lois, 1, ierr)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_13', sk=nombas(ic))
-    endif
+    end if
     call closdr(nom512, ierr)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_14', sk=nombas(ic))
-    endif
+    end if
     do k = 1, ncar
         caralu(k) = tampon(k+3)
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndassp(list_func_acti, ds_contact , ds_system,&
-                  sddyna        , hval_veasse, cndonn)
+subroutine ndassp(list_func_acti, ds_contact, ds_system, &
+                  sddyna, hval_veasse, cndonn)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,12 +42,12 @@ implicit none
 #include "asterfort/nonlinDSVectCombAddAny.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: sddyna
-character(len=19), intent(in) :: hval_veasse(*)
-character(len=19), intent(in) :: cndonn
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: hval_veasse(*)
+    character(len=19), intent(in) :: cndonn
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,7 +78,7 @@ character(len=19), intent(in) :: cndonn
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_20')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -87,11 +87,11 @@ character(len=19), intent(in) :: cndonn
     cndfdo = '&&CNCHAR.DFDO'
     cnfvdo = '&&CNCHAR.FVDO'
     cnvady = '&&CNCHAR.FVDY'
-    l_macr = isfonc(list_func_acti,'MACR_ELEM_STAT')
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 !
 ! - Coefficient for multi-step scheme
 !
-    coeequ = ndynre(sddyna,'COEF_MPAS_EQUI_COUR')
+    coeequ = ndynre(sddyna, 'COEF_MPAS_EQUI_COUR')
 !
 ! - Get dead Neumann loads and multi-step dynamic schemes forces
 !
@@ -117,7 +117,7 @@ character(len=19), intent(in) :: cndonn
 !
     if (ds_contact%l_cnctdf) then
         call nonlinDSVectCombAddAny(ds_contact%cnctdf, -1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Add LIAISON_UNIL penalized force
 !
@@ -125,23 +125,23 @@ character(len=19), intent(in) :: cndonn
         l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
         if (l_unil_pena) then
             call nonlinDSVectCombAddAny(ds_contact%cnunil, -1.d0, ds_vectcomb)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Add CONTINUE/XFEM contact force
 !
     if (ds_contact%l_cneltc) then
         call nonlinDSVectCombAddAny(ds_contact%cneltc, -1.d0, ds_vectcomb)
-    endif
+    end if
     if (ds_contact%l_cneltf) then
         call nonlinDSVectCombAddAny(ds_contact%cneltf, -1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Force from sub-structuring
 !
     if (l_macr) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNSSTR', -1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Get Dirichlet boundary conditions - B.U
 !
@@ -163,6 +163,6 @@ character(len=19), intent(in) :: cndonn
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', cndonn, 6)
-    endif
+    end if
 !
 end subroutine

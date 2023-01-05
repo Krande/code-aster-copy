@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 !       NBNOEU : NOMBRE DE NOEUDS DU MAILLAGE
 !-----------------------------------------------------------------------
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterf.h"
@@ -82,10 +82,10 @@ implicit none
 !
     call infniv(ifm, nivinf)
     if (nivinf .gt. 1) then
-        write (ifm,*) '<',nompro,'> DEBUT IMPRESSION DES JOINTS :'
-    endif
+        write (ifm, *) '<', nompro, '> DEBUT IMPRESSION DES JOINTS :'
+    end if
 !
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     ASSERT(nbproc <= MT_DOMMAX)
@@ -103,7 +103,7 @@ implicit none
     domjoin = nomast//'.DOMJOINTS'
     nbjoin = 0
     call jeexin(domjoin, iret)
-    if(iret > 0) then
+    if (iret > 0) then
         call jeveuo(domjoin, 'L', vi=v_dojoin)
         call jelira(domjoin, 'LONMAX', nbjoin, k8bid)
         descri = "code_aster"
@@ -119,23 +119,23 @@ implicit none
             do i = 1, 2
                 nomjoi = " "
                 nojoin = " "
-                if( i == 1 ) then
-                    if( rang < domdis) then
-                        nomjoi = chrang // ' ' // chdomdis
+                if (i == 1) then
+                    if (rang < domdis) then
+                        nomjoi = chrang//' '//chdomdis
                         nojoin = nomast//'.R'//chnbjo
                     else
-                        nomjoi = chdomdis // ' ' // chrang
+                        nomjoi = chdomdis//' '//chrang
                         nojoin = nomast//'.E'//chnbjo
                     end if
                 else
-                    if( rang < domdis) then
-                        nomjoi = chdomdis // ' ' // chrang
+                    if (rang < domdis) then
+                        nomjoi = chdomdis//' '//chrang
                         nojoin = nomast//'.E'//chnbjo
                     else
-                        nomjoi = chrang // ' ' // chdomdis
+                        nomjoi = chrang//' '//chdomdis
                         nojoin = nomast//'.R'//chnbjo
                     end if
-                endif
+                end if
 !
 ! --- Creation du joint
 !
@@ -148,15 +148,15 @@ implicit none
                 call jeveuo(nojoin, 'L', jjoinr)
 !
                 call as_msdcrw(idfimd, nomamd, nomjoi, MED_NO_DT, MED_NO_IT, MED_NODE, &
-                                MED_NONE, MED_NODE, MED_NONE, nbnoj/2, zi(jjoinr), codret)
+                               MED_NONE, MED_NODE, MED_NONE, nbnoj/2, zi(jjoinr), codret)
                 ASSERT(codret == 0)
             end do
         end do
-    endif
+    end if
 !
     if (nivinf .gt. 1) then
-        write (ifm,*) '<',nompro,'> FIN IMPRESSION DES JOINTS.'
-    endif
+        write (ifm, *) '<', nompro, '> FIN IMPRESSION DES JOINTS.'
+    end if
 !
     call jedema()
 !

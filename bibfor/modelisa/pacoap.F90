@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
+subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
                   t, nomaz, liso1z, liso2z)
     implicit none
 #include "jeveux.h"
@@ -110,11 +110,11 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
     call jeexin(lisou1, iret)
     if (iret .ne. 0) then
         call jedetr(lisou1)
-    endif
+    end if
     call jeexin(lisou2, iret)
     if (iret .ne. 0) then
         call jedetr(lisou2)
-    endif
+    end if
     call wkvect(lisou1, 'V V K8', lonlis, idlou1)
     call wkvect(lisou2, 'V V K8', lonlis, idlou2)
 !
@@ -143,49 +143,49 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
     do i1 = 1, lonlis
         nomno1 = zk8(idlin1+i1-1)
 !       CALL JENONU(JEXNOM(NOEUMA,NOMNO1),NUNO1)
-        nuno1=num_lisin1(i1)
-        call parotr(noma, iageom, nuno1, 0, centre,&
+        nuno1 = num_lisin1(i1)
+        call parotr(noma, iageom, nuno1, 0, centre, &
                     mrot, t, x1)
         dmin = r8gaem()
         j2 = 0
         do i2 = 1, lonlis
             nomo2 = zk8(idlin2+i2-1)
 !         CALL JENONU(JEXNOM(NOEUMA,NOMO2),INO2)
-            ino2=num_lisin2(i2)
+            ino2 = num_lisin2(i2)
 !         CALL PACOOR(NOMA,INO2,0,X2)
-            x2(1)=zr(iageom-1+3*(ino2-1)+1)
-            x2(2)=zr(iageom-1+3*(ino2-1)+2)
-            x2(3)=zr(iageom-1+3*(ino2-1)+3)
-            d = padist( 3, x1, x2 )
+            x2(1) = zr(iageom-1+3*(ino2-1)+1)
+            x2(2) = zr(iageom-1+3*(ino2-1)+2)
+            x2(3) = zr(iageom-1+3*(ino2-1)+3)
+            d = padist(3, x1, x2)
             if (d .lt. dmin) then
                 dmin = d
                 nomno2 = nomo2
                 nuno2 = ino2
                 j2 = i2
-            endif
+            end if
         end do
 !
         if (j2 .eq. 0) then
             call utmess('F', 'MODELISA6_3', sk=nomno1)
-        endif
+        end if
 !
         if (zk8(idlinv+j2-1) .eq. m8blan) then
             zk8(idlou1+i1-1) = nomno1
             zk8(idlou2+i1-1) = nomno2
             zk8(idlinv+j2-1) = nomno1
         else
-            ier = ier + 1
-            valk (1) = nomno2
-            valk (2) = nomno1
-            valk (3) = zk8(idlinv+j2-1)
+            ier = ier+1
+            valk(1) = nomno2
+            valk(2) = nomno1
+            valk(3) = zk8(idlinv+j2-1)
             call utmess('E', 'MODELISA8_77', nk=3, valk=valk)
-        endif
+        end if
 !
     end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA6_4')
-    endif
+    end if
 !
     do i = 1, lonlis
         zk8(idlinv+i-1) = m8blan
@@ -199,47 +199,47 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 !
     do i2 = 1, lonlis
         nomno2 = zk8(idlin2+i2-1)
-        nuno2=num_lisin2(i2)
-        x2(1)=zr(iageom-1+3*(nuno2-1)+1)
-        x2(2)=zr(iageom-1+3*(nuno2-1)+2)
-        x2(3)=zr(iageom-1+3*(nuno2-1)+3)
+        nuno2 = num_lisin2(i2)
+        x2(1) = zr(iageom-1+3*(nuno2-1)+1)
+        x2(2) = zr(iageom-1+3*(nuno2-1)+2)
+        x2(3) = zr(iageom-1+3*(nuno2-1)+3)
         dmin = r8gaem()
         j1 = 0
         do i1 = 1, lonlis
             nomo1 = zk8(idlin1+i1-1)
-            ino1=num_lisin1(i1)
-            call parotr(noma, iageom, ino1, 0, centre,&
+            ino1 = num_lisin1(i1)
+            call parotr(noma, iageom, ino1, 0, centre, &
                         mrot, t, x1)
-            d = padist( 3, x1, x2 )
+            d = padist(3, x1, x2)
             if (d .lt. dmin) then
                 dmin = d
                 nomno1 = nomo1
                 nuno1 = ino1
                 j1 = i1
-            endif
+            end if
         end do
 !
         if (j1 .eq. 0) then
             call utmess('F', 'MODELISA6_3', sk=nomno2)
-        endif
+        end if
 !
         if (zk8(idlinv+j1-1) .eq. m8blan) then
             zk8(idlou3+i2-1) = nomno1
             zk8(idlou4+i2-1) = nomno2
             zk8(idlinv+j1-1) = nomno2
         else
-            ier = ier + 1
-            valk (1) = nomno1
-            valk (2) = nomno2
-            valk (3) = zk8(idlinv+j1-1)
+            ier = ier+1
+            valk(1) = nomno1
+            valk(2) = nomno2
+            valk(3) = zk8(idlinv+j1-1)
             call utmess('E', 'MODELISA8_77', nk=3, valk=valk)
-        endif
+        end if
 !
     end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA6_4')
-    endif
+    end if
 !
 ! --- VERIFICATION DE LA COHERENCE DES COUPLES FORMES D'UNE PART
 ! --- PAR LISOU1 ET LISOU2 ET D'AUTRE-PART DES COUPLES 'INVERSES'
@@ -251,32 +251,32 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             if (zk8(idlou1+i-1) .eq. zk8(idlou3+j-1)) then
                 iexcor = 1
                 if (zk8(idlou2+i-1) .ne. zk8(idlou4+j-1)) then
-                    ier = ier + 1
-                    valk (1) = lisin1
-                    valk (2) = lisin2
-                    valk (3) = zk8(idlou1+i-1)
-                    valk (4) = zk8(idlou2+i-1)
-                    valk (5) = zk8(idlou4+j-1)
+                    ier = ier+1
+                    valk(1) = lisin1
+                    valk(2) = lisin2
+                    valk(3) = zk8(idlou1+i-1)
+                    valk(4) = zk8(idlou2+i-1)
+                    valk(5) = zk8(idlou4+j-1)
                     call utmess('E', 'MODELISA8_87', nk=5, valk=valk)
-                endif
-            endif
+                end if
+            end if
         end do
 !
         if (iexcor .eq. 0) then
-            ier = ier + 1
-            valk (1) = lisin1
-            valk (2) = lisin2
-            valk (3) = zk8(idlou1+i-1)
-            valk (4) = ' '
-            valk (5) = ' '
+            ier = ier+1
+            valk(1) = lisin1
+            valk(2) = lisin2
+            valk(3) = zk8(idlou1+i-1)
+            valk(4) = ' '
+            valk(5) = ' '
             call utmess('E', 'MODELISA8_88', nk=5, valk=valk)
-        endif
+        end if
 !
     end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA6_4')
-    endif
+    end if
 !
 ! --- MENAGE
 !

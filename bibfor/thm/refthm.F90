@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine refthm(ds_thm   ,&
-                  jv_mater , ndim     , l_axi    , l_steady , fnoevo ,&
-                  mecani   , press1   , press2   , tempe    ,&
-                  nno      , nnos     , npi      , npg      ,&
-                  elem_coor, dt       , dimdef   , dimcon   , dimuel ,&
-                  jv_poids , jv_poids2,&
-                  jv_func  , jv_func2 , jv_dfunc , jv_dfunc2,&
-                  nddls    , nddlm    , nddl_meca, nddl_p1  , nddl_p2,&
-                  b        , r        , vectu )
+subroutine refthm(ds_thm, &
+                  jv_mater, ndim, l_axi, l_steady, fnoevo, &
+                  mecani, press1, press2, tempe, &
+                  nno, nnos, npi, npg, &
+                  elem_coor, dt, dimdef, dimcon, dimuel, &
+                  jv_poids, jv_poids2, &
+                  jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                  b, r, vectu)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
@@ -40,25 +40,25 @@ implicit none
 #include "asterfort/terefe.h"
 #include "blas/daxpy.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-integer, intent(in) :: jv_mater
-integer, intent(in) :: ndim
-aster_logical, intent(in) :: l_axi
-aster_logical, intent(in) :: l_steady
-aster_logical, intent(in) :: fnoevo
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-integer, intent(in) :: nno, nnos
-integer, intent(in) :: npi, npg
-real(kind=8) :: elem_coor(ndim, nno)
-real(kind=8), intent(in) :: dt
-integer, intent(in) :: dimuel, dimdef, dimcon
-integer, intent(in) :: jv_poids, jv_poids2
-integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
-integer, intent(in) :: nddls, nddlm
-integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
-real(kind=8), intent(out) :: b(dimdef, dimuel)
-real(kind=8), intent(out) :: r(1:dimdef+1)
-real(kind=8), intent(out) :: vectu(dimuel)
+    type(THM_DS), intent(inout) :: ds_thm
+    integer, intent(in) :: jv_mater
+    integer, intent(in) :: ndim
+    aster_logical, intent(in) :: l_axi
+    aster_logical, intent(in) :: l_steady
+    aster_logical, intent(in) :: fnoevo
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: nno, nnos
+    integer, intent(in) :: npi, npg
+    real(kind=8) :: elem_coor(ndim, nno)
+    real(kind=8), intent(in) :: dt
+    integer, intent(in) :: dimuel, dimdef, dimcon
+    integer, intent(in) :: jv_poids, jv_poids2
+    integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
+    integer, intent(in) :: nddls, nddlm
+    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
+    real(kind=8), intent(out) :: b(dimdef, dimuel)
+    real(kind=8), intent(out) :: r(1:dimdef+1)
+    real(kind=8), intent(out) :: vectu(dimuel)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,7 +118,7 @@ real(kind=8), intent(out) :: vectu(dimuel)
     ASSERT(nddls .le. 6)
     ASSERT(nno .le. 27)
     ASSERT(npi .le. 27)
-    ASSERT(dimcon .le. 31 + 5)
+    ASSERT(dimcon .le. 31+5)
 !
 ! - Check which *_REFE exist
 !
@@ -126,22 +126,22 @@ real(kind=8), intent(out) :: vectu(dimuel)
         call terefe('SIGM_REFE', 'THM', vale_refe)
         indx_vale_refe = 1
         list_vale_refe(indx_vale_refe) = vale_refe
-    endif
+    end if
     if (ds_thm%ds_elem%l_dof_pre1) then
         call terefe('FLUX_HYD1_REFE', 'THM', vale_refe)
         indx_vale_refe = 2
         list_vale_refe(indx_vale_refe) = vale_refe
-    endif
+    end if
     if (ds_thm%ds_elem%l_dof_pre2) then
         call terefe('FLUX_HYD2_REFE', 'THM', vale_refe)
         indx_vale_refe = 3
         list_vale_refe(indx_vale_refe) = vale_refe
-    endif
+    end if
     if (ds_thm%ds_elem%l_dof_ther) then
         call terefe('FLUX_THER_REFE', 'THM', vale_refe)
         indx_vale_refe = 4
         list_vale_refe(indx_vale_refe) = vale_refe
-    endif
+    end if
 !
 ! - Compute
 !
@@ -153,40 +153,40 @@ real(kind=8), intent(out) :: vectu(dimuel)
             else if (i_dim .le. (mecani(5)+press1(2)*press1(7))) then
                 indx_vale_refe = 2
                 if (tempe(5) .gt. 0) then
-                    if (i_dim .eq. (mecani(5)+press1(7)) .or. i_dim .eq.&
-                        (mecani( 5)+press1(2)*press1(7))) then
+                    if (i_dim .eq. (mecani(5)+press1(7)) .or. i_dim .eq. &
+                        (mecani(5)+press1(2)*press1(7))) then
                         cycle
-                    endif
-                endif
-            else if (i_dim .le. (mecani(5)+press1(2)*press1(7)+press2(2)*press2(7)) ) then
+                    end if
+                end if
+            else if (i_dim .le. (mecani(5)+press1(2)*press1(7)+press2(2)*press2(7))) then
                 indx_vale_refe = 3
                 if (tempe(5) .gt. 0) then
-                    if (i_dim .eq. (mecani(5)+ press1(2)*press1(7)+press2( 7)) .or.&
-                        i_dim .eq. (mecani(5)+ press1(2)*press1(7)+ press2(2)*press2(7))) then
+                    if (i_dim .eq. (mecani(5)+press1(2)*press1(7)+press2(7)) .or. &
+                        i_dim .eq. (mecani(5)+press1(2)*press1(7)+press2(2)*press2(7))) then
                         cycle
-                    endif
-                endif
+                    end if
+                end if
             else if (i_dim .le. (mecani(5)+tempe(5))) then
                 indx_vale_refe = 4
-            endif
+            end if
 ! --------- Get *_REFE value
             vale_refe = list_vale_refe(indx_vale_refe)
 ! --------- Compute
             if (vale_refe .ne. r8vide()) then
                 sigtm(i_dim+dimcon*(kpi-1)) = vale_refe
-                call fnothm(ds_thm, jv_mater , ndim     , l_axi    , l_steady , fnoevo ,&
-                            mecani   , press1   , press2   , tempe    ,&
-                            nno      , nnos     , npi      , npg      ,&
-                            elem_coor, dt       , dimdef   , dimcon   , dimuel ,&
-                            jv_poids , jv_poids2,&
-                            jv_func  , jv_func2 , jv_dfunc , jv_dfunc2,&
-                            nddls    , nddlm    , nddl_meca, nddl_p1  , nddl_p2,&
-                            sigtm    , b        , r        , bsigm(1) )
+                call fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
+                            mecani, press1, press2, tempe, &
+                            nno, nnos, npi, npg, &
+                            elem_coor, dt, dimdef, dimcon, dimuel, &
+                            jv_poids, jv_poids2, &
+                            jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                            nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                            sigtm, b, r, bsigm(1))
                 do k = 1, dimuel
-                    ftemp(k) = ftemp(k) + abs(bsigm(k))
+                    ftemp(k) = ftemp(k)+abs(bsigm(k))
                 end do
                 sigtm(i_dim+dimcon*(kpi-1)) = 0.0d0
-            endif
+            end if
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmtex(ndexfr, ndim  , nnl   , nne   , nnm   , nbcps,&
+subroutine mmmtex(ndexfr, ndim, nnl, nne, nnm, nbcps, &
                   matrff, matrfe, matrfm, matref, matrmf)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/isdeco.h"
 #include "asterfort/mmmte2.h"
 !
-integer, intent(in) :: ndexfr, ndim, nne, nnl, nnm, nbcps
-real(kind=8), intent(inout) :: matrff(18, 18), matref(27, 18), matrfe(18, 27)
-real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
+    integer, intent(in) :: ndexfr, ndim, nne, nnl, nnm, nbcps
+    real(kind=8), intent(inout) :: matrff(18, 18), matref(27, 18), matrfe(18, 27)
+    real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,13 +55,13 @@ real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbcpf = nbcps - 1
+    nbcpf = nbcps-1
 !
     if (ndexfr .ne. 0) then
         call isdeco([ndexfr], ndexcl, 10)
-        call mmmte2(ndim, nnl, nne, nnm, nbcpf,&
-                    ndexcl, matrff, matrfe, matrfm, matref,&
+        call mmmte2(ndim, nnl, nne, nnm, nbcpf, &
+                    ndexcl, matrff, matrfe, matrfm, matref, &
                     matrmf)
-    endif
+    end if
 !
 end subroutine

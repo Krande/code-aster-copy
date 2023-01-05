@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,62 +92,62 @@ subroutine chcoma(tablez, nomaou)
     if (ngm .ne. 0) then
         ngm = 1
         call getvtx('REPERE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma)
-        noma=nogrma
-        iret=0
+        noma = nogrma
+        iret = 0
     else
         call tbexp2(table, 'TYPE_OBJET')
-        call tbliva(table, 0, k8b, [ibid], [r8b],&
-                    [c16b], k8b, k8b, [r8b], 'TYPE_OBJET',&
-                    k8b, ibid, r8b, c16b, typobj,&
+        call tbliva(table, 0, k8b, [ibid], [r8b], &
+                    [c16b], k8b, k8b, [r8b], 'TYPE_OBJET', &
+                    k8b, ibid, r8b, c16b, typobj, &
                     iret)
-        if (typobj.ne.'MAILLAGE') call utmess('F', 'MODELISA2_89')
+        if (typobj .ne. 'MAILLAGE') call utmess('F', 'MODELISA2_89')
 
         call tbexp2(table, 'NOM_SD')
-        call tbliva(table, 0, k8b, [ibid], [r8b],&
-                    [c16b], k8b, k8b, [r8b], 'NOM_SD',&
-                    k8b, ibid, r8b, c16b, noma,&
+        call tbliva(table, 0, k8b, [ibid], [r8b], &
+                    [c16b], k8b, k8b, [r8b], 'NOM_SD', &
+                    k8b, ibid, r8b, c16b, noma, &
                     iret)
-    endif
+    end if
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
-    endif
-    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
-                [c16b], noma, k8b, [r8b], 'CDG_Y',&
-                k8b, ibid, yg, c16b, k8b,&
+    end if
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b], &
+                [c16b], noma, k8b, [r8b], 'CDG_Y', &
+                k8b, ibid, yg, c16b, k8b, &
                 iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
-    endif
-    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
-                [c16b], noma, k8b, [r8b], 'CDG_Z',&
-                k8b, ibid, zg, c16b, k8b,&
+    end if
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b], &
+                [c16b], noma, k8b, [r8b], 'CDG_Z', &
+                k8b, ibid, zg, c16b, k8b, &
                 iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
-    endif
+    end if
 !
 ! --- RECUPERATION DANS LA TABLE DE L'ANGLE FAISANT PASSER DU REPERE
 ! --- PRINCIPAL D'INERTIE AU REPERE GLOBAL :
 !     ------------------------------------
-    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
-                [c16b], noma, k8b, [r8b], 'ALPHA',&
-                k8b, ibid, alpha, c16b, k8b,&
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b], &
+                [c16b], noma, k8b, [r8b], 'ALPHA', &
+                k8b, ibid, alpha, c16b, k8b, &
                 iret)
     if (iret .ne. 0) then
         call utmess('F', 'ALGELINE_7')
-    endif
+    end if
 !
 ! --- PASSAGE DE L'ANGLE DE DEGRES EN RADIANS :
 !     ---------------------------------------
-    alpha = alpha * r8dgrd()
+    alpha = alpha*r8dgrd()
 !
 ! --- CONSTITUTION DE LA MATRICE DE PASSAGE DU REPERE GLOBAL
 ! --- AU REPERE D'INERTIE :
 !     -------------------
-    p(1,1) = cos(alpha)
-    p(2,1) = sin(alpha)
-    p(1,2) = -sin(alpha)
-    p(2,2) = cos(alpha)
+    p(1, 1) = cos(alpha)
+    p(2, 1) = sin(alpha)
+    p(1, 2) = -sin(alpha)
+    p(2, 2) = cos(alpha)
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
@@ -167,8 +167,8 @@ subroutine chcoma(tablez, nomaou)
     do ino = 1, nbno
 !
         idcoor = jcoor-1+dimcoo*(ino-1)
-        zr(idcoor+1) = zr(idcoor+1) - yg
-        zr(idcoor+2) = zr(idcoor+2) - zg
+        zr(idcoor+1) = zr(idcoor+1)-yg
+        zr(idcoor+2) = zr(idcoor+2)-zg
     end do
 !
 ! --- ROTATION D'ANGLE ALPHA DES AXES :
@@ -179,8 +179,8 @@ subroutine chcoma(tablez, nomaou)
         yabs = zr(idcoor+1)
         zabs = zr(idcoor+2)
 !
-        zr(idcoor+1) = p(1,1)*yabs + p(2,1)*zabs
-        zr(idcoor+2) = p(1,2)*yabs + p(2,2)*zabs
+        zr(idcoor+1) = p(1, 1)*yabs+p(2, 1)*zabs
+        zr(idcoor+2) = p(1, 2)*yabs+p(2, 2)*zabs
     end do
 !
     call jedema()

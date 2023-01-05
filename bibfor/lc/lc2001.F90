@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,38 +17,38 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W0104
 !
-subroutine lc2001(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
-                  neps, deps, nsig, sigm, option,&
-                  angmas, sigp, vip, typmod, ndsde,&
+subroutine lc2001(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  neps, deps, nsig, sigm, option, &
+                  angmas, sigp, vip, typmod, ndsde, &
                   dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/nmelas_incr.h"
 #include "asterfort/rccoma.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-integer, intent(in) :: ndim
-integer, intent(in) :: imate
-integer, intent(in) :: neps
-real(kind=8), intent(in) :: deps(neps)
-integer, intent(in) :: nsig
-real(kind=8), intent(in) :: sigm(nsig)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(3)
-real(kind=8), intent(out) :: sigp(nsig)
-real(kind=8), intent(out) :: vip(1)
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: ndsde
-real(kind=8), intent(out) :: dsidep(nsig,neps)
-integer, intent(out) :: codret
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: deps(neps)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(nsig)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(nsig)
+    real(kind=8), intent(out) :: vip(1)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: ndsde
+    real(kind=8), intent(out) :: dsidep(nsig, neps)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,20 +63,20 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT (neps*nsig .eq. ndsde)
-    ASSERT (neps .eq. nsig)
-    ASSERT (neps .ge. 2*ndim)
+    ASSERT(neps*nsig .eq. ndsde)
+    ASSERT(neps .eq. nsig)
+    ASSERT(neps .ge. 2*ndim)
 
     codret = 0
     call rccoma(imate, 'ELAS', 1, mcmate, icodre)
-    ASSERT(icodre.eq.0)
+    ASSERT(icodre .eq. 0)
     if (mcmate .eq. 'ELAS') then
-        call nmelas_incr(BEHinteg,&
-                    fami, kpg, ksp, typmod,&
-                    imate, deps(1:2*ndim), sigm(1:2*ndim), option, &
-                    sigp(1:2*ndim), vip, dsidep(1:2*ndim,1:2*ndim))
+        call nmelas_incr(BEHinteg, &
+                         fami, kpg, ksp, typmod, &
+                         imate, deps(1:2*ndim), sigm(1:2*ndim), option, &
+                         sigp(1:2*ndim), vip, dsidep(1:2*ndim, 1:2*ndim))
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

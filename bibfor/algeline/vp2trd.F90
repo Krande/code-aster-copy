@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vp2trd(type, nbvect, alpha, beta, signes,&
+subroutine vp2trd(type, nbvect, alpha, beta, signes, &
                   vecpro, mxiter, nitqr)
     implicit none
 #include "jeveux.h"
@@ -72,16 +72,16 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
     if (type .eq. 'G') then
         symet = signes(1)
         do ivec = 2, nbvect
-            symet = min( signes(ivec),symet )
+            symet = min(signes(ivec), symet)
         end do
     else
-        symet = - 1.d0
-    endif
+        symet = -1.d0
+    end if
 !
     if (symet .gt. 0.d0) then
 !
 !        --- CAS OU LA TRIDIAGONALE EST SYMETRIQUE ---
-        call vpqlts(alpha, beta, nbvect, vecpro, nbvect,&
+        call vpqlts(alpha, beta, nbvect, vecpro, nbvect, &
                     mxiter, ier, nitqr)
         do ivect = 1, nbvect
             beta(ivect) = 0.0d0
@@ -97,8 +97,8 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
             call wkvect('&&VP2TRD.ZONE.TRAV', 'V V R', n2, ladw1)
             call wkvect('&&VP2TRD.WK.VPHQRP', 'V V R', n2, ladwk1)
             call wkvect('&&VP2TRD.Z.VPHQRP ', 'V V R', n2*n2, ladz1)
-            call vp2tru(method, type, alpha, beta, signes,&
-                        vecpro, nbvect, zr(ladw1), zr(ladz1), zr(ladwk1),&
+            call vp2tru(method, type, alpha, beta, signes, &
+                        vecpro, nbvect, zr(ladw1), zr(ladz1), zr(ladwk1), &
                         mxiter, ier, nitqr)
             call jedetr('&&VP2TRD.ZONE.TRAV')
             call jedetr('&&VP2TRD.WK.VPHQRP')
@@ -108,19 +108,19 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
             call wkvect('&&VP2TRD.A.VPHQRP ', 'V V R', nbvect*nbvect, ladz2)
             call wkvect('&&VP2TRD.WK.VPHQRP', 'V V R', n2, ladwk2)
 !
-            call vp2tru(method, type, alpha, beta, signes,&
-                        zr(ladz2), nbvect, zr(ladw2), vecpro, zr(ladwk2),&
+            call vp2tru(method, type, alpha, beta, signes, &
+                        zr(ladz2), nbvect, zr(ladw2), vecpro, zr(ladwk2), &
                         mxiter, ier, nitqr)
             call jedetr('&&VP2TRD.W.VPHQRP  ')
             call jedetr('&&VP2TRD.A.VPHQRP  ')
             call jedetr('&&VP2TRD.WK.VPHQRP ')
-        endif
-    endif
+        end if
+    end if
 !
     if (nbvect .eq. 1) vecpro(1) = 1.d0
     if (ier .ne. 0) then
         call utmess('F', 'ALGELINE3_55')
-    endif
+    end if
 !
 !     --- PASSAGE AUX VALEURS PROPRES DU SYSTEME INITIAL ---
     if (type .eq. 'G') then
@@ -129,16 +129,16 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
                 call utmess('A', 'ALGELINE3_56')
                 alpha(ivect) = 1.d+70
             else
-                alpha(ivect) = 1.d0 / alpha(ivect)
-            endif
+                alpha(ivect) = 1.d0/alpha(ivect)
+            end if
         end do
 !        --- TRI DES ELEMENTS PROPRES PAR ORDRE CROISSANT DES VALEURS
 !            ABSOLUES DES VALEURS PROPRES
-        call vpordo(1, 0, nbvect, alpha, vecpro,&
+        call vpordo(1, 0, nbvect, alpha, vecpro, &
                     nbvect)
     else if (type .eq. 'Q') then
 !        -- POUR LE PB Q LA RESTORATION DEPEND DE L'APPROCHE (CF:WP2VEC)
-    endif
+    end if
 !
     call jedema()
 end subroutine

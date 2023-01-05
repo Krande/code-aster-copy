@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine crperm()
 !
 !
 !
-    integer :: n1, nbcham, iord1(1), iord2, nbperm,  nbtrou, ip, ibid, ic
+    integer :: n1, nbcham, iord1(1), iord2, nbperm, nbtrou, ip, ibid, ic
     integer :: iret, jlim1, jlim2, nbma, jlino, nbno2, nncp
     real(kind=8) :: inst1, tran(3), prec
     real(kind=8) :: valr
@@ -81,18 +81,18 @@ subroutine crperm()
     else
         call getvr8(' ', 'PRECISION', scal=prec, nbret=n1)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
-        call rsorac(resu1, 'INST', ibid, inst1, k8b,&
-                    cbid, prec, crit, iord1, 1,&
+        call rsorac(resu1, 'INST', ibid, inst1, k8b, &
+                    cbid, prec, crit, iord1, 1, &
                     nbtrou)
         if (nbtrou .eq. 0) then
             valr = inst1
-            valk (1) = resu1
+            valk(1) = resu1
             call utmess('F', 'CALCULEL5_70', sk=valk(1), sr=valr)
         else if (nbtrou .ne. 1) then
             valr = inst1
             call utmess('F', 'CALCULEL5_71', sr=valr)
-        endif
-    endif
+        end if
+    end if
     call getvid(' ', 'MAILLAGE_INIT', scal=ma1, nbret=n1)
     call getvid(' ', 'RESU_FINAL', scal=resu2, nbret=n1)
     call getvid(' ', 'MAILLAGE_FINAL', scal=ma2, nbret=n1)
@@ -106,7 +106,7 @@ subroutine crperm()
         nbcham = -n1
         call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=cham, nbret=n1)
 !
-    endif
+    end if
 !
     call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
     iord2 = 1
@@ -115,22 +115,22 @@ subroutine crperm()
 !     -----------------------------
 !
     if (resu2 .ne. resu3) then
-        valk (1) = resu3
-        valk (2) = resu2
+        valk(1) = resu3
+        valk(2) = resu2
         call utmess('F', 'CALCULEL5_72', nk=2, valk=valk)
-    endif
+    end if
 !
     call jelira(resu2//'           .ORDR', 'LONUTI', ibid)
     if (ibid .ne. 1) then
-        valk (1) = resu2
-        valk (2) = k8b
+        valk(1) = resu2
+        valk(2) = k8b
         call utmess('F', 'CALCULEL5_73', nk=2, valk=valk)
-    endif
+    end if
 !
     do ic = 1, nbcham
-        call rsexch('F', resu1, cham(ic), iord1(1), ch1,&
+        call rsexch('F', resu1, cham(ic), iord1(1), ch1, &
                     iret)
-        call rsexch('F', resu2, cham(ic), iord2, ch2,&
+        call rsexch('F', resu2, cham(ic), iord2, ch2, &
                     iret)
 !
         if (cham(ic) .eq. 'DEPL') then
@@ -161,7 +161,7 @@ subroutine crperm()
             chs2 = '&&CRPERM.STRX_2'
             call celces(ch2, 'V', chs2)
             chsi2(ic) = chs2
-        endif
+        end if
 !
     end do
 !
@@ -177,12 +177,12 @@ subroutine crperm()
 !
     do ip = 1, nbperm
 !
-        call getvem(ma1, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_INIT', ip,&
+        call getvem(ma1, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_INIT', ip, &
                     1, gma1, n1)
-        call getvem(ma2, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_FINAL', ip,&
+        call getvem(ma2, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_FINAL', ip, &
                     1, gma2, n1)
 !
-        call getvr8('PERM_CHAM', 'TRAN', iocc=ip, nbval=3, vect=tran,&
+        call getvr8('PERM_CHAM', 'TRAN', iocc=ip, nbval=3, vect=tran, &
                     nbret=n1)
         call getvr8('PERM_CHAM', 'PRECISION', iocc=ip, scal=prec, nbret=n1)
 !
@@ -191,7 +191,7 @@ subroutine crperm()
 !
         call wkvect(linoeu, 'V V I', nbno2, jlino)
 !
-        call crpcvg(ma1, ma2, gma1, gma2, tran,&
+        call crpcvg(ma1, ma2, gma1, gma2, tran, &
                     prec, lima1, lima2, zi(jlino))
 !
         call jelira(lima1, 'LONMAX', nbma)
@@ -211,7 +211,7 @@ subroutine crperm()
             else
                 call cetran(zi(jlim1), zi(jlim2), nbma, chs1, chs2)
 !
-            endif
+            end if
 !
         end do
 !
@@ -222,24 +222,24 @@ subroutine crperm()
     end do
 !
     do ic = 1, nbcham
-        call rsexch('F', resu2, cham(ic), iord2, ch2,&
+        call rsexch('F', resu2, cham(ic), iord2, ch2, &
                     iret)
         chs1 = chsi1(ic)
         chs2 = chsi2(ic)
         if (cham(ic) .eq. 'DEPL') then
             call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=prchno)
-            call cnscno(chs2, prchno, 'NON', 'G', ch2,&
+            call cnscno(chs2, prchno, 'NON', 'G', ch2, &
                         'F', ibid)
             call detrsd('CHAM_NO_S', chs1)
             call detrsd('CHAM_NO_S', chs2)
         else
             call dismoi('NOM_LIGREL', ch2, 'CHAM_ELEM', repk=ligrel)
             call dismoi('NOM_OPTION', ch2, 'CHAM_ELEM', repk=option)
-            call cescel(chs2, ligrel, option, ' ', 'OUI',&
+            call cescel(chs2, ligrel, option, ' ', 'OUI', &
                         nncp, 'G', ch2, 'F', ibid)
             call detrsd('CHAM_ELEM_S', chs1)
             call detrsd('CHAM_ELEM_S', chs2)
-        endif
+        end if
     end do
 !
     call jedema()

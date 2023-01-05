@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine dtminfo_choc(nlcase, nbnoli)
 #include "asterfort/codent.h"
 !
 !   -0.1- Input/output arguments
-    integer          , intent(in)   :: nlcase
-    integer          , intent(in)   :: nbnoli
+    integer, intent(in)   :: nlcase
+    integer, intent(in)   :: nbnoli
 !
 !   -0.2- Local variables
     integer                      :: input, ind, base, digit, decal
@@ -50,14 +50,14 @@ subroutine dtminfo_choc(nlcase, nbnoli)
 
     input = nlcase
     base = 2
-    ind  = 1
+    ind = 1
     chaine = ' '
     chaine(1:1) = '|'
     do ind = 1, nbnoli
         decal = 1+(ind-1)*4
-        digit = input - int(input/base)*base
-        input = (input - digit)/base
-        if (digit.eq.1) chaine(decal+1:decal+2) = ' x'
+        digit = input-int(input/base)*base
+        input = (input-digit)/base
+        if (digit .eq. 1) chaine(decal+1:decal+2) = ' x'
         chaine(decal+3:decal+4) = ' |'
     end do
     call utmess('I', 'DYNAMIQUE_92', nk=2, valk=[chaine, line])

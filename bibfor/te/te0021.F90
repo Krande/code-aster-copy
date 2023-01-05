@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,20 +51,20 @@ subroutine te0021(option, nomte)
     integer :: npg2
     real(kind=8) :: omega1, omega2, omega3, rho(1), wij
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PROTATR', 'L', irota)
     call jevech('PMATUUR', 'E', imatuu)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     call get_elas_id(zi(imate), elas_id, elas_keyword)
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', elas_keyword, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', elas_keyword, 0, ' ', [0.d0], &
                 1, 'RHO', rho(1), icodre, 1)
     omega1 = zr(irota+1)*zr(irota)
     omega2 = zr(irota+2)*zr(irota)
@@ -74,7 +74,7 @@ subroutine te0021(option, nomte)
         do l = 1, 3
             do i = 1, nno
                 do j = 1, i
-                    a(k,l,i,j) = 0.d0
+                    a(k, l, i, j) = 0.d0
                 end do
             end do
         end do
@@ -85,27 +85,27 @@ subroutine te0021(option, nomte)
     do kp = 1, npg2
 !
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
 !
         do i = 1, nno
             do j = 1, i
                 wij = rho(1)*poids*zr(ivf+l+i-1)*zr(ivf+l+j-1)
-                a(1,1,i,j) = a(1,1,i,j) - (omega2**2+omega3**2)*wij
-                a(2,2,i,j) = a(2,2,i,j) - (omega1**2+omega3**2)*wij
-                a(3,3,i,j) = a(3,3,i,j) - (omega1**2+omega2**2)*wij
-                a(2,1,i,j) = a(2,1,i,j) + omega1*omega2*wij
-                a(3,1,i,j) = a(3,1,i,j) + omega1*omega3*wij
-                a(3,2,i,j) = a(3,2,i,j) + omega2*omega3*wij
+                a(1, 1, i, j) = a(1, 1, i, j)-(omega2**2+omega3**2)*wij
+                a(2, 2, i, j) = a(2, 2, i, j)-(omega1**2+omega3**2)*wij
+                a(3, 3, i, j) = a(3, 3, i, j)-(omega1**2+omega2**2)*wij
+                a(2, 1, i, j) = a(2, 1, i, j)+omega1*omega2*wij
+                a(3, 1, i, j) = a(3, 1, i, j)+omega1*omega3*wij
+                a(3, 2, i, j) = a(3, 2, i, j)+omega2*omega3*wij
             end do
         end do
     end do
 !
     do i = 1, nno
         do j = 1, i
-            a(1,2,i,j) = a(2,1,i,j)
-            a(1,3,i,j) = a(3,1,i,j)
-            a(2,3,i,j) = a(3,2,i,j)
+            a(1, 2, i, j) = a(2, 1, i, j)
+            a(1, 3, i, j) = a(3, 1, i, j)
+            a(2, 3, i, j) = a(3, 2, i, j)
         end do
     end do
 !
@@ -114,10 +114,10 @@ subroutine te0021(option, nomte)
     do k = 1, 3
         do l = 1, 3
             do i = 1, nno
-                ik = ((3*i+k-4)* (3*i+k-3))/2
+                ik = ((3*i+k-4)*(3*i+k-3))/2
                 do j = 1, i
-                    ijkl = ik + 3* (j-1) + l
-                    zr(imatuu+ijkl-1) = a(k,l,i,j)
+                    ijkl = ik+3*(j-1)+l
+                    zr(imatuu+ijkl-1) = a(k, l, i, j)
                 end do
             end do
         end do

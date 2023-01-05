@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
+subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon, &
                   taillr, conf, lnoff)
     implicit none
 #include "jeveux.h"
@@ -84,32 +84,32 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !       RAJOUTER LA REGLE CAPY EXCLUS THETA ET NUME_FOND
 !       RAJOUTER LA REGLE CAPY EXCLUS FOND_FISS ET NUME_FOND
 !
-    else if (typfis.eq.'FONDFISS') then
+    else if (typfis .eq. 'FONDFISS') then
 !
 !       1) VERIF : FONOEU = NOM DES NOEUDS DU FOND DE FISSURE
-        noeuin=nomfis//'.FOND.NOEU'
+        noeuin = nomfis//'.FOND.NOEU'
 !
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER CAR
 !       LE CAS DES FONDS DOUBLES EST INTERDIT)
         call jeexin(noeuin, ier)
-        ASSERT(ier.ne.0)
+        ASSERT(ier .ne. 0)
 !
 !       2) VERIF : CHFOND = COORDONNEES DES POINTS/NOEUDS DU FOND DE FISSURE
-        fondin=nomfis//'.FONDFISS'
+        fondin = nomfis//'.FONDFISS'
 !
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER)
         call jeexin(fondin, ier)
-        ASSERT(ier.ne.0)
+        ASSERT(ier .ne. 0)
 !
 !       3) VERIF : BASEFON = BASE LOCALE AU FOND DE FISSURE
-        basein=nomfis//'.BASEFOND'
+        basein = nomfis//'.BASEFOND'
 !
 !       VERIF D'EXISTENCE (CET OBJET N'EXISTE QUE SI CONFIG_INIT='COLLEE')
         call dismoi('CONFIG_INIT', nomfis, 'FOND_FISS', repk=conf)
         if (conf .eq. 'COLLEE') then
             call jeexin(basein, ier)
-            ASSERT(ier.ne.0)
-        endif
+            ASSERT(ier .ne. 0)
+        end if
 
 !       4) CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
 !       EN PRENANT EN COMPTE LES MOTS-CLES NUME_FOND ET NB_POINT_FOND
@@ -121,26 +121,26 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !       CET OBJET N'EXISTE QUE SI CONFIG_INIT='COLLEE'
         if (conf .eq. 'COLLEE') then
             call jeexin(taillr, ier)
-            ASSERT(ier.ne.0)
-        endif
+            ASSERT(ier .ne. 0)
+        end if
 !
-    else if (typfis.eq.'FISSURE') then
+    else if (typfis .eq. 'FISSURE') then
 !
 !       1) FONOEU N'EXISTE PAS EN X-FEM
 !
 !       2) VERIF : CHFOND = COORDONNEES DES POINTS/NOEUDS DU FOND DE FISSURE
-        fondin=nomfis//'.FONDFISS'
+        fondin = nomfis//'.FONDFISS'
 !
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER)
         call jeexin(fondin, ier)
-        ASSERT(ier.ne.0)
+        ASSERT(ier .ne. 0)
 !
 !       3) VERIF : BASEFON = BASE LOCALE AU FOND DE FISSURE
-        basein=nomfis//'.BASEFOND'
+        basein = nomfis//'.BASEFOND'
 !
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER)
         call jeexin(basein, ier)
-        ASSERT(ier.ne.0)
+        ASSERT(ier .ne. 0)
 !
 !       4) CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
 !       EN PRENANT EN COMPTE LES MOTS-CLES NUME_FOND ET NB_POINT_FOND
@@ -149,7 +149,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !       5) TAILLR = TAILLES DES MAILLES CONNECTEES AUX NOEUDS
         taillr = nomfis//'.FOND.TAILLE_R'
 !
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,30 +50,30 @@ subroutine imptou(base, tous, mess)
 !
     call jemarq()
 !     GOTO 9999
-    bas1=base
+    bas1 = base
 !
 !
 !     1. LA PREMIERE FOIS ON ALLOUE UN POINTEUR DE NOMS QUI CONTIENDRA
 !        TOUS LES OBJETS DEJA IMPRIMES UNE FOIS : '&&IMPTOU.DEJAVU'
 !     --------------------------------------------------------------
-    dejavu='&&IMPTOU.DEJAVU'
+    dejavu = '&&IMPTOU.DEJAVU'
     call jeexin(dejavu, iret)
     if (iret .eq. 0) then
         call jecreo(dejavu, 'G N K24')
         call jeecra(dejavu, 'NOMMAX', 90000)
-    endif
+    end if
 !
 !
 !
 !     2. RECUPERATION DE LA LISTE DES OBJETS :
 !     --------------------------------------------------------------
-    call jelstc(bas1, ' ', 0, 0, kbid,&
+    call jelstc(bas1, ' ', 0, 0, kbid, &
                 nbval)
     nbobj = -nbval
 !     -- ON AUGMENTE NBOBJ DE 1 CAR ON VA CREER UN OBJET DE PLUS !
     nbobj = nbobj+1
     AS_ALLOCATE(vk24=liste, size=nbobj)
-    call jelstc(bas1, ' ', 0, nbobj, liste,&
+    call jelstc(bas1, ' ', 0, nbobj, liste, &
                 nbval)
 !
 !
@@ -84,10 +84,10 @@ subroutine imptou(base, tous, mess)
         call jenonu(jexnom(dejavu, obj), nuobj)
         if (nuobj .eq. 0) call jecroc(jexnom(dejavu, obj))
 !
-        if ((nuobj.gt.0) .and. (tous.eq.'NEW')) goto 10
+        if ((nuobj .gt. 0) .and. (tous .eq. 'NEW')) goto 10
 !
         call dbgobj(obj, 'OUI', 6, mess)
- 10     continue
+10      continue
     end do
 !
 !

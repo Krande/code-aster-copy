@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine betimp(BEHinteg,&
-                  nmat, mater, sig, vind, vinf,&
-                  nseui1, nseui2, nseui3, nseui4,&
+subroutine betimp(BEHinteg, &
+                  nmat, mater, sig, vind, vinf, &
+                  nseui1, nseui2, nseui3, nseui4, &
                   sige, sigd)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/betfpp.h"
@@ -75,150 +75,150 @@ implicit none
     character(len=8) :: nomail
 !       ---------------------------------------------------------------
     integer :: ndt, ndi
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !
-    data   d13      /.33333333333333d0 /
-    data   zero     / 0.d0 /
-    data   un       / 1.d0 /
-    data   deux     / 2.d0 /
-    data   trois    / 3.d0 /
-    rac2 = sqrt (deux)
+    data d13/.33333333333333d0/
+    data zero/0.d0/
+    data un/1.d0/
+    data deux/2.d0/
+    data trois/3.d0/
+    rac2 = sqrt(deux)
 !
     call infniv(ifm, niv)
     if (niv .eq. 2) then
-    endif
+    end if
 !
     call tecael(iadzi, iazk24)
-    nomail = zk24(iazk24-1+3)(1:8)
+    nomail = zk24(iazk24-1+3) (1:8)
 !
 ! ---   IMPRESSION GENERALE
 !
 !
 ! ---   CARACTERISTIQUES MATERIAU
 !
-    beta = mater(3,2)
+    beta = mater(3, 2)
 !
-    a = rac2 * (beta - un) / (deux * beta - un)
-    b = rac2 / trois * beta / (deux * beta - un)
+    a = rac2*(beta-un)/(deux*beta-un)
+    b = rac2/trois*beta/(deux*beta-un)
     c = rac2
-    d = deux * rac2 / trois
+    d = deux*rac2/trois
 !
 !
 ! --- LONGUEUR CARACTERISTIQUE POUR LOI BETON LC
 !
-    if (mater(9,2) .lt. zero) then
+    if (mater(9, 2) .lt. zero) then
         lc = BEHinteg%elem%eltsize1
     else
-        lc = mater(9,2)
-    endif
+        lc = mater(9, 2)
+    end if
 !
 100 format(a43)
-101 format(a43,a8)
-102 format(a43,1pd12.5)
-103 format(4(a9,i3))
+101 format(a43, a8)
+102 format(a43, 1pd12.5)
+103 format(4(a9, i3))
 !
 ! ---   TRAITEMENT DE LA CONTRAINTE ELASTIQUE
 !
     call lcdevi(sige, dev)
-    sigeq = sqrt (1.5d0 * dot_product(dev(1:ndt), dev(1:ndt)))
+    sigeq = sqrt(1.5d0*dot_product(dev(1:ndt), dev(1:ndt)))
 !
     call lchydr(sige, sigh)
 !
     pc = vind(1)
     pt = vind(2)
-    call betfpp(BEHinteg,&
-                mater, nmat, pc, pt,&
-                3, fc, ft, dfcdlc, dftdlt,&
+    call betfpp(BEHinteg, &
+                mater, nmat, pc, pt, &
+                3, fc, ft, dfcdlc, dftdlt, &
                 kuc, kut, ke)
 !
-    fcomp = (rac2 * d13 * sigeq + a * sigh) / b - fc
-    ftrac = (rac2 * d13 * sigeq + c * sigh) / d - ft
+    fcomp = (rac2*d13*sigeq+a*sigh)/b-fc
+    ftrac = (rac2*d13*sigeq+c*sigh)/d-ft
 !
-    write(ifm,100) ' -----------------------------------------  '
-    write(ifm,100) ' NON CONVERGENCE DE LA LOI BETON_DOUBLE_DP '
-    write(ifm,100) ' -----------------------------------------  '
-    write(ifm,101) 'MAILLE :                                   ',&
+    write (ifm, 100) ' -----------------------------------------  '
+    write (ifm, 100) ' NON CONVERGENCE DE LA LOI BETON_DOUBLE_DP '
+    write (ifm, 100) ' -----------------------------------------  '
+    write (ifm, 101) 'MAILLE :                                   ',&
      &                   nomail
-    write(ifm,102) 'LONGUEUR CARACTERISTIQUE :                 ',&
+    write (ifm, 102) 'LONGUEUR CARACTERISTIQUE :                 ',&
      &                   lc
-    write(ifm,102) 'CONTRAINTE ELASTIQUE EQUIVALENTE :         ',&
+    write (ifm, 102) 'CONTRAINTE ELASTIQUE EQUIVALENTE :         ',&
      &                   sigeq
-    write(ifm,102) 'CONTRAINTE ELASTIQUE HYDROSTATIQUE :       ',&
+    write (ifm, 102) 'CONTRAINTE ELASTIQUE HYDROSTATIQUE :       ',&
      &                   sigh
-    write(ifm,102) 'ECROUISSAGE EN COMPRESSION :               ',&
+    write (ifm, 102) 'ECROUISSAGE EN COMPRESSION :               ',&
      &                   pc
-    write(ifm,102) 'ECROUISSAGE EN TRACTION :                  ',&
+    write (ifm, 102) 'ECROUISSAGE EN TRACTION :                  ',&
      &                   pt
-    write(ifm,102) 'RESISTANCE COMPRESSION AVANT ECROUISSAGE : ',&
+    write (ifm, 102) 'RESISTANCE COMPRESSION AVANT ECROUISSAGE : ',&
      &                   fc
-    write(ifm,102) 'RESISTANCE TRACTION AVANT ECROUISSAGE :    ',&
+    write (ifm, 102) 'RESISTANCE TRACTION AVANT ECROUISSAGE :    ',&
      &                   ft
-    write(ifm,102) 'ECROUISSAGE ULTIME EN COMPRESSION :        ',&
+    write (ifm, 102) 'ECROUISSAGE ULTIME EN COMPRESSION :        ',&
      &                   kuc
-    write(ifm,102) 'ECROUISSAGE AU PIC EN COMPRESSION :        ',&
+    write (ifm, 102) 'ECROUISSAGE AU PIC EN COMPRESSION :        ',&
      &                   ke
-    write(ifm,102) 'ECROUISSAGE ULTIME EN TRACTION :           ',&
+    write (ifm, 102) 'ECROUISSAGE ULTIME EN TRACTION :           ',&
      &                   kut
-    write(ifm,102) 'VALEUR DU CRITERE DE COMPRESSION :         ',&
+    write (ifm, 102) 'VALEUR DU CRITERE DE COMPRESSION :         ',&
      &                   fcomp
-    write(ifm,102) 'VALEUR DU CRITERE DE TRACTION :            ',&
+    write (ifm, 102) 'VALEUR DU CRITERE DE TRACTION :            ',&
      &                   ftrac
 !
 ! ---   TRAITEMENT DE LA CONTRAINTE (NON ELASTIQUE) A L'INSTANT MOINS
 !
     call lcdevi(sigd, dev)
-    sigeq = sqrt (1.5d0 * dot_product(dev(1:ndt), dev(1:ndt)))
+    sigeq = sqrt(1.5d0*dot_product(dev(1:ndt), dev(1:ndt)))
 !
     call lchydr(sigd, sigh)
 !
-    write(ifm,102) 'CONTRAINTE EQUIVALENTE A L INSTANT MOINS : ',&
+    write (ifm, 102) 'CONTRAINTE EQUIVALENTE A L INSTANT MOINS : ',&
      &                   sigeq
-    write(ifm,102) 'CONTRAINTE HYDROSTATIQUE A L INSTANT MOINS:',&
+    write (ifm, 102) 'CONTRAINTE HYDROSTATIQUE A L INSTANT MOINS:',&
      &                   sigh
 !
 ! ---   TRAITEMENT DE LA CONTRAINTE ELASTO PLASTIQUE
 !
     call lcdevi(sig, dev)
-    sigeq = sqrt (1.5d0 * dot_product(dev(1:ndt), dev(1:ndt)))
+    sigeq = sqrt(1.5d0*dot_product(dev(1:ndt), dev(1:ndt)))
 !
     call lchydr(sig, sigh)
 !
     pc = vinf(1)
     pt = vinf(2)
-    call betfpp(BEHinteg,&
-                mater, nmat, pc, pt,&
-                3, fc, ft, dfcdlc, dftdlt,&
+    call betfpp(BEHinteg, &
+                mater, nmat, pc, pt, &
+                3, fc, ft, dfcdlc, dftdlt, &
                 kuc, kut, ke)
 !
-    fcomp = (rac2 * d13 * sigeq + a * sigh) / b - fc
-    ftrac = (rac2 * d13 * sigeq + c * sigh) / d - ft
-    dlambc = vinf(1) - vind(1)
-    dlambt = vinf(2) - vind(2)
+    fcomp = (rac2*d13*sigeq+a*sigh)/b-fc
+    ftrac = (rac2*d13*sigeq+c*sigh)/d-ft
+    dlambc = vinf(1)-vind(1)
+    dlambt = vinf(2)-vind(2)
 !
-    write(ifm,103) 'NSEUI1 : ',nseui1,' NSEUI2 : ',nseui2,&
-     &                 ' NSEUI3 : ',nseui3,' NSEUI4 : ',nseui4
-    write(ifm,102) 'CONTRAINTE EQUIVALENTE A L INSTANT PLUS :  ',&
+    write (ifm, 103) 'NSEUI1 : ', nseui1, ' NSEUI2 : ', nseui2,&
+     &                 ' NSEUI3 : ', nseui3, ' NSEUI4 : ', nseui4
+    write (ifm, 102) 'CONTRAINTE EQUIVALENTE A L INSTANT PLUS :  ',&
      &                   sigeq
-    write(ifm,102) 'CONTRAINTE HYDROSTATIQUE A L INSTANT PLUS :',&
+    write (ifm, 102) 'CONTRAINTE HYDROSTATIQUE A L INSTANT PLUS :',&
      &                   sigh
-    write(ifm,102) 'ECROUISSAGE EN COMPRESSION A L INST. PLUS :',&
+    write (ifm, 102) 'ECROUISSAGE EN COMPRESSION A L INST. PLUS :',&
      &                   pc
-    write(ifm,102) 'ECROUISSAGE EN TRACTION A L INSTANT PLUS:  ',&
+    write (ifm, 102) 'ECROUISSAGE EN TRACTION A L INSTANT PLUS:  ',&
      &                   pt
-    write(ifm,102) 'RESISTANCE COMPRESSION APRES ECROUISSAGE : ',&
+    write (ifm, 102) 'RESISTANCE COMPRESSION APRES ECROUISSAGE : ',&
      &                   fc
-    write(ifm,102) 'RESISTANCE TRACTION APRES ECROUISSAGE :    ',&
+    write (ifm, 102) 'RESISTANCE TRACTION APRES ECROUISSAGE :    ',&
      &                   ft
-    write(ifm,102) 'VALEUR DU CRITERE DE COMPRESSION :         ',&
+    write (ifm, 102) 'VALEUR DU CRITERE DE COMPRESSION :         ',&
      &                   fcomp
-    write(ifm,102) 'VALEUR DU CRITERE DE TRACTION :            ',&
+    write (ifm, 102) 'VALEUR DU CRITERE DE TRACTION :            ',&
      &                   ftrac
-    write(ifm,102) 'INCREMENT DE DEFO. PLAS. EN COMPRESSION :  ',&
+    write (ifm, 102) 'INCREMENT DE DEFO. PLAS. EN COMPRESSION :  ',&
      &                   dlambc
-    write(ifm,102) 'INCREMENT DE DEFO. PLAS. EN TRACTION :     ',&
+    write (ifm, 102) 'INCREMENT DE DEFO. PLAS. EN TRACTION :     ',&
      &                   dlambt
-    write(ifm,100) ' -----------------------------------------  '
+    write (ifm, 100) ' -----------------------------------------  '
 !
 !
 end subroutine

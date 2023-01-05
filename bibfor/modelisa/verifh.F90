@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verifh(fami    , kpg    , ksp    , poum    , j_mater    ,&
-                  epshy   , materi_, ihydr_ )
+subroutine verifh(fami, kpg, ksp, poum, j_mater, &
+                  epshy, materi_, ihydr_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/rcvarc.h"
@@ -28,14 +28,14 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/get_elas_id.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-character(len=*), intent(in) :: poum
-integer, intent(in) :: j_mater
-real(kind=8), intent(out) :: epshy
-character(len=8), optional, intent(in) :: materi_
-integer, optional, intent(out) :: ihydr_
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: j_mater
+    real(kind=8), intent(out) :: epshy
+    character(len=8), optional, intent(in) :: materi_
+    integer, optional, intent(out) :: ihydr_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,34 +73,34 @@ integer, optional, intent(out) :: ihydr_
     materi = ' '
     if (present(materi_)) then
         materi = materi_
-    endif
+    end if
 !
-    iret_hydr   = 0
-    iret_hydrm  = 0
-    iret_hydrp  = 0
-    hydrm       = 0.d0
-    hydrp       = 0.d0
-    epshy       = 0.d0
+    iret_hydr = 0
+    iret_hydrm = 0
+    iret_hydrp = 0
+    hydrm = 0.d0
+    hydrp = 0.d0
+    epshy = 0.d0
 !
 ! - No hydratation -> strain is zero
 !
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                 ksp, hydrp, iret_hydr)
     if (iret_hydr .ne. 0) then
         goto 999
-    endif
+    end if
 !
 ! - Get hydratation
 !
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                     ksp, hydrm, iret_hydrm)
-    endif
+    end if
 !
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                     ksp, hydrp, iret_hydrp)
-    endif
+    end if
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
@@ -108,52 +108,52 @@ integer, optional, intent(out) :: ihydr_
 !
 ! - Get elastic parameters
 !
-    nomres='B_ENDOGE'
+    nomres = 'B_ENDOGE'
 !
     icodrm = 0
     icodrp = 0
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        if (iret_hydrm.eq.0) then
-            call rcvalb(fami, kpg, ksp, '-', j_mater,&
-                        materi, elas_keyword, 0, ' ', [0.d0],&
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        if (iret_hydrm .eq. 0) then
+            call rcvalb(fami, kpg, ksp, '-', j_mater, &
+                        materi, elas_keyword, 0, ' ', [0.d0], &
                         1, nomres, valres(1), icodrm(1), 1)
             bendom = valres(1)
-        endif
-    endif
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        if (iret_hydrp.eq.0) then
-            call rcvalb(fami, kpg, ksp, '+', j_mater,&
-                        materi, elas_keyword, 0, ' ', [0.d0],&
+        end if
+    end if
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        if (iret_hydrp .eq. 0) then
+            call rcvalb(fami, kpg, ksp, '+', j_mater, &
+                        materi, elas_keyword, 0, ' ', [0.d0], &
                         1, nomres, valres(1), icodrp(1), 1)
             bendop = valres(1)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Test
 !
-    if ((icodrm(1)+icodrp(1)).ne.0) then
+    if ((icodrm(1)+icodrp(1)) .ne. 0) then
         call tecael(iadzi, iazk24)
-        valk(1) = zk24(iazk24-1+3)(1:8)
+        valk(1) = zk24(iazk24-1+3) (1:8)
         valk(2) = 'HYDR'
         valk(3) = nomres
         call utmess('F', 'COMPOR5_32', nk=3, valk=valk)
-    endif
+    end if
 !
 ! - Compute strains
 !
     if (poum .eq. 'T') then
-        if (iret_hydrm + iret_hydrp .eq. 0) then
-            epshy = (- bendop*hydrp) - (- bendom*hydrm)
-        endif
+        if (iret_hydrm+iret_hydrp .eq. 0) then
+            epshy = (-bendop*hydrp)-(-bendom*hydrm)
+        end if
     else if (poum .eq. '-') then
-        if (iret_hydrm.eq.0) then
-            epshy = - bendom*hydrm
-        endif
+        if (iret_hydrm .eq. 0) then
+            epshy = -bendom*hydrm
+        end if
     else if (poum .eq. '+') then
-        if (iret_hydrp.eq.0) then
-            epshy = - bendop*hydrp
-        endif
-    endif
+        if (iret_hydrp .eq. 0) then
+            epshy = -bendop*hydrp
+        end if
+    end if
 !
 999 continue
 !
@@ -161,12 +161,12 @@ integer, optional, intent(out) :: ihydr_
 !
     if (present(ihydr_)) then
         ihydr_ = 0
-        if ((iret_hydrm + iret_hydrp) .ne. 0) then
+        if ((iret_hydrm+iret_hydrp) .ne. 0) then
             ihydr_ = 1
-        endif
+        end if
         if (iret_hydr .ne. 0) then
             ihydr_ = 1
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

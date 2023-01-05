@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine modiba(nomres, basemo, basefl, numvit, newres,&
-                  itypfl, imasse, nuor, nbnuor, numo,&
+subroutine modiba(nomres, basemo, basefl, numvit, newres, &
+                  itypfl, imasse, nuor, nbnuor, numo, &
                   nbmfl)
     implicit none
 #include "asterf_types.h"
@@ -79,7 +79,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     integer :: lmat(2), lddl, lvali, lvalr, lvalk
     integer :: npari, nparr, npark
     integer :: nbpari, nbparr, nbpark, nbpara
-    parameter    ( nbpari=1 , nbparr=15 , nbpark=1, nbpara=17 )
+    parameter(nbpari=1, nbparr=15, nbpark=1, nbpara=17)
     real(kind=8) :: frequ, amort, omeg2, masg, rigg
     real(kind=8) :: factx, facty, factz, depi, xmastr(3)
     character(len=1) :: typmod
@@ -96,15 +96,15 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     real(kind=8), pointer :: freq(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
-    data iddl  / 1, 2, 3, 4, 5, 6 /
-    data  nopara /&
-     &  'NUME_MODE'       , 'NORME'           ,&
-     &  'FREQ'            ,&
-     &  'OMEGA2'          , 'AMOR_REDUIT'     ,&
-     &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,&
-     &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,&
-     &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,&
-     &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
+    data iddl/1, 2, 3, 4, 5, 6/
+    data nopara/&
+     &  'NUME_MODE', 'NORME',&
+     &  'FREQ',&
+     &  'OMEGA2', 'AMOR_REDUIT',&
+     &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
+     &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
+     &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
 !
 !     ------------------------------------------------------------------
 !
@@ -121,7 +121,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     if (newres) then
         call rscrsd('G', nomres, 'MODE_MECA', nbnuor)
         call refdcp(basemo, nomres)
-    endif
+    end if
 !
 !     --- PARAMETRES SOUS ECOULEMENT ---
 !
@@ -134,13 +134,13 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     kvali = '&&MODIBA.PARA_I'
     kvalr = '&&MODIBA.PARA_R'
     kvalk = '&&MODIBA.PARA_K'
-    call vprecu(basemo, 'DEPL', nbnuor, nuor, kvec,&
-                nbpara, nopara(1), kvali, kvalr, kvalk,&
-                neq, nbmode, typmod, npari, nparr,&
+    call vprecu(basemo, 'DEPL', nbnuor, nuor, kvec, &
+                nbpara, nopara(1), kvali, kvalr, kvalk, &
+                neq, nbmode, typmod, npari, nparr, &
                 npark)
-    ASSERT(npari.eq.nbpari)
-    ASSERT(nparr.eq.nbparr)
-    ASSERT(npark.eq.nbpark)
+    ASSERT(npari .eq. nbpari)
+    ASSERT(nparr .eq. nbparr)
+    ASSERT(npark .eq. nbpark)
     call jeveuo(kvec, 'E', lmod)
     call jeveuo(kvali, 'E', lvali)
     call jeveuo(kvalr, 'E', lvalr)
@@ -148,7 +148,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !
 !     --- ON RECUPERE UN NUME_DDL ---
 !
-    call rsexch('F', basemo, 'DEPL', nuor(1), nomcha,&
+    call rsexch('F', basemo, 'DEPL', nuor(1), nomcha, &
                 iret)
     call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchno)
     call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
@@ -164,55 +164,55 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
             numod = nuor(i)
 !
             if (numo(j) .eq. numod) then
-                imas = nbmfl*(ivit-1) + j
-                ifac = nbmfl*(ivit-1) + 3*(j-1)
-                ifre = 2*nbmfl*(numvit-1) + 2*(j-1)
+                imas = nbmfl*(ivit-1)+j
+                ifac = nbmfl*(ivit-1)+3*(j-1)
+                ifre = 2*nbmfl*(numvit-1)+2*(j-1)
                 frequ = freq(ifre+1)
                 amort = freq(1+ifre+1)
-                omeg2 = ( depi * frequ ) ** 2
+                omeg2 = (depi*frequ)**2
                 masg = vmasg(imas)
-                rigg = omeg2 * masg
+                rigg = omeg2*masg
                 factx = fact(ifac+1)
                 facty = fact(ifac+2)
                 factz = fact(ifac+3)
                 if (amort .le. 0.d0) amort = 1.d-06
 !
 !           --- FREQUENCE ---
-                zr(lvalr+i-1) = freqom( omeg2 )
+                zr(lvalr+i-1) = freqom(omeg2)
 !           --- OMEGA2 ---
                 zr(lvalr+nbnuor+i-1) = omeg2
 !           --- AMOR_REDUIT ---
-                zr(lvalr+nbnuor*2 +i-1) = amort
+                zr(lvalr+nbnuor*2+i-1) = amort
 !           --- MASS_GENE , RIGI_GENE ---
-                zr(lvalr+nbnuor*3 +i-1) = masg
-                zr(lvalr+nbnuor*4 +i-1) = rigg
+                zr(lvalr+nbnuor*3+i-1) = masg
+                zr(lvalr+nbnuor*4+i-1) = rigg
 !           --- MASS_EFFE_D... ---
-                zr(lvalr+nbnuor*6+i-1) = factx * factx / masg
-                zr(lvalr+nbnuor*7+i-1) = facty * facty / masg
-                zr(lvalr+nbnuor*8+i-1) = factz * factz / masg
+                zr(lvalr+nbnuor*6+i-1) = factx*factx/masg
+                zr(lvalr+nbnuor*7+i-1) = facty*facty/masg
+                zr(lvalr+nbnuor*8+i-1) = factz*factz/masg
 !           --- FACT_PARTICI_D... ---
-                zr(lvalr+nbnuor*9 +i-1) = factx / masg
-                zr(lvalr+nbnuor*10+i-1) = facty / masg
-                zr(lvalr+nbnuor*11+i-1) = factz / masg
+                zr(lvalr+nbnuor*9+i-1) = factx/masg
+                zr(lvalr+nbnuor*10+i-1) = facty/masg
+                zr(lvalr+nbnuor*11+i-1) = factz/masg
 !
-                if (itypfl .eq. 3 .or. (itypfl.eq.4 .and. imasse.ne.0)) then
+                if (itypfl .eq. 3 .or. (itypfl .eq. 4 .and. imasse .ne. 0)) then
                     lnorm = .true.
                     zk24(lvalk+i-1) = 'SANS_CMP: LAGR'
-                    write(chamfl(14:19),'(2I3.3)') numod,numvit
+                    write (chamfl(14:19), '(2I3.3)') numod, numvit
                     call jeveuo(chamfl(1:19)//'.VALE', 'L', vr=vale)
                     icm = 0
                     do ieq = 1, neq
                         do k = 1, 6
                             if (deeq(1+(2*ieq)-1) .eq. iddl(k)) then
-                                icm = icm + 1
+                                icm = icm+1
                                 zr(lmod+neq*(i-1)+ieq-1) = vale(icm)
                                 goto 30
-                            endif
+                            end if
                         end do
- 30                     continue
+30                      continue
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
@@ -222,31 +222,31 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     if (lnorm) then
         norm = 'AVEC_CMP'
         call wkvect('&&MODIBA.POSITION.DDL', 'V V I', neq, lddl)
-        call pteddl('CHAM_NO', nomcha, 1, 'LAGR    ', neq,&
-                    list_equa = zi(lddl))
+        call pteddl('CHAM_NO', nomcha, 1, 'LAGR    ', neq, &
+                    list_equa=zi(lddl))
         do ieq = 0, neq-1
-            zi(lddl+ieq)= 1 - zi(lddl+ieq)
+            zi(lddl+ieq) = 1-zi(lddl+ieq)
         end do
         AS_ALLOCATE(vr=coef_mode, size=nbmode)
 !        --- ON NORMALISE LES DEFORMEES
-        call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&
-                    zi(lddl), zr(lmod), zr(lvalr), xmastr,0,&
+        call vpnorm(norm, 'OUI', lmat(1), neq, nbmode, &
+                    zi(lddl), zr(lmod), zr(lvalr), xmastr, 0, &
                     0, coef_mode)
 !        --- ON STOCKE LES DEFORMEES
-        call vpstor(-1, typmod, nomres, nbnuor, neq,&
-                    zr(lmod), zc(1), nbnuor, nbpari, nbparr,&
-                    nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
+        call vpstor(-1, typmod, nomres, nbnuor, neq, &
+                    zr(lmod), zc(1), nbnuor, nbpari, nbparr, &
+                    nbpark, nopara, '    ', zi(lvali), zr(lvalr), &
                     zk24(lvalk), iprec)
 !        --- ON NORMALISE LES AUTRES CHAMPS
         call vpnor2(nomres, nbmode, nuor, coef_mode)
         AS_DEALLOCATE(vr=coef_mode)
     else
 !        --- ON STOCKE LES DEFORMEES
-        call vpstor(-1, typmod, nomres, nbnuor, neq,&
-                    zr(lmod), zc(1), nbnuor, nbpari, nbparr,&
-                    nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
+        call vpstor(-1, typmod, nomres, nbnuor, neq, &
+                    zr(lmod), zc(1), nbnuor, nbpari, nbparr, &
+                    nbpark, nopara, '    ', zi(lvali), zr(lvalr), &
                     zk24(lvalk), iprec)
-    endif
+    end if
 !
 !     --- TITRE ASSOCIE AU CONCEPT ---
 !

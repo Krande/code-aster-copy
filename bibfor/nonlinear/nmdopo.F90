@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmdopo(sddyna, ds_posttimestep)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -36,8 +36,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/selectListRead.h"
 !
-character(len=19), intent(in) :: sddyna
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,17 +69,17 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_9')
-    endif
+    end if
 !
 ! - Initializations
 !
-    iocc        = 1
-    strip(1)    = -10.d0
-    strip(2)    = 10.d0
+    iocc = 1
+    strip(1) = -10.d0
+    strip(2) = 10.d0
     l_mode_vibr = ASTER_FALSE
     l_crit_stab = ASTER_FALSE
-    l_small     = ASTER_FALSE
-    l_strip     = ASTER_FALSE
+    l_small = ASTER_FALSE
+    l_strip = ASTER_FALSE
 !
 ! - Active functionnalities
 !
@@ -96,7 +96,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         call getfac('MODE_VIBR', nocc)
         ASSERT(nocc .le. 1)
         l_mode_vibr = nocc .ne. 0
-    endif
+    end if
     ds_posttimestep%l_crit_stab = l_crit_stab
     ds_posttimestep%l_mode_vibr = l_mode_vibr
 !
@@ -109,17 +109,17 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
             option = 'FLAMBDYN'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         ds_posttimestep%crit_stab%option = option
-    endif
+    end if
     if (l_mode_vibr) then
         if (l_impl) then
             option = 'VIBRDYNA'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         ds_posttimestep%mode_vibr%option = option
-    endif
+    end if
 !
 ! - Parameters for MODE_VIBR
 !
@@ -133,7 +133,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         l_small = ASTER_FALSE
         l_strip = ASTER_FALSE
         if (level .eq. 'BANDE') then
-            call getvr8(keywfact, 'FREQ', iocc=iocc, nbval=2, vect=strip,&
+            call getvr8(keywfact, 'FREQ', iocc=iocc, nbval=2, vect=strip, &
                         nbret=iret)
             l_strip = ASTER_TRUE
             ds_posttimestep%mode_vibr%strip_bounds(1) = omega2(strip(1))
@@ -143,15 +143,15 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
             l_small = ASTER_TRUE
             ds_posttimestep%mode_vibr%nb_eigen = nb_eigen
         elseif (level .eq. 'CALIBRATION') then
-            call getvr8(keywfact, 'FREQ', iocc=iocc, nbval=2, vect=strip,&
+            call getvr8(keywfact, 'FREQ', iocc=iocc, nbval=2, vect=strip, &
                         nbret=iret)
             l_strip = ASTER_TRUE
             ds_posttimestep%mode_vibr%strip_bounds(1) = omega2(strip(1))
             ds_posttimestep%mode_vibr%strip_bounds(2) = omega2(strip(2))
         else
             ASSERT(ASTER_FALSE)
-        endif
-        ds_posttimestep%mode_vibr%level   = level
+        end if
+        ds_posttimestep%mode_vibr%level = level
         ds_posttimestep%mode_vibr%l_small = l_small
         ds_posttimestep%mode_vibr%l_strip = l_strip
 ! ----- Get parameters for eigen solver
@@ -159,7 +159,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         ds_posttimestep%mode_vibr%coef_dim_espace = coef_dim_espace
 ! ----- Read select list
         call selectListRead(keywfact, iocc, ds_posttimestep%mode_vibr%selector)
-    endif
+    end if
 !
 ! - Parameters for CRIT_STAB
 !
@@ -170,7 +170,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         l_small = ASTER_FALSE
         l_strip = ASTER_FALSE
         if (level .eq. 'BANDE') then
-            call getvr8(keywfact, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=strip,&
+            call getvr8(keywfact, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=strip, &
                         nbret=iret)
             l_strip = ASTER_TRUE
             ds_posttimestep%crit_stab%strip_bounds(1) = strip(1)
@@ -180,15 +180,15 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
             l_small = ASTER_TRUE
             ds_posttimestep%crit_stab%nb_eigen = nb_eigen
         elseif (level .eq. 'CALIBRATION') then
-            call getvr8(keywfact, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=strip,&
+            call getvr8(keywfact, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=strip, &
                         nbret=iret)
             l_strip = ASTER_TRUE
             ds_posttimestep%crit_stab%strip_bounds(1) = strip(1)
             ds_posttimestep%crit_stab%strip_bounds(2) = strip(2)
         else
             ASSERT(ASTER_FALSE)
-        endif
-        ds_posttimestep%mode_vibr%level   = level
+        end if
+        ds_posttimestep%mode_vibr%level = level
         ds_posttimestep%crit_stab%l_small = l_small
         ds_posttimestep%crit_stab%l_strip = l_strip
 ! ----- Get parameters for eigen solver
@@ -208,27 +208,27 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         ds_posttimestep%stab_para%nb_dof_excl = nb_dof_excl
         if (nb_dof_excl .ne. 0) then
             ASSERT(nb_dof_excl .le. nb_maxi_dof)
-            AS_ALLOCATE(vk8 = ds_posttimestep%stab_para%list_dof_excl, size = nb_dof_excl)
-            call getvtx(keywfact, 'DDL_EXCLUS', iocc=iocc,&
-                        nbval=nb_dof_excl, vect=ds_posttimestep%stab_para%list_dof_excl,&
+            AS_ALLOCATE(vk8=ds_posttimestep%stab_para%list_dof_excl, size=nb_dof_excl)
+            call getvtx(keywfact, 'DDL_EXCLUS', iocc=iocc, &
+                        nbval=nb_dof_excl, vect=ds_posttimestep%stab_para%list_dof_excl, &
                         nbret=iret)
-        endif
+        end if
 ! ----- Stabilized DOF
         call getvtx(keywfact, 'DDL_STAB', iocc=iocc, nbval=0, nbret=nb_dof_stab)
         nb_dof_stab = -nb_dof_stab
         ds_posttimestep%stab_para%nb_dof_stab = nb_dof_stab
         if (nb_dof_stab .ne. 0) then
             ASSERT(nb_dof_stab .le. nb_maxi_dof)
-            AS_ALLOCATE(vk8 = ds_posttimestep%stab_para%list_dof_stab, size = nb_dof_stab)
-            call getvtx(keywfact, 'DDL_STAB', iocc=iocc,&
-                        nbval=nb_dof_stab, vect=ds_posttimestep%stab_para%list_dof_stab,&
+            AS_ALLOCATE(vk8=ds_posttimestep%stab_para%list_dof_stab, size=nb_dof_stab)
+            call getvtx(keywfact, 'DDL_STAB', iocc=iocc, &
+                        nbval=nb_dof_stab, vect=ds_posttimestep%stab_para%list_dof_stab, &
                         nbret=iret)
-        endif
+        end if
 ! ----- Stabilization parameters
         call getvr8(keywfact, 'PREC_INSTAB', iocc=iocc, scal=instab_prec, nbret=iret)
         ds_posttimestep%stab_para%instab_prec = instab_prec
         call getvtx(keywfact, 'SIGNE', iocc=iocc, scal=instab_sign, nbret=iret)
         ds_posttimestep%stab_para%instab_sign = instab_sign
-    endif
+    end if
 !
 end subroutine

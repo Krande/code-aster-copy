@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine d1pa3d(xyzgau, repere, irep, passag)
 !
     do i = 1, 3
         do j = 1, 3
-            p(i,j) = zero
+            p(i, j) = zero
         end do
     end do
 !
@@ -82,7 +82,7 @@ subroutine d1pa3d(xyzgau, repere, irep, passag)
 !          ----------------------------------------
             call matrot(angl, p)
             irep = 1
-        endif
+        end if
 !
 ! ---- CAS OU LE REPERE D'ORTHOTROPIE EST DEFINI COMME SUIT :
 ! ----    LA DIRECTION D'ORTHOTROPIE EST DEFINIE PAR 2 ANGLES
@@ -106,7 +106,7 @@ subroutine d1pa3d(xyzgau, repere, irep, passag)
 !      ----------------------------------------
         call utrcyl(xyzgau, dire, orig, p)
         irep = 1
-    endif
+    end if
 !
 ! ---- CONSTRUCTION DE LA MATRICE DE PASSAGE  POUR LE TENSEUR
 ! ---- D'ELASTICITE (QUI EST DU QUATRIEME ORDRE) DU REPERE
@@ -116,48 +116,48 @@ subroutine d1pa3d(xyzgau, repere, irep, passag)
 !       ---------------------------------------------------------
     if (irep .eq. 1) then
 !
-        passag(1,1) = p(1,1)*p(1,1)
-        passag(1,2) = p(1,2)*p(1,2)
-        passag(1,3) = p(1,3)*p(1,3)
-        passag(1,4) = deux*p(1,1)*p(1,2)
-        passag(1,5) = deux*p(1,1)*p(1,3)
-        passag(1,6) = deux*p(1,2)*p(1,3)
+        passag(1, 1) = p(1, 1)*p(1, 1)
+        passag(1, 2) = p(1, 2)*p(1, 2)
+        passag(1, 3) = p(1, 3)*p(1, 3)
+        passag(1, 4) = deux*p(1, 1)*p(1, 2)
+        passag(1, 5) = deux*p(1, 1)*p(1, 3)
+        passag(1, 6) = deux*p(1, 2)*p(1, 3)
 !
-        passag(2,1) = p(2,1)*p(2,1)
-        passag(2,2) = p(2,2)*p(2,2)
-        passag(2,3) = p(2,3)*p(2,3)
-        passag(2,4) = deux*p(2,1)*p(2,2)
-        passag(2,5) = deux*p(2,1)*p(2,3)
-        passag(2,6) = deux*p(2,2)*p(2,3)
+        passag(2, 1) = p(2, 1)*p(2, 1)
+        passag(2, 2) = p(2, 2)*p(2, 2)
+        passag(2, 3) = p(2, 3)*p(2, 3)
+        passag(2, 4) = deux*p(2, 1)*p(2, 2)
+        passag(2, 5) = deux*p(2, 1)*p(2, 3)
+        passag(2, 6) = deux*p(2, 2)*p(2, 3)
 !
-        passag(3,1) = p(3,1)*p(3,1)
-        passag(3,2) = p(3,2)*p(3,2)
-        passag(3,3) = p(3,3)*p(3,3)
-        passag(3,4) = deux*p(3,1)*p(3,2)
-        passag(3,5) = deux*p(3,1)*p(3,3)
-        passag(3,6) = deux*p(3,2)*p(3,3)
+        passag(3, 1) = p(3, 1)*p(3, 1)
+        passag(3, 2) = p(3, 2)*p(3, 2)
+        passag(3, 3) = p(3, 3)*p(3, 3)
+        passag(3, 4) = deux*p(3, 1)*p(3, 2)
+        passag(3, 5) = deux*p(3, 1)*p(3, 3)
+        passag(3, 6) = deux*p(3, 2)*p(3, 3)
 !
-        passag(4,1) = p(1,1)*p(2,1)
-        passag(4,2) = p(1,2)*p(2,2)
-        passag(4,3) = p(1,3)*p(2,3)
-        passag(4,4) = (p(1,1)*p(2,2) + p(1,2)*p(2,1))
-        passag(4,5) = (p(1,1)*p(2,3) + p(1,3)*p(2,1))
-        passag(4,6) = (p(1,2)*p(2,3) + p(1,3)*p(2,2))
+        passag(4, 1) = p(1, 1)*p(2, 1)
+        passag(4, 2) = p(1, 2)*p(2, 2)
+        passag(4, 3) = p(1, 3)*p(2, 3)
+        passag(4, 4) = (p(1, 1)*p(2, 2)+p(1, 2)*p(2, 1))
+        passag(4, 5) = (p(1, 1)*p(2, 3)+p(1, 3)*p(2, 1))
+        passag(4, 6) = (p(1, 2)*p(2, 3)+p(1, 3)*p(2, 2))
 !
-        passag(5,1) = p(1,1)*p(3,1)
-        passag(5,2) = p(1,2)*p(3,2)
-        passag(5,3) = p(1,3)*p(3,3)
-        passag(5,4) = p(1,1)*p(3,2) + p(1,2)*p(3,1)
-        passag(5,5) = p(1,1)*p(3,3) + p(1,3)*p(3,1)
-        passag(5,6) = p(1,2)*p(3,3) + p(1,3)*p(3,2)
+        passag(5, 1) = p(1, 1)*p(3, 1)
+        passag(5, 2) = p(1, 2)*p(3, 2)
+        passag(5, 3) = p(1, 3)*p(3, 3)
+        passag(5, 4) = p(1, 1)*p(3, 2)+p(1, 2)*p(3, 1)
+        passag(5, 5) = p(1, 1)*p(3, 3)+p(1, 3)*p(3, 1)
+        passag(5, 6) = p(1, 2)*p(3, 3)+p(1, 3)*p(3, 2)
 !
-        passag(6,1) = p(2,1)*p(3,1)
-        passag(6,2) = p(2,2)*p(3,2)
-        passag(6,3) = p(2,3)*p(3,3)
-        passag(6,4) = p(2,1)*p(3,2) + p(2,2)*p(3,1)
-        passag(6,5) = p(2,1)*p(3,3) + p(2,3)*p(3,1)
-        passag(6,6) = p(2,2)*p(3,3) + p(3,2)*p(2,3)
+        passag(6, 1) = p(2, 1)*p(3, 1)
+        passag(6, 2) = p(2, 2)*p(3, 2)
+        passag(6, 3) = p(2, 3)*p(3, 3)
+        passag(6, 4) = p(2, 1)*p(3, 2)+p(2, 2)*p(3, 1)
+        passag(6, 5) = p(2, 1)*p(3, 3)+p(2, 3)*p(3, 1)
+        passag(6, 6) = p(2, 2)*p(3, 3)+p(3, 2)*p(2, 3)
 !
-    endif
+    end if
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

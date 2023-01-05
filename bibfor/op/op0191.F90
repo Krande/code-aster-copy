@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,16 +51,16 @@ subroutine op0191()
 !       le nom de la commande          : nomcmd
     call getres(resuou, concep, nomcmd)
 !
-    call getvid(' ', 'CHAM_GD',  scal=resuin, nbret=n0)
-    if ( n0.ne.0 ) then
-        call modirepcham(resuou, resuin )
+    call getvid(' ', 'CHAM_GD', scal=resuin, nbret=n0)
+    if (n0 .ne. 0) then
+        call modirepcham(resuou, resuin)
         goto 999
-    endif
+    end if
     call getvid(' ', 'RESULTAT', scal=resuin, nbret=n0)
-    if ( n0.ne.0 ) then
-        call modirepresu(resuou, resuin )
+    if (n0 .ne. 0) then
+        call modirepresu(resuou, resuin)
         goto 999
-    endif
+    end if
 !
 999 continue
     call jedema()

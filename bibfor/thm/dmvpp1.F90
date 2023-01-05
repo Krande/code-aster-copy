@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function dmvpp1(rho11, rho12, phids, cs ,&
-                dpvpl, satur, phi  , pvp)
+function dmvpp1(rho11, rho12, phids, cs, &
+                dpvpl, satur, phi, pvp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-real(kind=8), intent(in) :: rho11, rho12, phids, cs, dpvpl, satur, phi, pvp
-real(kind=8) :: dmvpp1
+    real(kind=8), intent(in) :: rho11, rho12, phids, cs, dpvpl, satur, phi, pvp
+    real(kind=8) :: dmvpp1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ real(kind=8) :: dmvpp1
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dmvpp1 = rho12*((-phids-(1.d0-satur)*(1.d0-satur)*cs)*dpvpl+&
-                      phids+(1.d0-satur)*satur*cs+phi*(1.d0-satur)*rho12/rho11/pvp)
+    dmvpp1 = rho12*((-phids-(1.d0-satur)*(1.d0-satur)*cs)*dpvpl+ &
+                    phids+(1.d0-satur)*satur*cs+phi*(1.d0-satur)*rho12/rho11/pvp)
 !
 end function

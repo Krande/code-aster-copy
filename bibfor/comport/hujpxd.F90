@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujpxd(k, mater, sig, vin, prox,&
+subroutine hujpxd(k, mater, sig, vin, prox, &
                   proxc)
     implicit none
 !    HUJEUX:  CRITERE DE PROXIMITE POUR LES SEUILS DEVIATOIRES
@@ -41,13 +41,13 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
     real(kind=8) :: degr, beta, b, m, phi, pcref, ptrac
     real(kind=8) :: sigd(3), p, q, dist, rh
     aster_logical :: debug, prox, proxc
-    parameter    (un = 1.d0)
-    parameter    (tole1 = 1.d-6)
-    parameter    (tole2 = 1.d-7)
-    parameter    (degr = 0.0174532925199d0)
+    parameter(un=1.d0)
+    parameter(tole1=1.d-6)
+    parameter(tole2=1.d-7)
+    parameter(degr=0.0174532925199d0)
 !
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
     call infniv(ifm, niv)
 !
@@ -67,7 +67,7 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
     phi = mater(5, 2)
     pcref = mater(7, 2)
     pa = mater(8, 2)
-    ptrac = mater(21,2)
+    ptrac = mater(21, 2)
     pcr = pcref*exp(-beta*epsvp)
     m = sin(degr*phi)
 !
@@ -76,24 +76,24 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
 ! --- PROJECTION DANS LE PLAN DEVIATEUR K ------------------------
 ! ==================================================================
     call hujprj(k-4, sig, sigd, p, q)
-    if (((p -ptrac)/pa) .le. tole2) then
-        if (debug) write (ifm,'(A)') 'HUJPXD :: LOG(P/PA) NON DEFINI'
+    if (((p-ptrac)/pa) .le. tole2) then
+        if (debug) write (ifm, '(A)') 'HUJPXD :: LOG(P/PA) NON DEFINI'
         prox = .false.
         goto 999
-    endif
+    end if
 !
 !
 ! ==================================================================
 ! --- CALCUL DU SEUIL DU MECANISME DEVIATOIRE K ------------------
 ! ==================================================================
-    r = -q /( m*(p -ptrac)*(un-b*log((p -ptrac)/pcr)) )
+    r = -q/(m*(p-ptrac)*(un-b*log((p-ptrac)/pcr)))
     dist = abs(r-rh)/rh
 !
     if (dist .lt. 1.d-5) then
         prox = .true.
     else
         prox = .false.
-    endif
+    end if
 !
 ! ==================================================================
 ! --- SEUIL CYCLIQUE ELASTIQUE  + TANGENT AU SEUIL MONOTONE --------
@@ -103,11 +103,11 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
         dist = abs(r-rh)/rh
     else
         dist = abs(r-rh)
-    endif
+    end if
 !
-    if ((dist .lt. tole1) .and. (vin(k).eq.mater(18,2))) then
+    if ((dist .lt. tole1) .and. (vin(k) .eq. mater(18, 2))) then
         proxc = .true.
-    endif
+    end if
 !
 999 continue
 end subroutine

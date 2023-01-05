@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gmeth3(nnoff, gthi, milieu, gs,&
+subroutine gmeth3(nnoff, gthi, milieu, gs, &
                   objcur, gi, num, connex)
 
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -79,21 +79,21 @@ implicit none
 !       RESOLUTION DU SYSTEME : MATRICE DIAGONALE
         call jeveuo(vect, 'L', ivect)
         do i = 1, nnoff
-            gi(i) = gthi(i)/zr(ivect+i-1 )
+            gi(i) = gthi(i)/zr(ivect+i-1)
         end do
 
-    else if ( lissg.eq.'LAGRANGE' ) then
+    else if (lissg .eq. 'LAGRANGE') then
         num = 3
 
 !       CALCUL DE LA MATRICE DU SYSTEME LINÉAIRE
         matr = '&&METHO3.MATRI'
-        call  gmatc3(nnoff, milieu, connex, &
-                     objcur, matr)
+        call gmatc3(nnoff, milieu, connex, &
+                    objcur, matr)
 
 !       SYSTEME LINEAIRE:  MATR*GI = GTHI
         call gsyste(matr, nnoff, nnoff, gthi, gi)
 
-    endif
+    end if
 !
     do i = 1, nnoff
         gs(i) = gi(i)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,16 +58,16 @@ subroutine te0014(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(option.eq.'CHAR_MECA_ROTA_R')
+    ASSERT(option .eq. 'CHAR_MECA_ROTA_R')
 !
 ! - Finite element parameters
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     ndl = 3*nno
     do i = 1, ndl
         do j = 1, ndl
-            amm(i,j) = 0.d0
+            amm(i, j) = 0.d0
         end do
     end do
 !
@@ -93,8 +93,8 @@ subroutine te0014(option, nomte)
 ! - Material
 !
     call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb('FPG1', 1, 1, '+', zi(j_mate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(j_mate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre(1), 1)
 !
 ! - Computation
@@ -105,53 +105,53 @@ subroutine te0014(option, nomte)
     om3 = rota_speed*rota_axis(3)
     if (j_deplm .eq. 0 .or. j_deplp .eq. 0) then
         do i = 1, nno
-            x(i) = zr(j_geom+3*i-3) - rota_cent(1)
-            y(i) = zr(j_geom+3*i-2) - rota_cent(2)
-            z(i) = zr(j_geom+3*i-1) - rota_cent(3)
-        enddo
+            x(i) = zr(j_geom+3*i-3)-rota_cent(1)
+            y(i) = zr(j_geom+3*i-2)-rota_cent(2)
+            z(i) = zr(j_geom+3*i-1)-rota_cent(3)
+        end do
     else
         do i = 1, nno
-            x(i) = zr(j_geom+3*i-3) + zr(j_deplm+3*i-3) + zr(j_deplp+3*i- 3) - rota_cent(1)
-            y(i) = zr(j_geom+3*i-2) + zr(j_deplm+3*i-2) + zr(j_deplp+3*i- 2) - rota_cent(2)
-            z(i) = zr(j_geom+3*i-1) + zr(j_deplm+3*i-1) + zr(j_deplp+3*i- 1) - rota_cent(3)
-        enddo
-    endif
+            x(i) = zr(j_geom+3*i-3)+zr(j_deplm+3*i-3)+zr(j_deplp+3*i-3)-rota_cent(1)
+            y(i) = zr(j_geom+3*i-2)+zr(j_deplm+3*i-2)+zr(j_deplp+3*i-2)-rota_cent(2)
+            z(i) = zr(j_geom+3*i-1)+zr(j_deplm+3*i-1)+zr(j_deplp+3*i-1)-rota_cent(3)
+        end do
+    end if
     do i = 1, nno
-        omo = om1*x(i) + om2*y(i) + om3*z(i)
-        ft(3*i-2) = omm*x(i) - omo*om1
-        ft(3*i-1) = omm*y(i) - omo*om2
-        ft(3*i) = omm*z(i) - omo*om3
-    enddo
+        omo = om1*x(i)+om2*y(i)+om3*z(i)
+        ft(3*i-2) = omm*x(i)-omo*om1
+        ft(3*i-1) = omm*y(i)-omo*om2
+        ft(3*i) = omm*z(i)-omo*om3
+    end do
 !
 ! - Loop on point Gauss
 !
     do kp = 1, npg
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(j_geom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(j_geom), &
                     poids)
         do i = 1, nno
             xi = rho(1)*poids*zr(ivf+l+i-1)
-            ii = 3* (i-1)
+            ii = 3*(i-1)
             do j = 1, nno
                 xij = xi*zr(ivf+l+j-1)
-                jj = 3* (j-1)
+                jj = 3*(j-1)
                 do ic = 1, 3
-                    amm(ii+ic,jj+ic) = amm(ii+ic,jj+ic) + xij
-                enddo
-            enddo
-        enddo
+                    amm(ii+ic, jj+ic) = amm(ii+ic, jj+ic)+xij
+                end do
+            end do
+        end do
     end do
 !
     do i = 1, ndl
         rri = 0.d0
         do j = 1, ndl
-            rri = rri + amm(i,j)*ft(j)
-        enddo
-        amm(i,i) = rri
+            rri = rri+amm(i, j)*ft(j)
+        end do
+        amm(i, i) = rri
     end do
 !
     do i = 1, ndl
-        zr(j_vect+i-1) = amm(i,i)
+        zr(j_vect+i-1) = amm(i, i)
     end do
 !
 end subroutine

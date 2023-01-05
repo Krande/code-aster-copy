@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function spect4(xx, y, xlc, vitn, rhoe,&
+function spect4(xx, y, xlc, vitn, rhoe, &
                 defm, nbp, im, jm)
     implicit none
 !  CALCUL DE
@@ -42,44 +42,44 @@ function spect4(xx, y, xlc, vitn, rhoe,&
     real(kind=8) :: delta, phix, phiy, rox, roy, spect4, ux
     real(kind=8) :: uy
 !-----------------------------------------------------------------------
-    if (xx .le. rhoe(2,1)) then
+    if (xx .le. rhoe(2, 1)) then
         i = 2
-    else if (xx .gt. rhoe(nbp-1,1)) then
+    else if (xx .gt. rhoe(nbp-1, 1)) then
         i = nbp
     else
-        i =3
- 10     continue
-        if (xx .gt. rhoe(i,1)) then
+        i = 3
+10      continue
+        if (xx .gt. rhoe(i, 1)) then
             i = i+1
             goto 10
-        endif
-    endif
+        end if
+    end if
 !
-    delta = (xx-rhoe(i-1,1)) / (rhoe(i,1)-rhoe(i-1,1))
+    delta = (xx-rhoe(i-1, 1))/(rhoe(i, 1)-rhoe(i-1, 1))
 !
-    phix = defm(i-1,im) + delta*(defm(i,im)-defm(i-1,im))
-    ux = vitn(i-1,2) + delta*(vitn(i,2)-vitn(i-1,2))
-    rox = rhoe(i-1,2) + delta*(rhoe(i,2)-rhoe(i-1,2))
+    phix = defm(i-1, im)+delta*(defm(i, im)-defm(i-1, im))
+    ux = vitn(i-1, 2)+delta*(vitn(i, 2)-vitn(i-1, 2))
+    rox = rhoe(i-1, 2)+delta*(rhoe(i, 2)-rhoe(i-1, 2))
 !
-    if (y .le. rhoe(2,1)) then
+    if (y .le. rhoe(2, 1)) then
         i = 2
-    else if (y .gt. rhoe(nbp-1,1)) then
+    else if (y .gt. rhoe(nbp-1, 1)) then
         i = nbp
     else
-        i =3
- 20     continue
-        if (y .gt. rhoe(i,1)) then
+        i = 3
+20      continue
+        if (y .gt. rhoe(i, 1)) then
             i = i+1
             goto 20
-        endif
-    endif
+        end if
+    end if
 !
-    delta = (y-rhoe(i-1,1)) / (rhoe(i,1)-rhoe(i-1,1))
+    delta = (y-rhoe(i-1, 1))/(rhoe(i, 1)-rhoe(i-1, 1))
 !
-    phiy = defm(i-1,jm) + delta*(defm(i,jm)-defm(i-1,jm))
-    uy = vitn(i-1,2) + delta*(vitn(i,2)-vitn(i-1,2))
-    roy = rhoe(i-1,2) + delta*(rhoe(i,2)-rhoe(i-1,2))
+    phiy = defm(i-1, jm)+delta*(defm(i, jm)-defm(i-1, jm))
+    uy = vitn(i-1, 2)+delta*(vitn(i, 2)-vitn(i-1, 2))
+    roy = rhoe(i-1, 2)+delta*(rhoe(i, 2)-rhoe(i-1, 2))
 !
-    spect4 = exp(-abs(xx-y)/xlc) * phix * phiy* rox * roy * ux*ux * uy*uy
+    spect4 = exp(-abs(xx-y)/xlc)*phix*phiy*rox*roy*ux*ux*uy*uy
 !
 end function

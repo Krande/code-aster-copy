@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     if (valres(1) .ne. epais) then
         valres(2) = epais
         call utmess('F', 'ELEMENTS5_42', nr=2, valr=valres)
-    endif
+    end if
 !
 !     ELAS
 !     ATTENTION PARAMETRES EQUIVALENTS EN FLEXION
@@ -65,15 +65,15 @@ subroutine maglrc(zimat, matr, delas, ecr)
 !
 !     MATRICE ELASTIQUE MEMBRANE/CISAILLEMENT
 !
-    nomres(1)  = 'BN11'
-    nomres(2)  = 'BN12'
-    nomres(3)  = 'BN22'
-    nomres(4)  = 'BN33'
-    nomres(5)  = 'BT1'
-    nomres(6)  = 'BT2'
-    nomres(7)  = 'BM11'
-    nomres(8)  = 'BM12'
-    nomres(9)  = 'BM22'
+    nomres(1) = 'BN11'
+    nomres(2) = 'BN12'
+    nomres(3) = 'BN22'
+    nomres(4) = 'BN33'
+    nomres(5) = 'BT1'
+    nomres(6) = 'BT2'
+    nomres(7) = 'BM11'
+    nomres(8) = 'BM12'
+    nomres(9) = 'BM22'
     nomres(10) = 'BM33'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ', [r8b], 10, nomres, valres, codres, 1)
@@ -83,11 +83,11 @@ subroutine maglrc(zimat, matr, delas, ecr)
     matr(3) = valres(2)
     matr(4) = valres(3)
     matr(5) = valres(4)
-    delas(4,4) = valres(7)
-    delas(4,5) = valres(8)
-    delas(5,4) = delas(4,5)
-    delas(5,5) = valres(9)
-    delas(6,6) = valres(10)
+    delas(4, 4) = valres(7)
+    delas(4, 5) = valres(8)
+    delas(5, 4) = delas(4, 5)
+    delas(5, 5) = valres(9)
+    delas(6, 6) = valres(10)
     matr(14) = valres(5)
     matr(15) = valres(6)
 !
@@ -143,11 +143,11 @@ subroutine maglrc(zimat, matr, delas, ecr)
     matr(26) = valres(5)
     matr(27) = valres(6)
 !
-    delas(1,1) = matr(2)
-    delas(1,2) = matr(3)
-    delas(2,1) = delas(1,2)
-    delas(2,2) = matr(4)
-    delas(3,3) = matr(5)
+    delas(1, 1) = matr(2)
+    delas(1, 2) = matr(3)
+    delas(2, 1) = delas(1, 2)
+    delas(2, 2) = matr(4)
+    delas(3, 3) = matr(5)
 !
     call jevech('PCACOQU', 'L', icacoq)
     alph = zr(icacoq+1)*r8dgrd()
@@ -156,11 +156,11 @@ subroutine maglrc(zimat, matr, delas, ecr)
     vglob(1) = cos(beta)*cos(alph)
     vglob(2) = cos(beta)*sin(alph)
     vglob(3) = -sin(beta)
-    vel = vglob(1)*vglob(1) + vglob(2)*vglob(2)
-    vel = vel + vglob(3)*vglob(3)
+    vel = vglob(1)*vglob(1)+vglob(2)*vglob(2)
+    vel = vel+vglob(3)*vglob(3)
     vel = sqrt(vel)
     do i = 1, 3
-        ecr(10 + i) = vglob(i)/vel
+        ecr(10+i) = vglob(i)/vel
     end do
 !
 end subroutine

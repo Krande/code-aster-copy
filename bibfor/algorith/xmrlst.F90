@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmrlst(jcesd, jcesv, jcesl, noma, posma,&
+subroutine xmrlst(jcesd, jcesv, jcesl, noma, posma, &
                   coor, lst)
 !
 !
@@ -78,7 +78,7 @@ subroutine xmrlst(jcesd, jcesv, jcesl, noma, posma,&
 ! --- ON RECUPERE LE TYPE DE LA MAILLE
 !
     call jeveuo(noma//'.TYPMAIL', 'L', jma)
-    itypma=zi(jma-1+posma)
+    itypma = zi(jma-1+posma)
     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
     if (typma .eq. 'HEXA8') elref = 'HE8'
     if (typma .eq. 'PENTA6') elref = 'PE6'
@@ -97,10 +97,10 @@ subroutine xmrlst(jcesd, jcesv, jcesl, noma, posma,&
 !
     lst = 0.d0
     do ino = 1, nno
-        call cesexi('C', jcesd(7), jcesl(7), posma, ino,&
+        call cesexi('C', jcesd(7), jcesl(7), posma, ino, &
                     1, 1, iad)
-        ASSERT(iad.gt.0)
-        lst = lst + zr(jcesv(7)-1+iad) * ff(ino)
+        ASSERT(iad .gt. 0)
+        lst = lst+zr(jcesv(7)-1+iad)*ff(ino)
     end do
     lst = sqrt(abs(lst))
 !

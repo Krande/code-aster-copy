@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,17 +27,17 @@ function lcqeqv(x, y)
 !-----------------------------------------------------------------------
     integer :: i
 !-----------------------------------------------------------------------
-    parameter       ( epsi = 1.d-9 )
+    parameter(epsi=1.d-9)
     integer :: n, nd
     real(kind=8) :: x(6), y(6)
     character(len=3) :: lcqeqv
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !       ----------------------------------------------------------------
     do i = 1, n
-        if (abs (x(i) - y(i)) .gt. epsi) then
+        if (abs(x(i)-y(i)) .gt. epsi) then
             lcqeqv = 'NON'
             goto 999
-        endif
+        end if
     end do
     lcqeqv = 'OUI'
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romMultiParaProdModeInit(ds_multipara, nb_mode_maxi)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/codent.h"
 !
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-integer, intent(in) :: nb_mode_maxi
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    integer, intent(in) :: nb_mode_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ integer, intent(in) :: nb_mode_maxi
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: i_matr, nb_matr, i_vect, nb_vect,jv_dummy, nbEqua
+    integer :: i_matr, nb_matr, i_vect, nb_vect, jv_dummy, nbEqua
     character(len=24) :: prod_matr_mode, matr_mode_curr
     character(len=8) :: matr_name, matr_type
     character(len=1) :: prod_type, syst_type
@@ -59,14 +59,14 @@ integer, intent(in) :: nb_mode_maxi
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_34')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    nb_matr   = ds_multipara%nb_matr
-    nb_vect   = ds_multipara%nb_vect
+    nb_matr = ds_multipara%nb_matr
+    nb_vect = ds_multipara%nb_vect
     syst_type = ds_multipara%syst_type
-    nbEqua    = ds_multipara%field%nbEqua
+    nbEqua = ds_multipara%field%nbEqua
 !
 ! - Generate names of datastructures
 !
@@ -75,7 +75,7 @@ integer, intent(in) :: nb_mode_maxi
         call codent(i_matr, 'D0', knume)
         ds_multipara%matr_mode_curr(i_matr) = '&&OP0053.MM.'//knume
         ds_multipara%prod_matr_mode(i_matr) = '&&OP0053.PM.'//knume
-        ds_multipara%matr_redu(i_matr)      = '&&OP0053.MR.'//knume
+        ds_multipara%matr_redu(i_matr) = '&&OP0053.MR.'//knume
     end do
     ASSERT(nb_vect .le. 9999999)
     do i_vect = 1, nb_vect
@@ -87,15 +87,15 @@ integer, intent(in) :: nb_mode_maxi
 !
     do i_matr = 1, nb_matr
         matr_mode_curr = ds_multipara%matr_mode_curr(i_matr)
-        matr_name      = ds_multipara%matr_name(i_matr)
-        matr_type      = ds_multipara%matr_type(i_matr)
-        l_coefm_cplx   = ds_multipara%matr_coef(i_matr)%l_cplx
-        prod_type      = 'R'
+        matr_name = ds_multipara%matr_name(i_matr)
+        matr_type = ds_multipara%matr_type(i_matr)
+        l_coefm_cplx = ds_multipara%matr_coef(i_matr)%l_cplx
+        prod_type = 'R'
         if (matr_type .eq. 'C' .or. l_coefm_cplx .or. syst_type .eq. 'C') then
-            prod_type    = 'C'
-        endif
+            prod_type = 'C'
+        end if
         call vtcrem(matr_mode_curr, matr_name, 'V', prod_type)
-        call wkvect(ds_multipara%matr_redu(i_matr), 'V V '//syst_type, nb_mode_maxi*nb_mode_maxi,&
+        call wkvect(ds_multipara%matr_redu(i_matr), 'V V '//syst_type, nb_mode_maxi*nb_mode_maxi, &
                     jv_dummy)
         prod_matr_mode = ds_multipara%prod_matr_mode(i_matr)
         call wkvect(prod_matr_mode, 'V V '//syst_type, nb_mode_maxi*nbEqua, jv_dummy)

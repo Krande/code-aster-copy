@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ethdst(fami, nno, ndim, nbsig, npg,&
-                  ipoids, ivf, idfde, xyz, depl,&
+subroutine ethdst(fami, nno, ndim, nbsig, npg, &
+                  ipoids, ivf, idfde, xyz, depl, &
                   instan, repere, mater, option, enthth)
     implicit none
 !
@@ -78,40 +78,40 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
 !
 ! --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
-    call epthmc(fami, nno, ndim, nbsig, npg,&
-                zr(ivf), xyz, repere, instan, mater,&
+    call epthmc(fami, nno, ndim, nbsig, npg, &
+                zr(ivf), xyz, repere, instan, mater, &
                 option, epsith)
 !
 ! --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
-    call sigtmc(fami, nno, ndim, nbsig, npg,&
-                zr(ivf), xyz, instan, mater, repere,&
+    call sigtmc(fami, nno, ndim, nbsig, npg, &
+                zr(ivf), xyz, instan, mater, repere, &
                 k16bid, sigth)
 !
 ! --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
     do igau = 1, npg
-        enthpg=0.d0
+        enthpg = 0.d0
 ! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 3D
 !
-        if (lteatt('DIM_TOPO_MAILLE','3')) then
-            call dfdm3d(nno, igau, ipoids, idfde, xyz,&
+        if (lteatt('DIM_TOPO_MAILLE', '3')) then
+            call dfdm3d(nno, igau, ipoids, idfde, xyz, &
                         poidi, dfdx, dfdy, dfdz)
 ! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 2D
         else
-            k=(igau-1)*nno
-            call dfdm2d(nno, igau, ipoids, idfde, xyz,&
+            k = (igau-1)*nno
+            call dfdm2d(nno, igau, ipoids, idfde, xyz, &
                         poidi, dfdx, dfdy)
-            if (lteatt('AXIS','OUI')) then
+            if (lteatt('AXIS', 'OUI')) then
                 rayon = 0.d0
                 do i = 1, nno
-                    rayon = rayon + zr(ivf+k-1+i)*xyz(2*(i-1)+1)
+                    rayon = rayon+zr(ivf+k-1+i)*xyz(2*(i-1)+1)
                 end do
-                poidi=poidi*rayon
-            endif
-        endif
+                poidi = poidi*rayon
+            end if
+        end if
         do i = 1, nbsig
-            enthpg = enthpg+epsith(i+nbsig*(igau-1))* sigth(i+nbsig*( igau-1))
+            enthpg = enthpg+epsith(i+nbsig*(igau-1))*sigth(i+nbsig*(igau-1))
         end do
         enthth = enthth+(enthpg*poidi)
     end do

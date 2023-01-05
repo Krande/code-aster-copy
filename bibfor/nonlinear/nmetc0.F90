@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmetc0(model, cara_elem, compor, ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -68,40 +68,40 @@ implicit none
     l_strx = .false._1
     do i_field = 1, nb_field
         field_type = ds_inout%field(i_field)%type
-        init_name  = ds_inout%field(i_field)%init_name
-        l_acti     = ds_inout%l_field_acti(i_field)
+        init_name = ds_inout%field(i_field)%init_name
+        l_acti = ds_inout%l_field_acti(i_field)
         if (field_type .eq. 'SIEF_ELGA' .and. l_acti) then
-            l_sief    = .true.
+            l_sief = .true.
             sief_init = init_name
-        endif
+        end if
         if (field_type .eq. 'VARI_ELGA' .and. l_acti) then
-            l_vari    = .true.
+            l_vari = .true.
             vari_init = init_name
-        endif
+        end if
         if (field_type .eq. 'STRX_ELGA' .and. l_acti) then
-            l_strx    = .true.
+            l_strx = .true.
             strx_init = init_name
-        endif
+        end if
     end do
 !
 ! - Initial fields: compute stress and internal variables
 !
     if (l_vari .or. l_sief) then
         call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
-        call alchml(ligrmo,'TOU_INI_ELGA','PSIEF_R','V',sief_init,iret,compor)
-        call alchml(ligrmo,'TOU_INI_ELGA','PVARI_R','V',vari_init,iret,compor)
-    endif
+        call alchml(ligrmo, 'TOU_INI_ELGA', 'PSIEF_R', 'V', sief_init, iret, compor)
+        call alchml(ligrmo, 'TOU_INI_ELGA', 'PVARI_R', 'V', vari_init, iret, compor)
+    end if
 !
 ! - Initial fields: special multifibers field
 !
     if (l_strx) then
-        lpain(1)  = 'PCAORIE'
-        lchin(1)  = cara_elem(1:8)//'.CARORIEN'
+        lpain(1) = 'PCAORIE'
+        lchin(1) = cara_elem(1:8)//'.CARORIEN'
         lpaout(1) = 'PSTRX_R'
         lchout(1) = strx_init
-        call calcul('S', 'INI_STRX', ligrmo, 1, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', 'INI_STRX', ligrmo, 1, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
-    endif
+    end if
 !
 end subroutine

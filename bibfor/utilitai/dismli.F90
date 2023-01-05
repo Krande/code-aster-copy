@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,25 +51,25 @@ subroutine dismli(questi, nomobz, repi, repkz, ierd)
 !
     if (questi(1:10) .eq. 'NOM_MAILLA') then
         call jeveuo(nomob(1:8)//'.IDC_REFE', 'L', llref)
-        repk(1:8)=zk24(llref)
-    else if (questi(1:12).eq.'NOM_NUME_DDL') then
+        repk(1:8) = zk24(llref)
+    else if (questi(1:12) .eq. 'NOM_NUME_DDL') then
         call jeveuo(nomob(1:8)//'.IDC_REFE', 'L', llref)
-        repk(1:19)=zk24(llref+1)
-    else if (questi.eq.'NOM_MODE_CYCL') then
+        repk(1:19) = zk24(llref+1)
+    else if (questi .eq. 'NOM_MODE_CYCL') then
         call jeveuo(nomob(1:8)//'.IDC_REFE', 'L', llref)
-        repk(1:8)=zk24(llref+2)
-    else if (questi(1:5).eq.'NB_EC') then
+        repk(1:8) = zk24(llref+2)
+    else if (questi(1:5) .eq. 'NB_EC') then
         call jeveuo(nomob(1:8)//'.IDC_DESC', 'L', lldes)
-        repi=zi(lldes+1)
-    else if (questi(1:10).eq.'NB_CMP_MAX') then
+        repi = zi(lldes+1)
+    else if (questi(1:10) .eq. 'NB_CMP_MAX') then
         call jeveuo(nomob(1:8)//'.IDC_DESC', 'L', lldes)
-        repi=zi(lldes+2)
-    else if (questi(1:6).eq.'NUM_GD') then
+        repi = zi(lldes+2)
+    else if (questi(1:6) .eq. 'NUM_GD') then
         call jeveuo(nomob(1:8)//'.IDC_DESC', 'L', lldes)
-        repi=zi(lldes+3)
+        repi = zi(lldes+3)
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
     repkz = repk
     call jedema()

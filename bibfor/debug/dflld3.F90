@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dflld3(sdlist, i_adap)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -28,8 +28,8 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: sdlist
-integer, intent(in) :: i_adap
+    character(len=8), intent(in) :: sdlist
+    integer, intent(in) :: i_adap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,33 +63,33 @@ integer, intent(in) :: i_adap
     sdlist_aevenr = sdlist(1:8)//'.ADAP.EVENR'
     sdlist_atplur = sdlist(1:8)//'.ADAP.TPLUR'
     sdlist_atpluk = sdlist(1:8)//'.ADAP.TPLUK'
-    call jeveuo(sdlist_aevenr, 'L', vr   = v_sdlist_aevenr)
-    call jeveuo(sdlist_atplur, 'L', vr   = v_sdlist_atplur)
-    call jeveuo(sdlist_atpluk, 'L', vk16 = v_sdlist_atpluk)
+    call jeveuo(sdlist_aevenr, 'L', vr=v_sdlist_aevenr)
+    call jeveuo(sdlist_atplur, 'L', vr=v_sdlist_atplur)
+    call jeveuo(sdlist_atpluk, 'L', vk16=v_sdlist_atpluk)
 !
 ! - Print
 !
     action_type = nint(v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+1))
-    pcent_augm  = v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+2)
-    vale_ref    = v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+3)
-    nom_cham    = v_sdlist_atpluk(SIZE_LATPK*(i_adap-1)+2)
-    nom_cmp     = v_sdlist_atpluk(SIZE_LATPK*(i_adap-1)+3)
-    crit_cmp    = 'GE'
+    pcent_augm = v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+2)
+    vale_ref = v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+3)
+    nom_cham = v_sdlist_atpluk(SIZE_LATPK*(i_adap-1)+2)
+    nom_cmp = v_sdlist_atpluk(SIZE_LATPK*(i_adap-1)+3)
+    crit_cmp = 'GE'
     nb_iter_newton_ref = nint(v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+5))
     if (action_type .eq. ADAP_ACT_FIXE) then
         call utmess('I', 'DISCRETISATION3_80')
-        call utmess('I', 'DISCRETISATION3_84', sr = pcent_augm)
+        call utmess('I', 'DISCRETISATION3_84', sr=pcent_augm)
     elseif (action_type .eq. ADAP_ACT_INCR_QUANT) then
         call utmess('I', 'DISCRETISATION3_81')
         call utmess('I', 'DISCRETISATION3_21', &
-                    nk = 3, valk = [nom_cham, nom_cmp, crit_cmp],&
-                    sr = vale_ref)
+                    nk=3, valk=[nom_cham, nom_cmp, crit_cmp], &
+                    sr=vale_ref)
     elseif (action_type .eq. ADAP_ACT_ITER) then
         call utmess('I', 'DISCRETISATION3_82')
-        call utmess('I', 'DISCRETISATION3_85', si = nb_iter_newton_ref)
+        call utmess('I', 'DISCRETISATION3_85', si=nb_iter_newton_ref)
     elseif (action_type .eq. ADAP_ACT_IMPLEX) then
         call utmess('I', 'DISCRETISATION3_83')
-    endif
+    end if
 !
     call jedema()
 end subroutine

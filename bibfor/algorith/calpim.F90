@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
-                  mtrmas, numer, nbddl, noexit, cpexit,&
+subroutine calpim(graexc, excmod, napexc, nbmode, tymmec, &
+                  mtrmas, numer, nbddl, noexit, cpexit, &
                   nvasex, vecass)
     implicit none
 #include "jeveux.h"
@@ -80,49 +80,49 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
 !
     if (excmod .eq. 'OUI') then
         do i = 1, nbmode
-            zr(iadpim+(i-1)*nbmode+i-1) = 1.d0 / massegene(i)
+            zr(iadpim+(i-1)*nbmode+i-1) = 1.d0/massegene(i)
         end do
         goto 999
-    endif
+    end if
 !
     do i1 = 1, napexc
 !
         if (graexc .eq. 'DEPL_R') then
-            call mrmult('ZERO', iad, zr(listadrmodsta(i1)), zr(itrav1), 1,&
+            call mrmult('ZERO', iad, zr(listadrmodsta(i1)), zr(itrav1), 1, &
                         .true._1)
         else if (nvasex .eq. 0) then
-            call posddl('NUME_DDL', numer, noexit(i1), cpexit(i1), ibid,&
+            call posddl('NUME_DDL', numer, noexit(i1), cpexit(i1), ibid, &
                         idlre1)
-            zr(itrav1-1+idlre1)=1
+            zr(itrav1-1+idlre1) = 1
         else
             veass1 = vecass(i1)
             call jeveuo(veass1//'           .VALE', 'L', vr=vale)
             do i4 = 1, nbddl
-                zr(itrav1-1+i4)=vale(i4)
+                zr(itrav1-1+i4) = vale(i4)
             end do
-        endif
+        end if
 !
         do i2 = 1, nbmode
             ibid = iadpim+(i1-1)*nbmode+i2-1
             zr(ibid) = 0
-            if ((graexc.eq.'DEPL_R') .or. (nvasex.ne.0)) then
+            if ((graexc .eq. 'DEPL_R') .or. (nvasex .ne. 0)) then
                 do i3 = 1, nbddl
                     if (tymmec .eq. 'R') then
                         valfi = zr(listadrmode(i2)+i3-1)
                     else if (tymmec .eq. 'C') then
                         valfi = dble(zc(listadrmode(i2)+i3-1))
-                    endif
-                    zr(ibid) = zr(ibid) + zr(itrav1+i3-1)*valfi
+                    end if
+                    zr(ibid) = zr(ibid)+zr(itrav1+i3-1)*valfi
                 end do
             else
                 if (tymmec .eq. 'R') then
                     valfi = zr(listadrmode(i2)+idlre1-1)
                 else if (tymmec .eq. 'C') then
                     valfi = dble(zc(listadrmode(i2)+idlre1-1))
-                endif
+                end if
                 zr(ibid) = valfi
-            endif
-            zr(ibid) = zr(ibid) / massegene(i2)
+            end if
+            zr(ibid) = zr(ibid)/massegene(i2)
         end do
     end do
 !

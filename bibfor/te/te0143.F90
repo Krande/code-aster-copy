@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,14 +75,14 @@ subroutine te0143(option, nomte)
     integer, parameter :: nb_cara1 = 11
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'A1','IY1','IZ1','EY1','EZ1','A2','IY2','IZ2','EY2','EZ2','TVAR'/
+    data noms_cara1/'A1', 'IY1', 'IZ1', 'EY1', 'EZ1', 'A2', 'IY2', 'IZ2', 'EY2', 'EZ2', 'TVAR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_cara2 = 7
     real(kind=8) :: vale_cara2(nb_cara2)
     character(len=8) :: noms_cara2(nb_cara2)
-    data noms_cara2 /'A1','IY1','IZ1','EY1','EZ1','IYR21','IZR21'/
+    data noms_cara2/'A1', 'IY1', 'IZ1', 'EY1', 'EZ1', 'IYR21', 'IZR21'/
 !
     integer             :: retp(2), iret
     real(kind=8)        :: valr(2)
@@ -92,59 +92,59 @@ subroutine te0143(option, nomte)
 !
     nno = 2
 !   Récupération des caractéristiques générales des sections
-    if (nomte(1:13).eq.'MECA_POU_D_TG') then
+    if (nomte(1:13) .eq. 'MECA_POU_D_TG') then
         itype = 0
         nc = 7
         call poutre_modloc('CAGNP1', noms_cara2, nb_cara2, lvaleur=vale_cara2)
-        a    = vale_cara2(1)
-        xiy  = vale_cara2(2)
-        xiz  = vale_cara2(3)
-        ey   = vale_cara2(4)
-        ez   = vale_cara2(5)
+        a = vale_cara2(1)
+        xiy = vale_cara2(2)
+        xiz = vale_cara2(3)
+        ey = vale_cara2(4)
+        ez = vale_cara2(5)
         iyr2 = vale_cara2(6)
         izr2 = vale_cara2(7)
     else
         call poutre_modloc('CAGNPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
         nc = 6
-        a      = vale_cara1(1)
-        xiy    = vale_cara1(2)
-        xiz    = vale_cara1(3)
-        a2     = vale_cara1(6)
-        xiy2   = vale_cara1(7)
-        xiz2   = vale_cara1(8)
-        ey = (vale_cara1(4) +vale_cara1(9))/2.d0
-        ez = (vale_cara1(5) +vale_cara1(10))/2.d0
+        a = vale_cara1(1)
+        xiy = vale_cara1(2)
+        xiz = vale_cara1(3)
+        a2 = vale_cara1(6)
+        xiy2 = vale_cara1(7)
+        xiz2 = vale_cara1(8)
+        ey = (vale_cara1(4)+vale_cara1(9))/2.d0
+        ez = (vale_cara1(5)+vale_cara1(10))/2.d0
         itype = nint(vale_cara1(11))
-    endif
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   section initiale
     if (nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !       calcul des caractéristiques
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
-        a   = carsec(1)
+        a = carsec(1)
         xiy = carsec(5)
         xiz = carsec(4)
-    endif
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   Recuperation des orientations
     call jevech('PCAORIE', 'L', lorien)
 !   Recuperation des coordonnees des noeuds
-    xl =  lonele()
+    xl = lonele()
     call matrot(zr(lorien), pgl)
 !
     if (nomte .eq. 'MECA_POU_D_T') then
-        valp(1:2)=['C_FLEX_Y', 'C_FLEX_Z']
+        valp(1:2) = ['C_FLEX_Y', 'C_FLEX_Z']
         call get_value_mode_local('PCAARPO', valp, valr, iret, retpara_=retp)
         xfly = 1.0; xflz = 1.0
-        if ( retp(1).eq.0) xfly = valr(1)
-        if ( retp(2).eq.0) xflz = valr(2)
-        xiy  = xiy/xfly
-        xiz  = xiz/xflz
+        if (retp(1) .eq. 0) xfly = valr(1)
+        if (retp(2) .eq. 0) xflz = valr(2)
+        xiy = xiy/xfly
+        xiz = xiz/xflz
         xiy2 = xiy2/xfly
         xiz2 = xiz2/xflz
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   Calcul des matrices elementaires
@@ -155,36 +155,36 @@ subroutine te0143(option, nomte)
         call jevech('PMATUUR', 'E', lmat)
         if (nc .eq. 6) then
 !           NOMBRE DE POINTS DE GAUSS
-            call elrefe_info(fami='RIGI',npg=npg)
-            ASSERT((npg.eq.2).or.(npg.eq.3))
+            call elrefe_info(fami='RIGI', npg=npg)
+            ASSERT((npg .eq. 2) .or. (npg .eq. 3))
             if (npg .eq. 2) then
                 do i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+i-1)
-                enddo
+                end do
             else
                 do i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+nc+i-1)
-                enddo
-            endif
+                end do
+            end if
             call ptkg00(sigma, a, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez, mat)
-        else if (nomte.eq.'MECA_POU_D_TG') then
+        else if (nomte .eq. 'MECA_POU_D_TG') then
             call jspgno(xl, zr(ldep), b)
             b(1:7) = -b(1:7)
             call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, mat)
-        else if (nomte.eq.'MECA_POU_D_TGM') then
+        else if (nomte .eq. 'MECA_POU_D_TGM') then
 !           on projette avec les fcts de forme sur les noeuds debut et fin de l'élément
 !           pour le point 1
-            ksi1 = -sqrt( 5.d0 / 3.d0 )
-            d1b3(1,1) = ksi1*(ksi1-1.d0)/2.0d0
-            d1b3(1,2) = 1.d0-ksi1*ksi1
-            d1b3(1,3) = ksi1*(ksi1+1.d0)/2.0d0
+            ksi1 = -sqrt(5.d0/3.d0)
+            d1b3(1, 1) = ksi1*(ksi1-1.d0)/2.0d0
+            d1b3(1, 2) = 1.d0-ksi1*ksi1
+            d1b3(1, 3) = ksi1*(ksi1+1.d0)/2.0d0
 !           pour le point 2
-            ksi1 = sqrt( 5.d0 / 3.d0 )
-            d1b3(2,1) = ksi1*(ksi1-1.d0)/2.0d0
-            d1b3(2,2) = 1.d0-ksi1*ksi1
-            d1b3(2,3) = ksi1*(ksi1+1.d0)/2.0d0
+            ksi1 = sqrt(5.d0/3.d0)
+            d1b3(2, 1) = ksi1*(ksi1-1.d0)/2.0d0
+            d1b3(2, 2) = 1.d0-ksi1*ksi1
+            d1b3(2, 3) = ksi1*(ksi1+1.d0)/2.0d0
 !           On recupere les efforts généralisé cf option SIEF_ELNO
             call jevech('PSTRXRR', 'L', istrxr)
 !           nombre de composante par pdg dans le champs PSTRXRR
@@ -196,17 +196,17 @@ subroutine te0143(option, nomte)
                 b(i+nc) = 0.0d+0
                 do kp = 1, 3
                     adr = istrxr+ncomp*(kp-1)+i-1
-                    b(i) = b(i) -zr(adr)*d1b3(1,kp)
-                    b(i+nc)= b(i+nc)+zr(adr)*d1b3(2,kp)
-                enddo
-            enddo
+                    b(i) = b(i)-zr(adr)*d1b3(1, kp)
+                    b(i+nc) = b(i+nc)+zr(adr)*d1b3(2, kp)
+                end do
+            end do
             call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, mat)
-        endif
+        end if
 !       Passage du repère local au repère global
         call utpslg(nno, nc, pgl, mat, zr(lmat))
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
+    end if
 !
 end subroutine

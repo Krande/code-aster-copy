@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl,&
-                        time   ,dt, depl  , vite, fext,&
-                        nbmode,nlacc,nlcase,idx_start,idx_end)
+subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
+                            time, dt, depl, vite, fext, &
+                            nbmode, nlacc, nlcase, idx_start, idx_end)
     implicit none
 
 !
@@ -50,101 +50,99 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
 !
 !   -0.1- Input/output arguments
-    integer               , intent(in)  :: nbmode,nlacc,nlcase,idx_start,idx_end
-    character(len=*)      , intent(in)  :: sd_dtm_
-    character(len=*)      , intent(in)  :: sd_nl_
-    integer     , pointer  :: buffdtm  (:)
-    integer     , pointer  :: buffnl   (:)
-    real(kind=8)          , intent(in)  :: time
-    real(kind=8), pointer  :: depl     (:)
-    real(kind=8), pointer  :: vite     (:)
-    real(kind=8), pointer :: fext  (:)
-    real(kind=8)          , intent(in)  :: dt
+    integer, intent(in)  :: nbmode, nlacc, nlcase, idx_start, idx_end
+    character(len=*), intent(in)  :: sd_dtm_
+    character(len=*), intent(in)  :: sd_nl_
+    integer, pointer  :: buffdtm(:)
+    integer, pointer  :: buffnl(:)
+    real(kind=8), intent(in)  :: time
+    real(kind=8), pointer  :: depl(:)
+    real(kind=8), pointer  :: vite(:)
+    real(kind=8), pointer :: fext(:)
+    real(kind=8), intent(in)  :: dt
 !
 !   -0.2- Local variables
-    integer           :: i,   par_coorno(2)
-    integer           ::  nl_ind,nl_type
+    integer           :: i, par_coorno(2)
+    integer           ::  nl_ind, nl_type
     real(kind=8)      ::  eps
     character(len=8)  :: sd_dtm, sd_nl
 !
-    real(kind=8)    , pointer :: fext_nl(:) => null()
-    real(kind=8)    , pointer :: fext_tgt(:)=> null()
+    real(kind=8), pointer :: fext_nl(:) => null()
+    real(kind=8), pointer :: fext_tgt(:) => null()
 !
-    data par_coorno  /_COOR_NO1, _COOR_NO2/
+    data par_coorno/_COOR_NO1, _COOR_NO2/
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
-    sd_nl  = sd_nl_
+    sd_nl = sd_nl_
     eps = r8prem()
 
-        call nlget (sd_nl,  _F_TOT_WK , vr=fext_nl , buffer=buffnl)
-        call nlget (sd_nl,  _F_TAN_WK , vr=fext_tgt, buffer=buffnl)
+    call nlget(sd_nl, _F_TOT_WK, vr=fext_nl, buffer=buffnl)
+    call nlget(sd_nl, _F_TAN_WK, vr=fext_tgt, buffer=buffnl)
 
-
-do nl_ind  = idx_start, idx_end
-   call nlget(sd_nl, _NL_TYPE, iocc=nl_ind, iscal=nl_type, buffer=buffnl)
-   select case (nl_type)
+    do nl_ind = idx_start, idx_end
+        call nlget(sd_nl, _NL_TYPE, iocc=nl_ind, iscal=nl_type, buffer=buffnl)
+        select case (nl_type)
 !
 !
-        case(NL_CHOC)
+        case (NL_CHOC)
 
-            call dtmforc_choc(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
-                                              time, depl, vite, fext_nl, fext_tgt)
+            call dtmforc_choc(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              time, depl, vite, fext_nl, fext_tgt)
 
 !                   --- Special case of choc nonlinearities that can be
 !                       implicitely treated
-            if ((nlcase.eq.0).or.(nlacc.eq.1)) then
-                do i=1, nbmode
-                    fext(i) = fext(i) + fext_nl(i)
+            if ((nlcase .eq. 0) .or. (nlacc .eq. 1)) then
+                do i = 1, nbmode
+                    fext(i) = fext(i)+fext_nl(i)
                 end do
             else
-                do i=1, nbmode
-                    fext(i) = fext(i) + fext_tgt(i)
+                do i = 1, nbmode
+                    fext(i) = fext(i)+fext_tgt(i)
                 end do
             end if
-    case(NL_BUCKLING)
-        call dtmforc_flam(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
-                          time, depl, vite, fext)
+        case (NL_BUCKLING)
+            call dtmforc_flam(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              time, depl, vite, fext)
 
-    case(NL_ANTI_SISMIC)
-        call dtmforc_ants(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
-                          time, depl, vite, fext)
+        case (NL_ANTI_SISMIC)
+            call dtmforc_ants(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              time, depl, vite, fext)
 
-    case(NL_DIS_VISC)
-        call dtmforc_dvis(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
-                          time, dt, depl, vite, fext)
+        case (NL_DIS_VISC)
+            call dtmforc_dvis(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              time, dt, depl, vite, fext)
 
-    case(NL_DIS_ECRO_TRAC)
-        call dtmforc_decr(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
-                          time, dt, depl, vite, fext)
+        case (NL_DIS_ECRO_TRAC)
+            call dtmforc_decr(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              time, dt, depl, vite, fext)
 
-    case(NL_CRACKED_ROTOR)
-        call dtmforc_rotf(nl_ind,sd_dtm, sd_nl, buffdtm, buffnl,&
-                          time, depl, fext)
+        case (NL_CRACKED_ROTOR)
+            call dtmforc_rotf(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              time, depl, fext)
 ! !
-    ! TODO: change the name to NL_YACS
-    case(NL_LUBRICATION)
-         ! we will deal with it later
-         continue
+            ! TODO: change the name to NL_YACS
+        case (NL_LUBRICATION)
+            ! we will deal with it later
+            continue
 !
-    case(NL_YACS)
-        ! we will deal with it later
-        continue
+        case (NL_YACS)
+            ! we will deal with it later
+            continue
 !
-    case(NL_FX_RELATIONSHIP)
-        call dtmforc_rede(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
-                          depl, fext)
+        case (NL_FX_RELATIONSHIP)
+            call dtmforc_rede(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              depl, fext)
 ! !
-    case(NL_FV_RELATIONSHIP)
-        call dtmforc_revi(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
-                          vite, fext)
+        case (NL_FV_RELATIONSHIP)
+            call dtmforc_revi(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl, &
+                              vite, fext)
 
-    !
-    case default
-        ASSERT(.false.)
+            !
+        case default
+            ASSERT(.false.)
 
-    end select
-end do
-
+        end select
+    end do
 
 end subroutine

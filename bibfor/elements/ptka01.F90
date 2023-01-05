@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptka01(sk, e, a, xl, xiy,&
-                  xiz, xjx, g, alfay, alfaz,&
+subroutine ptka01(sk, e, a, xl, xiy, &
+                  xiz, xjx, g, alfay, alfaz, &
                   ey, ez, ist)
     implicit none
 #include "asterc/r8gaem.h"
@@ -75,8 +75,8 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     integer :: ip(12), i
     real(kind=8) :: zero, xl2, xl3, phiy, phiz, eiy, eiz
 !--- -------------------------------------------------------------------
-    parameter  (zero=0.d0)
-    data        ip/0,1,3,6,10,15,21,28,36,45,55,66/
+    parameter(zero=0.d0)
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/
 !--- -------------------------------------------------------------------
     do i = 1, 78
         sk(i) = zero
@@ -86,14 +86,14 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     if (abs(g) .lt. 1.d0/r8gaem()) then
         if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
-    endif
+    end if
 !
 !     1/ TRACTION - COMPRESSION
     sk(1) = e*a/xl
     sk(ip(7)+1) = -sk(1)
     sk(ip(7)+7) = sk(1)
 !
-    if ((ist.eq.2) .or. (ist.eq.5)) goto 999
+    if ((ist .eq. 2) .or. (ist .eq. 5)) goto 999
 !
 !     2/ FLEXION
 !     2.1) CALCUL DES CONSTANTES
@@ -117,7 +117,7 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     sk(ip(12)+8) = -sk(ip(6)+2)
     sk(ip(12)+12) = sk(ip(6)+6)
 !
-    if ((ist.eq.3) .or. (ist.eq.6)) goto 999
+    if ((ist .eq. 3) .or. (ist .eq. 6)) goto 999
 !
 !     3/ FLEXION DANS LE PLAN XOZ
     sk(ip(3)+3) = 12.d0*eiy/((1.d0+phiz)*xl3)
@@ -136,7 +136,7 @@ subroutine ptka01(sk, e, a, xl, xiy,&
     sk(ip(10)+4) = -sk(ip(4)+4)
     sk(ip(10)+10) = sk(ip(4)+4)
 !
-    if ((ez.eq.zero) .and. (ey.eq.zero)) goto 999
+    if ((ez .eq. zero) .and. (ey .eq. zero)) goto 999
 !
 !     5/ AVEC EXCENTREMENT
 !     RECTIFICATION POUR LA TORSION

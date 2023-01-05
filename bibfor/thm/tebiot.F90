@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine tebiot(ds_thm, angl_naut, tbiot)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8dgrd.h"
 #include "asterc/r8pi.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/utbtab.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: angl_naut(3)
-real(kind=8), intent(out) :: tbiot(6)
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: angl_naut(3)
+    real(kind=8), intent(out) :: tbiot(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,29 +55,29 @@ real(kind=8), intent(out) :: tbiot(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    bt(:,:)    = 0.d0
-    pass(:,:)  = 0.d0
-    work(:,:)  = 0.d0
-    bgl(:,:)   = 0.d0
-    tbiot(:)   = 0.d0
+    bt(:, :) = 0.d0
+    pass(:, :) = 0.d0
+    work(:, :) = 0.d0
+    bgl(:, :) = 0.d0
+    tbiot(:) = 0.d0
 !
 ! - Local tensor
 !
     if (ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ISOT) then
-        bt(1,1) = ds_thm%ds_material%biot%coef
-        bt(2,2) = ds_thm%ds_material%biot%coef
-        bt(3,3) = ds_thm%ds_material%biot%coef
+        bt(1, 1) = ds_thm%ds_material%biot%coef
+        bt(2, 2) = ds_thm%ds_material%biot%coef
+        bt(3, 3) = ds_thm%ds_material%biot%coef
     else if (ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ISTR) then
-        bt(1,1) = ds_thm%ds_material%biot%l
-        bt(2,2) = ds_thm%ds_material%biot%l
-        bt(3,3) = ds_thm%ds_material%biot%n
+        bt(1, 1) = ds_thm%ds_material%biot%l
+        bt(2, 2) = ds_thm%ds_material%biot%l
+        bt(3, 3) = ds_thm%ds_material%biot%n
     else if (ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ORTH) then
-        bt(1,1) = ds_thm%ds_material%biot%l
-        bt(2,2) = ds_thm%ds_material%biot%t
-        bt(3,3) = ds_thm%ds_material%biot%n
+        bt(1, 1) = ds_thm%ds_material%biot%l
+        bt(2, 2) = ds_thm%ds_material%biot%t
+        bt(3, 3) = ds_thm%ds_material%biot%n
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Construct transition matrix from nautical angles
 !
@@ -89,11 +89,11 @@ real(kind=8), intent(out) :: tbiot(6)
 !
 ! - Transform in vector
 !
-    tbiot(1) = bgl(1,1)
-    tbiot(2) = bgl(2,2)
-    tbiot(3) = bgl(3,3)
-    tbiot(4) = bgl(1,2)
-    tbiot(5) = bgl(1,3)
-    tbiot(6) = bgl(2,3)
+    tbiot(1) = bgl(1, 1)
+    tbiot(2) = bgl(2, 2)
+    tbiot(3) = bgl(3, 3)
+    tbiot(4) = bgl(1, 2)
+    tbiot(5) = bgl(1, 3)
+    tbiot(6) = bgl(2, 3)
 !
 end subroutine

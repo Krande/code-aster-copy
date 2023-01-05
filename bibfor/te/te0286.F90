@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine te0286(option, nomte)
     real(kind=8) :: enthth, epot, undemi, zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
@@ -70,9 +70,9 @@ subroutine te0286(option, nomte)
     instan = r8vide()
     nharm = zero
     ndim2 = 2
-    if (lteatt('FOURIER','OUI')) then
+    if (lteatt('FOURIER', 'OUI')) then
         ndim = 3
-    endif
+    end if
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
@@ -118,25 +118,25 @@ subroutine te0286(option, nomte)
     if (iharmo .ne. 0) then
         nh = zi(iharmo)
         nharm = dble(nh)
-    endif
+    end if
 !
 ! ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 ! ---- (I.E.  1/2*SIGMA_MECA - SIGMA_THERMIQUES)
 !      ------------------------------------
-    call simtep(fami, nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call simtep(fami, nno, ndim, nbsig, npg, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, zi(imate), nharm, sigma)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 !      -----------------------------------------------
-    call bsigmc(nno, ndim, nbsig, npg, ipoids,&
-                ivf, idfde, zr(igeom), nharm, sigma,&
+    call bsigmc(nno, ndim, nbsig, npg, ipoids, &
+                ivf, idfde, zr(igeom), nharm, sigma, &
                 bsigma)
 !
 ! ---- CALCUL DU TERME EPSTH_T*D*EPSTH
 !      -------------------------------
-    call ethdst(fami, nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call ethdst(fami, nno, ndim, nbsig, npg, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, zi(imate), option, enthth)
 !
 ! ---- CALCUL DE L'ENERGIE POTENTIELLE :
@@ -146,10 +146,10 @@ subroutine te0286(option, nomte)
     epot = zero
 !
     do i = 1, ndim*nno
-        epot = epot + bsigma(i)*zr(idepl+i-1)
+        epot = epot+bsigma(i)*zr(idepl+i-1)
     end do
 !
-    epot = epot + undemi*enthth
+    epot = epot+undemi*enthth
 !
 ! ---- RECUPERATION ET AFFECTATION DU REEL EN SORTIE
 ! ---- AVEC L'ENERGIE DE DEFORMATION

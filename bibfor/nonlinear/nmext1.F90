@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmext1(mesh          , field    , field_disc   , field_type   , field_s ,&
-                  nb_elem       , nb_node  , nb_poin      , nb_spoi      , nb_cmp  ,&
-                  type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp,&
-                  list_node     , list_elem, list_poin    , list_spoi    , list_cmp,&
-                  work_node     , work_poin, work_elem)
+subroutine nmext1(mesh, field, field_disc, field_type, field_s, &
+                  nb_elem, nb_node, nb_poin, nb_spoi, nb_cmp, &
+                  type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp, &
+                  list_node, list_elem, list_poin, list_spoi, list_cmp, &
+                  work_node, work_poin, work_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmext2.h"
 #include "asterfort/nmext3.h"
@@ -90,20 +90,20 @@ implicit none
 ! - For nodal values
 !
     if (field_disc .eq. 'NOEU' .and. nb_node > 0) then
-        call nmext2(mesh         , field    , nb_cmp  , nb_node  , type_extr,&
+        call nmext2(mesh, field, nb_cmp, nb_node, type_extr, &
                     type_extr_cmp, list_node, list_cmp, work_node)
-    endif
+    end if
 !
 ! - For point (Gauss) values
 !
     if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
-        if(nb_elem > 0 .or. nb_poin > 0) then
-            call nmext3(mesh          , field    , field_type   , field_s      ,&
-                        nb_cmp        , nb_elem  , nb_poin      , nb_spoi      ,&
-                        type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp,&
-                        list_elem     , list_poin, list_spoi    , list_cmp     ,&
-                        work_poin     , work_elem)
+        if (nb_elem > 0 .or. nb_poin > 0) then
+            call nmext3(mesh, field, field_type, field_s, &
+                        nb_cmp, nb_elem, nb_poin, nb_spoi, &
+                        type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp, &
+                        list_elem, list_poin, list_spoi, list_cmp, &
+                        work_poin, work_elem)
         end if
-    endif
+    end if
 !
 end subroutine

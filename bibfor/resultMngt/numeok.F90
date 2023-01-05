@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,26 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine numeok(storeAccess,&
-                  storeIndxNb, storeTimeNb,&
-                  storeIndx  , storeTime  ,&
-                  storeCrit  , storeEpsi  ,&
-                  fileIndx   , fileTime   ,&
+subroutine numeok(storeAccess, &
+                  storeIndxNb, storeTimeNb, &
+                  storeIndx, storeTime, &
+                  storeCrit, storeEpsi, &
+                  fileIndx, fileTime, &
                   astock)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=10), intent(in) :: storeAccess
-integer, intent(in) :: storeIndxNb, storeTimeNb
-character(len=19), intent(in) :: storeIndx, storeTime
-real(kind=8), intent(in) :: storeEpsi
-character(len=8), intent(in) :: storeCrit
-integer, intent(in) :: fileIndx
-real(kind=8), intent(in) :: fileTime
-aster_logical, intent(out) :: astock
+    character(len=10), intent(in) :: storeAccess
+    integer, intent(in) :: storeIndxNb, storeTimeNb
+    character(len=19), intent(in) :: storeIndx, storeTime
+    real(kind=8), intent(in) :: storeEpsi
+    character(len=8), intent(in) :: storeCrit
+    integer, intent(in) :: fileIndx
+    real(kind=8), intent(in) :: fileTime
+    aster_logical, intent(out) :: astock
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,31 +70,31 @@ aster_logical, intent(out) :: astock
     if (storeAccess .eq. 'TOUT_ORDRE') then
         astock = .true.
     elseif (storeAccess .eq. 'NUME_ORDRE') then
-        call jeveuo(storeIndx//'.VALE', 'L', vi = vStoreIndx)
+        call jeveuo(storeIndx//'.VALE', 'L', vi=vStoreIndx)
         do iStore = 1, storeIndxNb
             if (fileIndx .eq. vStoreIndx(iStore)) then
                 astock = .true.
                 goto 70
-            endif
+            end if
         end do
     else
-        call jeveuo(storeTime//'.VALE', 'L', vr = vStoreTime)
+        call jeveuo(storeTime//'.VALE', 'L', vr=vStoreTime)
         do iStore = 1, storeTimeNb
             tref = vStoreTime(iStore)
             if (storeCrit .eq. 'RELATIF') then
                 if (abs(tref-fileTime) .le. abs(storeEpsi*fileTime)) then
                     astock = .true.
                     goto 70
-                endif
+                end if
             else if (storeCrit .eq. 'ABSOLU') then
                 if (abs(tref-fileTime) .le. abs(storeEpsi)) then
                     astock = .true.
                     goto 70
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
- 70 continue
+70  continue
 !
 end subroutine

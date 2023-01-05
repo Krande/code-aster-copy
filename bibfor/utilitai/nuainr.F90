@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nuainr(method, np1, nx1, nc1, ic1,&
-                  nuax1, nual1, nuav1, x2, dref,&
+subroutine nuainr(method, np1, nx1, nc1, ic1, &
+                  nuax1, nual1, nuav1, x2, dref, &
                   val2)
     implicit none
 #include "asterf_types.h"
@@ -51,7 +51,7 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
 !
 ! PARAMETRES DE L'EXPONENTIELLE DONNANT LE POIDS DES POINTS :
     real(kind=8) :: alpha, beta
-    data alpha,beta/.2d0,0.75d0/
+    data alpha, beta/.2d0, 0.75d0/
 !
 ! -DEB
 !
@@ -60,175 +60,175 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
     if (nx1 .eq. 1) then
         do i = 1, nx1+1
             do j = 1, nx1+1
-                k1(i,j)= 0.d0
+                k1(i, j) = 0.d0
             end do
         end do
-    else if (nx1.eq.2) then
+    else if (nx1 .eq. 2) then
         do i = 1, nx1+1
             do j = 1, nx1+1
-                k2(i,j)= 0.d0
+                k2(i, j) = 0.d0
             end do
         end do
-    else if (nx1.eq.3) then
+    else if (nx1 .eq. 3) then
         do i = 1, nx1+1
             do j = 1, nx1+1
-                k3(i,j)= 0.d0
+                k3(i, j) = 0.d0
             end do
         end do
-    endif
+    end if
 !
     do i = 1, nx1+1
-        f(i)= 0.d0
+        f(i) = 0.d0
     end do
 !
-    dref2=dref*alpha
+    dref2 = dref*alpha
 !
     if (method .eq. 'NUAGE_DEG_0') then
 !     ------------------------
-        k0(1,1) = 0.d0
+        k0(1, 1) = 0.d0
         f(1) = 0.d0
 !
         if (nx1 .eq. 1) then
             do ip1 = 1, np1
-                if (.not.nual1((ip1-1)*nc1+ic1)) goto 1
-                d=(nuax1((ip1-1)*1+1)-x2(1))**2
-                w=exp(-(d/dref2)**beta)
+                if (.not. nual1((ip1-1)*nc1+ic1)) goto 1
+                d = (nuax1((ip1-1)*1+1)-x2(1))**2
+                w = exp(-(d/dref2)**beta)
                 v1 = nuav1((ip1-1)*nc1+ic1)
-                k0(1,1) = k0(1,1) + w
-                f(1) = f(1) + w*v1
-  1             continue
+                k0(1, 1) = k0(1, 1)+w
+                f(1) = f(1)+w*v1
+1               continue
             end do
 !
-        else if (nx1.eq.2) then
+        else if (nx1 .eq. 2) then
             do ip1 = 1, np1
-                if (.not.nual1((ip1-1)*nc1+ic1)) goto 2
-                d=(nuax1((ip1-1)*2+1)-x2(1))**2 +(nuax1((ip1-1)*2+2)-&
-                x2(2))**2
-                w=exp(-(d/dref2)**beta)
+                if (.not. nual1((ip1-1)*nc1+ic1)) goto 2
+                d = (nuax1((ip1-1)*2+1)-x2(1))**2+(nuax1((ip1-1)*2+2)- &
+                                                   x2(2))**2
+                w = exp(-(d/dref2)**beta)
                 v1 = nuav1((ip1-1)*nc1+ic1)
-                k0(1,1) = k0(1,1) + w
-                f(1) = f(1) + w*v1
-  2             continue
+                k0(1, 1) = k0(1, 1)+w
+                f(1) = f(1)+w*v1
+2               continue
             end do
 !
-        else if (nx1.eq.3) then
+        else if (nx1 .eq. 3) then
             do ip1 = 1, np1
-                if (.not.nual1((ip1-1)*nc1+ic1)) goto 3
-                d=(nuax1((ip1-1)*3+1)-x2(1))**2 +(nuax1((ip1-1)*3+2)-&
-                x2(2))**2 +(nuax1((ip1-1)*3+3)-x2(3))**2
-                w=exp(-(d/dref2)**beta)
+                if (.not. nual1((ip1-1)*nc1+ic1)) goto 3
+                d = (nuax1((ip1-1)*3+1)-x2(1))**2+(nuax1((ip1-1)*3+2)- &
+                                                   x2(2))**2+(nuax1((ip1-1)*3+3)-x2(3))**2
+                w = exp(-(d/dref2)**beta)
                 v1 = nuav1((ip1-1)*nc1+ic1)
-                k0(1,1) = k0(1,1) + w
-                f(1) = f(1) + w*v1
-  3             continue
+                k0(1, 1) = k0(1, 1)+w
+                f(1) = f(1)+w*v1
+3               continue
             end do
-        endif
+        end if
 !
 !
-        val2 = f(1)/k0(1,1)
+        val2 = f(1)/k0(1, 1)
 !
 !
-    else if (method.eq.'NUAGE_DEG_1') then
+    else if (method .eq. 'NUAGE_DEG_1') then
 !     -----------------------------
         if (nx1 .eq. 1) then
 !       --------------
             do ip1 = 1, np1
-                if (.not.nual1((ip1-1)*nc1+ic1)) goto 11
-                d=(nuax1((ip1-1)*1+1)-x2(1))**2
-                w=exp(-(d/dref2)**beta)
+                if (.not. nual1((ip1-1)*nc1+ic1)) goto 11
+                d = (nuax1((ip1-1)*1+1)-x2(1))**2
+                w = exp(-(d/dref2)**beta)
 !
                 x1 = nuax1((ip1-1)*1+1)
                 v1 = nuav1((ip1-1)*nc1+ic1)
-                k1(1,1) = k1(1,1) +w
-                k1(1,2) = k1(1,2) +w*x1
-                k1(2,2) = k1(2,2) +w*x1*x1
-                f(1) = f(1) + w*v1
-                f(2) = f(2) + w*v1*x1
- 11             continue
+                k1(1, 1) = k1(1, 1)+w
+                k1(1, 2) = k1(1, 2)+w*x1
+                k1(2, 2) = k1(2, 2)+w*x1*x1
+                f(1) = f(1)+w*v1
+                f(2) = f(2)+w*v1*x1
+11              continue
             end do
-            k1(2,1)=k1(1,2)
+            k1(2, 1) = k1(1, 2)
 !
-        else if (nx1.eq.2) then
+        else if (nx1 .eq. 2) then
 !       ------------------
             do ip1 = 1, np1
-                if (.not.nual1((ip1-1)*nc1+ic1)) goto 21
-                d=(nuax1((ip1-1)*2+1)-x2(1))**2 +(nuax1((ip1-1)*2+2)-&
-                x2(2))**2
-                w=exp(-(d/dref2)**beta)
+                if (.not. nual1((ip1-1)*nc1+ic1)) goto 21
+                d = (nuax1((ip1-1)*2+1)-x2(1))**2+(nuax1((ip1-1)*2+2)- &
+                                                   x2(2))**2
+                w = exp(-(d/dref2)**beta)
 !
                 x1 = nuax1((ip1-1)*2+1)
                 y1 = nuax1((ip1-1)*2+2)
                 v1 = nuav1((ip1-1)*nc1+ic1)
-                k2(1,1) = k2(1,1) + w
-                k2(1,2) = k2(1,2) + w*x1
-                k2(1,3) = k2(1,3) + w*y1
-                k2(2,2) = k2(2,2) + w*x1*x1
-                k2(2,3) = k2(2,3) + w*x1*y1
-                k2(3,3) = k2(3,3) + w*y1*y1
-                f(1) = f(1) + w*v1
-                f(2) = f(2) + w*v1*x1
-                f(3) = f(3) + w*v1*y1
- 21             continue
+                k2(1, 1) = k2(1, 1)+w
+                k2(1, 2) = k2(1, 2)+w*x1
+                k2(1, 3) = k2(1, 3)+w*y1
+                k2(2, 2) = k2(2, 2)+w*x1*x1
+                k2(2, 3) = k2(2, 3)+w*x1*y1
+                k2(3, 3) = k2(3, 3)+w*y1*y1
+                f(1) = f(1)+w*v1
+                f(2) = f(2)+w*v1*x1
+                f(3) = f(3)+w*v1*y1
+21              continue
             end do
-            k2(2,1) = k2(1,2)
-            k2(3,1) = k2(1,3)
-            k2(3,2) = k2(2,3)
+            k2(2, 1) = k2(1, 2)
+            k2(3, 1) = k2(1, 3)
+            k2(3, 2) = k2(2, 3)
 !
-        else if (nx1.eq.3) then
+        else if (nx1 .eq. 3) then
 !       ------------------
             do ip1 = 1, np1
-                if (.not.nual1((ip1-1)*nc1+ic1)) goto 31
-                d=(nuax1((ip1-1)*3+1)-x2(1))**2 +(nuax1((ip1-1)*3+2)-&
-                x2(2))**2 +(nuax1((ip1-1)*3+3)-x2(3))**2
-                w=exp(-(d/dref2)**beta)
+                if (.not. nual1((ip1-1)*nc1+ic1)) goto 31
+                d = (nuax1((ip1-1)*3+1)-x2(1))**2+(nuax1((ip1-1)*3+2)- &
+                                                   x2(2))**2+(nuax1((ip1-1)*3+3)-x2(3))**2
+                w = exp(-(d/dref2)**beta)
 !
                 x1 = nuax1((ip1-1)*3+1)
                 y1 = nuax1((ip1-1)*3+2)
                 z1 = nuax1((ip1-1)*3+3)
                 v1 = nuav1((ip1-1)*nc1+ic1)
-                k3(1,1) = k3(1,1) + w
-                k3(1,2) = k3(1,2) + w*x1
-                k3(1,3) = k3(1,3) + w*y1
-                k3(1,4) = k3(1,4) + w*z1
-                k3(2,2) = k3(2,2) + w*x1*x1
-                k3(2,3) = k3(2,3) + w*x1*y1
-                k3(2,4) = k3(2,4) + w*x1*z1
-                k3(3,3) = k3(3,3) + w*y1*y1
-                k3(3,4) = k3(3,4) + w*y1*z1
-                k3(4,4) = k3(4,4) + w*z1*z1
-                f(1) = f(1) + w*v1
-                f(2) = f(2) + w*v1*x1
-                f(3) = f(3) + w*v1*y1
-                f(4) = f(4) + w*v1*z1
- 31             continue
+                k3(1, 1) = k3(1, 1)+w
+                k3(1, 2) = k3(1, 2)+w*x1
+                k3(1, 3) = k3(1, 3)+w*y1
+                k3(1, 4) = k3(1, 4)+w*z1
+                k3(2, 2) = k3(2, 2)+w*x1*x1
+                k3(2, 3) = k3(2, 3)+w*x1*y1
+                k3(2, 4) = k3(2, 4)+w*x1*z1
+                k3(3, 3) = k3(3, 3)+w*y1*y1
+                k3(3, 4) = k3(3, 4)+w*y1*z1
+                k3(4, 4) = k3(4, 4)+w*z1*z1
+                f(1) = f(1)+w*v1
+                f(2) = f(2)+w*v1*x1
+                f(3) = f(3)+w*v1*y1
+                f(4) = f(4)+w*v1*z1
+31              continue
             end do
-            k3(2,1) = k3(1,2)
-            k3(3,1) = k3(1,3)
-            k3(3,2) = k3(2,3)
-            k3(4,1) = k3(1,4)
-            k3(4,2) = k3(2,4)
-            k3(4,3) = k3(3,4)
-        endif
+            k3(2, 1) = k3(1, 2)
+            k3(3, 1) = k3(1, 3)
+            k3(3, 2) = k3(2, 3)
+            k3(4, 1) = k3(1, 4)
+            k3(4, 2) = k3(2, 4)
+            k3(4, 3) = k3(3, 4)
+        end if
         if (nx1 .eq. 1) then
-            call mgauss('NFVP', k1, f, 2, 2,&
+            call mgauss('NFVP', k1, f, 2, 2, &
                         1, det, iret)
-        else if (nx1.eq.2) then
-            call mgauss('NFVP', k2, f, 3, 3,&
+        else if (nx1 .eq. 2) then
+            call mgauss('NFVP', k2, f, 3, 3, &
                         1, det, iret)
-        else if (nx1.eq.3) then
-            call mgauss('NFVP', k3, f, 4, 4,&
+        else if (nx1 .eq. 3) then
+            call mgauss('NFVP', k3, f, 4, 4, &
                         1, det, iret)
-        endif
+        end if
 !
         val2 = f(1)
         do ix1 = 1, nx1
-            val2 = val2 + f(ix1+1)*x2(ix1)
+            val2 = val2+f(ix1+1)*x2(ix1)
         end do
 !
     else
         meth2 = method
         call utmess('F', 'UTILITAI2_60', sk=meth2)
-    endif
+    end if
 !
 !
 end subroutine

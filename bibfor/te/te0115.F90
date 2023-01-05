@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine te0115(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     dimmod = 3
 !
@@ -111,8 +111,8 @@ subroutine te0115(option, nomte)
 ! ---- DE L'ELEMENT :
 ! ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 !      ------------------------------------
-    call sigvmc(fami, nno, dimmod, nbsig, npg1,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call sigvmc(fami, nno, dimmod, nbsig, npg1, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, zi(imate), nharm, sigma)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES CONTRAINTES AUX

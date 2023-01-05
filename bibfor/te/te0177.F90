@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,33 +43,33 @@ subroutine te0177(option, nomte)
     integer :: icodre(1)
     complex(kind=8) :: valres(1)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTC', 'E', imattt)
 !
-    call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres,&
+    call rcvalc(zi(imate), 'FLUIDE', 1, 'CELE_C', valres, &
                 icodre, 1)
 !
     do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 !
-        ij = imattt - 1
+        ij = imattt-1
         do i = 1, nno
             do j = 1, i
-                ij = ij + 1
-                zc(ij) = zc(ij)+poids*((1.0d0,0.0d0)/(valres(1)**2))*zr(ivf+k+i-1)*zr(ivf+k+j-1)
+                ij = ij+1
+                zc(ij) = zc(ij)+poids*((1.0d0, 0.0d0)/(valres(1)**2))*zr(ivf+k+i-1)*zr(ivf+k+j-1)
             end do
         end do
     end do

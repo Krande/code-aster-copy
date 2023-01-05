@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine refdaj(arret, result, nbordr, numer, typre,&
+subroutine refdaj(arret, result, nbordr, numer, typre, &
                   conre, codret)
     implicit none
 #include "asterf_types.h"
@@ -104,11 +104,11 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     character(len=24) :: typres, accres(10), accref(5), obindi, corefd, typref, kbid
     character(len=24) :: numer1, bl24, conref(3)
 !
-    data  accres /'ACOU_HARMO','DYNA_HARMO','DYNA_TRANS' ,'HARM_GENE','MODE_ACOU',&
-                  'MODE_FLAMB','MODE_MECA' ,'MODE_MECA_C','TRAN_GENE','EVOL_NOLI'/
+    data accres/'ACOU_HARMO', 'DYNA_HARMO', 'DYNA_TRANS', 'HARM_GENE', 'MODE_ACOU', &
+        'MODE_FLAMB', 'MODE_MECA', 'MODE_MECA_C', 'TRAN_GENE', 'EVOL_NOLI'/
 !
-    data  accref /'DYNAMIQUE','INTERF_DYNA','INTERF_STAT','MESURE','INIT'/
-    data  lonref / 3,1,1,1 /
+    data accref/'DYNAMIQUE', 'INTERF_DYNA', 'INTERF_STAT', 'MESURE', 'INIT'/
+    data lonref/3, 1, 1, 1/
 !
     typref = typre
     conref = conre
@@ -129,9 +129,9 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !  ____________________________________________________________________
 !
 !     1.1 - CONDITION D'ARRET
-    if ((arret.ne.'F') .and. (arret.ne.' ')) then
+    if ((arret .ne. 'F') .and. (arret .ne. ' ')) then
         ASSERT(.false.)
-    endif
+    end if
 !
     call getres(resu2, typres, kbid)
     if (result(1:2) .eq. '&&') then
@@ -140,7 +140,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
         result = resu2
     else if (result .ne. resu2) then
         call gettco(result, typres)
-    endif
+    end if
 !
 !     1.2 - PRESENCE DU .INDI (OBJET INT) ET .REFD (COLLECTION D'OBJ K8)
     newref = .false.
@@ -151,26 +151,26 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     if ((ibid*jbid) .eq. 0 .and. (ibid+jbid) .ne. 0) then
         if (arret .eq. 'F') then
             ASSERT(.false.)
-        endif
+        end if
         codret = 0
         goto 27
-    endif
+    end if
     if ((ibid+jbid) .eq. 0) newref = .true.
 !
 !     1.3 - TYPE DE RESULTAT A TRAITER, CAS D'UN CONCEPT RE-ENTRANT
-    if (.not.(newref)) then
+    if (.not. (newref)) then
         oktres = .false.
         do ibid = 1, 10
             if (typres .eq. accres(ibid)) oktres = .true.
         end do
-        if (.not.(oktres)) then
+        if (.not. (oktres)) then
             if (arret .eq. 'F') then
                 ASSERT(.false.)
-            endif
+            end if
             codret = 0
             goto 27
-        endif
-    endif
+        end if
+    end if
 !
 !     1.4 - TYPE DE REFERENCE A AJOUTER
     oktref = .false.
@@ -179,16 +179,16 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
             indref = ibid
             oktref = .true.
             goto 16
-        endif
+        end if
     end do
- 16 continue
-    if (.not.(oktref)) then
+16  continue
+    if (.not. (oktref)) then
         if (arret .eq. 'F') then
             ASSERT(.false.)
-        endif
+        end if
         codret = 0
         goto 27
-    endif
+    end if
 !  ____________________________________________________________________
 !
 !  - 2 - AJOUT DES ENTREES DE REFERENCE DANS LES .INDI ET .REFD
@@ -196,7 +196,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !     2.1 - CREATION DU .INDI ET .REFD SI BESOIN
     if (newref) then
         call wkvect(obindi, jvb//' V I', nbinit, jbid)
-        call jecrec(corefd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT',&
+        call jecrec(corefd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT', &
                     nbinit)
         call jeecra(corefd, 'LONT', nbinit*5, k8bid)
 !       INITIALISATION DES ELEMENTS DE .INDI A (-100)
@@ -206,8 +206,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
         if (typref .eq. 'INIT') then
             codret = 1
             goto 27
-        endif
-    endif
+        end if
+    end if
 !
 !     2.2 - RAJOUT SI BESOIN DE L'ENTREE DE REF. A LA COLLECTION REFD
     call jelira(corefd, 'NUTIOC', nbrefs, k8bid)
@@ -218,7 +218,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !             N'A PAS DEJA ETE ETEINT, DOUBLER SA TAILLE LE CAS ECHEANT
     if (nbrefs .ge. nbrefsmax) then
         call refdag(result)
-    endif
+    end if
 !
 !     2.2.2 - VERIFIER SI L'ENTREE DE REFERENCE EXISTE DEJA
 !             CRITERES DE LA VERIFICATION :
@@ -228,8 +228,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
     if (nbrefs .ge. 1) then
         do ibid = 1, nbrefs
             call jeveuo(jexnum(corefd, ibid), 'E', jrefe)
-            if ((typre .eq. zk24(jrefe)) .and. (numer .eq. zk24(jrefe+1)) .and.&
-                (conre(1).eq. zk24(jrefe+2))) then
+            if ((typre .eq. zk24(jrefe)) .and. (numer .eq. zk24(jrefe+1)) .and. &
+                (conre(1) .eq. zk24(jrefe+2))) then
 !               --- ALORS METTRE A JOUR L'ENTREE DU .REFD
                 do jbid = 1, lonref(indref)
                     zk24(jrefe+jbid+1) = conref(jbid)
@@ -241,18 +241,18 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
                     nbord0 = 0
                     call jeveuo(obindi, 'E', jindi)
                     if (ibid .gt. 1) nbord0 = zi(jindi+nbrefs-1)
-                    if ((zi(jindi+nbrefs) - nbord0) .eq. -1) then
-                        zi(jindi+nbrefs) = nbord0 + nbord1
+                    if ((zi(jindi+nbrefs)-nbord0) .eq. -1) then
+                        zi(jindi+nbrefs) = nbord0+nbord1
                     else
-                        zi(jindi+nbrefs-1) = zi(jindi+nbrefs-1)  + nbord1
+                        zi(jindi+nbrefs-1) = zi(jindi+nbrefs-1)+nbord1
                     end if
-                endif
+                end if
 
                 codret = 1
                 goto 27
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !   2.2.2 - RAJOUTER UN OBJET A LA COLLECTION .REFD AVEC LES INFOS
 !           DE CONREF ET M.A.J L'OBJET .INDI
@@ -266,14 +266,14 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
 !       --- TRAITEMENT SPECIAL SI IL S'AGIT DE LA PREMIERE ENTREE INDI :
 !           SI nbord1 EST EGALE A -1 ET UN NOMBRE NON NULL DES CHAMPS EST DEJA STOCKE
 !           DANS LA SD : ON Y MET CE NOMBRE
-        call dismoi('NB_CHAMPS', result, 'RESU_DYNA', repi=nbcham, arret='C',&
+        call dismoi('NB_CHAMPS', result, 'RESU_DYNA', repi=nbcham, arret='C', &
                     ier=ir)
         if ((ir .eq. 0) .and. (nbcham .ne. 0)) then
             nbord1 = nbcham
-        endif
-    endif
+        end if
+    end if
 !
-    zi(jindi+nbrefs) = nbord0 + nbord1
+    zi(jindi+nbrefs) = nbord0+nbord1
 !
 !   --- RAJOUTER UNE ENTREE A LA COLLECTION .REFD
     call jecroc(jexnum(corefd, nbrefs+1))
@@ -287,10 +287,10 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
         do ibid = lonref(indref)+1, 3
             zk24(jrefe+ibid+1) = bl24
         end do
-    endif
+    end if
     codret = 1
 !
- 27 continue
+27  continue
 !
 !   For debugging purposes only
 !   call utimsd(6, 1, .false._1, .true._1, corefd,1, 'G')

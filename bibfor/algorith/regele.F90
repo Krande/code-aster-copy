@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine regele(npi, ndim, dimuel,&
-                  nddls, nddlm, nno, nnos, nnom,&
-                  axi, regula, dimcon, ipoids, ipoid2,&
-                  ivf, ivf2, idfde, idfde2, compor,&
-                  geom, deplp, contp, imate, dimdef,&
-                  matuu, vectu, lVect, lMatr, lSigm,&
+subroutine regele(npi, ndim, dimuel, &
+                  nddls, nddlm, nno, nnos, nnom, &
+                  axi, regula, dimcon, ipoids, ipoid2, &
+                  ivf, ivf2, idfde, idfde2, compor, &
+                  geom, deplp, contp, imate, dimdef, &
+                  matuu, vectu, lVect, lMatr, lSigm, &
                   codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cabr2g.h"
@@ -33,15 +33,15 @@ implicit none
 #include "asterfort/dilsga.h"
 #include "asterfort/equreg.h"
 !
-aster_logical :: axi
-integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm
-integer :: imate, dimdef, ndim, nno, nnom, nnos, dimuel, dimcon
-integer :: regula(6)
-real(kind=8) :: vectu(dimuel), matuu(dimuel*dimuel), contp(dimcon*npi)
-real(kind=8) :: geom(ndim, *), deplp(dimuel)
-character(len=16) :: compor(*)
-aster_logical, intent(in) :: lVect, lMatr, lSigm
-integer, intent(out) :: codret
+    aster_logical :: axi
+    integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm
+    integer :: imate, dimdef, ndim, nno, nnom, nnos, dimuel, dimcon
+    integer :: regula(6)
+    real(kind=8) :: vectu(dimuel), matuu(dimuel*dimuel), contp(dimcon*npi)
+    real(kind=8) :: geom(ndim, *), deplp(dimuel)
+    character(len=16) :: compor(*)
+    aster_logical, intent(in) :: lVect, lMatr, lSigm
+    integer, intent(out) :: codret
 ! ======================================================================
 ! --- BUT : CALCUL ELEMENTAIRE AUX POINTS D'INTEGRATION ----------------
 ! ======================================================================
@@ -57,14 +57,14 @@ integer, intent(out) :: codret
     codret = 0
     if (lMatr) then
         do i = 1, dimuel*dimuel
-            matuu(i)=0.d0
+            matuu(i) = 0.d0
         end do
-    endif
+    end if
     if (lVect) then
         do i = 1, dimuel
-            vectu(i)=0.d0
+            vectu(i) = 0.d0
         end do
-    endif
+    end if
 ! ======================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION ------------------------------
 ! ======================================================================
@@ -72,10 +72,10 @@ integer, intent(out) :: codret
 ! ======================================================================
 ! --- DEFINITION DE L'OPERATEUR B (DEFINI PAR E=B.U) -------------------
 ! ======================================================================
-        call cabr2g(kpg, ipoids, ipoid2, ivf, ivf2,&
-                    idfde, idfde2, geom, dimdef, dimuel,&
-                    ndim, nddls, nddlm, nno, nnos,&
-                    nnom, axi, regula, b, poids,&
+        call cabr2g(kpg, ipoids, ipoid2, ivf, ivf2, &
+                    idfde, idfde2, geom, dimdef, dimuel, &
+                    ndim, nddls, nddlm, nno, nnos, &
+                    nnom, axi, regula, b, poids, &
                     poids2)
 ! ======================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
@@ -83,29 +83,29 @@ integer, intent(out) :: codret
         do i = 1, dimdef
             defgep(i) = 0.d0
             do n = 1, dimuel
-                defgep(i) = defgep(i)+b(i,n)*deplp(n)
+                defgep(i) = defgep(i)+b(i, n)*deplp(n)
             end do
         end do
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES VIRTUELLES ET GENERALISEES ----------------
 ! --- ET DE LEURS DERIVEES ---------------------------------------------
 ! ======================================================================
-        call equreg(imate, lSigm, compor, regula, dimdef,&
-                    dimcon, defgep, ndim, sigp, r,&
+        call equreg(imate, lSigm, compor, regula, dimdef, &
+                    dimcon, defgep, ndim, sigp, r, &
                     drde)
         if (lSigm) then
             do iDime = 1, dimcon
-                contp(dimcon*(kpg-1) + iDime) = sigp(iDIme)
+                contp(dimcon*(kpg-1)+iDime) = sigp(iDIme)
             end do
-        endif
+        end if
         if (lMatr) then
-            call dilopt(dimdef, dimuel, poids, poids2, b,&
+            call dilopt(dimdef, dimuel, poids, poids2, b, &
                         drde, matuu)
-        endif
+        end if
         if (lVect) then
-            call dilsga(dimdef, dimuel, poids, poids2, b,&
+            call dilsga(dimdef, dimuel, poids, poids2, b, &
                         r, vectu)
-        endif
+        end if
     end do
 !
 end subroutine

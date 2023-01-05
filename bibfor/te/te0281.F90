@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2019 Christophe Durand - www.code-aster.org
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine te0281(option, nomte)
     character(len=16) :: nomte, option
 !
     integer :: nbres
-    parameter (nbres=3)
+    parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=2) :: typgeo
     character(len=32) :: phenom
@@ -77,14 +77,14 @@ subroutine te0281(option, nomte)
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
     call uttgel(nomte, typgeo)
-    if ((lteatt('LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+    if ((lteatt('LUMPE', 'OUI')) .and. (typgeo .ne. 'PY')) then
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
     else
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    endif
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    end if
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
@@ -109,19 +109,19 @@ subroutine te0281(option, nomte)
         call jevech('PHYDRPM', 'L', ihydr)
         do kp = 1, npg2
             l = nno*(kp-1)
-            hydrpg(kp)=0.d0
+            hydrpg(kp) = 0.d0
             do i = 1, nno
-                hydrpg(kp)=hydrpg(kp)+zr(ihydr)*zr(ivf2+l+i-1)
+                hydrpg(kp) = hydrpg(kp)+zr(ihydr)*zr(ivf2+l+i-1)
             end do
         end do
 !
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'THER_HYDR', 0, ' ', [0.d0],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', 'THER_HYDR', 0, ' ', [0.d0], &
                     1, 'CHALHYDR', chal, icodre, 1)
     else
         lhyd = .false.
-    endif
-    if (zk16(icomp)(1:5) .eq. 'THER_') then
+    end if
+    if (zk16(icomp) (1:5) .eq. 'THER_') then
 !
 !====
 ! --- THERMIQUE
@@ -131,7 +131,7 @@ subroutine te0281(option, nomte)
         aniso = .false.
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
             aniso = .true.
-        endif
+        end if
         call ntfcma(zk16(icomp), zi(imate), aniso, ifon)
 !
 ! ---   TRAITEMENT DE L ANISOTROPIE
@@ -154,15 +154,15 @@ subroutine te0281(option, nomte)
                 orig(1) = zr(icamas+4)
                 orig(2) = zr(icamas+5)
                 orig(3) = zr(icamas+6)
-            endif
-        endif
+            end if
+        end if
 !====
 ! 2. CALCULS DU TERME DE RIGIDITE DE L'OPTION
 !====
 !
         do kp = 1, npg
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
@@ -170,13 +170,13 @@ subroutine te0281(option, nomte)
             dtpgdz = 0.d0
             do i = 1, nno
 ! CALCUL DE T- ET DE SON GRADIENT
-                tpg = tpg + zr(itemp+i-1)*zr(ivf+l+i-1)
-                dtpgdx = dtpgdx + zr(itemp+i-1)*dfdx(i)
-                dtpgdy = dtpgdy + zr(itemp+i-1)*dfdy(i)
-                dtpgdz = dtpgdz + zr(itemp+i-1)*dfdz(i)
+                tpg = tpg+zr(itemp+i-1)*zr(ivf+l+i-1)
+                dtpgdx = dtpgdx+zr(itemp+i-1)*dfdx(i)
+                dtpgdy = dtpgdy+zr(itemp+i-1)*dfdy(i)
+                dtpgdz = dtpgdz+zr(itemp+i-1)*dfdz(i)
             end do
 !
-            if (.not.aniso) then
+            if (.not. aniso) then
                 tpgbuf = tpg
                 call rcfode(ifon(2), tpgbuf, lambda, r8bid)
                 fluglo(1) = lambda*dtpgdx
@@ -189,17 +189,17 @@ subroutine te0281(option, nomte)
                 call rcfode(ifon(4), tpgbuf, lambor(1), r8bid)
                 call rcfode(ifon(5), tpgbuf, lambor(2), r8bid)
                 call rcfode(ifon(6), tpgbuf, lambor(3), r8bid)
-                if (.not.global) then
+                if (.not. global) then
                     point(1) = 0.d0
                     point(2) = 0.d0
                     point(3) = 0.d0
                     do nuno = 1, nno
-                        point(1) = point(1) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-3)
-                        point(2) = point(2) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-2)
-                        point(3) = point(3) + zr(ivf+l+nuno-1)* zr(igeom+ 3*nuno-1)
+                        point(1) = point(1)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-3)
+                        point(2) = point(2)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-2)
+                        point(3) = point(3)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-1)
                     end do
                     call utrcyl(point, dire, orig, p)
-                endif
+                end if
                 fluglo(1) = dtpgdx
                 fluglo(2) = dtpgdy
                 fluglo(3) = dtpgdz
@@ -212,12 +212,12 @@ subroutine te0281(option, nomte)
                 n1 = 1
                 n2 = 3
                 call utpvlg(n1, n2, p, fluloc, fluglo)
-            endif
+            end if
 !
             do i = 1, nno
-                zr(ivectt+i-1) = zr(ivectt+i-1) - poids* (1.0d0-theta) *&
+                zr(ivectt+i-1) = zr(ivectt+i-1)-poids*(1.0d0-theta)*&
                                  & (dfdx(i)*fluglo(1)+dfdy(i)*fluglo(2)+dfdz(i)*fluglo(3))
-                zr(ivecti+i-1) = zr(ivecti+i-1) - poids* (1.0d0-theta) *&
+                zr(ivecti+i-1) = zr(ivecti+i-1)-poids*(1.0d0-theta)*&
                                  & (dfdx(i)*fluglo(1)+dfdy(i)*fluglo(2)+dfdz(i)*fluglo(3))
             end do
 ! FIN BOUCLE SUR LES PTS DE GAUSS
@@ -230,12 +230,12 @@ subroutine te0281(option, nomte)
 !
         do kp = 1, npg2
             l = (kp-1)*nno
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
+            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             do i = 1, nno
 ! CALCUL DE T- ET DE SON GRADIENT
-                tpg = tpg + zr(itemp+i-1)*zr(ivf2+l+i-1)
+                tpg = tpg+zr(itemp+i-1)*zr(ivf2+l+i-1)
             end do
 !
 ! CALCUL DES CARACTERISTIQUES MATERIAUX EN TRANSITOIRE UNIQUEMENT
@@ -245,9 +245,9 @@ subroutine te0281(option, nomte)
             if (lhyd) then
 ! THER_HYDR
                 do i = 1, nno
-                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids*&
-                                     & ((beta     -chal(1)*hydrpg(kp))*zr(ivf2+l+i-1)/deltat)
-                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids*&
+                    zr(ivectt+i-1) = zr(ivectt+i-1)+poids*&
+                                     & ((beta-chal(1)*hydrpg(kp))*zr(ivf2+l+i-1)/deltat)
+                    zr(ivecti+i-1) = zr(ivecti+i-1)+poids*&
                                      & ((dbeta*tpg-chal(1)*hydrpg(kp))*zr(ivf2+l+i-1)/deltat)
                 end do
             else
@@ -256,19 +256,19 @@ subroutine te0281(option, nomte)
 ! CALCUL STD A 2 OUTPUTS (LE DEUXIEME NE SERT QUE POUR LA PREDICTION)
 !
                 do i = 1, nno
-                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids*beta /deltat*zr(ivf2+l+i-1)
-                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids*dbeta*tpg/deltat*zr(ivf2+l+i-1)
+                    zr(ivectt+i-1) = zr(ivectt+i-1)+poids*beta/deltat*zr(ivf2+l+i-1)
+                    zr(ivecti+i-1) = zr(ivecti+i-1)+poids*dbeta*tpg/deltat*zr(ivf2+l+i-1)
                 end do
 !
 ! ENDIF THER_HYDR
-            endif
+            end if
 ! FIN BOUCLE SUR LES PTS DE GAUSS
         end do
 !
 ! --- SECHAGE
 !
-    else if ((zk16(icomp) (1:5).eq.'SECH_')) then
-        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1: 10) .eq.&
+    else if ((zk16(icomp) (1:5) .eq. 'SECH_')) then
+        if (zk16(icomp) (1:12) .eq. 'SECH_GRANGER' .or. zk16(icomp) (1:10) .eq. &
             'SECH_NAPPE') then
             call jevech('PTMPCHI', 'L', isechi)
             call jevech('PTMPCHF', 'L', isechf)
@@ -277,10 +277,10 @@ subroutine te0281(option, nomte)
 !          ISECHI ET ISECHF SONT FICTIFS
             isechi = itemp
             isechf = itemp
-        endif
+        end if
         do kp = 1, npg
             l = nno*(kp-1)
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
@@ -288,23 +288,23 @@ subroutine te0281(option, nomte)
             dtpgdz = 0.d0
             tpsec = 0.d0
             do i = 1, nno
-                tpg = tpg + zr( itemp+i-1)*zr(ivf+l+i-1)
-                tpsec = tpsec + zr(isechi+i-1)*zr(ivf+l+i-1)
-                dtpgdx = dtpgdx + zr(itemp+i-1)*dfdx(i)
-                dtpgdy = dtpgdy + zr(itemp+i-1)*dfdy(i)
-                dtpgdz = dtpgdz + zr(itemp+i-1)*dfdz(i)
+                tpg = tpg+zr(itemp+i-1)*zr(ivf+l+i-1)
+                tpsec = tpsec+zr(isechi+i-1)*zr(ivf+l+i-1)
+                dtpgdx = dtpgdx+zr(itemp+i-1)*dfdx(i)
+                dtpgdy = dtpgdy+zr(itemp+i-1)*dfdy(i)
+                dtpgdz = dtpgdz+zr(itemp+i-1)*dfdz(i)
             end do
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
 !
             do i = 1, nno
-                zr(ivectt+i-1) = zr(ivectt+i-1) - poids* ( (1.0d0- theta)*diff*&
-                                 & (dfdx(i)*dtpgdx+dfdy(i)*dtpgdy+dfdz(i)* dtpgdz) )
+                zr(ivectt+i-1) = zr(ivectt+i-1)-poids*((1.0d0-theta)*diff*&
+                                 & (dfdx(i)*dtpgdx+dfdy(i)*dtpgdy+dfdz(i)*dtpgdz))
                 zr(ivecti+i-1) = zr(ivectt+i-1)
             end do
         end do
         do kp = 1, npg2
             l = nno*(kp-1)
-            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
+            call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
@@ -312,19 +312,19 @@ subroutine te0281(option, nomte)
             dtpgdz = 0.d0
             tpsec = 0.d0
             do i = 1, nno
-                tpg = tpg + zr( itemp+i-1)*zr(ivf2+l+i-1)
-                tpsec = tpsec + zr(isechi+i-1)*zr(ivf2+l+i-1)
-                dtpgdx = dtpgdx + zr(itemp+i-1)*dfdx(i)
-                dtpgdy = dtpgdy + zr(itemp+i-1)*dfdy(i)
-                dtpgdz = dtpgdz + zr(itemp+i-1)*dfdz(i)
+                tpg = tpg+zr(itemp+i-1)*zr(ivf2+l+i-1)
+                tpsec = tpsec+zr(isechi+i-1)*zr(ivf2+l+i-1)
+                dtpgdx = dtpgdx+zr(itemp+i-1)*dfdx(i)
+                dtpgdy = dtpgdy+zr(itemp+i-1)*dfdy(i)
+                dtpgdz = dtpgdz+zr(itemp+i-1)*dfdz(i)
             end do
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
             do i = 1, nno
-                zr(ivectt+i-1) = zr(ivectt+i-1) + poids* (tpg/deltat*zr(ivf2+l+i-1))
+                zr(ivectt+i-1) = zr(ivectt+i-1)+poids*(tpg/deltat*zr(ivf2+l+i-1))
                 zr(ivecti+i-1) = zr(ivectt+i-1)
             end do
         end do
 !
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

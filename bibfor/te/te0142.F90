@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine te0142(option, nomte)
 !
-use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
+    use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -36,7 +36,7 @@ implicit none
     integer, parameter :: sdim = 3
     integer, parameter :: ncmp_el = 4
     integer, parameter :: ncmp_th = 2
-    integer, parameter :: ncmptot = sdim + ncmp_el + ncmp_th
+    integer, parameter :: ncmptot = sdim+ncmp_el+ncmp_th
 
     integer :: igeom, i, j, nbpar, ipar
     integer :: ndim, npg1, kpg, spt, iret
@@ -46,45 +46,45 @@ implicit none
     integer :: icodre_el(ncmp_el), icodre_th(ncmp_th), ndim2
     character(len=8) :: fami, poum, novrc
     character(len=16) :: nomres_el(ncmp_el), nomres_th(ncmp_th)
-    character(len=8) :: nompar(sdim),nompar0(sdim)
+    character(len=8) :: nompar(sdim), nompar0(sdim)
     real(kind=8) :: xyzgau(sdim), xyzgau0(sdim)
     character(len=32) :: phenom_el, phenom_th, valk(2)
 
     aster_logical::lfound
 !     ------------------------------------------------------------------
 !
-    if (option .eq. 'MATE_ELGA')then
+    if (option .eq. 'MATE_ELGA') then
         fami = 'MTGA'
-    elseif (option .eq. 'MATE_ELEM')then
+    elseif (option .eq. 'MATE_ELEM') then
         fami = 'FPG1'
     else
         ASSERT(.false.)
-    endif
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno, nnos=nnos, npg=npg1, jvf=ivf)
+    end if
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, jvf=ivf)
 !
-    if (lteatt('ABSO','OUI')) then
-        ndim2 = ndim + 1
+    if (lteatt('ABSO', 'OUI')) then
+        ndim2 = ndim+1
     else
         ndim2 = ndim
-    endif
+    end if
 
     call jevech('PMATERC', 'L', imate)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERR', 'E', ival)
 !
-    mater=zi(imate)
-    nomres_el(1)='E'
-    nomres_el(2)='NU'
-    nomres_el(3)='RHO'
-    nomres_el(4)='ALPHA'
+    mater = zi(imate)
+    nomres_el(1) = 'E'
+    nomres_el(2) = 'NU'
+    nomres_el(3) = 'RHO'
+    nomres_el(4) = 'ALPHA'
     valres_el(:) = 0.d0
 
-    nomres_th(1)='LAMBDA'
-    nomres_th(2)='RHO_CP'
+    nomres_th(1) = 'LAMBDA'
+    nomres_th(2) = 'RHO_CP'
     valres_th(:) = 0.d0
 
-    spt=1
-    poum='+'
+    spt = 1
+    poum = '+'
 !
     nompar0(1) = 'X'
     nompar0(2) = 'Y'
@@ -96,73 +96,73 @@ implicit none
     valk(1) = 'ELAS'
     valk(2) = ' '
     if (ALL(valk .ne. phenom_el)) then
-       phenom_th = 'ELAS'
-    endif
+        phenom_th = 'ELAS'
+    end if
 
     call rccoma(mater, 'THER', 0, phenom_th, iret)
     ASSERT((iret .eq. 0) .or. (iret .eq. 1))
     valk(1) = 'THER'
     valk(2) = 'THER_NL'
     if (ALL(valk .ne. phenom_th)) then
-       phenom_th = 'THER'
-    endif
+        phenom_th = 'THER'
+    end if
 
 !   check if X, Y or Z are present in the command variables and store indirection in indir
     nbpar = 0
-    do i=1, ndim2
-        lfound=.false.
-        do ipar=1,ca_nbcvrc_
-            novrc=zk8(ca_jvcnom_-1+ipar)
+    do i = 1, ndim2
+        lfound = .false.
+        do ipar = 1, ca_nbcvrc_
+            novrc = zk8(ca_jvcnom_-1+ipar)
             if (novrc .eq. nompar0(i)) then
-                lfound=.true.
+                lfound = .true.
                 cycle
-            endif
-        enddo
+            end if
+        end do
         if (.not. lfound) then
-            nbpar=nbpar+1
-            indir(nbpar)=i
-        endif
-    enddo
+            nbpar = nbpar+1
+            indir(nbpar) = i
+        end if
+    end do
 !   only use parameters in indir
-    do i=1,nbpar
+    do i = 1, nbpar
         nompar(i) = nompar0(indir(i))
-    enddo
+    end do
 
     do kpg = 1, npg1
-        idecpg = nno* (kpg-1) - 1
+        idecpg = nno*(kpg-1)-1
         ! ----- Coordinates for current Gauss point
         xyzgau0(:) = 0.d0
         do i = 1, nno
-            idecno = ndim2* (i-1) - 1
+            idecno = ndim2*(i-1)-1
             do j = 1, ndim2
-                xyzgau0(j) = xyzgau0(j) + zr(ivf+i+idecpg)*zr(igeom+j+idecno)
-            enddo
+                xyzgau0(j) = xyzgau0(j)+zr(ivf+i+idecpg)*zr(igeom+j+idecno)
+            end do
         end do
 !           only use parameters in indir
-        do i=1,nbpar
+        do i = 1, nbpar
             xyzgau(i) = xyzgau0(indir(i))
-        enddo
+        end do
 
         do i = 1, sdim
-           zr(ival-1+(kpg-1)*ncmptot+i) = xyzgau0(i)
-        enddo
+            zr(ival-1+(kpg-1)*ncmptot+i) = xyzgau0(i)
+        end do
 
-        call rcvalb(fami, kpg, spt, poum, mater,&
-                    ' ', phenom_el, nbpar, nompar, xyzgau,&
+        call rcvalb(fami, kpg, spt, poum, mater, &
+                    ' ', phenom_el, nbpar, nompar, xyzgau, &
                     ncmp_el, nomres_el, valres_el, icodre_el, 0, 'NON')
 
         do i = 1, ncmp_el
-           zr(ival-1+(kpg-1)*ncmptot+sdim+i) = valres_el(i)
-        enddo
+            zr(ival-1+(kpg-1)*ncmptot+sdim+i) = valres_el(i)
+        end do
 
-        call rcvalb(fami, kpg, spt, poum, mater,&
-                    ' ', phenom_th, nbpar, nompar, xyzgau,&
+        call rcvalb(fami, kpg, spt, poum, mater, &
+                    ' ', phenom_th, nbpar, nompar, xyzgau, &
                     ncmp_th, nomres_th, valres_th, icodre_th, 0, 'NON')
 
         do i = 1, ncmp_th
-           zr(ival-1+(kpg-1)*ncmptot+sdim+ncmp_el+i) = valres_th(i)
-        enddo
+            zr(ival-1+(kpg-1)*ncmptot+sdim+ncmp_el+i) = valres_th(i)
+        end do
 
-    enddo
+    end do
 !
 end subroutine

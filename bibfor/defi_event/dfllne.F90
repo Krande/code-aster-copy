@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dfllne(keywf, nb_fail, l_fail_error)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -27,9 +27,9 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: keywf
-integer, intent(out) :: nb_fail
-aster_logical, intent(out) :: l_fail_error
+    character(len=16), intent(in) :: keywf
+    integer, intent(out) :: nb_fail
+    aster_logical, intent(out) :: l_fail_error
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,8 +51,8 @@ aster_logical, intent(out) :: l_fail_error
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_fail_error    = .false._1
-    nb_fail         = 0
+    l_fail_error = .false._1
+    nb_fail = 0
     nb_evt_count(:) = 0
 !
 ! - Number of ECHEC keywords
@@ -67,10 +67,10 @@ aster_logical, intent(out) :: l_fail_error
         do i_event = 1, FAIL_EVT_NB
             if (event_typek .eq. failEventKeyword(i_event)) then
                 i_event_acti = i_event
-            endif
+            end if
         end do
         ASSERT(i_event_acti .gt. 0)
-        nb_evt_count(i_event_acti) = nb_evt_count(i_event_acti) + 1
+        nb_evt_count(i_event_acti) = nb_evt_count(i_event_acti)+1
     end do
 !
 ! - Check number of events
@@ -78,8 +78,8 @@ aster_logical, intent(out) :: l_fail_error
     do i_event = 1, FAIL_EVT_NB
         event_typek = failEventKeyword(i_event)
         if (nb_evt_count(i_event) .gt. failEventMaxi(i_event)) then
-            call utmess('F', 'DISCRETISATION_10', sk = event_typek)
-        endif
+            call utmess('F', 'DISCRETISATION_10', sk=event_typek)
+        end if
     end do
 !
 ! - Special for ERROR failure

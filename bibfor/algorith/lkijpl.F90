@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
+subroutine lkijpl(nmat, mater, sigf, nr, drdy, &
                   dsde)
     implicit none
 ! person_in_charge: alexandre.foucault at edf.fr
@@ -46,12 +46,12 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
     real(kind=8) :: maxi, mini, mue, mu
 !
 !       --------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !       --------------------------------------------------------------
 ! === =================================================================
 ! --- INITIALISATION MATRICES A ZERO
 ! === =================================================================
-    jss(:,:) = 0.d0
+    jss(:, :) = 0.d0
     call r8inir(18, 0.d0, jsz, 1)
     call r8inir(18, 0.d0, jzs, 1)
     call r8inir(9, 0.d0, jzz, 1)
@@ -61,7 +61,7 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
     maxi = 0.d0
     do i = 1, nr
         do j = 1, nr
-            if(abs(drdy(i,j)).gt.maxi)maxi = abs(drdy(i,j))
+            if (abs(drdy(i, j)) .gt. maxi) maxi = abs(drdy(i, j))
         end do
     end do
 ! === =================================================================
@@ -70,7 +70,7 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
     mini = r8prem()*maxi
     do i = 1, nr
         do j = 1, nr
-            if(abs(drdy(i,j)).lt.mini)drdy(i,j) = 0.d0
+            if (abs(drdy(i, j)) .lt. mini) drdy(i, j) = 0.d0
         end do
     end do
 !
@@ -79,20 +79,20 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 ! === =================================================================
     do i = 1, ndt
         do j = 1, ndt
-            jss(i,j) = drdy(i,j)
+            jss(i, j) = drdy(i, j)
         end do
     end do
 !
     do i = 1, 3
         do j = 1, ndt
-            jsz(j,i)=drdy(j,ndt+i)
-            jzs(i,j)=drdy(ndt+i,j)
+            jsz(j, i) = drdy(j, ndt+i)
+            jzs(i, j) = drdy(ndt+i, j)
         end do
     end do
 !
     do i = 1, 3
         do j = 1, 3
-            jzz(i,j) = drdy(ndt+i,ndt+j)
+            jzz(i, j) = drdy(ndt+i, ndt+j)
         end do
     end do
 ! === =================================================================
@@ -103,11 +103,11 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 ! --- AVEC I1 = -TRACE(SIGMA), CAR EQUATIONS DU MODELE LETK
 ! --- SONT EXPRIMEES EN CONVENTION MECANIQUE DES SOLS
     i1 = -(sigf(1)+sigf(2)+sigf(3))
-    patm = mater(1,2)
-    nelas = mater(2,2)
+    patm = mater(1, 2)
+    nelas = mater(2, 2)
     coefnl = (i1/(3.d0*patm))**nelas
 !
-    mue = mater(4,1)
+    mue = mater(4, 1)
     mu = -mue*coefnl
 !
 ! === =================================================================
@@ -115,47 +115,47 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 ! === =================================================================
     coefnl = coefnl/mu
 !
-    hooknl(1:ndt,1:ndt) = coefnl * hook(1:ndt,1:ndt)
+    hooknl(1:ndt, 1:ndt) = coefnl*hook(1:ndt, 1:ndt)
 ! === =================================================================
 ! --- CONSTRUCTION TENSEUR CONSTITUTIF TANGENT DSDE
 ! === =================================================================
 ! --- INVERSION DU TERME JZZ
     call r8inir(9, 0.d0, invjzz, 1)
     do i = 1, 3
-        invjzz(i,i) = 1.d0
+        invjzz(i, i) = 1.d0
     end do
 !
-    call mgauss('NCVP', jzz, invjzz, 3, 3,&
+    call mgauss('NCVP', jzz, invjzz, 3, 3, &
                 3, det, iret)
     if (iret .gt. 0) call r8inir(9, 0.d0, invjzz, 1)
 !
 ! --- PRODUIT DU TERME (JZZ)^-1*JZS = J3X6
-    call prmama(1, invjzz, 3, 3, 3,&
-                jzs, 3, 3, ndt, j3x6,&
+    call prmama(1, invjzz, 3, 3, 3, &
+                jzs, 3, 3, ndt, j3x6, &
                 3, 3, ndt, ier)
-    if (ier .gt. 0) write(6,*)'ECHEC AVEC PRMAMA 1'
+    if (ier .gt. 0) write (6, *) 'ECHEC AVEC PRMAMA 1'
 !
 ! --- PRODUIT DU TERME JSZ*(JZZ)^-1*JZS = JSZ*J3*6 = J6X6
-    call prmama(1, jsz, 6, ndt, 3,&
-                j3x6, 3, 3, ndt, j6x6,&
+    call prmama(1, jsz, 6, ndt, 3, &
+                j3x6, 3, 3, ndt, j6x6, &
                 6, ndt, ndt, ier)
-    if (ier .gt. 0) write(6,*)'ECHEC AVEC PRMAMA 2'
+    if (ier .gt. 0) write (6, *) 'ECHEC AVEC PRMAMA 2'
 !
 ! --- DIFFERENCE DE MATRICE (JSS - J6X6) = DIJACO
-    dijaco(1:ndt,1:ndt) = jss(1:ndt,1:ndt) - j6x6(1:ndt,1:ndt)
+    dijaco(1:ndt, 1:ndt) = jss(1:ndt, 1:ndt)-j6x6(1:ndt, 1:ndt)
 !
 ! --- INVERSION DU TERME (DIJACO)^-1 = INVDIJ
-    invdij(:,:) = 0.d0
+    invdij(:, :) = 0.d0
     do i = 1, ndt
-        invdij(i,i) = 1.d0
+        invdij(i, i) = 1.d0
     end do
-    call mgauss('NCVP', dijaco, invdij, 6, ndt,&
+    call mgauss('NCVP', dijaco, invdij, 6, ndt, &
                 ndt, det, iret)
     if (iret .gt. 1) then
-        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
+        dsde(1:ndt, 1:ndt) = hook(1:ndt, 1:ndt)
     end if
 !
 ! --- CONSTRUCTION DSDE = INVDIJ*HOOKNL
-    dsde(1:ndt,1:ndt) = matmul(invdij(1:ndt,1:ndt), hooknl(1:ndt,1:ndt))
+    dsde(1:ndt, 1:ndt) = matmul(invdij(1:ndt, 1:ndt), hooknl(1:ndt, 1:ndt))
 !
 end subroutine

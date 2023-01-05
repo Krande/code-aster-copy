@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
+subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres, &
                   nompaz, option, iret)
 !
 !
@@ -53,7 +53,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len= 8) :: nomgd, nompar
+    character(len=8) :: nomgd, nompar
     character(len=19) :: cns1, ces2, cel2, dcel
     character(len=24) :: valk(5)
     integer :: ipo
@@ -91,38 +91,38 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
     if (nomgd .eq. 'TEMP_R') then
         option = 'INI_SP_MATER'
         nompar = 'PTEMMAT'
-    else if (nomgd.eq.'HYDR_R') then
+    else if (nomgd .eq. 'HYDR_R') then
         option = 'INI_SP_MATER'
         nompar = 'PHYDMAT'
-    else if (nomgd.eq.'NEUT_R') then
+    else if (nomgd .eq. 'NEUT_R') then
         option = 'INI_SP_MATER'
         nompar = 'PNEUMAT'
-    else if (nomgd.eq.'SIEF_R') then
+    else if (nomgd .eq. 'SIEF_R') then
         option = 'INI_SP_RIGI'
         nompar = 'PCONTPR'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   Allocation de ces2 (ELGA):
     call detrsd('CHAM_ELEM_S', ces2)
 !
-    dcel='&&PJCOR2'
+    dcel = '&&PJCOR2'
 !
     call jeveuo(ligrel//'.LGRF', 'L', jlgrf)
     call cesvar(noca, ' ', ligrel, dcel)
-    call alchml(ligrel, option, nompar, 'V', cel2,&
+    call alchml(ligrel, option, nompar, 'V', cel2, &
                 iret, dcel)
 !
-    nompaz=nompar
+    nompaz = nompar
     if (iret .eq. 1) then
         valk(1) = nompar
         valk(2) = option
         valk(3) = ligrel
         valk(4) = cel2
         call utmess('F', 'CALCULEL_50', nk=4, valk=valk)
-    endif
+    end if
 !
     call celces(cel2, 'V', ces2)
     call detrsd('CHAM_ELEM', cel2)
@@ -138,17 +138,17 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
     call jeveuo(corres//'.PJEF_SP', 'L', vi=pjef_sp)
 !   nbno1 est le nombre de pseudo-noeuds du maillage 2
     do ipo = 1, nbno1
-            ima= pjef_sp(3*(ipo-1)+1)
-            ipt= pjef_sp(3*(ipo-1)+2)
-            isp= pjef_sp(3*(ipo-1)+3)
+        ima = pjef_sp(3*(ipo-1)+1)
+        ipt = pjef_sp(3*(ipo-1)+2)
+        isp = pjef_sp(3*(ipo-1)+3)
         do icmp = 1, ncmp1
-            call cesexi('C', jce2d, jce2l, ima, ipt,&
+            call cesexi('C', jce2d, jce2l, ima, ipt, &
                         isp, icmp, iad2)
             if (iad2 .gt. 0) then
-                cesv(iad2)=cnsv((ipo-1)*ncmp1+icmp)
-            endif
-        enddo
-    enddo
+                cesv(iad2) = cnsv((ipo-1)*ncmp1+icmp)
+            end if
+        end do
+    end do
 !
     call jedema()
 end subroutine

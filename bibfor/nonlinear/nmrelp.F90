@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmrelp(model          , nume_dof   , ds_material   , cara_elem, ds_system ,&
-                  ds_constitutive, list_load  , list_func_acti, iter_newt, ds_measure,&
-                  sdnume         , ds_algopara, ds_contact    , valinc   ,&
-                  solalg         , veelem     , veasse        , ds_conv  , ldccvg,&
+subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
+                  ds_constitutive, list_load, list_func_acti, iter_newt, ds_measure, &
+                  sdnume, ds_algopara, ds_contact, valinc, &
+                  solalg, veelem, veasse, ds_conv, ldccvg, &
                   sddyna_)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8maem.h"
@@ -54,20 +54,20 @@ implicit none
 #include "asterfort/zbinit.h"
 #include "blas/daxpy.h"
 !
-integer :: list_func_acti(*)
-integer :: iter_newt, ldccvg
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: list_load, sdnume
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24) :: model, nume_dof, cara_elem
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: veelem(*), veasse(*)
-character(len=19) :: solalg(*), valinc(*)
-type(NL_DS_Conv), intent(inout) :: ds_conv
-character(len=19), intent(in), optional :: sddyna_
+    integer :: list_func_acti(*)
+    integer :: iter_newt, ldccvg
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: list_load, sdnume
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24) :: model, nume_dof, cara_elem
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: veelem(*), veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    character(len=19), intent(in), optional :: sddyna_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -129,18 +129,18 @@ character(len=19), intent(in), optional :: sddyna_
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... RECHERCHE LINEAIRE'
-    endif
+        write (ifm, *) '<MECANONLINE> ... RECHERCHE LINEAIRE'
+    end if
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
     sddyna = ' '
     if (present(sddyna_)) then
         sddyna = sddyna_
-    endif
-    lgrot = isfonc(list_func_acti,'GD_ROTA')
-    lendo = isfonc(list_func_acti,'ENDO_NO')
-    lnkry = isfonc(list_func_acti,'NEWTON_KRYLOV')
+    end if
+    lgrot = isfonc(list_func_acti, 'GD_ROTA')
+    lendo = isfonc(list_func_acti, 'ENDO_NO')
+    lnkry = isfonc(list_func_acti, 'NEWTON_KRYLOV')
 !
 ! --- INITIALISATIONS
 !
@@ -150,9 +150,9 @@ character(len=19), intent(in), optional :: sddyna_
     k19bla = ' '
     ldccvg = -1
     call nmchai('VALINC', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zvalin)
+    ASSERT(nmax .eq. zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zsolal)
+    ASSERT(nmax .eq. zsolal)
 !
 ! --- PARAMETRES RECHERCHE LINEAIRE
 !
@@ -162,7 +162,7 @@ character(len=19), intent(in), optional :: sddyna_
     rhoexm = -ds_algopara%line_search%rho_excl
     rhoexp = ds_algopara%line_search%rho_excl
     relirl = ds_algopara%line_search%resi_rela
-    ASSERT(itrlmx.le.1000)
+    ASSERT(itrlmx .le. 1000)
     dimmem = 10
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
@@ -200,8 +200,8 @@ character(len=19), intent(in), optional :: sddyna_
     call vtzero(depplt)
     call copisd('CHAMP_GD', 'V', varplu, varplt)
     call copisd('CHAMP_GD', 'V', sigplu, sigplt)
-    call vtcreb('&&NMRECH.RESI', 'V', 'R', nume_ddlz = nume_dof, nb_equa_outz = neq)
-    call vtcreb('&&NMRECH.DIRI', 'V', 'R', nume_ddlz = nume_dof, nb_equa_outz = neq)
+    call vtcreb('&&NMRECH.RESI', 'V', 'R', nume_ddlz=nume_dof, nb_equa_outz=neq)
+    call vtcreb('&&NMRECH.DIRI', 'V', 'R', nume_ddlz=nume_dof, nb_equa_outz=neq)
 !
 ! --- CONSTRUCTION DES VARIABLES CHAPEAUX
 !
@@ -218,16 +218,16 @@ character(len=19), intent(in), optional :: sddyna_
 ! --- CALCUL DE F(RHO=0)
 !
     call nmrecz(nume_dof, ds_contact, list_func_acti, &
-                cndiri  , ds_system%cnfint, cnfext, cnsstr, ddepla,&
+                cndiri, ds_system%cnfint, cnfext, cnsstr, ddepla, &
                 f0)
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... FONCTIONNELLE INITIALE: ',f0
-    endif
+        write (ifm, *) '<MECANONLINE> ... FONCTIONNELLE INITIALE: ', f0
+    end if
 !
 ! --- VALEUR DE CONVERGENCE
 !
-    fcvg = abs(relirl * f0)
+    fcvg = abs(relirl*f0)
 !
 ! --- INITIALISATION ET DIRECTION DE DESCENTE
 !
@@ -236,17 +236,17 @@ character(len=19), intent(in), optional :: sddyna_
         rhom = 0.d0
         fm = f0
         rhoopt = 1.d0
-    else if (ds_algopara%line_search%method .eq.'MIXTE') then
+    else if (ds_algopara%line_search%method .eq. 'MIXTE') then
         if (f0 .le. 0.d0) then
             sens = 1.d0
         else
             sens = -1.d0
-        endif
+        end if
         call zbinit(sens*f0, parmul, dimmem, mem)
         rhoopt = 1.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- BOUCLE DE RECHERCHE LINEAIRE
 !
@@ -257,47 +257,47 @@ character(len=19), intent(in), optional :: sddyna_
 !
 ! ----- CALCUL DE L'INCREMENT DE DEPLACEMENT TEMPORAIRE
 !
-        call nmmaji(nume_dof, lgrot, lendo, sdnume, rho,&
+        call nmmaji(nume_dof, lgrot, lendo, sdnume, rho, &
                     depdel, ddepla, depdet, 0)
-        call nmmaji(nume_dof, lgrot, lendo, sdnume, rho,&
+        call nmmaji(nume_dof, lgrot, lendo, sdnume, rho, &
                     depplu, ddepla, depplt, 1)
         if (lnkry) then
             call vlaxpy(1.d0-rho, ddepla, depdet)
             call vlaxpy(1.d0-rho, ddepla, depplt)
-        endif
+        end if
 ! ----- Print
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE> ...... ITERATION <',iterho,'>'
-            write (ifm,*) '<MECANONLINE> ...... RHO COURANT = ',rho
-            write (ifm,*) '<MECANONLINE> ...... INCREMENT DEPL.'
+            write (ifm, *) '<MECANONLINE> ...... ITERATION <', iterho, '>'
+            write (ifm, *) '<MECANONLINE> ...... RHO COURANT = ', rho
+            write (ifm, *) '<MECANONLINE> ...... INCREMENT DEPL.'
             call nmdebg('VECT', depplt, 6)
-            write (ifm,*) '<MECANONLINE> ...... INCREMENT DEPL. TOTAL'
+            write (ifm, *) '<MECANONLINE> ...... INCREMENT DEPL. TOTAL'
             call nmdebg('VECT', depdet, 6)
-        endif
+        end if
 ! ----- Update internal forces
         ds_system2%cnfint = cnfint2(act)
         ds_system2%veinte = ds_system%veinte
-        call nonlinIntForce(CORR_NEWTON   ,&
-                            model         , cara_elem      ,&
-                            list_func_acti, iter_newt      , sdnume,&
-                            ds_material   , ds_constitutive,&
-                            ds_system2    , ds_measure     ,&
-                            valint(1, act), solalt         ,&
+        call nonlinIntForce(CORR_NEWTON, &
+                            model, cara_elem, &
+                            list_func_acti, iter_newt, sdnume, &
+                            ds_material, ds_constitutive, &
+                            ds_system2, ds_measure, &
+                            valint(1, act), solalt, &
                             ldccvg)
 ! ----- Update force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
-        call nonlinRForceCompute(model   , ds_material, cara_elem, list_load,&
-                                 nume_dof, ds_measure , depplt,&
-                                 veelem  , cndiri_ = cndiri2(act))
+        call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
+                                 nume_dof, ds_measure, depplt, &
+                                 veelem, cndiri_=cndiri2(act))
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE> ...... FORCES INTERNES'
+            write (ifm, *) '<MECANONLINE> ...... FORCES INTERNES'
             call nmdebg('VECT', cnfint2(act), 6)
-            write (ifm,*) '<MECANONLINE> ...... REACTIONS D''APPUI'
+            write (ifm, *) '<MECANONLINE> ...... REACTIONS D''APPUI'
             call nmdebg('VECT', cndiri2(act), 6)
-        endif
+        end if
 !
 ! ----- ON A NECESSAIREMENT INTEGRE LA LOI DE COMPORTEMENT
 !
-        ASSERT(ldccvg.ne.-1)
+        ASSERT(ldccvg .ne. -1)
 !
 ! ----- ECHEC A L'INTEGRATION DE LA LOI DE COMPORTEMENT
 !
@@ -309,8 +309,8 @@ character(len=19), intent(in), optional :: sddyna_
                 goto 100
             else
                 goto 999
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- CALCUL DE F(RHO)
 !
@@ -318,31 +318,31 @@ character(len=19), intent(in), optional :: sddyna_
                     cndiri2(act), cnfint2(act), cnfext, cnsstr, ddepla, f)
 !
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE> ... FONCTIONNELLE COURANTE: ',f
-        endif
+            write (ifm, *) '<MECANONLINE> ... FONCTIONNELLE COURANTE: ', f
+        end if
 !
 ! ----- CALCUL DU RHO OPTIMAL
 !
         if (ds_algopara%line_search%method .eq. 'CORDE') then
-            call nmrech(fm, f, fopt, fcvg, rhomin,&
-                        rhomax, rhoexm, rhoexp, rhom, rho,&
-                        rhoopt, ldcopt, ldccvg, opt, act,&
+            call nmrech(fm, f, fopt, fcvg, rhomin, &
+                        rhomax, rhoexm, rhoexp, rhom, rho, &
+                        rhoopt, ldcopt, ldccvg, opt, act, &
                         stite)
 !
         else if (ds_algopara%line_search%method .eq. 'MIXTE') then
-            call nmrebo(f, mem, sens, rho, rhoopt,&
-                        ldcopt, ldccvg, fopt, fcvg, opt,&
-                        act, rhomin, rhomax, rhoexm, rhoexp,&
+            call nmrebo(f, mem, sens, rho, rhoopt, &
+                        ldcopt, ldccvg, fopt, fcvg, opt, &
+                        act, rhomin, rhomax, rhoexm, rhoexp, &
                         stite, echec)
             if (echec) then
                 goto 100
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
         if (stite) then
             goto 100
-        endif
+        end if
     end do
     iterho = itrlmx
 !
@@ -361,7 +361,7 @@ character(len=19), intent(in), optional :: sddyna_
         call copisd('CHAMP_GD', 'V', varplt, varplu)
         call copisd('CHAMP_GD', 'V', cnfint2(opt), ds_system%cnfint)
         call copisd('CHAMP_GD', 'V', cndiri2(opt), cndiri)
-    endif
+    end if
 !
 ! --- INFORMATIONS SUR LA RECHERCHE LINEAIRE
 !

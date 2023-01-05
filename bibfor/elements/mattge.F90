@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mattge(nomte, dtild, sina, cosa, r,&
+subroutine mattge(nomte, dtild, sina, cosa, r, &
                   jacp, vf, dfds, rtangi)
     implicit none
 !
@@ -36,104 +36,104 @@ subroutine mattge(nomte, dtild, sina, cosa, r,&
 !-----------------------------------------------------------------------
     if (nomte .eq. 'MECXSE3') then
 !
-        mats(1,1)=-sina*dfds(1)
-        mats(1,2)= cosa*dfds(1)
-        mats(1,3)= 0.d0
-        mats(1,4)=-sina*dfds(2)
-        mats(1,5)= cosa*dfds(2)
-        mats(1,6)= 0.d0
-        mats(1,7)=-sina*dfds(3)
-        mats(1,8)= cosa*dfds(3)
-        mats(1,9)= 0.d0
+        mats(1, 1) = -sina*dfds(1)
+        mats(1, 2) = cosa*dfds(1)
+        mats(1, 3) = 0.d0
+        mats(1, 4) = -sina*dfds(2)
+        mats(1, 5) = cosa*dfds(2)
+        mats(1, 6) = 0.d0
+        mats(1, 7) = -sina*dfds(3)
+        mats(1, 8) = cosa*dfds(3)
+        mats(1, 9) = 0.d0
 !
-        mats(2,1)= 0.d0
-        mats(2,2)= 0.d0
-        mats(2,3)= dfds(1)
-        mats(2,4)= 0.d0
-        mats(2,5)= 0.d0
-        mats(2,6)= dfds(2)
-        mats(2,7)= 0.d0
-        mats(2,8)= 0.d0
-        mats(2,9)= dfds(3)
+        mats(2, 1) = 0.d0
+        mats(2, 2) = 0.d0
+        mats(2, 3) = dfds(1)
+        mats(2, 4) = 0.d0
+        mats(2, 5) = 0.d0
+        mats(2, 6) = dfds(2)
+        mats(2, 7) = 0.d0
+        mats(2, 8) = 0.d0
+        mats(2, 9) = dfds(3)
 !
-        mats(3,1)= vf(1)/r
-        mats(3,2)= 0.d0
-        mats(3,3)= 0.d0
-        mats(3,4)= vf(2)/r
-        mats(3,5)= 0.d0
-        mats(3,6)= 0.d0
-        mats(3,7)= vf(3)/r
-        mats(3,8)= 0.d0
-        mats(3,9)= 0.d0
+        mats(3, 1) = vf(1)/r
+        mats(3, 2) = 0.d0
+        mats(3, 3) = 0.d0
+        mats(3, 4) = vf(2)/r
+        mats(3, 5) = 0.d0
+        mats(3, 6) = 0.d0
+        mats(3, 7) = vf(3)/r
+        mats(3, 8) = 0.d0
+        mats(3, 9) = 0.d0
 !
-        mats(4,1)= 0.d0
-        mats(4,2)= 0.d0
-        mats(4,3)=-sina*vf(1)/r
-        mats(4,4)= 0.d0
-        mats(4,5)= 0.d0
-        mats(4,6)=-sina*vf(2)/r
-        mats(4,7)= 0.d0
-        mats(4,8)= 0.d0
-        mats(4,9)=-sina*vf(3)/r
+        mats(4, 1) = 0.d0
+        mats(4, 2) = 0.d0
+        mats(4, 3) = -sina*vf(1)/r
+        mats(4, 4) = 0.d0
+        mats(4, 5) = 0.d0
+        mats(4, 6) = -sina*vf(2)/r
+        mats(4, 7) = 0.d0
+        mats(4, 8) = 0.d0
+        mats(4, 9) = -sina*vf(3)/r
 !
-        mats(5,1)= cosa*dfds(1)
-        mats(5,2)= sina*dfds(1)
-        mats(5,3)= vf(1)
-        mats(5,4)= cosa*dfds(2)
-        mats(5,5)= sina*dfds(2)
-        mats(5,6)= vf(2)
-        mats(5,7)= cosa*dfds(3)
-        mats(5,8)= sina*dfds(3)
-        mats(5,9)= vf(3)
+        mats(5, 1) = cosa*dfds(1)
+        mats(5, 2) = sina*dfds(1)
+        mats(5, 3) = vf(1)
+        mats(5, 4) = cosa*dfds(2)
+        mats(5, 5) = sina*dfds(2)
+        mats(5, 6) = vf(2)
+        mats(5, 7) = cosa*dfds(3)
+        mats(5, 8) = sina*dfds(3)
+        mats(5, 9) = vf(3)
 !
         call dscal(25, jacp, dtild, 1)
 !
-        call btkb(5, 9, 9, dtild, mats,&
+        call btkb(5, 9, 9, dtild, mats, &
                   dtilds, rtangi)
 !
     else
 !
         do i = 1, 3
             do j = 1, 3
-                dtild1(i,j)=dtild(i,j)
+                dtild1(i, j) = dtild(i, j)
             end do
         end do
 !
-        mats1(1,1)=-sina*dfds(1)
-        mats1(1,2)= cosa*dfds(1)
-        mats1(1,3)= 0.d0
-        mats1(1,4)=-sina*dfds(2)
-        mats1(1,5)= cosa*dfds(2)
-        mats1(1,6)= 0.d0
-        mats1(1,7)=-sina*dfds(3)
-        mats1(1,8)= cosa*dfds(3)
-        mats1(1,9)= 0.d0
+        mats1(1, 1) = -sina*dfds(1)
+        mats1(1, 2) = cosa*dfds(1)
+        mats1(1, 3) = 0.d0
+        mats1(1, 4) = -sina*dfds(2)
+        mats1(1, 5) = cosa*dfds(2)
+        mats1(1, 6) = 0.d0
+        mats1(1, 7) = -sina*dfds(3)
+        mats1(1, 8) = cosa*dfds(3)
+        mats1(1, 9) = 0.d0
 !
-        mats1(2,1)= 0.d0
-        mats1(2,2)= 0.d0
-        mats1(2,3)= dfds(1)
-        mats1(2,4)= 0.d0
-        mats1(2,5)= 0.d0
-        mats1(2,6)= dfds(2)
-        mats1(2,7)= 0.d0
-        mats1(2,8)= 0.d0
-        mats1(2,9)= dfds(3)
+        mats1(2, 1) = 0.d0
+        mats1(2, 2) = 0.d0
+        mats1(2, 3) = dfds(1)
+        mats1(2, 4) = 0.d0
+        mats1(2, 5) = 0.d0
+        mats1(2, 6) = dfds(2)
+        mats1(2, 7) = 0.d0
+        mats1(2, 8) = 0.d0
+        mats1(2, 9) = dfds(3)
 !
-        mats1(3,1)= cosa*dfds(1)
-        mats1(3,2)= sina*dfds(1)
-        mats1(3,3)= vf(1)
-        mats1(3,4)= cosa*dfds(2)
-        mats1(3,5)= sina*dfds(2)
-        mats1(3,6)= vf(2)
-        mats1(3,7)= cosa*dfds(3)
-        mats1(3,8)= sina*dfds(3)
-        mats1(3,9)= vf(3)
+        mats1(3, 1) = cosa*dfds(1)
+        mats1(3, 2) = sina*dfds(1)
+        mats1(3, 3) = vf(1)
+        mats1(3, 4) = cosa*dfds(2)
+        mats1(3, 5) = sina*dfds(2)
+        mats1(3, 6) = vf(2)
+        mats1(3, 7) = cosa*dfds(3)
+        mats1(3, 8) = sina*dfds(3)
+        mats1(3, 9) = vf(3)
 !
         call dscal(9, jacp, dtild1, 1)
 !
-        call btkb(3, 9, 9, dtild1, mats1,&
+        call btkb(3, 9, 9, dtild1, mats1, &
                   dtildt, rtangi)
 !
-    endif
+    end if
 !
 end subroutine

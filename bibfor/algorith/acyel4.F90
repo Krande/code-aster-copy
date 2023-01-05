@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
-                  lilig, nblig, licol, nbcol, cmat,&
+subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart, &
+                  lilig, nblig, licol, nbcol, cmat, &
                   ndim, ideb, jdeb, beta)
     implicit none
 !
@@ -74,8 +74,8 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), iret)
     if (iret .eq. 0) goto 999
 !
-    abet=cos(beta)
-    bbet=sin(beta)
+    abet = cos(beta)
+    bbet = sin(beta)
 !
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), ibid)
     call jeveuo(jexnum(nomcol, ibid), 'L', llob)
@@ -87,18 +87,18 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
 !
         do j = 1, nbcol
             do i = 1, nblig
-                iad=llob+(licol(j)-1)*nobl+lilig(i)-1
-                call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
-                            1, ideb+i-1, jdeb+ j-1, abet, 1,&
+                iad = llob+(licol(j)-1)*nobl+lilig(i)-1
+                call ampcpr(cmat, ndim, ndim, zr(iad), 1, &
+                            1, ideb+i-1, jdeb+j-1, abet, 1, &
                             1)
-                call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
-                            1, ideb+i-1, jdeb+ j-1, bbet, 2,&
+                call ampcpr(cmat, ndim, ndim, zr(iad), 1, &
+                            1, ideb+i-1, jdeb+j-1, bbet, 2, &
                             1)
-                call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
-                            1, jdeb+j-1, ideb+ i-1, abet, 1,&
+                call ampcpr(cmat, ndim, ndim, zr(iad), 1, &
+                            1, jdeb+j-1, ideb+i-1, abet, 1, &
                             1)
-                call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
-                            1, jdeb+j-1, ideb+ i-1, -bbet, 2,&
+                call ampcpr(cmat, ndim, ndim, zr(iad), 1, &
+                            1, jdeb+j-1, ideb+i-1, -bbet, 2, &
                             1)
             end do
         end do
@@ -107,20 +107,20 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart,&
 !
 !  SI ASSEMBLAGE COMPLET ON TRAITE TOUT D'UN COUP
 !
-        call ampcpr(cmat, ndim, ndim, zr(llob), nobl,&
-                    nobc, ideb, jdeb, abet, 1,&
+        call ampcpr(cmat, ndim, ndim, zr(llob), nobl, &
+                    nobc, ideb, jdeb, abet, 1, &
                     1)
-        call ampcpr(cmat, ndim, ndim, zr(llob), nobl,&
-                    nobc, ideb, jdeb, bbet, 2,&
+        call ampcpr(cmat, ndim, ndim, zr(llob), nobl, &
+                    nobc, ideb, jdeb, bbet, 2, &
                     1)
-        call ampcpr(cmat, ndim, ndim, zr(llob), nobl,&
-                    nobc, jdeb, ideb, abet, 1,&
+        call ampcpr(cmat, ndim, ndim, zr(llob), nobl, &
+                    nobc, jdeb, ideb, abet, 1, &
                     -1)
-        call ampcpr(cmat, ndim, ndim, zr(llob), nobl,&
-                    nobc, jdeb, ideb, -bbet, 2,&
+        call ampcpr(cmat, ndim, ndim, zr(llob), nobl, &
+                    nobc, jdeb, ideb, -bbet, 2, &
                     -1)
 !
-    endif
+    end if
 !
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,33 +19,33 @@
 ! aslint: disable=W1504
 #include "asterf_types.h"
 !
-subroutine mmmtuu(phase , l_pena_cont, l_pena_fric,&
-                  ndim  , nne        , nnm   ,&
-                  mprojn, mprojt     ,&
-                  wpg   , ffe        , ffm   , jacobi,&
-                  coefac, coefaf     , coefff, lambda,&
-                  rese  , nrese      ,&
-                  matree, matrmm     ,&
+subroutine mmmtuu(phase, l_pena_cont, l_pena_fric, &
+                  ndim, nne, nnm, &
+                  mprojn, mprojt, &
+                  wpg, ffe, ffm, jacobi, &
+                  coefac, coefaf, coefff, lambda, &
+                  rese, nrese, &
+                  matree, matrmm, &
                   matrem, matrme)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/mmmtee.h"
 #include "asterfort/mmmtem.h"
 #include "asterfort/mmmtme.h"
 #include "asterfort/mmmtmm.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont, l_pena_fric
-integer, intent(in)  :: ndim, nne, nnm
-real(kind=8), intent(in)  :: mprojn(3, 3), mprojt(3, 3)
-real(kind=8), intent(in)  :: ffe(9), ffm(9)
-real(kind=8), intent(in)  :: wpg, jacobi
-real(kind=8), intent(in)  :: rese(3), nrese
-real(kind=8), intent(in)  :: coefac, coefaf
-real(kind=8), intent(in)  :: lambda, coefff
-real(kind=8), intent(out)  :: matrem(27, 27), matrme(27, 27)
-real(kind=8), intent(out)  :: matree(27, 27), matrmm(27, 27)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont, l_pena_fric
+    integer, intent(in)  :: ndim, nne, nnm
+    real(kind=8), intent(in)  :: mprojn(3, 3), mprojt(3, 3)
+    real(kind=8), intent(in)  :: ffe(9), ffm(9)
+    real(kind=8), intent(in)  :: wpg, jacobi
+    real(kind=8), intent(in)  :: rese(3), nrese
+    real(kind=8), intent(in)  :: coefac, coefaf
+    real(kind=8), intent(in)  :: lambda, coefff
+    real(kind=8), intent(out)  :: matrem(27, 27), matrme(27, 27)
+    real(kind=8), intent(out)  :: matree(27, 27), matrmm(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,36 +83,36 @@ real(kind=8), intent(out)  :: matree(27, 27), matrmm(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call mmmtee(phase , l_pena_cont, l_pena_fric,&
-                ndim  , nne        ,&
-                mprojn, mprojt     ,&
-                wpg   , ffe        , jacobi     ,&
-                coefac, coefaf     , coefff     , lambda,&
-                rese  , nrese      ,&
+    call mmmtee(phase, l_pena_cont, l_pena_fric, &
+                ndim, nne, &
+                mprojn, mprojt, &
+                wpg, ffe, jacobi, &
+                coefac, coefaf, coefff, lambda, &
+                rese, nrese, &
                 matree)
 !
-    call mmmtmm(phase , l_pena_cont, l_pena_fric,&
-                ndim  , nnm        ,&
-                mprojn, mprojt     ,&
-                wpg   , ffm        , jacobi     ,&
-                coefac, coefaf     , coefff     , lambda,&
-                rese  , nrese      ,&
+    call mmmtmm(phase, l_pena_cont, l_pena_fric, &
+                ndim, nnm, &
+                mprojn, mprojt, &
+                wpg, ffm, jacobi, &
+                coefac, coefaf, coefff, lambda, &
+                rese, nrese, &
                 matrmm)
 !
-    call mmmtem(phase ,&
-                ndim  , nne   , nnm   ,&
-                mprojn, mprojt, wpg   , jacobi,&
-                ffe   , ffm   , &
-                coefac, coefaf, coefff, lambda,&
-                rese  , nrese ,&
+    call mmmtem(phase, &
+                ndim, nne, nnm, &
+                mprojn, mprojt, wpg, jacobi, &
+                ffe, ffm, &
+                coefac, coefaf, coefff, lambda, &
+                rese, nrese, &
                 matrem)
 !
-    call mmmtme(phase ,&
-                ndim  , nne   , nnm   ,&
-                mprojn, mprojt, wpg   , jacobi,&
-                ffe   , ffm   , &
-                coefac, coefaf, coefff, lambda,&
-                rese  , nrese , &
+    call mmmtme(phase, &
+                ndim, nne, nnm, &
+                mprojn, mprojt, wpg, jacobi, &
+                ffe, ffm, &
+                coefac, coefaf, coefff, lambda, &
+                rese, nrese, &
                 matrme)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ subroutine algocup(ds_contact, numedd, matass)
 ! person_in_charge: mickael.abbas at edf.fr
 !
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/cucpem.h"
@@ -74,8 +74,8 @@ implicit none
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write(ifm,*) '<LIA_UNIL><> ALGO   : PENALISATION'
-    endif
+        write (ifm, *) '<LIA_UNIL><> ALGO   : PENALISATION'
+    end if
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
@@ -89,11 +89,11 @@ implicit none
 !
 ! --- INITIALISATION DES VARIABLES
 !
-    nbliai = cudisi(deficu(1:16),'NNOCU')
+    nbliai = cudisi(deficu(1:16), 'NNOCU')
     neq = zi(lmat+2)
 !
 !   Mecanisle de stockage de nbliac
-    nbliac = cudisd(resocu,'NBLIAC')
+    nbliac = cudisd(resocu, 'NBLIAC')
 !
 ! --- CREATION DU SECOND MEMBRE AFMU = -E_N*AT*JEU
 !
@@ -101,7 +101,7 @@ implicit none
 !
     if (nbliac_new .eq. 0) then
         goto 999
-    endif
+    end if
 !
 ! --- CALCUL DE LA MATRICE DE CONTACT PENALISEE ELEMENTAIRE [E_N*AT]
 !
@@ -111,7 +111,7 @@ implicit none
 !
     call cucpma(deficu, resocu, neq, nbliai, numedd, matrcu)
 !
-999  continue
+999 continue
 !
 !   Il faudra prevoir une actualisation de nbliac
 !

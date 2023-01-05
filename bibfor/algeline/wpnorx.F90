@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,21 +35,21 @@ subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
     real(kind=8) :: prec
 !     ------------------------------------------------------------------
 !
-    prec=r8miem()*10.d0
-    zero = dcmplx(0.0d0,0.0d0)
+    prec = r8miem()*10.d0
+    zero = dcmplx(0.0d0, 0.0d0)
     do imode = 1, nbmode
         normx = zero
         do ieq = 1, neq
-            if (abs(vecp(ieq,imode)*exclus(ieq)) .gt. abs(normx)) then
-                normx = vecp(ieq,imode)
-            endif
+            if (abs(vecp(ieq, imode)*exclus(ieq)) .gt. abs(normx)) then
+                normx = vecp(ieq, imode)
+            end if
         end do
         if (abs(normx) .gt. prec) then
-            normx = 1.d0 / normx
+            normx = 1.d0/normx
             do ieq = 1, neq
-                vecp(ieq,imode) = vecp(ieq,imode) * normx
+                vecp(ieq, imode) = vecp(ieq, imode)*normx
             end do
-        endif
+        end if
         resufk(imode) = 'SANS_CMP: LAGR'
     end do
 !

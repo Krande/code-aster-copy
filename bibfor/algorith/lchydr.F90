@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ subroutine lchydr(a, h)
 !       ----------------------------------------------------------------
     integer :: n, nd
     real(kind=8) :: a(6), ta, h
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !-----------------------------------------------------------------------
     integer :: i
 !       ----------------------------------------------------------------
     ta = 0.d0
     do i = 1, nd
-        ta = ta + a(i)
+        ta = ta+a(i)
     end do
-    h = ta / 3.d0
+    h = ta/3.d0
 end subroutine

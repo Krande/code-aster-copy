@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfveri(mesh        , ds_contact  , time_curr    , nt_ncomp_poin,&
-                  v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti , v_ncomp_zone)
+subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
+                  v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -99,8 +99,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     node_slav_indx = 0
-    i_ncomp_poin   = 1
-    k8bla          = ' '
+    i_ncomp_poin = 1
+    k8bla = ' '
 !
 ! - Pairing datastructure
 !
@@ -112,28 +112,28 @@ implicit none
 !
 ! - Parameters
 !
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
-    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
 !
 ! - Loop on contact zones
 !
-    i_poin         = 1
+    i_poin = 1
     nt_ncomp_poin0 = 0
     do i_zone = 1, nb_cont_zone
 !
 ! ----- Parameters of zone
 !
-        nb_cont_node = mminfi(ds_contact%sdcont_defi, 'NBPT'  , i_zone)
-        jdecne       = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
-        l_veri       = mminfl(ds_contact%sdcont_defi, 'VERIF' , i_zone)
+        nb_cont_node = mminfi(ds_contact%sdcont_defi, 'NBPT', i_zone)
+        jdecne = mminfi(ds_contact%sdcont_defi, 'JDECNE', i_zone)
+        l_veri = mminfl(ds_contact%sdcont_defi, 'VERIF', i_zone)
 !
 ! ----- Computation: no evaluate (see cfresu)
 !
-        if (.not.l_veri) then
+        if (.not. l_veri) then
             nb_poin = mminfi(ds_contact%sdcont_defi, 'NBPC', i_zone)
-            i_poin  = i_poin + nb_poin
+            i_poin = i_poin+nb_poin
             goto 25
-        endif
+        end if
 !
 ! ----- Loop on nodes
 !
@@ -141,18 +141,18 @@ implicit none
 !
 ! --------- Current slave node
 !
-            node_slav_indx(1) = jdecne + i_cont_node
+            node_slav_indx(1) = jdecne+i_cont_node
             call cfnumn(ds_contact%sdcont_defi, 1, node_slav_indx(1), node_slav_nume(1))
             call jenuno(jexnum(mesh//'.NOMNOE', node_slav_nume(1)), node_slav_name)
 !
 ! --------- Parameters from pairing
 !
-            call apinfi(sdappa, 'APPARI_TYPE'     , i_poin, pair_type)
-            call apinfi(sdappa, 'APPARI_ENTITE'   , i_poin, pair_enti)
+            call apinfi(sdappa, 'APPARI_TYPE', i_poin, pair_type)
+            call apinfi(sdappa, 'APPARI_ENTITE', i_poin, pair_enti)
             call apinfr(sdappa, 'APPARI_PROJ_KSI1', i_poin, ksipr1)
             call apinfr(sdappa, 'APPARI_PROJ_KSI2', i_poin, ksipr2)
-            call apvect(sdappa, 'APPARI_TAU1'     , i_poin, tau1m)
-            call apvect(sdappa, 'APPARI_TAU2'     , i_poin, tau2m)
+            call apvect(sdappa, 'APPARI_TAU1', i_poin, tau1m)
+            call apvect(sdappa, 'APPARI_TAU2', i_poin, tau2m)
 !
 ! --------- Coordinates of point
 !
@@ -175,24 +175,24 @@ implicit none
 !
 ! ------------- Coordinates of projection
 !
-                call cfcoor(mesh  , ds_contact%sdcont_defi   , newgeo, elem_mast_indx, ksipr1,&
+                call cfcoor(mesh, ds_contact%sdcont_defi, newgeo, elem_mast_indx, ksipr1, &
                             ksipr2, node_coor_proj)
 !
 ! ------------- Define new local basis
 !
-                call cftanr(mesh, model_ndim, ds_contact, i_zone,&
-                            node_slav_indx(1), 'MAIL', elem_mast_indx, elem_mast_nume, ksipr1,&
+                call cftanr(mesh, model_ndim, ds_contact, i_zone, &
+                            node_slav_indx(1), 'MAIL', elem_mast_indx, elem_mast_nume, ksipr1, &
                             ksipr2, tau1m, tau2m, tau1, tau2)
                 call mmnorm(model_ndim, tau1, tau2, norm, noor)
                 if (noor .le. r8prem()) then
                     call utmess('F', 'CONTACT3_26', sk=node_slav_name)
-                endif
+                end if
 !
 ! ------------- Compute gap
 !
                 call cfnewj(model_ndim, poin_coor, node_coor_proj, norm, gap)
-                call cfdist(ds_contact, i_zone, posmae, poin_coor, time_curr,&
-                            gap_user, node_slav_indx_ = node_slav_indx(1))
+                call cfdist(ds_contact, i_zone, posmae, poin_coor, time_curr, &
+                            gap_user, node_slav_indx_=node_slav_indx(1))
                 gap = gap+gap_user
             else if (pair_type .eq. 1) then
 !
@@ -209,33 +209,33 @@ implicit none
 !
 ! ------------- Define new local basis
 !
-                call cftanr(mesh, model_ndim, ds_contact, i_zone,&
-                            node_slav_indx(1), 'NOEU', node_slav_indx(1), node_slav_nume(1), r8bid,&
+                call cftanr(mesh, model_ndim, ds_contact, i_zone, &
+                           node_slav_indx(1), 'NOEU', node_slav_indx(1), node_slav_nume(1), r8bid, &
                             r8bid, tau1m, tau2m, tau1, tau2)
                 call mmnorm(model_ndim, tau1, tau2, norm, noor)
                 if (noor .le. r8prem()) then
                     call utmess('F', 'CONTACT3_26', sk=node_slav_name)
-                endif
+                end if
 !
 ! ------------- Compute gap
 !
                 call cfnewj(model_ndim, poin_coor, node_coor_proj, norm, gap)
-                call cfdist(ds_contact, i_zone, posmae, poin_coor, time_curr,&
-                            gap_user, node_slav_indx_ = node_slav_indx(1))
+                call cfdist(ds_contact, i_zone, posmae, poin_coor, time_curr, &
+                            gap_user, node_slav_indx_=node_slav_indx(1))
                 gap = gap+gap_user
 !
-            else if (pair_type.eq.-1) then
+            else if (pair_type .eq. -1) then
                 enti_name = 'EXCLU'
                 gap = r8vide()
-            else if (pair_type.eq.-2) then
+            else if (pair_type .eq. -2) then
                 enti_name = 'EXCLU'
                 gap = r8vide()
-            else if (pair_type.eq.-3) then
+            else if (pair_type .eq. -3) then
                 enti_name = 'EXCLU'
                 gap = r8vide()
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! --------- Save
 !
@@ -247,14 +247,14 @@ implicit none
 !
 ! --------- Next points
 !
-            i_ncomp_poin   = i_ncomp_poin + 1
-            nt_ncomp_poin0 = nt_ncomp_poin0+ 1
-            i_poin         = i_poin + 1
+            i_ncomp_poin = i_ncomp_poin+1
+            nt_ncomp_poin0 = nt_ncomp_poin0+1
+            i_poin = i_poin+1
 !
         end do
- 25     continue
+25      continue
     end do
 !
-    ASSERT(nt_ncomp_poin0.eq.nt_ncomp_poin)
+    ASSERT(nt_ncomp_poin0 .eq. nt_ncomp_poin)
 !
 end subroutine

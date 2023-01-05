@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipel2(mat, sup, sud, mup, mud,&
+subroutine pipel2(mat, sup, sud, mup, mud, &
                   vim, tau, copilo)
 !
 !
@@ -51,17 +51,17 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
     character(len=8) :: fami, poum
     character(len=16) :: nom(3)
 !
-    data nom /'GC','SIGM_C','PENA_LAGR'/
+    data nom/'GC', 'SIGM_C', 'PENA_LAGR'/
 ! ----------------------------------------------------------------------
 !
 !
 ! -- RECUPERATION DES PARAMETRES PHYSIQUES
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, mat,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, mat, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 3, nom, val, cod, 2)
     gc = val(1)
     sc = val(2)
@@ -70,7 +70,7 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
     r = val(3)*sc*sc/gc
 !
 !   seuil en multiplicateur augmente
-    tpa = max(vim,sc) + (r*dc-sc)*tau
+    tpa = max(vim, sc)+(r*dc-sc)*tau
 !
 ! -- CAS DE L'ENDOMMAGEMENT SATURE
     if (tpa .gt. r*dc) goto 999
@@ -80,14 +80,14 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
 ! -- CALCUL DU SECOND MEMBRE
 !
 !    FORCE COHESIVE AUGMENTEE
-    tp(1) = mup(1) + r*sup(1)
-    tp(2) = mup(2) + r*sup(2)
-    tp(3) = mup(3) + r*sup(3)
+    tp(1) = mup(1)+r*sup(1)
+    tp(2) = mup(2)+r*sup(2)
+    tp(3) = mup(3)+r*sup(3)
 !
 !    FORCE COHESIVE AUGMENTEE
-    td(1) = mud(1) + r*sud(1)
-    td(2) = mud(2) + r*sud(2)
-    td(3) = mud(3) + r*sud(3)
+    td(1) = mud(1)+r*sud(1)
+    td(2) = mud(2)+r*sud(2)
+    td(3) = mud(3)+r*sud(3)
 !
     tpn = tp(1)
     tdn = td(1)
@@ -98,9 +98,9 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
 !    CISAILLEMENT : C0 + 2.C1 ETA + C2 ETA**2
 !    OUVERTURE    : N0 + 2.N1 ETA + N2 ETA**2
 !
-    c0 = tp(2)*tp(2) + tp(3)*tp(3)
-    c1 = tp(2)*td(2) + tp(3)*td(3)
-    c2 = td(2)*td(2) + td(3)*td(3)
+    c0 = tp(2)*tp(2)+tp(3)*tp(3)
+    c1 = tp(2)*td(2)+tp(3)*td(3)
+    c2 = td(2)*td(2)+td(3)*td(3)
 !
     n0 = tpn*tpn
     n1 = tpn*tdn
@@ -133,22 +133,22 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
             eta = rac(i)
 !
             if (i .le. 2) then
-                if ((tpn + eta*tdn) .lt. 0.d0) then
-                    pente = 2.d0*(c2*eta + c1)
-                    copilo(nrac+1) = tau - pente*eta
+                if ((tpn+eta*tdn) .lt. 0.d0) then
+                    pente = 2.d0*(c2*eta+c1)
+                    copilo(nrac+1) = tau-pente*eta
                     copilo(nrac+2) = pente
-                    nrac = nrac + 2
-                endif
+                    nrac = nrac+2
+                end if
             else
-                if ((tpn + eta*tdn) .ge. 0.d0) then
-                    pente = 2.d0*((c2+n2)*eta + c1+n1)
-                    copilo(nrac+1) = tau - pente*eta
+                if ((tpn+eta*tdn) .ge. 0.d0) then
+                    pente = 2.d0*((c2+n2)*eta+c1+n1)
+                    copilo(nrac+1) = tau-pente*eta
                     copilo(nrac+2) = pente
-                    nrac = nrac + 2
-                endif
-            endif
+                    nrac = nrac+2
+                end if
+            end if
 !
-        endif
+        end if
     end do
     if (nrac .eq. 0) copilo(5) = 0.d0
 !

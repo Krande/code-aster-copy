@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
     integer :: idigit, lout, n
 !
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: sx( * )
+    real(kind=8) :: sx(*)
 !
 !     .. LOCAL SCALARS ..
     character(len=80) :: line
@@ -52,17 +52,17 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
 !
 !     ... FIRST EXECUTABLE STATEMENT
 !
-    lll = min( len( ifmt ), 80 )
+    lll = min(len(ifmt), 80)
     do i = 1, lll
-        line( i: i ) = '-'
+        line(i:i) = '-'
     end do
 !
-    do i = lll + 1, 80
-        line( i: i ) = ' '
+    do i = lll+1, 80
+        line(i:i) = ' '
     end do
 !
-    write( lout, fmt=999 ) ifmt, line( 1: lll )
-999 format( / 1x, a, / 1x, a )
+    write (lout, fmt=999) ifmt, line(1:lll)
+999 format(/1x, a, /1x, a)
 !
     if (n .le. 0) goto 100
     ndigit = idigit
@@ -76,29 +76,29 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
         ndigit = -idigit
         if (ndigit .le. 4) then
             do k1 = 1, n, 5
-                k2 = min( n, k1+4 )
-                write( lout, fmt = 998 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+4)
+                write (lout, fmt=998) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
-        else if (ndigit.le.6) then
+        else if (ndigit .le. 6) then
             do k1 = 1, n, 4
-                k2 = min( n, k1+3 )
-                write( lout, fmt = 997 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+3)
+                write (lout, fmt=997) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
-        else if (ndigit.le.10) then
+        else if (ndigit .le. 10) then
             do k1 = 1, n, 3
-                k2 = min( n, k1+2 )
-                write( lout, fmt = 996 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+2)
+                write (lout, fmt=996) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
         else
             do k1 = 1, n, 2
-                k2 = min( n, k1+1 )
-                write( lout, fmt = 995 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+1)
+                write (lout, fmt=995) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
-        endif
+        end if
 !
 !=======================================================================
 !             CODE FOR OUTPUT USING 132 COLUMNS FORMAT
@@ -107,36 +107,36 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
     else
         if (ndigit .le. 4) then
             do k1 = 1, n, 10
-                k2 = min( n, k1+9 )
-                write( lout, fmt = 998 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+9)
+                write (lout, fmt=998) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
-        else if (ndigit.le.6) then
+        else if (ndigit .le. 6) then
             do k1 = 1, n, 8
-                k2 = min( n, k1+7 )
-                write( lout, fmt = 997 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+7)
+                write (lout, fmt=997) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
-        else if (ndigit.le.10) then
+        else if (ndigit .le. 10) then
             do k1 = 1, n, 6
-                k2 = min( n, k1+5 )
-                write( lout, fmt = 996 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+5)
+                write (lout, fmt=996) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
         else
             do k1 = 1, n, 5
-                k2 = min( n, k1+4 )
-                write( lout, fmt = 995 )k1, k2, ( sx( i ), i = k1,&
-                k2 )
+                k2 = min(n, k1+4)
+                write (lout, fmt=995) k1, k2, (sx(i), i=k1, &
+                                               k2)
             end do
-        endif
-    endif
-    write( lout, fmt = 994 )
-998 format( 1x, i4, ' - ', i4, ':', 1p, 10d12.3 )
-997 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 8d14.5 )
-996 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 6d18.9 )
-995 format( 1x, i4, ' - ', i4, ':', 1x, 1p, 5d24.13 )
-994 format( 1x, ' ' )
+        end if
+    end if
+    write (lout, fmt=994)
+998 format(1x, i4, ' - ', i4, ':', 1p, 10d12.3)
+997 format(1x, i4, ' - ', i4, ':', 1x, 1p, 8d14.5)
+996 format(1x, i4, ' - ', i4, ':', 1x, 1p, 6d18.9)
+995 format(1x, i4, ' - ', i4, ':', 1x, 1p, 5d24.13)
+994 format(1x, ' ')
 !
 100 continue
 end subroutine

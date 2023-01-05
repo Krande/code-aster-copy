@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine op0007()
 !
-implicit none
+    implicit none
 !
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -55,10 +55,10 @@ implicit none
         valeType = 'COMP'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Load type
-    call wkvect(load//'.TYPE', 'G V K8', 1, vk8 = loadType)
+    call wkvect(load//'.TYPE', 'G V K8', 1, vk8=loadType)
     if (valeType .eq. 'REEL') then
         loadType(1) = 'MECA_RE'
     else if (valeType .eq. 'FONC') then
@@ -67,7 +67,7 @@ implicit none
         loadType(1) = 'MECA_RI'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Loads treatment
     call charme(load, valeType)

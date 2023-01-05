@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,28 +17,28 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine thmComputeMatrix(ds_thm    , parm_theta, gravity,&
-                            ndim      ,&
-                            dimdef    , dimcon ,&
-                            mecani    , press1 , press2, tempe,&
-                            congem    , congep ,&
-                            time_incr ,&
-                            drds      )
+subroutine thmComputeMatrix(ds_thm, parm_theta, gravity, &
+                            ndim, &
+                            dimdef, dimcon, &
+                            mecani, press1, press2, tempe, &
+                            congem, congep, &
+                            time_incr, &
+                            drds)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in)  :: parm_theta, gravity(3)
-integer, intent(in) :: ndim
-integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
-real(kind=8), intent(in) :: time_incr
-real(kind=8), intent(out) :: drds(dimdef+1, dimcon)
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in)  :: parm_theta, gravity(3)
+    integer, intent(in) :: ndim
+    integer, intent(in) :: dimdef, dimcon
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
+    real(kind=8), intent(in) :: time_incr
+    real(kind=8), intent(out) :: drds(dimdef+1, dimcon)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ real(kind=8), intent(out) :: drds(dimdef+1, dimcon)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    drds(1:dimdef+1,1:dimcon) = 0.d0
+    drds(1:dimdef+1, 1:dimcon) = 0.d0
 !
 ! - Address in generalized strains vector
 !
@@ -99,145 +99,145 @@ real(kind=8), intent(out) :: drds(dimdef+1, dimcon)
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         do i = 1, 6
-            drds(addeme+ndim-1+i,adcome+i-1) = drds(addeme+ndim-1+i,adcome+i-1)+1.d0
+            drds(addeme+ndim-1+i, adcome+i-1) = drds(addeme+ndim-1+i, adcome+i-1)+1.d0
         end do
         do i = 1, 6
-            drds(addeme+ndim-1+i,adcome+6+i-1) = drds(addeme+ndim-1+i,adcome+6+i-1)+1.d0
+            drds(addeme+ndim-1+i, adcome+6+i-1) = drds(addeme+ndim-1+i, adcome+6+i-1)+1.d0
         end do
-    endif
+    end if
 !
 ! - First pressure DOF
 !
     if (ds_thm%ds_elem%l_dof_pre1) then
         if (ds_thm%ds_elem%l_dof_meca) then
             do i = 1, ndim
-                drds(addeme+i-1,adcp11) = drds(addeme+i-1,adcp11) - gravity(i)
+                drds(addeme+i-1, adcp11) = drds(addeme+i-1, adcp11)-gravity(i)
             end do
-        endif
-        drds(addep1,adcp11) = drds(addep1,adcp11)-1.d0
+        end if
+        drds(addep1, adcp11) = drds(addep1, adcp11)-1.d0
         do i = 1, ndim
-            drds(addep1+i,adcp11+i) = drds(addep1+i,adcp11+i) + parm_theta*time_incr
+            drds(addep1+i, adcp11+i) = drds(addep1+i, adcp11+i)+parm_theta*time_incr
         end do
         if (nbpha1 .gt. 1) then
             if (ds_thm%ds_elem%l_dof_meca) then
                 do i = 1, ndim
-                    drds(addeme+i-1,adcp12) = drds(addeme+i-1,adcp12) - gravity(i)
+                    drds(addeme+i-1, adcp12) = drds(addeme+i-1, adcp12)-gravity(i)
                 end do
-            endif
-            drds(addep1,adcp12) = drds(addep1,adcp12)-1.d0
+            end if
+            drds(addep1, adcp12) = drds(addep1, adcp12)-1.d0
             do i = 1, ndim
-                drds(addep1+i,adcp12+i) = drds(addep1+i,adcp12+i) + parm_theta*time_incr
+                drds(addep1+i, adcp12+i) = drds(addep1+i, adcp12+i)+parm_theta*time_incr
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Second pressure DOF
 !
     if (ds_thm%ds_elem%l_dof_pre2) then
         if (ds_thm%ds_elem%l_dof_meca) then
             do i = 1, ndim
-                drds(addeme+i-1,adcp21) = drds(addeme+i-1,adcp21) - gravity(i)
+                drds(addeme+i-1, adcp21) = drds(addeme+i-1, adcp21)-gravity(i)
             end do
-        endif
-        drds(addep2,adcp21) = drds(addep2,adcp21)-1.d0
+        end if
+        drds(addep2, adcp21) = drds(addep2, adcp21)-1.d0
         do i = 1, ndim
-            drds(addep2+i,adcp21+i) = drds(addep2+i,adcp21+i) + parm_theta*time_incr
+            drds(addep2+i, adcp21+i) = drds(addep2+i, adcp21+i)+parm_theta*time_incr
         end do
         if (nbpha2 .gt. 1) then
             if (ds_thm%ds_elem%l_dof_meca) then
                 do i = 1, ndim
-                    drds(addeme+i-1,adcp22) = drds(addeme+i-1,adcp22)-gravity(i)
+                    drds(addeme+i-1, adcp22) = drds(addeme+i-1, adcp22)-gravity(i)
                 end do
-            endif
-            drds(addep2,adcp22) = drds(addep2,adcp22)-1.d0
+            end if
+            drds(addep2, adcp22) = drds(addep2, adcp22)-1.d0
             do i = 1, ndim
-                drds(addep2+i,adcp22+i) = drds(addep2+i,adcp22+i) + parm_theta*time_incr
+                drds(addep2+i, adcp22+i) = drds(addep2+i, adcp22+i)+parm_theta*time_incr
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Thermal DOF
 !
     if (ds_thm%ds_elem%l_dof_ther) then
-        drds(dimdef+1,adcote) = drds(dimdef+1,adcote)-1.d0
+        drds(dimdef+1, adcote) = drds(dimdef+1, adcote)-1.d0
         do i = 1, ndim
-            drds(addete+i,adcote+i) = drds(addete+i,adcote+i) + parm_theta*time_incr
+            drds(addete+i, adcote+i) = drds(addete+i, adcote+i)+parm_theta*time_incr
         end do
         if (ds_thm%ds_elem%l_dof_pre1) then
-            drds(dimdef+1,adcp11) = drds(dimdef+1,adcp11) -&
-                                    ((parm_theta)*congep(adcp11+ndim+1)+&
-                                     (1.d0-parm_theta)*congem(adcp11+ndim+1))
-            drds(dimdef+1,adcp11+ndim+1) = drds(dimdef+1,adcp11+ndim+1) -&
-                                           parm_theta*(congep(adcp11)-congem(adcp11))
+            drds(dimdef+1, adcp11) = drds(dimdef+1, adcp11)- &
+                                     ((parm_theta)*congep(adcp11+ndim+1)+ &
+                                      (1.d0-parm_theta)*congem(adcp11+ndim+1))
+            drds(dimdef+1, adcp11+ndim+1) = drds(dimdef+1, adcp11+ndim+1)- &
+                                            parm_theta*(congep(adcp11)-congem(adcp11))
             do i = 1, ndim
-                drds(addete,adcp11+i) = drds(addete,adcp11+i)+&
-                                        parm_theta*time_incr*gravity(i)
+                drds(addete, adcp11+i) = drds(addete, adcp11+i)+ &
+                                         parm_theta*time_incr*gravity(i)
             end do
             do i = 1, ndim
-                drds(addete+i,adcp11+ndim+1) = drds(addete+i,adcp11+ndim+1)+&
-                                               parm_theta*time_incr*congep(adcp11+i)
+                drds(addete+i, adcp11+ndim+1) = drds(addete+i, adcp11+ndim+1)+ &
+                                                parm_theta*time_incr*congep(adcp11+i)
             end do
             do i = 1, ndim
-                drds(addete+i,adcp11+i) = drds(addete+i,adcp11+i)+&
-                                          parm_theta*time_incr*congep(adcp11+ndim+1)
+                drds(addete+i, adcp11+i) = drds(addete+i, adcp11+i)+ &
+                                           parm_theta*time_incr*congep(adcp11+ndim+1)
             end do
             if (nbpha1 .gt. 1) then
-                drds(dimdef+1,adcp12)        = drds(dimdef+1,adcp12)-&
-                    ((parm_theta)*congep(adcp12+ndim+1)+&
-                     (1.d0-parm_theta)*congem(adcp12+ndim+1))
-                drds(dimdef+1,adcp12+ndim+1) = drds(dimdef+1,adcp12+ndim+1)-&
-                                               parm_theta*(congep(adcp12)-congem(adcp12))
+                drds(dimdef+1, adcp12) = drds(dimdef+1, adcp12)- &
+                                         ((parm_theta)*congep(adcp12+ndim+1)+ &
+                                          (1.d0-parm_theta)*congem(adcp12+ndim+1))
+                drds(dimdef+1, adcp12+ndim+1) = drds(dimdef+1, adcp12+ndim+1)- &
+                                                parm_theta*(congep(adcp12)-congem(adcp12))
                 do i = 1, ndim
-                    drds(addete,adcp12+i)    = drds(addete,adcp12+i)+&
-                                               parm_theta*time_incr*gravity(i)
+                    drds(addete, adcp12+i) = drds(addete, adcp12+i)+ &
+                                             parm_theta*time_incr*gravity(i)
                 end do
                 do i = 1, ndim
-                    drds(addete+i,adcp12+ndim+1) = drds(addete+i,adcp12+ndim+1)+&
-                                                   parm_theta*time_incr*congep(adcp12+i)
+                    drds(addete+i, adcp12+ndim+1) = drds(addete+i, adcp12+ndim+1)+ &
+                                                    parm_theta*time_incr*congep(adcp12+i)
                 end do
                 do i = 1, ndim
-                    drds(addete+i,adcp12+i)  = drds(addete+i,adcp12+i)+&
+                    drds(addete+i, adcp12+i) = drds(addete+i, adcp12+i)+ &
                                                parm_theta*time_incr*congep(adcp12+ndim+1)
                 end do
-            endif
-        endif
+            end if
+        end if
         if (ds_thm%ds_elem%l_dof_pre2) then
-            drds(dimdef+1,adcp21) = drds(dimdef+1,adcp21) -&
-                ((parm_theta)*congep(adcp21+ndim+1)+&
-                 (1.d0-parm_theta)*congem(adcp21+ndim+1))
-            drds(dimdef+1,adcp21+ndim+1) = drds(dimdef+1,adcp21+ndim+1)-&
-                 parm_theta*(congep(adcp21)-congem(adcp21))
+            drds(dimdef+1, adcp21) = drds(dimdef+1, adcp21)- &
+                                     ((parm_theta)*congep(adcp21+ndim+1)+ &
+                                      (1.d0-parm_theta)*congem(adcp21+ndim+1))
+            drds(dimdef+1, adcp21+ndim+1) = drds(dimdef+1, adcp21+ndim+1)- &
+                                            parm_theta*(congep(adcp21)-congem(adcp21))
             do i = 1, ndim
-                drds(addete,adcp21+i) = drds(addete,adcp21+i) + parm_theta*time_incr*gravity(i)
+                drds(addete, adcp21+i) = drds(addete, adcp21+i)+parm_theta*time_incr*gravity(i)
             end do
             do i = 1, ndim
-                drds(addete+i,adcp21+ndim+1) = drds(addete+i,adcp21+ndim+1) +&
-                                               parm_theta*time_incr*congep(adcp21+i)
+                drds(addete+i, adcp21+ndim+1) = drds(addete+i, adcp21+ndim+1)+ &
+                                                parm_theta*time_incr*congep(adcp21+i)
             end do
             do i = 1, ndim
-                drds(addete+i,adcp21+i) = drds(addete+i,adcp21+i)+&
-                                          parm_theta*time_incr*congep(adcp21+ndim+1)
+                drds(addete+i, adcp21+i) = drds(addete+i, adcp21+i)+ &
+                                           parm_theta*time_incr*congep(adcp21+ndim+1)
             end do
             if (nbpha2 .gt. 1) then
-                drds(dimdef+1,adcp22) = drds(dimdef+1,adcp22)-&
-                                        ((parm_theta)*congep(adcp22+ndim+1)+&
-                                         (1.d0-parm_theta)*congem(adcp22+ndim+1))
-                drds(dimdef+1,adcp22+ndim+1) = drds(dimdef+1,adcp22+ndim+1)-&
-                                               parm_theta*(congep(adcp22)-congem(adcp22))
+                drds(dimdef+1, adcp22) = drds(dimdef+1, adcp22)- &
+                                         ((parm_theta)*congep(adcp22+ndim+1)+ &
+                                          (1.d0-parm_theta)*congem(adcp22+ndim+1))
+                drds(dimdef+1, adcp22+ndim+1) = drds(dimdef+1, adcp22+ndim+1)- &
+                                                parm_theta*(congep(adcp22)-congem(adcp22))
                 do i = 1, ndim
-                    drds(addete,adcp22+i) = drds(addete,adcp22+i)+&
-                                            parm_theta*time_incr*gravity(i)
+                    drds(addete, adcp22+i) = drds(addete, adcp22+i)+ &
+                                             parm_theta*time_incr*gravity(i)
                 end do
                 do i = 1, ndim
-                    drds(addete+i,adcp22+ndim+1) = drds(addete+i,adcp22+ndim+1)+&
-                                                   parm_theta*time_incr*congep(adcp22+i)
+                    drds(addete+i, adcp22+ndim+1) = drds(addete+i, adcp22+ndim+1)+ &
+                                                    parm_theta*time_incr*congep(adcp22+i)
                 end do
                 do i = 1, ndim
-                    drds(addete+i,adcp22+i) = drds(addete+i,adcp22+i)+&
-                                              parm_theta*time_incr*congep(adcp22+ndim+1)
+                    drds(addete+i, adcp22+i) = drds(addete+i, adcp22+i)+ &
+                                               parm_theta*time_incr*congep(adcp22+ndim+1)
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

@@ -67,7 +67,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
 !
 !
 !-----------------------------------------------------------------------
-    pgc='CALPRC'
+    pgc = 'CALPRC'
 !-----------------------------------------------------------------------
 !
 ! --- CREATION DU .REFE
@@ -84,23 +84,23 @@ subroutine calprc(nomres, classe, basmod, nommat)
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
     call jeveuo(nommat(1:19)//'.REFA', 'L', jrefa)
-    ntail = nbdef* (nbdef+1)/2
+    ntail = nbdef*(nbdef+1)/2
     if (zk24(jrefa-1+9) .eq. 'MS') then
-       lsym = .true.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', &
-                   'CONSTANT',1)
+        lsym = .true.
+        call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', &
+                    'CONSTANT', 1)
     else
-       lsym = .false.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', &
-                   'CONSTANT',2)
-    endif
+        lsym = .false.
+        call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', &
+                    'CONSTANT', 2)
+    end if
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
     call jeveuo(jexnum(nomres(1:18)//'_VALE', 1), 'E', ldres)
-    if (.not.lsym) then
+    if (.not. lsym) then
         call jecroc(jexnum(nomres(1:18)//'_VALE', 2))
         call jeveuo(jexnum(nomres(1:18)//'_VALE', 2), 'E', ldres2)
-    endif
+    end if
 !
 ! --- CONTROLE D'EXISTENCE DE LA MATRICE
 !
@@ -108,7 +108,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
     if (ier .eq. 0) then
         valk = nommat(1:8)
         call utmess('E', 'ALGORITH12_39', sk=valk)
-    endif
+    end if
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE
 !
@@ -137,9 +137,9 @@ subroutine calprc(nomres, classe, basmod, nommat)
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE
 !
         do j = 1, neq
-            zc(ltvec1+j-1)=dcmplx(zr(idbase+(i-1)*neq+j-1),0.d0)
+            zc(ltvec1+j-1) = dcmplx(zr(idbase+(i-1)*neq+j-1), 0.d0)
         end do
-        call mcmult('ZERO', lmat, zc(ltvec1), zc(ltvec2), 1,&
+        call mcmult('ZERO', lmat, zc(ltvec1), zc(ltvec2), 1, &
                     .true._1)
         call zeclag(zc(ltvec2), neq, zi(iddeeq))
 !        do j = 1, neq
@@ -147,38 +147,38 @@ subroutine calprc(nomres, classe, basmod, nommat)
 !
 ! ----- PRODUIT AVEC LA DEFORMEE COURANTE
 !
-        xprod=dcmplx(0.d0,0.d0)
+        xprod = dcmplx(0.d0, 0.d0)
         do j = 1, neq
-            xprod=xprod+ zc(ltvec2-1+j)*dcmplx(zr(idbase+(i-1)*neq-1+&
-            j),0.d0)
+            xprod = xprod+zc(ltvec2-1+j)*dcmplx(zr(idbase+(i-1)*neq-1+ &
+                                                   j), 0.d0)
         end do
 !
         iad = i*(i+1)/2
         zc(ldres+iad-1) = xprod
-         if (.not.lsym) zc(ldres2+iad-1) = xprod
-         if (lsym) then
-          jdeb = i+1
-         else
-          jdeb=1
-         endif
+        if (.not. lsym) zc(ldres2+iad-1) = xprod
+        if (lsym) then
+            jdeb = i+1
+        else
+            jdeb = 1
+        end if
 !
 ! ----- PRODUIT AVEC DEFORMEES D'ORDRE SUPERIEURE
 !
 !        if (i .lt. nbdef) then
-            do j = jdeb, nbdef
-                xprod=dcmplx(0.d0,0.d0)
-                do k = 1, neq
-                    xprod=xprod+ zc(ltvec2-1+k)*dcmplx(zr(idbase+(j-1)&
-                    *neq-1+k),0.d0)
-                end do
-                if (j.gt.i) then
-                  iad = i+(j-1)*j/2
-                  zc(ldres+iad-1) = xprod
-                else
-                  iad = j+(i-1)*i/2
-                  zc(ldres2+iad-1) = xprod
-                end if
+        do j = jdeb, nbdef
+            xprod = dcmplx(0.d0, 0.d0)
+            do k = 1, neq
+                xprod = xprod+zc(ltvec2-1+k)*dcmplx(zr(idbase+(j-1) &
+                                                       *neq-1+k), 0.d0)
             end do
+            if (j .gt. i) then
+                iad = i+(j-1)*j/2
+                zc(ldres+iad-1) = xprod
+            else
+                iad = j+(i-1)*i/2
+                zc(ldres2+iad-1) = xprod
+            end if
+        end do
 !        endif
 !
     end do

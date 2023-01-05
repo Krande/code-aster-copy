@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine mmmcpt(mesh, ds_measure, ds_contact, cnsinr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -38,10 +38,10 @@ implicit none
 #include "asterfort/mminfm.h"
 #include "asterfort/nmrvai.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: cnsinr
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: cnsinr
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,38 +78,38 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! - Initialisations
 !
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     nbliac = 0
     nbliaf = 0
 !
 ! - Working vector
 !
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
-    AS_ALLOCATE(vi = v_work, size = nb_node_mesh)
+    AS_ALLOCATE(vi=v_work, size=nb_node_mesh)
 !
 ! - Acces to contact objects
 !
     ztabf = cfmmvd('ZTABF')
     zresu = cfmmvd('ZRESU')
     sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-    call jeveuo(sdcont_tabfin, 'L', vr = v_sdcont_tabfin)
-    call jeveuo(cnsinr(1:19)//'.CNSV', 'L', vr = v_cnsinr_cnsv)
+    call jeveuo(sdcont_tabfin, 'L', vr=v_sdcont_tabfin)
+    call jeveuo(cnsinr(1:19)//'.CNSV', 'L', vr=v_cnsinr_cnsv)
 !
 ! - Loop on contact zones
 !
     i_poin = 1
     do i_zone = 1, nb_cont_zone
 ! ----- Get parameters on current zone
-        lveri        = mminfl(ds_contact%sdcont_defi, 'VERIF' , i_zone)
-        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE' , i_zone)
-        jdecme       = mminfi(ds_contact%sdcont_defi, 'JDECME', i_zone)
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', i_zone)
+        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE', i_zone)
+        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', i_zone)
 ! ----- No computation
         if (lveri) then
             cycle
-        endif
+        end if
         do i_elem_slav = 1, nb_elem_slav
 ! --------- Get current slave element
-            elem_slav_indx = jdecme + i_elem_slav
+            elem_slav_indx = jdecme+i_elem_slav
 ! --------- Number of contact (integration) points on current slave element
             call mminfm(elem_slav_indx, ds_contact%sdcont_defi, 'NPTM', nb_poin_elem)
 ! --------- Loop on contact (integration) points
@@ -119,24 +119,24 @@ type(NL_DS_Contact), intent(in) :: ds_contact
                     if (v_work(node_slav_nume) .eq. 0) then
                         node_status = nint(v_cnsinr_cnsv(zresu*(node_slav_nume-1)+1))
                         if (node_status .ge. 1) then
-                            nbliac = nbliac + 1
+                            nbliac = nbliac+1
                             if (node_status .eq. 1) then
-                                nbliaf = nbliaf + 1
-                            endif
-                        endif
+                                nbliaf = nbliaf+1
+                            end if
+                        end if
                         v_work(node_slav_nume) = 1
-                    endif
-                endif
+                    end if
+                end if
 ! ------------- Next point
-                i_poin = i_poin + 1
+                i_poin = i_poin+1
             end do
         end do
 
     end do
 !
-    AS_DEALLOCATE(vi = v_work)
-    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
-    call nmrvai(ds_measure, 'Cont_NFric', input_count = nbliaf)
+    AS_DEALLOCATE(vi=v_work)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count=nbliac)
+    call nmrvai(ds_measure, 'Cont_NFric', input_count=nbliaf)
 !
     call jedema()
 end subroutine

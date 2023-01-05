@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine nmcpl1(compor, typmod, option, vimp, deps, &
-                  optio2, cp,     nvv)
+                  optio2, cp, nvv)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/utmess.h"
@@ -62,55 +62,55 @@ implicit none
     cp = 0; nvv = 0
     rac2 = sqrt(2.d0)
 !
-    if (compor(RELA_NAME)(1:4) .eq. 'SANS') goto 999
+    if (compor(RELA_NAME) (1:4) .eq. 'SANS') goto 999
 !
     if (typmod(1) .eq. 'C_PLAN') then
-        if (compor(PLANESTRESS)(1:7) .eq. 'DEBORST') then
+        if (compor(PLANESTRESS) (1:7) .eq. 'DEBORST') then
             if (compor(DEFO) .eq. 'SIMO_MIEHE') then
                 ASSERT(.false.)
-            endif
-            read(compor(NVAR),'(I16)') nbvari
+            end if
+            read (compor(NVAR), '(I16)') nbvari
             nvv = nbvari-4
-            write(compor(NVAR),'(I16)') nvv
-            cp  = 2
-        endif
-    endif
+            write (compor(NVAR), '(I16)') nvv
+            cp = 2
+        end if
+    end if
 !
     if (typmod(1) .eq. 'COMP1D') then
         if (compor(DEFO) .eq. 'SIMO_MIEHE') then
             call utmess('F', 'ALGORITH7_10')
-        endif
-        read(compor(NVAR),'(I16)') nbvari
-        nvv=nbvari-4
-        write(compor(NVAR),'(I16)') nvv
+        end if
+        read (compor(NVAR), '(I16)') nbvari
+        nvv = nbvari-4
+        write (compor(NVAR), '(I16)') nvv
         cp = 1
-    endif
+    end if
 !
     if (cp .eq. 2) then
         typmod(1) = 'AXIS'
-        optio2    = option
+        optio2 = option
         if (optio2 .eq. 'RAPH_MECA') then
             option = 'FULL_MECA'
-        endif
+        end if
         if (option .eq. 'FULL_MECA') then
-            depzz   = vimp(nvv+1)-vimp(nvv+2)*deps(1)-vimp(nvv+3)*deps(2)-vimp(nvv+4)*deps(4)/rac2
+            depzz = vimp(nvv+1)-vimp(nvv+2)*deps(1)-vimp(nvv+3)*deps(2)-vimp(nvv+4)*deps(4)/rac2
             deps(3) = depzz
-        endif
-    endif
+        end if
+    end if
 !
     if (cp .eq. 1) then
         typmod(1) = 'AXIS'
-        optio2    = option
+        optio2 = option
         if (optio2 .eq. 'RAPH_MECA') then
             option = 'FULL_MECA'
-        endif
+        end if
         if (option .eq. 'FULL_MECA') then
-            depx    = deps(1)
-            depy    = vimp(nvv+1)+vimp(nvv+2)*depx
-            depz    = vimp(nvv+3)+vimp(nvv+4)*depx
+            depx = deps(1)
+            depy = vimp(nvv+1)+vimp(nvv+2)*depx
+            depz = vimp(nvv+3)+vimp(nvv+4)*depx
             deps(2) = depy
             deps(3) = depz
-        endif
-    endif
+        end if
+    end if
 999 continue
 end subroutine

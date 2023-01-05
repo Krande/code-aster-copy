@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptgy01(sk, nl, xnu, rho, a,&
-                  xl, xiy, xiz, alfinv, ey,&
+subroutine ptgy01(sk, nl, xnu, rho, a, &
+                  xl, xiy, xiz, alfinv, ey, &
                   ez, ist)
     implicit none
 #include "jeveux.h"
@@ -72,39 +72,39 @@ subroutine ptgy01(sk, nl, xnu, rho, a,&
     real(kind=8) :: ip, alfinv
     integer :: i, j, ipoint
 !
-    parameter (zero=0.d0)
+    parameter(zero=0.d0)
 !
 ! ---------------------------------------------------------------------
     do i = 1, nl
         sk(i) = zero
     end do
 !
-    ASSERT(nl.eq.78)
+    ASSERT(nl .eq. 78)
 !
 !
     if (abs(xl) .lt. r8prem()) then
         call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    end if
     ip = (xiy+xiz)
     phi = 12.d0*ip*alfinv*(1.d0+xnu)/(a*xl*xl)
-    com = rho * ip / (30.d0 * xl*(1.d0+phi)*(1.d0+phi))
+    com = rho*ip/(30.d0*xl*(1.d0+phi)*(1.d0+phi))
 !
 !
 !     I : LIGNE ; J : COLONNE
     i = 2
     j = 3
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = -36.d0 * com
+    sk(ipoint) = -36.d0*com
     i = 2
     j = 5
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com *xl
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 3
     j = 6
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com *xl
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 5
     j = 6
     ipoint = int(j*(j-1)/2)+i
@@ -112,27 +112,27 @@ subroutine ptgy01(sk, nl, xnu, rho, a,&
     i = 3
     j = 8
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = -36.d0 * com
+    sk(ipoint) = -36.d0*com
     i = 5
     j = 8
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com * xl
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 2
     j = 9
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = 36.d0 * com
+    sk(ipoint) = 36.d0*com
     i = 6
     j = 9
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com * xl
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 8
     j = 9
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = -36.d0 * com
+    sk(ipoint) = -36.d0*com
     i = 2
     j = 11
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com * xl
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 6
     j = 11
     ipoint = int(j*(j-1)/2)+i
@@ -140,11 +140,11 @@ subroutine ptgy01(sk, nl, xnu, rho, a,&
     i = 8
     j = 11
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = -(3.d0 - 15.d0 * phi) * com * xl
+    sk(ipoint) = -(3.d0-15.d0*phi)*com*xl
     i = 3
     j = 12
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com * xl
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 5
     j = 12
     ipoint = int(j*(j-1)/2)+i
@@ -152,7 +152,7 @@ subroutine ptgy01(sk, nl, xnu, rho, a,&
     i = 9
     j = 12
     ipoint = int(j*(j-1)/2)+i
-    sk(ipoint) = -(3.d0 - 15.d0 * phi) * com * xl
+    sk(ipoint) = -(3.d0-15.d0*phi)*com*xl
     i = 11
     j = 12
     ipoint = int(j*(j-1)/2)+i

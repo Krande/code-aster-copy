@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,75 +47,75 @@ subroutine diagp3(tens, vecp, valp)
 !      write (6,*) '-----------------------------------------------'
 !      write (6,*) TENS(1),TENS(4),TENS(6),TENS(2),TENS(3),TENS(5)
 ! -- PASSAGE AU DEVIATEUR
-    trace=(tens(1)+tens(4)+tens(6))/3.d0
+    trace = (tens(1)+tens(4)+tens(6))/3.d0
 !      write (6,*) TRACE,R8PREM()
-    tens(1)=tens(1)-trace
-    tens(4)=tens(4)-trace
-    tens(6)=tens(6)-trace
+    tens(1) = tens(1)-trace
+    tens(4) = tens(4)-trace
+    tens(6) = tens(6)-trace
 !      write (6,*) TENS(1),TENS(4),TENS(6),TENS(2),TENS(3),TENS(5)
 !
 ! -- CALCUL DES COEFFICIENTS DU POLYNOME P3
 !
-    det(1)=tens(4)*tens(6)-tens(5)**2
-    det(2)=tens(1)*tens(6)-tens(3)**2
-    det(3)=tens(1)*tens(4)-tens(2)**2
+    det(1) = tens(4)*tens(6)-tens(5)**2
+    det(2) = tens(1)*tens(6)-tens(3)**2
+    det(3) = tens(1)*tens(4)-tens(2)**2
 !
 !
-    det(4)=tens(1)*det(1)-tens(2)*(tens(2)*tens(6)-tens(5)*tens(3))&
+    det(4) = tens(1)*det(1)-tens(2)*(tens(2)*tens(6)-tens(5)*tens(3))&
      &       +tens(3)*(tens(2)*tens(5)-tens(4)*tens(3))
 !
     call zerop3(0.d0, det(1)+det(2)+det(3), -det(4), valp, nrac)
 !
 ! -- CAS DES RACINES DOUBLES QUI PASSENT MAL NUMERIQUEMENT
     if (nrac .eq. 1) then
-        rtemp=(det(1)+det(2)+det(3))
+        rtemp = (det(1)+det(2)+det(3))
         if (rtemp .le. 0.d0) then
-            valp(2)=sqrt(-rtemp/3.d0)
-            valp(3)=-sqrt(-rtemp/3.d0)
-            if (abs(valp(2)**3+rtemp*valp(2)-det(4)) .lt.&
-                abs(valp(3)** 3+rtemp*valp(3)-det(4))) then
-                valp(3)=valp(2)
+            valp(2) = sqrt(-rtemp/3.d0)
+            valp(3) = -sqrt(-rtemp/3.d0)
+            if (abs(valp(2)**3+rtemp*valp(2)-det(4)) .lt. &
+                abs(valp(3)**3+rtemp*valp(3)-det(4))) then
+                valp(3) = valp(2)
             else
-                valp(2)=valp(3)
-            endif
+                valp(2) = valp(3)
+            end if
         else
             tnull = .true.
             do i = 1, 6
                 if (abs(tens(i)) .gt. (r8prem()*100*abs(trace))) then
                     tnull = .false.
-                endif
+                end if
             end do
             if (tnull) then
-                valp(1)=0.d0
-                valp(2)=0.d0
-                valp(3)=0.d0
+                valp(1) = 0.d0
+                valp(2) = 0.d0
+                valp(3) = 0.d0
             else
                 call utmess('F', 'ALGORITH2_79')
-            endif
-        endif
+            end if
+        end if
         if (valp(2) .gt. valp(1)) then
-            rtemp=valp(1)
-            valp(1)=valp(2)
-            valp(3)=rtemp
-        endif
-    endif
+            rtemp = valp(1)
+            valp(1) = valp(2)
+            valp(3) = rtemp
+        end if
+    end if
 !
-    rtemp=valp(1)
-    valp(1)=valp(3)
-    valp(3)=rtemp
+    rtemp = valp(1)
+    valp(1) = valp(3)
+    valp(3) = rtemp
 !
 !      write (6,*) 'VALEURS PROPRES :',VALP(1),VALP(2),VALP(3)
 !
 ! -- ON RECHERCHE LA VALEUR PROPRE LA PLUS SEPAREE
 !    ON LA MET DANS VALP(1)
     if ((valp(2)-valp(1)) .gt. (valp(3)-valp(1))/2.d0) then
-        invvp=.false.
+        invvp = .false.
     else
-        invvp=.true.
-        rtemp=valp(1)
-        valp(1)=valp(3)
-        valp(3)=rtemp
-    endif
+        invvp = .true.
+        rtemp = valp(1)
+        valp(1) = valp(3)
+        valp(3) = rtemp
+    end if
 !
 ! -- VECP DE LA VAL PROPRE LA PLUS SEPAREE
 !      write (6,*) 'VAL PROPRE APRES TRI : ',VALP(1),VALP(2),VALP(3)
@@ -123,45 +123,45 @@ subroutine diagp3(tens, vecp, valp)
 !      ON PRENDRA CELUI DONT LA NORME EST LA PLUS GRANDE
     do ind = 1, 3
         if (ind .eq. 1) then
-            x(1)= tens(1)-valp(2)
-            x(2)= tens(2)
-            x(3)= tens(3)
-        else if (ind.eq.2) then
-            x(1)= tens(2)
-            x(2)= tens(4)-valp(2)
-            x(3)= tens(5)
+            x(1) = tens(1)-valp(2)
+            x(2) = tens(2)
+            x(3) = tens(3)
+        else if (ind .eq. 2) then
+            x(1) = tens(2)
+            x(2) = tens(4)-valp(2)
+            x(3) = tens(5)
         else
-            x(1)= tens(3)
-            x(2)= tens(5)
-            x(3)= tens(6)-valp(2)
-        endif
-        vecp(1,ind)=(tens(1)-valp(3))*x(1)+ tens(2)*x(2)+tens(3)*x(3)
-        vecp(2,ind)=tens(2)*x(1)+(tens(4)-valp(3))*x(2)+ tens(5)*x(3)
-        vecp(3,ind)=tens(3)*x(1)+tens(5)*x(2)+ (tens(6)-valp(3))*x(3)
-        y(ind)=(vecp(1,ind))**2+(vecp(2,ind))**2+ (vecp(3,ind))**2
+            x(1) = tens(3)
+            x(2) = tens(5)
+            x(3) = tens(6)-valp(2)
+        end if
+        vecp(1, ind) = (tens(1)-valp(3))*x(1)+tens(2)*x(2)+tens(3)*x(3)
+        vecp(2, ind) = tens(2)*x(1)+(tens(4)-valp(3))*x(2)+tens(5)*x(3)
+        vecp(3, ind) = tens(3)*x(1)+tens(5)*x(2)+(tens(6)-valp(3))*x(3)
+        y(ind) = (vecp(1, ind))**2+(vecp(2, ind))**2+(vecp(3, ind))**2
     end do
-    rtemp=y(1)
-    ind=1
+    rtemp = y(1)
+    ind = 1
     if (y(2) .gt. y(1)) then
         if (y(3) .gt. y(2)) then
-            ind=3
+            ind = 3
         else
-            ind=2
-        endif
-    else if (y(3).gt.y(1)) then
-        ind=3
-    endif
-    a=sqrt(y(ind))
+            ind = 2
+        end if
+    else if (y(3) .gt. y(1)) then
+        ind = 3
+    end if
+    a = sqrt(y(ind))
 ! -- CAS DE 3 VALEURS PROPRES EGALES
     if (a .lt. r8miem()) then
         call r8inir(9, 0.d0, vecp, 1)
-        vecp(1,1)=1.d0
-        vecp(2,2)=1.d0
-        vecp(3,3)=1.d0
+        vecp(1, 1) = 1.d0
+        vecp(2, 2) = 1.d0
+        vecp(3, 3) = 1.d0
         goto 999
-    endif
+    end if
     do i = 1, 3
-        vecp(i,1)=vecp(i,ind)/a
+        vecp(i, 1) = vecp(i, ind)/a
     end do
 !
 ! -- AUTRES VECTEURS PROPRES : ON PASSE DANS LE SOUS-ESPACE
@@ -171,95 +171,95 @@ subroutine diagp3(tens, vecp, valp)
 !    ON COMMENCE PAR PRENDRE CELUI ORTHOGONAL A UN VECT DE BASE
 !    DONT LA NORME EST LA PLUS GRANDE (POUR LE CAS OU LE PREMIER
 !    VECTEUR PROPRE SERAIT UN VECTEUR DE BASE)
-    y(1)=vecp(3,1)**2+vecp(2,1)**2
-    y(2)=vecp(3,1)**2+vecp(1,1)**2
-    y(3)=vecp(1,1)**2+vecp(2,1)**2
-    rtemp=y(1)
-    ind=1
+    y(1) = vecp(3, 1)**2+vecp(2, 1)**2
+    y(2) = vecp(3, 1)**2+vecp(1, 1)**2
+    y(3) = vecp(1, 1)**2+vecp(2, 1)**2
+    rtemp = y(1)
+    ind = 1
     if (y(2) .gt. y(1)) then
         if (y(3) .gt. y(2)) then
-            ind=3
+            ind = 3
         else
-            ind=2
-        endif
-    else if (y(3).gt.y(1)) then
-        ind=3
-    endif
-    a=sqrt(y(ind))
+            ind = 2
+        end if
+    else if (y(3) .gt. y(1)) then
+        ind = 3
+    end if
+    a = sqrt(y(ind))
     if (ind .eq. 1) then
-        vecp(1,2)=0.d0
-        vecp(2,2)=-vecp(3,1)/a
-        vecp(3,2)=vecp(2,1)/a
-    else if (ind.eq.2) then
-        vecp(1,2)=vecp(3,1)/a
-        vecp(2,2)=0.d0
-        vecp(3,2)=-vecp(1,1)/a
+        vecp(1, 2) = 0.d0
+        vecp(2, 2) = -vecp(3, 1)/a
+        vecp(3, 2) = vecp(2, 1)/a
+    else if (ind .eq. 2) then
+        vecp(1, 2) = vecp(3, 1)/a
+        vecp(2, 2) = 0.d0
+        vecp(3, 2) = -vecp(1, 1)/a
     else
-        vecp(1,2)=-vecp(2,1)/a
-        vecp(2,2)=vecp(1,1)/a
-        vecp(3,2)=0.d0
-    endif
-    vecp(1,3)=vecp(2,1)*vecp(3,2)-&
-     &                 vecp(3,1)*vecp(2,2)
-    vecp(2,3)=vecp(3,1)*vecp(1,2)-&
-     &                 vecp(1,1)*vecp(3,2)
-    vecp(3,3)=vecp(1,1)*vecp(2,2)-&
-     &                      vecp(2,1)*vecp(1,2)
+        vecp(1, 2) = -vecp(2, 1)/a
+        vecp(2, 2) = vecp(1, 1)/a
+        vecp(3, 2) = 0.d0
+    end if
+    vecp(1, 3) = vecp(2, 1)*vecp(3, 2)-&
+     &                 vecp(3, 1)*vecp(2, 2)
+    vecp(2, 3) = vecp(3, 1)*vecp(1, 2)-&
+     &                 vecp(1, 1)*vecp(3, 2)
+    vecp(3, 3) = vecp(1, 1)*vecp(2, 2)-&
+     &                      vecp(2, 1)*vecp(1, 2)
 !
 ! -- ON PASSE DANS LE SOUS-ESPACE ORTHOGONAL
 !
-    a=vecp(1,2)*(vecp(1,2)*tens(1)+2.d0*vecp(2,2)*tens(2))&
-     & +vecp(2,2)*(vecp(2,2)*tens(4)+2.d0*vecp(3,2)*tens(5))&
-     & +vecp(3,2)*(vecp(3,2)*tens(6)+2.d0*vecp(1,2)*tens(3))
-    b=vecp(1,3)*(vecp(1,3)*tens(1)+2.d0*vecp(2,3)*tens(2))&
-     & +vecp(2,3)*(vecp(2,3)*tens(4)+2.d0*vecp(3,3)*tens(5))&
-     & +vecp(3,3)*(vecp(3,3)*tens(6)+2.d0*vecp(1,3)*tens(3))
-    c=vecp(1,2)*(vecp(1,3)*tens(1)+vecp(2,3)*tens(2)+vecp(3,3)*tens(3)&
-     &)+vecp(2,2)*(vecp(1,3)*tens(2)+vecp(2,3)*tens(4)+vecp(3,3)*tens(5)&
-     &)+vecp(3,2)*(vecp(1,3)*tens(3)+vecp(2,3)*tens(5)+vecp(3,3)*tens(6)&
+    a = vecp(1, 2)*(vecp(1, 2)*tens(1)+2.d0*vecp(2, 2)*tens(2))&
+     & +vecp(2, 2)*(vecp(2, 2)*tens(4)+2.d0*vecp(3, 2)*tens(5))&
+     & +vecp(3, 2)*(vecp(3, 2)*tens(6)+2.d0*vecp(1, 2)*tens(3))
+    b = vecp(1, 3)*(vecp(1, 3)*tens(1)+2.d0*vecp(2, 3)*tens(2))&
+     & +vecp(2, 3)*(vecp(2, 3)*tens(4)+2.d0*vecp(3, 3)*tens(5))&
+     & +vecp(3, 3)*(vecp(3, 3)*tens(6)+2.d0*vecp(1, 3)*tens(3))
+    c = vecp(1, 2)*(vecp(1, 3)*tens(1)+vecp(2, 3)*tens(2)+vecp(3, 3)*tens(3)&
+     &)+vecp(2, 2)*(vecp(1, 3)*tens(2)+vecp(2, 3)*tens(4)+vecp(3, 3)*tens(5)&
+     &)+vecp(3, 2)*(vecp(1, 3)*tens(3)+vecp(2, 3)*tens(5)+vecp(3, 3)*tens(6)&
      &)
 ! -- ON CHERCHE L'ANGLE DONT EST TOURNE LE REPERE PROPRE
 !
-    f=2.d0*c
-    g=a-b
+    f = 2.d0*c
+    g = a-b
     if (abs(f) .lt. r8miem()) then
-        theta=0.d0
+        theta = 0.d0
     else
-        theta=atan2(f,g)
-        theta=theta/2.d0
-    endif
+        theta = atan2(f, g)
+        theta = theta/2.d0
+    end if
 !
 ! -- EST-CE THETA OU THETA+PI/2 ?
 !
-    rtemp=(a-b)*cos(2.d0*theta)+2.d0*c*sin(2.d0*theta)
-    if (rtemp*(valp(2)-valp(3)) .lt. 0.d0) theta=theta+r8pi()/2.d0
+    rtemp = (a-b)*cos(2.d0*theta)+2.d0*c*sin(2.d0*theta)
+    if (rtemp*(valp(2)-valp(3)) .lt. 0.d0) theta = theta+r8pi()/2.d0
 !        write (6,*) 'THETA =',THETA
-    a=cos(theta)
-    b=sin(theta)
-    y(1)=vecp(1,2)*a+vecp(1,3)*b
-    y(2)=vecp(2,2)*a+vecp(2,3)*b
-    y(3)=vecp(3,2)*a+vecp(3,3)*b
-    vecp(1,2)=y(1)
-    vecp(2,2)=y(2)
-    vecp(3,2)=y(3)
+    a = cos(theta)
+    b = sin(theta)
+    y(1) = vecp(1, 2)*a+vecp(1, 3)*b
+    y(2) = vecp(2, 2)*a+vecp(2, 3)*b
+    y(3) = vecp(3, 2)*a+vecp(3, 3)*b
+    vecp(1, 2) = y(1)
+    vecp(2, 2) = y(2)
+    vecp(3, 2) = y(3)
 !
-    vecp(1,3)=vecp(2,1)*vecp(3,2)-&
-     &                vecp(3,1)*vecp(2,2)
-    vecp(2,3)=vecp(3,1)*vecp(1,2)-&
-     &                vecp(1,1)*vecp(3,2)
-    vecp(3,3)=vecp(1,1)*vecp(2,2)-&
-     &                      vecp(2,1)*vecp(1,2)
+    vecp(1, 3) = vecp(2, 1)*vecp(3, 2)-&
+     &                vecp(3, 1)*vecp(2, 2)
+    vecp(2, 3) = vecp(3, 1)*vecp(1, 2)-&
+     &                vecp(1, 1)*vecp(3, 2)
+    vecp(3, 3) = vecp(1, 1)*vecp(2, 2)-&
+     &                      vecp(2, 1)*vecp(1, 2)
 !
     if (invvp) then
         do i = 1, 3
-            rtemp=vecp(i,1)
-            vecp(i,1)=vecp(i,3)
-            vecp(i,3)=-rtemp
+            rtemp = vecp(i, 1)
+            vecp(i, 1) = vecp(i, 3)
+            vecp(i, 3) = -rtemp
         end do
-        rtemp=valp(1)
-        valp(1)=valp(3)
-        valp(3)=rtemp
-    endif
+        rtemp = valp(1)
+        valp(1) = valp(3)
+        valp(3) = rtemp
+    end if
 !
 !        Y(1)=TENS(1)
 !        Y(2)=TENS(4)
@@ -281,7 +281,7 @@ subroutine diagp3(tens, vecp, valp)
 999 continue
 !
     do i = 1, 3
-        valp(i)=valp(i)+trace
+        valp(i) = valp(i)+trace
     end do
 !
 !      IF (MOD(INT(TPS(2)),100000).EQ.0) THEN

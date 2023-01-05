@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmobsw(sd_obsv  ,   ds_inout  )
+subroutine nmobsw(sd_obsv, ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/diinst.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 
-character(len=19), intent(in) :: sd_obsv
-type(NL_DS_InOut), optional, intent(in) :: ds_inout
+    character(len=19), intent(in) :: sd_obsv
+    type(NL_DS_InOut), optional, intent(in) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,17 +66,17 @@ type(NL_DS_InOut), optional, intent(in) :: ds_inout
 
     !if (nume_time.eq.0) then
     sdextr_obsv = sd_obsv(1:14)
-    extr_info   = sdextr_obsv(1:14)//'     .INFO'
-    call jeveuo(extr_info, 'L', vi = v_extr_info)
+    extr_info = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'L', vi=v_extr_info)
     nb_keyw_fact = v_extr_info(1)
-    if (nb_keyw_fact.ne.0) then
+    if (nb_keyw_fact .ne. 0) then
         extr_field = sdextr_obsv(1:14)//'     .CHAM'
-        call jeveuo(extr_field, 'E', vk24 = v_extr_field)
-    endif
+        call jeveuo(extr_field, 'E', vk24=v_extr_field)
+    end if
     do i_keyw_fact = 1, nb_keyw_fact
-        i_field      = v_extr_info(7+7*(i_keyw_fact-1)+7)
-        i_field      = abs(i_field)
-        field_type   = v_extr_field(4*(i_field-1)+1)
+        i_field = v_extr_info(7+7*(i_keyw_fact-1)+7)
+        i_field = abs(i_field)
+        field_type = v_extr_field(4*(i_field-1)+1)
         call nmextd(field_type, ds_inout, field)
         v_extr_field(4*(i_field-1)+4) = field
     end do

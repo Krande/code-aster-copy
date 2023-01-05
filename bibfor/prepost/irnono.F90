@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irnono(meshNameZ , &
-                  nbNode    , nodeName    ,&
-                  nbGrNode  , grNodeName  ,&
-                  nbNodeSelect, nodeFlag  , lfichUniq)
+subroutine irnono(meshNameZ, &
+                  nbNode, nodeName, &
+                  nbGrNode, grNodeName, &
+                  nbNodeSelect, nodeFlag, lfichUniq)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -33,14 +33,14 @@ implicit none
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: meshNameZ
-integer, intent(in) :: nbNode
-character(len=8), pointer :: nodeName(:)
-integer, intent(in) :: nbGrNode
-character(len=24), pointer :: grNodeName(:)
-integer, intent(out) :: nbNodeSelect
-aster_logical, pointer :: nodeFlag(:)
-aster_logical, intent(in) :: lfichUniq
+    character(len=*), intent(in) :: meshNameZ
+    integer, intent(in) :: nbNode
+    character(len=8), pointer :: nodeName(:)
+    integer, intent(in) :: nbGrNode
+    character(len=24), pointer :: grNodeName(:)
+    integer, intent(out) :: nbNodeSelect
+    aster_logical, pointer :: nodeFlag(:)
+    aster_logical, intent(in) :: lfichUniq
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ aster_logical, intent(in) :: lfichUniq
 !
 ! - Initializations
 !
-    meshName     = meshNameZ
+    meshName = meshNameZ
     nbNodeSelect = 0
 !
 ! - Select nodes by name
@@ -69,20 +69,20 @@ aster_logical, intent(in) :: lfichUniq
     if (nbNode .ne. 0) then
         if (lfichUniq) then
             call utmess('F', 'MED3_4')
-        endif
+        end if
         do iNode = 1, nbNode
             call jenonu(jexnom(meshName//'.NOMNOE', nodeName(iNode)), nodeNume)
             if (nodeNume .eq. 0) then
                 call utmess('A', 'RESULT3_6', sk=nodeName(iNode))
                 nodeName(iNode) = ' '
             else
-                if (.not.nodeFlag(nodeNume)) then
+                if (.not. nodeFlag(nodeNume)) then
                     nodeFlag(nodeNume) = ASTER_TRUE
-                    nbNodeSelect = nbNodeSelect + 1
-                endif
-            endif
+                    nbNodeSelect = nbNodeSelect+1
+                end if
+            end if
         end do
-    endif
+    end if
 !
 ! - Select nodes in groups of nodes
 !
@@ -96,27 +96,27 @@ aster_logical, intent(in) :: lfichUniq
                 grNodeName(iGrNode) = ' '
             else
                 call jeexin(jexnom(meshName//'.GROUPENO', grNodeName(iGrNode)), iret)
-                if (iret.ne.0) then
-                    call jelira(jexnom(meshName//'.GROUPENO', grNodeName(iGrNode)),&
+                if (iret .ne. 0) then
+                    call jelira(jexnom(meshName//'.GROUPENO', grNodeName(iGrNode)), &
                                 'LONMAX', grNodeNbNode)
                     if (grNodeNbNode .eq. 0) then
                         call utmess('A', 'RESULT3_8', sk=grNodeName(iGrNode))
                         grNodeName(iGrNode) = ' '
                     else
-                        call jeveuo(jexnom(meshName//'.GROUPENO', grNodeName(iGrNode)),&
-                                    'L', vi = listNode)
+                        call jeveuo(jexnom(meshName//'.GROUPENO', grNodeName(iGrNode)), &
+                                    'L', vi=listNode)
                         do iNode = 1, grNodeNbNode
                             nodeNume = listNode(iNode)
-                            if (.not.nodeFlag(nodeNume)) then
+                            if (.not. nodeFlag(nodeNume)) then
                                 nodeFlag(nodeNume) = ASTER_TRUE
-                                nbNodeSelect = nbNodeSelect + 1
-                            endif
+                                nbNodeSelect = nbNodeSelect+1
+                            end if
                         end do
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

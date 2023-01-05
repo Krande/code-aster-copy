@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,15 +64,15 @@ subroutine te0432(option, nomte)
     aster_logical :: lexc, ldiag
 !
 !
-    lexc = (lteatt('MODELI','GRC'))
-    ldiag = (option(1:10).eq.'MASS_MECA_')
+    lexc = (lteatt('MODELI', 'GRC'))
+    ldiag = (option(1:10) .eq. 'MASS_MECA_')
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     fami = 'MASS'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, 1, &
                 1, tref, iret)
     call r8inir(8*8*6*6, 0.d0, a, 1)
     call r8inir(8*8*3*3, 0.d0, aexc, 1)
@@ -84,10 +84,10 @@ subroutine te0432(option, nomte)
 !
     if (option .eq. 'MASS_MECA') then
 !
-    else if (option.eq.'M_GAMMA') then
+    else if (option .eq. 'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
-    else if (option.eq.'ECIN_ELEM') then
-        stopz='ONO'
+    else if (option .eq. 'ECIN_ELEM') then
+        stopz = 'ONO'
         call tecach(stopz, 'PVITESR', 'L', iretv, iad=ivite)
         if (iretv .ne. 0) then
             call tecach(stopz, 'PDEPLAR', 'L', iretd, iad=idepl)
@@ -95,19 +95,19 @@ subroutine te0432(option, nomte)
                 call jevech('POMEGA2', 'L', ifreq)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! PARAMETRES EN SORTIE
 !
     if (option(1:9) .eq. 'MASS_MECA') then
         call jevech('PMATUUR', 'E', imatuu)
-    else if (option.eq.'M_GAMMA') then
+    else if (option .eq. 'M_GAMMA') then
         call jevech('PVECTUR', 'E', ivect)
-    else if (option.eq.'ECIN_ELEM') then
+    else if (option .eq. 'ECIN_ELEM') then
         call jevech('PENERCR', 'E', iecin)
-    endif
+    end if
 !
 !
 !
@@ -124,85 +124,85 @@ subroutine te0432(option, nomte)
 !
         if (nomte .eq. 'MEGCTR3') then
             call dxtpgl(zr(igeom), pgl)
-        else if (nomte.eq.'MEGCQU4') then
+        else if (nomte .eq. 'MEGCQU4') then
             call dxqpgl(zr(igeom), pgl, 'S', iret)
-        endif
+        end if
 !
         do i = 1, 3
-            vecn(i)=distn*pgl(3,i)
-        enddo
+            vecn(i) = distn*pgl(3, i)
+        end do
 !
-        nddl=6
+        nddl = 6
 !
     else
 !
         nddl = 3
 !
-    endif
+    end if
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS : ON CALCULE D'ABORD LA
 !      CONTRAINTE ET/OU LA RIGIDITE SI NECESSAIRE PUIS
 !      ON JOUE AVEC B
 !
     wgt = 0.d0
-    do  kpg = 1, npg
+    do kpg = 1, npg
 !
 ! - MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
 !   ET DES DERIVEES DE FONCTION DE FORME
 !
         do n = 1, nno
-            vff(n) =zr(ivf+(kpg-1)*nno+n-1)
-            dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
-            dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-        enddo
+            vff(n) = zr(ivf+(kpg-1)*nno+n-1)
+            dff(1, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2)
+            dff(2, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
+        end do
 !
 ! - MASS_MECA
 !
-        call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'RHO', rho, codres, 1)
 !
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
 !
-        call nmgrib(nno, zr(igeom), dff, dir11, lexc,&
+        call nmgrib(nno, zr(igeom), dff, dir11, lexc, &
                     vecn, b, jac, p)
-        wgt = wgt + rho(1)*zr(ipoids+kpg-1)*jac*densit
+        wgt = wgt+rho(1)*zr(ipoids+kpg-1)*jac*densit
 !
         do n = 1, nno
             do i = 1, n
                 coef = rho(1)*zr(ipoids+kpg-1)*jac*densit*vff(n)*vff(i)
-                a(1,1,n,i) = a(1,1,n,i) + coef
-                a(2,2,n,i) = a(2,2,n,i) + coef
-                a(3,3,n,i) = a(3,3,n,i) + coef
-            enddo
-        enddo
+                a(1, 1, n, i) = a(1, 1, n, i)+coef
+                a(2, 2, n, i) = a(2, 2, n, i)+coef
+                a(3, 3, n, i) = a(3, 3, n, i)+coef
+            end do
+        end do
 !
         if (lexc) then
-            do  i = 1, 3
-                do  j = 1, 3
-                    do  n = 1, nno
-                        do  m = 1, n
-                            aexc(i,j,n,m) = a(i,j,n,m)
-                        enddo
-                    enddo
-                enddo
-            enddo
+            do i = 1, 3
+                do j = 1, 3
+                    do n = 1, nno
+                        do m = 1, n
+                            aexc(i, j, n, m) = a(i, j, n, m)
+                        end do
+                    end do
+                end do
+            end do
             call r8inir(8*8*6*6, 0.d0, a, 1)
-            do  i = 1, 6
-                do  j = 1, 6
-                    do  n = 1, nno
-                        do  m = 1, n
-                            do  k = 1, 3
-                                a(i,j,n,m) = a(i,j,n,m)+p(k,i)*p(k,j) *aexc(k,k,n,m)
-                            enddo
-                        enddo
-                    enddo
-                enddo
-            enddo
-        endif
+            do i = 1, 6
+                do j = 1, 6
+                    do n = 1, nno
+                        do m = 1, n
+                            do k = 1, 3
+                                a(i, j, n, m) = a(i, j, n, m)+p(k, i)*p(k, j)*aexc(k, k, n, m)
+                            end do
+                        end do
+                    end do
+                end do
+            end do
+        end if
 !
-     enddo
+    end do
 !
 ! - RANGEMENT DES RESULTATS
 ! -------------------------
@@ -212,12 +212,12 @@ subroutine te0432(option, nomte)
 !
         call r8inir(3*8, 0.d0, diag, 1)
         call r8inir(3, 0.d0, somme, 1)
-        do  i = 1, 3
-            do  j = 1, nno
-                somme(i) = somme(i) + a(i,i,j,j)
-            enddo
+        do i = 1, 3
+            do j = 1, nno
+                somme(i) = somme(i)+a(i, i, j, j)
+            end do
             alfam(i) = wgt/somme(i)
-        enddo
+        end do
 !
 !-- CALCUL DU FACTEUR DE DIAGONALISATION
 !
@@ -227,77 +227,77 @@ subroutine te0432(option, nomte)
 !
         do j = 1, nno
             do i = 1, 3
-                diag(i,j) = a(i,i,j,j)*alfam(i)
-            enddo
-        enddo
+                diag(i, j) = a(i, i, j, j)*alfam(i)
+            end do
+        end do
 !
-        do  k = 1, nddl
-            do  l = 1, nddl
-                do  i = 1, nno
-                    do  j = 1, nno
-                        a(k,l,i,j) = 0.d0
-                    enddo
-                enddo
-            enddo
-        enddo
+        do k = 1, nddl
+            do l = 1, nddl
+                do i = 1, nno
+                    do j = 1, nno
+                        a(k, l, i, j) = 0.d0
+                    end do
+                end do
+            end do
+        end do
         do k = 1, 3
             do i = 1, nno
-                a(k,k,i,i) = diag(k,i)
-            enddo
-        enddo
+                a(k, k, i, i) = diag(k, i)
+            end do
+        end do
         if (nddl .eq. 6) then
-            do  i = 1, nno
-                a(4,4,i,i) = a(4,4,i,i) * alfam(1)
-                a(5,5,i,i) = a(4,4,i,i) * alfam(2)
-                a(6,6,i,i) = a(4,4,i,i) * alfam(3)
-            enddo
-        endif
-    endif
+            do i = 1, nno
+                a(4, 4, i, i) = a(4, 4, i, i)*alfam(1)
+                a(5, 5, i, i) = a(4, 4, i, i)*alfam(2)
+                a(6, 6, i, i) = a(4, 4, i, i)*alfam(3)
+            end do
+        end if
+    end if
 !
 !
     if (option(1:9) .eq. 'MASS_MECA') then
-        do  k = 1, nddl
-            do  l = 1, nddl
-                do  i = 1, nno
-                    kkd = ((nddl*(i-1)+k-1)* (nddl*(i-1)+k))/2
-                    do  j = 1, i
-                        kk = kkd + nddl * (j-1) + l
-                        zr(imatuu+kk-1) = a(k,l,i,j)
-                    enddo
-                enddo
-            enddo
-        enddo
+        do k = 1, nddl
+            do l = 1, nddl
+                do i = 1, nno
+                    kkd = ((nddl*(i-1)+k-1)*(nddl*(i-1)+k))/2
+                    do j = 1, i
+                        kk = kkd+nddl*(j-1)+l
+                        zr(imatuu+kk-1) = a(k, l, i, j)
+                    end do
+                end do
+            end do
+        end do
 !
-    else if (option.eq.'M_GAMMA'.or. option.eq.'ECIN_ELEM') then
+    else if (option .eq. 'M_GAMMA' .or. option .eq. 'ECIN_ELEM') then
         nvec = nddl*nno*(nddl*nno+1)/2
         do k = 1, nvec
             matv(k) = 0.0d0
-        enddo
-        do  k = 1, nddl
-            do  l = 1, nddl
-                do  i = 1, nno
-                    kkd = ((nddl*(i-1)+k-1)* (nddl*(i-1)+k))/2
-                    do  j = 1, i
-                        kk = kkd + nddl* (j-1) + l
-                        matv(kk) = a(k,l,i,j)
-                    enddo
-                enddo
-            enddo
-        enddo
+        end do
+        do k = 1, nddl
+            do l = 1, nddl
+                do i = 1, nno
+                    kkd = ((nddl*(i-1)+k-1)*(nddl*(i-1)+k))/2
+                    do j = 1, i
+                        kk = kkd+nddl*(j-1)+l
+                        matv(kk) = a(k, l, i, j)
+                    end do
+                end do
+            end do
+        end do
         call vecma(matv, nvec, matp, nddl*nno)
         if (option .eq. 'M_GAMMA') then
             call pmavec('ZERO', nddl*nno, matp, zr(iacce), zr(ivect))
-        else if (option.eq.'ECIN_ELEM') then
+        else if (option .eq. 'ECIN_ELEM') then
             if (iretv .eq. 0) then
                 call pmavec('ZERO', nddl*nno, matp, zr(ivite), masvit)
-                ecin = .5d0*ddot(nddl*nno,zr(ivite),1,masvit,1)
+                ecin = .5d0*ddot(nddl*nno, zr(ivite), 1, masvit, 1)
             else
                 call pmavec('ZERO', nddl*nno, matp, zr(idepl), masdep)
-                ecin = .5d0*ddot(nddl*nno,zr(idepl),1,masdep,1)*zr( ifreq)
-            endif
+                ecin = .5d0*ddot(nddl*nno, zr(idepl), 1, masdep, 1)*zr(ifreq)
+            end if
             zr(iecin) = ecin
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
+subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev, &
                   tbscrv, nomdb, tbscmb)
 !
     implicit none
@@ -39,7 +39,7 @@ subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
 ! --- : NOMDB  : NOMBRE DE NOEUDS COTE METAL DE BASE -------------------
 ! --- : TBSCMB : VECTEUR DES ABSCISSES CURVILIGNES COTE METAL DE BASE --
 ! ======================================================================
-    integer :: ibid,irev
+    integer :: ibid, irev
     character(len=8) :: motfac, k8b, tabrev, tabmdb, tabthr
 ! ======================================================================
     call jemarq()
@@ -53,27 +53,27 @@ subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
     call getvid(motfac, 'TABL_MECA_REV', iocc=1, scal=tabrev, nbret=irev)
     call getvid(motfac, 'TABL_MECA_MDB', iocc=1, scal=tabmdb, nbret=ibid)
     call getvid(motfac, 'TABL_THER', iocc=1, scal=tabthr, nbret=ibid)
-    if(irev.eq.0) then
-      tabrev=tabmdb
-    endif
+    if (irev .eq. 0) then
+        tabrev = tabmdb
+    end if
 ! ======================================================================
 ! --- RECUPERATION DES LISTES D'INSTANT --------------------------------
 ! ======================================================================
-    call tbexv1(tabrev, 'INST', tbinst, 'V', nbval,&
+    call tbexv1(tabrev, 'INST', tbinst, 'V', nbval, &
                 k8b)
-    call tbexv1(tabthr, 'INST', tbinth, 'V', nbval2,&
+    call tbexv1(tabthr, 'INST', tbinth, 'V', nbval2, &
                 k8b)
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DES ABSCISSES CURVILIGNES ---------------
 ! --- COTE REVETEMENT --------------------------------------------------
 ! ======================================================================
-    call tbexv1(tabrev, 'ABSC_CURV', tbscrv, 'V', norev,&
+    call tbexv1(tabrev, 'ABSC_CURV', tbscrv, 'V', norev, &
                 k8b)
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DES ABSCISSES CURVILIGNES ---------------
 ! --- COTE METAL DE BASE -----------------------------------------------
 ! ======================================================================
-    call tbexv1(tabmdb, 'ABSC_CURV', tbscmb, 'V', nomdb,&
+    call tbexv1(tabmdb, 'ABSC_CURV', tbscmb, 'V', nomdb, &
                 k8b)
 ! ======================================================================
 ! --- DESTRUCTION DES TABLES INUTILES ----------------------------------

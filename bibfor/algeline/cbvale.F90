@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
+subroutine cbvale(nbcomb, typcst, const, lmat, typres, &
                   lres, ddlexc, matd)
     implicit none
 #include "asterf_types.h"
@@ -79,18 +79,18 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !     -----------------------------------------------------------------
     call jemarq()
     zero = 0.d0
-    czero = dcmplx(zero,zero)
+    czero = dcmplx(zero, zero)
     rbid = zero
     cbid = czero
 !
 !
     nomddl = ddlexc
-    matres = zk24(zi(lres+1))(1:19)
+    matres = zk24(zi(lres+1)) (1:19)
     if (matd) then
         neq = zi(lres+5)
     else
         neq = zi(lres+2)
-    endif
+    end if
     call jelira(matres//'.REFA', 'CLAS', cval=clas)
     valmr = matres//'.VALM'
     lgbloc = zi(lres+14)
@@ -105,11 +105,11 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !
 !     II) RECUPERATION DES POSITIONS DES DDL
     call wkvect('&&CBVALE', 'V V I', neq*mxddl, lddl)
-    call pteddl('NUME_DDL', nume, mxddl, nomddl, neq,&
-                tabl_equa = zi(lddl))
+    call pteddl('NUME_DDL', nume, mxddl, nomddl, neq, &
+                tabl_equa=zi(lddl))
 !
     symr = zi(lres+4) .eq. 1
-    ASSERT(typres.eq.'R' .or. typres.eq.'C')
+    ASSERT(typres .eq. 'R' .or. typres .eq. 'C')
 !
 !
     call mtdsc2(zk24(zi(lres+1)), 'SMDI', 'L', jsmdi)
@@ -118,19 +118,19 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !
 !
     call jeveuo(jexnum(valmr, 1), 'E', jvamr1)
-    if (.not.symr) call jeveuo(jexnum(valmr, 2), 'E', jvamr2)
+    if (.not. symr) call jeveuo(jexnum(valmr, 2), 'E', jvamr2)
 !
 !
 ! --- MISE A ZERO DE LA MATRICE RESULTAT :
 !     ----------------------------------------
     if (typres .eq. 'R') then
         call vecini(lgbloc, zero, zr(jvamr1))
-        if (.not.symr) call vecini(lgbloc, zero, zr(jvamr2))
+        if (.not. symr) call vecini(lgbloc, zero, zr(jvamr2))
 !
-    else if (typres.eq.'C') then
+    else if (typres .eq. 'C') then
         call vecinc(lgbloc, czero, zc(jvamr1))
-        if (.not.symr) call vecinc(lgbloc, czero, zc(jvamr2))
-    endif
+        if (.not. symr) call vecinc(lgbloc, czero, zc(jvamr2))
+    end if
 !
 !
 ! --- BOUCLE SUR LES MATRICES A COMBINER ---
@@ -139,90 +139,90 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     do imat = 1, nbcomb
         if (typcst(imat) .eq. 'R') then
             r8cst = const(iconst)
-            c8cst = dcmplx(r8vide(),r8vide())
-            iconst=iconst+1
+            c8cst = dcmplx(r8vide(), r8vide())
+            iconst = iconst+1
         else
             r8cst = r8vide()
-            c8cst = dcmplx(const(iconst),const(iconst+1))
-            iconst=iconst+2
-        endif
-        mati = zk24(zi(lmat(imat)+1))(1:19)
+            c8cst = dcmplx(const(iconst), const(iconst+1))
+            iconst = iconst+2
+        end if
+        mati = zk24(zi(lmat(imat)+1)) (1:19)
         valmi = mati//'.VALM'
         call jelira(valmi, 'TYPE', cval=typmat)
-        ASSERT(typmat.eq.'R' .or. typmat.eq.'C')
+        ASSERT(typmat .eq. 'R' .or. typmat .eq. 'C')
         call jeveuo(jexnum(valmi, 1), 'L', jvami1)
         symi = zi(lmat(imat)+4) .eq. 1
-        if (.not.symi) call jeveuo(jexnum(valmi, 2), 'L', jvami2)
-        rouc=typres(1:1)//typcst(imat)(1:1)
+        if (.not. symi) call jeveuo(jexnum(valmi, 2), 'L', jvami2)
+        rouc = typres(1:1)//typcst(imat) (1:1)
 !
 !
         if (typres .eq. 'R') then
 !       --------------------------
             if (typmat .eq. 'R') then
 !         --------------------------
-                call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
+                call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                             r8cst, c8cst, zr(jvami1), zr(jvamr1), [cbid])
-                if (.not.symr) then
+                if (.not. symr) then
                     if (symi) then
-                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zr(jvami1), zr(jvamr2), [cbid])
                     else
-                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zr(jvami2), zr(jvamr2), [cbid])
-                    endif
-                endif
+                    end if
+                end if
 !
-            else if (typmat.eq.'C') then
+            else if (typmat .eq. 'C') then
 !         --------------------------
-                call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
+                call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                             r8cst, c8cst, zc(jvami1), zr(jvamr1), [cbid])
-                if (.not.symr) then
+                if (.not. symr) then
                     if (symi) then
-                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zc(jvami1), zr(jvamr2), [cbid])
                     else
-                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zc(jvami2), zr(jvamr2), [cbid])
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
 !
 !
-        else if (typres.eq.'C') then
+        else if (typres .eq. 'C') then
 !       --------------------------
             if (typmat .eq. 'R') then
 !         --------------------------
-                call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
+                call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                             r8cst, c8cst, zr(jvami1), [rbid], zc(jvamr1))
-                if (.not.symr) then
+                if (.not. symr) then
                     if (symi) then
-                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zr(jvami1), [rbid], zc(jvamr2))
                     else
-                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalr(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zr(jvami2), [rbid], zc(jvamr2))
-                    endif
-                endif
+                    end if
+                end if
 !
-            else if (typmat.eq.'C') then
+            else if (typmat .eq. 'C') then
 !         --------------------------
-                call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl),&
+                call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                             r8cst, c8cst, zc(jvami1), [rbid], zc(jvamr1))
-                if (.not.symr) then
+                if (.not. symr) then
                     if (symi) then
-                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zc(jvami1), [rbid], zc(jvamr2))
                     else
-                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi( lddl),&
+                        call cbvalc(rouc, neq, zi4(jsmhc), zi(jsmdi), zi(lddl), &
                                     r8cst, c8cst, zc(jvami2), [rbid], zc(jvamr2))
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
 !
 !
         call jelibe(jexnum(valmi, 1))
-        if (.not.symi) call jelibe(jexnum(valmi, 2))
+        if (.not. symi) call jelibe(jexnum(valmi, 2))
     end do
 !
 !

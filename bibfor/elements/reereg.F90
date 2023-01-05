@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine reereg(stop, elrefp, nnop, coor, xg,&
+subroutine reereg(stop, elrefp, nnop, coor, xg, &
                   ndim, xe, iret, toler, ndim_coor_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
@@ -29,15 +29,15 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
-character(len=1) :: stop
-character(len=8) :: elrefp
-integer :: nnop, ndim
-real(kind=8) :: coor(ndim*nnop)
-real(kind=8) :: xg(ndim)
-real(kind=8) :: xe(ndim)
-real(kind=8), optional, intent(in) :: toler
-integer :: iret
-integer, optional, intent(in) :: ndim_coor_
+    character(len=1) :: stop
+    character(len=8) :: elrefp
+    integer :: nnop, ndim
+    real(kind=8) :: coor(ndim*nnop)
+    real(kind=8) :: xg(ndim)
+    real(kind=8) :: xe(ndim)
+    real(kind=8), optional, intent(in) :: toler
+    integer :: iret
+    integer, optional, intent(in) :: ndim_coor_
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ integer, optional, intent(in) :: ndim_coor_
 ! ----------------------------------------------------------------------
 !
     integer :: nbnomx, itermx, ndim_coor
-    parameter   (nbnomx = 27 , itermx = 50)
+    parameter(nbnomx=27, itermx=50)
 !
     real(kind=8) :: zero, tolerc
     integer :: iter, i, k, idim, ino, ipb
@@ -75,13 +75,13 @@ integer, optional, intent(in) :: ndim_coor_
 !
 ! --- si tolerance non precisee, defaut a 10E-8
 !
-    if ( present(toler) ) then
+    if (present(toler)) then
         tolerc = toler
     else
         tolerc = 1.d-8
-    endif
+    end if
 !
-    if(present(ndim_coor_)) then
+    if (present(ndim_coor_)) then
         ndim_coor = ndim_coor_
     else
         ndim_coor = ndim
@@ -94,13 +94,13 @@ integer, optional, intent(in) :: ndim_coor_
     iret = 0
     xe(:) = zero
 !
-100  continue
-    iter=iter+1
+100 continue
+    iter = iter+1
 !
 ! --- VALEURS DES FONCTIONS DE FORME EN XE: FF
 !
     call elrfvf(elrefp, xe, ff, nno)
-    ASSERT(nno.eq.nnop)
+    ASSERT(nno .eq. nnop)
 !
 ! --- DERIVEES PREMIERES DES FONCTIONS DE FORME EN XE: DFF
 !
@@ -118,34 +118,34 @@ integer, optional, intent(in) :: ndim_coor_
 !
 ! --- CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE: INVJAC
 !
-    call invjax(stop, nno, ndim, nderiv, dff,&
+    call invjax(stop, nno, ndim, nderiv, dff, &
                 coor, invjac, ipb, ndim_coor)
     if (ipb .eq. 1) then
         if (stop .eq. 'S') then
             call utmess('F', 'ALGORITH5_19')
-        else if (stop.eq.'C') then
-            iret=1
+        else if (stop .eq. 'C') then
+            iret = 1
             goto 999
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- UPDATE XE
 !
     do i = 1, ndim
-        xenew(i)=xe(i)
+        xenew(i) = xe(i)
         do k = 1, ndim
-            xenew(i) = xenew(i)-invjac(i,k)*(point(k)-xg(k))
+            xenew(i) = xenew(i)-invjac(i, k)*(point(k)-xg(k))
         end do
     end do
 !
 ! --- CALCUL DE L'ERREUR: ERR
 !
     do i = 1, ndim
-        etmp(i) = xenew(i) - xe(i)
+        etmp(i) = xenew(i)-xe(i)
     end do
-    err = ddot(nderiv,etmp,1,etmp,1)
+    err = ddot(nderiv, etmp, 1, etmp, 1)
 !
 ! --- NOUVELLE VALEUR DE XE
 !
@@ -155,16 +155,16 @@ integer, optional, intent(in) :: ndim_coor_
 !
     if (err .le. tolerc) then
         goto 999
-    else if (iter.lt.itermx) then
+    else if (iter .lt. itermx) then
         goto 100
     else
         if (stop .eq. 'S') then
             call utmess('F', 'ELEMENTS2_58')
         else
-            ASSERT(stop.eq.'C')
-            iret=1
-        endif
-    endif
+            ASSERT(stop .eq. 'C')
+            iret = 1
+        end if
+    end if
 !
 999 continue
 !

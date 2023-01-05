@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lceiab(fami, kpg, ksp, mat, option,&
-                  mu, su, de, ddedt, vim,&
+subroutine lceiab(fami, kpg, ksp, mat, option, &
+                  mu, su, de, ddedt, vim, &
                   vip, r, codret)
 !
     implicit none
@@ -54,7 +54,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
     character(len=16) :: nom(6)
     character(len=1) :: poum
 !
-    data nom /'SIGM_C','GLIS_C','ALPHA','BETA','PENA_LAGR',&
+    data nom/'SIGM_C', 'GLIS_C', 'ALPHA', 'BETA', 'PENA_LAGR',&
      &          'CINEMATIQUE'/
 !-----------------------------------------------------------------------
 !
@@ -101,19 +101,19 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 ! --------------------
 !
 !    OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
-    resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
-    rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
-    elas = option(11:14).eq.'ELAS'
+    resi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH'
+    rigi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RIGI'
+    elas = option(11:14) .eq. 'ELAS'
 !
 !    RECUPERATION DES PARAMETRES PHYSIQUES
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'CZM_LAB_MIX', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mat, &
+                ' ', 'CZM_LAB_MIX', 0, ' ', [0.d0], &
                 6, nom, val, cod, 2)
 !
     sc = val(1)
@@ -132,31 +132,31 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !    LECTURE DES VARIABLES INTERNES
     ka = vim(1)
     regm = nint(vim(2))
-    sk = max(0.d0,s0*(ka/d0)**alpha/(ka/d0 + 1.d0)**(alpha+beta))
+    sk = max(0.d0, s0*(ka/d0)**alpha/(ka/d0+1.d0)**(alpha+beta))
 !
 ! -----------------------------
 ! -- CALCUL DU SECOND MEMBRE --
 ! -----------------------------
 !
 !    FORCE COHESIVE AUGMENTEE : LAMBDA + R.[U]
-    t(1) = mu(1) + r*su(1)
-    t(2) = mu(2) + r*su(2)
-    t(3) = mu(3) + r*su(3)
+    t(1) = mu(1)+r*su(1)
+    t(2) = mu(2)+r*su(2)
+    t(3) = mu(3)+r*su(3)
 !
 !    PROJECTEUR POUR UNE COMPOSANTE NORMALE POSITIVE
     call r8inir(9, 0.d0, pr, 1)
 !
-    if ((cinema.eq.0) .and. (t(1).ge.0.d0)) pr(1,1) = 1.d0
-    pr(2,2) = 1.d0
-    if ((cinema.eq.0) .or. (cinema.eq.2)) pr(3,3) = 1.d0
+    if ((cinema .eq. 0) .and. (t(1) .ge. 0.d0)) pr(1, 1) = 1.d0
+    pr(2, 2) = 1.d0
+    if ((cinema .eq. 0) .or. (cinema .eq. 2)) pr(3, 3) = 1.d0
 !
 !    PROJECTION DE LA COMPOSANTE NORMALE POSITIVE
-    tpo(1) = t(1)*pr(1,1)
-    tpo(2) = t(2)*pr(2,2)
-    tpo(3) = t(3)*pr(3,3)
+    tpo(1) = t(1)*pr(1, 1)
+    tpo(2) = t(2)*pr(2, 2)
+    tpo(3) = t(3)*pr(3, 3)
 !
 !    NORME DU SECOND MEMBRE PROJETE
-    tno = sqrt(tpo(1)**2 + tpo(2)**2 + tpo(3)**2)
+    tno = sqrt(tpo(1)**2+tpo(2)**2+tpo(3)**2)
 !
 !    VECTEUR UNITE DIRECTION DE FORCE
     if (tno .gt. 0.d0) then
@@ -169,7 +169,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
         tpon(1) = 0.d0
         tpon(2) = 1.d0
         tpon(3) = 0.d0
-    endif
+    end if
 !
 ! --------------------------------------------
 ! -- RESOLUTION DU PROBLEME 1D SUR LA NORME --
@@ -183,25 +183,25 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
             regime = 3
 !
 !      ADHERENCE (INITIALE OU COURANTE)
-        else if (tno .le. r*ka + sk) then
+        else if (tno .le. r*ka+sk) then
             regime = 0
 !
 !      ENDOMMAGEMENT
         else
             regime = 1
-        endif
+        end if
 !
 !    SINON, ON N'ACTUALISE PAS LE REGIME DE FONCTIONNEMENT DE LA LOI
     else
         regime = regm
-    endif
+    end if
 !
     codret = 0
 !
 !    CALCUL DE L'ECOULEMENT 1D SELON LE REGIME DE COMPORTEMENT
     if (regime .eq. 3) then
         dno = tno/r
-    else if (regime.eq.0) then
+    else if (regime .eq. 0) then
         dno = ka
     else
 !     DANS LE CAS GENERAL, UTILISATION D UN ALGORITHME DE NEWTON
@@ -213,7 +213,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !         QUE D UN POINT D INITIALISATION JUDICIEUX
         dnon = alpha/beta
 100     continue
-        res = dnon**alpha/(dnon+1.d0)**(alpha+beta) - (tnon - rn*dnon)
+        res = dnon**alpha/(dnon+1.d0)**(alpha+beta)-(tnon-rn*dnon)
         if (res .lt. 0) goto 110
         dnon = dnon/100.d0
         goto 100
@@ -226,19 +226,19 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
         i = 0
 200     continue
 !         TEST DU CRITERE
-        res = dnon**alpha/(dnon+1.d0)**(alpha+beta) - (tnon - rn*dnon)
+        res = dnon**alpha/(dnon+1.d0)**(alpha+beta)-(tnon-rn*dnon)
         if (abs(res/rn) .lt. 1.d-12) goto 210
 !
 !         DIAGNOSTIC DE NON-CONVERGENCE
         if (i .ge. 20) then
             codret = 1
             goto 999
-        endif
-        i = i + 1
+        end if
+        i = i+1
 !
 !         NOUVEL ESTIMATEUR
-        deriv = (alpha-beta*dnon)*dnon**(alpha-1.d0) /(dnon+1.d0)**( alpha+beta+1.d0) + rn
-        dnon = dnon - res/deriv
+        deriv = (alpha-beta*dnon)*dnon**(alpha-1.d0)/(dnon+1.d0)**(alpha+beta+1.d0)+rn
+        dnon = dnon-res/deriv
 !
 !         PROJECTION SUR LES BORNES DE L'INTERVALLE
         if (dnon .lt. bmin) dnon = bmin
@@ -247,7 +247,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !
 210     continue
         dno = dnon*d0
-    endif
+    end if
 !
 ! ------------------------------------
 ! -- CONSTRUCTION DE LA SOLUTION 3D --
@@ -259,16 +259,16 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
         de(1) = dno*tpon(1)
         de(2) = dno*tpon(2)
         de(3) = dno*tpon(3)
-    endif
+    end if
 !
 !    MISE A JOUR DES VARIABLES INTERNES
     if (resi) then
-        vip(1) = max(ka,dno)
+        vip(1) = max(ka, dno)
         vip(2) = regime
         vip(3) = de(1)
         vip(4) = de(2)
         vip(5) = de(3)
-    endif
+    end if
 !
 ! ----------------------
 ! -- MATRICE TANGENTE --
@@ -279,42 +279,42 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 !      AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
         if (elas) then
             if (regime .eq. 1) regime = 0
-        endif
+        end if
 !
 !      CALCUL DU COEFFICIENT 1D DE LA MATRICE TANGENTE
         if (regime .eq. 3) then
             ddno = 1.d0/r
-        else if (regime.eq.0) then
+        else if (regime .eq. 0) then
             ddno = 0.d0
         else
             if (dno .gt. 0.d0) then
                 dnon = dno/d0
-                dsidno = s0/d0*(alpha-beta*dnon)*dnon**(alpha-1.d0) /(dnon+1.d0)**(alpha+beta+1.d&
+                dsidno = s0/d0*(alpha-beta*dnon)*dnon**(alpha-1.d0)/(dnon+1.d0)**(alpha+beta+1.d&
                          &0)
-                ddno = 1.d0/(r + dsidno)
+                ddno = 1.d0/(r+dsidno)
             else
                 ddno = 0.d0
-            endif
-        endif
+            end if
+        end if
 !
 !      MATRICE TANGENTE 3D
         call r8inir(36, 0.d0, ddedt, 1)
         if (tno .gt. 0.d0) then
             do i = 1, 3
                 do j = 1, 3
-                    ddedt(i,j) = ddno * tpon(i)*tpon(j) + dno/tno * ( pr(i,j) - tpon(i)*tpon(j))
+                    ddedt(i, j) = ddno*tpon(i)*tpon(j)+dno/tno*(pr(i, j)-tpon(i)*tpon(j))
                 end do
             end do
         else
 !         CAS OU TNO EST RIGOUREUSEMENT NUL
             do i = 1, 3
                 do j = 1, 3
-                    ddedt(i,j) = ddno * tpon(i)*tpon(j)
+                    ddedt(i, j) = ddno*tpon(i)*tpon(j)
                 end do
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 999 continue
 !

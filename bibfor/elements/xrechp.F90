@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
-                  ihechp, jptint, jcface, jlonch, jlst,&
-                  jbasec, nfh, nfe, fonree, imattt,&
+subroutine xrechp(ndim, elrefp, nnop, igeom, itps, &
+                  ihechp, jptint, jcface, jlonch, jlst, &
+                  jbasec, nfh, nfe, fonree, imattt, &
                   heavn)
 ! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
@@ -81,7 +81,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
     integer :: ipgf, ilev, inp, jnp, kddl, lddl, ind1, ind2, iddlma, ier
     integer :: mxstac, hea_fa(2), ifh, ife
 !
-    parameter (mxstac=1000)
+    parameter(mxstac=1000)
 !
     real(kind=8) :: theta, he(2), xg(4), jac, ff(27), r27bid(27), nd(3)
     real(kind=8) :: dfbid(27, 3), r3bid(3), lst, rr(2), ffenr(nnop, 1+nfh+nfe)
@@ -90,7 +90,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !     PAR CONVENTION :
 !     LEVRE INFERIEURE (HE=-1) EST LA LEVRE 1, DE NORMALE SORTANTE  ND
 !     LEVRE SUPERIEURE (HE=+1) EST LA LEVRE 2, DE NORMALE SORTANTE -ND
-    data    he / -1.d0 , 1.d0/
+    data he/-1.d0, 1.d0/
 !
 !-----------------------------------------------------------------------
 !
@@ -100,16 +100,16 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    ASSERT(nnop.le.mxstac .and. 1+nfh+nfe.le.mxstac)
+    ASSERT(nnop .le. mxstac .and. 1+nfh+nfe .le. mxstac)
 !
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
     do ilev = 1, 2
-        hea_fa(ilev)=xcalc_code(1,he_real=[he(ilev)])
-    enddo
+        hea_fa(ilev) = xcalc_code(1, he_real=[he(ilev)])
+    end do
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
     axi = .false.
-    if (lteatt('AXIS','OUI')) axi = .true.
+    if (lteatt('AXIS', 'OUI')) axi = .true.
 !
 !     RECUP DU PARAMETRE THETA (POUR LE THETA SCHEMA)
     theta = zr(itps-1+3)
@@ -122,21 +122,21 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !
 !     ELREFE ET FPG POUR LES FACETTES
     if (ndim .eq. 3) then
-        elc='TR3'
-        fpg='XCON'
-    else if (ndim.eq.2) then
-        elc='SE2'
-        fpg='MASS'
-    endif
+        elc = 'TR3'
+        fpg = 'XCON'
+    else if (ndim .eq. 2) then
+        elc = 'SE2'
+        fpg = 'MASS'
+    end if
 !
 !     RECUPERATIONS DES DONNEES SUR LA TOPOLOGIE DES FACETTES
-    ninter=zi(jlonch-1+1)
-    nface =zi(jlonch-1+2)
-    nptf  =zi(jlonch-1+3)
+    ninter = zi(jlonch-1+1)
+    nface = zi(jlonch-1+2)
+    nptf = zi(jlonch-1+3)
     if (ninter .lt. ndim) goto 999
     do i = 1, nface
         do j = 1, nptf
-            cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
+            cface(i, j) = zi(jcface-1+ndim*(i-1)+j)
         end do
     end do
 !
@@ -146,7 +146,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !
     do ifa = 1, nface
 !
-        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
+        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf, &
                          jvf=ivff, jdfde=idfdef)
 !
 !-----------------------------------------------------------------------
@@ -159,57 +159,57 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 !         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
 !         ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS
-            elrefc='NON'
+            elrefc = 'NON'
             if (ndim .eq. 3) then
-                call xjacff(elrefp, elrefc, elc, ndim, fpg,&
-                            jptint, ifa, cface, ipgf, nnop,&
-                            nnop, igeom, jbasec, xg, jac,&
-                            ff, r27bid, dfbid, nd, r3bid,&
+                call xjacff(elrefp, elrefc, elc, ndim, fpg, &
+                            jptint, ifa, cface, ipgf, nnop, &
+                            nnop, igeom, jbasec, xg, jac, &
+                            ff, r27bid, dfbid, nd, r3bid, &
                             r3bid)
-            else if (ndim.eq.2) then
-                call xjacf2(elrefp, elrefc, elc, ndim, fpg,&
-                            jptint, ifa, cface, nptf, ipgf,&
-                            nnop, nnop, igeom, jbasec, xg,&
-                            jac, ff, r27bid, dfbid, nd,&
+            else if (ndim .eq. 2) then
+                call xjacf2(elrefp, elrefc, elc, ndim, fpg, &
+                            jptint, ifa, cface, nptf, ipgf, &
+                            nnop, nnop, igeom, jbasec, xg, &
+                            jac, ff, r27bid, dfbid, nd, &
                             r3bid)
-            endif
+            end if
 !
 !         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
             if (nfe .eq. 1) then
-                lst=0.d0
+                lst = 0.d0
                 do i = 1, nnop
-                    lst=lst+zr(jlst-1+i)*ff(i)
+                    lst = lst+zr(jlst-1+i)*ff(i)
                 end do
-                ASSERT(lst.lt.0.d0)
-                rr(1)=-sqrt(-lst)
-                rr(2)= sqrt(-lst)
-            endif
+                ASSERT(lst .lt. 0.d0)
+                rr(1) = -sqrt(-lst)
+                rr(2) = sqrt(-lst)
+            end if
 !
 !         VALEUR DU COEFFICIENT ECHANGE PAROI
             if (fonree .eq. 'REEL') then
                 hechp = zr(ihechp)
-            else if (fonree.eq.'FONC') then
-                nompar(1)='X'
-                nompar(2)='Y'
-                if (ndim .eq. 3) nompar(3)='Z'
-                if (ndim .eq. 3) nompar(4)='INST'
-                if (ndim .eq. 2) nompar(3)='INST'
+            else if (fonree .eq. 'FONC') then
+                nompar(1) = 'X'
+                nompar(2) = 'Y'
+                if (ndim .eq. 3) nompar(3) = 'Z'
+                if (ndim .eq. 3) nompar(4) = 'INST'
+                if (ndim .eq. 2) nompar(3) = 'INST'
                 xg(ndim+1) = zr(itps)
-                call fointe('FM', zk8(ihechp), ndim+1, nompar, xg,&
+                call fointe('FM', zk8(ihechp), ndim+1, nompar, xg, &
                             hechp, ier)
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 !         MODIFICATION DU JACOBIEN SI AXI
             if (axi) then
                 r = 0.d0
                 do inp = 1, nnop
-                    r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
+                    r = r+ff(inp)*zr(igeom-1+2*(inp-1)+1)
                 end do
-                ASSERT(r.gt.0d0)
-                jac = jac * r
-            endif
+                ASSERT(r .gt. 0d0)
+                jac = jac*r
+            end if
 !
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES (DEUX) LEVRES DE LA FISSURES
@@ -220,22 +220,22 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !           FFENR : TABLEAU DES FF ENRICHIES
                 do i = 1, nnop
 !             DDL CLASSIQUE (TEMP)
-                    ffenr(i,1) = ff(i)
+                    ffenr(i, 1) = ff(i)
 !             DDL HEAVISIDE (H1)
                     if (nfh .eq. 1) then
-                        ffenr(i,1+nfh) = xcalc_heav(heavn(i,1),hea_fa(ilev),heavn(i,5))*ff(i)
-                    endif
+                        ffenr(i, 1+nfh) = xcalc_heav(heavn(i, 1), hea_fa(ilev), heavn(i, 5))*ff(i)
+                    end if
 !             DDL CRACK-TIP (E1)
                     if (nfe .eq. 1) then
-                        ffenr(i,1+nfh+nfe) = rr(ilev)*ff(i)
-                    endif
+                        ffenr(i, 1+nfh+nfe) = rr(ilev)*ff(i)
+                    end if
                 end do
 !
 !           REMPLISSAGE DE LA MATRICE
                 do inp = 1, nnop
                     do kddl = 1, nbddl
 !
-                        ind1 = (nbddl*(inp-1)+kddl-1) * (nbddl*(inp-1) +kddl ) /2
+                        ind1 = (nbddl*(inp-1)+kddl-1)*(nbddl*(inp-1)+kddl)/2
 !
                         do jnp = 1, inp
 !
@@ -245,10 +245,10 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                                 iddlma = kddl
                             else
                                 iddlma = nbddl
-                            endif
+                            end if
 !
                             do ifh = 1, nfh
-                                lddl=1+ifh
+                                lddl = 1+ifh
                                 if (lddl .le. iddlma) then
 !                     ON ECRIT PROPREMENT LES TERMES DE COUPLAGE COMPTE TENU
 !                      * DU SAUT DE DEPLACEMENT SUR LES TERMES HEAVISIDES
@@ -256,37 +256,37 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !                               - FRONTIERE 1 : 1-->2
 !                               - FRONTIERE 2 : 2-->1
                                     if (ilev .eq. 1) then
-                                        r8tmp = (&
-                                                xcalc_heav(&
-                                                heavn(jnp, 1), hea_fa(1),&
-                                                heavn(jnp, 5)) -xcalc_heav(heavn(jnp, 1),&
-                                                hea_fa(2), heavn(jnp, 5))&
-                                                )*ff(jnp&
-                                                )
+                                        r8tmp = ( &
+                                                xcalc_heav( &
+                                                heavn(jnp, 1), hea_fa(1), &
+                                                heavn(jnp, 5))-xcalc_heav(heavn(jnp, 1), &
+                                                                         hea_fa(2), heavn(jnp, 5)) &
+                                                )*ff(jnp &
+                                                     )
                                     else if (ilev .eq. 2) then
-                                        r8tmp = (&
-                                                xcalc_heav(&
-                                                heavn(jnp, 1), hea_fa(2),&
-                                                heavn(jnp, 5)) -xcalc_heav(heavn(jnp, 1),&
-                                                hea_fa(1), heavn(jnp, 5))&
-                                                )*ff(jnp&
-                                                )
-                                    endif
-                                    ind2 = ind1 + nbddl*(jnp-1)+lddl
-                                    zr(imattt-1+ind2) = zr(imattt-1+ ind2) + theta*hechp*jac* ffe&
-                                                        &nr(inp,kddl)*r8tmp
-                                endif
-                            enddo
+                                        r8tmp = ( &
+                                                xcalc_heav( &
+                                                heavn(jnp, 1), hea_fa(2), &
+                                                heavn(jnp, 5))-xcalc_heav(heavn(jnp, 1), &
+                                                                         hea_fa(1), heavn(jnp, 5)) &
+                                                )*ff(jnp &
+                                                     )
+                                    end if
+                                    ind2 = ind1+nbddl*(jnp-1)+lddl
+                                    zr(imattt-1+ind2) = zr(imattt-1+ind2)+theta*hechp*jac*ffe&
+                                                        &nr(inp, kddl)*r8tmp
+                                end if
+                            end do
 !
                             do ife = 1, nfe
-                                lddl=1+nfh+ife
+                                lddl = 1+nfh+ife
                                 if (lddl .le. iddlma) then
                                     r8tmp = 2.d0*rr(ilev)*ff(jnp)
-                                    ind2 = ind1 + nbddl*(jnp-1)+lddl
-                                    zr(imattt-1+ind2) = zr(imattt-1+ ind2) + theta*hechp*jac* ffe&
-                                                        &nr(inp,kddl)*r8tmp
-                                endif
-                            enddo
+                                    ind2 = ind1+nbddl*(jnp-1)+lddl
+                                    zr(imattt-1+ind2) = zr(imattt-1+ind2)+theta*hechp*jac*ffe&
+                                                        &nr(inp, kddl)*r8tmp
+                                end if
+                            end do
 !
                         end do
                     end do

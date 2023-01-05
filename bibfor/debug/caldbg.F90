@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine caldbg(inout, ncham, lcham, lparam)
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
-    inou2=inout
+    inou2 = inout
 !
 !     1- POUR FAIRE DU DEBUG PAR COMPARAISON DE 2 VERSIONS:
 !     -----------------------------------------------------

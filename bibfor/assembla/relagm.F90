@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine relagm(mo, ma, nm, nl, newn,&
+subroutine relagm(mo, ma, nm, nl, newn, &
                   oldn)
     implicit none
 !
@@ -71,7 +71,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !
     nbssa = 0
     nbsma = 0
-    if(mo .ne. ' ') then
+    if (mo .ne. ' ') then
         call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     end if
@@ -81,7 +81,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
         if (iret .gt. 0) call jeveuo(ma//'.TYPL', 'L', vi=typl)
     else
         goto 999
-    endif
+    end if
 !
 !     -- L'OBJET SUIVANT CONTIENDRA EN REGARD DES NUMEROS DE NOEUDS
 !        PHYSIQUES DU MAILLAGE UN ENTIER (+1, OU 0) POUR DIRE
@@ -90,38 +90,38 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !
 !
 !     -- .OLDT EST UN .OLDN TEMPORAIRE QUE L'ON RECOPIERA A LA FIN
-    nbnoma= nm+nl
+    nbnoma = nm+nl
     AS_ALLOCATE(vi=oldt, size=nbnoma)
 !
 !
 !     -- BOUCLE SUR LES (SUPER)MAILLES
 !     --------------------------------
-    icol= 0
+    icol = 0
     do ima = 1, nbsma
-        exilag=.false.
+        exilag = .false.
         if (sssa(ima) .eq. 1) then
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
             call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
 !
 !         -- ON REGARDE LES NUMEROS PHYSIQUES MAX ET MIN DE LA MAILLE:
-            iprem =0
+            iprem = 0
             do i = 1, nbnm
-                ino=zi(iamail-1+i)
-                if ((ino.gt.0) .and. (ino.le.nm)) then
-                    iprem=iprem+1
+                ino = zi(iamail-1+i)
+                if ((ino .gt. 0) .and. (ino .le. nm)) then
+                    iprem = iprem+1
                     if (iprem .eq. 1) then
-                        inomax=ino
-                        inomin=ino
-                    endif
+                        inomax = ino
+                        inomin = ino
+                    end if
                     if (newn(ino) .gt. newn(inomax)) then
-                        inomax=ino
-                    endif
+                        inomax = ino
+                    end if
                     if (newn(ino) .lt. newn(inomin)) then
-                        inomin=ino
-                    endif
+                        inomin = ino
+                    end if
                 else
-                    icol=icol+1
-                endif
+                    icol = icol+1
+                end if
             end do
 !
 !
@@ -130,26 +130,26 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !         ON DOIT LE DEPLACER (+INOMAX : DERRIERE) (-INOMIN : DEVANT)
 !
             do i = 1, nbnm
-                ino=zi(iamail-1+i)
+                ino = zi(iamail-1+i)
                 if (ino .gt. nm) then
-                    exilag=.true.
-                    itypi=typl(ino-nm)
+                    exilag = .true.
+                    itypi = typl(ino-nm)
                     if (itypi .eq. -1) then
-                        newn(ino)=-inomin
-                    else if (itypi.eq.-2) then
-                        newn(ino)= inomax
+                        newn(ino) = -inomin
+                    else if (itypi .eq. -2) then
+                        newn(ino) = inomax
                     else
                         ASSERT(.false.)
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
             if (exilag) then
-                avap(inomin)= 1
-                avap(inomax)= 1
-            endif
+                avap(inomin) = 1
+                avap(inomax) = 1
+            end if
 !
-        endif
+        end if
 !
     end do
 !
@@ -158,47 +158,47 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !
 !     -- ON REMPLIT .OLDT AVEC LES NOEUDS DE .OLDN ET LES LAGRANGES:
 !     -------------------------------------------------------------
-    ico= 0
+    ico = 0
     do i = 1, nm
-        iold=oldn(i)
+        iold = oldn(i)
         if (iold .eq. 0) goto 32
         if (avap(iold) .eq. 1) then
 !
             do il = 1, nl
                 if (newn(nm+il) .eq. -iold) then
                     ico = ico+1
-                    oldt(ico)=nm+il
-                endif
+                    oldt(ico) = nm+il
+                end if
             end do
 !
             ico = ico+1
-            oldt(ico)=iold
+            oldt(ico) = iold
 !
             do il = 1, nl
                 if (newn(nm+il) .eq. +iold) then
                     ico = ico+1
-                    oldt(ico)=nm+il
-                endif
+                    oldt(ico) = nm+il
+                end if
             end do
 !
         else
             ico = ico+1
-            oldt(ico)=iold
-        endif
+            oldt(ico) = iold
+        end if
     end do
- 32 continue
-    nbnore= ico
+32  continue
+    nbnore = ico
 !
 !     -- ON RECOPIE .OLDT DANS .OLDN ET ON REMET .NEWN A JOUR :
 !     ---------------------------------------------------------
     do i = 1, nbnoma
-        newn(i) =0
-        oldn(i) =0
+        newn(i) = 0
+        oldn(i) = 0
     end do
 !
     do i = 1, nbnore
         oldn(i) = oldt(i)
-        newn(oldt(i)) =i
+        newn(oldt(i)) = i
     end do
 !
 !

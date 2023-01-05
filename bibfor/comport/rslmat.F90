@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rslmat(fami, kpg, ksp, mod, imat,&
-                  nmat, materd, materf, matcst, ndt,&
+subroutine rslmat(fami, kpg, ksp, mod, imat, &
+                  nmat, materd, materf, matcst, ndt, &
                   ndi, nr, nvi, vind)
     implicit none
 !       ROUSSELIER : RECUPERATION DU MATERIAU A TEMPD ET TEMPF
@@ -63,7 +63,7 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
     character(len=3) :: matcst
     character(len=*) :: fami
 !
-    data epsi       /1.d-15/
+    data epsi/1.d-15/
 !       ----------------------------------------------------------------
 !
 ! -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -82,63 +82,63 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
     nomc(7) = 'SIGM_1   '
     nomc(8) = 'PORO_INIT'
     nomc(9) = 'PORO_CRIT'
-    nomc(10)= 'PORO_ACCE'
-    nomc(11)= 'PORO_LIMI'
-    nomc(12)= 'D_SIGM_EPSI_NORM'
-    nomc(13)= 'AN'
-    nomc(14)= 'BETA'
+    nomc(10) = 'PORO_ACCE'
+    nomc(11) = 'PORO_LIMI'
+    nomc(12) = 'D_SIGM_EPSI_NORM'
+    nomc(13) = 'AN'
+    nomc(14) = 'BETA'
 !
 !
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imat, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 5, nomc(1), materd(1, 1), cerr(1), 0)
-    if (cerr(3) .ne. 0) materd(3,1) = 0.d0
-    if (cerr(4) .ne. 0) materd(4,1) = 0.d0
-    if (cerr(5) .ne. 0) materd(5,1) = 0.d0
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
+    if (cerr(3) .ne. 0) materd(3, 1) = 0.d0
+    if (cerr(4) .ne. 0) materd(4, 1) = 0.d0
+    if (cerr(5) .ne. 0) materd(5, 1) = 0.d0
+    call rcvalb(fami, kpg, ksp, '-', imat, &
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0], &
                 9, nomc(6), materd(1, 2), cerr(6), 2)
 !
 !         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 !         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tempd, iret)
-    call rctype(imat, 1, 'TEMP', [tempd], para_vale,&
+    call rctype(imat, 1, 'TEMP', [tempd], para_vale, &
                 para_type)
-    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'COMPOR5_5', sk = para_type)
-    endif
-    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
+    if ((para_type .eq. 'TEMP') .and. (iret .eq. 1)) then
+        call utmess('F', 'COMPOR5_5', sk=para_type)
+    end if
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol, &
                 jvale, nbvale, materd(1, 1))
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 5, nomc(1), materf(1, 1), cerr(1), 0)
-    if (cerr(3) .ne. 0) materf(3,1) = 0.d0
-    if (cerr(4) .ne. 0) materf(4,1) = 0.d0
-    if (cerr(5) .ne. 0) materf(5,1) = 0.d0
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
+    if (cerr(3) .ne. 0) materf(3, 1) = 0.d0
+    if (cerr(4) .ne. 0) materf(4, 1) = 0.d0
+    if (cerr(5) .ne. 0) materf(5, 1) = 0.d0
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0], &
                 9, nomc(6), materf(1, 2), cerr(6), 2)
 !
 !         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 !         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tempf, iret)
-    call rctype(imat, 1, 'TEMP', [tempf], para_vale,&
+    call rctype(imat, 1, 'TEMP', [tempf], para_vale, &
                 para_type)
-    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'COMPOR5_5', sk = para_type)
-    endif
-    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
+    if ((para_type .eq. 'TEMP') .and. (iret .eq. 1)) then
+        call utmess('F', 'COMPOR5_5', sk=para_type)
+    end if
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol, &
                 jvale, nbvale, materf(1, 1))
 !
 ! -     MATERIAU CONSTANT ? ------------------------------------------
@@ -146,29 +146,29 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 !       PRINT * ,'MATERD = ',MATERD,'MATERF = ',MATERF
     matcst = 'OUI'
     do i = 1, 5
-        if (abs ( materd(i,1) - materf(i,1) ) .gt. epsi) then
+        if (abs(materd(i, 1)-materf(i, 1)) .gt. epsi) then
             matcst = 'NON'
             goto 50
-        endif
+        end if
     end do
     do i = 1, 8
-        if (abs ( materd(i,2) - materf(i,2) ) .gt. epsi) then
+        if (abs(materd(i, 2)-materf(i, 2)) .gt. epsi) then
             matcst = 'NON'
             goto 50
-        endif
+        end if
     end do
 !
 ! ---- INITIALISATION DE LA POROSITE INITIALE -------------------------
- 50 continue
+50  continue
     if (vind(2) .eq. 0.d0) then
-        f0 = materf(3,2)
+        f0 = materf(3, 2)
         vind(2) = f0
         if (f0 .le. 0.d0) then
             call utmess('F', 'ALGORITH10_49')
-        else if (f0.ge.1.d0) then
+        else if (f0 .ge. 1.d0) then
             call utmess('F', 'ALGORITH10_50')
-        endif
-    endif
+        end if
+    end if
 !
 ! ----ET C EST TOUT ---------
 end subroutine

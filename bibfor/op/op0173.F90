@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0173()
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/copisd.h"
@@ -55,9 +55,9 @@ implicit none
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    cbid=(0.d0,0.d0)
-    r8b=0.d0
-    ibid=0
+    cbid = (0.d0, 0.d0)
+    r8b = 0.d0
+    ibid = 0
 !
     call getres(nomres, concep, nomcmd)
 !
@@ -74,13 +74,13 @@ implicit none
         call tbimfi(nparfi, newtab, newta1, iret)
         if (iret .ne. 0) then
             call utmess('F', 'UTILITAI7_11')
-        endif
+        end if
         newtab = newta1
-    endif
+    end if
 !
-    call tbliva(newtab, 0, k8b, [ibid], [r8b],&
-                [cbid], k8b, k8b, [r8b], para,&
-                ctype, vali, valr, valc, valk,&
+    call tbliva(newtab, 0, k8b, [ibid], [r8b], &
+                [cbid], k8b, k8b, [r8b], para, &
+                ctype, vali, valr, valc, valk, &
                 iret)
     if (iret .eq. 0) then
     else if (iret .eq. 1) then
@@ -91,7 +91,7 @@ implicit none
         call utmess('F', 'CALCULEL4_45')
     else
         call utmess('F', 'CALCULEL4_46')
-    endif
+    end if
 !
     if (typesd .eq. 'MATR_ASSE_GENE_R') then
 !          ------------------------------
@@ -115,9 +115,9 @@ implicit none
 !          ------------------------------
         call copisd('VECT_ELEM', 'G', valk, nomres)
 !
-        elseif ( typesd .eq. 'CHAM_GD_SDASTER' .or. typesd .eq.&
-    'CHAM_NO_SDASTER' .or. typesd .eq. 'CARTE_SDASTER' .or. typesd&
-    .eq. 'CHAM_ELEM' ) then
+    elseif (typesd .eq. 'CHAM_GD_SDASTER' .or. typesd .eq. &
+            'CHAM_NO_SDASTER' .or. typesd .eq. 'CARTE_SDASTER' .or. typesd &
+            .eq. 'CHAM_ELEM') then
 !          ----------------------------------------
         call copisd('CHAMP_GD', 'G', valk, nomres)
 !
@@ -125,8 +125,8 @@ implicit none
 !          ------------------------------
         call copisd('RESULTAT', 'G', valk, nomres)
 !
-        elseif ( typesd .eq. 'FONCTION_SDASTER' .or. typesd .eq.&
-    'FONCTION_C' .or. typesd .eq. 'NAPPE_SDASTER' ) then
+    elseif (typesd .eq. 'FONCTION_SDASTER' .or. typesd .eq. &
+            'FONCTION_C' .or. typesd .eq. 'NAPPE_SDASTER') then
 !          ------------------------------
         call copisd('FONCTION', 'G', valk, nomres)
 !
@@ -141,11 +141,11 @@ implicit none
 !
     else
         call utmess('F', 'CALCULEL4_47', sk=typesd)
-    endif
+    end if
 !
     if (typesd .eq. 'REEL' .and. typesd .eq. 'ENTIER') then
         call titre()
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsSelectStoringIndex(resultZ, lFromField ,&
+subroutine rsSelectStoringIndex(resultZ, lFromField, &
                                 nbStore, numeStoreJv, timeStoreJv)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/getvid.h"
@@ -33,10 +33,10 @@ implicit none
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: resultZ
-aster_logical, intent(in) :: lFromField
-integer, intent(out) :: nbStore
-character(len=24), intent(out) :: numeStoreJv, timeStoreJv
+    character(len=*), intent(in) :: resultZ
+    aster_logical, intent(in) :: lFromField
+    integer, intent(out) :: nbStore
+    character(len=24), intent(out) :: numeStoreJv, timeStoreJv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,74 +64,74 @@ character(len=24), intent(out) :: numeStoreJv, timeStoreJv
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbStore        = 0
+    nbStore = 0
     lSelectByIndex = ASTER_FALSE
-    numeStoreJv    = '&&RSSELE.NUME_STORE'
-    timeStoreJv    = '&&RSSELE.TIME_STORE'
+    numeStoreJv = '&&RSSELE.NUME_STORE'
+    timeStoreJv = '&&RSSELE.TIME_STORE'
 !
 ! - Get parameters
 !
-    call getvr8(' ', 'PRECISION' , scal=prec)
-    call getvtx(' ', 'CRITERE'   , scal=crit)
-    call getvr8(' ', 'INST'      , nbval=0, nbret=keywNbTime)
+    call getvr8(' ', 'PRECISION', scal=prec)
+    call getvtx(' ', 'CRITERE', scal=crit)
+    call getvr8(' ', 'INST', nbval=0, nbret=keywNbTime)
     call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=keywNbStore)
-    call getvid(' ', 'LIST_INST' , nbval=0, nbret=keywNbTimeList)
+    call getvid(' ', 'LIST_INST', nbval=0, nbret=keywNbTimeList)
     call getvid(' ', 'LIST_ORDRE', nbval=0, nbret=keywNbStoreList)
 
     if (lFromField) then
-        nbStore          = 1
-        call wkvect(numeStoreJv, 'V V I', nbStore, vi = listNumeStore)
+        nbStore = 1
+        call wkvect(numeStoreJv, 'V V I', nbStore, vi=listNumeStore)
         listNumeStore(1) = 1
-        lSelectByIndex   = ASTER_TRUE
+        lSelectByIndex = ASTER_TRUE
     else
 ! ----- From list of time index
         if (keywNbTime .ne. 0) then
-            nbStore     = - keywNbTime
-            call wkvect(timeStoreJv, 'V V R', nbStore, vr = listTimeStore)
-            call getvr8(' ', 'INST', nbval = nbStore, vect = listTimeStore, nbret = iret)
-        endif
+            nbStore = -keywNbTime
+            call wkvect(timeStoreJv, 'V V R', nbStore, vr=listTimeStore)
+            call getvr8(' ', 'INST', nbval=nbStore, vect=listTimeStore, nbret=iret)
+        end if
         if (keywNbTimeList .ne. 0) then
-            call getvid(' ', 'LIST_INST', scal = listTime, nbret = iret)
-            call jeveuo(listTime(1:19)//'.VALE', 'L', vr = listTimeRead)
+            call getvid(' ', 'LIST_INST', scal=listTime, nbret=iret)
+            call jeveuo(listTime(1:19)//'.VALE', 'L', vr=listTimeRead)
             call jelira(listTime(1:19)//'.VALE', 'LONMAX', nbStore)
-            call wkvect(timeStoreJv, 'V V R', nbStore, vr = listTimeStore)
+            call wkvect(timeStoreJv, 'V V R', nbStore, vr=listTimeStore)
             listTimeStore(1:nbStore) = listTimeRead(1:nbStore)
-        endif
+        end if
 
 ! ----- From list of storing index
         if (keywNbStore .ne. 0) then
             lSelectByIndex = ASTER_TRUE
-            nbStore        = -keywNbStore
-            call wkvect(numeStoreJv, 'V V I', nbStore, vi = listNumeStore)
-            call getvis(' ', 'NUME_ORDRE', nbval = nbStore, vect = listNumeStore, nbret = iret)
-        endif
+            nbStore = -keywNbStore
+            call wkvect(numeStoreJv, 'V V I', nbStore, vi=listNumeStore)
+            call getvis(' ', 'NUME_ORDRE', nbval=nbStore, vect=listNumeStore, nbret=iret)
+        end if
         if (keywNbStoreList .ne. 0) then
             lSelectByIndex = ASTER_TRUE
-            call getvid(' ', 'LIST_ORDRE', scal = listNume, nbret = iret)
-            call jeveuo(listNume(1:19)//'.VALE', 'L', vi = listNumeRead)
+            call getvid(' ', 'LIST_ORDRE', scal=listNume, nbret=iret)
+            call jeveuo(listNume(1:19)//'.VALE', 'L', vi=listNumeRead)
             call jelira(listNume(1:19)//'.VALE', 'LONMAX', nbStore)
-            call wkvect(numeStoreJv, 'V V I', nbStore, vi = listNumeStore)
+            call wkvect(numeStoreJv, 'V V I', nbStore, vi=listNumeStore)
             listNumeStore(1:nbStore) = listNumeRead(1:nbStore)
-        endif
+        end if
 
 ! ----- All storing index
         if (keywNbStoreList+keywNbTimeList+keywNbStore+keywNbTime .eq. 0) then
             lSelectByIndex = ASTER_TRUE
             call rs_get_liststore(resultZ, nbStore)
             if (nbStore .ne. 0) then
-                call wkvect(numeStoreJv, 'V V I', nbStore, vi = listNumeStore)
+                call wkvect(numeStoreJv, 'V V I', nbStore, vi=listNumeStore)
                 call rs_get_liststore(resultZ, nbStore, listNumeStore)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Create objects
 !
     if (lSelectByIndex) then
-        call wkvect(timeStoreJv, 'V V R', nbStore, vr = listTimeStore)
+        call wkvect(timeStoreJv, 'V V R', nbStore, vr=listTimeStore)
     else
-        call wkvect(numeStoreJv, 'V V I', nbStore, vi = listNumeStore)
-    endif
+        call wkvect(numeStoreJv, 'V V I', nbStore, vi=listNumeStore)
+    end if
 !
 ! - Prepare list of time store
 !
@@ -140,14 +140,14 @@ character(len=24), intent(out) :: numeStoreJv, timeStoreJv
             if (.not. lFromField) then
                 call rsadpa(resultZ, 'L', 1, 'INST', listNumeStore(iStore), 0, sjv=jvPara)
                 listTimeStore(iStore) = zr(jvPara)
-            endif
+            end if
         else
             time = listTimeStore(iStore)
-            call rsorac(resultZ, 'INST', 0   , time, kdummy,&
-                        cdummy , prec  , crit, tord, 1     ,&
+            call rsorac(resultZ, 'INST', 0, time, kdummy, &
+                        cdummy, prec, crit, tord, 1, &
                         iret)
             listNumeStore(iStore) = tord(1)
-        endif
+        end if
     end do
 !
 end subroutine

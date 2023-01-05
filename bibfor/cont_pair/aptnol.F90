@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine aptnol(sdappa, model_ndim, nt_node)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmnorm.h"
@@ -52,13 +52,13 @@ implicit none
 !
     sdappa_tgno = sdappa(1:19)//'.TGNO'
     sdappa_norl = sdappa(1:19)//'.NORL'
-    call jeveuo(sdappa_tgno, 'L', vr = v_sdappa_tgno)
-    call jeveuo(sdappa_norl, 'E', vr = v_sdappa_norl)
+    call jeveuo(sdappa_tgno, 'L', vr=v_sdappa_tgno)
+    call jeveuo(sdappa_norl, 'E', vr=v_sdappa_norl)
 !
 ! - Loop on nodes
 !
-    do i_node=1, nt_node
-        noor      = 0.d0
+    do i_node = 1, nt_node
+        noor = 0.d0
         norm(1:3) = 0.d0
         tau1(1) = v_sdappa_tgno(6*(i_node-1)+1)
         tau1(2) = v_sdappa_tgno(6*(i_node-1)+2)

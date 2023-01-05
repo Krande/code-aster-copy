@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/mfront_set_double_parameter.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterc/mfront_set_outofbounds_policy.h"
 #include "asterfort/assert.h"
 !
-type(Behaviour_Crit), pointer :: behaviourCrit(:)
-integer, intent(in) :: iFactorKeyword
+    type(Behaviour_Crit), pointer :: behaviourCrit(:)
+    integer, intent(in) :: iFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,25 +54,25 @@ integer, intent(in) :: iFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iveriborne     = behaviourCrit(iFactorKeyword)%iveriborne
+    iveriborne = behaviourCrit(iFactorKeyword)%iveriborne
     resi_inte_rela = behaviourCrit(iFactorKeyword)%resi_inte_rela
     iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
-    paraExte       = behaviourCrit(iFactorKeyword)%paraExte
-    l_mfront_offi  = paraExte%l_mfront_offi
+    paraExte = behaviourCrit(iFactorKeyword)%paraExte
+    l_mfront_offi = paraExte%l_mfront_offi
     l_mfront_proto = paraExte%l_mfront_proto
-    libr_name      = paraExte%libr_name
-    subr_name      = paraExte%subr_name
-    model_mfront   = paraExte%model_mfront
+    libr_name = paraExte%libr_name
+    subr_name = paraExte%subr_name
+    model_mfront = paraExte%model_mfront
 !
 ! - Set values
 !
     if (l_mfront_offi .or. l_mfront_proto) then
-        call mfront_set_double_parameter(libr_name, subr_name, model_mfront,&
+        call mfront_set_double_parameter(libr_name, subr_name, model_mfront, &
                                          "epsilon", resi_inte_rela)
-        call mfront_set_integer_parameter(libr_name, subr_name, model_mfront,&
+        call mfront_set_integer_parameter(libr_name, subr_name, model_mfront, &
                                           "iterMax", int(iter_inte_maxi))
-        call mfront_set_outofbounds_policy(libr_name, subr_name, model_mfront,&
+        call mfront_set_outofbounds_policy(libr_name, subr_name, model_mfront, &
                                            iveriborne)
-    endif
+    end if
 !
 end subroutine

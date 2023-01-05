@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,8 +98,8 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     character(len=8), pointer :: v8fiss(:) => null()
     character(len=8), pointer :: vnofon(:) => null()
 !
-    data vk8_typmod/ '3D',   'AXIS', 'D_PLAN', 'C_PLAN'/
-    data vin_modeli/   3,        2,        2,        2/
+    data vk8_typmod/'3D', 'AXIS', 'D_PLAN', 'C_PLAN'/
+    data vin_modeli/3, 2, 2, 2/
 !
 !   --------------------------------------------------------------------
 !   debut
@@ -113,7 +113,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 !   recup du modele et du vecteur .MAILLE
     call dismoi('NOM_MODELE', nomres, 'RESULTAT', repk=nommod)
-    ASSERT( (nommod .ne. '#AUCUN') .or. (nommod .ne. '#PLUSIEURS') )
+    ASSERT((nommod .ne. '#AUCUN') .or. (nommod .ne. '#PLUSIEURS'))
     call jeveuo(nommod//'.MAILLE', 'E', vi=vtyele)
 !
 !   recup du maillage de definition du modele
@@ -122,16 +122,16 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 !   recup de la dimension du probleme
     call dismoi('DIM_GEOM', nommod, 'MODELE', repi=ndim)
-    ASSERT( (ndim .eq. 2) .or. (ndim .eq. 3) )
+    ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !
 !   recup de la carte cham_mater//'.CHAMP_MAT' sous forme de cham_elem_s
     call dismoi('CHAM_MATER', nomres, 'RESULTAT', repk=nomchm)
-    ASSERT( (nomchm .ne. '#AUCUN') .or. (nomchm .ne. '#PLUSIEURS') )
+    ASSERT((nomchm .ne. '#AUCUN') .or. (nomchm .ne. '#PLUSIEURS'))
 !
     chmat = nomchm//'.CHAMP_MAT'
     cesmat = '&&POSTKUTIL.CESMAT'
     call carces(chmat, 'ELEM', ' ', 'V', cesmat, 'A', iret)
-    ASSERT( iret .eq. 0 )
+    ASSERT(iret .eq. 0)
 !
     call jeveuo(cesmat//'.CESV', 'L', vk8=vcesv)
     call jeveuo(cesmat//'.CESL', 'L', jcesl)
@@ -140,19 +140,19 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     nbcmp = zi(jcesd-1+2)
 !
 !   verifs sur le cham_mater
-    ASSERT( vcesk(1) .eq. noma )
-    ASSERT( vcesk(3) .eq. 'ELEM' )
-    ASSERT( zi(jcesd-1+1) .eq. nbma )
-    ASSERT( (nbcmp .eq. 1) .or. (nbcmp .eq. 5) )
-    ASSERT( zi(jcesd-1+3) .eq. 1 )
-    ASSERT( zi(jcesd-1+4) .eq. 1 )
+    ASSERT(vcesk(1) .eq. noma)
+    ASSERT(vcesk(3) .eq. 'ELEM')
+    ASSERT(zi(jcesd-1+1) .eq. nbma)
+    ASSERT((nbcmp .eq. 1) .or. (nbcmp .eq. 5))
+    ASSERT(zi(jcesd-1+3) .eq. 1)
+    ASSERT(zi(jcesd-1+4) .eq. 1)
 !
 !   s'agit-il d'un modele fem ou x-fem
     l_xfem = .false.
     call jeexin(nommod//'.FISS', ier)
     if (ier .ne. 0) then
         l_xfem = .true.
-    endif
+    end if
 !
 !   --------------------------------------------------------------------
 !   recup de la liste vmafon des mailles principales CTIP dans le cas xfem
@@ -163,7 +163,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !       verif sur la sd_fiss_xfem in
         call dismoi('NB_FISS_XFEM', nommod, 'MODELE', repi=nfiss)
         call jeveuo(nommod//'.FISS', 'L', vk8=v8fiss)
-        ASSERT( indik8(v8fiss, nomfis, 1, nfiss) .gt. 0 )
+        ASSERT(indik8(v8fiss, nomfis, 1, nfiss) .gt. 0)
 !
 !       recup de la liste des mailles CTIP pour la fissure nomfis
         limafo = '&&XMOT2M.NUM_MAILLES'
@@ -190,10 +190,10 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 !       recup de la liste des noeuds du fond
         call jeexin(nomfis//'.FOND.NOEU', ier1)
-        ASSERT( ier1 .gt. 0 )
-        if ( ier1 .ne. 0 ) then
+        ASSERT(ier1 .gt. 0)
+        if (ier1 .ne. 0) then
             call jeveuo(nomfis//'.FOND.NOEU', 'L', vk8=vnofon)
-        endif
+        end if
         nbnof = size(vnofon)
 !
 !       1ere boucle sur les noeuds du fond : dimensionnement de la liste
@@ -207,7 +207,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
             call jelira(jexnum(cnxinv, inoeu), 'LONMAX', nmanoe)
             call jeveuo(jexnum(cnxinv, inoeu), 'L', jmanoe)
 !           on s'assure que le noeud n'est pas orphelin
-            ASSERT( zi(jmanoe-1+1) .ne. 0 )
+            ASSERT(zi(jmanoe-1+1) .ne. 0)
 !
 !           boucle sur les mailles connectees au noeud courant
             cpt_ma_noe = 0
@@ -219,14 +219,14 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), k8typma)
                 call dismoi('DIM_TOPO', k8typma, 'TYPE_MAILLE', repi=ndime)
                 if (ndime .eq. ndim) then
-                    cpt_ma_noe = cpt_ma_noe + 1
-                endif
+                    cpt_ma_noe = cpt_ma_noe+1
+                end if
 !
-            enddo
-            ASSERT( cpt_ma_noe .gt. 0 )
-            cpt_ma_fon = cpt_ma_fon + cpt_ma_noe
+            end do
+            ASSERT(cpt_ma_noe .gt. 0)
+            cpt_ma_fon = cpt_ma_fon+cpt_ma_noe
 !
-        enddo
+        end do
         nbma_tmp = cpt_ma_fon
         AS_ALLOCATE(vi=vmatmp, size=nbma_tmp)
 !
@@ -241,59 +241,59 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
             call jelira(jexnum(cnxinv, inoeu), 'LONMAX', nmanoe)
             call jeveuo(jexnum(cnxinv, inoeu), 'L', jmanoe)
 !           on s'assure que le noeud n'est pas orphelin
-            ASSERT( zi(jmanoe-1+1) .ne. 0 )
+            ASSERT(zi(jmanoe-1+1) .ne. 0)
 !
 !           boucle sur les mailles connectees au noeud courant
             do ima = 1, nmanoe
 !
 !               on ne garde que les mailles principales
                 imanoe = zi(jmanoe-1+ima)
-                ASSERT( imanoe .gt. 0 )
+                ASSERT(imanoe .gt. 0)
                 itypma = vtypma(imanoe)
                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), k8typma)
                 call dismoi('DIM_TOPO', k8typma, 'TYPE_MAILLE', repi=ndime)
                 if (ndime .eq. ndim) then
-                    cpt_ma_fon = cpt_ma_fon + 1
+                    cpt_ma_fon = cpt_ma_fon+1
                     vmatmp(cpt_ma_fon) = imanoe
-                endif
+                end if
 !
-            enddo
+            end do
 !
-        enddo
+        end do
 !
 !       suppression des doublons dans la liste brute et allocation
 !       de liste sans doublons
         cpt_dbl = 0
         do i = 1, nbma_tmp
             ima1 = vmatmp(i)
-            if ( ima1 .ne. 0 ) then
+            if (ima1 .ne. 0) then
                 do j = i+1, nbma_tmp
                     ima2 = vmatmp(j)
-                    if ( (ima1 .eq. ima2) .and. (ima2 .ne. 0) ) then
+                    if ((ima1 .eq. ima2) .and. (ima2 .ne. 0)) then
                         vmatmp(j) = 0
-                        cpt_dbl = cpt_dbl + 1
-                    endif
-                enddo
-            endif
-        enddo
-        nbma_fon = nbma_tmp - cpt_dbl
-        ASSERT( nbma_fon .gt. 0 )
+                        cpt_dbl = cpt_dbl+1
+                    end if
+                end do
+            end if
+        end do
+        nbma_fon = nbma_tmp-cpt_dbl
+        ASSERT(nbma_fon .gt. 0)
         AS_ALLOCATE(vi=vmafon, size=nbma_fon)
 !
 !       remplissage de la liste sans doublons
         cpt_ma_fon = 0
         do i = 1, nbma_tmp
-            if ( vmatmp(i) .ne. 0 ) then
-                cpt_ma_fon = cpt_ma_fon + 1
+            if (vmatmp(i) .ne. 0) then
+                cpt_ma_fon = cpt_ma_fon+1
                 vmafon(cpt_ma_fon) = vmatmp(i)
-            endif
-        enddo
+            end if
+        end do
 !
 !       menage
         call jedetr(cnxinv)
         AS_DEALLOCATE(vi=vmatmp)
 !
-    endif
+    end if
 !
 !   --------------------------------------------------------------------
 !   recup du nom du materiau et de la modelisation sur les mailles
@@ -310,38 +310,36 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
         if (lteatt('TYPMOD', vk8_typmod(i), ktyel)) then
             imodeli = i
             exit
-        endif
-    enddo
+        end if
+    end do
     inco = .False.
 ! .or. lteatt('INCO','C3B') .or. lteatt('INCO','C2 ') .or. lteatt('INCO','C2O')
-    if (lteatt('INCO','C5GV', ktyel) .or. &
-        lteatt('INCO','C3B', ktyel) .or. &
-        lteatt('INCO','C2 ', ktyel) .or. &
-        lteatt('INCO','C2O', ktyel)) then
-      inco = .True.
-    endif
+    if (lteatt('INCO', 'C5GV', ktyel) .or. &
+        lteatt('INCO', 'C3B', ktyel) .or. &
+        lteatt('INCO', 'C2 ', ktyel) .or. &
+        lteatt('INCO', 'C2O', ktyel)) then
+        inco = .True.
+    end if
 
     if (inco) then
-      call utmess('F', 'RUPTURE1_74')
-    endif
-    ASSERT( imodeli .gt. 0 )
+        call utmess('F', 'RUPTURE1_74')
+    end if
+    ASSERT(imodeli .gt. 0)
     k8typmo = vk8_typmod(imodeli)
 
-
-
-    ASSERT( ndim .eq. vin_modeli(imodeli) )
+    ASSERT(ndim .eq. vin_modeli(imodeli))
 !
 !   recup du materiau sur la 1ere maille de vmafon
     vk8_mater(:) = ''
     imaf = vmafon(1)
     do icmp = 1, nbcmp
         call cesexi('S', jcesd, jcesl, imaf, 1, 1, icmp, iad)
-        ASSERT( iad .gt. 0 )
+        ASSERT(iad .gt. 0)
         vk8_mater(icmp) = vcesv(iad)
-    enddo
-    if ( nbcmp.gt.1 ) then
-        ASSERT( vk8_mater(2) .eq. 'TREF=>' )
-    endif
+    end do
+    if (nbcmp .gt. 1) then
+        ASSERT(vk8_mater(2) .eq. 'TREF=>')
+    end if
     k8mater = vk8_mater(1)
 !
 !   boucle sur les mailles de vmafon
@@ -353,31 +351,31 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !       la meme modelisation
         nutyel = vtyele(imaf)
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), ktyel)
-        ASSERT( lteatt('TYPMOD', k8typmo, ktyel) )
+        ASSERT(lteatt('TYPMOD', k8typmo, ktyel))
 !
 !       verif que toutes les mailles de vmafon sont affectees avec
 !       le meme materiau
-        if (imater.eq.1) then
+        if (imater .eq. 1) then
             do icmp = 1, nbcmp
                 call cesexi('S', jcesd, jcesl, imaf, 1, 1, icmp, iad)
-                ASSERT( iad .gt. 0 )
-                if( vk8_mater(icmp) .ne. vcesv(iad))then
-                    call utmess('F','RUPTURE1_13')
-                endif
-            enddo
-        endif
+                ASSERT(iad .gt. 0)
+                if (vk8_mater(icmp) .ne. vcesv(iad)) then
+                    call utmess('F', 'RUPTURE1_13')
+                end if
+            end do
+        end if
 !
-    enddo
+    end do
 !
 !   --------------------------------------------------------------------
 !   variables out
 !   --------------------------------------------------------------------
 !
-    if (imater.eq.1) then
+    if (imater .eq. 1) then
         repmat = k8mater
     else
         repmat = ' '
-    endif
+    end if
     repmod = k8typmo
 !
 !   --------------------------------------------------------------------
@@ -388,7 +386,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
         call jedetr(limafo)
     else
         AS_DEALLOCATE(vi=vmafon)
-    endif
+    end if
 !
     call detrsd('CHAM_ELEM_S', cesmat)
 !

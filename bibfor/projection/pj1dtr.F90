@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine pj1dtr(corrMeshTemp, corrMesh, cellListType, cellListCode)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "jeveux.h"
@@ -34,9 +34,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=16), intent(in) :: corrMesh, corrMeshTemp
-character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
-integer, intent(in) :: cellListType(MT_NTYMAX)
+    character(len=16), intent(in) :: corrMesh, corrMeshTemp
+    character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
+    integer, intent(in) :: cellListType(MT_NTYMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,8 +79,8 @@ integer, intent(in) :: cellListType(MT_NTYMAX)
     call jeveuo(corrMeshTemp//'.PJXX_K1', 'L', vk24=pjxx_k1)
     call jeveuo(corrMeshTemp//'.PJEF_CF', 'L', vr=pjef_cf)
     call jeveuo(corrMeshTemp//'.PJEF_TR', 'L', vi=pjef_tr)
-    mesh1=pjxx_k1(1)(1:8)
-    mesh2=pjxx_k1(2)(1:8)
+    mesh1 = pjxx_k1(1) (1:8)
+    mesh2 = pjxx_k1(2) (1:8)
     call dismoi('NB_NO_MAILLA', mesh1, 'MAILLAGE', repi=nbNode1)
     call dismoi('NB_NO_MAILLA', mesh2, 'MAILLAGE', repi=nbNode2)
     call dismoi('NB_MA_MAILLA', mesh1, 'MAILLAGE', repi=nbCell1)
@@ -92,73 +92,71 @@ integer, intent(in) :: cellListType(MT_NTYMAX)
 
 ! - Allocate corrMesh
     call wkvect(corrMesh//'.PJXX_K1', 'V V K24', 5, j2xxk1)
-    zk24(j2xxk1-1+1)=mesh1
-    zk24(j2xxk1-1+2)=mesh2
-    zk24(j2xxk1-1+3)='COLLOCATION'
+    zk24(j2xxk1-1+1) = mesh1
+    zk24(j2xxk1-1+2) = mesh2
+    zk24(j2xxk1-1+3) = 'COLLOCATION'
 
 ! - Create .pjef_nb and .pjef_m1
     call wkvect(corrMesh//'.PJEF_NB', 'V V I', nbNode2, i2conb)
     call wkvect(corrMesh//'.PJEF_M1', 'V V I', nbNode2, i2com1)
-    ideca2=0
+    ideca2 = 0
     do iNode2 = 1, nbNode2
 !       ITR : SEG2 ASSOCIE A INO2
-        itr=pjef_tr(iNode2)
+        itr = pjef_tr(iNode2)
         if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIEE AU SEG2 ITR
-        ima1=seg2(1+3*(itr-1)+3)
-        nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
-        zi(i2conb-1+iNode2)=nbno
-        zi(i2com1-1+iNode2)=ima1
-        ideca2=ideca2+nbno
+        ima1 = seg2(1+3*(itr-1)+3)
+        nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
+        zi(i2conb-1+iNode2) = nbno
+        zi(i2com1-1+iNode2) = ima1
+        ideca2 = ideca2+nbno
     end do
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
-    endif
+    end if
 
 ! - Create .pjef_nu .pjef_cf .pjef_co
     call wkvect(corrMesh//'.PJEF_NU', 'V V I', ideca2, i2conu)
     call wkvect(corrMesh//'.PJEF_CF', 'V V R', ideca2, i2cocf)
     call wkvect(corrMesh//'.PJEF_CO', 'V V R', 3*nbNode2, i2coco)
-    ideca1=0
-    ideca2=0
+    ideca1 = 0
+    ideca2 = 0
     do iNode2 = 1, nbNode2
 !       ITR : SEG2 ASSOCIE A INO2
         itr = pjef_tr(iNode2)
         if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU SEG2 ITR
-        ima1= seg2(1+3*(itr-1)+3)
+        ima1 = seg2(1+3*(itr-1)+3)
 !       ITYPM : TYPE DE LA MAILLE IMA1
         itypm = typmail(ima1)
-        nutm = indiis(cellListType,itypm,1,MT_NTYMAX)
+        nutm = indiis(cellListType, itypm, 1, MT_NTYMAX)
         ASSERT(nutm .ne. 0)
         elrefa = cellListCode(nutm)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
-        call elrfno(elrefa, nno  = nno, nodeCoor = crrefe)
+        call elrfno(elrefa, nno=nno, nodeCoor=crrefe)
         ASSERT(nbno .eq. nno)
 
-
 !       determination des coordonnees de iNode2 dans l'element de reference
-        ksi=0.d0
+        ksi = 0.d0
         do kk = 1, 2
             x1 = crrefe(1, kk)
-            ksi = ksi + pjef_cf(ideca1+kk)*x1
+            ksi = ksi+pjef_cf(ideca1+kk)*x1
         end do
         x(1) = ksi
-        zr(i2coco-1+3*(iNode2-1)+1)=x(1)
-
+        zr(i2coco-1+3*(iNode2-1)+1) = x(1)
 
 !       2.2.2 :
 !       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI
 !       -------------------------------------------------------
         call elrfvf(elrefa, x, ff)
         do ino = 1, nbno
-            nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
+            nuno = connex(1+zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
             zr(i2cocf-1+ideca2+ino) = ff(ino)
         end do
 
-        ideca1=ideca1+2
-        ideca2=ideca2+nbno
+        ideca1 = ideca1+2
+        ideca2 = ideca2+nbno
 
     end do
 

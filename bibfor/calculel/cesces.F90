@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
+subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz, &
                   base, cesb)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -74,9 +74,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !     ------------------------------------------------------------------
     integer :: ima, ncmp, icmp
     integer :: jcesd, jcesv, jcesl, nbma, iret, nbsp, nbno, ico
-    integer :: iad,  ino, isp, nbpg2, nbno2, iad1
+    integer :: iad, ino, isp, nbpg2, nbno2, iad1
     integer ::   ilcnx1, iacnx1, nbpg, ipg
-    integer :: mnogal, mnogad,   nbno1, imaref
+    integer :: mnogal, mnogad, nbno1, imaref
     integer ::  jces1d, jces1l, jces1v
     integer :: nbpt, nbpt1, nbsp1, ipt, ipt1, nbv
     character(len=4) :: typce1
@@ -102,7 +102,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     ces2 = cesb
     cesmod = cesmoz
     mnoga = mnogaz
-    celfpg=celfpz
+    celfpg = celfpz
 !
 !
 !     1. RECUPERATION DE :
@@ -115,7 +115,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
-    ASSERT(iret.gt.0)
+    ASSERT(iret .gt. 0)
     call jeveuo(ces1//'.CESK', 'L', vk8=ces1k)
     call jeveuo(ces1//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces1//'.CESD', 'L', jces1d)
@@ -136,19 +136,19 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     if (typce1 .eq. typces) then
         call copisd('CHAM_ELEM_S', base, ces1, ces2)
         goto 180
-    endif
-    ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
+    end if
+    ASSERT(tsca .eq. 'R' .or. tsca .eq. 'C')
 !
 !
 !
 !     3. VERIFICATIONS :
 !     ---------------------------
-    if ((typce1.eq.'ELNO') .and. (typces.eq.'ELGA')) then
+    if ((typce1 .eq. 'ELNO') .and. (typces .eq. 'ELGA')) then
         call exisd('CHAM_ELEM_S', mnoga, iret)
-        ASSERT(iret.gt.0)
+        ASSERT(iret .gt. 0)
         call jeveuo(mnoga//'.CESK', 'L', vk8=bref)
-        ASSERT(ma.eq.bref(1))
-    endif
+        ASSERT(ma .eq. bref(1))
+    end if
 !
 !
 !     4. CALCUL DES OBJETS  '.NBPT','.NBSP' ET '.NBCMP'
@@ -162,36 +162,36 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
         do ima = 1, nbma
             vnbpt(ima) = 1
             vnbsp(ima) = 1
-            nbcmp(ima) = zi(jces1d-1+5+4* (ima-1)+3)
+            nbcmp(ima) = zi(jces1d-1+5+4*(ima-1)+3)
         end do
 !
-    else if (typces.eq.'ELNO') then
+    else if (typces .eq. 'ELNO') then
         do ima = 1, nbma
-            vnbpt(ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
-            vnbsp(ima) = zi(jces1d-1+5+4* (ima-1)+2)
-            nbcmp(ima) = zi(jces1d-1+5+4* (ima-1)+3)
+            vnbpt(ima) = zi(ilcnx1+ima)-zi(ilcnx1+ima-1)
+            vnbsp(ima) = zi(jces1d-1+5+4*(ima-1)+2)
+            nbcmp(ima) = zi(jces1d-1+5+4*(ima-1)+3)
         end do
 !
-    else if (typces.eq.'ELGA') then
+    else if (typces .eq. 'ELGA') then
         call exisd('CHAM_ELEM_S', cesmod, iret)
 !       TEST ARGUMENT CESMOD OBLIGATOIRE
-        ASSERT(iret.gt.0)
+        ASSERT(iret .gt. 0)
         call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
-            vnbpt(ima) = cemd(5+4* (ima-1)+1)
-            vnbsp(ima) = zi(jces1d-1+5+4* (ima-1)+2)
-            nbcmp(ima) = zi(jces1d-1+5+4* (ima-1)+3)
+            vnbpt(ima) = cemd(5+4*(ima-1)+1)
+            vnbsp(ima) = zi(jces1d-1+5+4*(ima-1)+2)
+            nbcmp(ima) = zi(jces1d-1+5+4*(ima-1)+3)
         end do
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !     5. CREATION DE CES2 :
 !     ---------------------------------------
-    call cescre(base, ces2, typces, ma, nomgd,&
-                ncmp, cesc, vnbpt, vnbsp,nbcmp)
+    call cescre(base, ces2, typces, ma, nomgd, &
+                ncmp, cesc, vnbpt, vnbsp, nbcmp)
 !
     call jeveuo(ces2//'.CESD', 'L', jcesd)
     call jeveuo(ces2//'.CESV', 'E', jcesv)
@@ -203,40 +203,40 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !     ------------------------------------------
 !
 !
-    if ((typce1.eq.'ELNO') .and. (typces.eq.'ELGA')) then
+    if ((typce1 .eq. 'ELNO') .and. (typces .eq. 'ELGA')) then
 !     ------------------------------------------------------
         mnoga = mnogaz
         call jeveuo(mnoga//'.CESK', 'L', vk8=nmnogak)
         call jeveuo(mnoga//'.CESD', 'L', mnogad)
         call jeveuo(mnoga//'.CESL', 'L', mnogal)
         call jeveuo(mnoga//'.CESV', 'L', vr=nmnogav)
-        ASSERT(nmnogak(1).eq.ma)
+        ASSERT(nmnogak(1) .eq. ma)
 !
         do ima = 1, nbma
-            call cesexi('C', mnogad, mnogal, ima, 1,&
+            call cesexi('C', mnogad, mnogal, ima, 1, &
                         1, 1, iad)
             if (iad .le. 0) goto 90
             if (nint(nmnogav(iad)) .gt. 0) then
-                imaref=ima
+                imaref = ima
             else
-                imaref=-nint(nmnogav(iad))
-            endif
-            call cesexi('C', mnogad, mnogal, imaref, 1,&
+                imaref = -nint(nmnogav(iad))
+            end if
+            call cesexi('C', mnogad, mnogal, imaref, 1, &
                         1, 1, iad)
             if (iad .le. 0) goto 90
 !
             nbno2 = nint(nmnogav(iad))
             nbpg2 = nint(nmnogav(iad+1))
 !
-            nbpg = zi(jcesd-1+5+4* (ima-1)+1)
-            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-            nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
+            nbpg = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = zi(jcesd-1+5+4*(ima-1)+2)
+            nbno = zi(ilcnx1+ima)-zi(ilcnx1-1+ima)
 !
-            nbno1 = zi(jces1d-1+5+4* (ima-1)+1)
+            nbno1 = zi(jces1d-1+5+4*(ima-1)+1)
 !
-            ASSERT(nbno.eq.nbno1)
-            ASSERT(nbno.eq.nbno2)
-            ASSERT(nbpg.eq.nbpg2)
+            ASSERT(nbno .eq. nbno1)
+            ASSERT(nbno .eq. nbno2)
+            ASSERT(nbpg .eq. nbpg2)
 !
             do icmp = 1, ncmp
                 do isp = 1, nbsp
@@ -244,9 +244,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !             - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                     ico = 0
                     do ino = 1, nbno
-                        call cesexi('C', jces1d, jces1l, ima, ino,&
+                        call cesexi('C', jces1d, jces1l, ima, ino, &
                                     isp, icmp, iad1)
-                        if (iad1 .gt. 0) ico = ico + 1
+                        if (iad1 .gt. 0) ico = ico+1
                     end do
                     if (ico .ne. nbno) goto 70
 !
@@ -254,66 +254,66 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                         do ipg = 1, nbpg
                             vr = 0.d0
                             do ino = 1, nbno
-                                call cesexi('C', jces1d, jces1l, ima, ino,&
+                                call cesexi('C', jces1d, jces1l, ima, ino, &
                                             isp, icmp, iad1)
                                 v1r = zr(jces1v-1+iad1)
-                                vr = vr + v1r*nmnogav(iad+1+nbno* (ipg-1)+ino)
+                                vr = vr+v1r*nmnogav(iad+1+nbno*(ipg-1)+ino)
                             end do
 !
-                            call cesexi('C', jcesd, jcesl, ima, ipg,&
+                            call cesexi('C', jcesd, jcesl, ima, ipg, &
                                         isp, icmp, iad1)
-                            ASSERT(iad1.lt.0)
+                            ASSERT(iad1 .lt. 0)
                             zl(jcesl-1-iad1) = .true.
                             zr(jcesv-1-iad1) = vr
                         end do
 !
-                    else if (tsca.eq.'C') then
+                    else if (tsca .eq. 'C') then
                         do ipg = 1, nbpg
-                            vc = dcmplx(0.d0,0.d0)
+                            vc = dcmplx(0.d0, 0.d0)
                             do ino = 1, nbno
-                                call cesexi('C', jces1d, jces1l, ima, ino,&
+                                call cesexi('C', jces1d, jces1l, ima, ino, &
                                             isp, icmp, iad1)
                                 v1c = zc(jces1v-1+iad1)
-                                vc = vc + v1c*nmnogav(iad+1+nbno* (ipg-1)+ino)
+                                vc = vc+v1c*nmnogav(iad+1+nbno*(ipg-1)+ino)
                             end do
 !
-                            call cesexi('C', jcesd, jcesl, ima, ipg,&
+                            call cesexi('C', jcesd, jcesl, ima, ipg, &
                                         isp, icmp, iad1)
-                            ASSERT(iad1.lt.0)
+                            ASSERT(iad1 .lt. 0)
                             zl(jcesl-1-iad1) = .true.
                             zc(jcesv-1-iad1) = vc
                         end do
-                    endif
- 70                 continue
+                    end if
+70                  continue
                 end do
 !
             end do
- 90         continue
+90          continue
         end do
 !
 !
-    else if ((typce1.eq.'ELEM') .and. (typces(1:2).eq.'EL')) then
+    else if ((typce1 .eq. 'ELEM') .and. (typces(1:2) .eq. 'EL')) then
 !     ------------------------------------------------------
         do ima = 1, nbma
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp1 = zi(jces1d-1+5+4*(ima-1)+2)
 !
             do icmp = 1, ncmp
                 do isp = 1, nbsp1
-                    call cesexi('C', jces1d, jces1l, ima, 1,&
+                    call cesexi('C', jces1d, jces1l, ima, 1, &
                                 isp, icmp, iad1)
                     if (iad1 .le. 0) goto 110
 !
                     do ipt = 1, nbpt
-                        call cesexi('C', jcesd, jcesl, ima, ipt,&
+                        call cesexi('C', jcesd, jcesl, ima, ipt, &
                                     isp, icmp, iad)
-                        ASSERT(iad.lt.0)
+                        ASSERT(iad .lt. 0)
                         zl(jcesl-1-iad) = .true.
                         if (tsca .eq. 'R') then
                             zr(jcesv-1-iad) = zr(jces1v-1+iad1)
-                        else if (tsca.eq.'C') then
+                        else if (tsca .eq. 'C') then
                             zc(jcesv-1-iad) = zc(jces1v-1+iad1)
-                        endif
+                        end if
                     end do
 110                 continue
                 end do
@@ -322,54 +322,54 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
         end do
 !
 !
-    else if ((typce1(1:2).eq.'EL') .and. (typces.eq.'ELEM')) then
+    else if ((typce1(1:2) .eq. 'EL') .and. (typces .eq. 'ELEM')) then
 !     ------------------------------------------------------
         do ima = 1, nbma
-            nbpt1 = zi(jces1d-1+5+4* (ima-1)+1)
-            nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
+            nbpt1 = zi(jces1d-1+5+4*(ima-1)+1)
+            nbsp1 = zi(jces1d-1+5+4*(ima-1)+2)
             if ((nbpt1*nbsp1) .eq. 0) goto 170
 !
             do icmp = 1, ncmp
                 do isp = 1, nbsp1
                     if (tsca .eq. 'R') then
                         vr = 0.d0
-                    else if (tsca.eq.'C') then
-                        vc = dcmplx(0.d0,0.d0)
-                    endif
+                    else if (tsca .eq. 'C') then
+                        vc = dcmplx(0.d0, 0.d0)
+                    end if
                     nbv = 0
                     do ipt1 = 1, nbpt1
-                        call cesexi('C', jces1d, jces1l, ima, ipt1,&
+                        call cesexi('C', jces1d, jces1l, ima, ipt1, &
                                     isp, icmp, iad1)
                         if (iad1 .le. 0) goto 140
-                        nbv = nbv + 1
+                        nbv = nbv+1
                         if (tsca .eq. 'R') then
-                            vr = vr + zr(jces1v-1+iad1)
-                        else if (tsca.eq.'C') then
-                            vc = vc + zc(jces1v-1+iad1)
-                        endif
+                            vr = vr+zr(jces1v-1+iad1)
+                        else if (tsca .eq. 'C') then
+                            vc = vc+zc(jces1v-1+iad1)
+                        end if
 140                     continue
                     end do
 !
 !             -- ON N'AFFECTE DE VALEUR A LA MAILLE QUE SI TOUS
 !                LES POINTS ONT CONTRIBUE :
                     if (nbv .eq. nbpt1) then
-                        call cesexi('C', jcesd, jcesl, ima, 1,&
+                        call cesexi('C', jcesd, jcesl, ima, 1, &
                                     isp, icmp, iad)
-                        ASSERT(iad.lt.0)
+                        ASSERT(iad .lt. 0)
                         zl(jcesl-1-iad) = .true.
                         if (tsca .eq. 'R') then
                             zr(jcesv-1-iad) = vr/dble(nbv)
-                        else if (tsca.eq.'C') then
+                        else if (tsca .eq. 'C') then
                             zc(jcesv-1-iad) = vc/dble(nbv)
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
             end do
 170         continue
         end do
 !
 !
-    else if ((typce1.eq.'ELGA') .and. (typces.eq.'ELNO')) then
+    else if ((typce1 .eq. 'ELGA') .and. (typces .eq. 'ELNO')) then
 !     ------------------------------------------------------
         call cesgno(ces1, celfpg, ces2)
 !
@@ -377,7 +377,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     else
 !       CAS NON ENCORE PROGRAMME ...
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !     7- MENAGE :

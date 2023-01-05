@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,29 +18,29 @@
 ! aslint: disable=W1504,W1306
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine assthm(ds_thm   , option   , j_mater  ,&
-                  lMatr    , lSigm    , lVect    ,&
-                  lVari    , lMatrPred, l_axi    , l_steady ,&
-                  typmod   , inte_type, angl_naut,&
-                  ndim     , nbvari   , nno      , nnos     ,&
-                  npg      , npi      ,&
-                  nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2, &
-                  dimdef   , dimcon   , dimuel   ,&
-                  mecani   , press1   , press2   , tempe  ,&
-                  compor   , carcri   ,&
-                  jv_poids , jv_poids2,&
-                  jv_func  , jv_func2 ,&
-                  jv_dfunc , jv_dfunc2,&
-                  elem_coor,&
-                  dispm    , dispp    ,&
-                  congem   , congep   ,&
-                  vintm    , vintp    ,&
-                  time_prev, time_curr,&
-                  matuu    , vectu    , codret)
+subroutine assthm(ds_thm, option, j_mater, &
+                  lMatr, lSigm, lVect, &
+                  lVari, lMatrPred, l_axi, l_steady, &
+                  typmod, inte_type, angl_naut, &
+                  ndim, nbvari, nno, nnos, &
+                  npg, npi, &
+                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                  dimdef, dimcon, dimuel, &
+                  mecani, press1, press2, tempe, &
+                  compor, carcri, &
+                  jv_poids, jv_poids2, &
+                  jv_func, jv_func2, &
+                  jv_dfunc, jv_dfunc2, &
+                  elem_coor, &
+                  dispm, dispp, &
+                  congem, congep, &
+                  vintm, vintp, &
+                  time_prev, time_curr, &
+                  matuu, vectu, codret)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -56,36 +56,36 @@ implicit none
 #include "asterfort/thmSelectMatrix.h"
 #include "asterfort/thmGetBehaviourChck.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-integer, parameter :: dimmat = 120
-character(len=16), intent(in) :: option
-aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred, lVect
-integer, intent(in) :: j_mater
-aster_logical, intent(in)  :: l_axi, l_steady
-character(len=8), intent(in) :: typmod(2)
-character(len=3), intent(in) :: inte_type
-real(kind=8), intent(in)  :: angl_naut(3)
-integer, intent(in) :: nbvari, ndim
-integer, intent(in) :: nno, nnos
-integer, intent(in) :: npg, npi
-integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
-integer, intent(in) :: dimuel, dimdef, dimcon
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-character(len=16), intent(in)  :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-integer, intent(in) :: jv_poids, jv_poids2
-integer, intent(in) :: jv_func, jv_func2
-integer, intent(in) :: jv_dfunc, jv_dfunc2
-real(kind=8), intent(in) :: elem_coor(ndim, nno)
-real(kind=8), intent(in) :: dispm(dimuel), dispp(dimuel)
-real(kind=8), intent(inout) :: congem(dimcon*npi)
-real(kind=8), intent(inout) :: congep(dimcon*npi)
-real(kind=8), intent(in) :: vintm(nbvari*npi)
-real(kind=8), intent(inout) :: vintp(nbvari*npi)
-real(kind=8), intent(in) :: time_prev, time_curr
-real(kind=8), intent(inout) :: matuu(dimuel*dimuel)
-real(kind=8), intent(inout) :: vectu(dimuel)
-integer, intent(out) :: codret
+    type(THM_DS), intent(inout) :: ds_thm
+    integer, parameter :: dimmat = 120
+    character(len=16), intent(in) :: option
+    aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred, lVect
+    integer, intent(in) :: j_mater
+    aster_logical, intent(in)  :: l_axi, l_steady
+    character(len=8), intent(in) :: typmod(2)
+    character(len=3), intent(in) :: inte_type
+    real(kind=8), intent(in)  :: angl_naut(3)
+    integer, intent(in) :: nbvari, ndim
+    integer, intent(in) :: nno, nnos
+    integer, intent(in) :: npg, npi
+    integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
+    integer, intent(in) :: dimuel, dimdef, dimcon
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    character(len=16), intent(in)  :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    integer, intent(in) :: jv_poids, jv_poids2
+    integer, intent(in) :: jv_func, jv_func2
+    integer, intent(in) :: jv_dfunc, jv_dfunc2
+    real(kind=8), intent(in) :: elem_coor(ndim, nno)
+    real(kind=8), intent(in) :: dispm(dimuel), dispp(dimuel)
+    real(kind=8), intent(inout) :: congem(dimcon*npi)
+    real(kind=8), intent(inout) :: congep(dimcon*npi)
+    real(kind=8), intent(in) :: vintm(nbvari*npi)
+    real(kind=8), intent(inout) :: vintp(nbvari*npi)
+    real(kind=8), intent(in) :: time_prev, time_curr
+    real(kind=8), intent(inout) :: matuu(dimuel*dimuel)
+    real(kind=8), intent(inout) :: vectu(dimuel)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -161,28 +161,27 @@ integer, intent(out) :: codret
 !
     ASSERT(nddls*nno .le. dimmat)
     ASSERT(dimuel .le. dimmat)
-    codret     = 0
-    defgep(:)  = 0.d0
-    defgem(:)  = 0.d0
-    dfdi(:,:)  = 0.d0
-    dfdi2(:,:) = 0.d0
-    b(:,:)     = 0.d0
-    drds(:,:)  = 0.d0
-    drdsr(:,:) = 0.d0
-    dsde(:,:)  = 0.d0
-    r(:)       = 0.d0
-    sigbar(:)  = 0.d0
-    work1(:,:) = 0.d0
-    work2(:,:) = 0.d0
-    addeme     = mecani(2)
-    addep1     = press1(3)
-    addep2     = press2(3)
-    addete     = tempe(2)
+    codret = 0
+    defgep(:) = 0.d0
+    defgem(:) = 0.d0
+    dfdi(:, :) = 0.d0
+    dfdi2(:, :) = 0.d0
+    b(:, :) = 0.d0
+    drds(:, :) = 0.d0
+    drdsr(:, :) = 0.d0
+    dsde(:, :) = 0.d0
+    r(:) = 0.d0
+    sigbar(:) = 0.d0
+    work1(:, :) = 0.d0
+    work2(:, :) = 0.d0
+    addeme = mecani(2)
+    addep1 = press1(3)
+    addep2 = press2(3)
+    addete = tempe(2)
 !
 ! - Get parameters for behaviour
 !
     call thmGetBehaviour(compor, ds_thm)
-
 
 !
 ! - Get parameters for internal variables
@@ -194,7 +193,6 @@ integer, intent(out) :: codret
 !
     call thmGetBehaviourChck(ds_thm)
 
-
 !
 ! - Get storage parameters for behaviours
 !
@@ -202,89 +200,89 @@ integer, intent(out) :: codret
 !
 ! - Get initial parameters (THM_INIT)
 !
-    call thmGetParaInit(j_mater, ds_thm, l_check_ = ASTER_TRUE)
+    call thmGetParaInit(j_mater, ds_thm, l_check_=ASTER_TRUE)
 !
 ! - Time parameters
 !
-    time_incr  = time_curr-time_prev
+    time_incr = time_curr-time_prev
     parm_theta = carcri(PARM_THETA_THM)
 !
 ! - Create matrix for selection of dof
 !
-    call thmSelectMatrix(ds_thm,&
-                         ndim  , dimdef, inte_type,&
-                         addeme, addete, addep1   , addep2,&
-                         a     , as    ,&
-                         c     , cs    )
+    call thmSelectMatrix(ds_thm, &
+                         ndim, dimdef, inte_type, &
+                         addeme, addete, addep1, addep2, &
+                         a, as, &
+                         c, cs)
 !
 ! - Initialization of output fields
 !
     if (lVect) then
         vectu(1:dimuel) = 0.d0
-    endif
+    end if
     if (lMatr) then
         matuu(1:dimuel*dimuel) = 0.d0
-        matri(:,:)             = 0.d0
-    endif
+        matri(:, :) = 0.d0
+    end if
 !
 ! - Loop on integration points
 !
     do ipi = 1, npi
         kpi = ipi
 ! ----- Compute [B] matrix for generalized strains
-        call cabthm(ds_thm   , l_axi    , ndim   ,&
-                    nddls    , nddlm    ,&
-                    nddl_meca, nddl_p1  , nddl_p2,&
-                    nno      , nnos     ,&
-                    dimuel   , dimdef   , kpi    ,&
-                    addeme   , addete   , addep1 , addep2,&
-                    elem_coor,&
-                    jv_poids , jv_poids2,&
-                    jv_func  , jv_func2 ,&
-                    jv_dfunc , jv_dfunc2,&
-                    dfdi     , dfdi2    ,&
-                    poids    , poids2   ,&
-                    b        )
+        call cabthm(ds_thm, l_axi, ndim, &
+                    nddls, nddlm, &
+                    nddl_meca, nddl_p1, nddl_p2, &
+                    nno, nnos, &
+                    dimuel, dimdef, kpi, &
+                    addeme, addete, addep1, addep2, &
+                    elem_coor, &
+                    jv_poids, jv_poids2, &
+                    jv_func, jv_func2, &
+                    jv_dfunc, jv_dfunc2, &
+                    dfdi, dfdi2, &
+                    poids, poids2, &
+                    b)
 ! ----- Compute generalized strains
         do i = 1, dimdef
-            defgem(i)=0.d0
-            defgep(i)=0.d0
+            defgem(i) = 0.d0
+            defgep(i) = 0.d0
             do n = 1, dimuel
-                defgem(i)=defgem(i)+b(i,n)*dispm(n)
-                defgep(i)=defgep(i)+b(i,n)*dispp(n)
+                defgem(i) = defgem(i)+b(i, n)*dispm(n)
+                defgep(i) = defgep(i)+b(i, n)*dispp(n)
             end do
         end do
 ! ----- Compute generalized stresses and derivatives at current Gauss point
         if (l_steady) then
-            call equthp(ds_thm   , option   , j_mater  ,&
-                        lMatr    , lSigm    , lVect   ,&
-                        lVari    , lMatrPred,&
-                        typmod   , angl_naut,&
-                        ndim     , nbvari   ,&
-                        kpi      , npg      ,&
-                        dimdef   , dimcon   ,&
-                        mecani   , press1   , press2, tempe ,&
-                        carcri   ,&
-                        defgem   , defgep   ,&
-                        congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1),&
-                        vintm((kpi-1)*nbvari+1) , vintp((kpi-1)*nbvari+1) ,&
-                        time_prev, time_curr,&
-                        r        , drds     , dsde  , codret)
+            call equthp(ds_thm, option, j_mater, &
+                        lMatr, lSigm, lVect, &
+                        lVari, lMatrPred, &
+                        typmod, angl_naut, &
+                        ndim, nbvari, &
+                        kpi, npg, &
+                        dimdef, dimcon, &
+                        mecani, press1, press2, tempe, &
+                        carcri, &
+                        defgem, defgep, &
+                        congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
+                        vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
+                        time_prev, time_curr, &
+                        r, drds, dsde, codret)
         else
-            call equthm(ds_thm   , option   , j_mater  ,&
-                        lMatr    , lSigm    ,&
-                        lVari    , lMatrPred,&
-                        typmod   , angl_naut, parm_theta,&
-                        ndim     , nbvari   ,&
-                        kpi      , npg      ,&
-                        dimdef   , dimcon   ,&
-                        mecani   , press1   , press2, tempe, &
-                        carcri   ,&
-                        defgem   , defgep   ,&
-                        congem((kpi-1)* dimcon+1), congep((kpi-1)* dimcon+1),&
-                        vintm((kpi-1)*nbvari+1)  , vintp((kpi-1)*nbvari+1)  ,&
-                        time_prev, time_curr, time_incr ,&
-                        r        , drds     , dsde  , codret)
+            call equthm(ds_thm, option, j_mater, &
+                        lMatr, lSigm, &
+                        lVari, lMatrPred, &
+                        typmod, angl_naut, parm_theta, &
+                        ndim, nbvari, &
+                        kpi, npg, &
+                        dimdef, dimcon, &
+                        mecani, press1, press2, tempe, &
+                        carcri, &
+                        defgem, defgep, &
+                        congem((kpi-1)*dimcon+1), congep((kpi-1)*dimcon+1), &
+                        vintm((kpi-1)*nbvari+1), vintp((kpi-1)*nbvari+1), &
+                        time_prev, time_curr, time_incr, &
+                        r, drds, dsde, codret)
 ! --------- For selective integrations => move Gauss points to nodes
             if (ds_thm%ds_elem%l_dof_meca) then
                 if (kpi .gt. npg) then
@@ -292,18 +290,18 @@ integer, intent(out) :: codret
                         do i = 1, 6
                             congep((kpi-1)*dimcon+i) = congep((kpi-npg-1)*dimcon+i)
                         end do
-                    endif
+                    end if
                     if (lVari) then
                         do i = 1, nb_vari_meca
                             vintp((kpi-1)*nbvari+i) = vintp((kpi-npg-1)*nbvari+i)
                         end do
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
         if (codret .ne. 0) then
             goto 99
-        endif
+        end if
 ! ======================================================================
 ! --- CONTRIBUTION DU POINT D'INTEGRATION KPI A LA MATRICE TANGENTE ET -
 ! --- AU RESIDU --------------------------------------------------------
@@ -320,7 +318,7 @@ integer, intent(out) :: codret
         else
             ck(1:dimdef) = cs(1:dimdef)
             ak(1:2) = as(1:2)
-        endif
+        end if
 ! ======================================================================
 ! --- CALCUL DE MATUU (MATRI) ------------------------------------------
 ! --- ON MODIFIE LA 7EME LIGNE (TERME EN TEMPERATURE) DE LA MATRICE ----
@@ -329,22 +327,22 @@ integer, intent(out) :: codret
         if (lMatr) then
             do i = 1, dimdef
                 do j = 1, dimcon
-                    drdsr(i,j)=drds(i,j)
+                    drdsr(i, j) = drds(i, j)
                 end do
             end do
 !
             if (ds_thm%ds_elem%l_dof_ther) then
                 do i = 1, dimcon
-                    drdsr(addete,i) = ak(1)*drds(addete,i) + ak(2)* drds(dimdef+1,i)
+                    drdsr(addete, i) = ak(1)*drds(addete, i)+ak(2)*drds(dimdef+1, i)
                 end do
-            endif
+            end if
 ! ======================================================================
 ! --- ON ASSEMBLE: DF=BT.CK.DRDSR.DK.DSDE.FK.B.POIDS -------------------
 ! ======================================================================
-            call pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
+            call pmathm(dimmat, dimdef, dimcon, dimuel, dsde, &
                         drdsr, ck, b, poids, work1, work2, matri)
 !
-        endif
+        end if
 ! ======================================================================
 ! --- CALCUL DE VECTUU -------------------------------------------------
 ! ======================================================================
@@ -358,31 +356,31 @@ integer, intent(out) :: codret
 ! --- ON SELECTIONNE LA BONNE COMPOSANTE 7 POUR CE PI ------------------
 ! ======================================================================
             if (ds_thm%ds_elem%l_dof_ther) then
-                sigbar(addete) = ak(1)*r(addete) + ak(2)*r(dimdef+1)
-            endif
+                sigbar(addete) = ak(1)*r(addete)+ak(2)*r(dimdef+1)
+            end if
 ! ======================================================================
 ! --- ON ASSEMBLE R=BT.SIGBAR.POIDS ------------------------------------
 ! ======================================================================
             do i = 1, dimuel
                 do k = 1, dimdef
-                    vectu(i)=vectu(i)+b(k,i)*sigbar(k)*poids
+                    vectu(i) = vectu(i)+b(k, i)*sigbar(k)*poids
                 end do
             end do
-        endif
+        end if
     end do
 ! ======================================================================
 ! --- SORTIE DE BOUCLE SUR LES POINTS D'INTEGRATION --------------------
 ! ======================================================================
     if (lMatr) then
-        kji=1
+        kji = 1
         do ii = 1, dimuel
             do jj = 1, dimuel
-                matuu(kji) = matri(ii,jj)
-                kji= kji + 1
+                matuu(kji) = matri(ii, jj)
+                kji = kji+1
             end do
         end do
-    endif
+    end if
 ! ======================================================================
-99 continue
+99  continue
 ! ======================================================================
 end subroutine

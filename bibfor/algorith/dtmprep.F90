@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ subroutine dtmprep(sd_dtm_)
 #include "asterfort/as_allocate.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
     integer          :: iret, append, substruc, vali(1), nbmode
@@ -101,25 +101,25 @@ subroutine dtmprep(sd_dtm_)
     character(len=24):: typres, nomcmd, nume24, nomstr, valk(1), jvname
     character(len=24):: solver, lisins
 !
-    integer, pointer           :: desc(:)  => null()
-    integer, pointer           :: smde(:)  => null()
-    integer, pointer           :: nequ(:)  => null()
-    real(kind=8), pointer      :: conl(:)  => null()
-    real(kind=8), pointer      :: puls(:)  => null()
+    integer, pointer           :: desc(:) => null()
+    integer, pointer           :: smde(:) => null()
+    integer, pointer           :: nequ(:) => null()
+    real(kind=8), pointer      :: conl(:) => null()
+    real(kind=8), pointer      :: puls(:) => null()
     real(kind=8), pointer      :: puls2(:) => null()
-    character(len=24), pointer :: refa(:)  => null()
+    character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refag(:) => null()
 
-    data  methods /'DIFF_CENTRE     ', 'DEVOGE          ', 'NEWMARK         ', &
-                   'RUNGE_KUTTA_32  ', 'RUNGE_KUTTA_54  ', 'ADAPT_ORDRE1    ', &
-                   'ADAPT_ORDRE2    ', 'ITMI            ', 'TRBDF2          '/
+    data methods/'DIFF_CENTRE     ', 'DEVOGE          ', 'NEWMARK         ', &
+        'RUNGE_KUTTA_32  ', 'RUNGE_KUTTA_54  ', 'ADAPT_ORDRE1    ', &
+        'ADAPT_ORDRE2    ', 'ITMI            ', 'TRBDF2          '/
 
 !
 !   0 - Initializations
     call jemarq()
     call infmaj()
     sd_dtm = sd_dtm_
-    epsi   = r8prem()
+    epsi = r8prem()
 !
 !   --------------------------------------------------------------------------------------
 !   1 - Start with verifications of the command syntax which are not possible
@@ -144,24 +144,24 @@ subroutine dtmprep(sd_dtm_)
         if (tran .eq. nomres) then
             calcres = '&&OP0029'
             append = 1
-        endif
-    endif
+        end if
+    end if
     call dtmget(sd_dtm, _SOLVER, savejv=solver)
     call cresol(solver)
 !
-    call dtmsav(sd_dtm, _RESU_SD ,1, kscal=nomres)
-    call dtmsav(sd_dtm, _CALC_SD ,1, kscal=calcres)
-    call dtmsav(sd_dtm, _APPND_SD,1, iscal=append)
+    call dtmsav(sd_dtm, _RESU_SD, 1, kscal=nomres)
+    call dtmsav(sd_dtm, _CALC_SD, 1, kscal=calcres)
+    call dtmsav(sd_dtm, _APPND_SD, 1, iscal=append)
 
     do i = 1, _DTM_NB_SCHEMAS
-        if (method.eq.methods(i)) goto 5
-    enddo
+        if (method .eq. methods(i)) goto 5
+    end do
 5   continue
-    if (i.gt._DTM_NB_SCHEMAS) then
+    if (i .gt. _DTM_NB_SCHEMAS) then
         ASSERT(.false.)
-    endif
-    call dtmsav(sd_dtm, _SCHEMA_I  ,1, iscal=i)
-    call dtmsav(sd_dtm, _SCHEMA  ,1, kscal=method)
+    end if
+    call dtmsav(sd_dtm, _SCHEMA_I, 1, iscal=i)
+    call dtmsav(sd_dtm, _SCHEMA, 1, kscal=method)
 
 !
 !   --------------------------------------------------------------------------------------
@@ -171,12 +171,12 @@ subroutine dtmprep(sd_dtm_)
 !   --- 4.1 - Modal basis and number of modes
     call getvid(' ', 'MATR_MASS', scal=masgen, nbret=iret)
 
-    if (iret.eq.0) then
+    if (iret .eq. 0) then
         ! write(*,*) "No mass matrix has been found as an input"
         ASSERT(.false.)
-    endif
+    end if
     call jeveuo(masgen//'           .REFA', 'L', vk24=refa)
-    basemo = refa(1)(1:8)
+    basemo = refa(1) (1:8)
     call jeveuo(masgen//'           .DESC', 'L', vi=desc)
     nbmode = desc(2)
     typbas = 'MODE_MECA'
@@ -186,11 +186,11 @@ subroutine dtmprep(sd_dtm_)
 !
 !   Note : this property is determined in section 4 after checking the matrices K and M
 
-    call gettco(basemo,typco)
+    call gettco(basemo, typco)
     if (typco(1:9) .eq. 'MODE_MECA') then
         call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
-    else if (typco(1:9).eq.'MODE_GENE') then
+    else if (typco(1:9) .eq. 'MODE_GENE') then
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matass)
         call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=numddl)
         call jeveuo(numddl(1:14)//'.NUME.NEQU', 'L', vi=nequ)
@@ -198,7 +198,7 @@ subroutine dtmprep(sd_dtm_)
     else
 !       --- Substructuring case, basis vectors can not be retrieved
         goto 10
-    endif
+    end if
 !
 !     if (typco(1:9) .eq. 'MODE_MECA') then
 ! !       --- Blindage size(.VALE) = nb_equa du numeddl
@@ -214,10 +214,10 @@ subroutine dtmprep(sd_dtm_)
 !
     call dtminivec(sd_dtm, _BASE_VEC, nbmode*neq, address=jbase)
     call copmod(basemo, numer=numddl, bmodr=zr(jbase), nbmodes=nbmode, nequa=neq)
-    call dtmsav(sd_dtm, _NB_PHYEQ,1, iscal=neq)
+    call dtmsav(sd_dtm, _NB_PHYEQ, 1, iscal=neq)
 !   Physical DOF numbering, note that in substructuring cases the nume_ddl_gene is saved
 !   under this parameter (NUM_DDL) of the sd_dtm (section 4.0)
-    call dtmsav(sd_dtm, _NUM_DDL,1, kscal=numddl)
+    call dtmsav(sd_dtm, _NUM_DDL, 1, kscal=numddl)
 
 10  continue
 !
@@ -226,17 +226,17 @@ subroutine dtmprep(sd_dtm_)
 !   --------------------------------------------------------------------------------------
 !
 !   --- 4.0 - Calculation type : simple projection or sub-structuring
-    nume24(1:14) = refa(2)(1:14)
+    nume24(1:14) = refa(2) (1:14)
     call jeveuo(nume24(1:14)//'.NUME.REFN', 'L', jrefe)
     call gettco(zk24(jrefe), typrep)
     substruc = 0
-    if (typrep(1:11).eq.'MODELE_GENE') then
+    if (typrep(1:11) .eq. 'MODELE_GENE') then
         substruc = 1
-        modgen = zk24(jrefe)(1:8)
+        modgen = zk24(jrefe) (1:8)
         call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
-        call dtmsav(sd_dtm, _NUM_DDL,1, kscal=nume24(1:14))
-    endif
-    call dtmsav(sd_dtm, _SUB_STRU,1, iscal=substruc)
+        call dtmsav(sd_dtm, _NUM_DDL, 1, kscal=nume24(1:14))
+    end if
+    call dtmsav(sd_dtm, _SUB_STRU, 1, iscal=substruc)
     lagrcorr = 0
 
 !   --- 4.1 - Extraction of the mass M-matrix, full and diagonal
@@ -246,39 +246,39 @@ subroutine dtmprep(sd_dtm_)
 !   --- Diagonal terms extraction and saving
     call dtminivec(sd_dtm, _MASS_DIA, nbmode, address=jmas1)
     call extdia(masgen, nume24, substruc, zr(jmas1))
-    if (nbstor.gt.nbmode) then
+    if (nbstor .gt. nbmode) then
 !       --- Full matrix extraction and saving
         call dtminivec(sd_dtm, _MASS_FUL, nbmode*nbmode, address=jmas2)
         call copmat(masgen, zr(jmas2))
 
 !       --- Factorized matrix saving
-        call dtminivec(sd_dtm, _MASS_FAC, nbmode*nbmode,address=jmas3)
-        call dcopy(nbmode*nbmode, zr(jmas2),1,zr(jmas3),1)
+        call dtminivec(sd_dtm, _MASS_FAC, nbmode*nbmode, address=jmas3)
+        call dcopy(nbmode*nbmode, zr(jmas2), 1, zr(jmas3), 1)
         call trlds(zr(jmas3), nbmode, nbmode, iret)
 
         typbas = 'BASE_MODA'
 !       --- Zero pivot : correction is required (case of sub-structuring)
-        if (iret.ne.0) then
+        if (iret .ne. 0) then
             lagrcorr = 1
             mastem = '&&29&MAS'
             call getvid(' ', 'MATR_RIGI', scal=riggen)
             call ajlagr(riggen, masgen, mastem)
             call copmat(mastem, zr(jmas2))
-            call dcopy(nbmode*nbmode, zr(jmas2),1,zr(jmas3),1)
+            call dcopy(nbmode*nbmode, zr(jmas2), 1, zr(jmas3), 1)
             call trlds(zr(jmas3), nbmode, nbmode, piv)
-            if (piv.ne.0) then
+            if (piv .ne. 0) then
                 call dtmget(sd_dtm, _MASS_FAC, savejv=jvname)
                 call jedetr(jvname)
                 call dtmget(sd_dtm, _MASS_FUL, savejv=jvname)
                 call jedetr(jvname)
                 typbas = 'MODE_MECA'
                 call utmess('A', 'ALGORITH16_22', si=piv)
-            endif
-        endif
-    endif
-    call dtmsav(sd_dtm, _MASS_MAT,1, kscal=masgen)
-    call dtmsav(sd_dtm, _BASE_MOD,1, kscal=basemo)
-    call dtmsav(sd_dtm, _NB_MODES,1, iscal=nbmode)
+            end if
+        end if
+    end if
+    call dtmsav(sd_dtm, _MASS_MAT, 1, kscal=masgen)
+    call dtmsav(sd_dtm, _BASE_MOD, 1, kscal=basemo)
+    call dtmsav(sd_dtm, _NB_MODES, 1, iscal=nbmode)
 !
 !
 !   -------------------------------------------------------------------------------------
@@ -286,43 +286,43 @@ subroutine dtmprep(sd_dtm_)
 !   --- 4.2 - Extraction of the stiffness K-matrix, full and diagonal
     call getvid(' ', 'MATR_RIGI', scal=riggen)
     call jeveuo(riggen//'           .REFA', 'L', vk24=refa)
-    nume24(1:14) = refa(2)(1:14)
+    nume24(1:14) = refa(2) (1:14)
     nomstr = nume24(1:14)//'.SMOS'
     call jeveuo(nomstr(1:19)//'.SMDE', 'L', vi=smde)
     nbstor = smde(2)
 !   --- Diagonal terms extraction and saving
     call dtminivec(sd_dtm, _RIGI_DIA, nbmode, address=jrig1)
     call extdia(riggen, nume24, substruc, zr(jrig1))
-    if (nbstor.gt.nbmode) then
+    if (nbstor .gt. nbmode) then
 !       --- Full matrix extraction and saving
         call dtminivec(sd_dtm, _RIGI_FUL, nbmode*nbmode, address=jrig2)
         call copmat(riggen, zr(jrig2))
         typbas = 'BASE_MODA'
-    endif
-    call dtmsav(sd_dtm, _RIGI_MAT,1, kscal=riggen)
-    call dtmsav(sd_dtm, _TYP_BASE,1, kscal=typbas)
+    end if
+    call dtmsav(sd_dtm, _RIGI_MAT, 1, kscal=riggen)
+    call dtmsav(sd_dtm, _TYP_BASE, 1, kscal=typbas)
 
 !   --- Calculation of the frequencies associated to the modes from the diagonal
 !       mass and stiffness terms
-    AS_ALLOCATE(vr=puls , size=nbmode)
+    AS_ALLOCATE(vr=puls, size=nbmode)
     AS_ALLOCATE(vr=puls2, size=nbmode)
     do i = 1, nbmode
-        puls (i) = 0.d0
+        puls(i) = 0.d0
         puls2(i) = 0.d0
-    enddo
-    if (substruc.eq.0) then
+    end do
+    if (substruc .eq. 0) then
 !       --- Direct calculation case, all modes can be supposed dynamic and some
 !           frequency can hereafter be associated to each generalized dof
         do i = 1, nbmode
-            if (abs(zr(jmas1+i-1)).gt.epsi) then
+            if (abs(zr(jmas1+i-1)) .gt. epsi) then
                 omeg2 = abs(zr(jrig1+i-1)/zr(jmas1+i-1))
-                puls (i) = sqrt(omeg2)
+                puls(i) = sqrt(omeg2)
                 puls2(i) = omeg2
             else
-                puls (i) = 1.d-6
+                puls(i) = 1.d-6
                 puls2(i) = 1.d-12
             end if
-        enddo
+        end do
         nbmody = nbmode
     else
 !       --- Substructuring case, loop over each substructure, and then associate a
@@ -333,21 +333,21 @@ subroutine dtmprep(sd_dtm_)
             call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
             do j = 1, nbbas
                 omeg2 = abs(zr(jrig1+nbmodi+j-1)/zr(jmas1+nbmodi+j-1))
-                puls (nbmodi+j) = sqrt(omeg2)
+                puls(nbmodi+j) = sqrt(omeg2)
                 puls2(nbmodi+j) = omeg2
-            enddo
+            end do
             call dismoi('NB_MODES_TOT', basemo, 'RESULTAT', repi=nbbas)
-            nbmodi = nbmodi + nbbas
-        enddo
+            nbmodi = nbmodi+nbbas
+        end do
         nbmody = nbmode
 !       --- Substructuing : saved is the modal basis corresponding to the last
 !           dynamic substructure (??? Special care should be taken thereafter ???)
 !           NB_MOD_D represents the number of dynamic modes across all substructures
-        call dtmsav(sd_dtm, _BASE_MOD,1,kscal=basemo)
+        call dtmsav(sd_dtm, _BASE_MOD, 1, kscal=basemo)
         ! call dtmsav(sd_dtm, _NB_MOD_D,1,iscal=nbmody)
-    endif
-    call dtmsav(sd_dtm, _OMEGA   ,nbmody,rvect=puls)
-    call dtmsav(sd_dtm, _OMEGA_SQ,nbmody,rvect=puls2)
+    end if
+    call dtmsav(sd_dtm, _OMEGA, nbmody, rvect=puls)
+    call dtmsav(sd_dtm, _OMEGA_SQ, nbmody, rvect=puls2)
     AS_DEALLOCATE(vr=puls2)
 !   Note : puls is kept in memory for later usage with mdptem and mdchoc
 !
@@ -357,12 +357,12 @@ subroutine dtmprep(sd_dtm_)
     lamor = 0
 !   --- lamor signifies that damping is read from a list : AMOR_REDUIT / LIST_AMOR and
 !       no damping matrix is used
-    call getvid(' ', 'MATR_AMOR', scal=amogen, nbret = iret)
-    if (iret.eq.0) lamor = 1
+    call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=iret)
+    if (iret .eq. 0) lamor = 1
 !   C-Matrix is supplied
-    if (lamor.eq.0) then
+    if (lamor .eq. 0) then
         call jeveuo(amogen//'           .REFA', 'L', vk24=refa)
-        nume24(1:14) = refa(2)(1:14)
+        nume24(1:14) = refa(2) (1:14)
 !       --- Diagonal terms extraction and saving
         call dtminivec(sd_dtm, _AMOR_DIA, nbmode, address=jamo1)
         call extdia(amogen, nume24, substruc, zr(jamo1))
@@ -371,37 +371,37 @@ subroutine dtmprep(sd_dtm_)
             acrit = 2.d0*sqrt(abs(zr(jmas1+i-1)*zr(jrig1+i-1)))
             agene = zr(jamo1+i-1)
             if (agene .gt. acrit) then
-                vali (1) = i
-                valr (1) = agene
-                valr (2) = acrit
-                valk (1) = ' '
-                call utmess('A', 'ALGORITH16_20', sk=valk(1), si=vali(1), nr=2,&
+                vali(1) = i
+                valr(1) = agene
+                valr(2) = acrit
+                valk(1) = ' '
+                call utmess('A', 'ALGORITH16_20', sk=valk(1), si=vali(1), nr=2, &
                             valr=valr)
-            endif
-        enddo
+            end if
+        end do
 !
         nomstr = nume24(1:14)//'.SMOS'
         call jeveuo(nomstr(1:19)//'.SMDE', 'L', vi=smde)
         nbstor = smde(2)
-        if (nbstor.gt.nbmode) then
+        if (nbstor .gt. nbmode) then
 !           --- Full matrix extraction and saving
             call dtminivec(sd_dtm, _AMOR_FUL, nbmode*nbmode, address=jamo2)
 !           --- Fully damp "lagrange" dof in substructuring case
-            if (lagrcorr.eq.1) then
+            if (lagrcorr .eq. 1) then
                 amotem = '&&29&AMO'
                 call ajlagr(riggen, amogen, amotem)
                 call copmat(amotem, zr(jamo2))
                 call jeveuo(amotem//'           .CONL', 'E', vr=conl)
                 do i = 1, nbmode
                     conl(i) = conl(i)/2.0d0
-                enddo
+                end do
             else
                 call copmat(amogen, zr(jamo2))
-            endif
+            end if
         else
 !           --- Diagonal matrix, multiply by the inverse of M
-            do i=1, nbmode
-                if (abs(zr(jmas1+i-1)).gt.epsi) then
+            do i = 1, nbmode
+                if (abs(zr(jmas1+i-1)) .gt. epsi) then
                     zr(jamo1+i-1) = zr(jamo1+i-1)/zr(jmas1+i-1)
                 else
 !                   --- Static modes : critical damping to avoid artifical dynamics
@@ -409,27 +409,27 @@ subroutine dtmprep(sd_dtm_)
 !                   M = k/omega^2    K = k   C = 2*k/omega = Cc   M-1*C = 2*omega
                     zr(jamo1+i-1) = 2.d0*puls(i)
                 end if
-            enddo
-        endif
-        call dtmsav(sd_dtm, _AMOR_MAT,1, kscal=amogen)
+            end do
+        end if
+        call dtmsav(sd_dtm, _AMOR_MAT, 1, kscal=amogen)
 !
     else
 !       --- Creation of a diagonal damping matrix from the supplied damping coefs list
         call dtmprep_damp(sd_dtm)
-    endif
+    end if
 
 !   --- Set the modal mass to k/omega^2 for the previously detected static modes,
 !       Note : these have been artificially damped beyond criticity
     do i = 1, nbmode
-        if (abs(zr(jmas1+i-1)).le.epsi) then
-            if (abs(zr(jrig1+i-1)).gt.epsi) then
+        if (abs(zr(jmas1+i-1)) .le. epsi) then
+            if (abs(zr(jrig1+i-1)) .gt. epsi) then
                 zr(jmas1+i-1) = zr(jrig1+i-1)/(puls(i)*puls(i))
             else
                 zr(jrig1+i-1) = puls(i)*puls(i)
                 zr(jmas1+i-1) = 1.d0
             end if
         end if
-    enddo
+    end do
 
 !
 !   -------------------------------------------------------------------------------------
@@ -438,23 +438,23 @@ subroutine dtmprep(sd_dtm_)
 !   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT
 !          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN
 !          THE SUBSEQUENT CALCULATION ROUTINES
-    if (substruc.eq.1) then
+    if (substruc .eq. 1) then
         call mtdscr(riggen//'           ')
         call jeveut(riggen//'           .&INT', 'E', descr)
         call mtdscr(mastem//'           ')
         call jeveuo(mastem//'           .REFA', 'E', jrefa)
         zk24(jrefa-1+7) = solver
         call jeveut(mastem//'           .&INT', 'E', descm)
-        if (lamor.eq.0) then
+        if (lamor .eq. 0) then
             call mtdscr(amotem//'           ')
             call jeveut(amotem//'           .&INT', 'E', desca)
         else
             desca = 0
-        endif
-        call dtmsav(sd_dtm, _MAT_DESC,3,ivect=[descm,descr,desca])
+        end if
+        call dtmsav(sd_dtm, _MAT_DESC, 3, ivect=[descm, descr, desca])
     else
-        call dtmsav(sd_dtm, _MAT_DESC,3,ivect=[0,0,0])
-    endif
+        call dtmsav(sd_dtm, _MAT_DESC, 3, ivect=[0, 0, 0])
+    end if
 
 !
 !   --------------------------------------------------------------------------------------
@@ -481,7 +481,7 @@ subroutine dtmprep(sd_dtm_)
         continue
     else
         nexcit = 0
-    endif
+    end if
 
 !
 !   --- 6.2 - Charging from an existing result : EXCIT_RESU -> RESULTAT
@@ -496,14 +496,14 @@ subroutine dtmprep(sd_dtm_)
             call dismoi('BASE_MODALE', resgen, 'RESU_DYNA', repk=basemo2)
             if (basemo .ne. basemo2) then
                 call utmess('F', 'ALGORITH17_18', si=i)
-            endif
-        enddo
+            end if
+        end do
     else
         nexcir = 0
-    endif
+    end if
 !
 !   --- 6.3 - Additional excitation parameters
-    ntotex = nexcit + nexcir*nbmode
+    ntotex = nexcit+nexcir*nbmode
     monmot = 'NON'
     if (ntotex .ne. 0) then
 !       --- Function multiplicatory coefficient
@@ -523,16 +523,16 @@ subroutine dtmprep(sd_dtm_)
         call wkvect(calcres//'           .FVIT', 'G V K8', 2*ntotex, jnovit)
         call wkvect(calcres//'           .FACC', 'G V K8', 2*ntotex, jnoacc)
 !
-        call mdrecf(nexcit, nexcir, zi(jidesc), zk8(jnomfo), zr(jcoefm),&
-                    zi(jiadve), zi(jinumo), zk8(jnodep), zk8(jnovit), zk8(jnoacc),&
-                    neq, typco, basemo, nbmode, zr(jrig1),&
+        call mdrecf(nexcit, nexcir, zi(jidesc), zk8(jnomfo), zr(jcoefm), &
+                    zi(jiadve), zi(jinumo), zk8(jnodep), zk8(jnovit), zk8(jnoacc), &
+                    neq, typco, basemo, nbmode, zr(jrig1), &
                     monmot, calcres)
 !
         call jeexin(calcres//'           .IPSD', iret)
         if (iret .ne. 0) call jeveuo(calcres//'           .IPSD', 'E', jpsdel)
-    endif
-    call dtmsav(sd_dtm, _NB_EXC_T,1,iscal=ntotex)
-    call dtmsav(sd_dtm, _MULTI_AP,1,kscal=monmot)
+    end if
+    call dtmsav(sd_dtm, _NB_EXC_T, 1, iscal=ntotex)
+    call dtmsav(sd_dtm, _MULTI_AP, 1, kscal=monmot)
 
 !
 !   --------------------------------------------------------------------------------------
@@ -550,10 +550,10 @@ subroutine dtmprep(sd_dtm_)
         call getvid(' ', 'ACCE_ROTA', scal=fonca, nbret=ng2)
         if (ng2 .eq. 0) then
             fonca = ' '
-        endif
+        end if
         call getvid(' ', 'MATR_RIGY', scal=rgygen, nbret=ng2)
         call jeveuo(gyogen//'           .REFA', 'L', vk24=refag)
-        numgeg = refag(2)(1:14)
+        numgeg = refag(2) (1:14)
         nomstg = numgeg//'.SMOS'
         call jeveuo(nomstg//'.SMDE', 'L', jscdeg)
         call copmat(gyogen, zr(jgyog))
@@ -564,12 +564,12 @@ subroutine dtmprep(sd_dtm_)
             call dtminivec(sd_dtm, _RIGY_FUL, nbmode*nbmode, address=jrgyg)
             call r8inir(nbmode*nbmode, 0.d0, zr(jrgyg), 1)
             fonca = ' '
-        endif
+        end if
         call dtmsav(sd_dtm, _V_ROT_F, 1, kscal=foncv)
         call dtmsav(sd_dtm, _A_ROT_F, 1, kscal=fonca)
     else
         call getvr8(' ', 'VITE_ROTA', scal=vrotat)
-    endif
+    end if
     call dtmsav(sd_dtm, _V_ROT, 1, rscal=vrotat)
     call dtmsav(sd_dtm, _VITE_VAR, 1, kscal=k8var(1:3))
 
@@ -594,8 +594,8 @@ subroutine dtmprep(sd_dtm_)
 !
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
     lisins = '&&DTMPREP'
-    if ((nbnli).gt.0) then
-        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl)
+    if ((nbnli) .gt. 0) then
+        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
 
         ! call dtmget(sd_dtm, _CHO_DEPL, vr=chodep)
         ! call dtmget(sd_dtm, _CHO_PARA, vr=chopar)
@@ -607,24 +607,24 @@ subroutine dtmprep(sd_dtm_)
         ! call mdptem(nbmode, zr(jmas1), puls, nbnli, chodep,&
         !             chopar, chonoe, dt, dtmax, dtmin,&
         !             tinit, tfin, nbpas, iret, lisins)
-        call mdptem(nbmode, zr(jmas1), puls, nbnli, dt,&
-                    dtmax, dtmin, tinit, tfin, nbpas,&
+        call mdptem(nbmode, zr(jmas1), puls, nbnli, dt, &
+                    dtmax, dtmin, tinit, tfin, nbpas, &
                     iret, lisins)
     else
-        call mdptem(nbmode, zr(jmas1), puls, 0, dt,&
-                    dtmax, dtmin, tinit, tfin, nbpas,&
+        call mdptem(nbmode, zr(jmas1), puls, 0, dt, &
+                    dtmax, dtmin, tinit, tfin, nbpas, &
                     iret, lisins)
-    endif
+    end if
     if (iret .ne. 0) call utmess('F', 'ALGORITH5_24')
     call jedetr(lisins)
 !
-    AS_DEALLOCATE(vr=puls )
+    AS_DEALLOCATE(vr=puls)
 !
 !
 
-    call dtmsav(sd_dtm, _DT      , 1, rscal=dt)
-    call dtmsav(sd_dtm, _DT_MIN  , 1, rscal=dtmin)
-    call dtmsav(sd_dtm, _DT_MAX  , 1, rscal=dtmax)
+    call dtmsav(sd_dtm, _DT, 1, rscal=dt)
+    call dtmsav(sd_dtm, _DT_MIN, 1, rscal=dtmin)
+    call dtmsav(sd_dtm, _DT_MAX, 1, rscal=dtmax)
     call dtmsav(sd_dtm, _INST_INI, 1, rscal=tinit)
     call dtmsav(sd_dtm, _INST_FIN, 1, rscal=tfin)
     call dtmsav(sd_dtm, _NB_STEPS, 1, iscal=nbpas)
@@ -641,7 +641,6 @@ subroutine dtmprep(sd_dtm_)
 !   --------------------------------------------------------------------------------------
 !
     call dtmallo(sd_dtm)
-
 
 !
     call jedema()

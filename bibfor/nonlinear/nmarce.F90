@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmarce(ds_inout, result   , sddisc, time, nume_store,&
-                  force   , ds_print_)
+subroutine nmarce(ds_inout, result, sddisc, time, nume_store, &
+                  force, ds_print_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmeteo.h"
@@ -64,12 +64,12 @@ implicit none
 !
     do i_field = 1, nb_field
         if (present(ds_print_)) then
-            call nmeteo(result, sddisc , ds_inout , force, nume_store, &
-                        time  , i_field, ds_print_)
+            call nmeteo(result, sddisc, ds_inout, force, nume_store, &
+                        time, i_field, ds_print_)
         else
-            call nmeteo(result, sddisc , ds_inout , force, nume_store, &
-                        time  , i_field)
-        endif
+            call nmeteo(result, sddisc, ds_inout, force, nume_store, &
+                        time, i_field)
+        end if
     end do
 !
 end subroutine

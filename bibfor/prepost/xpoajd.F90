@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
-                  ninter, iainc, ncompa, typma, co,&
-                  igeom, jdirno, nfiss, jheavn, ncompn,&
-                  he, ndime, ndim, cmp, nbcmp,&
-                  nfh, nfe, ddlc, ima, jconx1,&
-                  jconx2, jcnsv1, jcnsv2, jcnsl2, nbnoc,&
-                  inntot, inn, nnn, contac, lmeca,&
-                  pre1, heavno, nlachm, lacthm, jbaslo,&
+subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
+                  ninter, iainc, ncompa, typma, co, &
+                  igeom, jdirno, nfiss, jheavn, ncompn, &
+                  he, ndime, ndim, cmp, nbcmp, &
+                  nfh, nfe, ddlc, ima, jconx1, &
+                  jconx2, jcnsv1, jcnsv2, jcnsl2, nbnoc, &
+                  inntot, inn, nnn, contac, lmeca, &
+                  pre1, heavno, nlachm, lacthm, jbaslo, &
                   jlsn, jlst, jstno, ka, mu)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -115,7 +115,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
     integer :: lact(8), nlact, hea_se, alp
     aster_logical :: lpint, lcont, pre1
-    parameter    (crilsn = 1.d-6)
+    parameter(crilsn=1.d-6)
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -129,14 +129,14 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         do ifiss = 1, nfiss
             if (lsn(ifiss) .eq. 0.d0) lpint = .true.
         end do
-    else if (ino.gt.1000.and.ino.lt.2000) then
+    else if (ino .gt. 1000 .and. ino .lt. 2000) then
         lpint = .true.
-    else if (ino.gt.2000) then
+    else if (ino .gt. 2000) then
         lpint = .false.
         do ifiss = 1, nfiss
             if (abs(lsn(ifiss)) .lt. crilsn) lpint = .true.
         end do
-    endif
+    end if
 !
     fiss = 1
     if (lpint) then
@@ -146,34 +146,34 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             if (abs(lsn(ifiss)) .lt. minlsn .and. he(ifiss) .ne. 0) then
                 minlsn = abs(lsn(ifiss))
                 fiss = ifiss
-            endif
+            end if
         end do
         if (he(fiss) .eq. 1) then
             lpint = .false.
-        endif
-    endif
+        end if
+    end if
     if (ddlc .gt. 0) then
         ASSERT(lmeca)
-    endif
-    nptint=ninter(1)
-    if (pre1) nptint=ninter(fiss)
-    lcont = (ddlc.gt.0).and.(ndime.eq.ndim).and.(nptint.gt.0)
+    end if
+    nptint = ninter(1)
+    if (pre1) nptint = ninter(fiss)
+    lcont = (ddlc .gt. 0) .and. (ndime .eq. ndim) .and. (nptint .gt. 0)
 !
-    inn = inn + 1
-    inntot = inntot + 1
-    ASSERT(inn.le.nnn)
+    inn = inn+1
+    inntot = inntot+1
+    ASSERT(inn .le. nnn)
 !
     zi(jdirno-1+(2+nfiss)*(inn-1)+1) = ino
-    zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc + inntot
+    zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc+inntot
     do ifiss = 1, nfiss
         zi(jdirno-1+(2+nfiss)*(inn-1)+2+ifiss) = he(ifiss)
     end do
 !
 !     FF : FONCTIONS DE FORMES AU NOEUD SOMMET OU D'INTERSECTION
-    call xpoffo(ndim, ndime, elrefp, nnop, igeom,&
+    call xpoffo(ndim, ndime, elrefp, nnop, igeom, &
                 co, ff)
 !
-    if (pre1 .or. (nfe.gt.0.and.lmeca.and..not.iselli(elrefp))) then
+    if (pre1 .or. (nfe .gt. 0 .and. lmeca .and. .not. iselli(elrefp))) then
 !       ON RECUPERE L'ELEMENT LINEAIRE ASSOCIE A L'ELEMENT PARENT
 !       QUADRATIQUE ET LE NOMBRE DE NOEUDS SOMMETS
         call elelin(3, elrefp, elref2, ibid, nnops)
@@ -181,9 +181,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !       FF2 : FONCTIONS DE FORME AUX NOEUDS SOMMETS POUR INTERPOLER LE
 !       CHAMP PRIMAL CORRESPONDANT À LA PRESSION POUR LE CAS HM-XFEM
         ff2(:) = 0.d0
-        call xpoffo(ndim, ndime, elref2, nnops, igeom,&
+        call xpoffo(ndim, ndime, elref2, nnops, igeom, &
                     co, ff2)
-    endif
+    end if
 !
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
 !     CHAMP PRIMAL (DEPL EN MECA -> NDIM CMP / TEMP EN THERMIQUE
@@ -192,46 +192,46 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         ndimc = ndim
     else
         ndimc = 1
-    endif
+    end if
     chpri(:) = 0.d0
-    fk(:,:,:)=0.
-    fe(:)=0.
+    fk(:, :, :) = 0.
+    fe(:) = 0.
 !
 !   FK : FONCTIONS D'ENRICHISSEMENT
     if (nfe .gt. 0 .and. ndimc .eq. 1) then
         r = sqrt(lsn(1)**2+lst(1)**2)
         if (r .gt. r8prem()) then
 !         LE POINT N'EST PAS SUR LE FOND DE FISSURE
-            theta = he(1)*abs(atan2(lsn(1),lst(1)))
+            theta = he(1)*abs(atan2(lsn(1), lst(1)))
         else
 !         LE POINT EST SUR LE FOND DE FISSURE :
 !         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-            theta=0.d0
-        endif
+            theta = 0.d0
+        end if
 !
         call xdeffe(r, theta, fe)
-    else if (nfe.gt.0 .and. lmeca) then
+    else if (nfe .gt. 0 .and. lmeca) then
         if (abs(lsn(1)) .lt. crilsn .and. lst(1) .le. 0) then
             if (he(1) .gt. 0) then
-                call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1), 8),&
-                                  zr(jlsn), zr(jlst), zr(igeom), ka, mu,&
-                                  ff, fk, face='MAIT', elref=elrefp, nnop2=nnops,&
+                call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1), 8), &
+                                  zr(jlsn), zr(jlst), zr(igeom), ka, mu, &
+                                  ff, fk, face='MAIT', elref=elrefp, nnop2=nnops, &
                                   ff2=ff2)
             else
-                call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1), 8),&
-                                  zr(jlsn), zr(jlst), zr(igeom), ka, mu,&
-                                  ff, fk, face='ESCL', elref=elrefp, nnop2=nnops,&
+                call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1), 8), &
+                                  zr(jlsn), zr(jlst), zr(igeom), ka, mu, &
+                                  ff, fk, face='ESCL', elref=elrefp, nnop2=nnops, &
                                   ff2=ff2)
-            endif
+            end if
         else
-            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1), 8),&
-                              zr(jlsn), zr(jlst), zr(igeom), ka, mu,&
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1), 8), &
+                              zr(jlsn), zr(jlst), zr(igeom), ka, mu, &
                               ff, fk, elref=elrefp, nnop2=nnops, ff2=ff2)
-        endif
-    endif
+        end if
+    end if
 !
 !   CALCUL DE L IDENTIFIANT SOUS ELEMENT
-    hea_se=xcalc_code(nfiss,he)
+    hea_se = xcalc_code(nfiss, he)
 !
 !     CALCUL DE L'APPROXIMATION DU CHAMP PRIMAL "CHPRI" (DEPLACEMENT
 !     EN MECA / TEMPERATURE EN THERMIQUE)
@@ -239,93 +239,93 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         do j = 1, nnop
 !
 !         ADRESSE DE LA 1ERE CMP DU CHAMP PRIMAL DU NOEUD INO
-            iad=jcnsv1-1+nbcmp*(zi(jconx1-1+zi(jconx2+ima-1)+j-1)-1)
+            iad = jcnsv1-1+nbcmp*(zi(jconx1-1+zi(jconx2+ima-1)+j-1)-1)
 !
-            ipos=0
+            ipos = 0
 !
 !         DDLS CLASSIQUES POUR LES DEPLACEMENTS
             do i = 1, ndimc
-                ipos=ipos+1
-                chpri(i) = chpri(i) + ff(j)*zr(iad+cmp(ipos))
+                ipos = ipos+1
+                chpri(i) = chpri(i)+ff(j)*zr(iad+cmp(ipos))
             end do
 !
 !         ON ZAPPE LA POSITION DES DDLS DE PRESSION QUELQUE SOIT LA
 !         NATURE DU NOEUD
-            ipos=ipos+1
+            ipos = ipos+1
 !
 !         DDLS HEAVISIDE POUR LES DEPLACEMENTS
             do ig = 1, nfh
                 do i = 1, ndimc
-                    ipos=ipos+1
-                    chpri(i) = chpri(i) + xcalc_heav(zi(jheavn-1+(j-1)*ncompn+ig),hea_se, zi(jhea&
-                               &vn-1+(j-1)*ncompn+ncompn)) *ff(j)*zr(iad+cmp(ipos))
+                    ipos = ipos+1
+                    chpri(i) = chpri(i)+xcalc_heav(zi(jheavn-1+(j-1)*ncompn+ig), hea_se, zi(jhea&
+                               &vn-1+(j-1)*ncompn+ncompn))*ff(j)*zr(iad+cmp(ipos))
                 end do
 !         ON ZAPPE LA POSITION DES DDLS HEAVISIDE DE PRESSION QUELQUE SOIT LA
 !         NATURE DU NOEUD
-                ipos=ipos+1
+                ipos = ipos+1
 !
             end do
 !
         end do
 !         ON TRAITE ICI LES DDLS DE PRESSION (NOEUDS SOMMETS UNIQUEMENT)
         do i = 1, nnops
-            npr(i)=zi(jconx1-1+zi(jconx2+ima-1)+i-1)
+            npr(i) = zi(jconx1-1+zi(jconx2+ima-1)+i-1)
         end do
 !
-        press=0.d0
+        press = 0.d0
 !         DDLS CLASSIQUES POUR LA PRESSION DANS LE MASSIF
         do i = 1, nnops
-            press = press + ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1))
+            press = press+ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1))
 !         DDLS HEAVISIDE POUR LA PRESSION DANS LE MASSIF
             do ig = 1, nfh
-                press = press +xcalc_heav(&
-                        zi(jheavn-1+(i-1)*ncompn+ig), hea_se,&
-                        zi(&
+                press = press+xcalc_heav( &
+                        zi(jheavn-1+(i-1)*ncompn+ig), hea_se, &
+                        zi( &
                         jheavn-1+(i-1)*ncompn+ncompn))*zr(jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1+ig&
-                        &*(ndim+1))&
-                        )*ff2(i&
-                        )
+                                                                                       &*(ndim+1)) &
+                                                          )*ff2(i &
+                                                                )
             end do
         end do
     else
         do j = 1, nnop
 !
 !         ADRESSE DE LA 1ERE CMP DU CHAMP PRIMAL DU NOEUD INO
-            iad=jcnsv1-1+nbcmp*(zi(jconx1-1+zi(jconx2+ima-1)+j-1)-1)
+            iad = jcnsv1-1+nbcmp*(zi(jconx1-1+zi(jconx2+ima-1)+j-1)-1)
 !
-            ipos=0
+            ipos = 0
 !
 !         DDLS CLASSIQUES
             do i = 1, ndimc
-                ipos=ipos+1
-                chpri(i) = chpri(i) + ff(j) * zr(iad+cmp(ipos))
+                ipos = ipos+1
+                chpri(i) = chpri(i)+ff(j)*zr(iad+cmp(ipos))
             end do
 !
 !         DDLS HEAVISIDE
             do ig = 1, nfh
                 do i = 1, ndimc
-                    ipos=ipos+1
-                    chpri(i) = chpri(i) + xcalc_heav(zi(jheavn-1+(j-1)*ncompn+ig),hea_se, zi(jhea&
-                               &vn-1+(j-1)*ncompn+ncompn)) * ff(j) * zr(iad+cmp(ipos))
+                    ipos = ipos+1
+                    chpri(i) = chpri(i)+xcalc_heav(zi(jheavn-1+(j-1)*ncompn+ig), hea_se, zi(jhea&
+                               &vn-1+(j-1)*ncompn+ncompn))*ff(j)*zr(iad+cmp(ipos))
                 end do
             end do
 !
 !         DDL ENRICHIS EN FOND DE FISSURE
             do ig = 1, nfe
                 if (ndimc .eq. 1) then
-                    ipos=ipos+1
-                    chpri(i) = chpri(i) + fe(1)* ff(j) * zr(iad+cmp(ipos))
-                else if (ndimc.gt.1) then
+                    ipos = ipos+1
+                    chpri(i) = chpri(i)+fe(1)*ff(j)*zr(iad+cmp(ipos))
+                else if (ndimc .gt. 1) then
                     do alp = 1, ndimc
-                        ipos=ipos+1
+                        ipos = ipos+1
                         do i = 1, ndimc
-                            chpri(i) = chpri(i) + fk(j,alp,i) * zr(iad+cmp(ipos))
+                            chpri(i) = chpri(i)+fk(j, alp, i)*zr(iad+cmp(ipos))
                         end do
                     end do
-                endif
+                end if
             end do
         end do
-    endif
+    end if
     if (pre1) then
 !
 !      CALCUL DES LAGRANGES DE CONTACT HM-XFEM
@@ -339,73 +339,73 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             if (contac .ge. 2) then
 ! ---  FONCTIONS DE FORMES LINEAIRES POUR LE P2P1
                 call elelin(contac, elrefp, elrefc, ibid, nnol)
-                call xpoffo(ndim, ndime, elrefc, nnol, igeom,&
+                call xpoffo(ndim, ndime, elrefc, nnol, igeom, &
                             co, ff)
             else
                 ASSERT(.false.)
-            endif
+            end if
 ! ---  FONCTIONS DE FORMES MODIFIÉES
             iaindec = iainc+ncompa*(fiss-1)
-            nptint=ninter(fiss)
+            nptint = ninter(fiss)
             call xlacti(typma, nptint, iaindec, lact, nlact)
             nlachm(1) = nlact
             lacthm(1:8) = lact(1:8)
-            ASSERT(nlachm(1).gt.0.or.nlachm(2).gt.0)
+            ASSERT(nlachm(1) .gt. 0 .or. nlachm(2) .gt. 0)
             call xmofhm(lacthm, nlachm, nnol, ff, ffc)
             do j = 1, nnol
-                ngl(j)=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
+                ngl(j) = zi(jconx1-1+zi(jconx2+ima-1)+j-1)
             end do
 !
             if (contac .eq. 3) then
                 do i = 1, 3
 ! ---  CALCUL DE PRE_FLU, LAG_FLI ET LAG_FLS
                     do j = 1, nnol
-                        laghm(i)=laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                      +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j,fiss)-1)+i))*ffc(j)
+                        laghm(i) = laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
+                                    +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j, fiss)-1)+i))*ffc(j)
                     end do
                 end do
 !
                 do i = 1, ndim
 ! ---  CALCUL DE LAGS_C, LAGS_F1 ET LAGS_F2 (DDLS LIES A LA PARTIE COHESIVE)
                     do j = 1, nnol
-                        lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                      +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+                        lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
+                                  +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
                     end do
                 end do
-            else if (contac.eq.2) then
+            else if (contac .eq. 2) then
                 do i = 1, 3
 ! ---  CALCUL DE PRE_FLU, LAG_FLI ET LAG_FLS
                     do j = 1, nnol
-                        laghm(i)=laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+i))*ffc(j)
+                        laghm(i) = laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
+                                  +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+i))*ffc(j)
                     end do
                 end do
 !
                 do i = 1, ndim
 ! ---  CALCUL DE LAGS_C, LAGS_F1 ET LAGS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
                     do j = 1, nnol
-                        lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+                        lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
+                                +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
                     end do
                 end do
 !
                 do i = ndim+1, 2*ndim
 ! ---  CALCUL DE JUPS_C, JUPS_F1 ET JUPS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
                     do j = 1, nnol
-                        lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+                        lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
+                                +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
                     end do
                 end do
 !
                 do i = 2*ndim+1, 3*ndim
 ! ---  CALCUL DE MUS_C, MUS_F1 ET MUS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
                     do j = 1, nnol
-                        lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+                        lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
+                                +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
     else
 !
 !     CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
@@ -415,63 +415,63 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         if (lpint .and. lcont .and. nfiss .eq. 1) then
 !
 !       NOEUD(S) GLOBAUX PORTANT LE(S) LAMBDA(S)
-            nptint=ninter(1)
+            nptint = ninter(1)
             iaindec = iainc
             call xlacti(typma, nptint, iaindec, lact, nlact)
-            ASSERT(nlact.gt.0)
+            ASSERT(nlact .gt. 0)
             if (contac .eq. 1 .or. contac .eq. 2) then
                 nnol = nnop
-            else if (contac.eq.3) then
+            else if (contac .eq. 3) then
 ! --- FONCTIONS DE FORMES LINEAIRES POUR LE P2P1
                 call elelin(contac, elrefp, elrefc, ibid, nnol)
-                call xpoffo(ndim, ndime, elrefc, nnol, igeom,&
+                call xpoffo(ndim, ndime, elrefc, nnol, igeom, &
                             co, ff)
-            endif
+            end if
 ! --- FONCTIONS DE FORMES MODIFIÉES
             call xmoffc(lact, nlact, nnol, ff, ffc)
             do j = 1, nnol
-                ngl(j)=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
+                ngl(j) = zi(jconx1-1+zi(jconx2+ima-1)+j-1)
             end do
 !
             do i = 1, ddlc
 ! --- CALCUL AVEC LES FF DE CONTACT FFC, LINÉAIRES ET MODIFIÉES
                 do j = 1, nnol
-                    lagrs(i)=lagrs(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                   +cmp((1+nfh+nfe)*ndim+i))*ffc(j)
+                    lagrs(i) = lagrs(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
+                                           +cmp((1+nfh+nfe)*ndim+i))*ffc(j)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !       ECRITURE DANS LE .VALE2 POUR LE NOEUD INO2
-    ino2 = nbnoc + inntot
+    ino2 = nbnoc+inntot
     if (pre1) then
         idecv2 = jcnsv2-1+(4*ndimc+4)*(ino2-1)
         idecl2 = jcnsl2-1+(4*ndimc+4)*(ino2-1)
         do i = 1, ndimc
-            zr(idecv2+i)=chpri(i)
-            zl(idecl2+i)=.true.
+            zr(idecv2+i) = chpri(i)
+            zl(idecl2+i) = .true.
         end do
 !       ADRESSAGE DANS LE TABLEAU ZR DES DDLS DE PRESSIONS
-        zr(idecv2+ndimc+1)=press
-        zl(idecl2+ndimc+1)=.true.
+        zr(idecv2+ndimc+1) = press
+        zl(idecl2+ndimc+1) = .true.
         if (lpint .and. lcont) then
 !       ADRESSAGE POUR LES LAGRANGES DE CONTACT HM-XFEM
             do i = 1, 3
-                zr(idecv2+ndimc+1+i)=laghm(i)
-                zl(idecl2+ndimc+1+i)=.true.
+                zr(idecv2+ndimc+1+i) = laghm(i)
+                zl(idecl2+ndimc+1+i) = .true.
             end do
             do i = 1, ndim
-                zr(idecv2+ndimc+1+3+i)=lagrc(i)
-                zl(idecl2+ndimc+1+3+i)=.true.
+                zr(idecv2+ndimc+1+3+i) = lagrc(i)
+                zl(idecl2+ndimc+1+3+i) = .true.
             end do
             if (contac .eq. 2) then
                 do i = ndim+1, 3*ndim
-                    zr(idecv2+ndimc+1+3+i)=lagrc(i)
-                    zl(idecl2+ndimc+1+3+i)=.true.
+                    zr(idecv2+ndimc+1+3+i) = lagrc(i)
+                    zl(idecl2+ndimc+1+3+i) = .true.
                 end do
-            endif
-        endif
+            end if
+        end if
     else
         if (lmeca) then
 !         POUR LA MECA
@@ -481,20 +481,20 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !         POUR LA THERMIQUE
             idecv2 = jcnsv2-1+ndimc*(ino2-1)
             idecl2 = jcnsl2-1+ndimc*(ino2-1)
-        endif
+        end if
         do i = 1, ndimc
-            zr(idecv2+i)=chpri(i)
-            zl(idecl2+i)=.true.
+            zr(idecv2+i) = chpri(i)
+            zl(idecl2+i) = .true.
             if (lpint .and. lcont .and. nfiss .eq. 1) then
 !             POUR LES LAGRANGES DE CONTACT EN MECA
                 nlag = ddlc/ndimc
                 do j = 1, nlag
-                    zr(idecv2+ndimc*j+i)=lagrs(ndimc*(j-1)+i)
-                    zl(idecl2+ndimc*j+i)=.true.
+                    zr(idecv2+ndimc*j+i) = lagrs(ndimc*(j-1)+i)
+                    zl(idecl2+ndimc*j+i) = .true.
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 !

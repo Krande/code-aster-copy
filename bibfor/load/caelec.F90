@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine caelec(load, mesh, nbOcc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -34,8 +34,8 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/getelem.h"
 !
-character(len=8), intent(in) :: load, mesh
-integer, intent(in) :: nbOcc
+    character(len=8), intent(in) :: load, mesh
+    integer, intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,8 +68,8 @@ integer, intent(in) :: nbOcc
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load , mesh, valeType,&
-                        nbMap      , map        , nbCmp)
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
+                        nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', vr=valv)
 !
@@ -90,7 +90,7 @@ integer, intent(in) :: nbOcc
             if (code .eq. 'PARA') then
                 call getvr8(keywordfact, 'DIST', iocc=iocc, scal=d, nbret=nbRet)
                 if (nbRet .ne. 0) then
-                    zcod  = 12.d0
+                    zcod = 12.d0
                     p1(1) = d
                     p1(2) = 0.d0
                     p1(3) = 0.d0
@@ -101,7 +101,7 @@ integer, intent(in) :: nbOcc
                     p2(1) = 0.d0
                     p2(2) = 0.d0
                     p2(3) = 0.d0
-                endif
+                end if
             else if (code .eq. 'INFI') then
                 zcod = 2.d0
                 call getvr8(keywordfact, 'POINT1', iocc=iocc, nbval=3, vect=p1, nbret=nbRet)
@@ -110,8 +110,8 @@ integer, intent(in) :: nbOcc
                 zcod = 3.d0
                 call getvr8(keywordfact, 'POINT1', iocc=iocc, nbval=3, vect=p1, nbret=nbRet)
                 call getvr8(keywordfact, 'POINT2', iocc=iocc, nbval=3, vect=p2, nbret=nbRet)
-            endif
-        endif
+            end if
+        end if
 
 ! ----- Read mesh affectation
         call getelem(mesh, keywordfact, iocc, 'F', listCell, nbCell)
@@ -125,7 +125,7 @@ integer, intent(in) :: nbOcc
         valv(5) = p2(2)
         valv(6) = p2(3)
         valv(7) = zcod
-        call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell,&
+        call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell, &
                     limanu=zi(jvCell))
         call jedetr(listCell)
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine camoat(nomres, numref, intf, raid, raildl,&
+subroutine camoat(nomres, numref, intf, raid, raildl, &
                   inord)
     implicit none
 !
@@ -59,12 +59,12 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ier, ik, ino, inord
-    integer :: j, lldeeq, lldes, llncmp, llnoin,  ltddl
+    integer :: j, lldeeq, lldes, llncmp, llnoin, ltddl
     integer :: ltpar, nbatta, nbcmp, nbcpmx, nbdeb, nbec, nbfin
     integer :: nbint, nbmn, nbnoe, nbnot, neq, ntail, numgd
 !
 !-----------------------------------------------------------------------
-    parameter (nbcpmx=300)
+    parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: nomres, intf, typcou, nomnoe, nomcmp, mailla
     character(len=19) :: numddl, numref
@@ -75,21 +75,21 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------
-    data pgc /'CAMOAT'/
+    data pgc/'CAMOAT'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    typdef='ATTACHE'
+    typdef = 'ATTACHE'
 !
 !---------------------RECHERCHE DU NUMDDL ASSOCIE A LA MATRICE----------
 !
     call dismoi('NOM_NUME_DDL', raid, 'MATR_ASSE', repk=numddl)
-    numddl(15:19)='.NUME'
+    numddl(15:19) = '.NUME'
 !
 !---------------------REQUETTE DU DEEQ DU NUMDDL------------------------
 !
-    numddl(15:19)='.NUME'
-    deeq=numddl//'.DEEQ'
+    numddl(15:19) = '.NUME'
+    deeq = numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
@@ -106,7 +106,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !
 !-----------REQUETTE ADRESSE DE LA TABLE DESCRIPTION DES DEFORMEES------
 !
-    desdef=intf//'.IDC_DEFO'
+    desdef = intf//'.IDC_DEFO'
     call jeveuo(desdef, 'L', lldes)
     call jelira(desdef, 'LONMAX', nbnot)
 !**************************************************************
@@ -121,54 +121,54 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !
 !-----------COMPTAGE DU NOMBRE DE NOEUDS MAC NEAL-----------------------
 !
-    nbdeb=nbnot
-    nbfin=0
+    nbdeb = nbnot
+    nbfin = 0
 !
     do j = 1, nbint
         call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
-        typcou=idc_type(j)
+        typcou = idc_type(j)
         if (typcou .eq. 'MNEAL   ') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)
             do i = 1, nbnoe
-                ik=zi(llnoin+i-1)
-                nbfin=max(nbfin,ik)
-                nbdeb=min(nbdeb,ik)
+                ik = zi(llnoin+i-1)
+                nbfin = max(nbfin, ik)
+                nbdeb = min(nbdeb, ik)
             end do
             call jelibe(jexnum(intf//'.IDC_LINO', j))
-        endif
+        end if
     end do
 !
     call jelibe(intf//'.IDC_TYPE')
 !
     if (nbfin .gt. 0) then
-        nbmn=nbfin-nbdeb+1
+        nbmn = nbfin-nbdeb+1
     else
-        nbmn=0
-    endif
+        nbmn = 0
+    end if
 !
 !
 !----------ALLOCATION DU VECTEUR DES DDL A IMPOSER A 1------------------
 !                    ET DES VALEURS DES PARAMETRES NOEUD_CMP
-    ntail=nbmn*nbcmp
+    ntail = nbmn*nbcmp
     if (ntail .eq. 0) goto 999
 !
-    temddl='&&'//pgc//'.LISTE.DDL'
-    tempar='&&'//pgc//'.PARA.NOCMP'
+    temddl = '&&'//pgc//'.LISTE.DDL'
+    tempar = '&&'//pgc//'.PARA.NOCMP'
     call wkvect(temddl, 'V V I', ntail, ltddl)
     call wkvect(tempar, 'V V K16', ntail, ltpar)
     if (raildl .eq. '                   ') then
-        raildl='&&'//pgc//'.RAID.LDLT'
+        raildl = '&&'//pgc//'.RAID.LDLT'
         call facmtr(raid, raildl, ier)
         if (ier .eq. -2) then
             call utmess('F', 'ALGORITH12_40')
-        endif
-    endif
+        end if
+    end if
 !
 !
 !-------------COMPTAGE ET REPERAGE DES DEFORMEES A CALCULER-------------
 !
 !
-    nbatta=0
+    nbatta = 0
 !
     if (nbmn .gt. 0) then
         do i = nbdeb, nbfin
@@ -176,25 +176,25 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !          ICOD=ZI(LLDES+2*NBNOT+I-1)
             call isdeco(zi(lldes+2*nbnot+(i-1)*nbec+1-1), idec, nbcmp)
 !**************************************************************
-            ino=zi(lldes+i-1)
+            ino = zi(lldes+i-1)
             call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
             do j = 1, nbcmp
                 if (idec(j) .eq. 1) then
-                    nbatta=nbatta+1
-                    nomcmp=zk8(llncmp+j-1)
-                    zk16(ltpar+nbatta-1)=nomnoe//nomcmp
-                    call cheddl(zi(lldeeq), neq, ino, j, zi(ltddl+nbatta- 1),&
+                    nbatta = nbatta+1
+                    nomcmp = zk8(llncmp+j-1)
+                    zk16(ltpar+nbatta-1) = nomnoe//nomcmp
+                    call cheddl(zi(lldeeq), neq, ino, j, zi(ltddl+nbatta-1), &
                                 1)
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
 !
 !------------------CALCUL DES MODES D'ATTACHE---------------------------
 !
 !
-    call defsta(nomres, numref, raildl, zi(ltddl), zk16(ltpar),&
+    call defsta(nomres, numref, raildl, zi(ltddl), zk16(ltpar), &
                 1, nbatta, typdef, inord)
 !
 !

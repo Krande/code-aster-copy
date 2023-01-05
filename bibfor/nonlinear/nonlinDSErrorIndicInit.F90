@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSErrorIndicInit(model, ds_constitutive, ds_errorindic)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=24), intent(in) :: model
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
+    character(len=24), intent(in) :: model
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,25 +61,25 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('MECANONLINE',ifm, niv)
+    call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_74')
-    endif
+    end if
 !
 ! - Initializations (incremental way for global error)
 !
     ds_errorindic%erre_thm_glob = 0.d0
-    l_erre_thm  = ds_errorindic%l_erre_thm
+    l_erre_thm = ds_errorindic%l_erre_thm
 !
 ! - Get value of THETA
 !
-    call jeveuo(ds_constitutive%carcri(1:19)//'.VALV', 'L', vr = v_valv)
+    call jeveuo(ds_constitutive%carcri(1:19)//'.VALV', 'L', vr=v_valv)
     ds_errorindic%parm_theta = v_valv(PARM_THETA_THM)
 !
 ! - Checks for behaviour
 !
-    call jeveuo(ds_constitutive%compor(1:19)//'.VALE', 'L', vk16 = v_compor_vale)
-    call jeveuo(ds_constitutive%compor(1:19)//'.DESC', 'L', vi   = v_compor_desc)
+    call jeveuo(ds_constitutive%compor(1:19)//'.VALE', 'L', vk16=v_compor_vale)
+    call jeveuo(ds_constitutive%compor(1:19)//'.DESC', 'L', vi=v_compor_desc)
     nb_affe = v_compor_desc(3)
     do i_affe = 1, nb_affe
         rela_comp = v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1))
@@ -89,15 +89,15 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
         if (l_erre_thm) then
             if (.not. l_kit_thm .and. rela_thmc .ne. 'VIDE') then
                 call utmess('F', 'INDICATEUR_23')
-            endif
+            end if
             if (l_erre_thm) then
-                if (rela_thmc .ne. 'LIQU_SATU' .and. rela_meca .ne. 'ELAS' .and.&
+                if (rela_thmc .ne. 'LIQU_SATU' .and. rela_meca .ne. 'ELAS' .and. &
                     rela_thmc .ne. 'VIDE') then
                     call utmess('F', 'INDICATEUR_25')
-                endif
-            endif
-        endif
-    enddo
+                end if
+            end if
+        end if
+    end do
 !
 ! - Caracteristics lengths
 !
@@ -105,6 +105,6 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
         call cetule(model, tbgrca, iret)
         ds_errorindic%adim_l = tbgrca(1)
         ds_errorindic%adim_p = tbgrca(2)
-    endif
+    end if
 !
 end subroutine

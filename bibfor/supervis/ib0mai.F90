@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine ib0mai()
 #include "asterfort/utmess.h"
     integer, parameter :: n = 5
     integer :: lfic(n), mfic
-    common /fenvje/  lfic,mfic
+    common/fenvje/lfic, mfic
 !
     character(len=8) :: nomf, k8tab(3)
     integer :: unmega, idebug, iret, lois
@@ -46,7 +46,7 @@ subroutine ib0mai()
 !
     valr = 0.d0
 !     --- MEMOIRE POUR LE GESTIONNAIRE D'OBJET ---
-    unmega = 1024 * 1024
+    unmega = 1024*1024
 !     RESTRICTION POUR UNE TAILLE MEMOIRE JEVEUX EXACTE
     lois = loisem()
 ! --- UNITES LOGIQUES
@@ -58,19 +58,19 @@ subroutine ib0mai()
 !
     memory = 0.d0
     call gtoptr('memory', memory, iret)
-    moctet = memory * unmega
+    moctet = memory*unmega
     if (moctet .gt. ismaem()) then
         valr(1) = moctet
         valr(2) = ismaem()
         call utmess('F', 'JEVEUX_1', nr=2, valr=valr)
-    endif
+    end if
     mxdyn = int(moctet)
 !
     call jedebu(4, mxdyn/lois, idebug)
 !
 !     --- ALLOCATION D'UNE BASE DE DONNEES TEMPORAIRE VOLATILE---
     nomf = 'VOLATILE'
-    call jeinif('DEBUT', 'DETRUIT', nomf, 'V', 250,&
+    call jeinif('DEBUT', 'DETRUIT', nomf, 'V', 250, &
                 100, 1)
     call superv_before()
 ! --- IMPRESSION DE L'ENTETE
@@ -83,12 +83,12 @@ subroutine ib0mai()
         call utmess('I', 'SUPERVIS2_22', nr=3, valr=valr)
     else
         call utmess('I', 'SUPERVIS2_29', nr=2, valr=valr)
-    endif
+    end if
 !
     sizf = mfic/(1024*1024.0d0)
     call utmess('I', 'SUPERVIS2_24', sr=sizf)
 !
     if (idebug .eq. 1) then
         call utmess('I', 'SUPERVIS_12')
-    endif
+    end if
 end subroutine

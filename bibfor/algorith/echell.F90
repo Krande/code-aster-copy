@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,12 +42,12 @@ subroutine echell(geomi, ech)
     real(kind=8) :: ech
 !
     call jemarq()
-    coorjv=geomi(1:19)//'.VALE'
+    coorjv = geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
     call jelira(coorjv, 'LONMAX', n1)
-    iadcoo=iadcoo-1
+    iadcoo = iadcoo-1
     do i = 1, n1
-        zr(iadcoo+i)=zr(iadcoo+i)*ech
+        zr(iadcoo+i) = zr(iadcoo+i)*ech
     end do
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,12 +63,12 @@ subroutine te0235(option, nomte)
     character(len=8) :: fami, poum
 !
     integer :: nbres
-    parameter (nbres=6)
+    parameter(nbres=6)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres), elas_keyword
     integer :: elas_id
-    data nomres/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
+    data nomres/'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
@@ -76,7 +76,7 @@ subroutine te0235(option, nomte)
     integer, parameter :: nb_cara = 5
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','AY1','AZ1'/
+    data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1'/
 ! --------------------------------------------------------------------------------------------------
 !
 !   Caracteristiques des elements
@@ -85,9 +85,9 @@ subroutine te0235(option, nomte)
     itype = 0
 !   Caracteristiques generales des sections
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-    a     = vale_cara(1)
-    xiy   = vale_cara(2)
-    xiz   = vale_cara(3)
+    a = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
     alfay = vale_cara(4)
     alfaz = vale_cara(5)
 !
@@ -96,34 +96,34 @@ subroutine te0235(option, nomte)
 !
     if (nomte .eq. 'MECA_POU_D_TG') then
         valres(:) = 0.0d0
-        fami='FPG1'
-        kpg=1
-        spt=1
-        poum='+'
+        fami = 'FPG1'
+        kpg = 1
+        spt = 1
+        poum = '+'
         call get_elas_id(zi(lmater), elas_id, elas_keyword)
-        call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', elas_keyword, 0, ' ', [0.0d0],&
+        call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', elas_keyword, 0, ' ', [0.0d0], &
                     3, nomres, valres, codres, 1)
-        e   = valres(1)
+        e = valres(1)
         xnu = valres(2)
         rho = valres(3)
-        g   = e /(2.0d0*(1.0d0 + xnu))
-    else if (nomte.eq.'MECA_POU_D_TGM') then
+        g = e/(2.0d0*(1.0d0+xnu))
+    else if (nomte .eq. 'MECA_POU_D_TGM') then
 !       calcul de E et G
         call pmfitx(zi(lmater), 1, casece, g)
 !       calcul de RHO MOYEN
         call pmfitx(zi(lmater), 2, casrho, rbid)
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
-        a   = carsec(1)
+        a = carsec(1)
         xiy = carsec(5)
         xiz = carsec(4)
         rho = casrho(1)/a
-        e   = casece(1)/a
-    endif
+        e = casece(1)/a
+    end if
 !   Coordonnees des noeuds
-    xl =  lonele()
+    xl = lonele()
 !   Récupération des orientations
     call jevech('PCAORIE', 'L', lorien)
 !   Récupération du vecteur rotation
@@ -132,17 +132,17 @@ subroutine te0235(option, nomte)
     omega(2) = zr(irota+2)*zr(irota)
     omega(3) = zr(irota+3)*zr(irota)
     call matrot(zr(lorien), pgl)
-    do  i = 1, 3
-        s=0.d0
-        do  j = 1, 3
-            s=s+pgl(i,j)*omega(j)
-        enddo
-        omegl(i)=s
-    enddo
+    do i = 1, 3
+        s = 0.d0
+        do j = 1, 3
+            s = s+pgl(i, j)*omega(j)
+        end do
+        omegl(i) = s
+    end do
 !   Calcul de la matrice de masse locale
     matp1(:) = 0.0d0
 !   Poutre droite section constante ou variable (1 ou 2)
-    call poriro(itype, matp1, rho, omegl, e, a, a, xl, xiy, xiy,&
+    call poriro(itype, matp1, rho, omegl, e, a, a, xl, xiy, xiy, &
                 xiz, xiz, g, alfay, alfay, alfaz, alfaz)
     call masstg(matp1, mlv)
     call jevech('PMATUUR', 'E', lmat)

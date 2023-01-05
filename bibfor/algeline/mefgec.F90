@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefgec(ndim, nbcyl, som, xint, yint,&
+subroutine mefgec(ndim, nbcyl, som, xint, yint, &
                   rint, dcent, ficent, d, fi)
 ! aslint: disable=
     implicit none
@@ -71,15 +71,15 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
 ! ---                  DES CYLINDRES INTERIEURS
 !
     do i = 1, nbcyl
-        dcent(i) = sqrt( ( xint(i)-xext)*(xint(i)-xext) + (yint(i)-yext) *(yint(i)-yext ) )
+        dcent(i) = sqrt((xint(i)-xext)*(xint(i)-xext)+(yint(i)-yext)*(yint(i)-yext))
         if (dcent(i) .ne. 0.d0) then
             ficent(i) = acos((xint(i)-xext)/dcent(i))
             if ((yint(i)-yext) .lt. 0.d0) then
                 ficent(i) = 2.d0*pi-ficent(i)
-            endif
+            end if
         else
             ficent(i) = 0.d0
-        endif
+        end if
     end do
 !
 ! --- (D,FI) : COORDONNEES POLAIRES RELATIVES DES CENTRES
@@ -87,26 +87,26 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
 !
     do i = 1, nbcyl
         do j = 1, nbcyl
-            d(j,i) = sqrt(&
-                     ( xint(i)-xint(j))*(xint(i)-xint(j))+ (yint(i)-yint(j))*(yint(i)-yint(j) ))
+            d(j, i) = sqrt( &
+                      (xint(i)-xint(j))*(xint(i)-xint(j))+(yint(i)-yint(j))*(yint(i)-yint(j)))
             if (i .ne. j) then
-                if ((rint(j)+rint(i)) .ge. d(j,i)) then
-                    write(note(1:3),'(I3.3)') i
-                    write(not2(1:3),'(I3.3)') j
+                if ((rint(j)+rint(i)) .ge. d(j, i)) then
+                    write (note(1:3), '(I3.3)') i
+                    write (not2(1:3), '(I3.3)') j
                     valk(1) = note
                     valk(2) = not2
                     call utmess('F', 'ALGELINE_80', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
 !
-            if (d(j,i) .ne. 0.d0) then
-                fi(j,i) = acos((xint(i)-xint(j))/d(j,i))
+            if (d(j, i) .ne. 0.d0) then
+                fi(j, i) = acos((xint(i)-xint(j))/d(j, i))
                 if ((yint(i)-yint(j)) .lt. 0.d0) then
-                    fi(j,i) = 2.d0*pi-fi(j,i)
-                endif
+                    fi(j, i) = 2.d0*pi-fi(j, i)
+                end if
             else
-                fi(j,i) = 0.d0
-            endif
+                fi(j, i) = 0.d0
+            end if
 !
         end do
     end do
@@ -118,9 +118,9 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
     do i = 1, nbcyl
         delta = sqrt((xint(i)-xext)**2+(yint(i)*yext)**2)
         if (delta .ge. (rext-rint(i))) then
-            write(note(1:3),'(I3.3)') i
+            write (note(1:3), '(I3.3)') i
             call utmess('F', 'ALGELINE_81', sk=note)
-        endif
+        end if
     end do
 !
 !

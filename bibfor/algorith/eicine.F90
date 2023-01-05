@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eicine(ndim, axi, nno1, nno2, vff1,&
-                  vff2, wref, dffr2, geom, ang,&
+subroutine eicine(ndim, axi, nno1, nno2, vff1, &
+                  vff2, wref, dffr2, geom, ang, &
                   wg, b)
 !
 !
@@ -60,27 +60,27 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
         call subaco(nno2, dffr2, geom, cova)
         call sumetr(cova, metr, jac)
         wg = wref*jac
-    else if (ndim.eq.2) then
-        call dfdm1d(nno2, wref, dffr2, geom, dfdx,&
+    else if (ndim .eq. 2) then
+        call dfdm1d(nno2, wref, dffr2, geom, dfdx, &
                     cour, wg, cosa, sina)
-    endif
+    end if
 !
     if (axi) then
-        r = ddot(nno2,geom,2,vff2,1)
+        r = ddot(nno2, geom, 2, vff2, 1)
 ! ----------------------------------------------------------------------
 ! POUR LES ELEMENTS AVEC COUPLAGE HM, DANS LE CAS OU R EGAL 0, ON A UN
 ! JACOBIEN NUL EN UN PG. ON PRENDS LE MAX DU RAYON MULTIPLIE PAR 1.E-3
 ! ----------------------------------------------------------------------
         if (r .eq. 0.d0) then
-            rmax=geom(1,1)
+            rmax = geom(1, 1)
             do n = 2, nno2
-                rmax=max(geom(1,n),rmax)
+                rmax = max(geom(1, n), rmax)
             end do
             wg = wg*1.d-03*rmax
         else
             wg = r*wg
-        endif
-    endif
+        end if
+    end if
 !
 !    CALCUL DES ANGLES NAUTIQUES AU POINT D'INTEGRATION
 !
@@ -88,7 +88,7 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
     if (ndim .eq. 3) nang = 3
     call r8inir(3, 0.d0, angloc, 1)
     do i = 1, nang
-        angloc(i) = ddot(nno2,ang(i),nang,vff2,1)
+        angloc(i) = ddot(nno2, ang(i), nang, vff2, 1)
     end do
 !
 !    CALCUL DE LA MATRICE DE ROTATION GLOBAL -> LOCAL
@@ -100,8 +100,8 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
     do i = 1, ndim
         do j = 1, ndim
             do n = 1, nno1
-                b(i,j,n) = - rot(i,j)*vff1(n)
-                b(i,j,n+nno1) = rot(i,j)*vff1(n)
+                b(i, j, n) = -rot(i, j)*vff1(n)
+                b(i, j, n+nno1) = rot(i, j)*vff1(n)
             end do
         end do
     end do

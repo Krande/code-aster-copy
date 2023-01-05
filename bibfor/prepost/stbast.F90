@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,24 +33,24 @@ subroutine stbast(nfie, nfis, lgrcou)
 !
     character(len=16) :: k16nom
 !
-    if (ulisop ( nfie, k16nom ) .eq. 0) then
+    if (ulisop(nfie, k16nom) .eq. 0) then
         call ulopen(nfie, ' ', 'IDEAS', 'NEW', 'O')
     else
 !       TANT QU'IL Y AURA DES IUNIFI...
-        call uldefi(nfie, ' ', 'IDEAS', 'L', 'NEW',&
+        call uldefi(nfie, ' ', 'IDEAS', 'L', 'NEW', &
                     'O')
-    endif
-    if (ulisop ( nfis, k16nom ) .eq. 0) then
+    end if
+    if (ulisop(nfis, k16nom) .eq. 0) then
         call ulopen(nfis, ' ', 'FICHIER-MODELE', 'NEW', 'O')
-    endif
+    end if
 !
     call presup(nfie, nfis, lgrcou)
 !
-    write(nfis,*) 'FIN'
+    write (nfis, *) 'FIN'
     rewind nfis
 !
-    call uldefi(-nfie, ' ', ' ', ' ', ' ',&
+    call uldefi(-nfie, ' ', ' ', ' ', ' ', &
                 ' ')
-    call uldefi(-nfis, ' ', ' ', ' ', ' ',&
+    call uldefi(-nfis, ' ', ' ', ' ', ' ', &
                 ' ')
 end subroutine

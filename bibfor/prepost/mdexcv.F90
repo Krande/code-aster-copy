@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
+subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord, &
                   typent, typgeo, nbval, nbprof, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_____________________________________________________________________
@@ -65,11 +65,11 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     integer :: edlect
-    parameter (edlect=0)
+    parameter(edlect=0)
     integer :: edcomp
-    parameter (edcomp=2)
+    parameter(edcomp=2)
     integer :: iterma
-    parameter (iterma=1)
+    parameter(iterma=1)
 !
     med_idt :: idfimd
     integer :: nbprof, iprof, iaux, npr, nip, ntmp
@@ -87,7 +87,7 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !
     nbval = 0
     codret = 0
-    inquire(file=nofimd,exist=ficexi)
+    inquire (file=nofimd, exist=ficexi)
 !
     if (.not. ficexi) then
 !
@@ -101,39 +101,39 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
         else
             dejouv = .true.
             iaux = 0
-        endif
+        end if
         if (iaux .eq. 0) then
 !
 !====
 ! 2. COMBIEN DE VALEURS ?
 !====
 !
-            call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
-                           typgeo, iterma, nomamd, nompro, nomloc,&
+            call as_mfdonp(idfimd, nochmd, numpt, numord, typent, &
+                           typgeo, iterma, nomamd, nompro, nomloc, &
                            nbprof, codret)
             do iprof = 1, nbprof
-                call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
-                               numpt, numord, iprof, nompro, edcomp,&
+                call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd, &
+                               numpt, numord, iprof, nompro, edcomp, &
                                npr, nomloc, nip, ntmp, codret)
                 if (codret .eq. 0) then
-                    nbval = nbval + nip*ntmp
-                endif
+                    nbval = nbval+nip*ntmp
+                end if
             end do
 !
 !====
 ! 3. FERMETURE DU FICHIER
 !====
 !
-            if (.not.dejouv) then
+            if (.not. dejouv) then
                 call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
-                    saux08='mficlo'
+                    saux08 = 'mficlo'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
                 idfimd = 0
-            endif
+            end if
 !
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

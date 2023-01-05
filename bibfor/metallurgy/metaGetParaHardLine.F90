@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,25 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaHardLine(poum     , fami     , kpg, ksp, j_mater,&
-                               meta_type, nb_phasis,&
-                               young    , coef     , h)
+subroutine metaGetParaHardLine(poum, fami, kpg, ksp, j_mater, &
+                               meta_type, nb_phasis, &
+                               young, coef, h)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/Metallurgy_type.h"
 !
-character(len=1), intent(in) :: poum
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg, ksp
-integer, intent(in) :: j_mater
-integer, intent(in) :: meta_type
-integer, intent(in) :: nb_phasis
-real(kind=8), intent(in) :: young
-real(kind=8), intent(in) :: coef
-real(kind=8), intent(out) :: h(*)
+    character(len=1), intent(in) :: poum
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg, ksp
+    integer, intent(in) :: j_mater
+    integer, intent(in) :: meta_type
+    integer, intent(in) :: nb_phasis
+    real(kind=8), intent(in) :: young
+    real(kind=8), intent(in) :: coef
+    real(kind=8), intent(out) :: h(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,10 +79,10 @@ real(kind=8), intent(out) :: h(*)
         resu_name(3) = 'C_D_SIGM_EPSI'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, j_mater, &
+                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0], &
                 nb_resu, resu_name, resu_vale, codret, 2)
     do i_resu = 1, nb_resu
         h(i_resu) = resu_vale(i_resu)

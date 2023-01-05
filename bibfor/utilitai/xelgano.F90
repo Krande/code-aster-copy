@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xelgano(modele,sigelga,sigseno)
+subroutine xelgano(modele, sigelga, sigseno)
 !
 !     routine utilitaire X-FEM
 !
@@ -53,8 +53,8 @@ subroutine xelgano(modele,sigelga,sigseno)
     character(len=16) :: option
 
     integer :: nchin, nchout
-    parameter (nchin=2)
-    parameter (nchout=1)
+    parameter(nchin=2)
+    parameter(nchout=1)
     character(len=8)  :: lpain(nchin), lpaout(nchout)
     character(len=24) :: lchin(nchin), lchout(nchout)
     character(len=24) :: ligrmo
@@ -76,7 +76,7 @@ subroutine xelgano(modele,sigelga,sigseno)
     lpaout(1) = 'PCONTSER'
     lchout(1) = sigseno
 
-    call calcul('S',option,ligrmo,nchin,lchin,lpain,nchout,lchout,lpaout,'V','OUI')
+    call calcul('S', option, ligrmo, nchin, lchin, lpain, nchout, lchout, lpaout, 'V', 'OUI')
 
     call jedema()
 end subroutine

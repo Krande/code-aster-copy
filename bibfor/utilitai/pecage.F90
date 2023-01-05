@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine pecage(resu, modele, nbocc)
     integer :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nm, nbgrma, jgr
     integer :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, nbparc
     integer :: np, ifm, niv, iorig, i, icage
-    parameter (mxvale=29,nbparr=48)
+    parameter(mxvale=29, nbparr=48)
     real(kind=8) :: valpar(nbparr), r8b, xyp(2), orig(3), zero
     character(len=3) :: symex, symey
     character(len=8) :: k8b, noma, lpain(15), lpaout(5)
@@ -70,31 +70,31 @@ subroutine pecage(resu, modele, nbocc)
     aster_logical :: nsymx, nsymy
     real(kind=8), pointer :: trav1(:) => null()
 !     ------------------------------------------------------------------
-    character(len=16), parameter :: noparr(nbparr) =&
-        (/'LIEU            ', 'ENTITE          ', 'A_M             ', 'CDG_Y_M         ',&
-          'CDG_Z_M         ', 'IY_G_M          ', 'IZ_G_M          ', 'IYZ_G_M         ',&
-          'Y_MAX           ', 'Z_MAX           ', 'Y_MIN           ', 'Z_MIN           ',&
-          'R_MAX           ', 'A               ', 'CDG_Y           ', 'CDG_Z           ',&
-          'IY_G            ', 'IZ_G            ', 'IYZ_G           ', 'IY              ',&
-          'IZ              ', 'ALPHA           ', 'Y_P             ', 'Z_P             ',&
-          'IY_P            ', 'IZ_P            ', 'IYZ_P           ', 'JX              ',&
-          'AY              ', 'AZ              ', 'EY              ', 'EZ              ',&
-          'PCTY            ', 'PCTZ            ', 'JG              ', 'KY              ',&
-          'KZ              ', 'IYR2_G          ', 'IZR2_G          ', 'IYR2            ',&
-          'IZR2            ', 'IYR2_P          ', 'IZR2_P          ', 'RY              ',&
-          'RZ              ', 'NOM_OBJET       ', 'TYPE_OBJET      ', 'NOM_SD          '/)
-    character(len=3), parameter :: typarr(nbparr) =&
-        (/'K24','K8 ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
-          'R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
-          'R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
-          'R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
-          'R  ','R  ','R  ','R  ','R  ','K16','K16','K8 '/)
+    character(len=16), parameter :: noparr(nbparr) = &
+                 (/'LIEU            ', 'ENTITE          ', 'A_M             ', 'CDG_Y_M         ', &
+                   'CDG_Z_M         ', 'IY_G_M          ', 'IZ_G_M          ', 'IYZ_G_M         ', &
+                   'Y_MAX           ', 'Z_MAX           ', 'Y_MIN           ', 'Z_MIN           ', &
+                   'R_MAX           ', 'A               ', 'CDG_Y           ', 'CDG_Z           ', &
+                   'IY_G            ', 'IZ_G            ', 'IYZ_G           ', 'IY              ', &
+                   'IZ              ', 'ALPHA           ', 'Y_P             ', 'Z_P             ', &
+                   'IY_P            ', 'IZ_P            ', 'IYZ_P           ', 'JX              ', &
+                   'AY              ', 'AZ              ', 'EY              ', 'EZ              ', &
+                   'PCTY            ', 'PCTZ            ', 'JG              ', 'KY              ', &
+                   'KZ              ', 'IYR2_G          ', 'IZR2_G          ', 'IYR2            ', &
+                   'IZR2            ', 'IYR2_P          ', 'IZR2_P          ', 'RY              ', &
+                    'RZ              ', 'NOM_OBJET       ', 'TYPE_OBJET      ', 'NOM_SD          '/)
+    character(len=3), parameter :: typarr(nbparr) = &
+                           (/'K24', 'K8 ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                             'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
+                                     'R  ', 'R  ', 'R  ', 'R  ', 'R  ', 'K16', 'K16', 'K8 '/)
 !     ------------------------------------------------------------------
 !
     call jemarq()
     ibid = 0
-    c16b=(0.d0,0.d0)
-    r8b=0.d0
+    c16b = (0.d0, 0.d0)
+    r8b = 0.d0
     iorig = 0
     icage = 1
 !
@@ -125,8 +125,8 @@ subroutine pecage(resu, modele, nbocc)
     lpaout(1) = 'PCARAGE'
     lchout(1) = chelem
 !
-    call calcul('S', option, ligrel, 1, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrel, 1, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     nsymx = .false.
@@ -135,7 +135,7 @@ subroutine pecage(resu, modele, nbocc)
     call getvtx('CARA_GEOM', 'SYME_Y', iocc=1, scal=symey, nbret=ns2)
     if (symex .eq. 'OUI') nsymx = .true.
     if (symey .eq. 'OUI') nsymy = .true.
-    call getvr8('CARA_GEOM', 'ORIG_INER', iocc=1, nbval=2, vect=xyp,&
+    call getvr8('CARA_GEOM', 'ORIG_INER', iocc=1, nbval=2, vect=xyp, &
                 nbret=np)
 !
 !     --- CREATION DE LA TABLE ---
@@ -145,12 +145,12 @@ subroutine pecage(resu, modele, nbocc)
         call tbajpa(resu, nbparr, noparr, typarr)
     else
         call utmess('F', 'UTILITAI3_48')
-    endif
-    nbparc = nbparr - 3
+    end if
+    nbparc = nbparr-3
     valk(1) = noma
     valk(2) = 'MAILLAGE'
     valk(3) = noma
-    call tbajli(resu, 3, noparr(nbparr-2:nbparr), [ibid], [r8b],&
+    call tbajli(resu, 3, noparr(nbparr-2:nbparr), [ibid], [r8b], &
                 [c16b], valk, 0)
 !
     AS_ALLOCATE(vr=trav1, size=mxvale)
@@ -167,22 +167,22 @@ subroutine pecage(resu, modele, nbocc)
         valk(2) = '????????'
 !
         if (nt .ne. 0) then
-            call pemica(chelem, mxvale, trav1, 0, [ibid],&
+            call pemica(chelem, mxvale, trav1, 0, [ibid], &
                         orig, iorig, icage)
-            call pecag2(ndim, nsymx, nsymy, np, xyp,&
+            call pecag2(ndim, nsymx, nsymy, np, xyp, &
                         trav1, valpar)
-            call pecag3(ndim, nsymx, nsymy, noma, 'TOUT',&
+            call pecag3(ndim, nsymx, nsymy, noma, 'TOUT', &
                         0, k8b, valpar)
             valk(1) = noma
             valk(2) = 'TOUT'
-            call tbajli(resu, nbparc, noparr, [ibid], valpar,&
+            call tbajli(resu, nbparc, noparr, [ibid], valpar, &
                         [c16b], valk, 0)
-        endif
+        end if
 !
         if (ng .ne. 0) then
             nbgrma = -ng
             call wkvect('&&PECAGE_GROUPM', 'V V K24', nbgrma, jgr)
-            call getvtx('CARA_GEOM', 'GROUP_MA', iocc=iocc, nbval=nbgrma, vect=zk24(jgr),&
+            call getvtx('CARA_GEOM', 'GROUP_MA', iocc=iocc, nbval=nbgrma, vect=zk24(jgr), &
                         nbret=ng)
             valk(2) = 'GROUP_MA'
             do ig = 1, nbgrma
@@ -190,31 +190,31 @@ subroutine pecage(resu, modele, nbocc)
                 if (iret .eq. 0) then
                     call utmess('F', 'UTILITAI3_46', sk=zk24(jgr+ig-1))
                     goto 20
-                endif
+                end if
                 call jelira(jexnom(mlggma, zk24(jgr+ig-1)), 'LONUTI', nbma)
                 if (nbma .eq. 0) then
                     call utmess('A', 'UTILITAI3_47', sk=zk24(jgr+ig-1))
                     goto 20
-                endif
+                end if
                 call jeveuo(jexnom(noma//'.GROUPEMA', zk24(jgr+ig-1)), 'L', jad)
-                call pemica(chelem, mxvale, trav1, nbma, zi(jad),&
+                call pemica(chelem, mxvale, trav1, nbma, zi(jad), &
                             orig, iorig, icage)
-                call pecag2(ndim, nsymx, nsymy, np, xyp,&
+                call pecag2(ndim, nsymx, nsymy, np, xyp, &
                             trav1, valpar)
-                call pecag3(ndim, nsymx, nsymy, noma, 'GROUP_MA',&
+                call pecag3(ndim, nsymx, nsymy, noma, 'GROUP_MA', &
                             1, zk24(jgr+ig-1), valpar)
                 valk(1) = zk24(jgr+ig-1)
-                call tbajli(resu, nbparc, noparr, [ibid], valpar,&
+                call tbajli(resu, nbparc, noparr, [ibid], valpar, &
                             [c16b], valk, 0)
- 20             continue
+20              continue
             end do
             call jedetr('&&PECAGE_GROUPM')
-        endif
+        end if
 !
         if (nm .ne. 0) then
             nbmail = -nm
             call wkvect('&&PECAGE_MAILLE', 'V V K8', nbmail, jma)
-            call getvtx('CARA_GEOM', 'MAILLE', iocc=iocc, nbval=nbmail, vect=zk8(jma),&
+            call getvtx('CARA_GEOM', 'MAILLE', iocc=iocc, nbval=nbmail, vect=zk8(jma), &
                         nbret=nm)
             valk(2) = 'MAILLE'
             do im = 1, nbmail
@@ -222,22 +222,22 @@ subroutine pecage(resu, modele, nbocc)
                 if (iret .eq. 0) then
                     call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                     goto 30
-                endif
+                end if
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
-                call pemica(chelem, mxvale, trav1, 1, [nume],&
+                call pemica(chelem, mxvale, trav1, 1, [nume], &
                             orig, iorig, icage)
-                call pecag2(ndim, nsymx, nsymy, np, xyp,&
+                call pecag2(ndim, nsymx, nsymy, np, xyp, &
                             trav1, valpar)
-                call pecag3(ndim, nsymx, nsymy, noma, 'MAILLE',&
-                            nbmail, zk8( jma), valpar)
+                call pecag3(ndim, nsymx, nsymy, noma, 'MAILLE', &
+                            nbmail, zk8(jma), valpar)
                 valk(1) = zk8(jma+im-1)
-                call tbajli(resu, nbparc, noparr, [ibid], valpar,&
+                call tbajli(resu, nbparc, noparr, [ibid], valpar, &
                             [c16b], valk, 0)
- 30             continue
+30              continue
             end do
 !
             call jedetr('&&PECAGE_MAILLE')
-        endif
+        end if
     end do
 !
     call detrsd('CHAM_ELEM', '&&PECAGE.CARA_GEOM')

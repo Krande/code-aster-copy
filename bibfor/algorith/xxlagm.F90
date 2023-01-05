@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
-                  nnol, pla, reac, reac12, tau1,&
+subroutine xxlagm(ffc, idepl, idepm, lact, ndim, &
+                  nnol, pla, reac, reac12, tau1, &
                   tau2, nvec)
     implicit none
 #include "jeveux.h"
@@ -47,31 +47,31 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
 ! --- RÉACTION CONTACT = SOMME DES FF(I).LAMBDA(I) POUR I=1,NNOL
 ! --- RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
 ! --- (DEPDEL+DEPMOI)
-    reac=0.d0
+    reac = 0.d0
     reac12(:) = 0.d0
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) goto 120
-        reac = reac + ffi * zr(idepl-1+pli)
+        reac = reac+ffi*zr(idepl-1+pli)
         if (nvec .eq. 2) then
-            reac = reac + ffi * zr(idepm-1+pli)
-        endif
+            reac = reac+ffi*zr(idepm-1+pli)
+        end if
         do j = 1, ndim
             if (ndim .eq. 3) then
-                reac12(j)=reac12(j)+ffi*(zr(idepl-1+pli+1)*tau1(j)&
-                +zr(idepl-1+pli+2)*tau2(j))
+                reac12(j) = reac12(j)+ffi*(zr(idepl-1+pli+1)*tau1(j) &
+                                           +zr(idepl-1+pli+2)*tau2(j))
                 if (nvec .eq. 2) then
-                    reac12(j)=reac12(j)+ffi*(zr(idepm-1+pli+1)*tau1(j)&
-                    +zr(idepm-1+pli+2)*tau2(j))
-                endif
-            else if (ndim.eq.2) then
-                reac12(j)=reac12(j)+ffi*zr(idepl-1+pli+1)*tau1(j)
+                    reac12(j) = reac12(j)+ffi*(zr(idepm-1+pli+1)*tau1(j) &
+                                               +zr(idepm-1+pli+2)*tau2(j))
+                end if
+            else if (ndim .eq. 2) then
+                reac12(j) = reac12(j)+ffi*zr(idepl-1+pli+1)*tau1(j)
                 if (nvec .eq. 2) then
-                    reac12(j)=reac12(j)+ffi*zr(idepm-1+pli+1)*tau1(j)
-                endif
-            endif
+                    reac12(j) = reac12(j)+ffi*zr(idepm-1+pli+1)*tau1(j)
+                end if
+            end if
         end do
 120     continue
     end do

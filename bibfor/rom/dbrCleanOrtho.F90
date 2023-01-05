@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine dbrCleanOrtho(paraOrtho)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/romBaseClean.h"
 !
-type(ROM_DS_ParaDBR_Ortho), intent(inout) :: paraOrtho
+    type(ROM_DS_ParaDBR_Ortho), intent(inout) :: paraOrtho
 !
 ! --------------------------------------------------------------------------------------------------
 !

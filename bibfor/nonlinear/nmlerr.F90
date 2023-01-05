@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine nmlerr(sddisc, action, infz, valr, vali)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -77,71 +77,71 @@ subroutine nmlerr(sddisc, action, infz, valr, vali)
     call jeveuo(infocv, 'E', jifcv)
     info = infz
 !
-    ASSERT((action.eq.'E').or.(action.eq.'L'))
+    ASSERT((action .eq. 'E') .or. (action .eq. 'L'))
 !
     if (info .eq. 'MXITER') then
         if (action .eq. 'L') then
             vali = nint(zr(jifcv+1-1))
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+1-1) = vali
-        endif
-    else if (info.eq.'MNITER') then
+        end if
+    else if (info .eq. 'MNITER') then
         if (action .eq. 'L') then
             vali = nint(zr(jifcv+2-1))
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+2-1) = vali
-        endif
-    else if (info.eq.'NBITER') then
+        end if
+    else if (info .eq. 'NBITER') then
         if (action .eq. 'L') then
             vali = nint(zr(jifcv+3-1))
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+3-1) = vali
-        endif
-    else if (info.eq.'PAS_MINI_ELAS') then
+        end if
+    else if (info .eq. 'PAS_MINI_ELAS') then
         if (action .eq. 'L') then
             valr = zr(jifcv+4-1)
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+4-1) = valr
-        endif
-    else if (info.eq.'RESI_GLOB_RELA') then
+        end if
+    else if (info .eq. 'RESI_GLOB_RELA') then
         if (action .eq. 'L') then
             valr = zr(jifcv+5-1)
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+5-1) = valr
-        endif
-    else if (info.eq.'RESI_GLOB_MAXI') then
+        end if
+    else if (info .eq. 'RESI_GLOB_MAXI') then
         if (action .eq. 'L') then
             valr = zr(jifcv+6-1)
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+6-1) = valr
-        endif
-    else if (info.eq.'TYPE_RESI') then
+        end if
+    else if (info .eq. 'TYPE_RESI') then
         if (action .eq. 'L') then
             vali = nint(zr(jifcv+7-1))
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+7-1) = vali
-        endif
-    else if (info.eq.'INIT_NEWTON_KRYLOV') then
+        end if
+    else if (info .eq. 'INIT_NEWTON_KRYLOV') then
         if (action .eq. 'L') then
             valr = zr(jifcv+8-1)
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+8-1) = valr
-        endif
-    else if (info.eq.'ITER_NEWTON_KRYLOV') then
+        end if
+    else if (info .eq. 'ITER_NEWTON_KRYLOV') then
         if (action .eq. 'L') then
             valr = zr(jifcv+9-1)
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+9-1) = valr
-        endif
-    else if (info.eq.'ITERSUP') then
+        end if
+    else if (info .eq. 'ITERSUP') then
         if (action .eq. 'L') then
             vali = nint(zr(jifcv+10-1))
-        else if (action.eq.'E') then
+        else if (action .eq. 'E') then
             zr(jifcv+10-1) = vali
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

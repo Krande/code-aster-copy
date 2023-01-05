@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrParaInfoPod(operation, paraPod)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/romSnapInfo.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: operation
-type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
+    character(len=16), intent(in) :: operation
+    type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,29 +58,29 @@ type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_48')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    toleSVD        = paraPod%toleSVD
-    toleIncr       = paraPod%toleIncr
-    field          = paraPod%field
-    fieldName      = paraPod%fieldName
-    nbModeMaxi     = paraPod%nbModeMaxi
-    nbCmpToFilter  = paraPod%nbCmpToFilter
+    toleSVD = paraPod%toleSVD
+    toleIncr = paraPod%toleIncr
+    field = paraPod%field
+    fieldName = paraPod%fieldName
+    nbModeMaxi = paraPod%nbModeMaxi
+    nbCmpToFilter = paraPod%nbCmpToFilter
     nbVariToFilter = paraPod%nbVariToFilter
 !
 ! - Print - General for POD
 !
     if (niv .ge. 2) then
         if (nbModeMaxi .ne. 0) then
-            call utmess('I', 'ROM18_49', si = nbModeMaxi)
-        endif
-        call utmess('I', 'ROM18_51' , sr = toleSVD)
+            call utmess('I', 'ROM18_49', si=nbModeMaxi)
+        end if
+        call utmess('I', 'ROM18_51', sr=toleSVD)
         if (operation .eq. 'POD_INCR') then
-            call utmess('I', 'ROM18_52' , sr = toleIncr)
-        endif
-        call utmess('I', 'ROM18_50' , sk = fieldName)
+            call utmess('I', 'ROM18_52', sr=toleIncr)
+        end if
+        call utmess('I', 'ROM18_50', sk=fieldName)
         call utmess('I', 'ROM18_64')
         call romFieldPrintInfo(field)
         if (nbCmpToFilter .eq. 0) then
@@ -91,19 +91,19 @@ type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
                 cmpFilterName = paraPod%cmpToFilter(iCmpToFilter)
                 if (nbVariToFilter .ne. 0) then
                     variFilterName = paraPod%variToFilter(iCmpToFilter)
-                    call utmess('I', 'ROM18_68', si = iCmpToFilter,&
-                                 nk = 2, valk = [cmpFilterName, variFilterName])
+                    call utmess('I', 'ROM18_68', si=iCmpToFilter, &
+                                nk=2, valk=[cmpFilterName, variFilterName])
                 else
-                    call utmess('I', 'ROM18_67', si = iCmpToFilter, sk = cmpFilterName)
-                endif
+                    call utmess('I', 'ROM18_67', si=iCmpToFilter, sk=cmpFilterName)
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Print about snapshots selection
 !
     if (niv .ge. 2) then
         call romSnapInfo(paraPod%snap)
-    endif
+    end if
 !
 end subroutine

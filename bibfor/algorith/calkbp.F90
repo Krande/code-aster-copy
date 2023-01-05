@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,14 +51,14 @@ subroutine calkbp(nno, ndim, w, dff1, kbp)
         pbulle = 3.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - TERME KBP
 ! - BOUCLE SUR LES NOEUDS DE PRESSION
     do na = 1, nno
 ! - BOUCLE SUR LA DIMENSION
         do ia = 1, ndim
-            kbp(ia,na) = - w/pbulle*dff1(na,ia)
+            kbp(ia, na) = -w/pbulle*dff1(na, ia)
         end do
     end do
 !

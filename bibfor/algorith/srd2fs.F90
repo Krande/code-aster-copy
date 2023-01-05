@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
+subroutine srd2fs(nmat, materf, para, vara, varh, i1, devsig, ds2hds, d2shds, d2fds2)
 
 !
 
@@ -38,7 +38,7 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
 !     : IRET           : CODE RETOUR
 ! ===================================================================================
 
-    implicit   none
+    implicit none
 
 #include "asterfort/lcprte.h"
 
@@ -47,20 +47,20 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     !!!
 
     integer :: nmat
-    real(kind=8) :: d2fds2(6,6),para(3),vara(4),materf(nmat,2)
-    real(kind=8) :: devsig(6),i1,ds2hds(6),varh(2),d2shds(6,6)
+    real(kind=8) :: d2fds2(6, 6), para(3), vara(4), materf(nmat, 2)
+    real(kind=8) :: devsig(6), i1, ds2hds(6), varh(2), d2shds(6, 6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndi,ndt,i
-    real(kind=8) :: sigc,sii,coef1,coef2,vident(6),vect1(6)
-    real(kind=8) :: mat1(6,6),mat2(6,6),mat3(6,6),ucri
-    common /tdim/ ndt,ndi
+    integer :: ndi, ndt, i
+    real(kind=8) :: sigc, sii, coef1, coef2, vident(6), vect1(6)
+    real(kind=8) :: mat1(6, 6), mat2(6, 6), mat3(6, 6), ucri
+    common/tdim/ndt, ndi
 
     !!! Recup. de sigma_c
-    sigc=materf(3,2)
+    sigc = materf(3, 2)
 
     !!!
     !!! Construction de sii
@@ -73,16 +73,16 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     !!! Construction coef1 = a*sigc*h0c*(ad*sii*h + b*i1 + d)**(a-1)
     !!!
 
-    ucri=vara(1)*sii*varh(2)+vara(2)*i1+vara(3)
+    ucri = vara(1)*sii*varh(2)+vara(2)*i1+vara(3)
 
-    if (ucri.le.0.d0) then
-        ucri=0.d0
-        coef1=0.d0
-        coef2=1.d0
+    if (ucri .le. 0.d0) then
+        ucri = 0.d0
+        coef1 = 0.d0
+        coef2 = 1.d0
     else
-        coef1=para(1)*sigc*varh(1)*(para(1)-1.d0)*ucri**(para(1)-2.d0)
-        coef2=1.d0-(vara(1)*para(1)*sigc*varh(1)*ucri**(para(1)-1.d0))
-    endif
+        coef1 = para(1)*sigc*varh(1)*(para(1)-1.d0)*ucri**(para(1)-2.d0)
+        coef2 = 1.d0-(vara(1)*para(1)*sigc*varh(1)*ucri**(para(1)-1.d0))
+    end if
 
     !!!
     !!! Constuction du vecteur identite
@@ -90,35 +90,35 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
 
     vident(:) = 0.d0
 
-    do i=1,ndi
-        vident(i)=1.d0
+    do i = 1, ndi
+        vident(i) = 1.d0
     end do
 
     !!!
     !!! Construction de a*ds2hds + b*vident
     !!!
 
-    do i=1,ndt
-        vect1(i)=vara(1)*ds2hds(i)+vara(2)*vident(i)
+    do i = 1, ndt
+        vect1(i) = vara(1)*ds2hds(i)+vara(2)*vident(i)
     end do
 
     !!!
     !!! Produit tensoriel de coef1*(vect1 x vect1)
     !!!
 
-    call lcprte(vect1,vect1,mat1)
-    mat2(1:ndt,1:ndt) = coef1 * mat1(1:ndt,1:ndt)
+    call lcprte(vect1, vect1, mat1)
+    mat2(1:ndt, 1:ndt) = coef1*mat1(1:ndt, 1:ndt)
 
     !!!
     !!! Produit coef2 * d2shds
     !!!
 
-    mat3(1:ndt,1:ndt) = coef2 * d2shds(1:ndt,1:ndt)
+    mat3(1:ndt, 1:ndt) = coef2*d2shds(1:ndt, 1:ndt)
 
     !!!
     !!! Construction mat3 - mat2 = d2fds2
     !!!
 
-    d2fds2(1:ndt,1:ndt) = mat3(1:ndt,1:ndt) - mat2(1:ndt,1:ndt)
+    d2fds2(1:ndt, 1:ndt) = mat3(1:ndt, 1:ndt)-mat2(1:ndt, 1:ndt)
 
 end subroutine

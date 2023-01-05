@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,14 +39,14 @@ function iorim1(num1, num2, reorie)
 ! --- BOUCLES SUR LES SOMMETS
     do i1 = 1, 2
         j1 = 3-i1
-        if (egal(i1,i1)) then
+        if (egal(i1, i1)) then
             iorim1 = -1
             goto 100
-        endif
-        if (egal(i1,j1)) then
+        end if
+        if (egal(i1, j1)) then
             iorim1 = 1
             goto 100
-        endif
+        end if
     end do
     iorim1 = 0
 100 continue
@@ -57,6 +57,6 @@ function iorim1(num1, num2, reorie)
         l = num2(2)
         num2(1) = l
         num2(2) = k
-    endif
+    end if
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinInitDisp(list_func_acti, sdnume   , nume_dof,&
-                          hval_algo     , hval_incr)
+subroutine nonlinInitDisp(list_func_acti, sdnume, nume_dof, &
+                          hval_algo, hval_incr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmchex.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: sdnume
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sdnume
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,13 +73,13 @@ character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! - Active functionnalites
 !
-    l_grot = isfonc(list_func_acti,'GD_ROTA')
+    l_grot = isfonc(list_func_acti, 'GD_ROTA')
 !
 ! - Access to large rotations DOF
 !
     if (l_grot) then
         call jeveuo(sdnume(1:19)//'.NDRO', 'L', jv_ndro)
-    endif
+    end if
 !
 ! - Get hat variables
 !
@@ -93,8 +93,8 @@ character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! - Set fields to "zero"
 !
-    call jeveuo(disp_cumu_inst//'.VALE', 'E', vr = v_disp_cumu)
-    call jeveuo(disp_curr//'.VALE', 'L', vr = v_disp_curr)
+    call jeveuo(disp_cumu_inst//'.VALE', 'E', vr=v_disp_cumu)
+    call jeveuo(disp_curr//'.VALE', 'L', vr=v_disp_curr)
     call initia(nb_equa, l_grot, zi(jv_ndro), v_disp_curr, v_disp_cumu)
 !
 end subroutine

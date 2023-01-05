@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine lisltc(lischa, ichar, typech)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -64,7 +64,7 @@ subroutine lisltc(lischa, ichar, typech)
         typcha = lischa(1:19)//'.TYPC'
         call jeveuo(typcha, 'L', jtypc)
         typech = zk8(jtypc-1+ichar)
-    endif
+    end if
 !
     call jedema()
 end subroutine

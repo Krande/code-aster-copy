@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3da4(m, a, b, la, lb,&
+subroutine pj3da4(m, a, b, la, lb, &
                   d2)
     implicit none
     real(kind=8) :: m(3), a(3), b(3), d2, la, lb
@@ -38,28 +38,28 @@ subroutine pj3da4(m, a, b, la, lb,&
     real(kind=8) :: ab(3), am(3)
 ! DEB ------------------------------------------------------------------
     do k = 1, 3
-        ab(k)=b(k)-a(k)
-        am(k)=m(k)-a(k)
+        ab(k) = b(k)-a(k)
+        am(k) = m(k)-a(k)
     end do
 !
-    a1= am(1)*ab(1)+am(2)*ab(2)+am(3)*ab(3)
-    a2= ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3)
+    a1 = am(1)*ab(1)+am(2)*ab(2)+am(3)*ab(3)
+    a2 = ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3)
 !
 !     -- CAS DU SEGMENT DE LONGUEUR NULLE :
     if (a2 .eq. 0.d0) then
-        lb=0.5d0
+        lb = 0.5d0
     else
-        lb=a1/a2
-    endif
+        lb = a1/a2
+    end if
 !
 !
-    if (lb .lt. 0.d0) lb=0.d0
-    if (lb .gt. 1.d0) lb=1.d0
+    if (lb .lt. 0.d0) lb = 0.d0
+    if (lb .gt. 1.d0) lb = 1.d0
 !
-    la=1.d0-lb
+    la = 1.d0-lb
     do k = 1, 3
-        p(k)=la*a(k)+lb*b(k)
-        p(k)=m(k)-p(k)
+        p(k) = la*a(k)+lb*b(k)
+        p(k) = m(k)-p(k)
     end do
-    d2=p(1)*p(1)+p(2)*p(2)+p(3)*p(3)
+    d2 = p(1)*p(1)+p(2)*p(2)+p(3)*p(3)
 end subroutine

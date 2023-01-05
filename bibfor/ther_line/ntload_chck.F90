@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ntload_chck(list_load)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -58,8 +58,8 @@ implicit none
 !
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
-    call jeveuo(lload_name, 'L', vk24 = v_load_name)
-    call jeveuo(lload_info, 'L', vi   = v_load_info)
+    call jeveuo(lload_name, 'L', vk24=v_load_name)
+    call jeveuo(lload_info, 'L', vi=v_load_info)
 !
 ! - Seek for special loads
 !
@@ -73,15 +73,15 @@ implicit none
                 call jeexin(cart_name//'.VALE', iret)
                 if (iret .ne. 0) then
                     isnotallowed = .true.
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Fatal error
 !
     if (isnotallowed) then
         call utmess('F', 'THERNONLINE4_1')
-    endif
+    end if
 !
 end subroutine

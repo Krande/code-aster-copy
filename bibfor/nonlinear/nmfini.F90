@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmfini(sddyna, valinc         , measse   , modele    , ds_material,&
-                  carele, ds_constitutive, ds_system, ds_measure, sddisc     , numins,&
-                  solalg, numedd         , fonact   )
+subroutine nmfini(sddyna, valinc, measse, modele, ds_material, &
+                  carele, ds_constitutive, ds_system, ds_measure, sddisc, numins, &
+                  solalg, numedd, fonact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -39,16 +39,16 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/assvec.h"
 !
-character(len=19) :: sddyna, valinc(*), measse(*)
-integer, intent(in) :: fonact(*)
-character(len=24) :: modele, carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=24) :: numedd
-character(len=19) :: sddisc, solalg(*)
-integer :: numins
+    character(len=19) :: sddyna, valinc(*), measse(*)
+    integer, intent(in) :: fonact(*)
+    character(len=24) :: modele, carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: numedd
+    character(len=19) :: sddisc, solalg(*)
+    integer :: numins
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,8 +95,8 @@ integer :: numins
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lamor = ndynlo(sddyna,'MAT_AMORT')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    lamor = ndynlo(sddyna, 'MAT_AMORT')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     call nmchex(valinc, 'VALINC', 'FEXMOI', fexmoi)
     call jeveuo(fexmoi//'.VALE', 'E', vr=fexmo)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=nb_equa)
@@ -104,8 +104,8 @@ integer :: numins
 ! - Get time
 !
     ASSERT(numins .eq. 1)
-    time_prev = diinst(sddisc,numins-1)
-    time_curr = diinst(sddisc,numins)
+    time_prev = diinst(sddisc, numins-1)
+    time_curr = diinst(sddisc, numins)
 !
 ! --- AJOUT DE LA FORCE DE LIAISON ET DE LA FORCE D AMORTISSEMENT MODAL
 !
@@ -114,7 +114,7 @@ integer :: numins
     call nmchex(valinc, 'VALINC', 'FLIMOI', flimoi)
     call jeveuo(flimoi//'.VALE', 'L', vr=flimo)
     do i_equa = 1, nb_equa
-        fexmo(i_equa)=fammo(i_equa)+flimo(i_equa)
+        fexmo(i_equa) = fammo(i_equa)+flimo(i_equa)
     end do
 !
 ! --- AJOUT DU TERME C.V
@@ -126,13 +126,13 @@ integer :: numins
         call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
         call jeveuo(vitmoi//'.VALE', 'L', vr=vitmo)
         AS_ALLOCATE(vr=cv, size=nb_equa)
-        call mrmult('ZERO', iamort, vitmo, cv, 1,&
+        call mrmult('ZERO', iamort, vitmo, cv, 1, &
                     .true._1)
         do i_equa = 1, nb_equa
-            fexmo(i_equa) = fexmo(i_equa) + cv(i_equa)
+            fexmo(i_equa) = fexmo(i_equa)+cv(i_equa)
         end do
         AS_DEALLOCATE(vr=cv)
-    endif
+    end if
 !
 ! --- AJOUT DU TERME M.A
 !
@@ -143,26 +143,26 @@ integer :: numins
         call nmchex(valinc, 'VALINC', 'ACCMOI', accmoi)
         call jeveuo(accmoi//'.VALE', 'L', vr=ccmo)
         AS_ALLOCATE(vr=ma, size=nb_equa)
-        call mrmult('ZERO', imasse, ccmo, ma, 1,&
+        call mrmult('ZERO', imasse, ccmo, ma, 1, &
                     .true._1)
         do i_equa = 1, nb_equa
-            fexmo(i_equa) = fexmo(i_equa) + ma(i_equa)
+            fexmo(i_equa) = fexmo(i_equa)+ma(i_equa)
         end do
         AS_DEALLOCATE(vr=ma)
-    endif
+    end if
 !
 ! - Direct computation (no integration of behaviour)
 !
-    call nonlinNForceCompute(modele     , carele         , fonact   ,&
-                             ds_material, ds_constitutive,&
-                             ds_measure , ds_system      ,&
-                             time_prev  , time_curr      ,&
-                             valinc     , solalg)
-    call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0],&
+    call nonlinNForceCompute(modele, carele, fonact, &
+                             ds_material, ds_constitutive, &
+                             ds_measure, ds_system, &
+                             time_prev, time_curr, &
+                             valinc, solalg)
+    call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], &
                 ds_system%nume_dof)
     call jeveuo(ds_system%cnfnod//'.VALE', 'L', vr=cnfno)
     do i_equa = 1, nb_equa
-        fexmo(i_equa) = fexmo(i_equa) + cnfno(i_equa)
+        fexmo(i_equa) = fexmo(i_equa)+cnfno(i_equa)
     end do
 !
 ! --- INITIALISATION DES FORCES INTERNES

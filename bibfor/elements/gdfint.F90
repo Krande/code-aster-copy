@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gdfint(kp, nno, ajacob, pjacob, en,&
+subroutine gdfint(kp, nno, ajacob, pjacob, en, &
                   enprim, x0pg, pn, pm, fint)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE LA
@@ -45,18 +45,18 @@ subroutine gdfint(kp, nno, ajacob, pjacob, en,&
 !-----------------------------------------------------------------------
 !
     do ne = 1, nno
-        call gdmb(ne, kp, ajacob, en, enprim,&
+        call gdmb(ne, kp, ajacob, en, enprim, &
                   x0pg, b)
-        call transp(b, 6, 6, 6, bt,&
+        call transp(b, 6, 6, 6, bt, &
                     6)
         do i = 1, 3
             vect(i) = pn(i)
             vect(3+i) = pm(i)
         end do
-        call promat(bt, 6, 6, 6, vect,&
+        call promat(bt, 6, 6, 6, vect, &
                     6, 6, 1, fors)
         do k = 1, 6
-            fint(k,ne) = fint(k,ne) + pjacob*fors(k)
+            fint(k, ne) = fint(k, ne)+pjacob*fors(k)
         end do
     end do
 end subroutine

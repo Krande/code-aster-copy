@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine te0012(option, nomte)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -39,7 +39,7 @@ implicit none
 #include "asterfort/vecma.h"
 #include "blas/ddot.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,11 +76,11 @@ character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    fami='MASS'
-    call elrefe_info(fami=fami,nno=nno,nnos=nnos,&
-                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    fami = 'MASS'
+    call elrefe_info(fami=fami, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     nddl = 3*nno
-    nvec = nddl* (nddl+1)/2
+    nvec = nddl*(nddl+1)/2
 !
 ! - Get model of finite element
 !
@@ -88,42 +88,42 @@ character(len=16) :: option, nomte
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, ASTER_FALSE, ASTER_FALSE, 3    ,&
-                    mecani, press1     , press2     , tempe)
+    call thmGetGene(ds_thm, ASTER_FALSE, ASTER_FALSE, 3, &
+                    mecani, press1, press2, tempe)
 
-    if (lteatt('TYPMOD2','THM')) then
-        idec = press1(1) + press2(1) + tempe(1)
+    if (lteatt('TYPMOD2', 'THM')) then
+        idec = press1(1)+press2(1)+tempe(1)
     else
         idec = 0
-    endif
+    end if
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
 
-    a(:,:,:,:) = 0.0d0
+    a(:, :, :, :) = 0.0d0
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
     do kp = 1, npg
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
-        call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kp, 1, '+', zi(imate), &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     1, 'RHO', rho, icodre(1), 1)
         do i = 1, nno
             do j = 1, i
-                a(1,1,i,j) = a(1,1,i,j) + rho(1)*poids*zr(ivf+l+i-1)* zr(ivf+l+j-1)
+                a(1, 1, i, j) = a(1, 1, i, j)+rho(1)*poids*zr(ivf+l+i-1)*zr(ivf+l+j-1)
             end do
         end do
     end do
 !
     do i = 1, nno
         do j = 1, i
-            a(2,2,i,j) = a(1,1,i,j)
-            a(3,3,i,j) = a(1,1,i,j)
+            a(2, 2, i, j) = a(1, 1, i, j)
+            a(3, 3, i, j) = a(1, 1, i, j)
         end do
     end do
 !
@@ -139,10 +139,10 @@ character(len=16) :: option, nomte
         do k = 1, 3
             do l = 1, 3
                 do i = 1, nno
-                    ik = ((3*i+k-4)* (3*i+k-3))/2
+                    ik = ((3*i+k-4)*(3*i+k-3))/2
                     do j = 1, i
-                        ijkl = ik + 3* (j-1) + l
-                        matv(ijkl) = a(k,l,i,j)
+                        ijkl = ik+3*(j-1)+l
+                        matv(ijkl) = a(k, l, i, j)
                     end do
                 end do
             end do
@@ -159,7 +159,7 @@ character(len=16) :: option, nomte
                         i2 = i+idec*(k-1)
                     else
                         i2 = i+idec*nnos
-                    endif
+                    end if
                     do l = 1, nno
                         do n2 = 1, 3
                             j = 3*l+n2-3
@@ -168,34 +168,34 @@ character(len=16) :: option, nomte
                                 j2 = j+idec*(l-1)
                             else
                                 j2 = j+idec*nnos
-                            endif
-                            zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1) /2+j)
+                            end if
+                            zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1)/2+j)
                         end do
                     end do
 405                 continue
                 end do
             end do
-        endif
+        end if
 !
-    else if (option.eq.'MASS_MECA_DIAG' .or. option.eq.'MASS_MECA_EXPLI' ) then
+    else if (option .eq. 'MASS_MECA_DIAG' .or. option .eq. 'MASS_MECA_EXPLI') then
 !
         call jevech('PMATUUR', 'E', imatuu)
 !
 !-- CALCUL DE LA MASSE DE L'ELEMENT
 !
-        wgt = a(1,1,1,1)
+        wgt = a(1, 1, 1, 1)
         do i = 2, nno
-            do j = 1, i - 1
-                wgt = wgt + 2*a(1,1,i,j)
+            do j = 1, i-1
+                wgt = wgt+2*a(1, 1, i, j)
             end do
-            wgt = wgt + a(1,1,i,i)
+            wgt = wgt+a(1, 1, i, i)
         end do
 !
 !-- CALCUL DE LA TRACE EN TRANSLATION SUIVANT X
 !
         trace = 0.d0
         do i = 1, nno
-            trace = trace + a(1,1,i,i)
+            trace = trace+a(1, 1, i, i)
         end do
 !
 !-- CALCUL DU FACTEUR DE DIAGONALISATION
@@ -207,22 +207,22 @@ character(len=16) :: option, nomte
         k = 0
         do j = 1, nno
             do i = 1, 3
-                k = k + 1
+                k = k+1
                 if (idec .eq. 0) then
-                    idiag = k* (k+1)/2
+                    idiag = k*(k+1)/2
                 else
                     if (j .le. nnos) then
                         k2 = k+idec*(j-1)
                     else
                         k2 = k+idec*nnos
-                    endif
-                    idiag = k2* (k2+1)/2
-                endif
-                zr(imatuu+idiag-1) = a(i,i,j,j)*alfa
+                    end if
+                    idiag = k2*(k2+1)/2
+                end if
+                zr(imatuu+idiag-1) = a(i, i, j, j)*alfa
             end do
         end do
 !
-    else if (option.eq.'M_GAMMA') then
+    else if (option .eq. 'M_GAMMA') then
 !
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
@@ -232,10 +232,10 @@ character(len=16) :: option, nomte
         do k = 1, 3
             do l = 1, 3
                 do i = 1, nno
-                    ik = ((3*i+k-4)* (3*i+k-3))/2
+                    ik = ((3*i+k-4)*(3*i+k-3))/2
                     do j = 1, i
-                        ijkl = ik + 3* (j-1) + l
-                        matv(ijkl) = a(k,l,i,j)
+                        ijkl = ik+3*(j-1)+l
+                        matv(ijkl) = a(k, l, i, j)
                     end do
                 end do
             end do
@@ -255,7 +255,7 @@ character(len=16) :: option, nomte
                         i2 = i+idec*(k-1)
                     else
                         i2 = i+idec*nnos
-                    endif
+                    end if
                     vect1(i) = zr(iacce+i2-1)
                 end do
             end do
@@ -267,16 +267,16 @@ character(len=16) :: option, nomte
                         i2 = i+idec*(k-1)
                     else
                         i2 = i+idec*nnos
-                    endif
+                    end if
                     zr(ivect+i2-1) = vect2(i)
                 end do
             end do
-        endif
+        end if
 !
 ! OPTION ECIN_ELEM : CALCUL DE L'ENERGIE CINETIQUE
 !
-    else if (option.eq.'ECIN_ELEM') then
-        stopz='ONO'
+    else if (option .eq. 'ECIN_ELEM') then
+        stopz = 'ONO'
         call tecach(stopz, 'PVITESR', 'L', iret, iad=ivite)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
@@ -287,17 +287,17 @@ character(len=16) :: option, nomte
             do k = 1, 3
                 do l = 1, 3
                     do i = 1, nno
-                        ik = ((3*i+k-4)* (3*i+k-3))/2
+                        ik = ((3*i+k-4)*(3*i+k-3))/2
                         do j = 1, i
-                            ijkl = ik + 3* (j-1) + l
-                            matv(ijkl) = a(k,l,i,j)
+                            ijkl = ik+3*(j-1)+l
+                            matv(ijkl) = a(k, l, i, j)
                         end do
                     end do
                 end do
             end do
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(ivite), masvit)
-            zr(iecin) = .5d0*ddot(nddl,zr(ivite),1,masvit,1)
+            zr(iecin) = .5d0*ddot(nddl, zr(ivite), 1, masvit, 1)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=idepl)
             if (iret .eq. 0) then
@@ -309,24 +309,24 @@ character(len=16) :: option, nomte
                 do k = 1, 3
                     do l = 1, 3
                         do i = 1, nno
-                            ik = ((3*i+k-4)* (3*i+k-3))/2
+                            ik = ((3*i+k-4)*(3*i+k-3))/2
                             do j = 1, i
-                                ijkl = ik + 3* (j-1) + l
-                                matv(ijkl) = a(k,l,i,j)
+                                ijkl = ik+3*(j-1)+l
+                                matv(ijkl) = a(k, l, i, j)
                             end do
                         end do
                     end do
                 end do
                 call vecma(matv, nvec, matp, nddl)
                 call pmavec('ZERO', nddl, matp, zr(idepl), masdep)
-                zr(iecin) = .5d0*ddot(nddl,zr(idepl),1,masdep,1)*zr( ifreq)
+                zr(iecin) = .5d0*ddot(nddl, zr(idepl), 1, masdep, 1)*zr(ifreq)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
-            endif
-        endif
+            end if
+        end if
 !
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

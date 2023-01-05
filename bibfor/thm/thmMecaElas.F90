@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,27 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmMecaElas(ds_thm, lMatr, lSigm, angl_naut, dtemp,&
-                       adcome, dimcon,&
-                       deps  , congep, dsdeme   , ther_meca)
+subroutine thmMecaElas(ds_thm, lMatr, lSigm, angl_naut, dtemp, &
+                       adcome, dimcon, &
+                       deps, congep, dsdeme, ther_meca)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/thmTherElas.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical, intent(in) :: lMatr, lSigm
-real(kind=8), intent(in) :: dtemp
-integer, intent(in) :: dimcon, adcome
-real(kind=8), intent(in) :: angl_naut(3)
-real(kind=8), intent(in) :: deps(6)
-real(kind=8), intent(inout) :: congep(dimcon)
-real(kind=8), intent(inout) :: dsdeme(6,6)
-real(kind=8), intent(out) :: ther_meca(6)
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical, intent(in) :: lMatr, lSigm
+    real(kind=8), intent(in) :: dtemp
+    integer, intent(in) :: dimcon, adcome
+    real(kind=8), intent(in) :: angl_naut(3)
+    real(kind=8), intent(in) :: deps(6)
+    real(kind=8), intent(inout) :: congep(dimcon)
+    real(kind=8), intent(inout) :: dsdeme(6, 6)
+    real(kind=8), intent(out) :: ther_meca(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,16 +68,16 @@ real(kind=8), intent(out) :: ther_meca(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dsdeme    = 0.d0
+    dsdeme = 0.d0
     ther_dila = 0.d0
-    depstr    = 0.d0
+    depstr = 0.d0
     ther_meca = 0.d0
 !
 ! - Prepare strains
 
     depstr = deps
     do i = 4, 6
-        depstr(i)          = deps(i)*rac2
+        depstr(i) = deps(i)*rac2
     end do
 !
 ! - Prepare stresses
@@ -86,7 +86,7 @@ real(kind=8), intent(out) :: ther_meca(6)
         do i = 4, 6
             congep(adcome+i-1) = congep(adcome+i-1)/rac2
         end do
-    endif
+    end if
 !
 ! - Compute thermic quantities
 !
@@ -97,35 +97,35 @@ real(kind=8), intent(out) :: ther_meca(6)
     if (lMatr) then
         do i = 1, 3
             do j = 1, 3
-                dsdeme(i,j) = ds_thm%ds_material%elas%d(i,j)
+                dsdeme(i, j) = ds_thm%ds_material%elas%d(i, j)
             end do
             do j = 4, 6
-                dsdeme(i,j) = ds_thm%ds_material%elas%d(i,j)/(0.5*rac2)
+                dsdeme(i, j) = ds_thm%ds_material%elas%d(i, j)/(0.5*rac2)
             end do
         end do
         do i = 4, 6
             do j = 1, 3
-                dsdeme(i,j) = ds_thm%ds_material%elas%d(i,j)*rac2
+                dsdeme(i, j) = ds_thm%ds_material%elas%d(i, j)*rac2
             end do
             do j = 4, 6
-                dsdeme(i,j) = ds_thm%ds_material%elas%d(i,j)*2.d0
+                dsdeme(i, j) = ds_thm%ds_material%elas%d(i, j)*2.d0
             end do
         end do
-    endif
+    end if
 !
 ! - Compute stress
 !
     if (lSigm) then
         do i = 1, 6
             do j = 1, 6
-                congep(adcome+i-1) = congep(adcome+i-1) + &
-                                     ds_thm%ds_material%elas%d(i,j)*depstr(j)
+                congep(adcome+i-1) = congep(adcome+i-1)+ &
+                                     ds_thm%ds_material%elas%d(i, j)*depstr(j)
             end do
         end do
         do i = 4, 6
             congep(adcome+i-1) = congep(adcome+i-1)*rac2
         end do
-    endif
+    end if
 !
 ! - For thermic (dilatation)
 !
@@ -134,7 +134,7 @@ real(kind=8), intent(out) :: ther_meca(6)
             do i = 1, 6
                 congep(adcome+i-1) = congep(adcome+i-1)-ther_meca(i)*dtemp
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

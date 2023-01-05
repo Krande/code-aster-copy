@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcqubo(ep0, ep1, l0, l1, etamin,&
+subroutine lcqubo(ep0, ep1, l0, l1, etamin, &
                   etamax, vide, etam, etap)
     implicit none
 #include "asterf_types.h"
     real(kind=8), intent(in) :: ep0(6), ep1(6), l0, l1, etamin, etamax
     real(kind=8), intent(out) :: etam, etap
-    aster_logical,intent(out) :: vide
+    aster_logical, intent(out) :: vide
 !
 ! ----------------------------------------------------------------------
 !  BORNES POUR LE PILOTAGE RELATIF AU CRITERE QUADRATIQUE
@@ -40,5 +40,5 @@ subroutine lcqubo(ep0, ep1, l0, l1, etamin,&
 ! ----------------------------------------------------------------------
     etam = etamin
     etap = etamax
-    vide = etamax.le.etamin
+    vide = etamax .le. etamin
 end subroutine

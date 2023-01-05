@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine betfpp(BEHinteg,&
-                  materf, nmat, pc, pt,&
-                  nseuil, fc, ft, dfcdlc, dftdlt,&
+subroutine betfpp(BEHinteg, &
+                  materf, nmat, pc, pt, &
+                  nseuil, fc, ft, dfcdlc, dftdlt, &
                   kuc, kut, ke)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 !       BETON_DOUBLE_DP: CONVEXE ELASTO PLASTIQUE POUR (MATER,SIG,P1,P2)
 !                   AVEC UN SEUIL EN COMPRESSION ET UN SEUIL EN TRACTION
@@ -49,10 +49,10 @@ implicit none
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: un, zero, d13, deux
-    parameter       ( un    = 1.d0   )
-    parameter       ( deux  = 2.d0   )
-    parameter       ( zero  = 0.d0   )
-    parameter       ( d13   =  .33333333333333d0 )
+    parameter(un=1.d0)
+    parameter(deux=2.d0)
+    parameter(zero=0.d0)
+    parameter(d13=.33333333333333d0)
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     integer :: nmat, nseuil
@@ -67,20 +67,20 @@ implicit none
     character(len=8) :: nomail
 !     ------------------------------------------------------------------
     integer :: n, nd
-    common /tdim/   n , nd
-    data   epsi     /1.d-6/
+    common/tdim/n, nd
+    data epsi/1.d-6/
 !     ------------------------------------------------------------------
 !
 ! --- INITIALISATION
 !
-    e = materf(1,1)
-    fcp = materf(1,2)
-    ftp = materf(2,2)
-    gc = materf(4,2)
-    gt = materf(5,2)
-    celas = materf(6,2)
-    typcom = int( materf(7,2) + 0.5d0 )
-    typtra = int( materf(8,2) + 0.5d0 )
+    e = materf(1, 1)
+    fcp = materf(1, 2)
+    ftp = materf(2, 2)
+    gc = materf(4, 2)
+    gt = materf(5, 2)
+    celas = materf(6, 2)
+    typcom = int(materf(7, 2)+0.5d0)
+    typtra = int(materf(8, 2)+0.5d0)
 !
     kuc = zero
     ke = zero
@@ -92,15 +92,15 @@ implicit none
 !
 ! --- LONGUEUR CARACTERISTIQUE POUR LOI BETON LC
 !
-    if (materf(9,2) .lt. zero) then
+    if (materf(9, 2) .lt. zero) then
         if (BEHinteg%elem%l_eltsize1) then
             lc = BEHinteg%elem%eltsize1
         else
             call utmess('F', 'COMPOR2_12')
-        endif
+        end if
     else
-        lc = materf(9,2)
-    endif
+        lc = materf(9, 2)
+    end if
 !
 !
 ! --- VALEUR ET DERIVEE DE LA COURBE D'ADOUCISSEMENT EN COMPRESSION
@@ -110,61 +110,61 @@ implicit none
 ! -      COURBE POST PIC EN COMPRESSION LINEAIRE
 !
         if (typcom .eq. 0) then
-            ke = deux * (un - celas) * fcp / e
-            ku = deux * gc / (lc * fcp) - (un + deux * celas) * ke * d13
-            lc0 = (6.d0 * e * gc) / (fcp * fcp * (11.d0 - 4.d0 * celas * (un + celas)))
+            ke = deux*(un-celas)*fcp/e
+            ku = deux*gc/(lc*fcp)-(un+deux*celas)*ke*d13
+            lc0 = (6.d0*e*gc)/(fcp*fcp*(11.d0-4.d0*celas*(un+celas)))
             if (lc .gt. lc0) then
-                if (materf(9,2) .lt. zero) then
+                if (materf(9, 2) .lt. zero) then
                     call utmess('A', 'ALGORITH_44')
                 else
                     call tecael(iadzi, iazk24)
-                    nomail = zk24(iazk24-1+3)(1:8)
+                    nomail = zk24(iazk24-1+3) (1:8)
                     call utmess('A', 'ALGORITH_45', sk=nomail)
-                endif
-            endif
+                end if
+            end if
             if (pc .lt. ke) then
-                fc = fcp * ( celas + deux*(un - celas)*pc/ke + (celas - un)*pc*pc/(ke*ke) )
-                dfcdlc = fcp * deux * (un - celas) * (un - pc/ke) / ke
+                fc = fcp*(celas+deux*(un-celas)*pc/ke+(celas-un)*pc*pc/(ke*ke))
+                dfcdlc = fcp*deux*(un-celas)*(un-pc/ke)/ke
             else
                 if (pc .lt. ku) then
-                    fc = fcp * (pc - ku) / (ke - ku)
-                    dfcdlc = fcp / (ke - ku)
+                    fc = fcp*(pc-ku)/(ke-ku)
+                    dfcdlc = fcp/(ke-ku)
                 else
-                    fc = fcp * epsi
+                    fc = fcp*epsi
 !               FC = ZERO
                     dfcdlc = zero
-                endif
-            endif
+                end if
+            end if
 !
 ! -      COURBE POST PIC EN COMPRESSION NON LINEAIRE
 !
         else
-            ke = deux * (un - celas) * fcp / e
-            ku = 1.5d0 * gc / (lc * fcp) - 0.5d0 * celas * ke
-            lc0 = (1.5d0 * e * gc) / (fcp * fcp * (4.d0 - celas * (un + celas)))
+            ke = deux*(un-celas)*fcp/e
+            ku = 1.5d0*gc/(lc*fcp)-0.5d0*celas*ke
+            lc0 = (1.5d0*e*gc)/(fcp*fcp*(4.d0-celas*(un+celas)))
             if (lc .gt. lc0) then
-                if (materf(9,2) .lt. zero) then
+                if (materf(9, 2) .lt. zero) then
                     call utmess('A', 'ALGORITH_44')
                 else
                     call tecael(iadzi, iazk24)
-                    nomail = zk24(iazk24-1+3)(1:8)
+                    nomail = zk24(iazk24-1+3) (1:8)
                     call utmess('A', 'ALGORITH_45', sk=nomail)
-                endif
-            endif
+                end if
+            end if
             if (pc .lt. ke) then
-                fc = fcp * ( celas + deux*(un - celas)*pc/ke + (celas - un)*pc*pc/(ke*ke) )
-                dfcdlc = fcp * deux * (un - celas) * (un - pc/ke) / ke
-            else if (pc.lt.ku) then
-                fc = fcp * (un - (pc - ku)* (pc - ku) /((ke - ku)*(ke - ku)))
-                dfcdlc = - deux*fcp*(pc - ku) / ((ke - ku)*(ke - ku))
+                fc = fcp*(celas+deux*(un-celas)*pc/ke+(celas-un)*pc*pc/(ke*ke))
+                dfcdlc = fcp*deux*(un-celas)*(un-pc/ke)/ke
+            else if (pc .lt. ku) then
+                fc = fcp*(un-(pc-ku)*(pc-ku)/((ke-ku)*(ke-ku)))
+                dfcdlc = -deux*fcp*(pc-ku)/((ke-ku)*(ke-ku))
             else
-                fc = fcp * epsi
+                fc = fcp*epsi
 !               FC = ZERO
                 dfcdlc = zero
-            endif
-        endif
+            end if
+        end if
         kuc = ku
-    endif
+    end if
 !
 ! --- VALEUR ET DERIVEE DE LA COURBE D'ADOUCISSEMENT EN TRACTION
 !
@@ -173,44 +173,44 @@ implicit none
 ! -      COURBE POST PIC EN TRACTION LINEAIRE
 !
         if (typtra .eq. 0) then
-            ku = deux * gt / (lc * ftp)
-            lc0 = (deux * e * gt) / (ftp * ftp)
+            ku = deux*gt/(lc*ftp)
+            lc0 = (deux*e*gt)/(ftp*ftp)
             if (lc .gt. lc0) then
-                if (materf(9,2) .lt. zero) then
+                if (materf(9, 2) .lt. zero) then
                     call utmess('A', 'ALGORITH_46')
                 else
                     call tecael(iadzi, iazk24)
-                    nomail = zk24(iazk24-1+3)(1:8)
+                    nomail = zk24(iazk24-1+3) (1:8)
                     call utmess('A', 'ALGORITH_47', sk=nomail)
-                endif
-            endif
+                end if
+            end if
             if (pt .lt. ku) then
-                ft = ftp * (un - pt / ku)
-                dftdlt = - ftp / ku
+                ft = ftp*(un-pt/ku)
+                dftdlt = -ftp/ku
             else
-                ft = ftp * epsi
+                ft = ftp*epsi
                 dftdlt = zero
-            endif
+            end if
 !
 ! -      COURBE POST PIC EN TRACTION NON LINEAIRE
 !
         else
             ku = 1.d06
-            lc0 = (e * gt) / (ftp * ftp)
+            lc0 = (e*gt)/(ftp*ftp)
             if (lc .gt. lc0) then
-                if (materf(9,2) .lt. zero) then
+                if (materf(9, 2) .lt. zero) then
                     call utmess('A', 'ALGORITH_46')
                 else
                     call tecael(iadzi, iazk24)
-                    nomail = zk24(iazk24-1+3)(1:8)
+                    nomail = zk24(iazk24-1+3) (1:8)
                     call utmess('A', 'ALGORITH_47', sk=nomail)
-                endif
-            endif
-            ft = ftp * exp( - lc * ftp * pt / gt)
-            dftdlt = - ftp * ftp * lc / gt * exp( - lc * ftp * pt / gt)
-        endif
+                end if
+            end if
+            ft = ftp*exp(-lc*ftp*pt/gt)
+            dftdlt = -ftp*ftp*lc/gt*exp(-lc*ftp*pt/gt)
+        end if
         kut = ku
 !
-    endif
+    end if
 !
 end subroutine

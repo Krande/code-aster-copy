@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,68 +45,68 @@ subroutine dcalph(x, y, nbpts, pe)
 !
 ! 1 - INITIALISATION
 !
-    c=0.d+0
-    iter=0
+    c = 0.d+0
+    iter = 0
 !
-    ymin=y(1)
+    ymin = y(1)
     do ipt = 2, nbpts
-        ymin=min(ymin,y(ipt))
+        ymin = min(ymin, y(ipt))
     end do
 !
 100 continue
 !
-    xmoy=0.d0
-    ymoy=0.d0
-    vx=0.d0
-    vxy=0.d0
+    xmoy = 0.d0
+    ymoy = 0.d0
+    vx = 0.d0
+    vxy = 0.d0
 !
 ! 2 - RECHERCHE DU X MOYEN ET DU Y MOYEN
 !
     do ipt = 1, nbpts
-        xmoy=xmoy+log(x(ipt))
-        ymoy=ymoy+log(y(ipt)-c)
+        xmoy = xmoy+log(x(ipt))
+        ymoy = ymoy+log(y(ipt)-c)
     end do
 !
-    xmoy=xmoy/nbpts
-    ymoy=ymoy/nbpts
+    xmoy = xmoy/nbpts
+    ymoy = ymoy/nbpts
 !
     do ipt = 1, nbpts
-        vx=vx+(xmoy-log(x(ipt)))*(xmoy-log(x(ipt)))
-        vxy= vxy+(xmoy-log(x(ipt)))*(ymoy-log(y(ipt)-c))
+        vx = vx+(xmoy-log(x(ipt)))*(xmoy-log(x(ipt)))
+        vxy = vxy+(xmoy-log(x(ipt)))*(ymoy-log(y(ipt)-c))
     end do
 !
 ! 3 - PENTE THEORIQUE = VXY/VX
 ! CONSTANTE = Y - PENTE * X
 !
-    a=vxy/vx
-    b=exp(ymoy - a*xmoy)
-    f=0.d+0
+    a = vxy/vx
+    b = exp(ymoy-a*xmoy)
+    f = 0.d+0
 !
     do ipt = 1, nbpts
-        f=f+(y(ipt)-c-b*x(ipt)**a)**2
+        f = f+(y(ipt)-c-b*x(ipt)**a)**2
     end do
 !
-    c1=0.d+0
+    c1 = 0.d+0
 !
     do ipt = 1, nbpts
-        c1=c1+(y(ipt)-c-b*x(ipt)**a)
+        c1 = c1+(y(ipt)-c-b*x(ipt)**a)
     end do
 !
-    c1=c1/nbpts
+    c1 = c1/nbpts
 !
     if (c1 .gt. 0 .and. c1 .lt. ymin) then
         if (abs((c1-c)/c1) .gt. 1) then
-            c=c1
-            f=0.d+0
+            c = c1
+            f = 0.d+0
             do ipt = 1, nbpts
-                f=f+(y(ipt)-c-b*x(ipt)**a)**2
+                f = f+(y(ipt)-c-b*x(ipt)**a)**2
             end do
-            iter=iter+1
+            iter = iter+1
             if (iter .lt. 5) goto 100
-        endif
-    endif
+        end if
+    end if
 !
-    pe=(a/2.d0)+1.d0
-    if (pe .le. 0.4d0) pe=0.4d0
+    pe = (a/2.d0)+1.d0
+    if (pe .le. 0.4d0) pe = 0.4d0
 !
 end subroutine

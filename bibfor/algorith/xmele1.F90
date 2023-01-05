@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmele1(mesh  , model, ds_contact, ligrel, nfiss,&
-                  chelem, param, option,   list_func_acti)
+subroutine xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                  chelem, param, option, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -96,16 +96,16 @@ implicit none
     integer, pointer :: cesv2(:) => null()
     integer, pointer :: xfem_cont(:) => null()
 !
-    data licmp3    / 'X1', 'X2', 'X3'/
-    data licmp5    / 'X1', 'X2', 'X3', 'X4', 'X5'/
+    data licmp3/'X1', 'X2', 'X3'/
+    data licmp5/'X1', 'X2', 'X3', 'X4', 'X5'/
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<XFEM  > CREATION DU CHAM_ELEM PINDCOI '
-    endif
+        write (ifm, *) '<XFEM  > CREATION DU CHAM_ELEM PINDCOI '
+    end if
 !
 ! --- INITIALISATIONS CHAMPS SIMPLES DE TRAVAIL
 !
@@ -123,40 +123,40 @@ implicit none
 !
 ! --- ELEMENT DE REFERENCE ASSOCIE A UNE FACETTE DE CONTACT
 !
-    lxthm=isfonc(list_func_acti,'THM')
+    lxthm = isfonc(list_func_acti, 'THM')
 !
     if (ndim .eq. 3) then
         if (lxthm) then
-            elc='TR6'
+            elc = 'TR6'
         else
-            elc='TR3'
-        endif
-    else if (ndim.eq.2) then
-        if (xfem_cont(1) .le. 2 .and. .not.lxthm) then
-            elc='SE2'
+            elc = 'TR3'
+        end if
+    else if (ndim .eq. 2) then
+        if (xfem_cont(1) .le. 2 .and. .not. lxthm) then
+            elc = 'SE2'
         else
-            elc='SE3'
-        endif
-    endif
+            elc = 'SE3'
+        end if
+    end if
 !
 ! --- INFOS SUR LE TYPE DE LA VALEUR A INITIALISER
 !
-    isint = (param.eq.'PINDCOI'.or. param.eq.'PMEMCON'.or. param.eq.'PGLISS')
+    isint = (param .eq. 'PINDCOI' .or. param .eq. 'PMEMCON' .or. param .eq. 'PGLISS')
     if (isint) then
         nomgd = 'NEUT_I'
     else
         nomgd = 'NEUT_R'
-    endif
+    end if
 !
     if (param .eq. 'PCOHES') then
-       if (lxthm) then
-          ncmp = 5
-       else
-          ncmp = 3
-       endif
+        if (lxthm) then
+            ncmp = 5
+        else
+            ncmp = 3
+        end if
     else
         ncmp = 1
-    endif
+    end if
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
@@ -183,8 +183,8 @@ implicit none
 ! --- RECUPERATION NOMBRE DE POINTS DE GAUSS PAR FACETTE
 !
             nomfis = fiss(ifiss)
-            izone = xxconi(ds_contact%sdcont_defi,nomfis,'MAIT')
-            typint = mminfi(ds_contact%sdcont_defi,'INTEGRATION',izone )
+            izone = xxconi(ds_contact%sdcont_defi, nomfis, 'MAIT')
+            typint = mminfi(ds_contact%sdcont_defi, 'INTEGRATION', izone)
             call xmelin(elc, typint, nnint)
 !
 ! --- RECUP LISTE DES MAILLES DE CONTACT POUR LA FISSURE
@@ -195,21 +195,21 @@ implicit none
             if (iret .ne. 0) then
                 call jeveuo(grp, 'L', jgrp)
                 call jelira(grp, 'LONMAX', nmaenr)
-            endif
+            end if
 !
 ! --- BOUCLE SUR LES MAILLES DE CONTACT DE LA FISSURE
 !
             do i = 1, nmaenr
                 ima = zi(jgrp-1+i)
-                ASSERT(ima.le.nbma)
+                ASSERT(ima .le. nbma)
 ! --- NOMBRE DE FISSURES VUE PAR LA MAILLE
                 nfisc = zi(jcesd2-1+5+4*(ima-1)+2)
                 nfisc2 = zi(jcesd1-1+5+4*(ima-1)+2)
-                ASSERT(nfisc.eq.nfisc2)
+                ASSERT(nfisc .eq. nfisc2)
                 nface = 0
 ! --- BOUCLE SUR CES FISSURES
                 do ifima = 1, nfisc
-                    call cesexi('S', jcesd1, jcesl1, ima, 1,&
+                    call cesexi('S', jcesd1, jcesl1, ima, 1, &
                                 ifima, 1, iad)
                     nomfi2 = cesv1(iad)
 !
@@ -218,136 +218,136 @@ implicit none
 ! --- LE NOMBRE DE SOUS-POINTS
 !
                     if (nomfis .eq. nomfi2) then
-                        ASSERT(nface.eq.0)
-                        call cesexi('S', jcesd2, jcesl2, ima, 1,&
+                        ASSERT(nface .eq. 0)
+                        call cesexi('S', jcesd2, jcesl2, ima, 1, &
                                     ifima, 2, iad)
                         nface = cesv2(iad)
-                        ASSERT(nface.le.30)
+                        ASSERT(nface .le. 30)
                         zi(jnbsp-1+ima) = zi(jnbsp-1+ima)+nface*nnint
-                    endif
+                    end if
                 end do
             end do
         end do
 !
         if (param .eq. 'PCOHES') then
-           if (lxthm) then
-              call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
-                          ncmp, licmp5, [-1], zi( jnbsp), [-ncmp])
-           else
-              call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
-                          ncmp, licmp3, [-1], zi( jnbsp), [-ncmp])
-           endif
+            if (lxthm) then
+                call cescre('V', chelsi, 'ELEM', mesh, nomgd, &
+                            ncmp, licmp5, [-1], zi(jnbsp), [-ncmp])
+            else
+                call cescre('V', chelsi, 'ELEM', mesh, nomgd, &
+                            ncmp, licmp3, [-1], zi(jnbsp), [-ncmp])
+            end if
         else
-            call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
-                        1, 'X1', [-1], zi( jnbsp), [-ncmp])
-        endif
+            call cescre('V', chelsi, 'ELEM', mesh, nomgd, &
+                        1, 'X1', [-1], zi(jnbsp), [-ncmp])
+        end if
 !
 ! --- RAZ VECTEUR DE DIMENSIONNEMENT
 !
-    call jedetr(chnbsp)
-    call wkvect(chnbsp, 'V V I', nbma, jnbsp)
+        call jedetr(chnbsp)
+        call wkvect(chnbsp, 'V V I', nbma, jnbsp)
 !
 ! --- ACCES AU CHAM_ELEM_S
 !
-    call jeveuo(chelsi//'.CESD', 'L', jcesd)
-    call jeveuo(chelsi//'.CESL', 'E', jcesl)
-    call jeveuo(chelsi//'.CESV', 'E', jcesv)
+        call jeveuo(chelsi//'.CESD', 'L', jcesd)
+        call jeveuo(chelsi//'.CESL', 'E', jcesl)
+        call jeveuo(chelsi//'.CESV', 'E', jcesv)
 !
 ! --- ENRICHISSEMENT DU CHAM_ELEM_S POUR LA MULTIFISSURATION
 !
-    do ifis = 1, nfiss
+        do ifis = 1, nfiss
 !
 ! --- ACCES FISSURE COURANTE
 !
-        nomfis = fiss(ifis)
-        grp = nomfis(1:8)//'.MAILFISS.CONT'
-        call jeexin(grp, iret)
-        if (iret .ne. 0) call jeveuo(grp, 'L', jgrp)
+            nomfis = fiss(ifis)
+            grp = nomfis(1:8)//'.MAILFISS.CONT'
+            call jeexin(grp, iret)
+            if (iret .ne. 0) call jeveuo(grp, 'L', jgrp)
 !
 ! --- ZONE DE CONTACT IZONE CORRESPONDANTE
 !
-        izone = xxconi(ds_contact%sdcont_defi,nomfis,'MAIT')
-        typint = mminfi(ds_contact%sdcont_defi,'INTEGRATION',izone )
-        call xmelin(elc, typint, nnint)
+            izone = xxconi(ds_contact%sdcont_defi, nomfis, 'MAIT')
+            typint = mminfi(ds_contact%sdcont_defi, 'INTEGRATION', izone)
+            call xmelin(elc, typint, nnint)
 !
 ! --- CONTACT INIT
 !
-        if (isint) then
-            if (param .eq. 'PINDCOI' .or. param .eq. 'PMEMCON') then
-                vall = mminfi(ds_contact%sdcont_defi,'CONTACT_INIT',izone ).eq.1
-            else if (param.eq.'PGLISS') then
-                vall = mminfl(ds_contact%sdcont_defi,'GLISSIERE_ZONE',izone )
+            if (isint) then
+                if (param .eq. 'PINDCOI' .or. param .eq. 'PMEMCON') then
+                    vall = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', izone) .eq. 1
+                else if (param .eq. 'PGLISS') then
+                    vall = mminfl(ds_contact%sdcont_defi, 'GLISSIERE_ZONE', izone)
+                else
+                    ASSERT(.false.)
+                end if
             else
-                ASSERT(.false.)
-            endif
-        else
-            if (param .eq. 'PSEUIL') then
-                valr = mminfr(ds_contact%sdcont_defi,'SEUIL_INIT',izone )
-            else if (param(1:5).eq.'PCOHE') then
-                valr = 0.d0
-            else
-                ASSERT(.false.)
-            endif
-            vall = valr.ne.0.d0
-        endif
+                if (param .eq. 'PSEUIL') then
+                    valr = mminfr(ds_contact%sdcont_defi, 'SEUIL_INIT', izone)
+                else if (param(1:5) .eq. 'PCOHE') then
+                    valr = 0.d0
+                else
+                    ASSERT(.false.)
+                end if
+                vall = valr .ne. 0.d0
+            end if
 !
-        if (vall) then
+            if (vall) then
 !
 ! --- ON COPIE LES CHAMPS CORRESP. AUX ELEM. DE CONTACT
 !
-            call jeexin(grp, iret)
-            if (iret .ne. 0) then
-                call jeveuo(grp, 'L', jgrp)
-                call jelira(grp, 'LONMAX', nmaenr)
-                do i = 1, nmaenr
-                    ima = zi(jgrp-1+i)
+                call jeexin(grp, iret)
+                if (iret .ne. 0) then
+                    call jeveuo(grp, 'L', jgrp)
+                    call jelira(grp, 'LONMAX', nmaenr)
+                    do i = 1, nmaenr
+                        ima = zi(jgrp-1+i)
 !
 ! --- INDICE LOCAL DE LA FISSURE COURANTE
 ! --- ET DECALAGE CORRESPONDANT
 !
-                    nfisc = zi(jcesd1-1+5+4*(ima-1)+2)
-                    do ifima = 1, nfisc
-                        call cesexi('S', jcesd1, jcesl1, ima, 1,&
-                                    ifima, 1, iad)
-                        nomfi2 = cesv1(iad)
-                        if (nomfis .eq. nomfi2) then
-                            call cesexi('S', jcesd2, jcesl2, ima, 1,&
-                                        ifima, 2, iad)
-                            nface = cesv2(iad)
-                            npg = nface*nnint
-                        endif
-                    end do
+                        nfisc = zi(jcesd1-1+5+4*(ima-1)+2)
+                        do ifima = 1, nfisc
+                            call cesexi('S', jcesd1, jcesl1, ima, 1, &
+                                        ifima, 1, iad)
+                            nomfi2 = cesv1(iad)
+                            if (nomfis .eq. nomfi2) then
+                                call cesexi('S', jcesd2, jcesl2, ima, 1, &
+                                            ifima, 2, iad)
+                                nface = cesv2(iad)
+                                npg = nface*nnint
+                            end if
+                        end do
 !
 ! --- RECOPIE EFFECTIVE DES CHAMPS
 !
-                    do ispt = 1, npg
-                        do icmp = 1, ncmp
-                            call cesexi('S', jcesd, jcesl, ima, 1,&
-                                        zi(jnbsp-1+ima)+ispt, icmp, iad)
-                            zl(jcesl-1+abs(iad)) = .true.
-                            if (isint) zi(jcesv-1+abs(iad)) = 1
-                            if (.not.isint) zr(jcesv-1+abs(iad)) = valr
+                        do ispt = 1, npg
+                            do icmp = 1, ncmp
+                                call cesexi('S', jcesd, jcesl, ima, 1, &
+                                            zi(jnbsp-1+ima)+ispt, icmp, iad)
+                                zl(jcesl-1+abs(iad)) = .true.
+                                if (isint) zi(jcesv-1+abs(iad)) = 1
+                                if (.not. isint) zr(jcesv-1+abs(iad)) = valr
+                            end do
                         end do
-                    end do
 !
 ! --- INCREMENTATION REPERAGE POUR LES FISSURES SUIVANTES
 !
-                    zi(jnbsp-1+ima) = zi(jnbsp-1+ima) + npg
+                        zi(jnbsp-1+ima) = zi(jnbsp-1+ima)+npg
 !
-                end do
-            endif
-        endif
-    end do
+                    end do
+                end if
+            end if
+        end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !
-    call cescel(chelsi, ligrel, option, param, 'OUI',&
-                ibid, 'V', chelem, 'F', ibid)
+        call cescel(chelsi, ligrel, option, param, 'OUI', &
+                    ibid, 'V', chelem, 'F', ibid)
 !
 ! --- MENAGE
 !
-    call detrsd('CHAM_ELEM_S', chelsi)
-    endif
+        call detrsd('CHAM_ELEM_S', chelsi)
+    end if
     call detrsd('CHAM_ELEM_S', cmafis)
     call detrsd('CHAM_ELEM_S', faclon)
     call jedetr(chnbsp)

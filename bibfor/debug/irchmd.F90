@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,20 +46,20 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
     character(len=16), pointer :: paraListName(:) => null()
     character(len=19) :: chan19, nopara
     character(len=64) :: noch64
-    parameter (sdcarm = ' ')
+    parameter(sdcarm=' ')
 !
-    chan19=chanom
-    noch64=nochmd
+    chan19 = chanom
+    noch64 = nochmd
     call dismoi('TYPE_CHAMP', chan19, 'CHAMP', repk=typech)
 !
-    noresu=' '
-    nomsym=' '
-    nopara=' '
-    numord=0
-    call irchme(ifichi, chan19, partie, noch64, noresu,&
-                nomsym, typech, numord, 0, [' '],&
-                0, [0], 0, [0], .false._1,&
-                sdcarm, sdcarm, 0, paraListName , nbCmpDyna,&
+    noresu = ' '
+    nomsym = ' '
+    nopara = ' '
+    numord = 0
+    call irchme(ifichi, chan19, partie, noch64, noresu, &
+                nomsym, typech, numord, 0, [' '], &
+                0, [0], 0, [0], .false._1, &
+                sdcarm, sdcarm, 0, paraListName, nbCmpDyna, &
                 .false._1, codret)
 !
 end subroutine

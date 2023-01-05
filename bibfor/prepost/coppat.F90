@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,48 +50,48 @@ subroutine coppat(main, maout, nbma, nbpain, lenpat, same_zone)
     call jemarq()
 !
     call jedetr(maout//'.PATCH')
-    call jelira(main//'.PATCH','NUTIOC',nbpatch)
+    call jelira(main//'.PATCH', 'NUTIOC', nbpatch)
     nbpain = nbpatch-1
-    call jelira(jexnum(main//'.PATCH', 1),'LONUTI' ,nbzone)
-    call jelira(main//'.PATCH','LONT' ,lonpat)
-    call jecrec(maout//'.PATCH','G V I', 'NU', 'CONTIG', 'VARIABLE', nbpatch+nbma)
+    call jelira(jexnum(main//'.PATCH', 1), 'LONUTI', nbzone)
+    call jelira(main//'.PATCH', 'LONT', lonpat)
+    call jecrec(maout//'.PATCH', 'G V I', 'NU', 'CONTIG', 'VARIABLE', nbpatch+nbma)
     if (same_zone) then
         call jeecra(maout//'.PATCH', 'LONT', ival=lonpat+lenpat)
     else
         call jeecra(maout//'.PATCH', 'LONT', ival=lonpat+lenpat+2)
-    endif
+    end if
     call jeecra(maout//'.PATCH', 'LONT', ival=lonpat+lenpat+2)
-    call jecroc(jexnum(maout//'.PATCH',1))
+    call jecroc(jexnum(maout//'.PATCH', 1))
     if (same_zone) then
-        call jeecra(jexnum(maout//'.PATCH',1), 'LONMAX', ival=nbzone)
-        call jeecra(jexnum(maout//'.PATCH',1), 'LONUTI', ival=nbzone)
+        call jeecra(jexnum(maout//'.PATCH', 1), 'LONMAX', ival=nbzone)
+        call jeecra(jexnum(maout//'.PATCH', 1), 'LONUTI', ival=nbzone)
     else
-        call jeecra(jexnum(maout//'.PATCH',1), 'LONMAX', ival=nbzone+2)
-        call jeecra(jexnum(maout//'.PATCH',1), 'LONUTI', ival=nbzone+2)
-    endif
-    call jeveuo(jexnum(maout//'.PATCH',1), 'E', patch)
+        call jeecra(jexnum(maout//'.PATCH', 1), 'LONMAX', ival=nbzone+2)
+        call jeecra(jexnum(maout//'.PATCH', 1), 'LONUTI', ival=nbzone+2)
+    end if
+    call jeveuo(jexnum(maout//'.PATCH', 1), 'E', patch)
     call jeveuo(jexnum(main//'.PATCH', 1), 'L', odpath)
     call jelira(jexnum(main//'.PATCH', 1), 'LONUTI', nbinfo)
     if (same_zone) then
-        do inc2=1,nbinfo
-            zi(patch+inc2-1)=zi(odpath+inc2-1)
+        do inc2 = 1, nbinfo
+            zi(patch+inc2-1) = zi(odpath+inc2-1)
         end do
-        zi(patch+nbzone+0-1)= zi(patch+nbzone+0-1) + nbma
+        zi(patch+nbzone+0-1) = zi(patch+nbzone+0-1)+nbma
     else
-        do inc2=1,nbinfo
-            zi(patch+inc2-1)=zi(odpath+inc2-1)
+        do inc2 = 1, nbinfo
+            zi(patch+inc2-1) = zi(odpath+inc2-1)
         end do
-        zi(patch+nbzone+1-1)=nbpatch+1
-        zi(patch+nbzone+2-1)=nbma
-    endif
-    do inc1=1, nbpatch-1
+        zi(patch+nbzone+1-1) = nbpatch+1
+        zi(patch+nbzone+2-1) = nbma
+    end if
+    do inc1 = 1, nbpatch-1
         call jeveuo(jexnum(main//'.PATCH', inc1+1), 'L', odpath)
         call jelira(jexnum(main//'.PATCH', inc1+1), 'LONUTI', nbinfo)
         call jecroc(jexnum(maout//'.PATCH', inc1+1))
         call jeecra(jexnum(maout//'.PATCH', inc1+1), 'LONMAX', nbinfo)
         call jeecra(jexnum(maout//'.PATCH', inc1+1), 'LONUTI', nbinfo)
         call jeveuo(jexnum(maout//'.PATCH', inc1+1), 'E', nwpath)
-        do inc2=1, nbinfo
+        do inc2 = 1, nbinfo
             zi(nwpath+inc2-1) = zi(odpath+inc2-1)
         end do
     end do

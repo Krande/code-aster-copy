@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine aptgno(sdappa, mesh, sdcont_defi)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfcald.h"
@@ -63,15 +63,15 @@ implicit none
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> ...... TANGENTES SUR LES NOEUDS'
-    endif
+        write (ifm, *) '<APPARIEMENT> ...... TANGENTES SUR LES NOEUDS'
+    end if
 !
 ! - Get parameters
 !
-    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    model_ndim = cfdisi(sdcont_defi, 'NDIM')
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
     sdappa_tgno = sdappa(1:19)//'.TGNO'
-    call jeveuo(sdappa_tgno, 'E', vr = v_sdappa_tgno)
+    call jeveuo(sdappa_tgno, 'E', vr=v_sdappa_tgno)
     v_sdappa_tgno(:) = 0.d0
 !
 ! - Loop on contact zones
@@ -80,43 +80,43 @@ implicit none
 !
 ! ----- Parameters on current zone - Master
 !
-        nb_node_mast   = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
-        jdecnm         = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
-        norm_type      = mminfi(sdcont_defi, 'VECT_MAIT', i_zone)
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM', i_zone)
+        jdecnm = mminfi(sdcont_defi, 'JDECNM', i_zone)
+        norm_type = mminfi(sdcont_defi, 'VECT_MAIT', i_zone)
         norm_vect(1:3) = 0.d0
         if (norm_type .ne. 0) then
             norm_vect(1) = mminfr(sdcont_defi, 'VECT_MAIT_DIRX', i_zone)
             norm_vect(2) = mminfr(sdcont_defi, 'VECT_MAIT_DIRY', i_zone)
             norm_vect(3) = mminfr(sdcont_defi, 'VECT_MAIT_DIRZ', i_zone)
-        endif
+        end if
 !
 ! ----- Compute tangents at each node by smoothing - On current zone/Master
 !
         apcald = cfcald(sdcont_defi, i_zone, 'MAIT')
         if (apcald) then
-            call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecnm,&
+            call aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecnm, &
                         nb_node_mast, norm_type, norm_vect)
-        endif
+        end if
 !
 ! ----- Parameters on current zone - Slave
 !
-        nb_node_slav   = mminfi(sdcont_defi, 'NBNOE'    , i_zone)
-        jdecne         = mminfi(sdcont_defi, 'JDECNE'   , i_zone)
-        norm_type      = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
+        nb_node_slav = mminfi(sdcont_defi, 'NBNOE', i_zone)
+        jdecne = mminfi(sdcont_defi, 'JDECNE', i_zone)
+        norm_type = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
         norm_vect(1:3) = 0.d0
         if (norm_type .ne. 0) then
             norm_vect(1) = mminfr(sdcont_defi, 'VECT_ESCL_DIRX', i_zone)
             norm_vect(2) = mminfr(sdcont_defi, 'VECT_ESCL_DIRY', i_zone)
             norm_vect(3) = mminfr(sdcont_defi, 'VECT_ESCL_DIRZ', i_zone)
-        endif
+        end if
 !
 ! ----- Compute tangents at each node by smoothing - On current zone/salve
 !
         apcald = cfcald(sdcont_defi, i_zone, 'ESCL')
         if (apcald) then
-            call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecne,&
+            call aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecne, &
                         nb_node_slav, norm_type, norm_vect)
-        endif
+        end if
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine char_read_tran(keywordfact , iocc      , ndim,&
-                          l_tran_     , tran_     ,&
-                          l_cent_     , cent_     ,&
+subroutine char_read_tran(keywordfact, iocc, ndim, &
+                          l_tran_, tran_, &
+                          l_cent_, cent_, &
                           l_angl_naut_, angl_naut_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8dgrd.h"
@@ -29,15 +29,15 @@ implicit none
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: keywordfact
-integer, intent(in) :: iocc
-integer, intent(in) :: ndim
-aster_logical, optional, intent(out) :: l_tran_
-real(kind=8), optional, intent(out) :: tran_(3)
-aster_logical, optional, intent(out) :: l_cent_
-real(kind=8), optional, intent(out) :: cent_(3)
-aster_logical, optional, intent(out) :: l_angl_naut_
-real(kind=8), optional, intent(out) :: angl_naut_(3)
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    integer, intent(in) :: ndim
+    aster_logical, optional, intent(out) :: l_tran_
+    real(kind=8), optional, intent(out) :: tran_(3)
+    aster_logical, optional, intent(out) :: l_cent_
+    real(kind=8), optional, intent(out) :: cent_(3)
+    aster_logical, optional, intent(out) :: l_angl_naut_
+    real(kind=8), optional, intent(out) :: angl_naut_(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,17 +66,17 @@ real(kind=8), optional, intent(out) :: angl_naut_(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_tran         = ASTER_FALSE
-    l_angl_naut    = ASTER_FALSE
-    l_cent         = ASTER_FALSE
-    tran(1:3)      = 0.d0
-    cent(1:3)      = 0.d0
+    l_tran = ASTER_FALSE
+    l_angl_naut = ASTER_FALSE
+    l_cent = ASTER_FALSE
+    tran(1:3) = 0.d0
+    cent(1:3) = 0.d0
     angl_naut(1:3) = 0.d0
     if (ndim .eq. 3) then
         nangmx = 3
     else
         nangmx = 1
-    endif
+    end if
 
 ! - Translation
     call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=0, nbret=ntran)
@@ -87,9 +87,9 @@ real(kind=8), optional, intent(out) :: angl_naut_(3)
             vali(1) = ndim
             vali(2) = ndim
             call utmess('F', 'CHARGES2_42', sk='TRAN', ni=2, vali=vali)
-        endif
+        end if
         call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=ntran, vect=tran)
-    endif
+    end if
 
 ! - Rotation
     call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=0, nbret=ncent)
@@ -100,9 +100,9 @@ real(kind=8), optional, intent(out) :: angl_naut_(3)
             vali(1) = ndim
             vali(2) = ndim
             call utmess('F', 'CHARGES2_42', sk='CENTRE', ni=2, vali=vali)
-        endif
+        end if
         call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=ncent, vect=cent)
-    endif
+    end if
 !
     call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangl)
     nangl = -nangl
@@ -112,25 +112,25 @@ real(kind=8), optional, intent(out) :: angl_naut_(3)
             vali(1) = nangmx
             vali(2) = ndim
             call utmess('F', 'CHARGES2_42', sk='ANGL_NAUT', ni=2, vali=vali)
-        endif
+        end if
         call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=nangmx, vect=angl_naut)
         do i = 1, 3
             angl_naut(i) = angl_naut(i)*r8dgrd()
         end do
-    endif
+    end if
 
 ! - Copy output
     if (present(l_tran_)) then
-        l_tran_    = l_tran
+        l_tran_ = l_tran
         tran_(1:3) = tran(1:3)
-    endif
+    end if
     if (present(l_cent_)) then
-        l_cent_    = l_cent
+        l_cent_ = l_cent
         cent_(1:3) = cent(1:3)
-    endif
+    end if
     if (present(l_angl_naut_)) then
-        l_angl_naut_    = l_angl_naut
+        l_angl_naut_ = l_angl_naut
         angl_naut_(1:3) = angl_naut(1:3)
-    endif
+    end if
 !
 end subroutine

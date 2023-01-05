@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,11 +45,11 @@ subroutine trldc(a, nordre, ierr)
     integer :: i, ibm, idiag, ierr, in, indiag, jn
     integer :: jndiag, nordre
 !-----------------------------------------------------------------------
-    data zero /0.d+00/
+    data zero/0.d+00/
 !-----------------------------------------------------------------------
 !
-    epsi=1.d0/r8gaem()
-    xmax=zero
+    epsi = 1.d0/r8gaem()
+    xmax = zero
     ierr = 0
     do in = 1, nordre
         indiag = in*(in-1)/2+1
@@ -60,37 +60,37 @@ subroutine trldc(a, nordre, ierr)
             jndiag = jn*(jn-1)/2+1
 !
             if (jn .eq. 1) goto 36
-            ibm = jn - 1
+            ibm = jn-1
 !
-            r8val = a (indiag+in-jn)
+            r8val = a(indiag+in-jn)
             do i = 1, ibm
                 idiag = i*(i-1)/2+1
-                r8val = r8val - dconjg(a(jndiag+jn-i))*a(indiag+in-i)* a(idiag)
+                r8val = r8val-dconjg(a(jndiag+jn-i))*a(indiag+in-i)*a(idiag)
             end do
-            a ( indiag+in-jn ) = r8val
+            a(indiag+in-jn) = r8val
 !
- 36         continue
-            a (indiag+in-jn ) = a (indiag+in-jn ) / a(jndiag)
+36          continue
+            a(indiag+in-jn) = a(indiag+in-jn)/a(jndiag)
         end do
 !
- 50     continue
+50      continue
 !
 !        UTILISATION  DE LA LIGNE IN ( CALCUL DU TERME PIVOT)
-        ibm = in - 1
+        ibm = in-1
 !
-        r8val = a (indiag)
+        r8val = a(indiag)
         do i = 1, ibm
             idiag = i*(i-1)/2+1
-            r8val = r8val - dconjg(a(indiag+in-i))*a(indiag+in-i)*a( idiag)
+            r8val = r8val-dconjg(a(indiag+in-i))*a(indiag+in-i)*a(idiag)
         end do
-        a (indiag) = r8val
-        xmod=dble(r8val)**2+dimag(r8val)**2
-        if (xmod .gt. xmax) xmax=xmod
+        a(indiag) = r8val
+        xmod = dble(r8val)**2+dimag(r8val)**2
+        if (xmod .gt. xmax) xmax = xmod
         if ((xmod/xmax) .lt. epsi) then
             call utmess('I', 'ALGORITH10_98')
             ierr = in
             goto 999
-        endif
+        end if
 !
     end do
 !

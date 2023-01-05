@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@
 !
 subroutine nonlinDSTableIOClean(tableio)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 !
-type(NL_DS_TableIO), intent(inout) :: tableio
+    type(NL_DS_TableIO), intent(inout) :: tableio
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,7 +42,7 @@ type(NL_DS_TableIO), intent(inout) :: tableio
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    AS_DEALLOCATE(vk24 = tableio%paraName)
-    AS_DEALLOCATE(vk8 = tableio%paraType)
+    AS_DEALLOCATE(vk24=tableio%paraName)
+    AS_DEALLOCATE(vk8=tableio%paraType)
 !
 end subroutine

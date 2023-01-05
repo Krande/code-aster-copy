@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verifs(fami    , kpg    , ksp    , poum    , j_mater    ,&
-                    epsse , materi_, isech_)
+subroutine verifs(fami, kpg, ksp, poum, j_mater, &
+                  epsse, materi_, isech_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/rcvarc.h"
@@ -28,14 +28,14 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/get_elas_id.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-character(len=*), intent(in) :: poum
-integer, intent(in) :: j_mater
-real(kind=8), intent(out) :: epsse
-character(len=8), optional, intent(in) :: materi_
-integer, optional, intent(out) :: isech_
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: j_mater
+    real(kind=8), intent(out) :: epsse
+    character(len=8), optional, intent(in) :: materi_
+    integer, optional, intent(out) :: isech_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,44 +73,44 @@ integer, optional, intent(out) :: isech_
     materi = ' '
     if (present(materi_)) then
         materi = materi_
-    endif
+    end if
 !
-    iret_sech     = 0
-    iret_sechm    = 0
-    iret_sechp    = 0
-    iret_sechref  = 0
-    sechm         = 0.d0
-    sechp         = 0.d0
-    sechref       = 0.d0
-    epsse         = 0.d0
+    iret_sech = 0
+    iret_sechm = 0
+    iret_sechp = 0
+    iret_sechref = 0
+    sechm = 0.d0
+    sechp = 0.d0
+    sechref = 0.d0
+    epsse = 0.d0
 !
 ! - No drying -> strain is zero
 !
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                 ksp, sechp, iret_sech)
     if (iret_sech .ne. 0) then
         goto 999
-    endif
+    end if
 !
 ! - Get drying
 !
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sechref, iret_sechref)
     if (iret_sechref .eq. 1) then
         call tecael(iadzi, iazk24)
         elem_name = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'COMPOR5_24', sk=elem_name)
-    endif
+    end if
 !
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        call rcvarc(' ', 'SECH', '-', fami, kpg,&
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        call rcvarc(' ', 'SECH', '-', fami, kpg, &
                     ksp, sechm, iret_sechm)
-    endif
+    end if
 !
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        call rcvarc(' ', 'SECH', '+', fami, kpg, &
                     ksp, sechp, iret_sechp)
-    endif
+    end if
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
@@ -118,53 +118,53 @@ integer, optional, intent(out) :: isech_
 !
 ! - Get elastic parameters
 !
-    nomres='K_DESSIC'
+    nomres = 'K_DESSIC'
 !
     icodrm = 0
     icodrp = 0
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        if (iret_sechm.eq.0) then
-            call rcvalb(fami, kpg, ksp, '-', j_mater,&
-                        materi, elas_keyword, 0, ' ', [0.d0],&
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        if (iret_sechm .eq. 0) then
+            call rcvalb(fami, kpg, ksp, '-', j_mater, &
+                        materi, elas_keyword, 0, ' ', [0.d0], &
                         1, nomres, valres(1), icodrm(1), 1)
             kdessm = valres(1)
-        endif
-    endif
+        end if
+    end if
 !
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        if (iret_sechp.eq.0) then
-            call rcvalb(fami, kpg, ksp, '+', j_mater,&
-                        materi, elas_keyword, 0, ' ', [0.d0],&
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        if (iret_sechp .eq. 0) then
+            call rcvalb(fami, kpg, ksp, '+', j_mater, &
+                        materi, elas_keyword, 0, ' ', [0.d0], &
                         1, nomres, valres(1), icodrp(1), 1)
             kdessp = valres(1)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Test
 !
-    if ((icodrm(1)+icodrp(1)).ne.0) then
+    if ((icodrm(1)+icodrp(1)) .ne. 0) then
         call tecael(iadzi, iazk24)
-        valk(1) = zk24(iazk24-1+3)(1:8)
+        valk(1) = zk24(iazk24-1+3) (1:8)
         valk(2) = 'SECH'
         valk(3) = nomres
         call utmess('F', 'COMPOR5_32', nk=3, valk=valk)
-    endif
+    end if
 !
 ! - Compute strains
 !
     if (poum .eq. 'T') then
-        if (iret_sechm + iret_sechp .eq. 0) then
-            epsse = (- kdessp*(sechref-sechp)) - (- kdessm*(sechref-sechm))
-        endif
+        if (iret_sechm+iret_sechp .eq. 0) then
+            epsse = (-kdessp*(sechref-sechp))-(-kdessm*(sechref-sechm))
+        end if
     else if (poum .eq. '-') then
-        if (iret_sechm.eq.0) then
-            epsse = - kdessm*(sechref-sechm)
-        endif
+        if (iret_sechm .eq. 0) then
+            epsse = -kdessm*(sechref-sechm)
+        end if
     else if (poum .eq. '+') then
-        if (iret_sechp.eq.0) then
-            epsse = - kdessp*(sechref-sechp)
-        endif
-    endif
+        if (iret_sechp .eq. 0) then
+            epsse = -kdessp*(sechref-sechp)
+        end if
+    end if
 !
 999 continue
 !
@@ -172,12 +172,12 @@ integer, optional, intent(out) :: isech_
 !
     if (present(isech_)) then
         isech_ = 0
-        if ((iret_sechm + iret_sechp) .ne. 0) then
+        if ((iret_sechm+iret_sechp) .ne. 0) then
             isech_ = 1
-        endif
+        end if
         if (iret_sech .ne. 0) then
             isech_ = 1
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
-                  cham1, moa1, moa2, noma1, noma2,&
+subroutine pjxxco(typcal, method, lcorre, isole, resuin, &
+                  cham1, moa1, moa2, noma1, noma2, &
                   cnref, noca)
 !
 !
@@ -66,7 +66,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lnoeu, lelno, lelem, lelga, proj1
-    character(len= 8) :: corru
+    character(len=8) :: corru
     character(len=16) :: cortmp, k16bid
     character(len=24) :: valk(2)
 !
@@ -76,30 +76,30 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 
 !   cas de la méthode 'NUAGE_DEG'
     if (method(1:10) .eq. 'NUAGE_DEG_') then
-        ASSERT(typcal.eq.'1ET2')
+        ASSERT(typcal .eq. '1ET2')
         call pjngco(lcorre(1), noma1, noma2, method, cnref, 'V')
     else
 !   si TYPCAL='1' => 'COLLOCATION' ou 'COUPLAGE' seulement
         if (typcal .eq. '1') then
-            ASSERT(resuin.eq.' ' .and. cham1.eq.' ')
-            ASSERT(method.eq.'COLLOCATION'.or.method.eq.'COUPLAGE')
+            ASSERT(resuin .eq. ' ' .and. cham1 .eq. ' ')
+            ASSERT(method .eq. 'COLLOCATION' .or. method .eq. 'COUPLAGE')
             call getres(corru, k16bid, k16bid)
-            cortmp='&&PJXXCO.CORRES'
+            cortmp = '&&PJXXCO.CORRES'
             if (method .eq. 'COLLOCATION') then
                 call pjefco(moa1, moa2, cortmp, 'V')
-            else if (method.eq.'COUPLAGE') then
+            else if (method .eq. 'COUPLAGE') then
 !               méthode pour le couplage via YACS avec SATURNE pour ifs
                 call pjeftc(noma1, noma2, cortmp, 'V')
-            endif
+            end if
             call copisd('CORRESP_2_MAILLA', 'G', cortmp, corru)
             call detrsd('CORRESP_2_MAILLA', cortmp)
 !
         else
-            ASSERT(typcal.eq.'1ET2')
+            ASSERT(typcal .eq. '1ET2')
 !           quels sont les types de champs a projeter ?
             call pjtyco(isole, resuin, cham1, lnoeu, lelno, lelem, lelga)
 !           vérification de la cohérence de la demande formulée par l'utilisateur
-            if ((method.eq.'ECLA_PG') .and. (.not.lelga)) then
+            if ((method .eq. 'ECLA_PG') .and. (.not. lelga)) then
                 valk(1) = method
                 if (lnoeu) then
                     call utmess('F', 'CALCULEL5_32', sk=valk(1))
@@ -107,49 +107,49 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
                     if (lelno) valk(2) = 'ELNO'
                     if (lelem) valk(2) = 'ELEM'
                     call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
 !
-            if ((method.eq.'COLLOCATION') .and. (.not.lnoeu) .and. ( .not.lelno) &
-                                          .and. (.not.lelem)) then
+            if ((method .eq. 'COLLOCATION') .and. (.not. lnoeu) .and. (.not. lelno) &
+                .and. (.not. lelem)) then
                 ASSERT(lelga)
                 valk(1) = method
                 valk(2) = 'ELGA'
                 call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
-            endif
+            end if
 !
-            if ((method(1:10).eq.'SOUS_POINT') .and. (.not.lnoeu) .and. (.not.lelno)) then
+            if ((method(1:10) .eq. 'SOUS_POINT') .and. (.not. lnoeu) .and. (.not. lelno)) then
                 ASSERT(lelga .or. lelem)
                 valk(1) = method
                 valk(2) = 'ELGA ET ELEM'
                 call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
-            endif
+            end if
 !
 !           on utilise lcorre(1) ou lcorre(2) suivant le type de champ
-            proj1=.false.
+            proj1 = .false.
             if ((lnoeu) .or. (lelno) .or. (lelem)) then
-                if (method(1:10).eq.'SOUS_POINT') then
+                if (method(1:10) .eq. 'SOUS_POINT') then
                     call pjspco(moa1, moa2, lcorre(1), 'V', noca, method, isole)
                 else
                     call pjefco(moa1, moa2, lcorre(1), 'V')
-                endif
-                proj1=.true.
-            endif
+                end if
+                proj1 = .true.
+            end if
 !
             if (lelga) then
                 if (isole) then
-                    if ((method.eq.'ECLA_PG') .or. (method.eq.'AUTO')) then
+                    if ((method .eq. 'ECLA_PG') .or. (method .eq. 'AUTO')) then
                         call pjelco(moa1, moa2, cham1, lcorre(2), 'V')
                     else
-                        valk(1)=method
-                        call utmess('F','CALCULEL5_58',nk=1,valk=valk)
-                    endif
+                        valk(1) = method
+                        call utmess('F', 'CALCULEL5_58', nk=1, valk=valk)
+                    end if
                 else
-                    if (.not.proj1)  call utmess('F','CALCULEL5_57')
-                endif
-            endif
-        endif
-    endif
+                    if (.not. proj1) call utmess('F', 'CALCULEL5_57')
+                end if
+            end if
+        end if
+    end if
 !
     call jedema()
 end subroutine

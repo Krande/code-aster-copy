@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmforc_step(list_func_acti,&
-                       model         , cara_elem      , nume_dof ,&
-                       list_load     , sddyna         ,&
-                       ds_material   , ds_constitutive,&
-                       ds_measure    , ds_inout       ,&
-                       sddisc        , nume_inst      ,&
-                       hval_incr     , hval_algo      , hhoField,&
-                       hval_veelem   , hval_veasse)
+subroutine nmforc_step(list_func_acti, &
+                       model, cara_elem, nume_dof, &
+                       list_load, sddyna, &
+                       ds_material, ds_constitutive, &
+                       ds_measure, ds_inout, &
+                       sddisc, nume_inst, &
+                       hval_incr, hval_algo, hhoField, &
+                       hval_veelem, hval_veasse)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -43,18 +43,18 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=24), intent(in) :: model, cara_elem, nume_dof
-character(len=19), intent(in) :: list_load, sddyna
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_InOut), intent(in) :: ds_inout
-type(HHO_Field), intent(in) :: hhoField
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: model, cara_elem, nume_dof
+    character(len=19), intent(in) :: list_load, sddyna
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    type(HHO_Field), intent(in) :: hhoField
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,42 +94,42 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
         call utmess('I', 'MECANONLINE11_13')
-    endif
+    end if
 !
 ! - Get time
 !
     ASSERT(nume_inst .gt. 0)
-    time_prev = diinst(sddisc,nume_inst-1)
-    time_curr = diinst(sddisc,nume_inst)
+    time_prev = diinst(sddisc, nume_inst-1)
+    time_curr = diinst(sddisc, nume_inst)
 !
 ! - Active functionnalities
 !
-    l_dyna    = ndynlo(sddyna,'DYNAMIQUE')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
 ! - Compute CHAR_MECA_*_R for PREDICTOR
 !
-    call nmvcpr(model      , cara_elem      , hval_incr,&
+    call nmvcpr(model, cara_elem, hval_incr, &
                 ds_material, ds_constitutive, &
                 'V')
 !
 ! - Compute loads
 !
-    call nonlinLoadCompute('FIXE'     , list_load      ,&
-                           model      , cara_elem      , nume_dof  , list_func_acti,&
-                           ds_material, ds_constitutive, ds_measure,&
-                           time_prev  , time_curr      ,&
-                           hval_incr  , hval_algo      ,&
-                           hval_veelem, hval_veasse    ,&
+    call nonlinLoadCompute('FIXE', list_load, &
+                           model, cara_elem, nume_dof, list_func_acti, &
+                           ds_material, ds_constitutive, ds_measure, &
+                           time_prev, time_curr, &
+                           hval_incr, hval_algo, &
+                           hval_veelem, hval_veasse, &
                            hhoField)
 !
 ! - Compute loads (for dynamic)
 !
     if (l_dyna) then
-        call nonlinLoadDynaCompute('FIXE'     , sddyna     ,&
-                                   model      , nume_dof   ,&
-                                   ds_material, ds_measure , ds_inout,&
-                                   time_prev  , time_curr  ,&
+        call nonlinLoadDynaCompute('FIXE', sddyna, &
+                                   model, nume_dof, &
+                                   ds_material, ds_measure, ds_inout, &
+                                   time_prev, time_curr, &
                                    hval_veelem, hval_veasse)
-    endif
+    end if
 !
 end subroutine

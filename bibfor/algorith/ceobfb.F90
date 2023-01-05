@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
+subroutine ceobfb(bm, epsm, lambda, mu, ecrob, &
                   bdim, fb, nofbm, fbm)
 ! person_in_charge: ludovic.idoux at edf.fr
     implicit none
@@ -51,23 +51,23 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
     real(kind=8) :: vecc(3, 3), valcc(3), vecfb(3, 3), valfb(3)
     real(kind=8) :: vecfbs(2, 2), valfbs(2)
 !
-    data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
-    t(1,1)=1
-    t(1,2)=4
-    t(1,3)=5
-    t(2,1)=4
-    t(2,2)=2
-    t(2,3)=6
-    t(3,1)=5
-    t(3,2)=6
-    t(3,3)=3
+    t(1, 1) = 1
+    t(1, 2) = 4
+    t(1, 3) = 5
+    t(2, 1) = 4
+    t(2, 2) = 2
+    t(2, 3) = 6
+    t(3, 1) = 5
+    t(3, 2) = 6
+    t(3, 3) = 3
 !
-    deux=2.d0
+    deux = 2.d0
 !
     do i = 1, 6
-        b(i)=bm(i)
-        eps(i)=epsm(i)
+        b(i) = bm(i)
+        eps(i) = epsm(i)
     end do
 !
 ! CALCUL DE FB
@@ -77,8 +77,8 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cc(t(i,j))=cc(t(i,j))+b(t(i,k))*eps(t(k,j))+ b(t(j,k))&
-                *eps(t(k,i))
+                cc(t(i, j)) = cc(t(i, j))+b(t(i, k))*eps(t(k, j))+b(t(j, k)) &
+                              *eps(t(k, i))
             end do
         end do
     end do
@@ -87,37 +87,37 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
     call r8inir(6, 0.d0, cpe, 1)
     do i = 1, 3
         if (valcc(i) .lt. 0.d0) then
-            valcc(i)=0.d0
-        endif
+            valcc(i) = 0.d0
+        end if
     end do
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                ccp(t(i,j))=ccp(t(i,j))+vecc(i,k)*valcc(k)*vecc(j,k)
+                ccp(t(i, j)) = ccp(t(i, j))+vecc(i, k)*valcc(k)*vecc(j, k)
             end do
         end do
     end do
     do i = 1, 3
         do j = i, 3
             do k = 1, 3
-                cpe(t(i,j))=cpe(t(i,j))+ ccp(t(i,k))*eps(t(k,j))+&
-                ccp(t(j,k))*eps(t(k,i))
+                cpe(t(i, j)) = cpe(t(i, j))+ccp(t(i, k))*eps(t(k, j))+ &
+                               ccp(t(j, k))*eps(t(k, i))
             end do
         end do
     end do
 !
     call r8inir(6, 0.d0, fb, 1)
-    treb=0.d0
+    treb = 0.d0
     do i = 1, 3
-        treb=treb+cc(i)/deux
+        treb = treb+cc(i)/deux
     end do
     if (treb .gt. 0.d0) then
         do i = 1, 6
-            fb(i)=-lambda*treb*eps(i)
+            fb(i) = -lambda*treb*eps(i)
         end do
-    endif
+    end if
     do i = 1, 6
-        fb(i)=fb(i)-mu/deux*cpe(i)+ecrob*(kron(i)-b(i))
+        fb(i) = fb(i)-mu/deux*cpe(i)+ecrob*(kron(i)-b(i))
     end do
 !
 ! CALCUL DE LA PARTIE POSITIVE DE FBM ET DE SA NORME NOFB
@@ -125,62 +125,62 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
     call r8inir(6, 0.d0, fbm, 1)
     if (bdim .eq. 3) then
         call diago3(fb, vecfb, valfb)
-        nofbm=0.d0
+        nofbm = 0.d0
 !
         do i = 1, 3
             if (valfb(i) .gt. 0.d0) then
-                valfb(i)=0.d0
-            endif
-            nofbm=nofbm+valfb(i)*valfb(i)
+                valfb(i) = 0.d0
+            end if
+            nofbm = nofbm+valfb(i)*valfb(i)
         end do
 !
         do i = 1, 3
             do j = i, 3
                 do k = 1, 3
-                    fbm(t(i,j))=fbm(t(i,j))+vecfb(i,k)*valfb(k)*vecfb(&
-                    j,k)
+                    fbm(t(i, j)) = fbm(t(i, j))+vecfb(i, k)*valfb(k)*vecfb( &
+                                   j, k)
                 end do
             end do
         end do
 !
-    else if (bdim.eq.2) then
-        r(1,1)=1
-        r(2,2)=2
-        r(1,2)=3
-        r(2,1)=3
-        fbs(1)=fb(1)
-        fbs(2)=fb(2)
-        fbs(3)=fb(4)
+    else if (bdim .eq. 2) then
+        r(1, 1) = 1
+        r(2, 2) = 2
+        r(1, 2) = 3
+        r(2, 1) = 3
+        fbs(1) = fb(1)
+        fbs(2) = fb(2)
+        fbs(3) = fb(4)
 !
         call diago2(fbs, vecfbs, valfbs)
 !
-        nofbm=0.d0
+        nofbm = 0.d0
         do i = 1, 2
             if (valfbs(i) .gt. 0.d0) then
-                valfbs(i)=0.d0
-            endif
-            nofbm=nofbm+valfbs(i)*valfbs(i)
+                valfbs(i) = 0.d0
+            end if
+            nofbm = nofbm+valfbs(i)*valfbs(i)
         end do
 !
         do i = 1, 2
             do j = i, 2
                 do k = 1, 2
-                    fbm(r(i,j))=fbm(r(i,j))+vecfbs(i,k)*valfbs(k)*&
-                    vecfbs(j,k)
+                    fbm(r(i, j)) = fbm(r(i, j))+vecfbs(i, k)*valfbs(k)* &
+                                   vecfbs(j, k)
                 end do
             end do
         end do
 !
-    else if (bdim.eq.1) then
+    else if (bdim .eq. 1) then
         if (fb(1) .lt. 0.d0) then
-            fbm(1)=fb(1)
-        endif
-        nofbm=fbm(1)**2
+            fbm(1) = fb(1)
+        end if
+        nofbm = fbm(1)**2
 !
-    endif
+    end if
 !
     if (abs(nofbm) .lt. r8prem()) then
-        nofbm=0.d0
-    endif
+        nofbm = 0.d0
+    end if
 !
 end subroutine

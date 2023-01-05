@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine extmod_sorted(basemo, numddl, nume, nbnumo, dmode,&
-                  nbeq, nbnoe, iddl, nbddl)
+subroutine extmod_sorted(basemo, numddl, nume, nbnumo, dmode, &
+                         nbeq, nbnoe, iddl, nbddl)
     implicit none
 ! EXTRAIRE D'UN CONCEPT MODE_MECA LA DEFORMEE POUR UN OU PLUSIEURS DDL
 ! LES LAGRANGES SONT SUPPRIMES.
@@ -54,7 +54,7 @@ subroutine extmod_sorted(basemo, numddl, nume, nbnumo, dmode,&
     call jeveuo(deeq, 'L', ideeq)
     do im = 1, nbnumo
         inumo = nume(im)
-        call rsexch('F', basemo, 'DEPL', inumo, nomcha,&
+        call rsexch('F', basemo, 'DEPL', inumo, nomcha, &
                     iret)
         nomcha = nomcha(1:19)//'.VALE'
         call jeveuo(nomcha, 'L', iadmod)
@@ -66,7 +66,7 @@ subroutine extmod_sorted(basemo, numddl, nume, nbnumo, dmode,&
                 if (iiddl .eq. iddl(k)) then
                     dmode((im-1)*nbnoe*nbddl+(iinod-1)*nbddl+k) = zr(iadmod+ieq-1)
                     goto 22
-                endif
+                end if
             end do
 22          continue
         end do

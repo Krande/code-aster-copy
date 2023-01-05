@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,31 +48,31 @@ subroutine zengen(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: seuil, xx
-    parameter (seuil=1.0e+10)
+    parameter(seuil=1.0e+10)
 !
 !   système d'équations : contrainte, epsivisq, epsi , dissipation
     integer :: isig, iepvis, iepsi, idissi
-    parameter (isig=1,iepvis=2,iepsi=3,idissi=4)
+    parameter(isig=1, iepvis=2, iepsi=3, idissi=4)
 !   paramètres du modèle : s1, e2, s3, nu3, alpha3
     integer :: is1, ie2, is3, inu3, ialp3
-    parameter (is1=1,ie2=2,is3=3,inu3=4,ialp3=5)
+    parameter(is1=1, ie2=2, is3=3, inu3=4, ialp3=5)
 !
     dyy(iepsi) = dy0(iepsi)
-    xx = (yy0(isig)*(1.0d0+ppr(ie2)*ppr(is1)) -ppr(ie2)*yy0(iepsi))/ppr(inu3)
+    xx = (yy0(isig)*(1.0d0+ppr(ie2)*ppr(is1))-ppr(ie2)*yy0(iepsi))/ppr(inu3)
     if (abs(xx) .gt. seuil) then
-        if (log10(abs(xx)) .gt. 200.0d0 * ppr(ialp3)) then
-            decoup=.true.
+        if (log10(abs(xx)) .gt. 200.0d0*ppr(ialp3)) then
+            decoup = .true.
             goto 999
-        endif
-    endif
+        end if
+    end if
     if (xx .ge. 0.0d0) then
-        dyy(iepvis) = ( abs(xx) )**(1.0d0/ppr(ialp3))
+        dyy(iepvis) = (abs(xx))**(1.0d0/ppr(ialp3))
     else
-        dyy(iepvis) = -( abs(xx) )**(1.0d0/ppr(ialp3))
-    endif
+        dyy(iepvis) = -(abs(xx))**(1.0d0/ppr(ialp3))
+    end if
     dyy(idissi) = ppr(inu3)*abs(xx*dyy(iepvis))
 !
-    dyy(isig) = (dyy(iepsi)*(1.0d0+ppr(ie2)*ppr(is3)) - dyy(iepvis))
+    dyy(isig) = (dyy(iepsi)*(1.0d0+ppr(ie2)*ppr(is3))-dyy(iepvis))
     dyy(isig) = dyy(isig)/(ppr(is1)+ppr(is3)+ppr(ie2)*ppr(is1)*ppr(is3))
 !
 999 continue

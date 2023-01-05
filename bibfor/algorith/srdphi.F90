@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine srdphi(nbmat, mater, de, seuilv, dfdsv, dphi)
 !                    DPHI = A*NV/PA*(FVP/PA)**(NV-1)*DFVP/DSIGE*DE
 ! ===================================================================================
 
-    implicit    none
+    implicit none
 
 #include "asterfort/r8inir.h"
 
@@ -46,7 +46,7 @@ subroutine srdphi(nbmat, mater, de, seuilv, dfdsv, dphi)
     !!!
 
     integer :: nbmat
-    real(kind=8) :: mater(nbmat,2), de(6,6)
+    real(kind=8) :: mater(nbmat, 2), de(6, 6)
     real(kind=8) :: dphi(6), dfdsv(6), seuilv
 
     !!!
@@ -57,50 +57,50 @@ subroutine srdphi(nbmat, mater, de, seuilv, dfdsv, dphi)
     real(kind=8) :: pa, a, n, aa(6), a0, r, z
     real(kind=8) :: tpp, trr
 
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 
     !!!
     !!! Recuperation des temperatures
     !!!
 
-    tpp=mater(7,1)
-    trr=mater(8,1)
+    tpp = mater(7, 1)
+    trr = mater(8, 1)
 
     !!!
     !!! Para. du modele
     !!!
 
     !!! a T0
-    pa=mater(1,2)
-    a0=mater(16,2)
-    n=mater(17,2)
-    z=mater(27,2)
-    r=8.3144621d0
+    pa = mater(1, 2)
+    a0 = mater(16, 2)
+    n = mater(17, 2)
+    z = mater(27, 2)
+    r = 8.3144621d0
 
     !!! a T
-    if ((tpp.ge.trr).and.(trr.gt.0.d0)) then
-        a=a0*exp(-z/r/tpp*(1.d0-tpp/trr))
+    if ((tpp .ge. trr) .and. (trr .gt. 0.d0)) then
+        a = a0*exp(-z/r/tpp*(1.d0-tpp/trr))
     else
-        a=a0
-    endif
+        a = a0
+    end if
 
     !!!
     !!! Matrice intermediaire
     !!!
 
     call r8inir(6, 0.d0, aa, 1)
-    aa(1:ndt) = matmul(de(1:ndt,1:ndt), dfdsv(1:ndt))
+    aa(1:ndt) = matmul(de(1:ndt, 1:ndt), dfdsv(1:ndt))
 
     !!!
     !!! Calcul de dphi/deps
     !!!
 
-    do i=1, ndt
-        if (seuilv.le.0.d0) then
-            dphi(i)=0.d0
+    do i = 1, ndt
+        if (seuilv .le. 0.d0) then
+            dphi(i) = 0.d0
         else
-            dphi(i)=a*n/pa*(seuilv/pa)**(n-1.d0)*aa(i)
-        endif
+            dphi(i) = a*n/pa*(seuilv/pa)**(n-1.d0)*aa(i)
+        end if
     end do
 
 end subroutine

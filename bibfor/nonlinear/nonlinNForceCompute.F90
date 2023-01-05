@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_lload_name: mickael.abbas at edf.fr
 !
-subroutine nonlinNForceCompute(model      , cara_elem      , list_func_acti,&
-                               ds_material, ds_constitutive,&
-                               ds_measure , ds_system      ,&
-                               time_prev  , time_curr      ,&
-                               hval_incr  , hval_algo)
+subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
+                               ds_material, ds_constitutive, &
+                               ds_measure, ds_system, &
+                               time_prev, time_curr, &
+                               hval_incr, hval_algo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -38,14 +38,14 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=24), intent(in) :: model, cara_elem
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_System), intent(in) :: ds_system
-real(kind=8), intent(in) :: time_prev, time_curr
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=24), intent(in) :: model, cara_elem
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_System), intent(in) :: ds_system
+    real(kind=8), intent(in) :: time_prev, time_curr
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_8')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -104,7 +104,7 @@ character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
 !
 ! - Active functionnalities
 !
-    l_implex     = isfonc(list_func_acti,'IMPLEX')
+    l_implex = isfonc(list_func_acti, 'IMPLEX')
 !
 ! - Time
 !
@@ -113,24 +113,24 @@ character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! - Compute
 !
     if (l_implex) then
-        call vefnme(option                , model           , ds_material%mateco, cara_elem,&
-                    ds_constitutive%compor, time_list       , 0                 , ' '      ,&
-                    vrcmoi                , sigm_extr       , ' ',&
-                    disp_prev             , disp_cumu_inst  ,&
-                    'V'                   , ds_system%vefnod)
+        call vefnme(option, model, ds_material%mateco, cara_elem, &
+                    ds_constitutive%compor, time_list, 0, ' ', &
+                    vrcmoi, sigm_extr, ' ', &
+                    disp_prev, disp_cumu_inst, &
+                    'V', ds_system%vefnod)
     else
-        call vefnme(option                , model           , ds_material%mateco, cara_elem,&
-                    ds_constitutive%compor, time_list       , 0                 , ' '      ,&
-                    vrcmoi                , sigm_prev       , strx_prev,&
-                    disp_prev             , disp_cumu_inst  ,&
-                    'V'                   , ds_system%vefnod)
-    endif
+        call vefnme(option, model, ds_material%mateco, cara_elem, &
+                    ds_constitutive%compor, time_list, 0, ' ', &
+                    vrcmoi, sigm_prev, strx_prev, &
+                    disp_prev, disp_cumu_inst, &
+                    'V', ds_system%vefnod)
+    end if
 !
 ! - Restore disp_cumu_inst
 !

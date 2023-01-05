@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
+subroutine nurfpd(ndim, nno1, nno2, npg, iw, &
+                  vff1, vff2, idff1, vu, vp, &
                   typmod, geomi, sigref, epsref, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
@@ -68,15 +68,15 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
     real(kind=8) :: def(2*ndim, nno1, ndim)
     real(kind=8) :: t1, dff1(nno1, 4)
 !
-    data         f    / 1.d0, 0.d0, 0.d0,&
+    data f/1.d0, 0.d0, 0.d0,&
      &                    0.d0, 1.d0, 0.d0,&
-     &                    0.d0, 0.d0, 1.d0 /
+     &                    0.d0, 0.d0, 1.d0/
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
 !
-    axi = typmod(1).eq.'AXIS'
-    nddl = nno1*ndim + nno2
+    axi = typmod(1) .eq. 'AXIS'
+    nddl = nno1*ndim+nno2
     rac2 = sqrt(2.d0)
     ndimsi = 2*ndim
 !
@@ -84,8 +84,8 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
 !
     do g = 1, npg
 !
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
 !
 ! - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
@@ -93,31 +93,31 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
         if (ndim .eq. 2) then
             do na = 1, nno1
                 do ia = 1, ndim
-                    def(1,na,ia)= f(ia,1)*dff1(na,1)
-                    def(2,na,ia)= f(ia,2)*dff1(na,2)
-                    def(3,na,ia)= 0.d0
-                    def(4,na,ia)=(f(ia,1)*dff1(na,2)+f(ia,2)*dff1(na,1))/rac2
+                    def(1, na, ia) = f(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = f(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = 0.d0
+                    def(4, na, ia) = (f(ia, 1)*dff1(na, 2)+f(ia, 2)*dff1(na, 1))/rac2
                 end do
             end do
 !
 ! - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
             if (axi) then
                 do na = 1, nno1
-                    def(3,na,1) = f(3,3)*vff1(na,g)/r
+                    def(3, na, 1) = f(3, 3)*vff1(na, g)/r
                 end do
-            endif
+            end if
         else
             do na = 1, nno1
                 do ia = 1, ndim
-                    def(1,na,ia)= f(ia,1)*dff1(na,1)
-                    def(2,na,ia)= f(ia,2)*dff1(na,2)
-                    def(3,na,ia)= f(ia,3)*dff1(na,3)
-                    def(4,na,ia)=(f(ia,1)*dff1(na,2)+f(ia,2)*dff1(na,1))/rac2
-                    def(5,na,ia)=(f(ia,1)*dff1(na,3)+f(ia,3)*dff1(na,1))/rac2
-                    def(6,na,ia)=(f(ia,2)*dff1(na,3)+f(ia,3)*dff1(na,2))/rac2
+                    def(1, na, ia) = f(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = f(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = f(ia, 3)*dff1(na, 3)
+                    def(4, na, ia) = (f(ia, 1)*dff1(na, 2)+f(ia, 2)*dff1(na, 1))/rac2
+                    def(5, na, ia) = (f(ia, 1)*dff1(na, 3)+f(ia, 3)*dff1(na, 1))/rac2
+                    def(6, na, ia) = (f(ia, 2)*dff1(na, 3)+f(ia, 3)*dff1(na, 2))/rac2
                 end do
             end do
-        endif
+        end if
 !
 ! - VECTEUR FINT:U
         do kl = 1, ndimsi
@@ -125,9 +125,9 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
             sigma(kl) = sigref
             do na = 1, nno1
                 do ia = 1, ndim
-                    kk = vu(ia,na)
-                    t1 = ddot(2*ndim, sigma,1, def(1,na,ia),1)
-                    vect(kk) = vect(kk) + abs(w*t1)/ndimsi
+                    kk = vu(ia, na)
+                    t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                    vect(kk) = vect(kk)+abs(w*t1)/ndimsi
                 end do
             end do
         end do
@@ -135,8 +135,8 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
 ! - VECTEUR FINT:P
         do sa = 1, nno2
             kk = vp(sa)
-            t1 = vff2(sa,g)*epsref
-            vect(kk) = vect(kk) + abs(w*t1)
+            t1 = vff2(sa, g)*epsref
+            vect(kk) = vect(kk)+abs(w*t1)
         end do
     end do
 end subroutine

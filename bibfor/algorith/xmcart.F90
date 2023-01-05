@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine xmcart(mesh, model, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -113,14 +113,14 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> CREATION DE LA CARTE POUR LES ELEMENTS DE CONTACT X-FEM'
-    endif
+        write (ifm, *) '<CONTACT> CREATION DE LA CARTE POUR LES ELEMENTS DE CONTACT X-FEM'
+    end if
 !
 ! --- INITIALISATIONS
 !
     nbch_allo = nbch
-    ndim = cfdisi(ds_contact%sdcont_defi,'NDIM')
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
+    ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    ntpc = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     ncmp(1) = 34
     if (ndim .eq. 2) then
         ncmp(2) = 32
@@ -132,7 +132,7 @@ implicit none
         ncmp(8) = 40
         ncmp(9) = 16*3*ndim
         ncmp(10) = 16
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         ncmp(2) = 64
         ncmp(3) = 120
         ncmp(4) = 200
@@ -142,7 +142,7 @@ implicit none
         ncmp(8) = 80
         ncmp(9) = 16*3*ndim
         ncmp(10) = 16
-    endif
+    end if
 !
     ztabf = cfmmvd('ZTABF')
     zxain = xxmmvd('ZXAIN')
@@ -170,14 +170,14 @@ implicit none
     call celces(model//'.TOPOFAC.OE', 'V', chs(2))
     call celces(model//'.TOPOFAC.AI', 'V', chs(3))
     call celces(model//'.TOPOFAC.CF', 'V', chs(4))
-    lfiss=exi_fiss(model)
+    lfiss = exi_fiss(model)
     if (lfiss) then
-      ASSERT(nbch_allo.eq.10)
-      call celces(model//'.BASLOC', 'V', chs(9))
-      call celces(model//'.LNNO', 'V', chs(10))
+        ASSERT(nbch_allo .eq. 10)
+        call celces(model//'.BASLOC', 'V', chs(9))
+        call celces(model//'.LNNO', 'V', chs(10))
     else
-      nbch_allo=8
-    endif
+        nbch_allo = 8
+    end if
 !
     do i = 1, 4
         call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
@@ -199,7 +199,7 @@ implicit none
             call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
             call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
         end do
-    endif
+    end if
 !
 ! --- CHAMPS ELEM XFEM TOPOLOGIE DES FONCTIONS HEAVISIDE
 !
@@ -211,12 +211,12 @@ implicit none
 ! --- CHAMPS ELEM POUR LES FCTS SINGULIERES
 !
     if (lfiss) then
-      do i = 9, 10
-        call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
-        call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
-        call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
-      enddo
-    endif
+        do i = 9, 10
+            call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
+            call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
+            call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
+        end do
+    end if
 !
 ! - <LIGREL> for contact elements
 !
@@ -253,11 +253,11 @@ implicit none
             nomgd = 'N240_I'
         else
             nomgd = 'NEUT_I'
-        endif
+        end if
         call alcart('V', carte(i), mesh, nomgd)
         call jeveuo(carte(i)//'.NCMP', 'E', jncmp(i))
         call jeveuo(carte(i)//'.VALV', 'E', jvalv(i))
-        do k = 1,ncmp(i)
+        do k = 1, ncmp(i)
             call codent(k, 'G', ch3)
             zk8(jncmp(i)-1+k) = 'X'//ch3
         end do
@@ -270,20 +270,20 @@ implicit none
 ! ----- NUMEROS MAILLE ET NOMBRE DE NOEUDS ESCLAVE ET MAITRE
         nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
         nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
-        nnoe = zi(jconx+nummae) - zi(jconx+nummae-1)
-        nnom = zi(jconx+nummam) - zi(jconx+nummam-1)
+        nnoe = zi(jconx+nummae)-zi(jconx+nummae-1)
+        nnom = zi(jconx+nummam)-zi(jconx+nummam-1)
 ! ----- NOMBRE DE POINTS D'INTERSECTION ET DE FACETTES ESCLAVE
         npte = nint(zr(jtabf+ztabf*(ipc-1)+24))
         ninter = nint(zr(jtabf+ztabf*(ipc-1)+14))
-        nbpi=ninter
+        nbpi = ninter
         if (nnoe .eq. nnom .and. ndim .eq. 2) then
-            if (nnoe .eq. 6 .and. ninter .eq. 2) nbpi=3
-            if (nnoe .eq. 8 .and. ninter .eq. 2) nbpi=3
-        endif
+            if (nnoe .eq. 6 .and. ninter .eq. 2) nbpi = 3
+            if (nnoe .eq. 8 .and. ninter .eq. 2) nbpi = 3
+        end if
         nface = nint(zr(jtabf+ztabf*(ipc-1)+26))
 ! ----- NUMERO LOCALE DE FISSURE ESCLAVE ET MAITRE
-        ifise= nint(zr(jtabf+ztabf*(ipc-1)+33))
-        ifism= nint(zr(jtabf+ztabf*(ipc-1)+34))
+        ifise = nint(zr(jtabf+ztabf*(ipc-1)+33))
+        ifism = nint(zr(jtabf+ztabf*(ipc-1)+34))
 ! ----- NOMBRE DE FONCTIONS HEAVISIDE
         if (lmulti) then
             nfhe = zi(jcesd(5)-1+5+4*(nummae-1)+2)
@@ -291,7 +291,7 @@ implicit none
         else
             nfhe = 1
             nfhm = 1
-        endif
+        end if
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.POINT
 !
@@ -307,10 +307,10 @@ implicit none
         zr(jvalv(1)-1+10) = zr(jtabf+ztabf*(ipc-1)+12)
         zr(jvalv(1)-1+11) = zr(jtabf+ztabf*(ipc-1)+13)
         zr(jvalv(1)-1+12) = npte
-        zr(jvalv(1)-1+13) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_CONT' ,izone )
-        zr(jvalv(1)-1+14) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_FROT' ,izone )
-        zr(jvalv(1)-1+15) = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
-        zr(jvalv(1)-1+16) = mminfi(ds_contact%sdcont_defi,'FROTTEMENT_ZONE',izone )
+        zr(jvalv(1)-1+13) = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', izone)
+        zr(jvalv(1)-1+14) = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_FROT', izone)
+        zr(jvalv(1)-1+15) = mminfr(ds_contact%sdcont_defi, 'COEF_COULOMB', izone)
+        zr(jvalv(1)-1+16) = mminfi(ds_contact%sdcont_defi, 'FROTTEMENT_ZONE', izone)
         zr(jvalv(1)-1+17) = zr(jtabf+ztabf*(ipc-1)+22)
         zr(jvalv(1)-1+18) = zr(jtabf+ztabf*(ipc-1)+30)
         zr(jvalv(1)-1+19) = zr(jtabf+ztabf*(ipc-1)+16)
@@ -326,10 +326,10 @@ implicit none
         zr(jvalv(1)-1+29) = zr(jtabf+ztabf*(ipc-1)+23)
         zr(jvalv(1)-1+30) = zr(jtabf+ztabf*(ipc-1)+27)
         zr(jvalv(1)-1+31) = ninter
-        zr(jvalv(1)-1+33) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_CONT' ,izone )
-        zr(jvalv(1)-1+34) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_FROT' ,izone )
+        zr(jvalv(1)-1+33) = mminfr(ds_contact%sdcont_defi, 'COEF_PENA_CONT', izone)
+        zr(jvalv(1)-1+34) = mminfr(ds_contact%sdcont_defi, 'COEF_PENA_FROT', izone)
 !
-        call nocart(carte(1), -3, ncmp(1), ligrel=ligrxf, nma=1,&
+        call nocart(carte(1), -3, ncmp(1), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.STANO
@@ -338,32 +338,32 @@ implicit none
             do j = 1, nfhe
                 jfiss = 1
                 if (lmulti) then
-                    call cesexi('C', jcesd(5), jcesl(5), nummae, i,&
+                    call cesexi('C', jcesd(5), jcesl(5), nummae, i, &
                                 j, 1, iad)
                     if (iad .gt. 0) jfiss = zi(jcesv(5)-1+iad)
-                endif
-                call cesexi('S', jcesd(1), jcesl(1), nummae, i,&
+                end if
+                call cesexi('S', jcesd(1), jcesl(1), nummae, i, &
                             jfiss, 1, iad)
-                ASSERT(iad.gt.0)
-                zi(jvalv(2)-1+nfhe*(i-1)+j)=zi(jcesv(1)-1+iad)
+                ASSERT(iad .gt. 0)
+                zi(jvalv(2)-1+nfhe*(i-1)+j) = zi(jcesv(1)-1+iad)
             end do
         end do
         do i = 1, nnom
             do j = 1, nfhm
                 jfiss = 1
                 if (lmulti) then
-                    call cesexi('C', jcesd(5), jcesl(5), nummam, i,&
+                    call cesexi('C', jcesd(5), jcesl(5), nummam, i, &
                                 j, 1, iad)
                     if (iad .gt. 0) jfiss = zi(jcesv(5)-1+iad)
-                endif
-                call cesexi('S', jcesd(1), jcesl(1), nummam, i,&
+                end if
+                call cesexi('S', jcesd(1), jcesl(1), nummam, i, &
                             jfiss, 1, iad)
-                ASSERT(iad.gt.0)
-                zi(jvalv(2)-1+nfhe*nnoe+nfhm*(i-1)+j)=zi(jcesv(1)-1+&
-                iad)
+                ASSERT(iad .gt. 0)
+                zi(jvalv(2)-1+nfhe*nnoe+nfhm*(i-1)+j) = zi(jcesv(1)-1+ &
+                                                           iad)
             end do
         end do
-        call nocart(carte(2), -3, ncmp(2), ligrel=ligrxf, nma=1,&
+        call nocart(carte(2), -3, ncmp(2), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.BASLOC
@@ -371,80 +371,80 @@ implicit none
         if (lfiss) then
         do i = 1, nnoe
             do j = 1, 3*ndim
-                call cesexi('S', jcesd(9), jcesl(9), nummae, i,&
+                call cesexi('S', jcesd(9), jcesl(9), nummae, i, &
                             1, j, iad)
-                ASSERT(iad.gt.0)
-                zr(jvalv(9)-1+3*ndim*(i-1)+j)=zr(jcesv(9)-1+iad)
-            enddo
+                ASSERT(iad .gt. 0)
+                zr(jvalv(9)-1+3*ndim*(i-1)+j) = zr(jcesv(9)-1+iad)
+            end do
         end do
         do i = 1, nnom
             do j = 1, 3*ndim
-                call cesexi('S', jcesd(9), jcesl(9), nummam, i,&
+                call cesexi('S', jcesd(9), jcesl(9), nummam, i, &
                             1, j, iad)
-                ASSERT(iad.gt.0)
-                zr(jvalv(9)-1+3*ndim*nnoe+3*ndim*(i-1)+j)=zr(jcesv(9)-1+iad)
-            enddo
+                ASSERT(iad .gt. 0)
+                zr(jvalv(9)-1+3*ndim*nnoe+3*ndim*(i-1)+j) = zr(jcesv(9)-1+iad)
+            end do
         end do
-        call nocart(carte(9), -3, ncmp(9), ligrel=ligrxf, nma=1,&
+        call nocart(carte(9), -3, ncmp(9), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
-        endif
+        end if
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.LNNO
 !
         if (lfiss) then
         do i = 1, nnoe
-            call cesexi('S', jcesd(10), jcesl(10), nummae, i,&
+            call cesexi('S', jcesd(10), jcesl(10), nummae, i, &
                         1, 1, iad)
-            ASSERT(iad.gt.0)
-            zr(jvalv(10)-1+i)=zr(jcesv(10)-1+iad)
+            ASSERT(iad .gt. 0)
+            zr(jvalv(10)-1+i) = zr(jcesv(10)-1+iad)
         end do
         do i = 1, nnom
-            call cesexi('S', jcesd(10), jcesl(10), nummam, i,&
+            call cesexi('S', jcesd(10), jcesl(10), nummam, i, &
                         1, 1, iad)
-            ASSERT(iad.gt.0)
-            zr(jvalv(10)-1+i+nnoe)=zr(jcesv(10)-1+iad)
+            ASSERT(iad .gt. 0)
+            zr(jvalv(10)-1+i+nnoe) = zr(jcesv(10)-1+iad)
         end do
-        call nocart(carte(10), -3, ncmp(10), ligrel=ligrxf, nma=1,&
+        call nocart(carte(10), -3, ncmp(10), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
-        endif
+        end if
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.PINTER
 !
         do i = 1, ndim
             do j = 1, nbpi
-                call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
+                call cesexi('S', jcesd(2), jcesl(2), nummae, 1, &
                             ifise, ndim*(j-1)+i, iad)
-                ASSERT(iad.gt.0)
-                zr(jvalv(3)-1+ndim*(j-1)+i)=zr(jcesv(2)-1+iad)
+                ASSERT(iad .gt. 0)
+                zr(jvalv(3)-1+ndim*(j-1)+i) = zr(jcesv(2)-1+iad)
             end do
         end do
-        call nocart(carte(3), -3, ncmp(3), ligrel=ligrxf, nma=1,&
+        call nocart(carte(3), -3, ncmp(3), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.AINTER
 !
         do i = 1, zxain
             do j = 1, ninter
-                call cesexi('S', jcesd(3), jcesl(3), nummae, 1,&
+                call cesexi('S', jcesd(3), jcesl(3), nummae, 1, &
                             ifise, zxain*(j-1)+i, iad)
-                ASSERT(iad.gt.0)
-                zr(jvalv(4)-1+zxain*(j-1)+i)=zr(jcesv(3)-1+iad)
+                ASSERT(iad .gt. 0)
+                zr(jvalv(4)-1+zxain*(j-1)+i) = zr(jcesv(3)-1+iad)
             end do
         end do
-        call nocart(carte(4), -3, ncmp(4), ligrel=ligrxf, nma=1,&
+        call nocart(carte(4), -3, ncmp(4), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.CCFACE
 !
         do i = 1, npte
             do j = 1, nface
-                call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
+                call cesexi('S', jcesd(4), jcesl(4), nummae, 1, &
                             ifise, npte*(j-1)+i, iad)
-                ASSERT(iad.gt.0)
-                zi(jvalv(5)-1+npte*(j-1)+i)=zi(jcesv(4)-1+iad)
+                ASSERT(iad .gt. 0)
+                zi(jvalv(5)-1+npte*(j-1)+i) = zi(jcesv(4)-1+iad)
             end do
         end do
-        call nocart(carte(5), -3, ncmp(5), ligrel=ligrxf, nma=1,&
+        call nocart(carte(5), -3, ncmp(5), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
 !
         if (lmulti) then
@@ -452,85 +452,85 @@ implicit none
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.TOPONO.HFA
                 ncmpe = zi(jcesd(7)-1+5+4*(nummae-1)+3)
-                if (ncmpe.ge.2) then
-                     call cesexi('S', jcesd(7), jcesl(7), nummae, 1,&
-                                 ifise, 1, iad)
-                     ASSERT(iad.gt.0)
-                     zi(jvalv(6)-1+1)=zi(jcesv(7)-1+iad)
+                if (ncmpe .ge. 2) then
+                    call cesexi('S', jcesd(7), jcesl(7), nummae, 1, &
+                                ifise, 1, iad)
+                    ASSERT(iad .gt. 0)
+                    zi(jvalv(6)-1+1) = zi(jcesv(7)-1+iad)
                 else
-                     zi(jvalv(6)-1+1)=xcalc_code(1,[-1])
-                endif
+                    zi(jvalv(6)-1+1) = xcalc_code(1, [-1])
+                end if
                 ncmpm = zi(jcesd(7)-1+5+4*(nummam-1)+3)
-                if (ncmpm.ge.2) then
-                     call cesexi('S', jcesd(7), jcesl(7), nummam, 1,&
-                                 ifism, 2, iad)
-                     ASSERT(iad.gt.0)
-                     zi(jvalv(6)-1+2)=zi(jcesv(7)-1+iad)
+                if (ncmpm .ge. 2) then
+                    call cesexi('S', jcesd(7), jcesl(7), nummam, 1, &
+                                ifism, 2, iad)
+                    ASSERT(iad .gt. 0)
+                    zi(jvalv(6)-1+2) = zi(jcesv(7)-1+iad)
                 else
-                     zi(jvalv(6)-1+2)=xcalc_code(1,[+1])
-                endif
+                    zi(jvalv(6)-1+2) = xcalc_code(1, [+1])
+                end if
 !
-                call nocart(carte(6), -3, ncmp(6), ligrel=ligrxf, nma=1,&
+                call nocart(carte(6), -3, ncmp(6), ligrel=ligrxf, nma=1, &
                             limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.PLALA
 !
                 do i = 1, nnoe
-                    call cesexi('C', jcesd(6), jcesl(6), nummae, i,&
+                    call cesexi('C', jcesd(6), jcesl(6), nummae, i, &
                                 ifise, 1, iad)
                     if (iad .gt. 0) then
-                        zi(jvalv(7)-1+i)=zi(jcesv(6)-1+iad)
+                        zi(jvalv(7)-1+i) = zi(jcesv(6)-1+iad)
                     else
-                        zi(jvalv(7)-1+i)=1
-                    endif
+                        zi(jvalv(7)-1+i) = 1
+                    end if
                 end do
-                call nocart(carte(7), -3, ncmp(7), ligrel=ligrxf, nma=1,&
+                call nocart(carte(7), -3, ncmp(7), ligrel=ligrxf, nma=1, &
                             limanu=[-ipc])
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.TOPONO.HNO
 !
         ncmpe = zi(jcesd(8)-1+5+4*(nummae-1)+3)
         do i = 1, nnoe
             do j = 1, nfhe
-                call cesexi('C', jcesd(8), jcesl(8), nummae, i,&
-                                1, j, iad)
-                ASSERT(iad.gt.0)
-                zi(jvalv(8)-1+nfhe*(i-1)+j)=zi(jcesv(8)-1+iad)
-            enddo
+                call cesexi('C', jcesd(8), jcesl(8), nummae, i, &
+                            1, j, iad)
+                ASSERT(iad .gt. 0)
+                zi(jvalv(8)-1+nfhe*(i-1)+j) = zi(jcesv(8)-1+iad)
+            end do
 !   BRICOLAGE POUR REMPLIR LE IFLAG DE XCALC_HEAV QUI NE SERT QU'EN MONO HEAVISIDE
-            if (nfhe.gt.0) then
-            call cesexi('C', jcesd(8), jcesl(8), nummae, i,&
-                                1, ncmpe, iad)
-            ASSERT(iad.gt.0)
-            zi(jvalv(8)-1+nfhe*nnoe+nfhm*nnom+i)=zi(jcesv(8)-1+iad)
-            endif
-        enddo
+            if (nfhe .gt. 0) then
+                call cesexi('C', jcesd(8), jcesl(8), nummae, i, &
+                            1, ncmpe, iad)
+                ASSERT(iad .gt. 0)
+                zi(jvalv(8)-1+nfhe*nnoe+nfhm*nnom+i) = zi(jcesv(8)-1+iad)
+            end if
+        end do
 !
         ncmpm = zi(jcesd(8)-1+5+4*(nummam-1)+3)
         do i = 1, nnom
             do j = 1, nfhm
-                call cesexi('C', jcesd(8), jcesl(8), nummam, i,&
-                                1, j, iad)
-                ASSERT(iad.gt.0)
-                zi(jvalv(8)-1+nfhe*nnoe+nfhm*(i-1)+j)=zi(jcesv(8)-1+iad)
-            enddo
+                call cesexi('C', jcesd(8), jcesl(8), nummam, i, &
+                            1, j, iad)
+                ASSERT(iad .gt. 0)
+                zi(jvalv(8)-1+nfhe*nnoe+nfhm*(i-1)+j) = zi(jcesv(8)-1+iad)
+            end do
 !   BRICOLAGE POUR REMPLIR LE IFLAG DE XCALC_HEAV QUI NE SERT QU'EN MONO HEAVISIDE
-            if (nfhm.gt.0) then
-             call cesexi('C', jcesd(8), jcesl(8), nummam, i,&
-                                1, ncmpm, iad)
-             ASSERT(iad.gt.0)
-             zi(jvalv(8)-1+(1+nfhe)*nnoe+nfhm*nnom+i)=zi(jcesv(8)-1+iad)
-            endif
-        enddo
+            if (nfhm .gt. 0) then
+                call cesexi('C', jcesd(8), jcesl(8), nummam, i, &
+                            1, ncmpm, iad)
+                ASSERT(iad .gt. 0)
+                zi(jvalv(8)-1+(1+nfhe)*nnoe+nfhm*nnom+i) = zi(jcesv(8)-1+iad)
+            end if
+        end do
 !
-        call nocart(carte(8), -3, ncmp(8), ligrel=ligrxf, nma=1,&
+        call nocart(carte(8), -3, ncmp(8), ligrel=ligrxf, nma=1, &
                     limanu=[-ipc])
 !
         if (niv .ge. 2) then
             call xmimp3(ifm, mesh, ipc, jvalv(1), jtabf)
-        endif
+        end if
 !
     end do
 !

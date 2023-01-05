@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine epsett(applic, nbrddl, depl, btild, sgmtd,&
+subroutine epsett(applic, nbrddl, depl, btild, sgmtd, &
                   epsi, wgt, effint)
     implicit none
 !
@@ -33,9 +33,9 @@ subroutine epsett(applic, nbrddl, depl, btild, sgmtd,&
 !     EPSXX, EPSYY, EPSXY, EPSXZ (CE SONT LES COMPOSANTES TILDE)
 !
         do i = 1, 4
-            epsi(i)=0.d0
+            epsi(i) = 0.d0
             do k = 1, nbrddl
-                epsi(i)=epsi(i)+btild(i,k)*depl(k)
+                epsi(i) = epsi(i)+btild(i, k)*depl(k)
             end do
         end do
 !
@@ -44,12 +44,12 @@ subroutine epsett(applic, nbrddl, depl, btild, sgmtd,&
 !     CALCULS DES EFFORTS INTERIEURS
 !
         do i = 1, nbrddl
-            effinb=0.d0
+            effinb = 0.d0
             do k = 1, 4
-                effinb=effinb+btild(k,i)*sgmtd(k)
+                effinb = effinb+btild(k, i)*sgmtd(k)
             end do
-            effint(i)=effint(i)+wgt*effinb
+            effint(i) = effint(i)+wgt*effinb
         end do
 !
-    endif
+    end if
 end subroutine

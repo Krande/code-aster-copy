@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,11 +87,11 @@ subroutine rc32t()
 !
     jvorig = '&&RC3200.TRANSIT.ORIG'
     jvextr = '&&RC3200.TRANSIT.EXTR'
-    call jecrec(jvorig, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(jvorig, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsitu)
-    call jecrec(jvextr, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(jvextr, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsitu)
-    call jecrec('&&RC3200.TEMPCST', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec('&&RC3200.TEMPCST', 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbsitu)
 !
     call getfac('RESU_THER', nbther)
@@ -114,7 +114,7 @@ subroutine rc32t()
     crit(2) = 'RELATIF'
 !
     do i = 1, 8
-        temp(i)=0.d0
+        temp(i) = 0.d0
     end do
 !
     l = 0
@@ -127,38 +127,38 @@ subroutine rc32t()
         call getvis('SITUATION', 'NUME_RESU_PRES', iocc=iocc, scal=nume2, nbret=n2)
         call getvis('SITUATION', 'NUME_RESU_MECA', iocc=iocc, scal=nume3, nbret=n3)
         call getvid('SITUATION', 'TABL_TEMP', iocc=iocc, scal=tabtemp, nbret=n4)
-        nn= n1+n2+n3
+        nn = n1+n2+n3
         if ((nn+n4) .eq. 0) goto 888
 !
         if (n1 .ne. 0) then
             do ither = 1, nbther, 1
                 call getvis('RESU_THER', 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n5)
                 if (numether .eq. nume1) then
-                    call getvid('RESU_THER', 'TABL_RESU_THER', iocc=ither, scal=tabther,&
+                    call getvid('RESU_THER', 'TABL_RESU_THER', iocc=ither, scal=tabther, &
                                 nbret=n5)
-                endif
+                end if
             end do
-        endif
+        end if
 !
         if (n2 .ne. 0) then
             do ipres = 1, nbpres, 1
                 call getvis('RESU_PRES', 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n5)
                 if (numepres .eq. nume2) then
-                    call getvid('RESU_PRES', 'TABL_RESU_PRES', iocc=ipres, scal=tabpres,&
+                    call getvid('RESU_PRES', 'TABL_RESU_PRES', iocc=ipres, scal=tabpres, &
                                 nbret=n5)
-                endif
+                end if
             end do
-        endif
+        end if
 !
         if (n3 .ne. 0) then
             do imeca = 1, nbmeca, 1
                 call getvis('RESU_MECA', 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n5)
                 if (numemeca .eq. nume3) then
-                    call getvid('RESU_MECA', 'TABL_RESU_MECA', iocc=imeca, scal=tabmeca,&
+                    call getvid('RESU_MECA', 'TABL_RESU_MECA', iocc=imeca, scal=tabmeca, &
                                 nbret=n5)
-                endif
+                end if
             end do
-        endif
+        end if
 !----------------------------------------------------
 ! ------ RECUPERATION DES INSTANTS ET DES ABSCISSES
 !----------------------------------------------------
@@ -171,7 +171,7 @@ subroutine rc32t()
             tableok = tabmeca
         else
             tableok = tabtemp
-        endif
+        end if
 !
 ! --------- on verifie l'ordre des noeuds de la table
         call rcveri(tableok)
@@ -179,22 +179,22 @@ subroutine rc32t()
 ! --------- on recupere les instants de la table
         call tbexip(tableok, valek(1), exist, k8b)
         if (.not. exist) then
-            valk (1) = tableok
-            valk (2) = valek(1)
+            valk(1) = tableok
+            valk(2) = valek(1)
             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-        endif
-        call tbexv1(tableok, valek(1), 'RC.INSTANT', 'V', nbinst,&
+        end if
+        call tbexv1(tableok, valek(1), 'RC.INSTANT', 'V', nbinst, &
                     k8b)
         call jeveuo('RC.INSTANT', 'L', jinst)
 !
 ! --------- on recupere les abscisses curvilignes de la table
         call tbexip(tableok, valek(2), exist, k8b)
         if (.not. exist) then
-            valk (1) = tableok
-            valk (2) = valek(2)
+            valk(1) = tableok
+            valk(2) = valek(2)
             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-        endif
-        call tbexv1(tableok, valek(2), 'RC.ABSC', 'V', nbabsc,&
+        end if
+        call tbexv1(tableok, valek(2), 'RC.ABSC', 'V', nbabsc, &
                     k8b)
         call jeveuo('RC.ABSC', 'L', jabsc)
 !
@@ -205,22 +205,22 @@ subroutine rc32t()
         if (l .gt. 1) then
             if (abs(verifori-zr(jabsc)) .gt. 1e-8) call utmess('F', 'POSTRCCM_45')
             if (abs(verifextr-zr(jabsc+nbabsc-1)) .gt. 1e-8) call utmess('F', 'POSTRCCM_45')
-        endif
+        end if
 !
 ! ------ ON VERIFIE LA COHERENCE DES TABLES (THERMIQUE, PRESSION ET MECA)
         if (n1 .ne. 0) then
             if (n2 .ne. 0) then
                 call rcver1('MECANIQUE', tabpres, tabther)
-            endif
+            end if
             if (n3 .ne. 0) then
                 call rcver1('MECANIQUE', tabmeca, tabther)
-            endif
-        endif
+            end if
+        end if
         if (n2 .ne. 0) then
             if (n3 .ne. 0) then
                 call rcver1('MECANIQUE', tabmeca, tabpres)
-            endif
-        endif
+            end if
+        end if
 !
         if (nn .eq. 0) then
             if (n4 .ne. 0) then
@@ -229,23 +229,23 @@ subroutine rc32t()
                 call jeecra(jexnum('&&RC3200.TEMPCST', iocc), 'LONUTI', n4)
                 call jeveuo(jexnum('&&RC3200.TEMPCST', iocc), 'E', jtemp)
 !
-                vale(1)= zr(jinst)
-                vale(2)= zr(jabsc)
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, zr(jtemp), cbid, k8b,&
+                vale(1) = zr(jinst)
+                vale(2) = zr(jabsc)
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, zr(jtemp), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
+                end if
+            end if
             goto 888
-        endif
+        end if
 !---------------------------------------------------------------
 ! ------ CREATION DES 2*8 TABLES A 6 composantes de contraintes
 ! ------ (totales et mécaniques en tminsp et tmaxsp)
@@ -254,14 +254,14 @@ subroutine rc32t()
 ! ------ tminsn et tmaxsn
 !---------------------------------------------------------------
 !
-        AS_ALLOCATE(vr=contraintesth,  size=nbabsc)
-        AS_ALLOCATE(vr=contraintespr,  size=nbabsc)
+        AS_ALLOCATE(vr=contraintesth, size=nbabsc)
+        AS_ALLOCATE(vr=contraintespr, size=nbabsc)
         AS_ALLOCATE(vr=contraintesmec, size=nbabsc)
         AS_ALLOCATE(vr=contraintestot, size=nbabsc)
         AS_ALLOCATE(vr=contraintesm, size=nbabsc)
 !
-        ncmp=6
-        ndim = 2 * 8 * ncmp + 4 + 4
+        ncmp = 6
+        ndim = 2*8*ncmp+4+4
         call jecroc(jexnum(jvorig, iocc))
         call jeecra(jexnum(jvorig, iocc), 'LONMAX', ndim)
         call jeecra(jexnum(jvorig, iocc), 'LONUTI', ndim)
@@ -304,112 +304,112 @@ subroutine rc32t()
                     vale(2) = zr(jabsc+k-1)
 !
                     if (n1 .ne. 0) then
-                        call tbliva(tabther, 2, valek, [ibid], vale,&
-                                    [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, contraintesth(k), cbid, k8b,&
+                        call tbliva(tabther, 2, valek, [ibid], vale, &
+                                    [cbid], k8b, crit, prec, nocmp(j), &
+                                    k8b, ibid, contraintesth(k), cbid, k8b, &
                                     iret)
                         if (iret .ne. 0) then
-                            valk (1) = tabther
-                            valk (2) = nocmp(j)
-                            valk (3) = valek(1)
-                            valk (4) = valek(2)
-                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                            valk(1) = tabther
+                            valk(2) = nocmp(j)
+                            valk(3) = valek(1)
+                            valk(4) = valek(2)
+                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                         valr=vale)
-                        endif
-                    endif
+                        end if
+                    end if
                     if (n2 .ne. 0) then
-                        call tbliva(tabpres, 2, valek, [ibid], vale,&
-                                    [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, contraintespr(k), cbid, k8b,&
+                        call tbliva(tabpres, 2, valek, [ibid], vale, &
+                                    [cbid], k8b, crit, prec, nocmp(j), &
+                                    k8b, ibid, contraintespr(k), cbid, k8b, &
                                     iret)
                         if (iret .ne. 0) then
-                            valk (1) = tabpres
-                            valk (2) = nocmp(j)
-                            valk (3) = valek(1)
-                            valk (4) = valek(2)
-                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                            valk(1) = tabpres
+                            valk(2) = nocmp(j)
+                            valk(3) = valek(1)
+                            valk(4) = valek(2)
+                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                         valr=vale)
-                        endif
-                    endif
+                        end if
+                    end if
                     if (n3 .ne. 0) then
-                        call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                                    [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, contraintesmec(k), cbid, k8b,&
+                        call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                                    [cbid], k8b, crit, prec, nocmp(j), &
+                                    k8b, ibid, contraintesmec(k), cbid, k8b, &
                                     iret)
                         if (iret .ne. 0) then
-                            valk (1) = tabmeca
-                            valk (2) = nocmp(j)
-                            valk (3) = valek(1)
-                            valk (4) = valek(2)
-                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                            valk(1) = tabmeca
+                            valk(2) = nocmp(j)
+                            valk(3) = valek(1)
+                            valk(4) = valek(2)
+                            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                         valr=vale)
-                        endif
-                    endif
-                    contraintestot(k)= contraintesmec(k)+contraintespr(k)+ contraintesth(k)
-                    sigtot((k-1)*ncmp+j) = contraintesmec(k)+contraintespr(k)+ contraintesth(k)
+                        end if
+                    end if
+                    contraintestot(k) = contraintesmec(k)+contraintespr(k)+contraintesth(k)
+                    sigtot((k-1)*ncmp+j) = contraintesmec(k)+contraintespr(k)+contraintesth(k)
                 end do
                 call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
-                siglin(1*j)= momen0 - 0.5d0*momen1
-                siglin((nbabsc-1)*ncmp+j)= momen0 + 0.5d0*momen1
+                siglin(1*j) = momen0-0.5d0*momen1
+                siglin((nbabsc-1)*ncmp+j) = momen0+0.5d0*momen1
             end do
 !
 ! --------- tmaxsp et tminsp
 !
-            kk=0
+            kk = 0
             do k = 1, nbabsc, nbabsc-1
-                kk=kk+1
+                kk = kk+1
                 call rctres(sigtot((k-1)*ncmp+1), tresc(kk))
 !
-                if (trace(3,sigtot((k-1)*ncmp+1)) .lt. 0.d0) then
+                if (trace(3, sigtot((k-1)*ncmp+1)) .lt. 0.d0) then
                     r3(kk) = tresc(kk)*(-1.0d0)
                 else
                     r3(kk) = tresc(kk)
-                endif
+                end if
                 if (i .eq. 1) then
                     tremin(kk) = r3(kk)
                     tremax(kk) = r3(kk)
                     tminsp(kk) = vale(1)
                     tmaxsp(kk) = vale(1)
                 else
-                    if (compr8(r3(kk),'LT',tremin(kk),prec(1),1)) then
+                    if (compr8(r3(kk), 'LT', tremin(kk), prec(1), 1)) then
                         tremin(kk) = r3(kk)
                         tminsp(kk) = vale(1)
-                    endif
-                    if (compr8(r3(kk),'GT',tremax(kk),prec(1),1)) then
+                    end if
+                    if (compr8(r3(kk), 'GT', tremax(kk), prec(1), 1)) then
                         tremax(kk) = r3(kk)
                         tmaxsp(kk) = vale(1)
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
 ! --------- tmaxsn et tminsn
 !
-            kk=0
+            kk = 0
 !
             do k = 1, nbabsc, nbabsc-1
-                kk=kk+1
+                kk = kk+1
                 call rctres(siglin((k-1)*ncmp+1), trescb(kk))
 !
-                if (trace(3,siglin((k-1)*ncmp+1)) .lt. 0.d0) then
+                if (trace(3, siglin((k-1)*ncmp+1)) .lt. 0.d0) then
                     r3b(kk) = trescb(kk)*(-1.0d0)
                 else
                     r3b(kk) = trescb(kk)
-                endif
+                end if
                 if (i .eq. 1) then
                     treminb(kk) = r3b(kk)
                     tremaxb(kk) = r3b(kk)
                     tminsn(kk) = vale(1)
                     tmaxsn(kk) = vale(1)
                 else
-                    if (compr8(r3b(kk),'LT',treminb(kk),prec(1),1)) then
+                    if (compr8(r3b(kk), 'LT', treminb(kk), prec(1), 1)) then
                         treminb(kk) = r3b(kk)
                         tminsn(kk) = vale(1)
-                    endif
-                    if (compr8(r3b(kk),'GT',tremaxb(kk),prec(1),1)) then
+                    end if
+                    if (compr8(r3b(kk), 'GT', tremaxb(kk), prec(1), 1)) then
                         tremaxb(kk) = r3b(kk)
                         tmaxsn(kk) = vale(1)
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
         end do
@@ -422,39 +422,39 @@ subroutine rc32t()
             vale(1) = tminsp(1)
             vale(2) = zr(jabsc)
             if (n1 .ne. 0) then
-                call tbliva(tabther, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesth(1), cbid, k8b,&
+                call tbliva(tabther, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesth(1), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n2 .ne. 0) then
-                call tbliva(tabpres, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintespr(1), cbid, k8b,&
+                call tbliva(tabpres, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintespr(1), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n3 .ne. 0) then
-                call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesmec(1), cbid, k8b,&
+                call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesmec(1), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(1), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(1), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
-            contraintesm(1)=contraintespr(1)+contraintesmec(1)
-            contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
+                end if
+            end if
+            contraintesm(1) = contraintespr(1)+contraintesmec(1)
+            contraintestot(1) = contraintesth(1)+contraintespr(1)+contraintesmec(1)
 !
             zr(jorig-1+j) = contraintestot(1)
             zr(jorig-1+72+j) = contraintesm(1)
@@ -464,39 +464,39 @@ subroutine rc32t()
             vale(1) = tmaxsp(1)
             vale(2) = zr(jabsc)
             if (n1 .ne. 0) then
-                call tbliva(tabther, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesth(1), cbid, k8b,&
+                call tbliva(tabther, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesth(1), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n2 .ne. 0) then
-                call tbliva(tabpres, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintespr(1), cbid, k8b,&
+                call tbliva(tabpres, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintespr(1), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n3 .ne. 0) then
-                call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesmec(1), cbid, k8b,&
+                call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesmec(1), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(2), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(2), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
-            contraintesm(1)=contraintespr(1)+contraintesmec(1)
-            contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
+                end if
+            end if
+            contraintesm(1) = contraintespr(1)+contraintesmec(1)
+            contraintestot(1) = contraintesth(1)+contraintespr(1)+contraintesmec(1)
 !
             zr(jorig-1+6+j) = contraintestot(1)
             zr(jorig-1+78+j) = contraintesm(1)
@@ -507,41 +507,41 @@ subroutine rc32t()
             do k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
                 if (n1 .ne. 0) then
-                    call tbliva(tabther, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                    call tbliva(tabther, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesth(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n2 .ne. 0) then
-                    call tbliva(tabpres, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                    call tbliva(tabpres, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintespr(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n3 .ne. 0) then
-                    call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesmec(k), cbid, k8b,&
+                    call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesmec(k), cbid, k8b, &
                                 iret)
-                endif
-                contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                end if
+                contraintestot(k) = contraintesth(k)+contraintespr(k)+contraintesmec(k)
             end do
 !
             vale(2) = zr(jabsc)
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(3), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(3), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
+                end if
+            end if
             zr(jorig+88) = temp(3)
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
@@ -549,12 +549,12 @@ subroutine rc32t()
             call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-            zr(jorig-1+12+j) = momen0 - 0.5d0*momen1
+            zr(jorig-1+12+j) = momen0-0.5d0*momen1
             zr(jorig-1+24+j) = momen0pres
-            zr(jorig-1+36+j) = momen0ther - 0.5d0*momen1ther
-            zr(jorig-1+48+j) = momen0pres - 0.5d0*momen1pres
-            zr(jorig-1+60+j) = momen0mec - 0.5d0*momen1mec
-            zr(jorig-1+92+j) = - 0.5d0*momen1ther
+            zr(jorig-1+36+j) = momen0ther-0.5d0*momen1ther
+            zr(jorig-1+48+j) = momen0pres-0.5d0*momen1pres
+            zr(jorig-1+60+j) = momen0mec-0.5d0*momen1mec
+            zr(jorig-1+92+j) = -0.5d0*momen1ther
 !
 ! --------- pour tmaxsn a l'origine
             vale(1) = tmaxsn(1)
@@ -562,41 +562,41 @@ subroutine rc32t()
                 vale(2) = zr(jabsc+k-1)
 !
                 if (n1 .ne. 0) then
-                    call tbliva(tabther, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                    call tbliva(tabther, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesth(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n2 .ne. 0) then
-                    call tbliva(tabpres, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                    call tbliva(tabpres, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintespr(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n3 .ne. 0) then
-                    call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesmec(k), cbid, k8b,&
+                    call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesmec(k), cbid, k8b, &
                                 iret)
-                endif
-                contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                end if
+                contraintestot(k) = contraintesth(k)+contraintespr(k)+contraintesmec(k)
             end do
 !
             vale(2) = zr(jabsc)
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(4), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(4), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
+                end if
+            end if
             zr(jorig+89) = temp(4)
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
@@ -604,11 +604,11 @@ subroutine rc32t()
             call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-            zr(jorig-1+18+j) = momen0 - 0.5d0*momen1
+            zr(jorig-1+18+j) = momen0-0.5d0*momen1
             zr(jorig-1+30+j) = momen0pres
-            zr(jorig-1+42+j) = momen0ther - 0.5d0*momen1ther
-            zr(jorig-1+54+j) = momen0pres - 0.5d0*momen1pres
-            zr(jorig-1+66+j) = momen0mec - 0.5d0*momen1mec
+            zr(jorig-1+42+j) = momen0ther-0.5d0*momen1ther
+            zr(jorig-1+54+j) = momen0pres-0.5d0*momen1pres
+            zr(jorig-1+66+j) = momen0mec-0.5d0*momen1mec
             zr(jorig+84) = tminsn(1)
             zr(jorig+85) = tmaxsn(1)
             zr(jorig+86) = tminsp(1)
@@ -619,40 +619,40 @@ subroutine rc32t()
             vale(1) = tminsp(2)
             vale(2) = zr(jabsc+nbabsc-1)
             if (n1 .ne. 0) then
-                call tbliva(tabther, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesth(nbabsc), cbid, k8b,&
+                call tbliva(tabther, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesth(nbabsc), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n2 .ne. 0) then
-                call tbliva(tabpres, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintespr(nbabsc), cbid, k8b,&
+                call tbliva(tabpres, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintespr(nbabsc), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n3 .ne. 0) then
-                call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesmec(nbabsc), cbid, k8b,&
+                call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesmec(nbabsc), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(5), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(5), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
-            contraintesm(nbabsc)=contraintespr(nbabsc)+contraintesmec(nbabsc)
-            contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+&
-                                   contraintesmec(nbabsc)
+                end if
+            end if
+            contraintesm(nbabsc) = contraintespr(nbabsc)+contraintesmec(nbabsc)
+            contraintestot(nbabsc) = contraintesth(nbabsc)+contraintespr(nbabsc)+ &
+                                     contraintesmec(nbabsc)
 !
             zr(jextr-1+j) = contraintestot(nbabsc)
             zr(jextr-1+72+j) = contraintesm(nbabsc)
@@ -662,40 +662,40 @@ subroutine rc32t()
             vale(1) = tmaxsp(2)
             vale(2) = zr(jabsc+nbabsc-1)
             if (n1 .ne. 0) then
-                call tbliva(tabther, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesth(nbabsc), cbid, k8b,&
+                call tbliva(tabther, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesth(nbabsc), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n2 .ne. 0) then
-                call tbliva(tabpres, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintespr(nbabsc), cbid, k8b,&
+                call tbliva(tabpres, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintespr(nbabsc), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n3 .ne. 0) then
-                call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesmec(nbabsc), cbid, k8b,&
+                call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintesmec(nbabsc), cbid, k8b, &
                             iret)
-            endif
+            end if
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(6), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(6), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
-            contraintesm(nbabsc)=contraintespr(nbabsc)+contraintesmec(nbabsc)
-            contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+&
-                                   contraintesmec(nbabsc)
+                end if
+            end if
+            contraintesm(nbabsc) = contraintespr(nbabsc)+contraintesmec(nbabsc)
+            contraintestot(nbabsc) = contraintesth(nbabsc)+contraintespr(nbabsc)+ &
+                                     contraintesmec(nbabsc)
 !
             zr(jextr-1+6+j) = contraintestot(nbabsc)
             zr(jextr-1+78+j) = contraintesm(nbabsc)
@@ -706,40 +706,40 @@ subroutine rc32t()
             do k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
                 if (n1 .ne. 0) then
-                    call tbliva(tabther, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                    call tbliva(tabther, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesth(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n2 .ne. 0) then
-                    call tbliva(tabpres, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                    call tbliva(tabpres, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintespr(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n3 .ne. 0) then
-                    call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesmec(k), cbid, k8b,&
+                    call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesmec(k), cbid, k8b, &
                                 iret)
-                endif
-                contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                end if
+                contraintestot(k) = contraintesth(k)+contraintespr(k)+contraintesmec(k)
             end do
             vale(2) = zr(jabsc+nbabsc-1)
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(7), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(7), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
+                end if
+            end if
             zr(jextr+88) = temp(7)
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
@@ -747,11 +747,11 @@ subroutine rc32t()
             call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-            zr(jextr-1+12+j) = momen0 + 0.5d0*momen1
+            zr(jextr-1+12+j) = momen0+0.5d0*momen1
             zr(jextr-1+24+j) = momen0pres
-            zr(jextr-1+36+j) = momen0ther + 0.5d0*momen1ther
-            zr(jextr-1+48+j) = momen0pres + 0.5d0*momen1pres
-            zr(jextr-1+60+j) = momen0mec + 0.5d0*momen1mec
+            zr(jextr-1+36+j) = momen0ther+0.5d0*momen1ther
+            zr(jextr-1+48+j) = momen0pres+0.5d0*momen1pres
+            zr(jextr-1+60+j) = momen0mec+0.5d0*momen1mec
             zr(jextr-1+92+j) = 0.5d0*momen1ther
 !
 ! --------- pour tmaxsn a l'extremite
@@ -759,40 +759,40 @@ subroutine rc32t()
             do k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
                 if (n1 .ne. 0) then
-                    call tbliva(tabther, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                    call tbliva(tabther, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesth(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n2 .ne. 0) then
-                    call tbliva(tabpres, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                    call tbliva(tabpres, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintespr(k), cbid, k8b, &
                                 iret)
-                endif
+                end if
                 if (n3 .ne. 0) then
-                    call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesmec(k), cbid, k8b,&
+                    call tbliva(tabmeca, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, contraintesmec(k), cbid, k8b, &
                                 iret)
-                endif
-                contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+                end if
+                contraintestot(k) = contraintesth(k)+contraintespr(k)+contraintesmec(k)
             end do
             vale(2) = zr(jabsc+nbabsc-1)
             if (n4 .ne. 0) then
-                call tbliva(tabtemp, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, 'TEMP',&
-                            k8b, ibid, temp(8), cbid, k8b,&
+                call tbliva(tabtemp, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, 'TEMP', &
+                            k8b, ibid, temp(8), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tabtemp
-                    valk (2) = 'TEMP'
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = tabtemp
+                    valk(2) = 'TEMP'
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
-            endif
+                end if
+            end if
             zr(jextr+89) = temp(8)
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
@@ -800,11 +800,11 @@ subroutine rc32t()
             call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-            zr(jextr-1+18+j) = momen0 + 0.5d0*momen1
+            zr(jextr-1+18+j) = momen0+0.5d0*momen1
             zr(jextr-1+30+j) = momen0pres
-            zr(jextr-1+42+j) = momen0ther + 0.5d0*momen1ther
-            zr(jextr-1+54+j) = momen0pres + 0.5d0*momen1pres
-            zr(jextr-1+66+j) = momen0mec + 0.5d0*momen1mec
+            zr(jextr-1+42+j) = momen0ther+0.5d0*momen1ther
+            zr(jextr-1+54+j) = momen0pres+0.5d0*momen1pres
+            zr(jextr-1+66+j) = momen0mec+0.5d0*momen1mec
             zr(jextr+84) = tminsn(2)
             zr(jextr+85) = tmaxsn(2)
             zr(jextr+86) = tminsp(2)

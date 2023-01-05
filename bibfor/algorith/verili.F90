@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     integer ::  lllia, llncmp, llpl1, llpl2, nbcmpm, nbec
     integer :: nbecmx, nbnoe1, nbnoe2, numgd
 !-----------------------------------------------------------------------
-    parameter (nbcmpm =  10)
-    parameter (nbecmx =  10)
+    parameter(nbcmpm=10)
+    parameter(nbecmx=10)
     character(len=8) :: nomres, nomg
     character(len=24) :: fpli1, fpli2
     character(len=24) :: valk(6)
@@ -70,11 +70,11 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     integer, pointer :: desc(:) => null()
 !
 !-----------------------------------------------------------------------
-    data blanc /' '/
+    data blanc/' '/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    iret=0
+    iret = 0
 !
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
 !
@@ -82,40 +82,40 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
 !----RECUPERATION DES NOM DE MACR_ELEM ET INTERFACE MIS EN JEU----------
 !
     call jeveuo(jexnum(nomres//'      .MODG.LIDF', ii), 'L', lllia)
-    sst1=zk8(lllia)
-    intf1=zk8(lllia+1)
-    sst2=zk8(lllia+2)
-    intf2=zk8(lllia+3)
+    sst1 = zk8(lllia)
+    intf1 = zk8(lllia+1)
+    sst2 = zk8(lllia+2)
+    intf2 = zk8(lllia+3)
 !
 !--------------VERIFICATION COHERENCE NOMBRE DE NOEUDS------------------
 !
     call jelira(jexnum(fpli1, ii), 'LONMAX', idim1)
-    nbnoe1=idim1/(1+nbec)
+    nbnoe1 = idim1/(1+nbec)
     call jelira(jexnum(fpli2, ii), 'LONMAX', idim2)
-    nbnoe2=idim2/(1+nbec)
+    nbnoe2 = idim2/(1+nbec)
 !
     if (nbnoe1 .ne. nbnoe2) then
-        valk (1) = sst1
-        valk (2) = intf1
-        valk (3) = sst2
-        valk (4) = intf2
-        vali (1) = nbnoe1
-        vali (2) = nbnoe2
-        call utmess('E', 'ALGORITH14_70', nk=4, valk=valk, ni=2,&
+        valk(1) = sst1
+        valk(2) = intf1
+        valk(3) = sst2
+        valk(4) = intf2
+        vali(1) = nbnoe1
+        vali(2) = nbnoe2
+        call utmess('E', 'ALGORITH14_70', nk=4, valk=valk, ni=2, &
                     vali=vali)
-        iret=1
+        iret = 1
         goto 999
-    endif
+    end if
 !
 !--------RECUPERATION DU NUMERO DE GRANDEUR SOUS-JACENTE----------------
 !
     call jeveuo(nomres//'      .MODG.DESC', 'L', vi=desc)
-    numgd=desc(3)
+    numgd = desc(3)
 !
 !-----------------VERIFICATION SUR LES COMPOSANTES----------------------
 !
@@ -125,33 +125,33 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !
     do i = 1, nbnoe1
 !
-        call isgeco(zi(llpl1+(i-1)*(nbec+1)+1), zi(llpl2+(i-1)*(nbec+ 1)+1), nbcmpm, -1, icodp)
-        call isgeco(zi(llpl2+(i-1)*(nbec+1)+1), zi(llpl1+(i-1)*(nbec+ 1)+1), nbcmpm, -1, icodm)
+        call isgeco(zi(llpl1+(i-1)*(nbec+1)+1), zi(llpl2+(i-1)*(nbec+1)+1), nbcmpm, -1, icodp)
+        call isgeco(zi(llpl2+(i-1)*(nbec+1)+1), zi(llpl1+(i-1)*(nbec+1)+1), nbcmpm, -1, icodm)
 !
         call isdeco(icodm, idecm, nbcmpm)
         call isdeco(icodp, idecp, nbcmpm)
 !
         do j = 1, nbcmpm
             if (idecp(j) .ne. 0) then
-                valk (1) = sst1
-                valk (2) = intf1
-                valk (3) = zk8(llncmp+j-1)
-                valk (4) = sst2
-                valk (5) = intf2
-                valk (6) = blanc
+                valk(1) = sst1
+                valk(2) = intf1
+                valk(3) = zk8(llncmp+j-1)
+                valk(4) = sst2
+                valk(5) = intf2
+                valk(6) = blanc
                 call utmess('F', 'ALGORITH14_71', nk=6, valk=valk)
-                iret=iret+1
-            endif
+                iret = iret+1
+            end if
             if (idecm(j) .ne. 0) then
-                valk (1) = sst2
-                valk (2) = intf2
-                valk (3) = zk8(llncmp+j-1)
-                valk (4) = sst1
-                valk (5) = intf1
-                valk (6) = blanc
+                valk(1) = sst2
+                valk(2) = intf2
+                valk(3) = zk8(llncmp+j-1)
+                valk(4) = sst1
+                valk(5) = intf1
+                valk(6) = blanc
                 call utmess('F', 'ALGORITH14_72', nk=6, valk=valk)
-                iret=iret+1
-            endif
+                iret = iret+1
+            end if
         end do
     end do
 !

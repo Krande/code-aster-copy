@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 !
 subroutine thmTherElas(ds_thm, angl_naut, mdal, dalal)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/matrot.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: angl_naut(3)
-real(kind=8), intent(out) :: mdal(6)
-real(kind=8), intent(out) :: dalal
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: angl_naut(3)
+    real(kind=8), intent(out) :: mdal(6)
+    real(kind=8), intent(out) :: dalal
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,56 +51,56 @@ real(kind=8), intent(out) :: dalal
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: al(6), tal(3, 3), talg(3, 3), work(6, 6), pass(3, 3)
-    integer :: i,j
+    integer :: i, j
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mdal(:)   = 0.d0
-    dalal     = 0.d0
-    al(:)     = 0.d0
-    tal(:,:)  = 0.d0
-    talg(:,:) = 0.d0
-    work(:,:) = 0.d0
-    pass(:,:) = 0.d0
+    mdal(:) = 0.d0
+    dalal = 0.d0
+    al(:) = 0.d0
+    tal(:, :) = 0.d0
+    talg(:, :) = 0.d0
+    work(:, :) = 0.d0
+    pass(:, :) = 0.d0
 !
 ! - Get dilatation coefficient
 !
     if (ds_thm%ds_material%elas%id .eq. 1) then
-        al(1)  = ds_thm%ds_material%ther%alpha
-        al(2)  = ds_thm%ds_material%ther%alpha
-        al(3)  = ds_thm%ds_material%ther%alpha
+        al(1) = ds_thm%ds_material%ther%alpha
+        al(2) = ds_thm%ds_material%ther%alpha
+        al(3) = ds_thm%ds_material%ther%alpha
     else if (ds_thm%ds_material%elas%id .eq. 3) then
         call matrot(angl_naut, pass)
-        tal(1,1) = ds_thm%ds_material%ther%alpha_l
-        tal(2,2) = ds_thm%ds_material%ther%alpha_l
-        tal(3,3) = ds_thm%ds_material%ther%alpha_n
-        al(1) = talg(1,1)
-        al(2) = talg(2,2)
-        al(3) = talg(3,3)
-        al(4) = talg(1,2)
-        al(5) = talg(1,3)
-        al(6) = talg(2,3)
+        tal(1, 1) = ds_thm%ds_material%ther%alpha_l
+        tal(2, 2) = ds_thm%ds_material%ther%alpha_l
+        tal(3, 3) = ds_thm%ds_material%ther%alpha_n
+        al(1) = talg(1, 1)
+        al(2) = talg(2, 2)
+        al(3) = talg(3, 3)
+        al(4) = talg(1, 2)
+        al(5) = talg(1, 3)
+        al(6) = talg(2, 3)
     else if (ds_thm%ds_material%elas%id .eq. 2) then
         call matrot(angl_naut, pass)
-        tal(1,1) = ds_thm%ds_material%ther%alpha_l
-        tal(2,2) = ds_thm%ds_material%ther%alpha_t
-        tal(3,3) = ds_thm%ds_material%ther%alpha_n
+        tal(1, 1) = ds_thm%ds_material%ther%alpha_l
+        tal(2, 2) = ds_thm%ds_material%ther%alpha_t
+        tal(3, 3) = ds_thm%ds_material%ther%alpha_n
         call utbtab('ZERO', 3, 3, tal, pass, work, talg)
-        al(1) = talg(1,1)
-        al(2) = talg(2,2)
-        al(3) = talg(3,3)
-        al(4) = talg(1,2)
-        al(5) = talg(1,3)
-        al(6) = talg(2,3)
+        al(1) = talg(1, 1)
+        al(2) = talg(2, 2)
+        al(3) = talg(3, 3)
+        al(4) = talg(1, 2)
+        al(5) = talg(1, 3)
+        al(6) = talg(2, 3)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Compute
 !
     do i = 1, 6
         do j = 1, 6
-            mdal(i) = mdal(i) + ds_thm%ds_material%elas%d(i,j)*al(j)
+            mdal(i) = mdal(i)+ds_thm%ds_material%elas%d(i, j)*al(j)
         end do
     end do
     do i = 1, 6

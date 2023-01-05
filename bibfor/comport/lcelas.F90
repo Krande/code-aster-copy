@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcelas(fami, kpg, ksp, loi, mod,&
-                  imat, nmat, materd, materf, matcst,&
-                  nvi, angmas, deps, sigd, vind,&
-                  sigf, vinf, theta, etatd, crit,&
+subroutine lcelas(fami, kpg, ksp, loi, mod, &
+                  imat, nmat, materd, materf, matcst, &
+                  nvi, angmas, deps, sigd, vind, &
+                  sigf, vinf, theta, etatd, crit, &
                   iret)
-    implicit   none
+    implicit none
 !       INTEGRATION ELASTIQUE SUR DT
 !       IN  LOI    :  NOM DU MODELE DE COMPORTEMENT
 !           MOD    :  MODELISATION
@@ -60,26 +60,26 @@ subroutine lcelas(fami, kpg, ksp, loi, mod,&
     iret = 0
 !
     if (loi(1:8) .eq. 'ROUSS_PR' .or. loi(1:10) .eq. 'ROUSS_VISC') then
-        call rsllin(mod, nmat, materd, materf, matcst,&
+        call rsllin(mod, nmat, materd, materf, matcst, &
                     deps, sigd, vind, sigf, theta)
-    else if (loi(1:4).eq.'LETK') then
+    else if (loi(1:4) .eq. 'LETK') then
 !        ELASTICITE NON LINEAIRE ISOTROPE POUR LETK
-        call lksige(mod, nmat, materd, deps, sigd,&
+        call lksige(mod, nmat, materd, deps, sigd, &
                     sigf)
-    else if (loi(1:3).eq.'LKR') then
+    else if (loi(1:3) .eq. 'LKR') then
 !        ELASTICITE NON LINEAIRE ISOTROPE POUR LKR
-        call srsige(nmat,materd,deps,sigd,sigf)
-    else if (loi(1:6).eq.'HUJEUX') then
+        call srsige(nmat, materd, deps, sigd, sigf)
+    else if (loi(1:6) .eq. 'HUJEUX') then
 !        ELASTICITE NON LINEAIRE ISOTROPE POUR HUJEUX
-        call hujpel(fami, kpg, ksp, etatd, mod,&
-                    crit, imat, nmat, materf, angmas,&
-                    deps, sigd, nvi, vind, sigf,&
+        call hujpel(fami, kpg, ksp, etatd, mod, &
+                    crit, imat, nmat, materf, angmas, &
+                    deps, sigd, nvi, vind, sigf, &
                     vinf, iret)
     else
 !        ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
-        call lcelin(mod, nmat, materd, materf, deps,&
+        call lcelin(mod, nmat, materd, materf, deps, &
                     sigd, sigf)
 !
-    endif
+    end if
 !
 end subroutine

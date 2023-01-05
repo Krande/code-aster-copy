@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujres(fami, kpg, ksp, mod, crit,&
-                  mater, imat, nvi, deps, sigd,&
+subroutine hujres(fami, kpg, ksp, mod, crit, &
+                  mater, imat, nvi, deps, sigd, &
                   vind, sigf, vinf, iret, etatf)
     implicit none
 !   INTEGRATION PLASTIQUE DE LA LOI DE HUJEUX
@@ -48,7 +48,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
     integer :: ndt, ndi, nvi, ndec, iret, kpg, ksp
     integer :: i, k, ifm, niv, nsubd, maj, niter
     integer :: nvimax, idec, imat, indi(7)
-    parameter     (nvimax=50)
+    parameter(nvimax=50)
     real(kind=8) :: deps(6), vins(nvimax)
     real(kind=8) :: sigd(6), sigf(6), predic(6), ptrac
     real(kind=8) :: sigd0(6), deps0(6), predi0(6)
@@ -64,27 +64,27 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
     character(len=*) :: fami
     aster_logical :: debug, plas, try, nodec, tract
 !
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
-    data zero, deux   / 0.d0, 2.d0/
-    data tol, tole1 / .5d0, 1.d-7 /
+    data zero, deux/0.d0, 2.d0/
+    data tol, tole1/.5d0, 1.d-7/
 !
     if (nvi .gt. nvimax) then
         call utmess('F', 'COMPOR1_1')
-    endif
+    end if
 !
-    try  = .true.
+    try = .true.
     loop = .false.
-    nodec= .false.
-    niter= int(crit(1))
+    nodec = .false.
+    niter = int(crit(1))
 !
     do i = 1, 7
         indi(i) = 0
-    enddo
+    end do
 !
-    ptrac = mater(21,2)
-    pref = mater(8,2)
+    ptrac = mater(21, 2)
+    pref = mater(8, 2)
     rtrac = abs(1.d-6*pref)
 !
     call infniv(ifm, niv)
@@ -128,7 +128,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
         ndec = niter
         aredec = .true.
         noconv = .false.
-    endif
+    end if
 !
 !
 !  POINT DE RETOUR EN CAS DE DECOUPAGE POUR DR/R > TOLE OU
@@ -146,20 +146,20 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
         iret = 0
         aredec = .true.
         noconv = .false.
-    endif
+    end if
 !
     if (subd) then
         ndec = nsubd
         iret = 0
         aredec = .true.
         try = .false.
-    endif
+    end if
 !
     if (rdctps) then
         ndec = 3
         iret = 0
         aredec = .true.
-    endif
+    end if
 !
 !   RESTAURATION DE SIGD VIND DEPS ET PREDIC ELAS SIGF
 !   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
@@ -168,43 +168,43 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 !
     do i = 1, ndt
         deps(i) = deps0(i)/ndec
-    enddo
+    end do
 !
-    call hujpre(fami, kpg, ksp,'ELASTIC', mod,&
-                imat, mater, deps, sigd,&
+    call hujpre(fami, kpg, ksp, 'ELASTIC', mod, &
+                imat, mater, deps, sigd, &
                 sigf, vind, iret)
 !
 !KH ON IMPOSE UNE CONDITION SUR LA VARIATION DE DSIGMA
 !   < 50% de SIGMA_INIT
     asig = 0.d0
-    adsig= 0.d0
+    adsig = 0.d0
 !
     do i = 1, ndt
-        asig = asig + sigd(i)**2.d0
-        adsig= adsig+ (sigf(i)-sigd(i))**2.d0
+        asig = asig+sigd(i)**2.d0
+        adsig = adsig+(sigf(i)-sigd(i))**2.d0
     end do
     asig = sqrt(asig)
-    adsig= sqrt(adsig)
+    adsig = sqrt(adsig)
 !
     if ((-asig/pref) .gt. tole1) then
         nsubd = nint(adsig/asig/tol)
         if (nsubd .gt. 1) then
-            ndec = min(ndec*nsubd,100)
+            ndec = min(ndec*nsubd, 100)
             do i = 1, ndt
                 deps(i) = deps0(i)/ndec
-            enddo
-        endif
-    endif
+            end do
+        end if
+    end if
 !
 !
     if (debug) then
 !
-        write(ifm,*)
-        write(ifm,'(A)') '================== HUJRES =================='
-        write(ifm,*)
-        write(ifm,1001) 'NDEC=',ndec
+        write (ifm, *)
+        write (ifm, '(A)') '================== HUJRES =================='
+        write (ifm, *)
+        write (ifm, 1001) 'NDEC=', ndec
 !
-    endif
+    end if
 !
 !               INIT BOUCLE SUR LES DECOUPAGES
 !  =============================================================
@@ -212,27 +212,27 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 !
 ! --- MISE A JOUR DU COMPTEUR D'ITERATIONS LOCALES
         loop = .false.
-        vind(35) = vind0(35) + idec
+        vind(35) = vind0(35)+idec
 !
         if (debug) then
 !
-            write(ifm,*)
-            write(ifm,1001) '%% IDEC=',idec
+            write (ifm, *)
+            write (ifm, 1001) '%% IDEC=', idec
 !
-        endif
+        end if
 !
         maj = 0
         predic(1:ndt) = sigf(1:ndt)
 !
         do k = 1, 8
-            negmul(k)=.false.
-        enddo
+            negmul(k) = .false.
+        end do
 !
 ! ---> SAUVEGARDE DES SURFACES DE CHARGE AVANT MODIFICATION
         vins(1:nvi) = vind(1:nvi)
 ! ---> DEFINITION DU DOMAINE POTENTIEL DE MECANISMES ACTIFS
 !
-        call hujpot(mod, mater, vind, deps, sigd,&
+        call hujpot(mod, mater, vind, deps, sigd, &
                     sigf, etatf, rdctps, iret, aredec)
         if (iret .eq. 1) goto 9999
 !
@@ -241,7 +241,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
         else if (rdctps .and. (aredec)) then
             iret = 1
             goto 9999
-        endif
+        end if
 !
 !
 ! ---> SI ELASTICITE PASSAGE A L'ITERATION SUIVANTE
@@ -252,33 +252,33 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                 if (((pf+deux*rtrac-ptrac)/abs(pref)) .ge. zero) then
                     plas = .true.
                     etatf = 'PLASTIC'
-                endif
-            enddo
+                end if
+            end do
 !
-            if (.not.plas) then
+            if (.not. plas) then
                 do i = 1, nvi
-                    vinf(i)=vind(i)
-                enddo
+                    vinf(i) = vind(i)
+                end do
                 chgmec = .false.
                 goto 40
-            endif
-        endif
+            end if
+        end if
 !
 !
 ! ---> SINON RESOLUTION VIA L'ALGORITHME DE NEWTON
         chgmec = .false.
 !
         vinf(1:nvi) = vind(1:nvi)
-        if (debug) write(6,*)'HUJRES - VINF =',(vinf(i),i=24,31)
+        if (debug) write (6, *) 'HUJRES - VINF =', (vinf(i), i=24, 31)
 !
-100      continue
+100     continue
 !--->   RESOLUTION EN FONCTION DES MECANISMES ACTIVES
 !       MECANISMES ISOTROPE ET DEVIATOIRE
 !-----------------------------------------------------
 !
-        call hujmid(mod, crit, mater, nvi, deps,&
-                    sigd, sigf, vind, vinf, noconv,&
-                    aredec, stopnc, negmul, iret, subd,&
+        call hujmid(mod, crit, mater, nvi, deps, &
+                    sigd, sigf, vind, vinf, noconv, &
+                    aredec, stopnc, negmul, iret, subd, &
                     loop, nsubd, indi, tract)
 !
 ! --- ON CONTROLE QUE LES PRESSIONS ISOTROPES PAR PLAN
@@ -286,14 +286,14 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
         do i = 1, ndi
             call hujprj(i, sigf, vec, pf, qf)
             if (((pf+rtrac-ptrac)/abs(pref)) .gt. zero) then
-                noconv=.true.
-                if (debug) write(6,'(A)')'HUJRES :: SOL EN TRACTION'
-            endif
-        enddo
+                noconv = .true.
+                if (debug) write (6, '(A)') 'HUJRES :: SOL EN TRACTION'
+            end if
+        end do
 ! --- SI TRACTION DETECTEE ET NON CONVERGENCE, ON IMPOSE
 ! --- ETAT DE CONTRAINTES ISOTROPE
         if ((noconv) .and. (tract)) then
-            noconv=.false.
+            noconv = .false.
             do i = 1, 3
                 sigf(i) = -deux*rtrac
                 sigf(3+i) = zero
@@ -303,11 +303,11 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                 vind(6+4*i) = zero
                 vind(7+4*i) = zero
                 vind(8+4*i) = zero
-            enddo
+            end do
             vinf(1:nvi) = vind(1:nvi)
             iret = 0
-            if (debug) write(6,'(A)')'HUJRES :: CORRECTION SIGMA'
-        endif
+            if (debug) write (6, '(A)') 'HUJRES :: CORRECTION SIGMA'
+        end if
 ! --- SI PROCHE TRACTION ET NON CONVERGENCE, ON IMPOSE
 ! --- ETAT DE CONTRAINTES ISOTROPE
         if (noconv) then
@@ -316,9 +316,9 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                 call hujprj(i, sigf, vec, pf, qf)
                 if ((abs(pf-ptrac)/abs(pref)) .lt. 1.d-5) then
                     impose = .true.
-                    if (debug) write(6,'(A)')'HUJRES :: SOL LIQUEFIE'
-                endif
-            enddo
+                    if (debug) write (6, '(A)') 'HUJRES :: SOL LIQUEFIE'
+                end if
+            end do
             if (impose) then
                 noconv = .false.
                 do i = 1, 3
@@ -330,11 +330,11 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                     vind(6+4*i) = zero
                     vind(7+4*i) = zero
                     vind(8+4*i) = zero
-                enddo
+                end do
                 vinf(1:nvi) = vind(1:nvi)
                 iret = 0
-            endif
-        endif
+            end if
+        end if
 !
 ! --- PRISE DE DECISION POUR LA SUITE DE L'ALGORITHME
 ! --- ECHEC DE L'INTEGRATION
@@ -348,10 +348,10 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 !
 ! --- NON CONVERGENCE D'OU ECHEC D'INTEGRATION LOCAL
         if (noconv) then
-            if (debug) write(6,'(A)')'HUJRES :: PROBLEME AVEC NOCONV '
+            if (debug) write (6, '(A)') 'HUJRES :: PROBLEME AVEC NOCONV '
             iret = 1
             goto 9999
-        endif
+        end if
 !
 ! --- REPRISE A CE NIVEAU SI MECANISME SUPPOSE ELASTIQUE
 40      continue
@@ -360,7 +360,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 !                 DES MULTIPLICATEURS PLASTIQUES
 !                 DES SEUILS EN DECHARGE
 !
-        call hujact(mater, vind, vinf, vins, sigd,&
+        call hujact(mater, vind, vinf, vins, sigd, &
                     sigf, negmul, chgmec, indi)
         if (iret .eq. 1) goto 9999
 !
@@ -374,22 +374,22 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                 goto 500
             else
 ! --- REPRISE DE L'ITERATION EN TENANT COMPTE DES MODIFICATIONS
-                if (debug) write(ifm,'(A)') 'HUJRES :: CHANGEMENT DE MECANISME'
+                if (debug) write (ifm, '(A)') 'HUJRES :: CHANGEMENT DE MECANISME'
                 chgmec = .false.
 !
 ! --- REINITIALISATION DE SIGF A LA PREDICTION ELASTIQUE PREDIC
 !            CALL LCEQVE (PREDIC, SIGF)
 ! --- PREDICTEUR MIS A JOUR TENANT COMPTE DE L'ETAT PRECEDEMMENT OBTENU
-                maj = maj + 1
+                maj = maj+1
                 if (maj .lt. 5) then
                     loop = .true.
                     vinf(1:nvi) = vind(1:nvi)
                     goto 100
                 else
-                    if (debug) write(6,'(A)') 'HUJRES :: SOLUTION EXPLICITE'
-                endif
-            endif
-        endif
+                    if (debug) write (6, '(A)') 'HUJRES :: SOLUTION EXPLICITE'
+                end if
+            end if
+        end if
 ! End - CHGMEC
 ! --- S'IL N'Y A PAS DE CHANGEMENT DE MECANISME, ON POURSUIT
 !
@@ -398,22 +398,22 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
             sigd(1:ndt) = sigf(1:ndt)
             do i = 1, nvi
                 vind(i) = vinf(i)
-            enddo
+            end do
             do i = 1, ndt
                 deps(i) = deps0(i)/ndec
-            enddo
+            end do
 ! --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE
-            call hujpre(fami, kpg, ksp, 'ELASTIC', mod,&
-                        imat, mater, deps, sigd,&
+            call hujpre(fami, kpg, ksp, 'ELASTIC', mod, &
+                        imat, mater, deps, sigd, &
                         sigf, vind, iret)
-        endif
+        end if
 !
-    enddo
+    end do
 ! End - Boucle sur les redecoupages
 !
 !
-9999  continue
+9999 continue
 !
-    1001 format(a,i3)
-    if (debug) write(6,*)'IRET - HUJRES =',iret
+1001 format(a, i3)
+    if (debug) write (6, *) 'IRET - HUJRES =', iret
 end subroutine

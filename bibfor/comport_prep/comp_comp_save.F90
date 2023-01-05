@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine comp_comp_save(mesh, compor, v_info_valk, v_info_vali)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -29,10 +29,10 @@ implicit none
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: compor
-character(len=16), intent(in) :: v_info_valk(:)
-integer, intent(in) :: v_info_vali(:)
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: compor
+    character(len=16), intent(in) :: v_info_valk(:)
+    integer, intent(in) :: v_info_vali(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,57 +72,57 @@ integer, intent(in) :: v_info_vali(:)
     do iFactorKeyword = 1, nbFactorKeyword
         nume_comp = 0
         nb_vari_comp = 0
-        nb_vari_exte = v_info_vali(4*(iFactorKeyword-1)+ 1)
-        unit_comp    = v_info_vali(4*(iFactorKeyword-1)+ 2)
-        nb_vari      = v_info_vali(4*(iFactorKeyword-1)+ 3)
-        nume_comp(1) = v_info_vali(4*(iFactorKeyword-1)+ 4)
-        rela_comp    = v_info_valk(16*(iFactorKeyword-1)+ 1)
-        defo_comp    = v_info_valk(16*(iFactorKeyword-1)+ 2)
-        type_comp    = v_info_valk(16*(iFactorKeyword-1)+ 3)
-        type_cpla    = v_info_valk(16*(iFactorKeyword-1)+ 4)
-        kit_comp(1)  = v_info_valk(16*(iFactorKeyword-1)+ 5)
-        kit_comp(2)  = v_info_valk(16*(iFactorKeyword-1)+ 6)
-        kit_comp(3)  = v_info_valk(16*(iFactorKeyword-1)+ 7)
-        kit_comp(4)  = v_info_valk(16*(iFactorKeyword-1)+ 8)
-        mult_comp    = v_info_valk(16*(iFactorKeyword-1)+ 14)
-        post_iter    = v_info_valk(16*(iFactorKeyword-1)+ 16)
+        nb_vari_exte = v_info_vali(4*(iFactorKeyword-1)+1)
+        unit_comp = v_info_vali(4*(iFactorKeyword-1)+2)
+        nb_vari = v_info_vali(4*(iFactorKeyword-1)+3)
+        nume_comp(1) = v_info_vali(4*(iFactorKeyword-1)+4)
+        rela_comp = v_info_valk(16*(iFactorKeyword-1)+1)
+        defo_comp = v_info_valk(16*(iFactorKeyword-1)+2)
+        type_comp = v_info_valk(16*(iFactorKeyword-1)+3)
+        type_cpla = v_info_valk(16*(iFactorKeyword-1)+4)
+        kit_comp(1) = v_info_valk(16*(iFactorKeyword-1)+5)
+        kit_comp(2) = v_info_valk(16*(iFactorKeyword-1)+6)
+        kit_comp(3) = v_info_valk(16*(iFactorKeyword-1)+7)
+        kit_comp(4) = v_info_valk(16*(iFactorKeyword-1)+8)
+        mult_comp = v_info_valk(16*(iFactorKeyword-1)+14)
+        post_iter = v_info_valk(16*(iFactorKeyword-1)+16)
 
 ! ----- Set options in COMPOR <CARTE>
         comporValv(RELA_NAME) = rela_comp
-        write (comporValv(NVAR),'(I16)') nb_vari
+        write (comporValv(NVAR), '(I16)') nb_vari
         comporValv(DEFO) = defo_comp
         comporValv(INCRELAS) = type_comp
         comporValv(PLANESTRESS) = type_cpla
-        write (comporValv(NUME),'(I16)') nume_comp(1)
+        write (comporValv(NUME), '(I16)') nume_comp(1)
         comporValv(MULTCOMP) = mult_comp
         comporValv(KIT1_NAME) = kit_comp(1)
         comporValv(KIT2_NAME) = kit_comp(2)
         comporValv(KIT3_NAME) = kit_comp(3)
         comporValv(KIT4_NAME) = kit_comp(4)
         comporValv(POSTITER) = post_iter
-        write (comporValv(KIT1_NUME),'(I16)') nume_comp(2)
-        write (comporValv(KIT2_NUME),'(I16)') nume_comp(3)
-        write (comporValv(KIT3_NUME),'(I16)') 0
-        write (comporValv(KIT4_NUME),'(I16)') 0
-        write (comporValv(KIT1_NVAR),'(I16)') nb_vari_comp(1)
-        write (comporValv(KIT2_NVAR),'(I16)') nb_vari_comp(2)
-        write (comporValv(KIT3_NVAR),'(I16)') nb_vari_comp(3)
-        write (comporValv(KIT4_NVAR),'(I16)') nb_vari_comp(4)
+        write (comporValv(KIT1_NUME), '(I16)') nume_comp(2)
+        write (comporValv(KIT2_NUME), '(I16)') nume_comp(3)
+        write (comporValv(KIT3_NUME), '(I16)') 0
+        write (comporValv(KIT4_NUME), '(I16)') 0
+        write (comporValv(KIT1_NVAR), '(I16)') nb_vari_comp(1)
+        write (comporValv(KIT2_NVAR), '(I16)') nb_vari_comp(2)
+        write (comporValv(KIT3_NVAR), '(I16)') nb_vari_comp(3)
+        write (comporValv(KIT4_NVAR), '(I16)') nb_vari_comp(4)
 
 ! ----- Get list of elements where comportment is defined
-        call comp_read_mesh(mesh, factorKeyword, iFactorKeyword ,&
-                            list_elem_affe, l_affe_all , nb_elem_affe)
+        call comp_read_mesh(mesh, factorKeyword, iFactorKeyword, &
+                            list_elem_affe, l_affe_all, nb_elem_affe)
 !
 ! ----- Affect in COMPOR <CARTE>
 !
         if (l_affe_all) then
             call nocart(compor, 1, nbCmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
-            call nocart(compor, 3, nbCmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = v_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+            call nocart(compor, 3, nbCmp, mode='NUM', nma=nb_elem_affe, &
+                        limanu=v_elem_affe)
             call jedetr(list_elem_affe)
-        endif
+        end if
     end do
 !
     call jedetr(compor//'.NCMP')

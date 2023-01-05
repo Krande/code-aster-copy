@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
-                  epm, dp, sp, xi, dirdp,&
+subroutine nmtarl(mode, ndimsi, mat, sigel, vim, &
+                  epm, dp, sp, xi, dirdp, &
                   dirsp, dirxi, min, rho, ener)
 !
     implicit none
@@ -55,7 +55,7 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
     real(kind=8) :: x(4), y(4), energ(4)
     real(kind=8) :: rhomax, refe, prelin
 !
-    parameter (prelin = 1.d-2, itelin = 3)
+    parameter(prelin=1.d-2, itelin=3)
 !
 !
 !    INITIALISATION DE LA SOLUTION RHO = 0
@@ -65,27 +65,27 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
     if (refe .ge. 0.d0) then
         rho = 0.d0
         goto 999
-    endif
+    end if
     energ(1) = ener
 !
 !
 !    EXAMEN DE LA SOLUTION RHO = RHOMAX
     rhomax = rho
     x(2) = rhomax
-    call nmtacr(mode, ndimsi, mat, sigel, vim,&
-                epm, dp+rhomax*dirdp, sp+rhomax*dirsp, xi+rhomax*dirxi, f,&
-                g, fds, gds, fdp, gdp,&
+    call nmtacr(mode, ndimsi, mat, sigel, vim, &
+                epm, dp+rhomax*dirdp, sp+rhomax*dirsp, xi+rhomax*dirxi, f, &
+                g, fds, gds, fdp, gdp, &
                 fdx, gdx, dpmax, sig, tang)
     if (mode .eq. 2) then
-        y(2) = (f*fdp+g*gdp)*dirdp + (f*fds+g*gds)*dirsp
+        y(2) = (f*fdp+g*gdp)*dirdp+(f*fds+g*gds)*dirsp
     else
-        y(2) = (f*fdx+g*gdx)*dirxi + (f*fds+g*gds)*dirsp
-    endif
+        y(2) = (f*fdx+g*gdx)*dirxi+(f*fds+g*gds)*dirsp
+    end if
     ener = (f**2+g**2)/2.d0
     if (y(2) .le. 0.d0) then
         rho = rhomax
         goto 999
-    endif
+    end if
     energ(2) = ener
 !
 !
@@ -99,17 +99,17 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
     energ(4) = energ(2)
 !
     do niter = 1, itelin
-        if (abs( y(4)/refe ) .lt. prelin) goto 110
+        if (abs(y(4)/refe) .lt. prelin) goto 110
         call zeroco(x, y)
-        call nmtacr(mode, ndimsi, mat, sigel, vim,&
-                    epm, dp+x(4)*dirdp, sp+ x(4)*dirsp, xi+x(4)*dirxi, f,&
-                    g, fds, gds, fdp, gdp,&
+        call nmtacr(mode, ndimsi, mat, sigel, vim, &
+                    epm, dp+x(4)*dirdp, sp+x(4)*dirsp, xi+x(4)*dirxi, f, &
+                    g, fds, gds, fdp, gdp, &
                     fdx, gdx, dpmax, sig, tang)
         if (mode .eq. 2) then
-            y(4) = (f*fdp+g*gdp)*dirdp + (f*fds+g*gds)*dirsp
+            y(4) = (f*fdp+g*gdp)*dirdp+(f*fds+g*gds)*dirsp
         else
-            y(4) = (f*fdx+g*gdx)*dirxi + (f*fds+g*gds)*dirsp
-        endif
+            y(4) = (f*fdx+g*gdx)*dirxi+(f*fds+g*gds)*dirsp
+        end if
         energ(4) = (f**2+g**2)/2.d0
     end do
 110 continue

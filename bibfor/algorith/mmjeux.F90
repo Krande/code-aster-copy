@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mmjeux(alias, nno, ndim, coorma, ksi1,&
+subroutine mmjeux(alias, nno, ndim, coorma, ksi1, &
                   ksi2, coorpt, jeupm, dist)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -57,7 +57,7 @@ subroutine mmjeux(alias, nno, ndim, coorma, ksi1,&
     real(kind=8) :: coorpr(3)
     integer :: idim, ndimg
     real(kind=8) :: zero
-    parameter    (zero=0.d0)
+    parameter(zero=0.d0)
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,13 +69,13 @@ subroutine mmjeux(alias, nno, ndim, coorma, ksi1,&
 !
 ! --- COORDONNEES DU PROJETE
 !
-    call mmcoor(alias, nno, ndim, coorma, ksi1,&
+    call mmcoor(alias, nno, ndim, coorma, ksi1, &
                 ksi2, coorpr)
 !
 ! --- DISTANCE POINT DE CONTACT/PROJECTION
 !
     do idim = 1, ndimg
-        dist(idim) = coorpr(idim) - coorpt(idim)
+        dist(idim) = coorpr(idim)-coorpt(idim)
     end do
 !
 ! --- JEUPM

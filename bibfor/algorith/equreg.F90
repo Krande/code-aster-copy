@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,22 +16,22 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine equreg(imate , lSigm , compor, regula, dimdef,&
-                  dimcon, defgep, ndim  , contp , r     ,&
+subroutine equreg(imate, lSigm, compor, regula, dimdef, &
+                  dimcon, defgep, ndim, contp, r, &
                   drde)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/reg2gr.h"
 #include "asterfort/regcge.h"
 #include "asterfort/regder.h"
 !
-integer :: imate, dimdef, dimcon, regula(6), ndim
-aster_logical, intent(in) :: lSigm
-real(kind=8) :: defgep(dimdef), contp(dimcon), r(dimcon)
-real(kind=8) :: drde(dimcon, dimdef)
-character(len=16) :: compor(*)
+    integer :: imate, dimdef, dimcon, regula(6), ndim
+    aster_logical, intent(in) :: lSigm
+    real(kind=8) :: defgep(dimdef), contp(dimcon), r(dimcon)
+    real(kind=8) :: drde(dimcon, dimdef)
+    character(len=16) :: compor(*)
 ! ======================================================================
 ! --- BUT : ROUTINE POUR LA RESOLUTION DES LOI DE COMPORTEMENTS --------
 ! ---       SECOND GRADIENT --------------------------------------------
@@ -44,22 +44,22 @@ character(len=16) :: compor(*)
 ! ======================================================================
 ! --- APPEL A LA RESOLUTION MECANIQUE DE LA LOI REGULARISANTE ----------
 ! ======================================================================
-    call reg2gr(imate, compor, ndim, regula, dimdef,&
+    call reg2gr(imate, compor, ndim, regula, dimdef, &
                 defgep, sigp, dsde2g)
-    call regcge(dimdef, dimcon, regula, ndim, defgep,&
+    call regcge(dimdef, dimcon, regula, ndim, defgep, &
                 sigp, r)
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES CONTRAINTES GENERALISEES -----------------
 ! ======================================================================
-    call regder(dimdef, dimcon, ndim, regula, dsde2g,&
+    call regder(dimdef, dimcon, ndim, regula, dsde2g, &
                 drde)
 ! ======================================================================
 ! --- RECUPERATION DU VECTEUR CONTRAINTES ------------------------------
 ! ======================================================================
     if (lSigm) then
         do i = 1, dimcon
-            contp(i)=r(i)
+            contp(i) = r(i)
         end do
-    endif
+    end if
 !
 end subroutine

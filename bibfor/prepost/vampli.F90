@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
+subroutine vampli(vwork, tdisp, liste, nbt, nbordr, &
                   numini, nbp, tspaq, nomopt, cxsr)
 ! person_in_charge: jean-michel.proix at edf.fr
     implicit none
@@ -118,13 +118,13 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
             if (inop .gt. nnoini) then
                 kwork = 1
-                somnow = somnow + 1
-            endif
+                somnow = somnow+1
+            end if
 !
-            cnbno = cnbno + 1
+            cnbno = cnbno+1
             if ((l*int(nbnot/10.0d0)) .lt. cnbno) then
-                l = l + 1
-            endif
+                l = l+1
+            end if
 !
 !
 !  CALCUL DE LA VARIATION D'AMPLITUDE
@@ -138,30 +138,30 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
                 do j = (i+1), nbordr
 !
-                    adrsi = (i-1)*tspaq + kwork*somnow*decal + ( ibidno-1)*decal
+                    adrsi = (i-1)*tspaq+kwork*somnow*decal+(ibidno-1)*decal
 !
-                    adrsj = (j-1)*tspaq + kwork*somnow*decal + ( ibidno-1)*decal
+                    adrsj = (j-1)*tspaq+kwork*somnow*decal+(ibidno-1)*decal
 !
 !   TENSI/J(1) = CPXXI/J   TENSI/J(2) = CPYYI/J   TENSI/J(3) = CPZZI/J
 !   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
 !
-                    tensi(1) = vwork(adrsi + 1)
-                    tensi(2) = vwork(adrsi + 2)
-                    tensi(3) = vwork(adrsi + 3)
-                    tensi(4) = vwork(adrsi + 4)
-                    tensi(5) = vwork(adrsi + 5)
-                    tensi(6) = vwork(adrsi + 6)
+                    tensi(1) = vwork(adrsi+1)
+                    tensi(2) = vwork(adrsi+2)
+                    tensi(3) = vwork(adrsi+3)
+                    tensi(4) = vwork(adrsi+4)
+                    tensi(5) = vwork(adrsi+5)
+                    tensi(6) = vwork(adrsi+6)
 !
-                    tensj(1) = vwork(adrsj + 1)
-                    tensj(2) = vwork(adrsj + 2)
-                    tensj(3) = vwork(adrsj + 3)
-                    tensj(4) = vwork(adrsj + 4)
-                    tensj(5) = vwork(adrsj + 5)
-                    tensj(6) = vwork(adrsj + 6)
+                    tensj(1) = vwork(adrsj+1)
+                    tensj(2) = vwork(adrsj+2)
+                    tensj(3) = vwork(adrsj+3)
+                    tensj(4) = vwork(adrsj+4)
+                    tensj(5) = vwork(adrsj+5)
+                    tensj(6) = vwork(adrsj+6)
 !
 !
                     do k = 1, 6
-                        dtens(k) = tensi(k) - tensj(k)
+                        dtens(k) = tensi(k)-tensj(k)
                     end do
 !
                     call rvinvt(dtens, vmis, tres, trac, detr)
@@ -170,11 +170,11 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
                     if (vmis .gt. vavmis) then
                         vavmis = vmis
-                    endif
+                    end if
 !
                     if (tres .gt. vatres) then
                         vatres = tres
-                    endif
+                    end if
 !
                 end do
 !
@@ -190,8 +190,8 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !  AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
             do icmp = 1, 24
-                jad = 24*(nunoe-1) + icmp
-                zl(jcnrl - 1 + jad) = .true.
+                jad = 24*(nunoe-1)+icmp
+                zl(jcnrl-1+jad) = .true.
                 cnsv(jad) = vresu(icmp)
             end do
 !
@@ -230,20 +230,20 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
         do imap = nmaini, nmaini+(nbmap-1)
             if (imap .gt. nmaini) then
                 kwork = 1
-                sompgw = sompgw + liste(imap-1)
-            endif
+                sompgw = sompgw+liste(imap-1)
+            end if
             nbpg = liste(imap)
 !
 ! SI LA MAILLE COURANTE N'A PAS DE POINTS DE GAUSS, LE PROGRAMME
 ! PASSE DIRECTEMENT A LA MAILLE SUIVANTE.
             if (nbpg .eq. 0) then
                 goto 100
-            endif
+            end if
 !
-            nbpgp = nbpgp + nbpg
+            nbpgp = nbpgp+nbpg
             if ((l*int(nbpgt/10.0d0)) .lt. nbpgp) then
-                l = l + 1
-            endif
+                l = l+1
+            end if
 !
 !  BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -261,31 +261,31 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
                     do j = (i+1), nbordr
 !
-                        adrsi = (i-1)*tspaq + kwork*sompgw*decal + (ipg-1)*decal
+                        adrsi = (i-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                        adrsj = (j-1)*tspaq + kwork*sompgw*decal + (ipg-1)*decal
+                        adrsj = (j-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
 !
 !   TENSI/J(1) = CPXXI/J   TENSI/J(2) = CPYYI/J   TENSI/J(3) = CPZZI/J
 !   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
 !
-                        tensi(1) = vwork(adrsi + 1)
-                        tensi(2) = vwork(adrsi + 2)
-                        tensi(3) = vwork(adrsi + 3)
-                        tensi(4) = vwork(adrsi + 4)
-                        tensi(5) = vwork(adrsi + 5)
-                        tensi(6) = vwork(adrsi + 6)
+                        tensi(1) = vwork(adrsi+1)
+                        tensi(2) = vwork(adrsi+2)
+                        tensi(3) = vwork(adrsi+3)
+                        tensi(4) = vwork(adrsi+4)
+                        tensi(5) = vwork(adrsi+5)
+                        tensi(6) = vwork(adrsi+6)
 !
-                        tensj(1) = vwork(adrsj + 1)
-                        tensj(2) = vwork(adrsj + 2)
-                        tensj(3) = vwork(adrsj + 3)
-                        tensj(4) = vwork(adrsj + 4)
-                        tensj(5) = vwork(adrsj + 5)
-                        tensj(6) = vwork(adrsj + 6)
+                        tensj(1) = vwork(adrsj+1)
+                        tensj(2) = vwork(adrsj+2)
+                        tensj(3) = vwork(adrsj+3)
+                        tensj(4) = vwork(adrsj+4)
+                        tensj(5) = vwork(adrsj+5)
+                        tensj(6) = vwork(adrsj+6)
 !
 !
                         do k = 1, 6
-                            dtens(k) = tensi(k) - tensj(k)
+                            dtens(k) = tensi(k)-tensj(k)
                         end do
 !
                         call rvinvt(dtens, vmis, tres, trac, detr)
@@ -293,11 +293,11 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
                         if (vmis .gt. vavmis) then
                             vavmis = vmis
-                        endif
+                        end if
 !
                         if (tres .gt. vatres) then
                             vatres = tres
-                        endif
+                        end if
 !
                     end do
 !
@@ -316,12 +316,12 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 ! 12. AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
                 do icmp = 1, 24
-                    call cesexi('C', jcerd, jcerl, imap, ipg,&
+                    call cesexi('C', jcerd, jcerl, imap, ipg, &
                                 1, icmp, jad)
 !
                     ASSERT(jad .ne. 0)
                     jad = abs(jad)
-                    zl(jcerl - 1 + jad) = .true.
+                    zl(jcerl-1+jad) = .true.
                     cesv(jad) = vresu(icmp)
 !
                 end do
@@ -331,7 +331,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 100         continue
         end do
 !
-    endif
+    end if
 !
 !
 ! MENAGE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine check_homo_ratio(cara, vale, nval)
     integer :: nv, i, j
     character(len=3) :: carpou(nk)
 !
-    data carpou /'R1', 'R2', 'EP1', 'EP2'/
+    data carpou/'R1', 'R2', 'EP1', 'EP2'/
 !
 !   copy the properties is the expected order
     nv = min(4, nval)
@@ -48,39 +48,39 @@ subroutine check_homo_ratio(cara, vale, nval)
                 tcar(j) = cara(i)
                 tval(j) = vale(i)
                 exit
-            endif
+            end if
         end do
     end do
 !
-    if (tcar(1)(1:1).eq. ' ')then
+    if (tcar(1) (1:1) .eq. ' ') then
         call utmess('F', 'MODELISA5_54', sk=carpou(1))
-    endif
-    if (tcar(2)(1:1).eq. ' ')then
+    end if
+    if (tcar(2) (1:1) .eq. ' ') then
         call utmess('F', 'MODELISA5_54', sk=carpou(2))
-    endif
+    end if
 !
 !   default: EPi = Ri
-    if (tcar(3)(1:1) .eq. ' ') then
+    if (tcar(3) (1:1) .eq. ' ') then
         tval(3) = tval(1)
-    endif
-    if (tcar(4)(1:1) .eq. ' ') then
+    end if
+    if (tcar(4) (1:1) .eq. ' ') then
         tval(4) = tval(2)
-    endif
+    end if
 #ifdef ASTER_DEBUG_ALL
-    write(6,*) MARKER, "POUT/CERCL/CARA:", tval(1), tval(2), tval(3), tval(4)
+    write (6, *) MARKER, "POUT/CERCL/CARA:", tval(1), tval(2), tval(3), tval(4)
 #endif
 !
-    rratio = tval(2) / tval(1)
-    eratio = tval(4) / tval(3)
-    homo = abs((rratio - eratio) / rratio)
+    rratio = tval(2)/tval(1)
+    eratio = tval(4)/tval(3)
+    homo = abs((rratio-eratio)/rratio)
 #ifdef ASTER_DEBUG_ALL
-    write(6,*) MARKER, "POUT/CERCL/HOMO:", rratio, eratio, homo
+    write (6, *) MARKER, "POUT/CERCL/HOMO:", rratio, eratio, homo
 #endif
     if (homo .gt. 1.0d-2) then
         valr(1:4) = tval(1:4)
         valr(5) = rratio
         valr(6) = eratio
         call utmess('A', 'POUTRE0_4', nr=6, valr=valr)
-    endif
+    end if
 !
 end subroutine

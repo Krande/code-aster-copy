@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
-                  nomgma, noma, connec, tyma, ngma,&
+subroutine cmfiss(main, gno1, gno2, prefix, mainit, &
+                  nomgma, noma, connec, tyma, ngma, &
                   gpma)
 !
 !
@@ -73,26 +73,26 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
     call jeexin(jexnom(main//'.GROUPENO', gno1), iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_19', sk=gno1)
-    endif
+    end if
     call jeexin(jexnom(main//'.GROUPENO', gno2), iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_19', sk=gno2)
-    endif
+    end if
 !
     call jelira(jexnom(main//'.GROUPENO', gno1), 'LONUTI', nb1)
     call jelira(jexnom(main//'.GROUPENO', gno2), 'LONUTI', nb2)
 !
     if (nb1 .ne. nb2) then
         call utmess('F', 'ALGELINE_20')
-    endif
+    end if
     if (nb1 .le. 1) then
         call utmess('F', 'ALGELINE_21')
-    endif
+    end if
 !
 !
 ! - INITIALISATION
 !
-    nbmajo = nb1 - 1
+    nbmajo = nb1-1
     lgpref = lxlgut(prefix)
     call jeveuo(jexnom(main//'.GROUPENO', gno1), 'L', jgno1)
     call jeveuo(jexnom(main//'.GROUPENO', gno2), 'L', jgno2)
@@ -110,7 +110,7 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 !
 ! - NOM ET TAILLE DU NOUVEAU GROUP_MA
 !
-    zk24(ingma)= nomgma
+    zk24(ingma) = nomgma
     zi(igpma) = nbmajo
 !
 !
@@ -124,11 +124,11 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
         lgma = lxlgut(knume)
         if (lgma+lgpref .gt. 8) then
             call utmess('F', 'ALGELINE_17')
-        endif
-        zk8(inoma-1 + ma) = prefix(1:lgpref) // knume
+        end if
+        zk8(inoma-1+ma) = prefix(1:lgpref)//knume
 !
 !      TYPE DE LA NOUVELLE MAILLE : QUAD4
-        zi(ityma-1 + ma) = tyqua4
+        zi(ityma-1+ma) = tyqua4
 !
 !      CONNECTIVITE DE LA NOUVELLE MAILLE
 !
@@ -138,26 +138,26 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 ! LA CONNECTIVITE LOCALE DEFINIE CI-APRES DONNE DES ED NUMEROTÉ DANS LE
 ! SENS TRIGO
 !
-        zi(jcon ) = 4
-        n1 = zi(jgno1-1 + ma )
-        n2 = zi(jgno1-1 + ma+1)
-        n3 = zi(jgno2-1 + ma+1)
-        n4 = zi(jgno2-1 + ma )
+        zi(jcon) = 4
+        n1 = zi(jgno1-1+ma)
+        n2 = zi(jgno1-1+ma+1)
+        n3 = zi(jgno2-1+ma+1)
+        n4 = zi(jgno2-1+ma)
         zi(jcon+1) = n1
         zi(jcon+2) = n2
         zi(jcon+3) = n3
         zi(jcon+4) = n4
-        jcon = jcon + 5
+        jcon = jcon+5
 !
 ! LES NOEUDS TOPOLOGIQUEMENT CONFONDUS NE SERONT PAS BIEN TRAITES
 ! PAR CALCUL LORS DE LA PHASE DE RESOLUTION NON LINEAIRE
 ! ON ARRETE DONC DES CE STADE
-        if (n1 .eq. n2 .or. n1 .eq. n3 .or. n1 .eq. n4 .or. n2 .eq. n3 .or. n2 .eq. n4 .or.&
+        if (n1 .eq. n2 .or. n1 .eq. n3 .or. n1 .eq. n4 .or. n2 .eq. n3 .or. n2 .eq. n4 .or. &
             n3 .eq. n4) then
             call utmess('F', 'ALGELINE_22')
-        endif
+        end if
 !      INSERTION DE LA MAILLE DANS LE NOUVEAU GROUP_MA
-        zi(igpma + ma) = - ma
+        zi(igpma+ma) = -ma
 !
     end do
 !

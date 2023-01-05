@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfapma(noma, newgeo, ds_contact, lctfd,&
-                  ndimg, izone, posnoe, numnoe,&
-                  coorne, posmam, ksipr1, ksipr2, tau1m,&
+subroutine cfapma(noma, newgeo, ds_contact, lctfd, &
+                  ndimg, izone, posnoe, numnoe, &
+                  coorne, posmam, ksipr1, ksipr2, tau1m, &
                   tau2m, iliai)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -104,13 +104,13 @@ implicit none
 !
 ! --- COORDONNEES PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 !
-    call cfcoor(noma, ds_contact%sdcont_defi, newgeo, posmam, ksipr1,&
+    call cfcoor(noma, ds_contact%sdcont_defi, newgeo, posmam, ksipr1, &
                 ksipr2, coornp)
 !
 ! --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-    call cftanr(noma, ndimg, ds_contact, izone,&
-                posnoe, 'MAIL', posmam, nummam, ksipr1,&
+    call cftanr(noma, ndimg, ds_contact, izone, &
+                posnoe, 'MAIL', posmam, nummam, ksipr1, &
                 ksipr2, tau1m, tau2m, tau1, tau2)
 !
 ! --- CALCUL DE LA NORMALE INTERIEURE
@@ -119,7 +119,7 @@ implicit none
     if (noor .le. r8prem()) then
         call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
         call utmess('F', 'CONTACT3_26', sk=nomnoe)
-    endif
+    end if
 !
 ! --- CALCUL DU JEU
 !
@@ -127,13 +127,13 @@ implicit none
 !
 ! --- COEFFICIENT DE LA RELATION LINEAIRE SUR NOEUD MAITRE
 !
-    call cfreli(noma, nummam, nbnom, ksipr1, ksipr2,&
+    call cfreli(noma, nummam, nbnom, ksipr1, ksipr2, &
                 coefno)
 !
 ! --- AJOUT DE LA LIAISON NODALE
 !
-    call cfaddm(ds_contact, lctfd, posnoe, iliai,&
-                ndimg, nbnom, posnsm, coefno, tau1,&
+    call cfaddm(ds_contact, lctfd, posnoe, iliai, &
+                ndimg, nbnom, posnsm, coefno, tau1, &
                 tau2, norm, jeu, coornp)
 !
 end subroutine

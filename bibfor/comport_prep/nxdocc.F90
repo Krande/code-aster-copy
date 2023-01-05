@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine nxdocc(model, compor)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/comp_init.h"
@@ -27,8 +27,8 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 !
-character(len=8), intent(in) :: model
-character(len=19), intent(out) :: compor
+    character(len=8), intent(in) :: model
+    character(len=19), intent(out) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !

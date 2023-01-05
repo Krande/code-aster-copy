@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -397,9 +397,9 @@
 !     DEPT. OF COMPUTATIONAL &     HOUSTON, TEXAS
 !     APPLIED MATHEMATICS
 !     RICE UNIVERSITY
-subroutine znaupd(ido, bmat, n, which, nev,&
-                  tol, resid, ncv, v, ldv,&
-                  iparam, ipntr, workd, workl, lworkl,&
+subroutine znaupd(ido, bmat, n, which, nev, &
+                  tol, resid, ncv, v, ldv, &
+                  iparam, ipntr, workd, workl, lworkl, &
                   rwork, info, neqact, alpha)
 !     HOUSTON, TEXAS
 !
@@ -423,11 +423,11 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 #include "asterfort/znaup2.h"
 #include "asterfort/zvout.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     integer :: nopx, nbx, nrorth, nitref, nrstrt
-    common /infor/&
+    common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
 !
@@ -453,7 +453,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !     %------------%
 !
     complex(kind=8) :: zero
-    parameter (zero = (0.0d+0, 0.0d+0))
+    parameter(zero=(0.0d+0, 0.0d+0))
 !
 !     %---------------%
 !     | LOCAL SCALARS |
@@ -461,7 +461,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !
     integer :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode, msglvl, mxiter, nb, nev0, next
     integer :: np, ritz, j
-    save       bounds, ih, iq, ishift, iw,&
+    save bounds, ih, iq, ishift, iw,&
      &           ldh, ldq, mode, msglvl, mxiter, nb,&
      &           nev0, next, np, ritz
 !
@@ -499,28 +499,28 @@ subroutine znaupd(ido, bmat, n, which, nev,&
             ierr = -2
         else if (ncv .le. nev .or. ncv .gt. n) then
             if (msglvl .gt. 0) then
-                write(logfil,*)
-                write(logfil,*)'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-                write(logfil,*)'& FLAG ERREUR -3 DEBRANCHE DANS ZNAUPD &'
-                write(logfil,*)'& NBVECT < NBFREQ + 2 OU NBVECT > NBEQ &'
-                write(logfil,*)'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-                write(logfil,*)
-            endif
+                write (logfil, *)
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *) '& FLAG ERREUR -3 DEBRANCHE DANS ZNAUPD &'
+                write (logfil, *) '& NBVECT < NBFREQ + 2 OU NBVECT > NBEQ &'
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *)
+            end if
         else if (mxiter .le. 0) then
             ierr = -4
-            else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which&
-        .ne. 'LR' .and. which .ne. 'SR' .and. which .ne. 'LI' .and.&
-        which .ne. 'SI') then
+        else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which &
+                 .ne. 'LR' .and. which .ne. 'SR' .and. which .ne. 'LI' .and. &
+                 which .ne. 'SI') then
             ierr = -5
         else if (bmat .ne. 'I' .and. bmat .ne. 'G') then
             ierr = -6
-        else if (lworkl .lt. 3*ncv**2 + 5*ncv) then
+        else if (lworkl .lt. 3*ncv**2+5*ncv) then
             ierr = -7
         else if (mode .lt. 1 .or. mode .gt. 3) then
             ierr = -10
         else if (mode .eq. 1 .and. bmat .eq. 'G') then
             ierr = -11
-        endif
+        end if
 !
 !        %------------%
 !        | ERROR EXIT |
@@ -530,7 +530,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
             info = ierr
             ido = 99
             goto 9000
-        endif
+        end if
 !
 !        %------------------------%
 !        | SET DEFAULT PARAMETERS |
@@ -547,14 +547,14 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !        | SIZE OF THE INVARIANT SUBSPACE DESIRED.      |
 !        %----------------------------------------------%
 !
-        np = ncv - nev
+        np = ncv-nev
         nev0 = nev
 !
 !        %-----------------------------%
 !        | ZERO OUT INTERNAL WORKSPACE |
 !        %-----------------------------%
 !
-        do j = 1, 3*ncv**2 + 5*ncv
+        do j = 1, 3*ncv**2+5*ncv
             workl(j) = zero
         end do
 !
@@ -577,11 +577,11 @@ subroutine znaupd(ido, bmat, n, which, nev,&
         ldh = ncv
         ldq = ncv
         ih = 1
-        ritz = ih + ldh*ncv
-        bounds = ritz + ncv
-        iq = bounds + ncv
-        iw = iq + ldq*ncv
-        next = iw + ncv**2 + 3*ncv
+        ritz = ih+ldh*ncv
+        bounds = ritz+ncv
+        iq = bounds+ncv
+        iw = iq+ldq*ncv
+        next = iw+ncv**2+3*ncv
 !
         ipntr(4) = next
         ipntr(5) = ih
@@ -589,16 +589,16 @@ subroutine znaupd(ido, bmat, n, which, nev,&
         ipntr(7) = iq
         ipntr(8) = bounds
         ipntr(14) = iw
-    endif
+    end if
 !
 !     %-------------------------------------------------------%
 !     | CARRY OUT THE IMPLICITLY RESTARTED ARNOLDI ITERATION. |
 !     %-------------------------------------------------------%
 !
-    call znaup2(ido, bmat, n, which, nev0,&
-                np, tol, resid, ishift, mxiter,&
-                v, ldv, workl(ih), ldh, workl(ritz),&
-                workl(bounds), workl(iq), ldq, workl(iw), ipntr,&
+    call znaup2(ido, bmat, n, which, nev0, &
+                np, tol, resid, ishift, mxiter, &
+                v, ldv, workl(ih), ldh, workl(ritz), &
+                workl(bounds), workl(iq), ldq, workl(iw), ipntr, &
                 workd, rwork, info, neqact, alpha)
 !
 !     %--------------------------------------------------%
@@ -628,7 +628,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
         call ivout(logfil, 1, [np], ndigit, '_NAUPD: NUMBER OF WANTED "CONVERGED" RITZ VALUES')
         call zvout(logfil, np, workl(ritz), ndigit, '_NAUPD: THE FINAL RITZ VALUES')
         call zvout(logfil, np, workl(bounds), ndigit, '_NAUPD: ASSOCIATED RITZ ESTIMATES')
-    endif
+    end if
 !        %--------------------------------%
 !        | VERSION NUMBER & VERSION DATE  |
 !        %--------------------------------%
@@ -640,12 +640,12 @@ subroutine znaupd(ido, bmat, n, which, nev,&
     vali(6) = nrstrt
     call utmess('I', 'ALGELINE6_27', ni=6, vali=vali)
 !
-    mxiter=0
-    nopx=0
-    nbx=0
-    nrorth=0
-    nitref=0
-    nrstrt=0
+    mxiter = 0
+    nopx = 0
+    nbx = 0
+    nrorth = 0
+    nitref = 0
+    nrstrt = 0
 !
 9000 continue
 !

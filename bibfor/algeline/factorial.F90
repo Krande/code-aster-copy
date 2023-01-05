@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 function factorial(n)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -40,30 +40,30 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     select case (n)
-        case (0)
-            factorial = 1
-        case (1)
-            factorial = 1
-        case (2)
-            factorial = 2
-        case (3)
-            factorial = 6
-        case (4)
-            factorial = 24
-        case (5)
-            factorial = 120
-        case (6)
-            factorial = 720
-        case (7)
-            factorial = 5040
-        case (8)
-            factorial = 40320
-        case (9)
-            factorial = 362880
-        case (10)
-            factorial = 3628800
-        case (11)
-            factorial = 39916800
+    case (0)
+        factorial = 1
+    case (1)
+        factorial = 1
+    case (2)
+        factorial = 2
+    case (3)
+        factorial = 6
+    case (4)
+        factorial = 24
+    case (5)
+        factorial = 120
+    case (6)
+        factorial = 720
+    case (7)
+        factorial = 5040
+    case (8)
+        factorial = 40320
+    case (9)
+        factorial = 362880
+    case (10)
+        factorial = 3628800
+    case (11)
+        factorial = 39916800
 !        case (12)
 !            factorial = 479001600
 !        case (13)
@@ -82,8 +82,8 @@ implicit none
 !            factorial = 121645100408832000
 !        case (20)
 !            factorial = 2432902008176640000
-        case default
-            ASSERT(ASTER_FALSE)
-        end select
+    case default
+        ASSERT(ASTER_FALSE)
+    end select
 !
 end function

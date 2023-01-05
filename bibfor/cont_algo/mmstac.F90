@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval,cycling_type)
+subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval, cycling_type)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 !
@@ -53,7 +53,7 @@ implicit none
 !
 ! - Augmented lagrangian for contact
 !
-    laug_cont = pres_cont - coef_cont * dist_cont
+    laug_cont = pres_cont-coef_cont*dist_cont
 !
 ! - New status of contact (sign of augmented lagrangian)
 !
@@ -61,19 +61,18 @@ implicit none
     if (laug_cont .lt. 0.0) then
         indi_cont_eval = 1
         if (present(cycling_type)) then
-            if (abs(pres_cont) .lt. abs(-coef_cont*dist_cont) ) then
-                    indi_cont_eval = 0
-            endif
-        endif
+            if (abs(pres_cont) .lt. abs(-coef_cont*dist_cont)) then
+                indi_cont_eval = 0
+            end if
+        end if
     else
         indi_cont_eval = 0
         if (present(cycling_type)) then
-            if (abs(dist_cont) .lt. 1.d6*r8prem() ) then
+            if (abs(dist_cont) .lt. 1.d6*r8prem()) then
                 indi_cont_eval = 1
-            endif
-        endif
-    endif
-
+            end if
+        end if
+    end if
 
 !    if (present(cycling_type)) then
 !       if (cycling_type .eq. -4)  indi_cont_eval = 0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ subroutine x33x6(x33, x6)
     do i = 1, 6
         call indice0(i, k, l)
         if (i .le. 3) then
-            x6(i)=x33(k,l)
+            x6(i) = x33(k, l)
         else
-            x6(i)=0.5*(x33(k,l)+x33(l,k))
+            x6(i) = 0.5*(x33(k, l)+x33(l, k))
         end if
     end do
 end subroutine

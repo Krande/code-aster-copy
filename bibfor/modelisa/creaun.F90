@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine creaun(char, noma, nomo, nzocu, nnocu,&
-                  lisnoe, poinoe, nbgdcu, coefcu, compcu,&
+subroutine creaun(char, noma, nomo, nzocu, nnocu, &
+                  lisnoe, poinoe, nbgdcu, coefcu, compcu, &
                   multcu, penacu)
 !
 !
@@ -109,7 +109,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 ! --- INITIALISATIONS
 !
     deficu = char(1:8)//'.UNILATE'
-    noeuma = noma // '.NOMNOE'
+    noeuma = noma//'.NOMNOE'
     k8bla = ' '
     call jeveuo(multcu, 'L', jmult)
     call jeveuo(poinoe, 'L', jpoi)
@@ -120,16 +120,16 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     call jeexin(penacu, jpena)
     if (jpena .ne. 0) then
         call jeveuo(penacu, 'L', jpena)
-    endif
+    end if
 !
 !
 ! --- CALCUL DU NOMBRE TOTAL DE GRANDEURS A GAUCHE
 !
     nbgau = 0
     do izone = 1, nzocu
-        nbno = zi(jpoi+izone) - zi(jpoi+izone-1)
-        nbcmp = zi(jnbgd+izone) - zi(jnbgd+izone-1)
-        nbgau = nbgau + nbno*nbcmp
+        nbno = zi(jpoi+izone)-zi(jpoi+izone-1)
+        nbcmp = zi(jnbgd+izone)-zi(jnbgd+izone-1)
+        nbgau = nbgau+nbno*nbcmp
     end do
 !
 ! --- CREATION DES VECTEURS DEFINITIFS
@@ -145,7 +145,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     AS_ALLOCATE(vk8=coefd, size=nnocu)
     if (jpena .ne. 0) then
         AS_ALLOCATE(vr=cpena, size=nnocu)
-    endif
+    end if
     indir(1) = 1
 !
 ! ---
@@ -156,9 +156,9 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 !
     do izone = 1, nzocu
 !
-        nbno = zi(jpoi+izone) - zi(jpoi+izone-1)
+        nbno = zi(jpoi+izone)-zi(jpoi+izone-1)
         jdebnd = zi(jpoi+izone-1)
-        nbcmp = zi(jnbgd+izone) - zi(jnbgd+izone-1)
+        nbcmp = zi(jnbgd+izone)-zi(jnbgd+izone-1)
         jdebcp = zi(jnbgd+izone-1)
 !
         do ino = 1, nbno
@@ -170,48 +170,48 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 !
                 cmp = zk8(jncmp-1+jdebcp+icmp-1)
 !
-                call exiscp(cmp, k8bla, nomo, 1, 'NUM',&
+                call exiscp(cmp, k8bla, nomo, 1, 'NUM', &
                             k8bla, [numnd], exist)
 !
                 if (exist(1) .eq. 1) then
                     if (niv .ge. 2) then
                         call jenuno(jexnum(noeuma, numnd), nomno)
-                        valk (1) = nomno
-                        valk (2) = cmp
+                        valk(1) = nomno
+                        valk(2) = cmp
                         call utmess('I', 'UNILATER_58', nk=2, valk=valk)
-                    endif
+                    end if
                     cmpg(ncmpg) = cmp
                     coefg(ncmpg) = zk8(jmult-1+jdebcp+icmp-1)
-                    ncmpg = ncmpg + 1
+                    ncmpg = ncmpg+1
                 else
-                    nbsup = nbsup + 1
+                    nbsup = nbsup+1
                     call jenuno(jexnum(noeuma, numnd), nomno)
-                    valk (1) = nomno
-                    valk (2) = cmp
+                    valk(1) = nomno
+                    valk(2) = cmp
                     call utmess('I', 'UNILATER_75', nk=2, valk=valk)
-                endif
+                end if
 !
-            enddo
+            end do
 !
             zi(jnoeu-1+cptnd) = numnd
             coefd(cptd) = zk8(jcoef+izone-1)
-            indir(cptnd+1) = indir(cptnd) + nbcmp - nbsup
+            indir(cptnd+1) = indir(cptnd)+nbcmp-nbsup
             if (jpena .ne. 0) then
                 cpena(cptd) = zr(jpena+izone-1)
-            endif
+            end if
 !
-            cptd = cptd + 1
-            cptnd = cptnd + 1
+            cptd = cptd+1
+            cptnd = cptnd+1
 !
-        enddo
+        end do
     end do
 !
-    cptd = cptd - 1
-    cptnd = cptnd - 1
-    ncmpg = ncmpg - 1
+    cptd = cptd-1
+    cptnd = cptnd-1
+    ncmpg = ncmpg-1
 !
-    ASSERT(cptd.eq.nnocu)
-    ASSERT(cptnd.eq.nnocu)
+    ASSERT(cptd .eq. nnocu)
+    ASSERT(cptnd .eq. nnocu)
 !
 ! --- QUELQUES INFOS DIMENSIONS
 !
@@ -256,7 +256,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     if (jpena .ne. 0) then
         call wkvect(deficu(1:16)//'.COEFPE', 'G V R', nnocu, jpena)
         zr(jpena:jpena+nnocu-1) = cpena(1:nnocu)
-    endif
+    end if
 !
 ! --- NETTOYAGE
 !
@@ -267,7 +267,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     AS_DEALLOCATE(vk8=coefd)
     if (jpena .ne. 0) then
         AS_DEALLOCATE(vr=cpena)
-    endif
+    end if
 !
 ! ======================================================================
     call jedema()

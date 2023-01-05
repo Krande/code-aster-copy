@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchno(option, numord, resuin, resuou, lichou,&
-                  mesmai, nomail, modele, carael, basopt,&
+subroutine ccchno(option, numord, resuin, resuou, lichou, &
+                  mesmai, nomail, modele, carael, basopt, &
                   ligrel, ligmod, codret, nochou, ideb, ifin, vcham)
     implicit none
 !     --- ARGUMENTS ---
@@ -47,7 +47,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     character(len=24) :: lichou(2), mesmai, ligrel
     aster_logical :: ligmod
     character(len=19), optional :: nochou
-    integer,           optional :: ideb, ifin
+    integer, optional :: ideb, ifin
     character(len=24), optional :: vcham
 !  CALC_CHAMP - CALCUL D'UN CHAMP AUX NOEUDS
 !  -    -                   --        --
@@ -76,7 +76,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: ier, nbma, jmai, ngr, igr, nmaxob, iret
-    parameter    (nmaxob=30)
+    parameter(nmaxob=30)
     integer :: adobj(nmaxob), nbobj, nbsp, nb
     aster_logical :: ldist
 !
@@ -88,13 +88,13 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
 !
     call jemarq()
 ! EVENTUEL PARALLELISME EN TEMPS
-    if (present(ideb).and.present(ifin).and.present(vcham)) then
-      ldist=.True.
-      nb=ifin-ideb+1
+    if (present(ideb) .and. present(ifin) .and. present(vcham)) then
+        ldist = .True.
+        nb = ifin-ideb+1
     else
-      ldist=.False.
-      nb=0
-    endif
+        ldist = .False.
+        nb = 0
+    end if
 !
     call jeexin(mesmai, ier)
     if (ier .ne. 0) then
@@ -102,7 +102,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
         call jelira(mesmai, 'LONMAX', nbma)
     else
         nbma = 0
-    endif
+    end if
 !
     chams0 = '&&CALCOP.CHAMS0'
     chams1 = '&&CALCOP.CHAMS1'
@@ -113,33 +113,33 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     call rsexch(' ', resuin, optele, numord, chelem, ier)
     if (ier .ne. 0) then
         call rsexch(' ', resuou, optele, numord, chelem, ier)
-    endif
+    end if
 !
     call exisd('CHAMP_GD', chelem, ier)
     if (ier .eq. 0) then
-        lichou=' '
-        valk(1)=optele
-        valk(2)=option
-        valk(3)=resuin
-        valk(4)=resuou
+        lichou = ' '
+        valk(1) = optele
+        valk(2) = option
+        valk(3) = resuin
+        valk(4) = resuou
         call utmess('A', 'CALCCHAMP_2', nk=4, valk=valk, si=numord)
         if (ldist) call utmess('F', 'PREPOST_18')
         goto 999
-    endif
+    end if
     call celces(chelem, 'V', chams0)
     if (nbma .ne. 0) then
         call cesred(chams0, nbma, zi(jmai), 0, [k8b], 'V', chams0)
-    endif
+    end if
 !
 !   VERIFICATION DES REPERES LOCAUX
     erdm = 'NON'
     call dismoi('EXI_RDM', ligrel, 'LIGREL', repk=erdm)
 !   cette vérification ne doit être faite que dans le cas ou le modèle contient des éléments
 !   de structure et que pour certains champs qui sont en repère local
-    if ((erdm.eq.'OUI').and. &
-        ((option(1:4).eq.'EPSI').or.(option(1:4).eq.'SIGM').or.&
-         (option(1:4).eq.'SIEF').or. &
-         (option(1:4).eq.'DEGE').or.(option(1:4).eq.'EFGE'))) then
+    if ((erdm .eq. 'OUI') .and. &
+        ((option(1:4) .eq. 'EPSI') .or. (option(1:4) .eq. 'SIGM') .or. &
+         (option(1:4) .eq. 'SIEF') .or. &
+         (option(1:4) .eq. 'DEGE') .or. (option(1:4) .eq. 'EFGE'))) then
         if (ligmod) then
 !           pour les coques 3d certaines initialisations sont nécessaires pour pouvoir utiliser
 !           les routines de changement de repère propres aux coques 3d
@@ -147,33 +147,33 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
             if (erdm .eq. 'OUI' .and. ligmod) then
                 call jelira(ligrel(1:19)//'.LIEL', 'NUTIOC', ngr)
                 do igr = 1, ngr
-                    call inigrl(ligrel, igr, nmaxob, adobj, noobj,nbobj)
-                enddo
-            endif
-        endif
+                    call inigrl(ligrel, igr, nmaxob, adobj, noobj, nbobj)
+                end do
+            end if
+        end if
         if (carael .ne. ' ') then
-            call ccvrrl(nomail, modele, carael, mesmai, chams0,'A', codret)
+            call ccvrrl(nomail, modele, carael, mesmai, chams0, 'A', codret)
         else
             valk(1) = option(1:4)
             call utmess('A', 'CALCULEL4_2', nk=1, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     call cescns(chams0, ' ', 'V', chams1, 'A', codret)
 ! CREATION DES SDS CHAM_NOS SIMPLE OU SIMULTANES
-    if (ldist.and.(nb.ge.2)) then
-      call cnscno(chams1, ' ', 'NON', basopt, nochou, ' ', iret, nbz=nb, vchamz=vcham)
+    if (ldist .and. (nb .ge. 2)) then
+        call cnscno(chams1, ' ', 'NON', basopt, nochou, ' ', iret, nbz=nb, vchamz=vcham)
     else
-      call cnscno(chams1, ' ', 'NON', basopt, nochou, ' ', iret)
-    endif
+        call cnscno(chams1, ' ', 'NON', basopt, nochou, ' ', iret)
+    end if
 !
 !   VERIFICATION POUR LES CHAMPS A SOUS-POINT
     call dismoi('MXNBSP', chelem, 'CHAM_ELEM', repi=nbsp)
-    if ((nbsp.gt.1) .and. (iret.eq.1)) then
-        valk(1)=optele
-        valk(2)=option
+    if ((nbsp .gt. 1) .and. (iret .eq. 1)) then
+        valk(1) = optele
+        valk(2) = option
         call utmess('F', 'CALCULEL4_16', nk=2, valk=valk)
-    endif
+    end if
 !
     call detrsd('CHAM_ELEM_S', chams0)
     call detrsd('CHAM_NO_S', chams1)

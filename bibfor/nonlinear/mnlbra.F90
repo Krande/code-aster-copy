@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
+subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
                   epsman, amax, xus)
     implicit none
 !
@@ -76,13 +76,13 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
 ! --- RECUPERATION DU SECOND MEMBRE SUPPLEMENTAIRE
 ! ----------------------------------------------------------------------
     call jeveuo(xfpnla, 'L', ifpnla)
-    norme = dnrm2(ninc-1,zr(ifpnla),1)
+    norme = dnrm2(ninc-1, zr(ifpnla), 1)
 !
     if (norme .eq. 0.d0) then
         call utmess('F', 'MECANONLINE9_61')
     else
         amax = (epsman/norme)**dble(1.d0/(ordman+1))
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- ON RECOPIE LE POINT INITIAL
 ! ----------------------------------------------------------------------
@@ -91,9 +91,9 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt,&
 ! --- ON CALCUL LA BRANCHE
 ! ----------------------------------------------------------------------
     do i = 2, nbpt
-        a=amax*dble(i-1)/dble(nbpt-1)
+        a = amax*dble(i-1)/dble(nbpt-1)
         do k = 0, ordman
-            call daxpy(ninc, a**dble(k), zr(iups+k*ninc), 1, zr(ius+(i-1)*ninc),&
+            call daxpy(ninc, a**dble(k), zr(iups+k*ninc), 1, zr(ius+(i-1)*ninc), &
                        1)
         end do
     end do

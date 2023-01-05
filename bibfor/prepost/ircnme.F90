@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
-                  nbcmp, nomcmp, partie, numpt, instan,&
-                  numord, nbnoec, linoec, sdcarm, carael,&
+subroutine ircnme(ifi, nochmd, chanom, typech, modele, &
+                  nbcmp, nomcmp, partie, numpt, instan, &
+                  numord, nbnoec, linoec, sdcarm, carael, &
                   field_type, lfichUniq, codret)
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -78,7 +78,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'IRCNME' )
+    parameter(nompro='IRCNME')
 !
     character(len=19) :: chamns
 !
@@ -109,10 +109,10 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 ! 2. ECRITURE DES CHAMPS AU FORMAT MED
 !====
 !
-    call ircame(ifi, nochmd, chanom, typech, modele,&
-                nbcmp, nomcmp, ' ', partie, numpt,&
-                instan, numord, jcnsk, jcnsd, jcnsc,&
-                jcnsv, jcnsl, nbnoec, linoec, sdcarm,&
+    call ircame(ifi, nochmd, chanom, typech, modele, &
+                nbcmp, nomcmp, ' ', partie, numpt, &
+                instan, numord, jcnsk, jcnsd, jcnsc, &
+                jcnsv, jcnsl, nbnoec, linoec, sdcarm, &
                 carael, field_type, nbCmpDyna, lfichUniq, codret)
 !
 !====
@@ -127,7 +127,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 !
     if (codret .ne. 0 .and. codret .ne. 100) then
         call utmess('A', 'MED_89', sk=chanom)
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxpred(model     , mate     , mateco   , cara_elem, list_load, nume_dof ,&
-                  solver    , lostat   , tpsthe   , time     , matass   ,&
-                  lonch     , maprec   , varc_curr, temp_prev, temp_iter,&
-                  cn2mbr    , hydr_prev, hydr_curr, dry_prev , dry_curr ,&
-                  compor    , cndirp   , cnchci   , vec2nd   , vec2ni   ,&
+subroutine nxpred(model, mate, mateco, cara_elem, list_load, nume_dof, &
+                  solver, lostat, tpsthe, time, matass, &
+                  lonch, maprec, varc_curr, temp_prev, temp_iter, &
+                  cn2mbr, hydr_prev, hydr_curr, dry_prev, dry_curr, &
+                  compor, cndirp, cnchci, vec2nd, vec2ni, &
                   ds_algorom)
 !
-use ROM_Datastructure_type
+    use ROM_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/asasve.h"
@@ -44,23 +44,23 @@ implicit none
 #include "asterfort/vethbt.h"
 #include "asterfort/vethbu.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: mate, mateco
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: solver
-real(kind=8) :: tpsthe(6)
-character(len=24), intent(in) :: time
-character(len=19), intent(in) :: varc_curr
-integer :: lonch
-character(len=19) :: maprec
-character(len=24) :: matass, cndirp, cnchci, cnresi
-character(len=24) :: temp_iter, temp_prev, vec2nd, vec2ni
-character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
-aster_logical :: lostat
-character(len=24), intent(in) :: cn2mbr
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate, mateco
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: solver
+    real(kind=8) :: tpsthe(6)
+    character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr
+    integer :: lonch
+    character(len=19) :: maprec
+    character(len=24) :: matass, cndirp, cnchci, cnresi
+    character(len=24) :: temp_iter, temp_prev, vec2nd, vec2ni
+    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
+    aster_logical :: lostat
+    character(len=24), intent(in) :: cn2mbr
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,8 +98,8 @@ type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     cnvabt = ' '
     cnvabu = ' '
     typres = 'R'
-    chsol  = '&&NXPRED.SOLUTION'
-    bidon  = '&&FOMULT.BIDON'
+    chsol = '&&NXPRED.SOLUTION'
+    bidon = '&&FOMULT.BIDON'
     veresi = '&&VERESI           .RELR'
     vebtla = '&&VETBTL           .RELR'
     vabtla = ' '
@@ -112,10 +112,10 @@ type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --- RECUPERATION D'ADRESSES
 !
-    call jeveuo(vec2nd(1:19)//'.VALE', 'L', vr = v_vec2nd)
-    call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr = v_cn2mbr)
-    call jeveuo(vec2ni(1:19)//'.VALE', 'L', vr = v_vec2ni)
-    call jeveuo(cndirp(1:19)//'.VALE', 'L', vr = v_cndirp)
+    call jeveuo(vec2nd(1:19)//'.VALE', 'L', vr=v_vec2nd)
+    call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr=v_cn2mbr)
+    call jeveuo(vec2ni(1:19)//'.VALE', 'L', vr=v_vec2ni)
+    call jeveuo(cndirp(1:19)//'.VALE', 'L', vr=v_cndirp)
 !
     if (lostat) then
 !
@@ -125,59 +125,59 @@ type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! ----- Neumann loads elementary vectors (residuals)
 !
-        call verstp(model    , lload_name, lload_info, cara_elem, mateco   ,&
-                    time_curr,  time     , compor    , temp_prev ,temp_iter,&
-                    varc_curr,  veresi   , 'V'       ,&
-                    hydr_prev, hydr_curr , dry_prev  , dry_curr )
+        call verstp(model, lload_name, lload_info, cara_elem, mateco, &
+                    time_curr, time, compor, temp_prev, temp_iter, &
+                    varc_curr, veresi, 'V', &
+                    hydr_prev, hydr_curr, dry_prev, dry_curr)
 !
 ! ----- Neumann loads vector (residuals)
 !
         call asasve(veresi, nume_dof, typres, varesi)
-        call ascova('D', varesi, bidon, 'INST', rbid,&
+        call ascova('D', varesi, bidon, 'INST', rbid, &
                     typres, cnresi)
         call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=v_cnresi)
 !
 ! ----- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
-        call vethbt(model, lload_name, lload_info, cara_elem, mate,&
+        call vethbt(model, lload_name, lload_info, cara_elem, mate, &
                     temp_prev, vebtla, 'V')
         call asasve(vebtla, nume_dof, typres, vabtla)
-        call ascova('D', vabtla, bidon, 'INST', rbid,&
+        call ascova('D', vabtla, bidon, 'INST', rbid, &
                     typres, cnvabt)
         call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=v_cnvabt)
 !
 ! ----- B . TEMPERATURE - CALCUL ET ASSEMBLAGE
 !
-        call vethbu(model, matass, lload_name, lload_info, cara_elem,&
+        call vethbu(model, matass, lload_name, lload_info, cara_elem, &
                     mate, temp_prev, vebuem)
         call asasve(vebuem, nume_dof, typres, vabuem)
-        call ascova('D', vabuem, bidon, 'INST', rbid,&
+        call ascova('D', vabuem, bidon, 'INST', rbid, &
                     typres, cnvabu)
         call jeveuo(cnvabu(1:19)//'.VALE', 'L', vr=v_cnvabu)
 !
         do iEqua = 1, lonch
-            v_cn2mbr(iEqua) = v_vec2nd(iEqua) - v_cnresi(iEqua) +&
-                              v_cndirp(iEqua) - v_cnvabt(iEqua)- v_cnvabu(iEqua)
+            v_cn2mbr(iEqua) = v_vec2nd(iEqua)-v_cnresi(iEqua)+ &
+                              v_cndirp(iEqua)-v_cnvabt(iEqua)-v_cnvabu(iEqua)
         end do
 !
 ! ----- Solve linear system
 !
         if (ds_algorom%l_rom .and. ds_algorom%phase .eq. 'HROM') then
-            call jeveuo(ds_algorom%gamma, 'E', vr = v_gamma)
+            call jeveuo(ds_algorom%gamma, 'E', vr=v_gamma)
             do iMode = 1, ds_algorom%ds_empi%nbMode
-                v_gamma (iMode) = 0.d0
-            enddo
+                v_gamma(iMode) = 0.d0
+            end do
             call copisd('CHAMP_GD', 'V', temp_prev, chsol)
             call romAlgoNLSystemSolve(matass, cn2mbr, cnchci, ds_algorom, chsol)
         else if (ds_algorom%l_rom .and. ds_algorom%phase .eq. 'CORR_EF') then
             call romAlgoNLCorrEFMatrixModify(nume_dof, matass, ds_algorom)
             call romAlgoNLCorrEFResiduModify(cn2mbr, ds_algorom)
-            call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+            call nxreso(matass, maprec, solver, cnchci, cn2mbr, &
                         chsol)
         else
-            call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+            call nxreso(matass, maprec, solver, cnchci, cn2mbr, &
                         chsol)
-        endif
+        end if
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
@@ -190,34 +190,34 @@ type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !=======================================================================
 !
         do iEqua = 1, lonch
-            v_cn2mbr(iEqua) = v_vec2ni(iEqua) + v_cndirp(iEqua)
+            v_cn2mbr(iEqua) = v_vec2ni(iEqua)+v_cndirp(iEqua)
         end do
 !
 ! ----- Solve linear system
 !
         if (ds_algorom%l_rom .and. ds_algorom%phase .eq. 'HROM') then
-            call jeveuo(ds_algorom%gamma, 'E', vr = v_gamma)
+            call jeveuo(ds_algorom%gamma, 'E', vr=v_gamma)
             do iMode = 1, ds_algorom%ds_empi%nbMode
-                v_gamma (iMode) = 0.d0
-            enddo
+                v_gamma(iMode) = 0.d0
+            end do
             call copisd('CHAMP_GD', 'V', temp_prev, chsol)
-            call romAlgoNLSystemSolve(matass, cn2mbr,cnchci, ds_algorom, chsol)
+            call romAlgoNLSystemSolve(matass, cn2mbr, cnchci, ds_algorom, chsol)
         else if (ds_algorom%l_rom .and. ds_algorom%phase .eq. 'CORR_EF') then
             call romAlgoNLCorrEFMatrixModify(nume_dof, matass, ds_algorom)
             call romAlgoNLCorrEFResiduModify(cn2mbr, ds_algorom)
-            call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+            call nxreso(matass, maprec, solver, cnchci, cn2mbr, &
                         chsol)
         else
-            call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+            call nxreso(matass, maprec, solver, cnchci, cn2mbr, &
                         chsol)
-        endif
+        end if
 
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
         call copisd('CHAMP_GD', 'V', chsol, temp_iter)
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

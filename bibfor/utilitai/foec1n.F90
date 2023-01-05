@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,28 +37,28 @@ subroutine foec1n(iuni, nomf, vec, nbfonc, verif)
 !-----------------------------------------------------------------------
     integer :: i
 !-----------------------------------------------------------------------
-    data tprol/'CONSTANT','LINEAIRE','EXCLU'/
+    data tprol/'CONSTANT', 'LINEAIRE', 'EXCLU'/
 !
     nomfon = nomf
     nompaf = vec(7)
     nompan = vec(3)
     nomres = vec(4)
-    write(iuni,*) ' NAPPE ',nomfon,' : ',&
-     &                          nomres,' = F(',nompan,', ',nompaf,')'
-    write(iuni,*) ' DONNEE EN ',nbfonc,' POINTS'
+    write (iuni, *) ' NAPPE ', nomfon, ' : ',&
+     &                          nomres, ' = F(', nompan, ', ', nompaf, ')'
+    write (iuni, *) ' DONNEE EN ', nbfonc, ' POINTS'
     call fopro1(vec, 0, prolgd, interp)
-    write(iuni,*) ' INTERPOLATION ',interp
+    write (iuni, *) ' INTERPOLATION ', interp
     do i = 1, 3
-        if (prolgd(1:1) .eq. tprol(i)(1:1)) then
-            write(iuni,*) ' PROLONGEMENT A GAUCHE : ',tprol(i)
-        endif
-        if (prolgd(2:2) .eq. tprol(i)(1:1)) then
-            write(iuni,*) ' PROLONGEMENT A DROITE : ',tprol(i)
-        endif
+        if (prolgd(1:1) .eq. tprol(i) (1:1)) then
+            write (iuni, *) ' PROLONGEMENT A GAUCHE : ', tprol(i)
+        end if
+        if (prolgd(2:2) .eq. tprol(i) (1:1)) then
+            write (iuni, *) ' PROLONGEMENT A DROITE : ', tprol(i)
+        end if
     end do
     if (verif .eq. '        ') then
-        write(iuni,*) ' LES PARAMETRES DE LA NAPPE SONT REORDONNES'
-    else if (verif.eq.'CROISSANT') then
-        write(iuni,*) ' VERIFICATION ',verif
-    endif
+        write (iuni, *) ' LES PARAMETRES DE LA NAPPE SONT REORDONNES'
+    else if (verif .eq. 'CROISSANT') then
+        write (iuni, *) ' VERIFICATION ', verif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zngets(ishift, which, kev, np, ritz,&
+subroutine zngets(ishift, which, kev, np, ritz, &
                   bounds)
 !
 !     SUBROUTINE ARPACK CALCULANT NP SHIFTS DU RESTART DE IRAM.
@@ -119,7 +119,7 @@ subroutine zngets(ishift, which, kev, np, ritz,&
 #include "asterfort/zvout.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !
@@ -174,16 +174,16 @@ subroutine zngets(ishift, which, kev, np, ritz,&
 !
         call zsortc('SM', .true._1, np, bounds, ritz)
 !
-    endif
+    end if
 !
 !
     if (msglvl .gt. 0) then
         call ivout(logfil, 1, [kev], ndigit, '_NGETS: KEV IS')
         call ivout(logfil, 1, [np], ndigit, '_NGETS: NP IS')
         call zvout(logfil, kev+np, ritz, ndigit, '_NGETS: EIGENVALUES OF CURRENT H MATRIX ')
-        call zvout(logfil, kev+np, bounds, ndigit,&
+        call zvout(logfil, kev+np, bounds, ndigit, &
                    '_NGETS: RITZ ESTIMATES OF THE CURRENT KEV+NP RITZ VALUES')
-    endif
+    end if
 !
 !
 !     %---------------%

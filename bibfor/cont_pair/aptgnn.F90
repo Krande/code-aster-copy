@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aptgnn(sdappa , mesh     , sdcont_defi, model_ndim, jdecno,&
+subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
                   nb_node, norm_type, norm_vect)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
@@ -93,30 +93,30 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    one_proc=.false.
+    one_proc = .false.
 !
 ! - Acces to pairing datastructure
 !
     sdappa_tgel = sdappa(1:19)//'.TGEL'
     sdappa_tgno = sdappa(1:19)//'.TGNO'
-    call jeveuo(sdappa_tgno, 'E', vr = v_sdappa_tgno)
+    call jeveuo(sdappa_tgno, 'E', vr=v_sdappa_tgno)
 !
 ! - Mpi informations
 !
     call asmpi_comm('GET', mpicou)
-    call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
-    if(one_proc)then
-            nb_proc = 1
-            i_proc= 0
-    endif
-    nb_poin_mpi  = int(nb_node/nb_proc)
+    call asmpi_info(mpicou, rank=i_proc, size=nb_proc)
+    if (one_proc) then
+        nb_proc = 1
+        i_proc = 0
+    end if
+    nb_poin_mpi = int(nb_node/nb_proc)
     nbr_poin_mpi = nb_node-nb_poin_mpi*nb_proc
-    idx_start    = 1+(i_proc)*nb_poin_mpi
-    idx_end      = idx_start+nb_poin_mpi-1+nbr_poin_mpi*int((i_proc+1)/nb_proc)
+    idx_start = 1+(i_proc)*nb_poin_mpi
+    idx_end = idx_start+nb_poin_mpi-1+nbr_poin_mpi*int((i_proc+1)/nb_proc)
 !
 ! - Loop on nodes
 !
-    do  i_node= idx_start, idx_end
+    do i_node = idx_start, idx_end
 !
         normal(1:3) = 0.d0
         tau1_node(1:3) = 0.d0
@@ -149,7 +149,7 @@ implicit none
 !
 ! --------- Access to connectivity
 !
-            call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+            call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi=v_mesh_connex)
 !
 ! --------- Number of nodes
 !
@@ -161,13 +161,13 @@ implicit none
             do i_elem_node = 1, elem_nbnode
                 if (v_mesh_connex(i_elem_node) .eq. node_nume(1)) then
                     i_node_curr = i_elem_node
-                endif
+                end if
             end do
-            ASSERT(i_node_curr.ne.0)
+            ASSERT(i_node_curr .ne. 0)
 !
 ! --------- Access to current tangent
 !
-            call jeveuo(jexnum(sdappa_tgel, elem_indx), 'L', vr = v_sdappa_tgel)
+            call jeveuo(jexnum(sdappa_tgel, elem_indx), 'L', vr=v_sdappa_tgel)
             tau1(1) = v_sdappa_tgel(6*(i_node_curr-1)+1)
             tau1(2) = v_sdappa_tgel(6*(i_node_curr-1)+2)
             tau1(3) = v_sdappa_tgel(6*(i_node_curr-1)+3)
@@ -180,24 +180,24 @@ implicit none
             call mmnorm(model_ndim, tau1, tau2, vnorm, noor)
             if (noor .le. r8prem()) then
                 call utmess('F', 'APPARIEMENT_15', nk=2, valk=valk)
-            endif
+            end if
 !
 ! --------- Add normal
 !
-            normal(1) = normal(1) + vnorm(1)
-            normal(2) = normal(2) + vnorm(2)
-            normal(3) = normal(3) + vnorm(3)
+            normal(1) = normal(1)+vnorm(1)
+            normal(2) = normal(2)+vnorm(2)
+            normal(3) = normal(3)+vnorm(3)
         end do
 !
 ! ----- Mean square
 !
-        normal(1) = normal(1) / node_nbelem
-        normal(2) = normal(2) / node_nbelem
-        normal(3) = normal(3) / node_nbelem
+        normal(1) = normal(1)/node_nbelem
+        normal(2) = normal(2)/node_nbelem
+        normal(3) = normal(3)/node_nbelem
         call normev(normal, normn)
         if (normn .le. r8prem()) then
             call utmess('F', 'APPARIEMENT_16', sk=node_name)
-        endif
+        end if
 !
 ! ----- New local basis after smoothing
 !
@@ -208,14 +208,14 @@ implicit none
         if (norm_type .eq. 2) then
             call dcopy(3, norm_vect, 1, tau2_node, 1)
             call provec(normal, tau2_node, tau1_node)
-        endif
+        end if
 !
 ! ----- New local basis after smoothing
 !
         call mmtann(model_ndim, tau1_node, tau2_node, niverr)
         if (niverr .ne. 0) then
             call utmess('F', 'APPARIEMENT_17', sk=node_name)
-        endif
+        end if
 !
 ! ----- Save tangents
 !

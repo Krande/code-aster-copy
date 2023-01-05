@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,17 +67,17 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
     character(len=8), pointer :: cvrc(:) => null()
     character(len=8), pointer :: cvvar(:) => null()
     character(len=1) :: base
-    save models,chmats,carels,chvres
-    data models/' '/,chmats/' '/,carels/' '/,chvres/' '/
+    save models, chmats, carels, chvres
+    data models/' '/, chmats/' '/, carels/' '/, chvres/' '/
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    if( present(basez) ) then
+    if (present(basez)) then
         base = basez
     else
         base = 'V'
-    endif
+    end if
 !
 !     -- SI LE CHAMP A PRODUIRE EXISTE DEJA ET QUE LES ARGUMENTS
 !        SONT LES MEMES QUE LA FOIS PRECEDENTE, ON SORT RAPIDEMENT :
@@ -88,21 +88,21 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
         if (carele .ne. carels) goto 5
         if (chvref .ne. chvres) goto 5
         goto 999
-    endif
-  5 continue
+    end if
+5   continue
 !     -- SAUVERGARDE DES ARGUMENTS POUR LE PROCHAIN APPEL
-    models=modele
-    chmats=chmat
-    carels=carele
-    chvres=chvref
+    models = modele
+    chmats = chmat
+    carels = carele
+    chvres = chvref
 !
 !
 !     -- ON SE PROTEGE DES MODELES QUI NE CONNAISSENT PAS LES VRC :
-    celmod='&&VRCREF.CELMOD'
-    ligrmo=modele//'.MODELE'
+    celmod = '&&VRCREF.CELMOD'
+    ligrmo = modele//'.MODELE'
     call jeexin(ligrmo//'.LIEL', iret)
     if (iret .eq. 0) goto 999
-    call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
+    call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod, &
                 iret, ' ')
     call detrsd('CHAMP', celmod)
     if (iret .eq. 1) goto 999
@@ -110,25 +110,25 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
 !
     call jeexin(chmat//'.CVRCVARC', iret)
 !     AVRC : .TRUE. SI AFFE_MATERIAU/AFFE_VARC EST UTILISE
-    avrc=.false.
+    avrc = .false.
     if (iret .gt. 0) then
         call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrc)
         call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
         do k = 1, nbcvrc
             if (cvrc(k) .ne. ' ') then
-                avrc=.true.
+                avrc = .true.
                 goto 11
-            endif
+            end if
         end do
 !
- 11     continue
-    endif
+11      continue
+    end if
 !
 !
 !
 !     -- CAS : PAS DE AFFE_VARC :
 !     ------------------------------------------
-    if (.not.avrc) goto 999
+    if (.not. avrc) goto 999
 !
 !     -- CAS AFFE_VARC  :
 !     ------------------------
@@ -141,16 +141,16 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma1)
     call dismoi('NOM_MAILLA', chmat//'.CHAMP_MAT', 'CHAMP', repk=noma2)
     if (noma1 .ne. noma2) then
-        valk(1)=noma1
-        valk(2)=noma2
+        valk(1) = noma1
+        valk(2) = noma2
         call utmess('F', 'CALCULEL4_23', nk=2, valk=valk)
-    endif
+    end if
 !
 !
 !     1. ALLOCATION DE CSVREF
 !     ------------------------------------------
-    dceli='&&VRCREF.DCELI'
-    csvref='&&VRCREF.CSVREF'
+    dceli = '&&VRCREF.DCELI'
+    csvref = '&&VRCREF.CSVREF'
     call cesvar(carele, ' ', ligrmo, dceli)
 !
 !     -- MODIFICATION DE DCELI : TOUTES LES MAILLES ONT
@@ -161,18 +161,18 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
     nbma = zi(jdcld-1+1)
 !
     do ima = 1, nbma
-        nbpt = zi(jdcld-1+5+4* (ima-1)+1)
-        nbsp = max(1,zi(jdcld-1+5+4* (ima-1)+2))
-        ASSERT(nbpt.eq.1)
-        ASSERT(nbsp.eq.1)
-        call cesexi('C', jdcld, jdcll, ima, 1,&
+        nbpt = zi(jdcld-1+5+4*(ima-1)+1)
+        nbsp = max(1, zi(jdcld-1+5+4*(ima-1)+2))
+        ASSERT(nbpt .eq. 1)
+        ASSERT(nbsp .eq. 1)
+        call cesexi('C', jdcld, jdcll, ima, 1, &
                     1, 2, iad)
-        if (iad .gt. 0) dclv(iad)=nbcvrc
+        if (iad .gt. 0) dclv(iad) = nbcvrc
     end do
 !
-    call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
+    call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod, &
                 iret, dceli)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
     call detrsd('CHAMP', dceli)
     call celces(celmod, 'V', csvref)
     call detrsd('CHAMP', celmod)
@@ -184,63 +184,63 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
     call jeveuo(csvref//'.CESV', 'E', vr=cesv)
     call jelira(csvref//'.CESL', 'LONMAX', n1)
     do k = 1, n1
-        zl(jcesl-1+k)=.false.
+        zl(jcesl-1+k) = .false.
     end do
 !
 !
 !
 !     2. REMPLISSAGE DE CSVREF.CESV :
 !     ------------------------------------------
-    varc=' '
+    varc = ' '
     do k = 1, nbcvrc
         if (cvvar(k) .eq. varc) goto 1
-        varc=cvvar(k)
+        varc = cvvar(k)
         cart1 = chmat//'.'//varc//'.1'
-        ces1='&&VRCREF.CES1'
-        call carces(cart1, 'ELEM', ' ', 'V', ces1,&
+        ces1 = '&&VRCREF.CES1'
+        call carces(cart1, 'ELEM', ' ', 'V', ces1, &
                     'A', iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
 !
         call jeveuo(ces1//'.CESD', 'L', jcesd1)
         call jeveuo(ces1//'.CESV', 'L', vr=cesv1)
         call jeveuo(ces1//'.CESL', 'L', jcesl1)
 !
         nbma = zi(jcesd-1+1)
-        ASSERT(nbma.eq.zi(jcesd1-1+1))
+        ASSERT(nbma .eq. zi(jcesd1-1+1))
 !
 !       -- CALCUL DE NCMP
-        ncmp=0
+        ncmp = 0
         do k2 = k, nbcvrc
-            if (cvvar(k2) .eq. varc) ncmp=ncmp+1
+            if (cvvar(k2) .eq. varc) ncmp = ncmp+1
         end do
 !
         do ima = 1, nbma
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            nbsp = max(1,zi(jcesd-1+5+4* (ima-1)+2))
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = max(1, zi(jcesd-1+5+4*(ima-1)+2))
 !
-            call cesexi('C', jcesd1, jcesl1, ima, 1,&
+            call cesexi('C', jcesd1, jcesl1, ima, 1, &
                         1, 1, iad)
             if (iad .le. 0) goto 70
-            valref=cesv1(iad)
+            valref = cesv1(iad)
 !
             do ipt = 1, nbpt
                 do isp = 1, nbsp
                     do icmp = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, ima, ipt,&
-                                    isp, k-1+ icmp, iad)
-                        ASSERT(iad.le.0)
+                        call cesexi('C', jcesd, jcesl, ima, ipt, &
+                                    isp, k-1+icmp, iad)
+                        ASSERT(iad .le. 0)
                         if (iad .eq. 0) goto 51
-                        iad=-iad
-                        zl(jcesl-1+iad)=.true.
-                        cesv(iad)=valref
- 51                     continue
+                        iad = -iad
+                        zl(jcesl-1+iad) = .true.
+                        cesv(iad) = valref
+51                      continue
                     end do
                 end do
             end do
- 70         continue
+70          continue
         end do
         call detrsd('CHAMP', ces1)
-  1     continue
+1       continue
     end do
 !
 !
@@ -250,7 +250,7 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
 !     LE CHAMP DE TEMP_REF PEUT CONTENIR DES VALEURS "VIDES"
 !     ON LES TRANSFORME EN "NAN"
     call juvinn(csvref//'.CESV')
-    call cescel(csvref, ligrmo, 'INIT_VARC', 'PVARCPR', 'NAN',&
+    call cescel(csvref, ligrmo, 'INIT_VARC', 'PVARCPR', 'NAN', &
                 nncp, base, chvref, 'F', ibid)
     call detrsd('CHAM_ELEM_S', csvref)
 !

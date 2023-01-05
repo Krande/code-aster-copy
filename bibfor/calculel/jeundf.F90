@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,24 +63,24 @@ subroutine jeundf(obj, undf0_)
     undf0 = ASTER_FALSE
     if (present(undf0_)) then
         undf0 = undf0_
-    endif
+    end if
 !
-    obj2=obj
+    obj2 = obj
 !
     if (undf0) then
-        i1undf=0
-        r1undf=0.d0
+        i1undf = 0
+        r1undf = 0.d0
     else
-        i1undf=ismaem()
-        r1undf=r8nnem()
-    endif
+        i1undf = ismaem()
+        r1undf = r8nnem()
+    end if
 !
-    c1undf=dcmplx(r1undf,r1undf)
-    k8df='XXXXXXXX'
-    k16df=k8df//k8df
-    k24df=k16df//k8df
-    k32df=k24df//k8df
-    k80df=k32df//k32df//k16df
+    c1undf = dcmplx(r1undf, r1undf)
+    k8df = 'XXXXXXXX'
+    k16df = k8df//k8df
+    k24df = k16df//k8df
+    k32df = k24df//k8df
+    k80df = k32df//k32df//k16df
 !
 !
 !     -- DETERMINATION DE TYPSCA :
@@ -89,25 +89,25 @@ subroutine jeundf(obj, undf0_)
     if (type .eq. 'K') then
         call jelira(obj2, 'LTYP', ltyp)
         if (ltyp .eq. 8) then
-            typsca='K8'
-        else if (ltyp.eq.16) then
-            typsca='K16'
-        else if (ltyp.eq.24) then
-            typsca='K24'
-        else if (ltyp.eq.32) then
-            typsca='K32'
-        else if (ltyp.eq.80) then
-            typsca='K80'
+            typsca = 'K8'
+        else if (ltyp .eq. 16) then
+            typsca = 'K16'
+        else if (ltyp .eq. 24) then
+            typsca = 'K24'
+        else if (ltyp .eq. 32) then
+            typsca = 'K32'
+        else if (ltyp .eq. 80) then
+            typsca = 'K80'
         else
             ASSERT(.false.)
-        endif
+        end if
     else
-        typsca=type
-    endif
+        typsca = type
+    end if
 !
     call jelira(obj2, 'XOUS', cval=xous)
 !     TEST CAS NON PROGRAMME
-    ASSERT(xous.ne.'X')
+    ASSERT(xous .ne. 'X')
 !
     call jelira(obj2, 'LONMAX', long)
     call jeveuo(obj2, 'E', iad)
@@ -115,43 +115,43 @@ subroutine jeundf(obj, undf0_)
 !
     if (typsca .eq. 'I') then
         do k = 1, long
-            zi(iad-1+k)=i1undf
+            zi(iad-1+k) = i1undf
         end do
-    else if (typsca.eq.'L') then
+    else if (typsca .eq. 'L') then
         do k = 1, long
-            zl(iad-1+k)=.false.
+            zl(iad-1+k) = .false.
         end do
-    else if (typsca.eq.'R') then
+    else if (typsca .eq. 'R') then
         do k = 1, long
-            zr(iad-1+k)=r1undf
+            zr(iad-1+k) = r1undf
         end do
-    else if (typsca.eq.'C') then
+    else if (typsca .eq. 'C') then
         do k = 1, long
-            zc(iad-1+k)=c1undf
+            zc(iad-1+k) = c1undf
         end do
-    else if (typsca.eq.'K8') then
+    else if (typsca .eq. 'K8') then
         do k = 1, long
-            zk8(iad-1+k)=k8df
+            zk8(iad-1+k) = k8df
         end do
-    else if (typsca.eq.'K16') then
+    else if (typsca .eq. 'K16') then
         do k = 1, long
-            zk16(iad-1+k)=k16df
+            zk16(iad-1+k) = k16df
         end do
-    else if (typsca.eq.'K24') then
+    else if (typsca .eq. 'K24') then
         do k = 1, long
-            zk24(iad-1+k)=k24df
+            zk24(iad-1+k) = k24df
         end do
-    else if (typsca.eq.'K32') then
+    else if (typsca .eq. 'K32') then
         do k = 1, long
-            zk32(iad-1+k)=k32df
+            zk32(iad-1+k) = k32df
         end do
-    else if (typsca.eq.'K80') then
+    else if (typsca .eq. 'K80') then
         do k = 1, long
-            zk80(iad-1+k)=k80df
+            zk80(iad-1+k) = k80df
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     call jedema()

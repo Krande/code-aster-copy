@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptgy02(sk, nl, xnu, rho, a,&
-                  xl, xiy, xiz, xjx, alfinv,&
+subroutine ptgy02(sk, nl, xnu, rho, a, &
+                  xl, xiy, xiz, xjx, alfinv, &
                   ey, ez, ist)
     implicit none
 #include "jeveux.h"
@@ -73,90 +73,90 @@ subroutine ptgy02(sk, nl, xnu, rho, a,&
     real(kind=8) :: ip, alfinv
     integer :: i, j, ipoint, nc
 !
-    parameter (zero=0.d0,nc=6)
+    parameter(zero=0.d0, nc=6)
 !
 ! ---------------------------------------------------------------------
     do i = 1, nl
         sk(i) = zero
     end do
 !
-    ASSERT(nl.eq.144)
+    ASSERT(nl .eq. 144)
 !
 !
     if (abs(xl) .lt. r8prem()) then
         call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    end if
     ip = (xiy+xiz)
     phi = 12.d0*ip*alfinv*(1.d0+xnu)/(a*xl*xl)
-    com = rho * ip / (30.d0 * xl*(1.d0+phi)*(1.d0+phi))
+    com = rho*ip/(30.d0*xl*(1.d0+phi)*(1.d0+phi))
 !
 !
 !     I : LIGNE ; J : COLONNE
     i = 3
     j = 2
-    ipoint = nc*(j) + i
-    sk(ipoint) = -36.d0 * com
+    ipoint = nc*(j)+i
+    sk(ipoint) = -36.d0*com
     i = 5
     j = 2
-    ipoint = nc*(j) + i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com *xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 9
     j = 2
-    ipoint = nc*(j) + i
-    sk(ipoint) = 36.d0 * com
+    ipoint = nc*(j)+i
+    sk(ipoint) = 36.d0*com
     i = 11
     j = 2
-    ipoint = nc*(j) + i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com * xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 3
     j = 6
-    ipoint = nc*(j) + i
-    sk(ipoint) = -(3.d0 - 15.d0 * phi) * com *xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = -(3.d0-15.d0*phi)*com*xl
     i = 5
     j = 6
-    ipoint = nc*(j) + i
+    ipoint = nc*(j)+i
     sk(ipoint) = (4.d0+5.d0*phi+10.d0*phi*phi)*com*xl*xl
     i = 9
     j = 6
-    ipoint = nc*(j) + i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com * xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 11
     j = 6
-    ipoint = nc*(j) + i
+    ipoint = nc*(j)+i
     sk(ipoint) = -(1.d0+5.d0*phi-5.d0*phi*phi)*com*xl*xl
     i = 3
     j = 8
-    ipoint = nc*(j) + i
-    sk(ipoint) = 36.d0 * com
+    ipoint = nc*(j)+i
+    sk(ipoint) = 36.d0*com
     i = 5
     j = 8
-    ipoint = nc*(j) + i
-    sk(ipoint) = -(3.d0 - 15.d0 * phi) * com * xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = -(3.d0-15.d0*phi)*com*xl
     i = 9
     j = 8
-    ipoint = nc*(j) + i
-    sk(ipoint) = -36.d0 * com
+    ipoint = nc*(j)+i
+    sk(ipoint) = -36.d0*com
     i = 11
     j = 8
-    ipoint = nc*(j) + i
-    sk(ipoint) = -(3.d0 - 15.d0 * phi) * com * xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = -(3.d0-15.d0*phi)*com*xl
     i = 3
     j = 12
-    ipoint = nc*(j) + i
-    sk(ipoint) = -(3.d0 - 15.d0 * phi) * com * xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = -(3.d0-15.d0*phi)*com*xl
     i = 5
     j = 12
-    ipoint = nc*(j) + i
+    ipoint = nc*(j)+i
     sk(ipoint) = -(1.d0+5.d0*phi-5.d0*phi*phi)*com*xl*xl
     i = 9
     j = 12
-    ipoint = nc*(j) + i
-    sk(ipoint) = (3.d0 - 15.d0 * phi) * com * xl
+    ipoint = nc*(j)+i
+    sk(ipoint) = (3.d0-15.d0*phi)*com*xl
     i = 11
     j = 12
-    ipoint = nc*(j) + i
+    ipoint = nc*(j)+i
     sk(ipoint) = (4.d0+5.d0*phi+10.d0*phi*phi)*com*xl*xl
 !
 !

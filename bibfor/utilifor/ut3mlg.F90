@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ut3mlg(nno, nnc, pgl, matl, matg)
 !
-  use linalg_ops_module, only : as_matmul
+    use linalg_ops_module, only: as_matmul
 !
     implicit none
 !
@@ -53,25 +53,25 @@ subroutine ut3mlg(nno, nnc, pgl, matl, matg)
 ! --------------------------------------------------------------------------------------------------
 !
 !   Pour l'instant cela ne marche qu'avec 3 composantes par noeuds
-    ASSERT( nnc.eq.3 )
+    ASSERT(nnc .eq. 3)
 ! --------------------------------------------------------------------------------------------------
 !   Matrice de passage Global vers Local
-    MatPassGL(:,:) = 0.0
-    if ( nno.eq.1 ) then
+    MatPassGL(:, :) = 0.0
+    if (nno .eq. 1) then
         do ii = 1, 3
             do jj = 1, 3
-                MatPassGL(ii,jj) = pgl(ii,jj)
-            enddo
-        enddo
+                MatPassGL(ii, jj) = pgl(ii, jj)
+            end do
+        end do
     else
         do ii = 1, 3
             do jj = 1, 3
-                MatPassGL(ii  ,jj)   = pgl(ii,jj)
-                MatPassGL(ii+3,jj+3) = pgl(ii,jj)
-           enddo
-        enddo
-    endif
+                MatPassGL(ii, jj) = pgl(ii, jj)
+                MatPassGL(ii+3, jj+3) = pgl(ii, jj)
+            end do
+        end do
+    end if
 
-    matg = as_matmul( transpose(MatPassGL) , as_matmul( Matl , MatPassGL ) )
+    matg = as_matmul(transpose(MatPassGL), as_matmul(Matl, MatPassGL))
 
 end subroutine

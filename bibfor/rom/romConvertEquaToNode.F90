@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine romConvertEquaToNode(field_refe, list_length, v_list_equa, v_list_node)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/dismoi.h"
 !
-character(len=24), intent(in) :: field_refe
-integer, intent(in) :: list_length
-integer, pointer :: v_list_equa(:)
-integer, pointer :: v_list_node(:)
+    character(len=24), intent(in) :: field_refe
+    integer, intent(in) :: list_length
+    integer, pointer :: v_list_equa(:)
+    integer, pointer :: v_list_node(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,13 +53,13 @@ integer, pointer :: v_list_node(:)
 ! --------------------------------------------------------------------------------------------------
 !
     call dismoi('PROF_CHNO', field_refe, 'CHAM_NO', repk=prchno)
-    call jeveuo(prchno(1:19)//'.DEEQ', 'L', vi = v_deeq)
+    call jeveuo(prchno(1:19)//'.DEEQ', 'L', vi=v_deeq)
 !
 ! - Convert
 !
     do i_list = 1, list_length
         i_equa = v_list_equa(i_list)
-        nume_node  = v_deeq(2*(i_equa-1)+1)
+        nume_node = v_deeq(2*(i_equa-1)+1)
         v_list_node(i_list) = nume_node
     end do
 !

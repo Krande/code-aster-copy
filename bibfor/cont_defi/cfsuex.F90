@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -64,19 +64,19 @@ implicit none
 !
 ! - Access to datastructure
 !
-    sdcont_ssnoco  = sdcont_defi(1:16)//'.SSNOCO'
+    sdcont_ssnoco = sdcont_defi(1:16)//'.SSNOCO'
     sdcont_pssnoco = sdcont_defi(1:16)//'.PSSNOCO'
-    call jeveuo(sdcont_ssnoco , 'E', vi=v_sdcont_ssnoco)
+    call jeveuo(sdcont_ssnoco, 'E', vi=v_sdcont_ssnoco)
     call jeveuo(sdcont_pssnoco, 'E', vi=v_sdcont_pssnoco)
     call jelira(sdcont_ssnoco, 'LONMAX', ival=nb_sans)
 !
 ! - Copy vectors
 !
-    AS_ALLOCATE(vi=v_ssnoco , size=nb_sans)
+    AS_ALLOCATE(vi=v_ssnoco, size=nb_sans)
     AS_ALLOCATE(vi=v_pssnoco, size=nb_cont_zone+1)
-    v_ssnoco(1:nb_sans)  = v_sdcont_ssnoco(1:nb_sans)
-    do i_node = 1, nb_cont_zone + 1
-        v_pssnoco(1:nb_cont_zone + 1) = v_sdcont_pssnoco(1:nb_cont_zone + 1)
+    v_ssnoco(1:nb_sans) = v_sdcont_ssnoco(1:nb_sans)
+    do i_node = 1, nb_cont_zone+1
+        v_pssnoco(1:nb_cont_zone+1) = v_sdcont_pssnoco(1:nb_cont_zone+1)
     end do
 !
 ! - Destruct objects
@@ -86,22 +86,22 @@ implicit none
 !
 ! - Create new objects
 !
-    call wkvect(sdcont_ssnoco , 'G V I', nb_sans+nb_excl*nb_cont_zone, vi=v_sdcont_ssnoco)
-    call wkvect(sdcont_pssnoco, 'G V I', nb_cont_zone+1              , vi=v_sdcont_pssnoco)
+    call wkvect(sdcont_ssnoco, 'G V I', nb_sans+nb_excl*nb_cont_zone, vi=v_sdcont_ssnoco)
+    call wkvect(sdcont_pssnoco, 'G V I', nb_cont_zone+1, vi=v_sdcont_pssnoco)
     i_node_new = 1
     v_sdcont_pssnoco(1) = 0
     do i_zone = 1, nb_cont_zone
-        nb_node_old = v_pssnoco(i_zone+1) - v_pssnoco(i_zone)
+        nb_node_old = v_pssnoco(i_zone+1)-v_pssnoco(i_zone)
         do i_excl = 1, nb_node_old
             v_sdcont_ssnoco(i_node_new) = v_ssnoco(v_pssnoco(i_zone)+i_excl)
-            i_node_new = i_node_new + 1
+            i_node_new = i_node_new+1
         end do
         do i_excl = 1, nb_excl
             v_sdcont_ssnoco(i_node_new) = v_list_excl(i_excl)
-            i_node_new = i_node_new + 1
+            i_node_new = i_node_new+1
         end do
-        nb_node_new = nb_node_old + nb_excl
-        v_sdcont_pssnoco(i_zone+1) = v_sdcont_pssnoco(i_zone) + nb_node_new
+        nb_node_new = nb_node_old+nb_excl
+        v_sdcont_pssnoco(i_zone+1) = v_sdcont_pssnoco(i_zone)+nb_node_new
     end do
 !
 ! - Clean

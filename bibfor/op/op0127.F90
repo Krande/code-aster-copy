@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine op0127()
     call getvtx(' ', 'STOCKAGE', scal=typrof, nbret=ibid2)
 !
     call getres(nomres, nomcon, nomope)
-    nugene=nomres
+    nugene = nomres
 !
 !
 !-----NUMEROTATION DES DEGRES DE LIBERTE
@@ -67,18 +67,18 @@ subroutine op0127()
         if (option .eq. 'CLASSIQU') then
             call numgen(nugene, modgen)
             call strmag(nugene, typrof)
-        else if (option(1:7).eq.'INITIAL') then
+        else if (option(1:7) .eq. 'INITIAL') then
             call numgcy(nugene, modgen)
-        else if (option(1:7).eq.'ELIMINE') then
+        else if (option(1:7) .eq. 'ELIMINE') then
             call nugeel(nugene, modgen)
 !          WRITE(6,*)' '
 !          WRITE(6,*)'*** ON FORCE LE STOCKAGE PLEIN ***'
 !          WRITE(6,*)' '
-            typrof='PLEIN'
+            typrof = 'PLEIN'
             call strmag(nugene, typrof)
-        endif
-    else if (ibid2.ne.0) then
+        end if
+    else if (ibid2 .ne. 0) then
         call nummod(nugene, modmec)
-    endif
+    end if
 !
 end subroutine

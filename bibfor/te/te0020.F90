@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine te0020(nomopt, nomte)
     real(kind=8) :: pgl(3, 3)
 !
     integer :: nbres
-    parameter  (nbres=4)
+    parameter(nbres=4)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
@@ -78,10 +78,10 @@ subroutine te0020(nomopt, nomte)
     integer, parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','JX1','A2','IY2','IZ2'/
+    data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'JX1', 'A2', 'IY2', 'IZ2'/
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nomopt(1:15).eq.'CHAR_MECA_EPSI_')
+    ASSERT(nomopt(1:15) .eq. 'CHAR_MECA_EPSI_')
     nc = 6
 !
     call jevech('PMATERC', 'L', lmater)
@@ -92,40 +92,40 @@ subroutine te0020(nomopt, nomte)
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
     nomres(4) = 'RHO'
-    call rcvalb('FPG1', 1, 1, '+', zi(lmater),&
-                ' ', 'ELAS', 0, ' ', [0.0d+0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(lmater), &
+                ' ', 'ELAS', 0, ' ', [0.0d+0], &
                 4, nomres, valres, codres, 0)
     if (codres(3) .ne. 0) valres(3) = 0.0d+0
     if (codres(4) .ne. 0) valres(4) = 0.0d+0
     e = valres(1)
     xnu = valres(2)
-    g = e/ (2.0d+0* (1.0d+0+xnu))
+    g = e/(2.0d+0*(1.0d+0+xnu))
 !
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !   section initiale
-    a      = vale_cara(1)
-    xiy    = vale_cara(2)
-    xiz    = vale_cara(3)
-    alfay  = vale_cara(4)
-    alfaz  = vale_cara(5)
-    xjx    = vale_cara(6)
+    a = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
+    alfay = vale_cara(4)
+    alfaz = vale_cara(5)
+    xjx = vale_cara(6)
 !   section finale
-    a2     = vale_cara(7)
-    xiy2   = vale_cara(8)
-    xiz2   = vale_cara(9)
+    a2 = vale_cara(7)
+    xiy2 = vale_cara(8)
+    xiz2 = vale_cara(9)
 
 ! --------------------------------------------------------------------------------------------------
     if (nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
-        a   = carsec(1)
+        a = carsec(1)
         xiy = carsec(5)
         xiz = carsec(4)
-    endif
+    end if
 !
 
-    if (nomopt(15:16).eq.'_R')then
+    if (nomopt(15:16) .eq. '_R') then
         call jevech('PEPSINR', 'L', idefi)
         epx(1) = zr(idefi)
         xky(1) = zr(idefi+1)
@@ -142,29 +142,29 @@ subroutine te0020(nomopt, nomte)
         nompar(3) = 'Z'
         nompar(4) = 'INST'
         valpar(4) = zr(itemps)
-        do ino = 1,2
+        do ino = 1, 2
             valpar(1) = zr(igeom+(ino-1)*3-1+1)
             valpar(2) = zr(igeom+(ino-1)*3-1+2)
             valpar(3) = zr(igeom+(ino-1)*3-1+3)
 
-            call fointe('FM', zk8(idefi), 4, nompar, valpar,&
+            call fointe('FM', zk8(idefi), 4, nompar, valpar, &
                         epx(ino), ier)
-            call fointe('FM', zk8(idefi+1), 4, nompar, valpar,&
+            call fointe('FM', zk8(idefi+1), 4, nompar, valpar, &
                         xky(ino), ier)
-            call fointe('FM', zk8(idefi+2), 4, nompar, valpar,&
+            call fointe('FM', zk8(idefi+2), 4, nompar, valpar, &
                         xkz(ino), ier)
-        enddo
-    endif
+        end do
+    end if
 !   les valeurs doivent être les mêmes aux deux noeuds
-    if (abs(epx(1)-epx(2)).gt. 1d3*r8prem())then
+    if (abs(epx(1)-epx(2)) .gt. 1d3*r8prem()) then
         call utmess('F', 'CHARGES_4', sk='EPX', nr=2, valr=epx)
-    endif
-    if (abs(xky(1)-xky(2)).gt. 1d3*r8prem())then
+    end if
+    if (abs(xky(1)-xky(2)) .gt. 1d3*r8prem()) then
         call utmess('F', 'CHARGES_4', sk='KY', nr=2, valr=xky)
-    endif
-    if (abs(xkz(1)-xkz(2)).gt. 1d3*r8prem())then
+    end if
+    if (abs(xkz(1)-xkz(2)) .gt. 1d3*r8prem()) then
         call utmess('F', 'CHARGES_4', sk='KZ', nr=2, valr=xkz)
-    endif
+    end if
 !
     fs(1) = e*a*epx(1)
     fs(2) = 0.d0
@@ -172,10 +172,10 @@ subroutine te0020(nomopt, nomte)
     fs(4) = 0.d0
     fs(5) = e*xiy*xky(1)
     fs(6) = e*xiz*xkz(1)
-    if ((nomte.eq.'MECA_POU_D_TG')) then
-        fs( 7) = 0.d0
-        fs( 8) = e*a*epx(2)
-        fs( 9) = 0.d0
+    if ((nomte .eq. 'MECA_POU_D_TG')) then
+        fs(7) = 0.d0
+        fs(8) = e*a*epx(2)
+        fs(9) = 0.d0
         fs(10) = 0.d0
         fs(11) = 0.d0
         fs(12) = e*xiy*xky(2)
@@ -183,15 +183,15 @@ subroutine te0020(nomopt, nomte)
         fs(14) = 0.d0
 !
         nc = 7
-    else if (nomte.eq.'MECA_POU_D_TGM') then
+    else if (nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
         call pmfitx(zi(lmater), 1, carsec, r8bid)
         fs(1) = carsec(1)*epx(1)
         fs(5) = carsec(5)*xky(1)
         fs(6) = carsec(4)*xkz(1)
-        fs( 7) = 0.d0
-        fs( 8) = carsec(1)*epx(2)
-        fs( 9) = 0.d0
+        fs(7) = 0.d0
+        fs(8) = carsec(1)*epx(2)
+        fs(9) = 0.d0
         fs(10) = 0.d0
         fs(11) = 0.d0
         fs(12) = carsec(5)*xky(2)
@@ -199,7 +199,7 @@ subroutine te0020(nomopt, nomte)
         fs(14) = 0.d0
 !
         nc = 7
-    else if (nomte.eq.'MECA_POU_D_EM') then
+    else if (nomte .eq. 'MECA_POU_D_EM') then
 !       Récupération des caractéristiques des fibres
         call pmfitx(zi(lmater), 1, carsec, r8bid)
         fs(1) = carsec(1)*epx(1)
@@ -212,13 +212,13 @@ subroutine te0020(nomopt, nomte)
         fs(11) = carsec(5)*xky(2)
         fs(12) = carsec(4)*xkz(2)
     else
-        fs( 7) = e*a2*epx(2)
-        fs( 8) = 0.d0
-        fs( 9) = 0.d0
+        fs(7) = e*a2*epx(2)
+        fs(8) = 0.d0
+        fs(9) = 0.d0
         fs(10) = 0.d0
         fs(11) = e*xiy2*xky(2)
         fs(12) = e*xiz2*xkz(2)
-    endif
+    end if
     fs(1) = -fs(1)
     fs(2) = -fs(2)
     fs(3) = -fs(3)

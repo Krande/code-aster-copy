@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,35 +17,35 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-subroutine mmmsta(ndim         , leltf         , indco ,&
-                  ialgoc       , ialgof        ,&
-                  lpenaf       , coefaf        ,&
-                  lambda       , djeut         , dlagrf,&
-                  tau1         , tau2          ,&
-                  lcont        , ladhe         , l_fric_no,&
-                  rese         , nrese         ,&
-                  l_previous_  , indco_prev_   ,&
+subroutine mmmsta(ndim, leltf, indco, &
+                  ialgoc, ialgof, &
+                  lpenaf, coefaf, &
+                  lambda, djeut, dlagrf, &
+                  tau1, tau2, &
+                  lcont, ladhe, l_fric_no, &
+                  rese, nrese, &
+                  l_previous_, indco_prev_, &
                   indadhe_prev_, indadhe2_prev_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmtrpr.h"
 !
-integer, intent(in) :: ndim
-aster_logical, intent(in) :: leltf
-integer, intent(in) :: indco
-integer, intent(in) :: ialgoc, ialgof
-aster_logical, intent(in) :: lpenaf
-real(kind=8), intent(in) :: coefaf, lambda
-real(kind=8), intent(in) :: djeut(3), dlagrf(2)
-real(kind=8), intent(in)  :: tau1(3), tau2(3)
-aster_logical, intent(out) :: lcont, ladhe, l_fric_no
-real(kind=8), intent(out) :: rese(3), nrese
-aster_logical, optional, intent(in) :: l_previous_
-integer, optional, intent(in) :: indco_prev_, indadhe_prev_, indadhe2_prev_
+    integer, intent(in) :: ndim
+    aster_logical, intent(in) :: leltf
+    integer, intent(in) :: indco
+    integer, intent(in) :: ialgoc, ialgof
+    aster_logical, intent(in) :: lpenaf
+    real(kind=8), intent(in) :: coefaf, lambda
+    real(kind=8), intent(in) :: djeut(3), dlagrf(2)
+    real(kind=8), intent(in)  :: tau1(3), tau2(3)
+    aster_logical, intent(out) :: lcont, ladhe, l_fric_no
+    real(kind=8), intent(out) :: rese(3), nrese
+    aster_logical, optional, intent(in) :: l_previous_
+    integer, optional, intent(in) :: indco_prev_, indadhe_prev_, indadhe2_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,23 +90,23 @@ integer, optional, intent(in) :: indco_prev_, indadhe_prev_, indadhe2_prev_
 ! --------------------------------------------------------------------------------------------------
 !
     l_fric_no = ASTER_FALSE
-    lcont   = ASTER_FALSE
-    ladhe   = ASTER_FALSE
-    nrese   = 0.d0
+    lcont = ASTER_FALSE
+    ladhe = ASTER_FALSE
+    nrese = 0.d0
     rese(:) = 0.d0
 !
     if (present(l_previous_)) then
-        l_previous    = l_previous_
-        indco_prev    = indco_prev_
-        indadhe_prev  = indadhe_prev_
+        l_previous = l_previous_
+        indco_prev = indco_prev_
+        indadhe_prev = indadhe_prev_
         indadhe2_prev = indadhe2_prev_
         ASSERT(l_previous)
     else
-        l_previous    = ASTER_FALSE
-        indco_prev    = 0
-        indadhe_prev  = 0
+        l_previous = ASTER_FALSE
+        indco_prev = 0
+        indadhe_prev = 0
         indadhe2_prev = 0
-    endif
+    end if
 !
 ! - Contact state of contact
 !
@@ -114,28 +114,28 @@ integer, optional, intent(in) :: indco_prev_, indadhe_prev_, indadhe2_prev_
         lcont = (indco_prev .eq. 1)
     else
         lcont = (indco .eq. 1)
-    endif
+    end if
     if (leltf) then
 !! This test influence highly the NON_REGRESSION & CONVERGENCE
 !! ONE MUST HAVE ATTENTION WHEN MODIFYING
         if (lambda .eq. 0.d0) then
 !            lcont = ASTER_FALSE
             l_fric_no = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute state of friction
 !
-    if (leltf .and. lcont .and. (.not.l_fric_no)) then
-        call mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
-                    tau1, tau2  , ladhe, rese, nrese)
+    if (leltf .and. lcont .and. (.not. l_fric_no)) then
+        call mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf, &
+                    tau1, tau2, ladhe, rese, nrese)
 ! On est en penalisation ou en algo_cont=penalisation, algo_frot=standard/penalisation
         if (indadhe_prev .eq. 1 .and. l_previous) then
             ladhe = ASTER_TRUE
-        endif
-        if (indadhe2_prev .eq. 1 .and. (ialgoc.eq.3) .and. .not. (ialgof.eq.3)  ) then
+        end if
+        if (indadhe2_prev .eq. 1 .and. (ialgoc .eq. 3) .and. .not. (ialgof .eq. 3)) then
             ladhe = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

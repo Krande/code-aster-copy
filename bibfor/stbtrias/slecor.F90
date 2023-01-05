@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine slecor(iunv, datset)
 !  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
     call jemarq()
 !
-    first=.true.
+    first = .true.
     moins1 = '    -1'
     inus = 10
     call jeexin('&&IDEAS.SYST', iret)
@@ -55,55 +55,55 @@ subroutine slecor(iunv, datset)
         call jedetr('&&IDEAS.SYST')
         if (datset .eq. 2420) then
             call utmess('A', 'STBTRIAS_3')
-        else if (datset.eq.18) then
+        else if (datset .eq. 18) then
             call utmess('A', 'STBTRIAS_4')
-        endif
-    endif
+        end if
+    end if
     call wkvect('&&IDEAS.SYST', 'V V I', inus, jsys)
 !
-  1 continue
+1   continue
 !
-    read(iunv,'(A)') cbuf
+    read (iunv, '(A)') cbuf
     if (cbuf(1:6) .ne. moins1) then
 !
         if (first) then
             if (datset .eq. 2420) then
-                read(iunv,'(A)') kbid
-                read(iunv,'(3I10)') inum,icoor,icol
-            else if (datset.eq.18) then
-                read(cbuf,'(5I10)') inum,icoor,ibid,icol,ibid2
-            endif
+                read (iunv, '(A)') kbid
+                read (iunv, '(3I10)') inum, icoor, icol
+            else if (datset .eq. 18) then
+                read (cbuf, '(5I10)') inum, icoor, ibid, icol, ibid2
+            end if
         else
             if (datset .eq. 2420) then
-                read(cbuf,'(3I10)') inum,icoor,icol
-            else if (datset.eq.18) then
-                read(cbuf,'(5I10)') inum,icoor,ibid,icol,ibid2
-            endif
-        endif
+                read (cbuf, '(3I10)') inum, icoor, icol
+            else if (datset .eq. 18) then
+                read (cbuf, '(5I10)') inum, icoor, ibid, icol, ibid2
+            end if
+        end if
         if (inum .gt. inus) then
             inus = inum
             call juveca('&&IDEAS.SYST', inus)
             call jeveuo('&&IDEAS.SYST', 'E', jsys)
-        endif
+        end if
 !
         zi(jsys-1+inum) = icoor
 !
         if (datset .eq. 2420) then
-            read(iunv,'(A)') kbid
-            read(iunv,'(3(1PD25.16))') rbid
-            read(iunv,'(3(1PD25.16))') rbid
-            read(iunv,'(3(1PD25.16))') rbid
-            read(iunv,'(3(1PD25.16))') rbid
+            read (iunv, '(A)') kbid
+            read (iunv, '(3(1PD25.16))') rbid
+            read (iunv, '(3(1PD25.16))') rbid
+            read (iunv, '(3(1PD25.16))') rbid
+            read (iunv, '(3(1PD25.16))') rbid
         else
-            read(iunv,'(A)') kbid
-            read(iunv,'(6(1PE13.5))') rbid
-            read(iunv,'(3(1PE13.5))') rbid
-        endif
+            read (iunv, '(A)') kbid
+            read (iunv, '(6(1PE13.5))') rbid
+            read (iunv, '(3(1PE13.5))') rbid
+        end if
 !
         first = .false.
 !
         goto 1
 !
-    endif
+    end if
     call jedema()
 end subroutine

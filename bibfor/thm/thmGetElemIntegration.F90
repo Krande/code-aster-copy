@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 
 subroutine thmGetElemIntegration(l_vf, inte_type)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/teattr.h"
 !
-aster_logical, intent(in) :: l_vf
-character(len=3), intent(out) :: inte_type
+    aster_logical, intent(in) :: l_vf
+    character(len=3), intent(out) :: inte_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,14 +51,14 @@ character(len=3), intent(out) :: inte_type
     else
         call teattr('S', 'DIM_TOPO_MODELI', d1, iret)
         call teattr('S', 'DIM_TOPO_MAILLE', d2, iret)
-        l_princ   = (d1.eq.d2)
+        l_princ = (d1 .eq. d2)
         inte_type = 'CLA'
         if (l_princ) then
             call teattr('C', 'INTTHM', mint, iret)
             if (iret .eq. 0) then
                 inte_type = mint
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

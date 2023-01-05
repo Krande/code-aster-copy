@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,14 +47,14 @@ function iscycl(ccycle, longcy)
 !
     iscycl = .false.
     if (longcy .eq. 3) then
-        if ((ccycle.eq.4) .or. (ccycle.eq.10)) iscycl = .true.
-    else if (longcy.eq.4) then
-        if ((ccycle.eq.20) .or. (ccycle.eq.10)) iscycl = .true.
-    else if (longcy.eq.15) then
-        if ((ccycle.eq.21844) .or. (ccycle.eq.43690)) iscycl = .true.
-    else if (longcy.eq.6) then
-        if ((ccycle.eq.21) .or. (ccycle.eq.42)) iscycl = .true.
+        if ((ccycle .eq. 4) .or. (ccycle .eq. 10)) iscycl = .true.
+    else if (longcy .eq. 4) then
+        if ((ccycle .eq. 20) .or. (ccycle .eq. 10)) iscycl = .true.
+    else if (longcy .eq. 15) then
+        if ((ccycle .eq. 21844) .or. (ccycle .eq. 43690)) iscycl = .true.
+    else if (longcy .eq. 6) then
+        if ((ccycle .eq. 21) .or. (ccycle .eq. 42)) iscycl = .true.
     else
         ASSERT(.false.)
-    endif
+    end if
 end function

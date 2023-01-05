@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
+subroutine lkdfdx(nbmat, mater, ucrip, invar, s, &
                   paraep, varpl, derpar, dfdxip)
-    implicit      none
+    implicit none
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
     integer :: nbmat
@@ -47,7 +47,7 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
 !                DERPAR(3) = DMD  ------------------------------------
 ! OUT : DFDXIP : dF/dXIP ---------------------------------------------
 ! ====================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: ndi, ndt
     real(kind=8) :: pref, sigc, rcos3t, h0c, h0e, htheta
     real(kind=8) :: sii
@@ -58,17 +58,17 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
 ! ====================================================================
 ! --- INITIALISATION DE PARAMETRES -----------------------------------
 ! ====================================================================
-    parameter       ( zero    =  0.0d0   )
-    parameter       ( un      =  1.0d0   )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
 !      PARAMETER       ( DEUX    =  2.0D0   )
 !      PARAMETER       ( TROIS   =  3.0D0   )
-    parameter       ( lgleps  =  1.0d-8  )
+    parameter(lgleps=1.0d-8)
 ! ====================================================================
 ! ====================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ---------------------------
 ! ====================================================================
-    sigc = mater(3,2)
-    pref = mater(1,2)
+    sigc = mater(3, 2)
+    pref = mater(1, 2)
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! ================================================================
@@ -76,29 +76,29 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
 ! =================================================================
 ! --- CALCUL DE h(THETA), H0E ET H0C, -----------------------------
 ! =================================================================
-    rcos3t = cos3t (s, pref, lgleps)
-    call lkhtet(nbmat, mater, rcos3t, h0e, h0c,&
+    rcos3t = cos3t(s, pref, lgleps)
+    call lkhtet(nbmat, mater, rcos3t, h0e, h0c, &
                 htheta)
 ! =================================================================
 ! --- CALCUL DE d(F)/d(sd)
 ! =================================================================
-    fact1 = - paraep(1) * varpl(4) * sigc * h0c
+    fact1 = -paraep(1)*varpl(4)*sigc*h0c
     if (ucrip .gt. zero) then
-        dfdsd = fact1 * (ucrip)**(paraep(1) - un)
+        dfdsd = fact1*(ucrip)**(paraep(1)-un)
     else
         dfdsd = zero
-    endif
+    end if
 ! =================================================================
 ! --- CALCUL DE d(F)/d(md)
 ! =================================================================
     if (ucrip .gt. zero) then
-        fact3 = - paraep(1) * sigc * h0c
-        fact4 = varpl(1) * sii * htheta / paraep(3)
-        fact5 = varpl(2) * invar / paraep(3)
-        dfdmd = fact3 * (fact4 + fact5) * (ucrip)**(paraep(1) - un)
+        fact3 = -paraep(1)*sigc*h0c
+        fact4 = varpl(1)*sii*htheta/paraep(3)
+        fact5 = varpl(2)*invar/paraep(3)
+        dfdmd = fact3*(fact4+fact5)*(ucrip)**(paraep(1)-un)
     else
         dfdmd = zero
-    endif
+    end if
 ! =================================================================
 ! --- CALCUL DE d(F)/d(ad)
 ! =================================================================
@@ -110,11 +110,11 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
 !     &        (LOG(UCRIP)-(FACT7*FACT8/UCRIP))
 ! VERSION CIH
     if (ucrip .gt. zero) then
-        dfdad = - sigc*h0c*log(ucrip/varpl(4))*(ucrip)**paraep(1)
+        dfdad = -sigc*h0c*log(ucrip/varpl(4))*(ucrip)**paraep(1)
     else
         dfdad = zero
-    endif
-    dfdxip = derpar(1)*dfdad + derpar(2)*dfdsd + derpar(3)*dfdmd
+    end if
+    dfdxip = derpar(1)*dfdad+derpar(2)*dfdsd+derpar(3)*dfdmd
 ! =================================================================
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmab6(ndim, nnol, pla, ffc, jac,&
+subroutine xmmab6(ndim, nnol, pla, ffc, jac, &
                   tau1, tau2, lact, mmat)
 !
     implicit none
@@ -60,29 +60,29 @@ subroutine xmmab6(ndim, nnol, pla, ffc, jac,&
 ! ----------------------------------------------------------------------
 !
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) cycle
 !
         do j = 1, nnol
-            plj=pla(j)
-            ffj=ffc(j)
-            nlj=lact(j)
+            plj = pla(j)
+            ffj = ffc(j)
+            nlj = lact(j)
             if (nlj .eq. 0) cycle
 !
 ! --- MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
 !
-            metr(1,1)=ddot(ndim,tau1(1),1,tau1(1),1)
+            metr(1, 1) = ddot(ndim, tau1(1), 1, tau1(1), 1)
             if (ndim .eq. 3) then
-                metr(1,2)=ddot(ndim,tau1(1),1,tau2(1),1)
-                metr(2,1)=ddot(ndim,tau2(1),1,tau1(1),1)
-                metr(2,2)=ddot(ndim,tau2(1),1,tau2(1),1)
-            endif
+                metr(1, 2) = ddot(ndim, tau1(1), 1, tau2(1), 1)
+                metr(2, 1) = ddot(ndim, tau2(1), 1, tau1(1), 1)
+                metr(2, 2) = ddot(ndim, tau2(1), 1, tau2(1), 1)
+            end if
 !
             do k = 1, ndim-1
                 do l = 1, ndim-1
-                    mmat(pli+k,plj+l) = mmat(pli+k,plj+l)+ffi*ffj*metr(k,l)*jac
+                    mmat(pli+k, plj+l) = mmat(pli+k, plj+l)+ffi*ffj*metr(k, l)*jac
                 end do
             end do
         end do

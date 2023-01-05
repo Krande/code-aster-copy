@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rvchgr(mailla, nlsnac, repere, sdnewr,&
+subroutine rvchgr(mailla, nlsnac, repere, sdnewr, &
                   iret)
     implicit none
 #include "asterf_types.h"
@@ -85,14 +85,14 @@ subroutine rvchgr(mailla, nlsnac, repere, sdnewr,&
     iret = 1
 !
     if (repere(1:7) .eq. 'POLAIRE') then
-        call dismoi('Z_CST', mailla, 'MAILLAGE', repk=k8b, arret='C',&
+        call dismoi('Z_CST', mailla, 'MAILLAGE', repk=k8b, arret='C', &
                     ier=ierd)
         if (k8b(1:3) .eq. 'NON') then
             iret = 0
             call utmess('A', 'POSTRELE_28')
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
     ind = 1
 !
@@ -100,30 +100,30 @@ subroutine rvchgr(mailla, nlsnac, repere, sdnewr,&
     call jeveuo(nlsnac, 'L', alsnac)
     call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
-    nd = zi(alsnac + 1-1)
+    nd = zi(alsnac+1-1)
 !
     zref = vale(3)
 !
- 10 continue
+10  continue
     if ((iret .ne. 0) .and. (ind .le. nbnac)) then
 !
-        nd = zi(alsnac + ind-1)
-        znd = vale(1+ 3*nd-1)
+        nd = zi(alsnac+ind-1)
+        znd = vale(1+3*nd-1)
 !
-        call rvegal(1.0d-3, 'R', zref, znd, egal,&
+        call rvegal(1.0d-3, 'R', zref, znd, egal, &
                     aux)
 !
         if (.not. egal) then
 !
             iret = 0
 !
-        endif
+        end if
 !
-        ind = ind + 1
+        ind = ind+1
 !
         goto 10
 !
-    endif
+    end if
 !
     if (iret .ne. 0) then
 !
@@ -133,7 +133,7 @@ subroutine rvchgr(mailla, nlsnac, repere, sdnewr,&
 !
         call utmess('A', 'POSTRELE_28')
 !
-    endif
+    end if
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,13 +61,13 @@ subroutine mavegr(nomu)
         call jelira(grpmai, 'NMAXOC', nbgrma)
         nbgrmt = nbgrma
         do i = 1, nbgrma
-            call jeexin(jexnum ( grpmai, i ), iret)
+            call jeexin(jexnum(grpmai, i), iret)
             if (iret .eq. 0) goto 100
-            call jenuno(jexnum ( grpmai, i ), nomg)
+            call jenuno(jexnum(grpmai, i), nomg)
             if (nomg .eq. blanc) then
-                nbgrmt = nbgrmt - 1
+                nbgrmt = nbgrmt-1
                 call utmess('A', 'MODELISA5_36')
-            endif
+            end if
 100         continue
         end do
         if (nbgrmt .eq. 0) then
@@ -78,14 +78,14 @@ subroutine mavegr(nomu)
             call jedetr(gpptnm)
             call jecreo(gpptnm, 'G N K24')
             call jeecra(gpptnm, 'NOMMAX', nbgrmt)
-            call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
+            call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', &
                         nbgrmt)
             do i = 1, nbgrma
-                call jeexin(jexnum ( grpmav, i ), iret)
+                call jeexin(jexnum(grpmav, i), iret)
                 if (iret .eq. 0) goto 110
-                call jenuno(jexnum ( grpmav, i ), nomg)
+                call jenuno(jexnum(grpmav, i), nomg)
                 if (nomg .eq. blanc) goto 110
-                call jecroc(jexnom ( grpmai, nomg ))
+                call jecroc(jexnom(grpmai, nomg))
                 call jeveuo(jexnum(grpmav, i), 'L', jvg)
                 call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
                 call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma))
@@ -97,8 +97,8 @@ subroutine mavegr(nomu)
 110             continue
             end do
             call jedetr(grpmav)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- TRAITEMENT DES GROUP_NO
 !
@@ -107,13 +107,13 @@ subroutine mavegr(nomu)
         call jelira(grpnoe, 'NMAXOC', nbgrno)
         nbgrnt = nbgrno
         do i = 1, nbgrno
-            call jeexin(jexnum ( grpnoe, i ), iret)
+            call jeexin(jexnum(grpnoe, i), iret)
             if (iret .eq. 0) goto 200
-            call jenuno(jexnum ( grpnoe, i ), nomg)
+            call jenuno(jexnum(grpnoe, i), nomg)
             if (nomg .eq. blanc) then
-                nbgrnt = nbgrnt - 1
+                nbgrnt = nbgrnt-1
                 call utmess('A', 'MODELISA5_37')
-            endif
+            end if
 200         continue
         end do
         if (nbgrnt .eq. 0) then
@@ -124,14 +124,14 @@ subroutine mavegr(nomu)
             call jedetr(gpptnn)
             call jecreo(gpptnn, 'G N K24')
             call jeecra(gpptnn, 'NOMMAX', nbgrnt)
-            call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
+            call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', &
                         nbgrnt)
             do i = 1, nbgrno
-                call jeexin(jexnum ( grpnov, i ), iret)
+                call jeexin(jexnum(grpnov, i), iret)
                 if (iret .eq. 0) goto 210
-                call jenuno(jexnum ( grpnov, i ), nomg)
+                call jenuno(jexnum(grpnov, i), nomg)
                 if (nomg .eq. blanc) goto 210
-                call jecroc(jexnom ( grpnoe, nomg ))
+                call jecroc(jexnom(grpnoe, nomg))
                 call jeveuo(jexnum(grpnov, i), 'L', jvg)
                 call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
                 call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno))
@@ -143,8 +143,8 @@ subroutine mavegr(nomu)
 210             continue
             end do
             call jedetr(grpnov)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,29 +79,29 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
     if (criter .eq. 'ABSOLU') then
         if (n1 .eq. 0) then
             call utmess('F', 'LISTINST_1')
-        endif
-    else if (criter.eq.'RELATIF') then
+        end if
+    else if (criter .eq. 'RELATIF') then
         if (n1 .eq. 0) then
             prec = predef
             call utmess('A', 'LISTINST_2', sr=predef)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (prec .le. r8prem()) then
         call utmess('F', 'LISTINST_3')
-    endif
+    end if
 !
 ! --- TOLERANCE
 !
     if (criter .eq. 'RELATIF') then
         tole = prec
-    else if (criter.eq.'ABSOLU') then
+    else if (criter .eq. 'ABSOLU') then
         tole = -prec
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -69,16 +69,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_iden_rela  = .false.
+    l_iden_rela = .false.
     nb_iden_rela = 0
     nb_iden_term = 0
-    cmp_name     = 'LAGS_C'
+    cmp_name = 'LAGS_C'
 !
 ! - Get datastructure for linear relations from MESH
 !
     mesh_patch = mesh//'.PATCH'
     call jeexin(mesh_patch, iret)
-    ASSERT(iret.gt.0)
+    ASSERT(iret .gt. 0)
 !
 ! - Get parameters
 !
@@ -90,18 +90,18 @@ implicit none
 !
 ! ----- Current patch
 !
-        call jeveuo(jexnum(mesh_patch, i_patch+1), 'L', vi = v_mesh_patch)
+        call jeveuo(jexnum(mesh_patch, i_patch+1), 'L', vi=v_mesh_patch)
 !
 ! ----- Total number of linear relations
 !
         if (v_mesh_patch(1) .eq. 25 .or. v_mesh_patch(1) .eq. 26) then
-            nb_iden_term = nb_iden_term + 4
-            nb_iden_rela = nb_iden_rela + 1
+            nb_iden_term = nb_iden_term+4
+            nb_iden_rela = nb_iden_rela+1
         elseif (v_mesh_patch(1) .eq. 12) then
-            nb_iden_term = nb_iden_term + 2
-            nb_iden_rela = nb_iden_rela + 1
+            nb_iden_term = nb_iden_term+2
+            nb_iden_rela = nb_iden_rela+1
         else
-            nb_iden_rela = nb_iden_rela + 0
+            nb_iden_rela = nb_iden_rela+0
         end if
     end do
 !
@@ -113,21 +113,21 @@ implicit none
 !
 ! - Create object for identity relations - Informations
 !
-    call wkvect(iden_rela(1:19)//'.INFO', 'V V I', 4, vi = v_sdiden_info)
-    call wkvect(iden_rela(1:19)//'.DIME', 'V V I', nb_iden_rela, vi = v_sdiden_dime)
+    call wkvect(iden_rela(1:19)//'.INFO', 'V V I', 4, vi=v_sdiden_info)
+    call wkvect(iden_rela(1:19)//'.DIME', 'V V I', nb_iden_rela, vi=v_sdiden_dime)
 !
 ! - Create object for identity relations - Collection
 !
-    call jecrec(iden_rela(1:19)//'.COLL', 'V V K8', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(iden_rela(1:19)//'.COLL', 'V V K8', 'NU', 'CONTIG', 'VARIABLE', &
                 nb_iden_rela)
-    call jeecra(iden_rela(1:19)//'.COLL', 'LONT',ival=nb_iden_term*2)
+    call jeecra(iden_rela(1:19)//'.COLL', 'LONT', ival=nb_iden_term*2)
     i_rela = 0
 
     do i_patch = 1, nt_patch
 !
 ! ----- Current patch
 !
-        call jeveuo(jexnum(mesh_patch, i_patch+1), 'L', vi = v_mesh_patch)
+        call jeveuo(jexnum(mesh_patch, i_patch+1), 'L', vi=v_mesh_patch)
 !
 ! ----- Access to nodes
 !
@@ -149,18 +149,18 @@ implicit none
 
 ! --------- New relation
 !
-            i_rela = i_rela + 1
+            i_rela = i_rela+1
 !
 ! --------- Create object in collection
 !
             call jecroc(jexnum(iden_rela(1:19)//'.COLL', i_rela))
             call jeecra(jexnum(iden_rela(1:19)//'.COLL', i_rela), 'LONMAX', nb_node*2)
-            call jeveuo(jexnum(iden_rela(1:19)//'.COLL', i_rela),'E',vk8 = v_sdiden_term)
+            call jeveuo(jexnum(iden_rela(1:19)//'.COLL', i_rela), 'E', vk8=v_sdiden_term)
 !
 ! --------- Set object in collection
 !
-            v_sdiden_dime(i_rela)=nb_node
-            do i_node= 1, nb_node
+            v_sdiden_dime(i_rela) = nb_node
+            do i_node = 1, nb_node
                 v_sdiden_term((i_node-1)*2+1) = node_name(i_node)
                 v_sdiden_term((i_node-1)*2+2) = cmp_name
             end do
@@ -173,9 +173,9 @@ implicit none
 !
 ! - Total number of same terms
 !
-    nb_iden_dof  = nb_iden_term-nb_iden_rela
+    nb_iden_dof = nb_iden_term-nb_iden_rela
 !
-    ASSERT(i_rela.eq.nb_iden_rela)
+    ASSERT(i_rela .eq. nb_iden_rela)
 !
     v_sdiden_info(1) = nb_iden_rela
     v_sdiden_info(2) = nb_iden_term
@@ -183,6 +183,6 @@ implicit none
 !
 999 continue
 !
-    l_iden_rela = nb_iden_rela.gt.0
+    l_iden_rela = nb_iden_rela .gt. 0
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
-                  compcu, nopono, nolino, lisnoe, poinoe,&
+subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu, &
+                  compcu, nopono, nolino, lisnoe, poinoe, &
                   nnoco)
 !
 !
@@ -111,7 +111,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !
 ! --- VECTEUR CONTENANT LES NOEUDS ZONE
 !
-        nbno = zi(jnp+izone) - zi(jnp+izone-1)
+        nbno = zi(jnp+izone)-zi(jnp+izone-1)
         jdebut = zi(jnp+izone-1)
         n1 = 0
         n2 = 0
@@ -124,17 +124,17 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
             if (numno1 .ne. 0) then
                 do j = i+1, nbno
                     numno2 = zi(jnl-2+jdebut+j)
-                    if ((numno1.eq.numno2) .and. (numno2.ne.0)) then
+                    if ((numno1 .eq. numno2) .and. (numno2 .ne. 0)) then
                         zi(jnl-2+jdebut+j) = 0
-                        n1 = n1 + 1
-                    endif
+                        n1 = n1+1
+                    end if
                 end do
-            endif
+            end if
         end do
 !
 ! --- RECUPERATION INFOS SANS_NOEUD, SANS_GROUP_NO
 !
-        call palino(noma, motfac, 'SANS_GROUP_NO', 'SANS_NOEUD', izone,&
+        call palino(noma, motfac, 'SANS_GROUP_NO', 'SANS_NOEUD', izone, &
                     nelim)
         call jeveuo(nelim, 'L', juelim)
         nbelim = zi(juelim)
@@ -148,17 +148,17 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
             if (numno1 .ne. 0) then
                 do j = 1, nbno
                     numno2 = zi(jnl-2+jdebut+j)
-                    if ((numno1.eq.numno2) .and. (numno2.ne.0)) then
+                    if ((numno1 .eq. numno2) .and. (numno2 .ne. 0)) then
                         zi(jnl-2+jdebut+j) = 0
-                        n2 = n2 + 1
-                    endif
+                        n2 = n2+1
+                    end if
                 end do
-            endif
+            end if
         end do
 !
 ! --- ELIMINATION DES NOEUDS NE COMPORTANT AUCUNE DES GRANDEURS
 !
-        nbcmp = zi(jnbgd+izone) - zi(jnbgd+izone-1)
+        nbcmp = zi(jnbgd+izone)-zi(jnbgd+izone-1)
         jdecat = zi(jnbgd+izone-1)
 !
         do ino = 1, nbno
@@ -169,49 +169,49 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
                 do icmp = 1, nbcmp
 !
                     cmp = zk8(jcmpg-1+jdecat+icmp-1)
-                    call exiscp(cmp, k8bla, nomo, 1, 'NUM',&
+                    call exiscp(cmp, k8bla, nomo, 1, 'NUM', &
                                 k8bla, [numno1], exist)
                     if (exist(1) .eq. 0) then
-                        nb = nb + 1
-                    endif
+                        nb = nb+1
+                    end if
                 end do
                 if (nb .eq. nbcmp) then
                     zi(jnl-2+jdebut+ino) = 0
-                    n3 = n3 + 1
-                endif
-            endif
+                    n3 = n3+1
+                end if
+            end if
         end do
 !
 ! --- NOMBRE DE NOEUDS A SUPPRIMER
 !
-        nbsup = n1 + n2 + n3
-        ntsup = ntsup + nbsup
+        nbsup = n1+n2+n3
+        ntsup = ntsup+nbsup
 !
 ! --- MAJ VECTEUR POINTEUR INDIRECT (POINOE)
 !
-        zi(jpoi+izone) = zi(jpoi+izone-1) + nbno - nbsup
+        zi(jpoi+izone) = zi(jpoi+izone-1)+nbno-nbsup
         if (nbno .eq. nbsup) then
             call utmess('F', 'UNILATER_48')
-        endif
+        end if
     end do
 !
 ! --- CREATION DU VECTEUR RESULTANT
 !
-    nnoco = nnoco - ntsup
+    nnoco = nnoco-ntsup
     call wkvect(lisnoe, 'V V I', nnoco, jnoe)
 !
 ! --- ELIMINATION EFFECTIVE DES NOEUDS
 !
     jdecal = 0
     do izone = 1, nzocu
-        nbno = zi(jnp+izone) - zi(jnp+izone-1)
+        nbno = zi(jnp+izone)-zi(jnp+izone-1)
         jdebut = zi(jnp+izone-1)
         do ino = 1, nbno
             numno1 = zi(jnl-2+jdebut+ino)
             if (numno1 .ne. 0) then
                 zi(jnoe+jdecal) = numno1
-                jdecal = jdecal +1
-            endif
+                jdecal = jdecal+1
+            end if
         end do
     end do
 !

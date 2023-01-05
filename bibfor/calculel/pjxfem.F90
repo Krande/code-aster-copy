@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz,&
+subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
                   prol0, ligrez, base, modz, inst, iret)
 !
-implicit none
+    implicit none
 !
 !-------------------------------------------------------------------
 !     BUT : PROJETER UN CHAMP "CH1" SUIVANT "CORRES"
@@ -63,7 +63,7 @@ implicit none
     real(kind=8) :: inst
 !
     integer :: ddlmax, nbnomax
-    parameter (ddlmax=27,nbnomax=27)
+    parameter(ddlmax=27, nbnomax=27)
     character(len=3) :: tsca
     character(len=8) :: ma1, ma2, nomgd
     character(len=19) :: ch1, ch2, cns1, cns2, prfchn, ligrel
@@ -80,7 +80,7 @@ implicit none
     aster_logical :: vide, lvarc, cplan, poiss, young
     real(kind=8) :: dx(3), h1(3), ff(nbnomax), geom(nbnomax*3), baslo(nbnomax*9)
     real(kind=8) :: lsn(nbnomax), lst(nbnomax)
-    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3), ka, mu, ff2(8)
+    real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3), ka, mu, ff2(8)
     integer, pointer :: pjef_nu(:) => null()
     character(len=8), pointer :: cns1k(:) => null()
     integer, pointer :: pjef_nb(:) => null()
@@ -102,13 +102,13 @@ implicit none
     character(len=16), pointer :: valk(:) => null()
 !
 !
-    corres=correz
-    ch1=ch1z
-    ch2=ch2z
-    prfchn=prfchz
-    ligrel=ligrez
-    modx=modz
-    ASSERT(tychv.eq.'NOEU')
+    corres = correz
+    ch1 = ch1z
+    ch2 = ch2z
+    prfchn = prfchz
+    ligrel = ligrez
+    modx = modz
+    ASSERT(tychv .eq. 'NOEU')
 !
     cns1 = '&&PJXFEM'//'.CH1S'
     cns2 = '&&PJXFEM'//'.CH2S'
@@ -118,7 +118,7 @@ implicit none
 !     0- CONVERSTION VERS LE CHAMP_NO_S DE TRAVAIL :
 !     ----------------------------------------------------
     call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych)
-    ASSERT(tych.eq.'NOEU')
+    ASSERT(tych .eq. 'NOEU')
     call cnocns(ch1, 'V', cns1)
 !
 !------------------------------------------------------------------
@@ -149,7 +149,7 @@ implicit none
     call jeveuo(corres//'.PJEF_M1', 'L', vi=pjef_m1)
     call jeveuo(corres//'.PJEF_CO', 'L', vr=pjef_co)
 !
-    ma2 = pjxx_k1(2)(1:8)
+    ma2 = pjxx_k1(2) (1:8)
 !
 !
 !------------------------------------------------------------------
@@ -160,21 +160,21 @@ implicit none
         iret = 1
         goto 99
 !
-    endif
+    end if
 !     TEST SUR IDENTITE DES 2 MAILLAGES
-    ASSERT(pjxx_k1(1).eq.ma1)
+    ASSERT(pjxx_k1(1) .eq. ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
         call utmess('F', 'CALCULEL_67', sk=nomgd)
-    endif
+    end if
 !
 !
 !------------------------------------------------------------------
 !     4- ALLOCATION DE CNS2 :
 !     ------------------------
     call detrsd('CHAM_NO_S', cns2)
-    call cnscre(ma2, nomgd, ncmp, cns1c, base,&
+    call cnscre(ma2, nomgd, ncmp, cns1c, base, &
                 cns2)
     call jeveuo(cns2//'.CNSK', 'L', jcns2k)
     call jeveuo(cns2//'.CNSD', 'L', vi=cns2d)
@@ -203,26 +203,26 @@ implicit none
     call jeveuo(chs_bslo//'.CESV', 'L', jcesv_bslo)
     call jeveuo(chs_bslo//'.CESL', 'L', jcesl_bslo)
     call getvid(' ', 'RESULTAT', scal=resu, nbret=nn)
-    ASSERT(nn.eq.1)
-    varcns='&&PJXFEM.VARC'
-    call res2mat(resu, inst, chmat, mu=mu, ka=ka,&
-                 nommat=nommat, lvarc=lvarc, varcns=varcns,&
+    ASSERT(nn .eq. 1)
+    varcns = '&&PJXFEM.VARC'
+    call res2mat(resu, inst, chmat, mu=mu, ka=ka, &
+                 nommat=nommat, lvarc=lvarc, varcns=varcns, &
                  cplan=cplan)
     if (lvarc) then
-      call jeveuo(varcns//'.CESD', 'L', jcesd_varc)
-      call jeveuo(varcns//'.CESV', 'L', jcesv_varc)
-      call jeveuo(varcns//'.CESL', 'L', jcesl_varc)
-      call rccome(nommat, 'ELAS', ier, k11_ind_nomrc=k11)
-      call jeexin(nommat//k11//'.VALR', ier)
-      call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
-      call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
-      call jeveuo(nommat//k11//'.VALK', 'L', vk16=valk)
-      call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
-      nbf = (nbk-nbr-nbc)/2
-      call jelira(chmat//'.CVRCVARC', 'LONMAX', nbvarc)
-      ASSERT(nbvarc.le.2)
-      call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
-    endif
+        call jeveuo(varcns//'.CESD', 'L', jcesd_varc)
+        call jeveuo(varcns//'.CESV', 'L', jcesv_varc)
+        call jeveuo(varcns//'.CESL', 'L', jcesl_varc)
+        call rccome(nommat, 'ELAS', ier, k11_ind_nomrc=k11)
+        call jeexin(nommat//k11//'.VALR', ier)
+        call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
+        call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
+        call jeveuo(nommat//k11//'.VALK', 'L', vk16=valk)
+        call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
+        nbf = (nbk-nbr-nbc)/2
+        call jelira(chmat//'.CVRCVARC', 'LONMAX', nbvarc)
+        ASSERT(nbvarc .le. 2)
+        call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
+    end if
 
 !
 !------------------------------------------------------------------
@@ -239,194 +239,194 @@ implicit none
         itypel = maille(ima)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
         call elref2(notype, 10, lirefe, nbelr)
-        elrefp= lirefe(1)
+        elrefp = lirefe(1)
 !        print*,' - elref =',elrefp
 !        print*,' - nbno  =',nbno1
 !        print*,' - ndim  =',ndim
 !        print*,' - ncmp  =',ncmp
-        cmp(:)=0
-        ipos=0
-        nfh=0
-        nfe=0
-        do i=1,ncmp
-          vide=.true.
-          do ino1 = 1, nbno1
-            nuno1 = pjef_nu(1+idecal-1+ino1)
-            if (zl(jcns1l-1+(nuno1-1)*ncmp + i)) vide=.false.
-          enddo
-          if (cns1c(i)(1:2) .eq. 'DX' .or. cns1c(i)(1:2) .eq. 'DY' .or.&
-              cns1c(i)(1:2) .eq. 'DZ') then
-            ipos = ipos +1
-            cmp(ipos)=i
-          endif
-          if (cns1c(i)(1:1) .eq. 'H'.and.cns1c(i)(3:3).ne.'P') then
-            ipos = ipos +1
-            if (.not.vide) nfh = nfh +1
-            cmp(ipos)=i
-          endif
-          if (cns1c(i)(1:2) .eq. 'K1' .or. cns1c(i)(1:2) .eq. 'K2' .or.&
-              cns1c(i)(1:2) .eq. 'K3') then
-            ipos = ipos +1
-            if (.not.vide) nfe = nfe +1
-            cmp(ipos)=i
-          endif
-        enddo
-        nfh=nfh/ndim
-        nfe=nfe/ndim
+        cmp(:) = 0
+        ipos = 0
+        nfh = 0
+        nfe = 0
+        do i = 1, ncmp
+            vide = .true.
+            do ino1 = 1, nbno1
+                nuno1 = pjef_nu(1+idecal-1+ino1)
+                if (zl(jcns1l-1+(nuno1-1)*ncmp+i)) vide = .false.
+            end do
+            if (cns1c(i) (1:2) .eq. 'DX' .or. cns1c(i) (1:2) .eq. 'DY' .or. &
+                cns1c(i) (1:2) .eq. 'DZ') then
+                ipos = ipos+1
+                cmp(ipos) = i
+            end if
+            if (cns1c(i) (1:1) .eq. 'H' .and. cns1c(i) (3:3) .ne. 'P') then
+                ipos = ipos+1
+                if (.not. vide) nfh = nfh+1
+                cmp(ipos) = i
+            end if
+            if (cns1c(i) (1:2) .eq. 'K1' .or. cns1c(i) (1:2) .eq. 'K2' .or. &
+                cns1c(i) (1:2) .eq. 'K3') then
+                ipos = ipos+1
+                if (.not. vide) nfe = nfe+1
+                cmp(ipos) = i
+            end if
+        end do
+        nfh = nfh/ndim
+        nfe = nfe/ndim
 !
 !        print*,' - nfh   =',nfh
 !        print*,' - nfe   =',nfe
 !        print*,' - cmp  =',cmp
 !
-        dx(:)=0.
-        h1(:)=0.
+        dx(:) = 0.
+        h1(:) = 0.
         do ino1 = 1, nbno1
-            ff(ino1)=pjef_cf(1+idecal-1+ino1)
-        enddo
+            ff(ino1) = pjef_cf(1+idecal-1+ino1)
+        end do
 !       CALCUL DES PARAMETRES MATERIAUX
 !         INTERPOLATION DES VARC
         if (lvarc) then
-          varc(:)=0.
-          do ino1 = 1, nbno1
-            do k = 1, nbvarc
-              call cesexi('C', jcesd_varc, jcesl_varc, ima, ino1,&
-                           1, k, iad)
-              ASSERT(iad.gt.0)
-              varc(k)=varc(k)+zr(jcesv_varc-1+iad)*ff(ino1)
-            enddo
-          enddo
+            varc(:) = 0.
+            do ino1 = 1, nbno1
+                do k = 1, nbvarc
+                    call cesexi('C', jcesd_varc, jcesl_varc, ima, ino1, &
+                                1, k, iad)
+                    ASSERT(iad .gt. 0)
+                    varc(k) = varc(k)+zr(jcesv_varc-1+iad)*ff(ino1)
+                end do
+            end do
 !        print*,' - varc =',varc
-          poiss=.false.
-          young=.false.
-          do ik = 1, nbf
-            if (valk(nbr+nbc+ik).eq.'NU') then
-              call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc),&
-                          nu, ier)
-              if (ier.eq.0) poiss=.true.
-            endif
-            if (valk(nbr+nbc+ik).eq.'E') then
-              call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc),&
-                           e, ier)
-              if (ier.eq.0) young=.true.
-            endif
-          enddo
-          if (poiss) then
-            ka = 3.d0-4.d0*nu
-            if (cplan) ka = (3.d0-nu)/(1.d0+nu)
-            if (young) mu = e/(2.d0*(1.d0+nu))
-          endif
-        endif
-        if (nfe.gt.0) then
+            poiss = .false.
+            young = .false.
+            do ik = 1, nbf
+                if (valk(nbr+nbc+ik) .eq. 'NU') then
+                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
+                                nu, ier)
+                    if (ier .eq. 0) poiss = .true.
+                end if
+                if (valk(nbr+nbc+ik) .eq. 'E') then
+                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
+                                e, ier)
+                    if (ier .eq. 0) young = .true.
+                end if
+            end do
+            if (poiss) then
+                ka = 3.d0-4.d0*nu
+                if (cplan) ka = (3.d0-nu)/(1.d0+nu)
+                if (young) mu = e/(2.d0*(1.d0+nu))
+            end if
+        end if
+        if (nfe .gt. 0) then
 !         EXTRACTION DE LSN,LST
 !           POUR LE MOENET CA NE SERT A RIEN DANS XCALFEV
-          lsn(1:nbno1)=0.
-          lst(1:nbno1)=0.
+            lsn(1:nbno1) = 0.
+            lst(1:nbno1) = 0.
 !         EXTRACTION DU STANO
-          nn = zi(jcesd_stno-1+5+4*(ima-1)+3)
-          if (nn .gt. 0) then
-            do ino1 = 1, nbno1
-              call cesexi('C', jcesd_stno, jcesl_stno, ima, ino1,&
-                           1, 1, iad)
-              ASSERT(iad.gt.0)
-              stano(ino1)=zi(jcesv_stno-1+iad)
-            enddo
-          else
-             stano(1:nbno1)=-2
-          endif
+            nn = zi(jcesd_stno-1+5+4*(ima-1)+3)
+            if (nn .gt. 0) then
+                do ino1 = 1, nbno1
+                    call cesexi('C', jcesd_stno, jcesl_stno, ima, ino1, &
+                                1, 1, iad)
+                    ASSERT(iad .gt. 0)
+                    stano(ino1) = zi(jcesv_stno-1+iad)
+                end do
+            else
+                stano(1:nbno1) = -2
+            end if
 !         EXTRACTION DU BASLO
-          nn = zi(jcesd_bslo-1+5+4*(ima-1)+3)
-          if (nn.gt.0) then
-            do ino1 = 1, nbno1
-              do i = 1, 3*ndim
-                 call cesexi('C', jcesd_bslo, jcesl_bslo, ima, ino1,&
-                              1, i, iad)
-                 ASSERT(iad.gt.0)
-                 baslo((ino1-1)*3*ndim+i)=zr(jcesv_bslo-1+iad)
-              enddo
-            enddo
-          else
-             baslo(1:(nbno1*3*ndim))=0.d0
-          endif
+            nn = zi(jcesd_bslo-1+5+4*(ima-1)+3)
+            if (nn .gt. 0) then
+                do ino1 = 1, nbno1
+                    do i = 1, 3*ndim
+                        call cesexi('C', jcesd_bslo, jcesl_bslo, ima, ino1, &
+                                    1, i, iad)
+                        ASSERT(iad .gt. 0)
+                        baslo((ino1-1)*3*ndim+i) = zr(jcesv_bslo-1+iad)
+                    end do
+                end do
+            else
+                baslo(1:(nbno1*3*ndim)) = 0.d0
+            end if
 !         EXTRACTION DU GEOM
-          do ino1 = 1, nbno1
-              nuno1 = pjef_nu(1+idecal-1+ino1)
-              do i = 1, ndim
-                  geom(ndim*(ino1-1)+i)=zr(iacoo1-1+3*(nuno1-1)+i)
-              end do
-          end do
+            do ino1 = 1, nbno1
+                nuno1 = pjef_nu(1+idecal-1+ino1)
+                do i = 1, ndim
+                    geom(ndim*(ino1-1)+i) = zr(iacoo1-1+3*(nuno1-1)+i)
+                end do
+            end do
 !        print*,' - stano  =',stano(1:nbno1)
 !        print*,' - baslo  =',baslo(1:6*nbno1)
 !         print*,' - ka, mu=',ka,mu
 !         CALCUL DES FF LINEAIRE AU CAS OU ...
-          ff2(:)=0.
-          if (.not.iselli(elrefp)) then
-              call xellin(elrefp, nbno1, elrefp2, nnop2)
-              call elrfvf(elrefp2, pjef_co((3*(ino2-1)+1):(3*(ino2-1)+ndim)), ff2, nnop2)
-          endif
+            ff2(:) = 0.
+            if (.not. iselli(elrefp)) then
+                call xellin(elrefp, nbno1, elrefp2, nnop2)
+                call elrfvf(elrefp2, pjef_co((3*(ino2-1)+1):(3*(ino2-1)+ndim)), ff2, nnop2)
+            end if
 !         APPEL A XCALFEV EN PLUS ET MOINS
-          fk_escl(:,:,:)=0.
-          fk_mait(:,:,:)=0.
-          call xcalfev_wrap(ndim, nbno1, baslo, stano, -1.d0,&
-                     lsn, lst, geom, ka, mu, ff, fk_escl, face='ESCL',&
-                     elref=elrefp, nnop2=nnop2, ff2=ff2)
-          call xcalfev_wrap(ndim, nbno1, baslo, stano, +1.d0,&
-                     lsn, lst, geom, ka, mu, ff, fk_mait, face='MAIT',&
-                     elref=elrefp, nnop2=nnop2, ff2=ff2)
-        endif
+            fk_escl(:, :, :) = 0.
+            fk_mait(:, :, :) = 0.
+            call xcalfev_wrap(ndim, nbno1, baslo, stano, -1.d0, &
+                              lsn, lst, geom, ka, mu, ff, fk_escl, face='ESCL', &
+                              elref=elrefp, nnop2=nnop2, ff2=ff2)
+            call xcalfev_wrap(ndim, nbno1, baslo, stano, +1.d0, &
+                              lsn, lst, geom, ka, mu, ff, fk_mait, face='MAIT', &
+                              elref=elrefp, nnop2=nnop2, ff2=ff2)
+        end if
 !
         do ino1 = 1, nbno1
             nuno1 = pjef_nu(1+idecal-1+ino1)
-            ipos  = 0
-            iad   = jcns1v-1+ (nuno1-1)*ncmp
-            iad2  = jcns1l-1+ (nuno1-1)*ncmp
+            ipos = 0
+            iad = jcns1v-1+(nuno1-1)*ncmp
+            iad2 = jcns1l-1+(nuno1-1)*ncmp
 !         DDLS CLASSIQUES
             do i = 1, ndim
-                ipos=ipos+1
-                dx(i) = dx(i) + ff(ino1) * zr(iad+cmp(ipos))
-            enddo
+                ipos = ipos+1
+                dx(i) = dx(i)+ff(ino1)*zr(iad+cmp(ipos))
+            end do
 !         DDLS HEAVISIDE
             do ig = 1, nfh
                 do i = 1, ndim
-                    ipos=ipos+1
-                    if (.not.zl(iad2+cmp(ipos))) goto 21
-                    h1(i) = h1(i) + ff(ino1) * zr(iad+cmp(ipos))
+                    ipos = ipos+1
+                    if (.not. zl(iad2+cmp(ipos))) goto 21
+                    h1(i) = h1(i)+ff(ino1)*zr(iad+cmp(ipos))
 21                  continue
-                enddo
-            enddo
+                end do
+            end do
 !         DDL ENRICHIS EN FOND DE FISSURE
             do ig = 1, nfe
                 do alp = 1, ndim
-                    ipos=ipos+1
-                    if (.not.zl(iad2+cmp(ipos))) goto 22
+                    ipos = ipos+1
+                    if (.not. zl(iad2+cmp(ipos))) goto 22
                     do i = 1, ndim
-                        dx(i) = dx(i) + (fk_mait(ino1,alp,i)+fk_escl(ino1,alp,i))/2.&
-                                        *zr(iad+cmp(ipos))
-                        h1(i) = h1(i) + (fk_mait(ino1,alp,i)-fk_escl(ino1,alp,i))/2.&
-                                        *zr(iad+cmp(ipos))
-                    enddo
+                        dx(i) = dx(i)+(fk_mait(ino1, alp, i)+fk_escl(ino1, alp, i))/2. &
+                                *zr(iad+cmp(ipos))
+                        h1(i) = h1(i)+(fk_mait(ino1, alp, i)-fk_escl(ino1, alp, i))/2. &
+                                *zr(iad+cmp(ipos))
+                    end do
 22                  continue
-                enddo
-            enddo
-         enddo
+                end do
+            end do
+        end do
 !        print*,' + dx  =',dx
 !        print*,' + h1  =',h1
 !        print*,' ***************'
 !       COPIE DU RESULTAT DANS LES DDLS DX,DY,DZ ET H1X,H1Y,H1Z
         do i = 1, ndim
-            zl(jcns2l-1+ (ino2-1)*ncmp+cmp(i)) = .true.
-            zr(jcns2v-1+(ino2-1)*ncmp+cmp(i))=dx(i)
-            zl(jcns2l-1+ (ino2-1)*ncmp+cmp(i+ndim)) = .true.
-            zr(jcns2v-1+(ino2-1)*ncmp+cmp(i+ndim))=h1(i)
-        enddo
-        idecal = idecal + nbno1
- 50     continue
+            zl(jcns2l-1+(ino2-1)*ncmp+cmp(i)) = .true.
+            zr(jcns2v-1+(ino2-1)*ncmp+cmp(i)) = dx(i)
+            zl(jcns2l-1+(ino2-1)*ncmp+cmp(i+ndim)) = .true.
+            zr(jcns2v-1+(ino2-1)*ncmp+cmp(i+ndim)) = h1(i)
+        end do
+        idecal = idecal+nbno1
+50      continue
     end do
 !
 !------------------------------------------------------------------
 !     7- CONVERSTION VERS LE CHAMP_NO RESULTAT :
 !     ----------------------------------------------------
-     call cnscno(cns2, prfchn, prol0, base, ch2,&
-                 'A', iret)
+    call cnscno(cns2, prfchn, prol0, base, ch2, &
+                'A', iret)
 !
 !------------------------------------------------------------------
 !     8- NETTOYAGE DES OBJETS DE TRAVAIL :

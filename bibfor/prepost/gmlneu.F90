@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine gmlneu(igmsh, nbnode)
 !
 ! --- LECTURE DU NOMBRE DE NOEUDS :
 !     ---------------------------
-    read(igmsh,'(I10)') nbnode
+    read (igmsh, '(I10)') nbnode
 !
 ! --- CREATION DE VECTEURS DE TRAVAIL :
 !     -------------------------------
@@ -72,8 +72,8 @@ subroutine gmlneu(igmsh, nbnode)
     ndmax = 0
     do inode = 1, nbnode
 !        READ(IGMSH,'(I10,3(E25.16))') NODE,X,Y,Z
-        read(igmsh,*) node,x,y,z
-        ndmax = max(node,ndmax)
+        read (igmsh, *) node, x, y, z
+        ndmax = max(node, ndmax)
 !
         zi(jinfo+inode-1) = node
         zr(jcoor-1+3*(inode-1)+1) = x
@@ -90,7 +90,7 @@ subroutine gmlneu(igmsh, nbnode)
     end do
 !
 !
-    write(imes,*) 'NOMBRE DE NOEUDS : ',nbnode
+    write (imes, *) 'NOMBRE DE NOEUDS : ', nbnode
 !
     call jedema()
 !

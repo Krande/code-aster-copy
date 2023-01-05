@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
+subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm, &
                   nbchm)
     implicit none
 !
@@ -56,36 +56,36 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
 !
     do i = 1, nbm, 1
 !
-        zl(aplace + i-1) = .false.
+        zl(aplace+i-1) = .false.
 !
     end do
 !
- 20 continue
+20  continue
     if (simple) then
 !
         call i2fspl(voisn2, zl(aplace), nbm, simple, mdpt)
 !
         if (simple) then
 !
-            call i2gspl(mdpt, voisn1, voisn2, zl(aplace), stchm,&
+            call i2gspl(mdpt, voisn1, voisn2, zl(aplace), stchm, &
                         ptchm, ast, apt)
 !
-        endif
+        end if
 !
         goto 20
 !
-    endif
+    end if
 !
     mdpt = 0
 !
     if (cycle) then
         call i2fccl(zl(aplace), nbm, cycle, mdpt)
-        ASSERT(.not.cycle)
-    endif
+        ASSERT(.not. cycle)
+    end if
 !
     ptchm(apt) = ast
 !
-    nbchm = apt - 1
+    nbchm = apt-1
 !
     call jedetr('&INTPLACE')
 !

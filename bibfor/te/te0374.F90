@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine te0374(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,18 +66,18 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
     ASSERT(nno .le. 9)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndi = nno*(2*nno+1)
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndi = nno*(nno+1)/2
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 ! - Get material properties for fluid
 !
@@ -95,12 +95,12 @@ character(len=16), intent(in) :: option, nomte
 !
     if (zr(jv_onde) .ne. 0.d0) then
         do ino = 1, nno
-            i = jv_geom + 3*(ino-1) -1
+            i = jv_geom+3*(ino-1)-1
             do jno = 1, nno
-                j = jv_geom + 3*(jno-1) -1
-                sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-                sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-                sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+                j = jv_geom+3*(jno-1)-1
+                sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+                sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+                sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
             end do
         end do
 ! ----- Loop on Gauss points
@@ -115,46 +115,46 @@ character(len=16), intent(in) :: option, nomte
                 idec = (i-1)*ndim
                 do j = 1, nno
                     jdec = (j-1)*ndim
-                    nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                    ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                    nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+                    nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                    ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                    nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
                 end do
             end do
 ! --------- Compute jacobian
-            jac = sqrt(nx*nx + ny*ny + nz*nz)
+            jac = sqrt(nx*nx+ny*ny+nz*nz)
             if (fsi_form .eq. 'FSI_UPPHI') then
                 do i = 1, nno
                     do j = 1, i
                         ii = 2*i
                         jj = 2*j
-                        ij = (ii-1)*ii/2 + jj
-                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1) -&
-                                           jac*zr(ipoids+ipg-1) *&
-                                           zr(ivf+ldec+i-1)* zr(ivf+ldec+j-1)*rho/celer
+                        ij = (ii-1)*ii/2+jj
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)- &
+                                           jac*zr(ipoids+ipg-1)* &
+                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)*rho/celer
                     end do
                 end do
             elseif (fsi_form .eq. 'FSI_UP') then
                 do i = 1, nno
                     do j = 1, i
-                    ij = (i-1)*i/2 + j
-                    zr(jv_matr+ij-1) = zr(jv_matr+ij-1) +&
-                                       jac* zr( ipoids+ipg-1) *&
-                                       zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)/celer
+                        ij = (i-1)*i/2+j
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)+ &
+                                           jac*zr(ipoids+ipg-1)* &
+                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)/celer
                     end do
                 end do
             elseif (fsi_form .eq. 'FSI_UPSI') then
                 do i = 1, nno
                     do j = 1, i
-                    ij = (i-1)*i/2 + j
-                    zr(jv_matr+ij-1) = zr(jv_matr+ij-1) -&
-                                       jac* zr( ipoids+ipg-1) *&
-                                       zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)*rho/celer
+                        ij = (i-1)*i/2+j
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1)- &
+                                           jac*zr(ipoids+ipg-1)* &
+                                           zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)*rho/celer
                     end do
                 end do
             else
-                call utmess('F', 'FLUID1_2', sk = fsi_form)
-            endif
+                call utmess('F', 'FLUID1_2', sk=fsi_form)
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

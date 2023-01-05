@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine dbr_calcpod_size(base, snap, m, n)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-type(ROM_DS_Snap), intent(in) :: snap
-integer, intent(out) :: m, n
+    type(ROM_DS_Empi), intent(in) :: base
+    type(ROM_DS_Snap), intent(in) :: snap
+    integer, intent(out) :: m, n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,10 +49,10 @@ integer, intent(out) :: m, n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbSnap   = snap%nbSnap
+    nbSnap = snap%nbSnap
     baseType = base%baseType
-    nbSlice  = base%lineicNume%nbSlice
-    nbEqua   = base%mode%nbEqua
+    nbSlice = base%lineicNume%nbSlice
+    nbEqua = base%mode%nbEqua
 !
 ! - Prepare parameters for LAPACK
 !
@@ -62,6 +62,6 @@ integer, intent(out) :: m, n
     else
         m = nbEqua
         n = nbSnap
-    endif
+    end if
 !
 end subroutine

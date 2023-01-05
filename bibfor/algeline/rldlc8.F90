@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
+subroutine rldlc8(nommat, hcol, adia, ablo, neq, &
                   nbbloc, xsol, nbsol)
     implicit none
 !
@@ -33,7 +33,7 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
     character(len=*) :: nommat
     integer :: neq
     integer :: hcol(*), adia(*), ablo(*)
-    complex(kind=8) :: xsol (neq, *)
+    complex(kind=8) :: xsol(neq, *)
 ! COMPIL PARAL
 !     ------------------------------------------------------------------
 !     RESOLUTION DU SYSTEME A COEFFICIENTS REELS:  A * X = B
@@ -108,8 +108,8 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
     integer :: isol, ixx, ldiag, lmat, nbbloc, nbsol
 !
 !-----------------------------------------------------------------------
-    data  ualf  /'                   .UALF'/
-    data  nomdia/'                   .&VDI'/
+    data ualf/'                   .UALF'/
+    data nomdia/'                   .&VDI'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -127,22 +127,22 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
         if (ablo(ibloc) .ge. neq) goto 101
 !
 !        -- IDERBL EST LE NUMERO DU DERNIER BLOC A TRAITER:
-        iderbl=ibloc
+        iderbl = ibloc
         call jeveuo(jexnum(ualf, ibloc), 'L', lmat)
         do iequa = ablo(ibloc)+1, ablo(ibloc+1)
             if (iequa .gt. neq) goto 111
-            ilong = hcol (iequa)
-            iadia = lmat + adia(iequa) - 1
-            ide = iadia - ilong + 1
-            ixx = iequa - ilong + 1
+            ilong = hcol(iequa)
+            iadia = lmat+adia(iequa)-1
+            ide = iadia-ilong+1
+            ixx = iequa-ilong+1
 !MIC$ DO ALL SHARED (NBSOL,ILONG,IXX,IDE,IEQUA,XSOL,ZC)
 !MIC$*       PRIVATE(ISOL,C8VAL,I)
             do isol = 1, nbsol
                 c8val = (0.d0, 0.d0)
-                do i = 0, ilong - 2
-                    c8val = c8val + xsol(ixx+i,isol) * zc(ide+i)
+                do i = 0, ilong-2
+                    c8val = c8val+xsol(ixx+i, isol)*zc(ide+i)
                 end do
-                xsol(iequa,isol) = xsol(iequa,isol) - c8val
+                xsol(iequa, isol) = xsol(iequa, isol)-c8val
             end do
 !
             zc(ldiag+iequa-1) = zc(iadia)
@@ -157,7 +157,7 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
 !MIC$*       PRIVATE(ISOL,IEQUA)
     do isol = 1, nbsol
         do iequa = 1, neq
-            xsol(iequa,isol) = xsol(iequa,isol) / zc(ldiag+iequa-1)
+            xsol(iequa, isol) = xsol(iequa, isol)/zc(ldiag+iequa-1)
         end do
     end do
 !
@@ -167,20 +167,20 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
         do iequa = ablo(ibloc+1), ablo(ibloc)+1, -1
             if (iequa .gt. neq) goto 310
             ilong = hcol(iequa)
-            iadia = lmat + adia(iequa) - 1
-            ide = iadia - ilong + 1
-            ixx = iequa - ilong + 1
+            iadia = lmat+adia(iequa)-1
+            ide = iadia-ilong+1
+            ixx = iequa-ilong+1
 !
 !MIC$ DO ALL SHARED (NBSOL,ILONG,IXX,IDE,IEQUA,XSOL,ZC)
 !MIC$*       PRIVATE(ISOL,C8VAL,I)
             do isol = 1, nbsol
-                c8val = - xsol(iequa,isol)
+                c8val = -xsol(iequa, isol)
                 if (c8val .ne. 0) then
-                    do i = 0, ilong - 2
-                        xsol(ixx+i,isol)=xsol(ixx+i,isol)+c8val*zc(&
-                        ide+i)
+                    do i = 0, ilong-2
+                        xsol(ixx+i, isol) = xsol(ixx+i, isol)+c8val*zc( &
+                                            ide+i)
                     end do
-                endif
+                end if
             end do
 310         continue
         end do

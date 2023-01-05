@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 module calcG_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterc/getres.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
@@ -78,7 +78,7 @@ private
 #include "asterfort/copisd.h"
 #include "asterfort/exisd.h"
 !
-public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
+    public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,7 +106,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !------ temperature in VARC
         aster_logical      :: l_temp = ASTER_FALSE
 ! ----- topological dimension
-        integer            :: ndim      = 0
+        integer            :: ndim = 0
 ! ----- name of list of NUME
         character(len=24)  :: list_nume_name = ' '
 ! ----- list of nume
@@ -119,9 +119,9 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
         character(len=8)   :: list_option(NB_MAX_OPT) = ' '
 ! ----- level information
         integer            :: level_info = 1
-        contains
+    contains
         procedure, pass    :: initialize => initialize_field
-        procedure, pass    :: print      => print_field
+        procedure, pass    :: print => print_field
         procedure, pass    :: isModeMeca
         procedure, pass    :: isDynaTrans
         procedure, pass    :: clean => clean_field
@@ -134,39 +134,39 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !
     type CalcG_Study
 ! ----- name of model
-        character(len=8)   :: model     = ' '
+        character(len=8)   :: model = ' '
 ! ----- name of mesh
-        character(len=8)   :: mesh      = ' '
+        character(len=8)   :: mesh = ' '
 ! ----- name of material
-        character(len=24)  :: material  = ' '
+        character(len=24)  :: material = ' '
 ! ----- name of coded material
-        character(len=24)  :: mateco    = ' '
+        character(len=24)  :: mateco = ' '
 ! ----- name of elementary characteristics
-        character(len=24)  :: carael    = ' '
+        character(len=24)  :: carael = ' '
 ! ----- name of loading
-        character(len=24)  :: loading   = ' '
+        character(len=24)  :: loading = ' '
 ! ----- index order
         integer            :: nume_ordre = -1
 ! ----- option to compute
-        character(len=8)   :: option    = ' '
+        character(len=8)   :: option = ' '
 !------ modal analysis ?
         aster_logical      :: l_modal = ASTER_FALSE
 !------ axisymetric model
         aster_logical      :: l_axis = ASTER_FALSE
 ! ----- displacement field
-        character(len=24)  :: depl   = ' '
+        character(len=24)  :: depl = ' '
 ! ----- speed field
-        character(len=24)  :: vitesse   = ' '
+        character(len=24)  :: vitesse = ' '
 ! ----- acceleration field
-        character(len=24)  :: acce   = ' '
+        character(len=24)  :: acce = ' '
 ! ----- time
-        real(kind=8)       :: time   = 0.d0
+        real(kind=8)       :: time = 0.d0
 ! ----- pulse
-        real(kind=8)       :: pulse   = 0.d0
+        real(kind=8)       :: pulse = 0.d0
 ! ----- computed values (G, K1, K2, K3, FIC1, FIC2, FIC3)
-        real(kind=8)       :: gth(NB_MAX_TERM)   = 0.d0
+        real(kind=8)       :: gth(NB_MAX_TERM) = 0.d0
 ! ----- member function
-        contains
+    contains
         procedure, pass    :: initialize => initialize_study
         procedure, pass    :: print => print_study
         procedure, pass    :: setOption
@@ -240,7 +240,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 ! ----- name of coordinates of nodes in the crack
         character(len=24)       :: fondNoeudCoor = '&&CALC_G.COORN'
 ! ----- member function
-        contains
+    contains
         procedure, pass    :: initialize => initialize_theta
         procedure, pass    :: print => print_theta
         procedure, pass, private :: create_npf
@@ -282,7 +282,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
         integer :: nb_point = 1
 !
 ! ----- member function
-        contains
+    contains
         procedure, pass    :: initialize => initialize_table
         procedure, pass    :: addValues
         procedure, pass    :: addPara
@@ -332,7 +332,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
         real(kind=8)       :: cgExpTabl = 0.d0
 
 ! ----- member function
-        contains
+    contains
         procedure, pass    :: initialize => initialize_stat
         procedure, pass    :: print => print_stat
         procedure, pass    :: finish => finish_stat
@@ -350,7 +350,7 @@ contains
 !
     subroutine initialize_stat(this)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Stat), intent(inout)  :: this
 !
@@ -375,7 +375,7 @@ contains
 !
     subroutine initialize_field(this, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Field), intent(inout)  :: this
         type(CalcG_Stat), intent(inout)   :: cgStat
@@ -405,21 +405,21 @@ contains
 ! --- Get name and type of result (in)
 !
         call getvid(' ', 'RESULTAT', scal=this%result_in, nbret=ier)
-        ASSERT(ier==1)
+        ASSERT(ier == 1)
         call gettco(this%result_in, this%result_in_type, ASTER_TRUE)
         call dismoi('MODELE', this%result_in, 'RESULTAT', repk=modele)
         call dismoi('DIM_GEOM', modele, 'MODELE', repi=this%ndim)
 !
         call dismoi('CHAM_MATER', this%result_in, 'RESULTAT', repk=mater)
         call dismoi('EXI_VARC', mater, 'CHAM_MATER', repk=repk)
-        if( repk == "OUI" ) then
+        if (repk == "OUI") then
             this%l_temp = ASTER_TRUE
         end if
 !
 ! --- Get name of option
 !
         call getvtx(' ', 'OPTION', nbret=ier)
-        if(ier == 1) then
+        if (ier == 1) then
             this%nb_option = ier
             call getvtx(' ', 'OPTION', scal=this%list_option(1))
         else
@@ -430,14 +430,14 @@ contains
 ! --- Remove option G* if option KJ* exists
 !
             if (any('G' == this%list_option) .and. any('KJ' == this%list_option)) then
-                this%nb_option = this%nb_option - 1
-                this%list_option = pack(this%list_option, this%list_option.ne.'G')
-            endif
+                this%nb_option = this%nb_option-1
+                this%list_option = pack(this%list_option, this%list_option .ne. 'G')
+            end if
 
             if (any('G_EPSI' == this%list_option) .and. any('KJ_EPSI' == this%list_option)) then
-                this%nb_option = this%nb_option - 1
-                this%list_option = pack(this%list_option, this%list_option.ne.'G_EPSI')
-            endif
+                this%nb_option = this%nb_option-1
+                this%list_option = pack(this%list_option, this%list_option .ne. 'G_EPSI')
+            end if
 
         end if
 !
@@ -458,23 +458,23 @@ contains
 !
         call cgReadCompor(this%result_in, this%compor, this%list_nume(1), this%l_incr)
 !
-        if(this%level_info > 1) then
+        if (this%level_info > 1) then
             call comp_info(modele, this%compor)
         end if
 !
 ! --- if ELAS_INCR
 !
-        if(this%l_incr) then
+        if (this%l_incr) then
             lisopt = ' '
             nbropt = 0
-            call ccbcop(this%result_in, this%result_out, this%list_nume_name,&
+            call ccbcop(this%result_in, this%result_out, this%list_nume_name, &
                         this%nb_nume, lisopt, nbropt)
         end if
 !
         call jedema()
 !
         call cpu_time(finish)
-        cgStat%init_cgField = cgStat%init_cgField +finish - start
+        cgStat%init_cgField = cgStat%init_cgField+finish-start
 !
     end subroutine
 !
@@ -484,7 +484,7 @@ contains
 !
     subroutine print_field(this)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Field), intent(in)  :: this
 !
@@ -496,18 +496,18 @@ contains
 !
         integer :: i
 !
-        print*, "----------------------------------------------------------------------"
-        print*, "Informations about CalcG_Field"
-        print*, "Level of informations: ", this%level_info
-        print*, "Dimension of the problem: ", this%ndim
-        print*, "Result: ", this%result_in, " of type ", this%result_in_type
-        print*, "Output: ", this%table_out
-        print*, "Number of option to compute: ", this%nb_option
-        do i =1, this%nb_option
-            print*, "** option ", i, ": ", this%list_option(i)
+        print *, "----------------------------------------------------------------------"
+        print *, "Informations about CalcG_Field"
+        print *, "Level of informations: ", this%level_info
+        print *, "Dimension of the problem: ", this%ndim
+        print *, "Result: ", this%result_in, " of type ", this%result_in_type
+        print *, "Output: ", this%table_out
+        print *, "Number of option to compute: ", this%nb_option
+        do i = 1, this%nb_option
+            print *, "** option ", i, ": ", this%list_option(i)
         end do
-        print*, "Number of step/mode to compute: ", this%nb_nume
-        print*, "----------------------------------------------------------------------"
+        print *, "Number of step/mode to compute: ", this%nb_nume
+        print *, "----------------------------------------------------------------------"
 !
     end subroutine
 !
@@ -517,7 +517,7 @@ contains
 !
     subroutine print_stat(this)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Stat), intent(in)  :: this
 !
@@ -527,38 +527,38 @@ contains
 !   In this     : calG stat
 ! --------------------------------------------------------------------------------------------------
 !
-        print*, "----------------------------------------------------------------------------------"
-        print*, "Informations about CalcG_Stat"
-        print*, "Level of informations: ", this%level_info
-        print*, "Total time of OP: ", this%time, "s"
-        print*, "*CalcG_Field: "
-        print*, "**initialize(): ", this%init_cgField, "s with ", 1, "calls"
-        print*, "**clean():      ", this%clean_cgField, "s with ", 1, "calls"
-        print*, "*CalcG_Theta: "
-        print*, "**initialize(): ", this%init_cgTheta, "s with ", 1, "calls"
-        print*, "**create_npf(): ", this%npf_cgTheta, "s with ", this%nb_npf_cgTheta, "calls"
-        print*, "*CalcG_Study: "
-        print*, "**initialize(): ", this%init_cgStudy, "s with ", this%nb_init_cgStudy, "calls"
-        print*, "*CalcG_Table: "
-        print*, "**initialize(): ", this%init_cgTable, "s with ", 1, "calls"
-        print*, "**save():       ", this%save_cgTable, "s with ", this%nb_save_cgTable, "calls"
-        print*, "**clean():      ", this%clean_cgTable, "s with ", 1, "calls"
-        print*, "*Others: "
-        print*, "**cgVerification():       ", this%cgVerif, "s with ", 1, "calls"
-        print*, "**cgComputeThetaFactor(): ", this%cgThetaFact, "s with ", 1, "calls"
-        print*, "**cgComputeMatrix():      ", this%cgCmpMat, "s with ", 1, "calls"
-        print*, "**cgExportTableG():       ", this%cgExpTabl, "s with ", 1, "calls"
-        print*, "**cgComputeGtheta():      ", this%cgCmpGtheta, "s with ", &
-        this%nb_cgCmpGtheta, "calls"
-        print*, "***calcul():       " , this%cgCmpGtheta_te, "s with ", &
-        this%nb_cgCmpGtheta_te, "calls"
-        print*, "***gsyste():       ", this%cgCmpGtheta_sys, "s with ", &
-        this%nb_cgCmpGtheta_sys, "calls"
-        print*, "***cgDiscrField(): ", this%cgCmpGtheta_disc, "s with ", &
-        this%nb_cgCmpGtheta_disc, "calls"
-        print*, "***mesomm():       ", this%cgCmpGtheta_mes, "s with ", &
-        this%nb_cgCmpGtheta_mes, "calls"
-        print*, "----------------------------------------------------------------------------------"
+       print *, "----------------------------------------------------------------------------------"
+        print *, "Informations about CalcG_Stat"
+        print *, "Level of informations: ", this%level_info
+        print *, "Total time of OP: ", this%time, "s"
+        print *, "*CalcG_Field: "
+        print *, "**initialize(): ", this%init_cgField, "s with ", 1, "calls"
+        print *, "**clean():      ", this%clean_cgField, "s with ", 1, "calls"
+        print *, "*CalcG_Theta: "
+        print *, "**initialize(): ", this%init_cgTheta, "s with ", 1, "calls"
+        print *, "**create_npf(): ", this%npf_cgTheta, "s with ", this%nb_npf_cgTheta, "calls"
+        print *, "*CalcG_Study: "
+        print *, "**initialize(): ", this%init_cgStudy, "s with ", this%nb_init_cgStudy, "calls"
+        print *, "*CalcG_Table: "
+        print *, "**initialize(): ", this%init_cgTable, "s with ", 1, "calls"
+        print *, "**save():       ", this%save_cgTable, "s with ", this%nb_save_cgTable, "calls"
+        print *, "**clean():      ", this%clean_cgTable, "s with ", 1, "calls"
+        print *, "*Others: "
+        print *, "**cgVerification():       ", this%cgVerif, "s with ", 1, "calls"
+        print *, "**cgComputeThetaFactor(): ", this%cgThetaFact, "s with ", 1, "calls"
+        print *, "**cgComputeMatrix():      ", this%cgCmpMat, "s with ", 1, "calls"
+        print *, "**cgExportTableG():       ", this%cgExpTabl, "s with ", 1, "calls"
+        print *, "**cgComputeGtheta():      ", this%cgCmpGtheta, "s with ", &
+            this%nb_cgCmpGtheta, "calls"
+        print *, "***calcul():       ", this%cgCmpGtheta_te, "s with ", &
+            this%nb_cgCmpGtheta_te, "calls"
+        print *, "***gsyste():       ", this%cgCmpGtheta_sys, "s with ", &
+            this%nb_cgCmpGtheta_sys, "calls"
+        print *, "***cgDiscrField(): ", this%cgCmpGtheta_disc, "s with ", &
+            this%nb_cgCmpGtheta_disc, "calls"
+        print *, "***mesomm():       ", this%cgCmpGtheta_mes, "s with ", &
+            this%nb_cgCmpGtheta_mes, "calls"
+       print *, "----------------------------------------------------------------------------------"
 !
     end subroutine
 !
@@ -568,7 +568,7 @@ contains
 !
     subroutine finish_stat(this)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Stat), intent(inout)  :: this
 !
@@ -581,7 +581,7 @@ contains
         real(kind=8) :: finish
 !
         call cpu_time(finish)
-        this%time = finish - this%time
+        this%time = finish-this%time
 !
     end subroutine
 !
@@ -591,7 +591,7 @@ contains
 !
     function isModeMeca(this) result(lmode)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Field), intent(in)  :: this
         aster_logical                   :: lmode
@@ -602,7 +602,7 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-        if(this%result_in_type == "MODE_MECA") then
+        if (this%result_in_type == "MODE_MECA") then
             lmode = ASTER_TRUE
         else
             lmode = ASTER_FALSE
@@ -615,7 +615,7 @@ contains
 !
     function isDynaTrans(this) result(lmode)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Field), intent(in)  :: this
         aster_logical                   :: lmode
@@ -626,7 +626,7 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-        if(this%result_in_type == "DYNA_TRANS") then
+        if (this%result_in_type == "DYNA_TRANS") then
             lmode = ASTER_TRUE
         else
             lmode = ASTER_FALSE
@@ -639,7 +639,7 @@ contains
 !
     subroutine clean_field(this, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Field), intent(inout)  :: this
         type(CalcG_stat), intent(inout) :: cgStat
@@ -650,34 +650,34 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
-    integer, pointer :: ordr(:) => null()
-    real(kind=8) :: start, finish
+        integer :: iret
+        integer, pointer :: ordr(:) => null()
+        real(kind=8) :: start, finish
 !
-    call cpu_time(start)
+        call cpu_time(start)
 !
-    call jemarq()
+        call jemarq()
 !
-    if (this%l_incr) then
+        if (this%l_incr) then
 !
-        call jeexin(this%result_out//'           .ORDR', iret)
-        if (iret .ne. 0) then
-            call jeveuo(this%result_out//'           .ORDR', 'L', vi=ordr)
-            call rsrusd(this%result_out, ordr(1))
-            call detrsd('RESULTAT', this%result_out)
-        endif
+            call jeexin(this%result_out//'           .ORDR', iret)
+            if (iret .ne. 0) then
+                call jeveuo(this%result_out//'           .ORDR', 'L', vi=ordr)
+                call rsrusd(this%result_out, ordr(1))
+                call detrsd('RESULTAT', this%result_out)
+            end if
 !
-        call jedetr(this%list_nume_name)
-        call jedetr(this%result_out)
-        call rsmena(this%result_in)
-    endif
+            call jedetr(this%list_nume_name)
+            call jedetr(this%result_out)
+            call rsmena(this%result_in)
+        end if
 !
-    AS_DEALLOCATE(vi=this%list_nume)
+        AS_DEALLOCATE(vi=this%list_nume)
 !
-    call jedema()
+        call jedema()
 !
-    call cpu_time(finish)
-    cgStat%clean_cgField = cgStat%clean_cgField + finish - start
+        call cpu_time(finish)
+        cgStat%clean_cgField = cgStat%clean_cgField+finish-start
 !
     end subroutine
 !
@@ -687,7 +687,7 @@ contains
 !
     subroutine clean_table(this, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Table), intent(inout)  :: this
         type(CalcG_stat), intent(inout) :: cgStat
@@ -698,27 +698,27 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: start, finish
+        real(kind=8) :: start, finish
 !
-    call cpu_time(start)
+        call cpu_time(start)
 !
-    call jemarq()
+        call jemarq()
 !
-    AS_DEALLOCATE(vr=this%v_G)
-    AS_DEALLOCATE(vr=this%v_K1)
-    AS_DEALLOCATE(vr=this%v_K2)
-    AS_DEALLOCATE(vr=this%v_K3)
-    AS_DEALLOCATE(vr=this%v_G_IRWIN)
-    AS_DEALLOCATE(vr=this%v_G_EPSI)
-    AS_DEALLOCATE(vr=this%v_KJ)
-    AS_DEALLOCATE(vr=this%v_KJ_EPSI)
-    AS_DEALLOCATE(vk8=this%v_COMPOR)
-    AS_DEALLOCATE(vr=this%v_TEMP)
+        AS_DEALLOCATE(vr=this%v_G)
+        AS_DEALLOCATE(vr=this%v_K1)
+        AS_DEALLOCATE(vr=this%v_K2)
+        AS_DEALLOCATE(vr=this%v_K3)
+        AS_DEALLOCATE(vr=this%v_G_IRWIN)
+        AS_DEALLOCATE(vr=this%v_G_EPSI)
+        AS_DEALLOCATE(vr=this%v_KJ)
+        AS_DEALLOCATE(vr=this%v_KJ_EPSI)
+        AS_DEALLOCATE(vk8=this%v_COMPOR)
+        AS_DEALLOCATE(vr=this%v_TEMP)
 !
-    call jedema()
+        call jedema()
 !
-    call cpu_time(finish)
-    cgStat%clean_cgTable = cgStat%clean_cgTable + finish - start
+        call cpu_time(finish)
+        cgStat%clean_cgTable = cgStat%clean_cgTable+finish-start
 !
     end subroutine
 !
@@ -728,7 +728,7 @@ contains
 !
     subroutine initialize_study(this, result_in, nume_index, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
@@ -748,21 +748,21 @@ contains
         call cpu_time(start)
 !
         this%nume_ordre = nume_index
-        this%loading    = "&&STUDY.CHARGES"
+        this%loading = "&&STUDY.CHARGES"
         call medomg(result_in, this%nume_ordre, this%model, this%material, &
                     this%mateco, this%loading)
         call dismoi('CARA_ELEM', result_in, 'RESULTAT', repk=this%carael)
-        call dismoi('NOM_MAILLA', this%model,'MODELE', repk=this%mesh)
+        call dismoi('NOM_MAILLA', this%model, 'MODELE', repk=this%mesh)
         call dismoi('MODELISATION', this%model, 'MODELE', repk=typmo)
-        if( typmo(1:4) == "AXIS") then
+        if (typmo(1:4) == "AXIS") then
             this%l_axis = ASTER_TRUE
         else
             this%l_axis = ASTER_FALSE
         end if
 !
         call cpu_time(finish)
-        cgStat%init_cgStudy = cgStat%init_cgStudy + finish - start
-        cgStat%nb_init_cgStudy = cgStat%nb_init_cgStudy + 1
+        cgStat%init_cgStudy = cgStat%init_cgStudy+finish-start
+        cgStat%nb_init_cgStudy = cgStat%nb_init_cgStudy+1
 !
     end subroutine
 !
@@ -772,7 +772,7 @@ contains
 !
     subroutine print_study(this)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Study), intent(in)  :: this
 !
@@ -782,16 +782,16 @@ contains
 !   In this     : study type
 ! --------------------------------------------------------------------------------------------------
 !
-        print*, "----------------------------------------------------------------------"
-        print*, "Informations about CalcG_Study"
-        print*, "Option: ", this%option
-        print*, "Model: ", this%model
-        print*, "Mesh: ", this%mesh
-        print*, "Material: ", this%material
-        print*, "Coded material: ", this%mateco
-        print*, "Loading: ", this%loading
-        print*, "Nume index: ", this%nume_ordre
-        print*, "----------------------------------------------------------------------"
+        print *, "----------------------------------------------------------------------"
+        print *, "Informations about CalcG_Study"
+        print *, "Option: ", this%option
+        print *, "Model: ", this%model
+        print *, "Mesh: ", this%mesh
+        print *, "Material: ", this%material
+        print *, "Coded material: ", this%mateco
+        print *, "Loading: ", this%loading
+        print *, "Nume index: ", this%nume_ordre
+        print *, "----------------------------------------------------------------------"
 !
     end subroutine
 !
@@ -801,7 +801,7 @@ contains
 !
     subroutine setOption(this, option, isModeMeca)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: option
@@ -820,8 +820,8 @@ contains
                 this%l_modal = ASTER_TRUE
             else
                 call utmess('F', 'RUPTURE0_27')
-            endif
-        endif
+            end if
+        end if
 !
     end subroutine
 !
@@ -831,7 +831,7 @@ contains
 !
     subroutine getField(this, result_in)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
@@ -851,7 +851,7 @@ contains
             this%acce = ' '
         else
             call rsexch(' ', result_in, 'ACCE', this%nume_ordre, this%acce, iret)
-        endif
+        end if
 !
     end subroutine
 !
@@ -862,7 +862,7 @@ contains
 !
     subroutine getParameter(this, result_in)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
@@ -878,16 +878,16 @@ contains
 
 !
         if (this%l_modal) then
-            call rsadpa(result_in, 'L', 1, 'OMEGA2', this%nume_ordre,&
+            call rsadpa(result_in, 'L', 1, 'OMEGA2', this%nume_ordre, &
                         0, sjv=ipuls, styp=k8bid)
             this%pulse = sqrt(zr(ipuls))
             this%time = 0.d0
         else
-            call rsadpa(result_in, 'L', 1, 'INST', this%nume_ordre,&
+            call rsadpa(result_in, 'L', 1, 'INST', this%nume_ordre, &
                         0, sjv=jinst, styp=k8bid)
             this%pulse = 0.d0
             this%time = zr(jinst)
-        endif
+        end if
 !
     end subroutine
 !
@@ -897,7 +897,7 @@ contains
 !
     subroutine initialize_theta(this, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(inout)  :: this
         type(CalcG_Stat), intent(inout)   :: cgStat
@@ -913,7 +913,7 @@ contains
         real(kind=8) :: maxtai, mintai, valpar(1), valres_i, valres_s
         aster_logical :: l_disc
         real(kind=8), pointer :: fondTailleR(:) => null()
-        real(kind=8), pointer :: absfon(:)  => null()
+        real(kind=8), pointer :: absfon(:) => null()
         integer, pointer :: typmail(:) => null()
         real(kind=8) :: start, finish
         character(len=8) :: thetafactorsin
@@ -930,19 +930,19 @@ contains
 ! --- get informations about the crack
 !
         call getvtx('THETA', 'FISSURE', iocc=1, scal=this%crack, nbret=ier)
-        ASSERT(ier==1)
+        ASSERT(ier == 1)
         call gettco(this%crack, this%crack_type, ASTER_TRUE)
 !
-        call dismoi('NOM_MAILLA',this%crack,'FOND_FISS', arret='F', repk=this%mesh)
-        call dismoi('TYPE_FOND', this%crack,'FOND_FISS', arret='F', repk=typfon)
+        call dismoi('NOM_MAILLA', this%crack, 'FOND_FISS', arret='F', repk=this%mesh)
+        call dismoi('TYPE_FOND', this%crack, 'FOND_FISS', arret='F', repk=typfon)
         call dismoi('CONFIG_INIT', this%crack, 'FOND_FISS', repk=this%config_init)
         call dismoi('SYME', this%crack, 'FOND_FISS', repk=this%symech)
         call dismoi('DIM_GEOM', this%mesh, 'MAILLAGE', repi=ndim)
 !
-        ASSERT(.not.isParallelMesh(this%mesh))
+        ASSERT(.not. isParallelMesh(this%mesh))
 !
         this%nomNoeud = this%mesh//'.NOMNOE'
-        this%absfond  = this%crack//'.ABSFON'
+        this%absfond = this%crack//'.ABSFON'
 !
 !       Maillage linéaire ou quadratique
         call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
@@ -954,14 +954,14 @@ contains
 !
         if (.not. ismali(typma)) then
             this%milieu = ASTER_TRUE
-        endif
+        end if
 !
 ! --- the crack is closed ?
         if (typfon .eq. 'FERME') then
             this%l_closed = ASTER_TRUE
         else
             this%l_closed = ASTER_FALSE
-        endif
+        end if
 ! --- number of nodes in the crack
         call jelira(this%crack//'.FOND.NOEU', 'LONMAX', this%nb_fondNoeud)
 !
@@ -971,40 +971,40 @@ contains
         l_disc = (this%discretization == "LINEAIRE") .or. (this%discretization == "LEGENDRE")
         ASSERT(l_disc)
 !
-        if(this%discretization == "LINEAIRE") then
+        if (this%discretization == "LINEAIRE") then
             call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nb_point_fond, nbret=ier)
             ASSERT(this%nb_point_fond >= 0)
             ASSERT(this%degree == 0)
-            if(this%nb_point_fond.ne.0)then
+            if (this%nb_point_fond .ne. 0) then
                 this%milieu = ASTER_FALSE
                 this%nnof = this%nb_point_fond
             else
                 this%nnof = this%nb_fondNoeud
-            endif
+            end if
         end if
 !
-        if(this%discretization == "LEGENDRE") then
+        if (this%discretization == "LEGENDRE") then
             call getvis('THETA', 'DEGRE', iocc=1, scal=this%degree, nbret=ier)
             this%nnof = this%nb_fondNoeud
             ASSERT(this%nb_point_fond == 0)
             ASSERT(this%degree >= 0)
-            if(this%l_closed) then
+            if (this%l_closed) then
                 call utmess('F', 'RUPTURE0_90')
             end if
         end if
 !
 ! --- Find nb_theta_field
-        if(ndim == 2) then
+        if (ndim == 2) then
             this%nb_theta_field = 1
         else
-            if (this%discretization.eq.'LINEAIRE') then
+            if (this%discretization .eq. 'LINEAIRE') then
                 this%nb_theta_field = this%nnof
-            elseif(this%discretization.eq.'LEGENDRE') then
-                this%nb_theta_field = this%degree + 1
+            elseif (this%discretization .eq. 'LEGENDRE') then
+                this%nb_theta_field = this%degree+1
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
+            end if
+        end if
 !
 ! ---- Create pointers for NB_POINT_FOND
         call this%create_npf(cgStat)
@@ -1013,15 +1013,14 @@ contains
 !
         call getvis('THETA', 'NB_COUCHE_INF', iocc=1, scal=this%nb_couche_inf, nbret=ier)
         call getvis('THETA', 'NB_COUCHE_SUP', iocc=1, scal=this%nb_couche_sup, nbret=ier)
-        if(ier.ne.0)then
-            this%radius_type='NB_COUCHE'
-        endif
+        if (ier .ne. 0) then
+            this%radius_type = 'NB_COUCHE'
+        end if
 !
-        if(ier == 1 .and. ((this%nb_couche_inf < 0) .or. &
-            (this%nb_couche_inf >= this%nb_couche_sup))) then
+        if (ier == 1 .and. ((this%nb_couche_inf < 0) .or. &
+                            (this%nb_couche_inf >= this%nb_couche_sup))) then
             call utmess('F', 'RUPTURE3_4', ni=2, vali=[this%nb_couche_inf, this%nb_couche_sup])
         end if
-
 
         call this%getAbsfon(absfon)
         this%lonfis = absfon(this%nnof)
@@ -1029,8 +1028,8 @@ contains
         ier = 0
         call getvtx('THETA', 'CHAM_THETA', iocc=1, scal=this%theta_factors, nbret=ier)
         if (ier > 0) then
-            call exisd('CHAM_NO',this%theta_factors, ier)
-        endif
+            call exisd('CHAM_NO', this%theta_factors, ier)
+        end if
 
         if (ier == 0) then
 ! --- get automatic name
@@ -1040,70 +1039,70 @@ contains
 
             call getvr8('THETA', 'R_INF', iocc=1, scal=this%r_inf, nbret=ier)
             call getvr8('THETA', 'R_SUP', iocc=1, scal=this%r_sup, nbret=ier)
-            if(ier.ne.0)then
-                this%radius_type='R'
-            endif
+            if (ier .ne. 0) then
+                this%radius_type = 'R'
+            end if
 !
             call getvid('THETA', 'R_INF_FO', iocc=1, scal=this%r_inf_fo, nbret=ier)
             call getvid('THETA', 'R_SUP_FO', iocc=1, scal=this%r_sup_fo, nbret=ier)
-            if(ier.ne.0)then
-                this%radius_type='R_FO'
-            endif
+            if (ier .ne. 0) then
+                this%radius_type = 'R_FO'
+            end if
 !
 !       Verifications
-            if(this%radius_type=='R' .and. &
-                      ((this%r_inf < 0.d0) .or. (this%r_inf >= this%r_sup))) then
+            if (this%radius_type == 'R' .and. &
+                ((this%r_inf < 0.d0) .or. (this%r_inf >= this%r_sup))) then
                 call utmess('F', 'RUPTURE3_3', nr=2, valr=[this%r_inf, this%r_sup])
             end if
 !
-            if(this%radius_type == 'R_FO')then
+            if (this%radius_type == 'R_FO') then
                 do i = 1, this%nnof
                     nompar(1) = 'ABSC'
                     valpar(1) = absfon(i)
                     call fointe('FM', this%r_inf_fo, 1, nompar, valpar, valres_i, ier)
                     call fointe('FM', this%r_sup_fo, 1, nompar, valpar, valres_s, ier)
-                    if ( valres_s .le. valres_i) then
+                    if (valres_s .le. valres_i) then
                         call utmess('F', 'RUPTURE1_6')
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
 !       if no radius is defined
-            if (this%radius_type.ne.'R' .and. this%radius_type.ne.'R_FO' &
-            .and. this%radius_type.ne.'NB_COUCHE') then
-                this%radius_type='R'
+            if (this%radius_type .ne. 'R' .and. this%radius_type .ne. 'R_FO' &
+                .and. this%radius_type .ne. 'NB_COUCHE') then
+                this%radius_type = 'R'
                 if (this%config_init == 'DECOLLEE') then
 !               A vérifier si toujours impossible de calculer r dans ce cas
 !               (fond_taille_r disponible dans la sd_fond_fissure même si
 !               DECOLLEE?)
                     call utmess('F', 'RUPTURE1_7')
-                endif
+                end if
                 call this%getFondTailleR(fondTailleR)
                 maxtai = fondTailleR(1)
                 mintai = fondTailleR(1)
                 do i = 1, this%nb_fondNoeud
-                    maxtai = max(maxtai,fondTailleR(i))
-                    mintai = min(mintai,fondTailleR(i))
+                    maxtai = max(maxtai, fondTailleR(i))
+                    mintai = min(mintai, fondTailleR(i))
                 end do
                 this%r_inf = 2*maxtai
                 this%r_sup = 4*maxtai
                 call utmess('I', 'RUPTURE1_5', nr=2, valr=[this%r_inf, this%r_sup])
                 if (maxtai .gt. 2*mintai) then
                     call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
-                endif
-            endif
+                end if
+            end if
         else
             this%theta_factors_in = ASTER_TRUE
 !           pour COPIER ET STOCKER LE INPUT CHAMP_NO THETA_FACTORS
             thetafactorsin = this%theta_factors(1:8)
             this%theta_factors = this%theta_factors(1:8)//'_CHAM_THETA_FACT'
             call copisd('CHAMP_GD', 'G', thetafactorsin, this%theta_factors)
-        endif
+        end if
 !
         call jedema()
 !
         call cpu_time(finish)
-        cgStat%init_cgTheta = cgStat%init_cgTheta + finish - start
+        cgStat%init_cgTheta = cgStat%init_cgTheta+finish-start
 !
     end subroutine
 !
@@ -1113,7 +1112,7 @@ contains
 !
     subroutine compute_curvature(this, model)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(inout)  :: this
         character(len=8), intent(in) :: model
@@ -1138,7 +1137,7 @@ contains
 !
     subroutine getCoorNodes(this, v_coor)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         real(kind=8), pointer :: v_coor(:)
@@ -1161,7 +1160,7 @@ contains
 !
     subroutine getFondNoeudCoor(this, v_coor)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         real(kind=8), pointer :: v_coor(:)
@@ -1184,7 +1183,7 @@ contains
 !
     subroutine getAbscurv(this, v_abs)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         real(kind=8), pointer :: v_abs(:)
@@ -1196,7 +1195,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call jemarq()
-        if(this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
+        if (this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
             call jeveuo(this%npf_abscurv, 'L', vr=v_abs)
         else
             call jeveuo(this%crack//'.ABSCUR', 'L', vr=v_abs)
@@ -1211,7 +1210,7 @@ contains
 !
     subroutine getAbsfon(this, v_absfon)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         real(kind=8), pointer :: v_absfon(:)
@@ -1223,7 +1222,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call jemarq()
-        if(this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
+        if (this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
             call jeveuo(this%npf_absfon, 'L', vr=v_absfon)
         else
             call jeveuo(this%crack//'.ABSFON', 'L', vr=v_absfon)
@@ -1238,7 +1237,7 @@ contains
 !
     subroutine getAbsfonName(this, absfon)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         character(len=24), intent(out) :: absfon
@@ -1249,7 +1248,7 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        if(this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
+        if (this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
             absfon = this%npf_absfon
         else
             absfon = this%crack//'.ABSFON'
@@ -1263,7 +1262,7 @@ contains
 !
     subroutine getFondTailleR(this, v_taille)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         real(kind=8), pointer :: v_taille(:)
@@ -1286,7 +1285,7 @@ contains
 !
     subroutine getBaseLoc(this, v_base)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         real(kind=8), pointer :: v_base(:)
@@ -1298,11 +1297,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call jemarq()
-        if(this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
+        if (this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
             call jeveuo(this%npf_baseloc//'.VALE', 'L', vr=v_base)
         else
             call jeveuo(this%crack//'.BASLOC    .VALE', 'L', vr=v_base)
-        endif
+        end if
         call jedema()
 !
     end subroutine
@@ -1310,7 +1309,7 @@ contains
 !
     subroutine getFondNoeud(this, v_fondnoeu)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         character(len=8), pointer :: v_fondnoeu(:)
@@ -1322,11 +1321,11 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call jemarq()
-        if(this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
+        if (this%discretization == "LINEAIRE" .and. this%nb_point_fond > 0) then
             call jeveuo(this%npf_fondNoeud, 'L', vk8=v_fondnoeu)
         else
             call jeveuo(this%crack//'.FOND.NOEU', 'L', vk8=v_fondnoeu)
-        endif
+        end if
         call jedema()
 !
     end subroutine
@@ -1334,7 +1333,7 @@ contains
 !
     subroutine getFondNoeudNume(this, v_fondnoeuNume)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
         integer, pointer :: v_fondnoeuNume(:)
@@ -1356,7 +1355,7 @@ contains
 !
     subroutine print_theta(this)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
 !
@@ -1366,27 +1365,27 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        print*, "----------------------------------------------------------------------"
-        print*, "Informations about CalcG_Theta"
-        print*, "Field theta: ", this%theta_field
-        print*, "theta_factors: ", this%theta_factors
-        print*, "Crack: ", this%crack, " of type ", this%crack_type
-        print*, "Number of nodes in the crack: ", this%nb_fondNoeud
-        print*, "Mesh support: ", this%mesh
-        print*, "linear or quadratic", this%milieu
-        print*, "Initial configuration: ", this%config_init
-        print*, "the crack is symetric: ", this%symech
-        print*, "The crack is closed ?: ", this%l_closed
+        print *, "----------------------------------------------------------------------"
+        print *, "Informations about CalcG_Theta"
+        print *, "Field theta: ", this%theta_field
+        print *, "theta_factors: ", this%theta_factors
+        print *, "Crack: ", this%crack, " of type ", this%crack_type
+        print *, "Number of nodes in the crack: ", this%nb_fondNoeud
+        print *, "Mesh support: ", this%mesh
+        print *, "linear or quadratic", this%milieu
+        print *, "Initial configuration: ", this%config_init
+        print *, "the crack is symetric: ", this%symech
+        print *, "The crack is closed ?: ", this%l_closed
 !        print*, "Nombre de champs THETA: ", this%nb_theta_field
-        print*, "Discretization : ", this%discretization,  " with number/degree ", &
-                this%nnof, this%degree
-        print*, "Radius:"
-        print*, "*** Inferior: ", this%r_inf
-        print*, "*** Superior: ", this%r_sup
-        print*, "Number of cell layers:"
-        print*, "*** Inferior: ", this%nb_couche_inf
-        print*, "*** Superior: ", this%nb_couche_sup
-        print*, "----------------------------------------------------------------------"
+        print *, "Discretization : ", this%discretization, " with number/degree ", &
+            this%nnof, this%degree
+        print *, "Radius:"
+        print *, "*** Inferior: ", this%r_inf
+        print *, "*** Superior: ", this%r_sup
+        print *, "Number of cell layers:"
+        print *, "*** Inferior: ", this%nb_couche_inf
+        print *, "*** Superior: ", this%nb_couche_sup
+        print *, "----------------------------------------------------------------------"
 !
     end subroutine
 !
@@ -1396,7 +1395,7 @@ contains
 !
     subroutine addPara(this, name, type)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Table), intent(inout)  :: this
         character(len=*), intent(in) :: name, type
@@ -1406,7 +1405,7 @@ contains
 !   add a parameter to the table
 !   In this     : calcG Table
 ! ---------------------------------------------------------------------------------------
-        this%nb_para = this%nb_para + 1
+        this%nb_para = this%nb_para+1
         ASSERT(this%nb_para .le. NB_MAX_PARA)
 !
         this%list_name_para(this%nb_para) = name
@@ -1420,7 +1419,7 @@ contains
 !
     subroutine initialize_table(this, cgField, cgTheta, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Table), intent(inout)  :: this
         type(CalcG_field), intent(in) :: cgField
@@ -1454,20 +1453,20 @@ contains
         else
             call this%addPara('NUME_ORDRE', 'I')
             call this%addPara('INST', 'R')
-        endif
+        end if
 ! --- Node name
         call this%addPara('NOEUD', 'K8')
         call this%addPara('NUM_PT', 'I')
 ! --- Coordinates of nodes
         call this%addPara('COOR_X', 'R')
         call this%addPara('COOR_Y', 'R')
-        if (cgField%ndim.eq.3) then
+        if (cgField%ndim .eq. 3) then
             call this%addPara('COOR_Z', 'R')
             call this%addPara('ABSC_CURV', 'R')
             call this%addPara('ABSC_CURV_NORM', 'R')
-        endif
+        end if
 ! --- Tempature
-        if( cgField%l_temp ) then
+        if (cgField%l_temp) then
 !            call this%addPara('TEMP', 'R')
             AS_ALLOCATE(vr=this%v_TEMP, size=this%nb_point)
         end if
@@ -1476,20 +1475,20 @@ contains
         call cgTheta%getFondNoeudNume(fondNoeudNume)
         AS_ALLOCATE(vk8=this%v_COMPOR, size=this%nb_point)
         call cgComporNodes(cgField%result_in, cgField%list_nume(1), this%nb_point, &
-                                fondNoeudNume, this%v_COMPOR)
+                           fondNoeudNume, this%v_COMPOR)
 ! --- Option
         nbValues = this%nb_point
         do iopt = 1, cgField%nb_option
             option = cgField%list_option(iopt)
 
-            if (option == "G" ) then
+            if (option == "G") then
                 call this%addPara('G', 'R')
             elseif (option == "K") then
                 call this%addPara('K1', 'R')
                 call this%addPara('K2', 'R')
-                if (cgField%ndim.eq.3) then
+                if (cgField%ndim .eq. 3) then
                     call this%addPara('K3', 'R')
-                endif
+                end if
                 call this%addPara('G_IRWIN', 'R')
             elseif (option == "KJ") then
                 call this%addPara('KJ', 'R')
@@ -1497,7 +1496,7 @@ contains
             elseif (option == "KJ_EPSI") then
                 call this%addPara('KJ_EPSI', 'R')
                 call this%addPara('G_EPSI', 'R')
-            elseif (option == "G_EPSI" ) then
+            elseif (option == "G_EPSI") then
                 call this%addPara('G_EPSI', 'R')
             else
                 ASSERT(ASTER_FALSE)
@@ -1526,7 +1525,7 @@ contains
         call jedema()
 !
         call cpu_time(finish)
-        cgStat%init_cgTable = cgStat%init_cgTable + finish - start
+        cgStat%init_cgTable = cgStat%init_cgTable+finish-start
 !
     end subroutine
 !
@@ -1536,7 +1535,7 @@ contains
 !
     subroutine addValues(this, cgField, cgStudy, node_id)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Table), intent(inout)  :: this
         type(CalcG_field), intent(in) :: cgField
@@ -1549,32 +1548,32 @@ contains
 !   In this     : calcG Table
 ! ----------------------------------------------------------------------------------------
 !
-        if(cgStudy%option == "G") then
+        if (cgStudy%option == "G") then
             this%v_G(node_id) = cgStudy%gth(1)
-        elseif(cgStudy%option == "K") then
+        elseif (cgStudy%option == "K") then
             this%v_K1(node_id) = cgStudy%gth(2)
             this%v_K2(node_id) = cgStudy%gth(3)
-            if(cgField%ndim == 3) then
+            if (cgField%ndim == 3) then
                 this%v_K3(node_id) = cgStudy%gth(4)
             end if
-            this%v_G_IRWIN(node_id) = cgStudy%gth(5)**2 + cgStudy%gth(6)**2 + cgStudy%gth(7)**2
-        elseif(cgStudy%option == "KJ") then
+            this%v_G_IRWIN(node_id) = cgStudy%gth(5)**2+cgStudy%gth(6)**2+cgStudy%gth(7)**2
+        elseif (cgStudy%option == "KJ") then
             if (cgStudy%gth(2) .ge. 0) then
                 this%v_KJ(node_id) = sqrt(cgStudy%gth(2))
             else
-                call utmess('F', 'RUPTURE3_12', ni = 1, vali = [node_id], &
-                            nr = 1, valr = [cgStudy%gth(2)])
-            endif
+                call utmess('F', 'RUPTURE3_12', ni=1, vali=[node_id], &
+                            nr=1, valr=[cgStudy%gth(2)])
+            end if
             this%v_G(node_id) = cgStudy%gth(1)
-        elseif(cgStudy%option == "KJ_EPSI") then
+        elseif (cgStudy%option == "KJ_EPSI") then
             if (cgStudy%gth(2) .ge. 0) then
                 this%v_KJ_EPSI(node_id) = sqrt(cgStudy%gth(2))
             else
-                call utmess('F', 'RUPTURE3_12', ni = 1, vali = [node_id], &
-                            nr = 1, valr = [cgStudy%gth(2)])
-            endif
+                call utmess('F', 'RUPTURE3_12', ni=1, vali=[node_id], &
+                            nr=1, valr=[cgStudy%gth(2)])
+            end if
             this%v_G_EPSI(node_id) = cgStudy%gth(1)
-        elseif(cgStudy%option == "G_EPSI") then
+        elseif (cgStudy%option == "G_EPSI") then
             this%v_G_EPSI(node_id) = cgStudy%gth(1)
         else
             ASSERT(ASTER_FALSE)
@@ -1589,7 +1588,7 @@ contains
 !
     subroutine save_table(this, cgField, cgTheta, cgStudy, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_Table), intent(in)  :: this
         type(CalcG_field), intent(in) :: cgField
@@ -1626,7 +1625,7 @@ contains
         else
             call tbajvi(this%table_g, this%nb_para, 'NUME_ORDRE', cgStudy%nume_ordre, livi)
             call tbajvr(this%table_g, this%nb_para, 'INST', cgStudy%time, livr)
-        endif
+        end if
 !
         call cgTheta%getAbsfon(absfon)
         call cgTheta%getFondNoeud(fondNoeud)
@@ -1639,38 +1638,38 @@ contains
             coor = fondNoeudCoor((i_node-1)*3+1:(i_node-1)*3+3)
             call tbajvr(this%table_g, this%nb_para, 'COOR_X', coor(1), livr)
             call tbajvr(this%table_g, this%nb_para, 'COOR_Y', coor(2), livr)
-            if (cgField%ndim.eq.3) then
+            if (cgField%ndim .eq. 3) then
                 call tbajvr(this%table_g, this%nb_para, 'COOR_Z', coor(3), livr)
                 call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV', absfon(i_node), livr)
                 call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV_NORM', &
                             absfon(i_node)/cgTheta%lonfis, livr)
-            endif
+            end if
 !
-            if( cgField%l_temp ) then
+            if (cgField%l_temp) then
 !                call tbajvr(this%table_g, this%nb_para, 'TEMP', this%v_TEMP(i_node), livr)
             end if
             call tbajvk(this%table_g, this%nb_para, 'COMPORTEMENT', this%v_COMPOR(i_node), livk)
 !
             do iopt = 1, cgField%nb_option
                 option = cgField%list_option(iopt)
-                if(option == "G") then
+                if (option == "G") then
                     call tbajvr(this%table_g, this%nb_para, 'G', this%v_G(i_node), livr)
                 elseif (option == "K") then
                     call tbajvr(this%table_g, this%nb_para, 'K1', this%v_K1(i_node), livr)
                     call tbajvr(this%table_g, this%nb_para, 'K2', this%v_K2(i_node), livr)
                     if (cgField%ndim .eq. 3) then
                         call tbajvr(this%table_g, this%nb_para, 'K3', this%v_K3(i_node), livr)
-                    endif
+                    end if
                     call tbajvr(this%table_g, this%nb_para, 'G_IRWIN', this%v_G_IRWIN(i_node), livr)
-                elseif(option == "KJ") then
+                elseif (option == "KJ") then
                     call tbajvr(this%table_g, this%nb_para, 'KJ', this%v_KJ(i_node), livr)
                     call tbajvr(this%table_g, this%nb_para, 'G', this%v_G(i_node), livr)
-                elseif(option == "KJ_EPSI") then
+                elseif (option == "KJ_EPSI") then
                     call tbajvr(this%table_g, this%nb_para, 'KJ_EPSI', this%v_KJ_EPSI(i_node), livr)
                     call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
-                elseif(option == "KJ_EPSI") then
+                elseif (option == "KJ_EPSI") then
 
-                elseif(option == "G_EPSI") then
+                elseif (option == "G_EPSI") then
                     call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
                 else
                     ASSERT(ASTER_FALSE)
@@ -1682,8 +1681,8 @@ contains
         end do
 !
         call cpu_time(finish)
-        cgStat%save_cgTable = cgStat%save_cgTable + finish - start
-        cgStat%nb_save_cgTable = cgStat%nb_save_cgTable + 1
+        cgStat%save_cgTable = cgStat%save_cgTable+finish-start
+        cgStat%nb_save_cgTable = cgStat%nb_save_cgTable+1
 !
     end subroutine save_table
 !
@@ -1694,7 +1693,7 @@ contains
 !
     subroutine create_npf(this, cgStat)
 !
-    implicit none
+        implicit none
 !
         class(CalcG_theta), intent(in) :: this
         type(CalcG_Stat), intent(inout)   :: cgStat
@@ -1725,7 +1724,7 @@ contains
         real(kind=8) :: xm, ym, zm, xa, ya, za, xb, yb, zb, d
         real(kind=8) :: xab, yab, zab, xam, yam, zam, norm2, xnm, ynm, znm
         real(kind=8) :: vnora(3), vnorb(3), vdira(3), vdirb(3), vnorn(3), vdirn(3)
-        character(len=8), parameter :: licmp(9) = ['X1','X2','X3','X4','X5','X6','X7','X8','X9']
+    character(len=8), parameter :: licmp(9) = ['X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7', 'X8', 'X9']
 !
         call jemarq()
         call jeveuo(this%crack//'.FOND.NOEU', 'L', vk8=fondNoeud)
@@ -1734,7 +1733,7 @@ contains
         call wkvect(this%fondNoeudNume, 'V V I', this%nnof, vi=fondNoeudNume)
         call wkvect(this%fondNoeudCoor, 'V V R', 3*this%nnof, vr=fondNoeudCoor)
 !
-        if(this%nb_point_fond > 0) then
+        if (this%nb_point_fond > 0) then
             call cpu_time(start)
             call wkvect(this%npf_basefond, 'V V R', 6*this%nb_point_fond, vr=v_basfon)
             call wkvect(this%npf_fondNoeud, 'V V K8', this%nb_point_fond, vk8=v_noeuf)
@@ -1744,7 +1743,7 @@ contains
             call jeveuo(this%crack//'.BASNOF', 'L', vr=basfon)
 !
 ! --- Create virtual nodes (id and name)
-            do i_node = 2, this%nb_point_fond - 1
+            do i_node = 2, this%nb_point_fond-1
                 fondNoeudNume(i_node) = -1
                 v_noeuf(i_node) = "XXXXXXXX"
             end do
@@ -1752,14 +1751,14 @@ contains
 ! --- First and last nodes
 !
             call jenonu(jexnom(this%nomNoeud, fondNoeud(1)), nume)
-            fondNoeudNume(1)  = nume
+            fondNoeudNume(1) = nume
             v_noeuf(1) = fondNoeud(1)
             fondNoeudCoor(1:3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
             v_absfon(1) = 0.d0
             v_basfon(1:6) = basfon(1:6)
 !
             call jenonu(jexnom(this%nomNoeud, fondNoeud(this%nb_fondNoeud)), nume)
-            fondNoeudNume(this%nb_point_fond)  = nume
+            fondNoeudNume(this%nb_point_fond) = nume
             v_noeuf(this%nb_point_fond) = fondNoeud(this%nb_fondNoeud)
             fondNoeudCoor(3*(this%nb_point_fond-1)+1:3*(this%nb_point_fond-1)+3) = &
                 coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
@@ -1788,9 +1787,9 @@ contains
                 base2(1:6) = basfon(6*(node_nume-1)+1:6*(node_nume-1)+6)
 !
                 fondNoeudCoor(3*(i_node-1)+1:3*(i_node-1)+3) = &
-                    coor1(1:3) + (coor2(1:3) - coor1(1:3))*(s-s1)/(s2- s1)
+                    coor1(1:3)+(coor2(1:3)-coor1(1:3))*(s-s1)/(s2-s1)
                 v_basfon(6*(i_node-1)+1:6*(i_node-1)+6) = &
-                    base1(1:6) + (base2(1:6) - base1(1:6))*(s-s1)/(s2- s1)
+                    base1(1:6)+(base2(1:6)-base1(1:6))*(s-s1)/(s2-s1)
                 v_absfon(i_node) = s
             end do
 
@@ -1802,12 +1801,12 @@ contains
             call dismoi('DIM_GEOM', this%mesh, 'MAILLAGE', repi=ndim)
             ASSERT(ndim == 3)
             call dismoi('NB_NO_MAILLA', this%mesh, 'MAILLAGE', repi=nbno)
-            nseg = this%nb_point_fond - 1
+            nseg = this%nb_point_fond-1
             call wkvect(this%npf_abscurv, 'V V R', nbno, vr=v_abscur)
 !
 !     INITIALISATION DU CHAMP SIMPLE DE LA BASE LOCALE
             cnsbas = '&&CALC_G.CNSBAS'
-            call cnscre(this%mesh, 'NEUT_R', ndim*3, licmp, 'V',&
+            call cnscre(this%mesh, 'NEUT_R', ndim*3, licmp, 'V', &
                         cnsbas)
             call jeveuo(cnsbas//'.CNSV', 'E', vr=gsv)
             call jeveuo(cnsbas//'.CNSL', 'E', vl=gsl)
@@ -1830,12 +1829,12 @@ contains
                     inb = iseg+1
 !
 !           COORD DES POINTS A ET B, EXTREMITES DU SEGMENT ISEG
-                    xa = fondNoeudCoor((ina-1)*3 + 1)
-                    ya = fondNoeudCoor((ina-1)*3 + 2)
-                    za = fondNoeudCoor((ina-1)*3 + 3)
-                    xb = fondNoeudCoor((inb-1)*3 + 1)
-                    yb = fondNoeudCoor((inb-1)*3 + 2)
-                    zb = fondNoeudCoor((inb-1)*3 + 3)
+                    xa = fondNoeudCoor((ina-1)*3+1)
+                    ya = fondNoeudCoor((ina-1)*3+2)
+                    za = fondNoeudCoor((ina-1)*3+3)
+                    xb = fondNoeudCoor((inb-1)*3+1)
+                    yb = fondNoeudCoor((inb-1)*3+2)
+                    zb = fondNoeudCoor((inb-1)*3+3)
 !
 !           VECTEUR AB ET AM
                     xab = xb-xa
@@ -1846,8 +1845,8 @@ contains
                     zam = zm-za
 !
 !           PARAM S (PRODUIT SCALAIRE...)
-                    s = xab*xam + yab*yam + zab*zam
-                    norm2 = xab*xab + yab*yab + zab*zab
+                    s = xab*xam+yab*yam+zab*zam
+                    norm2 = xab*xab+yab*yab+zab*zab
                     s = s/norm2
 !
 !           SI N EN DEHORS DU SEGMENT AB
@@ -1855,14 +1854,14 @@ contains
                     if (s .le. eps) s = 0.d0
 !
 !           COORD DU PROJETE DE M SUR ISEG: N
-                    xnm = xm - (s*xab+xa)
-                    ynm = ym - (s*yab+ya)
-                    znm = zm - (s*zab+za)
+                    xnm = xm-(s*xab+xa)
+                    ynm = ym-(s*yab+ya)
+                    znm = zm-(s*zab+za)
 !
 !           DISTANCE MN
-                    d = sqrt(xnm*xnm + ynm*ynm + znm*znm)
+                    d = sqrt(xnm*xnm+ynm*ynm+znm*znm)
 !
-                    if (d .lt. (dmin*(1-abs(r8prem())*1.d04) )) then
+                    if (d .lt. (dmin*(1-abs(r8prem())*1.d04))) then
                         dmin = d
                         sn = s
                         indica = ina
@@ -1871,10 +1870,10 @@ contains
                         n(1) = s*xab+xa
                         n(2) = s*yab+ya
                         n(3) = s*zab+za
-                    endif
+                    end if
                 end do
 !           ABSCISSE CURVILIGNE DU NOEUD N SUR LE FRONT DE FISSURE
-                v_abscur(i_node) = (1-sn)*v_absfon(indica) + sn*v_absfon(indicb)
+                v_abscur(i_node) = (1-sn)*v_absfon(indica)+sn*v_absfon(indicb)
 !
 !         CALCUL DES VECTEURS DE LA BASE LOCALE AU POINT PROJETE
 !
@@ -1898,19 +1897,19 @@ contains
 
                 end do
             end do
-            call cnscno(cnsbas, ' ', 'NON', 'G', this%npf_baseloc,&
-            'F', ibid)
+            call cnscno(cnsbas, ' ', 'NON', 'G', this%npf_baseloc, &
+                        'F', ibid)
             call cpu_time(finish)
-            cgStat%npf_cgTheta = cgStat%npf_cgTheta + finish - start
+            cgStat%npf_cgTheta = cgStat%npf_cgTheta+finish-start
         else
             do i_node = 1, this%nb_fondNoeud
 !               Récupération du numéro de noeud
                 call jenonu(jexnom(this%nomNoeud, fondNoeud(i_node)), nume)
-                fondNoeudNume(i_node)= nume
+                fondNoeudNume(i_node) = nume
                 fondNoeudCoor(3*(i_node-1)+1:3*(i_node-1)+3) = coorNoeud(3*(nume-1)+1:3*(nume-1)+3)
-            enddo
+            end do
         end if
-    call jedema()
+        call jedema()
 !
     end subroutine
 !

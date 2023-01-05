@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,8 +85,8 @@ subroutine macr78(nomres, trange, typres)
     integer, pointer :: ordr(:) => null()
     character(len=24), pointer :: mael_refe(:) => null()
 !-----------------------------------------------------------------------
-    data nomcmp   /'DX      ','DY      ','DZ      ',&
-     &               'DRX     ','DRY     ','DRZ     '/
+    data nomcmp/'DX      ', 'DY      ', 'DZ      ',&
+     &               'DRX     ', 'DRY     ', 'DRZ     '/
 !     ------------------------------------------------------------------
     call jemarq()
     nomin = trange(1:8)
@@ -102,11 +102,11 @@ subroutine macr78(nomres, trange, typres)
 !      IF (TREDU.EQ.'OUI') LREDU = .TRUE.
     call getvid(' ', 'MACR_ELEM_DYNA', scal=macrel, nbret=nmc)
     call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
-    basemo = mael_refe(1)(1:8)
-    call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
-                cbid, rbid, k8b, tmod, 1,&
+    basemo = mael_refe(1) (1:8)
+    call rsorac(basemo, 'LONUTI', 0, rbid, k8b, &
+                cbid, rbid, k8b, tmod, 1, &
                 ibid)
-    nbmode=tmod(1)
+    nbmode = tmod(1)
     call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numedd)
     call dismoi('NOM_MAILLA', numedd(1:14), 'NUME_DDL', repk=mailla)
     call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=lintf)
@@ -121,39 +121,39 @@ subroutine macr78(nomres, trange, typres)
 !      NBNDE2 = NBMDEF/NEC
 !      ASSERT(NBNDEF.EQ.NBNDE2)
     if (nbmdef .ne. 0) then
-        call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', nbmdyn+1,&
+        call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', nbmdyn+1, &
                     0, sjv=lnocmp, styp=k8b)
         if (zk16(lnocmp) .eq. ' ') then
-            lredu=.true.
+            lredu = .true.
             nec = nbmode/nbntot
             nbndyn = nbmdyn/nec
             nbndef = nbntot-nbndyn
         else
             k = 1
- 31         continue
+31          continue
             if ((k+1) .gt. nbmdef) then
                 nes = k
                 goto 32
-            endif
-            call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', nbmdyn+k+1,&
+            end if
+            call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', nbmdyn+k+1, &
                         0, sjv=lnocm2, styp=k8b)
-            if (zk16(lnocmp)(1:8) .ne. zk16(lnocm2)(1:8)) then
+            if (zk16(lnocmp) (1:8) .ne. zk16(lnocm2) (1:8)) then
                 nes = k
                 goto 32
             else
-                k=k+1
+                k = k+1
                 goto 31
-            endif
- 32         continue
+            end if
+32          continue
             nbndef = nbmdef/nes
             nbndyn = nbntot-nbndef
             if (nbmdyn .ne. 0) then
                 nec = nbmdyn/nbndyn
             else
                 nec = nes
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
     AS_ALLOCATE(vk8=noecmp, size=2*nbmode)
     call jeveuo(macrel//'.LINO', 'L', vi=lino)
@@ -162,12 +162,12 @@ subroutine macr78(nomres, trange, typres)
     else
         nbtdyn = nbndyn
         do i = nbmdyn+1, nbmode
-            call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', i,&
+            call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', i, &
                         0, sjv=lnocmp, styp=k8b)
-            noecmp(1+2*i-2) = zk16(lnocmp)(1:8)
-            noecmp(1+2*i-1) = zk16(lnocmp)(9:16)
+            noecmp(1+2*i-2) = zk16(lnocmp) (1:8)
+            noecmp(1+2*i-1) = zk16(lnocmp) (9:16)
         end do
-    endif
+    end if
 !
     do i = 1, nbtdyn
         call jenuno(jexnum(mailla//'.NOMNOE', lino(i)), nomnol)
@@ -199,33 +199,33 @@ subroutine macr78(nomres, trange, typres)
         else
             call utmess('A', 'ALGORITH10_93')
             goto 999
-        endif
-    endif
+        end if
+    end if
     knume = '&&MACR78.NUM_RANG'
     kinst = '&&MACR78.INSTANT'
-    call rstran('NON', trange, ' ', 1, kinst,&
+    call rstran('NON', trange, ' ', 1, kinst, &
                 knume, nbinst, iretou)
     if (iretou .ne. 0) then
         call utmess('F', 'UTILITAI4_24')
-    endif
+    end if
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
         call jeveuo(kinst, 'L', jinst)
         call jeveuo(knume, 'L', jnume)
-    endif
+    end if
 !
     call jeexin(trange//'.ORDR', iret)
     if (iret .ne. 0) then
         call jeveuo(trange//'.ORDR', 'L', vi=ordr)
 !
-    endif
+    end if
 !
 !
 !     --- CREATION DE LA SD RESULTAT ---
     call rscrsd('G', nomres, typres, nbinst)
 !
     AS_ALLOCATE(vr=restr, size=nbmode)
-    call rsexch('F', nomin, 'DEPL', 1, cham19,&
+    call rsexch('F', nomin, 'DEPL', 1, cham19, &
                 iret)
     call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=maya)
 ! ATTENTION MAILLA MAILLAGE DU MACRO_ELEM DE RESTITUTION
@@ -241,7 +241,7 @@ subroutine macr78(nomres, trange, typres)
             inu0 = zi(jnume+iarc0-1)
             inum = ordr(inu0)
             iarch = iarc0-1
-            call rsexch('F', nomin, champ(i)(1:4), inum, nomcha,&
+            call rsexch('F', nomin, champ(i) (1:4), inum, nomcha, &
                         iret)
             nomcha = nomcha(1:19)//'.VALE'
             call jeveuo(nomcha, 'L', ivale)
@@ -257,34 +257,34 @@ subroutine macr78(nomres, trange, typres)
                 iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                 restr(im) = zr(ivale+iddl-1+icmp-1)
             end do
-            call rsexch(' ', nomres, champ(i)(1:4), iarch, chamno,&
+            call rsexch(' ', nomres, champ(i) (1:4), iarch, chamno, &
                         iret)
-            call vtcreb(chamno, 'G', 'R',&
-                        nume_ddlz = numedd,&
-                        nb_equa_outz = neq)
+            call vtcreb(chamno, 'G', 'R', &
+                        nume_ddlz=numedd, &
+                        nb_equa_outz=neq)
             call jeveuo(chamno(1:19)//'.VALE', 'E', ldnew)
             call mdgeph(neq, nbmode, base, restr, zr(ldnew))
-            call rsnoch(nomres, champ(i)(1:4), iarch)
+            call rsnoch(nomres, champ(i) (1:4), iarch)
             if (i .eq. 1) then
-                call rsadpa(nomres, 'E', 1, 'INST', iarch,&
+                call rsadpa(nomres, 'E', 1, 'INST', iarch, &
                             0, sjv=linst, styp=k8b)
                 zr(linst) = zr(jinst+iarc0-1)
-                call rsadpa(nomin, 'L', 1, 'MODELE', inum,&
+                call rsadpa(nomin, 'L', 1, 'MODELE', inum, &
                             0, sjv=lpa2, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'MODELE', iarch,&
+                call rsadpa(nomres, 'E', 1, 'MODELE', iarch, &
                             0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
-                call rsadpa(nomin, 'L', 1, 'CHAMPMAT', inum,&
+                call rsadpa(nomin, 'L', 1, 'CHAMPMAT', inum, &
                             0, sjv=lpa2, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iarch,&
+                call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iarch, &
                             0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
-                call rsadpa(nomin, 'L', 1, 'CARAELEM', inum,&
+                call rsadpa(nomin, 'L', 1, 'CARAELEM', inum, &
                             0, sjv=lpa2, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'CARAELEM', iarch,&
+                call rsadpa(nomres, 'E', 1, 'CARAELEM', iarch, &
                             0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
-            endif
+            end if
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine dbr_calcpod_savel(base, nbMode, nbSnapRedu, baseSing, baseValeR)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/romBaseSave.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-integer, intent(in) :: nbMode, nbSnapRedu
-real(kind=8), pointer :: baseValeR(:), baseSing(:)
+    type(ROM_DS_Empi), intent(in) :: base
+    integer, intent(in) :: nbMode, nbSnapRedu
+    real(kind=8), pointer :: baseValeR(:), baseSing(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ real(kind=8), pointer :: baseValeR(:), baseSing(:)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iSlice, iMode, nodeNume, cmpNume, i_2d, iEqua
-    integer :: nbSlice, n_2d, nbCmp, nbLineMode,nbEqua
+    integer :: nbSlice, n_2d, nbCmp, nbLineMode, nbEqua
     real(kind=8), pointer :: lineModesVale(:) => null()
     real(kind=8), pointer :: lineModesSing(:) => null()
     integer, pointer :: numeSlice(:) => null()
@@ -58,49 +58,49 @@ real(kind=8), pointer :: baseValeR(:), baseSing(:)
 ! --------------------------------------------------------------------------------------------------
 !
     lineicNume = base%lineicNume
-    nbEqua     = base%mode%nbEqua
-    nbCmp      = lineicNume%nbCmp
-    nbSlice    = lineicNume%nbSlice
+    nbEqua = base%mode%nbEqua
+    nbCmp = lineicNume%nbCmp
+    nbSlice = lineicNume%nbSlice
     nbLineMode = nbMode*nbSlice
 !
 ! - Create working objects
 !
-    AS_ALLOCATE(vr = lineModesVale, size = nbEqua*nbMode*nbSlice)
-    AS_ALLOCATE(vr = lineModesSing, size = nbMode*nbSlice)
-    AS_ALLOCATE(vi = numeSlice, size = nbMode*nbSlice)
+    AS_ALLOCATE(vr=lineModesVale, size=nbEqua*nbMode*nbSlice)
+    AS_ALLOCATE(vr=lineModesSing, size=nbMode*nbSlice)
+    AS_ALLOCATE(vi=numeSlice, size=nbMode*nbSlice)
 !
 ! - Create index of slices
 !
     do iSlice = 1, nbSlice
         do iMode = 1, nbMode
-            lineModesSing(iMode + nbMode*(iSlice - 1)) = baseSing(iMode)
-            numeSlice(iMode + nbMode*(iSlice - 1))     = iSlice
-        enddo
-    enddo
+            lineModesSing(iMode+nbMode*(iSlice-1)) = baseSing(iMode)
+            numeSlice(iMode+nbMode*(iSlice-1)) = iSlice
+        end do
+    end do
 !
 ! - Create modes to save
 !
     do iEqua = 1, nbEqua
-        nodeNume = (iEqua - 1)/nbCmp + 1
-        cmpNume  = iEqua - (nodeNume - 1)*nbCmp
-        iSlice   = lineicNume%numeSlice(nodeNume)
-        n_2d     = lineicNume%numeSection(nodeNume)
-        i_2d     = (n_2d - 1)*nbCmp + cmpNume
+        nodeNume = (iEqua-1)/nbCmp+1
+        cmpNume = iEqua-(nodeNume-1)*nbCmp
+        iSlice = lineicNume%numeSlice(nodeNume)
+        n_2d = lineicNume%numeSection(nodeNume)
+        i_2d = (n_2d-1)*nbCmp+cmpNume
         do iMode = 1, nbMode
-            lineModesVale(iEqua + nbEqua*(iMode - 1 + nbMode*(iSlice - 1))) =&
-                baseValeR(i_2d + nbEqua/nbSlice*(iMode - 1))
-        enddo
-    enddo
+            lineModesVale(iEqua+nbEqua*(iMode-1+nbMode*(iSlice-1))) = &
+                baseValeR(i_2d+nbEqua/nbSlice*(iMode-1))
+        end do
+    end do
 !
 ! - Save modes
 !
-    call romBaseSave(base         , nbLineMode   , nbSnapRedu,&
+    call romBaseSave(base, nbLineMode, nbSnapRedu, &
                      lineModesVale, lineModesSing, numeSlice)
 !
 ! - Cleaning
 !
-    AS_DEALLOCATE(vr = lineModesVale)
-    AS_DEALLOCATE(vr = lineModesSing)
-    AS_DEALLOCATE(vi = numeSlice)
+    AS_DEALLOCATE(vr=lineModesVale)
+    AS_DEALLOCATE(vr=lineModesSing)
+    AS_DEALLOCATE(vi=numeSlice)
 !
 end subroutine

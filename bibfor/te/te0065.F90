@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0065(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "jeveux.h"
@@ -61,7 +61,7 @@ implicit none
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
-    if (lielrf(2)(1:4) .eq. 'POHO') then
+    if (lielrf(2) (1:4) .eq. 'POHO') then
 !
 !        POUR LES ELEMENTS DE LA MODELISATION '3D_FAISCEAU':
 !        ===================================================
@@ -72,10 +72,10 @@ implicit none
             nbv = 1
         else
             call utmess('F', 'ELEMENTS3_98')
-        endif
+        end if
         tpg = 0.d0
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [tpg],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 0, ' ', [tpg], &
                     nbv, nomres, valres, icodre, 1)
         rhopou = valres(1)
 !
@@ -86,10 +86,10 @@ implicit none
             nbv = 1
         else
             call utmess('F', 'ELEMENTS3_98')
-        endif
+        end if
         tpg = 0.d0
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [tpg],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 0, ' ', [tpg], &
                     nbv, nomres, valres, icodre, 1)
         rhoflu = valres(1)
 !
@@ -102,27 +102,27 @@ implicit none
         call jevech('PCAPOUF', 'L', lcorr)
         ycell = zr(lcorr+4)
         rapp = zr(lcorr+5)
-        rapp = rapp * rapp / ycell
+        rapp = rapp*rapp/ycell
         yf = zr(lcorr+3)/ycell
-        rho(1) = ( rhopou * ayz * rapp ) + ( rhoflu * yf )
-        call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        rho(1) = (rhopou*ayz*rapp)+(rhoflu*yf)
+        call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     else
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 0, ' ', [0.d0],&
+            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                        ' ', phenom, 0, ' ', [0.d0], &
                         1, 'RHO', rho, icodre, 1)
         else
             call utmess('F', 'ELEMENTS_50')
-        endif
-    endif
+        end if
+    end if
 !
 !
     do i = 1, nno
-        x(i) = zr(igeom+3* (i-1))
+        x(i) = zr(igeom+3*(i-1))
         y(i) = zr(igeom+3*i-2)
         z(i) = zr(igeom+3*i-1)
     end do
@@ -139,30 +139,30 @@ implicit none
     volume = 0.d0
     do kp = 1, npg
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
 !
-        volume = volume + poids
+        volume = volume+poids
         do i = 1, nno
 !           --- CDG ---
-            zr(lcastr+1) = zr(lcastr+1) + poids*x(i)*zr(ivf+l+i-1)
-            zr(lcastr+2) = zr(lcastr+2) + poids*y(i)*zr(ivf+l+i-1)
-            zr(lcastr+3) = zr(lcastr+3) + poids*z(i)*zr(ivf+l+i-1)
+            zr(lcastr+1) = zr(lcastr+1)+poids*x(i)*zr(ivf+l+i-1)
+            zr(lcastr+2) = zr(lcastr+2)+poids*y(i)*zr(ivf+l+i-1)
+            zr(lcastr+3) = zr(lcastr+3)+poids*z(i)*zr(ivf+l+i-1)
 !           --- INERTIE ---
             xxi = 0.d0
             yyi = 0.d0
             zzi = 0.d0
             do j = 1, nno
-                xxi = xxi + x(i)*zr(ivf+l+i-1)*x(j)*zr(ivf+l+j-1)
-                yyi = yyi + y(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
-                zzi = zzi + z(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
-                matine(2) = matine(2) + poids*x(i)*zr(ivf+l+i-1)*y(j)* zr(ivf+l+j-1)
-                matine(4) = matine(4) + poids*x(i)*zr(ivf+l+i-1)*z(j)* zr(ivf+l+j-1)
-                matine(5) = matine(5) + poids*y(i)*zr(ivf+l+i-1)*z(j)* zr(ivf+l+j-1)
+                xxi = xxi+x(i)*zr(ivf+l+i-1)*x(j)*zr(ivf+l+j-1)
+                yyi = yyi+y(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
+                zzi = zzi+z(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
+                matine(2) = matine(2)+poids*x(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
+                matine(4) = matine(4)+poids*x(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
+                matine(5) = matine(5)+poids*y(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
             end do
-            matine(1) = matine(1) + poids* (yyi+zzi)
-            matine(3) = matine(3) + poids* (xxi+zzi)
-            matine(6) = matine(6) + poids* (xxi+yyi)
+            matine(1) = matine(1)+poids*(yyi+zzi)
+            matine(3) = matine(3)+poids*(xxi+zzi)
+            matine(6) = matine(6)+poids*(xxi+yyi)
         end do
     end do
 !
@@ -175,11 +175,11 @@ implicit none
     zr(lcastr+3) = zg
 !
 !     ---ON DONNE LES INERTIES EN G ---
-    zr(lcastr+4) = matine(1)*rho(1) - zr(lcastr)* (yg*yg+zg*zg)
-    zr(lcastr+5) = matine(3)*rho(1) - zr(lcastr)* (xg*xg+zg*zg)
-    zr(lcastr+6) = matine(6)*rho(1) - zr(lcastr)* (xg*xg+yg*yg)
-    zr(lcastr+7) = matine(2)*rho(1) - zr(lcastr)* (xg*yg)
-    zr(lcastr+8) = matine(4)*rho(1) - zr(lcastr)* (xg*zg)
-    zr(lcastr+9) = matine(5)*rho(1) - zr(lcastr)* (yg*zg)
+    zr(lcastr+4) = matine(1)*rho(1)-zr(lcastr)*(yg*yg+zg*zg)
+    zr(lcastr+5) = matine(3)*rho(1)-zr(lcastr)*(xg*xg+zg*zg)
+    zr(lcastr+6) = matine(6)*rho(1)-zr(lcastr)*(xg*xg+yg*yg)
+    zr(lcastr+7) = matine(2)*rho(1)-zr(lcastr)*(xg*yg)
+    zr(lcastr+8) = matine(4)*rho(1)-zr(lcastr)*(xg*zg)
+    zr(lcastr+9) = matine(5)*rho(1)-zr(lcastr)*(yg*zg)
 !
 end subroutine

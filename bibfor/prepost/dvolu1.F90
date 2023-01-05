@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ function dvolu1(numele, coord, norm, volt)
 ! 1 - RECHERCHE DU POINT INTERNE (NUMELE<0) OU EXTERNE (NUMELE>0)
 !
     do j = 1, 4
-        if (norm(1,j) .eq. 1 .and. numele .lt. 0) i = j
-        if (norm(1,j) .eq. -1 .and. numele .gt. 0) i = j
+        if (norm(1, j) .eq. 1 .and. numele .lt. 0) i = j
+        if (norm(1, j) .eq. -1 .and. numele .gt. 0) i = j
     end do
 !
 ! 2 - DETERMINATION DANS LE TABLEAU DES POSITIONS DES INTERSECTIONS
@@ -54,11 +54,11 @@ function dvolu1(numele, coord, norm, volt)
         j = 5
         k = 6
         l = 7
-    else if (i.eq.2) then
+    else if (i .eq. 2) then
         j = 8
         k = 5
         l = 9
-    else if (i.eq.3) then
+    else if (i .eq. 3) then
         j = 6
         k = 8
         l = 10
@@ -66,31 +66,31 @@ function dvolu1(numele, coord, norm, volt)
         j = 10
         k = 9
         l = 7
-    endif
+    end if
 !
 ! 3 - CALCUL DU VOLUME
 !
-    dvolu1 =(coord(1,l)-coord(1,i))*&
-     &       ((coord(2,j)-coord(2,i))*(coord(3,k)-coord(3,i)) -&
-     &        (coord(3,j)-coord(3,i))*(coord(2,k)-coord(2,i)) )
-    dvolu1 = dvolu1 +(&
-             coord(2,l)-coord(2,i))* ((coord(1,k)-coord(1,i))*(coord(3,j)-coord(3,i)) - (coord(3,&
-             &k)-coord(3,i))*(coord(1,j)-coord(1,i))&
+    dvolu1 = (coord(1, l)-coord(1, i))*&
+     &       ((coord(2, j)-coord(2, i))*(coord(3, k)-coord(3, i))-&
+     &        (coord(3, j)-coord(3, i))*(coord(2, k)-coord(2, i)))
+    dvolu1 = dvolu1+( &
+            coord(2, l)-coord(2, i))*((coord(1, k)-coord(1, i))*(coord(3, j)-coord(3, i))-(coord(3,&
+             &k)-coord(3, i))*(coord(1, j)-coord(1, i)) &
              )
-    dvolu1 = dvolu1 +(&
-             coord(3,l)-coord(3,i))* ((coord(1,j)-coord(1,i))*(coord(2,k)-coord(2,i)) - (coord(2,&
-             &j)-coord(2,i))*(coord(1,k)-coord(1,i))&
+    dvolu1 = dvolu1+( &
+            coord(3, l)-coord(3, i))*((coord(1, j)-coord(1, i))*(coord(2, k)-coord(2, i))-(coord(2,&
+             &j)-coord(2, i))*(coord(1, k)-coord(1, i)) &
              )
 !
-    dvolu1 = dvolu1 / 6.d0
+    dvolu1 = dvolu1/6.d0
     if (dvolu1 .lt. 0.0d0) dvolu1 = -dvolu1
 !
     if (numele .gt. 0) then
-        dvolu1 = volt(numele) - dvolu1
-    endif
+        dvolu1 = volt(numele)-dvolu1
+    end if
     if (abs(dvolu1) .lt. 1.0d-10) dvolu1 = 0.0d0
     if (dvolu1 .lt. 0.d0) then
         dvolu1 = -dvolu1
-    endif
+    end if
 !
 end function

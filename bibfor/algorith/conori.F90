@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,10 +123,10 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE GROUP_MA_FISSURE DANS .COMM
 !     ------------------------------------------------------------------
-    ic=1
-    call getvem(ma, 'GROUP_MA', 'ORIE_FISSURE', 'GROUP_MA', ic,&
+    ic = 1
+    call getvem(ma, 'GROUP_MA', 'ORIE_FISSURE', 'GROUP_MA', ic, &
                 0, kbid, nbgco)
-    nbgco=-nbgco
+    nbgco = -nbgco
 !
 !     ==================================================================
     if (nbgco .ne. 0) then
@@ -135,20 +135,20 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
         call jelira(ma//'.GROUPEMA', 'NUTIOC', nbgma)
         if (niv .eq. 2) then
-            write (ifm,*)' '
-            write (ifm,*)' LA LISTE DES GROUP_MA '
-            write (ifm,*)' '
-        endif
+            write (ifm, *) ' '
+            write (ifm, *) ' LA LISTE DES GROUP_MA '
+            write (ifm, *) ' '
+        end if
 !     ------------------------------------------------------------------
 !     RECHERCHE DES NOMS DES GROUP_MA DANS .MAIL
 !     ------------------------------------------------------------------
         do igma = 1, nbgma
             call jenuno(jexnum(ma//'.GROUPEMA', igma), kbid)
             if (niv .eq. 2) then
-                write (ifm,*)'   GROUP_MA     : ',kbid
-            endif
+                write (ifm, *) '   GROUP_MA     : ', kbid
+            end if
         end do
-        write (ifm,*)' '
+        write (ifm, *) ' '
 !     ------------------------------------------------------------------
 !     CREATION D UN TABLEAU DE TRAVAIL
 !     ------------------------------------------------------------------
@@ -156,17 +156,17 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DES NOMS DES GROUP_MA_FISSURE DANS .COMM
 !     ------------------------------------------------------------------
-        call getvem(ma, 'GROUP_MA', 'ORIE_FISSURE', 'GROUP_MA', ic,&
+        call getvem(ma, 'GROUP_MA', 'ORIE_FISSURE', 'GROUP_MA', ic, &
                     nbgco, zk24(io8gco), idum)
         if (niv .eq. 2) then
-            write (ifm,*)' '
-            write (ifm,*)' LA LISTE DES ORIE_FISSURE'
-            write (ifm,*)' '
+            write (ifm, *) ' '
+            write (ifm, *) ' LA LISTE DES ORIE_FISSURE'
+            write (ifm, *) ' '
             do igco = 1, nbgco
-                write (ifm,*)'   ORIE_FISSURE: ',zk24(io8gco+igco-1)
+                write (ifm, *) '   ORIE_FISSURE: ', zk24(io8gco+igco-1)
             end do
-            write (ifm,*)' '
-        endif
+            write (ifm, *) ' '
+        end if
 !     ------------------------------------------------------------------
         call jelira(ma//'.NOMMAI', 'NOMUTI', nbmar)
         call jelira(ma//'.NOMNOE', 'NOMUTI', nbnoe)
@@ -178,11 +178,11 @@ subroutine conori(ma)
         call wkvect('&&OP0154.KTR', 'V V K8', nbmar, iktyr)
         call wkvect('&&OP0154.IMI', 'V V I', nbmar, jmic)
         call wkvect('&&OP0154.MBL', 'V V I', nbmar, jmb)
-        call conini(ma, zi(inoe), zi(imai), zi(imaz), nbmar,&
-                    nbnoe, nbmarc, zk8(ikmar), zi(jmic), zi(jmb),&
+        call conini(ma, zi(inoe), zi(imai), zi(imaz), nbmar, &
+                    nbnoe, nbmarc, zk8(ikmar), zi(jmic), zi(jmb), &
                     zk8(iktyr), nbgco, io8gco)
-        write (ifm,*)'NOMBRE DE MAILLES DE REFERENCE TESTEES : ',&
-        nbmarc
+        write (ifm, *) 'NOMBRE DE MAILLES DE REFERENCE TESTEES : ', &
+            nbmarc
 !
 !     ==================================================================
 !     ------------------------------------------------------------------
@@ -195,10 +195,10 @@ subroutine conori(ma)
             call jenonu(jexnom(ma//'.GROUPEMA', zk24(io8gco+igco-1)), igma)
 !
             if (niv .eq. 2) then
-                write (ifm,*)' '
-                write (ifm,*)' TRAITEMENT DE ',zk24(io8gco+igco-1)
-                write (ifm,*)' '
-            endif
+                write (ifm, *) ' '
+                write (ifm, *) ' TRAITEMENT DE ', zk24(io8gco+igco-1)
+                write (ifm, *) ' '
+            end if
             if (igma .eq. 0) then
 !     ------------------------------------------------------------------
 !     TRAITEMENT DU CAS DE NON-EXISTENCE
@@ -219,15 +219,15 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
                 call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONMAX', nbmag)
                 if (niv .eq. 2) then
-                    write (ifm,*)'   LA LISTE DES MAILLES DU GROUPE '
-                    write (ifm,*)' '
-                endif
+                    write (ifm, *) '   LA LISTE DES MAILLES DU GROUPE '
+                    write (ifm, *) ' '
+                end if
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU GROUP_MA
 !     ------------------------------------------------------------------
                 do imag = 1, nbmag
-                    imac=zi(imigma+imag-1)
+                    imac = zi(imigma+imag-1)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
 !     ------------------------------------------------------------------
@@ -236,18 +236,18 @@ subroutine conori(ma)
 !     RECHERCHE DE L'ADRESSE DU TYPE DE LA MAILLE DANS ZI
 !     ------------------------------------------------------------------
                     call jeveuo(ma//'.TYPMAIL', 'L', iatyma)
-                    imityc=iatyma-1+imac
-                    ityc=zi(imityc)
+                    imityc = iatyma-1+imac
+                    ityc = zi(imityc)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU TYPE DE LA MAILLE DANS CATA.TM.NOMTM
 !     ------------------------------------------------------------------
                     call jenuno(jexnum('&CATA.TM.NOMTM', ityc), ktyc)
                     if (niv .eq. 2) then
-                        write (ifm,*)'     MAILLE NU : ',imag,' NOM : ',kmac,&
-     &            ' ORDRE : ',imac,' TYPE : ',ityc,' TYPE : ',ktyc
-                    endif
-                    macoc(1)=kmac
-                    macoc(2)=ktyc
+                        write (ifm, *) '     MAILLE NU : ', imag, ' NOM : ', kmac,&
+     &            ' ORDRE : ', imac, ' TYPE : ', ityc, ' TYPE : ', ktyc
+                    end if
+                    macoc(1) = kmac
+                    macoc(2) = ktyc
 !
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L ADRESSE DES CONNEXIONS DE LA MAILLE
@@ -262,59 +262,59 @@ subroutine conori(ma)
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
                     do icoc = 1, nbcoc
-                        inoc=zi(imicoc+icoc-1)
+                        inoc = zi(imicoc+icoc-1)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DU NOEUD
 !     ------------------------------------------------------------------
                         call jenuno(jexnum(ma//'.NOMNOE', inoc), knoc)
-                        macoc(icoc+2)=knoc
+                        macoc(icoc+2) = knoc
                     end do
 !
 !     ------------------------------------------------------------------
 !     SAUVEGARDE DE LA MAILLE DE FISSURE
 !     ------------------------------------------------------------------
                     do idum = 1, nbcoc+2
-                        macos(idum)=macoc(idum)
+                        macos(idum) = macoc(idum)
                     end do
 !     ==================================================================
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU MAILLAGE
 !     ------------------------------------------------------------------
-                    lomodi=.false.
-                    loreor=.false.
-                    nbmac=0
+                    lomodi = .false.
+                    loreor = .false.
+                    nbmac = 0
                     do imarc = 1, nbmarc
-                        imar=zi(imaz-1+imarc)
+                        imar = zi(imaz-1+imarc)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DE LA MAILLE
 !     ------------------------------------------------------------------
-                        kmar=zk8(ikmar-1+imar)
+                        kmar = zk8(ikmar-1+imar)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU TYPE DE LA MAILLE
 !     ------------------------------------------------------------------
-                        ktyr=zk8(iktyr-1+imar)
+                        ktyr = zk8(iktyr-1+imar)
 !
-                        macor(1)=kmar
-                        macor(2)=ktyr
+                        macor(1) = kmar
+                        macor(2) = ktyr
 !
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L ADRESSE DES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-                        imicor=zi(jmic-1+imar)
+                        imicor = zi(jmic-1+imar)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-                        nbcor=zi(jmb-1+imar)
+                        nbcor = zi(jmb-1+imar)
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
                         do icor = 1, nbcor
-                            inor=zi(imicor+icor-1)
+                            inor = zi(imicor+icor-1)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOM DU NOEUD
 !     ------------------------------------------------------------------
                             call jenuno(jexnum(ma//'.NOMNOE', inor), knor)
-                            macor(icor+2)=knor
+                            macor(icor+2) = knor
                         end do
 !     ==================================================================
 !     ------------------------------------------------------------------
@@ -323,75 +323,75 @@ subroutine conori(ma)
 !                      LOMODI = .TRUE.  SI MODIFICATION
 !                      LOMODI = .FALSE. SINON
 !     ------------------------------------------------------------------
-                        lomod0=.false.
-                        locor0=.false.
-                        loreo0=.false.
-                        call contac(macor, nbcor, macoc, nbcoc, lface0,&
+                        lomod0 = .false.
+                        locor0 = .false.
+                        loreo0 = .false.
+                        call contac(macor, nbcor, macoc, nbcoc, lface0, &
                                     lomod0, locor0, loreo0, ma)
-                        if (loreo0) lface0= .not. lface0
+                        if (loreo0) lface0 = .not. lface0
                         if (locor0 .or. lomod0) then
-                            nbmac=nbmac+1
+                            nbmac = nbmac+1
                             if (niv .eq. 2) then
-                                write (ifm,*)'LA MAILLE DE FISSURE   ',macoc(1),&
-     &                ' DE TYPE ',macoc(2)
-                                write (ifm,*)(macoc(i+2),i=1,nbcoc)
-                                write (ifm,*)'S''APPUIE SUR LA MAILLE ',macor(1),&
-     &                ' DE TYPE ',macor(2)
-                                write (ifm,*)(macor(i+2),i=1,nbcor)
+                                write (ifm, *) 'LA MAILLE DE FISSURE   ', macoc(1),&
+     &                ' DE TYPE ', macoc(2)
+                                write (ifm, *) (macoc(i+2), i=1, nbcoc)
+                                write (ifm, *) 'S''APPUIE SUR LA MAILLE ', macor(1),&
+     &                ' DE TYPE ', macor(2)
+                                write (ifm, *) (macor(i+2), i=1, nbcor)
                                 if (lface0) then
-                                    write (ifm,*)'PAR SA FACE INFERIEURE'
+                                    write (ifm, *) 'PAR SA FACE INFERIEURE'
                                 else
-                                    write (ifm,*)'PAR SA FACE SUPERIEURE'
-                                endif
+                                    write (ifm, *) 'PAR SA FACE SUPERIEURE'
+                                end if
                                 if (lomod0) then
-                                    write (ifm,*)&
+                                    write (ifm, *)&
      &                  'UNE REORIENTATION POUR L''APPUI A EU LIEU'
-                                endif
+                                end if
                                 if (loreo0) then
-                                    write (ifm,*)&
+                                    write (ifm, *)&
      &                  'UNE REORIENTATION POUR LA NORMALE A EU LIEU'
-                                endif
-                                write (ifm,*)
-                            endif
+                                end if
+                                write (ifm, *)
+                            end if
                             if (nbmac .eq. 3) then
                                 call utmess('F', 'ALGORITH2_30')
-                            endif
-                            if (nbmac .eq. 2 .and. (lface0.eqv. lface)) then
+                            end if
+                            if (nbmac .eq. 2 .and. (lface0 .eqv. lface)) then
                                 call utmess('F', 'ALGORITH2_30')
-                            endif
-                            lface=lface0
-                            if (lomod0) lomodi=.true.
-                            if (loreo0) loreor=.true.
-                            if (nbmac .eq. 2 .and. (lomod0.or.loreo0)) then
+                            end if
+                            lface = lface0
+                            if (lomod0) lomodi = .true.
+                            if (loreo0) loreor = .true.
+                            if (nbmac .eq. 2 .and. (lomod0 .or. loreo0)) then
                                 call utmess('F', 'ALGORITH2_30')
-                            endif
-                        endif
+                            end if
+                        end if
 !
 !     ==================================================================
                     end do
                     if (nbmac .eq. 0) then
                         call utmess('F', 'ALGORITH2_30')
-                    endif
+                    end if
 !
                     if (lomodi .or. loreor) then
 !     ------------------------------------------------------------------
 !     ECRITURE DES MAILLES MODIFIEES
 !     ------------------------------------------------------------------
                         if (niv .eq. 2) then
-                            write (ifm,*)' '
-                            write (ifm,*)'       MODIFICATION DE LA MAILLE'
-                            write (ifm,*)' '
-                            write (ifm,*)'       AVANT'
-                            write (ifm,9000)(macos(idum),idum=1,nbcoc+&
-                            2)
-                            write (ifm,*)'       APRES'
-                            write (ifm,9000)(macoc(idum),idum=1,nbcoc+&
-                            2)
-                            write (ifm,*)' '
-                        endif
+                            write (ifm, *) ' '
+                            write (ifm, *) '       MODIFICATION DE LA MAILLE'
+                            write (ifm, *) ' '
+                            write (ifm, *) '       AVANT'
+                            write (ifm, 9000) (macos(idum), idum=1, nbcoc+ &
+                                               2)
+                            write (ifm, *) '       APRES'
+                            write (ifm, 9000) (macoc(idum), idum=1, nbcoc+ &
+                                               2)
+                            write (ifm, *) ' '
+                        end if
 !
                         do icoc = 1, nbcoc
-                            knoc=macoc(icoc+2)
+                            knoc = macoc(icoc+2)
 !     ------------------------------------------------------------------
 !     RECHERCHE DE L'ORDRE DU NOEUD
 !     ------------------------------------------------------------------
@@ -399,23 +399,23 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     MODIFICATION DE L ORIENTATION DE LA MAILLE
 !     ------------------------------------------------------------------
-                            zi(imicoc+icoc-1)=inoc
+                            zi(imicoc+icoc-1) = inoc
                         end do
-                    endif
+                    end if
 !     ==================================================================
 !
                 end do
 !     ------------------------------------------------------------------
-            endif
+            end if
 !     ------------------------------------------------------------------
         end do
 !
-    endif
+    end if
 !     ------------------------------------------------------------------
 !     ==================================================================
 !     EMISSION D'UNE ERREUR <F> SI UNE ERREUR <E> S'EST PRODUITE
     call chkmsg(0, ichk)
     call jedema()
 !
-    9000 format (6x,6(2x,a8),(/,26x,4(2x,a8)))
+9000 format(6x, 6(2x, a8), (/, 26x, 4(2x, a8)))
 end subroutine

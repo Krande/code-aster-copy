@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
+subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv, &
                   fiss, damax, ndomp, edomg, radtor)
     implicit none
 !
@@ -105,8 +105,8 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     integer :: jecons, jdisfr, nbelno, jelno, nbelpr, jefrom, nodadj
 !
 !     DOMAINE PHYSICAL MESH
-    integer ::  nbptff, nbno,  jnto, nunopr, jnofla, jdist, node
-    integer :: numelm,  itypma, jconx1, jconx2, ndim, jaux, jnofl1
+    integer ::  nbptff, nbno, jnto, nunopr, jnofla, jdist, node
+    integer :: numelm, itypma, jconx1, jconx2, ndim, jaux, jnofl1
     integer :: eldim
     real(kind=8) :: eps, xm, ym, zm, xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij
     real(kind=8) :: xim, yim, zim, s, norm2, xn, yn, zn, d, dmin
@@ -172,13 +172,13 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !     CREATE A TEMPORARY LOGICAL VECTOR TO MARK THE NODES THAT HAVE
 !     BEEN SELECTED
-    nodfla='&&XPRDOM.NODEFLAG'
+    nodfla = '&&XPRDOM.NODEFLAG'
     call wkvect(nodfla, 'V V L', nbno, jnofla)
     call jeundf(nodfla)
     call jeveuo(nodfla, 'E', jnofla)
 !
 !     CREATE A TEMPORARY VECTOR TO STORE THE DISTANCES OF EACH NODE
-    distno='&&XPRDOM.DISTNO'
+    distno = '&&XPRDOM.DISTNO'
     call wkvect(distno, 'V V R8', nbno, jdist)
 !
     xi1 = fondfiss(4*(1-1)+1)
@@ -193,9 +193,9 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     do i = 1, nbno
 !
 !        COORDINATES OF NODE M
-        xm=vale((i-1)*3+1)
-        ym=vale((i-1)*3+2)
-        zm=vale((i-1)*3+3)
+        xm = vale((i-1)*3+1)
+        ym = vale((i-1)*3+2)
+        zm = vale((i-1)*3+3)
 !
 !        THE PROJECTION IS NEEDED ONLY FOR THE 3D CASE
         if (ndim .eq. 3) then
@@ -227,8 +227,8 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
                 zim = zm-zi1
 !
 !            PARAM S (PRODUIT SCALAIRE...)
-                s = xij*xim + yij*yim + zij*zim
-                norm2 = xij*xij + yij*yij + zij*zij
+                s = xij*xim+yij*yim+zij*zim
+                norm2 = xij*xij+yij*yij+zij*zij
                 s = s/norm2
 !            SI N=P(M) SORT DU SEGMENT
                 if ((s-1) .ge. eps) s = 1.d0
@@ -241,9 +241,9 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
                 d = (xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm)
                 if (d .lt. dmin) then
                     dmin = d
-                endif
+                end if
 !
-2100             continue
+2100            continue
             end do
 !
         else
@@ -258,13 +258,13 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
                 zi1 = fondfiss(4*(j-1)+3)
 !
 !               SAVE CPU TIME: THE SQUARE OF THE DISTANCE IS EVALUATED!
-                d = (xi1-xm)*(xi1-xm)+(yi1-ym)*(yi1-ym)+ (zi1-zm)*( zi1-zm)
+                d = (xi1-xm)*(xi1-xm)+(yi1-ym)*(yi1-ym)+(zi1-zm)*(zi1-zm)
 !
                 if (d .lt. dmin) dmin = d
 !
             end do
 !
-        endif
+        end if
 !
 !        STORE THE DISTANCE
         zr(jdist-1+i) = dmin
@@ -273,17 +273,17 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !           THE NODE IS INSIDE THE TORUS AND THEREFORE IT IS STORED.
             nunopr = nunopr+1
             zl(jnofla-1+i) = .true.
-        endif
+        end if
 !
     end do
 !
-    nodfl1='&&XPRDOM.NODEFLAG1'
+    nodfl1 = '&&XPRDOM.NODEFLAG1'
     call jedupo(nodfla, 'V', nodfl1, .false._1)
     call jeveuo(nodfl1, 'L', jnofl1)
 !
 !     ALL THE ELEMENTS CONTAINING THE SELECTED NODES MUST BE
 !     CONSIDERED. THEIR NODES MUST BE SELECTED.
-    nodadj=0
+    nodadj = 0
     do i = 1, nbno
 !
         if (zl(jnofl1-1+i)) then
@@ -295,41 +295,41 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
             do j = 1, nbelno
 !
-                numelm=zi(jelno-1+j)
+                numelm = zi(jelno-1+j)
 !
 !           ONLY THE ELEMENTS OF THE SAME DIMENSION OF THE MODEL ARE
 !           CONSIDERED
-                itypma=mai(numelm)
-                eldim=tmdim(itypma)
+                itypma = mai(numelm)
+                eldim = tmdim(itypma)
 !
                 if (eldim .eq. ndim) then
 !
 !              RETRIEVE THE NUMBER OF NODES FORMING THE ELEMENT
-                    call jeveuo(jexnum('&CATA.TM.NBNO' , itypma), 'L', jaux)
+                    call jeveuo(jexnum('&CATA.TM.NBNO', itypma), 'L', jaux)
 !
 !              RETRIEVE EACH NODE IN THE ELEMENT
                     do k = 1, zi(jaux)
 !
                         node = zi(jconx1-1+zi(jconx2-1+numelm)+k-1)
 !
-                        if (.not.zl(jnofla-1+node)) then
+                        if (.not. zl(jnofla-1+node)) then
                             nodadj = nodadj+1
                             zl(jnofla-1+node) = .true.
 !
 !                    UPDATE THE RADIUS OF THE TORUS
                             if (radtor .lt. zr(jdist-1+node)) then
                                 radtor = zr(jdist-1+node)
-                            endif
+                            end if
 !
-                        endif
+                        end if
 !
                     end do
 !
-                endif
+                end if
 !
             end do
 !
-        endif
+        end if
 !
     end do
 !
@@ -342,15 +342,15 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     call wkvect(ndomp, 'V V I', nunopr, jnto)
 !
 !     TEMPORARY POINTER
-    j=0
+    j = 0
 !
     do i = 1, nbno
 !
         if (zl(jnofla-1+i)) then
-            j=j+1
-            ASSERT(j.le.nunopr)
+            j = j+1
+            ASSERT(j .le. nunopr)
             zi(jnto-1+j) = i
-        endif
+        end if
 !
     end do
 !
@@ -410,7 +410,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
             end do
 !
-        endif
+        end if
 !
     end do
 !
@@ -431,10 +431,10 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
         if (zl(jecons-1+i)) then
 !
-            nbelpr = nbelpr + 1
+            nbelpr = nbelpr+1
             zi(jefrom-1+nbelpr) = i
 !
-        endif
+        end if
 !
     end do
 !

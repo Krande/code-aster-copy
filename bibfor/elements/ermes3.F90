@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
-                  iref1, ivois, isig, nbcmp, dsg11,&
+subroutine ermes3(noe, ifa, tymvol, nnof, typmav, &
+                  iref1, ivois, isig, nbcmp, dsg11, &
                   dsg22, dsg33, dsg12, dsg13, dsg23)
 ! person_in_charge: josselin.delmas at edf.fr
 ! =====================================================================
@@ -85,28 +85,28 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
 ! ----- NOMBRE DE NOEUDS DE LA MAILLE VOISINE --------------------------
 !
     if (typmav .eq. 'HEXA8') then
-        nbnovo=8
-    else if (typmav.eq.'HEXA20') then
-        nbnovo=20
-    else if (typmav.eq.'HEXA27') then
-        nbnovo=27
-    else if (typmav.eq.'PENTA6') then
-        nbnovo=6
-    else if (typmav.eq.'PENTA15') then
-        nbnovo=15
-    else if (typmav.eq.'PENTA18') then
-        nbnovo=18
-    else if (typmav.eq.'TETRA4') then
-        nbnovo=4
-    else if (typmav.eq.'TETRA10') then
-        nbnovo=10
-    else if (typmav.eq.'PYRAM5') then
-        nbnovo=5
-    else if (typmav.eq.'PYRAM13') then
-        nbnovo=13
+        nbnovo = 8
+    else if (typmav .eq. 'HEXA20') then
+        nbnovo = 20
+    else if (typmav .eq. 'HEXA27') then
+        nbnovo = 27
+    else if (typmav .eq. 'PENTA6') then
+        nbnovo = 6
+    else if (typmav .eq. 'PENTA15') then
+        nbnovo = 15
+    else if (typmav .eq. 'PENTA18') then
+        nbnovo = 18
+    else if (typmav .eq. 'TETRA4') then
+        nbnovo = 4
+    else if (typmav .eq. 'TETRA10') then
+        nbnovo = 10
+    else if (typmav .eq. 'PYRAM5') then
+        nbnovo = 5
+    else if (typmav .eq. 'PYRAM13') then
+        nbnovo = 13
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! ----- RECHERCHE DES ADRESSES POUR OBTENIR SIGMA SUR LES VOISINS ------
 !
@@ -120,82 +120,82 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
 !
 ! --- ON VERIFIE QU'IL N'Y A PAS DE SOUS POINT -------------------------
 !
-    iaux=jceld-1+zi(jceld-1+4+igrel)+4+4*(iel-1)+1
-    jaux=zi(iaux)
-    ASSERT((jaux.eq.1) .or. (jaux.eq.0))
+    iaux = jceld-1+zi(jceld-1+4+igrel)+4+4*(iel-1)+1
+    jaux = zi(iaux)
+    ASSERT((jaux .eq. 1) .or. (jaux .eq. 0))
 !
 ! --- FORMULES MAGIQUES DONNANT LE BON DECALAGE POUR NAVIGUER DANS .CELV
 !
-    adiel=zi(iaux+3)
-    iaval=jcelv-1+adiel
+    adiel = zi(iaux+3)
+    iaval = jcelv-1+adiel
 !
 ! ----- CALCUL DE LA NUMEROTATION DU VOISIN ----------------------------
 !
-    iconx1=zi(iref1+10)
-    iconx2=zi(iref1+11)
-    jad=iconx1-1+zi(iconx2+zi(ivois)-1)
-    jadv=iconx1-1+zi(iconx2+zi(ivois+ifa)-1)
+    iconx1 = zi(iref1+10)
+    iconx2 = zi(iref1+11)
+    jad = iconx1-1+zi(iconx2+zi(ivois)-1)
+    jadv = iconx1-1+zi(iconx2+zi(ivois+ifa)-1)
 !
 ! ----- BOUCLE SUR LES NOEUDS DE LA FACE ----------------------
 !
-    do 10 , in = 1 , nnof
+    do 10, in = 1, nnof
 !
-    ino=noe(in,ifa,tymvol)
+        ino = noe(in, ifa, tymvol)
 !
 ! ----- RECUPERATION DE SIGMA SUR LA MAILLE COURANTE ------
 !
-    iaux = isig-1+nbcmp*(ino-1)+1
-    sig11(in) = zr(iaux)
-    sig22(in) = zr(iaux+1)
-    sig33(in) = zr(iaux+2)
-    sig12(in) = zr(iaux+3)
-    sig13(in) = zr(iaux+4)
-    sig23(in) = zr(iaux+5)
+        iaux = isig-1+nbcmp*(ino-1)+1
+        sig11(in) = zr(iaux)
+        sig22(in) = zr(iaux+1)
+        sig33(in) = zr(iaux+2)
+        sig12(in) = zr(iaux+3)
+        sig13(in) = zr(iaux+4)
+        sig23(in) = zr(iaux+5)
 !
 ! ----- RECUPERATION DE SIGMA SUR LE VOISIN ------
 !
-    ncher=zi(jad-1+ino)
-    inov=indiis(zi(jadv),ncher,1,nbnovo)
+        ncher = zi(jad-1+ino)
+        inov = indiis(zi(jadv), ncher, 1, nbnovo)
 !       ON VERIFIE QUE L'ON TROUVE BIEN UN NOEUD DANS LA LISTE
-    ASSERT(inov.gt.0)
-    iaux = iaval-1+nbcmp*(inov-1)+1
-    sigv11(in) = zr(iaux)
-    sigv22(in) = zr(iaux+1)
-    sigv33(in) = zr(iaux+2)
-    sigv12(in) = zr(iaux+3)
-    sigv13(in) = zr(iaux+4)
-    sigv23(in) = zr(iaux+5)
+        ASSERT(inov .gt. 0)
+        iaux = iaval-1+nbcmp*(inov-1)+1
+        sigv11(in) = zr(iaux)
+        sigv22(in) = zr(iaux+1)
+        sigv33(in) = zr(iaux+2)
+        sigv12(in) = zr(iaux+3)
+        sigv13(in) = zr(iaux+4)
+        sigv23(in) = zr(iaux+5)
 !
 ! ----- CALCUL DES SAUTS DE CONTRAINTES --------------------------------
 !
-    dsg11(in)=sig11(in)-sigv11(in)
-    dsg22(in)=sig22(in)-sigv22(in)
-    dsg33(in)=sig33(in)-sigv33(in)
-    dsg12(in)=sig12(in)-sigv12(in)
-    dsg13(in)=sig13(in)-sigv13(in)
-    dsg23(in)=sig23(in)-sigv23(in)
+        dsg11(in) = sig11(in)-sigv11(in)
+        dsg22(in) = sig22(in)-sigv22(in)
+        dsg33(in) = sig33(in)-sigv33(in)
+        dsg12(in) = sig12(in)-sigv12(in)
+        dsg13(in) = sig13(in)-sigv13(in)
+        dsg23(in) = sig23(in)-sigv23(in)
 !
-    10 end do
+10  end do
 !
     if (nnof .eq. 1789) then
-        write(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',tymvol
-        write(6,1001)
-        1000 format(i3,6x,(6(1x,1pe12.5)))
-        1001 format(11x,'SIXX         SIYY         SIZZ         SIXY',&
+        write (6, *) 'TYPE MAILLE VOLUMIQUE COURANTE :', tymvol
+        write (6, 1001)
+1000    format(i3, 6x, (6(1x, 1pe12.5)))
+1001    format(11x, 'SIXX         SIYY         SIZZ         SIXY',&
      &           '         SIXZ         SIYZ')
-        do 110 , in = 1 , nnof
-        ino=noe(in,ifa,tymvol)
-        ncher=zi(jad-1+ino)
-        write(6,1000) ncher,sig11(in),sig22(in),sig33(in),&
-            sig12(in),sig13(in),sig23(in)
-        110     end do
-        write(6,*) 'TYPE MAILLE VOISINE :',typmav
-        do 120 , in = 1 , nnof
-        ino=noe(in,ifa,tymvol)
-        ncher=zi(jad-1+ino)
-        write(6,1000) ncher,sigv11(in),sigv22(in),sigv33(in),&
-            sigv12(in),sigv13(in),sigv23(in)
-        120     end do
-    endif
+        do 110, in = 1, nnof
+            ino = noe(in, ifa, tymvol)
+            ncher = zi(jad-1+ino)
+            write (6, 1000) ncher, sig11(in), sig22(in), sig33(in), &
+                sig12(in), sig13(in), sig23(in)
+110     end do
+        write (6, *) 'TYPE MAILLE VOISINE :', typmav
+        do 120, in = 1, nnof
+            ino = noe(in, ifa, tymvol)
+            ncher = zi(jad-1+ino)
+            write (6, 1000) ncher, sigv11(in), sigv22(in), sigv33(in), &
+                sigv12(in), sigv13(in), sigv23(in)
+120     end do
+    end if
 !
 end subroutine

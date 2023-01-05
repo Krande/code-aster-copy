@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine iremed(fileUnit   , dsNameZ      , lResu           ,&
-                  fieldListNb, fieldListType, fieldMedListType,&
-                  storeListNb, storeListIndx,&
-                  paraListNb , paraListName ,&
-                  cmpListNb  , cmpListName  ,&
-                  cellUserNb , cellUserNume ,&
-                  nodeUserNb , nodeUserNume ,&
-                  cplxFormat , lVariName    , caraElem,&
+subroutine iremed(fileUnit, dsNameZ, lResu, &
+                  fieldListNb, fieldListType, fieldMedListType, &
+                  storeListNb, storeListIndx, &
+                  paraListNb, paraListName, &
+                  cmpListNb, cmpListName, &
+                  cellUserNb, cellUserNume, &
+                  nodeUserNb, nodeUserNume, &
+                  cplxFormat, lVariName, caraElem, &
                   lfichUniq)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/carces.h"
@@ -49,26 +49,26 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/bool_to_int.h"
 !
-integer, intent(in) :: fileUnit
-character(len=19), intent(in) :: dsNameZ
-aster_logical, intent(in) :: lResu
-integer, intent(in) :: fieldListNb
-character(len=16), pointer :: fieldListType(:)
-character(len=80), pointer :: fieldMedListType(:)
-integer, intent(in) :: storeListNb
-integer, pointer :: storeListIndx(:)
-integer, intent(in) :: paraListNb
-character(len=16), pointer :: paraListName(:)
-integer, intent(in) :: cmpListNb
-character(len=8), pointer :: cmpListName(:)
-integer, intent(in) :: cellUserNb
-integer, pointer :: cellUserNume(:)
-integer, intent(in) :: nodeUserNb
-integer, pointer :: nodeUserNume(:)
-character(len=*), intent(in) ::  cplxFormat
-aster_logical, intent(in) :: lVariName
-character(len=8), intent(in) :: caraElem
-aster_logical, intent(in) :: lfichUniq
+    integer, intent(in) :: fileUnit
+    character(len=19), intent(in) :: dsNameZ
+    aster_logical, intent(in) :: lResu
+    integer, intent(in) :: fieldListNb
+    character(len=16), pointer :: fieldListType(:)
+    character(len=80), pointer :: fieldMedListType(:)
+    integer, intent(in) :: storeListNb
+    integer, pointer :: storeListIndx(:)
+    integer, intent(in) :: paraListNb
+    character(len=16), pointer :: paraListName(:)
+    integer, intent(in) :: cmpListNb
+    character(len=8), pointer :: cmpListName(:)
+    integer, intent(in) :: cellUserNb
+    integer, pointer :: cellUserNume(:)
+    integer, intent(in) :: nodeUserNb
+    integer, pointer :: nodeUserNume(:)
+    character(len=*), intent(in) ::  cplxFormat
+    aster_logical, intent(in) :: lVariName
+    character(len=8), intent(in) :: caraElem
+    aster_logical, intent(in) :: lfichUniq
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,11 +104,11 @@ aster_logical, intent(in) :: lfichUniq
     aster_logical :: lfirst, l_mult_model, l_vari_name, l_meta_name
     integer, pointer :: cmpListNume(:) => null()
     character(len=24), pointer :: celk(:) => null()
-    parameter   (cesnsp = '&&IREMED.CANBSP')
-    parameter   (cescoq = '&&IREMED.CARCOQUE')
-    parameter   (cesfib = '&&IREMED.CAFIBR')
-    parameter   (cesori = '&&IREMED.CARORIEN')
-    parameter   (cestuy = '&&IREMED.CARGEOPO')
+    parameter(cesnsp='&&IREMED.CANBSP')
+    parameter(cescoq='&&IREMED.CARCOQUE')
+    parameter(cesfib='&&IREMED.CAFIBR')
+    parameter(cesori='&&IREMED.CARORIEN')
+    parameter(cestuy='&&IREMED.CARGEOPO')
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,53 +121,53 @@ aster_logical, intent(in) :: lfichUniq
     sdcarm = ' '
     if (caraElem .ne. ' ') then
         if (lResu) then
-            call dismoi('CARA_ELEM', dsName, 'RESULTAT', repk=carel2, arret='C',&
+            call dismoi('CARA_ELEM', dsName, 'RESULTAT', repk=carel2, arret='C', &
                         ier=ierd)
             if (carel2 .ne. caraElem) then
                 valk2(1) = caraElem
                 valk2(2) = carel2
                 call utmess('F', 'MED_64', sk=valk2(1))
-            endif
-        endif
+            end if
+        end if
         sdcarm = '&&IREMED'
         call exisd('CHAMP', caraElem//'.CANBSP', iret)
         if (iret .ne. 0) then
             call celces(caraElem//'.CANBSP', 'V', cesnsp)
-        endif
+        end if
         call exisd('CARTE', caraElem//'.CARORIEN', iret)
         if (iret .ne. 0) then
-            call carces(caraElem//'.CARORIEN', 'ELEM', ' ', 'V', cesori,&
+            call carces(caraElem//'.CARORIEN', 'ELEM', ' ', 'V', cesori, &
                         'A', iret)
-        endif
+        end if
         call exisd('CARTE', caraElem//'.CARCOQUE', iret)
         if (iret .ne. 0) then
-            call carces(caraElem//'.CARCOQUE', 'ELEM', ' ', 'V', cescoq,&
+            call carces(caraElem//'.CARCOQUE', 'ELEM', ' ', 'V', cescoq, &
                         'A', iret)
-        endif
+        end if
         call exisd('CARTE', caraElem//'.CARGEOPO', iret)
         if (iret .ne. 0) then
-            call carces(caraElem//'.CARGEOPO', 'ELEM', ' ', 'V', cestuy,&
+            call carces(caraElem//'.CARGEOPO', 'ELEM', ' ', 'V', cestuy, &
                         'A', iret)
-        endif
+        end if
         call exisd('CHAM_ELEM', caraElem//'.CAFIBR', iret)
         if (iret .ne. 0) then
             call celces(caraElem//'.CAFIBR', 'V', cesfib)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Create parameters in MED file
 !
     if (paraListNb .gt. 0) then
         call irmpar(dsName, fileUnit, paraListNb, paraListName)
-    endif
+    end if
 !
 ! - Loop on fields
 !
     do iField = 1, fieldListNb
         fieldType = fieldListType(iField)
         l_mult_model = ASTER_FALSE
-        l_vari_name  = ASTER_FALSE
-        l_meta_name  = ASTER_FALSE
+        l_vari_name = ASTER_FALSE
+        l_meta_name = ASTER_FALSE
 ! ----- Loop on storing slots
         do iStore = 1, storeListNb
             storeIndx = storeListIndx(iStore)
@@ -183,17 +183,17 @@ aster_logical, intent(in) :: lfichUniq
                     if (lfirst) then
                         call codent(storeIndx, 'G', chnumo)
                         call utmess('A', 'PREPOST2_46', sk=chnumo)
-                    endif
+                    end if
                     goto 22
-                endif
-            endif
+                end if
+            end if
 ! --------- Get name of field
             if (lResu) then
                 call rsexch(' ', dsName, fieldType, storeIndx, fieldName, iret)
                 if (iret .ne. 0) goto 21
             else
                 fieldName = dsNameZ
-            endif
+            end if
 !
 !         * IMPRESSION DU CHAMP (CHAM_NO OU CHAM_ELEM)
 !             LE CHAMP EST UN CHAM_GD SIMPLE SI LRESU=.FALSE. OU
@@ -204,8 +204,8 @@ aster_logical, intent(in) :: lfichUniq
             call dismoi('TYPE_CHAMP', fieldName, 'CHAMP', repk=typech)
             call dismoi('TYPE_RESU', dsName, 'RESULTAT', repk=resultType)
 !
-            if ((typech(1:4).eq.'NOEU') .or. (typech(1:2).eq.'EL')) then
-            else if (typech(1:4).eq. 'CART') then
+            if ((typech(1:4) .eq. 'NOEU') .or. (typech(1:2) .eq. 'EL')) then
+            else if (typech(1:4) .eq. 'CART') then
 !            GOTO 9999
             else
                 valk(1) = typech
@@ -215,35 +215,35 @@ aster_logical, intent(in) :: lfichUniq
                     call utmess('A', 'PREPOST6_36')
                 else
                     call utmess('A', 'PREPOST_87', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
 !
 !         --- NOM DE LA GRANDEUR ASSOCIEE AU CHAMP CHAM19
             call dismoi('NOM_GD', fieldName, 'CHAMP', repk=nomgd)
             call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 
-            if ((typech(1:4).eq. 'CART'.and. tsca.ne.'R')) then
-                if ( .not. lResu ) then
-                    valk(1)=tsca
+            if ((typech(1:4) .eq. 'CART' .and. tsca .ne. 'R')) then
+                if (.not. lResu) then
+                    valk(1) = tsca
                     call utmess('A+', 'PREPOST_91', nk=1, valk=valk)
-                endif
+                end if
                 goto 999
-             endif
+            end if
 !
             if (cmpListNb .ne. 0) then
-                if ((nomgd.eq.'VARI_R') .and. (typech(1:2).eq.'EL')) then
+                if ((nomgd .eq. 'VARI_R') .and. (typech(1:2) .eq. 'EL')) then
                     AS_ALLOCATE(vi=cmpListNume, size=cmpListNb)
                     call utcmp3(cmpListNb, cmpListName, cmpListNume)
                     AS_DEALLOCATE(vi=cmpListNume)
-                endif
-            endif
+                end if
+            end if
 ! --------- Get name of field in MED file
             fieldNameMed = ' '
-            if (.not.associated(fieldMedListType)) then
+            if (.not. associated(fieldMedListType)) then
                 call mdnoch(fieldNameMed, lnochm, bool_to_int(lResu), dsName, fieldType, codret)
             else
-                fieldNameMed = fieldMedListType(iField)(1:64)
-            endif
+                fieldNameMed = fieldMedListType(iField) (1:64)
+            end if
 !
 !         -- TRAITEMENT SPECIFIQUE POUR LES CHAMPS ISSUE DE PROJ_CHAMP
 !            METHODE='SOUS_POINT'
@@ -253,55 +253,55 @@ aster_logical, intent(in) :: lfichUniq
                     call utmess('A', 'MED2_9', sk=fieldType)
                     codret = 0
                     goto 999
-                endif
-            endif
+                end if
+            end if
 !
 !         -- ON LANCE L'IMPRESSION:
 !         -------------------------
 !
-            if (.not.lResu) dsName = ' '
-            call irchme(fileUnit, fieldName, cplxFormat, fieldNameMed, dsName,&
-                        fieldType, typech, storeIndx, cmpListNb, cmpListName,&
-                        nodeUserNb, nodeUserNume,&
-                        cellUserNb, cellUserNume, lVariName,&
-                        sdcarm, caraElem, paraListNb, paraListName,&
+            if (.not. lResu) dsName = ' '
+            call irchme(fileUnit, fieldName, cplxFormat, fieldNameMed, dsName, &
+                        fieldType, typech, storeIndx, cmpListNb, cmpListName, &
+                        nodeUserNb, nodeUserNume, &
+                        cellUserNb, cellUserNume, lVariName, &
+                        sdcarm, caraElem, paraListNb, paraListName, &
                         nbCmpDyna, lfichUniq, codret)
 !
 999         continue
 !
-            if (codret .ne. 0 .and. codret .ne. 100 .and.&
+            if (codret .ne. 0 .and. codret .ne. 100 .and. &
                 codret .ne. 200 .and. codret .ne. 300) then
                 valk(1) = fieldType
                 valk(2) = 'MED'
                 if (fieldType .ne. 'COMPORTEMENT') then
                     call utmess('A', 'PREPOST_90', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
             if (codret .eq. 100) then
                 l_mult_model = ASTER_TRUE
-            endif
+            end if
             if (codret .eq. 200) then
-                l_vari_name  = ASTER_TRUE
-            endif
+                l_vari_name = ASTER_TRUE
+            end if
             if (codret .eq. 400) then
-                l_meta_name  = ASTER_TRUE
-            endif
+                l_meta_name = ASTER_TRUE
+            end if
 !
- 22         continue
+22          continue
 !
- 21         continue
+21          continue
         end do
         if (l_mult_model) then
             valk(1) = fieldType
             call utmess('I', 'MED_30', sk=valk(1))
-        endif
+        end if
         if (l_vari_name) then
             call utmess('A', 'MED2_7')
-        endif
+        end if
         if (l_meta_name) then
             call utmess('A', 'MED2_10')
-        endif
-        lfirst=.false.
+        end if
+        lfirst = .false.
 !
     end do
 !

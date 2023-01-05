@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
+subroutine lkdnds(nmat, materf, i1, devsig, bprimp, &
                   nvi, vint, val, para, dndsig)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -47,11 +47,11 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
     real(kind=8) :: dsiids(6, 6), kron2(6, 6)
     real(kind=8) :: unstro, unssii, trois, kron(6), dbdsig(6)
     real(kind=8) :: devbds(6, 6), dsidsi(6, 6), sdsids(6, 6), didbds(6, 6)
-    parameter       (zero  =  0.d0 )
-    parameter       (un    =  1.d0 )
-    parameter       (trois =  3.d0 )
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(trois=3.d0)
 !     ------------------------------------------------------------------
-    common /tdim/   ndt,ndi
+    common/tdim/ndt, ndi
 !     ------------------------------------------------------------------
 !
 ! ----------------------------
@@ -67,9 +67,9 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
     end do
 !
 ! --- CONSTRUCTION DE MATRICE IDENTITE
-    mident(:,:) = zero
+    mident(:, :) = zero
     do i = 1, ndt
-        mident(i,i) = un
+        mident(i, i) = un
     end do
 !
 ! --- CONSTRUCTION DE DI1/DSIGMA
@@ -79,24 +79,24 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
     end do
 !
 ! --- CONSTRUCTION DE DS/DSIGMA
-    unstro = un / trois
+    unstro = un/trois
     call lcprte(kron, kron, kron2)
-    kron2(1:ndt,1:ndt) = unstro * kron2(1:ndt,1:ndt)
-    dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron2(1:ndt,1:ndt)
+    kron2(1:ndt, 1:ndt) = unstro*kron2(1:ndt, 1:ndt)
+    dsdsig(1:ndt, 1:ndt) = mident(1:ndt, 1:ndt)-kron2(1:ndt, 1:ndt)
 !
 ! --- CONSTRUCTION DE DSII/D(DEVSIG)
     unssii = un/sii
-    dsiids(1:ndt, 1) = unssii * devsig(1:ndt)
+    dsiids(1:ndt, 1) = unssii*devsig(1:ndt)
 !
 ! --- CALCUL DE D(BPRIME)/D(DEVSIG) ET D(BPRIME)/D(I1)
-    call lkdbds(nmat, materf, i1, devsig, nvi,&
+    call lkdbds(nmat, materf, i1, devsig, nvi, &
                 vint, para, val, dbetds, dbetdi)
 !
 ! --- CONSTRUCTION DE D(BPRIME)/DSIGMA
     do i = 1, ndt
         dbdsig(i) = zero
         do j = 1, ndt
-            dbdsig(i) = dbdsig(i)+dbetds(j)*dsdsig(j,i)
+            dbdsig(i) = dbdsig(i)+dbetds(j)*dsdsig(j, i)
         end do
         dbdsig(i) = dbdsig(i)+dbetdi*di1dsi(i)
     end do
@@ -105,7 +105,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
     call lcprte(devsig, dbdsig, devbds)
 !
 ! --- CALCUL DE DEVSIG*DSII/DSIGMA
-    dsidsi(1:ndt, 1) = matmul(dsdsig(1:ndt,1:ndt), dsiids(1:ndt, 1))
+    dsidsi(1:ndt, 1) = matmul(dsdsig(1:ndt, 1:ndt), dsiids(1:ndt, 1))
     call lcprte(devsig, dsidsi, sdsids)
 !
 ! --- PRODUIT TENSORIEL DE KRON*DBPRIME/DSIGMA
@@ -116,12 +116,12 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 ! ------------------------------
     do i = 1, ndt
         do j = 1, ndt
-            dndsig(i,j) = (&
-                          (&
-                          devbds(i,j)/sii+bprimp/sii*dsdsig(i,j)- bprimp/sii**2*sdsids(i,j))* sqr&
-                          &t(bprimp**2+trois)-bprimp/ sqrt(bprimp**2+trois)*(bprimp/sii* devbds(i&
-                          &,j)-didbds(i,j) )&
-                          )/(bprimp**2+trois&
+            dndsig(i, j) = ( &
+                          ( &
+                          devbds(i, j)/sii+bprimp/sii*dsdsig(i, j)-bprimp/sii**2*sdsids(i, j))*sqr&
+                          &t(bprimp**2+trois)-bprimp/sqrt(bprimp**2+trois)*(bprimp/sii*devbds(i&
+                          &, j)-didbds(i, j)) &
+                          )/(bprimp**2+trois &
                           )
         end do
     end do

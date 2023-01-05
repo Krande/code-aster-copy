@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcvali(fami,   kpg,    ksp,  imate, materi, &
-                  compor, ndim,   epsm, deps,  instam, &
+subroutine lcvali(fami, kpg, ksp, imate, materi, &
+                  compor, ndim, epsm, deps, instam, &
                   instap, codret)
 !
     implicit none
@@ -39,54 +39,54 @@ subroutine lcvali(fami,   kpg,    ksp,  imate, materi, &
     real(kind=8) :: veps2, instam, instap, dt, tmax, tmin, temp
 !
 !     EXAMEN DU DOMAINE DE VALIDITE
-    iret1=0
-    iret2=0
-    iret3=0
-    ndimsi=2*ndim
+    iret1 = 0
+    iret2 = 0
+    iret3 = 0
+    ndimsi = 2*ndim
     if (compor(3) .eq. 'SIMO_MIEHE') goto 999
 !
-    nomres(1)='EPSI_MAXI'
-    nomres(2)='VEPS_MAXI'
-    nomres(3)='TEMP_MINI'
-    nomres(4)='TEMP_MAXI'
+    nomres(1) = 'EPSI_MAXI'
+    nomres(2) = 'VEPS_MAXI'
+    nomres(3) = 'TEMP_MINI'
+    nomres(4) = 'TEMP_MAXI'
     call rcvalb(fami, kpg, ksp, '+', imate, materi, 'VERI_BORNE', &
                 0, ' ', [0.d0], 4, nomres, valres, icodre, 0)
 !
 !     TRAITEMENT DE EPSI_MAXI
     if (icodre(1) .eq. 0) then
-        epsmax=valres(1)
+        epsmax = valres(1)
         call dcopy(ndimsi, epsm, 1, eps, 1)
         call daxpy(ndimsi, 1.d0, deps, 1, eps, 1)
-        eps2=sqrt(ddot(ndimsi,eps,1,eps,1))
+        eps2 = sqrt(ddot(ndimsi, eps, 1, eps, 1))
         if (eps2 .gt. epsmax) then
-            iret1=4
-        endif
-    endif
+            iret1 = 4
+        end if
+    end if
 !     TRAITEMENT DE VEPS_MAXI
     if (icodre(2) .eq. 0) then
-        vepsm=valres(2)
-        dt=instap-instam
+        vepsm = valres(2)
+        dt = instap-instam
         call dcopy(ndimsi, deps, 1, veps, 1)
         call dscal(ndimsi, 1.d0/dt, veps, 1)
-        veps2=sqrt(ddot(ndimsi,veps,1,veps,1))
+        veps2 = sqrt(ddot(ndimsi, veps, 1, veps, 1))
         if (veps2 .gt. vepsm) then
-            iret2=4
-        endif
-    endif
+            iret2 = 4
+        end if
+    end if
 !     TRAITEMENT DE TEMP_MINI ET TEMP_MAXI
     if (icodre(3) .eq. 0) then
-        tmin=valres(3)
-        tmax=valres(4)
+        tmin = valres(3)
+        tmax = valres(4)
         call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, temp, iret)
         if (iret .eq. 0) then
-            if ((temp.lt.tmin) .or. (temp.gt.tmax)) then
-                iret3=4
-            endif
-        endif
-    endif
+            if ((temp .lt. tmin) .or. (temp .gt. tmax)) then
+                iret3 = 4
+            end if
+        end if
+    end if
 !
-    codret=max(iret1,iret2)
-    codret=max(codret,iret3)
+    codret = max(iret1, iret2)
+    codret = max(codret, iret3)
 !
-999  continue
+999 continue
 end subroutine

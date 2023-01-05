@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine comp_meca_cvar(behaviourPrepPara)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_nbvari.h"
 !
-type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+    type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,10 +73,10 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
         model_dim = behaviourPrepPara%v_paraExte(iFactorKeyword)%model_dim
 
 ! ----- Count the number of internal state variables and index of behaviours
-        call comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp ,&
-                         post_iter, meca_comp, mult_comp, regu_visc,&
-                         libr_name, subr_name, model_dim, model_mfront,&
-                         nbVariUMAT,&
+        call comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
+                         post_iter, meca_comp, mult_comp, regu_visc, &
+                         libr_name, subr_name, model_dim, model_mfront, &
+                         nbVariUMAT, &
                          nbVari, numeLaw, nbVariKit, numeLawKit)
 
 ! ----- Save informations
@@ -86,12 +86,12 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
         behaviourPrepPara%v_para(iFactorKeyword)%numeLawKit = numeLawKit
 
         if (behaviourPrepPara%lDebug) then
-            WRITE(6,*) "- Occurrence : ",iFactorKeyword
-            WRITE(6,*) "--- nbVari : ",behaviourPrepPara%v_para(iFactorKeyword)%nbVari
-            WRITE(6,*) "--- nbVariKit : ",behaviourPrepPara%v_para(iFactorKeyword)%nbVariKit
-            WRITE(6,*) "--- numeLaw : ",behaviourPrepPara%v_para(iFactorKeyword)%numeLaw
-            WRITE(6,*) "--- numeLawKit : ",behaviourPrepPara%v_para(iFactorKeyword)%numeLawKit
-        endif
+            WRITE (6, *) "- Occurrence : ", iFactorKeyword
+            WRITE (6, *) "--- nbVari : ", behaviourPrepPara%v_para(iFactorKeyword)%nbVari
+            WRITE (6, *) "--- nbVariKit : ", behaviourPrepPara%v_para(iFactorKeyword)%nbVariKit
+            WRITE (6, *) "--- numeLaw : ", behaviourPrepPara%v_para(iFactorKeyword)%numeLaw
+            WRITE (6, *) "--- numeLawKit : ", behaviourPrepPara%v_para(iFactorKeyword)%numeLawKit
+        end if
 
     end do
 !

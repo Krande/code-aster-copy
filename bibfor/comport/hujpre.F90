@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujpre(fami, kpg, ksp, etat, mod,&
-                  imat, mater, deps, sigd,&
+subroutine hujpre(fami, kpg, ksp, etat, mod, &
+                  imat, mater, deps, sigd, &
                   sigf, vind, iret)
     implicit none
 !                   CALCUL DE LA PREDICTION EN CONTRAINTE
@@ -56,15 +56,15 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
     character(len=*) :: fami
     logical :: debug
 !
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
-    data   un, zero / 1.d0, 0.d0/
-    data   d13, tole1 /0.33333333334d0, 1.0d-7/
+    data un, zero/1.d0, 0.d0/
+    data d13, tole1/0.33333333334d0, 1.0d-7/
 !
 !
-    pref = mater(8,2)
-    ptrac = mater(21,2)
+    pref = mater(8, 2)
+    ptrac = mater(21, 2)
     rtrac = abs(pref*1.d-6)
 !
     if (etat .eq. 'ELASTIC') then
@@ -73,42 +73,42 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
 !
     else if (etat .eq. 'PLASTIC') then
 !
-        call hujtid(fami, kpg, ksp, mod, imat,&
+        call hujtid(fami, kpg, ksp, mod, imat, &
                     sigd, vind, dsde, iret)
         if (iret .eq. 0) then
-            dsig(1:ndt) = matmul(dsde(1:ndt,1:ndt), deps(1:ndt))
-            sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
-            i1 =d13*trace(ndi,sigf)
+            dsig(1:ndt) = matmul(dsde(1:ndt, 1:ndt), deps(1:ndt))
+            sigf(1:ndt) = sigd(1:ndt)+dsig(1:ndt)
+            i1 = d13*trace(ndi, sigf)
         else
-            iret =0
+            iret = 0
             i1 = -un
             if (debug) then
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3) (1:8)
-                write(6,'(10(A))')&
+                write (6, '(10(A))')&
      &     'HUJPRE :: ECHEC DANS LA PSEUDO-PREDICTION ELASTIQUE DANS ',&
-     &     'LA MAILLE ',nomail
-            endif
-        endif
+     &     'LA MAILLE ', nomail
+            end if
+        end if
 !
-        if ((i1 + un)/abs(pref) .ge. tole1) then
+        if ((i1+un)/abs(pref) .ge. tole1) then
             if (debug) then
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3) (1:8)
-                write(6,'(10(A))')&
+                write (6, '(10(A))')&
      &      'HUJPRE :: TRACTION DANS LA PSEUDO-PREDICTION ELASTIQUE ',&
-     &      'DANS LA MAILLE ',nomail
-            endif
+     &      'DANS LA MAILLE ', nomail
+            end if
             call hujela(mod, mater, deps, sigd, sigf, iret)
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 ! ---> CONTROLE QU'AUCUNE COMPOSANTE DU VECTEUR SIGF NE SOIT POSITIVE
     do i = 1, ndt
-        dsig(i)= sigf(i) - sigd(i)
-    enddo
+        dsig(i) = sigf(i)-sigd(i)
+    end do
 !
     maxi = un
     cohes = -rtrac+ptrac
@@ -120,25 +120,25 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
         call hujprj(i, dsig, dev, dp(i), q)
         if (pf(i) .gt. cohes .and. dp(i) .gt. tole1) then
             factor = (-pd(i)+cohes)/dp(i)
-            if ((factor.gt.zero) .and. (factor.lt.maxi)) then
+            if ((factor .gt. zero) .and. (factor .lt. maxi)) then
                 maxi = factor
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
 !
 !
 ! ---> SI IL EXISTE PF(I)>0, ALORS MODIFICATION DE LA PREDICTION
     if (maxi .lt. un) then
         do i = 1, ndt
-            dsig(i) = maxi * dsig(i)
-        enddo
-        sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
+            dsig(i) = maxi*dsig(i)
+        end do
+        sigf(1:ndt) = sigd(1:ndt)+dsig(1:ndt)
         if (debug) then
-            write (6,'(A,A,E12.5)')&
+            write (6, '(A,A,E12.5)')&
      &    'HUJPRE :: APPLICATION DE FACTOR POUR MODIFIER ',&
-     &    'LA PREDICTION -> FACTOR =',maxi
-            write(6,'(A,6(1X,E12.5))') 'SIGF =',(sigf(i),i=1,ndt)
-        endif
-    endif
+     &    'LA PREDICTION -> FACTOR =', maxi
+            write (6, '(A,6(1X,E12.5))') 'SIGF =', (sigf(i), i=1, ndt)
+        end if
+    end if
 !
 end subroutine

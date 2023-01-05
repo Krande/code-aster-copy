@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,12 +38,12 @@ subroutine detmat()
 !-----------------------------------------------------------------------
 !
     call jelstc('V', '.REFA', 20, 100, lirefa, nbmat)
-    ASSERT(nbmat.ge.0)
+    ASSERT(nbmat .ge. 0)
 !
     do i = 1, nbmat
         call jeexin(lirefa(i), ier)
         if (ier .eq. 0) goto 10
-        matass = lirefa(i)(1:19)
+        matass = lirefa(i) (1:19)
 !
 ! -- Detruire matrice
         call detmatrix(matass)
@@ -52,7 +52,7 @@ subroutine detmat()
         call detrsd('MATR_ASSE', matass)
 !
 !
- 10     continue
+10      continue
     end do
 !
 end subroutine

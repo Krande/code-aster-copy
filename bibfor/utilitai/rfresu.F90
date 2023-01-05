@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine rfresu()
 !
-implicit none
+    implicit none
 !
 #include "asterc/getres.h"
 #include "asterfort/as_allocate.h"
@@ -110,88 +110,88 @@ implicit none
         if (npr .ne. 0) then
             if (intres(1:3) .ne. 'NON') then
                 call utmess('F', 'UTILITAI4_21')
-            endif
+            end if
             call focrr3(funcName, result, npresu, 'G', iret)
             goto 10
-        endif
+        end if
 !
         call getvtx(' ', 'NOM_CHAM', scal=fieldName, nbret=l)
         call rsutnc(result, fieldName, 1, cham19, numer1, nbtrou)
         if (nbtrou .eq. 0) then
             call utmess('F', 'UTILITAI4_22', sk=fieldName)
-        endif
+        end if
         call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh)
         call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
         if (ngn .ne. 0) then
             call utnono(' ', mesh, 'NOEUD', groupNodeName, nodeName, iret)
             if (iret .eq. 10) then
                 call utmess('F', 'ELEMENTS_67', sk=groupNodeName)
-            else if (iret.eq.1) then
+            else if (iret .eq. 1) then
                 valk(1) = groupNodeName
                 valk(2) = nodeName
                 call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-            endif
-        endif
+            end if
+        end if
         if (ngm .ne. 0) then
             call utnono(' ', mesh, 'MAILLE', groupCellName, cellName, iret)
             if (iret .eq. 10) then
                 call utmess('F', 'ELEMENTS_73', sk=groupCellName)
-            else if (iret.eq.1) then
+            else if (iret .eq. 1) then
                 valk(1) = cellName
                 call utmess('A', 'UTILITAI6_72', sk=valk(1))
-            endif
-        endif
+            end if
+        end if
         call utcmp1(nomgd, ' ', 1, cmpName, ivari, variName)
-        if (ivari.eq.-1) then
-            ASSERT(fieldName(1:7).eq.'VARI_EL')
+        if (ivari .eq. -1) then
+            ASSERT(fieldName(1:7) .eq. 'VARI_EL')
 
 ! --------- Get list of storing index
             call rs_get_liststore(result, nbStore)
             if (nbStore .ne. 0) then
-                AS_ALLOCATE(vi = listStore, size = nbStore)
+                AS_ALLOCATE(vi=listStore, size=nbStore)
                 call rs_get_liststore(result, nbStore, listStore)
-            endif
+            end if
 
 ! --------- Get model (only one !)
             call rsGetOneModelFromResult(result, nbStore, listStore, model)
             if (model .eq. '#PLUSIEURS') then
                 call utmess('F', 'RESULT1_4')
-            endif
+            end if
 
 ! --------- Get behaviour (only one !)
             call rsGetOneBehaviourFromResult(result, nbStore, listStore, compor)
             if (compor .eq. '#SANS') then
                 call utmess('F', 'RESULT1_5')
-            endif
+            end if
             if (compor .eq. '#PLUSIEURS') then
                 call utmess('F', 'RESULT1_6')
-            endif
-            AS_DEALLOCATE(vi = listStore)
+            end if
+            AS_DEALLOCATE(vi=listStore)
 
 ! --------- Get name of internal state variables
             call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
-            call varinonu(model , compor  ,&
-                          1, [cellNume],&
+            call varinonu(model, compor, &
+                          1, [cellNume], &
                           1, variName, cmpName)
             call lxliis(cmpName(2:8), ivari, iret)
             ASSERT(iret .eq. 0)
             ASSERT(cmpName(1:1) .eq. 'V')
         else
-            variName=' '
-        endif
+            variName = ' '
+        end if
 
         if (intres(1:3) .eq. 'NON') then
-            call focrrs(funcName, result, 'G', fieldName, cellName,&
-                        nodeName, cmpName, npoint, nusp, ivari, variName,&
+            call focrrs(funcName, result, 'G', fieldName, cellName, &
+                        nodeName, cmpName, npoint, nusp, ivari, variName, &
                         iret)
         else
-            call focrr2(funcName, result, 'G', fieldName, cellName,&
-                        nodeName, cmpName, npoint, nusp, ivari, variName,&
+            call focrr2(funcName, result, 'G', fieldName, cellName, &
+                        nodeName, cmpName, npoint, nusp, ivari, variName, &
                         iret)
-        endif
+        end if
 !
-    endif
- 10 continue
+    end if
+10  continue
     call foattr(' ', 1, funcName)
 !     --- VERIFICATION QU'ON A BIEN CREE UNE FONCTION ---
 !         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
@@ -200,7 +200,7 @@ implicit none
     call titre()
     if (niv .gt. 1) then
         call foimpr(funcName, niv, ifm, 0, k8b)
-    endif
+    end if
 !
     call jedema()
 end subroutine

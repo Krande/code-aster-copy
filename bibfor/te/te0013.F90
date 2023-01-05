@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine te0013(option, nomte)
 !
 ! - Finite element informations
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, jpoids=ipoids,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, jpoids=ipoids, &
                      jvf=ivf, jdfde=idfde)
 !
 
@@ -79,11 +79,11 @@ subroutine te0013(option, nomte)
         call metau2(l_meta)
     else
         call metau1(l_meta)
-    endif
+    end if
 
     if (l_meta) then
         goto 40
-    endif
+    end if
 
 ! - Number of stress components
 !
@@ -111,18 +111,18 @@ subroutine te0013(option, nomte)
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         time = zr(itemps)
-    endif
+    end if
 !
 ! - Compute thermal stresses {SIGTH}
 !
-    call sigtmc('RIGI', nno, ndim, nbsig, npg,&
-                zr(ivf), zr(igeom), time, zi(imate), repere,&
+    call sigtmc('RIGI', nno, ndim, nbsig, npg, &
+                zr(ivf), zr(igeom), time, zi(imate), repere, &
                 option, sigth)
 !
 ! - Compute CHAR_MECA_TEMP_R: [B]Tx{SIGTH}
 !
-    call bsigmc(nno, ndim, nbsig, npg, ipoids,&
-                ivf, idfde, zr(igeom), nharm, sigth,&
+    call bsigmc(nno, ndim, nbsig, npg, ipoids, &
+                ivf, idfde, zr(igeom), nharm, sigth, &
                 bsigma)
 !
 ! - Set output vector
@@ -133,5 +133,5 @@ subroutine te0013(option, nomte)
         zr(ivectu+i-1) = bsigma(i)
     end do
 !
- 40 continue
+40  continue
 end subroutine

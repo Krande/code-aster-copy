@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gbilin(fami, kp, imate, dudm, dvdm,&
-                  dtdm, dfdm, tgdm, poids, sigin,&
-                  dsigin, epsref, c1, c2, c3,&
-                  cs, th, coef, rho, puls,&
+subroutine gbilin(fami, kp, imate, dudm, dvdm, &
+                  dtdm, dfdm, tgdm, poids, sigin, &
+                  dsigin, epsref, c1, c2, c3, &
+                  cs, th, coef, rho, puls, &
                   axi, g)
     implicit none
 !
@@ -80,19 +80,19 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 !
     rac2 = sqrt(2.d0)
 ! INITIALISATION DES TENSEURS DE DEFORMATION TOTALE
-    epsu(1)=dudm(1,1)
-    epsu(2)=dudm(2,2)
-    epsu(3)=dudm(3,3)
-    epsu(4)=0.5d0*(dudm(1,2)+dudm(2,1))*rac2
+    epsu(1) = dudm(1, 1)
+    epsu(2) = dudm(2, 2)
+    epsu(3) = dudm(3, 3)
+    epsu(4) = 0.5d0*(dudm(1, 2)+dudm(2, 1))*rac2
 !
-    epsv(1)=dvdm(1,1)
-    epsv(2)=dvdm(2,2)
-    epsv(3)=dvdm(3,3)
-    epsv(4)=0.5d0*(dvdm(1,2)+dvdm(2,1))*rac2
+    epsv(1) = dvdm(1, 1)
+    epsv(2) = dvdm(2, 2)
+    epsv(3) = dvdm(3, 3)
+    epsv(4) = 0.5d0*(dvdm(1, 2)+dvdm(2, 1))*rac2
 !INITIALISATION DE TEMP1 et TEMP2
     do i = 1, 4
-        temp1(i)=0.d0
-        temp2(i)=0.d0
+        temp1(i) = 0.d0
+        temp2(i) = 0.d0
     end do
 !
 !
@@ -104,61 +104,61 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
 !
-    call verift(fami, kp, 1, '+', imate,&
-                iret_ = iret, epsth_=epsthe)
-    call rcvalb(fami, kp, 1, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call verift(fami, kp, 1, '+', imate, &
+                iret_=iret, epsth_=epsthe)
+    call rcvalb(fami, kp, 1, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres(1), valres(1), icodre(1), 1)
-    call rcvalb(fami, kp, 1, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kp, 1, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, nomres(3), valres(3), icodre(3), 0)
     e = valres(1)
     nu = valres(2)
     alpha = valres(3)
-    divt = dtdm(1,1)+dtdm(2,2)
-    if (axi) divt = divt+dtdm(3,3)
-    divv = th*(dvdm(1,1)+dvdm(2,2))
-    if (axi) divv = divv+dvdm(3,3)
+    divt = dtdm(1, 1)+dtdm(2, 2)
+    if (axi) divt = divt+dtdm(3, 3)
+    divv = th*(dvdm(1, 1)+dvdm(2, 2))
+    if (axi) divv = divv+dvdm(3, 3)
 !
 ! - TERME CLASSIQUE
 !
     if (.not. axi) then
-        vect(1)= 0.5d0*(dvdm(1,1)*dudm(2,2)+dudm(1,1)*dvdm(2,2))
-        vect(2)= 0.5d0*(dvdm(1,1)*dudm(1,2)+dudm(1,1)*dvdm(1,2))
-        vect(3)= 0.5d0*(dvdm(1,1)*dudm(2,1)+dudm(1,1)*dvdm(2,1))
-        vect(4)= 0.5d0*(dvdm(2,2)*dudm(1,2)+dudm(2,2)*dvdm(1,2))
-        vect(5)= 0.5d0*(dvdm(2,2)*dudm(2,1)+dudm(2,2)*dvdm(2,1))
-        vect(6)= 0.5d0*(dvdm(1,2)*dudm(2,1)+dudm(1,2)*dvdm(2,1))
+        vect(1) = 0.5d0*(dvdm(1, 1)*dudm(2, 2)+dudm(1, 1)*dvdm(2, 2))
+        vect(2) = 0.5d0*(dvdm(1, 1)*dudm(1, 2)+dudm(1, 1)*dvdm(1, 2))
+        vect(3) = 0.5d0*(dvdm(1, 1)*dudm(2, 1)+dudm(1, 1)*dvdm(2, 1))
+        vect(4) = 0.5d0*(dvdm(2, 2)*dudm(1, 2)+dudm(2, 2)*dvdm(1, 2))
+        vect(5) = 0.5d0*(dvdm(2, 2)*dudm(2, 1)+dudm(2, 2)*dvdm(2, 1))
+        vect(6) = 0.5d0*(dvdm(1, 2)*dudm(2, 1)+dudm(1, 2)*dvdm(2, 1))
 !
-        s11 = dudm(1,1)*dvdm(1,1) + dudm(2,2)*dvdm(2,2)
-        s12 = dudm(1,1)*dvdm(2,2) + dudm(2,2)*dvdm(1,1)
-        s13 = (dudm(1,2)+dudm(2,1))*(dvdm(1,2)+dvdm(2,1))
+        s11 = dudm(1, 1)*dvdm(1, 1)+dudm(2, 2)*dvdm(2, 2)
+        s12 = dudm(1, 1)*dvdm(2, 2)+dudm(2, 2)*dvdm(1, 1)
+        s13 = (dudm(1, 2)+dudm(2, 1))*(dvdm(1, 2)+dvdm(2, 1))
 !
-        s21 = dudm(1,1)*dvdm(1,1)*dtdm(1,1) + dudm(2,2)*dvdm(2,2)* dtdm(2,2) + vect(5)*dtdm(1,2) &
-              &+ vect(2)*dtdm(2,1)
+        s21 = dudm(1, 1)*dvdm(1, 1)*dtdm(1, 1)+dudm(2, 2)*dvdm(2, 2)*dtdm(2, 2)+vect(5)*dtdm(1, 2) &
+              &+vect(2)*dtdm(2, 1)
 !
-        s22 = vect(1)*(dtdm(1,1)+dtdm(2,2)) +vect(3)* dtdm(1,2) +vect(4)* dtdm(2,1)
+        s22 = vect(1)*(dtdm(1, 1)+dtdm(2, 2))+vect(3)*dtdm(1, 2)+vect(4)*dtdm(2, 1)
 !
-        s23 = (&
-              vect(6)+dudm(2, 1)*dvdm(2, 1))*dtdm(1, 1) +(vect(6)+dudm( 1, 2)*dvdm(1, 2))*dtdm(2,&
-              2) +(vect(2)+vect(3))*dtdm(1, 2) +(vect(4)+vect(5))*dtdm(2, 1&
-              )
+        s23 = ( &
+              vect(6)+dudm(2, 1)*dvdm(2, 1))*dtdm(1, 1)+(vect(6)+dudm(1, 2)*dvdm(1, 2))*dtdm(2, &
+                                       2)+(vect(2)+vect(3))*dtdm(1, 2)+(vect(4)+vect(5))*dtdm(2, 1 &
+                                                                                                   )
 !
     else
 ! Cas AXI
-        s11 = dudm(1,1)*dvdm(1,1) + dudm(2,2)*dvdm(2,2) + dudm(3,3)* dvdm(3,3)
-        s12 = dudm(1,1)*dvdm(2,2) + dudm(2,2)*dvdm(1,1) + dudm(1,1)* dvdm(3,3) + dudm(3,3)*dvdm(1&
-              &,1) + dudm(2,2)*dvdm(3,3) + dudm( 3,3)*dvdm(2,2)
-        s13 = (&
-              dudm(1,2)+dudm(2,1))*(dvdm(1,2)+dvdm(2,1)) + (dudm(2,3) +dudm(3,2))*(dvdm(2,3)+dvdm&
-              &(3,2)) + (dudm(3,1)+dudm(1,3))*( dvdm(3,1)+dvdm(1,3)&
+        s11 = dudm(1, 1)*dvdm(1, 1)+dudm(2, 2)*dvdm(2, 2)+dudm(3, 3)*dvdm(3, 3)
+        s12 = dudm(1, 1)*dvdm(2, 2)+dudm(2, 2)*dvdm(1, 1)+dudm(1, 1)*dvdm(3, 3)+dudm(3, 3)*dvdm(1&
+              &, 1)+dudm(2, 2)*dvdm(3, 3)+dudm(3, 3)*dvdm(2, 2)
+        s13 = ( &
+            dudm(1, 2)+dudm(2, 1))*(dvdm(1, 2)+dvdm(2, 1))+(dudm(2, 3)+dudm(3, 2))*(dvdm(2, 3)+dvdm&
+              &(3, 2))+(dudm(3, 1)+dudm(1, 3))*(dvdm(3, 1)+dvdm(1, 3) &
               )
 ! Calcul de S2
         do i = 1, 3
             do j = 1, 3
                 do k = 1, 3
                     do l = 1, 3
-                        bil(i,j,k,l) = 0.5d0 * ( dudm(i,j)*dvdm(k,l)+ dudm(k,l)*dvdm(i,j) )
+                        bil(i, j, k, l) = 0.5d0*(dudm(i, j)*dvdm(k, l)+dudm(k, l)*dvdm(i, j))
                     end do
                 end do
             end do
@@ -167,7 +167,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
         s21 = 0.d0
         do k = 1, 3
             do p = 1, 3
-                s21 = s21 + bil(k,k,k,p)*dtdm(p,k)
+                s21 = s21+bil(k, k, k, p)*dtdm(p, k)
             end do
         end do
 !
@@ -176,9 +176,9 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
             do l = 1, 3
                 if (l .ne. k) then
                     do p = 1, 3
-                        s22 = s22 + bil(l,l,k,p)*dtdm(p,k)
+                        s22 = s22+bil(l, l, k, p)*dtdm(p, k)
                     end do
-                endif
+                end if
             end do
         end do
 !
@@ -189,18 +189,18 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
                     do m = 1, 3
                         if (m .ne. k .and. m .ne. l) then
                             do p = 1, 3
-                                s23 = s23 + bil(l,m,l,p)*dtdm(p,m)
-                                s23 = s23 + bil(l,m,m,p)*dtdm(p,l)
+                                s23 = s23+bil(l, m, l, p)*dtdm(p, m)
+                                s23 = s23+bil(l, m, m, p)*dtdm(p, l)
                             end do
-                        endif
+                        end if
                     end do
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
-    s1 = c1*s11 + c2*s12 + c3*s13
-    s2 = c1*s21 + c2*s22 + c3*s23
+    s1 = c1*s11+c2*s12+c3*s13
+    s2 = c1*s21+c2*s22+c3*s23
 !
 !--------------------------AUTRE MANIERE DE CALCUL POUR S2----------
 !
@@ -210,43 +210,43 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     prod = 0.d0
     do i = 1, 2
         do j = 1, 2
-            prod = prod + dvdm(i,j)*dtdm(j,i)
+            prod = prod+dvdm(i, j)*dtdm(j, i)
         end do
     end do
-    if (axi) prod = prod+dvdm(3,3)*dtdm(3,3)
+    if (axi) prod = prod+dvdm(3, 3)*dtdm(3, 3)
     s2th = 0.5d0*th*coef*epsthe*prod*e/(1.d0-2.d0*nu)
 !
-    tcla = (-divt/2.d0*(s1-s1th)+ (s2-s2th))*poids
+    tcla = (-divt/2.d0*(s1-s1th)+(s2-s2th))*poids
 !
 ! - TERME THERMIQUE
 !
     prod = 0.d0
     if (iret .eq. 0) then
         do i = 1, 2
-            prod = prod + tgdm(i)*dtdm(i,4)
+            prod = prod+tgdm(i)*dtdm(i, 4)
         end do
         tthe = poids*prod*divv*coef*alpha*e/(2.d0*(1.d0-2.d0*nu))
     else
         tthe = 0.d0
-    endif
+    end if
 !
 ! - TERME FORCE VOLUMIQUE
 !
-    tfor=0.d0
+    tfor = 0.d0
     do i = 1, 2
-        prod=0.d0
+        prod = 0.d0
         do j = 1, 2
-            prod = prod + dfdm(i,j)*dtdm(j,4)
+            prod = prod+dfdm(i, j)*dtdm(j, 4)
         end do
-        tfor = tfor + cs*dvdm(i,4)*(prod+dfdm(i,4)*divt)*poids
+        tfor = tfor+cs*dvdm(i, 4)*(prod+dfdm(i, 4)*divt)*poids
     end do
 !
 ! - TERME DYNAMIQUE
 !
-    prod=0.d0
+    prod = 0.d0
     do i = 1, 2
         do j = 1, 2
-            prod = prod + dudm(i,j)*dtdm(j,4)*dvdm(i,4)+ dvdm(i,j)* dtdm(j,4)*dudm(i,4)
+            prod = prod+dudm(i, j)*dtdm(j, 4)*dvdm(i, 4)+dvdm(i, j)*dtdm(j, 4)*dudm(i, 4)
         end do
     end do
     tdyn = -0.5d0*rho*(puls**2)*prod*poids
@@ -257,63 +257,63 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 !   TINI1 : TERME DE CONTRAINTES INITIALES SEULES -(EPS-EPSTHE*Id2-EPSREF):GRAD(SIGIN).THETA
 !si cs =1, on calcule G
 !si cs =0.5, on calcule K
-    tini1 =0
+    tini1 = 0
     do j = 1, 4
         do i = 1, 2
-            temp1(j)=temp1(j)+dsigin(j,i)*dtdm(i,4)
+            temp1(j) = temp1(j)+dsigin(j, i)*dtdm(i, 4)
         end do
     end do
 !
     if (cs .gt. 0.9) then
 !
         do i = 1, 3
-            tini1 =tini1-(epsu(i)-epsthe-epsref(i))*temp1(i)
+            tini1 = tini1-(epsu(i)-epsthe-epsref(i))*temp1(i)
         end do
 ! Le terme thermique n'apparait pas hors diagonale
-        tini1 =tini1-(epsu(4)-epsref(4))*temp1(4)
+        tini1 = tini1-(epsu(4)-epsref(4))*temp1(4)
 !
-    else if (cs.lt.0.6) then
+    else if (cs .lt. 0.6) then
         do i = 1, 4
-            tini1 =tini1-0.5d0*(epsv(i))*temp1(i)
+            tini1 = tini1-0.5d0*(epsv(i))*temp1(i)
         end do
     end if
-    tini1=tini1*poids
+    tini1 = tini1*poids
 !
 !   TINI2 : TERME DU A LA MODIFICATION DE LA CONTRAINTE SIGIN: GRAD(U).GRAD(THETA)
-    tini2 =0
+    tini2 = 0
 ! ce terme ne s'exprime pas en notation de Voigt, on doit le calculer terme a terme (trop cool)
     if (cs .gt. 0.9) then
-        temp2(1)=dudm(1,1)*dtdm(1,1)+dudm(1,2)*dtdm(2,1)
-        temp2(2)=dudm(2,1)*dtdm(1,2)+dudm(2,2)*dtdm(2,2)
-        temp2(3)=dudm(3,1)*dtdm(1,3)+dudm(3,2)*dtdm(2,3)
+        temp2(1) = dudm(1, 1)*dtdm(1, 1)+dudm(1, 2)*dtdm(2, 1)
+        temp2(2) = dudm(2, 1)*dtdm(1, 2)+dudm(2, 2)*dtdm(2, 2)
+        temp2(3) = dudm(3, 1)*dtdm(1, 3)+dudm(3, 2)*dtdm(2, 3)
         temp2(4)=(dudm(1,1)*dtdm(1,2)+dudm(1,2)*dtdm(2,2)+dudm(2,1)*dtdm(1,1)+dudm(2,2)*dtdm(2,1))&
-        /rac2
-    else if (cs.lt.0.6) then
-        temp2(1)=dvdm(1,1)*dtdm(1,1)+dvdm(1,2)*dtdm(2,1)
-        temp2(2)=dvdm(2,1)*dtdm(1,2)+dvdm(2,2)*dtdm(2,2)
-        temp2(3)=0.d0
+                  /rac2
+    else if (cs .lt. 0.6) then
+        temp2(1) = dvdm(1, 1)*dtdm(1, 1)+dvdm(1, 2)*dtdm(2, 1)
+        temp2(2) = dvdm(2, 1)*dtdm(1, 2)+dvdm(2, 2)*dtdm(2, 2)
+        temp2(3) = 0.d0
         temp2(4)=(dvdm(1,1)*dtdm(1,2)+dvdm(1,2)*dtdm(2,2)+dvdm(2,1)*dtdm(1,1)+dvdm(2,2)*dtdm(2,1))&
-        /rac2
-    endif
+                  /rac2
+    end if
     do i = 1, 4
-        tini2=tini2+sigin(i)*temp2(i)
+        tini2 = tini2+sigin(i)*temp2(i)
     end do
-    tini2=cs*tini2*poids
+    tini2 = cs*tini2*poids
 !
 !   TINI3:TERME DU A LA MODIFICATION DE L'ENERGIE LIBRE:-1/2*(2*(EPS-EPSTH)-EPSREF):SIGIN divTheta
-    tini3 =0
+    tini3 = 0
     if (cs .gt. 0.9) then
         do i = 1, 3
-            tini3=tini3-(epsu(i)-epsthe-0.5d0*epsref(i))*sigin(i)*divt
+            tini3 = tini3-(epsu(i)-epsthe-0.5d0*epsref(i))*sigin(i)*divt
         end do
-        tini3=tini3-(epsu(4)-0.5d0*epsref(4))*sigin(4)*divt
+        tini3 = tini3-(epsu(4)-0.5d0*epsref(4))*sigin(4)*divt
 !
-    else if (cs.lt.0.6) then
+    else if (cs .lt. 0.6) then
         do i = 1, 4
-            tini3=tini3-0.5d0*epsv(i)*sigin(i)*divt
+            tini3 = tini3-0.5d0*epsv(i)*sigin(i)*divt
         end do
-    endif
-    tini3=tini3*poids
+    end if
+    tini3 = tini3*poids
 !
     g = tcla+tthe+tfor+tdyn+tini2+tini3+tini1
 !

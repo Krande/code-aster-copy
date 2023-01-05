@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,25 +98,25 @@ subroutine rfhge2(harmge)
     call jeexin(resu//'.'//nomcha(1:4), iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_23', sk=nomcha)
-    endif
+    end if
     call jeveuo(resu//'.'//nomcha(1:4), 'L', itresu)
 !
     knume = '&&RFHGE2.NUME_ORDR'
     kinst = '&&RFHGE2.FREQUENCE'
-    call rstran(intres, resu, ' ', 1, kinst,&
+    call rstran(intres, resu, ' ', 1, kinst, &
                 knume, nbordr, ie)
     if (ie .ne. 0) then
         call utmess('F', 'UTILITAI4_15')
-    endif
+    end if
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
         call jeveuo(kinst, 'L', jinst)
         call jeveuo(knume, 'L', lordr)
-    endif
+    end if
 !
 !     --- CREATION DE LA FONCTION ---
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro) = 'FONCT_C         '
     zk24(lpro+1) = interp(1)//interp(2)
@@ -132,14 +132,14 @@ subroutine rfhge2(harmge)
     call jeveuo(resu//'.DESC', 'L', vi=desc)
     nbmode = desc(2)
     call getvis(' ', 'NUME_CMP_GENE', scal=numcmp, nbret=n1)
-    lfon = lvar + nbordr
+    lfon = lvar+nbordr
 !
 ! --- CAS OU D'UNE VARIABLE GENERALISEE
 !
     if (n1 .ne. 0) then
         if (numcmp .gt. nbmode) then
             call utmess('F', 'UTILITAI4_14')
-        endif
+        end if
 !
         jj = 0
         if (intres(1:3) .ne. 'NON') then
@@ -152,11 +152,11 @@ subroutine rfhge2(harmge)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 crep = zc(itresu+nbmode*(ii-1)+numcmp-1)
                 zr(lfon+jj) = dble(crep)
-                jj = jj +1
+                jj = jj+1
                 zr(lfon+jj) = dimag(crep)
-                jj = jj +1
+                jj = jj+1
             end do
-        endif
+        end if
     else
 !
 ! --- CAS D'UNE VARIABLE PHYSIQUE
@@ -167,7 +167,7 @@ subroutine rfhge2(harmge)
 !
 ! ---   RECUPERATION DE LA BASE MODALE DANS UN VECTEUR DE TRAVAIL
         call dismoi('NB_EQUA', nume, 'NUME_DDL', repi=neq)
-        call wkvect('&&RFHGE2.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
+        call wkvect('&&RFHGE2.VECT.PROPRE', 'V V R', neq*nbmode, idbase)
         call copmod(basemo, numer=nume, bmodr=zr(idbase))
 !
 ! --- TRAITEMENT D'UN GROUP DE NOEUDS SEUELEMENT
@@ -175,12 +175,12 @@ subroutine rfhge2(harmge)
             call jenonu(jexnom(noma//'.GROUPENO', nogno), ign2)
             if (ign2 .le. 0) then
                 call utmess('F', 'ELEMENTS_67', sk=nogno)
-            endif
+            end if
             call jeveuo(jexnum(noma//'.GROUPENO', ign2), 'L', iagno)
             ino = zi(iagno)
             call jenuno(jexnum(noma//'.NOMNOE', ino), noeud)
-        endif
-        call posddl('NUME_DDL', nume, noeud, cmp, inoeud,&
+        end if
+        call posddl('NUME_DDL', nume, noeud, cmp, inoeud, &
                     iddl)
         if (inoeud .eq. 0) then
             lg1 = lxlgut(noeud)
@@ -191,7 +191,7 @@ subroutine rfhge2(harmge)
             valk(1) = cmp(1:lg2)
             valk(2) = noeud(1:lg1)
             call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
-        endif
+        end if
 ! --- INTERPOLATION PROPREMENT DITE (ESPACE PHYSIQUE)
         jj = 0
         if (intres(1:3) .ne. 'NON') then
@@ -201,17 +201,17 @@ subroutine rfhge2(harmge)
             AS_ALLOCATE(vc=vectgene, size=nbmode)
             do iordr = 0, nbordr-1
 !             EXTRACTION ET INTERPOLATION
-                call zxtrac(intres, epsi, crit, nbinsg, disc,&
+                call zxtrac(intres, epsi, crit, nbinsg, disc, &
                             zr(jinst+iordr), zc(itresu), nbmode, vectgene, ierd)
 !             PASSAGE EN BASE PHYSIQUE
-                call mdgep5(neq, nbmode, zr(idbase), vectgene, iddl,&
+                call mdgep5(neq, nbmode, zr(idbase), vectgene, iddl, &
                             crep)
 !             REMPLISSAGE DES TROIS VECTEURS DE LA FONCTION
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+jj) = dble(crep)
-                jj = jj +1
+                jj = jj+1
                 zr(lfon+jj) = dimag(crep)
-                jj = jj +1
+                jj = jj+1
             end do
             AS_DEALLOCATE(vc=vectgene)
 !
@@ -220,17 +220,17 @@ subroutine rfhge2(harmge)
             do iordr = 0, nbordr-1
                 ii = zi(lordr+iordr)
 !             PASSAGE EN BASE PHYSIQUE
-                call mdgep5(neq, nbmode, zr(idbase), zc(itresu+nbmode*( ii-1)), iddl,&
+                call mdgep5(neq, nbmode, zr(idbase), zc(itresu+nbmode*(ii-1)), iddl, &
                             crep)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+jj) = dble(crep)
-                jj = jj +1
+                jj = jj+1
                 zr(lfon+jj) = dimag(crep)
-                jj = jj +1
+                jj = jj+1
             end do
 !
-        endif
-    endif
+        end if
+    end if
 !
     call jedetr('&&RFHGE2.VECT.PROPRE')
 !

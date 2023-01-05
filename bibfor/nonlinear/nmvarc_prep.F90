@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmvarc_prep(type_comp, model    , cara_elem, mateco   , varc_refe,&
-                       compor   , exis_temp, mxchin   , nbin     , lpain    ,&
-                       lchin    , mxchout  , nbout    , lpaout   , lchout   ,&
+subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
+                       compor, exis_temp, mxchin, nbin, lpain, &
+                       lchin, mxchout, nbout, lpaout, lchout, &
                        sigm_prev, vari_prev, varc_prev, varc_curr, nume_harm)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/alchml.h"
@@ -105,14 +105,14 @@ implicit none
 ! - Initializations
 !
     call exixfe(model, iret)
-    lxfem  = iret.ne.0
+    lxfem = iret .ne. 0
     chvref = '&&NMVCPR.VREF'
     ligrmo = model(1:8)//'.MODELE'
     chsith = '&&NMVCPR.CHSITH'
 !
 ! - Init fields
 !
-    call inical(mxchin, lpain, lchin, mxchout, lpaout,&
+    call inical(mxchin, lpain, lchin, mxchout, lpaout, &
                 lchout)
 !
 ! - Get command variables
@@ -133,28 +133,28 @@ implicit none
 !
 ! - Input fields
 !
-    lpain(1)  = 'PVARCRR'
-    lchin(1)  = chvref(1:19)
-    lpain(2)  = 'PGEOMER'
-    lchin(2)  = chgeom(1:19)
-    lpain(3)  = 'PMATERC'
-    lchin(3)  = mateco(1:19)
-    lpain(4)  = 'PCACOQU'
-    lchin(4)  = chcara(7)(1:19)
-    lpain(5)  = 'PCAGNPO'
-    lchin(5)  = chcara(6)(1:19)
-    lpain(6)  = 'PCADISM'
-    lchin(6)  = chcara(3)(1:19)
-    lpain(7)  = 'PCAORIE'
-    lchin(7)  = chcara(1)(1:19)
-    lpain(8)  = 'PCAGNBA'
-    lchin(8)  = chcara(11)(1:19)
-    lpain(9)  = 'PCAARPO'
-    lchin(9)  = chcara(9)(1:19)
+    lpain(1) = 'PVARCRR'
+    lchin(1) = chvref(1:19)
+    lpain(2) = 'PGEOMER'
+    lchin(2) = chgeom(1:19)
+    lpain(3) = 'PMATERC'
+    lchin(3) = mateco(1:19)
+    lpain(4) = 'PCACOQU'
+    lchin(4) = chcara(7) (1:19)
+    lpain(5) = 'PCAGNPO'
+    lchin(5) = chcara(6) (1:19)
+    lpain(6) = 'PCADISM'
+    lchin(6) = chcara(3) (1:19)
+    lpain(7) = 'PCAORIE'
+    lchin(7) = chcara(1) (1:19)
+    lpain(8) = 'PCAGNBA'
+    lchin(8) = chcara(11) (1:19)
+    lpain(9) = 'PCAARPO'
+    lchin(9) = chcara(9) (1:19)
     lpain(10) = 'PCAMASS'
-    lchin(10) = chcara(12)(1:19)
+    lchin(10) = chcara(12) (1:19)
     lpain(11) = 'PCAGEPO'
-    lchin(11) = chcara(5)(1:19)
+    lchin(11) = chcara(5) (1:19)
     lpain(12) = 'PCONTMR'
     lchin(12) = sigm_prev
     lpain(13) = 'PVARIPR'
@@ -166,22 +166,22 @@ implicit none
     lpain(16) = 'PFIBRES'
     lchin(16) = chcara(1) (1:8)//'.CAFIBR'
     call meharm(model, nume_harm, chharm)
-    lpain(17)='PHARMON'
-    lchin(17)= chharm(1:19)
+    lpain(17) = 'PHARMON'
+    lchin(17) = chharm(1:19)
 !
 ! - Computation of elementary vectors - Previous
 !
-    if (type_comp.eq.'-') then
+    if (type_comp .eq. '-') then
         lpain(18) = 'PTEMPSR'
         lchin(18) = time_prev
         lpain(19) = 'PVARCPR'
         lchin(19) = vrcmoi
         nbin = 19
-    endif
+    end if
 !
 ! - Computation of elementary vectors - Current
 !
-    if (type_comp.eq.'+') then
+    if (type_comp .eq. '+') then
         lpain(18) = 'PTEMPSR'
         lchin(18) = time_curr
         lpain(19) = 'PVARCPR'
@@ -189,13 +189,13 @@ implicit none
         lpain(20) = 'PVARCMR'
         lchin(20) = vrcmoi
         nbin = 20
-    endif
+    end if
 !
 ! - XFEM input fields
 !
     if (lxfem .and. exis_temp) then
         call xajcin(model, 'CHAR_MECA_TEMP_R', mxchin, lchin, lpain, nbin)
-    endif
+    end if
 !
 ! - Output fields
 !
@@ -206,12 +206,12 @@ implicit none
 !
     if (lxfem .and. exis_temp) then
         call detrsd('CHAM_ELEM', chsith)
-        call alchml(ligrmo, 'SIEF_ELGA', 'PCONTRR', 'V', chsith,&
+        call alchml(ligrmo, 'SIEF_ELGA', 'PCONTRR', 'V', chsith, &
                     iret, ' ')
         lpaout(2) = 'PCONTRT'
         lchout(2) = chsith
         nbout = nbout+1
-    endif
+    end if
 !
     call jedema()
 end subroutine

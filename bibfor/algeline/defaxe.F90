@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function defaxe(icoq, imod, z, long, nbm,&
+function defaxe(icoq, imod, z, long, nbm, &
                 tcoef)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -41,8 +41,8 @@ function defaxe(icoq, imod, z, long, nbm,&
 !-----------------------------------------------------------------------
     itab = 0
     if (icoq .eq. 2) itab = 5
-    zz = tcoef(1+itab,imod)*z/long
-    defaxe = tcoef(2+itab,imod)*dble(cos(zz)) + tcoef(3+itab,imod)*dble(sin(zz)) + tcoef(4+itab,i&
-             &mod)*dble(cosh(zz)) + tcoef(5+itab,imod)*dble(sinh(zz))
+    zz = tcoef(1+itab, imod)*z/long
+    defaxe = tcoef(2+itab, imod)*dble(cos(zz))+tcoef(3+itab, imod)*dble(sin(zz))+tcoef(4+itab, i&
+             &mod)*dble(cosh(zz))+tcoef(5+itab, imod)*dble(sinh(zz))
 !
 end function

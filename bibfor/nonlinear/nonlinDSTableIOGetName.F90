@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine nonlinDSTableIOGetName(tableio)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/ltcrsd.h"
 #include "asterfort/ltnotb.h"
 !
-type(NL_DS_TableIO), intent(inout) :: tableio
+    type(NL_DS_TableIO), intent(inout) :: tableio
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +49,8 @@ type(NL_DS_TableIO), intent(inout) :: tableio
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tablName     = ' '
-    resultName   = tableio%resultName
+    tablName = ' '
+    resultName = tableio%resultName
     tablSymbName = tableio%tablSymbName
 !
 ! - Get list of tables
@@ -58,7 +58,7 @@ type(NL_DS_TableIO), intent(inout) :: tableio
     call jeexin(resultName//'           .LTNT', iret)
     if (iret .eq. 0) then
         call ltcrsd(resultName, 'G')
-    endif
+    end if
 !
 ! - Get name of table in results datastructure
 !

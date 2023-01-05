@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
-                   vc, vk)
+subroutine tbadap(nomta, nbpar, nompar, vi, vr, &
+                  vc, vk)
     implicit none
 #include "jeveux.h"
 #include "asterc/ismaem.h"
@@ -67,7 +67,6 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
     nbpara = tbnp(1)
     nblign = tbnp(2)
 
-
     AS_ALLOCATE(vk24=add, size=nbpar)
     AS_ALLOCATE(vi=add_i, size=nbpar)
     AS_ALLOCATE(vk24=noadd, size=nbpara)
@@ -89,34 +88,34 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
 !   A to-be-added parameter is defined as a parameter whose value is to be included
 !   in the following line.
     do i = 1, nbpara
-        inpar = tblp(1+4*(i-1) )
+        inpar = tblp(1+4*(i-1))
         do j = 1, nbpar
             jnpar = nompar(j)
             if (jnpar .eq. inpar) then
-                type = tblp(1+4*(i-1)+1)(1:3)
+                type = tblp(1+4*(i-1)+1) (1:3)
 
                 if (type(1:1) .eq. 'I') then
-                    ki = ki + 1
+                    ki = ki+1
                     if (vi(ki) .eq. ismaem()) goto 10
                 else if (type(1:1) .eq. 'R') then
-                    kr = kr + 1
+                    kr = kr+1
                     if (vr(kr) .eq. r8vide()) goto 10
                 else if (type(1:1) .eq. 'C') then
-                    kc = kc + 1
-                    if (dble(vc(kc)) .eq. r8vide() .and. dimag( vc(kc)) .eq. r8vide()) &
+                    kc = kc+1
+                    if (dble(vc(kc)) .eq. r8vide() .and. dimag(vc(kc)) .eq. r8vide()) &
                         goto 10
                 else if (type(1:1) .eq. 'K') then
-                    kk = kk + 1
-                    if (vk(kk)(1:7) .eq. '???????') goto 10
+                    kk = kk+1
+                    if (vk(kk) (1:7) .eq. '???????') goto 10
                 else
-                    ASSERT( .false. )
-                endif
+                    ASSERT(.false.)
+                end if
 
 !               Parameter of index /i/ is not empty, it needs to be saved
                 nomjvl = tblp(1+4*(i-1)+3)
 
-                add_c = add_c + 1
-                ASSERT( add_c .le. nbpar )
+                add_c = add_c+1
+                ASSERT(add_c .le. nbpar)
                 add(add_c) = nomjvl
                 add_i(add_c) = i
                 goto 20
@@ -126,8 +125,8 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
 
 !       Parameter of index /i/ is not to be saved
         nomjvl = tblp(1+4*(i-1)+3)
-        noadd_c = noadd_c + 1
-        ASSERT( noadd_c .le. nbpara )
+        noadd_c = noadd_c+1
+        ASSERT(noadd_c .le. nbpara)
         noadd(noadd_c) = nomjvl
         noadd_i(noadd_c) = i
 20      continue
@@ -136,7 +135,6 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
 !   If all parameters are to be saved, or, if all of them are *not* to be saved
 !   then there is no possibility of conflict
     if ((add_c .eq. nbpara) .or. (noadd_c .eq. nbpara)) goto 30
-
 
 !   Otherwise, we need to cross-check the /add/ and /noadd/ arrays for
 !   duplicate entries, and do the necessary for expanding the optimized table
@@ -150,14 +148,14 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
             nomjvl2 = noadd(j)
             if (nomjvl1 .eq. nomjvl2) then
 !               Conflict detected, compare the parameter indices
-                read (nomjvl1(21:24),'(I16)') save_ind
+                read (nomjvl1(21:24), '(I16)') save_ind
                 if (add_i(i) .eq. save_ind) then
 !                   The index of the paramater to be added is that of the reference
 !                   parameter, then duplicate its existing logicals and create
 !                   a new object for parameter of index noadd(j)
                     call codent(noadd_i(j), 'D0', knume)
                     nomjvl2 = nomtab(1:17)//'LG.'//knume
-                    call jedup1(nomjvl1,base,nomjvl2)
+                    call jedup1(nomjvl1, base, nomjvl2)
                     tblp(1+4*(noadd_i(j)-1)+3) = nomjvl2
                 else if (noadd_i(j) .eq. save_ind) then
 !                   The index of the paramater to be added is not that of the reference
@@ -165,13 +163,12 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
 !                   a new object for parameter of index add(j)
                     call codent(add_i(i), 'D0', knume)
                     nomjvl2 = nomtab(1:17)//'LG.'//knume
-                    call jedup1(nomjvl1,base,nomjvl2)
+                    call jedup1(nomjvl1, base, nomjvl2)
                     tblp(1+4*(add_i(i)-1)+3) = nomjvl2
                 end if
             end if
         end do
     end do
-
 
 30  continue
 

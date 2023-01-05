@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
-                  lresu, nbordr, ordr, nbcmp, nomcmp,&
+subroutine irgmsh(nomcon, partie, ifi, nbcham, cham, &
+                  lresu, nbordr, ordr, nbcmp, nomcmp, &
                   nbmat, nummai, versio, lFirstOcc, tycha)
     implicit none
 #include "asterf_types.h"
@@ -77,7 +77,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !
 !     --- TABLEAU DE DECOUPAGE
     integer :: ntyele
-    parameter (ntyele = 28)
+    parameter(ntyele=28)
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
     integer :: nbel(ntyele)
     character(len=24) :: nobj(ntyele)
@@ -92,17 +92,17 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
     if (lresu) then
         do ior = 1, nbordr
             do ich = 1, nbcham
-                call rsexch(' ', nomcon, cham(ich), ordr(ior), noch19,&
+                call rsexch(' ', nomcon, cham(ich), ordr(ior), noch19, &
                             iret)
                 if (iret .eq. 0) goto 34
             end do
         end do
         call utmess('A', 'PREPOST2_59')
         goto 999
- 34     continue
+34      continue
     else
         noch19 = nomcon
-    endif
+    end if
     call dismoi('NOM_MAILLA', noch19, 'CHAMP', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
@@ -110,20 +110,20 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !
     if (lFirstOcc) then
         call irgmpf(ifi, versio)
-    endif
+    end if
 !
 ! --- RECUPERATION DES INSTANTS, FREQUENCES, ...
 !
     call wkvect('&&IRGMSH.PARA', 'V V R', max(1, nbordr), jpara)
     if (lresu) then
-        noco19=nomcon
+        noco19 = nomcon
 !
 !        -- DANS UN EVOL_NOLI, IL PEUT EXISTER INST ET FREQ.
 !           ON PREFERE INST :
         call jenonu(jexnom(noco19//'.NOVA', 'INST'), iret)
         if (iret .ne. 0) then
             do ior = 1, nbordr
-                call rsadpa(nomcon, 'L', 1, 'INST', ordr(ior),&
+                call rsadpa(nomcon, 'L', 1, 'INST', ordr(ior), &
                             0, sjv=iad, styp=k8b)
                 zr(jpara+ior-1) = zr(iad)
             end do
@@ -131,15 +131,15 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             call jenonu(jexnom(noco19//'.NOVA', 'FREQ'), iret)
             if (iret .ne. 0) then
                 do ior = 1, nbordr
-                    call rsadpa(nomcon, 'L', 1, 'FREQ', ordr(ior),&
+                    call rsadpa(nomcon, 'L', 1, 'FREQ', ordr(ior), &
                                 0, sjv=iad, styp=k8b, istop=0)
                     zr(jpara+ior-1) = zr(iad)
                 end do
-            endif
-        endif
+            end if
+        end if
     else
         zr(jpara) = 0.d0
-    endif
+    end if
 !
 ! --- TRANSFORMATION DU MAILLAGE EN MAILLAGE SUPPORTE PAR GMSH
 !
@@ -148,14 +148,14 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
         nbel(i) = 0
         nobj(i) = ' '
     end do
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1' ), typpoi)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2' ), typseg)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3' ), typtri)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4' ), typqua)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4' ), typtet)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5' ), typpyr)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6' ), typpri)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8' ), typhex)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), typpoi)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), typseg)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typtri)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), typqua)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), typtet)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), typpyr)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), typpri)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), typhex)
     nobj(typpoi) = '&&IRGMSH_POI'
     nobj(typseg) = '&&IRGMSH_SEG'
     nobj(typtri) = '&&IRGMSH_TRI'
@@ -166,7 +166,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
     nobj(typhex) = '&&IRGMSH_HEX'
 !
     nomaou = '&&MAILLA'
-    call irgmma(noma, nomaou, nbmat, nummai, 'V',&
+    call irgmma(noma, nomaou, nbmat, nummai, 'V', &
                 nobj, nbel, versio)
 !
     call jeveuo(nomaou//'.COORDO    .VALE', 'L', vr=vale)
@@ -182,12 +182,12 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !        --VERIFICATION DE L'EXISTENCE DU CHAMP CHAM(ICH) DANS LA
 !          SD RESULTAT NOMCON POUR LE NO. D'ORDRE ORDR(1)
 !          ET RECUPERATION DANS NOCH19 DU NOM SI LE CHAM_GD EXISTE
-            call rsexch(' ', nomcon, cham(ich), ordr(1), noch19,&
+            call rsexch(' ', nomcon, cham(ich), ordr(1), noch19, &
                         iret)
             if (iret .ne. 0) goto 10
         else
             noch19 = nomcon
-        endif
+        end if
 !
 ! ------ RECHERCHE DU TYPE DU CHAMP (CHAM_NO OU CHAM_ELEM)
 !
@@ -196,37 +196,37 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 ! ------ TRAITEMENT DU CAS CHAM_NO:
 !
         if (tych(1:4) .eq. 'NOEU') then
-            call irgmcn(cham(ich), partie, ifi, nomcon, ordr,&
-                        nbordr, vale, connex, zi(jpoin), nobj,&
-                        nbel, nbcmp, nomcmp, lresu, zr(jpara),&
+            call irgmcn(cham(ich), partie, ifi, nomcon, ordr, &
+                        nbordr, vale, connex, zi(jpoin), nobj, &
+                        nbel, nbcmp, nomcmp, lresu, zr(jpara), &
                         versio, tycha)
 !
 ! ------ TRAITEMENT DU CAS CHAM_ELEM AUX NOEUDS:
 !
-        else if (tych(1:4).eq.'ELNO') then
+        else if (tych(1:4) .eq. 'ELNO') then
             if (tycha(1:4) .eq. 'VECT') then
-                valk(1)=tycha
-                valk(2)=tych(1:4)
+                valk(1) = tycha
+                valk(2) = tych(1:4)
                 call utmess('A', 'PREPOST6_35', nk=2, valk=valk)
-                tycha='SCALAIRE'
-            endif
-            call irgmce(cham(ich), partie, ifi, nomcon, ordr,&
-                        nbordr, vale, connex, zi(jpoin), nobj,&
-                        nbel, nbcmp, nomcmp, lresu, zr(jpara),&
+                tycha = 'SCALAIRE'
+            end if
+            call irgmce(cham(ich), partie, ifi, nomcon, ordr, &
+                        nbordr, vale, connex, zi(jpoin), nobj, &
+                        nbel, nbcmp, nomcmp, lresu, zr(jpara), &
                         nomaou, noma, versio, tycha)
 !
 !
 ! ------ TRAITEMENT DU CAS CHAM_ELEM AUX GAUSS:
 !
-        else if (tych(1:4).eq.'ELGA' .or. tych(1:4).eq.'ELEM') then
+        else if (tych(1:4) .eq. 'ELGA' .or. tych(1:4) .eq. 'ELEM') then
             if (tycha(1:4) .eq. 'VECT' .or. tycha(1:4) .eq. 'TENS') then
-                valk(1)=tycha
-                valk(2)=tych(1:4)
+                valk(1) = tycha
+                valk(2) = tych(1:4)
                 call utmess('A', 'PREPOST6_35', nk=2, valk=valk)
-            endif
-            call irgmcg(cham(ich), partie, ifi, nomcon, ordr,&
-                        nbordr, vale, connex, zi(jpoin), nobj,&
-                        nbel, nbcmp, nomcmp, lresu, zr(jpara),&
+            end if
+            call irgmcg(cham(ich), partie, ifi, nomcon, ordr, &
+                        nbordr, vale, connex, zi(jpoin), nobj, &
+                        nbel, nbcmp, nomcmp, lresu, zr(jpara), &
                         nomaou, versio)
 !
 ! ------ AUTRE: PAS D'IMPRESSION
@@ -235,8 +235,8 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             valk2(1) = cham(ich)
             valk2(2) = tych
             call utmess('I', 'PREPOST2_60', nk=2, valk=valk2)
-        endif
- 10     continue
+        end if
+10      continue
     end do
 !
 ! --- MENAGE
@@ -244,7 +244,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
     do i = 1, ntyele
         if (nobj(i) .ne. ' ') then
             call jedetr(nobj(i))
-        endif
+        end if
     end do
 !
     call detrsd('MAILLAGE', nomaou)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nm1dci(fami, kpg, ksp, imate, em,&
-                  ep, sigm, deps, vim, option,&
+subroutine nm1dci(fami, kpg, ksp, imate, em, &
+                  ep, sigm, deps, vim, option, &
                   materi, sigp, vip, dsde)
 !
     implicit none
@@ -63,30 +63,30 @@ subroutine nm1dci(fami, kpg, ksp, imate, em,&
     integer :: icodre(2)
     character(len=16) :: nomecl(2)
 !
-    data nomecl/'D_SIGM_EPSI','SY'/
+    data nomecl/'D_SIGM_EPSI', 'SY'/
 !     ------------------------------------------------------------------
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                materi, 'ECRO_LINE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate, &
+                materi, 'ECRO_LINE', 0, ' ', [0.d0], &
                 1, nomecl, valres, icodre, 1)
     etm = valres(1)
 !
     if (etm .le. 0.) then
-        valrm(1)=etm
-        valrm(2)=em
+        valrm(1) = etm
+        valrm(2) = em
         call utmess('F', 'COMPOR1_53', nr=2, valr=valrm)
-    endif
+    end if
 !
-    hm = em*etm/ (em-etm)
+    hm = em*etm/(em-etm)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'ECRO_LINE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                materi, 'ECRO_LINE', 0, ' ', [0.d0], &
                 2, nomecl, valres, icodre, 1)
     etp = valres(1)
-    hp = ep*etp/ (ep-etp)
+    hp = ep*etp/(ep-etp)
     sigy = valres(2)
     xm = vim(1)
 !     ------------------------------------------------------------------
-    sige = ep* (sigm/em+deps) - hp/hm*xm
+    sige = ep*(sigm/em+deps)-hp/hm*xm
 !
     sieleq = abs(sige)
 !     ------------------------------------------------------------------
@@ -98,26 +98,26 @@ subroutine nm1dci(fami, kpg, ksp, imate, em,&
             dsde = ep
             dp = 0.d0
             xp = hp/hm*xm
-            sigp = ep* (sigm/em+deps)
+            sigp = ep*(sigm/em+deps)
             vip(1) = xp
         else
             vip(2) = 1.d0
-            dp = (sieleq-sigy)/ (ep+hp)
+            dp = (sieleq-sigy)/(ep+hp)
             if (option .eq. 'FULL_MECA_ELAS') then
                 dsde = ep
             else
                 dsde = etp
-            endif
-            xp = hp/hm*xm + hp*dp*sige/sieleq
-            sigp = xp + sigy*sige/sieleq
+            end if
+            xp = hp/hm*xm+hp*dp*sige/sieleq
+            sigp = xp+sigy*sige/sieleq
             vip(1) = xp
-        endif
-    endif
+        end if
+    end if
     if (option(1:10) .eq. 'RIGI_MECA_') then
-        if ((vim(2).lt.0.5d0) .or. (option.eq.'RIGI_MECA_ELAS')) then
+        if ((vim(2) .lt. 0.5d0) .or. (option .eq. 'RIGI_MECA_ELAS')) then
             dsde = ep
         else
             dsde = etp
-        endif
-    endif
+        end if
+    end if
 end subroutine

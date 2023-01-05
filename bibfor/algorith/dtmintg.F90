@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/nlget.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in) :: sd_dtm_
-    character(len=*) , intent(in) :: sd_int_
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_int_
     integer, pointer              :: buffdtm(:)
     integer, pointer              :: buffint(:)
 !
@@ -58,45 +58,45 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 !
     call dtmget(sd_dtm, _SCHEMA_I, iscal=method, buffer=buffdtm)
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli, buffer=buffdtm)
-    if (nbnoli.gt.0) then
-        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+    if (nbnoli .gt. 0) then
+        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl, buffer=buffdtm)
         call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
-        call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
+        call nlget(sd_nl, _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
         call dtmget(sd_dtm, _NL_SAVES, vr=nlsav1, buffer=buffdtm)
         call dcopy(size(nlsav2), nlsav2, 1, nlsav1, 1)
     end if
 
     select case (method)
 !
-        case(_SCH_EULER)
-            call inteuler(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_EULER)
+        call inteuler(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_DEVOGE)
-            call intdevo(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_DEVOGE)
+        call intdevo(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_NEWMARK)
-            call intnewm(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_NEWMARK)
+        call intnewm(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_RUNGE_KUTTA_32)
-            call intruku32(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_RUNGE_KUTTA_32)
+        call intruku32(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_RUNGE_KUTTA_54)
-            call intruku54(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_RUNGE_KUTTA_54)
+        call intruku54(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_ADAPT_ORDRE1)
-            call intadapt1(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_ADAPT_ORDRE1)
+        call intadapt1(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_ADAPT_ORDRE2)
-            call intadapt2(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_ADAPT_ORDRE2)
+        call intadapt2(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_ITMI)
-            call intitmi(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_ITMI)
+        call intitmi(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case(_SCH_TRBDF2)
-            call inttrbdf2(sd_dtm, sd_int, buffdtm, buffint)
+    case (_SCH_TRBDF2)
+        call inttrbdf2(sd_dtm, sd_int, buffdtm, buffint)
 !
-        case default
-            ASSERT(.false.)
+    case default
+        ASSERT(.false.)
 !
     end select
 

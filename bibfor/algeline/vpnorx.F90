@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,36 +17,36 @@
 ! --------------------------------------------------------------------
 
 subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
-  implicit   none
+    implicit none
 #include "blas/dscal.h"
-  integer :: nbmode, neq, exclus(*)
-  real(kind=8) :: vecp(neq, *)
-  character(len=*) :: resufk(*)
+    integer :: nbmode, neq, exclus(*)
+    real(kind=8) :: vecp(neq, *)
+    character(len=*) :: resufk(*)
 !     NORMALISE A LA PLUS GRANDE DES VALEURS SUR UN DDL QUI N'EST PAS
 !     EXCLUS
 !     ------------------------------------------------------------------
 !
-  integer :: imode, ieq
-  real(kind=8) :: normx, invx, absnx, rexc, arexc
-  character(len=24) :: k24b
+    integer :: imode, ieq
+    real(kind=8) :: normx, invx, absnx, rexc, arexc
+    character(len=24) :: k24b
 !
-  k24b='SANS_CMP: LAGR'
-  do imode = 1, nbmode
-     normx = vecp(1,imode)*exclus(1)
-     absnx=abs(normx)
-     do ieq = 2, neq
-        rexc=vecp(ieq,imode)*exclus(ieq)
-        arexc=abs(rexc)
-        if (absnx .lt. arexc) then
-           normx = rexc
-           absnx = arexc
-        endif
-     end do
-     if (normx .ne. 0.d0) then
-        invx=1.d0/normx
-        call dscal(neq, invx, vecp(1, imode), 1)
-     endif
-  end do
-  resufk(1:nbmode) = k24b
+    k24b = 'SANS_CMP: LAGR'
+    do imode = 1, nbmode
+        normx = vecp(1, imode)*exclus(1)
+        absnx = abs(normx)
+        do ieq = 2, neq
+            rexc = vecp(ieq, imode)*exclus(ieq)
+            arexc = abs(rexc)
+            if (absnx .lt. arexc) then
+                normx = rexc
+                absnx = arexc
+            end if
+        end do
+        if (normx .ne. 0.d0) then
+            invx = 1.d0/normx
+            call dscal(neq, invx, vecp(1, imode), 1)
+        end if
+    end do
+    resufk(1:nbmode) = k24b
 !
 end subroutine

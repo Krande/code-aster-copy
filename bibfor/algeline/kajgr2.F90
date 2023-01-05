@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: typflu
-    common  / kop144 / typflu
+    common/kop144/typflu
 !
     integer :: igrap, nkamax, iflag, unit
     real(kind=8) :: vr, cokaj1, cokaj2
@@ -47,7 +47,7 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
     real(kind=8) :: coef1(20, 11), coef2(20, 11)
     character(len=16) :: k16nom
     character(len=24) :: nom1, nom2
-    save         coeca1, coeca2
+    save coeca1, coeca2
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -70,30 +70,30 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
         call jeveuo(nom2, 'L', iunit)
         unit = zi(iunit-1+2)
         k16nom = ' '
-        if (ulisop ( unit, k16nom ) .eq. 0) then
+        if (ulisop(unit, k16nom) .eq. 0) then
             call ulopen(unit, ' ', ' ', 'NEW', 'O')
-        endif
+        end if
 !
 ! ---    BLOC D'INITIALISATION
         do i = 1, nbomax
             do j = 1, nkamax
-                coeca1(i,j) = zero
-                coeca2(i,j) = zero
-                coef1(i,j) = zero
-                coef2(i,j) = zero
+                coeca1(i, j) = zero
+                coeca2(i, j) = zero
+                coef1(i, j) = zero
+                coef2(i, j) = zero
             end do
         end do
 !
-        read (unit,*) nbloc
+        read (unit, *) nbloc
         do i = 1, nbloc
-            read (unit,*) (coef1(i,j),j = 1,nkamax)
-            read (unit,*) (coef2(i,j),j = 1,nkamax)
-            read (unit,*)
+            read (unit, *) (coef1(i, j), j=1, nkamax)
+            read (unit, *) (coef2(i, j), j=1, nkamax)
+            read (unit, *)
         end do
         do i = 1, nbomax
             do j = 1, nkamax
-                coeca1(i,j) = coef1(i,j)
-                coeca2(i,j) = coef2(i,j)
+                coeca1(i, j) = coef1(i, j)
+                coeca2(i, j) = coef2(i, j)
             end do
         end do
         call wkvect(nom1, 'V V I', 1, iflag)
@@ -101,40 +101,40 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
 !        FERMETURE DU FICHIER
         call ulopen(-unit, ' ', ' ', ' ', ' ')
         goto 60
-    endif
+    end if
 !
- 60 continue
+60  continue
 !
 !
 !-----1.CONFIG. ECOULEMENT ASCENDANT TIGE DE COMMANDE CENTREE
 !
     if (igrap .eq. 1) then
 !
-        cokaj1 = coeca1(1,8) + coeca1(1,7)/vr
-        cokaj2 = coeca2(1,8) + coeca2(1,7)/vr
+        cokaj1 = coeca1(1, 8)+coeca1(1, 7)/vr
+        cokaj2 = coeca2(1, 8)+coeca2(1, 7)/vr
 !
 !-----2.CONFIG. ECOULEMENT ASCENDANT TIGE DE COMMANDE EXCENTREE
 !
-    else if (igrap.eq.2) then
+    else if (igrap .eq. 2) then
 !
-        cokaj1 = coeca1(2,8) + coeca1(2,7)/vr
-        cokaj2 = coeca2(2,8) + coeca2(2,7)/vr
+        cokaj1 = coeca1(2, 8)+coeca1(2, 7)/vr
+        cokaj2 = coeca2(2, 8)+coeca2(2, 7)/vr
 !
 !-----3.CONFIG. ECOULEMENT DESCENDANT TIGE DE COMMANDE CENTREE
 !
-    else if (igrap.eq.3) then
+    else if (igrap .eq. 3) then
 !
-        cokaj1 = coeca1(3,8) + coeca1(3,7)/vr
-        cokaj2 = coeca2(3,8) + coeca2(3,7)/vr
+        cokaj1 = coeca1(3, 8)+coeca1(3, 7)/vr
+        cokaj2 = coeca2(3, 8)+coeca2(3, 7)/vr
 !
 !-----4.CONFIG. ECOULEMENT DESCENDANT TIGE DE COMMANDE EXCENTREE
 !
     else
 !
-        cokaj1 = coeca1(4,8) + coeca1(4,7)/vr
-        cokaj2 = coeca2(4,8) + coeca2(4,7)/vr
+        cokaj1 = coeca1(4, 8)+coeca1(4, 7)/vr
+        cokaj2 = coeca2(4, 8)+coeca2(4, 7)/vr
 !
-    endif
+    end if
 !
     call jedema()
 !

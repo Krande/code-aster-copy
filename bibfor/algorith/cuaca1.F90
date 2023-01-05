@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
+subroutine cuaca1(deficu, resocu, solveu, lmat, cncine, &
                   nbliac, ajliai)
 !
 !
@@ -101,38 +101,38 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
 !
 ! --- CALCUL DE LGBLOC
 !
-    lgbloc = cudisi(deficu,'NB_RESOL')
+    lgbloc = cudisi(deficu, 'NB_RESOL')
 !
-    nbsm = nbliac - ajliai
-    npas = nbsm / lgbloc
-    nrest = nbsm - lgbloc*npas
+    nbsm = nbliac-ajliai
+    npas = nbsm/lgbloc
+    nrest = nbsm-lgbloc*npas
 !
     if (nrest .gt. 0) then
-        npast = npas + 1
+        npast = npas+1
     else
         npast = npas
-    endif
-    chsecm='&&CFACA1.TAMPON'
+    end if
+    chsecm = '&&CFACA1.TAMPON'
     call wkvect(chsecm, ' V V R ', neq*lgbloc, tampon)
 !
 !
     do ipas = 1, npast
         lg = lgbloc
-        if (npast .ne. npas .and. (ipas.eq.npast)) lg = nrest
+        if (npast .ne. npas .and. (ipas .eq. npast)) lg = nrest
 !
         do kk = 1, neq*lg
             zr(tampon-1+kk) = 0.0d0
         end do
 !
         do il = 1, lg
-            iliac = lgbloc* (ipas-1) + il + ajliai
+            iliac = lgbloc*(ipas-1)+il+ajliai
             lliac = zi(jliac+iliac-1)
             jdecal = zi(jpoi+lliac-1)
-            nbddl = zi(jpoi+lliac) - zi(jpoi+lliac-1)
+            nbddl = zi(jpoi+lliac)-zi(jpoi+lliac-1)
 !
 ! --- CALCUL DE LA COLONNE AT POUR LA LIAISON ACTIVE LLIAC EN CONTACT
 !
-            call calatm(neq, nbddl, 1.d0, zr(japcoe+jdecal), zi(japddl+ jdecal),&
+            call calatm(neq, nbddl, 1.d0, zr(japcoe+jdecal), zi(japddl+jdecal), &
                         zr(tampon+neq*(il-1)))
 !
         end do
@@ -144,14 +144,14 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine,&
 ! --- RECOPIE
 !
         do il = 1, lg
-            iliac = lgbloc* (ipas-1) + il + ajliai
+            iliac = lgbloc*(ipas-1)+il+ajliai
             lliac = zi(jliac+iliac-1)
 !
 ! --- AJOUT D'UNE LIAISON DE CONTACT
 !
             call jeveuo(jexnum(cm1a, lliac), 'E', jcm1a)
             do kk = 1, neq
-                zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
+                zr(jcm1a-1+kk) = zr(tampon-1+neq*(il-1)+kk)
             end do
             call jelibe(jexnum(cm1a, lliac))
         end do

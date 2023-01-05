@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -198,8 +198,8 @@
 !     4) COMPUTE THE J-TH STEP RESIDUAL VECTOR.
 !        W_{J} =  V_{J}^T * B * OP * V_{J}
 !        R_{J} =  OP*V_{J} - V_{J} * W_{J}
-subroutine znaitr(ido, bmat, n, k, np,&
-                  resid, rnorm, v, ldv, h,&
+subroutine znaitr(ido, bmat, n, k, np, &
+                  resid, rnorm, v, ldv, h, &
                   ldh, ipntr, workd, info, alpha)
 !        H(:,J) = W_{J};
 !        H(J,J-1) = RNORM
@@ -253,11 +253,11 @@ subroutine znaitr(ido, bmat, n, k, np,&
 #include "blas/zlascl.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     integer :: nopx, nbx, nrorth, nitref, nrstrt
-    common /infor/&
+    common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
 !     %------------------%
@@ -281,8 +281,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !
     complex(kind=8) :: one, zero
     real(kind=8) :: rone, rzero
-    parameter (one = (1.0d+0, 0.0d+0), zero = (0.0d+0, 0.0d+0),&
-     &           rone = 1.0d+0, rzero = 0.0d+0)
+    parameter(one=(1.0d+0, 0.0d+0), zero=(0.0d+0, 0.0d+0),&
+     &           rone=1.0d+0, rzero=0.0d+0)
 !
 !     %--------------%
 !     | LOCAL ARRAYS |
@@ -300,7 +300,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     real(kind=8) :: smlnum, tst1, ulp, unfl, betaj, temp1, rnorm1, wnorm, rbid(1)
     complex(kind=8) :: cnorm
 !
-    save       first, orth1, orth2, rstart, step3, step4,&
+    save first, orth1, orth2, rstart, step3, step4,&
      &           ierr, ipj, irj, ivj, iter, itry, j, msglvl,&
      &           betaj, rnorm1, smlnum, ulp, unfl, wnorm
 !
@@ -313,7 +313,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !     | DATA STATEMENTS |
 !     %-----------------%
 !
-    data       first / .true. /
+    data first/.true./
 !
 !     %-----------------------%
 !     | EXECUTABLE STATEMENTS |
@@ -321,7 +321,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !
     call matfpe(-1)
 !
-    rbid=0.d0
+    rbid = 0.d0
     if (first) then
 !
 !        %-----------------------------------------%
@@ -334,10 +334,10 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !
         unfl = r8miem()
 ! DUE TO CRS512         OVFL = ONE / UNFL
-        ulp = r8prem() * 0.5d0 * isbaem()
-        smlnum = unfl*( n / ulp )
+        ulp = r8prem()*0.5d0*isbaem()
+        smlnum = unfl*(n/ulp)
         first = .false.
-    endif
+    end if
 !
     if (ido .eq. 0) then
 !
@@ -358,11 +358,11 @@ subroutine znaitr(ido, bmat, n, k, np,&
         rstart = .false.
         orth1 = .false.
         orth2 = .false.
-        j = k + 1
+        j = k+1
         ipj = 1
-        irj = ipj + n
-        ivj = irj + n
-    endif
+        irj = ipj+n
+        ivj = irj+n
+    end if
 !
 !     %-------------------------------------------------%
 !     | WHEN IN REVERSE COMMUNICATION MODE ONE OF:      |
@@ -399,7 +399,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     if (msglvl .gt. 1) then
         call ivout(logfil, 1, [j], ndigit, '_NAITR: GENERATING ARNOLDI VECTOR NUMBER')
         call dvout(logfil, 1, [rnorm], ndigit, '_NAITR: B-NORM OF THE CURRENT RESIDUAL IS')
-    endif
+    end if
 !
 !        %---------------------------------------------------%
 !        | STEP 1: CHECK IF THE B NORM OF J-TH RESIDUAL      |
@@ -418,7 +418,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !
     if (msglvl .gt. 0) then
         call ivout(logfil, 1, [j], ndigit, '_NAITR: ****** RESTART AT STEP ******')
-    endif
+    end if
 !
 !           %---------------------------------------------%
 !           | ITRY IS THE LOOP VARIABLE THAT CONTROLS THE |
@@ -427,24 +427,24 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !           %---------------------------------------------%
 !
     betaj = rzero
-    nrstrt = nrstrt + 1
+    nrstrt = nrstrt+1
     itry = 1
- 20 continue
+20  continue
     rstart = .true.
     ido = 0
- 30 continue
+30  continue
 !
 !           %--------------------------------------%
 !           | IF IN REVERSE COMMUNICATION MODE AND |
 !           | RSTART = .TRUE. FLOW RETURNS HERE.   |
 !           %--------------------------------------%
 !
-    call zgetv0(ido, bmat, .false._1, n, j,&
-                v, ldv, resid, rnorm, ipntr,&
+    call zgetv0(ido, bmat, .false._1, n, j, &
+                v, ldv, resid, rnorm, ipntr, &
                 workd, ierr, alpha)
     if (ido .ne. 99) goto 9000
     if (ierr .lt. 0) then
-        itry = itry + 1
+        itry = itry+1
         if (itry .le. 3) goto 20
 !
 !              %------------------------------------------------%
@@ -453,12 +453,12 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !              | WHICH SPANS OP AND EXIT.                       |
 !              %------------------------------------------------%
 !
-        info = j - 1
+        info = j-1
         ido = 99
         goto 9000
-    endif
+    end if
 !
- 40 continue
+40  continue
 !
 !        %---------------------------------------------------------%
 !        | STEP 2:  V_{J} = R_{J-1}/RNORM AND P_{J} = P_{J}/RNORM  |
@@ -469,7 +469,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !
     call zcopy(n, resid, 1, v(1, j), 1)
     if (rnorm .ge. unfl) then
-        temp1 = rone / rnorm
+        temp1 = rone/rnorm
         call zdscal(n, temp1, v(1, j), 1)
         call zdscal(n, temp1, workd(ipj), 1)
     else
@@ -479,11 +479,11 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !            | USE LAPACK ROUTINE ZLASCL               |
 !            %-----------------------------------------%
 !
-        call zlascl('G', i, i, rnorm, rone,&
+        call zlascl('G', i, i, rnorm, rone, &
                     n, 1, v(1, j), n, infol4)
-        call zlascl('G', i, i, rnorm, rone,&
+        call zlascl('G', i, i, rnorm, rone, &
                     n, 1, workd(ipj), n, infol4)
-    endif
+    end if
 !
 !        %------------------------------------------------------%
 !        | STEP 3:  R_{J} = OP*V_{J}; NOTE THAT P_{J} = B*V_{J} |
@@ -491,7 +491,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %------------------------------------------------------%
 !
     step3 = .true.
-    nopx = nopx + 1
+    nopx = nopx+1
     call zcopy(n, v(1, j), 1, workd(ivj), 1)
     ipntr(1) = ivj
     ipntr(2) = irj
@@ -503,7 +503,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %-----------------------------------%
 !
     goto 9000
- 50 continue
+50  continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION; |
@@ -525,7 +525,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %---------------------------------------%
 !
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         step4 = .true.
         ipntr(1) = irj
         ipntr(2) = ipj
@@ -538,8 +538,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
         goto 9000
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd(ipj), 1)
-    endif
- 60 continue
+    end if
+60  continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION; |
@@ -555,11 +555,11 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %-------------------------------------%
 !
     if (bmat .eq. 'G') then
-        cnorm = zdotc (n, resid, 1, workd(ipj), 1)
-        wnorm = sqrt( dlapy2(dble(cnorm),dimag(cnorm)) )
+        cnorm = zdotc(n, resid, 1, workd(ipj), 1)
+        wnorm = sqrt(dlapy2(dble(cnorm), dimag(cnorm)))
     else if (bmat .eq. 'I') then
         wnorm = dznrm2(n, resid, 1)
-    endif
+    end if
 !
 !        %-----------------------------------------%
 !        | COMPUTE THE J-TH RESIDUAL CORRESPONDING |
@@ -575,8 +575,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | WORKD(IPJ:IPJ+N-1) CONTAINS B*OP*V_{J}.  |
 !        %------------------------------------------%
 !
-    call zgemv('C', n, j, one, v,&
-               ldv, workd(ipj), 1, zero, h(1, j),&
+    call zgemv('C', n, j, one, v, &
+               ldv, workd(ipj), 1, zero, h(1, j), &
                1)
 !
 !        %--------------------------------------%
@@ -584,17 +584,17 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | RESID CONTAINS OP*V_{J}. SEE STEP 3. |
 !        %--------------------------------------%
 !
-    call zgemv('N', n, j, -one, v,&
-               ldv, h(1, j), 1, one, resid,&
+    call zgemv('N', n, j, -one, v, &
+               ldv, h(1, j), 1, one, resid, &
                1)
 !
-    if (j .gt. 1) h(j,j-1) = dcmplx(betaj, rzero)
+    if (j .gt. 1) h(j, j-1) = dcmplx(betaj, rzero)
 !
 !
     orth1 = .true.
 !
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call zcopy(n, resid, 1, workd(irj), 1)
         ipntr(1) = irj
         ipntr(2) = ipj
@@ -607,8 +607,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
         goto 9000
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd(ipj), 1)
-    endif
- 70 continue
+    end if
+70  continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH1 = .TRUE. |
@@ -622,11 +622,11 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %------------------------------%
 !
     if (bmat .eq. 'G') then
-        cnorm = zdotc (n, resid, 1, workd(ipj), 1)
-        rnorm = sqrt( dlapy2(dble(cnorm),dimag(cnorm)) )
+        cnorm = zdotc(n, resid, 1, workd(ipj), 1)
+        rnorm = sqrt(dlapy2(dble(cnorm), dimag(cnorm)))
     else if (bmat .eq. 'I') then
         rnorm = dznrm2(n, resid, 1)
-    endif
+    end if
 !
 !        %-----------------------------------------------------------%
 !        | STEP 5: RE-ORTHOGONALIZATION / ITERATIVE REFINEMENT PHASE |
@@ -649,7 +649,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     if (rnorm .gt. alpha*wnorm) goto 100
 !
     iter = 0
-    nrorth = nrorth + 1
+    nrorth = nrorth+1
 !
 !        %---------------------------------------------------%
 !        | ENTER THE ITERATIVE REFINEMENT PHASE. IF FURTHER  |
@@ -658,22 +658,22 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | GRAM-SCHMIDT USING ALL THE ARNOLDI VECTORS V_{J}  |
 !        %---------------------------------------------------%
 !
- 80 continue
+80  continue
 !
     if (msglvl .gt. 2) then
         rtemp(1) = wnorm
         rtemp(2) = rnorm
         call dvout(logfil, 2, rtemp, ndigit, '_NAITR: RE-ORTHOGONALIZATION; WNORM AND RNORM ARE')
         call zvout(logfil, j, h(1, j), ndigit, '_NAITR: J-TH COLUMN OF H')
-    endif
+    end if
 !
 !        %----------------------------------------------------%
 !        | COMPUTE V_{J}^T * B * R_{J}.                       |
 !        | WORKD(IRJ:IRJ+J-1) = V(:,1:J)'*WORKD(IPJ:IPJ+N-1). |
 !        %----------------------------------------------------%
 !
-    call zgemv('C', n, j, one, v,&
-               ldv, workd(ipj), 1, zero, workd(irj),&
+    call zgemv('C', n, j, one, v, &
+               ldv, workd(ipj), 1, zero, workd(irj), &
                1)
 !
 !        %---------------------------------------------%
@@ -683,15 +683,15 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | + V(:,1:J)*WORKD(IRJ:IRJ+J-1)*E'_J.         |
 !        %---------------------------------------------%
 !
-    call zgemv('N', n, j, -one, v,&
-               ldv, workd(irj), 1, one, resid,&
+    call zgemv('N', n, j, -one, v, &
+               ldv, workd(irj), 1, one, resid, &
                1)
-    call zaxpy(j, one, workd(irj), 1, h(1, j),&
+    call zaxpy(j, one, workd(irj), 1, h(1, j), &
                1)
 !
     orth2 = .true.
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call zcopy(n, resid, 1, workd(irj), 1)
         ipntr(1) = irj
         ipntr(2) = ipj
@@ -705,8 +705,8 @@ subroutine znaitr(ido, bmat, n, k, np,&
         goto 9000
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd(ipj), 1)
-    endif
- 90 continue
+    end if
+90  continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH2 = .TRUE. |
@@ -717,21 +717,21 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        %-----------------------------------------------------%
 !
     if (bmat .eq. 'G') then
-        cnorm = zdotc (n, resid, 1, workd(ipj), 1)
-        rnorm1 = sqrt( dlapy2(dble(cnorm),dimag(cnorm)) )
+        cnorm = zdotc(n, resid, 1, workd(ipj), 1)
+        rnorm1 = sqrt(dlapy2(dble(cnorm), dimag(cnorm)))
     else if (bmat .eq. 'I') then
         rnorm1 = dznrm2(n, resid, 1)
-    endif
+    end if
 !
     if (msglvl .gt. 0 .and. iter .gt. 0) then
         call ivout(logfil, 1, [j], ndigit, '_NAITR: ITERATIVE REFINEMENT FOR ARNOLDI RESIDUAL')
         if (msglvl .gt. 2) then
             rtemp(1) = rnorm
             rtemp(2) = rnorm1
-            call dvout(logfil, 2, rtemp, ndigit,&
+            call dvout(logfil, 2, rtemp, ndigit, &
                        '_NAITR: ITERATIVE REFINEMENT ; RNORM AND RNORM1 ARE')
-        endif
-    endif
+        end if
+    end if
 !
 !        %-----------------------------------------%
 !        | DETERMINE IF WE NEED TO PERFORM ANOTHER |
@@ -759,9 +759,9 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !           | IS REQUIRED. NITREF IS USED BY STAT.H     |
 !           %-------------------------------------------%
 !
-        nitref = nitref + 1
+        nitref = nitref+1
         rnorm = rnorm1
-        iter = iter + 1
+        iter = iter+1
         if (iter .le. 1) goto 80
 !
 !           %-------------------------------------------------%
@@ -772,7 +772,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
             resid(jj) = zero
         end do
         rnorm = rzero
-    endif
+    end if
 !
 !        %----------------------------------------------%
 !        | BRANCH HERE DIRECTLY IF ITERATIVE REFINEMENT |
@@ -789,7 +789,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !        | STEP 6: UPDATE  J = J+1;  CONTINUE |
 !        %------------------------------------%
 !
-    j = j + 1
+    j = j+1
     if (j .gt. k+np) then
         ido = 99
         do i = max(1, k), k+np-1
@@ -800,21 +800,21 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !              | REFERENCE: LAPACK SUBROUTINE ZLAHQR        |
 !              %--------------------------------------------%
 !
-            tst1 = dlapy2(&
-                   dble(h(i, i)), dimag(h(i, i))) + dlapy2(dble(h( i+1, i+1)), dimag(h(i+1, i+1))&
-                   )
-            if (tst1 .eq. dble(zero)) tst1 = zlanhs( '1', k+np, h, ldh, rbid )
-            if (dlapy2(dble(h(i+1,i)),dimag(h(i+1,i))) .le. max( ulp* tst1, smlnum )) h(i+1,i) = &
-                                                                                      zero
+            tst1 = dlapy2( &
+                   dble(h(i, i)), dimag(h(i, i)))+dlapy2(dble(h(i+1, i+1)), dimag(h(i+1, i+1)) &
+                                                         )
+            if (tst1 .eq. dble(zero)) tst1 = zlanhs('1', k+np, h, ldh, rbid)
+            if (dlapy2(dble(h(i+1, i)), dimag(h(i+1, i))) .le. max(ulp*tst1, smlnum)) h(i+1, i) = &
+                zero
         end do
 !
         if (msglvl .gt. 2) then
-            call zmout(logfil, k+np, k+np, h, ldh,&
+            call zmout(logfil, k+np, k+np, h, ldh, &
                        ndigit, '_NAITR: FINAL UPPER HESSENBERG MATRIX H OF ORDER K+NP')
-        endif
+        end if
 !
         goto 9000
-    endif
+    end if
 !
 !        %--------------------------------------------------------%
 !        | LOOP BACK TO EXTEND THE FACTORIZATION BY ANOTHER STEP. |

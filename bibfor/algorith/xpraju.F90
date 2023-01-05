@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
+subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn, &
                   deltat, vmax)
 !
     implicit none
@@ -56,7 +56,7 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, nbno,    ifm, niv, cptzo, cptaju
+    integer :: i, nbno, ifm, niv, cptzo, cptaju
     integer :: jlisno
     real(kind=8) :: modzon, dmin
     real(kind=8), pointer :: ltno(:) => null()
@@ -101,7 +101,7 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
                 vnno(i) = 0
 !
 !             CALCULATE THE MAXIMUM VALUE OF THE SPEED COMPONENTS
-                if (abs(vtno(i)) .gt. vmax) vmax=abs(vtno(i) )
+                if (abs(vtno(i)) .gt. vmax) vmax = abs(vtno(i))
 !
                 cptzo = cptzo+1
 !
@@ -114,21 +114,21 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
                 vnno(i) = vnno(i)*ltno(i)/modzon
 !
 !             CALCULATE THE MAXIMUM VALUE OF THE SPEED COMPONENTS
-                if (abs(vtno(i)) .gt. vmax) vmax=abs(vtno(i) )
-                if (abs(vnno(i)) .gt. vmax) vmax=abs(vnno(i) )
+                if (abs(vtno(i)) .gt. vmax) vmax = abs(vtno(i))
+                if (abs(vnno(i)) .gt. vmax) vmax = abs(vnno(i))
 !
                 cptaju = cptaju+1
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
     end do
 !
     if (niv .ge. 1) then
-        write(ifm,*)'   NOMBRE DE NOEUDS DONT VN EST ANNULEE :',cptzo
-        write(ifm,*)'   NOMBRE DE NOEUDS DONT VN EST AJUSTEE :',cptaju
-    endif
+        write (ifm, *) '   NOMBRE DE NOEUDS DONT VN EST ANNULEE :', cptzo
+        write (ifm, *) '   NOMBRE DE NOEUDS DONT VN EST AJUSTEE :', cptaju
+    end if
 !
 !-----------------------------------------------------------------------
 !     FIN

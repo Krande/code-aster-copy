@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
 
-
     implicit none
 !            CORRECTION DES EFFORTS GENERALISES POUR TORSION
 !
@@ -35,7 +34,6 @@ subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
 ! --- OUT
 !       fl         : efforts nodaux corriges pour torsion
 
-
 ! -----------------------------------------------------------
     integer :: tygrfi, nbpout, ii
     real(kind=8) :: gxjx, gxjxpout(*), deplm(*), deplp(*), xl, fl(*)
@@ -43,20 +41,19 @@ subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
 !-----------------------------------------------------------------------
 !    parameter (zero=0.0d+0)
 
-    if (tygrfi .eq. 1 ) then
-      fl(10) = gxjx*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
-      fl(4) = -fl(10)
-    elseif (tygrfi .eq. 2 ) then
-      do ii =1, nbpout
-        fl(10) = fl(10) + gxjxpout(ii)*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
-        fl(4) = fl(4) - gxjxpout(ii)*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
-      enddo
-    elseif (tygrfi .eq. 3 ) then
-      do ii =1, nbpout
-         fl(13) = fl(13) + gxjxpout(ii)*(deplm(13)+deplp(13)-deplm(4)-deplp(4))/xl
-         fl(4) = fl(4) - gxjxpout(ii)*(deplm(13)+deplp(13)-deplm(4)-deplp(4))/xl
-     enddo
-    endif
-
+    if (tygrfi .eq. 1) then
+        fl(10) = gxjx*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
+        fl(4) = -fl(10)
+    elseif (tygrfi .eq. 2) then
+        do ii = 1, nbpout
+            fl(10) = fl(10)+gxjxpout(ii)*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
+            fl(4) = fl(4)-gxjxpout(ii)*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
+        end do
+    elseif (tygrfi .eq. 3) then
+        do ii = 1, nbpout
+            fl(13) = fl(13)+gxjxpout(ii)*(deplm(13)+deplp(13)-deplm(4)-deplp(4))/xl
+            fl(4) = fl(4)-gxjxpout(ii)*(deplm(13)+deplp(13)-deplm(4)-deplp(4))/xl
+        end do
+    end if
 
 end subroutine

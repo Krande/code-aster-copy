@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,11 +60,11 @@ subroutine utcrre(result, nbval)
         call rscrsd('G', result, typres, nbval)
     else
 ! ----- SI LE RESULTAT N'EST PAS ASSEZ GRAND, ON L'AGRANDIT :
-        resu19=result
+        resu19 = result
         call jelira(resu19//'.ORDR', 'LONMAX', nbav)
         if (nbval .gt. nbav) call rsagsd(result, nbval)
 ! ----- S'IL EXISTE, ON DETRUIT TOUT CE QUI SERAIT AU DELA DE NBVAL
         call rsrusd(result, nbval+1)
-    endif
+    end if
 !
 end subroutine

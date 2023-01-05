@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0042()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -51,7 +51,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6) :: nompro
-    parameter  (nompro='OP0042')
+    parameter(nompro='OP0042')
     integer :: ifm, niv, n0, nuord, nchar, ibid, jordr, np, nc
     integer :: nbordr, iret
     real(kind=8) :: prec
@@ -80,9 +80,9 @@ implicit none
 ! --- ON INTERDIT L'UTILISATION DE CALC_ERREUR EN PARALLELE
 !
     call asmpi_info(size=msize)
-    if ( msize > 1 ) then
+    if (msize > 1) then
         call utmess('F', 'CALCULEL3_5', si=to_aster_int(msize))
-    endif
+    end if
 !
     call getres(resuc1, concep, nomcmd)
     call getvid(' ', 'RESULTAT', scal=resuco, nbret=n0)
@@ -94,16 +94,16 @@ implicit none
 !
     call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
-    call rsutnu(resuco, ' ', 0, knum, nbordr,&
+    call rsutnu(resuco, ' ', 0, knum, nbordr, &
                 prec, crit, iret)
     if (iret .eq. 10) then
         call utmess('A', 'CALCULEL4_8', sk=resuco)
         goto 999
-    endif
+    end if
     if (iret .ne. 0) then
         call utmess('A', 'ALGORITH3_41')
         goto 999
-    endif
+    end if
 !
 !     -- ON VEUT INTERDIRE LA REENTRANCE DE LA COMMANDE SI
 !        ON UTILISE L'UN DES MOTS CLES : MODELE, CARA_ELEM,
@@ -111,7 +111,7 @@ implicit none
 !     --------------------------------------------------------
     if (resuco .eq. resuc1) then
         call ccvrpu(resuco, knum, nbordr)
-    endif
+    end if
 !
     call jeveuo(knum, 'L', jordr)
     nuord = zi(jordr)
@@ -120,25 +120,25 @@ implicit none
     solveu = '&&OP0042.SOLVEUR'
     call cresol(solveu)
 !
-    call medom1(modele, mate, mateco, cara, kcha, nchar,&
+    call medom1(modele, mate, mateco, cara, kcha, nchar, &
                 resuco, nuord)
     call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
 !
 !     --- TRAITEMENT DU PHENOMENE MECANIQUE ---
     if (pheno(1:4) .eq. 'MECA') then
 !
-        call mecalr(newcal, tysd, knum, kcha, resuco,&
-                    resuc1, nbordr, modele, mate, cara,&
+        call mecalr(newcal, tysd, knum, kcha, resuco, &
+                    resuc1, nbordr, modele, mate, cara, &
                     nchar)
 !
 !     --- TRAITEMENT DES PHENOMENES THERMIQUES ET ACOUSTIQUES ---
-    else if (pheno(1:4).eq.'THER') then
+    else if (pheno(1:4) .eq. 'THER') then
 !
-        call thcalr(newcal, tysd, knum, kcha, resuco,&
-                    resuc1, nbordr, modele, mate, cara,&
+        call thcalr(newcal, tysd, knum, kcha, resuco, &
+                    resuc1, nbordr, modele, mate, cara, &
                     nchar)
 !
-    endif
+    end if
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nbval(ck, cm, cmat, ndim, lambda,&
+subroutine nbval(ck, cm, cmat, ndim, lambda, &
                  nb)
 !    B. GUIGON   P. RICHARD                    DATE 06/04/92
 !-----------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine nbval(ck, cm, cmat, ndim, lambda,&
     integer :: idiag
 !-----------------------------------------------------------------------
     do i = 1, ndim*(ndim+1)/2
-        cmat(i)=ck(i)-lambda*cm(i)
+        cmat(i) = ck(i)-lambda*cm(i)
     end do
 !
 !    FACTORISATION DE LA MATRICE
@@ -62,10 +62,10 @@ subroutine nbval(ck, cm, cmat, ndim, lambda,&
 !    COMPTAGE DU NOMBRE DE TERME NEGATIF SUR LA DIAGONALE DE 'D'
 !    DANS LA DECOMPOSTION LDLT DE LA MATRICE
 !
-    nb=0
+    nb = 0
     do i = 1, ndim
         idiag = i*(i-1)/2+1
-        if (dble(cmat(idiag)) .lt. 0.d0) nb=nb+1
+        if (dble(cmat(idiag)) .lt. 0.d0) nb = nb+1
     end do
 !
 end subroutine

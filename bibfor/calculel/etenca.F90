@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,28 +89,28 @@ subroutine etenca(chinz, ligrlz, iret)
     if (iexi .gt. 0) then
         call jeveuo(jexatr(ma//'.GROUPEMA', 'LONUTI'), 'L', jmalut)
     else
-        jmalut=0
-    endif
+        jmalut = 0
+    end if
 !
-    lalloc=.false.
+    lalloc = .false.
     if (nma .gt. 0) then
         call jeexin(chin//'.PTMA', iexi)
         if (iexi .eq. 0) then
-            lalloc=.true.
+            lalloc = .true.
             call wkvect(chin//'.PTMA', 'V V I', nma, ptma)
-        endif
-    endif
+        end if
+    end if
 !
     if (nms .gt. 0) then
         call jeexin(chin//'.PTMS', iexi)
         if (iexi .eq. 0) then
-            lalloc=.true.
+            lalloc = .true.
             call wkvect(chin//'.PTMS', 'V V I', nms, ptms)
-        endif
-    endif
+        end if
+    end if
 !
 !       -- LA CARTE EST DEJA ETENDUE:
-    if (.not.lalloc) goto 999
+    if (.not. lalloc) goto 999
 !
 !
 !     ----MISE EN MEMOIRE DE LA COLLECTION .LIMA :
@@ -118,7 +118,7 @@ subroutine etenca(chinz, ligrlz, iret)
     if (iexi .gt. 0) then
         call jeveuo(chin//'.LIMA', 'L', ialima)
         call jeveuo(jexatr(chin//'.LIMA', 'LONCUM'), 'L', illima)
-    endif
+    end if
 !
 !
 !     ----REMPLISSAGE DES OBJETS PTMA ET PTMS:
@@ -135,7 +135,7 @@ subroutine etenca(chinz, ligrlz, iret)
             bonlig = .true.
         else
             bonlig = .false.
-        endif
+        end if
 !
 !        ------ GROUPE PREDEFINI "TOUT":
         if (code .eq. 1) then
@@ -143,55 +143,55 @@ subroutine etenca(chinz, ligrlz, iret)
                 zi(ptma-1+i) = igd
             end do
             goto 60
-        endif
-        if ((code.eq.-1) .and. bonlig) then
+        end if
+        if ((code .eq. -1) .and. bonlig) then
             do i = 1, nms
                 zi(ptms-1+i) = igd
             end do
             goto 60
-        endif
+        end if
 !
 !        ------- GROUPE DE MAILLES DU MAILLAGE:
         if (code .eq. 2) then
-            ASSERT(jmalut.ne.0)
-            nb=zi(jmalut-1+ient)
+            ASSERT(jmalut .ne. 0)
+            nb = zi(jmalut-1+ient)
             call jeveuo(jexnum(ma//'.GROUPEMA', ient), 'L', grpma)
             do i = 1, nb
                 ii = zi(grpma-1+i)
                 zi(ptma-1+ii) = igd
             end do
             goto 60
-        endif
+        end if
 !
 !        ------- LISTE TARDIVE DE MAILLES ASSOCIEE A LA CARTE:
         if (abs(code) .eq. 3) then
-            nb = zi(illima+ient) - zi(illima+ient-1)
-            lima=ialima+zi(illima-1+ient)-1
+            nb = zi(illima+ient)-zi(illima+ient-1)
+            lima = ialima+zi(illima-1+ient)-1
 !
             if (code .gt. 0) then
                 do i = 1, nb
                     ii = zi(lima-1+i)
                     if (ii .le. 0) then
                         valk = chin
-                        vali (1) = ient
-                        vali (2) = i
-                        vali (3) = ii
+                        vali(1) = ient
+                        vali(2) = i
+                        vali(3) = ii
                         call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
-                    endif
+                    end if
                     zi(ptma-1+ii) = igd
                 end do
             else
                 if (bonlig) then
                     do i = 1, nb
                         ii = zi(lima-1+i)
-                        ASSERT(ii.lt.0)
+                        ASSERT(ii .lt. 0)
                         zi(ptms-1-ii) = igd
                     end do
-                endif
-            endif
+                end if
+            end if
             goto 60
-        endif
- 60     continue
+        end if
+60      continue
     end do
 999 continue
     call jedema()

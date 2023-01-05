@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,14 +69,14 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
     refe(1:19) = champ
     desc(1:19) = champ
     vale(1:19) = champ
-    chmod2=chmod
+    chmod2 = chmod
 !
     classe = base(1:1)
     if (typc(1:1) .eq. 'K') then
         type = 'F'
     else
         type = typc(1:1)
-    endif
+    end if
 !
 !     -- RECOPIE DE L'OBJET .REFE MODELE :
     call jedupo(chmod2//'.REFE', classe, refe, .false._1)
@@ -85,7 +85,7 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
     call wkvect(desc, classe//' V I', 2, lchamp)
     call jeecra(desc, 'DOCU', ibid, 'CHNO')
     call dismoi('NUM_GD', chmod2, 'CHAM_NO', repi=nugdsi)
-    zi(lchamp-1+1)=nugdsi
+    zi(lchamp-1+1) = nugdsi
     zi(lchamp-1+2) = 1
 !
 !     -- CREATION DE L'OBJET .VALE :

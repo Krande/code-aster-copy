@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine zeclag(vect, nbddl, ideeq)
     integer :: i, ityp
 !-----------------------------------------------------------------------
     do i = 1, nbddl
-        ityp = ideeq(2,i)
-        if (ityp .le. 0) vect(i)=dcmplx(0.d0,0.d0)
+        ityp = ideeq(2, i)
+        if (ityp .le. 0) vect(i) = dcmplx(0.d0, 0.d0)
     end do
 !
 end subroutine

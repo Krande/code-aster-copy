@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utmess_core(typ, idmess, nk, valk, ni,&
+subroutine utmess_core(typ, idmess, nk, valk, ni, &
                        vali, nr, valr, nexcep, fname)
 ! person_in_charge: mathieu.courtois at edf.fr
 !
@@ -59,7 +59,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     integer :: lout, idf, i, lc, imaap
     integer :: numex
 !
-    aster_logical, save :: isFirst=ASTER_TRUE
+    aster_logical, save :: isFirst = ASTER_TRUE
     type(Message), save :: firstMsg
     type(Message) :: excMsg
 !
@@ -83,13 +83,13 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     idf = index('EFIMASZD', typm(1:1))
     if (idf .eq. 0) then
         idf = 2
-    endif
+    end if
     lstop = .false.
 !
 !     --- COMPORTEMENT EN CAS D'ERREUR
     call onerrf(' ', compex, lout)
 !
-    lerrm = idf.eq.4
+    lerrm = idf .eq. 4
     if (lerrm) then
         idf = 2
         typm(1:1) = 'F'
@@ -99,69 +99,69 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
             recurs = 0
         else
             lerrm = .false.
-        endif
-    endif
+        end if
+    end if
 !
-    lerror = idf.eq.2 .or. idf.eq.6 .or. idf.eq.7
+    lerror = idf .eq. 2 .or. idf .eq. 6 .or. idf .eq. 7
 !     DOIT-ON VALIDER LE CONCEPT ?
-    lvalid = (idf.eq.6 .or. idf.eq.7) .or. (idf.eq.2 .and. compex(1:lout).eq.'EXCEPTION+VALID')
+ lvalid = (idf .eq. 6 .or. idf .eq. 7) .or. (idf .eq. 2 .and. compex(1:lout) .eq. 'EXCEPTION+VALID')
 !     DOIT-ON S'ARRETER BRUTALEMENT (POUR DEBUG) ?
-    labort = idf.eq.2 .and. compex(1:lout).eq.'ABORT'
+    labort = idf .eq. 2 .and. compex(1:lout) .eq. 'ABORT'
 !     AFFICHER LE TRACEBACK SI DISPONIBLE
-    ltrb = labort .or. (lerror .and. msgId(1:4).eq.'DVP_') .or. idf.eq.8
+    ltrb = labort .or. (lerror .and. msgId(1:4) .eq. 'DVP_') .or. idf .eq. 8
 !
     numex = nexcep
     if (numex .eq. 0 .or. (lerror .and. idf .ne. 7)) then
 !     SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP
 !     SINON ON LEVE L'EXCEPTION DE BASE ASTER.ERROR
         numex = 1
-    endif
+    end if
 !
     suite = .false.
     if (len(typm) .gt. 1) then
-        if (typm(2:2) .eq. '+') suite=.true.
-    endif
+        if (typm(2:2) .eq. '+') suite = .true.
+    end if
 !
 !   Keep the first message in memory because this is one that will be used
 !   to raise the exception
-    if ( isFirst ) then
+    if (isFirst) then
         call init_message(firstMsg, typ, msgId, &
                           nk=nk, valk=valk, &
                           ni=ni, vali=vali, &
                           nr=nr, valr=valr, &
                           num_except=numex)
         isFirst = ASTER_FALSE
-    endif
+    end if
 ! --- SE PROTEGER DES APPELS RECURSIFS POUR LES MESSAGES D'ERREUR
     if (lerror) then
         if (recurs .eq. 1234567891) then
             call jefini('ERREUR')
-        endif
+        end if
 !
         if (recurs .eq. 1234567890) then
             recurs = 1234567891
 !          ON EST DEJA PASSE PAR UTMESG... SANS EN ETRE SORTI
-            call utprin('F', 0, 'CATAMESS_55', 0, valk,&
+            call utprin('F', 0, 'CATAMESS_55', 0, valk, &
                         0, vali, 0, valr, fname)
 !          ON NE FAIT PLUS RIEN ET ON SORT DE LA ROUTINE
             goto 999
-        endif
+        end if
         recurs = 1234567890
-    endif
+    end if
 !
     call jevema(imaap)
     if (imaap .ge. 200) call jefini('ERREUR')
     if (isjvup() .eq. 1) then
         call jemarq()
-    endif
+    end if
 !
-    call utprin(typm, numex, msgId, nk, valk,&
+    call utprin(typm, numex, msgId, nk, valk, &
                 ni, vali, nr, valr, fname)
 !
 !     --- REMONTEE D'ERREUR SI DISPO
     if (ltrb) then
         call trabck('Traceback printed by Intel compiler', int(-1, 4))
-    endif
+    end if
 ! --- EN CAS DE MESSAGE AVEC SUITE, PAS D'ARRET, PAS D'EXCEPTION
     if (.not. suite) then
 !
@@ -182,11 +182,11 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
             if (idf .ne. 7) then
 !           SINON ON LEVE L'EXCEPTION DE BASE ASTER.ERROR
                 numex = 1
-            endif
+            end if
 !
             if (isjvup() .eq. 1) then
                 call superv_after(exception=.true.)
-            endif
+            end if
 
 !           NOM DU CONCEPT COURANT
             call getres(nomres, k8b, k8b)
@@ -195,19 +195,19 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !               - SI ERREUR <S> OU EXCEPTION
 !               - SI ERREUR <F> MAIS LA COMMANDE A DIT "EXCEPTION+VALID"
                 if (lvalid) then
-                    call utprin('I', 0, 'CATAMESS_70', 1, nomres,&
+                    call utprin('I', 0, 'CATAMESS_70', 1, nomres, &
                                 0, vali, 0, valr, fname)
 !
 !             SINON LE CONCEPT COURANT EST DETRUIT
                 else
-                    call utprin('I', 0, 'CATAMESS_69', 1, nomres,&
+                    call utprin('I', 0, 'CATAMESS_69', 1, nomres, &
                                 0, vali, 0, valr, fname)
                     lc = lxlgut(nomres)
                     if (lc .gt. 0) then
                         call jedetc(' ', nomres(1:lc), 1)
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
 !
             if (isjvup() .eq. 1) then
 !
@@ -217,7 +217,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
                     call jedema()
                 end do
 !
-            endif
+            end if
 !
 !           AVERTIR LE PROC #0 QU'ON A RENCONTRE UN PROBLEME !
             excMsg = firstMsg
@@ -231,24 +231,24 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
                 isFirst = ASTER_TRUE
                 call ib1mai()
                 call superv_after(exception=.true.)
-                call uexcep(numex, excMsg%id, excMsg%nk, excMsg%valk, excMsg%ni,&
+                call uexcep(numex, excMsg%id, excMsg%nk, excMsg%valk, excMsg%ni, &
                             excMsg%vali, excMsg%nr, excMsg%valr)
                 call free_message(excMsg)
                 call free_message(firstMsg)
-            endif
+            end if
         else
 !           info/warning, reinit id
-            if(firstMsg%typ .ne. 'F' .and. recurs .eq. 0) then
+            if (firstMsg%typ .ne. 'F' .and. recurs .eq. 0) then
                 isFirst = ASTER_TRUE
                 call free_message(firstMsg)
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
     if (lerror) recurs = 0
 999 continue
     if (isjvup() .eq. 1 .and. .not. lstop) then
         call jedema()
-    endif
+    end if
 end subroutine

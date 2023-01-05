@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine plasbe(BEHinteg,&
-                  fami, kpg, ksp, typmod, imat, l_epsi_varc,&
-                  crit, epsdt, depst, sigd, vind,&
-                  opt, sigf, vinf, dsde,&
+subroutine plasbe(BEHinteg, &
+                  fami, kpg, ksp, typmod, imat, l_epsi_varc, &
+                  crit, epsdt, depst, sigd, vind, &
+                  opt, sigf, vinf, dsde, &
                   icomp, nvi, irteti)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -168,7 +168,7 @@ implicit none
 !       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !       ----------------------------------------------------------------
-type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHinteg
     aster_logical, intent(in) :: l_epsi_varc
     integer :: imat, ndt, ndi, nr, nvi
     integer :: itmax, icomp
@@ -182,9 +182,9 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     integer :: iret, kpg, ksp
     real(kind=8) :: tneg, tref
 !-----------------------------------------------------------------------
-    parameter       ( epsi = 1.d-15 )
-    parameter       ( nmat = 90     )
-    parameter       ( tneg = -1.d3  )
+    parameter(epsi=1.d-15)
+    parameter(nmat=90)
+    parameter(tneg=-1.d3)
 !
     real(kind=8) :: crit(*)
     real(kind=8) :: vind(*), vinf(*)
@@ -203,8 +203,8 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*) :: fami
     aster_logical :: rigi, resi, istemp
 !       ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
-    common /ecri/   nomail
+    common/tdim/ndt, ndi
+    common/ecri/nomail
 !       ----------------------------------------------------------------
 !
 ! --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
@@ -221,27 +221,27 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     nseui4 = 0
     nomail = ' '
 !
-    resi = opt(1:9).eq.'FULL_MECA' .or. opt .eq.'RAPH_MECA'
-    rigi = opt(1:9).eq.'FULL_MECA' .or. opt(1:9).eq.'RIGI_MECA'
-    ASSERT((opt(1:9).eq.'RIGI_MECA') .or. (opt(1:9).eq.'FULL_MECA') .or. (opt .eq.'RAPH_MECA'))
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    resi = opt(1:9) .eq. 'FULL_MECA' .or. opt .eq. 'RAPH_MECA'
+    rigi = opt(1:9) .eq. 'FULL_MECA' .or. opt(1:9) .eq. 'RIGI_MECA'
+    ASSERT((opt(1:9) .eq. 'RIGI_MECA') .or. (opt(1:9) .eq. 'FULL_MECA') .or. (opt .eq. 'RAPH_MECA'))
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tempd, iret)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tempf, iret)
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                 ksp, tref, iret)
 !
 ! --    C'EST INTERDIT DE MELANGER DEUX MODELISATIONS AVEC OU SANS
 ! --      DEPENDENCE DES PARAMETRES DE LA TEMPERATURE
-    if ((.not.isnan(tempd)) .and. (isnan(tempf))) then
+    if ((.not. isnan(tempd)) .and. (isnan(tempf))) then
         call utmess('F', 'ALGORITH9_100')
-    else if ((isnan(tempd)).and.(.not.isnan(tempf))) then
+    else if ((isnan(tempd)) .and. (.not. isnan(tempf))) then
         call utmess('F', 'ALGORITH9_100')
-    else if ((vind(3).eq.tneg).and.(.not.isnan(tempf))) then
+    else if ((vind(3) .eq. tneg) .and. (.not. isnan(tempf))) then
         call utmess('F', 'ALGORITH9_100')
     else
-        istemp = .not.isnan(tempd) .and. .not.isnan(tempf)
-    endif
+        istemp = .not. isnan(tempd) .and. .not. isnan(tempf)
+    end if
 !
 ! --    OPTION SUPPRIMEE CAR TYPMA EST IMPOSE SUIVANT QUE L'ON EST EN
 ! --    PLASTCITE OU VISCOPLASTICITE. TYPMA EST DEFINI DANS LCMATE
@@ -263,41 +263,41 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
         tmpmx = vind(3)
         if (tempd .gt. tmpmx) tmpmx = tempd
     else
-        tmpmx=r8nnem()
-    endif
+        tmpmx = r8nnem()
+    end if
 !
 ! --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 !                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 !
 !
-    call betmat(fami, kpg, ksp, mod, imat,&
-                nmat, tmpmx, tempf, materd, materf,&
+    call betmat(fami, kpg, ksp, mod, imat, &
+                nmat, tmpmx, tempf, materd, materf, &
                 matcst, ndt, ndi, nr, nvi)
 !
 ! --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 !
-    call lcdedi(fami, kpg, ksp, nmat, materd,&
-                materf, tempd, tempf, tref, depst,&
+    call lcdedi(fami, kpg, ksp, nmat, materd, &
+                materf, tempd, tempf, tref, depst, &
                 epsdt, deps, epsd, l_epsi_varc)
 !
 ! --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 !
-    call lcdehy(fami, kpg, ksp, nmat, materd,&
+    call lcdehy(fami, kpg, ksp, nmat, materd, &
                 materf, deps, epsd, l_epsi_varc)
 !
 ! --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
 !
-    if (abs(vind (nvi)) .le. epsi) then
+    if (abs(vind(nvi)) .le. epsi) then
         etatd = 'ELASTIC'
     else
         etatd = 'PLASTIC'
-    endif
+    end if
 !
 !  -->  REDECOUPAGE IMPOSE
     if (icomp .eq. -1 .and. opt .ne. 'RIGI_MECA_TANG') then
         irteti = 0
         goto 999
-    endif
+    end if
 !
 !       ----------------------------------------------------------------
 !       OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
@@ -307,7 +307,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 ! --    INTEGRATION ELASTIQUE SUR DT
 !
-        call lcelin(mod, nmat, materd, materf, deps,&
+        call lcelin(mod, nmat, materd, materf, deps, &
                     sigd, sige)
         vinf(1:nvi-1) = vind(1:nvi-1)
         vinf(nvi) = 0.d0
@@ -317,13 +317,13 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
             vinf(3) = tmpmx
         else
             vinf(3) = tneg
-        endif
+        end if
 !
         sigf(1:ndt) = sige(1:ndt)
 !
 ! --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 !
-        call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf,&
+        call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
                     nvi, nseuil)
 !
         if (nseuil .ge. 0) then
@@ -333,12 +333,12 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
             etatf = 'PLASTIC'
 !
             nseui1 = nseuil
-            call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi,&
-                        vind, sigf, vinf, nseuil,&
+            call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+                        vind, sigf, vinf, nseuil, &
                         irtet)
 !           GOTO (1), IRTET
 !
-            call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf,&
+            call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
                         nvi, nseuil)
             nseui2 = nseuil
 !
@@ -346,92 +346,92 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                 if (nseui2 .eq. 44) then
                     call utmess('A', 'ALGORITH9_93')
                     goto 1
-                endif
+                end if
                 if (nseui2 .eq. 4) then
                     call codent(nseui1, 'G', cnseui)
                     call utmess('A', 'ALGORITH9_94', sk=cnseui)
                     goto 1
-                endif
+                end if
                 if (nseui2 .eq. nseui1) then
                     if (nseui2 .ne. 3) then
                         nseui2 = 3
                     else
                         nseui2 = 2
-                    endif
+                    end if
                     nseuil = nseui2
-                endif
+                end if
                 sigf(1:ndt) = sige(1:ndt)
-                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi,&
-                            vind, sigf, vinf, nseuil,&
+                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+                            vind, sigf, vinf, nseuil, &
                             irtet)
 !              GOTO (1), IRTET
 !
-                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf,&
+                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
                             nvi, nseuil)
                 nseui3 = nseuil
-            endif
+            end if
 !
             if (nseui3 .gt. 0) then
                 if (nseui3 .eq. 44) then
                     call utmess('A', 'ALGORITH9_93')
                     goto 1
-                endif
+                end if
                 if (nseui3 .eq. 4) then
                     call codent(nseui2, 'G', cnseui)
                     call utmess('A', 'ALGORITH9_94', sk=cnseui)
                     goto 1
-                endif
+                end if
                 if (nseui3 .eq. nseui1 .or. nseui3 .eq. nseui2) then
-                    nseui3 = 6 - nseui1 - nseui2
+                    nseui3 = 6-nseui1-nseui2
                     nseuil = nseui3
-                endif
+                end if
                 sigf(1:ndt) = sige(1:ndt)
-                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi,&
-                            vind, sigf, vinf, nseuil,&
+                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+                            vind, sigf, vinf, nseuil, &
                             irtet)
 !              GOTO (1), IRTET
 !
-                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf,&
+                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
                             nvi, nseuil)
                 nseui4 = nseuil
-            endif
+            end if
 !
             if (nseui4 .gt. 0) then
                 if (nseui4 .eq. 44) then
                     call utmess('A', 'ALGORITH9_93')
                     goto 1
-                endif
+                end if
                 if (nseui4 .eq. 4) then
                     call codent(nseui3, 'G', cnseui)
                     call utmess('A', 'ALGORITH9_94', sk=cnseui)
                     goto 1
-                endif
+                end if
                 nseuil = 22
                 nseui4 = nseuil
                 sigf(1:ndt) = sige(1:ndt)
-                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi,&
-                            vind, sigf, vinf, nseuil,&
+                call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi, &
+                            vind, sigf, vinf, nseuil, &
                             irtet)
 !             GOTO (1), IRTET
 !
-                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf,&
+                call betcvx(BEHinteg, nmat, materf, sigf, vind, vinf, &
                             nvi, nseuil)
-            endif
+            end if
 !
             if (nseuil .ge. 0) then
                 call codent(nseui4, 'G', cnseui)
                 call utmess('A', 'ALGORITH9_94', sk=cnseui)
                 goto 1
-            endif
+            end if
 !
         else
 !
 ! --       PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
 !
             etatf = 'ELASTIC'
-        endif
+        end if
 !
-    endif
+    end if
 !
 !       ----------------------------------------------------------------
 !       OPTIONS 'FULL_MECA', 'RIGI_MECA_TANG', 'RIGI_MECA_ELAS' :
@@ -443,7 +443,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
     if (rigi) then
         if (opt(1:9) .eq. 'RIGI_MECA') then
-            if (( etatd.eq.'ELASTIC' ) .or. ( opt(10:14).eq.'_ELAS' )) then
+            if ((etatd .eq. 'ELASTIC') .or. (opt(10:14) .eq. '_ELAS')) then
                 call lcopli('ISOTROPE', mod, materd(1, 1), dsde)
             else if (etatd .eq. 'PLASTIC') then
 !   ------> ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
@@ -451,13 +451,13 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                 if (typma .eq. 'COHERENT') then
 ! PAS UTILISE ICI  CALL LCJELA ( LOI  , MOD ,  NMAT, MATERD,VIND, DSDE)
                 else if (typma .eq. 'VITESSE ') then
-                    call betjpl(BEHinteg, mod, nmat, materd, sigd, vind,&
+                    call betjpl(BEHinteg, mod, nmat, materd, sigd, vind, &
                                 dsde)
-                endif
-            endif
+                end if
+            end if
 !
-        else if (opt (1:9) .eq. 'FULL_MECA') then
-            if (( etatf .eq. 'ELASTIC' ) .or. ( opt(10:14) .eq. '_ELAS' )) then
+        else if (opt(1:9) .eq. 'FULL_MECA') then
+            if ((etatf .eq. 'ELASTIC') .or. (opt(10:14) .eq. '_ELAS')) then
                 call lcopli('ISOTROPE', mod, materf(1, 1), dsde)
             else if (etatf .eq. 'PLASTIC') then
 !   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
@@ -465,25 +465,25 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                 if (typma .eq. 'COHERENT') then
 ! PAS UTILISE ICI  CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
                 else if (typma .eq. 'VITESSE ') then
-                    call betjpl(BEHinteg, mod, nmat, materd, sigf, vinf,&
+                    call betjpl(BEHinteg, mod, nmat, materd, sigf, vinf, &
                                 dsde)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 !       ----------------------------------------------------------------
 !
     irteti = 0
     goto 999
-  1 continue
+1   continue
     irteti = 1
-    call betimp(BEHinteg, nmat, materf, sigf, vind, vinf,&
-                nseui1, nseui2, nseui3, nseui4,&
+    call betimp(BEHinteg, nmat, materf, sigf, vind, vinf, &
+                nseui1, nseui2, nseui3, nseui4, &
                 sige, sigd)
 !
     call tecael(iadzi, iazk24)
-    nomail = zk24(iazk24-1+3)(1:8)
+    nomail = zk24(iazk24-1+3) (1:8)
     call utmess('A', 'ALGORITH9_95', sk=nomail)
 !
 999 continue

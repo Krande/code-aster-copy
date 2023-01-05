@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mm_cycl_d3(ds_contact    , i_cont_poin   ,&
-                      indi_frot_prev, dist_frot_prev,&
-                      indi_cont_eval, indi_frot_eval,&
+subroutine mm_cycl_d3(ds_contact, i_cont_poin, &
+                      indi_frot_prev, dist_frot_prev, &
+                      indi_cont_eval, indi_frot_eval, &
                       dist_frot_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterc/r8rddg.h"
@@ -69,7 +69,7 @@ implicit none
     integer, pointer :: p_sdcont_cyceta(:) => null()
     real(kind=8) :: module_prev, module_curr
     real(kind=8) :: angle, prosca, val, tole_angl
-    integer :: cycl_type, cycl_ecod, cycl_long, cycl_stat,cycl_long_acti
+    integer :: cycl_type, cycl_ecod, cycl_long, cycl_stat, cycl_long_acti
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,76 +89,76 @@ implicit none
     sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
     sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
-    call jeveuo(sdcont_cyclis, 'E', vi = p_sdcont_cyclis)
-    call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
-    call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
+    call jeveuo(sdcont_cyclis, 'E', vi=p_sdcont_cyclis)
+    call jeveuo(sdcont_cycnbr, 'E', vi=p_sdcont_cycnbr)
+    call jeveuo(sdcont_cyceta, 'E', vi=p_sdcont_cyceta)
 !
 ! - Cycling break if: no contact, sticking or previous state was sticking
 !
-    if ((indi_cont_eval .eq. 0).or.&
-        (indi_frot_eval .eq. 1).or.&
+    if ((indi_cont_eval .eq. 0) .or. &
+        (indi_frot_eval .eq. 1) .or. &
         (indi_frot_prev .eq. 1)) then
         goto 99
-    endif
+    end if
 !
 ! - Cycle state
 !
-    cycl_long    = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
-    cycl_ecod    = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
-    cycl_ecod    = cycl_ecod + (2**cycl_long)*indi_cont_eval
-    if (cycl_long .eq. cycl_long_acti)  then
+    cycl_long = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
+    cycl_ecod = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
+    cycl_ecod = cycl_ecod+(2**cycl_long)*indi_cont_eval
+    if (cycl_long .eq. cycl_long_acti) then
         cycl_long = 0
         cycl_ecod = 0
-    endif
+    end if
 !
 ! - Cycling detection
 !
-    prosca = ddot(3,dist_frot_prev,1,dist_frot_curr,1)
-    module_curr = sqrt(dist_frot_curr(1)*dist_frot_curr(1)+&
-                       dist_frot_curr(2)*dist_frot_curr(2)+&
+    prosca = ddot(3, dist_frot_prev, 1, dist_frot_curr, 1)
+    module_curr = sqrt(dist_frot_curr(1)*dist_frot_curr(1)+ &
+                       dist_frot_curr(2)*dist_frot_curr(2)+ &
                        dist_frot_curr(3)*dist_frot_curr(3))
-    module_prev = sqrt(dist_frot_prev(1)*dist_frot_prev(1)+&
-                       dist_frot_prev(2)*dist_frot_prev(2)+&
+    module_prev = sqrt(dist_frot_prev(1)*dist_frot_prev(1)+ &
+                       dist_frot_prev(2)*dist_frot_prev(2)+ &
                        dist_frot_prev(3)*dist_frot_prev(3))
-    angle  = 0.d0
+    angle = 0.d0
     if ((module_prev*module_curr) .gt. r8prem()) then
         val = prosca/(module_prev*module_curr)
         if (val .gt. 1.d0) then
             val = 1.d0
-        endif
+        end if
         if (val .lt. -1.d0) then
             val = -1.d0
-        endif
+        end if
         angle = acos(val)
         angle = angle*r8rddg()
-    endif
+    end if
 !
 ! - Detection
 !
     cycl_stat = 0
-    if ((abs(angle) .ge. 180.-tole_angl) .and. (abs(angle) .le. 180.d0+tole_angl))  then
+    if ((abs(angle) .ge. 180.-tole_angl) .and. (abs(angle) .le. 180.d0+tole_angl)) then
         cycl_stat = 10
-        if (module_curr  .lt. 1.d-6  .and. module_prev .lt. 1.d-6) cycl_stat = 11
+        if (module_curr .lt. 1.d-6 .and. module_prev .lt. 1.d-6) cycl_stat = 11
 
-        if ( (module_curr .lt. 1.d-6 .and. module_prev .gt. 1.d-6)        .or.  &
-             (module_curr .gt. 1.d-6 .and. module_prev .lt. 1.d-6) ) cycl_stat = 12
+        if ((module_curr .lt. 1.d-6 .and. module_prev .gt. 1.d-6) .or. &
+            (module_curr .gt. 1.d-6 .and. module_prev .lt. 1.d-6)) cycl_stat = 12
 
-        if (module_curr  .gt. 1.d-6  .and. module_prev .gt. 1.d-6) cycl_stat = 13
+        if (module_curr .gt. 1.d-6 .and. module_prev .gt. 1.d-6) cycl_stat = 13
 
-    endif
+    end if
 
 !
 ! - Cycling save : incrementation of cycle objects
 !
-    99  continue
-    cycl_long = cycl_long + 1
+99  continue
+    cycl_long = cycl_long+1
 !        write (6,*) "cyclage avant-arrière de type ", cycl_stat
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
-    if (cycl_long .eq. cycl_long_acti)  then
+    if (cycl_long .eq. cycl_long_acti) then
         cycl_long = 0
         cycl_ecod = 0
-    endif
+    end if
     p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type) = cycl_long
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
     ASSERT(cycl_long .le. cycl_long_acti)

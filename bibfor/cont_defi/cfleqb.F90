@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfleqb(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -76,20 +76,20 @@ implicit none
 ! - Datastructure for contact definition
 !
     sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
-    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
     sdcont_pnoeuqu = sdcont_defi(1:16)//'.PNOEUQU'
-    sdcont_noeuqu  = sdcont_defi(1:16)//'.NOEUQU'
-    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
-    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
+    sdcont_noeuqu = sdcont_defi(1:16)//'.NOEUQU'
+    call jeveuo(sdcont_pzoneco, 'L', vi=v_sdcont_pzoneco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Create datastructure for middle nodes
 !
-    call wkvect(sdcont_pnoeuqu, 'V V I', nb_cont_zone+1  , vi = v_sdcont_pnoeuqu)
-    call wkvect(sdcont_noeuqu , 'V V I', 3*nt_node_middle, vi = v_sdcont_noeuqu)
+    call wkvect(sdcont_pnoeuqu, 'V V I', nb_cont_zone+1, vi=v_sdcont_pnoeuqu)
+    call wkvect(sdcont_noeuqu, 'V V I', 3*nt_node_middle, vi=v_sdcont_noeuqu)
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi=v_mesh_typmail)
 !
 ! - Loop on contact zones
 !
@@ -99,15 +99,15 @@ implicit none
 !
 ! ----- No computation
 !
-        l_veri = mminfl(sdcont_defi,'VERIF',i_zone )
+        l_veri = mminfl(sdcont_defi, 'VERIF', i_zone)
         if (l_veri) then
             goto 21
-        endif
+        end if
 !
 ! ----- Number of contact surfaces
 !
-        nb_surf = v_sdcont_pzoneco(i_zone+1) - v_sdcont_pzoneco(i_zone)
-        ASSERT(nb_surf.eq.2)
+        nb_surf = v_sdcont_pzoneco(i_zone+1)-v_sdcont_pzoneco(i_zone)
+        ASSERT(nb_surf .eq. 2)
 !
 ! ----- Loop on surfaces
 !
@@ -133,42 +133,42 @@ implicit none
 !
 ! ------------- Connectivity of element
 !
-                call jeveuo(jexnum(mesh(1:8)//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+                call jeveuo(jexnum(mesh(1:8)//'.CONNEX', elem_nume), 'L', vi=v_mesh_connex)
 !
 ! ------------- Get nodes: vertex_1 - vertex_2 - middle
 !
                 if (type_name .eq. 'QUAD8') then
                     nb_node_middle = 4
-                    node_quad(1,1) = v_mesh_connex(5)
-                    node_quad(1,2) = v_mesh_connex(6)
-                    node_quad(1,3) = v_mesh_connex(7)
-                    node_quad(1,4) = v_mesh_connex(8)
-                    node_quad(2,1) = v_mesh_connex(1)
-                    node_quad(2,2) = v_mesh_connex(2)
-                    node_quad(2,3) = v_mesh_connex(3)
-                    node_quad(2,4) = v_mesh_connex(4)
-                    node_quad(3,1) = v_mesh_connex(2)
-                    node_quad(3,2) = v_mesh_connex(3)
-                    node_quad(3,3) = v_mesh_connex(4)
-                    node_quad(3,4) = v_mesh_connex(1)
+                    node_quad(1, 1) = v_mesh_connex(5)
+                    node_quad(1, 2) = v_mesh_connex(6)
+                    node_quad(1, 3) = v_mesh_connex(7)
+                    node_quad(1, 4) = v_mesh_connex(8)
+                    node_quad(2, 1) = v_mesh_connex(1)
+                    node_quad(2, 2) = v_mesh_connex(2)
+                    node_quad(2, 3) = v_mesh_connex(3)
+                    node_quad(2, 4) = v_mesh_connex(4)
+                    node_quad(3, 1) = v_mesh_connex(2)
+                    node_quad(3, 2) = v_mesh_connex(3)
+                    node_quad(3, 3) = v_mesh_connex(4)
+                    node_quad(3, 4) = v_mesh_connex(1)
                 else
                     nb_node_middle = 0
-                endif
+                end if
 !
 ! ------------- Set list of nodes
 !
                 if (type_name(1:5) .eq. 'QUAD8') then
                     do i_node_quad = 1, nb_node_middle
-                        v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+1) = node_quad(1,i_node_quad)
-                        v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+2) = node_quad(2,i_node_quad)
-                        v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+3) = node_quad(3,i_node_quad)
+                        v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+1) = node_quad(1, i_node_quad)
+                        v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+2) = node_quad(2, i_node_quad)
+                        v_sdcont_noeuqu(jdecqu+3*(i_node_quad-1)+3) = node_quad(3, i_node_quad)
                     end do
-                    jdecqu = jdecqu + 3*nb_node_middle
-                    inoqto = inoqto + 3*nb_node_middle
-                endif
+                    jdecqu = jdecqu+3*nb_node_middle
+                    inoqto = inoqto+3*nb_node_middle
+                end if
             end do
         end do
- 21     continue
+21      continue
 !
 ! ----- Update pointer
 !

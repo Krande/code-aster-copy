@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine convertFieldNodeToFieldElga(model, fieldNode, fieldElga)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/alchml.h"
 #include "asterfort/chpchd.h"
@@ -27,8 +27,8 @@ implicit none
 #include "asterfort/nopar2.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: model
-character(len=*), intent(in) :: fieldNode, fieldElga
+    character(len=8), intent(in) :: model
+    character(len=*), intent(in) :: fieldNode, fieldElga
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,12 +50,12 @@ character(len=*), intent(in) :: fieldNode, fieldElga
 !
 ! - Create new field on cell
 !
-    call dismoi('NOM_GD', fieldNode, 'CHAMP', repk = physName, arret='C', ier=iret)
+    call dismoi('NOM_GD', fieldNode, 'CHAMP', repk=physName, arret='C', ier=iret)
     call nopar2(option, physName, 'OUT', paraName)
     call alchml(ligrel, option, paraName, 'V', fieldElemRefe, iret, ' ')
     if (iret .ne. 0) then
         call utmess('F', 'UTILITAI3_23', nk=3, valk=[ligrel, paraName, option])
-    endif
+    end if
 !
 ! - Change support of field
 !

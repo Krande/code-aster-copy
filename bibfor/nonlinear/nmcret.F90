@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine nmcret(sderro, typcod, vali)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -108,15 +108,15 @@ subroutine nmcret(sderro, typcod, vali)
 !
 ! ----- NOM DE L'EVENEMENT
 !
-        neven = zk16(jeenom-1+ieven)(1:9)
+        neven = zk16(jeenom-1+ieven) (1:9)
 !
 ! ----- NOM DU CODE RETOUR
 !
-        ncret = zk8 (jeecon-1+ieven)
+        ncret = zk8(jeecon-1+ieven)
 !
 ! ----- VALEUR DU CODE RETOUR
 !
-        vcret = zi (jeecov-1+ieven)
+        vcret = zi(jeecov-1+ieven)
 !
 ! ----- ACTIVATION DE L'EVENEMENT
 !
@@ -125,11 +125,11 @@ subroutine nmcret(sderro, typcod, vali)
                 call nmcrel(sderro, neven, .true._1)
             else
                 call nmcrel(sderro, neven, .false._1)
-            endif
-        endif
+            end if
+        end if
     end do
 !
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

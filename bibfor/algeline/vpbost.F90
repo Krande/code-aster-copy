@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
-                  nvpro, vpinf, vpmax, precdc, method,&
+subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro, &
+                  nvpro, vpinf, vpmax, precdc, method, &
                   omecor)
 !     RECTIFIE LES VALEURS PROPRES
 !-----------------------------------------------------------------------
@@ -62,7 +62,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
 !     -------------------------------------------
 !
     do i = 1, nbvect
-        valpro(i) = valpro(i) + omeshi
+        valpro(i) = valpro(i)+omeshi
     end do
 !
     vpinf = valpro(1)
@@ -70,34 +70,34 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
     do i = 2, nbmode
         if (valpro(i) .lt. vpinf) then
             vpinf = valpro(i)
-        endif
+        end if
         if (valpro(i) .gt. vpmax) then
             vpmax = valpro(i)
-        endif
+        end if
     end do
     if (niv .ge. 1) then
-        write(ifm,1600)
+        write (ifm, 1600)
         if (typres .eq. 'DYNAMIQUE') then
             valr(1) = freqom(vpinf)
             valr(2) = freqom(vpmax)
             call utmess('I', 'ALGELINE6_16', nr=2, valr=valr)
         else
-            valr(1) = - vpmax
-            valr(2) = - vpinf
+            valr(1) = -vpmax
+            valr(2) = -vpinf
             call utmess('I', 'ALGELINE6_17', nr=2, valr=valr)
-        endif
-    endif
+        end if
+    end if
 !
     if (method .eq. 'SORENSEN') then
         if (abs(vpmax) .le. omecor) then
-            vpmax=omecor
-        endif
+            vpmax = omecor
+        end if
         if (abs(vpinf) .le. omecor) then
-            vpinf=-omecor
-        endif
-        vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
-        vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
-    endif
+            vpinf = -omecor
+        end if
+        vpinf = vpinf*(1.d0-sign(precdc, vpinf))
+        vpmax = vpmax*(1.d0+sign(precdc, vpmax))
+    end if
 !
 !     -----POUR LES OPTIONS JACOBI ET LANCZOS---
 !
@@ -106,17 +106,17 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
     if (method .ne. 'SORENSEN') then
         do i = nbmode+1, nbvect
             if (valpro(i) .le. vpinf) then
-                if (.not.loginf) then
+                if (.not. loginf) then
                     loginf = .true.
                     vpinf2 = valpro(i)
-                endif
-            endif
+                end if
+            end if
             if (valpro(i) .ge. vpmax) then
-                if (.not.logmax) then
+                if (.not. logmax) then
                     logmax = .true.
                     vpmax2 = valpro(i)
-                endif
-            endif
+                end if
+            end if
         end do
 !
 !     ----ON REGARDE L'ECART QU'IL Y A ENTRE FREQMIN ET LA
@@ -125,68 +125,68 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
         if (loginf) then
             if (vpinf2 .lt. vpinf) then
                 if (vpmax .gt. r8prem()) then
-                    tole=(abs(vpinf2-vpinf)/vpinf)
+                    tole = (abs(vpinf2-vpinf)/vpinf)
                     if (tole .lt. precdc) then
                         call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpinf2)
                         call utmess('A', 'ALGELINE4_66', sr=valr(1))
-                        vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
-                    endif
+                        vpinf = vpinf*(1.d0-sign(precdc, vpinf))
+                    end if
                 else
-                    tole=abs(vpinf2-vpinf)
+                    tole = abs(vpinf2-vpinf)
                     if (tole .lt. precdc) then
                         call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpinf2)
                         call utmess('A', 'ALGELINE4_66', sr=valr(1))
-                        vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
-                    endif
-                endif
-                vpinf = 0.5d0 * (vpinf+vpinf2)
+                        vpinf = vpinf*(1.d0-sign(precdc, vpinf))
+                    end if
+                end if
+                vpinf = 0.5d0*(vpinf+vpinf2)
             else
-                vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
-            endif
+                vpinf = vpinf*(1.d0-sign(precdc, vpinf))
+            end if
         else
-            vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
-        endif
+            vpinf = vpinf*(1.d0-sign(precdc, vpinf))
+        end if
 !
 !     -----ON FAIT LES MEMES CALCULS AVEC FREQMAX------
 !
         if (logmax) then
             if (vpmax2 .gt. vpmax) then
                 if (vpinf .gt. r8prem()) then
-                    tole=(abs(vpmax2-vpmax)/vpmax)
+                    tole = (abs(vpmax2-vpmax)/vpmax)
                     if (tole .lt. precdc) then
                         call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpmax2)
                         call utmess('A', 'ALGELINE4_66', sr=valr(1))
-                        vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
-                    endif
+                        vpmax = vpmax*(1.d0+sign(precdc, vpmax))
+                    end if
                 else
-                    tole=abs(vpmax2-vpmax)
+                    tole = abs(vpmax2-vpmax)
                     if (tole .lt. precdc) then
                         call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpmax2)
                         call utmess('A', 'ALGELINE4_66', sr=valr(1))
-                        vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
-                    endif
-                endif
-                vpmax = 0.5d0 * (vpmax+vpmax2)
+                        vpmax = vpmax*(1.d0+sign(precdc, vpmax))
+                    end if
+                end if
+                vpmax = 0.5d0*(vpmax+vpmax2)
             else
-                vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
-            endif
+                vpmax = vpmax*(1.d0+sign(precdc, vpmax))
+            end if
         else
-            vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
-        endif
-    endif
+            vpmax = vpmax*(1.d0+sign(precdc, vpmax))
+        end if
+    end if
 !
 !     -----DETERMINATION DE FREQMIN ET FREQMAX-----
 !
     if (abs(vpmax) .le. omecor) then
-        vpmax=omecor
-    endif
+        vpmax = omecor
+    end if
     if (abs(vpinf) .le. omecor) then
-        vpinf=-omecor
-    endif
+        vpinf = -omecor
+    end if
 !
 !      -----IMPRESSIONS-----
 !
@@ -196,24 +196,24 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
                 call utmess('I', 'ALGELINE6_18', sr=freqom(vpinf2))
             else
                 call utmess('I', 'ALGELINE6_20', sr=vpinf2)
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
     if (logmax) then
         if (niv .ge. 1) then
             if (typres .eq. 'DYNAMIQUE') then
                 call utmess('I', 'ALGELINE6_19', sr=freqom(vpmax2))
             else
                 call utmess('I', 'ALGELINE6_21', sr=vpmax2)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     if (niv .ge. 1) then
-        write(ifm,1600)
-    endif
+        write (ifm, 1600)
+    end if
 !
-    1600 format (72('-'))
+1600 format(72('-'))
 !
 end subroutine

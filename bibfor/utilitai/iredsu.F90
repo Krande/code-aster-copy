@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine iredsu(macr, fileUnit, versio)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,8 +38,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-integer, intent(in) :: fileUnit, versio
-character(len=*), intent(in) :: macr
+    integer, intent(in) :: fileUnit, versio
+    character(len=*), intent(in) :: macr
 !
 !     BUT:
 !       IMPRESSION D'UN CONCEPT MACR_ELEM_DYNA AU FORMAT "IDEAS"
@@ -93,8 +93,8 @@ character(len=*), intent(in) :: macr
     macrel = macr
 !
     call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
-    basemo = mael_refe(1)(1:19)
-    noma = mael_refe(2)(1:8)
+    basemo = mael_refe(1) (1:19)
+    noma = mael_refe(2) (1:8)
     manono = noma//'.NOMNOE'
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
     call rslipa(basemo, 'NOEUD_CMP', '&&IREDSU.LINOEU', jnoeu, nbmodt)
@@ -102,8 +102,8 @@ character(len=*), intent(in) :: macr
     do im = 1, nbmodt
         if (zk16(jnoeu+im-1) .ne. ' ') exit
     end do
-    nbmode = im - 1
-    nbmods = nbmodt - nbmode
+    nbmode = im-1
+    nbmods = nbmodt-nbmode
 !
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -113,27 +113,27 @@ character(len=*), intent(in) :: macr
     if (nbmods .ne. 0) then
         AS_ALLOCATE(vk8=noeuds, size=nbnoeu)
         inoeu = 1
-        noeuds(1) = zk16(jnoeu+nbmode)(1:8)
+        noeuds(1) = zk16(jnoeu+nbmode) (1:8)
         do im = 2, nbmods
-            noeu = zk16(jnoeu+nbmode+im-1)(1:8)
+            noeu = zk16(jnoeu+nbmode+im-1) (1:8)
             do j = 1, inoeu
                 if (noeu .eq. noeuds(j)) exit
             end do
-            inoeu = inoeu + 1
+            inoeu = inoeu+1
             noeuds(inoeu) = noeu
         end do
         if (versio .eq. 5) then
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   481'
-            write (fileUnit,'(I10)') 1
-            write (fileUnit,'(40A2)') 'Ju', 'nc'
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   481'
+            write (fileUnit, '(I10)') 1
+            write (fileUnit, '(40A2)') 'Ju', 'nc'
+            write (fileUnit, '(A)') '    -1'
             ind = 1
             icol = 7
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   757'
-            write (fileUnit,'(2I10)') ind
-            write (fileUnit,'(A)') 'DDL JONCTION'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   757'
+            write (fileUnit, '(2I10)') ind
+            write (fileUnit, '(A)') 'DDL JONCTION'
             do in = 1, inoeu
                 noeu = noeuds(in)
                 call jenonu(jexnom(manono, noeu), inoe)
@@ -144,8 +144,8 @@ character(len=*), intent(in) :: macr
                 idry = 0
                 idrz = 0
                 do im = 1, nbmods
-                    if (noeu .eq. zk16(jnoeu+nbmode+im-1)(1:8)) then
-                        cmp = zk16(jnoeu+nbmode+im-1)(9:16)
+                    if (noeu .eq. zk16(jnoeu+nbmode+im-1) (1:8)) then
+                        cmp = zk16(jnoeu+nbmode+im-1) (9:16)
                         if (cmp .eq. 'DX      ') then
                             idx = 1
                         else if (cmp .eq. 'DY      ') then
@@ -158,15 +158,15 @@ character(len=*), intent(in) :: macr
                             idry = 1
                         else if (cmp .eq. 'DRZ     ') then
                             idrz = 1
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
-                write (fileUnit,'(2I10,6I2)') inoe, icol, idx, idy, idz,&
-                idrx, idry, idrz
+                write (fileUnit, '(2I10,6I2)') inoe, icol, idx, idy, idz, &
+                    idrx, idry, idrz
             end do
-            write (fileUnit,'(A)') '    -1'
-        endif
-    endif
+            write (fileUnit, '(A)') '    -1'
+        end if
+    end if
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 !                 --- IMPRESSION DES MODES DYNAMIQUES ---
@@ -181,33 +181,33 @@ character(len=*), intent(in) :: macr
     do i = 1, nbordr
         iord = ordr(i)
         if (zk16(jnoeu+i-1) .ne. ' ') then
-            call rsexch(' ', basemo, 'DEPL', iord, noch19,&
+            call rsexch(' ', basemo, 'DEPL', iord, noch19, &
                         iret)
             if (iret .eq. 0) then
-                nstat = nstat + 1
+                nstat = nstat+1
                 mode_stat(nstat) = noch19
-            endif
+            end if
         else
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   481'
-            write (fileUnit,'(I10)') 1
-            write (fileUnit,'(40A2)') 'Ph', 'i_', 'a '
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   481'
+            write (fileUnit, '(I10)') 1
+            write (fileUnit, '(40A2)') 'Ph', 'i_', 'a '
+            write (fileUnit, '(A)') '    -1'
             title = 'MODE DYNAMIQUE'
-            call resuPrintIdeas(fileUnit, basemo, ASTER_TRUE    ,&
-                                1       , [iord],&
-                                1       , 'DEPL',&
-                                title_ = title)
-        endif
+            call resuPrintIdeas(fileUnit, basemo, ASTER_TRUE, &
+                                1, [iord], &
+                                1, 'DEPL', &
+                                title_=title)
+        end if
     end do
     if (nstat .ne. 0) then
-        write (fileUnit,'(A)') '    -1'
-        write (fileUnit,'(A)') '   481'
-        write (fileUnit,'(I10)') 1
-        write (fileUnit,'(40A2)') 'Ps', 'i_', 'a '
-        write (fileUnit,'(A)') '    -1'
+        write (fileUnit, '(A)') '    -1'
+        write (fileUnit, '(A)') '   481'
+        write (fileUnit, '(I10)') 1
+        write (fileUnit, '(40A2)') 'Ps', 'i_', 'a '
+        write (fileUnit, '(A)') '    -1'
         call irmad0(fileUnit, versio, nstat, mode_stat, fieldType)
-    endif
+    end if
     AS_DEALLOCATE(vk24=mode_stat)
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -221,25 +221,25 @@ character(len=*), intent(in) :: macr
         AS_ALLOCATE(vr=rigi_jonc, size=nbmods*nbmods)
         AS_ALLOCATE(vr=part_supe, size=nbmode*nbmods)
         AS_ALLOCATE(vr=part_infe, size=nbmode*nbmods)
-    endif
-!
-    call jelira(macrel//'.MAEL_MASS_VALE','NMAXOC',ntriam)
-    call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vale)
-    if (ntriam.gt.1) then
-     call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 2), 'L', vr=mael_mass_vali)
-    else
-     call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vali)
     end if
-    call jelira(macrel//'.MAEL_RAID_VALE','NMAXOC',ntriar)
-    call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale)
-    if (ntriar.gt.1) then
-     call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 2), 'L', vr=mael_raid_vali)
+!
+    call jelira(macrel//'.MAEL_MASS_VALE', 'NMAXOC', ntriam)
+    call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vale)
+    if (ntriam .gt. 1) then
+        call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 2), 'L', vr=mael_mass_vali)
     else
-     call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vali)
+        call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vali)
+    end if
+    call jelira(macrel//'.MAEL_RAID_VALE', 'NMAXOC', ntriar)
+    call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale)
+    if (ntriar .gt. 1) then
+        call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 2), 'L', vr=mael_raid_vali)
+    else
+        call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vali)
     end if
     do im = 1, nbmode
         do i = 1, im
-            k =im*(im-1)/2 + i
+            k = im*(im-1)/2+i
             mass_gene(1+i-1+(im-1)*nbmode) = mael_mass_vale(k)
             mass_gene(1+im-1+(i-1)*nbmode) = mael_mass_vale(k)
             rigi_gene(1+i-1+(im-1)*nbmode) = mael_raid_vale(k)
@@ -248,15 +248,15 @@ character(len=*), intent(in) :: macr
     end do
     do is = nbmode+1, nbmodt
         do im = 1, nbmode
-            k = is*(is-1)/2 + im
-            is2 = is - nbmode
+            k = is*(is-1)/2+im
+            is2 = is-nbmode
             part_supe(1+is2-1+(im-1)*nbmods) = mael_mass_vale(k)
             part_infe(1+is2-1+(im-1)*nbmods) = mael_mass_vale(k)
         end do
         do i = nbmode+1, is
-            k = is*(is-1)/2 + i
-            i2 = i - nbmode
-            is2 = is - nbmode
+            k = is*(is-1)/2+i
+            i2 = i-nbmode
+            is2 = is-nbmode
             mass_jonc(1+i2-1+(is2-1)*nbmods) = mael_mass_vale(k)
             mass_jonc(1+is2-1+(i2-1)*nbmods) = mael_mass_vale(k)
             rigi_jonc(1+i2-1+(is2-1)*nbmods) = mael_raid_vale(k)
@@ -264,91 +264,91 @@ character(len=*), intent(in) :: macr
         end do
     end do
 !
-    m2 = nbmode * nbmode
+    m2 = nbmode*nbmode
     if (versio .eq. 5) then
         ityp = 4
         ifor = 1
         icol = 2
 !
 !        --- MASSE GENERALISEE ---
-        write (fileUnit,'(A)') '    -1'
-        write (fileUnit,'(A)') '   481'
-        write (fileUnit,'(I10)') 1
-        write (fileUnit,'(40A2)') 'Mg', 'en', '_a'
-        write (fileUnit,'(A)') '    -1'
+        write (fileUnit, '(A)') '    -1'
+        write (fileUnit, '(A)') '   481'
+        write (fileUnit, '(I10)') 1
+        write (fileUnit, '(40A2)') 'Mg', 'en', '_a'
+        write (fileUnit, '(A)') '    -1'
         imat = 131
-        write (fileUnit,'(A)') '    -1'
-        write (fileUnit,'(A)') '   252'
-        write (fileUnit,'(I10)') imat
-        write (fileUnit,'(5I10)') ityp, ifor, nbmode, nbmode, icol
-        write (fileUnit,111) (mass_gene(1+i) , i= 0, m2-1 )
-        write (fileUnit,'(A)') '    -1'
+        write (fileUnit, '(A)') '    -1'
+        write (fileUnit, '(A)') '   252'
+        write (fileUnit, '(I10)') imat
+        write (fileUnit, '(5I10)') ityp, ifor, nbmode, nbmode, icol
+        write (fileUnit, 111) (mass_gene(1+i), i=0, m2-1)
+        write (fileUnit, '(A)') '    -1'
 !
 !        --- RAIDEUR GENERALISEE ---
-        write (fileUnit,'(A)') '    -1'
-        write (fileUnit,'(A)') '   481'
-        write (fileUnit,'(I10)') 1
-        write (fileUnit,'(40A2)') 'Kg', 'en', '_a'
-        write (fileUnit,'(A)') '    -1'
+        write (fileUnit, '(A)') '    -1'
+        write (fileUnit, '(A)') '   481'
+        write (fileUnit, '(I10)') 1
+        write (fileUnit, '(40A2)') 'Kg', 'en', '_a'
+        write (fileUnit, '(A)') '    -1'
         imat = 139
-        write (fileUnit,'(A)') '    -1'
-        write (fileUnit,'(A)') '   252'
-        write (fileUnit,'(I10)') imat
-        write (fileUnit,'(5I10)') ityp, ifor, nbmode, nbmode, icol
-        write (fileUnit,111) (rigi_gene(1+i) , i= 0, m2-1 )
-        write (fileUnit,'(A)') '    -1'
+        write (fileUnit, '(A)') '    -1'
+        write (fileUnit, '(A)') '   252'
+        write (fileUnit, '(I10)') imat
+        write (fileUnit, '(5I10)') ityp, ifor, nbmode, nbmode, icol
+        write (fileUnit, 111) (rigi_gene(1+i), i=0, m2-1)
+        write (fileUnit, '(A)') '    -1'
 !
         if (nbmods .ne. 0) then
-            m2 = nbmods * nbmods
+            m2 = nbmods*nbmods
 !
 !          --- MASSE CONDENSEE A LA JONCTION ---
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   481'
-            write (fileUnit,'(I10)') 1
-            write (fileUnit,'(40A2)') 'Mb', 'ar', '_a'
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   481'
+            write (fileUnit, '(I10)') 1
+            write (fileUnit, '(40A2)') 'Mb', 'ar', '_a'
+            write (fileUnit, '(A)') '    -1'
             imat = 134
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   252'
-            write (fileUnit,'(I10)') imat
-            write (fileUnit,'(5I10)') ityp, ifor, nbmods, nbmods, icol
-            write (fileUnit,111) (mass_jonc(1+i) , i= 0, m2-1 )
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   252'
+            write (fileUnit, '(I10)') imat
+            write (fileUnit, '(5I10)') ityp, ifor, nbmods, nbmods, icol
+            write (fileUnit, 111) (mass_jonc(1+i), i=0, m2-1)
+            write (fileUnit, '(A)') '    -1'
 !
 !          --- RIGIDITE CONDENSEE A LA JONCTION ---
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   481'
-            write (fileUnit,'(I10)') 1
-            write (fileUnit,'(40A2)') 'Kb', 'ar', '_a'
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   481'
+            write (fileUnit, '(I10)') 1
+            write (fileUnit, '(40A2)') 'Kb', 'ar', '_a'
+            write (fileUnit, '(A)') '    -1'
             imat = 142
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   252'
-            write (fileUnit,'(I10)') imat
-            write (fileUnit,'(5I10)') ityp, ifor, nbmods, nbmods, icol
-            write (fileUnit,111) (rigi_jonc(1+i) , i= 0, m2-1 )
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   252'
+            write (fileUnit, '(I10)') imat
+            write (fileUnit, '(5I10)') ityp, ifor, nbmods, nbmods, icol
+            write (fileUnit, 111) (rigi_jonc(1+i), i=0, m2-1)
+            write (fileUnit, '(A)') '    -1'
 !
-            m2 = nbmode * nbmods
+            m2 = nbmode*nbmods
 !
 !          --- FACTEUR DE PARTICIPATION INFERIEUR ---
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   481'
-            write (fileUnit,'(I10)') 1
-            write (fileUnit,'(40A2)') 'Lm', 'at', '_a'
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   481'
+            write (fileUnit, '(I10)') 1
+            write (fileUnit, '(40A2)') 'Lm', 'at', '_a'
+            write (fileUnit, '(A)') '    -1'
             imat = 132
-            write (fileUnit,'(A)') '    -1'
-            write (fileUnit,'(A)') '   252'
-            write (fileUnit,'(I10)') imat
-            write (fileUnit,'(5I10)') ityp, ifor, nbmode, nbmods, icol
-            write (fileUnit,111) (part_infe(1+i) , i= 0, m2-1 )
-            write (fileUnit,'(A)') '    -1'
+            write (fileUnit, '(A)') '    -1'
+            write (fileUnit, '(A)') '   252'
+            write (fileUnit, '(I10)') imat
+            write (fileUnit, '(5I10)') ityp, ifor, nbmode, nbmods, icol
+            write (fileUnit, 111) (part_infe(1+i), i=0, m2-1)
+            write (fileUnit, '(A)') '    -1'
 !
-        endif
-    endif
+        end if
+    end if
 !
-111 format( 1p, 4d20.12 )
+111 format(1p, 4d20.12)
 !
 ! --- MENAGE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pbflui(umoy, hmoy, rmoy, long, cf0,&
-                  mcf0, fsvr, icoq, imod, nbm,&
+subroutine pbflui(umoy, hmoy, rmoy, long, cf0, &
+                  mcf0, fsvr, icoq, imod, nbm, &
                   rki, tcoef, s1, s2, ysol)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -76,8 +76,8 @@ subroutine pbflui(umoy, hmoy, rmoy, long, cf0,&
 !
     rhof = fsvr(1)
 !
-    r1 = rmoy - hmoy/2.d0
-    r2 = rmoy + hmoy/2.d0
+    r1 = rmoy-hmoy/2.d0
+    r2 = rmoy+hmoy/2.d0
 !
     call wkvect('&&PBFLUI.TEMP.LBDA', 'V V C', 3, ilbda)
     call wkvect('&&PBFLUI.TEMP.KCAL', 'V V C', 3*4, ikcal)
@@ -91,35 +91,35 @@ subroutine pbflui(umoy, hmoy, rmoy, long, cf0,&
 !
 ! --- 2.RESOLUTION
 !
-    call profpr(icoq, rki, r1, r2, coepr1,&
+    call profpr(icoq, rki, r1, r2, coepr1, &
                 coepr2, wpr)
     rkip = rki/dble(sqrt(wpr))
 !
     if (umoy .lt. 1.d-5) then
 !
-        call pbflu0(rhof, hmoy, rmoy, long, icoq,&
-                    imod, nbm, rkip, tcoef, zr( id))
+        call pbflu0(rhof, hmoy, rmoy, long, icoq, &
+                    imod, nbm, rkip, tcoef, zr(id))
 !
     else
 !
-        call pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
+        call pbflvp(umoy, hmoy, rmoy, cf0, mcf0, &
                     rkip, s1, s2, zc(ilbda))
 !
-        call pbflkc(umoy, rhof, hmoy, rmoy, long,&
-                    cf0, mcf0, icoq, imod, nbm,&
-                    rkip, tcoef, s1, s2, zc(iki),&
+        call pbflkc(umoy, rhof, hmoy, rmoy, long, &
+                    cf0, mcf0, icoq, imod, nbm, &
+                    rkip, tcoef, s1, s2, zc(iki), &
                     zc(ilbda), zc(ikcal), zc(ipass))
 !
-        call pbflga(umoy, hmoy, rmoy, long, cf0,&
-                    fsvr, icoq, imod, nbm, tcoef,&
-                    s1, s2, zc(ilbda), zc(ikcal), zr(icond),&
+        call pbflga(umoy, hmoy, rmoy, long, cf0, &
+                    fsvr, icoq, imod, nbm, tcoef, &
+                    s1, s2, zc(ilbda), zc(ikcal), zr(icond), &
                     zc(igama))
 !
-    endif
+    end if
 !
-    call pbflso(umoy, rmoy, long, icoq, imod,&
-                nbm, rkip, tcoef, zr(iharm), zc(ilbda),&
-                zc(ikcal), zc(ipass), zr(icond), zc(igama), zr(id),&
+    call pbflso(umoy, rmoy, long, icoq, imod, &
+                nbm, rkip, tcoef, zr(iharm), zc(ilbda), &
+                zc(ikcal), zc(ipass), zr(icond), zc(igama), zr(id), &
                 ysol)
 !
     call jedetr('&&PBFLUI.TEMP.LBDA')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,10 +74,10 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     call dismoi('NOM_NUME_DDL', nommat, 'MATR_ASSE', repk=nu)
     factol(1:19) = nommat
     factou(1:19) = nommat
-    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
-                nomp05, nomp06, nomp07, nomp08, nomp09,&
-                nomp10, nomp11, nomp12, nomp13, nomp14,&
-                nomp15, nomp16, nomp17, nomp18, nomp19,&
+    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04, &
+                nomp05, nomp06, nomp07, nomp08, nomp09, &
+                nomp10, nomp11, nomp12, nomp13, nomp14, &
+                nomp15, nomp16, nomp17, nomp18, nomp19, &
                 nomp20)
 !                                ALLOCATION DES POINTEURS ENTIERS
     call jeveuo(nomp01, 'L', desc)
@@ -91,8 +91,8 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     call jeveuo(nomp14, 'L', anc)
     call jeveuo(nomp19, 'L', nouv)
     nbsn = zi(desc+1)
-    nbloc= zi(desc+2)
-    lgblma=0
+    nbloc = zi(desc+2)
+    lgblma = 0
     do i = 0, nbloc-1
         if (zi(lgbloc+i) .gt. lgblma) lgblma = zi(lgbloc+i)
     end do
@@ -107,9 +107,9 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
 !
     call jedetr('&&RLFC16.ALLEUR.VALF ')
     do i = 1, nbsol
-        call mltdca(nbloc, zi(lgbloc), zi(ncbloc), zi(decal), zi(seq),&
-                    nbsn, neq, zi(supnd), zi(adress), zi4(global),&
-                    zi(lgsn), factol, factou, cxsol(1, i), zc(pointr),&
+        call mltdca(nbloc, zi(lgbloc), zi(ncbloc), zi(decal), zi(seq), &
+                    nbsn, neq, zi(supnd), zi(adress), zi4(global), &
+                    zi(lgsn), factol, factou, cxsol(1, i), zc(pointr), &
                     zi(nouv), zi(anc), zi(ad), zc(trav), typsym)
     end do
 !

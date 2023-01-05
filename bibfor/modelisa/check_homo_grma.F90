@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine check_homo_grma(cara, nval)
     integer :: nv, i, j
     character(len=8) :: carpou(nk)
 !
-    data carpou /'R_DEBUT', 'R_FIN', 'EP_DEBUT', 'EP_FIN'/
+    data carpou/'R_DEBUT', 'R_FIN', 'EP_DEBUT', 'EP_FIN'/
 !
     nv = min(4, nval)
     tcar = '   '
@@ -40,15 +40,15 @@ subroutine check_homo_grma(cara, nval)
             if (cara(i) .eq. carpou(j)) then
                 tcar(j) = cara(i)
                 exit
-            endif
+            end if
         end do
     end do
 !
-    if (tcar(1)(1:1).eq. ' ')then
+    if (tcar(1) (1:1) .eq. ' ') then
         call utmess('F', 'MODELISA5_54', sk=carpou(1))
-    endif
-    if (tcar(2)(1:1).eq. ' ')then
+    end if
+    if (tcar(2) (1:1) .eq. ' ') then
         call utmess('F', 'MODELISA5_54', sk=carpou(2))
-    endif
+    end if
 !
 end subroutine

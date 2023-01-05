@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine utpslg(nn, nc, p, sl, sg)
 #include "asterfort/vecma.h"
 !
     integer      :: nn, nc
-    real(kind=8) :: p(3,3), sl(*), sg(*)
+    real(kind=8) :: p(3, 3), sl(*), sg(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,14 +52,14 @@ subroutine utpslg(nn, nc, p, sl, sg)
 !
     integer :: i, j, k, l, m, n, nb
 !
-    if (mod(nc,3) .eq. 0) then
-        nb = nn * nc / 3
+    if (mod(nc, 3) .eq. 0) then
+        nb = nn*nc/3
         do i = 1, nb
-            k = 3 * ( i - 1 )
+            k = 3*(i-1)
             do j = 1, i
-                in(1) =     k*(k+1)/2 + 3*(j-1)
-                in(2) = (k+1)*(k+2)/2 + 3*(j-1)
-                in(3) = (k+2)*(k+3)/2 + 3*(j-1)
+                in(1) = k*(k+1)/2+3*(j-1)
+                in(2) = (k+1)*(k+2)/2+3*(j-1)
+                in(3) = (k+2)*(k+3)/2+3*(j-1)
                 if (i .eq. j) then
                     ! bloc diagonal
                     r(1) = sl(in(1)+1)
@@ -75,65 +75,65 @@ subroutine utpslg(nn, nc, p, sl, sg)
                         do n = 1, m
                             sg(in(m)+n) = 0.0
                             do l = 1, 3
-                                sg(in(m)+n) = sg(in(m)+n) + p(l,m)*( r(3*(l-1)+1)*p(1,n) + &
-                                                                     r(3*(l-1)+2)*p(2,n) + &
-                                                                     r(3*(l-1)+3)*p(3,n) )
-                            enddo
-                        enddo
-                    enddo
+                                sg(in(m)+n) = sg(in(m)+n)+p(l, m)*(r(3*(l-1)+1)*p(1, n)+ &
+                                                                   r(3*(l-1)+2)*p(2, n)+ &
+                                                                   r(3*(l-1)+3)*p(3, n))
+                            end do
+                        end do
+                    end do
                 else
                     ! bloc extra - diagonal
                     do m = 1, 3
                         do n = 1, 3
                             sg(in(m)+n) = 0.0
                             do l = 1, 3
-                                sg(in(m)+n) = sg(in(m)+n) + p(l,m)*( sl(in(l)+1)*p(1,n) + &
-                                                                     sl(in(l)+2)*p(2,n) + &
-                                                                     sl(in(l)+3)*p(3,n) )
-                            enddo
-                        enddo
-                    enddo
-                endif
-            enddo
-        enddo
+                                sg(in(m)+n) = sg(in(m)+n)+p(l, m)*(sl(in(l)+1)*p(1, n)+ &
+                                                                   sl(in(l)+2)*p(2, n)+ &
+                                                                   sl(in(l)+3)*p(3, n))
+                            end do
+                        end do
+                    end do
+                end if
+            end do
+        end do
 !
-    else if (mod(nc,3) .eq. 1) then
-        mr14(:,:) = 0.0
+    else if (mod(nc, 3) .eq. 1) then
+        mr14(:, :) = 0.0
         do i = 1, 3
             do j = 1, 3
-                mr14(i   ,j )   = p(i,j)
-                mr14(i+3 ,j+3 ) = p(i,j)
-                mr14(i+7 ,j+7 ) = p(i,j)
-                mr14(i+10,j+10) = p(i,j)
-            enddo
-        enddo
-        mr14( 7, 7) = 1.0
-        mr14(14,14) = 1.0
+                mr14(i, j) = p(i, j)
+                mr14(i+3, j+3) = p(i, j)
+                mr14(i+7, j+7) = p(i, j)
+                mr14(i+10, j+10) = p(i, j)
+            end do
+        end do
+        mr14(7, 7) = 1.0
+        mr14(14, 14) = 1.0
         mtr14 = transpose(mr14)
         call vecma(sl, 105, ml14, 14)
-        mv14 = matmul(mtr14,ml14)
-        mtr14 = matmul(mv14,mr14)
+        mv14 = matmul(mtr14, ml14)
+        mtr14 = matmul(mv14, mr14)
         call mavec(mtr14, 14, sg, 105)
 !
-    else if (mod(nc,3) .eq. 2) then
-        mr16(:,:) = 0.0
+    else if (mod(nc, 3) .eq. 2) then
+        mr16(:, :) = 0.0
         do i = 1, 3
             do j = 1, 3
-                mr16(i   ,j )   = p(i,j)
-                mr16(i+3 ,j+3 ) = p(i,j)
-                mr16(i+8 ,j+8 ) = p(i,j)
-                mr16(i+11,j+11) = p(i,j)
-            enddo
-        enddo
-        mr16( 7, 7) = 1.0
-        mr16( 8, 8) = 1.0
-        mr16(15,15) = 1.0
-        mr16(16,16) = 1.0
+                mr16(i, j) = p(i, j)
+                mr16(i+3, j+3) = p(i, j)
+                mr16(i+8, j+8) = p(i, j)
+                mr16(i+11, j+11) = p(i, j)
+            end do
+        end do
+        mr16(7, 7) = 1.0
+        mr16(8, 8) = 1.0
+        mr16(15, 15) = 1.0
+        mr16(16, 16) = 1.0
         mtr16 = transpose(mr16)
         call vecma(sl, 136, ml16, 16)
-        mv16 = matmul(mtr16,ml16)
-        mtr16 = matmul(mv16,mr16)
+        mv16 = matmul(mtr16, ml16)
+        mtr16 = matmul(mv16, mr16)
         call mavec(mtr16, 16, sg, 136)
-    endif
+    end if
 !
 end subroutine

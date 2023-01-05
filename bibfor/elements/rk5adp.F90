@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax,&
+subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax, &
                   errmax, y0, dy0, rk5fct, resu, iret, ynorme)
     implicit none
 #include "asterf_types.h"
@@ -33,7 +33,7 @@ subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax,&
     real(kind=8)     :: dy0(nbeq)
     real(kind=8)     :: resu(2*nbeq)
     integer          :: iret
-    real(kind=8),intent(in),optional :: ynorme(nbeq)
+    real(kind=8), intent(in), optional :: ynorme(nbeq)
 !
     interface
         subroutine rk5fct(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
@@ -85,18 +85,18 @@ subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax,&
 !
     real(kind=8) :: puplus, pumoin, creduc, cforce, coeffm, seuil, precis, grlog
 !   puissance pour augmenter le pas de temps
-    parameter (puplus = -0.20d0)
+    parameter(puplus=-0.20d0)
 !   puissance pour diminuer le pas de temps
-    parameter (pumoin = -0.25d0)
+    parameter(pumoin=-0.25d0)
 !   coefficient de reduction sur la variation du pas de temps
-    parameter (creduc =  0.90d0)
+    parameter(creduc=0.90d0)
 !   coefficient de diminution du pas de temps en cas de forcage
-    parameter (cforce =  0.30d0)
+    parameter(cforce=0.30d0)
 !   augmentation maximale de pas de temps
-    parameter (coeffm =  5.0d0)
-    parameter (seuil  = (coeffm/creduc)**(1.0d0/puplus) )
-    parameter (precis =  1.0e-08)
-    parameter (grlog  =  1.0e+08)
+    parameter(coeffm=5.0d0)
+    parameter(seuil=(coeffm/creduc)**(1.0d0/puplus))
+    parameter(precis=1.0e-08)
+    parameter(grlog=1.0e+08)
 !
     nbbou = 0
     t9 = t0
@@ -105,68 +105,68 @@ subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax,&
 !   ON COMMENCE
 100 continue
 !
-    if ( present(ynorme) ) then
+    if (present(ynorme)) then
         norme(:) = ynorme(:)
     else
         norme(:) = y9(:)
         do ii = 1, nbeq
             if (abs(norme(ii)) .le. precis) then
                 norme(ii) = 1.0d0
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !   dépassement du nombre d'itération maximum ==> découpage global
     if (nbbou .gt. nbmax) then
         iret = 1
         goto 999
-    endif
+    end if
     decoup = ASTER_FALSE
 
     call rk5app(nbeq, param_real, param_int, param_car, dt9, y9, dy0, rk5fct, solu, decoup)
-    nbbou = nbbou + 1
+    nbbou = nbbou+1
 !   découpage forcé
     if (decoup) then
-        dt9 = cforce * dt9
+        dt9 = cforce*dt9
         goto 100
-    endif
+    end if
 !   calcul de l'erreur
     erreur = 0.0d0
     do ii = 1, nbeq
-        xbid1 = abs( solu(2*nbeq + ii)/norme(ii) )
+        xbid1 = abs(solu(2*nbeq+ii)/norme(ii))
         if (xbid1 .gt. grlog) then
             if (log10(xbid1) .gt. 100.0d0) then
 !               découpage forcé
-                dt9 = cforce * dt9
+                dt9 = cforce*dt9
                 goto 100
-            endif
-        endif
-        erreur = erreur + (xbid1**2)
-    enddo
+            end if
+        end if
+        erreur = erreur+(xbid1**2)
+    end do
     erreur = sqrt(erreur)/errmax
     if (erreur .gt. 1.0d0) then
 !       on ne converge pas ==> diminution du pas de temps
-        xbid1 = creduc * dt9 * (erreur**pumoin)
-        dt9 = max(0.10d0 * dt9, xbid1)
+        xbid1 = creduc*dt9*(erreur**pumoin)
+        dt9 = max(0.10d0*dt9, xbid1)
         goto 100
-    else if (abs(t9 + dt9 - t0 - dt0) .gt. precis) then
+    else if (abs(t9+dt9-t0-dt0) .gt. precis) then
 !       on a converge ==> augmentation du pas de temps
         nbbou = 0
 !       temps convergé
-        t9 = t9 + dt9
+        t9 = t9+dt9
 !       solution convergée
         y9(1:nbeq) = solu(1:nbeq)
 !       augmente le pas d'intégration dans la limite de coeffm
         if (erreur .gt. seuil) then
-            dt9 = creduc * dt9 * (erreur**puplus)
+            dt9 = creduc*dt9*(erreur**puplus)
         else
-            dt9 = coeffm * dt9
-        endif
+            dt9 = coeffm*dt9
+        end if
 !       on ne peut pas dépasser t0 + dt0
-        if (t9 + dt9 .gt. t0 + dt0) then
-            dt9 = t0 + dt0 - t9
-        endif
+        if (t9+dt9 .gt. t0+dt0) then
+            dt9 = t0+dt0-t9
+        end if
         goto 100
-    endif
+    end if
 !   résultat
     resu = solu(1:2*nbeq)
 999 continue

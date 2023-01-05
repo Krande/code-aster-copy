@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ subroutine irmit2(nbmode, ifmis, freq, tabrig)
 !   On convertit ensuite en INTEGER (*4 sur machine 32 bits, sinon *8).
 !   Les reels ne posent pas de probleme : ce sont toujours des REAL*8
 !
-    read(ifmis,*) nins2,pas
-    nfreq=int(nins2)
+    read (ifmis, *) nins2, pas
+    nfreq = int(nins2)
     call wkvect(tabfrq, 'V V R', nfreq, jfrq)
 !      NBMODE=LONG2
 !      N1=LONG3
-    ic=1
+    ic = 1
     call jeveuo(tabrig, 'E', jrig)
     do i = 1, nfreq
         zr(jfrq+i-1) = (i-1)*pas
@@ -65,42 +65,42 @@ subroutine irmit2(nbmode, ifmis, freq, tabrig)
 !      READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
     do i = 1, nfreq
         a(1) = zr(jfrq+i-1)
-        if (freq .le. (a(1) + r8prem( ))) then
+        if (freq .le. (a(1)+r8prem())) then
             ifreq = i
-            if (i .gt. 1 .and. freq .lt. (a(1) - r8prem( ))) then
+            if (i .gt. 1 .and. freq .lt. (a(1)-r8prem())) then
                 ifreq = ifreq-1
-            endif
-            if (freq .le. r8prem( )) ic = 2
+            end if
+            if (freq .le. r8prem()) ic = 2
             if (i .eq. 1 .and. nfreq .eq. 1) ic = 0
-            if (i .eq. nfreq .and. freq .ge. (a(1) - r8prem( ))) then
+            if (i .eq. nfreq .and. freq .ge. (a(1)-r8prem())) then
                 ic = 0
                 ifreq = nfreq
-            endif
+            end if
             goto 7
-        endif
+        end if
     end do
     ifreq = nfreq
     ic = 0
-  7 continue
+7   continue
     do i = 1, ifreq-1
-        read(ifmis,*) a(1)
-        read(ifmis,1000) (zr(jri0+i1-1),i1=1,nbmode)
+        read (ifmis, *) a(1)
+        read (ifmis, 1000) (zr(jri0+i1-1), i1=1, nbmode)
     end do
-    read(ifmis,*) a(1)
-    read(ifmis,1000) (zr(jrig+i1-1),i1=1,nbmode)
+    read (ifmis, *) a(1)
+    read (ifmis, 1000) (zr(jrig+i1-1), i1=1, nbmode)
     if (ic .ge. 1) then
-        read(ifmis,*) a(1)
-        read(ifmis,1000) (zr(jri2+i1-1),i1=1,nbmode)
+        read (ifmis, *) a(1)
+        read (ifmis, 1000) (zr(jri2+i1-1), i1=1, nbmode)
         do i1 = 1, nbmode
-            zr(jrig+i1-1) = zr(jrig+i1-1) + (freq-zr(jfrq+ifreq-1))/( zr(jfrq+ifreq)-zr(jfrq+ifre&
-                            &q-1)) * (zr(jri2+i1-1)-zr(jrig+ i1-1))
+            zr(jrig+i1-1) = zr(jrig+i1-1)+(freq-zr(jfrq+ifreq-1))/(zr(jfrq+ifreq)-zr(jfrq+ifre&
+                            &q-1))*(zr(jri2+i1-1)-zr(jrig+i1-1))
         end do
-    endif
+    end if
 !
     call jedetr(tabri0)
     call jedetr(tabri2)
     call jedetr(tabfrq)
 !
-    1000 format((6(1x,1pe13.6)))
+1000 format((6(1x, 1pe13.6)))
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_list_info(load_empty  , nb_load    , v_load_name, v_load_info,&
-                          lload_name_ , lload_info_,&
-                          list_load_  ,&
+subroutine load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
+                          lload_name_, lload_info_, &
+                          list_load_, &
                           list_nbload_, list_name_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
@@ -66,41 +66,41 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     load_empty = .true.
-    nb_load    = 0
+    nb_load = 0
 !
 ! - Origin of informations
 !
     if (present(list_load_)) then
         lload_name = list_load_(1:19)//'.LCHA'
         lload_info = list_load_(1:19)//'.INFC'
-        orig_list  = 'SD_LIST_LOAD'
+        orig_list = 'SD_LIST_LOAD'
     elseif (present(lload_name_)) then
         lload_name = lload_name_
         lload_info = lload_info_
-        orig_list  = 'SD_LIST_LOAD'
+        orig_list = 'SD_LIST_LOAD'
     elseif (present(list_name_)) then
-        orig_list  = 'LIST_NAME'
+        orig_list = 'LIST_NAME'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    if (orig_list.eq.'SD_LIST_LOAD') then
+    if (orig_list .eq. 'SD_LIST_LOAD') then
         call jeexin(lload_name, iret)
         if (iret .ne. 0) then
             call jelira(lload_name, 'LONMAX', nb_load)
             if (nb_load .ne. 0) then
                 load_empty = .false.
-                call jeveuo(lload_name, 'L', vk24 = v_load_name)
-                call jeveuo(lload_info, 'L', vi   = v_load_info)
-            endif
-        endif
+                call jeveuo(lload_name, 'L', vk24=v_load_name)
+                call jeveuo(lload_info, 'L', vi=v_load_info)
+            end if
+        end if
     else
-        nb_load    = list_nbload_
-        load_empty = nb_load.eq.0
-        if (.not.load_empty) then
+        nb_load = list_nbload_
+        load_empty = nb_load .eq. 0
+        if (.not. load_empty) then
             v_load_name => list_name_(1:nb_load)
             v_load_info => null()
-        endif
-    endif
+        end if
+    end if
 
 end subroutine

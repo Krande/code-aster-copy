@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vechme(stop     , modelz, lload_namez, lload_infoz, inst        ,&
-                  cara_elem, mate  , mateco     , vect_elemz , varc_currz , ligrel_calcz,&
+subroutine vechme(stop, modelz, lload_namez, lload_infoz, inst, &
+                  cara_elem, mate, mateco, vect_elemz, varc_currz, ligrel_calcz, &
                   nharm, basez)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -78,7 +78,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_in_maxi, nbout
-    parameter (nb_in_maxi = 45, nbout = 1)
+    parameter(nb_in_maxi=45, nbout=1)
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
@@ -102,29 +102,29 @@ implicit none
 !
 ! - Initializations
 !
-    resu_elem   = '&&VECHME.0000000'
-    model       = modelz
-    lload_name  = lload_namez
-    lload_info  = lload_infoz
-    varc_curr   = ' '
+    resu_elem = '&&VECHME.0000000'
+    model = modelz
+    lload_name = lload_namez
+    lload_info = lload_infoz
+    varc_curr = ' '
     if (present(varc_currz)) then
-        varc_curr   = varc_currz
-    endif
+        varc_curr = varc_currz
+    end if
     ligrel_calc = model(1:8)//'.MODELE'
     if (present(ligrel_calcz)) then
         ligrel_calc = ligrel_calcz
-    endif
-    inst_prev   = inst(1)
-    inst_curr   = inst(1)+inst(2)
-    inst_theta  = inst(3)
-    base        = 'V'
-    if(present(basez)) then
+    end if
+    inst_prev = inst(1)
+    inst_curr = inst(1)+inst(2)
+    inst_theta = inst(3)
+    base = 'V'
+    if (present(basez)) then
         base = basez
     end if
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Result name for vect_elem
@@ -132,57 +132,57 @@ implicit none
     vect_elem = vect_elemz
     if (vect_elem .eq. ' ') then
         vect_elem = '&&VECHME'
-    endif
+    end if
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load  , v_load_name, v_load_info,&
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
                         lload_name, lload_info)
 !
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, mate, cara_elem,&
+    call memare(base, vect_elem, model, mate, cara_elem, &
                 'CHAR_MECA')
     call reajre(vect_elem, ' ', base)
     if (load_empty) then
         goto 99
-    endif
+    end if
 !
 ! - Preparing input fields
 !
     if (present(nharm)) then
-        call load_neum_prep(model    , cara_elem , mate      , mateco , 'Dead'      , inst_prev,&
-                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
-                            lpain    , varc_curr = varc_curr, nharm = nharm)
+        call load_neum_prep(model, cara_elem, mate, mateco, 'Dead', inst_prev, &
+                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+                            lpain, varc_curr=varc_curr, nharm=nharm)
     else
-        call load_neum_prep(model    , cara_elem , mate      , mateco, 'Dead'      , inst_prev,&
-                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
-                            lpain    , varc_curr = varc_curr)
-    endif
+        call load_neum_prep(model, cara_elem, mate, mateco, 'Dead', inst_prev, &
+                            inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+                            lpain, varc_curr=varc_curr)
+    end if
 !
 ! - Computation
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
+        load_name = v_load_name(i_load) (1:8)
         load_nume = v_load_info(nb_load+i_load+1)
 !
 ! ----- Standard dead Neumann loads
 !
-        if ((load_nume .gt. 0 .and. load_nume .lt. 4).or.(load_nume.eq.55)) then
-            call load_neum_comp(stop       , i_load    , load_name , load_nume, 'Dead'   ,&
-                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin    ,&
-                                base       , resu_elem , vect_elem  )
-        endif
+        if ((load_nume .gt. 0 .and. load_nume .lt. 4) .or. (load_nume .eq. 55)) then
+            call load_neum_comp(stop, i_load, load_name, load_nume, 'Dead', &
+                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                base, resu_elem, vect_elem)
+        end if
 !
 ! ----- Composite dead Neumann loads (EVOL_CHAR)
 !
-        call load_neum_evcd(stop      , inst_prev , load_name, i_load, ligrel_calc,&
-                            nb_in_maxi, nb_in_prep, lpain    , lchin , base       ,&
-                            resu_elem , vect_elem)
+        call load_neum_evcd(stop, inst_prev, load_name, i_load, ligrel_calc, &
+                            nb_in_maxi, nb_in_prep, lpain, lchin, base, &
+                            resu_elem, vect_elem)
     end do
 !
- 99 continue
+99  continue
 !
     vect_elemz = vect_elem//'.RELR'
 !

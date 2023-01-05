@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ subroutine apmams(matass, auxMat)
 #include "asterf_petsc.h"
     !
     !
-use aster_petsc_module
-implicit none
+    use aster_petsc_module
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -138,31 +138,31 @@ implicit none
     call MatSetType(auxMat, MATSEQAIJ, ierr)
     ASSERT(ierr == 0)
     call MatGetBlockSize(auxMat, bs4, ierr)
-    ASSERT( ierr == 0 )
+    ASSERT(ierr == 0)
     bs = bs4
     ASSERT(mod(neq2, bs) .eq. 0)
-    call MatSetSizes(auxMat,PETSC_DECIDE,PETSC_DECIDE,to_petsc_int(neq2),to_petsc_int(neq2), ierr)
-    ASSERT(ierr.eq.0)
+  call MatSetSizes(auxMat, PETSC_DECIDE, PETSC_DECIDE, to_petsc_int(neq2), to_petsc_int(neq2), ierr)
+    ASSERT(ierr .eq. 0)
     call MatSetUp(auxMat, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
 !   Compute nnz
 !   -----------------------------------------------------------------------------
-    do jcol2 = 0, neq2 - 1
-        jcol1=jcol2+1
+    do jcol2 = 0, neq2-1
+        jcol1 = jcol2+1
         nbd = 0
-        if (jcol1.eq.1) then
+        if (jcol1 .eq. 1) then
             nzdeb = 1
         else
-            nzdeb = smdi(jcol1-1) + 1
-        endif
+            nzdeb = smdi(jcol1-1)+1
+        end if
         nzfin = smdi(jcol1)
         do k = nzdeb, nzfin
             ilig = smhc(k)
-            nbd = nbd + 1
-            v_dxi1(ilig) = v_dxi1(ilig) + to_petsc_int(1)
+            nbd = nbd+1
+            v_dxi1(ilig) = v_dxi1(ilig)+to_petsc_int(1)
         end do
-        v_dxi1(jcol2+1) = v_dxi1(jcol2+1) + to_petsc_int(nbd - 1)
+        v_dxi1(jcol2+1) = v_dxi1(jcol2+1)+to_petsc_int(nbd-1)
     end do
 
 !   Preallocate the matrix
@@ -170,50 +170,50 @@ implicit none
     unused_nz = -1
     mm = to_petsc_int(neq2)
     call MatSeqAIJSetPreallocation(auxMat, unused_nz, v_dxi1(1:mm), ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
 !   Fill the matrix
 !   -----------------------------------------------------------------------------
-    do jcol2 = 0, neq2 - 1
+    do jcol2 = 0, neq2-1
         iterm = 0
         jterm = 0
-        jcol1 = jcol2 + 1
+        jcol1 = jcol2+1
         if (jcol1 .eq. 1) then
             nzdeb = 1
         else
-            nzdeb = smdi(jcol1 - 1) + 1
+            nzdeb = smdi(jcol1-1)+1
         end if
         nzfin = smdi(jcol1)
         do k = nzdeb, nzfin
             !       -- ilig : indice ligne (fortran) du terme courant dans la matrice Aster
             ilig = smhc(k)
-            jterm = jterm + 1
+            jterm = jterm+1
             !           -- si A n'est pas symetrique, on lit valm2
             if (lmnsy) then
-                valm = zr(jvalm2 - 1 + k)
+                valm = zr(jvalm2-1+k)
             else
                 !           -- si A est symetrique, on lit valm1
-                valm = zr(jvalm - 1 + k)
+                valm = zr(jvalm-1+k)
             end if
-            zr(jdval2 + jterm - 1) = valm
-            v_dxi2(jterm) = to_petsc_int(ilig - 1)
+            zr(jdval2+jterm-1) = valm
+            v_dxi2(jterm) = to_petsc_int(ilig-1)
 
-            iterm = iterm + 1
-            valm = zr(jvalm - 1 + k)
-            zr(jdval1 + iterm - 1) = valm
-            v_dxi1(iterm) = to_petsc_int(ilig - 1)
+            iterm = iterm+1
+            valm = zr(jvalm-1+k)
+            zr(jdval1+iterm-1) = valm
+            v_dxi1(iterm) = to_petsc_int(ilig-1)
         end do
 
 !       we remove the extra term computed in the algorithm
-        jterm = jterm - 1
+        jterm = jterm-1
         mm = to_petsc_int(iterm)
         call MatSetValues(auxMat, mm, v_dxi1(1:mm), ione, [to_petsc_int(jcol2)], &
-                          zr(jdval1 - 1 + 1:jdval1 - 1 + mm), INSERT_VALUES, ierr)
+                          zr(jdval1-1+1:jdval1-1+mm), INSERT_VALUES, ierr)
         ASSERT(ierr .eq. 0)
 !
         nn = to_petsc_int(jterm)
         call MatSetValues(auxMat, ione, [to_petsc_int(jcol2)], nn, v_dxi2(1:nn), &
-                          zr(jdval2 - 1 + 1:jdval2 - 1 + nn), INSERT_VALUES, ierr)
+                          zr(jdval2-1+1:jdval2-1+nn), INSERT_VALUES, ierr)
         ASSERT(ierr .eq. 0)
 !
     end do
@@ -221,9 +221,9 @@ implicit none
 !   Assembly the auxiliary matrix
 !   -----------------------------------------------------------------------------
     call MatAssemblyBegin(auxMat, MAT_FINAL_ASSEMBLY, ierr)
-    ASSERT(ierr==0)
+    ASSERT(ierr == 0)
     call MatAssemblyEnd(auxMat, MAT_FINAL_ASSEMBLY, ierr)
-    ASSERT(ierr==0)
+    ASSERT(ierr == 0)
 
     call jelibe(nume//'.SMOS.SMDI')
     call jelibe(nume//'.SMOS.SMHC')

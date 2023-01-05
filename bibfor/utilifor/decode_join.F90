@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,32 +37,32 @@ subroutine decode_join(nomjoi, dom1, dom2)
 !
     length = 15000
     do ich = 1, MED_NAME_SIZE
-        if( nom(ich:ich) .eq. ' ' ) then
-            length = ich - 1
+        if (nom(ich:ich) .eq. ' ') then
+            length = ich-1
             exit
         end if
     end do
     ASSERT(length <= MED_NAME_SIZE)
 !
-    read(nom(1:length), *) dom1
+    read (nom(1:length), *) dom1
     nom = nomjoi
 !
     start = -1
-    do ich = length + 1, MED_NAME_SIZE
-        if( nom(ich:ich) .ne. ' ' ) then
+    do ich = length+1, MED_NAME_SIZE
+        if (nom(ich:ich) .ne. ' ') then
             start = ich
             exit
         end if
     end do
     ASSERT(start > length)
     do ich = start, MED_NAME_SIZE
-        if( nom(ich:ich) == ' ' ) then
-            length = ich - 1
+        if (nom(ich:ich) == ' ') then
+            length = ich-1
             exit
         end if
     end do
     ASSERT(start <= length)
 
-    read(nom(start:length), *) dom2
+    read (nom(start:length), *) dom2
 !
 end subroutine

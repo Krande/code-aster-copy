@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,26 @@
 ! aslint: disable=W1504
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine thmCpl003(ds_thm,&
-                     lMatr, lSigm, lVari, lMatrPred, angl_naut,&
-                     j_mater,&
-                     ndim  , nbvari   ,&
-                     dimdef, dimcon   ,&
-                     adcote, adcp11   , adcp12, &
-                     addete, addep1   , &
-                     temp  , p1       ,&
-                     dtemp , dp1      ,&
-                     deps  , epsv     , depsv ,&
-                     tbiot ,&
-                     phi   , rho11    , satur ,&
-                     pvp   , h11      , h12   ,&
-                     congem, congep   ,&
-                     vintm , vintp    , dsde  ,&
+subroutine thmCpl003(ds_thm, &
+                     lMatr, lSigm, lVari, lMatrPred, angl_naut, &
+                     j_mater, &
+                     ndim, nbvari, &
+                     dimdef, dimcon, &
+                     adcote, adcp11, adcp12, &
+                     addete, addep1, &
+                     temp, p1, &
+                     dtemp, dp1, &
+                     deps, epsv, depsv, &
+                     tbiot, &
+                     phi, rho11, satur, &
+                     pvp, h11, h12, &
+                     congem, congep, &
+                     vintm, vintp, dsde, &
                      retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8maem.h"
@@ -66,24 +66,24 @@ implicit none
 #include "asterfort/thmEvalSatuInit.h"
 #include "asterfort/thmEvalSatuMiddle.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: j_mater, ndim, nbvari
-integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: adcote, adcp11, adcp12
-integer, intent(in) :: addep1, addete
-real(kind=8), intent(in) :: temp, p1
-real(kind=8), intent(in) :: dtemp, dp1
-real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
-real(kind=8), intent(out) :: phi, rho11, satur
-real(kind=8), intent(out) :: pvp, h11, h12
-real(kind=8), intent(in) :: congem(dimcon)
-real(kind=8), intent(inout) :: congep(dimcon)
-real(kind=8), intent(in) :: vintm(nbvari)
-real(kind=8), intent(inout) :: vintp(nbvari)
-real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-integer, intent(out)  :: retcom
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: j_mater, ndim, nbvari
+    integer, intent(in) :: dimdef, dimcon
+    integer, intent(in) :: adcote, adcp11, adcp12
+    integer, intent(in) :: addep1, addete
+    real(kind=8), intent(in) :: temp, p1
+    real(kind=8), intent(in) :: dtemp, dp1
+    real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
+    real(kind=8), intent(out) :: phi, rho11, satur
+    real(kind=8), intent(out) :: pvp, h11, h12
+    real(kind=8), intent(in) :: congem(dimcon)
+    real(kind=8), intent(inout) :: congep(dimcon)
+    real(kind=8), intent(in) :: vintm(nbvari)
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
+    integer, intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -152,95 +152,95 @@ integer, intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(.not.(ds_thm%ds_elem%l_dof_meca))
-    dpvp   = 0.d0
-    dpvpl  = 0.d0
-    dpvpt  = 0.d0
-    dpad   = 0.d0
-    rho11  = 0.d0
-    rho12  = 0.d0
-    rho21  = 0.d0
-    rho22  = 0.d0
-    cp21   = 0.d0
-    cp22   = 0.d0
-    alp11  = 0.d0
-    alp12  = 0.d0
-    signe  = -1.d0
-    phi    = 0.d0
-    phids  = 0.d0
+    ASSERT(.not. (ds_thm%ds_elem%l_dof_meca))
+    dpvp = 0.d0
+    dpvpl = 0.d0
+    dpvpt = 0.d0
+    dpad = 0.d0
+    rho11 = 0.d0
+    rho12 = 0.d0
+    rho21 = 0.d0
+    rho22 = 0.d0
+    cp21 = 0.d0
+    cp22 = 0.d0
+    alp11 = 0.d0
+    alp12 = 0.d0
+    signe = -1.d0
+    phi = 0.d0
+    phids = 0.d0
     saturm = 0.d0
     dsatur = 0.d0
-    satur  = 0.d0
+    satur = 0.d0
     retcom = 0
 !
 ! - Get storage parameters for behaviours
 !
-    advico    = ds_thm%ds_behaviour%advico
-    advihy    = ds_thm%ds_behaviour%advihy
-    vihrho    = ds_thm%ds_behaviour%vihrho
-    vicphi    = ds_thm%ds_behaviour%vicphi
-    vicpvp    = ds_thm%ds_behaviour%vicpvp
-    vicsat    = ds_thm%ds_behaviour%vicsat
+    advico = ds_thm%ds_behaviour%advico
+    advihy = ds_thm%ds_behaviour%advihy
+    vihrho = ds_thm%ds_behaviour%vihrho
+    vicphi = ds_thm%ds_behaviour%vicphi
+    vicpvp = ds_thm%ds_behaviour%vicpvp
+    vicsat = ds_thm%ds_behaviour%vicsat
 !
 ! - No gaz pressure (=> infinity)
 !
-    dp2    = 0.d0
-    p2     = r8maem()
+    dp2 = 0.d0
+    p2 = r8maem()
 !
 ! - Get initial parameters
 !
-    phi0   = ds_thm%ds_parainit%poro_init
-    pvp0   = ds_thm%ds_parainit%prev_init
+    phi0 = ds_thm%ds_parainit%poro_init
+    pvp0 = ds_thm%ds_parainit%prev_init
 !
 ! - Compute steam pressure
 !
-    pvp    = vintm(advico+vicpvp) + pvp0
-    pvpm   = vintm(advico+vicpvp) + pvp0
-    p1m    = pvpm-p1+dp1
+    pvp = vintm(advico+vicpvp)+pvp0
+    pvpm = vintm(advico+vicpvp)+pvp0
+    p1m = pvpm-p1+dp1
 !
 ! - Get material parameters
 !
-    rgaz   = ds_thm%ds_material%solid%r_gaz
-    rho0   = ds_thm%ds_material%solid%rho
-    csigm  = ds_thm%ds_material%solid%cp
+    rgaz = ds_thm%ds_material%solid%r_gaz
+    rho0 = ds_thm%ds_material%solid%rho
+    csigm = ds_thm%ds_material%solid%cp
     rho110 = ds_thm%ds_material%liquid%rho
-    cliq   = ds_thm%ds_material%liquid%unsurk
+    cliq = ds_thm%ds_material%liquid%unsurk
     alpliq = ds_thm%ds_material%liquid%alpha
-    cp11   = ds_thm%ds_material%liquid%cp
+    cp11 = ds_thm%ds_material%liquid%cp
     mamolv = ds_thm%ds_material%steam%mass_mol
-    cp12   = ds_thm%ds_material%steam%cp
+    cp12 = ds_thm%ds_material%steam%cp
 !
 ! - Storage coefficient
 !
     l_emmag = ds_thm%ds_material%hydr%l_emmag
-    em      = ds_thm%ds_material%hydr%emmag
+    em = ds_thm%ds_material%hydr%emmag
 !
 ! - Evaluation of initial saturation
 !
-    call thmEvalSatuInit(ds_thm, j_mater, p1m   , p1    ,temp-dtemp,temp,&
-                         saturm, satur  , dsatur, retcom)
+    call thmEvalSatuInit(ds_thm, j_mater, p1m, p1, temp-dtemp, temp, &
+                         saturm, satur, dsatur, retcom)
 !
 ! - Evaluation of initial porosity
 !
-    phi  = vintm(advico+vicphi) + phi0
-    phim = vintm(advico+vicphi) + phi0
+    phi = vintm(advico+vicphi)+phi0
+    phim = vintm(advico+vicphi)+phi0
 !
 ! - Evaluation of initial enthalpies/initial mass/volumic mass
 !
-    h11    = congem(adcp11+ndim+1)
-    h12    = congem(adcp12+ndim+1)
-    m11m   = congem(adcp11)
-    m12m   = congem(adcp12)
-    rho11  = vintm(advihy+vihrho) + rho110
-    rho11m = vintm(advihy+vihrho) + rho110
+    h11 = congem(adcp11+ndim+1)
+    h12 = congem(adcp12+ndim+1)
+    m11m = congem(adcp11)
+    m12m = congem(adcp12)
+    rho11 = vintm(advihy+vihrho)+rho110
+    rho11m = vintm(advihy+vihrho)+rho110
 !
 ! - Prepare initial parameters for coupling law
 !
-    call inithm(ds_thm   ,&
-                angl_naut, tbiot , phi0 ,&
-                epsv     , depsv ,&
-                epsvm    , cs    , mdal , dalal,&
-                alpha0   , alphfi, cbiot, unsks)
+    call inithm(ds_thm, &
+                angl_naut, tbiot, phi0, &
+                epsv, depsv, &
+                epsvm, cs, mdal, dalal, &
+                alpha0, alphfi, cbiot, unsks)
 !
 ! ==================================================================================================
 !
@@ -253,63 +253,63 @@ integer, intent(out)  :: retcom
     if (lVari) then
 ! ----- Compute volumic mass for water
         if (ds_thm%ds_elem%l_dof_ther) then
-            call virhol(nbvari, vintm , vintp ,&
-                        advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,&
-                        cliq  , alpliq, signe ,&
-                        rho110, rho11 , rho11m,&
+            call virhol(nbvari, vintm, vintp, &
+                        advihy, vihrho, &
+                        dtemp, dp1, dp2, dpad, &
+                        cliq, alpliq, signe, &
+                        rho110, rho11, rho11m, &
                         retcom)
         else
-            call virhol(nbvari, vintm , vintp ,&
-                        advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,&
-                        cliq  , 0.d0  , signe ,&
-                        rho110, rho11 , rho11m,&
+            call virhol(nbvari, vintm, vintp, &
+                        advihy, vihrho, &
+                        dtemp, dp1, dp2, dpad, &
+                        cliq, 0.d0, signe, &
+                        rho110, rho11, rho11m, &
                         retcom)
-        endif
-    endif
+        end if
+    end if
     if (retcom .ne. 0) then
         goto 30
-        endif
+    end if
 !
 ! - Compute steam pressure (no dissolved air)
 !
     if (lVari) then
-        call vipvp1(ds_thm,&
-                    ndim  , nbvari,&
-                    dimcon,&
-                    adcp11, adcp12, advico, vicpvp,&
+        call vipvp1(ds_thm, &
+                    ndim, nbvari, &
+                    dimcon, &
+                    adcp11, adcp12, advico, vicpvp, &
                     congem, &
-                    cp11  , cp12  ,&
-                    mamolv, rgaz  , rho11 , signe ,&
-                    temp  , p2    ,&
-                    dtemp , dp1   , dp2   ,&
-                    pvp0  , pvpm  , pvp   ,&
-                    vintm , vintp ,&
+                    cp11, cp12, &
+                    mamolv, rgaz, rho11, signe, &
+                    temp, p2, &
+                    dtemp, dp1, dp2, &
+                    pvp0, pvpm, pvp, &
+                    vintm, vintp, &
                     retcom)
-    endif
+    end if
     if (retcom .ne. 0) then
         goto 30
-    endif
+    end if
 !
 ! - Increment of steam pressure
 !
-    dpvp = pvp - pvpm
+    dpvp = pvp-pvpm
 !
 ! - Evaluation of "middle" saturation (only LIQU_VAPE)
 !
-    call thmEvalSatuMiddle(ds_thm, j_mater, pvp-p1,temp,&
-                           satur , dsatur , retcom)
+    call thmEvalSatuMiddle(ds_thm, j_mater, pvp-p1, temp, &
+                           satur, dsatur, retcom)
     if (lVari) then
 !
 ! ----- Compute porosity with storage coefficient
 !
         if (l_emmag) then
-            call viemma(nbvari, vintm, vintp,&
-                        advico, vicphi,&
-                        phi0  , dp1   , dp2 , signe, satur,&
-                        em    , phi   , phim)
-        endif
+            call viemma(nbvari, vintm, vintp, &
+                        advico, vicphi, &
+                        phi0, dp1, dp2, signe, satur, &
+                        em, phi, phim)
+        end if
 !
 ! ----- Save saturation in internal state variables
 !
@@ -317,8 +317,8 @@ integer, intent(out)  :: retcom
 !
         if (retcom .ne. 0) then
             goto 30
-        endif
-    endif
+        end if
+    end if
 !
 ! ==================================================================================================
 !
@@ -330,66 +330,66 @@ integer, intent(out)  :: retcom
 !
 ! - Compute volumic mass for steam
 !
-    rho12  = masvol(mamolv, pvp , rgaz, temp )
+    rho12 = masvol(mamolv, pvp, rgaz, temp)
     rho12m = masvol(mamolv, pvpm, rgaz, temp-dtemp)
     if (ds_thm%ds_elem%l_dof_ther) then
 ! ----- Compute thermal expansion of liquid
-        alp11 = dileau(satur,phi,alphfi,alpliq)
+        alp11 = dileau(satur, phi, alphfi, alpliq)
 ! ----- Compute thermal expansion of steam
-        alp12 = dilgaz(satur,phi,alphfi,temp)
+        alp12 = dilgaz(satur, phi, alphfi, temp)
 ! ----- Compute specific heat capacity
-        call capaca(rho0, rho11, rho12, rho21, rho22,&
-                    satur, phi  ,&
-                    csigm, cp11 , cp12 , cp21  , cp22 ,&
-                    dalal, temp , coeps, retcom)
+        call capaca(rho0, rho11, rho12, rho21, rho22, &
+                    satur, phi, &
+                    csigm, cp11, cp12, cp21, cp22, &
+                    dalal, temp, coeps, retcom)
         if (retcom .ne. 0) then
             goto 30
-        endif
+        end if
         if (lSigm) then
 ! --------- Update enthalpy of liquid
-            congep(adcp11+ndim+1) = congep(adcp11+ndim+1) +&
-                                    enteau(dtemp, alpliq, temp,&
-                                           rho11, dp2   , dp1 ,dpad,&
+            congep(adcp11+ndim+1) = congep(adcp11+ndim+1)+ &
+                                    enteau(dtemp, alpliq, temp, &
+                                           rho11, dp2, dp1, dpad, &
                                            signe, cp11)
 ! --------- Update enthalpy of steam
-            congep(adcp12+ndim+1) = congep(adcp12+ndim+1) +&
+            congep(adcp12+ndim+1) = congep(adcp12+ndim+1)+ &
                                     entgaz(dtemp, cp12)
 ! --------- Update "reduced" heat Q'
-            congep(adcote) = congep(adcote) +&
-                             calor(mdal    , temp , dtemp, deps ,&
-                                   dp1-dpvp, dpvp , signe,&
-                                   alp11   , alp12, coeps, ndim)
-        endif
-    endif
+            congep(adcote) = congep(adcote)+ &
+                             calor(mdal, temp, dtemp, deps, &
+                                   dp1-dpvp, dpvp, signe, &
+                                   alp11, alp12, coeps, ndim)
+        end if
+    end if
 !
 ! - Compute derivative of stem pressure by temperature and by liquid pressure
 !
     if (lMatrPred) then
         dpvpl = rho12m/rho11m
         if (ds_thm%ds_elem%l_dof_ther) then
-            dpvpt = rho12m * (congem(adcp12+ndim+1) - congem(adcp11+ ndim+1)) / temp
-        endif
+            dpvpt = rho12m*(congem(adcp12+ndim+1)-congem(adcp11+ndim+1))/temp
+        end if
     else
         dpvpl = rho12/rho11
         if (ds_thm%ds_elem%l_dof_ther) then
-            dpvpt = rho12 * (congep(adcp12+ndim+1) - congep(adcp11+ ndim+1)) / temp
-        endif
-    endif
+            dpvpt = rho12*(congep(adcp12+ndim+1)-congep(adcp11+ndim+1))/temp
+        end if
+    end if
 !
 ! - Update quantity of mass
 !
     if (lSigm) then
-        congep(adcp11) = appmas(m11m ,&
-                                phi  , phim  ,&
-                                satur, saturm,&
-                                rho11, rho11m,&
-                                epsv , epsvm)
-        congep(adcp12) = appmas(m12m      ,&
-                                phi       , phim       ,&
-                                1.d0-satur, 1.d0-saturm,&
-                                rho12     , rho12m     ,&
-                                epsv      , epsvm)
-    endif
+        congep(adcp11) = appmas(m11m, &
+                                phi, phim, &
+                                satur, saturm, &
+                                rho11, rho11m, &
+                                epsv, epsvm)
+        congep(adcp12) = appmas(m12m, &
+                                phi, phim, &
+                                1.d0-satur, 1.d0-saturm, &
+                                rho12, rho12m, &
+                                epsv, epsvm)
+    end if
 !
 ! ==================================================================================================
 !
@@ -400,36 +400,36 @@ integer, intent(out)  :: retcom
     if (lMatr) then
         if (ds_thm%ds_elem%l_dof_ther) then
 ! --------- Derivative of enthalpy of liquid by capillary pressure
-            dsde(adcp11+ndim+1,addep1) = dsde(adcp11+ndim+1,addep1) + &
-                                         dhwdp1(signe,alpliq,temp,rho11)
+            dsde(adcp11+ndim+1, addep1) = dsde(adcp11+ndim+1, addep1)+ &
+                                          dhwdp1(signe, alpliq, temp, rho11)
 ! --------- Derivative of enthalpy of liquid by temperature
-            dsde(adcp11+ndim+1,addete) = dsde(adcp11+ndim+1,addete) +&
-                                         dhdt(cp11)
+            dsde(adcp11+ndim+1, addete) = dsde(adcp11+ndim+1, addete)+ &
+                                          dhdt(cp11)
 ! --------- Derivative of enthalpy of steam by temperature
-            dsde(adcp12+ndim+1,addete) = dsde(adcp12+ndim+1,addete) +&
-                                         dhdt(cp12)
+            dsde(adcp12+ndim+1, addete) = dsde(adcp12+ndim+1, addete)+ &
+                                          dhdt(cp12)
 ! --------- Derivative of quantity of mass from liquid by liquid pressure
-            dsde(adcp11,addete) = dsde(adcp11,addete) +&
-                                  dmwdt2(rho11, alp11,phids,satur,cs,dpvpt)
+            dsde(adcp11, addete) = dsde(adcp11, addete)+ &
+                                   dmwdt2(rho11, alp11, phids, satur, cs, dpvpt)
 ! --------- Derivative of quantity of mass from steam pressure by gaz pressure
-            dsde(adcp12,addete) = dsde(adcp12,addete) +&
-                                  dmvpd2(rho12, alp12, dpvpt, phi, satur, pvp, phids, cs)
+            dsde(adcp12, addete) = dsde(adcp12, addete)+ &
+                                   dmvpd2(rho12, alp12, dpvpt, phi, satur, pvp, phids, cs)
 ! --------- Derivative of "reduced" heat Q' of steam by temperature
-            dsde(adcote,addete) = dsde(adcote,addete) + &
-                                  dqvpdt(coeps, alp12, temp, dpvpt)
+            dsde(adcote, addete) = dsde(adcote, addete)+ &
+                                   dqvpdt(coeps, alp12, temp, dpvpt)
 ! --------- Derivative of "reduced" heat Q' of steam by steam pressure
-            dsde(adcote,addep1) = dsde(adcote,addep1) + &
-                                  dqvpdp(alp11, alp12, temp, dpvpl)
-        endif
+            dsde(adcote, addep1) = dsde(adcote, addep1)+ &
+                                   dqvpdp(alp11, alp12, temp, dpvpl)
+        end if
 ! ----- Derivative of quantity of mass by liquid pressure
-        dsde(adcp11,addep1) = dsde(adcp11,addep1) +&
-                              dmwp1v(rho11, phids,satur,cs,dpvpl,phi,cliq)
+        dsde(adcp11, addep1) = dsde(adcp11, addep1)+ &
+                               dmwp1v(rho11, phids, satur, cs, dpvpl, phi, cliq)
 ! ----- Derivative of quantity of mass from steam pressure by liquid pressure
-        dsde(adcp12,addep1) = dsde(adcp12,addep1) +&
-                              dmvpp1(rho11, rho12,phids,cs,dpvpl,satur,phi,pvp)
-    endif
+        dsde(adcp12, addep1) = dsde(adcp12, addep1)+ &
+                               dmvpp1(rho11, rho12, phids, cs, dpvpl, satur, phi, pvp)
+    end if
 !
- 30 continue
+30  continue
 !
 ! - Get new enthalpy of liquid
 !

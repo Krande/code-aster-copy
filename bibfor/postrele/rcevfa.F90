@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcevfa(nommat, para, sm, cnoc, csno,&
-                  csne, cspo, cspe, kemixt, cspto,&
+subroutine rcevfa(nommat, para, sm, cnoc, csno, &
+                  csne, cspo, cspe, kemixt, cspto, &
                   cspte, cspmo, cspme, cfao, cfae)
     implicit none
 #include "asterf_types.h"
@@ -63,7 +63,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
         call jeveuo(cspte, 'L', jspte)
         call jeveuo(cspmo, 'L', jspmo)
         call jeveuo(cspme, 'L', jspme)
-    endif
+    end if
     call jelira(cnoc, 'LONMAX', nbinst)
     call jeveuo(cnoc, 'L', jnoc)
 !
@@ -81,13 +81,13 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 !         --------------------------------------------------------
     do i1 = 1, nbinst
 !
-        ind = ind + 1
+        ind = ind+1
         zr(jfao-1+5*(ind-1)+4) = 0.d0
         zr(jfae-1+5*(ind-1)+4) = 0.d0
 !
         do i2 = i1+1, nbinst
 !
-            ind = ind + 1
+            ind = ind+1
             sno = zr(jsno+ind-1)
             sne = zr(jsne+ind-1)
 !
@@ -98,9 +98,9 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                 spo = zr(jspo+ind-1)
                 spe = zr(jspe+ind-1)
 !
-                call prccm3(nommat, para, sm, sno, spo,&
+                call prccm3(nommat, para, sm, sno, spo, &
                             keo, salto, nadmo(1))
-                call prccm3(nommat, para, sm, sne, spe,&
+                call prccm3(nommat, para, sm, sne, spe, &
                             kee, salte, nadme(1))
 !
                 zr(jfao-1+5*(ind-1)+1) = keo
@@ -111,8 +111,8 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                 zr(jfae-1+5*(ind-1)+2) = salte
                 zr(jfae-1+5*(ind-1)+3) = nadme(1)
 !
-                zr(jfao-1+5*(ind-1)+4) = 1.d0 / nadmo(1)
-                zr(jfae-1+5*(ind-1)+4) = 1.d0 / nadme(1)
+                zr(jfao-1+5*(ind-1)+4) = 1.d0/nadmo(1)
+                zr(jfae-1+5*(ind-1)+4) = 1.d0/nadme(1)
             else
 !
 ! --- 2EME CAS : KE_MIXTE
@@ -123,61 +123,61 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                 spte = zr(jspte+ind-1)
 !
                 kth = 1.86d0*(1.d0-(1.d0/(1.66d0+sno/sm)))
-                ketheo = max(1.d0,kth)
-                saltho = 0.5d0 * para(3) * ketheo * spto
+                ketheo = max(1.d0, kth)
+                saltho = 0.5d0*para(3)*ketheo*spto
 !
                 kth = 1.86d0*(1.d0-(1.d0/(1.66d0+sne/sm)))
-                kethee = max(1.d0,kth)
-                salthe = 0.5d0 * para(3) * kethee * spte
+                kethee = max(1.d0, kth)
+                salthe = 0.5d0*para(3)*kethee*spte
 !
-                call prccm3(nommat, para, sm, sno, spmo,&
+                call prccm3(nommat, para, sm, sno, spmo, &
                             kemeco, saltmo, nbid)
-                call prccm3(nommat, para, sm, sne, spme,&
+                call prccm3(nommat, para, sm, sne, spme, &
                             kemece, saltme, nbid)
-                salto = saltmo + saltho
-                salte = saltme + salthe
+                salto = saltmo+saltho
+                salte = saltme+salthe
 !
 ! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM
 !
                 call limend(nommat, salto, 'WOHLER', k8b, endur)
                 if (endur) then
-                    nadmo(1)=r8maem()
+                    nadmo(1) = r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salto],&
+                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salto], &
                                 1, 'WOHLER  ', nadmo(1), icodre(1), 2)
                     if (nadmo(1) .lt. 0) then
-                        valr (1) = salto
-                        valr (2) = nadmo(1)
+                        valr(1) = salto
+                        valr(2) = nadmo(1)
                         call utmess('A', 'POSTRELE_61', nr=2, valr=valr)
-                    endif
-                endif
+                    end if
+                end if
 !
                 call limend(nommat, salte, 'WOHLER', k8b, endur)
                 if (endur) then
-                    nadme(1)=r8maem()
+                    nadme(1) = r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salte],&
+                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salte], &
                                 1, 'WOHLER  ', nadme(1), icodre(1), 2)
                     if (nadmo(1) .lt. 0) then
-                        valr (1) = salte
-                        valr (2) = nadme(1)
+                        valr(1) = salte
+                        valr(2) = nadme(1)
                         call utmess('A', 'POSTRELE_61', nr=2, valr=valr)
-                    endif
-                endif
+                    end if
+                end if
 !
                 zr(jfao-1+5*(ind-1)+1) = kemeco
                 zr(jfao-1+5*(ind-1)+5) = ketheo
                 zr(jfao-1+5*(ind-1)+2) = salto
                 zr(jfao-1+5*(ind-1)+3) = nadmo(1)
-                zr(jfao-1+5*(ind-1)+4) = 1.d0 / nadmo(1)
+                zr(jfao-1+5*(ind-1)+4) = 1.d0/nadmo(1)
 !
                 zr(jfae-1+5*(ind-1)+1) = kemece
                 zr(jfae-1+5*(ind-1)+5) = kethee
                 zr(jfae-1+5*(ind-1)+2) = salte
                 zr(jfae-1+5*(ind-1)+3) = nadme(1)
-                zr(jfae-1+5*(ind-1)+4) = 1.d0 / nadme(1)
+                zr(jfae-1+5*(ind-1)+4) = 1.d0/nadme(1)
 !
-            endif
+            end if
 !
         end do
 !

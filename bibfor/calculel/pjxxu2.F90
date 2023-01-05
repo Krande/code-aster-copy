@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
 !
     integer :: nno, nutm(10), nbtm, i, k, j
     integer :: ima, nbno, ino, nuno, kk
-    integer :: iad, ialin1,  ilcnx1
+    integer :: iad, ialin1, ilcnx1
     integer :: iexi
     integer, pointer :: connex(:) => null()
     integer, pointer :: lima_check(:) => null()
@@ -85,49 +85,49 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
     if (iexi .gt. 0) then
         call dismoi('NOM_MAILLA', moa, 'MODELE', repk=ma)
     else
-        ma=moa
-    endif
+        ma = moa
+    end if
 !
 !
 !
 !     1 : TYPE_MAILLES UTILES DE MOA :
 !     -------------------------------
     if (dim .eq. '0D') then
-        nbtm=1
-        notm(1)='POI1'
+        nbtm = 1
+        notm(1) = 'POI1'
 
     else if (dim .eq. '1D') then
-        nbtm=4
-        notm(1)='SEG2'
-        notm(2)='SEG3'
-        notm(3)='SEG4'
-        notm(4)='POI1'
+        nbtm = 4
+        notm(1) = 'SEG2'
+        notm(2) = 'SEG3'
+        notm(3) = 'SEG4'
+        notm(4) = 'POI1'
 
-    else if (dim.eq.'2D') then
-        nbtm=6
-        notm(1)='TRIA3'
-        notm(2)='TRIA6'
-        notm(3)='TRIA7'
-        notm(4)='QUAD4'
-        notm(5)='QUAD8'
-        notm(6)='QUAD9'
+    else if (dim .eq. '2D') then
+        nbtm = 6
+        notm(1) = 'TRIA3'
+        notm(2) = 'TRIA6'
+        notm(3) = 'TRIA7'
+        notm(4) = 'QUAD4'
+        notm(5) = 'QUAD8'
+        notm(6) = 'QUAD9'
 !
-    else if (dim.eq.'3D') then
-        nbtm=10
-        notm(1)='TETRA4'
-        notm(2)='TETRA10'
-        notm(3)='PENTA6'
-        notm(4)='PENTA15'
-        notm(5)='PENTA18'
-        notm(6)='HEXA8'
-        notm(7)='HEXA20'
-        notm(8)='HEXA27'
-        notm(9)='PYRAM5'
-        notm(10)='PYRAM13'
+    else if (dim .eq. '3D') then
+        nbtm = 10
+        notm(1) = 'TETRA4'
+        notm(2) = 'TETRA10'
+        notm(3) = 'PENTA6'
+        notm(4) = 'PENTA15'
+        notm(5) = 'PENTA18'
+        notm(6) = 'HEXA8'
+        notm(7) = 'HEXA20'
+        notm(8) = 'HEXA27'
+        notm(9) = 'PYRAM5'
+        notm(10) = 'PYRAM13'
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     do k = 1, nbtm
         call jenonu(jexnom('&CATA.TM.NOMTM', notm(k)), nutm(k))
@@ -138,14 +138,14 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
 !     2 : MAILLES UTILES DE MOA :
 !     ----------------------------
     AS_ALLOCATE(vi=lima_check, size=nbma)
-    lima_check(:)=0
+    lima_check(:) = 0
 
 !    les mailles ne doivent pas necessairement etre portées par un élément fini
 
     call jeveuo(ma//'.TYPMAIL', 'L', iad)
     do j = 1, nbtm
         do i = 1, nbma
-            if (zi(iad-1+lima(i)) .eq. nutm(j)) lima_check(i)= 1
+            if (zi(iad-1+lima(i)) .eq. nutm(j)) lima_check(i) = 1
         end do
     end do
 !
@@ -154,18 +154,18 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
 !     ---------------------------
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nno)
     AS_ALLOCATE(vi=linoma, size=nno)
-    linoma(:)=0
+    linoma(:) = 0
     call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     nbnoOut = 0
     do i = 1, nbma
         if (lima_check(i) .ne. 1) cycle
         ima = lima(i)
-        nbno=zi(ilcnx1+ima)-zi(ilcnx1-1+ima)
+        nbno = zi(ilcnx1+ima)-zi(ilcnx1-1+ima)
         do ino = 1, nbno
-            nuno=connex(1+zi(ilcnx1-1+ima)-2+ino)
-            if (linoma(nuno).eq.0) nbnoOut = nbnoOut + 1
-            linoma(nuno)=1
+            nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
+            if (linoma(nuno) .eq. 0) nbnoOut = nbnoOut+1
+            linoma(nuno) = 1
         end do
     end do
 
@@ -175,13 +175,13 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
     call wkvect(klino, 'V V I', nbnoOut, ialin1)
 
     kk = 0
-    do ino = 1,nno
-        if (linoma(ino).eq.1) then
-            zi(ialin1+kk)=ino
-            kk=kk+1
-        endif
-    enddo
-    ASSERT(nbnoOut.eq.kk)
+    do ino = 1, nno
+        if (linoma(ino) .eq. 1) then
+            zi(ialin1+kk) = ino
+            kk = kk+1
+        end if
+    end do
+    ASSERT(nbnoOut .eq. kk)
     AS_DEALLOCATE(vi=linoma)
 !
     call jedema()

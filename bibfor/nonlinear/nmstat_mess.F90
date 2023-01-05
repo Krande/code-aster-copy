@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmstat_mess(ds_measure, phasis)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/nmrvai.h"
 #include "asterfort/nmimpr_mess.h"
 !
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=1), intent(in) :: phasis
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=1), intent(in) :: phasis
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,34 +63,34 @@ character(len=1), intent(in) :: phasis
         l_acti = ds_measure%l_device_acti(i_device)
         if (l_acti) then
             if (phasis .eq. 'P') then
-                time_mesg   = device%time_indi_step
-                count_mesg  = device%count_indi_step
+                time_mesg = device%time_indi_step
+                count_mesg = device%count_indi_step
             elseif (phasis .eq. 'T') then
-                time_mesg   = device%time_indi_comp
-                count_mesg  = device%count_indi_comp
+                time_mesg = device%time_indi_comp
+                count_mesg = device%count_indi_comp
             else
                 ASSERT(.false.)
-            endif
-            l_time      = time_mesg .ne. 0
-            l_count     = count_mesg .ne. 0
+            end if
+            l_time = time_mesg .ne. 0
+            l_count = count_mesg .ne. 0
             device_type = device%type
             if (l_time) then
                 call nmtimr(ds_measure, device_type, phasis, time)
-            endif
+            end if
             if (l_count) then
-                call nmrvai(ds_measure, device_type, phasis, output_count = count)
-            endif
-            if (l_time.and.l_count) then
+                call nmrvai(ds_measure, device_type, phasis, output_count=count)
+            end if
+            if (l_time .and. l_count) then
                 ASSERT(time_mesg .eq. count_mesg)
-                call nmimpr_mess(time_mesg, vali_ = count, valr_ = time)
-            endif
-            if (l_time.and..not.l_count) then
-                call nmimpr_mess(time_mesg, valr_ = time)
-            endif
-            if (l_count.and..not.l_time) then
-                call nmimpr_mess(count_mesg, vali_ = count)
-            endif
-        endif
+                call nmimpr_mess(time_mesg, vali_=count, valr_=time)
+            end if
+            if (l_time .and. .not. l_count) then
+                call nmimpr_mess(time_mesg, valr_=time)
+            end if
+            if (l_count .and. .not. l_time) then
+                call nmimpr_mess(count_mesg, vali_=count)
+            end if
+        end if
     end do
 !
 end subroutine

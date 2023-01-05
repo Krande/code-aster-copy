@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine rrcInit(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -35,7 +35,7 @@ implicit none
 #include "asterfort/rsGetAllFieldType.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
+    type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,14 +63,14 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM16_2')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    resultRom    = cmdPara%resultRom
-    resultDom    = cmdPara%resultDom
-    modelRom     = cmdPara%modelRom
-    mesh         = cmdPara%mesh
+    resultRom = cmdPara%resultRom
+    resultDom = cmdPara%resultDom
+    modelRom = cmdPara%modelRom
+    mesh = cmdPara%mesh
     nbFieldBuild = cmdPara%nbFieldBuild
 !
 ! - Get reduced coordinates
@@ -83,36 +83,36 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 !
 ! - Get list of type of fields in a results datastructure (at least for ONE storing index)
 !
-    call rsGetAllFieldType(cmdPara%resultRom%resultName,&
+    call rsGetAllFieldType(cmdPara%resultRom%resultName, &
                            nbFieldResult, resultField, resultFieldNume)
 !
 ! - Prepare vector of list of nodes for selection
 !
-    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi = nbNodeMesh)
-    AS_ALLOCATE(vi = listNode, size = nbNodeMesh)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbNodeMesh)
+    AS_ALLOCATE(vi=listNode, size=nbNodeMesh)
 !
 ! - Initializations of build fields
 !
     if (niv .ge. 2) then
-        call utmess('I', 'ROM16_4', si = nbFieldBuild)
-    endif
+        call utmess('I', 'ROM16_4', si=nbFieldBuild)
+    end if
     do iFieldBuild = 1, nbFieldBuild
-        call romFieldBuildInit(mesh         , nbNodeMesh , listNode       ,&
-                               nbFieldResult, resultField, resultFieldNume,&
-                               resultRom    , modelRom   , cmdPara%tablReduCoor   ,&
+        call romFieldBuildInit(mesh, nbNodeMesh, listNode, &
+                               nbFieldResult, resultField, resultFieldNume, &
+                               resultRom, modelRom, cmdPara%tablReduCoor, &
                                cmdPara%fieldBuild(iFieldBuild))
     end do
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi = listNode)
-    AS_DEALLOCATE(vk16 = resultField)
-    AS_DEALLOCATE(vi = resultFieldNume)
+    AS_DEALLOCATE(vi=listNode)
+    AS_DEALLOCATE(vk16=resultField)
+    AS_DEALLOCATE(vi=resultFieldNume)
 !
 ! - Print parameters (debug)
 !
     if (niv .ge. 2) then
         call rrcInfo(cmdPara)
-    endif
+    end if
 !
 end subroutine

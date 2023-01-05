@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,11 +78,11 @@ subroutine te0151(option, nomte)
     real(kind=8) :: epsthe
     integer :: kpg, spt, nklv
 ! --------------------------------------------------------------------------------------------------
-    parameter    (nbres = 3 )
+    parameter(nbres=3)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
-    data nomres / 'E' , 'NU' , 'RHO' /
+    data nomres/'E', 'NU', 'RHO'/
 ! --------------------------------------------------------------------------------------------------
 !
     call jevech('PMATERC', 'L', lmater)
@@ -92,62 +92,62 @@ subroutine te0151(option, nomte)
     npg = 3
     istruc = 1
     nno = 2
-    if (nomte.eq.'MECA_POU_D_EM') npg = 2
+    if (nomte .eq. 'MECA_POU_D_EM') npg = 2
 !
     call moytem(fami, npg, 1, '+', valpar, iret)
     call verifm(fami, npg, 1, '+', zi(lmater), epsthe, iret)
     nbpar = 1
     nompar = 'TEMP'
-    famil='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    famil = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(famil, kpg, spt, poum, zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb(famil, kpg, spt, poum, zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar], &
                 2, nomres, valres, codres, 1)
-    call rcvalb(famil, kpg, spt, poum, zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb(famil, kpg, spt, poum, zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar], &
                 1, nomres(3), valres(3), codres(3), 1)
 !
     e = valres(1)
     xnu = valres(2)
     rho = valres(3)
-    g = e / ( 2.0d0 * ( 1.0d0 + xnu ) )
+    g = e/(2.0d0*(1.0d0+xnu))
 !
 !   recuperation des caracteristiques generales des sections
     call jevech('PCAORIE', 'L', lorien)
     call matrot(zr(lorien), pgl)
-    xl =  lonele()
+    xl = lonele()
     call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar)
     itype = nint(tvar)
 !
     nc = 6
-    if ( nomte(1:13) .eq. 'MECA_POU_D_TG') nc = 7
+    if (nomte(1:13) .eq. 'MECA_POU_D_TG') nc = 7
 !
     nklv = 2*nc*(2*nc+1)/2
     if (option .ne. 'ECIN_ELEM') then
         call jevech('PDEPLAR', 'L', jdepl)
         do i = 1, 2*nc
             ug(i) = zr(jdepl+i-1)
-        enddo
+        end do
     else
-        stopz='ONO'
+        stopz = 'ONO'
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvite)
 !       iret ne peut valoir que 0 (tout est ok) ou 2 (champ non fourni)
         if (iret .eq. 0) then
             do i = 1, 2*nc
                 ug(i) = zr(jvite+i-1)
-            enddo
+            end do
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepl)
             if (iret .eq. 0) then
                 do i = 1, 2*nc
                     ug(i) = zr(jdepl+i-1)
-                enddo
+                end do
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !   matrice de rotation PGL. vecteur deplacement ou vitesse local  ul = pgl * ug
     call utpvgl(nno, nc, pgl, ug, ul)
@@ -157,11 +157,11 @@ subroutine te0151(option, nomte)
     if (option .eq. 'EPOT_ELEM') then
         call jevech('PENERDR', 'E', jende)
 !       calcul de la matrice de rigidite locale
-        if ((nomte.eq.'MECA_POU_D_EM') .or. ( nomte.eq.'MECA_POU_D_TGM')) then
+        if ((nomte .eq. 'MECA_POU_D_EM') .or. (nomte .eq. 'MECA_POU_D_TGM')) then
             call pmfrig(nomte, zi(lmater), klv)
         else
             call porigi(nomte, e, xnu, xl, klv)
-        endif
+        end if
 !       matrice rigidite ligne > matrice rigidite carre
         call vecma(klv, nklv, klc, 2*nc)
 !        energie de deformation
@@ -169,8 +169,8 @@ subroutine te0151(option, nomte)
         call ptenpo(nc*2, ul, klc, zr(jende), itype, idis)
         if (epsthe .ne. 0.0d0) then
             call ptenth(ul, xl, epsthe, 2*nc, klc, enerth)
-            zr(jende) = zr(jende) - enerth
-        endif
+            zr(jende) = zr(jende)-enerth
+        end if
 !
     else if (option .eq. 'ECIN_ELEM') then
 !       energie cinetique
@@ -187,13 +187,13 @@ subroutine te0151(option, nomte)
 !           energie cinetique
             idis = 1
             call ptenci(12, ul, klc, zr(jfreq), zr(jende), itype, kanl, idis)
-        else if (codres(3).ne.0) then
+        else if (codres(3) .ne. 0) then
             call utmess('F', 'ELEMENTS3_31')
-        endif
+        end if
 !
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine caimpe(phenom, load, mesh, valeType, nbOcc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 !
-character(len=16), intent(in) :: phenom
-character(len=8), intent(in) :: load, mesh
-character(len=4), intent(in) :: valeType
-integer, intent(in) :: nbOcc
+    character(len=16), intent(in) :: phenom
+    character(len=8), intent(in) :: load, mesh
+    character(len=4), intent(in) :: valeType
+    integer, intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,8 +72,8 @@ integer, intent(in) :: nbOcc
     call jemarq()
 
 ! - Creation and initialization to zero of <CARTE>
-    call char_crea_cart(phenom, keywFact, load , mesh, valeType,&
-                        nbMap , map     , nbCmp)
+    call char_crea_cart(phenom, keywFact, load, mesh, valeType, &
+                        nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', jvValv)
 
@@ -84,24 +84,24 @@ integer, intent(in) :: nbOcc
 
 ! ----- Get parameter
         if (valeType .eq. 'REEL') then
-            call getvr8(keywFact, 'IMPE', iocc=iocc, scal = impeReal, nbret=nbRet)
+            call getvr8(keywFact, 'IMPE', iocc=iocc, scal=impeReal, nbret=nbRet)
             zr(jvValv-1+1) = impeReal
         elseif (valeType .eq. 'COMP') then
-            call getvc8(keywFact, 'IMPE', iocc=iocc, scal = impeCplx, nbret=nbRet)
+            call getvc8(keywFact, 'IMPE', iocc=iocc, scal=impeCplx, nbret=nbRet)
             zc(jvValv-1+1) = impeCplx
         elseif (valeType .eq. 'FONC') then
-            call getvid(keywFact, 'IMPE', iocc=iocc, scal = impeFunc, nbret=nbRet)
+            call getvid(keywFact, 'IMPE', iocc=iocc, scal=impeFunc, nbret=nbRet)
             zk8(jvValv-1+1) = impeFunc
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
 ! ----- Set parameter in field
         if (nbCell .ne. 0) then
             call jeveuo(listCell, 'L', jvCell)
             call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell, limanu=zi(jvCell))
             call jedetr(listCell)
-        endif
+        end if
 
     end do
 !

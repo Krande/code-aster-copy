@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zmvpy(uplo, n, alpha, a, lda,&
+subroutine zmvpy(uplo, n, alpha, a, lda, &
                  x, incx, beta, y, incy)
     implicit none
 #include "asterfort/vecinc.h"
@@ -46,57 +46,57 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
     complex(kind=8) :: temp
     real(kind=8) :: dble
 !
-    if (n .eq. 0 .or. (alpha.eq.(0.0d0,0.0d0).and.beta.eq.(1.0d0,0.0d0))) goto 999
+    if (n .eq. 0 .or. (alpha .eq. (0.0d0, 0.0d0) .and. beta .eq. (1.0d0, 0.0d0))) goto 999
 !
     ix = 1
     iy = 1
-    if (incx .lt. 0) ix = (-n+1)*incx + 1
-    if (incy .lt. 0) iy = (-n+1)*incy + 1
+    if (incx .lt. 0) ix = (-n+1)*incx+1
+    if (incy .lt. 0) iy = (-n+1)*incy+1
 !
-    if (beta .eq. (1.0d0,0.0d0)) then
+    if (beta .eq. (1.0d0, 0.0d0)) then
     else if (incy .eq. 0) then
-        if (beta .eq. (0.0d0,0.0d0)) then
-            y(1) = (0.0d0,0.0d0)
+        if (beta .eq. (0.0d0, 0.0d0)) then
+            y(1) = (0.0d0, 0.0d0)
         else
             y(1) = beta**n*y(1)
-        endif
-    else if (beta .eq. (0.0d0,0.0d0)) then
+        end if
+    else if (beta .eq. (0.0d0, 0.0d0)) then
         call vecinc(n, (0.0d0, 0.0d0), y, inc=abs(incy))
     else
         call zmult(n, beta, y, abs(incy))
-    endif
+    end if
 !
-    if (alpha .eq. (0.0d0,0.0d0)) goto 999
+    if (alpha .eq. (0.0d0, 0.0d0)) goto 999
 !
     if (uplo(1:1) .eq. 'U' .or. uplo(1:1) .eq. 'u') then
         do j = 1, n
             temp = alpha*x(ix)
-            ky = iy + (j-2)*min(incy,0)
-            call zaxpy(j-1, temp, a(1, j), 1, y(ky),&
+            ky = iy+(j-2)*min(incy, 0)
+            call zaxpy(j-1, temp, a(1, j), 1, y(ky), &
                        incy)
-            ky = iy + (j-1)*incy
-            y(ky) = y(ky) + temp*dble(a(j,j))
-            do i = j + 1, n
-                ky = ky + incy
-                y(ky) = y(ky) + temp*dconjg(a(j,i))
+            ky = iy+(j-1)*incy
+            y(ky) = y(ky)+temp*dble(a(j, j))
+            do i = j+1, n
+                ky = ky+incy
+                y(ky) = y(ky)+temp*dconjg(a(j, i))
             end do
-            ix = ix + incx
+            ix = ix+incx
         end do
     else
         do j = 1, n
             temp = alpha*x(ix)
             ky = iy
-            do i = 1, j - 1
-                y(ky) = y(ky) + temp*dconjg(a(j,i))
-                ky = ky + incy
+            do i = 1, j-1
+                y(ky) = y(ky)+temp*dconjg(a(j, i))
+                ky = ky+incy
             end do
-            y(ky) = y(ky) + temp*dble(a(j,j))
-            ky = ky + incy + (n-j-1)*min(incy,0)
-            call zaxpy(n-j, temp, a(j+1, j), 1, y(ky),&
+            y(ky) = y(ky)+temp*dble(a(j, j))
+            ky = ky+incy+(n-j-1)*min(incy, 0)
+            call zaxpy(n-j, temp, a(j+1, j), 1, y(ky), &
                        incy)
-            ix = ix + incx
+            ix = ix+incx
         end do
-    endif
+    end if
 !
 999 continue
 end subroutine

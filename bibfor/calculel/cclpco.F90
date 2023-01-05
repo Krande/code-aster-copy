@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cclpco(option, resuou, numord, nbpaou, lipaou,&
+subroutine cclpco(option, resuou, numord, nbpaou, lipaou, &
                   lichou)
     implicit none
 !     --- ARGUMENTS ---
@@ -68,22 +68,22 @@ subroutine cclpco(option, resuou, numord, nbpaou, lipaou,&
     nparin = zi(iaopds-1+2)
     nparou = zi(iaopds-1+3)
 !
-    if (nparou.eq.1) then
-        ipara=1
+    if (nparou .eq. 1) then
+        ipara = 1
 
-    elseif (nparou.eq.2) then
+    elseif (nparou .eq. 2) then
 !       -- on cherche le parametre de type reel :
-        ipara=0
-        do kpara=1,2
-            nugd=zi(iaopds-1+4+nparin+kpara)
+        ipara = 0
+        do kpara = 1, 2
+            nugd = zi(iaopds-1+4+nparin+kpara)
             call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
             call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-            if (tsca.eq.'R') ipara=kpara
-        enddo
-        ASSERT(ipara.gt.0)
+            if (tsca .eq. 'R') ipara = kpara
+        end do
+        ASSERT(ipara .gt. 0)
     else
         ASSERT(.false.)
-    endif
+    end if
 
     nbpaou = 1
     lipaou(1) = zk8(iapara+nparin+ipara-1)

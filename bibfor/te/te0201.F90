@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0201(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,7 +32,7 @@ implicit none
 #include "blas/dcopy.h"
 
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,20 +62,20 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    npg=2
-    ivarip=1
-    icoret=1
-    icontp=1
-    ivect=1
-    icoret=1
+    npg = 2
+    ivarip = 1
+    icoret = 1
+    icontp = 1
+    ivect = 1
+    icoret = 1
 !
 ! - Type of finite element
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'
-    endif
+    end if
     typmod(2) = 'ELEMJOIN'
 !
 ! - Get input fields
@@ -91,13 +91,13 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icomp),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icomp), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -110,29 +110,29 @@ character(len=16), intent(in) :: option, nomte
         matsym = .true.
         if (rela_comp .eq. 'JOINT_MECA_RUPT') matsym = .false.
         if (rela_comp .eq. 'JOINT_MECA_FROT') matsym = .false.
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivect)
-    endif
+    end if
 
 !     CONTRAINTE -, RANGEE DANS UN TABLEAU (6,NPG)
     sigmo = 0.d0
-    sigmo(1,1) = zr(icontm)
-    sigmo(2,1) = zr(icontm+1)
-    sigmo(1,2) = zr(icontm+2)
-    sigmo(2,2) = zr(icontm+3)
+    sigmo(1, 1) = zr(icontm)
+    sigmo(2, 1) = zr(icontm+1)
+    sigmo(1, 2) = zr(icontm+2)
+    sigmo(2, 2) = zr(icontm+3)
 !
 ! CALCUL DES CONTRAINTES, VIP, FORCES INTERNES ET MATR TANG ELEMENTAIRES
-    call nmfi2d(npg, lgpg, zi(imater), option, zr(igeom),&
-                zr(idepm), zr(iddep), sigmo, sigma, fint,&
-                mat, zr(ivarim), zr(ivarip), zr(iinstm), zr(iinstp),&
-                zr(icarcr), zk16(icomp), typmod, lMatr, lVect, lSigm,&
+    call nmfi2d(npg, lgpg, zi(imater), option, zr(igeom), &
+                zr(idepm), zr(iddep), sigmo, sigma, fint, &
+                mat, zr(ivarim), zr(ivarip), zr(iinstm), zr(iinstp), &
+                zr(icarcr), zk16(icomp), typmod, lMatr, lVect, lSigm, &
                 codret)
 !
 ! - Save matrix
@@ -143,7 +143,7 @@ character(len=16), intent(in) :: option, nomte
             kk = 0
             do i = 1, 8
                 do j = 1, i
-                    zr(imatr+kk) = mat(i,j)
+                    zr(imatr+kk) = mat(i, j)
                     kk = kk+1
                 end do
             end do
@@ -152,33 +152,33 @@ character(len=16), intent(in) :: option, nomte
             kk = 0
             do i = 1, 8
                 do j = 1, 8
-                    zr(imatr+kk) = mat(i,j)
+                    zr(imatr+kk) = mat(i, j)
                     kk = kk+1
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Save stresses
 !
     if (lSigm) then
-        zr(icontp) = sigma(1,1)
-        zr(icontp+1) = sigma(2,1)
-        zr(icontp+2) = sigma(1,2)
-        zr(icontp+3) = sigma(2,2)
-    endif
+        zr(icontp) = sigma(1, 1)
+        zr(icontp+1) = sigma(2, 1)
+        zr(icontp+2) = sigma(1, 2)
+        zr(icontp+3) = sigma(2, 2)
+    end if
 !
 ! - Save internal forces
 !
     if (lVect) then
         call dcopy(8, fint, 1, zr(ivect), 1)
-    endif
+    end if
 !
 ! - Save return code
 !
     if (lSigm) then
         call jevech('PCODRET', 'E', icoret)
         zi(icoret) = codret
-    endif
+    end if
 !
 end subroutine

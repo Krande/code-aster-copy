@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dngets(ishift, which, kev, np, ritzr,&
+subroutine dngets(ishift, which, kev, np, ritzr, &
                   ritzi, bounds, shiftr, shifti)
 !
 !     SUBROUTINE ARPACK CALCULANT NP SHIFTS DU RESTART DE IRAM.
@@ -120,7 +120,7 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 #include "asterfort/ivout.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !
@@ -143,7 +143,7 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 !     %------------%
 !
     real(kind=8) :: zero
-    parameter (zero = 0.0d+0)
+    parameter(zero=0.0d+0)
 !
 !     %---------------%
 !     | LOCAL SCALARS |
@@ -173,26 +173,26 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 !     %----------------------------------------------------%
 !
     if (which .eq. 'LM') then
-        call dsortc('LR', .true._1, kev+np, ritzr, ritzi,&
+        call dsortc('LR', .true._1, kev+np, ritzr, ritzi, &
                     bounds)
     else if (which .eq. 'SM') then
-        call dsortc('SR', .true._1, kev+np, ritzr, ritzi,&
+        call dsortc('SR', .true._1, kev+np, ritzr, ritzi, &
                     bounds)
     else if (which .eq. 'LR') then
-        call dsortc('LM', .true._1, kev+np, ritzr, ritzi,&
+        call dsortc('LM', .true._1, kev+np, ritzr, ritzi, &
                     bounds)
     else if (which .eq. 'SR') then
-        call dsortc('SM', .true._1, kev+np, ritzr, ritzi,&
+        call dsortc('SM', .true._1, kev+np, ritzr, ritzi, &
                     bounds)
     else if (which .eq. 'LI') then
-        call dsortc('LM', .true._1, kev+np, ritzr, ritzi,&
+        call dsortc('LM', .true._1, kev+np, ritzr, ritzi, &
                     bounds)
     else if (which .eq. 'SI') then
-        call dsortc('SM', .true._1, kev+np, ritzr, ritzi,&
+        call dsortc('SM', .true._1, kev+np, ritzr, ritzi, &
                     bounds)
-    endif
+    end if
 !
-    call dsortc(which, .true._1, kev+np, ritzr, ritzi,&
+    call dsortc(which, .true._1, kev+np, ritzr, ritzi, &
                 bounds)
 !
 !     %-------------------------------------------------------%
@@ -202,10 +202,10 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 !     | COMPLEX CONJUGATE PAIRS TOGETHER.                     |
 !     %-------------------------------------------------------%
 !
-    if (( ritzr(np+1) - ritzr(np) ) .eq. zero .and. ( ritzi(np+1) + ritzi(np) ) .eq. zero) then
-        np = np - 1
-        kev = kev + 1
-    endif
+    if ((ritzr(np+1)-ritzr(np)) .eq. zero .and. (ritzi(np+1)+ritzi(np)) .eq. zero) then
+        np = np-1
+        kev = kev+1
+    end if
 !
     if (ishift .eq. 1) then
 !
@@ -218,20 +218,20 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 !        | BE CAREFUL AND USE 'SR' SINCE WE WANT TO SORT BOUNDS! |
 !        %-------------------------------------------------------%
 !
-        call dsortc('SR', .true._1, np, bounds, ritzr,&
+        call dsortc('SR', .true._1, np, bounds, ritzr, &
                     ritzi)
-    endif
+    end if
 !
     if (msglvl .gt. 0) then
         call ivout(logfil, 1, [kev], ndigit, '_NGETS: KEV IS')
         call ivout(logfil, 1, [np], ndigit, '_NGETS: NP IS')
-        call dvout(logfil, kev+np, ritzr, ndigit,&
+        call dvout(logfil, kev+np, ritzr, ndigit, &
                    '_NGETS: EIGENVALUES OF CURRENT H MATRIX -- REAL PART')
-        call dvout(logfil, kev+np, ritzi, ndigit,&
+        call dvout(logfil, kev+np, ritzi, ndigit, &
                    '_NGETS: EIGENVALUES OF CURRENT H MATRIX -- IMAG PART')
-        call dvout(logfil, kev+np, bounds, ndigit,&
+        call dvout(logfil, kev+np, bounds, ndigit, &
                    '_NGETS: RITZ ESTIMATES OF THE CURRENT KEV+NP RITZ VALUES')
-    endif
+    end if
 !
 !     %---------------%
 !     | END OF DNGETS |

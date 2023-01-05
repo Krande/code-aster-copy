@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
+subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
                   chresu)
     implicit none
 #include "jeveux.h"
@@ -40,7 +40,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
 !
     integer :: ibid, im, ima, decal, nbcmp, nbpt, ipt, ino, jconx1
     integer :: jconx2, npara, nbcin, decin, icmp, iad
-    parameter   ( npara = 8 )
+    parameter(npara=8)
     real(kind=8) :: valer(5), type
     complex(kind=8) :: c16b
     character(len=8) :: valek(3), typara(npara)
@@ -51,14 +51,14 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: cinv(:) => null()
 !     ------------------------------------------------------------------
-    data nopara / 'MAILLE', 'TYPE_MAILLE', 'NOEUD' ,  'SM',&
-     &              'SN_MAX', 'SN/3SM', 'SALT_MAX' , 'FACT_USAGE_CUMU' /
-    data typara / 'K8'    , 'K8'    , 'K8'       , 'R' ,&
-     &              'R'     , 'R'     , 'R'        , 'R' /
+    data nopara/'MAILLE', 'TYPE_MAILLE', 'NOEUD', 'SM',&
+     &              'SN_MAX', 'SN/3SM', 'SALT_MAX', 'FACT_USAGE_CUMU'/
+    data typara/'K8', 'K8', 'K8', 'R',&
+     &              'R', 'R', 'R', 'R'/
 ! DEB ------------------------------------------------------------------
 !
-    ibid=0
-    c16b=(0.d0,0.d0)
+    ibid = 0
+    c16b = (0.d0, 0.d0)
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, npara, nopara, typara)
 !
@@ -92,7 +92,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
         do ipt = 1, nbpt
 !
             icmp = 7
-            iad = decin + (ipt-1)*nbcin + icmp
+            iad = decin+(ipt-1)*nbcin+icmp
             type = cinv(iad)
             if (type .eq. 0.d0) then
                 valek(2) = '???'
@@ -104,19 +104,19 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
                 valek(2) = 'TRN'
             else if (type .eq. 40.d0) then
                 valek(2) = 'TEE'
-            endif
+            end if
 !
             ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
             call jenuno(jexnum(nomnoe, ino), valek(3))
 !
             do icmp = 1, nbcmp
 !
-                iad = decal + (ipt-1)*nbcmp + icmp
+                iad = decal+(ipt-1)*nbcmp+icmp
                 valer(icmp) = cesv(iad)
 !
             end do
 !
-            call tbajli(nomres, npara, nopara, [ibid], valer,&
+            call tbajli(nomres, npara, nopara, [ibid], valer, &
                         [c16b], valek, 0)
 !
         end do

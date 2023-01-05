@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine pjnout(modele)
 !     ------------------------------------------------------------------
 !
     character(len=8) :: noma
-    integer :: nbnoeu, jnout, ima, nbno, j,  nbmail
+    integer :: nbnoeu, jnout, ima, nbno, j, nbmail
 !     ------------------------------------------------------------------
 !
 !     FONCTIONS "FORMULES" POUR ACCEDER RAPIDEMENT A LA CONNECTIVITE :
@@ -68,7 +68,7 @@ subroutine pjnout(modele)
         if (maille(ima) .eq. 0) goto 280
         nbno = zznbne(ima)
         do j = 1, nbno
-            zi(jnout-1+zzconx(ima,j)) = 1
+            zi(jnout-1+zzconx(ima, j)) = 1
         end do
 280     continue
     end do

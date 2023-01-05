@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine ss2mme(modelz, vesstrz, base)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -39,8 +39,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=*), intent(in) :: modelz, vesstrz
-character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: modelz, vesstrz
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ character(len=1), intent(in) :: base
 
 ! - Initializations
     vesstr = vesstrz
-    model  = modelz
+    model = modelz
     call getfac(keywfact, nboc)
     if (nboc .eq. 0) goto 999
 
@@ -85,13 +85,13 @@ character(len=1), intent(in) :: base
 !
     if (nbssa .eq. 0) then
         call utmess('F', 'SOUSTRUC_24')
-    endif
+    end if
 !
     call jeveuo(model//'.MODELE    .SSSA', 'L', vi=sssa)
     call jeveuo(mesh//'.NOMACR', 'L', vk8=vnomacr)
 !
     call jeveuo(vesstr(1:19)//'.RERR', 'E', vk24=rerr)
-    rerr(3)='OUI_SOUS_STRUC'
+    rerr(3) = 'OUI_SOUS_STRUC'
 !
     call jecrec(vesstr(1:19)//'.RELC', base//' V I', 'NO', 'CONTIG', 'CONSTANT', nboc)
     call jeecra(vesstr(1:19)//'.RELC', 'LONMAX', nbsma)
@@ -112,10 +112,10 @@ character(len=1), intent(in) :: base
         call getvtx(keywfact, 'TOUT', iocc=ioc, scal=k8bid, nbret=n1)
         if (n1 .eq. 1) then
             do i = 1, nbsma
-                if (sssa(i) .eq. 1) zi(ialsch-1+i)=1
+                if (sssa(i) .eq. 1) zi(ialsch-1+i) = 1
             end do
             goto 5
-        endif
+        end if
 !
 !       -- CAS : MAILLE: L_MAIL
 !
@@ -123,9 +123,9 @@ character(len=1), intent(in) :: base
         if (-n2 .gt. nbsma) then
             call utmess('F', 'SOUSTRUC_25')
         else
-            call getvtx(keywfact, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=lmai,&
+            call getvtx(keywfact, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=lmai, &
                         nbret=n2)
-        endif
+        end if
         do i = 1, n2
             nosma = lmai(i)
             call jenonu(jexnom(mesh//'.SUPMAIL', nosma), imas)
@@ -134,19 +134,19 @@ character(len=1), intent(in) :: base
                 valk(2) = mesh
                 call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
             else
-                zi(ialsch-1+imas)=1
-            endif
+                zi(ialsch-1+imas) = 1
+            end if
         end do
 !
 !       -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES
 !
-  5     continue
+5       continue
         do i = 1, nbsma
             if (zi(ialsch-1+i) .ne. 0) then
                 call jenuno(jexnum(mesh//'.SUPMAIL', i), nosma)
                 if (sssa(i) .ne. 1) then
                     call utmess('F', 'SOUSTRUC_27', sk=nosma)
-                endif
+                end if
 !
                 nomacr = vnomacr(i)
                 call jeexin(jexnom(nomacr//'.LICA', nomcas), iret)
@@ -155,14 +155,14 @@ character(len=1), intent(in) :: base
                     valk(1) = nosma
                     valk(2) = nomcas
                     call utmess('E', 'SOUSTRUC_28', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
     if (ier0 .eq. 1) then
         call utmess('F', 'SOUSTRUC_29')
-    endif
+    end if
 !
     AS_DEALLOCATE(vk8=lmai)
 !

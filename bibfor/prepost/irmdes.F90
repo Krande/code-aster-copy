@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,36 +94,36 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 ! 3.1. ==> CREATION
 !
     descri = ' '
-    descri (1:13) = 'CODE_ASTER - '
+    descri(1:13) = 'CODE_ASTER - '
 !                      1234567890123
-    descri (14:21) = cvers
-    descri (22:24) = ' - '
+    descri(14:21) = cvers
+    descri(22:24) = ' - '
 !                       234
     call gtoptk('versLabel', descri(25:60), iret)
-    descri (61:79) = mach//' - '
-    descri (80:98) = os//' - '
+    descri(61:79) = mach//' - '
+    descri(80:98) = os//' - '
 !
-    descri (99:116) = ladate(1:15)//' - '
+    descri(99:116) = ladate(1:15)//' - '
 !
     ltit = 0
     ideb = 117
     do it = 1, nbtitr
         iaux = lxlgut(titre(it))
-        ltit = ltit + iaux + 1
+        ltit = ltit+iaux+1
         if (ltit .gt. 84) goto 32
-        descri(ideb:ideb+iaux) = titre(it)(1:iaux)//'-'
-        ideb = ideb + iaux + 1
+        descri(ideb:ideb+iaux) = titre(it) (1:iaux)//'-'
+        ideb = ideb+iaux+1
         if (ideb .gt. 200) goto 32
     end do
- 32 continue
+32  continue
 !
 ! 3.2. ==> ECRITURE
 !
     call as_mficow(idfimd, descri, codret)
     if (codret .ne. 0) then
-        saux08='mficow'
+        saux08 = 'mficow'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 !====
 ! 4. LA FIN

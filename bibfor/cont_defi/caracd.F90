@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine caracd(sdcont, nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/cfmmvd.h"
 #include "asterfort/wkvect.h"
@@ -49,7 +49,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    jv_base     = 'G'
+    jv_base = 'G'
     sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Sizes

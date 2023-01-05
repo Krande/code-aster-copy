@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
-                  rigi, mass, amor, jordr, jdisc,&
-                  nbsym, nomsym, jdepl, jvite, jacce,&
-                  method, dt, jptem, nbnli, sd_nl_,&
+subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
+                  rigi, mass, amor, jordr, jdisc, &
+                  nbsym, nomsym, jdepl, jvite, jacce, &
+                  method, dt, jptem, nbnli, sd_nl_, &
                   jvint, sauve, checkarg)
 ! aslint: disable=W1504
     implicit none
@@ -54,7 +54,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     character(len=*), optional, intent(in) :: sd_nl_
     integer, optional, intent(out) :: jvint
     character(len=4), optional, intent(in) :: sauve
-    aster_logical , optional, intent(in) :: checkarg
+    aster_logical, optional, intent(in) :: checkarg
 !
 !     ALLOCATION DES VECTEURS DE SORTIE POUR UN CALCUL TRANSITOIRE
 !     SUR BASE GENERALISEE (SD_DYNA_GENE)
@@ -90,8 +90,8 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     integer, pointer :: vindx(:) => null()
 !-----------------------------------------------------------------------
 !   --- 0 - Obligatory arguments, validation of the input values
-    ASSERT((typcal.eq.'TRAN').or.(typcal.eq.'HARM'))
-    ASSERT(nbsauv.ge.0)
+    ASSERT((typcal .eq. 'TRAN') .or. (typcal .eq. 'HARM'))
+    ASSERT(nbsauv .ge. 0)
 
 !
 !   --- Default values of input arguments
@@ -101,7 +101,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     masgen = ' '
     amogen = ' '
     nbsym2 = 3
-    nomsym2 = ['DEPL','VITE','ACCE']
+    nomsym2 = ['DEPL', 'VITE', 'ACCE']
     method2 = ' '
     dt2 = 0.0d0
     nbnoli = 0
@@ -115,7 +115,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (present(amor)) amogen = amor
     if (present(method)) method2 = method
     if (present(dt)) dt2 = dt
-    if (present(nbnli )) nbnoli = nbnli
+    if (present(nbnli)) nbnoli = nbnli
     if (present(sauve)) sauve2 = sauve
     if (present(checkarg)) checkargs = checkarg
     if (present(nbsym) .and. present(nomsym)) then
@@ -123,7 +123,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         do inom = 1, nbsym2
             nomsym2(inom) = nomsym(inom)
         end do
-    endif
+    end if
 !
 !   --- Initialize all output jeveux pointers to 1
     if (present(jdepl)) jdepl = 1
@@ -137,69 +137,69 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !   --- If checkarg is .true. then verify the coherence of all optional arguments,
     if (checkargs) then
 !       --- 1 - Coherence between the modal basis and the number of modes
-        ASSERT(AU_MOINS_UN2(base,nbmodes))
+        ASSERT(AU_MOINS_UN2(base, nbmodes))
         if (present(base)) then
             if (base .ne. ' ') call dismoi('NB_MODES_TOT', base, 'RESULTAT', repi=nbmode)
-        endif
+        end if
         if (present(nbmodes)) then
-            ASSERT((nbmode.eq.0).or.(nbmode.eq.nbmodes))
+            ASSERT((nbmode .eq. 0) .or. (nbmode .eq. nbmodes))
             nbmode = nbmodes
-        endif
+        end if
 !       --- 2 - If nbsauv = 0, then only initialize some objects => no vector retrieval
         if (nbsauv .eq. 0) then
-            ASSERT((absent(jordr)).and.(absent(jdisc)))
-            ASSERT((absent(jdepl)).and.(absent(jvite)).and.(absent(jacce)))
+            ASSERT((absent(jordr)) .and. (absent(jdisc)))
+            ASSERT((absent(jdepl)) .and. (absent(jvite)) .and. (absent(jacce)))
             ASSERT(absent(jptem))
 !       --- 3 - If nbsauv != 0
         else
 !           --- 3.1 - Get the symbolic names of the saved fields or use def vals
-            ASSERT(ENSEMBLE2(nbsym,nomsym))
+            ASSERT(ENSEMBLE2(nbsym, nomsym))
             if (typcal .eq. 'TRAN') then
                 ASSERT(absent(nbsym))
-            endif
+            end if
 !           --- 3.2 - Verify according to nomsym if it possible to retrieve the
 !                     displacement, velocity, and acceleration vectors.
             saved = .false.
             do inom = 1, nbsym2
                 if (nomsym2(inom) .eq. 'DEPL') saved = .true.
             end do
-            if (.not.(saved)) then
+            if (.not. (saved)) then
                 ASSERT(absent(jdepl))
-            endif
+            end if
             saved = .false.
             do inom = 1, nbsym2
                 if (nomsym2(inom) .eq. 'VITE') saved = .true.
             end do
-            if (.not.(saved)) then
+            if (.not. (saved)) then
                 ASSERT(absent(jvite))
-            endif
+            end if
             saved = .false.
             do inom = 1, nbsym2
                 if (nomsym2(inom) .eq. 'ACCE') saved = .true.
             end do
-            if (.not.(saved)) then
+            if (.not. (saved)) then
                 ASSERT(absent(jacce))
-            endif
+            end if
 !           --- 3.3 - No time step or integration method are allowed in harmonic case
             if (typcal .eq. 'HARM') then
                 ASSERT(absent(dt))
                 ASSERT(absent(method))
                 ASSERT(absent(jptem))
-            endif
-        endif
+            end if
+        end if
 !       --- 4 - Treatment of choc parameters/arguments
         if (nbnoli .ne. 0) then
             ASSERT(present(sd_nl_))
-        endif
+        end if
 
 !       --- 5 - Treatment of sauv parameter, global (default) or volatile saving
-        ASSERT((sauve2(1:4).eq.'GLOB'.or.sauve2(1:4).eq.'VOLA'))
+        ASSERT((sauve2(1:4) .eq. 'GLOB' .or. sauve2(1:4) .eq. 'VOLA'))
 !   --- End of argument verification
-    endif
+    end if
 !
-    if (sauve2(1:4) .eq. 'GLOB') typsau='G V'
-    if (sauve2(1:4) .eq. 'VOLA') typsau='V V'
-    nbstoc = nbmode * nbsauv
+    if (sauve2(1:4) .eq. 'GLOB') typsau = 'G V'
+    if (sauve2(1:4) .eq. 'VOLA') typsau = 'V V'
+    nbstoc = nbmode*nbsauv
 !
     jchmp = 1
     jdesc = 1
@@ -214,28 +214,28 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         if (entvid) then
             if (basemo .ne. blanc) then
                 matric(1) = basemo
-                call refdaj('F', nomres, nbsauv, ' ', 'MESURE',&
+                call refdaj('F', nomres, nbsauv, ' ', 'MESURE', &
                             matric, iret)
             else
-                call refdaj(' ', nomres, nbsauv, ' ', 'INIT',&
+                call refdaj(' ', nomres, nbsauv, ' ', 'INIT', &
                             ' ', iret)
-            endif
+            end if
         else
 !           On recupere la numerotation generalisee
             call jeexin(riggen(1:8)//'           .REFA', iret)
             if (iret .ne. 0) then
                 call jeveuo(riggen(1:8)//'           .REFA', 'L', j1refe)
-                numgen = zk24(j1refe+1)(1:8)
+                numgen = zk24(j1refe+1) (1:8)
             else
                 numgen = blanc
-            endif
+            end if
             matric(1) = riggen(1:8)
             matric(2) = masgen(1:8)
             matric(3) = amogen(1:8)
-            call refdaj('F', nomres, nbsauv, numgen(1:8), 'DYNAMIQUE',&
+            call refdaj('F', nomres, nbsauv, numgen(1:8), 'DYNAMIQUE', &
                         matric, iret)
-        endif
-    endif
+        end if
+    end if
 !
 !   .DESC is already created in mdrecf (external forces retrieval), and DESC[5] is set
 !   to 1 if a static correction is considered.
@@ -255,16 +255,16 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !      -- DANS LE CAS 'HARM' ON REMPLIT LA VALEUR A 4
 !
 !      -- BLINDAGE : VERIFICATION DE NBSYM ET NOMSYM
-        if ((nbsym2.le.0) .or. (nbsym2.ge.4)) then
+        if ((nbsym2 .le. 0) .or. (nbsym2 .ge. 4)) then
             call utmess('F', 'ALGORITH17_29')
-        endif
+        end if
         do inom = 1, nbsym2
-            if ((nomsym2(inom)(1:4).ne.'DEPL') .and. (nomsym2(inom)( 1:4).ne.'VITE') .and.&
-                (nomsym2(inom)(1:4).ne.'ACCE')) then
+            if ((nomsym2(inom) (1:4) .ne. 'DEPL') .and. (nomsym2(inom) (1:4) .ne. 'VITE') .and. &
+                (nomsym2(inom) (1:4) .ne. 'ACCE')) then
                 call utmess('F', 'ALGORITH17_29')
-            endif
-        enddo
-    else if (typcal.eq.'TRAN') then
+            end if
+        end do
+    else if (typcal .eq. 'TRAN') then
 !     -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
         nbsym2 = 3
         nomsym2(1) = 'DEPL'
@@ -272,15 +272,15 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         nomsym2(3) = 'ACCE'
         if (nbnoli .ne. 0) then
             zi(jdesc) = 2
-        endif
+        end if
 !     -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
 !      ON MET LA VALEUR 3 QUI SERVIRA DE TEST
 !       A LA COMMANDE POST_DYNA_MODA_T
         if ((method2(1:4) .ne. 'DIFF') .and. (method2(1:7) .ne. 'NEWMARK')) then
             zi(jdesc) = 3
-        endif
+        end if
 !     DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
-    endif
+    end if
     zi(jdesc+1) = nbmode
     zi(jdesc+2) = nbnoli
     zi(jdesc+3) = 0
@@ -294,7 +294,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         nomsym2(3) = 'ACCE'
     else
         attrib = typsau//' C'
-    endif
+    end if
 !
     if (nbsauv .ne. 0) then
 !       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
@@ -305,13 +305,13 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
                 call r8inir(nbstoc, 0.d0, zr(jchmp), 1)
             else
                 do i = 0, nbstoc-1
-                    zc(jchmp+i) = dcmplx(0.d0,0.d0)
-                enddo
-            endif
-            if ((nomsym2(inom) .eq. 'DEPL').and.(present(jdepl))) jdepl=jchmp
-            if ((nomsym2(inom) .eq. 'VITE').and.(present(jvite))) jvite=jchmp
-            if ((nomsym2(inom) .eq. 'ACCE').and.(present(jacce))) jacce=jchmp
-        enddo
+                    zc(jchmp+i) = dcmplx(0.d0, 0.d0)
+                end do
+            end if
+            if ((nomsym2(inom) .eq. 'DEPL') .and. (present(jdepl))) jdepl = jchmp
+            if ((nomsym2(inom) .eq. 'VITE') .and. (present(jvite))) jvite = jchmp
+            if ((nomsym2(inom) .eq. 'ACCE') .and. (present(jacce))) jacce = jchmp
+        end do
 !
 !       OBJETS COMMUNS
         call crevec(nomres//'           .ORDR', typsau//' I', nbsauv, jordr)
@@ -319,8 +319,8 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         if (typcal .eq. 'TRAN') then
             call crevec(nomres//'           .PTEM', typsau//' R', nbsauv, jptem)
             zr(jptem) = dt
-        endif
-    endif
+        end if
+    end if
 !
 !   CREATION DES VECTEURS DE STOCKAGE DES FORCES DE CHOC
     if (nbnoli .ne. 0) then
@@ -335,7 +335,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !           Internal variables object
             call crevec(nomres//'        .NL.VINT', typsau//' R', nbvint*nbsauv, jvint)
             call r8inir(nbvint*nbsauv, 0.d0, zr(jvint), 1)
-        endif
+        end if
 
         call jeexin(nomres//'        .NL.TYPE', iret)
         if (iret .eq. 0) then
@@ -343,7 +343,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             do i = 1, nbnoli
                 call nlget(sd_nl, _NL_TYPE, iocc=i, iscal=zi(jnltyp-1+i))
             end do
-        endif
+        end if
 
         call jeexin(nomres//'        .NL.INTI', iret)
         if (iret .eq. 0) then
@@ -353,21 +353,21 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             end do
             do i = 1, nbnoli
                 call nlget(sd_nl, _NL_TITLE, iocc=i, lonvec=iret)
-                if (iret.ne.0) call nlget(sd_nl, _NL_TITLE, iocc=i, kscal=zk24(jinti-1+(i-1)*5+1))
+                if (iret .ne. 0) call nlget(sd_nl, _NL_TITLE, iocc=i, kscal=zk24(jinti-1+(i-1)*5+1))
 
                 call nlget(sd_nl, _NO1_NAME, iocc=i, lonvec=iret)
-                if (iret.ne.0) call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+2))
+                if (iret .ne. 0) call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+2))
 
                 call nlget(sd_nl, _NO2_NAME, iocc=i, lonvec=iret)
-                if (iret.ne.0) call nlget(sd_nl, _NO2_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+3))
+                if (iret .ne. 0) call nlget(sd_nl, _NO2_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+3))
 
                 call nlget(sd_nl, _SS1_NAME, iocc=i, lonvec=iret)
-                if (iret.ne.0) call nlget(sd_nl, _SS1_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+4))
+                if (iret .ne. 0) call nlget(sd_nl, _SS1_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+4))
 
                 call nlget(sd_nl, _SS2_NAME, iocc=i, lonvec=iret)
-                if (iret.ne.0) call nlget(sd_nl, _SS2_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+5))
-            enddo
-        endif
-    endif
+                if (iret .ne. 0) call nlget(sd_nl, _SS2_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+5))
+            end do
+        end if
+    end if
 !
 end subroutine

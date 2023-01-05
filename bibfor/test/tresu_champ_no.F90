@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
-                          refi, refr, refc, typres, epsi,&
+subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
+                          refi, refr, refc, typres, epsi, &
                           crit, llab, ssigne, ignore, compare)
     implicit none
 #include "asterc/indik8.h"
@@ -99,12 +99,12 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     skip = .false.
     if (present(ignore)) then
         skip = ignore
-    endif
+    end if
 !
     ordgrd = 1.d0
     if (present(compare)) then
         ordgrd = compare
-    endif
+    end if
 !
     call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
     l_parallel_mesh = isParallelMesh(mesh)
@@ -112,8 +112,8 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     call dismoi('NOM_GD', cham19, 'CHAM_NO', repk=nogd)
 !
     call jeveuo(cham19//'.REFE', 'L', iarefe)
-    nomma = zk24(iarefe-1+1)(1:8)
-    prchno = zk24(iarefe-1+2)(1:19)
+    nomma = zk24(iarefe-1+1) (1:8)
+    prchno = zk24(iarefe-1+2) (1:19)
 !
     call jelira(cham19//'.VALE', 'TYPE', cval=type)
     if (type .ne. typres) then
@@ -121,10 +121,10 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
         valk(2) = type
         valk(3) = typres
         call utmess('F', 'CALCULEL6_89', nk=3, valk=valk)
-    else if (type.ne.'R' .and. type.ne.'C') then
+    else if (type .ne. 'R' .and. type .ne. 'C') then
         valk(1) = type
         call utmess('F', 'CALCULEL6_90', sk=valk(1))
-    endif
+    end if
     call jeveuo(cham19//'.VALE', 'L', iavale)
 !
     call jeveuo(cham19//'.DESC', 'L', iadesc)
@@ -135,12 +135,12 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !     -- ON RECHERCHE LE NUMERO CORRESPONDANT A NOCMP:
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
-    icmp = indik8(zk8(iancmp),nocmp,1,ncmpmx)
+    icmp = indik8(zk8(iancmp), nocmp, 1, ncmpmx)
     if (icmp .eq. 0) then
         valk(1) = nocmp
         valk(2) = nogd
         call utmess('F', 'CALCULEL6_91', nk=2, valk=valk)
-    endif
+    end if
 !
 !        -- RECUPERATION DU NUMERO DU NOEUD:
     l_ok = ASTER_FALSE
@@ -148,19 +148,19 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     inog = ino
     call asmpi_comm_vect('MPI_MAX', 'I', sci=inog)
     if (inog .eq. 0) then
-        valk(1) =nonoeu(1:8)
+        valk(1) = nonoeu(1:8)
         call utmess('F', 'CALCULEL6_92', sk=valk(1))
     end if
 !
-    if( ino == 0) then
+    if (ino == 0) then
         go to 100
-    endif
+    end if
 !
-    if(l_parallel_mesh) then
-        call asmpi_info(rank = irank)
+    if (l_parallel_mesh) then
+        call asmpi_info(rank=irank)
         rank = to_aster_int(irank)
         call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
-        if(v_noex(ino) .ne. rank) then
+        if (v_noex(ino) .ne. rank) then
             go to 100
         end if
     end if
@@ -173,19 +173,19 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP: (+1)
         idecal = 0
         do iicmp = 1, icmp
-            if (exisdg(zi(iadesc+2),iicmp)) idecal = idecal + 1
+            if (exisdg(zi(iadesc+2), iicmp)) idecal = idecal+1
         end do
 !
-        if (exisdg(zi(iadesc+2),icmp)) then
+        if (exisdg(zi(iadesc+2), icmp)) then
             if (type .eq. 'R') then
                 valr = zr(iavale-1+(ino-1)*ncmp+idecal)
             else if (type .eq. 'I') then
                 vali = zi(iavale-1+(ino-1)*ncmp+idecal)
             else if (type .eq. 'C') then
                 valc = zc(iavale-1+(ino-1)*ncmp+idecal)
-            endif
+            end if
             l_ok = ASTER_TRUE
-        endif
+        end if
     else
 !        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
 !
@@ -196,62 +196,62 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !        IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
 !        NCMP : NOMBRE DE COMPOSANTES PRESENTES SUR LE NOEUD
 !        IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
-        ival = zi(iaprno-1+ (ino-1)* (nec+2)+1)
-        ncmp = zi(iaprno-1+ (ino-1)* (nec+2)+2)
-        iadg = iaprno - 1 + (ino-1)* (nec+2) + 3
-        ASSERT( ncmp .ne. 0 )
+        ival = zi(iaprno-1+(ino-1)*(nec+2)+1)
+        ncmp = zi(iaprno-1+(ino-1)*(nec+2)+2)
+        iadg = iaprno-1+(ino-1)*(nec+2)+3
+        ASSERT(ncmp .ne. 0)
 !
 !        -- ON COMPTE LES CMP PRESENTES SUR LE NOEUD AVANT ICMP:
         idecal = 0
         do iicmp = 1, icmp
-            if (exisdg(zi(iadg),iicmp)) idecal = idecal + 1
+            if (exisdg(zi(iadg), iicmp)) idecal = idecal+1
         end do
 !
-        if (exisdg(zi(iadg),icmp)) then
+        if (exisdg(zi(iadg), icmp)) then
             if (type .eq. 'R') then
                 valr = zr(iavale-1+zi(ianueq-1+ival-1+idecal))
             else if (type .eq. 'I') then
                 vali = zi(iavale-1+zi(ianueq-1+ival-1+idecal))
             else if (type .eq. 'C') then
                 valc = zc(iavale-1+zi(ianueq-1+ival-1+idecal))
-            endif
+            end if
             l_ok = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
 !
 100 continue
 !
 !
-    if(l_parallel_mesh) then
+    if (l_parallel_mesh) then
         ser = 0
         rank = -1
-        if( l_ok ) then
+        if (l_ok) then
             ser = 1
             rank = to_aster_int(irank)
         end if
         call asmpi_comm_vect('MPI_MAX', 'I', sci=ser)
         call asmpi_comm_vect('MPI_MAX', 'I', sci=rank)
-        if(ser == 1) then
+        if (ser == 1) then
             l_ok = ASTER_TRUE
         else
             l_ok = ASTER_FALSE
         end if
     end if
 !
-    if(l_ok) then
-        if( l_parallel_mesh ) then
-            if( type == 'R') then
+    if (l_ok) then
+        if (l_parallel_mesh) then
+            if (type == 'R') then
                 call asmpi_comm_vect('BCAST', 'R', bcrank=rank, scr=valr)
-            elseif( type == 'I' ) then
+            elseif (type == 'I') then
                 call asmpi_comm_vect('BCAST', 'I', bcrank=rank, sci=vali)
-            elseif( type == 'C' ) then
+            elseif (type == 'C') then
                 call asmpi_comm_vect('BCAST', 'C', bcrank=rank, scc=valc)
-            endif
+            end if
         end if
-        call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref,&
-                                 crit, epsi, ssigne, refr, valr,&
-                                 refi, vali, refc, valc, ignore=skip,&
-                                 compare=ordgrd)
+        call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref, &
+                             crit, epsi, ssigne, refr, valr, &
+                             refi, vali, refc, valc, ignore=skip, &
+                             compare=ordgrd)
     else
         call utmess('F', 'CALCULEL6_93')
     end if

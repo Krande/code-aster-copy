@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
+subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
                   ctccvg)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -121,14 +121,14 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : GRADIENT CONJUGUE PROJETE'
-        write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: SANS'
-    endif
+        write (ifm, *) '<CONTACT><CALC> ALGO_CONTACT   : GRADIENT CONJUGUE PROJETE'
+        write (ifm, *) '<CONTACT><CALC> ALGO_FROTTEMENT: SANS'
+    end if
 !
 ! --- INITIALISATION DES VARIABLES
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
-    neq = cfdisd(resoco,'NEQ' )
+    nbliai = cfdisd(resoco, 'NBLIAI')
+    neq = cfdisd(resoco, 'NEQ')
     ctccvg = 0
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
@@ -168,27 +168,27 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
 !
 ! --- RECUPERATION DU CRITERE DE CONVERGENCE
 !
-    epsi = cfdisr(defico,'RESI_ABSO')
-    coefrs = cfdisr(defico,'COEF_RESI')
+    epsi = cfdisr(defico, 'RESI_ABSO')
+    coefrs = cfdisr(defico, 'COEF_RESI')
     gcpmax = 10*nbliai
-    premax = cfdisi(defico,'ITER_PRE_MAXI')
-    if (cfdisi(defico,'ITER_GCP_MAXI') .ne. 0) then
-        gcpmax = max(gcpmax,cfdisi(defico,'ITER_GCP_MAXI'))
-    endif
-    if (cfdisi(defico,'PRE_COND') .eq. 1) then
+    premax = cfdisi(defico, 'ITER_PRE_MAXI')
+    if (cfdisi(defico, 'ITER_GCP_MAXI') .ne. 0) then
+        gcpmax = max(gcpmax, cfdisi(defico, 'ITER_GCP_MAXI'))
+    end if
+    if (cfdisi(defico, 'PRE_COND') .eq. 1) then
         precon = 'DIRICHLET'
     else
         precon = 'SANS'
-    endif
-    if (cfdisi(defico,'RECH_LINEAIRE') .eq. 1) then
+    end if
+    if (cfdisi(defico, 'RECH_LINEAIRE') .eq. 1) then
         search = 'NON_ADMISSIBLE'
     else
         search = 'ADMISSIBLE'
-    endif
+    end if
 !
     if (niv .ge. 2) then
-        write (ifm,9010) gcpmax
-    endif
+        write (ifm, 9010) gcpmax
+    end if
 !
 ! --- INITIALISATION A PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL
 !
@@ -198,12 +198,12 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
 !                    REPRISE DE LA BOUCLE PRINCIPALE
 ! ======================================================================
 !
- 40 continue
+40  continue
 !
     if (niv .eq. 2) then
-        write (ifm,*) '<CONTACT><CALC> --------------------------------'
-        write (ifm,*) '<CONTACT><CALC> ITERATION DE GCP = ',iter
-    endif
+        write (ifm, *) '<CONTACT><CALC> --------------------------------'
+        write (ifm, *) '<CONTACT><CALC> ITERATION DE GCP = ', iter
+    end if
 !
 ! --- CALCUL DU SOUS-GRADIENT
 !
@@ -212,29 +212,29 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
 ! --- A-T-ON CONVERGE ?
 !
     if (niv .eq. 2) then
-        write (ifm,9060) ninf,epsi
-    endif
+        write (ifm, 9060) ninf, epsi
+    end if
 !
     if (ninf .lt. epsi) then
         goto 160
-    endif
+    end if
 !
 ! --- PRECONDITIONNEMENT UNIQUEMENT AU VOISINAGE DE LA SOLUTION
 ! --- LE VOISINAGE EST DEFINI PAR COEF_RESI
 !
     if (iter .eq. 1) then
         ninfpc = coefrs*ninf
-    endif
+    end if
     pceffe = precon
     if (ninfpc .gt. 0.d0) then
         if (ninf .gt. ninfpc) then
             pceffe = 'SANS'
-        endif
-    endif
+        end if
+    end if
 !
 ! --- PRECONDITIONNEMENT
 !
-    call cfgcpc(resoco, matass, solveu, neq, nbliai,&
+    call cfgcpc(resoco, matass, solveu, neq, nbliai, &
                 pceffe, tole, premax, epsi)
 !
 ! --- CONJUGAISON
@@ -243,34 +243,34 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
 !
 ! --- RECHERCHE LINEAIRE: PAS D'AVANCEMENT
 !
-    call cfgcrl(resoco, neq, nbliai, matass, solveu,&
+    call cfgcrl(resoco, neq, nbliai, matass, solveu, &
                 alpha)
 !
 ! --- PROJECTION DU PAS D'AVANCEMENT
 !
-    call cfgcpr(resoco, matass, solveu, neq, nbliai,&
+    call cfgcpr(resoco, matass, solveu, neq, nbliai, &
                 search, alpha)
 !
 ! --- ACTUALISATION DE {DDEPLC} = {DDEPLC} - ALPHA . {DDELT}
 !
-    call jeveuo(ddelt(1:19) //'.VALE', 'L', vr=vddelt)
+    call jeveuo(ddelt(1:19)//'.VALE', 'L', vr=vddelt)
     call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
-    call daxpy(neq, -alpha, vddelt, 1, ddepc,&
+    call daxpy(neq, -alpha, vddelt, 1, ddepc, &
                1)
 !
 ! --- ON VERIFIE SI L'ETAT DE CONTACT A CHANGE (ON NE CONJUGUE PAS)
 !
     conjug = .true.
     do iliai = 1, nbliai
-        if (((zr(jmum-1+iliai).le.tole).and. (zr(jmu -1+iliai) .gt.tole)) .or.&
-            ((zr(jmum-1+iliai).gt.tole).and. (zr(jmu -1+ iliai).le.tole))) then
+        if (((zr(jmum-1+iliai) .le. tole) .and. (zr(jmu-1+iliai) .gt. tole)) .or. &
+            ((zr(jmum-1+iliai) .gt. tole) .and. (zr(jmu-1+iliai) .le. tole))) then
             conjug = .false.
             if (niv .eq. 2) then
-                write (ifm,*) '<CONTACT><CALC>'//&
+                write (ifm, *) '<CONTACT><CALC>'//&
      &        ' CHANGEMENT DE L''ETAT DE CONTACT'
-            endif
+            end if
             goto 100
-        endif
+        end if
     end do
 100 continue
 !
@@ -282,14 +282,14 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
 !
 ! --- ON PASSE A L'ITERATION SUIVANTE
 !
-    iter = iter + 1
+    iter = iter+1
 !
 ! --- A-T-ON DEPASSE LE NOMBRE D'ITERATIONS DE CONTACT AUTORISE ?
 !
     if (iter .ge. gcpmax) then
         ctccvg = 1
         goto 160
-    endif
+    end if
 !
     goto 40
 !
@@ -308,17 +308,17 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass,&
     call cfecrd(resoco, 'NBLIAC', nbliac)
 !
     if (niv .ge. 2) then
-        write(ifm,9020) iter
-    endif
+        write (ifm, 9020) iter
+    end if
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(ds_measure, 'Cont_Algo ', input_count = iter)
-    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_Algo ', input_count=iter)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count=nbliac)
 !
     call jedema()
 !
-    9010 format (' <CONTACT><CALC> DEBUT DES ITERATIONS (MAX: ',i8,')')
-    9020 format (' <CONTACT><CALC> FIN DES ITERATIONS (NBR: ',i8,')')
-    9060 format (' <CONTACT><CALC> NORME INFINIE DU RESIDU : ', 1pe12.5,' (CRITERE: ',1pe12.5,')')
+9010 format(' <CONTACT><CALC> DEBUT DES ITERATIONS (MAX: ', i8, ')')
+9020 format(' <CONTACT><CALC> FIN DES ITERATIONS (NBR: ', i8, ')')
+9060 format(' <CONTACT><CALC> NORME INFINIE DU RESIDU : ', 1pe12.5, ' (CRITERE: ', 1pe12.5, ')')
 end subroutine

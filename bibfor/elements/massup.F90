@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine massup(option, ndim, dlns, nno, nnos,&
-                  mate, phenom, npg, ipoids, idfde,&
-                  geom, vff1, imatuu, icodre, igeom,&
+subroutine massup(option, ndim, dlns, nno, nnos, &
+                  mate, phenom, npg, ipoids, idfde, &
+                  geom, vff1, imatuu, icodre, igeom, &
                   ivf)
 !
 ! person_in_charge: sebastien.fayolle at edf.fr
@@ -66,68 +66,68 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
     integer :: icodre(1)
 !
 !
-    idec = dlns - ndim
+    idec = dlns-ndim
 !
     call rccoma(mate, 'ELAS', 1, phenom, icodre(1))
 !
     call r8inir(ndim*ndim*nno*nno, 0.d0, a, 1)
     call r8inir(ndim*nno*(ndim*nno+1)/2, 0.d0, matv, 1)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
     if (ndim .eq. 2) then
         do kpg = 1, npg
             k = (kpg-1)*nno
             call dfdm2j(nno, kpg, idfde, geom, poids)
-            poids = abs(poids) * zr(ipoids+kpg-1)
+            poids = abs(poids)*zr(ipoids+kpg-1)
 !
-            if (lteatt('AXIS','OUI')) then
+            if (lteatt('AXIS', 'OUI')) then
                 r = 0.0d0
                 do i = 1, nno
-                    r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                    r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
                 end do
                 poids = poids*r
-            endif
+            end if
 !
             do i = 1, nno
                 do j = 1, i
-                    a(1,1,i,j) = a(1,1,i,j)+rho(1)*poids*vff1(i,kpg)* vff1(j,kpg)
-                    a(2,2,i,j) = a(1,1,i,j)
+                    a(1, 1, i, j) = a(1, 1, i, j)+rho(1)*poids*vff1(i, kpg)*vff1(j, kpg)
+                    a(2, 2, i, j) = a(1, 1, i, j)
                 end do
             end do
         end do
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         do kpg = 1, npg
             call dfdm3j(nno, kpg, idfde, geom, poids)
-            poids = abs(poids) * zr(ipoids+kpg-1)
+            poids = abs(poids)*zr(ipoids+kpg-1)
 !
             do i = 1, nno
                 do j = 1, i
-                    a(1,1,i,j) = a(1,1,i,j)+rho(1)*poids*vff1(i,kpg)* vff1(j,kpg)
-                    a(2,2,i,j) = a(1,1,i,j)
-                    a(3,3,i,j) = a(1,1,i,j)
+                    a(1, 1, i, j) = a(1, 1, i, j)+rho(1)*poids*vff1(i, kpg)*vff1(j, kpg)
+                    a(2, 2, i, j) = a(1, 1, i, j)
+                    a(3, 3, i, j) = a(1, 1, i, j)
                 end do
             end do
         end do
     else
 ! - OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
     do k = 1, ndim
         do l = 1, ndim
             do i = 1, nno
-                ik = ((ndim*i+k-ndim-1)* (ndim*i+k-ndim))/2
+                ik = ((ndim*i+k-ndim-1)*(ndim*i+k-ndim))/2
                 do j = 1, i
-                    ijkl = ik + ndim* (j-1) + l
-                    matv(ijkl) = a(k,l,i,j)
+                    ijkl = ik+ndim*(j-1)+l
+                    matv(ijkl) = a(k, l, i, j)
                 end do
             end do
         end do
@@ -141,7 +141,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
                     i2 = i+idec*(k-1)
                 else
                     i2 = i+idec*nnos
-                endif
+                end if
                 do l = 1, nno
                     do n2 = 1, ndim
                         j = ndim*l+n2-ndim
@@ -150,29 +150,29 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
                             j2 = j+idec*(l-1)
                         else
                             j2 = j+idec*nnos
-                        endif
-                        zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1)/2+ j)
+                        end if
+                        zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1)/2+j)
                     end do
                 end do
 405             continue
             end do
         end do
-        elseif (option.eq.'MASS_MECA_DIAG' .or.&
-     &        option.eq.'MASS_MECA_EXPLI' ) then
+    elseif (option .eq. 'MASS_MECA_DIAG' .or.&
+ &        option .eq. 'MASS_MECA_EXPLI') then
 !
 ! - CALCUL DE LA MASSE DE L'ELEMENT
-        wgt = a(1,1,1,1)
+        wgt = a(1, 1, 1, 1)
         do i = 2, nno
-            do j = 1, i - 1
-                wgt = wgt + 2*a(1,1,i,j)
+            do j = 1, i-1
+                wgt = wgt+2*a(1, 1, i, j)
             end do
-            wgt = wgt + a(1,1,i,i)
+            wgt = wgt+a(1, 1, i, i)
         end do
 !
 ! - CALCUL DE LA TRACE EN TRANSLATION SUIVANT X
         trace = 0.d0
         do i = 1, nno
-            trace = trace + a(1,1,i,i)
+            trace = trace+a(1, 1, i, i)
         end do
 !
 ! - CALCUL DU FACTEUR DE DIAGONALISATION
@@ -182,23 +182,23 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
         k = 0
         do j = 1, nno
             do i = 1, 3
-                k = k + 1
+                k = k+1
                 if (idec .eq. 0) then
-                    idiag = k* (k+1)/2
+                    idiag = k*(k+1)/2
                 else
                     if (j .le. nnos) then
                         k2 = k+idec*(j-1)
                     else
                         k2 = k+idec*nnos
-                    endif
-                    idiag = k2* (k2+1)/2
-                endif
-                zr(imatuu+idiag-1) = a(i,i,j,j)*alpha
+                    end if
+                    idiag = k2*(k2+1)/2
+                end if
+                zr(imatuu+idiag-1) = a(i, i, j, j)*alpha
             end do
         end do
     else
 ! - OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

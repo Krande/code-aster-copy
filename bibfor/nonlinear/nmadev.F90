@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmadev(sddisc, sderro, iterat)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/getAdapEvent.h"
 !
-character(len=19) :: sddisc
-character(len=24) :: sderro
-integer :: iterat
+    character(len=19) :: sddisc
+    character(len=24) :: sderro
+    integer :: iterat
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ integer :: iterat
 ! --- LA MISE A JOUR DE L'INDICATEUR DE SUCCES DES ITERATIONS DE NEWTON
 ! --- N'EST FAITE QU'EN GESTION AUTO DU PAS DE TEMPS
 !
-    call utdidt('L', sddisc, 'LIST', 'METHODE', valk_ = metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE', valk_=metlis)
     if (metlis .ne. 'AUTO') goto 999
 !
 ! --- EVENEMENTS
@@ -79,7 +79,7 @@ integer :: iterat
 !
 ! --- BOUCLE SUR LES OCCURENCES D'ADAPTATION
 !
-    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_ = nb_adap)
+    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_=nb_adap)
 !
     do i_adap = 1, nb_adap
 ! ----- Get event type
@@ -89,40 +89,40 @@ integer :: iterat
 !
 ! ------- PARAMETRES DU SEUIL
 !
-            call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_ = i_adap, &
-                        valk_ = nopara)
-            call utdidt('L', sddisc, 'ADAP', 'CRIT_COMP', index_ = i_adap, &
-                        valk_ = cricom)
-            call utdidt('L', sddisc, 'ADAP', 'VALE', index_ = i_adap, &
-                        valr_ = vale, vali_ = vali)
+            call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_=i_adap, &
+                        valk_=nopara)
+            call utdidt('L', sddisc, 'ADAP', 'CRIT_COMP', index_=i_adap, &
+                        valk_=cricom)
+            call utdidt('L', sddisc, 'ADAP', 'VALE', index_=i_adap, &
+                        valr_=vale, vali_=vali)
 !
-            ASSERT(nopara.eq.'NB_ITER_NEWT')
+            ASSERT(nopara .eq. 'NB_ITER_NEWT')
 !
 ! ------- RECUP DU NB DE SUCCES CONSECUTIFS : NBOK
 !
-            call utdidt('L', sddisc, 'ADAP', 'NB_EVEN_OK', index_ = i_adap, &
-                        vali_ = nb_event_ok)
+            call utdidt('L', sddisc, 'ADAP', 'NB_EVEN_OK', index_=i_adap, &
+                        vali_=nb_event_ok)
 !
 ! ------- EN CAS DE NOUVEAU SUCCES A CONVERGENCE
 !
             if (cvnewt) then
-                if (cricom .eq. 'LT' .and. iterat .lt. vali .or. cricom .eq. 'GT' .and.&
-                    iterat .gt. vali .or. cricom .eq. 'LE' .and. iterat .le. vali .or.&
+                if (cricom .eq. 'LT' .and. iterat .lt. vali .or. cricom .eq. 'GT' .and. &
+                    iterat .gt. vali .or. cricom .eq. 'LE' .and. iterat .le. vali .or. &
                     cricom .eq. 'GE' .and. iterat .ge. vali) then
                     nb_event_ok = nb_event_ok+1
-                endif
-            endif
+                end if
+            end if
 !
 ! ------- EN CAS D'ECHEC: ON REMET A ZERO
 !
-            if (lerrit .or. itemax .or. divres) nb_event_ok=0
+            if (lerrit .or. itemax .or. divres) nb_event_ok = 0
 !
 ! ------- ENREGISTREMENT DU NB DE SUCCES CONSECUTIFS
 !
-            call utdidt('E', sddisc, 'ADAP', 'NB_EVEN_OK', index_ = i_adap, &
-                        vali_ = nb_event_ok)
+            call utdidt('E', sddisc, 'ADAP', 'NB_EVEN_OK', index_=i_adap, &
+                        vali_=nb_event_ok)
 !
-        endif
+        end if
     end do
 !
 999 continue

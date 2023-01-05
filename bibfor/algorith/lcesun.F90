@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcesun(x,p,val,der)
+subroutine lcesun(x, p, val, der)
     implicit none
 
-    real(kind=8),intent(in) :: x,p(:)
-    real(kind=8),intent(out):: val,der
+    real(kind=8), intent(in) :: x, p(:)
+    real(kind=8), intent(out):: val, der
 ! --------------------------------------------------------------------------------------------------
 !   smoothed unilateral function and its derivative:
 !     f(x) = (x - 0.5/gamma) * exp(1/(gamma*x)) if x<0
@@ -32,14 +32,14 @@ subroutine lcesun(x,p,val,der)
 ! der: f'(x)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
+    common/lcee/lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
 ! --------------------------------------------------------------------------------------------------
-    if (x*gamma.ge.-1.d-3) then
+    if (x*gamma .ge. -1.d-3) then
         val = 0
         der = 0
     else
-        val = (x-0.5d0/gamma) * exp(1/(gamma*x))
-        der = (1 - (gamma*x-0.5d0)/(gamma*x)**2) * exp(1/(gamma*x))
+        val = (x-0.5d0/gamma)*exp(1/(gamma*x))
+        der = (1-(gamma*x-0.5d0)/(gamma*x)**2)*exp(1/(gamma*x))
     end if
 
 end subroutine lcesun

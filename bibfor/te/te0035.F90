@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine te0035(option, nomte)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dxbsig.h"
 #include "asterfort/dxefgi.h"
@@ -48,8 +48,8 @@ subroutine te0035(option, nomte)
     character(len=16) :: optio2
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcaco)
@@ -64,7 +64,7 @@ subroutine te0035(option, nomte)
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
-    endif
+    end if
 !
 ! --- DETERMINATION DES COORDONNEES DES CONNECTIVITES DE L'ELEMENT
 ! --- DANS SON REPERE LOCAL
@@ -79,7 +79,7 @@ subroutine te0035(option, nomte)
 !
         call dxefgt(pgl, sigt)
 !
-    else if (option .eq.'CHAR_MECA_EPSI_R') then
+    else if (option .eq. 'CHAR_MECA_EPSI_R') then
 !
         call jevech('PEPSINR', 'L', idefi)
 !
@@ -90,11 +90,11 @@ subroutine te0035(option, nomte)
             epsini(ncomp*(ig-1)+4) = zr(idefi+ncomp*(ig-1)+4-1)
             epsini(ncomp*(ig-1)+5) = zr(idefi+ncomp*(ig-1)+5-1)
             epsini(ncomp*(ig-1)+6) = zr(idefi+ncomp*(ig-1)+6-1)
-        enddo
+        end do
 !
         call dxefgi(nomte, pgl, epsini, sigt)
 !
-    else if (option .eq.'CHAR_MECA_EPSI_F') then
+    else if (option .eq. 'CHAR_MECA_EPSI_F') then
 !
         call jevech('PEPSINF', 'L', idefi)
 !
@@ -107,13 +107,13 @@ subroutine te0035(option, nomte)
 !
         call dxefgi_fonc(nomte, pgl, epsinif, zr(jgeom), zr(ivf), sigt)
 !
-    endif
+    end if
 !
 ! --- CALCUL DES EFFORTS INTERNES D'ORIGINE THERMIQUE
 ! --- (I.E. SOMME_VOL(BT_SIG))
 !     ------------------------
     optio2 = 'FORC_NODA'
-    call dxbsig(nomte, xyzl, pgl, sigt, bsigma,&
+    call dxbsig(nomte, xyzl, pgl, sigt, bsigma, &
                 optio2)
 !
 ! --- AFFECTATION DU VECTEUR DES FORCES ELEMENTAIRES EN SORTIE DU TE

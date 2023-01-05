@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
-                  iter, intg, typess, essai, icomp,&
+subroutine cvmcvg(dy, ddy, nr, itmax, toler, &
+                  iter, intg, typess, essai, icomp, &
                   irteti)
     implicit none
 !       VISCOCHABOCHE        : CONTROLE DE LA CONVERGENCE
@@ -56,8 +56,8 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !-----------------------------------------------------------------------
     integer :: i, irteti
 !-----------------------------------------------------------------------
-    parameter       ( dplim = 1.d-10 )
-    parameter       ( tolim = 1.d-3  )
+    parameter(dplim=1.d-10)
+    parameter(tolim=1.d-3)
 !
     integer :: ndt, ndi, vali
     integer :: itsup, ndp
@@ -65,10 +65,10 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
     real(kind=8) :: der(10), dp, valr
     character(len=10) :: cdp, ctol, citer, cintg
     character(len=24) :: valk(2)
-    save            itsup,ter
-    common /tdim/   ndt , ndi
+    save itsup, ter
+    common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
-    data itsup      /0/
+    data itsup/0/
 !
 !
 ! -- ICOMP = 0 ==> PAS DE REDECOUPAGE EN COURS
@@ -77,7 +77,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 ! -- ICOMP = 2 ==> PAS DE REDECOUPAGE
 !
 !
-    ndp = 3 * ndt+1
+    ndp = 3*ndt+1
     dp = dy(ndp)
     irteti = 0
 !
@@ -104,12 +104,12 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
             call utmess('A', 'ALGORITH2_54', sk=cdp)
             irteti = 0
             goto 999
-        endif
+        end if
 !
 ! -     SI ITER > 3 ,ON ESSAYE AVEC UNE SOLUTION DE DEPART ELASTIQUE
 !
         if (iter .ge. 3) then
-            intg = intg + 1
+            intg = intg+1
             if (intg .eq. 1) then
                 typess = 1
                 irteti = 2
@@ -160,17 +160,17 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                 else
                     vali = intg
                     valr = dp
-                    call utmess('Z', 'ALGORITH16_60', si=vali, sr=valr,&
+                    call utmess('Z', 'ALGORITH16_60', si=vali, sr=valr, &
                                 num_except=ASTER_INTEGRATION_ERROR)
-                endif
-            endif
+                end if
+            end if
 !
 ! -         SINON ITERATION SUIVANTE
 !
         else
             irteti = 1
             goto 999
-        endif
+        end if
 !
 ! -     CAS DE DP POSITIF
 !       -----------------
@@ -193,7 +193,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !
                 irteti = 1
                 goto 999
-            endif
+            end if
 !
 ! -         ITER >= ITMAX
 !           ------------
@@ -209,23 +209,23 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                 if (iter .ge. 6) then
 !
                     do i = 1, 5
-                        der(i) = abs(ter(iter-i-1) - ter(iter-i))
+                        der(i) = abs(ter(iter-i-1)-ter(iter-i))
                     end do
 !
 ! -                 CONVERGENCE REGULIERE SUR LES 5 DERNIERES ITERATIONS
 !
-                    if ((&
-                        ter(iter) .lt. ter(iter-1) .and. ter(iter- 1) .lt. ter(iter-2)&
-                        .and. ter(iter-2) .lt. ter( iter-3) .and. ter(iter-3) .lt.&
-                        ter(iter-4) .and. ter(iter-4) .lt. ter(iter-5)&
-                        )&
-                        .or.&
-                        (&
-                        der(1) .lt. der(2) .and. der(2) .lt. der(3) .and. der(3) .lt.&
-                        der(4) .and. der(4) .lt. der(5)&
+                    if (( &
+                        ter(iter) .lt. ter(iter-1) .and. ter(iter-1) .lt. ter(iter-2) &
+                        .and. ter(iter-2) .lt. ter(iter-3) .and. ter(iter-3) .lt. &
+                        ter(iter-4) .and. ter(iter-4) .lt. ter(iter-5) &
+                        ) &
+                        .or. &
+                        ( &
+                        der(1) .lt. der(2) .and. der(2) .lt. der(3) .and. der(3) .lt. &
+                        der(4) .and. der(4) .lt. der(5) &
                         )) then
 !
-                        itsup = itsup + 1
+                        itsup = itsup+1
 !
 ! -                     SI ERR < TOLIM ET DP < DPLIM , ON ACCEPTE
 !
@@ -253,8 +253,8 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                             else
                                 irteti = 3
                                 goto 999
-                            endif
-                        endif
+                            end if
+                        end if
                     else
                         if (icomp .eq. 0 .or. icomp .eq. 1) then
                             call codent(iter, 'G', citer)
@@ -267,8 +267,8 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                         else
                             irteti = 3
                             goto 999
-                        endif
-                    endif
+                        end if
+                    end if
 !
 ! -               ITER < 6 STOP
 !
@@ -284,8 +284,8 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                     else
                         irteti = 3
                         goto 999
-                    endif
-                endif
+                    end if
+                end if
 !
 ! -           CONVERGENCE A ITMAX
 !
@@ -293,9 +293,9 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                 itsup = 0
                 irteti = 0
                 goto 999
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 999 continue
 end subroutine

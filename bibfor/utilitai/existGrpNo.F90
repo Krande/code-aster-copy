@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,39 +60,39 @@ subroutine existGrpNo(mesh, group_no, l_exi_in_grp, l_exi_in_grp_p)
     aster_logical :: l_parallel_mesh
 !-----------------------------------------------------------------------
 !
-    l_exi_in_grp   = ASTER_FALSE
+    l_exi_in_grp = ASTER_FALSE
     l_exi_in_grp_p = ASTER_FALSE
-    grnoma         = mesh//'.GROUPENO'
-    grnomap        = mesh//'.PAR_GRPNOE'
+    grnoma = mesh//'.GROUPENO'
+    grnomap = mesh//'.PAR_GRPNOE'
 !
     call jemarq()
 !
     l_parallel_mesh = isParallelMesh(mesh)
 !
-    if(l_parallel_mesh) then
+    if (l_parallel_mesh) then
         call jeexin(grnoma, iret)
-        if(iret .ne. 0) then
+        if (iret .ne. 0) then
             call jenonu(jexnom(grnoma, group_no), iret)
 !
-            if(iret .ne. 0) then
-                l_exi_in_grp   = ASTER_TRUE
+            if (iret .ne. 0) then
+                l_exi_in_grp = ASTER_TRUE
             end if
         end if
         call jeexin(grnomap, iret)
-        if(iret .ne. 0) then
+        if (iret .ne. 0) then
             call jenonu(jexnom(grnomap, group_no), iret)
 !
-            if(iret .ne. 0) then
-                l_exi_in_grp_p   = ASTER_TRUE
+            if (iret .ne. 0) then
+                l_exi_in_grp_p = ASTER_TRUE
             end if
         end if
     else
         call jeexin(grnoma, iret)
-        if(iret .ne. 0) then
+        if (iret .ne. 0) then
             call jenonu(jexnom(grnoma, group_no), iret)
 !
-            if(iret .ne. 0) then
-                l_exi_in_grp   = ASTER_TRUE
+            if (iret .ne. 0) then
+                l_exi_in_grp = ASTER_TRUE
                 l_exi_in_grp_p = ASTER_TRUE
             end if
         end if

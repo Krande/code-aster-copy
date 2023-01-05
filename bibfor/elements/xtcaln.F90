@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,29 +53,29 @@ subroutine xtcaln(ndim, tau1, tau2, norm, mprojt)
 !
 ! ----------------------------------------------------------------------
 !
-    mprojt(:,:) = 0.d0
+    mprojt(:, :) = 0.d0
 !
 ! --- NORMALE
 !
     if (ndim .eq. 2) then
         call mmnorm(ndim, tau1, tau2, norm, noor)
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         call provec(tau1, tau2, norm)
         call normev(norm, noor)
-    endif
+    end if
     if (noor .lt. r8prem()) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- MATRICE DE PROJECTION TANGENTE
 !
     do i = 1, ndim
         do j = 1, ndim
-            mprojt(i,j) = -1.d0*norm(i)*norm(j)
+            mprojt(i, j) = -1.d0*norm(i)*norm(j)
         end do
     end do
     do i = 1, ndim
-        mprojt(i,i) = 1.d0 + mprojt(i,i)
+        mprojt(i, i) = 1.d0+mprojt(i, i)
     end do
 !
 end subroutine

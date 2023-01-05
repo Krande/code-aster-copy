@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine ssdege(nomu)
 !-----------------------------------------------------------------------
     call jemarq()
     call getvid('DEFINITION', 'CHAR_MACR_ELEM', iocc=1, nbval=0, nbret=n1)
-    nchar=-n1
+    nchar = -n1
 !
     call wkvect(nomu//'.REFM', 'G V K8', 9+nchar, iarefm)
 !
@@ -74,38 +74,38 @@ subroutine ssdege(nomu)
     call dismoi('NOM_GD', pheno, 'PHENOMENE', repk=nomgd)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
 !
-    zk8(iarefm-1+1)= nomo
-    zk8(iarefm-1+2)= noma
+    zk8(iarefm-1+1) = nomo
+    zk8(iarefm-1+2) = noma
     call getvid('DEFINITION', 'CHAM_MATER', iocc=1, scal=kbi81, nbret=n1)
-    if (n1 .ne. 0) zk8(iarefm-1+3)=kbi81
+    if (n1 .ne. 0) zk8(iarefm-1+3) = kbi81
     call getvid('DEFINITION', 'CARA_ELEM', iocc=1, scal=kbi81, nbret=n1)
-    if (n1 .ne. 0) zk8(iarefm-1+4)=kbi81
+    if (n1 .ne. 0) zk8(iarefm-1+4) = kbi81
 !
-    zk8(iarefm-1+6)= 'NON_RIGI'
-    zk8(iarefm-1+7)= 'NON_MASS'
-    zk8(iarefm-1+8)= 'NON_AMOR'
+    zk8(iarefm-1+6) = 'NON_RIGI'
+    zk8(iarefm-1+7) = 'NON_MASS'
+    zk8(iarefm-1+8) = 'NON_AMOR'
 !
     call getvid('DEFINITION', 'PROJ_MESU', iocc=1, scal=promes, nbret=ier)
     if (ier .eq. 0) then
-        zk8(iarefm-1+9)= ' '
+        zk8(iarefm-1+9) = ' '
     else
-        zk8(iarefm-1+9)= promes
-    endif
+        zk8(iarefm-1+9) = promes
+    end if
 !
 !     -- RECUPERARTION DU NOM DES CHARGES CINEMATIQUES:
 !     -------------------------------------------------
     if (nchar .gt. 0) then
-        call getvid('DEFINITION', 'CHAR_MACR_ELEM', iocc=1, nbval=nchar, vect=zk8( iarefm-1+9+1),&
+        call getvid('DEFINITION', 'CHAR_MACR_ELEM', iocc=1, nbval=nchar, vect=zk8(iarefm-1+9+1), &
                     nbret=n1)
-    endif
+    end if
 !
 !     -- CREATION DES OBJETS .LICA ET .LICH:
 !     --------------------------------------
     call getvis('DEFINITION', 'NMAX_CAS', iocc=1, scal=nbc, nbret=n1)
-    nbc= max(nbc,1)
-    call jecrec(nomu//'.LICA', 'G V R', 'NO', 'DISPERSE', 'CONSTANT',&
+    nbc = max(nbc, 1)
+    call jecrec(nomu//'.LICA', 'G V R', 'NO', 'DISPERSE', 'CONSTANT', &
                 nbc)
-    call jecrec(nomu//'.LICH', 'G V K8', 'NO', 'CONTIG', 'CONSTANT',&
+    call jecrec(nomu//'.LICH', 'G V K8', 'NO', 'CONTIG', 'CONSTANT', &
                 nbc)
     call getvis('DEFINITION', 'NMAX_CHAR', iocc=1, scal=nch, nbret=n1)
     call jeecra(nomu//'.LICH', 'LONMAX', nch)
@@ -115,8 +115,8 @@ subroutine ssdege(nomu)
 !     ------------------------------
     call getvr8('DEFINITION', 'INST', iocc=1, scal=time, nbret=n1)
     call wkvect(nomu//'.VARM', 'G V R', 2, jvarm)
-    zr(jvarm-1+1)=jevtbl('TAILLE_BLOC')
-    zr(jvarm-1+2)=time
+    zr(jvarm-1+1) = jevtbl('TAILLE_BLOC')
+    zr(jvarm-1+2) = time
 !
 !
 !     -- CREATION DE L'OBJET .DESM:
@@ -136,19 +136,19 @@ subroutine ssdege(nomu)
 !        AUCUN DDL POUR LE MODELE.
 !     --------------------------------------------------------
     call jeveuo(nomo//'.MODELE    .PRNM', 'L', vi=prnm)
-    lmess=.false.
+    lmess = .false.
     do ii = 1, nbnoto
-        ino=zi(iaexte-1+ii)
+        ino = zi(iaexte-1+ii)
         do iec = 1, nbec
             if (prnm(nbec*(ino-1)+iec) .ne. 0) goto 11
-            zi(iaexte-1+ii)=0
-            lmess=.true.
+            zi(iaexte-1+ii) = 0
+            lmess = .true.
         end do
- 11     continue
+11      continue
     end do
     if (lmess) then
         call utmess('A', 'SOUSTRUC_41')
-    endif
+    end if
 !
 !
 !     -- ELIMINATION DES NOEUDS EXTERNES EN DOUBLE :
@@ -156,22 +156,22 @@ subroutine ssdege(nomu)
     call ssdeu2(nbnoto, zi(iaexte), nvalap)
     if (nvalap .ne. nbnoto) then
         call utmess('A', 'SOUSTRUC_42')
-    endif
+    end if
 !
 !
 !     -- CREATION DE L'OBJET .LINO ET RECOPIE DE .EXTERN:
 !     ---------------------------------------------------
     call wkvect(nomu//'.LINO', 'G V I', nvalap, ialino)
-    do 21 , ii= 1,nvalap
-    zi(ialino-1+ii)= zi(iaexte-1+ii)
-    21 end do
+    do 21, ii = 1, nvalap
+        zi(ialino-1+ii) = zi(iaexte-1+ii)
+21  end do
     call jeecra(nomu//'.LINO', 'LONUTI', nvalap)
 !
 !
 !     -- MISE A JOUR DE .DESM :
 !     -------------------------
-    zi(jdesm-1+2)=nvalap
-    zi(jdesm-1+6)=nchar
+    zi(jdesm-1+2) = nvalap
+    zi(jdesm-1+6) = nchar
 !
 !
     call jedetr(nomu//'.EXTERN')

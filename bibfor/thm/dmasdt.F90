@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 !
 function dmasdt(rho12, rho21, alp21, h11, h12, &
-                satur, phi  ,&
-                pas  , temp )
+                satur, phi, &
+                pas, temp)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: rho12, rho21
-real(kind=8), intent(in) :: satur, h11, h12
-real(kind=8), intent(in) :: phi, alp21
-real(kind=8), intent(in) :: temp, pas
-real(kind=8) :: dmasdt
+    real(kind=8), intent(in) :: rho12, rho21
+    real(kind=8), intent(in) :: satur, h11, h12
+    real(kind=8), intent(in) :: phi, alp21
+    real(kind=8), intent(in) :: temp, pas
+    real(kind=8) :: dmasdt
 !
 ! --------------------------------------------------------------------------------------------------
 !

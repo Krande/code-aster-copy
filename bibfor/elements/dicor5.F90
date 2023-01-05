@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dicor5(k0, sim, p1, pi, ui,&
-                  ti, dxu1, dxu2, dryu1, dryu2,&
-                  nu1, nu2, mu1, mu2, c1,&
-                  dbar2, uu, tt, dur, dryr,&
-                  dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2,&
+subroutine dicor5(k0, sim, p1, pi, ui, &
+                  ti, dxu1, dxu2, dryu1, dryu2, &
+                  nu1, nu2, mu1, mu2, c1, &
+                  dbar2, uu, tt, dur, dryr, &
+                  dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2, &
                   dnsdt2, si, varip2, varip3)
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1504
@@ -81,7 +81,7 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
     else
         ubr1 = (ui+dur)/dxu1/p1
         tbr1 = (ti+dryr)/dryu1/p1
-    endif
+    end if
     feq1 = sqrt(ubr1**2+tbr1**2)
     ubr1 = ubr1/feq1
     tbr1 = tbr1/feq1
@@ -106,7 +106,7 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
     tr2 = t2/dryu2
     p2 = sqrt(ur2**2+tr2**2)
     g2 = dbar2*p2
-    rg2 = 0.5d0*(-g2+sqrt(g2**2 + 4.d0*g2))
+    rg2 = 0.5d0*(-g2+sqrt(g2**2+4.d0*g2))
 !      RGP2 = (1.D0-RG2)**2/RG2/(2.D0-RG2)
 !
     varip2 = p2
@@ -117,7 +117,7 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
     si(1) = -si(7)
     si(5) = -si(11)
 !
-    call dicor3(k0, dur, dryr, sim, si,&
+    call dicor3(k0, dur, dryr, sim, si, &
                 dnsdu, dmsdt, dnsdt)
 !
     dnsdu2 = rg2*nu2/dxu2/p2

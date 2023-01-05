@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cjspla(mod, crit, mater, seuili, seuild,&
-                  nvi, epsd, deps, sigd, vind,&
-                  sigf, vinf, mecani, nivcjs, niter,&
+subroutine cjspla(mod, crit, mater, seuili, seuild, &
+                  nvi, epsd, deps, sigd, vind, &
+                  sigf, vinf, mecani, nivcjs, niter, &
                   ndec, epscon, iret, trac)
     implicit none
 !       INTEGRATION PLASTIQUE DE LA LOI CJS
@@ -67,17 +67,17 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     character(len=4) :: nivcjs
 !
     character(len=8) :: mod
-    parameter     ( zero = 0.d0   )
+    parameter(zero=0.d0)
     integer :: idec
     integer :: i, niter0
 !
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
 !
-    ASSERT(nvi.le.nvimax)
+    ASSERT(nvi .le. nvimax)
 !
-    pa = mater(12,2)
-    qinit = mater(13,2)
+    pa = mater(12, 2)
+    qinit = mater(13, 2)
     trac = .false.
 !
 !  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
@@ -96,7 +96,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         stopnc = .true.
     else
         stopnc = .false.
-    endif
+    end if
 !
 !
 !  INITIALISATION DES VARIABLES DE REDECOUPAGE
@@ -125,7 +125,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
         ndec = int(crit(5))
         aredec = .true.
         noconv = .false.
-    endif
+    end if
 !
 !
 !
@@ -134,9 +134,9 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !
 500 continue
     if (noconv) then
-        ndec = - int(crit(5))
-        aredec=.true.
-    endif
+        ndec = -int(crit(5))
+        aredec = .true.
+    end if
 !
 !
 !   RESTAURATION DE SIGD VIND DEPS ET PREDIC ELAS SIGF
@@ -159,34 +159,34 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 ! SAUVEGARDE PREDIC ELASTIQUE POUR EVENTUEL CHANGEMENT
 ! DE MECANISME
 !
-        predic(1:ndt)= sigf(1:ndt)
+        predic(1:ndt) = sigf(1:ndt)
 !
         i1f = zero
         do i = 1, ndi
-            i1f = i1f + sigf(i)
+            i1f = i1f+sigf(i)
         end do
 !
         if ((i1f+qinit) .eq. 0.d0) then
-            i1f = -qinit+1.d-12 * pa
+            i1f = -qinit+1.d-12*pa
             pref = abs(pa)
         else
             pref = abs(i1f+qinit)
-        endif
+        end if
 !
         call cjssmi(mater, sigf, vind, seuili)
         call cjssmd(mater, sigf, vind, seuild)
         seuili = seuili/pref
         seuild = seuild/pref
-        chgmec=.false.
+        chgmec = .false.
         if (seuili .gt. zero .and. seuild .le. zero) then
-            mecani='ISOTRO'
-        endif
+            mecani = 'ISOTRO'
+        end if
         if (seuili .le. zero .and. seuild .gt. zero) then
-            mecani='DEVIAT'
-        endif
+            mecani = 'DEVIAT'
+        end if
         if (seuili .gt. zero .and. seuild .gt. zero) then
-            mecani='ISODEV'
-        endif
+            mecani = 'ISODEV'
+        end if
 !
 !
         do i = 1, nvi-1
@@ -202,50 +202,50 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !       -----------------------
 !
         if (mecani .eq. 'ISOTRO') then
-            call cjsmis(mod, crit, mater, nvi, epsd,&
-                        deps, sigd, sigf, vind, vinf,&
+            call cjsmis(mod, crit, mater, nvi, epsd, &
+                        deps, sigd, sigf, vind, vinf, &
                         noconv, aredec, stopnc, niter0, epscon)
-            niter = niter + niter0
-            if (noconv .and. (.not.aredec)) goto 500
+            niter = niter+niter0
+            if (noconv .and. (.not. aredec)) goto 500
             if (noconv) then
-                iret=1
+                iret = 1
                 goto 999
-            endif
-        endif
+            end if
+        end if
 !
 !
 !       MECANISME DEVIATOIRE SEUL
 !       -------------------------
 !
         if (mecani .eq. 'DEVIAT') then
-            call cjsmde(mod, crit, mater, nvi, epsd,&
-                        deps, sigd, sigf, vind, vinf,&
-                        noconv, aredec, stopnc, niter0, epscon,&
+            call cjsmde(mod, crit, mater, nvi, epsd, &
+                        deps, sigd, sigf, vind, vinf, &
+                        noconv, aredec, stopnc, niter0, epscon, &
                         trac)
-            niter = niter + niter0
+            niter = niter+niter0
             if (trac) goto 999
 !
-            if (noconv .and. (.not.aredec)) goto 500
+            if (noconv .and. (.not. aredec)) goto 500
             if (noconv) then
-                iret=1
+                iret = 1
                 goto 999
-            endif
-        endif
+            end if
+        end if
 !
 !       MECANISMES ISOTROPE ET DEVIATOIRE
 !       ---------------------------------
 !
         if (mecani .eq. 'ISODEV') then
-            call cjsmid(mod, crit, mater, nvi, epsd,&
-                        deps, sigd, sigf, vind, vinf,&
+            call cjsmid(mod, crit, mater, nvi, epsd, &
+                        deps, sigd, sigf, vind, vinf, &
                         noconv, aredec, stopnc, niter0, epscon)
-            niter = niter + niter0
-            if (noconv .and. (.not.aredec)) goto 500
+            niter = niter+niter0
+            if (noconv .and. (.not. aredec)) goto 500
             if (noconv) then
-                iret=1
+                iret = 1
                 goto 999
-            endif
-        endif
+            end if
+        end if
 !
 !
 !
@@ -256,32 +256,32 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !
         i1f = zero
         do i = 1, ndi
-            i1f = i1f + sigf(i)
+            i1f = i1f+sigf(i)
         end do
         if ((i1f+qinit) .eq. 0.d0) then
-            i1f = -qinit + 1.d-12 * pa
+            i1f = -qinit+1.d-12*pa
             pref = abs(pa)
         else
             pref = abs(i1f+qinit)
-        endif
+        end if
 !--->   VERIFICATION DES MECANISMES ACTIVES
 !
 !
         if ((mecani .eq. 'ISOTRO') .and. (seuild .gt. zero)) then
-            mecani='ISODEV'
-            chgmec=.true.
-        endif
+            mecani = 'ISODEV'
+            chgmec = .true.
+        end if
         if ((mecani .eq. 'DEVIAT') .and. (seuili .gt. zero)) then
-            mecani='ISODEV'
-            chgmec=.true.
-        endif
+            mecani = 'ISODEV'
+            chgmec = .true.
+        end if
 !
 !
 ! - SI ON ACTIVE EN FAIT LES DEUX MECANISMES AU LIEU D'UN SEUL : RETOUR
 !   ET SI ON AVAIT CONVERGE
 !
-        if (chgmec .and. (.not.noconv)) then
-            chgmec=.false.
+        if (chgmec .and. (.not. noconv)) then
+            chgmec = .false.
             sigf(1:ndt) = predic(1:ndt)
             goto 100
         else
@@ -293,8 +293,8 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
                 do i = 1, ndt
                     sigf(i) = sigd(i)+(predi0(i)-sigd(i))/ndec
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbr_para_info(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR), intent(in) :: cmdPara
+    type(ROM_DS_ParaDBR), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,18 +57,18 @@ type(ROM_DS_ParaDBR), intent(in) :: cmdPara
 ! - Get parameters
 !
     operation = cmdPara%operation
-    lReuse    = cmdPara%lReuse
+    lReuse = cmdPara%lReuse
 !
 ! - Print - General
 !
     if (niv .ge. 2) then
-        call utmess('I', 'ROM19_6', sk = operation)
+        call utmess('I', 'ROM19_6', sk=operation)
         if (lReuse) then
             call utmess('I', 'ROM19_7')
         else
             call utmess('I', 'ROM19_8')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Print / method
 !
@@ -86,6 +86,6 @@ type(ROM_DS_ParaDBR), intent(in) :: cmdPara
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

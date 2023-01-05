@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine trchno(ific, nocc)
 ! ----------------------------------------------------------------------
 !
     character(len=6) :: nompro
-    parameter (nompro='TRCHNO')
+    parameter(nompro='TRCHNO')
 !
     integer :: iocc, iret, nbcmp, n1, n2, n3, n4, ng
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
@@ -80,12 +80,12 @@ subroutine trchno(ific, nocc)
     travrr = '&&'//nompro//'_TRAVR_R        '
     travir = '&&'//nompro//'_TRAVI_R        '
     travcr = '&&'//nompro//'_TRAVC_R        '
-    irefi=1
-    irefr=1
-    irefc=1
-    irefir=1
-    irefrr=1
-    irefcr=1
+    irefi = 1
+    irefr = 1
+    irefc = 1
+    irefir = 1
+    irefrr = 1
+    irefcr = 1
 !
     do iocc = 1, nocc
         lign1 = ' '
@@ -93,10 +93,10 @@ subroutine trchno(ific, nocc)
         nonoeu = ' '
         noddl = ' '
         call getvid('CHAM_NO', 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
-        lign1(1:21)='---- '//motcle(1:8)
-        lign1(22:22)='.'
-        lign2(1:21)='     '//cham19(1:8)
-        lign2(22:22)='.'
+        lign1(1:21) = '---- '//motcle(1:8)
+        lign1(22:22) = '.'
+        lign2(1:21) = '     '//cham19(1:8)
+        lign2(22:22) = '.'
 !
         call tresu_read_refe('CHAM_NO', iocc, tbtxt)
 !
@@ -104,20 +104,20 @@ subroutine trchno(ific, nocc)
         if (n1 .ne. 0) then
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
-            lign1(1:nl1+16)=lign1(1:nl1-1)//' NOM_CMP'
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '//noddl
-            lign1(nl1+17:nl1+17)='.'
-            lign2(nl2+17:nl2+17)='.'
-        endif
+            lign1(1:nl1+16) = lign1(1:nl1-1)//' NOM_CMP'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//noddl
+            lign1(nl1+17:nl1+17) = '.'
+            lign2(nl2+17:nl2+17) = '.'
+        end if
         call getvtx('CHAM_NO', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
         if (ssigne .eq. 'OUI') then
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
-            lign1(1:nl1+16)=lign1(1:nl1-1)//' VALE_ABS'
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '//ssigne
-            lign1(nl1+17:nl1+17)='.'
-            lign2(nl2+17:nl2+17)='.'
-        endif
+            lign1(1:nl1+16) = lign1(1:nl1-1)//' VALE_ABS'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//ssigne
+            lign1(nl1+17:nl1+17) = '.'
+            lign2(nl2+17:nl2+17) = '.'
+        end if
         call tresu_tole(epsi, mcf='CHAM_NO', iocc=iocc)
         call getvtx('CHAM_NO', 'CRITERE', iocc=iocc, scal=crit, nbret=iret)
 !
@@ -128,65 +128,65 @@ subroutine trchno(ific, nocc)
         skip = .false.
         ordgrd = 1.d0
         if (n1 .ne. 0) then
-            nref=-n1
+            nref = -n1
             typres = 'R'
             call jedetr(travr)
             call wkvect(travr, 'V V R', nref, irefr)
-            call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
+            call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr), &
                         nbret=iret)
             call tresu_ordgrd(zr(irefr), skip, ordgrd, mcf='CHAM_NO', iocc=iocc)
         else if (n2 .ne. 0) then
-            nref=-n2
+            nref = -n2
             typres = 'I'
             call jedetr(travi)
             call wkvect(travi, 'V V I', nref, irefi)
-            call getvis('CHAM_NO', 'VALE_CALC_I', iocc=iocc, nbval=nref, vect=zi( irefi),&
+            call getvis('CHAM_NO', 'VALE_CALC_I', iocc=iocc, nbval=nref, vect=zi(irefi), &
                         nbret=iret)
         else if (n3 .ne. 0) then
-            nref=-n3
+            nref = -n3
             typres = 'C'
             call jedetr(travc)
             call wkvect(travc, 'V V C', nref, irefc)
-            call getvc8('CHAM_NO', 'VALE_CALC_C', iocc=iocc, nbval=nref, vect=zc( irefc),&
+            call getvc8('CHAM_NO', 'VALE_CALC_C', iocc=iocc, nbval=nref, vect=zc(irefc), &
                         nbret=iret)
-        endif
+        end if
 ! ----------------------------------------------------------------------
-        lref=.false.
+        lref = .false.
         call getvr8('CHAM_NO', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
-            lref=.true.
+            lref = .true.
             call getvr8('CHAM_NO', 'VALE_REFE', iocc=iocc, nbval=0, nbret=n1r)
             call getvis('CHAM_NO', 'VALE_REFE_I', iocc=iocc, nbval=0, nbret=n2r)
             call getvc8('CHAM_NO', 'VALE_REFE_C', iocc=iocc, nbval=0, nbret=n3r)
             if (n1r .ne. 0) then
-                ASSERT((n1r.eq.n1))
-                nref=-n1r
+                ASSERT((n1r .eq. n1))
+                nref = -n1r
                 call jedetr(travrr)
                 call wkvect(travrr, 'V V R', nref, irefrr)
-                call getvr8('CHAM_NO', 'VALE_REFE', iocc=iocc, nbval=nref, vect=zr(irefrr),&
+                call getvr8('CHAM_NO', 'VALE_REFE', iocc=iocc, nbval=nref, vect=zr(irefrr), &
                             nbret=iret)
-            else if (n2r.ne.0) then
-                ASSERT((n2r.eq.n2))
-                nref=-n2r
+            else if (n2r .ne. 0) then
+                ASSERT((n2r .eq. n2))
+                nref = -n2r
                 call jedetr(travir)
                 call wkvect(travir, 'V V I', nref, irefir)
-                call getvis('CHAM_NO', 'VALE_REFE_I', iocc=iocc, nbval=nref, vect=zi(irefir),&
+                call getvis('CHAM_NO', 'VALE_REFE_I', iocc=iocc, nbval=nref, vect=zi(irefir), &
                             nbret=iret)
-            else if (n3r.ne.0) then
-                ASSERT((n3r.eq.n3))
-                nref=-n3r
+            else if (n3r .ne. 0) then
+                ASSERT((n3r .eq. n3))
+                nref = -n3r
                 call jedetr(travcr)
                 call wkvect(travcr, 'V V C', nref, irefcr)
-                call getvc8('CHAM_NO', 'VALE_REFE_C', iocc=iocc, nbval=nref, vect=zc(irefcr),&
+                call getvc8('CHAM_NO', 'VALE_REFE_C', iocc=iocc, nbval=nref, vect=zc(irefcr), &
                             nbret=iret)
-            endif
-        endif
+            end if
+        end if
         if (skip .and. .not. lref) then
             call utmess('A', 'TEST0_11')
-        endif
+        end if
         if (skip .and. .not. lref) then
             call utmess('A', 'TEST0_11')
-        endif
+        end if
 ! ----------------------------------------------------------------------
 !
         call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
@@ -199,18 +199,18 @@ subroutine trchno(ific, nocc)
             call getvtx('RESU', 'NOEUD', iocc=iocc, scal=exclgr, nbret=n2)
             if (n2 > 0 .and. l_parallel_mesh) then
                 call utmess('F', 'MODELISA7_86')
-            endif
+            end if
             call getvtx('RESU', 'GROUP_NO', iocc=iocc, scal=exclgr, nbret=n3)
             if ((n2+n3) .gt. 0) then
                 call utmess('A', 'CALCULEL6_96')
-            endif
+            end if
 
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
-            lign1(1:nl1+16)=lign1(1:nl1-1)//' TYPE_TEST'
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '//typtes
-            lign1(nl1+17:nl1+17)='.'
-            lign2(nl2+17:nl2+17)='.'
+            lign1(1:nl1+16) = lign1(1:nl1-1)//' TYPE_TEST'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//typtes
+            lign1(nl1+17:nl1+17) = '.'
+            lign2(nl2+17:nl2+17) = '.'
 !
             call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, nbval=0, nbret=n4)
             if (n4 .eq. 0) then
@@ -219,124 +219,124 @@ subroutine trchno(ific, nocc)
                 nl2 = lxlgut(lign2)
                 nl22 = lxlgut(lign2(1:nl2-1))
                 if (nl11 .lt. 80) then
-                    write (ific,*) lign1(1:nl11)
-                else if (nl11.lt.160) then
-                    write (ific,116) lign1(1:80),lign1(81:nl11)
+                    write (ific, *) lign1(1:nl11)
+                else if (nl11 .lt. 160) then
+                    write (ific, 116) lign1(1:80), lign1(81:nl11)
                 else
-                    write (ific,120) lign1(1:80),lign1(81:160),&
-                    lign1(161:nl11)
-                endif
+                    write (ific, 120) lign1(1:80), lign1(81:160), &
+                        lign1(161:nl11)
+                end if
                 if (nl22 .lt. 80) then
-                    write (ific,*) lign2(1:nl22)
-                else if (nl22.lt.160) then
-                    write (ific,116) lign2(1:80),lign2(81:nl22)
+                    write (ific, *) lign2(1:nl22)
+                else if (nl22 .lt. 160) then
+                    write (ific, 116) lign2(1:80), lign2(81:nl22)
                 else
-                    write (ific,120) lign2(1:80),lign2(81:160),&
-                    lign2(161:nl22)
-                endif
+                    write (ific, 120) lign2(1:80), lign2(81:160), &
+                        lign2(161:nl22)
+                end if
 !
                 if (lref) then
-                    tbref(1)=tbtxt(1)
-                    tbref(2)=tbtxt(2)
-                    tbtxt(1)='NON_REGRESSION'
-                endif
-                call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
-                                     zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
+                    tbref(1) = tbtxt(1)
+                    tbref(2) = tbtxt(2)
+                    tbtxt(1) = 'NON_REGRESSION'
+                end if
+                call tresu_champ_all(cham19, typtes, typres, nref, tbtxt, &
+                                     zi(irefi), zr(irefr), zc(irefc), epsi, crit, &
                                      .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
-                    call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
-                                         zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
+                    call tresu_champ_all(cham19, typtes, typres, nref, tbref, &
+                                         zi(irefir), zr(irefrr), zc(irefcr), epsir, crit, &
                                          .false._1, ssigne)
-                endif
+                end if
 !
             else
                 nbcmp = -n4
                 AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
-                call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=nom_cmp,&
+                call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=nom_cmp, &
                             nbret=n4)
                 if (lref) then
-                    tbref(1)=tbtxt(1)
-                    tbref(2)=tbtxt(2)
-                    tbtxt(1)='NON_REGRESSION'
-                endif
-                call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
-                                     zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
-                                     lign2, crit, ific, nbcmp, nom_cmp,&
+                    tbref(1) = tbtxt(1)
+                    tbref(2) = tbtxt(2)
+                    tbtxt(1) = 'NON_REGRESSION'
+                end if
+                call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt, &
+                                     zi(irefi), zr(irefr), zc(irefc), epsi, lign1, &
+                                     lign2, crit, ific, nbcmp, nom_cmp, &
                                      .true._1, ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
-                    call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
-                                         zi( irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
-                                         lign2, crit, ific, nbcmp, nom_cmp,&
+                    call tresu_champ_cmp(cham19, typtes, typres, nref, tbref, &
+                                         zi(irefir), zr(irefrr), zc(irefcr), epsir, lign1, &
+                                         lign2, crit, ific, nbcmp, nom_cmp, &
                                          .false._1, ssigne)
-                endif
+                end if
                 AS_DEALLOCATE(vk8=nom_cmp)
-            endif
+            end if
 !
         else
 !
             call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
-            call getvem(nomma, 'NOEUD', 'CHAM_NO', 'NOEUD', iocc,&
+            call getvem(nomma, 'NOEUD', 'CHAM_NO', 'NOEUD', iocc, &
                         1, nonoeu(1:8), n1)
             if (n1 .ne. 0) then
                 nl1 = lxlgut(lign1)
                 nl2 = lxlgut(lign2)
-                lign1(1:nl1+16)=lign1(1:nl1-1)//' NOEUD'
-                lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nonoeu(1:8)
+                lign1(1:nl1+16) = lign1(1:nl1-1)//' NOEUD'
+                lign2(1:nl2+16) = lign2(1:nl2-1)//' '//nonoeu(1:8)
 !
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
-                endif
-            endif
+                end if
+            end if
 !
-            call getvem(nomma, 'GROUP_NO', 'CHAM_NO', 'GROUP_NO', iocc,&
+            call getvem(nomma, 'GROUP_NO', 'CHAM_NO', 'GROUP_NO', iocc, &
                         1, nogrno, n2)
 
             ng = 0
-            if(n2 == 0 .and. l_parallel_mesh) then
+            if (n2 == 0 .and. l_parallel_mesh) then
                 call getvtx('RESU', 'GROUP_NO', iocc=iocc, nbval=1, scal=nogrno, nbret=ng)
             end if
             if ((n2 .ne. 0) .or. (ng .ne. 0)) then
                 nl1 = lxlgut(lign1)
                 nl2 = lxlgut(lign2)
-                lign1(1:nl1+16)=lign1(1:nl1-1)//' GROUP_NO'
-                lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nogrno
-            endif
+                lign1(1:nl1+16) = lign1(1:nl1-1)//' GROUP_NO'
+                lign2(1:nl2+16) = lign2(1:nl2-1)//' '//nogrno
+            end if
 !
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
-            write (ific,*) lign1(1:nl1)
-            write (ific,*) lign2(1:nl2)
+            write (ific, *) lign1(1:nl1)
+            write (ific, *) lign2(1:nl2)
 !
 !
             if (n1 .eq. 1) then
 !            RIEN A FAIRE.
             else
                 nonoeu = ' '
-                if( n2 > 0 ) then
+                if (n2 > 0) then
                     call utnono('F', nomma, 'NOEUD', nogrno, nonoeu(1:8), iret)
                 end if
                 nonoeu(10:33) = nogrno
-            endif
+            end if
 !
             if (lref) then
-                tbref(1)=tbtxt(1)
-                tbref(2)=tbtxt(2)
-                tbtxt(1)='NON_REGRESSION'
-            endif
-            call tresu_champ_no(cham19, nonoeu, noddl, nref, tbtxt,&
-                                zi(irefi), zr( irefr), zc(irefc), typres, epsi,&
+                tbref(1) = tbtxt(1)
+                tbref(2) = tbtxt(2)
+                tbtxt(1) = 'NON_REGRESSION'
+            end if
+            call tresu_champ_no(cham19, nonoeu, noddl, nref, tbtxt, &
+                                zi(irefi), zr(irefr), zc(irefc), typres, epsi, &
                                 crit, .true._1, ssigne, ignore=skip, compare=ordgrd)
             if (lref) then
-                call tresu_champ_no(cham19, nonoeu, noddl, nref, tbref,&
-                                    zi(irefir), zr(irefrr), zc(irefcr), typres, epsir,&
+                call tresu_champ_no(cham19, nonoeu, noddl, nref, tbref, &
+                                    zi(irefir), zr(irefrr), zc(irefcr), typres, epsir, &
                                     crit, .false._1, ssigne)
-            endif
-        endif
-        write (ific,*)' '
+            end if
+        end if
+        write (ific, *) ' '
     end do
 !
-    116 format(1x,a80,a)
-    120 format(1x,2(a80),a)
+116 format(1x, a80, a)
+120 format(1x, 2(a80), a)
 !
     call jedetr(travr)
     call jedetr(travc)

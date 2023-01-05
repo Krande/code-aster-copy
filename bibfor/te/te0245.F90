@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0245(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/getDensity.h"
 #include "asterfort/teattr.h"
 !
-character(len=*) :: option, nomte
+    character(len=*) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ character(len=*) :: option, nomte
     call jevech('PMATERC', 'L', lmater)
 
     call teattr('S', 'DIM_COOR_MODELI', attrib, ier)
-    read(attrib, '(I8)') dimModel
+    read (attrib, '(I8)') dimModel
 !
     call getDensity(zi(lmater), rho)
 !
@@ -69,23 +69,23 @@ character(len=*) :: option, nomte
     else if (dimModel .eq. 2) then
         xl = lonele(dime=2, igeom=igeom)
     else
-        ASSERT( ASTER_FALSE )
-    endif
+        ASSERT(ASTER_FALSE)
+    end if
 !
 !   calcul des caracteristiques elementaires
     if (option .eq. 'MASS_INER') then
         call jevech('PMASSINE', 'E', lcastr)
 !       masse et cdg de l'element
         if (nomte .eq. 'MECA_BARRE') then
-            zr(lcastr) = rho * a * xl
-            zr(lcastr+1) =( zr(igeom+4) + zr(igeom+1) ) / 2.d0
-            zr(lcastr+2) =( zr(igeom+5) + zr(igeom+2) ) / 2.d0
-            zr(lcastr+3) =( zr(igeom+6) + zr(igeom+3) ) / 2.d0
-        else if (nomte.eq.'MECA_2D_BARRE') then
-            zr(lcastr) = rho * a * xl
-            zr(lcastr+1) =( zr(igeom+3) + zr(igeom+1) ) / 2.d0
-            zr(lcastr+2) =( zr(igeom+4) + zr(igeom+2) ) / 2.d0
-        endif
+            zr(lcastr) = rho*a*xl
+            zr(lcastr+1) = (zr(igeom+4)+zr(igeom+1))/2.d0
+            zr(lcastr+2) = (zr(igeom+5)+zr(igeom+2))/2.d0
+            zr(lcastr+3) = (zr(igeom+6)+zr(igeom+3))/2.d0
+        else if (nomte .eq. 'MECA_2D_BARRE') then
+            zr(lcastr) = rho*a*xl
+            zr(lcastr+1) = (zr(igeom+3)+zr(igeom+1))/2.d0
+            zr(lcastr+2) = (zr(igeom+4)+zr(igeom+2))/2.d0
+        end if
 !       inertie de l'element
         zr(lcastr+4) = 0.d0
         zr(lcastr+5) = 0.d0
@@ -95,6 +95,6 @@ character(len=*) :: option, nomte
         zr(lcastr+9) = 0.d0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

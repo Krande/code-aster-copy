@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,21 +19,21 @@
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmvppe(ndim     , nne      , nnm     , nnl   , nbdm  ,&
-                  i_reso_geom   , l_large_slip ,&
-                  jeusup  ,&
-                  tau1     , tau2     ,&
-                  ffe      , ffm      , ffl     , dffm  , ddffm ,&
-                  jeu      , djeu    , djeut ,&
-                  dlagrc   , dlagrf   ,&
-                  norm     , mprojt   ,&
-                  mprt1n   , mprt2n   , &
-                  mprt11   , mprt12   , mprt21  , mprt22,&
-                  kappa    , &
-                  taujeu1  , taujeu2  ,&
+subroutine mmvppe(ndim, nne, nnm, nnl, nbdm, &
+                  i_reso_geom, l_large_slip, &
+                  jeusup, &
+                  tau1, tau2, &
+                  ffe, ffm, ffl, dffm, ddffm, &
+                  jeu, djeu, djeut, &
+                  dlagrc, dlagrf, &
+                  norm, mprojt, &
+                  mprt1n, mprt2n, &
+                  mprt11, mprt12, mprt21, mprt22, &
+                  kappa, &
+                  taujeu1, taujeu2, &
                   dnepmait1, dnepmait2)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,20 +47,20 @@ implicit none
 #include "asterfort/mmreac.h"
 #include "Contact_type.h"
 !
-integer, intent(in) :: ndim, nne, nnm, nnl, nbdm
-integer, intent(in) :: i_reso_geom
-aster_logical, intent(in) :: l_large_slip
-real(kind=8), intent(in) :: jeusup
-real(kind=8), intent(in) :: tau1(3), tau2(3)
-real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2,9), ddffm(3,9)
-real(kind=8), intent(out) :: jeu
-real(kind=8), intent(out) :: djeut(3), djeu(3), dlagrc, dlagrf(2)
-real(kind=8), intent(out) :: norm(3)
-real(kind=8), intent(out) :: mprojt(3, 3)
-real(kind=8), intent(out) :: mprt1n(3, 3), mprt2n(3, 3)
-real(kind=8), intent(out) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
-real(kind=8), intent(out) :: kappa(2, 2)
-real(kind=8), intent(out) :: dnepmait1, dnepmait2, taujeu1, taujeu2
+    integer, intent(in) :: ndim, nne, nnm, nnl, nbdm
+    integer, intent(in) :: i_reso_geom
+    aster_logical, intent(in) :: l_large_slip
+    real(kind=8), intent(in) :: jeusup
+    real(kind=8), intent(in) :: tau1(3), tau2(3)
+    real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2, 9), ddffm(3, 9)
+    real(kind=8), intent(out) :: jeu
+    real(kind=8), intent(out) :: djeut(3), djeu(3), dlagrc, dlagrf(2)
+    real(kind=8), intent(out) :: norm(3)
+    real(kind=8), intent(out) :: mprojt(3, 3)
+    real(kind=8), intent(out) :: mprt1n(3, 3), mprt2n(3, 3)
+    real(kind=8), intent(out) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(out) :: kappa(2, 2)
+    real(kind=8), intent(out) :: dnepmait1, dnepmait2, taujeu1, taujeu2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,7 +116,7 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2, taujeu1, taujeu2
     real(kind=8) :: ddeple(3), ddeplm(3)
     real(kind=8) :: deplme(3), deplmm(3)
     real(kind=8) :: mprojn(3, 3)
-    real(kind=8) :: gene11(3,3), gene21(3,3), gene22(3,3)
+    real(kind=8) :: gene11(3, 3), gene21(3, 3), gene22(3, 3)
     real(kind=8) :: a(2, 2), ha(2, 2), h(2, 2), hah(2, 2)
     real(kind=8) :: mprnt1(3, 3), mprnt2(3, 3)
     real(kind=8) :: vech1(3), vech2(3)
@@ -141,89 +141,89 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2, taujeu1, taujeu2
     ppe = 0.d0
     if (i_reso_geom .eq. ALGO_NEWT) then
         ppe = 1.d0
-    endif
+    end if
 !
 ! - Get initial geometry
 !
-    call lcgeominit(ndim          ,&
-                    nne           , nnm           ,&
+    call lcgeominit(ndim, &
+                    nne, nnm, &
                     elem_mast_temp, elem_slav_temp)
-    elem_slav_init(:,:) = 0.d0
-    elem_mast_init(:,:) = 0.d0
+    elem_slav_init(:, :) = 0.d0
+    elem_mast_init(:, :) = 0.d0
     do i_dime = 1, ndim
         do i_nne = 1, nne
-            elem_slav_init(i_nne,i_dime) = elem_slav_temp(i_nne,i_dime)
+            elem_slav_init(i_nne, i_dime) = elem_slav_temp(i_nne, i_dime)
         end do
         do i_nnm = 1, nnm
-            elem_mast_init(i_nnm,i_dime) = elem_mast_temp(i_nnm,i_dime)
+            elem_mast_init(i_nnm, i_dime) = elem_mast_temp(i_nnm, i_dime)
         end do
     end do
 !
 ! - Update geometry
 !
-    call mmreac(ndim          , nne           , nnm,&
-                jv_disp       , jv_disp_incr  , ppe,&
-                elem_slav_temp, elem_mast_temp,&
-                elem_slav_tem2, elem_mast_tem2,&
-                nbdm_    = nbdm,&
-                ddepmam_ = ddepmam)
-    elem_slav_coor(:,:) = 0.d0
-    elem_mast_coor(:,:) = 0.d0
+    call mmreac(ndim, nne, nnm, &
+                jv_disp, jv_disp_incr, ppe, &
+                elem_slav_temp, elem_mast_temp, &
+                elem_slav_tem2, elem_mast_tem2, &
+                nbdm_=nbdm, &
+                ddepmam_=ddepmam)
+    elem_slav_coor(:, :) = 0.d0
+    elem_mast_coor(:, :) = 0.d0
     do i_dime = 1, ndim
         do i_nne = 1, nne
-            elem_slav_coor(i_nne,i_dime) = elem_slav_tem2(i_nne,i_dime)
+            elem_slav_coor(i_nne, i_dime) = elem_slav_tem2(i_nne, i_dime)
         end do
         do i_nnm = 1, nnm
-            elem_mast_coor(i_nnm,i_dime) = elem_mast_tem2(i_nnm,i_dime)
+            elem_mast_coor(i_nnm, i_dime) = elem_mast_tem2(i_nnm, i_dime)
         end do
     end do
 !
 ! - Compute local basis
 !
-    call mmgeom(ndim  ,&
-                nne   , nnm   ,&
-                ffe   , ffm   ,&
-                elem_slav_coor, elem_mast_coor,&
-                tau1  , tau2  ,&
-                norm  , mprojn, mprojt,&
-                geome , geomm )
+    call mmgeom(ndim, &
+                nne, nnm, &
+                ffe, ffm, &
+                elem_slav_coor, elem_mast_coor, &
+                tau1, tau2, &
+                norm, mprojn, mprojt, &
+                geome, geomm)
 !
 ! - Compute increment of Lagrange multipliers
 !
-    call mmlagm(nbdm  , ndim  , nnl, jv_disp_incr, ffl,&
+    call mmlagm(nbdm, ndim, nnl, jv_disp_incr, ffl, &
                 dlagrc, dlagrf)
 !
 ! - Compute increment of displacements
 !
-    call mmdepm(nbdm  , ndim  ,&
-                nne   , nnm   ,&
-                jv_disp , jv_disp_incr,&
-                ffe   , ffm   ,&
-                ddeple, ddeplm,&
+    call mmdepm(nbdm, ndim, &
+                nne, nnm, &
+                jv_disp, jv_disp_incr, &
+                ffe, ffm, &
+                ddeple, ddeplm, &
                 deplme, deplmm)
 !
 ! - Compute gaps
 !
-    call mmmjeu(ndim  , i_reso_geom, jeusup,&
-                geome , geomm ,&
-                ddeple, ddeplm,&
-                norm  , mprojt,&
-                jeu   , djeu  , djeut )
+    call mmmjeu(ndim, i_reso_geom, jeusup, &
+                geome, geomm, &
+                ddeple, ddeplm, &
+                norm, mprojt, &
+                jeu, djeu, djeut)
 !
 ! - Compute projection matrices for second variation of gap
 !
-    call mmcalg(ndim     , l_large_slip,&
-                nnm      , dffm        , ddffm ,&
-                elem_mast_coor, ddepmam     ,&
-                tau1     , tau2        , norm  ,&
-                jeu      , djeu        ,&
-                gene11   , gene21      , gene22,&
-                kappa    , h           ,&
-                vech1    , vech2       ,&
-                a        , ha          , hah   ,&
-                mprt11   , mprt12      , mprt21, mprt22,&
-                mprt1n   , mprt2n      , mprnt1, mprnt2,&
-                taujeu1  , taujeu2     ,&
+    call mmcalg(ndim, l_large_slip, &
+                nnm, dffm, ddffm, &
+                elem_mast_coor, ddepmam, &
+                tau1, tau2, norm, &
+                jeu, djeu, &
+                gene11, gene21, gene22, &
+                kappa, h, &
+                vech1, vech2, &
+                a, ha, hah, &
+                mprt11, mprt12, mprt21, mprt22, &
+                mprt1n, mprt2n, mprnt1, mprnt2, &
+                taujeu1, taujeu2, &
                 dnepmait1, dnepmait2)
 !
 end subroutine

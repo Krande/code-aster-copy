@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
-                  mxfreq, nfreq, valp, ieme, det,&
+subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich, &
+                  mxfreq, nfreq, valp, ieme, det, &
                   idet, nbpas, typres, nblagr, solveu)
     implicit none
 #include "asterfort/vpstur.h"
@@ -69,49 +69,49 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
 !-----------------------------------------------------------------------
     do i = 2, nfreq-1
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
-        call vpstur(lraide, valp(i), lmasse, ldynam, det(i),&
-                    idet(i), ieme(i), ier, solveu, .true._1,&
+        call vpstur(lraide, valp(i), lmasse, ldynam, det(i), &
+                    idet(i), ieme(i), ier, solveu, .true._1, &
                     .false._1)
-        ieme(i) = ieme(i) - nblagr
+        ieme(i) = ieme(i)-nblagr
         if (typres .ne. 'DYNAMIQUE') then
             if (valp(i) .lt. 0.d0) then
-                ieme(i) = - ieme(i)
-            endif
-        endif
+                ieme(i) = -ieme(i)
+            end if
+        end if
     end do
 !
     do ipas = 2, mxdich
-        ieme0 = - 1
+        ieme0 = -1
         iencor = 0
-        interv = nfreq -1
+        interv = nfreq-1
         iborn1 = 0
         do ip = 1, interv
-            iborn1 = iborn1 + 1
-            iborn2 = iborn1 + 1
-            ieme0 = ieme(max(iborn1-1,1))
+            iborn1 = iborn1+1
+            iborn2 = iborn1+1
+            ieme0 = ieme(max(iborn1-1, 1))
             ieme1 = ieme(iborn1)
             ieme2 = ieme(iborn2)
-            ieme3 = ieme(min(iborn2+1,nfreq))
+            ieme3 = ieme(min(iborn2+1, nfreq))
 !
             if (abs(ieme1-ieme(1)) .le. mxfreq) then
                 if (abs(ieme2-ieme1) .gt. 1) then
 !
                     freq1 = valp(iborn1)
                     freq2 = valp(iborn2)
-                    valpx = (freq1+freq2) * 0.5d0
+                    valpx = (freq1+freq2)*0.5d0
                     if (abs(freq2-freq1) .ge. tol*valpx) then
                         iencor = 1
-                        idx=0
+                        idx = 0
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)
-                        call vpstur(lraide, valpx, lmasse, ldynam, dx,&
-                                    idx, ix, ier, solveu, .true._1,&
+                        call vpstur(lraide, valpx, lmasse, ldynam, dx, &
+                                    idx, ix, ier, solveu, .true._1, &
                                     .false._1)
                         ix = ix-nblagr
                         if (typres .ne. 'DYNAMIQUE') then
                             if (valpx .lt. 0.d0) then
-                                ix = - ix
-                            endif
-                        endif
+                                ix = -ix
+                            end if
+                        end if
                         if (ix .eq. ieme0) then
 !                       --- ECRASER LA BORNE INF ---
                             iplace = iborn1
@@ -120,30 +120,30 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
                             iplace = iborn2
                         else
 !                       --- INSERER ENTRE LES DEUX BORNES ---
-                            nfreq = nfreq + 1
-                            iborn1 = iborn1 + 1
+                            nfreq = nfreq+1
+                            iborn1 = iborn1+1
                             do jdec = nfreq, iborn2, -1
-                                det( jdec) = det (jdec-1)
-                                idet( jdec) = idet (jdec-1)
-                                valp( jdec) = valp (jdec-1)
-                                ieme( jdec) = ieme (jdec-1)
+                                det(jdec) = det(jdec-1)
+                                idet(jdec) = idet(jdec-1)
+                                valp(jdec) = valp(jdec-1)
+                                ieme(jdec) = ieme(jdec-1)
                                 nbpas(jdec) = nbpas(jdec-1)
                             end do
                             iplace = iborn2
-                        endif
+                        end if
 !
-                        det (iplace) = dx
-                        idet (iplace) = idx
-                        valp (iplace) = valpx
-                        ieme (iplace) = ix
+                        det(iplace) = dx
+                        idet(iplace) = idx
+                        valp(iplace) = valpx
+                        ieme(iplace) = ix
                         nbpas(iplace) = ipas
 !
-                    endif
-                endif
+                    end if
+                end if
             else
-                nfreq = nfreq - (interv - ip + 1)
+                nfreq = nfreq-(interv-ip+1)
                 goto 100
-            endif
+            end if
 !
         end do
         if (iencor .eq. 0) goto 999

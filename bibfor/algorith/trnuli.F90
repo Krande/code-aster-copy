@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,28 +45,28 @@ subroutine trnuli(itab, nblig, nbcol, icol, nures)
     integer :: itab(nblig, nbcol), icol(nbcol)
     aster_logical :: ok
 !-----------------------------------------------------------------------
-    i=0
-    nures=0
+    i = 0
+    nures = 0
 !
- 10 continue
-    i=i+1
+10  continue
+    i = i+1
 !
-    ok=.true.
+    ok = .true.
 !
     do j = 1, nbcol
-        if (itab(i,j) .ne. icol(j)) ok=.false.
+        if (itab(i, j) .ne. icol(j)) ok = .false.
     end do
 !
     if (ok) then
-        nures=i
+        nures = i
         goto 999
     else
         if (i .lt. nblig) then
             goto 10
         else
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 !
 999 continue

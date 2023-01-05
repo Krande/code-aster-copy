@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcofr(mesh      , disp_curr , disp_cumu_inst, disp_iter, solver        ,&
-                  nume_dof  , matr_asse , iter_newt     , time_curr, resi_glob_rela,&
+subroutine nmcofr(mesh, disp_curr, disp_cumu_inst, disp_iter, solver, &
+                  nume_dof, matr_asse, iter_newt, time_curr, resi_glob_rela, &
                   ds_measure, ds_contact, ctccvg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -81,8 +81,8 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS DE CONTACT'
-    endif
+        write (ifm, *) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS DE CONTACT'
+    end if
 !
 ! - Initializations
 !
@@ -90,25 +90,25 @@ implicit none
 !
 ! - Pairing
 !
-    call cfgeom(iter_newt, mesh     , ds_measure, ds_contact,&
+    call cfgeom(iter_newt, mesh, ds_measure, ds_contact, &
                 disp_curr, time_curr)
 !
 ! - Contact solving
 !
-    call nmtime(ds_measure, 'Init'  , 'Cont_Algo')
+    call nmtime(ds_measure, 'Init', 'Cont_Algo')
     call nmtime(ds_measure, 'Launch', 'Cont_Algo')
-    call cfalgo(mesh          , ds_measure, resi_glob_rela, iter_newt,&
-                solver        , nume_dof  , matr_asse     , disp_iter,&
-                disp_cumu_inst, ds_contact, ctccvg        )
+    call cfalgo(mesh, ds_measure, resi_glob_rela, iter_newt, &
+                solver, nume_dof, matr_asse, disp_iter, &
+                disp_cumu_inst, ds_contact, ctccvg)
     call nmtime(ds_measure, 'Stop', 'Cont_Algo')
 !
 ! - Pairing ended
 !
-    ds_contact%l_pair       = .false._1
+    ds_contact%l_pair = .false._1
     ds_contact%l_first_geom = .false._1
 !
 ! - Yes for computation
 !
-    ASSERT(ctccvg.ge.0)
+    ASSERT(ctccvg .ge. 0)
 !
 end subroutine

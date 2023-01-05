@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dbudef(depl, b, d, nbsig, nbinco,&
+subroutine dbudef(depl, b, d, nbsig, nbinco, &
                   sigma)
 !.======================================================================
     implicit none
@@ -63,7 +63,7 @@ subroutine dbudef(depl, b, d, nbsig, nbinco,&
         s = zero
 !
         do j = 1, nbinco
-            s = s + depl(j)*b(i,j)
+            s = s+depl(j)*b(i, j)
         end do
 !
         eps(i) = s
@@ -76,7 +76,7 @@ subroutine dbudef(depl, b, d, nbsig, nbinco,&
         s = zero
 !
         do j = 1, nbsig
-            s = s + eps(j)*d(i,j)
+            s = s+eps(j)*d(i, j)
         end do
 !
         sigma(i) = s

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,29 +17,29 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc0031(BEHinteg    ,&
-                  fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, neps,&
-                  epsm, deps, sigm, vim, option,&
-                  angmas, sigp, vip, typmod,&
+subroutine lc0031(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, neps, &
+                  epsm, deps, sigm, vim, option, &
+                  angmas, sigp, vip, typmod, &
                   icomp, nvi, dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmveei.h"
 #include "asterfort/nmvprk.h"
 #include "asterfort/utlcal.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, neps
-real(kind=8) :: carcri(*), angmas(*), instam, instap
-real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
-real(kind=8) :: dsidep(6, 6)
-character(len=16) :: compor(*), option
-character(len=8) :: typmod(*)
-character(len=*) :: fami
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, neps
+    real(kind=8) :: carcri(*), angmas(*), instam, instap
+    real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
+    real(kind=8) :: dsidep(6, 6)
+    character(len=16) :: compor(*), option
+    character(len=8) :: typmod(*)
+    character(len=*) :: fami
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,18 +59,18 @@ character(len=*) :: fami
 !
     call utlcal('VALE_NOM', algo_inte, carcri(6))
     if (algo_inte .eq. 'RUNGE_KUTTA') then
-        call nmvprk(BEHinteg ,&
-                    fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, carcri, instam, instap,&
-                    neps, epsm, deps, sigm, vim,&
-                    option, angmas, sigp, vip, dsidep,&
+        call nmvprk(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    neps, epsm, deps, sigm, vim, &
+                    option, angmas, sigp, vip, dsidep, &
                     codret)
     else
-        call nmveei(BEHinteg ,&
-                    fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, carcri, instam, instap,&
-                    epsm, deps, sigm, vim, option,&
+        call nmveei(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    epsm, deps, sigm, vim, option, &
                     sigp, vip, dsidep, codret)
-    endif
+    end if
 !
 end subroutine

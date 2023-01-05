@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cutabl(indic, nbliac, ajliai, spliai, resocu,&
+subroutine cutabl(indic, nbliac, ajliai, spliai, resocu, &
                   typope, posit, liaiso)
 !
 !
@@ -84,27 +84,27 @@ subroutine cutabl(indic, nbliac, ajliai, spliai, resocu,&
 !
         indic = 1
         zi(jliac-1+posit) = liaiso
-        nbliac = nbliac + 1
-    else if (typope.eq.typesp) then
+        nbliac = nbliac+1
+    else if (typope .eq. typesp) then
 !
 ! --- ON SUPPRIME UNE LIAISON
 !
         indic = -1
-        do ii = posit, nbliac - 1
+        do ii = posit, nbliac-1
             zi(jliac-1+ii) = zi(jliac-1+ii+1)
         end do
-        nbliac = nbliac - 1
-        ajliai = ajliai - 1
-    endif
+        nbliac = nbliac-1
+        ajliai = ajliai-1
+    end if
 !
 ! --- MISE A JOUR DE L'INDICATEUR POUR LA FACTORISATION DE LA MATRICE
 ! --- DE CONTACT
 !
-    spliai = min(spliai,posit-1)
-    spliai = min(spliai,nbliac)
+    spliai = min(spliai, posit-1)
+    spliai = min(spliai, nbliac)
     if (ajliai .lt. 0) then
         ajliai = 0
-    endif
+    end if
 ! ======================================================================
     call jedema()
 ! ======================================================================

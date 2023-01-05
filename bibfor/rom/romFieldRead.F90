@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldRead(operation , field      , fieldObject,&
+subroutine romFieldRead(operation, field, fieldObject, &
                         fieldVale_, resultName_, numeStore_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,12 +31,12 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: operation
-type(ROM_DS_Field), intent(in) :: field
-character(len=24), intent(inout) :: fieldObject
-character(len=8), optional, intent(in) :: resultName_
-integer, optional, intent(in) :: numeStore_
-real(kind=8), optional, pointer :: fieldVale_(:)
+    character(len=*), intent(in) :: operation
+    type(ROM_DS_Field), intent(in) :: field
+    character(len=24), intent(inout) :: fieldObject
+    character(len=8), optional, intent(in) :: resultName_
+    integer, optional, intent(in) :: numeStore_
+    real(kind=8), optional, pointer :: fieldVale_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,27 +66,27 @@ real(kind=8), optional, pointer :: fieldVale_(:)
 !
     fieldName = field%fieldName
     fieldSupp = field%fieldSupp
-    lFilter   = field%lFilter
-    nbEqua    = field%nbEqua
+    lFilter = field%lFilter
+    nbEqua = field%nbEqua
 !
     if (operation .eq. 'Read') then
-        call rsexch(' '       , resultName_, fieldName,&
+        call rsexch(' ', resultName_, fieldName, &
                     numeStore_, fieldObject, iret)
         if (iret .ne. 0) then
-            call utmess('F','ROM11_11', sk = fieldName, si = numeStore_)
-        endif
+            call utmess('F', 'ROM11_11', sk=fieldName, si=numeStore_)
+        end if
         if (fieldSupp == 'NOEU') then
-            call jeveuo(fieldObject(1:19)//'.VALE', 'L', vr = fieldVale_)
+            call jeveuo(fieldObject(1:19)//'.VALE', 'L', vr=fieldVale_)
         else if (fieldSupp == 'ELGA') then
-            call jeveuo(fieldObject(1:19)//'.CELV', 'L', vr = fieldVale_)
+            call jeveuo(fieldObject(1:19)//'.CELV', 'L', vr=fieldVale_)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         if (lFilter) then
             do iEqua = 1, nbEqua
-                fieldVale_(iEqua) = fieldVale_(iEqua) * field%equaFilter(iEqua)
+                fieldVale_(iEqua) = fieldVale_(iEqua)*field%equaFilter(iEqua)
             end do
-        endif
+        end if
 
     elseif (operation .eq. 'Free') then
         if (fieldSupp == 'NOEU') then
@@ -95,10 +95,10 @@ real(kind=8), optional, pointer :: fieldVale_(:)
             call jelibe(fieldObject(1:19)//'.CELV')
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

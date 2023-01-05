@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     call jelira(nch19//'.VALE', 'TYPE', cval=type)
     if (type .ne. 'C') then
         call utmess('F', 'POSTRELE_11')
-    endif
+    end if
     call jelira(nch19//'.VALE', 'LONMAX', neq)
     call jeveuo(nch19//'.VALE', 'L', vc=vale)
     call wkvect(vecteu, 'V V R', neq, kval)
@@ -58,24 +58,24 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
 !
     if (form .eq. 'MODULE') then
         do i = 0, neq-1
-            a = dble( vale(1+i) )
-            b = dimag( vale(1+i) )
-            zr(kval+i) = sqrt( a*a + b*b )
+            a = dble(vale(1+i))
+            b = dimag(vale(1+i))
+            zr(kval+i) = sqrt(a*a+b*b)
         end do
 !
     else if (form .eq. 'REEL') then
         do i = 0, neq-1
-            zr(kval+i) = dble( vale(1+i) )
+            zr(kval+i) = dble(vale(1+i))
         end do
 !
     else if (form .eq. 'IMAG') then
         do i = 0, neq-1
-            zr(kval+i) = dimag( vale(1+i) )
+            zr(kval+i) = dimag(vale(1+i))
         end do
 !
     else
         call utmess('F', 'POSTRELE_52', sk=form)
-    endif
+    end if
 !
     call jedema()
 end subroutine

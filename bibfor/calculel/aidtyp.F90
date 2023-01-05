@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine aidtyp(impr)
 !
 !
 !
-    ligne(1:40)= '========================================'
-    ligne(41:80)='========================================'
+    ligne(1:40) = '========================================'
+    ligne(41:80) = '========================================'
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
@@ -70,7 +70,7 @@ subroutine aidtyp(impr)
 !     ------------------------
     do iop = 1, nbop
         call jenuno(jexnum('&CATA.OP.NOMOPT', iop), noop)
-        nop2(iop)=noop
+        nop2(iop) = noop
     end do
 !
 !
@@ -80,14 +80,14 @@ subroutine aidtyp(impr)
         call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
         call jelira('&CATA.'//nophen, 'NUTIOC', nbmodl)
         do imodl = 1, nbmodl
-            call jeveuo(jexnum('&CATA.'//nophen , imodl), 'L', iamodl)
+            call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
             call jenuno(jexnum('&CATA.'//nophen(1:13)//'.MODL', imodl), nomodl)
             do itm = 1, nbtm
-                ite= zi(iamodl-1+itm)
+                ite = zi(iamodl-1+itm)
                 if (ite .eq. 0) goto 3
                 call jenuno(jexnum('&CATA.TE.NOMTE', ite), note)
-                not2(ite)=nophen//' '//nomodl//' '//note
-  3             continue
+                not2(ite) = nophen//' '//nomodl//' '//note
+3               continue
             end do
         end do
     end do
@@ -95,30 +95,30 @@ subroutine aidtyp(impr)
 !     ON COMPLETE .NOT2 AVEC LES ELEMENTS N'APPARTENANT A AUCUNE
 !        MODELISATION NI PHENOMENE:
     do ite = 1, nbte
-        if (not2(ite)(1:1) .eq. ' ') then
+        if (not2(ite) (1:1) .eq. ' ') then
             call jenuno(jexnum('&CATA.TE.NOMTE', ite), note)
-            not2(ite)(35:50)=note
-        endif
+            not2(ite) (35:50) = note
+        end if
     end do
 !
 !
 !     -- ECRITURE DES COUPLES (TE,OPT)
 !     --------------------------------
-    write(impr,'(A80)') ligne
-    write(impr,*)' NOMBRE D''OPTION        : ', nbop
-    write(impr,*)' NOMBRE DE TYPE_ELEMENT : ', nbte
-    write(impr,'(A80)') ligne
+    write (impr, '(A80)') ligne
+    write (impr, *) ' NOMBRE D''OPTION        : ', nbop
+    write (impr, *) ' NOMBRE DE TYPE_ELEMENT : ', nbte
+    write (impr, '(A80)') ligne
     do ite = 1, nbte
         do iop = 1, nbop
-            ioptte= optte(nbop*(ite-1)+iop)
+            ioptte = optte(nbop*(ite-1)+iop)
             if (ioptte .eq. 0) goto 101
             call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
-            nucalc= zi(iaopmo)
+            nucalc = zi(iaopmo)
             if (nucalc .eq. 0) goto 101
-            vnbte(ite)=vnbte(ite)+1
-            vnbop(iop)=vnbop(iop)+1
-            write(impr,1001) not2(ite)(1:50), nop2(&
-            iop),nucalc
+            vnbte(ite) = vnbte(ite)+1
+            vnbop(iop) = vnbop(iop)+1
+            write (impr, 1001) not2(ite) (1:50), nop2( &
+                iop), nucalc
 101         continue
         end do
     end do
@@ -126,23 +126,23 @@ subroutine aidtyp(impr)
 !
 !     -- ECRITURE RESUME TYPE_ELEMENT:
 !     --------------------------------
-    write(impr,'(A80)') ligne
-    write(impr,*)' RESUME TYPE_ELEMENTS : '
+    write (impr, '(A80)') ligne
+    write (impr, *) ' RESUME TYPE_ELEMENTS : '
     do ite = 1, nbte
-        write(impr,1001) not2(ite)(1:50),' NB_OPT_CALC: ',&
-        vnbte(ite)
+        write (impr, 1001) not2(ite) (1:50), ' NB_OPT_CALC: ', &
+            vnbte(ite)
     end do
 !
 !
 !     -- ECRITURE RESUME OPTIONS:
 !     ---------------------------
-    write(impr,'(A80)') ligne
-    write(impr,*)' RESUME OPTIONS : '
+    write (impr, '(A80)') ligne
+    write (impr, *) ' RESUME OPTIONS : '
     do iop = 1, nbop
-        write(impr,*)nop2(iop),' NB_TYP_CALC: ', vnbop(&
-        iop)
+        write (impr, *) nop2(iop), ' NB_TYP_CALC: ', vnbop( &
+            iop)
     end do
-    write(impr,'(A80)') ligne
+    write (impr, '(A80)') ligne
 !
 !
 ! --- MENAGE
@@ -153,6 +153,6 @@ subroutine aidtyp(impr)
     AS_DEALLOCATE(vk16=nop2)
 !
 !
-    1001 format (a50,1x,a16,1x,i5)
+1001 format(a50, 1x, a16, 1x, i5)
     call jedema()
 end subroutine

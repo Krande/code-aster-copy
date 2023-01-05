@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verifm(fami , npg  , nspg , poum, j_mater,&
+subroutine verifm(fami, npg, nspg, poum, j_mater, &
                   epsth, iret_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -71,10 +71,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iret_temp_curr  = 0
-    iret_temp_prev  = 0
-    iret_temp_refe  = 0
-    epsth           = 0.d0
+    iret_temp_curr = 0
+    iret_temp_prev = 0
+    iret_temp_refe = 0
+    epsth = 0.d0
 !
 ! - Get name of material if multi-material Gauss point (PMF)
 !
@@ -82,21 +82,21 @@ implicit none
 !
 ! - No temperature -> thermic strain is zero
 !
-    call rcvarc(' ' , 'TEMP'   , '+'      , fami, npg,&
+    call rcvarc(' ', 'TEMP', '+', fami, npg, &
                 nspg, temp_curr, iret_temp)
     if (iret_temp .ne. 0) then
         goto 999
-    endif
+    end if
 !
 ! - Get reference temperature
 !
-    call rcvarc(' ' , 'TEMP', 'REF', fami, npg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, npg, &
                 nspg, temp_refe, iret_temp_refe)
     if (iret_temp_refe .eq. 1) then
         call tecael(iadzi, iazk24)
         elem_name = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'COMPOR5_8', sk=elem_name)
-    endif
+    end if
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
@@ -104,78 +104,78 @@ implicit none
 !
 ! - Only isotropic elasticity
 !
-    if (elas_id.ne.1) then
+    if (elas_id .ne. 1) then
         call tecael(iadzi, iazk24)
-        elem_name = zk24(iazk24-1+3)(1:8)
+        elem_name = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'COMPOR5_9', sk=elem_name)
-    endif
+    end if
 !
 ! - No metallurgical material
 !
-    if (elas_keyword.eq.'ELAS_META') then
+    if (elas_keyword .eq. 'ELAS_META') then
         call tecael(iadzi, iazk24)
         elem_name = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'COMPOR5_10', sk=elem_name)
-    endif
+    end if
 !
 ! - Get temperatures (mean value on all Gauss points)
 !
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        call moytem(fami, npg, nspg, '-', temp_prev,&
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        call moytem(fami, npg, nspg, '-', temp_prev, &
                     iret_temp_prev)
-    endif
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        call moytem(fami, npg, nspg, '+', temp_curr,&
+    end if
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        call moytem(fami, npg, nspg, '+', temp_curr, &
                     iret_temp_curr)
-    endif
+    end if
 !
 ! - Get elastic parameters for thermic dilatation
 !
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        if (iret_temp_prev.eq.0) then
-            call get_elasth_para(fami     , j_mater     , '-', npg, nspg,&
-                                 elas_id  , elas_keyword, materi_ = materi, temp_vale_ = temp_prev,&
-                                 alpha = alpha_prev)
-        endif
-    endif
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        if (iret_temp_curr.eq.0) then
-            call get_elasth_para(fami     , j_mater     , '+', npg, nspg,&
-                                 elas_id  , elas_keyword, materi_ = materi, temp_vale_ = temp_curr,&
-                                 alpha = alpha_curr)
-        endif
-    endif
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        if (iret_temp_prev .eq. 0) then
+            call get_elasth_para(fami, j_mater, '-', npg, nspg, &
+                                 elas_id, elas_keyword, materi_=materi, temp_vale_=temp_prev, &
+                                 alpha=alpha_prev)
+        end if
+    end if
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        if (iret_temp_curr .eq. 0) then
+            call get_elasth_para(fami, j_mater, '+', npg, nspg, &
+                                 elas_id, elas_keyword, materi_=materi, temp_vale_=temp_curr, &
+                                 alpha=alpha_curr)
+        end if
+    end if
 !
 ! - Compute thermic strain
 !
     if (poum .eq. 'T') then
-        if (iret_temp_prev+iret_temp_curr.eq.0) then
-            if (elas_id.eq.1) then
-                epsth = alpha_curr(1)*(temp_curr-temp_refe)-&
+        if (iret_temp_prev+iret_temp_curr .eq. 0) then
+            if (elas_id .eq. 1) then
+                epsth = alpha_curr(1)*(temp_curr-temp_refe)- &
                         alpha_prev(1)*(temp_prev-temp_refe)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else if (poum .eq. '-') then
-        if (iret_temp_prev.eq.0) then
-            if (elas_id.eq.1) then
+        if (iret_temp_prev .eq. 0) then
+            if (elas_id .eq. 1) then
                 epsth = alpha_prev(1)*(temp_prev-temp_refe)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else if (poum .eq. '+') then
-        if (iret_temp_curr.eq.0) then
-            if (elas_id.eq.1) then
+        if (iret_temp_curr .eq. 0) then
+            if (elas_id .eq. 1) then
                 epsth = alpha_curr(1)*(temp_curr-temp_refe)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
 !
@@ -185,10 +185,10 @@ implicit none
         iret_ = 0
         if ((iret_temp_prev+iret_temp_curr) .ne. 0) then
             iret_ = 1
-        endif
+        end if
         if (iret_temp .ne. 0) then
             iret_ = 1
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

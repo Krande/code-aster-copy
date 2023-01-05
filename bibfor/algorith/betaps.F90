@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 
 function betaps(beta, pplus, pult)
 !
-    implicit      none
+    implicit none
     real(kind=8) :: beta, pplus, pult, betaps
     if (pplus .lt. pult) then
         betaps = beta*(1.0d0-pplus/pult)
     else
         betaps = 0.0d0
-    endif
+    end if
 ! ======================================================================
 end function

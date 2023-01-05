@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,32 +77,32 @@ subroutine rftabl(tabres)
         call tbimfi(nparfi, newtab, newta1, iret)
         if (iret .ne. 0) then
             call utmess('F', 'UTILITAI7_11')
-        endif
+        end if
         newtab = newta1
-    endif
+    end if
 !     ------------------------------------------------------------------
 !
     if (n2+n3 .ne. 0) then
 !
-        call tbexfo(newtab, parax, paray, nomfon, interp,&
+        call tbexfo(newtab, parax, paray, nomfon, interp, &
                     prolgd, 'G')
 !
     else if (n4 .ne. 0) then
 !
-        call tbliva(newtab, 0, k8b, [ibid], [r8b],&
-                    [c16b], k8b, k8b, [r8b], nopara,&
-                    k8b, ibid, r8b, c16b, nomf,&
+        call tbliva(newtab, 0, k8b, [ibid], [r8b], &
+                    [c16b], k8b, k8b, [r8b], nopara, &
+                    k8b, ibid, r8b, c16b, nomf, &
                     iret)
         if (iret .ne. 0) then
             valk(1) = nopara
-            valk(2)(1:19) = newtab
+            valk(2) (1:19) = newtab
             call utmess('F', 'MODELISA2_91', nk=2, valk=valk)
-        endif
+        end if
         call copisd('FONCTION', 'G', nomf, nomfon)
 !
     else
         call utmess('F', 'UTILITAI4_27')
-    endif
+    end if
 !
 !
     if (nparfi .ne. 0) call detrsd('TABLE', newta1)

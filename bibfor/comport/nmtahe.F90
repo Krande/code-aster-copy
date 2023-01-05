@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
-                  deps, sigm, vim, option, sigp,&
+subroutine nmtahe(fami, kpg, ksp, ndim, imate, &
+                  compor, crit, instam, instap, epsm, &
+                  deps, sigm, vim, option, sigp, &
                   vip, dsidep, iret)
     implicit none
 #include "asterfort/assert.h"
@@ -77,27 +77,27 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: tang(6, 6)
     real(kind=8) :: det, dirdp, dirsp, dirxi, ener, min, rho, rhomax, interi
 !
-    parameter (rhomax = 2.d0, interi = 0.99999d0)
+    parameter(rhomax=2.d0, interi=0.99999d0)
 !
 !
 !
 ! - INITIALISATION
-    iret=0
+    iret = 0
 !   DIMENSION DES TENSEURS ET MISE AUX NORMES
     ndimsi = ndim*2
     rac2 = sqrt(2.d0)
     do k = 4, ndimsi
-        vim(2+k) = vim(2+k) * rac2
+        vim(2+k) = vim(2+k)*rac2
     end do
 !
 !    LECTURE DES CARACTERISTIQUES
-    call nmtama(fami, kpg, ksp, imate, instam,&
+    call nmtama(fami, kpg, ksp, imate, instam, &
                 instap, matm, mat)
 !
 !
 !    CALCUL DES CONTRAINTES ELASTIQUES
-    call nmtael(fami, kpg, ksp, imate, ndimsi,&
-                matm, mat, sigm, epsm, deps,&
+    call nmtael(fami, kpg, ksp, imate, ndimsi, &
+                matm, mat, sigm, epsm, deps, &
                 epm, sigel, sigp)
 !
 !
@@ -107,8 +107,8 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
 !      PREDICTION ELASTIQUE
         dp = 0.d0
         xi = 1.d0
-        call nmtasp(ndimsi, crit, mat, sigel, vim,&
-                    epm, dp, sp, xi, f,&
+        call nmtasp(ndimsi, crit, mat, sigel, vim, &
+                    epm, dp, sp, xi, f, &
                     iret)
         if (iret .eq. 1) goto 999
 !
@@ -116,14 +116,14 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
         if (f .gt. 0.d0) then
 !
 !        CALCUL DE DP : EQUATION SCALAIRE F=0 AVEC  0 < DP < DPMAX
-            call nmtadp(ndimsi, crit, mat, sigel, vim,&
-                        epm, dp, sp, xi, g,&
+            call nmtadp(ndimsi, crit, mat, sigel, vim, &
+                        epm, dp, sp, xi, g, &
                         iret)
 !
 !        PLASTICITE CLASSIQUE (G<0)
             if (g .le. 0.d0) then
-                call nmtaac(2, ndimsi, mat, sigel, vim,&
-                            epm, dp, sp, xi, sigp,&
+                call nmtaac(2, ndimsi, mat, sigel, vim, &
+                            epm, dp, sp, xi, sigp, &
                             vip)
 !
 !        PLASTICITE A DEUX SURFACES (G>0) -> NEWTON
@@ -135,31 +135,31 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
                 do niter = 1, int(crit(1))
 !
 !            DIRECTION DE DESCENTE
-                    call nmtacr(2, ndimsi, mat, sigel, vim,&
-                                epm, dp, sp, xi, f,&
-                                g, fds, gds, fdp, gdp,&
+                    call nmtacr(2, ndimsi, mat, sigel, vim, &
+                                epm, dp, sp, xi, f, &
+                                g, fds, gds, fdp, gdp, &
                                 fdx, gdx, dpmax, sig, tang)
-                    det = fdp*gds - fds*gdp
-                    dirdp = (g*fds - f*gds) / det
-                    dirsp = (f*gdp - g*fdp) / det
+                    det = fdp*gds-fds*gdp
+                    dirdp = (g*fds-f*gds)/det
+                    dirsp = (f*gdp-g*fdp)/det
                     dirxi = 0.d0
 !
 !            CORRECTION DE LA DIRECTION POUR RESTER DS P>P- ET S>SP>SP-
-                    if (dp+rhomax*dirdp .lt. 0.d0) dirdp= ( -dp)/rhomax
-                    if (sp+rhomax*dirsp .lt. vim(2)) dirsp= (vim(2) -sp ) /rhomax
-                    if (sp+rhomax*dirsp .gt. mat(11)) dirsp= (mat(11)- sp )/rhomax
+                    if (dp+rhomax*dirdp .lt. 0.d0) dirdp = (-dp)/rhomax
+                    if (sp+rhomax*dirsp .lt. vim(2)) dirsp = (vim(2)-sp)/rhomax
+                    if (sp+rhomax*dirsp .gt. mat(11)) dirsp = (mat(11)-sp)/rhomax
 !
 !            RECHERCHE LINEAIRE
                     ener = (f**2+g**2)/2.d0
-                    min = (f*fdp+g*gdp)*dirdp + (f*fds+g*gds)*dirsp
+                    min = (f*fdp+g*gdp)*dirdp+(f*fds+g*gds)*dirsp
                     rho = rhomax*interi
-                    call nmtarl(2, ndimsi, mat, sigel, vim,&
-                                epm, dp, sp, xi, dirdp,&
+                    call nmtarl(2, ndimsi, mat, sigel, vim, &
+                                epm, dp, sp, xi, dirdp, &
                                 dirsp, dirxi, min, rho, ener)
 !
 !            ACTUALISATION
-                    dp = dp + rho*dirdp
-                    sp = sp + rho*dirsp
+                    dp = dp+rho*dirdp
+                    sp = sp+rho*dirsp
 !
                     if (ener/mat(4)**2 .lt. crit(3)**2) goto 210
                 end do
@@ -167,10 +167,10 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
                 goto 999
 210             continue
 !
-                call nmtaac(3, ndimsi, mat, sigel, vim,&
-                            epm, dp, sp, xi, sigp,&
+                call nmtaac(3, ndimsi, mat, sigel, vim, &
+                            epm, dp, sp, xi, sigp, &
                             vip)
-            endif
+            end if
 !
 !
 !      DECHARGE
@@ -180,16 +180,16 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
             dp = 0.d0
             xi = 0.d0
             if (vim(9) .ne. 0.d0) then
-                call nmtasp(ndimsi, crit, mat, sigel, vim,&
-                            epm, dp, sp, xi, f,&
+                call nmtasp(ndimsi, crit, mat, sigel, vim, &
+                            epm, dp, sp, xi, f, &
                             iret)
-                ASSERT(iret.eq.0)
-            endif
+                ASSERT(iret .eq. 0)
+            end if
 !
 !        DECHARGE CLASSIQUE
             if (vim(9) .eq. 0.d0 .or. f .le. 0.d0) then
-                call nmtaac(0, ndimsi, mat, sigel, vim,&
-                            epm, dp, sp, xi, sigp,&
+                call nmtaac(0, ndimsi, mat, sigel, vim, &
+                            epm, dp, sp, xi, sigp, &
                             vip)
 !
 !
@@ -198,8 +198,8 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
             else
 !
 !          CALCUL DE XI : EQUATION SCALAIRE F=0 AVEC  0 < XI < 1
-                call nmtaxi(ndimsi, crit, mat, sigel, vim,&
-                            epm, dp, sp, xi, g,&
+                call nmtaxi(ndimsi, crit, mat, sigel, vim, &
+                            epm, dp, sp, xi, g, &
                             iret)
 !
 !          ITERATIONS DE NEWTON
@@ -210,59 +210,59 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
                     do niter = 1, int(crit(1))
 !
 !              DIRECTION DE DESCENTE
-                        call nmtacr(3, ndimsi, mat, sigel, vim,&
-                                    epm, dp, sp, xi, f,&
-                                    g, fds, gds, fdp, gdp,&
+                        call nmtacr(3, ndimsi, mat, sigel, vim, &
+                                    epm, dp, sp, xi, f, &
+                                    g, fds, gds, fdp, gdp, &
                                     fdx, gdx, dpmax, sig, tang)
-                        det = fdx*gds - fds*gdx
-                        dirxi = (g*fds - f*gds) / det
-                        dirsp = (f*gdx - g*fdx) / det
+                        det = fdx*gds-fds*gdx
+                        dirxi = (g*fds-f*gds)/det
+                        dirsp = (f*gdx-g*fdx)/det
                         dirdp = 0.d0
 !
 !              CORRECTION DIRECTION POUR RESTER DANS 0<XI<1 ET SP-<SP<S
-                        if (xi+rhomax*dirxi .lt. 0.d0) dirxi=(-xi) / rhomax
-                        if (xi+rhomax*dirxi .gt. 1.d0) dirxi=(1.d0-xi)/ rhomax
-                        if (sp+rhomax*dirsp .lt. vim(2)) dirsp=(vim(2)- sp )/rhomax
-                        if (sp+rhomax*dirsp .gt. mat(11)) dirsp=(mat(11)- sp )/rhomax
+                        if (xi+rhomax*dirxi .lt. 0.d0) dirxi = (-xi)/rhomax
+                        if (xi+rhomax*dirxi .gt. 1.d0) dirxi = (1.d0-xi)/rhomax
+                        if (sp+rhomax*dirsp .lt. vim(2)) dirsp = (vim(2)-sp)/rhomax
+                        if (sp+rhomax*dirsp .gt. mat(11)) dirsp = (mat(11)-sp)/rhomax
 !
 !              RECHERCHE LINEAIRE
                         ener = (f**2+g**2)/2.d0
-                        min = (f*fdx+g*gdx)*dirxi + (f*fds+g*gds)* dirsp
+                        min = (f*fdx+g*gdx)*dirxi+(f*fds+g*gds)*dirsp
                         rho = rhomax*interi
-                        call nmtarl(3, ndimsi, mat, sigel, vim,&
-                                    epm, dp, sp, xi, dirdp,&
+                        call nmtarl(3, ndimsi, mat, sigel, vim, &
+                                    epm, dp, sp, xi, dirdp, &
                                     dirsp, dirxi, min, rho, ener)
 !
 !              ACTUALISATION
-                        xi = xi + rho*dirxi
-                        sp = sp + rho*dirsp
+                        xi = xi+rho*dirxi
+                        sp = sp+rho*dirsp
 !
                         if (ener/mat(4)**2 .lt. crit(3)**2) goto 310
                     end do
                     iret = 1
                     goto 999
 310                 continue
-                endif
+                end if
 !
-                call nmtaac(1, ndimsi, mat, sigel, vim,&
-                            epm, dp, sp, xi, sigp,&
+                call nmtaac(1, ndimsi, mat, sigel, vim, &
+                            epm, dp, sp, xi, sigp, &
                             vip)
 !
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 ! -- RIGIDITE TANGENTE (FULL_MECA)
 !
     if (option(1:9) .eq. 'FULL_MECA') then
         ind = int(vip(9)+0.5d0)
-        call nmtari(ind, ndimsi, mat, sigel, vim,&
+        call nmtari(ind, ndimsi, mat, sigel, vim, &
                     epm, dp, sp, xi, dsidep)
-    endif
+    end if
 !
 !
 ! -- RIGIDITE TANGENTE (RIGI_MECA_TANG) -> MATRICE ELASTIQUE
@@ -272,22 +272,22 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
         dp = 0.d0
         sp = vim(2)
         xi = 1.d0
-        call nmtari(ind, ndimsi, mat, sigel, vim,&
+        call nmtari(ind, ndimsi, mat, sigel, vim, &
                     epm, dp, sp, xi, dsidep)
-    endif
+    end if
 !
 !
 ! REMISE AUX NORMES
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
         do k = 4, ndimsi
-            vim(2+k) = vim(2+k) / rac2
+            vim(2+k) = vim(2+k)/rac2
         end do
     else
         do k = 4, ndimsi
-            vim(2+k) = vim(2+k) / rac2
-            vip(2+k) = vip(2+k) / rac2
+            vim(2+k) = vim(2+k)/rac2
+            vip(2+k) = vip(2+k)/rac2
         end do
-    endif
+    end if
 !
 !
 999 continue

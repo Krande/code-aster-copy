@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,30 +47,30 @@ subroutine tailsd(nom, nomsd, val, nbval)
         val(3) = 0
 !
         sd19 = nomsd
-        call jeexin(sd19 // '.DESC', iret1)
-        call jeexin(sd19 // '.NOVA', iret2)
+        call jeexin(sd19//'.DESC', iret1)
+        call jeexin(sd19//'.NOVA', iret2)
         if (iret1 .eq. 0 .or. iret2 .eq. 0) then
             goto 999
-        endif
-        call jelira(sd19 // '.DESC', 'NOMMAX', val(1))
-        call jelira(sd19 // '.NOVA', 'NOMMAX', val(2))
-        call rsorac(sd19, 'LONUTI', 0, 0.d0, ' ',&
-                    cbid, 0.d0, ' ', val(3), 1,&
+        end if
+        call jelira(sd19//'.DESC', 'NOMMAX', val(1))
+        call jelira(sd19//'.NOVA', 'NOMMAX', val(2))
+        call rsorac(sd19, 'LONUTI', 0, 0.d0, ' ', &
+                    cbid, 0.d0, ' ', val(3), 1, &
                     ibid)
 !
 !
 !  DETERMINE LE NOMBRE D OBJETS SIMPLES DANS UNE COLECTION
 ! ---------------------------------------------------------------------
-    else if (nom.eq.'LIST_COLLECTION') then
+    else if (nom .eq. 'LIST_COLLECTION') then
         val(1) = 0
 !
         sd = nomsd
         call jeexin(sd, iret1)
         if (iret1 .eq. 0) then
             goto 999
-        endif
+        end if
         call jelira(sd, 'NUTIOC', val(1))
         if (val(1) .eq. 0) call jelira(sd, 'NMAXOC', val(1))
-    endif
-999  continue
+    end if
+999 continue
 end subroutine

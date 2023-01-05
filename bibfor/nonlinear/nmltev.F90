@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,16 +88,16 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
 !
     do ieven = 1, zeven
         icode = zi(jeeact-1+ieven)
-        teven = zk16(jeeniv-1+ieven)(1:9)
+        teven = zk16(jeeniv-1+ieven) (1:9)
         if (teven(1:4) .eq. typevt) then
             if (typevt .eq. 'EVEN') then
                 if (icode .eq. 1) levent = .true.
             else
                 if (teven(6:9) .eq. nombcl) then
                     if (icode .eq. 1) levent = .true.
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
 ! --- Share error for HPC

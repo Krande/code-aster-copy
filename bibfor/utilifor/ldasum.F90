@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LINPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,10 +48,10 @@ function ldasum(n, dx, incx)
 !        CODE FOR INCREMENT NOT EQUAL TO 1
 !
     ix = 1
-    if(incx.lt.0)ix = (-n+1)*incx + 1
+    if (incx .lt. 0) ix = (-n+1)*incx+1
     do i = 1, n
-        dtemp = dtemp + abs(dx(ix))
-        ix = ix + incx
+        dtemp = dtemp+abs(dx(ix))
+        ix = ix+incx
     end do
     ldasum = dtemp
     goto 1000
@@ -62,24 +62,24 @@ function ldasum(n, dx, incx)
 !        CLEAN-UP LOOP
 !
 ! DUE TO CRP_11
- 20 continue
-    m = mod(n,6)
+20  continue
+    m = mod(n, 6)
     if (m .eq. 0) goto 40
     do i = 1, m
-        dtemp = dtemp + abs(dx(i))
+        dtemp = dtemp+abs(dx(i))
     end do
     if (n .lt. 6) goto 60
 ! DUE TO CRP_11
- 40 continue
-    mp1 = m + 1
+40  continue
+    mp1 = m+1
     do i = mp1, n, 6
-        dtemp = dtemp + abs(&
-                dx(i)) + abs(dx(i + 1)) + abs(dx(i + 2)) + abs(dx(i + 3)) + abs(dx(i + 4)) + abs(&
-                &dx(i + 5)&
+        dtemp = dtemp+abs( &
+                dx(i))+abs(dx(i+1))+abs(dx(i+2))+abs(dx(i+3))+abs(dx(i+4))+abs(&
+                &dx(i+5) &
                 )
     end do
 ! DUE TO CRP_11
- 60 continue
+60  continue
     ldasum = dtemp
 !
 1000 continue

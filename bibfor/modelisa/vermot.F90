@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vermot(icl, iv, cv, cnl, ier,&
+subroutine vermot(icl, iv, cv, cnl, ier, &
                   irteti)
     implicit none
 #include "asterfort/utmess.h"
@@ -42,8 +42,8 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
 !-----------------------------------------------------------------------
     irteti = 0
     if (icl .ne. 3) then
-        if (iv .gt. 16) jv=16
-        if (iv .le. 16) jv=iv
+        if (iv .gt. 16) jv = 16
+        if (iv .le. 16) jv = iv
         nom = cv(1:jv)
         valk(1) = cnl
         valk(2) = nom(1:jv)
@@ -51,14 +51,14 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
         ier = 1
         irteti = 1
         goto 9999
-    endif
+    end if
 !
     if (iv .gt. 24) then
         call utmess('F', 'MODELISA7_82', sk=cnl)
         ier = 1
         irteti = 1
         goto 9999
-    endif
+    end if
 !
     mcl = '        '
     mcl(1:iv) = cv(1:iv)
@@ -67,14 +67,14 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
         ier = 1
         irteti = 1
         goto 9999
-    endif
+    end if
     if (mcl .eq. 'FINSF   ') then
         call utmess('E', 'MODELISA7_84', sk=cnl)
         ier = 1
         irteti = 1
         goto 9999
-    endif
+    end if
 !
     irteti = 0
-9999  continue
+9999 continue
 end subroutine

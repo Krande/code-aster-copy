@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
+subroutine nmprex(numedd, depmoi, solalg, sddisc, numins, &
                   incest, depest)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/copisd.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 !
-character(len=24) :: numedd
-character(len=19) :: sddisc, incest
-character(len=19) :: solalg(*), depmoi, depest
-integer :: numins
+    character(len=24) :: numedd
+    character(len=19) :: sddisc, incest
+    character(len=19) :: solalg(*), depmoi, depest
+    integer :: numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,14 +73,14 @@ integer :: numins
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... PAR EXTRAPOLATION'
-    endif
+        write (ifm, *) '<MECANONLINE> ... PAR EXTRAPOLATION'
+    end if
 !
 ! --- INITIALISATIONS
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins )
+    instam = diinst(sddisc, numins-1)
+    instap = diinst(sddisc, numins)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -99,17 +99,17 @@ integer :: numins
 ! --- EXTRAPOLATION DES DEPLACEMENTS S'IL EXISTE UN PAS PRECEDENT
 !
     if (numins .ge. 2) then
-        instaa = diinst(sddisc,numins-2)
+        instaa = diinst(sddisc, numins-2)
         if (instaa .eq. instam) then
             call utmess('F', 'ALGORITH8_28')
-        endif
-        coef = (instap-instam) / (instam-instaa)
-        call jeveuo(depold(1:19)// '.VALE', 'L', vr=old)
-        call daxpy(neq, coef, old, 1, depes,&
+        end if
+        coef = (instap-instam)/(instam-instaa)
+        call jeveuo(depold(1:19)//'.VALE', 'L', vr=old)
+        call daxpy(neq, coef, old, 1, depes, &
                    1)
-        call daxpy(neq, coef, old, 1, inces,&
+        call daxpy(neq, coef, old, 1, inces, &
                    1)
-    endif
+    end if
 !
     call jedema()
 end subroutine

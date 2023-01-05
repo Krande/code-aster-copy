@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
+subroutine xcninv(nnotot, nse, nnop, nno, jcnset, &
                   cninv)
     implicit none
 #include "jeveux.h"
@@ -63,17 +63,17 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
 !
         do in = 1, nno
 !
-            ino=zi(jcnset-1+nno*(ise-1)+in)
+            ino = zi(jcnset-1+nno*(ise-1)+in)
 ! ------- NUMÉROTATION PROPRE A LA CONNECTIVITÉ INVERSE
             if (ino .lt. 1000) then
-                jno=ino
+                jno = ino
             else
-                jno=ino-1000+nnop
-            endif
+                jno = ino-1000+nnop
+            end if
 ! ------- STOCKAGE
-            cninv(jno,1)=cninv(jno,1)+1
-            ASSERT(cninv(jno, 1).le.nse)
-            cninv(jno,cninv(jno,1)+1)=ise
+            cninv(jno, 1) = cninv(jno, 1)+1
+            ASSERT(cninv(jno, 1) .le. nse)
+            cninv(jno, cninv(jno, 1)+1) = ise
 !
         end do
 !

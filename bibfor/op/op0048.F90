@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,15 +57,15 @@ subroutine op0048()
 !-----------------------------------------------------------------------
 !
     integer :: nvrcmx
-    parameter ( nvrcmx = 2 )
+    parameter(nvrcmx=2)
     character(len=8) :: tab_nomvrc(nvrcmx), tab_nomgrd(nvrcmx)
     character(len=8) :: tab_nomcmp(nvrcmx)
-    data tab_nomvrc/ 'TEMP'  , 'NEUT1'  /
-    data tab_nomgrd/ 'TEMP_R', 'NEUT_R' /
-    data tab_nomcmp/ 'TEMP'  , 'X1'     /
+    data tab_nomvrc/'TEMP', 'NEUT1'/
+    data tab_nomgrd/'TEMP_R', 'NEUT_R'/
+    data tab_nomcmp/'TEMP', 'X1'/
 !
     character(len=6) :: nompro
-    parameter (nompro='OP0048')
+    parameter(nompro='OP0048')
 !
     integer :: ier, iret, ibid, nbno, ino, k, l, nbvarc, jcesd1, jcesl1
     integer :: nbma, ima, iad, itrou, nbcmp, itest, nucmp, cpt_dbl, ind
@@ -101,7 +101,7 @@ subroutine op0048()
 !
 !   recup du modele
     call dismoi('NOM_MODELE', resu, 'RESULTAT', repk=model)
-    ASSERT( (model .ne. '#AUCUN') .or. (model .ne. '#PLUSIEURS') )
+    ASSERT((model .ne. '#AUCUN') .or. (model .ne. '#PLUSIEURS'))
 !
 !   recup du maillage
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
@@ -110,23 +110,23 @@ subroutine op0048()
 !
 !   recup du cham_mater
     call dismoi('CHAM_MATER', resu, 'RESULTAT', repk=chmat)
-    ASSERT( (chmat .ne. '#AUCUN') .or. (chmat .ne. '#PLUSIEURS') )
+    ASSERT((chmat .ne. '#AUCUN') .or. (chmat .ne. '#PLUSIEURS'))
 !
 !   presence de variables de commande obligatoire
     call jeexin(chmat//'.CVRCVARC', iret)
-    ASSERT( iret .gt. 0 )
+    ASSERT(iret .gt. 0)
 !
 !   verif sur la presence de CARA_ELEM
     call dismoi('CARA_ELEM', resu, 'RESULTAT', repk=carael)
-    ASSERT( carael .ne. '#PLUSIEURS' )
+    ASSERT(carael .ne. '#PLUSIEURS')
     if (carael .eq. '#AUCUN') then
         carael = ' '
-    endif
+    end if
 !
 !   recup de chmat//'.CVRCVARC'
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbvarc)
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
-    ASSERT( nbvarc .le. nvrcmx )
+    ASSERT(nbvarc .le. nvrcmx)
 !
 !   pas de doublons dans '.CVRCVARC' (est-ce d'ailleurs possible?)
     cpt_dbl = 0
@@ -134,12 +134,12 @@ subroutine op0048()
         k8_k = cvrcvarc(k)
         do l = k+1, nbvarc
             k8_l = cvrcvarc(l)
-            if ( k8_k .eq. k8_l ) then
-                cpt_dbl = cpt_dbl + 1
-            endif
-        enddo
-    enddo
-    ASSERT( cpt_dbl .eq. 0 )
+            if (k8_k .eq. k8_l) then
+                cpt_dbl = cpt_dbl+1
+            end if
+        end do
+    end do
+    ASSERT(cpt_dbl .eq. 0)
 !
 !   recup de nucmp et itrou
 !     nucmp  : numero de la cmp qui correspond a nomvarc dans le champ
@@ -149,39 +149,39 @@ subroutine op0048()
     itrou = 0
     do k = 1, nbvarc
         itest = indik8(tab_nomvrc, cvrcvarc(k), 1, nvrcmx)
-        ASSERT( itest .gt. 0 )
-        if ( cvrcvarc(k) .eq. nomvarc ) then
+        ASSERT(itest .gt. 0)
+        if (cvrcvarc(k) .eq. nomvarc) then
             nucmp = k
             itrou = itest
-        endif
-    enddo
-    ASSERT( nucmp .gt. 0 )
-    ASSERT( itrou .gt. 0 )
+        end if
+    end do
+    ASSERT(nucmp .gt. 0)
+    ASSERT(itrou .gt. 0)
 !
 !   verif pour interdire le cas particulier de la VARC TEMP aux points
 !   de Gauss xfem (cas du chainage thermo mecanique complet avec xfem)
     do k = 1, nbvarc
-        varc=cvrcvarc(k)
+        varc = cvrcvarc(k)
         cart2 = chmat//'.'//varc//'.2'
-        ces1='&&'//nompro//'.CES1'
+        ces1 = '&&'//nompro//'.CES1'
         call carces(cart2, 'ELEM', ' ', 'V', ces1, 'A', iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
         call jeveuo(ces1//'.CESD', 'L', jcesd1)
         call jeveuo(ces1//'.CESL', 'L', jcesl1)
         call jeveuo(ces1//'.CESV', 'L', vk16=cesv)
         do ima = 1, nbma
             call cesexi('C', jcesd1, jcesl1, ima, 1, 1, 1, iad)
-            if ( iad .le. 0 ) then
+            if (iad .le. 0) then
                 cycle
-            endif
-            iad=iad-1
-            nomsym=cesv(iad+4)
+            end if
+            iad = iad-1
+            nomsym = cesv(iad+4)
             if (nomsym .eq. 'TEMP_ELGA') then
                 call utmess('F', 'XFEM_1', sk=chmat)
-            endif
-        enddo
+            end if
+        end do
         call detrsd('CHAM_ELEM_S', ces1)
-    enddo
+    end do
 !
 !-----------------------------------------------------------------------
 !   recup du cham_elem (ELNO) de varc a l'instant inst
@@ -189,11 +189,11 @@ subroutine op0048()
 !
     celvrc = '&&'//nompro//'.CELVRC'
     call vrcins(model, chmat, carael, inst, celvrc, codret, nompaz='PVARCNO')
-    ASSERT( codret .eq. 'OK' )
+    ASSERT(codret .eq. 'OK')
     call exisd('CHAM_ELEM', celvrc, iret)
-    ASSERT( iret .eq. 1 )
+    ASSERT(iret .eq. 1)
     call dismoi('TYPE_CHAMP', celvrc, 'CHAMP', repk=tych)
-    ASSERT( tych .eq. 'ELNO' )
+    ASSERT(tych .eq. 'ELNO')
 !
 !-----------------------------------------------------------------------
 !   transformation en cham_no. Le nom de la grandeur depend de nomvarc :
@@ -215,8 +215,8 @@ subroutine op0048()
     call jeveuo(cnsvrc//'.CNSD', 'L', vi=cnsvrc_d)
     call jeveuo(cnsvrc//'.CNSC', 'L', vk8=cnsvrc_c)
     nbcmp = cnsvrc_d(2)
-    ASSERT( nbcmp .eq. nbvarc )
-    ASSERT( nbcmp .ge. nucmp )
+    ASSERT(nbcmp .eq. nbvarc)
+    ASSERT(nbcmp .ge. nucmp)
 !
 !   creation d'un cham_no_s cnsvr2 dont le type de la grandeur depend
 !   de nomvarc
@@ -230,11 +230,11 @@ subroutine op0048()
     call jeveuo(cnsvr2//'.CNSV', 'E', vr=cnsvr2_v)
     do ino = 1, nbno
         ind = nbcmp*(ino-1)+nucmp
-        if ( cnsvrc_l(ind) ) then
+        if (cnsvrc_l(ind)) then
             cnsvr2_l(ino) = .true.
             cnsvr2_v(ino) = cnsvrc_v(ind)
-        endif
-    enddo
+        end if
+    end do
     call detrsd('CHAM_NO_S', cnsvrc)
 !
 !   transformation cham_no_s ->  cham_no : cnsvr2 -> chnout

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcecli(fami, kpg, ksp, ndim, mate,&
-                  option, lamb, saut, sigma, dsidep,&
+subroutine lcecli(fami, kpg, ksp, ndim, mate, &
+                  option, lamb, saut, sigma, dsidep, &
                   vim, vip, r)
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -60,13 +60,13 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
     integer :: cod(3)
     character(len=16) :: nom(3)
     character(len=1) :: poum
-    parameter  (zero = 0.d0)
+    parameter(zero=0.d0)
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
-    resi = option(1:9).eq.'FULL_MECA' .or. option.eq.'RAPH_MECA'
-    rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
-    elas = option.eq.'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
+    rigi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
+    elas = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS'
 !
 !
 ! les sauts et lambda sont deja ceux a l instant que l on veut calculer
@@ -82,10 +82,10 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 3, nom, val, cod, 2)
 !
     gc = val(1)
@@ -95,25 +95,25 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 ! INITIALISATION
 !
-    ka = max(sc,vim(1))
+    ka = max(sc, vim(1))
     rtan = 0.d0
 !
 ! --- CALCUL DE LA FORCE COHESIVE AUGMENTEE
 !
     do i = 1, ndim
-        laug(i) = lamb(i) + r*saut(i)
+        laug(i) = lamb(i)+r*saut(i)
     end do
 !
 ! --- FORCE COHESIVE EQUIVALENTE
 !
     do i = 2, ndim
-        rtan=rtan+laug(i)**2
+        rtan = rtan+laug(i)**2
     end do
-    na = sqrt( max(zero,laug(1))**2 + rtan )
+    na = sqrt(max(zero, laug(1))**2+rtan)
 !
 ! --- MODULE TANGENT POUR LES REGIMES ELASTIQUES
 !
-    rk = sc/ka + ( 1.d0/(r*lc/sc-1.d0) )*(sc/ka-1.d0)
+    rk = sc/ka+(1.d0/(r*lc/sc-1.d0))*(sc/ka-1.d0)
 !
 !
 ! INITIALISATION COMPLEMENTAIRE POUR RIGI_MECA_TANG (SECANTE PENALISEE)
@@ -124,12 +124,12 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
             diss = 0
         else
             diss = nint(vim(2))
-        endif
+        end if
 !
         cass = nint(vim(3))
 !
         goto 500
-    endif
+    end if
 !
 ! CALCUL DE LA CONTRAINTE
 !
@@ -137,11 +137,11 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 !     CONTRAINTE DE CONTACT : PARTIE NEGATIVE ET NORMALE DE LA FORCE AUGMENTEE
 !
-    sigma(1) = min(zero,laug(1))
+    sigma(1) = min(zero, laug(1))
 !
 !     CONTRAINTE DE FISSURATION
 !
-    if ((na.ge.(lc*r)) .or. (ka.ge.(lc*r))) then
+    if ((na .ge. (lc*r)) .or. (ka .ge. (lc*r))) then
 !
         diss = 0
         cass = 2
@@ -155,30 +155,30 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
                 cass = 1
             else
                 cass = 0
-            endif
-            sigma(1) = sigma(1) + rk*max(zero,laug(1))
+            end if
+            sigma(1) = sigma(1)+rk*max(zero, laug(1))
             do i = 2, ndim
-                sigma(i) = sigma(i) + rk*laug(i)
+                sigma(i) = sigma(i)+rk*laug(i)
             end do
 !
         else
 !
             diss = 1
             cass = 1
-            ra = sc/na + ( 1.d0/(r*lc/sc-1.d0) ) * (sc/na-1.d0)
-            sigma(1) = sigma(1) + ra*max(zero,laug(1))
+            ra = sc/na+(1.d0/(r*lc/sc-1.d0))*(sc/na-1.d0)
+            sigma(1) = sigma(1)+ra*max(zero, laug(1))
             do i = 2, ndim
-                sigma(i) = sigma(i) + ra*laug(i)
+                sigma(i) = sigma(i)+ra*laug(i)
             end do
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! ACTUALISATION DES VARIABLES INTERNES
 !
 ! on conserve la distinction à suivre
-    kapp = max(vim(1),na)
+    kapp = max(vim(1), na)
     vip(1) = kapp
     vip(2) = diss
     vip(3) = cass
@@ -194,61 +194,61 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 !    MATRICE TANGENTE DE CONTACT
 !
-    if (laug(1) .le. 0.d0) dsidep(1,1) = dsidep(1,1) + 1.d0
+    if (laug(1) .le. 0.d0) dsidep(1, 1) = dsidep(1, 1)+1.d0
 !
 ! DANS LE CAS OU L'ELEMENT EST TOTALEMENT CASSE ON INTRODUIT UNE
 ! RIGIDITE ARTIFICIELLE DANS LA MATRICE TANGENTE POUR ASSURER
 ! LA CONVERGENCE
 !
     if (cass .eq. 2) then
-        if (laug(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) - 1.d-8
+        if (laug(1) .gt. 0.d0) dsidep(1, 1) = dsidep(1, 1)-1.d-8
         do i = 2, ndim
-            dsidep(i,i) = dsidep(i,i) - 1.d-8
+            dsidep(i, i) = dsidep(i, i)-1.d-8
         end do
         goto 999
-    endif
+    end if
 !
 !    MATRICE TANGENTE DE FISSURATION
-    if ((diss.eq.0) .or. elas) then
+    if ((diss .eq. 0) .or. elas) then
 !
-        if (laug(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) + rk
+        if (laug(1) .gt. 0.d0) dsidep(1, 1) = dsidep(1, 1)+rk
 !
         do i = 2, ndim
-            dsidep(i,i) = dsidep(i,i) + rk
+            dsidep(i, i) = dsidep(i, i)+rk
         end do
 !
     else
 !
-        coef = sc/na + ( 1.d0/(r*lc/sc-1.d0) ) * (sc/na-1.d0)
-        coef2 = -sc*(1.d0 + 1.d0/(r*lc/sc-1.d0) )/(na**3)
+        coef = sc/na+(1.d0/(r*lc/sc-1.d0))*(sc/na-1.d0)
+        coef2 = -sc*(1.d0+1.d0/(r*lc/sc-1.d0))/(na**3)
 !
         if (laug(1) .le. 0.d0) then
 !
             do i = 2, ndim
-                dsidep(i,i) = dsidep(i,i) + coef + coef2*laug(i)*laug(i)
+                dsidep(i, i) = dsidep(i, i)+coef+coef2*laug(i)*laug(i)
             end do
 !
             if (ndim .eq. 3) then
-                dsidep(2,3) = dsidep(2,3) + coef2*laug(2)*laug(3)
-                dsidep(3,2) = dsidep(3,2) + coef2*laug(3)*laug(2)
-            endif
+                dsidep(2, 3) = dsidep(2, 3)+coef2*laug(2)*laug(3)
+                dsidep(3, 2) = dsidep(3, 2)+coef2*laug(3)*laug(2)
+            end if
 !
         else
 !
             do i = 1, ndim
-                dsidep(i,i) = dsidep(i,i) + coef + coef2*laug(i)*laug(i)
+                dsidep(i, i) = dsidep(i, i)+coef+coef2*laug(i)*laug(i)
             end do
 !
             do j = 1, ndim-1
                 do i = j+1, ndim
-                    dsidep(j,i) = dsidep(j,i) + coef2*laug(j)*laug(i)
-                    dsidep(i,j) = dsidep(i,j) + coef2*laug(i)*laug(j)
+                    dsidep(j, i) = dsidep(j, i)+coef2*laug(j)*laug(i)
+                    dsidep(i, j) = dsidep(i, j)+coef2*laug(i)*laug(j)
                 end do
             end do
 !
-        endif
+        end if
 !
-    endif
+    end if
 999 continue
 !
 !

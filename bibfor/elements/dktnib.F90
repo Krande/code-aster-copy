@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dktnib(qsi, eta, carat3, nfx, nfy)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, carat3(*), nfx(9), nfy(9)
 !.======================================================================
 !  DKTNIB -- DETERMINATION DES FONCTIONS DE FORME DES ROTATIONS
@@ -77,7 +77,7 @@ subroutine dktnib(qsi, eta, carat3, nfx, nfy)
     l5 = carat3(14)
     l6 = carat3(15)
 !
-    n1 = un - qsi - eta
+    n1 = un-qsi-eta
     n2 = qsi
     n3 = eta
 !
@@ -85,28 +85,28 @@ subroutine dktnib(qsi, eta, carat3, nfx, nfy)
     p5 = quatre*qsi*eta
     p6 = quatre*eta*(un-qsi-eta)
 !
-    nfx(1) = trois/deux*(p4*c4/l4 - p6*c6/l6)
-    nfx(2) = n1 - trois/quatre*(p4*c4*c4 + p6*c6*c6)
-    nfx(3) = -trois/quatre*(p4*c4*s4 + p6*c6*s6)
+    nfx(1) = trois/deux*(p4*c4/l4-p6*c6/l6)
+    nfx(2) = n1-trois/quatre*(p4*c4*c4+p6*c6*c6)
+    nfx(3) = -trois/quatre*(p4*c4*s4+p6*c6*s6)
 !
-    nfx(4) = trois/deux*(p5*c5/l5 - p4*c4/l4)
-    nfx(5) = n2 - trois/quatre*(p5*c5*c5 + p4*c4*c4)
-    nfx(6) = -trois/quatre*(p5*c5*s5 + p4*c4*s4)
+    nfx(4) = trois/deux*(p5*c5/l5-p4*c4/l4)
+    nfx(5) = n2-trois/quatre*(p5*c5*c5+p4*c4*c4)
+    nfx(6) = -trois/quatre*(p5*c5*s5+p4*c4*s4)
 !
-    nfx(7) = trois/deux*(p6*c6/l6 - p5*c5/l5)
-    nfx(8) = n3 - trois/quatre*(p6*c6*c6 + p5*c5*c5)
-    nfx(9) = -trois/quatre*(p6*c6*s6 + p5*c5*s5)
+    nfx(7) = trois/deux*(p6*c6/l6-p5*c5/l5)
+    nfx(8) = n3-trois/quatre*(p6*c6*c6+p5*c5*c5)
+    nfx(9) = -trois/quatre*(p6*c6*s6+p5*c5*s5)
 !
-    nfy(1) = trois/deux*(p4*s4/l4 - p6*s6/l6)
+    nfy(1) = trois/deux*(p4*s4/l4-p6*s6/l6)
     nfy(2) = nfx(3)
-    nfy(3) = n1 - trois/quatre*(p4*s4*s4 + p6*s6*s6)
+    nfy(3) = n1-trois/quatre*(p4*s4*s4+p6*s6*s6)
 !
-    nfy(4) = trois/deux*(p5*s5/l5 - p4*s4/l4)
+    nfy(4) = trois/deux*(p5*s5/l5-p4*s4/l4)
     nfy(5) = nfx(6)
-    nfy(6) = n2 - trois/quatre*(p5*s5*s5 + p4*s4*s4)
+    nfy(6) = n2-trois/quatre*(p5*s5*s5+p4*s4*s4)
 !
-    nfy(7) = trois/deux*(p6*s6/l6 - p5*s5/l5)
+    nfy(7) = trois/deux*(p6*s6/l6-p5*s5/l5)
     nfy(8) = nfx(9)
-    nfy(9) = n3 - trois/quatre*(p6*s6*s6 + p5*s5*s5)
+    nfy(9) = n3-trois/quatre*(p6*s6*s6+p5*s5*s5)
 !
 end subroutine

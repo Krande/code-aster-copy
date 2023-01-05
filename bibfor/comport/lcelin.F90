@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcelin(mod, nmat, materd, materf, deps,&
+subroutine lcelin(mod, nmat, materd, materf, deps, &
                   sigd, sigf)
     implicit none
 ! INTEGRATION ELASTIQUE LINEAIRE ISOTROPE SUR DT
@@ -37,43 +37,43 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
     real(kind=8) :: epsed(6), epsef(6), deps(6)
     character(len=8) :: mod
     integer :: ndt, ndi
-    common /tdim/ ndt, ndi
+    common/tdim/ndt, ndi
 ! ----------------------------------------------------------------
-    if (int(materf(nmat,1)) .eq. 0) then
+    if (int(materf(nmat, 1)) .eq. 0) then
 !
 ! --     OPERATEUR ELASTIQUE LINEAIRE ISOTROPE
 !
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
 !
-    else if (int(materf(nmat,1)).eq.1) then
+    else if (int(materf(nmat, 1)) .eq. 1) then
 !
 ! --     OPERATEUR ELASTIQUE LINEAIRE ORTHOTROPE
 !
         call lcopli('ORTHOTRO', mod, materf(1, 1), hookf)
         call lcopil('ORTHOTRO', mod, materd(1, 1), dkooh)
-    endif
+    end if
 !
 !                                                        -1
 ! --  DEFORMATION ELASTIQUE A T ET T+DT : EPSEF = HOOKD  SIGD + DEPS
 !
-    epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
-    epsef(1:ndt) = epsed(1:ndt) + deps(1:ndt)
+    epsed(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigd(1:ndt))
+    epsef(1:ndt) = epsed(1:ndt)+deps(1:ndt)
 !
 ! --  CONTRAINTES PLANES
 !     DEPS3 = - ( H31 EPSEF1 + H32 EPSEF2 + H34 EPSEF4 )/H33 - EPSED3
 !
     if (mod(1:6) .eq. 'C_PLAN') then
-        deps(3) = - (&
-                  hookf(3, 1) * epsef(1) + hookf(3, 2) * epsef(2) + hookf(3, 4) * epsef(4) ) / ho&
-                  &okf(3,&
-                  3) - epsed(3&
+        deps(3) = -( &
+                  hookf(3, 1)*epsef(1)+hookf(3, 2)*epsef(2)+hookf(3, 4)*epsef(4))/ho&
+                  &okf(3, &
+                  3)-epsed(3 &
                   )
-        epsef(1:ndt) = epsed(1:ndt) + deps(1:ndt)
-    endif
+        epsef(1:ndt) = epsed(1:ndt)+deps(1:ndt)
+    end if
 !
 ! --  INTEGRATION ELASTIQUE : SIGF = HOOKF EPSEF (EPSEF MODIFIE EN CP)
 !
-    sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
+    sigf(1:ndt) = matmul(hookf(1:ndt, 1:ndt), epsef(1:ndt))
 !
 end subroutine

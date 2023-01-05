@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mat152(option, model, moint, nocham, ivalk,&
+subroutine mat152(option, model, moint, nocham, ivalk, &
                   nbmo, max, may, maz, num)
     implicit none
 ! AUTEUR : G.ROUSSEAU
@@ -68,11 +68,11 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
 !---------------SUR LE MODELE INTERFACE(THERMIQUE)-------------
 !
     call jemarq()
-    n7=0
-    if (getexm(' ','CHAM_NO') .eq. 1) then
+    n7 = 0
+    if (getexm(' ', 'CHAM_NO') .eq. 1) then
         call getvid(' ', 'CHAM_NO', nbval=0, nbret=n6)
-        n7 =-n6
-    endif
+        n7 = -n6
+    end if
     call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
 !------ RECUPERATION D'ARGUMENTS COMMUNS AUX CALCULS DES DEUX ---
 !-------------------------MATR_ELEM -----------------------------
@@ -83,23 +83,23 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
     lchin(1) = chgeom
     lpain(2) = 'PACCELR'
     lpaout(1) = 'PMATTTR'
-    maz=' '
+    maz = ' '
 !----------------------------------------------------------------
 !-----------CALCUL DE LA MATRICE AZ DES N(I)*N(J)*NZ-------------
 !----------------------------------------------------------------
     if (model .eq. '3D') then
-        dir='Z'
-        call calmaa(moint, ' ', dir, ligrmo, lchin(1),&
+        dir = 'Z'
+        call calmaa(moint, ' ', dir, ligrmo, lchin(1), &
                     lpain(1), lpaout(1), num, maz)
 !
 !
-    endif
+    end if
 !----------------------------------------------------------------
 !-----------CALCUL DE LA MATRICE AX DES N(I)*N(J)*NX-------------
 !----------------------------------------------------------------
 !
-    dir='X'
-    call calmaa(moint, ' ', dir, ligrmo, lchin(1),&
+    dir = 'X'
+    call calmaa(moint, ' ', dir, ligrmo, lchin(1), &
                 lpain(1), lpaout(1), num, max)
 !
 !
@@ -107,8 +107,8 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
 !-----------CALCUL DE LA MATRICE AY DES N(I)*N(J)*NY-------------
 !----------------------------------------------------------------
 !
-    dir='Y'
-    call calmaa(moint, ' ', dir, ligrmo, lchin(1),&
+    dir = 'Y'
+    call calmaa(moint, ' ', dir, ligrmo, lchin(1), &
                 lpain(1), lpaout(1), num, may)
 !
 !----------------------------------------------------------------
@@ -120,20 +120,20 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
         call wkvect('&&MAT152.MADE', 'V V K24', nbmo, imade)
 !
         do imode = 1, nbmo
-            incr='BID'
+            incr = 'BID'
             if (n7 .gt. 0) then
-                lchin(2)=zk8(ivalk+imode-1)
+                lchin(2) = zk8(ivalk+imode-1)
             else
-                call rsexch(' ', modmec, 'DEPL', imode, nomcha,&
+                call rsexch(' ', modmec, 'DEPL', imode, nomcha, &
                             iret)
-                lchin(2) =nomcha
-            endif
+                lchin(2) = nomcha
+            end if
             call codent(imode, 'D0', incr(1:3))
-            call ca2mam(moint, incr, ligrmo, lchin, lpain,&
+            call ca2mam(moint, incr, ligrmo, lchin, lpain, &
                         lpaout, num, made)
-            zk24(imade+imode-1)= made
+            zk24(imade+imode-1) = made
         end do
 !
-    endif
+    end if
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine op0156()
     call infmaj()
 !
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
-    resu=' '
+    resu = ' '
     call getres(resu, type, nomcmd)
 !
 !     0. MATRICE :
@@ -64,12 +64,12 @@ subroutine op0156()
     call mtdscr(masse)
     call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
     if (zi(lmat+3) .eq. 1) then
-        typmat='R'
-    else if (zi(lmat+3).eq.2) then
-        typmat='C'
+        typmat = 'R'
+    else if (zi(lmat+3) .eq. 2) then
+        typmat = 'C'
     else
         call utmess('F', 'ALGELINE2_86')
-    endif
+    end if
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numem)
     call dismoi('PROF_CHNO', masse, 'MATR_ASSE', repk=pfchn1)
 !
@@ -80,24 +80,24 @@ subroutine op0156()
     call chpver('F', chamno, 'NOEU', '*', ier)
     call jelira(chamno//'.VALE', 'TYPE', cval=typres)
     if (typmat .ne. typres) then
-        valk(1)=typmat
-        valk(2)=typres
+        valk(1) = typmat
+        valk(2) = typres
         call utmess('F', 'ALGELINE4_42', nk=2, valk=valk)
-    endif
+    end if
 !
     call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchn2)
 !     -- SI LA NUMEROTATION DE CHAM_NO N'EST PAS LA MEME QUE CELLE DE
 !        LA MATRICE, ON CHANGE LA NUMEROTATION DE CHAM_NO.
 !        EN APPELANT VTCOPY, ON PERD LA VALEUR DES LAGRANGES
-    if (.not.idensd('PROF_CHNO',pfchn1,pfchn2)) then
-        valk(1)=pfchn1
-        valk(2)=pfchn2
+    if (.not. idensd('PROF_CHNO', pfchn1, pfchn2)) then
+        valk(1) = pfchn1
+        valk(2) = pfchn2
         call utmess('A', 'CALCULEL3_46', nk=2, valk=valk)
-        chamn2='&&OP0156.CHAM_NO'
-        call vtcreb(chamn2, 'V', typres, nume_ddlz = numem)
+        chamn2 = '&&OP0156.CHAM_NO'
+        call vtcreb(chamn2, 'V', typres, nume_ddlz=numem)
         call vtcopy(chamno, chamn2, 'F', ier)
-        chamno=chamn2
-    endif
+        chamno = chamn2
+    end if
     call jeveuo(chamno//'.VALE', 'L', jchin)
 !
 !
@@ -106,20 +106,20 @@ subroutine op0156()
     call jeexin(resu//'.VALE', iret)
     if (iret .ne. 0) then
         call utmess('F', 'ALGELINE2_87', sk=resu(1:8))
-    endif
-    call vtcreb(resu, 'G', typres, nume_ddlz = numem)
+    end if
+    call vtcreb(resu, 'G', typres, nume_ddlz=numem)
     call jeveuo(resu//'.VALE', 'E', jchout)
 !
 !
 !     4. PRODUIT MATRICE X VECTEUR :
 !     ----------------------------------
     if (typres .eq. 'R') then
-        call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1,&
+        call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1, &
                     .true._1)
-    else if (typres.eq.'C') then
-        call mcmult('ZERO', lmat, zc(jchin), zc(jchout), 1,&
+    else if (typres .eq. 'C') then
+        call mcmult('ZERO', lmat, zc(jchin), zc(jchout), 1, &
                     .true._1)
-    endif
+    end if
 !
 !
     call titre()

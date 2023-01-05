@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,11 +70,11 @@ subroutine te0512(option, nomte)
 !
 !
     integer :: mxcmel, nbpgmx, nbres, nbres2, mxcvar
-    parameter ( mxcmel = 162 )
-    parameter ( nbpgmx =  27 )
-    parameter ( nbres  =   2 )
-    parameter ( nbres2 =   3 )
-    parameter ( mxcvar = 378 )
+    parameter(mxcmel=162)
+    parameter(nbpgmx=27)
+    parameter(nbres=2)
+    parameter(nbres2=3)
+    parameter(mxcvar=378)
 !
     integer :: i, k
     integer :: nno, nnos, npg, iret
@@ -107,8 +107,8 @@ subroutine te0512(option, nomte)
     character(len=16) :: pheno, phenom, pheno2, phenm2
     character(len=16) :: rela_comp
 !
-    data nomres / 'E','NU' /
-    data nomre2 / 'S','EPSP_SEUIL','EXP_S' /
+    data nomres/'E', 'NU'/
+    data nomre2/'S', 'EPSP_SEUIL', 'EXP_S'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -120,14 +120,14 @@ subroutine te0512(option, nomte)
     un = 1.0d0
     deux = 2.0d0
     trois = 3.0d0
-    undemi = 1.0d0 / 2.0d0
-    untier = 1.0d0 / 3.0d0
-    detier = 2.0d0 / 3.0d0
-    trdemi = 3.0d0 / 2.0d0
+    undemi = 1.0d0/2.0d0
+    untier = 1.0d0/3.0d0
+    detier = 2.0d0/3.0d0
+    trdemi = 3.0d0/2.0d0
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     nbsig = nbsigm()
 !
 ! ---    CARACTERISTIQUES MATERIAUX
@@ -150,13 +150,13 @@ subroutine te0512(option, nomte)
     call rccoma(zi(imate), pheno, 1, phenom, codres(1))
     if (codres(1) .eq. 1) then
         call utmess('F', 'FATIGUE1_7')
-    endif
+    end if
 !
     pheno2 = 'DOMMA_LEMAITRE'
     call rccoma(zi(imate), pheno2, 1, phenm2, codres(1))
     if (codres(1) .eq. 1) then
         call utmess('F', 'FATIGUE1_6')
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- 1. PREALABLES
@@ -177,10 +177,10 @@ subroutine te0512(option, nomte)
 !
     do igau = 1, npg
         indic = (igau-1)*nbsig
-        trsig(igau) = untier * (sigma(indic+1)+ sigma(indic+2) + sigma(indic+3) )
-        sigd(indic+1) = sigma(indic+1) - trsig(igau)
-        sigd(indic+2) = sigma(indic+2) - trsig(igau)
-        sigd(indic+3) = sigma(indic+3) - trsig(igau)
+        trsig(igau) = untier*(sigma(indic+1)+sigma(indic+2)+sigma(indic+3))
+        sigd(indic+1) = sigma(indic+1)-trsig(igau)
+        sigd(indic+2) = sigma(indic+2)-trsig(igau)
+        sigd(indic+3) = sigma(indic+3)-trsig(igau)
         sigd(indic+4) = sigma(indic+4)
         sigd(indic+5) = sigma(indic+5)
         sigd(indic+6) = sigma(indic+6)
@@ -190,14 +190,14 @@ subroutine te0512(option, nomte)
 !
     do igau = 1, npg
         indic = (igau-1)*nbsig
-        sigeq(igau) = sigd(indic+1) * sigd(indic+1) + &
-                      sigd(indic+2) * sigd(indic+2) + &
-                      sigd(indic+3) * sigd(indic+3) + &
-                      sigd(indic+4) * sigd(indic+4) * deux
-        if (ndim .eq. 3) sigeq(igau) = sigeq(igau) + &
-                                       sigd(indic+5) * sigd(indic+5) * deux +&
-                                       sigd(indic+6) * sigd(indic+6) * deux
-        sigeq(igau) = (sigeq(igau) * trdemi) ** undemi
+        sigeq(igau) = sigd(indic+1)*sigd(indic+1)+ &
+                      sigd(indic+2)*sigd(indic+2)+ &
+                      sigd(indic+3)*sigd(indic+3)+ &
+                      sigd(indic+4)*sigd(indic+4)*deux
+        if (ndim .eq. 3) sigeq(igau) = sigeq(igau)+ &
+                                       sigd(indic+5)*sigd(indic+5)*deux+ &
+                                       sigd(indic+6)*sigd(indic+6)*deux
+        sigeq(igau) = (sigeq(igau)*trdemi)**undemi
     end do
 !
 ! ----------------------------------------------------------------------
@@ -205,7 +205,7 @@ subroutine te0512(option, nomte)
 ! ----------------------------------------------------------------------
 !
     do igau = 1, npg
-        triax(igau) = trsig(igau) / sigeq(igau)
+        triax(igau) = trsig(igau)/sigeq(igau)
     end do
 !
 ! ----------------------------------------------------------------------
@@ -214,11 +214,11 @@ subroutine te0512(option, nomte)
 ! ---    NORMALISEE (CENDO)
 ! ----------------------------------------------------------------------
     do igau = 1, npg
-        call rcvalb(fami, igau, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, igau, 1, '+', zi(imate), &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     nbres, nomres, valres, codres, 1)
-        call rcvalb(fami, igau, 1, '+', zi(imate),&
-                    ' ', phenm2, 0, ' ', [0.d0],&
+        call rcvalb(fami, igau, 1, '+', zi(imate), &
+                    ' ', phenm2, 0, ' ', [0.d0], &
                     nbres2, nomre2, valre2, codre2, 1)
 !
         ts = valre2(1)
@@ -229,11 +229,11 @@ subroutine te0512(option, nomte)
         iexpo(igau) = un/expo(igau)
         xes = valres(1)*ts*deux
         xnu = valres(2)
-        coe1 = detier * (un + xnu)
-        coe2 = trois * (un - deux * xnu)
+        coe1 = detier*(un+xnu)
+        coe2 = trois*(un-deux*xnu)
 !
-        sendo(igau) = (coe1*sigeq(igau)**deux +coe2*trsig(igau)*trsig( igau) )**undemi
-        cendo(igau) = (coe1*sigeq(igau)**deux +coe2*trsig(igau)*trsig( igau) )/xes
+        sendo(igau) = (coe1*sigeq(igau)**deux+coe2*trsig(igau)*trsig(igau))**undemi
+        cendo(igau) = (coe1*sigeq(igau)**deux+coe2*trsig(igau)*trsig(igau))/xes
     end do
 !
 ! ----------------------------------------------------------------------
@@ -244,7 +244,7 @@ subroutine te0512(option, nomte)
 ! --- 3.1 RECUPERATION DU COMPORTEMENT
 !
     call tecach('OOO', 'PVARIPR', 'L', iret, nval=7, itab=jtab)
-    nbvari = max(jtab(6),1)*jtab(7)
+    nbvari = max(jtab(6), 1)*jtab(7)
     nbsig = nbvari
     call jevech('PCOMPOR', 'L', icompo)
     rela_comp = zk16(icompo-1+RELA_NAME)
@@ -277,27 +277,27 @@ subroutine te0512(option, nomte)
                 resu1 = zero
             else
                 resu1 = (un-dommoi(igau))**expo(igau)
-            endif
+            end if
             kmoiss = cendom(igau)**petits(igau)
             kpluss = cendo(igau)**petits(igau)
-            ksomm = kmoiss + kpluss
-            pdiff = xvari2(iepsp+(igau-1)*nbsig) - xvari1(iepsp+(igau- 1)*nbsig )
+            ksomm = kmoiss+kpluss
+            pdiff = xvari2(iepsp+(igau-1)*nbsig)-xvari1(iepsp+(igau-1)*nbsig)
             resu2 = (expo(igau)/deux)*ksomm*pdiff
-            vale = resu1 - resu2
+            vale = resu1-resu2
             if (vale .gt. zero) then
                 domle(igau) = un-vale**iexpo(igau)
             else
                 domle(igau) = un+(-un*vale)**iexpo(igau)
-            endif
+            end if
         else
             domle(igau) = zero
-        endif
+        end if
 !
 ! --- 3.4 LA VALEUR DE L'ENDOMMAGEMENT EST BORNEE A 1
 !
         if (domle(igau) .gt. un) then
             domle(igau) = un
-        endif
+        end if
 !
 !
     end do

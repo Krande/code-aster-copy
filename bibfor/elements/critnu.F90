@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,39 +44,39 @@ function critnu(zimat, nmnbn, deps, dtg, normm)
     cp = matmul(dtg, deps)
 !
 !     TENSEUR DES CONTRAINTES TESTS
-    do j = 1,6
-       nprnbn(j) = nmnbn(j) + cp(j)
+    do j = 1, 6
+        nprnbn(j) = nmnbn(j)+cp(j)
     end do
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
-    call mppffn(zimat, nprnbn, nmprpl, nmprzf, nmprzg,&
+    call mppffn(zimat, nprnbn, nmprpl, nmprzf, nmprzg, &
                 nmprif, normm)
 !
     if (nmprif .gt. 0) then
-        critnu=-1
+        critnu = -1
         call utmess('A', 'ELEMENTS_21')
         goto 20
-    endif
+    end if
 !
 !     CALCUL DES CRITERES DE PLASTICITE F
-    f1elas = fplass(nprnbn,nmprpl,1)
-    f2elas = fplass(nprnbn,nmprpl,2)
+    f1elas = fplass(nprnbn, nmprpl, 1)
+    f2elas = fplass(nprnbn, nmprpl, 2)
 !
 !     CALCUL DES CONDITIONS DE PLASTICITE G
-    g1elas = gplass(nprnbn,nmprpl,1)
-    g2elas = gplass(nprnbn,nmprpl,2)
+    g1elas = gplass(nprnbn, nmprpl, 1)
+    g2elas = gplass(nprnbn, nmprpl, 2)
 !
     if ((f1elas .gt. 0) .or. (g1elas .gt. 0)) then
         if ((f2elas .gt. 0) .or. (g2elas .gt. 0)) then
             critnu = 12
         else
             critnu = 1
-        endif
-    else if ((f2elas .gt. 0).or.(g2elas .gt. 0)) then
+        end if
+    else if ((f2elas .gt. 0) .or. (g2elas .gt. 0)) then
         critnu = 2
     else
         critnu = 0
-    endif
+    end if
 !
 20  continue
 end function

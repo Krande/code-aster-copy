@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine rc32mu()
 #include "asterfort/wkvect.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
     integer :: ncmp, nb, kk
-    parameter  ( ncmp = 6 )
+    parameter(ncmp=6)
     real(kind=8) :: prec, momen0, momen1
     complex(kind=8) :: cbid
     aster_logical :: exist
@@ -66,37 +66,37 @@ subroutine rc32mu()
     call getvid(motclf, 'TABL_MX', iocc=1, scal=tbsig(4), nbret=ns(4))
     if (ns(4) .eq. 0) then
         call getvid(motclf, 'TABL_MX_TUBU', iocc=1, scal=tbsig(4), nbret=ns(4))
-    endif
+    end if
     call rcveri(tbsig(4))
 !
     call getvid(motclf, 'TABL_FX', iocc=1, scal=tbsig(1), nbret=ns(1))
     if (ns(1) .eq. 0) then
         call getvid(motclf, 'TABL_FX_TUBU', iocc=1, scal=tbsig(1), nbret=ns(1))
-    endif
+    end if
     if (ns(1) .ne. 0) call rcver1('MECANIQUE', tbsig(4), tbsig(1))
 !
     call getvid(motclf, 'TABL_FY', iocc=1, scal=tbsig(2), nbret=ns(2))
     if (ns(2) .eq. 0) then
         call getvid(motclf, 'TABL_FY_TUBU', iocc=1, scal=tbsig(2), nbret=ns(2))
-    endif
+    end if
     if (ns(2) .ne. 0) call rcver1('MECANIQUE', tbsig(4), tbsig(2))
 !
     call getvid(motclf, 'TABL_FZ', iocc=1, scal=tbsig(3), nbret=ns(3))
     if (ns(3) .eq. 0) then
         call getvid(motclf, 'TABL_FZ_TUBU', iocc=1, scal=tbsig(3), nbret=ns(3))
-    endif
+    end if
     if (ns(3) .ne. 0) call rcver1('MECANIQUE', tbsig(4), tbsig(3))
 !
     call getvid(motclf, 'TABL_MY', iocc=1, scal=tbsig(5), nbret=ns(5))
     if (ns(5) .eq. 0) then
         call getvid(motclf, 'TABL_MY_TUBU', iocc=1, scal=tbsig(5), nbret=ns(5))
-    endif
+    end if
     if (ns(5) .ne. 0) call rcver1('MECANIQUE', tbsig(4), tbsig(5))
 !
     call getvid(motclf, 'TABL_MZ', iocc=1, scal=tbsig(6), nbret=ns(6))
     if (ns(6) .eq. 0) then
         call getvid(motclf, 'TABL_MZ_TUBU', iocc=1, scal=tbsig(6), nbret=ns(6))
-    endif
+    end if
     if (ns(6) .ne. 0) call rcver1('MECANIQUE', tbsig(4), tbsig(6))
 !
     call getvid(motclf, 'TABL_FX_CORP', iocc=1, scal=tbsig(7), nbret=ns(7))
@@ -125,12 +125,12 @@ subroutine rc32mu()
     valek = 'ABSC_CURV       '
     call tbexip(tbsig(4), valek, exist, k8b)
     if (.not. exist) then
-        valk (1) = tbsig(4)
-        valk (2) = valek
+        valk(1) = tbsig(4)
+        valk(2) = valek
         call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-    endif
+    end if
     abscur = '&&RC32MU.ABSC_CURV'
-    call tbexv1(tbsig(4), valek, abscur, 'V', nbabsc,&
+    call tbexv1(tbsig(4), valek, abscur, 'V', nbabsc, &
                 k8b)
     call jeveuo(abscur, 'L', jabsc)
 !
@@ -144,15 +144,15 @@ subroutine rc32mu()
     nocmp(6) = 'SIYZ'
 !
 ! --- 13 TABLES A  ( 6 COMPOSANTES + 6 LINEARISEES + 6 M_0 + 6 M_1 )
-    ndim = 13 * ( 6 + 6 + 6 + 6 )
+    ndim = 13*(6+6+6+6)
     call wkvect('&&RC3200.MECA_UNIT .ORIG', 'V V R', ndim, jmuno)
     call wkvect('&&RC3200.MECA_UNIT .EXTR', 'V V R', ndim, jmune)
 !
 ! --- LES PROFILS DE CONTRAINTES ISSUS DES CALCULS MECANIQUES UNITAIRES
 !
     do kk = 1, ndim
-        zr(jmuno+kk-1)=0.d0
-        zr(jmune+kk-1)=0.d0
+        zr(jmuno+kk-1) = 0.d0
+        zr(jmune+kk-1) = 0.d0
     end do
 !
     do i = 1, 13
@@ -161,46 +161,46 @@ subroutine rc32mu()
 !
         call tbexip(tbsig(i), valek, exist, k8b)
         if (.not. exist) then
-            valk (1) = tbsig(i)
-            valk (2) = valek
+            valk(1) = tbsig(i)
+            valk(2) = valek
             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-        endif
+        end if
         do j = 1, ncmp
 !
             do k = 1, nbabsc
-                call tbliva(tbsig(i), 1, valek, [ibid], zr(jabsc+k-1),&
-                            [cbid], k8b, crit, [prec], nocmp(j),&
-                            k8b, ibid, contraintes(k), cbid, k8b,&
+                call tbliva(tbsig(i), 1, valek, [ibid], zr(jabsc+k-1), &
+                            [cbid], k8b, crit, [prec], nocmp(j), &
+                            k8b, ibid, contraintes(k), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = tbsig(i)
-                    valk (2) = nocmp(j)
-                    valk (3) = valek
-                    call utmess('F', 'POSTRCCM_44', nk=3, valk=valk, sr=zr( jabsc+k-1))
-                endif
+                    valk(1) = tbsig(i)
+                    valk(2) = nocmp(j)
+                    valk(3) = valek
+                    call utmess('F', 'POSTRCCM_44', nk=3, valk=valk, sr=zr(jabsc+k-1))
+                end if
             end do
 !
-            l = ncmp*(i-1) + j
+            l = ncmp*(i-1)+j
             zr(jmuno-1+l) = contraintes(1)
             zr(jmune-1+l) = contraintes(nbabsc)
 !
             call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
 !
-            l = 13*ncmp + ncmp*(i-1) + j
-            zr(jmuno-1+l) = momen0 - 0.5d0*momen1
-            zr(jmune-1+l) = momen0 + 0.5d0*momen1
+            l = 13*ncmp+ncmp*(i-1)+j
+            zr(jmuno-1+l) = momen0-0.5d0*momen1
+            zr(jmune-1+l) = momen0+0.5d0*momen1
 !
-            l = 2*13*ncmp + ncmp*(i-1) + j
+            l = 2*13*ncmp+ncmp*(i-1)+j
             zr(jmuno-1+l) = momen0
             zr(jmune-1+l) = momen0
 !
-            l = 3*13*ncmp + ncmp*(i-1) + j
+            l = 3*13*ncmp+ncmp*(i-1)+j
             zr(jmuno-1+l) = 0.5d0*momen1
             zr(jmune-1+l) = 0.5d0*momen1
 !
         end do
 !
- 10     continue
+10      continue
     end do
 !
     call jedetr(abscur)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,13 @@ subroutine tbajvi(table, nbpara, nompar, vi, livi)
 !
     vr = 0.d0
     livr(1) = 0.d0
-    vc = dcmplx(0.d0,0.d0)
-    livc(1) = dcmplx(0.d0,0.d0)
+    vc = dcmplx(0.d0, 0.d0)
+    livc(1) = dcmplx(0.d0, 0.d0)
     vk = ' '
     livk(1) = ' '
 !
-    call tbajva(table, nbpara, nompar, vi, livi,&
-                vr, livr, vc, livc, vk,&
+    call tbajva(table, nbpara, nompar, vi, livi, &
+                vr, livr, vc, livc, vk, &
                 livk)
 !
 end subroutine

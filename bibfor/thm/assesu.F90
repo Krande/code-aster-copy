@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,27 +17,27 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501,W1504,W1306
 !
-subroutine assesu(ds_thm   ,&
-                  lMatr    , lVect    , lSigm ,&
-                  lVari    , lMatrPred,&
-                  option   , j_mater  ,&
+subroutine assesu(ds_thm, &
+                  lMatr, lVect, lSigm, &
+                  lVari, lMatrPred, &
+                  option, j_mater, &
                   type_elem, &
-                  ndim     , nbvari   ,&
-                  nno      , nnos     , nface ,&
-                  dimdef   , dimcon   , dimuel,&
-                  mecani   , press1   , press2, tempe,&
-                  compor   , carcri   ,&
-                  elem_coor,&
-                  dispm    , dispp    ,&
-                  defgem   , defgep   ,&
-                  congem   , congep   ,&
-                  vintm    , vintp    ,&
-                  time_prev, time_curr,&
-                  matuu    , vectu)
+                  ndim, nbvari, &
+                  nno, nnos, nface, &
+                  dimdef, dimcon, dimuel, &
+                  mecani, press1, press2, tempe, &
+                  compor, carcri, &
+                  elem_coor, &
+                  dispm, dispp, &
+                  defgem, defgep, &
+                  congem, congep, &
+                  vintm, vintp, &
+                  time_prev, time_curr, &
+                  matuu, vectu)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -58,28 +58,28 @@ implicit none
 #include "asterfort/thmGetBehaviourChck.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm, lMatrPred
-integer, parameter :: maxfa=6
-character(len=16), intent(in) :: option
-integer, intent(in) :: j_mater
-character(len=8), intent(in) :: type_elem(2)
-integer, intent(in) :: ndim, nbvari
-integer, intent(in) :: nno, nnos, nface
-integer, intent(in) :: dimdef, dimcon, dimuel
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-character(len=16), intent(in)  :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: elem_coor(ndim, nno)
-real(kind=8), intent(in) :: dispm(dimuel), dispp(dimuel)
-real(kind=8), intent(inout) :: defgem(dimdef), defgep(dimdef)
-real(kind=8), intent(in) :: congem(dimcon, maxfa+1)
-real(kind=8), intent(inout) :: congep(dimcon, maxfa+1)
-real(kind=8), intent(in) :: vintm(nbvari, maxfa+1)
-real(kind=8), intent(inout) :: vintp(nbvari, maxfa+1)
-real(kind=8), intent(in) :: time_curr, time_prev
-real(kind=8), intent(inout) :: matuu(dimuel*dimuel)
-real(kind=8), intent(inout) :: vectu(dimuel)
+    type(THM_DS), intent(inout) :: ds_thm
+    aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm, lMatrPred
+    integer, parameter :: maxfa = 6
+    character(len=16), intent(in) :: option
+    integer, intent(in) :: j_mater
+    character(len=8), intent(in) :: type_elem(2)
+    integer, intent(in) :: ndim, nbvari
+    integer, intent(in) :: nno, nnos, nface
+    integer, intent(in) :: dimdef, dimcon, dimuel
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    character(len=16), intent(in)  :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: elem_coor(ndim, nno)
+    real(kind=8), intent(in) :: dispm(dimuel), dispp(dimuel)
+    real(kind=8), intent(inout) :: defgem(dimdef), defgep(dimdef)
+    real(kind=8), intent(in) :: congem(dimcon, maxfa+1)
+    real(kind=8), intent(inout) :: congep(dimcon, maxfa+1)
+    real(kind=8), intent(in) :: vintm(nbvari, maxfa+1)
+    real(kind=8), intent(inout) :: vintp(nbvari, maxfa+1)
+    real(kind=8), intent(in) :: time_curr, time_prev
+    real(kind=8), intent(inout) :: matuu(dimuel*dimuel)
+    real(kind=8), intent(inout) :: vectu(dimuel)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -219,7 +219,7 @@ real(kind=8), intent(inout) :: vectu(dimuel)
 ! FM2ASS(MAXFA+1,NFACE) DERIVEE DE FMASS / P_K PUIS P_2,SIGMA
 ! FM1ADS(MAXFA+1,NFACE) DERIVEE DE FMADS / P_K PUIS P_1,SIGMA
 ! FM2ADS(MAXFA+1,NFACE) DERIVEE DE FMADS / P_K PUIS P_2,SIGMA
-    integer, parameter :: con = 1, dconp1 = 2, dconp2 = 3, diffu  = 4, ddifp1 = 5, ddifp2 = 6
+    integer, parameter :: con = 1, dconp1 = 2, dconp2 = 3, diffu = 4, ddifp1 = 5, ddifp2 = 6
     integer, parameter :: mob = 7, dmobp1 = 8, dmobp2 = 9, masse = 10, dmasp1 = 11, dmasp2 = 12
     integer, parameter :: wliq = 1, wvap = 2, airdis = 3, airsec = 4, eau = 1, air = 2, densit = 14
     integer, parameter :: vkint = 13, kxx = 1, kyy = 2, kzz = 3, kxy = 4, kyz = 5, kzx = 6
@@ -246,8 +246,8 @@ real(kind=8), intent(inout) :: vectu(dimuel)
     real(kind=8) :: pcpf(maxfa), pgpf(maxfa), dpgp1f(maxfa), dpgp2f(maxfa), pwpf(maxfa)
     real(kind=8) :: dpwp1f(maxfa), dpwp2f(maxfa), cvpf(maxfa), dcvp1f(maxfa), cadf(maxfa)
     real(kind=8) :: dcad1f(maxfa), dcad2f(maxfa), dcvp2f(maxfa)
-    real(kind=8) :: yss (3, maxfa, maxfa)
-    real(kind=8) :: c (maxfa, maxfa), d (maxfa, maxfa)
+    real(kind=8) :: yss(3, maxfa, maxfa)
+    real(kind=8) :: c(maxfa, maxfa), d(maxfa, maxfa)
     real(kind=8) :: flks(maxfa), dflks1(maxfa+1, maxfa), dflks2(maxfa+1, maxfa), fgks(maxfa)
     real(kind=8) :: dfgks1(maxfa+1, maxfa), dfgks2(maxfa+1, maxfa), ftgks(maxfa)
     real(kind=8) :: ftgks1(maxfa+1, maxfa), ftgks2(maxfa+1, maxfa), fclks(maxfa)
@@ -286,75 +286,75 @@ real(kind=8), intent(inout) :: vectu(dimuel)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iadp1k                  = 2*nface+1
-    iadp2k                  = 2*nface+2
-    adcm1                   = 2*nface+1
-    adcm2                   = 2*nface+2
-    angl_naut(:)            = zero
-    dsde(1:dimcon,1:dimdef) = zero
-    pcpf(1:maxfa)   = zero
-    pgpf(1:maxfa)   = zero
+    iadp1k = 2*nface+1
+    iadp2k = 2*nface+2
+    adcm1 = 2*nface+1
+    adcm2 = 2*nface+2
+    angl_naut(:) = zero
+    dsde(1:dimcon, 1:dimdef) = zero
+    pcpf(1:maxfa) = zero
+    pgpf(1:maxfa) = zero
     dpgp1f(1:maxfa) = zero
     dpgp2f(1:maxfa) = zero
-    pwpf(1:maxfa)   = zero
+    pwpf(1:maxfa) = zero
     dpwp1f(1:maxfa) = zero
     dpwp2f(1:maxfa) = zero
-    cvpf(1:maxfa)   = zero
+    cvpf(1:maxfa) = zero
     dcvp1f(1:maxfa) = zero
     dcvp2f(1:maxfa) = zero
-    cadf(1:maxfa)   = zero
+    cadf(1:maxfa) = zero
     dcad1f(1:maxfa) = zero
     dcad2f(1:maxfa) = zero
-    mobwf(1:maxfa)  = zero
-    dw1f(1:maxfa)   = zero
-    dw2f(1:maxfa)   = zero
+    mobwf(1:maxfa) = zero
+    dw1f(1:maxfa) = zero
+    dw2f(1:maxfa) = zero
     dw1ffa(1:maxfa) = zero
     dw2ffa(1:maxfa) = zero
-    moadf(1:maxfa)  = zero
-    dad1f(1:maxfa)  = zero
-    dad2f(1:maxfa)  = zero
+    moadf(1:maxfa) = zero
+    dad1f(1:maxfa) = zero
+    dad2f(1:maxfa) = zero
     dad1ff(1:maxfa) = zero
     dad2ff(1:maxfa) = zero
-    moasf(1:maxfa)  = zero
-    das1f(1:maxfa)  = zero
-    das2f(1:maxfa)  = zero
+    moasf(1:maxfa) = zero
+    das1f(1:maxfa) = zero
+    das2f(1:maxfa) = zero
     das1ff(1:maxfa) = zero
     das2ff(1:maxfa) = zero
-    movpf(1:maxfa)  = zero
-    dvp1f(1:maxfa)  = zero
-    dvp2f(1:maxfa)  = zero
+    movpf(1:maxfa) = zero
+    dvp1f(1:maxfa) = zero
+    dvp2f(1:maxfa) = zero
     dvp1ff(1:maxfa) = zero
     dvp2ff(1:maxfa) = zero
-    fw1s(1:maxfa+1) =zero
-    fw2s(1:maxfa+1) =zero
-    fvp1s(1:maxfa+1)=zero
-    fvp2s(1:maxfa+1)=zero
-    fas1s(1:maxfa+1)=zero
-    fas2s(1:maxfa+1)=zero
-    fad1s(1:maxfa+1)=zero
-    fad2s(1:maxfa+1)=zero
-    fluws =zero
-    fluvps=zero
-    fluass=zero
-    fluads=zero
-    fmvps(1:maxfa)=zero
-    fmws(1:maxfa) =zero
-    fmass(1:maxfa)=zero
-    fmads(1:maxfa)=zero
-    fm1ws(1:maxfa+1,1:maxfa) =zero
-    fm2ws(1:maxfa+1,1:maxfa) =zero
-    fm1vps(1:maxfa+1,1:maxfa)=zero
-    fm2vps(1:maxfa+1,1:maxfa)=zero
-    fm1ass(1:maxfa+1,1:maxfa)=zero
-    fm2ass(1:maxfa+1,1:maxfa)=zero
-    fm1ads(1:maxfa+1,1:maxfa)=zero
-    fm2ads(1:maxfa+1,1:maxfa)=zero
+    fw1s(1:maxfa+1) = zero
+    fw2s(1:maxfa+1) = zero
+    fvp1s(1:maxfa+1) = zero
+    fvp2s(1:maxfa+1) = zero
+    fas1s(1:maxfa+1) = zero
+    fas2s(1:maxfa+1) = zero
+    fad1s(1:maxfa+1) = zero
+    fad2s(1:maxfa+1) = zero
+    fluws = zero
+    fluvps = zero
+    fluass = zero
+    fluads = zero
+    fmvps(1:maxfa) = zero
+    fmws(1:maxfa) = zero
+    fmass(1:maxfa) = zero
+    fmads(1:maxfa) = zero
+    fm1ws(1:maxfa+1, 1:maxfa) = zero
+    fm2ws(1:maxfa+1, 1:maxfa) = zero
+    fm1vps(1:maxfa+1, 1:maxfa) = zero
+    fm2vps(1:maxfa+1, 1:maxfa) = zero
+    fm1ass(1:maxfa+1, 1:maxfa) = zero
+    fm2ass(1:maxfa+1, 1:maxfa) = zero
+    fm1ads(1:maxfa+1, 1:maxfa) = zero
+    fm2ads(1:maxfa+1, 1:maxfa) = zero
     if (lMatr) then
         matuu(1:dimuel*dimuel) = zero
-    endif
+    end if
     if (lVect) then
         vectu(1:dimuel) = zero
-    endif
+    end if
 !
 ! - Initialization of FV quantities
 !
@@ -401,19 +401,19 @@ real(kind=8), intent(inout) :: vectu(dimuel)
 ! - Get storage parameters for behaviours
 !
     nume_thmc = ds_thm%ds_behaviour%nume_thmc
-    advico    = ds_thm%ds_behaviour%advico
-    vicpr1    = ds_thm%ds_behaviour%vicpr1
-    vicpr2    = ds_thm%ds_behaviour%vicpr2
+    advico = ds_thm%ds_behaviour%advico
+    vicpr1 = ds_thm%ds_behaviour%vicpr1
+    vicpr2 = ds_thm%ds_behaviour%vicpr2
 !
 ! - Get initial parameters (THM_INIT)
 !
-    call thmGetParaInit(j_mater, ds_thm, l_check_ = ASTER_TRUE)
+    call thmGetParaInit(j_mater, ds_thm, l_check_=ASTER_TRUE)
 !
 ! - Compute geometric parameters for current cell
 !
-    call cabhvf(maxfa    , ndim , nno  , nnos , nface ,&
-                elem_coor,&
-                vol      , mface, dface, xface, normfa)
+    call cabhvf(maxfa, ndim, nno, nnos, nface, &
+                elem_coor, &
+                vol, mface, dface, xface, normfa)
 !
 ! - Compute generalized strains
 !
@@ -431,30 +431,30 @@ real(kind=8), intent(inout) :: vectu(dimuel)
                 defgem(addep2+i) = zero
                 defgep(addep2+i) = zero
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute generalized stresses and derivatives
 !
-    call comthm_vf(ds_thm     ,&
-                   lMatr      , lVect, lSigm      ,&
-                   lVari      , lMatrPred  ,&
-                   option     , j_mater    ,&
-                   type_elem  , angl_naut  ,&
-                   ndim       , nbvari     ,&
-                   dimdef     , dimcon     ,&
-                   0          , valfac     , valcen,&
-                   adcome     , adcote     , adcp11, adcp12, adcp21, adcp22,&
-                   addeme     , addete     , addep1, addep2,&
-                   carcri     ,&
-                   defgem     , defgep     ,&
-                   congem     , congep     ,&
-                   vintm(1, 1), vintp(1, 1),&
-                   time_prev  , time_curr  ,&
-                   dsde       , gravity    , retcom)
+    call comthm_vf(ds_thm, &
+                   lMatr, lVect, lSigm, &
+                   lVari, lMatrPred, &
+                   option, j_mater, &
+                   type_elem, angl_naut, &
+                   ndim, nbvari, &
+                   dimdef, dimcon, &
+                   0, valfac, valcen, &
+                   adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                   addeme, addete, addep1, addep2, &
+                   carcri, &
+                   defgem, defgep, &
+                   congem, congep, &
+                   vintm(1, 1), vintp(1, 1), &
+                   time_prev, time_curr, &
+                   dsde, gravity, retcom)
     if (retcom .ne. 0) then
         call utmess('F', 'COMPOR1_9')
-    endif
+    end if
     do fa = 1, nface
         if (ds_thm%ds_elem%l_dof_pre1) then
             defgem(addep1) = dispm(iadp1(fa))
@@ -470,35 +470,35 @@ real(kind=8), intent(inout) :: vectu(dimuel)
                     defgem(addep2+i) = zero
                     defgep(addep2+i) = zero
                 end do
-            endif
+            end if
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         do i = 1, dimcon
             do j = 1, dimdef
-                dsde(i,j) = zero
+                dsde(i, j) = zero
             end do
         end do
 ! ----- Compute generalized stresses and derivatives
-        call comthm_vf(ds_thm        ,&
-                       lMatr         , lVect         , lSigm         ,&
-                       lVari         , lMatrPred     ,&
-                       option        , j_mater       ,&
-                       type_elem     , angl_naut     ,&
-                       ndim          , nbvari        ,&
-                       dimdef        , dimcon        ,&
-                       fa            , valfac        , valcen,&
-                       adcome        , adcote        , adcp11, adcp12, adcp21, adcp22,&
-                       addeme        , addete        , addep1, addep2,&
-                       carcri        ,&
-                       defgem        , defgep        ,&
-                       congem        , congep        ,&
-                       vintm(1, fa+1), vintp(1, fa+1),&
-                       time_prev     , time_curr     ,&
-                       dsde          , gravity       , retcom)
+        call comthm_vf(ds_thm, &
+                       lMatr, lVect, lSigm, &
+                       lVari, lMatrPred, &
+                       option, j_mater, &
+                       type_elem, angl_naut, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       fa, valfac, valcen, &
+                       adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                       addeme, addete, addep1, addep2, &
+                       carcri, &
+                       defgem, defgep, &
+                       congem, congep, &
+                       vintm(1, fa+1), vintp(1, fa+1), &
+                       time_prev, time_curr, &
+                       dsde, gravity, retcom)
         if (retcom .ne. 0) then
             call utmess('F', 'COMPOR1_9')
-        endif
+        end if
     end do
 !
 ! - Set
@@ -506,43 +506,43 @@ real(kind=8), intent(inout) :: vectu(dimuel)
     if (lVect) then
         vectu(adcm1) = valcen(masse, eau)*vol
         vectu(adcm2) = valcen(masse, air)*vol
-    endif
+    end if
     if (lMatr) then
-        matuu(zzadma(0,adcm1,iadp1k)) = valcen(dmasp1, eau)*vol
-        matuu(zzadma(0,adcm2,iadp1k)) = valcen(dmasp1, air)*vol
-        matuu(zzadma(0,adcm1,iadp2k)) = valcen(dmasp2, eau)*vol
-        matuu(zzadma(0,adcm2,iadp2k)) = valcen(dmasp2, air)*vol
-    endif
-    rhol   = valcen(densit ,rholq)
-    drhol1 = valcen(densit ,rholq1)
-    drhol2 = valcen(densit ,rholq2)
-    rhog   = valcen(densit ,rhoga)
-    drhog1 = valcen(densit ,rhoga1)
-    drhog2 = valcen(densit ,rhoga2)
+        matuu(zzadma(0, adcm1, iadp1k)) = valcen(dmasp1, eau)*vol
+        matuu(zzadma(0, adcm2, iadp1k)) = valcen(dmasp1, air)*vol
+        matuu(zzadma(0, adcm1, iadp2k)) = valcen(dmasp2, eau)*vol
+        matuu(zzadma(0, adcm2, iadp2k)) = valcen(dmasp2, air)*vol
+    end if
+    rhol = valcen(densit, rholq)
+    drhol1 = valcen(densit, rholq1)
+    drhol2 = valcen(densit, rholq2)
+    rhog = valcen(densit, rhoga)
+    drhog1 = valcen(densit, rhoga1)
+    drhog2 = valcen(densit, rhoga2)
     if (ndim .eq. 2) then
-        kintvf(1) = valcen(vkint ,kxx)
-        kintvf(2) = valcen(vkint ,kyy)
-        kintvf(3) = valcen(vkint ,kxy)
+        kintvf(1) = valcen(vkint, kxx)
+        kintvf(2) = valcen(vkint, kyy)
+        kintvf(3) = valcen(vkint, kxy)
         kintvf(4) = zero
         kintvf(5) = zero
         kintvf(6) = zero
     else
-        kintvf(1) = valcen(vkint ,kxx)
-        kintvf(2) = valcen(vkint ,kyy)
-        kintvf(3) = valcen(vkint ,kzz)
-        kintvf(4) = valcen(vkint ,kxy)
-        kintvf(5) = valcen(vkint ,kyz)
-        kintvf(6) = valcen(vkint ,kzx)
-    endif
+        kintvf(1) = valcen(vkint, kxx)
+        kintvf(2) = valcen(vkint, kyy)
+        kintvf(3) = valcen(vkint, kzz)
+        kintvf(4) = valcen(vkint, kxy)
+        kintvf(5) = valcen(vkint, kyz)
+        kintvf(6) = valcen(vkint, kzx)
+    end if
 !
 ! - Compute what ?
 !
-    call cacdsu(maxfa    , parm_alpha,&
-                ndim     , nno       , nface ,&
-                elem_coor,&
-                vol      , mface     , dface ,&
-                xface    , normfa    , kintvf,&
-                yss      , c         , d    )
+    call cacdsu(maxfa, parm_alpha, &
+                ndim, nno, nface, &
+                elem_coor, &
+                vol, mface, dface, &
+                xface, normfa, kintvf, &
+                yss, c, d)
 !
 ! - Get pressures and derivatives
 !
@@ -564,79 +564,79 @@ real(kind=8), intent(inout) :: vectu(dimuel)
         dpwp1f(ifa) = -1.d0
         dpwp2f(ifa) = 1.d0
     end do
-    cvp = valcen(con,wvap)
-    dcvp1 = valcen(dconp1,wvap)
-    dcvp2 = valcen(dconp2,wvap)
+    cvp = valcen(con, wvap)
+    dcvp1 = valcen(dconp1, wvap)
+    dcvp2 = valcen(dconp2, wvap)
     do ifa = 1, nface
-        cvpf (ifa) = valfac(ifa,con,wvap)
-        dcvp1f(ifa) = valfac(ifa,dconp1,wvap)
-        dcvp2f(ifa) = valfac(ifa,dconp2,wvap)
+        cvpf(ifa) = valfac(ifa, con, wvap)
+        dcvp1f(ifa) = valfac(ifa, dconp1, wvap)
+        dcvp2f(ifa) = valfac(ifa, dconp2, wvap)
     end do
-    cad = valcen(con,airdis)
-    dcad1 = valcen(dconp1,airdis)
-    dcad2 = valcen(dconp2,airdis)
+    cad = valcen(con, airdis)
+    dcad1 = valcen(dconp1, airdis)
+    dcad2 = valcen(dconp2, airdis)
     do ifa = 1, nface
-        cadf(ifa) = valfac(ifa,con,airdis)
-        dcad1f(ifa) = valfac(ifa,dconp1,airdis)
-        dcad2f(ifa) = valfac(ifa,dconp2,airdis)
+        cadf(ifa) = valfac(ifa, con, airdis)
+        dcad1f(ifa) = valfac(ifa, dconp1, airdis)
+        dcad2f(ifa) = valfac(ifa, dconp2, airdis)
     end do
 !
 ! - Save pressures in internal variables
 !
     if (nume_thmc .eq. LIQU_AD_GAZ) then
         do ipg = 1, nface+1
-            vintp(advico+vicpr1,ipg) = pcp
-            vintp(advico+vicpr2,ipg) = pgp
+            vintp(advico+vicpr1, ipg) = pcp
+            vintp(advico+vicpr2, ipg) = pgp
         end do
-    endif
+    end if
 !
 ! - Compute "volumic" flux
 !
-    call vfcfks(lMatr, maxfa  , ndim  , nface,&
-                cvp   , dcvp1  , dcvp2 ,&
-                cvpf  , dcvp1f , dcvp2f,&
-                d     , gravity,&
-                zero  , zero   , zero  ,&
-                xg    , xface  ,&
-                ftgks , ftgks1  , ftgks2)
-    call vfcfks(lMatr, maxfa  , ndim  , nface,&
-                cad   , dcad1  , dcad2 ,&
-                cadf  , dcad1f , dcad2f,&
-                d     , gravity,&
-                zero  , zero   , zero  ,&
-                xg    , xface  ,&
-                fclks , fclks1 , fclks2)
-    call vfcfks(lMatr, maxfa  , ndim  , nface,&
-                pwp   , dpwp1  , dpwp2 ,&
-                pwpf  , dpwp1f , dpwp2f,&
-                c     , gravity,&
-                rhol  , drhol1 , drhol2,&
-                xg    , xface  ,&
-                flks  , dflks1 , dflks2)
-    call vfcfks(lMatr, maxfa  , ndim  , nface,&
-                pgp   , dpgp1  , dpgp2 ,&
-                pgpf  , dpgp1f , dpgp2f,&
-                c     , gravity,&
-                rhog  , drhog1 , drhog2,&
-                xg    , xface  ,&
-                fgks  , dfgks1 , dfgks2)
+    call vfcfks(lMatr, maxfa, ndim, nface, &
+                cvp, dcvp1, dcvp2, &
+                cvpf, dcvp1f, dcvp2f, &
+                d, gravity, &
+                zero, zero, zero, &
+                xg, xface, &
+                ftgks, ftgks1, ftgks2)
+    call vfcfks(lMatr, maxfa, ndim, nface, &
+                cad, dcad1, dcad2, &
+                cadf, dcad1f, dcad2f, &
+                d, gravity, &
+                zero, zero, zero, &
+                xg, xface, &
+                fclks, fclks1, fclks2)
+    call vfcfks(lMatr, maxfa, ndim, nface, &
+                pwp, dpwp1, dpwp2, &
+                pwpf, dpwp1f, dpwp2f, &
+                c, gravity, &
+                rhol, drhol1, drhol2, &
+                xg, xface, &
+                flks, dflks1, dflks2)
+    call vfcfks(lMatr, maxfa, ndim, nface, &
+                pgp, dpgp1, dpgp2, &
+                pgpf, dpgp1f, dpgp2f, &
+                c, gravity, &
+                rhog, drhog1, drhog2, &
+                xg, xface, &
+                fgks, dfgks1, dfgks2)
 !
 ! - Get diffusion
 !
     do ifa = 1, nface
-        difuvp(ifa) = valcen(diffu,wvap)
-        difuas(ifa) = -valcen(diffu,airsec)
-        difuad(ifa) = valcen(diffu,airdis)
-        divp1(ifa)  = valcen(ddifp1,wvap)
-        divp2(ifa)  = valcen(ddifp2,wvap)
+        difuvp(ifa) = valcen(diffu, wvap)
+        difuas(ifa) = -valcen(diffu, airsec)
+        difuad(ifa) = valcen(diffu, airdis)
+        divp1(ifa) = valcen(ddifp1, wvap)
+        divp2(ifa) = valcen(ddifp2, wvap)
         divp1f(ifa) = zero
         divp2f(ifa) = zero
-        dias1(ifa)  = -valcen(ddifp1,airsec)
-        dias2(ifa)  = -valcen(ddifp2,airsec)
+        dias1(ifa) = -valcen(ddifp1, airsec)
+        dias2(ifa) = -valcen(ddifp2, airsec)
         dias1f(ifa) = zero
         dias2f(ifa) = zero
-        diad1(ifa)  = valcen(ddifp1,airdis)
-        diad2(ifa)  = valcen(ddifp2,airdis)
+        diad1(ifa) = valcen(ddifp1, airdis)
+        diad2(ifa) = valcen(ddifp2, airdis)
         diad1f(ifa) = zero
         diad2f(ifa) = zero
     end do
@@ -645,184 +645,184 @@ real(kind=8), intent(inout) :: vectu(dimuel)
 !
     do ifa = 1, nface
         if (flks(ifa) .ge. zero) then
-            mobwf(ifa)  = valcen(mob,wliq)
-            dw1f(ifa)   = valcen(dmobp1,wliq)
-            dw2f(ifa)   = valcen(dmobp2,wliq)
+            mobwf(ifa) = valcen(mob, wliq)
+            dw1f(ifa) = valcen(dmobp1, wliq)
+            dw2f(ifa) = valcen(dmobp2, wliq)
             dw1ffa(ifa) = zero
             dw2ffa(ifa) = zero
-            moadf(ifa)  = valcen(mob,airdis)
-            dad1f(ifa)  = valcen(dmobp1,airdis)
-            dad2f(ifa)  = valcen(dmobp2,airdis)
+            moadf(ifa) = valcen(mob, airdis)
+            dad1f(ifa) = valcen(dmobp1, airdis)
+            dad2f(ifa) = valcen(dmobp2, airdis)
             dad1ff(ifa) = zero
             dad2ff(ifa) = zero
         else
-            mobwf(ifa)  = valfac(ifa,mob,wliq)
-            dw1f(ifa)   = zero
-            dw2f(ifa)   = zero
-            dw1ffa(ifa) = valfac(ifa,dmobp1,wliq)
-            dw2ffa(ifa) = valfac(ifa,dmobp2,wliq)
-            moadf(ifa)  = valfac(ifa,mob,airdis)
-            dad1f(ifa)  = zero
-            dad2f(ifa)  = zero
-            dad1ff(ifa) = valfac(ifa,dmobp1,airdis)
-            dad2ff(ifa) = valfac(ifa,dmobp2,airdis)
-        endif
+            mobwf(ifa) = valfac(ifa, mob, wliq)
+            dw1f(ifa) = zero
+            dw2f(ifa) = zero
+            dw1ffa(ifa) = valfac(ifa, dmobp1, wliq)
+            dw2ffa(ifa) = valfac(ifa, dmobp2, wliq)
+            moadf(ifa) = valfac(ifa, mob, airdis)
+            dad1f(ifa) = zero
+            dad2f(ifa) = zero
+            dad1ff(ifa) = valfac(ifa, dmobp1, airdis)
+            dad2ff(ifa) = valfac(ifa, dmobp2, airdis)
+        end if
         if (fgks(ifa) .ge. zero) then
-            moasf(ifa)  = valcen(mob,airsec)
-            das1f(ifa)  = valcen(dmobp1,airsec)
-            das2f(ifa)  = valcen(dmobp2,airsec)
+            moasf(ifa) = valcen(mob, airsec)
+            das1f(ifa) = valcen(dmobp1, airsec)
+            das2f(ifa) = valcen(dmobp2, airsec)
             das1ff(ifa) = zero
             das2ff(ifa) = zero
-            movpf(ifa)  = valcen(mob,wvap)
-            dvp1f(ifa)  = valcen(dmobp1,wvap)
-            dvp2f(ifa)  = valcen(dmobp2,wvap)
+            movpf(ifa) = valcen(mob, wvap)
+            dvp1f(ifa) = valcen(dmobp1, wvap)
+            dvp2f(ifa) = valcen(dmobp2, wvap)
             dvp1ff(ifa) = zero
             dvp2ff(ifa) = zero
         else
-            moasf(ifa)  = valfac(ifa,mob,airsec)
-            das1f(ifa)  = zero
-            das2f(ifa)  = zero
-            das1ff(ifa) = valfac(ifa,dmobp1,airsec)
-            das2ff(ifa) = valfac(ifa,dmobp2,airsec)
-            movpf(ifa)  = valfac(ifa,mob,wvap)
-            dvp1f(ifa)  = zero
-            dvp2f(ifa)  = zero
-            dvp1ff(ifa) = valfac(ifa,dmobp1,wvap)
-            dvp2ff(ifa) = valfac(ifa,dmobp2,wvap)
-        endif
+            moasf(ifa) = valfac(ifa, mob, airsec)
+            das1f(ifa) = zero
+            das2f(ifa) = zero
+            das1ff(ifa) = valfac(ifa, dmobp1, airsec)
+            das2ff(ifa) = valfac(ifa, dmobp2, airsec)
+            movpf(ifa) = valfac(ifa, mob, wvap)
+            dvp1f(ifa) = zero
+            dvp2f(ifa) = zero
+            dvp1ff(ifa) = valfac(ifa, dmobp1, wvap)
+            dvp2ff(ifa) = valfac(ifa, dmobp2, wvap)
+        end if
     end do
 !
 ! - Compute "massic" flux
 !
     do ifa = 1, nface
-        call cafmes(ifa       , ASTER_TRUE, lMatr, maxfa, nface,&
-                    flks(ifa) , dflks1    , dflks2,&
-                    mobwf(ifa), dw1f      , dw2f  ,&
-                    dw1ffa    , dw2ffa    ,&
-                    fmws      , fm1ws     , fm2ws)
-        call cafmes(ifa       , ASTER_TRUE, lMatr, maxfa, nface,&
-                    fgks(ifa) , dfgks1    , dfgks2,&
-                    movpf(ifa), dvp1f     , dvp2f ,&
-                    dvp1ff    , dvp2ff    ,&
-                    fmvps     , fm1vps    , fm2vps)
-        call cafmes(ifa        , lVect, lMatr, maxfa, nface,&
-                    ftgks(ifa) , ftgks1, ftgks2,&
-                    difuvp(ifa), divp1 , divp2 ,&
-                    divp1f     , divp2f,&
-                    fmvps      , fm1vps, fm2vps)
-        call cafmes(ifa       , ASTER_TRUE, lMatr, maxfa, nface,&
-                    fgks(ifa) , dfgks1    , dfgks2,&
-                    moasf(ifa), das1f     , das2f ,&
-                    das1ff    , das2ff    ,&
-                    fmass     , fm1ass    , fm2ass)
-        call cafmes(ifa        , lVect, lMatr, maxfa, nface,&
-                    ftgks(ifa) , ftgks1, ftgks2,&
-                    difuas(ifa), dias1 , dias2 ,&
-                    dias1f     , dias2f,&
-                    fmass      , fm1ass, fm2ass)
-        call cafmes(ifa       , ASTER_TRUE, lMatr, maxfa, nface,&
-                    flks(ifa) , dflks1    , dflks2,&
-                    moadf(ifa), dad1f     , dad2f ,&
-                    dad1ff    , dad2ff    ,&
-                    fmads     , fm1ads    , fm2ads)
-        call cafmes(ifa        , lVect, lMatr, maxfa, nface,&
-                    fclks(ifa) , fclks1, fclks2,&
-                    difuad(ifa), diad1 , diad2 ,&
-                    diad1f     , diad2f,&
-                    fmads      , fm1ads, fm2ads)
+        call cafmes(ifa, ASTER_TRUE, lMatr, maxfa, nface, &
+                    flks(ifa), dflks1, dflks2, &
+                    mobwf(ifa), dw1f, dw2f, &
+                    dw1ffa, dw2ffa, &
+                    fmws, fm1ws, fm2ws)
+        call cafmes(ifa, ASTER_TRUE, lMatr, maxfa, nface, &
+                    fgks(ifa), dfgks1, dfgks2, &
+                    movpf(ifa), dvp1f, dvp2f, &
+                    dvp1ff, dvp2ff, &
+                    fmvps, fm1vps, fm2vps)
+        call cafmes(ifa, lVect, lMatr, maxfa, nface, &
+                    ftgks(ifa), ftgks1, ftgks2, &
+                    difuvp(ifa), divp1, divp2, &
+                    divp1f, divp2f, &
+                    fmvps, fm1vps, fm2vps)
+        call cafmes(ifa, ASTER_TRUE, lMatr, maxfa, nface, &
+                    fgks(ifa), dfgks1, dfgks2, &
+                    moasf(ifa), das1f, das2f, &
+                    das1ff, das2ff, &
+                    fmass, fm1ass, fm2ass)
+        call cafmes(ifa, lVect, lMatr, maxfa, nface, &
+                    ftgks(ifa), ftgks1, ftgks2, &
+                    difuas(ifa), dias1, dias2, &
+                    dias1f, dias2f, &
+                    fmass, fm1ass, fm2ass)
+        call cafmes(ifa, ASTER_TRUE, lMatr, maxfa, nface, &
+                    flks(ifa), dflks1, dflks2, &
+                    moadf(ifa), dad1f, dad2f, &
+                    dad1ff, dad2ff, &
+                    fmads, fm1ads, fm2ads)
+        call cafmes(ifa, lVect, lMatr, maxfa, nface, &
+                    fclks(ifa), fclks1, fclks2, &
+                    difuad(ifa), diad1, diad2, &
+                    diad1f, diad2f, &
+                    fmads, fm1ads, fm2ads)
     end do
 !
 ! - Compute total "volumic" flux
 !
-    call cafves(lMatr, maxfa , nface ,&
-                flks  , dflks1, dflks2,&
-                mobwf , dw1f  , dw2f  ,&
-                dw1ffa, dw2ffa,&
-                fluws , fw1s  , fw2s)
-    call cafves(lMatr, maxfa , nface ,&
-                fgks  , dfgks1, dfgks2,&
-                movpf , dvp1f , dvp2f ,&
-                dvp1ff, dvp2ff,&
+    call cafves(lMatr, maxfa, nface, &
+                flks, dflks1, dflks2, &
+                mobwf, dw1f, dw2f, &
+                dw1ffa, dw2ffa, &
+                fluws, fw1s, fw2s)
+    call cafves(lMatr, maxfa, nface, &
+                fgks, dfgks1, dfgks2, &
+                movpf, dvp1f, dvp2f, &
+                dvp1ff, dvp2ff, &
                 fluvps, fvp1s, fvp2s)
-    call cafves(lMatr, maxfa , nface ,&
-                ftgks , ftgks1, ftgks2,&
-                difuvp, divp1 , divp2 ,&
-                divp1f, divp2f,&
-                fluvps, fvp1s , fvp2s)
-    call cafves(lMatr, maxfa , nface ,&
-                fgks  , dfgks1, dfgks2,&
-                moasf , das1f , das2f ,&
-                das1ff, das2ff,&
-                fluass, fas1s , fas2s)
-    call cafves(lMatr, maxfa, nface,&
-                ftgks, ftgks1, ftgks2,&
-                difuas, dias1, dias2,&
-                dias1f, dias2f,&
+    call cafves(lMatr, maxfa, nface, &
+                ftgks, ftgks1, ftgks2, &
+                difuvp, divp1, divp2, &
+                divp1f, divp2f, &
+                fluvps, fvp1s, fvp2s)
+    call cafves(lMatr, maxfa, nface, &
+                fgks, dfgks1, dfgks2, &
+                moasf, das1f, das2f, &
+                das1ff, das2ff, &
                 fluass, fas1s, fas2s)
-    call cafves(lMatr, maxfa , nface ,&
-                flks  , dflks1, dflks2,&
-                moadf , dad1f , dad2f ,&
-                dad1ff, dad2ff,&
-                fluads, fad1s , fad2s)
-    call cafves(lMatr, maxfa , nface ,&
-                fclks , fclks1, fclks2,&
-                difuad, diad1 , diad2 ,&
-                diad1f, diad2f,&
-                fluads, fad1s , fad2s)
+    call cafves(lMatr, maxfa, nface, &
+                ftgks, ftgks1, ftgks2, &
+                difuas, dias1, dias2, &
+                dias1f, dias2f, &
+                fluass, fas1s, fas2s)
+    call cafves(lMatr, maxfa, nface, &
+                flks, dflks1, dflks2, &
+                moadf, dad1f, dad2f, &
+                dad1ff, dad2ff, &
+                fluads, fad1s, fad2s)
+    call cafves(lMatr, maxfa, nface, &
+                fclks, fclks1, fclks2, &
+                difuad, diad1, diad2, &
+                diad1f, diad2f, &
+                fluads, fad1s, fad2s)
 !
 ! - Compute residual
 !
     if (lVect) then
 ! ----- Continuity of flux
         do ifa = 1, nface
-            congep(adcp11+1,ifa+1) = fmws(ifa)+fmvps(ifa)
-            congep(adcp12+1,ifa+1) = fmass(ifa)+fmads(ifa)
-            vectu(adcf1(ifa))      = congep(adcp11+1,ifa+1)
-            vectu(adcf2(ifa))      = congep(adcp12+1,ifa+1)
+            congep(adcp11+1, ifa+1) = fmws(ifa)+fmvps(ifa)
+            congep(adcp12+1, ifa+1) = fmass(ifa)+fmads(ifa)
+            vectu(adcf1(ifa)) = congep(adcp11+1, ifa+1)
+            vectu(adcf2(ifa)) = congep(adcp12+1, ifa+1)
         end do
 ! ----- Conservation of mass
-        congep(adcp11+1,1) = fluws
-        congep(adcp12+1,1) = fluvps
-        congep(adcp21+1,1) = fluass
-        congep(adcp22+1,1) = fluads
-        vectu(adcm1)       = vectu(adcm1)+congep(adcp11+1,1) + congep(adcp12+1,1)
-        vectu(adcm2)       = vectu(adcm2)+congep(adcp21+1,1) + congep(adcp22+1,1)
-    endif
+        congep(adcp11+1, 1) = fluws
+        congep(adcp12+1, 1) = fluvps
+        congep(adcp21+1, 1) = fluass
+        congep(adcp22+1, 1) = fluads
+        vectu(adcm1) = vectu(adcm1)+congep(adcp11+1, 1)+congep(adcp12+1, 1)
+        vectu(adcm2) = vectu(adcm2)+congep(adcp21+1, 1)+congep(adcp22+1, 1)
+    end if
 !
 ! - Compute matrix
 !
     if (lMatr) then
-        matuu(zzadma(0,adcm1,iadp1k))= matuu(zzadma(0,adcm1,iadp1k))+fw1s(1)+fvp1s(1)
-        matuu(zzadma(0,adcm1,iadp2k))= matuu(zzadma(0,adcm1,iadp2k))+fw2s(1)+fvp2s(1)
-        matuu(zzadma(0,adcm2,iadp1k))= matuu(zzadma(0,adcm2,iadp1k))+fas1s(1)+fad1s(1)
-        matuu(zzadma(0,adcm2,iadp2k))= matuu(zzadma(0,adcm2,iadp2k))+fas2s(1)+fad2s(1)
+        matuu(zzadma(0, adcm1, iadp1k)) = matuu(zzadma(0, adcm1, iadp1k))+fw1s(1)+fvp1s(1)
+        matuu(zzadma(0, adcm1, iadp2k)) = matuu(zzadma(0, adcm1, iadp2k))+fw2s(1)+fvp2s(1)
+        matuu(zzadma(0, adcm2, iadp1k)) = matuu(zzadma(0, adcm2, iadp1k))+fas1s(1)+fad1s(1)
+        matuu(zzadma(0, adcm2, iadp2k)) = matuu(zzadma(0, adcm2, iadp2k))+fas2s(1)+fad2s(1)
         do ifa = 1, nface
-            matuu(zzadma(0,adcm1,iadp1(ifa)))= matuu(zzadma(0,adcm1,iadp1(ifa))) +&
-                fw1s(ifa+1)+fvp1s(ifa+1)
-            matuu(zzadma(0,adcm1,iadp2(ifa)))= matuu(zzadma(0,adcm1,iadp2(ifa))) +&
-                fw2s(ifa+1)+fvp2s(ifa+1)
-            matuu(zzadma(0,adcm2,iadp1(ifa)))= matuu(zzadma(0,adcm2,iadp1(ifa))) +&
-                fas1s(ifa+1)+fad1s(ifa+1)
-            matuu(zzadma(0,adcm2,iadp2(ifa)))= matuu(zzadma(0,adcm2,iadp2(ifa))) +&
-                fas2s(ifa+1)+fad2s(ifa+1)
-            matuu(zzadma(0,adcf1(ifa),iadp1k))= matuu(zzadma(0,adcf1(ifa),iadp1k)) +&
-                fm1ws(1,ifa)+fm1vps(1,ifa)
-            matuu(zzadma(0,adcf1(ifa),iadp2k))= matuu(zzadma(0,adcf1(ifa),iadp2k)) +&
-                fm2ws(1,ifa)+fm2vps(1,ifa)
-            matuu(zzadma(0,adcf2(ifa),iadp1k))= matuu(zzadma(0,adcf2(ifa),iadp1k)) +&
-                fm1ass(1,ifa)+fm1ads(1,ifa)
-            matuu(zzadma(0,adcf2(ifa),iadp2k))= matuu(zzadma(0,adcf2(ifa),iadp2k)) +&
-                fm2ass(1,ifa)+fm2ads(1,ifa)
+            matuu(zzadma(0, adcm1, iadp1(ifa))) = matuu(zzadma(0, adcm1, iadp1(ifa)))+ &
+                                                  fw1s(ifa+1)+fvp1s(ifa+1)
+            matuu(zzadma(0, adcm1, iadp2(ifa))) = matuu(zzadma(0, adcm1, iadp2(ifa)))+ &
+                                                  fw2s(ifa+1)+fvp2s(ifa+1)
+            matuu(zzadma(0, adcm2, iadp1(ifa))) = matuu(zzadma(0, adcm2, iadp1(ifa)))+ &
+                                                  fas1s(ifa+1)+fad1s(ifa+1)
+            matuu(zzadma(0, adcm2, iadp2(ifa))) = matuu(zzadma(0, adcm2, iadp2(ifa)))+ &
+                                                  fas2s(ifa+1)+fad2s(ifa+1)
+            matuu(zzadma(0, adcf1(ifa), iadp1k)) = matuu(zzadma(0, adcf1(ifa), iadp1k))+ &
+                                                   fm1ws(1, ifa)+fm1vps(1, ifa)
+            matuu(zzadma(0, adcf1(ifa), iadp2k)) = matuu(zzadma(0, adcf1(ifa), iadp2k))+ &
+                                                   fm2ws(1, ifa)+fm2vps(1, ifa)
+            matuu(zzadma(0, adcf2(ifa), iadp1k)) = matuu(zzadma(0, adcf2(ifa), iadp1k))+ &
+                                                   fm1ass(1, ifa)+fm1ads(1, ifa)
+            matuu(zzadma(0, adcf2(ifa), iadp2k)) = matuu(zzadma(0, adcf2(ifa), iadp2k))+ &
+                                                   fm2ass(1, ifa)+fm2ads(1, ifa)
             do jfa = 1, nface
-                matuu(zzadma(0,adcf1(ifa),iadp1(jfa)))= matuu(zzadma(0,adcf1(ifa),iadp1(jfa))) +&
-                    fm1ws(jfa+1,ifa)+fm1vps(jfa+1,ifa)
-                matuu(zzadma(0,adcf1(ifa),iadp2(jfa)))= matuu(zzadma(0,adcf1(ifa),iadp2(jfa))) +&
-                    fm2ws(jfa+1,ifa)+fm2vps(jfa+1,ifa)
-                matuu(zzadma(0,adcf2(ifa),iadp1(jfa)))= matuu(zzadma(0,adcf2(ifa),iadp1(jfa))) +&
-                    fm1ass(jfa+1,ifa)+fm1ads(jfa+1,ifa)
-                matuu(zzadma(0,adcf2(ifa),iadp2(jfa)))= matuu(zzadma(0,adcf2(ifa),iadp2(jfa))) +&
-                    fm2ass(jfa+1,ifa)+fm2ads(jfa+1,ifa)
+              matuu(zzadma(0, adcf1(ifa), iadp1(jfa))) = matuu(zzadma(0, adcf1(ifa), iadp1(jfa)))+ &
+                                                           fm1ws(jfa+1, ifa)+fm1vps(jfa+1, ifa)
+              matuu(zzadma(0, adcf1(ifa), iadp2(jfa))) = matuu(zzadma(0, adcf1(ifa), iadp2(jfa)))+ &
+                                                           fm2ws(jfa+1, ifa)+fm2vps(jfa+1, ifa)
+              matuu(zzadma(0, adcf2(ifa), iadp1(jfa))) = matuu(zzadma(0, adcf2(ifa), iadp1(jfa)))+ &
+                                                           fm1ass(jfa+1, ifa)+fm1ads(jfa+1, ifa)
+              matuu(zzadma(0, adcf2(ifa), iadp2(jfa))) = matuu(zzadma(0, adcf2(ifa), iadp2(jfa)))+ &
+                                                           fm2ass(jfa+1, ifa)+fm2ads(jfa+1, ifa)
             end do
         end do
-    endif
+    end if
 end subroutine

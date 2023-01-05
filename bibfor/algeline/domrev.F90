@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function domrev(gamcjs, sigc, parame, rgdev, rucpla)
 !
-    implicit      none
+    implicit none
 #include "asterfort/hlode.h"
     real(kind=8) :: gamcjs, sigc, parame(5), rgdev, rucpla, domrev
 ! --- BUT : CALCUL DU DOMAINE DE REVERSIBILITE -------------------------
@@ -34,8 +34,8 @@ function domrev(gamcjs, sigc, parame, rgdev, rucpla)
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
-    parameter       (  un    =  1.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(un=1.0d0)
     agamp = parame(2)
 ! ======================================================================
 ! --- CALCUL DE H0 = (1-GAMMA_CJS)**(1/6) ------------------------------
@@ -44,6 +44,6 @@ function domrev(gamcjs, sigc, parame, rgdev, rucpla)
 ! ======================================================================
 ! --- CALCUL DE FBIS = (G(S)/(SIG_C*H0))**(1/A(GAMP))-U(GAMP) ----------
 ! ======================================================================
-    domrev = (rgdev/(sigc*h0))**(un/agamp) - rucpla
+    domrev = (rgdev/(sigc*h0))**(un/agamp)-rucpla
 ! ======================================================================
 end function

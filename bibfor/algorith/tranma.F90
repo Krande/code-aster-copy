@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,22 +44,22 @@ subroutine tranma(geomi, d, bidim)
     real(kind=8) :: d(3)
 !
     call jemarq()
-    coorjv=geomi(1:19)//'.VALE'
+    coorjv = geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
     call jelira(coorjv, 'LONMAX', n1)
-    n1=n1/3
-    iadcoo=iadcoo-1
+    n1 = n1/3
+    iadcoo = iadcoo-1
     if (bidim) then
         do i = 1, n1
-            zr(iadcoo+3*(i-1)+1)=zr(iadcoo+3*(i-1)+1)+d(1)
-            zr(iadcoo+3*(i-1)+2)=zr(iadcoo+3*(i-1)+2)+d(2)
+            zr(iadcoo+3*(i-1)+1) = zr(iadcoo+3*(i-1)+1)+d(1)
+            zr(iadcoo+3*(i-1)+2) = zr(iadcoo+3*(i-1)+2)+d(2)
         end do
     else
         do i = 1, n1
-            zr(iadcoo+3*(i-1)+1)=zr(iadcoo+3*(i-1)+1)+d(1)
-            zr(iadcoo+3*(i-1)+2)=zr(iadcoo+3*(i-1)+2)+d(2)
-            zr(iadcoo+3*(i-1)+3)=zr(iadcoo+3*(i-1)+3)+d(3)
+            zr(iadcoo+3*(i-1)+1) = zr(iadcoo+3*(i-1)+1)+d(1)
+            zr(iadcoo+3*(i-1)+2) = zr(iadcoo+3*(i-1)+2)+d(2)
+            zr(iadcoo+3*(i-1)+3) = zr(iadcoo+3*(i-1)+3)+d(3)
         end do
-    endif
+    end if
     call jedema()
 end subroutine

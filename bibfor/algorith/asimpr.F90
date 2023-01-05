@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     didi = '&&OP0109.DIRECTION'
     lnore = '&&ASENAP.NOREF'
     nbnor = '&&ASENAP.NREF'
-    ordr ='&&ASECON.NORD'
+    ordr = '&&ASECON.NORD'
 !
     call utmess('I', 'SEISME_66')
     call jeveuo(knoeu, 'L', jkno)
@@ -81,9 +81,9 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     chainl = ' '
     chaina = ' '
 !
-    chainq(1 : 4) ='QUAD'
-    chainl(1 : 4) ='LINE'
-    chaina(1 : 4) ='ABS '
+    chainq(1:4) = 'QUAD'
+    chainl(1:4) = 'LINE'
+    chaina(1:4) = 'ABS '
     iq = 1
     il = 1
     ia = 1
@@ -91,46 +91,46 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     ino = 1
     do id = 1, 3
         do is = 1, nbsup
-            if (tcosup(is,1) .eq. 1) then
+            if (tcosup(is, 1) .eq. 1) then
                 do ii = 1, ino
-                    if (nomsup(is,id) .eq. noeuds(ii)) then
+                    if (nomsup(is, id) .eq. noeuds(ii)) then
                         goto 42
-                    endif
+                    end if
                 end do
-                noeuds(ino) = nomsup(is,id)
-                chainq(iq+5 : iq+12)= noeuds(ino)
+                noeuds(ino) = nomsup(is, id)
+                chainq(iq+5:iq+12) = noeuds(ino)
                 ino = ino+1
                 iq = iq+9
-            else if (tcosup(is,1).eq.2) then
+            else if (tcosup(is, 1) .eq. 2) then
                 do ii = 1, ino
-                    if (nomsup(is,id) .eq. noeuds(ino)) goto 42
+                    if (nomsup(is, id) .eq. noeuds(ino)) goto 42
                 end do
-                noeuds(ino)= nomsup(is,id)
-                chainl(il+5 : il+12)= nomsup(is,id)
+                noeuds(ino) = nomsup(is, id)
+                chainl(il+5:il+12) = nomsup(is, id)
                 ino = ino+1
                 il = il+9
-            else if (tcosup(is,1).eq.3) then
+            else if (tcosup(is, 1) .eq. 3) then
                 do ii = 1, ino
-                    if (nomsup(is,id) .eq. noeuds(ino)) goto 42
+                    if (nomsup(is, id) .eq. noeuds(ino)) goto 42
                 end do
-                chaina(ia+5 : ia+12)= nomsup(is,id)
-                noeuds(ino)= nomsup(is,id)
+                chaina(ia+5:ia+12) = nomsup(is, id)
+                noeuds(ino) = nomsup(is, id)
                 ino = ino+1
                 ia = ia+9
-            endif
- 42         continue
+            end if
+42          continue
         end do
     end do
 !
     if (iq .ne. 1) then
         call utmess('I', 'SEISME_67', sk=chainq)
-    endif
+    end if
     if (il .ne. 1) then
         call utmess('I', 'SEISME_67', sk=chainl)
-    endif
+    end if
     if (ia .ne. 1) then
         call utmess('I', 'SEISME_67', sk=chaina)
-    endif
+    end if
 !
 !
 !
@@ -156,32 +156,32 @@ subroutine asimpr(nbsup, tcosup, nomsup)
                     call codent(nucas, 'D0', kdir(2:8))
                     call jelira(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno)
                     call jeveuo(jexnom('&&ASENAP.LINOEU', knum), 'L', jno)
-                    lnod =3*nbno
+                    lnod = 3*nbno
                     call jelira(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', lnod)
                     call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'L', jdir)
-                    if (zi(jref+icas-1) .eq. 1) noref = zk8(jnref+icas- 1)
+                    if (zi(jref+icas-1) .eq. 1) noref = zk8(jnref+icas-1)
                     do ino = 1, nbno
-                        noeu =zk8(jno+ino-1)
+                        noeu = zk8(jno+ino-1)
                         if (zr(jdir+3*(ino-1)) .ne. epsima) then
                             cmp = 'DX'
                             vale = zr(jdir+3*(ino-1))
-                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4,&
+                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4, &
                                         valk=[noeu, cmp, noref, nomcas])
-                        endif
+                        end if
                         if (zr(jdir+3*(ino-1)+1) .ne. epsima) then
                             cmp = 'DY'
                             vale = zr(jdir+3*(ino-1)+1)
-                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4,&
+                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4, &
                                         valk=[noeu, cmp, noref, nomcas])
-                        endif
+                        end if
                         if (zr(jdir+3*(ino-1)+2) .ne. epsima) then
                             cmp = 'DZ'
                             vale = zr(jdir+3*(ino-1)+2)
-                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4,&
+                            call utmess('I', 'SEISME_69', si=nucas, sr=vale, nk=4, &
                                         valk=[noeu, cmp, noref, nomcas])
-                        endif
+                        end if
                     end do
-                endif
+                end if
             end do
         end do
     end do
@@ -196,13 +196,13 @@ subroutine asimpr(nbsup, tcosup, nomsup)
         charcas = typdir
         do ic = 1, ncas
             icas = zi(jcas+ic-1)
-            write( ki, '(i3)' )  icas
+            write (ki, '(i3)') icas
             charcas = charcas(1:6+4*(ic-1))//ki//' '
-        enddo
+        end do
         call utmess('I', 'SEISME_71', si=iordr, sk=charcas)
     end do
     iordr = zi(jord+nboc)
-    typdir ='QUAD'
+    typdir = 'QUAD'
     call utmess('I', 'SEISME_72')
     call utmess('I', 'SEISME_71', si=iordr, sk=typdir)
 !

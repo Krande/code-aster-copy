@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
+subroutine mefsm1(vale, matgen, base, nomnum, nomsto, &
                   nbmode, nbloc, nterm)
     implicit none
 #include "jeveux.h"
@@ -58,13 +58,13 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
     end do
 !
     call wkvect(matrge//'.REFA', 'G V K24', 20, jrefa)
-    zk24(jrefa-1+11)='MPI_COMPLET'
+    zk24(jrefa-1+11) = 'MPI_COMPLET'
     zk24(jrefa-1+1) = base
     zk24(jrefa-1+2) = nomnum
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'GENE'
 !
-    call jecrec(matrge//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(matrge//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 nbloc)
     call jeecra(matrge//'.UALF', 'LONMAX', nterm)
 !
@@ -76,8 +76,8 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
     nterm = 0
     do i = 1, nbmode
         do j = 1, i
-            nterm = nterm + 1
-            zr(ldblo+nterm-1) = vale( j + (i-1)*nbmode )
+            nterm = nterm+1
+            zr(ldblo+nterm-1) = vale(j+(i-1)*nbmode)
         end do
     end do
 !

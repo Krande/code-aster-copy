@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 
 subroutine te0465(option, nomte)
 !
-use HHO_type
-use HHO_basis_module
-use HHO_size_module
-use HHO_quadrature_module
-use HHO_Neumann_module
-use HHO_init_module
-use HHO_eval_module
-use HHO_rhs_module
-use HHO_utils_module
+    use HHO_type
+    use HHO_basis_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_Neumann_module
+    use HHO_init_module
+    use HHO_eval_module
+    use HHO_rhs_module
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -40,7 +40,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "blas/daxpy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 !---------------------------------------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@ character(len=16), intent(in) :: option, nomte
 ! ---- number of dofs
 !
     call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    faces_dofs = total_dofs - cbs
+    faces_dofs = total_dofs-cbs
 !
     ASSERT(hhoQuadCell%nbQuadPoints <= MAX_QP_CELL)
 !
@@ -96,7 +96,7 @@ character(len=16), intent(in) :: option, nomte
 !
     call jevech('PTEMPSR', 'L', j_time)
     time_curr = zr(j_time)
-    time_prev = time_curr - zr(j_time+1)
+    time_prev = time_curr-zr(j_time+1)
     theta = zr(j_time+2)
 !
 ! ---- Which option ?
@@ -116,10 +116,10 @@ character(len=16), intent(in) :: option, nomte
 !
         if (hhoCell%ndim == 3) then
             nbpara = 4
-            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
         else if (hhoCell%ndim == 2) then
             nbpara = 3
-            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(1:2) = (/'X', 'Y'/)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -150,7 +150,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! ---- compute surface load
 !
-    NeumValuesQP = theta * ValQP_curr + (1.d0-theta) * ValQP_prev
+    NeumValuesQP = theta*ValQP_curr+(1.d0-theta)*ValQP_prev
     call hhoMakeRhsCellScal(hhoCell, hhoQuadCell, NeumValuesQP, hhoData%cell_degree(), rhs_T)
 !
 ! ---- save result

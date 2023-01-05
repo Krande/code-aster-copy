@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
-                  nbcmpc, nomcmc, nbvato, typent, typgeo,&
-                  existc, nbcmfi, nmcmfi, nbval, nbprof,&
+subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord, &
+                  nbcmpc, nomcmc, nbvato, typent, typgeo, &
+                  existc, nbcmfi, nmcmfi, nbval, nbprof, &
                   codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_____________________________________________________________________
@@ -83,7 +83,7 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
 ! 1. LE CHAMP A-T-IL ETE CREE ?
 !====
 !
-    call mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
+    call mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc, &
                 iaux, nbcmfi, nmcmfi, codret)
 !
 !====
@@ -98,25 +98,25 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
 !
 ! 2.2. ==> LES COMPOSANTES VOULUES NE SONT PAS TOUTES ENREGISTREES
 !
-    else if (iaux.eq.2) then
+    else if (iaux .eq. 2) then
 !
         existc = 1
 !
 ! 2.3. ==> SI LE CHAMP EST CORRECTEMENT CREE, COMBIEN A-T-IL DE VALEURS
 !          A CE COUPLE NUMERO DE PAS DE TEMPS / NUMERO D'ORDRE ?
 !
-    else if (iaux.eq.1) then
+    else if (iaux .eq. 1) then
 !
-        call mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
+        call mdexcv(nofimd, idfimd, nochmd, numpt, numord, &
                     typent, typgeo, nbval, nbprof, codret)
 !
         if (nbval .eq. 0) then
             existc = 2
-        else if (nbval.eq.nbvato) then
+        else if (nbval .eq. nbvato) then
             existc = 3
         else
             existc = 4
-        endif
+        end if
 !
 ! 2.4. ==> BIZARRE
 !
@@ -124,6 +124,6 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
 !
         call utmess('F', 'MED_76')
 !
-    endif
+    end if
 !
 end subroutine

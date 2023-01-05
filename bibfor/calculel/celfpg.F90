@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,14 +82,14 @@ subroutine celfpg(celz, nomobj, iret)
     character(len=24), pointer :: celk(:) => null()
     integer, pointer :: liel(:) => null()
     integer, pointer :: celd(:) => null()
-    save ligrsv,nomosv
+    save ligrsv, nomosv
 !
 #define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    cel=celz
-    iret=0
+    cel = celz
+    iret = 0
 !
 !     -- SI CE N'EST PAS UN CHAMP ELGA, IL N'Y A RIEN A FAIRE :
     call jeveuo(cel//'.CELK', 'L', vk24=celk)
@@ -111,55 +111,55 @@ subroutine celfpg(celz, nomobj, iret)
     call jeveuo(cel//'.CELD', 'L', vi=celd)
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
-    nbgr=celd(2)
+    nbgr = celd(2)
 !
 !
 !     3 REPLISSAGE DE NOMOBJ :
 !     -------------------------------------------------------
 !
     call jeexin(nomobj, iexi)
-    lexi=(iexi.gt.0)
+    lexi = (iexi .gt. 0)
 !
-    if (.not.lexi) then
+    if (.not. lexi) then
         call wkvect(nomobj, 'V V K16', nbma, jobj)
-        ligrsv=ligrel
-        nomosv=nomobj
+        ligrsv = ligrel
+        nomosv = nomobj
     else
-        ASSERT(nomobj.eq.nomosv)
-        ASSERT(ligrel.eq.ligrsv)
+        ASSERT(nomobj .eq. nomosv)
+        ASSERT(ligrel .eq. ligrsv)
         call jeveuo(nomobj, 'L', jobj)
-    endif
+    end if
 !
     do igr = 1, nbgr
-        nbel=nbelem(ligrel,igr)
-        imolo=celd(celd(4+igr)+2)
+        nbel = nbelem(ligrel, igr)
+        imolo = celd(celd(4+igr)+2)
         if (imolo .eq. 0) goto 20
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-        kfpg=zi(jmolo-1+4+nec+1)
+        kfpg = zi(jmolo-1+4+nec+1)
         if (kfpg .gt. 0) then
             call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
         else
             call codent(kfpg, 'G', nofpg)
-        endif
+        end if
 !
-        if (.not.lexi) then
+        if (.not. lexi) then
             do iel = 1, nbel
-                numa=numail(igr,iel)
-                if (numa .gt. 0) zk16(jobj-1+numa)=nofpg
+                numa = numail(igr, iel)
+                if (numa .gt. 0) zk16(jobj-1+numa) = nofpg
             end do
 !
         else
-            iel=1
-            numa=numail(igr,iel)
+            iel = 1
+            numa = numail(igr, iel)
             if (zk16(jobj-1+numa) .ne. nofpg) then
-                iret=1
+                iret = 1
                 goto 30
-            endif
-        endif
- 20     continue
+            end if
+        end if
+20      continue
     end do
 !
 !
- 30 continue
+30  continue
     call jedema()
 end subroutine

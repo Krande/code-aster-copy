@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine selectListGet(selectList, nume_inst, inst, l_select)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utacli.h"
 !
-type(NL_DS_SelectList), intent(in) :: selectList
-integer, intent(in) :: nume_inst
-real(kind=8), intent(in) :: inst
-aster_logical, intent(out) :: l_select
+    type(NL_DS_SelectList), intent(in) :: selectList
+    integer, intent(in) :: nume_inst
+    real(kind=8), intent(in) :: inst
+    aster_logical, intent(out) :: l_select
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,11 +58,11 @@ aster_logical, intent(out) :: l_select
 !
 ! - Get values
 !
-    nb_value   = selectList%nb_value
-    precision  = selectList%precision
-    l_abso     = selectList%l_abso
-    freq_step  = selectList%freq_step
-    l_by_freq  = selectList%l_by_freq
+    nb_value = selectList%nb_value
+    precision = selectList%precision
+    l_abso = selectList%l_abso
+    freq_step = selectList%freq_step
+    l_by_freq = selectList%l_by_freq
 !
 ! - Compute tolerance
 !
@@ -70,16 +70,16 @@ aster_logical, intent(out) :: l_select
         tolerance = abs(inst)
     else
         tolerance = abs(inst)*precision
-    endif
+    end if
 !
 ! - Find
 !
     if (l_by_freq) then
-        reste    = mod(nume_inst, freq_step)
+        reste = mod(nume_inst, freq_step)
         l_select = nint(reste) .eq. 0
     else
         call utacli(inst, selectList%list_value, nb_value, tolerance, nb_found)
         l_select = nb_found .ge. 0
-    endif
+    end if
 !
 end subroutine

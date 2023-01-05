@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 subroutine cbelec(load, mesh)
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/caelec.h"
 !
-character(len=8), intent(in) :: load, mesh
+    character(len=8), intent(in) :: load, mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,6 +47,6 @@ character(len=8), intent(in) :: load, mesh
     call getfac(keywordfact, nbocc)
     if (nbocc .ne. 0) then
         call caelec(load, mesh, nbocc)
-    endif
+    end if
 !
 end subroutine

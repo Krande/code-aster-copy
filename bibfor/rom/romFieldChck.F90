@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine romFieldChck(field, fieldName_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(in) :: field
-character(len=*), optional, intent(in) :: fieldName_
+    type(ROM_DS_Field), intent(in) :: field
+    character(len=*), optional, intent(in) :: fieldName_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,25 +57,25 @@ character(len=*), optional, intent(in) :: fieldName_
         fieldName = fieldName_
     else
         fieldName = field%fieldName
-    endif
+    end if
 !
 ! - List of components authorized in field
 !
     if (fieldName .eq. 'TEMP') then
-        nbCmpChck      = 1
+        nbCmpChck = 1
         chckCmpName(1) = 'TEMP'
     elseif (fieldName .eq. 'DEPL') then
-        nbCmpChck      = 3
+        nbCmpChck = 3
         chckCmpName(1) = 'DX'
         chckCmpName(2) = 'DY'
         chckCmpName(3) = 'DZ'
     elseif (fieldName .eq. 'FLUX_NOEU') then
-        nbCmpChck      = 3
+        nbCmpChck = 3
         chckCmpName(1) = 'FLUX'
         chckCmpName(2) = 'FLUY'
         chckCmpName(3) = 'FLUZ'
     elseif (fieldName .eq. 'SIEF_NOEU') then
-        nbCmpChck      = 6
+        nbCmpChck = 6
         chckCmpName(1) = 'SIXX'
         chckCmpName(2) = 'SIYY'
         chckCmpName(3) = 'SIZZ'
@@ -83,7 +83,7 @@ character(len=*), optional, intent(in) :: fieldName_
         chckCmpName(5) = 'SIYZ'
         chckCmpName(6) = 'SIXY'
     elseif (fieldName .eq. 'SIEF_ELGA') then
-        nbCmpChck      = 6
+        nbCmpChck = 6
         chckCmpName(1) = 'SIXX'
         chckCmpName(2) = 'SIYY'
         chckCmpName(3) = 'SIZZ'
@@ -91,23 +91,23 @@ character(len=*), optional, intent(in) :: fieldName_
         chckCmpName(5) = 'SIYZ'
         chckCmpName(6) = 'SIXY'
     elseif (fieldName .eq. 'UPPHI_2D') then
-        nbCmpChck      = 4
+        nbCmpChck = 4
         chckCmpName(1) = 'DX'
         chckCmpName(2) = 'DY'
         chckCmpName(3) = 'PRES'
         chckCmpName(4) = 'PHI'
     elseif (fieldName .eq. 'UPPHI_3D') then
-        nbCmpChck      = 5
+        nbCmpChck = 5
         chckCmpName(1) = 'DX'
         chckCmpName(2) = 'DY'
         chckCmpName(3) = 'DZ'
         chckCmpName(4) = 'PRES'
         chckCmpName(5) = 'PHI'
     elseif (fieldName .eq. 'VARI_ELGA') then
-        nbCmpChck      = 0
+        nbCmpChck = 0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Required components
 !
@@ -115,8 +115,8 @@ character(len=*), optional, intent(in) :: fieldName_
         cmpName = chckCmpName(iCmpChck)
         cmpIndx = indik8(field%listCmpName, chckCmpName(iCmpChck), 1, nbCmpName)
         if (cmpIndx .eq. 0) then
-            call utmess('F', 'ROM11_25', sk = cmpName)
-        endif
+            call utmess('F', 'ROM11_25', sk=cmpName)
+        end if
     end do
 !
 ! - Forbidden components
@@ -126,9 +126,9 @@ character(len=*), optional, intent(in) :: fieldName_
             cmpName = field%listCmpName(iCmpName)
             cmpIndx = indik8(chckCmpName, cmpName, 1, nbCmpChck)
             if (cmpIndx .eq. 0) then
-                call utmess('F', 'ROM11_23', sk = cmpName)
-            endif
+                call utmess('F', 'ROM11_23', sk=cmpName)
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

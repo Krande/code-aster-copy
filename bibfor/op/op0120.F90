@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,43 +87,43 @@ subroutine op0120()
     pts3 = abs(1.d0-pts2)
     if (pts2 .ge. 1.d-06 .and. pts3 .ge. 1.d-06) then
         call utmess('F', 'ALGORITH9_56')
-    endif
+    end if
 !
     call infmaj()
     call infniv(ifm, niv)
 !
-    nomref=nomu(1:8)
+    nomref = nomu(1:8)
 !
     call wkvect(nomref//'.REFE', 'G V K16', 3, lrefe)
     zk16(lrefe) = 'DSP'
     zk16(lrefe+1) = 'TOUT'
     zk16(lrefe+2) = 'FREQ'
 !
-    durana = tinst2 - tinst1
+    durana = tinst2-tinst1
     call getvr8(' ', 'DUREE_ANALYSE', scal=durana, nbret=nda)
 !
     durdec = durana
     call getvr8(' ', 'DUREE_DECALAGE', scal=durdec, nbret=ndd)
 !
     if (nda .ne. 0) then
-        bmatr = ( (tinst2-tinst1) - durana ) / durdec
-        nmatr = int( abs(bmatr) + 1 )
+        bmatr = ((tinst2-tinst1)-durana)/durdec
+        nmatr = int(abs(bmatr)+1)
     else
         nmatr = 1
-    endif
+    end if
 !
     call wkvect('&&OP0120.TEMP.LFON', 'V V K8', nfonc, lfon)
     call wkvect('&&OP0120.TEMP.VALE', 'V V C', nbpts, lvale)
 !
     call getvid(' ', 'FONCTION', nbval=nfonc, vect=zk8(lfon), nbret=l)
 !
-    dt = durana / nbpts
-    long = nbpts * nfonc / 2
-    nfcod = nfonc * ( nfonc+1 ) / 2
-    long1 = nbpts * nfcod
-    long2 = nmatr * nfcod
-    nbpts2 = nbpts / 2
-    dfreq = 1.d0 / durana
+    dt = durana/nbpts
+    long = nbpts*nfonc/2
+    nfcod = nfonc*(nfonc+1)/2
+    long1 = nbpts*nfcod
+    long2 = nmatr*nfcod
+    nbpts2 = nbpts/2
+    dfreq = 1.d0/durana
 !C
     call wkvect('&&OP0120.TEMP.VALC', 'V V C', long, lvalc)
     call wkvect('&&OP0120.TEMP.LINT', 'V V R', nbpts, lint)
@@ -134,18 +134,18 @@ subroutine op0120()
         do kf = 1, nfonc
             nomfon = zk8(lfon+kf-1)
             do it = 1, nbpts
-                tinst = tinst1 + (imatr-1)* (durdec) + (it-1)*dt
-                call fointe('F ', nomfon, 1, ['INST'], [tinst],&
+                tinst = tinst1+(imatr-1)*(durdec)+(it-1)*dt
+                call fointe('F ', nomfon, 1, ['INST'], [tinst], &
                             resu, ier)
                 zero = 0.d0
-                zc(lvale+it-1) = dcmplx(resu,zero)
+                zc(lvale+it-1) = dcmplx(resu, zero)
             end do
 !       --- CALCUL DE LA TRANFORMEE DE FOURIER ---
             ifft = 1
             call fft(zc(lvale), nbpts, ifft)
 !       ---
             do it = 1, nbpts2
-                lresu1 = lvalc + (kf-1)*nbpts2 + (it-1)
+                lresu1 = lvalc+(kf-1)*nbpts2+(it-1)
                 zc(lresu1) = zc(lvale+it-1)*dt
             end do
         end do
@@ -153,30 +153,30 @@ subroutine op0120()
         do j = 1, nfonc
             do i = 1, j
 !
-                call calint(i, j, zc(lvalc), nbpts, zr(lint),&
+                call calint(i, j, zc(lvalc), nbpts, zr(lint), &
                             long, durana)
 !
                 do kk = 1, nbpts2
-                    l1 = lint + kk - 1
-                    l2 = lssx + kk - 1 + nbpts*lcomp1
-                    zr(l2) = zr(l2) + zr(l1)
-                    zr(l2+nbpts2) = zr(l2+nbpts2) + zr(l1+nbpts2)
+                    l1 = lint+kk-1
+                    l2 = lssx+kk-1+nbpts*lcomp1
+                    zr(l2) = zr(l2)+zr(l1)
+                    zr(l2+nbpts2) = zr(l2+nbpts2)+zr(l1+nbpts2)
                 end do
-                lcomp1 = lcomp1 + 1
+                lcomp1 = lcomp1+1
             end do
         end do
-        call rms(imatr, zr(lssx), long1, zr(lrms), long2,&
+        call rms(imatr, zr(lssx), long1, zr(lrms), long2, &
                  nbpts, nfcod, dfreq, nfonc)
     end do
     do kb = 1, long1
-        ls1 = lssx + kb - 1
+        ls1 = lssx+kb-1
         zr(ls1) = zr(ls1)/dble(nmatr)
     end do
 !
 !     --- CREATION DES NOMS DE FONCTIONS ---
     mxval = nfonc*(nfonc+1)/2
     chvale = nomref//'.VALE'
-    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 mxval)
     chfreq = nomref//'.DISC'
     chnumi = nomref//'.NUMI'
@@ -204,7 +204,7 @@ subroutine op0120()
                 nbabs = nbpts2
             else
                 nbabs = 2*nbpts2
-            endif
+            end if
 !
             call jecroc(jexnum(chvale, ipf))
             call jeecra(jexnum(chvale, ipf), 'LONMAX', nbabs)
@@ -213,40 +213,40 @@ subroutine op0120()
 !
             do k = 1, nbpts2
                 if (ival(1) .eq. ival(2)) then
-                    l1 = ispec + k-1
-                    l2 = lssx + nbpts* (ktabl-1) + k - 1
+                    l1 = ispec+k-1
+                    l2 = lssx+nbpts*(ktabl-1)+k-1
                     zr(l1) = zr(l2)
                 else
-                    l1 = ispec + (k-1)*2
-                    l2 = lssx + nbpts* (ktabl-1) + k - 1
+                    l1 = ispec+(k-1)*2
+                    l2 = lssx+nbpts*(ktabl-1)+k-1
                     zr(l1) = zr(l2)
                     zr(l1+1) = zr(l2+nbpts2)
-                endif
+                end if
             end do
-            ktabl = ktabl + 1
+            ktabl = ktabl+1
         end do
     end do
 !
     if (niv .ge. 1) then
         freini = 0.d0
-        frefin = dfreq* (nbpts2-1)
-        write (ifm,200)
-        write (ifm,201) dfreq, freini, frefin
-    endif
+        frefin = dfreq*(nbpts2-1)
+        write (ifm, 200)
+        write (ifm, 201) dfreq, freini, frefin
+    end if
     if (niv .ge. 2) then
         nomobj = '&&OP0117.FONCTION'
         if (nfcod .ne. mxval) then
             call utmess('F', 'MODELISA2_89')
-        endif
+        end if
         call jeveuo(nomobj, 'L', ltabl)
         call intimp(ifm, zr(lrms), zk24(ltabl), nmatr, nfcod)
-    endif
+    end if
 !
 !
     call titre()
 !
-    200 format ('<PAS EN FREQUENCE>  <FREQ. INITIALE>  <FREQ. FINALE>')
-    201 format (4x,d11.4,4x,d11.4,4x,d11.4)
+200 format('<PAS EN FREQUENCE>  <FREQ. INITIALE>  <FREQ. FINALE>')
+201 format(4x, d11.4, 4x, d11.4, 4x, d11.4)
 !
     call jedema()
 end subroutine

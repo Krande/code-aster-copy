@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
+subroutine fonno4(ndim, macofo, noma, nbmac, tablev, &
                   noe, nbnoff, indic)
     implicit none
 #include "jeveux.h"
@@ -66,65 +66,65 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
 !     RECUPERATION DU VECTEUR DES MAILLES CONNECTEES AU SEGMENT DU FOND
     call jeveuo(macofo, 'L', jmaco)
 !
-    indic(1)=0
-    indic(2)=0
-    indic(3)=0
-    indic(4)=0
-    comp5=0
+    indic(1) = 0
+    indic(2) = 0
+    indic(3) = 0
+    indic(4) = 0
+    comp5 = 0
 !     ON BALAYE LES MAILLES CONNECTEES AU NOEUD INO
     do ima = 1, nbmac
 !       POUR CHAQUE FACE RETENUE
         do inp = 1, 4
-            compte=0
+            compte = 0
 !         ON NE CONSIDERE QUE LES MAILLES INTERNES AFIN D'ELIMINER
 !         LES FACES (EN 3D) OU LES SEGMENTS INTERNES (EN 2D)
-            if ((zi(jmaco-1 + ima).ne.tablev(1)) .and. (zi(jmaco-1 + ima).ne.tablev(2))) then
-                ityp = iatyma-1+zi(jmaco-1 + ima)
+            if ((zi(jmaco-1+ima) .ne. tablev(1)) .and. (zi(jmaco-1+ima) .ne. tablev(2))) then
+                ityp = iatyma-1+zi(jmaco-1+ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
                 call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
-                call jeveuo(jexnum( noma//'.CONNEX', zi(jmaco-1 + ima) ), 'L', iamase)
+                call jeveuo(jexnum(noma//'.CONNEX', zi(jmaco-1+ima)), 'L', iamase)
 !           POUR CHAQUE NOEUD DE LA MAILLE INTERNE
                 do i = 1, nn
 !             ON COMPTE LE NOMBRE DE NOEUDS COMMUN AVEC LA FACE INP
                     do ino1 = 1, 4
-                        if (noe(inp,ino1) .ne. 0) then
-                            if (zi(iamase-1+i) .eq. noe(inp,ino1)) then
+                        if (noe(inp, ino1) .ne. 0) then
+                            if (zi(iamase-1+i) .eq. noe(inp, ino1)) then
                                 compte = compte+1
-                            endif
-                        endif
+                            end if
+                        end if
                     end do
                 end do
-            endif
+            end if
 !         LES FACES A NE PAS PRENDRE EN COMPTE CAR INTERNE
-            if (((nbnoff.gt.1).and.(compte.ge.3)) .or. ((nbnoff.eq.1) .and.(compte.ge.2))) then
-                comp5 = comp5 + 1
+      if (((nbnoff .gt. 1) .and. (compte .ge. 3)) .or. ((nbnoff .eq. 1) .and. (compte .ge. 2))) then
+                comp5 = comp5+1
                 indic(comp5) = inp
-            endif
+            end if
         end do
     end do
 !
 !     CAS PARTICULIER OU AUCUNE MAILLE INTERNE N'EST PRESENTE
-    if ((comp5.eq.0) .and. (nbmac.eq.2)) then
+    if ((comp5 .eq. 0) .and. (nbmac .eq. 2)) then
         do inp = 1, 4
             do inq = 1, 4
                 compte = 0
                 if (inp .ne. inq) then
                     do i = 1, 4
                         do j = 1, 4
-                            if (noe(inp,i) .ne. 0) then
-                                if (noe(inp,i) .eq. noe(inq,j)) then
+                            if (noe(inp, i) .ne. 0) then
+                                if (noe(inp, i) .eq. noe(inq, j)) then
                                     compte = compte+1
-                                endif
-                            endif
+                                end if
+                            end if
                         end do
                     end do
-                endif
+                end if
                 if (ndim .eq. 3 .and. compte .ge. 3 .or. ndim .eq. 2 .and. compte .ge. 2) then
-                    indic(inp)=inq
-                endif
+                    indic(inp) = inq
+                end if
             end do
         end do
-    endif
+    end if
 !
 !
     call jedema()

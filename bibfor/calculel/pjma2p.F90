@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     integer :: nbma, nbpt, nbcmp, nbmamo
     integer :: ima, ipt, icmp, iad, iadime
     integer ::  jdimt, jpo2, nbtrou, jlitr
-    integer :: jcesd, jcesl,  iatypm
+    integer :: jcesd, jcesl, iatypm
     character(len=8) :: nom, mail2, noma
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc, limato, litrou
@@ -85,19 +85,19 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jeveuo(mail2//'.TYPMAIL', 'L', vi=typmail)
 !
 !     -- RECUPERATION DU CHAMP DE COORDONNEES DU MAILLAGE 2
-    chgeom=mail2//'.COORDO'
+    chgeom = mail2//'.COORDO'
 !
 !
 !     -- ON REDUIT LE LIGREL DE MOA2 SUR MAILLES DE DIMENSION NDIM :
-    ligrel='&&PJMA2P.LIGREL'
-    limato='&&PJMA2P.LIMATOT'
-    litrou='&&PJMA2P.LITROU'
+    ligrel = '&&PJMA2P.LIGREL'
+    limato = '&&PJMA2P.LIMATOT'
+    litrou = '&&PJMA2P.LITROU'
 !     -- ON NE CONSERVE QUE LES MAILLES AFFECTEES :
     call utmamo(moa2, nbmamo, limato)
 !     -- ON NE CONSERVE QUE LES MAILLES DE DIMENSION NDIM :
-    call utflmd(mail2, limato, nbmamo, ndim, ' ',&
+    call utflmd(mail2, limato, nbmamo, ndim, ' ', &
                 nbtrou, litrou)
-    ASSERT(nbtrou.gt.0)
+    ASSERT(nbtrou .gt. 0)
     call jeveuo(litrou, 'L', jlitr)
     call exlim1(zi(jlitr), nbtrou, moa2, 'V', ligrel)
     call jedetr(limato)
@@ -106,18 +106,18 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
 !     1.  CALCUL DU CHAMP DE COORDONNEES DES ELGA (CHAMG):
 !     -------------------------------------------------------
-    chamg='&&PJMA2P.PGCOOR'
+    chamg = '&&PJMA2P.PGCOOR'
 !
     call calc_coor_elga(moa2, ligrel, chgeom, chamg)
 !
 !     -- TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
-    ces='&&PJMA2P.PGCORS'
+    ces = '&&PJMA2P.PGCORS'
     call celces(chamg, 'V', ces)
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESL', 'L', jcesl)
     call jeveuo(ces//'.CESV', 'E', vr=cesv)
-    nbma=zi(jcesd-1+1)
+    nbma = zi(jcesd-1+1)
 !
 !     2.1 MODIFICATION DES COORDONNEES DE CERTAINS PG (PYRAM/FPG27)
 !         CAR CES POINTS DE GAUSS SONT EN "DEHORS" DES PYRAMIDES
@@ -126,50 +126,50 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), ipy13)
     do ima = 1, nbma
         if (typmail(ima) .eq. ipy5 .or. typmail(ima) .eq. ipy13) then
-            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
             if (nbpt .eq. 27) then
                 do icmp = 1, 3
-                    xmoy(icmp)=0.d0
+                    xmoy(icmp) = 0.d0
                 end do
 !           -- XMOY : CENTRE DE LA PYRAMIDE :
                 do ipt = 1, 15
                     do icmp = 1, 3
-                        call cesexi('C', jcesd, jcesl, ima, ipt,&
+                        call cesexi('C', jcesd, jcesl, ima, ipt, &
                                     1, icmp, iad)
-                        ASSERT(iad.gt.0)
-                        xmoy(icmp)=xmoy(icmp)+cesv(iad)
+                        ASSERT(iad .gt. 0)
+                        xmoy(icmp) = xmoy(icmp)+cesv(iad)
                     end do
                 end do
                 do icmp = 1, 3
-                    xmoy(icmp)=xmoy(icmp)/15
+                    xmoy(icmp) = xmoy(icmp)/15
                 end do
 !
 !           -- ON "RAMENE" LES 12 DERNIERS PG VERS LE CENTRE (10%) :
                 do ipt = 16, 27
                     do icmp = 1, 3
-                        call cesexi('C', jcesd, jcesl, ima, ipt,&
+                        call cesexi('C', jcesd, jcesl, ima, ipt, &
                                     1, icmp, iad)
-                        ASSERT(iad.gt.0)
-                        rayo=cesv(iad)-xmoy(icmp)
-                        cesv(iad)=cesv(iad)-0.6d0*rayo
+                        ASSERT(iad .gt. 0)
+                        rayo = cesv(iad)-xmoy(icmp)
+                        cesv(iad) = cesv(iad)-0.6d0*rayo
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !
 !     2. CALCUL DE NBNO2P : NOMBRE DE NOEUDS (ET DE MAILLES) DE MA2P
 !        CALCUL DE '.PJEF_EL'
 !     ----------------------------------------------------------------
-    nbno2p=0
+    nbno2p = 0
     do ima = 1, nbma
         call jeveuo(jexnum('&CATA.TM.TMDIM', typmail(ima)), 'L', jdimt)
         if (zi(jdimt) .eq. ndim) then
-            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
             if (nbpt .eq. 0) cycle
-            nbno2p=nbno2p+nbpt
-        endif
+            nbno2p = nbno2p+nbpt
+        end if
     end do
 !
 !     ON CREE UN TABLEAU, POUR CHAQUE JPO2, ON STOCKE DEUX VALEURS :
@@ -177,19 +177,19 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !      * LA DEUXIEME VALEUR EST LE NUMERO DU PG DANS CETTE MAILLE
     call wkvect(corres//'.PJEF_EL', 'V V I', nbno2p*2, jpo2)
 !
-    ipo=1
+    ipo = 1
     do ima = 1, nbma
         call jeveuo(jexnum('&CATA.TM.TMDIM', typmail(ima)), 'L', jdimt)
         if (zi(jdimt) .eq. ndim) then
-            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
             if (nbpt .eq. 0) cycle
             call jenuno(jexnum(mail2//'.NOMMAI', ima), noma)
             do ipg = 1, nbpt
-                zi(jpo2-1+ipo)=ima
-                zi(jpo2-1+ipo+1)=ipg
-                ipo=ipo+2
+                zi(jpo2-1+ipo) = ima
+                zi(jpo2-1+ipo+1) = ipg
+                ipo = ipo+2
             end do
-        endif
+        end if
     end do
 !
 !     3. CREATION DU .DIME DU NOUVEAU MAILLAGE
@@ -197,9 +197,9 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !        TOUTES LES MAILLES SONT DES POI1
 !     --------------------------------------------------
     call wkvect(ma2p//'.DIME', 'V V I', 6, iadime)
-    zi(iadime-1+1)=nbno2p
-    zi(iadime-1+3)=nbno2p
-    zi(iadime-1+6)=3
+    zi(iadime-1+1) = nbno2p
+    zi(iadime-1+3) = nbno2p
+    zi(iadime-1+6) = 3
 !
 !
 !     4. CREATION DU .NOMNOE ET DU .NOMMAI DU NOUVEAU MAILLAGE
@@ -212,25 +212,25 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
     if (nbno2p .ge. 10000000) then
 !       -- PLUS DE 10 MILLIONS DE NOEUDS, ON PASSE EN BASE 36
-        do k = 1 , nbno2p
+        do k = 1, nbno2p
             call codlet(k, 'G', nom(2:8))
             call jecroc(jexnom(ma2p//'.NOMNOE', 'N'//nom(2:8)))
             call jecroc(jexnom(ma2p//'.NOMMAI', 'M'//nom(2:8)))
-        enddo
+        end do
     else
 !       -- MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
-        do k = 1 , nbno2p
+        do k = 1, nbno2p
             call codent(k, 'G', nom(2:8))
             call jecroc(jexnom(ma2p//'.NOMNOE', 'N'//nom(2:8)))
             call jecroc(jexnom(ma2p//'.NOMMAI', 'M'//nom(2:8)))
-        enddo
-    endif
+        end do
+    end if
 !
 !
 !
 !     5. CREATION DU .CONNEX ET DU .TYPMAIL DU NOUVEAU MAILLAGE
 !     ----------------------------------------------------------
-    call jecrec(ma2p//'.CONNEX', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(ma2p//'.CONNEX', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbno2p)
     call jeecra(ma2p//'.CONNEX', 'LONT', nbno2p, ' ')
     call jeveuo(ma2p//'.CONNEX', 'E', vi=connex)
@@ -238,14 +238,14 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call wkvect(ma2p//'.TYPMAIL', 'V V I', nbno2p, iatypm)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ipoi1)
 !
-    nuno2=0
+    nuno2 = 0
     do ima = 1, nbno2p
-        zi(iatypm-1+ima)=ipoi1
-        nno2=1
+        zi(iatypm-1+ima) = ipoi1
+        nno2 = 1
         call jecroc(jexnum(ma2p//'.CONNEX', ima))
         call jeecra(jexnum(ma2p//'.CONNEX', ima), 'LONMAX', nno2)
-        nuno2=nuno2+1
-        connex(nuno2)=nuno2
+        nuno2 = nuno2+1
+        connex(nuno2) = nuno2
     end do
 !
 !
@@ -253,50 +253,50 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !     -- CREATION DU .REFE DU NOUVEAU MAILLAGE
 !     --------------------------------------------------
     call wkvect(ma2p//'.COORDO    .REFE', 'V V K24', 4, j4)
-    zk24(j4)='MA2P'
+    zk24(j4) = 'MA2P'
 !
 !
 !     -- CREATION DE COORDO.VALE DU NOUVEAU MAILLAGE
 !     --------------------------------------------------
     call wkvect(ma2p//'.COORDO    .VALE', 'V V R', 3*nbno2p, j1)
 !
-    ino2p=0
+    ino2p = 0
     do ima = 1, nbma
-        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-        nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
+        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+        nbcmp = zi(jcesd-1+5+4*(ima-1)+3)
         if (nbpt .eq. 0) goto 160
         call jeveuo(jexnum('&CATA.TM.TMDIM', typmail(ima)), 'L', jdimt)
 !
         if (zi(jdimt) .eq. ndim) then
-            ASSERT(nbcmp.ge.3)
+            ASSERT(nbcmp .ge. 3)
             do ipt = 1, nbpt
-                ino2p=ino2p+1
+                ino2p = ino2p+1
                 do icmp = 1, 3
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 1, icmp, iad)
                     if (iad .gt. 0) then
-                        zr(j1-1+3*(ino2p-1)+icmp)=cesv(iad)
-                    endif
+                        zr(j1-1+3*(ino2p-1)+icmp) = cesv(iad)
+                    end if
                 end do
             end do
-        endif
+        end if
 160     continue
     end do
-    ASSERT(ino2p.eq.nbno2p)
+    ASSERT(ino2p .eq. nbno2p)
 !
 !
 !     -- CREATION DU .DESC DU NOUVEAU MAILLAGE
 !     --------------------------------------------------
-    coodsc=ma2p//'.COORDO    .DESC'
+    coodsc = ma2p//'.COORDO    .DESC'
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
     call jecreo(coodsc, 'V V I')
     call jeecra(coodsc, 'LONMAX', 3)
     call jeecra(coodsc, 'DOCU', cval='CHNO')
     call jeveuo(coodsc, 'E', iad)
-    zi(iad)=ntgeo
-    zi(iad+1)=-3
-    zi(iad+2)=14
+    zi(iad) = ntgeo
+    zi(iad+1) = -3
+    zi(iad+2) = 14
 !
     call detrsd('CHAM_ELEM', chamg)
     call detrsd('CHAM_ELEM_S', ces)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mgausw(a, b, dim, nordre, nb,&
+subroutine mgausw(a, b, dim, nordre, nb, &
                   det, iret)
 !
     implicit none
@@ -49,7 +49,7 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 !
 !     PARAMETRE
     real(kind=8) :: condmx
-    parameter (condmx = 1.d16)
+    parameter(condmx=1.d16)
 !
     integer :: i, j, k
     real(kind=8) :: c, d, cmin, cmax
@@ -62,28 +62,28 @@ subroutine mgausw(a, b, dim, nordre, nb,&
     else
         ldet = .true.
         det = 1.d0
-    endif
+    end if
 !
     do i = 1, nordre
 !
 ! ----- RECHERCHE DU MEILLEUR PIVOT
 !
         j = i
-        c = a(i,i)
+        c = a(i, i)
         flag = .false.
 !
         do k = i+1, nordre
-            d = a(k,i)
+            d = a(k, i)
             if (abs(c) .lt. abs(d)) then
                 c = d
                 j = k
                 flag = .true.
-            endif
+            end if
         end do
 !
 ! ----- DETERMINANT
 !
-        if (ldet) det = det * c
+        if (ldet) det = det*c
 !
 ! ----- ESTIMATION GROSSIERE DU CONDITIONNEMENT
 !
@@ -96,57 +96,57 @@ subroutine mgausw(a, b, dim, nordre, nb,&
                 if (cmax .gt. condmx*cmin) then
                     iret = .false.
                     goto 100
-                endif
+                end if
                 goto 30
-            endif
+            end if
             if (abs(c) .gt. cmax) then
                 cmax = abs(c)
                 if (cmax .gt. condmx*cmin) then
                     iret = .false.
                     goto 100
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
- 30     continue
+30      continue
 !
 ! ----- PERMUTATION
 !
         if (flag) then
 !
             do k = i, nordre
-                d = a(i,k)
-                a(i,k) = a(j,k)
-                a(j,k) = d
+                d = a(i, k)
+                a(i, k) = a(j, k)
+                a(j, k) = d
             end do
 !
             do k = 1, nb
-                d = b(i,k)
-                b(i,k) = b(j,k)
-                b(j,k) = d
+                d = b(i, k)
+                b(i, k) = b(j, k)
+                b(j, k) = d
             end do
 !
             det = (-1.d0)*det
 !
-        endif
+        end if
 !
 ! ----- ELIMINATION
 !
         do j = i+1, nordre
 !
-            if (a(j,i) .ne. 0.d0) then
+            if (a(j, i) .ne. 0.d0) then
 !
-                d = a(j,i)/c
+                d = a(j, i)/c
 !
                 do k = 1, nb
-                    b(j,k) = b(j,k) - d*b(i,k)
+                    b(j, k) = b(j, k)-d*b(i, k)
                 end do
 !
                 do k = i+1, nordre
-                    a(j,k) = a(j,k) - d*a(i,k)
+                    a(j, k) = a(j, k)-d*a(i, k)
                 end do
 !
-            endif
+            end if
 !
         end do
     end do
@@ -154,15 +154,15 @@ subroutine mgausw(a, b, dim, nordre, nb,&
 ! --- RESOLUTION
 !
     do k = 1, nb
-        b(nordre,k) = b(nordre,k)/c
+        b(nordre, k) = b(nordre, k)/c
 !
         do i = nordre-1, 1, -1
             d = 0.d0
             do j = i+1, nordre
-                d = d + a(i,j) * b(j, k)
+                d = d+a(i, j)*b(j, k)
             end do
 !
-            b(i,k) = (b(i,k) - d) / a(i,i)
+            b(i, k) = (b(i, k)-d)/a(i, i)
 !
         end do
     end do

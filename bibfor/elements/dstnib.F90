@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dstnib(qsi, eta, carat3, an, am,&
+subroutine dstnib(qsi, eta, carat3, an, am, &
                   nfx, nfy, nmx, nmy)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, carat3(*), an(3, 9), am(3, 6)
     real(kind=8) :: nfx(9), nfy(9), nmx(6), nmy(6)
 !.======================================================================
@@ -87,7 +87,7 @@ subroutine dstnib(qsi, eta, carat3, an, am,&
     s5 = carat3(20)
     s6 = carat3(21)
 !
-    n1 = un - qsi - eta
+    n1 = un-qsi-eta
     n2 = qsi
     n3 = eta
 !
@@ -100,47 +100,47 @@ subroutine dstnib(qsi, eta, carat3, an, am,&
 ! --- DE FLEXION :                                            =
 !==============================================================
 !
-    nfx(1) = p4*c4*an(1,1) + p5*c5*an(2,1) + p6*c6*an(3,1)
-    nfx(2) = n1 + p4*c4*an(1,2) + p5*c5*an(2,2) + p6*c6*an(3,2)
-    nfx(3) = p4*c4*an(1,3) + p5*c5*an(2,3) + p6*c6*an(3,3)
+    nfx(1) = p4*c4*an(1, 1)+p5*c5*an(2, 1)+p6*c6*an(3, 1)
+    nfx(2) = n1+p4*c4*an(1, 2)+p5*c5*an(2, 2)+p6*c6*an(3, 2)
+    nfx(3) = p4*c4*an(1, 3)+p5*c5*an(2, 3)+p6*c6*an(3, 3)
 !
-    nfx(4) = p4*c4*an(1,4) + p5*c5*an(2,4) + p6*c6*an(3,4)
-    nfx(5) = n2 + p4*c4*an(1,5) + p5*c5*an(2,5) + p6*c6*an(3,5)
-    nfx(6) = p4*c4*an(1,6) + p5*c5*an(2,6) + p6*c6*an(3,6)
+    nfx(4) = p4*c4*an(1, 4)+p5*c5*an(2, 4)+p6*c6*an(3, 4)
+    nfx(5) = n2+p4*c4*an(1, 5)+p5*c5*an(2, 5)+p6*c6*an(3, 5)
+    nfx(6) = p4*c4*an(1, 6)+p5*c5*an(2, 6)+p6*c6*an(3, 6)
 !
-    nfx(7) = p4*c4*an(1,7) + p5*c5*an(2,7) + p6*c6*an(3,7)
-    nfx(8) = n3 + p4*c4*an(1,8) + p5*c5*an(2,8) + p6*c6*an(3,8)
-    nfx(9) = p4*c4*an(1,9) + p5*c5*an(2,9) + p6*c6*an(3,9)
+    nfx(7) = p4*c4*an(1, 7)+p5*c5*an(2, 7)+p6*c6*an(3, 7)
+    nfx(8) = n3+p4*c4*an(1, 8)+p5*c5*an(2, 8)+p6*c6*an(3, 8)
+    nfx(9) = p4*c4*an(1, 9)+p5*c5*an(2, 9)+p6*c6*an(3, 9)
 !
-    nfy(1) = p4*s4*an(1,1) + p5*s5*an(2,1) + p6*s6*an(3,1)
-    nfy(2) = p4*s4*an(1,2) + p5*s5*an(2,2) + p6*s6*an(3,2)
-    nfy(3) = n1 + p4*s4*an(1,3) + p5*s5*an(2,3) + p6*s6*an(3,3)
+    nfy(1) = p4*s4*an(1, 1)+p5*s5*an(2, 1)+p6*s6*an(3, 1)
+    nfy(2) = p4*s4*an(1, 2)+p5*s5*an(2, 2)+p6*s6*an(3, 2)
+    nfy(3) = n1+p4*s4*an(1, 3)+p5*s5*an(2, 3)+p6*s6*an(3, 3)
 !
-    nfy(4) = p4*s4*an(1,4) + p5*s5*an(2,4) + p6*s6*an(3,4)
-    nfy(5) = p4*s4*an(1,5) + p5*s5*an(2,5) + p6*s6*an(3,5)
-    nfy(6) = n2 + p4*s4*an(1,6) + p5*s5*an(2,6) + p6*s6*an(3,6)
+    nfy(4) = p4*s4*an(1, 4)+p5*s5*an(2, 4)+p6*s6*an(3, 4)
+    nfy(5) = p4*s4*an(1, 5)+p5*s5*an(2, 5)+p6*s6*an(3, 5)
+    nfy(6) = n2+p4*s4*an(1, 6)+p5*s5*an(2, 6)+p6*s6*an(3, 6)
 !
-    nfy(7) = p4*s4*an(1,7) + p5*s5*an(2,7) + p6*s6*an(3,7)
-    nfy(8) = p4*s4*an(1,8) + p5*s5*an(2,8) + p6*s6*an(3,8)
-    nfy(9) = n3 + p4*s4*an(1,9) + p5*s5*an(2,9) + p6*s6*an(3,9)
+    nfy(7) = p4*s4*an(1, 7)+p5*s5*an(2, 7)+p6*s6*an(3, 7)
+    nfy(8) = p4*s4*an(1, 8)+p5*s5*an(2, 8)+p6*s6*an(3, 8)
+    nfy(9) = n3+p4*s4*an(1, 9)+p5*s5*an(2, 9)+p6*s6*an(3, 9)
 !
 !==============================================================
 ! --- FONCTIONS D'INTERPOLATIONS DES ROTATIONS POUR LES DDLS  =
 ! --- DE MEMBRANE :                                           =
 !==============================================================
 !
-    nmx(1) = p4*c4*am(1,1) + p5*c5*am(2,1) + p6*c6*am(3,1)
-    nmx(2) = p4*c4*am(1,2) + p5*c5*am(2,2) + p6*c6*am(3,2)
-    nmx(3) = p4*c4*am(1,3) + p5*c5*am(2,3) + p6*c6*am(3,3)
-    nmx(4) = p4*c4*am(1,4) + p5*c5*am(2,4) + p6*c6*am(3,4)
-    nmx(5) = p4*c4*am(1,5) + p5*c5*am(2,5) + p6*c6*am(3,5)
-    nmx(6) = p4*c4*am(1,6) + p5*c5*am(2,6) + p6*c6*am(3,6)
+    nmx(1) = p4*c4*am(1, 1)+p5*c5*am(2, 1)+p6*c6*am(3, 1)
+    nmx(2) = p4*c4*am(1, 2)+p5*c5*am(2, 2)+p6*c6*am(3, 2)
+    nmx(3) = p4*c4*am(1, 3)+p5*c5*am(2, 3)+p6*c6*am(3, 3)
+    nmx(4) = p4*c4*am(1, 4)+p5*c5*am(2, 4)+p6*c6*am(3, 4)
+    nmx(5) = p4*c4*am(1, 5)+p5*c5*am(2, 5)+p6*c6*am(3, 5)
+    nmx(6) = p4*c4*am(1, 6)+p5*c5*am(2, 6)+p6*c6*am(3, 6)
 !
-    nmy(1) = p4*s4*am(1,1) + p5*s5*am(2,1) + p6*s6*am(3,1)
-    nmy(2) = p4*s4*am(1,2) + p5*s5*am(2,2) + p6*s6*am(3,2)
-    nmy(3) = p4*s4*am(1,3) + p5*s5*am(2,3) + p6*s6*am(3,3)
-    nmy(4) = p4*s4*am(1,4) + p5*s5*am(2,4) + p6*s6*am(3,4)
-    nmy(5) = p4*s4*am(1,5) + p5*s5*am(2,5) + p6*s6*am(3,5)
-    nmy(6) = p4*s4*am(1,6) + p5*s5*am(2,6) + p6*s6*am(3,6)
+    nmy(1) = p4*s4*am(1, 1)+p5*s5*am(2, 1)+p6*s6*am(3, 1)
+    nmy(2) = p4*s4*am(1, 2)+p5*s5*am(2, 2)+p6*s6*am(3, 2)
+    nmy(3) = p4*s4*am(1, 3)+p5*s5*am(2, 3)+p6*s6*am(3, 3)
+    nmy(4) = p4*s4*am(1, 4)+p5*s5*am(2, 4)+p6*s6*am(3, 4)
+    nmy(5) = p4*s4*am(1, 5)+p5*s5*am(2, 5)+p6*s6*am(3, 5)
+    nmy(6) = p4*s4*am(1, 6)+p5*s5*am(2, 6)+p6*s6*am(3, 6)
 !
 end subroutine

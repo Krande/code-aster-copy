@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine caundf(code, opt, te)
-use calcul_module, only : ca_iaoppa_, ca_iawlo2_, ca_iawloc_, &
-    ca_iawtyp_, ca_igr_, ca_nbgr_, ca_npario_
-implicit none
+    use calcul_module, only: ca_iaoppa_, ca_iawlo2_, ca_iawloc_, &
+                             ca_iawtyp_, ca_igr_, ca_nbgr_, ca_npario_
+    implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 
 #include "asterf_types.h"
@@ -58,76 +58,72 @@ implicit none
 
     innem = isnnem()
     rnnem = r8nnem()
-    knnem='????????'
+    knnem = '????????'
 
-    ASSERT((code.eq.'ECRIT').or.(code.eq.'VERIF'))
-
+    ASSERT((code .eq. 'ECRIT') .or. (code .eq. 'VERIF'))
 
     if (code .eq. 'ECRIT') then
 !   ---------------------------
 
 !        -- champs "in" et "out" :
         do iparg = 1, ca_npario_
-            lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
+            lgcata = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
             if (lgcata .le. 0) cycle
-            iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
-            if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) cycle
+            iachlo = zi(ca_iawloc_-1+3*(iparg-1)+1)
+            if ((iachlo .eq. -1) .or. (iachlo .eq. -2)) cycle
 
-            typsca = zk8(ca_iawtyp_-1+iparg)(1:3)
-            lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
-            debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
+            typsca = zk8(ca_iawtyp_-1+iparg) (1:3)
+            lggrel = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
+            debugr = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
 
             if (typsca .eq. 'R') then
                 zr(iachlo-1+debugr-1+lggrel+1) = rnnem
-            else if (typsca.eq.'C') then
-                zc(iachlo-1+debugr-1+lggrel+1) = dcmplx(rnnem,rnnem)
-            else if (typsca.eq.'I') then
+            else if (typsca .eq. 'C') then
+                zc(iachlo-1+debugr-1+lggrel+1) = dcmplx(rnnem, rnnem)
+            else if (typsca .eq. 'I') then
                 zi(iachlo-1+debugr-1+lggrel+1) = innem
-            else if (typsca.eq.'K8') then
+            else if (typsca .eq. 'K8') then
                 zk8(iachlo-1+debugr-1+lggrel+1) = knnem
-            else if (typsca.eq.'K16') then
+            else if (typsca .eq. 'K16') then
                 zk16(iachlo-1+debugr-1+lggrel+1) = knnem
-            else if (typsca.eq.'K24') then
+            else if (typsca .eq. 'K24') then
                 zk24(iachlo-1+debugr-1+lggrel+1) = knnem
             else
                 ASSERT(.false.)
-            endif
-        enddo
+            end if
+        end do
 
-
-
-    else if (code.eq.'VERIF') then
+    else if (code .eq. 'VERIF') then
 !   ------------------------------
 
 !        -- champs "out" :
         arret = .false.
-        np = nbpara(opt,te,'OUT')
+        np = nbpara(opt, te, 'OUT')
         do ipar = 1, np
-            ecras=.false.
-            nompar = nopara(opt,te,'OUT',ipar)
-            iparg = indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
-            lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
+            ecras = .false.
+            nompar = nopara(opt, te, 'OUT', ipar)
+            iparg = indik8(zk8(ca_iaoppa_), nompar, 1, ca_npario_)
+            lgcata = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)
             if (lgcata .le. 0) cycle
-            ich=zi(ca_iawloc_-1+3*(iparg-1)+3)
+            ich = zi(ca_iawloc_-1+3*(iparg-1)+3)
             if (ich .eq. 0) cycle
-            iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
-            if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) cycle
+            iachlo = zi(ca_iawloc_-1+3*(iparg-1)+1)
+            if ((iachlo .eq. -1) .or. (iachlo .eq. -2)) cycle
 
-            typsca = zk8(ca_iawtyp_-1+iparg)(1:3)
-            lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
-            debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
-
+            typsca = zk8(ca_iawtyp_-1+iparg) (1:3)
+            lggrel = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
+            debugr = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
 
             if (typsca .eq. 'R') then
-                if (.not.isnan(zr(iachlo-1+debugr-1+lggrel+1))) ecras=.true.
-            else if (typsca.eq.'C') then
-                if (.not.isnan(dble(zc(iachlo-1+debugr-1+lggrel+1)))) ecras=.true.
-                if (.not.isnan(dimag(zc(iachlo-1+debugr-1+lggrel+1)))) ecras=.true.
-            else if (typsca.eq.'I') then
-                if (zi(iachlo-1+debugr-1+lggrel+1) .ne. innem) ecras= .true.
+                if (.not. isnan(zr(iachlo-1+debugr-1+lggrel+1))) ecras = .true.
+            else if (typsca .eq. 'C') then
+                if (.not. isnan(dble(zc(iachlo-1+debugr-1+lggrel+1)))) ecras = .true.
+                if (.not. isnan(dimag(zc(iachlo-1+debugr-1+lggrel+1)))) ecras = .true.
+            else if (typsca .eq. 'I') then
+                if (zi(iachlo-1+debugr-1+lggrel+1) .ne. innem) ecras = .true.
             else
                 ASSERT(.false.)
-            endif
+            end if
 
             if (ecras) then
                 arret = .true.
@@ -137,13 +133,12 @@ implicit none
                 valk(2) = nomopt
                 valk(3) = nompar
                 call utmess('E', 'CALCUL_40', nk=3, valk=valk)
-            endif
+            end if
 
-        enddo
+        end do
 
-        ASSERT(.not.arret)
+        ASSERT(.not. arret)
 
-    endif
-
+    end if
 
 end subroutine

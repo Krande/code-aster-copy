@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine pofape()
 !     -----------------------------------------------------------------
 !
     integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, nbc, ibid, iordo
-    integer :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract (35), nbeps
+    integer :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract(35), nbeps
     integer :: ifonc2, ifonce, iordoe, ifonc3, ifoncp, iordop, nbepsp
     integer :: tdisp, nbnop, lisnoe(1), nbnot, nbordr, nnoini
     integer :: tspaq, k, jrwork, nbcmp, ordini
@@ -69,12 +69,12 @@ subroutine pofape()
     character(len=19) :: k19b
     character(len=24) :: fvale(6), etvale(6), ptvale(6)
 !     --- POST_FATI_MULT -----------------------------------------------
-    parameter    ( nbpapf = 50  )
+    parameter(nbpapf=50)
     character(len=3) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
-    data  nomppf / 'CRITERE' , 'VALE_CRITERE' , 'PRES_HYDRO_MAX' ,&
-     &               'AMPLI_CISSION' , 'RAYON_SPHERE'   ,&
-     &               'VALE_MIN' , 'VALE_MAX' , 'DOMMAGE' ,'NBRUP',&
+    data nomppf/'CRITERE', 'VALE_CRITERE', 'PRES_HYDRO_MAX',&
+     &               'AMPLI_CISSION', 'RAYON_SPHERE',&
+     &               'VALE_MIN', 'VALE_MAX', 'DOMMAGE', 'NBRUP',&
      &               'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&
      &               'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1',&
      &               'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',&
@@ -84,26 +84,26 @@ subroutine pofape()
      &               'DTAUCR', 'DGAMCR', 'DSINCR', 'DEPNCR', &
      &               'MTAUCR', 'MGAMCR', 'MSINCR', 'MEPNCR', &
      &               'DGAMPC', 'DEPNPC', 'MGAMPC', 'MEPNPC', &
-     &               'VNM1X',  'VNM1Y', 'VNM1Z',&
-     &               'VNM2X',  'VNM2Y',  'VNM2Z'  /
+     &               'VNM1X', 'VNM1Y', 'VNM1Z',&
+     &               'VNM2X', 'VNM2Y', 'VNM2Z'/
 !
 !
-    data  typppf /'K16','R' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R',&
-     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
-     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
-     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
-     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
-     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
-     &                  'R',  'R',  'R' , 'R' , 'R' , 'R' , 'R' /
+    data typppf/'K16', 'R', 'R', 'R', 'R', 'R', 'R', 'R',&
+     &                  'R', 'R', 'R', 'R', 'R', 'R', 'R',&
+     &                  'R', 'R', 'R', 'R', 'R', 'R', 'R',&
+     &                  'R', 'R', 'R', 'R', 'R', 'R', 'R',&
+     &                  'R', 'R', 'R', 'R', 'R', 'R', 'R',&
+     &                  'R', 'R', 'R', 'R', 'R', 'R', 'R',&
+     &                  'R', 'R', 'R', 'R', 'R', 'R', 'R'/
 !
 !     ---------------------------------------------------------------
 !     ----------------------------------------------------------------
 !
     call jemarq()
 !
-    cbid=(0.d0,0.d0)
-    rbid=0.d0
-    ibid=0
+    cbid = (0.d0, 0.d0)
+    rbid = 0.d0
+    ibid = 0
 !
     lke = .false.
     lhaigh = .false.
@@ -123,17 +123,17 @@ subroutine pofape()
     call getvid(' ', 'FORMULE_GRDEQ', scal=nomfor, nbret=nval)
     if (nval .eq. 0) then
         nomfor = '        '
-    endif
+    end if
 !
     call getvid(' ', 'FORMULE_VIE', scal=forvie, nbret=nval)
     if (nval .eq. 0) then
         forvie = '        '
-    endif
+    end if
 !
     call getvid(' ', 'FORMULE_CRITIQUE', scal=forcri, nbret=nval)
     if (nval .eq. 0) then
         forcri = '        '
-    endif
+    end if
 !
 !
     kdomm = ' '
@@ -143,14 +143,14 @@ subroutine pofape()
     call getvtx(' ', 'METHODE', scal=nommet, nbret=nval)
     if (nval .eq. 0) then
         nommet = '        '
-    endif
+    end if
 !
 ! ---   PROJECTION SUR UN AXE OU SUR DEUX AXES
 !     (CHARGEMENT NON_PERIODIQUE UNIQUEMENT)
     call getvtx(' ', 'PROJECTION', scal=proaxe, nbret=nval)
     if (nval .eq. 0) then
         proaxe = '        '
-    endif
+    end if
 !
 !---    ANALYSER LE CRITERE
 !  INITIALISER
@@ -160,7 +160,7 @@ subroutine pofape()
     crepsp = .false.
     fordef = .false.
 !
-    call anacri(criter, nomfor, typcha, 'OUI', paract,&
+    call anacri(criter, nomfor, typcha, 'OUI', paract, &
                 fordef, crsigm, crepst, crepse, crepsp)
 !     --- RECUPERATION DE LA FONCTION CHARGEMENT ---
 !
@@ -171,12 +171,12 @@ subroutine pofape()
     call getvid('HISTOIRE', 'SIGM_XY', iocc=1, scal=nomten(4), nbret=n4)
     call getvid('HISTOIRE', 'SIGM_XZ', iocc=1, scal=nomten(5), nbret=n5)
     call getvid('HISTOIRE', 'SIGM_YZ', iocc=1, scal=nomten(6), nbret=n6)
-    nbf = n1 + n2 + n3 + n4 + n5 + n6
+    nbf = n1+n2+n3+n4+n5+n6
 !
     if (nbf .ne. 0) then
         fvale(1) = nomten(1)//'           .VALE'
         call jelira(fvale(1), 'LONMAX', nbpts)
-    endif
+    end if
 !
 !CCCCCCCCC RECUPERER LA DEFORMATION TOTALE
     call getvid('HISTOIRE', 'EPS_XX', iocc=1, scal=nomeps(1), nbret=n1)
@@ -185,12 +185,12 @@ subroutine pofape()
     call getvid('HISTOIRE', 'EPS_XY', iocc=1, scal=nomeps(4), nbret=n4)
     call getvid('HISTOIRE', 'EPS_XZ', iocc=1, scal=nomeps(5), nbret=n5)
     call getvid('HISTOIRE', 'EPS_YZ', iocc=1, scal=nomeps(6), nbret=n6)
-    nbeps = n1 + n2 + n3 + n4 + n5 + n6
+    nbeps = n1+n2+n3+n4+n5+n6
 !
     if (nbeps .ne. 0) then
         etvale(1) = nomeps(1)//'           .VALE'
         call jelira(etvale(1), 'LONMAX', nbpts)
-    endif
+    end if
 !
 !CCCCCCCCC RECUPERER LA DEFORMATION PLASTIQUE
     call getvid('HISTOIRE', 'EPSP_XX', iocc=1, scal=nomepp(1), nbret=n1)
@@ -199,18 +199,18 @@ subroutine pofape()
     call getvid('HISTOIRE', 'EPSP_XY', iocc=1, scal=nomepp(4), nbret=n4)
     call getvid('HISTOIRE', 'EPSP_XZ', iocc=1, scal=nomepp(5), nbret=n5)
     call getvid('HISTOIRE', 'EPSP_YZ', iocc=1, scal=nomepp(6), nbret=n6)
-    nbepsp = n1 + n2 + n3 + n4 + n5 + n6
+    nbepsp = n1+n2+n3+n4+n5+n6
 !
     if (nbepsp .ne. 0) then
         ptvale(1) = nomepp(1)//'           .VALE'
         call jelira(ptvale(1), 'LONMAX', nbpts)
-    endif
+    end if
 !
 !C  CONTRUIRE TABLEAU CONTRAINTE
     if (nbf .eq. 0) then
         if (crsigm) then
             call utmess('F', 'FATIGUE1_97')
-        endif
+        end if
         call wkvect('&&POFAPE.ORDO', 'V V R', nbpts/2*6, iordo)
     else
 !
@@ -220,7 +220,7 @@ subroutine pofape()
             call jelira(fvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) then
                 call utmess('F', 'FATIGUE1_21')
-            endif
+            end if
         end do
         call wkvect('&&POFAPE.ORDO', 'V V R', nbptot/2*nbf, iordo)
         call jeveuo(fvale(1), 'L', ifonc1)
@@ -229,23 +229,23 @@ subroutine pofape()
             do j = 1, nbptot/2
                 if (zr(ifonc+j-1) .ne. zr(ifonc1+j-1)) then
                     call utmess('F', 'FATIGUE1_21')
-                endif
+                end if
                 zr(iordo+(j-1)*nbf+i-1) = zr(ifonc+nbptot/2+j-1)
             end do
         end do
-        nbptot = nbptot / 2
+        nbptot = nbptot/2
         do j = 1, nbptot
             zr(iordo+(j-1)*nbf) = zr(ifonc1+nbptot+j-1)
 !
         end do
 !
-    endif
+    end if
 !
 !C  CONTRUIRE TABLEAU DEFORMATION TOTALE
     if (nbeps .eq. 0) then
         if (crepst) then
             call utmess('F', 'FATIGUE1_98')
-        endif
+        end if
         call wkvect('&&POFAPE.ORDOE', 'V V R', nbpts/2*6, iordoe)
     else
 !
@@ -255,7 +255,7 @@ subroutine pofape()
             call jelira(etvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) then
                 call utmess('F', 'FATIGUE1_21')
-            endif
+            end if
         end do
         call wkvect('&&POFAPE.ORDOE', 'V V R', nbptot*nbeps/2, iordoe)
         call jeveuo(etvale(1), 'L', ifonc2)
@@ -264,15 +264,15 @@ subroutine pofape()
             do j = 1, nbptot/2
                 if (zr(ifonce+j-1) .ne. zr(ifonc2+j-1)) then
                     call utmess('F', 'FATIGUE1_21')
-                endif
+                end if
                 zr(iordoe+(j-1)*nbeps+i-1) = zr(ifonce+nbptot/2+j-1)
             end do
         end do
-        nbptot = nbptot / 2
+        nbptot = nbptot/2
         do j = 1, nbptot
             zr(iordoe+(j-1)*nbeps) = zr(ifonc2+nbptot+j-1)
         end do
-    endif
+    end if
 !
 !
 !C  CONTRUIRE TABLEAU DEFORMATION PLASTIQUE
@@ -280,7 +280,7 @@ subroutine pofape()
     if (nbepsp .eq. 0) then
         if (crepsp) then
             call utmess('F', 'FATIGUE1_99')
-        endif
+        end if
         call wkvect('&&POFAPE.ORDOP', 'V V R', nbpts/2*6, iordop)
     else
 !
@@ -290,7 +290,7 @@ subroutine pofape()
             call jelira(ptvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) then
                 call utmess('F', 'FATIGUE1_21')
-            endif
+            end if
         end do
         call wkvect('&&POFAPE.ORDOP', 'V V R', nbptot*nbepsp/2, iordop)
         call jeveuo(ptvale(1), 'L', ifonc3)
@@ -299,15 +299,15 @@ subroutine pofape()
             do j = 1, nbptot/2
                 if (zr(ifoncp+j-1) .ne. zr(ifonc3+j-1)) then
                     call utmess('F', 'FATIGUE1_21')
-                endif
+                end if
                 zr(iordop+(j-1)*nbeps+i-1) = zr(ifoncp+nbptot/2+j-1)
             end do
         end do
-        nbptot = nbptot / 2
+        nbptot = nbptot/2
         do j = 1, nbptot
             zr(iordop+(j-1)*nbeps) = zr(ifonc3+nbptot+j-1)
         end do
-    endif
+    end if
 !
 !CC  RECUPERER LE MATERIAU
 !
@@ -315,13 +315,13 @@ subroutine pofape()
     call getvid(' ', 'MATER', scal=nommat, nbret=n1)
 !
     if (crepse) then
-        if ((nbeps + nbepsp) .eq. 0) then
+        if ((nbeps+nbepsp) .eq. 0) then
             call utmess('F', 'FATIGUE1_95')
-        endif
-        if ((nbeps + nbepsp) .gt. 0) then
+        end if
+        if ((nbeps+nbepsp) .gt. 0) then
             call utmess('A', 'FATIGUE1_96')
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --- CREATION DE LA TABLE ---
@@ -333,9 +333,9 @@ subroutine pofape()
 !
 !CCCCCCCCCCCCCCCCCC
 !
-    call tbajli(result, 1, nomppf(1), [ibid], [rbid],&
+    call tbajli(result, 1, nomppf(1), [ibid], [rbid], &
                 [cbid], criter, 0)
-    call tbnuli(result, 1, nomppf(1), [ibid], [rbid],&
+    call tbnuli(result, 1, nomppf(1), [ibid], [rbid], &
                 [cbid], criter, [rbid], k8b, ilign)
     if (ilign .le. 0) ilign = 0
 !
@@ -345,9 +345,9 @@ subroutine pofape()
         resu(j) = 0.0d0
     end do
 !
-    if (( criter .eq. 'FORMULE_CRITERE' ) .or. ( criter .eq. 'MATAKE_MODI_AV' ) .or.&
-        ( criter .eq. 'DANG_VAN_MODI_AV' ) .or. ( criter .eq. 'FATESOCI_MODI_AV' ) .or.&
-        ( criter .eq. 'MATAKE_MODI_AC' ) .or. ( criter .eq. 'DANG_VAN_MODI_AC' )) then
+    if ((criter .eq. 'FORMULE_CRITERE') .or. (criter .eq. 'MATAKE_MODI_AV') .or. &
+        (criter .eq. 'DANG_VAN_MODI_AV') .or. (criter .eq. 'FATESOCI_MODI_AV') .or. &
+        (criter .eq. 'MATAKE_MODI_AC') .or. (criter .eq. 'DANG_VAN_MODI_AC')) then
 !
 ! ! ANALYSER LE CRITERE
 !         call anacri(criter, nomfor, typcha, 'OUI', paract,&
@@ -360,9 +360,9 @@ subroutine pofape()
 !
         do j = 1, nbptot
             do k = 1, 6
-                zr(jrwork+(j-1)*nbcmp*3+k-1) = zr(iordo+(j-1)*nbcmp+k- 1)
-                zr(jrwork+(j-1)*nbcmp*3 + nbcmp + k-1) = zr( iordoe+(j- 1 )*nbcmp+k-1 )
-                zr(jrwork+(j-1)*nbcmp*3 + nbcmp*2 + k-1) = zr( iordop+(j-1 )*nbcmp+k-1 )
+                zr(jrwork+(j-1)*nbcmp*3+k-1) = zr(iordo+(j-1)*nbcmp+k-1)
+                zr(jrwork+(j-1)*nbcmp*3+nbcmp+k-1) = zr(iordoe+(j-1)*nbcmp+k-1)
+                zr(jrwork+(j-1)*nbcmp*3+nbcmp*2+k-1) = zr(iordop+(j-1)*nbcmp+k-1)
             end do
         end do
 !
@@ -380,35 +380,35 @@ subroutine pofape()
 ! POUR CHARGEMENT PERIODIQUE
         if (typcha .eq. 'PERIODIQUE') then
 !
-            call dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
-                        nnoini, nbnop, tspaq, nommet, criter,&
-                        nomfor, kdomm, forvie, forcri, k8b,&
+            call dtauno(jrwork, lisnoe, nbnot, nbordr, ordini, &
+                        nnoini, nbnop, tspaq, nommet, criter, &
+                        nomfor, kdomm, forvie, forcri, k8b, &
                         k19b, nommat, post, valpar, vresu)
 !
-            if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or.&
+            if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or. &
                 (paract(5) .eq. 1) .or. (paract(6) .eq. 1)) then
 !
                 plcicr = .true.
-            endif
+            end if
 !
 ! PLAN CRITIQUE DE TYPE CISSAILLEMENT DE DANG VAN-MATAKE
             if (plcicr) then
 !
-                call tbajli(result, 1, nomppf(10), [ibid], vresu(1),&
+                call tbajli(result, 1, nomppf(10), [ibid], vresu(1), &
                             [cbid], k8b, ilign)
 !
                 do i = 1, 3
-                    call tbajli(result, 1, nomppf(i+44), [ibid], vresu(i+1),&
+                    call tbajli(result, 1, nomppf(i+44), [ibid], vresu(i+1), &
                                 [cbid], k8b, ilign)
 !
                 end do
 !
                 do i = 1, 4
-                    call tbajli(result, 1, nomppf(i+11), [ibid], vresu(i+4),&
+                    call tbajli(result, 1, nomppf(i+11), [ibid], vresu(i+4), &
                                 [cbid], k8b, ilign)
 !
                 end do
-            endif
+            end if
 !
 !POUR LES NOUVEUAX CRITERS DE PLAN CRITIQUE
 !
@@ -418,104 +418,104 @@ subroutine pofape()
 !
             if (plcr2) then
                 do i = 1, 3
-                    call tbajli(result, 1, nomppf(i+44), [ibid], vresu(i+1),&
+                    call tbajli(result, 1, nomppf(i+44), [ibid], vresu(i+1), &
                                 [cbid], k8b, ilign)
 !
                 end do
 !
                 do i = 24, 35
                     if (paract(i) .eq. 1) then
-                        call tbajli(result, 1, nomppf(i+9), [ibid], valpar(i),&
+                        call tbajli(result, 1, nomppf(i+9), [ibid], valpar(i), &
                                     [cbid], k8b, ilign)
-                    endif
+                    end if
                 end do
 !
-            endif
+            end if
 !
 !
 ! POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
             if (paract(2) .eq. 1) then
-                call tbajli(result, 1, nomppf(11), [ibid], valpar(2),&
+                call tbajli(result, 1, nomppf(11), [ibid], valpar(2), &
                             [cbid], k8b, ilign)
-            endif
+            end if
             do i = 7, 23
                 if (paract(i) .eq. 1) then
-                    call tbajli(result, 1, nomppf(i+9), [ibid], valpar(i),&
+                    call tbajli(result, 1, nomppf(i+9), [ibid], valpar(i), &
                                 [cbid], k8b, ilign)
-                endif
+                end if
             end do
 !
 !
-            call tbajli(result, 1, nomppf(2), [ibid], vresu(9),&
+            call tbajli(result, 1, nomppf(2), [ibid], vresu(9), &
                         [cbid], k8b, ilign)
-            call tbajli(result, 1, nomppf(9), [ibid], vresu(10),&
+            call tbajli(result, 1, nomppf(9), [ibid], vresu(10), &
                         [cbid], k8b, ilign)
-            call tbajli(result, 1, nomppf(8), [ibid], vresu(11),&
+            call tbajli(result, 1, nomppf(8), [ibid], vresu(11), &
                         [cbid], k8b, ilign)
 !
 !
 ! POUR CHARGEMENT NON-PERIODIQUE
         else if (typcha .eq. 'NON_PERIODIQUE') then
 !
-            call avgrno(zr(jrwork), tdisp, lisnoe, nbnot, nbordr,&
-                        nnoini, nbnop, tspaq, criter, nomfor,&
-                        kdomm, forvie, fordef, k8b, proaxe,&
+            call avgrno(zr(jrwork), tdisp, lisnoe, nbnot, nbordr, &
+                        nnoini, nbnop, tspaq, criter, nomfor, &
+                        kdomm, forvie, fordef, k8b, proaxe, &
                         nommat, k19b, post, resu)
 !
-            call tbajli(result, 1, nomppf(45), [ibid], resu(1),&
+            call tbajli(result, 1, nomppf(45), [ibid], resu(1), &
                         [cbid], k8b, ilign)
-            call tbajli(result, 1, nomppf(46), [ibid], resu(2),&
+            call tbajli(result, 1, nomppf(46), [ibid], resu(2), &
                         [cbid], k8b, ilign)
-            call tbajli(result, 1, nomppf(47), [ibid], resu(3),&
+            call tbajli(result, 1, nomppf(47), [ibid], resu(3), &
                         [cbid], k8b, ilign)
-            call tbajli(result, 1, nomppf(8), [ibid], resu(4),&
-                        [cbid], k8b, ilign)
-!
-            call tbajli(result, 1, nomppf(48), [ibid], resu(5),&
-                        [cbid], k8b, ilign)
-            call tbajli(result, 1, nomppf(49), [ibid], resu(6),&
-                        [cbid], k8b, ilign)
-            call tbajli(result, 1, nomppf(50), [ibid], resu(7),&
+            call tbajli(result, 1, nomppf(8), [ibid], resu(4), &
                         [cbid], k8b, ilign)
 !
-        endif
+            call tbajli(result, 1, nomppf(48), [ibid], resu(5), &
+                        [cbid], k8b, ilign)
+            call tbajli(result, 1, nomppf(49), [ibid], resu(6), &
+                        [cbid], k8b, ilign)
+            call tbajli(result, 1, nomppf(50), [ibid], resu(7), &
+                        [cbid], k8b, ilign)
+!
+        end if
 !
         goto 50
-    endif
+    end if
 !
 !
     nomres(1) = 'D0'
     nomres(2) = 'TAU0'
     nbpar = 0
     nompar = ' '
-    call rcvale(nommat, 'FATIGUE ', nbpar, nompar, [rbid],&
+    call rcvale(nommat, 'FATIGUE ', nbpar, nompar, [rbid], &
                 2, nomres, val, icodre, 2)
 !
     if (criter .eq. 'CROSSLAND') then
 !          -----------------------
-        call fmcros(nbf, nbptot, zr(iordo), val(1), val(2),&
+        call fmcros(nbf, nbptot, zr(iordo), val(1), val(2), &
                     rcrit, phmax, cissio)
 !
-        call tbajli(result, 1, nomppf(2), [ibid], [rcrit],&
+        call tbajli(result, 1, nomppf(2), [ibid], [rcrit], &
                     [cbid], k8b, ilign)
-        call tbajli(result, 1, nomppf(3), [ibid], [phmax],&
+        call tbajli(result, 1, nomppf(3), [ibid], [phmax], &
                     [cbid], k8b, ilign)
-        call tbajli(result, 1, nomppf(4), [ibid], [cissio],&
+        call tbajli(result, 1, nomppf(4), [ibid], [cissio], &
                     [cbid], k8b, ilign)
 !
     else if (criter .eq. 'PAPADOPOULOS') then
 !              --------------------------
-        call fmpapa(nbf, nbptot, zr(iordo), val(1), val(2),&
+        call fmpapa(nbf, nbptot, zr(iordo), val(1), val(2), &
                     rcrit, phmax, sphere)
 !
-        call tbajli(result, 1, nomppf(2), [ibid], [rcrit],&
+        call tbajli(result, 1, nomppf(2), [ibid], [rcrit], &
                     [cbid], k8b, ilign)
-        call tbajli(result, 1, nomppf(3), [ibid], [phmax],&
+        call tbajli(result, 1, nomppf(3), [ibid], [phmax], &
                     [cbid], k8b, ilign)
-        call tbajli(result, 1, nomppf(5), [ibid], [sphere],&
+        call tbajli(result, 1, nomppf(5), [ibid], [sphere], &
                     [cbid], k8b, ilign)
 !
-    endif
+    end if
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !
@@ -529,10 +529,10 @@ subroutine pofape()
         else
             vmax = 2.d0*(rcrit+val(2))*(val(1)/val(2))
             vmin = 0.d0
-        endif
-        call tbajli(result, 1, nomppf(6), [ibid], [vmin],&
+        end if
+        call tbajli(result, 1, nomppf(6), [ibid], [vmin], &
                     [cbid], k8b, ilign)
-        call tbajli(result, 1, nomppf(7), [ibid], [vmax],&
+        call tbajli(result, 1, nomppf(7), [ibid], [vmax], &
                     [cbid], k8b, ilign)
 !
 !         --- CALCUL DU DOMMAGE ELEMENTAIRE ---
@@ -545,7 +545,7 @@ subroutine pofape()
             call rccome(nommat, pheno, icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
-            endif
+            end if
             cara = 'WOHLER'
             call rcpare(nommat, pheno, cara, icodwo)
             cara = 'A_BASQUIN'
@@ -553,27 +553,27 @@ subroutine pofape()
             cara = 'A0'
             call rcpare(nommat, pheno, cara, icodhs)
             if (icodwo .eq. 0) then
-                call fgdowh(nommat, nbc, [vmin], [vmax], lke,&
+                call fgdowh(nommat, nbc, [vmin], [vmax], lke, &
                             [0.d0], lhaigh, [0.d0], domage)
             else if (icodba .eq. 0) then
-                call fgdoba(nommat, nbc, [vmin], [vmax], lke,&
+                call fgdoba(nommat, nbc, [vmin], [vmax], lke, &
                             [0.d0], lhaigh, [0.d0], domage)
             else if (icodhs .eq. 0) then
-                call fgdohs(nommat, nbc, [vmin], [vmax], lke,&
+                call fgdohs(nommat, nbc, [vmin], [vmax], lke, &
                             [0.d0], lhaigh, [0.d0], domage)
-            endif
+            end if
 !
-            call tbajli(result, 1, nomppf(8), [ibid], [domage],&
+            call tbajli(result, 1, nomppf(8), [ibid], [domage], &
                         [cbid], k8b, ilign)
 !
         else if (kdomm .eq. ' ') then
         else
             call utmess('F', 'FATIGUE1_20')
-        endif
+        end if
 !
-    endif
+    end if
 !
- 50 continue
+50  continue
 !
     call jedetr('&&POFAPE.ORDO')
     call jedema()

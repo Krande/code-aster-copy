@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,22 +41,22 @@ function nmcri6(dp)
 !----- COMMONS NECESSAIRES A VON_MISES ISOTROPE PUISSANCE :
 !      COMMONS COMMUNS A NMCRI2 ET NMISOT
 !
-    common /rconm6/mutrbe,tauteq
+    common/rconm6/mutrbe, tauteq
     real(kind=8) :: mutrbe, tauteq
 !
     integer :: jprol, jvale, nbval
     real(kind=8) :: pm, young, nu, mu, unk, troisk, cother, sigy
     real(kind=8) :: sigm0, epsi0, dt, coefm, rpm, pente, apui, npui
-    common /lcpim/&
-     &          pm,young,nu,mu,unk,troisk,cother,&
-     &          sigm0,epsi0,dt,coefm,rpm,pente,&
-     &          apui,npui,sigy,jprol,jvale,nbval
+    common/lcpim/&
+     &          pm, young, nu, mu, unk, troisk, cother,&
+     &          sigm0, epsi0, dt, coefm, rpm, pente,&
+     &          apui, npui, sigy, jprol, jvale, nbval
 !
 ! DEB-------------------------------------------------------------------
 !
-    unsurn=1.d0/npui
-    call ecpuis(young, sigy, apui, unsurn, pm,&
+    unsurn = 1.d0/npui
+    call ecpuis(young, sigy, apui, unsurn, pm, &
                 dp, rpp, rprim)
-    nmcri6= rpp + mutrbe*dp - tauteq
+    nmcri6 = rpp+mutrbe*dp-tauteq
 !
 end function

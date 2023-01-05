@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmforn(ndim, nno1, nno2, npg, iw,&
+subroutine nmforn(ndim, nno1, nno2, npg, iw, &
                   vff1, vff2, idfde1, geom, vect)
 !
 !
@@ -61,7 +61,7 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
 !
     grand = .false.
     axi = .false.
-    nddl = nno1*ndim + nno2
+    nddl = nno1*ndim+nno2
     ndimsi = 2*ndim
 !
 !
@@ -78,25 +78,25 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 !
-        call dfdmip(ndim, nno1, axi, geom, g,&
-                    iw, vff1(1, g), idfde1, r, wg,&
+        call dfdmip(ndim, nno1, axi, geom, g, &
+                    iw, vff1(1, g), idfde1, r, wg, &
                     dfdi1)
-        call nmmabu(ndim, nno1, axi, grand, dfdi1,&
+        call nmmabu(ndim, nno1, axi, grand, dfdi1, &
                     b)
         do n = 1, nno1
             do i = 1, ndim
                 kk = iu(nno1*(i-1)+n)
                 t1 = 0
                 do kl = 1, ndimsi
-                    t1 = t1 + abs(b(kl,i,n))
+                    t1 = t1+abs(b(kl, i, n))
                 end do
-                vect(kk) = vect(kk) + wg*t1*sigref
+                vect(kk) = vect(kk)+wg*t1*sigref
             end do
         end do
 !
         do n = 1, nno2
             kk = ia(n)
-            vect(kk) = vect(kk) + wg*vff2(n,g)*varref
+            vect(kk) = vect(kk)+wg*vff2(n, g)*varref
         end do
 !
 !

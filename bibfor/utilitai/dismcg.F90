@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,38 +63,38 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
 !
     if (questi .eq. 'NB_EQUA') then
         call jelira(nomob//'.VALE', 'LONMAX', repi)
-    else if (questi.eq.'NOM_MAILLA') then
+    else if (questi .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe-1+1) (1:8)
-    else if (questi.eq.'NB_DDLACT') then
+    else if (questi .eq. 'NB_DDLACT') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
-        call dismpn(questi, zk24(iarefe-1+2)(1:8)//'.NUME      ', repi, repk, ierd)
-    else if (questi.eq.'TYPE_CHAMP') then
+        call dismpn(questi, zk24(iarefe-1+2) (1:8)//'.NUME      ', repi, repk, ierd)
+    else if (questi .eq. 'TYPE_CHAMP') then
         repk = 'VGEN'
-    else if (questl(1:7).eq.'NOM_GD ') then
+    else if (questl(1:7) .eq. 'NOM_GD ') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), repk)
-    else if (questi.eq.'TYPE_SUPERVIS') then
+    else if (questi .eq. 'TYPE_SUPERVIS') then
         call jeveuo(nomob//'.DESC', 'L', iadesc)
         call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
-        repk='CHAM_NO_'//nogd
-    else if (questi.eq.'PROF_CHNO') then
+        repk = 'CHAM_NO_'//nogd
+    else if (questi .eq. 'PROF_CHNO') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
-    else if (questi.eq.'NOM_NUME_DDL') then
+    else if (questi .eq. 'NOM_NUME_DDL') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
         call jeexin(repk(1:19)//'.NEQU', iret)
         if (iret .eq. 0) then
             call utmess('F', 'UTILITAI_51')
-            ierd=1
+            ierd = 1
             goto 9999
-        endif
+        end if
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
-9999  continue
+9999 continue
     repkz = repk
     call jedema()
 end subroutine

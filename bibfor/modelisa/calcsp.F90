@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcsp(casint, nomu, table, freq, masg,&
+subroutine calcsp(casint, nomu, table, freq, masg, &
                   nbm, nbmr, imod1, nuor, ivite)
     implicit none
 !     CALCUL POUR CHAQUE VITESSES DES INTERSPECTRES DE REPONSES
@@ -77,7 +77,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     call jemarq()
 !
     pi = r8pi()
-    imodf = imod1 + nbmr - 1
+    imodf = imod1+nbmr-1
     if (imodf .gt. nbm) then
         call utmess('F', 'MODELISA2_76', ni=2, vali=[nbm, nbmr])
     end if
@@ -114,7 +114,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     call wkvect(crnumi, 'G V I', mrxval, lrnumi)
     call wkvect(crnumj, 'G V I', mrxval, lrnumj)
 !
-    call jecrec(crvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(crvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 mrxval)
 !
 ! --- CREATION DE VECTEURS DE TRAVAIL ---
@@ -130,7 +130,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
             vali(2) = iv
             call utmess('F', 'MODELISA2_90', ni=2, vali=vali)
             goto 20
-        endif
+        end if
     end do
 !
     do im = imod1, imodf
@@ -140,13 +140,13 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
         ksi = freq(2*nbm*(iv-1)+2*(im-1)+2)
         if (ksi .le. 0.d0) ksi = 1.d-06
 !
-        imb = im - imod1 + 1
+        imb = im-imod1+1
 !
         do ip = 1, nbpf
             fr = zr(lfreq+ip-1)
             ihr1 = ihr+nbpf*(imb-1)+ip-1
             ihi1 = ihi+nbpf*(imb-1)+ip-1
-            zr(ihr1) = (mgi*(fri*fri - fr*fr))
+            zr(ihr1) = (mgi*(fri*fri-fr*fr))
             zr(ihi1) = (mgi*ksi*fr*fri*2.d0)
 !
         end do
@@ -165,9 +165,9 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
             ival(3) = nuor(im1)
 !
             do i1 = 1, mxval
-                if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+ i1) .eq. ival(3))) then
+                if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+i1) .eq. ival(3))) then
                     call jeveuo(jexnum(chvale, i1), 'L', ifonc)
-                endif
+                end if
             end do
 !
             call jecroc(jexnum(crvale, ipf))
@@ -177,11 +177,11 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
                 nbabs = nbpf
             else
                 nbabs = 2*nbpf
-            endif
+            end if
             call jeecra(jexnum(crvale, ipf), 'LONMAX', nbabs)
             call jeecra(jexnum(crvale, ipf), 'LONUTI', nbabs)
             call jeveuo(jexnum(crvale, ipf), 'E', lvale)
-            ipf = ipf + 1
+            ipf = ipf+1
 !
             do il = 1, nbpf
                 hir1 = zr(ihr+nbpf*(im1-1)+il-1)
@@ -189,21 +189,21 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
                 hir2 = zr(ihr+nbpf*(im2-1)+il-1)
                 hii2 = zr(ihi+nbpf*(im2-1)+il-1)
                 hdenom = (hir1*hir1+hii1*hii1)*(hir2*hir2+hii2*hii2)
-                hhr = (hir1*hir2 + hii1*hii2)/hdenom
-                hhi = (hir2*hii1 - hir1*hii2)/hdenom
+                hhr = (hir1*hir2+hii1*hii2)/hdenom
+                hhi = (hir2*hii1-hir1*hii2)/hdenom
 !
                 if (ival(2) .eq. ival(3)) then
                     zr(lvale+il-1) = hhr*zr(ifonc+il-1)
                 else
-                    zr(lvale+2*(il-1)) = hhr*zr( ifonc+2*(il-1))- hhi*zr(ifonc+2*(il-1)+1 )
-                    zr(lvale+2*(il-1)+1)= hhr*zr(ifonc+2*(il-1)+1)+&
-                    hhi*zr(ifonc+2*(il-1))
-                endif
+                    zr(lvale+2*(il-1)) = hhr*zr(ifonc+2*(il-1))-hhi*zr(ifonc+2*(il-1)+1)
+                    zr(lvale+2*(il-1)+1) = hhr*zr(ifonc+2*(il-1)+1)+ &
+                                           hhi*zr(ifonc+2*(il-1))
+                end if
             end do
 !
         end do
     end do
- 20 continue
+20  continue
 !
 !
 ! --- MENAGE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmsuiy(ds_print, vale_r, i_dof_monitor)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmimcr.h"
 !
-type(NL_DS_Print), intent(inout) :: ds_print
-real(kind=8), intent(in) :: vale_r
-integer, intent(inout) :: i_dof_monitor
+    type(NL_DS_Print), intent(inout) :: ds_print
+    real(kind=8), intent(in) :: vale_r
+    integer, intent(inout) :: i_dof_monitor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,9 +48,9 @@ integer, intent(inout) :: i_dof_monitor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    write(indsui,'(I1)') i_dof_monitor
+    write (indsui, '(I1)') i_dof_monitor
     typcol = 'SUIVDDL'//indsui
     call nmimcr(ds_print, typcol, vale_r, .true._1)
-    i_dof_monitor = i_dof_monitor + 1
+    i_dof_monitor = i_dof_monitor+1
 !
 end subroutine

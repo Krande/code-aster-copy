@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,50 +58,50 @@ function compr8(a, comp, b, eps, crit)
 !
     real(kind=8) :: minab, min, tole
 !
-    compr8=.false.
-    minab = min(abs(a),abs(b))
+    compr8 = .false.
+    minab = min(abs(a), abs(b))
 !
 !     --------------------
 !     TESTS PRELIMINAIRES
 !     --------------------
 !
 !     TEST DE LA PRECISION (POSITIVE OU NULLE)
-    ASSERT(eps.ge.0.d0)
+    ASSERT(eps .ge. 0.d0)
 !
-    ASSERT(crit.eq.0.or.crit.eq.1)
+    ASSERT(crit .eq. 0 .or. crit .eq. 1)
 !
 !     --------------------
 !     COMPARAISONS
 !     --------------------
 !
-    if (crit .eq. 0) tole=eps
-    if (crit .eq. 1) tole=eps*minab
+    if (crit .eq. 0) tole = eps
+    if (crit .eq. 1) tole = eps*minab
 !
     if (comp .eq. 'EQ') then
 !
-        if (abs(a-b) .le. tole) compr8=.true.
+        if (abs(a-b) .le. tole) compr8 = .true.
 !
-    else if (comp.eq.'LE') then
+    else if (comp .eq. 'LE') then
 !
-        if (a .le. b+tole) compr8=.true.
+        if (a .le. b+tole) compr8 = .true.
 !
-    else if (comp.eq.'LT') then
+    else if (comp .eq. 'LT') then
 !
-        if (a .lt. b-tole) compr8=.true.
+        if (a .lt. b-tole) compr8 = .true.
 !
-    else if (comp.eq.'GE') then
+    else if (comp .eq. 'GE') then
 !
-        if (a .ge. b-tole) compr8=.true.
+        if (a .ge. b-tole) compr8 = .true.
 !
-    else if (comp.eq.'GT') then
+    else if (comp .eq. 'GT') then
 !
-        if (a .gt. b+tole) compr8=.true.
+        if (a .gt. b+tole) compr8 = .true.
 !
     else
 !
         ASSERT(.false.)
 !
-    endif
+    end if
 !
 !
 end function

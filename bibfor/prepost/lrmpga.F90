@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
-                  pgmmil, spmmil, ntypel, npgmax, indpg,&
+subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
+                  pgmmil, spmmil, ntypel, npgmax, indpg, &
                   numpt, numord, option, param)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -89,7 +89,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
     character(len=*) :: MEDFieldName
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'LRMPGA' )
+    parameter(nompro='LRMPGA')
 !
     integer, parameter :: nbCellType = 19
     integer, parameter :: MED_ACC_RDONLY = 0
@@ -110,7 +110,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
     integer :: npr, nbValues, l_iprof, l_fapg
     integer :: iopt, imod, jvModeLoc, igrd, jvDescrigd, nec, nbsp
     integer :: typeCellNume
-    integer, parameter :: MEDIterMesh=1
+    integer, parameter :: MEDIterMesh = 1
 !
     character(len=1) :: fileState
     character(len=8) :: cellTypeIden, fapg, elref, typeCellName
@@ -129,17 +129,17 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
     integer, pointer :: tmfpg(:) => null()
 !
     integer, parameter :: MED_GEOMETRY_TYPE(nbCellType) = &
-        (/  1, 102, 103, 104,&
-          203, 204, 206, 207,&
-          208, 209, 304, 305,&
-          306, 308, 310, 313,&
-          315, 320, 327/)
-    character(len=8), parameter :: AsterAllCellType(nbCellType)  = &
-        (/  'POI1    ', 'SEG2    ', 'SEG3    ', 'SEG4    ',&
-            'TRIA3   ', 'QUAD4   ', 'TRIA6   ', 'TRIA7   ',&
-            'QUAD8   ', 'QUAD9   ', 'TETRA4  ', 'PYRAM5  ',&
-            'PENTA6  ', 'HEXA8   ', 'TETRA10 ', 'PYRAM13 ',&
-            'PENTA15 ', 'HEXA20  ', 'HEXA27  '/)
+                          (/1, 102, 103, 104, &
+                            203, 204, 206, 207, &
+                            208, 209, 304, 305, &
+                            306, 308, 310, 313, &
+                            315, 320, 327/)
+    character(len=8), parameter :: AsterAllCellType(nbCellType) = &
+                                   (/'POI1    ', 'SEG2    ', 'SEG3    ', 'SEG4    ', &
+                                     'TRIA3   ', 'QUAD4   ', 'TRIA6   ', 'TRIA7   ', &
+                                     'QUAD8   ', 'QUAD9   ', 'TETRA4  ', 'PYRAM5  ', &
+                                     'PENTA6  ', 'HEXA8   ', 'TETRA10 ', 'PYRAM13 ', &
+                                     'PENTA15 ', 'HEXA20  ', 'HEXA27  '/)
 !
 !-----------------------------------------------------------------------
 !
@@ -148,21 +148,21 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
-        write (ifm,101) 'DEBUT DE '//nompro
-    endif
+        write (ifm, 101) 'DEBUT DE '//nompro
+    end if
 
     call dismoi('DIM_GEOM', ligrel(1:8), 'MODELE', repi=modelDime)
-    if (.not.(modelDime.eq.2.or.modelDime.eq.3)) then
+    if (.not. (modelDime .eq. 2 .or. modelDime .eq. 3)) then
         call utmess('F', 'MODELISA2_6')
-    endif
+    end if
 !
 !  ======================================
 !  == 1 : EXPLOITATION DU FICHIER MED  ==
 !  ======================================
 !
 !  == 1.1. INITIALISATIONS
-    do i=1,nbCell
-        pgmail(i)=0
+    do i = 1, nbCell
+        pgmail(i) = 0
     end do
 
 ! - Get name of file from logical unit
@@ -174,13 +174,13 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
         MEDFileName = 'fort.'//cellTypeIden
     else
         MEDFileName = fileName(1:200)
-    endif
+    end if
 
 ! - Open MED file
     call as_med_open(MEDFileIden, MEDFileName, MED_ACC_RDONLY, codret)
 
 ! - Nombre de localisations dans le fichier MED
-    nbLocalizations=0
+    nbLocalizations = 0
     call as_mlcnlc(MEDFileIden, nbLocalizations, iret)
 !
 !  == 1.3. A PARTIR DU NOM DU CHAMP MED ET DE L'INDICE DU PAS DE TEMPS,
@@ -189,14 +189,14 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
 !      - UN MARQUEUR DE CORRESPONDANCE : ZI(JNGAOK)
 !      REMARQUE: L'INDICE DU PAS DE TEMPS EST OBTENU EN PARCOURANT
 !      LA LISTE DES PAS DE TEMPS (BOUCLE 39)
-    AS_ALLOCATE(vk8 = asterCellType, size = nbCellType)
-    AS_ALLOCATE(vi = MEDCellType, size = nbCellType)
+    AS_ALLOCATE(vk8=asterCellType, size=nbCellType)
+    AS_ALLOCATE(vi=MEDCellType, size=nbCellType)
     call wkvect('&&LRMPGA_TYPGEO_OKPG_MED', 'V V I', nbCellType, jngaok)
     call wkvect('&&LRMPGA_TYPGEO_NOMLOC', 'V V K80', 2*nbCellType, jnoloc)
     nbTypeCellInField = 0
     if (nivinf .gt. 1) then
-        write(ifm, 201) MEDFieldName
-    endif
+        write (ifm, 201) MEDFieldName
+    end if
 
 ! - Get number of components in field
     call as_mfdncn(MEDFileIden, MEDFieldName, nbCmp, iret)
@@ -204,7 +204,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
 ! - Get parameters about field
     AS_ALLOCATE(vk16=cname, size=nbCmp)
     AS_ALLOCATE(vk16=cunit, size=nbCmp)
-    call as_mfdfin(MEDFileIden, MEDFieldName, MEDMeshName, nbStep, cname(1),&
+    call as_mfdfin(MEDFileIden, MEDFieldName, MEDMeshName, nbStep, cname(1), &
                    cunit(1), iret)
     AS_DEALLOCATE(vk16=cname)
     AS_DEALLOCATE(vk16=cunit)
@@ -219,32 +219,32 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
 ! --------- Get number of profiles
             call as_mfdonp(MEDFileIden, &
                            MEDFieldName, numpt, numord, &
-                           MED_CELL, MED_GEOMETRY_TYPE(iCellType),&
-                           MEDIterMesh, MEDMeshName,&
-                           k24Dummy1, k24Dummy2,&
+                           MED_CELL, MED_GEOMETRY_TYPE(iCellType), &
+                           MEDIterMesh, MEDMeshName, &
+                           k24Dummy1, k24Dummy2, &
                            nbProfile, codret)
 
 ! --------- Get profiles
-            if ( nbProfile .ne. 0 ) then
+            if (nbProfile .ne. 0) then
                 nolipr = '&&LRMPGA'//cellTypeIden//'PR'
                 nlnbpg = '&&LRMPGA'//cellTypeIden//'PG'
                 call wkvect(nolipr, 'V V K80', 2*nbProfile, jnopro)
                 call wkvect(nlnbpg, 'V V I', nbProfile, jnonpg)
 
                 do iProfile = 1, nbProfile
-                    call as_mfdonv(MEDFileIden, MEDFieldName,&
-                                   MED_CELL, MED_GEOMETRY_TYPE(iCellType), MEDMeshName,&
-                                   numpt, numord, iProfile, profileName, MED_COMPACT_STMODE,&
+                    call as_mfdonv(MEDFileIden, MEDFieldName, &
+                                   MED_CELL, MED_GEOMETRY_TYPE(iCellType), MEDMeshName, &
+                                   numpt, numord, iProfile, profileName, MED_COMPACT_STMODE, &
                                    npr, localizationName, MEDNbPg, nbValues, iret)
                     ASSERT(iret .eq. 0)
                     zk80(jnopro+2*iProfile-2) = profileName
                     zk80(jnopro+2*iProfile-1) = localizationName
                     zi(jnonpg+iProfile-1) = MEDNbPg
-                enddo
+                end do
             else
-                call as_mfdonv(MEDFileIden, MEDFieldName,&
-                               MED_CELL, MED_GEOMETRY_TYPE(iCellType), MEDMeshName,&
-                               numpt, numord, 1, profileName, MED_COMPACT_STMODE,&
+                call as_mfdonv(MEDFileIden, MEDFieldName, &
+                               MED_CELL, MED_GEOMETRY_TYPE(iCellType), MEDMeshName, &
+                               numpt, numord, 1, profileName, MED_COMPACT_STMODE, &
                                npr, localizationName, MEDNbPg, nbValues, iret)
                 ASSERT(iret .eq. 0)
                 nolipr = '&&LRMPGA'//cellTypeIden//'PR'
@@ -254,10 +254,10 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                 zk80(jnopro) = ' '
                 zk80(jnopro+1) = localizationName
                 zi(jnonpg) = -1
-            endif
+            end if
 
             if (nbValues .gt. 0) then
-                nbTypeCellInField = nbTypeCellInField + 1
+                nbTypeCellInField = nbTypeCellInField+1
                 asterCellType(nbTypeCellInField) = AsterAllCellType(iCellType)
                 !asterElemType(nbTypeCellInField) = AsterAllElemType(iCellType)
                 zk80(jnoloc+2*nbTypeCellInField-2) = nolipr
@@ -268,20 +268,20 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                 call jedetr(nolipr)
                 call jedetr(nlnbpg)
                 MEDNbPg = 0
-            endif
+            end if
 !
         end do
-    endif
+    end if
     if (nivinf .gt. 1) then
-        write(ifm,*) ' '
-    endif
+        write (ifm, *) ' '
+    end if
 !
     if (nbTypeCellInField .eq. 0) then
         call utmess('F', 'MED_77', sk=MEDFieldName, si=fileUnit)
-    endif
+    end if
 !
 
-    liel=ligrel//'.LIEL'
+    liel = ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', nbgrel)
 !
 !  =========================================
@@ -292,7 +292,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
 
 !   ON PARCOURT LES GROUPES D'ELEMENTS PRESENTS DANS LE MODELE
-    do igrel = 1,nbgrel
+    do igrel = 1, nbgrel
 
 ! ----- Type of finite element on current GREL
         typeElemNume = typele(ligrel, igrel)
@@ -304,7 +304,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
 ! ----- Access to GREL
         call jeveuo(jexnum(liel, igrel), 'L', jvGrel)
         call jelira(jexnum(liel, igrel), 'LONMAX', lonmax)
-        nbElem = lonmax - 1
+        nbElem = lonmax-1
 !
 !       MODE LOCAL ASSOCIE AU PARAMETRE PARAM DE L'OPTION OPTION
         imod = modat2(iopt, typeElemNume, param)
@@ -314,7 +314,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
         else
             call jeveuo(jexnum('&CATA.TE.MODELOC', imod), 'L', jvModeLoc)
 !           CHAMP ELGA
-            ASSERT(zi(jvModeLoc-1+1).eq.3)
+            ASSERT(zi(jvModeLoc-1+1) .eq. 3)
 !
             igrd = zi(jvModeLoc-1+2)
             call jeveuo(jexnum('&CATA.GD.DESCRIGD', igrd), 'L', jvDescrigd)
@@ -323,7 +323,7 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
 !           NUMERO ET NOM DE LA FAMILLE GLOBALE DE PTS GAUSS
             nufgpg = zi(jvModeLoc-1+4+nec+1)
             call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofgpg)
-            elref= nofgpg(1:8)
+            elref = nofgpg(1:8)
             fapg = nofgpg(9:16)
 
 !           NOMBRE DE PG : NBPG
@@ -341,13 +341,13 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                     call wkvect('&&LRMPGA_PERMUT', 'V V I', AsterNbPg, jperm)
 
 ! ----------------- Get number of profiles on this MED cell
-                    nolipr = zk80(jnoloc+2*iTypeCellInField-2)(1:24)
+                    nolipr = zk80(jnoloc+2*iTypeCellInField-2) (1:24)
                     call jeveuo(nolipr, 'L', jnopro)
                     call jelira(nolipr, 'LONMAX', lonmax)
                     nbProfile = lonmax/2
 
 ! ----------------- Acces to number of integration points for these profiles
-                    nlnbpg = zk80(jnoloc+2*iTypeCellInField-1)(1:24)
+                    nlnbpg = zk80(jnoloc+2*iTypeCellInField-1) (1:24)
                     call jeveuo(nlnbpg, 'L', jnonpg)
 
                     ! initialiser le cumul des mailles du meme type d'element
@@ -355,33 +355,33 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
 
                     do iProfile = 1, nbProfile
 ! --------------------- Acces to number of integration points for these profiles
-                        profileName = zk80(jnopro + 2*iProfile - 2)(1:64)
-                        localizationName = zk80(jnopro + 2*iProfile - 1)(1:64)
-                        MEDNbPg = zi(jnonpg + iProfile - 1)
+                        profileName = zk80(jnopro+2*iProfile-2) (1:64)
+                        localizationName = zk80(jnopro+2*iProfile-1) (1:64)
+                        MEDNbPg = zi(jnonpg+iProfile-1)
 
                         ! on ne compare que le meme profile du meme type element
-                        if ((fapg(1:l_fapg) .ne. localizationName(9:8+l_fapg) ) .and. &
-                           (localizationName .ne. ' ')) then
+                        if ((fapg(1:l_fapg) .ne. localizationName(9:8+l_fapg)) .and. &
+                            (localizationName .ne. ' ')) then
                             if (localizationName(1:17) .ne. "NOM_LOC_GAUSS_001") goto 999
-                        endif
+                        end if
 
 ! --------------------- Check consistency of integration points between Aster and MED
-                        call lrvcpg(MEDFileIden, MEDNbPg, AsterNbPg,&
-                                    typeCellName, MEDCellType(iTypeCellInField),&
-                                    elref, fapg, nbLocalizations, localizationName, zi(jperm),&
+                        call lrvcpg(MEDFileIden, MEDNbPg, AsterNbPg, &
+                                    typeCellName, MEDCellType(iTypeCellInField), &
+                                    elref, fapg, nbLocalizations, localizationName, zi(jperm), &
                                     typeCellNume, nbsp, codret)
 
-                        if ( codret .ne. 4 ) then
-                            if ( profileName .ne. ' ' ) then
-                                call lrcmpr(MEDFileIden, profileName,'&&LRMPGA.TMP', lgproa, codre2)
-                                do iElem = 1, min(lgproa,nbElem)
-                                    ASSERT(zi(jvGrel+iElem-1+l_iprof).le.nbCell)
+                        if (codret .ne. 4) then
+                            if (profileName .ne. ' ') then
+                               call lrcmpr(MEDFileIden, profileName, '&&LRMPGA.TMP', lgproa, codre2)
+                                do iElem = 1, min(lgproa, nbElem)
+                                    ASSERT(zi(jvGrel+iElem-1+l_iprof) .le. nbCell)
                                     pgmail(zi(jvGrel+iElem-1+l_iprof)) = AsterNbPg
                                     pgmmil(zi(jvGrel+iElem-1+l_iprof)) = MEDNbPg
                                     spmmil(zi(jvGrel+iElem-1+l_iprof)) = nbsp
                                 end do
                                 ! mettre à jour le cumul
-                                l_iprof = l_iprof + min(lgproa,nbElem)
+                                l_iprof = l_iprof+min(lgproa, nbElem)
                                 call jedetr('&&LRMPGA.TMP')
                             else
                                 do iElem = 1, nbElem
@@ -389,28 +389,28 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                                     pgmmil(zi(jvGrel+iElem-1+l_iprof)) = MEDNbPg
                                     spmmil(zi(jvGrel+iElem-1+l_iprof)) = nbsp
                                 end do
-                            endif
+                            end if
                         else
                             codret = 4
-                        endif
+                        end if
 !
 !                       SI LE NBRE PT GAUSS INCORRECT ET PAS DE <F>,
 !                       NBPG=0 : RIEN A ECRIRE DANS LRCMVE
                         if (codret .eq. 4) then
                             AsterNbPg = 0
 !                           SI PERMUTATIONS AU NIVEAU DES PG ASTER/MED :
-                        else if (codret.eq.1) then
+                        else if (codret .eq. 1) then
 !  ===>                     REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A
 !                           UNE PERMUTATION DANS LES PG MED/ASTER
                             if (zi(jngaok+iTypeCellInField-1) .eq. 0) then
                                 do ipgm = 1, AsterNbPg
-                                    indpg(typeCellNume,ipgm)=zi(jperm+ipgm-1)
+                                    indpg(typeCellNume, ipgm) = zi(jperm+ipgm-1)
                                 end do
                             else
                                 do ipgm = 1, AsterNbPg
-                                    ASSERT(indpg(typeCellNume,ipgm).eq.zi(jperm+ipgm-1))
+                                    ASSERT(indpg(typeCellNume, ipgm) .eq. zi(jperm+ipgm-1))
                                 end do
-                            endif
+                            end if
                             zi(jngaok+iTypeCellInField-1) = 1
                         else
 !  ===>                     SINON REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A :
@@ -419,33 +419,33 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
 !                            - LES PG ASTER/MED CORRESPONDENT
                             if (zi(jngaok+iTypeCellInField-1) .eq. 0) then
                                 do ipg = 1, AsterNbPg
-                                    indpg(typeCellNume,ipg)=ipg
+                                    indpg(typeCellNume, ipg) = ipg
                                 end do
                             else
                                 do ipg = 1, AsterNbPg
-                                    if (indpg(typeCellNume,ipg) .ne. 0 ) then
-                                        ASSERT(indpg(typeCellNume,ipg).eq.ipg)
+                                    if (indpg(typeCellNume, ipg) .ne. 0) then
+                                        ASSERT(indpg(typeCellNume, ipg) .eq. ipg)
                                     else
-                                        indpg(typeCellNume,ipg)=ipg
-                                    endif
+                                        indpg(typeCellNume, ipg) = ipg
+                                    end if
                                 end do
-                            endif
+                            end if
                             zi(jngaok+iTypeCellInField-1) = 1
-                        endif
-                        999 continue
-                    enddo
+                        end if
+999                     continue
+                    end do
                     call jedetr('&&LRMPGA_PERMUT')
-                endif
-            enddo
-        endif
-    enddo
+                end if
+            end do
+        end if
+    end do
 !
 !   DESTRUCTION DES TABLEAUX TEMPORAIRES
     do iCellType = 1, 2*nbTypeCellInField
         call jedetr(zk80(jnoloc+iCellType-1))
-    enddo
-    AS_DEALLOCATE(vk8 = asterCellType)
-    AS_DEALLOCATE(vi = MEDCellType)
+    end do
+    AS_DEALLOCATE(vk8=asterCellType)
+    AS_DEALLOCATE(vi=MEDCellType)
     call jedetr('&&LRMPGA_TYPGEO_NBPG_MED')
     call jedetr('&&LRMPGA_TYPGEO_OKPG_MED')
     call jedetr('&&LRMPGA_TYPGEO_NOMLOC')
@@ -453,13 +453,13 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
     call jedema()
 !
     if (nivinf .gt. 1) then
-        write (ifm,101) 'FIN DE '//nompro
-    endif
+        write (ifm, 101) 'FIN DE '//nompro
+    end if
 !
-101 format(/,10('='),a,10('='),/)
+101 format(/, 10('='), a, 10('='),/)
 201 format('POUR LE CHAMP MED ', a,&
-    &     /,'MAILLE ! NBRE DE PTS DE GAUSS',&
+    &     /, 'MAILLE ! NBRE DE PTS DE GAUSS',&
     &       ' ! ELREFE ASTER ASSOCIE ! NOM LOCALISATION',&
-    &     /,72('-'))
+    &     /, 72('-'))
 !
 end subroutine

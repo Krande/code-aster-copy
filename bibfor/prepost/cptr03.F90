@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cptr03(main  , maout , inc   , jcoor , jcnnpa, conloc,&
-                  limane, nomnoe, nbno  , jmacou, jmacsu, macou ,&
-                  macsu , ind   , ind1  )
+subroutine cptr03(main, maout, inc, jcoor, jcnnpa, conloc, &
+                  limane, nomnoe, nbno, jmacou, jmacsu, macou, &
+                  macsu, ind, ind1)
 !
     implicit none
 #include "jeveux.h"
@@ -62,39 +62,39 @@ subroutine cptr03(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !
-    call jecroc(jexnum(maout//'.PATCH',inc+1))
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONMAX', ival=2)
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONUTI', ival=2)
-    call jeveuo(jexnum(maout//'.PATCH',inc+1), 'E', patch)
+    call jecroc(jexnum(maout//'.PATCH', inc+1))
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONMAX', ival=2)
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONUTI', ival=2)
+    call jeveuo(jexnum(maout//'.PATCH', inc+1), 'E', patch)
 ! --- TYPE DE MAILLE PATCH
     zi(patch-1+1) = 7
 ! --- DDL INTERNE
-     zi(patch-1+2)=nbno+ind1
+    zi(patch-1+2) = nbno+ind1
     zi(jcnnpa+nbno+ind1-1) = inc
 ! --- CREATION DES NOEUDS DDL INTERNE
-    call cpnptr3(main,macou,zr(jcoor),nbno+ind1,nomnoe)
+    call cpnptr3(main, macou, zr(jcoor), nbno+ind1, nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
     call cpmptr3(conloc, jmacou, nbno+ind1, ind)
 ! --- NOUVEAUX ELEMENTS DE CORPS
-    conneo='&&CPTR3.CNORD'
+    conneo = '&&CPTR3.CNORD'
     call cnpc(main, macou, macsu, conneo)
-    call jeveuo(conneo,'L',jconneo)
+    call jeveuo(conneo, 'L', jconneo)
     call cpmctr3(conloc, jmacsu, nbno+ind1, ind+2, zi(jconneo))
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Peau)
 
     call jeveuo(jexnum(limane, macou), 'E', jlimane)
-    zi(jlimane+1-1)=ind
-    zi(jlimane+2-1)=ind+1
+    zi(jlimane+1-1) = ind
+    zi(jlimane+2-1) = ind+1
 ! --- INFO PATCH LIE
-    zi(jlimane+3-1)=inc
+    zi(jlimane+3-1) = inc
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Volume)
 
     call jeveuo(jexnum(limane, macsu), 'E', jlimane)
-    zi(jlimane+1-1)=ind+2
-    zi(jlimane+2-1)=ind+3
+    zi(jlimane+1-1) = ind+2
+    zi(jlimane+2-1) = ind+3
 ! --- Nettoyage / mis à jour
-    ind=ind+4
-    ind1=ind1+1
+    ind = ind+4
+    ind1 = ind1+1
     call jedetr(conneo)
 !
     call jedema()

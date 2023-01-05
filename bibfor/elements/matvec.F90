@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine matvec(nordre, amat, nombv, v1, v2,&
+subroutine matvec(nordre, amat, nombv, v1, v2, &
                   vecres)
     implicit none
 #include "asterfort/utmess.h"
@@ -45,19 +45,19 @@ subroutine matvec(nordre, amat, nombv, v1, v2,&
         do i = 1, nordre
             vsom(i) = v1(i)
         end do
-    else if (nombv.eq.2) then
+    else if (nombv .eq. 2) then
         do i = 1, nordre
-            vsom(i) = v1(i) + v2(i)
+            vsom(i) = v1(i)+v2(i)
         end do
     else
         call utmess('F', 'ELEMENTS2_34')
-    endif
+    end if
     k = 0
     do i = 1, nordre
         vecres(i) = zero
         do j = 1, nordre
-            k = k + 1
-            vecres(i) = vecres(i) + amat(k) * vsom(j)
+            k = k+1
+            vecres(i) = vecres(i)+amat(k)*vsom(j)
         end do
     end do
 end subroutine

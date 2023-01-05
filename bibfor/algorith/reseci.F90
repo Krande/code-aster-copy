@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,17 +65,17 @@ subroutine reseci(carele, nummai, ai1, ai2)
 !***        BOUCLE SUR LES ASSOCIATIONS *******************************C
 !**********************************************************************C
     do iass1 = 1, inasmx
-        icode1 = zi(iad1-1+3+2* (iass1-1)+1)
+        icode1 = zi(iad1-1+3+2*(iass1-1)+1)
         if (icode1 .eq. 1) then
             inulim = 1
-            iec1 = zi(iad1-1+3+2* (inasmx)+inecgd* (iass1-1)+1)
+            iec1 = zi(iad1-1+3+2*(inasmx)+inecgd*(iass1-1)+1)
 !
-        else if (icode1.eq.3) then
-            inulim = zi(iad1-1+3+2* (iass1-1)+2)
-            iec1 = zi(iad1-1+3+2* (inasmx)+inecgd* (iass1-1)+1)
+        else if (icode1 .eq. 3) then
+            inulim = zi(iad1-1+3+2*(iass1-1)+2)
+            iec1 = zi(iad1-1+3+2*(inasmx)+inecgd*(iass1-1)+1)
 !
         else
-        endif
+        end if
 !   ON REGARDE SI LA MAILLE EST DANS LE .LIMA
         call jeveuo(jexnum(k24bi1(1:19)//'.LIMA', inulim), 'L', ialima)
         call jelira(jexnum(k24bi1(1:19)//'.LIMA', inulim), 'LONMAX', inbmai)
@@ -84,7 +84,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
             if (nummai .eq. numai1) then
                 goto 104
 !
-            endif
+            end if
 !
         end do
     end do
@@ -103,9 +103,9 @@ subroutine reseci(carele, nummai, ai1, ai2)
         if (k8bid1(1:3) .eq. 'AI1') then
             irgai1 = icmp
 !
-        else if (k8bid1(1:3).eq.'AI2') then
+        else if (k8bid1(1:3) .eq. 'AI2') then
             irgai2 = icmp
-        endif
+        end if
 !
     end do
 !**********************************************************************C
@@ -115,16 +115,16 @@ subroutine reseci(carele, nummai, ai1, ai2)
     call jeveuo(k24bi1, 'L', iavale)
     if (irgai1 .gt. 30) call veri32()
     if (irgai2 .gt. 30) call veri32()
-    itest1 = mod((iec1-mod(iec1,2**irgai1))/2**irgai1,2)
-    itest2 = mod((iec1-mod(iec1,2**irgai2))/2**irgai2,2)
+    itest1 = mod((iec1-mod(iec1, 2**irgai1))/2**irgai1, 2)
+    itest2 = mod((iec1-mod(iec1, 2**irgai2))/2**irgai2, 2)
     if ((itest1*itest2) .ne. 1) then
 !
     else
-        ibid1 = (iass1-1)*igdncm + irgai1
+        ibid1 = (iass1-1)*igdncm+irgai1
         ai1 = zr(iavale-1+ibid1)
-        ibid1 = (iass1-1)*igdncm + irgai2
+        ibid1 = (iass1-1)*igdncm+irgai2
         ai2 = zr(iavale-1+ibid1)
-    endif
+    end if
 !
     call jedema()
 end subroutine

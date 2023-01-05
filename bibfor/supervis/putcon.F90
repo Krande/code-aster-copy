@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine putcon(nomres, nbind, ind, valr, vali,&
+subroutine putcon(nomres, nbind, ind, valr, vali, &
                   num, ier)
 ! aslint: disable=
     implicit none
@@ -45,15 +45,15 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
     character(len=32) :: noml32
 !     ------------------------------------------------------------------
     call jemarq()
-    noml32=nomres
+    noml32 = nomres
 !
     call jjvern(noml32, 0, iret)
     call jelira(noml32, 'XOUS', cval=xous)
     call jelira(noml32, 'GENR', cval=genr)
     if (iret .eq. 0) then
 !     CET OBJET N'EXISTE PAS
-        ier=0
-    else if ((xous.eq.'S').and.(genr.ne.'N')) then
+        ier = 0
+    else if ((xous .eq. 'S') .and. (genr .ne. 'N')) then
 !     ------------------------------------------------------------------
 !     CET OBJET EXISTE ET EST SIMPLE. ON PEUT AVOIR SA VALEUR
 !     ------------------------------------------------------------------
@@ -61,25 +61,25 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
         call jelira(noml32, 'TYPELONG', cval=type)
         call jelira(noml32, 'LONMAX', nbindj)
         if (nbind .gt. nbindj) then
-            ier=0
-        endif
+            ier = 0
+        end if
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
-            ier=1
+            ier = 1
             do i = 1, nbind
-                zr(jres+ind(i)-1)=valr(i)
+                zr(jres+ind(i)-1) = valr(i)
             end do
-        else if (type.eq.'C') then
+        else if (type .eq. 'C') then
 !     LES VALEURS SONT COMPLEXES
-            ier=1
+            ier = 1
             do i = 1, nbind
-                zc(jres+ind(i)-1)=dcmplx(valr(i),vali(i))
+                zc(jres+ind(i)-1) = dcmplx(valr(i), vali(i))
             end do
         else
 !     LES VALEURS SONT NI REELLES NI COMPLEXES
-            ier=0
-        endif
-    else if (xous.eq.'X') then
+            ier = 0
+        end if
+    else if (xous .eq. 'X') then
 !     ------------------------------------------------------------------
 !     CET OBJET EST UNE COLLECTION, ON PEUT AVOIR SA VALEUR GRACE A NUM
 !     LE NUMERO D'ORDRE DANS LA COLLECTION
@@ -88,31 +88,31 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
         call jelira(noml32, 'TYPELONG', cval=type)
         call jelira(jexnum(noml32, num), 'LONMAX', nbindj)
         if (nbind .gt. nbindj) then
-            ier=0
-        endif
+            ier = 0
+        end if
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
-            ier=1
+            ier = 1
             do i = 1, nbind
-                zr(jres+ind(i)-1)=valr(i)
+                zr(jres+ind(i)-1) = valr(i)
             end do
-        else if (type.eq.'C') then
+        else if (type .eq. 'C') then
 !     LES VALEURS SONT COMPLEXES
-            ier=1
+            ier = 1
             do i = 1, nbind
-                zc(jres+ind(i)-1)=dcmplx(valr(i),vali(i))
+                zc(jres+ind(i)-1) = dcmplx(valr(i), vali(i))
             end do
         else
 !     LES VALEURS SONT NI REELLES NI COMPLEXES
-            ier=0
-        endif
+            ier = 0
+        end if
 !         IER=0
-    else if ((xous.eq.'S').and.(genr.eq.'N')) then
+    else if ((xous .eq. 'S') .and. (genr .eq. 'N')) then
 !     ------------------------------------------------------------------
 !     CET OBJET EST SIMPLE MAIS C EST UN REPERTOIRE DE NOMS
 !     ------------------------------------------------------------------
-        ier=0
-    endif
+        ier = 0
+    end if
 !
     call jedema()
 end subroutine

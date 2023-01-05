@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmextf(keyw_fact, i_keyw_fact, type_extr_cmp)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
@@ -52,10 +52,10 @@ implicit none
     call getvtx(keyw_fact, 'EVAL_CMP', iocc=i_keyw_fact, scal=answer)
     if (answer .eq. 'VALE') then
         type_extr_cmp = ' '
-    else if (answer.eq.'FORMULE') then
+    else if (answer .eq. 'FORMULE') then
         call getvid(keyw_fact, 'FORMULE', iocc=i_keyw_fact, scal=type_extr_cmp)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

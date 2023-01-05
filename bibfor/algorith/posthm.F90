@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine posthm(option, modint, jgano, ncmp, nvim,&
+subroutine posthm(option, modint, jgano, ncmp, nvim, &
                   vpg, vno)
     implicit none
 #include "asterfort/assert.h"
@@ -53,11 +53,11 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
     integer :: i, j, jganpg, jganso
     integer :: ndim, nno, nnos, npg, ndim2, nno2, nnos2, npg2
     integer :: nvmax, npgmax, nnosma, dimmax, nnomax
-    parameter (nvmax  = 60)
-    parameter (npgmax = 8 )
-    parameter (nnosma = 8 )
-    parameter (dimmax = 31 + 5)
-    parameter (nnomax = 20)
+    parameter(nvmax=60)
+    parameter(npgmax=8)
+    parameter(nnosma=8)
+    parameter(dimmax=31+5)
+    parameter(nnomax=20)
     real(kind=8) :: vpg1(npgmax*nvmax), vpg2(nnosma*nvmax)
     real(kind=8) :: spg1(npgmax*dimmax), spg2(nnosma*dimmax)
     real(kind=8) :: varipg(nnomax*nvmax), variso(nnomax*nvmax)
@@ -69,12 +69,12 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! =====================================================================
 ! --- MATRICE DE PASSAGE POINTS DE GAUSS -> SOMMETS JGANPG ------------
 ! =====================================================================
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                          jgano=jganpg)
 ! =====================================================================
 ! --- MATRICE DE PASSAGE SOMMETS -> SOMMETS : JGANSO ------------------
 ! =====================================================================
-        call elrefe_info(fami='NOEU_S', ndim=ndim2, nno=nno2, nnos=nnos2, npg=npg2,&
+        call elrefe_info(fami='NOEU_S', ndim=ndim2, nno=nno2, nnos=nnos2, npg=npg2, &
                          jgano=jganso)
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
@@ -103,7 +103,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
                     vno((i-1)*ncmp+j) = siefso((i-1)*ncmp+j)
                 end do
             end do
-        endif
+        end if
         if (option .eq. 'VARI_ELNO  ') then
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
@@ -125,7 +125,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
                     vno((i-1)*ncmp+j) = variso((i-1)*ncmp+j)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 ! =====================================================================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crenua(nuagez    , gran_name, nb_point, nb_dim, nb_cmp_max,&
+subroutine crenua(nuagez, gran_name, nb_point, nb_dim, nb_cmp_max, &
                   l_crea_nual)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -61,31 +61,31 @@ implicit none
 !
 ! - Create .NUAX
 !
-    length = nb_dim * nb_point
+    length = nb_dim*nb_point
     call wkvect(nuage//'.NUAX', 'V V R', length, jnuax)
 !
 ! - Create .NUAI
 !
-    length = 5 + nb_cmp_max
+    length = 5+nb_cmp_max
     call wkvect(nuage//'.NUAI', 'V V I', length, jnuai)
 !
 ! - Create .NUAV
 !
     call dismoi('TYPE_SCA', gran_name, 'GRANDEUR', repk=type_scal)
-    length = nb_cmp_max * nb_point
+    length = nb_cmp_max*nb_point
     if (type_scal(1:1) .eq. 'R') then
         call wkvect(nuage//'.NUAV', 'V V R', length, jnuav)
     else if (type_scal(1:1) .eq. 'C') then
         call wkvect(nuage//'.NUAV', 'V V C', length, jnuav)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Create .NUAL
 !
     if (l_crea_nual) then
-        length = nb_cmp_max * nb_point
+        length = nb_cmp_max*nb_point
         call wkvect(nuage//'.NUAL', 'V V L', length, jnual)
-    endif
+    end if
 !
 end subroutine

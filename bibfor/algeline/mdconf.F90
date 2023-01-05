@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdconf(typflu, base, noma, nbm, lnoe,&
-                  nuor, iimpr, indic, veci1, vecr1,&
+subroutine mdconf(typflu, base, noma, nbm, lnoe, &
+                  nuor, iimpr, indic, veci1, vecr1, &
                   vecr2, vecr3, vecr4, vecr5)
     implicit none
 ! DESCRIPTION : CALCUL DES PARAMETRES DE COUPLAGE FLUIDE-STRUCTURE POUR
@@ -109,8 +109,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
     real(kind=8) :: ep, phi1, phi2, phie, prota, ptran, rhof
     real(kind=8) :: tolr, vmoy, vmoyto, x1, x2
 !-----------------------------------------------------------------------
-    data depla  /'DX      ','DY      ','DZ      '/
-    data config /'ASC_CEN ','ASC_EXC ','DES_CEN ','DES_EXC '/
+    data depla/'DX      ', 'DY      ', 'DZ      '/
+    data config/'ASC_CEN ', 'ASC_EXC ', 'DES_CEN ', 'DES_EXC '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -168,7 +168,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
         do ik = 1, lnoe
             vecr5(ik) = zr(irhoe+ik-1)
             vecr2(ik) = zr(irhoe+ik+lnoe-1)
-            vecr2(ik+lnoe)=zr(irhoi+ik+lnoe-1)
+            vecr2(ik+lnoe) = zr(irhoi+ik+lnoe-1)
         end do
 !
 ! ---    2.4.CALCUL DES NUMERO DE ZONE     --> VECTEUR VECI1 ---
@@ -206,41 +206,41 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 if (abs(zr(ipv+lnoe+ik-1)) .gt. tolr) then
                     n1 = ik
                     goto 21
-                endif
+                end if
             end do
- 21         continue
+21          continue
 !
             do ik = lnoe, 1, -1
                 if (abs(zr(ipv+lnoe+ik-1)) .gt. tolr) then
                     n2 = ik
                     goto 31
-                endif
+                end if
             end do
- 31         continue
+31          continue
 !
-            zi(izone + 2*(nuzo-1)-1+2) = n1
-            zi(izone + 2*(nuzo-1)-1+3) = n2
+            zi(izone+2*(nuzo-1)-1+2) = n1
+            zi(izone+2*(nuzo-1)-1+3) = n2
             if (n1 .eq. n2) then
                 call utmess('F', 'ALGELINE_68', sk=zk8(ifsvk+3+nuzo))
-            endif
+            end if
 !
             aire = 0.d0
             x1 = zr(ipv+n1-1)
             x2 = zr(ipv+n2-1)
             do ik = n1+1, n2
-                aire = aire + (&
-                       zr(ipv+lnoe+ik-1) + zr(ipv+lnoe+ik-2) ) * ( zr(ipv+ik-1) - zr(ipv+ik-2)&
-                       ) / 2.d0
+                aire = aire+( &
+                       zr(ipv+lnoe+ik-1)+zr(ipv+lnoe+ik-2))*(zr(ipv+ik-1)-zr(ipv+ik-2) &
+                                                             )/2.d0
             end do
 
 !
-            vmoy = aire / (x2-x1)
-            vmoyto = vmoyto + aire
-            alonto = alonto + (x2-x1)
+            vmoy = aire/(x2-x1)
+            vmoyto = vmoyto+aire
+            alonto = alonto+(x2-x1)
             do ik = n1, n2
                 if (veci1(ik) .ne. 0) then
                     call utmess('F', 'ALGELINE_69', sk=zk8(ifsvk+3+nuzo))
-                endif
+                end if
                 vecr1(ik+lnoe) = vmoy
                 veci1(ik) = ireszo
                 vecr1(ik) = zr(ipv+lnoe+ik-1)
@@ -253,8 +253,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
         end do
 !
 ! ---    VITESSE MOYENNE SUR L'ENSEMBLE DU TUBE
-        vmoyto = vmoyto / alonto
-
+        vmoyto = vmoyto/alonto
 
         vecr1(1+2*lnoe) = vmoyto
 !
@@ -279,34 +278,34 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
             call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
 !
-            call extmod_sorted(base, numddl, nuor, nbm, vecr3,&
-                        neq, lnoe, [idep], 1)
+            call extmod_sorted(base, numddl, nuor, nbm, vecr3, &
+                               neq, lnoe, [idep], 1)
             call permnoe(mailla, vecr3, nbm, lnoe, 1)
 !
-        endif
+        end if
 !
 ! ---   2.6.IMPRESSION  ---
 !
         if (iimpr .eq. 1) then
             ipas = zi(ifsvi)
-            vali (1) = lnoe
-            vali (2) = ipas
-            valk (1) = base
-            valk (2) = caelem(1:8)
-            valr (1) = phie
-            call utmess('I', 'ALGELINE5_10', nk=2, valk=valk, ni=2,&
+            vali(1) = lnoe
+            vali(2) = ipas
+            valk(1) = base
+            valk(2) = caelem(1:8)
+            valr(1) = phie
+            call utmess('I', 'ALGELINE5_10', nk=2, valk=valk, ni=2, &
                         vali=vali, sr=valr(1))
             do nuzo = 1, nzex
-                valk (1) = zk8(ifsvk+nuzo+3)
-                vali (1) = zi(ifsvi+nuzo+1)
+                valk(1) = zk8(ifsvk+nuzo+3)
+                vali(1) = zi(ifsvi+nuzo+1)
                 call utmess('I', 'ALGELINE5_11', sk=valk(1), si=vali(1))
             end do
             call utmess('I', 'VIDE_1')
-        endif
+        end if
 !
 ! --- 3.CONFIGURATION DE TYPE "GRAPPE DE COMMANDE"  ---
 !
-    else if (itypfl.eq.2) then
+    else if (itypfl .eq. 2) then
 !
         if (icoupl .eq. 1) then
 !
@@ -345,7 +344,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             call exmano(noma, numno0, zi(imail), nbmano)
             if (nbmano .ne. 2) then
                 call utmess('F', 'ALGELINE_70')
-            endif
+            end if
 !
             call deelpo(caelem(1:8), noma, zi(imail), phi1)
             call deelpo(caelem(1:8), noma, zi(imail+1), phi2)
@@ -354,14 +353,14 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 call utmess('F', 'ALGELINE_71')
             else
                 phie = phi1
-            endif
+            end if
 !
             vecr4(1) = phie
 !
 !------- 3.4.RECUPERATION DES GRANDEURS GEOMETRIQUES CARACTERISTIQUES --
 !        DEDUCTION DE COEFFICIENTS DE DIMENSIONNEMENT                ---
 ! ---                                            --> VECTEUR VECR2   ---
-            lp = phie * 986.d0/890.d0
+            lp = phie*986.d0/890.d0
 !
             comaj = 0.5d0*rhof*phie*phie*lp
             comaj1 = comaj*cm1
@@ -385,7 +384,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 itran2 = 3
                 irota1 = 6
                 irota2 = 5
-            else if (iaxe.eq.2) then
+            else if (iaxe .eq. 2) then
                 itran1 = 3
                 itran2 = 1
                 irota1 = 4
@@ -395,7 +394,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 itran2 = 2
                 irota1 = 5
                 irota2 = 4
-            endif
+            end if
 !
 !------- 3.5.PONDERATIONS DUES AUX DEFORMEES MODALES
 !                                                --> VECTEUR VECR3  ---
@@ -413,10 +412,10 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
                 numod = nuor(imod)
 !
-                call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
+                call rsadpa(base, 'L', 1, 'MASS_GENE', numod, &
                             0, sjv=lmasg, styp=k8b)
 !
-                call rsexch('F', base, 'DEPL', numod, nomcha,&
+                call rsexch('F', base, 'DEPL', numod, nomcha, &
                             iret)
                 nomcha = nomcha(1:19)//'.VALE'
                 call jeveuo(nomcha, 'L', ivale)
@@ -427,8 +426,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 drzi = 0.d0
                 do j = 1, neq
                     if (zi(ideeq+(2*j)-1) .eq. 1) then
-                        ipm = ipm + 1
-                    endif
+                        ipm = ipm+1
+                    end if
                     if (ipm .eq. numno0) then
                         if (zi(ideeq+(2*j)-1) .eq. itran1) then
                             dyi = zr(ivale+j-1)
@@ -438,19 +437,19 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                             drzi = zr(ivale+j-1)
                         else if (zi(ideeq+(2*j)-1) .eq. irota2) then
                             dryi = zr(ivale+j-1)
-                        endif
+                        end if
                     else if (ipm .eq. (numno0+1)) then
                         goto 131
-                    endif
+                    end if
                 end do
 131             continue
-                ptran = dyi*dyi + dzi*dzi
-                prota = drzi*drzi + dryi*dryi
+                ptran = dyi*dyi+dzi*dzi
+                prota = drzi*drzi+dryi*dryi
                 vecr3(2*imod-1) = ptran
                 vecr3(2*imod) = prota
                 call jelibe(nomcha)
 !
-                vecr1(imod) = zr(lmasg) + comaj1*ptran + comaj2*prota
+                vecr1(imod) = zr(lmasg)+comaj1*ptran+comaj2*prota
 !
             end do
 !
@@ -458,16 +457,16 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! ---   2.6.IMPRESSION  ---
 !
             if (iimpr .eq. 1) then
-                valk (1) = nomno0
-                valk (2) = base
-                valk (3) = caelem(1:8)
-                valk (4) = config(indic)
-                valr (1) = phie
-                valr (2) = cm1
-                valr (3) = rhof
-                call utmess('I', 'ALGELINE5_13', nk=4, valk=valk, nr=3,&
+                valk(1) = nomno0
+                valk(2) = base
+                valk(3) = caelem(1:8)
+                valk(4) = config(indic)
+                valr(1) = phie
+                valr(2) = cm1
+                valr(3) = rhof
+                call utmess('I', 'ALGELINE5_13', nk=4, valk=valk, nr=3, &
                             valr=valr)
-            endif
+            end if
 !
             call jedetr('&&MDCONF.TEMP.MAIL')
 !
@@ -476,9 +475,9 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
             if (iimpr .eq. 1) then
                 call utmess('I', 'ALGELINE5_14')
-            endif
+            end if
 !
-        endif
+        end if
 !
 ! --- 4.AUTRES CONFIGURATIONS NON TRAITEES  ---
 !
@@ -486,7 +485,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
         call utmess('F', 'ALGELINE_72')
 !
-    endif
+    end if
 !
     call jedema()
 !

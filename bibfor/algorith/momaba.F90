@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,25 +60,25 @@ subroutine momaba(mailla)
 !
     call infniv(ifm, niv)
 !
-    connex=mailla//'.CONNEX'
-    nommai=mailla//'.NOMMAI'
-    nomnoe=mailla//'.NOMNOE'
+    connex = mailla//'.CONNEX'
+    nommai = mailla//'.NOMMAI'
+    nomnoe = mailla//'.NOMNOE'
     call jeveuo(mailla//'.TYPMAIL        ', 'L', jtyma)
     call jeveuo(mailla//'.COORDO    .VALE', 'E', vr=coor)
     call jeveuo(mailla//'.DIME           ', 'L', vi=dime)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbmat)
-    lmodi=.false.
-    lconx=.false.
+    lmodi = .false.
+    lconx = .false.
 !     ------------------------------------------------------------------
 !
 ! --- LECTURE DE LA LISTE DE MAILLES
 !
-    motcle(1)='GROUP_MA_FOND'
-    tymocl(1)='GROUP_MA'
-    motcle(2)='MAILLE_FOND'
-    tymocl(2)='MAILLE'
-    nomjv='&&MOMABA.LISTE_MA'
-    call reliem(' ', mailla, 'NU_MAILLE', 'MODI_MAILLE', 1,&
+    motcle(1) = 'GROUP_MA_FOND'
+    tymocl(1) = 'GROUP_MA'
+    motcle(2) = 'MAILLE_FOND'
+    tymocl(2) = 'MAILLE'
+    nomjv = '&&MOMABA.LISTE_MA'
+    call reliem(' ', mailla, 'NU_MAILLE', 'MODI_MAILLE', 1, &
                 nbmc, motcle, tymocl, nomjv, nbma)
 !
     if (nbma .eq. 0) goto 150
@@ -91,34 +91,34 @@ subroutine momaba(mailla)
 !     SI LE MAILLAGE EST DE DIMENSION 2.
     if (dime(6) .eq. 2) then
         call utmess('F', 'ALGORITH6_16')
-    endif
+    end if
 !
 ! --- CREATION DE LA CONNECTIVITE INVERSE
 !
     call cncinv(mailla, [0], 0, 'V', '&&MOMABA.CONINV')
     call jeveuo('&&MOMABA.CONINV', 'L', vi=coninv)
     call jeveuo(jexatr('&&MOMABA.CONINV', 'LONCUM'), 'L', ilcnx2)
-    lconx=.true.
+    lconx = .true.
 !
     do i = 1, nbma
-        ityp=jtyma-1+zi(jnuma+i-1)
+        ityp = jtyma-1+zi(jnuma+i-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
 !
         if (niv .eq. 2) then
             call jenuno(jexnum(nommai, zi(jnuma+i-1)), k8b)
-            write (ifm,*)'TRAITEMENT DE LA MAILLE ',k8b
-        endif
+            write (ifm, *) 'TRAITEMENT DE LA MAILLE ', k8b
+        end if
         if (type(1:4) .eq. 'SEG3') then
             call jeveuo(jexnum(connex, zi(jnuma+i-1)), 'L', jpoin)
-            n1=zi(jpoin)
-            n2=zi(jpoin+1)
-        else if (type(1:4).eq.'POI1') then
+            n1 = zi(jpoin)
+            n2 = zi(jpoin+1)
+        else if (type(1:4) .eq. 'POI1') then
             call jeveuo(jexnum(connex, zi(jnuma+i-1)), 'L', jpoin)
-            n1=zi(jpoin)
-            n2=0
+            n1 = zi(jpoin)
+            n2 = 0
         else
             call utmess('F', 'ALGORITH6_17')
-        endif
+        end if
 !
         nbm1 = zi(ilcnx2+n1)-zi(ilcnx2-1+n1)
 !
@@ -128,87 +128,87 @@ subroutine momaba(mailla)
             call jeveuo(jexnum(connex, numa), 'L', jpoin)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyma-1+numa)), type)
 !
-            nbno=0
+            nbno = 0
 ! --------- TRIA6, TRIA7
             if (type .eq. 'TRIA6' .or. type .eq. 'TRIA7') then
-                nbno=3
+                nbno = 3
 ! --------- QUAD8, QUAD9
-            else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
-                nbno=4
+            else if (type .eq. 'QUAD8' .or. type .eq. 'QUAD9') then
+                nbno = 4
 ! --------- TETRA10
-            else if (type.eq.'TETRA10') then
-                nbno=4
+            else if (type .eq. 'TETRA10') then
+                nbno = 4
 ! --------- PENTA15, PENTA18
-            else if (type.eq.'PENTA15' .or. type.eq.'PENTA18') then
-                nbno=6
+            else if (type .eq. 'PENTA15' .or. type .eq. 'PENTA18') then
+                nbno = 6
 ! --------- PYRAM13
-            else if (type.eq.'PYRAM13') then
-                nbno=5
+            else if (type .eq. 'PYRAM13') then
+                nbno = 5
 ! --------- HEXA20, HEXA27
-            else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
-                nbno=8
-            endif
+            else if (type .eq. 'HEXA20' .or. type .eq. 'HEXA27') then
+                nbno = 8
+            end if
 !
             i1sauv = 0
             i2sauv = 0
             do i1 = 1, nbno
                 if (zi(jpoin+i1-1) .eq. n1) i1sauv = i1
                 if (zi(jpoin+i1-1) .eq. n2) i2sauv = i1
-            enddo
+            end do
 !
-            if ( (i1sauv.ne.0.and.i2sauv.ne.0).or.&
-                 (i1sauv.ne.0.and.n2.eq.0) ) then
+            if ((i1sauv .ne. 0 .and. i2sauv .ne. 0) .or. &
+                (i1sauv .ne. 0 .and. n2 .eq. 0)) then
 ! ------------- TRIA6, TRIA7
                 if (type .eq. 'TRIA6' .or. type .eq. 'TRIA7') then
-                    lmodi=.true.
-                    call bartri(i1sauv, i2sauv, coor, zi( jpoin))
+                    lmodi = .true.
+                    call bartri(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- QUAD8, QUAD9
-                else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
-                    lmodi=.true.
+                else if (type .eq. 'QUAD8' .or. type .eq. 'QUAD9') then
+                    lmodi = .true.
                     call barqua(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- TETRA10
-                else if (type.eq.'TETRA10') then
-                    lmodi=.true.
+                else if (type .eq. 'TETRA10') then
+                    lmodi = .true.
                     call bartet(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- PENTA15, PENTA18
-                else if (type.eq.'PENTA15' .or. type.eq.'PENTA18') then
-                    lmodi=.true.
+                else if (type .eq. 'PENTA15' .or. type .eq. 'PENTA18') then
+                    lmodi = .true.
                     call barpen(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- PYRAM13
-                else if (type.eq.'PYRAM13') then
-                    lmodi=.true.
+                else if (type .eq. 'PYRAM13') then
+                    lmodi = .true.
                     call barpyr(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- HEXA20, HEXA27
-                else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
-                    lmodi=.true.
+                else if (type .eq. 'HEXA20' .or. type .eq. 'HEXA27') then
+                    lmodi = .true.
                     call barhex(i1sauv, i2sauv, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
-                endif
-            endif
-        enddo
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
+                end if
+            end if
+        end do
 !
     end do
 !
@@ -227,39 +227,39 @@ subroutine momaba(mailla)
 !     LEURS MODIFICATIONS
     call wkvect('&&COORD_NOEUDS', 'V V R', ndim, jcon)
     do i = 1, ndim
-        zr(jcon+i-1)=conm(i)
+        zr(jcon+i-1) = conm(i)
     end do
 !
-    motcle(1)='GROUP_NO_FOND'
-    tymocl(1)='GROUP_NO'
-    motcle(2)='NOEUD_FOND'
-    tymocl(2)='NOEUD'
-    nomjv='&&MOMABA.LISTE_NO'
-    call reliem(' ', mailla, 'NU_NOEUD', 'MODI_MAILLE', 1,&
+    motcle(1) = 'GROUP_NO_FOND'
+    tymocl(1) = 'GROUP_NO'
+    motcle(2) = 'NOEUD_FOND'
+    tymocl(2) = 'NOEUD'
+    nomjv = '&&MOMABA.LISTE_NO'
+    call reliem(' ', mailla, 'NU_NOEUD', 'MODI_MAILLE', 1, &
                 nbmc, motcle, tymocl, nomjv, nbma)
     if (nbma .eq. 0) goto 260
 !
-    if ( .not.lconx ) then
+    if (.not. lconx) then
 !
 ! ------- CREATION DE LA CONNECTIVITE INVERSE
 !
         call cncinv(mailla, [0], 0, 'V', '&&MOMABA.CONINV')
         call jeveuo('&&MOMABA.CONINV', 'L', vi=coninv)
         call jeveuo(jexatr('&&MOMABA.CONINV', 'LONCUM'), 'L', ilcnx2)
-        lconx=.true.
-    endif
+        lconx = .true.
+    end if
 !
 !     ON VERIFIE L'UNICITE DU NOEUD DU FOND DE FISSURE POUR UN
 !     MAILLAGE DE DIMENSION 2
     if (dime(6) .eq. 2 .and. nbma .gt. 1) then
         call utmess('F', 'ALGORITH6_18')
-    endif
+    end if
 !
 !     ON VERIFIE QU'IL Y A AU MOINS 2 NOEUDS POUR UN
 !     MAILLAGE DE DIMENSION 3
     if (dime(6) .eq. 3 .and. nbma .lt. 2) then
         call utmess('F', 'ALGORITH16_74')
-    endif
+    end if
 !
     call jeveuo(nomjv, 'L', jnuma)
     call wkvect('&&NOEU_MIL_FISS', 'V V I', nbma, jnbma)
@@ -267,17 +267,17 @@ subroutine momaba(mailla)
 ! --- TRAITEMENT DES NOEUDS
 !
 !   nombre de noeuds sommet du fond de fissure
-    nbnsf=0
+    nbnsf = 0
 !   nombre de noeuds milieu du fond de fissure
-    nbnmf=0
+    nbnmf = 0
     do i = 1, nbma
-        n1=zi(jnuma+i-1)
-        n2=0
+        n1 = zi(jnuma+i-1)
+        n2 = 0
         if (niv .eq. 2) then
             call jenuno(jexnum(nomnoe, zi(jnuma+i-1)), k8b)
-            write (ifm,*)'TRAITEMENT DU NOEUD ',k8b
-        endif
-        lnmf=.true.
+            write (ifm, *) 'TRAITEMENT DU NOEUD ', k8b
+        end if
+        lnmf = .true.
 !
         nbm1 = zi(ilcnx2+n1)-zi(ilcnx2-1+n1)
 !
@@ -287,115 +287,115 @@ subroutine momaba(mailla)
             call jeveuo(jexnum(connex, numa), 'L', jpoin)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyma-1+numa)), type)
 !
-            nbno=0
+            nbno = 0
 ! --------- TRIA6, TRIA7
             if (type .eq. 'TRIA6' .or. type .eq. 'TRIA7') then
-                nbno=3
+                nbno = 3
 ! --------- QUAD8, QUAD9
-            else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
-                nbno=4
+            else if (type .eq. 'QUAD8' .or. type .eq. 'QUAD9') then
+                nbno = 4
 ! --------- TETRA10
-            else if (type.eq.'TETRA10') then
-                nbno=4
+            else if (type .eq. 'TETRA10') then
+                nbno = 4
 ! --------- PENTA15, PENTA18
-            else if (type.eq.'PENTA15' .or. type.eq.'PENTA18') then
-                nbno=6
+            else if (type .eq. 'PENTA15' .or. type .eq. 'PENTA18') then
+                nbno = 6
 ! --------- PYRAM13
-            else if (type.eq.'PYRAM13') then
-                nbno=5
+            else if (type .eq. 'PYRAM13') then
+                nbno = 5
 ! --------- HEXA20, HEXA27
-            else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
-                nbno=8
-            endif
+            else if (type .eq. 'HEXA20' .or. type .eq. 'HEXA27') then
+                nbno = 8
+            end if
 !
             i1sauv = 0
             do i1 = 1, nbno
                 if (zi(jpoin+i1-1) .eq. n1) i1sauv = i1
-            enddo
+            end do
 !
-            if ( i1sauv.ne.0 ) then
+            if (i1sauv .ne. 0) then
 ! ------------- TRIA6, TRIA7
                 if (type .eq. 'TRIA6' .or. type .eq. 'TRIA7') then
-                    lnmf=.false.
-                    lmodi=.true.
-                    call bartri(i1sauv, n2, coor, zi( jpoin))
+                    lnmf = .false.
+                    lmodi = .true.
+                    call bartri(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- QUAD8, QUAD9
-                else if (type.eq.'QUAD8' .or. type.eq.'QUAD9') then
-                    lnmf=.false.
-                    lmodi=.true.
+                else if (type .eq. 'QUAD8' .or. type .eq. 'QUAD9') then
+                    lnmf = .false.
+                    lmodi = .true.
                     call barqua(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- TETRA10
-                else if (type.eq.'TETRA10') then
-                    lnmf=.false.
-                    lmodi=.true.
+                else if (type .eq. 'TETRA10') then
+                    lnmf = .false.
+                    lmodi = .true.
                     call bartet(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- PENTA15
-                else if (type.eq.'PENTA15') then
-                    lnmf=.false.
-                    lmodi=.true.
+                else if (type .eq. 'PENTA15') then
+                    lnmf = .false.
+                    lmodi = .true.
                     call barpen(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- PYRAM13
-                else if (type.eq.'PYRAM13') then
-                    lnmf=.false.
-                    lmodi=.true.
+                else if (type .eq. 'PYRAM13') then
+                    lnmf = .false.
+                    lmodi = .true.
                     call barpyr(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
 ! ------------- HEXA20, HEXA27
-                else if (type.eq.'HEXA20' .or. type.eq.'HEXA27') then
-                    lnmf=.false.
-                    lmodi=.true.
+                else if (type .eq. 'HEXA20' .or. type .eq. 'HEXA27') then
+                    lnmf = .false.
+                    lmodi = .true.
                     call barhex(i1sauv, n2, coor, zi(jpoin))
                     if (niv .eq. 2) then
                         call jenuno(jexnum(nommai, numa), k8b)
-                        write (ifm,*)'   MAILLE MODIFIEE ',k8b
-                    endif
-                endif
-            endif
-        enddo
+                        write (ifm, *) '   MAILLE MODIFIEE ', k8b
+                    end if
+                end if
+            end if
+        end do
 !
         if (lnmf) then
 !         ON STOCKE LES NOEUDS MILIEU DU FOND DE FISSURE
-            zi(jnbma+nbnmf)=n1
-            nbnmf=nbnmf+1
+            zi(jnbma+nbnmf) = n1
+            nbnmf = nbnmf+1
         else
-            nbnsf=nbnsf+1
-        endif
+            nbnsf = nbnsf+1
+        end if
 !
     end do
 !
     do i = 1, nbnmf
 !       ON REAJUSTE LES COORDONNEES DES NOEUDS MILIEU
 !       DU FOND DE FISSURE
-        nn=3*(zi(jnbma+i-1)-1)
-        coor(nn+1)=zr(jcon+nn)
-        coor(1+nn+1)=zr(jcon+nn+1)
-        coor(1+nn+2)=zr(jcon+nn+2)
+        nn = 3*(zi(jnbma+i-1)-1)
+        coor(nn+1) = zr(jcon+nn)
+        coor(1+nn+1) = zr(jcon+nn+1)
+        coor(1+nn+2) = zr(jcon+nn+2)
     end do
 !
-    if (.not.lmodi) then
+    if (.not. lmodi) then
         call utmess('F', 'ALGORITH16_72')
-    elseif (nbma .gt. 1 .and. nbnmf.ne.nbnsf-1)then
+    elseif (nbma .gt. 1 .and. nbnmf .ne. nbnsf-1) then
         call utmess('F', 'ALGORITH16_73', si=nbnsf-1-nbnmf)
-    endif
+    end if
 !
     call jedetr('&&NOEU_MIL_FISS')
     call jedetr('&&COORD_NOEUDS')

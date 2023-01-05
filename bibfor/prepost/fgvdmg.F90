@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
-                  mexpic, mcompt, mdomag, nbord, nbpt,&
+subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon, &
+                  mexpic, mcompt, mdomag, nbord, nbpt, &
                   ntcmp, nbcmp, numcmp, impr, vdomag)
     implicit none
 #include "jeveux.h"
@@ -115,7 +115,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
         valk(1) = nomsym
         valk(2) = nomsd
         call utmess('F', 'PREPOST_51', nk=2, valk=valk)
-    endif
+    end if
     call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
 !
 ! ---   BOUCLE SUR LES COMPOSANTES DE LA EQUI_GD
@@ -127,23 +127,23 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 !
         do ipt = 1, nbpt
             if (impr .ge. 2) then
-                valk (1) = kcmp
+                valk(1) = kcmp
                 vali = ipt
                 call utmess('I', 'PREPOST6_6', sk=valk(1), si=vali)
-            endif
+            end if
 !
 ! ---       CALCUL DU VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
 !           BOUCLE SUR LES NBORD NUMEROS D ORDRE
 !
             do iord = 1, nbord
-                chequi = zk24(ivch+iord-1)(1:19)
+                chequi = zk24(ivch+iord-1) (1:19)
 !
                 if (chequi .eq. ' ') then
                     valk(1) = chequi
                     valk(2) = nomsym
                     valk(3) = nomsd
                     call utmess('F', 'PREPOST_52', nk=3, valk=valk)
-                endif
+                end if
 !
                 if ((icmp .eq. 1) .and. (ipt .eq. 1)) then
                     call jeveuo(chequi//'.CELV', 'L', ivord)
@@ -152,13 +152,13 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                         valk(2) = nomsym
                         vali = ntcmp
                         call utmess('F', 'FATIGUE1_78', sk=valk(2), si=vali)
-                    endif
-                endif
+                    end if
+                end if
 !
                 call jeveuo(chequi//'.CELV', 'L', ivord)
 !
 ! -         STOCKAGE COMPOSANTE NUMCMP(ICMP)
-                zr(ivpt+iord-1) = zr(ivord+(ipt-1)*ntcmp+numcmp(icmp)- 1)
+                zr(ivpt+iord-1) = zr(ivord+(ipt-1)*ntcmp+numcmp(icmp)-1)
 !
 !
             end do
@@ -170,48 +170,48 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 !         METHODE CALCUL DU DOMMAGE          = WOHLER_LINEAIRE
 !
             if (mcompt .eq. 'RAINFLOW') then
-                call fgpic2(mexpic, zr(ivrtv), zr(ivpt), nbord, zr(ivpic),&
+                call fgpic2(mexpic, zr(ivrtv), zr(ivpt), nbord, zr(ivpic), &
                             npic)
-                call fgrain(zr(ivpic), npic, zi(ivitv), ncyc, zr(ivmin),&
+                call fgrain(zr(ivpic), npic, zi(ivitv), ncyc, zr(ivmin), &
                             zr(ivmax))
-            else if (mcompt(1:6).eq.'TAHERI') then
+            else if (mcompt(1:6) .eq. 'TAHERI') then
                 call fgcota(nbord, zr(ivpt), ncyc, zr(ivmin), zr(ivmax))
-            endif
+            end if
             if (ncyc .eq. 0) then
                 call utmess('F', 'FATIGUE1_77', si=ncyc)
-            endif
+            end if
 !
             if (impr .ge. 2) then
                 vali = nbord
-                valr (1) = zr(ivpt)
-                valr (2) = zr(ivpt+1)
+                valr(1) = zr(ivpt)
+                valr(2) = zr(ivpt+1)
                 call utmess('I', 'PREPOST6_7', si=vali, nr=2, valr=valr)
                 if (mcompt .eq. 'RAINFLOW') then
                     vali = npic
-                    valr (1) = zr(ivpic)
-                    valr (2) = zr(ivpic+1)
+                    valr(1) = zr(ivpic)
+                    valr(2) = zr(ivpic+1)
                     call utmess('I', 'PREPOST6_8', si=vali, nr=2, valr=valr)
-                endif
+                end if
                 vali = ncyc
                 call utmess('I', 'PREPOST6_9', si=vali)
                 do j = 1, ncyc
                     vali = j
-                    valr (1) = zr(ivmax+j-1)
-                    valr (2) = zr(ivmin+j-1)
+                    valr(1) = zr(ivmax+j-1)
+                    valr(2) = zr(ivmin+j-1)
                     call utmess('I', 'PREPOST6_10', si=vali, nr=2, valr=valr)
                 end do
-            endif
+            end if
 !
 ! ---     CALCUL DU DOMMAGE AU POINT IPT ET STOCK DANS VECTEUR VDOMAG
 !
-            call fgdomg(mdomag, nommat, nomnap, nomfon, zr(ivmin),&
-                        zr( ivmax), ncyc, dommag)
+            call fgdomg(mdomag, nommat, nomnap, nomfon, zr(ivmin), &
+                        zr(ivmax), ncyc, dommag)
 !
             vdomag(ipt) = dommag
             if (impr .ge. 2) then
-                valr (1) = dommag
+                valr(1) = dommag
                 call utmess('I', 'PREPOST6_11', sr=valr(1))
-            endif
+            end if
 !
         end do
 !

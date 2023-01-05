@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,12 +78,12 @@ subroutine pmfd00()
     integer :: ira1, iriy1, iriz1, irva1, irviy1, irviz1
     integer :: jdnm, jmailfib
     integer :: jnbfig, nbgf, jngf, jcafig, jpofig, jsdfig, jtyfig, ipoint, ngf, ig, ng, ig1
-    integer :: nummai, nbmaza,  ilima,  nbfig,tyfib
+    integer :: nummai, nbmaza, ilima, nbfig, tyfib
 !
 !   Nb de groupes max par élément. Ce nombre doit etre en accord avec les catalogues
 !       grandeur_simple__.cata   NBSP_I ==> NUG[ngmxel]
 !       gener_mepmf1.cata        NBSP_I ==> NUG[ngmxel]
-    integer, parameter ::ngmxel=10
+    integer, parameter ::ngmxel = 10
     integer :: nugrp(ngmxel)
 !
     real(kind=8) :: casect(6), carg(6)
@@ -103,7 +103,7 @@ subroutine pmfd00()
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
-    data ltymcl/'MAILLE','GROUP_MA','TOUT'/
+    data ltymcl/'MAILLE', 'GROUP_MA', 'TOUT'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,11 +131,11 @@ subroutine pmfd00()
         call jeveuo(vpofig, 'L', jpofig)
         call jeveuo(vsdfig, 'L', jsdfig)
 !       nombre total de fibres sur tous les groupes
-        nbfib=0
+        nbfib = 0
         do ig = 1, nbgf
-            nbfib=nbfib+zi(jnbfig-1+ig)
-        enddo
-    endif
+            nbfib = nbfib+zi(jnbfig-1+ig)
+        end do
+    end if
 !
     modnom = nomo//'.MODELE    .LGRF'
     call jeveuo(modnom, 'L', jdnm)
@@ -152,7 +152,7 @@ subroutine pmfd00()
 !   2eme chance
     call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
     ligrmo = modele//'.MODELE'
-    celbid='&&PMFD00.CELBID'
+    celbid = '&&PMFD00.CELBID'
     call alchml(ligrmo, 'TOU_INI_ELEM', 'PNBSP_I', 'V', celbid, iret, ' ')
     call detrsd('CHAM_ELEM', celbid)
     if (iret .eq. 1) goto 999
@@ -176,9 +176,9 @@ subroutine pmfd00()
     call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
 !   rang des composantes a1, iy1, iz1 dans la carte
-    ira1  = indik8( zk8(inomcp), 'A1' , 1, nbcmp )
-    iriy1 = indik8( zk8(inomcp), 'IY1', 1, nbcmp )
-    iriz1 = indik8( zk8(inomcp), 'IZ1', 1, nbcmp )
+    ira1 = indik8(zk8(inomcp), 'A1', 1, nbcmp)
+    iriy1 = indik8(zk8(inomcp), 'IY1', 1, nbcmp)
+    iriz1 = indik8(zk8(inomcp), 'IZ1', 1, nbcmp)
     ASSERT(ira1 .ne. 0 .and. iriy1 .ne. 0 .and. iriz1 .ne. 0)
 !   nombre d'entier code dans la carte
     call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
@@ -187,16 +187,16 @@ subroutine pmfd00()
 !
     valmi = 0
     do ioc = 1, nbocc0
-        nugrp(:)=0
-        call reliem(nomo, noma, 'NU_MAILLE', 'MULTIFIBRE', ioc,&
+        nugrp(:) = 0
+        call reliem(nomo, noma, 'NU_MAILLE', 'MULTIFIBRE', ioc, &
                     2, ltymcl, ltymcl, '&&PMFD00.MAILLSEP', nmailp)
         call jeveuo('&&PMFD00.MAILLSEP', 'L', vi=maillsep)
 !       nombre de groupes a affecter
         call getvtx('MULTIFIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=0, nbret=ngf)
-        ngf=-ngf
+        ngf = -ngf
         if (ngf .gt. ngmxel) then
             call utmess('F', 'MODELISA8_7', si=ngmxel)
-        endif
+        end if
 !       noms des groupes a affecter
         call getvtx('MULTIFIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=ngf, vect=zk24(jngf), nbret=ibid)
 !       Nombre de fibres de l'ensemble des groupes.
@@ -208,50 +208,50 @@ subroutine pmfd00()
             call jenonu(jexnom(vnmfig, zk24(jngf+ig-1)), ng)
             if (ng .eq. 0) then
                 call utmess('F', 'MODELISA6_18', sk=zk24(jngf+ig-1))
-            endif
+            end if
             nbfib = nbfib+zi(jnbfig+ng-1)
-            if (ig.eq.1) then
-                tyfib  = zi(jtyfig+ng-1)
+            if (ig .eq. 1) then
+                tyfib = zi(jtyfig+ng-1)
             else
-                if ( tyfib.ne.zi(jtyfig+ng-1) ) then
+                if (tyfib .ne. zi(jtyfig+ng-1)) then
                     valmk(1) = zk24(jngf)
                     valmk(2) = zk24(jngf+ig-1)
                     call utmess('F', 'MODELISA6_17', nk=2, valk=valmk)
-                endif
-            endif
+                end if
+            end if
             nugrp(ig) = ng
-        enddo
-        ASSERT( (tyfib.ne.1).or.(tyfib.ne.2) )
+        end do
+        ASSERT((tyfib .ne. 1) .or. (tyfib .ne. 2))
         ncarfi = zi(jsdfig+tyfib)
-        ncarfimax = max(zi(jsdfig+1),zi(jsdfig+2))
+        ncarfimax = max(zi(jsdfig+1), zi(jsdfig+2))
 !       on affecte les éléments poutres concernés par cette occurence pour chaque EL :
 !           nb de fibre, nb de groupes de fibres, numéro des groupes
 !           dans la SD on ne mémorise que ncarfimax, c'est le dimensionnement de la carte.
         do jj = 1, nmailp
             numail = maillsep(jj)
             ipos = jmailfib+(numail-1)*(4+ngmxel)
-            zi(ipos)   = nbfib
+            zi(ipos) = nbfib
             zi(ipos+1) = ngf
             zi(ipos+2) = tyfib
             zi(ipos+3) = ncarfimax
             do ig = 1, ngmxel
                 zi(ipos+3+ig) = nugrp(ig)
-            enddo
-        enddo
+            end do
+        end do
 !       intégration pour tous les groupes de cette occurence
-        casect(:)=0.0d+0
+        casect(:) = 0.0d+0
         do ig = 1, ngf
-            ig1    = nugrp(ig)
-            nbfig  = zi(jnbfig-1+ig1)
+            ig1 = nugrp(ig)
+            nbfig = zi(jnbfig-1+ig1)
             ipoint = zi(jpofig-1+ig1)
             call pmfitg(tyfib, nbfig, ncarfi, zr(jcafig+ipoint-1), carg)
             do ii = 1, 6
-                casect(ii) = casect(ii) + carg(ii)
-            enddo
-        enddo
+                casect(ii) = casect(ii)+carg(ii)
+            end do
+        end do
 !       boucle sur les mailles
         do ima = 1, nmailp
-            nummai=maillsep(ima)
+            nummai = maillsep(ima)
 !           recherche de la zone comtenant nummai
             iasbon = 0
             do ii = 1, iasedi
@@ -263,62 +263,62 @@ subroutine pmfd00()
                     call jeveuo(jexnum(k24bid, izone), 'L', ilima)
                     call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !               si c'est un groupe de maille
-                else if (icode.eq.2) then
+                else if (icode .eq. 2) then
                     k24bid = noma//'.GROUPEMA'
                     call jeveuo(jexnum(k24bid, izone), 'L', ilima)
                     call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !               si c'est tout le maillage
-                else if (icode.eq.1) then
+                else if (icode .eq. 1) then
                     iasbon = ii
                     goto 160
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !               maille dans liste ou groupe de maille de cette zone
                 do jj = 1, nbmaza
                     if (nummai .eq. zi(ilima+jj-1)) then
                         iasbon = ii
                         goto 160
-                    endif
-                enddo
-            enddo
+                    end if
+                end do
+            end do
             if (iasbon .eq. 0) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 call utmess('F', 'ALGELINE_34', sk=valmk(1))
-            endif
+            end if
 160         continue
 !           entier code de la zone
             icode = desc(1+3+2*iasmax+nbec*(iasbon-1))
 !           rang de la valeur dans l'entier code (0 si n'existe pas)
-            irva1  = rgcmpg(icode,ira1)
-            irviy1 = rgcmpg(icode,iriy1)
-            irviz1 = rgcmpg(icode,iriz1)
+            irva1 = rgcmpg(icode, ira1)
+            irviy1 = rgcmpg(icode, iriy1)
+            irviz1 = rgcmpg(icode, iriz1)
             if (irva1 .eq. 0 .or. irviy1 .eq. 0 .or. irviz1 .eq. 0) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 call utmess('F', 'MODELISA8_3', sk=valmk(1))
-            endif
+            end if
 !           on recupere les composantes : a1, iy1, iz1 de cette zone
-            airpou=vale(1+(iasbon-1)*nbcmp + irva1 - 1)
-            moinoy=vale(1+(iasbon-1)*nbcmp + irviy1 - 1)
-            moinoz=vale(1+(iasbon-1)*nbcmp + irviz1 - 1)
-            if ( airpou .le. r8prem() ) then
+            airpou = vale(1+(iasbon-1)*nbcmp+irva1-1)
+            moinoy = vale(1+(iasbon-1)*nbcmp+irviy1-1)
+            moinoz = vale(1+(iasbon-1)*nbcmp+irviz1-1)
+            if (airpou .le. r8prem()) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 call utmess('F', 'MODELISA8_1', sk=valmk(1))
-            endif
-            if ( moinoy .le. r8prem() ) then
+            end if
+            if (moinoy .le. r8prem()) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 valmk(2) = 'IY'
                 call utmess('F', 'MODELISA8_2', nk=2, valk=valmk)
-            endif
-            if ( moinoz .le. r8prem() ) then
+            end if
+            if (moinoz .le. r8prem()) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 valmk(2) = 'IZ'
                 call utmess('F', 'MODELISA8_2', nk=2, valk=valmk)
-            endif
+            end if
 !           Test sur la section
 !               comparaison sur la somme des aires des fibres
             call getvr8('MULTIFIBRE', 'PREC_AIRE', iocc=ioc, scal=precai, nbret=iret)
-            erre=abs(airpou-casect(1))/airpou
+            erre = abs(airpou-casect(1))/airpou
             if (erre .gt. precai) then
                 valmi = ioc
                 call jenuno(jexnum(mommai, nummai), valmk(1))
@@ -327,12 +327,12 @@ subroutine pmfd00()
                 valmr(3) = erre
                 valmr(4) = precai
                 call utmess('E', 'MODELISA8_4', sk=valmk(1), si=valmi, nr=4, valr=valmr)
-            endif
+            end if
 !           Test sur les inerties
-            if ( tyfib .eq. 1 ) then
+            if (tyfib .eq. 1) then
 !               comparaison des moments d'inerties : iy, iz
                 call getvr8('MULTIFIBRE', 'PREC_INERTIE', iocc=ioc, scal=precai, nbret=iret)
-                erre=abs(moinoy-casect(5))/moinoy
+                erre = abs(moinoy-casect(5))/moinoy
                 if (erre .gt. precai) then
                     valmi = ioc
                     call jenuno(jexnum(mommai, nummai), valmk(1))
@@ -342,8 +342,8 @@ subroutine pmfd00()
                     valmr(3) = erre
                     valmr(4) = precai
                     call utmess('E', 'MODELISA8_5', nk=2, valk=valmk, si=valmi, nr=4, valr=valmr)
-                endif
-                erre=abs(moinoz-casect(4))/moinoz
+                end if
+                erre = abs(moinoz-casect(4))/moinoz
                 if (erre .gt. precai) then
                     valmi = ioc
                     call jenuno(jexnum(mommai, nummai), valmk(1))
@@ -353,15 +353,15 @@ subroutine pmfd00()
                     valmr(3) = erre
                     valmr(4) = precai
                     call utmess('E', 'MODELISA8_5', nk=2, valk=valmk, si=valmi, nr=4, valr=valmr)
-                endif
-            else if ( tyfib .eq. 2 ) then
+                end if
+            else if (tyfib .eq. 2) then
 !               Si tyfib=2 pas de test sur les inerties
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
     if (valmi .ne. 0) then
         call utmess('F', 'MODELISA8_6')
-    endif
+    end if
 !
 200 continue
 ! --------------------------------------------------------------------------------------------------
@@ -376,7 +376,7 @@ subroutine pmfd00()
     if (niv .eq. 2) then
         call imprsd('CHAMP', carele//'.CANBSP', 6, 'INFO=2')
         call imprsd('CHAMP', carele//'.CAFIBR', 6, 'INFO=2')
-    endif
+    end if
 999 continue
     call jedema()
 end subroutine

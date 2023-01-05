@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine orvlse(noma, listma, nbmail, norien, vect,&
+subroutine orvlse(noma, listma, nbmail, norien, vect, &
                   noeud)
     implicit none
 #include "asterf_types.h"
@@ -119,16 +119,16 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
             valk(1) = nomail
             valk(2) = typel
             call utmess('F', 'MODELISA5_93', nk=2, valk=valk)
-        endif
+        end if
     end do
 !ok --- on teste le type de maille de la liste
 !       si ce n'est pas un seg => erreur
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
-    kdim ='1D'
+    kdim = '1D'
     nomavo = '&&ORVLMA.MAILLE_VOISINE '
-    call utmavo(noma, kdim, listma, nbmail, 'V',&
+    call utmavo(noma, kdim, listma, nbmail, 'V', &
                 nomavo, zero, ibid)
     call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
     call jeveuo(nomavo, 'L', p3)
@@ -136,23 +136,23 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
 !
 ! --- ON TESTE SI LA POUTRE CONTIENT UN EMBRANCHEMENT
     do ima = 1, nbmail
-        numail = zi(p4+ima) - zi(p4+ima-1)
+        numail = zi(p4+ima)-zi(p4+ima-1)
         if (numail .ge. 3) then
-            norieg =0
+            norieg = 0
             do ii = 1, numail
                 numa = zi(p3+zi(p4+ima-1)-1+ii-1)
                 do ico = 1, nbmail
                     if (numa .eq. listma(ico)) then
-                        norieg = norieg +1
+                        norieg = norieg+1
                         goto 12
-                    endif
+                    end if
                 end do
- 12             continue
+12              continue
             end do
             if (norieg .ge. 3) then
                 call utmess('F', 'MODELISA4_84')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !
@@ -167,39 +167,39 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
         jdesm1 = zi(kori-1+ima)
 !
 ! ------ VERIFICATION QUE LE NOEUD EST DANS LA MAILLE
-        ico = ioriv3( zi(p1+jdesm1-1), noeud, vect, zr(jcoor) )
+        ico = ioriv3(zi(p1+jdesm1-1), noeud, vect, zr(jcoor))
 !
 ! ------ LA MAILLE NE CONTIENT PAS LE NOEUD
         if (ico .eq. 0) then
 !
 ! ------ LA MAILLE A ETE REORIENTEE
         else if (ico .lt. 0) then
-            nbmaor = nbmaor + 1
+            nbmaor = nbmaor+1
             zi(kdeb+nbmaor-1) = ima
             zi(lori-1+ima) = 1
             if (niv .eq. 2) then
                 call jenuno(jexnum(mailma, numa), nomail)
-                write(ifm,*) 'LA MAILLE '//nomail//&
+                write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' A ETE ORIENTEE PAR RAPPORT AU VECTEUR'
-            endif
-            norieg = norieg + 1
+            end if
+            norieg = norieg+1
 !
 ! ------ LA MAILLE A LA BONNE ORIENTATION
         else
-            nbmaor = nbmaor + 1
+            nbmaor = nbmaor+1
             zi(kdeb+nbmaor-1) = ima
             zi(lori-1+ima) = 1
             if (niv .eq. 2) then
                 call jenuno(jexnum(mailma, numa), nomail)
-                write(ifm,*) 'LA MAILLE '//nomail//&
+                write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' EST ORIENTEE PAR RAPPORT AU VECTEUR'
-            endif
-        endif
+            end if
+        end if
 !
     end do
     if (nbmaor .eq. 0) then
         call utmess('F', 'MODELISA6_1')
-    endif
+    end if
 !
     do ii = 1, nbmaor
         lliste = 0
@@ -216,35 +216,35 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
         nbmavo = zi(p4+im1)-zi(p4-1+im1)
         do im3 = 1, nbmavo
             indi = zi(p3+zi(p4+im1-1)-1+im3-1)
-            im2 = indiis ( listma, indi, 1, nbmail )
+            im2 = indiis(listma, indi, 1, nbmail)
             if (im2 .eq. 0) goto 210
             numail = listma(im2)
             if (pasori(im2)) then
                 jdesm2 = zi(kori-1+im2)
 !           VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
-                ico = iorim1 ( zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie )
+                ico = iorim1(zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
 !           SI MAILLES CONNEXES
                 if (ico .ne. 0) then
                     zi(lori-1+im2) = 1
-                    lliste = lliste + 1
+                    lliste = lliste+1
                     zi(jori+lliste) = im2
                     if (reorie .and. niv .eq. 2) then
                         call jenuno(jexnum(mailma, numail), nomail)
                         if (ico .lt. 0) then
-                            write (ifm,*) 'LA MAILLE ',nomail,' A ETE REORIENTEE'
+                            write (ifm, *) 'LA MAILLE ', nomail, ' A ETE REORIENTEE'
                         else
-                            write (ifm,*) 'LA MAILLE ',nomail,' EST ORIENTEE'
-                        endif
-                    endif
-                endif
+                            write (ifm, *) 'LA MAILLE ', nomail, ' EST ORIENTEE'
+                        end if
+                    end if
+                end if
 !
 !           SI ORIENTATIONS CONTRAIRES
-                if (ico .lt. 0) norieg = norieg + 1
+                if (ico .lt. 0) norieg = norieg+1
 !
-            endif
+            end if
 210         continue
         end do
-        iliste = iliste + 1
+        iliste = iliste+1
         if (iliste .le. lliste) goto 200
     end do
 !
@@ -253,10 +253,10 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
     do ima = 1, nbmail
         if (pasori(ima)) then
             call utmess('F', 'MODELISA6_2')
-        endif
+        end if
     end do
 !
-    norien = norien + norieg
+    norien = norien+norieg
 !
     call jedetr('&&ORVLMA.ORI1')
     call jedetr('&&ORVLMA.ORI2')

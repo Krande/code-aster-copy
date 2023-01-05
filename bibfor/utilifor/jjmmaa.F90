@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,28 +29,28 @@ subroutine jjmmaa(ct, aut)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    aut='INTERF_ST/TF'
+    aut = 'INTERF_ST/TF'
 !
 !
     call kloklo(t)
-    t(1)=t(2)
-    t(2)=t(3)
-    t(3)=t(4)
+    t(1) = t(2)
+    t(2) = t(3)
+    t(3) = t(4)
     if (t(1) .le. 9) then
-        ct(1)='0   '
-        call codent(t(1), 'G', ct(1)(2:2))
+        ct(1) = '0   '
+        call codent(t(1), 'G', ct(1) (2:2))
     else
-        ct(1)='    '
-        call codent(t(1), 'G', ct(1)(1:2))
-    endif
+        ct(1) = '    '
+        call codent(t(1), 'G', ct(1) (1:2))
+    end if
     if (t(2) .le. 9) then
-        ct(2)='0   '
-        call codent(t(2), 'G', ct(2)(2:2))
+        ct(2) = '0   '
+        call codent(t(2), 'G', ct(2) (2:2))
     else
-        ct(2)='    '
-        call codent(t(2), 'G', ct(2)(1:2))
-    endif
-    ct(3)='    '
+        ct(2) = '    '
+        call codent(t(2), 'G', ct(2) (1:2))
+    end if
+    ct(3) = '    '
     call codent(t(3), 'G', ct(3))
 !
 end subroutine

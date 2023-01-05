@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,13 +68,13 @@ subroutine recyec(nmresz, mdcycz, numsec, typsdz)
 !-------------------RECUPERATION DE LA BASE MODALE----------------------
 !
     call jeveuo(modcyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
-    basmod=cycl_refe(3)
+    basmod = cycl_refe(3)
 !
 !-----------------------RECUPERATION DU TYPE INTERFACE------------------
 !
 !
     call jeveuo(modcyc//'.CYCL_TYPE', 'L', vk8=cycl_type)
-    typint=cycl_type(1)
+    typint = cycl_type(1)
 !
 !
 !------------------------------RESTITUTION -----------------------------
@@ -83,14 +83,14 @@ subroutine recyec(nmresz, mdcycz, numsec, typsdz)
 !
     if (typint .eq. 'CRAIGB  ' .or. typint .eq. 'CB_HARMO') then
         call recbec(nomres, typsd, basmod, modcyc, numsec)
-    endif
+    end if
 !
 !
 !    CAS MAC NEAL AVEC ET SANS CORRECTION
 !
     if (typint .eq. 'MNEAL   ' .or. typint .eq. 'AUCUN   ') then
         call remnec(nomres, typsd, basmod, modcyc, numsec)
-    endif
+    end if
 !
 !
     call jedema()

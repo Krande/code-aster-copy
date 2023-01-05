@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine jjalls(lonoi, ic, genri, typei, lty,&
+subroutine jjalls(lonoi, ic, genri, typei, lty, &
                   ci, itab, jitab, iadmi, iadyn)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
@@ -46,47 +46,47 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 ! OUT IADYN  : ADRESSE DU TABLEAU ALLOUE DYNAMIQUEMENT
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
     integer :: i, iada, idm, ierr, iessai, ildyna, jcara
     integer :: jdate, jhcod, jiadd, jiadm, jiszo2, jlong, jlono
     integer :: jltyp, jluti, jmarq, lgbl, lsi, lso
     integer :: ltot, n, nde
 !-----------------------------------------------------------------------
-    parameter      ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
     integer :: nitecr, kmarq
-    common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
-     &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
-     &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
+    common/ificje/nblmax(n), nbluti(n), longbl(n),&
+     &                 kitlec(n), kitecr(n), kiadm(n),&
+     &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
 ! ----------------------------------------------------------------------
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: ldyn, lgdyn, nbdyn, nbfree
-    common /idynje/  ldyn , lgdyn , nbdyn , nbfree
+    common/idynje/ldyn, lgdyn, nbdyn, nbfree
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
     integer :: init, iblanc, valloc, lsic
     integer :: ic, ival(4), unmega
     aster_logical :: linit, ldeps
     character(len=8) :: cblanc
-    equivalence    ( cblanc,iblanc )
-    parameter      ( nde = 6)
+    equivalence(cblanc, iblanc)
+    parameter(nde=6)
 ! ----------------------------------------------------------------------
 ! REMARQUE : LE PARAMETER NDE EST AUSSI DEFINI DANS JXLIRO JXECRO
 ! ----------------------------------------------------------------------
-    data cblanc     /'        '/
+    data cblanc/'        '/
 ! DEB ------------------------------------------------------------------
     ltot = 0
     jitab = 0
     iadmi = 0
     iadyn = 0
-    linit = ( ci(1:4) .eq. 'INIT' )
+    linit = (ci(1:4) .eq. 'INIT')
     lso = lonoi
 !
 !     LA TAILLE DU SEGMENT DE VALEURS EST AJUSTEE POUR S'ALLIGNER
@@ -94,9 +94,9 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 !
 !
     if (lty .ne. lois) then
-        lso = lso + lty
-        if (mod(lso,lois) .ne. 0) lso = (1 + lso/lois) * lois
-    endif
+        lso = lso+lty
+        if (mod(lso, lois) .ne. 0) lso = (1+lso/lois)*lois
+    end if
 !
 !     LA TAILLE DU SEGMENT DE VALEURS EST AJUSTEE A LA LONGUEUR DE BLOC
 !     SI ON EST COMPRIS ENTRE LGBL-(NDE*LOIS) ET LGBL POUR DISPOSER DE
@@ -107,19 +107,19 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
             lgbl = 1024*longbl(ic)*lois
             if (lso .ge. lgbl-nde*lois .and. lso .lt. lgbl) then
                 lso = lgbl
-            endif
-        endif
-    endif
-    ASSERT(lso.ne.0)
-    lsi = lso / lois
+            end if
+        end if
+    end if
+    ASSERT(lso .ne. 0)
+    lsi = lso/lois
 !
 !     LE SEGMENT DE VALEURS EST ALLOUE DYNAMIQUEMENT
 !
     iessai = 0
     ildyna = 0
 !
-    lsic = lsi + 8
- 50 continue
+    lsic = lsi+8
+50  continue
     ildyna = ildyna+1
 !
 !   ON TESTE SI LE CUMUL DES ALLOCATIONS RESTE INFERIEUR A LA LIMITE
@@ -128,11 +128,11 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 !
     if (mcdyn+lsic .gt. vmxdyn) then
         if (ildyna .gt. 1) then
-            unmega=1048576
-            ival(1)=(lsic*lois)/unmega
-            ival(2)=nint(vmxdyn*lois)/unmega
-            ival(3)=nint(mcdyn*lois)/unmega
-            ival(4)=(ltot*lois)/unmega
+            unmega = 1048576
+            ival(1) = (lsic*lois)/unmega
+            ival(2) = nint(vmxdyn*lois)/unmega
+            ival(3) = nint(mcdyn*lois)/unmega
+            ival(4) = (ltot*lois)/unmega
             call utmess('E', 'JEVEUX_62', ni=4, vali=ival)
             call jeimpm(6)
             call utmess('F', 'JEVEUX_62', ni=4, vali=ival)
@@ -144,56 +144,56 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
             call jjldyn(2, -2, ltot)
             if (mcdyn+lsic .gt. vmxdyn) then
                 call jjldyn(0, -1, ltot)
-            endif
+            end if
             goto 50
-        endif
-    endif
+        end if
+    end if
     iessai = iessai+1
     call hpalloc(iada, lsic, ierr, 0)
     if (ierr .eq. 0) then
         valloc = loc(iszon)
-        jiszo2 = (iada - valloc)/lois
-        iadmi = jiszo2 + 5 - jiszon
-        idm = jiszo2 + 1
+        jiszo2 = (iada-valloc)/lois
+        iadmi = jiszo2+5-jiszon
+        idm = jiszo2+1
         iadyn = iada
-        mcdyn = mcdyn + lsic
-        mxdyn = max(mxdyn,mcdyn*lois)
-        nbdyn = nbdyn + 1
+        mcdyn = mcdyn+lsic
+        mxdyn = max(mxdyn, mcdyn*lois)
+        nbdyn = nbdyn+1
     else
         if (iessai .gt. 1) then
             call utmess('E', 'JEVEUX_60', ni=2, vali=ival)
             call jeimpm(6)
-            ival(1)=lsic*lois
-            ival(2)=ltot*lois
+            ival(1) = lsic*lois
+            ival(2) = ltot*lois
             call utmess('F', 'JEVEUX_60', ni=2, vali=ival)
         else
             call jjldyn(2, -2, ltot)
             if (mcdyn+lsic .gt. vmxdyn) then
                 call jjldyn(0, -1, ltot)
-            endif
+            end if
             goto 50
-        endif
-    endif
+        end if
+    end if
 !
-    iszon( idm ) = idm + lsi + 8 - jiszon
-    iszon( idm +1 ) = 0
-    iszon( idm +2 ) = 0
-    iszon( idm +3 ) = istat(1)
-    iszon( idm+lsi+ 4 ) = istat(1)
-    iszon( idm+lsi+ 5 ) = 0
-    iszon( idm+lsi+ 6 ) = 0
-    iszon( idm+lsi+ 7 ) = 0
+    iszon(idm) = idm+lsi+8-jiszon
+    iszon(idm+1) = 0
+    iszon(idm+2) = 0
+    iszon(idm+3) = istat(1)
+    iszon(idm+lsi+4) = istat(1)
+    iszon(idm+lsi+5) = 0
+    iszon(idm+lsi+6) = 0
+    iszon(idm+lsi+7) = 0
 !
     ldeps = .true.
-    call jxlocs(itab, genri, lty, lonoi, iadmi,&
+    call jxlocs(itab, genri, lty, lonoi, iadmi, &
                 ldeps, jitab)
 !
     if (linit) then
         init = 0
         if (typei(1:1) .eq. 'K') init = iblanc
         do i = 1, lsi
-            iszon ( jiszon+iadmi+i-1 ) = init
+            iszon(jiszon+iadmi+i-1) = init
         end do
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

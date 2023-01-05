@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
+subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
                   basemo, typref, typbas, tousno, multap)
     implicit none
 #include "asterf_types.h"
@@ -38,12 +38,12 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
     character(len=16) :: champ(8)
     character(len=19) :: nomcha
 !     ------------------------------------------------------------------
-    data blanc    /'        '/
+    data blanc/'        '/
 !     ------------------------------------------------------------------
 !
     mode = basemo
 !
-    champ(1)=' '
+    champ(1) = ' '
     call getvtx(' ', 'TOUT_CHAM', scal=champ(1), nbret=n1)
 !
     if (champ(1) .eq. 'OUI') then
@@ -57,38 +57,38 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
         else
             call jeveuo(trange//'.DEPL', 'L', itresu(1))
 !
-        endif
+        end if
 !
         call jeexin(trange//'.VITE', iret)
         if (iret .eq. 0) then
             call utmess('F', 'ALGORITH10_12')
         else
             call jeveuo(trange//'.VITE', 'L', itresu(2))
-        endif
+        end if
         call jeexin(trange//'.ACCE', iret)
         if (iret .eq. 0) then
             call utmess('F', 'ALGORITH10_13')
         else
             call jeveuo(trange//'.ACCE', 'L', itresu(3))
-        endif
+        end if
         if (nfonct .ne. 0) then
             nbcham = 4
             typea(4) = 'ACCE_ABSOLU     '
             itresu(4) = itresu(3)
-        endif
+        end if
         if (mode .eq. blanc) then
             typref(1) = ' '
             typref(2) = ' '
             typref(3) = ' '
             typref(4) = ' '
         else
-            call rsexch(' ', basemo, 'DEPL', 1, nomcha,&
+            call rsexch(' ', basemo, 'DEPL', 1, nomcha, &
                         iret)
             typref(1) = nomcha
             typref(2) = nomcha
             typref(3) = nomcha
             typref(4) = nomcha
-        endif
+        end if
         typbas(1) = 'DEPL'
         typbas(2) = 'DEPL'
         typbas(3) = 'DEPL'
@@ -108,14 +108,14 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                     call utmess('F', 'ALGORITH10_11')
                 else
                     call jeveuo(trange//'.DEPL', 'L', itresu(i))
-                endif
+                end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
                 else
-                    call rsexch(' ', basemo, typea(i), 1, nomcha,&
+                    call rsexch(' ', basemo, typea(i), 1, nomcha, &
                                 iret)
                     typref(i) = nomcha
-                endif
+                end if
                 typbas(i) = 'DEPL'
 !
             else if (champ(i) .eq. 'VITE') then
@@ -125,14 +125,14 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                     call utmess('F', 'ALGORITH10_12')
                 else
                     call jeveuo(trange//'.VITE', 'L', itresu(i))
-                endif
+                end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
                 else
-                    call rsexch(' ', basemo, 'DEPL', 1, nomcha,&
+                    call rsexch(' ', basemo, 'DEPL', 1, nomcha, &
                                 iret)
                     typref(i) = nomcha
-                endif
+                end if
                 typbas(i) = 'DEPL'
 !
             else if (champ(i) .eq. 'ACCE') then
@@ -142,14 +142,14 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                     call utmess('F', 'ALGORITH10_13')
                 else
                     call jeveuo(trange//'.ACCE', 'L', itresu(i))
-                endif
+                end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
                 else
-                    call rsexch(' ', basemo, 'DEPL', 1, nomcha,&
+                    call rsexch(' ', basemo, 'DEPL', 1, nomcha, &
                                 iret)
                     typref(i) = nomcha
-                endif
+                end if
                 typbas(i) = 'DEPL'
 !
             else if (champ(i) .eq. 'ACCE_ABSOLU') then
@@ -159,35 +159,35 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                     call utmess('F', 'ALGORITH10_13')
                 else
                     call jeveuo(trange//'.ACCE', 'L', itresu(i))
-                endif
+                end if
                 if (mode .eq. blanc) then
                     typref(i) = ' '
                 else
-                    call rsexch(' ', basemo, 'DEPL', 1, nomcha,&
+                    call rsexch(' ', basemo, 'DEPL', 1, nomcha, &
                                 iret)
                     typref(i) = nomcha
-                endif
+                end if
                 typbas(i) = 'DEPL'
 !
-                elseif ( champ(i) .eq. 'FORC_NODA' .or. champ(i) .eq.&
-            'REAC_NODA' ) then
+            elseif (champ(i) .eq. 'FORC_NODA' .or. champ(i) .eq. &
+                    'REAC_NODA') then
                 typea(i) = champ(i)
                 call jeexin(trange//'.DEPL', iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH10_11')
                 else
                     call jeveuo(trange//'.DEPL', 'L', itresu(i))
-                endif
+                end if
                 if (multap) then
                     call utmess('F', 'ALGORITH10_14')
-                endif
+                end if
                 if (mode .eq. blanc) then
                     call utmess('F', 'ALGORITH10_15')
                 else
-                    call rsexch('F', basemo, typea(i), 1, nomcha,&
+                    call rsexch('F', basemo, typea(i), 1, nomcha, &
                                 iret)
                     typref(i) = nomcha
-                endif
+                end if
                 typbas(i) = typea(i)
 !
             else
@@ -197,24 +197,24 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                     call utmess('F', 'ALGORITH10_11')
                 else
                     call jeveuo(trange//'.DEPL', 'L', itresu(i))
-                endif
+                end if
                 if (.not. tousno) then
                     call utmess('F', 'ALGORITH10_17', sk=typea(i))
-                endif
+                end if
                 if (multap) then
                     call utmess('F', 'ALGORITH10_14')
-                endif
+                end if
                 if (mode .eq. blanc) then
                     call utmess('F', 'ALGORITH10_15')
                 else
-                    call rsexch('F', basemo, typea(i), 1, nomcha,&
+                    call rsexch('F', basemo, typea(i), 1, nomcha, &
                                 iret)
                     typref(i) = nomcha
-                endif
+                end if
                 typbas(i) = typea(i)
 !
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

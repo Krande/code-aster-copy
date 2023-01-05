@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,15 +66,15 @@ subroutine dxefn2(nomte, pgl, sigt)
     call rcvarc(' ', 'TEMP_MIL', 'REF', 'NOEU', 1, 1, tref, iret1)
 !
 !
-    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 '&
-   .or. nomte .eq. 'MEDKTG3 ' .or. nomte .eq. 'MET3TR3 ') then
+    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' &
+        .or. nomte .eq. 'MEDKTG3 ' .or. nomte .eq. 'MET3TR3 ') then
         nno = 3
-    else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDKQG4 ' .or.&
-             nomte.eq.'MEDSQU4 ' .or. nomte.eq.'MEQ4QU4 ') then
+    else if (nomte .eq. 'MEDKQU4 ' .or. nomte .eq. 'MEDKQG4 ' .or. &
+             nomte .eq. 'MEDSQU4 ' .or. nomte .eq. 'MEQ4QU4 ') then
         nno = 4
     else
         call utmess('F', 'ELEMENTS_14', sk=nomte)
-    endif
+    end if
 !
 !===============================================================
 !          -- RECUPERATION DE LA TEMPERATURE  AUX NOEUDS
@@ -86,15 +86,15 @@ subroutine dxefn2(nomte, pgl, sigt)
         call rcvarc(' ', 'TEMP_SUP', '+', 'NOEU', ino, 1, tsup(ino), iret)
         call rcvarc(' ', 'TEMP_MIL', '+', 'NOEU', ino, 1, tmoy(ino), iretm)
         if (iret .eq. 0 .and. iretm .ne. 0) then
-            tmoy(ino)=(tinf(ino)+tsup(ino))/2.d0
-        endif
+            tmoy(ino) = (tinf(ino)+tsup(ino))/2.d0
+        end if
     end do
 !
     call jevech('PMATERC', 'L', jmate)
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
-    if ((phenom.eq.'ELAS')       .or. (phenom.eq.'ELAS_COQUE')&
-   .or. (phenom.eq.'ELAS_COQMU') .or. (phenom.eq.'ELAS_GLRC') ) then
+    if ((phenom .eq. 'ELAS') .or. (phenom .eq. 'ELAS_COQUE') &
+        .or. (phenom .eq. 'ELAS_COQMU') .or. (phenom .eq. 'ELAS_GLRC')) then
 !
 ! --- RECUPERATION DE L'EPAISSEUR DE LA COQUE
 !     --------------------------
@@ -124,19 +124,19 @@ subroutine dxefn2(nomte, pgl, sigt)
 !  --      CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
 !  --      SONT LES RESULTATS DE LA ROUTINE DXMATH.
 !          ----------------------------------------
-                        coe1 = (tsup(ino)+tinf(ino)+4.d0*tmoy(ino))/6.d0 - tref
+                        coe1 = (tsup(ino)+tinf(ino)+4.d0*tmoy(ino))/6.d0-tref
                         coe2 = (tsup(ino)-tinf(ino))/epais
 !
-                        sigt(1+8* (ino-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
-                        sigt(2+8* (ino-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
-                        sigt(3+8* (ino-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
-                        sigt(4+8* (ino-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
-                        sigt(5+8* (ino-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
-                        sigt(6+8* (ino-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
+                        sigt(1+8*(ino-1)) = coe1*(dm(1, 1)+dm(1, 2))+coe2*(dmf(1, 1)+dmf(1, 2))
+                        sigt(2+8*(ino-1)) = coe1*(dm(2, 1)+dm(2, 2))+coe2*(dmf(2, 1)+dmf(2, 2))
+                        sigt(3+8*(ino-1)) = coe1*(dm(3, 1)+dm(3, 2))+coe2*(dmf(3, 1)+dmf(3, 2))
+                        sigt(4+8*(ino-1)) = coe2*(df(1, 1)+df(1, 2))+coe1*(dmf(1, 1)+dmf(1, 2))
+                        sigt(5+8*(ino-1)) = coe2*(df(2, 1)+df(2, 2))+coe1*(dmf(2, 1)+dmf(2, 2))
+                        sigt(6+8*(ino-1)) = coe2*(df(3, 1)+df(3, 2))+coe1*(dmf(3, 1)+dmf(3, 2))
                     end do
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 30  continue
 end subroutine

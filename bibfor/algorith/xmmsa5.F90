@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
-                  nd, tau1, tau2, cohes, job,&
-                  rela, alpha, dsidep, delta, p,&
+subroutine xmmsa5(ndim, ipgf, imate, saut, lamb, &
+                  nd, tau1, tau2, cohes, job, &
+                  rela, alpha, dsidep, delta, p, &
                   am, r)
     implicit none
 #include "jeveux.h"
@@ -73,8 +73,8 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 ! --- INIIALISATIONS
 !
     am(:) = 0.d0
-    p(:,:) = 0.d0
-    dsidep(:,:) = 0.d0
+    p(:, :) = 0.d0
+    dsidep(:, :) = 0.d0
     delta(:) = 0.d0
     vim(:) = 0.d0
     vip(:) = 0.d0
@@ -82,21 +82,21 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 ! --- ON CONSTRUIT P MATRICE DE PASSAGE BASE FIXE --> BASE COVARIANTE
 !
     do i = 1, ndim
-        p(1,i) = nd(i)
+        p(1, i) = nd(i)
     end do
     do i = 1, ndim
-        p(2,i) = tau1(i)
+        p(2, i) = tau1(i)
     end do
     if (ndim .eq. 3) then
         do i = 1, ndim
-            p(3,i) = tau2(i)
+            p(3, i) = tau2(i)
         end do
-    endif
+    end if
 !
 ! --- CALCUL SAUT DE DEPLACEMENT EN BASE LOCALE {AM}=[P]{SAUT}
 ! --- ON UTILISE L UTILITAIRE PRMAVE : PRODUIT MATRICE-VECTEUR
 !
-    call prmave(0, p, 3, ndim, ndim,&
+    call prmave(0, p, 3, ndim, ndim, &
                 saut, ndim, am, ndim, ier)
 !
 ! --- INVERSION DE CONVENTIONS ENTRE X-FEM ET ROUTINE COMPORTEMENT
@@ -117,31 +117,31 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 ! --- PREDICTION: COHES(3)=1, CORRECTION: COHES(3)=2
 !
         if (cohes(3) .eq. 1.d0) then
-            option='RIGI_MECA_TANG'
+            option = 'RIGI_MECA_TANG'
         else if (cohes(3) .eq. 2.d0) then
-            option='FULL_MECA'
+            option = 'FULL_MECA'
         else
-            option='FULL_MECA'
-        endif
+            option = 'FULL_MECA'
+        end if
 
-        if(job.eq.'MATRICE'.and.option.eq.'FULL_MECA') then
+        if (job .eq. 'MATRICE' .and. option .eq. 'FULL_MECA') then
             eps = 100.*r8prem()
-            vim(4)=min(1.d0,vim(4)*(1+eps))
-        endif
+            vim(4) = min(1.d0, vim(4)*(1+eps))
+        end if
 !
 ! VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
 !.............VIM(1): SEUIL, PLUS GRANDE NORME DU SAUT
 !
         if (rela .eq. 3.d0) then
-            call lceitc('RIGI', ipgf, 1, imate, option,&
-                        lamb, am, delta, dsidep, vim,&
+            call lceitc('RIGI', ipgf, 1, imate, option, &
+                        lamb, am, delta, dsidep, vim, &
                         vip, r)
-        else if (rela.eq.4.d0) then
-            call lceiou('RIGI', ipgf, 1, imate, option,&
-                        lamb, am, delta, dsidep, vim,&
+        else if (rela .eq. 4.d0) then
+            call lceiou('RIGI', ipgf, 1, imate, option, &
+                        lamb, am, delta, dsidep, vim, &
                         vip, r)
 !
-        endif
+        end if
 !
 ! VARIABLES INTERNES ACTUALISEES
 !
@@ -151,9 +151,9 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 ! SINON, DESCENTE
         if (job .eq. 'ACTU_VI') then
             alpha(3) = 1.d0
-        else if (job.eq.'MATRICE') then
+        else if (job .eq. 'MATRICE') then
             alpha(3) = 2.d0
-        endif
+        end if
 !
-    endif
+    end if
 end subroutine

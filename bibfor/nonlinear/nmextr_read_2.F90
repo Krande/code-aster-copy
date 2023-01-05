@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,24 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmextr_read_2(sdextrz      , ds_inout, nb_keyw_fact, list_field, rela_field_keyw,&
+subroutine nmextr_read_2(sdextrz, ds_inout, nb_keyw_fact, list_field, rela_field_keyw, &
                          nb_field_comp)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmextd.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
-type(NL_DS_InOut), intent(in) :: ds_inout
-character(len=*), intent(in) :: sdextrz
-integer, intent(in) :: nb_keyw_fact
-character(len=24), pointer :: list_field(:)
-integer, pointer :: rela_field_keyw(:)
-integer, intent(in) :: nb_field_comp
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=*), intent(in) :: sdextrz
+    integer, intent(in) :: nb_keyw_fact
+    character(len=24), pointer :: list_field(:)
+    integer, pointer :: rela_field_keyw(:)
+    integer, intent(in) :: nb_field_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,30 +69,30 @@ integer, intent(in) :: nb_field_comp
 ! - Access to datastructure
 !
     extr_comp = sdextr(1:14)//'     .COMP'
-    call jeveuo(extr_comp, 'E', vk24 = v_extr_comp)
+    call jeveuo(extr_comp, 'E', vk24=v_extr_comp)
 !
     do i_field_comp = 1, nb_field_comp
 !
 ! ----- Name of LIGREL
 !
-        write(chaine,'(I2)') i_field_comp
+        write (chaine, '(I2)') i_field_comp
         ligrel = sdextr(1:14)//chaine(1:2)//'   .LIGR'
 !
 ! ----- Find first keyword for this field
 !
         do i_keyw_fact = 1, nb_keyw_fact
             i_field = rela_field_keyw(i_keyw_fact)
-            l_comp  = i_field.lt.0
+            l_comp = i_field .lt. 0
             i_field = abs(i_field)
             if (l_comp) then
                 field_type = list_field(i_field)
-                if (field_type.eq.'EPSI_ELGA') then
+                if (field_type .eq. 'EPSI_ELGA') then
                     field_disc = 'ELGA'
                     call nmextd(field_type, ds_inout, field_comp)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
         end do
 !
 ! ----- Save

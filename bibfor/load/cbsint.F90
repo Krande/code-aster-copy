@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cbsint(load, mesh)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 !
-character(len=8), intent(in) :: load, mesh
+    character(len=8), intent(in) :: load, mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ character(len=8), intent(in) :: load, mesh
         call getvid(keywordFact, 'SIGM', iocc=1, scal=chsig, nbret=ibid)
         valv(1) = chsig(1:8)
         call nocart(carte, 1, ncmp)
-    endif
+    end if
 
     call jedema()
 end subroutine

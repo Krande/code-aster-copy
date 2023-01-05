@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
+subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim, &
                   codret)
 !_____________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -62,9 +62,9 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     integer :: edlect
-    parameter (edlect=0)
+    parameter(edlect=0)
     integer :: ednstr
-    parameter (ednstr=0)
+    parameter(ednstr=0)
 !
 !
     integer :: nbmaie
@@ -84,7 +84,7 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 !
     existm = .false.
     codret = 0
-    inquire(file=nofimd,exist=ficexi)
+    inquire (file=nofimd, exist=ficexi)
 !
     if (.not. ficexi) then
 !
@@ -99,7 +99,7 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
         else
             dejouv = .true.
             iaux = 0
-        endif
+        end if
         if (iaux .eq. 0) then
 !====
 ! 2. LE MAILLAGE EST-IL PRESENT ?
@@ -109,9 +109,9 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 !
             call as_mmhnmh(idfimd, nbmaie, codret)
             if (codret .ne. 0) then
-                saux08='mmhnmh'
+                saux08 = 'mmhnmh'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
+            end if
 !
 ! 2.2. ==> RECHERCHE DU NOM ET DE LA DIMENSION DU PREMIER MAILLAGE
 !
@@ -122,42 +122,42 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
             else
 !
 !                 12345678901234567890123456789012
-                saux64 = '                                '// '                 '
+                saux64 = '                                '//'                 '
                 daux = ' '
                 iaux = 1
-                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
+                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux, &
                                daux, codret)
                 if (codret .ne. 0) then
-                    saux08='mmhmii'
+                    saux08 = 'mmhmii'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
                 if (tyaux .ne. ednstr) then
                     call utmess('A', 'MED_81')
-                endif
+                end if
 !
                 iaux = len(nomamd)
                 jaux = lxlgut(saux64)
-                ASSERT(jaux.le.iaux)
+                ASSERT(jaux .le. iaux)
 !
                 nomamd = ' '
                 nomamd(1:jaux) = saux64(1:jaux)
                 ndim = kaux
                 existm = .true.
 !
-            endif
+            end if
 !
 ! 2.3. ==> FERMETURE DU FICHIER
 !
-            if (.not.dejouv) then
+            if (.not. dejouv) then
                 call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
-                    saux08='mficlo'
+                    saux08 = 'mficlo'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
                 idfimd = 0
-            endif
+            end if
 !
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

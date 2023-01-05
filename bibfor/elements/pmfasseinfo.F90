@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine pmfasseinfo(tygrfi, nbfibr, nbcarm, cara, mxfiass, nbfiass, gxjxpou)
 #include "asterfort/utmess.h"
 !
     integer, intent(in) :: nbfibr, tygrfi, nbcarm
-    real(kind=8), intent(in) :: cara(nbcarm,nbfibr)
+    real(kind=8), intent(in) :: cara(nbcarm, nbfibr)
     integer, intent(out):: mxfiass
     integer, pointer :: nbfiass(:)
     real(kind=8), pointer :: gxjxpou(:)
@@ -54,31 +54,31 @@ subroutine pmfasseinfo(tygrfi, nbfibr, nbcarm, cara, mxfiass, nbfiass, gxjxpou)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    if ( tygrfi .eq. 1 ) then
-        mxfiass    = nbfibr
-        ASSERT( size(nbfiass) .eq. 1 )
+    if (tygrfi .eq. 1) then
+        mxfiass = nbfibr
+        ASSERT(size(nbfiass) .eq. 1)
         nbfiass(1) = nbfibr
-    else if ( tygrfi .eq. 2 ) then
+    else if (tygrfi .eq. 2) then
         nbassfi = 0
-        do ii = 1 , nbfibr
-            numgr   = nint( cara(nbcarm,ii) )
-            nbassfi = max( nbassfi , numgr )
-        enddo
-        ASSERT( nbassfi .ne. 0 )
+        do ii = 1, nbfibr
+            numgr = nint(cara(nbcarm, ii))
+            nbassfi = max(nbassfi, numgr)
+        end do
+        ASSERT(nbassfi .ne. 0)
 !
-        ASSERT( size(nbfiass) .eq. nbassfi )
+        ASSERT(size(nbfiass) .eq. nbassfi)
         nbfiass(1:nbassfi) = 0
-        do ii = 1 , nbfibr
-            numgr = nint( cara(nbcarm,ii) )
-            nbfiass(numgr) = nbfiass(numgr) + 1
-            gxjxpou(numgr) = cara(nbcarm-1,ii)
-        enddo
+        do ii = 1, nbfibr
+            numgr = nint(cara(nbcarm, ii))
+            nbfiass(numgr) = nbfiass(numgr)+1
+            gxjxpou(numgr) = cara(nbcarm-1, ii)
+        end do
         mxfiass = 0
-        do ii = 1 , nbassfi
-            mxfiass = max( mxfiass , nbfiass(ii) )
-        enddo
-        ASSERT( mxfiass .ne. 0 )
+        do ii = 1, nbassfi
+            mxfiass = max(mxfiass, nbfiass(ii))
+        end do
+        ASSERT(mxfiass .ne. 0)
     else
         call utmess('F', 'ELEMENTS2_40', si=tygrfi)
-    endif
+    end if
 end subroutine

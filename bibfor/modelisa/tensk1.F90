@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tensk1(icabl, nbno, s, alpha, f0,&
-                  delta, ea, frco, frli, sa,&
+subroutine tensk1(icabl, nbno, s, alpha, f0, &
+                  delta, ea, frco, frli, sa, &
                   f)
     implicit none
 !  DESCRIPTION : CALCUL DE LA TENSION LE LONG D'UN CABLE EN PRENANT EN
@@ -77,15 +77,15 @@ subroutine tensk1(icabl, nbno, s, alpha, f0,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     do ino = 1, nbno
-        f(ino) = f0 * dble ( exp (-frco*alpha(ino)-frli*s(ino)) )
+        f(ino) = f0*dble(exp(-frco*alpha(ino)-frli*s(ino)))
     end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   PRISE EN COMPTE DES PERTES DE TENSION PAR RECUL DE L'ANCRAGE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call ancrca(icabl, nbno, s, alpha, f0,&
-                delta, ea, frco, frli, sa,&
+    call ancrca(icabl, nbno, s, alpha, f0, &
+                delta, ea, frco, frli, sa, &
                 d, f)
 !
 ! --- FIN DE TENSK1.

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine uthk(nomte, geom, hk, ndim, niv,&
+subroutine uthk(nomte, geom, hk, ndim, niv, &
                 noe, nsomm, tymvol, ifa)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -76,7 +76,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 #include "asterfort/utmess.h"
 #include "asterfort/uttgel.h"
 !
-    integer, parameter :: l1=9, l2=6, l3=4
+    integer, parameter :: l1 = 9, l2 = 6, l3 = 4
     character(len=16), intent(in) :: nomte
     real(kind=8), intent(in) :: geom(*)
     real(kind=8), intent(out) :: hk
@@ -90,10 +90,10 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! DECLARATION VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'UTHK  ' )
+    parameter(nompro='UTHK  ')
 !
     integer :: dimtab
-    parameter ( dimtab = 28 )
+    parameter(dimtab=28)
     real(kind=8) :: tabaux(dimtab)
 !
     real(kind=8) :: x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, x5, y5, z5
@@ -118,7 +118,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
         y3 = geom(6)
         call uttgel(nomte, typgeo)
 !
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
 !
 ! 1.2. ==> HEXA/TETRA/PENTA/PYRA
 !
@@ -136,7 +136,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
         z4 = geom(12)
         call uttgel(nomte, typgeo)
 !
-    else if (ndim.eq.0) then
+    else if (ndim .eq. 0) then
 !
         ASSERT(present(noe))
         ASSERT(ENSEMBLE4(noe, nsomm, tymvol, ifa))
@@ -144,92 +144,92 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 !
         do in = 1, nsomm
 !
-            iino=noe(in+l1*(ifa-1)+l1*l2*(tymvol-1))
+            iino = noe(in+l1*(ifa-1)+l1*l2*(tymvol-1))
             i = 3*(iino-1)+1
             if (in .eq. 1) then
                 x1 = geom(i)
                 y1 = geom(i+1)
                 z1 = geom(i+2)
-            else if (in.eq.2) then
+            else if (in .eq. 2) then
                 x2 = geom(i)
                 y2 = geom(i+1)
                 z2 = geom(i+2)
-            else if (in.eq.3) then
+            else if (in .eq. 3) then
                 x3 = geom(i)
                 y3 = geom(i+1)
                 z3 = geom(i+2)
-            else if (in.eq.4) then
+            else if (in .eq. 4) then
                 x4 = geom(i)
                 y4 = geom(i+1)
                 z4 = geom(i+2)
-            endif
+            end if
 !
         end do
-        if ((nsomm.eq.3) .or. (nsomm.eq.6)) then
+        if ((nsomm .eq. 3) .or. (nsomm .eq. 6)) then
 ! FACE_3 OU FACE_6
             typgeo = 'FT'
         else
 ! FACE_4 OU FACE_8
             typgeo = 'FQ'
-        endif
-    endif
+        end if
+    end if
 !
 !====
 ! 2. TRIANGLE : PLUS GRANDE ARETE
 !====
 !
-    if ((typgeo.eq.'TR') .or. (typgeo.eq.'TS') .or. (typgeo.eq.'TL')) then
+    if ((typgeo .eq. 'TR') .or. (typgeo .eq. 'TS') .or. (typgeo .eq. 'TL')) then
 !
-        tabaux(1) = (x2-x1)**2 + (y2-y1)**2
-        tabaux(2) = (x3-x2)**2 + (y3-y2)**2
-        tabaux(3) = (x1-x3)**2 + (y1-y3)**2
+        tabaux(1) = (x2-x1)**2+(y2-y1)**2
+        tabaux(2) = (x3-x2)**2+(y3-y2)**2
+        tabaux(3) = (x1-x3)**2+(y1-y3)**2
 !
-        hk = max(tabaux(1),tabaux(2),tabaux(3))
+        hk = max(tabaux(1), tabaux(2), tabaux(3))
 !
 !====
 ! 3. QUADRANGLE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-        elseif ( (typgeo.eq.'QU') .or. (typgeo.eq.'QS') .or. (&
-    typgeo.eq.'QL') ) then
+    elseif ((typgeo .eq. 'QU') .or. (typgeo .eq. 'QS') .or. ( &
+            typgeo .eq. 'QL')) then
 !
         x4 = geom(7)
         y4 = geom(8)
 !
 !       LES DIAGONALES
 !
-        tabaux(1) = (x1-x3)**2 + (y1-y3)**2
-        tabaux(2) = (x2-x4)**2 + (y2-y4)**2
+        tabaux(1) = (x1-x3)**2+(y1-y3)**2
+        tabaux(2) = (x2-x4)**2+(y2-y4)**2
 !
 !       LES ARETES
 !
-        tabaux(3) = (x1-x2)**2 + (y1-y2)**2
-        tabaux(4) = (x1-x4)**2 + (y1-y4)**2
-        tabaux(5) = (x2-x3)**2 + (y2-y3)**2
-        tabaux(6) = (x3-x4)**2 + (y3-y4)**2
+        tabaux(3) = (x1-x2)**2+(y1-y2)**2
+        tabaux(4) = (x1-x4)**2+(y1-y4)**2
+        tabaux(5) = (x2-x3)**2+(y2-y3)**2
+        tabaux(6) = (x3-x4)**2+(y3-y4)**2
 !
-        hk = max(tabaux(1),tabaux(2),tabaux(3),tabaux(4),tabaux(5), tabaux(6))
+        hk = max(tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6))
 !
 !====
 ! 4. TETRAEDRE : PLUS GRANDE ARETE
 !====
 !
-    else if (typgeo.eq.'TE') then
+    else if (typgeo .eq. 'TE') then
 !
-        tabaux(1) = (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2
-        tabaux(2) = (x3-x1)**2 + (y3-y1)**2 + (z3-z1)**2
-        tabaux(3) = (x4-x1)**2 + (y4-y1)**2 + (z4-z1)**2
-        tabaux(4) = (x3-x2)**2 + (y3-y2)**2 + (z3-z2)**2
-        tabaux(5) = (x4-x2)**2 + (y4-y2)**2 + (z4-z2)**2
-        tabaux(6) = (x4-x3)**2 + (y4-y3)**2 + (z4-z3)**2
+        tabaux(1) = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
+        tabaux(2) = (x3-x1)**2+(y3-y1)**2+(z3-z1)**2
+        tabaux(3) = (x4-x1)**2+(y4-y1)**2+(z4-z1)**2
+        tabaux(4) = (x3-x2)**2+(y3-y2)**2+(z3-z2)**2
+        tabaux(5) = (x4-x2)**2+(y4-y2)**2+(z4-z2)**2
+        tabaux(6) = (x4-x3)**2+(y4-y3)**2+(z4-z3)**2
 !
-        hk = max(tabaux(1),tabaux(2),tabaux(3),tabaux(4),tabaux(5), tabaux(6))
+        hk = max(tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6))
 !
 !====
 ! 5. HEXAEDRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (typgeo.eq.'HE') then
+    else if (typgeo .eq. 'HE') then
 !
         x5 = geom(13)
         y5 = geom(14)
@@ -246,53 +246,53 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 !
 ! DIAGONALES VOLUMIQUES
 !
-        tabaux(1) = (x1-x7)**2 + (y1-y7)**2 + (z1-z7)**2
-        tabaux(2) = (x2-x8)**2 + (y2-y8)**2 + (z2-z8)**2
-        tabaux(3) = (x3-x5)**2 + (y3-y5)**2 + (z3-z5)**2
-        tabaux(4) = (x4-x6)**2 + (y4-y6)**2 + (z4-z6)**2
+        tabaux(1) = (x1-x7)**2+(y1-y7)**2+(z1-z7)**2
+        tabaux(2) = (x2-x8)**2+(y2-y8)**2+(z2-z8)**2
+        tabaux(3) = (x3-x5)**2+(y3-y5)**2+(z3-z5)**2
+        tabaux(4) = (x4-x6)**2+(y4-y6)**2+(z4-z6)**2
 !
 ! DIAGONALES SURFACIQUES
 !
-        tabaux(5) = (x1-x3)**2 + (y1-y3)**2 + (z1-z3)**2
-        tabaux(6) = (x2-x4)**2 + (y2-y4)**2 + (z2-z4)**2
-        tabaux(7) = (x3-x8)**2 + (y3-y8)**2 + (z3-z8)**2
-        tabaux(8) = (x7-x4)**2 + (y7-y4)**2 + (z7-z4)**2
-        tabaux(9) = (x5-x7)**2 + (y5-y7)**2 + (z5-z7)**2
-        tabaux(10) = (x6-x8)**2 + (y6-y8)**2 + (z6-z8)**2
-        tabaux(11) = (x5-x2)**2 + (y5-y2)**2 + (z5-z2)**2
-        tabaux(12) = (x6-x1)**2 + (y6-y1)**2 + (z6-z1)**2
-        tabaux(13) = (x6-x3)**2 + (y6-y3)**2 + (z6-z3)**2
-        tabaux(14) = (x7-x2)**2 + (y7-y2)**2 + (z7-z2)**2
-        tabaux(15) = (x5-x4)**2 + (y5-y4)**2 + (z5-z4)**2
-        tabaux(16) = (x1-x8)**2 + (y1-y8)**2 + (z1-z8)**2
+        tabaux(5) = (x1-x3)**2+(y1-y3)**2+(z1-z3)**2
+        tabaux(6) = (x2-x4)**2+(y2-y4)**2+(z2-z4)**2
+        tabaux(7) = (x3-x8)**2+(y3-y8)**2+(z3-z8)**2
+        tabaux(8) = (x7-x4)**2+(y7-y4)**2+(z7-z4)**2
+        tabaux(9) = (x5-x7)**2+(y5-y7)**2+(z5-z7)**2
+        tabaux(10) = (x6-x8)**2+(y6-y8)**2+(z6-z8)**2
+        tabaux(11) = (x5-x2)**2+(y5-y2)**2+(z5-z2)**2
+        tabaux(12) = (x6-x1)**2+(y6-y1)**2+(z6-z1)**2
+        tabaux(13) = (x6-x3)**2+(y6-y3)**2+(z6-z3)**2
+        tabaux(14) = (x7-x2)**2+(y7-y2)**2+(z7-z2)**2
+        tabaux(15) = (x5-x4)**2+(y5-y4)**2+(z5-z4)**2
+        tabaux(16) = (x1-x8)**2+(y1-y8)**2+(z1-z8)**2
 !
 ! ARETES
 !
-        tabaux(17) = (x2-x3)**2 + (y2-y3)**2 + (z2-z3)**2
-        tabaux(18) = (x2-x6)**2 + (y2-y6)**2 + (z2-z6)**2
-        tabaux(19) = (x3-x7)**2 + (y3-y7)**2 + (z3-z7)**2
-        tabaux(20) = (x6-x7)**2 + (y6-y7)**2 + (z6-z7)**2
-        tabaux(21) = (x5-x6)**2 + (y5-y6)**2 + (z5-z6)**2
-        tabaux(22) = (x7-x8)**2 + (y7-y8)**2 + (z7-z8)**2
-        tabaux(23) = (x4-x3)**2 + (y4-y3)**2 + (z4-z3)**2
-        tabaux(24) = (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2
-        tabaux(25) = (x1-x4)**2 + (y1-y4)**2 + (z1-z4)**2
-        tabaux(26) = (x4-x8)**2 + (y4-y8)**2 + (z4-z8)**2
-        tabaux(27) = (x1-x5)**2 + (y1-y5)**2 + (z1-z5)**2
-        tabaux(28) = (x5-x8)**2 + (y5-y8)**2 + (z5-z8)**2
+        tabaux(17) = (x2-x3)**2+(y2-y3)**2+(z2-z3)**2
+        tabaux(18) = (x2-x6)**2+(y2-y6)**2+(z2-z6)**2
+        tabaux(19) = (x3-x7)**2+(y3-y7)**2+(z3-z7)**2
+        tabaux(20) = (x6-x7)**2+(y6-y7)**2+(z6-z7)**2
+        tabaux(21) = (x5-x6)**2+(y5-y6)**2+(z5-z6)**2
+        tabaux(22) = (x7-x8)**2+(y7-y8)**2+(z7-z8)**2
+        tabaux(23) = (x4-x3)**2+(y4-y3)**2+(z4-z3)**2
+        tabaux(24) = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
+        tabaux(25) = (x1-x4)**2+(y1-y4)**2+(z1-z4)**2
+        tabaux(26) = (x4-x8)**2+(y4-y8)**2+(z4-z8)**2
+        tabaux(27) = (x1-x5)**2+(y1-y5)**2+(z1-z5)**2
+        tabaux(28) = (x5-x8)**2+(y5-y8)**2+(z5-z8)**2
 !
-        hk = max(&
-             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7),&
-             tabaux(8), tabaux(9), tabaux(10), tabaux(11), tabaux(12), tabaux(13), tabaux(14),&
-             tabaux(15), tabaux(16), tabaux(17), tabaux(18), tabaux(19), tabaux(20), tabaux(21),&
-             tabaux(22), tabaux(23), tabaux(24), tabaux(25), tabaux(26), tabaux(27), tabaux(28)&
+        hk = max( &
+             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7), &
+             tabaux(8), tabaux(9), tabaux(10), tabaux(11), tabaux(12), tabaux(13), tabaux(14), &
+             tabaux(15), tabaux(16), tabaux(17), tabaux(18), tabaux(19), tabaux(20), tabaux(21), &
+             tabaux(22), tabaux(23), tabaux(24), tabaux(25), tabaux(26), tabaux(27), tabaux(28) &
              )
 !
 !====
 ! 5. PENTAEDRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (typgeo.eq.'PE') then
+    else if (typgeo .eq. 'PE') then
 !
         x5 = geom(13)
         y5 = geom(14)
@@ -303,36 +303,36 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 !
 ! DIAGONALES SURFACIQUES
 !
-        tabaux(1) = (x1-x6)**2 + (y1-y6)**2 + (z1-z6)**2
-        tabaux(2) = (x3-x4)**2 + (y3-y4)**2 + (z3-z4)**2
-        tabaux(3) = (x2-x4)**2 + (y2-y4)**2 + (z2-z4)**2
-        tabaux(4) = (x1-x5)**2 + (y1-y5)**2 + (z1-z5)**2
-        tabaux(5) = (x2-x6)**2 + (y2-y6)**2 + (z2-z6)**2
-        tabaux(6) = (x3-x5)**2 + (y3-y5)**2 + (z3-z5)**2
+        tabaux(1) = (x1-x6)**2+(y1-y6)**2+(z1-z6)**2
+        tabaux(2) = (x3-x4)**2+(y3-y4)**2+(z3-z4)**2
+        tabaux(3) = (x2-x4)**2+(y2-y4)**2+(z2-z4)**2
+        tabaux(4) = (x1-x5)**2+(y1-y5)**2+(z1-z5)**2
+        tabaux(5) = (x2-x6)**2+(y2-y6)**2+(z2-z6)**2
+        tabaux(6) = (x3-x5)**2+(y3-y5)**2+(z3-z5)**2
 !
 ! ARETES
 !
-        tabaux(7) = (x4-x5)**2 + (y4-y5)**2 + (z4-z5)**2
-        tabaux(8) = (x5-x6)**2 + (y5-y6)**2 + (z5-z6)**2
-        tabaux(9) = (x6-x4)**2 + (y6-y4)**2 + (z6-z4)**2
-        tabaux(10) = (x6-x3)**2 + (y6-y3)**2 + (z6-z3)**2
-        tabaux(11) = (x4-x1)**2 + (y4-y1)**2 + (z4-z1)**2
-        tabaux(12) = (x5-x2)**2 + (y5-y2)**2 + (z5-z2)**2
-        tabaux(13) = (x1-x3)**2 + (y1-y3)**2 + (z1-z3)**2
-        tabaux(14) = (x3-x2)**2 + (y3-y2)**2 + (z3-z2)**2
-        tabaux(15) = (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2
+        tabaux(7) = (x4-x5)**2+(y4-y5)**2+(z4-z5)**2
+        tabaux(8) = (x5-x6)**2+(y5-y6)**2+(z5-z6)**2
+        tabaux(9) = (x6-x4)**2+(y6-y4)**2+(z6-z4)**2
+        tabaux(10) = (x6-x3)**2+(y6-y3)**2+(z6-z3)**2
+        tabaux(11) = (x4-x1)**2+(y4-y1)**2+(z4-z1)**2
+        tabaux(12) = (x5-x2)**2+(y5-y2)**2+(z5-z2)**2
+        tabaux(13) = (x1-x3)**2+(y1-y3)**2+(z1-z3)**2
+        tabaux(14) = (x3-x2)**2+(y3-y2)**2+(z3-z2)**2
+        tabaux(15) = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
 !
-        hk = max(&
-             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7),&
-             tabaux(8), tabaux(9), tabaux(10), tabaux(11), tabaux(12), tabaux(13), tabaux(14),&
-             tabaux(15)&
+        hk = max( &
+             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7), &
+             tabaux(8), tabaux(9), tabaux(10), tabaux(11), tabaux(12), tabaux(13), tabaux(14), &
+             tabaux(15) &
              )
 !
 !====
 ! 6. PYRAMIDE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (typgeo.eq.'PY') then
+    else if (typgeo .eq. 'PY') then
 !
         x5 = geom(13)
         y5 = geom(14)
@@ -340,52 +340,52 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 !
 ! DIAGONALES SURFACIQUES
 !
-        tabaux(1) = (x1-x3)**2 + (y1-y3)**2 + (z1-z3)**2
-        tabaux(2) = (x2-x4)**2 + (y2-y4)**2 + (z2-z4)**2
+        tabaux(1) = (x1-x3)**2+(y1-y3)**2+(z1-z3)**2
+        tabaux(2) = (x2-x4)**2+(y2-y4)**2+(z2-z4)**2
 !
 ! ARETES
 !
-        tabaux(3) = (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2
-        tabaux(4) = (x3-x2)**2 + (y3-y2)**2 + (z3-z2)**2
-        tabaux(5) = (x4-x3)**2 + (y4-y3)**2 + (z4-z3)**2
-        tabaux(6) = (x1-x4)**2 + (y1-y4)**2 + (z1-z4)**2
-        tabaux(7) = (x5-x1)**2 + (y5-y1)**2 + (z5-z1)**2
-        tabaux(8) = (x5-x2)**2 + (y5-y2)**2 + (z5-z2)**2
-        tabaux(9) = (x5-x3)**2 + (y5-y3)**2 + (z5-z3)**2
-        tabaux(10) = (x5-x4)**2 + (y5-y4)**2 + (z5-z4)**2
+        tabaux(3) = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
+        tabaux(4) = (x3-x2)**2+(y3-y2)**2+(z3-z2)**2
+        tabaux(5) = (x4-x3)**2+(y4-y3)**2+(z4-z3)**2
+        tabaux(6) = (x1-x4)**2+(y1-y4)**2+(z1-z4)**2
+        tabaux(7) = (x5-x1)**2+(y5-y1)**2+(z5-z1)**2
+        tabaux(8) = (x5-x2)**2+(y5-y2)**2+(z5-z2)**2
+        tabaux(9) = (x5-x3)**2+(y5-y3)**2+(z5-z3)**2
+        tabaux(10) = (x5-x4)**2+(y5-y4)**2+(z5-z4)**2
 !
-        hk = max(&
-             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7),&
-             tabaux(8), tabaux(9), tabaux(10)&
+        hk = max( &
+             tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6), tabaux(7), &
+             tabaux(8), tabaux(9), tabaux(10) &
              )
 !
 !====
 ! 7. FACE QUADRANGULAIRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (typgeo.eq.'FQ') then
+    else if (typgeo .eq. 'FQ') then
 !
-        tabaux(1) = (x1-x3)**2 + (y1-y3)**2 + (z1-z3)**2
-        tabaux(2) = (x2-x4)**2 + (y2-y4)**2 + (z2-z4)**2
+        tabaux(1) = (x1-x3)**2+(y1-y3)**2+(z1-z3)**2
+        tabaux(2) = (x2-x4)**2+(y2-y4)**2+(z2-z4)**2
 !
-        tabaux(3) = (x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2
-        tabaux(4) = (x1-x4)**2 + (y1-y4)**2 + (z1-z4)**2
-        tabaux(5) = (x2-x3)**2 + (y2-y3)**2 + (z2-z3)**2
-        tabaux(6) = (x3-x4)**2 + (y3-y4)**2 + (z3-z4)**2
+        tabaux(3) = (x1-x2)**2+(y1-y2)**2+(z1-z2)**2
+        tabaux(4) = (x1-x4)**2+(y1-y4)**2+(z1-z4)**2
+        tabaux(5) = (x2-x3)**2+(y2-y3)**2+(z2-z3)**2
+        tabaux(6) = (x3-x4)**2+(y3-y4)**2+(z3-z4)**2
 !
-        hk = max( tabaux(1) ,tabaux(2) ,tabaux(3) ,tabaux(4) , tabaux(5) ,tabaux(6))
+        hk = max(tabaux(1), tabaux(2), tabaux(3), tabaux(4), tabaux(5), tabaux(6))
 !
 !====
 ! 8. FACE TRIANGULAIRE : PLUS GRANDE ARETE
 !====
 !
-    else if (typgeo.eq.'FT') then
+    else if (typgeo .eq. 'FT') then
 !
-        tabaux(1) = (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2
-        tabaux(2) = (x3-x2)**2 + (y3-y2)**2 + (z3-z2)**2
-        tabaux(3) = (x1-x3)**2 + (y1-y3)**2 + (z1-z3)**2
+        tabaux(1) = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
+        tabaux(2) = (x3-x2)**2+(y3-y2)**2+(z3-z2)**2
+        tabaux(3) = (x1-x3)**2+(y1-y3)**2+(z1-z3)**2
 !
-        hk = max(tabaux(1),tabaux(2),tabaux(3))
+        hk = max(tabaux(1), tabaux(2), tabaux(3))
 !
 !====
 ! 9. INCONNU
@@ -395,7 +395,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
         valk(1) = nompro
         valk(2) = typgeo
         call utmess('F', 'INDICATEUR_32', nk=2, valk=valk)
-    endif
+    end if
 !
 !====
 ! 10. LA FIN
@@ -406,6 +406,6 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 !
     if (niv .ge. 2) then
         call utmess('I', 'INDICATEUR_33', sk=typgeo, sr=hk)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,18 +26,18 @@ subroutine irgmpf(ifi, versio)
 !       IFI    : NUMERO D'UNITE LOGIQUE DU FICHIER GMSH
 !     ------------------------------------------------------------------
 !
-    write(ifi,101) '$PostFormat'
+    write (ifi, 101) '$PostFormat'
 !
     if (versio .eq. 1) then
-        write(ifi,102) 1.0d0 , 0, 8
-    else if (versio.eq.2) then
-        write(ifi,102) 1.2d0 , 0, 8
-    endif
+        write (ifi, 102) 1.0d0, 0, 8
+    else if (versio .eq. 2) then
+        write (ifi, 102) 1.2d0, 0, 8
+    end if
 !
-    write(ifi,103) '$EndPostFormat'
+    write (ifi, 103) '$EndPostFormat'
 !
-    101 format(a11)
-    102 format(f4.1,1x,i1,1x,i1)
-    103 format(a14)
+101 format(a11)
+102 format(f4.1, 1x, i1, 1x, i1)
+103 format(a14)
 !
 end subroutine

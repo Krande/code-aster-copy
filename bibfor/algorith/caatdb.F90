@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caatdb(nno, a, d, b, jac,&
+subroutine caatdb(nno, a, d, b, jac, &
                   matuu)
 !     CALCUL DE TADB POUR LE HEXA8 STABILISE
 !-----------------------------------------------------------------------
@@ -32,31 +32,31 @@ subroutine caatdb(nno, a, d, b, jac,&
             do kl = 1, 6
                 tmp = 0.d0
                 do k = 1, 6
-                    tmp = tmp + a(k,i,n)*d(k,kl)
+                    tmp = tmp+a(k, i, n)*d(k, kl)
                 end do
                 sig(kl) = tmp
             end do
 !
-            kkd = (3* (n-1)+i-1)* (3* (n-1)+i)/2
+            kkd = (3*(n-1)+i-1)*(3*(n-1)+i)/2
             do j = 1, 3
                 do m = 1, n
                     if (m .eq. n) then
                         j1 = i
                     else
                         j1 = 3
-                    endif
+                    end if
 !
                     tmp = 0.d0
                     do k = 1, 6
-                        tmp = tmp + sig(k)*b(k,j,m)
+                        tmp = tmp+sig(k)*b(k, j, m)
                     end do
 !
 !   STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
 !
                     if (j .le. j1) then
-                        kk = kkd + 3* (m-1) + j
-                        matuu(kk) = matuu(kk) + tmp*jac
-                    endif
+                        kk = kkd+3*(m-1)+j
+                        matuu(kk) = matuu(kk)+tmp*jac
+                    end if
 !
                 end do
             end do

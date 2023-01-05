@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine optimw(method, nrupt, x, y, prob,&
-                  sigw, nt, nur, nbres, calm,&
-                  cals, mk, sk, mkp, skp,&
+subroutine optimw(method, nrupt, x, y, prob, &
+                  sigw, nt, nur, nbres, calm, &
+                  cals, mk, sk, mkp, skp, &
                   impr, ifm, dept, indtp, nbtp)
     implicit none
 #include "asterf_types.h"
@@ -70,7 +70,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !        METHODE DE REGRESSION LINEAIRE
 !
 !
-        if (.not.dept) then
+        if (.not. dept) then
 !
 !       UN SEUL RESU : PAS DE DEPENDANCE EN TEMPERATURE
 !
@@ -83,13 +83,13 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                 prob(i) = i
                 s1 = nrupt
-                prob(i) = prob(i) / (s1 + 1.d0)
-                y(i) = log ( log ( 1.d0 / ( 1.d0-prob(i)) ) )
-                x(i) = log ( sigw(i) )
-                syi = syi + y(i)
-                sxi = sxi + x(i)
-                sxixi = sxixi + x(i)*x(i)
-                sxiyi = sxiyi + x(i)*y(i)
+                prob(i) = prob(i)/(s1+1.d0)
+                y(i) = log(log(1.d0/(1.d0-prob(i))))
+                x(i) = log(sigw(i))
+                syi = syi+y(i)
+                sxi = sxi+x(i)
+                sxixi = sxixi+x(i)*x(i)
+                sxiyi = sxiyi+x(i)*y(i)
 !
             end do
 !
@@ -100,8 +100,8 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                 do j = 1, nrupt
 !
-                    sxiyj = sxiyj + x(i)*y(j)
-                    sxixj = sxixj + x(i)*x(j)
+                    sxiyj = sxiyj+x(i)*y(j)
+                    sxixj = sxixj+x(i)*x(j)
 !
                 end do
 !
@@ -110,27 +110,27 @@ subroutine optimw(method, nrupt, x, y, prob,&
             unsurn = nrupt
             unsurn = 1.d0/unsurn
 !
-            if ((.not.calm) .and. (.not.cals)) then
-                mkp = (unsurn*sxiyj-sxiyi) / ( unsurn*sxixj-sxixi )
-                skp(1) = exp ( unsurn*(sxi- (1.d0/mkp)*syi) )
+            if ((.not. calm) .and. (.not. cals)) then
+                mkp = (unsurn*sxiyj-sxiyi)/(unsurn*sxixj-sxixi)
+                skp(1) = exp(unsurn*(sxi-(1.d0/mkp)*syi))
             else if (calm) then
                 mkp = mk
-                skp(1) = exp ( unsurn*(sxi- (1.d0/mkp)*syi) )
+                skp(1) = exp(unsurn*(sxi-(1.d0/mkp)*syi))
             else if (cals) then
                 skp(1) = sk(1)
-                mkp = sxiyi/(sxixi - log(skp(1))*sxi)
-            endif
-            if (impr) write(ifm,*) 'M(K) =',mkp,'SIGU(K) = ',skp(1)
+                mkp = sxiyi/(sxixi-log(skp(1))*sxi)
+            end if
+            if (impr) write (ifm, *) 'M(K) =', mkp, 'SIGU(K) = ', skp(1)
 !
-            sxi =0.d0
+            sxi = 0.d0
             do j = 1, nrupt
 !
                 prov = (1.d0-exp(-(sigw(j)/sk(1))**mk))
-                if (prov .ne. 1.d0) prov = log ( log (1.d0/(1.d0-prov) ) )
-                sxi = sxi + (y(j)- prov)**2
+                if (prov .ne. 1.d0) prov = log(log(1.d0/(1.d0-prov)))
+                sxi = sxi+(y(j)-prov)**2
 !
             end do
-            if (impr) write(ifm, * ) 'ECART THEORIE-EXPERIENCE AU DEBUT DE L''ITERATION : ', sxi
+            if (impr) write (ifm, *) 'ECART THEORIE-EXPERIENCE AU DEBUT DE L''ITERATION : ', sxi
 !
         else
 !
@@ -145,7 +145,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                 do ir = 1, nbres
 !
-                    if (indtp(ir) .eq. itp) snt = snt + nt(ir)
+                    if (indtp(ir) .eq. itp) snt = snt+nt(ir)
 !
                 end do
 !
@@ -155,19 +155,19 @@ subroutine optimw(method, nrupt, x, y, prob,&
                     do k = 1, i-1
                         if (indtp(nur(k)) .eq. itp) then
                             irg = irg+1
-                        endif
+                        end if
                     end do
 !
                     if (indtp(nur(i)) .eq. itp) then
 !
                         prob(i) = irg
-                        prob(i) = prob(i) / (snt+1.d0)
-                        y(i) = log ( log ( 1.d0 / ( 1.d0-prob(i)) ) )
-                        x(i) = log ( sigw(i) )
-                        sxixi = sxixi + x(i)*x(i)
-                        sxiyi = sxiyi + x(i)*y(i)
+                        prob(i) = prob(i)/(snt+1.d0)
+                        y(i) = log(log(1.d0/(1.d0-prob(i))))
+                        x(i) = log(sigw(i))
+                        sxixi = sxixi+x(i)*x(i)
+                        sxiyi = sxiyi+x(i)*y(i)
 !
-                    endif
+                    end if
 !
                 end do
 !
@@ -184,7 +184,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                 do ir = 1, nbres
 !
-                    if (indtp(ir) .eq. itp) snt = snt + nt(ir)
+                    if (indtp(ir) .eq. itp) snt = snt+nt(ir)
 !
                 end do
 !
@@ -193,27 +193,27 @@ subroutine optimw(method, nrupt, x, y, prob,&
                     do j = 1, nrupt
 !
                         if (indtp(nur(i)) .eq. itp .and. indtp(nur(j)) .eq. itp) then
-                            sxiyj = sxiyj + x(i)*y(j)
-                            sxixj = sxixj + x(i)*x(j)
-                        endif
+                            sxiyj = sxiyj+x(i)*y(j)
+                            sxixj = sxixj+x(i)*x(j)
+                        end if
 !
                     end do
 !
                 end do
-                s1 = s1 + sxiyj/snt
-                s2 = s2 + sxixj/snt
+                s1 = s1+sxiyj/snt
+                s2 = s2+sxixj/snt
 !
             end do
 !
-            if ((.not.calm)) then
-                mkp = (s1-sxiyi) / ( s2-sxixi )
+            if ((.not. calm)) then
+                mkp = (s1-sxiyi)/(s2-sxixi)
             else if (calm) then
                 mkp = mk
-            endif
+            end if
 !
-            if (impr) write(ifm,*) 'M(K) =',mkp
+            if (impr) write (ifm, *) 'M(K) =', mkp
 !
-            if (((.not.calm).and.(.not.cals)) .or. calm) then
+            if (((.not. calm) .and. (.not. cals)) .or. calm) then
 !
 !          (M ET SIGMA-U) OU (SIGMA-U) SONT A RECALER
 !
@@ -223,7 +223,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                     do ir = 1, nbres
 !
-                        if (indtp(ir) .eq. itp) snt = snt + nt(ir)
+                        if (indtp(ir) .eq. itp) snt = snt+nt(ir)
 !
                     end do
 !
@@ -233,14 +233,14 @@ subroutine optimw(method, nrupt, x, y, prob,&
                     do i = 1, nrupt
 !
                         if (indtp(nur(i)) .eq. itp) then
-                            syi = syi + y(i)
-                            sxi = sxi + x(i)
-                        endif
+                            syi = syi+y(i)
+                            sxi = sxi+x(i)
+                        end if
 !
                     end do
 !
-                    skp(itp) = exp ( (sxi-(1.d0/mkp)*syi)/snt )
-                    if (impr) write(ifm,*) 'S(K) (',itp,')=',skp(itp)
+                    skp(itp) = exp((sxi-(1.d0/mkp)*syi)/snt)
+                    if (impr) write (ifm, *) 'S(K) (', itp, ')=', skp(itp)
 !
                 end do
 !
@@ -249,19 +249,19 @@ subroutine optimw(method, nrupt, x, y, prob,&
                 do ir = 1, nbtp
 !
                     skp(ir) = sk(ir)
-                    if (impr) write(ifm,*) 'S(K) (',ir,')=',skp(ir)
+                    if (impr) write (ifm, *) 'S(K) (', ir, ')=', skp(ir)
 !
                 end do
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
-    else if (method(1:9).eq.'MAXI_VRAI') then
+    else if (method(1:9) .eq. 'MAXI_VRAI') then
 !
 !        METHODE DU MAXIMUM DE VRAISSEMBLANCE
 !
-        if ((.not.calm) .and. (.not.cals)) then
+        if ((.not. calm) .and. (.not. cals)) then
 !
 !        M ET SIGMA-U SONT A RECALER
 !
@@ -271,12 +271,12 @@ subroutine optimw(method, nrupt, x, y, prob,&
             swm = 0.d0
             unsurn = nrupt
             unsurn = 1.d0/unsurn
-            if (impr) write(ifm,*) 'RESOLUTION F(M)=0 PAR NEWTON'
+            if (impr) write (ifm, *) 'RESOLUTION F(M)=0 PAR NEWTON'
 !
 !          RESOLUTION DE L'EQUATION NON LINEAIRE F(M)=0
 !
-            call ntweib(nrupt, cals, sk, sigw, nur,&
-                        nt, nbres, mg, md, prec,&
+            call ntweib(nrupt, cals, sk, sigw, nur, &
+                        nt, nbres, mg, md, prec, &
                         mkp, impr, ifm, indtp, nbtp)
 !
             unsurm = 1.d0/mkp
@@ -288,7 +288,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
                 snt = 0.d0
                 do ir = 1, nbres
 !
-                    if (indtp(ir) .eq. itp) snt = snt + nt(ir)
+                    if (indtp(ir) .eq. itp) snt = snt+nt(ir)
 !
                 end do
 !
@@ -296,12 +296,12 @@ subroutine optimw(method, nrupt, x, y, prob,&
                 do i = 1, nrupt
 !
                     if (indtp(nur(i)) .eq. itp) then
-                        swm = swm + sigw(i) ** mkp
-                    endif
+                        swm = swm+sigw(i)**mkp
+                    end if
 !
                 end do
 !
-                skp(itp) = ( swm / snt ) ** ( unsurm )
+                skp(itp) = (swm/snt)**(unsurm)
 !
             end do
 !
@@ -316,19 +316,19 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
                 snt = 0.d0
                 do ir = 1, nbres
-                    if (indtp(ir) .eq. itp) snt = snt + nt(ir)
+                    if (indtp(ir) .eq. itp) snt = snt+nt(ir)
                 end do
 !
                 swm = 0.d0
                 do i = 1, nrupt
 !
                     if (indtp(nur(i)) .eq. itp) then
-                        swm = swm + sigw(i) ** mkp
-                    endif
+                        swm = swm+sigw(i)**mkp
+                    end if
 !
                 end do
 !
-                skp(itp) = ( swm / snt ) ** ( unsurm )
+                skp(itp) = (swm/snt)**(unsurm)
 !
             end do
 !
@@ -345,24 +345,24 @@ subroutine optimw(method, nrupt, x, y, prob,&
 !
 !          RESOLUTION DE L'EQUATION NON LINEAIRE F(M)=0
 !
-            if (impr) write(ifm,*) 'RESOLUTION F(M)=0 PAR NEWTON'
-            call ntweib(nrupt, cals, sk, sigw, nur,&
-                        nt, nbres, mg, md, prec,&
+            if (impr) write (ifm, *) 'RESOLUTION F(M)=0 PAR NEWTON'
+            call ntweib(nrupt, cals, sk, sigw, nur, &
+                        nt, nbres, mg, md, prec, &
                         mkp, impr, ifm, indtp, nbtp)
 !
-        endif
+        end if
 !
         if (impr) then
-            write(ifm,*) 'M(K) =',mkp
+            write (ifm, *) 'M(K) =', mkp
             do ir = 1, nbtp
-                write(ifm,*) 'S(K) (',ir,')=',skp(ir)
+                write (ifm, *) 'S(K) (', ir, ')=', skp(ir)
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
     if (mkp .lt. 1.d0) then
         call utmess('F', 'UTILITAI3_36')
-    endif
+    end if
 !
 end subroutine

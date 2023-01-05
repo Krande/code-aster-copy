@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmprca(mesh, modele, numedd         , numfix     , ds_material, carele    ,&
-                  ds_constitutive, lischa     , ds_algopara, solveu    , ds_system,&
-                  fonact, ds_print       , ds_measure , ds_algorom, sddisc     , numins    ,&
-                  valinc, solalg         , matass     , maprec     , ds_contact,&
-                  sddyna, meelem         , measse     , veelem     , veasse    ,&
-                  depest, ldccvg         , faccvg     , rescvg     , condcvg)
+subroutine nmprca(mesh, modele, numedd, numfix, ds_material, carele, &
+                  ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
+                  fonact, ds_print, ds_measure, ds_algorom, sddisc, numins, &
+                  valinc, solalg, matass, maprec, ds_contact, &
+                  sddyna, meelem, measse, veelem, veasse, &
+                  depest, ldccvg, faccvg, rescvg, condcvg)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
@@ -49,25 +49,25 @@ implicit none
 #include "asterfort/nonlinLoadDirichletCompute.h"
 #include "asterfort/romCoefComputeFromField.h"
 !
-integer :: fonact(*)
-character(len=8), intent(in) :: mesh
-integer :: numins, ldccvg, faccvg, rescvg, condcvg
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=19) :: maprec, matass
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: lischa, solveu, sddisc, sddyna
-character(len=24) :: modele, carele
-character(len=24) :: numedd, numfix
-type(NL_DS_Print), intent(inout) :: ds_print
-type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=19) :: veelem(*), veasse(*)
-character(len=19) :: meelem(*), measse(*)
-character(len=19) :: solalg(*), valinc(*)
-character(len=19) :: depest
+    integer :: fonact(*)
+    character(len=8), intent(in) :: mesh
+    integer :: numins, ldccvg, faccvg, rescvg, condcvg
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=19) :: maprec, matass
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: lischa, solveu, sddisc, sddyna
+    character(len=24) :: modele, carele
+    character(len=24) :: numedd, numfix
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=19) :: veelem(*), veasse(*)
+    character(len=19) :: meelem(*), measse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    character(len=19) :: depest
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -167,24 +167,24 @@ character(len=19) :: depest
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(mesh       , modele     , ds_material, carele, ds_constitutive,&
-                ds_algopara, lischa  , numedd, numfix, solveu, ds_system,&
-                ds_print, ds_measure, ds_algorom, sddisc,&
-                sddyna     , numins  , fonact, ds_contact,&
-                valinc     , solalg  , hhoField, meelem, measse,&
-                maprec     , matass  , faccvg, ldccvg, condcvg)
+    call nmprma(mesh, modele, ds_material, carele, ds_constitutive, &
+                ds_algopara, lischa, numedd, numfix, solveu, ds_system, &
+                ds_print, ds_measure, ds_algorom, sddisc, &
+                sddyna, numins, fonact, ds_contact, &
+                valinc, solalg, hhoField, meelem, measse, &
+                maprec, matass, faccvg, ldccvg, condcvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
     if ((faccvg .eq. 1) .or. (faccvg .eq. 2) .or. (ldccvg .eq. 1)) then
         goto 999
-    endif
+    end if
 !
 ! - Compute values of Dirichlet conditions
 !
-    call nonlinLoadDirichletCompute(lischa    , modele, numedd,&
-                                    ds_measure, matass, depest,&
-                                    veelem    , veasse)
+    call nonlinLoadDirichletCompute(lischa, modele, numedd, &
+                                    ds_measure, matass, depest, &
+                                    veelem, veasse)
 !
 ! - Evaluate second member for Dirichlet loads (AFFE_CHAR_MECA)
 !
@@ -209,9 +209,9 @@ character(len=19) :: depest
         cncine24 = cncine
         call romAlgoNLSystemSolve(mata24, vect24, cncine24, ds_algorom, solu1, l_update_redu)
     else
-        call nmreso(fonact, cndonn, cnpilo, cncind, solveu,&
+        call nmreso(fonact, cndonn, cnpilo, cncind, solveu, &
                     maprec, matass, solu1, solu2, rescvg)
-    endif
+    end if
 
 ! - End of timer for solver
     call nmtime(ds_measure, 'Stop', 'Solve')
@@ -224,9 +224,9 @@ character(len=19) :: depest
 ! --- CORRECTION DU DEPLACEMENT DONNE POUR LE RENDRE
 ! --- CINEMATIQUEMENT ADMISSIBLE
 !
-    call jeveuo(numedd(1:14)// '.NUME.DELG', 'L', vi=delg)
-    call jeveuo(solu1 (1:19)//'.VALE', 'L', vr=sol1)
-    call jeveuo(solu2 (1:19)//'.VALE', 'L', vr=sol2)
+    call jeveuo(numedd(1:14)//'.NUME.DELG', 'L', vi=delg)
+    call jeveuo(solu1(1:19)//'.VALE', 'L', vr=sol1)
+    call jeveuo(solu2(1:19)//'.VALE', 'L', vr=sol2)
     call jeveuo(depso1(1:19)//'.VALE', 'E', vr=dep1)
     call jeveuo(depso2(1:19)//'.VALE', 'E', vr=dep2)
 !
@@ -236,18 +236,18 @@ character(len=19) :: depest
         if (delg(i) .eq. 0) then
             dep1(i) = dep1(i)+sol1(i)
             dep2(i) = sol2(i)
-        endif
+        end if
     end do
 !
 ! - For HROM: update reduced coordinates
 !
     if (l_rom) then
-        AS_ALLOCATE(vr = v_vect, size = ds_algorom%ds_empi%nbMode)
-        call jeveuo(ds_algorom%gamma, 'E', vr = v_gamma)
+        AS_ALLOCATE(vr=v_vect, size=ds_algorom%ds_empi%nbMode)
+        call jeveuo(ds_algorom%gamma, 'E', vr=v_gamma)
         call romCoefComputeFromField(ds_algorom%ds_empi, dep1, v_vect)
-        v_gamma = v_gamma + v_vect
-        AS_DEALLOCATE(vr = v_vect)
-    endif
+        v_gamma = v_gamma+v_vect
+        AS_DEALLOCATE(vr=v_vect)
+    end if
 !
 999 continue
 !

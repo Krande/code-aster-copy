@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine rgndas(nume_ddlz, i_equa , l_print, type_equaz, name_nodez,&
+subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
                   name_cmpz, ligrelz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/get_equa_info.h"
@@ -33,13 +33,13 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-character(len=*), intent(in) :: nume_ddlz
-integer, intent(in) :: i_equa
-logical, intent(in) :: l_print
-character(len=1), optional, intent(out) :: type_equaz
-character(len=*), optional, intent(out) :: name_nodez
-character(len=*), optional, intent(out) :: name_cmpz
-character(len=*), optional, intent(out) :: ligrelz
+    character(len=*), intent(in) :: nume_ddlz
+    integer, intent(in) :: i_equa
+    logical, intent(in) :: l_print
+    character(len=1), optional, intent(out) :: type_equaz
+    character(len=*), optional, intent(out) :: name_nodez
+    character(len=*), optional, intent(out) :: name_cmpz
+    character(len=*), optional, intent(out) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,11 +76,11 @@ character(len=*), optional, intent(out) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nume_ddl  = nume_ddlz
+    nume_ddl = nume_ddlz
     prof_gene = nume_ddl(1:14)//'.NUME'
-    ligrel    = ' '
+    ligrel = ' '
     name_node = ' '
-    name_cmp  = ' '
+    name_cmp = ' '
     name_cmp_lagr = ' '
     name_subs = ' '
     nb_node_lagr = 0
@@ -93,95 +93,95 @@ character(len=*), optional, intent(out) :: ligrelz
     if (mesh .eq. ' ' .or. idx_gd .eq. 0) then
         type_equa = 'A'
         name_node = 'Unknown'
-        name_cmp  = 'Unknown'
+        name_cmp = 'Unknown'
         goto 99
-    endif
+    end if
 !
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', idx_gd), 'L', vk8 = p_cata_nomcmp)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', idx_gd), 'L', vk8=p_cata_nomcmp)
 !
 ! - Get information about dof
 !
-    call get_equa_info(nume_ddlz    , i_equa   , type_equa, nume_node   , nume_cmp,&
-                       nume_cmp_lagr, nume_subs, nume_link, nb_node_lagr, list_node_lagr,&
+    call get_equa_info(nume_ddlz, i_equa, type_equa, nume_node, nume_cmp, &
+                       nume_cmp_lagr, nume_subs, nume_link, nb_node_lagr, list_node_lagr, &
                        ligrel)
 !
 ! - Physical dof
 !
-    if (type_equa.eq.'A') then
+    if (type_equa .eq. 'A') then
         call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
         name_cmp = p_cata_nomcmp(nume_cmp)
-    endif
+    end if
 !
 ! - Non-Physical dof (Lagrange)
 !
-    if (type_equa.eq.'B') then
+    if (type_equa .eq. 'B') then
         call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
         name_cmp = p_cata_nomcmp(nume_cmp)
-        ASSERT(name_cmp.eq.'LAGR')
+        ASSERT(name_cmp .eq. 'LAGR')
         name_cmp_lagr = p_cata_nomcmp(nume_cmp_lagr)
-    endif
+    end if
 !
 ! - Non-Physical dof (Lagrange) - LIAISON_DDL
 !
-    if (type_equa.eq.'C') then
+    if (type_equa .eq. 'C') then
 !
-    endif
+    end if
 !
 ! - Generalized dof - Substructuring
 !
-    if (type_equa.eq.'D') then
+    if (type_equa .eq. 'D') then
         name_cmp = 'GEN'
         call jeexin(prof_gene//'.REFE', iexi)
         if (iexi .gt. 0) then
-            call jeveuo(prof_gene//'.REFE', 'L', vk24 = p_refe)
+            call jeveuo(prof_gene//'.REFE', 'L', vk24=p_refe)
         else
-            call jeveuo(prof_gene//'.REFN', 'L', vk24 = p_refe)
-        endif
-        modl_gene = p_refe(1)(1:8)
+            call jeveuo(prof_gene//'.REFN', 'L', vk24=p_refe)
+        end if
+        modl_gene = p_refe(1) (1:8)
         call jeexin(modl_gene//'      .MODG.SSNO', iexi)
         if (iexi .gt. 0) then
             if (nume_subs .eq. 0) then
                 name_subs = 'N/A'
             else
                 call jenuno(jexnum(modl_gene//'      .MODG.SSNO', nume_subs), name_subs)
-            endif
+            end if
         else
             name_subs = 'N/A'
-        endif
+        end if
         name_node = name_subs
-    endif
+    end if
 !
 ! - Generalized dof - Kinematic link
 !
-    if (type_equa.eq.'E') then
+    if (type_equa .eq. 'E') then
         name_node = 'TAR'
-        name_cmp  = 'LAG'
-    endif
+        name_cmp = 'LAG'
+    end if
 !
 ! - Print equation
 !
     if (l_print) then
-        call equa_print(mesh         , i_equa   , type_equa, name_node   , name_cmp,&
-                        name_cmp_lagr, name_subs, nume_link, nb_node_lagr, list_node_lagr,&
+        call equa_print(mesh, i_equa, type_equa, name_node, name_cmp, &
+                        name_cmp_lagr, name_subs, nume_link, nb_node_lagr, list_node_lagr, &
                         ligrel)
-    endif
+    end if
 !
- 99 continue
+99  continue
     if (present(name_nodez)) then
         name_nodez = name_node
-    endif
+    end if
     if (present(name_cmpz)) then
-        name_cmpz  = name_cmp
-    endif
+        name_cmpz = name_cmp
+    end if
     if (present(type_equaz)) then
         type_equaz = type_equa
-    endif
+    end if
     if (present(ligrelz)) then
         ligrelz = ligrel
-    endif
+    end if
 !
-    if (nb_node_lagr.gt.0) then
+    if (nb_node_lagr .gt. 0) then
         AS_DEALLOCATE(vi=list_node_lagr)
-    endif
+    end if
 !
 end subroutine

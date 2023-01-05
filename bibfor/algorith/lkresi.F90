@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lkresi(typmod, nmat, materf, timed, timef,&
-                  nvi, vind, vinf, yd, yf,&
+subroutine lkresi(typmod, nmat, materf, timed, timef, &
+                  nvi, vind, vinf, yd, yf, &
                   deps, nr, r)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -66,11 +66,11 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
     real(kind=8) :: paraep(3), varpl(4), dfdsp(6), bprimp
     real(kind=8) :: vecnp(6), gp(6), devgii, deux, trois, depse(6)
     real(kind=8) :: dsige(6), sigdt(6), sigft(6), depst(6), lamgd2
-    parameter       (zero  =  0.d0 )
-    parameter       (deux  =  2.d0 )
-    parameter       (trois =  3.d0 )
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
 !       ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !       --------------------------------------------------------------
 !
 ! --------------------------------------------------------------------
@@ -96,26 +96,26 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
         vint(1) = yf(ndt+2)
     else
         vint(1) = vind(1)
-    endif
+    end if
     if (yf(ndt+3) .ge. vind(3)) then
         vint(3) = yf(ndt+3)
     else
         vint(3) = vind(3)
-    endif
+    end if
 !
 ! --- INCREMENT DE TEMPS
-    dt = timef - timed
+    dt = timef-timed
 !
 ! --- CONSTRUCTION TENSEUR DEVIATOIRE DES CONTRAINTES ET 1ER INVARIANT
     call lcdevi(sigft, devsig)
     i1 = sigft(1)+sigft(2)+sigft(3)
 !
 ! --- DONNEES MATERIAU : VALEUR MAX DE XIV; XI_PIC
-    xivmax = materf(20,2)
-    xippic = materf(18,2)
+    xivmax = materf(20, 2)
+    xippic = materf(18, 2)
 !
 ! --- CONSTRUCTION TENSEUR ELASTIQUE NON LINEAIRE DSDENL
-    call lkelas(ndi, ndt, nmat, materf, depst,&
+    call lkelas(ndi, ndt, nmat, materf, depst, &
                 sigft, dsdenl, kk, mu)
 !
 ! ----------------------------------------------------------------------
@@ -129,26 +129,26 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
 ! --- I-2) VARIABLE D'ECROUISSAGE VISQUEUSE VINTR = YF(NDT+3)
 ! --- I-3) CALCUL SEUIL VISQUEUX PAR RAPPORT A YF(1:6)=SIGF -> SEUILV
 ! --- I-3-1)  XIT   = YF(NDT+3)
-    call lkcriv(vint(3), i1, devsig, vint, nmat,&
+    call lkcriv(vint(3), i1, devsig, vint, nmat, &
                 materf, ucriv, seuilv)
 !
     if (seuilv .ge. zero) then
-        call lkdgde(val, vint(3), dt, seuilv, ucriv,&
-                    i1, devsig, vint, nmat, materf,&
+        call lkdgde(val, vint(3), dt, seuilv, ucriv, &
+                    i1, devsig, vint, nmat, materf, &
                     depsv, dgamv, retcom)
     else
         dgamv = zero
         do i = 1, ndt
             depsv(i) = zero
         end do
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- II) - BUT : CALCUL DE LA DEFORMATION PLASTIQUE -DEPSP- ET DU
 ! ---       PARAMETRE D ECROUISSAGE PLASTIQUE -DGAMP-
 ! ----------------------------------------------------------------------
 ! --- II-2-B-2) INDICATEUR CONTRACTANCE OU DILATANCE -> VARV = 0 OU 1
 ! --- II-2-B-2)-1) CALCUL POSITION YF PAR RAPPORT SEUIL VISQUEUX MAX
-    call lkcriv(xivmax, i1, devsig, vint, nmat,&
+    call lkcriv(xivmax, i1, devsig, vint, nmat, &
                 materf, ucriv, seuivm)
 !
 ! --- II-2-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
@@ -156,48 +156,48 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
         varv = 0
     else
         varv = 1
-    endif
+    end if
 !
 ! --- II-1) CALCUL FONCTION SEUIL PLASTIQUE EN YF
     seuilp = zero
-    call lkcrip(i1, devsig, vint, nmat, materf,&
+    call lkcrip(i1, devsig, vint, nmat, materf, &
                 ucrip, seuilp)
 !
 ! --- II-2)SI SEUILP >= 0 ALORS PLASTICITE A PRENDRE EN COMPTE
-    if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then
+    if ((seuilp .ge. zero) .or. (vinf(7) .gt. zero)) then
 ! --- II-2-B-1) INDICATEUR ANGLE DE DILATANCE PLASTIQUE PSI -> 0 OU 1
         if (yf(ndt+2) .le. xippic) then
             val = 0
         else
             val = 1
-        endif
+        end if
 !
 ! --- II-2-B-3) CALCUL DE DF/DSIG
-        call lkdhds(nmat, materf, i1, devsig, dhds,&
+        call lkdhds(nmat, materf, i1, devsig, dhds, &
                     retcom)
-        call lkds2h(nmat, materf, i1, devsig, dhds,&
+        call lkds2h(nmat, materf, i1, devsig, dhds, &
                     ds2hds, retcom)
         call lkvarp(vint, nmat, materf, paraep)
         call lkvacp(nmat, materf, paraep, varpl)
-        call lkdfds(nmat, materf, devsig, paraep, varpl,&
+        call lkdfds(nmat, materf, devsig, paraep, varpl, &
                     ds2hds, ucrip, dfdsp)
 !
 ! --- II-2-B-4) CALCUL DE G
-        bprimp = lkbpri (val,vint,nmat,materf,paraep,i1,devsig)
+        bprimp = lkbpri(val, vint, nmat, materf, paraep, i1, devsig)
         call lkcaln(devsig, bprimp, vecnp, retcom)
         call lkcalg(dfdsp, vecnp, gp, devgii)
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- III) EQUATION D'EQUILIBRE : (CONVENTION MECANIQUE DES SOLS)
 ! ---      SIGDT - SIGFT + DSDE:(DEPST-DEPSP-DEPSVP) = 0
 ! ----------------------------------------------------------------------
-    if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then
+    if ((seuilp .ge. zero) .or. (vinf(7) .gt. zero)) then
         do i = 1, ndt
             depse(i) = depst(i)-depsv(i)-yf(ndt+1)*gp(i)
         end do
 !
-        dsige(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), depse(1:ndt))
+        dsige(1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), depse(1:ndt))
 !
         do i = 1, ndt
             r(i) = dsige(i)+sigdt(i)-sigft(i)
@@ -207,12 +207,12 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
             depse(i) = depst(i)-depsv(i)
         end do
 !
-        dsige(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), depse(1:ndt))
+        dsige(1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), depse(1:ndt))
 !
         do i = 1, ndt
             r(i) = dsige(i)+sigdt(i)-sigft(i)
         end do
-    endif
+    end if
 ! === =================================================================
 ! --- MISE A L'ECHELLE DE DEFORMATIONS -> R(I)/MODULE_CISAILLEMENT
 ! === =================================================================
@@ -228,24 +228,24 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
         r(ndt+1) = -yf(ndt+1)
     else
         r(ndt+1) = -seuilp/mu
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- V) EVOLUTION DE XIP :
 ! ---    XIPD - XIPF + DLAM*G_II*SQRT(2/3)(+ DGAMVP) = 0
 ! ----------------------------------------------------------------------
-    lamgd2 = max(zero,yf(ndt+1)*devgii*sqrt(deux/trois))
+    lamgd2 = max(zero, yf(ndt+1)*devgii*sqrt(deux/trois))
 !
     if (varv .eq. 0) then
         r(ndt+2) = yd(ndt+2)-yf(ndt+2)+lamgd2
     else
         r(ndt+2) = yd(ndt+2)-yf(ndt+2)+lamgd2+dgamv
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- VI) EVOLUTION DE XIVP :
 ! ---     XIVPD - XIVPF + MIN(DGAM_VP,XIV_MAX-XIVPD) = 0
 ! ----------------------------------------------------------------------
 ! --- TEST POUR DEFINIR MIN(DGAMV,XIV_MAX-XIV)
-    dxiv = min(dgamv,xivmax-yd(ndt+3))
+    dxiv = min(dgamv, xivmax-yd(ndt+3))
 !
     r(ndt+3) = yd(ndt+3)-yf(ndt+3)+dxiv
 !

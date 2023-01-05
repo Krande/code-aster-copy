@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,12 +87,12 @@ subroutine nugeel(nugene, modgen)
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    imes=iunifi('MESSAGE')
+    imes = iunifi('MESSAGE')
 !
 !-----------------------------------------------------------------------
 !
-    defli=modgen//'      .MODG.LIDF'
-    nomsst=modgen//'      .MODG.SSNO'
+    defli = modgen//'      .MODG.LIDF'
+    nomsst = modgen//'      .MODG.SSNO'
 !
 !----------------------RECUPERATION DES DIMENSIONS PRINCIPALES----------
 !
@@ -113,41 +113,40 @@ subroutine nugeel(nugene, modgen)
 !--                                                            --C
 !----------------------------------------------------------------C
 !
-    seliai=nugene(1:14)//'.ELIM.BASE'
-    sizlia=nugene(1:14)//'.ELIM.TAIL'
-    sst=   nugene(1:14)//'.ELIM.NOMS'
+    seliai = nugene(1:14)//'.ELIM.BASE'
+    sizlia = nugene(1:14)//'.ELIM.TAIL'
+    sst = nugene(1:14)//'.ELIM.NOMS'
 !
-    call indlia(modgen, seliai, nindep, nbddl, sst,&
+    call indlia(modgen, seliai, nindep, nbddl, sst, &
                 sizlia)
 !
 ! - Create PROF_GENE
 !
-    prof_gene=nugene//'.NUME'
-    call profgene_crsd(prof_gene, 'G', nindep, nb_sstr = nb_sstr, nb_link = 0,&
-                       model_genez = modgen, gran_namez = 'DEPL_R')
+    prof_gene = nugene//'.NUME'
+    call profgene_crsd(prof_gene, 'G', nindep, nb_sstr=nb_sstr, nb_link=0, &
+                       model_genez=modgen, gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !
     call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_sstr)
-    ASSERT(i_ligr_sstr.eq.1)
-    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_sstr), 'E', vi = prgene_prno)
-    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_sstr), 'E', vi = prgene_orig)
+    ASSERT(i_ligr_sstr .eq. 1)
+    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_sstr), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_sstr), 'E', vi=prgene_orig)
     prgene_prno(1) = 1
     prgene_prno(2) = nindep
     prgene_orig(1) = 1
 
-
 !
 !----------------------BOUCLES DE COMPTAGE DES DDL----------------------
 !
-    icomp=0
+    icomp = 0
 
 !
     call jeveuo(sizlia, 'L', lsilia)
     call jeveuo(sst, 'L', lsst)
 !
-    write (imes,*)'+++ NOMBRE DE SOUS-STRUSTURES: ',nbsst
-    write (imes,*)'+++ NOMBRE DE LIAISONS: ',nblia
+    write (imes, *) '+++ NOMBRE DE SOUS-STRUSTURES: ', nbsst
+    write (imes, *) '+++ NOMBRE DE LIAISONS: ', nblia
 !
 !
 !
@@ -157,7 +156,7 @@ subroutine nugeel(nugene, modgen)
     call wkvect('&&'//pgc//'.SST.NBLIA', 'V V I', nbsst, ltssnb)
 !
     call wkvect('&&'//pgc//'.LIA.SST', 'V V I', nblia*2, ltlia)
-    call jecrec('&&'//pgc//'.SST.LIA', 'V V I', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec('&&'//pgc//'.SST.LIA', 'V V I', 'NU', 'DISPERSE', 'CONSTANT', &
                 nbsst)
     call jeecra('&&'//pgc//'.SST.LIA', 'LONMAX', 2*nblia)
 !
@@ -170,16 +169,16 @@ subroutine nugeel(nugene, modgen)
 !
 !
     do i1 = 1, nblia*2
-        nulia=int((i1-1)/2)+1
+        nulia = int((i1-1)/2)+1
         call jeveuo(jexnum(defli, nulia), 'L', lldefl)
-        sst1=zk8(lldefl)
-        sst2=zk8(lldefl+2)
+        sst1 = zk8(lldefl)
+        sst2 = zk8(lldefl+2)
         call jenonu(jexnom(nomsst, sst1), nusst1)
         call jenonu(jexnom(nomsst, sst2), nusst2)
 !
-        zi(ltssnb+nusst1-1)=1
-        zi(ltssnb+nusst2-1)=1
-        zi(ltlia+i1-1)=max(nusst1,nusst2)
+        zi(ltssnb+nusst1-1) = 1
+        zi(ltssnb+nusst2-1) = 1
+        zi(ltlia+i1-1) = max(nusst1, nusst2)
     end do
 !
 !   BOUCLE PERMETTANT DE DETERMINER L'INVERSE
@@ -188,29 +187,29 @@ subroutine nugeel(nugene, modgen)
 !
 !   ET POUR DETECTER LES SOUS-STRUCTURES NON CONNECTEES
 !
-    pbcone=.false.
+    pbcone = .false.
     do i1 = 1, nbsst
-        icomp=0
+        icomp = 0
         call jenonu(jexnom(nomsst, zk8(lsst+i1-1)), nusst)
         if (zi(ltssnb+nusst-1) .eq. 0) then
-            pbcone=.true.
+            pbcone = .true.
             call jenuno(jexnum(nomsst, nusst), sst1)
-            valk=sst1
+            valk = sst1
             call utmess('E', 'ALGORITH13_75', sk=valk)
-        endif
+        end if
         call jecroc(jexnum('&&'//pgc//'.SST.LIA', i1))
         call jeveuo(jexnum('&&'//pgc//'.SST.LIA', i1), 'E', ltsst)
         do j1 = 1, nblia*2
             if (zi(ltlia+j1-1) .eq. nusst) then
-                icomp=icomp+1
-                zi(ltsst+icomp-1)=j1
-            endif
+                icomp = icomp+1
+                zi(ltsst+icomp-1) = j1
+            end if
         end do
     end do
 !
     if (pbcone) then
         call utmess('F', 'ALGORITH13_76')
-    endif
+    end if
 !
     call jedetr('&&'//pgc//'.LIA.SST')
     call jedetr('&&'//pgc//'.SST.NBLIA')

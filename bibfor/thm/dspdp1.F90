@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,18 +16,18 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dspdp1(ds_thm, signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
+subroutine dspdp1(ds_thm, signe, tbiot, satur, dsdp1, phi0, ep, surf, sbjh, wbjh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: signe, tbiot(6), satur
-real(kind=8), intent(out) :: dsdp1(6)
-real(kind=8), intent(in)  :: phi0,ep,surf,sbjh,wbjh
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: signe, tbiot(6), satur
+    real(kind=8), intent(out) :: dsdp1(6)
+    real(kind=8), intent(in)  :: phi0, ep, surf, sbjh, wbjh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,15 +55,15 @@ real(kind=8), intent(in)  :: phi0,ep,surf,sbjh,wbjh
 !
     do i = 1, 6
         if (ds_thm%ds_behaviour%l_stress_bishop) then
-            if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
+            if ((ds_thm%ds_behaviour%rela_hydr) .eq. 'HYDR_TABBAL') then
                 dsdp1(i) = -tbiot(i)*(-sbjh-((2./3.)*(surf/phi0)*wbjh*ep))
 
             else
                 dsdp1(i) = signe*tbiot(i)*satur
-            endif
+            end if
         else
             dsdp1(i) = 0.d0
-        endif
+        end if
     end do
 !
 end subroutine

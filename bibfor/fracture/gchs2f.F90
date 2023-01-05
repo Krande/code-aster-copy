@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine gchs2f(char1, char2, char3)
 !
     call jemarq()
 !
-    nomfon=char3(1:8)
+    nomfon = char3(1:8)
     epsi = r8prem()
 !
 !     DUPLICATION AVANT MISE A JOUR
@@ -73,7 +73,7 @@ subroutine gchs2f(char1, char2, char3)
     call jeveuo(char1//'.DESC', 'L', vi=des1)
     call jeveuo(char2//'.DESC', 'L', vi=des2)
     call jeveuo(char3//'.DESC', 'E', vi=des3)
-    des3(1)=des2(1)
+    des3(1) = des2(1)
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', des1(1)), 'LONMAX', ncmp1)
     call jelira(jexnum('&CATA.GD.NOMCMP', des2(1)), 'LONMAX', ncmp2)
@@ -84,47 +84,47 @@ subroutine gchs2f(char1, char2, char3)
     call jeveuo(char1//'.VALE', 'L', vr=vale)
     call wkvect(char3//'.VALE', 'V V K8', ncmp2*des3(3), jval3)
 !
-    k=0
-    kk=0
+    k = 0
+    kk = 0
     do i = 1, ncmp1
         nocmp1 = zk8(jncmp1-1+i)
-        j=indik8(zk8(jncmp2),nocmp1,1,ncmp2)
+        j = indik8(zk8(jncmp2), nocmp1, 1, ncmp2)
         if (j .ne. 0) then
-            k=k+1
+            k = k+1
             if (k .eq. 1) then
-                iec = (i-1)/30 + 1
-                reste = i - 30* (iec-1)
+                iec = (i-1)/30+1
+                reste = i-30*(iec-1)
                 code = 2**reste
-            endif
+            end if
             do izo = 1, des1(3)
                 if (abs(vale(1+(izo-1)*ncmp1+i-1)) .gt. epsi) then
-                    kk=kk+1
+                    kk = kk+1
                     call codent(kk, 'D0', nomfon(7:8))
-                    nomf19=nomfon
-                    ASSERT(lxlgut(nomf19).le.24)
+                    nomf19 = nomfon
+                    ASSERT(lxlgut(nomf19) .le. 24)
                     call wkvect(nomf19//'.PROL', 'V V K24', 6, jfpro)
-                    zk24(jfpro )='CONSTANT'
-                    zk24(jfpro+1)='LIN LIN'
-                    zk24(jfpro+2)='TOUTPARA'
-                    zk24(jfpro+3)='TOUTRESU'
-                    zk24(jfpro+4)='CC'
-                    zk24(jfpro+5)=nomf19
+                    zk24(jfpro) = 'CONSTANT'
+                    zk24(jfpro+1) = 'LIN LIN'
+                    zk24(jfpro+2) = 'TOUTPARA'
+                    zk24(jfpro+3) = 'TOUTRESU'
+                    zk24(jfpro+4) = 'CC'
+                    zk24(jfpro+5) = nomf19
                     call wkvect(nomf19//'.VALE', 'V V R', 2, jfval)
-                    zr(jfval)=1.d0
-                    zr(jfval+1)=vale(1+(izo-1)*ncmp1+i-1)
-                    zk8(jval3+(izo-1)*ncmp2+j-1)=nomfon
+                    zr(jfval) = 1.d0
+                    zr(jfval+1) = vale(1+(izo-1)*ncmp1+i-1)
+                    zk8(jval3+(izo-1)*ncmp2+j-1) = nomfon
                 else
-                    zk8(jval3+(izo-1)*ncmp2+j-1)='&FOZERO'
-                endif
+                    zk8(jval3+(izo-1)*ncmp2+j-1) = '&FOZERO'
+                end if
             end do
-        endif
+        end if
     end do
 !
 !     DESC (MAJ 2/2)
     nec = nbec(des3(1))
     do i = 1, nec*des3(3)
-        des3(1+3+2*des3(3)+i-1)= ior(des3(1+3+2*des3(1+3-&
-        1)+i-1),code)
+        des3(1+3+2*des3(3)+i-1) = ior(des3(1+3+2*des3(1+3- &
+                                                      1)+i-1), code)
     end do
 !
     call jedema()

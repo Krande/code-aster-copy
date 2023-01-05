@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0011(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -60,21 +60,21 @@ implicit none
 ! - Finite element informations
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-                      npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! - Initializations
 !
-    instan    = r8vide()
-    nbinco    = ndim*nno
-    nharm     = 0.d0
-    btdb(:,:) = 0.d0
+    instan = r8vide()
+    nbinco = ndim*nno
+    nharm = 0.d0
+    btdb(:, :) = 0.d0
     xyzgau(:) = 0.d0
-    bary(:)   = 0.d0
+    bary(:) = 0.d0
 !
 ! - Number of stress components
 !
-    nbsig     = nbsigm()
+    nbsig = nbsigm()
 !
 ! - Geometry
 !
@@ -89,7 +89,7 @@ implicit none
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         instan = zr(itemps)
-    endif
+    end if
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
@@ -108,32 +108,32 @@ implicit none
 !
     do igau = 1, npg1
 !
-        idecpg = nno* (igau-1) - 1
+        idecpg = nno*(igau-1)-1
 !
 ! ----- Coordinates for current Gauss point
 !
         xyzgau(:) = 0.d0
         do i = 1, nno
-            idecno = 3* (i-1) - 1
-            xyzgau(1) = xyzgau(1) + zr(ivf+i+idecpg)*zr(igeom+1+idecno)
-            xyzgau(2) = xyzgau(2) + zr(ivf+i+idecpg)*zr(igeom+2+idecno)
-            xyzgau(3) = xyzgau(3) + zr(ivf+i+idecpg)*zr(igeom+3+idecno)
+            idecno = 3*(i-1)-1
+            xyzgau(1) = xyzgau(1)+zr(ivf+i+idecpg)*zr(igeom+1+idecno)
+            xyzgau(2) = xyzgau(2)+zr(ivf+i+idecpg)*zr(igeom+2+idecno)
+            xyzgau(3) = xyzgau(3)+zr(ivf+i+idecpg)*zr(igeom+3+idecno)
         end do
 !
 ! ----- Compute matrix [B]: displacement -> strain (first order)
 !
-        call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf,&
+        call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf, &
                     idfde, nno, nharm, jacgau, b)
 !
 ! ----- Compute Hooke matrix [D]
 !
-        call dmatmc(fami, zi(imate), instan, '+',&
-                    igau, 1, repere, xyzgau, nbsig,&
+        call dmatmc(fami, zi(imate), instan, '+', &
+                    igau, 1, repere, xyzgau, nbsig, &
                     d)
 !
 ! ----- Compute rigidity matrix [K] = [B]Tx[D]x[B]
 !
-        call btdbmc(b, d, jacgau, ndim, nno,&
+        call btdbmc(b, d, jacgau, ndim, nno, &
                     nbsig, elas_id, btdb)
 !
     end do
@@ -144,8 +144,8 @@ implicit none
     k = 0
     do i = 1, nbinco
         do j = 1, i
-            k = k + 1
-            zr(imatuu+k-1) = btdb(i,j)
+            k = k+1
+            zr(imatuu+k-1) = btdb(i, j)
         end do
     end do
 !

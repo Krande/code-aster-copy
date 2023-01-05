@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpzrbk(z, h, d, mm, izh,&
+subroutine vpzrbk(z, h, d, mm, izh, &
                   k, l)
     implicit none
     integer :: mm, izh, k, l
@@ -34,24 +34,24 @@ subroutine vpzrbk(z, h, d, mm, izh,&
 !-----------------------------------------------------------------------
     zero = 0.d0
     do m = l-2, k, -1
-        ma=m+1
-        if (h(ma,m) .ne. zero) then
+        ma = m+1
+        if (h(ma, m) .ne. zero) then
             do i = m+2, l
-                d(i)=h(i,m)
+                d(i) = h(i, m)
             end do
             if (ma .le. l) then
                 do j = 1, mm
-                    g=zero
+                    g = zero
                     do i = ma, l
-                        g=g+d(i)*z(i,j)
+                        g = g+d(i)*z(i, j)
                     end do
 !
-                    g = (g/d(ma))/h(ma,m)
+                    g = (g/d(ma))/h(ma, m)
                     do i = ma, l
-                        z(i,j)=z(i,j)+g*d(i)
+                        z(i, j) = z(i, j)+g*d(i)
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 end subroutine

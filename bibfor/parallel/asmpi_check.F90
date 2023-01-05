@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,33 +67,33 @@ subroutine asmpi_check(iret)
     call asmpi_info(mpicou, rank=rank, size=nbpro4)
     nbproc = to_aster_int(nbpro4)
 !   if not started by mpiexec for debugging
-    if (nbproc .le. 1 ) then
+    if (nbproc .le. 1) then
         goto 999
-    endif
-    np1 = nbpro4 - 1
+    end if
+    np1 = nbpro4-1
     nbv = 1
 
     DEBUG_MPI('mpi_check', rank, nbpro4)
 
 !   On the processor #0
     if (rank == 0) then
-        allocate(isterm(nbproc))
-        allocate(diag(nbproc))
-        allocate(request(nbproc))
+        allocate (isterm(nbproc))
+        allocate (diag(nbproc))
+        allocate (request(nbproc))
 
         call uttrst(tres)
-        timeout = tres * 0.2d0
+        timeout = tres*0.2d0
         if (timeout < 0) then
             timeout = 120.
             call utmess('A', 'APPELMPI_94', sr=timeout)
-        endif
+        end if
 
 !       Ask each processor for its status
         do i = 1, np1
             isterm(i) = .false.
             ip4 = i
             DEBUG_MPI('mpi_check', 'irecv from ', ip4)
-            call asmpi_irecv_i4(diag(i:i), nbv, ip4, ST_TAG_CHK, mpicou,&
+            call asmpi_irecv_i4(diag(i:i), nbv, ip4, ST_TAG_CHK, mpicou, &
                                 request(i))
         end do
 !
@@ -105,19 +105,19 @@ subroutine asmpi_check(iret)
                 if (.not. isterm(i)) then
                     call asmpi_test(request(i), term)
                     if (term .eq. 1) then
-                        nbterm = nbterm + 1
+                        nbterm = nbterm+1
                         isterm(i) = .true.
                         if (diag(i) .eq. ST_ER) then
                             call utmess('I', 'APPELMPI_84', si=i)
                             call ststat(ST_ER_OTH)
-                        endif
-                    endif
-                endif
+                        end if
+                    end if
+                end if
             end do
             lcont = nbterm .lt. np1
 !           timeout
             tf = asmpi_wtime()
-            if (lcont .and. (tf - t0) .gt. timeout) then
+            if (lcont .and. (tf-t0) .gt. timeout) then
                 lcont = .false.
                 call utmess('E', 'APPELMPI_97', sr=timeout)
                 do i = 1, np1
@@ -125,25 +125,25 @@ subroutine asmpi_check(iret)
                         call utmess('E+', 'APPELMPI_96', si=i)
                         call utmess('E', 'APPELMPI_83', sk='MPI_IRECV')
                         call ststat(ST_UN_OTH)
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
 
         if (gtstat(ST_ER_PR0)) then
             call utmess('I', 'APPELMPI_84', si=0)
-        endif
+        end if
 !       Tell to all processors that answered if it continues or not
         if (gtstat(ST_OK)) then
             istat = ST_OK
         else
             istat = ST_ER
-        endif
+        end if
         do i = 1, np1
             if (isterm(i)) then
                 if (istat .ne. ST_OK) then
                     call utmess('I', 'APPELMPI_81', si=i)
-                endif
+                end if
                 wki(1) = istat
                 ip4 = i
                 DEBUG_MPI('mpi_check:send status / to', wki(1), ip4)
@@ -152,7 +152,7 @@ subroutine asmpi_check(iret)
 !               cancel those have not answered
                 DEBUG_MPI('mpi_check', 'cancel request for proc', i)
                 call asmpi_cancel(request(i))
-            endif
+            end if
         end do
 !
         if (.not. gtstat(ST_OK)) then
@@ -161,11 +161,11 @@ subroutine asmpi_check(iret)
                 call asmpi_stop(1)
             else
                 call asmpi_stop(2)
-            endif
-        endif
-        deallocate(isterm)
-        deallocate(diag)
-        deallocate(request)
+            end if
+        end if
+        deallocate (isterm)
+        deallocate (diag)
+        deallocate (request)
 
 !   On all others processors (not #0)
     else
@@ -175,8 +175,8 @@ subroutine asmpi_check(iret)
             iret = 1
             call utmess('I', 'APPELMPI_80')
             call asmpi_stop(2)
-        endif
-    endif
+        end if
+    end if
 999 continue
 
 #else

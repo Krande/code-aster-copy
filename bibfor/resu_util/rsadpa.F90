@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
+subroutine rsadpa(nomsd, cel, npara, lpara, iordr, &
                   itype, tjv, ttyp, sjv, styp, istop)
 ! aslint: disable=W1306
     implicit none
@@ -83,56 +83,55 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
     noms2 = nomsd
     iundef = isnnem()
     rundef = r8vide()
-    cundef = dcmplx(rundef,rundef)
+    cundef = dcmplx(rundef, rundef)
 
     if (present(istop)) then
-        istop2=istop
+        istop2 = istop
     else
-        istop2=1
-    endif
-
+        istop2 = 1
+    end if
 
 !   --- recuperation du numero de rangement ---
     call rsutrg(nomsd, iordr, irang, nrang)
 !
     if (cel .eq. 'L') then
         if (irang .eq. 0) then
-            valk (1) = nomsd
-            vali (1) = iordr
+            valk(1) = nomsd
+            vali(1) = iordr
             call utmess('F', 'UTILITAI6_77', sk=valk(1), si=vali(1))
-        endif
+        end if
     else
         if (irang .eq. 0) then
             call jelira(noms2//'.ORDR', 'LONMAX', nbordr)
-            nrang = nrang + 1
+            nrang = nrang+1
             if (nrang .gt. nbordr) then
-                valk (1) = nomsd
-                vali (1) = iordr
-                vali (2) = nbordr
+                valk(1) = nomsd
+                vali(1) = iordr
+                vali(2) = nbordr
                 call utmess('F', 'UTILITAI6_78', sk=valk(1), ni=2, vali=vali)
-            endif
+            end if
             call jeecra(noms2//'.ORDR', 'LONUTI', nrang)
             call jeveuo(noms2//'.ORDR', 'E', jordr)
             if (nrang .gt. 1) then
-                if(zi(jordr+nrang-2)>=iordr) then
-                    valk (1) = nomsd
-                    vali (1) = iordr
-                    vali (2) = nrang
+                if (zi(jordr+nrang-2) >= iordr) then
+                    valk(1) = nomsd
+                    vali(1) = iordr
+                    vali(2) = nrang
                     call utmess('F', 'UTILITAI6_81', sk=valk(1), ni=2, vali=vali)
                 end if
-            endif
+            end if
             zi(jordr+nrang-1) = iordr
             irang = nrang
-        endif
-    endif
+        end if
+    end if
 
     call jelira(jexnum(noms2//'.TACH', 1), 'LONMAX', nbordr)
     if (irang .gt. nbordr) then
-        valk (1) = nomsd
-        vali (1) = irang
-        vali (2) = nbordr
+        valk(1) = nomsd
+        vali(1) = irang
+        vali(2) = nbordr
         call utmess('F', 'UTILITAI6_79', sk=valk(1), ni=2, vali=vali)
-    endif
+    end if
 
     do i = 1, npara
         param = lpara(i)
@@ -141,53 +140,52 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
             ifr = iunifi('RESULTAT')
             call dismoi('TYPE_RESU', nomsd, 'RESULTAT', repk=k16b)
             call jeimpo(ifr, noms2//'.NOVA', ' ')
-            valk (1) = nomsd
-            valk (2) = param
-            valk (3) = k16b
+            valk(1) = nomsd
+            valk(2) = param
+            valk(3) = k16b
             call utmess('F', 'UTILITAI6_80', nk=3, valk=valk)
-        endif
+        end if
 
-        call extrs3(noms2, param, irang, cel, 1,&
+        call extrs3(noms2, param, irang, cel, 1, &
                     ctype(i), ljeveu(i))
-
 
 !       -- on verifie que les parametres accedes en lecture n'ont pas
 !          une valeur "undef" :
 !       --------------------------------------------------------------
-        if (cel .eq. 'L'.and. istop2.eq.1 ) then
-           if (ctype(i).eq.'R') then
-               ASSERT(zr(ljeveu(i)).ne.rundef)
-           elseif (ctype(i).eq.'C') then
-               ASSERT(zc(ljeveu(i)).ne.cundef)
-           elseif (ctype(i).eq.'I') then
-               ASSERT(zi(ljeveu(i)).ne.iundef)
-           endif
-        endif
+        if (cel .eq. 'L' .and. istop2 .eq. 1) then
+            if (ctype(i) .eq. 'R') then
+                ASSERT(zr(ljeveu(i)) .ne. rundef)
+            elseif (ctype(i) .eq. 'C') then
+                ASSERT(zc(ljeveu(i)) .ne. cundef)
+            elseif (ctype(i) .eq. 'I') then
+                ASSERT(zi(ljeveu(i)) .ne. iundef)
+            end if
+        end if
 
     end do
 
-    ASSERT(EXCLUS2(tjv,sjv))
+    ASSERT(EXCLUS2(tjv, sjv))
     if (present(tjv)) then
         do i = 1, npara
-            tjv(i)=ljeveu(i)
+            tjv(i) = ljeveu(i)
         end do
     else if (present(sjv)) then
-        sjv=ljeveu(1)
+        sjv = ljeveu(1)
     else
         ASSERT(.false.)
-    endif
+    end if
 
-    ASSERT(EXCLUS2(ttyp,styp))
+    ASSERT(EXCLUS2(ttyp, styp))
     if (itype .ne. 0) then
         if (present(ttyp)) then
             do i = 1, npara
-                ttyp(i)=ctype(i)
+                ttyp(i) = ctype(i)
             end do
         else if (present(styp)) then
-            styp=ctype(1)
+            styp = ctype(1)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 
 end subroutine

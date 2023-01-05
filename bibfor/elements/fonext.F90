@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
+subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg, &
                   nbnoff, jborl, jdirol, jnvdir, iseg)
 !
     implicit none
@@ -87,8 +87,8 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !     -----------------------------------------------------------------
 !
     call jemarq()
-    numpt=1
-    if (iseg .ne. 1) numpt=nbnoff
+    numpt = 1
+    if (iseg .ne. 1) numpt = nbnoff
 !
 !     RECUPERATION DES INFORMATIONS RELATIVES AU MAILLAGE
 !
@@ -103,9 +103,9 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !
 !     BOUCLE SUR LE NOMBRE DE MAILLES CONNECTEES AU NOEUD EXTREMITE
     do ima = 1, nmanoe
-        nmaext=zi(jmanoe-1+(ima-1)+1)
+        nmaext = zi(jmanoe-1+(ima-1)+1)
 !
-        itypma=typmail(nmaext)
+        itypma = typmail(nmaext)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
         call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
@@ -115,58 +115,58 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !       CALCUL DU CENTRE DE GRAVITE DE LA MAILLE
         call cengra(noma, nmaext, coorg)
         call confac(typma, ibid3, ibid, fa, nbf)
-        nbfacb=0
-        inobor(1)=0
-        inobor(2)=0
+        nbfacb = 0
+        inobor(1) = 0
+        inobor(2) = 0
 !       BOUCLE SUR LE NOMBRE DE FACES DE LA MAILLE
         do ifa = 1, nbf
             nbno = 4
-            if (fa(ifa,4) .eq. 0) nbno = 3
-            nofac=.false.
+            if (fa(ifa, 4) .eq. 0) nbno = 3
+            nofac = .false.
 !         BOUCLE SUR LE NOMBRE DE NOEUDS DE LA FACE
             do ino = 1, nbno
-                nuno = connex(zi(jconx2+nmaext-1)+fa(ifa,ino)-1)
+                nuno = connex(zi(jconx2+nmaext-1)+fa(ifa, ino)-1)
                 if (nuno .eq. inoseg) goto 110
-                if (nuno .eq. inoext) nofac=.true.
+                if (nuno .eq. inoext) nofac = .true.
 !         FIN BOUCLE SUR LES NOEUDS
             end do
 !
             if (nofac) then
-                nunoa = connex(zi(jconx2+nmaext-1)+fa(ifa,1)-1)
-                nunob = connex(zi(jconx2+nmaext-1)+fa(ifa,2)-1)
-                nunoc = connex(zi(jconx2+nmaext-1)+fa(ifa,3)-1)
+                nunoa = connex(zi(jconx2+nmaext-1)+fa(ifa, 1)-1)
+                nunob = connex(zi(jconx2+nmaext-1)+fa(ifa, 2)-1)
+                nunoc = connex(zi(jconx2+nmaext-1)+fa(ifa, 3)-1)
 !
 !           ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
-                call xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
+                call xfabor(noma, cnxinv, nunoa, nunob, nunoc, &
                             fabord)
                 if (fabord) then
-                    call xnorme(numpt, inobor, vectn, nbfacb, nunoa,&
+                    call xnorme(numpt, inobor, vectn, nbfacb, nunoa, &
                                 nunob, nunoc, jcoor, coorg)
 !             ON VERIFIE QUE LA NORMALE A LA FACE N'EST PAS
 !             COLINEAIRE AU VECTEUR NORMAL AU PLAN DE FISSURE
-                    vect(1)=vectn(1+3*(nbfacb-1))
-                    vect(2)=vectn(2+3*(nbfacb-1))
-                    vect(3)=vectn(3+3*(nbfacb-1))
+                    vect(1) = vectn(1+3*(nbfacb-1))
+                    vect(2) = vectn(2+3*(nbfacb-1))
+                    vect(3) = vectn(3+3*(nbfacb-1))
                     call normev(vect, norme)
 !
-                    proj=vect(1)*zr(jbasno-1+6*(numpt-1)+1) +vect(2)*&
-                    zr(jbasno-1+6*(numpt-1)+2) +vect(3)*zr(jbasno-1+6*&
-                    (numpt-1)+3)
+                    proj = vect(1)*zr(jbasno-1+6*(numpt-1)+1)+vect(2)* &
+                           zr(jbasno-1+6*(numpt-1)+2)+vect(3)*zr(jbasno-1+6* &
+                                                                 (numpt-1)+3)
 !
                     if (abs(proj) .ge. 0.95d0) then
                         nbfacb = nbfacb-1
                         goto 110
-                    endif
+                    end if
 !
-                endif
-            endif
+                end if
+            end if
 !       FIN BOUCLE SUR LES FACES
 110         continue
         end do
         if (nbfacb .ne. 0) then
-            call xextre(inobor, vectn, nbfacb, jbasno, jborl,&
+            call xextre(inobor, vectn, nbfacb, jbasno, jborl, &
                         jdirol, jnvdir)
-        endif
+        end if
 !     FIN BOUCLE SUR LES MAILLES
 100     continue
     end do

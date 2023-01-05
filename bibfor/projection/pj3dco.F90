@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3dco(typeSelect   ,&
-                  entity1      , entity2        ,&
-                  nbCellSelect1, listCellSelect1,&
-                  nbNodeSelect2, listNodeSelect2,&
-                  geom1        , geom2, corrMesh,&
-                  l_dmax       , dmax, dala,&
-                  listInterc_  , nbInterc_)
+subroutine pj3dco(typeSelect, &
+                  entity1, entity2, &
+                  nbCellSelect1, listCellSelect1, &
+                  nbNodeSelect2, listNodeSelect2, &
+                  geom1, geom2, corrMesh, &
+                  l_dmax, dmax, dala, &
+                  listInterc_, nbInterc_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -48,15 +48,15 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: typeSelect
-character(len=8), intent(in) :: entity1, entity2
-integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
-character(len=*), intent(in) :: geom1, geom2
-character(len=16), intent(in)  :: corrMesh
-aster_logical, intent(in) :: l_dmax
-real(kind=8), intent(in) :: dmax, dala
-character(len=16), optional, intent(in)  :: listInterc_
-integer, optional, intent(in)  :: nbInterc_
+    character(len=*), intent(in) :: typeSelect
+    character(len=8), intent(in) :: entity1, entity2
+    integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    character(len=*), intent(in) :: geom1, geom2
+    character(len=16), intent(in)  :: corrMesh
+    aster_logical, intent(in) :: l_dmax
+    real(kind=8), intent(in) :: dmax, dala
+    character(len=16), optional, intent(in)  :: listInterc_
+    integer, optional, intent(in)  :: nbInterc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ integer, optional, intent(in)  :: nbInterc_
     aster_logical, parameter :: dbg = ASTER_FALSE
     character(len=8) :: mesh1, mesh2, nodeName2
     character(len=14), parameter :: boite = '&&PJ3DCO.BOITE'
-    character(len=16), parameter :: corrMeshTemp='&&PJ3DCO.CORRESP'
+    character(len=16), parameter :: corrMeshTemp = '&&PJ3DCO.CORRESP'
     character(len=16) :: listInterc
     integer :: nbCellType
     integer :: cellListType(MT_NTYMAX)
@@ -110,14 +110,14 @@ integer, optional, intent(in)  :: nbInterc_
     call infniv(ifm, niv)
 
 ! - Prepare list of entities
-    call pjxxut('3D'         , typeSelect     ,&
-                entity1      , entity2        ,&
-                nbCellSelect1, listCellSelect1,&
-                nbNodeSelect2, listNodeSelect2,&
-                mesh1        , mesh2          ,&
-                nbCellType   , cellListType   , cellListCode)
-    call jeveuo('&&PJXXCO.LIMA1', 'L', vi = listCell1)
-    call jeveuo('&&PJXXCO.LINO2', 'L', vi = listNode2)
+    call pjxxut('3D', typeSelect, &
+                entity1, entity2, &
+                nbCellSelect1, listCellSelect1, &
+                nbNodeSelect2, listNodeSelect2, &
+                mesh1, mesh2, &
+                nbCellType, cellListType, cellListCode)
+    call jeveuo('&&PJXXCO.LIMA1', 'L', vi=listCell1)
+    call jeveuo('&&PJXXCO.LINO2', 'L', vi=listNode2)
 
 ! - Access to meshes
     call dismoi('NB_NO_MAILLA', mesh1, 'MAILLAGE', repi=nbNode1)
@@ -131,24 +131,24 @@ integer, optional, intent(in)  :: nbInterc_
     do iCell1 = 1, nbCell1
         if (listCell1(iCell1) .ne. 0) then
             cellTypeNume = typmail(iCell1)
-            if ((cellTypeNume.eq.cellListType(1)) .or. (cellTypeNume.eq.cellListType(2))) then
-                nbTetra = nbTetra + 1
-            else if ((cellTypeNume.eq.cellListType(3)) .or. (cellTypeNume.eq.cellListType(4)).or.&
-                     (cellTypeNume.eq.cellListType(5))) then
-                nbTetra = nbTetra + 3
-            else if ((cellTypeNume.eq.cellListType(6)).or.(cellTypeNume.eq.cellListType(7)).or.&
-                     (cellTypeNume.eq.cellListType(8)).or.(cellTypeNume.eq.cellListType(11))) then
-                nbTetra = nbTetra + 6
-            else if ((cellTypeNume.eq.cellListType(9)).or.(cellTypeNume.eq.cellListType(10))) then
-                nbTetra = nbTetra + 2
+            if ((cellTypeNume .eq. cellListType(1)) .or. (cellTypeNume .eq. cellListType(2))) then
+                nbTetra = nbTetra+1
+        else if ((cellTypeNume .eq. cellListType(3)) .or. (cellTypeNume .eq. cellListType(4)) .or. &
+                     (cellTypeNume .eq. cellListType(5))) then
+                nbTetra = nbTetra+3
+        else if ((cellTypeNume .eq. cellListType(6)) .or. (cellTypeNume .eq. cellListType(7)) .or. &
+                 (cellTypeNume .eq. cellListType(8)) .or. (cellTypeNume .eq. cellListType(11))) then
+                nbTetra = nbTetra+6
+        else if ((cellTypeNume .eq. cellListType(9)) .or. (cellTypeNume .eq. cellListType(10))) then
+                nbTetra = nbTetra+2
             else
                 call utmess('F', 'PROJECTION4_1')
-            endif
-        endif
+            end if
+        end if
     end do
     if (nbTetra .eq. 0) then
         call utmess('F', 'PROJECTION4_55')
-    endif
+    end if
 
 ! - Create object to cut cells in TETRA4
 !         long(v)=1+6*ntr3
@@ -168,100 +168,100 @@ integer, optional, intent(in)  :: nbInterc_
     do iCell1 = 1, nbCell1
         if (listCell1(iCell1) .ne. 0) then
             cellTypeNume = typmail(iCell1)
-            if ((cellTypeNume.eq.cellListType(1)) .or. (cellTypeNume.eq.cellListType(2))) then
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=1
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
-            else if ((cellTypeNume.eq.cellListType(3)) .or. (cellTypeNume.eq.cellListType(4)).or.&
-                     (cellTypeNume.eq.cellListType(5))) then
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=1
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+6)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+5)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=2
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+6)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+5)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=3
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+5)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-            else if ((cellTypeNume.eq.cellListType(6)).or.(cellTypeNume.eq.cellListType(7)).or.&
-                     (cellTypeNume.eq.cellListType(8)).or.(cellTypeNume.eq.cellListType(11))) then
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=1
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+8)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+6)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=2
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+8)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+6)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+5)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=3
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+6)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=4
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+8)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+7)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=5
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+8)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+6)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+7)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=6
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+7)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-            else if ((cellTypeNume.eq.cellListType(9)).or.(cellTypeNume.eq.cellListType(10))) then
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=1
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+5)
-                nbTetra=nbTetra+1
-                zi(iate4+(nbTetra-1)*6+5)=iCell1
-                zi(iate4+(nbTetra-1)*6+6)=2
-                zi(iate4+(nbTetra-1)*6+1)=connex(1+ zi(ilcnx1-1+iCell1)-2+1)
-                zi(iate4+(nbTetra-1)*6+2)=connex(1+ zi(ilcnx1-1+iCell1)-2+3)
-                zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+4)
-                zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+5)
+            if ((cellTypeNume .eq. cellListType(1)) .or. (cellTypeNume .eq. cellListType(2))) then
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 1
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
+        else if ((cellTypeNume .eq. cellListType(3)) .or. (cellTypeNume .eq. cellListType(4)) .or. &
+                     (cellTypeNume .eq. cellListType(5))) then
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 1
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+6)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+5)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 2
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+6)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+5)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 3
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+5)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+        else if ((cellTypeNume .eq. cellListType(6)) .or. (cellTypeNume .eq. cellListType(7)) .or. &
+                 (cellTypeNume .eq. cellListType(8)) .or. (cellTypeNume .eq. cellListType(11))) then
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 1
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+8)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+6)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 2
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+8)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+6)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+5)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 3
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+6)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 4
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+8)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+7)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 5
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+8)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+6)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+7)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 6
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+7)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+        else if ((cellTypeNume .eq. cellListType(9)) .or. (cellTypeNume .eq. cellListType(10))) then
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 1
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+2)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+5)
+                nbTetra = nbTetra+1
+                zi(iate4+(nbTetra-1)*6+5) = iCell1
+                zi(iate4+(nbTetra-1)*6+6) = 2
+                zi(iate4+(nbTetra-1)*6+1) = connex(1+zi(ilcnx1-1+iCell1)-2+1)
+                zi(iate4+(nbTetra-1)*6+2) = connex(1+zi(ilcnx1-1+iCell1)-2+3)
+                zi(iate4+(nbTetra-1)*6+3) = connex(1+zi(ilcnx1-1+iCell1)-2+4)
+                zi(iate4+(nbTetra-1)*6+4) = connex(1+zi(ilcnx1-1+iCell1)-2+5)
             else
                 call utmess('F', 'PROJECTION4_1')
-            endif
-        endif
+            end if
+        end if
     end do
 
 ! - Get coordinates of nodes
@@ -269,12 +269,12 @@ integer, optional, intent(in)  :: nbInterc_
         call jeveuo(mesh1//'.COORDO    .VALE', 'L', iacoo1)
     else
         call jeveuo(geom1, 'L', iacoo1)
-    endif
+    end if
     if (geom2 .eq. ' ') then
         call jeveuo(mesh2//'.COORDO    .VALE', 'L', iacoo2)
     else
         call jeveuo(geom2, 'L', iacoo2)
-    endif
+    end if
 
 ! - Create boxes
     call pj3dfb(boite, '&&PJXXCO.TETR4', zr(iacoo1), zr(iacoo2))
@@ -320,9 +320,9 @@ integer, optional, intent(in)  :: nbInterc_
 
 ! - Create temporary datastructure
     call wkvect(corrMeshTemp//'.PJXX_K1', 'V V K24', 5, jxxk1)
-    zk24(jxxk1-1+1)=mesh1
-    zk24(jxxk1-1+2)=mesh2
-    zk24(jxxk1-1+3)='COLLOCATION'
+    zk24(jxxk1-1+1) = mesh1
+    zk24(jxxk1-1+2) = mesh2
+    zk24(jxxk1-1+3) = 'COLLOCATION'
     call wkvect(corrMeshTemp//'.PJEF_NB', 'V V I', nbNode2, iaconb)
     call wkvect(corrMeshTemp//'.PJEF_NU', 'V V I', 4*nbNode2, iaconu)
     call wkvect(corrMeshTemp//'.PJEF_CF', 'V V R', 4*nbNode2, iacocf)
@@ -334,75 +334,74 @@ integer, optional, intent(in)  :: nbInterc_
     do iNode2 = 1, nbNode2
         if (listNode2(iNode2) .eq. 0) cycle
 ! ----- Special for XFEM (issue23983))
-        if (zr(iacoo2-1+3*(iNode2-1)+1) .eq. 0.d0 .and.&
-            zr(iacoo2-1+3*(iNode2-1)+2) .eq. 0.d0 .and.&
-            zr(iacoo2-1+3*(iNode2-1)+3) .eq. 0.d0 ) then
-            nbpt0=nbpt0+1
+        if (zr(iacoo2-1+3*(iNode2-1)+1) .eq. 0.d0 .and. &
+            zr(iacoo2-1+3*(iNode2-1)+2) .eq. 0.d0 .and. &
+            zr(iacoo2-1+3*(iNode2-1)+3) .eq. 0.d0) then
+            nbpt0 = nbpt0+1
             if (nbpt0 .eq. 1) then
-                ino2_0=iNode2
-                idecal_0=idecal
+                ino2_0 = iNode2
+                idecal_0 = idecal
             else
-                zi(iaconb-1+iNode2)=4
-                cellLink1=zi(iacotr-1+ino2_0)
-                zi(iacotr-1+iNode2)=cellLink1
-                if (cellLink1.eq.0) cycle
+                zi(iaconb-1+iNode2) = 4
+                cellLink1 = zi(iacotr-1+ino2_0)
+                zi(iacotr-1+iNode2) = cellLink1
+                if (cellLink1 .eq. 0) cycle
                 do k = 1, 4
-                    zi(iaconu-1+idecal+k)= zi(iaconu-1+idecal_0+k)
-                    zr(iacocf-1+idecal+k)= zr(iacocf-1+idecal_0+k)
+                    zi(iaconu-1+idecal+k) = zi(iaconu-1+idecal_0+k)
+                    zr(iacocf-1+idecal+k) = zr(iacocf-1+idecal_0+k)
                 end do
-                idecal=idecal+zi(iaconb-1+iNode2)
+                idecal = idecal+zi(iaconb-1+iNode2)
                 cycle
-            endif
-        endif
-        call pj3dap(iNode2, zr(iacoo2), zr(iacoo1), zi(iate4),&
-                    cobary, cellLink1, nbtrou, bt3ddi, bt3dvr,&
-                    bt3dnb, bt3dlc, zi( iabtco),&
+            end if
+        end if
+        call pj3dap(iNode2, zr(iacoo2), zr(iacoo1), zi(iate4), &
+                    cobary, cellLink1, nbtrou, bt3ddi, bt3dvr, &
+                    bt3dnb, bt3dlc, zi(iabtco), &
                     l_dmax, dmax, dala, loin, dmin)
-        if (l_dmax .and. (nbtrou.eq.0)) then
+        if (l_dmax .and. (nbtrou .eq. 0)) then
             zi(iaconb-1+iNode2) = 4
             zi(iacotr-1+iNode2) = 0
             cycle
-        endif
+        end if
         if (nbtrou .eq. 0) then
             call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
             call utmess('F', 'PROJECTION4_56', sk=nodeName2)
-        endif
+        end if
         zi(iaconb-1+iNode2) = 4
         zi(iacotr-1+iNode2) = cellLink1
         do k = 1, 4
             zi(iaconu-1+idecal+k) = zi(iate4+6*(cellLink1-1)+k)
             zr(iacocf-1+idecal+k) = cobary(k)
         end do
-        idecal=idecal+zi(iaconb-1+iNode2)
+        idecal = idecal+zi(iaconb-1+iNode2)
     end do
 
 ! - For alarm, see ticket 16186
 
-
 ! - Transform corrMeshTemp in corrMesh
-    if (present(listInterc_))then
+    if (present(listInterc_)) then
         ASSERT(present(nbInterc_))
         listInterc = listInterc_
         nbInterc = nbInterc_
-        call pj3dtr(corrMeshTemp, corrMesh,&
-                    cellListType, cellListCode,&
-                    zr(iacoo1), zr(iacoo2),&
-                    dala,&
+        call pj3dtr(corrMeshTemp, corrMesh, &
+                    cellListType, cellListCode, &
+                    zr(iacoo1), zr(iacoo2), &
+                    dala, &
                     listInterc, nbInterc)
     else
         listInterc = ' '
         nbInterc = 0
-        call pj3dtr(corrMeshTemp, corrMesh,&
-                    cellListType, cellListCode,&
-                    zr(iacoo1), zr(iacoo2),&
+        call pj3dtr(corrMeshTemp, corrMesh, &
+                    cellListType, cellListCode, &
+                    zr(iacoo1), zr(iacoo2), &
                     dala)
-    endif
+    end if
 
 ! - Debug
     if (dbg) then
         call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, '&&PJ3DCO', 1, ' ')
         call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, corrMesh, 1, ' ')
-    endif
+    end if
 
 ! - Clean
     call detrsd('CORRESP_2_MAILLA', corrMeshTemp)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ntweib(nrupt, cals, sk, sigw, nur,&
-                  nt, nbres, x1, x2, xacc,&
+subroutine ntweib(nrupt, cals, sk, sigw, nur, &
+                  nt, nbres, x1, x2, xacc, &
                   rtsafe, impr, ifm, indtp, nbtp)
     implicit none
 #include "asterf_types.h"
@@ -63,89 +63,89 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
     real(kind=8) :: valr(4)
     integer :: maxit, j
     integer :: vali
-    parameter (maxit=100)
+    parameter(maxit=100)
 !     ----------------------------------------------------------------
 !
-  4 continue
-    call fcweib(nrupt, cals, sk, sigw, nur,&
-                nt, nbres, indtp, nbtp, x1,&
+4   continue
+    call fcweib(nrupt, cals, sk, sigw, nur, &
+                nt, nbres, indtp, nbtp, x1, &
                 fl, dfl)
-    if (impr) write(ifm,*) 'F,DF,X1 SUR BORNE GAUCHE : ',fl,dfl,x1
-  5 continue
-    call fcweib(nrupt, cals, sk, sigw, nur,&
-                nt, nbres, indtp, nbtp, x2,&
+    if (impr) write (ifm, *) 'F,DF,X1 SUR BORNE GAUCHE : ', fl, dfl, x1
+5   continue
+    call fcweib(nrupt, cals, sk, sigw, nur, &
+                nt, nbres, indtp, nbtp, x2, &
                 fh, dfh)
-    if (impr) write(ifm,*) 'F,DF,X2 SUR BORNE DROITE : ',fh,dfh,x2
+    if (impr) write (ifm, *) 'F,DF,X2 SUR BORNE DROITE : ', fh, dfh, x2
 !
 !     RECHERCHE DE LA BORNE DROITE SI F(X1) ET F(X2) DE MEME SIGNE
 !
-    if (((fl.gt.0.d0.and.fh.gt.0.d0).and.dfh.lt.0.d0 ) .or.&
-        ((fl.lt.0.d0.and.fh.lt.0.d0).and.dfh.gt.0.d0)) then
-        x2 = x2 + 0.9d0
+    if (((fl .gt. 0.d0 .and. fh .gt. 0.d0) .and. dfh .lt. 0.d0) .or. &
+        ((fl .lt. 0.d0 .and. fh .lt. 0.d0) .and. dfh .gt. 0.d0)) then
+        x2 = x2+0.9d0
         goto 5
-    endif
-    if (((fl.gt.0.d0.and.fh.gt.0.d0).and.dfl.gt.0.d0 ) .or.&
-        ((fl.lt.0.d0.and.fh.lt.0.d0).and.dfl.lt.0.d0)) then
-        x1 = x1 - 0.9d0
+    end if
+    if (((fl .gt. 0.d0 .and. fh .gt. 0.d0) .and. dfl .gt. 0.d0) .or. &
+        ((fl .lt. 0.d0 .and. fh .lt. 0.d0) .and. dfl .lt. 0.d0)) then
+        x1 = x1-0.9d0
         goto 4
-    endif
+    end if
     if (fl .eq. 0.d0) then
         rtsafe = x1
         goto 999
-    else if (fh.eq.0.d0) then
+    else if (fh .eq. 0.d0) then
         rtsafe = x2
         goto 999
-    else if (fl.lt.0.d0) then
+    else if (fl .lt. 0.d0) then
         xl = x1
         xh = x2
     else
         xh = x1
         xl = x2
-    endif
+    end if
     rtsafe = 0.5d0*(x1+x2)
     dxold = abs(x2-x1)
     dx = dxold
-    call fcweib(nrupt, cals, sk, sigw, nur,&
-                nt, nbres, indtp, nbtp, rtsafe,&
+    call fcweib(nrupt, cals, sk, sigw, nur, &
+                nt, nbres, indtp, nbtp, rtsafe, &
                 f, df)
-    if (impr) write(ifm,*) 'F ET DF MILIEU INTERVALLE :',rtsafe,f,df
+    if (impr) write (ifm, *) 'F ET DF MILIEU INTERVALLE :', rtsafe, f, df
     do j = 1, maxit
-        if (impr) write(ifm,*) '*** ITERATION DE NEWTON NO',j
-        if (((rtsafe-xh)*df-f)*((rtsafe-xl)*df-f) .gt. 0.d0 .or. abs( 2.d0*f) .gt.&
+        if (impr) write (ifm, *) '*** ITERATION DE NEWTON NO', j
+        if (((rtsafe-xh)*df-f)*((rtsafe-xl)*df-f) .gt. 0.d0 .or. abs(2.d0*f) .gt. &
             abs(dxold*df)) then
             dxold = dx
             dx = 0.5d0*(xh-xl)
             rtsafe = xl+dx
             if (xl .eq. rtsafe) goto 999
-            if (impr) write(ifm,*) 'INCREMENT - SOLUTION : ',dx, rtsafe
+            if (impr) write (ifm, *) 'INCREMENT - SOLUTION : ', dx, rtsafe
         else
             dxold = dx
             dx = f/df
             temp = rtsafe
             rtsafe = rtsafe-dx
             if (temp .eq. rtsafe) goto 999
-            if (impr) write(ifm,*) 'INCREMENT - SOLUTION : ',dx, rtsafe
-        endif
+            if (impr) write (ifm, *) 'INCREMENT - SOLUTION : ', dx, rtsafe
+        end if
         if (abs(dx) .lt. xacc) goto 999
-        call fcweib(nrupt, cals, sk, sigw, nur,&
-                    nt, nbres, indtp, nbtp, rtsafe,&
+        call fcweib(nrupt, cals, sk, sigw, nur, &
+                    nt, nbres, indtp, nbtp, rtsafe, &
                     f, df)
-        if (impr) write(ifm,*) 'SOLUTION/F-DF : ',rtsafe,f,df
+        if (impr) write (ifm, *) 'SOLUTION/F-DF : ', rtsafe, f, df
         if (f .lt. 0.d0) then
             xl = rtsafe
         else
             xh = rtsafe
-        endif
+        end if
     end do
     call utmess('F', 'UTILITAI2_53')
 999 continue
     if (impr) then
-        valr (1) = rtsafe
-        valr (2) = f
-        valr (3) = dx
-        valr (4) = xacc
+        valr(1) = rtsafe
+        valr(2) = f
+        valr(3) = dx
+        valr(4) = xacc
         vali = j
         call utmess('I', 'UTILITAI6_48', si=vali, nr=4, valr=valr)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ subroutine hsaco(vectt, dudxnc, hsc)
 !
 #include "asterfort/hsame.h"
 #include "asterfort/hsash.h"
-    real(kind=8) :: vectt ( 3 , 3 )
+    real(kind=8) :: vectt(3, 3)
 !
-    real(kind=8) :: dudxnc ( 9 )
+    real(kind=8) :: dudxnc(9)
 !
-    real(kind=8) :: hsm1 ( 3 , 9 )
+    real(kind=8) :: hsm1(3, 9)
 !
-    real(kind=8) :: hsm2 ( 3 , 9 )
+    real(kind=8) :: hsm2(3, 9)
 !
-    real(kind=8) :: hss1 ( 2 , 9 )
+    real(kind=8) :: hss1(2, 9)
 !
-    real(kind=8) :: hss2 ( 2 , 9 )
+    real(kind=8) :: hss2(2, 9)
 !
-    real(kind=8) :: hsc ( 5 , 9 )
+    real(kind=8) :: hsc(5, 9)
 !
     integer :: i, j
 !
@@ -57,11 +57,11 @@ subroutine hsaco(vectt, dudxnc, hsc)
     do j = 1, 9
 !
         do i = 1, 3
-            hsc ( i , j ) = hsm2 ( i , j )
+            hsc(i, j) = hsm2(i, j)
 !
         end do
         do i = 1, 2
-            hsc ( i + 3 , j ) = hss2 ( i , j )
+            hsc(i+3, j) = hss2(i, j)
 !
         end do
 !

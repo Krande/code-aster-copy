@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
         call rsnopa(resu8, 2, nomjv, nbac, nbpa)
         call jeexin(nomjv, iret)
         if (iret .gt. 0) call jeveuo(nomjv, 'E', lpout)
-        nbout = nbac + nbpa
+        nbout = nbac+nbpa
     else
 !
 !       --- VERIFICATION DE L'EXISTANCE DU PARAMETRE
@@ -71,15 +71,15 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
             call rsexpa(resu8, 2, parin(i), iret)
             if (iret .eq. 0) then
                 call getres(cbid, cbid, nomcmd)
-                valk (1) = parin(i)
-                valk (2) = ' '
+                valk(1) = parin(i)
+                valk(2) = ' '
                 call utmess('A', 'PREPOST5_41', nk=2, valk=valk)
             else
-                nbout = nbout + 1
+                nbout = nbout+1
                 zk16(lpout+nbout-1) = parin(i)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
     call jedema()

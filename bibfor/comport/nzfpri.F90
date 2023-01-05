@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzfpri(deuxmu  , trans, rprim , seuil,&
-                  nb_phase, phase, zalpha,&
-                  fmel    , eta  , unsurn,&
-                  dt      , dp   , &
-                  fplas   , fp   , fd    ,&
-                  fprim   , fdevi)
+subroutine nzfpri(deuxmu, trans, rprim, seuil, &
+                  nb_phase, phase, zalpha, &
+                  fmel, eta, unsurn, &
+                  dt, dp, &
+                  fplas, fp, fd, &
+                  fprim, fdevi)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: deuxmu, trans, rprim, seuil
-integer, intent(in) :: nb_phase
-real(kind=8), intent(in) :: phase(nb_phase), zalpha
-real(kind=8), intent(in) :: fmel, eta(nb_phase), unsurn(nb_phase), dt, dp
-real(kind=8), intent(out) :: fplas, fp(nb_phase), fd(nb_phase), fprim, fdevi
+    real(kind=8), intent(in) :: deuxmu, trans, rprim, seuil
+    integer, intent(in) :: nb_phase
+    real(kind=8), intent(in) :: phase(nb_phase), zalpha
+    real(kind=8), intent(in) :: fmel, eta(nb_phase), unsurn(nb_phase), dt, dp
+    real(kind=8), intent(out) :: fplas, fp(nb_phase), fd(nb_phase), fprim, fdevi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,9 +65,9 @@ real(kind=8), intent(out) :: fplas, fp(nb_phase), fd(nb_phase), fprim, fdevi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    spetra = 1.5d0*deuxmu*trans +1.d0
-    r0     = 1.5d0*deuxmu + rprim*spetra
-    fplas  = seuil - r0*dp
+    spetra = 1.5d0*deuxmu*trans+1.d0
+    r0 = 1.5d0*deuxmu+rprim*spetra
+    fplas = seuil-r0*dp
 !
     if (zalpha .gt. 0.d0) then
         do i_phase = 1, nb_phase-1
@@ -77,25 +77,25 @@ real(kind=8), intent(out) :: fplas, fp(nb_phase), fd(nb_phase), fprim, fdevi
         do i_phase = 1, nb_phase-1
             fz(i_phase) = 0.d0
         end do
-    endif
+    end if
     fz(nb_phase) = (1.d0-fmel)
-    fprim        = fplas
+    fprim = fplas
     do i_phase = 1, nb_phase
         if (phase(i_phase) .gt. 0.d0) then
             fp(i_phase) = fplas-spetra*eta(i_phase)*((dp/dt)**unsurn(i_phase))
         else
             fp(i_phase) = 0.d0
-        endif
-        fprim = fprim - spetra*fz(i_phase)*eta(i_phase)*((dp/dt)**unsurn(i_phase))
+        end if
+        fprim = fprim-spetra*fz(i_phase)*eta(i_phase)*((dp/dt)**unsurn(i_phase))
     end do
     if (dp .gt. 0.d0) then
         fdevi = -r0
         do i_phase = 1, nb_phase
-            fd(i_phase) = -r0-(eta(i_phase)*spetra/dt**unsurn(i_phase))*&
+            fd(i_phase) = -r0-(eta(i_phase)*spetra/dt**unsurn(i_phase))* &
                           unsurn(i_phase)*dp**(unsurn(i_phase)-1)
-            fdevi       = fdevi-&
-                          fz(i_phase)*(eta(i_phase)*spetra/dt**unsurn(i_phase))*&
-                          unsurn(i_phase)*dp**(unsurn(i_phase)- 1)
+            fdevi = fdevi- &
+                    fz(i_phase)*(eta(i_phase)*spetra/dt**unsurn(i_phase))* &
+                    unsurn(i_phase)*dp**(unsurn(i_phase)-1)
         end do
-    endif
+    end if
 end subroutine

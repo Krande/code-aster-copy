@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine irmmf1(fid, nomamd, typent, nbrent, nbgrou,&
-                  nomgen, nufaen, nomast, prefix, typgeo,&
+subroutine irmmf1(fid, nomamd, typent, nbrent, nbgrou, &
+                  nomgen, nufaen, nomast, prefix, typgeo, &
                   nomtyp, nmatyp, infmed, ifm, nosdfu)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/irmmf2.h"
@@ -29,18 +29,18 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
 !
-med_idt :: fid
-integer :: typent, nbrent, nbgrou
-integer :: nufaen(nbrent)
-integer :: typgeo(*), nmatyp(*)
-integer :: infmed
-integer :: ifm
-character(len=6) :: prefix
-character(len=8) :: nomast
-character(len=24) :: nomgen(*)
-character(len=8) :: nomtyp(*)
-character(len=*) :: nomamd
-character(len=8) :: nosdfu
+    med_idt :: fid
+    integer :: typent, nbrent, nbgrou
+    integer :: nufaen(nbrent)
+    integer :: typgeo(*), nmatyp(*)
+    integer :: infmed
+    integer :: ifm
+    character(len=6) :: prefix
+    character(len=8) :: nomast
+    character(len=24) :: nomgen(*)
+    character(len=8) :: nomtyp(*)
+    character(len=*) :: nomamd
+    character(len=8) :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,11 +101,11 @@ character(len=8) :: nosdfu
             saux07 = 'NOEUDS '
         else
             saux07 = 'MAILLES'
-        endif
-        write (ifm,100) saux07, saux07, nbrent, nbgrou
-100     format( /,'CONSTRUCTION DES FAMILLES DE ',a, /,'. NOMBRE DE ',a,' :',i12,&
-                /,'. NOMBRE DE GROUPES :',i5)
-    endif
+        end if
+        write (ifm, 100) saux07, saux07, nbrent, nbgrou
+100     format(/, 'CONSTRUCTION DES FAMILLES DE ', a, /, '. NOMBRE DE ', a, ' :', i12, &
+                /, '. NOMBRE DE GROUPES :', i5)
+    end if
 !
     if (nbgrou .ne. 0) then
 !
@@ -143,18 +143,18 @@ character(len=8) :: nosdfu
 !       DE PASCAL (HONNEUR AUX AUVERGNATS)
 !       DONC LA SOMME VAUT (1+1)*NBGROU-1 - 1
 !
-        raux = log(dble(nbrent)) / log(2.d0)
+        raux = log(dble(nbrent))/log(2.d0)
         if (nbgrou .lt. int(raux)) then
-            iaux = 2**nbgrou - 1
+            iaux = 2**nbgrou-1
         else
             iaux = nbrent
-        endif
+        end if
         call wkvect(nofaex, 'V V K80', iaux, adnofe)
 !
 !       ON UTILISE DES TABLEAUX DE BITS POUR ENREGISTRER LA PRESENCE
 !       D'UNE ENTITE DANS UN GROUPE : 30 PAR ENTIER INT*4 NBEC ENTIERS
 !
-        nbec = (nbgrou-1) / 30 + 1
+        nbec = (nbgrou-1)/30+1
 !       COLOSSAL ALLOC DU TABLEAU CROISE DES ENTITES X GROUPES
 !
         call wkvect(tabaux, 'V V I', nbrent*nbec, adtabx)
@@ -163,23 +163,23 @@ character(len=8) :: nosdfu
 ! 3. CREATION ET ECRITURE DES FAMILLES
 !====
 !
-        if(nosdfu.eq.' ') then
-            call irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
-                        nomgen, nbec, nomast, prefix, typgeo,&
-                        nomtyp, nmatyp, nufaen, zi( adnufa), zk80(adnogr),&
+        if (nosdfu .eq. ' ') then
+            call irmmf2(fid, nomamd, typent, nbrent, nbgrou, &
+                        nomgen, nbec, nomast, prefix, typgeo, &
+                        nomtyp, nmatyp, nufaen, zi(adnufa), zk80(adnogr), &
                         zk80(adnofe), zi(adtabx), infmed, ifm)
         else
-            call irmmf3(fid, nomamd, typent, nbrent, nbgrou,&
-                        nomgen, nbec, nomast, prefix, typgeo,&
-                        nomtyp, nmatyp, nufaen, zi( adnufa), zk80(adnogr),&
+            call irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
+                        nomgen, nbec, nomast, prefix, typgeo, &
+                        nomtyp, nmatyp, nufaen, zi(adnufa), zk80(adnogr), &
                         zk80(adnofe), zi(adtabx), infmed, ifm, nosdfu)
-        endif
+        end if
 !
         call jedetr(nufacr)
         call jedetr(nogrfa)
         call jedetr(nofaex)
         call jedetr(tabaux)
 !
-    endif
+    end if
 !
 end subroutine

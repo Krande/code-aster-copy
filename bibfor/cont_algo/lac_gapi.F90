@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine lac_gapi(mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
@@ -41,8 +41,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,8 +83,8 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: patch_indx
     integer, pointer :: v_mesh_typmail(:) => null()
     integer, pointer :: v_mesh_comapa(:) => null()
-    integer, pointer :: v_mesh_connex(:)  => null()
-    integer, pointer :: v_connex_lcum(:)  => null()
+    integer, pointer :: v_mesh_connex(:) => null()
+    integer, pointer :: v_connex_lcum(:) => null()
     integer :: nb_poin_inte
     real(kind=8) :: poin_inte(16), poin_gaus_ma(72)
     aster_logical :: l_axis
@@ -96,29 +96,29 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_29')
-    endif
+        call utmess('I', 'CONTACT5_29')
+    end if
 !
 ! - Initializations
 !
-    pair_tole      = 1.d-8
+    pair_tole = 1.d-8
 !
 ! - Access to mesh (patches)
 !
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
-    call jeveuo(mesh//'.COMAPA' , 'L', vi = v_mesh_comapa)
-    call jeveuo(mesh//'.CONNEX' , 'L', vi = v_mesh_connex)
-    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=v_mesh_typmail)
+    call jeveuo(mesh//'.COMAPA', 'L', vi=v_mesh_comapa)
+    call jeveuo(mesh//'.CONNEX', 'L', vi=v_mesh_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi=v_connex_lcum)
 !
 ! - Get parameters
 !
-    l_axis       = cfdisi(ds_contact%sdcont_defi,'AXISYMETRIQUE').eq.1
-    nt_patch     = ds_contact%nt_patch
+    l_axis = cfdisi(ds_contact%sdcont_defi, 'AXISYMETRIQUE') .eq. 1
+    nt_patch = ds_contact%nt_patch
     nb_cont_pair = ds_contact%nb_cont_pair
 !
 ! - Working vector
 !
-    AS_ALLOCATE(vr=patch_weight_c, size = nt_patch)
+    AS_ALLOCATE(vr=patch_weight_c, size=nt_patch)
 !
 ! - Access to geometry
 !
@@ -134,22 +134,22 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     sdappa_coef = sdappa(1:19)//'.COEF'
     sdappa_nmcp = sdappa(1:19)//'.NMCP'
     sdappa_poid = sdappa(1:19)//'.POID'
-    call jeveuo(sdappa_gapi, 'E', vr = v_sdappa_gapi)
-    call jeveuo(sdappa_coef, 'E', vr = v_sdappa_coef)
-    call jeveuo(sdappa_nmcp, 'E', vi = v_sdappa_nmcp)
-    call jeveuo(sdappa_poid, 'E', vr = v_sdappa_poid)
+    call jeveuo(sdappa_gapi, 'E', vr=v_sdappa_gapi)
+    call jeveuo(sdappa_coef, 'E', vr=v_sdappa_coef)
+    call jeveuo(sdappa_nmcp, 'E', vi=v_sdappa_nmcp)
+    call jeveuo(sdappa_poid, 'E', vr=v_sdappa_poid)
     if (nb_cont_pair .ne. 0) then
         sdappa_apli = sdappa(1:19)//'.APLI'
         sdappa_apnp = sdappa(1:19)//'.APNP'
         sdappa_apts = sdappa(1:19)//'.APTS'
         sdappa_ap2m = sdappa(1:19)//'.AP2M'
         sdappa_wpat = sdappa(1:19)//'.WPAT'
-        call jeveuo(sdappa_apli, 'L', vi = v_sdappa_apli)
-        call jeveuo(sdappa_apnp, 'L', vi = v_sdappa_apnp)
-        call jeveuo(sdappa_apts, 'L', vr = v_sdappa_apts)
-        call jeveuo(sdappa_ap2m, 'L', vr = v_sdappa_ap2m)
-        call jeveuo(sdappa_wpat, 'L', vr = v_sdappa_wpat)
-    endif
+        call jeveuo(sdappa_apli, 'L', vi=v_sdappa_apli)
+        call jeveuo(sdappa_apnp, 'L', vi=v_sdappa_apnp)
+        call jeveuo(sdappa_apts, 'L', vr=v_sdappa_apts)
+        call jeveuo(sdappa_ap2m, 'L', vr=v_sdappa_ap2m)
+        call jeveuo(sdappa_wpat, 'L', vr=v_sdappa_wpat)
+    end if
 !
 ! - Compute mean square gap and weight of intersection on contact pairs
 !
@@ -163,41 +163,41 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! ----- Get master and slave element type
         elem_type_nume = v_mesh_typmail(elem_slav_nume)
         call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
-        call aptype(elem_slav_type  ,&
+        call aptype(elem_slav_type, &
                     elem_slav_nbnode, elem_slav_code, elem_slav_dime)
         elem_type_nume = v_mesh_typmail(elem_mast_nume)
         call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
-        call aptype(elem_mast_type  ,&
+        call aptype(elem_mast_type, &
                     elem_mast_nbnode, elem_mast_code, elem_mast_dime)
         ASSERT(elem_slav_dime .eq. elem_mast_dime)
 ! ----- Get current patch
         patch_indx = v_mesh_comapa(elem_slav_nume)
 ! ----- Get coordinates of slave element (on old geometry)
-        call apcoor(v_mesh_connex  , v_connex_lcum   , jv_geomO      ,&
-                    elem_slav_nume , elem_slav_nbnode, elem_slav_dime,&
+        call apcoor(v_mesh_connex, v_connex_lcum, jv_geomO, &
+                    elem_slav_nume, elem_slav_nbnode, elem_slav_dime, &
                     elem_slav_coorO)
 ! ----- Get coordinates of slave element (on new geometry)
-        call apcoor(v_mesh_connex  , v_connex_lcum   , jv_geomN      ,&
-                    elem_slav_nume , elem_slav_nbnode, elem_slav_dime,&
+        call apcoor(v_mesh_connex, v_connex_lcum, jv_geomN, &
+                    elem_slav_nume, elem_slav_nbnode, elem_slav_dime, &
                     elem_slav_coorN)
 ! ----- Get coordinates of master element (on new geometry)
-        call apcoor(v_mesh_connex  , v_connex_lcum   , jv_geomN      ,&
-                    elem_mast_nume , elem_mast_nbnode, elem_mast_dime,&
+        call apcoor(v_mesh_connex, v_connex_lcum, jv_geomN, &
+                    elem_mast_nume, elem_mast_nbnode, elem_mast_dime, &
                     elem_mast_coorN)
 ! ----- Get intersection nodes and Gauss points on master element
-        nb_poin_inte       = v_sdappa_apnp(i_cont_pair)
-        poin_inte(1:16)    = v_sdappa_apts(16*(i_cont_pair-1)+1:16*(i_cont_pair-1)+16)
+        nb_poin_inte = v_sdappa_apnp(i_cont_pair)
+        poin_inte(1:16) = v_sdappa_apts(16*(i_cont_pair-1)+1:16*(i_cont_pair-1)+16)
         poin_gaus_ma(1:72) = v_sdappa_ap2m(72*(i_cont_pair-1)+1:72*(i_cont_pair-1)+72)
 ! ----- Compute mean square gap and weight of intersection
-        call gapint(elem_slav_dime, l_axis          ,&
-                    elem_slav_code, elem_slav_nbnode, elem_slav_coorO, elem_slav_coorN,&
-                    elem_mast_code, elem_mast_nbnode, elem_mast_coorN,&
-                    nb_poin_inte  , poin_inte       , poin_gaus_ma  ,&
-                    gap_moy       , inte_weight)
+        call gapint(elem_slav_dime, l_axis, &
+                    elem_slav_code, elem_slav_nbnode, elem_slav_coorO, elem_slav_coorN, &
+                    elem_mast_code, elem_mast_nbnode, elem_mast_coorN, &
+                    nb_poin_inte, poin_inte, poin_gaus_ma, &
+                    gap_moy, inte_weight)
 ! ----- Save gap and weight
-        v_sdappa_gapi(patch_indx)  = v_sdappa_gapi(patch_indx)-gap_moy
+        v_sdappa_gapi(patch_indx) = v_sdappa_gapi(patch_indx)-gap_moy
         patch_weight_c(patch_indx) = patch_weight_c(patch_indx)+inte_weight
-        v_sdappa_nmcp(patch_indx)  = v_sdappa_nmcp(patch_indx) + 1
+        v_sdappa_nmcp(patch_indx) = v_sdappa_nmcp(patch_indx)+1
     end do
 !
 ! - Compute mean square gap and weight of intersection on patches
@@ -206,7 +206,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
         if (patch_weight_c(i_patch) .le. pair_tole) then
             v_sdappa_gapi(i_patch) = r8nnem()
         end if
-        if (.not.isnan(v_sdappa_gapi(i_patch))) then
+        if (.not. isnan(v_sdappa_gapi(i_patch))) then
             v_sdappa_gapi(i_patch) = v_sdappa_gapi(i_patch)/patch_weight_c(i_patch)
             v_sdappa_coef(i_patch) = patch_weight_c(i_patch)/v_sdappa_wpat(i_patch)
             v_sdappa_poid(i_patch) = patch_weight_c(i_patch)

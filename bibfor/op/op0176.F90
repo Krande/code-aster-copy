@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0176()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -55,7 +55,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'OP0176' )
+    parameter(nompro='OP0176')
     integer :: ibid, storeNb, nbexcl, jexcl, nbarch
     integer :: nbac, nbpa, iret, nbnosy, paraNb, nbrest
     integer :: mesgUnit, ifm, niv
@@ -77,13 +77,13 @@ implicit none
 !
 ! - Initializations
 !
-    noma=' '
-    nomo=' '
-    nocara=' '
-    nochmat=' '
-    mesgUnit   = iunifi('MESSAGE')
-    lisarc     = '&&'//nompro//'.LISTE.ARCH'
-    lichex     = '&&'//nompro//'.LISTE.CHAM'
+    noma = ' '
+    nomo = ' '
+    nocara = ' '
+    nochmat = ' '
+    mesgUnit = iunifi('MESSAGE')
+    lisarc = '&&'//nompro//'.LISTE.ARCH'
+    lichex = '&&'//nompro//'.LISTE.CHAM'
     paraJvName = '&&'//nompro//'.NOMS_PARA '
 !
     call getres(resultOutName, typcon, nomcmd)
@@ -99,14 +99,14 @@ implicit none
 !
     call rs_get_liststore(resultInName, storeNb)
     ASSERT(storeNb .gt. 0)
-    AS_ALLOCATE(vi = storeIndx, size = storeNb)
+    AS_ALLOCATE(vi=storeIndx, size=storeNb)
     call rs_get_liststore(resultInName, storeNb, storeIndx)
 !
 ! - Get list of parameters from input result
 !
     call rsnopa(resultInName, 2, paraJvName, nbac, nbpa)
-    paraNb = nbac + nbpa
-    call jeveuo(paraJvName, 'L', vk16 = paraName)
+    paraNb = nbac+nbpa
+    call jeveuo(paraJvName, 'L', vk16=paraName)
 !
 !     --- CHAMPS EXCLUS ET PAS D'ARCHIVAGE ---
 !
@@ -121,15 +121,15 @@ implicit none
         call getvid('RESTREINT', 'MODELE', iocc=1, scal=nomo, nbret=nmode)
         call getvid('RESTREINT', 'CARA_ELEM', iocc=1, scal=nocara, nbret=ncara)
         call getvid('RESTREINT', 'CHAM_MATER', iocc=1, scal=nochmat, nbret=nchmat)
-    endif
-    if ((nbarch.eq.0) .and. (nbrest.eq.0)) then
+    end if
+    if ((nbarch .eq. 0) .and. (nbrest .eq. 0)) then
         goto 999
-    else if ((nbarch.eq.0)) then
+    else if ((nbarch .eq. 0)) then
         archi => storeIndx
         nbarch = storeNb
     else
-        call jeveuo(lisarc, 'L', vi = archi)
-    endif
+        call jeveuo(lisarc, 'L', vi=archi)
+    end if
     call jeveuo(lichex, 'L', jexcl)
 !
 !     --- ALLOCATION DE LA STRUCTURE SORTIE SI ELLE N'EXISTE PAS ---
@@ -137,20 +137,19 @@ implicit none
     call jeexin(resultOutName//'.DESC', iret)
     if (iret .eq. 0) then
         call rscrsd('G', resultOutName, typcon, nbarch)
-    endif
+    end if
 !
     if (resultInName .eq. resultOutName) then
-        if (lrest)  call utmess('F', 'PREPOST2_5')
-        call extrs1(resultInName, storeNb, storeIndx, paraNb, paraName,&
+        if (lrest) call utmess('F', 'PREPOST2_5')
+        call extrs1(resultInName, storeNb, storeIndx, paraNb, paraName, &
                     nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
     else
-        call extrs2(resultInName, resultOutName, typcon, lrest, noma,&
-                    nomo, nocara, nochmat, storeNb, storeIndx, paraNb, paraName,&
+        call extrs2(resultInName, resultOutName, typcon, lrest, noma, &
+                    nomo, nocara, nochmat, storeNb, storeIndx, paraNb, paraName, &
                     nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
-    endif
+    end if
 
-
-    AS_DEALLOCATE(vi = storeIndx)
+    AS_DEALLOCATE(vi=storeIndx)
 !
     call titre()
 !
@@ -161,15 +160,15 @@ implicit none
 ! ----- Get list of storing index
         call rs_get_liststore(resultOutName, storeNb)
         ASSERT(storeNb .gt. 0)
-        AS_ALLOCATE(vi = storeIndx, size = storeNb)
+        AS_ALLOCATE(vi=storeIndx, size=storeNb)
         call rs_get_liststore(resultOutName, storeNb, storeIndx)
 ! ----- Print list of parameters
-        call irpara(resultOutName, mesgUnit    ,&
-                    storeNb      , storeIndx   ,&
-                    paraNb       , paraName,&
+        call irpara(resultOutName, mesgUnit, &
+                    storeNb, storeIndx, &
+                    paraNb, paraName, &
                     'T')
-        AS_DEALLOCATE(vi = storeIndx)
-    endif
+        AS_DEALLOCATE(vi=storeIndx)
+    end if
 !
 999 continue
 !

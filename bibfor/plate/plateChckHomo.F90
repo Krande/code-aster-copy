@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine plateChckHomo(l_nonlin, option, lcqhom)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-aster_logical, intent(in) :: l_nonlin
-character(len=*), intent(in) :: option
-aster_logical, intent(out) :: lcqhom
+    aster_logical, intent(in) :: l_nonlin
+    character(len=*), intent(in) :: option
+    aster_logical, intent(out) :: lcqhom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,14 +58,14 @@ aster_logical, intent(out) :: lcqhom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    fami         = 'FPG1'
-    kpg          = 1
-    spt          = 1
-    poum         = '+'
-    jv_pnbsp     = 0
-    lcqhom       = ASTER_FALSE
-    i_layer      = 0
-    thick_tot    = 0.d0
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    jv_pnbsp = 0
+    lcqhom = ASTER_FALSE
+    i_layer = 0
+    thick_tot = 0.d0
     thick_lay(1) = 0.d0
 !
 ! - Input fields
@@ -77,48 +77,48 @@ aster_logical, intent(out) :: lcqhom
     if (l_nonlin .or. option(1:9) .eq. 'RIGI_MECA') then
         call jevech('PMATERC', 'L', jv_mate)
         call rccoma(zi(jv_mate), 'ELAS', 1, phenom, codret(1))
-        if ((phenom.eq.'ELAS_COQUE') .or. (phenom.eq.'ELAS_COQMU') .or.&
-            (phenom.eq.'ELAS_ORTH')) then
+        if ((phenom .eq. 'ELAS_COQUE') .or. (phenom .eq. 'ELAS_COQMU') .or. &
+            (phenom .eq. 'ELAS_ORTH')) then
             lcqhom = ASTER_TRUE
-        endif
+        end if
     else
         iret = 1
-    endif
+    end if
 !
 ! - Check between DEFI_COQU_MULT/AFFE_CARA_ELEM
 !
     if (iret .eq. 0) then
 ! ----- Get thickness of plate
         call jevech('PCACOQU', 'L', jv_cacoqu)
-        thick        = zr(jv_cacoqu)
+        thick = zr(jv_cacoqu)
 ! ----- Number of layers
-        nb_layer     = zi(jv_pnbsp)
+        nb_layer = zi(jv_pnbsp)
 10      continue
 ! ----- Get current layer
-        i_layer = i_layer + 1
+        i_layer = i_layer+1
         call codent(i_layer, 'G', layer_nume)
         call codent(1, 'G', layer_name)
         para_name = 'C'//layer_nume//'_V'//layer_name
 ! ----- Get thickness of layer
-        call rcvalb(fami, kpg, spt, poum, zi(jv_mate),&
-                    ' ', 'ELAS_COQMU', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, zi(jv_mate), &
+                    ' ', 'ELAS_COQMU', 0, ' ', [0.d0], &
                     1, para_name, thick_lay, codret, 0)
         if (codret(1) .eq. 0) then
-            thick_tot = thick_tot + thick_lay(1)
+            thick_tot = thick_tot+thick_lay(1)
             goto 10
-        endif
+        end if
         if (nint(thick_tot) .ne. 0) then
             if ((i_layer-1) .ne. nb_layer) then
                 vali(1) = i_layer-1
                 vali(2) = nb_layer
                 call utmess('F', 'PLATE1_2', ni=2, vali=vali)
-            endif
+            end if
             if (abs(thick-thick_tot)/thick .gt. 1.d-2) then
                 valr(1) = thick_tot
                 valr(2) = thick
                 call utmess('F', 'PLATE1_3', nr=2, valr=valr)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,41 +35,41 @@ subroutine xveri0(ndime, elrefp, ksi, iret)
 !----------------------------------------------------------------------
     integer :: j
     real(kind=8) :: plan, tole, zero, one
-    parameter   (tole=1.d-12)
+    parameter(tole=1.d-12)
 !INTRODUCTION D UNE TOLERENCE GEOMETRIQUE POUR CAPTER LES POINTS SUR LE BORD DE L ELEMENT
 !PAS BESOIN DE MISE A L ECHELLE DANS L ESPACE PARAMETRIQUE DE REFERENCE
 !----------------------------------------------------------------------
-     iret=0
-     zero=-tole
-     one=1.d0+tole
-     if    ((elrefp .eq. 'TE4') .or. (elrefp .eq. 'T10') .or.&
-            (elrefp .eq. 'TR3') .or. (elrefp .eq. 'TR6') .or.&
-            (elrefp .eq. 'TR7')) then
-           plan=1.d0
-           do  j=1,ndime
-              if(ksi(j) .lt. zero) iret=iret+1
-              plan=plan-ksi(j)
-           enddo
-           if(plan .lt. zero) iret=iret+1
-     elseif((elrefp .eq. 'PE6') .or. (elrefp .eq. 'P15') .or.&
+    iret = 0
+    zero = -tole
+    one = 1.d0+tole
+    if ((elrefp .eq. 'TE4') .or. (elrefp .eq. 'T10') .or. &
+        (elrefp .eq. 'TR3') .or. (elrefp .eq. 'TR6') .or. &
+        (elrefp .eq. 'TR7')) then
+        plan = 1.d0
+        do j = 1, ndime
+            if (ksi(j) .lt. zero) iret = iret+1
+            plan = plan-ksi(j)
+        end do
+        if (plan .lt. zero) iret = iret+1
+    elseif ((elrefp .eq. 'PE6') .or. (elrefp .eq. 'P15') .or. &
             (elrefp .eq. 'P18')) then
-           if (abs(ksi(1)) .gt. one) iret=iret+1
-           if ((ksi(2) .gt. one) .or. (ksi(3) .gt. one)) iret=iret+1
-           plan=1.d0-ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1
-     elseif((elrefp .eq. 'PY5') .or. (elrefp .eq. 'P13')) then
-           if (ksi(3) .lt. zero) iret=iret+1
-           plan=1.d0-ksi(1)-ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1
-           plan=1.d0-ksi(1)+ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1
-           plan=1.d0+ksi(1)-ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1
-           plan=1.d0+ksi(1)+ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1
-     else
-        do  j=1,ndime
-           if(abs(ksi(j)) .gt. one)  iret=iret+1
-        enddo
-     endif
+        if (abs(ksi(1)) .gt. one) iret = iret+1
+        if ((ksi(2) .gt. one) .or. (ksi(3) .gt. one)) iret = iret+1
+        plan = 1.d0-ksi(2)-ksi(3)
+        if (plan .lt. zero) iret = iret+1
+    elseif ((elrefp .eq. 'PY5') .or. (elrefp .eq. 'P13')) then
+        if (ksi(3) .lt. zero) iret = iret+1
+        plan = 1.d0-ksi(1)-ksi(2)-ksi(3)
+        if (plan .lt. zero) iret = iret+1
+        plan = 1.d0-ksi(1)+ksi(2)-ksi(3)
+        if (plan .lt. zero) iret = iret+1
+        plan = 1.d0+ksi(1)-ksi(2)-ksi(3)
+        if (plan .lt. zero) iret = iret+1
+        plan = 1.d0+ksi(1)+ksi(2)-ksi(3)
+        if (plan .lt. zero) iret = iret+1
+    else
+        do j = 1, ndime
+            if (abs(ksi(j)) .gt. one) iret = iret+1
+        end do
+    end if
 end subroutine

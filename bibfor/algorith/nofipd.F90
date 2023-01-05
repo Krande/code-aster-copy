@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nofipd(ndim, nnod, nnop, nnog, npg,&
-                  iw, vffd, vffp, vffg, idffd,&
-                  vu, vp, vpi, geomi, typmod,&
-                  option, nomte, mate, compor, lgpg,&
-                  carcri, instm, instp, ddlm, ddld,&
-                  angmas, sigm, vim, sigp, vip,&
-                  vect, matr, codret,&
+subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
+                  iw, vffd, vffp, vffg, idffd, &
+                  vu, vp, vpi, geomi, typmod, &
+                  option, nomte, mate, compor, lgpg, &
+                  carcri, instm, instp, ddlm, ddld, &
+                  angmas, sigm, vim, sigp, vip, &
+                  vect, matr, codret, &
                   lSigm, lVect, lMatr)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,20 +42,20 @@ implicit none
 #include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
-integer :: ndim, nnod, nnop, nnog, npg, iw, idffd, lgpg
-integer :: mate
-integer :: vu(3, 27), vp(27), vpi(3, 27)
-integer :: codret
-real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg), vffg(nnog, npg)
-real(kind=8) :: instm, instp
-real(kind=8) :: geomi(ndim, nnod), ddlm(*), ddld(*), angmas(*)
-real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
-real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
-real(kind=8) :: vect(*), matr(*)
-real(kind=8) :: carcri(*)
-character(len=8) :: typmod(*)
-character(len=16) :: compor(*), option, nomte
-aster_logical, intent(in) :: lSigm, lVect, lMatr
+    integer :: ndim, nnod, nnop, nnog, npg, iw, idffd, lgpg
+    integer :: mate
+    integer :: vu(3, 27), vp(27), vpi(3, 27)
+    integer :: codret
+    real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg), vffg(nnog, npg)
+    real(kind=8) :: instm, instp
+    real(kind=8) :: geomi(ndim, nnod), ddlm(*), ddld(*), angmas(*)
+    real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
+    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
+    real(kind=8) :: vect(*), matr(*)
+    real(kind=8) :: carcri(*)
+    character(len=8) :: typmod(*)
+    character(len=16) :: compor(*), option, nomte
+    aster_logical, intent(in) :: lSigm, lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -124,28 +124,28 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
     real(kind=8) :: dsbdep(2*ndim, 2*ndim)
     real(kind=8) :: stab, hk
     type(Behaviour_Integ) :: BEHinteg
-    real(kind=8), parameter :: idev(6,6) = reshape((/ 2.d0,-1.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-                                                     -1.d0, 2.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-                                                     -1.d0,-1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
-                                                      0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0,&
-                                                      0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0,&
-                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/),(/6,6/))
+    real(kind=8), parameter :: idev(6, 6) = reshape((/2.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0, &
+                                                      -1.d0, 2.d0, -1.d0, 0.d0, 0.d0, 0.d0, &
+                                                      -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0, &
+                                                      0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
+                                                      0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
+                                                     0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mini   = ASTER_FALSE
-    grand  = ASTER_FALSE
-    axi    = typmod(1).eq.'AXIS'
-    cod    = 0
-    nddl   = nnod*ndim + nnop + nnog*ndim
+    mini = ASTER_FALSE
+    grand = ASTER_FALSE
+    axi = typmod(1) .eq. 'AXIS'
+    cod = 0
+    nddl = nnod*ndim+nnop+nnog*ndim
     dsidep = 0.d0
     codret = 0
     if (lVect) then
         vect(1:nddl) = 0.d0
-    endif
+    end if
     if (lMatr) then
         matr(1:nddl*(nddl+1)/2) = 0.d0
-    endif
+    end if
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -160,8 +160,8 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
 !
     do na = 1, nnod
         do ia = 1, ndim
-            deplm(ia+ndim*(na-1)) = ddlm(vu(ia,na))
-            depld(ia+ndim*(na-1)) = ddld(vu(ia,na))
+            deplm(ia+ndim*(na-1)) = ddlm(vu(ia, na))
+            depld(ia+ndim*(na-1)) = ddld(vu(ia, na))
         end do
     end do
     do sa = 1, nnop
@@ -170,8 +170,8 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
     end do
     do ra = 1, nnog
         do ia = 1, ndim
-            gpresm(ia+ndim*(ra-1)) = ddlm(vpi(ia,ra))
-            gpresd(ia+ndim*(ra-1)) = ddld(vpi(ia,ra))
+            gpresm(ia+ndim*(ra-1)) = ddlm(vpi(ia, ra))
+            gpresd(ia+ndim*(ra-1)) = ddld(vpi(ia, ra))
         end do
     end do
 !
@@ -185,92 +185,92 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
         epsm = 0.d0
         deps = 0.d0
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nnod, axi, geomi, kpg,&
-                    iw, vffd(1, kpg), idffd, r, w,&
+        call dfdmip(ndim, nnod, axi, geomi, kpg, &
+                    iw, vffd(1, kpg), idffd, r, w, &
                     dff1)
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dff1, deplm, fm, epsm)
-        divum = epsm(1) + epsm(2) + epsm(3)
+        divum = epsm(1)+epsm(2)+epsm(3)
 ! ----- Kinematic - Increment of strains
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dff1, depld, fm, deps)
-        ddivu = deps(1) + deps(2) + deps(3)
+        ddivu = deps(1)+deps(2)+deps(3)
 ! ----- Pressure and "gonflement"
-        pm = ddot(nnop,vffp(1,kpg),1,presm,1)
-        pd = ddot(nnop,vffp(1,kpg),1,presd,1)
+        pm = ddot(nnop, vffp(1, kpg), 1, presm, 1)
+        pd = ddot(nnop, vffp(1, kpg), 1, presd, 1)
         do ia = 1, ndim
-            pim(ia) = ddot(nnog,vffg(1,kpg),1,gpresm(ia),ndim)
-            pid(ia) = ddot(nnog,vffg(1,kpg),1,gpresd(ia),ndim)
-            gpm(ia) = ddot(nnop,dff1(1,ia),1,presm,1)
-            gpd(ia) = ddot(nnop,dff1(1,ia),1,presd,1)
+            pim(ia) = ddot(nnog, vffg(1, kpg), 1, gpresm(ia), ndim)
+            pid(ia) = ddot(nnog, vffg(1, kpg), 1, gpresd(ia), ndim)
+            gpm(ia) = ddot(nnop, dff1(1, ia), 1, presm, 1)
+            gpd(ia) = ddot(nnop, dff1(1, ia), 1, presd, 1)
         end do
 ! ----- Kinematic - Product [F].[B]
         if (ndim .eq. 2) then
             do na = 1, nnod
                 do ia = 1, ndim
-                    def(1,na,ia)= fm(ia,1)*dff1(na,1)
-                    def(2,na,ia)= fm(ia,2)*dff1(na,2)
-                    def(3,na,ia)= 0.d0
-                    def(4,na,ia)=(fm(ia,1)*dff1(na,2)+fm(ia,2)*dff1(na,1))/rac2
+                    def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = fm(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = 0.d0
+                    def(4, na, ia) = (fm(ia, 1)*dff1(na, 2)+fm(ia, 2)*dff1(na, 1))/rac2
                 end do
             end do
             if (axi) then
                 do na = 1, nnod
-                    def(3,na,1) = fm(3,3)*vffd(na,kpg)/r
+                    def(3, na, 1) = fm(3, 3)*vffd(na, kpg)/r
                 end do
-            endif
+            end if
         elseif (ndim .eq. 3) then
             do na = 1, nnod
                 do ia = 1, ndim
-                    def(1,na,ia)= fm(ia,1)*dff1(na,1)
-                    def(2,na,ia)= fm(ia,2)*dff1(na,2)
-                    def(3,na,ia)= fm(ia,3)*dff1(na,3)
-                    def(4,na,ia)=(fm(ia,1)*dff1(na,2)+fm(ia,2)*dff1(na,1))/rac2
-                    def(5,na,ia)=(fm(ia,1)*dff1(na,3)+fm(ia,3)*dff1(na,1))/rac2
-                    def(6,na,ia)=(fm(ia,2)*dff1(na,3)+fm(ia,3)*dff1(na,2))/rac2
+                    def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = fm(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = fm(ia, 3)*dff1(na, 3)
+                    def(4, na, ia) = (fm(ia, 1)*dff1(na, 2)+fm(ia, 2)*dff1(na, 1))/rac2
+                    def(5, na, ia) = (fm(ia, 1)*dff1(na, 3)+fm(ia, 3)*dff1(na, 1))/rac2
+                    def(6, na, ia) = (fm(ia, 2)*dff1(na, 3)+fm(ia, 3)*dff1(na, 2))/rac2
                 end do
             end do
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 ! ----- CALCUL DE TRACE(B)
         do na = 1, nnod
             do ia = 1, ndim
-                deftr(na,ia) = def(1,na,ia) + def(2,na,ia) + def(3,na,ia)
+                deftr(na, ia) = def(1, na, ia)+def(2, na, ia)+def(3, na, ia)
             end do
         end do
 ! ----- Prepare stresses
         do ia = 1, 3
-            sigmPrep(ia) = sigm(ia,kpg) + sigm(2*ndim+1,kpg)
+            sigmPrep(ia) = sigm(ia, kpg)+sigm(2*ndim+1, kpg)
         end do
         do ia = 4, 2*ndim
-            sigmPrep(ia) = sigm(ia,kpg)*rac2
+            sigmPrep(ia) = sigm(ia, kpg)*rac2
         end do
 ! ----- Compute behaviour
         sigma = 0.d0
-        call nmcomp(BEHinteg,&
-                    'RIGI', kpg, 1, ndim, typmod,&
-                    mate, compor, carcri, instm, instp,&
-                    6, epsm, deps, 6, sigmPrep,&
+        call nmcomp(BEHinteg, &
+                    'RIGI', kpg, 1, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epsm, deps, 6, sigmPrep, &
                     vim(1, kpg), option, angmas, &
                     sigma, vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
-        endif
+        end if
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp,&
+        call tanbul(option, ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
 ! ----- Internal forces
         if (lVect) then
-            sigtr = sigma(1) + sigma(2) + sigma(3)
+            sigtr = sigma(1)+sigma(2)+sigma(3)
             do ia = 1, 3
-                sigma(ia) = sigma(ia) - sigtr/3.d0 + (pm+pd)
+                sigma(ia) = sigma(ia)-sigtr/3.d0+(pm+pd)
             end do
             do na = 1, nnod
                 do ia = 1, ndim
-                    kk = vu(ia,na)
-                    t1 = ddot(2*ndim, sigma,1, def(1,na,ia),1)
-                    vect(kk) = vect(kk) + w*t1
+                    kk = vu(ia, na)
+                    t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                    vect(kk) = vect(kk)+w*t1
                 end do
             end do
             t2 = (divum+ddivu-(pm+pd)*alpha-trepst)
@@ -278,61 +278,61 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
                 kk = vp(sa)
                 t1 = 0.d0
                 do ia = 1, ndim
-                    t1 = t1 + dff1(sa,ia)*(gpm(ia)+gpd(ia)-pim(ia)- pid(ia))
+                    t1 = t1+dff1(sa, ia)*(gpm(ia)+gpd(ia)-pim(ia)-pid(ia))
                 end do
-                t1 = vffp(sa,kpg)*t2 - stab*t1
-                vect(kk) = vect(kk) + w*t1
+                t1 = vffp(sa, kpg)*t2-stab*t1
+                vect(kk) = vect(kk)+w*t1
             end do
             do ra = 1, nnog
                 do ia = 1, ndim
-                    kk = vpi(ia,ra)
-                    t1 = stab*vffg(ra,kpg)*(gpm(ia)+gpd(ia)-pim(ia)-pid( ia))
-                    vect(kk) = vect(kk) + w*t1
+                    kk = vpi(ia, ra)
+                    t1 = stab*vffg(ra, kpg)*(gpm(ia)+gpd(ia)-pim(ia)-pid(ia))
+                    vect(kk) = vect(kk)+w*t1
                 end do
             end do
-        endif
+        end if
 ! ----- Cauchy stresses
         if (lSigm) then
             do ia = 1, 3
-                sigp(ia,kpg) = sigma(ia)
+                sigp(ia, kpg) = sigma(ia)
             end do
             do ia = 4, 2*ndim
-                sigp(ia,kpg) = sigma(ia)/rac2
+                sigp(ia, kpg) = sigma(ia)/rac2
             end do
-            sigp(2*ndim+1,kpg) = sigtr/3.d0 - (pm+pd)
-        endif
+            sigp(2*ndim+1, kpg) = sigtr/3.d0-(pm+pd)
+        end if
 ! ----- Rigidity matrix
         if (lMatr) then
-            devd = matmul(idev/3.d0,dsidep)
-            ddev = matmul(dsidep,idev/3.d0)
-            dddev = matmul(devd,idev/3.d0)
+            devd = matmul(idev/3.d0, dsidep)
+            ddev = matmul(dsidep, idev/3.d0)
+            dddev = matmul(devd, idev/3.d0)
 ! - TERME K:UX
             do na = 1, nnod
                 do ia = 1, ndim
-                    vuiana = vu(ia,na)
+                    vuiana = vu(ia, na)
                     os = (vuiana-1)*vuiana/2
 ! - TERME K:UU      KUU(NDIM,NNO1,NDIM,NNO1)
                     do nb = 1, nnod
                         do ib = 1, ndim
-                            if (vu(ib,nb) .le. vuiana) then
-                                kk = os+vu(ib,nb)
+                            if (vu(ib, nb) .le. vuiana) then
+                                kk = os+vu(ib, nb)
                                 t1 = 0.d0
                                 do ja = 1, 2*ndim
                                     do jb = 1, 2*ndim
-                                        t1 = t1 + def(ja,na,ia)*dddev(ja,jb)*def(jb,nb,ib)
+                                        t1 = t1+def(ja, na, ia)*dddev(ja, jb)*def(jb, nb, ib)
                                     end do
                                 end do
-                                matr(kk) = matr(kk) + w*t1
-                            endif
+                                matr(kk) = matr(kk)+w*t1
+                            end if
                         end do
                     end do
 ! - TERME K:UP      KUP(NDIM,NNO1,NNO2)
                     do sb = 1, nnop
                         if (vp(sb) .lt. vuiana) then
-                            kk = os + vp(sb)
-                            t1 = deftr(na,ia)*vffp(sb,kpg)
-                            matr(kk) = matr(kk) + w*t1
-                        endif
+                            kk = os+vp(sb)
+                            t1 = deftr(na, ia)*vffp(sb, kpg)
+                            matr(kk) = matr(kk)+w*t1
+                        end if
                     end do
 ! - TERME K:UPI = 0.D0     KUP(NDIM,NNO1,NDIM,NNO3)
                 end do
@@ -344,41 +344,41 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
 ! - TERME K:PU      KPU(NDIM,NNO2,NNO1)
                 do nb = 1, nnod
                     do ib = 1, ndim
-                        if (vu(ib,nb) .lt. vpsa) then
-                            kk = os + vu(ib,nb)
-                            t1 = vffp(sa,kpg)*deftr(nb,ib)
-                            matr(kk) = matr(kk) + w*t1
-                        endif
+                        if (vu(ib, nb) .lt. vpsa) then
+                            kk = os+vu(ib, nb)
+                            t1 = vffp(sa, kpg)*deftr(nb, ib)
+                            matr(kk) = matr(kk)+w*t1
+                        end if
                     end do
                 end do
 ! - TERME K:PP      KPP(NNO2,NNO2)
                 do sb = 1, nnop
                     if (vp(sb) .le. vpsa) then
-                        kk = os + vp(sb)
-                        t1 = - vffp(sa,kpg)*vffp(sb,kpg)*alpha
+                        kk = os+vp(sb)
+                        t1 = -vffp(sa, kpg)*vffp(sb, kpg)*alpha
                         t2 = 0.d0
 ! - PRODUIT SCALAIRE DES GRAD DE FONCTIONS DE FORME
                         do ia = 1, ndim
-                            t2 = t2 - dff1(sa,ia)*dff1(sb,ia)
+                            t2 = t2-dff1(sa, ia)*dff1(sb, ia)
                         end do
-                        matr(kk) = matr(kk) + w*(t2*stab+t1)
-                    endif
+                        matr(kk) = matr(kk)+w*(t2*stab+t1)
+                    end if
                 end do
 ! - TERME K:PPI     KPPI(NNO2,NDIM,NNO3)
                 do rb = 1, nnog
                     do ib = 1, ndim
-                        if (vpi(ib,rb) .lt. vpsa) then
-                            kk = os + vpi(ib,rb)
-                            t1 = vffg(rb,kpg)*deftr(sa,ib)*stab
-                            matr(kk) = matr(kk) + w*t1
-                        endif
+                        if (vpi(ib, rb) .lt. vpsa) then
+                            kk = os+vpi(ib, rb)
+                            t1 = vffg(rb, kpg)*deftr(sa, ib)*stab
+                            matr(kk) = matr(kk)+w*t1
+                        end if
                     end do
                 end do
             end do
 ! - TERME K:PIX
             do ra = 1, nnog
                 do ia = 1, ndim
-                    vpiana = vpi(ia,ra)
+                    vpiana = vpi(ia, ra)
                     os = (vpiana-1)*vpiana/2
 !
 ! - TERME K:PIU = 0.D0     KUU(NDIM,NNO3,NDIM,NNO1)
@@ -386,26 +386,26 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
 ! - TERME K:PIP     KPIP(NDIM,NNO3,NNO2)
                     do sb = 1, nnop
                         if (vp(sb) .lt. vpiana) then
-                            kk = os + vp(sb)
-                            t1 = vffg(ra,kpg)*deftr(sb,ia)*stab
-                            matr(kk) = matr(kk) + w*t1
-                        endif
+                            kk = os+vp(sb)
+                            t1 = vffg(ra, kpg)*deftr(sb, ia)*stab
+                            matr(kk) = matr(kk)+w*t1
+                        end if
                     end do
 !
 ! - TERME K:PIPI    KPIPI(NDIM,NNO3,NDIM,NNO3)
 ! - REMARQUE : MATRICE NON NULLE QUE SI I=J DONC K:PIPI(I,N,J,M)=0 SINON
                     do rb = 1, nnog
                         do ib = 1, ndim
-                            if (vpi(ib,rb) .le. vpiana .and. (ia.eq.ib)) then
-                                kk = os + vpi(ib,rb)
-                                t1 = -vffg(ra,kpg)*vffg(rb,kpg)*stab
-                                matr(kk) = matr(kk) + w*t1
-                            endif
+                            if (vpi(ib, rb) .le. vpiana .and. (ia .eq. ib)) then
+                                kk = os+vpi(ib, rb)
+                                t1 = -vffg(ra, kpg)*vffg(rb, kpg)*stab
+                                matr(kk) = matr(kk)+w*t1
+                            end if
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     end do
 !
 999 continue

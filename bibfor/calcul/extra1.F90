@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,63 +51,63 @@ subroutine extra1(nin, lchin, lpain)
     aster_logical :: exich
 !-------------------------------------------------------------------
 !
-    npin=nbpara(ca_nuop_,ca_nute_,'IN ')
+    npin = nbpara(ca_nuop_, ca_nute_, 'IN ')
     do ipar = 1, npin
-        nompar=nopara(ca_nuop_,ca_nute_,'IN ',ipar)
-        iparg=indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
-        iparin=indik8(lpain,nompar,1,nin)
-        exich=((iparin.gt.0) .and. zl(ca_iachix_-1+iparin))
-        if (.not.exich) then
-            zi(ca_iawloc_-1+3*(iparg-1)+1)=-1
-            zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2)=0
+        nompar = nopara(ca_nuop_, ca_nute_, 'IN ', ipar)
+        iparg = indik8(zk8(ca_iaoppa_), nompar, 1, ca_npario_)
+        iparin = indik8(lpain, nompar, 1, nin)
+        exich = ((iparin .gt. 0) .and. zl(ca_iachix_-1+iparin))
+        if (.not. exich) then
+            zi(ca_iawloc_-1+3*(iparg-1)+1) = -1
+            zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+2) = 0
             goto 90
-        endif
+        end if
 !
-        ASSERT(iparin.ne.0)
-        chin=lchin(iparin)
+        ASSERT(iparin .ne. 0)
+        chin = lchin(iparin)
         if (chin(1:1) .eq. ' ') then
             call utmess('E', 'CALCUL_13', sk=nompar)
-        endif
+        end if
 !
 !
-        ca_iichin_=iparin
-        ca_igd_   =zi(ca_iachii_-1+ca_iachid_*(iparin-1)+1)
-        ca_nec_   =zi(ca_iachii_-1+ca_iachid_*(iparin-1)+2)
-        ca_ncmpmx_=zi(ca_iachii_-1+ca_iachid_*(iparin-1)+3)
-        ca_iachin_=zi(ca_iachii_-1+ca_iachid_*(iparin-1)+5)
-        ca_ianueq_=zi(ca_iachii_-1+ca_iachid_*(iparin-1)+10)
-        ca_lprno_ =zi(ca_iachii_-1+ca_iachid_*(iparin-1)+11)
-        iparg=indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
-        ca_iachlo_=zi(ca_iawloc_-1+3*(iparg-1)+1)
-        ca_ilchlo_=zi(ca_iawloc_-1+3*(iparg-1)+2)
-        imodat=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+1)
-        ASSERT((ca_iachlo_.lt.-2) .or. (ca_iachlo_.gt.0))
-        ASSERT(ca_ilchlo_.ne.-1)
-        type=zk8(ca_iachik_-1+2*(iparin-1)+1)(1:4)
-        ca_typegd_=zk8(ca_iachik_-1+2*(iparin-1)+2)
+        ca_iichin_ = iparin
+        ca_igd_ = zi(ca_iachii_-1+ca_iachid_*(iparin-1)+1)
+        ca_nec_ = zi(ca_iachii_-1+ca_iachid_*(iparin-1)+2)
+        ca_ncmpmx_ = zi(ca_iachii_-1+ca_iachid_*(iparin-1)+3)
+        ca_iachin_ = zi(ca_iachii_-1+ca_iachid_*(iparin-1)+5)
+        ca_ianueq_ = zi(ca_iachii_-1+ca_iachid_*(iparin-1)+10)
+        ca_lprno_ = zi(ca_iachii_-1+ca_iachid_*(iparin-1)+11)
+        iparg = indik8(zk8(ca_iaoppa_), nompar, 1, ca_npario_)
+        ca_iachlo_ = zi(ca_iawloc_-1+3*(iparg-1)+1)
+        ca_ilchlo_ = zi(ca_iawloc_-1+3*(iparg-1)+2)
+        imodat = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+1)
+        ASSERT((ca_iachlo_ .lt. -2) .or. (ca_iachlo_ .gt. 0))
+        ASSERT(ca_ilchlo_ .ne. -1)
+        type = zk8(ca_iachik_-1+2*(iparin-1)+1) (1:4)
+        ca_typegd_ = zk8(ca_iachik_-1+2*(iparin-1)+2)
         if (ca_typegd_ .eq. 'R') then
-            ca_itypgd_=1
-        else if (ca_typegd_.eq.'C') then
-            ca_itypgd_=2
-        else if (ca_typegd_.eq.'I') then
-            ca_itypgd_=3
-        else if (ca_typegd_.eq.'K8') then
-            ca_itypgd_=4
-        else if (ca_typegd_.eq.'K16') then
-            ca_itypgd_=5
-        else if (ca_typegd_.eq.'K24') then
-            ca_itypgd_=6
+            ca_itypgd_ = 1
+        else if (ca_typegd_ .eq. 'C') then
+            ca_itypgd_ = 2
+        else if (ca_typegd_ .eq. 'I') then
+            ca_itypgd_ = 3
+        else if (ca_typegd_ .eq. 'K8') then
+            ca_itypgd_ = 4
+        else if (ca_typegd_ .eq. 'K16') then
+            ca_itypgd_ = 5
+        else if (ca_typegd_ .eq. 'K24') then
+            ca_itypgd_ = 6
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !
 !       1- mise a .false. du champ_loc.EXIS
 !       -----------------------------------------------------
-        lggrel=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
-        debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
+        lggrel = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+4)
+        debugr = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+ca_igr_-1)+5)
         do k = 1, lggrel
-            zl(ca_ilchlo_-1+debugr-1+k)=.false.
+            zl(ca_ilchlo_-1+debugr-1+k) = .false.
         end do
 !
 !
@@ -117,7 +117,7 @@ subroutine extra1(nin, lchin, lpain)
         if (type .eq. 'CHML') call exchml(imodat, iparg)
         if (type .eq. 'CHNO') call exchno(imodat, iparg)
         if (type .eq. 'RESL') call exresl(imodat, iparg, chin)
- 90     continue
+90      continue
     end do
 !
 !

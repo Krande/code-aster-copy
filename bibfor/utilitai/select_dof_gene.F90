@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine select_dof_gene(prof_genez, nb_cmp, cata_cmp, list_cmp, list_equa,&
+subroutine select_dof_gene(prof_genez, nb_cmp, cata_cmp, list_cmp, list_equa, &
                            tabl_equa)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nueq_chck.h"
 #include "asterfort/jeveuo.h"
@@ -31,7 +31,7 @@ implicit none
     character(len=8), pointer, optional :: cata_cmp(:)
     character(len=8), pointer, optional :: list_cmp(:)
     integer, pointer, optional :: list_equa(:)
-    integer, pointer, optional :: tabl_equa(:,:)
+    integer, pointer, optional :: tabl_equa(:, :)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,10 +70,10 @@ implicit none
 !
     prof_gene = prof_genez
     call nueq_chck(prof_gene, nb_equa)
-    call jeveuo(prof_gene//'.DESC', 'L', vi = v_desc)
-    ASSERT(v_desc(1).eq.2)
+    call jeveuo(prof_gene//'.DESC', 'L', vi=v_desc)
+    ASSERT(v_desc(1) .eq. 2)
 !
-    call jeveuo(prof_gene//'.DEEQ', 'L', vi = v_deeq)
+    call jeveuo(prof_gene//'.DEEQ', 'L', vi=v_deeq)
     do i_equa = 1, nb_equa
         node_nume = v_deeq(2*i_equa)
         do i_cmp = 1, nb_cmp
@@ -81,25 +81,25 @@ implicit none
                 name_cmp = list_cmp(i_cmp)
             else
                 name_cmp = cata_cmp(i_cmp)
-            endif
+            end if
             if (name_cmp .eq. 'LAGR' .and. node_nume .lt. 0) then
                 if (present(tabl_equa)) then
-                    tabl_equa(i_equa,i_cmp) = 1
+                    tabl_equa(i_equa, i_cmp) = 1
                 elseif (present(list_equa)) then
                     list_equa(i_equa) = 1
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
             if (name_cmp .eq. 'GENE' .and. node_nume .gt. 0) then
                 if (present(tabl_equa)) then
-                    tabl_equa(i_equa,i_cmp) = 1
+                    tabl_equa(i_equa, i_cmp) = 1
                 elseif (present(list_equa)) then
                     list_equa(i_equa) = 1
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 

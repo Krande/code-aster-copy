@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefcir(ndim, nbcyl, nbgrp, numgrp, som,&
-                  rint, dcent, ficent, d, fi,&
-                  ppxx, ppxy, ppyx, ppyy, vnxx,&
+subroutine mefcir(ndim, nbcyl, nbgrp, numgrp, som, &
+                  rint, dcent, ficent, d, fi, &
+                  ppxx, ppxy, ppyx, ppyy, vnxx, &
                   vnxy, vnyx, vnyy, tmp)
     implicit none
 !
@@ -118,13 +118,13 @@ subroutine mefcir(ndim, nbcyl, nbgrp, numgrp, som,&
             end do
 !
 ! ---       ASSEMBLAGE
-            call mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
-                        idir, igrp, som, rint, dcent,&
+            call mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp, &
+                        idir, igrp, som, rint, dcent, &
                         ficent, d, fi, zr(ia), zr(ib))
 !
 ! ---       RESOLUTION DU SYSTEME A.X = B PAR LA METHODE DE CROUT
             ier = 1
-            call mtcrog(zr(ia), zr(ib), nmax, nmax, 1,&
+            call mtcrog(zr(ia), zr(ib), nmax, nmax, 1, &
                         zr(ix), zr(itrav), ier)
 !
             if (ier .eq. 1) then

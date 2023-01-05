@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cnocns(cnoz, basez, cnsz, undf0_)
 !
-  implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -60,8 +60,8 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
     character(len=3) :: tsca
     character(len=8) :: mesh, gran_name
     character(len=19) :: cno, cns, prof_chno
-    integer :: nb_ec, idx_gd, nb_cmp_mx, nb_node,  jrefe, jvale, ierr
-    integer :: iadg, jprno,  i_node, ncmp, nb_cmp, jcnsl, jcnsv
+    integer :: nb_ec, idx_gd, nb_cmp_mx, nb_node, jrefe, jvale, ierr
+    integer :: iadg, jprno, i_node, ncmp, nb_cmp, jcnsl, jcnsv
     integer :: ival, ico, ieq, i_cmp_cata, i_cmp_field, i_cmp
     logical :: sdveri
     integer, pointer :: desc(:) => null()
@@ -79,17 +79,17 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
     base = basez
 
     undf0 = ASTER_FALSE
-    if ( present(undf0_)) then
+    if (present(undf0_)) then
         undf0 = undf0_
-     endif
+    end if
 !
 ! - Check ?
 !
-    sdveri=.false.
+    sdveri = .false.
     if (sdveri) then
         call cheksd(cno, 'sd_cham_no', ierr)
-        ASSERT(ierr.eq.0)
-    endif
+        ASSERT(ierr .eq. 0)
+    end if
 !
 ! - Old is erased
 !
@@ -112,12 +112,12 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
 !
 ! - Create objects for global components (catalog) <=> local components (field)
 !
-    call cmpcha(cno      , cmp_name, cata_to_field, field_to_cata, nb_cmp,&
+    call cmpcha(cno, cmp_name, cata_to_field, field_to_cata, nb_cmp, &
                 nb_cmp_mx)
 !
 ! - Allocate CNS
 !
-    call cnscre(mesh, gran_name, nb_cmp, cmp_name, base,&
+    call cnscre(mesh, gran_name, nb_cmp, cmp_name, base, &
                 cns, undf0)
 !
 ! - Access to CNS
@@ -131,7 +131,7 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
         prof_chno = ' '
     else
         call dismoi('PROF_CHNO', cno, 'CHAM_NO', repk=prof_chno)
-    endif
+    end if
 !
 ! - Set values in CNS
 !
@@ -139,20 +139,20 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
         do i_node = 1, nb_node
             do i_cmp_field = 1, nb_cmp
                 zl(jcnsl-1+(i_node-1)*nb_cmp+i_cmp_field) = .true.
-                ieq = (i_node-1)*nb_cmp + i_cmp_field
+                ieq = (i_node-1)*nb_cmp+i_cmp_field
                 if (tsca .eq. 'R') then
                     zr(jcnsv-1+ieq) = zr(jvale-1+ieq)
-                else if (tsca.eq.'I') then
+                else if (tsca .eq. 'I') then
                     zi(jcnsv-1+ieq) = zi(jvale-1+ieq)
-                else if (tsca.eq.'C') then
+                else if (tsca .eq. 'C') then
                     zc(jcnsv-1+ieq) = zc(jvale-1+ieq)
-                else if (tsca.eq.'L') then
+                else if (tsca .eq. 'L') then
                     zl(jcnsv-1+ieq) = zl(jvale-1+ieq)
-                else if (tsca.eq.'K8') then
+                else if (tsca .eq. 'K8') then
                     zk8(jcnsv-1+ieq) = zk8(jvale-1+ieq)
                 else
                     ASSERT(.false.)
-                endif
+                end if
             end do
         end do
     else
@@ -163,15 +163,15 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !         IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
 !         IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
-            ncmp = zi(jprno-1+ (i_node-1)* (nb_ec+2)+2)
+            ncmp = zi(jprno-1+(i_node-1)*(nb_ec+2)+2)
             if (ncmp .ne. 0) then
-                ival = zi(jprno-1+ (i_node-1)* (nb_ec+2)+1)
-                iadg = jprno - 1 + (i_node-1)* (nb_ec+2)+3
+                ival = zi(jprno-1+(i_node-1)*(nb_ec+2)+1)
+                iadg = jprno-1+(i_node-1)*(nb_ec+2)+3
                 ico = 0
                 do i_cmp = 1, nb_cmp
                     i_cmp_cata = field_to_cata(i_cmp)
-                    if (exisdg(zi(iadg),i_cmp_cata)) then
-                        ico = ico + 1
+                    if (exisdg(zi(iadg), i_cmp_cata)) then
+                        ico = ico+1
                         ieq = nueq(ival-1+ico)
                         i_cmp_field = cata_to_field(i_cmp_cata)
 !             ASSERT(ic_mp_field.EQ.ic_mp)  COUTEUX ?
@@ -179,33 +179,33 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
                         zl(jcnsl-1+(i_node-1)*nb_cmp+i_cmp_field) = .true.
 
                         if (tsca .eq. 'R') then
-                            zr(jcnsv-1+ (i_node-1)*nb_cmp+i_cmp_field) = zr(jvale-1+ ieq)
-                        else if (tsca.eq.'I') then
-                            zi(jcnsv-1+ (i_node-1)*nb_cmp+i_cmp_field) = zi(jvale-1+ ieq)
-                        else if (tsca.eq.'C') then
-                            zc(jcnsv-1+ (i_node-1)*nb_cmp+i_cmp_field) = zc(jvale-1+ ieq)
-                        else if (tsca.eq.'L') then
-                            zl(jcnsv-1+ (i_node-1)*nb_cmp+i_cmp_field) = zl(jvale-1+ ieq)
-                        else if (tsca.eq.'K8') then
-                            zk8(jcnsv-1+ (i_node-1)*nb_cmp+i_cmp_field) = zk8(jvale-1+ieq)
+                            zr(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zr(jvale-1+ieq)
+                        else if (tsca .eq. 'I') then
+                            zi(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zi(jvale-1+ieq)
+                        else if (tsca .eq. 'C') then
+                            zc(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zc(jvale-1+ieq)
+                        else if (tsca .eq. 'L') then
+                            zl(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zl(jvale-1+ieq)
+                        else if (tsca .eq. 'K8') then
+                            zk8(jcnsv-1+(i_node-1)*nb_cmp+i_cmp_field) = zk8(jvale-1+ieq)
                         else
                             ASSERT(.false.)
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! - Check
 !
-    if (sdveri)  then
-        call cheksd(cns,'sd_cham_no_s',ierr)
-        ASSERT(ierr.eq.0)
-    endif
+    if (sdveri) then
+        call cheksd(cns, 'sd_cham_no_s', ierr)
+        ASSERT(ierr .eq. 0)
+    end if
 !
-    AS_DEALLOCATE(vi = cata_to_field)
-    AS_DEALLOCATE(vi = field_to_cata)
-    AS_DEALLOCATE(vk8 = cmp_name)
+    AS_DEALLOCATE(vi=cata_to_field)
+    AS_DEALLOCATE(vi=field_to_cata)
+    AS_DEALLOCATE(vk8=cmp_name)
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcejtu(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
-                  option, epsm, deps, sigm, sigp,&
-                  dsidep, vim, vip, typmod,&
+subroutine lcejtu(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  option, epsm, deps, sigm, sigp, &
+                  dsidep, vim, vip, typmod, &
                   instam, instap)
 !
 ! person_in_charge: astrid.filiot at edf.fr
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -60,7 +60,7 @@ implicit none
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
-    parameter (nbpa=8)
+    parameter(nbpa=8)
     integer :: cod(nbpa)
     character(len=16) :: nom(nbpa)
     real(kind=8) :: val(nbpa)
@@ -72,14 +72,14 @@ implicit none
     real(kind=8) :: delta_N_pos, delta_T, lambda
     real(kind=8) :: beta, b, t, delta_0, delta_f, r, d, g
     real(kind=8) :: delta_f_N, delta_f_T
-    real(kind=8) :: quot, a(6,6), aa(6,6)
+    real(kind=8) :: quot, a(6, 6), aa(6, 6)
     real(kind=8) :: zero, pi
     character(len=16) :: type_comp
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, pred, l_lambda0
 !
-    data nom / 'K', 'SIGM_C_N', 'SIGM_C_T', 'GC_N', 'GC_T', 'C_RUPT', &
-                'ETA_BK', 'CRIT_INIT' /
+    data nom/'K', 'SIGM_C_N', 'SIGM_C_T', 'GC_N', 'GC_T', 'C_RUPT', &
+        'ETA_BK', 'CRIT_INIT'/
 !
 !-----------------------------------------------------------------------
 ! RQ SUR LES NOTATIONS :
@@ -117,10 +117,10 @@ implicit none
     call r8inir(6*6, 0.d0, aa, 1)
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
-    resi = option(1:9).eq.'FULL_MECA' .or. option.eq.'RAPH_MECA'
-    rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
-    elas = option.eq.'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS'
-    pred = option.eq.'RIGI_MECA_TANG'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
+    rigi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
+    elas = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS'
+    pred = option .eq. 'RIGI_MECA_TANG'
 !
 ! INSTANT DE CALCUL T- (INSTANT PRECEDENT) OU T+ (INSTANT ACTUEL)
     inst = instam
@@ -129,23 +129,23 @@ implicit none
 ! SAUT DE DEPLACEMENT A L'INSTANT ACTUEL
     call dcopy(ndim, epsm, 1, delta, 1)
     call dcopy(ndim, deps, 1, ddelta, 1)
-    if (resi) call daxpy(ndim, 1.d0, ddelta, 1, delta,1)
+    if (resi) call daxpy(ndim, 1.d0, ddelta, 1, delta, 1)
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'RUPT_TURON', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'RUPT_TURON', 0, ' ', [0.d0], &
                 nbpa, nom, val, cod, 2)
 !
 !   * VERIFICATION
     if (val(1)*val(2)*val(3)*val(4)*val(5) .lt. r8prem()) then
-        call utmess('F','COMPOR4_74', nk=5, valk=nom(1:5))
-    endif
+        call utmess('F', 'COMPOR4_74', nk=5, valk=nom(1:5))
+    end if
 !
 !   * RIGIDITE DE PENALISATION (IDENTIQUE POUR TOUS LES MODES)
     k = val(1)
@@ -170,23 +170,23 @@ implicit none
     crit = val(8)
 !
 ! PARTIE POSITIVE DU SAUT NORMAL
-    delta_N_pos = max(0.d0,delta(1))
+    delta_N_pos = max(0.d0, delta(1))
 !
 ! SAUT EQUIVALENT TANGENTIEL
-    delta_T = sqrt(delta(2)**2 + delta(3)**2)
+    delta_T = sqrt(delta(2)**2+delta(3)**2)
 !
 ! SAUT EQUIVALENT TOTAL
-    lambda = sqrt(delta_N_pos**2 + delta_T**2)
+    lambda = sqrt(delta_N_pos**2+delta_T**2)
     l_lambda0 = (lambda .lt. r8prem())
 !
     if (.not. l_lambda0) then
 ! TAUX DE MIXITE A T+ (BETA A PARTIR DES SAUTS, B A PARTIR DES TAUX DE RESTIT G)
-        beta = delta_T / (delta_T + delta_N_pos)
+        beta = delta_T/(delta_T+delta_N_pos)
         b = beta**2/(1-2*beta+2*beta**2)
 ! SEUILS D'INITIATION DE L'ENDOMMAGEMENT A T+
 ! * CRITERE DE TURON (DE TYPE BK, FONCTION DU TAUX DE MIXITE)
         if (crit .eq. 0) then
-            delta_0 = sqrt(delta_N_0**2 + (delta_T_0**2-delta_N_0**2)*b**eta)
+            delta_0 = sqrt(delta_N_0**2+(delta_T_0**2-delta_N_0**2)*b**eta)
             ASSERT(delta_0 .gt. r8prem())
 ! * CRITERE DE YE (DE TYPE ELLIPTIQUE)
         elseif (crit .eq. 1) then
@@ -194,15 +194,15 @@ implicit none
                 t = pi/2
             else
                 t = atan(delta_N_0/delta_T_0*delta_T/delta_N_pos)
-            endif
+            end if
             delta_0 = sqrt((delta_N_0*cos(t))**2+(delta_T_0*sin(t))**2)
             ASSERT(delta_0 .gt. r8prem())
         else
             ASSERT(.False.)
-        endif
+        end if
 ! SEUIL DE PROPAGATION DE LA FISSURE A T+ (DE TYPE BK)
-        delta_f = 1/delta_0 * (delta_N_0*delta_N_f + &
-                (delta_T_0*delta_T_f - delta_N_0*delta_N_f )*b**eta)
+        delta_f = 1/delta_0*(delta_N_0*delta_N_f+ &
+                             (delta_T_0*delta_T_f-delta_N_0*delta_N_f)*b**eta)
         ASSERT(delta_f .gt. r8prem())
     else
 ! CAS PARTICULIERS SI ON (RE)PASSE PAR UN ETAT DE SAUT NUL :
@@ -216,8 +216,8 @@ implicit none
             call utmess('A', 'COMPOR4_73')
             delta_0 = min(delta_N_0, delta_T_0)
             delta_f = min(delta_N_f, delta_T_f)
-        endif
-    endif
+        end if
+    end if
 !
 ! ESTIMATION DE LA VARIABLE SEUIL ACTUELLE
     r = max(delta_0, vim(1))
@@ -228,9 +228,9 @@ implicit none
             diss = 0
         else
             diss = nint(vim(4))
-        endif
+        end if
         cass = nint(vim(5))
-    endif
+    end if
 !
 ! CALCUL DE LA CONTRAINTE
     if (resi) then
@@ -241,10 +241,10 @@ implicit none
             g = 1.0
         else
             if ((delta_0-lambda) .ge. zero) then
-                g = lambda * lambda / delta_0 / delta_f
+                g = lambda*lambda/delta_0/delta_f
             else
                 g = 1.-(delta_f-lambda)*(delta_f-lambda)/(delta_f-delta_0)/delta_f
-            endif
+            end if
 
             if ((r-lambda) .gt. zero) then
                 diss = 0
@@ -252,7 +252,7 @@ implicit none
                     cass = 1
                 else
                     cass = 0
-                endif
+                end if
                 d = delta_f*(r-delta_0)/(r*(delta_f-delta_0))
 !                 g = (r-delta_0)/(delta_f-delta_0)
 !                 g = (delta_f-(delta_f-r)*(delta_f-r)/(delta_f-delta_0))/delta_f
@@ -266,29 +266,29 @@ implicit none
                 else
                     d = vim(3)
 !                     g = vim(11)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
         ASSERT((d-1.d0) .le. r8prem())
         ASSERT((g-1.d0) .le. r8prem())
 !
         if (type_comp .eq. 'COMP_ELAS') then
-            sigp(1) = - d*k*max(0.d0, - delta(1)) + (1-d)*k*delta(1)
+            sigp(1) = -d*k*max(0.d0, -delta(1))+(1-d)*k*delta(1)
             do i = 2, ndim
                 sigp(i) = (1-d)*k*delta(i)
-            enddo
+            end do
         else if (type_comp .eq. 'COMP_INCR') then
             sigp(1) = sigm(1) &
-                        - (d*k*max(0.d0, - delta(1))*delta(1) - &
-                            vim(3)*k*max(0.d0, - (delta(1)-ddelta(1)))*(delta(1)-ddelta(1))) &
-                        + (1-d)*k*delta(1) - (1-vim(3))*k*(delta(1)-ddelta(1))
+                      -(d*k*max(0.d0, -delta(1))*delta(1)- &
+                        vim(3)*k*max(0.d0, -(delta(1)-ddelta(1)))*(delta(1)-ddelta(1))) &
+                      +(1-d)*k*delta(1)-(1-vim(3))*k*(delta(1)-ddelta(1))
             do i = 2, ndim
                 sigp(i) = sigm(i) &
-                           + (1-d)*k*delta(i) - (1-vim(3))*k*(delta(i)-ddelta(i))
-            enddo
+                          +(1-d)*k*delta(i)-(1-vim(3))*k*(delta(i)-ddelta(i))
+            end do
         else
             ASSERT(.false.)
-        endif
+        end if
 !         write(6,*) ''
 !         write(6,*) 'sigm',sigm
 !         write(6,*) 'sigp',sigp
@@ -329,7 +329,7 @@ implicit none
             vip(8) = delta(3)
         else
             vip(8) = 0.d0
-        endif
+        end if
         vip(9) = lambda
         vip(10) = delta_T
         vip(11) = g
@@ -338,7 +338,7 @@ implicit none
         vip(14) = b
         vip(15) = delta_0
         vip(16) = delta_f
-    endif
+    end if
 !
 ! CALCUL DE LA MATRICE TANGENTE
 ! NB : EN TOUTE RIGUEUR, ELLE N'EST PAS DEFINIE EN DELTA(1)=0
@@ -348,50 +348,50 @@ implicit none
 !   * RIGIDITE ARTIFICIELLE POST-RUPTURE
         if (cass .eq. 2) then
             if (delta(1) .gt. r8prem()) then
-                dsidep(1,1) = c*val(2)/delta_N_f
+                dsidep(1, 1) = c*val(2)/delta_N_f
             else
-                dsidep(1,1) = k
-            endif
+                dsidep(1, 1) = k
+            end if
             do i = 2, ndim
-                dsidep(i,i) = c*val(3)/delta_T_f
-            enddo
+                dsidep(i, i) = c*val(3)/delta_T_f
+            end do
         else
 !
             if (abs(delta(1)) .gt. r8prem()) then
-                quot = max(0.d0, - delta(1))/abs(delta(1))
+                quot = max(0.d0, -delta(1))/abs(delta(1))
 !   * VAUT 1 si delta(1) < 0 et 0 si delta(1) > 0
             else
                 quot = 1.d0
 !   * VAUT 1 si delta(1) = 0 (prolongement à gauche)
-            endif
+            end if
 !
             if ((diss .eq. 0) .or. elas) then
                 d = delta_f*(r-delta_0)/(r*(delta_f-delta_0))
             else
                 d = delta_f*(lambda-delta_0)/(lambda*(delta_f-delta_0))
-            endif
+            end if
 !
-            do i = 1,ndim
-                a(i,i) = 1 - d
-            enddo
-            a(1,1) = a(1,1) + d * quot
+            do i = 1, ndim
+                a(i, i) = 1-d
+            end do
+            a(1, 1) = a(1, 1)+d*quot
             dsidep = a*k
 !
             if (diss .eq. 1) then
-                do i = 1,ndim
-                    do j = 1,ndim
-                        aa(i,j) = delta(i)*delta(j)
-                    enddo
-                    aa(i,1) = aa(i,1) + delta(i)*max(0.d0, - delta(1))
-                enddo
-                do j = 1,ndim
-                    aa(1,j) = aa(1,j) + delta(j)*max(0.d0, - delta(1))
-                enddo
-                aa(1,1) = aa(1,1) + (max(0.d0, -delta(1)))**2
+                do i = 1, ndim
+                    do j = 1, ndim
+                        aa(i, j) = delta(i)*delta(j)
+                    end do
+                    aa(i, 1) = aa(i, 1)+delta(i)*max(0.d0, -delta(1))
+                end do
+                do j = 1, ndim
+                    aa(1, j) = aa(1, j)+delta(j)*max(0.d0, -delta(1))
+                end do
+                aa(1, 1) = aa(1, 1)+(max(0.d0, -delta(1)))**2
                 aa = aa*k*delta_f*delta_0/(delta_f-delta_0)*1/lambda**3
-                dsidep = dsidep - aa
-            endif
-        endif
-    endif
+                dsidep = dsidep-aa
+            end if
+        end if
+    end if
 !
 end subroutine

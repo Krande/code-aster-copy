@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,8 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
     integer :: idterm, idtyco, idtyva, iret, lvecrl, nbrela
 !
 !-----------------------------------------------------------------------
-    parameter (lvecrl = 10000)
-    parameter (nbrela = 1000)
+    parameter(lvecrl=10000)
+    parameter(nbrela=1000)
 !
     call jemarq()
 !
@@ -88,7 +88,7 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
         call jedetr(lisrel//'.RLTC')
         call jedetr(lisrel//'.RLTV')
         call jedetr(lisrel//'.RLBE')
-    endif
+    end if
 !
 ! ---  VECTEUR DES COEFFICIENTS DES TERMES DES RELATIONS
 !
@@ -96,7 +96,7 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
         call wkvect(lisrel//'.RLCO', base//' V C', lvecrl, idcoef)
     else
         call wkvect(lisrel//'.RLCO', base//' V R', lvecrl, idcoef)
-    endif
+    end if
 !
 ! ---  VECTEUR DES NOMS DES DDLS IMPLIQUES DANS LES RELATIONS
 !
@@ -110,11 +110,11 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
 !
     if (typval .eq. 'REEL') then
         call wkvect(lisrel//'.RLBE', base//' V R', nbrela, idbeta)
-    else if (typval.eq.'COMP') then
+    else if (typval .eq. 'COMP') then
         call wkvect(lisrel//'.RLBE', base//' V C', nbrela, idbeta)
-    else if (typval.eq.'FONC') then
+    else if (typval .eq. 'FONC') then
         call wkvect(lisrel//'.RLBE', base//' V K24', nbrela, idbeta)
-    endif
+    end if
 !
 ! ---  VECTEUR DES NOMBRES DE TERMES DE CHAQUE RELATION
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
     call getvid(motfac, 'TABL_THER', iocc=1, scal=tabthr, nbret=ibid)
     if (profil(1:7) .eq. 'ELLIPSE') then
         if (deklag .lt. 0.D0 .and. irev .eq. 0) call utmess('F', 'PREPOST_7')
-    endif
-    if (irev .eq. 0) tabrev=tabmdb
+    end if
+    if (irev .eq. 0) tabrev = tabmdb
 ! ======================================================================
 ! --- VERIFICATION DE LA PRESENCE DE LISTE D'INSTANT -------------------
 ! ======================================================================
@@ -73,17 +73,17 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 ! --- VERIFICATION DE LA COHERENCE DES LISTES D'INSTANT POUR -----------
 ! --- LES CHAMPS MECANIQUES --------------------------------------------
 ! ======================================================================
-    call tbexv1(tabrev, 'INST', tbins1, 'V', nbval1,&
+    call tbexv1(tabrev, 'INST', tbins1, 'V', nbval1, &
                 k8b)
-    call tbexv1(tabmdb, 'INST', tbins2, 'V', nbval2,&
+    call tbexv1(tabmdb, 'INST', tbins2, 'V', nbval2, &
                 k8b)
     if (nbval1 .ne. nbval2) then
         call utmess('F', 'PREPOST4_90')
-    endif
-    teste = verinr ( nbval1, tbins1, tbins2 )
+    end if
+    teste = verinr(nbval1, tbins1, tbins2)
     if (teste) then
         call utmess('F', 'PREPOST4_91')
-    endif
+    end if
 ! ======================================================================
 ! --- DESTRUCTIONS DES VECTEURS INUTILES -------------------------------
 ! ======================================================================
@@ -111,25 +111,25 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 ! --- VERIFICATION DE LA COHERENCE DES LISTES D'INSTANT POUR -----------
 ! --- LES CHAMPS MECANIQUES --------------------------------------------
 ! ======================================================================
-        call tbexv1(tabrev, 'INST', tbins2, 'V', nbval2,&
+        call tbexv1(tabrev, 'INST', tbins2, 'V', nbval2, &
                     k8b)
         if (nbval1 .ne. nbval2) then
             call utmess('F', 'PREPOST4_92')
-        endif
-        teste = verinr ( nbval1, tbins1, tbins2)
+        end if
+        teste = verinr(nbval1, tbins1, tbins2)
         if (teste) then
             call utmess('F', 'PREPOST4_91')
-        endif
+        end if
         call jedetr(tbins2)
-        call tbexv1(tabmdb, 'INST', tbins2, 'V', nbval2,&
+        call tbexv1(tabmdb, 'INST', tbins2, 'V', nbval2, &
                     k8b)
         if (nbval1 .ne. nbval2) then
             call utmess('F', 'PREPOST4_92')
-        endif
-        teste = verinr ( nbval1, tbins1, tbins2)
+        end if
+        teste = verinr(nbval1, tbins1, tbins2)
         if (teste) then
             call utmess('F', 'PREPOST4_91')
-        endif
+        end if
         call jedetr(tbins2)
         call jedetr(tabrev)
         call jedetr(tabmdb)
@@ -163,7 +163,7 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 ! ======================================================================
                 call tbexp2(tabrev, 'SIZZ')
                 call tbexp2(tabmdb, 'SIZZ')
-            endif
+            end if
         else
 ! ======================================================================
 ! --- CAS D'UNE DIMENSION D'ORDRE 3 ------------------------------------
@@ -188,8 +188,8 @@ subroutine veritb(nk1d, ndim, oridef, deklag, profil)
                 call tbexp2(tabmdb, 'SIXY')
                 call tbexp2(tabrev, 'COOR_X')
                 call tbexp2(tabrev, 'COOR_Y')
-            endif
-        endif
+            end if
+        end if
 ! ======================================================================
 ! --- VERIFICATION DU PARAMETRE TEMP POUR LA TABLE DONNEE THERMIQUE ----
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine sleneu(iunv, nbnode, ama, bma, cma,&
-                  ami, bmi, cmi, mix, man,&
+subroutine sleneu(iunv, nbnode, ama, bma, cma, &
+                  ami, bmi, cmi, mix, man, &
                   ites, datset)
 ! aslint: disable=
     implicit none
@@ -101,11 +101,11 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
     integer, pointer :: syst(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    nbnode=0
-    ites=0
+    nbnode = 0
+    ites = 0
 !
 !  --> N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
-    imes=iunifi('MESSAGE')
+    imes = iunifi('MESSAGE')
 !
     ntail = 1000
     niter = 1000
@@ -129,23 +129,23 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
 !     Il n'y a pas de sys de coord defini dans le fichier, pour ne pas
 !     planter on en cree un bidon ici qu'on declare comme cartesien
         isyst = 0
-    endif
+    end if
 !
-  1 continue
+1   continue
     do iter = 1, niter
-        read (iunv,'(A)') cbuf
-        read (unit=cbuf,fmt='(4X,I2)') ind
+        read (iunv, '(A)') cbuf
+        read (unit=cbuf, fmt='(4X,I2)') ind
         if (ind .eq. -1) goto 99
 !
 ! --> LES COORDONNEES DES NOEUDS SONT EN SIMPLE PRECISION (SUPERTAB 4
 !     OU 6) OU EN REAL*8 (SUPERTAB 6 OU 7)
 !
         if (datset .eq. 15) then
-            read (cbuf,'(4I10,3E13.6)') node,i,j,icnode,x,y,z
-        else if (datset.eq.781.or.datset.eq.2411) then
-            read (cbuf,'(4I10)') node,i,j,icnode
-            read (iunv,'(3E25.16)') x,y,z
-        endif
+            read (cbuf, '(4I10,3E13.6)') node, i, j, icnode, x, y, z
+        else if (datset .eq. 781 .or. datset .eq. 2411) then
+            read (cbuf, '(4I10)') node, i, j, icnode
+            read (iunv, '(3E25.16)') x, y, z
+        end if
 !
 !
 ! -->  GESTION DES SYSTEMES DE COORDONNEES - BIS
@@ -155,46 +155,46 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
         if (iret .ne. 0) then
             call jeveuo('&&IDEAS.SYST', 'L', vi=syst)
             isyst = syst(i)
-        endif
+        end if
 !
 !        On ne teste ici que si le systeme de coordonnne est cartesien,
 !        cylindrique ou autre
         if (isyst .ne. 0) then
             call utmess('F', 'STBTRIAS_10')
-        endif
+        end if
 !        On ne teste ici que si les noeuds font reference a plusieurs
 !        systeme de coordonnne
 !        On ne teste pas si ces systemes sont identiques juste si leur
 !        label est different
-        if ((i.ne.itmp) .and. (itmp.ne.-6)) then
+        if ((i .ne. itmp) .and. (itmp .ne. -6)) then
             call utmess('A', 'STBTRIAS_11')
-        endif
+        end if
 !
 !
 !  --> INITIALISATION POUR LA RECHERCHE DES MINI ET MAXI
         if (nbnode .eq. 0) then
-            ama=x
-            bma=y
-            cma=z
-            ami=x
-            bmi=y
-            cmi=z
+            ama = x
+            bma = y
+            cma = z
+            ami = x
+            bmi = y
+            cmi = z
         else
-            ama=max(ama,x)
-            bma=max(bma,y)
-            cma=max(cma,z)
-            ami=min(ami,x)
-            bmi=min(bmi,y)
-            cmi=min(cmi,z)
-        endif
+            ama = max(ama, x)
+            bma = max(bma, y)
+            cma = max(cma, z)
+            ami = min(ami, x)
+            bmi = min(bmi, y)
+            cmi = min(cmi, z)
+        end if
 !
         if (nbnode .eq. 0) then
-            mix=node
+            mix = node
         else
-            man=max(mix,node)
-        endif
+            man = max(mix, node)
+        end if
 !
-        nbnode = nbnode + 1
+        nbnode = nbnode+1
 !
         zi(jinfo-1+ndeca+(iter-1)*3+1) = node
         zi(jinfo-1+ndeca+(iter-1)*3+2) = i
@@ -203,15 +203,15 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
         zr(jcoor-1+ndeca+(iter-1)*3+2) = y
         zr(jcoor-1+ndeca+(iter-1)*3+3) = z
     end do
-    ntail = ntail + niter
-    ndeca = ndeca + 3000
+    ntail = ntail+niter
+    ndeca = ndeca+3000
     call juveca('&&PRESUP.INFO.NOEUDS', 3*ntail)
     call jeveuo('&&PRESUP.INFO.NOEUDS', 'E', jinfo)
     call juveca('&&PRESUP.COOR.NOEUDS', 3*ntail)
     call jeveuo('&&PRESUP.COOR.NOEUDS', 'E', jcoor)
     goto 1
- 99 continue
+99  continue
 !
-    write (imes,*) 'NOMBRE DE NOEUDS :',nbnode
+    write (imes, *) 'NOMBRE DE NOEUDS :', nbnode
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
                   npuis)
 !
-    implicit     none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -29,7 +29,7 @@ subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
 !
     character(len=19), intent(in) :: lisold
     integer, intent(in)  :: ichar
-    character(len=16) , intent(out) :: typfct
+    character(len=16), intent(out) :: typfct
     character(len=8), intent(out)  :: nomfct
     real(kind=8), intent(out)  :: phase
     integer, intent(out)  :: npuis
@@ -66,10 +66,10 @@ subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
     phase = 0.d0
     npuis = 0
     typfct = 'CONST_REEL'
-    nomfct = zk24(jalifc+ichar-1)(1:8)
-    if (nomfct(1:8).ne.'&&NMDOME'.and.nomfct.ne.' ') then
+    nomfct = zk24(jalifc+ichar-1) (1:8)
+    if (nomfct(1:8) .ne. '&&NMDOME' .and. nomfct .ne. ' ') then
         typfct = 'FONCT_REEL'
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,23 +58,23 @@ subroutine te0332(option, nomte)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     RECUPERATION DU NUMERO DE LA MAILLE :
 !     -------------------------------------
     call tecael(iadzi, iazk24, noms=0)
-    ima =zi(iadzi)
-    numema= dble(ima)
+    ima = zi(iadzi)
+    numema = dble(ima)
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
-    poids=0.d0
-    triax=0.d0
-    rsr0=0.d0
-    volu=0.d0
-    volume=0.d0
-    dvol=0.d0
+    poids = 0.d0
+    triax = 0.d0
+    rsr0 = 0.d0
+    volu = 0.d0
+    volume = 0.d0
+    dvol = 0.d0
     depseq = 0.d0
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -83,71 +83,71 @@ subroutine te0332(option, nomte)
     call jevech('PVARIPR', 'L', ivarpg)
     call jevech('PSDRMR', 'L', isdrmr)
     call jevech('PSOUSOP', 'L', issopt)
-    call tecach('OOO', 'PVARIPR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIPR', 'L', iret, nval=7, &
                 itab=jtab)
-    nbvari = max(jtab(6),1)*jtab(7)
+    nbvari = max(jtab(6), 1)*jtab(7)
     call jevech('PCOMPOR', 'L', icompo)
 !     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
 !
-    if ((zk16(icompo).eq.'VMIS_ISOT_TRAC') .or. (zk16(icompo).eq.'VMIS_ISOT_LINE') .or.&
-        (zk16(icompo).eq.'LEMAITRE') .or. (zk16(icompo).eq.'VMIS_ECMI_TRAC') .or.&
-        (zk16(icompo).eq.'VMIS_ECMI_LINE') .or. (zk16(icompo).eq.'VISC_CIN1_CHAB') .or.&
-        (zk16(icompo).eq.'VISC_CIN2_CHAB')) then
+    if ((zk16(icompo) .eq. 'VMIS_ISOT_TRAC') .or. (zk16(icompo) .eq. 'VMIS_ISOT_LINE') .or. &
+        (zk16(icompo) .eq. 'LEMAITRE') .or. (zk16(icompo) .eq. 'VMIS_ECMI_TRAC') .or. &
+        (zk16(icompo) .eq. 'VMIS_ECMI_LINE') .or. (zk16(icompo) .eq. 'VISC_CIN1_CHAB') .or. &
+        (zk16(icompo) .eq. 'VISC_CIN2_CHAB')) then
         ipopp = 1
     else
         call utmess('F', 'ELEMENTS3_74', sk=zk16(icompo))
-    endif
+    end if
 !
     call jevech('PRICTRA', 'E', iritra)
     call jevech('PSDRPR', 'E', isdrpr)
 !
-    optcal(1) = zk24(issopt)(1:16)
-    optcal(2) = zk24(issopt)(17:19)
+    optcal(1) = zk24(issopt) (1:16)
+    optcal(2) = zk24(issopt) (17:19)
 !
     do ii = 1, 4
-        cong(ii)=0.d0
+        cong(ii) = 0.d0
     end do
-    varigm =0.d0
-    varigp =0.d0
+    varigm = 0.d0
+    varigp = 0.d0
 !
 !     --- BOUCLE SUR POINTS DE GAUSS SUIVANT OPTIONS DE CALCUL ---
 !
-    if ((optcal(1).eq.'SIGM_ELMOY') .and. (optcal(2).eq.'NON')) then
+    if ((optcal(1) .eq. 'SIGM_ELMOY') .and. (optcal(2) .eq. 'NON')) then
         do kp = 1, npg
-            k=(kp-1)*nno
-            r=0.d0
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            k = (kp-1)*nno
+            r = 0.d0
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
                 do ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
-            dvol=poids
-            volume=volume+dvol
+                poids = poids*r
+            end if
+            dvol = poids
+            volume = volume+dvol
             do ii = 1, 4
-                cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
+                cong(ii) = cong(ii)+dvol*zr(icong+4*kp+ii-5)
             end do
             varigm = varigm+dvol*zr(ivarmg+nbvari*(kp-1)+ipopp-1)
             varigp = varigp+dvol*zr(ivarpg+nbvari*(kp-1)+ipopp-1)
         end do
 !        ------- SIGXX MOYENNEE SUR L'ELEMENT -----------
-        sig(1) =cong(1)/volume
+        sig(1) = cong(1)/volume
 !        ------- SIGYY MOYENNEE SUR L'ELEMENT -----------
-        sig(2) =cong(2)/volume
+        sig(2) = cong(2)/volume
 !        ------- SIGZZ MOYENNEE SUR L'ELEMENT -----------
-        sig(3) =cong(3)/volume
+        sig(3) = cong(3)/volume
 !        ------- SIGXY MOYENNEE SUR L'ELEMENT -----------
-        sig(4) =cong(4)/volume
+        sig(4) = cong(4)/volume
 !        ------- EPSPEQ MOYENNEE SUR L'ELEMENT ----------
-        varigm =varigm/volume
-        varigp =varigp/volume
+        varigm = varigm/volume
+        varigp = varigp/volume
 !
         sigm = (sig(1)+sig(2)+sig(3))/3.d0
-        sigeq = (&
-                sig(1)-sigm)*(sig(1)-sigm)+(sig(2)-sigm)* (sig(2)- sigm)+(sig(3)-sigm)*(sig(3)-si&
-                &gm)+2.d0*sig(4)* sig(4&
+        sigeq = ( &
+                sig(1)-sigm)*(sig(1)-sigm)+(sig(2)-sigm)*(sig(2)-sigm)+(sig(3)-sigm)*(sig(3)-si&
+                &gm)+2.d0*sig(4)*sig(4 &
                 )
         sigeq = sqrt(1.5d0*sigeq)
         triax = sigm/sigeq
@@ -158,122 +158,122 @@ subroutine te0332(option, nomte)
         end do
 !
 !
-        elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'OUI'))&
-    then
+    elseif ((optcal(1) .eq. 'SIGM_ELGA') .and. (optcal(2) .eq. 'OUI')) &
+        then
         do kp = 1, npg
-            r=0.d0
+            r = 0.d0
             sdrsrm = zr(isdrmr+kp-1)
-            k=(kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
                 do ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
-            volume=poids
+                poids = poids*r
+            end if
+            volume = poids
             do ii = 1, 4
-                cong(ii)=zr(icong+4*kp+ii-5)
+                cong(ii) = zr(icong+4*kp+ii-5)
             end do
-            varigm =zr(ivarmg+nbvari*(kp-1)+ipopp-1)
-            varigp =zr(ivarpg+nbvari*(kp-1)+ipopp-1)
+            varigm = zr(ivarmg+nbvari*(kp-1)+ipopp-1)
+            varigp = zr(ivarpg+nbvari*(kp-1)+ipopp-1)
 !
             sigm = (cong(1)+cong(2)+cong(3))/3.d0
-            sigeq = (&
-                    cong(1)-sigm)*(cong(1)-sigm)+(cong(2)-sigm)* (cong(2)-sigm)+(cong(3)-sigm)*(c&
-                    &ong(3)-sigm)+ 2.d0*cong(4) * cong(4&
+            sigeq = ( &
+                    cong(1)-sigm)*(cong(1)-sigm)+(cong(2)-sigm)*(cong(2)-sigm)+(cong(3)-sigm)*(c&
+                    &ong(3)-sigm)+2.d0*cong(4)*cong(4 &
                     )
             sigeq = sqrt(1.5d0*sigeq)
             triax = sigm/sigeq
             volu = volume
             depseq = varigp-varigm
-            sdrsrp=sdrsrm+0.283d0*sign(1.d0,triax)*exp(1.5d0* abs(&
-            triax))*depseq
+            sdrsrp = sdrsrm+0.283d0*sign(1.d0, triax)*exp(1.5d0*abs( &
+                                                          triax))*depseq
             zr(isdrpr+kp-1) = sdrsrp
             crois = exp(sdrsrp)
             if (crois .gt. rsr0) then
-                rsr0=crois
-                volu=volume
-            endif
+                rsr0 = crois
+                volu = volume
+            end if
 !
         end do
 !
 !
-        elseif ((optcal(1).eq.'SIGM_ELMOY').and.(optcal(2).eq.'OUI'))&
-    then
+    elseif ((optcal(1) .eq. 'SIGM_ELMOY') .and. (optcal(2) .eq. 'OUI')) &
+        then
         do kp = 1, npg
-            r=0.d0
-            k=(kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            r = 0.d0
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
                 do ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
-            dvol=poids
-            volume=volume+dvol
+                poids = poids*r
+            end if
+            dvol = poids
+            volume = volume+dvol
             do ii = 1, 4
-                cong(ii)=cong(ii)+zr(icong+4*kp+ii-5)*dvol
+                cong(ii) = cong(ii)+zr(icong+4*kp+ii-5)*dvol
             end do
-            varigm=varigm+dvol*zr(ivarmg+nbvari*(kp-1)+ipopp-1)
-            varigp=varigp+dvol*zr(ivarpg+nbvari*(kp-1)+ipopp-1)
+            varigm = varigm+dvol*zr(ivarmg+nbvari*(kp-1)+ipopp-1)
+            varigp = varigp+dvol*zr(ivarpg+nbvari*(kp-1)+ipopp-1)
         end do
 !        ------- SIGXX MOYENNEE SUR L'ELEMENT -----------
-        sig(1) =cong(1)/volume
+        sig(1) = cong(1)/volume
 !        ------- SIGYY MOYENNEE SUR L'ELEMENT -----------
-        sig(2) =cong(2)/volume
+        sig(2) = cong(2)/volume
 !        ------- SIGZZ MOYENNEE SUR L'ELEMENT -----------
-        sig(3) =cong(3)/volume
+        sig(3) = cong(3)/volume
 !        ------- SIGXY MOYENNEE SUR L'ELEMENT -----------
-        sig(4) =cong(4)/volume
+        sig(4) = cong(4)/volume
 !        ------- EPSPEQ MOYENNEE SUR L'ELEMENT ----------
-        varigm=varigm/volume
-        varigp=varigp/volume
+        varigm = varigm/volume
+        varigp = varigp/volume
 !
         sigm = (sig(1)+sig(2)+sig(3))/3.d0
-        sigeq = (&
-                sig(1)-sigm)*(sig(1)-sigm)+(sig(2)-sigm)* (sig(2)- sigm)+(sig(3)-sigm)*(sig(3)-si&
-                &gm)+2.d0*sig(4)* sig(4&
+        sigeq = ( &
+                sig(1)-sigm)*(sig(1)-sigm)+(sig(2)-sigm)*(sig(2)-sigm)+(sig(3)-sigm)*(sig(3)-si&
+                &gm)+2.d0*sig(4)*sig(4 &
                 )
         sigeq = sqrt(1.5d0*sigeq)
         triax = sigm/sigeq
         volu = volume
         depseq = varigp-varigm
         sdrsrm = zr(isdrmr)
-        sdrsrp = sdrsrm+0.283d0*sign(1.d0,triax)*exp(1.5d0* abs(triax) )*depseq
+        sdrsrp = sdrsrm+0.283d0*sign(1.d0, triax)*exp(1.5d0*abs(triax))*depseq
         do kq = 1, npg
             zr(isdrpr+kq-1) = sdrsrp
         end do
         rsr0 = exp(sdrsrp)
 !
 !
-        elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'NON'))&
-    then
+    elseif ((optcal(1) .eq. 'SIGM_ELGA') .and. (optcal(2) .eq. 'NON')) &
+        then
         do kp = 1, npg
-            k=(kp-1)*nno
-            r=0.d0
+            k = (kp-1)*nno
+            r = 0.d0
             do ii = 1, 4
-                cong(ii)=zr(icong+(4*kp)-5+ii)
+                cong(ii) = zr(icong+(4*kp)-5+ii)
             end do
-            varigm=zr(ivarmg+nbvari*(kp-1)+ipopp-1)
-            varigp=zr(ivarpg+nbvari*(kp-1)+ipopp-1)
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            varigm = zr(ivarmg+nbvari*(kp-1)+ipopp-1)
+            varigp = zr(ivarpg+nbvari*(kp-1)+ipopp-1)
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
                 do ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
-            dvol=poids
-            volume=volume+dvol
+                poids = poids*r
+            end if
+            dvol = poids
+            volume = volume+dvol
             sigm = (cong(1)+cong(2)+cong(3))/3.d0
-            sigeq = (&
-                    cong(1)-sigm)*(cong(1)-sigm)+(cong(2)-sigm)* (cong(2)-sigm)+(cong(3)-sigm)*(c&
-                    &ong(3)-sigm)+ 2.d0*cong(4) * cong(4&
+            sigeq = ( &
+                    cong(1)-sigm)*(cong(1)-sigm)+(cong(2)-sigm)*(cong(2)-sigm)+(cong(3)-sigm)*(c&
+                    &ong(3)-sigm)+2.d0*cong(4)*cong(4 &
                     )
             sigeq = sqrt(1.5d0*sigeq)
             triax = triax+dvol*sigm/sigeq
@@ -292,7 +292,7 @@ subroutine te0332(option, nomte)
     else
 !       OPTION DE CALCUL NON VALIDE
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     zr(iritra) = triax

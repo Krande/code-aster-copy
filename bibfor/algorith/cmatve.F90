@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine cmatve(mat, vectin, vectou, ndim)
 !-----------------------------------------------------------------------
 !
     do i = 1, ndim
-        vectou(i) = dcmplx(0.d0,0.d0)
+        vectou(i) = dcmplx(0.d0, 0.d0)
         do j = 1, ndim
-            vectou(i) = vectou(i) + mat(i,j)*vectin(j)
+            vectou(i) = vectou(i)+mat(i, j)*vectin(j)
         end do
     end do
     goto 999

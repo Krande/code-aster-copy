@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lkvarv(vintr, nbmat, mater, paravi)
 !
-    implicit      none
+    implicit none
     integer :: nbmat
     real(kind=8) :: paravi(3), mater(nbmat, 2)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE---------------------------
@@ -37,9 +37,9 @@ subroutine lkvarv(vintr, nbmat, mater, paravi)
 ! ==================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE -------------------------
 ! ==================================================================
-    a0 = mater( 8,2)
-    s0 = mater(11,2)
-    m0 = mater(12,2)
+    a0 = mater(8, 2)
+    s0 = mater(11, 2)
+    m0 = mater(12, 2)
 !
 !
 ! ==================================================================
@@ -47,10 +47,10 @@ subroutine lkvarv(vintr, nbmat, mater, paravi)
 ! --- VISQUEUX POUR AVOIR UNE DROITE
 ! ==================================================================
     avmax = 1.d0
-    mvmax = mater(19,2)
+    mvmax = mater(19, 2)
     svmax = s0
 !
-    xivmax = mater(20,2)
+    xivmax = mater(20, 2)
 ! ==================================================================
 ! CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS XIV < XIVMAX------
 ! ==================================================================
@@ -59,11 +59,11 @@ subroutine lkvarv(vintr, nbmat, mater, paravi)
 !
         fact1 = xiv/xivmax
 !
-        axiv = a0 + (avmax - a0)*fact1
+        axiv = a0+(avmax-a0)*fact1
 !
-        sxiv = s0 + (svmax - s0)*fact1
+        sxiv = s0+(svmax-s0)*fact1
 !
-        mxiv = m0 + (mvmax - m0)*fact1
+        mxiv = m0+(mvmax-m0)*fact1
 ! ==================================================================
 ! CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS XIV >= XIVMAX   --
 ! ==================================================================
@@ -76,7 +76,7 @@ subroutine lkvarv(vintr, nbmat, mater, paravi)
 ! ==================================================================
 ! CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS XIE< XIP < XIULT--
 ! ==================================================================
-    endif
+    end if
 ! ==================================================================
 ! --- STOCKAGE -----------------------------------------------------
 ! ==================================================================

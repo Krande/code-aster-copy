@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine ndxdec(ds_print, sddisc, sderro, numins)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/nmacto.h"
@@ -67,21 +67,21 @@ implicit none
 !
     if (etnewt .eq. 'CONV') then
         retact = 0
-    else if (etnewt.eq.'EVEN') then
+    else if (etnewt .eq. 'EVEN') then
         call nmacto(sddisc, ievdac)
-        call nmevac(sddisc, sderro  , ievdac, numins, iterat,&
+        call nmevac(sddisc, sderro, ievdac, numins, iterat, &
                     retact, ds_print)
-    else if (etnewt.eq.'CONT') then
+    else if (etnewt .eq. 'CONT') then
 ! ----- CONTINUER LA BOUCLE DE NEWTON EST IMPOSSIBLE EN EXPLICITE
         ASSERT(.false.)
-    else if (etnewt.eq.'ERRE') then
+    else if (etnewt .eq. 'ERRE') then
 ! ----- ERRREUR NON TRAITEE DANS NDXCVG
         retact = 4
-    else if (etnewt.eq.'STOP') then
+    else if (etnewt .eq. 'STOP') then
         retact = 4
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- TRAITEMENT DE L'ACTION
 !
@@ -90,41 +90,41 @@ implicit none
 ! ----- TOUT EST OK -> ON PASSE A LA SUITE
 !
         actnew = 0
-    else if (retact.eq.1) then
+    else if (retact .eq. 1) then
 !
 ! ----- ON REFAIT LE PAS DE TEMPS
 !
         actnew = 1
-    else if (retact.eq.2) then
+    else if (retact .eq. 2) then
 !
         ASSERT(.false.)
-    else if (retact.eq.3) then
+    else if (retact .eq. 3) then
 !
 ! ----- ECHEC DE L'ACTION -> ARRET DU CALCUL
 !
         actnew = 3
-    else if (retact.eq.4) then
+    else if (retact .eq. 4) then
 !
 ! ----- ARRET DU CALCUL
 !
         actnew = 3
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
 !
     if (actnew .eq. 0) then
         call nmeceb(sderro, 'NEWT', 'CONV')
-    else if (actnew.eq.1) then
+    else if (actnew .eq. 1) then
         call nmeceb(sderro, 'NEWT', 'ERRE')
-    else if (actnew.eq.2) then
+    else if (actnew .eq. 2) then
         ASSERT(.false.)
-    else if (actnew.eq.3) then
+    else if (actnew .eq. 3) then
         call nmeceb(sderro, 'NEWT', 'STOP')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- TRANSFERT ETAT DE LA BOUCLE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine metaGetType(meta_type, nb_phasis)
 !
-use calcul_module, only : calcul_status
+    use calcul_module, only: calcul_status
 !
-implicit none
+    implicit none
 !
 #include "asterfort/rcvarc.h"
 #include "asterfort/Metallurgy_type.h"
 !
-integer, intent(out) :: meta_type
-integer, intent(out) :: nb_phasis
+    integer, intent(out) :: meta_type
+    integer, intent(out) :: nb_phasis
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,13 +46,13 @@ integer, intent(out) :: nb_phasis
     integer :: iret_steel, iret_zirc
     real(kind=8) :: r8dummy
 !
-    data steel /'PFERRITE'/
-    data zirc  /'ALPHPUR'/
+    data steel/'PFERRITE'/
+    data zirc/'ALPHPUR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    kpg       = 1
-    ksp       = 1
+    kpg = 1
+    ksp = 1
     meta_type = META_NONE
     nb_phasis = 0
 !
@@ -62,20 +62,20 @@ integer, intent(out) :: nb_phasis
         fami = 'PMAT'
     else
         fami = 'RIGI'
-    endif
+    end if
 !
-    call rcvarc(' ', steel, '+', fami, kpg,&
+    call rcvarc(' ', steel, '+', fami, kpg, &
                 ksp, r8dummy, iret_steel)
     if (iret_steel .eq. 0) then
         meta_type = META_STEEL
         nb_phasis = 5
     else
-        call rcvarc(' ', zirc, '+', fami, kpg,&
+        call rcvarc(' ', zirc, '+', fami, kpg, &
                     ksp, r8dummy, iret_zirc)
         if (iret_zirc .eq. 0) then
             meta_type = META_ZIRC
             nb_phasis = 3
-        endif
-    endif
+        end if
+    end if
 
 end subroutine

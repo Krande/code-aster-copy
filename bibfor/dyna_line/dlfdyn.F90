@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
+subroutine dlfdyn(rigid, amort, lamort, neq, d0, &
                   v0, f, f0)
     implicit none
 #include "asterf_types.h"
@@ -50,14 +50,14 @@ subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
     real(kind=8) :: mun
 !
     mun = -1.d0
-    call mrmult('ZERO', rigid, d0, f0, 1,&
+    call mrmult('ZERO', rigid, d0, f0, 1, &
                 .true._1)
-    call daxpy(neq, mun, f0, 1, f,&
+    call daxpy(neq, mun, f0, 1, f, &
                1)
     if (lamort) then
-        call mrmult('ZERO', amort, v0, f0, 1,&
+        call mrmult('ZERO', amort, v0, f0, 1, &
                     .true._1)
-        call daxpy(neq, mun, f0, 1, f,&
+        call daxpy(neq, mun, f0, 1, f, &
                    1)
-    endif
+    end if
 end subroutine

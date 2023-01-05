@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmctcl(model, mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,9 +30,9 @@ implicit none
 #include "asterfort/mmligr.h"
 #include "asterfort/xmligr.h"
 !
-character(len=8), intent(in) :: model
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,19 +53,19 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cont_form      = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
+    cont_form = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
 !
 ! - Create elements for contact
 !
     if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         call mmligr(mesh, model, ds_contact)
-    elseif  (cont_form .eq. 3) then
+    elseif (cont_form .eq. 3) then
         if (l_cont_xfem_gg) then
             call xmligr(mesh, model, ds_contact)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

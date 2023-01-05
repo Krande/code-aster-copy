@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine te0397(option, nomte)
 !
     call elref1(elrefe)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -61,31 +61,31 @@ subroutine te0397(option, nomte)
 !
         do kp = 1, npg
             k = (kp-1)*nno
-            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                         cour, poids, nx, ny)
             r = 0.d0
             fx = 0.d0
             fy = 0.d0
             do i = 1, nno
-                l = (kp-1)*nno + i
+                l = (kp-1)*nno+i
 !-----------------------------------------------------
 !              LE SIGNE MOINS CORRESPOND A LA CONVENTION :
 !                 UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
 !-----------------------------------------------------
                 f3 = -zr(ipres+i-1)
-                fx = fx + nx*f3*zr(ivf+l-1)
-                fy = fy + ny*f3*zr(ivf+l-1)
-                r = r + zr(igeom+2* (i-1))*zr(ivf+l-1)
+                fx = fx+nx*f3*zr(ivf+l-1)
+                fy = fy+ny*f3*zr(ivf+l-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+l-1)
             end do
             poids = poids*r
             do i = 1, nno
-                l = (kp-1)*nno + i
-                zr(ivectu+nddl* (i-1)) = zr(ivectu+nddl* (i-1)) + fx*zr(ivf+l-1 )*poids
-                zr(ivectu+nddl* (i-1)+1) = zr( ivectu+nddl* (i-1)+1 ) + fy*zr(ivf+l-1 )*poids
+                l = (kp-1)*nno+i
+                zr(ivectu+nddl*(i-1)) = zr(ivectu+nddl*(i-1))+fx*zr(ivf+l-1)*poids
+                zr(ivectu+nddl*(i-1)+1) = zr(ivectu+nddl*(i-1)+1)+fy*zr(ivf+l-1)*poids
             end do
         end do
 !
-    else if (option.eq.'CHAR_MECA_PRES_F') then
+    else if (option .eq. 'CHAR_MECA_PRES_F') then
 !              ------------------------------
         call jevech('PPRESSF', 'L', ipres)
         call jevech('PTEMPSR', 'L', itemps)
@@ -94,20 +94,20 @@ subroutine te0397(option, nomte)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
-        do i = 0, nno - 1
+        do i = 0, nno-1
             valpar(1) = zr(igeom+3*i)
             valpar(2) = zr(igeom+3*i+1)
             valpar(3) = zr(igeom+3*i+2)
-            call fointe('FM', zk8(ipres), 4, nompar, valpar,&
+            call fointe('FM', zk8(ipres), 4, nompar, valpar, &
                         pr, ier)
             if (pr .ne. 0.d0) then
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3) (1:8)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_92', sk=valk)
-            endif
+            end if
         end do
 !
-    endif
+    end if
 !
 end subroutine

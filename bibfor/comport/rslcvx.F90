@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rslcvx(fami, kpg, ksp, imat, nmat,&
+subroutine rslcvx(fami, kpg, ksp, imat, nmat, &
                   mater, sig, vin, seuil)
     implicit none
 !       ROUSSELIER : CONVEXE ELASTO PLASTIQUE POUR (MATER,TEMP,SIG,B,P)
@@ -50,35 +50,35 @@ subroutine rslcvx(fami, kpg, ksp, imat, nmat,&
     real(kind=8) :: un, argmax
 !
     integer :: ndt, ndi
-    common /tdim/ ndt, ndi
+    common/tdim/ndt, ndi
 !
-    parameter       ( un     = 1.d0   )
+    parameter(un=1.d0)
 !       ----------------------------------------------------------------
-    d = mater(1,2)
-    s1 = mater(2,2)
-    f0 = mater(3,2)
+    d = mater(1, 2)
+    s1 = mater(2, 2)
+    f0 = mater(3, 2)
     p = vin(1)
     f = vin(2)
     argmax = 200.d0
 !
 ! --    MATERIAU CASSE
-    if (f .ge. mater(6,2)) then
+    if (f .ge. mater(6, 2)) then
         seuil = un
 !
 ! --    MATERIAU SAIN
     else
         unrho = (un-f0)/(un-f)
-        rig(1:ndt) = unrho * sig(1:ndt)
+        rig(1:ndt) = unrho*sig(1:ndt)
         call lchydr(rig, rigm)
         call lcsomh(rig, -rigm, rigdv)
-        call rsliso(fami, kpg, ksp, '+', imat,&
+        call rsliso(fami, kpg, ksp, '+', imat, &
                     p, rp, drdp)
-        seuil = lcnrts(rigdv) - rp
+        seuil = lcnrts(rigdv)-rp
         if ((rigm/s1) .gt. (argmax)) then
-            seuil = seuil + d*s1*f*exp(argmax)
+            seuil = seuil+d*s1*f*exp(argmax)
         else
-            seuil = seuil + d*s1*f*exp(rigm/s1)
-        endif
-    endif
+            seuil = seuil+d*s1*f*exp(rigm/s1)
+        end if
+    end if
 !
 end subroutine

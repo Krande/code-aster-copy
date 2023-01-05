@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta,&
+subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta, &
                   rho, offset)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -69,7 +69,7 @@ subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta,&
 ! --- CALCUL
 !
     do i = 1, neq
-        ddepl(i) = rho*du0(i) + (eta-offset)*du1(i)
+        ddepl(i) = rho*du0(i)+(eta-offset)*du1(i)
     end do
 !
     call jedema()

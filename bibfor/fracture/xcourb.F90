@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine xcourb(basloc, noma, modele, courb)
 !
     call jemarq()
 !
-    cnsg='&&XCOURB.CNSGT'
+    cnsg = '&&XCOURB.CNSGT'
     call cnocns(basloc, 'V', cnsg)
 !
     call jeveuo(cnsg//'.CNSV', 'L', vr=gb)
@@ -71,7 +71,7 @@ subroutine xcourb(basloc, noma, modele, courb)
 !------------------------------------------------------------------
 !     CREATION DU CHAM_NO SIMPLE MATPASS  (MATRICE INVP)
 !------------------------------------------------------------------
-    cnsr='&&XCOURB.CNSLT'
+    cnsr = '&&XCOURB.CNSLT'
     licmp(1) = 'X1'
     licmp(2) = 'X2'
     licmp(3) = 'X3'
@@ -81,14 +81,14 @@ subroutine xcourb(basloc, noma, modele, courb)
     licmp(7) = 'X7'
     licmp(8) = 'X8'
     licmp(9) = 'X9'
-    call cnscre(noma, 'NEUT_R', 9, licmp, 'V',&
+    call cnscre(noma, 'NEUT_R', 9, licmp, 'V', &
                 cnsr)
     call jeveuo(cnsr//'.CNSV', 'E', vr=rsv)
     call jeveuo(cnsr//'.CNSL', 'E', jrsl)
 !
     do ino = 1, nbno
 !       ON VÉRIFIE QUE LE NOEUD A BIEN UNE VALEUR DE GRADLST ASSOCIÉE
-        if (.not.zl(jgl-1+3*3*(ino-1)+4)) goto 100
+        if (.not. zl(jgl-1+3*3*(ino-1)+4)) goto 100
         do i = 1, 3
             el1(i) = gb(3*3*(ino-1)+i+3)
             el2(i) = gb(3*3*(ino-1)+i+6)
@@ -100,45 +100,45 @@ subroutine xcourb(basloc, noma, modele, courb)
         call provec(el1, el2, el3)
 !       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
         do i = 1, 3
-            p(i,1)=el1(i)
-            p(i,2)=el2(i)
-            p(i,3)=el3(i)
+            p(i, 1) = el1(i)
+            p(i, 2) = el2(i)
+            p(i, 3) = el3(i)
         end do
 !       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TP
         do i = 1, 3
             do j = 1, 3
-                invp(i,j)=p(j,i)
+                invp(i, j) = p(j, i)
             end do
         end do
         do i = 1, 3
-            rsv(9*(ino-1)+i)=invp(i,1)
-            zl(jrsl-1+9*(ino-1)+i)=.true.
-            rsv(9*(ino-1)+i+3)=invp(i,2)
-            zl(jrsl-1+9*(ino-1)+i+3)=.true.
-            rsv(9*(ino-1)+i+6)=invp(i,3)
-            zl(jrsl-1+9*(ino-1)+i+6)=.true.
+            rsv(9*(ino-1)+i) = invp(i, 1)
+            zl(jrsl-1+9*(ino-1)+i) = .true.
+            rsv(9*(ino-1)+i+3) = invp(i, 2)
+            zl(jrsl-1+9*(ino-1)+i+3) = .true.
+            rsv(9*(ino-1)+i+6) = invp(i, 3)
+            zl(jrsl-1+9*(ino-1)+i+6) = .true.
         end do
 !
 100     continue
     end do
-    matpas='&&XCOURB.MATPAS'
-    call cnscno(cnsr, ' ', 'NON', 'V', matpas,&
+    matpas = '&&XCOURB.MATPAS'
+    call cnscno(cnsr, ' ', 'NON', 'V', matpas, &
                 'F', ibid)
 !
 !------------------------------------------------------------------
 !     CALCUL DU GRADIENT DE MATPASS : CHAM_ELGA A 27 COMPOSANTES
 !------------------------------------------------------------------
 !
-    lpain(1)='PGEOMER'
-    lchin(1)=noma//'.COORDO'
-    lpain(2)='PNEUTER'
-    lchin(2)=matpas
-    lpaout(1)='PGNEUTR'
-    lchout(1)=courb
-    ligrmo=modele//'.MODELE'
-    nchin=2
-    call calcul('S', 'GRAD_NEUT9_R', ligrmo, nchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    lpain(1) = 'PGEOMER'
+    lchin(1) = noma//'.COORDO'
+    lpain(2) = 'PNEUTER'
+    lchin(2) = matpas
+    lpaout(1) = 'PGNEUTR'
+    lchout(1) = courb
+    ligrmo = modele//'.MODELE'
+    nchin = 2
+    call calcul('S', 'GRAD_NEUT9_R', ligrmo, nchin, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     call jedema()

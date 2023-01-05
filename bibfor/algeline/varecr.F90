@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine varecr(gamp, nbmat, mater, parame)
 !
-    implicit      none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbmat
@@ -37,26 +37,26 @@ subroutine varecr(gamp, nbmat, mater, parame)
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( zero   = 0.0d0   )
-    parameter       ( un     = 1.0d0   )
-    parameter       ( deux   = 2.0d0   )
-    parameter       ( trois  = 3.0d0   )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE -----------------------------
 ! ======================================================================
-    gamult = mater( 1,2)
-    gammae = mater( 2,2)
-    mult = mater( 3,2)
-    me = mater( 4,2)
-    ae = mater( 5,2)
-    mpic = mater( 6,2)
-    apic = mater( 7,2)
-    eta = mater( 8,2)
-    sigc = mater( 9,2)
-    sigp1 = mater(13,2)
-    sigp2 = mater(14,2)
+    gamult = mater(1, 2)
+    gammae = mater(2, 2)
+    mult = mater(3, 2)
+    me = mater(4, 2)
+    ae = mater(5, 2)
+    mpic = mater(6, 2)
+    apic = mater(7, 2)
+    eta = mater(8, 2)
+    sigc = mater(9, 2)
+    sigp1 = mater(13, 2)
+    sigp2 = mater(14, 2)
 ! ======================================================================
 ! CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS GAMP > GAMULT(1-EPS) -
 ! ======================================================================
@@ -120,8 +120,8 @@ subroutine varecr(gamp, nbmat, mater, parame)
             fact2 = me*sigp2/sigc
             puis1 = ae/agamp
             mgamp = fact1*(fact2**puis1)
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! --- STOCKAGE ---------------------------------------------------------
 ! ======================================================================

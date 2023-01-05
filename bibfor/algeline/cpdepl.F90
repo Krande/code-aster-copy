@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     integer :: icham, im, imod, lnoe
     integer :: neq
 !-----------------------------------------------------------------------
-    data iddl    /1,2,3,4,5,6/
+    data iddl/1, 2, 3, 4, 5, 6/
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -72,11 +72,11 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     call jelira(nomnoe, 'NOMUTI', lnoe)
 !
     do im = 1, nbm
-        write(nomcha(14:16),'(I3.3)') nuor(im)
+        write (nomcha(14:16), '(I3.3)') nuor(im)
         call jeveuo(nomcha, 'E', icham)
         zi(imod) = nuor(im)
-        call extmod_sorted(base, numddl, zi(imod), 1, zr(icham),&
-                    neq, lnoe, iddl, 6)
+        call extmod_sorted(base, numddl, zi(imod), 1, zr(icham), &
+                           neq, lnoe, iddl, 6)
         call jelibe(nomcha)
     end do
 !

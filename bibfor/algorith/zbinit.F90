@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,19 +46,19 @@ subroutine zbinit(f0, coef, dimmem, mem)
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
-    common /zbpar/ rhoneg,rhopos,&
-     &               parmul,fneg  ,fpos  ,&
-     &               dimcpl,nbcpl ,bpos  ,lopti
+    common/zbpar/rhoneg, rhopos,&
+     &               parmul, fneg, fpos,&
+     &               dimcpl, nbcpl, bpos, lopti
 !
 ! ----------------------------------------------------------------------
 !
     if (f0 .gt. 0) then
         ASSERT(.false.)
-    endif
+    end if
     parmul = coef
     dimcpl = dimmem
-    mem(1,1) = 0.d0
-    mem(2,1) = f0
+    mem(1, 1) = 0.d0
+    mem(2, 1) = f0
     nbcpl = 1
     bpos = .false.
     rhoneg = 0.d0

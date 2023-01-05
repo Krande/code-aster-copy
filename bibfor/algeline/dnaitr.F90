@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -212,8 +212,8 @@
 !              SET R_(J) = 0 AND RNORM = 0, GOTO 1)
 !        ENDIF
 !  END DO
-subroutine dnaitr(ido, bmat, n, k, np,&
-                  resid, rnorm, v, ldv, h,&
+subroutine dnaitr(ido, bmat, n, k, np, &
+                  resid, rnorm, v, ldv, h, &
                   ldh, ipntr, workd, info, alpha)
 !
 ! ASTER INFORMATION
@@ -251,11 +251,11 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 #include "blas/dscal.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     integer :: nopx, nbx, nrorth, nitref, nrstrt
-    common /infor/&
+    common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
 !     %------------------%
@@ -278,7 +278,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !     %------------%
 !
     real(kind=8) :: one, zero
-    parameter (one = 1.0d+0, zero = 0.0d+0)
+    parameter(one=1.0d+0, zero=0.0d+0)
 !
 !     %---------------%
 !     | LOCAL SCALARS |
@@ -311,7 +311,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !     | DATA STATEMENTS |
 !     %-----------------%
 !
-    data  first / .true. /
+    data first/.true./
 !
 !     %-----------------------%
 !     | EXECUTABLE STATEMENTS |
@@ -331,10 +331,10 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !
         unfl = r8miem()
 ! DUE TO CRS512         OVFL = ONE / UNFL
-        ulp = r8prem() * 0.5d0 * isbaem()
-        smlnum = unfl*( n / ulp )
+        ulp = r8prem()*0.5d0*isbaem()
+        smlnum = unfl*(n/ulp)
         first = .false.
-    endif
+    end if
 !
     if (ido .eq. 0) then
 !
@@ -355,11 +355,11 @@ subroutine dnaitr(ido, bmat, n, k, np,&
         rstart = .false.
         orth1 = .false.
         orth2 = .false.
-        j = k + 1
+        j = k+1
         ipj = 1
-        irj = ipj + n
-        ivj = irj + n
-    endif
+        irj = ipj+n
+        ivj = irj+n
+    end if
 !
 !     %-------------------------------------------------%
 !     | WHEN IN REVERSE COMMUNICATION MODE ONE OF:      |
@@ -396,7 +396,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
     if (msglvl .gt. 1) then
         call ivout(logfil, 1, [j], ndigit, '_NAITR: GENERATING ARNOLDI VECTOR NUMBER')
         call dvout(logfil, 1, [rnorm], ndigit, '_NAITR: B-NORM OF THE CURRENT RESIDUAL IS')
-    endif
+    end if
 !
 !        %---------------------------------------------------%
 !        | STEP 1: CHECK IF THE B NORM OF J-TH RESIDUAL      |
@@ -415,7 +415,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !
     if (msglvl .gt. 0) then
         call ivout(logfil, 1, [j], ndigit, '_NAITR: ****** RESTART AT STEP ******')
-    endif
+    end if
 !
 !           %---------------------------------------------%
 !           | ITRY IS THE LOOP VARIABLE THAT CONTROLS THE |
@@ -424,24 +424,24 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !           %---------------------------------------------%
 !
     betaj = zero
-    nrstrt = nrstrt + 1
+    nrstrt = nrstrt+1
     itry = 1
- 20 continue
+20  continue
     rstart = .true.
     ido = 0
- 30 continue
+30  continue
 !
 !           %--------------------------------------%
 !           | IF IN REVERSE COMMUNICATION MODE AND |
 !           | RSTART = .TRUE. FLOW RETURNS HERE.   |
 !           %--------------------------------------%
 !
-    call dgetv0(ido, bmat, itry, .false._1, n,&
-                j, v, ldv, resid, rnorm,&
+    call dgetv0(ido, bmat, itry, .false._1, n, &
+                j, v, ldv, resid, rnorm, &
                 ipntr, workd, ierr, alpha)
     if (ido .ne. 99) goto 9000
     if (ierr .lt. 0) then
-        itry = itry + 1
+        itry = itry+1
         if (itry .le. 3) goto 20
 !
 !              %------------------------------------------------%
@@ -450,12 +450,12 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !              | WHICH SPANS OP AND EXIT.                       |
 !              %------------------------------------------------%
 !
-        info = j - 1
+        info = j-1
         ido = 99
         goto 9000
-    endif
+    end if
 !
- 40 continue
+40  continue
 !
 !        %---------------------------------------------------------%
 !        | STEP 2:  V_(J) = R_(J-1)/RNORM AND P_(J) = P_(J)/RNORM  |
@@ -466,7 +466,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !
     call dcopy(n, resid, 1, v(1, j), 1)
     if (rnorm .ge. unfl) then
-        temp1 = one / rnorm
+        temp1 = one/rnorm
         call dscal(n, temp1, v(1, j), 1)
         call dscal(n, temp1, workd(ipj), 1)
     else
@@ -477,13 +477,13 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !            %-----------------------------------------%
 !
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one,&
+        call dlascl('G', i, i, rnorm, one, &
                     n, 1, v(1, j), n, infol4)
 ! DUE TO CRP_102 CALL DLASCL ('GENERAL', I, I, RNORM, ONE, N, 1,
-        call dlascl('G', i, i, rnorm, one,&
+        call dlascl('G', i, i, rnorm, one, &
                     n, 1, workd(ipj), n, infol4)
 !
-    endif
+    end if
 !
 !        %------------------------------------------------------%
 !        | STEP 3:  R_(J) = OP*V_(J), NOTE THAT P_(J) = B*V_(J) |
@@ -491,7 +491,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %------------------------------------------------------%
 !
     step3 = .true.
-    nopx = nopx + 1
+    nopx = nopx+1
     call dcopy(n, v(1, j), 1, workd(ivj), 1)
     ipntr(1) = ivj
     ipntr(2) = irj
@@ -503,7 +503,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %-----------------------------------%
 !
     goto 9000
- 50 continue
+50  continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION, |
@@ -525,7 +525,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %---------------------------------------%
 !
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         step4 = .true.
         ipntr(1) = irj
         ipntr(2) = ipj
@@ -538,8 +538,8 @@ subroutine dnaitr(ido, bmat, n, k, np,&
         goto 9000
     else if (bmat .eq. 'I') then
         call dcopy(n, resid, 1, workd(ipj), 1)
-    endif
- 60 continue
+    end if
+60  continue
 !
 !        %----------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION, |
@@ -555,11 +555,11 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %-------------------------------------%
 !
     if (bmat .eq. 'G') then
-        wnorm = ddot (n, resid, 1, workd(ipj), 1)
+        wnorm = ddot(n, resid, 1, workd(ipj), 1)
         wnorm = sqrt(abs(wnorm))
     else if (bmat .eq. 'I') then
         wnorm = dnrm2(n, resid, 1)
-    endif
+    end if
 !
 !        %-----------------------------------------%
 !        | COMPUTE THE J-TH RESIDUAL CORRESPONDING |
@@ -574,8 +574,8 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        | WORKD(IPJ:IPJ+N-1) CONTAINS B*OP*V_(J).  |
 !        %------------------------------------------%
 !
-    call dgemv('T', n, j, one, v,&
-               ldv, workd(ipj), 1, zero, h(1, j),&
+    call dgemv('T', n, j, one, v, &
+               ldv, workd(ipj), 1, zero, h(1, j), &
                1)
 !
 !        %--------------------------------------%
@@ -583,14 +583,14 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        | RESID CONTAINS OP*V_(J). SEE STEP 3. |
 !        %--------------------------------------%
 !
-    call dgemv('N', n, j, -one, v,&
-               ldv, h(1, j), 1, one, resid,&
+    call dgemv('N', n, j, -one, v, &
+               ldv, h(1, j), 1, one, resid, &
                1)
 !
-    if (j .gt. 1) h(j,j-1) = betaj
+    if (j .gt. 1) h(j, j-1) = betaj
     orth1 = .true.
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call dcopy(n, resid, 1, workd(irj), 1)
         ipntr(1) = irj
         ipntr(2) = ipj
@@ -603,8 +603,8 @@ subroutine dnaitr(ido, bmat, n, k, np,&
         goto 9000
     else if (bmat .eq. 'I') then
         call dcopy(n, resid, 1, workd(ipj), 1)
-    endif
- 70 continue
+    end if
+70  continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH1 = .TRUE. |
@@ -618,11 +618,11 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %------------------------------%
 !
     if (bmat .eq. 'G') then
-        rnorm = ddot (n, resid, 1, workd(ipj), 1)
+        rnorm = ddot(n, resid, 1, workd(ipj), 1)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
         rnorm = dnrm2(n, resid, 1)
-    endif
+    end if
 !
 !        %-----------------------------------------------------------%
 !        | STEP 5: RE-ORTHOGONALIZATION / ITERATIVE REFINEMENT PHASE |
@@ -644,7 +644,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !
     if (rnorm .gt. alpha*wnorm) goto 100
     iter = 0
-    nrorth = nrorth + 1
+    nrorth = nrorth+1
 !
 !        %---------------------------------------------------%
 !        | ENTER THE ITERATIVE REFINEMENT PHASE. IF FURTHER  |
@@ -653,22 +653,22 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        | GRAM-SCHMIDT USING ALL THE ARNOLDI VECTORS V_(J)  |
 !        %---------------------------------------------------%
 !
- 80 continue
+80  continue
 !
     if (msglvl .gt. 2) then
         xtemp(1) = wnorm
         xtemp(2) = rnorm
         call dvout(logfil, 2, xtemp, ndigit, '_NAITR: RE-ORTHONALIZATION, WNORM AND RNORM ARE')
         call dvout(logfil, j, h(1, j), ndigit, '_NAITR: J-TH COLUMN OF H')
-    endif
+    end if
 !
 !        %----------------------------------------------------%
 !        | COMPUTE V_(J)T * B * R_(J)                         |
 !        | WORKD(IRJ:IRJ+J-1) = V(:,1:J)'*WORKD(IPJ:IPJ+N-1). |
 !        %----------------------------------------------------%
 !
-    call dgemv('T', n, j, one, v,&
-               ldv, workd(ipj), 1, zero, workd(irj),&
+    call dgemv('T', n, j, one, v, &
+               ldv, workd(ipj), 1, zero, workd(irj), &
                1)
 !
 !        %---------------------------------------------%
@@ -678,15 +678,15 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        | + V(:,1:J)*WORKD(IRJ:IRJ+J-1)*E'_J.         |
 !        %---------------------------------------------%
 !
-    call dgemv('N', n, j, -one, v,&
-               ldv, workd(irj), 1, one, resid,&
+    call dgemv('N', n, j, -one, v, &
+               ldv, workd(irj), 1, one, resid, &
                1)
-    call daxpy(j, one, workd(irj), 1, h(1, j),&
+    call daxpy(j, one, workd(irj), 1, h(1, j), &
                1)
 !
     orth2 = .true.
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call dcopy(n, resid, 1, workd(irj), 1)
         ipntr(1) = irj
         ipntr(2) = ipj
@@ -700,8 +700,8 @@ subroutine dnaitr(ido, bmat, n, k, np,&
         goto 9000
     else if (bmat .eq. 'I') then
         call dcopy(n, resid, 1, workd(ipj), 1)
-    endif
- 90 continue
+    end if
+90  continue
 !
 !        %---------------------------------------------------%
 !        | BACK FROM REVERSE COMMUNICATION IF ORTH2 = .TRUE. |
@@ -712,21 +712,21 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %-----------------------------------------------------%
 !
     if (bmat .eq. 'G') then
-        rnorm1 = ddot (n, resid, 1, workd(ipj), 1)
+        rnorm1 = ddot(n, resid, 1, workd(ipj), 1)
         rnorm1 = sqrt(abs(rnorm1))
     else if (bmat .eq. 'I') then
         rnorm1 = dnrm2(n, resid, 1)
-    endif
+    end if
 !
     if (msglvl .gt. 0 .and. iter .gt. 0) then
         call ivout(logfil, 1, [j], ndigit, '_NAITR: ITERATIVE REFINEMENT FOR ARNOLDI RESIDUAL')
         if (msglvl .gt. 2) then
             xtemp(1) = rnorm
             xtemp(2) = rnorm1
-            call dvout(logfil, 2, xtemp, ndigit,&
+            call dvout(logfil, 2, xtemp, ndigit, &
                        '_NAITR: ITERATIVE REFINEMENT , RNORM AND RNORM1 ARE')
-        endif
-    endif
+        end if
+    end if
 !
 !        %-----------------------------------------%
 !        | DETERMINE IF WE NEED TO PERFORM ANOTHER |
@@ -754,9 +754,9 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !           | IS REQUIRED. NITREF IS USED BY STAT.H     |
 !           %-------------------------------------------%
 !
-        nitref = nitref + 1
+        nitref = nitref+1
         rnorm = rnorm1
-        iter = iter + 1
+        iter = iter+1
         if (iter .le. 1) goto 80
 !
 !           %-------------------------------------------------%
@@ -767,7 +767,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
             resid(jj) = zero
         end do
         rnorm = zero
-    endif
+    end if
 !
 !        %----------------------------------------------%
 !        | BRANCH HERE DIRECTLY IF ITERATIVE REFINEMENT |
@@ -783,7 +783,7 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !        %------------------------------------%
 !        | STEP 6: UPDATE  J = J+1,  CONTINUE |
 !        %------------------------------------%
-    j = j + 1
+    j = j+1
     if (j .gt. k+np) then
         ido = 99
         do i = max(1, k), k+np-1
@@ -794,18 +794,18 @@ subroutine dnaitr(ido, bmat, n, k, np,&
 !              | REFERENCE: LAPACK SUBROUTINE DLAHQR        |
 !              %--------------------------------------------%
 !
-            tst1 = abs( h( i, i ) ) + abs( h( i+1, i+1 ) )
-            if (tst1 .eq. zero) tst1 = dlanhs( '1', k+np, h, ldh, workd(n+1) )
-            if (abs( h( i+1,i ) ) .le. max( ulp*tst1, smlnum )) h(i+1,i) = zero
+            tst1 = abs(h(i, i))+abs(h(i+1, i+1))
+            if (tst1 .eq. zero) tst1 = dlanhs('1', k+np, h, ldh, workd(n+1))
+            if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
         end do
 !
         if (msglvl .gt. 2) then
-            call dmout(logfil, k+np, k+np, h, ldh,&
+            call dmout(logfil, k+np, k+np, h, ldh, &
                        ndigit, '_NAITR: FINAL UPPER HESSENBERG MATRIX H OF ORDER K+NP')
-        endif
+        end if
 !
         goto 9000
-    endif
+    end if
 !
 !        %--------------------------------------------------------%
 !        | LOOP BACK TO EXTEND THE FACTORIZATION BY ANOTHER STEP. |

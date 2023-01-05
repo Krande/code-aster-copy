@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,16 +49,16 @@ subroutine te0503(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
+        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCOEFHR', 'L', icoefh)
@@ -67,7 +67,7 @@ subroutine te0503(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    mrigt(:,:) = 0.d0
+    mrigt(:, :) = 0.d0
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !
@@ -75,32 +75,32 @@ subroutine te0503(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
         do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         coorse, nx, ny, poids)
             if (laxi) then
                 r = 0.d0
                 do i = 1, nno
-                    l = (kp-1)*nno + i
-                    r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
+                    l = (kp-1)*nno+i
+                    r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
                 end do
                 poids = poids*r
-            endif
-            ij = imattt - 1
+            end if
+            ij = imattt-1
             do i = 1, nno
-                li = ivf + (kp-1)*nno + i - 1
+                li = ivf+(kp-1)*nno+i-1
 !
                 do j = 1, i
-                    lj = ivf + (kp-1)*nno + j - 1
-                    ij = ij + 1
-                    mrigt(c(ise,i),c(ise,j)) = mrigt(&
-                                               c(ise, i),&
-                                               c(ise, j) ) + poids*zr(li)*zr(lj)*zr(icoefh&
-                                               )
+                    lj = ivf+(kp-1)*nno+j-1
+                    ij = ij+1
+                    mrigt(c(ise, i), c(ise, j)) = mrigt( &
+                                                  c(ise, i), &
+                                                  c(ise, j))+poids*zr(li)*zr(lj)*zr(icoefh &
+                                                                                    )
                 end do
             end do
         end do
@@ -108,11 +108,11 @@ subroutine te0503(option, nomte)
 !
 ! MISE SOUS FORME DE VECTEUR
 !
-    ij = imattt - 1
+    ij = imattt-1
     do i = 1, nnop2
         do j = 1, i
-            ij = ij + 1
-            zr(ij) = mrigt(i,j)
+            ij = ij+1
+            zr(ij) = mrigt(i, j)
         end do
     end do
 !

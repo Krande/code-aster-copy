@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
+subroutine axacti(basmod, numa, nbdiam, lisnu, nblis, &
                   nbacti)
     implicit none
 !
@@ -64,7 +64,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
     integer :: nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
     integer :: nbnoa, nbnot, numa
 !-----------------------------------------------------------------------
-    parameter (nbcpmx=300)
+    parameter(nbcpmx=300)
     character(len=8) :: basmod, intf
     aster_logical :: okass
     integer :: idec(nbcpmx), lisnu(nblis)
@@ -86,7 +86,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
 !-------------------REQUETTE DESCRIPTEUR DES DEFORMEES STATIQUES--------
 !
@@ -107,19 +107,19 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !
 !--------------------------ON DETERMINE LA LISTE------------------------
 !
-    icomp=0
-    nbacti=0
+    icomp = 0
+    nbacti = 0
 !
     do i = 1, nbnoa
-        inu=zi(llnoa+i-1)
+        inu = zi(llnoa+i-1)
 !*************************************************************
 !        ICOD=ZI(LLDESC+2*NBNOT+INU-1)
         call isdeco(zi(lldesc+2*nbnot+(inu-1)*nbec+1-1), idec, nbcmp)
         do j = 1, nbcmp
 !*************************************************************
-            okass=.false.
+            okass = .false.
             if (idec(j) .gt. 0) then
-                icomp=icomp+1
+                icomp = icomp+1
 !-- Cas des diametres 0 et 1 :
 !--  En théorie, il n'y a pas besoin de bloquer "artificiellement"
 !--  des DDL qui doivent être nuls. On peut laisser le code gérer
@@ -128,22 +128,22 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !--  Cependant, pour conserver la non régression, on conserve les blocages
 !
 !                 okass=.true.
-                if (j .eq. 1 .and. nbdiam .eq. 1) okass=.true.
-                if (j .eq. 2 .and. nbdiam .eq. 1) okass=.true.
-                if (j .eq. 3 .and. nbdiam .eq. 0) okass=.true.
-                if (j .eq. 4 .and. nbdiam .eq. 1) okass=.true.
-                if (j .eq. 5 .and. nbdiam .eq. 1) okass=.true.
-                if (j .eq. 6 .and. nbdiam .eq. 0) okass=.true.
-                if (j .eq. 7 .and. nbdiam .eq. 0) okass=.true.
-                if (j .eq. 8 .and. nbdiam .eq. 0) okass=.true.
-                if (j .eq. 9 .and. nbdiam .eq. 0) okass=.true.
-                if (j .eq. 10 .and. nbdiam .eq. 0) okass=.true.
+                if (j .eq. 1 .and. nbdiam .eq. 1) okass = .true.
+                if (j .eq. 2 .and. nbdiam .eq. 1) okass = .true.
+                if (j .eq. 3 .and. nbdiam .eq. 0) okass = .true.
+                if (j .eq. 4 .and. nbdiam .eq. 1) okass = .true.
+                if (j .eq. 5 .and. nbdiam .eq. 1) okass = .true.
+                if (j .eq. 6 .and. nbdiam .eq. 0) okass = .true.
+                if (j .eq. 7 .and. nbdiam .eq. 0) okass = .true.
+                if (j .eq. 8 .and. nbdiam .eq. 0) okass = .true.
+                if (j .eq. 9 .and. nbdiam .eq. 0) okass = .true.
+                if (j .eq. 10 .and. nbdiam .eq. 0) okass = .true.
 !
-            endif
+            end if
             if (okass) then
-                nbacti=nbacti+1
-                if (nbacti .le. nblis) lisnu(nbacti)=icomp
-            endif
+                nbacti = nbacti+1
+                if (nbacti .le. nblis) lisnu(nbacti) = icomp
+            end if
         end do
     end do
 !

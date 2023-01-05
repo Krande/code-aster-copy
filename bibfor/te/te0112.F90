@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine te0112(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ character(len=16), intent(in) :: option, nomte
 !
     a = 0.d0
 !
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -66,36 +66,36 @@ character(len=16), intent(in) :: option, nomte
 ! - Loop on gauss points
 !
     do kp = 1, npg
-        k=(kp-1)*nno
-        ic = icontr + (kp-1)*6
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        ic = icontr+(kp-1)*6
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdr, dfdz)
         r = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
         end do
         poids = poids*r
         do i = 1, nno
-            dfdr(i) = dfdr(i) + zr(ivf+k+i-1)/r
-            dfdt(i) = - xh * zr(ivf+k+i-1)/r
+            dfdr(i) = dfdr(i)+zr(ivf+k+i-1)/r
+            dfdt(i) = -xh*zr(ivf+k+i-1)/r
         end do
         do i = 1, nno
             do j = 1, i
-                a(1,1,i,j) = a(1,1,i,j) + poids * (&
-                             zr(ic) * dfdr(i) * dfdr(j) +&
-                             zr(ic+1) * dfdz(i) * dfdz(j) +&
-                             zr(ic+2) * dfdt(i) * dfdt(j) +&
-                             zr(ic+3) * (dfdr(i) * dfdz(j) + dfdz(i) * dfdr(j)) +&
-                             zr(ic+4) * (dfdt(i) * dfdr(j) + dfdr(i) * dfdt(j)) +&
-                             zr(ic+5) * (dfdz(i) * dfdt(j) + dfdt(i) * dfdz(j)))
+                a(1, 1, i, j) = a(1, 1, i, j)+poids*( &
+                                zr(ic)*dfdr(i)*dfdr(j)+ &
+                                zr(ic+1)*dfdz(i)*dfdz(j)+ &
+                                zr(ic+2)*dfdt(i)*dfdt(j)+ &
+                                zr(ic+3)*(dfdr(i)*dfdz(j)+dfdz(i)*dfdr(j))+ &
+                                zr(ic+4)*(dfdt(i)*dfdr(j)+dfdr(i)*dfdt(j))+ &
+                                zr(ic+5)*(dfdz(i)*dfdt(j)+dfdt(i)*dfdz(j)))
             end do
         end do
     end do
 !
     do i = 1, nno
         do j = 1, i
-            a(2,2,i,j) = a(1,1,i,j)
-            a(3,3,i,j) = a(1,1,i,j)
+            a(2, 2, i, j) = a(1, 1, i, j)
+            a(3, 3, i, j) = a(1, 1, i, j)
         end do
     end do
 !
@@ -104,10 +104,10 @@ character(len=16), intent(in) :: option, nomte
     do k = 1, 3
         do l = 1, 3
             do i = 1, nno
-                ik = ((3*i+k-4) * (3*i+k-3)) / 2
+                ik = ((3*i+k-4)*(3*i+k-3))/2
                 do j = 1, i
-                    ijkl = ik + 3 * (j-1) + l
-                    zr(imatuu+ijkl-1) = a(k,l,i,j)
+                    ijkl = ik+3*(j-1)+l
+                    zr(imatuu+ijkl-1) = a(k, l, i, j)
                 end do
             end do
         end do

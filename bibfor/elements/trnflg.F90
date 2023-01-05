@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,31 +29,31 @@ subroutine trnflg(nbx, vectpt, vecl, vecg)
 !-----------------------------------------------------------------------
     do ib = 1, nbx
 !
-        i1=6*(ib-1)
+        i1 = 6*(ib-1)
 !
 !     LES TERMES DE FORCE
 !
         if (ib .le. nbx-1) then
-            vecg(i1+1)=vecl(i1+1)
-            vecg(i1+2)=vecl(i1+2)
-            vecg(i1+3)=vecl(i1+3)
+            vecg(i1+1) = vecl(i1+1)
+            vecg(i1+2) = vecl(i1+2)
+            vecg(i1+3) = vecl(i1+3)
 !
 !     LES TERMES DE MOMENT = TPI * MLOCAL  (  TPI = TI  )
 !
-            vecg(i1+4)=vectpt(ib,1,1)*vecl(i1+4)+vectpt(ib,2,1)*vecl(&
-            i1+5) +vectpt(ib,3,1)*vecl(i1+6)
-            vecg(i1+5)=vectpt(ib,1,2)*vecl(i1+4)+vectpt(ib,2,2)*vecl(&
-            i1+5) +vectpt(ib,3,2)*vecl(i1+6)
-            vecg(i1+6)=vectpt(ib,1,3)*vecl(i1+4)+vectpt(ib,2,3)*vecl(&
-            i1+5) +vectpt(ib,3,3)*vecl(i1+6)
+            vecg(i1+4) = vectpt(ib, 1, 1)*vecl(i1+4)+vectpt(ib, 2, 1)*vecl( &
+                         i1+5)+vectpt(ib, 3, 1)*vecl(i1+6)
+            vecg(i1+5) = vectpt(ib, 1, 2)*vecl(i1+4)+vectpt(ib, 2, 2)*vecl( &
+                         i1+5)+vectpt(ib, 3, 2)*vecl(i1+6)
+            vecg(i1+6) = vectpt(ib, 1, 3)*vecl(i1+4)+vectpt(ib, 2, 3)*vecl( &
+                         i1+5)+vectpt(ib, 3, 3)*vecl(i1+6)
         else
-            vecg(i1+1)=vectpt(ib,1,1)*vecl(i1+1)+vectpt(ib,2,1)*vecl(&
-            i1+2) +vectpt(ib,3,1)*vecl(i1+3)
-            vecg(i1+2)=vectpt(ib,1,2)*vecl(i1+1)+vectpt(ib,2,2)*vecl(&
-            i1+2) +vectpt(ib,3,2)*vecl(i1+3)
-            vecg(i1+3)=vectpt(ib,1,3)*vecl(i1+1)+vectpt(ib,2,3)*vecl(&
-            i1+2) +vectpt(ib,3,3)*vecl(i1+3)
-        endif
+            vecg(i1+1) = vectpt(ib, 1, 1)*vecl(i1+1)+vectpt(ib, 2, 1)*vecl( &
+                         i1+2)+vectpt(ib, 3, 1)*vecl(i1+3)
+            vecg(i1+2) = vectpt(ib, 1, 2)*vecl(i1+1)+vectpt(ib, 2, 2)*vecl( &
+                         i1+2)+vectpt(ib, 3, 2)*vecl(i1+3)
+            vecg(i1+3) = vectpt(ib, 1, 3)*vecl(i1+1)+vectpt(ib, 2, 3)*vecl( &
+                         i1+2)+vectpt(ib, 3, 3)*vecl(i1+3)
+        end if
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
+subroutine ca2mam(moint, incr, ligrmo, lchin, lpain, &
                   lpaout, num, made)
     implicit none
 !
@@ -67,14 +67,14 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
     lpaout(1) = 'PMATTTR'
     matel = '&&B'//incr(1:3)
     madeel = matel//'.RELR'
-    call memare('V', matel, moint(1:8), ' ', ' ',&
+    call memare('V', matel, moint(1:8), ' ', ' ', &
                 'AMOR_AJOU ')
     call wkvect(madeel, 'V V K24', 1, jlva)
 !
     lchout(1) = matel(1:8)//'.ME000'
     call codent(1, 'D0', lchout(1) (12:14))
-    call calcul('S', option, ligrmo, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
     zk24(jlva) = lchout(1)
     call jeecra(madeel, 'LONUTI', 1)
@@ -90,11 +90,11 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 !
     made = 'MA'//incr
 !
-    call assmam('V', made, 1, matel, [1.d0],&
+    call assmam('V', made, 1, matel, [1.d0], &
                 num, 'ZERO', 1)
 !
 !
-    nu19=num
+    nu19 = num
 !
 ! --- MENAGE
 !

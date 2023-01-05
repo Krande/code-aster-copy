@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine xmtbca(mesh, hval_incr, ds_material, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,10 +37,10 @@ implicit none
 #include "asterfort/mmbouc.h"
 #include "asterfort/nmchex.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: hval_incr(*)
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: hval_incr(*)
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 1
-    integer, parameter :: nbin  = 11
+    integer, parameter :: nbin = 11
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -94,9 +94,9 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     heavno = ds_contact%sdcont_solv(1:14)//'.XFPL'
     hea_fa = ds_contact%sdcont_solv(1:14)//'.XFHF'
     hea_no = ds_contact%sdcont_solv(1:14)//'.XFHN'
-    basefo  = ds_contact%sdcont_solv(1:14)//'.XFBS'
-    lnno  = ds_contact%sdcont_solv(1:14)//'.XFLN'
-    stano  = ds_contact%sdcont_solv(1:14)//'.XFST'
+    basefo = ds_contact%sdcont_solv(1:14)//'.XFBS'
+    lnno = ds_contact%sdcont_solv(1:14)//'.XFLN'
+    stano = ds_contact%sdcont_solv(1:14)//'.XFST'
     option = 'XCVBCA'
     debug = nivdbg .ge. 2
 !
@@ -116,7 +116,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     cindco = '&&XMTBCA.INDCO'
 !
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    ntpc = cfdisi(ds_contact%sdcont_defi, 'NTPC')
 !
 ! --- INITIALISATION DE L'INDICATEUR DE CONVERGENCE DE LA BOUCLE
 ! --- SUR LES CONTRAINTES ACTIVES (CONVERGENCE <=> INCOCA =1)
@@ -126,7 +126,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
@@ -146,13 +146,13 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     lpain(7) = 'PHEA_FA'
     lchin(7) = hea_fa
     lpain(8) = 'PBASLOC'
-    lchin(8) =  basefo
+    lchin(8) = basefo
     lpain(9) = 'PLSNGG'
-    lchin(9) =  lnno
+    lchin(9) = lnno
     lpain(10) = 'PSTANO'
-    lchin(10) =  stano
-    lpain(11)  = 'PMATERC'
-    lchin(11)  = ds_material%mateco(1:19)
+    lchin(10) = stano
+    lpain(11) = 'PMATERC'
+    lchin(11) = ds_material%mateco(1:19)
 
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
@@ -162,14 +162,14 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --- APPEL A CALCUL
 !
-    call calcul('S', option, ligrxf, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrxf, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
 ! --- ON RECUPÈRE LES VARIABLES CHANGEMENT DE STATUT/STATUT/MEMCO
 !
@@ -204,7 +204,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
                 nel2 = celd(debgr2+1)
                 call jeveuo(jexnum(ligrxf//'.LIEL', igr2), 'L', jad2)
                 do iel2 = 1, nel2
-                    adiel2=celd(debgr2+4+4*(iel2-1)+4)
+                    adiel2 = celd(debgr2+4+4*(iel2-1)+4)
                     ipc2 = -zi(jad2-1+iel2)
                     if (zr(jtabf+ztabf*(ipc2-1)+4) .ne. group) goto 40
                     if (zr(jtabf+ztabf*(ipc2-1)+27) .eq. 0) goto 40
@@ -217,17 +217,17 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
                         if (zr(jtabf+ztabf*(ipc2-1)+4) .eq. group) then
                             if (zr(jtabf+ztabf*(ipc2-1)+5) .eq. naret2) then
                                 zr(jtabf+ztabf*(ipc2-1)+27) = 0
-                                elseif (zr(jtabf+ztabf*(ipc2-1)+5)&
-                            .eq.naret) then
+                            elseif (zr(jtabf+ztabf*(ipc2-1)+5) &
+                                    .eq. naret) then
                                 zr(jtabf+ztabf*(ipc2-1)+27) = 1
-                            endif
-                        endif
+                            end if
+                        end if
                     end do
                     goto 20
                 end do
 40              continue
             end do
-20      continue
+20          continue
         end do
     end do
 !
@@ -243,7 +243,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             ipc = -zi(jad-1+iel)
             zr(jtabf+ztabf*(ipc-1)+13) = celv(adiel+1)
             zr(jtabf+ztabf*(ipc-1)+28) = celv(adiel+2)
-            sinco = sinco + celv(adiel)
+            sinco = sinco+celv(adiel)
         end do
     end do
 !
@@ -252,7 +252,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     if (sinco .gt. 0) then
         loop_cont_conv = ASTER_FALSE
-    endif
+    end if
 !
 ! - Set loop values
 !
@@ -260,7 +260,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
     else
         call mmbouc(ds_contact, 'Cont', 'Set_Divergence')
-    endif
+    end if
 !
     call jedema()
 end subroutine

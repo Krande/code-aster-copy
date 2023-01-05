@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
-                  lcmin, cnsvt, cnsvn, vpoint, cnsbl,&
-                  cnsdis, disfr, cnsbet, listp, damax,&
-                  locdom, rdimp, rdtor, delta, ucnslt,&
+subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
+                  lcmin, cnsvt, cnsvn, vpoint, cnsbl, &
+                  cnsdis, disfr, cnsbet, listp, damax, &
+                  locdom, rdimp, rdtor, delta, ucnslt, &
                   ucnsln)
 !
 ! aslint: disable=W1501,W1504
@@ -129,8 +129,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     real(kind=8) :: ni(3), ti(3), bi(3), nj(3), tj(3), bj(3), rij(3, 3), tpl(3)
     real(kind=8) :: npl(3), bpl(3), axeul(3), calfa, salfa, modvec
     real(kind=8) :: t0, t180, alfa
-    parameter      (t0 = 0.5d0/180.d0*3.1415d0)
-    parameter      (t180 = 179.5d0/180.d0*3.1415d0)
+    parameter(t0=0.5d0/180.d0*3.1415d0)
+    parameter(t180=179.5d0/180.d0*3.1415d0)
     aster_logical :: endpnt
 !
 !     MULTIPLE CRACK FRONTS
@@ -138,7 +138,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !     BISECTION METHOD AND VELOCITY INTERPOLATION
     real(kind=8) :: tolld, dprec, ds, vp, betap
-    real(kind=8) :: ptang(3,3), sens, npp(3), tpp(3), norme
+    real(kind=8) :: ptang(3, 3), sens, npp(3), tpp(3), norme
     integer :: maxite, jlimsx, jlimdx
     real(kind=8), pointer :: euler(:) => null()
     real(kind=8), pointer :: vn_propa_ff(:) => null()
@@ -153,8 +153,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     real(kind=8), pointer :: nlst(:) => null()
 !
 !   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
-    real(kind=8), parameter :: atol=1.e-12
-    real(kind=8), parameter :: rtol=1.e-12
+    real(kind=8), parameter :: atol = 1.e-12
+    real(kind=8), parameter :: rtol = 1.e-12
     aster_logical :: near
 !
 !-----------------------------------------------------------------------
@@ -206,15 +206,15 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     call jeexin(fiss//'.GRI.MAILLA', ibid)
     if (ibid .eq. 0) then
 !        NO AUXILIARY GRID USED
-        grille=.false.
+        grille = .false.
     else
-        grille=.true.
-    endif
+        grille = .true.
+    end if
 !
 !      On utilise un fond virtuel si une grille auxilliaire
 !      est utilisee et que l on travaille sur un modele 3D
 !
-    if ((grille) .and. (ndim.eq.3) .and. (method.eq.'UPWIND')) then
+    if ((grille) .and. (ndim .eq. 3) .and. (method .eq. 'UPWIND')) then
 !
         fvirtu = .true.
 !
@@ -224,11 +224,11 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !     Creation de vecteur ou sont stocke les coordonnees et les
 !     bases associees du font de fissure virtuel
-        covir='&&XPRVIT.COVIR'
-        bavir='&&XPRVIT.BAVIR'
-        vitvir='&&XPRVIT.VITVIR'
-        angvir='&&XPRVIT.ANGVIR'
-        numvir='&&XPRVIT.NUMVIR'
+        covir = '&&XPRVIT.COVIR'
+        bavir = '&&XPRVIT.BAVIR'
+        vitvir = '&&XPRVIT.VITVIR'
+        angvir = '&&XPRVIT.ANGVIR'
+        numvir = '&&XPRVIT.NUMVIR'
 !
         call wkvect(covir, 'V V R8', 4*(nbptff+2*numfon), cfv)
         call wkvect(bavir, 'V V R8', 6*(nbptff+2*numfon), bfv)
@@ -238,65 +238,65 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !      OPERATION SUR RADIMP ET RADTOR
         if (radimp .gt. 0.d0) then
-            radimp=sqrt(radimp)
-        endif
+            radimp = sqrt(radimp)
+        end if
         if (radtor .gt. 0.d0) then
-            radtor=sqrt(radtor)
-        endif
+            radtor = sqrt(radtor)
+        end if
 !
 !
         if (numfon .gt. 1) then
 !        ON VERIFIE QUE LE FOND DE FISSURE EST BIEN ORIENTE
 !        SINON ON MODIFIE LA NUMEROTATION DU FOND DE FISSURE
             call xprfon(fiss, numfon, nvit, nbeta)
-        endif
+        end if
 !
 !       DEFINITION DU FOND VIRTUEL
-        call xprvir(fiss, covir, bavir, vitvir, angvir,&
-                    numvir, numfon, nvit, nbeta, nbptff,&
+        call xprvir(fiss, covir, bavir, vitvir, angvir, &
+                    numvir, numfon, nvit, nbeta, nbptff, &
                     radimp, radtor, damax, noma, locdom)
 !
 !       ON POINTE LES ROUTINES DESTINEES AU FRONT PHYSIQUE
 !       SUR LE FRONT VIRTUEL
-        jfonf=cfv
-        jbasef=bfv
-        jvit=vfv
-        jbeta=afv
-        jfmult=nfv
-    endif
+        jfonf = cfv
+        jbasef = bfv
+        jvit = vfv
+        jbeta = afv
+        jfmult = nfv
+    end if
 !
 !     CREATE THE CHAMP_NO_S WHERE THE LOCAL REFERENCE SYSTEM IS
 !     STORED FOR EACH NODE IN THE MESH.
 !     CREATE ALSO THE CHAMP_NO_S WHERE THE DISTANCE BETWEEN EACH
 !     NODE AND ITS PROJECTION ON THE CRACK FRONT IS STORED.
-    typcmp(1)='X1'
-    typcmp(2)='X2'
-    typcmp(3)='X3'
-    typcmp(4)='X4'
-    typcmp(5)='X5'
-    typcmp(6)='X6'
+    typcmp(1) = 'X1'
+    typcmp(2) = 'X2'
+    typcmp(3) = 'X3'
+    typcmp(4) = 'X4'
+    typcmp(5) = 'X5'
+    typcmp(6) = 'X6'
     if (ndim .eq. 2) then
 !        2D CASE: EACH VECTOR IN THE FIELD HAS 2 COMPONENTS ONLY
-        call cnscre(noma, 'NEUT_R', 4, typcmp, 'V',&
+        call cnscre(noma, 'NEUT_R', 4, typcmp, 'V', &
                     cnsbl)
-        call cnscre(noma, 'NEUT_R', 4, typcmp, 'V',&
+        call cnscre(noma, 'NEUT_R', 4, typcmp, 'V', &
                     cnsdis)
     else
 !        3D CASE: EACH VECTOR IN THE FIELD HAS 3 COMPONENTS
-        call cnscre(noma, 'NEUT_R', 6, typcmp, 'V',&
+        call cnscre(noma, 'NEUT_R', 6, typcmp, 'V', &
                     cnsbl)
-        call cnscre(noma, 'NEUT_R', 6, typcmp, 'V',&
+        call cnscre(noma, 'NEUT_R', 6, typcmp, 'V', &
                     cnsdis)
-    endif
+    end if
 !
     call jeveuo(cnsbl//'.CNSV', 'E', vr=bl)
     call jeveuo(cnsdis//'.CNSV', 'E', vr=dis)
 !
 !     CREATION DES CHAM_NO_S CONTENANT LES COMPOSANTES DU VECTEUR V
 !     (VT & VN)
-    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
+    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V', &
                 cnsvt)
-    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
+    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V', &
                 cnsvn)
 !
 !     CREATE THE VECTOR WHERE THE MODULE OF THE PROPAGATION SPEED IS
@@ -352,7 +352,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !    Initialisation du vecteur delta
     do i = 1, 2*nbno
-        zr(jdelta+i-1)=0.d0
+        zr(jdelta+i-1) = 0.d0
     end do
 !
 ! ***************************************************************
@@ -371,8 +371,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        THE ACTUAL POINT ON THE CRACK FRONT
 !        ***************************************************************
 !
-        vt_propa_ff(i)=zr(jvit-1+i)*cos(zr(jbeta-1+i))
-        vn_propa_ff(i)=zr(jvit-1+i)*sin(zr(jbeta-1+i))
+        vt_propa_ff(i) = zr(jvit-1+i)*cos(zr(jbeta-1+i))
+        vn_propa_ff(i) = zr(jvit-1+i)*sin(zr(jbeta-1+i))
 !
 !        ***************************************************************
 !        RECALCULATE THE LOCAL REFERENCE SYSTEM IN THE ACTUAL CRACK
@@ -398,7 +398,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             t(1) = zr(jbasef-1+2*ndim*(i-1)+4)
             t(2) = zr(jbasef-1+2*ndim*(i-1)+5)
             t(3) = zr(jbasef-1+2*ndim*(i-1)+6)
-        endif
+        end if
 !
 !        CALCULATE THE BINORMAL AXIS AS THE VECTORIAL PRODUCT BETWEEN
 !        THE TANGENTIAL AND NORMAL AXES. THIS AXIS IS TANGENT TO THE
@@ -420,7 +420,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        THAN ZERO... EXCEPT IN THE CASE THE NORMAL AND TANGENTIAL AXIS
 !        ARE PARALLEL! IN THIS CASE SOMETHING NASTY HAS HAPPENED TO THE
 !        LEVEL SETS (OUTSIDE THIS SUBROUTINE)!
-        ASSERT(mtast.gt.0.d0)
+        ASSERT(mtast .gt. 0.d0)
 !
 !        CALCULATE THE UNIT VECTOR FOR THE NEW TANGENTIAL AXIS AND STORE
 !        IT
@@ -431,7 +431,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             zr(jbasef-1+2*ndim*(i-1)+4) = tast(1)/mtast
             zr(jbasef-1+2*ndim*(i-1)+5) = tast(2)/mtast
             zr(jbasef-1+2*ndim*(i-1)+6) = tast(3)/mtast
-        endif
+        end if
 !
 !        CALCULATE THE UNIT VECTOR FOR THE NORMAL AXIS AND STORE IT
         mtast = (n(1)**2.d0+n(2)**2.d0+n(3)**2.d0)**0.5d0
@@ -442,7 +442,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             zr(jbasef-1+2*ndim*(i-1)+1) = n(1)/mtast
             zr(jbasef-1+2*ndim*(i-1)+2) = n(2)/mtast
             zr(jbasef-1+2*ndim*(i-1)+3) = n(3)/mtast
-        endif
+        end if
 !
 !        ***************************************************************
 !        EVALUATE THE PROPAGATION SPEED VECTOR V AT THE POINT
@@ -451,25 +451,25 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        CALCULATE THE MODULE OF THE NORMAL AND TANGENTIAL AXES FOR THE
 !        LOCAL REFERENCE SYSTEM AT THE POINT
         if (ndim .eq. 2) then
-            modnor = sqrt(zr( jbasef-1+2*ndim*(i-1)+1)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+2 )**2.d0&
-                     )
-            modtan = sqrt(zr( jbasef-1+2*ndim*(i-1)+3)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+4 )**2.d0&
-                     )
+            modnor = sqrt(zr(jbasef-1+2*ndim*(i-1)+1)**2.d0+zr(jbasef-1+2*ndim*(i-1)+2)**2.d0 &
+                          )
+            modtan = sqrt(zr(jbasef-1+2*ndim*(i-1)+3)**2.d0+zr(jbasef-1+2*ndim*(i-1)+4)**2.d0 &
+                          )
         else
-            modnor = sqrt(zr(jbasef-1+2*ndim*(i-1)+1)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+2)**2.d0+&
-                     &zr(jbasef-1+2*ndim*(i-1)+ 3)**2.d0)
-            modtan = sqrt(zr(jbasef-1+2*ndim*(i-1)+4)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+5)**2.d0+&
-                     &zr(jbasef-1+2*ndim*(i-1)+ 6)**2.d0)
-        endif
+            modnor = sqrt(zr(jbasef-1+2*ndim*(i-1)+1)**2.d0+zr(jbasef-1+2*ndim*(i-1)+2)**2.d0+&
+                     &zr(jbasef-1+2*ndim*(i-1)+3)**2.d0)
+            modtan = sqrt(zr(jbasef-1+2*ndim*(i-1)+4)**2.d0+zr(jbasef-1+2*ndim*(i-1)+5)**2.d0+&
+                     &zr(jbasef-1+2*ndim*(i-1)+6)**2.d0)
+        end if
 !
-        ASSERT(modnor.gt.0.d0)
-        ASSERT(modtan.gt.0.d0)
+        ASSERT(modnor .gt. 0.d0)
+        ASSERT(modtan .gt. 0.d0)
 !
 !        CALCULATE THE PROPAGATION SPEED VECTOR V IN THE GLOBAL
 !        REFERENCE SYSTEM USED FOR THE MESH
         do j = 1, ndim
-            v_propa_ff(ndim*(i-1)+j) = vn_propa_ff(i)*zr(jbasef-1+2* ndim*(i-1)+j)/modnor+ vt_pro&
-                                       &pa_ff(i)*zr(jbasef-1+2*ndim*(i- 1)+j+ndim)/modtan
+            v_propa_ff(ndim*(i-1)+j) = vn_propa_ff(i)*zr(jbasef-1+2*ndim*(i-1)+j)/modnor+vt_pro&
+                                       &pa_ff(i)*zr(jbasef-1+2*ndim*(i-1)+j+ndim)/modtan
         end do
 !
 !        ***************************************************************
@@ -478,7 +478,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        ACTUAL POINT
 !        ***************************************************************
 !
-        if ((ndim.eq.3) .and. (i.gt.1)) then
+        if ((ndim .eq. 3) .and. (i .gt. 1)) then
 !
 !           RETRIEVE THE LOCAL BASE FOR THE PREVIOUS POINT
             ni(1) = zr(jbasef-1+2*ndim*(i-1-1)+1)
@@ -512,33 +512,33 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             bj(3) = tj(1)*nj(2)-tj(2)*nj(1)
 !
 !           CALCULATE THE ROTATION MATRIX
-            rij(1,1) = tj(1)*ti(1)+tj(2)*ti(2)+tj(3)*ti(3)
-            rij(2,1) = tj(1)*ni(1)+tj(2)*ni(2)+tj(3)*ni(3)
-            rij(3,1) = tj(1)*bi(1)+tj(2)*bi(2)+tj(3)*bi(3)
+            rij(1, 1) = tj(1)*ti(1)+tj(2)*ti(2)+tj(3)*ti(3)
+            rij(2, 1) = tj(1)*ni(1)+tj(2)*ni(2)+tj(3)*ni(3)
+            rij(3, 1) = tj(1)*bi(1)+tj(2)*bi(2)+tj(3)*bi(3)
 !
-            rij(1,2) = nj(1)*ti(1)+nj(2)*ti(2)+nj(3)*ti(3)
-            rij(2,2) = nj(1)*ni(1)+nj(2)*ni(2)+nj(3)*ni(3)
-            rij(3,2) = nj(1)*bi(1)+nj(2)*bi(2)+nj(3)*bi(3)
+            rij(1, 2) = nj(1)*ti(1)+nj(2)*ti(2)+nj(3)*ti(3)
+            rij(2, 2) = nj(1)*ni(1)+nj(2)*ni(2)+nj(3)*ni(3)
+            rij(3, 2) = nj(1)*bi(1)+nj(2)*bi(2)+nj(3)*bi(3)
 !
-            rij(1,3) = bj(1)*ti(1)+bj(2)*ti(2)+bj(3)*ti(3)
-            rij(2,3) = bj(1)*ni(1)+bj(2)*ni(2)+bj(3)*ni(3)
-            rij(3,3) = bj(1)*bi(1)+bj(2)*bi(2)+bj(3)*bi(3)
+            rij(1, 3) = bj(1)*ti(1)+bj(2)*ti(2)+bj(3)*ti(3)
+            rij(2, 3) = bj(1)*ni(1)+bj(2)*ni(2)+bj(3)*ni(3)
+            rij(3, 3) = bj(1)*bi(1)+bj(2)*bi(2)+bj(3)*bi(3)
 !
 !           CALCULATE THE EULER ANGLE
-            alfa = 0.5d0*(rij(1,1)+rij(2,2)+rij(3,3)-1)
-            if (alfa .gt. 1.d0) alfa=1.d0
-            if (alfa .lt. -1.d0) alfa=-1.d0
+            alfa = 0.5d0*(rij(1, 1)+rij(2, 2)+rij(3, 3)-1)
+            if (alfa .gt. 1.d0) alfa = 1.d0
+            if (alfa .lt. -1.d0) alfa = -1.d0
             alfa = acos(alfa)
             euler(7*(i-1-1)+1) = alfa
 !
 !           CALCULATE THE EULER VECTOR
-            if ((alfa.gt.t0) .and. (alfa.lt.t180)) then
-                euler(7*(i-1-1)+2) = 0.5d0*(rij(2,3)-rij(3,2))/ sin(alfa)
-                euler(7*(i-1-1)+3) = 0.5d0*(rij(3,1)-rij(1,3))/ sin(alfa)
-                euler(7*(i-1-1)+4) = 0.5d0*(rij(1,2)-rij(2,1))/ sin(alfa)
-            endif
+            if ((alfa .gt. t0) .and. (alfa .lt. t180)) then
+                euler(7*(i-1-1)+2) = 0.5d0*(rij(2, 3)-rij(3, 2))/sin(alfa)
+                euler(7*(i-1-1)+3) = 0.5d0*(rij(3, 1)-rij(1, 3))/sin(alfa)
+                euler(7*(i-1-1)+4) = 0.5d0*(rij(1, 2)-rij(2, 1))/sin(alfa)
+            end if
 !
-        endif
+        end if
 !
     end do
 
@@ -567,9 +567,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     do i = 1, nbno
 !
 !        COORD DU NOEUD M DU MAILLAGE
-        xm=vale((i-1)*3+1)
-        ym=vale((i-1)*3+2)
-        zm=vale((i-1)*3+3)
+        xm = vale((i-1)*3+1)
+        ym = vale((i-1)*3+2)
+        zm = vale((i-1)*3+3)
 !
 !        THE PROJ(V)=V IS NEEDED ONLY FOR THE 3D CASE
         if (ndim .eq. 3) then
@@ -580,14 +580,14 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !          BOUCLE SUR PT DE FONFIS
             do j = 1, nbptff-1
 !
-                if (.not.fvirtu) then
+                if (.not. fvirtu) then
 !               CHECK IF THE CURRENT SEGMENT ON THE FRONT IS OUTSIDE
 !               THE MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE
 !               FORMING THE FRONT)
                     do fon = 1, numfon
                         if (j .eq. zi(jfmult-1+2*fon)) goto 210
                     end do
-                endif
+                end if
 !
 !            COORD PT I, ET J
                 xi1 = zr(jfonf-1+4*(j-1)+1)
@@ -605,8 +605,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 zim = zm-zi1
 !
 !            PARAM S (PRODUIT SCALAIRE...)
-                s = xij*xim + yij*yim + zij*zim
-                norm2 = xij*xij + yij*yij + zij*zij
+                s = xij*xim+yij*yim+zij*zim
+                norm2 = xij*xij+yij*yij+zij*zij
                 s = s/norm2
 !            SI N=P(M) SORT DU SEGMENT
                 if ((s-1) .ge. eps) s = 1.d0
@@ -620,7 +620,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 d = (xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm)
 
 !            d est-elle egale a dmin ?
-                near = abs(d-dmin) .le. (atol + dmin*rtol)
+                near = abs(d-dmin) .le. (atol+dmin*rtol)
 
                 if (d .lt. dmin .and. .not. near) then
                     dmin = d
@@ -630,7 +630,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     dis(3*(i-1)+1) = xm-xn
                     dis(3*(i-1)+2) = ym-yn
                     dis(3*(i-1)+3) = zm-zn
-                endif
+                end if
 210             continue
             end do
 !
@@ -646,10 +646,10 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 zi1 = zr(jfonf-1+4*(j-1)+3)
 !
 !               SAVE CPU TIME: THE SQUARE OF THE DISTANCE IS EVALUATED!
-                d = (xi1-xm)*(xi1-xm)+(yi1-ym)*(yi1-ym)+ (zi1-zm)*( zi1-zm)
+                d = (xi1-xm)*(xi1-xm)+(yi1-ym)*(yi1-ym)+(zi1-zm)*(zi1-zm)
 
 !               d est-elle egale a dmin ?
-                near = abs(d-dmin) .le. (atol + dmin*rtol)
+                near = abs(d-dmin) .le. (atol+dmin*rtol)
 
                 if (d .lt. dmin .and. .not. near) then
                     dmin = d
@@ -662,11 +662,11 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     zr(jlistp-1+3*(i-1)+1) = xi1
                     zr(jlistp-1+3*(i-1)+2) = yi1
                     zr(jlistp-1+3*(i-1)+3) = zi1
-                endif
+                end if
 !
             end do
 !
-        endif
+        end if
 !
 !        ***************************************************************
 !        SMOOTH THE PROJECTION OF THE VELOCITY
@@ -675,31 +675,31 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         if (ndim .eq. 3) then
 !
 !           MAXIMUM NUMBER OF ITERATIONS
-            maxite=25
+            maxite = 25
 !           INITIAL VALUE FOR DS
-            ds= 2.0d-1
+            ds = 2.0d-1
 !           TOLERANCE TO CHECK THE CONVERGENCE
             tolld = 1.0d-2*lcmin
 !           POINT PROJECTED ON ONE END OF THE FRONT FLAG
             endpnt = .false.
 !
 !           CALCULATE THE LIMITS FOR JMIN ON THE ACTUAL CRACK FRONT
-            if (.not.fvirtu) then
+            if (.not. fvirtu) then
                 jlimsx = 0
                 jlimdx = 0
                 do fon = 1, numfon
-                    if ((jmin.ge.zi(jfmult-1+2*fon-1)) .and. ( jmin.le.zi(jfmult-1+2*fon))) then
+                    if ((jmin .ge. zi(jfmult-1+2*fon-1)) .and. (jmin .le. zi(jfmult-1+2*fon))) then
                         jlimsx = zi(jfmult-1+2*fon-1)
                         jlimdx = zi(jfmult-1+2*fon)-1
                         goto 204
-                    endif
+                    end if
                 end do
             else
                 jlimsx = 1
                 jlimdx = zi(jfmult-1+2*numfon)-1
-            endif
+            end if
 !
-            ASSERT(2.gt.1)
+            ASSERT(2 .gt. 1)
 !
 204         continue
 !
@@ -721,17 +721,17 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 zij = zj1-zi1
 !
 !              RETREIVE THE LENGTH OF THE CRACK FRONT SEGMENT
-                norm2 = sqrt(xij*xij + yij*yij + zij*zij)
+                norm2 = sqrt(xij*xij+yij*yij+zij*zij)
 !
 !              COORD DU NOEUD M DU MAILLAGE
-                xm=vale((i-1)*3+1)
-                ym=vale((i-1)*3+2)
-                zm=vale((i-1)*3+3)
+                xm = vale((i-1)*3+1)
+                ym = vale((i-1)*3+2)
+                zm = vale((i-1)*3+3)
 !
 !              CALCULATE THE EULER ANGLE FOR THE NODE
                 alfa = euler(7*(jmin-1)+1)*smin
 !
-                if ((alfa.gt.t0) .and. (alfa.lt.t180)) then
+                if ((alfa .gt. t0) .and. (alfa .lt. t180)) then
 !
 !                 CALCULATE COS(ALFA) AND SIN(ALFA) TO SPEED UP THE CODE
                     calfa = cos(alfa)
@@ -757,8 +757,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !                 CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO
 !                 THELOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT
 !                 (SMIN=0)
-                    bpl(1) = (1-calfa)*axeul(1)*axeul(3)-axeul(2)* salfa
-                    bpl(2) = (1-calfa)*axeul(2)*axeul(3)+axeul(1)* salfa
+                    bpl(1) = (1-calfa)*axeul(1)*axeul(3)-axeul(2)*salfa
+                    bpl(2) = (1-calfa)*axeul(2)*axeul(3)+axeul(1)*salfa
                     bpl(3) = calfa+(1-calfa)*axeul(3)**2
 !
 !                 CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO
@@ -770,7 +770,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !                 CALCULATE THE UNIT VECTOR FOR THE NORMAL AXIS
                     modvec = (b(1)**2+b(2)**2+b(3)**2)**0.5d0
 !
-                    ASSERT(modvec.gt.r8prem())
+                    ASSERT(modvec .gt. r8prem())
 !
                     b(1) = b(1)/modvec
                     b(2) = b(2)/modvec
@@ -782,15 +782,15 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                         b(1) = euler(7*(jmin-1)+5)
                         b(2) = euler(7*(jmin-1)+6)
                         b(3) = euler(7*(jmin-1)+7)
-                    endif
+                    end if
 !
                     if (alfa .gt. t180) then
                         b(1) = euler(7*(jmin-1+1)+5)
                         b(2) = euler(7*(jmin-1+1)+6)
                         b(3) = euler(7*(jmin-1+1)+7)
-                    endif
+                    end if
 !
-                endif
+                end if
 !
 !              COORD DE N
                 xn = smin*xij+xi1
@@ -798,53 +798,53 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 zn = smin*zij+zi1
 !
 !              DISTANCE OF POINT M TO THE PLANE N-T
-                d=(xm-xn)*b(1)+(ym-yn)*b(2)+(zm-zn)*b(3)
+                d = (xm-xn)*b(1)+(ym-yn)*b(2)+(zm-zn)*b(3)
 !
                 if (abs(d) .lt. tolld) goto 207
 !
 !              INJECTION OF THE GOOD DPREC FOR THE FIRST ITERATION
                 if (j .eq. 1) then
-                    ds=ds*sign(1.d0,d)* sign(1.d0,(b(1)*xij+b(2)*yij+&
-                    b(3)*zij))
-                    dprec=d
-                endif
+                    ds = ds*sign(1.d0, d)*sign(1.d0, (b(1)*xij+b(2)*yij+ &
+                                                      b(3)*zij))
+                    dprec = d
+                end if
 !
 !              CHANGE IN THE SEARCH DIRECTION
-                if ((d*dprec) .lt. 0.d0) ds=ds*(-0.5d0)
+                if ((d*dprec) .lt. 0.d0) ds = ds*(-0.5d0)
 !
 !              UPDATE THE PROJECTED POINT POSITION ON THE FRONT
-                smin=smin+ds
+                smin = smin+ds
 !
 !              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
 !              smin est-il egal a 0 ?
-               near = abs(smin) .le. atol
+                near = abs(smin) .le. atol
 
-               if (smin .lt. 0.d0 .and. .not. near) then
-                   if (jmin.gt.jlimsx) then
-                       jmin=jmin-1
-                       smin=1.d0
-                   else if (jmin.eq.jlimsx) then
-                       smin=0.d0
-                       endpnt = .true.
-                       goto 207
-                   endif
-                endif
+                if (smin .lt. 0.d0 .and. .not. near) then
+                    if (jmin .gt. jlimsx) then
+                        jmin = jmin-1
+                        smin = 1.d0
+                    else if (jmin .eq. jlimsx) then
+                        smin = 0.d0
+                        endpnt = .true.
+                        goto 207
+                    end if
+                end if
 
 !               smin est-il egal a 1 ?
                 near = abs(smin-1.d0) .le. atol
 
                 if (smin .gt. 1.d0 .and. .not. near) then
-                    if (jmin.lt.jlimdx) then
-                        jmin=jmin+1
-                        smin=0.d0
-                    else if (jmin.eq.jlimdx) then
-                        smin=1.d0
+                    if (jmin .lt. jlimdx) then
+                        jmin = jmin+1
+                        smin = 0.d0
+                    else if (jmin .eq. jlimdx) then
+                        smin = 1.d0
                         endpnt = .true.
                         goto 207
-                    endif
-                endif
+                    end if
+                end if
 !
-                dprec=d
+                dprec = d
 !
             end do
 !
@@ -871,19 +871,19 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !          SI ON UTILISE LA METHODE UPWIND AVEC UNE GRILLE ET QU'IL
 !          Y A PLUSIEURS FOND DE FISSURE, ON REACALCULE LES
 !          LEVELS SETS
-            if (fvirtu .and. (numfon.gt.1)) then
-                fonvir=.false.
+            if (fvirtu .and. (numfon .gt. 1)) then
+                fonvir = .false.
 !
 !        1: ON DETERMINE SI LE NOEUDS EST PROJETE SUR UN SEGMENT DU
 !            FRONT VIRTUEL A L'INTERIEUR D'UN TROU (SEGMENT DU FRONT
 !            VIRTUEL DE TYPES 2 ET 3)
 !
                 do k = 1, (numfon-1)
-                    if ((jmin.eq.(zi(nfv+2*k-1)-1)) .or. (jmin.eq.(zi( nfv+2*k)))) then
-                        fonvir=.true.
+                    if ((jmin .eq. (zi(nfv+2*k-1)-1)) .or. (jmin .eq. (zi(nfv+2*k)))) then
+                        fonvir = .true.
                     else
                         goto 861
-                    endif
+                    end if
 861                 continue
                 end do
 !
@@ -891,23 +891,23 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
                 if (fonvir) then
 !          CALCUL DE LA VALEUR DE LA LEVEL SET NORMALE RECHERCHEE
-                    lsnth(1)= dis(3*(i-1)+1)*zr(jbasef+6*(jmin-&
-                    1)-1+1) +dis(3*(i-1)+2)*zr(jbasef+6*(jmin-1)&
-                    -1+2) +dis(3*(i-1)+3)*zr(jbasef+6*(jmin-1)-&
-                    1+3)
+                    lsnth(1) = dis(3*(i-1)+1)*zr(jbasef+6*(jmin- &
+                                                       1)-1+1)+dis(3*(i-1)+2)*zr(jbasef+6*(jmin-1) &
+                                                        -1+2)+dis(3*(i-1)+3)*zr(jbasef+6*(jmin-1)- &
+                                                                                                1+3)
 !
 !          CALCUL DE LA VALEUR DE LA LEVEL SET TANGENTEE RECHERCHEE
-                    lstth(1)= dis(3*(i-1)+1)*zr(jbasef+6*&
-                    (jmin-1)-1+4)+dis(3*(i-1)+2)*zr(jbasef+6*(&
-                    jmin-1)-1+5) +dis(3*(i-1)+3)*zr(jbasef+6*(&
-                    jmin-1)-1+6)
+                    lstth(1) = dis(3*(i-1)+1)*zr(jbasef+6* &
+                                                 (jmin-1)-1+4)+dis(3*(i-1)+2)*zr(jbasef+6*( &
+                                                         jmin-1)-1+5)+dis(3*(i-1)+3)*zr(jbasef+6*( &
+                                                                                        jmin-1)-1+6)
 !
 !          CALCUL DE LA CORRECTION A APPORTER
-                    zr(jdelta+2*(i-1))= lsnth(1)-nlsn(i)
-                    zr(jdelta+2*(i-1)+1)= lstth(1)-nlst(i)
-                endif
+                    zr(jdelta+2*(i-1)) = lsnth(1)-nlsn(i)
+                    zr(jdelta+2*(i-1)+1) = lstth(1)-nlst(i)
+                end if
 !
-            endif
+            end if
 !
 !           STORE THE DISTANCE VECTOR
 !
@@ -919,11 +919,11 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 if (jmin .eq. 1) then
 !           Le projete est sur un segment virtuel du fond de
 !           fissure (segment1)
-                    pi(1)= xm-zr(cfv+4-1+1)
+                    pi(1) = xm-zr(cfv+4-1+1)
                     pi(2) = ym-zr(cfv+4-1+2)
                     pi(3) = zm-zr(cfv+4-1+3)
                     zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
-                else if (jmin.eq.(nbptff-1)) then
+                else if (jmin .eq. (nbptff-1)) then
                     pi(1) = xm-zr(cfv+4*(nbptff-2)-1+1)
                     pi(2) = ym-zr(cfv+4*(nbptff-2)-1+2)
                     pi(3) = zm-zr(cfv+4*(nbptff-2)-1+3)
@@ -935,45 +935,45 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                             pi(1) = xm-zr(cfv-1+4*(jmin-1)+1)
                             pi(2) = ym-zr(cfv-1+4*(jmin-1)+2)
                             pi(3) = zm-zr(cfv-1+4*(jmin-1)+3)
-                            zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)** 2
+                            zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
                             goto 61
-                        else if ((jmin).eq.(zi(nfv+2*k))) then
+                        else if ((jmin) .eq. (zi(nfv+2*k))) then
 !              Le point est projete sur un segment virtuel de type 3
                             pi(1) = xm-zr(cfv-1+4*(jmin-0)+1)
                             pi(2) = ym-zr(cfv-1+4*(jmin-0)+2)
                             pi(3) = zm-zr(cfv-1+4*(jmin-0)+3)
-                            zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)** 2
-                        else if ((jmin).eq.(zi(nfv+2*k-1))) then
+                            zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                        else if ((jmin) .eq. (zi(nfv+2*k-1))) then
 !              Le point est projete sur un segment virtuel de type 2
-                            normkl=(xm-zr(cfv-1+4*(jmin+1)+1))**2&
-                            +(ym-zr(cfv-1+4*(jmin+1)+2))**2 +(zm-zr(&
-                            cfv-1+4*(jmin+1)+3))**2
+                            normkl = (xm-zr(cfv-1+4*(jmin+1)+1))**2 &
+                                     +(ym-zr(cfv-1+4*(jmin+1)+2))**2+(zm-zr( &
+                                                                      cfv-1+4*(jmin+1)+3))**2
 !
-                            normij=(xm-zr(cfv-1+4*(jmin-2)+1))**2&
-                            +(ym-zr(cfv-1+4*(jmin-2)+2))**2 +(zm-zr(&
-                            cfv-1+4*(jmin-2)+3))**2
+                            normij = (xm-zr(cfv-1+4*(jmin-2)+1))**2 &
+                                     +(ym-zr(cfv-1+4*(jmin-2)+2))**2+(zm-zr( &
+                                                                      cfv-1+4*(jmin-2)+3))**2
 !
                             if (normkl .ge. normij) then
 !                   On est plus proche du fond de fissure a gauche
                                 pi(1) = xm-zr(cfv-1+4*(jmin-2)+1)
                                 pi(2) = ym-zr(cfv-1+4*(jmin-2)+2)
                                 pi(3) = zm-zr(cfv-1+4*(jmin-2)+3)
-                                zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi( 3)**2
+                                zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
                             else
 !                   On est plus proche du fond de fissure a droite
                                 pi(1) = xm-zr(cfv-1+4*(jmin+1)+1)
                                 pi(2) = ym-zr(cfv-1+4*(jmin+1)+2)
                                 pi(3) = zm-zr(cfv-1+4*(jmin+1)+3)
-                                zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi( 3)**2
-                            endif
+                                zr(jdisfr+i-1) = pi(1)**2+pi(2)**2+pi(3)**2
+                            end if
                             goto 61
-                        endif
- 61                     continue
+                        end if
+61                      continue
                     end do
-                endif
-            endif
+                end if
+            end if
 !
-        endif
+        end if
 !
 !        ***************************************************************
 !        EVALUATE THE LOCAL REFERENCE SYSTEM IN THE NODE
@@ -987,8 +987,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             bl(2*ndim*(i-1)+1) = zr(jbasef-1+2*ndim*(jmin-1)+1)
             bl(2*ndim*(i-1)+2) = zr(jbasef-1+2*ndim*(jmin-1)+2)
 !           T-AXIS
-            bl(2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+1)
-            bl(2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+2)
+            bl(2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1)+ndim+1)
+            bl(2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1)+ndim+2)
 
 !
         else
@@ -996,7 +996,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !           CALCULATE THE EULER ANGLE FOR THE NODE
             alfa = euler(7*(jmin-1)+1)*smin
 !
-            if ((alfa.gt.t0) .and. (alfa.lt.t180)) then
+            if ((alfa .gt. t0) .and. (alfa .lt. t180)) then
 !
 !              CALCULATE COS(ALFA) AND SIN(ALFA) TO SPEED UP THE CODE
                 calfa = cos(alfa)
@@ -1044,7 +1044,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !              N-AXIS
                 modvec = (t(1)**2+t(2)**2+t(3)**2)**0.5d0
 !
-                ASSERT(modvec.gt.r8prem())
+                ASSERT(modvec .gt. r8prem())
 !
                 bl(2*ndim*(i-1)+1) = n(1)/modvec
                 bl(2*ndim*(i-1)+2) = n(2)/modvec
@@ -1052,7 +1052,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !              T-AXIS
                 modvec = (n(1)**2+n(2)**2+n(3)**2)**0.5d0
 !
-                ASSERT(modvec.gt.r8prem())
+                ASSERT(modvec .gt. r8prem())
 !
                 bl(2*ndim*(i-1)+4) = t(1)/modvec
                 bl(2*ndim*(i-1)+5) = t(2)/modvec
@@ -1060,83 +1060,83 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
             else
 !
-                if (alfa .gt. t180) jmin=jmin+1
+                if (alfa .gt. t180) jmin = jmin+1
 !
 !              N-AXIS
-                bl(2*ndim*(i-1)+1) = zr(jbasef-1+2*ndim*(jmin-1) +1)
-                bl(2*ndim*(i-1)+2) = zr(jbasef-1+2*ndim*(jmin-1) +2)
-                bl(2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1) +3)
+                bl(2*ndim*(i-1)+1) = zr(jbasef-1+2*ndim*(jmin-1)+1)
+                bl(2*ndim*(i-1)+2) = zr(jbasef-1+2*ndim*(jmin-1)+2)
+                bl(2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1)+3)
 !              T-AXIS
-                bl(2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+1)
-                bl(2*ndim*(i-1)+5) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+2)
-                bl(2*ndim*(i-1)+6) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+3)
+                bl(2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1)+ndim+1)
+                bl(2*ndim*(i-1)+5) = zr(jbasef-1+2*ndim*(jmin-1)+ndim+2)
+                bl(2*ndim*(i-1)+6) = zr(jbasef-1+2*ndim*(jmin-1)+ndim+3)
 !
-            endif
+            end if
 !
 !           CORRECTION OF THE LOCAL BASE FOR THE POINTS PROJECTED ON
 !           ONE END OF THE CRACK FRONT
-            if ((operation.eq.'PROPA_COHESIF'&
-                .or.operation.eq.'DETECT_COHESIF') .and. endpnt) then
+            if ((operation .eq. 'PROPA_COHESIF' &
+                 .or. operation .eq. 'DETECT_COHESIF') .and. endpnt) then
 !
-               n(1) = bl(2*ndim*(i-1)+1)
-               n(2) = bl(2*ndim*(i-1)+2)
-               n(3) = bl(2*ndim*(i-1)+3)
-               t(1) = bl(2*ndim*(i-1)+4)
-               t(2) = bl(2*ndim*(i-1)+5)
-               t(3) = bl(2*ndim*(i-1)+6)
-               call normev(n,norme)
-               ASSERT(norme.ne.0.d0)
-               call normev(t,norme)
-               ASSERT(norme.ne.0.d0)
+                n(1) = bl(2*ndim*(i-1)+1)
+                n(2) = bl(2*ndim*(i-1)+2)
+                n(3) = bl(2*ndim*(i-1)+3)
+                t(1) = bl(2*ndim*(i-1)+4)
+                t(2) = bl(2*ndim*(i-1)+5)
+                t(3) = bl(2*ndim*(i-1)+6)
+                call normev(n, norme)
+                ASSERT(norme .ne. 0.d0)
+                call normev(t, norme)
+                ASSERT(norme .ne. 0.d0)
 !
 !              ON COMMENCE PAR CORRIGER LE VECTEUR NORMAL
-               call xmafr1(ndim,t,ptang)
-               bi(1) = xm - xn
-               bi(2) = ym - yn
-               bi(3) = zm - zn
-               call prmave(0, ptang, 3, ndim, ndim,&
-                           bi, ndim, npp, ndim, ier)
-               call normev(npp, norme)
-               if(norme.eq.0.d0) then
-                   npp(1) = n(1)
-                   npp(2) = n(2)
-                   npp(3) = n(3)
-               endif
-               sens = ddot(ndim,npp,1,n,1)
-               if(sens.lt.0.d0) then
-                  sens = -1.d0
-               else
-                  sens = 1.d0
-               endif
-               ASSERT(sens.ne.0.d0)
-               bl(2*ndim*(i-1)+1) = sens*npp(1)
-               bl(2*ndim*(i-1)+2) = sens*npp(2)
-               bl(2*ndim*(i-1)+3) = sens*npp(3)
+                call xmafr1(ndim, t, ptang)
+                bi(1) = xm-xn
+                bi(2) = ym-yn
+                bi(3) = zm-zn
+                call prmave(0, ptang, 3, ndim, ndim, &
+                            bi, ndim, npp, ndim, ier)
+                call normev(npp, norme)
+                if (norme .eq. 0.d0) then
+                    npp(1) = n(1)
+                    npp(2) = n(2)
+                    npp(3) = n(3)
+                end if
+                sens = ddot(ndim, npp, 1, n, 1)
+                if (sens .lt. 0.d0) then
+                    sens = -1.d0
+                else
+                    sens = 1.d0
+                end if
+                ASSERT(sens .ne. 0.d0)
+                bl(2*ndim*(i-1)+1) = sens*npp(1)
+                bl(2*ndim*(i-1)+2) = sens*npp(2)
+                bl(2*ndim*(i-1)+3) = sens*npp(3)
 !
 !              ENSUITE, ON CORRIGE LE VECTEUR TANGENT
-               call xmafr1(ndim,npp,ptang)
-               call prmave(0, ptang, 3, ndim, ndim,&
-                           bi, ndim, tpp, ndim, ier)
-               call normev(tpp, norme)
-               if(norme.eq.0.d0) then
-                   tpp(1) = t(1)
-                   tpp(2) = t(2)
-                   tpp(3) = t(3)
-               endif
-               sens = ddot(ndim,tpp,1,t,1)
-               if(sens.lt.0.d0) then
-                  sens = -1.d0
-               else
-                  sens = 1.d0
-               endif
-               bl(2*ndim*(i-1)+4) = sens*tpp(1)
-               bl(2*ndim*(i-1)+5) = sens*tpp(2)
-               bl(2*ndim*(i-1)+6) = sens*tpp(3)
+                call xmafr1(ndim, npp, ptang)
+                call prmave(0, ptang, 3, ndim, ndim, &
+                            bi, ndim, tpp, ndim, ier)
+                call normev(tpp, norme)
+                if (norme .eq. 0.d0) then
+                    tpp(1) = t(1)
+                    tpp(2) = t(2)
+                    tpp(3) = t(3)
+                end if
+                sens = ddot(ndim, tpp, 1, t, 1)
+                if (sens .lt. 0.d0) then
+                    sens = -1.d0
+                else
+                    sens = 1.d0
+                end if
+                bl(2*ndim*(i-1)+4) = sens*tpp(1)
+                bl(2*ndim*(i-1)+5) = sens*tpp(2)
+                bl(2*ndim*(i-1)+6) = sens*tpp(3)
 !
-            endif
+            end if
 !
-            if (((method.eq.'GEOMETRI' .or. method.eq.'SIMPLEXE') &
-                   .and.operation.eq.'RIEN') .and. endpnt) then
+            if (((method .eq. 'GEOMETRI' .or. method .eq. 'SIMPLEXE') &
+                 .and. operation .eq. 'RIEN') .and. endpnt) then
 
 !
 !              NORMAL AXIS OF THE LOCAL BASE
@@ -1145,7 +1145,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 n(3) = bl(2*ndim*(i-1)+3)
 !
 !              Q->P
-                modvec =(xm-xn)*n(1)+(ym-yn)*n(2)+(zm-zn)*n(3)
+                modvec = (xm-xn)*n(1)+(ym-yn)*n(2)+(zm-zn)*n(3)
                 bi(1) = modvec*n(1)
                 bi(2) = modvec*n(2)
                 bi(3) = modvec*n(3)
@@ -1157,8 +1157,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !              CHECK THE DIRECTION OF THE NEW T-AXIS WITH RESPECT TO THE
 !              ORIGINAL T-AXIS
-                modvec=bl(2*ndim*(i-1)+4)*t(1)+ bl(2*ndim*&
-                (i-1)+5)*t(2)+ bl(2*ndim*(i-1)+6)*t(3)
+                modvec = bl(2*ndim*(i-1)+4)*t(1)+bl(2*ndim* &
+                                                    (i-1)+5)*t(2)+bl(2*ndim*(i-1)+6)*t(3)
                 if (modvec .lt. 0.d0) then
 !                 MODULUS OF THE NEW T-AXIS. ITS DIRECTION MUST BE
 !                 CHANGED (-1)
@@ -1166,7 +1166,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 else
 !                 MODULUS OF THE NEW T-AXIS. ITS DIRECTION IS OK.
                     modvec = (t(1)**2+t(2)**2+t(3)**2)**0.5d0
-                endif
+                end if
 !
 !              STORE THE NEW T-AXIS (THE CORRECT DIRECTION IS DETERMINED
 !              BY THE SIGN OF MODVEC)
@@ -1174,32 +1174,32 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 bl(2*ndim*(i-1)+5) = t(2)/modvec
                 bl(2*ndim*(i-1)+6) = t(3)/modvec
 !
-            endif
+            end if
 !
-            if (fvirtu .and. (numfon.gt.1)) then
+            if (fvirtu .and. (numfon .gt. 1)) then
 !           Calcul de la correction a apporter au level set pour les
 !           vecteurs projetes sur le front virtuel( SEGMENT DE TYPE 2)
 !
                 do k = 1, (numfon-1)
                     if ((jmin) .eq. (zi(nfv+2*k-1))) then
 !
-                        lsnth(1)= dis(3*(i-1)+1)*bl(2*&
-                        ndim*(i-1)+1) +dis(3*(i-1)+2)*bl(&
-                        2*ndim*(i-1)+2) +dis(3*(i-1)+3)*bl(1-&
-                        1+2*ndim*(i-1)+3)
+                        lsnth(1) = dis(3*(i-1)+1)*bl(2* &
+                                                     ndim*(i-1)+1)+dis(3*(i-1)+2)*bl( &
+                                   2*ndim*(i-1)+2)+dis(3*(i-1)+3)*bl(1- &
+                                                                     1+2*ndim*(i-1)+3)
 !
-                        lstth(1)= dis(3*(i-1)+1)*bl(2*&
-                        ndim*(i-1)+4) +dis(3*(i-1)+2)*bl(&
-                        2*ndim*(i-1)+5) +dis(3*(i-1)+3)*bl(1-&
-                        1+2*ndim*(i-1)+6)
+                        lstth(1) = dis(3*(i-1)+1)*bl(2* &
+                                                     ndim*(i-1)+4)+dis(3*(i-1)+2)*bl( &
+                                   2*ndim*(i-1)+5)+dis(3*(i-1)+3)*bl(1- &
+                                                                     1+2*ndim*(i-1)+6)
 !
-                        zr(jdelta+2*(i-1))= lsnth(1)-nlsn(i)
-                        zr(jdelta+2*(i-1)+1)= lstth(1)-nlst(i)
+                        zr(jdelta+2*(i-1)) = lsnth(1)-nlsn(i)
+                        zr(jdelta+2*(i-1)+1) = lstth(1)-nlst(i)
 !
-                    endif
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !        ***************************************************************
 !        EVALUATE THE NORM. AND TANG. COMPONENTS OF THE PROPAGATION
@@ -1208,21 +1208,21 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
         if (ndim .eq. 2) then
 !
-            betap=zr(jbeta-1+jmin)
-            vp=zr(jvit-1+jmin)
+            betap = zr(jbeta-1+jmin)
+            vp = zr(jvit-1+jmin)
 !
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
 !
-            betap=(zr(jbeta-1+jmin+1)-zr(jbeta-1+jmin))*smin+ zr(&
-            jbeta-1+jmin)
+            betap = (zr(jbeta-1+jmin+1)-zr(jbeta-1+jmin))*smin+zr( &
+                    jbeta-1+jmin)
 !
-            vp=(zr(jvit-1+jmin+1)-zr(jvit-1+jmin))*smin+zr(jvit-1+&
-            jmin)
+            vp = (zr(jvit-1+jmin+1)-zr(jvit-1+jmin))*smin+zr(jvit-1+ &
+                                                             jmin)
 !
-        endif
+        end if
 !
-        vnv(i)=vp*sin(betap)
-        vtv(i)=vp*cos(betap)
+        vnv(i) = vp*sin(betap)
+        vtv(i) = vp*cos(betap)
         zl(jvtl+i-1) = .true.
         zl(jvnl+i-1) = .true.
 !
@@ -1244,40 +1244,40 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !  IMPRESSION DES VITESSES DE PROPAGATION EN INFO=2
     if (niv .ge. 1) then
-        write(ifm,*) ' '
-        write(ifm,*) 'VITESSE DE PROPAGATION EN FOND DE FISSURE'
+        write (ifm, *) ' '
+        write (ifm, *) 'VITESSE DE PROPAGATION EN FOND DE FISSURE'
 !
         do i = 1, nbptff
 !
             do j = 1, numfon
 !
                 if (i .eq. zi(jfmult-1+2*j-1)) then
-                    write(ifm,*) ' '
-                    if (numfon .gt. 1) write(ifm,313) j
-                    write(ifm,*)  ' NUM_PT    VITESSE         '&
+                    write (ifm, *) ' '
+                    if (numfon .gt. 1) write (ifm, 313) j
+                    write (ifm, *) ' NUM_PT    VITESSE         '&
      &               //'BETA          VT            VN'
-                endif
+                end if
 !
             end do
 !
-            write(ifm,311) i,zr(jvit-1+i),zr(jbeta-1+i),vt_propa_ff(i),&
-            vn_propa_ff(i)
+            write (ifm, 311) i, zr(jvit-1+i), zr(jbeta-1+i), vt_propa_ff(i), &
+                vn_propa_ff(i)
 !
         end do
 !
-        311     format(4x,i2,4x,4(1pd12.5,3x))
-        313     format(1x,' FOND DE FISSURE ',i2)
+311     format(4x, i2, 4x, 4(1pd12.5, 3x))
+313     format(1x, ' FOND DE FISSURE ', i2)
 !
-    endif
+    end if
 !
     if (fvirtu) then
-        nbptff=nbptff-2*numfon
+        nbptff = nbptff-2*numfon
         call jedetr(covir)
         call jedetr(bavir)
         call jedetr(vitvir)
         call jedetr(angvir)
         call jedetr(numvir)
-    endif
+    end if
 !
     AS_DEALLOCATE(vr=v_propa_ff)
     AS_DEALLOCATE(vr=vt_propa_ff)

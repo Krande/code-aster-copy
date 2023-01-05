@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! ----------------------------------------------------------crit----------
 
-subroutine nmactn(ds_print, sddisc, sderro, ds_contact,&
-                  ds_conv , iterat, numins)
+subroutine nmactn(ds_print, sddisc, sderro, ds_contact, &
+                  ds_conv, iterat, numins)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -78,21 +78,21 @@ implicit none
 !
     if (etnewt .eq. 'CONV') then
         retact = 0
-    else if (etnewt.eq.'EVEN') then
+    else if (etnewt .eq. 'EVEN') then
         call nmacto(sddisc, ievdac)
-        call nmevac(sddisc, sderro  , ievdac, numins, iterat, &
+        call nmevac(sddisc, sderro, ievdac, numins, iterat, &
                     retact, ds_print, ds_contact)
-    else if (etnewt.eq.'CONT') then
+    else if (etnewt .eq. 'CONT') then
 ! ----- TROP TARD POUR CONTINUE NEWTON -> IMPOSSIBLE
         ASSERT(.false.)
-    else if (etnewt.eq.'ERRE') then
+    else if (etnewt .eq. 'ERRE') then
 ! ----- ERRREUR NON TRAITE DANS NMCVGN -> IMPOSSIBLE
         ASSERT(.false.)
-    else if (etnewt.eq.'STOP') then
+    else if (etnewt .eq. 'STOP') then
         retact = 4
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- TRAITEMENT DE L'ACTION
 !
@@ -101,21 +101,21 @@ implicit none
 ! ----- TOUT EST OK -> ON PASSE A LA SUITE
 !cri
         actnew = 0
-    else if (retact.eq.1) then
+    else if (retact .eq. 1) then
 !
 ! ----- ON REFAIT LE PAS DE TEMPS
 !
         actnew = 1
-    else if (retact.eq.2) then
+    else if (retact .eq. 2) then
 !
 ! ----- ON CONTINUE LES ITERATIONS DE NEWTON
 !
         actnew = 2
-    else if (retact.eq.3) then
+    else if (retact .eq. 3) then
 !
 ! ----- ECHEC DE L'ACTION
 !
-        if (.not.ds_conv%l_stop) then
+        if (.not. ds_conv%l_stop) then
 !
 ! ------- CONVERGENCE FORCEE -> ON PASSE A LA SUITE
 !
@@ -123,17 +123,17 @@ implicit none
             actnew = 0
             call nmcrel(sderro, 'ITER_MAXI', .false._1)
             call nmeceb(sderro, 'RESI', 'CONV')
-        else if  (.not.ds_conv%l_stop_pene) then
+        else if (.not. ds_conv%l_stop_pene) then
 !
 ! ------- CONVERGENCE PENE_MAXI : Bcle PF not converged
             actnew = 3
-        else if  (nint(ds_contact%continue_pene) .eq. 2) then
+        else if (nint(ds_contact%continue_pene) .eq. 2) then
 !
 ! ------- CONVERGENCE PENE_MAXI
 !
-            call utmess('A', 'MECANONLINE2_39', nr=4,valr=[&
-                        ds_contact%calculated_penetration/ds_contact%arete_min,&
-                        ds_contact%arete_min,ds_contact%estimated_coefficient,ds_contact%arete_max])
+            call utmess('A', 'MECANONLINE2_39', nr=4, valr=[ &
+                        ds_contact%calculated_penetration/ds_contact%arete_min, &
+                      ds_contact%arete_min, ds_contact%estimated_coefficient, ds_contact%arete_max])
 !
 ! ------- ARRET DU CALCUL
 !
@@ -144,28 +144,28 @@ implicit none
 ! ------- ARRET DU CALCUL
 !
             actnew = 3
-        endif
-    else if (retact.eq.4) then
+        end if
+    else if (retact .eq. 4) then
 !
 ! ----- ARRET DU CALCUL
 !
         actnew = 3
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
 !
     if (actnew .eq. 0) then
         call nmeceb(sderro, 'NEWT', 'CONV')
-    else if (actnew.eq.1) then
+    else if (actnew .eq. 1) then
         call nmeceb(sderro, 'NEWT', 'ERRE')
-    else if (actnew.eq.2) then
+    else if (actnew .eq. 2) then
         call nmeceb(sderro, 'NEWT', 'CONT')
-    else if (actnew.eq.3) then
+    else if (actnew .eq. 3) then
         call nmeceb(sderro, 'NEWT', 'STOP')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

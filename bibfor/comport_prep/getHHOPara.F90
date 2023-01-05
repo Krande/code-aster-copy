@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine getHHOPara(behaviourPrepCrit)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 !
-type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
+    type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,30 +54,30 @@ type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
     hho_calc = HHO_CALC_NO
     hho_stab = HHO_STAB_AUTO
 
-    call getvtx(factorKeyword, 'OPTIMISATION', iocc = 1, nbval=0, nbret = iret)
+    call getvtx(factorKeyword, 'OPTIMISATION', iocc=1, nbval=0, nbret=iret)
 
     if (iret .ne. 0) then
-        if(iret == -1) then
-            call getvtx(factorKeyword, 'OPTIMISATION', iocc = 1, scal=txt, nbret = iret)
+        if (iret == -1) then
+            call getvtx(factorKeyword, 'OPTIMISATION', iocc=1, scal=txt, nbret=iret)
             ASSERT(iret == 1)
-            if(txt == "MEMOIRE") then
+            if (txt == "MEMOIRE") then
                 hho_calc = HHO_CALC_NO
-            elseif(txt == "TEMPS") then
+            elseif (txt == "TEMPS") then
                 hho_calc = HHO_CALC_YES
             else
                 ASSERT(ASTER_FALSE)
             end if
         end if
 
-        call getvtx(factorKeyword, 'STABILISATION', iocc = 1, nbval=0, nbret = iret)
-        if(iret == -1) then
-            call getvtx(factorKeyword, 'STABILISATION', iocc = 1, scal=txt, nbret = iret)
+        call getvtx(factorKeyword, 'STABILISATION', iocc=1, nbval=0, nbret=iret)
+        if (iret == -1) then
+            call getvtx(factorKeyword, 'STABILISATION', iocc=1, scal=txt, nbret=iret)
             ASSERT(iret == 1)
-            if(txt == "AUTO") then
+            if (txt == "AUTO") then
                 hho_stab = HHO_STAB_AUTO
-            elseif(txt == "MANUEL") then
+            elseif (txt == "MANUEL") then
                 hho_stab = HHO_STAB_MANU
-                call getvr8(factorKeyword, 'COEF_STAB', iocc = 1, scal=hho_coef_stab, nbret = iret)
+                call getvr8(factorKeyword, 'COEF_STAB', iocc=1, scal=hho_coef_stab, nbret=iret)
                 ASSERT(iret == 1)
             else
                 ASSERT(ASTER_FALSE)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
-                  motfac, iocc, base, formr, nomsym,&
+subroutine titrea(niv, nomcon, nomcha, nomobj, st, &
+                  motfac, iocc, base, formr, nomsym, &
                   iordr, defTitle, lDefTitle)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -80,8 +80,8 @@ implicit none
             valk = motfac
             call utmess('A', 'UTILITAI7_4', sk=valk, si=vali)
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
     call getres(cres, cbid, cbid)
     if (niv .eq. 'T') then
@@ -92,14 +92,14 @@ implicit none
         motcle = 'SOUS_TITRE'
     else
         motcle = '   '
-    endif
+    end if
 !
     if (motcle .ne. '   ') then
         call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=nbtitr)
-        nbtitr = - nbtitr
+        nbtitr = -nbtitr
     else
         nbtitr = 0
-    endif
+    end if
 !
     if (nbtitr .eq. 0 .and. present(defTitle)) then
 !        --- TITRE PAR DEFAUT FOURNI PAR L'OPERATEUR ---
@@ -111,7 +111,7 @@ implicit none
         zi(llon) = lDefTitle
 !       on passe en négatif pour savoir que c'est un titre utilisateur
 !       et ainsi ne pas traiter les démons
-        nbtitr = - nbtitr
+        nbtitr = -nbtitr
     elseif (nbtitr .eq. 0) then
 !        --- TITRE PAR DEFAUT  ---
         call titred(niv, nomcon, nomcha, nbtitr)
@@ -121,15 +121,15 @@ implicit none
 !        --- TITRE UTILISATEUR ---
         call wkvect('&&TITRE .TAMPON.ENTREE', 'V V K80', nbtitr, ldon)
         call wkvect('&&TITRE .LONGUEUR     ', 'V V I  ', nbtitr, llon)
-        call getvtx(motfac, motcle, iocc=iocc, nbval=nbtitr, vect=zk80(ldon),&
+        call getvtx(motfac, motcle, iocc=iocc, nbval=nbtitr, vect=zk80(ldon), &
                     nbret=l)
-        call getltx(motfac, motcle, iocc, 80, nbtitr,&
+        call getltx(motfac, motcle, iocc, 80, nbtitr, &
                     zi(llon), l)
 !       on passe en négatif pour savoir que c'est un titre utilisateur
 !       et ainsi ne pas traiter les démons
-        nbtitr = - nbtitr
-    endif
-    call titre1(st, nomobj, base, nbtitr, zk80(ldon),&
+        nbtitr = -nbtitr
+    end if
+    call titre1(st, nomobj, base, nbtitr, zk80(ldon), &
                 zi(llon), formr, nomsym, iordr)
     call jedetr('&&TITRE .TAMPON.ENTREE')
     call jedetr('&&TITRE .LONGUEUR     ')

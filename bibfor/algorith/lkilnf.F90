@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkilnf(nvi, vind, nmat, materf, dt,&
-                  sigd, nr, yd, yf, deps,&
+subroutine lkilnf(nvi, vind, nmat, materf, dt, &
+                  sigd, nr, yd, yf, deps, &
                   vinf)
     implicit none
 ! RESPOSABLE FOUCAULT A.FOUCAULT
@@ -74,16 +74,16 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
     real(kind=8) :: sigt(6)
     real(kind=8) :: vecnp(6), gp(6), devgii, deux, trois, un
 !
-    parameter       (zero  =  0.d0 )
-    parameter       (un    =  1.d0 )
-    parameter       (deux  =  2.d0 )
-    parameter       (trois =  3.d0 )
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
 !
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !     ------------------------------------------------------------------
 ! --- REMPLISSAGE DIRECT DE VINF(1) ET VINF(3)
-    vinf(1) = max(yf(ndt+2),zero)
-    vinf(3) = max(yf(ndt+3),zero)
+    vinf(1) = max(yf(ndt+2), zero)
+    vinf(3) = max(yf(ndt+3), zero)
 !
 ! --------------------------------------------------------------------
 ! --- PASSAGE EN CONVENTION MECANIQUE DES SOLS
@@ -99,8 +99,8 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
     i1 = sigt(1)+sigt(2)+sigt(3)
 !
 ! --- DONNEES MATERIAU : VALEUR MAX DE XIV; XI_PIC
-    xivmax = materf(20,2)
-    xippic = materf(18,2)
+    xivmax = materf(20, 2)
+    xippic = materf(18, 2)
 !
 ! ----------------------------------------------------------------------
 ! --- I) - BUT : CALCUL DE LA DEFORMATION VISQUEUSE -DEPSV- ET DU
@@ -112,11 +112,11 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
 ! --- I-2) VARIABLE D'ECROUISSAGE VISQUEUSE VINTR = YF(NDT+3)
 ! --- I-3) CALCUL SEUIL VISQUEUX PAR RAPPORT A YF(1:6)=SIGF -> SEUILV
 ! --- I-3-1)  XIT   = YF(NDT+3)
-    call lkcriv(yf(ndt+3), i1, devsig, vinf, nmat,&
+    call lkcriv(yf(ndt+3), i1, devsig, vinf, nmat, &
                 materf, ucriv, seuilv)
     if (seuilv .ge. zero) then
-        call lkdgde(val, yf(ndt+3), dt, seuilv, ucriv,&
-                    i1, devsig, vinf, nmat, materf,&
+        call lkdgde(val, yf(ndt+3), dt, seuilv, ucriv, &
+                    i1, devsig, vinf, nmat, materf, &
                     depsv, dgamv, retcom)
         vinf(4) = vind(4)+dgamv
 ! --- INDICATEUR DE VISCO-PLASTICITE
@@ -124,7 +124,7 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
     else
         vinf(4) = vind(4)
         vinf(6) = zero
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- II) - BUT : CALCUL DE LA DEFORMATION PLASTIQUE -DEPSP- ET DU
 ! ---       PARAMETRE D ECROUISSAGE PLASTIQUE -DGAMP-
@@ -132,7 +132,7 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
 ! --- II-1) CALCUL FONCTION SEUIL PLASTIQUE EN YF
     seuilp = zero
 !
-    call lkcrip(i1, devsig, vinf, nmat, materf,&
+    call lkcrip(i1, devsig, vinf, nmat, materf, &
                 ucrip, seuilp)
 !
 ! --- II-2)SI YF(NDT+1) > 0 ALORS PLASTICITE A PRENDRE EN COMPTE
@@ -146,11 +146,11 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
             val = 0
         else
             val = 1
-        endif
+        end if
 !
 ! --- II-2-A-2) INDICATEUR CONTRACTANCE OU DILATANCE -> VARV = 0 OU 1
 ! --- II-2-A-2)-1) CALCUL POSITION YF PAR RAPPORT SEUIL VISQUEUX MAX
-        call lkcriv(xivmax, i1, devsig, vinf, nmat,&
+        call lkcriv(xivmax, i1, devsig, vinf, nmat, &
                     materf, ucriv, seuivm)
 !
 ! --- II-2-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
@@ -158,21 +158,21 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
             varv = 0
         else
             varv = 1
-        endif
+        end if
         vinf(5) = varv
 !
 ! --- II-2-A-3) CALCUL DE DF/DSIG
-        call lkdhds(nmat, materf, i1, devsig, dhds,&
+        call lkdhds(nmat, materf, i1, devsig, dhds, &
                     retcom)
-        call lkds2h(nmat, materf, i1, devsig, dhds,&
+        call lkds2h(nmat, materf, i1, devsig, dhds, &
                     ds2hds, retcom)
         call lkvarp(vinf, nmat, materf, paraep)
         call lkvacp(nmat, materf, paraep, varpl)
-        call lkdfds(nmat, materf, devsig, paraep, varpl,&
+        call lkdfds(nmat, materf, devsig, paraep, varpl, &
                     ds2hds, ucrip, dfdsp)
 !
 ! --- II-2-A-4) CALCUL DE G
-        bprimp = lkbpri (val,vinf,nmat,materf,paraep,i1,devsig)
+        bprimp = lkbpri(val, vinf, nmat, materf, paraep, i1, devsig)
         call lkcaln(devsig, bprimp, vecnp, retcom)
         call lkcalg(dfdsp, vecnp, gp, devgii)
 !
@@ -184,7 +184,7 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
 ! --- INDICATEUR DE PLASTICITE
         vinf(7) = zero
 !
-        call lkcriv(xivmax, i1, devsig, vinf, nmat,&
+        call lkcriv(xivmax, i1, devsig, vinf, nmat, &
                     materf, ucriv, seuivm)
 !
 ! --- II-2-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
@@ -192,9 +192,9 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
             varv = 0
         else
             varv = 1
-        endif
+        end if
         vinf(5) = varv
 !
-    endif
+    end if
 !
 end subroutine

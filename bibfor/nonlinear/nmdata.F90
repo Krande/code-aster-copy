@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdata(model    , mesh         , mater     , mateco     , cara_elem  , ds_constitutive,&
-                  list_load, solver       , ds_conv   , sddyna     , ds_posttimestep,&
-                  ds_energy, ds_errorindic, ds_print  , ds_algopara,&
-                  ds_inout , ds_contact   , ds_measure, ds_algorom)
+subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
+                  list_load, solver, ds_conv, sddyna, ds_posttimestep, &
+                  ds_energy, ds_errorindic, ds_print, ds_algopara, &
+                  ds_inout, ds_contact, ds_measure, ds_algorom)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -51,25 +51,25 @@ implicit none
 #include "asterfort/nonlinDSErrorIndicRead.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-character(len=*), intent(out) :: model
-character(len=*), intent(out) :: mesh
-character(len=*), intent(out) :: mater
-character(len=*), intent(out) :: mateco
-character(len=*), intent(out) :: cara_elem
-type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-character(len=*), intent(out) :: list_load
-character(len=*), intent(out) :: solver
-type(NL_DS_Conv), intent(inout) :: ds_conv
-character(len=19) :: sddyna
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
-type(NL_DS_Energy), intent(inout) :: ds_energy
-type(NL_DS_Print), intent(inout) :: ds_print
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-type(NL_DS_InOut), intent(inout) :: ds_inout
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
-type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
+    character(len=*), intent(out) :: model
+    character(len=*), intent(out) :: mesh
+    character(len=*), intent(out) :: mater
+    character(len=*), intent(out) :: mateco
+    character(len=*), intent(out) :: cara_elem
+    type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+    character(len=*), intent(out) :: list_load
+    character(len=*), intent(out) :: solver
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    character(len=19) :: sddyna
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    type(NL_DS_Energy), intent(inout) :: ds_energy
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,7 +113,7 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
         call utmess('I', 'MECANONLINE12_1')
-    endif
+    end if
 !
 ! - Get command parameters
 !
@@ -125,8 +125,8 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! - Initial state (EVOL_NOL or stresses)
 !
-    call GetIOField(ds_inout, 'SIEF_ELGA', l_read_ = l_sigm)
-    l_etat_init = ((ds_inout%l_stin_evol).or.(l_sigm))
+    call GetIOField(ds_inout, 'SIEF_ELGA', l_read_=l_sigm)
+    l_etat_init = ((ds_inout%l_stin_evol) .or. (l_sigm))
 !
 ! --- LECTURE DONNEES GENERALES
 !
@@ -138,9 +138,9 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     if (nomcmd(6:13) .eq. 'NON_LINE' .and. cara_elem .ne. ' ') then
         call gettco(cara_elem, typco)
         if (typco .eq. 'CARA_ELEM') then
-            call verif_affe(model,cara_elem, non_lin = ASTER_TRUE)
-        endif
-    endif
+            call verif_affe(model, cara_elem, non_lin=ASTER_TRUE)
+        end if
+    end if
 !
 ! - Read parameters for algorithm management
 !
@@ -151,7 +151,7 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     call nmdomt_ls(ds_algopara)
 
 ! - Read objects for constitutive laws
-    call nmdorc(model, mater, l_etat_init,&
+    call nmdorc(model, mater, l_etat_init, &
                 ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
 !
 ! - Read parameters for convergence
@@ -186,7 +186,7 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
     if (nomcmd .eq. 'STAT_NON_LINE') then
         call nonlinDSErrorIndicRead(ds_errorindic)
-    endif
+    end if
 !
 ! - Read parameters for printing
 !

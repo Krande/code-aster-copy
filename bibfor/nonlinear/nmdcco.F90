@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac,&
-                  ratio , optdec      , retdec, ldcext, subdur)
+subroutine nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac, &
+                  ratio, optdec, retdec, ldcext, subdur)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -77,10 +77,10 @@ subroutine nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac,&
 !
 ! --- PARAMETRES
 !
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_INST', index_ = i_event_acti,&
-                valr_ = subins)
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_DUREE', index_ = i_event_acti,&
-                valr_ = subdur)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_INST', index_=i_event_acti, &
+                valr_=subins)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_DUREE', index_=i_event_acti, &
+                valr_=subdur)
     typdec = 'DELT'
     deltac = subins
     ldcext = .true.

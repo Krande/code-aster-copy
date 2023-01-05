@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrInitAlgoOrtho()
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -42,7 +42,7 @@ implicit none
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_29')
-    endif
+    end if
 !
     ! Nothing to do
 !

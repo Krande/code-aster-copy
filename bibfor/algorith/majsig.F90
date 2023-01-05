@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine majsig(materf, se, seq, i1e, alpha,&
+subroutine majsig(materf, se, seq, i1e, alpha, &
                   dp, plas, sig)
     implicit none
     real(kind=8) :: materf(5, 2), dp, se(*), seq, i1e, alpha, sig(6)
@@ -26,18 +26,18 @@ subroutine majsig(materf, se, seq, i1e, alpha,&
     integer :: ii, ndt, ndi
     real(kind=8) :: young, nu, troisk, deuxmu, trois, deux, un
     real(kind=8) :: i1, dev(6), plas
-    parameter ( trois  =  3.0d0 )
-    parameter ( deux   =  2.0d0 )
-    parameter ( un     =  1.0d0 )
+    parameter(trois=3.0d0)
+    parameter(deux=2.0d0)
+    parameter(un=1.0d0)
 ! =====================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! =====================================================================
 ! --- AFFECTATION DES VARIABLES ---------------------------------------
 ! =====================================================================
-    young = materf(1,1)
-    nu = materf(2,1)
-    troisk = young / (un-deux*nu)
-    deuxmu = young / (un+nu)
+    young = materf(1, 1)
+    nu = materf(2, 1)
+    troisk = young/(un-deux*nu)
+    deuxmu = young/(un+nu)
 ! =====================================================================
 ! --- MISE A JOUR DU DEVIATEUR ----------------------------------------
 ! =====================================================================
@@ -49,12 +49,12 @@ subroutine majsig(materf, se, seq, i1e, alpha,&
         do ii = 1, ndt
             dev(ii) = se(ii)*(un-trois*deuxmu/deux*dp/seq)
         end do
-    endif
+    end if
 !
 ! =====================================================================
 ! --- MISE A JOUR DU PREMIER INVARIANT --------------------------------
 ! =====================================================================
-    i1 = i1e - trois*troisk*alpha*dp
+    i1 = i1e-trois*troisk*alpha*dp
 ! =====================================================================
 ! --- MISE A JOUR DU VECTEUR DE CONTRAINTES ---------------------------
 ! =====================================================================
@@ -62,7 +62,7 @@ subroutine majsig(materf, se, seq, i1e, alpha,&
         sig(ii) = dev(ii)
     end do
     do ii = 1, ndi
-        sig(ii) = sig(ii) + i1/trois
+        sig(ii) = sig(ii)+i1/trois
     end do
 ! =====================================================================
 end subroutine

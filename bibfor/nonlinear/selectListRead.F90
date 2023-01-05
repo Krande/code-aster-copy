@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine selectListRead(keywfactz, iocc, selectList)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -36,9 +36,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nmcrpm.h"
 !
-character(len=*), intent(in) :: keywfactz
-integer, intent(in) :: iocc
-type(NL_DS_SelectList), intent(out) :: selectList
+    character(len=*), intent(in) :: keywfactz
+    integer, intent(in) :: iocc
+    type(NL_DS_SelectList), intent(out) :: selectList
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ type(NL_DS_SelectList), intent(out) :: selectList
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keywfact     = keywfactz
+    keywfact = keywfactz
     precision = 0.d0
     prec_default = 1.d-6
     incr_mini = 0.d0
@@ -77,54 +77,54 @@ type(NL_DS_SelectList), intent(out) :: selectList
 ! - Get parameters to select real value
 !
     call getvr8(keywfact, 'PRECISION', iocc=iocc, scal=precision, nbret=n1)
-    call getvtx(keywfact, 'CRITERE'  , iocc=iocc, scal=criterion, nbret=n2)
+    call getvtx(keywfact, 'CRITERE', iocc=iocc, scal=criterion, nbret=n2)
     if (criterion .eq. 'ABSOLU') then
         if (n1 .eq. 0) then
             call utmess('F', 'LISTINST_1')
-        endif
+        end if
         l_abso = ASTER_TRUE
     else if (criterion .eq. 'RELATIF') then
         if (n1 .eq. 0) then
             precision = prec_default
             call utmess('A', 'LISTINST_2', sr=prec_default)
-        endif
+        end if
         l_abso = ASTER_FALSE
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     if (precision .le. r8prem()) then
         call utmess('F', 'LISTINST_3')
-    endif
+    end if
 !
 ! - Get parameters to get list of values
 !
     call getvid(keywfact, 'LIST_INST', iocc=iocc, scal=list, nbret=n2)
-    call getvr8(keywfact, 'INST'     , iocc=iocc, nbval=0, nbret=n3)
+    call getvr8(keywfact, 'INST', iocc=iocc, nbval=0, nbret=n3)
     n3 = -n3
-    if ((n2.ge.1) .and. (n3.ge.1)) then
+    if ((n2 .ge. 1) .and. (n3 .ge. 1)) then
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     if (n3 .ge. 1) then
         nb_value = n3
     else if (n2 .ge. 1) then
         call jelira(list//'.VALE', 'LONMAX', ival=nb_value)
     else
         nb_value = 0
-    endif
+    end if
 !
 ! - Get list
 !
     if (nb_value .ne. 0) then
-        AS_ALLOCATE(vr = selectList%list_value, size = nb_value)
+        AS_ALLOCATE(vr=selectList%list_value, size=nb_value)
         if (n3 .ge. 1) then
-            call getvr8(keywfact, 'INST', iocc=iocc, nbval=nb_value, vect=selectList%list_value,&
+            call getvr8(keywfact, 'INST', iocc=iocc, nbval=nb_value, vect=selectList%list_value, &
                         nbret=iret)
         else
-            call jeveuo(list//'.VALE', 'L', vr = v_vale)
+            call jeveuo(list//'.VALE', 'L', vr=v_vale)
             selectList%list_value(1:nb_value) = v_vale(1:nb_value)
-        endif
+        end if
         call nmcrpm(selectList%list_value, nb_value, incr_mini)
-    endif
+    end if
 !
 ! - Read frequency
 !
@@ -133,19 +133,19 @@ type(NL_DS_SelectList), intent(out) :: selectList
         call getvis(keywfact, 'PAS_CALC', iocc=iocc, scal=freq_step, nbret=n1)
         if (n1 .ne. 0) then
             ASSERT(freq_step .ge. 0)
-        endif
-    endif
+        end if
+    end if
     if (n1+nb_value .eq. 0) then
         freq_step = 1
-    endif
+    end if
 !
 ! - Save values
 !
-    selectList%nb_value   = nb_value
-    selectList%precision  = precision
-    selectList%l_abso     = l_abso
-    selectList%incr_mini  = incr_mini
-    selectList%freq_step  = freq_step
-    selectList%l_by_freq  = freq_step .gt. 0
+    selectList%nb_value = nb_value
+    selectList%precision = precision
+    selectList%l_abso = l_abso
+    selectList%incr_mini = incr_mini
+    selectList%freq_step = freq_step
+    selectList%l_by_freq = freq_step .gt. 0
 !
 end subroutine

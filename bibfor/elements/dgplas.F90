@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-
-subroutine dgplas(ea, sya, eb, nub, ftj,fcj,&
-                  num, nuf, a, b1, b,&
-                  syt, syf, ef, dxd, drd, h,&
-                  ipentetrac, ipenteflex, icisai, emaxm, emaxf, nnap,&
-                  omx, rx, ry, np, dxp, pendt,&
+subroutine dgplas(ea, sya, eb, nub, ftj, fcj, &
+                  num, nuf, a, b1, b, &
+                  syt, syf, ef, dxd, drd, h, &
+                  ipentetrac, ipenteflex, icisai, emaxm, emaxf, nnap, &
+                  omx, rx, ry, np, dxp, pendt, &
                   drp, mp, pendf)
 !
 ! aslint: disable=W1504
@@ -94,68 +93,67 @@ subroutine dgplas(ea, sya, eb, nub, ftj,fcj,&
 ! - DETERMINATION DE LA PENTE POST ENDOMMAGEMENT EN TRACTION
     if (ipentetrac .eq. 3) then
         if (emaxm .lt. dxd) then
-            rmesg(1)=emaxm
-            rmesg(2)=dxd
+            rmesg(1) = emaxm
+            rmesg(2) = dxd
             call utmess('F', 'ALGORITH6_5', nr=2, valr=rmesg)
-        endif
-        dxp=emaxm
-        np=b*dxp
-        pendt=(np-syt)/(dxp-dxd)
+        end if
+        dxp = emaxm
+        np = b*dxp
+        pendt = (np-syt)/(dxp-dxd)
     else if (ipentetrac .eq. 1) then
-        pendt=b
+        pendt = b
     else if (ipentetrac .eq. 2) then
-        dxp=sya(1)/ea(1)
-        do ilit = 2,nnap
+        dxp = sya(1)/ea(1)
+        do ilit = 2, nnap
             if (sya(ilit)/ea(ilit) .lt. dxp) then
-                dxp=sya(ilit)/ea(ilit)
-            endif
-        enddo
-        np=b*dxp
-        pendt=(np-syt)/(dxp-dxd)
-    endif
+                dxp = sya(ilit)/ea(ilit)
+            end if
+        end do
+        np = b*dxp
+        pendt = (np-syt)/(dxp-dxd)
+    end if
 !
 ! - ESSAI DE CISAILLEMENT PUR DANS LE PLAN
     if (icisai .eq. 1) then
         if (ipentetrac .eq. 1) then
-            pendt=b
+            pendt = b
         else if (ipentetrac .eq. 3) then
             if (emaxm .lt. dxd) then
-                rmesg(1)=emaxm
-                rmesg(2)=dxd
+                rmesg(1) = emaxm
+                rmesg(2) = dxd
                 call utmess('F', 'ALGORITH6_5', nr=2, valr=rmesg)
-            endif
-            dxp=emaxm
-            np=b*dxd+ftj/3.d0
+            end if
+            dxp = emaxm
+            np = b*dxd+ftj/3.d0
         else if (ipentetrac .eq. 2) then
-            dxp=sqrt(2.d0)*dxp+2.d0*dxd
-            np=b*dxp+ftj/3.d0
-        endif
-    endif
+            dxp = sqrt(2.d0)*dxp+2.d0*dxd
+            np = b*dxp+ftj/3.d0
+        end if
+    end if
 !
 ! - DETERMINATION DE LA PENTE POST ENDOMMAGEMENT EN FLEXION
 
-
     if (ipenteflex .eq. 3) then
-        drp=0.d0
-        call dgmmax(eb, nub, num, nuf, h,&
-                    a, b1, b, mp, drp,&
+        drp = 0.d0
+        call dgmmax(eb, nub, num, nuf, h, &
+                    a, b1, b, mp, drp, &
                     w, c)
-        pendf=c
+        pendf = c
     else if (ipenteflex .eq. 4) then
 ! PLAS_ACIER
-        call dgmpla(eb, nub, ea, sya, num,&
-                    nuf, h, a, b1, b,&
-                    nnap, rx, ry, mp, drp,&
+        call dgmpla(eb, nub, ea, sya, num, &
+                    nuf, h, a, b1, b, &
+                    nnap, rx, ry, mp, drp, &
                     w)
-        pendf=(mp-syf)/(drp-drd)
+        pendf = (mp-syf)/(drp-drd)
     else
         ya = rx(1)*h
         efm = 1./12.*ef*h**3-2*ea(1)*omx*(ya**2)
         efm = efm*12/(h**3)
-        call calc_myf_gf(efm, ftj, fcj, h, ea(1), omx,&
-                       ya, sya(1), ipenteflex, emaxf,&
-                       syf, pendf)
+        call calc_myf_gf(efm, ftj, fcj, h, ea(1), omx, &
+                         ya, sya(1), ipenteflex, emaxf, &
+                         syf, pendf)
 
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine op0134()
         call getvid(' ', 'LIST_PARA', scal=listp, nbret=n1)
         call jeveuo(listp//'.VALE', 'L', lvalp)
         call jelira(listp//'.VALE', 'LONUTI', nbvalp)
-    endif
+    end if
 !
 ! --- NAPPE OU FONCTION
 !
@@ -86,15 +86,15 @@ subroutine op0134()
         else if (nbnova .eq. 2) then
             noparp = nova(1)
             noparf = nova(2)
-        endif
+        end if
 !
-    else if (typco(1:8).eq.'FONCTION') then
+    else if (typco(1:8) .eq. 'FONCTION') then
         if (typco(1:10) .eq. 'FONCTION_C') compl = .true.
         nbnova = 1
         call jeveuo(nomfin//'.PROL', 'L', lprol)
         noparp = zk24(lprol+2)
 !
-    else if (typco(1:5).eq.'NAPPE') then
+    else if (typco(1:5) .eq. 'NAPPE') then
         nbnova = 2
         call jeveuo(nomfin//'.PROL', 'L', lprol)
         noparp = zk24(lprol+2)
@@ -102,14 +102,14 @@ subroutine op0134()
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     if (nbnova .eq. 1) then
 ! ------------------------------------------------------------------
 !                 FONCTION
 ! ------------------------------------------------------------------
-        call calcfo(compl, nomfin, nomfon, nbvalp, zr(lvalp),&
+        call calcfo(compl, nomfin, nomfon, nbvalp, zr(lvalp), &
                     noparp)
 !
     else if (nbnova .eq. 2) then
@@ -128,8 +128,8 @@ subroutine op0134()
                 call jelira(listf//'.VALE', 'LONUTI', nbvalf)
             else
                 call utmess('F', 'FONCT0_49')
-            endif
-        endif
+            end if
+        end if
 !
 !        VERIFIER LA COHERENCE DES NOMS DES PARAMETRES
         call getvtx(' ', 'NOM_PARA', scal=nopn, nbret=n1)
@@ -142,12 +142,12 @@ subroutine op0134()
                 call utmess('F', 'FONCT0_58', nk=3, valk=valk)
             else
                 call utmess('F', 'FONCT0_59', nk=3, valk=valk)
-            endif
-        endif
+            end if
+        end if
 !
         call getvtx(' ', 'NOM_PARA_FONC', scal=nopf, nbret=n1)
 !        OBLIGATOIRE
-        ASSERT(n1.eq.1)
+        ASSERT(n1 .eq. 1)
         if (nopf .ne. noparf) then
             valk(1) = nomfin
             valk(2) = noparf
@@ -156,17 +156,17 @@ subroutine op0134()
                 call utmess('F', 'FONCT0_60', nk=3, valk=valk)
             else
                 call utmess('F', 'FONCT0_61', nk=3, valk=valk)
-            endif
-        endif
+            end if
+        end if
 !
-        call calcna(nomfin, nomfon, nbvalp, zr(lvalp), noparp,&
+        call calcna(nomfin, nomfon, nbvalp, zr(lvalp), noparp, &
                     nbvalf, zr(lvalf), noparf)
 !
     else
 !
         call utmess('F', 'FONCT0_48')
 !
-    endif
+    end if
 !
 ! --- SURCHARGE EVENTUELLE DU .PROL
 !

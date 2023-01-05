@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,14 +42,14 @@ subroutine te0578(option, nomte)
 !
     integer :: ndim, nfh, nfe, itempn, igeom, nnop, itempg, jpintt
     integer :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
-    integer :: heavn(27,5), ino, ig, jheavn, ncompn, jtab(7), iret
+    integer :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
     character(len=8) :: elrefp
 !
 ! ----------------------------------------------------------------------
 ! --- PREALABLES AU CALCUL
 ! ----------------------------------------------------------------------
 !
-    option=option
+    option = option
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
     ASSERT(iselli(elrefp))
@@ -69,31 +69,31 @@ subroutine te0578(option, nomte)
 !
 !     ELT DE REF PARENT : RECUP NDIM ET NNOP (NOEUDS PARENT)
 !     -> RQ : 'RIGI' POUR LA FAMILLE DE PG EST DONC SANS CONSQUENCE
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
 !     RECUP DE NFH (NBRE FCT HEAVISIDE) ET NFE (NBRE FCT SINGULIER)
     call xthini(nomte, nfh, nfe)
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
-    if (nfh.gt.0 .or. nfe.gt.0) then
-      call jevech('PHEA_NO', 'L', jheavn)
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nnop
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
-        enddo
-      enddo
-    endif
+    if (nfh .gt. 0 .or. nfe .gt. 0) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn .eq. 5)
+        do ino = 1, nnop
+            do ig = 1, ncompn
+                heavn(ino, ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            end do
+        end do
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- CALCUL DU CHAMP DE TEMPERATURE AUX POINTS DE GAUSS
 ! ----------------------------------------------------------------------
 !
-    call xtelga(ndim, elrefp, nnop, igeom, zr(itempn),&
-                zi(jlonch), zi(jcnset), jpintt, zr(jlsn), zr(jlst),&
+    call xtelga(ndim, elrefp, nnop, igeom, zr(itempn), &
+                zi(jlonch), zi(jcnset), jpintt, zr(jlsn), zr(jlst), &
                 heavn, zr(jbaslo), zi(jheavt), nfh, nfe, zr(itempg))
 !
 end subroutine

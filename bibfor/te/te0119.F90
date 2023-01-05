@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,17 +48,17 @@ subroutine te0119(option, nomte)
 !
 !   Récupération du code de la modélisation
     call teattr('S', 'ALIAS8', alias8, ibid)
-    cmod=alias8(3:5)
+    cmod = alias8(3:5)
 !
 !   Vérification que l'excentrement est nul pour COQUE_3D
-    if ( cmod .eq. 'CQ3') then
+    if (cmod .eq. 'CQ3') then
         call jevech('PCACOQU', 'L', j1)
         excent = zr(j1-1+6)
         if (nint(excent) .ne. 0) then
             call tecael(iadzi, iazk24)
-            valk(1)=zk24(iazk24-1+3)(1:8)
+            valk(1) = zk24(iazk24-1+3) (1:8)
             call utmess('F', 'CALCULEL2_31', sk=valk(1))
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

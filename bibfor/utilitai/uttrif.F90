@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,12 +44,12 @@ subroutine uttrif(vale, nb, typfon)
         if (nb .gt. 1) then
 !            --- CHOIX DE L'INCREMENT ---
             incrs = 1
-            is9 = nb / 9
- 10         continue
+            is9 = nb/9
+10          continue
             if (incrs .lt. is9) then
                 incrs = 3*incrs+1
                 goto 10
-            endif
+            end if
 !            --- REMONTEE DES BULLES ---
 120         continue
             do j = incrs+1, nb
@@ -65,25 +65,25 @@ subroutine uttrif(vale, nb, typfon)
                         xt = vale(l+nb)
                         vale(l+nb) = vale(l+nb+incrs)
                         vale(l+nb+incrs) = xt
-                        l = l - incrs
+                        l = l-incrs
                         goto 130
-                    endif
-                endif
+                    end if
+                end if
             end do
             incrs = incrs/3
             if (incrs .ge. 1) goto 120
-        endif
-    else if (typfon.eq.'FONCT_C') then
+        end if
+    else if (typfon .eq. 'FONCT_C') then
 !        --- TRI BULLE ---
         if (nb .gt. 1) then
 !            --- CHOIX DE L'INCREMENT ---
             incrs = 1
-            is9 = nb / 9
- 11         continue
+            is9 = nb/9
+11          continue
             if (incrs .lt. is9) then
                 incrs = 3*incrs+1
                 goto 11
-            endif
+            end if
 !            --- REMONTEE DES BULLES ---
 121         continue
             do j = incrs+1, nb
@@ -103,17 +103,17 @@ subroutine uttrif(vale, nb, typfon)
                         xt = vale(nb+2*(l-1)+2)
                         vale(nb+2*(l-1)+2) = vale(nb+2*(l+incrs-1)+2)
                         vale(nb+2*(l+incrs-1)+2) = xt
-                        l = l - incrs
+                        l = l-incrs
                         goto 131
-                    endif
-                endif
+                    end if
+                end if
             end do
             incrs = incrs/3
             if (incrs .ge. 1) goto 121
-        endif
+        end if
     else
         call getres(k16b1, k16b2, nomcmd)
         call utmess('F', 'UTILITAI5_58')
-    endif
+    end if
 !
 end subroutine

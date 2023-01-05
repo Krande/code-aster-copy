@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine asdir(monoap, muapde, id, neq, nbsup,&
+subroutine asdir(monoap, muapde, id, neq, nbsup, &
                  nsupp, tcosup, recmod, repdir)
     implicit none
 #include "asterf_types.h"
@@ -53,45 +53,45 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
 !
     call jemarq()
 !
-    if (monoap .or. .not.muapde) then
+    if (monoap .or. .not. muapde) then
         do in = 1, neq
-            repdir(in,id)=recmod(1,in,id)
+            repdir(in, id) = recmod(1, in, id)
         end do
     else
         AS_ALLOCATE(vr=quad, size=neq)
         AS_ALLOCATE(vr=line, size=neq)
         call wkvect('&&ASDIR.ABS ', 'V V R', neq, jabs)
         do is = 1, nsupp(id)
-            if (tcosup(is,id) .eq. 1) then
+            if (tcosup(is, id) .eq. 1) then
 !              --- COMBINAISON QUADRATIQUE ---
                 do in = 1, neq
-                    xxx = recmod(is,in,id)
-                    quad(in)= quad(in)+ xxx
+                    xxx = recmod(is, in, id)
+                    quad(in) = quad(in)+xxx
                 end do
-            else if (tcosup(is,id).eq.2) then
+            else if (tcosup(is, id) .eq. 2) then
 !              --- COMBINAISON LINEAIRE ---
                 do in = 1, neq
-                    if (recmod(is,in,id) .ge. 0.d0) then
-                        xxx = sqrt(recmod(is,in,id))
-                        line(in)= line(in)+ xxx
-                    endif
+                    if (recmod(is, in, id) .ge. 0.d0) then
+                        xxx = sqrt(recmod(is, in, id))
+                        line(in) = line(in)+xxx
+                    end if
                 end do
             else
 !              --- COMBINAISON VALEUR ABSOLUE ---
                 do in = 1, neq
-                    xxx = sqrt(abs(recmod(is,in,id)))
-                    zr(jabs+in-1)= zr(jabs+in-1)+ xxx
+                    xxx = sqrt(abs(recmod(is, in, id)))
+                    zr(jabs+in-1) = zr(jabs+in-1)+xxx
                 end do
-            endif
+            end if
         end do
         do in = 1, neq
-            xx1 = line(in) * line(in)
-            xx2 = zr(jabs+in-1) * zr(jabs+in-1)
-            repdir(in,id) = quad(in)+xx1+xx2
+            xx1 = line(in)*line(in)
+            xx2 = zr(jabs+in-1)*zr(jabs+in-1)
+            repdir(in, id) = quad(in)+xx1+xx2
         end do
         AS_DEALLOCATE(vr=quad)
         AS_DEALLOCATE(vr=line)
         call jedetr('&&ASDIR.ABS ')
-    endif
+    end if
     call jedema()
 end subroutine

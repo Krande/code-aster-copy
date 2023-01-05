@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine srdvds(dt, nbmat, mater, gv, dfdsv, seuilv, dvds)
 ! OUT : DVDS   : DERIVEE DE DEPSV/ DSIG
 ! ===================================================================================
 
-    implicit    none
+    implicit none
 
 #include "asterfort/lcprte.h"
 #include "asterfort/r8inir.h"
@@ -46,7 +46,7 @@ subroutine srdvds(dt, nbmat, mater, gv, dfdsv, seuilv, dvds)
     !!!
 
     integer :: nbmat
-    real(kind=8) :: mater(nbmat,2), dvds(6,6), dt
+    real(kind=8) :: mater(nbmat, 2), dvds(6, 6), dt
     real(kind=8) :: gv(6), dfdsv(6), seuilv
 
     !!!
@@ -54,33 +54,33 @@ subroutine srdvds(dt, nbmat, mater, gv, dfdsv, seuilv, dvds)
     !!!
 
     integer :: i, k, ndi, ndt
-    real(kind=8) :: pa, aa(6,6), a, n, a0, z, r, tpp, trr
-    common /tdim/   ndt , ndi
+    real(kind=8) :: pa, aa(6, 6), a, n, a0, z, r, tpp, trr
+    common/tdim/ndt, ndi
 
     !!!
     !!! Recuperation des temperatures
     !!!
 
-    tpp=mater(7,1)
-    trr=mater(8,1)
+    tpp = mater(7, 1)
+    trr = mater(8, 1)
 
     !!!
     !!! Para. du modele
     !!!
 
     !!! a T0
-    pa=mater(1,2)
-    a0=mater(16,2)
-    n=mater(17,2)
-    z=mater(27,2)
-    r=8.3144621d0
+    pa = mater(1, 2)
+    a0 = mater(16, 2)
+    n = mater(17, 2)
+    z = mater(27, 2)
+    r = 8.3144621d0
 
     !!! a T
-    if ((tpp.ge.trr).and.(trr.gt.0.d0)) then
-        a=a0*exp(-z/r/tpp*(1.d0-tpp/trr))
+    if ((tpp .ge. trr) .and. (trr .gt. 0.d0)) then
+        a = a0*exp(-z/r/tpp*(1.d0-tpp/trr))
     else
-        a=a0
-    endif
+        a = a0
+    end if
 
     !!!
     !!! Matrice intermediaire
@@ -93,13 +93,13 @@ subroutine srdvds(dt, nbmat, mater, gv, dfdsv, seuilv, dvds)
     !!! Calcul de dphi/ddeps
     !!!
 
-    do i=1, ndt
-        do k=1, ndt
-            if (seuilv.le.0.d0) then
-                dvds(i,k)=0.d0
+    do i = 1, ndt
+        do k = 1, ndt
+            if (seuilv .le. 0.d0) then
+                dvds(i, k) = 0.d0
             else
-                dvds(i,k)=a*n/pa*(seuilv/pa)**(n-1.d0)*aa(i,k)*dt
-            endif
+                dvds(i, k) = a*n/pa*(seuilv/pa)**(n-1.d0)*aa(i, k)*dt
+            end if
         end do
     end do
 

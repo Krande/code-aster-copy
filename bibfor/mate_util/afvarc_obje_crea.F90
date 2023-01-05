@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine afvarc_obje_crea(jv_base, chmate, mesh, varc_cata, varc_affe)
 !
-use Material_Datastructure_type
+    use Material_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -56,7 +56,7 @@ implicit none
     integer :: nb_varc_cmp, nb_affe_varc
     integer :: i_affe_varc, i_cmp
     integer :: indx_cata, iret
-    integer, parameter :: nmxcmp=20
+    integer, parameter :: nmxcmp = 20
     character(len=8) :: varc_name, cmp_name
     character(len=24) :: cvnom, cvvar, cvgd, cvcmp
     character(len=19) :: cart1, cart2
@@ -68,7 +68,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_varc_cmp  = varc_affe%nb_varc_cmp
+    nb_varc_cmp = varc_affe%nb_varc_cmp
     nb_affe_varc = varc_affe%nb_affe_varc
     ASSERT(nb_affe_varc .ne. 0)
 !
@@ -76,36 +76,36 @@ implicit none
 !
     cvnom = chmate//'.CVRCNOM'
     cvvar = chmate//'.CVRCVARC'
-    cvgd  = chmate//'.CVRCGD'
+    cvgd = chmate//'.CVRCGD'
     cvcmp = chmate//'.CVRCCMP'
-    call wkvect(cvnom, jv_base//' V K8', nb_varc_cmp, vk8 = v_cvnom)
-    call wkvect(cvvar, jv_base//' V K8', nb_varc_cmp, vk8 = v_cvvar)
-    call wkvect(cvgd , jv_base//' V K8', nb_varc_cmp, vk8 = v_cvgd)
-    call wkvect(cvcmp, jv_base//' V K8', nb_varc_cmp, vk8 = v_cvcmp)
+    call wkvect(cvnom, jv_base//' V K8', nb_varc_cmp, vk8=v_cvnom)
+    call wkvect(cvvar, jv_base//' V K8', nb_varc_cmp, vk8=v_cvvar)
+    call wkvect(cvgd, jv_base//' V K8', nb_varc_cmp, vk8=v_cvgd)
+    call wkvect(cvcmp, jv_base//' V K8', nb_varc_cmp, vk8=v_cvcmp)
 !
 ! - Create fields
 !
     do i_affe_varc = 1, nb_affe_varc
         indx_cata = varc_affe%list_affe_varc(i_affe_varc)%indx_cata
         varc_name = varc_cata%list_cata_varc(indx_cata)%name
-        cart1     = chmate//'.'//varc_name//'.1'
+        cart1 = chmate//'.'//varc_name//'.1'
         call exisd('CARTE', cart1, iret)
         if (iret .eq. 0) then
             call alcart(jv_base, cart1, mesh, 'NEUT_R')
-        endif
-        call jeveuo(cart1//'.NCMP', 'E', vk8  = v_cart_ncmp)
+        end if
+        call jeveuo(cart1//'.NCMP', 'E', vk8=v_cart_ncmp)
         cmp_name = 'X'
         do i_cmp = 1, nmxcmp
             call codent(i_cmp, 'G', cmp_name(2:8))
             v_cart_ncmp(i_cmp) = cmp_name
         end do
 !
-        cart2     = chmate//'.'//varc_name//'.2'
+        cart2 = chmate//'.'//varc_name//'.2'
         call exisd('CARTE', cart2, iret)
         if (iret .eq. 0) then
             call alcart(jv_base, cart2, mesh, 'NEUT_K16')
-        endif
-        call jeveuo(cart2//'.NCMP', 'E', vk8  = v_cart_ncmp)
+        end if
+        call jeveuo(cart2//'.NCMP', 'E', vk8=v_cart_ncmp)
         cmp_name = 'Z'
         do i_cmp = 1, 7
             call codent(i_cmp, 'G', cmp_name(2:8))

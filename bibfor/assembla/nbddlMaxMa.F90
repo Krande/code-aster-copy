@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -128,45 +128,45 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     call jemarq()
 !
     matr_asse = matr_assez
-    nume_ddl  = nume_ddlz
+    nume_ddl = nume_ddlz
 !
 ! --- Verification nume_ddl
 !
     call jeexin(matr_asse//'.REFA', iret)
     if (iret .gt. 0) then
         call jeveuo(matr_asse//'.REFA', 'L', jrefa)
-        ASSERT(zk24(jrefa-1+2)(1:14).eq.nume_ddl)
+        ASSERT(zk24(jrefa-1+2) (1:14) .eq. nume_ddl)
     end if
 !
     call dismoi('NOM_MODELE', nume_ddl, 'NUME_DDL', repk=model)
     call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=mesh)
-    call dismoi('NOM_GD'    , nume_ddl, 'NUME_DDL', repk=nogdco)
-    call dismoi('NOM_GD_SI' , nogdco  , 'GRANDEUR', repk=nogdsi)
-    call dismoi('NUM_GD_SI' , nogdsi  , 'GRANDEUR', repi=nugd)
+    call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=nogdco)
+    call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
+    call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
 !
-    nec=nbec(nugd)
+    nec = nbec(nugd)
 !
     call jeexin(model//'.MODELE    .SSSA', iret)
     if (iret .gt. 0) then
         call jeveuo(model//'.MODELE    .SSSA', 'L', vi=sssa)
-    endif
+    end if
 !
     call jeexin(mesh//'.CONNEX', iret)
     if (iret .gt. 0) then
         call jeveuo(mesh//'.CONNEX', 'L', iconx1)
         call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', iconx2)
     else
-        iconx1=0
-        iconx2=0
-    endif
+        iconx1 = 0
+        iconx2 = 0
+    end if
 !
 ! --- calcul de l_matd et jnueq
 !
     call dismoi('MATR_DISTRIBUEE', nume_ddl, 'NUME_DDL', repk=answer)
-    l_matd = (answer.eq.'OUI')
+    l_matd = (answer .eq. 'OUI')
 !
     call jelira(nume_ddl//'.NUME.REFN', 'LONMAX', n1)
-    ASSERT(n1.eq.4)
+    ASSERT(n1 .eq. 4)
 !
 ! --- Acces au PROF_CHNO
 !
@@ -176,7 +176,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     else
         call jeveuo(nume_ddl//'.NUME.PRNO', 'L', vi=v_prn1)
         call jeveuo(jexatr(nume_ddl//'.NUME.PRNO', 'LONCUM'), 'L', vi=v_prn2)
-    endif
+    end if
 !
 ! --- liste des matr_elem dans un objet jeveux
 !
@@ -192,25 +192,25 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     call parti0(nbmat, v_name_mat, partition)
 !
     if (partition .ne. ' ') then
-        l_distme=ASTER_TRUE
+        l_distme = ASTER_TRUE
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
         call jeveuo(partition//'.PRTK', 'L', vk24=v_prtk)
-        l_dgrel=(v_prtk(1).eq.'SOUS_DOMAINE') .or. (v_prtk(1).eq.'GROUP_ELEM')
-        if (.not.l_dgrel) then
+        l_dgrel = (v_prtk(1) .eq. 'SOUS_DOMAINE') .or. (v_prtk(1) .eq. 'GROUP_ELEM')
+        if (.not. l_dgrel) then
             call jeveuo(partition//'.NUPR', 'L', vi=v_numsd)
-        endif
+        end if
     else
-        rang=0
+        rang = 0
         nbproc = 1
-        l_distme=ASTER_FALSE
-        l_dgrel=ASTER_FALSE
-    endif
+        l_distme = ASTER_FALSE
+        l_dgrel = ASTER_FALSE
+    end if
 !
     if (l_matd) then
         ASSERT(l_distme)
-    endif
+    end if
 !
 ! --- Calcul du nombre maximum de ddl par maille
 !
@@ -220,12 +220,12 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
     maxDDLMa = 0
 !
     do imat = 1, nbmat
-        matr_elem=v_name_mat(imat)(1:19)
+        matr_elem = v_name_mat(imat) (1:19)
         call dismoi('NOM_MODELE', matr_elem, 'MATR_ELEM', repk=model_elem)
 !
         if (model_elem .ne. model) then
             call utmess('F', 'ASSEMBLA_5')
-        endif
+        end if
 !
 ! --- traitement des elements finis classiques
 !
@@ -237,7 +237,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
                 call jeveuo(matr_elem//'.RELR', 'L', vk24=v_relr)
 !
                 do iresu = 1, nb_resu_elem
-                    resu_elem=v_relr(iresu)(1:19)
+                    resu_elem = v_relr(iresu) (1:19)
 !
                     call jeexin(resu_elem//'.DESC', iret)
                     if (iret .ne. 0) then
@@ -245,10 +245,10 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
                         call dismoi('MPI_COMPLET', resu_elem, 'RESUELEM', repk=answer)
                         if (answer .eq. 'NON') then
                             ASSERT(l_distme)
-                        endif
+                        end if
 !
                         call jeveuo(resu_elem//'.NOLI', 'L', vk24=v_nomlig)
-                        nomligrel=v_nomlig(1)(1:19)
+                        nomligrel = v_nomlig(1) (1:19)
 
                         call jenonu(jexnom(matr_asse//'.LILI', nomligrel), ilima)
                         call jenonu(jexnom(nume_ddl//'.NUME.LILI', nomligrel), ilinu)
@@ -258,29 +258,29 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
 ! --- boucle sur les grels du ligrel
 !
                         do igrel = 1, zzngel(ilima)
-                            if (l_dgrel .and. mod(igrel,nbproc) .ne. rang) goto 100
+                            if (l_dgrel .and. mod(igrel, nbproc) .ne. rang) goto 100
 !
 ! --- il se peut que le grel igrel soit vide
                             call jaexin(jexnum(resu_elem//'.RESL', igrel), iret)
                             if (iret .eq. 0) goto 100
 !
-                            mode=zi(jdesc+igrel+1)
+                            mode = zi(jdesc+igrel+1)
                             if (mode .gt. 0) then
-                                nnoe=nbno(mode)
+                                nnoe = nbno(mode)
 !
 ! --- nombre d'elements du grel igrel du ligrel nomligrel/ilima
 !
-                                nel=zznelg(ilima,igrel)
+                                nel = zznelg(ilima, igrel)
 !
 ! --- boucle sur les elements du grel
 !
                                 do iel = 1, nel
                                     nddlt = 0
-                                    numa=zzliel(ilima,igrel,iel)
+                                    numa = zzliel(ilima, igrel, iel)
 !
 ! --- SI LES CALCULS ONT ETE DISTRIBUES
 !
-                                    if (l_distme .and. .not.l_dgrel) then
+                                    if (l_distme .and. .not. l_dgrel) then
 !       SI ON EST DANS UN CALCUL DISTRIBUE, ON SE POSE
 !       LA QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA AUX
 !       DONNEES ATTRIBUEES AU PROC SI MAILLE PHYSIQUE: CHAQUE PROC
@@ -290,39 +290,39 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
                                             if (v_numsd(numa) .ne. rang) goto 200
                                         else
                                             if (rang .ne. 0) goto 200
-                                        endif
-                                    endif
+                                        end if
+                                    end if
 !
                                     if (numa .gt. 0) then
 ! --- MAILLE DU MAILLAGE
                                         do ino = 1, nnoe
-                                            n1 = zzconx(numa,ino)
-                                            nddl1 = zzprno(1,n1,2)
-                                            nddlt = nddlt + nddl1
+                                            n1 = zzconx(numa, ino)
+                                            nddl1 = zzprno(1, n1, 2)
+                                            nddlt = nddlt+nddl1
                                         end do
                                     else
 ! --- MAILLE TARDIVE
-                                        numa=-numa
+                                        numa = -numa
                                         do ino = 1, nnoe
 ! --- N1 : INDICE DU NOEUDS DS LE .NEMA DU LIGREL DE CHARGE GLOBAL OU LOCAL
-                                            n1=zznema(ilima,numa,ino)
+                                            n1 = zznema(ilima, numa, ino)
                                             if (n1 .lt. 0) then
 ! --- NOEUD TARDIF
-                                                n1=-n1
-                                                nddl1=zzprno(ilinu,n1,2)
+                                                n1 = -n1
+                                                nddl1 = zzprno(ilinu, n1, 2)
                                             else
 ! --- NOEUD PHYSIQUE
-                                                nddl1=zzprno(1,n1,2)
-                                            endif
-                                            nddlt = nddlt + nddl1
+                                                nddl1 = zzprno(1, n1, 2)
+                                            end if
+                                            nddlt = nddlt+nddl1
                                         end do
-                                    endif
+                                    end if
 !
-200 continue
+200                                 continue
                                     maxDDLMa = max(maxDDLMa, nddlt)
                                 end do
-                            endif
-100  continue
+                            end if
+100                         continue
                         end do
                     end if
                 end do
@@ -339,15 +339,15 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
 !
             do iel = 1, nbssa
                 nddlt = 0
-                if(sssa(iel) .ne. 0) then
+                if (sssa(iel) .ne. 0) then
                     call jeveuo(jexnum(mesh//'.SUPMAIL', iel), 'L', iamail)
                     call jelira(jexnum(mesh//'.SUPMAIL', iel), 'LONMAX', nnoe)
 
                     do ino = 1, nnoe
-                        n1=zi(iamail-1+ino)
-                        ASSERT(n1.ne.0)
-                        nddl1=zzprno(1,n1,2)
-                        nddlt = nddlt + nddl1
+                        n1 = zi(iamail-1+ino)
+                        ASSERT(n1 .ne. 0)
+                        nddl1 = zzprno(1, n1, 2)
+                        nddlt = nddlt+nddl1
                     end do
                 end if
                 maxDDLMa = max(maxDDLMa, nddlt)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 module contact_algebra_module
 !
-use contact_type
+    use contact_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 !
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
@@ -55,7 +55,7 @@ contains
 !
     real(kind=8) function projRm(x)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in) :: x
 !
@@ -65,7 +65,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        if(x <= TOLE_BORNE) then
+        if (x <= TOLE_BORNE) then
             projRm = x
         else
             projRm = 0.d0
@@ -79,7 +79,7 @@ contains
 !
     real(kind=8) function Heaviside(x)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in) :: x
 !
@@ -89,7 +89,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        if(x >= -(TOLE_BORNE)) then
+        if (x >= -(TOLE_BORNE)) then
             Heaviside = 1.d0
         else
             Heaviside = 0.d0
@@ -103,10 +103,10 @@ contains
 !
     function otimes(v1, v2)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in) :: v1(3), v2(3)
-        real(kind=8) :: otimes(3,3)
+        real(kind=8) :: otimes(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,8 +117,8 @@ contains
         integer :: i, j
 !
         do j = 1, 3
-            do i= 1, 3
-                otimes(i,j) = v1(i) * v2(j)
+            do i = 1, 3
+                otimes(i, j) = v1(i)*v2(j)
             end do
         end do
 !
@@ -130,9 +130,9 @@ contains
 !
     function Iden3()
 !
-    implicit none
+        implicit none
 !
-        real(kind=8) :: Iden3(3,3)
+        real(kind=8) :: Iden3(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -141,9 +141,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         Iden3 = 0.d0
-        Iden3(1,1) = 1.d0
-        Iden3(2,2) = 1.d0
-        Iden3(3,3) = 1.d0
+        Iden3(1, 1) = 1.d0
+        Iden3(2, 2) = 1.d0
+        Iden3(3, 3) = 1.d0
 !
     end function
 !
@@ -153,10 +153,10 @@ contains
 !
     function projTn(normal)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in) :: normal(3)
-        real(kind=8) :: projTn(3,3)
+        real(kind=8) :: projTn(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,7 +165,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        projTn = Iden3() - otimes(normal, normal)
+        projTn = Iden3()-otimes(normal, normal)
 !
     end function
 !
@@ -175,10 +175,10 @@ contains
 !
     function metricTensor(tau)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), intent(in) :: tau(3,2)
-        real(kind=8) :: metricTensor(2,2)
+        real(kind=8), intent(in) :: tau(3, 2)
+        real(kind=8) :: metricTensor(2, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -196,11 +196,11 @@ contains
 !
     function invMetricTensor(geom, metricTens)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: metricTens(2,2)
-        real(kind=8) :: invMetricTensor(2,2)
+        real(kind=8), intent(in) :: metricTens(2, 2)
+        real(kind=8) :: invMetricTensor(2, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -212,15 +212,15 @@ contains
 !
         invMetricTensor = 0.d0
 !
-        if(geom%elem_dime == 3) then
-            det = metricTens(1,1) * metricTens(2,2) - metricTens(1,2) * metricTens(2,1)
-            invMetricTensor(1,1) = metricTens(2,2) / det
-            invMetricTensor(1,2) = -metricTens(2,1) / det
-            invMetricTensor(2,1) = invMetricTensor(1,2)
-            invMetricTensor(2,2) = metricTens(1,1) / det
+        if (geom%elem_dime == 3) then
+            det = metricTens(1, 1)*metricTens(2, 2)-metricTens(1, 2)*metricTens(2, 1)
+            invMetricTensor(1, 1) = metricTens(2, 2)/det
+            invMetricTensor(1, 2) = -metricTens(2, 1)/det
+            invMetricTensor(2, 1) = invMetricTensor(1, 2)
+            invMetricTensor(2, 2) = metricTens(1, 1)/det
         else
-            invMetricTensor(1,1) = 1.d0 / metricTens(1,1)
-         end if
+            invMetricTensor(1, 1) = 1.d0/metricTens(1, 1)
+        end if
 !
     end function
 !
@@ -230,11 +230,11 @@ contains
 !
     function secondFundForm(elem_dime, nb_node, elem_coor, ddff, norm)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: elem_dime, nb_node
-        real(kind=8), intent(in) :: elem_coor(3,9), norm(3), ddff(3,9)
-        real(kind=8) :: secondFundForm(2,2)
+        real(kind=8), intent(in) :: elem_coor(3, 9), norm(3), ddff(3, 9)
+        real(kind=8) :: secondFundForm(2, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Eval second fondamental form
@@ -254,18 +254,18 @@ contains
 !
         do idim = 1, elem_dime
             do ino = 1, nb_node
-                ddgeo1(idim) = ddgeo1(idim) + ddff(1,ino)*elem_coor(idim, ino)
-                ddgeo2(idim) = ddgeo2(idim) + ddff(2,ino)*elem_coor(idim, ino)
-                ddgeo3(idim) = ddgeo3(idim) + ddff(3,ino)*elem_coor(idim, ino)
-            enddo
+                ddgeo1(idim) = ddgeo1(idim)+ddff(1, ino)*elem_coor(idim, ino)
+                ddgeo2(idim) = ddgeo2(idim)+ddff(2, ino)*elem_coor(idim, ino)
+                ddgeo3(idim) = ddgeo3(idim)+ddff(3, ino)*elem_coor(idim, ino)
+            end do
         end do
 !
 ! --- Evaluate H
 !
-        secondFundForm(1,1) = ddgeo1(1)*norm(1)+ddgeo1(2)*norm(2)+ddgeo1(3)*norm(3)
-        secondFundForm(1,2) = ddgeo3(1)*norm(1)+ddgeo3(2)*norm(2)+ddgeo3(3)*norm(3)
-        secondFundForm(2,1) = secondFundForm(1,2)
-        secondFundForm(2,2) = ddgeo2(1)*norm(1)+ddgeo2(2)*norm(2)+ddgeo2(3)*norm(3)
+        secondFundForm(1, 1) = ddgeo1(1)*norm(1)+ddgeo1(2)*norm(2)+ddgeo1(3)*norm(3)
+        secondFundForm(1, 2) = ddgeo3(1)*norm(1)+ddgeo3(2)*norm(2)+ddgeo3(3)*norm(3)
+        secondFundForm(2, 1) = secondFundForm(1, 2)
+        secondFundForm(2, 2) = ddgeo2(1)*norm(1)+ddgeo2(2)*norm(2)+ddgeo2(3)*norm(3)
 !
     end function
 !
@@ -275,10 +275,10 @@ contains
 !
     function cmpTang(invMetricTens, tau, vec)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), intent(in) :: invMetricTens(2,2)
-        real(kind=8), intent(in) :: tau(3,2), vec(3)
+        real(kind=8), intent(in) :: invMetricTens(2, 2)
+        real(kind=8), intent(in) :: tau(3, 2), vec(3)
         real(kind=8) :: cmpTang(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ contains
 !
     function projBs(param, x, s, norm_slav)
 !
-    implicit none
+        implicit none
 !
         type(ContactParameters), intent(in) :: param
         real(kind=8), intent(in) :: x(3), norm_slav(3)
@@ -314,19 +314,19 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm_xT, Tn(3,3), xT(3)
+        real(kind=8) :: norm_xT, Tn(3, 3), xT(3)
 !
         projBs = 0
-        if(param%type_fric .ne. FRIC_TYPE_NONE) then
-            if(abs(s) > r8prem()) then
+        if (param%type_fric .ne. FRIC_TYPE_NONE) then
+            if (abs(s) > r8prem()) then
                 Tn = projTn(norm_slav)
                 xT = matmul(Tn, x)
                 norm_xT = norm2(xT)
 !
-                if(norm_xT <= s) then
+                if (norm_xT <= s) then
                     projBs = xT
                 else
-                    projBs = s * xT / norm_xT
+                    projBs = s*xT/norm_xT
                 end if
             end if
         end if
@@ -339,12 +339,12 @@ contains
 !
     function dprojBs_dx(param, x, s, norm_slav)
 !
-    implicit none
+        implicit none
 !
         type(ContactParameters), intent(in) :: param
         real(kind=8), intent(in) :: x(3)
         real(kind=8), intent(in) :: s, norm_slav(3)
-        real(kind=8) :: dprojBs_dx(3,3)
+        real(kind=8) :: dprojBs_dx(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -352,20 +352,20 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm_xT, Tn(3,3), xT_uni(3), xT(3)
+        real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), xT(3)
 !
         dprojBs_dx = 0
-        if(param%type_fric .ne. FRIC_TYPE_NONE) then
-            if(abs(s) > r8prem()) then
+        if (param%type_fric .ne. FRIC_TYPE_NONE) then
+            if (abs(s) > r8prem()) then
                 Tn = projTn(norm_slav)
                 xT = matmul(Tn, x)
                 norm_xT = norm2(xT)
 !
-                if(norm_xT <= s) then
+                if (norm_xT <= s) then
                     dprojBs_dx = Tn
                 else
-                    xT_uni = xT / norm_xT
-                    dprojBs_dx = s * norm_xT * (Tn - otimes(xT_uni, xT_uni))
+                    xT_uni = xT/norm_xT
+                    dprojBs_dx = s*norm_xT*(Tn-otimes(xT_uni, xT_uni))
                 end if
             end if
         end if
@@ -378,7 +378,7 @@ contains
 !
     function dprojBs_ds(param, x, s, norm_slav)
 !
-    implicit none
+        implicit none
 !
         type(ContactParameters), intent(in) :: param
         real(kind=8), intent(in) :: x(3), norm_slav(3)
@@ -391,17 +391,17 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm_xT, Tn(3,3), xT(3)
+        real(kind=8) :: norm_xT, Tn(3, 3), xT(3)
 !
         dprojBs_ds = 0
-        if(param%type_fric .ne. FRIC_TYPE_NONE) then
-            if(abs(s) > r8prem()) then
+        if (param%type_fric .ne. FRIC_TYPE_NONE) then
+            if (abs(s) > r8prem()) then
                 Tn = projTn(norm_slav)
                 xT = matmul(Tn, x)
                 norm_xT = norm2(xT)
 !
-                if(norm_xT > s) then
-                    dprojBs_ds = xT / norm_xT
+                if (norm_xT > s) then
+                    dprojBs_ds = xT/norm_xT
                 end if
             end if
         end if
@@ -414,12 +414,12 @@ contains
 !
     function dprojBs_dn(param, x, s, norm_slav)
 !
-    implicit none
+        implicit none
 !
         type(ContactParameters), intent(in) :: param
         real(kind=8), intent(in) :: x(3)
         real(kind=8), intent(in) :: s, norm_slav(3)
-        real(kind=8) :: dprojBs_dn(3,3)
+        real(kind=8) :: dprojBs_dn(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -427,21 +427,21 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm_xT, Tn(3,3), xT_uni(3), x_n, xT(3)
+        real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), x_n, xT(3)
 !
         dprojBs_dn = 0
-        if(param%type_fric .ne. FRIC_TYPE_NONE) then
-            if(abs(s) > r8prem()) then
+        if (param%type_fric .ne. FRIC_TYPE_NONE) then
+            if (abs(s) > r8prem()) then
                 Tn = projTn(norm_slav)
                 xT = matmul(Tn, x)
                 norm_xT = norm2(xT)
                 x_n = dot_product(x, norm_slav)
 !
-                if(norm_xT <= s) then
-                    dprojBs_dn = -x_n * Tn - otimes(norm_slav, xT)
+                if (norm_xT <= s) then
+                    dprojBs_dn = -x_n*Tn-otimes(norm_slav, xT)
                 else
-                    xT_uni = xT / norm_xT
-                    dprojBs_dn = -s/norm_xT*(x_n*(Tn-otimes(xT_uni,xT_uni)) + otimes(norm_slav, xT))
+                    xT_uni = xT/norm_xT
+                    dprojBs_dn = -s/norm_xT*(x_n*(Tn-otimes(xT_uni, xT_uni))+otimes(norm_slav, xT))
                 end if
             end if
         end if
@@ -454,12 +454,12 @@ contains
 !
     function dNs_du(geom, tau_slav, dTs_ns)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: tau_slav(3,2)
-        real(kind=8), intent(in) :: dTs_ns(MAX_LAGA_DOFS,2)
-        real(kind=8) :: dNs_du(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(in) :: tau_slav(3, 2)
+        real(kind=8), intent(in) :: dTs_ns(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: dNs_du(MAX_LAGA_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -468,7 +468,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: lhs_inv(3,2), metricTens(2,2), invMetricTens(2,2)
+        real(kind=8) :: lhs_inv(3, 2), metricTens(2, 2), invMetricTens(2, 2)
 !
         metricTens = metricTensor(tau_slav)
         invMetricTens = invMetricTensor(geom, metricTens)
@@ -481,7 +481,7 @@ contains
 !
         dNs_du = 0.d0
         call dgemm("N", "T", geom%nb_dofs, geom%elem_dime, geom%elem_dime-1, 1.d0, &
-                    dTs_ns, MAX_LAGA_DOFS, lhs_inv, 3, 0.d0, dNs_du, MAX_LAGA_DOFS)
+                   dTs_ns, MAX_LAGA_DOFS, lhs_inv, 3, 0.d0, dNs_du, MAX_LAGA_DOFS)
 !
     end function
 !
@@ -491,12 +491,12 @@ contains
 !
     function d2Ns_du2_ns(geom, tau_slav, dTs_ns)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: tau_slav(3,2)
-        real(kind=8), intent(in) :: dTs_ns(MAX_LAGA_DOFS,2)
-        real(kind=8) :: d2Ns_du2_ns(MAX_LAGA_DOFS,MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: tau_slav(3, 2)
+        real(kind=8), intent(in) :: dTs_ns(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: d2Ns_du2_ns(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -506,22 +506,22 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS,2), metricTens(2,2), invMetricTens(2,2)
+        real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS, 2), metricTens(2, 2), invMetricTens(2, 2)
 !
         metricTens = metricTensor(tau_slav)
         invMetricTens = invMetricTensor(geom, metricTens)
 !
 ! ----- Term: -invMetricTens_slav * (D tau^s(u^s)[v^s]  * n^s)
 !
-        invA_dT_ns =  0.d0
+        invA_dT_ns = 0.d0
         call dgemm("N", "T", geom%nb_dofs, geom%elem_dime-1, geom%elem_dime-1, -1.d0, &
-                    dTs_ns, MAX_LAGA_DOFS, invMetricTens, 2, 0.d0, invA_dT_ns, MAX_LAGA_DOFS)
+                   dTs_ns, MAX_LAGA_DOFS, invMetricTens, 2, 0.d0, invA_dT_ns, MAX_LAGA_DOFS)
 !
 ! --- Compute D2 ns . n^s
 !
         d2Ns_du2_ns = 0.d0
         call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0, &
-            dTs_ns, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_ns, MAX_LAGA_DOFS)
+                 dTs_ns, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_ns, MAX_LAGA_DOFS)
 !
     end function
 !
@@ -531,13 +531,13 @@ contains
 !
     function d2Ns_du2_nm(geom, tau_slav, norm_mast, dNs, dTs, dTs_ns, dTs_nm)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: tau_slav(3,2), norm_mast(3)
-        real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS,3), dTs(MAX_LAGA_DOFS,3,2)
-        real(kind=8), intent(in) :: dTs_nm(MAX_LAGA_DOFS,2), dTs_ns(MAX_LAGA_DOFS,2)
-        real(kind=8) :: d2Ns_du2_nm(MAX_LAGA_DOFS,MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: tau_slav(3, 2), norm_mast(3)
+        real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS, 3), dTs(MAX_LAGA_DOFS, 3, 2)
+        real(kind=8), intent(in) :: dTs_nm(MAX_LAGA_DOFS, 2), dTs_ns(MAX_LAGA_DOFS, 2)
+        real(kind=8) :: d2Ns_du2_nm(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -548,8 +548,8 @@ contains
 !                        -  invMetricTens^s D tau^s(u^s)[v^s] D n^s(u^s)[du^s] )
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS,2), metricTens(2,2), invMetricTens(2,2)
-        real(kind=8) :: ts_nm(2), invA_ts_nm(2), dinvMetric(MAX_LAGA_DOFS,3,2)
+        real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS, 2), metricTens(2, 2), invMetricTens(2, 2)
+        real(kind=8) :: ts_nm(2), invA_ts_nm(2), dinvMetric(MAX_LAGA_DOFS, 3, 2)
         integer :: i_tau
 !
         d2Ns_du2_nm = 0.d0
@@ -564,29 +564,29 @@ contains
 !
 ! --- Term: -invMetricTens_slav * (D tau^s(u^s)[v^s]  * n^s)
 !
-        invA_dT_ns =  0.d0
+        invA_dT_ns = 0.d0
         call dgemm("N", "T", geom%nb_dofs, geom%elem_dime-1, geom%elem_dime-1, -1.d0, &
-                    dTs_ns, MAX_LAGA_DOFS, invMetricTens, 2, 0.d0, invA_dT_ns, MAX_LAGA_DOFS)
+                   dTs_ns, MAX_LAGA_DOFS, invMetricTens, 2, 0.d0, invA_dT_ns, MAX_LAGA_DOFS)
 !
 ! --- Term: -( D tau^s(u^s)[v^s](u^s)[v^s] n^s)^T * invMetricTens^s * ( D tau^s(u^s)[v^s] n^m)
 !
         call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, 1.d0, &
-            dTs_nm, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
+                 dTs_nm, MAX_LAGA_DOFS, invA_dT_ns, MAX_LAGA_DOFS, 0.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
 !
 ! --- Term: -((tau^s)^T n^m  invMetricTens^s ) . D tau^s(u^s)[v^s] D n^s(u^s)[du^s]
 !
-        do i_tau = 1, geom%elem_dime - 1
+        do i_tau = 1, geom%elem_dime-1
             call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime, -invA_ts_nm(i_tau), &
-                        dTs(:,:,i_tau), MAX_LAGA_DOFS, dNs, MAX_LAGA_DOFS, &
-                        1.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
+                       dTs(:, :, i_tau), MAX_LAGA_DOFS, dNs, MAX_LAGA_DOFS, &
+                       1.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
         end do
 !
 ! --- Term: (tau^s)^T n^m ( D invMetricTens^s(u^s){\vdu} D tau^s(u^s)[v^s] n^s )
 !
-        do i_tau = 1, geom%elem_dime - 1
+        do i_tau = 1, geom%elem_dime-1
             call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, -invA_ts_nm(i_tau), &
-                        dinvMetric(:,:,i_tau), MAX_LAGA_DOFS, dTs_ns, MAX_LAGA_DOFS, &
-                        1.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
+                       dinvMetric(:, :, i_tau), MAX_LAGA_DOFS, dTs_ns, MAX_LAGA_DOFS, &
+                       1.d0, d2Ns_du2_nm, MAX_LAGA_DOFS)
         end do
 !
     end function
@@ -597,11 +597,11 @@ contains
 !
     function dT_du(elem_dime, nb_node, dfunc)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: elem_dime, nb_node
-        real(kind=8), intent(in) :: dfunc(2,9)
-        real(kind=8) :: dT_du(27,3,2)
+        real(kind=8), intent(in) :: dfunc(2, 9)
+        real(kind=8) :: dT_du(27, 3, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -617,8 +617,8 @@ contains
         index = 0
         do i_node = 1, nb_node
             do i_dim = 1, elem_dime
-                index = index + 1
-                do i_tau = 1, elem_dime - 1
+                index = index+1
+                do i_tau = 1, elem_dime-1
                     dT_du(index, i_dim, i_tau) = dfunc(i_tau, i_node)
                 end do
             end do
@@ -632,11 +632,11 @@ contains
 !
     function dTs_du(geom, dfunc_slav)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dfunc_slav(2,9)
-        real(kind=8) :: dTs_du(MAX_LAGA_DOFS,3,2)
+        real(kind=8), intent(in) :: dfunc_slav(2, 9)
+        real(kind=8) :: dTs_du(MAX_LAGA_DOFS, 3, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -644,7 +644,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: dT(27,3,2)
+        real(kind=8) :: dT(27, 3, 2)
         integer:: i_node, i_dim, index, index2
 !
         dTs_du = 0.d0
@@ -657,13 +657,13 @@ contains
         index2 = 0
         do i_node = 1, geom%nb_node_slav
             do i_dim = 1, geom%elem_dime
-                index = index + 1
-                index2 = index2 + 1
+                index = index+1
+                index2 = index2+1
                 dTs_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = &
                     dT(index2, 1:geom%elem_dime, 1:geom%elem_dime-1)
             end do
 !
-            index = index + geom%indi_lagc(i_node)
+            index = index+geom%indi_lagc(i_node)
         end do
 !
     end function
@@ -674,11 +674,11 @@ contains
 !
     function dTm_du(geom, dfunc_mast)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dfunc_mast(2,9)
-        real(kind=8) :: dTm_du(MAX_LAGA_DOFS,3,2)
+        real(kind=8), intent(in) :: dfunc_mast(2, 9)
+        real(kind=8) :: dTm_du(MAX_LAGA_DOFS, 3, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -686,7 +686,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: dT(27,3,2)
+        real(kind=8) :: dT(27, 3, 2)
         integer:: i_node, i_dim, index, index2
 !
         dTm_du = 0.d0
@@ -695,12 +695,12 @@ contains
 !
 ! --- Master side
 !
-        index = geom%nb_dofs - geom%nb_node_mast * geom%elem_dime
+        index = geom%nb_dofs-geom%nb_node_mast*geom%elem_dime
         index2 = 0
         do i_node = 1, geom%nb_node_mast
             do i_dim = 1, geom%elem_dime
-                index = index + 1
-                index2 = index2 + 1
+                index = index+1
+                index2 = index2+1
                 dTm_du(index, 1:geom%elem_dime, 1:geom%elem_dime-1) = &
                     dT(index2, 1:geom%elem_dime, 1:geom%elem_dime-1)
             end do
@@ -714,11 +714,11 @@ contains
 !
     function dT_du_norm(elem_dime, nb_node, dfunc, norm)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: elem_dime, nb_node
-        real(kind=8), intent(in) :: dfunc(2,9), norm(3)
-        real(kind=8) :: dT_du_norm(27,2)
+        real(kind=8), intent(in) :: dfunc(2, 9), norm(3)
+        real(kind=8) :: dT_du_norm(27, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -734,9 +734,9 @@ contains
         index = 0
         do i_node = 1, nb_node
             do i_dim = 1, elem_dime
-                index = index + 1
-                do i_tau = 1, elem_dime - 1
-                    dT_du_norm(index, i_tau) = dfunc(i_tau, i_node) * norm(i_dim)
+                index = index+1
+                do i_tau = 1, elem_dime-1
+                    dT_du_norm(index, i_tau) = dfunc(i_tau, i_node)*norm(i_dim)
                 end do
             end do
         end do
@@ -749,11 +749,11 @@ contains
 !
     function dTs_du_ns(geom, dfunc_slav, norm_slav)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dfunc_slav(2,9), norm_slav(3)
-        real(kind=8) :: dTs_du_ns(MAX_LAGA_DOFS,2)
+        real(kind=8), intent(in) :: dfunc_slav(2, 9), norm_slav(3)
+        real(kind=8) :: dTs_du_ns(MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -761,7 +761,7 @@ contains
 !   D tau^s (u)[v] . n^s
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: dT_n(27,2)
+        real(kind=8) :: dT_n(27, 2)
         integer:: i_node, i_dim, index, index2
 !
         dTs_du_ns = 0.d0
@@ -774,13 +774,13 @@ contains
         index2 = 0
         do i_node = 1, geom%nb_node_slav
             do i_dim = 1, geom%elem_dime
-                index = index + 1
-                index2 = index2 + 1
+                index = index+1
+                index2 = index2+1
                 dTs_du_ns(index, 1:geom%elem_dime-1) = &
                     dT_n(index2, 1:geom%elem_dime-1)
             end do
 !
-            index = index + geom%indi_lagc(i_node)
+            index = index+geom%indi_lagc(i_node)
         end do
 !
     end function
@@ -791,11 +791,11 @@ contains
 !
     function dTs_du_nm(geom, dfunc_slav, norm_mast)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dfunc_slav(2,9), norm_mast(3)
-        real(kind=8) :: dTs_du_nm(MAX_LAGA_DOFS,2)
+        real(kind=8), intent(in) :: dfunc_slav(2, 9), norm_mast(3)
+        real(kind=8) :: dTs_du_nm(MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -813,11 +813,11 @@ contains
 !
     function dTm_du_nm(geom, dfunc_mast, norm_mast)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dfunc_mast(2,9), norm_mast(3)
-        real(kind=8) :: dTm_du_nm(MAX_LAGA_DOFS,2)
+        real(kind=8), intent(in) :: dfunc_mast(2, 9), norm_mast(3)
+        real(kind=8) :: dTm_du_nm(MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -825,7 +825,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: dT_n(27,2)
+        real(kind=8) :: dT_n(27, 2)
         integer:: i_node, i_dim, index, index2
 !
         dTm_du_nm = 0.d0
@@ -834,12 +834,12 @@ contains
 !
 ! --- Master side
 !
-        index = geom%nb_dofs - geom%nb_node_mast * geom%elem_dime
+        index = geom%nb_dofs-geom%nb_node_mast*geom%elem_dime
         index2 = 0
         do i_node = 1, geom%nb_node_mast
             do i_dim = 1, geom%elem_dime
-                index = index + 1
-                index2 = index2 + 1
+                index = index+1
+                index2 = index2+1
                 dTm_du_nm(index, 1:geom%elem_dime-1) = &
                     dT_n(index2, 1:geom%elem_dime-1)
             end do
@@ -853,12 +853,12 @@ contains
 !
     subroutine dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dGap, dZetaM)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3,2), gap
-        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS,3)
-        real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS), dZetaM(MAX_LAGA_DOFS,2)
+        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3, 2), gap
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS, 3)
+        real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS), dZetaM(MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -867,7 +867,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: det, rhs(MAX_LAGA_DOFS, 3), lhs(3,3), lhs_inv(3,3), sol(3, MAX_LAGA_DOFS)
+        real(kind=8) :: det, rhs(MAX_LAGA_DOFS, 3), lhs(3, 3), lhs_inv(3, 3), sol(3, MAX_LAGA_DOFS)
 !
         dZetaM = 0.d0
         dGap = 0.d0
@@ -875,34 +875,34 @@ contains
 !
 ! --- lhs : (tau^m, -n^s )
 !
-        if(geom%elem_dime == 2) then
-            lhs(1:3,1) = tau_mast(1:3,1)
-            lhs(1:3,2) = -norm_slav
-            lhs(1:3,3) = [0.d0, 0.d0, 1.d0]
+        if (geom%elem_dime == 2) then
+            lhs(1:3, 1) = tau_mast(1:3, 1)
+            lhs(1:3, 2) = -norm_slav
+            lhs(1:3, 3) = [0.d0, 0.d0, 1.d0]
         else
-            lhs(1:3,1:2) = tau_mast
-            lhs(1:3,3) = -norm_slav
+            lhs(1:3, 1:2) = tau_mast
+            lhs(1:3, 3) = -norm_slav
         end if
 !
         call matinv("S", 3, lhs, lhs_inv, det)
 !
 ! --- rhs : (v^s - v^m  + g*Dn^s)
 !
-        rhs = jump_v + gap *  dNs
+        rhs = jump_v+gap*dNs
 !
 ! --- Compute solution: (De^m(u)[v], Dgap(u)[v]) = lhs^-1 * rhs
 !
         call dgemm("N", "T", 3, geom%nb_dofs, 3, 1.d0, &
-                    lhs_inv, 3, rhs, MAX_LAGA_DOFS, 0.d0, sol, 3)
+                   lhs_inv, 3, rhs, MAX_LAGA_DOFS, 0.d0, sol, 3)
 !
 ! --- Extract terms
 !
-        if(present(dZetaM)) then
+        if (present(dZetaM)) then
             dZetaM(1:geom%nb_dofs, 1:geom%elem_dime-1) = &
                 transpose(sol(1:geom%elem_dime-1, 1:geom%nb_dofs))
         end if
 !
-        if(present(dGap)) then
+        if (present(dGap)) then
             dGap(1:geom%nb_dofs) = sol(geom%elem_dime, 1:geom%nb_dofs)
         end if
 !
@@ -914,11 +914,11 @@ contains
 !
     function dZetaM_du(geom, norm_slav, tau_mast, gap, jump_v, dNs)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3,2), gap
-        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3, 2), gap
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS, 3)
         real(kind=8) :: dZetaM_du(MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -928,7 +928,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dZetaM = dZetaM_du)
+        call dPi_du(geom, norm_slav, tau_mast, gap, jump_v, dNs, dZetaM=dZetaM_du)
 !
     end function
 !
@@ -938,11 +938,11 @@ contains
 !
     function dGap_du(geom, norm_slav, tau_mast, gap, jump_v, dNs)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3,2), gap
-        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(in) :: norm_slav(3), tau_mast(3, 2), gap
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3), dNs(MAX_LAGA_DOFS, 3)
         real(kind=8) :: dGap_du(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -962,11 +962,11 @@ contains
 !
     function d2Gap_du2(geom, norm_slav, norm_mast, gap, Hm, dNs, dGap, dZetaM, dTm_nm, d2Ns_nm)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3), Hm(2,2), gap
-        real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS,3), dGap(MAX_LAGA_DOFS)
+        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3), Hm(2, 2), gap
+        real(kind=8), intent(in) :: dNs(MAX_LAGA_DOFS, 3), dGap(MAX_LAGA_DOFS)
         real(kind=8), intent(in) :: d2Ns_nm(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
         real(kind=8), intent(in) :: dZetaM(MAX_LAGA_DOFS, 2), dTm_nm(MAX_LAGA_DOFS, 2)
         real(kind=8) :: d2Gap_du2(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
@@ -980,20 +980,20 @@ contains
 !   whit H^m = d tau^m / de .n^m
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm(3), dNs_n(MAX_LAGA_DOFS), dZetaM_H(MAX_LAGA_DOFS,2), inv_ns_nm
+        real(kind=8) :: norm(3), dNs_n(MAX_LAGA_DOFS), dZetaM_H(MAX_LAGA_DOFS, 2), inv_ns_nm
 !
         d2Gap_du2 = 0.d0
 !
 ! --- Term: n^m/(n^m.n^s)
 !
-        inv_ns_nm = 1.d0 / dot_product(norm_mast, norm_slav)
-        norm = norm_mast * inv_ns_nm
+        inv_ns_nm = 1.d0/dot_product(norm_mast, norm_slav)
+        norm = norm_mast*inv_ns_nm
 !
 ! --- Term: D(n^s[v^s]).n^m/(n^m.n^s)
 !
         dNs_n = 0.d0
         call dgemv('N', geom%nb_dofs, geom%elem_dime, 1.d0, dNs, MAX_LAGA_DOFS, &
-                    norm, 1, 1.d0, dNs_n, 1)
+                   norm, 1, 1.d0, dNs_n, 1)
 !
 ! --- Term: -(D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s]).n^m/(n^m.n^s)
 !
@@ -1002,26 +1002,26 @@ contains
 !
 ! --- Term: -gap(u) D^2 n^s[v^s, w^s].n^m/(n^m.n^s)
 !
-        d2Gap_du2(1:geom%nb_dofs,1:geom%nb_dofs) = d2Gap_du2(1:geom%nb_dofs,1:geom%nb_dofs) &
-            - (gap * inv_ns_nm) * d2Ns_nm(1:geom%nb_dofs,1:geom%nb_dofs)
+        d2Gap_du2(1:geom%nb_dofs, 1:geom%nb_dofs) = d2Gap_du2(1:geom%nb_dofs, 1:geom%nb_dofs) &
+                                            -(gap*inv_ns_nm)*d2Ns_nm(1:geom%nb_dofs, 1:geom%nb_dofs)
 !
 ! --- Term: ( D tau^m[v] .n^m * De[w] + D tau^m[w] .n^m * De[v] )/(n^m.n^s)
 !
         call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, inv_ns_nm, &
-                    dTm_nm, MAX_LAGA_DOFS, dZetaM, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
+                   dTm_nm, MAX_LAGA_DOFS, dZetaM, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
         call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, inv_ns_nm, &
-                    dZetaM, MAX_LAGA_DOFS, dTm_nm, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
+                   dZetaM, MAX_LAGA_DOFS, dTm_nm, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
 !
 ! --- Term: H^m * De[v]
 !
         dZetaM_H = 0.d0
         call dgemm("N", "N", geom%nb_dofs, geom%elem_dime-1, geom%elem_dime-1, 1.d0, &
-                    dZetaM, MAX_LAGA_DOFS, Hm, 2, 0.d0, dZetaM_H, MAX_LAGA_DOFS)
+                   dZetaM, MAX_LAGA_DOFS, Hm, 2, 0.d0, dZetaM_H, MAX_LAGA_DOFS)
 !
 ! --- Term: (H^m * De[v])*De[w] / (n^m.n^s)
 !
         call dgemm("N", "T", geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, inv_ns_nm, &
-                    dZetaM, MAX_LAGA_DOFS, dZetaM_H, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
+                   dZetaM, MAX_LAGA_DOFS, dZetaM_H, MAX_LAGA_DOFS, 1.d0, d2Gap_du2, MAX_LAGA_DOFS)
 !
     end function
 !
@@ -1031,11 +1031,11 @@ contains
 !
     function jump(geom, func_slav, func_mast)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9)
-        real(kind=8) :: jump(MAX_LAGA_DOFS,3)
+        real(kind=8) :: jump(MAX_LAGA_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1053,18 +1053,18 @@ contains
 !
         do i_node = 1, geom%nb_node_slav
             do i_dim = 1, geom%elem_dime
-                index = index + 1
+                index = index+1
                 jump(index, i_dim) = func_slav(i_node)
             end do
 !
-            index = index + geom%indi_lagc(i_node)
+            index = index+geom%indi_lagc(i_node)
         end do
 !
 ! --- Master side
 !
         do i_node = 1, geom%nb_node_mast
             do i_dim = 1, geom%elem_dime
-                index = index + 1
+                index = index+1
                 jump(index, i_dim) = -func_mast(i_node)
             end do
         end do
@@ -1077,7 +1077,7 @@ contains
 !
     function jump_tang(geom, func_slav, func_mast, norm_slav)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9)
@@ -1092,7 +1092,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: i_node, i_dim, index, j_dim
-        real(kind=8) :: Tn(3,3)
+        real(kind=8) :: Tn(3, 3)
 !
         jump_tang = 0.d0
         index = 0
@@ -1102,22 +1102,22 @@ contains
 !
         do i_node = 1, geom%nb_node_slav
             do i_dim = 1, geom%elem_dime
-                index = index + 1
+                index = index+1
                 do j_dim = 1, geom%elem_dime
-                    jump_tang(index, j_dim) = func_slav(i_node) * Tn(j_dim, i_dim)
+                    jump_tang(index, j_dim) = func_slav(i_node)*Tn(j_dim, i_dim)
                 end do
             end do
 !
-            index = index + geom%indi_lagc(i_node)
+            index = index+geom%indi_lagc(i_node)
         end do
 !
 ! --- Master side
 !
         do i_node = 1, geom%nb_node_mast
             do i_dim = 1, geom%elem_dime
-                index = index + 1
+                index = index+1
                 do j_dim = 1, geom%elem_dime
-                    jump_tang(index, j_dim) = -func_mast(i_node) * Tn(j_dim, i_dim)
+                    jump_tang(index, j_dim) = -func_mast(i_node)*Tn(j_dim, i_dim)
                 end do
             end do
         end do
@@ -1130,10 +1130,10 @@ contains
 !
     function jump_norm(geom, jump_v, norm_)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(in) :: jump_v(MAX_LAGA_DOFS, 3)
         real(kind=8), intent(in) :: norm_(3)
         real(kind=8) :: jump_norm(MAX_LAGA_DOFS)
 !
@@ -1145,8 +1145,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         jump_norm = 0.d0
-        call dgemv("N", geom%nb_dofs, geom%elem_dime, 1.d0, jump_v, MAX_LAGA_DOFS, norm_, 1, 0.d0,&
-                    jump_norm, 1)
+        call dgemv("N", geom%nb_dofs, geom%elem_dime, 1.d0, jump_v, MAX_LAGA_DOFS, norm_, 1, 0.d0, &
+                   jump_norm, 1)
 !
     end function
 !

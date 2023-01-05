@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine caliso(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,8 +47,8 @@ implicit none
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,16 +109,16 @@ character(len=4), intent(in) :: valeType
 ! - Model informations
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
-    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
+    if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
         call utmess('F', 'CHARGES2_6')
-    endif
-    call jeveuo(modelLigrel//'.PRNM', 'L', vi = prnm)
+    end if
+    call jeveuo(modelLigrel//'.PRNM', 'L', vi=prnm)
 
 !
 ! - Minimum distance
 !
     dist = armin(mesh)
-    ASSERT(dist.gt.0.d0)
+    ASSERT(dist .gt. 0.d0)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
@@ -131,7 +131,7 @@ character(len=4), intent(in) :: valeType
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
@@ -147,17 +147,17 @@ character(len=4), intent(in) :: valeType
     cmp_index_dry = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
     cmp_name = 'DRZ'
     cmp_index_drz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    ASSERT(cmp_index_dx.gt.0)
-    ASSERT(cmp_index_dy.gt.0)
-    ASSERT(cmp_index_dz.gt.0)
-    ASSERT(cmp_index_drx.gt.0)
-    ASSERT(cmp_index_dry.gt.0)
-    ASSERT(cmp_index_drz.gt.0)
+    ASSERT(cmp_index_dx .gt. 0)
+    ASSERT(cmp_index_dy .gt. 0)
+    ASSERT(cmp_index_dz .gt. 0)
+    ASSERT(cmp_index_drx .gt. 0)
+    ASSERT(cmp_index_dry .gt. 0)
+    ASSERT(cmp_index_drz .gt. 0)
 !
 ! - Loop on factor keyword
 !
     do iocc = 1, nbocc
-        nom_noeuds_tmp(1:4)=' '
+        nom_noeuds_tmp(1:4) = ' '
 !
 ! ----- Minimum distance
 !
@@ -167,7 +167,7 @@ character(len=4), intent(in) :: valeType
 ! ----- Read mesh affectation
 !
         list_node = '&&CALISO.LIST_NODE'
-        call getnode(mesh, keywordFact, iocc, 'F', list_node,nb_node)
+        call getnode(mesh, keywordFact, iocc, 'F', list_node, nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Only one node: nothing to do
@@ -175,7 +175,7 @@ character(len=4), intent(in) :: valeType
         if (nb_node .eq. 1) then
             call utmess('I', 'CHARGES2_17')
             cycle
-        endif
+        end if
 !
 ! ----- Model: 2D
 !
@@ -187,33 +187,33 @@ character(len=4), intent(in) :: valeType
             do i_no = 1, nb_node
                 numnoe = zi(jlino+i_no-1)
                 prnm1 => prnm((numnoe-1)*nbec+1:(numnoe-1)*nbec+nbec)
-                if (exisdg(prnm1,cmp_index_drz)) then
+                if (exisdg(prnm1, cmp_index_drz)) then
                     l_rota_2d = .true.
                     goto 40
-                endif
-            enddo
- 40         continue
+                end if
+            end do
+40          continue
 !
 ! --------- Compute linear relations
 !
             if (l_rota_2d) then
-                call drz12d(mesh, modelLigrel, valeType, nb_node, list_node,&
+                call drz12d(mesh, modelLigrel, valeType, nb_node, list_node, &
                             cmp_index_drz, list_rela, nom_noeuds_tmp)
                 type_rela = "ROTA2D"
             else
-                call solide_tran('2D',mesh, valeType, dist_mini, nb_node, list_node,&
+                call solide_tran('2D', mesh, valeType, dist_mini, nb_node, list_node, &
                                  list_rela, nom_noeuds_tmp, dim)
-                if (dim.eq.0) then
+                if (dim .eq. 0) then
                     type_rela = "LIN"
                 else
                     call codent(dim, 'D0', kdim)
                     type_rela = "2D"//kdim
-                endif
-            endif
+                end if
+            end if
 !
 ! ----- Model: 3D
 !
-        else if (geomDime.eq.3) then
+        else if (geomDime .eq. 3) then
 !
 ! --------- Is any node has rotation dofs ?
 !
@@ -221,33 +221,33 @@ character(len=4), intent(in) :: valeType
             do i_no = 1, nb_node
                 numnoe = zi(jlino+i_no-1)
                 prnm1 => prnm((numnoe-1)*nbec+1:(numnoe-1)*nbec+nbec)
-                if (exisdg(prnm1,cmp_index_drx) .and.&
-                    exisdg(prnm1,cmp_index_dry) .and.&
-                    exisdg(prnm1,cmp_index_drz)) then
+                if (exisdg(prnm1, cmp_index_drx) .and. &
+                    exisdg(prnm1, cmp_index_dry) .and. &
+                    exisdg(prnm1, cmp_index_drz)) then
                     l_rota_3d = .true.
                     goto 50
-                endif
-            enddo
- 50         continue
+                end if
+            end do
+50          continue
 !
 ! --------- Compute linear relations
 !
             if (l_rota_3d) then
-                call drz13d(mesh, modelLigrel, valeType, nb_node, list_node,&
-                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
+                call drz13d(mesh, modelLigrel, valeType, nb_node, list_node, &
+                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, &
                             cmp_index_dry, cmp_index_drz, list_rela, nom_noeuds_tmp)
                 type_rela = "ROTA3D"
             else
-                call solide_tran('3D',mesh, valeType, dist_mini, nb_node, list_node,&
+                call solide_tran('3D', mesh, valeType, dist_mini, nb_node, list_node, &
                                  list_rela, nom_noeuds_tmp, dim)
-                if (dim.eq.0) then
+                if (dim .eq. 0) then
                     type_rela = "LIN"
                 else
                     call codent(dim, 'D0', kdim)
                     type_rela = "3D"//kdim
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 !       - Final linear relation affectation
 !
@@ -255,11 +255,11 @@ character(len=4), intent(in) :: valeType
         call detrsd('LISTE_RELA', list_rela)
 
 !       -- remplissage de l'objet .PRDSO :
-        call jeveuo(load//'.DUAL.PRDSO', 'E', vk8 = prdso)
-        call jelira(load//'.DUAL.PRDK', 'LONUTI', ival = nuti)
-        do k=1,4
+        call jeveuo(load//'.DUAL.PRDSO', 'E', vk8=prdso)
+        call jelira(load//'.DUAL.PRDK', 'LONUTI', ival=nuti)
+        do k = 1, 4
             prdso(4*(nuti-1)+k) = nom_noeuds_tmp(k)
-        enddo
+        end do
 !
         call jedetr(list_node)
 !

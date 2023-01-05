@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmpilr(list_func_acti, nume_dof, matass, hval_veasse, ds_contact, cnfint,&
-                  eta           , residu  )
+subroutine nmpilr(list_func_acti, nume_dof, matass, hval_veasse, ds_contact, cnfint, &
+                  eta, residu)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dismoi.h"
@@ -34,12 +34,12 @@ implicit none
 #include "asterfort/nmpcin.h"
 #include "asterfort/nmequi.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: matass, hval_veasse(*), cnfint
-type(NL_DS_Contact), intent(in) :: ds_contact
-real(kind=8), intent(in) :: eta
-real(kind=8), intent(out) :: residu
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: matass, hval_veasse(*), cnfint
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    real(kind=8), intent(in) :: eta
+    real(kind=8), intent(out) :: residu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,9 +73,9 @@ real(kind=8), intent(out) :: residu
 ! - Active functionnalities
 !
     l_load_cine = isfonc(list_func_acti, 'DIRI_CINE')
-    l_macr      = isfonc(list_func_acti, 'MACR_ELEM_STAT')
-    l_disp      = ASTER_TRUE
-    l_pilo      = ASTER_TRUE
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
+    l_disp = ASTER_TRUE
+    l_pilo = ASTER_TRUE
 !
 ! - Hat variables
 !
@@ -91,16 +91,16 @@ real(kind=8), intent(out) :: residu
     if (l_load_cine) then
         call nmpcin(matass)
         call jeveuo(matass(1:19)//'.CCID', 'L', vi=v_ccid)
-    endif
+    end if
 !
 ! - Compute lack of balance forces
 !
     cnequi = '&&CNCHAR.DONN'
-    call nmequi(l_disp, l_pilo, l_macr, cnequi,&
-                cnfint, cnfext, cndiri, cnsstr,&
-                ds_contact_ = ds_contact,&
-                cnbudi_ = cnbudi, cndfdo_ = cndfdo,&
-                cndipi_ = cndipi, eta_    = eta)
+    call nmequi(l_disp, l_pilo, l_macr, cnequi, &
+                cnfint, cnfext, cndiri, cnsstr, &
+                ds_contact_=ds_contact, &
+                cnbudi_=cnbudi, cndfdo_=cndfdo, &
+                cndipi_=cndipi, eta_=eta)
     call jeveuo(cnequi(1:19)//'.VALE', 'L', vr=v_cnequi)
 !
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=nb_equa)
@@ -112,9 +112,9 @@ real(kind=8), intent(out) :: residu
         if (l_load_cine) then
             if (v_ccid(i_equa) .eq. 1) then
                 cycle
-            endif
-        endif
-        residu = max(residu,abs(v_cnequi(i_equa)))
+            end if
+        end if
+        residu = max(residu, abs(v_cnequi(i_equa)))
     end do
 !
     call jedema()

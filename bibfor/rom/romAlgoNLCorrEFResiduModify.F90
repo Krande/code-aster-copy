@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,17 +20,17 @@
 subroutine romAlgoNLCorrEFResiduModify(vect_2mbr, ds_algorom)
 
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
 !
-character(len=24)    , intent(in) :: vect_2mbr
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    character(len=24), intent(in) :: vect_2mbr
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,12 +50,12 @@ type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jeveuo(vect_2mbr(1:19)//'.VALE', 'E'     , vr = v_vect_2mbr)
+    call jeveuo(vect_2mbr(1:19)//'.VALE', 'E', vr=v_vect_2mbr)
     call jelira(vect_2mbr(1:19)//'.VALE', 'LONMAX', nb_equa_2mbr)
     do i_equa = 1, nb_equa_2mbr
         if (ds_algorom%v_equa_sub(i_equa) .eq. 1) then
             v_vect_2mbr(i_equa) = 0.d0
-        endif
-    enddo
+        end if
+    end do
 !
 end subroutine

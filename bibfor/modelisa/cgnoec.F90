@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,11 +104,11 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 !
     if (ndim .ne. 3) then
         call utmess('F', 'MODELISA3_84')
-    endif
+    end if
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
@@ -119,7 +119,7 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
     mocle(1) = 'POINT'
     mocle(2) = 'NOEUD_CENTRE'
     mocle(3) = 'GROUP_NO_CENTRE'
-    call utcono(motfac, mocle, iocc, noma, ndim,&
+    call utcono(motfac, mocle, iocc, noma, ndim, &
                 x0, iret)
 !
 ! --- RECUPERATION DU RAYON DU CYLINDRE :
@@ -131,8 +131,8 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
         call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call utmess('F', 'MODELISA3_75')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA DIRECTION DEFINISSANT L'AXE DU CYLINDRE :
 !     ----------------------------------------------------------
@@ -146,16 +146,16 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
             if (nvect .ne. 3) then
                 call utmess('F', 'MODELISA3_86')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe,&
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe, &
                             nbret=nv)
-            endif
-        endif
+            end if
+        end if
     else
         nangle = -nangle
         if (nangle .ne. 2) then
             call utmess('F', 'MODELISA3_87')
-        endif
-        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+        end if
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle, &
                     nbret=nv)
 !
         angle(1) = angle(1)*r8dgrd()
@@ -164,13 +164,13 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
         axe(1) = cos(angle(1))*cos(angle(2))
         axe(2) = sin(angle(1))*cos(angle(2))
         axe(3) = -sin(angle(2))
-    endif
+    end if
 !
-    xnorm2 = axe(1)*axe(1) + axe(2)*axe(2) + axe(3)*axe(3)
+    xnorm2 = axe(1)*axe(1)+axe(2)*axe(2)+axe(3)*axe(3)
 !
     if (xnorm2 .eq. zero) then
         call utmess('F', 'MODELISA3_79')
-    endif
+    end if
 !
     xnorm = sqrt(xnorm2)
 !
@@ -187,8 +187,8 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
         call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
             call utmess('F', 'MODELISA3_89')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE :
 !     ---------------------------------------------
@@ -210,15 +210,15 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
         x(2) = vale(3*(ino-1)+2)
         x(3) = vale(3*(ino-1)+3)
 !
-        xx0(1) = x(1) - x0(1)
-        xx0(2) = x(2) - x0(2)
-        xx0(3) = x(3) - x0(3)
+        xx0(1) = x(1)-x0(1)
+        xx0(2) = x(2)-x0(2)
+        xx0(3) = x(3)-x0(3)
 !
-        xnoxx2 = xx0(1)*xx0(1) + xx0(2)*xx0(2) + xx0(3)*xx0(3)
+        xnoxx2 = xx0(1)*xx0(1)+xx0(2)*xx0(2)+xx0(3)*xx0(3)
 !
         if (xnoxx2 .ne. zero) then
 !
-            xnoxx0 = sqrt (xnoxx2)
+            xnoxx0 = sqrt(xnoxx2)
 !
             xx0(1) = xx0(1)/xnoxx0
             xx0(2) = xx0(2)/xnoxx0
@@ -227,20 +227,20 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 ! ---         CALCUL DE L'ANGLE FORME PAR L'AXE DU CYLINDRE
 ! ---         AVEC LE VECTEUR POSITION COURANT XX0 :
 !             ------------------------------------
-            psca = abs(xx0(1)*axe(1) + xx0(2)*axe(2) + xx0(3)*axe(3))
+            psca = abs(xx0(1)*axe(1)+xx0(2)*axe(2)+xx0(3)*axe(3))
             if (psca .gt. un) then
-                psca = psca - eps
-            endif
+                psca = psca-eps
+            end if
             ang = acos(psca)
 !
 ! ---         CALCUL DE LA DISTANCE DU NOEUD COURANT A L'AXE
 ! ---         DU CYLINDRE :
 !             -----------
-            d2 = (&
-                 (&
-                 x(1)-x0(1))*(x(1)-x0(1)) + (x(2)-x0(2))*(x(2)-x0(2) ) + (x(3)-x0(3))*(x(3)-x0(3)&
-                 &))*sin(ang&
-                 )*sin(ang&
+            d2 = ( &
+                 ( &
+                 x(1)-x0(1))*(x(1)-x0(1))+(x(2)-x0(2))*(x(2)-x0(2))+(x(3)-x0(3))*(x(3)-x0(3)&
+                 &))*sin(ang &
+                 )*sin(ang &
                  )
 !
 ! ---         SI LE NOEUD COURANT APPARTIENT A L'ENVELOPPE DU
@@ -249,17 +249,17 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !             -------------------------
             dist = sqrt(d2)
             if (abs(dist-rayon) .le. prec) then
-                nbno = nbno + 1
+                nbno = nbno+1
                 zi(idlino+nbno-1) = ino
-            endif
+            end if
 !
         else
 !              -- CAS DU NOEUD CONFONDU AVEC LE POINT DEFINISSANT L'AXE:
             if (abs(rayon) .le. prec) then
-                nbno = nbno + 1
+                nbno = nbno+1
                 zi(idlino+nbno-1) = ino
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !

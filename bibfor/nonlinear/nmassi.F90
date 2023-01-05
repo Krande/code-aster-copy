@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmassi(list_func_acti, sddyna, ds_system, hval_veasse, cndonn)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,10 +37,10 @@ implicit none
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/nonlinDSVectCombAddAny.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: sddyna, hval_veasse(*)
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: cndonn
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sddyna, hval_veasse(*)
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: cndonn
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,15 +68,15 @@ character(len=19), intent(in) :: cndonn
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_17')
-    endif
+    end if
 !
 ! - Active functionnalities
 !
-    l_wave = ndynlo(sddyna,'ONDE_PLANE')
-    l_lapl = isfonc(list_func_acti,'LAPLACE')
+    l_wave = ndynlo(sddyna, 'ONDE_PLANE')
+    l_lapl = isfonc(list_func_acti, 'LAPLACE')
     if (l_wave .or. l_lapl) then
         call utmess('A', 'MECANONLINE_23')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -109,6 +109,6 @@ character(len=19), intent(in) :: cndonn
     call nonlinDSVectCombCompute(ds_vectcomb, cndonn)
     if (niv .ge. 2) then
         call nmdebg('VECT', cndonn, 6)
-    endif
+    end if
 !
 end subroutine

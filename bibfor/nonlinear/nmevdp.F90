@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,8 +60,8 @@ subroutine nmevdp(sddisc, retswa)
 !
 ! --- PARAMETRES
 !
-    call utdidt('L', sddisc, 'ECHE', 'ESSAI_ITER_PILO',&
-                vali_ = piless)
+    call utdidt('L', sddisc, 'ECHE', 'ESSAI_ITER_PILO', &
+                vali_=piless)
 !
 ! --- L'UTILISATEUR UTILISE LE PILOTAGE
 ! --- ET SOUHAITE BASCULER SI NON-CONVERGENCE
@@ -74,7 +74,7 @@ subroutine nmevdp(sddisc, retswa)
         pilcho = 'NATUREL'
         retswa = 0
         call utmess('I', 'MECANONLINE10_42')
-    else if (piless.eq.1) then
+    else if (piless .eq. 1) then
 !
 ! ----- ON RETENTE EN CHOISISSANT L'AUTRE SOLUTION
 !
@@ -84,14 +84,14 @@ subroutine nmevdp(sddisc, retswa)
         retswa = 1
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- SAUVEGARDE INFO
 !
-    call utdidt('E', sddisc, 'ECHE', 'ESSAI_ITER_PILO',&
-                vali_ = piless)
-    call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO',&
-                valk_ = pilcho)
+    call utdidt('E', sddisc, 'ECHE', 'ESSAI_ITER_PILO', &
+                vali_=piless)
+    call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', &
+                valk_=pilcho)
 !
     call jedema()
 end subroutine

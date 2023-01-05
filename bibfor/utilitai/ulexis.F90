@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ function ulexis(iul)
 !
 !     ------------------------------------------------------------------
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
     aster_logical :: ficexi
     character(len=8) :: k8b
     character(len=255) :: namell
@@ -46,15 +46,15 @@ function ulexis(iul)
         if (unit .eq. iul) then
             ulexis = .true.
             goto 12
-        endif
+        end if
     end do
     call codent(iul, 'G', k8b)
     namell = 'fort.'//k8b
-    inquire(file=namell,exist=ficexi)
+    inquire (file=namell, exist=ficexi)
     if (ficexi) then
         call ulopen(iul, ' ', ' ', 'A', 'O')
         ulexis = .true.
-    endif
- 12 continue
+    end if
+12  continue
 !
 end function

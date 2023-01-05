@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp,&
+subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
                   mxresf, resufi, resufr, vauc)
     implicit none
 #include "jeveux.h"
@@ -52,38 +52,38 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp,&
 ! --- 4. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
 !
     do j = 1, nbvect
-        zi(iadind + j-1) = -2
+        zi(iadind+j-1) = -2
     end do
     do j = 1, nbvect
-        if (zi(iadind + j-1) .eq. -2) then
+        if (zi(iadind+j-1) .eq. -2) then
             if (dimag(vp(j)) .gt. 0.d0) then
-                zi(iadind + j-1) = 0
+                zi(iadind+j-1) = 0
             else
-                zi(iadind + j-1) = 1
-            endif
-        endif
+                zi(iadind+j-1) = 1
+            end if
+        end if
     end do
 !
-    if (zi(iadind + nbvect-1) .eq. -2) then
-        zi(iadind + nbvect-1) = 0
-    endif
+    if (zi(iadind+nbvect-1) .eq. -2) then
+        zi(iadind+nbvect-1) = 0
+    end if
 !
 !
 ! --- 1.3. ELIMINATION DES CONJUGUES (OPERATEUR REEL) -- COMPACTAGE --
     k = 1
     do j = 1, nbvect
-        if (zi(iadind + j-1) .eq. 0) then
+        if (zi(iadind+j-1) .eq. 0) then
             if (k .ne. j) then
                 vp(k) = vp(j)
-                zi(iadind + k-1) = zi(iadind + j-1)
+                zi(iadind+k-1) = zi(iadind+j-1)
                 do i = 1, neq, 1
-                    vecp(i,k) = vecp(i,j)
-                    vauc(i,k) = vauc(i,j)
-                    vauc(i+neq,k) = vauc(i+neq,j)
+                    vecp(i, k) = vecp(i, j)
+                    vauc(i, k) = vauc(i, j)
+                    vauc(i+neq, k) = vauc(i+neq, j)
                 end do
-            endif
-            k = k + 1
-        endif
+            end if
+            k = k+1
+        end if
     end do
 !
 !
@@ -91,16 +91,16 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp,&
 !     ----------    AU NIVEAU DE L' OPERATEUR REEL    -----------------
 !
 ! --- 4. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-
-    call wpordc(1, dcmplx(0.d0, 0.d0), vp, vecp, nbfreq,&
+    call wpordc(1, dcmplx(0.d0, 0.d0), vp, vecp, nbfreq, &
                 neq)
 !
 ! --- 5. PREPARATION DE RESUFR
     do j = 1, nbfreq
         am = dble(vp(j))*dble(vp(j))
         om = dimag(vp(j))*dimag(vp(j))
-        resufi(j,1) = j
-        resufr(j,2) = om
-        resufr(j,3) = -dble(vp(j))/sqrt(om + am)
+        resufi(j, 1) = j
+        resufr(j, 2) = om
+        resufr(j, 3) = -dble(vp(j))/sqrt(om+am)
     end do
 !
 ! --- 6. DESTRUCTION OJB TEMPORAIRE

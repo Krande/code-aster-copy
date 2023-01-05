@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine draac2(a, b, c, x1, x2,&
+subroutine draac2(a, b, c, x1, x2, &
                   kode)
 !
     implicit none
@@ -43,25 +43,25 @@ subroutine draac2(a, b, c, x1, x2,&
     x2 = 0.0d0
     kode = 0
     delta = 0.0d0
-    epsi = 1.0d-8 * max(abs(a),abs(b),abs(c))
+    epsi = 1.0d-8*max(abs(a), abs(b), abs(c))
     x0 = 0.0d0
     deuza = 0.0d0
     asup = 0.0d0
 !
     if (abs(a) .gt. epsi) then
-        x1 = b * b
-        x2 = 4.0d0 * a * c
-        delta = x1 - x2
-        asup = 1.0d-8 * max(x1,abs(x2))
-        deuza = 2.0d0 * a
-        x0 = -b / deuza
+        x1 = b*b
+        x2 = 4.0d0*a*c
+        delta = x1-x2
+        asup = 1.0d-8*max(x1, abs(x2))
+        deuza = 2.0d0*a
+        x0 = -b/deuza
 !
         if (delta .lt. -asup) then
 !     CAS OU ON A DEUX RACINES IMAGINAIRES
             kode = 0
             x1 = 0.0d0
             x2 = 0.0d0
-        else if (delta.lt.asup) then
+        else if (delta .lt. asup) then
 !     CAS OU ON A UNE RACINE REELE DOUBLE
             kode = 1
             x1 = x0
@@ -70,10 +70,10 @@ subroutine draac2(a, b, c, x1, x2,&
 !     CAS OU ON A DEUX RACINES
             kode = 2
             x2 = sqrt(delta)/abs(deuza)
-            x1 = x0 - x2
-            x2 = x0 + x2
-        endif
-    else if (abs(b).le.epsi) then
+            x1 = x0-x2
+            x2 = x0+x2
+        end if
+    else if (abs(b) .le. epsi) then
 !     CAS OU LE POLYNOME DU SECOND DEGRE
 !     S APPARENTE A UNE CONSTANTE
         kode = 0
@@ -83,8 +83,8 @@ subroutine draac2(a, b, c, x1, x2,&
 !     CAS OU LE POLYNOME DU SECOND DEGRE
 !     S APPARENTE A UN POLYNOME DU PREMIER DEGRE
         kode = 1
-        x1 = - c / b
+        x1 = -c/b
         x2 = x1
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dktnli(option,&
-                  xyzl  , pgl   , uml   , dul,&
-                  btsig , ktan  , codret)
+subroutine dktnli(option, &
+                  xyzl, pgl, uml, dul, &
+                  btsig, ktan, codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -52,11 +52,11 @@ implicit none
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: xyzl(3, 4), uml(6, 4), dul(6, 4)
-real(kind=8), intent(in) :: pgl(3, 3)
-real(kind=8), intent(out) :: ktan(300), btsig(6,4)
-integer , intent(out) :: codret
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: xyzl(3, 4), uml(6, 4), dul(6, 4)
+    real(kind=8), intent(in) :: pgl(3, 3)
+    real(kind=8), intent(out) :: ktan(300), btsig(6, 4)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,7 +166,7 @@ integer , intent(out) :: codret
     real(kind=8) :: qsi, eta, cara(25), jacob(5)
     real(kind=8) :: ctor, coehsd, zmax, quotient, a, b, c
     aster_logical :: dkt, dkq, leul
-    real(kind=8) :: dvt(2),vt(2)
+    real(kind=8) :: dvt(2), vt(2)
     real(kind=8) :: dfel(3, 3), dmel(3, 3), dmfel(3, 3), dcel(2, 2), dciel(2, 2)
     real(kind=8) :: dmcel(3, 2), dfcel(3, 2)
     real(kind=8) :: d1iel(2, 2)
@@ -176,27 +176,27 @@ integer , intent(out) :: codret
     aster_logical :: coupmfel
     integer :: multicel
     integer :: lg_varip
-    real(kind=8),allocatable:: varip(:)
+    real(kind=8), allocatable:: varip(:)
     character(len=4), parameter :: fami = 'RIGI'
     type(Behaviour_Integ) :: BEHinteg
     aster_logical :: lVect, lMatr, lVari, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lSigm  = L_SIGM(option)
-    lVect  = L_VECT(option)
-    lMatr  = L_MATR(option)
-    lVari  = L_VARI(option)
-    flex   = 0.d0
-    memb   = 0.d0
-    mefl   = 0.d0
-    ktan   = 0.d0
-    btsig  = 0.d0
+    lSigm = L_SIGM(option)
+    lVect = L_VECT(option)
+    lMatr = L_MATR(option)
+    lVari = L_VARI(option)
+    flex = 0.d0
+    memb = 0.d0
+    mefl = 0.d0
+    ktan = 0.d0
+    btsig = 0.d0
     codret = 0
 !
 ! - Get finite element parameters
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nbNode, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nbNode, npg=npg, &
                      jpoids=ipoids, jcoopg=icoopg)
     dkt = ASTER_FALSE
     dkq = ASTER_FALSE
@@ -206,7 +206,7 @@ integer , intent(out) :: codret
         dkq = ASTER_TRUE
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     typmod(1) = 'C_PLAN  '
     typmod(2) = '        '
 !
@@ -222,9 +222,9 @@ integer , intent(out) :: codret
 !
     call jevech('PMATERC', 'L', imate)
     call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
-    nbsp   = jtab(7)
+    nbsp = jtab(7)
     icontm = jtab(1)
-    ASSERT(npg.eq.jtab(3))
+    ASSERT(npg .eq. jtab(3))
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
@@ -238,11 +238,11 @@ integer , intent(out) :: codret
     call jevech('PCOMPOR', 'L', icompo)
     defo_comp = zk16(icompo-1+DEFO)
     incr_elas = zk16(icompo-1+INCRELAS)
-    leul      = defo_comp .eq. 'GROT_GDEP'
-    read (zk16(icompo-1+NVAR),'(I16)') nbvar
-    
-    ASSERT ( (.not. defo_comp.eq.'GROT_GDEP') .or. (.not. incr_elas.eq.'COMP_ELAS') )
-     
+    leul = defo_comp .eq. 'GROT_GDEP'
+    read (zk16(icompo-1+NVAR), '(I16)') nbvar
+
+    ASSERT((.not. defo_comp .eq. 'GROT_GDEP') .or. (.not. incr_elas .eq. 'COMP_ELAS'))
+
 !
 ! - Geometric parameters
 !
@@ -256,36 +256,35 @@ integer , intent(out) :: codret
         ctor = zr(icacoq+3)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Output fields
 !
 
-    
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
 
-    lg_varip=npg*nbsp*nbvar
-    allocate(varip(lg_varip))
+    lg_varip = npg*nbsp*nbvar
+    allocate (varip(lg_varip))
     if (lVari) then
         call jevech('PVARIMP', 'L', ivarix)
         varip(1:lg_varip) = zr(ivarix:ivarix+lg_varip-1)
-    endif
+    end if
 !
 ! - Preparation of displacements
 !
     do ino = 1, nbNode
-        um(1,ino) = uml(1,ino)
-        um(2,ino) = uml(2,ino)
-        uf(1,ino) = uml(3,ino)
-        uf(2,ino) = uml(5,ino)
-        uf(3,ino) = -uml(4,ino)
-        dum(1,ino) = dul(1,ino)
-        dum(2,ino) = dul(2,ino)
-        duf(1,ino) = dul(3,ino)
-        duf(2,ino) = dul(5,ino)
-        duf(3,ino) = -dul(4,ino)
+        um(1, ino) = uml(1, ino)
+        um(2, ino) = uml(2, ino)
+        uf(1, ino) = uml(3, ino)
+        uf(2, ino) = uml(5, ino)
+        uf(3, ino) = -uml(4, ino)
+        dum(1, ino) = dul(1, ino)
+        dum(2, ino) = dul(2, ino)
+        duf(1, ino) = dul(3, ino)
+        duf(2, ino) = dul(5, ino)
+        duf(3, ino) = -dul(4, ino)
     end do
 !
 ! - Get layers
@@ -294,37 +293,37 @@ integer , intent(out) :: codret
     nbcou = zi(jnbspi-1+1)
     ASSERT(nbcou .gt. 0)
     hic = h/nbcou
-    zmin = -h/deux + distn
+    zmin = -h/deux+distn
 !
 ! - Coefficients for shear stresses
 !
-    zmax = distn + h/2.d0
-    quotient = 1.d0*zmax**3-3*zmax**2*zmin + 3*zmax*zmin**2-1.d0*zmin**3
+    zmax = distn+h/2.d0
+    quotient = 1.d0*zmax**3-3*zmax**2*zmin+3*zmax*zmin**2-1.d0*zmin**3
     a = -6.d0/quotient
     b = +6.d0*(zmin+zmax)/quotient
     c = -6.d0*zmax*zmin/quotient
 !
 ! - Hooke matrix for shear
 !
-    call dxmate(fami, dfel, dmel, dmfel, dcel,&
-                dciel, dmcel, dfcel, nbNode, pgl,&
+    call dxmate(fami, dfel, dmel, dmfel, dcel, &
+                dciel, dmcel, dfcel, nbNode, pgl, &
                 multicel, coupmfel, t2iuel, t2uiel, t1veel)
     do ino = 1, nbNode
-        depfel(1+3*(ino-1)) = uf(1,ino)+duf(1,ino)
-        depfel(2+3*(ino-1)) = uf(2,ino)+duf(2,ino)
-        depfel(3+3*(ino-1)) = uf(3,ino)+duf(3,ino)
+        depfel(1+3*(ino-1)) = uf(1, ino)+duf(1, ino)
+        depfel(2+3*(ino-1)) = uf(2, ino)+duf(2, ino)
+        depfel(3+3*(ino-1)) = uf(3, ino)+duf(3, ino)
     end do
 !
 ! - Loop on Gauss points
 !
     do ipg = 1, npg
-        n   = 0.d0
-        m   = 0.d0
-        df  = 0.d0
-        dm  = 0.d0
+        n = 0.d0
+        m = 0.d0
+        df = 0.d0
+        dm = 0.d0
         dmf = 0.d0
         dvt = 0.d0
-        vt  = 0.d0
+        vt = 0.d0
 ! ----- Current Gauss point
         qsi = zr(icoopg-1+ndim*(ipg-1)+1)
         eta = zr(icoopg-1+ndim*(ipg-1)+2)
@@ -344,7 +343,7 @@ integer , intent(out) :: codret
             call dkttxy(cara(16), cara(13), hft2el, depfel, vt)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 ! ----- Compute strain and curvature
         call pmrvec('ZERO', 3, 2*nbNode, bm, um, eps)
         call pmrvec('ZERO', 3, 2*nbNode, bm, dum, deps)
@@ -356,55 +355,55 @@ integer , intent(out) :: codret
             do i = 1, 2
                 do k = 1, nbNode
                     do j = 1, 2
-                        bmq(i,j) = bmq(i,j) + bm(i,2*(k-1)+i)*dum(j,k)
-                     end do
-                    bmq(i,3) = bmq(i,3) + bm(i,2*(k-1)+i)*duf(1,k)
+                        bmq(i, j) = bmq(i, j)+bm(i, 2*(k-1)+i)*dum(j, k)
+                    end do
+                    bmq(i, 3) = bmq(i, 3)+bm(i, 2*(k-1)+i)*duf(1, k)
                 end do
             end do
             do k = 1, 3
-                do  i = 1, 2
-                    deps(i) = deps(i) - 0.5d0*bmq(i,k)*bmq(i,k)
+                do i = 1, 2
+                    deps(i) = deps(i)-0.5d0*bmq(i, k)*bmq(i, k)
                 end do
-                deps(3) = deps(3) - bmq(1,k)*bmq(2,k)
+                deps(3) = deps(3)-bmq(1, k)*bmq(2, k)
             end do
-        endif
+        end if
 ! ----- Loop on layers to integrate behaviour
         do icou = 1, nbcou
             do igauh = 1, npgh
 ! ------------- Current (sub)-point
-                ksp  = (icou-1)*npgh+igauh
-                isp  = (icou-1)*npgh+igauh
-                ivpg = ((ipg-1)*nbsp + isp-1)*nbvar
-                icpg = ((ipg-1)*nbsp + isp-1)*nbcon
+                ksp = (icou-1)*npgh+igauh
+                isp = (icou-1)*npgh+igauh
+                ivpg = ((ipg-1)*nbsp+isp-1)*nbvar
+                icpg = ((ipg-1)*nbsp+isp-1)*nbcon
 ! ------------- Value of height for integration point
                 if (igauh .eq. 1) then
-                    zic = zmin + (icou-1)*hic
+                    zic = zmin+(icou-1)*hic
                     coef = 1.d0/3.d0
                 else if (igauh .eq. 2) then
-                    zic = zmin + hic/deux + (icou-1)*hic
+                    zic = zmin+hic/deux+(icou-1)*hic
                     coef = 4.d0/3.d0
                 else
-                    zic = zmin + hic + (icou-1)*hic
+                    zic = zmin+hic+(icou-1)*hic
                     coef = 1.d0/3.d0
-                endif
+                end if
 ! ------------- Compute 2D strains
-                eps2d(1)  = eps(1) + zic*khi(1)
-                eps2d(2)  = eps(2) + zic*khi(2)
-                eps2d(3)  = 0.0d0
-                eps2d(4)  = (eps(3)+zic*khi(3))/rac2
-                eps2d(5)  = 0.d0
-                eps2d(6)  = 0.d0
-                deps2d(1) = deps(1) + zic*dkhi(1)
-                deps2d(2) = deps(2) + zic*dkhi(2)
+                eps2d(1) = eps(1)+zic*khi(1)
+                eps2d(2) = eps(2)+zic*khi(2)
+                eps2d(3) = 0.0d0
+                eps2d(4) = (eps(3)+zic*khi(3))/rac2
+                eps2d(5) = 0.d0
+                eps2d(6) = 0.d0
+                deps2d(1) = deps(1)+zic*dkhi(1)
+                deps2d(2) = deps(2)+zic*dkhi(2)
                 deps2d(3) = 0.0d0
                 deps2d(4) = (deps(3)+zic*dkhi(3))/rac2
                 deps2d(5) = 0.d0
                 deps2d(6) = 0.d0
 ! ------------- Elastic matrix for shear stresses
-                d1iel(1,1) = a*zic*zic + b*zic + c
-                d1iel(2,2) = d1iel(1,1)
-                d1iel(1,2) = 0.d0
-                d1iel(2,1) = 0.d0
+                d1iel(1, 1) = a*zic*zic+b*zic+c
+                d1iel(2, 2) = d1iel(1, 1)
+                d1iel(1, 2) = 0.d0
+                d1iel(2, 1) = 0.d0
 ! ------------- Prepare stresses
                 do j = 1, 4
                     sigmPrep(j) = zr(icontm+icpg-1+j)
@@ -413,79 +412,76 @@ integer , intent(out) :: codret
                 if (lSigm) then
                     do j = 1, 5
                         zr(icontp+icpg+j) = 0.d0
-                    enddo
-                endif
+                    end do
+                end if
 ! ------------- Integration
-                call nmcomp(BEHinteg,&
-                            'RIGI'         , ipg            , ksp       , 2     , typmod  ,&
-                            zi(imate)      , zk16(icompo)   , zr(icarcr), instm , instp   ,&
-                            4              , eps2d          , deps2d    , 4     , sigmPrep,&
-                            zr(ivarim+ivpg), option         , angmas    , &
-                            zr(icontp+icpg), varip(1+ivpg), 36        , dsidep,&
+                call nmcomp(BEHinteg, &
+                            'RIGI', ipg, ksp, 2, typmod, &
+                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
+                            4, eps2d, deps2d, 4, sigmPrep, &
+                            zr(ivarim+ivpg), option, angmas, &
+                            zr(icontp+icpg), varip(1+ivpg), 36, dsidep, &
                             codkpg)
-                            
+
                 if (codkpg .ne. 0) then
                     if (codret .ne. 1) then
                         codret = codkpg
-                    endif
-                endif
-                
-                
-                
-                
+                    end if
+                end if
+
 ! ------------- Get stresses
                 if (lSigm) then
                     zr(icontp+icpg+3) = zr(icontp+icpg+3)/rac2
-                    zr(icontp+icpg+4) = d1iel(1,1)*vt(1) + d1iel(1,2)*vt(2)
-                    zr(icontp+icpg+5) = d1iel(2,1)*vt(1) + d1iel(2,2)*vt(2)
-                endif
+                    zr(icontp+icpg+4) = d1iel(1, 1)*vt(1)+d1iel(1, 2)*vt(2)
+                    zr(icontp+icpg+5) = d1iel(2, 1)*vt(1)+d1iel(2, 2)*vt(2)
+                end if
 ! ------------- Compute vector
                 if (lVect) then
                     coehsd = coef*hic/deux
-                    n(1) = n(1) + coehsd*zr(icontp+icpg-1+1)
-                    n(2) = n(2) + coehsd*zr(icontp+icpg-1+2)
-                    n(3) = n(3) + coehsd*zr(icontp+icpg-1+4)
-                    m(1) = m(1) + coehsd*zic*zr(icontp+icpg-1+1)
-                    m(2) = m(2) + coehsd*zic*zr(icontp+icpg-1+2)
-                    m(3) = m(3) + coehsd*zic*zr(icontp+icpg-1+4)
-                endif
+                    n(1) = n(1)+coehsd*zr(icontp+icpg-1+1)
+                    n(2) = n(2)+coehsd*zr(icontp+icpg-1+2)
+                    n(3) = n(3)+coehsd*zr(icontp+icpg-1+4)
+                    m(1) = m(1)+coehsd*zic*zr(icontp+icpg-1+1)
+                    m(2) = m(2)+coehsd*zic*zr(icontp+icpg-1+2)
+                    m(3) = m(3)+coehsd*zic*zr(icontp+icpg-1+4)
+                end if
 ! ------------- Compute matrix
                 if (lMatr) then
-                    d2d(1) = dsidep(1,1)
-                    d2d(2) = dsidep(1,2)
-                    d2d(3) = dsidep(1,4)/rac2
-                    d2d(4) = dsidep(2,1)
-                    d2d(5) = dsidep(2,2)
-                    d2d(6) = dsidep(2,4)/rac2
-                    d2d(7) = dsidep(4,1)/rac2
-                    d2d(8) = dsidep(4,2)/rac2
-                    d2d(9) = dsidep(4,4)/deux
+                    d2d(1) = dsidep(1, 1)
+                    d2d(2) = dsidep(1, 2)
+                    d2d(3) = dsidep(1, 4)/rac2
+                    d2d(4) = dsidep(2, 1)
+                    d2d(5) = dsidep(2, 2)
+                    d2d(6) = dsidep(2, 4)/rac2
+                    d2d(7) = dsidep(4, 1)/rac2
+                    d2d(8) = dsidep(4, 2)/rac2
+                    d2d(9) = dsidep(4, 4)/deux
                     do k = 1, 9
-                        dm(k) = dm(k) + coef*hic/deux*poids*d2d(k)
-                        dmf(k) = dmf(k) + coef*hic/deux*poids*zic*d2d( k)
-                        df(k) = df(k) + coef*hic/deux*poids*zic*zic* d2d(k)
+                        dm(k) = dm(k)+coef*hic/deux*poids*d2d(k)
+                        dmf(k) = dmf(k)+coef*hic/deux*poids*zic*d2d(k)
+                        df(k) = df(k)+coef*hic/deux*poids*zic*zic*d2d(k)
                     end do
-                endif
+                end if
             end do
         end do
 ! ----- BTSIG = BTSIG + BFT*M + BMT*N
         if (lVect) then
             do ino = 1, nbNode
                 do k = 1, 3
-                    btsig(1,ino) = btsig(1,ino) + bm(k,2* (ino-1)+1)* n(k)*poids
-                    btsig(2,ino) = btsig(2,ino) + bm(k,2* (ino-1)+2)* n(k)*poids
-                    btsig(3,ino) = btsig(3,ino) + bf(k,3* (ino-1)+1)* m(k)*poids
-                    btsig(5,ino) = btsig(5,ino) + bf(k,3* (ino-1)+2)* m(k)*poids
-                    btsig(4,ino) = btsig(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
+                    btsig(1, ino) = btsig(1, ino)+bm(k, 2*(ino-1)+1)*n(k)*poids
+                    btsig(2, ino) = btsig(2, ino)+bm(k, 2*(ino-1)+2)*n(k)*poids
+                    btsig(3, ino) = btsig(3, ino)+bf(k, 3*(ino-1)+1)*m(k)*poids
+                    btsig(5, ino) = btsig(5, ino)+bf(k, 3*(ino-1)+2)*m(k)*poids
+                    btsig(4, ino) = btsig(4, ino)-bf(k, 3*(ino-1)+3)*m(k)*poids
                 end do
             end do
-        endif
+        end if
 ! ----- Elementary matrices (membrane, bending, ...)
         if (lMatr) then
             call utbtab('CUMU', 3, 2*nbNode, dm, bm, work, memb)
             call utbtab('CUMU', 3, 3*nbNode, df, bf, work, flex)
             call utctab('CUMU', 3, 3*nbNode, 2*nbNode, dmf, bf, bm, work, mefl)
-        endif
+        end if
     end do
 !
 ! - Add elementary matrices in global matrix
@@ -497,15 +493,14 @@ integer , intent(out) :: codret
             call dxqloc(flex, memb, mefl, ctor, ktan)
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
-    
+        end if
+    end if
+
 ! ------------- Get internal variables
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         zr(ivarip:ivarip+lg_varip-1) = varip(1:lg_varip)
     end if
-    
-    
-    deallocate(varip)
+
+    deallocate (varip)
 end subroutine

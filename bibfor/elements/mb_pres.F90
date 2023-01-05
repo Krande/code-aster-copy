@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine mb_pres()
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -52,31 +52,31 @@ implicit none
     call rccoma(zi(imate), 'ELAS_MEMBRANE', 0, phenom, icodre)
 ! - Only small strains work with ELAS_MEMBRANE behavior
     if (icodre .eq. 0) then
-        param='PPRESSR'
+        param = 'PPRESSR'
         call tecach('NNO', param, 'L', iret, nval=8, itab=itab)
         if (iret .eq. 0) then
-            jad=itab(1)
-            nbv=itab(2)
-            ASSERT(itab(5).eq.1 .or. itab(5).eq.4)
-            if (itab(5).eq.1) then
-                do k=1,nbv
-                    if (zr(jad-1+k).ne.0.d0) then
+            jad = itab(1)
+            nbv = itab(2)
+            ASSERT(itab(5) .eq. 1 .or. itab(5) .eq. 4)
+            if (itab(5) .eq. 1) then
+                do k = 1, nbv
+                    if (zr(jad-1+k) .ne. 0.d0) then
                         call utmess('F', 'CALCUL_48')
-                    endif
-                enddo
+                    end if
+                end do
             else
-                do k=1,nbv
-                    if (zk8(jad-1+k).ne.'&FOZERO') then
+                do k = 1, nbv
+                    if (zk8(jad-1+k) .ne. '&FOZERO') then
                         call fointe(' ', zk8(jad-1+k), 0, ' ', [0.d0], pr, ier)
-                        if (ier.eq.0 .and. pr.eq.0.d0) then
+                        if (ier .eq. 0 .and. pr .eq. 0.d0) then
                             ! tout va bien ...
                         else
                             call utmess('F', 'CALCUL_48')
-                        endif
-                    endif
-                enddo
-            endif
-        endif
-    endif
+                        end if
+                    end if
+                end do
+            end if
+        end if
+    end if
 
 end subroutine

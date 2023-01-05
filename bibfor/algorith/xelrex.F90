@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 
 subroutine xelrex(elrefp, nno, xref, ndime)
-implicit none
+    implicit none
 #include "asterf_types.h"
 #include "asterfort/elraca.h"
 #include "asterfort/elrfno.h"
-character(len=8):: elrefp
-integer :: nno
-integer, optional :: ndime
-real(kind=8) :: xref(81)
+    character(len=8):: elrefp
+    integer :: nno
+    integer, optional :: ndime
+    real(kind=8) :: xref(81)
 !   BUT: INTERFACE VERS ELRACA :
 !         RETOURNE LES COORDONNEES DE REFERENCE DE
 !             L ELEMENT PARENT COMPLET
@@ -34,49 +34,49 @@ real(kind=8) :: xref(81)
 !=======================================================================
 !
 ! - Change to complete quadratic elements
-    transfert=.false.
+    transfert = .false.
     if ((elrefp .eq. 'H20')) then
-        elp='H27'
-        transfert=.true.
+        elp = 'H27'
+        transfert = .true.
     else if ((elrefp .eq. 'P15')) then
-        elp='P18'
-        transfert=.true.
+        elp = 'P18'
+        transfert = .true.
     else if ((elrefp .eq. 'QU8')) then
-        elp='QU9'
-        transfert=.true.
+        elp = 'QU9'
+        transfert = .true.
     else
-        elp=elrefp
-    endif
+        elp = elrefp
+    end if
 
 ! - Get number of nodes
 !   LE TRANSFERT VERS L ELMENT COMPLET EST AMBIGU
 !     ON STOCKE LES COORDONNES DE REFERENCE DE L ELEMENT COMPLET
 !     ON INTERPOLE SUR LE L ELEMENT PARENT => NNO (L ELMENT INCOMPLET)
 
-    call elrfno(elp, nno, ndim = ndim)
+    call elrfno(elp, nno, ndim=ndim)
     if (transfert) then
         if ((elrefp .eq. 'H20')) then
-            nno=20
+            nno = 20
         else if ((elrefp .eq. 'P15')) then
-            nno=15
+            nno = 15
         else if ((elrefp .eq. 'QU8')) then
-            nno=8
-        endif
-    endif
+            nno = 8
+        end if
+    end if
 
 ! - Get coordinates of nodes
-    call elraca(elp, nodeCoor_ = xref)
+    call elraca(elp, nodeCoor_=xref)
 
 !
 !   Cas particulier de la pyramide quadratique : le noeud au centre de
 !   la base doit être ajouté à la main, car la pyramide quadratique à
 !   14 noeuds n'existe pas en tant qu'élémént de référence dans Aster
-    if (elrefp.eq.'P13') then
-       xref(ndim*(14-1)+1)=0.
-       xref(ndim*(14-1)+2)=0.
-       xref(ndim*(14-1)+3)=0.
-    endif
+    if (elrefp .eq. 'P13') then
+        xref(ndim*(14-1)+1) = 0.
+        xref(ndim*(14-1)+2) = 0.
+        xref(ndim*(14-1)+3) = 0.
+    end if
 !
-    if (present(ndime)) ndime=ndim
+    if (present(ndime)) ndime = ndim
 !
 end

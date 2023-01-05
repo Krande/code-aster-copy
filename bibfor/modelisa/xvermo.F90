@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,11 +59,11 @@ subroutine xvermo(nfiss, fiss, mai)
 !
 !       VERIFICATION DE LA COHERENCE
         if (mai .ne. maif) then
-            valk(1)=fiss(ifiss)
-            valk(2)=maif
-            valk(3)=mai
+            valk(1) = fiss(ifiss)
+            valk(2) = maif
+            valk(3) = mai
             call utmess('F', 'XFEM_39', nk=3, valk=valk)
-        endif
+        end if
 !
     end do
 !

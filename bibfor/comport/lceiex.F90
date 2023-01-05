@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lceiex(fami, kpg, ksp, mat, option,&
-                  mu, su, de, ddedt, vim,&
+subroutine lceiex(fami, kpg, ksp, mat, option, &
+                  mu, su, de, ddedt, vim, &
                   vip, r, carcri, codret)
 !
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
@@ -27,7 +27,6 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-
 
     character(len=16) :: option
     integer :: mat, kpg, ksp, i, codret
@@ -39,7 +38,6 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !            LOI DE COMPORTEMENT COHESIVE CZM_EXP_MIX
 !            POUR LES ELEMENTS D'INTERFACE 2D ET 3D.
 !
-
 
 !-----------------------------------------------------------------------
 !
@@ -96,27 +94,27 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     integer :: cod(4), iter_inte_maxi
     character(len=16) :: nom(4)
     character(len=1) :: poum
-    data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
+    data nom/'GC', 'SIGM_C', 'PENA_LAGR', 'RIGI_GLIS'/
 
-    iter_inte_maxi=abs(carcri(1))
-    resi_inte_rela=carcri(3)
+    iter_inte_maxi = abs(carcri(1))
+    resi_inte_rela = carcri(3)
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
 
-    resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
-    rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
-    elas = option(11:14).eq.'ELAS'
+    resi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH'
+    rigi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RIGI'
+    elas = option(11:14) .eq. 'ELAS'
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
-    call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mat, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 4, nom, val, cod, 2)
 !
     gc = val(1)
@@ -124,9 +122,9 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 !
     dc = 3.2*gc/sc
-    h  = sc/dc
-    r = h * val(3)
-    c = h * val(4)
+    h = sc/dc
+    r = h*val(3)
+    c = h*val(4)
 !
 ! -- INITIALISATION
 !
@@ -134,19 +132,19 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     ga = vim(4)
 !
 !    CALCUL DE KAPPA : KA = DC*(1-SQRT(1-GA))
-    tmp = sqrt(max(0.d0,1.d0-ga))
+    tmp = sqrt(max(0.d0, 1.d0-ga))
     tmp = dc*(1.d0-tmp)
-    tmp = max(0.d0,tmp)
-    tmp = min(dc,tmp)
+    tmp = max(0.d0, tmp)
+    tmp = min(dc, tmp)
     ka = tmp
 !
-    sk = max(0.d0,sc*exp(-sc*ka/gc))
+    sk = max(0.d0, sc*exp(-sc*ka/gc))
 !
 !
 !    FORCES COHESIVES AUGMENTEES
-    t(1) = mu(1) + r*su(1)
-    t(2) = mu(2) + r*su(2)
-    t(3) = mu(3) + r*su(3)
+    t(1) = mu(1)+r*su(1)
+    t(2) = mu(2)+r*su(2)
+    t(3) = mu(3)+r*su(3)
     tn = t(1)
 !
 !
@@ -156,9 +154,9 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !    SI RIGI_MECA_*
     if (.not. resi) then
         regime = nint(vim(2))
-        dn=vim(7)
+        dn = vim(7)
         goto 5000
-    endif
+    end if
 !
 !    CONTACT
     if (tn .lt. 0.d0) then
@@ -171,7 +169,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
         dn = tn/r
 !
 !    ADHERENCE (INITIALE OU COURANTE)
-    else if (tn .le. r*ka + sk) then
+    else if (tn .le. r*ka+sk) then
         regime = 0
         dn = ka
 !
@@ -187,30 +185,30 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !         QUE D UN POINT D INITIALISATION JUDICIEUX  (solution de la bi-lineaire)
 !         0.22 - approximation de 2/9 qui correspond au point de changement de pente
 !         dans la loi bi-linéaire par Petersson
-        dc1=dc*0.22
+        dc1 = dc*0.22
         dn = (tn-sc)/(r-(sc*3)/(3.2*dc))
         if (dn >= dc1) then
-            dn=(tn-(3.d0/7.d0)*sc)/(r-(sc*3.d0)/(7.d0*3.2d0*(dc)))
+            dn = (tn-(3.d0/7.d0)*sc)/(r-(sc*3.d0)/(7.d0*3.2d0*(dc)))
             if (dn >= dc) then
-                dn=0.999*dc
-            endif
-        endif
+                dn = 0.999*dc
+            end if
+        end if
 !
         bmin = dn/4
-        bmax = max(dn*3,dc)
+        bmax = max(dn*3, dc)
 !
 !
 !     3 - BOUCLE DE CONVERGENCE DE L ALGORITHME DE NEWTON
         i = 0
 200     continue
 !         TEST DU CRITERE
-        res = sc*exp(-sc*dn/gc) + r*dn-tn
+        res = sc*exp(-sc*dn/gc)+r*dn-tn
         if (abs(res) .lt. resi_inte_rela .or. i > iter_inte_maxi) goto 210
-        i = i + 1
+        i = i+1
 !
 !         NOUVEL ESTIMATEUR
-        deriv = -(sc**2/gc)*exp(-sc*dn/gc) + r
-        dn = dn - res/deriv
+        deriv = -(sc**2/gc)*exp(-sc*dn/gc)+r
+        dn = dn-res/deriv
 !
 !         PROJECTION SUR LES BORNES DE L'INTERVALLE
         if (dn .lt. bmin) dn = bmin
@@ -220,17 +218,17 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 210     continue
 !
         if (abs(res) .lt. resi_inte_rela .and. i > iter_inte_maxi) then
-            call utmess("I","RUPTURE2_6")
+            call utmess("I", "RUPTURE2_6")
             codret = 1
             goto 9999
-        endif
+        end if
 !
 
 !    SURFACE LIBRE FINALE (RUPTURE)
     else
         regime = 2
         dn = tn/r
-    endif
+    end if
     call r8inir(6, 0.d0, de, 1)
 !    COMPOSANTE DE L'OUVERTURE :
     de(1) = dn
@@ -240,21 +238,21 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 
 !
-    kap = min( max(ka,dn) , dc )
-    gap = kap/dc * (2.d0 - kap/dc)
-    gap = max(0.d0,gap)
-    gap = min(1.d0,gap)
+    kap = min(max(ka, dn), dc)
+    gap = kap/dc*(2.d0-kap/dc)
+    gap = max(0.d0, gap)
+    gap = min(1.d0, gap)
 !
     vip(1) = kap
     vip(2) = regime
 !
     if (kap .eq. 0.d0) then
         vip(3) = 0.d0
-    else if (kap.eq.dc) then
+    else if (kap .eq. dc) then
         vip(3) = 2.d0
     else
         vip(3) = 1.d0
-    endif
+    end if
 !
     vip(4) = gap
     vip(5) = gc*vip(4)
@@ -272,12 +270,12 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !    AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
     if (elas) then
         if (regime .eq. 1) regime = 0
-    endif
+    end if
 !
     call r8inir(36, 0.d0, ddedt, 1)
 !
-    ddedt(2,2) = 1.d0/(c+r)
-    ddedt(3,3) = 1.d0/(c+r)
+    ddedt(2, 2) = 1.d0/(c+r)
+    ddedt(3, 3) = 1.d0/(c+r)
 !
     if (regime .eq. 0) then
         ddndtn = 0.d0
@@ -289,8 +287,8 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
         ddndtn = 1.d0/r
     else if (regime .eq. -1) then
         ddndtn = 0.d0
-    endif
-    ddedt(1,1) = ddndtn
+    end if
+    ddedt(1, 1) = ddndtn
 
 9999 continue
 !

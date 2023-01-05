@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpzech(d, z, low, high, mm,&
+subroutine vpzech(d, z, low, high, mm, &
                   neq, iz)
     implicit none
     integer :: low, high, mm, neq, iz
@@ -37,7 +37,7 @@ subroutine vpzech(d, z, low, high, mm,&
     do i = low, high
         s = d(i)
         do j = 1, mm
-            z(i,j) = z(i,j)*s
+            z(i, j) = z(i, j)*s
         end do
     end do
 !
@@ -46,21 +46,21 @@ subroutine vpzech(d, z, low, high, mm,&
         jj = nint(d(ii))
         if (ii .ne. jj) then
             do j = 1, mm
-                s = z(ii,j)
-                z(ii,j) = z(jj,j)
-                z(jj,j) = s
+                s = z(ii, j)
+                z(ii, j) = z(jj, j)
+                z(jj, j) = s
             end do
-        endif
+        end if
     end do
 !
     do ii = high+1, neq
         jj = nint(d(ii))
         if (ii .ne. jj) then
             do j = 1, mm
-                s = z(ii,j)
-                z(ii,j) = z(jj,j)
-                z(jj,j) = s
+                s = z(ii, j)
+                z(ii, j) = z(jj, j)
+                z(jj, j) = s
             end do
-        endif
+        end if
     end do
 end subroutine

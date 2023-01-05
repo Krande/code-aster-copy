@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 module Material_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
@@ -55,7 +55,6 @@ implicit none
         integer, pointer      :: v_elem(:)
         integer               :: nb_elem
     end type Mat_DS_VarcAffe
-
 
 ! - Type: external state variable
     type Mat_DS_VarcCata

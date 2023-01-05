@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid,  idlima, idnoeu, ima, ino
+    integer :: ibid, idlima, idnoeu, ima, ino
     integer :: iocc, iret, nb, nbma, nbmai, ndim, nrayon
     integer :: numnoe
     real(kind=8) :: d2, rayon, zero
@@ -110,7 +110,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
@@ -121,7 +121,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
     mocle(1) = 'POINT'
     mocle(2) = 'NOEUD_CENTRE'
     mocle(3) = 'GROUP_NO_CENTRE'
-    call utcono(motfac, mocle, iocc, noma, ndim,&
+    call utcono(motfac, mocle, iocc, noma, ndim, &
                 x0, iret)
 !
 ! --- RECUPERATION DU RAYON DE LA SPHERE :
@@ -133,8 +133,8 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
         call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call utmess('F', 'MODELISA3_83')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES DU MAILLAGE :
 !     ---------------------------------------------
@@ -181,12 +181,12 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
             x(2) = vale(3*(numnoe-1)+2)
             if (ndim .eq. 3) then
                 x(3) = vale(3*(numnoe-1)+3)
-            endif
+            end if
 !
 ! ---        DISTANCE DU NOEUD COURANT AU CENTRE DE LA SPHERE :
 !            ------------------------------------------------
-            d2 = (x(1)-x0(1))*(x(1)-x0(1)) + (x(2)-x0(2))*(x(2)-x0(2)) + (x(3)-x0(3))*(x(3)-x0(3)&
-                 )
+            d2 = (x(1)-x0(1))*(x(1)-x0(1))+(x(2)-x0(2))*(x(2)-x0(2))+(x(3)-x0(3))*(x(3)-x0(3) &
+                                                                                   )
 !
 ! ---      SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A AU MOINS UN NOEUD
 !          -------------------------------------------------------------
@@ -197,41 +197,41 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---             AFFECTEE AU GROUP_MA :
 !                 --------------------
                 if (d2 .le. rayon*rayon) then
-                    nbma = nbma + 1
+                    nbma = nbma+1
                     zi(idlima+nbma-1) = ima
                     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                     goto 10
-                endif
+                end if
 ! ---            SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU
 ! ---            MAJORITE , COMPTER LE NOMBRE DES NOEUDS D'UNE MAILLE
 ! ---            DANS LE SPHERE :
 !                ----------------------------------------------------
-            else if ((selec.eq.'TOUS').or.(selec.eq.'MAJORITE')) then
+            else if ((selec .eq. 'TOUS') .or. (selec .eq. 'MAJORITE')) then
                 if (d2 .le. rayon*rayon) then
-                    nbnod=nbnod+1
-                endif
-            endif
+                    nbnod = nbnod+1
+                end if
+            end if
 !
         end do
 !
         if (selec .eq. 'TOUS') then
             if (nbnod .eq. nbno) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlima+nbma-1) = ima
                 call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                 goto 10
-            endif
-        endif
+            end if
+        end if
         if (selec .eq. 'MAJORITE') then
             if (nbnod .ge. (nbno+1)/2) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlima+nbma-1) = ima
                 call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                 goto 10
-            endif
-        endif
+            end if
+        end if
 !
- 10     continue
+10      continue
     end do
 !
     call jedema()

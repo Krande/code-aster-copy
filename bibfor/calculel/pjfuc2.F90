@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,13 +69,13 @@ subroutine pjfuc2(c1, c2, base, c3)
     call jeveuo(c1//'.PJXX_K1', 'L', jno1)
     call jeveuo(c2//'.PJXX_K1', 'L', jno2)
     do ii = 1, 2
-        ma1 = zk24(jno1-1+ii)(1:8)
-        ma2 = zk24(jno2-1+ii)(1:8)
+        ma1 = zk24(jno1-1+ii) (1:8)
+        ma2 = zk24(jno2-1+ii) (1:8)
         if (ma1 .ne. ma2) then
             valk(1) = ma1
             valk(2) = ma2
             call utmess('F', 'CALCULEL4_65', nk=2, valk=valk)
-        endif
+        end if
     end do
     call jedupo(c1//'.PJXX_K1', base, c3//'.PJXX_K1', .false._1)
 !
@@ -101,12 +101,12 @@ subroutine pjfuc2(c1, c2, base, c3)
     do ino = 1, nbno1
         zi(jnb3-1+ino) = nb1(ino)
         zi(jm13-1+ino) = m11(ino)
-        ilengt = ilengt + nb1(ino)
+        ilengt = ilengt+nb1(ino)
     end do
     do ino = 1, nbno2
         zi(jnb3-1+nbno1+ino) = nb2(ino)
         zi(jm13-1+nbno1+ino) = m12(ino)
-        ilengt = ilengt + nb2(ino)
+        ilengt = ilengt+nb2(ino)
     end do
 !
 !     4 - AFFECTATION DE PJEF_CF ET PJEF_NU
@@ -120,7 +120,7 @@ subroutine pjfuc2(c1, c2, base, c3)
             zr(jcf3-1+ideca1+ii) = cf1(ideca1+ii)
             zi(jnu3-1+ideca1+ii) = nu1(ideca1+ii)
         end do
-        ideca1 = ideca1 + nb1(ino)
+        ideca1 = ideca1+nb1(ino)
     end do
     ideca2 = 0
     do ino = 1, nbno2
@@ -128,8 +128,8 @@ subroutine pjfuc2(c1, c2, base, c3)
             zr(jcf3-1+ideca1+ii) = cf2(ideca2+ii)
             zi(jnu3-1+ideca1+ii) = nu2(ideca2+ii)
         end do
-        ideca1 = ideca1 + nb2(ino)
-        ideca2 = ideca2 + nb2(ino)
+        ideca1 = ideca1+nb2(ino)
+        ideca2 = ideca2+nb2(ino)
     end do
 !
 !     5 - LIBERATION DE LA MEMOIRE

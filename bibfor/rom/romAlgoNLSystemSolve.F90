@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoNLSystemSolve(matr_asse , vect_2mbr, vect_cine,&
+subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, &
                                 ds_algorom, vect_solu, l_update_redu_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -44,12 +44,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
-character(len=24), intent(in) :: matr_asse
-character(len=24), intent(in) :: vect_2mbr
-character(len=24), intent(in) :: vect_cine
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-character(len=19), intent(in) :: vect_solu
-aster_logical, optional, intent(in) :: l_update_redu_
+    character(len=24), intent(in) :: matr_asse
+    character(len=24), intent(in) :: vect_2mbr
+    character(len=24), intent(in) :: vect_cine
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    character(len=19), intent(in) :: vect_solu
+    aster_logical, optional, intent(in) :: l_update_redu_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,32 +93,32 @@ aster_logical, optional, intent(in) :: l_update_redu_
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_40')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    l_rom      = ds_algorom%l_rom
-    l_hrom     = ds_algorom%l_hrom
-    gamma      = ds_algorom%gamma
+    l_rom = ds_algorom%l_rom
+    l_hrom = ds_algorom%l_hrom
+    gamma = ds_algorom%gamma
     resultName = ds_algorom%ds_empi%resultName
-    nbMode     = ds_algorom%ds_empi%nbMode
-    nbEqua     = ds_algorom%ds_empi%mode%nbEqua
-    fieldName  = ds_algorom%ds_empi%mode%fieldName
-    vcine19    = vect_cine(1:19)
+    nbMode = ds_algorom%ds_empi%nbMode
+    nbEqua = ds_algorom%ds_empi%mode%nbEqua
+    fieldName = ds_algorom%ds_empi%mode%fieldName
+    vcine19 = vect_cine(1:19)
     ASSERT(ds_algorom%ds_empi%mode%fieldSupp .eq. 'NOEU')
     ASSERT(l_rom)
     l_update_redu = ASTER_TRUE
     if (present(l_update_redu_)) then
         l_update_redu = l_update_redu_
-    endif
+    end if
 !
 ! - Access to reduced coordinates
 !
-    call jeveuo(gamma, 'E', vr = v_gamma)
+    call jeveuo(gamma, 'E', vr=v_gamma)
 !
 ! - Access to second member
 !
-    call jeveuo(vect_2mbr(1:19)//'.VALE', 'E'     , vr = v_vect_2mbr)
+    call jeveuo(vect_2mbr(1:19)//'.VALE', 'E', vr=v_vect_2mbr)
     call jelira(vect_2mbr(1:19)//'.VALE', 'LONMAX', nbEqua_2mbr)
     ASSERT(nbEqua .eq. nbEqua_2mbr)
 !
@@ -126,7 +126,7 @@ aster_logical, optional, intent(in) :: l_update_redu_
 !
     call mtmchc(matr_asse, 'ELIMF')
     call jeveuo(matr_asse(1:19)//'.&INT', 'L', jv_matr)
-    call dismoi('NB_EQUA', matr_asse, 'MATR_ASSE', repi = nbEqua_matr)
+    call dismoi('NB_EQUA', matr_asse, 'MATR_ASSE', repi=nbEqua_matr)
     ASSERT(nbEqua .eq. zi(jv_matr+2))
 !
 ! - Second member correction for AFFE_CHAR_CINE
@@ -141,34 +141,34 @@ aster_logical, optional, intent(in) :: l_update_redu_
         do iEqua = 1, nbEqua
             if (ds_algorom%v_equa_int(iEqua) .eq. 1) then
                 v_vect_2mbr(iEqua) = 0.d0
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
 ! - Allocate objects
 !
-    AS_ALLOCATE(vr = v_matr_rom, size = nbMode*nbMode)
-    AS_ALLOCATE(vr = v_vect_rom, size = nbMode)
-    AS_ALLOCATE(vr = v_mrmult  , size = nbEqua)
+    AS_ALLOCATE(vr=v_matr_rom, size=nbMode*nbMode)
+    AS_ALLOCATE(vr=v_vect_rom, size=nbMode)
+    AS_ALLOCATE(vr=v_mrmult, size=nbEqua)
 !
 ! - Compute reduced objects
 !
     do iMode = 1, nbMode
         call rsexch(' ', resultName, fieldName, iMode, mode, iret)
-        call jeveuo(mode(1:19)//'.VALE', 'L', vr = v_mode)
+        call jeveuo(mode(1:19)//'.VALE', 'L', vr=v_mode)
         term1 = ddot(nbEqua, v_mode, 1, v_vect_2mbr, 1)
         v_vect_rom(iMode) = term1
-        call mrmult('ZERO', jv_matr, v_mode, v_mrmult, 1, .false._1,l_rom)
+        call mrmult('ZERO', jv_matr, v_mode, v_mrmult, 1, .false._1, l_rom)
         if (l_hrom) then
             do iEqua = 1, nbEqua
                 if (ds_algorom%v_equa_int(iEqua) .eq. 1) then
                     v_mrmult(iEqua) = 0.d0
-                endif
+                end if
             end do
-        endif
+        end if
         do jMode = 1, nbMode
             call rsexch(' ', resultName, fieldName, jMode, mode, iret)
-            call jeveuo(mode(1:19)//'.VALE', 'L', vr = v_mode)
+            call jeveuo(mode(1:19)//'.VALE', 'L', vr=v_mode)
             term2 = ddot(nbEqua, v_mode, 1, v_mrmult, 1)
             v_matr_rom(nbMode*(iMode-1)+jMode) = term2
         end do
@@ -178,24 +178,24 @@ aster_logical, optional, intent(in) :: l_update_redu_
 !
     call mgauss('NFSP', v_matr_rom, v_vect_rom, nbMode, nbMode, 1, det, iret)
     if (l_update_redu) then
-        v_gamma = v_gamma + v_vect_rom
-    endif
+        v_gamma = v_gamma+v_vect_rom
+    end if
 !
 ! - Project in physical space
 !
     call vtzero(vect_solu)
-    do iMode = 1 , nbMode
+    do iMode = 1, nbMode
         term = v_vect_rom(iMode)
         call rsexch(' ', resultName, fieldName, iMode, mode, iret)
         call vtaxpy(term, mode, vect_solu)
-    enddo
-    call jeveuo(vect_solu(1:19)//'.VALE', 'E', vr = v_vect_solu)
+    end do
+    call jeveuo(vect_solu(1:19)//'.VALE', 'E', vr=v_vect_solu)
     call mrconl('MULT', jv_matr, 0, 'R', v_vect_solu, 1)
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = v_matr_rom)
-    AS_DEALLOCATE(vr = v_vect_rom)
-    AS_DEALLOCATE(vr = v_mrmult  )
+    AS_DEALLOCATE(vr=v_matr_rom)
+    AS_DEALLOCATE(vr=v_vect_rom)
+    AS_DEALLOCATE(vr=v_mrmult)
 !
 end subroutine

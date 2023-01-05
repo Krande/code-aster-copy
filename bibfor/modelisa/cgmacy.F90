@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid,  idlima, idnoeu, ima, ino
+    integer :: ibid, idlima, idnoeu, ima, ino
     integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
     integer :: nbnod, ndim, nrayon, numnoe, nv, nvect
     real(kind=8) :: ang, d2, eps, psca
@@ -126,11 +126,11 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 !
     if (ndim .ne. 3) then
         call utmess('F', 'MODELISA3_73')
-    endif
+    end if
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
@@ -141,7 +141,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
     mocle(1) = 'POINT'
     mocle(2) = 'NOEUD_CENTRE'
     mocle(3) = 'GROUP_NO_CENTRE'
-    call utcono(motfac, mocle, iocc, noma, ndim,&
+    call utcono(motfac, mocle, iocc, noma, ndim, &
                 x0, iret)
 !
 ! --- RECUPERATION DU RAYON DU CYLINDRE :
@@ -153,8 +153,8 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
         call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call utmess('F', 'MODELISA3_75')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA DIRECTION DEFINISSANT L'AXE DU CYLINDRE :
 !     ----------------------------------------------------------
@@ -168,16 +168,16 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
             if (nvect .ne. 3) then
                 call utmess('F', 'MODELISA3_77')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe,&
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe, &
                             nbret=nv)
-            endif
-        endif
+            end if
+        end if
     else
         nangle = -nangle
         if (nangle .ne. 2) then
             call utmess('F', 'MODELISA3_78')
-        endif
-        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+        end if
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle, &
                     nbret=nv)
 !
         angle(1) = angle(1)*r8dgrd()
@@ -186,13 +186,13 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
         axe(1) = cos(angle(1))*cos(angle(2))
         axe(2) = sin(angle(1))*cos(angle(2))
         axe(3) = -sin(angle(2))
-    endif
+    end if
 !
-    xnorm2 = axe(1)*axe(1) + axe(2)*axe(2) + axe(3)*axe(3)
+    xnorm2 = axe(1)*axe(1)+axe(2)*axe(2)+axe(3)*axe(3)
 !
     if (xnorm2 .eq. zero) then
         call utmess('F', 'MODELISA3_79')
-    endif
+    end if
 !
     xnorm = sqrt(xnorm2)
 !
@@ -245,23 +245,23 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
             x(2) = vale(3*(numnoe-1)+2)
             x(3) = vale(3*(numnoe-1)+3)
 !
-            xx0(1) = x(1) - x0(1)
-            xx0(2) = x(2) - x0(2)
-            xx0(3) = x(3) - x0(3)
+            xx0(1) = x(1)-x0(1)
+            xx0(2) = x(2)-x0(2)
+            xx0(3) = x(3)-x0(3)
 !
-            xnoxx2 = xx0(1)*xx0(1) + xx0(2)*xx0(2) + xx0(3)*xx0(3)
+            xnoxx2 = xx0(1)*xx0(1)+xx0(2)*xx0(2)+xx0(3)*xx0(3)
 !
 ! ---       SI LE NOEUD COURANT EST CONFONDU AVEC LE NOEUD DE
 ! ---       L'AXE DU CYLINDRE, ON AFFECTE  LA MAILLE COURANTE A LA
 ! ---       LISTE DE MAILLES QUI SERA AFFECTEE AU GROUP_MA :
 !           ----------------------------------------------
             if (xnoxx2 .eq. zero) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlima+nbma-1) = ima
                 goto 10
             else
 !
-                xnoxx0 = sqrt (xnoxx2)
+                xnoxx0 = sqrt(xnoxx2)
 !
                 xx0(1) = xx0(1)/xnoxx0
                 xx0(2) = xx0(2)/xnoxx0
@@ -270,20 +270,20 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---         CALCUL DE L'ANGLE FORME PAR L'AXE DU CYLINDRE
 ! ---         AVEC LE VECTEUR POSITION COURANT XX0 :
 !             ------------------------------------
-                psca = abs(xx0(1)*axe(1) + xx0(2)*axe(2) + xx0(3)*axe( 3))
+                psca = abs(xx0(1)*axe(1)+xx0(2)*axe(2)+xx0(3)*axe(3))
                 if (psca .gt. un) then
-                    psca = psca - eps
-                endif
+                    psca = psca-eps
+                end if
                 ang = acos(psca)
 !
 ! ---         CALCUL DE LA DISTANCE DU NOEUD COURANT A L'AXE
 ! ---         DU CYLINDRE :
 !             -----------
-                d2 = (&
-                     (&
-                     x(1)-x0(1))*(x(1)-x0(1)) + (x(2)-x0(2))*(x(2)- x0(2)) + (x(3)-x0(3))*(x(3)-x&
-                     &0(3)))*sin(ang&
-                     )*sin(ang&
+                d2 = ( &
+                     ( &
+                     x(1)-x0(1))*(x(1)-x0(1))+(x(2)-x0(2))*(x(2)-x0(2))+(x(3)-x0(3))*(x(3)-x&
+                     &0(3)))*sin(ang &
+                     )*sin(ang &
                      )
 !
 ! ---      SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A AU MOINS UN NOEUD
@@ -296,45 +296,45 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---         AFFECTEE AU GROUP_MA :
 !             --------------------
                     if (d2 .le. rayon*rayon) then
-                        nbma = nbma + 1
+                        nbma = nbma+1
                         zi(idlima+nbma-1) = ima
                         goto 10
-                    endif
+                    end if
 !
 ! ---         SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU
 ! ---         MAJORITE, COMPTER LE NOMBRE DES NOEUDS D'UNE MAILLE
 ! ---         DANS LE CYLINDRE :
 !             ------------------------------------------------
-                    else if((selec.eq.'TOUS').or. (selec.eq.'MAJORITE'))&
-                then
+                else if ((selec .eq. 'TOUS') .or. (selec .eq. 'MAJORITE')) &
+                    then
 !
                     if (d2 .le. rayon*rayon) then
-                        nbnod=nbnod+1
-                    endif
+                        nbnod = nbnod+1
+                    end if
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
         end do
 !
         if (selec .eq. 'TOUS') then
             if (nbnod .eq. nbno) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlima+nbma-1) = ima
                 goto 10
-            endif
-        endif
+            end if
+        end if
 !
         if (selec .eq. 'MAJORITE') then
             if (nbnod .ge. (nbno+1)/2) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlima+nbma-1) = ima
                 goto 10
-            endif
-        endif
+            end if
+        end if
 !
- 10     continue
+10      continue
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vetnth_nonl(model      , cara_elem   , mate      , mateco, time , compor   ,&
-                       temp_iter  , varc_curr,&
-                       vect_elem_l, vect_elem_nl, base,&
-                       dry_prev_  , dry_curr_   , hydr_prev_)
+subroutine vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
+                       temp_iter, varc_curr, &
+                       vect_elem_l, vect_elem_nl, base, &
+                       dry_prev_, dry_curr_, hydr_prev_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,19 +36,19 @@ implicit none
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: cara_elem
-character(len=24), intent(in) :: mate, mateco
-character(len=24), intent(in) :: time
-character(len=24), intent(in) :: compor
-character(len=24), intent(in) :: temp_iter
-character(len=19), intent(in) :: varc_curr
-character(len=24), intent(in) :: vect_elem_l
-character(len=24), intent(in) :: vect_elem_nl
-character(len=1),  intent(in) :: base
-character(len=24), optional,intent(in) :: dry_prev_
-character(len=24), optional,intent(in) :: dry_curr_
-character(len=24), optional,intent(in) :: hydr_prev_
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: mate, mateco
+    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: temp_iter
+    character(len=19), intent(in) :: varc_curr
+    character(len=24), intent(in) :: vect_elem_l
+    character(len=24), intent(in) :: vect_elem_nl
+    character(len=1), intent(in) :: base
+    character(len=24), optional, intent(in) :: dry_prev_
+    character(len=24), optional, intent(in) :: dry_curr_
+    character(len=24), optional, intent(in) :: hydr_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer , parameter :: nbin = 11, nbout = 2
+    integer, parameter :: nbin = 11, nbout = 2
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
     integer :: iret
@@ -87,26 +87,26 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    resu_elem_l  = vect_elem_l(1:8)//'.0000000'
+    resu_elem_l = vect_elem_l(1:8)//'.0000000'
     resu_elem_nl = vect_elem_nl(1:8)//'.0000000'
-    newnom       = '.0000000'
-    option       = 'CHAR_THER_EVOLNI'
-    ligrmo       = model(1:8)//'.MODELE'
+    newnom = '.0000000'
+    option = 'CHAR_THER_EVOLNI'
+    ligrmo = model(1:8)//'.MODELE'
 !
 ! - Get fields
 !
     hydr_prev = ' '
     if (present(hydr_prev_)) then
         hydr_prev = hydr_prev_
-    endif
+    end if
     dry_prev = ' '
     if (present(dry_prev_)) then
         dry_prev = dry_prev_
-    endif
+    end if
     dry_curr = ' '
     if (present(dry_curr_)) then
         dry_curr = dry_curr_
-    endif
+    end if
 !
 ! - Init fields
 !
@@ -119,14 +119,14 @@ character(len=24), optional,intent(in) :: hydr_prev_
         call memare(base, vect_elem_l, model, mate, cara_elem, 'MASS_THER')
     else
         call jedetr(vect_elem_l(1:19)//'.RELR')
-    endif
+    end if
     call jeexin(vect_elem_nl(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem_nl, model, mate, cara_elem,&
+        call memare(base, vect_elem_nl, model, mate, cara_elem, &
                     'MASS_THER')
     else
         call jedetr(vect_elem_nl(1:19)//'.RELR')
-    endif
+    end if
 !
 ! - Geometry field
 !
@@ -138,28 +138,28 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
 ! - Input fields
 !
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = chgeom(1:19)
-    lpain(2)  = 'PTEMPER'
-    lchin(2)  = temp_iter(1:19)
-    lpain(3)  = 'PMATERC'
-    lchin(3)  = mateco(1:19)
-    lpain(4)  = 'PTEMPSR'
-    lchin(4)  = time(1:19)
-    lpain(5)  = 'PCACOQU'
-    lchin(5)  = chcara(7)(1:19)
-    lpain(6)  = 'PVARCPR'
-    lchin(6)  = varc_curr(1:19)
-    lpain(7)  = 'PHYDRPM'
-    lchin(7)  = hydr_prev(1:19)
-    lpain(8)  = 'PCOMPOR'
-    lchin(8)  = compor(1:19)
-    lpain(9)  = 'PTMPCHI'
-    lchin(9)  = dry_prev(1:19)
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom(1:19)
+    lpain(2) = 'PTEMPER'
+    lchin(2) = temp_iter(1:19)
+    lpain(3) = 'PMATERC'
+    lchin(3) = mateco(1:19)
+    lpain(4) = 'PTEMPSR'
+    lchin(4) = time(1:19)
+    lpain(5) = 'PCACOQU'
+    lchin(5) = chcara(7) (1:19)
+    lpain(6) = 'PVARCPR'
+    lchin(6) = varc_curr(1:19)
+    lpain(7) = 'PHYDRPM'
+    lchin(7) = hydr_prev(1:19)
+    lpain(8) = 'PCOMPOR'
+    lchin(8) = compor(1:19)
+    lpain(9) = 'PTMPCHI'
+    lchin(9) = dry_prev(1:19)
     lpain(10) = 'PTMPCHF'
     lchin(10) = dry_curr(1:19)
     lpain(11) = 'PCAMASS'
-    lchin(11) = chcara(12)(1:19)
+    lchin(11) = chcara(12) (1:19)
 !
 ! - Generate new RESU_ELEM name
 !
@@ -171,7 +171,7 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
     lpaout(1) = 'PVECTTI'
     lchout(1) = resu_elem_nl
-    call corich('E', lchout(1), ichin_ = -1)
+    call corich('E', lchout(1), ichin_=-1)
 !
 ! - Generate new RESU_ELEM name
 !
@@ -183,17 +183,17 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
     lpaout(2) = 'PVECTTR'
     lchout(2) = resu_elem_l
-    call corich('E', lchout(2), ichin_ = -1)
+    call corich('E', lchout(2), ichin_=-1)
 !
 ! - Compute
 !
-    call calcul('S'  , option, ligrmo, nbin  , lchin,&
-                lpain, nbout , lchout, lpaout, base ,&
+    call calcul('S', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
 !
 ! - Add RESU_ELEM in VECT_ELEM
 !
     call reajre(vect_elem_nl, lchout(1), base)
-    call reajre(vect_elem_l , lchout(2), base)
+    call reajre(vect_elem_l, lchout(2), base)
 !
 end subroutine

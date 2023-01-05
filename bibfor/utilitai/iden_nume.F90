@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 function iden_nume(pchn1, pchn2)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,8 +26,8 @@ implicit none
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 !
-aster_logical :: iden_nume
-character(len=*), intent(in) :: pchn1, pchn2
+    aster_logical :: iden_nume
+    character(len=*), intent(in) :: pchn1, pchn2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,18 +53,18 @@ character(len=*), intent(in) :: pchn1, pchn2
             call jenuno(jexnum(lili2, i_lili2), ligr_name2)
             if (ligr_name1 .eq. ligr_name2) then
                 l_same_ligr = ASTER_TRUE
-            endif
+            end if
         end do
 ! ----- LIGREL Not found but no dof
         if (.not. l_same_ligr) then
             call jelira(jexnum(prno1, i_lili1), 'LONMAX', prno_length)
             if (prno_length .eq. 0) then
                 l_same_ligr = ASTER_TRUE
-            endif
-        endif
+            end if
+        end if
         if (.not. l_same_ligr) then
             exit
-        endif
+        end if
     end do
 !
     iden_nume = l_same_ligr

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hayjac(mod, nmat, coefel, coeft, timed,&
-                  timef, yf, deps, nr, nvi,&
-                  vind, vinf, yd, dy, crit,&
+subroutine hayjac(mod, nmat, coefel, coeft, timed, &
+                  timef, yf, deps, nr, nvi, &
+                  vind, vinf, yd, dy, crit, &
                   drdy, iret)
-    implicit   none
+    implicit none
 !     --------------------------------------------------------------
 !     CALCUL DU JACOBIEN DE HAYHURST = DRDY(DY)
 !     IN  MOD    :  TYPE DE MODELISATION
@@ -61,21 +61,21 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
     real(kind=8) :: id(6, 6), nxn(6, 6), dfedee(6, 6), dh1
     real(kind=8) :: dh2
     real(kind=8) :: un, zero, d23, d13, dseqde(6), hookf(6, 6), troisk, gh1, gh2
-    parameter ( un   =  1.d0      )
-    parameter ( zero =  0.d0      )
-    parameter ( d23  =  2.d0/3.d0 )
-    parameter ( d13  = -1.d0/3.d0 )
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(d23=2.d0/3.d0)
+    parameter(d13=-1.d0/3.d0)
 !
 !     --------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !     --------------------------------------------------------------
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data id         / d23   , d13   , d13   , zero , zero , zero ,&
-     &                  d13   , d23   , d13   , zero , zero , zero ,&
-     &                  d13   , d13   , d23   , zero , zero , zero ,&
-     &                  zero  , zero  , zero  , un   , zero , zero ,&
-     &                  zero  , zero  , zero  , zero , un   , zero ,&
-     &                  zero  , zero  , zero  , zero , zero , un /
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
+    data id/d23, d13, d13, zero, zero, zero,&
+     &                  d13, d23, d13, zero, zero, zero,&
+     &                  d13, d13, d23, zero, zero, zero,&
+     &                  zero, zero, zero, un, zero, zero,&
+     &                  zero, zero, zero, zero, un, zero,&
+     &                  zero, zero, zero, zero, zero, un/
 !
 ! --    COEFFICIENTS MATERIAU INELASTIQUES
 !
@@ -92,170 +92,170 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
     pkc = coeft(11)
     alphad = coeft(12)
     sequid = coeft(13)
-    young=coefel(1)
-    poiss=coefel(2)
-    deuxmu=young/(1.d0+poiss)
-    troisk=young/(1.d0-2.d0*poiss)
-    dt=timef-timed
-    theta=crit(4)
-    epsi=r8prem()*pk
-    dmgmi=1.d0-(1.d0+pkc*timef)**d13
+    young = coefel(1)
+    poiss = coefel(2)
+    deuxmu = young/(1.d0+poiss)
+    troisk = young/(1.d0-2.d0*poiss)
+    dt = timef-timed
+    theta = crit(4)
+    epsi = r8prem()*pk
+    dmgmi = 1.d0-(1.d0+pkc*timef)**d13
 !
-    ndim=3
+    ndim = 3
 !
-    gh1=yd(8)
-    gh2=yd(9)
-    dh1=dy(8)
-    dh2=dy(9)
-    h1=gh1+theta*dh1
-    h2=gh2+theta*dh2
-    h=h1+h2
-    dmg=yd(10)
-    ddmg=dy(10)
-    d=dmg+theta*ddmg
-    dp=dy(7)
-    dm1=1.d0-d
+    gh1 = yd(8)
+    gh2 = yd(9)
+    dh1 = dy(8)
+    dh2 = dy(9)
+    h1 = gh1+theta*dh1
+    h2 = gh2+theta*dh2
+    h = h1+h2
+    dmg = yd(10)
+    ddmg = dy(10)
+    d = dmg+theta*ddmg
+    dp = dy(7)
+    dm1 = 1.d0-d
 !
 !  INITIALISATION DE LA MATRICE DRDY
     call r8inir(nr*nr, 0.d0, drdy, 1)
     do i = 1, 10
-       drdy(i,i)=1.d0
+        drdy(i, i) = 1.d0
     end do
 !
 !
 !------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 !     attention FGEQUI ne prend pas en compte les SQRT(2)
     do itens = 1, ndt
-       epsef(itens)=yd(itens)+theta*dy(itens)
+        epsef(itens) = yd(itens)+theta*dy(itens)
     end do
     call lcopli('ISOTROPE', mod, coefel, hookf)
-    sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
-    sigf(1:ndt) = dm1 * sigf(1:ndt)
+    sigf(1:ndt) = matmul(hookf(1:ndt, 1:ndt), epsef(1:ndt))
+    sigf(1:ndt) = dm1*sigf(1:ndt)
 !
     call dscal(3, 1.d0/sqrt(2.d0), sigf(4), 1)
     call fgequi(sigf, 'SIGM_DIR', ndim, equi)
 !     on retablit le tenseur
     call dscal(3, sqrt(2.d0), sigf(4), 1)
-    trsig=equi(16)
-    grj0=max(equi(3),equi(4))
-    grj0=max(grj0,equi(5))
-    seq=equi(1)
-    seq0=seq/(1.d0-d)
-    trsig0=trsig/(1.d0-d)
+    trsig = equi(16)
+    grj0 = max(equi(3), equi(4))
+    grj0 = max(grj0, equi(5))
+    seq = equi(1)
+    seq0 = seq/(1.d0-d)
+    trsig0 = trsig/(1.d0-d)
     if (sequid .eq. 0.d0) then
-       sequi=grj0
+        sequi = grj0
     else
-       sequi=trsig
-    endif
+        sequi = trsig
+    end if
 !------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
     do itens = 1, ndt
-       if (itens .le. 3) then
-          dev(itens)=sigf(itens)-trsig/3.d0
-       else
-          dev(itens)=sigf(itens)*sqrt(2.0d0)
-       endif
+        if (itens .le. 3) then
+            dev(itens) = sigf(itens)-trsig/3.d0
+        else
+            dev(itens) = sigf(itens)*sqrt(2.0d0)
+        end if
     end do
 !
-    shmax=50.d0
+    shmax = 50.d0
 !
-    terme1=(seq*(1.d0-h))/(pk*(1.d0-dmgmi)*(1.d0-d))
+    terme1 = (seq*(1.d0-h))/(pk*(1.d0-dmgmi)*(1.d0-d))
     if (seq .le. epsi) then
-       sinh1=0.d0
-    else if (abs(terme1).lt.shmax) then
-       sinh1=sinh(terme1)
+        sinh1 = 0.d0
+    else if (abs(terme1) .lt. shmax) then
+        sinh1 = sinh(terme1)
     else
-       iret=1
-       goto 9999
-    endif
-    cosh1=sqrt(1.d0+sinh1*sinh1)
+        iret = 1
+        goto 9999
+    end if
+    cosh1 = sqrt(1.d0+sinh1*sinh1)
 !
 !----- EQUATION DONNANT LA DERIVEE DE L ENDOMMAGEMENT
 !
     if (sequi .ge. 0.d0) then
-       sinn=alphad*sequi+((1.d0-alphad)*seq)
+        sinn = alphad*sequi+((1.d0-alphad)*seq)
     else
-       sinn=(1.d0-alphad)*seq
-    endif
+        sinn = (1.d0-alphad)*seq
+    end if
     if ((sinn/sig0) .lt. shmax) then
-       sinh2=sinh(sinn/sig0)
+        sinh2 = sinh(sinn/sig0)
     else
-       iret=1
-       goto 9999
-    endif
-    cosh2=sqrt(1.d0+sinh2*sinh2)
+        iret = 1
+        goto 9999
+    end if
+    cosh2 = sqrt(1.d0+sinh2*sinh2)
 !
     if (seq .gt. 0.d0) then
 !        dFe/dEel
-        n(1:ndt) = (1.5d0/seq) * dev(1:ndt)
+        n(1:ndt) = (1.5d0/seq)*dev(1:ndt)
         call lcprte(n, n, nxn)
-        dfedee(1:ndt,1:ndt) = 1.5d0 * id(1:ndt,1:ndt)
-        dfedee(1:ndt,1:ndt) = dfedee(1:ndt,1:ndt) - nxn(1:ndt,1:ndt)
+        dfedee(1:ndt, 1:ndt) = 1.5d0*id(1:ndt, 1:ndt)
+        dfedee(1:ndt, 1:ndt) = dfedee(1:ndt, 1:ndt)-nxn(1:ndt, 1:ndt)
         do i = 1, 6
-           do j = 1, 6
-              drdy(i,j)=drdy(i,j)+deuxmu*theta*dp/seq*dm1*dfedee(i,j)
-           enddo
-        enddo
+            do j = 1, 6
+                drdy(i, j) = drdy(i, j)+deuxmu*theta*dp/seq*dm1*dfedee(i, j)
+            end do
+        end do
 !        dFe/dp
         do i = 1, 6
-           drdy(i,7)=n(i)
-        enddo
+            drdy(i, 7) = n(i)
+        end do
 !        dSeq/dEel
         do i = 1, 6
-           dseqde(i)=deuxmu*theta*(1.d0-d)*n(i)
-        enddo
+            dseqde(i) = deuxmu*theta*(1.d0-d)*n(i)
+        end do
 !        dFp/dEel=
-        coef=-eps0*dt*cosh1*(1.d0-h)/pk/(1.d0-dmgmi)/(1.d0-d)
+        coef = -eps0*dt*cosh1*(1.d0-h)/pk/(1.d0-dmgmi)/(1.d0-d)
         do i = 1, 6
-           drdy(7,i)=coef*dseqde(i)
-        enddo
+            drdy(7, i) = coef*dseqde(i)
+        end do
 !        dFp/dp=
-        drdy(7,7)=1.d0
+        drdy(7, 7) = 1.d0
 !        dFp/dH1=
-        drdy(7,8)=eps0*dt*cosh1*theta*seq0/pk/(1.d0-dmgmi)
-        drdy(7,9)=drdy(7,8)
+        drdy(7, 8) = eps0*dt*cosh1*theta*seq0/pk/(1.d0-dmgmi)
+        drdy(7, 9) = drdy(7, 8)
 !        dFp/dD=
-        drdy(7,10)=0.d0
+        drdy(7, 10) = 0.d0
 !
 !        dFH1/dEel=
-        coef=ph1*dp*(h1st-delta1*h1)/seq/seq
+        coef = ph1*dp*(h1st-delta1*h1)/seq/seq
         do i = 1, 6
-           drdy(8,i)=coef*dseqde(i)
-        enddo
+            drdy(8, i) = coef*dseqde(i)
+        end do
 !        dFH2/ds=
-        coef=ph2*dp*(h2st-delta2*h2)/seq/seq
+        coef = ph2*dp*(h2st-delta2*h2)/seq/seq
         do i = 1, 6
-           drdy(9,i)=coef*dseqde(i)
-        enddo
+            drdy(9, i) = coef*dseqde(i)
+        end do
 !        dFH1/dp=
-        drdy(8,7)=-ph1*(h1st-delta1*h1)/seq
-        drdy(9,7)=-ph2*(h2st-delta2*h2)/seq
+        drdy(8, 7) = -ph1*(h1st-delta1*h1)/seq
+        drdy(9, 7) = -ph2*(h2st-delta2*h2)/seq
 !        dFH1/dH1=
-        drdy(8,8)=1.d0+ph1*dp*delta1*theta/seq
-        drdy(9,9)=1.d0+ph2*dp*delta2*theta/seq
+        drdy(8, 8) = 1.d0+ph1*dp*delta1*theta/seq
+        drdy(9, 9) = 1.d0+ph2*dp*delta2*theta/seq
 !        dFH1/dD= - ou + ?
-        drdy(8,10)=-ph1*dp*(h1st-delta1*h1)*seq0*theta/seq/seq
-        drdy(9,10)=-ph2*dp*(h2st-delta2*h2)*seq0*theta/seq/seq
+        drdy(8, 10) = -ph1*dp*(h1st-delta1*h1)*seq0*theta/seq/seq
+        drdy(9, 10) = -ph2*dp*(h2st-delta2*h2)*seq0*theta/seq/seq
 !
 !        dFD/dEe
-        coef=-biga*dt*cosh2/sig0
+        coef = -biga*dt*cosh2/sig0
         do i = 1, 6
-           drdy(10,i)=coef*dseqde(i)*(1.d0-alphad)
-        enddo
+            drdy(10, i) = coef*dseqde(i)*(1.d0-alphad)
+        end do
 !
 !        DFD/DD
-        drdy(10,10)=1.d0+biga*dt*cosh2/sig0*(1-alphad)*theta*seq0
+        drdy(10, 10) = 1.d0+biga*dt*cosh2/sig0*(1-alphad)*theta*seq0
         if (sequid .gt. 0) then
-           if (trsig .gt. epsi) then
-              drdy(10,10)=drdy(10,10)+ biga*dt*cosh2/sig0*alphad*&
-                   theta*trsig0
-              do i = 1, 6
-                 drdy(10,i)=drdy(10,i)+ coef*troisk*theta*alphad*&
-                      kron(i)*(1.d0-d)
-              enddo
-           endif
-        endif
+            if (trsig .gt. epsi) then
+                drdy(10, 10) = drdy(10, 10)+biga*dt*cosh2/sig0*alphad* &
+                               theta*trsig0
+                do i = 1, 6
+                    drdy(10, i) = drdy(10, i)+coef*troisk*theta*alphad* &
+                                  kron(i)*(1.d0-d)
+                end do
+            end if
+        end if
 !
-    endif
+    end if
 !
 !
 9999 continue

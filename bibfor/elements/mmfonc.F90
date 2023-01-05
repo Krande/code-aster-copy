@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,10 +39,10 @@ subroutine mmfonc(fepx, fmin, fmax)
     fmax = -1.0d100
     fmin = 1.0d100
     rl = int(rl/2.d0)
-    nf0 = jfon-1 + rl
+    nf0 = jfon-1+rl
 !
     do i = 1, rl
-        val = zr(nf0 + i)
+        val = zr(nf0+i)
         if (val .gt. fmax) fmax = val
         if (val .lt. fmin) fmin = val
     end do

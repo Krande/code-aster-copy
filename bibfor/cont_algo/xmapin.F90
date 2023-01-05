@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine xmapin(mesh, model, ds_contact, ds_measure)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -52,12 +52,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
 ! - Pairing and initial options
 !
-    if (.not.l_cont_allv) then
+    if (.not. l_cont_allv) then
         call xmctcg(model, mesh, ds_contact, ds_measure)
-    endif
+    end if
 !
 end subroutine

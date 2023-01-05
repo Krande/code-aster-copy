@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: n1, k, nbnot, ino,  ncmp
+    integer :: n1, k, nbnot, ino, ncmp
     integer :: jlisno, jcn2v, jcn2l
     character(len=3) :: tsca
     character(len=8) :: nocmp, noma, ma1, nomgd
@@ -64,55 +64,55 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !
     call jemarq()
 !
-    motfac='CREA_GROUP_NO'
-    lisnoi=lisnoz
-    noma=nomaz
-    nbno=0
+    motfac = 'CREA_GROUP_NO'
+    lisnoi = lisnoz
+    noma = nomaz
+    nbno = 0
 !
     call getvid(motfac, 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
     call getvtx(motfac, 'NOM_CMP', iocc=iocc, scal=nocmp, nbret=n1)
-    call getvr8(motfac, 'VALE', iocc=iocc, nbval=2, vect=valr(1),&
+    call getvr8(motfac, 'VALE', iocc=iocc, nbval=2, vect=valr(1), &
                 nbret=n1)
-    ASSERT(n1.eq.2)
-    vmin=valr(1)
-    vmax=valr(2)
+    ASSERT(n1 .eq. 2)
+    vmin = valr(1)
+    vmax = valr(2)
     if (vmin .gt. vmax) goto 30
 !
     call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=ma1)
     if (noma .ne. ma1) then
-        valk(1)=cham19
-        valk(2)=noma
+        valk(1) = cham19
+        valk(2) = noma
         call utmess('F', 'CALCULEL2_50', nk=2, valk=valk)
-    endif
+    end if
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
 !
-    cns1='&&CGNOIV.CNS1'
-    cns2='&&CGNOIV.CNS2'
+    cns1 = '&&CGNOIV.CNS1'
+    cns2 = '&&CGNOIV.CNS2'
     call cnocns(cham19, 'V', cns1)
-    ncmp=1
-    call cnsred(cns1, 0, [0], ncmp, nocmp,&
+    ncmp = 1
+    call cnsred(cns1, 0, [0], ncmp, nocmp, &
                 'V', cns2)
 !
     call jeveuo(cns2//'.CNSK', 'L', vk8=cnsk)
     call jeveuo(cns2//'.CNSV', 'L', jcn2v)
     call jeveuo(cns2//'.CNSL', 'L', jcn2l)
-    nomgd=cnsk(2)
+    nomgd = cnsk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-    ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
+    ASSERT(tsca .eq. 'R' .or. tsca .eq. 'I')
 !
     AS_ALLOCATE(vi=lisno, size=nbnot)
     do ino = 1, nbnot
-        if (.not.zl(jcn2l-1+(ino-1)*ncmp+1)) goto 10
+        if (.not. zl(jcn2l-1+(ino-1)*ncmp+1)) goto 10
         if (tsca .eq. 'R') then
-            v1=zr(jcn2v-1+(ino-1)*ncmp+1)
-        else if (tsca.eq.'I') then
-            v1=zi(jcn2v-1+(ino-1)*ncmp+1)
-        endif
+            v1 = zr(jcn2v-1+(ino-1)*ncmp+1)
+        else if (tsca .eq. 'I') then
+            v1 = zi(jcn2v-1+(ino-1)*ncmp+1)
+        end if
         if (v1 .ge. vmin .and. v1 .le. vmax) then
-            nbno=nbno+1
-            lisno(nbno)=ino
-        endif
- 10     continue
+            nbno = nbno+1
+            lisno(nbno) = ino
+        end if
+10      continue
     end do
 !
 !
@@ -121,7 +121,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !     --------------------------------------------------------
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
     do k = 1, nbno
-        zi(jlisno-1+k)=lisno(k)
+        zi(jlisno-1+k) = lisno(k)
     end do
 !
 !
@@ -130,7 +130,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     call detrsd('CHAM_NO_S', cns1)
     call detrsd('CHAM_NO_S', cns2)
 !
- 30 continue
+30  continue
     call jedema()
 !
 end subroutine

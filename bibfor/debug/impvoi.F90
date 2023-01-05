@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,25 +85,25 @@ subroutine impvoi(texte, nbma, iaddvo, iadvoi)
 !-----------FIN FONCTIONS  D ACCES A VGE -------------------------------
 !
 !
-    write (6,*)
-    write (6,*)' IMPRESSION OBJET VOISINAGE VGE '
-    write (6,*)texte
-    write (6,*)
+    write (6, *)
+    write (6, *) ' IMPRESSION OBJET VOISINAGE VGE '
+    write (6, *) texte
+    write (6, *)
 !
     do ima = 1, nbma
-        write (6,9000)ima,zznbvo(ima)
+        write (6, 9000) ima, zznbvo(ima)
         do iv = 1, zznbvo(ima)
-            write (6,9010)iv,zztyvo(ima,iv),zzmavo(ima,iv), zznbno(ima,iv),zznbsc(ima,iv)
+            write (6, 9010) iv, zztyvo(ima, iv), zzmavo(ima, iv), zznbno(ima, iv), zznbsc(ima, iv)
             do is = 1, zznbsc(ima, iv)
-                write (6,9020)is,zzloc1(ima,iv,is),zzloc2(ima,iv,is)
+                write (6, 9020) is, zzloc1(ima, iv, is), zzloc2(ima, iv, is)
             end do
         end do
     end do
-    write (6,*)' FIN IMPRESSION OBJET VOISINAGE VGE '
-    write (6,*)
+    write (6, *) ' FIN IMPRESSION OBJET VOISINAGE VGE '
+    write (6, *)
 !
-    9000 format (' MAILLE ',i8,' NB VOIS ',i2)
-    9010 format (' VOISIN ',i2,' TYPE ',i2,' MAILLE ',i8,' NB NOEUDS ',i2,&
-     &       ' NB SOMMETS COMMUN ',i2)
-    9020 format (' IS ',i2,' NUMLOC ',i2,' NUMLOC DANS VOISIN ',i2)
+9000 format(' MAILLE ', i8, ' NB VOIS ', i2)
+9010 format(' VOISIN ', i2, ' TYPE ', i2, ' MAILLE ', i8, ' NB NOEUDS ', i2,&
+    &       ' NB SOMMETS COMMUN ', i2)
+9020 format(' IS ', i2, ' NUMLOC ', i2, ' NUMLOC DANS VOISIN ', i2)
 end subroutine

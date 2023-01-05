@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid,  idlima, idnoeu, ima, ino
+    integer :: ibid, idlima, idnoeu, ima, ino
     integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
     integer :: nbnod, ndim, ndim1, ndist, numnoe, nv, nvect
 !
@@ -124,7 +124,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
@@ -135,7 +135,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
     mocle(1) = 'POINT'
     mocle(2) = 'NOEUD_CENTRE'
     mocle(3) = 'GROUP_NO_CENTRE'
-    call utcono(motfac, mocle, iocc, noma, ndim,&
+    call utcono(motfac, mocle, iocc, noma, ndim, &
                 x0, iret)
 !
 ! --- RECUPERATION DE LA DEMI-LARGEUR DE LA BANDE :
@@ -147,8 +147,8 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
         call getvr8(motfac, 'DIST', iocc=iocc, scal=dist, nbret=nb)
         if (dist .le. zero) then
             call utmess('F', 'MODELISA3_68')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA DIRECTION PERPENDICULAIRE AU PLAN MILIEU
 ! --- DE LA BANDE :
@@ -162,32 +162,32 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
             nvect = -nvect
             if (ndim .eq. 3 .and. nvect .ne. 3) then
                 call utmess('F', 'MODELISA3_70')
-            else if (ndim.eq.2.and.nvect.ne.2) then
+            else if (ndim .eq. 2 .and. nvect .ne. 2) then
                 call utmess('F', 'MODELISA3_71')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor, &
                             nbret=nv)
-            endif
-        endif
+            end if
+        end if
     else
         nangle = -nangle
-        ndim1 = ndim - 1
-        nangle = min (nangle,ndim1)
-        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+        ndim1 = ndim-1
+        nangle = min(nangle, ndim1)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle, &
                     nbret=nv)
         if (abs(nv) .ne. ndim1) then
             valk = motfac
-            vali (1) = iocc
+            vali(1) = iocc
             call utmess('F+', 'MODELISA9_32', sk=valk, si=vali(1))
             if (ndim .eq. 2) then
                 call utmess('F+', 'MODELISA9_24')
             else
                 call utmess('F+', 'MODELISA9_25')
-            endif
-            vali (1) = abs(nv)
-            vali (2) = ndim1
+            end if
+            vali(1) = abs(nv)
+            vali(2) = ndim1
             call utmess('F', 'MODELISA9_35', ni=2, vali=vali)
-        endif
+        end if
 !
         if (ndim .eq. 2) then
             angle(1) = angle(1)*r8dgrd()
@@ -195,21 +195,21 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
             vecnor(1) = cos(angle(1))
             vecnor(2) = sin(angle(1))
             vecnor(3) = zero
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             angle(1) = angle(1)*r8dgrd()
             angle(2) = angle(2)*r8dgrd()
 !
             vecnor(1) = cos(angle(1))*cos(angle(2))
             vecnor(2) = sin(angle(1))*cos(angle(2))
             vecnor(3) = -sin(angle(2))
-        endif
-    endif
+        end if
+    end if
 !
-    xnorm2 = vecnor(1)*vecnor(1) + vecnor(2)*vecnor(2) + vecnor(3)*vecnor(3)
+    xnorm2 = vecnor(1)*vecnor(1)+vecnor(2)*vecnor(2)+vecnor(3)*vecnor(3)
 !
     if (xnorm2 .eq. zero) then
         call utmess('F', 'MODELISA3_72')
-    endif
+    end if
 !
     xnorm = sqrt(xnorm2)
 !
@@ -263,13 +263,13 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
             x(2) = vale(3*(numnoe-1)+2)
             x(3) = vale(3*(numnoe-1)+3)
 !
-            xx0(1) = x(1) - x0(1)
-            xx0(2) = x(2) - x0(2)
-            xx0(3) = x(3) - x0(3)
+            xx0(1) = x(1)-x0(1)
+            xx0(2) = x(2)-x0(2)
+            xx0(3) = x(3)-x0(3)
 !
 ! ---        CALCUL DE LA DISTANCE DU NOEUD COURANT AU PLAN MILIEU :
 !            -----------------------------------------------------
-            d = xx0(1)*vecnor(1) + xx0(2)*vecnor(2) + xx0(3)*vecnor(3)
+            d = xx0(1)*vecnor(1)+xx0(2)*vecnor(2)+xx0(3)*vecnor(3)
 !
 ! ---      SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A AU MOINS UN NOEUD
 !          -------------------------------------------------------------
@@ -280,40 +280,40 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---            AFFECTEE AU GROUP_MA :
 !                --------------------
                 if (abs(d) .le. dist) then
-                    nbma = nbma + 1
+                    nbma = nbma+1
                     zi(idlima+nbma-1) = ima
                     goto 10
-                endif
+                end if
 !
-            else if ((selec.eq.'TOUS').or.(selec.eq.'MAJORITE')) then
+            else if ((selec .eq. 'TOUS') .or. (selec .eq. 'MAJORITE')) then
 ! ---            SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU
 ! ---            MAJORITE, COMPTER LES NOMBRES DES NOEUDS D'UNE MAILLE
 ! ---            DANS LA BANDE:
 !                -------------------------------------------------
                 if (abs(d) .le. dist) then
-                    nbnod=nbnod+1
-                endif
-            endif
+                    nbnod = nbnod+1
+                end if
+            end if
 !
         end do
 !
         if (selec .eq. 'TOUS') then
             if (nbnod .eq. nbno) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlima+nbma-1) = ima
                 goto 10
-            endif
-        endif
+            end if
+        end if
 !
         if (selec .eq. 'MAJORITE') then
             if (nbnod .ge. (nbno+1)/2) then
-                nbma = nbma + 1
+                nbma = nbma+1
                 zi(idlima+nbma-1) = ima
                 goto 10
-            endif
-        endif
+            end if
+        end if
 !
- 10     continue
+10      continue
     end do
 !
     call jedema()

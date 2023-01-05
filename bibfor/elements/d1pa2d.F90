@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,26 +68,26 @@ subroutine d1pa2d(repere, irep, passag)
 ! ---- D'ORTHOTROPIE AU REPERE GLOBAL.
 !       ------------------------------
 !
-        passag(1,1) = cosa*cosa
-        passag(2,1) = sina*sina
-        passag(3,1) = zero
-        passag(4,1) =-cosa*sina
+        passag(1, 1) = cosa*cosa
+        passag(2, 1) = sina*sina
+        passag(3, 1) = zero
+        passag(4, 1) = -cosa*sina
 !
-        passag(1,2) = sina*sina
-        passag(2,2) = cosa*cosa
-        passag(3,2) = zero
-        passag(4,2) = sina*cosa
+        passag(1, 2) = sina*sina
+        passag(2, 2) = cosa*cosa
+        passag(3, 2) = zero
+        passag(4, 2) = sina*cosa
 !
-        passag(1,3) = zero
-        passag(2,3) = zero
-        passag(3,3) = un
-        passag(4,3) = zero
+        passag(1, 3) = zero
+        passag(2, 3) = zero
+        passag(3, 3) = un
+        passag(4, 3) = zero
 !
-        passag(1,4) = deux*sina*cosa
-        passag(2,4) =-deux*sina*cosa
-        passag(3,4) = zero
-        passag(4,4) = cosa*cosa - sina*sina
+        passag(1, 4) = deux*sina*cosa
+        passag(2, 4) = -deux*sina*cosa
+        passag(3, 4) = zero
+        passag(4, 4) = cosa*cosa-sina*sina
 !
-    endif
+    end if
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

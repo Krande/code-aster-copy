@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine copmod(base, bmodr, bmodz, champ, numer,&
+subroutine copmod(base, bmodr, bmodz, champ, numer, &
                   nbmodes, nequa)
     implicit none
 !
@@ -122,8 +122,8 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
         if (iret .ne. 0) then
             exnume = .true.
             numer2 = numer2(1:14)//'.NUME'
-        endif
-    endif
+        end if
+    end if
     if (present(nequa)) neq = nequa
 !
     chnoeud = .true.
@@ -136,9 +136,9 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
             call dismoi('NB_EQUA', numer2, 'NUME_DDL', repi=neq)
             if (present(nequa)) then
                 ASSERT(nequa .eq. neq)
-            endif
+            end if
         else
-            call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C',&
+            call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C', &
                         ier=iret)
             if (iret .eq. 0) then
                 call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
@@ -146,20 +146,20 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
                     call dismoi('NB_EQUA', numer1, 'NUME_DDL', repi=neq)
                     if (present(nequa)) then
                         ASSERT(nequa .eq. neq)
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
     else
 !   --- 2. CHAMP AUX ELEMENTS : PAR RAPPORT A UN CHAMP DU MEME TYPE DE LA BASE
-        call rsexch('F', base, champ2, 1, nomcha,&
+        call rsexch('F', base, champ2, 1, nomcha, &
                     iret)
         nomcha = nomcha(1:19)//'.CELV'
         call jelira(nomcha, 'LONMAX', neq)
         if (present(nequa)) then
             ASSERT(nequa .eq. neq)
-        endif
-    endif
+        end if
+    end if
     ASSERT(neq .ne. 0)
 !   --- FIN DE LA RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS
 !
@@ -167,7 +167,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
     if (present(nbmodes)) then
         ASSERT(nbmodes .le. nbmode)
         nbmode = nbmodes
-    endif
+    end if
 !
 !  ____________________________________________________________________
 !
@@ -178,7 +178,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 !
 !     1.1.1 - RECUPERER LE NOM DE CHAMP DU 1ER NUMERO ORDRE
 !
-    call rsexch('F', base, champ2, 1, nomcha,&
+    call rsexch('F', base, champ2, 1, nomcha, &
                 iret)
 !
 !     1.1.2 - POUR TRAITER LES CAS AVEC SS-STRUCTURATION, TESTER SI
@@ -186,15 +186,15 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 !             RECUPERER LE .REFE DU CHAMP DE DEPLACEMENT
 !
     call jeexin(nomcha(1:19)//'.REFE', iret)
-    if (iret .eq. 0) call rsexch('F', base, 'DEPL', 1, nomcha,&
+    if (iret .eq. 0) call rsexch('F', base, 'DEPL', 1, nomcha, &
                                  iret)
 !
     call jeveuo(nomcha(1:19)//'.REFE', 'L', vk24=refe)
 !
 !     1.2 - EXTRAIRE LE NOM DE MAILLAGE .REFE[1] ET DU NUME_DDL .REFE[2]
 !
-    maill1 = refe(1)(1:8)
-    numer1 = refe(2)(1:19)
+    maill1 = refe(1) (1:8)
+    numer1 = refe(2) (1:19)
 !
 !     1.3 - TRAITEMENT DES CAS AVEC UN PROF_CHNO ET NON PAS UN NUME_DDL
 !           COMPLET.
@@ -205,7 +205,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
         numer1 = numer1(1:14)//'.NUME'
     else
         if (exnume) lprchno1 = .true.
-    endif
+    end if
 
     if (exnume) then
         call dismoi('NOM_MAILLA', numer2(1:14), 'NUME_DDL', repk=maill2)
@@ -215,7 +215,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 !                       L'APPEL A COPMOD (VOIR OP0072 PAR EXEMPLE)
     else
         maill2 = maill1
-    endif
+    end if
 !
 !     1.4 - LIBERER L'OBJET .REFE PARCE QU'ON N'EN A PLUS BESOIN
 !
@@ -232,26 +232,26 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
     call jeexin(maill1(1:8)//'.INV.SKELETON', iret)
     modnum = .false.
     if (numer2 .ne. ' ') then
-        if ((.not.idensd('PROF_CHNO', numer2, numer1)) .and. (iret.eq.0) .and. (exnume)) then
+        if ((.not. idensd('PROF_CHNO', numer2, numer1)) .and. (iret .eq. 0) .and. (exnume)) then
             call dismoi('NOM_MAILLA', numer2(1:14), 'NUME_DDL', repk=maill2)
             if (maill1 .ne. maill2) then
-                valk (1) = numer2
-                valk (2) = maill2
-                valk (3) = numer1
-                valk (4) = maill1
+                valk(1) = numer2
+                valk(2) = maill2
+                valk(3) = numer1
+                valk(4) = maill1
                 call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
-            endif
-        endif
-        if (lprchno1)then
-            if ((numer2.ne.numer1) .and. (iret.eq.0)) then
+            end if
+        end if
+        if (lprchno1) then
+            if ((numer2 .ne. numer1) .and. (iret .eq. 0)) then
                 modnum = .true.
-            endif
+            end if
         else
-            if ((.not.idensd('PROF_CHNO', numer2, numer1)) .and. (iret.eq.0)) then
+            if ((.not. idensd('PROF_CHNO', numer2, numer1)) .and. (iret .eq. 0)) then
                 modnum = .true.
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 !     2.3 - RECUPERER L'OBJET .DEEQ
@@ -260,7 +260,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
         call jeveuo(numer2//'.DEEQ', 'L', jdeeq)
     else
         call jeveuo(numer1//'.DEEQ', 'L', jdeeq)
-    endif
+    end if
 !  ____________________________________________________________________
 !
 !  - 3 - RECOPIE DES CHAMPS ET MODIFICATION DE LA NUMER. SI NECESSAIRE
@@ -269,7 +269,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 !     3.1 - BOUCLE SUR LES MODES DE LA BASE
     do i = 1, nbmode
 !       3.1.1 - EXTRAIRE LE NOM DU CHAMP D'INTERET (NOMCHA)
-        call rsexch('F', base, champ2, i, nomcha,&
+        call rsexch('F', base, champ2, i, nomcha, &
                     iret)
 !
 !       3.1.2 - NOUVELLE NUMER.? ALORS CREER UN NOUVEAU CHAMP TEMPORAIRE
@@ -283,11 +283,11 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
             if (iret .ne. 0) then
                 valk(1) = nomcha
                 valk(2) = tmpcha
-                valk(3) = crefe(2)(1:8)
+                valk(3) = crefe(2) (1:8)
                 call utmess('A', 'UTILITAI_24', nk=3, valk=valk)
-            endif
+            end if
             nomcha = tmpcha
-        endif
+        end if
 !
 !       3.1.3 - OBTENIR L'OBJET DES VALEURS DU CHAMP (.VALE OU .CELV)
 !               POUR LES CHAM_NO ET CHAM_ELEM RESPECTIVEMENT
@@ -301,7 +301,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
             call dcopy(neq, zr(jval), 1, bmodr((i-1)*neq+1), 1)
         else
             call zcopy(neq, zc(jval), 1, bmodz((i-1)*neq+1), 1)
-        endif
+        end if
 !
 !       3.1.5 - MENAGE ET LIBERATION DE LA MEMOIRE SELON LE BESOIN
         call jelibe(valcha)
@@ -310,8 +310,8 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
                 call detrsd('CHAM_NO', tmpcha)
             else
                 call detrsd('CHAM_ELEM', tmpcha)
-            endif
-        endif
+            end if
+        end if
 !
 !       3.1.6 - ANNULER LES DDL DE LAGRANGE S'IL S'AGIT DES CHAMPS DE
 !               DEPLACEMENTS
@@ -320,8 +320,8 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
                 call zerlag(neq, zi(jdeeq), vectr=bmodr((i-1)*neq+1))
             else
                 call zerlag(neq, zi(jdeeq), vectz=bmodz((i-1)*neq+1))
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !     FIN DE LA BOUCLE (3.1) SUR LES MODES

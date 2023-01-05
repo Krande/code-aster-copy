@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,16 +49,16 @@ subroutine te0294(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     if (ndim .eq. 2) then
         nbcmp = 4
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         nbcmp = 6
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSIEF_R', 'L', isief)
@@ -69,41 +69,41 @@ subroutine te0294(option, nomte)
     if (ndim .eq. 3) then
         call jevech('PVECTR5', 'E', ivect5)
         call jevech('PVECTR6', 'E', ivect6)
-    endif
+    end if
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     do kp = 1, npg
-        k=(kp-1)*nno
+        k = (kp-1)*nno
         if (ndim .eq. 2) then
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
         else
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
-        endif
+        end if
 !
         if (laxi) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 !
         do i = 1, nno
-            k=(kp-1)*nno
-            zr(ivect1+i-1) = zr(ivect1+i-1) + poids * zr(ivf+k+i-1) * zr(isief+nbcmp*(kp-1))
-            zr(ivect2+i-1) = zr(ivect2+i-1) + poids * zr(ivf+k+i-1) * zr(isief+nbcmp*(kp-1)+1)
-            zr(ivect3+i-1) = zr(ivect3+i-1) + poids * zr(ivf+k+i-1) * zr(isief+nbcmp*(kp-1)+2)
-            zr(ivect4+i-1) = zr(ivect4+i-1) + poids * zr(ivf+k+i-1) * zr(isief+nbcmp*(kp-1)+3)
+            k = (kp-1)*nno
+            zr(ivect1+i-1) = zr(ivect1+i-1)+poids*zr(ivf+k+i-1)*zr(isief+nbcmp*(kp-1))
+            zr(ivect2+i-1) = zr(ivect2+i-1)+poids*zr(ivf+k+i-1)*zr(isief+nbcmp*(kp-1)+1)
+            zr(ivect3+i-1) = zr(ivect3+i-1)+poids*zr(ivf+k+i-1)*zr(isief+nbcmp*(kp-1)+2)
+            zr(ivect4+i-1) = zr(ivect4+i-1)+poids*zr(ivf+k+i-1)*zr(isief+nbcmp*(kp-1)+3)
             if (ndim .eq. 3) then
-                zr(ivect5+i-1) = zr(ivect5+i-1) + poids * zr(ivf+k+i- 1) * zr(isief+nbcmp*(kp-1)+&
+                zr(ivect5+i-1) = zr(ivect5+i-1)+poids*zr(ivf+k+i-1)*zr(isief+nbcmp*(kp-1)+&
                                  &4)
-                zr(ivect6+i-1) = zr(ivect6+i-1) + poids * zr(ivf+k+i- 1) * zr(isief+nbcmp*(kp-1)+&
+                zr(ivect6+i-1) = zr(ivect6+i-1)+poids*zr(ivf+k+i-1)*zr(isief+nbcmp*(kp-1)+&
                                  &5)
-            endif
+            end if
         end do
     end do
 !

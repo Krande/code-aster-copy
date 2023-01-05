@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tabcor(model, mate, mateco, ma1, ma2, moint,&
+subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
                   num, ndble, icor)
     implicit none
 #include "jeveux.h"
@@ -69,17 +69,17 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint,&
 !
     call getvr8(' ', 'DIST_REFE', scal=tailmi)
     call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
-    tailm2=(epsi*tailmi)**2
+    tailm2 = (epsi*tailmi)**2
 ! ON CREE UN CHAMNO BIDON SUR L INTERFACE THERMIQUE
 !
-    chnul='&&TABCOR.CHNUL'
-    call vtcreb(chnul, 'V', 'R',&
-                nume_ddlz = num)
+    chnul = '&&TABCOR.CHNUL'
+    call vtcreb(chnul, 'V', 'R', &
+                nume_ddlz=num)
     call jeveuo(chnul//'.VALE', 'E', ichnul)
 !
 !
-    cn2='&&TABCOR.BIDON'
-    call calflu(chnul, moint, mate, mateco, num, cn2,&
+    cn2 = '&&TABCOR.BIDON'
+    call calflu(chnul, moint, mate, mateco, num, cn2, &
                 nbdesc, nbrefe, nbvale, 'X')
 !
 !
@@ -98,7 +98,7 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint,&
     call jeecra('&&TABCOR.CORRE1', 'LONMAX', nbno1)
     call jeecra('&&TABCOR.CORRE1', 'LONUTI', nbno1)
     call jeveut('&&TABCOR.CORRE1', 'E', itb1)
-    icor(1)=itb1
+    icor(1) = itb1
 !
 ! SI IL Y A DES NOEUDS DOUBLES
 !
@@ -107,8 +107,8 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint,&
         call jeecra('&&TABCOR.CORRE2', 'LONMAX', nbno1)
         call jeecra('&&TABCOR.CORRE2', 'LONUTI', nbno1)
         call jeveut('&&TABCOR.CORRE2', 'E', itb2)
-        icor(2)=itb2
-    endif
+        icor(2) = itb2
+    end if
 !
 !
 !
@@ -136,55 +136,55 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint,&
 !
     do ino1 = 1, nbno1
 !
-        x1 = geom1((ino1 -1)*3 +1)
-        y1 = geom1((ino1 -1)*3 +2)
+        x1 = geom1((ino1-1)*3+1)
+        y1 = geom1((ino1-1)*3+2)
         if (model .eq. '3D') then
-            z1 = geom1((ino1 -1)*3 +3)
-        endif
+            z1 = geom1((ino1-1)*3+3)
+        end if
 !
 ! PARCOURS SUR LES NOEUDS DU MAILLAGE FLUIDE
 ! ON REPERE LES NOEUDS COINCIDENTS GEOMETRIQUEMENT
 ! AVEC LES NOEUDS DE LA STRUCTURE ET ON RECOPIE
 ! LE NOEUD COINCIDENT DS LE TABLEAU DE CORRESPONDANCE
 !
-        nbptr=0
+        nbptr = 0
         do ino2 = 1, nbno2
 !
-            ncmp2= zi(iprn2-1+ (ino2-1)* (nec2+2)+2)
+            ncmp2 = zi(iprn2-1+(ino2-1)*(nec2+2)+2)
             if (ncmp2 .eq. 0) goto 20
 !
 ! CRITERE GEOMETRIQUE DE PROXIMITE
 !
-            x2 = geom2((ino2 -1)*3 +1)
-            y2 = geom2((ino2 -1)*3 +2)
+            x2 = geom2((ino2-1)*3+1)
+            y2 = geom2((ino2-1)*3+2)
             if (model .eq. '3D') then
-                z2 = geom2((ino2 -1)*3 +3)
-                dista2 = (x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2
+                z2 = geom2((ino2-1)*3+3)
+                dista2 = (x1-x2)**2+(y1-y2)**2+(z1-z2)**2
             else
-                dista2 = (x1-x2)**2 + (y1-y2)**2
-            endif
+                dista2 = (x1-x2)**2+(y1-y2)**2
+            end if
 !
             if (dista2 .lt. (tailm2)) then
 !
 !
-                nbptr=nbptr+1
+                nbptr = nbptr+1
                 if (nbptr .eq. 1) then
-                    zi(itb1+ino1-1)=ino2
+                    zi(itb1+ino1-1) = ino2
                     if (ndble .eq. 0) goto 10
                 else
-                    zi(itb2+ino1-1)=ino2
+                    zi(itb2+ino1-1) = ino2
                     goto 10
-                endif
+                end if
 !
 ! PAS DE RECHERCHE DE NOEUDS DOUBLES
 !
 !                 GOTO 10
-            endif
+            end if
 !
- 20         continue
+20          continue
         end do
 !
- 10     continue
+10      continue
     end do
 !
 ! --- MENAGE

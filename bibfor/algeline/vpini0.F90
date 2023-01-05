@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag,&
+subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag, &
                   vecblo, vecrig, vecrer, vecrei, vecrek, vecvp)
 
 ! INITIALISATIONS LIEES A L'OPERATEUR MODE_ITER_SIMULT.
@@ -33,10 +33,10 @@ subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag,
 !
 ! --- OUTPUT
 !
-    character(len=8)  , intent(out) :: modes
-    character(len=16) , intent(out) :: compex, typcon
-    character(len=19) , intent(out) :: matpsc, matopa, solveu, eigsol
-    character(len=24) , intent(out) :: veclag, vecblo, vecrig, vecrer, vecrei, vecrek, vecvp
+    character(len=8), intent(out) :: modes
+    character(len=16), intent(out) :: compex, typcon
+    character(len=19), intent(out) :: matpsc, matopa, solveu, eigsol
+    character(len=24), intent(out) :: veclag, vecblo, vecrig, vecrer, vecrei, vecrek, vecvp
 !
 ! --- INPUT/OUTPUT
 ! None
@@ -52,8 +52,8 @@ subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag,
 !
 
 ! --- INITS. OBJETS JEVEUX PROPRES A CET OPERATEUR
-    solveu='&&OP0045.SOLVEUR'
-    eigsol='&&OP0045.EIGSOL'
+    solveu = '&&OP0045.SOLVEUR'
+    eigsol = '&&OP0045.EIGSOL'
 !
     matpsc = '&&OP0045.DYN_FAC_R '
     matopa = '&&OP0045.DYN_FAC_C '
@@ -65,16 +65,16 @@ subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag,
     vecrer = '&&OP0045.RESU_'
     vecrei = '&&OP0045.RESU_I'
     vecrek = '&&OP0045.RESU_K'
-    vecvp  = '&&OP0045.VECTEUR_PROPRE'
+    vecvp = '&&OP0045.VECTEUR_PROPRE'
 
 ! -- ON STOCKE LE COMPORTEMENT EN CAS D'ERREUR : COMPEX
-    compex=''
+    compex = ''
     call onerrf(' ', compex, lenout)
 
 ! -- RECUPERATION DU RESULTAT
-    modes=''
-    typcon=''
-    nomcmd=''
+    modes = ''
+    typcon = ''
+    nomcmd = ''
     call getres(modes, typcon, nomcmd)
 !
 !     FIN DE VPINI0

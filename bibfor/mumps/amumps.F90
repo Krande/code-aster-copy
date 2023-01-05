@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
+subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
                   iret, impr, ifmump, prepos, pcentp)
 !
 !
@@ -110,82 +110,82 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
     call infdbg('SOLVEUR', ifm, niv)
 !
 ! --- PARAMETRE POUR IMPRESSION FICHIER
-    lresol=((impr(1:3).eq.'NON').or.(impr(1:9).eq.'OUI_SOLVE'))
+    lresol = ((impr(1:3) .eq. 'NON') .or. (impr(1:9) .eq. 'OUI_SOLVE'))
 !
 ! --- TYPE DE SYSTEME: REEL OU COMPLEXE
-    type='S'
-    ASSERT(kxmps.gt.0)
-    ASSERT(kxmps.le.nmxins)
-    nomat=nomats(kxmps)
-    nosolv=nosols(kxmps)
-    nonu=nonus(kxmps)
-    etam=etams(kxmps)
-    rouc=roucs(kxmps)
-    prec=precs(kxmps)
-    ASSERT((rouc.eq.'R').and.(prec.eq.'S'))
-    smpsk=>smps(kxmps)
-    iret=0
+    type = 'S'
+    ASSERT(kxmps .gt. 0)
+    ASSERT(kxmps .le. nmxins)
+    nomat = nomats(kxmps)
+    nosolv = nosols(kxmps)
+    nonu = nonus(kxmps)
+    etam = etams(kxmps)
+    rouc = roucs(kxmps)
+    prec = precs(kxmps)
+    ASSERT((rouc .eq. 'R') .and. (prec .eq. 'S'))
+    smpsk => smps(kxmps)
+    iret = 0
     call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
     call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
 !
 ! --- ANALYSE PAR BLOCS
-    lbloc=((slvk(5)(1:4).eq.'FR++').or.(slvk(5)(1:4).eq.'LR++'))
+    lbloc = ((slvk(5) (1:4) .eq. 'FR++') .or. (slvk(5) (1:4) .eq. 'LR++'))
 !
 ! --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
 ! --- => LQUALI
-    epsmax=slvr(2)
-    lquali=(epsmax.gt.0.d0)
-    posttrait=slvk(11)
+    epsmax = slvr(2)
+    lquali = (epsmax .gt. 0.d0)
+    posttrait = slvk(11)
 !
 ! --- POUR "ELIMINER" LE 2EME LAGRANGE :
 ! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
-    klag2=slvk(6)(1:5)
-    lbis=klag2(1:5).eq.'LAGR2'
+    klag2 = slvk(6) (1:5)
+    lbis = klag2(1:5) .eq. 'LAGR2'
 !
 ! --- TRES PROBABLEMENT COMMANDE FACTORISER (POSTTRAITEMENTS
 ! --- INITIALISE A 'XXXX'). ON NE DETRUIRA RIEN A L'ISSU DE LA
 ! --- FACTO, AU CAS OU UN OP. RESOUDRE + RESI_RELA>0 SUIVRAIT
-    if (slvk(11)(1:4) .eq. 'XXXX') then
-        lopfac=.true.
+    if (slvk(11) (1:4) .eq. 'XXXX') then
+        lopfac = .true.
     else
-        lopfac=.false.
-    endif
+        lopfac = .false.
+    end if
 !
 ! --- TYPE DE RESOLUTION
-    ktypr=slvk(3)(1:8)
+    ktypr = slvk(3) (1:8)
 !
 ! --- PARAMETRE NPREC
-    nprec=slvi(1)
+    nprec = slvi(1)
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
     call jeveuo(nomat//'.REFA', 'L', vk24=refa)
-    ldist=(refa(11).ne.'MPI_COMPLET')
-    rang=smpsk%myid
-    nbproc=smpsk%nprocs
+    ldist = (refa(11) .ne. 'MPI_COMPLET')
+    rang = smpsk%myid
+    nbproc = smpsk%nprocs
 !
 ! --- MATRICE ASTER DISTRIBUEE ?
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
-    lmd = matd.eq.'OUI'
+    lmd = matd .eq. 'OUI'
 !
 ! --- MATRICE ASTER HPC ?
     call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc.eq.'OUI'
+    lmhpc = mathpc .eq. 'OUI'
 !
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)
-    lpreco = slvk(8)(1:3).eq.'OUI'
+    lpreco = slvk(8) (1:3) .eq. 'OUI'
 !
 ! --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
-    epsmat=slvr(1)
+    epsmat = slvr(1)
 !
 ! --- STRATEGIE MEMOIRE POUR MUMPS
-    usersm=slvk(9)(1:12)
-    nbfact=slvi(6)
+    usersm = slvk(9) (1:12)
+    nbfact = slvi(6)
 !
 ! --- POUR MONITORING
-    call amumpt(0, kmonit, temps, rang, nbproc,&
-                kxmps, lquali, type, ietdeb, ietrat,&
+    call amumpt(0, kmonit, temps, rang, nbproc, &
+                kxmps, lquali, type, ietdeb, ietrat, &
                 rctdeb, ldist)
 !
 !     ------------------------------------------------
@@ -200,8 +200,8 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
         call amumpi(0, lquali, ldist, kxmps, type, lmhpc, lbid)
         call smumps(smpsk)
 
-        rang=smpsk%myid
-        nbproc=smpsk%nprocs
+        rang = smpsk%myid
+        nbproc = smpsk%nprocs
 !
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
@@ -211,54 +211,54 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       -----------------------------------------------------
 !       CALCUL DU DETERMINANT PART I ?
 !       -----------------------------------------------------
-        ldet=.false.
+        ldet = .false.
         if (slvi(5) .eq. 1) then
-            if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
+            if ((niv .ge. 2) .and. (lbis) .and. (.not. lpreco)) then
                 call utmess('I', 'FACTOR_88')
-            endif
-            slvk(6)='NON'
-            klag2='NON'
-            lbis=.false.
-            ldet=.true.
-        endif
+            end if
+            slvk(6) = 'NON'
+            klag2 = 'NON'
+            lbis = .false.
+            ldet = .true.
+        end if
 !
 !       ------------------------------------------------
 !        REMPLISSAGE DE LA MATRICE MUMPS :
 !       ------------------------------------------------
-        call amumpt(1, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
+        call amumpt(1, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
-        call amumpm(ldist, kxmps, kmonit, impr, ifmump,&
-                    klag2, type, lmd, epsmat, ktypr,&
+        call amumpm(ldist, kxmps, kmonit, impr, ifmump, &
+                    klag2, type, lmd, epsmat, ktypr, &
                     lpreco, lmhpc, lbloc)
 !
 !       -----------------------------------------------------
 !       CONSERVE-T-ON LES FACTEURS OU NON ?
 !       -----------------------------------------------------
         if (slvi(4) .eq. 1) then
-             smpsk%icntl(31)=1
-        endif
+            smpsk%icntl(31) = 1
+        end if
 !
 !       ------------------------------------------------
 !        ANALYSE MUMPS:
 !       ------------------------------------------------
 !       INITIALISATIONS POUR ANALYSE+FACTO+CORRECTION EVENTUELLE
-        ifact=0
-        lpb13=.false.
+        ifact = 0
+        lpb13 = .false.
         if (usersm(1:4) .eq. 'AUTO') then
-            ifactm=pcentp(1)
+            ifactm = pcentp(1)
         else
-            ifactm=1
-        endif
+            ifactm = 1
+        end if
 !
- 10     continue
-        call amumpt(2, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
+10      continue
+        call amumpt(2, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
         smpsk%job = 1
         call smumps(smpsk)
-        call amumpt(4, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
+        call amumpt(4, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
 !
 !       ------------------------------------------------
@@ -266,39 +266,39 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       ------------------------------------------------
         if (smpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
-        else if ((smpsk%infog(1).eq.-5).or.(smpsk%infog(1).eq.-7)) then
+        else if ((smpsk%infog(1) .eq. -5) .or. (smpsk%infog(1) .eq. -7)) then
             call utmess('F', 'FACTOR_64')
-        else if (smpsk%infog(1).eq.-6) then
-            iret=2
+        else if (smpsk%infog(1) .eq. -6) then
+            iret = 2
             goto 99
-        else if (smpsk%infog(1).eq.-38) then
+        else if (smpsk%infog(1) .eq. -38) then
             call utmess('F', 'FACTOR_91')
-        else if (smpsk%infog(1).eq.-51) then
+        else if (smpsk%infog(1) .eq. -51) then
             call utmess('F', 'FACTOR_92')
         else
-            iaux=smpsk%infog(1)
+            iaux = smpsk%infog(1)
             if (iaux .lt. 0) then
                 call utmess('F', 'FACTOR_55', si=iaux)
             else
-                if ((.not.lpreco).and.(niv.ge.2)) then
+                if ((.not. lpreco) .and. (niv .ge. 2)) then
                     call utmess('A', 'FACTOR_55', si=iaux)
-                endif
-            endif
-        endif
-        if ((slvk(4) .ne.'AUTO').and.(smpsk%icntl(7).ne.smpsk%infog(7)).and.&
-            (.not.lpreco).and.(smpsk%infog(32).eq.1).and.(niv.ge.2)) then
+                end if
+            end if
+        end if
+        if ((slvk(4) .ne. 'AUTO') .and. (smpsk%icntl(7) .ne. smpsk%infog(7)) .and. &
+            (.not. lpreco) .and. (smpsk%infog(32) .eq. 1) .and. (niv .ge. 2)) then
             call utmess('I', 'FACTOR_50', sk=slvk(4))
-        endif
-        if ((slvk(4) .ne.'AUTO').and.(smpsk%icntl(29).ne.smpsk%infog(7)).and.&
-            (.not.lpreco).and.(smpsk%infog(32).eq.2).and.(niv.ge.2)) then
+        end if
+        if ((slvk(4) .ne. 'AUTO') .and. (smpsk%icntl(29) .ne. smpsk%infog(7)) .and. &
+            (.not. lpreco) .and. (smpsk%infog(32) .eq. 2) .and. (niv .ge. 2)) then
             call utmess('I', 'FACTOR_50', sk=slvk(4))
-        endif
+        end if
 !
 !       -----------------------------------------------------
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
-        if (.not.lpb13) call amumpu(1, 'S', kxmps, usersm, ibid,&
-                                    lbid, nbfact)
+        if (.not. lpb13) call amumpu(1, 'S', kxmps, usersm, ibid, &
+                                     lbid, nbfact)
 !
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 ! ---   ASSOCIEE
@@ -307,7 +307,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       -----------------------------------------------------
 !       CALCUL DU DETERMINANT PART II ?
 !       -----------------------------------------------------
-        if (ldet) smpsk%icntl(33)=1
+        if (ldet) smpsk%icntl(33) = 1
 !
 !       ------------------------------------------------
 !        FACTORISATION NUMERIQUE MUMPS:
@@ -326,14 +326,14 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !
         smpsk%job = 2
         if (lresol) then
-            pcpi=smpsk%icntl(14)
+            pcpi = smpsk%icntl(14)
             do ifact = 1, ifactm
                 call smumps(smpsk)
-                iaux=smpsk%infog(1)
+                iaux = smpsk%infog(1)
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(14)
-                if ((iaux.eq.-8) .or. (iaux.eq.-9) .or. (iaux.eq.-14)&
-                    .or. (iaux.eq.-15) .or. (iaux.eq.-17) .or. (iaux.eq.-20)) then
+                if ((iaux .eq. -8) .or. (iaux .eq. -9) .or. (iaux .eq. -14) &
+                    .or. (iaux .eq. -15) .or. (iaux .eq. -17) .or. (iaux .eq. -20)) then
                     if (ifact .eq. ifactm) then
 ! ---  ICNTL(14): PLUS DE NOUVELLE TENTATIVE POSSIBLE
                         if (lpreco) then
@@ -342,136 +342,136 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                             iret = 1
                             goto 99
                         else
-                            vali(1)=ifactm
-                            vali(2)=pcpi
-                            vali(3)=smpsk%icntl(14)
+                            vali(1) = ifactm
+                            vali(2) = pcpi
+                            vali(3) = smpsk%icntl(14)
                             call utmess('F', 'FACTOR_53', ni=3, vali=vali)
-                        endif
+                        end if
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
-                        smpsk%icntl(14)=smpsk%icntl(14) * to_mumps_int(pcentp(2))
-                        slvi(2)=smpsk%icntl(14)
-                        if ((niv.ge.2) .and. (.not.lpreco)) then
-                            vali(1)=smpsk%icntl(14)/pcentp(2)
-                            vali(2)=smpsk%icntl(14)
-                            vali(3)=ifact
-                            vali(4)=ifactm
+                        smpsk%icntl(14) = smpsk%icntl(14)*to_mumps_int(pcentp(2))
+                        slvi(2) = smpsk%icntl(14)
+                        if ((niv .ge. 2) .and. (.not. lpreco)) then
+                            vali(1) = smpsk%icntl(14)/pcentp(2)
+                            vali(2) = smpsk%icntl(14)
+                            vali(3) = ifact
+                            vali(4) = ifactm
                             call utmess('I', 'FACTOR_58', ni=4, vali=vali)
-                        endif
+                        end if
 ! --- DERNIERE CHANCE: ON RAJOUTE L'OOC
-                        if (ifact.eq.(ifactm-1)) then
-                          lpb13=.true.
-                          smpsk%icntl(23)=0
-                          smpsk%icntl(22)=1
-                        endif
-                        ifactm=max(ifactm-ifact,1)
+                        if (ifact .eq. (ifactm-1)) then
+                            lpb13 = .true.
+                            smpsk%icntl(23) = 0
+                            smpsk%icntl(22) = 1
+                        end if
+                        ifactm = max(ifactm-ifact, 1)
                         goto 10
-                    endif
+                    end if
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(23)
 ! --- CE N'EST UTILE QU' UNE FOIS D'OU LE CONTROLE DE LPB13
-                else if (((iaux.eq.-13).or.(iaux.eq.-19)).and.(.not.lpb13)) then
+                else if (((iaux .eq. -13) .or. (iaux .eq. -19)) .and. (.not. lpb13)) then
 ! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
-                    if ((niv.ge.2) .and. (.not.lpreco)) then
-                        vali(1)=smpsk%icntl(23)
+                    if ((niv .ge. 2) .and. (.not. lpreco)) then
+                        vali(1) = smpsk%icntl(23)
                         call utmess('I', 'FACTOR_85', si=vali(1))
-                    endif
-                    lpb13=.true.
-                    smpsk%icntl(23)=0
-                    smpsk%icntl(22)=1
-                    ifactm=max(ifactm-ifact,1)
+                    end if
+                    lpb13 = .true.
+                    smpsk%icntl(23) = 0
+                    smpsk%icntl(22) = 1
+                    ifactm = max(ifactm-ifact, 1)
                     goto 10
                 else
 ! ---  SORTIE STANDARD SANS ERREUR
                     exit
-                endif
-            enddo
-        endif
+                end if
+            end do
+        end if
 !
 ! ---  AFFICHAGE DE CONTROLE
         if (niv .ge. 2) then
-            write(ifm,*)
-            write(ifm,*)&
-     &      '<AMUMPS> FACTO. NUM. - NBRE TENTATIVES/MAX: ',ifact,ifactm
-        endif
-        call amumpt(6, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
+            write (ifm, *)
+            write (ifm, *)&
+     &      '<AMUMPS> FACTO. NUM. - NBRE TENTATIVES/MAX: ', ifact, ifactm
+        end if
+        call amumpt(6, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
 !
 !       ------------------------------------------------
 !        GESTION ERREURS ET MENAGE ASTER (SAUF ERREUR ICNTL(14/23)
 !           TRAITEE EN AMONT):
 !       ------------------------------------------------
-        valr(1)=(smpsk%infog(13)*100.d0)/smpsk%n
+        valr(1) = (smpsk%infog(13)*100.d0)/smpsk%n
         if (valr(1) .gt. 10.0) then
-            if ((niv.ge.2) .and. (.not.lpreco)) then
+            if ((niv .ge. 2) .and. (.not. lpreco)) then
                 call utmess('I', 'FACTOR_73')
-            endif
-        endif
+            end if
+        end if
         if (smpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
-        else if (smpsk%infog(1).eq.-10) then
-            iret=2
+        else if (smpsk%infog(1) .eq. -10) then
+            iret = 2
             goto 99
-        else if (smpsk%infog(1).eq.-13) then
+        else if (smpsk%infog(1) .eq. -13) then
             call utmess('F', 'FACTOR_54')
-        else if (smpsk%infog(1).eq.-37) then
+        else if (smpsk%infog(1) .eq. -37) then
             call utmess('F', 'FACTOR_65')
-        else if (smpsk%infog(1).eq.-90) then
+        else if (smpsk%infog(1) .eq. -90) then
             call utmess('F', 'FACTOR_66')
         else
-            iaux=smpsk%infog(1)
+            iaux = smpsk%infog(1)
             if (iaux .lt. 0) then
                 call utmess('F', 'FACTOR_55', si=iaux)
             else
-                if ((.not.lpreco).and.(niv.ge.2)) then
+                if ((.not. lpreco) .and. (niv .ge. 2)) then
                     call utmess('A', 'FACTOR_55', si=iaux)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 !       ------------------------------------------------
 !        DETECTION DE SINGULARITE SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(2, 'S', kxmps, k12bid, nprec,&
+        call amumpu(2, 'S', kxmps, k12bid, nprec, &
                     lresol, ibid)
 !
 !       ------------------------------------------------
 !        RECUPERATION DU DETERMINANT SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(4, 'S', kxmps, k12bid, ibid,&
+        call amumpu(4, 'S', kxmps, k12bid, ibid, &
                     lbid, ibid)
 !
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 !       INUTILES
-        if ((( rang.eq.0).and.(.not.ldist)) .or. (ldist) .or. (lmhpc)) then
-            if (.not.(lquali).and.(posttrait(1:4).ne.'MINI') .and. .not.lopfac) then
-                if (ldist.or.lmhpc) then
-                    deallocate(smpsk%a_loc,stat=ibid)
-                    deallocate(smpsk%irn_loc,stat=ibid)
-                    deallocate(smpsk%jcn_loc,stat=ibid)
+        if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (lmhpc)) then
+            if (.not. (lquali) .and. (posttrait(1:4) .ne. 'MINI') .and. .not. lopfac) then
+                if (ldist .or. lmhpc) then
+                    deallocate (smpsk%a_loc, stat=ibid)
+                    deallocate (smpsk%irn_loc, stat=ibid)
+                    deallocate (smpsk%jcn_loc, stat=ibid)
                 else
-                    deallocate(smpsk%a,stat=ibid)
-                    deallocate(smpsk%irn,stat=ibid)
-                    deallocate(smpsk%jcn,stat=ibid)
-                endif
-            endif
-        endif
+                    deallocate (smpsk%a, stat=ibid)
+                    deallocate (smpsk%irn, stat=ibid)
+                    deallocate (smpsk%jcn, stat=ibid)
+                end if
+            end if
+        end if
 !
 !     ------------------------------------------------
 !     ------------------------------------------------
-    else if (action(1:6).eq.'RESOUD') then
+    else if (action(1:6) .eq. 'RESOUD') then
 !     ------------------------------------------------
 !     ------------------------------------------------
 !
 !       ------------------------------------------------
 !        PRETRAITEMENTS ASTER DU/DES SECOND(S) MEMBRE(S) :
 !       ------------------------------------------------
-        call amumpt(7, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
+        call amumpt(7, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
-        call amumpp(0, nbsol, kxmps, ldist, type,&
-                    impr, ifmump, lbis, rsolu, cbid,&
+        call amumpp(0, nbsol, kxmps, ldist, type, &
+                    impr, ifmump, lbis, rsolu, cbid, &
                     vcine, prepos, lpreco, lmhpc)
 !
 !       --------------------------------------------------------------
@@ -482,14 +482,14 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       ------------------------------------------------
 !        RESOLUTION MUMPS :
 !       ------------------------------------------------
-        call amumpt(8, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
+        call amumpt(8, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
         smpsk%job = 3
         if (lresol) call smumps(smpsk)
 
-        call amumpt(10, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb, ietrat,&
+        call amumpt(10, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, ietrat, &
                     rctdeb, ldist)
 !
 !       ------------------------------------------------
@@ -497,50 +497,50 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       ------------------------------------------------
         if (smpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
-        else if ((smpsk%infog(1).eq.8).and.(lquali)) then
-            iaux=smpsk%infog(10)
-            if ((.not.lpreco).and.(niv.ge.2)) then
+        else if ((smpsk%infog(1) .eq. 8) .and. (lquali)) then
+            iaux = smpsk%infog(10)
+            if ((.not. lpreco) .and. (niv .ge. 2)) then
                 call utmess('A', 'FACTOR_62', si=iaux)
-            endif
-        else if (smpsk%infog(1).lt.0) then
-            iaux=smpsk%infog(1)
+            end if
+        else if (smpsk%infog(1) .lt. 0) then
+            iaux = smpsk%infog(1)
             call utmess('F', 'FACTOR_55', si=iaux)
-        else if (smpsk%infog(1).eq.4) then
+        else if (smpsk%infog(1) .eq. 4) then
 !          -- PERMUTATION DE COLONNES, SMPSK%JCN MODIFIE VOLONTAIREMENT
 !          -- PAR MUMPS. IL NE FAUT DONC PAS LE MANIPULER TEL QUE
 !          -- PAS GRAVE POUR ASTER.
         else
-            iaux=smpsk%infog(1)
-            if ((.not.lpreco).and.(iaux.ne.2).and.(niv.ge.2)) then
+            iaux = smpsk%infog(1)
+            if ((.not. lpreco) .and. (iaux .ne. 2) .and. (niv .ge. 2)) then
                 call utmess('A', 'FACTOR_55', si=iaux)
-            endif
-        endif
+            end if
+        end if
 ! --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
-        if ((lquali).and.(posttrait(1:4).ne.'MINI')) then
+        if ((lquali) .and. (posttrait(1:4) .ne. 'MINI')) then
             if (smpsk%rinfog(9) .gt. epsmax) then
-                valr(1)=smpsk%rinfog(9)
-                valr(2)=epsmax
+                valr(1) = smpsk%rinfog(9)
+                valr(2) = epsmax
                 call utmess('F', 'FACTOR_57', nr=2, valr=valr)
-            endif
-        endif
+            end if
+        end if
 !
 !       ------------------------------------------------
 !        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 !       ------------------------------------------------
-        call amumpp(2, nbsol, kxmps, ldist, type,&
-                    impr, ifmump, lbis, rsolu, cbid,&
+        call amumpp(2, nbsol, kxmps, ldist, type, &
+                    impr, ifmump, lbis, rsolu, cbid, &
                     vcine, prepos, lpreco, lmhpc)
 !
 !       ------------------------------------------------
 !        AFFICHAGE DU MONITORING :
 !       ------------------------------------------------
-        call amumpt(12, kmonit, temps, rang, nbproc,&
-                    kxmps, lquali, type, ietdeb,&
+        call amumpt(12, kmonit, temps, rang, nbproc, &
+                    kxmps, lquali, type, ietdeb, &
                     ietrat, rctdeb, ldist)
 !
 !     ------------------------------------------------
 !     ------------------------------------------------
-    else if (action(1:5).eq.'DETR_') then
+    else if (action(1:5) .eq. 'DETR_') then
 !     ------------------------------------------------
 !     ------------------------------------------------
 !
@@ -548,42 +548,42 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !        MENAGE ASTER ET MUMPS:
 !       ------------------------------------------------
         if (nomats(kxmps) .ne. ' ') then
-            if ((( rang.eq.0).and.(.not.ldist)) .or. (ldist) .or. (lmhpc)) then
-                if (ldist.or.lmhpc) then
-                    deallocate(smpsk%a_loc,stat=ibid)
-                    deallocate(smpsk%irn_loc,stat=ibid)
-                    deallocate(smpsk%jcn_loc,stat=ibid)
+            if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist) .or. (lmhpc)) then
+                if (ldist .or. lmhpc) then
+                    deallocate (smpsk%a_loc, stat=ibid)
+                    deallocate (smpsk%irn_loc, stat=ibid)
+                    deallocate (smpsk%jcn_loc, stat=ibid)
                 else
-                    deallocate(smpsk%a,stat=ibid)
-                    deallocate(smpsk%irn,stat=ibid)
-                    deallocate(smpsk%jcn,stat=ibid)
-                endif
-            endif
-            if ((rang.eq.0).and.(lbloc)) then
-              deallocate(smpsk%blkptr,stat=ibid)
-            endif
-            etams(kxmps)=' '
-            nonus(kxmps)=' '
-            nomats(kxmps)=' '
-            nosols(kxmps)=' '
-            roucs(kxmps)=' '
-            precs(kxmps)=' '
+                    deallocate (smpsk%a, stat=ibid)
+                    deallocate (smpsk%irn, stat=ibid)
+                    deallocate (smpsk%jcn, stat=ibid)
+                end if
+            end if
+            if ((rang .eq. 0) .and. (lbloc)) then
+                deallocate (smpsk%blkptr, stat=ibid)
+            end if
+            etams(kxmps) = ' '
+            nonus(kxmps) = ' '
+            nomats(kxmps) = ' '
+            nosols(kxmps) = ' '
+            roucs(kxmps) = ' '
+            precs(kxmps) = ' '
             smpsk%job = -2
             call smumps(smpsk)
 ! NETTOYAGE OBJETS AUXILIAIRES AU CAS OU
-            k24aux='&&TAILLE_OBJ_MUMPS'
+            k24aux = '&&TAILLE_OBJ_MUMPS'
             call jeexin(k24aux, ibid)
             if (ibid .ne. 0) call jedetr(k24aux)
 !
-            k24aux='&&AMUMP.PIVNUL'
+            k24aux = '&&AMUMP.PIVNUL'
             call jeexin(k24aux, ibid)
             if (ibid .ne. 0) call jedetr(k24aux)
 !
-            k24aux='&&AMUMP.DETERMINANT'
+            k24aux = '&&AMUMP.DETERMINANT'
             call jeexin(k24aux, ibid)
             if (ibid .ne. 0) call jedetr(k24aux)
-        endif
-    endif
+        end if
+    end if
 !
 !     -- ON REACTIVE LA LEVEE D'EXCEPTION
 99  continue

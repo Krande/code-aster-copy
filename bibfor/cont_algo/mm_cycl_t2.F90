@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
                       pres_frot_curr, dist_frot_curr, &
                       coef_frot_curr, cycl_stat_curr)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/mm_cycl_adaf.h"
@@ -95,7 +95,7 @@ implicit none
 !
     call mm_cycl_zonf(nrese_curr, tole_stick, tole_slide, zone_frot_curr)
     call mm_cycl_zonf(nrese_prev, tole_stick, tole_slide, zone_frot_prev)
-    if (zone_frot_curr.eq.-1) then
+    if (zone_frot_curr .eq. -1) then
         pres_frot_adap(1) = pres_frot_curr(1)
         pres_frot_adap(2) = pres_frot_curr(2)
         pres_frot_adap(3) = pres_frot_curr(3)
@@ -103,7 +103,7 @@ implicit none
         dist_frot_adap(2) = dist_frot_curr(2)
         dist_frot_adap(3) = dist_frot_curr(3)
         adap_type = 'Sticking'
-    elseif (zone_frot_curr.eq.+1) then
+    elseif (zone_frot_curr .eq. +1) then
         pres_frot_adap(1) = pres_frot_curr(1)
         pres_frot_adap(2) = pres_frot_curr(2)
         pres_frot_adap(3) = pres_frot_curr(3)
@@ -111,7 +111,7 @@ implicit none
         dist_frot_adap(2) = dist_frot_curr(2)
         dist_frot_adap(3) = dist_frot_curr(3)
         adap_type = 'Sliding'
-    elseif (zone_frot_prev.eq.-1) then
+    elseif (zone_frot_prev .eq. -1) then
         pres_frot_adap(1) = pres_frot_prev(1)
         pres_frot_adap(2) = pres_frot_prev(2)
         pres_frot_adap(3) = pres_frot_prev(3)
@@ -119,7 +119,7 @@ implicit none
         dist_frot_adap(2) = dist_frot_prev(2)
         dist_frot_adap(3) = dist_frot_prev(3)
         adap_type = 'Sticking'
-    elseif (zone_frot_prev.eq.+1) then
+    elseif (zone_frot_prev .eq. +1) then
         pres_frot_adap(1) = pres_frot_prev(1)
         pres_frot_adap(2) = pres_frot_prev(2)
         pres_frot_adap(3) = pres_frot_prev(3)
@@ -128,19 +128,19 @@ implicit none
         dist_frot_adap(3) = dist_frot_prev(3)
         adap_type = 'Sliding'
     else
-       cycl_stat_curr = -2
-       goto 99
-    endif
+        cycl_stat_curr = -2
+        goto 99
+    end if
 !
 ! - Trying to adapt coef
 !
     call mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_frot_prev, pres_frot_adap, &
                       dist_frot_adap, coef_adap, stat_adap)
-    if (stat_adap.eq.0) then
+    if (stat_adap .eq. 0) then
         cycl_stat_curr = -1
-    elseif (stat_adap.eq.-1) then
+    elseif (stat_adap .eq. -1) then
         cycl_stat_curr = -10
-    endif
+    end if
 
 99  continue
 !

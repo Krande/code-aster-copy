@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine proax0(ui, vi, csta, cstb, a1,&
+subroutine proax0(ui, vi, csta, cstb, a1, &
                   b1, u0, v0, rpax)
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -55,19 +55,19 @@ subroutine proax0(ui, vi, csta, cstb, a1,&
 !
     rpax = 0.0d0
 !
-    uip = ui + 1.0d0
-    vip = vi - (csta/cstb)*(uip-ui)
+    uip = ui+1.0d0
+    vip = vi-(csta/cstb)*(uip-ui)
 !
     a3 = (vip-vi)/(uip-ui)
-    b3 = (uip*vi - ui*vip)/(uip-ui)
+    b3 = (uip*vi-ui*vip)/(uip-ui)
 !
     up = (b3-b1)/(a1-a3)
-    vp = (a1*b3 - a3*b1)/(a1-a3)
-    val = sqrt((up-u0)**2 + (vp-v0)**2)
+    vp = (a1*b3-a3*b1)/(a1-a3)
+    val = sqrt((up-u0)**2+(vp-v0)**2)
 !
     if (up .lt. u0) then
         val = -val
-    endif
+    end if
     rpax = val
 !
     call jedema()

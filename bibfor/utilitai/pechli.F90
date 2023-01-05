@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine pechli(resu, modele, mateco)
 !
 !
     call jemarq()
-    c16b=(0.d0,0.d0)
+    c16b = (0.d0, 0.d0)
     lisord = '&&PECHLI.VECTORDR'
     chtime = '&&PECHLI.CH_INST_R'
     f0u = 0
@@ -83,7 +83,7 @@ subroutine pechli(resu, modele, mateco)
 !
     if (iret .eq. 0) then
         call utmess('F', 'POSTELEM_3', sk=result)
-    endif
+    end if
 !
 !
 ! -- EXISTENCE D'UN CHARGEMENT CONSTANT
@@ -110,7 +110,7 @@ subroutine pechli(resu, modele, mateco)
         noparr(5) = 'PUIS_CHAR_CSTE'
     else
         noparr(5) = 'CHAR_LIMI_ESTIM'
-    endif
+    end if
 !
     call tbcrsd(resu, 'G')
     call tbajpa(resu, 5, noparr, typarr)
@@ -125,11 +125,11 @@ subroutine pechli(resu, modele, mateco)
 !
     call getvr8(' ', 'PRECISION', scal=prec, nbret=iret)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=iret)
-    call rsutnu(result, ' ', 0, lisord, nbord,&
+    call rsutnu(result, ' ', 0, lisord, nbord, &
                 prec, crit, iret)
     if (iret .ne. 0) then
         call utmess('F', 'POSTELEM_1', sk=result)
-    endif
+    end if
     call jeveuo(lisord, 'L', jord)
 !
 !
@@ -141,19 +141,19 @@ subroutine pechli(resu, modele, mateco)
 !
 !      EXTRACTION DU CHAMP DE DEPLACEMENT
         numord = zi(jord-1+i)
-        call rsexch('F', result, 'DEPL', numord, depla,&
+        call rsexch('F', result, 'DEPL', numord, depla, &
                     iret)
 !
 !
 !      CREACTION DE LA CARTE DE L INSTANT DE CALCUL
-        call rsadpa(result, 'L', 1, 'INST', numord,&
+        call rsadpa(result, 'L', 1, 'INST', numord, &
                     0, sjv=jinst, styp=k8b)
         inst = zr(jinst)
-        call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
+        call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R', &
                     ncmp=1, nomcmp='INST', sr=inst)
 
 !     CALCUL DES VALEUR DE M EN FONCTION DE L'INSTANT
-        m = 1 + 10** (1-inst)
+        m = 1+10**(1-inst)
 !
 !
 !      CALCUL DES TERMES ELEMENTAIRES
@@ -168,8 +168,8 @@ subroutine pechli(resu, modele, mateco)
         lpain(4) = 'PTEMPSR'
         lchin(4) = chtime
         option = 'CHAR_LIMITE'
-        call calcul('S', option, ligrmo, 4, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, 4, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
 !
 !
@@ -183,23 +183,23 @@ subroutine pechli(resu, modele, mateco)
         chli(1) = 'CHLI1'
         chli(2) = 'CHLI2'
         chli(3) = 'CHLI3'
-        call memaxm('MAX', lchout(1), 'CHLI3', 3, chli,&
+        call memaxm('MAX', lchout(1), 'CHLI3', 3, chli, &
                     chmax, 0, [0])
 !
 !      CALCUL DU CHARGEMENT PERMANENT SI NECESSAIRE
         if (chrcst) then
-            call rsadpa(result, 'L', 1, 'ETA_PILOTAGE', numord,&
+            call rsadpa(result, 'L', 1, 'ETA_PILOTAGE', numord, &
                         0, sjv=jpilo, styp=k8b)
             eta = zr(jpilo)
-            f0u = m*chlim(2) - eta
-            chlim(1) = chlim(1) - f0u
+            f0u = m*chlim(2)-eta
+            chlim(1) = chlim(1)-f0u
         else
             if (chmax(3) .le. r8miem()) then
                 chlim(2) = 0.0d0
             else
                 chlim(2) = chlim(2)/chmax(3)
-            endif
-        endif
+            end if
+        end if
 !
 !
 !      ECRITURE DANS LA TABLE RESU DE LA CHARGE LIMITE
@@ -210,8 +210,8 @@ subroutine pechli(resu, modele, mateco)
             valer(4) = f0u
         else
             valer(4) = chlim(2)
-        endif
-        call tbajli(resu, 5, noparr, [numord], valer,&
+        end if
+        call tbajli(resu, 5, noparr, [numord], valer, &
                     [c16b], k8b, 0)
 !
         call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine xthini(nomte, nfh, nfe)
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',nno=nno,nnos=nnos)
+    call elrefe_info(fami='RIGI', nno=nno, nnos=nnos)
 !
 ! --- INITIALISATIONS
 !
@@ -61,16 +61,16 @@ subroutine xthini(nomte, nfh, nfe)
     if (enr(1:2) .eq. 'XH') then
         nfh = 1
 !       NOMBRE DE FISSURES :
-        call tecach('NOO', 'PLST', 'L', iret, nval=7,&
+        call tecach('NOO', 'PLST', 'L', iret, nval=7, &
                     itab=jtab)
         nfiss = jtab(7)
 !       ON NE TRAITE PAS LA JONCTION DE FISSURES EN THERMMIQUE
-        ASSERT(nfiss.eq.1)
-    endif
+        ASSERT(nfiss .eq. 1)
+    end if
 !
     if (enr(1:2) .eq. 'XT' .or. enr(3:3) .eq. 'T') then
         nfe = 1
-    endif
+    end if
 !
     ASSERT((nfh.eq.1 .and. nfe.eq.0) .or. (nfh.eq.0 .and. nfe.eq.1) .or.(nfh.eq.1 .and. nfe.eq.1))
 !

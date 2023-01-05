@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -59,7 +59,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=3)
+    parameter(nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -83,13 +83,13 @@ implicit none
 !
     vect_elem = vect_elem_
     base = 'V'
-    call jeexin(list_load(1:19)// '.LCHA', iret)
+    call jeexin(list_load(1:19)//'.LCHA', iret)
     if (iret .eq. 0) goto 99
     option = 'MECA_BU_R'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- CONSTRUCTION DU VECTEUR BDIDI.UREF
@@ -107,21 +107,21 @@ implicit none
 ! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
 ! REM : A CE STADE, ON FIXE LE COND A 1
 !
-    alpha=1.d0
+    alpha = 1.d0
     chalph = '&&VEBUME.CH_NEUT_R'
-    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ',&
+    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ', &
                 ncmp=1, nomcmp='X1', sr=alpha)
 !
 ! --- PREPARATION DES VECT_ELEM
 !
-    call jeexin(vect_elem(1:19)// '.RELR', iret)
+    call jeexin(vect_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare('V', vect_elem, model(1:8), ' ', ' ',&
+        call memare('V', vect_elem, model(1:8), ' ', ' ', &
                     'CHAR_MECA')
-    endif
+    end if
     call jedetr(vect_elem(1:19)//'.RELR')
     call reajre(vect_elem, ' ', 'V')
-    masque = vect_elem(1:19)// '.VEXXX'
+    masque = vect_elem(1:19)//'.VEXXX'
 !
 ! --- BOUCLE SUR LES CHARGES DE TYPE DIRICHLET DIFFERENTIEL
 !
@@ -132,8 +132,8 @@ implicit none
 !
         if (infc(icha+1) .le. 0 .or. infc(1+3*nchar+2+icha) .eq. 0) then
             cycle
-        endif
-        nomcha = lcha(icha)(1:8)
+        end if
+        nomcha = lcha(icha) (1:8)
         call jeexin(nomcha(1:8)//'.CHME.LIGRE.LIEL', iret)
         if (iret .le. 0) cycle
         call exisd('CHAMP_GD', nomcha(1:8)//'.CHME.CMULT', iret)
@@ -141,19 +141,19 @@ implicit none
 !
         call codent(nbres+1, 'D0', masque(12:14))
 !
-        ligrch = nomcha// '.CHME.LIGRE'
+        ligrch = nomcha//'.CHME.LIGRE'
         lpain(1) = 'PDDLMUR'
-        lchin(1) = nomcha// '.CHME.CMULT'
+        lchin(1) = nomcha//'.CHME.CMULT'
         lpain(2) = 'PDDLIMR'
         lchin(2) = disp_didi(1:19)
         lpain(3) = 'PALPHAR'
         lchin(3) = chalph(1:19)
         lpaout(1) = 'PVECTUR'
         lchout(1) = masque(1:19)
-        call calcul('S', option, ligrch, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, base,&
+        call calcul('S', option, ligrch, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
-        nbres = nbres + 1
+        nbres = nbres+1
         call reajre(vect_elem, lchout(1), 'V')
     end do
 !

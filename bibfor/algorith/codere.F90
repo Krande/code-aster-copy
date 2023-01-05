@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,14 +33,14 @@ subroutine codere(cod, npg, codret)
 !     ------------------------------------------------------------------
     integer :: i
 !
-    codret=0
+    codret = 0
     do i = 1, npg
         if (cod(i) .eq. 1) then
-            codret=1
+            codret = 1
             goto 999
-        else if (cod(i).ne.0) then
-            codret=cod(i)
-        endif
+        else if (cod(i) .ne. 0) then
+            codret = cod(i)
+        end if
     end do
 !
 !

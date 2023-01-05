@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine op0185()
     call getres(sd2, typsup, oper)
     call getvid(' ', 'CONCEPT', scal=sd1, nbret=iret)
 !
-    typinf=cotsti(typsup)
-    ASSERT(typinf.ne.'INCONNU')
+    typinf = cotsti(typsup)
+    ASSERT(typinf .ne. 'INCONNU')
     call copisd(typinf, 'G', sd1, sd2)
 !
     call jedema()

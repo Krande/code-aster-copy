@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine op0148()
 !
     integer :: lfreq
 !
-    data depla  /'DX      ','DY      ','DZ      '/
+    data depla/'DX      ', 'DY      ', 'DZ      '/
 !
 !
 !-----------------------------------------------------------------------
@@ -89,34 +89,34 @@ subroutine op0148()
     if (ibid .eq. 0) then
         call speph0(nomu, table)
         goto 999
-    endif
+    end if
 !C
 !
 ! --- 1.DETERMINATION DU CAS DE CALCUL ---
 !
     if (optcha(1:4) .eq. 'DEPL') then
         ioptch = 1
-    else if (optcha(1:4).eq.'VITE') then
+    else if (optcha(1:4) .eq. 'VITE') then
         ioptch = 2
-    else if (optcha(1:4).eq.'ACCE') then
+    else if (optcha(1:4) .eq. 'ACCE') then
         ioptch = 3
     else
         ioptch = 4
-    endif
+    end if
 !
     if (ioptch .le. 3) then
         do idep = 1, 3
             if (nomcmp .eq. depla(idep)) goto 11
         end do
- 11     continue
+11      continue
     else
         if (nomcmp(1:4) .eq. 'SMFY') then
             ismf = 5
         else
             ismf = 6
-        endif
+        end if
         call getvid(' ', 'MODE_MECA', scal=modmec)
-    endif
+    end if
 !
     call getvtx(' ', 'OPTION', scal=optcal)
     intphy = .false.
@@ -141,8 +141,8 @@ subroutine op0148()
         cmp1 = zk8(ifsvk+1)
         if (nomcmp(1:2) .ne. cmp1(1:2)) then
             call utmess('A', 'MODELISA5_80')
-        endif
-    endif
+        end if
+    end if
     modmec = zk8(irefba+1)
     call dismoi('NOM_MAILLA', modmec, 'RESULTAT', repk=maillage)
 !
@@ -157,7 +157,7 @@ subroutine op0148()
         val = zr(ivite-1+i3)-vitef
         if (abs(val) .lt. epsi) then
             ivitef = i3
-        endif
+        end if
     end do
 !
     numo = base//'.NUMO'
@@ -170,10 +170,10 @@ subroutine op0148()
 ! --- RECUPERATION DU NOM DU MAILLAGE ---
 !
     iv = 1
-    write(nomcha,'(A8,A5,2I3.3)') base(1:8),'.C01.',zi(inumo),iv
+    write (nomcha, '(A8,A5,2I3.3)') base(1:8), '.C01.', zi(inumo), iv
     chrefe = nomcha//'.REFE'
     call jeveuo(chrefe, 'L', ichref)
-    nommai = zk24(ichref)(1:8)
+    nommai = zk24(ichref) (1:8)
     nomnoe = nommai//'.NOMNOE'
     call jelira(nomnoe, 'NOMUTI', nbp)
 !
@@ -201,7 +201,7 @@ subroutine op0148()
     zi(inuor) = zi(jnuor)
     do i = 2, nbmr
         if (zi(jnuor+i-1) .ne. zi(inuor+nnn-1)) then
-            nnn = nnn + 1
+            nnn = nnn+1
             zi(inuor+nnn-1) = zi(jnuor+i-1)
         end if
     end do
@@ -210,10 +210,10 @@ subroutine op0148()
         if (zi(inumo+im-1) .eq. zi(inuor)) then
             imod1 = im
             goto 31
-        endif
+        end if
     end do
     call utmess('F', 'MODELISA5_78')
- 31 continue
+31  continue
 !
     call jelira(chfreq, 'LONMAX', nbpf)
     call jeveuo(chfreq, 'L', lfreq)
@@ -224,7 +224,7 @@ subroutine op0148()
     nbmcl = 2
     limocl(1) = 'GROUP_NO'
     limocl(2) = 'NOEUD'
-    call reliem(' ', maillage, typem, ' ', 1,&
+    call reliem(' ', maillage, typem, ' ', 1, &
                 nbmcl, limocl, limocl, '&&OP0148.TEMP.NOEN', nbn)
     call jeveuo('&&OP0148.TEMP.NOEN', 'L', inoen)
     call wkvect('&&OP0148.TEMP.NOEI', 'V V I ', nbn, inoei)
@@ -246,14 +246,14 @@ subroutine op0148()
     if (ioptch .ne. 4) then
 !
         do imr = 1, nbmr
-            write(nomcha,'(A8,A5,2I3.3)') base(1:8),'.C01.', zi(inuor+&
-            imr-1),iv
+            write (nomcha, '(A8,A5,2I3.3)') base(1:8), '.C01.', zi(inuor+ &
+                                                                   imr-1), iv
             chvale = nomcha//'.VALE'
             call jeveuo(chvale, 'L', ivale)
             do in = 1, nbn
                 nplace = zi(inoei+in-1)
-                icham1 = icham + nbn*(imr-1) + in - 1
-                ivale1 = ivale + 6*(nplace-1) + idep - 1
+                icham1 = icham+nbn*(imr-1)+in-1
+                ivale1 = ivale+6*(nplace-1)+idep-1
                 zr(icham1) = zr(ivale1)
             end do
             call jelibe(chvale)
@@ -262,33 +262,33 @@ subroutine op0148()
     else
 !
         do imr = 1, nbmr
-            numod = zi(inuor + imr - 1)
-            call rsexch('F', modmec, 'SIPO_ELNO', numod, sipo,&
+            numod = zi(inuor+imr-1)
+            call rsexch('F', modmec, 'SIPO_ELNO', numod, sipo, &
                         icode)
             sipo = sipo(1:19)//'.CELV'
             call jeveuo(sipo, 'L', isip)
             do in = 1, nbn
                 nplace = zi(inoei+in-1)
-                icham1 = icham + nbn*(imr-1) + in - 1
+                icham1 = icham+nbn*(imr-1)+in-1
                 if (nplace .eq. 1) then
                     zr(icham1) = zr(isip+ismf-1)
-                else if (nplace.eq.nbp) then
-                    isip1 = isip + 6 + 12*(nbp-2) + ismf - 1
+                else if (nplace .eq. nbp) then
+                    isip1 = isip+6+12*(nbp-2)+ismf-1
                     zr(icham1) = zr(isip1)
                 else
-                    isip1 = isip + 6 + 12*(nplace-2) + ismf - 1
-                    isip2 = isip1 + 6
+                    isip1 = isip+6+12*(nplace-2)+ismf-1
+                    isip2 = isip1+6
                     zr(icham1) = (zr(isip1)+zr(isip2))/2.d0
-                endif
+                end if
             end do
         end do
 !
-    endif
+    end if
 !
 ! --- 6.CREATION D'UNE MATRICE POUR STOCKER LES SPECTRES ---
 ! ---   POUR UNE VITESSE DONNEE                          ---
 !
-    nbfo1 = (nbmr* (nbmr+1))/2
+    nbfo1 = (nbmr*(nbmr+1))/2
     call wkvect('&&OP0148.TEMP.FONR', 'V V R', nbpf*nbfo1, ifor)
     call wkvect('&&OP0148.TEMP.FONI', 'V V R', nbpf*nbfo1, ifoi)
     call wkvect('&&OP0148.TEMP.DISC', 'V V R', nbpf, idis)
@@ -304,9 +304,9 @@ subroutine op0148()
 !
 ! --- 7.REALISATION DU CALCUL ---
 !
-    call spephy(ioptch, intphy, intmod, nomu, table,&
-                zr(ifreq), zr(icham), zr(ifor), zr(ifoi), zr(idis),&
-                zk8(inoen), nomcmp, zi(inuor), nbmr, nbn,&
+    call spephy(ioptch, intphy, intmod, nomu, table, &
+                zr(ifreq), zr(icham), zr(ifor), zr(ifoi), zr(idis), &
+                zk8(inoen), nomcmp, zi(inuor), nbmr, nbn, &
                 imod1, nbpf, nbm, ivitef)
 !
     call titre()

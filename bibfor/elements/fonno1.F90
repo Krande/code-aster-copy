@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fonno1(noma, cnxinv, ndim, na, nb,&
+subroutine fonno1(noma, cnxinv, ndim, na, nb, &
                   nbmac, macofo)
     implicit none
 #include "jeveux.h"
@@ -64,16 +64,16 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !
 !     MAILLES CONNECTEES A NA
-    adra = zi(jdrvlc-1 + na)
-    nbmaca = zi(jdrvlc-1 + na+1) - zi(jdrvlc-1 + na)
+    adra = zi(jdrvlc-1+na)
+    nbmaca = zi(jdrvlc-1+na+1)-zi(jdrvlc-1+na)
 !
 !     ALLOCATION DU VECTEUR DES MAILLES CONNECTEES AU SEGMENT DU FOND
     call wkvect(macofo, 'V V I', nbmaca, jmaco)
 !
-    comp1=0
+    comp1 = 0
     do ima = 1, nbmaca
 !       NUMERO DE LA MAILLE
-        numac = zi(jcncin-1 + adra+ima-1)
+        numac = zi(jcncin-1+adra+ima-1)
         ityp = iatyma-1+numac
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
         call dismoi('DIM_TOPO', type, 'TYPE_MAILLE', repi=ndime)
@@ -81,20 +81,20 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb,&
         if (ndime .ne. ndim) goto 10
 !
         if (ndim .eq. 2) then
-            comp1=comp1+1
-            zi(jmaco-1+comp1)=numac
-        else if (ndim.eq.3) then
+            comp1 = comp1+1
+            zi(jmaco-1+comp1) = numac
+        else if (ndim .eq. 3) then
 !         EN 3D ON DOIT AVOIR AUSSI LE NOEUD NB
             call jeveuo(jexnum(noma//'.CONNEX', numac), 'L', iamase)
             call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
             do ino1 = 1, nn
-                if (zi(iamase-1 + ino1) .eq. nb) then
-                    comp1=comp1+1
-                    zi(jmaco-1+comp1)=numac
-                endif
+                if (zi(iamase-1+ino1) .eq. nb) then
+                    comp1 = comp1+1
+                    zi(jmaco-1+comp1) = numac
+                end if
             end do
-        endif
- 10     continue
+        end if
+10      continue
     end do
 !
 !     NB MAILLES CONNECTEES AU SEGMENT

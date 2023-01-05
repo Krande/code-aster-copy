@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine settco(name, typeco)
         call wkvect(attr, 'G V K24', 1, vk24=vk)
     else
         call jeveuo(attr, 'E', vk24=vk)
-    endif
+    end if
     vk(1) = type24
 
     call jedema()

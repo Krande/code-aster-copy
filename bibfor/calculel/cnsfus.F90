@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
+subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
                   lcoc, base, cns3z)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
@@ -90,7 +90,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_NO_S "IN",
 !        ON CREE CNS3 SOUS UN NOM TEMPORAIRE :
     cns3 = '&&CNSFUS.CNS3'
-    ASSERT(nbchs.gt.0)
+    ASSERT(nbchs .gt. 0)
 !
     cns1 = lichs(1)
 !
@@ -121,14 +121,14 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         call jeveuo(cns1//'.CNSC', 'L', jcn1c)
 !
 !       TEST SUR IDENTITE DES 2 MAILLAGES
-        ASSERT(ma.eq.zk8(jcn1k-1+1))
+        ASSERT(ma .eq. zk8(jcn1k-1+1))
 !       TEST SUR IDENTITE DES 2 GRANDEURS
-        ASSERT(nomgd.eq.zk8(jcn1k-1+2))
+        ASSERT(nomgd .eq. zk8(jcn1k-1+2))
 !
         ncmp1 = zi(jcn1d-1+2)
         do icmp1 = 1, ncmp1
             nocmp = zk8(jcn1c-1+icmp1)
-            icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
+            icmp = indik8(zk8(jcmpgd), nocmp, 1, ncmpmx)
             nucmp(icmp) = 1
         end do
         call jelibe(cns1//'.CNSK')
@@ -139,16 +139,16 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     icmp3 = 0
     do icmp = 1, ncmpmx
         if (nucmp(icmp) .eq. 1) then
-            icmp3 = icmp3 + 1
+            icmp3 = icmp3+1
             licmp(icmp3) = zk8(jcmpgd-1+icmp)
-        endif
+        end if
     end do
     ncmp3 = icmp3
 !
 !
 !     2- ALLOCATION DE CNS3 :
 !     ---------------------------------------
-    call cnscre(ma, nomgd, ncmp3, licmp, base,&
+    call cnscre(ma, nomgd, ncmp3, licmp, base, &
                 cns3)
     call jeveuo(cns3//'.CNSD', 'L', jcn3d)
     call jeveuo(cns3//'.CNSC', 'L', vk8=cn3c)
@@ -167,7 +167,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         else
             coefr = lcoefr(ichs)
             if (tsca .eq. 'I') coefi = nint(coefr)
-        endif
+        end if
 !
         call jeveuo(cns1//'.CNSD', 'L', jcn1d)
         call jeveuo(cns1//'.CNSC', 'L', jcn1c)
@@ -177,60 +177,60 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
         do icmp1 = 1, ncmp1
             nocmp = zk8(jcn1c-1+icmp1)
-            icmp3 = indik8(cn3c,nocmp,1,ncmp3)
-            ASSERT(icmp3.ne.0)
+            icmp3 = indik8(cn3c, nocmp, 1, ncmp3)
+            ASSERT(icmp3 .ne. 0)
 !
             do ino = 1, nbno
-                k1 = (ino-1)*ncmp1 + icmp1
-                k3 = (ino-1)*ncmp3 + icmp3
+                k1 = (ino-1)*ncmp1+icmp1
+                k3 = (ino-1)*ncmp3+icmp3
 !
 !
                 if (zl(jcn1l-1+k1)) then
 !
 !             -- SI AFFECTATION :
-                    if ((.not.cumul) .or. (.not.zl(jcn3l-1+k3))) then
+                    if ((.not. cumul) .or. (.not. zl(jcn3l-1+k3))) then
                         zl(jcn3l-1+k3) = .true.
 !
                         if (tsca .eq. 'R') then
                             zr(jcn3v-1+k3) = coefr*zr(jcn1v-1+k1)
-                        else if (tsca.eq.'I') then
+                        else if (tsca .eq. 'I') then
                             zi(jcn3v-1+k3) = coefi*zi(jcn1v-1+k1)
-                        else if (tsca.eq.'L') then
+                        else if (tsca .eq. 'L') then
                             zl(jcn3v-1+k3) = zl(jcn1v-1+k1)
-                        else if (tsca.eq.'C') then
+                        else if (tsca .eq. 'C') then
                             if (lcoc) then
                                 zc(jcn3v-1+k3) = coefc*zc(jcn1v-1+k1)
                             else
                                 zc(jcn3v-1+k3) = coefr*zc(jcn1v-1+k1)
-                            endif
-                        else if (tsca.eq.'K8') then
+                            end if
+                        else if (tsca .eq. 'K8') then
                             zk8(jcn3v-1+k3) = zk8(jcn1v-1+k1)
                         else
                             ASSERT(.false.)
-                        endif
+                        end if
 !
 !             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                     else
                         if (tsca .eq. 'R') then
-                            zr(jcn3v-1+k3) = zr(jcn3v-1+k3) + coefr* zr(jcn1v-1+k1)
-                        else if (tsca.eq.'C') then
+                            zr(jcn3v-1+k3) = zr(jcn3v-1+k3)+coefr*zr(jcn1v-1+k1)
+                        else if (tsca .eq. 'C') then
                             if (lcoc) then
-                                zc(jcn3v-1+k3) = zc(jcn3v-1+k3) + coefc*zc(jcn1v-1+k1)
+                                zc(jcn3v-1+k3) = zc(jcn3v-1+k3)+coefc*zc(jcn1v-1+k1)
                             else
-                                zc(jcn3v-1+k3) = zc(jcn3v-1+k3) + coefr*zc(jcn1v-1+k1)
-                            endif
-                        else if (tsca.eq.'I') then
-                            zi(jcn3v-1+k3) = zi(jcn3v-1+k3) + coefi* zi(jcn1v-1+k1)
-                            else if ((tsca.eq.'L') .or. (tsca.eq.'K8'))&
-                        then
+                                zc(jcn3v-1+k3) = zc(jcn3v-1+k3)+coefr*zc(jcn1v-1+k1)
+                            end if
+                        else if (tsca .eq. 'I') then
+                            zi(jcn3v-1+k3) = zi(jcn3v-1+k3)+coefi*zi(jcn1v-1+k1)
+                        else if ((tsca .eq. 'L') .or. (tsca .eq. 'K8')) &
+                            then
 !                 CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
                             ASSERT(.false.)
                         else
                             ASSERT(.false.)
-                        endif
-                    endif
+                        end if
+                    end if
 !
-                endif
+                end if
 !
             end do
         end do

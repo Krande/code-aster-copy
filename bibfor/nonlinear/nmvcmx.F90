@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,72 +110,72 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     nbma = zi(jcesd-1+1)
 !
     do icmp = 1, nbcmp2
-        valmax=-r8maem()
-        valmin=r8maem()
-        imamin=0
-        imamax=0
-        iref=0
+        valmax = -r8maem()
+        valmin = r8maem()
+        imamin = 0
+        imamax = 0
+        iref = 0
         if (cvrcvarc(icmp) .eq. 'TEMP' .or. cvrcvarc(icmp) .eq. 'SECH') then
-            iref=1
-        endif
+            iref = 1
+        end if
 !
         do ima = 1, nbma
-            nbcmp = zi(jcesd-1+5+4* (ima-1)+3)
+            nbcmp = zi(jcesd-1+5+4*(ima-1)+3)
             if (nbcmp .eq. 0) goto 40
-            call cesexi('C', jcrsd, jcrsl, ima, 1,&
+            call cesexi('C', jcrsd, jcrsl, ima, 1, &
                         1, icmp, iad2)
             if (iad2 .le. 0) goto 40
 !
 !
 !           VALEURS DE REFERENCE
             if (iref .eq. 1) then
-                call cesexi('C', jcrsd, jcrsl, ima, 1,&
+                call cesexi('C', jcrsd, jcrsl, ima, 1, &
                             1, icmp, iad2)
                 valref = crsv(iad2)
-            endif
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+            end if
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = zi(jcesd-1+5+4*(ima-1)+2)
             do ipt = 1, nbpt
                 do isp = 1, nbsp
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
                         valeur = cesv(iad)
                         if (isnan(valeur)) goto 20
 !
                         if (iref .eq. 1) then
-                            valeur=abs(valeur-valref)
-                        endif
+                            valeur = abs(valeur-valref)
+                        end if
                         if (valeur .gt. valmax) then
-                            imamax=ima
-                            valmax=valeur
-                        endif
+                            imamax = ima
+                            valmax = valeur
+                        end if
                         if (valeur .lt. valmin) then
-                            imamin=ima
-                            valmin=valeur
-                        endif
-                    endif
- 20                 continue
+                            imamin = ima
+                            valmin = valeur
+                        end if
+                    end if
+20                  continue
                 end do
             end do
- 40         continue
+40          continue
         end do
         if (imamax .gt. 0) then
-            valk(2)=cvrcnom(icmp)
-            valk(1)=cvrcvarc(icmp)
-            valr(1)=valmax
-            valr(2)=valmin
+            valk(2) = cvrcnom(icmp)
+            valk(1) = cvrcvarc(icmp)
+            valr(1) = valmax
+            valr(2) = valmin
             call jenuno(jexnum(mailla//'.NOMMAI', imamax), valk(3))
             call jenuno(jexnum(mailla//'.NOMMAI', imamin), valk(4))
             if (iref .eq. 1) then
-                valk(5)=valk(1)
-                call utmess('A+', 'MECANONLINE2_95', nk=5, valk=valk, nr=2,&
+                valk(5) = valk(1)
+                call utmess('A+', 'MECANONLINE2_95', nk=5, valk=valk, nr=2, &
                             valr=valr)
             else
-                call utmess('A+', 'MECANONLINE2_94', nk=4, valk=valk, nr=2,&
+                call utmess('A+', 'MECANONLINE2_94', nk=4, valk=valk, nr=2, &
                             valr=valr)
-            endif
-        endif
+            end if
+        end if
     end do
     call utmess('A', 'MECANONLINE2_93')
 !

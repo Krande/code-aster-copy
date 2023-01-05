@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,15 +39,15 @@ subroutine arlt1d(mlv, ndim, ndml2, mcpln2)
 !
     do jaux = 1, 2*ndim*ndml2
         do iaux = 1, 2*ndim*ndml2
-            mcpln2(iaux,jaux) = 0.d0
+            mcpln2(iaux, jaux) = 0.d0
         end do
     end do
     kaux = 0
     do iaux = 1, 2*ndim*ndml2
         do jaux = 1, iaux
-            kaux = kaux + 1
-            mcpln2(iaux,jaux) = mcpln2(iaux,jaux) + mlv(kaux)
-            mcpln2(jaux,iaux) = mcpln2(iaux,jaux)
+            kaux = kaux+1
+            mcpln2(iaux, jaux) = mcpln2(iaux, jaux)+mlv(kaux)
+            mcpln2(jaux, iaux) = mcpln2(iaux, jaux)
         end do
     end do
 !

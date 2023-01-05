@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0431(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,7 +42,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,17 +78,17 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
 
-    lexc = (lteatt('MODELI','GRC'))
+    lexc = (lteatt('MODELI', 'GRC'))
 !
-    lNonLine = (option(1:9).eq.'FULL_MECA').or.&
-               (option(1:9).eq.'RAPH_MECA').or.&
-               (option(1:10).eq.'RIGI_MECA_')
-    lLine    = option .eq. 'RIGI_MECA'
+    lNonLine = (option(1:9) .eq. 'FULL_MECA') .or. &
+               (option(1:9) .eq. 'RAPH_MECA') .or. &
+               (option(1:10) .eq. 'RIGI_MECA_')
+    lLine = option .eq. 'RIGI_MECA'
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - Get input fields
@@ -110,49 +110,49 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PDEPLMR', 'L', ideplm)
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-        lgpg = max(jtab(6),1)*jtab(7)
+        lgpg = max(jtab(6), 1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PVARIMP', 'L', ivarix)
         call r8inir(3, r8nnem(), angmas, 1)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
     if (lNonLine) then
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo),&
-                             lMatr , lVect ,&
-                             lVari , lSigm)
+        call behaviourOption(option, zk16(icompo), &
+                             lMatr, lVect, &
+                             lVari, lSigm)
 ! ----- Properties of behaviour
         rela_comp = zk16(icompo-1+RELA_NAME)
         rela_cpla = zk16(icompo-1+PLANESTRESS)
-    endif
+    end if
 !
 ! - Get output fields
 !
-    ivarip=1
+    ivarip = 1
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
 ! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontx)
 ! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM
         call dcopy(npg, zr(icontm), 1, zr(icontx), 1)
-    endif
+    end if
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
 !
-        cod = 0
+    cod = 0
 !
 ! - LECTURE DES CARACTERISTIQUES DE GRILLE ET
 !   CALCUL DE LA DIRECTION D'ARMATURE
@@ -165,18 +165,18 @@ character(len=16), intent(in) :: option, nomte
 !
         if (nomte .eq. 'MEGCTR3') then
             call dxtpgl(zr(igeom), pgl)
-        else if (nomte.eq.'MEGCQU4') then
+        else if (nomte .eq. 'MEGCQU4') then
             call dxqpgl(zr(igeom), pgl, 'S', iret)
-        endif
+        end if
 !
         do i = 1, 3
-            vecn(i)=distn*pgl(3,i)
-        enddo
-        nddl=6
+            vecn(i) = distn*pgl(3, i)
+        end do
+        nddl = 6
 !
     else
         nddl = 3
-    endif
+    end if
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -186,23 +186,23 @@ character(len=16), intent(in) :: option, nomte
 !     ET DES DERIVEES DE FONCTION DE FORME
 !
         do n = 1, nno
-            dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
-            dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-        enddo
+            dff(1, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2)
+            dff(2, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
+        end do
 !
 ! --- CALCUL DE LA MATRICE "B" : DEPL NODAL --> EPS11 ET DU JACOBIEN
 !
-        call nmgrib(nno, zr(igeom), dff, dir11, lexc,&
+        call nmgrib(nno, zr(igeom), dff, dir11, lexc, &
                     vecn, b, jac, p)
 !
 ! --- RIGI_MECA : ON DONNE LA RIGIDITE ELASTIQUE
 !
         if (lLine) then
             nomres(1) = 'E'
-            call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', [0.d0],&
+            call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
                         1, nomres, valres, codres, 1)
-            rig=valres(1)
+            rig = valres(1)
 !
 ! --- RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
@@ -210,67 +210,67 @@ character(len=16), intent(in) :: option, nomte
             sigm = zr(icontm+kpg-1)
 !
 !         CALCUL DE LA DEFORMATION DEPS11
-            epsm=0.d0
-            deps=0.d0
+            epsm = 0.d0
+            deps = 0.d0
             do i = 1, nno
                 do j = 1, nddl
-                    epsm=epsm+b(j,i)*zr(ideplm+(i-1)*nddl+j-1)
-                    deps=deps+b(j,i)*zr(ideplp+(i-1)*nddl+j-1)
-                enddo
-            enddo
+                    epsm = epsm+b(j, i)*zr(ideplm+(i-1)*nddl+j-1)
+                    deps = deps+b(j, i)*zr(ideplp+(i-1)*nddl+j-1)
+                end do
+            end do
 !
-            call nmco1d(fami, kpg, 1, zi(imate), rela_comp, rela_cpla,&
-                        option, epsm, deps, angmas, sigm,&
-                        zr(ivarim+(kpg-1)*lgpg), sig, zr( ivarip+(kpg-1)*lgpg), rig, cod(kpg))
+            call nmco1d(fami, kpg, 1, zi(imate), rela_comp, rela_cpla, &
+                        option, epsm, deps, angmas, sigm, &
+                        zr(ivarim+(kpg-1)*lgpg), sig, zr(ivarip+(kpg-1)*lgpg), rig, cod(kpg))
 !
             if (lSigm) then
-                zr(icontp+kpg-1)=sig
-            endif
+                zr(icontp+kpg-1) = sig
+            end if
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
 ! --- RANGEMENT DES RESULTATS
 !
         if (lVect) then
             do n = 1, nno
                 do i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1) +&
-                                                b(i,n)*sig*zr(ipoids+kpg-1)*jac*densit
-                enddo
-            enddo
-        endif
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+ &
+                                                b(i, n)*sig*zr(ipoids+kpg-1)*jac*densit
+                end do
+            end do
+        end if
 !
         if (lMatr) then
             do n = 1, nno
                 do i = 1, nddl
-                    kkd = (nddl*(n-1)+i-1) * (nddl*(n-1)+i) /2
+                    kkd = (nddl*(n-1)+i-1)*(nddl*(n-1)+i)/2
                     do j = 1, nddl
                         do m = 1, n
                             if (m .eq. n) then
                                 j1 = i
                             else
                                 j1 = nddl
-                            endif
+                            end if
 !
 !                 RIGIDITE ELASTIQUE
-                            tmp=b(i,n)*rig*b(j,m)*zr(ipoids+kpg-1)* jac*densit
+                            tmp = b(i, n)*rig*b(j, m)*zr(ipoids+kpg-1)*jac*densit
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (j .le. j1) then
-                                kk = kkd + nddl*(m-1)+j
-                                zr(imatuu+kk-1) = zr(imatuu+kk-1) + tmp
-                            endif
-                        enddo
-                    enddo
-                enddo
-            enddo
-        endif
+                                kk = kkd+nddl*(m-1)+j
+                                zr(imatuu+kk-1) = zr(imatuu+kk-1)+tmp
+                            end if
+                        end do
+                    end do
+                end do
+            end do
+        end if
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
     end do
 !
     if (lSigm) then
         call codere(cod, npg, zi(jcret))
-    endif
+    end if
 !
 end subroutine

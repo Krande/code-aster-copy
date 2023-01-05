@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,8 +68,8 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     integer :: nbtet, noer, nta, numa
     real(kind=8) :: angle, pi, x
 !-----------------------------------------------------------------------
-    parameter   (nbcpmx=300)
-    parameter   (nta=10)
+    parameter(nbcpmx=300)
+    parameter(nta=10)
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, typddl(6), nomnoe, tyd, intf, kbid
     real(kind=8) :: xa(10), xta(10), tet0(10, 10), teta(nbtet, nbtet)
@@ -79,13 +79,13 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !-----------------------------------------------------------------------
 !
-    data typddl /'DX','DY','DZ','DRX','DRY','DRZ'/
-    data nook /.false./
+    data typddl/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
+    data nook/.false./
 !
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    pi=r8pi()
+    pi = r8pi()
 !
 !-------------------RECUPERATION DU MAILLAGE----------------------------
 !
@@ -98,7 +98,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
 !-------------------REQUETTE DESCRIPTEUR DES DEFORMEES STATIQUES--------
 !
@@ -118,44 +118,44 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !-------------RECUPERATION NOMBRE DE DDL INTERFACE AXE------------------
 !
-    kbid=' '
-    call bmnodi(basmod, kbid, '         ', numa, 0,&
+    kbid = ' '
+    call bmnodi(basmod, kbid, '         ', numa, 0, &
                 ibid, nbdax)
 !
     if (nbdax .ne. nbtet) then
-        vali (1) = nbdax
-        vali (2) = nbtet
+        vali(1) = nbdax
+        vali(2) = nbtet
         call utmess('F', 'ALGORITH15_2', ni=2, vali=vali)
-    endif
+    end if
 !
 !
 !----------------------CALCUL DU TETA ELEMENTAIRE-----------------------
 !
-    angle=2*pi/nbsec
+    angle = 2*pi/nbsec
     call intet0(angle, tet0, 3)
 !
 !
-    nbdcou=0
+    nbdcou = 0
     do i = 1, nbnoa
-        inoa=zi(llnoa+i-1)
+        inoa = zi(llnoa+i-1)
 !*************************************************************
 !        ICOD=ZI(LLDESC+2*NBNOT+INOA-1)
         call isdeco(zi(lldesc+2*nbnot+(inoa-1)*nbec+1-1), ideca, nbcmp)
         do j = 1, nta
 !*************************************************************
             if (ideca(j) .eq. 1) then
-                xa(j)=1.d0
+                xa(j) = 1.d0
             else
-                xa(j)=0.d0
-            endif
+                xa(j) = 0.d0
+            end if
 !
         end do
 !
 !
         do j = 1, nta
-            xta(j)=0.d0
+            xta(j) = 0.d0
             do k = 1, nta
-                xta(j)=xta(j)+tet0(j,k)*xa(k)
+                xta(j) = xta(j)+tet0(j, k)*xa(k)
             end do
         end do
 !
@@ -164,53 +164,53 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
         do j = 1, 6
             if (xta(j) .gt. 0.d0 .and. xa(j) .eq. 0.d0) then
-                noer=zi(lldesc+inoa-1)
+                noer = zi(lldesc+inoa-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=typddl(j)
+                tyd = typddl(j)
                 call utmess('E', 'ALGORITH14_94')
-                valk (1) = tyd
-                valk (2) = nomnoe
+                valk(1) = tyd
+                valk(2) = nomnoe
                 call utmess('E', 'ALGORITH14_95', nk=2, valk=valk)
-                nook=.true.
-            endif
+                nook = .true.
+            end if
 !
             if (xa(j) .gt. 0.d0 .and. xta(j) .eq. 0.d0) then
-                noer=zi(lldesc+inoa-1)
+                noer = zi(lldesc+inoa-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=typddl(j)
+                tyd = typddl(j)
                 call utmess('E', 'ALGORITH14_94')
-                valk (1) = tyd
-                valk (2) = nomnoe
+                valk(1) = tyd
+                valk(2) = nomnoe
                 call utmess('E', 'ALGORITH14_95', nk=2, valk=valk)
-                nook=.true.
-            endif
+                nook = .true.
+            end if
 !
         end do
 !
         if (nook) then
             call utmess('F', 'ALGORITH14_94')
-        endif
+        end if
 !
 !        nbdcou=0
-        iloci=0
-        icomp=0
+        iloci = 0
+        icomp = 0
         do j = 1, nta
             if (ideca(j) .gt. 0) then
-                iloci=iloci+1
-                ilocj=0
-                icomp=icomp+1
+                iloci = iloci+1
+                ilocj = 0
+                icomp = icomp+1
                 do k = 1, nta
                     if (ideca(k) .gt. 0) then
-                        ilocj=ilocj+1
-                        x=tet0(j,k)
-                        call amppr(teta, nbdax, nbdax, [x], 1,&
-                                   1, nbdcou+ iloci, nbdcou+ilocj)
-                    endif
+                        ilocj = ilocj+1
+                        x = tet0(j, k)
+                        call amppr(teta, nbdax, nbdax, [x], 1, &
+                                   1, nbdcou+iloci, nbdcou+ilocj)
+                    end if
                 end do
-            endif
+            end if
         end do
 !
-        nbdcou=nbdcou+icomp
+        nbdcou = nbdcou+icomp
 !
     end do
 !

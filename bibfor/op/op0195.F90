@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine op0195()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/cheksd.h"
@@ -86,8 +86,8 @@ implicit none
     call infmaj()
     call infniv(ifm, niv)
 !
-    dbg=.true.
-    dbg=.false.
+    dbg = .true.
+    dbg = .false.
 !
 !
 ! 1- CALCUL DE:
@@ -112,19 +112,19 @@ implicit none
     if (n1 .eq. 0) mesh = ' '
     if (model .ne. ' ') then
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=ma2)
-        if ((mesh.ne.' ') .and. (mesh.ne.ma2)) then
+        if ((mesh .ne. ' ') .and. (mesh .ne. ma2)) then
             call utmess('F', 'UTILITAI3_21')
-        endif
+        end if
         mesh = ma2
-    endif
+    end if
 !
     call getres(chou, typco, kbid)
     call exisd('CHAMP', chou, test)
     if (test .eq. 1) then
-        if (.not.((opera.eq.'ASSE').or.(opera.eq.'COMB'))) then
+        if (.not. ((opera .eq. 'ASSE') .or. (opera .eq. 'COMB'))) then
             call utmess('F', 'UTILITAI3_43')
-        endif
-    endif
+        end if
+    end if
     call getvtx(' ', 'TYPE_CHAM', scal=tychr1)
     tychr = tychr1(1:4)
     nomgd = tychr1(6:13)
@@ -133,8 +133,8 @@ implicit none
     call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=iret)
     if (iret .eq. 0) then
         prol0 = ' '
-    endif
-    if ((prol0.eq.'NON') .and. (tsca.eq.'R')) prol0='NAN'
+    end if
+    if ((prol0 .eq. 'NON') .and. (tsca .eq. 'R')) prol0 = 'NAN'
 !
     call getvtx(' ', 'OPTION', scal=option, nbret=n1)
     if (n1 .eq. 0) option = ' '
@@ -145,11 +145,11 @@ implicit none
     celmod = ' '
 !
     if (tychr(1:2) .eq. 'EL') then
-        if ((opera.eq.'AFFE') .or. (opera.eq.'ASSE') .or. (opera.eq.'ASSE_DEPL') .or. &
-            ( opera.eq.'DISC')) then
+        if ((opera .eq. 'AFFE') .or. (opera .eq. 'ASSE') .or. (opera .eq. 'ASSE_DEPL') .or. &
+            (opera .eq. 'DISC')) then
             if (model .eq. ' ') then
                 call utmess('F', 'UTILITAI3_22')
-            endif
+            end if
             call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 !
 !         -- CALCUL D'UN CHAM_ELEM "MODELE" : CELMOD
@@ -167,42 +167,42 @@ implicit none
                         valk(3) = ma2
                         valk(4) = mesh
                         call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
-                    endif
+                    end if
 !
                     call jeexin(chin//'.CELK', iret)
                     call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd2)
                     if (iret .ne. 0 .and. nomgd .eq. nomgd2) then
                         call dismoi('NOM_OPTION', chin, 'CHAM_ELEM', repk=optio2)
-                    endif
-                endif
+                    end if
+                end if
 !
             else
                 optio2 = option
-            endif
-            call nopar2(optio2,nomgd,'INOUT', nompar, 0, iret)
-            if (iret.ne. 0)then
+            end if
+            call nopar2(optio2, nomgd, 'INOUT', nompar, 0, iret)
+            if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL3_86', sk=tychr1)
-            endif
+            end if
             celmod = '&&OP0195.CELMOD'
-            call alchml(modelLigrel, optio2, nompar, 'V', celmod,&
+            call alchml(modelLigrel, optio2, nompar, 'V', celmod, &
                         iret, ' ')
             if (iret .ne. 0) then
-                valk(1)=modelLigrel
-                valk(2)=nompar
-                valk(3)=optio2
+                valk(1) = modelLigrel
+                valk(2) = nompar
+                valk(3) = optio2
                 call utmess('E', 'UTILITAI3_23', nk=3, valk=valk)
                 call utmess('F', 'CALCULEL3_87', sk=tychr1)
-            endif
+            end if
 !
 !         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :
-            call jeveuo(celmod//'.CELK', 'L', vk24 = v_celmod_celk)
+            call jeveuo(celmod//'.CELK', 'L', vk24=v_celmod_celk)
             if (v_celmod_celk(3) .ne. tychr) then
                 valk(1) = optio2
                 valk(2) = tychr
                 call utmess('F', 'UTILITAI3_24', nk=2, valk=valk)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 !
@@ -215,26 +215,26 @@ implicit none
         if (tychr .eq. 'NOEU') then
             if (nomgd .ne. 'GEOM_R') then
                 call utmess('F', 'UTILITAI3_25', sk=opera)
-            endif
+            end if
             call cnonor(model, nomgd, 'G', chou)
 !
         else
             valk(1) = opera
             valk(2) = tychr
             call utmess('F', 'UTILITAI3_26', nk=2, valk=valk)
-        endif
+        end if
 !
 !
 !
-    else if (opera.eq.'AFFE') then
+    else if (opera .eq. 'AFFE') then
 !     -----------------------------------------
         if (tychr .eq. 'NOEU') then
             call cnoaff(mesh, nomgd, 'G', chou)
 !
-        else if (tychr.eq.'CART') then
+        else if (tychr .eq. 'CART') then
             call caraff(mesh, nomgd, 'G', chou)
 !
-        else if (tychr(1:2).eq.'EL') then
+        else if (tychr(1:2) .eq. 'EL') then
             chatmp = '&&OP0195.CHATMP'
             if (nomgd .eq. 'VARI_R') then
                 call varaff(mesh, nomgd, 'V', chatmp)
@@ -244,59 +244,59 @@ implicit none
                 call caraff(mesh, nomgd, 'V', chatmp)
                 call chpchd(chatmp, tychr, celmod, prol0, 'G', chou, model)
                 call detrsd('CARTE', chatmp)
-            endif
-        endif
+            end if
+        end if
 !
 !
-    else if (opera.eq.'ASSE') then
+    else if (opera .eq. 'ASSE') then
 !     -----------------------------------------
-        call chpass(tychr, mesh, celmod, nomgd, prol0,&
+        call chpass(tychr, mesh, celmod, nomgd, prol0, &
                     chou)
 !
 !
-    else if (opera.eq.'COMB') then
+    else if (opera .eq. 'COMB') then
 !     -----------------------------------------
         call x195cb(tychr, nomgd, chou)
 !
 !
-    else if (opera.eq.'EVAL') then
+    else if (opera .eq. 'EVAL') then
 !     -----------------------------------------
         call chpeva(chou)
 !
 !
-    else if (opera.eq.'ASSE_DEPL') then
+    else if (opera .eq. 'ASSE_DEPL') then
 !     -----------------------------------------
         call xasdpl(model, celmod, prol0, chou)
 !
 !
-    else if (opera(1:3).eq.'R2C') then
+    else if (opera(1:3) .eq. 'R2C') then
 !     -----------------------------------------
         call chcore(chou)
 !
 !
-    else if (opera(1:3).eq.'C2R') then
+    else if (opera(1:3) .eq. 'C2R') then
 !     -----------------------------------------
         call chreco(chou)
 !
 !
-    else if (opera.eq.'DISC') then
+    else if (opera .eq. 'DISC') then
 !     -----------------------------------------
         call getvid(' ', 'CHAM_GD', scal=chin)
         call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd2)
         if (nomgd .ne. nomgd2) then
 !          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
-            if (nomgd.eq.'VARI_R'.and.nomgd2.eq.'VAR2_R') then
-            elseif (nomgd.eq.'VAR2_R'.and.nomgd2.eq.'VARI_R') then
+            if (nomgd .eq. 'VARI_R' .and. nomgd2 .eq. 'VAR2_R') then
+            elseif (nomgd .eq. 'VAR2_R' .and. nomgd2 .eq. 'VARI_R') then
             else
                 valk(1) = chin
                 valk(2) = tychr1
                 call utmess('F', 'UTILITAI3_27', nk=2, valk=valk)
-            endif
-        endif
+            end if
+        end if
         call chpchd(chin, tychr, celmod, prol0, 'G', chou, model)
 !
 !
-    else if (opera.eq.'EXTR') then
+    else if (opera .eq. 'EXTR') then
 !     -----------------------------------------
         call getvid(' ', 'TABLE', scal=ta, nbret=n1)
         if (n1 .eq. 0) then
@@ -304,8 +304,8 @@ implicit none
 !
         else
             call u195tb(chou)
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! 4.1  SI ON A CREE UN CHAM_NO, ON PEUT IMPOSER SA NUMEROTATION :
@@ -316,66 +316,66 @@ implicit none
         if (i12 .eq. 1) then
             call dismoi('NOM_MAILLA', nu1, 'NUME_DDL', repk=ma3)
             if (mesh .ne. ' ') then
-                if (ma3.ne.mesh) then
-                    valk(1)=nu1
-                    valk(2)=ma3
-                    valk(3)=mesh
-                    call utmess('F','CALCULEL4_69', nk=3, valk=valk)
-                endif
-            endif
-        endif
+                if (ma3 .ne. mesh) then
+                    valk(1) = nu1
+                    valk(2) = ma3
+                    valk(3) = mesh
+                    call utmess('F', 'CALCULEL4_69', nk=3, valk=valk)
+                end if
+            end if
+        end if
         if ((i11+i12) .gt. 0) then
             call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
             prchn1 = ' '
             if (i11 .gt. 0) then
                 call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=prchn1)
                 call dismoi('NOM_GD', ch1, 'CHAM_NO', repk=nomgd1)
-            endif
+            end if
             if (i12 .gt. 0) then
                 call dismoi('PROF_CHNO', nu1, 'NUME_DDL', repk=prchn1)
                 call dismoi('NOM_GD', nu1, 'NUME_DDL', repk=nomgd1)
-            endif
+            end if
 !
             if (nomgd1 .ne. nogd) then
 !           -- ON ACCEPTE LES COUPLES XXXX_R / XXXX_C :
                 if (nomgd1(5:7) .eq. '_R ' .or. nomgd1(5:7) .eq. '_C ') then
                     if (nogd(5:7) .eq. '_R ' .or. nogd(5:7) .eq. '_C ') then
                         if (nogd(1:4) .eq. nomgd1(1:4)) goto 1
-                    endif
-                endif
-                valk (1) = nomgd1
-                valk (2) = nogd
+                    end if
+                end if
+                valk(1) = nomgd1
+                valk(2) = nogd
                 call utmess('F', 'UTILITAI6_5', nk=2, valk=valk)
-            endif
-  1         continue
+            end if
+1           continue
 !
             call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
             if (.not. idensd('PROF_CHNO', prchn1, prchn2)) then
                 call getfac('COMB', nocc)
                 if (nocc .ne. 0) then
                     call utmess('A', 'CREACHAMP1_14')
-                endif
+                end if
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=iret)
                 if (iret .eq. 0) then
                     prol0 = 'NON'
-                endif
+                end if
 !               chacun son PROF_CHNO pour éviter les problèmes en cas de suppression
                 cns1 = '&&OP0195.CNS1'
                 call cnocns(chou, 'V', cns1)
                 call detrsd('PROF_CHNO', prchn2)
 !               si NUME_DDL pas de problèmes, donc on partage le prof_CHNO
-                if (i12.eq.1)then
-                    call cnscno(cns1, prchn1, prol0, 'G', chou,&
-                            'F', ibid)
+                if (i12 .eq. 1) then
+                    call cnscno(cns1, prchn1, prol0, 'G', chou, &
+                                'F', ibid)
                 else
                     call copisd('PROF_CHNO', 'G', prchn1, prchn2)
-                    call cnscno(cns1, prchn2, prol0, 'G', chou,&
-                            'F', ibid)
-                endif
+                    call cnscno(cns1, prchn2, prol0, 'G', chou, &
+                                'F', ibid)
+                end if
                 call detrsd('CHAM_NO_S', cns1)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 ! 4.2  SI ON A CREE UN CHAM_ELEM, ON PEUT VOULOIR AFFECTER TOUS LES SOUS-POINTS :
@@ -384,13 +384,13 @@ implicit none
         call getfac('AFFE_SP', nocc)
         if (nocc .eq. 1) then
             call getvid('AFFE_SP', 'CARA_ELEM', iocc=1, scal=carel)
-            chou2='&&OP0195.CHOU2'
+            chou2 = '&&OP0195.CHOU2'
             call duplisp(chou, chou2, carel, 'V')
             call detrsd('CHAMP', chou)
             call copisd('CHAMP', 'G', chou2, chou)
             call detrsd('CHAMP', chou2)
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! 5.  AJOUT DU TITRE :
@@ -405,42 +405,42 @@ implicit none
 !
 ! 7.  VERIFICATION PROL_ZERO='NON' POUR LES CHAM_ELEM :
 ! ------------------------------------------------------
-    if ((tychr(1:2).eq.'EL') .and. (prol0.eq.'NAN')) then
+    if ((tychr(1:2) .eq. 'EL') .and. (prol0 .eq. 'NAN')) then
         call celver(chou, 'PAS_NAN', 'STOP', iret)
-    endif
+    end if
     if (dbg .and. tychr(1:2) .eq. 'EL') then
         call cheksd(chou, 'SD_CHAM_ELEM', iret)
-        ASSERT(iret.eq.0)
-    endif
+        ASSERT(iret .eq. 0)
+    end if
 !
 !
 ! 8.  VERIFICATION DE LA COHERENCE DU MAILLAGE SOUS-JACENT :
 ! ---------------------------------------------------------
     if (mesh .ne. ' ') then
         call dismoi('NOM_MAILLA', chou, 'CHAMP', repk=ma2)
-        valk(1)=ma2
-        valk(2)=mesh
+        valk(1) = ma2
+        valk(2) = mesh
         if (mesh .ne. ma2) then
             call utmess('F', 'CALCULEL4_78', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! 9.  VERIFICATION DE LA COHERENCE DU CHAMP CREE AVEC TYPE_CHAM :
 ! ---------------------------------------------------------------
     call dismoi('TYPE_CHAMP', chou, 'CHAMP', repk=tych)
     if (tych .ne. tychr) then
-        valk(1)=tychr
-        valk(2)=tych
+        valk(1) = tychr
+        valk(2) = tych
         call utmess('F', 'CALCULEL4_70', nk=2, valk=valk)
-    endif
+    end if
 !
     call dismoi('NOM_GD', chou, 'CHAMP', repk=nogd)
     if (nogd .ne. nomgd) then
-        valk(1)=nomgd
-        valk(2)=nogd
+        valk(1) = nomgd
+        valk(2) = nogd
         call utmess('F', 'CALCULEL4_71', nk=2, valk=valk)
-    endif
+    end if
 !
 !
     call jedema()

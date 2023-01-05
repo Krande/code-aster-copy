@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmprta(mesh, model    , nume_dof , numfix     , ds_material, cara_elem,&
-                  ds_constitutive, list_load, ds_algopara, solveu     , ds_system,&
-                  list_func_acti , ds_print , ds_measure , ds_algorom , sddisc,&
-                  nume_inst      , hval_incr, hval_algo  , hhoField, matass     , maprec,&
-                  ds_contact     , sddyna   , hval_meelem, hval_measse, hval_veelem,&
-                  hval_veasse    , sdnume   , ldccvg     , faccvg,&
-                  rescvg         , condcvg)
+subroutine nmprta(mesh, model, nume_dof, numfix, ds_material, cara_elem, &
+                  ds_constitutive, list_load, ds_algopara, solveu, ds_system, &
+                  list_func_acti, ds_print, ds_measure, ds_algorom, sddisc, &
+                  nume_inst, hval_incr, hval_algo, hhoField, matass, maprec, &
+                  ds_contact, sddyna, hval_meelem, hval_measse, hval_veelem, &
+                  hval_veasse, sdnume, ldccvg, faccvg, &
+                  rescvg, condcvg)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
@@ -49,25 +49,25 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "asterfort/utmess.h"
 !
-integer :: list_func_acti(*)
-character(len=8), intent(in) :: mesh
-integer :: nume_inst, faccvg, rescvg, ldccvg, condcvg
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-type(NL_DS_Print), intent(inout) :: ds_print
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=19) :: matass, maprec
-character(len=19) :: list_load, solveu, sddisc, sddyna, sdnume
-character(len=24) :: model, cara_elem
-character(len=24) :: nume_dof, numfix
-character(len=19) :: hval_algo(*), hval_incr(*)
-type(HHO_Field), intent(in) :: hhoField
-type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=19) :: hval_veelem(*), hval_veasse(*)
-character(len=19) :: hval_meelem(*), hval_measse(*)
+    integer :: list_func_acti(*)
+    character(len=8), intent(in) :: mesh
+    integer :: nume_inst, faccvg, rescvg, ldccvg, condcvg
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=19) :: matass, maprec
+    character(len=19) :: list_load, solveu, sddisc, sddyna, sdnume
+    character(len=24) :: model, cara_elem
+    character(len=24) :: nume_dof, numfix
+    character(len=19) :: hval_algo(*), hval_incr(*)
+    type(HHO_Field), intent(in) :: hhoField
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=19) :: hval_veelem(*), hval_veasse(*)
+    character(len=19) :: hval_meelem(*), hval_measse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -138,11 +138,11 @@ character(len=19) :: hval_meelem(*), hval_measse(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_34')
-    endif
+    end if
 !
 ! - Active functionnalities
 !
-    leltc = isfonc(list_func_acti,'ELT_CONTACT')
+    leltc = isfonc(list_func_acti, 'ELT_CONTACT')
 !
 ! --- INITIALISATIONS
 !
@@ -158,8 +158,8 @@ character(len=19) :: hval_meelem(*), hval_measse(*)
 ! - Get time
 !
     ASSERT(nume_inst .gt. 0)
-    time_prev = diinst(sddisc,nume_inst-1)
-    time_curr = diinst(sddisc,nume_inst)
+    time_prev = diinst(sddisc, nume_inst-1)
+    time_curr = diinst(sddisc, nume_inst)
     iter_newt = 0
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
@@ -172,63 +172,63 @@ character(len=19) :: hval_meelem(*), hval_measse(*)
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(mesh       , model      , ds_material   , cara_elem , ds_constitutive,&
-                ds_algopara, list_load  , nume_dof      , numfix    , solveu         ,&
-                ds_system  , ds_print   , ds_measure    , ds_algorom, sddisc         ,&
-                sddyna     , nume_inst  , list_func_acti, ds_contact, hval_incr      ,&
-                hval_algo  , hhoField, hval_meelem, hval_measse   , maprec    , matass         ,&
-                faccvg     , ldccvg  , condcvg)
+    call nmprma(mesh, model, ds_material, cara_elem, ds_constitutive, &
+                ds_algopara, list_load, nume_dof, numfix, solveu, &
+                ds_system, ds_print, ds_measure, ds_algorom, sddisc, &
+                sddyna, nume_inst, list_func_acti, ds_contact, hval_incr, &
+                hval_algo, hhoField, hval_meelem, hval_measse, maprec, matass, &
+                faccvg, ldccvg, condcvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
     if ((faccvg .eq. 1) .or. (faccvg .eq. 2) .or. (ldccvg .eq. 1)) then
         goto 999
-    endif
+    end if
 !
 ! - Compute forces for second member at prediction
 !
-    call nmforc_pred(list_func_acti,&
-                     model         , cara_elem      ,&
-                     nume_dof      , matass         ,&
-                     list_load     , sddyna         ,&
-                     ds_material   , ds_constitutive,&
-                     ds_measure    , ds_algopara    ,&
-                     sddisc        , nume_inst      ,&
-                     hval_incr     , hval_algo      ,&
-                     hval_veelem   , hval_veasse    ,&
+    call nmforc_pred(list_func_acti, &
+                     model, cara_elem, &
+                     nume_dof, matass, &
+                     list_load, sddyna, &
+                     ds_material, ds_constitutive, &
+                     ds_measure, ds_algopara, &
+                     sddisc, nume_inst, &
+                     hval_incr, hval_algo, &
+                     hval_veelem, hval_veasse, &
                      hval_measse)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
     if (leltc) then
-        call nmfocc('PREDICTION', model     , ds_material, nume_dof , list_func_acti ,&
-                    ds_contact  , ds_measure, hval_algo  , hval_incr, ds_constitutive)
-    endif
+        call nmfocc('PREDICTION', model, ds_material, nume_dof, list_func_acti, &
+                    ds_contact, ds_measure, hval_algo, hval_incr, ds_constitutive)
+    end if
 !
 ! - Compute internal forces
 !
-    call nonlinIntForce(PRED_EULER    ,&
-                        model         , cara_elem      ,&
-                        list_func_acti, iter_newt      , sdnume,&
-                        ds_material   , ds_constitutive,&
-                        ds_system     , ds_measure     ,&
-                        hval_incr     , hval_algo      ,&
-                        ldccvg        ,&
-                        hhoField_  = hhoField ,&
-                        sddyna_    = sddyna   ,&
-                        time_prev_ = time_prev,&
-                        time_curr_ = time_curr,&
-                        ds_algorom_ = ds_algorom)
+    call nonlinIntForce(PRED_EULER, &
+                        model, cara_elem, &
+                        list_func_acti, iter_newt, sdnume, &
+                        ds_material, ds_constitutive, &
+                        ds_system, ds_measure, &
+                        hval_incr, hval_algo, &
+                        ldccvg, &
+                        hhoField_=hhoField, &
+                        sddyna_=sddyna, &
+                        time_prev_=time_prev, &
+                        time_curr_=time_curr, &
+                        ds_algorom_=ds_algorom)
     if (ldccvg .eq. 1) then
         goto 999
-    endif
+    end if
 !
 ! - Evaluate second member for prediction
 !
-    call nmassp(list_func_acti,&
-                sddyna        , ds_system,&
-                ds_contact    , hval_veasse   ,&
-                cnpilo        , cndonn)
+    call nmassp(list_func_acti, &
+                sddyna, ds_system, &
+                ds_contact, hval_veasse, &
+                cnpilo, cndonn)
 !
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
 !
@@ -236,9 +236,9 @@ character(len=19) :: hval_meelem(*), hval_measse(*)
 !
 ! --- RESOLUTION K.DU = DF
 !
-    call nmresd(list_func_acti, sddyna   , ds_measure, solveu    , nume_dof,&
-                time_curr     , maprec   , matass    , cndonn    , cnpilo  ,&
-                cncine        , hval_algo, rescvg    , ds_algorom)
+    call nmresd(list_func_acti, sddyna, ds_measure, solveu, nume_dof, &
+                time_curr, maprec, matass, cndonn, cnpilo, &
+                cncine, hval_algo, rescvg, ds_algorom)
 !
 999 continue
 !

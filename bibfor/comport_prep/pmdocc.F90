@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -38,9 +38,9 @@ implicit none
 #include "asterfort/setBehaviourTypeValue.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(out) :: compor(COMPOR_SIZE)
-integer, intent(out) :: nbVari
-character(len=16), intent(out) :: type_comp, mult_comp
+    character(len=16), intent(out) :: compor(COMPOR_SIZE)
+    integer, intent(out) :: nbVari
+    character(len=16), intent(out) :: type_comp, mult_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,7 +80,7 @@ character(len=16), intent(out) :: type_comp, mult_comp
     call comp_meca_info(behaviourPrepPara)
     if (behaviourPrepPara%nb_comp .eq. 0) then
         call utmess('F', 'COMPOR4_63')
-    endif
+    end if
 
 ! - Read informations from command file
     call comp_meca_read(l_etat_init, behaviourPrepPara)
@@ -89,7 +89,7 @@ character(len=16), intent(out) :: type_comp, mult_comp
     call comp_meca_cvar(behaviourPrepPara)
 
 ! - Some properties
-    nbVari    = behaviourPrepPara%v_para(1)%nbVari
+    nbVari = behaviourPrepPara%v_para(1)%nbVari
     rela_comp = behaviourPrepPara%v_para(1)%rela_comp
     type_comp = behaviourPrepPara%v_para(1)%type_comp
     mult_comp = behaviourPrepPara%v_para(1)%mult_comp
@@ -98,19 +98,19 @@ character(len=16), intent(out) :: type_comp, mult_comp
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
     if (l_kit_thm) then
         call utmess('F', 'COMPOR2_7')
-    endif
+    end if
 
 ! - Save informations in the field <COMPOR>
-    call setBehaviourTypeValue(behaviourPrepPara%v_para, comporList_ = compor(1:COMPOR_SIZE))
+    call setBehaviourTypeValue(behaviourPrepPara%v_para, comporList_=compor(1:COMPOR_SIZE))
 
 ! - Prepare informations about internal variables
-    call comp_meca_pvar(comporList_ = compor, comporInfo = comporInfo)
+    call comp_meca_pvar(comporList_=compor, comporInfo=comporInfo)
 
 ! - Print informations about internal variables
     call imvari(comporInfo)
 
 ! - Cleaning
-    deallocate(behaviourPrepPara%v_para)
+    deallocate (behaviourPrepPara%v_para)
 
 !
 end subroutine

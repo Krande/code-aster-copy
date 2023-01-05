@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine callis(nomres)
 !
 !
 !-----------------------------------------------------------------------
-    data un,moins1 /1.0d+00,-1.0d+00/
+    data un, moins1/1.0d+00, -1.0d+00/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -90,17 +90,17 @@ subroutine callis(nomres)
 !   NOM FAMILLE DEFINITION DES LIAISONS
 !
 !--------------NOMRES EST LE NOM DU MODELE GENERALISE
-    famli=nomres//'      .MODG.LIDF'
-    fmlia=nomres//'      .MODG.LIMA'
-    promli=nomres//'      .MODG.LIPR'
-    matprj='MATPROJ '
+    famli = nomres//'      .MODG.LIDF'
+    fmlia = nomres//'      .MODG.LIMA'
+    promli = nomres//'      .MODG.LIPR'
+    matprj = 'MATPROJ '
 !
 !  MINI-PROFNO DES LIAISON ORIENTEES ET NON ORIENTEE
 !
-    fpli1o='&&'//'PGC.PROF.LI1O'
-    fpli2o='&&'//'PGC.PROF.LI2O'
-    fpli1n='&&'//'PGC.PROF.LI1N'
-    fpli2n='&&'//'PGC.PROF.LI2N'
+    fpli1o = '&&'//'PGC.PROF.LI1O'
+    fpli2o = '&&'//'PGC.PROF.LI2O'
+    fpli1n = '&&'//'PGC.PROF.LI1N'
+    fpli2n = '&&'//'PGC.PROF.LI2N'
 !
 !-----------------RECUPERATION DU NOMBRE DE LIAISONS--------------------
 !             ET DECLARATION DES FAMILLES
@@ -111,13 +111,13 @@ subroutine callis(nomres)
 !
 !  NOM FAMILLE VOLATILE POUR PROFNO MATRICES ORIENTEES
 !
-    call jecrec(fpli1n, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(fpli1n, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nblis)
-    call jecrec(fpli2n, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(fpli2n, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nblis)
-    call jecrec(fpli1o, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(fpli1o, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nblis)
-    call jecrec(fpli2o, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(fpli2o, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nblis)
 !
 !------------------------BOUCLE SUR LES LIAISON-------------------------
@@ -126,10 +126,10 @@ subroutine callis(nomres)
 !
 !  FAMILLE A CREER POUR MATRICE LIAISON ORIENTEES
 !
-    call jecrec(fmlia, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(fmlia, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nblis*3)
 !
-    nbbloc=0
+    nbbloc = 0
 !
     do i = 1, nblis
 !
@@ -139,10 +139,10 @@ subroutine callis(nomres)
 !
 ! ------------- LA DEFINITION DE LA LIAISON
         call jeveuo(jexnum(famli, i), 'L', lllia)
-        sst1=zk8(lllia)
-        intf1=zk8(lllia+1)
-        sst2=zk8(lllia+2)
-        intf2=zk8(lllia+3)
+        sst1 = zk8(lllia)
+        intf1 = zk8(lllia+1)
+        sst2 = zk8(lllia+2)
+        intf2 = zk8(lllia+3)
 !
 ! ------------- ON VERIFIE SI MODES REDUITS OU PAS
         call getvtx('LIAISON', 'OPTION', iocc=i, scal=option, nbret=iopt)
@@ -155,9 +155,9 @@ subroutine callis(nomres)
 !
 !-------------LE NOM DES MODELES
 !
-        call mgutdm(nomres, sst1, ibid, 'NOM_MODELE  ', ibid,&
+        call mgutdm(nomres, sst1, ibid, 'NOM_MODELE  ', ibid, &
                     mod1)
-        call mgutdm(nomres, sst2, ibid, 'NOM_MODELE  ', ibid,&
+        call mgutdm(nomres, sst2, ibid, 'NOM_MODELE  ', ibid, &
                     mod2)
 !
 !-------------LE NOM DES MAILLAGES
@@ -165,26 +165,26 @@ subroutine callis(nomres)
         call dismoi('NOM_MAILLA', mod2, 'MODELE', repk=ma2)
 !
 !--------------LES INTERFACES AMONT DES SOUS-STRUCTURES
-        call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid,&
+        call mgutdm(nomres, sst1, ibid, 'NOM_LIST_INTERF', ibid, &
                     lint1)
-        call mgutdm(nomres, sst2, ibid, 'NOM_LIST_INTERF', ibid,&
+        call mgutdm(nomres, sst2, ibid, 'NOM_LIST_INTERF', ibid, &
                     lint2)
 !
 !--------------LES NOMBRES DES NOEUDS DES INTERFACES
-        int1=lint1//'.IDC_LINO'
+        int1 = lint1//'.IDC_LINO'
         call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
         call jelira(jexnum(int1, ibid), 'LONMAX', nbno1)
 !
-        int2=lint2//'.IDC_LINO'
+        int2 = lint2//'.IDC_LINO'
         call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
         call jelira(jexnum(int2, ibid), 'LONMAX', nbno2)
 !
 !--------------LES LISTES DES NUMEROS DES NOEUDS DES INTERFACES
-        call jenonu(jexnom(lint1 //'.IDC_NOMS', intf1), ibid)
-        call jeveuo(jexnum(lint1 //'.IDC_LINO', ibid), 'L', llint1)
+        call jenonu(jexnom(lint1//'.IDC_NOMS', intf1), ibid)
+        call jeveuo(jexnum(lint1//'.IDC_LINO', ibid), 'L', llint1)
 !
-        call jenonu(jexnom(lint2 //'.IDC_NOMS', intf2), ibid)
-        call jeveuo(jexnum(lint2 //'.IDC_LINO', ibid), 'L', llint2)
+        call jenonu(jexnom(lint2//'.IDC_NOMS', intf2), ibid)
+        call jeveuo(jexnum(lint2//'.IDC_LINO', ibid), 'L', llint2)
 !
 !
         if (option .eq. 'CLASSIQU') then
@@ -195,19 +195,19 @@ subroutine callis(nomres)
 !
 !  MATRICE DE LIAISON 1
 !
-            iad=ldpmli+(i-1)*9
-            call liacar(nomres, sst1, intf1, fpli1n, fpli1o,&
+            iad = ldpmli+(i-1)*9
+            call liacar(nomres, sst1, intf1, fpli1n, fpli1o, &
                         i, zi(iad))
-            zi(ldpmli+(i-1)*9+2)=nbbloc+1
-            nbbloc=nbbloc+1
+            zi(ldpmli+(i-1)*9+2) = nbbloc+1
+            nbbloc = nbbloc+1
 !
 !  MATRICE DE LIAISON 2
 !
-            iad=ldpmli+(i-1)*9+3
-            call liacar(nomres, sst2, intf2, fpli2n, fpli2o,&
+            iad = ldpmli+(i-1)*9+3
+            call liacar(nomres, sst2, intf2, fpli2n, fpli2o, &
                         i, zi(iad))
-            zi(ldpmli+(i-1)*9+5)=nbbloc+1
-            nbbloc=nbbloc+1
+            zi(ldpmli+(i-1)*9+5) = nbbloc+1
+            nbbloc = nbbloc+1
 !
 !  *******************************************
 !  RECUPERATION DES DONNEES INCOMPATIBILITE
@@ -216,46 +216,46 @@ subroutine callis(nomres)
 !-- LA GESTION DE L'INCOMPATIBILITE SE BORNE A FAIRE UNE INTERPOLATION
 !-- LINEAIRE DES DEPLACEMENTS DE LA MAILLE MAITRE...
 !
-            iinc=0
+            iinc = 0
 !       On teste si la liaison est incompatible
             call getvtx('LIAISON', 'GROUP_MA_MAIT_1', iocc=i, scal=k8bid, nbret=irep11)
             call getvtx('LIAISON', 'MAILLE_MAIT_1', iocc=i, scal=k8bid, nbret=irep12)
             call getvtx('LIAISON', 'GROUP_MA_MAIT_2', iocc=i, scal=k8bid, nbret=irep21)
             call getvtx('LIAISON', 'MAILLE_MAIT_2', iocc=i, scal=k8bid, nbret=irep22)
-            if ((irep11.ne.0) .or. (irep12.ne.0)) then
+            if ((irep11 .ne. 0) .or. (irep12 .ne. 0)) then
                 motcle(1) = 'MAILLE_MAIT_1'
                 motcle(2) = 'GROUP_MA_MAIT_1'
-                call prjlis(mod1, ma1, mod2, ma2, nbno1,&
-                            nbno2, motcle, lint1, lint2, intf1,&
-                            intf2, fpli1o, fpli2o, zi(ldpmli+(i-1) *9), zi(ldpmli+(i-1)*9+3),&
+                call prjlis(mod1, ma1, mod2, ma2, nbno1, &
+                            nbno2, motcle, lint1, lint2, intf1, &
+                            intf2, fpli1o, fpli2o, zi(ldpmli+(i-1)*9), zi(ldpmli+(i-1)*9+3), &
                             i, matprj, nomres, sst1, sst2)
-                nblig=zi(ldpmli+(i-1)*9+3)
-                iinc=1
-            else if ((irep21.ne.0).or.(irep22.ne.0)) then
+                nblig = zi(ldpmli+(i-1)*9+3)
+                iinc = 1
+            else if ((irep21 .ne. 0) .or. (irep22 .ne. 0)) then
                 motcle(1) = 'MAILLE_MAIT_2'
                 motcle(2) = 'GROUP_MA_MAIT_2'
-                call prjlis(mod2, ma2, mod1, ma1, nbno2,&
-                            nbno1, motcle, lint2, lint1, intf2,&
-                            intf1, fpli2o, fpli1o, zi(ldpmli+(i-1) *9+3), zi(ldpmli+(i-1)*9),&
+                call prjlis(mod2, ma2, mod1, ma1, nbno2, &
+                            nbno1, motcle, lint2, lint1, intf2, &
+                            intf1, fpli2o, fpli1o, zi(ldpmli+(i-1)*9+3), zi(ldpmli+(i-1)*9), &
                             i, matprj, nomres, sst2, sst1)
-                nblig=zi(ldpmli+(i-1)*9)
-                iinc=2
+                nblig = zi(ldpmli+(i-1)*9)
+                iinc = 2
             else
-                nblig=zi(ldpmli+(i-1)*9)
-            endif
+                nblig = zi(ldpmli+(i-1)*9)
+            end if
 !
 !  MATRICE LAGRANGE-LAGRANGE
 !
-            iad=ldpmli+(i-1)*9+6
-            zi(iad)=nblig
-            zi(iad+1)=2
-            zi(iad+2)=nbbloc+1
-            icar(1)=zi(iad)
-            icar(2)=zi(iad+1)
-            icar(3)=zi(iad+2)
-            icar(4)=1
+            iad = ldpmli+(i-1)*9+6
+            zi(iad) = nblig
+            zi(iad+1) = 2
+            zi(iad+2) = nbbloc+1
+            icar(1) = zi(iad)
+            icar(2) = zi(iad+1)
+            icar(3) = zi(iad+2)
+            icar(4) = 1
 !
-            nbbloc=nbbloc+1
+            nbbloc = nbbloc+1
 !
 !-------------------------DETERMINATION MATRICES ORIENTEES--------------
 !
@@ -265,31 +265,31 @@ subroutine callis(nomres)
                 call verili(nomres, i, fpli1o, fpli2o, iret)
                 if (iret .gt. 0) then
                     call utmess('F', 'ALGORITH12_38')
-                endif
+                end if
 !
-                iad=ldpmli+(i-1)*9
-                call rotlis(nomres, fmlia, zi(iad), fpli1n, fpli1o,&
+                iad = ldpmli+(i-1)*9
+                call rotlis(nomres, fmlia, zi(iad), fpli1n, fpli1o, &
                             i, sst1, intf1, un)
-                iad=ldpmli+(i-1)*9+3
-                call rotlis(nomres, fmlia, zi(iad), fpli2n, fpli2o,&
+                iad = ldpmli+(i-1)*9+3
+                call rotlis(nomres, fmlia, zi(iad), fpli2n, fpli2o, &
                             i, sst2, intf2, moins1)
 !
             else
                 if (iinc .eq. 1) then
-                    call inclis(nomres, sst1, sst2, intf1, intf2,&
-                                fmlia, fpli1n, fpli2n, fpli1o, fpli2o,&
+                    call inclis(nomres, sst1, sst2, intf1, intf2, &
+                                fmlia, fpli1n, fpli2n, fpli1o, fpli2o, &
                                 zi(ldpmli+(i-1)*9), zi(ldpmli+(i-1)*9+3), i, matprj)
-                else if (iinc.eq.2) then
-                    call inclis(nomres, sst2, sst1, intf2, intf1,&
-                                fmlia, fpli2n, fpli1n, fpli2o, fpli1o,&
+                else if (iinc .eq. 2) then
+                    call inclis(nomres, sst2, sst1, intf2, intf1, &
+                                fmlia, fpli2n, fpli1n, fpli2o, fpli1o, &
                                 zi(ldpmli+(i-1)*9+3), zi(ldpmli+(i-1)*9), i, matprj)
-                endif
+                end if
                 call jedetr(matprj)
-            endif
+            end if
 !
 !  MATRICE LAGRANGE-LAGRANGE
 !
-            iad=ldpmli+(i-1)*9+6
+            iad = ldpmli+(i-1)*9+6
             call inilag(fmlia, icar)
 !
 !--------------------------------------------------C
@@ -318,7 +318,7 @@ subroutine callis(nomres)
 !   ET ON FILTRE LES RELATIONS MAL PROJETEES, EN AVERTISSANT
 !   L'UTILISATEUR
 !
-        else if (option(1:6).eq.'REDUIT') then
+        else if (option(1:6) .eq. 'REDUIT') then
 !
 !----------------------------------------------------------------C
 !--                                                            --C
@@ -328,8 +328,8 @@ subroutine callis(nomres)
 !
 !-- VERIFICATION DE LA COMPATIBILITE DES NOEUDS
 !
-            iret=i
-            call vecomo(nomres, sst1, sst2, intf1, intf2,&
+            iret = i
+            call vecomo(nomres, sst1, sst2, intf1, intf2, &
                         iret, option)
 !          IF (IRET .EQ.1) THEN
 !
@@ -340,21 +340,21 @@ subroutine callis(nomres)
 !          ENDIF
 !
 !-- SOUS STRUCTURE 1
-            lino1='&&VECT_NOEUD_INTERF1'
-            indin1='&&VECT_IND_DDL_INTERF1'
-            tramo1='&&MATR_TRACE_MODE_INT1  '
+            lino1 = '&&VECT_NOEUD_INTERF1'
+            indin1 = '&&VECT_IND_DDL_INTERF1'
+            tramo1 = '&&MATR_TRACE_MODE_INT1  '
 !
-            call rotlir(nomres, sst1, intf1, lino1, 0,&
-                        indin1, tramo1, ddla1, nbeq1, 1,&
+            call rotlir(nomres, sst1, intf1, lino1, 0, &
+                        indin1, tramo1, ddla1, nbeq1, 1, &
                         i)
 !
 !-- SOUS STRUCTURE 2
-            lino2='&&VECT_NOEUD_INTERF2'
-            indin2='&&VECT_IND_DDL_INTERF2'
-            tramo2='&&MATR_TRACE_MODE_INT2  '
+            lino2 = '&&VECT_NOEUD_INTERF2'
+            indin2 = '&&VECT_IND_DDL_INTERF2'
+            tramo2 = '&&MATR_TRACE_MODE_INT2  '
 !
-            call rotlir(nomres, sst2, intf2, lino2, iret,&
-                        indin2, tramo2, ddla2, nbeq2, 2,&
+            call rotlir(nomres, sst2, intf2, lino2, iret, &
+                        indin2, tramo2, ddla2, nbeq2, 2, &
                         i)
 !
 !----------------------------------------C
@@ -368,28 +368,28 @@ subroutine callis(nomres)
             call getvtx('LIAISON', 'GROUP_MA_MAIT_2', iocc=i, scal=k8bid, nbret=irep21)
             call getvtx('LIAISON', 'MAILLE_MAIT_2', iocc=i, scal=k8bid, nbret=irep22)
 !
-            if ((irep21.ne.0) .or. (irep22.ne.0)) then
-                imast=2
+            if ((irep21 .ne. 0) .or. (irep22 .ne. 0)) then
+                imast = 2
                 if (iret .eq. 0) then
-                    call lipsrb(nomres, sst1, sst2, intf1,&
-                                intf2, lino1, lino2, indin1, indin2,&
-                                ddla2, ddla1, nbeq2, imast,&
+                    call lipsrb(nomres, sst1, sst2, intf1, &
+                                intf2, lino1, lino2, indin1, indin2, &
+                                ddla2, ddla1, nbeq2, imast, &
                                 tramo2)
-                endif
+                end if
 !-- ET ON PROJETTE L'EQUATION DE LIAISON SUR PHI1
 !
             else
 !-- SI ON NE PRECISE RIEN, C'EST LA SOUS STRUCTURE 1 QUI EST MAITRE
-                imast=1
+                imast = 1
                 if (iret .eq. 0) then
-                    call lipsrb(nomres, sst1, sst2, intf1,&
-                                intf2, lino1, lino2, indin1, indin2,&
-                                ddla1, ddla2, nbeq1, imast,&
+                    call lipsrb(nomres, sst1, sst2, intf1, &
+                                intf2, lino1, lino2, indin1, indin2, &
+                                ddla1, ddla2, nbeq1, imast, &
                                 tramo1)
 !-- ET ON PROJETTE L'EQUATION DE LIAISON SUR PHI2
-                endif
+                end if
 !
-            endif
+            end if
 !
 !-------------------------------------------------------------------C
 !--                                                               --C
@@ -397,67 +397,67 @@ subroutine callis(nomres)
 !--                                                               --C
 !-------------------------------------------------------------------C
 !
-            indcol='BLANC'
-            nbcol=0
+            indcol = 'BLANC'
+            nbcol = 0
 !
             if (imast .lt. 2) then
 !
-                iad=ldpmli+(i-1)*9
-                nbbloc=nbbloc+1
-                zi(iad+2)=nbbloc
-                call liared(nomres, fmlia, nbbloc, tramo1, ddla2,&
-                            nbeq1, tramo2, ddla2, nbeq2, taille,&
+                iad = ldpmli+(i-1)*9
+                nbbloc = nbbloc+1
+                zi(iad+2) = nbbloc
+                call liared(nomres, fmlia, nbbloc, tramo1, ddla2, &
+                            nbeq1, tramo2, ddla2, nbeq2, taille, &
                             indcol, nbcol)
-                zi(iad)=taille(1)
-                zi(iad+1)=taille(2)
+                zi(iad) = taille(1)
+                zi(iad+1) = taille(2)
 !
-                iad=ldpmli+(i-1)*9+3
-                nbbloc=nbbloc+1
-                zi(iad+2)=nbbloc
-                call liared(nomres, fmlia, nbbloc, tramo2, ddla2,&
-                            nbeq2, tramo2, ddla2, nbeq2, taille,&
+                iad = ldpmli+(i-1)*9+3
+                nbbloc = nbbloc+1
+                zi(iad+2) = nbbloc
+                call liared(nomres, fmlia, nbbloc, tramo2, ddla2, &
+                            nbeq2, tramo2, ddla2, nbeq2, taille, &
                             indcol, nbcol)
-                zi(iad)=taille(1)
-                zi(iad+1)=taille(2)
-                nblig=taille(1)
+                zi(iad) = taille(1)
+                zi(iad+1) = taille(2)
+                nblig = taille(1)
 !
             else
 !
-                iad=ldpmli+(i-1)*9
-                nbbloc=nbbloc+1
-                zi(iad+2)=nbbloc
-                call liared(nomres, fmlia, nbbloc, tramo1, ddla1,&
-                            nbeq1, tramo1, ddla1, nbeq1, taille,&
+                iad = ldpmli+(i-1)*9
+                nbbloc = nbbloc+1
+                zi(iad+2) = nbbloc
+                call liared(nomres, fmlia, nbbloc, tramo1, ddla1, &
+                            nbeq1, tramo1, ddla1, nbeq1, taille, &
                             indcol, nbcol)
-                zi(iad)=taille(1)
-                zi(iad+1)=taille(2)
+                zi(iad) = taille(1)
+                zi(iad+1) = taille(2)
 !
-                iad=ldpmli+(i-1)*9+3
-                nbbloc=nbbloc+1
-                zi(iad+2)=nbbloc
-                call liared(nomres, fmlia, nbbloc, tramo2, ddla1,&
-                            nbeq2, tramo1, ddla1, nbeq1, taille,&
+                iad = ldpmli+(i-1)*9+3
+                nbbloc = nbbloc+1
+                zi(iad+2) = nbbloc
+                call liared(nomres, fmlia, nbbloc, tramo2, ddla1, &
+                            nbeq2, tramo1, ddla1, nbeq1, taille, &
                             indcol, nbcol)
-                zi(iad)=taille(1)
-                zi(iad+1)=taille(2)
+                zi(iad) = taille(1)
+                zi(iad+1) = taille(2)
 !
-                nblig=taille(1)
+                nblig = taille(1)
 !
-            endif
+            end if
 !
             call jedetr(indcol)
 !
 !  MATRICE LAGRANGE-LAGRANGE
 !
-            iad=ldpmli+(i-1)*9+6
-            zi(iad)=nblig
-            zi(iad+1)=2
-            zi(iad+2)=nbbloc+1
-            nbbloc=nbbloc+1
-            icar(1)=zi(iad)
-            icar(2)=zi(iad+1)
-            icar(3)=zi(iad+2)
-            icar(4)=imast
+            iad = ldpmli+(i-1)*9+6
+            zi(iad) = nblig
+            zi(iad+1) = 2
+            zi(iad+2) = nbbloc+1
+            nbbloc = nbbloc+1
+            icar(1) = zi(iad)
+            icar(2) = zi(iad+1)
+            icar(3) = zi(iad+2)
+            icar(4) = imast
             call inilag(fmlia, icar)
 !
 !-- DESTRUCTION DES CONCEPTS TEMPORAIRES
@@ -470,7 +470,7 @@ subroutine callis(nomres)
             call jedetr(lino2)
             call jedetr(tramo2)
 !
-        endif
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 
 subroutine dgendo(em, h, ea, sya, fcj, epsi_c, &
-                  syt, syc, num, pendt, pendf, pelast, pelasf,&
-                  icisai, gt,&
-                  gf, gc, ipentetrac, np, dxp,&
-                  b,alpha_c)
+                  syt, syc, num, pendt, pendf, pelast, pelasf, &
+                  icisai, gt, &
+                  gf, gc, ipentetrac, np, dxp, &
+                  b, alpha_c)
 !
     implicit none
 !
@@ -75,48 +75,48 @@ subroutine dgendo(em, h, ea, sya, fcj, epsi_c, &
 
     alpha_c = 1.d0
 
-    gt=pendt/pelast
+    gt = pendt/pelast
 
-    call dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num,&
-                   gt, gc, syc, alpha_c)
+    call dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num, &
+                 gt, gc, syc, alpha_c)
 !
 ! - PARAMETRES D'ENDOMMAGEMENT MENBRANAIRE EN CISAILLEMENT
 !   PUR DANS LE PLAN
     if (icisai .eq. 1) then
 ! - On calule SYTXY a partir de GT et GC calculé en traction
-        sytxy=syt/(1.d0+num)*sqrt(((1.d0-num)*(1.d0+2.d0*num)*&
-        (1.d0-gt)+num**2*(1.d0-gc))/(2.d0-gc-gt))
-        syt=sytxy
+        sytxy = syt/(1.d0+num)*sqrt(((1.d0-num)*(1.d0+2.d0*num)* &
+                                     (1.d0-gt)+num**2*(1.d0-gc))/(2.d0-gc-gt))
+        syt = sytxy
 ! - PENTE='PENTE_LIM'
         if (ipentetrac .eq. 1) then
-            pendc=pendt
+            pendc = pendt
 ! - PENTE ='EPSI_MAX' OU PENTE = 'PLAS'
         else if ((ipentetrac .eq. 3) .or. (ipentetrac .eq. 2)) then
-            dxd=sytxy/pelast
-            pendc=(np-sytxy)/(dxp-dxd)
-        endif
+            dxd = sytxy/pelast
+            pendc = (np-sytxy)/(dxp-dxd)
+        end if
 
-        gt=pendc/((em*h)/2.d0/(1.d0+num))
-        call dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num,&
-                   gt, gc, syc, alpha_c)
-    endif
+        gt = pendc/((em*h)/2.d0/(1.d0+num))
+        call dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num, &
+                     gt, gc, syc, alpha_c)
+    end if
 
     gf = pendf/pelasf
 
     if (gt .lt. 1.d-3) then
         call utmess('A', 'ALGORITH6_4', sk='GAMMAT')
         gt = 1.d-3
-    endif
+    end if
     if (gc .lt. 1.d-3) then
         call utmess('A', 'ALGORITH6_4', sk='GAMMAC')
         gc = 1.d-3
-    endif
+    end if
     if (gf .lt. 1.d-3) then
         call utmess('A', 'ALGORITH6_4', sk='GAMMAF')
         gf = 1.d-3
-    endif
+    end if
     if (alpha_c .lt. 1.d-3) then
         call utmess('A', 'ALGORITH6_4', sk='ALPHAC')
         alpha_c = 1.d-3
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
-                  idfde, geom, typmod, compor, deplm,&
-                  ddepl, depl0, depl1, dfdi, fm,&
+subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
+                  idfde, geom, typmod, compor, deplm, &
+                  ddepl, depl0, depl1, dfdi, fm, &
                   epsm, epsp, epsd)
 !
 !
@@ -88,40 +88,40 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
     if (typmod(2) .eq. 'DEPLA') then
 !
 ! ----- CALCUL DE EPSM (LINEAIRE) OU EM (GREEN)  = EPS(UM)
-        call nmgeom(ndim, nno, axi, grand, geom,&
-                    kpg, ipoids, ivf, idfde, deplm,&
-                    .true._1, poids, dfdi, fm, epsm,&
+        call nmgeom(ndim, nno, axi, grand, geom, &
+                    kpg, ipoids, ivf, idfde, deplm, &
+                    .true._1, poids, dfdi, fm, epsm, &
                     r)
 !
 ! ----- REACTUALISATION DE LA GEOMETRIE SI GRANDES DEFS
         if (grand) then
-            call daxpy(ndim*nno, 1.d0, deplm, 1, geom,&
+            call daxpy(ndim*nno, 1.d0, deplm, 1, geom, &
                        1)
-        endif
+        end if
 !
 ! ----- CALCUL DE DEPS = EPS(DU)
-        call nmgeom(ndim, nno, axi, .false._1, geom,&
-                    kpg, ipoids, ivf, idfde, ddepl,&
-                    .true._1, poids, dfdi, t9bid, deps,&
+        call nmgeom(ndim, nno, axi, .false._1, geom, &
+                    kpg, ipoids, ivf, idfde, ddepl, &
+                    .true._1, poids, dfdi, t9bid, deps, &
                     r)
 !
 ! ----- CALCUL DE EPSP (= DEPS + EPS(DU0) )
-        call nmgeom(ndim, nno, axi, .false._1, geom,&
-                    kpg, ipoids, ivf, idfde, depl0,&
-                    .true._1, poids, dfdi, t9bid, epsp,&
+        call nmgeom(ndim, nno, axi, .false._1, geom, &
+                    kpg, ipoids, ivf, idfde, depl0, &
+                    .true._1, poids, dfdi, t9bid, epsp, &
                     r)
-        call daxpy(ndimsi, 1.d0, deps, 1, epsp,&
+        call daxpy(ndimsi, 1.d0, deps, 1, epsp, &
                    1)
 !
 ! ----- CALCUL DE EPSD (DEPS = EPSP + ETA EPSD)
-        call nmgeom(ndim, nno, axi, .false._1, geom,&
-                    kpg, ipoids, ivf, idfde, depl1,&
-                    .true._1, poids, dfdi, t9bid, epsd,&
+        call nmgeom(ndim, nno, axi, .false._1, geom, &
+                    kpg, ipoids, ivf, idfde, depl1, &
+                    .true._1, poids, dfdi, t9bid, epsd, &
                     r)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !

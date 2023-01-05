@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,23 +39,23 @@ subroutine rsnume(resu, nomsy, nu)
 !
 ! DEB ------------------------------------------------------------------
 !
-    nu=' '
-    resu2=resu
+    nu = ' '
+    resu2 = resu
     call jeexin(resu2//'.ORDR', iret)
     if (iret .gt. 0) then
         call jelira(resu2//'.ORDR', 'LONUTI', luti)
         if (luti .eq. 0) goto 999
         call rs_getlast(resu, nume_last)
 !
-        call rsexch(' ', resu, nomsy, nume_last, chamno,&
+        call rsexch(' ', resu, nomsy, nume_last, chamno, &
                     icode)
 !
         if (icode .eq. 0) then
             call jeveuo(chamno//'.REFE', 'L', vk24=refe)
-            call jeexin(refe(2)(1:19)//'.NEQU', iret2)
-            if (iret2 .gt. 0) nu=refe(2)(1:14)
-        endif
-    endif
+            call jeexin(refe(2) (1:19)//'.NEQU', iret2)
+            if (iret2 .gt. 0) nu = refe(2) (1:14)
+        end if
+    end if
 999 continue
 !
 end subroutine

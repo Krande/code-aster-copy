@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,16 +38,16 @@ subroutine zmult(n, za, zx, incx)
         if (incx .ne. 1) then
 !
             ix = 1
-            if (incx .lt. 0) ix = (-n+1)*incx + 1
+            if (incx .lt. 0) ix = (-n+1)*incx+1
             do i = 1, n
                 zx(ix) = za*zx(ix)
-                ix = ix + incx
+                ix = ix+incx
             end do
         else
 !
             do i = 1, n
                 zx(i) = za*zx(i)
             end do
-        endif
-    endif
+        end if
+    end if
 end subroutine

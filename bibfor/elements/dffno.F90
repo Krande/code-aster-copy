@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine dffno(elrefe, ndim, nno, nnos, dff)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfdf.h"
-character(len=*) :: elrefe
-integer :: ndim, nno, nnos
-real(kind=8) :: dff(*)
+    character(len=*) :: elrefe
+    integer :: ndim, nno, nnos
+    real(kind=8) :: dff(*)
 ! BUT:   CALCUL DES DERIVEES DES FONCTIONS DE FORMES
 !        AUX NOEUDS D'UN ELREFE
 !

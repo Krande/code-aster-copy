@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfddd(eps, endo, ndim, lambda, mu,&
+subroutine dfddd(eps, endo, ndim, lambda, mu, &
                  ecrod, dfd)
 !
 !
@@ -48,38 +48,38 @@ subroutine dfddd(eps, endo, ndim, lambda, mu,&
     real(kind=8) :: valeps(3), veceps(3, 3), phid
     integer :: i, t(3, 3)
 !
-    t(1,1)=1
-    t(1,2)=4
-    t(1,3)=5
-    t(2,1)=4
-    t(2,2)=2
-    t(2,3)=6
-    t(3,1)=5
-    t(3,2)=6
-    t(3,3)=3
+    t(1, 1) = 1
+    t(1, 2) = 4
+    t(1, 3) = 5
+    t(2, 1) = 4
+    t(2, 2) = 2
+    t(2, 3) = 6
+    t(3, 1) = 5
+    t(3, 2) = 6
+    t(3, 3) = 3
 !
     phid = -2.d0
 !
-    dfd=0.d0
-    treps=0.d0
+    dfd = 0.d0
+    treps = 0.d0
     do i = 1, ndim
-        treps=treps+eps(t(i,i))
+        treps = treps+eps(t(i, i))
     end do
     if (treps .lt. 0.d0) then
-        dfd=dfd+phid*lambda/2.d0*treps**2
-    endif
+        dfd = dfd+phid*lambda/2.d0*treps**2
+    end if
 !
     call diago3(eps, veceps, valeps)
     call r8inir(3, 0.d0, vpe, 1)
 !
     do i = 1, ndim
         if (valeps(i) .lt. 0.d0) then
-            vpe(i)=valeps(i)
+            vpe(i) = valeps(i)
         else
-            vpe(i)=0.d0
-        endif
+            vpe(i) = 0.d0
+        end if
     end do
 !
-    dfd=dfd+mu*phid*(vpe(1)**2+vpe(2)**2+vpe(3)**2)-2.d0*ecrod
+    dfd = dfd+mu*phid*(vpe(1)**2+vpe(2)**2+vpe(3)**2)-2.d0*ecrod
 !
 end subroutine

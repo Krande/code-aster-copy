@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,9 +86,9 @@ subroutine op0139()
     character(len=12) :: nopar3(5)
     character(len=16) :: operation(1)
     character(len=1) :: typar3(5)
-    data nopar3 /'NUME_FOND','NUM_PT','ABSC_CURV', 'VIT', 'BETA'/
-    data operation /'FRONT_COHE_BRUT'/
-    data typar3 /'I' ,'I','R','R','R'/
+    data nopar3/'NUME_FOND', 'NUM_PT', 'ABSC_CURV', 'VIT', 'BETA'/
+    data operation/'FRONT_COHE_BRUT'/
+    data typar3/'I', 'I', 'R', 'R', 'R'/
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -118,9 +118,9 @@ subroutine op0139()
 !
 !   DIMENSION DU PROBLEME
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    if ((ndim.lt.2) .or. (ndim.gt.3)) then
+    if ((ndim .lt. 2) .or. (ndim .gt. 3)) then
         call utmess('F', 'XFEM_18')
-    endif
+    end if
 !
 !   NOM DU CONCEPT TABLE ET CREATION DE LA TABLE
     call getres(table, k16bid, k16bid)
@@ -144,9 +144,9 @@ subroutine op0139()
 !   IL S AGIT DU CHAMP CNSDET
 !
     cnsdet = '&&OP0049.CNSDET'
-    call xdetfo(cnsdet, cnsln, cnslt, ndim,&
+    call xdetfo(cnsdet, cnsln, cnslt, ndim, &
                 nmafon, noma, nomfis, resuco)
-    call jeveuo('&&XDETFO.MAFOND', 'L',jmafon)
+    call jeveuo('&&XDETFO.MAFOND', 'L', jmafon)
 !
 ! --- PREPARATION DETERMINATION DES POINTS DU FRONT
 !
@@ -161,9 +161,9 @@ subroutine op0139()
 ! --- APPEL "ALLEGE" A XPTFON
 ! --- DETERMINATION PTS DESORDONNES DU PREMIER FOND DETECTE
 !
-    call xptfon(noma, ndim, nmafon, cnsdet, cnsln,&
-                cnxinv, jmafon, nxptff, jfono, nfonn,&
-                ibid, ibid, nomfis, .false._1, listpt, lbid, typdis,&
+    call xptfon(noma, ndim, nmafon, cnsdet, cnsln, &
+                cnxinv, jmafon, nxptff, jfono, nfonn, &
+                ibid, ibid, nomfis, .false._1, listpt, lbid, typdis, &
                 ibid, operation_opt=operation(1))
 !
 ! --- PAS DORDONNANCEMENT, ON REGARDE LE NUAGE DE POINTS UNIQUEMENT
@@ -182,17 +182,17 @@ subroutine op0139()
     call dismoi('NB_POINT_FOND', nomfis, 'FISS_XFEM', repi=nbptff)
 !
     maxact = nbptff
-    actpoi=0
+    actpoi = 0
 !
 ! --- BOUCLE SUR LES MORCEAUX DE L ANCIEN FRONT
 !
     do piece = 1, nfon
 !
 !       RECUP INFOS ANCIEN FRONT
-        ni=zi(jnfon-1+2*(piece-1)+1)
-        nf=zi(jnfon-1+2*(piece-1)+2)
-        sifval=nf-ni+1
-        vvit  = '&&OP0049.VITESSE'
+        ni = zi(jnfon-1+2*(piece-1)+1)
+        nf = zi(jnfon-1+2*(piece-1)+2)
+        sifval = nf-ni+1
+        vvit = '&&OP0049.VITESSE'
         vbeta = '&&OP0049.BETA'
         vitemp = '&&OP0049.VITEMP'
         call wkvect(vvit, 'V V R8', sifval, jvit)
@@ -200,7 +200,7 @@ subroutine op0139()
         call wkvect(vitemp, 'V V R8', sifval, jvitem)
 !
 !       CALCUL DE LA VITESSE A POSTERIORI
-        call xchavi(actpoi, jbasc, jffis, jfono, jvitem,&
+        call xchavi(actpoi, jbasc, jffis, jfono, jvitem, &
                     jbeta, ndim, nfonn, sifval)
 !       LES DEUX VALEURS EXTREMITES SEMBLENT FAUSSES, ON LES CORRIGE
         zr(jvitem) = zr(jvitem+1)
@@ -209,7 +209,7 @@ subroutine op0139()
 !       ICI, ON POURRA AJOUTER UNE ETAPE DE LISSAGE
 !       FONCTION R->R
 !
-        do i = 1,sifval
+        do i = 1, sifval
             zr(jvit-1+i) = zr(jvitem-1+i)
         end do
 !
@@ -221,11 +221,11 @@ subroutine op0139()
             vale(1) = zr(jffis-1+4*(actpoi+i-1)+4)
             vale(2) = zr(jvit-1+i)
             vale(3) = zr(jbeta-1+i)
-            call tbajli(table, npara, nopar3, vali, vale,&
+            call tbajli(table, npara, nopar3, vali, vale, &
                         c16b, k8bid, 0)
         end do
         actpoi = actpoi+sifval
-        ASSERT(actpoi.le.maxact)
+        ASSERT(actpoi .le. maxact)
         call jedetr(vvit)
         call jedetr(vbeta)
         call jedetr(vitemp)

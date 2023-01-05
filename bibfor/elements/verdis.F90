@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verdis(model, nomail, foue, i3d, i2d,&
+subroutine verdis(model, nomail, foue, i3d, i2d, &
                   ndim, ier)
     implicit none
 #include "asterfort/asmpi_comm_vect.h"
@@ -73,28 +73,28 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 !        IBID>3 ==> MELANGE DE MODELISATIONS ==> MESSAGE AFFE_MODELE
         if (ibid .gt. 3) then
             call utmess('A', 'MODELE1_14')
-        endif
+        end if
 !
         ndim = ibid
         if (ibid .ge. 100) then
-            ibid = ibid - 100
+            ibid = ibid-100
             ndim = 1
-        endif
+        end if
         if (ibid .ge. 20) then
-            ibid = ibid - 20
+            ibid = ibid-20
             ndim = 2
-        endif
+        end if
         if (ibid .eq. 3) ndim = 3
-    endif
+    end if
 !     LA DIMENSION C'EST 2D OU 3D : TOUS LES AUTRES CAS SONT EXCLUS
     if (l_parallel_mesh) then
         call asmpi_comm_vect('MPI_MAX', 'I', sci=ndim)
     end if
-    if ((ndim.ne.2) .and. (ndim.ne.3)) then
+    if ((ndim .ne. 2) .and. (ndim .ne. 3)) then
         call codent(dimmod, 'G', kmess)
         call utmess(foue, 'DISCRETS_20', sk=kmess)
-        ier = ier + 1
-    endif
+        ier = ier+1
+    end if
 !
 ! --- LE MODELE COMPORTE T-IL DES ELEMENTS DISCRETS 3D
     call modexi(model, 'DIS_', i3d)
@@ -107,14 +107,14 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
     end if
 !
 ! --- IL FAUT DES DISCRETS DANS LA MODELISATION
-    if ((i3d.eq.0) .and. (i2d.eq.0)) then
+    if ((i3d .eq. 0) .and. (i2d .eq. 0)) then
         call utmess(foue, 'DISCRETS_17')
-        ier = ier + 1
-    endif
+        ier = ier+1
+    end if
 ! --- PAS DE DISCRET 2D ET 3D SUR UN MODELE
-    if ((i3d.eq.1) .and. (i2d.eq.1)) then
+    if ((i3d .eq. 1) .and. (i2d .eq. 1)) then
         call utmess(foue, 'DISCRETS_16')
-        ier = ier + 1
-    endif
+        ier = ier+1
+    end if
 !
 end subroutine

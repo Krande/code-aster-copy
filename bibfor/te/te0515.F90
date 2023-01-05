@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine te0515(option, nomte)
 !
-use THM_type
-use Behaviour_module, only : behaviourOption
+    use THM_type
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/fnoesu.h"
 #include "asterfort/jevech.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,17 +69,17 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get all parameters for current element - Finite volume version
 !
-    call thmGetElemPara_vf(ds_thm   , l_axi , l_steady , l_vf  ,&
-                           type_elem, ndim  ,&
-                           mecani   , press1, press2, tempe,&
-                           dimdef   , dimcon, dimuel,&
-                           nno      , nnos  , nface )
+    call thmGetElemPara_vf(ds_thm, l_axi, l_steady, l_vf, &
+                           type_elem, ndim, &
+                           mecani, press1, press2, tempe, &
+                           dimdef, dimcon, dimuel, &
+                           nno, nnos, nface)
     ASSERT(l_vf)
 !
 ! - Non-linear options
 !
-    if ((option(1:14).eq.'RIGI_MECA_TANG' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
-        (option(1:9).eq.'FULL_MECA' )) then
+    if ((option(1:14) .eq. 'RIGI_MECA_TANG') .or. (option(1:9) .eq. 'RAPH_MECA') .or. &
+        (option(1:9) .eq. 'FULL_MECA')) then
 ! ----- Get input fields
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PMATERC', 'L', imate)
@@ -93,12 +93,12 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PCONTMR', 'L', icontm)
 ! ----- Select objects to construct from option name
         lMatrPred = option(1:9) .eq. 'RIGI_MECA'
-        call behaviourOption(option, zk16(icompo),&
-                             lMatr , lVect ,&
-                             lVari , lSigm ,&
+        call behaviourOption(option, zk16(icompo), &
+                             lMatr, lVect, &
+                             lVari, lSigm, &
                              retloi)
 ! ----- Properties of behaviour
-        read (zk16(icompo-1+NVAR),'(I16)') nbvari
+        read (zk16(icompo-1+NVAR), '(I16)') nbvari
 ! ----- Get output fields
         ivectu = ismaem()
         icontp = ismaem()
@@ -106,72 +106,72 @@ character(len=16), intent(in) :: option, nomte
         imatuu = ismaem()
         if (lMatr) then
             call jevech('PMATUNS', 'E', imatuu)
-        endif
+        end if
         if (lVect) then
             call jevech('PVECTUR', 'E', ivectu)
-        endif
+        end if
         if (lSigm) then
             call jevech('PCONTPR', 'E', icontp)
             call jevech('PCODRET', 'E', jcret)
-        endif
+        end if
         if (lVari) then
             call jevech('PVARIPR', 'E', ivarip)
-        endif
+        end if
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-            call assesu(ds_thm      ,&
-                        lMatr       , lVect    , lSigm ,&
-                        lVari       , lMatrPred,&
-                        option      , zi(imate) ,&
-                        type_elem   ,&
-                        ndim        , nbvari    ,&
-                        nno         , nnos      , nface ,&
-                        dimdef      , dimcon    , dimuel,&
-                        mecani      , press1    , press2, tempe,&
-                        zk16(icompo), zr(icarcr),&
-                        zr(igeom)   ,&
-                        zr(ideplm)  , zr(ideplm),&
-                        defgem      , defgep    ,&
-                        zr(icontm)  , zr(icontm),&
-                        zr(ivarim)  , zr(ivarim),&
-                        zr(iinstm)  , zr(iinstp),&
-                        zr(imatuu)  , zr(ivectu))
+            call assesu(ds_thm, &
+                        lMatr, lVect, lSigm, &
+                        lVari, lMatrPred, &
+                        option, zi(imate), &
+                        type_elem, &
+                        ndim, nbvari, &
+                        nno, nnos, nface, &
+                        dimdef, dimcon, dimuel, &
+                        mecani, press1, press2, tempe, &
+                        zk16(icompo), zr(icarcr), &
+                        zr(igeom), &
+                        zr(ideplm), zr(ideplm), &
+                        defgem, defgep, &
+                        zr(icontm), zr(icontm), &
+                        zr(ivarim), zr(ivarim), &
+                        zr(iinstm), zr(iinstp), &
+                        zr(imatuu), zr(ivectu))
         else
             do li = 1, dimuel
-                zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
+                zr(ideplp+li-1) = zr(ideplm+li-1)+zr(ideplp+li-1)
             end do
-            call assesu(ds_thm      ,&
-                        lMatr       , lVect    , lSigm ,&
-                        lVari       , lMatrPred,&
-                        option      , zi(imate) ,&
-                        type_elem   ,&
-                        ndim        , nbvari    ,&
-                        nno         , nnos      , nface ,&
-                        dimdef      , dimcon    , dimuel,&
-                        mecani      , press1    , press2, tempe,&
-                        zk16(icompo), zr(icarcr),&
-                        zr(igeom)   ,&
-                        zr(ideplm)  , zr(ideplp),&
-                        defgem      , defgep    ,&
-                        zr(icontm)  , zr(icontp),&
-                        zr(ivarim)  , zr(ivarip),&
-                        zr(iinstm)  , zr(iinstp),&
-                        zr(imatuu)  , zr(ivectu))
+            call assesu(ds_thm, &
+                        lMatr, lVect, lSigm, &
+                        lVari, lMatrPred, &
+                        option, zi(imate), &
+                        type_elem, &
+                        ndim, nbvari, &
+                        nno, nnos, nface, &
+                        dimdef, dimcon, dimuel, &
+                        mecani, press1, press2, tempe, &
+                        zk16(icompo), zr(icarcr), &
+                        zr(igeom), &
+                        zr(ideplm), zr(ideplp), &
+                        defgem, defgep, &
+                        zr(icontm), zr(icontp), &
+                        zr(ivarim), zr(ivarip), &
+                        zr(iinstm), zr(iinstp), &
+                        zr(imatuu), zr(ivectu))
 
-        endif
+        end if
         if (lSigm) then
             zi(jcret) = retloi
-        endif
-    endif
+        end if
+    end if
 !
 ! - Option: FORC_NODA
 !
     if (option .eq. 'FORC_NODA') then
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVECTUR', 'E', ivectu)
-        call fnoesu(nface     ,&
-                    dimcon    , dimuel   ,&
-                    press1    , press2   ,&
+        call fnoesu(nface, &
+                    dimcon, dimuel, &
+                    press1, press2, &
                     zr(icontm), zr(ivectu))
-    endif
+    end if
 !
 end subroutine

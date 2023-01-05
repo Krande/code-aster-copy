@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine apmamh(kptsc)
 !
 !
 ! person_in_charge: natacha.bereux at edf.fr
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -62,7 +62,7 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: nz, nvalm, nlong
     integer :: jsmdi, jsmhc, jdval1, jdval2, jvalm, jvalm2
-    integer :: k, iligl, jcoll, nzdeb, nzfin, nuno1, nucmp1, nuno2, nbproc, numno1,numno2
+    integer :: k, iligl, jcoll, nzdeb, nzfin, nuno1, nucmp1, nuno2, nbproc, numno1, numno2
     integer :: jcolg, iligg, jnugll, nucmp2, procol, jprddl
     integer :: jnequ, nloc, jdeeq, prolig, rang
     integer :: jterm, jcolg4(1), iterm
@@ -84,10 +84,10 @@ use petsc_data_module
     integer, pointer :: v_nuls(:) => null()
     integer, pointer :: v_deeg(:) => null()
 !
-    parameter (idxi1 ='&&APMAMC.IDXI1__')
-    parameter (idxi2 ='&&APMAMC.IDXI2__')
-    parameter (trans1='&&APMAMC.TRANS1_')
-    parameter (trans2='&&APMAMC.TRANS2_')
+    parameter(idxi1='&&APMAMC.IDXI1__')
+    parameter(idxi2='&&APMAMC.IDXI2__')
+    parameter(trans1='&&APMAMC.TRANS1_')
+    parameter(trans2='&&APMAMC.TRANS2_')
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -110,7 +110,7 @@ use petsc_data_module
     call jeveuo(nonu//'.NUME.NULG', 'L', jnugll)
     call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
     call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     nloc = zi(jnequ)
@@ -119,40 +119,40 @@ use petsc_data_module
 !   Adresses needed to get the stiffness matrix wrt nodes and dof numbers (see below)
     step_dbg = -1
     ldebug = ASTER_FALSE .and. nstep == step_dbg
-    nstep = nstep + 1
+    nstep = nstep+1
     if (ldebug) then
-        print*, "DEBUG IN APMAMH"
+        print *, "DEBUG IN APMAMH"
         call jeexin(nonu//'.NUME.NULS', iret)
-        if(iret == 0) then
+        if (iret == 0) then
             call crnustd(nonu)
         end if
         call jeveuo(nonu//'.NUME.NULS', 'L', vi=v_nuls)
         call jeveuo(nonu//'.NUME.DEEG', 'L', vi=v_deeg)
-    endif
+    end if
 !
     call jelira(nomat//'.VALM', 'NMAXOC', nvalm)
     if (nvalm .eq. 1) then
-        lmnsy=ASTER_FALSE
-    else if (nvalm.eq.2) then
-        lmnsy=ASTER_TRUE
+        lmnsy = ASTER_FALSE
+    else if (nvalm .eq. 2) then
+        lmnsy = ASTER_TRUE
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
     call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
-    ASSERT(nlong.eq.nz)
+    ASSERT(nlong .eq. nz)
     if (lmnsy) then
         call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvalm2)
         call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong)
-        ASSERT(nlong.eq.nz)
-    endif
+        ASSERT(nlong .eq. nz)
+    end if
 !
 !     low donne la premiere ligne stockee localement
 !     high donne la premiere ligne stockee par le processus (rang+1)
 !     ATTENTION ces indices commencent a zero (convention C de PETSc)
     call MatGetOwnershipRange(a, low, high, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
 #if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxi1, 'V V S', nloc, vi4=v_dxi1)
@@ -171,120 +171,120 @@ use petsc_data_module
 !   dans le bloc diagonal
 !    call MatSetOption(a, MAT_NEW_NONZERO_ALLOCATION_ERR, PETSC_FALSE, ierr)
     do jcoll = 1, nloc
-        if(jcoll == 1) then
+        if (jcoll == 1) then
             nzdeb = 1
         else
-            nzdeb = zi(jsmdi + jcoll - 2) + 1
+            nzdeb = zi(jsmdi+jcoll-2)+1
         end if
-        nzfin = zi(jsmdi + jcoll - 1)
-        procol = zi(jprddl + jcoll - 1)
-        jcolg = zi(jnugll + jcoll - 1)
+        nzfin = zi(jsmdi+jcoll-1)
+        procol = zi(jprddl+jcoll-1)
+        jcolg = zi(jnugll+jcoll-1)
         nuno2 = 0
-        if( zi(jdeeq + (jcoll - 1) * 2).gt.0 ) then
+        if (zi(jdeeq+(jcoll-1)*2) .gt. 0) then
             nuno2 = 1
-        endif
+        end if
         do k = nzdeb, nzfin
-            iligl = zi4(jsmhc + k - 1)
-            prolig = zi(jprddl + iligl - 1)
-            iligg = zi(jnugll + iligl - 1)
-            valm = zr(jvalm + k - 1)
+            iligl = zi4(jsmhc+k-1)
+            prolig = zi(jprddl+iligl-1)
+            iligg = zi(jnugll+iligl-1)
+            valm = zr(jvalm+k-1)
             valm2 = valm
-            if( lmnsy ) valm2 = zr(jvalm2 + k - 1)
+            if (lmnsy) valm2 = zr(jvalm2+k-1)
             nuno1 = 0
-            if( zi(jdeeq + (iligl - 1) * 2).gt.0 ) then
+            if (zi(jdeeq+(iligl-1)*2) .gt. 0) then
                 nuno1 = 1
-            endif
-            if( nuno1.ne.0.and.nuno2.ne.0 ) then
-                if( prolig .eq. rang ) then
-                    jterm = jterm + 1
-                    zr(jdval2 + jterm - 1) = valm
+            end if
+            if (nuno1 .ne. 0 .and. nuno2 .ne. 0) then
+                if (prolig .eq. rang) then
+                    jterm = jterm+1
+                    zr(jdval2+jterm-1) = valm
                     v_dxi2(jterm) = to_petsc_int(iligg)
 !                   Writings to get the stiffness matrix wrt nodes and dof numbers
-                    if (ldebug.and.valm.ne.0.d0) then
-                        numno1 = v_deeg(2*(iligl-1) + 1)
-                        nucmp1 = v_deeg(2*(iligl-1) + 2)
-                        numno2 = v_deeg(2*(jcoll-1) + 1)
-                        nucmp2 = v_deeg(2*(jcoll-1) + 2)
-                        write(11+rang,*) numno1, nucmp1, numno2, nucmp2, valm, &
+                    if (ldebug .and. valm .ne. 0.d0) then
+                        numno1 = v_deeg(2*(iligl-1)+1)
+                        nucmp1 = v_deeg(2*(iligl-1)+2)
+                        numno2 = v_deeg(2*(jcoll-1)+1)
+                        nucmp2 = v_deeg(2*(jcoll-1)+2)
+                        write (11+rang, *) numno1, nucmp1, numno2, nucmp2, valm, &
                             v_nuls(iligl), v_nuls(jcoll), prolig, procol, rang
-                    endif
-                    if( procol .eq. rang ) then
-                        if( iligg .ne. jcolg ) then
-                            iterm = iterm + 1
-                            zr(jdval1 + iterm - 1) = valm2
+                    end if
+                    if (procol .eq. rang) then
+                        if (iligg .ne. jcolg) then
+                            iterm = iterm+1
+                            zr(jdval1+iterm-1) = valm2
                             v_dxi1(iterm) = to_petsc_int(iligg)
 !                           Writings to get the stiffness matrix wrt nodes and dof numbers
-                            if (ldebug.and.valm2.ne.0.d0) then
-                                numno1 = v_deeg(2*(iligl-1) + 1)
-                                nucmp1 = v_deeg(2*(iligl-1) + 2)
-                                numno2 = v_deeg(2*(jcoll-1) + 1)
-                                nucmp2 = v_deeg(2*(jcoll-1) + 2)
-                                write(11+rang,*) numno2, nucmp2, numno1, nucmp1, valm2, &
+                            if (ldebug .and. valm2 .ne. 0.d0) then
+                                numno1 = v_deeg(2*(iligl-1)+1)
+                                nucmp1 = v_deeg(2*(iligl-1)+2)
+                                numno2 = v_deeg(2*(jcoll-1)+1)
+                                nucmp2 = v_deeg(2*(jcoll-1)+2)
+                                write (11+rang, *) numno2, nucmp2, numno1, nucmp1, valm2, &
                                     v_nuls(jcoll), v_nuls(iligl), prolig, procol, rang
-                                endif
-                        endif
-                    endif
-                else if( procol .eq. rang ) then
-                    iterm = iterm + 1
-                    zr(jdval1 + iterm - 1) = valm2
+                            end if
+                        end if
+                    end if
+                else if (procol .eq. rang) then
+                    iterm = iterm+1
+                    zr(jdval1+iterm-1) = valm2
                     v_dxi1(iterm) = to_petsc_int(iligg)
 !                   Writings to get the stiffness matrix wrt nodes and dof numbers
-                    if (ldebug.and.valm2.ne.0.d0) then
-                        numno1 = v_deeg(2*(iligl-1) + 1)
-                        nucmp1 = v_deeg(2*(iligl-1) + 2)
-                        numno2 = v_deeg(2*(jcoll-1) + 1)
-                        nucmp2 = v_deeg(2*(jcoll-1) + 2)
-                        write(11+rang,*) numno2, nucmp2, numno1, nucmp1, valm2, &
+                    if (ldebug .and. valm2 .ne. 0.d0) then
+                        numno1 = v_deeg(2*(iligl-1)+1)
+                        nucmp1 = v_deeg(2*(iligl-1)+2)
+                        numno2 = v_deeg(2*(jcoll-1)+1)
+                        nucmp2 = v_deeg(2*(jcoll-1)+2)
+                        write (11+rang, *) numno2, nucmp2, numno1, nucmp1, valm2, &
                             v_nuls(jcoll), v_nuls(iligl), prolig, procol, rang
-                    endif
-                endif
+                    end if
+                end if
             else
 !               Si on est sur un ddl de Lagrange et qu'on possede le ddl d'en face
 !               ou que les deux ddl sont de Lagrange, on doit donner le terme
-                lgive = (nuno1.eq.0.and.procol.eq.rang).or.&
-                        (nuno2.eq.0.and.prolig.eq.rang).or.&
-                        (nuno1.eq.0.and.nuno2.eq.0)
-                if( lgive ) then
-                    jterm = jterm + 1
-                    zr(jdval2 + jterm - 1) = valm
+                lgive = (nuno1 .eq. 0 .and. procol .eq. rang) .or. &
+                        (nuno2 .eq. 0 .and. prolig .eq. rang) .or. &
+                        (nuno1 .eq. 0 .and. nuno2 .eq. 0)
+                if (lgive) then
+                    jterm = jterm+1
+                    zr(jdval2+jterm-1) = valm
                     v_dxi2(jterm) = to_petsc_int(iligg)
 !                   Writings to get the stiffness matrix wrt nodes and dof numbers
-                    if (ldebug.and.valm.ne.0.d0) then
-                        numno1 = v_deeg(2*(iligl-1) + 1)
-                        nucmp1 = v_deeg(2*(iligl-1) + 2)
-                        numno2 = v_deeg(2*(jcoll-1) + 1)
-                        nucmp2 = v_deeg(2*(jcoll-1) + 2)
-                        write(11+rang,*) numno1, nucmp1, numno2, nucmp2, valm, &
+                    if (ldebug .and. valm .ne. 0.d0) then
+                        numno1 = v_deeg(2*(iligl-1)+1)
+                        nucmp1 = v_deeg(2*(iligl-1)+2)
+                        numno2 = v_deeg(2*(jcoll-1)+1)
+                        nucmp2 = v_deeg(2*(jcoll-1)+2)
+                        write (11+rang, *) numno1, nucmp1, numno2, nucmp2, valm, &
                             v_nuls(iligl), v_nuls(jcoll)
-                            !, iligg, jcolg
-                    endif
-                    if( iligg .ne. jcolg ) then
-                        iterm = iterm + 1
-                        zr(jdval1 + iterm - 1) = valm2
+                        !, iligg, jcolg
+                    end if
+                    if (iligg .ne. jcolg) then
+                        iterm = iterm+1
+                        zr(jdval1+iterm-1) = valm2
                         v_dxi1(iterm) = to_petsc_int(iligg)
 !                        Writings to get the stiffness matrix wrt nodes and dof numbers
-                        if (ldebug.and.valm2.ne.0.d0) then
-                            numno1 = v_deeg(2*(iligl-1) + 1)
-                            nucmp1 = v_deeg(2*(iligl-1) + 2)
-                            numno2 = v_deeg(2*(jcoll-1) + 1)
-                            nucmp2 = v_deeg(2*(jcoll-1) + 2)
-                            write(11+rang,*) numno2, nucmp2, numno1, nucmp1, valm2, &
+                        if (ldebug .and. valm2 .ne. 0.d0) then
+                            numno1 = v_deeg(2*(iligl-1)+1)
+                            nucmp1 = v_deeg(2*(iligl-1)+2)
+                            numno2 = v_deeg(2*(jcoll-1)+1)
+                            nucmp2 = v_deeg(2*(jcoll-1)+2)
+                            write (11+rang, *) numno2, nucmp2, numno1, nucmp1, valm2, &
                                 v_nuls(jcoll), v_nuls(iligl)
-                                !, jcolg, iligg
-                        endif
-                    endif
-                endif
-            endif
+                            !, jcolg, iligg
+                        end if
+                    end if
+                end if
+            end if
         end do
         jcolg4(1) = jcolg
         mm = to_petsc_int(jterm)
 !       Ici zi4(jdxi2) donne le numero de ligne
 !       Donc on donne ici le bloc triangulaire superieur
-        call MatSetValues(a, mm, v_dxi2(1:mm), un, [to_petsc_int(jcolg4)],&
+        call MatSetValues(a, mm, v_dxi2(1:mm), un, [to_petsc_int(jcolg4)], &
                           zr(jdval2:jdval2+mm), ADD_VALUES, ierr)
         nn = to_petsc_int(iterm)
 !       on donne ici le bloc triangulaire inferieur
-        call MatSetValues(a, un, [to_petsc_int(jcolg4)], nn, v_dxi1(1:nn),&
+        call MatSetValues(a, un, [to_petsc_int(jcolg4)], nn, v_dxi1(1:nn), &
                           zr(jdval1:jdval1+nn), ADD_VALUES, ierr)
         iterm = 0
         jterm = 0
@@ -302,7 +302,7 @@ use petsc_data_module
     call jedetr(trans1)
     call jedetr(trans2)
 !   Close the logical unit dedicated to dump the matrix
-    if (ldebug) flush(11+rang)
+    if (ldebug) flush (11+rang)
 !
     call jedema()
 !

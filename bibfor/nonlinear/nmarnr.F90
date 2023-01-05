@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine nmarnr(result, typtaz, numreu)
     if (iret .eq. 0) then
         numreu = 0
         goto 99
-    endif
+    end if
 !
 ! --- RECUPERATION DU NOM DE LA TABLE
 !
@@ -92,9 +92,9 @@ subroutine nmarnr(result, typtaz, numreu)
         goto 99
     else
         call tbexip(nomtab, 'NUME_REUSE', lexist, typvar)
-        if (.not.lexist .or. typvar .ne. 'I') then
+        if (.not. lexist .or. typvar .ne. 'I') then
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- NOMBRE DE LIGNES
 !
@@ -103,11 +103,11 @@ subroutine nmarnr(result, typtaz, numreu)
         if (nblign .eq. 0) then
             numreu = 0
             goto 99
-        endif
+        end if
 !
 ! ----- EXTRACTION DE LA COLONNE 'NUME_REUSE' DANS UN OBJET TEMPORAIRE
 !
-        call tbexve(nomtab, 'NUME_REUSE', lisres, 'V', nval,&
+        call tbexve(nomtab, 'NUME_REUSE', lisres, 'V', nval, &
                     typvar)
         call jeveuo(lisres, 'L', jlisre)
 !
@@ -117,13 +117,13 @@ subroutine nmarnr(result, typtaz, numreu)
             vali = zi(jlisre-1+ival)
             if (vali .gt. numreu) numreu = vali
         end do
-        numreu = numreu + 1
-    endif
+        numreu = numreu+1
+    end if
 !
- 99 continue
+99  continue
 !
     call jedetr(lisres)
-    ASSERT(numreu.ge.0)
+    ASSERT(numreu .ge. 0)
 !
     call jedema()
 end subroutine

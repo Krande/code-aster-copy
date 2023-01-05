@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dinuar(result    , sddisc     , nume_inst, force,&
+subroutine dinuar(result, sddisc, nume_inst, force, &
                   nume_store, nume_reuse_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -71,15 +71,15 @@ implicit none
 !
 ! - Initializations
 !
-    l_store    = .false._1
-    nume_store = - 1
-    nume_reuse = - 1
+    l_store = .false._1
+    nume_store = -1
+    nume_reuse = -1
 !
 ! - Acces to storing objects
 !
-    sdarch      = sddisc(1:14)//'.ARCH'
+    sdarch = sddisc(1:14)//'.ARCH'
     sdarch_ainf = sdarch(1:19)//'.AINF'
-    call jeveuo(sdarch_ainf, 'E', vi = v_sdarch_ainf)
+    call jeveuo(sdarch_ainf, 'E', vi=v_sdarch_ainf)
 !
 ! - Initial storing or not
 !
@@ -88,21 +88,21 @@ implicit none
     else
         time_curr = diinst(sddisc, nume_inst)
         call nmcrpo(sdarch, nume_inst, time_curr, l_store)
-    endif
+    end if
 !
 ! - "forced" storing
 !
     if (force) then
         l_store = .true.
-    endif
+    end if
 !
 ! - Stroing index
 !
     if (l_store) then
         nume_store = v_sdarch_ainf(1)
     else
-        nume_store = - 1
-    endif
+        nume_store = -1
+    end if
 !
 ! - REUSE for PARA_CALC table
 !
@@ -111,24 +111,24 @@ implicit none
 ! - Already stored ?
 !
     if (nume_store .ge. 2) then
-        call rsadpa(result, 'L', 1, 'INST', nume_store-1,&
+        call rsadpa(result, 'L', 1, 'INST', nume_store-1, &
                     0, sjv=jv_para)
         time_prev = zr(jv_para)
         if (time_curr .le. time_prev) then
             nume_store = -1
-            l_store    = .false._1
-        endif
-    endif
+            l_store = .false._1
+        end if
+    end if
 !
 ! - Increase storing index
 !
     if (l_store) then
-        v_sdarch_ainf(1) = v_sdarch_ainf(1) + 1
-    endif
+        v_sdarch_ainf(1) = v_sdarch_ainf(1)+1
+    end if
 !
     if (present(nume_reuse_)) then
         nume_reuse_ = nume_reuse
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
     real(kind=8) :: valeur
     real(kind=8) :: ai(4), rac4(8), signe, rac3(3)
 ! =====================================================================
-    parameter  ( zero   = 0.0d0 )
-    parameter  ( un     = 1.0d0 )
-    parameter  ( deux   = 2.0d0 )
-    parameter  ( trois  = 3.0d0 )
-    parameter  ( quatre = 4.0d0 )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(quatre=4.0d0)
 ! =====================================================================
 ! --- INITIALISATIONS ET COHERENCES -----------------------------------
 ! =====================================================================
@@ -53,23 +53,23 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
     racine(2) = 0.0d0
     racine(3) = 0.0d0
     racine(4) = 0.0d0
-    if ((mod(1:6).ne.'D_PLAN') .and. (mod(1:6).ne.'C_PLAN') .and. (mod(1:4).ne.'AXIS')) then
+    if ((mod(1:6) .ne. 'D_PLAN') .and. (mod(1:6) .ne. 'C_PLAN') .and. (mod(1:4) .ne. 'AXIS')) then
         call utmess('F', 'ALGORITH2_43')
-    endif
+    end if
 ! =====================================================================
 ! --- AFFECTATION DES VARIABLES ---------------------------------------
 ! =====================================================================
-    a0 = dsidep(1,1)*dsidep(4,4) - dsidep(1,4)*dsidep(4,1)
-    a1 = dsidep(1,1)*(dsidep(4,2)+dsidep(2,4)) - dsidep(1,4)*dsidep(2,1) - dsidep(1,2)*dsidep(4,1&
-         &)
-    a2 = dsidep(1,1)*dsidep(2,2) + dsidep(1,4)*dsidep(4,2) + dsidep(4,1)*dsidep(2,4) - dsidep(1,2&
-         &)*dsidep(4,4) - dsidep(1,2)*dsidep(2,1) - dsidep(4,4)*dsidep(2,1)
-    a3 = dsidep(2,2)*(dsidep(1,4) + dsidep(4,1)) - dsidep(1,2)*dsidep(2,4) - dsidep(4,2)*dsidep(2&
-         &,1)
-    a4 = dsidep(4,4)*dsidep(2,2) - dsidep(4,2)*dsidep(2,4)
+    a0 = dsidep(1, 1)*dsidep(4, 4)-dsidep(1, 4)*dsidep(4, 1)
+   a1 = dsidep(1, 1)*(dsidep(4, 2)+dsidep(2, 4))-dsidep(1, 4)*dsidep(2, 1)-dsidep(1, 2)*dsidep(4, 1&
+          &)
+    a2 = dsidep(1, 1)*dsidep(2, 2)+dsidep(1, 4)*dsidep(4, 2)+dsidep(4, 1)*dsidep(2, 4)-dsidep(1, 2&
+         &)*dsidep(4, 4)-dsidep(1, 2)*dsidep(2, 1)-dsidep(4, 4)*dsidep(2, 1)
+    a3 = dsidep(2, 2)*(dsidep(1, 4)+dsidep(4, 1))-dsidep(1, 2)*dsidep(2, 4)-dsidep(4, 2)*dsidep(2&
+         &, 1)
+    a4 = dsidep(4, 4)*dsidep(2, 2)-dsidep(4, 2)*dsidep(2, 4)
     if (a4 .lt. -r8prem()) then
         signe = -1.0d0
-    endif
+    end if
 ! =====================================================================
 ! --- CAS OU A4 = 0 ---------------------------------------------------
 ! =====================================================================
@@ -84,7 +84,7 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
         racine(3) = 0.0d0
         racine(4) = 0.0d0
         goto 9998
-    endif
+    end if
     lamba = trois*a3/quatre/a4
     lambb = a2/deux/a4
     lambc = a1/quatre/a4
@@ -93,7 +93,7 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 ! =====================================================================
     call zerop3(lamba, lambb, lambc, rac3, nbrac3)
     do ii = 1, nbrac3
-        valeur = signe * fbifur(a0,a1,a2,a3,a4,rac3(ii))
+        valeur = signe*fbifur(a0, a1, a2, a3, a4, rac3(ii))
         if (valeur .lt. -r8prem()) vbifur = un
     end do
 ! =====================================================================
@@ -112,13 +112,13 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
         compt = 0
         do ii = 1, 4
             if (abs(rac4((ii-1)*2+2)) .lt. r8prem()) then
-                compt = compt + 1
-                racine(compt) = atan2(rac4((ii-1)*2+1),1.0d0)
+                compt = compt+1
+                racine(compt) = atan2(rac4((ii-1)*2+1), 1.0d0)
                 racine(compt) = racine(compt)*r8rddg()
-            endif
+            end if
         end do
         nbrac4 = compt
-    endif
+    end if
 ! =====================================================================
 9998 continue
 ! =====================================================================

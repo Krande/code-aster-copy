@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,27 +17,27 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmtfm(phase,&
-                  ndim  , nnm   , nnl   , nbcps ,&
-                  wpg   , jacobi, ffm   , ffl   ,&
-                  tau1  , tau2  , mprojt,&
-                  rese  , nrese , lambda, coefff,&
+subroutine mmmtfm(phase, &
+                  ndim, nnm, nnl, nbcps, &
+                  wpg, jacobi, ffm, ffl, &
+                  tau1, tau2, mprojt, &
+                  rese, nrese, lambda, coefff, &
                   matrfm)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/mmmmpb.h"
 #include "asterfort/pmavec.h"
 !
-character(len=4), intent(in) :: phase
-integer, intent(in) :: ndim, nnm, nnl, nbcps
-real(kind=8), intent(in) :: ffm(9), ffl(9)
-real(kind=8), intent(in) :: wpg, jacobi
-real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: rese(3), nrese
-real(kind=8), intent(in) :: lambda, coefff
-real(kind=8), intent(out) :: matrfm(18, 27)
+    character(len=4), intent(in) :: phase
+    integer, intent(in) :: ndim, nnm, nnl, nbcps
+    real(kind=8), intent(in) :: ffm(9), ffl(9)
+    real(kind=8), intent(in) :: wpg, jacobi
+    real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: rese(3), nrese
+    real(kind=8), intent(in) :: lambda, coefff
+    real(kind=8), intent(out) :: matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,33 +76,33 @@ real(kind=8), intent(out) :: matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    a(:,:) = 0.d0
-    b(:,:) = 0.d0
-    h(:,:) = 0.d0
-    h1(:)  = 0.d0
-    h2(:)  = 0.d0
-    nbcpf  = nbcps - 1
+    a(:, :) = 0.d0
+    b(:, :) = 0.d0
+    h(:, :) = 0.d0
+    h1(:) = 0.d0
+    h2(:) = 0.d0
+    nbcpf = nbcps-1
 !
 ! - MATRICE [A] = [T]t*[P]
 !
     if (phase .eq. 'ADHE') then
         do i = 1, ndim
             do k = 1, ndim
-                a(1,i) = tau1(k)*mprojt(k,i) + a(1,i)
+                a(1, i) = tau1(k)*mprojt(k, i)+a(1, i)
             end do
         end do
         do i = 1, ndim
             do k = 1, ndim
-                a(2,i) = tau2(k)*mprojt(k,i) + a(2,i)
+                a(2, i) = tau2(k)*mprojt(k, i)+a(2, i)
             end do
         end do
-    endif
+    end if
 !
 ! - MATRICE DE PROJECTION SUR LA BOULE UNITE
 !
     if (phase .eq. 'GLIS') then
         call mmmmpb(rese, nrese, ndim, matprb)
-    endif
+    end if
 !
 ! - VECTEUR PROJ. BOULE SUR TANGENTES: {H1} = [K].{T1}
 !
@@ -110,17 +110,17 @@ real(kind=8), intent(out) :: matrfm(18, 27)
         call pmavec('ZERO', 3, matprb, tau1, h1)
         call pmavec('ZERO', 3, matprb, tau2, h2)
 ! ----- MATRICE [H] = [{H1}{H2}]
-        h(:,1) = h1(:)
-        h(:,2) = h2(:)
+        h(:, 1) = h1(:)
+        h(:, 2) = h2(:)
 ! ----- MATRICE [B] = [P]*[H]t
         do icmp = 1, nbcpf
             do j = 1, ndim
                 do k = 1, ndim
-                    b(icmp,j) = h(k,icmp)*mprojt(k,j)+b(icmp,j)
+                    b(icmp, j) = h(k, icmp)*mprojt(k, j)+b(icmp, j)
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - CALCUL DES TERMES
 !
@@ -131,27 +131,27 @@ real(kind=8), intent(out) :: matrfm(18, 27)
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inom-1)+idim
-                        matrfm(ii,jj) = matrfm(ii,jj)+&
-                                        wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*a(icmp,idim)
+                        matrfm(ii, jj) = matrfm(ii, jj)+ &
+                                         wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*a(icmp, idim)
                     end do
                 end do
             end do
         end do
-    else if (phase(1:4).eq.'GLIS') then
+    else if (phase(1:4) .eq. 'GLIS') then
         do inof = 1, nnl
             do inom = 1, nnm
                 do icmp = 1, nbcpf
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inom-1)+idim
-                        matrfm(ii,jj) = matrfm(ii,jj)+&
-                                        wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*b(icmp,idim)
+                        matrfm(ii, jj) = matrfm(ii, jj)+ &
+                                         wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*b(icmp, idim)
                     end do
                 end do
             end do
         end do
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

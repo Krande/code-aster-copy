@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0003(fami,   kpg,  ksp,    ndim,   imate,  &
-                  compor, crit, instam, instap, epsm,   &
-                  deps,   sigm, vim,    option, angmas, &
-                  sigp,   vip,  typmod, icomp,  nvi,    &
+subroutine lc0003(fami, kpg, ksp, ndim, imate, &
+                  compor, crit, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, nvi, &
                   dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ subroutine lc0003(fami,   kpg,  ksp,    ndim,   imate,  &
 !                   2   Redécoupage local  ?
 ! --------------------------------------------------------------------------------------------------
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmcine.h"
@@ -111,42 +111,42 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (compor(1)(1:14) .eq. 'VMIS_CINE_LINE') then
+    if (compor(1) (1:14) .eq. 'VMIS_CINE_LINE') then
 !
-        iscplane = typmod(1)(1:6).eq.'C_PLAN'
-        if ( iscplane) then
-            call nmcine_line_gc(fami,   kpg,    ksp,    ndim, typmod, &
-                                imate,  compor, crit,   epsm, deps,   &
-                                sigm,   vim,    option, sigp, vip,    &
+        iscplane = typmod(1) (1:6) .eq. 'C_PLAN'
+        if (iscplane) then
+            call nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
+                                imate, compor, crit, epsm, deps, &
+                                sigm, vim, option, sigp, vip, &
                                 dsidep, codret)
         else
-            call nmcine(fami,   kpg,    ksp,    ndim,  imate, &
-                        compor, crit,   instam, instap, epsm, &
-                        deps,   sigm,   vim,    option, sigp, &
-                        vip,    dsidep, codret)
-        endif
+            call nmcine(fami, kpg, ksp, ndim, imate, &
+                        compor, crit, instam, instap, epsm, &
+                        deps, sigm, vim, option, sigp, &
+                        vip, dsidep, codret)
+        end if
 !
-    else if (compor(1)(1:12) .eq. 'VMIS_CINE_GC') then
+    else if (compor(1) (1:12) .eq. 'VMIS_CINE_GC') then
 !
-        iscplane = typmod(1)(1:6).eq.'C_PLAN'
-        if ( .not. iscplane) then
+        iscplane = typmod(1) (1:6) .eq. 'C_PLAN'
+        if (.not. iscplane) then
             messk(1) = compor(1)
             messk(2) = 'C_PLAN, 1D, GRILLE_EXCENTRE'
             messk(3) = typmod(1)
             call utmess('F', 'ALGORITH4_1', nk=3, valk=messk)
-        endif
-        call nmcine_line_gc(fami,   kpg,    ksp,    ndim, typmod, &
-                            imate,  compor, crit,   epsm, deps,   &
-                            sigm,   vim,    option, sigp, vip,    &
+        end if
+        call nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
+                            imate, compor, crit, epsm, deps, &
+                            sigm, vim, option, sigp, vip, &
                             dsidep, codret)
 !
-    else if (compor(1)(1:9).eq.'VMIS_ECMI') then
+    else if (compor(1) (1:9) .eq. 'VMIS_ECMI') then
 !
-        call nmecmi(fami,   kpg,    ksp,  ndim, typmod, &
-                    imate,  compor, crit, deps, sigm,   &
-                    vim,    option, sigp, vip,  dsidep, &
+        call nmecmi(fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, crit, deps, sigm, &
+                    vim, option, sigp, vip, dsidep, &
                     codret)
 !
-    endif
+    end if
 !
 end subroutine

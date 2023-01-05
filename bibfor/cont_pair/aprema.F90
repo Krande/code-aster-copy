@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine aprema(sdappa, mesh, sdcont_defi, newgeo)
 !
-implicit none
+    implicit none
 !
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -79,10 +79,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('APPARIEMENT', ifm, niv)
-    one_proc=.false.
+    one_proc = .false.
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> RECH. MAILLE PLUS PROCHE'
-    endif
+        write (ifm, *) '<APPARIEMENT> RECH. MAILLE PLUS PROCHE'
+    end if
 !
 ! - Acces to pairing datastructure
 !
@@ -91,19 +91,19 @@ implicit none
     sdappa_tau1 = sdappa(1:19)//'.TAU1'
     sdappa_tau2 = sdappa(1:19)//'.TAU2'
     sdappa_proj = sdappa(1:19)//'.PROJ'
-    call jeveuo(sdappa_appa, 'E', vi = v_sdappa_appa)
-    call jeveuo(sdappa_dist, 'E', vr = v_sdappa_dist)
-    call jeveuo(sdappa_tau1, 'E', vr = v_sdappa_tau1)
-    call jeveuo(sdappa_tau2, 'E', vr = v_sdappa_tau2)
-    call jeveuo(sdappa_proj, 'E', vr = v_sdappa_proj)
+    call jeveuo(sdappa_appa, 'E', vi=v_sdappa_appa)
+    call jeveuo(sdappa_dist, 'E', vr=v_sdappa_dist)
+    call jeveuo(sdappa_tau1, 'E', vr=v_sdappa_tau1)
+    call jeveuo(sdappa_tau2, 'E', vr=v_sdappa_tau2)
+    call jeveuo(sdappa_proj, 'E', vr=v_sdappa_proj)
 !
 ! - Get parameters
 !
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
-    iter_maxi    = cfdisi(sdcont_defi,'PROJ_NEWT_ITER')
-    epsi_maxi    = cfdisr(sdcont_defi,'PROJ_NEWT_RESI')
-    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
-    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    iter_maxi = cfdisi(sdcont_defi, 'PROJ_NEWT_ITER')
+    epsi_maxi = cfdisr(sdcont_defi, 'PROJ_NEWT_RESI')
+    model_ndim = cfdisi(sdcont_defi, 'NDIM')
+    nt_poin = cfdisi(sdcont_defi, 'NTPT')
 !
 ! - Loop on contact zones
 !
@@ -112,27 +112,27 @@ implicit none
 !
 ! ----- Parameters on current zone
 !
-        nb_poin     = mminfi(sdcont_defi, 'NBPT'     , i_zone)
-        l_pair_masl = mminfi(sdcont_defi, 'APPARIEMENT', i_zone).eq.1
-        l_pair_dire = mminfi(sdcont_defi, 'TYPE_APPA'  , i_zone).eq.1
+        nb_poin = mminfi(sdcont_defi, 'NBPT', i_zone)
+        l_pair_masl = mminfi(sdcont_defi, 'APPARIEMENT', i_zone) .eq. 1
+        l_pair_dire = mminfi(sdcont_defi, 'TYPE_APPA', i_zone) .eq. 1
         if (l_pair_dire) then
             pair_vect(1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
             pair_vect(2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
             pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)
-        endif
+        end if
         tole_proj_ext = mminfr(sdcont_defi, 'TOLE_PROJ_EXT', i_zone)
 !
 ! ----- Mpi informations
 !
         call asmpi_comm('GET', mpicou)
-        call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
-        if(one_proc)then
+        call asmpi_info(mpicou, rank=i_proc, size=nb_proc)
+        if (one_proc) then
             nb_proc = 1
-        endif
-        nb_poin_mpi  = int(nb_poin/nb_proc)
+        end if
+        nb_poin_mpi = int(nb_poin/nb_proc)
         nbr_poin_mpi = nb_poin-nb_poin_mpi*nb_proc
-        idx_start   = 1+(i_proc)*nb_poin_mpi
-        idx_end     = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*int((i_proc+1)/nb_proc))
+        idx_start = 1+(i_proc)*nb_poin_mpi
+        idx_end = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*int((i_proc+1)/nb_proc))
 
 !
 ! ----- Loop on points
@@ -142,7 +142,7 @@ implicit none
 ! --------- Point to paired ?
 !
             call apinfi(sdappa, 'APPARI_TYPE', i_poin+i, pair_type)
-            ASSERT(pair_type.ne.0)
+            ASSERT(pair_type .ne. 0)
             if (l_pair_masl) then
 !
 ! ------------- Coordinates of point
@@ -156,26 +156,26 @@ implicit none
 !
 ! ------------- Projection of contact point on master element
 !
-            call approj(mesh          , newgeo        , sdcont_defi , node_mast_indx, l_pair_dire,&
-                        pair_vect     , iter_maxi     , epsi_maxi   , tole_proj_ext , poin_coor  ,&
-                        elem_mast_mini, proj_stat_mini, ksi1_mini   , ksi2_mini     , tau1_mini  ,&
-                        tau2_mini     , dist_mini     , vect_pm_mini)
+                call approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
+                            pair_vect, iter_maxi, epsi_maxi, tole_proj_ext, poin_coor, &
+                            elem_mast_mini, proj_stat_mini, ksi1_mini, ksi2_mini, tau1_mini, &
+                            tau2_mini, dist_mini, vect_pm_mini)
 !
 ! ------------- Orthogonalization of local basis
 !
-                call aporth(mesh     , sdcont_defi, model_ndim, elem_mast_mini, poin_coor,&
+                call aporth(mesh, sdcont_defi, model_ndim, elem_mast_mini, poin_coor, &
                             tau1_mini, tau2_mini)
                 if (pair_type .eq. 1) then
                     if (proj_stat_mini .eq. 2) then
                         pair_type = -3
                     else
                         pair_type = 2
-                    endif
-                endif
+                    end if
+                end if
                 l_save = .true.
             else
                 l_save = .false.
-            endif
+            end if
 !
 ! --------- Save
 !
@@ -195,13 +195,13 @@ implicit none
                 v_sdappa_tau2(3*(i_poin+i-1)+1) = tau2_mini(1)
                 v_sdappa_tau2(3*(i_poin+i-1)+2) = tau2_mini(2)
                 v_sdappa_tau2(3*(i_poin+i-1)+3) = tau2_mini(3)
-            endif
+            end if
 
         end do
 !
 ! ----- Next zone
 !
-            i_poin = i_poin + nb_poin
+        i_poin = i_poin+nb_poin
     end do
 !
 end subroutine

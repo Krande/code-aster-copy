@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdome(modele, mater, mateco, carele, lischa, result,&
+subroutine nmdome(modele, mater, mateco, carele, lischa, result, &
                   nuord)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -33,11 +33,11 @@ implicit none
 #include "asterfort/rslesd.h"
 #include "asterfort/utmess.h"
 !
-integer :: nuord
-character(len=8) :: result
-character(len=19) :: lischa
-character(len=24):: modele, mateco, carele
-character(len=*), intent(out) :: mater
+    integer :: nuord
+    character(len=8) :: result
+    character(len=19) :: lischa
+    character(len=24):: modele, mateco, carele
+    character(len=*), intent(out) :: mater
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,20 +81,20 @@ character(len=*), intent(out) :: mater
 !
     if (nomcmd .eq. 'LIRE_RESU' .or. nomcmd .eq. 'CREA_RESU') goto 500
 !
-    if ((nomcmd.eq.'CALC_CHAMP') .or. (nomcmd.eq.'POST_ELEM')) then
+    if ((nomcmd .eq. 'CALC_CHAMP') .or. (nomcmd .eq. 'POST_ELEM')) then
 !
 ! ------ RECUPERATION DU MODELE, MATERIAU, CARA_ELEM et EXCIT
 !        POUR LE NUMERO D'ORDRE NUORDR
 !
-        call rslesd(result, nuord, modele(1:8), materi, carele(1:8),&
+        call rslesd(result, nuord, modele(1:8), materi, carele(1:8), &
                     excit, iexcit)
-        l_load_user = iexcit.eq.1
+        l_load_user = iexcit .eq. 1
 !
         if (materi .ne. k8bla) then
-            call rcmfmc(materi, mateco, l_ther_ = ASTER_FALSE)
+            call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
         else
             mateco = ' '
-        endif
+        end if
         cara = carele(1:8)
     else
 !
@@ -104,23 +104,23 @@ character(len=*), intent(out) :: mater
             call getvid(' ', 'MODELE', scal=nomo, nbret=n1)
             if (n1 .eq. 0) then
                 call utmess('F', 'CALCULEL3_50')
-            endif
+            end if
             modele = nomo
-        endif
+        end if
 !
 ! ------ LE MATERIAU
 !
         materi = ' '
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
         call dismoi('BESOIN_MATER', modele, 'MODELE', repk=repons)
-        if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) then
+        if ((n1 .eq. 0) .and. (repons(1:3) .eq. 'OUI')) then
             call utmess('A', 'CALCULEL3_40')
-        endif
+        end if
         if (n1 .ne. 0) then
-            call rcmfmc(materi, mateco, l_ther_ = ASTER_FALSE)
+            call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
         else
             mateco = ' '
-        endif
+        end if
 !
 ! ------ LES CARACTERISTIQUES ELEMENTAIRES
 !
@@ -128,12 +128,12 @@ character(len=*), intent(out) :: mater
 !
         call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n1)
         call dismoi('EXI_RDM', modele, 'MODELE', repk=repons)
-        if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) then
+        if ((n1 .eq. 0) .and. (repons(1:3) .eq. 'OUI')) then
             call utmess('A', 'CALCULEL3_39')
-        endif
+        end if
 !
         carele = cara
-    endif
+    end if
 !
 500 continue
 !

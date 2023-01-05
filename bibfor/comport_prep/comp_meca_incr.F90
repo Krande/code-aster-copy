@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lccree.h"
@@ -62,14 +62,14 @@ implicit none
         if (present(l_etat_init)) then
             if (l_etat_init) then
                 type_comp = 'COMP_INCR'
-            endif
-        endif
+            end if
+        end if
         if (defo_comp .eq. 'PETIT_REAC') then
             type_comp = 'COMP_INCR'
-        endif
+        end if
         if (rela_comp .eq. 'ELAS' .and. defo_comp .eq. 'GROT_GDEP') then
             type_comp = 'COMP_INCR'
         end if
-    endif
+    end if
 !
 end subroutine

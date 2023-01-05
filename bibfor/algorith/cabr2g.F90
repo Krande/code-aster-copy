@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
-                  idfde, idfde2, geom, dimdef, dimuel,&
-                  ndim, nddls, nddlm, nno, nnos,&
-                  nnom, axi, regula, b, poids,&
+subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2, &
+                  idfde, idfde2, geom, dimdef, dimuel, &
+                  ndim, nddls, nddlm, nno, nnos, &
+                  nnom, axi, regula, b, poids, &
                   poids2)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -61,7 +61,7 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- INITIALISATION DE LA MATRICE B -----------------------------------
 ! ======================================================================
-    b(:,:) = 0.d0
+    b(:, :) = 0.d0
     adder1 = regula(1)
     adder2 = regula(2)
     adder3 = regula(3)
@@ -72,27 +72,27 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- CAS QUADRATIQUES -------------------------------------------------
 ! ======================================================================
-        call dfdm2d(nno, kpi, ipoids, idfde, geom,&
+        call dfdm2d(nno, kpi, ipoids, idfde, geom, &
                     poids, dfdi(1, 1), dfdi(1, 2))
 ! ======================================================================
 ! --- CAS LINEAIRES ----------------------------------------------------
 ! ======================================================================
-        call dfdm2d(nnos, kpi, ipoid2, idfde2, geom,&
+        call dfdm2d(nnos, kpi, ipoid2, idfde2, geom, &
                     poids2, dfdi2(1, 1), dfdi2(1, 2))
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
 ! ======================================================================
 ! --- CAS QUADRATIQUES -------------------------------------------------
 ! ======================================================================
-        call dfdm3d(nno, kpi, ipoids, idfde, geom,&
+        call dfdm3d(nno, kpi, ipoids, idfde, geom, &
                     poids, dfdi(1, 1), dfdi(1, 2), dfdi(1, 3))
 ! ======================================================================
 ! --- CAS LINEAIRES ----------------------------------------------------
 ! ======================================================================
-        call dfdm3d(nnos, kpi, ipoid2, idfde2, geom,&
+        call dfdm3d(nnos, kpi, ipoid2, idfde2, geom, &
                     poids2, dfdi2(1, 1), dfdi2(1, 2), dfdi2(1, 3))
     else
         call utmess('F', 'ALGORITH6_13')
-    endif
+    end if
 ! ======================================================================
 ! --- REMPLISSAGE DE L OPERATEUR B -------------------------------------
 ! ======================================================================
@@ -103,22 +103,22 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
     do n = 1, nnos
         do j = 1, ndim
             do i = 1, ndim
-                b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+j) = b(&
-                                                         adder1-1+(j-1)*ndim+i,&
-                                                         (n-1)*nddls+j ) - dfdi(n, i&
-                                                         )
-                b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+ndim+(j-1)*ndim+i)&
-                = b(adder1-1+(j-1)*ndim+i,(n-1)*nddls+ndim+(j-1)*ndim+&
-                i) + zr(ivf2+n+(kpi-1)*nnos-1)
+                b(adder1-1+(j-1)*ndim+i, (n-1)*nddls+j) = b( &
+                                                          adder1-1+(j-1)*ndim+i, &
+                                                          (n-1)*nddls+j)-dfdi(n, i &
+                                                                              )
+                b(adder1-1+(j-1)*ndim+i, (n-1)*nddls+ndim+(j-1)*ndim+i) &
+                    = b(adder1-1+(j-1)*ndim+i, (n-1)*nddls+ndim+(j-1)*ndim+ &
+                        i)+zr(ivf2+n+(kpi-1)*nnos-1)
             end do
         end do
     end do
     do n = 1, nnom
         do j = 1, ndim
             do i = 1, ndim
-                b(adder1-1+(j-1)*ndim+i,nnos*nddls+(n-1)*nddlm+j) =&
-                b(adder1-1+(j-1)*ndim+i,nnos*nddls+(n-1)*nddlm+j) -&
-                dfdi(n+nnos,i)
+                b(adder1-1+(j-1)*ndim+i, nnos*nddls+(n-1)*nddlm+j) = &
+                    b(adder1-1+(j-1)*ndim+i, nnos*nddls+(n-1)*nddlm+j)- &
+                    dfdi(n+nnos, i)
             end do
         end do
     end do
@@ -132,10 +132,10 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
         do k = 1, ndim
             do j = 1, ndim
                 do i = 1, ndim
-                    b(adder2-1+(k-1)*ndim*ndim+(j-1)*ndim+i, (n-1)*&
-                    nddls+ndim+(k-1)*ndim+j)= b(adder2-1+(k-1)*ndim*&
-                    ndim+(j-1)*ndim+i, (n-1)*nddls+ndim+(k-1)*ndim+j)+&
-                    dfdi2(n,i)
+                    b(adder2-1+(k-1)*ndim*ndim+(j-1)*ndim+i, (n-1)* &
+                      nddls+ndim+(k-1)*ndim+j) = b(adder2-1+(k-1)*ndim* &
+                                                ndim+(j-1)*ndim+i, (n-1)*nddls+ndim+(k-1)*ndim+j)+ &
+                                               dfdi2(n, i)
                 end do
             end do
         end do
@@ -149,8 +149,8 @@ subroutine cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
     do i = 1, ndim
         do j = 1, ndim
-            b(adder3-1+(i-1)*ndim+j,nnos*nddls+nnom*nddlm+(i-1)*ndim+&
-            j)= 1.0d0
+            b(adder3-1+(i-1)*ndim+j, nnos*nddls+nnom*nddlm+(i-1)*ndim+ &
+              j) = 1.0d0
         end do
     end do
 ! ======================================================================

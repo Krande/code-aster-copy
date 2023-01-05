@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine projInsideCell(pair_tole   , elem_dime, elem_code, &
+subroutine projInsideCell(pair_tole, elem_dime, elem_code, &
                           poin_coor, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -52,27 +52,27 @@ implicit none
     iret = 1
     if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3') then
         xpt = poin_coor(1)
-        if (xpt .ge. (-1.d0-pair_tole) .and.&
-            xpt .le. ( 1.d0+pair_tole)) then
+        if (xpt .ge. (-1.d0-pair_tole) .and. &
+            xpt .le. (1.d0+pair_tole)) then
             iret = 0
-        endif
+        end if
     elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6') then
-        xpt=poin_coor(1)
-        ypt=poin_coor(2)
-        if (xpt .ge. -pair_tole .and.&
-            ypt .ge. -pair_tole .and.&
-            (ypt+xpt).le.(1.d0+pair_tole)) then
+        xpt = poin_coor(1)
+        ypt = poin_coor(2)
+        if (xpt .ge. -pair_tole .and. &
+            ypt .ge. -pair_tole .and. &
+            (ypt+xpt) .le. (1.d0+pair_tole)) then
             iret = 0
         end if
     elseif (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' .or. elem_code .eq. 'QU9') then
-        xpt=poin_coor(1)
-        ypt=poin_coor(2)
-        if( xpt .ge. (-1.d0 - pair_tole) .and. &
-            xpt .le. (1.d0 + pair_tole) .and. &
-            ypt .ge. (-1.d0 - pair_tole) .and. &
-            ypt .le. (1.d0 + pair_tole) ) then
+        xpt = poin_coor(1)
+        ypt = poin_coor(2)
+        if (xpt .ge. (-1.d0-pair_tole) .and. &
+            xpt .le. (1.d0+pair_tole) .and. &
+            ypt .ge. (-1.d0-pair_tole) .and. &
+            ypt .le. (1.d0+pair_tole)) then
             iret = 0
-        endif
+        end if
     else
         ASSERT(.false.)
     end if

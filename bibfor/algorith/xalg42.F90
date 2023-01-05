@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xalg42(ndim, elrefp, it, nnose, cnset,&
-                  typma, ndime, geom, lsnelp, pmilie,&
-                  ninter, ainter, ar, npts, nptm,&
-                  pmmax, nmilie, mfis, lonref, pinref,&
+subroutine xalg42(ndim, elrefp, it, nnose, cnset, &
+                  typma, ndime, geom, lsnelp, pmilie, &
+                  ninter, ainter, ar, npts, nptm, &
+                  pmmax, nmilie, mfis, lonref, pinref, &
                   pintt, pmitt, jonc, exit)
     implicit none
 !
@@ -80,27 +80,27 @@ subroutine xalg42(ndim, elrefp, it, nnose, cnset,&
     zxain = xxmmvd('ZXAIN')
 !     COMPTEUR DES POINTS INTERSECTION NON CONFONDUS AVEC ND SOMMET
 !     COMPTEUR DE POINTS MILIEUX
-    ipm=0
-    inm=0
-    mfisloc=0
+    ipm = 0
+    inm = 0
+    mfisloc = 0
 !
     pmilie(1:51) = 0.d0
 !
     do i = 1, 4
-        ip1(i)=0
-        ip2(i)=0
-        pm1a(i)=0
-        pm1b(i)=0
-        pm2(i)=0
+        ip1(i) = 0
+        ip2(i) = 0
+        pm1a(i) = 0
+        pm1b(i) = 0
+        pm2(i) = 0
     end do
-    call xstudo(ndime, ninter, npts, nptm, ainter,&
-                nbpi, ip1, ip2, pm1a, pm1b,&
+    call xstudo(ndime, ninter, npts, nptm, ainter, &
+                nbpi, ip1, ip2, pm1a, pm1b, &
                 pm2)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU PREMIER TYPE DE POINT MILIEU    !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     do r = 1, ninter
-        a2=nint(ainter(zxain*(r-1)+1))
+        a2 = nint(ainter(zxain*(r-1)+1))
 ! POUR EMPECHER L ALGO DE CALCULER TROP DE POINTS MILIEUX
 ! COMME LE NOEUD MILIEU EST EN 4EME POSITION QUAND NINTER=4,NPTS=2
         if (r .eq. 4) goto 300
@@ -117,30 +117,30 @@ subroutine xalg42(ndim, elrefp, it, nnose, cnset,&
 !   PM1 EST MILIEU DE AR(A2,1) ET IP3                                                             !
 !   PM2 EST MILIEU DE AR(A2,2) ET IP3                                                             !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ia=cnset(nnose*(it-1)+ar(a2,1))
-        ib=cnset(nnose*(it-1)+ar(a2,2))
-        im=cnset(nnose*(it-1)+ar(a2,3))
+        ia = cnset(nnose*(it-1)+ar(a2, 1))
+        ib = cnset(nnose*(it-1)+ar(a2, 2))
+        im = cnset(nnose*(it-1)+ar(a2, 3))
         milara(:) = 0.d0
         milarb(:) = 0.d0
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
-        call xmilar(ndim, ndime, elrefp, geom, pinref,&
-                    ia, ib, im, r, ksia,&
+        call xmilar(ndim, ndime, elrefp, geom, pinref, &
+                    ia, ib, im, r, ksia, &
                     ksib, milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm, &
                     milara, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
-                pmiref(ndime*(ipm-1)+j)=ksia(j)
-            enddo
-        endif
-        call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+                pmiref(ndime*(ipm-1)+j) = ksia(j)
+            end do
+        end if
+        call xajpmi(ndim, pmilie, pmmax, ipm, inm, &
                     milarb, lonref, ajout)
         if (ajout) then
             do j = 1, ndime
-                pmiref(ndime*(ipm-1)+j)=ksib(j)
-            enddo
-        endif
+                pmiref(ndime*(ipm-1)+j) = ksib(j)
+            end do
+        end if
 300     continue
     end do
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -151,38 +151,38 @@ subroutine xalg42(ndim, elrefp, it, nnose, cnset,&
 !
 !      on ne calcule pas le premier type de point milieu si la
 !      fissure coincide avec une arete
-        ispm2=(nint(ainter(zxain*(ip1(k)-1)+1)) .ne. 0).or. &
-           (nint(ainter(zxain*(ip2(k)-1)+1)) .ne. 0)
+        ispm2 = (nint(ainter(zxain*(ip1(k)-1)+1)) .ne. 0) .or. &
+                (nint(ainter(zxain*(ip2(k)-1)+1)) .ne. 0)
 !
 !
         if (ispm2) then
 !        DETECTER LA COTE PORTANT LES DEUX POINTS D'INTERSECTIONS
-            call detefa(nnose, ip1(k), ip2(k), it, typma,&
+            call detefa(nnose, ip1(k), ip2(k), it, typma, &
                         ainter, cnset, n)
 !
 !        CALCUL DU POINT MILIEU DE 101-102
 !
-            call xmifis(ndim, ndime, elrefp, geom, lsnelp,&
-                        n, ip1(k), ip2(k), pinref, ksia,&
+            call xmifis(ndim, ndime, elrefp, geom, lsnelp, &
+                        n, ip1(k), ip2(k), pinref, ksia, &
                         milfi, pintt, exit, jonc)
 !
 !        on incremente le nombre de points milieux sur la fissure
-            mfisloc=mfisloc+1
+            mfisloc = mfisloc+1
 !        STOCKAGE PMILIE
-            call xajpmi(ndim, pmilie, pmmax, ipm, inm,&
+            call xajpmi(ndim, pmilie, pmmax, ipm, inm, &
                         milfi, lonref, ajout)
             if (ajout) then
                 do j = 1, ndime
-                    pmiref(ndime*(ipm-1)+j)=ksia(j)
-                enddo
-            endif
-        endif
+                    pmiref(ndime*(ipm-1)+j) = ksia(j)
+                end do
+            end if
+        end if
     end do
 !
-    ASSERT(ipm.eq.4.and.mfisloc.eq.2)
+    ASSERT(ipm .eq. 4 .and. mfisloc .eq. 2)
 !
     nmilie = ipm
-    mfis=mfis+mfisloc
+    mfis = mfis+mfisloc
 !
     call jedema()
 end subroutine

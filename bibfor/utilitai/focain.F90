@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,12 +67,12 @@ subroutine focain(method, nomfon, cste, sortie, base)
     call gettco(nomfi, typres)
     if (typres .eq. 'FORMULE') then
         call utmess('F', 'MODELISA2_5', sk=nomfi)
-    endif
+    end if
     vale = nomfi//'.VALE'
     call jelira(vale, 'LONUTI', nbval)
     call jeveuo(vale, 'L', lvar)
     nbpts = nbval/2
-    lfon = lvar + nbpts
+    lfon = lvar+nbpts
 !
     if (nbpts .ge. 2) then
 !
@@ -83,19 +83,19 @@ subroutine focain(method, nomfon, cste, sortie, base)
         do i = 0, nbpts-1
             zr(lres+i) = zr(lvar+i)
         end do
-        lres = lres + nbpts
+        lres = lres+nbpts
 !
 !       --- INTEGRATION ---
         if (method .eq. 'SIMPSON') then
-            call foc2in(method, nbpts, zr(lvar), zr(lfon), cste,&
+            call foc2in(method, nbpts, zr(lvar), zr(lfon), cste, &
                         zr(lres))
         else if (method .eq. 'TRAPEZE' .or. method .eq. '  ') then
-            call foc2in(method, nbpts, zr(lvar), zr(lfon), cste,&
+            call foc2in(method, nbpts, zr(lvar), zr(lfon), cste, &
                         zr(lres))
         else
             call utmess('F', 'UTILITAI_82')
-        endif
-    else if (nbpts.eq.1) then
+        end if
+    else if (nbpts .eq. 1) then
 !
 !       --- CREATION DU TABLEAU DES VALEURS ---
         call wkvect(nomfs//'.VALE', base//' V R', 4, lres)
@@ -104,36 +104,36 @@ subroutine focain(method, nomfon, cste, sortie, base)
         zr(lres) = zr(lvar)
         zr(lres+1) = zr(lvar)+1.d0
         zr(lres+2) = cste
-        zr(lres+3) = cste + zr(lvar+1)
-    endif
+        zr(lres+3) = cste+zr(lvar+1)
+    end if
 !
 !     --- AFFECTATION DU .PROL ---
     prol = nomfi//'.PROL'
     call jeveuo(prol, 'L', lpro)
-    nomres = zk24(lpro+3)(1:8)
+    nomres = zk24(lpro+3) (1:8)
     if (nomres(1:4) .eq. 'ACCE') then
         nomres = 'VITE'
     else if (nomres(1:4) .eq. 'VITE') then
         nomres = 'DEPL'
     else
         nomres = 'TOUTRESU'
-    endif
+    end if
     prol = nomfs//'.PROL'
-    ASSERT(lxlgut(nomfs).le.24)
+    ASSERT(lxlgut(nomfs) .le. 24)
     call wkvect(prol, 'G V K24', 6, lpros)
-    zk24(lpros ) = 'FONCTION'
-    if (zk24(lpro+1)(1:3) .eq. 'INT') then
+    zk24(lpros) = 'FONCTION'
+    if (zk24(lpro+1) (1:3) .eq. 'INT') then
         zk24(lpros+1) = 'LIN LIN '
     else
         zk24(lpros+1) = zk24(lpro+1)
-    endif
+    end if
     zk24(lpros+2) = zk24(lpro+2)
     zk24(lpros+3) = nomres
-    if (zk24(lpro+4)(1:1) .eq. 'I' .or. zk24(lpro+4)(2:2) .eq. 'I') then
+    if (zk24(lpro+4) (1:1) .eq. 'I' .or. zk24(lpro+4) (2:2) .eq. 'I') then
         zk24(lpros+4) = 'EE      '
     else
         zk24(lpros+4) = zk24(lpro+4)
-    endif
+    end if
 !
     zk24(lpros+5) = nomfs
     call jedema()

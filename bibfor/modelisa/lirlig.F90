@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,28 +32,28 @@ subroutine lirlig(ifl, cnl, lig, ilec)
 !               LIG     = LIGNE LUE
 !       ----------------------------------------------------------------
     integer :: nl, nl1, nl2, i
-    save                nl1, nl2
+    save nl1, nl2
     character(len=255) :: lirlg
-    data nl1,nl2    /0,0/
+    data nl1, nl2/0, 0/
 !
     cnl = ' '
-    read(unit=ifl,fmt=1,end=100) lirlg
+    read (unit=ifl, fmt=1, end=100) lirlg
     do i = 81, 255
         if (lirlg(i:i) .eq. '%') goto 12
         if (lirlg(i:i) .ne. ' ') then
             call utmess('F', 'MODELISA4_92', sk=lirlg)
-        endif
+        end if
     end do
- 12 continue
+12  continue
     lig = lirlg(1:80)
 !
     if (ilec .eq. 1) then
-        nl1 = nl1 + 1
+        nl1 = nl1+1
         nl = nl1
     else
-        nl2 = nl2 + 1
+        nl2 = nl2+1
         nl = nl2
-    endif
+    end if
 !
     cnl(1:14) = '(LIGNE       )'
     call codent(nl, 'D', cnl(8:13))
@@ -65,9 +65,9 @@ subroutine lirlig(ifl, cnl, lig, ilec)
         call utmess('F', 'MODELISA4_94')
     else
         call utmess('F', 'MODELISA4_93', si=nl1)
-    endif
+    end if
 !
-    1   format(a80)
+1   format(a80)
 !
 999 continue
 end subroutine

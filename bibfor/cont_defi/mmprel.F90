@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mmprel(sdcont, mesh, model, ligret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ajellt.h"
@@ -73,25 +73,25 @@ implicit none
 !
 ! - Datastructure for contact definition
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
-    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Parameters
 !
-    model_ndim   = cfdisi(sdcont_defi,'NDIM')
-    nb_cont_elem = cfdisi(sdcont_defi,'NMACO')
-    nt_elem_slav = cfdisi(sdcont_defi,'NTMAEC')
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
-    l_verif_all  = cfdisl(sdcont_defi,'ALL_VERIF')
+    model_ndim = cfdisi(sdcont_defi, 'NDIM')
+    nb_cont_elem = cfdisi(sdcont_defi, 'NMACO')
+    nt_elem_slav = cfdisi(sdcont_defi, 'NTMAEC')
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    l_verif_all = cfdisl(sdcont_defi, 'ALL_VERIF')
 !
 ! - Add elements
 !
-    if (.not.l_verif_all) then
+    if (.not. l_verif_all) then
 !
 ! ----- Create list of slave elements
 !
-        call wkvect(list_elem, 'V V I', nt_elem_slav, vi = v_list_elem)
+        call wkvect(list_elem, 'V V I', nt_elem_slav, vi=v_list_elem)
 !
 ! ----- Set list of slave elements
 !
@@ -99,40 +99,40 @@ implicit none
 !
 ! --------- Type of model
 !
-            l_frot_zone = mminfl(sdcont_defi,'FROTTEMENT_ZONE',i_zone)
-            l_veri = mminfl(sdcont_defi,'VERIF',i_zone)
+            l_frot_zone = mminfl(sdcont_defi, 'FROTTEMENT_ZONE', i_zone)
+            l_veri = mminfl(sdcont_defi, 'VERIF', i_zone)
             if (model_ndim .eq. 2) then
                 if (l_frot_zone) then
                     modeli = 'FRIC_SL_2D'
                 else
                     modeli = 'CONT_SL_2D'
-                endif
-            else if (model_ndim.eq. 3) then
+                end if
+            else if (model_ndim .eq. 3) then
                 if (l_frot_zone) then
                     modeli = 'FRIC_SL_3D'
                 else
                     modeli = 'CONT_SL_3D'
-                endif
+                end if
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! --------- Type of model
 !
-            if (.not.l_veri) then
-                nb_elem_slav = mminfi(sdcont_defi,'NBMAE' ,i_zone)
-                jdecme       = mminfi(sdcont_defi,'JDECME',i_zone)
-                ASSERT(nb_elem_slav.le.nt_elem_slav)
+            if (.not. l_veri) then
+                nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
+                jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
+                ASSERT(nb_elem_slav .le. nt_elem_slav)
                 do i_elem_slav = 1, nb_elem_slav
-                    elem_slav_idx  = jdecme+i_elem_slav
+                    elem_slav_idx = jdecme+i_elem_slav
                     elem_slav_nume = v_sdcont_mailco(elem_slav_idx)
                     v_list_elem(i_elem_slav) = elem_slav_nume
                 end do
-                call ajellt(ligret, mesh, nb_elem_slav, list_elem, ' ',&
+                call ajellt(ligret, mesh, nb_elem_slav, list_elem, ' ', &
                             phenom, modeli, 0, ' ')
-            endif
+            end if
         end do
         call jedetr(list_elem)
-    endif
+    end if
 !
 end subroutine

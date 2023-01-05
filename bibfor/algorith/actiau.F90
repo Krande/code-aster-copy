@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine actiau(nbcmp, nbno, nbec, mcoddl, icodac)
     integer :: i, iec, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !
 !-----------------------------------------------------------------------
-    parameter (nbcpmx = 300)
-    parameter (nbecmx =  10)
+    parameter(nbcpmx=300)
+    parameter(nbecmx=10)
     integer :: mcoddl(nbno*nbec, 2), icodac(nbno*nbec)
     integer :: idec(nbcpmx), itout(nbecmx), icoco(nbecmx), icici(nbecmx)
 !
@@ -61,7 +61,7 @@ subroutine actiau(nbcmp, nbno, nbec, mcoddl, icodac)
     end do
 !
     do i = 1, nbcmp
-        idec(i)=1
+        idec(i) = 1
     end do
     call iscode(idec, itout, nbcmp)
 !
@@ -72,7 +72,7 @@ subroutine actiau(nbcmp, nbno, nbec, mcoddl, icodac)
         call isgeco(icoco, mcoddl((i-1)*nbec+1, 2), nbcmp, 1, icici)
         call isgeco(icodac((i-1)*nbec+1), icici, nbcmp, -1, icoco)
         do iec = 1, nbec
-            icodac((i-1)*nbec+iec)=icoco(iec)
+            icodac((i-1)*nbec+iec) = icoco(iec)
         end do
     end do
 !

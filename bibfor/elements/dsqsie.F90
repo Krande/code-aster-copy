@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dsqsie(option, fami, xyzl, pgl, depl,&
+subroutine dsqsie(option, fami, xyzl, pgl, depl, &
                   nbcou, cdl)
     implicit none
 #include "asterf_types.h"
@@ -51,11 +51,11 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
 !                  SUR 3 NIVEAUX : 3 PTS D INTEGRATION DANS L EPAISSEUR
 !                  CORRESPONDANT AUX NIVEAUX INF, MOY, SUP
     integer :: nnomai
-    parameter  (nnomai=4)
+    parameter(nnomai=4)
     integer :: nddlme
-    parameter  (nddlme=2)
+    parameter(nddlme=2)
     integer :: nddlfl
-    parameter  (nddlfl=3)
+    parameter(nddlfl=3)
 !
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: jcaco, i, j, k, ie, icpg, ig, icou, iniv, multic
@@ -76,8 +76,8 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
     aster_logical :: coupmf, lcalct
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
 !     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
@@ -86,8 +86,8 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
     call gquad4(xyzl, caraq4)
 !
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
-    call dxmate(fami, df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate(fami, df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !
 !     -------- CALCUL DE LA MATRICE DE HOOKE EN MEMBRANE ---------------
@@ -97,16 +97,16 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
         hicou = epais/nbcou
         excen = zr(jcaco-1+5)
         h = dm/epais
-    endif
+    end if
 !
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
     do j = 1, nnomai
         do i = 1, nddlme
-            depm(i+2* (j-1)) = depl(i+6* (j-1))
+            depm(i+2*(j-1)) = depl(i+6*(j-1))
         end do
-        depf(1+3* (j-1)) = depl(1+2+6* (j-1))
-        depf(2+3* (j-1)) = depl(3+2+6* (j-1))
-        depf(3+3* (j-1)) = -depl(2+2+6* (j-1))
+        depf(1+3*(j-1)) = depl(1+2+6*(j-1))
+        depf(2+3*(j-1)) = depl(3+2+6*(j-1))
+        depf(3+3*(j-1)) = -depl(2+2+6*(j-1))
     end do
 !     ---- CALCUL DE LA MATRICE AN -------------------------------------
     call dsqdis(xyzl, caraq4, df, dci, an)
@@ -115,19 +115,19 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
 !  BOUCLE SUR LES POINTS D INTEGRATION
 !
     if (option .eq. 'EPSI_ELGA') then
-        lcalct=.false.
+        lcalct = .false.
     else
-        lcalct=.true.
-    endif
+        lcalct = .true.
+    end if
 !   coefficients pour calcul de sixz et siyz
     if (multic .eq. 0) then
-        zmin = excen - epais/2.d0
-        zmax = excen + epais/2.d0
-        quotient = 1.d0*zmax**3-3*zmax**2*zmin + 3*zmax*zmin**2-1.d0*zmin**3
+        zmin = excen-epais/2.d0
+        zmax = excen+epais/2.d0
+        quotient = 1.d0*zmax**3-3*zmax**2*zmin+3*zmax*zmin**2-1.d0*zmin**3
         a = -6.d0/quotient
         b = 6.d0*(zmin+zmax)/quotient
         c = -6.d0*zmax*zmin/quotient
-    endif
+    end if
 !
     do ie = 1, npg
         qsi = zr(icoopg-1+ndim*(ie-1)+1)
@@ -142,7 +142,7 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
         end do
         do i = 1, 3
             do j = 1, nddlme*nnomai
-                sm(i) = sm(i) + bm(i,j)*depm(j)
+                sm(i) = sm(i)+bm(i, j)*depm(j)
             end do
         end do
 !         ----- CALCUL DE LA MATRICE BFB AU POINT QSI ETA -----------
@@ -152,11 +152,11 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
 !         ------ BF = BFB + BFA.AN ----------------------------------
         do i = 1, 3
             do j = 1, 12
-                bfn(i,j) = 0.d0
+                bfn(i, j) = 0.d0
                 do k = 1, 4
-                    bfn(i,j) = bfn(i,j) + bfa(i,k)*an(k,j)
+                    bfn(i, j) = bfn(i, j)+bfa(i, k)*an(k, j)
                 end do
-                bf(i,j) = bfb(i,j) + bfn(i,j)
+                bf(i, j) = bfb(i, j)+bfn(i, j)
             end do
         end do
 !         ------ SF = BF.DEPF ---------------------------------------
@@ -165,7 +165,7 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
         end do
         do i = 1, 3
             do j = 1, nddlfl*nnomai
-                sf(i) = sf(i) + bf(i,j)*depf(j)
+                sf(i) = sf(i)+bf(i, j)*depf(j)
             end do
         end do
 !
@@ -178,34 +178,34 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
             do ig = 1, 3
 !
 !           INDICE DANS LE CHAMP DE CONTRAINTES A ECRIRE
-                icpg = 6*3*nbcou*(ie-1) + 6*3*(icou-1) + 6*(ig-1)
+                icpg = 6*3*nbcou*(ie-1)+6*3*(icou-1)+6*(ig-1)
 !
                 if (multic .eq. 0) then
 !             -- MONOCOUCHE
 !             -- COTE DES POINTS D'INTEGRATION
 !             --------------------------------
-                    zic = excen - epais/2.d0 + (icou-1)*hicou
+                    zic = excen-epais/2.d0+(icou-1)*hicou
                     if (ig .eq. 1) then
                         zic = zic
-                    else if (ig.eq.2) then
-                        zic = zic + hicou/2.d0
+                    else if (ig .eq. 2) then
+                        zic = zic+hicou/2.d0
                     else
-                        zic = zic + hicou
-                    endif
-                    d1i(1,1) = a*zic*zic + b*zic + c
-                    d1i(2,2) = d1i(1,1)
-                    d1i(1,2) = 0.d0
-                    d1i(2,1) = 0.d0
+                        zic = zic+hicou
+                    end if
+                    d1i(1, 1) = a*zic*zic+b*zic+c
+                    d1i(2, 2) = d1i(1, 1)
+                    d1i(1, 2) = 0.d0
+                    d1i(2, 1) = 0.d0
                 else
 !             -- EN MULTICOUCHES
 !             -- ON CALCULE TOUT D'UN COUP
-                    iniv = ig - 2
-                    call dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
+                    iniv = ig-2
+                    call dxdmul(lcalct, icou, iniv, t1ve, t2ui, &
                                 h, d1i, d2i, zic, hicou)
-                endif
+                end if
 !
                 do i = 1, 3
-                    eps(i) = sm(i) + zic*sf(i)
+                    eps(i) = sm(i)+zic*sf(i)
                     sig(i) = 0.d0
                 end do
 !
@@ -220,17 +220,17 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
 !
 ! ---       CALCUL DES MATRICES BCB, BCA ET BCM :
 !           -----------------------------------
-                call dsqcis(qsi, eta, caraq4, hmft2, hft2,&
+                call dsqcis(qsi, eta, caraq4, hmft2, hft2, &
                             bcm, bcb, bca)
 !
 !             ------ BC = BCB + BCA.AN ---------------------------------
                 do i = 1, 2
                     do j = 1, 12
-                        bcn(i,j) = 0.d0
+                        bcn(i, j) = 0.d0
                         do k = 1, 4
-                            bcn(i,j) = bcn(i,j) + bca(i,k)*an(k,j)
+                            bcn(i, j) = bcn(i, j)+bca(i, k)*an(k, j)
                         end do
-                        bc(i,j) = bcb(i,j) + bcn(i,j)
+                        bc(i, j) = bcb(i, j)+bcn(i, j)
                     end do
                 end do
 !             ------ VT = BC.DEPF --------------------------------------
@@ -238,14 +238,14 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
                 vt(2) = 0.d0
                 do i = 1, 2
                     do j = 1, 12
-                        vt(i) = vt(i) + bc(i,j)*depf(j)
+                        vt(i) = vt(i)+bc(i, j)*depf(j)
                     end do
                 end do
 !
                 if (option .eq. 'EPSI_ELGA') then
 !           ------ DCIS = DCI.VT --------------------------------------
-                    dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
-                    dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
+                    dcis(1) = dci(1, 1)*vt(1)+dci(1, 2)*vt(2)
+                    dcis(2) = dci(2, 1)*vt(1)+dci(2, 2)*vt(2)
                     cdl(icpg+1) = eps(1)
                     cdl(icpg+2) = eps(2)
                     cdl(icpg+3) = 0.d0
@@ -257,23 +257,23 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
 !           SIEF_ELGA
                     do i = 1, 3
                         do j = 1, 3
-                            sig(i) = sig(i) + h(i,j)*eps(j)
+                            sig(i) = sig(i)+h(i, j)*eps(j)
                         end do
                     end do
 !
 !             ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ----
-                    cist(1) = d1i(1,1)*vt(1) + d1i(1,2)*vt(2)
-                    cist(2) = d1i(2,1)*vt(1) + d1i(2,2)*vt(2)
+                    cist(1) = d1i(1, 1)*vt(1)+d1i(1, 2)*vt(2)
+                    cist(2) = d1i(2, 1)*vt(1)+d1i(2, 2)*vt(2)
                     if (multic .gt. 0) then
 !             ------- CALCUL DU PRODUIT HL.T2 ------------------------
                         call dsxhlt(df, jacob(2), hlt2)
-                        call dsqlxy(qsi, eta, hlt2, an, depf,&
+                        call dsqlxy(qsi, eta, hlt2, an, depf, &
                                     caraq4(13), lambda)
                         do j = 1, 4
-                            cist(1) = cist(1) + d2i(1,j)*lambda(j)
-                            cist(2) = cist(2) + d2i(2,j)*lambda(j)
+                            cist(1) = cist(1)+d2i(1, j)*lambda(j)
+                            cist(2) = cist(2)+d2i(2, j)*lambda(j)
                         end do
-                    endif
+                    end if
 !
                     cdl(icpg+1) = sig(1)
                     cdl(icpg+2) = sig(2)
@@ -281,7 +281,7 @@ subroutine dsqsie(option, fami, xyzl, pgl, depl,&
                     cdl(icpg+4) = sig(3)
                     cdl(icpg+5) = cist(1)
                     cdl(icpg+6) = cist(2)
-                endif
+                end if
             end do
         end do
     end do

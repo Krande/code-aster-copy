@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
+subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp, &
                      cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -39,11 +39,11 @@ subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
     fidm = to_med_idt(fid)
     tyatm4 = tyatmd
     nbrcm4 = nbrcmp
-    call msevac(fidm, nomest, nomatt, tyatm4, nbrcm4,&
+    call msevac(fidm, nomest, nomatt, tyatm4, nbrcm4, &
                 cret4)
     cret = cret4
 #else
-    call msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
+    call msevac(fid, nomest, nomatt, tyatmd, nbrcmp, &
                 cret)
 #endif
 !

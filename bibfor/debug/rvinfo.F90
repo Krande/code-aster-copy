@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rvinfo(ifm, iocc, i1, i2, c,&
+subroutine rvinfo(ifm, iocc, i1, i2, c, &
                   sdchef)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -50,34 +50,34 @@ subroutine rvinfo(ifm, iocc, i1, i2, c,&
     if (c .eq. 'R') then
         call jeveuo(jexnum(nomacc, iocc), 'L', adracc)
         call jeveuo(jexnum(nomval, iocc), 'L', adrval)
-        acces = zk8(adracc + i1-1)
+        acces = zk8(adracc+i1-1)
     else
         call jeveuo(nomval, 'L', adrval)
         call jeveuo(nomacc, 'L', adracc)
         acces = zk8(adracc)
-    endif
+    end if
 !
-    write(ifm,*)
-    write(ifm,*)'--- POST_TRAITEMENT NUMERO : ',iocc,&
-     &            ' - CHAMP NUMERO           : ',i2
-    if ((acces(1:1).eq.'O') .or. (acces(1:1).eq.'M')) then
-        vali = zi(adrval + i1-1)
+    write (ifm, *)
+    write (ifm, *) '--- POST_TRAITEMENT NUMERO : ', iocc,&
+     &            ' - CHAMP NUMERO           : ', i2
+    if ((acces(1:1) .eq. 'O') .or. (acces(1:1) .eq. 'M')) then
+        vali = zi(adrval+i1-1)
         if (acces(1:1) .eq. 'O') then
-            write(ifm,*)' NUME_ORDRE           : ',vali
+            write (ifm, *) ' NUME_ORDRE           : ', vali
         else
-            write(ifm,*)' NUME_MODE            : ',vali
-        endif
-    else if ((acces(1:1).eq.'F') .or. (acces(1:1).eq.'I')) then
-        valr = zr(adrval + i1-1)
+            write (ifm, *) ' NUME_MODE            : ', vali
+        end if
+    else if ((acces(1:1) .eq. 'F') .or. (acces(1:1) .eq. 'I')) then
+        valr = zr(adrval+i1-1)
         if (acces(1:1) .eq. 'I') then
-            write(ifm,*)' INSTANT                : ',valr
+            write (ifm, *) ' INSTANT                : ', valr
         else
-            write(ifm,*)' FREQUENCE              : ',valr
-        endif
+            write (ifm, *) ' FREQUENCE              : ', valr
+        end if
     else
-    endif
+    end if
 !
-    if (c .eq. 'E') write(ifm,*)' CHAMP INEXISTANT '
+    if (c .eq. 'E') write (ifm, *) ' CHAMP INEXISTANT '
 !
     call jedema()
 end subroutine

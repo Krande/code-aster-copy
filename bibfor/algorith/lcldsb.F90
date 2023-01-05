@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcldsb(fami, kpg, ksp, ndim,&
-                  imate, epsm, deps, vim,&
-                  option, sig,&
+subroutine lcldsb(fami, kpg, ksp, ndim, &
+                  imate, epsm, deps, vim, &
+                  option, sig, &
                   vip, dsidep)
     implicit none
 #include "asterf_types.h"
@@ -65,69 +65,69 @@ subroutine lcldsb(fami, kpg, ksp, ndim,&
     real(kind=8) :: kdess, bendo, lambda, deuxmu, gamma
     real(kind=8) :: seuil
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref, tp, tm, tref
-    parameter  (rigmin = 1.d-5)
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    parameter(rigmin=1.d-5)
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 ! ----------------------------------------------------------------------
 !
 !
 ! - Get temperatures
 !
-    call get_varc(fami , kpg  , ksp , 'T',&
+    call get_varc(fami, kpg, ksp, 'T', &
                   tm, tp, tref)
 !
 ! -- OPTION ET MODELISATION
 !
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
-    coup = (option(6:9).eq.'COUP')
-    if (coup) rigi=.true.
+    rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
+    coup = (option(6:9) .eq. 'COUP')
+    if (coup) rigi = .true.
     ndimsi = 2*ndim
-    rac2=sqrt(2.d0)
-    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+    rac2 = sqrt(2.d0)
+    call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                 ksp, hydrm, iret)
-    if (iret .ne. 0) hydrm=0.d0
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    if (iret .ne. 0) hydrm = 0.d0
+    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                 ksp, hydrp, iret)
-    if (iret .ne. 0) hydrp=0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+    if (iret .ne. 0) hydrp = 0.d0
+    call rcvarc(' ', 'SECH', '-', fami, kpg, &
                 ksp, sechm, iret)
-    if (iret .ne. 0) sechm=0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    if (iret .ne. 0) sechm = 0.d0
+    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                 ksp, sechp, iret)
-    if (iret .ne. 0) sechp=0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    if (iret .ne. 0) sechp = 0.d0
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sref, iret)
-    if (iret .ne. 0) sref=0.d0
+    if (iret .ne. 0) sref = 0.d0
 !
 ! -- INITIALISATION
 !
-    call lceib1(fami, kpg, ksp, imate,&
-                ndim, epsm, sref, sechm, hydrm,&
-                t, lambda, deuxmu, epsthe, kdess,&
+    call lceib1(fami, kpg, ksp, imate, &
+                ndim, epsm, sref, sechm, hydrm, &
+                t, lambda, deuxmu, epsthe, kdess, &
                 bendo, gamma, seuil)
 !
 ! -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 !
     if (resi) then
         do k = 1, ndimsi
-            eps(k) = epsm(k) + deps(k) - kron(k) * ( epsthe(2) - kdess * (sref-sechp) - bendo * h&
-                     &ydrp )
+            eps(k) = epsm(k)+deps(k)-kron(k)*(epsthe(2)-kdess*(sref-sechp)-bendo*h&
+                     &ydrp)
         end do
     else
         do k = 1, ndimsi
-            eps(k) = epsm(k) - ( epsthe(1) - kdess * (sref-sechm) - bendo * hydrm ) * kron(k)
+            eps(k) = epsm(k)-(epsthe(1)-kdess*(sref-sechm)-bendo*hydrm)*kron(k)
         end do
-    endif
+    end if
 !
     do k = 4, ndimsi
         eps(k) = eps(k)/rac2
     end do
     if (ndimsi .lt. 6) then
         do k = ndimsi+1, 6
-            eps(k)=0.d0
+            eps(k) = 0.d0
         end do
-    endif
+    end if
 !
 ! -- DIAGONALISATION DES DEFORMATIONS
 !
@@ -150,162 +150,162 @@ subroutine lcldsb(fami, kpg, ksp, ndim,&
         do k = 1, 3
             sigel(k) = 0.d0
         end do
-    endif
+    end if
     do k = 1, 3
         if (epsp(k) .gt. 0.d0) then
-            sigel(k) = sigel(k) + deuxmu*epsp(k)
-        endif
+            sigel(k) = sigel(k)+deuxmu*epsp(k)
+        end if
     end do
-    ener = 0.5d0 * ddot(3,epsp,1,sigel,1)
+    ener = 0.5d0*ddot(3, epsp, 1, sigel, 1)
 !
 ! -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
 !
     if (resi) then
         elas = .false.
-        d = (sqrt((1+gamma)/seuil * ener) - 1) / gamma
+        d = (sqrt((1+gamma)/seuil*ener)-1)/gamma
         if (d .lt. vim(1)) then
             d = vim(1)
             elas = .true.
         else if (d .gt. 1) then
             d = 1
             elas = .true.
-        endif
-        fd = (1 - d) / (1 + gamma*d)
+        end if
+        fd = (1-d)/(1+gamma*d)
         vip(1) = d
         if (elas) then
             vip(2) = 0
             if (fd .le. rigmin) vip(2) = 2
         else
             vip(2) = 1
-        endif
+        end if
     else
-        d=vim(1)
-        fd = (1 - d) / (1 + gamma*d)
-        elas=((nint(vim(2)).eq.0).or.(nint(vim(2)).eq.2))
-    endif
+        d = vim(1)
+        fd = (1-d)/(1+gamma*d)
+        elas = ((nint(vim(2)) .eq. 0) .or. (nint(vim(2)) .eq. 2))
+    end if
 !
 !
 ! -- CALCUL DES CONTRAINTES
 !
     if ((epsp(1)+epsp(2)+epsp(3)) .gt. 0.d0) then
-        lambdd=lambda * fd
+        lambdd = lambda*fd
     else
-        lambdd=lambda
-    endif
+        lambdd = lambda
+    end if
     if (epsp(1) .gt. 0.d0) then
-        deumud(1)=deuxmu*fd
+        deumud(1) = deuxmu*fd
     else
-        deumud(1)=deuxmu
-    endif
+        deumud(1) = deuxmu
+    end if
     if (epsp(2) .gt. 0.d0) then
-        deumud(2)=deuxmu*fd
+        deumud(2) = deuxmu*fd
     else
-        deumud(2)=deuxmu
-    endif
+        deumud(2) = deuxmu
+    end if
     if (epsp(3) .gt. 0.d0) then
-        deumud(3)=deuxmu*fd
+        deumud(3) = deuxmu*fd
     else
-        deumud(3)=deuxmu
-    endif
-    treps=epsp(1)+epsp(2)+epsp(3)
-    sigp(1)=lambdd*treps+deumud(1)*epsp(1)
-    sigp(2)=lambdd*treps+deumud(2)*epsp(2)
-    sigp(3)=lambdd*treps+deumud(3)*epsp(3)
+        deumud(3) = deuxmu
+    end if
+    treps = epsp(1)+epsp(2)+epsp(3)
+    sigp(1) = lambdd*treps+deumud(1)*epsp(1)
+    sigp(2) = lambdd*treps+deumud(2)*epsp(2)
+    sigp(3) = lambdd*treps+deumud(3)*epsp(3)
 !
 !
-    if (resi .and. (.not.coup)) then
+    if (resi .and. (.not. coup)) then
         call r8inir(6, 0.d0, sig, 1)
         do i = 1, 3
-            rtemp=sigp(i)
-            sig(1)=sig(1)+vecp(1,i)*vecp(1,i)*rtemp
-            sig(2)=sig(2)+vecp(2,i)*vecp(2,i)*rtemp
-            sig(3)=sig(3)+vecp(3,i)*vecp(3,i)*rtemp
-            sig(4)=sig(4)+vecp(1,i)*vecp(2,i)*rtemp
-            sig(5)=sig(5)+vecp(1,i)*vecp(3,i)*rtemp
-            sig(6)=sig(6)+vecp(2,i)*vecp(3,i)*rtemp
+            rtemp = sigp(i)
+            sig(1) = sig(1)+vecp(1, i)*vecp(1, i)*rtemp
+            sig(2) = sig(2)+vecp(2, i)*vecp(2, i)*rtemp
+            sig(3) = sig(3)+vecp(3, i)*vecp(3, i)*rtemp
+            sig(4) = sig(4)+vecp(1, i)*vecp(2, i)*rtemp
+            sig(5) = sig(5)+vecp(1, i)*vecp(3, i)*rtemp
+            sig(6) = sig(6)+vecp(2, i)*vecp(3, i)*rtemp
         end do
         do k = 4, ndimsi
-            sig(k)=rac2*sig(k)
+            sig(k) = rac2*sig(k)
         end do
-    endif
+    end if
 !
 ! -- CALCUL DE LA MATRICE TANGENTE
 !
     if (rigi) then
-        if (option(11:14) .eq. 'ELAS') elas=.true.
+        if (option(11:14) .eq. 'ELAS') elas = .true.
         call r8inir(36, 0.d0, dspdep, 1)
         if (coup) then
             call r8inir(72, 0.d0, dsidep, 1)
         else
             call r8inir(36, 0.d0, dsidep, 1)
-        endif
+        end if
         if (fd .lt. rigmin) then
             if ((epsp(1)+epsp(2)+epsp(3)) .gt. 0.d0) then
-                lambdd=lambda * rigmin
-            endif
+                lambdd = lambda*rigmin
+            end if
             if (epsp(1) .gt. 0.d0) then
-                deumud(1)=deuxmu*rigmin
-            endif
+                deumud(1) = deuxmu*rigmin
+            end if
             if (epsp(2) .gt. 0.d0) then
-                deumud(2)=deuxmu*rigmin
-            endif
+                deumud(2) = deuxmu*rigmin
+            end if
             if (epsp(3) .gt. 0.d0) then
-                deumud(3)=deuxmu*rigmin
-            endif
-        endif
+                deumud(3) = deuxmu*rigmin
+            end if
+        end if
         do k = 1, 3
             do l = 1, 3
-                dspdep(k,l) = lambdd
+                dspdep(k, l) = lambdd
             end do
         end do
         do k = 1, 3
-            dspdep(k,k) = dspdep(k,k) + deumud(k)
+            dspdep(k, k) = dspdep(k, k)+deumud(k)
         end do
         if (epsp(1)*epsp(2) .ge. 0.d0) then
-            dspdep(4,4)=deumud(1)
+            dspdep(4, 4) = deumud(1)
         else
-            dspdep(4,4)=(deumud(1)*epsp(1)-deumud(2)*epsp(2)) /(epsp(1)-epsp(2))
-        endif
+            dspdep(4, 4) = (deumud(1)*epsp(1)-deumud(2)*epsp(2))/(epsp(1)-epsp(2))
+        end if
         if (epsp(1)*epsp(3) .ge. 0.d0) then
-            dspdep(5,5)=deumud(1)
+            dspdep(5, 5) = deumud(1)
         else
-            dspdep(5,5)=(deumud(1)*epsp(1)-deumud(3)*epsp(3)) /(epsp(1)-epsp(3))
-        endif
+            dspdep(5, 5) = (deumud(1)*epsp(1)-deumud(3)*epsp(3))/(epsp(1)-epsp(3))
+        end if
         if (epsp(3)*epsp(2) .ge. 0.d0) then
-            dspdep(6,6)=deumud(3)
+            dspdep(6, 6) = deumud(3)
         else
-            dspdep(6,6)=(deumud(3)*epsp(3)-deumud(2)*epsp(2)) /(epsp(3)-epsp(2))
-        endif
+            dspdep(6, 6) = (deumud(3)*epsp(3)-deumud(2)*epsp(2))/(epsp(3)-epsp(2))
+        end if
         do i = 1, 3
             do j = i, 3
                 if (i .eq. j) then
-                    rtemp3=1.d0
+                    rtemp3 = 1.d0
                 else
-                    rtemp3=rac2
-                endif
+                    rtemp3 = rac2
+                end if
                 do k = 1, 3
                     do l = 1, 3
-                        if (t(i,j) .ge. t(k,l)) then
+                        if (t(i, j) .ge. t(k, l)) then
                             if (k .eq. l) then
-                                rtemp4=rtemp3
+                                rtemp4 = rtemp3
                             else
-                                rtemp4=rtemp3/rac2
-                            endif
-                            rtemp2=0.d0
+                                rtemp4 = rtemp3/rac2
+                            end if
+                            rtemp2 = 0.d0
                             do m = 1, 3
                                 do n = 1, 3
-                                    rtemp2=rtemp2+vecp(k,m)* vecp(i,n)&
-                                    *vecp(j,n)*vecp(l,m)*dspdep(n,m)
+                                    rtemp2 = rtemp2+vecp(k, m)*vecp(i, n) &
+                                             *vecp(j, n)*vecp(l, m)*dspdep(n, m)
                                 end do
                             end do
-                            rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*vecp(k,1)*vecp(l,2)*dspdep(4,4)
-                            rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*vecp(k,2)*vecp(l,1)*dspdep(4,4)
-                            rtemp2=rtemp2+vecp(i,1)*vecp(j,3)*vecp(k,1)*vecp(l,3)*dspdep(5,5)
-                            rtemp2=rtemp2+vecp(i,3)*vecp(j,1)*vecp(k,3)*vecp(l,1)*dspdep(5,5)
-                            rtemp2=rtemp2+vecp(i,2)*vecp(j,3)*vecp(k,2)*vecp(l,3)*dspdep(6,6)
-                            rtemp2=rtemp2+vecp(i,3)*vecp(j,2)*vecp(k,3)*vecp(l,2)*dspdep(6,6)
-                            dsidep(t(i,j),t(k,l))=dsidep(t(i,j),t(k,l))+rtemp2*rtemp4
-                        endif
+                            rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 2)*vecp(k, 1)*vecp(l, 2)*dspdep(4, 4)
+                            rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 1)*vecp(k, 2)*vecp(l, 1)*dspdep(4, 4)
+                            rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 3)*vecp(k, 1)*vecp(l, 3)*dspdep(5, 5)
+                            rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 1)*vecp(k, 3)*vecp(l, 1)*dspdep(5, 5)
+                            rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 3)*vecp(k, 2)*vecp(l, 3)*dspdep(6, 6)
+                            rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 2)*vecp(k, 3)*vecp(l, 2)*dspdep(6, 6)
+                            dsidep(t(i, j), t(k, l)) = dsidep(t(i, j), t(k, l))+rtemp2*rtemp4
+                        end if
                     end do
                 end do
             end do
@@ -313,94 +313,94 @@ subroutine lcldsb(fami, kpg, ksp, ndim,&
 !
         do i = 1, 6
             do j = i+1, 6
-                dsidep(i,j)=dsidep(j,i)
+                dsidep(i, j) = dsidep(j, i)
             end do
         end do
 ! -- CONTRIBUTION DISSIPATIVE
-        if ((.not. elas) .and. (ener.gt.0.d0)) then
+        if ((.not. elas) .and. (ener .gt. 0.d0)) then
             if (coup) then
                 coef = sqrt((1+gamma)/(2*gamma*(1+gamma*d)*ener))
                 if ((epsp(1)+epsp(2)+epsp(3)) .gt. 0.d0) then
-                    lambdd=lambda * coef
+                    lambdd = lambda*coef
                 else
-                    lambdd=0.d0
-                endif
+                    lambdd = 0.d0
+                end if
                 if (epsp(1) .gt. 0.d0) then
-                    deumud(1)=deuxmu*coef
+                    deumud(1) = deuxmu*coef
                 else
-                    deumud(1)=0.d0
-                endif
+                    deumud(1) = 0.d0
+                end if
                 if (epsp(2) .gt. 0.d0) then
-                    deumud(2)=deuxmu*coef
+                    deumud(2) = deuxmu*coef
                 else
-                    deumud(2)=0.d0
-                endif
+                    deumud(2) = 0.d0
+                end if
                 if (epsp(3) .gt. 0.d0) then
-                    deumud(3)=deuxmu*coef
+                    deumud(3) = deuxmu*coef
                 else
-                    deumud(3)=0.d0
-                endif
+                    deumud(3) = 0.d0
+                end if
                 do k = 1, 3
                     do l = 1, 3
-                        dspdep(k,l) = lambdd
+                        dspdep(k, l) = lambdd
                     end do
                 end do
                 do k = 1, 3
-                    dspdep(k,k) = dspdep(k,k) + deumud(k)
+                    dspdep(k, k) = dspdep(k, k)+deumud(k)
                 end do
                 if (epsp(1)*epsp(2) .ge. 0.d0) then
-                    dspdep(4,4)=deumud(1)
+                    dspdep(4, 4) = deumud(1)
                 else
-                    dspdep(4,4)=(deumud(1)*epsp(1)-deumud(2)*epsp(2))/(epsp(1)-epsp(2))
-                endif
+                    dspdep(4, 4) = (deumud(1)*epsp(1)-deumud(2)*epsp(2))/(epsp(1)-epsp(2))
+                end if
                 if (epsp(1)*epsp(3) .ge. 0.d0) then
-                    dspdep(5,5)=deumud(1)
+                    dspdep(5, 5) = deumud(1)
                 else
-                    dspdep(5,5)=(deumud(1)*epsp(1)-deumud(3)*epsp(3))/(epsp(1)-epsp(3))
-                endif
+                    dspdep(5, 5) = (deumud(1)*epsp(1)-deumud(3)*epsp(3))/(epsp(1)-epsp(3))
+                end if
                 if (epsp(3)*epsp(2) .ge. 0.d0) then
-                    dspdep(6,6)=deumud(3)
+                    dspdep(6, 6) = deumud(3)
                 else
-                    dspdep(6,6)=(deumud(3)*epsp(3)-deumud(2)*epsp(2))/(epsp(3)-epsp(2))
-                endif
+                    dspdep(6, 6) = (deumud(3)*epsp(3)-deumud(2)*epsp(2))/(epsp(3)-epsp(2))
+                end if
                 do i = 1, 3
                     do j = i, 3
                         if (i .eq. j) then
-                            rtemp3=1.d0
+                            rtemp3 = 1.d0
                         else
-                            rtemp3=rac2
-                        endif
+                            rtemp3 = rac2
+                        end if
                         do k = 1, 3
                             do l = 1, 3
-                                if (t(i,j) .ge. t(k,l)) then
+                                if (t(i, j) .ge. t(k, l)) then
                                     if (k .eq. l) then
-                                        rtemp4=rtemp3
+                                        rtemp4 = rtemp3
                                     else
-                                        rtemp4=rtemp3/rac2
-                                    endif
-                                    rtemp2=0.d0
+                                        rtemp4 = rtemp3/rac2
+                                    end if
+                                    rtemp2 = 0.d0
                                     do m = 1, 3
                                         do n = 1, 3
-                                            rtemp2=rtemp2+&
-                                                   vecp(k,m)*vecp(i,n)*&
-                                                   vecp(j,n)*vecp(l,m)*dspdep(n,m)
+                                            rtemp2 = rtemp2+ &
+                                                     vecp(k, m)*vecp(i, n)* &
+                                                     vecp(j, n)*vecp(l, m)*dspdep(n, m)
                                         end do
                                     end do
-                                    rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*&
-                                    vecp(k,1)*vecp(l,2)*dspdep(4,4)
-                                    rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*&
-                                    vecp(k,2)*vecp(l,1)*dspdep(4,4)
-                                    rtemp2=rtemp2+vecp(i,1)*vecp(j,3)*&
-                                    vecp(k,1)*vecp(l,3)*dspdep(5,5)
-                                    rtemp2=rtemp2+vecp(i,3)*vecp(j,1)*&
-                                    vecp(k,3)*vecp(l,1)*dspdep(5,5)
-                                    rtemp2=rtemp2+vecp(i,2)*vecp(j,3)*&
-                                    vecp(k,2)*vecp(l,3)*dspdep(6,6)
-                                    rtemp2=rtemp2+vecp(i,3)*vecp(j,2)*&
-                                    vecp(k,3)*vecp(l,2)*dspdep(6,6)
-                                    dsidep(t(i,j),t(k,l)+6)=dsidep(t(&
-                                    i,j),t(k,l)+6)+rtemp2*rtemp4
-                                endif
+                                    rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 2)* &
+                                             vecp(k, 1)*vecp(l, 2)*dspdep(4, 4)
+                                    rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 1)* &
+                                             vecp(k, 2)*vecp(l, 1)*dspdep(4, 4)
+                                    rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 3)* &
+                                             vecp(k, 1)*vecp(l, 3)*dspdep(5, 5)
+                                    rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 1)* &
+                                             vecp(k, 3)*vecp(l, 1)*dspdep(5, 5)
+                                    rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 3)* &
+                                             vecp(k, 2)*vecp(l, 3)*dspdep(6, 6)
+                                    rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 2)* &
+                                             vecp(k, 3)*vecp(l, 2)*dspdep(6, 6)
+                                    dsidep(t(i, j), t(k, l)+6) = dsidep(t( &
+                                                                     i, j), t(k, l)+6)+rtemp2*rtemp4
+                                end if
                             end do
                         end do
                     end do
@@ -408,7 +408,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim,&
 !
                 do i = 1, 6
                     do j = i+1, 6
-                        dsidep(i,j+6)=dsidep(j,i+6)
+                        dsidep(i, j+6) = dsidep(j, i+6)
                     end do
                 end do
 !
@@ -418,25 +418,25 @@ subroutine lcldsb(fami, kpg, ksp, ndim,&
                 tr(3) = sigel(3)
                 call r8inir(6, 0.d0, sigel, 1)
                 do i = 1, 3
-                    rtemp=tr(i)
-                    sigel(1)=sigel(1)+vecp(1,i)*vecp(1,i)*rtemp
-                    sigel(2)=sigel(2)+vecp(2,i)*vecp(2,i)*rtemp
-                    sigel(3)=sigel(3)+vecp(3,i)*vecp(3,i)*rtemp
-                    sigel(4)=sigel(4)+vecp(1,i)*vecp(2,i)*rtemp
-                    sigel(5)=sigel(5)+vecp(1,i)*vecp(3,i)*rtemp
-                    sigel(6)=sigel(6)+vecp(2,i)*vecp(3,i)*rtemp
+                    rtemp = tr(i)
+                    sigel(1) = sigel(1)+vecp(1, i)*vecp(1, i)*rtemp
+                    sigel(2) = sigel(2)+vecp(2, i)*vecp(2, i)*rtemp
+                    sigel(3) = sigel(3)+vecp(3, i)*vecp(3, i)*rtemp
+                    sigel(4) = sigel(4)+vecp(1, i)*vecp(2, i)*rtemp
+                    sigel(5) = sigel(5)+vecp(1, i)*vecp(3, i)*rtemp
+                    sigel(6) = sigel(6)+vecp(2, i)*vecp(3, i)*rtemp
                 end do
                 do k = 4, ndimsi
-                    sigel(k)=rac2*sigel(k)
+                    sigel(k) = rac2*sigel(k)
                 end do
                 coef = (1+gamma)/(2*gamma*(1+gamma*d)*ener)
 !
                 do k = 1, ndimsi
                     do l = 1, ndimsi
-                        dsidep(k,l) = dsidep(k,l) - coef * sigel(k) * sigel(l)
+                        dsidep(k, l) = dsidep(k, l)-coef*sigel(k)*sigel(l)
                     end do
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 end subroutine

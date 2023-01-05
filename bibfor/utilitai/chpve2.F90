@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,42 +47,42 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
 !
     call jemarq()
 !
-    ier=1
-    noch=nomch
-    blan8='        '
-    nomgd=blan8
-    gdch=blan8
+    ier = 1
+    noch = nomch
+    blan8 = '        '
+    nomgd = blan8
+    gdch = blan8
     do i = 1, nbtyp
-        lc=len(tabtyp(i))
-        ASSERT(lc.ge.11)
-        chaine=tabtyp(i)(1:11)
+        lc = len(tabtyp(i))
+        ASSERT(lc .ge. 11)
+        chaine = tabtyp(i) (1:11)
 !
         do j = 1, lc
             if (chaine(j:j) .eq. '#') then
                 loch = chaine(1:j)
                 gdch = chaine(j+1:11)
                 goto 30
-            endif
+            end if
         end do
- 30     continue
+30      continue
 !
         call dismoi('TYPE_CHAMP', noch, 'CHAMP', repk=tych)
         call dismoi('NOM_GD', noch, 'CHAMP', repk=nomgd)
 !
-        if ((loch(3:4).ne.'XX' .and. loch.eq.tych ) .or.&
-            (loch(3:4) .eq.'XX' .and. loch(1:2).eq.tych(1:2))) then
+        if ((loch(3:4) .ne. 'XX' .and. loch .eq. tych) .or. &
+            (loch(3:4) .eq. 'XX' .and. loch(1:2) .eq. tych(1:2))) then
             if (gdch(1:6) .eq. nomgd(1:6)) then
-                ier=0
+                ier = 0
                 goto 40
-            endif
-        endif
+            end if
+        end if
     end do
- 40 continue
+40  continue
 !
     if (ier .ne. 0) then
         valk = tych//'_'//nomgd
         call utmess('F', 'UTILITAI5_97', sk=valk)
-    endif
+    end if
 !
     call jedema()
 !

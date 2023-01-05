@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbr_init_algo(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dbrInitAlgoGreedy.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR), intent(inout) :: cmdPara
+    type(ROM_DS_ParaDBR), intent(inout) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ type(ROM_DS_ParaDBR), intent(inout) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM19_5')
-    endif
+    end if
 !
     if (cmdPara%operation(1:3) .eq. 'POD') then
         call dbrInitAlgoPod(cmdPara%base, cmdPara%paraPod)
@@ -64,6 +64,6 @@ type(ROM_DS_ParaDBR), intent(inout) :: cmdPara
         call dbrInitAlgoOrtho()
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

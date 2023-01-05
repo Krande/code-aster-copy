@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calc_norm_elem(normz   , ligrel, chcoef, chgaus, chcalc, &
+subroutine calc_norm_elem(normz, ligrel, chcoef, chgaus, chcalc, &
                           field_in, field_resu)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 !
 !
-    character(len=*) , intent(in) :: normz
+    character(len=*), intent(in) :: normz
     character(len=19), intent(in) :: ligrel
     character(len=19), intent(in) :: chcoef
     character(len=19), intent(in) :: chgaus
@@ -57,30 +57,30 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     norm = normz
-    if (norm.eq.'L2') then
+    if (norm .eq. 'L2') then
         option = 'NORME_L2'
-    elseif (norm.eq.'FROBENIUS') then
+    elseif (norm .eq. 'FROBENIUS') then
         option = 'NORME_FROB'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Compute norm * norm
 !
-    lpain(1)  = 'PCOORPG'
-    lchin(1)  = chgaus
-    lpain(2)  = 'PCHAMPG'
-    lchin(2)  = field_in
-    lpain(3)  = 'PCOEFR'
-    lchin(3)  = chcoef
-    lpain(4)  = 'PCALCI'
-    lchin(4)  = chcalc
+    lpain(1) = 'PCOORPG'
+    lchin(1) = chgaus
+    lpain(2) = 'PCHAMPG'
+    lchin(2) = field_in
+    lpain(3) = 'PCOEFR'
+    lchin(3) = chcoef
+    lpain(4) = 'PCALCI'
+    lchin(4) = chcalc
     lpaout(1) = 'PNORME'
     lchout(1) = field_resu
-    nbchin    = 4
+    nbchin = 4
 !
-    call calcul('S', option, ligrel, nbchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrel, nbchin, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 end subroutine

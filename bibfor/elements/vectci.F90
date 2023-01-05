@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,32 +28,32 @@ subroutine vectci(intsn, nb1, xi, xr, rnormc)
     integer :: i1, i2, intsx, j, k, l1, l2
 !
 !-----------------------------------------------------------------------
-    l1=207
-    l2=279
-    intsx=8*(intsn-1)
-    i1=l1+intsx
-    i2=l2+intsx
+    l1 = 207
+    l2 = 279
+    intsx = 8*(intsn-1)
+    i1 = l1+intsx
+    i2 = l2+intsx
 !
 !     CONSTRUCTION DES VECTEURS AA AUX X PTS D'INTEGRATION
 !
     do k = 1, 3
-        vecta(1,k)=0.d0
-        vecta(2,k)=0.d0
+        vecta(1, k) = 0.d0
+        vecta(2, k) = 0.d0
         do j = 1, nb1
-            vecta(1,k)=vecta(1,k)+xr(i1+j)*xi(k,j)
-            vecta(2,k)=vecta(2,k)+xr(i2+j)*xi(k,j)
+            vecta(1, k) = vecta(1, k)+xr(i1+j)*xi(k, j)
+            vecta(2, k) = vecta(2, k)+xr(i2+j)*xi(k, j)
         end do
     end do
 !
 !     CONSTRUCTION DU VECTEUR C AUX X PTS D'INTEGRATION
 !
-    vectc(1)=vecta(1,2)*vecta(2,3)-vecta(1,3)*vecta(2,2)
-    vectc(2)=vecta(1,3)*vecta(2,1)-vecta(1,1)*vecta(2,3)
-    vectc(3)=vecta(1,1)*vecta(2,2)-vecta(1,2)*vecta(2,1)
+    vectc(1) = vecta(1, 2)*vecta(2, 3)-vecta(1, 3)*vecta(2, 2)
+    vectc(2) = vecta(1, 3)*vecta(2, 1)-vecta(1, 1)*vecta(2, 3)
+    vectc(3) = vecta(1, 1)*vecta(2, 2)-vecta(1, 2)*vecta(2, 1)
 !
 !     NORME DU VECTEUR C AUX X PTS D'INTEGRATION
 !
-    rnormc=sqrt(vectc(1)*vectc(1)+vectc(2)*vectc(2)&
+    rnormc = sqrt(vectc(1)*vectc(1)+vectc(2)*vectc(2)&
      &                                +vectc(3)*vectc(3))
 !
 !     CONSTRUCTION DES VECTEURS TA AUX X PTS D'INTEGRATION

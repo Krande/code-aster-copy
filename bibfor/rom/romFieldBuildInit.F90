@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldBuildInit(mesh         , nbNodeMesh , listNode       ,&
-                             nbFieldResult, resultField, resultFieldNume,&
-                             resultRom    , modelRom   , tablReduCoor   ,&
+subroutine romFieldBuildInit(mesh, nbNodeMesh, listNode, &
+                             nbFieldResult, resultField, resultFieldNume, &
+                             resultRom, modelRom, tablReduCoor, &
                              fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -36,16 +36,16 @@ implicit none
 #include "asterfort/romFieldGetRefe.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-integer, intent(in) :: nbNodeMesh
-integer, pointer  :: listNode(:)
-integer, intent(in)  :: nbFieldResult
-character(len=16), pointer :: resultField(:)
-integer, pointer :: resultFieldNume(:)
-type(ROM_DS_Result), intent(in) :: resultRom
-character(len=8), intent(in) :: modelRom
-type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
-type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nbNodeMesh
+    integer, pointer  :: listNode(:)
+    integer, intent(in)  :: nbFieldResult
+    character(len=16), pointer :: resultField(:)
+    integer, pointer :: resultFieldNume(:)
+    type(ROM_DS_Result), intent(in) :: resultRom
+    character(len=8), intent(in) :: modelRom
+    type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
+    type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,24 +78,24 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! - Get parameters
 !
-    base      = fieldBuild%base
+    base = fieldBuild%base
     fieldName = fieldBuild%fieldDom%fieldName
 !
 ! - Debug print
 !
     if (niv .ge. 2) then
-        call utmess('I', 'ROM17_1', sk = fieldName)
-    endif
+        call utmess('I', 'ROM17_1', sk=fieldName)
+    end if
 !
 ! - Get representative field on reduced domain: from results datastructure !
 !
-    call romFieldGetRefe(resultRom%resultName, modelRom           ,&
-                         nbFieldResult       , resultField        , resultFieldNume,&
-                         fieldName           , fieldBuild%fieldRom)
+    call romFieldGetRefe(resultRom%resultName, modelRom, &
+                         nbFieldResult, resultField, resultFieldNume, &
+                         fieldName, fieldBuild%fieldRom)
 !
 ! - Prepare link between numbering
 !
-    call romFieldBuildPrepNume(mesh      , nbNodeMesh, listNode,&
+    call romFieldBuildPrepNume(mesh, nbNodeMesh, listNode, &
                                fieldBuild)
 !
 ! - Create [PHI] matrix
@@ -106,7 +106,7 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
     if (fieldBuild%operation .eq. 'GAPPY_POD') then
         call romFieldBuildMatrPhiTruncate(fieldBuild)
-    endif
+    end if
 !
 ! - Prepare reduced coordinates (or copy from results !)
 !

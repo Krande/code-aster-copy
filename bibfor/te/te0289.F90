@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,14 +48,14 @@ subroutine te0289(option, nomte)
 !
 !
     integer :: mxval
-    parameter (mxval=32*10*6)
+    parameter(mxval=32*10*6)
 !     EN 2D :
 !     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)-> en lineaire
 !     MXVAL =  6 (NBSE MAX) * 6 (NBNOSE MAX) * 4 (NBCMP MAX)-> en quadratique
 !     EN 3D :
 !     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)-> en lineaire
 !     MXVAL = 32 (NBSE MAX) * 10(NBNOSE MAX) * 6 (NBCMP MAX)-> en quadratique
-    integer :: ibid, ndim, nnop, nno, npg, ivf, jgano,irese
+    integer :: ibid, ndim, nnop, nno, npg, ivf, jgano, irese
     integer :: nfh, nfe, singu, ddlc, nbsig
     integer :: jcnset, jlonch, jsigpg
     integer :: jout1, jout2
@@ -66,8 +66,8 @@ subroutine te0289(option, nomte)
 !
     character(len=8) :: elrefp, elrese(6), fami(6)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 ! ----------------------------------------------------------------------
 !
 !
@@ -77,33 +77,33 @@ subroutine te0289(option, nomte)
 !
 !   ELEMENT DE REFERENCE PARENT : RECUP DE NDIM ET NNOP
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
-    ASSERT(nnop.le.27)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
+    ASSERT(nnop .le. 27)
 !
 !
 !   SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG, IVF ET JGANO
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
-    call elrefe_info(elrefe=elrese(ndim+irese),&
-                     fami=fami(ndim+irese),&
-                     nno=nno,&
-                     npg=npg,&
-                     jvf=ivf,&
+        irese = 0
+    end if
+    call elrefe_info(elrefe=elrese(ndim+irese), &
+                     fami=fami(ndim+irese), &
+                     nno=nno, &
+                     npg=npg, &
+                     jvf=ivf, &
                      jgano=jgano)
 !
-    ASSERT(npg.le.15)
+    ASSERT(npg .le. 15)
 !
 !   INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                ibid, ibid, ibid, ibid, ibid,&
+    call xteini(nomte, nfh, nfe, singu, ddlc, &
+                ibid, ibid, ibid, ibid, ibid, &
                 ibid)
 !
 !   NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
-    ASSERT(nbsig.le.6)
+    ASSERT(nbsig .le. 6)
 !
 !-----------------------------------------------------------------------
 !   RECUPERATION DES ENTREES / SORTIE
@@ -113,7 +113,7 @@ subroutine te0289(option, nomte)
     call jevech('PCONTRR', 'L', jsigpg)
 !
 !   RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=zi(jlonch-1+1)
+    nse = zi(jlonch-1+1)
 !
 !-----------------------------------------------------------------------
 !   OPTION SISE_ELNO
@@ -131,7 +131,7 @@ subroutine te0289(option, nomte)
 !       OPTION SIEF_ELNO ET SIGM_ELNO
 !-----------------------------------------------------------------------
 !
-    else if ((option.eq.'SIEF_ELNO').or. (option.eq.'SIGM_ELNO')) then
+    else if ((option .eq. 'SIEF_ELNO') .or. (option .eq. 'SIGM_ELNO')) then
 !
 !       RECUPERATION DES ENTREES / SORTIE
         call jevech('PCNSETO', 'L', jcnset)
@@ -149,7 +149,7 @@ subroutine te0289(option, nomte)
 !
         ASSERT(.false.)
 !
-    endif
+    end if
 !
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine orient(mdgene, sst, jcoor, ino, coordo,&
+subroutine orient(mdgene, sst, jcoor, ino, coordo, &
                   itran)
     implicit none
 !
@@ -53,7 +53,7 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
     integer :: ibid, itran, k, l, llrot, lltra, nbcmpm
 !
 !-----------------------------------------------------------------------
-    parameter   (nbcmpm=10)
+    parameter(nbcmpm=10)
     character(len=8) :: sst
     character(len=24) :: mdgene
     integer :: jcoor, ino
@@ -71,32 +71,32 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
     call intet0(zr(llrot+1), matrot, 2)
     r8bid = 0.d0
     call r8inir(nbcmpm*nbcmpm, r8bid, matbuf, 1)
-    call pmppr(mattmp, nbcmpm, nbcmpm, 1, matrot,&
-               nbcmpm, nbcmpm, 1, matbuf, nbcmpm,&
+    call pmppr(mattmp, nbcmpm, nbcmpm, 1, matrot, &
+               nbcmpm, nbcmpm, 1, matbuf, nbcmpm, &
                nbcmpm)
     r8bid = 0.d0
     call r8inir(nbcmpm*nbcmpm, r8bid, matrot, 1)
     call intet0(zr(llrot+2), mattmp, 1)
-    call pmppr(matbuf, nbcmpm, nbcmpm, 1, mattmp,&
-               nbcmpm, nbcmpm, 1, matrot, nbcmpm,&
+    call pmppr(matbuf, nbcmpm, nbcmpm, 1, mattmp, &
+               nbcmpm, nbcmpm, 1, matrot, nbcmpm, &
                nbcmpm)
 !
     do k = 1, 3
-        xanc(k)=zr(jcoor+(ino-1)*3+k-1)
+        xanc(k) = zr(jcoor+(ino-1)*3+k-1)
     end do
 !
     do k = 1, 3
-        xnew=0.d0
+        xnew = 0.d0
         do l = 1, 3
-            xnew=xnew+matrot(k,l)*xanc(l)
+            xnew = xnew+matrot(k, l)*xanc(l)
         end do
         if (itran .eq. 1) then
-            coordo(k)=xnew+zr(lltra+k-1)
-        else if (itran.eq.0) then
-            coordo(k)=xnew
+            coordo(k) = xnew+zr(lltra+k-1)
+        else if (itran .eq. 0) then
+            coordo(k) = xnew
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,9 +77,9 @@ subroutine vdefro(np, matev, tensel, tenloc)
         melem(3) = tensel(6+8*(i-1))
         melem(4) = tensel(5+8*(i-1))
 !
-        call utbtab('ZERO', 2, 2, nelem, matev(1, 1, i),&
+        call utbtab('ZERO', 2, 2, nelem, matev(1, 1, i), &
                     xab, nlocal)
-        call utbtab('ZERO', 2, 2, melem, matev(1, 1, i),&
+        call utbtab('ZERO', 2, 2, melem, matev(1, 1, i), &
                     xab, mlocal)
 !
         tenloc(1+8*(i-1)) = nlocal(1)
@@ -90,10 +90,10 @@ subroutine vdefro(np, matev, tensel, tenloc)
         tenloc(5+8*(i-1)) = mlocal(4)
         tenloc(6+8*(i-1)) = mlocal(2)
 !
-        tenloc(7+8*(i-1)) = tensel(&
-                            7+8*(i-1)) * matev(1, 1, i) + tensel(8+8*(i-1)) * matev(2, 1, i)
-        tenloc(8+8*(i-1)) = tensel(&
-                            7+8*(i-1)) * matev(1, 2, i) + tensel(8+8*(i-1)) * matev(2, 2, i)
+        tenloc(7+8*(i-1)) = tensel( &
+                            7+8*(i-1))*matev(1, 1, i)+tensel(8+8*(i-1))*matev(2, 1, i)
+        tenloc(8+8*(i-1)) = tensel( &
+                            7+8*(i-1))*matev(1, 2, i)+tensel(8+8*(i-1))*matev(2, 2, i)
 !
     end do
 !

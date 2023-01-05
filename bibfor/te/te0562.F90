@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0562(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/massup.h"
 #include "asterfort/teattr.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,18 +58,18 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Type of modelling
 !
-    call teattr('S', 'TYPMOD' , typmod(1))
+    call teattr('S', 'TYPMOD', typmod(1))
     call teattr('S', 'TYPMOD2', typmod(2))
 !
 ! - Get parameters of element
 !
-    call elrefv('MASS'  , ndim    ,&
-                nnoL    , nnoQ    , nnos,&
-                npg     , jv_poids,&
-                jv_vfL  , jv_vfQ  ,&
-                jv_dfdeL, jv_dfdeQ,&
+    call elrefv('MASS', ndim, &
+                nnoL, nnoQ, nnos, &
+                npg, jv_poids, &
+                jv_vfL, jv_vfQ, &
+                jv_dfdeL, jv_dfdeQ, &
                 jv_ganoL, jv_ganoQ)
-    ASSERT(ndim.eq.2 .or. ndim.eq.3)
+    ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
 !
 ! - Input fields
 !
@@ -79,11 +79,11 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - nb_DOF: displacements (2 or 3) + LAMBDA + VAR_REG
 !
-    nb_DOF = ndim + 2
+    nb_DOF = ndim+2
 !
-    call massup(option, ndim, nb_DOF, nnoQ, nnoL,&
-                zi(imate), phenom, npg, jv_poids, jv_dfdeQ,&
-                zr(igeom), zr(jv_vfQ), imatuu, icodr1, igeom,&
+    call massup(option, ndim, nb_DOF, nnoQ, nnoL, &
+                zi(imate), phenom, npg, jv_poids, jv_dfdeQ, &
+                zr(igeom), zr(jv_vfQ), imatuu, icodr1, igeom, &
                 jv_vfQ)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romMultiParaCoefOneCompute(ds_empi     , ds_multipara, ds_solveROM,&
-                                      i_mode_until, i_mode_coef , i_coef)
+subroutine romMultiParaCoefOneCompute(ds_empi, ds_multipara, ds_solveROM, &
+                                      i_mode_until, i_mode_coef, i_coef)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,10 +34,10 @@ implicit none
 #include "asterfort/romMultiParaROM2mbrCreate.h"
 #include "asterfort/romSolveROMSystSolve.h"
 !
-type(ROM_DS_Empi), intent(in) :: ds_empi
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-type(ROM_DS_Solve), intent(in) :: ds_solveROM
-integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
+    type(ROM_DS_Empi), intent(in) :: ds_empi
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    type(ROM_DS_Solve), intent(in) :: ds_solveROM
+    integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,57 +72,57 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM2_51', si = i_coef)
-    endif
+        call utmess('I', 'ROM2_51', si=i_coef)
+    end if
 !
 ! - Get parameters
 !
-    nb_mode         = ds_solveROM%syst_size
-    syst_2mbr_type  = ds_solveROM%syst_2mbr_type
-    syst_matr       = ds_solveROM%syst_matr
-    syst_solu       = ds_solveROM%syst_solu
-    syst_2mbr       = ds_solveROM%syst_2mbr
+    nb_mode = ds_solveROM%syst_size
+    syst_2mbr_type = ds_solveROM%syst_2mbr_type
+    syst_matr = ds_solveROM%syst_matr
+    syst_solu = ds_solveROM%syst_solu
+    syst_2mbr = ds_solveROM%syst_2mbr
 !
 ! - Access to objects
 !
     if (syst_2mbr_type .eq. 'R') then
-        call jeveuo(syst_solu, 'L', vr = vr_syst_solu)
+        call jeveuo(syst_solu, 'L', vr=vr_syst_solu)
     else if (syst_2mbr_type .eq. 'C') then
-        call jeveuo(syst_solu, 'L', vc = vc_syst_solu)
+        call jeveuo(syst_solu, 'L', vc=vc_syst_solu)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     ASSERT(i_mode_until .le. nb_mode)
-    ASSERT(i_mode_coef  .le. nb_mode)
+    ASSERT(i_mode_coef .le. nb_mode)
 !
 ! - Initialization of matrix
 !
     if (syst_2mbr_type .eq. 'R') then
-        call jeveuo(syst_matr, 'E', vr = vr_syst_matr)
+        call jeveuo(syst_matr, 'E', vr=vr_syst_matr)
         vr_syst_matr(1:nb_mode*nb_mode) = 0.d0
     else if (syst_2mbr_type .eq. 'C') then
-        call jeveuo(syst_matr, 'E', vc = vc_syst_matr)
-        vc_syst_matr(1:nb_mode*nb_mode) = dcmplx(0.d0,0.d0)
+        call jeveuo(syst_matr, 'E', vc=vc_syst_matr)
+        vc_syst_matr(1:nb_mode*nb_mode) = dcmplx(0.d0, 0.d0)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Initialization of vector
 !
     if (syst_2mbr_type .eq. 'R') then
-        call jeveuo(syst_2mbr, 'E', vr = vr_syst_2mbr)
+        call jeveuo(syst_2mbr, 'E', vr=vr_syst_2mbr)
         vr_syst_2mbr(1:nb_mode) = 0.d0
     else if (syst_2mbr_type .eq. 'C') then
-        call jeveuo(syst_2mbr, 'E', vc = vc_syst_2mbr)
-        vc_syst_2mbr(1:nb_mode) = dcmplx(0.d0,0.d0)
+        call jeveuo(syst_2mbr, 'E', vc=vc_syst_2mbr)
+        vc_syst_2mbr(1:nb_mode) = dcmplx(0.d0, 0.d0)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Evaluate coefficients
 !
-    call romEvalCoef(ds_multipara, l_init = ASTER_FALSE,&
-                     i_mode_coef_ = i_mode_coef, i_coef_ = i_coef)
+    call romEvalCoef(ds_multipara, l_init=ASTER_FALSE, &
+                     i_mode_coef_=i_mode_coef, i_coef_=i_coef)
 !
 ! - Compute reduced second member
 !
@@ -134,7 +134,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
 !
 ! - Solve reduced system
 !
-    call romSolveROMSystSolve(ds_solveROM, size_to_solve_ = i_mode_until)
+    call romSolveROMSystSolve(ds_solveROM, size_to_solve_=i_mode_until)
 !
 ! - Debug print
 !
@@ -145,7 +145,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
                 valr(2) = 0.d0
                 vali(1) = i_mode
                 vali(2) = i_coef
-                call utmess('I', 'ROM2_52', ni = 2, vali = vali, nr = 2, valr = valr)
+                call utmess('I', 'ROM2_52', ni=2, vali=vali, nr=2, valr=valr)
             end do
         else if (syst_2mbr_type .eq. 'C') then
             do i_mode = 1, i_mode_until
@@ -153,11 +153,11 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
                 valr(2) = dimag(vc_syst_solu(i_mode))
                 vali(1) = i_mode
                 vali(2) = i_coef
-                call utmess('I', 'ROM2_52', ni = 2, vali = vali, nr = 2, valr = valr)
+                call utmess('I', 'ROM2_52', ni=2, vali=vali, nr=2, valr=valr)
             end do
         else
             ASSERT(ASTER_FALSE)
         end if
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,20 +27,20 @@ subroutine prmadl(ndj, deblis, liste)
     else
         nd = deblis
         ndanc = 0
- 1      continue
+1       continue
 !         DO WHILE(ND.NE.0.AND.ND.LE.NDJ)
         if (nd .ne. 0 .and. nd .le. ndj) then
             ndanc = nd
             nd = liste(nd)
             goto 1
-        endif
+        end if
 !        ND EST NUL OU > NDJ, ON INSERE NDJ APRES NDANC
         if (ndanc .eq. 0) then
             nd = deblis
             deblis = ndj
         else
             liste(ndanc) = ndj
-        endif
+        end if
         liste(ndj) = nd
-    endif
+    end if
 end subroutine

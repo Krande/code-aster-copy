@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine b3d_jacobi(a, q, w)
     real(kind=8) :: a(3, 3), w(3), q(3, 3)
 !     .. parameters ..
     integer :: n
-    parameter (n=3)
+    parameter(n=3)
 !     .. local variables ..
     real(kind=8) :: sd, so
     real(kind=8) :: s, c, t
@@ -62,24 +62,24 @@ subroutine b3d_jacobi(a, q, w)
     real(kind=8) :: thresh
     integer :: i, x, y, r
 !
-    thresh=0.d0
-    h=0.d0
-    g=0.d0
-    theta=0.d0
-    i=0
-    z=0.0
-    x=0
-    y=0
-    r=0
-    s=0.0
-    sd=0.0
-    so=0.0
+    thresh = 0.d0
+    h = 0.d0
+    g = 0.d0
+    theta = 0.d0
+    i = 0
+    z = 0.0
+    x = 0
+    y = 0
+    r = 0
+    s = 0.0
+    sd = 0.0
+    so = 0.0
 !
 !     initialize q to the identitity matrix
 !     --- this loop can be omitted if only the eigenvalues are desired ---
 !      a=b
     do x = 1, n
-        q(x,x) = 1.0d0
+        q(x, x) = 1.0d0
         do y = 1, x-1
             q(x, y) = 0.0d0
             q(y, x) = 0.0d0
@@ -94,7 +94,7 @@ subroutine b3d_jacobi(a, q, w)
 !     calculate sqr(tr(a))
     sd = 0.0d0
     do x = 1, n
-        sd = sd + abs(w(x))
+        sd = sd+abs(w(x))
     end do
     sd = sd**2
 !
@@ -104,7 +104,7 @@ subroutine b3d_jacobi(a, q, w)
         so = 0.0d0
         do x = 1, n
             do y = x+1, n
-                so = so + abs(a(x, y))
+                so = so+abs(a(x, y))
             end do
         end do
         if (so .eq. 0.0d0) then
@@ -113,7 +113,7 @@ subroutine b3d_jacobi(a, q, w)
         end if
 !
         if (i .lt. 4) then
-            thresh = 0.2d0 * so / n**2
+            thresh = 0.2d0*so/n**2
         else
             thresh = 0.0d0
         end if
@@ -121,54 +121,54 @@ subroutine b3d_jacobi(a, q, w)
 !       do sweep
         do x = 1, n
             do y = x+1, n
-                g = 100.0d0 * ( abs(a(x, y)) )
-                if (i .gt. 4 .and. (abs(w(x)) + g) .eq. abs(w(x)) .and. abs(w(y)) + g .eq.&
+                g = 100.0d0*(abs(a(x, y)))
+                if (i .gt. 4 .and. (abs(w(x))+g) .eq. abs(w(x)) .and. abs(w(y))+g .eq. &
                     abs(w(y))) then
                     a(x, y) = 0.0d0
                 else if (abs(a(x, y)) .gt. thresh) then
 !             calculate jacobi transformation
-                    h = w(y) - w(x)
-                    if (abs(h) + g .eq. abs(h)) then
-                        t = a(x, y) / h
+                    h = w(y)-w(x)
+                    if (abs(h)+g .eq. abs(h)) then
+                        t = a(x, y)/h
                     else
-                        theta = 0.5d0 * h / a(x, y)
+                        theta = 0.5d0*h/a(x, y)
                         if (theta .lt. 0.0d0) then
-                            t = -1.0d0 / (sqrt(1.0d0 + theta**2) - theta)
+                            t = -1.0d0/(sqrt(1.0d0+theta**2)-theta)
                         else
-                            t = 1.0d0 / (sqrt(1.0d0 + theta**2) + theta)
+                            t = 1.0d0/(sqrt(1.0d0+theta**2)+theta)
                         end if
                     end if
 !
-                    c = 1.0d0 / sqrt( 1.0d0 + t**2 )
-                    s = t * c
-                    z = t * a(x, y)
+                    c = 1.0d0/sqrt(1.0d0+t**2)
+                    s = t*c
+                    z = t*a(x, y)
 !
 !             apply jacobi transformation
                     a(x, y) = 0.0d0
-                    w(x) = w(x) - z
-                    w(y) = w(y) + z
+                    w(x) = w(x)-z
+                    w(y) = w(y)+z
                     do r = 1, x-1
                         t = a(r, x)
-                        a(r, x) = c * t - s * a(r, y)
-                        a(r, y) = s * t + c * a(r, y)
+                        a(r, x) = c*t-s*a(r, y)
+                        a(r, y) = s*t+c*a(r, y)
                     end do
                     do r = x+1, y-1
                         t = a(x, r)
-                        a(x, r) = c * t - s * a(r, y)
-                        a(r, y) = s * t + c * a(r, y)
+                        a(x, r) = c*t-s*a(r, y)
+                        a(r, y) = s*t+c*a(r, y)
                     end do
                     do r = y+1, n
                         t = a(x, r)
-                        a(x, r) = c * t - s * a(y, r)
-                        a(y, r) = s * t + c * a(y, r)
+                        a(x, r) = c*t-s*a(y, r)
+                        a(y, r) = s*t+c*a(y, r)
                     end do
 !
 !             update eigenvectors
 !             --- this loop can be omitted if only the eigenvalues are desired ---
                     do r = 1, n
                         t = q(r, x)
-                        q(r, x) = c * t - s * q(r, y)
-                        q(r, y) = s * t + c * q(r, y)
+                        q(r, x) = c*t-s*q(r, y)
+                        q(r, y) = s*t+c*q(r, y)
                     end do
                 end if
             end do

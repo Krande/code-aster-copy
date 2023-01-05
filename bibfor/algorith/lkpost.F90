@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,16 +35,16 @@ subroutine lkpost(imate, sigf, nvi, vip)
     parameter(dimpar=12)
     integer :: cerr(dimpar)
     real(kind=8) :: mater(dimpar), i1, sii, devsig(6), lgleps, rcos3t
-    real(kind=8) :: crit0, crite, tempd , tempf , tref
+    real(kind=8) :: crit0, crite, tempd, tempf, tref
     parameter(lgleps=1.0d-8)
     character(len=16) :: nomc(dimpar)
-    integer :: ndi,ndt
-    common /tdim/ ndt, ndi
+    integer :: ndi, ndt
+    common/tdim/ndt, ndi
 !
 ! - Get temperatures
 !
-    call get_varc('RIGI', 1, 1 , 'T',&
-                  tempd , tempf , tref)
+    call get_varc('RIGI', 1, 1, 'T', &
+                  tempd, tempf, tref)
 !
 ! =================================================================
 ! --- RECUPERATION DES PROPRIETES MATERIAUX -----------------------
@@ -62,7 +62,7 @@ subroutine lkpost(imate, sigf, nvi, vip)
     nomc(11) = 'PA       '
     nomc(12) = 'H0_EXT   '
 !
-    call rcvala(imate, ' ', 'LETK', 1, 'TEMP',&
+    call rcvala(imate, ' ', 'LETK', 1, 'TEMP', &
                 [tempd], dimpar, nomc(1), mater(1), cerr(1), 0)
 !
 ! =================================================================
@@ -75,15 +75,15 @@ subroutine lkpost(imate, sigf, nvi, vip)
 ! =================================================================
     if (vip(1) .eq. 0.0d0) then
         vip(8) = 0
-    else if (vip(1).lt.mater(1)) then
+    else if (vip(1) .lt. mater(1)) then
         vip(8) = 1
-    else if (vip(1).lt.mater(2)) then
+    else if (vip(1) .lt. mater(2)) then
         vip(8) = 2
-    else if (vip(1).lt.mater(3)) then
+    else if (vip(1) .lt. mater(3)) then
         vip(8) = 3
     else
         vip(8) = 4
-    endif
+    end if
 !
 ! =================================================================
 ! --- VARIABLE DE POST-TRAITEMENT POUR SUIVRE L'EVOLUTION DE
@@ -108,15 +108,15 @@ subroutine lkpost(imate, sigf, nvi, vip)
     rcos3t = -cos3t(devsig, mater(11), lgleps)
 !
     crit0 = lkcrit(mater(4), mater(5), mater(6), mater(10), mater(9), mater(12), rcos3t, i1, sii)
-    crite = lkcrit( 1.0d0, mater(8), mater(6), mater(10), mater(9), mater(12), rcos3t, i1, sii )
+    crite = lkcrit(1.0d0, mater(8), mater(6), mater(10), mater(9), mater(12), rcos3t, i1, sii)
 !
     if (crit0 .lt. 0.0d0 .and. crite .gt. 0.0d0) then
         vip(9) = 1
-    else if (crit0.lt.0.0d0.and.crite.lt.0.0d0) then
+    else if (crit0 .lt. 0.0d0 .and. crite .lt. 0.0d0) then
         vip(9) = 2
-    else if (crit0.gt.0.0d0.and.crite.lt.0.0d0) then
+    else if (crit0 .gt. 0.0d0 .and. crite .lt. 0.0d0) then
         vip(9) = 3
     else
         vip(9) = 4
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine craglc(long, ligrch)
     integer :: nbmata, nbnomx
 !-----------------------------------------------------------------------
     call jemarq()
-    ASSERT(long.gt.0)
+    ASSERT(long .gt. 0)
 !
 ! --- ON CREE LIGREL DE CHARGE S'IL N'EXISTE PAS ---
 !
@@ -69,12 +69,12 @@ subroutine craglc(long, ligrch)
     if (iret .eq. 0) then
 !
 !  appeler char_lrea_ligf
-        call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+        call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                     long)
         lonlig = 2*long
         call jeecra(ligrch//'.LIEL', 'LONT', lonlig)
 !
-        call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+        call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                     long)
         lonema = 4*long
         call jeecra(ligrch//'.NEMA', 'LONT', lonema)
@@ -91,7 +91,7 @@ subroutine craglc(long, ligrch)
 !
         call wkvect(ligrch//'.NBNO', 'G V I', 1, idnbno)
         zi(idnbno) = 0
-    endif
+    end if
 !
 ! --- NOMBRE MAX D'ELEMENTS DE LA COLLECTION LIGRCH ---
 !
@@ -107,7 +107,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- NOMBRE D'ELEMENTS DISPONIBLES DE LA COLLECTION LIGRCH ---
 !
-    nbeldi = nbelma - nbelut
+    nbeldi = nbelma-nbelut
 !
 ! --- LONGUEUR TOTALE DE LA COLLECTION LIGRCH ---
 !
@@ -115,7 +115,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- NOUVEAU NOMBRE D'OBJETS DE LA COLLECTION LIGRCH ---
 !
-    longut = nbelut + long
+    longut = nbelut+long
 !
 ! --- MAJORANT DE LA NOUVELLE LONGUEUR DE LA COLLECTION LIGRCH.NEMA ---
 !
@@ -131,7 +131,7 @@ subroutine craglc(long, ligrch)
 ! ---       LA TAILLE DU LIGREL DE CHARGE EST INSUFFISANTE  ---
 ! ---       ON LA REDIMENSIONNE DE MANIERE ADEQUATE         ---
         call agligr(longut, ligrch)
-    endif
+    end if
 !
     call jedema()
 end subroutine

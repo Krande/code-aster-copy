@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0407(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,7 +34,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ character(len=16), intent(in) :: option, nomte
     character(len=16) :: mult_comp, defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=8) :: typmod(2)
-    character(len=4), parameter :: fami  = 'RIGI'
+    character(len=4), parameter :: fami = 'RIGI'
     integer :: nno, npg, i, imatuu, lgpg, ndim
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: icontm, ivarim, jv_mult_comp
@@ -75,8 +75,8 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get element parameters
 !
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,&
-         npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .eq. 8)
 !
 ! - Type of finite element
@@ -98,7 +98,7 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMULCOM', 'L', jv_mult_comp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Compute barycentric center
 !
@@ -115,9 +115,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -131,49 +131,49 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
 !
 ! - HYPER-ELASTICITE
 !
     if (type_comp .eq. 'COMP_ELAS') then
         call utmess('F', 'ELEMENTSSI_3')
-    endif
+    end if
 !
 ! - HYPO-ELASTICITE
 !
-    if (defo_comp (6:10) .eq. '_REAC') then
+    if (defo_comp(6:10) .eq. '_REAC') then
         do i = 1, ndim*nno
-            zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1) + zr(ideplp+i-1)
+            zr(igeom+i-1) = zr(igeom+i-1)+zr(ideplm+i-1)+zr(ideplp+i-1)
         end do
-    endif
+    end if
 !
     if (defo_comp(1:5) .eq. 'PETIT') then
-        call nmas3d(fami, nno, npg, ipoids, ivf,&
-                    idfde, zr(igeom), typmod, option, zi(imate),&
-                    zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
-                    zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim),&
-                    dfdi, def, zr(icontp), zr(ivarip), zr(imatuu),&
+        call nmas3d(fami, nno, npg, ipoids, ivf, &
+                    idfde, zr(igeom), typmod, option, zi(imate), &
+                    zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), angl_naut, zr(icontm), zr(ivarim), &
+                    dfdi, def, zr(icontp), zr(ivarip), zr(imatuu), &
                     zr(ivectu), codret)
     else
         call utmess('F', 'ELEMENTSSI_1', sk=defo_comp)
-    endif
+    end if
 !
 ! - Save return code
 !
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !
 end subroutine

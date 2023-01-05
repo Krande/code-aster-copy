@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine dfdm3j(nno, ipg, idfde, coor, jac)
 !
     do i = 1, 3
         do j = 1, 3
-            g(i,j) = 0.d0
+            g(i, j) = 0.d0
         end do
     end do
 !
@@ -51,15 +51,15 @@ subroutine dfdm3j(nno, ipg, idfde, coor, jac)
         dn = zr(idfde-1+k+ii+2)
         dk = zr(idfde-1+k+ii+3)
         do j = 1, 3
-            g(1,j) = g(1,j) + coor(ii+j) * de
-            g(2,j) = g(2,j) + coor(ii+j) * dn
-            g(3,j) = g(3,j) + coor(ii+j) * dk
+            g(1, j) = g(1, j)+coor(ii+j)*de
+            g(2, j) = g(2, j)+coor(ii+j)*dn
+            g(3, j) = g(3, j)+coor(ii+j)*dk
         end do
     end do
 !
-    j11 = g(2,2) * g(3,3) - g(2,3) * g(3,2)
-    j21 = g(3,1) * g(2,3) - g(2,1) * g(3,3)
-    j31 = g(2,1) * g(3,2) - g(3,1) * g(2,2)
+    j11 = g(2, 2)*g(3, 3)-g(2, 3)*g(3, 2)
+    j21 = g(3, 1)*g(2, 3)-g(2, 1)*g(3, 3)
+    j31 = g(2, 1)*g(3, 2)-g(3, 1)*g(2, 2)
 !
-    jac = g(1,1) * j11 + g(1,2) * j21 + g(1,3) * j31
+    jac = g(1, 1)*j11+g(1, 2)*j21+g(1, 3)*j31
 end subroutine

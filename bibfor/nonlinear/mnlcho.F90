@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
-                  nchoc, h, hf, parcho, adime,&
+subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
+                  nchoc, h, hf, parcho, adime, &
                   ninc, tabchoc, lcine, solveu)
     implicit none
 !
@@ -107,39 +107,39 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 ! --- INITIALISATION DU NOMBRE TOTAL D'INCONNUE DU SYSTEME
 ! ----------------------------------------------------------------------
-    ninc=nd*(2*h+1)
+    ninc = nd*(2*h+1)
     if (reprise) then
         nomcmp1 = '&&NOM_CMP_1'
         nomcmp2 = '&&NOM_CMP_2'
         origx = '&&ORIG_X'
         origy = '&&ORIG_Y'
         origz = '&&ORIG_Z'
-        call tbexve(tabchoc, 'TYPE_CHOC', parcho//'.TYPE', 'V', nchoc,&
+        call tbexve(tabchoc, 'TYPE_CHOC', parcho//'.TYPE', 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'NOEUD_CHOC', parcho//'.NOEU', 'V', nchoc,&
+        call tbexve(tabchoc, 'NOEUD_CHOC', parcho//'.NOEU', 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'NOM_CMP_1', nomcmp1, 'V', nchoc,&
+        call tbexve(tabchoc, 'NOM_CMP_1', nomcmp1, 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'NOM_CMP_2', nomcmp2, 'V', nchoc,&
+        call tbexve(tabchoc, 'NOM_CMP_2', nomcmp2, 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'RIGI_NOR', parcho//'.RAID', 'V', nchoc,&
+        call tbexve(tabchoc, 'RIGI_NOR', parcho//'.RAID', 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'PARA_REGUL', parcho//'.REG', 'V', nchoc,&
+        call tbexve(tabchoc, 'PARA_REGUL', parcho//'.REG', 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'JEU', parcho//'.JEU', 'V', nchoc,&
+        call tbexve(tabchoc, 'JEU', parcho//'.JEU', 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'ORIG_OBST_X', origx, 'V', nchoc,&
+        call tbexve(tabchoc, 'ORIG_OBST_X', origx, 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'ORIG_OBST_Y', origy, 'V', nchoc,&
+        call tbexve(tabchoc, 'ORIG_OBST_Y', origy, 'V', nchoc, &
                     typval)
-        call tbexve(tabchoc, 'ORIG_OBST_Z', origz, 'V', nchoc,&
+        call tbexve(tabchoc, 'ORIG_OBST_Z', origz, 'V', nchoc, &
                     typval)
         call jeveuo(nomcmp1, 'L', icmp1)
         call jeveuo(nomcmp2, 'L', icmp2)
         call jeveuo(origx, 'L', iorigx)
         call jeveuo(origy, 'L', iorigy)
         call jeveuo(origz, 'L', iorigz)
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES CHAMPS DE PARCHO A REMPLIR
@@ -159,8 +159,8 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION : NOM DE LA MATRICE DE RAIDEUR ET DU VECTEUR D'INDICE
 ! ----------------------------------------------------------------------
-    matk=zk24(zi(imat(1)+1))(1:19)
-    matm=zk24(zi(imat(2)+1))(1:19)
+    matk = zk24(zi(imat(1)+1)) (1:19)
+    matm = zk24(zi(imat(2)+1)) (1:19)
     call jeveuo(xcdl, 'L', iind)
 ! ----------------------------------------------------------------------
 ! --- BOUCLE SUR LE NOMBRE DE NOEUD DE CHOC
@@ -171,29 +171,29 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
             tchoc = type(k)
         else
             call getvtx('CHOC', 'OBSTACLE', iocc=k, scal=tchoc)
-        endif
-        type(k)=tchoc
+        end if
+        type(k) = tchoc
 ! --- RECUPERATION DU NBRE D EQ SUPP ET DE COMPOSANTE POUR CHAQUE NOEUD
         if (tchoc(1:7) .eq. 'BI_PLAN') then
-            ncmp(k)=1
-            neqs(k)=2
-        else if (tchoc(1:4).eq.'PLAN') then
-            ncmp(k)=1
-            neqs(k)=1
-        else if (tchoc(1:6).eq.'CERCLE') then
-            ncmp(k)=2
-            neqs(k)=4
-            orig=0.d0
+            ncmp(k) = 1
+            neqs(k) = 2
+        else if (tchoc(1:4) .eq. 'PLAN') then
+            ncmp(k) = 1
+            neqs(k) = 1
+        else if (tchoc(1:6) .eq. 'CERCLE') then
+            ncmp(k) = 2
+            neqs(k) = 4
+            orig = 0.d0
             if (reprise) then
                 orig(1) = zr(iorigx-1+k)
                 orig(2) = zr(iorigy-1+k)
                 orig(3) = zr(iorigz-1+k)
             else
                 call getvr8('CHOC', 'ORIG_OBST', iocc=k, nbval=3, vect=orig)
-            endif
-        endif
+            end if
+        end if
 ! --- ACTUALISATION DU NOMBRE TOTAL D'INCONNUE DU SYSTEME
-        ninc=ninc+neqs(k)*(2*hf+1)
+        ninc = ninc+neqs(k)*(2*hf+1)
 !
 ! --- RECUPERATION DU NOM DU NOEUD
         if (reprise) then
@@ -209,9 +209,9 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
                 call jenuno(jexnum(manono, zi(ldgn)), noeud(1))
             else
                 call getvtx('CHOC', 'NOEUD', iocc=k, scal=noeud(1))
-            endif
-        endif
-        noeu(k)=noeud(1)
+            end if
+        end if
+        noeu(k) = noeud(1)
 ! --- RECUPERATION DU NOM DE LA COMPOSANTE DU NOEUD
         if (reprise) then
             if (tchoc(1:6) .eq. 'CERCLE') then
@@ -221,11 +221,11 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
             else
                 ier = 1
                 cmp(1) = zk8(icmp1-1+k)
-            endif
+            end if
         else
-            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=ncmp(k), vect=cmp,&
+            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=ncmp(k), vect=cmp, &
                         nbret=ier)
-        endif
+        end if
         do i = 1, ier
             zk8(icmp-1+2*(k-1)+i) = cmp(i)
         end do
@@ -233,24 +233,24 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
         do i = 1, ncmp(k)
             if (tchoc(1:7) .eq. 'CERCLE') then
                 if (cmp(i) .eq. 'DX') then
-                    zr(iorig-1+3*(k-1)+i)=orig(1)
-                else if (cmp(i).eq.'DY') then
-                    zr(iorig-1+3*(k-1)+i)=orig(2)
-                else if (cmp(i).eq.'DZ') then
-                    zr(iorig-1+3*(k-1)+i)=orig(3)
-                endif
-            endif
+                    zr(iorig-1+3*(k-1)+i) = orig(1)
+                else if (cmp(i) .eq. 'DY') then
+                    zr(iorig-1+3*(k-1)+i) = orig(2)
+                else if (cmp(i) .eq. 'DZ') then
+                    zr(iorig-1+3*(k-1)+i) = orig(3)
+                end if
+            end if
 ! --- RECUPERATION DU NUMERO D'EQUATION DU NOEUD A LA BONNE COMPOSANTE
-            call posddl('NUME_DDL', numedd, noeud(1), cmp(i), nunoe,&
+            call posddl('NUME_DDL', numedd, noeud(1), cmp(i), nunoe, &
                         pddl)
 ! --- RECUPERATION DE LA POSITION DU NOEUD DANS LA MATRICE AVEC DDLS ACTIFS
-            ind=0
+            ind = 0
             do j = 1, pddl
                 if (zi(iind-1+j) .eq. 0) then
-                    ind=ind+1
-                endif
+                    ind = ind+1
+                end if
             end do
-            nddl(6*(k-1)+i)=ind
+            nddl(6*(k-1)+i) = ind
         end do
         if (.not. reprise) then
 ! --- JE RECUPERE LA VALEUR DU JEU ENTRE LE NOEUD ET LA BUTEE
@@ -259,13 +259,13 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
             call getvr8('CHOC', 'RIGI_NOR', iocc=k, scal=raid(k))
 ! --- JE RECUPERE LA VALEUR DU PARAMETRE DE REGULARISATION DE BUTEE
             call getvr8('CHOC', 'PARA_REGUL', iocc=k, scal=reg(k))
-        endif
+        end if
 ! --- JE RECUPERE LES VALEURS MAXIMALES POUR L'ADIMENSIONNEMENT
         if (jeu(k) .gt. jeumax(1)) then
-            jeumax(1)=jeu(k)
-            indmax(1)=nddl(k)
-            pdlmax=pddl
-        endif
+            jeumax(1) = jeu(k)
+            indmax(1) = nddl(k)
+            pdlmax = pddl
+        end if
     end do
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES CHAMPS DE ADIME (POUR L'ADIMENSIONNEMENT)
@@ -275,39 +275,39 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     call wkvect('&&MNLCHO.EI', 'V V R', neq, iei)
 ! ------------------------------------------------------------------
 ! --- ON RECUPERE KUi (POUR ADIMENSIONNE LA MATRICE DE RAIDEUR)
-    zr(iei-1+pdlmax)=1.d0
-    call preres(solveu, 'V', ier, ' ', matk,&
+    zr(iei-1+pdlmax) = 1.d0
+    call preres(solveu, 'V', ier, ' ', matk, &
                 ier2, 0)
-    call resoud(matk, ' ', solveu, ' ', 1,&
-                ' ', ' ', 'V', zr(iei), [cbid],&
+    call resoud(matk, ' ', solveu, ' ', 1, &
+                ' ', ' ', 'V', zr(iei), [cbid], &
                 ' ', .false._1, 0, ier)
-    zr(iadim-1+1)=1.d0/zr(iei-1+pdlmax)
+    zr(iadim-1+1) = 1.d0/zr(iei-1+pdlmax)
 ! --- ON RECUPERE MUi (POUR ADIMENSIONNE LA MATRICE DE MASSE)
     if (lcine) then
-        call preres(solveu, 'V', ier, ' ', matm,&
+        call preres(solveu, 'V', ier, ' ', matm, &
                     ier2, 0)
         call dscal(neq, 0.d0, zr(iei), 1)
-        zr(iei-1+pdlmax)=1.d0
-        call resoud(matm, ' ', solveu, ' ', 1,&
-                    ' ', ' ', 'V', zr(iei), [cbid],&
+        zr(iei-1+pdlmax) = 1.d0
+        call resoud(matm, ' ', solveu, ' ', 1, &
+                    ' ', ' ', 'V', zr(iei), [cbid], &
                     ' ', .false._1, 0, ier)
-        zr(iadim-1+2)=1.d0/zr(iei-1+pdlmax)
+        zr(iadim-1+2) = 1.d0/zr(iei-1+pdlmax)
     else
         do k = 1, neq
-            zr(iei-1+k)=1.d0
+            zr(iei-1+k) = 1.d0
         end do
         AS_ALLOCATE(vr=ei2, size=neq)
         call dscal(neq, 0.d0, ei2, 1)
-        call mrmult('ZERO', imat(2), zr(iei), ei2, 1,&
+        call mrmult('ZERO', imat(2), zr(iei), ei2, 1, &
                     .true._1)
-        zr(iadim-1+2)=ddot(neq,zr(iei),1,ei2,1)
-    endif
+        zr(iadim-1+2) = ddot(neq, zr(iei), 1, ei2, 1)
+    end if
 ! --- ON RECUPERE OMEGA (POUR ADIMENSIONNE LE TEMPS)
-    zr(iadim-1+3)=sqrt(zr(iadim-1+1)/zr(iadim-1+2))
+    zr(iadim-1+3) = sqrt(zr(iadim-1+1)/zr(iadim-1+2))
 ! ----------------------------------------------------------------------
 ! --- ACTUALISATION DU NOMBRE TOTAL D'INCONNUE DU SYSTEME
 ! ----------------------------------------------------------------------
-    ninc=ninc+4
+    ninc = ninc+4
 !
 !    call jedetr('&&mnlcho.adime.matk')
 !    call jedetr('&&mnlcho.adime.matm')
@@ -316,7 +316,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     call jedetr('&&MNLCHO.EI')
     if (.not. lcine) then
         AS_DEALLOCATE(vr=ei2)
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,21 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romLineicIndexSurf(tole         ,&
-                              nb_node      , coor_node1  , coor_node2  ,&
-                              nb_node_slice, coor_node_s1, coor_node_s2,&
+subroutine romLineicIndexSurf(tole, &
+                              nb_node, coor_node1, coor_node2, &
+                              nb_node_slice, coor_node_s1, coor_node_s2, &
                               node_in_slice)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: tole
-integer, intent(in) :: nb_node
-real(kind=8), intent(in) :: coor_node1(nb_node)
-real(kind=8), intent(in) :: coor_node2(nb_node)
-integer, intent(in) :: nb_node_slice
-real(kind=8), intent(in) :: coor_node_s1(nb_node_slice)
-real(kind=8), intent(in) :: coor_node_s2(nb_node_slice)
-integer, intent(out) :: node_in_slice(nb_node)
+    real(kind=8), intent(in) :: tole
+    integer, intent(in) :: nb_node
+    real(kind=8), intent(in) :: coor_node1(nb_node)
+    real(kind=8), intent(in) :: coor_node2(nb_node)
+    integer, intent(in) :: nb_node_slice
+    real(kind=8), intent(in) :: coor_node_s1(nb_node_slice)
+    real(kind=8), intent(in) :: coor_node_s2(nb_node_slice)
+    integer, intent(out) :: node_in_slice(nb_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,12 +58,12 @@ integer, intent(out) :: node_in_slice(nb_node)
 !
     do i_node = 1, nb_node
         do i_node_slice = 1, nb_node_slice
-            if (abs(coor_node_s1(i_node_slice)-coor_node1(i_node)).lt.tole .and.&
-                abs(coor_node_s2(i_node_slice)-coor_node2(i_node)).lt.tole) then
+            if (abs(coor_node_s1(i_node_slice)-coor_node1(i_node)) .lt. tole .and. &
+                abs(coor_node_s2(i_node_slice)-coor_node2(i_node)) .lt. tole) then
                 node_in_slice(i_node) = i_node_slice
                 exit
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
 
 end subroutine

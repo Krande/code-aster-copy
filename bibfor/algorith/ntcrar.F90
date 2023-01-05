@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ntcrar(result, sddisc, lreuse)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -73,8 +73,8 @@ implicit none
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<THERNONLINE> ... CREATION SD ARCHIVAGE'
-    endif
+        write (ifm, *) '<THERNONLINE> ... CREATION SD ARCHIVAGE'
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -86,7 +86,7 @@ implicit none
     numreo = -1
     numrep = -1
     call getfac(motfac, nocc)
-    ASSERT(nocc.le.1)
+    ASSERT(nocc .le. 1)
 !
 ! --- NOM SD ARCHIVAGE
 !
@@ -107,7 +107,7 @@ implicit none
 !
 ! --- RECUPERATION DU PREMIER NUMERO A ARCHIVER
 !
-    call nmarpr(result, sddisc, lreuse, numder, insder,&
+    call nmarpr(result, sddisc, lreuse, numder, insder, &
                 numarc)
 !
 ! --- RECUPERATION NUMERO REUSE - TABLE OBSERVATION
@@ -116,8 +116,8 @@ implicit none
 !
 ! --- NUMERO D'ARCHIVE COURANT ET NUMERO DE REUSE
 !
-    ASSERT(numarc.ge.0)
-    ASSERT(numreo.ge.0)
+    ASSERT(numarc .ge. 0)
+    ASSERT(numreo .ge. 0)
     call wkvect(arcinf, 'V V I', 3, jarinf)
     zi(jarinf-1+1) = numarc
     zi(jarinf-1+2) = numreo

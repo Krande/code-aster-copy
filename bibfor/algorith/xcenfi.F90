@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
- !
-subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
-                  pinref, pmiref, cenref, cenfi,&
+!
+subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn, &
+                  pinref, pmiref, cenref, cenfi, &
                   nn, exit, jonc, num)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -57,43 +57,43 @@ implicit none
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: epsmax, rbid, crit, maxi, x(81), dekker(4*ndime)
-    real(kind=8) :: dff(3,27), gradls(ndime)
+    real(kind=8) :: dff(3, 27), gradls(ndime)
     real(kind=8) :: ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
     integer :: ibid, itemax, i, n(3), j
     integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
     character(len=6) :: name
     character(len=3) :: edge
     aster_logical :: courbe
-    parameter   (tole=1.d-2)
+    parameter(tole=1.d-2)
 !
 ! --------------------------------------------------------------------
 !
 !
-    itemax=100
-    epsmax=1.d-9
-    name='XCENFI'
+    itemax = 100
+    epsmax = 1.d-9
+    name = 'XCENFI'
     if (present(num)) then
-       pi1 = num(1)
-       pi2 = num(2)
-       pi3 = num(3)
-       pi4 = num(4)
-       m12 = num(5)
-       m13 = num(6)
-       m34 = num(7)
-       m24 = num(8)
+        pi1 = num(1)
+        pi2 = num(2)
+        pi3 = num(3)
+        pi4 = num(4)
+        m12 = num(5)
+        m13 = num(6)
+        m34 = num(7)
+        m24 = num(8)
     else
 !  CONFERE XSTUDO
-       pi1=1
-       pi2=2
-       pi3=3
-       pi4=4
-       m12=9
-       m13=12
-       m34=11
-       m24=10
-    endif
+        pi1 = 1
+        pi2 = 2
+        pi3 = 3
+        pi4 = 4
+        m12 = 9
+        m13 = 12
+        m34 = 11
+        m24 = 10
+    end if
 !
-    ASSERT( ndime .eq. 3)
+    ASSERT(ndime .eq. 3)
 !
 !   CALCUL D UN POINT DE DEPART POUR LE NEWTON
 !===============================================================
@@ -105,108 +105,108 @@ implicit none
 !   EN RAFINANT LE MAILLAGE, LA SURFACE DE LA LEVEL-SET DEVIENT PLANE DANS
 !   LES SOUS-TETRAS, LE CRITERE CI DESSOUS N A PLUS D INCIDENCE SUR LE CALCUL
 !
-    courbe=.false.
-    maxi=0.d0
-    edge=""
+    courbe = .false.
+    maxi = 0.d0
+    edge = ""
 !   ARETE I1-I2
-    call xcedge(ndime, pinref, pi1, pi2, pmiref,&
+    call xcedge(ndime, pinref, pi1, pi2, pmiref, &
                 m12, crit)
     if (crit .gt. maxi) then
-        maxi=crit
-        edge="A12"
-    endif
+        maxi = crit
+        edge = "A12"
+    end if
 !   ARETE I2-I4
-    call xcedge(ndime, pinref, pi2, pi4, pmiref,&
+    call xcedge(ndime, pinref, pi2, pi4, pmiref, &
                 m24, crit)
     if (crit .gt. maxi) then
-        maxi=crit
-        edge="A24"
-    endif
+        maxi = crit
+        edge = "A24"
+    end if
 !   ARETE I3-I4
-    call xcedge(ndime, pinref, pi3, pi4, pmiref,&
+    call xcedge(ndime, pinref, pi3, pi4, pmiref, &
                 m34, crit)
     if (crit .gt. maxi) then
-        maxi=crit
-        edge="A34"
-    endif
+        maxi = crit
+        edge = "A34"
+    end if
 !   ARETE I1-I3
-    call xcedge(ndime, pinref, pi1, pi3, pmiref,&
+    call xcedge(ndime, pinref, pi1, pi3, pmiref, &
                 m13, crit)
     if (crit .gt. maxi) then
-        maxi=crit
-        edge="A13"
-    endif
+        maxi = crit
+        edge = "A13"
+    end if
 !
-    if (maxi .gt. tole) courbe=.true.
+    if (maxi .gt. tole) courbe = .true.
 !
-    if (.not.courbe) then
+    if (.not. courbe) then
         do i = 1, ndime
-            ptxx(i+ndime)=(pinref(ndime*(pi1-1)+i)+&
-                    pinref(ndime*(pi4-1)+i))/2.d0
-        enddo
+            ptxx(i+ndime) = (pinref(ndime*(pi1-1)+i)+ &
+                             pinref(ndime*(pi4-1)+i))/2.d0
+        end do
     else
         do i = 1, ndime
             if (edge .eq. "A12" .or. edge .eq. "A34") then
-                ptxx(i+ndime)=(pmiref(ndime*(m12-1)+i)+&
-                            pmiref(ndime*(m34-1)+i))/2.d0
+                ptxx(i+ndime) = (pmiref(ndime*(m12-1)+i)+ &
+                                 pmiref(ndime*(m34-1)+i))/2.d0
             else if (edge .eq. "A13" .or. edge .eq. "A24") then
-                ptxx(i+ndime)=(pmiref(ndime*(m13-1)+i)+&
-                            pmiref(ndime*(m24-1)+i))/2.d0
+                ptxx(i+ndime) = (pmiref(ndime*(m13-1)+i)+ &
+                                 pmiref(ndime*(m24-1)+i))/2.d0
             else
                 ASSERT(.false.)
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
 !    CALCUL DE LA DIRECTION DE RECHERCHE
 !    ON CHOISIT LE GRADIENT DE LA LSN AU POINT DE DEPART
 !
     do j = 1, ndime
-       xmi(j) = ptxx(ndime+j)
-       ptxx(j) = 0.d0
+        xmi(j) = ptxx(ndime+j)
+        ptxx(j) = 0.d0
     end do
     call elrfdf(elrefp, xmi, dff, nno, ndim)
 !
     gradls(:) = 0.d0
     do i = 1, nno
-       do j = 1, ndime
-          gradls(j) = gradls(j)+dff(j,i)*lsn(i)
-       end do
+        do j = 1, ndime
+            gradls(j) = gradls(j)+dff(j, i)*lsn(i)
+        end do
     end do
     call xnormv(ndime, gradls, rbid)
     do j = 1, ndime
-          ptxx(j) = gradls(j)
+        ptxx(j) = gradls(j)
     end do
 !
 !    ON RENSEIGNE LES NOEUDS DU SOUS TETRA POUR LA METHODE DE DEKKER
     dekker(:) = 0.d0
     call xelrex(elrefp, nno, x)
     do j = 1, ndime
-       dekker(j) = x(ndime*(nn(1)-1)+j)
-       dekker(j+ndime) = x(ndime*(nn(2)-1)+j)
-       dekker(j+2*ndime) = x(ndime*(nn(3)-1)+j)
-       dekker(j+3*ndime) = x(ndime*(nn(4)-1)+j)
+        dekker(j) = x(ndime*(nn(1)-1)+j)
+        dekker(j+ndime) = x(ndime*(nn(2)-1)+j)
+        dekker(j+2*ndime) = x(ndime*(nn(3)-1)+j)
+        dekker(j+3*ndime) = x(ndime*(nn(4)-1)+j)
     end do
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     ksi(:) = 0.d0
     if (jonc) then
-       call xnewto(elrefp, name, n,&
-                   ndime, ptxx, ndim, geom, lsn,&
-                   ibid, ibid, itemax,&
-                   epsmax, ksi)
+        call xnewto(elrefp, name, n, &
+                    ndime, ptxx, ndim, geom, lsn, &
+                    ibid, ibid, itemax, &
+                    epsmax, ksi)
     else
-       call xnewto(elrefp, name, n,&
-                   ndime, ptxx, ndim, geom, lsn,&
-                   ibid, ibid, itemax,&
-                   epsmax, ksi, exit, dekker)
-    endif
+        call xnewto(elrefp, name, n, &
+                    ndime, ptxx, ndim, geom, lsn, &
+                    ibid, ibid, itemax, &
+                    epsmax, ksi, exit, dekker)
+    end if
 !
     do i = 1, ndime
-        cenref(i)=ksi(1)*ptxx(i)+ptxx(i+ndime)
-    enddo
+        cenref(i) = ksi(1)*ptxx(i)+ptxx(i+ndime)
+    end do
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elrefp, nno, ndim, geom, cenref,&
+    call reerel(elrefp, nno, ndim, geom, cenref, &
                 cenfi)
 !
 end subroutine

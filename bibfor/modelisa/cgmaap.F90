@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- INITIALISATIONS :
 !     ================
-    nbmala=0
+    nbmala = 0
     motfac = mofaz
     noma = nomaz
     lismai = lismaz
@@ -98,12 +98,12 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 ! --- TYPE D'APPUI = 'AU_MOINS_UN'
 !     ============================
     if (typapp .eq. 'AU_MOINS_UN') then
-        nbma=nbmala
-        jlmas=jmala
+        nbma = nbmala
+        jlmas = jmala
         goto 333
     else
         call wkvect(lismas, 'V V I', nbmala, jlmas)
-    endif
+    end if
 !
 ! --- TYPE D'APPUI = 'TOUT' ET 'SOMMET'
 !     ======================================
@@ -115,14 +115,14 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
     tymocl(1) = 'NOEUD'
     motcle(2) = 'GROUP_NO'
     tymocl(2) = 'GROUP_NO'
-    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc,&
+    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc, &
                 nbmc, motcle, tymocl, mesnoe, nbno)
     call jeveuo(mesnoe, 'L', j1)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
     AS_ALLOCATE(vi=noeuds, size=nbnot)
     do k = 1, nbno
-        nuno=zi(j1-1+k)
-        noeuds(nuno)=1
+        nuno = zi(j1-1+k)
+        noeuds(nuno) = 1
     end do
 !
     call jeveuo(noma//'.CONNEX', 'L', iacnx)
@@ -135,65 +135,65 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
         call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
         do i = 1, nbmala
-            ima=zi(jmala+i-1)
+            ima = zi(jmala+i-1)
             call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typma)
 !
             if (typma(1:3) .eq. 'POI') then
-                zi(jnnma+i-1)=1
-            else if (typma(1:3).eq.'SEG') then
-                zi(jnnma+i-1)=2
-            else if (typma(1:4).eq.'QUAD') then
-                zi(jnnma+i-1)=4
-            else if (typma(1:4).eq.'TRIA') then
-                zi(jnnma+i-1)=3
-            else if (typma(1:5).eq.'TETRA') then
-                zi(jnnma+i-1)=4
-            else if (typma(1:5).eq.'PENTA') then
-                zi(jnnma+i-1)=6
-            else if (typma(1:5).eq.'PYRAM') then
-                zi(jnnma+i-1)=5
-            else if (typma(1:4).eq.'HEXA') then
-                zi(jnnma+i-1)=8
-            endif
+                zi(jnnma+i-1) = 1
+            else if (typma(1:3) .eq. 'SEG') then
+                zi(jnnma+i-1) = 2
+            else if (typma(1:4) .eq. 'QUAD') then
+                zi(jnnma+i-1) = 4
+            else if (typma(1:4) .eq. 'TRIA') then
+                zi(jnnma+i-1) = 3
+            else if (typma(1:5) .eq. 'TETRA') then
+                zi(jnnma+i-1) = 4
+            else if (typma(1:5) .eq. 'PENTA') then
+                zi(jnnma+i-1) = 6
+            else if (typma(1:5) .eq. 'PYRAM') then
+                zi(jnnma+i-1) = 5
+            else if (typma(1:4) .eq. 'HEXA') then
+                zi(jnnma+i-1) = 8
+            end if
         end do
 !
-    else if (typapp.eq.'TOUT'.or.typapp.eq.'MAJORITE') then
+    else if (typapp .eq. 'TOUT' .or. typapp .eq. 'MAJORITE') then
         do i = 1, nbmala
-            ima=zi(jmala+i-1)
-            zi(jnnma+i-1)=zi(ilcnx+ima)-zi(ilcnx+ima-1)
+            ima = zi(jmala+i-1)
+            zi(jnnma+i-1) = zi(ilcnx+ima)-zi(ilcnx+ima-1)
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --  ON FILTRE LES MAILLES SUIVANT LES CRITERES RELATIFS
 !     A CHAQUE TYPE D'APPUI:
 !     ---------------------------------------------------
-    nbma=0
+    nbma = 0
     do i = 1, nbmala
-        nno=zi(jnnma+i-1)
+        nno = zi(jnnma+i-1)
         if (nno .eq. 0) goto 30
 !
-        ima=zi(jmala+i-1)
-        jco=iacnx+zi(ilcnx+ima-1)-1
-        ii=0
+        ima = zi(jmala+i-1)
+        jco = iacnx+zi(ilcnx+ima-1)-1
+        ii = 0
         do j = 1, nno
-            nuno=zi(jco+j-1)
-            if (noeuds(nuno) .eq. 1) ii=ii+1
+            nuno = zi(jco+j-1)
+            if (noeuds(nuno) .eq. 1) ii = ii+1
         end do
 !
         if (typapp .eq. 'TOUT' .or. typapp .eq. 'SOMMET') then
             if (ii .eq. nno) then
-                nbma=nbma+1
-                zi(jlmas+nbma-1)=ima
-            endif
-        else if (typapp.eq.'MAJORITE') then
+                nbma = nbma+1
+                zi(jlmas+nbma-1) = ima
+            end if
+        else if (typapp .eq. 'MAJORITE') then
             if (ii .ge. (nno+1)/2) then
-                nbma=nbma+1
-                zi(jlmas+nbma-1)=ima
-            endif
-        endif
- 30     continue
+                nbma = nbma+1
+                zi(jlmas+nbma-1) = ima
+            end if
+        end if
+30      continue
     end do
 !
 ! --- CREATION ET REMPLISSAGE DU VECTEUR DE SORTIE
@@ -204,7 +204,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
         do i = 1, nbma
             zi(idlist+i-1) = zi(jlmas+i-1)
         end do
-    endif
+    end if
 !
 ! --- FIN
 !     ===

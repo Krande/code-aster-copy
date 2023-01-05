@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine ComputeTableWidth(table, line_width, nb_cols_active)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -49,16 +49,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_cols        = table%nb_cols
-    line_width     = 0
+    nb_cols = table%nb_cols
+    line_width = 0
     nb_cols_active = 0
 !
 ! - Number of active columns
 !
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            nb_cols_active = nb_cols_active + 1
-        endif
+            nb_cols_active = nb_cols_active+1
+        end if
     end do
 !
 ! - Compute width
@@ -66,8 +66,8 @@ implicit none
     line_width = 1
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            line_width = line_width + (16+1)
-        endif
+            line_width = line_width+(16+1)
+        end if
     end do
     ASSERT(line_width .le. 512)
 !

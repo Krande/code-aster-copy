@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sroptg(val, dum, dt, nbmat, mater,&
-                  invar, s, sel, ucrpm,&
-                  ucrvm, ucriv, seuilv, vinm, nvi, de,&
+subroutine sroptg(val, dum, dt, nbmat, mater, &
+                  invar, s, sel, ucrpm, &
+                  ucrvm, ucriv, seuilv, vinm, nvi, de, &
                   depsv, dside, retcom)
 
 !
@@ -51,7 +51,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
 !     : RETCOM : CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS
 ! ===================================================================================
 
-    implicit   none
+    implicit none
 
 #include "asterfort/lcprte.h"
 #include "asterfort/srbpri.h"
@@ -76,8 +76,8 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!!
 
     integer :: val, dum, nbmat, retcom, nvi
-    real(kind=8) :: dt, invar, s(6), sel(6), mater(nbmat,2), vinm(nvi)
-    real(kind=8) :: dside(6,6), de(6,6)
+    real(kind=8) :: dt, invar, s(6), sel(6), mater(nbmat, 2), vinm(nvi)
+    real(kind=8) :: dside(6, 6), de(6, 6)
     real(kind=8) :: ucrpm, ucrvm, ucriv, seuilv
 
     !!!
@@ -91,24 +91,23 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     real(kind=8) :: dhdsv(6), ds2hdv(6), dfdsv(6)
     real(kind=8) :: dhdsve(6), ds2hde(6), dfdsve(6)
     real(kind=8) :: vecnp(6), vecnv(6), gp(6), gv(6), devgii
-    real(kind=8) :: degv(6), degp(6), dgp(6,6), dgv(6,6)
-    real(kind=8) :: dfdegp, dfdxip, dphigv(6,6), dedgp(6,6), dedgv(6,6)
-    real(kind=8) :: dphi(6), ddlam(6), dvds(6,6)
-    real(kind=8) :: aa(6,6), cc(6,6), dd(6), nume(6)
+    real(kind=8) :: degv(6), degp(6), dgp(6, 6), dgv(6, 6)
+    real(kind=8) :: dfdegp, dfdxip, dphigv(6, 6), dedgp(6, 6), dedgv(6, 6)
+    real(kind=8) :: dphi(6), ddlam(6), dvds(6, 6)
+    real(kind=8) :: aa(6, 6), cc(6, 6), dd(6), nume(6)
     real(kind=8) :: depsv(6), ddepsv(6), ddgamv(6), dgamv
     real(kind=8) :: bprimp, bprimv, coupl
     real(kind=8) :: bidon, vintr, tmm, tpp, paravit(3), varvit(4)
-    real(kind=8) :: aat(6,6), cct(6,6)
-    common /tdim/   ndt, ndi
-
+    real(kind=8) :: aat(6, 6), cct(6, 6)
+    common/tdim/ndt, ndi
 
     !!!
     !!! Recuperation des temperatures et des increments
     !!!
 
-    tmm=mater(6,1)
-    tpp=mater(7,1)
-    vintr=vinm(3)
+    tmm = mater(6, 1)
+    tpp = mater(7, 1)
+    vintr = vinm(3)
 
     !!!
     !!! Recuperation des parametres d'ecrouissage a t- et v-
@@ -155,7 +154,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!! Recuperation de gp-
     !!!
 
-    bprimp=srbpri(val, vinm, nvi, nbmat, mater, paraep, invar, s, tmm)
+    bprimp = srbpri(val, vinm, nvi, nbmat, mater, paraep, invar, s, tmm)
 
     call srcaln(s, bprimp, vecnp, retcom)
     call srcalg(dfdsp, vecnp, gp, devgii)
@@ -164,8 +163,8 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!! Recuperation de gvp-
     !!!
 
-    val=0
-    bprimv=srbpri(val, vinm, nvi, nbmat, mater, paravi, invar, s, tmm)
+    val = 0
+    bprimv = srbpri(val, vinm, nvi, nbmat, mater, paravi, invar, s, tmm)
 
     call srcaln(s, bprimv, vecnv, retcom)
     call srcalg(dfdsv, vecnv, gv, bidon)
@@ -175,12 +174,12 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!!
 
     call srdphi(nbmat, mater, de, seuilv, dfdsve, dphi)
-    degv(1:ndt) = matmul(de(1:ndt,1:ndt), gv(1:ndt))
+    degv(1:ndt) = matmul(de(1:ndt, 1:ndt), gv(1:ndt))
     call lcprte(degv, dphi, dphigv)
 
-    do i=1, ndt
-        do k=1, ndt
-            aa(i,k)=de(i,k)-dphigv(i,k)*dt
+    do i = 1, ndt
+        do k = 1, ndt
+            aa(i, k) = de(i, k)-dphigv(i, k)*dt
         end do
     end do
 
@@ -188,8 +187,8 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!! Produit de dfp/dsig par aa
     !!!
 
-    aat(1:ndt,1:ndt) = transpose(aa(1:ndt,1:ndt))
-    nume(1:ndt) = matmul(aat(1:ndt,1:ndt), dfdsp(1:ndt))
+    aat(1:ndt, 1:ndt) = transpose(aa(1:ndt, 1:ndt))
+    nume(1:ndt) = matmul(aat(1:ndt, 1:ndt), dfdsp(1:ndt))
 
     !!!
     !!! Recuperation de dfp/dxip(-)
@@ -202,7 +201,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!!
 
     call r8inir(6, 0.d0, degp, 1)
-    degp(1:ndt) = matmul(de(1:ndt,1:ndt), gp(1:ndt))
+    degp(1:ndt) = matmul(de(1:ndt, 1:ndt), gp(1:ndt))
 
     !!!
     !!! Produit de dfp/dsig par de:gp
@@ -224,22 +223,22 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     call r8inir(6*6, 0.d0, cc, 1)
     call r8inir(6, 0.d0, dd, 1)
     call srdvds(dt, nbmat, mater, gv, dfdsve, seuilv, dvds)
-    cc(1:ndt,1:ndt) = matmul(dvds(1:ndt,1:ndt), de(1:ndt,1:ndt))
-    cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
-    dd(1:ndt) = matmul(cct(1:ndt,1:ndt), ddgamv(1:ndt))
+    cc(1:ndt, 1:ndt) = matmul(dvds(1:ndt, 1:ndt), de(1:ndt, 1:ndt))
+    cct(1:ndt, 1:ndt) = transpose(cc(1:ndt, 1:ndt))
+    dd(1:ndt) = matmul(cct(1:ndt, 1:ndt), ddgamv(1:ndt))
 
     !!!
     !!! Calcul de dlambda
     !!!
 
-    coupl=mater(28,2)
+    coupl = mater(28, 2)
 
-    do i=1, ndt
-        if ((dum.eq.1).and.(coupl.ge.1.d0/2.d0)) then
-            ddlam(i)=(nume(i)+dfdxip*dd(i))/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
+    do i = 1, ndt
+        if ((dum .eq. 1) .and. (coupl .ge. 1.d0/2.d0)) then
+            ddlam(i) = (nume(i)+dfdxip*dd(i))/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
         else
-            ddlam(i)=nume(i)/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
-        endif
+            ddlam(i) = nume(i)/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
+        end if
     end do
 
     !!!
@@ -253,9 +252,9 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     call lcprte(degp, ddlam, dedgp)
     call r8inir(6*6, 0.d0, dside, 1)
 
-    do i=1, ndt
-        do k=1, ndt
-            dside(i,k)=de(i,k)-dedgp(i,k)-dphigv(i,k)*dt
+    do i = 1, ndt
+        do k = 1, ndt
+            dside(i, k) = de(i, k)-dedgp(i, k)-dphigv(i, k)*dt
         end do
     end do
 

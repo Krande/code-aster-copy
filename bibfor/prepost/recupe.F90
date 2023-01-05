@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine recupe(noma, ndim, nk1d, lrev, lmdb, &
-                  matrev, matmdb, deklag, prodef,londef,&
+                  matrev, matmdb, deklag, prodef, londef, &
                   oridef, profil)
     implicit none
 #include "asterc/getfac.h"
@@ -47,7 +47,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, lmdb, &
 ! --- : ORIDEF : ORIENTATION DU DEFAUT ---------------------------------
 ! --- : PROFIL : TYPE DE PROFIL (ELLIPSE OU SEMI-ELLIPSE) --------------
 ! ======================================================================
-    integer :: ibid,ibid1,ibid2
+    integer :: ibid, ibid1, ibid2
     character(len=8) :: k8b
     character(len=16) :: motfac
 ! ======================================================================
@@ -64,7 +64,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, lmdb, &
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 ! ======================================================================
 ! --- RECUPERATION DU PROFIL DE FISSURE --------------------------------
 ! ======================================================================
@@ -77,24 +77,24 @@ subroutine recupe(noma, ndim, nk1d, lrev, lmdb, &
 ! ======================================================================
 ! --- RECUPERATION DES CARACTERISTIQUES DU METAL DE BASE ---------------
 ! ======================================================================
-    lmdb   = 0.d0
+    lmdb = 0.d0
     matmdb = '        '
-    if(profil(1:12).eq.'SEMI_ELLIPSE')then
-       call getvr8(' ', 'EPAIS_MDB', scal=lmdb, nbret=ibid1)
-       call getvid(' ', 'MATER_MDB', scal=matmdb, nbret=ibid2)
-       if((ibid1.eq.0).or.(ibid2.eq.0)) then
-          call utmess('F', 'PREPOST_3')
-       endif
+    if (profil(1:12) .eq. 'SEMI_ELLIPSE') then
+        call getvr8(' ', 'EPAIS_MDB', scal=lmdb, nbret=ibid1)
+        call getvid(' ', 'MATER_MDB', scal=matmdb, nbret=ibid2)
+        if ((ibid1 .eq. 0) .or. (ibid2 .eq. 0)) then
+            call utmess('F', 'PREPOST_3')
+        end if
 !
-    endif
+    end if
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES DE LA FISSURE ---------------------------
 ! ======================================================================
-    if(profil(1:7).eq.'ELLIPSE') then
-       call getvr8('FISSURE', 'DECALAGE', iocc=1, scal=deklag, nbret=ibid)
+    if (profil(1:7) .eq. 'ELLIPSE') then
+        call getvr8('FISSURE', 'DECALAGE', iocc=1, scal=deklag, nbret=ibid)
     else
-       deklag=0.d0
-    endif
+        deklag = 0.d0
+    end if
     call getvr8('FISSURE', 'PROFONDEUR', iocc=1, scal=prodef, nbret=ibid)
     call getvr8('FISSURE', 'LONGUEUR', iocc=1, scal=londef, nbret=ibid)
     call getvtx('FISSURE', 'ORIENTATION', iocc=1, scal=oridef, nbret=ibid)

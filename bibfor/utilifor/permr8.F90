@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,10 +37,10 @@ subroutine permr8(tab, shift, nbr)
     integer :: i
     real(kind=8) :: tampon(nbr)
 !
-    ASSERT((shift.ge.1).and.(shift.le.nbr))
+    ASSERT((shift .ge. 1) .and. (shift .le. nbr))
 !
     do i = 1, nbr
-        tampon(i) = tab( mod(i+shift-2,nbr) + 1 )
+        tampon(i) = tab(mod(i+shift-2, nbr)+1)
     end do
 !
     do i = 1, nbr

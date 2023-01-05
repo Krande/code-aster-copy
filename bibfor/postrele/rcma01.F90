@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
+subroutine rcma01(chmate, ima, ipt, nbm, adrm, &
                   vale)
     implicit none
 #include "jeveux.h"
@@ -71,49 +71,49 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
 ! --- LE MATERIAU : E   TEMPERATURE CALCUL
 !
     icmp = 1
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'E CALCUL'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     ec = cesv(iad)
 !
 ! --- LE MATERIAU : E   TEMPERATURE AMBIANTE
 !
     icmp = 2
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'E AMBIANT'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     e = cesv(iad)
 !
 ! --- LE MATERIAU : NU
 !
     icmp = 3
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'NU'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     nu = cesv(iad)
 !
 ! --- LE MATERIAU : ALPHA
 !
     icmp = 4
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'ALPHA'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     alpha = cesv(iad)
 !
 ! --- TRAITEMENT DE LA DISCONTINUITE, A GAUCHE ET A DROITE DU NOEUD
@@ -135,30 +135,30 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
             if (adrm(in) .ne. ima) then
                 imb = adrm(in)
                 goto 106
-            endif
+            end if
         end do
         call utmess('F', 'POSTRCCM_19')
 106     continue
         decmb = cesd(5+4*(imb-1)+4)
         icmp = 2
-        iad = decmb + (ipt-1)*nbcmp + icmp
+        iad = decmb+(ipt-1)*nbcmp+icmp
         if (.not. zl(jcesl-1+iad)) then
-            vali (1) = imb
-            vali (2) = ipt
+            vali(1) = imb
+            vali(2) = ipt
             valk = 'E_B'
             call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-        endif
+        end if
         eb = cesv(iad)
         icmp = 4
-        iad = decmb + (ipt-1)*nbcmp + icmp
+        iad = decmb+(ipt-1)*nbcmp+icmp
         if (.not. zl(jcesl-1+iad)) then
-            vali (1) = imb
-            vali (2) = ipt
+            vali(1) = imb
+            vali(2) = ipt
             valk = 'ALPHA_B'
             call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-        endif
+        end if
         alphab = cesv(iad)
-    endif
+    end if
 !
     vale(1) = ec
     vale(2) = e
@@ -168,67 +168,67 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
     vale(6) = eb
     vale(7) = alphaa
     vale(8) = alphab
-    vale(9) = ( ea + eb ) / 2
+    vale(9) = (ea+eb)/2
 !
 ! --- LE MATERIAU : E_REFE
 !
     icmp = 5
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'E_REFE'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     vale(10) = cesv(iad)
 !
 ! --- LE MATERIAU : SM
 !
     icmp = 6
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'SM'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     vale(11) = cesv(iad)
 !
 ! --- LE MATERIAU : M
 !
     icmp = 7
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'M'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     vale(12) = cesv(iad)
 !
 ! --- LE MATERIAU : N
 !
     icmp = 8
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'N'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     vale(13) = cesv(iad)
 !
 !
 ! --- TYPE DE KE
 !
     icmp = 9
-    iad = decma + (ipt-1)*nbcmp + icmp
+    iad = decma+(ipt-1)*nbcmp+icmp
     if (.not. zl(jcesl-1+iad)) then
-        vali (1) = ima
-        vali (2) = ipt
+        vali(1) = ima
+        vali(2) = ipt
         valk = 'TYPEKE'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-    endif
+    end if
     vale(14) = cesv(iad)
 !
     call jedema()

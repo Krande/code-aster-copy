@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_vale,&
-                  para_type, keyw_factz  , keywz, materi)
+subroutine rctype(jmat, nb_para_list, para_list_name, para_list_vale, para_vale, &
+                  para_type, keyw_factz, keywz, materi)
 !
     implicit none
 !
@@ -59,7 +59,7 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lfct, lmat, lsup
-    parameter  ( lmat = 9 , lfct = 10, lsup=2)
+    parameter(lmat=9, lfct=10, lsup=2)
 !
     integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, jpro, kmat, inom
     integer :: imate, nbmat
@@ -73,73 +73,73 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
     para_type = ' '
     para_vale = 0.d0
 !
-    ipi= 0; ipif= 0; imate= 0
+    ipi = 0; ipif = 0; imate = 0
 !
 !   Number of materials data for current element
     nbmat = zi(jmat)
-    if ( nbmat.ne.1 ) then
-        ASSERT( present(materi) )
+    if (nbmat .ne. 1) then
+        ASSERT(present(materi))
         do kmat = 1, nbmat
-            inom=zi(jmat+kmat)
-            nomi=zk8(inom)
+            inom = zi(jmat+kmat)
+            nomi = zk8(inom)
             if (nomi .eq. materi) then
 !               Coded material
                 imate = jmat+zi(jmat+nbmat+kmat)
                 goto 5
-            endif
-        enddo
+            end if
+        end do
         call utmess('F', 'CALCUL_45', sk=materi)
     else
 !       Coded material
         imate = jmat+zi(jmat+nbmat+1)
-    endif
+    end if
 5   continue
 !
 !   Simple keyword for traction curve
     if (present(keywz)) then
-        keyw  = keywz
+        keyw = keywz
     else
         keyw = 'SIGM'
-    endif
+    end if
 !
 !   Factor keyword for traction curve
     if (present(keyw_factz)) then
         keyw_fact = keyw_factz
     else
         keyw_fact = 'TRACTION'
-    endif
+    end if
 !
 !   Get index for factor keyword
     do icomp = 1, zi(imate+1)
         if (keyw_fact .eq. zk32(zi(imate)+icomp-1)) then
             ipi = zi(imate+2+icomp-1)
             goto 11
-        endif
-    enddo
-    call utmess('F', 'COMPOR5_1', sk = keyw_fact)
+        end if
+    end do
+    call utmess('F', 'COMPOR5_1', sk=keyw_fact)
 11  continue
 !
 ! - Get index for simple keyword
 !
-    idf   = zi(ipi)+zi(ipi+1)
-    nbf   = zi(ipi+2)
+    idf = zi(ipi)+zi(ipi+1)
+    nbf = zi(ipi+2)
     ivalk = zi(ipi+3)
     do ik = 1, nbf
         if (keyw .eq. zk16(ivalk+idf+ik-1)) then
-            if (keyw.eq.'SIGM') then
+            if (keyw .eq. 'SIGM') then
                 ipif = ipi+lmat-1+lfct*(ik-1)
-            else if ((keyw.eq.'SIGM_F1').or.&
-                     (keyw.eq.'SIGM_F2').or.&
-                     (keyw.eq.'SIGM_F3').or.&
-                     (keyw.eq.'SIGM_F4').or.&
-                     (keyw.eq.'SIGM_C')) then
+            else if ((keyw .eq. 'SIGM_F1') .or. &
+                     (keyw .eq. 'SIGM_F2') .or. &
+                     (keyw .eq. 'SIGM_F3') .or. &
+                     (keyw .eq. 'SIGM_F4') .or. &
+                     (keyw .eq. 'SIGM_C')) then
                 ipif = ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
             else
                 ASSERT(.false.)
-            endif
+            end if
             goto 21
-        endif
-    enddo
+        end if
+    end do
     ASSERT(.false.)
 21  continue
 !
@@ -158,23 +158,23 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
             para_vale = para_list_vale(1)
             goto 999
         else
-            call utmess('F', 'COMPOR5_2', sk = para_name(1))
-        endif
-    endif
+            call utmess('F', 'COMPOR5_2', sk=para_name(1))
+        end if
+    end if
 !
 ! - <NAPPE> case
 !
     do ipara = 1, nb_para
-        if (para_name(ipara)(1:4) .ne. 'EPSI') then
+        if (para_name(ipara) (1:4) .ne. 'EPSI') then
             do i_para_list = 1, nb_para_list
                 if (para_list_name(i_para_list) .eq. para_name(ipara)) then
                     para_vale = para_list_vale(i_para_list)
                     para_type = para_list_name(i_para_list)
                     goto 999
-                endif
-            enddo
-        endif
-    enddo
+                end if
+            end do
+        end if
+    end do
 !
     call utmess('F', 'COMPOR5_4')
 !

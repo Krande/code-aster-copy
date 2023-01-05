@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,33 +56,33 @@ subroutine peenc2(champ, rcoef)
     call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL3_52')
-    endif
+    end if
     call jeveuo(champ2//'.CELK', 'L', vk24=celk)
-    ligrel = celk(1)(1:19)
+    ligrel = celk(1) (1:19)
 !
     call jeveuo(champ2//'.CELD', 'L', vi=celd)
 !
 !     --- ON NE VERIFIE PAS LES LONGUEURS, CAR ELLES SONT DIFFERENTES
 !         SUIVANT LE TYPE D'ELEMENT.
 !     --- LA VALEUR "TOTALE" QUE L'ON VEUT RECUPERER EST PLACE EN 1
-    nbgr = nbgrel( ligrel )
+    nbgr = nbgrel(ligrel)
 !
     call jeveuo(champ2//'.CELV', 'E', lvale)
     do j = 1, nbgr
-        mode=celd(celd(4+j) +2)
+        mode = celd(celd(4+j)+2)
         if (mode .eq. 0) goto 30
-        icoef=max(1,celd(4))
-        longt = digdel(mode) * icoef
-        nel = nbelem( ligrel, j )
-        idecgr=celd(celd(4+j)+8)
+        icoef = max(1, celd(4))
+        longt = digdel(mode)*icoef
+        nel = nbelem(ligrel, j)
+        idecgr = celd(celd(4+j)+8)
         do k = 1, nel
 !
 !            --- TOTALE ---
             i = 1
             indic = lvale-1+idecgr+(k-1)*longt+i-1
-            zr(indic) = zr(indic) * rcoef
+            zr(indic) = zr(indic)*rcoef
         end do
- 30     continue
+30      continue
     end do
 !
     call jedema()

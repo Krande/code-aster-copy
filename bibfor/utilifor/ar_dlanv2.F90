@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlanv2(a, b, c, d, rt1r,&
-                  rt1i, rt2r, rt2i, cs, sn)
+subroutine ar_dlanv2(a, b, c, d, rt1r, &
+                     rt1i, rt2r, rt2i, cs, sn)
 !
 !     SUBROUTINE LAPACK CALCULANT LA FACTORISATION DE SCHUR D'UNE
 !     MATRICE 2X2.
@@ -90,7 +90,7 @@ subroutine ar_dlanv2(a, b, c, d, rt1r,&
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: zero, half, one
-    parameter          ( zero = 0.0d+0, half = 0.5d+0, one = 1.0d+0 )
+    parameter(zero=0.0d+0, half=0.5d+0, one=1.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     real(kind=8) :: aa, bb, cc, cs1, dd, p, sab, sac, sigma, sn1, tau, temp
@@ -109,7 +109,7 @@ subroutine ar_dlanv2(a, b, c, d, rt1r,&
     if (c .eq. zero) then
         goto 10
 !
-    else if (b.eq.zero) then
+    else if (b .eq. zero) then
 !
 !        SWAP ROWS AND COLUMNS
 !
@@ -121,75 +121,75 @@ subroutine ar_dlanv2(a, b, c, d, rt1r,&
         b = -c
         c = zero
         goto 10
-        else if( (a-d).eq.zero .and. sign( one, b ).ne. sign( one, c ) )&
-    then
+    else if ((a-d) .eq. zero .and. sign(one, b) .ne. sign(one, c)) &
+        then
         goto 10
     else
 !
 !        MAKE DIAGONAL ELEMENTS EQUAL
 !
-        temp = a - d
+        temp = a-d
         p = half*temp
-        sigma = b + c
-        tau = dlapy2( sigma, temp )
-        cs1 = sqrt( half*( one+abs( sigma ) / tau ) )
-        sn1 = -( p / ( tau*cs1 ) )*sign( one, sigma )
+        sigma = b+c
+        tau = dlapy2(sigma, temp)
+        cs1 = sqrt(half*(one+abs(sigma)/tau))
+        sn1 = -(p/(tau*cs1))*sign(one, sigma)
 !
 !        COMPUTE ( AA  BB ) = ( A  B ) ( CS1 -SN1 )
 !                ( CC  DD )   ( C  D ) ( SN1  CS1 )
 !
-        aa = a*cs1 + b*sn1
-        bb = -a*sn1 + b*cs1
-        cc = c*cs1 + d*sn1
-        dd = -c*sn1 + d*cs1
+        aa = a*cs1+b*sn1
+        bb = -a*sn1+b*cs1
+        cc = c*cs1+d*sn1
+        dd = -c*sn1+d*cs1
 !
 !        COMPUTE ( A  B ) = ( CS1  SN1 ) ( AA  BB )
 !                ( C  D )   (-SN1  CS1 ) ( CC  DD )
 !
-        a = aa*cs1 + cc*sn1
-        b = bb*cs1 + dd*sn1
-        c = -aa*sn1 + cc*cs1
-        d = -bb*sn1 + dd*cs1
+        a = aa*cs1+cc*sn1
+        b = bb*cs1+dd*sn1
+        c = -aa*sn1+cc*cs1
+        d = -bb*sn1+dd*cs1
 !
 !        ACCUMULATE TRANSFORMATION
 !
-        temp = cs*cs1 - sn*sn1
-        sn = cs*sn1 + sn*cs1
+        temp = cs*cs1-sn*sn1
+        sn = cs*sn1+sn*cs1
         cs = temp
 !
-        temp = half*( a+d )
+        temp = half*(a+d)
         a = temp
         d = temp
 !
         if (c .ne. zero) then
             if (b .ne. zero) then
-                if (sign( one, b ) .eq. sign( one, c )) then
+                if (sign(one, b) .eq. sign(one, c)) then
 !
 !                 REAL EIGENVALUES: REDUCE TO UPPER TRIANGULAR FORM
 !
-                    sab = sqrt( abs( b ) )
-                    sac = sqrt( abs( c ) )
-                    p = sign( sab*sac, c )
-                    tau = one / sqrt( abs( b+c ) )
-                    a = temp + p
-                    d = temp - p
-                    b = b - c
+                    sab = sqrt(abs(b))
+                    sac = sqrt(abs(c))
+                    p = sign(sab*sac, c)
+                    tau = one/sqrt(abs(b+c))
+                    a = temp+p
+                    d = temp-p
+                    b = b-c
                     c = zero
                     cs1 = sab*tau
                     sn1 = sac*tau
-                    temp = cs*cs1 - sn*sn1
-                    sn = cs*sn1 + sn*cs1
+                    temp = cs*cs1-sn*sn1
+                    sn = cs*sn1+sn*cs1
                     cs = temp
-                endif
+                end if
             else
                 b = -c
                 c = zero
                 temp = cs
                 cs = -sn
                 sn = temp
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 10  continue
 !
@@ -201,9 +201,9 @@ subroutine ar_dlanv2(a, b, c, d, rt1r,&
         rt1i = zero
         rt2i = zero
     else
-        rt1i = sqrt( abs( b ) )*sqrt( abs( c ) )
+        rt1i = sqrt(abs(b))*sqrt(abs(c))
         rt2i = -rt1i
-    endif
+    end if
 !
     call matfpe(1)
 !

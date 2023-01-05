@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine lrmhdf(nomamd, nomu, ifm, nrofic, niv,&
+subroutine lrmhdf(nomamd, nomu, ifm, nrofic, niv, &
                   infmed, nbnoeu, nbmail, nbcoor)
 !
     use as_med_module, only: as_med_open
@@ -47,11 +47,11 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, niv,&
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 !
-integer :: ifm, niv
-integer :: nrofic, infmed
-character(len=*) :: nomamd
-character(len=8) :: nomu
-integer :: nbnoeu, nbmail, nbcoor
+    integer :: ifm, niv
+    integer :: nrofic, infmed
+    character(len=*) :: nomamd
+    character(len=8) :: nomu
+    integer :: nbnoeu, nbmail, nbcoor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ integer :: nbnoeu, nbmail, nbcoor
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'LRMHDF'
-    integer, parameter :: edlect=0
+    integer, parameter :: edlect = 0
     integer :: iaux
     integer :: nmatyp(MT_NTYMAX)
     integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
@@ -96,11 +96,11 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     call jemarq()
 !
-    call sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
-                cooref, grpnoe, gpptnn, grpmai, gpptnm,&
+    call sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
+                cooref, grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
 !
-    descfi=' '
+    descfi = ' '
 !
 !====
 ! 1. PREALABLES
@@ -108,9 +108,9 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     if (niv .gt. 1) then
         call utflsh(codret)
-        write (ifm,101) 'DEBUT DE '//nompro
-    endif
-101 format(/,10('='),a,10('='),/)
+        write (ifm, 101) 'DEBUT DE '//nompro
+    end if
+101 format(/, 10('='), a, 10('='),/)
 !
 ! 1.1. ==> NOM DU FICHIER MED
 !
@@ -120,11 +120,11 @@ integer :: nbnoeu, nbmail, nbcoor
         nofimd = 'fort.'//saux08
     else
         nofimd = kfic(1:200)
-    endif
+    end if
 !
     if (niv .gt. 1) then
-        write (ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',nofimd
-    endif
+        write (ifm, *) '<', nompro, '> NOM DU FICHIER MED : ', nofimd
+    end if
 !
 ! 1.2. ==> VERIFICATION DU FICHIER MED
 !
@@ -132,47 +132,47 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     call as_mficom(nofimd, hdfok, medok, codret)
     if (hdfok .eq. 0) then
-        valk (1) = nofimd
-        valk (2) = nomamd
-        vali (1) = codret
+        valk(1) = nofimd
+        valk(2) = nomamd
+        vali(1) = codret
         call utmess('A', 'MODELISA9_44', nk=2, valk=valk, si=vali(1))
         call utmess('F', 'PREPOST3_10')
-    endif
+    end if
 !
 ! 1.2.2. ==> VERIFICATION DE LA VERSION MED
 !
     if (medok .eq. 0) then
-        vali (1) = codret
+        vali(1) = codret
         call utmess('A+', 'MED_24', si=vali(1))
         call as_mlbnuv(vlib(1), vlib(2), vlib(3), iret)
         if (iret .eq. 0) then
-            vali (1) = vlib(1)
-            vali (2) = vlib(2)
-            vali (3) = vlib(3)
+            vali(1) = vlib(1)
+            vali(2) = vlib(2)
+            vali(3) = vlib(3)
             call utmess('A+', 'MED_25', ni=3, vali=vali)
-        endif
+        end if
         call as_med_open(fid, nofimd, edlect, codret)
         call as_mfinvr(fid, vfic(1), vfic(2), vfic(3), iret)
         if (iret .eq. 0) then
             if (vfic(2) .eq. -1 .or. vfic(3) .eq. -1) then
                 call utmess('A+', 'MED_26')
             else
-                vali (1) = vfic(1)
-                vali (2) = vfic(2)
-                vali (3) = vfic(3)
+                vali(1) = vfic(1)
+                vali(2) = vfic(2)
+                vali(3) = vfic(3)
                 call utmess('A+', 'MED_27', ni=3, vali=vali)
-            endif
-            if (vfic(1) .lt. vlib(1) .or. ( vfic(1).eq.vlib(1) .and. vfic(2).lt.vlib(2) )&
-                .or.&
-                (&
-                vfic(1) .eq. vlib(1) .and. vfic( 2) .eq. vlib(2) .and. vfic(3) .eq. vlib(3)&
+            end if
+            if (vfic(1) .lt. vlib(1) .or. (vfic(1) .eq. vlib(1) .and. vfic(2) .lt. vlib(2)) &
+                .or. &
+                ( &
+                vfic(1) .eq. vlib(1) .and. vfic(2) .eq. vlib(2) .and. vfic(3) .eq. vlib(3) &
                 )) then
                 call utmess('A+', 'MED_28')
-            endif
-        endif
+            end if
+        end if
         call as_mficlo(fid, codret)
         call utmess('A', 'MED_41')
-    endif
+    end if
 !
 ! 1.3. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE A LIRE
 !
@@ -182,11 +182,11 @@ integer :: nbnoeu, nbmail, nbcoor
     if (nomamd .eq. ' ') then
 !
         ifimed = 0
-        call mdexpm(nofimd, ifimed, nomamd, existm, ndim,&
+        call mdexpm(nofimd, ifimed, nomamd, existm, ndim, &
                     codret)
-        if (.not.existm) then
+        if (.not. existm) then
             call utmess('F', 'MED_50', sk=nofimd)
-        endif
+        end if
 !
 ! 1.3.2. ==> C'EST UN MAILLAGE DESIGNE PAR UN NOM
 !            ON RECUPERE SA DIMENSION.
@@ -195,15 +195,15 @@ integer :: nbnoeu, nbmail, nbcoor
 !
         iaux = 1
         ifimed = 0
-        call mdexma(nofimd, ifimed, nomamd, iaux, existm,&
+        call mdexma(nofimd, ifimed, nomamd, iaux, existm, &
                     ndim, codret)
-        if (.not.existm) then
+        if (.not. existm) then
             valk(1) = nomamd
             valk(2) = nofimd(1:32)
             call utmess('F', 'MED_51', nk=2, valk=valk)
-        endif
+        end if
 !
-    endif
+    end if
 !
     nbcoor = ndim
     if (ndim .eq. 1) nbcoor = 2
@@ -216,12 +216,12 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     call as_med_open(fid, nofimd, edlect, codret)
     if (codret .ne. 0) then
-        valk (1) = nofimd(1:32)
-        valk (2) = nomamd
-        vali (1) = codret
+        valk(1) = nofimd(1:32)
+        valk(2) = nomamd
+        vali(1) = codret
         call utmess('A', 'MODELISA9_51', nk=2, valk=valk, si=vali(1))
         call utmess('F', 'PREPOST_69')
-    endif
+    end if
 !
 !
 ! 2.2. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
@@ -229,7 +229,7 @@ integer :: nbnoeu, nbmail, nbcoor
 !          . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 !          . VERIF COHERENCE AVEC LE CATALOGUE
 !
-    call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
+    call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                 modnum, nuanom, numnoa)
 !
 !====
@@ -242,16 +242,16 @@ integer :: nbnoeu, nbmail, nbcoor
 ! 4. DIMENSIONNEMENT
 !====
 !
-    call lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp,&
-                nmatyp, nbnoeu, nbmail, nbnoma, descfi,&
+    call lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp, &
+                nmatyp, nbnoeu, nbmail, nbnoma, descfi, &
                 adapma)
 !
 !====
 ! 5. LES NOEUDS
 !====
 !
-    call lrmmno(fid, nomamd, ndim, nbnoeu, nomu,&
-                nomnoe, cooval, coodsc, cooref, ifm,&
+    call lrmmno(fid, nomamd, ndim, nbnoeu, nomu, &
+                nomnoe, cooval, coodsc, cooref, ifm, &
                 infmed)
 !
 !====
@@ -260,9 +260,9 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     saux06 = nompro
 !
-    call lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
-                typgeo, nomtyp, nnotyp, renumd, nmatyp,&
-                nommai, connex, typmai, saux06, infmed,&
+    call lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp, &
+                typgeo, nomtyp, nnotyp, renumd, nmatyp, &
+                nommai, connex, typmai, saux06, infmed, &
                 modnum, numnoa)
 !
 !====
@@ -271,8 +271,8 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     saux06 = nompro
 !
-    call lrmmfa(fid, nomamd, nbnoeu, grpnoe,&
-                gpptnn, grpmai, gpptnm, nbgrno, nbgrma,&
+    call lrmmfa(fid, nomamd, nbnoeu, grpnoe, &
+                gpptnn, grpmai, gpptnm, nbgrno, nbgrma, &
                 typgeo, nomtyp, nmatyp, saux06, infmed)
 !
 !====
@@ -289,12 +289,12 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     call as_mficlo(fid, codret)
     if (codret .ne. 0) then
-        valk (1) = nofimd(1:32)
-        valk (2) = nomamd
-        vali (1) = codret
+        valk(1) = nofimd(1:32)
+        valk(2) = nomamd
+        vali(1) = codret
         call utmess('A', 'MODELISA9_52', nk=2, valk=valk, si=vali(1))
         call utmess('F', 'PREPOST_70')
-    endif
+    end if
 !
 ! 9.2. ==> MENAGE
 !
@@ -303,8 +303,8 @@ integer :: nbnoeu, nbmail, nbcoor
     call jedema()
 !
     if (niv .gt. 1) then
-        write (ifm,101) 'FIN DE '//nompro
+        write (ifm, 101) 'FIN DE '//nompro
         call utflsh(codret)
-    endif
+    end if
 !
 end subroutine

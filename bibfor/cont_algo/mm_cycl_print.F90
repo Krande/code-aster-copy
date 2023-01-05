@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_cycl_print(ds_print, ds_measure)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmrvai.h"
 #include "asterfort/nmimcr.h"
@@ -43,17 +43,17 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cycl_nb(4),cycl_nb_tot
+    integer :: cycl_nb(4), cycl_nb_tot
     real(kind=8) :: resi_pressure
 !
 ! --------------------------------------------------------------------------------------------------
 !
     resi_pressure = ds_print%resi_pressure
-    call nmrvai(ds_measure, 'Cont_Cycl1', phasis = 'N', output_count = cycl_nb(1))
-    call nmrvai(ds_measure, 'Cont_Cycl2', phasis = 'N', output_count = cycl_nb(2))
-    call nmrvai(ds_measure, 'Cont_Cycl3', phasis = 'N', output_count = cycl_nb(3))
-    call nmrvai(ds_measure, 'Cont_Cycl4', phasis = 'N', output_count = cycl_nb(4))
-    cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
+    call nmrvai(ds_measure, 'Cont_Cycl1', phasis='N', output_count=cycl_nb(1))
+    call nmrvai(ds_measure, 'Cont_Cycl2', phasis='N', output_count=cycl_nb(2))
+    call nmrvai(ds_measure, 'Cont_Cycl3', phasis='N', output_count=cycl_nb(3))
+    call nmrvai(ds_measure, 'Cont_Cycl4', phasis='N', output_count=cycl_nb(4))
+    cycl_nb_tot = cycl_nb(1)+cycl_nb(2)+cycl_nb(3)+cycl_nb(4)
     call nmimcr(ds_print, 'CTCC_CYCL', resi_pressure, .true._1)
 
 end subroutine

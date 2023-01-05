@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,22 +48,20 @@ subroutine detrsd_vide(typesd, nomsd)
     call jemarq()
     typ2sd = typesd
 
-
     if (typ2sd .eq. 'CARTE') then
 !   -----------------------------
-        carte=nomsd
+        carte = nomsd
         call jeexin(carte//'.DESC', iexi)
-        if (iexi.eq.0) goto 999
+        if (iexi .eq. 0) goto 999
         call jeveuo(carte//'.DESC', 'L', vi=desc)
-        ngedit=desc(3)
-        if (ngedit.eq.0) then
-            call detrsd('CHAMP',carte)
-        endif
-
+        ngedit = desc(3)
+        if (ngedit .eq. 0) then
+            call detrsd('CHAMP', carte)
+        end if
 
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
-    endif
+    end if
 
 999 continue
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
-                  nmafon, listpt, goinop, jfon, jnofaf,&
+subroutine xoriff(info, nfon, jfono, jbaso, jtailo, &
+                  nmafon, listpt, goinop, jfon, jnofaf, &
                   jbas, jtail, fonmul, nbfond)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -80,7 +80,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
     call jeveuo(info, 'L', jinfo)
     ptextr = '&&XORIFF.PTEXTR'
-    call xffext(jinfo, nfon, nmafon, listpt, ptextr,&
+    call xffext(jinfo, nfon, nmafon, listpt, ptextr, &
                 nbptex)
     typfon = ' '
     if (zk16(jinfo-1+3) .eq. 'FERME') typfon = 'FERME'
@@ -114,8 +114,8 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !               DOUBLON DANS LA LISTE
                         zi(jlistp-1+2*(ima-1)+2) = 0
                         goto 11
-                    endif
-                endif
+                    end if
+                end if
 !
                 zi(jtabpt-1+ipt+1) = zi(jlistp-1+2*(ima-1)+2)
                 zi(jlistp-1+2*(ima-1)+2) = 0
@@ -124,22 +124,22 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                 indipt = zi(jtabpt-1+ipt+1)
                 indicm = zi(jtabpt-1+ipt)
                 do k = 1, 3
-                    p(k)=zr(jfono-1+11*(indipt-1)+k)
-                    m(k)=zr(jfono-1+11*(indicm-1)+k)
+                    p(k) = zr(jfono-1+11*(indipt-1)+k)
+                    m(k) = zr(jfono-1+11*(indicm-1)+k)
                 end do
                 absc = zr(jfono-1+11*(indicm-1)+4)
-                zr(jfono-1+11*(indipt-1)+4) = absc + padist(3,m,p)
+                zr(jfono-1+11*(indipt-1)+4) = absc+padist(3, m, p)
 !
 !---      LE DEUXIEME INDICE CORRESPOND A CELUI RECHERCHE
-                elseif (zi(jlistp-1+2*(ima-1)+2).eq.zi(jtabpt-1+ipt))&
-            then
+            elseif (zi(jlistp-1+2*(ima-1)+2) .eq. zi(jtabpt-1+ipt)) &
+                then
                 if (ipt .gt. 2) then
                     if (zi(jtabpt-1+ipt-2) .eq. zi(jlistp-1+2*(ima-1)+1)) then
 !               DOUBLON DANS LA LISTE
                         zi(jlistp-1+2*(ima-1)+2) = 0
                         goto 11
-                    endif
-                endif
+                    end if
+                end if
 !
                 zi(jtabpt-1+ipt+1) = zi(jlistp-1+2*(ima-1)+1)
                 zi(jlistp-1+2*(ima-1)+2) = 0
@@ -148,14 +148,14 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                 indipt = zi(jtabpt-1+ipt+1)
                 indicm = zi(jtabpt-1+ipt)
                 do k = 1, 3
-                    p(k)=zr(jfono-1+11*(indipt-1)+k)
-                    m(k)=zr(jfono-1+11*(indicm-1)+k)
+                    p(k) = zr(jfono-1+11*(indipt-1)+k)
+                    m(k) = zr(jfono-1+11*(indicm-1)+k)
                 end do
                 absc = zr(jfono-1+11*(indicm-1)+4)
-                zr(jfono-1+11*(indipt-1)+4) = absc + padist(3,m,p)
+                zr(jfono-1+11*(indipt-1)+4) = absc+padist(3, m, p)
 !
-            endif
- 11         continue
+            end if
+11          continue
         end do
 !
 !       ON N'A PAS TROUVE DE POINT A ASSOCIER A IPT: C'EST UN POINT
@@ -173,11 +173,11 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                     zi(jfonmu-1+2*(nbfond-1)+2) = ipt
                     indice = 1
                     goto 13
-                endif
+                end if
             end do
- 13         continue
+13          continue
 !
-            ASSERT(indice.ne.0)
+            ASSERT(indice .ne. 0)
             zi(jptext-1+iptext) = 0
 !
 !         RECHERCHE D'UN NOUVEAU POINT D'EXTREMITE POUR DEBUTER LE
@@ -190,36 +190,36 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
                     zr(jfono-1+11*(indipt-1)+4) = 0.d0
                     zi(jptext-1+iptext) = 0
-                    nbfond = nbfond + 1
+                    nbfond = nbfond+1
                     zi(jfonmu-1+2*(nbfond-1)+1) = ipt+1
 !
                     goto 15
-                endif
+                end if
             end do
 !
 !         PRESENCE DE FONDS OUVERTS ET DE FONDS FERMES INTERDIT
             call utmess('F', 'XFEM_21')
 !
-        endif
- 15     continue
+        end if
+15      continue
     end do
 !
     zi(jfonmu-1+2*(nbfond-1)+2) = nfon
 !
     if (typfon .eq. 'FERME') then
         zi(jfonmu-1+2*(nbfond-1)+2) = nfon+1
-    endif
+    end if
 !
     call utmess('I', 'XFEM_34', si=nbfond)
 !
 !     ORDONNANCEMENT DE FONDFISS, DE NOFACPTFON, DE BASEFOND
 !     ET DE FOND.TAILLE_R
-    call xffcr(nfon, jfono, jbaso, jtailo, jtabpt,&
+    call xffcr(nfon, jfono, jbaso, jtailo, jtabpt, &
                typfon, jfon, jnofaf, jbas, jtail)
 !
     if (goinop) then
         call jedetr(ptextr)
         call jedetr(tabpt)
-    endif
+    end if
     call jedema()
 end subroutine

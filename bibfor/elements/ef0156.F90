@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,34 +30,34 @@ subroutine ef0156(nomte)
 ! REALISE  EFGE_ELNO pour barres et membranes
 ! ----------------------------------------------------------------------
 !
-    integer :: itabin(2), itabou(2),iret,k,ibid,jgano, npg, nno
+    integer :: itabin(2), itabou(2), iret, k, ibid, jgano, npg, nno
     character(len=8) :: alias8
     aster_logical :: lbarre
 !------------------------------------------------------------------------
 !
     call teattr('S', 'ALIAS8', alias8, ibid)
-    lbarre=alias8(6:8).eq.'SE2'
+    lbarre = alias8(6:8) .eq. 'SE2'
 
     call tecach('OOO', 'PCONTRR', 'L', iret=iret, nval=2, itab=itabin)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
     call tecach('OOO', 'PEFFORR', 'E', iret=iret, nval=2, itab=itabou)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 
     if (lbarre) then
-        ASSERT(itabin(2).eq.1)
-        ASSERT(itabou(2).eq.2)
-        zr(itabou(1)-1+1)=zr(itabin(1)-1+1)
-        zr(itabou(1)-1+2)=zr(itabin(1)-1+1)
+        ASSERT(itabin(2) .eq. 1)
+        ASSERT(itabou(2) .eq. 2)
+        zr(itabou(1)-1+1) = zr(itabin(1)-1+1)
+        zr(itabou(1)-1+2) = zr(itabin(1)-1+1)
 
     else
-        call elrefe_info(fami='RIGI', nno=nno, npg=npg,jgano=jgano)
-        ASSERT(3*nno.eq.itabou(2))
-        ASSERT(3*npg.eq.itabin(2))
+        call elrefe_info(fami='RIGI', nno=nno, npg=npg, jgano=jgano)
+        ASSERT(3*nno .eq. itabou(2))
+        ASSERT(3*npg .eq. itabin(2))
 
-        do k=1,itabin(2)
-            zr(itabou(1)-1+k)=zr(itabin(1)-1+k)
-        enddo
+        do k = 1, itabin(2)
+            zr(itabou(1)-1+k) = zr(itabin(1)-1+k)
+        end do
         call ppgan2(jgano, 1, 3, zr(itabin(1)), zr(itabou(1)))
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function mmmaxi(sdcont_defi, model, mesh)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
@@ -70,32 +70,32 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_elem_axis   = 0
-    mmmaxi         = .false.
+    nb_elem_axis = 0
+    mmmaxi = .false.
     list_elem_supp = '&&MMMAXI.MAISUP'
 !
 ! - Datastructure for contact definition
 !
-    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
-    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Parameters
 !
-    nb_cont_elem  = cfdisi(sdcont_defi,'NMACO' )
+    nb_cont_elem = cfdisi(sdcont_defi, 'NMACO')
 !
 ! - Access to model
 !
     model_maille = model(1:8)//'.MAILLE'
-    call jeveuo(model_maille, 'L', vi = v_model_maille)
+    call jeveuo(model_maille, 'L', vi=v_model_maille)
 !
 ! - Get support elements of skin elements
 !
     call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=v_geom_vale)
     call infmue()
-    call utmasu(mesh, '2D', nb_cont_elem, v_sdcont_mailco, list_elem_supp,&
+    call utmasu(mesh, '2D', nb_cont_elem, v_sdcont_mailco, list_elem_supp, &
                 v_geom_vale, 0, ivdummy, .false._1)
     call infbav()
-    call jeveuo(list_elem_supp, 'L', vi = v_list_elem_supp)
+    call jeveuo(list_elem_supp, 'L', vi=v_list_elem_supp)
 !
 ! - Loop on elements
 !
@@ -105,28 +105,28 @@ implicit none
             elem_type_nume = v_model_maille(elem_supp_nume)
             if (elem_type_nume .ne. 0) then
                 goto 50
-            endif
-        endif
-        elem_nume      = v_sdcont_mailco(i_elem)
+            end if
+        end if
+        elem_nume = v_sdcont_mailco(i_elem)
         elem_type_nume = v_model_maille(elem_nume)
         if (elem_type_nume .eq. 0) then
             goto 100
-        endif
- 50     continue
+        end if
+50      continue
         call jenuno(jexnum('&CATA.TE.NOMTE', elem_type_nume), elem_type_name)
-        if (lteatt('AXIS','OUI', typel=elem_type_name)) then
-            nb_elem_axis = nb_elem_axis +1
-        endif
+        if (lteatt('AXIS', 'OUI', typel=elem_type_name)) then
+            nb_elem_axis = nb_elem_axis+1
+        end if
 100     continue
     end do
 !
     if (nb_elem_axis .eq. nb_cont_elem) then
         mmmaxi = .true.
-    else if (nb_elem_axis.eq.0) then
+    else if (nb_elem_axis .eq. 0) then
         mmmaxi = .false.
     else
         call utmess('F', 'CONTACT2_12')
-    endif
+    end if
 !
     call jedetr(list_elem_supp)
 !

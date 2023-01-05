@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,21 +39,21 @@ subroutine pgyty(nno, npg, dfde, yty)
     k = 0
     do j = 1, npg
         do i = 1, nno
-            k = k + 1
-            enprim(i,j) = dfde(k)
+            k = k+1
+            enprim(i, j) = dfde(k)
         end do
     end do
 !
-    nordre = 3 * nno
+    nordre = 3*nno
     numero = -nordre
     do ngaus = 1, npg
         do ii = 1, nno
             do ki = 1, 3
-                i = ki + 3*(ii-1)
-                numero = numero + nordre
+                i = ki+3*(ii-1)
+                numero = numero+nordre
                 do jj = 1, nno
-                    j = ki + 3*(jj-1)
-                    yty(numero + j) = enprim(ii,ngaus) * enprim(jj, ngaus)
+                    j = ki+3*(jj-1)
+                    yty(numero+j) = enprim(ii, ngaus)*enprim(jj, ngaus)
                 end do
             end do
         end do

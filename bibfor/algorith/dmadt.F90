@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function dmadt(rho22, sat, phi, mamolg, dp21t,&
+function dmadt(rho22, sat, phi, mamolg, dp21t, &
                kh, alphfi)
     implicit none
     real(kind=8) :: rho22, sat, phi, mamolg, dp21t, kh, alphfi, dmadt
@@ -25,6 +25,6 @@ function dmadt(rho22, sat, phi, mamolg, dp21t,&
 ! --- CALCUL DE LA DERIVEE DE L AIR DISSOUS PAR RAPPORT A LA -----------
 ! --- TEMPERATURE ------------------------------------------------------
 ! ======================================================================
-    dmadt = rho22*sat* (phi*mamolg*dp21t/rho22/kh-3.0d0*alphfi)
+    dmadt = rho22*sat*(phi*mamolg*dp21t/rho22/kh-3.0d0*alphfi)
 ! ======================================================================
 end function

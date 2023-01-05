@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ function idenob(obj1, obj2)
         goto 220
     else
         if (iret2 .eq. 0) goto 210
-    endif
+    end if
 !
 !
 !   -- determination de type: r/c/k8,...
@@ -71,7 +71,7 @@ function idenob(obj1, obj2)
     call jelira(ob2, 'TYPE', cval=typ2)
     if (typ1 .ne. typ2) then
         goto 210
-    endif
+    end if
 !
     if (typ1 .eq. 'K') then
         call jelira(ob1, 'LTYP', ltyp1)
@@ -80,23 +80,23 @@ function idenob(obj1, obj2)
             goto 210
         else
             ltyp = ltyp1
-        endif
+        end if
 !
 !
         if (ltyp .eq. 8) then
             type = 'K8'
-        else if (ltyp.eq.16) then
+        else if (ltyp .eq. 16) then
             type = 'K16'
-        else if (ltyp.eq.24) then
+        else if (ltyp .eq. 24) then
             type = 'K24'
-        else if (ltyp.eq.32) then
+        else if (ltyp .eq. 32) then
             type = 'K32'
-        else if (ltyp.eq.80) then
+        else if (ltyp .eq. 80) then
             type = 'K80'
-        endif
+        end if
     else
         type = typ1
-    endif
+    end if
 !
 !
 !
@@ -108,7 +108,7 @@ function idenob(obj1, obj2)
         goto 210
     else
         xous = xous1
-    endif
+    end if
 !
     call jelira(ob1, 'GENR', cval=genr1)
     call jelira(ob2, 'GENR', cval=genr2)
@@ -116,7 +116,7 @@ function idenob(obj1, obj2)
         goto 210
     else
         genr = genr1
-    endif
+    end if
 !
 !
 !
@@ -126,14 +126,14 @@ function idenob(obj1, obj2)
 !   3.1 : cas des objets simples :
 !   ------------------------------
     if (xous .eq. 'S') then
-        ASSERT((genr.eq.'V').or.(genr.eq.'N'))
+        ASSERT((genr .eq. 'V') .or. (genr .eq. 'N'))
         if (genr .eq. 'V') then
 !
             call jelira(ob1, 'LONMAX', l1)
             call jelira(ob2, 'LONMAX', l2)
             if (l1 .ne. l2) then
                 goto 210
-            endif
+            end if
 !
             call jelira(ob1, 'LONUTI', l1)
             call jelira(ob2, 'LONUTI', l2)
@@ -141,7 +141,7 @@ function idenob(obj1, obj2)
                 goto 210
             else
                 l = l1
-            endif
+            end if
 !
             call jeveuo(ob1, 'L', iad1)
             call jeveuo(ob2, 'L', iad2)
@@ -151,58 +151,58 @@ function idenob(obj1, obj2)
                     if (zr(iad1-1+k) .ne. zr(iad2-1+k)) goto 210
                 end do
 !
-            else if (type.eq.'I') then
+            else if (type .eq. 'I') then
                 do k = 1, l
                     if (zi(iad1-1+k) .ne. zi(iad2-1+k)) goto 210
                 end do
 !
-            else if (type.eq.'C') then
+            else if (type .eq. 'C') then
                 do k = 1, l
                     if (zc(iad1-1+k) .ne. zc(iad2-1+k)) goto 210
                 end do
 !
-            else if (type.eq.'L') then
+            else if (type .eq. 'L') then
                 do k = 1, l
-                    if (.not. (zl(iad1-1+k).or. (.not. zl(iad2-1+k)))) goto 210
+                    if (.not. (zl(iad1-1+k) .or. (.not. zl(iad2-1+k)))) goto 210
                 end do
 !
-            else if (type.eq.'K8') then
+            else if (type .eq. 'K8') then
                 do k = 1, l
                     if (zk8(iad1-1+k) .ne. zk8(iad2-1+k)) goto 210
                 end do
 !
-            else if (type.eq.'K16') then
+            else if (type .eq. 'K16') then
                 do k = 1, l
                     if (zk16(iad1-1+k) .ne. zk16(iad2-1+k)) goto 210
                 end do
 !
-            else if (type.eq.'K24') then
+            else if (type .eq. 'K24') then
                 do k = 1, l
                     if (zk24(iad1-1+k) .ne. zk24(iad2-1+k)) goto 210
                 end do
 !
-            else if (type.eq.'K32') then
+            else if (type .eq. 'K32') then
                 do k = 1, l
                     if (zk32(iad1-1+k) .ne. zk32(iad2-1+k)) goto 210
                 end do
 !
-            else if (type.eq.'K80') then
+            else if (type .eq. 'K80') then
                 do k = 1, l
                     if (zk80(iad1-1+k) .ne. zk80(iad2-1+k)) goto 210
                 end do
 !
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 !
-        else if (genr.eq.'N') then
+        else if (genr .eq. 'N') then
 !       ------------------------------
             call jelira(ob1, 'NOMMAX', l1)
             call jelira(ob2, 'NOMMAX', l2)
             if (l1 .ne. l2) then
                 goto 210
-            endif
+            end if
 !
             call jelira(ob1, 'NOMUTI', l1)
             call jelira(ob2, 'NOMUTI', l2)
@@ -210,7 +210,7 @@ function idenob(obj1, obj2)
                 goto 210
             else
                 l = l1
-            endif
+            end if
 !
             do k = 1, l
                 call jenuno(jexnum(ob1, k), k241)
@@ -220,7 +220,7 @@ function idenob(obj1, obj2)
 !
 !
 !
-        endif
+        end if
 !
 !
 !   3.2 : cas des collections :
@@ -232,13 +232,13 @@ function idenob(obj1, obj2)
             call jelira(ob2, 'NMAXOC', l2)
             if (l1 .ne. l2) then
                 goto 210
-            endif
+            end if
 !
             call jelira(ob1, 'NUTIOC', l1)
             call jelira(ob2, 'NUTIOC', l2)
             if (l1 .ne. l2) then
                 goto 210
-            endif
+            end if
             nbobj = l1
 !
             do iobj = 1, nbobj
@@ -247,7 +247,7 @@ function idenob(obj1, obj2)
                 call jelira(jexnum(ob2, iobj), 'LONMAX', l2)
                 if (l1 .ne. l2) then
                     goto 210
-                endif
+                end if
 !
                 call jelira(jexnum(ob1, iobj), 'LONUTI', l1)
                 call jelira(jexnum(ob2, iobj), 'LONUTI', l2)
@@ -255,7 +255,7 @@ function idenob(obj1, obj2)
                     goto 210
                 else
                     l = l1
-                endif
+                end if
 !
                 call jeveuo(jexnum(ob1, iobj), 'L', iad1)
                 call jeveuo(jexnum(ob2, iobj), 'L', iad2)
@@ -265,55 +265,55 @@ function idenob(obj1, obj2)
                         if (zr(iad1-1+k) .ne. zr(iad2-1+k)) goto 210
                     end do
 !
-                else if (type.eq.'I') then
+                else if (type .eq. 'I') then
                     do k = 1, l
                         if (zi(iad1-1+k) .ne. zi(iad2-1+k)) goto 210
                     end do
 !
-                else if (type.eq.'C') then
+                else if (type .eq. 'C') then
                     do k = 1, l
                         if (zc(iad1-1+k) .ne. zc(iad2-1+k)) goto 210
                     end do
 !
-                else if (type.eq.'L') then
+                else if (type .eq. 'L') then
                     do k = 1, l
-                        if (.not. (zl(iad1-1+k).or. (.not.zl(iad2-1+k) ))) goto 210
+                        if (.not. (zl(iad1-1+k) .or. (.not. zl(iad2-1+k)))) goto 210
                     end do
 !
-                else if (type.eq.'K8') then
+                else if (type .eq. 'K8') then
                     do k = 1, l
                         if (zk8(iad1-1+k) .ne. zk8(iad2-1+k)) goto 210
                     end do
 !
-                else if (type.eq.'K16') then
+                else if (type .eq. 'K16') then
                     do k = 1, l
                         if (zk16(iad1-1+k) .ne. zk16(iad2-1+k)) goto 210
                     end do
 !
-                else if (type.eq.'K24') then
+                else if (type .eq. 'K24') then
                     do k = 1, l
                         if (zk24(iad1-1+k) .ne. zk24(iad2-1+k)) goto 210
                     end do
 !
-                else if (type.eq.'K32') then
+                else if (type .eq. 'K32') then
                     do k = 1, l
                         if (zk32(iad1-1+k) .ne. zk32(iad2-1+k)) goto 210
                     end do
 !
-                else if (type.eq.'K80') then
+                else if (type .eq. 'K80') then
                     do k = 1, l
                         if (zk80(iad1-1+k) .ne. zk80(iad2-1+k)) goto 210
                     end do
 !
                 else
                     ASSERT(.false.)
-                endif
+                end if
             end do
 !
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
     goto 220
 !

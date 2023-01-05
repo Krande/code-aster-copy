@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rslphi(fami, kpg, ksp, loi, imat,&
-                  troisk, troimu, depsmo, rigdmo, rieleq,&
-                  pi, d, s1, ann, theta,&
-                  acc, f, df, sig0, eps0,&
-                  mexpo, dt, phi, phip, rigeq,&
+subroutine rslphi(fami, kpg, ksp, loi, imat, &
+                  troisk, troimu, depsmo, rigdmo, rieleq, &
+                  pi, d, s1, ann, theta, &
+                  acc, f, df, sig0, eps0, &
+                  mexpo, dt, phi, phip, rigeq, &
                   rigm, p, overfl)
 ! aslint: disable=W1504
     implicit none
@@ -66,73 +66,73 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
 !
     aster_logical :: overfl
 !
-    parameter       ( un     = 1.d0  )
-    parameter       ( zero   = 0.d0  )
-    parameter       ( deux   = 2.d0  )
-    parameter       ( d13    = .33333333333333d0 )
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(d13=.33333333333333d0)
 !
 !      -------------------------------------------------------------
 !
     overfl = .false.
-    ftheta = f - (un - theta)*df
+    ftheta = f-(un-theta)*df
     unmf = (un-ftheta)
 !
 ! ----- CALCUL DE RIGM ET DRIGM/DDF---------------
-    rigm = rigdmo + troisk*theta*(depsmo - d13*df/unmf/acc)
+    rigm = rigdmo+troisk*theta*(depsmo-d13*df/unmf/acc)
     drigm = -troisk*d13*theta*(unmf+theta*df)/(unmf**2)/acc
     ! limit some quantities to avoid FPE in exponentials
     if ((rigm/s1) > 1.d1) then
         overfl = .true.
         goto 9999
-    endif
+    end if
     expo = d*exp(rigm/s1)
     dexpo = expo*(drigm/s1)
     unex = unmf*expo*acc
-    dunex = (-theta*expo + unmf*dexpo)*acc
+    dunex = (-theta*expo+unmf*dexpo)*acc
 !
 ! ----- CALCUL DE DP ET DDP/DDF-----------
 ! ----- ABSENCE DE GERMINATION---------------
     if (ann .eq. zero) then
         dp = df/(ftheta*unex)
-        ddp = (un - df*dunex/unex -df*theta/ftheta)/(ftheta*unex)
+        ddp = (un-df*dunex/unex-df*theta/ftheta)/(ftheta*unex)
 ! ----- AN NON NUL---------------
     else
         coeffa = deux*ann*theta
-        coeffb = ftheta + ann*pi
+        coeffb = ftheta+ann*pi
         coeffc = df/unex
-        discri = coeffb**2 + deux*coeffa*coeffc
+        discri = coeffb**2+deux*coeffa*coeffc
         if (coeffc .le. r8miem()) then
-            dp=0.d0
+            dp = 0.d0
         else
-            dp=(-coeffb+sqrt(discri))/coeffa
-        endif
-        ddp=((un-df*dunex/unex )/unex -theta*dp)/(coeffa*dp+coeffb)
-    endif
+            dp = (-coeffb+sqrt(discri))/coeffa
+        end if
+        ddp = ((un-df*dunex/unex)/unex-theta*dp)/(coeffa*dp+coeffb)
+    end if
     p = pi+dp
-    ptheta= pi +theta*dp
+    ptheta = pi+theta*dp
     ! limit plastic strain to avoid subsequent FPE
     if (p > 1.d30) then
         overfl = .true.
         goto 9999
-    endif
+    end if
 !
 ! ----- CALCUL DE RIGEQ ---------------
-    rigeq = rieleq - troimu*theta*dp
+    rigeq = rieleq-troimu*theta*dp
 !
 ! ----- CALCUL DE R(P) ET DR/DP(P) ----
-    call rsliso(fami, kpg, ksp, '+', imat,&
+    call rsliso(fami, kpg, ksp, '+', imat, &
                 ptheta, rp, drdp)
 !
-    ftot = ftheta + ann*ptheta
+    ftot = ftheta+ann*ptheta
 !
 ! ----- CALCUL DE PHI -----------------
 !
-    phi = rigeq - rp + s1*ftot*expo
+    phi = rigeq-rp+s1*ftot*expo
 !
 !
 ! ----- CALCUL DE DPHI/DDF -------------
 !
-    phip = s1*(ftot*dexpo + (theta + ann*theta*ddp)*expo) -(troimu+drdp )*theta*ddp
+    phip = s1*(ftot*dexpo+(theta+ann*theta*ddp)*expo)-(troimu+drdp)*theta*ddp
 !
 !
     if (loi(1:10) .eq. 'ROUSS_VISC') then
@@ -144,17 +144,17 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
             puiss = 0.d0
             dpuiss = 0.d0
         else
-            lv1 = dp / (dt*eps0)
-            lv2 = un / mexpo - un
-            lv3 = mexpo * dt * eps0
-            puiss = ( lv1 )**(un/mexpo)
-            dpuiss = ( lv1**lv2 ) / lv3
-        endif
+            lv1 = dp/(dt*eps0)
+            lv2 = un/mexpo-un
+            lv3 = mexpo*dt*eps0
+            puiss = (lv1)**(un/mexpo)
+            dpuiss = (lv1**lv2)/lv3
+        end if
 !
-        asinh = log(puiss + sqrt(un + puiss**2))
-        phi = seuil - sig0*asinh
-        phip = dseuil - sig0*ddp*dpuiss/sqrt(un+puiss**2)
-    endif
+        asinh = log(puiss+sqrt(un+puiss**2))
+        phi = seuil-sig0*asinh
+        phip = dseuil-sig0*ddp*dpuiss/sqrt(un+puiss**2)
+    end if
 !
 ! ----- ET C EST FINI -------------
 9999 continue

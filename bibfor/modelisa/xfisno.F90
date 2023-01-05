@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,12 +76,12 @@ subroutine xfisno(noma, modelx)
 ! --- LE CONTACT EST-IL DÉCLARÉ
 !
     call jeveuo(modelx(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
-    ASSERT(xfem_cont(1).le.1 .or. xfem_cont(1).eq.2 .or. xfem_cont(1).eq.3)
-    lcont = (xfem_cont(1).eq.1 .or. xfem_cont(1).eq.2 .or. xfem_cont(1).eq.3)
+    ASSERT(xfem_cont(1) .le. 1 .or. xfem_cont(1) .eq. 2 .or. xfem_cont(1) .eq. 3)
+    lcont = (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 2 .or. xfem_cont(1) .eq. 3)
     if (lcont) then
         heavno = modelx(1:8)//'.HEAVNO'
         ces2 = '&&XFISNO.HEAVNO'
-    endif
+    end if
 !
 ! --- TRANSFO CHAM_ELEM -> CHAM_ELEM_S DE STANO
 !
@@ -107,7 +107,7 @@ subroutine xfisno(noma, modelx)
 !
 ! --- CREATION DE LA SD ELNO FISSNO
 !
-    call cescre('V', ces, 'ELNO', noma, 'NEUT_I',&
+    call cescre('V', ces, 'ELNO', noma, 'NEUT_I', &
                 1, 'X1', [ibid], nbsp2, [-1])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
@@ -117,13 +117,13 @@ subroutine xfisno(noma, modelx)
 ! --- SI CONTACT, CREATION DE LA SD ELNO HEAVNO
 !
     if (lcont) then
-        call cescre('V', ces2, 'ELNO', noma, 'NEUT_I',&
+        call cescre('V', ces2, 'ELNO', noma, 'NEUT_I', &
                     1, 'X1', [ibid], nbsp, [-1])
 !
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESV', 'E', vi=cesv2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
-    endif
+    end if
 !
 ! --- INFOS SUR LE MAILLAGE
 !
@@ -142,74 +142,74 @@ subroutine xfisno(noma, modelx)
 ! --- PREMIERE PASSE, ON REMPLIT AVEC LES HEAVISIDES ACTIFS
 !
                 do ifiss = 1, nfiss
-                    call cesexi('S', jcesfd, jcesfl, ima, ino,&
+                    call cesexi('S', jcesfd, jcesfl, ima, ino, &
                                 ifiss, 1, iad)
-                    ASSERT(iad.gt.0)
+                    ASSERT(iad .gt. 0)
                     if (cesfv(iad) .eq. 1) then
                         do iheav = 1, nheav
-                            call cesexi('S', jcesd, jcesl, ima, ino,&
+                            call cesexi('S', jcesd, jcesl, ima, ino, &
                                         iheav, 1, iad)
                             if (iad .lt. 0) then
                                 zl(jcesl-1-iad) = .true.
                                 cesv(1-1-iad) = ifiss
                                 if (lcont) then
-                                    call cesexi('S', jcesd2, jcesl2, ima, ino,&
+                                    call cesexi('S', jcesd2, jcesl2, ima, ino, &
                                                 ifiss, 1, iad)
-                                    ASSERT(iad.lt.0)
+                                    ASSERT(iad .lt. 0)
                                     zl(jcesl2-1-iad) = .true.
                                     cesv2(1-1-iad) = iheav
-                                endif
+                                end if
                                 goto 30
-                            endif
+                            end if
                         end do
-                    endif
- 30                 continue
+                    end if
+30                  continue
                 end do
 !
 ! --- DEUXIEME PASSE, ON REMPLIT AVEC LES HEAVISIDES INACTIFS
 !
                 do ifiss = 1, nfiss
-                    call cesexi('S', jcesfd, jcesfl, ima, ino,&
+                    call cesexi('S', jcesfd, jcesfl, ima, ino, &
                                 ifiss, 1, iad)
-                    ASSERT(iad.gt.0)
+                    ASSERT(iad .gt. 0)
                     if (cesfv(iad) .eq. 0) then
                         do iheav = 1, nheav
-                            call cesexi('S', jcesd, jcesl, ima, ino,&
+                            call cesexi('S', jcesd, jcesl, ima, ino, &
                                         iheav, 1, iad)
                             if (iad .lt. 0) then
                                 zl(jcesl-1-iad) = .true.
                                 cesv(1-1-iad) = ifiss
                                 if (lcont) then
-                                    call cesexi('S', jcesd2, jcesl2, ima, ino,&
+                                    call cesexi('S', jcesd2, jcesl2, ima, ino, &
                                                 ifiss, 1, iad)
-                                    ASSERT(iad.lt.0)
+                                    ASSERT(iad .lt. 0)
                                     zl(jcesl2-1-iad) = .true.
                                     cesv2(1-1-iad) = iheav
-                                endif
+                                end if
                                 goto 50
-                            endif
+                            end if
                         end do
-                    endif
- 50                 continue
+                    end if
+50                  continue
                 end do
 !
 ! --- FIN DES DEUX PASSES, FISSNO EST DEFINI ENTIEREMENT POUR LE NOEUD
 ! ---                      HEAVNO N'EST PAS COMPLET
 !
             end do
-        endif
+        end if
     end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !
-    call cescel(ces, ligrel, 'INI_XFEM_ELNO', 'PFISNO', 'OUI',&
+    call cescel(ces, ligrel, 'INI_XFEM_ELNO', 'PFISNO', 'OUI', &
                 nncp, 'G', fissno, 'F', ibid)
     call detrsd('CHAM_ELEM_S', ces)
     if (lcont) then
-        call cescel(ces2, ligrel, 'FULL_MECA', 'PHEAVNO', 'NAN',&
+        call cescel(ces2, ligrel, 'FULL_MECA', 'PHEAVNO', 'NAN', &
                     nncp, 'G', heavno, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces2)
-    endif
+    end if
     call detrsd('CHAM_ELEM_S', cesf)
     call jedema()
 end subroutine

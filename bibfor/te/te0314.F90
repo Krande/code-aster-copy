@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,9 @@ subroutine te0314(option, nomte)
 !
     axi = .false.
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         axi = .true.
-    endif
+    end if
 ! ======================================================================
 ! --- RECUPERATION DES CHAMPS IN ET DES CHAMPS OUT ---------------------
 ! ======================================================================
@@ -64,7 +64,7 @@ subroutine te0314(option, nomte)
         call jevech('PTEMPSR', 'L', itemps)
         call jevech('PGEOMER', 'L', igeom)
         deltat = zr(itemps+1)
-    endif
+    end if
 !
 ! ======================================================================
 ! --- OPTION CHAR_MECA_FLUX_R ----------------------
@@ -77,9 +77,9 @@ subroutine te0314(option, nomte)
     flu1 = zr(iflux)
     if (axi) then
         r = zr(igeom)
-        zr(ires+6) = zr(ires+6) - deltat*flu1*r
+        zr(ires+6) = zr(ires+6)-deltat*flu1*r
     else
-        zr(ires+6) = zr(ires+6) - deltat*flu1
-    endif
+        zr(ires+6) = zr(ires+6)-deltat*flu1
+    end if
 !
 end subroutine

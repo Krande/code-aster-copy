@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,22 +16,22 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cafmes(ifa   , l_resi, l_matr, maxfa, nface,&
-                  fkss  , dfks1 , dfks2 ,&
-                  mobfas, dmob1 , dmob2 ,&
-                  dmob1f, dmob2f,&
-                  fmw   , fm1w  , fm2w)
+subroutine cafmes(ifa, l_resi, l_matr, maxfa, nface, &
+                  fkss, dfks1, dfks2, &
+                  mobfas, dmob1, dmob2, &
+                  dmob1f, dmob2f, &
+                  fmw, fm1w, fm2w)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-aster_logical, intent(in) :: l_matr, l_resi
-integer, intent(in) :: ifa, maxfa, nface
-real(kind=8), intent(in) :: fkss, dfks1(1+maxfa, maxfa), dfks2(1+maxfa, maxfa)
-real(kind=8), intent(in) :: mobfas,  dmob1(1:maxfa), dmob2(1:maxfa)
-real(kind=8), intent(in) :: dmob2f(1:maxfa), dmob1f(1:maxfa)
-real(kind=8), intent(out) :: fmw(1:maxfa), fm1w(1+maxfa, maxfa), fm2w(1+maxfa, maxfa)
+    aster_logical, intent(in) :: l_matr, l_resi
+    integer, intent(in) :: ifa, maxfa, nface
+    real(kind=8), intent(in) :: fkss, dfks1(1+maxfa, maxfa), dfks2(1+maxfa, maxfa)
+    real(kind=8), intent(in) :: mobfas, dmob1(1:maxfa), dmob2(1:maxfa)
+    real(kind=8), intent(in) :: dmob2f(1:maxfa), dmob1f(1:maxfa)
+    real(kind=8), intent(out) :: fmw(1:maxfa), fm1w(1+maxfa, maxfa), fm2w(1+maxfa, maxfa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,16 +65,16 @@ real(kind=8), intent(out) :: fmw(1:maxfa), fm1w(1+maxfa, maxfa), fm2w(1+maxfa, m
 ! --------------------------------------------------------------------------------------------------
 !
     if (l_resi) then
-        fmw(ifa) = fmw(ifa)+ mobfas * fkss
-    endif
+        fmw(ifa) = fmw(ifa)+mobfas*fkss
+    end if
     if (l_matr) then
-        fm1w(1,ifa) = fm1w(1,ifa) + dmob1(ifa) * fkss + mobfas * dfks1(1,ifa)
-        fm2w(1,ifa) = fm2w(1,ifa) + dmob2(ifa) * fkss + mobfas * dfks2(1,ifa)
+        fm1w(1, ifa) = fm1w(1, ifa)+dmob1(ifa)*fkss+mobfas*dfks1(1, ifa)
+        fm2w(1, ifa) = fm2w(1, ifa)+dmob2(ifa)*fkss+mobfas*dfks2(1, ifa)
         do jfa = 2, nface+1
-            fm1w(jfa,ifa) = fm1w(jfa,ifa) + mobfas * dfks1(jfa,ifa)
-            fm2w(jfa,ifa) = fm2w(jfa,ifa) + mobfas * dfks2(jfa,ifa)
+            fm1w(jfa, ifa) = fm1w(jfa, ifa)+mobfas*dfks1(jfa, ifa)
+            fm2w(jfa, ifa) = fm2w(jfa, ifa)+mobfas*dfks2(jfa, ifa)
         end do
-        fm1w(1+ifa,ifa) = fm1w(1+ifa,ifa) + dmob1f(ifa) * fkss
-        fm2w(1+ifa,ifa) = fm2w(1+ifa,ifa) + dmob2f(ifa) * fkss
-    endif
+        fm1w(1+ifa, ifa) = fm1w(1+ifa, ifa)+dmob1f(ifa)*fkss
+        fm2w(1+ifa, ifa) = fm2w(1+ifa, ifa)+dmob2f(ifa)*fkss
+    end if
 end subroutine

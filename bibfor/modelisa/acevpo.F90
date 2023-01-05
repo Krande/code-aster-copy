@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,17 +67,17 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
         nval = -nv
 !
         if (nval .ne. ncar) then
-            vali (1) = ioc
-            vali (2) = ncar
-            vali (3) = nval
+            vali(1) = ioc
+            vali(2) = ncar
+            vali(3) = nval
             call utmess('E', 'MODELISA9_31', ni=3, vali=vali)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
 !
         if (sec .eq. 'RECTANGLE') then
             if (vsec .eq. 'AFFINE') then
 !
-            endif
+            end if
         else if (sec .eq. 'CERCLE') then
             if (vsec .eq. 'CONSTANT') then
                 bon = .false.
@@ -86,8 +86,8 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
                 end do
                 if (.not. bon) then
                     call utmess('E', 'MODELISA_66', sk=kioc)
-                    ier = ier + 1
-                endif
+                    ier = ier+1
+                end if
             else if (vsec .eq. 'HOMOTHETIQUE') then
                 ASSERT(nval .le. 100)
                 if (nm .ne. 0) then
@@ -95,16 +95,16 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
                     call check_homo_ratio(cara, vale, min(nval, ncar))
                 else
                     call check_homo_grma(cara, ncar)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ---    GROUP_MA + GROUP_NO + NOEUD + MAILLE
-        nsom = ng + nm
+        nsom = ng+nm
         if (nsom .eq. ng .or. nsom .eq. nm) then
-            nlm = max(nlm,-nm)
-            nlg = max(nlg,-ng)
-        endif
+            nlm = max(nlm, -nm)
+            nlg = max(nlg, -ng)
+        end if
 !
     end do
 !

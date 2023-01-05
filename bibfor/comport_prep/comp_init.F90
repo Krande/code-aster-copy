@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine comp_init(mesh, compor, base, nbCmp_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=8) , intent(in) :: mesh
-character(len=19), intent(in) :: compor
-character(len=1) , intent(in) :: base
-integer, optional, intent(out) :: nbCmp_
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: compor
+    character(len=1), intent(in) :: base
+    integer, optional, intent(out) :: nbCmp_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,15 +53,15 @@ integer, optional, intent(out) :: nbCmp_
     integer :: physQuantityNume
     integer :: nbCmp, iCmp
     character(len=16), pointer :: comporValv(:) => null()
-    character(len=8) , pointer :: cataNomcmp(:) => null()
-    character(len=8) , pointer :: comporNcmp(:) => null()
+    character(len=8), pointer :: cataNomcmp(:) => null()
+    character(len=8), pointer :: comporNcmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
 
 ! - Read catalog
     call jenonu(jexnom('&CATA.GD.NOMGD', physQuantityName), physQuantityNume)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'L', vk8 = cataNomcmp)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'L', vk8=cataNomcmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'LONMAX', nbCmp)
     ASSERT(nbCmp .le. COMPOR_SIZE)
 
@@ -70,18 +70,18 @@ integer, optional, intent(out) :: nbCmp_
     call alcart(base, compor, mesh, physQuantityName)
 
 ! - Acces to <CARTE>
-    call jeveuo(compor(1:19)//'.NCMP', 'E', vk8  = comporNcmp)
-    call jeveuo(compor(1:19)//'.VALV', 'E', vk16 = comporValv)
+    call jeveuo(compor(1:19)//'.NCMP', 'E', vk8=comporNcmp)
+    call jeveuo(compor(1:19)//'.VALV', 'E', vk16=comporValv)
 
 ! - Init <CARTE>
     do iCmp = 1, nbCmp
         comporNcmp(iCmp) = cataNomcmp(iCmp)
         comporValv(iCmp) = ' '
-    enddo
+    end do
 
 ! - Output
     if (present(nbCmp_)) then
         nbCmp_ = nbCmp
-    endif
+    end if
 !
 end subroutine

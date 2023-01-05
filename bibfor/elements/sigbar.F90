@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,19 +41,19 @@ subroutine sigbar(sigma, barsig)
 !
     integer :: ii, jj
 !
-    real(kind=8) :: sigma ( 3 , 3 )
+    real(kind=8) :: sigma(3, 3)
 !
-    real(kind=8) :: barsig ( 9 , 9 )
+    real(kind=8) :: barsig(9, 9)
 !
 ! DEB
 !
-    call r8inir(9 * 9, 0.d0, barsig, 1)
+    call r8inir(9*9, 0.d0, barsig, 1)
 !
     do i = 1, 3
         do jj = 1, 3
             do ii = 1, 3
-                barsig ( ( i - 1 ) * 3 + ii , ( i - 1 ) * 3 + jj ) =&
-                sigma ( ii , jj )
+                barsig((i-1)*3+ii, (i-1)*3+jj) = &
+                    sigma(ii, jj)
             end do
         end do
     end do

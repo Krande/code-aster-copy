@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine xconta(sdcont, mesh, model, nb_dim)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -58,7 +58,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_crack_max
-    parameter    (nb_crack_max=100)
+    parameter(nb_crack_max=100)
 !
     integer :: i_crack, algo_lagr, izone
     integer :: nb_crack, nb_elem, ibid
@@ -80,7 +80,7 @@ implicit none
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     faclon = '&&XCONTA.FACLON'
     ainter = '&&XCONTA.AINTER'
-    tabai  = '&&XCONTA.TABAI'
+    tabai = '&&XCONTA.TABAI'
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem)
 !
 ! - Access to cracks datastructure
@@ -90,16 +90,16 @@ implicit none
     nb_crack = v_crack_nb(1)
     if (nb_crack .gt. nb_crack_max) then
         call utmess('F', 'XFEM_2', si=nb_crack_max)
-    endif
+    end if
 !
 ! - Create datastructure for linear relation
 !
     sdline = sdcont_defi(1:16)//'.XNRELL'
-    call wkvect(sdline, 'G V K24', nb_crack, vk24 = v_sdline)
+    call wkvect(sdline, 'G V K24', nb_crack, vk24=v_sdline)
 !
 ! - Datstructure to count cracks for multi-heaviside
 !
-    call wkvect('&&XCONTA.NBSP', 'V V I', nb_elem, vi = v_dummy)
+    call wkvect('&&XCONTA.NBSP', 'V V I', nb_elem, vi=v_dummy)
 !
 ! - Convert TRANSFO CHAM_ELEM -> CHAM_ELEM_S
 !
@@ -121,15 +121,15 @@ implicit none
 !
 ! ----- Contact zone
 !
-        izone = xxconi(sdcont_defi,crack,'MAIT')
+        izone = xxconi(sdcont_defi, crack, 'MAIT')
 !
 ! ----- Linear relation type
 !
-        algo_lagr = mminfi(sdcont_defi,'XFEM_ALGO_LAGR',izone )
+        algo_lagr = mminfi(sdcont_defi, 'XFEM_ALGO_LAGR', izone)
 !
 ! ----- Lagrange multiplier space selection
 !
-        call xdefco(mesh        , model, crack, algo_lagr, nb_dim,&
+        call xdefco(mesh, model, crack, algo_lagr, nb_dim, &
                     sdline_crack, tabai)
 !
 ! ----- "ARETE VITALE" detection
@@ -139,7 +139,7 @@ implicit none
 !
 ! - Convert CHAM_ELEM_S -> CHAM_ELEM
 !
-    call cescel(ainter, model//'.MODELE', 'TOPOFA', 'PAINTER', 'OUI',&
+    call cescel(ainter, model//'.MODELE', 'TOPOFA', 'PAINTER', 'OUI', &
                 ibid, 'G', model//'.TOPOFAC.AI', 'F', ibid)
 !
     call jedetr('&&XCONTA.NBSP')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine imvari(compor_info)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-character(len=19), intent(in) :: compor_info
+    character(len=19), intent(in) :: compor_info
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,15 +60,15 @@ character(len=19), intent(in) :: compor_info
 !
 ! - Access to informations
 !
-    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi = v_info)
+    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi=v_info)
     nt_vari = v_info(4)
     if (nt_vari .eq. 0) then
         goto 99
-    endif
+    end if
     call utmess('I', 'COMPOR4_1')
     nb_zone = v_info(2)
-    call jeveuo(compor_info(1:19)//'.RELA', 'L', vk16 = v_rela)
-    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi = v_zone)
+    call jeveuo(compor_info(1:19)//'.RELA', 'L', vk16=v_rela)
+    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi=v_zone)
 
     c_pmf = 0
     do i_zone = 1, nb_zone
@@ -79,7 +79,7 @@ character(len=19), intent(in) :: compor_info
 !
 ! --------- Acces to list of name of internal variables
 !
-            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'L', vk16 = v_vari)
+            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'L', vk16=v_vari)
             call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
 !
 ! --------- Exceptions ?
@@ -88,66 +88,66 @@ character(len=19), intent(in) :: compor_info
             vari_excl = v_vari(1)
             if (vari_excl(1:2) .eq. '&&') then
                 l_excl = .true.
-            endif
+            end if
 !
 ! --------- Get names of relation
 !
-            rela_comp   = v_rela(4*(i_zone-1) + 1)
-            defo_comp   = v_rela(4*(i_zone-1) + 2)
-            type_cpla   = v_rela(4*(i_zone-1) + 3)
-            regu_visc   = v_rela(4*(i_zone-1) + 4)
+            rela_comp = v_rela(4*(i_zone-1)+1)
+            defo_comp = v_rela(4*(i_zone-1)+2)
+            type_cpla = v_rela(4*(i_zone-1)+3)
+            regu_visc = v_rela(4*(i_zone-1)+4)
 !
 ! --------- Print name of internal variables
 !
             if (l_excl) then
-               if (vari_excl.eq.'&&MULT_COMP') then
-                    call utmess('I', 'COMPOR4_4', si = nb_elem_zone)
+                if (vari_excl .eq. '&&MULT_COMP') then
+                    call utmess('I', 'COMPOR4_4', si=nb_elem_zone)
                     call utmess('I', 'COMPOR4_11')
                     if (regu_visc .eq. 'VIDE') then
                         call utmess('I', 'COMPOR4_18')
                     else
-                        call utmess('I', 'COMPOR4_7', sk = regu_visc)
-                    endif
-                    call utmess('I', 'COMPOR4_9' , si = nb_vari)
+                        call utmess('I', 'COMPOR4_7', sk=regu_visc)
+                    end if
+                    call utmess('I', 'COMPOR4_9', si=nb_vari)
                     call utmess('I', 'COMPOR4_15')
-                else if (vari_excl.eq.'&&PROT_COMP') then
-                    call utmess('I', 'COMPOR4_4', si = nb_elem_zone)
+                else if (vari_excl .eq. '&&PROT_COMP') then
+                    call utmess('I', 'COMPOR4_4', si=nb_elem_zone)
                     call utmess('I', 'COMPOR4_10')
-                    call utmess('I', 'COMPOR4_6', sk = defo_comp)
+                    call utmess('I', 'COMPOR4_6', sk=defo_comp)
                     if (regu_visc .eq. 'VIDE') then
                         call utmess('I', 'COMPOR4_18')
                     else
-                        call utmess('I', 'COMPOR4_7', sk = regu_visc)
-                    endif
-                    call utmess('I', 'COMPOR4_9', si = nb_vari)
+                        call utmess('I', 'COMPOR4_7', sk=regu_visc)
+                    end if
+                    call utmess('I', 'COMPOR4_9', si=nb_vari)
                     call utmess('I', 'COMPOR4_16')
-                else if (vari_excl.eq.'&&MULT_PMF') then
-                    c_pmf = c_pmf + 1
+                else if (vari_excl .eq. '&&MULT_PMF') then
+                    c_pmf = c_pmf+1
                 else
                     ASSERT(ASTER_FALSE)
-                endif
+                end if
             else
-                call utmess('I', 'COMPOR4_4', si = nb_elem_zone)
-                call utmess('I', 'COMPOR4_5', sk = rela_comp)
-                call utmess('I', 'COMPOR4_6', sk = defo_comp)
+                call utmess('I', 'COMPOR4_4', si=nb_elem_zone)
+                call utmess('I', 'COMPOR4_5', sk=rela_comp)
+                call utmess('I', 'COMPOR4_6', sk=defo_comp)
                 if (regu_visc .eq. 'VIDE') then
                     call utmess('I', 'COMPOR4_18')
                 else
-                    call utmess('I', 'COMPOR4_7', sk = regu_visc)
-                endif
+                    call utmess('I', 'COMPOR4_7', sk=regu_visc)
+                end if
                 if (type_cpla .eq. 'DEBORST') then
                     call utmess('I', 'COMPOR4_8')
-                endif
-                call utmess('I', 'COMPOR4_9', si = nb_vari)
+                end if
+                call utmess('I', 'COMPOR4_9', si=nb_vari)
                 do i_vari = 1, nb_vari
-                    call utmess('I', 'COMPOR4_20', sk = v_vari(i_vari), si = i_vari)
-                enddo
-            endif
-        endif
-     end do
-     if (c_pmf .ne. 0) then
-        call utmess('I', 'COMPOR4_12', si = c_pmf)
-     endif
+                    call utmess('I', 'COMPOR4_20', sk=v_vari(i_vari), si=i_vari)
+                end do
+            end if
+        end if
+    end do
+    if (c_pmf .ne. 0) then
+        call utmess('I', 'COMPOR4_12', si=c_pmf)
+    end if
 !
 99  continue
 !

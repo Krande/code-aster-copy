@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine glrc_lc(epsm, deps, vim, option, sig,&
-                   vip, dsidep, lambda, deuxmu, lamf,&
-                   deumuf, gmt, gmc, gf, seuil,&
-                   alf, alfmc, crit,&
-                   epsic, epsiels, epsilim, codret,&
+subroutine glrc_lc(epsm, deps, vim, option, sig, &
+                   vip, dsidep, lambda, deuxmu, lamf, &
+                   deumuf, gmt, gmc, gf, seuil, &
+                   alf, alfmc, crit, &
+                   epsic, epsiels, epsilim, codret, &
                    ep, is_param_opt, val_param_opt, t2iu)
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
@@ -39,7 +39,7 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
     real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), seuil, alfmc
     real(kind=8) :: lambda, deuxmu, lamf, deumuf, alf, gmt, gmc, gf
     real(kind=8) :: epsic, epsiels, epsilim
-    real(kind=8) :: sig(6), dsidep(6, 6), vip(*), vecp(2,2), valp(2)
+    real(kind=8) :: sig(6), dsidep(6, 6), vip(*), vecp(2, 2), valp(2)
     character(len=16) :: option
     aster_logical :: is_param_opt(*), l_calc(2)
     real(kind=8) :: val_param_opt(*), ep, t2iu(4)
@@ -102,30 +102,30 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
     real(kind=8) :: tens(3), rx
 !
 ! --  OPTION ET MODELISATION
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
-    coup = (option(6:9).eq.'COUP')
-    if (coup) rigi=.true.
-    lelas = option .eq.'RIGI_MECA       '
+    rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
+    coup = (option(6:9) .eq. 'COUP')
+    if (coup) rigi = .true.
+    lelas = option .eq. 'RIGI_MECA       '
 !
 ! -- INITIALISATION
     if (lelas) then
         call r8inir(6, 0.d0, epsm, 1)
         call r8inir(6, 0.d0, deps, 1)
-    endif
+    end if
 !
     muf = deumuf*0.5d0
 !
 ! --  CALCUL DES EPSILON INITIAUX
     if (resi) then
         do k = 1, 6
-            eps(k) = epsm(k) + deps(k)
+            eps(k) = epsm(k)+deps(k)
         end do
     else
         do k = 1, 6
             eps(k) = epsm(k)
         end do
-    endif
+    end if
 !
 ! --  ON UTILISE EPSILON SOUS FORME VECTORIELLE
 ! --  DONC ON DIVISE LES TERMES NON DIAGONNAUX PAR 2
@@ -150,7 +150,7 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
     else
         da1 = vim(1)
         da2 = vim(2)
-    endif
+    end if
 !
 ! --  EVOLUTION DE DA1, DA2 ET EPS33
 !     INTEGRATION DE LA LOI DE COMPORTEMENT
@@ -158,18 +158,18 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
         told = crit(3)
         kdmax = nint(crit(1))
 !
-        call glrc_integ_loc(lambda, deuxmu, seuil, alf,&
-                            alfmc, gmt, gmc, cof1,&
-                            vim, q2d, qff, tr2d, eps33,&
-                            de33d1, de33d2, ksi2d, dksi1, dksi2,&
-                            da1, da2, kdmax, told, codret,&
+        call glrc_integ_loc(lambda, deuxmu, seuil, alf, &
+                            alfmc, gmt, gmc, cof1, &
+                            vim, q2d, qff, tr2d, eps33, &
+                            de33d1, de33d2, ksi2d, dksi1, dksi2, &
+                            da1, da2, kdmax, told, codret, &
                             emp)
 !
         if (da1 .lt. vim(1)) da1 = vim(1)
         if (da2 .lt. vim(2)) da2 = vim(2)
 !
-        elas1 = da1.le.vim(1)
-        elas2 = da2.le.vim(2)
+        elas1 = da1 .le. vim(1)
+        elas2 = da2 .le. vim(2)
 !
         elas1 = elas1 .or. lelas
         elas2 = elas2 .or. lelas
@@ -181,18 +181,17 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
             vip(3) = 0.0d0
         else
             vip(3) = 1.0d0
-        endif
+        end if
         if (elas2) then
             vip(4) = 0.0d0
         else
             vip(4) = 1.0d0
-        endif
-        vip(5)=1.d0-0.5d0*((1.d0+gmt*da1)/(1.d0+da1) +(1.d0+gmt*da2)/(1.d0+da2))
-        vip(6)=1.d0-0.5d0*((1.d0+gmc*da1)/(1.d0+da1) +(1.d0+gmc*da2)/(1.d0+da2))
-        vip(7)=1.d0-max((1.d0+gf*da1)/(1.d0+da1), (1.d0+gf*da2)/(1.d0+da2))
+        end if
+        vip(5) = 1.d0-0.5d0*((1.d0+gmt*da1)/(1.d0+da1)+(1.d0+gmt*da2)/(1.d0+da2))
+        vip(6) = 1.d0-0.5d0*((1.d0+gmc*da1)/(1.d0+da1)+(1.d0+gmc*da2)/(1.d0+da2))
+        vip(7) = 1.d0-max((1.d0+gf*da1)/(1.d0+da1), (1.d0+gf*da2)/(1.d0+da2))
 
-
-        if (is_param_opt(1))then
+        if (is_param_opt(1)) then
 
 !           passage des deformation dans le repere utilisateur
             eps8(1:6) = eps(1:6)
@@ -202,15 +201,15 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
 
             rx = val_param_opt(1)
 
-            maxabs = max( abs(epsu(1) - 0.5d0*ep*rx *epsu(4)),&
-                          abs(epsu(1) + 0.5d0*ep*rx *epsu(4)))
-            vip(8) = maxabs /epsiels
-            vip(9) = maxabs /epsilim
+            maxabs = max(abs(epsu(1)-0.5d0*ep*rx*epsu(4)), &
+                         abs(epsu(1)+0.5d0*ep*rx*epsu(4)))
+            vip(8) = maxabs/epsiels
+            vip(9) = maxabs/epsilim
 
-            maxabs = max( abs(epsu(2) - 0.5d0*ep*rx *epsu(5)),&
-                          abs(epsu(2) + 0.5d0*ep*rx *epsu(5)))
-            vip(10) = maxabs /epsiels
-            vip(11) = maxabs /epsilim
+            maxabs = max(abs(epsu(2)-0.5d0*ep*rx*epsu(5)), &
+                         abs(epsu(2)+0.5d0*ep*rx*epsu(5)))
+            vip(10) = maxabs/epsiels
+            vip(11) = maxabs/epsilim
 
             tens(1) = epsu(1)-ep/2*epsu(4)
             tens(2) = epsu(2)-ep/2*epsu(5)
@@ -224,36 +223,36 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
             call diago2(tens, vecp, valp)
             vip(13) = -min(valp(1), valp(2), 0.d0)/epsic
 
-            vip(14) = max(vim(14), epsu(1),epsu(2),0.d0)
-            vip(15) = max(vim(15), -epsu(1),-epsu(2),0.d0)
-            vip(16) = max(vim(16), abs(epsu(4)),abs(epsu(5)))
+            vip(14) = max(vim(14), epsu(1), epsu(2), 0.d0)
+            vip(15) = max(vim(15), -epsu(1), -epsu(2), 0.d0)
+            vip(16) = max(vim(16), abs(epsu(4)), abs(epsu(5)))
 
-            if (is_param_opt(2))then
+            if (is_param_opt(2)) then
 
-                if (vip(15) .gt.vim(15))then
+                if (vip(15) .gt. vim(15)) then
                     l_calc(1) = .true.
                 else
                     l_calc(1) = .false.
                     vip(17) = vim(17)
-                endif
+                end if
 
-                if (vip(16) .gt.vim(16))then
+                if (vip(16) .gt. vim(16)) then
                     l_calc(2) = .true.
                 else
                     l_calc(2) = .false.
                     vip(18) = vim(18)
-                endif
+                end if
 
-                call calc_glrcdm_err(l_calc, vip(15), vip(16), gf,&
-                           gmc, epsic, ep, val_param_opt,&
-                           vip(17), vip(18))
+                call calc_glrcdm_err(l_calc, vip(15), vip(16), gf, &
+                                     gmc, epsic, ep, val_param_opt, &
+                                     vip(17), vip(18))
 
             else
                 vip(17:18) = 0.d0
-            endif
+            end if
         else
             vip(8:18) = 0.d0
-        endif
+        end if
     else
         if (lelas) then
             da1 = 0.0d0
@@ -264,28 +263,28 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
         else
             da1 = vim(1)
             da2 = vim(2)
-            elas1 = nint(vim(3)).eq.0
-            elas2 = nint(vim(4)).eq.0
-            elas = (elas1.and.elas2)
-        endif
-    endif
-    call glrc_calc_eps33(lambda, deuxmu, alfmc, gmt, gmc,&
-                         tr2d, da1, da2, eps33, de33d1,&
-                         de33d2, ksi2d, dksi1, dksi2, cof1,&
+            elas1 = nint(vim(3)) .eq. 0
+            elas2 = nint(vim(4)) .eq. 0
+            elas = (elas1 .and. elas2)
+        end if
+    end if
+    call glrc_calc_eps33(lambda, deuxmu, alfmc, gmt, gmc, &
+                         tr2d, da1, da2, eps33, de33d1, &
+                         de33d2, ksi2d, dksi1, dksi2, cof1, &
                          q2d, emp, cof2, dq2d)
 !
 ! --  CALCUL DE LA TRACE 3D
-    treps = tr2d + eps33
+    treps = tr2d+eps33
 !
 ! --  CALCUL DES CONTRAINTES GENERALISEES ET DE LA MATRICE TANGENTE
 !
-    call glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf,&
-                      alfmc, emp, efp, eps, vmp,&
-                      vfp, tr2d, trot, treps, gmt,&
-                      gmc, gf, da1, da2, ksi2d,&
-                      qff, cof1, q2d, de33d1, de33d2,&
-                      elas, elas1, elas2, coup, rigi,&
-                      resi, option, dsidep, sig, cof2,&
+    call glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf, &
+                      alfmc, emp, efp, eps, vmp, &
+                      vfp, tr2d, trot, treps, gmt, &
+                      gmc, gf, da1, da2, ksi2d, &
+                      qff, cof1, q2d, de33d1, de33d2, &
+                      elas, elas1, elas2, coup, rigi, &
+                      resi, option, dsidep, sig, cof2, &
                       dq2d)
 !
 end subroutine

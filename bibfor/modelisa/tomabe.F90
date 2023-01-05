@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
-                  mail2d, nbnobe, nunobe, xflu, xret,&
+subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma, &
+                  mail2d, nbnobe, nunobe, xflu, xret, &
                   regl)
     implicit none
 !  DESCRIPTION : CARACTERISATION DE LA TOPOLOGIE DE LA STRUCTURE BETON
@@ -109,7 +109,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     character(len=4) :: regl
     real(kind=8) :: crite
     character(len=8), pointer :: cesv(:) => null()
-    data          bpelb  /'PERT_FLUA','PERT_RETR'/
+    data bpelb/'PERT_FLUA', 'PERT_RETR'/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -143,13 +143,13 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     do imail = 1, nbmabe
         numail = zi(jnumab+imail-1)
         ntyma = zi(jtyma+numail-1)
-        if ((ntyma.ne.ntri3) .and. (ntyma.ne.ntri6) .and. ( ntyma.ne.nqua4) .and.&
-            (ntyma.ne.nqua8) .and. (ntyma.ne.nqua9)) then
+        if ((ntyma .ne. ntri3) .and. (ntyma .ne. ntri6) .and. (ntyma .ne. nqua4) .and. &
+            (ntyma .ne. nqua8) .and. (ntyma .ne. nqua9)) then
             mail2d = .false.
             goto 11
-        endif
+        end if
     end do
- 11 continue
+11  continue
 !
 ! 1.3 SAISIE DES TYPES DE MAILLES ACCEPTABLES POUR UNE REPRESENTATION 3D
 ! --- ET VERIFICATION
@@ -157,34 +157,34 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     if (mail2d) then
         mail3d = .false.
     else
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4' ), ntet4)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), ntet4)
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA10'), ntet10)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5' ), npyr5)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), npyr5)
         call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), npyr13)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6' ), npen6)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), npen6)
         call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA15'), npen15)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8' ), nhex8)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA20' ), nhex20)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27' ), nhex27)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), nhex8)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA20'), nhex20)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27'), nhex27)
         mail3d = .true.
         do imail = 1, nbmabe
             numail = zi(jnumab+imail-1)
             ntyma = zi(jtyma+numail-1)
-            if ((ntyma.ne.ntet4) .and. (ntyma.ne.ntet10) .and. (ntyma.ne.npyr5) .and.&
-                (ntyma.ne.npyr13) .and. ( ntyma.ne.npen6) .and. (ntyma.ne.npen15) .and.&
-                ( ntyma.ne.nhex8) .and. (ntyma.ne.nhex20) .and. ( ntyma.ne.nhex27)) then
+            if ((ntyma .ne. ntet4) .and. (ntyma .ne. ntet10) .and. (ntyma .ne. npyr5) .and. &
+                (ntyma .ne. npyr13) .and. (ntyma .ne. npen6) .and. (ntyma .ne. npen15) .and. &
+                (ntyma .ne. nhex8) .and. (ntyma .ne. nhex20) .and. (ntyma .ne. nhex27)) then
                 mail3d = .false.
                 goto 21
-            endif
+            end if
         end do
- 21     continue
-    endif
+21      continue
+    end if
 !
 ! 1.4 SORTIE EN ERREUR FATALE SI REPRESENTATION NON ACCEPTABLE
 ! ---
-    if ((.not.mail2d) .and. (.not.mail3d)) then
+    if ((.not. mail2d) .and. (.not. mail3d)) then
         call utmess('F', 'MODELISA7_46')
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   DETERMINATION DES NOEUDS APPARTENANT A LA STRUCTURE BETON
@@ -205,7 +205,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         call jeveuo(jexnum(conxma, numail), 'L', jconx)
         do ino = 1, nbconx
             numnoe = zi(jconx+ino-1)
-            zi(jncoch+numnoe-1) = zi(jncoch+numnoe-1) + 1
+            zi(jncoch+numnoe-1) = zi(jncoch+numnoe-1)+1
         end do
     end do
 !
@@ -213,7 +213,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! ---
     nbnobe = 0
     do ino = 1, nbnoma
-        if (zi(jncoch+ino-1) .gt. 0) nbnobe = nbnobe + 1
+        if (zi(jncoch+ino-1) .gt. 0) nbnobe = nbnobe+1
     end do
 !
     call jeecra(nunobe, 'LONUTI', nbnobe)
@@ -221,9 +221,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     idecal = 0
     do ino = 1, nbnoma
         if (zi(jncoch+ino-1) .gt. 0) then
-            idecal = idecal + 1
+            idecal = idecal+1
             zi(jnunob+idecal-1) = ino
-        endif
+        end if
     end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,9 +239,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     numail = zi(jnumab)
     ias = zi(jptma+numail-1)
     if (ias .eq. 0) then
-        write(k3mai,'(I3)') numail
+        write (k3mai, '(I3)') numail
         call utmess('F', 'MODELISA7_47', sk=k3mai)
-    endif
+    end if
 !
 !
 !
@@ -256,46 +256,46 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
 !     TRANSFORMATION DU CHAM_MATER EN CHAM_ELEM_S POUR TRAITEMENT
 !
-    chsmat='&&TOMABE.NOM_MATER'
-    cartez='&&TOMABE.CARTE'
-    chtmp='&&TOMABE.BID'
+    chsmat = '&&TOMABE.NOM_MATER'
+    cartez = '&&TOMABE.CARTE'
+    chtmp = '&&TOMABE.BID'
 !
     call copisd(' ', 'V', carte, cartez)
-    call carces(cartez, 'ELEM', chtmp, 'V', chsmat,&
+    call carces(cartez, 'ELEM', chtmp, 'V', chsmat, &
                 'A', iret)
     call jeveuo(chsmat//'.CESD', 'L', jcesd)
     call jeveuo(chsmat//'.CESL', 'L', jcesl)
     call jeveuo(chsmat//'.CESV', 'L', vk8=cesv)
 !
     numail = zi(jnumab+1-1)
-    call cesexi('C', jcesd, jcesl, numail, 1,&
+    call cesexi('C', jcesd, jcesl, numail, 1, &
                 1, 1, iad)
 !
 !.... RELATION DE COMPORTEMENT <BPEL_BETON> OU  <ETCC_BETON>
 !      ON TESTE D'ABORD SI BPEL_BETON EST DONNE (ON A IMPOSE DANS
 !     LE CATALOGUE QU'UN SEUL COMPORTEMENT ETAIT POSSIBLE)
 !
-    iretbb=0
-    ireteb=0
-    regl='BPEL'
-    beton=cesv(iad)
+    iretbb = 0
+    ireteb = 0
+    regl = 'BPEL'
+    beton = cesv(iad)
     call rccome(beton, 'BPEL_BETON', icodn, k11_ind_nomrc=k11a)
     if (icodn .eq. 0) then
         rcvalk = beton//k11a//'.VALK'
         call jeexin(rcvalk, iretbb)
-    endif
+    end if
     if (iretbb .eq. 0) then
 !       ON TESTE SI ETCC_BETON EST RENSEIGNE
-        regl='ETCC'
+        regl = 'ETCC'
         call rccome(beton, 'ETCC_BETON', icodn, k11_ind_nomrc=k11b)
         if (icodn .eq. 0) then
             rcvalk = beton//k11b//'.VALK'
             call jeexin(rcvalk, ireteb)
-        endif
+        end if
         if (ireteb .eq. 0) then
             call utmess('F', 'MODELISA7_48')
-        endif
-    endif
+        end if
+    end if
 !
 !     RECUPERATION DES PERTES PAR FLUAGE OU RETRAIT POUR BPEL_BETON
     if (regl .eq. 'BPEL') then
@@ -309,11 +309,11 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
             if (zk16(jvalk+icste-1) .eq. bpelb(1)) then
                 trouv1 = .true.
                 xflu = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. bpelb(2)) then
                 trouv2 = .true.
                 xret = zr(jvalr+icste-1)
-            endif
+            end if
             if (trouv1 .and. trouv2) goto 151
         end do
 !
@@ -325,15 +325,15 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! PAR L UTILISATEUR DANS LA RELATION BPEL_BETON
 ! QUI DOIT ETRE UNIQUE A TOUT LE BETON
 !
-        crite=1.d-07
+        crite = 1.d-07
         if (nbmabe .gt. 1) then
             do imail = 2, nbmabe
                 numail = zi(jnumab+imail-1)
-                call cesexi('C', jcesd, jcesl, numail, 1,&
+                call cesexi('C', jcesd, jcesl, numail, 1, &
                             1, 1, iad)
-                beton=cesv(iad)
+                beton = cesv(iad)
                 call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)
-                ASSERT(iret.eq.0)
+                ASSERT(iret .eq. 0)
                 rcvalk = beton//k11a//'.VALK'
                 rcvalr = beton//k11a//'.VALR'
                 call jeveuo(rcvalk, 'L', jvalk)
@@ -342,9 +342,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
                 ias = zi(jptma+numail-1)
                 if (ias .eq. 0) then
-                    write(k3mai,'(I3)') numail
+                    write (k3mai, '(I3)') numail
                     call utmess('F', 'MODELISA7_47', sk=k3mai)
-                endif
+                end if
 !
                 do icste = 1, nbcste
 !
@@ -352,35 +352,35 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                         if (abs(xflu) .lt. crite) then
                             if (abs(xflu-zr(jvalr+icste-1)) .gt. crite) then
                                 call utmess('F', 'MODELISA7_49')
-                            endif
+                            end if
                         else
                             if (abs((xflu-zr(jvalr+icste-1))/xflu) .gt. crite) then
                                 call utmess('F', 'MODELISA7_49')
-                            endif
-                        endif
-                    else if (zk16(jvalk+icste-1).eq.bpelb(2)) then
+                            end if
+                        end if
+                    else if (zk16(jvalk+icste-1) .eq. bpelb(2)) then
                         if (abs(xret) .lt. crite) then
                             if (abs(xret-zr(jvalr+icste-1)) .gt. crite) then
                                 call utmess('F', 'MODELISA7_51')
-                            endif
+                            end if
                         else
                             if (abs((xret-zr(jvalr+icste-1))/xret) .gt. crite) then
                                 call utmess('F', 'MODELISA7_51')
-                            endif
-                        endif
-                    endif
+                            end if
+                        end if
+                    end if
                 end do
             end do
-        endif
+        end if
 !
-        if (.not. ( trouv1 .and. trouv2 )) then
+        if (.not. (trouv1 .and. trouv2)) then
             call utmess('F', 'MODELISA7_52')
-        endif
-        if (( xflu.lt.0.0d0 ) .or. ( xret.lt.0.0d0 ) .or. ( xflu+ xret.gt.1.0d0 )) then
+        end if
+        if ((xflu .lt. 0.0d0) .or. (xret .lt. 0.0d0) .or. (xflu+xret .gt. 1.0d0)) then
             call utmess('F', 'MODELISA7_53')
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 !

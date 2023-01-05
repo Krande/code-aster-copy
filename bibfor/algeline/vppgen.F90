@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
+subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
                   raideg, vect, neq, nbvect, iddl)
     implicit none
 #include "jeveux.h"
@@ -47,51 +47,51 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
     character(len=24) :: vecaux, vecau1
     integer :: ieq, ivect, laux, laux1
 !-----------------------------------------------------------------------
-    data  vecaux/'&&VPPGEN.VECTEUR.AUX0'/
-    data  vecau1/'&&VPPGEN.VECTEUR.AUX1'/
+    data vecaux/'&&VPPGEN.VECTEUR.AUX0'/
+    data vecau1/'&&VPPGEN.VECTEUR.AUX1'/
 !     ------------------------------------------------------------------
     call jemarq()
     call wkvect(vecaux, 'V V R', neq, laux)
     call wkvect(vecau1, 'V V R', neq, laux1)
-    laux = laux - 1
-    laux1= laux1- 1
+    laux = laux-1
+    laux1 = laux1-1
 !
-    rzero=0.d0
+    rzero = 0.d0
 !     ------------------------------------------------------------------
 !     ----------------- CALCUL DE LA MASSE GENERALISEE -----------------
 !     ------------------------------------------------------------------
     if (lmasse .ne. 0) then
         do ivect = 1, nbvect
-            call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1,&
+            call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1, &
                         .false._1)
-            masseg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
+            masseg(ivect) = ddot(neq, vect(1, ivect), 1, zr(laux+1), 1)
         end do
-    endif
+    end if
 !     ------------------------------------------------------------------
 !     --------------- CALCUL DE L'AMORTISSEMENT GENERALISE -------------
 !     ------------------------------------------------------------------
     if (lamor .ne. 0) then
         do ivect = 1, nbvect
-            call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1,&
+            call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1, &
                         .false._1)
-            amorg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
+            amorg(ivect) = ddot(neq, vect(1, ivect), 1, zr(laux+1), 1)
         end do
     else
         amorg(1:nbvect) = rzero
-    endif
+    end if
 !     ------------------------------------------------------------------
 !     ---------------- CALCUL DE LA RAIDEUR GENERALISEE ----------------
 !     ------------------------------------------------------------------
     if (lraide .ne. 0) then
         do ivect = 1, nbvect
             do ieq = 1, neq
-                zr(laux1+ieq)= vect(ieq,ivect)*iddl(ieq)
+                zr(laux1+ieq) = vect(ieq, ivect)*iddl(ieq)
             end do
-            call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1,&
+            call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1, &
                         .false._1)
-            raideg(ivect) = ddot(neq,zr(laux+1),1,zr(laux1+1),1)
+            raideg(ivect) = ddot(neq, zr(laux+1), 1, zr(laux1+1), 1)
         end do
-    endif
+    end if
 !     ------------------------------------------------------------------
     call jedetr(vecaux)
     call jedetr(vecau1)

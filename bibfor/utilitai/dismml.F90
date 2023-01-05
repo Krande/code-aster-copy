@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,28 +59,28 @@ subroutine dismml(questi, nomobz, repi, repkz, ierd)
 !
     call jeveuo(nomob//'.REFM', 'L', vk8=refm)
     if (questi .eq. 'NOM_MAILLA') then
-        repk= refm(2)
-    else if (questi.eq.'NOM_MODELE') then
-        repk= refm(1)
-    else if (questi.eq.'NOM_NUME_DDL') then
-        repk= refm(5)
-    else if (questi.eq.'NOM_PROJ_MESU') then
-        repk= refm(9)
+        repk = refm(2)
+    else if (questi .eq. 'NOM_MODELE') then
+        repk = refm(1)
+    else if (questi .eq. 'NOM_NUME_DDL') then
+        repk = refm(5)
+    else if (questi .eq. 'NOM_PROJ_MESU') then
+        repk = refm(9)
 !
-    else if (questi.eq.'DIM_GEOM') then
-        modele=refm(1)
+    else if (questi .eq. 'DIM_GEOM') then
+        modele = refm(1)
         call dismmo(questi, modele, repi, repk, ierd)
 !
-    else if (questi.eq.'EXI_AMOR') then
+    else if (questi .eq. 'EXI_AMOR') then
         call jeexin(nomob//'.MAEL_AMOR_VALE', iexi)
         if (iexi .ne. 0) then
-            repk='OUI'
+            repk = 'OUI'
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
     repkz = repk
     call jedema()

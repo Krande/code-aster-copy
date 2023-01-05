@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine as_mfiope(fid, nom, acces, cret)
     med_int :: acces4, cret4
 #endif
     cret = 0
-    if (cret.eq.0) then
+    if (cret .eq. 0) then
 #if !ASTER_MED_SAME_INT_IDT
         acces4 = acces
         call mfiope(fidm, nom, acces4, cret4)
@@ -48,7 +48,7 @@ subroutine as_mfiope(fid, nom, acces, cret)
 #else
         call mfiope(fid, nom, acces, cret)
 #endif
-    endif
+    end if
 !
 #endif
 end subroutine

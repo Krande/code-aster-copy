@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calkbb(nno, ndim, w, def, dsidep,&
+subroutine calkbb(nno, ndim, w, def, dsidep, &
                   kbb)
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
@@ -44,13 +44,13 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
     real(kind=8) :: dddev(2*ndim, 2*ndim)
     real(kind=8) :: idev(6, 6), idev2(4, 4)
 !
-    data         idev2/ 2.d0,-1.d0,-1.d0, 0.d0,&
-     &                   -1.d0, 2.d0,-1.d0, 0.d0,&
-     &                   -1.d0,-1.d0, 2.d0, 0.d0,&
+    data idev2/2.d0, -1.d0, -1.d0, 0.d0,&
+     &                   -1.d0, 2.d0, -1.d0, 0.d0,&
+     &                   -1.d0, -1.d0, 2.d0, 0.d0,&
      &                    0.d0, 0.d0, 0.d0, 3.d0/
-    data         idev / 2.d0,-1.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-     &                   -1.d0, 2.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-     &                   -1.d0,-1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
+    data idev/2.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0,&
+     &                   -1.d0, 2.d0, -1.d0, 0.d0, 0.d0, 0.d0,&
+     &                   -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
      &                    0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0,&
      &                    0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0,&
      &                    0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/
@@ -58,20 +58,20 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
 !
 ! - INITIALISATION
     call r8inir(ndim*ndim, 0.d0, kbb, 1)
-    devd(:,:) = 0.d0
-    dddev(:,:) = 0.d0
+    devd(:, :) = 0.d0
+    dddev(:, :) = 0.d0
 !
     if (ndim .eq. 3) then
         pbulle = 4.d0
-        devd(1:6,1:6) = matmul(idev/3.d0,dsidep(1:6,1:6))
-        dddev(1:6,1:6) = matmul(devd(1:6,1:6),idev/3.d0)
+        devd(1:6, 1:6) = matmul(idev/3.d0, dsidep(1:6, 1:6))
+        dddev(1:6, 1:6) = matmul(devd(1:6, 1:6), idev/3.d0)
     else if (ndim .eq. 2) then
         pbulle = 3.d0
-        devd(1:4,1:4) = matmul(idev2/3.d0,dsidep(1:4,1:4))
-        dddev(1:4,1:4) = matmul(devd(1:4,1:4),idev2/3.d0)
+        devd(1:4, 1:4) = matmul(idev2/3.d0, dsidep(1:4, 1:4))
+        dddev(1:4, 1:4) = matmul(devd(1:4, 1:4), idev2/3.d0)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - CALCUL DE LA MATRICE KBB
 ! - BOUCLE SUR LES SOUS ELEMENTS
@@ -81,10 +81,10 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
                 t1 = 0.d0
                 do kl = 1, 2*ndim
                     do pq = 1, 2*ndim
-                        t1 = t1 + def(kl,na,ia)*dddev(kl,pq)*def(pq, na,ja)
+                        t1 = t1+def(kl, na, ia)*dddev(kl, pq)*def(pq, na, ja)
                     end do
                 end do
-                kbb(ia,ja) = kbb(ia,ja) + pbulle*w*t1
+                kbb(ia, ja) = kbb(ia, ja)+pbulle*w*t1
             end do
         end do
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
+subroutine as_mlclci(fid, nordr, k64, ityp, nbn, &
                      ndim, nomasu, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -40,8 +40,8 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
     tymasu = 0
     fidm = to_med_idt(fid)
     nordr4 = to_med_int(nordr)
-    call mlclci(fidm, nordr4, k64, ityp4, ndim4,&
-                nbn4, giname, nomasu, nbmas4, tymas4,&
+    call mlclci(fidm, nordr4, k64, ityp4, ndim4, &
+                nbn4, giname, nomasu, nbmas4, tymas4, &
                 cret4)
     ityp = ityp4
     nbn = nbn4
@@ -49,8 +49,8 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
     ndim = ndim4
     nbmasu = nbmas4
 #else
-    call mlclci(fid, nordr, k64, ityp, ndim,&
-                nbn, giname, nomasu, nbmasu, tymasu,&
+    call mlclci(fid, nordr, k64, ityp, ndim, &
+                nbn, giname, nomasu, nbmasu, tymasu, &
                 cret)
 #endif
 !

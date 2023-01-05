@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0555(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,11 +64,11 @@ character(len=16), intent(in) :: option, nomte
 ! - Get parameters of element
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     ndim=ndim, nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', &
+                     ndim=ndim, nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
-    idfdy = idfdx + 1
-    ndi   = 2*nno
+    idfdy = idfdx+1
+    ndi = 2*nno
 !
 ! - Input fields
 !
@@ -80,7 +80,7 @@ character(len=16), intent(in) :: option, nomte
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, cele_r_ = celer)
+    call getFluidPara(j_mater, cele_r_=celer)
 !
 ! - Output field
 !
@@ -94,12 +94,12 @@ character(len=16), intent(in) :: option, nomte
     if (celer .ge. 1.d-1) then
 ! ----- CALCUL DES PRODUITS VECTORIELS OMI X OMJ
         do ino = 1, nno
-            i = jv_geom + 3*(ino-1) -1
+            i = jv_geom+3*(ino-1)-1
             do jno = 1, nno
-                j = jv_geom + 3*(jno-1) -1
-                sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-                sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-                sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+                j = jv_geom+3*(jno-1)-1
+                sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+                sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+                sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
             end do
         end do
 ! ----- Loop on Gauss points
@@ -114,42 +114,42 @@ character(len=16), intent(in) :: option, nomte
                 idec = (i-1)*ndim
                 do j = 1, nno
                     jdec = (j-1)*ndim
-                    nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                    ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                    nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+                    nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                    ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                    nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
                 end do
             end do
 ! --------- Compute jacobian
-            jac = sqrt(nx*nx + ny*ny + nz*nz)
+            jac = sqrt(nx*nx+ny*ny+nz*nz)
 ! --------- Compute matrix
             if (fsi_form .eq. 'FSI_UPPHI') then
                 do i = 1, nno
                     do j = 1, nno
                         ii = 2*i
                         jj = 2*j-1
-                        a(ii,jj) = a(ii,jj) -&
-                                   jac / celer *zr(ipoids+ipg-1) *&
-                                   zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
+                        a(ii, jj) = a(ii, jj)- &
+                                    jac/celer*zr(ipoids+ipg-1)* &
+                                    zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                     end do
                 end do
             else
-                call utmess('F', 'FLUID1_2', sk = fsi_form)
-            endif
+                call utmess('F', 'FLUID1_2', sk=fsi_form)
+            end if
         end do
 ! ----- Compute speed
         do i = 1, ndi
             if (jv_vitent .ne. 0) then
-                vites(i) = zr(jv_vitplu+i-1) + zr(jv_vitent+i-1)
+                vites(i) = zr(jv_vitplu+i-1)+zr(jv_vitent+i-1)
             else
                 vites(i) = zr(jv_vitplu+i-1)
-            endif
+            end if
         end do
 ! ----- Save vector
         do i = 1, ndi
             do j = 1, ndi
-                zr(jv_vect+i-1) = zr(jv_vect+i-1) - a(i,j)*vites(j)
+                zr(jv_vect+i-1) = zr(jv_vect+i-1)-a(i, j)*vites(j)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

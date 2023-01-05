@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function bprime(nbmat, mater, parame, invar1, s,&
+function bprime(nbmat, mater, parame, invar1, s, &
                 epssig)
 !
     implicit none
@@ -49,24 +49,24 @@ function bprime(nbmat, mater, parame, invar1, s,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter  ( mun    = -1.0d0   )
-    parameter  ( un     =  1.0d0   )
-    parameter  ( deux   =  2.0d0   )
-    parameter  ( trois  =  3.0d0   )
-    parameter  ( six    =  6.0d0   )
+    parameter(mun=-1.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     epstol = r8prem()
     sigt0 = 0.0d0
 ! ======================================================================
 ! --- INITIALISATION DES PARAMETRES MATERIAU ---------------------------
 ! ======================================================================
-    mult = mater( 3,2)
-    sigc = mater( 9,2)
-    gamma = mater(10,2)
-    ksi = mater(11,2)
-    pref = mater(15,2)
+    mult = mater(3, 2)
+    sigc = mater(9, 2)
+    gamma = mater(10, 2)
+    ksi = mater(11, 2)
+    pref = mater(15, 2)
 ! ======================================================================
 ! --- RECUPERATION DES VARIABLES D'ECROUISSAGE -------------------------
 ! ======================================================================
@@ -76,8 +76,8 @@ function bprime(nbmat, mater, parame, invar1, s,&
 ! ======================================================================
 ! --- CALCULS INTERMEDIAIRE POUR LE CALCUL DE BPRIME -------------------
 ! ======================================================================
-    sii=ddot(ndt,s,1,s,1)
-    sii = sqrt (sii)
+    sii = ddot(ndt, s, 1, s, 1)
+    sii = sqrt(sii)
     rcos3t = cos3t(s, pref, epssig)
 ! ======================================================================
 ! --- CALCUL DE PHI0 = 2*ARCTAN(RAC(1+A*M*S**(A-1))) - PI/2 ------------
@@ -89,37 +89,37 @@ function bprime(nbmat, mater, parame, invar1, s,&
     fact2 = un+agamp*mgamp*fact1
     if (fact2 .lt. epstol) then
         call utmess('F', 'ALGELINE_4')
-    endif
+    end if
     fact2 = sqrt(fact2)
-    phi0 = deux*atan2(fact2,un) - r8pi()/deux
+    phi0 = deux*atan2(fact2, un)-r8pi()/deux
 ! ======================================================================
 ! --- CALCUL DE C0 = SIGC*S**A/(RAC(1+A*M*S**(A-1))) -------------------
 ! ======================================================================
-    c0 = sigc * sgamp**agamp/fact2
+    c0 = sigc*sgamp**agamp/fact2
 ! ======================================================================
 ! --- CALCUL DE SIGT0 = 2*C0*RAC((1-SIN(PHI0))/(1+SIN(PHI0)) -----------
 ! ======================================================================
     if ((un+sin(phi0)) .lt. epstol) then
         call utmess('F', 'ALGELINE_4')
-    endif
+    end if
     sigt0 = deux*c0*sqrt((un-sin(phi0))/(un+sin(phi0)))
 10  continue
 ! ======================================================================
 ! --- CALCULS DE INTERMEDIAIRE -----------------------------------------
 ! ======================================================================
-    sig1 = invar1/trois + sqrt(deux/trois)*sii*rcos3t
+    sig1 = invar1/trois+sqrt(deux/trois)*sii*rcos3t
 !
 !   Variabilite machine: on met a 0 si un-rcos3t*rcos3t trop petit
-    un_m_rcos2 = un - rcos3t*rcos3t
+    un_m_rcos2 = un-rcos3t*rcos3t
     prec = 100.d0*r8prem()
 !
-    if(un_m_rcos2.lt.prec) then
+    if (un_m_rcos2 .lt. prec) then
         un_m_rcos2 = 0.d0
-    endif
+    end if
 !
-    sig2 = invar1/trois - sqrt(deux/trois)*sii* ( rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
+    sig2 = invar1/trois-sqrt(deux/trois)*sii*(rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
            & )
-    sig3 = invar1/trois + sqrt(deux/trois)*sii* (-rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
+    sig3 = invar1/trois+sqrt(deux/trois)*sii*(-rcos3t/deux+sqrt(trois*(un_m_rcos2))/deux&
            & )
 ! ======================================================================
 ! --- RECUPERATION DE SIG1 (MAX) ET SIG3 (MIN) -------------------------
@@ -132,7 +132,7 @@ function bprime(nbmat, mater, parame, invar1, s,&
         alpha = un
     else
         alpha = (sig1-sigt0)/(sig3-sigt0)
-    endif
+    end if
 ! ======================================================================
 ! --- CALCUL DE SIN(PSI) = GAMMA*(ALPHA-MULT-1) / (KSI*ALPHA+MULT+1) ---
 ! ======================================================================

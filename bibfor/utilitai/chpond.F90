@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chpond(tych, dejain, chin, cesout, cespoi,&
+subroutine chpond(tych, dejain, chin, cesout, cespoi, &
                   ligrel, carele)
 !
     implicit none
@@ -80,50 +80,49 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !-----------------------------------------------------------------
     call jemarq()
 
-    ligr19=ligrel
+    ligr19 = ligrel
     call dismoi('NOM_MAILLA', ligr19, 'LIGREL', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(ligr19//'.REPE', 'L', vi=repe)
-
 
 !   -- CALCUL DU CHAMP CESPOI
 !      (UNIQUEMENT AU PREMIER NUMERO D'ORDRE RENCONTRE)
     call jeexin(cespoi//'.CESV', iret)
     if (iret .eq. 0) then
 !
-        chgeom=noma//'.COORDO'
-        lchin(1)=chgeom(1:19)
-        lpain(1)='PGEOMER'
-        lchin(2)= carele//'.CANBSP'
-        lpain(2)='PNBSP_I'
-        lchin(3)= carele//'.CAFIBR'
-        lpain(3)='PFIBRES'
-        lchin(4)= carele//'.CARORIEN'
-        lpain(4)='PCAORIE'
-        lchin(5)= carele//'.CARGEOPO'
-        lpain(5)='PCAGEPO'
-        lchin(6)=carele//'.CARCOQUE'
-        lpain(6)='PCACOQU'
-        lchout(1)='&&CHPOND.PGCOOR'
-        lpaout(1)='PCOORPG'
+        chgeom = noma//'.COORDO'
+        lchin(1) = chgeom(1:19)
+        lpain(1) = 'PGEOMER'
+        lchin(2) = carele//'.CANBSP'
+        lpain(2) = 'PNBSP_I'
+        lchin(3) = carele//'.CAFIBR'
+        lpain(3) = 'PFIBRES'
+        lchin(4) = carele//'.CARORIEN'
+        lpain(4) = 'PCAORIE'
+        lchin(5) = carele//'.CARGEOPO'
+        lpain(5) = 'PCAGEPO'
+        lchin(6) = carele//'.CARCOQUE'
+        lpain(6) = 'PCACOQU'
+        lchout(1) = '&&CHPOND.PGCOOR'
+        lpaout(1) = 'PCOORPG'
 !
 !
-        if (carele.ne.' ') then
-           call cesvar(carele, ' ', ligr19, lchout(1))
-        endif
+        if (carele .ne. ' ') then
+            call cesvar(carele, ' ', ligr19, lchout(1))
+        end if
 !
-        call calcul('S', 'COOR_ELGA', ligr19, 6, lchin,&
+        call calcul('S', 'COOR_ELGA', ligr19, 6, lchin, &
                     lpain, 1, lchout, lpaout, 'V', 'OUI')
 !
 !       -- verification sur les champs cespoi et chin :
 !          (MEME FAMILLE DE PG & MEME ELEMENT DE REFERENCE)
         if (tych .eq. 'ELGA') then
-            vefch1='&&CHPOND.FPGCHIN'
-            vefch2='&&CHPOND.FPGCOOR'
+            vefch1 = '&&CHPOND.FPGCHIN'
+            vefch2 = '&&CHPOND.FPGCOOR'
             call celfpg(chin, vefch1, iret1)
-            ASSERT(iret1.eq.0)
+            ASSERT(iret1 .eq. 0)
             call celfpg(lchout(1), vefch2, iret2)
-            ASSERT(iret2.eq.0)
+            ASSERT(iret2 .eq. 0)
             call jeveuo(vefch1, 'L', jch1)
             call jeveuo(vefch2, 'L', jch2)
             do ima = 1, nbma
@@ -131,22 +130,22 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                 if (zk16(jch1+ima-1) .eq. ' ') cycle
 
 !               -- il ne faut verifier que les mailles postraitees:
-                if (repe(2*(ima-1)+1).eq.0) cycle
+                if (repe(2*(ima-1)+1) .eq. 0) cycle
 
-                if (ima.eq.36) then
-                endif
+                if (ima .eq. 36) then
+                end if
 
                 if (zk16(jch1+ima-1) .ne. zk16(jch2+ima-1)) then
-                    call utmess('F', 'CALCULEL2_4', sk=zk16(jch1+ima- 1))
-                endif
+                    call utmess('F', 'CALCULEL2_4', sk=zk16(jch1+ima-1))
+                end if
             end do
-        endif
+        end if
 !
         call celces(lchout(1), 'V', cespoi)
-        call cesred(cespoi, 0, [0], 1, 'W',&
+        call cesred(cespoi, 0, [0], 1, 'W', &
                     'V', cespoi)
 !
-    endif
+    end if
 
 !   -- CREATION ET RECUPERATION DES POINTEURS
     call jeveuo(cespoi//'.CESV', 'L', vr=poiv)
@@ -154,7 +153,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
     call jeveuo(cespoi//'.CESD', 'L', jpoid)
     call jeveuo(cespoi//'.CESC', 'L', jpoic)
 
-    chins='&&CHPOND.CHINS'
+    chins = '&&CHPOND.CHINS'
     call celces(chin, 'V', chins)
     call jeveuo(chins//'.CESV', 'L', vr=chsv)
     call jeveuo(chins//'.CESL', 'L', jchsl)
@@ -175,75 +174,75 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         if (iexi .eq. 0) then
             nbspmx = 0
             do ima = 1, nbma
-              if(zi(jpoid-1+5+4*(ima-1)+2).gt.nbspmx) then
-                 nbspmx = zi(jpoid-1+5+4*(ima-1)+2)
-              end if
+                if (zi(jpoid-1+5+4*(ima-1)+2) .gt. nbspmx) then
+                    nbspmx = zi(jpoid-1+5+4*(ima-1)+2)
+                end if
             end do
             call wkvect(cespoi//'.PDSM', 'V V R', nbma*nbspmx, jpdsm)
 
             do ima = 1, nbma
-                if (repe(2*(ima-1)+1).eq.0) cycle
+                if (repe(2*(ima-1)+1) .eq. 0) cycle
 
-                nbpt   =zi(jpoid-1+5+4*(ima-1)+1)
-                nbsp   =zi(jpoid-1+5+4*(ima-1)+2)
+                nbpt = zi(jpoid-1+5+4*(ima-1)+1)
+                nbsp = zi(jpoid-1+5+4*(ima-1)+2)
                 do isp = 1, nbsp
-                   do ipt = 1, nbpt
-                      call cesexi('C', jpoid, jpoil, ima, ipt,&
-                                  isp, 1, iad2)
-                      ASSERT(iad2.gt.0)
-                      zr(jpdsm-1+(ima-1)*nbsp+isp)=zr(jpdsm-1+(ima-1)*nbsp+isp)+&
-                                                      poiv(iad2)
-                   end do
+                    do ipt = 1, nbpt
+                        call cesexi('C', jpoid, jpoil, ima, ipt, &
+                                    isp, 1, iad2)
+                        ASSERT(iad2 .gt. 0)
+                        zr(jpdsm-1+(ima-1)*nbsp+isp) = zr(jpdsm-1+(ima-1)*nbsp+isp)+ &
+                                                       poiv(iad2)
+                    end do
                 end do
             end do
         else
             call jeveuo(cespoi//'.PDSM', 'L', jpdsm)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !   -- ponderation du champ par les poids des points :
     do ima = 1, nbma
-        if (repe(2*(ima-1)+1).eq.0) cycle
+        if (repe(2*(ima-1)+1) .eq. 0) cycle
 
-        nbpt =zi(jchsd-1+5+4*(ima-1)+1)
-        nbsp =zi(jchsd-1+5+4*(ima-1)+2)
-        nbcmp=zi(jchsd-1+5+4*(ima-1)+3)
+        nbpt = zi(jchsd-1+5+4*(ima-1)+1)
+        nbsp = zi(jchsd-1+5+4*(ima-1)+2)
+        nbcmp = zi(jchsd-1+5+4*(ima-1)+3)
         do ipt = 1, nbpt
             if (tych .eq. 'ELGA') then
-                call cesexi('S', jpoid, jpoil, ima, ipt,&
+                call cesexi('S', jpoid, jpoil, ima, ipt, &
                             1, 1, iad2)
-                ASSERT(iad2.gt.0)
-                poids=poiv(iad2)
-            else if (tych.eq.'ELEM') then
-                ASSERT(nbpt.eq.1)
+                ASSERT(iad2 .gt. 0)
+                poids = poiv(iad2)
+            else if (tych .eq. 'ELEM') then
+                ASSERT(nbpt .eq. 1)
                 if (dejain .eq. 'NON') then
-                    poids=zr(jpdsm-1+ima)
+                    poids = zr(jpdsm-1+ima)
                 else
-                    poids=1.d0
-                endif
-            else if (tych.eq.'ELNO') then
-                ASSERT(nbpt.gt.0)
-                poids=zr(jpdsm-1+ima)/nbpt
-            endif
+                    poids = 1.d0
+                end if
+            else if (tych .eq. 'ELNO') then
+                ASSERT(nbpt .gt. 0)
+                poids = zr(jpdsm-1+ima)/nbpt
+            end if
 !
             do isp = 1, nbsp
                 do icmp = 1, nbcmp
-                    call cesexi('C', jchsd, jchsl, ima, ipt,&
+                    call cesexi('C', jchsd, jchsl, ima, ipt, &
                                 isp, icmp, iad1)
-                    call cesexi('C', joutd, joutl, ima, ipt,&
+                    call cesexi('C', joutd, joutl, ima, ipt, &
                                 isp, icmp, iad3)
                     if (iad1 .le. 0) then
                         goto 40
                     else
-                        ASSERT(iad3.gt.0)
-                        if (tych.eq.'ELNO') then
-                           outv(iad3)=chsv(iad1)*zr(jpdsm-1+(ima-1)*nbsp+isp)/nbpt
+                        ASSERT(iad3 .gt. 0)
+                        if (tych .eq. 'ELNO') then
+                            outv(iad3) = chsv(iad1)*zr(jpdsm-1+(ima-1)*nbsp+isp)/nbpt
                         else
-                           outv(iad3)=chsv(iad1)*poids
-                        endif
-                    endif
- 40                 continue
+                            outv(iad3) = chsv(iad1)*poids
+                        end if
+                    end if
+40                  continue
                 end do
             end do
         end do

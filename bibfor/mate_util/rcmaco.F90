@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine rcmaco(chmat, chmatgrp, indmat, nbmat, imate, l_ther, basename, base_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -33,11 +33,11 @@ implicit none
 #include "asterfort/matcod.h"
 #include "asterfort/utmess.h"
 !
-character(len=8) :: chmat, basename
-character(len=24) :: chmatgrp
-integer :: indmat, nbmat, imate
-aster_logical, intent(in) :: l_ther
-character(len=1), intent(in), optional :: base_
+    character(len=8) :: chmat, basename
+    character(len=24) :: chmatgrp
+    integer :: indmat, nbmat, imate
+    aster_logical, intent(in) :: l_ther
+    character(len=1), intent(in), optional :: base_
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,19 +53,19 @@ character(len=1), intent(in), optional :: base_
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    if( present(base_) ) then
+    if (present(base_)) then
         base = base_
     else
         base = 'V'
-    endif
+    end if
 !
     call jeveut(chmatgrp, 'L', igrp)
     if (imate .gt. 9999) then
         call utmess('F', 'CALCULEL6_11')
-    endif
+    end if
 !
-    call matcod(chmat, indmat, nbmat, imate, igrp,&
-                    basename, codi, l_ther, base)
+    call matcod(chmat, indmat, nbmat, imate, igrp, &
+                basename, codi, l_ther, base)
 !
     call jedema()
 !

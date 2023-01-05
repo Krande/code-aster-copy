@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine naueul(angnau, angeul)
     call r8inir(3, 0.d0, xl, 1)
     call r8inir(3, 0.d0, yl, 1)
     call r8inir(3, 0.d0, zl, 1)
-    xl(1)=1.d0
-    yl(2)=1.d0
-    zl(3)=1.d0
+    xl(1) = 1.d0
+    yl(2) = 1.d0
+    zl(3) = 1.d0
 !
 !     EXPRESSION DES COORDONNEES DES 3 VECTEURS DE LA BASE LOCALE
 !     DANS LE REPERE GLOBAL
@@ -60,13 +60,13 @@ subroutine naueul(angnau, angeul)
     call normev(zlzg, nv3)
     if (nv3 .lt. r8miem()) then
         do i = 1, 3
-            x1(i)=xg(i)
+            x1(i) = xg(i)
         end do
     else
         do i = 1, 3
-            x1(i)=zlzg(i)
+            x1(i) = zlzg(i)
         end do
-    endif
+    end if
 !
 !     PREMIER ANGLE D'EULER : PHI1 (OU PSI )
     call angrot(xl, x1, zl, phi1)
@@ -75,12 +75,12 @@ subroutine naueul(angnau, angeul)
 !     DEUXIEME ANGLE D'EULER : PHI2 (OU PHI)
     call angrot(x1, xg, zg, phi2)
 !
-    angeul(1)=phi1
-    angeul(2)=phi
-    angeul(3)=phi2
-    if (angeul(1) .lt. 0.d0) angeul(1)=angeul(1)+2.0d0*r8pi()
-    if (angeul(2) .lt. 0.d0) angeul(2)=angeul(2)+2.0d0*r8pi()
-    if (angeul(3) .lt. 0.d0) angeul(3)=angeul(3)+2.0d0*r8pi()
+    angeul(1) = phi1
+    angeul(2) = phi
+    angeul(3) = phi2
+    if (angeul(1) .lt. 0.d0) angeul(1) = angeul(1)+2.0d0*r8pi()
+    if (angeul(2) .lt. 0.d0) angeul(2) = angeul(2)+2.0d0*r8pi()
+    if (angeul(3) .lt. 0.d0) angeul(3) = angeul(3)+2.0d0*r8pi()
 !
 !
 end subroutine

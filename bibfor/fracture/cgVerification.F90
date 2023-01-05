@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
-use calcG_type
+    use calcG_type
 !
     implicit none
 !
@@ -59,28 +59,28 @@ use calcG_type
 !
     call jemarq()
 !
-    if(cgField%level_info>1) then
+    if (cgField%level_info > 1) then
         call utmess('I', 'RUPTURE3_1')
     end if
 !
     call dismoi('MODELE', cgField%result_in, 'RESULTAT', repk=model)
-    call dismoi('NOM_MAILLA',model,'MODELE', repk=mesh)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     ASSERT(cgTheta%mesh .eq. mesh)
 !
     lmodemeca = cgField%isModeMeca()
-    ldynatrans= cgField%isDynaTrans()
+    ldynatrans = cgField%isDynaTrans()
 !
 ! --- EXCIT is allowed only for MODE_MECA and DYNA_TRANS
 !
     call getfac('EXCIT', nexci)
-    if(lmodemeca .or. ldynatrans) then
+    if (lmodemeca .or. ldynatrans) then
         if (nexci == 0) then
             call utmess('I', 'RUPTURE3_6')
-        endif
+        end if
     else
         if (nexci > 0) then
             call utmess('F', 'RUPTURE3_7')
-        endif
+        end if
     end if
 
 !--- Cas axis : on normalise informe l'utilisateur de la division
@@ -88,55 +88,55 @@ use calcG_type
     call dismoi('MODELISATION', cgStudy%model, 'MODELE', repk=typmo)
     if (typmo(1:4) .eq. 'AXIS') then
         call utmess('I', 'RUPTURE3_10')
-    endif
+    end if
 !
 !--- Verify the input theta factors field
-    if (cgTheta%theta_factors_in ) then
+    if (cgTheta%theta_factors_in) then
         call dismoi('NOM_MAILLA', cgTheta%theta_factors, 'CHAM_NO', repk=mesh0)
         ASSERT(mesh0 .eq. mesh)
 
         call jeveuo(cgTheta%theta_factors(1:19)//'.DESC', 'L', desc)
-        gd = zi(desc-1+1) 
+        gd = zi(desc-1+1)
         call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
         if ((nomgd(1:6) .ne. 'THET_R')) then
-           call utmess('F', 'RUPTURE3_5', sk=nomgd)
-        endif
+            call utmess('F', 'RUPTURE3_5', sk=nomgd)
+        end if
 
         ! Vérifications spécifiques en 3D
         if (cgField%ndim .eq. 3) then
             ! VERIFICATION PRESENCE NB_POINT_FOND
             if (cgTheta%nb_point_fond .ne. 0) then
-            ! INTERDICTION D AVOIR NB_POINT_FOND AVEC
-            ! DISCTRETISATION =  LEGENDRE
-                if (cgTheta%discretization.eq.'LEGENDRE') then
+                ! INTERDICTION D AVOIR NB_POINT_FOND AVEC
+                ! DISCTRETISATION =  LEGENDRE
+                if (cgTheta%discretization .eq. 'LEGENDRE') then
                     call utmess('F', 'RUPTURE1_73')
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 
         ! Vérifications spécifiques en 3D
         ! Les cmp DIR_Z /ABSC_CUR /LONG doivent 0
-        if(cgField%ndim .eq. 2) then
+        if (cgField%ndim .eq. 2) then
             call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbel)
-            call jeveuo(cgTheta%theta_factors(1:19)//'.VALE','L',vr= jvale)
+            call jeveuo(cgTheta%theta_factors(1:19)//'.VALE', 'L', vr=jvale)
             dirz = 0.0
             absccur = 0.0
             long = 0.0
             do i = 1, nbel
-                dirz = dirz + jvale((i-1)*6+4) 
-                absccur = absccur + jvale((i-1)*6+5) 
-                long = long + jvale((i-1)*6+6) 
-            enddo            
-            if ( .not. ( (dirz .eq. 0.0) .and. (absccur .eq. 0.0) .and. (long .eq. 0.0) ) ) then
+                dirz = dirz+jvale((i-1)*6+4)
+                absccur = absccur+jvale((i-1)*6+5)
+                long = long+jvale((i-1)*6+6)
+            end do
+            if (.not. ((dirz .eq. 0.0) .and. (absccur .eq. 0.0) .and. (long .eq. 0.0))) then
                 call utmess('F', 'RUPTURE1_76')
-            endif
-        endif
+            end if
+        end if
 
-    endif
+    end if
 
     call jedema()
 !
     call cpu_time(finish)
-    cgStat%cgVerif = finish - start
+    cgStat%cgVerif = finish-start
 !
 end subroutine

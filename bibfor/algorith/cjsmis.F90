@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cjsmis(mod, crit, mater, nvi, epsd,&
-                  deps, sigd, sigf, vind, vinf,&
+subroutine cjsmis(mod, crit, mater, nvi, epsd, &
+                  deps, sigd, sigf, vind, vinf, &
                   noconv, aredec, stopnc, niter, epscon)
 !
     implicit none
@@ -51,8 +51,8 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 #include "asterfort/mgauss.h"
     integer :: ndt, ndi, nr, nmod, niter, nvi, iret
     integer :: nitimp
-    parameter     (nmod = 8 )
-    parameter     (nitimp = 100)
+    parameter(nmod=8)
+    parameter(nitimp=100)
     integer :: iter
     aster_logical :: noconv, aredec, stopnc
 !
@@ -71,7 +71,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
     character(len=8) :: mod
 !
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
 !
 !     ------------------------------------------------------------------
@@ -85,7 +85,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> DIMENSION DU PROBLEME NR = NDT(SIG) + 1(QISO) + 1(DLAMBI)
 !
-    nr = ndt + 2
+    nr = ndt+2
 !
 !
 !
@@ -118,11 +118,11 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
     iter = 0
 100 continue
 !
-    iter = iter + 1
+    iter = iter+1
 !
 ! -> INCREMENTATION DE YF = YD + DY
 !
-    yf(1:nr) = yd(1:nr) + dy(1:nr)
+    yf(1:nr) = yd(1:nr)+dy(1:nr)
 !
 !
 ! -> CALCUL DU SECOND MEMBRE A T+DT :  -R(DY)
@@ -131,24 +131,24 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
     do i = 1, nr
         r(i) = 0.d0
         do j = 1, nr
-            drdy(i,j) = 0.d0
+            drdy(i, j) = 0.d0
         end do
     end do
 !
-    call cjsjis(mod, mater, deps, yd, yf,&
+    call cjsjis(mod, mater, deps, yd, yf, &
                 r, drdy)
 !
 !
 ! -> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
 !
     ddy(1:nr) = r(1:nr)
-    call mgauss('NFVP', drdy, ddy, nmod, nr,&
+    call mgauss('NFVP', drdy, ddy, nmod, nr, &
                 1, det, iret)
 !
 !
 ! -> REACTUALISATION DE DY = DY + DDY
 !
-    dy(1:nr) = ddy(1:nr) + dy(1:nr)
+    dy(1:nr) = ddy(1:nr)+dy(1:nr)
 !
 !
 ! -> VERIFICATION DE LA CONVERGENCE : ERREUR = !!DDY!!/!!DY!! < TOLER
@@ -158,13 +158,13 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
     if (err2 .eq. 0.d0) then
         err = err1
     else
-        err = err1 / err2
-    endif
+        err = err1/err2
+    end if
     if (iter .le. nitimp) then
-        erimp(iter,1) = err1
-        erimp(iter,2) = err2
-        erimp(iter,3) = err
-    endif
+        erimp(iter, 1) = err1
+        erimp(iter, 2) = err2
+        erimp(iter, 3) = err
+    end if
 !
 !
     if (iter .le. int(abs(crit(1)))) then
@@ -176,19 +176,19 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !          --  NON CONVERVENCE : ITERATION SUIVANTE  --
         else
             goto 100
-        endif
+        end if
 !
     else
 !
 !          --  NON CONVERVENCE : ITERATION MAXI ATTEINTE  --
         if (aredec .and. stopnc) then
-            call cjsncv('CJSMIS', nitimp, iter, ndt, nvi,&
-                        umess, erimp, epsd, deps, sigd,&
+            call cjsncv('CJSMIS', nitimp, iter, ndt, nvi, &
+                        umess, erimp, epsd, deps, sigd, &
                         vind)
         else
             noconv = .true.
-        endif
-    endif
+        end if
+    end if
 !
 200 continue
     niter = iter
@@ -197,7 +197,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> INCREMENTATION DE YF = YD + DY
 !
-    yf(1:nr) = yd(1:nr) + dy(1:nr)
+    yf(1:nr) = yd(1:nr)+dy(1:nr)
 !
 !
 ! -> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine mmmpha(leltf, lcont, ladhe, l_fric_no, phase)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-aster_logical, intent(in) :: leltf
-aster_logical, intent(in) :: lcont, ladhe, l_fric_no
-character(len=4), intent(out) :: phase
+    aster_logical, intent(in) :: leltf
+    aster_logical, intent(in) :: lcont, ladhe, l_fric_no
+    character(len=4), intent(out) :: phase
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ character(len=4), intent(out) :: phase
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    phase  = 'SANS'
+    phase = 'SANS'
 !
 ! - Main phase
 !
@@ -61,16 +61,16 @@ character(len=4), intent(out) :: phase
                 phase = 'NCON'
             else
                 phase = 'GLIS'
-            endif
+            end if
         else
             phase = 'SANS'
-        endif
+        end if
     else
         if (lcont) then
             phase = 'CONT'
         else
             phase = 'SANS'
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

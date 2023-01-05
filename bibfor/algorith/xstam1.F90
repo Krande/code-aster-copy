@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xstam1(noma, nbma, nmafis, mafis, stano,&
-                  mafon, maen1, maen2, maen3, nmafon,&
+subroutine xstam1(noma, nbma, nmafis, mafis, stano, &
+                  mafon, maen1, maen2, maen3, nmafon, &
                   nmaen1, nmaen2, nmaen3, typdis, cnslt)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -78,12 +78,12 @@ subroutine xstam1(noma, nbma, nmafis, mafis, stano,&
 !
     call jemarq()
 !
-    i=0
-    im1=0
-    im2=0
-    im3=0
+    i = 0
+    im1 = 0
+    im2 = 0
+    im3 = 0
 !
-    mai=noma//'.TYPMAIL'
+    mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -96,17 +96,17 @@ subroutine xstam1(noma, nbma, nmafis, mafis, stano,&
 !     BOUCLE SUR LES MAILLES DU MAILLAGE
     do ima = 1, nbma
 !
-        nmaabs=ima
+        nmaabs = ima
 !
-        itypma=zi(jma-1+nmaabs)
+        itypma = zi(jma-1+nmaabs)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         if (typma(1:3) .eq. 'POI') goto 310
 !
-        em=0
-        em1=0
-        em2=0
+        em = 0
+        em1 = 0
+        em2 = 0
         call panbno(itypma, nbnott)
-        nno = nbnott(1) + nbnott(2) + nbnott(3)
+        nno = nbnott(1)+nbnott(2)+nbnott(3)
 !
 !       BOUCLE SUR LES NOEUDS DE LA MAILLE
         lstch = .false.
@@ -114,20 +114,20 @@ subroutine xstam1(noma, nbma, nmafis, mafis, stano,&
             if (in .gt. 1) nunop = nuno
             nuno = connex(zi(jconx2+nmaabs-1)+in-1)
             en = abs(stano(nuno))
-            if (en .eq. 1 .or. en .eq. 3) em1=em1+1
-            if (en .eq. 2 .or. en .eq. 3) em2=em2+1
-            if (in .gt. 1 .and. cnslt(3:8) .eq. 'OP0010') lstch = lstch .or.&
-                                                                  (&
-                                                                  (&
+            if (en .eq. 1 .or. en .eq. 3) em1 = em1+1
+            if (en .eq. 2 .or. en .eq. 3) em2 = em2+1
+            if (in .gt. 1 .and. cnslt(3:8) .eq. 'OP0010') lstch = lstch .or. &
+                                                                  ( &
+                                                                  ( &
                                                                   zr(jltsv-1+nuno)*zr(jltsv-1+nun&
-                                                                  &op)&
-                                                                  )&
-                                                                  .le. 0.d0&
+                                                                  &op) &
+                                                                  ) &
+                                                                  .le. 0.d0 &
                                                                   )
         end do
-        if (em1 .ge. 1) em=1
-        if (em2 .ge. 1) em=2
-        if (em1 .ge. 1 .and. em2 .ge. 1) em=3
+        if (em1 .ge. 1) em = 1
+        if (em2 .ge. 1) em = 2
+        if (em1 .ge. 1 .and. em2 .ge. 1) em = 3
 !
 !         MAILLE RETENUE POUR MAFOND (TS LS NOEUDS SONT 'CARRÉS')
 !         SOUS RÉSERVE QUE CE SOIT UNE MAILLE PRINCIPALE DE MAFIS
@@ -139,52 +139,52 @@ subroutine xstam1(noma, nbma, nmafis, mafis, stano,&
 !
                     do imae = 1, nmafis
                         if (nmaabs .eq. mafis(imae)) then
-                            i=i+1
-                            ASSERT(i.le.nmafis)
-                            mafon(i)=nmaabs
+                            i = i+1
+                            ASSERT(i .le. nmafis)
+                            mafon(i) = nmaabs
 !                       ON SORT DE LA BOUCLE 312
                             goto 313
-                        endif
+                        end if
                     end do
 313                 continue
-                endif
-            endif
-        else if (typdis.eq.'COHESIF') then
+                end if
+            end if
+        else if (typdis .eq. 'COHESIF') then
 !
-            if (lstch .or. (em1.lt.nno.and.em1.gt.0) .and. typma(1:3) .ne. 'SEG') then
+            if (lstch .or. (em1 .lt. nno .and. em1 .gt. 0) .and. typma(1:3) .ne. 'SEG') then
                 do imae = 1, nmafis
                     if (nmaabs .eq. mafis(imae)) then
-                        i=i+1
-                        ASSERT(i.le.nmafis)
-                        mafon(i)=nmaabs
+                        i = i+1
+                        ASSERT(i .le. nmafis)
+                        mafon(i) = nmaabs
                         goto 413
-                    endif
+                    end if
                 end do
 413             continue
-            endif
-        endif
+            end if
+        end if
 !
 !       ON RÉCUPÈRE LES NUMEROS DES MAILLES ENRICHIES
         if (em .eq. 1) then
-            im1=im1+1
-            ASSERT(im1.le.nbma)
-            maen1(im1)=nmaabs
-        else if (em.eq.2) then
-            im2=im2+1
-            ASSERT(im2.le.nbma)
-            maen2(im2)=nmaabs
-        else if (em.eq.3) then
-            im3=im3+1
-            ASSERT(im3.le.nbma)
-            maen3(im3)=nmaabs
-        endif
+            im1 = im1+1
+            ASSERT(im1 .le. nbma)
+            maen1(im1) = nmaabs
+        else if (em .eq. 2) then
+            im2 = im2+1
+            ASSERT(im2 .le. nbma)
+            maen2(im2) = nmaabs
+        else if (em .eq. 3) then
+            im3 = im3+1
+            ASSERT(im3 .le. nbma)
+            maen3(im3) = nmaabs
+        end if
 310     continue
     end do
 !
-    nmafon=i
-    nmaen1=im1
-    nmaen2=im2
-    nmaen3=im3
+    nmafon = i
+    nmaen1 = im1
+    nmaen2 = im2
+    nmaen3 = im3
 !
     call jedema()
 end subroutine

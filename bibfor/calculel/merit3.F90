@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine merit3(modele, nchar, lchar, mate, mateco,&
-                  cara, time, matel, prefch, numero,&
+subroutine merit3(modele, nchar, lchar, mate, mateco, &
+                  cara, time, matel, prefch, numero, &
                   base)
     implicit none
 !
@@ -92,7 +92,7 @@ subroutine merit3(modele, nchar, lchar, mate, mateco,&
     call jemarq()
     if (modele(1:1) .eq. ' ') then
         call utmess('F', 'CALCULEL3_50')
-    endif
+    end if
 !
     call megeom(modele, chgeom)
     call mecara(cara, chcara)
@@ -101,7 +101,7 @@ subroutine merit3(modele, nchar, lchar, mate, mateco,&
     if (iret .gt. 0) then
         call jedetr(matel//'.RERR')
         call jedetr(matel//'.RELR')
-    endif
+    end if
 !
     chvite = '????'
 !
@@ -115,20 +115,20 @@ subroutine merit3(modele, nchar, lchar, mate, mateco,&
             convch = nomcha//'.CHTH'//'.CONVE'//'.VALE'
             call jeexin(convch, iret)
             if (iret .gt. 0) then
-                iconv = iconv + 1
+                iconv = iconv+1
                 if (iconv .gt. 1) then
                     call utmess('F', 'CALCULEL3_72')
-                endif
+                end if
 !
                 option = 'RIGI_THER_CONV_D'
-                call memare('V', matel, modele, mate, cara,&
+                call memare('V', matel, modele, mate, cara, &
                             option)
 !
                 call jeveuo(convch, 'L', jvites)
                 vitess = zk8(jvites)
                 chvite = vitess
                 carte = '&&MERIT3'//'.CONVECT.DECENT'
-                call mecact('V', carte, 'MODELE', modele//'.MODELE', 'NEUT_K24',&
+                call mecact('V', carte, 'MODELE', modele//'.MODELE', 'NEUT_K24', &
                             ncmp=1, nomcmp='Z1', sk='NON')
                 lpain(1) = 'PGEOMER'
                 lchin(1) = chgeom
@@ -146,16 +146,16 @@ subroutine merit3(modele, nchar, lchar, mate, mateco,&
                 lchin(7) = chcara(12)
                 ilires = 0
                 ligrmo = modele//'.MODELE'
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires+numero, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 7, lchin,&
-                            lpain, 1, lchout, lpaout, base,&
+                call calcul('S', option, ligrmo, 7, lchin, &
+                            lpain, 1, lchout, lpaout, base, &
                             'OUI')
                 call reajre(matel, lchout(1), base)
-            endif
+            end if
         end do
 !
-    endif
+    end if
 !
 ! --- MENAGE
     call detrsd('CARTE', '&&MERIT3'//'.CONVECT.DECENT')

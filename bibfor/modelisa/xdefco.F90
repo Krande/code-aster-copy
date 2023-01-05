@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xdefco(mesh        , model, crack, algo_lagr, nb_dim,&
+subroutine xdefco(mesh, model, crack, algo_lagr, nb_dim, &
                   sdline_crack, tabai)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -62,14 +62,14 @@ implicit none
     l_pilo = .false.
     l_ainter = .true.
     call jeexin(crack//'.MAILFISS.HEAV', ier)
-    if (ier .ne. 0) l_xfem=.true.
+    if (ier .ne. 0) l_xfem = .true.
     call jeexin(crack//'.MAILFISS.CTIP', ier)
-    if (ier .ne. 0) l_xfem=.true.
+    if (ier .ne. 0) l_xfem = .true.
     call jeexin(crack//'.MAILFISS.HECT', ier)
-    if (ier .ne. 0) l_xfem=.true.
+    if (ier .ne. 0) l_xfem = .true.
     ASSERT(l_xfem)
 !
-    call xlagsp(mesh        , model, crack, algo_lagr, nb_dim,&
+    call xlagsp(mesh, model, crack, algo_lagr, nb_dim, &
                 sdline_crack, l_pilo, tabai, l_ainter)
 
 end subroutine

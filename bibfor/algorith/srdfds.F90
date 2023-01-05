@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srdfds(nbmat,mater,para,var,ds2hds,ucri,dfdsig)
+subroutine srdfds(nbmat, mater, para, var, ds2hds, ucri, dfdsig)
 
 !
 
@@ -38,7 +38,7 @@ subroutine srdfds(nbmat,mater,para,var,ds2hds,ucri,dfdsig)
 ! OUT : DFDSIG(6)      : DF/DSIG
 ! ===================================================================================
 
-    implicit      none
+    implicit none
 
 #include "asterc/r8prem.h"
 #include "asterfort/r8inir.h"
@@ -49,53 +49,53 @@ subroutine srdfds(nbmat,mater,para,var,ds2hds,ucri,dfdsig)
     !!!
 
     integer :: nbmat
-    real(kind=8) :: mater(nbmat,2),para(3),var(4),ucri,ds2hds(6),dfdsig(6)
+    real(kind=8) :: mater(nbmat, 2), para(3), var(4), ucri, ds2hds(6), dfdsig(6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndi,ndt,i
-    real(kind=8) :: sigc,gamma,beta,r0c,pi,fact1
-    real(kind=8) :: a(6),kron(6),fact3
-    common /tdim/ ndt, ndi
+    integer :: ndi, ndt, i
+    real(kind=8) :: sigc, gamma, beta, r0c, pi, fact1
+    real(kind=8) :: a(6), kron(6), fact3
+    common/tdim/ndt, ndi
 
-    data kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 
     !!!
     !!! Recuperation de parametres du modele
     !!!
 
-    sigc=mater(3,2)
-    beta=mater(4,2)
-    gamma=mater(5,2)
-    pi=r8pi()
-    r0c=cos(beta*pi/6.d0-1.d0/3.d0*acos(gamma))
+    sigc = mater(3, 2)
+    beta = mater(4, 2)
+    gamma = mater(5, 2)
+    pi = r8pi()
+    r0c = cos(beta*pi/6.d0-1.d0/3.d0*acos(gamma))
 
     !!!
     !!! Termes intermediaires
     !!!
 
-    fact1=para(1)*sigc*r0c
-    fact3=para(1)-1.d0
+    fact1 = para(1)*sigc*r0c
+    fact3 = para(1)-1.d0
 
     !!!
     !!! Resultat final
     !!!
 
-    call r8inir(6,0.d0,a,1)
-    call r8inir(6,0.d0,dfdsig,1)
+    call r8inir(6, 0.d0, a, 1)
+    call r8inir(6, 0.d0, dfdsig, 1)
 
-    do i=1,ndt
-        a(i)=var(1)*ds2hds(i)+var(2)*kron(i)
+    do i = 1, ndt
+        a(i) = var(1)*ds2hds(i)+var(2)*kron(i)
     end do
 
-    do i=1,ndt
-        if (ucri.le.r8prem()) then
-            dfdsig(i)=ds2hds(i)
+    do i = 1, ndt
+        if (ucri .le. r8prem()) then
+            dfdsig(i) = ds2hds(i)
         else
-            dfdsig(i)=ds2hds(i)-fact1*a(i)*(ucri**fact3)
-        endif
+            dfdsig(i) = ds2hds(i)-fact1*a(i)*(ucri**fact3)
+        end if
     end do
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hsj1ms(epais, vectg, vectt, hsfm, hss,&
+subroutine hsj1ms(epais, vectg, vectt, hsfm, hss, &
                   hsj1m, hsj1s)
     implicit none
 #include "asterfort/jacbm1.h"
@@ -29,7 +29,7 @@ subroutine hsj1ms(epais, vectg, vectt, hsfm, hss,&
 !-----------------------------------------------------------------------
     integer :: i, j, j1, jb, k, k1
 !-----------------------------------------------------------------------
-    call jacbm1(epais, vectg, vectt, matj, jm1,&
+    call jacbm1(epais, vectg, vectt, matj, jm1, &
                 detj)
 !
 !     CONSTRUCTION DE HFM * S * JTILD-1  ET  HS * S * JTILD-1
@@ -49,20 +49,20 @@ subroutine hsj1ms(epais, vectg, vectt, hsfm, hss,&
     do jb = 1, 3
         do j = 1, 3
             do i = 1, 2
-                j1=j+3*(jb-1)
-                hsj1m(i,j1)=0.d0
-                hsj1s(i,j1)=0.d0
+                j1 = j+3*(jb-1)
+                hsj1m(i, j1) = 0.d0
+                hsj1s(i, j1) = 0.d0
                 do k = 1, 3
-                    k1=k+3*(jb-1)
-                    hsj1s(i,j1)=hsj1s(i,j1)+hss(i,k1)*jm1( k,j)
-                    hsj1m(i,j1)=hsj1m(i,j1)+hsfm(i,k1)*jm1(k,j)
+                    k1 = k+3*(jb-1)
+                    hsj1s(i, j1) = hsj1s(i, j1)+hss(i, k1)*jm1(k, j)
+                    hsj1m(i, j1) = hsj1m(i, j1)+hsfm(i, k1)*jm1(k, j)
                 end do
             end do
-            j1=j+3*(jb-1)
-            hsj1m(3,j1)=0.d0
+            j1 = j+3*(jb-1)
+            hsj1m(3, j1) = 0.d0
             do k = 1, 3
-                k1=k+3*(jb-1)
-                hsj1m(3,j1)=hsj1m(3,j1)+hsfm(3,k1)*jm1(k,j)
+                k1 = k+3*(jb-1)
+                hsj1m(3, j1) = hsj1m(3, j1)+hsfm(3, k1)*jm1(k, j)
             end do
         end do
     end do

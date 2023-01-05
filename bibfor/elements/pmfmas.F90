@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
 !
     integer :: jacf
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
-    real(kind=8) :: casrho(6), xl, rbid, cars1(6) ,co12, co13
+    real(kind=8) :: casrho(6), xl, rbid, cars1(6), co12, co13
     real(kind=8) :: matp1(78), a, xiy, xiz, casece(6), g
     real(kind=8) :: alfay, alfaz, ey, ez, casect(6)
     character(len=16) :: ch16
@@ -59,13 +59,13 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
     integer, parameter :: nb_cara = 4
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'AY1','AZ1','EY1','EZ1'/
+    data noms_cara/'AY1', 'AZ1', 'EY1', 'EZ1'/
 ! --------------------------------------------------------------------------------------------------
 !   Poutres droites multifibres
     if ((nomte .ne. 'MECA_POU_D_EM') .and. (nomte .ne. 'MECA_POU_D_TGM')) then
         ch16 = nomte
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
-    endif
+    end if
 !
 !   Longueur de l'élément
     xl = lonele()
@@ -76,37 +76,37 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
     if (nomte .eq. 'MECA_POU_D_EM') then
 !       Calcul de la matrice de masse locale
         call pmfitx(icdmat, 1, casect, rbid)
-        co12=casect(3)/casect(1)
-        co13=-casect(2)/casect(1)
-        call pmfm01(kanl, xl, co12, co13, casrho,mlv)
+        co12 = casect(3)/casect(1)
+        co13 = -casect(2)/casect(1)
+        call pmfm01(kanl, xl, co12, co13, casrho, mlv)
 !
-    else if (nomte .eq.'MECA_POU_D_TGM') then
+    else if (nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !
         call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
         alfay = vale_cara(1)
         alfaz = vale_cara(2)
-        ey    = vale_cara(3)
-        ez    = vale_cara(4)
+        ey = vale_cara(3)
+        ez = vale_cara(4)
 !
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), cars1)
-        a   = cars1(1)
+        a = cars1(1)
         xiy = cars1(5)
         xiz = cars1(4)
 !
         if (option .eq. 'MASS_FLUI_STRU') then
-            casrho(1) = rhoflu * a
-            casrho(4) = rhoflu * xiz
-            casrho(5) = rhoflu * xiy
-        endif
+            casrho(1) = rhoflu*a
+            casrho(4) = rhoflu*xiz
+            casrho(5) = rhoflu*xiy
+        end if
 !       Appel intégration sur section
         call pmfitx(icdmat, 1, casece, g)
         matp1(:) = 0.0d0
-        call pmfm21(kanl, matp1, casrho, casece, a, xl, xiy, xiz, g, alfay,&
-                  alfaz, ey, ez )
+        call pmfm21(kanl, matp1, casrho, casece, a, xl, xiy, xiz, g, alfay, &
+                    alfaz, ey, ez)
 !
         call masstg(matp1, mlv)
-    endif
+    end if
 !
 end subroutine

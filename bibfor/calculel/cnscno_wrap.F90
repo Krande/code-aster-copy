@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 
 subroutine cnscno_wrap(cnsz, prchnz, prol0, basez, cnoz, kstop, iret)
 ! A_UTIL
-  implicit none
+    implicit none
 #include "asterf_types.h"
 #include "asterfort/cnscno.h"
 !
-character(len=*) :: cnsz, cnoz, basez, prchnz, prol0
-character(len=1) :: kstop
-integer :: iret
+    character(len=*) :: cnsz, cnoz, basez, prchnz, prol0
+    character(len=1) :: kstop
+    integer :: iret
 !
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_NO_S (CNSZ) EN CHAM_NO (CNOZ)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtcrou(a, b, nmax, n, nbscmb,&
+subroutine mtcrou(a, b, nmax, n, nbscmb, &
                   l, d)
     implicit none
     integer :: n, nbscmb, nmax
@@ -40,15 +40,15 @@ subroutine mtcrou(a, b, nmax, n, nbscmb,&
         do j = 1, i-1
             s = zero
             do k = 1, j-1
-                s = s + l(i,k)*d(k)*l(j,k)
+                s = s+l(i, k)*d(k)*l(j, k)
             end do
-            l(i,j) = (a(i,j)-s)/d(j)
+            l(i, j) = (a(i, j)-s)/d(j)
         end do
         s = zero
         do k = 1, i-1
-            s = s + l(i,k)*l(i,k)*d(k)
+            s = s+l(i, k)*l(i, k)*d(k)
         end do
-        d(i) = a(i,i)-s
+        d(i) = a(i, i)-s
     end do
 !
 !   BOUCLE SUR LES SECONDS MEMBRES
@@ -60,15 +60,15 @@ subroutine mtcrou(a, b, nmax, n, nbscmb,&
         do i = 1, n
             s = zero
             do k = 1, i-1
-                s = s + l(i,k)*b(k,is)
+                s = s+l(i, k)*b(k, is)
             end do
-            b(i,is) = b(i,is)-s
+            b(i, is) = b(i, is)-s
         end do
 !
 !  DIVISION PAR LA DIAGONALE
 !
         do i = 1, n
-            b(i,is) = b(i,is)/d(i)
+            b(i, is) = b(i, is)/d(i)
         end do
 !
 !  REMONTEE
@@ -76,9 +76,9 @@ subroutine mtcrou(a, b, nmax, n, nbscmb,&
         do i = n, 1, -1
             s = zero
             do k = i+1, n
-                s = s + l(k,i)*b(k,is)
+                s = s+l(k, i)*b(k, is)
             end do
-            b(i,is) = b(i,is)-s
+            b(i, is) = b(i, is)-s
         end do
     end do
 end subroutine

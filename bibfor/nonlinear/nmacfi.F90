@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmacfi(list_func_acti, hval_veasse, cnffdo, cndfdo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/isfonc.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: hval_veasse(*), cnffdo, cndfdo
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: hval_veasse(*), cnffdo, cndfdo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,9 +52,9 @@ character(len=19), intent(in) :: hval_veasse(*), cnffdo, cndfdo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_didi = isfonc(list_func_acti,'DIDI')
-    l_macr = isfonc(list_func_acti,'MACR_ELEM_STAT')
-    l_sstf = isfonc(list_func_acti,'SOUS_STRUC')
+    l_didi = isfonc(list_func_acti, 'DIDI')
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
+    l_sstf = isfonc(list_func_acti, 'SOUS_STRUC')
 !
 ! - Initializations
 !
@@ -65,7 +65,7 @@ character(len=19), intent(in) :: hval_veasse(*), cnffdo, cndfdo
     call nonlinDSVectCombAddHat(hval_veasse, 'CNDIDO', 1.d0, ds_vectcomb)
     if (l_didi) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNDIDI', 1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Dirichlet (given displacements) - AFFE_CHAR_CINE
 !
@@ -84,13 +84,13 @@ character(len=19), intent(in) :: hval_veasse(*), cnffdo, cndfdo
 !
     if (l_macr) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNSSTR', -1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Sub-structuring force
 !
     if (l_sstf) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNSSTF', 1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Combination
 !

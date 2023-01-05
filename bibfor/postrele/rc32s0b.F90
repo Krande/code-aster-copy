@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,19 +64,19 @@ subroutine rc32s0b(seis, sig, trescamax)
                                                     do i12 = 1, 2
                                                         do j = 1, 6
 !
-                                                            st(j) = sig(j)+e0(i1)*seis(j) +e0(i2)&
-                                                                    &*seis(6+j) + e0(i3)*seis(2*6&
-                                                                    &+j) +e0(i4)*seis(3*6+j) + e0&
-                                                                    &(i5)*seis(4*6+j) +e0(i6)*sei&
-                                                                    &s(5*6+j) + e0(i7)*seis(6*6+j&
-                                                                    &) +e0(i8)*seis(7*6+j) + e0(i&
-                                                                    &9)*seis(8*6+j) +e0(i10)*seis&
-                                                                    &(9*6+j) + e0(i11)*seis(10*6+&
+                                                            st(j) = sig(j)+e0(i1)*seis(j)+e0(i2)&
+                                                                    &*seis(6+j)+e0(i3)*seis(2*6&
+                                                                    &+j)+e0(i4)*seis(3*6+j)+e0&
+                                                                    &(i5)*seis(4*6+j)+e0(i6)*sei&
+                                                                    &s(5*6+j)+e0(i7)*seis(6*6+j&
+                                                                    &)+e0(i8)*seis(7*6+j)+e0(i&
+                                                                    &9)*seis(8*6+j)+e0(i10)*seis&
+                                                                    &(9*6+j)+e0(i11)*seis(10*6+&
                                                                     &j)+e0(i12)*seis(11*6+j)
 !
                                                         end do
                                                         call rctres(st, tresca)
-                                                        trescamax=max(tresca, trescamax)
+                                                        trescamax = max(tresca, trescamax)
                                                     end do
                                                 end do
                                             end do
@@ -100,13 +100,13 @@ subroutine rc32s0b(seis, sig, trescamax)
                             do i6 = 1, 2
                                 do j = 1, 6
 !
-                                    st(j) = sig(j)+e0(i1)*seis(j)+e0(i2)*seis(6+j)+ e0(i3)*seis(2&
-                                            &*6+j) +e0(i4)*seis(3*6+j)+ e0(i5)*seis(4*6+j) +e0(i6&
+                                    st(j) = sig(j)+e0(i1)*seis(j)+e0(i2)*seis(6+j)+e0(i3)*seis(2&
+                                            &*6+j)+e0(i4)*seis(3*6+j)+e0(i5)*seis(4*6+j)+e0(i6&
                                             &)*seis(5*6+j)
 !
                                 end do
                                 call rctres(st, tresca)
-                                trescamax=max(tresca, trescamax)
+                                trescamax = max(tresca, trescamax)
 !
                             end do
                         end do
@@ -115,6 +115,6 @@ subroutine rc32s0b(seis, sig, trescamax)
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

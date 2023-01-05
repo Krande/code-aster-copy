@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wpordc(type, shift, vp, x, m,&
+subroutine wpordc(type, shift, vp, x, m, &
                   neq)
     implicit none
 #include "asterfort/utmess.h"
@@ -47,46 +47,46 @@ subroutine wpordc(type, shift, vp, x, m,&
     if (type .eq. 0) then
         do i = 1, m, 1
             k = i
-            p = dimag(vp(i)) - om
+            p = dimag(vp(i))-om
             do j = i+1, m
                 if ((dimag(vp(j))-om) .lt. p) then
-                    p = dimag(vp(j)) - om
+                    p = dimag(vp(j))-om
                     k = j
-                endif
+                end if
             end do
             if (k .ne. i) then
-                q=vp(i)
-                vp(i)=vp(k)
-                vp(k)=q
+                q = vp(i)
+                vp(i) = vp(k)
+                vp(k) = q
                 do j = 1, neq, 1
-                    c = x(j,i)
-                    x(j,i) = x(j,k)
-                    x(j,k) = c
+                    c = x(j, i)
+                    x(j, i) = x(j, k)
+                    x(j, k) = c
                 end do
-            endif
+            end if
         end do
     else if (type .eq. 1) then
         do i = 1, m, 1
             k = i
-            p = abs(vp(i) - shift)
+            p = abs(vp(i)-shift)
             do j = i+1, m
                 if ((abs(vp(j)-shift)) .lt. p) then
-                    p = abs(vp(j) - shift)
+                    p = abs(vp(j)-shift)
                     k = j
-                endif
+                end if
             end do
             if (k .ne. i) then
-                q=vp(i)
-                vp(i)=vp(k)
-                vp(k)=q
+                q = vp(i)
+                vp(i) = vp(k)
+                vp(k) = q
                 do j = 1, neq, 1
-                    c = x(j,i)
-                    x(j,i) = x(j,k)
-                    x(j,k) = c
+                    c = x(j, i)
+                    x(j, i) = x(j, k)
+                    x(j, k) = c
                 end do
-            endif
+            end if
         end do
     else
         call utmess('F', 'ALGELINE3_97')
-    endif
+    end if
 end subroutine

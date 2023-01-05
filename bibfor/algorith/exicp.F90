@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
     else
         call jeveuo(list_elem_affe, 'L', j_elem_affe)
         nb_elem = nb_elem_affe
-    endif
+    end if
 !
 ! - Loop on elements
 !
@@ -91,7 +91,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
             nume_elem = ielem
         else
             nume_elem = zi(j_elem_affe-1+ielem)
-        endif
+        end if
 !
 ! ----- Access to element type
 !
@@ -107,10 +107,10 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
                     if (typmod(1:6) .eq. 'C_PLAN') then
                         exicp = .true.
                         goto 999
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
     end do
 !
 999 continue

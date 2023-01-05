@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
-                  sigy, e, nu, p, rp,&
+subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale, &
+                  sigy, e, nu, p, rp, &
                   rprim, airerp, sieleq, dp)
 !
     implicit none
@@ -82,23 +82,23 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
 ! --------------------------------------------------------------------------------------------------
 !
     jp = jvale
-    jr = jvale + nbvale
-    type_prol = zk24(jprol+4)(2:2)
+    jr = jvale+nbvale
+    type_prol = zk24(jprol+4) (2:2)
     func_name = zk24(jprol+5)
 !
 ! - Elastic yield
 !
     if (quest .eq. 'S') then
-        ASSERT(ktrac.eq.1)
+        ASSERT(ktrac .eq. 1)
         sigy = zr(jr)
         goto 999
-    endif
+    end if
 !
 ! - Check
 !
     if (p .lt. 0) then
         call utmess('F', 'COMPOR5_59')
-    endif
+    end if
 !
 ! DISTINCTION ENTRE TRACTION ET META_TRACTION CAR
 ! POUR TRACTION:C EST LA COURBE SIGMA(P)
@@ -113,35 +113,35 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
             if (p .lt. zr(jp+i)) then
                 i0 = i-1
                 goto 20
-            endif
+            end if
             airerp_int = airerp_int+(zr(jr+i)+zr(jr+i-1))*(zr(jp+i)-zr(jp+i-1))
         end do
         tessup = .true.
         if (type_prol .eq. 'E') then
             call utmess('F', 'COMPOR5_60', sk=func_name, sr=zr(jp-1+nbvale))
-        endif
-        i0=nbvale-1
- 20     continue
+        end if
+        i0 = nbvale-1
+20      continue
 !
 ! - CALCUL DES VALEURS DE R(P), R'(P) ET AIRE(P)
 !
         if (quest .eq. 'V') then
             if (tessup) then
                 if (type_prol .eq. 'L') then
-                    rprim_int = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+ i0-1))
+                    rprim_int = (zr(jr+i0)-zr(jr+i0-1))/(zr(jp+i0)-zr(jp+i0-1))
                 else
                     rprim_int = 0.d0
-                endif
+                end if
             else
-                rprim_int = (zr(jr+i0+1)-zr(jr+i0))/ (zr(jp+i0+1)-zr(jp+ i0))
-            endif
+                rprim_int = (zr(jr+i0+1)-zr(jr+i0))/(zr(jp+i0+1)-zr(jp+i0))
+            end if
             p0 = zr(jp+i0)
             rp0 = zr(jr+i0)
-            rp_int = rp0 + rprim_int*(p-p0)
+            rp_int = rp0+rprim_int*(p-p0)
             airerp_int = (airerp_int+(rp0+rp_int)*(p-p0))*0.5d0
             goto 999
-        endif
-    endif
+        end if
+    end if
     if (ktrac .eq. 2) then
         airerp_int = 0.d0
         tessup = .false.
@@ -151,85 +151,85 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
             if (p .lt. zr(jp+i-1)) then
                 i0 = i-1
                 goto 21
-            endif
+            end if
         end do
         tessup = .true.
         if (type_prol .eq. 'E') then
             call utmess('F', 'COMPOR5_60', sk=func_name, sr=zr(jp-1+nbvale))
-        endif
-        i0=nbvale-1
- 21     continue
+        end if
+        i0 = nbvale-1
+21      continue
 !
 ! - CALCUL DES VALEURS DE R(P) ET R'(P)
 !
         if (quest .eq. 'V') then
             if (tessup) then
                 if (type_prol .eq. 'L') then
-                    rprim_int = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+ i0-1))
+                    rprim_int = (zr(jr+i0)-zr(jr+i0-1))/(zr(jp+i0)-zr(jp+i0-1))
                 else
                     rprim_int = 0.d0
-                endif
-                rp_int = zr(jr+i0)+ rprim_int*(p-zr(jp+i0))
+                end if
+                rp_int = zr(jr+i0)+rprim_int*(p-zr(jp+i0))
             else
                 if (i0 .eq. 0) then
                     rprim_int = zr(jr)/zr(jp)
                     p0 = 0.d0
                     rp0 = 0.d0
                 else
-                    rprim_int = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+ i0-1))
+                    rprim_int = (zr(jr+i0)-zr(jr+i0-1))/(zr(jp+i0)-zr(jp+i0-1))
                     p0 = zr(jp+i0-1)
                     rp0 = zr(jr+i0-1)
-                endif
-                rp_int = rp0 + rprim_int*(p-p0)
-            endif
+                end if
+                rp_int = rp0+rprim_int*(p-p0)
+            end if
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 ! - RESOLUTION DE L'EQUATION R(P+DP) + 3 MU DP = SIELEQ
 !
     troimu = 1.5d0*e/(1+nu)
     do i = i0+1, nbvale-1
-        equ = zr(jr+i) + troimu*(zr(jp+i)-p) - sieleq
+        equ = zr(jr+i)+troimu*(zr(jp+i)-p)-sieleq
         if (equ .gt. 0) then
             i0 = i-1
             goto 40
-        endif
-        airerp_int = airerp_int+(zr(jr+i)+zr(jr+i-1))* (zr(jp+i)-zr(jp+i-1))
+        end if
+        airerp_int = airerp_int+(zr(jr+i)+zr(jr+i-1))*(zr(jp+i)-zr(jp+i-1))
     end do
     tessup = .true.
     if (type_prol .eq. 'E') then
         call utmess('F', 'COMPOR5_60', sk=func_name, sr=zr(jp-1+nbvale))
-    endif
+    end if
     i0 = nbvale-1
- 40 continue
+40  continue
 !
 ! - CALCUL DES VALEURS DE DP, R(P+DP), R'(P+DP) ET AIRE(P+DP)
 !
     if (tessup) then
         if (type_prol .eq. 'L') then
-            rprim_int = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+i0-1))
+            rprim_int = (zr(jr+i0)-zr(jr+i0-1))/(zr(jp+i0)-zr(jp+i0-1))
         else
             rprim_int = 0.d0
-        endif
+        end if
     else
-        rprim_int = (zr(jr+i0+1)-zr(jr+i0))/ (zr(jp+i0+1)-zr(jp+i0))
-    endif
+        rprim_int = (zr(jr+i0+1)-zr(jr+i0))/(zr(jp+i0+1)-zr(jp+i0))
+    end if
     p0 = zr(jp+i0)
     rp0 = zr(jr+i0)
     dp = (sieleq-rp0-rprim_int*(p-p0))/(troimu+rprim_int)
     pp = p+dp
-    rp_int = rp0 + rprim_int*(pp-p0)
+    rp_int = rp0+rprim_int*(pp-p0)
     airerp_int = (airerp_int+(rp0+rp_int)*(pp-p0))*0.5d0
 !
 999 continue
     if (present(airerp)) then
         airerp = airerp_int
-    endif
+    end if
     if (present(rprim)) then
         rprim = rprim_int
-    endif
+    end if
     if (present(rp)) then
         rp = rp_int
-    endif
+    end if
 end subroutine

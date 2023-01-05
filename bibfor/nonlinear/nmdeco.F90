@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,23 +86,23 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !
 ! --- INFORMATIONS SUR LE PAS DE TEMPS
 !
-    call utdidt('L', sddisc, 'LIST', 'METHODE',&
-                valk_ = metlis)
-    instam = diinst(sddisc,nume_inst-1)
-    instap = diinst(sddisc,nume_inst)
+    call utdidt('L', sddisc, 'LIST', 'METHODE', &
+                valk_=metlis)
+    instam = diinst(sddisc, nume_inst-1)
+    instap = diinst(sddisc, nume_inst)
     deltat = instap-instam
     insref = instap
 !
 ! --- METHODE DE SUBDIVISION
 !
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_METHODE', index_ = i_event_acti, &
-                valk_ = submet)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_METHODE', index_=i_event_acti, &
+                valk_=submet)
 !
 ! --- TYPE DE SUBDIVISION
 !
     if (submet .eq. 'MANUEL') then
         call utmess('I', 'SUBDIVISE_1')
-    else if (submet.eq.'AUTO') then
+    else if (submet .eq. 'AUTO') then
         call utmess('I', 'SUBDIVISE_2')
     else if (submet .eq. 'AUCUNE') then
         call utmess('I', 'SUBDIVISE_3')
@@ -110,37 +110,37 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
         goto 999
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- DECOUPE DU PAS DE TEMPS
 !
     if (submet .eq. 'MANUEL') then
-        call nmdecm(sddisc, i_event_acti, nomlis, instam, deltat,&
+        call nmdecm(sddisc, i_event_acti, nomlis, instam, deltat, &
                     nbrpas, dtmin, retdec)
         ldcext = .false.
         durdec = -1.d0
-    else if (submet.eq.'AUTO') then
-        call nmdeca(sddisc, iterat, i_event_acti, nomlis, instam,&
-                    deltat, nbrpas, dtmin, ldcext, durdec,&
+    else if (submet .eq. 'AUTO') then
+        call nmdeca(sddisc, iterat, i_event_acti, nomlis, instam, &
+                    deltat, nbrpas, dtmin, ldcext, durdec, &
                     retdec)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- PAS DE DECOUPE: ON SORT
 !
     if (retdec .eq. 0) then
         goto 999
-    else if (retdec.eq.2) then
+    else if (retdec .eq. 2) then
 !
 ! ----- EN GESTION AUTO, IL EST NECESSAIRE D'ACTIVER LA POST-DECOUPE
 !
-        if ((retdec.eq.2) .and. (metlis.eq.'AUTO')) then
+        if ((retdec .eq. 2) .and. (metlis .eq. 'AUTO')) then
             goto 888
         else
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 ! --- VERIFICATIONS DE LA DECOUPE
 !
@@ -155,20 +155,20 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !
 888 continue
     if (ldcext) then
-        instam = diinst(sddisc,nume_inst-1)
-        instap = diinst(sddisc,nume_inst)
+        instam = diinst(sddisc, nume_inst-1)
+        instap = diinst(sddisc, nume_inst)
         deltac = instap-instam
         if (metlis .eq. 'MANUEL') then
-            call nmdcex(sddisc, insref, durdec, i_event_acti, deltac,&
+            call nmdcex(sddisc, insref, durdec, i_event_acti, deltac, &
                         retdex)
-        else if (metlis.eq.'AUTO') then
+        else if (metlis .eq. 'AUTO') then
             call nmdcax(sddisc, insref, nume_inst, durdec, deltac)
             retdex = 1
         else
             ASSERT(.false.)
-        endif
+        end if
         if (retdex .eq. 0) retdec = 0
-    endif
+    end if
 !
 999 continue
 !
@@ -176,11 +176,11 @@ subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !
     if (retdec .eq. 0) then
         call utmess('I', 'SUBDIVISE_50')
-    else if (retdec.eq.1) then
+    else if (retdec .eq. 1) then
         call utmess('I', 'SUBDIVISE_51')
-    else if (retdec.eq.2) then
+    else if (retdec .eq. 2) then
         call utmess('I', 'SUBDIVISE_52')
-    endif
+    end if
 !
     call jedetr(nomlis)
 !

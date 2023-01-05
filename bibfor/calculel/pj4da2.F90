@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
+subroutine pj4da2(ino2, geom2, i, geom1, tria3, &
                   cobary, d2, surf)
     implicit none
 #include "asterf_types.h"
@@ -47,71 +47,71 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3,&
 ! DEB ------------------------------------------------------------------
 !
     do k = 1, 3
-        m(k)=geom2(3*(ino2-1)+k)
-        a(k)=geom1(3*(tria3(1+4*(i-1)+1)-1)+k)
-        b(k)=geom1(3*(tria3(1+4*(i-1)+2)-1)+k)
-        c(k)=geom1(3*(tria3(1+4*(i-1)+3)-1)+k)
-        ab(k)=b(k)-a(k)
-        ac(k)=c(k)-a(k)
+        m(k) = geom2(3*(ino2-1)+k)
+        a(k) = geom1(3*(tria3(1+4*(i-1)+1)-1)+k)
+        b(k) = geom1(3*(tria3(1+4*(i-1)+2)-1)+k)
+        c(k) = geom1(3*(tria3(1+4*(i-1)+3)-1)+k)
+        ab(k) = b(k)-a(k)
+        ac(k) = c(k)-a(k)
     end do
 !
-    d2=r8maem()
-    dp=r8maem()
+    d2 = r8maem()
+    dp = r8maem()
 !
 !
 !   1. on cherche le point le plus proche a l'interieur du tria3
 !   -------------------------------------------------------------
-    call pj3da3(m, a, b, c, ok,&
+    call pj3da3(m, a, b, c, ok, &
                 l1, l2, l3, dp)
-    if ((ok) .and. (dp.lt.d2)) then
-        d2=dp
-        la=l1
-        lb=l2
-        lc=l3
-    endif
+    if ((ok) .and. (dp .lt. d2)) then
+        d2 = dp
+        la = l1
+        lb = l2
+        lc = l3
+    end if
 !
 !
 !   2. on boucle sur les 3 arretes du tria3 :
 !   -----------------------------------------
-    call pj3da4(m, a, b, l1, l2,&
+    call pj3da4(m, a, b, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        la=l1
-        lb=l2
-        lc=0.d0
-    endif
+        d2 = dp
+        la = l1
+        lb = l2
+        lc = 0.d0
+    end if
 !
-    call pj3da4(m, b, c, l1, l2,&
+    call pj3da4(m, b, c, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        lb=l1
-        lc=l2
-        la=0.d0
-    endif
+        d2 = dp
+        lb = l1
+        lc = l2
+        la = 0.d0
+    end if
 !
-    call pj3da4(m, a, c, l1, l2,&
+    call pj3da4(m, a, c, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        la=l1
-        lc=l2
-        lb=0.d0
-    endif
+        d2 = dp
+        la = l1
+        lc = l2
+        lb = 0.d0
+    end if
 !
 !
 !   3. on calcule surf :
 !   --------------------
-    v(1)=ab(2)*ac(3)-ab(3)*ac(2)
-    v(2)=ab(3)*ac(1)-ab(1)*ac(3)
-    v(3)=ab(1)*ac(2)-ab(2)*ac(1)
-    surf=sqrt(v(1)*v(1)+v(2)*v(2)+v(3)*v(3))
-    surf=surf/2.d0
+    v(1) = ab(2)*ac(3)-ab(3)*ac(2)
+    v(2) = ab(3)*ac(1)-ab(1)*ac(3)
+    v(3) = ab(1)*ac(2)-ab(2)*ac(1)
+    surf = sqrt(v(1)*v(1)+v(2)*v(2)+v(3)*v(3))
+    surf = surf/2.d0
 !
 !
-    cobary(1)=la
-    cobary(2)=lb
-    cobary(3)=lc
+    cobary(1) = la
+    cobary(2) = lb
+    cobary(3) = lc
 !
 end subroutine

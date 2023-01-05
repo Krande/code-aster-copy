@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,12 +60,12 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     character(len=16) :: motcle(2), typmcl(2)
     real(kind=8) :: puusur, tdebut, tfin, tmax, tmin
 !-----------------------------------------------------------------------
-    integer, pointer :: desc (:) => null()
-    real(kind=8), pointer :: disc (:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
     integer, pointer :: nltype(:) => null()
-    integer, pointer :: vindx (:) => null()
+    integer, pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
-    real(kind=8), pointer :: vint (:) => null()
+    real(kind=8), pointer :: vint(:) => null()
 !-----------------------------------------------------------------------
     integer, pointer :: chindx(:) => null()
     integer, pointer :: flindx(:) => null()
@@ -78,8 +78,8 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 !
 !
 !-----------------------------------------------------------------------
-    data motcle  /'NOEUD','GROUP_NO'/
-    data typmcl  /'NOEUD','GROUP_NO'/
+    data motcle/'NOEUD', 'GROUP_NO'/
+    data typmcl/'NOEUD', 'GROUP_NO'/
 !   ------------------------------------------------------------------
 !
     call jemarq()
@@ -92,7 +92,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     if (n1 .ne. 0) then
         call impus(ifires, 0, puusur)
         goto 999
-    endif
+    end if
 !
     call getvid(' ', 'RESU_GENE', scal=trange, nbret=nt)
     if (nt .ne. 0) then
@@ -108,7 +108,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             call dismoi('NOM_MODELE', base, 'RESULTAT', repk=modele)
             call dismoi('NOM_MAILLA', base, 'RESULTAT', repk=maillage)
 !
-            call reliem(modele, maillage, 'NO_NOEUD', ' ', 1,&
+            call reliem(modele, maillage, 'NO_NOEUD', ' ', 1, &
                         2, motcle, typmcl, nomno, nbno)
             call jeveuo(nomno, 'L', jnomno)
             noeu = zk8(jnomno)
@@ -116,11 +116,11 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             call jeveuo(trange(1:16)//'.NL.INTI', 'L', vk24=nlname)
 !           --- RECHERCHE DU NOEUD DE CHOC ---
             do ichoc = 1, nbnoli
-                if (nlname((ichoc-1)*5+2)(1:8) .eq. noeu) goto 12
+                if (nlname((ichoc-1)*5+2) (1:8) .eq. noeu) goto 12
             end do
-            lg = max(1,lxlgut(noeu))
+            lg = max(1, lxlgut(noeu))
             call utmess('F', 'UTILITAI_87', sk=noeu(1:lg))
- 12         continue
+12          continue
 !
             call jeveuo(trange//'.DISC', 'L', vr=disc)
             call jelira(trange//'.DISC', 'LONMAX', nbpt)
@@ -130,36 +130,36 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
                 tdebut = tmin
             else
                 if (tdebut .lt. tmin) tdebut = tmin
-            endif
+            end if
             if (n3 .eq. 0) then
                 tfin = tmax
             else
                 if (tfin .gt. tmax) tfin = tmax
-            endif
+            end if
             if (tdebut .ge. tfin) then
                 call utmess('F', 'PREPOST4_47')
-            endif
+            end if
             do j = 1, nbpt
                 if (disc(j) .ge. tdebut) then
                     idebut = j
                     goto 15
-                endif
+                end if
             end do
- 15         continue
+15          continue
             do j = 1, nbpt
                 if (disc(j) .ge. tfin) then
                     ifin = j
                     goto 17
-                endif
+                end if
             end do
- 17         continue
-            nbpas = ifin - idebut + 1
+17          continue
+            nbpas = ifin-idebut+1
             if (nbloc .eq. 0) nbloc = 1
-            nbval = nbpas / nbloc
+            nbval = nbpas/nbloc
 !
-            call jeveuo(trange(1:16)//'.NL.TYPE', 'L', vi =nltype)
-            call jeveuo(trange(1:16)//'.NL.VIND', 'L', vi =vindx)
-            call jeveuo(trange(1:16)//'.NL.VINT', 'L', vr =vint)
+            call jeveuo(trange(1:16)//'.NL.TYPE', 'L', vi=nltype)
+            call jeveuo(trange(1:16)//'.NL.VIND', 'L', vi=vindx)
+            call jeveuo(trange(1:16)//'.NL.VINT', 'L', vr=vint)
             nbvint = vindx(nbnoli+1)-1
 !
             AS_ALLOCATE(vi=chindx, size=nbnoli)
@@ -168,7 +168,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             nbchoc = 0
             do i = 1, nbnoli
                 if (nltype(i) .eq. NL_CHOC) then
-                    nbchoc = nbchoc + 1
+                    nbchoc = nbchoc+1
                     chindx(nbchoc) = i
                 end if
             end do
@@ -176,19 +176,19 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             nbflam = 0
             do i = 1, nbnoli
                 if (nltype(i) .eq. NL_BUCKLING) then
-                    nbflam = nbflam + 1
+                    nbflam = nbflam+1
                     flindx(nbflam) = i
                 end if
             end do
 !
-            nbtot = nbchoc + nbflam
+            nbtot = nbchoc+nbflam
 !
-            AS_ALLOCATE(vr =fcho, size=  3*nbtot*nbpt)
-            AS_ALLOCATE(vr =dloc, size=2*3*nbtot*nbpt)
-            AS_ALLOCATE(vr =vcho, size=  3*nbtot*nbpt)
-            AS_ALLOCATE(vi =icho, size=    nbtot*nbpt)
-            AS_ALLOCATE(vk8=ncho, size=  2*nbtot)
-            AS_ALLOCATE(vk8=inti, size=    nbtot)
+            AS_ALLOCATE(vr=fcho, size=3*nbtot*nbpt)
+            AS_ALLOCATE(vr=dloc, size=2*3*nbtot*nbpt)
+            AS_ALLOCATE(vr=vcho, size=3*nbtot*nbpt)
+            AS_ALLOCATE(vi=icho, size=nbtot*nbpt)
+            AS_ALLOCATE(vk8=ncho, size=2*nbtot)
+            AS_ALLOCATE(vk8=inti, size=nbtot)
 !
             do ic = 1, nbchoc
                 i = chindx(ic)
@@ -211,14 +211,14 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 !
                     icho((j-1)*nbtot+(ic-1)+1) = nint(vint((j-1)*nbvint+vindx(i)-1+13))
                 end do
-                inti(ic) = nlname((i-1)*5+1)(1:8)
-                ncho(ic) = nlname((i-1)*5+2)(1:8)
-                ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
+                inti(ic) = nlname((i-1)*5+1) (1:8)
+                ncho(ic) = nlname((i-1)*5+2) (1:8)
+                ncho(nbtot+ic) = nlname((i-1)*5+3) (1:8)
             end do
 !
             do ifl = 1, nbflam
                 i = flindx(ifl)
-                ic = nbchoc + ifl
+                ic = nbchoc+ifl
                 do j = 1, nbpt
                     fcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+1)
                     fcho((j-1)*3*nbtot+(ic-1)*3+2) = 0.d0
@@ -238,9 +238,9 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 !
                     icho((j-1)*nbtot+(ic-1)+1) = 0
                 end do
-                inti(ic) = nlname((i-1)*5+1)(1:8)
-                ncho(ic) = nlname((i-1)*5+2)(1:8)
-                ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
+                inti(ic) = nlname((i-1)*5+1) (1:8)
+                ncho(ic) = nlname((i-1)*5+2) (1:8)
+                ncho(nbtot+ic) = nlname((i-1)*5+3) (1:8)
             end do
 !
             AS_DEALLOCATE(vi=chindx)
@@ -255,16 +255,16 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             call wkvect('&&USURPU.WK3', 'V V R', nbpt, jwk3)
             call wkvect('&&USURPU.IWK4', 'V V I', nbpt, idwk4)
 !
-            call statpu(nbnoli, nbpt, disc, fcho, vcho,&
-                        icho, zr(jwk1), zr(jwk2), zr(jwk3), zi(idwk4),&
-                        idebut, nbloc, nbval, ifires, ichoc,&
+            call statpu(nbnoli, nbpt, disc, fcho, vcho, &
+                        icho, zr(jwk1), zr(jwk2), zr(jwk3), zi(idwk4), &
+                        idebut, nbloc, nbval, ifires, ichoc, &
                         impr, puusur)
 !
             call wkvect(kforn, 'V V R', nbpt, jfn)
             call wkvect(kvgli, 'V V R', nbpt, jvg)
             call dcopy(nbpt, zr(jwk1), 1, zr(jfn), 1)
             do i = 0, nbpt-1
-                zr(jvg+i) = sqrt( zr(jwk2+i)**2 + zr(jwk3+i)**2 )
+                zr(jvg+i) = sqrt(zr(jwk2+i)**2+zr(jwk3+i)**2)
             end do
 !
             call jedetr('&&USURPU.WK1')
@@ -273,17 +273,17 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             call jedetr('&&USURPU.IWK4')
 !
 !
-            AS_DEALLOCATE(vr =dloc)
-            AS_DEALLOCATE(vr =fcho)
-            AS_DEALLOCATE(vr =vcho)
-            AS_DEALLOCATE(vi =icho)
+            AS_DEALLOCATE(vr=dloc)
+            AS_DEALLOCATE(vr=fcho)
+            AS_DEALLOCATE(vr=vcho)
+            AS_DEALLOCATE(vi=icho)
             AS_DEALLOCATE(vk8=ncho)
             AS_DEALLOCATE(vk8=inti)
 !
         else
             call utmess('F', 'PREPOST4_84')
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
     call jedetr(nomno)

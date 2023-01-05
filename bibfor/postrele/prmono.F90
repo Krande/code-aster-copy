@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,34 +74,34 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     nbno = cnsd(1)
     ncmp = cnsd(2)
 !
-    call reliem(' ', ma, 'NU_NOEUD', 'ACTION', ioc,&
+    call reliem(' ', ma, 'NU_NOEUD', 'ACTION', ioc, &
                 4, motcle, typmcl, mesnoe, nbn)
     if (nbn .gt. 0) then
         nbnoeu = nbn
         call jeveuo(mesnoe, 'L', idnoeu)
     else
         nbnoeu = nbno
-    endif
+    end if
 !
     call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then
         nbcmp = -nbc
         AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
-        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=nom_cmp,&
+        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=nom_cmp, &
                     nbret=ibid)
     else
         nbcmp = ncmp
-    endif
+    end if
 !
     do i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp(i100) = nom_cmp(i100)
-            icp = indik8( cnsc, nocmp(i100), 1, ncmp )
+            icp = indik8(cnsc, nocmp(i100), 1, ncmp)
             if (icp .eq. 0) goto 100
         else
             icp = i100
             nocmp(i100) = cnsc(i100)
-        endif
+        end if
         som(i100) = 0.d0
 !
         do i110 = 1, nbnoeu
@@ -109,14 +109,14 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
                 ino = zi(idnoeu+i110-1)
             else
                 ino = i110
-            endif
+            end if
 !
             if (zl(jcnsl-1+(ino-1)*ncmp+icp)) then
 !
                 x = cnsv((ino-1)*ncmp+icp)
-                som(i100) = som(i100) + x
+                som(i100) = som(i100)+x
 !
-            endif
+            end if
 !
         end do
         som(i100) = som(i100)/nbnoeu

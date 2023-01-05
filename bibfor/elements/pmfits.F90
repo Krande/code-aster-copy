@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,35 +60,35 @@ subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    vs(:)=0.0d0
+    vs(:) = 0.0d0
 
 !
-    if ( typfib.eq.1 ) then
+    if (typfib .eq. 1) then
 !       caractéristiques utiles par fibre : Y Z AIRE
         do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            aire = vf(3,ii)
+            yy = vf(1, ii)
+            zz = vf(2, ii)
+            aire = vf(3, ii)
 !
             sigsf = vsig(ii)*aire
             vs(1) = vs(1)+sigsf
             vs(2) = vs(2)+yy*sigsf
             vs(3) = vs(3)+zz*sigsf
-        enddo
-    else if ( typfib.eq.2  .or. typfib.eq.3 ) then
+        end do
+    else if (typfib .eq. 2 .or. typfib .eq. 3) then
 !       caractéristiques utiles par fibre : Y Z AIRE YP ZP GX
         do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            aire = vf(3,ii)
+            yy = vf(1, ii)
+            zz = vf(2, ii)
+            aire = vf(3, ii)
 !
             sigsf = vsig(ii)*aire
             vs(1) = vs(1)+sigsf
             vs(2) = vs(2)+yy*sigsf
             vs(3) = vs(3)+zz*sigsf
-        enddo
+        end do
     else
         call utmess('F', 'ELEMENTS2_40', si=typfib)
-    endif
+    end if
 !
 end subroutine

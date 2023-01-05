@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fnorm(dnorm, vitloc, knorm, cnorm, cost,&
+subroutine fnorm(dnorm, vitloc, knorm, cnorm, cost, &
                  sint, fnorma, flocal, vnorm)
 !
 !***********************************************************************
@@ -44,12 +44,12 @@ subroutine fnorm(dnorm, vitloc, knorm, cnorm, cost,&
 !-----------------------------------------------------------------------
     real(kind=8) :: cost, dnorm, sint, vnorm
 !-----------------------------------------------------------------------
-    vnorm = vitloc(2)*cost + vitloc(3)*sint
-    fnorma = - knorm*dnorm - cnorm*vnorm
+    vnorm = vitloc(2)*cost+vitloc(3)*sint
+    fnorma = -knorm*dnorm-cnorm*vnorm
     if (fnorma .lt. 0.0d0) then
         fnorma = 0.0d0
-    endif
-    flocal(1)=0.d0
-    flocal(2)=fnorma*cost
-    flocal(3)=fnorma*sint
+    end if
+    flocal(1) = 0.d0
+    flocal(2) = fnorma*cost
+    flocal(3) = fnorma*sint
 end subroutine

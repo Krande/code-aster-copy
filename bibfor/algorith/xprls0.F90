@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprls0(noma, noesom, armin, cnsln,&
+subroutine xprls0(noma, noesom, armin, cnsln, &
                   cnslt, isozro, levset, nodtor, eletor)
 !
     implicit none
@@ -108,7 +108,7 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
     toll = 1.0d-2*armin
 !
 !      IF (NIV.GT.1)
-    write(ifm,*)'   CALCUL DES LEVEL SETS A PROXIMITE '&
+    write (ifm, *) '   CALCUL DES LEVEL SETS A PROXIMITE '&
      &   //'DE L''ISOZERO DE '//levset//'.'
 !
 !  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
@@ -139,10 +139,10 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
     if (levset .eq. 'LN') then
         call jeveuo(cnsln//'.CNSV', 'E', jlsno)
         call jeveuo(cnslt//'.CNSV', 'E', jltno)
-    else if (levset.eq.'LT') then
+    else if (levset .eq. 'LT') then
         call jeveuo(cnslt//'.CNSV', 'E', jlsno)
         call jeveuo(cnsln//'.CNSV', 'L', jltno)
-    endif
+    end if
 !
 !  RECUPERATION DE L'ADRESSE DE L'INFORMATION 'NOEUD SOMMET'
     call jeveuo(noesom, 'L', jnosom)
@@ -150,12 +150,12 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
 !  RECUPERATION DE L'ADRESSE DES VALEURS DE ISOZRO
     call jeveuo(isozro, 'E', jzero)
     do ino = 1, nbnog
-        zl(jzero-1+ino)=.false.
+        zl(jzero-1+ino) = .false.
     end do
 !
 ! INITIALISATION DU VECTEUR LST
     do i = 1, 6
-        lst(i)=0.d0
+        lst(i) = 0.d0
     end do
 !
 !
@@ -163,14 +163,14 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
 !     DANS UN PREMIER TEMPS,ON S'OCCUPE DES NOEUDS SOMMETS SUR L'ISOZERO
 !     ( UTILE DANS LE CAS DE MAILLES 1 OU 2 NOEUDS SONT A 0 )
 !-----------------------------------------------------------------------
-    nbnozo=0
+    nbnozo = 0
     do ino = 1, nbno
         node = zi(jnodto-1+ino)
         if (abs(zr(jlsno-1+node)) .lt. toll .and. zl(jnosom-1+node)) then
-            zr(jlsno-1+node)=0.d0
-            zl(jzero-1+node)=.true.
+            zr(jlsno-1+node) = 0.d0
+            zl(jzero-1+node) = .true.
             nbnozo = nbnozo+1
-        endif
+        end if
     end do
 !
 ! N.B. : cette etape de reajustement des level-set assure la validite de
@@ -184,7 +184,7 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
     maicou = '&&XPRLS0.MAICOU'
     call wkvect(maicou, 'V V I', nbmag, jmaco)
 !
-    nbmaco=0
+    nbmaco = 0
     do ima = 1, nbma
 !
         elem = zi(jeleto-1+ima)
@@ -193,41 +193,41 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
 !         NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
         ndime = tmdim(zi(jmai-1+elem))
         if (ndime .ne. ndim) goto 100
-        nbnoma = zi(jconx2+elem) - zi(jconx2+elem-1)
+        nbnoma = zi(jconx2+elem)-zi(jconx2+elem-1)
 !
 !  ON COMPTE D'ABORD LE NOMBRE DE NOEUDS DE LA MAILLE QUI S'ANNULENT
-        cptzo=0
+        cptzo = 0
         do inoa = 1, nbnoma
-            nunoa=connex(zi(jconx2+elem-1)+inoa-1)
+            nunoa = connex(zi(jconx2+elem-1)+inoa-1)
             lsna = zr(jlsno-1+nunoa)
             if (abs(lsna) .lt. toll .and. zl(jnosom-1+nunoa)) cptzo = cptzo+1
         end do
 !
 !  SI AU - TROIS NOEUDS S'ANNULENT (en 3D),ON A UN PLAN D'INTERSECTION
         if (cptzo .ge. ndim) then
-            nbmaco = nbmaco + 1
+            nbmaco = nbmaco+1
             zi(jmaco-1+nbmaco) = elem
             goto 100
-        endif
+        end if
 !
 !  ON PARCOURT LES ARETES DE L'ELEMENT
-        itypma=zi(jmai-1+elem)
+        itypma = zi(jmai-1+elem)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         call conare(typma, ar, nbar)
         do iar = 1, nbar
-            na=ar(iar,1)
-            nb=ar(iar,2)
-            nunoa=connex(zi(jconx2+elem-1)+na-1)
-            nunob=connex(zi(jconx2+elem-1)+nb-1)
+            na = ar(iar, 1)
+            nb = ar(iar, 2)
+            nunoa = connex(zi(jconx2+elem-1)+na-1)
+            nunob = connex(zi(jconx2+elem-1)+nb-1)
             lsna = zr(jlsno-1+nunoa)
             lsnb = zr(jlsno-1+nunob)
 !  SI UNE ARETE EST COUPEE,LA MAILLE L'EST FORCEMENT
-            if ((lsna*lsnb) .lt. 0.d0 .and. (abs(lsna).gt.r8prem()) .and.&
-                (abs(lsnb).gt.r8prem())) then
-                nbmaco = nbmaco + 1
+            if ((lsna*lsnb) .lt. 0.d0 .and. (abs(lsna) .gt. r8prem()) .and. &
+                (abs(lsnb) .gt. r8prem())) then
+                nbmaco = nbmaco+1
                 zi(jmaco-1+nbmaco) = elem
                 goto 100
-            endif
+            end if
         end do
 !
 100     continue
@@ -236,7 +236,7 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
 !     IF EVERYTHING GOES CORRECTLY, I SHOULD FIND AT LEAST ONE ELEMENT
 !     CUT BY THE ISOZERO OF LSN. IT'S BETTER TO CHECK IT BEFORE
 !     CONTINUING.
-    ASSERT(nbmaco.gt.0)
+    ASSERT(nbmaco .gt. 0)
 
 !-----------------------------------------------------
 !     ON REPERE LES NOEUDS SOMMETS DES MAILLES COUPEES
@@ -245,7 +245,7 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
     nomcou = '&&XPRLS0.NOMCOU'
     call wkvect(nomcou, 'V V I', nbmaco*6, jnomco)
 !
-    nbnoco=0
+    nbnoco = 0
 !  BOUCLE SUR LES NOEUDS
     do inoa = 1, nbno
         node = zi(jnodto-1+inoa)
@@ -257,20 +257,20 @@ subroutine xprls0(noma, noesom, armin, cnsln,&
                 nbnoma = zi(jconx2+nmaabs)-zi(jconx2+nmaabs-1)
 !  BOUCLE SUR LES NOEUDS DE LA MAILLE
                 do inob = 1, nbnoma
-                    nunob=connex(zi(jconx2+nmaabs-1)+inob-1)
+                    nunob = connex(zi(jconx2+nmaabs-1)+inob-1)
                     if (nunob .eq. node) then
                         nbnoco = nbnoco+1
                         zi(jnomco-1+nbnoco) = node
-                        zl(jzero-1+node)=.true.
+                        zl(jzero-1+node) = .true.
                         goto 200
-                    endif
+                    end if
                 end do
             end do
-        endif
+        end if
 200     continue
     end do
 !
-    write(ifm,*)'   NOMBRE DE NOEUD TROUVE AUTOUR DE L ISOZERO :',nbnoco+nbnozo
+    write (ifm, *) '   NOMBRE DE NOEUD TROUVE AUTOUR DE L ISOZERO :', nbnoco+nbnozo
 
 !   DESTRUCTION DES OBJETS VOLATILES
     call jedetr(maicou)

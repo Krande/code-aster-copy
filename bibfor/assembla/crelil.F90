@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crelil(kstop, nbmat, ilimat, lili, base,&
-                  nomma, pref, gd, mailla, nec,&
+subroutine crelil(kstop, nbmat, ilimat, lili, base, &
+                  nomma, pref, gd, mailla, nec, &
                   ncmp, ilimo, nlili, nbelm, nume_)
 !
     implicit none
@@ -112,7 +112,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad,  icomp, idimli, idlres
+    integer :: iad, icomp, idimli, idlres
     integer :: ili, imat, iresu, iret, iret1, n1
     integer :: nbgr, nbmo, nbresu, nbsup, ncmp
     character(len=24), pointer :: rerr(:) => null()
@@ -125,47 +125,47 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !---- CALCUL DU NBRE DE LIGRELS REFERENCES
 !
     idimli = 1
-    models= ' '
-    exiss2= 'NON'
+    models = ' '
+    exiss2 = 'NON'
 !
 !     -- VERIFICATION DES MATR_ELEM :
 !     -------------------------------
     do imat = 1, nbmat
-        matel = zk24(ilimat+imat-1)(1:19)
+        matel = zk24(ilimat+imat-1) (1:19)
         call jeexin(matel//'.RERR', iret1)
-        ASSERT(iret1.gt.0)
+        ASSERT(iret1 .gt. 0)
         call jeveuo(matel//'.RERR', 'L', vk24=rerr)
-        modele= rerr(1)(1:8)
-        if ((modele.ne.models).and.(models.ne.' ')) then
+        modele = rerr(1) (1:8)
+        if ((modele .ne. models) .and. (models .ne. ' ')) then
             call utmess('F', 'ASSEMBLA_18')
-        endif
-        models= modele
+        end if
+        models = modele
 !
         call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=n1)
         if (n1 .gt. 0) then
-            exiss1= 'OUI'
-            exiss2= 'OUI'
+            exiss1 = 'OUI'
+            exiss2 = 'OUI'
         else
-            exiss1= 'NON'
-        endif
+            exiss1 = 'NON'
+        end if
 !
         call jeexin(matel//'.RELR', iret)
         if (iret .gt. 0) then
             call jelira(matel//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', idlres)
-            idimli = idimli + nbresu
+            idimli = idimli+nbresu
         else
             if (exiss1(1:3) .eq. 'NON') then
                 call utmess('F', 'ASSEMBLA_19')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !     --SI IL EXISTE DES SOUS-STRUCTURES, ON COMPTE 1 LIGREL DE PLUS:
 !
-    if (exiss2(1:3) .eq. 'OUI') idimli=idimli+1
+    if (exiss2(1:3) .eq. 'OUI') idimli = idimli+1
 !
-    if(present(nume_)) then
+    if (present(nume_)) then
         call dismoi('NOM_MAILLA', nume_, 'NUME_DDL', repk=mailla(1:8))
         call dismoi('NUM_GD_SI', nume_, 'NUME_DDL', repi=gd)
     else
@@ -198,7 +198,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !---- CALCUL DE LILI
 !
     do imat = 1, nbmat
-        matel = zk24(ilimat+imat-1)(1:19)
+        matel = zk24(ilimat+imat-1) (1:19)
         call jeexin(matel//'.RELR', iret)
         if (iret .eq. 0) goto 110
         call jelira(matel//'.RELR', 'LONUTI', nbresu)
@@ -219,10 +219,10 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
                 if (iret .ne. 0) then
                     call jeveuo(nomli(1:19)//'.NBNO', 'L', iad)
                 else
-                endif
-                nlili = nlili + 1
+                end if
+                nlili = nlili+1
                 call jecroc(jexnom(k24lil, nomli))
-            endif
+            end if
 120         continue
         end do
 110     continue
@@ -231,16 +231,16 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !     -- ON REGARDE SI ON DOIT AJOUTER LE LIGREL DE MODELE POUR LES
 !     -- SOUS-STRUCTURES:
     if (exiss2(1:3) .eq. 'OUI') then
-        icomp=0
+        icomp = 0
         do ili = 1, nlili
             call jenuno(jexnum(k24lil, ili), nomli)
-            if (nomli(1:8) .eq. modele) icomp =1
+            if (nomli(1:8) .eq. modele) icomp = 1
         end do
         if (icomp .eq. 0) then
-            nlili= nlili+1
+            nlili = nlili+1
             call jecroc(jexnom(k24lil, modele//'.MODELE'))
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
@@ -248,10 +248,10 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         if (kstop .eq. 'C') then
             goto 999
         else
-            ASSERT(kstop.eq.'F')
+            ASSERT(kstop .eq. 'F')
             call utmess('F', 'ASSEMBLA_20')
-        endif
-    endif
+        end if
+    end if
 !
 101 continue
 !
@@ -261,7 +261,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
     if (nbelm .gt. 0) then
         call jeveuo(mailla(1:8)//'.CONNEX', 'L', iconx1)
         call jeveuo(jexatr(mailla(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    endif
+    end if
 !
 !---- CREATION DES OBJETS ADNE ET ADLI SUR 'V'
 !
@@ -272,52 +272,52 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
     call wkvect(prefix//'.ADLI', ' V V I', 3*nlili, iadlie)
 !---- ADNE(1)= NBELM
     zi(iadnem) = nbelm
-    nbmo=0
-    ilimo=0
+    nbmo = 0
+    ilimo = 0
     do ili = 2, nlili
         call jenuno(jexnum(k24lil, ili), nomli)
 !
 !---- CALCUL DU NBRE DE LIGRELS DE MODELE : NBMO ET DE ILIMO
 !
         if (nomli(9:15) .eq. '.MODELE') then
-            nbmo = nbmo + 1
-            if (nbmo .eq. 1) ilimo=ili
+            nbmo = nbmo+1
+            if (nbmo .eq. 1) ilimo = ili
             if (nbmo .gt. 1) then
                 call utmess('F', 'ASSEMBLA_21')
-            endif
-        endif
+            end if
+        end if
         call jeexin(nomli(1:19)//'.NEMA', iret)
         if (iret .ne. 0) then
 !
 !---- ADNE(3*(ILI-1)+1)=NBRE DE MAILLES SUP DU LIGREL NOMLI
 !
             call jelira(nomli(1:19)//'.NEMA', 'NUTIOC', nbsup)
-            zi(iadnem+3* (ili-1)) = nbsup
+            zi(iadnem+3*(ili-1)) = nbsup
             call jeveut(nomli(1:19)//'.NEMA', 'L', iad)
-            zi(iadnem+3* (ili-1)+1) = iad
+            zi(iadnem+3*(ili-1)+1) = iad
             call jeveut(jexatr(nomli(1:19)//'.NEMA', 'LONCUM'), 'L', iad)
-            zi(iadnem+3* (ili-1)+2) = iad
+            zi(iadnem+3*(ili-1)+2) = iad
         else
-            zi(iadnem+3* (ili-1)) = 0
-            zi(iadnem+3* (ili-1)+1) = 2**30
-            zi(iadnem+3* (ili-1)+2) = 2**30
-        endif
+            zi(iadnem+3*(ili-1)) = 0
+            zi(iadnem+3*(ili-1)+1) = 2**30
+            zi(iadnem+3*(ili-1)+2) = 2**30
+        end if
 !
 !---- ADLI(3*(ILI-1)+1)=NBRE DE MAILLES DU LIGREL NOMLI
 !
         call jeexin(nomli(1:19)//'.LIEL', iret)
         if (iret .gt. 0) then
             call jelira(nomli(1:19)//'.LIEL', 'NUTIOC', nbgr)
-            zi(iadlie+3* (ili-1)) = nbgr
+            zi(iadlie+3*(ili-1)) = nbgr
             call jeveut(nomli(1:19)//'.LIEL', 'L', iad)
-            zi(iadlie+3* (ili-1)+1) = iad
+            zi(iadlie+3*(ili-1)+1) = iad
             call jeveut(jexatr(nomli(1:19)//'.LIEL', 'LONCUM'), 'L', iad)
-            zi(iadlie+3* (ili-1)+2) = iad
+            zi(iadlie+3*(ili-1)+2) = iad
         else
-            zi(iadlie+3* (ili-1)) = 0
-            zi(iadlie+3* (ili-1)+1) = 2**30
-            zi(iadlie+3* (ili-1)+2) = 2**30
-        endif
+            zi(iadlie+3*(ili-1)) = 0
+            zi(iadlie+3*(ili-1)+1) = 2**30
+            zi(iadlie+3*(ili-1)+2) = 2**30
+        end if
     end do
 999 continue
 end subroutine

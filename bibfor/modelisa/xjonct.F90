@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ subroutine xjonct(noma, modelx)
     character(len=8) :: nomfis
     character(len=2) :: ch2
     integer ::  ibid, ier, nncp, jcesv, jcesl, jcesd, nmaenr, jgrp, ifis, nfis, i, k
-    integer :: ima, nbnoma, jconx2, nmasup, nuno, j, ind , iad, l, nuno2, iad2, ind2
-    integer :: ima2 , nbnoma2, jmasup
+    integer :: ima, nbnoma, jconx2, nmasup, nuno, j, ind, iad, l, nuno2, iad2, ind2
+    integer :: ima2, nbnoma2, jmasup
     integer, pointer :: xfem_cont(:) => null()
     integer, pointer :: vnfis(:) => null()
     character(len=8), pointer :: fiss(:) => null()
@@ -65,91 +65,91 @@ subroutine xjonct(noma, modelx)
 !
 ! --- INITIALISATIONS
 !
-       call jeveuo(modelx//'.XFEM_CONT', 'L', vi=xfem_cont)
-       if (xfem_cont(1).ne.2 .and. xfem_cont(1).ne.3) goto 999
+    call jeveuo(modelx//'.XFEM_CONT', 'L', vi=xfem_cont)
+    if (xfem_cont(1) .ne. 2 .and. xfem_cont(1) .ne. 3) goto 999
 !
-       joncno = modelx//'.TOPOSE.PJO'
-       cnxinv = '&&XJONCT.CNCINV'
-       call cncinv(noma,[ibid], 0, 'V', cnxinv)
-       ligrel = modelx//'.MODELE'
-       call jeveuo(noma//'.CONNEX', 'L', vi=connex)
-       call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-       call codent(1, 'G', ch2)
-       joncns = '&&XJONCT.CES'//ch2
+    joncno = modelx//'.TOPOSE.PJO'
+    cnxinv = '&&XJONCT.CNCINV'
+    call cncinv(noma, [ibid], 0, 'V', cnxinv)
+    ligrel = modelx//'.MODELE'
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
+    call codent(1, 'G', ch2)
+    joncns = '&&XJONCT.CES'//ch2
 !
-       call jeexin(joncno//'.CELD', ier)
-       if (ier .eq. 0) goto 999
+    call jeexin(joncno//'.CELD', ier)
+    if (ier .eq. 0) goto 999
 !
-       call celces(joncno, 'V', joncns)
-       call jeveuo(joncns//'.CESD', 'L', jcesd)
-       call jeveuo(joncns//'.CESL', 'L', jcesl)
-       call jeveuo(joncns//'.CESV', 'E', jcesv)
-       call jeveuo(modelx//'.NFIS', 'L', vi=vnfis)
-       nfis = vnfis(1)
-       call jeveuo(modelx//'.FISS', 'L', vk8=fiss)
+    call celces(joncno, 'V', joncns)
+    call jeveuo(joncns//'.CESD', 'L', jcesd)
+    call jeveuo(joncns//'.CESL', 'L', jcesl)
+    call jeveuo(joncns//'.CESV', 'E', jcesv)
+    call jeveuo(modelx//'.NFIS', 'L', vi=vnfis)
+    nfis = vnfis(1)
+    call jeveuo(modelx//'.FISS', 'L', vk8=fiss)
 !
 ! --- BOUCLE SUR LES FISSURES
-       do ifis = 1, nfis
-          nomfis = fiss(ifis)
-          grp = nomfis(1:8)//'.MAILFISS.CONT'
-          call jeexin(grp, ier)
-          nmaenr = 0
-          if (ier .ne. 0) then
-             call jeveuo(grp, 'L', jgrp)
-             call jelira(grp, 'LONMAX', nmaenr)
-          endif
+    do ifis = 1, nfis
+        nomfis = fiss(ifis)
+        grp = nomfis(1:8)//'.MAILFISS.CONT'
+        call jeexin(grp, ier)
+        nmaenr = 0
+        if (ier .ne. 0) then
+            call jeveuo(grp, 'L', jgrp)
+            call jelira(grp, 'LONMAX', nmaenr)
+        end if
 !
 ! --- BOUCLE SUR LES MAILES CONTACTANTES
-          do i = 1, nmaenr
-             ima = zi(jgrp-1+i)
-             nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
+        do i = 1, nmaenr
+            ima = zi(jgrp-1+i)
+            nbnoma = zi(jconx2+ima)-zi(jconx2+ima-1)
 !
 ! --- BOUCLE SUR LES NOEUDS DE LA MAILLE
-             do j = 1, nbnoma
-                call cesexi('C', jcesd, jcesl, ima, 1,&
+            do j = 1, nbnoma
+                call cesexi('C', jcesd, jcesl, ima, 1, &
                             1, j, iad)
-                if (iad.le.0) go to 220
+                if (iad .le. 0) go to 220
                 ind = zi(jcesv-1+iad)
-                if (ind.ne.1) then
-                   nuno = connex(zi(jconx2+ima-1)+ j-1)
-                   call jelira(jexnum(cnxinv, nuno), 'LONMAX', nmasup)
-                   call jeveuo(jexnum(cnxinv, nuno), 'L', jmasup)
+                if (ind .ne. 1) then
+                    nuno = connex(zi(jconx2+ima-1)+j-1)
+                    call jelira(jexnum(cnxinv, nuno), 'LONMAX', nmasup)
+                    call jeveuo(jexnum(cnxinv, nuno), 'L', jmasup)
 !
 ! --- BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
-                   do k = 1, nmasup
-                      ima2 = zi(jmasup-1+k)
-                      nbnoma2 = zi(jconx2+ima2) - zi(jconx2+ima2-1)
+                    do k = 1, nmasup
+                        ima2 = zi(jmasup-1+k)
+                        nbnoma2 = zi(jconx2+ima2)-zi(jconx2+ima2-1)
 !
 ! --- BOUCLE SUR LES NOEUDS DE LA MAILLE
-                      do l = 1, nbnoma2
-                         nuno2 = connex(zi(jconx2+ima2-1)+ l-1)
-                         if (nuno2.eq.nuno) then
-                            call cesexi('C', jcesd, jcesl, ima2, 1,&
-                                        1, l, iad2)
-                            if (iad2.le.0) go to 250
-                            ind2 = zi(jcesv-1+iad2)
-                            if (ind2.ge.1) then
-                               zi(jcesv-1+iad) = ind2
-                               goto 230
-                            endif
-                         endif
-                      end do
- 250                  continue
-                   end do
-                endif
- 230            continue
-             end do
- 220         continue
-          end do
-       end do
+                        do l = 1, nbnoma2
+                            nuno2 = connex(zi(jconx2+ima2-1)+l-1)
+                            if (nuno2 .eq. nuno) then
+                                call cesexi('C', jcesd, jcesl, ima2, 1, &
+                                            1, l, iad2)
+                                if (iad2 .le. 0) go to 250
+                                ind2 = zi(jcesv-1+iad2)
+                                if (ind2 .ge. 1) then
+                                    zi(jcesv-1+iad) = ind2
+                                    goto 230
+                                end if
+                            end if
+                        end do
+250                     continue
+                    end do
+                end if
+230             continue
+            end do
+220         continue
+        end do
+    end do
 !
-       call cescel(joncns, ligrel, 'TOPOSE', 'PJONCNO', 'OUI',&
-                   nncp, 'G', joncno, 'F', ibid)
+    call cescel(joncns, ligrel, 'TOPOSE', 'PJONCNO', 'OUI', &
+                nncp, 'G', joncno, 'F', ibid)
 !
-       call jedetr(cnxinv)
-       call detrsd('CHAM_ELEM_S', joncns)
+    call jedetr(cnxinv)
+    call detrsd('CHAM_ELEM_S', joncns)
 !
- 999   continue
+999 continue
 !
     call jedema()
 !

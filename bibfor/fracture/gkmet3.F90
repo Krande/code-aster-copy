@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex, &
                   iadgks, iadgki, abscur, num, typdis)
 
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -82,7 +82,7 @@ implicit none
 
     do i = 1, nnoff
 
-        zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
+        zr(iadabs-1+(i-1)+1) = zr(ifon-1+4*(i-1)+4)
         gthi(i) = zr(iadrgk-1+(i-1)*8+1)
         g1th(i) = zr(iadrgk-1+(i-1)*8+2)
         g2th(i) = zr(iadrgk-1+(i-1)*8+3)
@@ -90,11 +90,11 @@ implicit none
         k1th(i) = zr(iadrgk-1+(i-1)*8+5)
         k2th(i) = zr(iadrgk-1+(i-1)*8+6)
         k3th(i) = zr(iadrgk-1+(i-1)*8+7)
-        if(typdis.ne.'COHESIF') then
-            gith(i)=g1th(i)*g1th(i) +g2th(i)*g2th(i) +g3th(i)*g3th(i)
+        if (typdis .ne. 'COHESIF') then
+            gith(i) = g1th(i)*g1th(i)+g2th(i)*g2th(i)+g3th(i)*g3th(i)
         else
-            gith(i)=gthi(i)
-        endif
+            gith(i) = gthi(i)
+        end if
     end do
 
 !   CHOIX DU LISSAGE
@@ -112,14 +112,14 @@ implicit none
 
 !       RESOLUTION DU SYSTEME LINEAIRE : MATRICE DIAGONALE
         do i = 1, nnoff
-            gs(i) = gthi(i)/zr(ivect+i-1 )
-            k1s(i) = k1th(i)/zr(ivect+i-1 )
-            k2s(i) = k2th(i)/zr(ivect+i-1 )
-            k3s(i) = k3th(i)/zr(ivect+i-1 )
-            gis(i) = gith(i)/(zr(ivect+i-1 ) * zr(ivect+i-1 ))
-        enddo
+            gs(i) = gthi(i)/zr(ivect+i-1)
+            k1s(i) = k1th(i)/zr(ivect+i-1)
+            k2s(i) = k2th(i)/zr(ivect+i-1)
+            k3s(i) = k3th(i)/zr(ivect+i-1)
+            gis(i) = gith(i)/(zr(ivect+i-1)*zr(ivect+i-1))
+        end do
 
-        if (.not.connex) then
+        if (.not. connex) then
 !       CORRECTION DES VALEURS ASSOCIEES AU 1ER ET DERNIER CHAMPS THETA
             if (nnoff .gt. 2) then
                 s1 = zr(iadabs-1+1)
@@ -130,67 +130,67 @@ implicit none
                 sn = zr(iadabs-1+nnoff)
 
                 gs(1) = gs(2)+(s1-s2)*(gs(3)-gs(2))/(s3-s2)
-                k1s(1) = k1s(2) + (s1-s2)*(k1s(3)-k1s(2))/(s3-s2)
-                k2s(1) = k2s(2) + (s1-s2)*(k2s(3)-k2s(2))/(s3-s2)
-                k3s(1) = k3s(2) + (s1-s2)*(k3s(3)-k3s(2))/(s3-s2)
-                gis(1) = gis(2) + (s1-s2)*(gis(3)-gis(2))/(s3-s2)
-                gs(nnoff) = gs(nnoff-1) + (sn-sn1)*(gs(nnoff-2)-gs(nnoff-1))/(sn2-sn1)
-                k1s(nnoff) = k1s(nnoff-1) + (sn-sn1)*(k1s(nnoff-2)-k1s(nnoff-1))/(sn2-sn1)
-                k2s(nnoff) = k2s(nnoff-1) + (sn-sn1)*(k2s(nnoff-2)-k2s(nnoff-1))/(sn2-sn1)
-                k3s(nnoff) = k3s(nnoff-1) + (sn-sn1)*(k3s(nnoff-2)-k3s(nnoff-1))/(sn2-sn1)
-                gis(nnoff) = gis(nnoff-1) + (sn-sn1)*(gis(nnoff-2)-gis(nnoff-1))/(sn2-sn1)
+                k1s(1) = k1s(2)+(s1-s2)*(k1s(3)-k1s(2))/(s3-s2)
+                k2s(1) = k2s(2)+(s1-s2)*(k2s(3)-k2s(2))/(s3-s2)
+                k3s(1) = k3s(2)+(s1-s2)*(k3s(3)-k3s(2))/(s3-s2)
+                gis(1) = gis(2)+(s1-s2)*(gis(3)-gis(2))/(s3-s2)
+                gs(nnoff) = gs(nnoff-1)+(sn-sn1)*(gs(nnoff-2)-gs(nnoff-1))/(sn2-sn1)
+                k1s(nnoff) = k1s(nnoff-1)+(sn-sn1)*(k1s(nnoff-2)-k1s(nnoff-1))/(sn2-sn1)
+                k2s(nnoff) = k2s(nnoff-1)+(sn-sn1)*(k2s(nnoff-2)-k2s(nnoff-1))/(sn2-sn1)
+                k3s(nnoff) = k3s(nnoff-1)+(sn-sn1)*(k3s(nnoff-2)-k3s(nnoff-1))/(sn2-sn1)
+                gis(nnoff) = gis(nnoff-1)+(sn-sn1)*(gis(nnoff-2)-gis(nnoff-1))/(sn2-sn1)
 
-            endif
-        endif
+            end if
+        end if
 
     else if (lissg .eq. 'LAGRANGE') then
         num = 3
 
 !       CALCUL DE LA MATRICE DU SYTEME LINAIRE
         matr = '&&METHO3.MATRI'
-        call  gmatc3(nnoff, milieu, connex, &
-                     abscur, matr)
+        call gmatc3(nnoff, milieu, connex, &
+                    abscur, matr)
 
 !       X-FEM : CORRECTION VALEURS EXTREMITES (RESULTAT + PRECIS)
-        if (.not.connex) then
+        if (.not. connex) then
             if (nnoff .ne. 2) then
 
-                 s1 = zr(iadabs-1+1)
-                 s2 = zr(iadabs-1+2)
-                 s3 = zr(iadabs-1+3)
-                 sn2 = zr(iadabs-1+nnoff-2)
-                 sn1 = zr(iadabs-1+nnoff-1)
-                 sn = zr(iadabs-1+nnoff)
+                s1 = zr(iadabs-1+1)
+                s2 = zr(iadabs-1+2)
+                s3 = zr(iadabs-1+3)
+                sn2 = zr(iadabs-1+nnoff-2)
+                sn1 = zr(iadabs-1+nnoff-1)
+                sn = zr(iadabs-1+nnoff)
 
-    !            CORRECTION DANS LE CAS LINEAIRE
-                 if (.not.milieu) then
-                     gthi(1) = gthi(2)*(s2-s1)/(s3-s1)
-                     k1th(1) = k1th(2)*(s2-s1)/(s3-s1)
-                     k2th(1) = k2th(2)*(s2-s1)/(s3-s1)
-                     k3th(1) = k3th(2)*(s2-s1)/(s3-s1)
-                     gith(1) = gith(2)*(s2-s1)/(s3-s1)
-                     gthi(nnoff) = gthi(nnoff-1)*(sn-sn1)/(sn-sn2)
-                     k1th(nnoff) = k1th(nnoff-1)*(sn-sn1)/(sn-sn2)
-                     k2th(nnoff) = k2th(nnoff-1)*(sn-sn1)/(sn-sn2)
-                     k3th(nnoff) = k3th(nnoff-1)*(sn-sn1)/(sn-sn2)
-                     gith(nnoff) = gith(nnoff-1)*(sn-sn1)/(sn-sn2)
+                !            CORRECTION DANS LE CAS LINEAIRE
+                if (.not. milieu) then
+                    gthi(1) = gthi(2)*(s2-s1)/(s3-s1)
+                    k1th(1) = k1th(2)*(s2-s1)/(s3-s1)
+                    k2th(1) = k2th(2)*(s2-s1)/(s3-s1)
+                    k3th(1) = k3th(2)*(s2-s1)/(s3-s1)
+                    gith(1) = gith(2)*(s2-s1)/(s3-s1)
+                    gthi(nnoff) = gthi(nnoff-1)*(sn-sn1)/(sn-sn2)
+                    k1th(nnoff) = k1th(nnoff-1)*(sn-sn1)/(sn-sn2)
+                    k2th(nnoff) = k2th(nnoff-1)*(sn-sn1)/(sn-sn2)
+                    k3th(nnoff) = k3th(nnoff-1)*(sn-sn1)/(sn-sn2)
+                    gith(nnoff) = gith(nnoff-1)*(sn-sn1)/(sn-sn2)
 
-    !            CORRECTION DANS LE CAS QUADRATIQUE
-                 else if (milieu) then
-                     gthi(1) = gthi(2)/4.d0
-                     k1th(1) = k1th(2)/4.d0
-                     k2th(1) = k2th(2)/4.d0
-                     k3th(1) = k3th(2)/4.d0
-                     gith(1) = gith(2)/4.d0
-                     gthi(nnoff) = gthi(nnoff-1)/4.d0
-                     k1th(nnoff) = k1th(nnoff-1)/4.d0
-                     k2th(nnoff) = k2th(nnoff-1)/4.d0
-                     k3th(nnoff) = k3th(nnoff-1)/4.d0
-                     gith(nnoff) = gith(nnoff-1)/4.d0
-                 endif
+                    !            CORRECTION DANS LE CAS QUADRATIQUE
+                else if (milieu) then
+                    gthi(1) = gthi(2)/4.d0
+                    k1th(1) = k1th(2)/4.d0
+                    k2th(1) = k2th(2)/4.d0
+                    k3th(1) = k3th(2)/4.d0
+                    gith(1) = gith(2)/4.d0
+                    gthi(nnoff) = gthi(nnoff-1)/4.d0
+                    k1th(nnoff) = k1th(nnoff-1)/4.d0
+                    k2th(nnoff) = k2th(nnoff-1)/4.d0
+                    k3th(nnoff) = k3th(nnoff-1)/4.d0
+                    gith(nnoff) = gith(nnoff-1)/4.d0
+                end if
 
-             endif
-        endif
+            end if
+        end if
 !       SYSTEME LINEAIRE:  MATR*GS = GTHI
         call gsyste(matr, nnoff, nnoff, gthi, gs)
 
@@ -209,43 +209,43 @@ implicit none
         call gsyste(matr, nnoff, nnoff, g3th, g3s)
 
         do i = 1, nnoff
-            gis(i) = g1s(i)*g1s(i) + g2s(i)*g2s(i) + g3s(i)*g3s(i)
-        enddo
+            gis(i) = g1s(i)*g1s(i)+g2s(i)*g2s(i)+g3s(i)*g3s(i)
+        end do
 
-    endif
+    end if
 
 !   ----------------------------------------------------------------
 !                              RECOPIES
 !   ----------------------------------------------------------------
-    if(typdis.ne.'COHESIF') then
+    if (typdis .ne. 'COHESIF') then
         do i = 1, nnoff
-            zr(iadgks-1+(i-1)*5+1)=gs(i)
-            zr(iadgks-1+(i-1)*5+2)=k1s(i)
-            zr(iadgks-1+(i-1)*5+3)=k2s(i)
-            zr(iadgks-1+(i-1)*5+4)=k3s(i)
-            zr(iadgks-1+(i-1)*5+5)=gis(i)
+            zr(iadgks-1+(i-1)*5+1) = gs(i)
+            zr(iadgks-1+(i-1)*5+2) = k1s(i)
+            zr(iadgks-1+(i-1)*5+3) = k2s(i)
+            zr(iadgks-1+(i-1)*5+4) = k3s(i)
+            zr(iadgks-1+(i-1)*5+5) = gis(i)
         end do
-    else if(typdis.eq.'COHESIF') then
+    else if (typdis .eq. 'COHESIF') then
         do i = 1, nnoff
-            zr(iadgks-1+(i-1)*5+1)=gs(i)
-            k1s(i)=sqrt(k1s(i))
-            zr(iadgks-1+(i-1)*5+2)=k1s(i)
-            if(g2th(i).ge.0.d0) k2s(i)= sqrt(abs(k2s(i)))
-            if(g2th(i).lt.0.d0) k2s(i)=-sqrt(abs(k2s(i)))
-            zr(iadgks-1+(i-1)*5+3)=k2s(i)
-            if(g3th(i).ge.0.d0) k3s(i)=sqrt(abs(k3s(i)))
-            if(g3th(i).lt.0.d0) k3s(i)=-sqrt(abs(k3s(i)))
-            zr(iadgks-1+(i-1)*5+4)=k3s(i)
-            zr(iadgks-1+(i-1)*5+5)=gs(i)
+            zr(iadgks-1+(i-1)*5+1) = gs(i)
+            k1s(i) = sqrt(k1s(i))
+            zr(iadgks-1+(i-1)*5+2) = k1s(i)
+            if (g2th(i) .ge. 0.d0) k2s(i) = sqrt(abs(k2s(i)))
+            if (g2th(i) .lt. 0.d0) k2s(i) = -sqrt(abs(k2s(i)))
+            zr(iadgks-1+(i-1)*5+3) = k2s(i)
+            if (g3th(i) .ge. 0.d0) k3s(i) = sqrt(abs(k3s(i)))
+            if (g3th(i) .lt. 0.d0) k3s(i) = -sqrt(abs(k3s(i)))
+            zr(iadgks-1+(i-1)*5+4) = k3s(i)
+            zr(iadgks-1+(i-1)*5+5) = gs(i)
         end do
-    endif
+    end if
 
     do i = 1, nnoff
         zr(iadgki-1+(i-1)*5+1) = zr(iadrgk-1+(i-1)*8+1)
         zr(iadgki-1+(i-1)*5+2) = zr(iadrgk-1+(i-1)*8+5)
         zr(iadgki-1+(i-1)*5+3) = zr(iadrgk-1+(i-1)*8+6)
         zr(iadgki-1+(i-1)*5+4) = zr(iadrgk-1+(i-1)*8+7)
-    enddo
+    end do
 
 !!   CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
 !    do i = 1, nnoff

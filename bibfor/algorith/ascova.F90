@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ascova(detr, vachar, fomulz, npara, vpara,&
+subroutine ascova(detr, vachar, fomulz, npara, vpara, &
                   typres, cnchar, basez)
     implicit none
 #include "asterf_types.h"
@@ -98,9 +98,9 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !     -- ON VERIFIE QUE LE VACHAR A LES BONNES PROPRIETES:
 !     ----------------------------------------------------
     call jeexin(vachar, iret)
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
     call jelira(vachar, 'LONMAX', nbvec)
-    ASSERT(nbvec.ne.0)
+    ASSERT(nbvec .ne. 0)
     call jeveuo(vachar, 'L', jvec)
 !
 !
@@ -111,9 +111,9 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     else
         fct = .true.
         call jelira(fomult, 'LONMAX', nchar)
-        ASSERT(nchar.ne.0)
+        ASSERT(nchar .ne. 0)
         call jeveuo(fomult, 'L', jfonct)
-    endif
+    end if
 !
 !
 !
@@ -125,24 +125,24 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
         do k = 1, nbvec
 !
             chamno = zk24(jvec+k-1) (1:19)
-            call corich('L', chamno, ichout_ = icha)
+            call corich('L', chamno, ichout_=icha)
 !
-            ASSERT((icha.ne.0).and.(icha.ge.-2))
+            ASSERT((icha .ne. 0) .and. (icha .ge. -2))
 !
             if (icha .eq. -1) then
                 valres = 1.d0
-            else if (icha.eq.-2) then
+            else if (icha .eq. -2) then
                 valres = 0.d0
             else
-                ASSERT(icha.le.nchar)
+                ASSERT(icha .le. nchar)
                 valres = 1.d0
                 if (fct .and. zk24(jfonct+icha-1) .ne. ' ') then
-                    call fointe('F ', zk24(jfonct+icha-1), 1, [npara], [vpara],&
+                    call fointe('F ', zk24(jfonct+icha-1), 1, [npara], [vpara], &
                                 valres, ier)
                 else
-                    valres=1.d0
-                endif
-            endif
+                    valres = 1.d0
+                end if
+            end if
 !
             zr(jcoef+k-1) = valres
             zk8(jtype+k-1) = 'R'
@@ -161,42 +161,42 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
             phase = 0.d0
             call getvr8('EXCIT', 'PHAS_DEG', iocc=k, scal=phase, nbret=n1)
             call getvis('EXCIT', 'PUIS_PULS', iocc=k, scal=npuis, nbret=n2)
-            calpha = exp(dcmplx(0.d0,phase*dgrd))
+            calpha = exp(dcmplx(0.d0, phase*dgrd))
             if (npuis .ne. 0) calpha = calpha*omega**npuis
 !
             chamno = zk24(jvec+k-1) (1:19)
-            call corich('L', chamno, ichout_ = icha)
+            call corich('L', chamno, ichout_=icha)
 !
-            ASSERT((icha.ne.0).and.(icha.ge.-2))
+            ASSERT((icha .ne. 0) .and. (icha .ge. -2))
 !
             if (icha .eq. -1) then
                 valre = 1.d0
                 valim = 0.d0
-            else if (icha.eq.-2) then
+            else if (icha .eq. -2) then
                 valre = 0.d0
                 valim = 0.d0
             else
-                ASSERT(icha.le.nchar)
+                ASSERT(icha .le. nchar)
                 valre = 1.d0
                 valim = 0.d0
-                tval(1)=vpara
-                if (fct) call fointc('F', zk24(jfonct+icha-1)(1:8), 1, npara, tval,&
+                tval(1) = vpara
+                if (fct) call fointc('F', zk24(jfonct+icha-1) (1:8), 1, npara, tval, &
                                      valre, valim, ier)
-            endif
+            end if
 !
             zk8(jtype+k-1) = 'C'
-            kk = kk + 1
+            kk = kk+1
             zr(jcoef+kk-1) = valre*dble(calpha)-valim*dimag(calpha)
-            kk = kk + 1
+            kk = kk+1
             zr(jcoef+kk-1) = valim*dble(calpha)+valre*dimag(calpha)
         end do
-    endif
+    end if
 !
 !
 !     COMBINAISON LINEAIRES DES CHAM_NO :
 !     -----------------------------------
     if (cnchar .eq. ' ') cnchar = vachar(1:8)//'.ASCOVA'
-    call vtcmbl(nbvec, zk8(jtype), zr(jcoef), zk8(jtype), zk24(jvec),&
+    call vtcmbl(nbvec, zk8(jtype), zr(jcoef), zk8(jtype), zk24(jvec), &
                 zk8(jtype), cnchar, base)
     call jedetr('&&ASCOVA.COEF')
     call jedetr('&&ASCOVA.TYPE')
@@ -210,11 +210,11 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
             call detrsd('CHAMP_GD', zk24(jvec+k-1))
         end do
         call jedetr(vachar)
-    else if (detr.eq.'G') then
+    else if (detr .eq. 'G') then
 !       -- EN PRINCIPE UTILISE PAR DYNA_VIBRA//HARM
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     call jedema()

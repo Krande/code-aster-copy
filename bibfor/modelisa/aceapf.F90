@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,9 +73,9 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
         afl = 0.d0
         ace = 0.d0
         rapp = 0.d0
-        call getvem(noma, 'GROUP_MA', 'POUTRE_FLUI', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'POUTRE_FLUI', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'POUTRE_FLUI', 'MAILLE', ioc,&
+        call getvem(noma, 'MAILLE', 'POUTRE_FLUI', 'MAILLE', ioc, &
                     lmax, zk8(jdls2), nm)
         call getvr8('POUTRE_FLUI', 'B_T', iocc=ioc, scal=b(1), nbret=nb1)
         call getvr8('POUTRE_FLUI', 'B_N', iocc=ioc, scal=b(2), nbret=nb2)
@@ -97,14 +97,14 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
             do i = 1, ng
                 call nocart(cartpf, 2, 6, groupma=zk24(jdls+i-1))
             end do
-        endif
+        end if
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 !
         if (nm .gt. 0) then
-            call nocart(cartpf, 3, 6, mode='NOM', nma=nm,&
+            call nocart(cartpf, 3, 6, mode='NOM', nma=nm, &
                         limano=zk8(jdls2))
-        endif
+        end if
 !
     end do
 !

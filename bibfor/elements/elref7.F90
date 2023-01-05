@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
+subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1, &
                   elref2)
 !
 ! person_in_charge: gerald.nicolas at edf.fr
@@ -77,13 +77,13 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
         nbf = 4
         elref1 = 'SE2'
 !
-    else if (elrefv(1:3).eq.'QU8') then
+    else if (elrefv(1:3) .eq. 'QU8') then
         tymvol = -2
         ndegre = 2
         nbf = 4
         elref1 = 'SE3'
 !
-    else if (elrefv(1:3).eq.'QU9') then
+    else if (elrefv(1:3) .eq. 'QU9') then
         tymvol = -2
         ndegre = 2
         nbf = 4
@@ -91,19 +91,19 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
 !
 ! 1.2. ==> TRIANGLES
 !
-    else if (elrefv(1:3).eq.'TR3') then
+    else if (elrefv(1:3) .eq. 'TR3') then
         tymvol = -1
         ndegre = 1
         nbf = 3
         elref1 = 'SE2'
 !
-    else if (elrefv(1:3).eq.'TR6') then
+    else if (elrefv(1:3) .eq. 'TR6') then
         tymvol = -1
         ndegre = 2
         nbf = 3
         elref1 = 'SE3'
 !
-    else if (elrefv(1:3).eq.'TR7') then
+    else if (elrefv(1:3) .eq. 'TR7') then
         tymvol = -1
         ndegre = 2
         nbf = 3
@@ -114,19 +114,19 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
 !====
 ! 2.1. ==> HEXAEDRES
 !
-    else if (elrefv(1:3).eq.'HE8') then
+    else if (elrefv(1:3) .eq. 'HE8') then
         tymvol = 1
         ndegre = 1
         nbf = 6
         elref1 = 'QU4'
 !
-    else if (elrefv(1:3).eq.'H20') then
+    else if (elrefv(1:3) .eq. 'H20') then
         tymvol = 1
         ndegre = 2
         nbf = 6
         elref1 = 'QU8'
 !
-    else if (elrefv(1:3).eq.'H27') then
+    else if (elrefv(1:3) .eq. 'H27') then
         tymvol = 1
         ndegre = 2
         nbf = 6
@@ -134,21 +134,21 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
 !
 ! 2.2. ==> PENTAEDRES
 !
-    else if (elrefv(1:3).eq.'PE6') then
+    else if (elrefv(1:3) .eq. 'PE6') then
         tymvol = 2
         ndegre = 1
         nbf = 5
         elref1 = 'TR3'
         elref2 = 'QU4'
 !
-    else if (elrefv(1:3).eq.'P15') then
+    else if (elrefv(1:3) .eq. 'P15') then
         tymvol = 2
         ndegre = 2
         nbf = 5
         elref1 = 'TR6'
         elref2 = 'QU8'
 !
-    else if (elrefv(1:3).eq.'P18') then
+    else if (elrefv(1:3) .eq. 'P18') then
         tymvol = 2
         ndegre = 2
         nbf = 5
@@ -157,13 +157,13 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
 !
 ! 2.3. ==> TETRAEDRES
 !
-    else if (elrefv(1:3).eq.'TE4') then
+    else if (elrefv(1:3) .eq. 'TE4') then
         tymvol = 3
         ndegre = 1
         nbf = 4
         elref1 = 'TR3'
 !
-    else if (elrefv(1:3).eq.'T10') then
+    else if (elrefv(1:3) .eq. 'T10') then
         tymvol = 3
         ndegre = 2
         nbf = 4
@@ -171,14 +171,14 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
 !
 ! 2.4. ==> PYRAMIDES
 !
-    else if (elrefv(1:3).eq.'PY5') then
+    else if (elrefv(1:3) .eq. 'PY5') then
         tymvol = 4
         ndegre = 1
         nbf = 5
         elref1 = 'TR3'
         elref2 = 'QU4'
 !
-    else if (elrefv(1:3).eq.'P13') then
+    else if (elrefv(1:3) .eq. 'P13') then
         tymvol = 4
         ndegre = 2
         nbf = 5
@@ -194,7 +194,7 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
         valk(1) = elrefv(1:3)
         call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !
-    endif
+    end if
 !
 !GN          WRITE(6,*) 'TYMVOL :',TYMVOL, ', NBF :', NBF
 !GN          WRITE(6,*) 'ELREF1 : ',ELREF1

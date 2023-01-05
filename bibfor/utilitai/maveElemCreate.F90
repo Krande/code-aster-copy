@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine maveElemCreate(base, phenom, mave_elemz, model_, mate_, cara_elem_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 !
-character(len=1), intent(in) :: base
-character(len=4), intent(in) :: phenom
-character(len=*), intent(in) :: mave_elemz
-character(len=*), optional, intent(in) :: model_, mate_, cara_elem_
+    character(len=1), intent(in) :: base
+    character(len=4), intent(in) :: phenom
+    character(len=*), intent(in) :: mave_elemz
+    character(len=*), optional, intent(in) :: model_, mate_, cara_elem_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,13 +55,13 @@ character(len=*), optional, intent(in) :: model_, mate_, cara_elem_
     cara_elem = ' '
     if (present(model_)) then
         model = model_
-    endif
+    end if
     if (present(cara_elem_)) then
         cara_elem = cara_elem_
-    endif
+    end if
     if (present(mate_)) then
         mate = mate_
-    endif
+    end if
     call memare(base, mave_elem, model, mate, cara_elem, 'CHAR_'//phenom)
     call reajre(mave_elem, ' ', base)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine posigr(nomte, efge, sigm)
 ! --------------------------------------------------------------------------------------------------
 !
     integer      :: itsec
-    real(kind=8) :: a, a2, hy1, hy2, hz1, hz2,r1, r2
+    real(kind=8) :: a, a2, hy1, hy2, hz1, hz2, r1, r2
     real(kind=8) :: zero, deux
     real(kind=8) :: smf1, smf2, smfy1, smfy2, smfz1, smfz2, sn1, sn2
     real(kind=8) :: xiy, xiy2, xiz, xiz2
@@ -49,14 +49,14 @@ subroutine posigr(nomte, efge, sigm)
     integer, parameter :: nb_cara = 6
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','A2','IY2','IZ2'/
+    data noms_cara/'A1', 'IY1', 'IZ1', 'A2', 'IY2', 'IZ2'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_cara1 = 7
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'HY1','HZ1','HY2','HZ2','R1','R2','TSEC'/
+    data noms_cara1/'HY1', 'HZ1', 'HY2', 'HZ2', 'R1', 'R2', 'TSEC'/
 !
     integer             :: retp(4), iret
     real(kind=8)        :: valr(4)
@@ -70,37 +70,37 @@ subroutine posigr(nomte, efge, sigm)
 !   Récupération des caractéristiques générales des sections
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !   Section initiale
-    a      = vale_cara(1)
-    xiy    = vale_cara(2)
-    xiz    = vale_cara(3)
+    a = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
 !   Section finale
-    a2     = vale_cara(4)
-    xiy2   = vale_cara(5)
-    xiz2   = vale_cara(6)
+    a2 = vale_cara(4)
+    xiy2 = vale_cara(5)
+    xiz2 = vale_cara(6)
 !
     if (nomte .eq. 'MECA_POU_D_TG') then
-        a2=a
+        a2 = a
     else if (nomte .eq. 'MECA_POU_D_T') then
-        valp(1:4)=['C_FLEX_Y', 'C_FLEX_Z', 'I_SIGM_Y', 'I_SIGM_Z']
+        valp(1:4) = ['C_FLEX_Y', 'C_FLEX_Z', 'I_SIGM_Y', 'I_SIGM_Z']
         call get_value_mode_local('PCAARPO', valp, valr, iret, retpara_=retp)
         xfly = 1.0; xflz = 1.0; xsiy = 1.0; xsiz = 1.0
-        if ( retp(1).eq.0) xfly = valr(1)
-        if ( retp(2).eq.0) xflz = valr(2)
-        if ( retp(3).eq.0) xsiy = valr(3)
-        if ( retp(4).eq.0) xsiz = valr(4)
+        if (retp(1) .eq. 0) xfly = valr(1)
+        if (retp(2) .eq. 0) xflz = valr(2)
+        if (retp(3) .eq. 0) xsiy = valr(3)
+        if (retp(4) .eq. 0) xsiz = valr(4)
 !       prise en compte de l'indice de flexibilité
-        xiy  = xiy/xfly
-        xiz  = xiz/xflz
+        xiy = xiy/xfly
+        xiz = xiz/xflz
         xiy2 = xiy2/xfly
         xiz2 = xiz2/xflz
 !       prise en compte de l'indice de contraintes
-        xxy  = xsiy/xfly
-        xxz  = xsiz/xflz
-        xiy  = xiy/xxy
-        xiz  = xiz/xxz
+        xxy = xsiy/xfly
+        xxz = xsiz/xflz
+        xiy = xiy/xxy
+        xiz = xiz/xxz
         xiy2 = xiy2/xxy
         xiz2 = xiz2/xxz
-    endif
+    end if
 !
 !   caractéristiques des sections cercle et rectangle
     call poutre_modloc('CAGEPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
@@ -108,7 +108,7 @@ subroutine posigr(nomte, efge, sigm)
 !
 !   sxx calculé à partir des 2 flexions et de l'effort normal
     sn1 = -efge(1)/a
-    sn2 =  efge(7)/a2
+    sn2 = efge(7)/a2
 !
 !   section rectangulaire: le max  et le min sont obtenus sur les coins
     if (itsec .eq. 1) then
@@ -126,7 +126,7 @@ subroutine posigr(nomte, efge, sigm)
         sigm(4) = sn2+smfy2+smfz2
 !
 !   section circulaire: xiy = xiz.
-    else if (itsec.eq.2) then
+    else if (itsec .eq. 2) then
 !       formule utilisee :  a cos(t) + b sin(t) = R cos(t-s)
 !                         avec R= sqrt(a^2+b^2) et tan(s)= b/a
 !       donc max de a cos(t) + b sin(t) = R
@@ -141,8 +141,8 @@ subroutine posigr(nomte, efge, sigm)
         sigm(4) = sn2+smf2
 !
 !   section generale: interdit
-    else if (itsec.eq.0) then
+    else if (itsec .eq. 0) then
         call utmess('A', 'ELEMENTS4_4')
-    endif
+    end if
 !
 end subroutine

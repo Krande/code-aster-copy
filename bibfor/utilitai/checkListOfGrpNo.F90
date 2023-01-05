@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,16 +61,16 @@ subroutine checkListOfGrpNo(mesh, listGrpNo, nbGrpNo, l_stop_local)
 !
 ! --- The group of nodes does not exist in the local mesh
 !
-            if (.not.l_exi_in_grp .and. l_stop_local) then
+            if (.not. l_exi_in_grp .and. l_stop_local) then
                 valk(1) = grpNoName
                 valk(2) = mesh
                 call utmess('F', 'MODELISA7_75', nk=2, valk=valk)
-            endif
+            end if
         else
             valk(1) = grpNoName
             valk(2) = mesh
             call utmess('F', 'MODELISA7_75', nk=2, valk=valk)
-        endif
+        end if
     end do
 !
     call jedema()

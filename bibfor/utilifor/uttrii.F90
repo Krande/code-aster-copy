@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ subroutine uttrii(ivale, nbvale)
     if (nbvale .gt. 1) then
 !        --- CHOIX DE L'INCREMENT ---
         incrs = 1
-        is9 = nbvale / 9
- 10     continue
+        is9 = nbvale/9
+10      continue
         if (incrs .lt. is9) then
             incrs = 3*incrs+1
             goto 10
-        endif
+        end if
 !
 !        --- REMONTEE DES BULLES ---
 120     continue
@@ -55,23 +55,23 @@ subroutine uttrii(ivale, nbvale)
                     diff = ivale(l)
                     ivale(l) = ivale(l+incrs)
                     ivale(l+incrs) = diff
-                    l = l - incrs
+                    l = l-incrs
                     goto 130
-                endif
-            endif
+                end if
+            end if
         end do
         incrs = incrs/3
         if (incrs .ge. 1) goto 120
 !
 !        --- SUPPRESSION DES VALEURS MULTIPLES ---
-        j=1
+        j = 1
         do i = 2, nbvale
             if (ivale(i) .ne. ivale(j)) then
-                j = j + 1
+                j = j+1
                 ivale(j) = ivale(i)
-            endif
+            end if
         end do
         nbvale = j
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
-                  sige, epssig, invare, gamps, evps,&
+subroutine calcpj(nbmat, mater, gamp, evp, sigd, &
+                  sige, epssig, invare, gamps, evps, &
                   invars, b)
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/bprime.h"
 #include "asterfort/jedema.h"
@@ -60,20 +60,20 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
-    parameter       ( zero     =  0.0d0   )
-    parameter       ( deux     =  2.0d0   )
-    parameter       ( trois    =  3.0d0   )
+    parameter(zero=0.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE -----------------------------
 ! ======================================================================
-    mu = mater(4,1)
-    k = mater(5,1)
-    gamult = mater(1,2)
-    sigc = mater(9,2)
+    mu = mater(4, 1)
+    k = mater(5, 1)
+    gamult = mater(1, 2)
+    sigc = mater(9, 2)
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
@@ -85,14 +85,14 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
 ! --- CALCUL DES PROJECTIONS AU SOMMET ---------------------------------
 ! ======================================================================
     call lcdevi(sige, se)
-    siie=ddot(ndt,se,1,se,1)
-    siie = sqrt (siie)
-    gamps = gamp + sqrt(deux/trois)*siie/(deux*mu)
+    siie = ddot(ndt, se, 1, se, 1)
+    siie = sqrt(siie)
+    gamps = gamp+sqrt(deux/trois)*siie/(deux*mu)
     call varecr(gamps, nbmat, mater, zr(jpara))
     sgamp = zr(jpara-1+1)
     mgamp = zr(jpara-1+4)
     invars = trois*sigc*sgamp/mgamp
-    evps = evp + (invare - invars)/(trois * k)
+    evps = evp+(invare-invars)/(trois*k)
 ! ======================================================================
 ! --- CALCUL DU PARAMETRE DE DILATANCE B A L'INSTANT MOINS -------------
 ! ======================================================================
@@ -104,17 +104,17 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
 ! ======================================================================
 ! --- CAS OU GAMP <= GAMULT(1-EPS) -------------------------------------
 ! ======================================================================
-        sigii=ddot(ndt,sigd,1,sigd,1)
+        sigii = ddot(ndt, sigd, 1, sigd, 1)
         if (sigii .lt. epssig) then
             sig(1:ndt) = sige(1:ndt)
         else
             sig(1:ndt) = sigd(1:ndt)
-        endif
+        end if
         call lcdevi(sig, sd)
-        invar = trace (ndi,sig)
+        invar = trace(ndi, sig)
         call varecr(gamp, nbmat, mater, zr(jpara2))
-        b = bprime(nbmat,mater,zr(jpara2),invar,sd,epssig)
-    endif
+        b = bprime(nbmat, mater, zr(jpara2), invar, sd, epssig)
+    end if
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 ! ======================================================================

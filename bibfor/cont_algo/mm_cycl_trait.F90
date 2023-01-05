@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mm_cycl_trait(ds_contact    , i_cont_poin, &
+subroutine mm_cycl_trait(ds_contact, i_cont_poin, &
                          coef_cont_prev, &
                          coef_frot_prev, pres_frot_prev, dist_frot_prev, &
                          pres_frot_curr, dist_frot_curr, &
@@ -24,9 +24,9 @@ subroutine mm_cycl_trait(ds_contact    , i_cont_poin, &
                          indi_cont_curr, coef_cont_curr, &
                          indi_frot_curr, coef_frot_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
@@ -91,7 +91,7 @@ implicit none
 ! - Access to cycling objects
 !
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
-    call jeveuo(sdcont_cyceta, 'E' , vi = p_sdcont_cyceta)
+    call jeveuo(sdcont_cyceta, 'E', vi=p_sdcont_cyceta)
 !
 ! - No specific treatment
 !
@@ -100,30 +100,29 @@ implicit none
     indi_cont_curr = indi_cont_eval
     indi_frot_curr = indi_frot_eval
 
-
 !
 ! - Cycling 2
 !
     cycl_type = 2
     cycl_stat_prev = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type)
-    if (cycl_stat_prev.gt.0) then
+    if (cycl_stat_prev .gt. 0) then
         call mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
                         cycl_stat_prev, pres_frot_curr, dist_frot_curr, &
                         coef_frot_curr, cycl_stat_curr)
 !         p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat_curr
         goto 99
-    endif
+    end if
 !
 ! - Cycling 3
 !
     cycl_type = 3
     cycl_stat_prev = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type)
-    if (cycl_stat_prev.gt.0) then
+    if (cycl_stat_prev .gt. 0) then
         call mm_cycl_t3(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
                         cycl_stat_curr)
 !         p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat_curr
         goto 99
-    endif
+    end if
 !
 99  continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
-                  k24rc, pivot2, ltest, typcha, lraide,&
-                  lmasse, ldynam, solveu, lamor, lc,&
+subroutine apm345(nbtetc, typcon, rayonc, centrc, nk, &
+                  k24rc, pivot2, ltest, typcha, lraide, &
+                  lmasse, ldynam, solveu, lamor, lc, &
                   impr, ifapm)
     implicit none
 #include "asterf_types.h"
@@ -71,66 +71,66 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
 !   --- MISCELLANEOUS ---
     call jemarq()
     call infniv(ifm, niv)
-    pi=r8pi()
-    raddeg=180.d0/pi
+    pi = r8pi()
+    raddeg = 180.d0/pi
 !
 !   --- VERBOSE MODE FOR APM STEPS ---
 !      NIV=2
 !    --- PERTURBATION TO BE ADDED TO THE EVALUATION OF THE ARGUMENT ---
 !    --- FOR NOT MISSING A LOOP WHEN ARG IS JUST UNDER 2*PI RADIENT ---
-    prec2=1.d-3
-    piprec=2.d0*pi-prec2
+    prec2 = 1.d-3
+    piprec = 2.d0*pi-prec2
 !
 !   --- STEP 3: DISCRETISATION OF THE SHAPE ---
     call wkvect('&&APM345.CONTOUR.DIS', 'V V C', nbtetc, jcont)
     if (typcon(1:6) .eq. 'CERCLE') then
-        ASSERT(nbtetc.gt.1)
-        raux1=2.d0*pi/(nbtetc-1)
+        ASSERT(nbtetc .gt. 1)
+        raux1 = 2.d0*pi/(nbtetc-1)
         do i = 1, nbtetc
-            raux2=(i-1)*raux1
-            rauxx=rayonc*cos(raux2)
-            rauxy=rayonc*sin(raux2)
-            zc(jcont+i-1)=centrc+dcmplx(rauxx,rauxy)
+            raux2 = (i-1)*raux1
+            rauxx = rayonc*cos(raux2)
+            rauxy = rayonc*sin(raux2)
+            zc(jcont+i-1) = centrc+dcmplx(rauxx, rauxy)
         end do
-    endif
+    end if
 !
 !   --- STEP 4: EVALUATING THE ARGUMENT VALUE OF P(CONTOUR) ---
     call wkvect('&&APM345.CONTOUR.THETA', 'V V R', nbtetc, jtheta)
     do i = 1, nbtetc
-        call apchar(typcha, k24rc, nk, zc(jcont+i-1), theta,&
-                    lraide, lmasse, ldynam, solveu, lamor,&
+        call apchar(typcha, k24rc, nk, zc(jcont+i-1), theta, &
+                    lraide, lmasse, ldynam, solveu, lamor, &
                     lc, impr, ifapm, i)
-        zr(jtheta+i-1)=theta
+        zr(jtheta+i-1) = theta
     end do
     call jedetr('&&APM345.CONTOUR.DIS')
 !
 !   --- STEP 5: COUNTING THE DIFFERENCE BETWEEN ANGLE         ---
-    if (ltest .or. (niv.ge.2)) then
-        write(ifm,*)'DISPLAY I/ARG(P(LAMBDA_I))/NB_EIGENVALUE_I'
-        write(ifm,*)'------------------------------------------'
-    endif
-    pivot2=0
-    thetao=zr(jtheta)
-    if (ltest .or. (niv.ge.2)) write(ifm,*)'STEP 5: ',1,thetao*raddeg,pivot2
+    if (ltest .or. (niv .ge. 2)) then
+        write (ifm, *) 'DISPLAY I/ARG(P(LAMBDA_I))/NB_EIGENVALUE_I'
+        write (ifm, *) '------------------------------------------'
+    end if
+    pivot2 = 0
+    thetao = zr(jtheta)
+    if (ltest .or. (niv .ge. 2)) write (ifm, *) 'STEP 5: ', 1, thetao*raddeg, pivot2
     do i = 2, nbtetc
-        theta=zr(jtheta+i-1)
+        theta = zr(jtheta+i-1)
 !   --- CORRECTION IF THETA GOES NEAR 2*PI TO NOT MISS A LOOP ---
-        if (theta .gt. piprec) theta=prec2
+        if (theta .gt. piprec) theta = prec2
 !
 !   --- HEURISTIC BASED ON THE WORK OF O.BERTRAND (PHD INRIA) ---
 !   --- WE ADD ONLY THE CONDITION I>2                         ---
-        thetap=thetao+pi
-        thetam=thetao-pi
-        if ((thetao.lt.pi) .and. ((theta.gt.thetap).or. abs(theta) .lt.prec2) .and.&
-            (i.gt.2)) then
-            pivot2=pivot2-1
-            else if ((thetao.gt.pi).and.((theta.lt.thetam).or. abs(theta)&
-        .lt.prec2)) then
-            pivot2=pivot2+1
-        endif
-        thetao=theta
+        thetap = thetao+pi
+        thetam = thetao-pi
+        if ((thetao .lt. pi) .and. ((theta .gt. thetap) .or. abs(theta) .lt. prec2) .and. &
+            (i .gt. 2)) then
+            pivot2 = pivot2-1
+        else if ((thetao .gt. pi) .and. ((theta .lt. thetam) .or. abs(theta) &
+                                         .lt. prec2)) then
+            pivot2 = pivot2+1
+        end if
+        thetao = theta
 !
-        if (ltest .or. (niv.ge.2)) write(ifm, *)'STEP 5: ', i, theta* raddeg, pivot2
+        if (ltest .or. (niv .ge. 2)) write (ifm, *) 'STEP 5: ', i, theta*raddeg, pivot2
     end do
     call jedetr('&&APM345.CONTOUR.THETA')
 !

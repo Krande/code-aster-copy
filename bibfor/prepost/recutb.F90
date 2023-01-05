@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine recutb(ik1d, nomgrn, tabrev, tabmdb, tabthr)
     call getvid(motfac, 'TABL_MECA_MDB', iocc=ik1d, scal=tabmdb, nbret=ibid)
     call getvid(motfac, 'TABL_THER', iocc=ik1d, scal=tabthr, nbret=ibid)
     call getvtx(motfac, 'INTITULE', iocc=ik1d, scal=nomgrn, nbret=ibid)
-    if(irev.eq.0) tabrev=tabmdb
+    if (irev .eq. 0) tabrev = tabmdb
 ! ======================================================================
     call jedema()
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt,&
-                  dnsinf, dnssup,&
-                  sigmsi, sigmss, sigmci, sigmcs, alpha,&
-                  ht, bw, enrobi, enrobs, facier, fbeton,&
-                  scmaxi, scmaxs, ssmax, uc, um,&
+subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
+                  dnsinf, dnssup, &
+                  sigmsi, sigmss, sigmci, sigmcs, alpha, &
+                  ht, bw, enrobi, enrobs, facier, fbeton, &
+                  scmaxi, scmaxs, ssmax, uc, um, &
                   compress, dnstra, thetab, ak, uk, ierr)
 !______________________________________________________________________
 !
@@ -123,206 +123,206 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt,&
     real(kind=8), parameter :: pi = 3.1415927
 !------------------------------------------------------------------------
 
-if (effm.ge.0.) then
-    d = ht - enrobi
-    d0 = enrobs
-else
-    d = ht - enrobs
-    d0 = enrobi
-endif
+    if (effm .ge. 0.) then
+        d = ht-enrobi
+        d0 = enrobs
+    else
+        d = ht-enrobs
+        d0 = enrobi
+    end if
 
-fcd = 0.5*(scmaxi+scmaxs)
-fyd = ssmax
-gammac = fbeton/fcd
-gammas = facier/fyd
-VEd = Abs(efft)
-TEd = Abs(effmt)
+    fcd = 0.5*(scmaxi+scmaxs)
+    fyd = ssmax
+    gammac = fbeton/fcd
+    gammas = facier/fyd
+    VEd = Abs(efft)
+    TEd = Abs(effmt)
 
 !INITIALISATION DU CODE RETOUR
-ierr = 0
+    ierr = 0
 
 !IMPACT DE LA TORSION SUR CISAILLEMENT
-tk = Max((bw*ht/(2*(bw+ht))), 2*(ht-d), 2*d0)
-ak = (bw-tk)*(ht-tk)
-uk = 2*(bw-tk+ht-tk)
-VEdT = (TEd/(2*ak))*(ht-tk)
-
-!CALCUL POUR CODIFICATION = BAEL91
-
-if (typco.eq.1) then
-    
-    if (typstru.eq.0) then
-    sigmat = sqrt(effrts(7)*effrts(7)+effrts(8)*effrts(8))/d
-    elseif (typstru.eq.1) then
-    sigmat = (VEd+VEdT)/(bw*d)
-    endif
-    dnstra = sigmat/fyd
-    thetab = 45.0*pi/180.0
-
-!CALCUL POUR CODIFICATION = EC2
-
-elseif (typco.eq.2) then
-
-!   CALCULS INTERMEDIAIRES
-    if (uc.eq.0) then
-    unite_pa = 1.e-6
-    elseif (uc.eq.1) then
-    unite_pa = 1.
-    endif
-    if (um.eq.0) then
-    unite_m = 1.e3
-    elseif (um.eq.1) then
-    unite_m = 1.
-    endif
-
-    if ((fbeton*unite_pa).le.50) then
-    fctm = 0.7*0.3*((fbeton*unite_pa)**(2./3.))
-    else
-    fctm = 0.7*2.12*log(1+0.1*(fbeton*unite_pa+8))
-    endif
-    fctd = fctm/(gammac*unite_pa)
-
-!   Ajout Effet de la Torsion
-
     tk = Max((bw*ht/(2*(bw+ht))), 2*(ht-d), 2*d0)
     ak = (bw-tk)*(ht-tk)
     uk = 2*(bw-tk+ht-tk)
-    
-    TRdc = fctd*tk*2*Ak
+    VEdT = (TEd/(2*ak))*(ht-tk)
 
-    Scp = effn/(bw*ht)
-    if ((Scp.lt.0) .or. (compress.eq.0)) then
-    Scp = 0
-    endif
+!CALCUL POUR CODIFICATION = BAEL91
+
+    if (typco .eq. 1) then
+
+        if (typstru .eq. 0) then
+            sigmat = sqrt(effrts(7)*effrts(7)+effrts(8)*effrts(8))/d
+        elseif (typstru .eq. 1) then
+            sigmat = (VEd+VEdT)/(bw*d)
+        end if
+        dnstra = sigmat/fyd
+        thetab = 45.0*pi/180.0
+
+!CALCUL POUR CODIFICATION = EC2
+
+    elseif (typco .eq. 2) then
+
+!   CALCULS INTERMEDIAIRES
+        if (uc .eq. 0) then
+            unite_pa = 1.e-6
+        elseif (uc .eq. 1) then
+            unite_pa = 1.
+        end if
+        if (um .eq. 0) then
+            unite_m = 1.e3
+        elseif (um .eq. 1) then
+            unite_m = 1.
+        end if
+
+        if ((fbeton*unite_pa) .le. 50) then
+            fctm = 0.7*0.3*((fbeton*unite_pa)**(2./3.))
+        else
+            fctm = 0.7*2.12*log(1+0.1*(fbeton*unite_pa+8))
+        end if
+        fctd = fctm/(gammac*unite_pa)
+
+!   Ajout Effet de la Torsion
+
+        tk = Max((bw*ht/(2*(bw+ht))), 2*(ht-d), 2*d0)
+        ak = (bw-tk)*(ht-tk)
+        uk = 2*(bw-tk+ht-tk)
+
+        TRdc = fctd*tk*2*Ak
+
+        Scp = effn/(bw*ht)
+        if ((Scp .lt. 0) .or. (compress .eq. 0)) then
+            Scp = 0
+        end if
 
 !   Impact de la torsion sur Cisaillement
 
-    VEdT = (TEd/(2*ak))*(ht-tk)
+        VEdT = (TEd/(2*ak))*(ht-tk)
 
 !   Calcul de alphaCW
-    if (compress.eq.0) then
-        alphaCW = 1
-    elseif (compress.eq.1) then
-        if (Scp.le.0) then
+        if (compress .eq. 0) then
             alphaCW = 1
-        elseif (Scp.le.(0.25*fbeton)) then
-            alphaCW = 1 + Scp/fbeton
-        elseif (Scp.le.(0.5*fbeton)) then
-            alphaCW = 1.25
-        elseif (Scp.lt.fbeton) then
-            alphaCW = 2.5*(1-Scp/fbeton)
-        else
-            alphaCW = 0
-        endif
-    endif
+        elseif (compress .eq. 1) then
+            if (Scp .le. 0) then
+                alphaCW = 1
+            elseif (Scp .le. (0.25*fbeton)) then
+                alphaCW = 1+Scp/fbeton
+            elseif (Scp .le. (0.5*fbeton)) then
+                alphaCW = 1.25
+            elseif (Scp .lt. fbeton) then
+                alphaCW = 2.5*(1-Scp/fbeton)
+            else
+                alphaCW = 0
+            end if
+        end if
 
-    Nu = 0.6*(1-fbeton*unite_pa/250.d0)
-    if ((fbeton*unite_pa).le.60) Then
-    Nu1 = 0.6
-    else
-    Nu1 = 0.9 - fbeton*unite_pa/200.d0
-    endif
+        Nu = 0.6*(1-fbeton*unite_pa/250.d0)
+        if ((fbeton*unite_pa) .le. 60) Then
+            Nu1 = 0.6
+        else
+            Nu1 = 0.9-fbeton*unite_pa/200.d0
+        end if
 
 !   Calcul du bras de levier des efforts internes
 
-    if ((alpha.ge.0) .and. (alpha.le.1) .and. (effm.gt.0)) then
-         z1 = d - d0
-         z2 = (1 - alpha/3.0)*d
-         zMOY = (dnssup*sigmss)*z1 + (0.5*sigmcs*alpha*d*bw)*z2
-         denom =  dnssup*sigmss + 0.5*sigmcs*alpha*d*bw
-         !if (denom.ne.0) then
-         if (abs(denom).gt.epsilon(denom)) then
-             zMOY = zMOY/denom
-         else
-             zMOY = 0.9*d
-         endif
-    elseif ((alpha.ge.0) .and. (alpha.le.1) .and. (effm.lt.0)) then
-         z1 = d - d0
-         z2 = (1 - alpha/3.0)*d
-         zMOY = (dnsinf*sigmsi)*z1 + (0.5*sigmci*alpha*d*bw)*z2
-         denom = dnsinf*sigmsi + 0.5*sigmci*alpha*d*bw
-         !if (denom.ne.0) then
-         if (abs(denom).gt.epsilon(denom)) then
-             zMOY = zMOY/denom
-         else
-             zMOY = 0.9*d
-         endif    
-    else
-         zMOY = 0.9*d
-    endif
+        if ((alpha .ge. 0) .and. (alpha .le. 1) .and. (effm .gt. 0)) then
+            z1 = d-d0
+            z2 = (1-alpha/3.0)*d
+            zMOY = (dnssup*sigmss)*z1+(0.5*sigmcs*alpha*d*bw)*z2
+            denom = dnssup*sigmss+0.5*sigmcs*alpha*d*bw
+            !if (denom.ne.0) then
+            if (abs(denom) .gt. epsilon(denom)) then
+                zMOY = zMOY/denom
+            else
+                zMOY = 0.9*d
+            end if
+        elseif ((alpha .ge. 0) .and. (alpha .le. 1) .and. (effm .lt. 0)) then
+            z1 = d-d0
+            z2 = (1-alpha/3.0)*d
+            zMOY = (dnsinf*sigmsi)*z1+(0.5*sigmci*alpha*d*bw)*z2
+            denom = dnsinf*sigmsi+0.5*sigmci*alpha*d*bw
+            !if (denom.ne.0) then
+            if (abs(denom) .gt. epsilon(denom)) then
+                zMOY = zMOY/denom
+            else
+                zMOY = 0.9*d
+            end if
+        else
+            zMOY = 0.9*d
+        end if
 
 !   Calcul de la resistance du Beton SEUL
 
-    kBAR = 1. + (200.d0/max(unite_m*d, unite_m*(ht-d0)))**0.5
-    kBAR = min(kBAR,2.0)
-    if (typstru.eq.0) then
-        vmin = (0.34/gammac)*((fbeton*unite_pa)**0.5)
-    elseif (typstru.eq.1) then
-        vmin = (0.053/gammac)*(kBAR**1.5)*((fbeton*unite_pa)**0.5)    
-    endif
-    vmin = vmin/unite_pa
-    CRdc = 0.18/gammac
-    k1 = 0.15
-    rhoL = 0
-    if (sigmss.lt.0) then
-        rhoL = rhoL + dnssup
-    endif
-    if (sigmsi.lt.0) then
-        rhoL = rhoL + dnsinf
-    endif
-    rhoL = rhoL/(bw*d)
-    if (rhoL.gt.0) then
-        vCALC = CRdc*kBAR*((100*rhoL*(fbeton*unite_pa))**(1./3.))
-        vCALC = vCALC/unite_pa
-    else
-        vCALC = 0
-    endif 
+        kBAR = 1.+(200.d0/max(unite_m*d, unite_m*(ht-d0)))**0.5
+        kBAR = min(kBAR, 2.0)
+        if (typstru .eq. 0) then
+            vmin = (0.34/gammac)*((fbeton*unite_pa)**0.5)
+        elseif (typstru .eq. 1) then
+            vmin = (0.053/gammac)*(kBAR**1.5)*((fbeton*unite_pa)**0.5)
+        end if
+        vmin = vmin/unite_pa
+        CRdc = 0.18/gammac
+        k1 = 0.15
+        rhoL = 0
+        if (sigmss .lt. 0) then
+            rhoL = rhoL+dnssup
+        end if
+        if (sigmsi .lt. 0) then
+            rhoL = rhoL+dnsinf
+        end if
+        rhoL = rhoL/(bw*d)
+        if (rhoL .gt. 0) then
+            vCALC = CRdc*kBAR*((100*rhoL*(fbeton*unite_pa))**(1./3.))
+            vCALC = vCALC/unite_pa
+        else
+            vCALC = 0
+        end if
 
-    VRdc = (Max(vCALC,vmin)+k1*Scp)*bw*d
+        VRdc = (Max(vCALC, vmin)+k1*Scp)*bw*d
 
 !   Calcul de DNSTRA
 
-    if ((TEd/TRdc+VEd/VRdc).le.1) Then
- 
-         dnstra = 0
-         thetab = -1
-         
-    else
+        if ((TEd/TRdc+VEd/VRdc) .le. 1) Then
 
-         do j= 0,232
-         thetab_ITER(j) = 21.8+j*0.1
-         thetab = Thetab_ITER(j)*pi/180.0
-         VRdmax = alphaCW*bw*zMOY*Nu1*fcd/(tan(thetab) + 1.0/(tan(thetab)))
-         TRdmax = 2*Nu*alphaCW*fcd*Ak*tk*sin(thetab)*cos(thetab)
-         eq_ITER(j) = VEd/VRdmax + TEd/TRdmax
-         dnstra_ITER(j) = (VEd + 2*VEdT)*tan(thetab)/(zMOY*fyd)
-         end do
-   
-         countV = 0
-         dnstra = -1
-         thetab = -1
-   
-         do j=0,232
-            if (eq_ITER(j).le.1) then
-                countV = countV + 1
-                if (countV.eq.1) then
-                    thetab = thetab_ITER(j)*pi/180.0
-                    dnstra = dnstra_ITER(j)
-                else
-                    if (dnstra_ITER(j).lt.dnstra) then
-                    thetab = thetab_ITER(j)*pi/180.0
-                    dnstra = dnstra_ITER(j)
-                    endif
-                endif
-            endif
-         end do
+            dnstra = 0
+            thetab = -1
 
-         if (countV.eq.0) then
-         ierr = 1
-         endif
-   
-    endif
+        else
 
-endif
+            do j = 0, 232
+                thetab_ITER(j) = 21.8+j*0.1
+                thetab = Thetab_ITER(j)*pi/180.0
+                VRdmax = alphaCW*bw*zMOY*Nu1*fcd/(tan(thetab)+1.0/(tan(thetab)))
+                TRdmax = 2*Nu*alphaCW*fcd*Ak*tk*sin(thetab)*cos(thetab)
+                eq_ITER(j) = VEd/VRdmax+TEd/TRdmax
+                dnstra_ITER(j) = (VEd+2*VEdT)*tan(thetab)/(zMOY*fyd)
+            end do
+
+            countV = 0
+            dnstra = -1
+            thetab = -1
+
+            do j = 0, 232
+                if (eq_ITER(j) .le. 1) then
+                    countV = countV+1
+                    if (countV .eq. 1) then
+                        thetab = thetab_ITER(j)*pi/180.0
+                        dnstra = dnstra_ITER(j)
+                    else
+                        if (dnstra_ITER(j) .lt. dnstra) then
+                            thetab = thetab_ITER(j)*pi/180.0
+                            dnstra = dnstra_ITER(j)
+                        end if
+                    end if
+                end if
+            end do
+
+            if (countV .eq. 0) then
+                ierr = 1
+            end if
+
+        end if
+
+    end if
 
 end subroutine

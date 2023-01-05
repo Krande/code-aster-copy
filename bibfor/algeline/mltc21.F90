@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltc21(p, front, frn, n, t1,&
+subroutine mltc21(p, front, frn, n, t1, &
                   t2, eps, ier)
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION COMPLEXE DE MLTF21
@@ -34,43 +34,43 @@ subroutine mltc21(p, front, frn, n, t1,&
     integer :: dia1, dia2, j, l, m, r, dia21, n1
     complex(kind=8) :: coef1
     m = p/2
-    r = p - 2*m
+    r = p-2*m
     l = n
     dia2 = -n
     do j = 1, m
 !                                            TRAVAIL SUR LE BLOC TRIANGU
-        dia1 = dia2 + n + 1
-        dia2 = dia1 + n + 1
-        dia21 = dia2 + 1
-        l = l - 2
+        dia1 = dia2+n+1
+        dia2 = dia1+n+1
+        dia21 = dia2+1
+        l = l-2
         coef1 = front(dia1+1)
         if (abs(front(dia1)) .lt. eps) then
             ier = 1
             goto 120
         else
             front(dia1+1) = front(dia1+1)/front(dia1)
-            front(dia2) = front(dia2) - front(dia1+1)*coef1
+            front(dia2) = front(dia2)-front(dia1+1)*coef1
 !                                            TRAVAIL SUR LES 2 COLONNES
-            call cclni2(front(dia1+2), front(dia21), l, front(dia1), front(dia2),&
+            call cclni2(front(dia1+2), front(dia21), l, front(dia1), front(dia2), &
                         coef1, t1, t2, eps, ier)
 !                                            MISE A JOUR DES COLONNES SU
-            n1 = p - 2*j
+            n1 = p-2*j
 !     MODIFS POUR STOCKAGE CGEMV
-            call ccl21j(front(dia1), front(dia21+n), frn, j, l,&
+            call ccl21j(front(dia1), front(dia21+n), frn, j, l, &
                         n, n1, t1, t2)
-        endif
+        end if
     end do
 !                                            TRAVAIL SUR LE RESTE DES CO
 !                                            DU SUPERNOEUD
     if (r .eq. 1) then
 !     MODIFS POUR STOCKAGE CGEMV
-        dia1 = dia2 + n + 1
-        dia2 = dia1 + l
-        l = l - 1
-        call cclni1(front(dia1+1), l, front(dia1), t1, eps,&
+        dia1 = dia2+n+1
+        dia2 = dia1+l
+        l = l-1
+        call cclni1(front(dia1+1), l, front(dia1), t1, eps, &
                     ier)
         call ccl11j(front(dia1), frn, l, t1)
-    endif
+    end if
 120 continue
     goto 999
 999 continue

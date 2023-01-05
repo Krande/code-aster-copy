@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfaofi(fid, maa, ind, fam, num,&
-                     attid, attval, attdes, natt, gro,&
+subroutine as_mfaofi(fid, maa, ind, fam, num, &
+                     attid, attval, attdes, natt, gro, &
                      cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     l'argument natt est en "plus"
@@ -43,10 +43,10 @@ subroutine as_mfaofi(fid, maa, ind, fam, num,&
     med_int, allocatable :: attid4(:), attva4(:)
     med_int :: cret4, num4
 !
-    allocate ( attid4(natt) )
-    allocate ( attva4(natt) )
+    allocate (attid4(natt))
+    allocate (attva4(natt))
 !
-    call mfaofi(to_med_idt(fid), maa, to_med_int(ind), fam, attid4,&
+    call mfaofi(to_med_idt(fid), maa, to_med_int(ind), fam, attid4, &
                 attva4, attdes, num4, gro, cret4)
     num = to_aster_int(num4)
     cret = to_aster_int(cret4)
@@ -56,7 +56,7 @@ subroutine as_mfaofi(fid, maa, ind, fam, num,&
     deallocate (attid4)
     deallocate (attva4)
 #else
-    call mfaofi(fid, maa, ind, fam, attid,&
+    call mfaofi(fid, maa, ind, fam, attid, &
                 attval, attdes, num, gro, cret)
 #endif
 !

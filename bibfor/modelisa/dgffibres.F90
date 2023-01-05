@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,33 +52,33 @@ subroutine dgffibres(nboccfib, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgr
     character(len=24) :: valk(3)
 !
     character(len=16) :: limcls(3), ltymcl(3)
-    data limcls/'MAILLE_SECT','GROUP_MA_SECT','TOUT_SECT'/
-    data ltymcl/'MAILLE','GROUP_MA','TOUT'/
+    data limcls/'MAILLE_SECT', 'GROUP_MA_SECT', 'TOUT_SECT'/
+    data ltymcl/'MAILLE', 'GROUP_MA', 'TOUT'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     maxfibre1 = 10
     do ioc = 1, nboccfib
-        iinbgf = iinbgf + 1
+        iinbgf = iinbgf+1
         call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=tousgroupesnom(iinbgf))
 !
         call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=0, nbret=nbvfibre)
         nbvfibre = -nbvfibre
-        maxfibre1 = max(maxfibre1,nbvfibre)
+        maxfibre1 = max(maxfibre1, nbvfibre)
 !       Vérification multiple de 'ncarfi1' pour 'vale' dans 'fibre'
-        if ( modulo(nbvfibre,ncarfi1).ne.0 ) then
+        if (modulo(nbvfibre, ncarfi1) .ne. 0) then
             call codent(nbvfibre, 'G', k7bid)
-            valk(1)=tousgroupesnom(iinbgf)
-            valk(1)='VALE'
-            vali(1)=nbvfibre
-            vali(2)=ncarfi1
+            valk(1) = tousgroupesnom(iinbgf)
+            valk(1) = 'VALE'
+            vali(1) = nbvfibre
+            vali(2) = ncarfi1
             call utmess('F', 'MODELISA6_26', nk=2, valk=valk, ni=2, vali=vali)
-        endif
-        ulnbmailles = ulnbmailles + nbvfibre/ncarfi1
-        nbfibres1   = nbfibres1   + nbvfibre/ncarfi1
-        ulnbnoeuds  = ulnbnoeuds  + nbvfibre/ncarfi1
-        maxmailgrp  = max(maxmailgrp,nbvfibre/ncarfi1)
-        tousgroupesnbf(iinbgf) = tousgroupesnbf(iinbgf) + nbvfibre/ncarfi1
-    enddo
+        end if
+        ulnbmailles = ulnbmailles+nbvfibre/ncarfi1
+        nbfibres1 = nbfibres1+nbvfibre/ncarfi1
+        ulnbnoeuds = ulnbnoeuds+nbvfibre/ncarfi1
+        maxmailgrp = max(maxmailgrp, nbvfibre/ncarfi1)
+        tousgroupesnbf(iinbgf) = tousgroupesnbf(iinbgf)+nbvfibre/ncarfi1
+    end do
 
 end

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mateMFrontAddProperties(mate         , v_mate_read,&
-                                   i_mate_mfront, i_mate_elas, i_mate_add ,&
-                                   l_elas       , l_elas_func, l_elas_istr, l_elas_orth)
+subroutine mateMFrontAddProperties(mate, v_mate_read, &
+                                   i_mate_mfront, i_mate_elas, i_mate_add, &
+                                   l_elas, l_elas_func, l_elas_istr, l_elas_orth)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/codent.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mate
-character(len=32), pointer :: v_mate_read(:)
-integer, intent(in) :: i_mate_mfront, i_mate_elas, i_mate_add
-aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
+    character(len=8), intent(in) :: mate
+    character(len=32), pointer :: v_mate_read(:)
+    integer, intent(in) :: i_mate_mfront, i_mate_elas, i_mate_add
+    aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_new_elas  = i_mate_add .gt. 0
+    l_new_elas = i_mate_add .gt. 0
 !
 ! - Access to elastic material
 !
@@ -73,30 +73,30 @@ aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
     if (i_mate_elas .gt. 0) then
         call codent(i_mate_elas, 'D0', nom)
         noobrc_elas = mate//'.CPT.'//nom
-    endif
+    end if
 !
 ! - Get properties for MFront
 !
     nomrc_mfront = v_mate_read(i_mate_mfront)
-    call mateMFrontGetProperties(nomrc_mfront , l_mfront_func, l_mfront_anis,&
-                                 mfront_nbvale, mfront_prop  , mfront_valr  , mfront_valk)
+    call mateMFrontGetProperties(nomrc_mfront, l_mfront_func, l_mfront_anis, &
+                                 mfront_nbvale, mfront_prop, mfront_valr, mfront_valk)
 !
 ! - Check consistency between MFront/Elasticity and ELAS
 !
     if (l_elas .or. l_elas_istr .or. l_elas_orth) then
-        call mateMFrontCheck(l_mfront_func, l_mfront_anis ,&
-                             noobrc_elas  , l_elas        , l_elas_func , l_elas_istr, l_elas_orth,&
-                             mfront_nbvale, mfront_prop   , mfront_valr , mfront_valk)
-    endif
+        call mateMFrontCheck(l_mfront_func, l_mfront_anis, &
+                             noobrc_elas, l_elas, l_elas_func, l_elas_istr, l_elas_orth, &
+                             mfront_nbvale, mfront_prop, mfront_valr, mfront_valk)
+    end if
 !
 ! - Add elastic properties
 !
     if (l_new_elas) then
         call utmess('I', 'MATERIAL2_15')
-        call mateMFrontAddElasticity(l_mfront_func, l_mfront_anis,&
-                                     mate         , i_mate_add   ,&
-                                     mfront_nbvale, mfront_prop  ,&
-                                     mfront_valr  , mfront_valk)
-    endif
+        call mateMFrontAddElasticity(l_mfront_func, l_mfront_anis, &
+                                     mate, i_mate_add, &
+                                     mfront_nbvale, mfront_prop, &
+                                     mfront_valr, mfront_valk)
+    end if
 !
 end subroutine

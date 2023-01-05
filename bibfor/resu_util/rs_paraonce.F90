@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rs_paraonce(result   , nb_para      , list_para,&
+subroutine rs_paraonce(result, nb_para, list_para, &
                        nb_store_, v_list_store_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -70,20 +70,20 @@ implicit none
 ! - List of storing index
 !
     if (present(nb_store_)) then
-        nb_store     = nb_store_
+        nb_store = nb_store_
         v_list_store = v_list_store_
     else
         call rs_get_liststore(result, nb_store)
-        AS_ALLOCATE(vi = v_list_store, size = nb_store)
+        AS_ALLOCATE(vi=v_list_store, size=nb_store)
         call rs_get_liststore(result, nb_store, v_list_store)
-    endif
+    end if
 !
 ! - Check unicity
 !
     if (nb_store .gt. 1) then
         do i_para = 1, nb_para
             nume_store0 = v_list_store(1)
-            call rsadpa(result, 'L', 1, list_para(i_para), nume_store0,&
+            call rsadpa(result, 'L', 1, list_para(i_para), nume_store0, &
                         1, sjv=jv_para, styp=ctyp)
             para_refe = ' '
             if (ctyp(1:3) .eq. 'K80') then
@@ -98,10 +98,10 @@ implicit none
                 para_refe = zk8(jv_para)
             else
                 ASSERT(.false.)
-            endif
+            end if
             do i_store = 2, nb_store
                 nume_store = v_list_store(i_store)
-                call rsadpa(result, 'L', 1, list_para(i_para), nume_store,&
+                call rsadpa(result, 'L', 1, list_para(i_para), nume_store, &
                             1, sjv=jv_para, styp=ctyp)
                 para_curr = ' '
                 if (ctyp(1:3) .eq. 'K80') then
@@ -116,19 +116,19 @@ implicit none
                     para_curr = zk8(jv_para)
                 else
                     ASSERT(.false.)
-                endif
+                end if
             end do
             if (para_curr .ne. para_refe) then
                 valk(1) = result
                 valk(2) = list_para(i_para)
-                call utmess('F', 'RESULT1_2', nk = 2, valk = valk)
-            endif
+                call utmess('F', 'RESULT1_2', nk=2, valk=valk)
+            end if
         end do
-    endif
+    end if
 !
-    if (.not.present(nb_store_)) then
-        AS_DEALLOCATE(vi = v_list_store)
-    endif
+    if (.not. present(nb_store_)) then
+        AS_DEALLOCATE(vi=v_list_store)
+    end if
 !
     call jedema()
 !

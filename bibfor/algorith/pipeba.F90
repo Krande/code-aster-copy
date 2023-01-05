@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pipeba(ndim, mate, sup, sud, vim,&
+subroutine pipeba(ndim, mate, sup, sud, vim, &
                   dtau, copilo)
 !
 !
@@ -56,19 +56,19 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
     nom(1) = 'GC'
     nom(2) = 'SIGM_C'
     nom(3) = 'PENA_ADHERENCE'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 3, nom, val, cod, 2)
     lc = val(1)/val(2)
     k0 = val(1)/val(2)*val(3)
-    ka = max(vim,k0)
-    kref = max(lc,ka)
+    ka = max(vim, k0)
+    kref = max(lc, ka)
 !
-    c = dtau*kref + ka
+    c = dtau*kref+ka
 !
     ok(1) = 0
     ok(2) = 0
@@ -82,13 +82,13 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
 !    DES SOLUTIONS TRES FORTEMENT EN COMPRESSION QUI FONT EXPLOSER LA
 !    PENALISATION
 !
-    p0=0.d0
-    p1=0.d0
-    p2=0.d0
+    p0 = 0.d0
+    p1 = 0.d0
+    p2 = 0.d0
     do i = 2, ndim
-        p2 = p2 + sud(i)*sud(i)
-        p1 = p1 + sud(i)*sup(i)
-        p0 = p0 + sup(i)*sup(i)
+        p2 = p2+sud(i)*sud(i)
+        p1 = p1+sud(i)*sup(i)
+        p0 = p0+sup(i)*sup(i)
     end do
 !
 !    PAS DE SOLUTION
@@ -104,7 +104,7 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
         eta(1) = rac(2)
         a1(1) = (p1+p2*eta(1))/(kref*c)
         a0(1) = dtau-eta(1)*a1(1)
-    endif
+    end if
 !
     xn = sup(1)+rac(1)*sud(1)
     if (xn .le. 0 .and. xn .ge. -kref) then
@@ -112,16 +112,16 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
         eta(2) = rac(1)
         a1(2) = (p1+p2*eta(2))/(kref*c)
         a0(2) = dtau-eta(2)*a1(2)
-    endif
+    end if
 !
 100 continue
 !
 !
 !    PORTION EN TRACTION : FEL = (SQR(SU(1)**2 + SU(2)**2) - KA) / KREF
 !
-    p2 = ddot(ndim,sud,1,sud,1)
-    p1 = ddot(ndim,sud,1,sup,1)
-    p0 = ddot(ndim,sup,1,sup,1)
+    p2 = ddot(ndim, sud, 1, sud, 1)
+    p1 = ddot(ndim, sud, 1, sup, 1)
+    p0 = ddot(ndim, sup, 1, sup, 1)
 !
 !    PAS DE SOLUTION
     if (p2 .lt. (1.d0/r8gaem()**0.5d0)) goto 200
@@ -135,14 +135,14 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
         eta(3) = rac(2)
         a1(3) = (p1+p2*eta(3))/(kref*c)
         a0(3) = dtau-eta(3)*a1(3)
-    endif
+    end if
 !
     if (sup(1)+rac(1)*sud(1) .gt. 0) then
         ok(4) = 1
         eta(4) = rac(1)
         a1(4) = (p1+p2*eta(4))/(kref*c)
         a0(4) = dtau-eta(4)*a1(4)
-    endif
+    end if
 !
 200 continue
 !
@@ -150,16 +150,16 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
 ! -- CLASSEMENT DES SOLUTIONS
 !
     nsol = ok(1)+ok(2)+ok(3)+ok(4)
-    ASSERT(nsol.le.2)
+    ASSERT(nsol .le. 2)
 !
     j = 0
     do i = 1, 4
         if (ok(i) .eq. 1) then
             j = j+1
             etasol(j) = eta(i)
-            copilo(1 + 2*(j-1)) = a0(i)
-            copilo(2 + 2*(j-1)) = a1(i)
-        endif
+            copilo(1+2*(j-1)) = a0(i)
+            copilo(2+2*(j-1)) = a1(i)
+        end if
     end do
 !
 !    ON RANGE LES SOLUTIONS DANS L'ORDRE CROISSANT (SI NECESSAIRE)
@@ -176,8 +176,8 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
             tmp = copilo(2)
             copilo(2) = copilo(4)
             copilo(4) = tmp
-        endif
-    endif
+        end if
+    end if
 !
 !
 !    TRAITEMENT EN L'ABSENCE DE SOLUTION
@@ -193,7 +193,7 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
         else
             copilo(1) = 1.d0
             copilo(5) = 1.d0
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

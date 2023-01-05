@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,9 +45,9 @@ subroutine split_string(instring, delim, string1, string2)
     if (index .gt. 0) then
         part1 = instr(1:index-1)
         part2 = instr(index+1:)
-    endif
+    end if
     string1 = part1
     if (present(string2)) then
         string2 = part2
-    endif
+    end if
 end subroutine split_string

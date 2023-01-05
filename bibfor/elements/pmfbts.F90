@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,19 +35,19 @@ subroutine pmfbts(b, wi, vs, ve)
 !
     real(kind=8) :: vs(3), b(4), wi, ve(12)
 !
-    ve(1)=-b(1)*vs(1)*wi
-    ve(2)=-b(2)*vs(2)*wi
-    ve(3)=-b(2)*vs(3)*wi
-    ve(4)=0.d0
+    ve(1) = -b(1)*vs(1)*wi
+    ve(2) = -b(2)*vs(2)*wi
+    ve(3) = -b(2)*vs(3)*wi
+    ve(4) = 0.d0
 !
-    ve(5)=b(3)*vs(3)*wi
-    ve(6)=-b(3)*vs(2)*wi
-    ve(7)=-ve(1)
-    ve(8)=-ve(2)
-    ve(9)=-ve(3)
-    ve(10)=0.d0
+    ve(5) = b(3)*vs(3)*wi
+    ve(6) = -b(3)*vs(2)*wi
+    ve(7) = -ve(1)
+    ve(8) = -ve(2)
+    ve(9) = -ve(3)
+    ve(10) = 0.d0
 !
-    ve(11)=b(4)*vs(3)*wi
-    ve(12)=-b(4)*vs(2)*wi
+    ve(11) = b(4)*vs(3)*wi
+    ve(12) = -b(4)*vs(2)*wi
 !
 end subroutine

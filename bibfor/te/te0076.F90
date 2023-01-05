@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0076(option, nomte)
     integer :: icamas, ij, nbres, nuno
     real(kind=8) :: alpha, xnorm, xu, yu
 !-----------------------------------------------------------------------
-    parameter ( nbres=2 )
+    parameter(nbres=2)
     integer :: icodre(nbres)
     character(len=8) :: elrefe, alias8
     character(len=16) :: nomres(nbres)
@@ -64,13 +64,13 @@ subroutine te0076(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
-        if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
-    endif
+        if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
+        if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -83,15 +83,15 @@ subroutine te0076(option, nomte)
     aniso = .false.
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemps)],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
                     1, nomres, valres, icodre, 1)
         lambda = valres(1)
     else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemps)],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
                     2, nomres, valres, icodre, 1)
 !
         lambor(1) = valres(1)
@@ -99,7 +99,7 @@ subroutine te0076(option, nomte)
         aniso = .true.
     else
         call utmess('F', 'ELEMENTS2_63')
-    endif
+    end if
 !
     global = .false.
     if (aniso) then
@@ -107,21 +107,21 @@ subroutine te0076(option, nomte)
         if (zr(icamas) .gt. 0.d0) then
             global = .true.
             alpha = zr(icamas+1)*r8dgrd()
-            p(1,1) = cos(alpha)
-            p(2,1) = sin(alpha)
-            p(1,2) = -sin(alpha)
-            p(2,2) = cos(alpha)
+            p(1, 1) = cos(alpha)
+            p(2, 1) = sin(alpha)
+            p(1, 2) = -sin(alpha)
+            p(2, 2) = cos(alpha)
         else
             orig(1) = zr(icamas+4)
             orig(2) = zr(icamas+5)
-        endif
-    endif
+        end if
+    end if
 !
     call connec(nomte, nse, nnop2, c)
 !
     do i = 1, nnop2
         do j = 1, nnop2
-            mrigt(i,j) = 0.d0
+            mrigt(i, j) = 0.d0
         end do
     end do
 !
@@ -131,57 +131,57 @@ subroutine te0076(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
         do kp = 1, npg
-            k=(kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coorse,&
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, coorse, &
                         poids, dfdx, dfdy)
-            if (lteatt('AXIS','OUI')) then
+            if (lteatt('AXIS', 'OUI')) then
                 r = 0.d0
                 do i = 1, nno
-                    r = r + coorse(2*(i-1)+1)*zr(ivf+k+i-1)
+                    r = r+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
                 end do
                 poids = poids*r
-            endif
+            end if
 !
-            if (.not.global .and. aniso) then
+            if (.not. global .and. aniso) then
                 point(1) = 0.d0
                 point(2) = 0.d0
                 do nuno = 1, nno
-                    point(1)= point(1) + zr(ivf+k+nuno-1)*coorse(2*(nuno-1)+1)
-                    point(2)= point(2) + zr(ivf+k+nuno-1)*coorse(2*(nuno-1)+2)
+                    point(1) = point(1)+zr(ivf+k+nuno-1)*coorse(2*(nuno-1)+1)
+                    point(2) = point(2)+zr(ivf+k+nuno-1)*coorse(2*(nuno-1)+2)
                 end do
 !
-                xu = orig(1) - point(1)
-                yu = orig(2) - point(2)
-                xnorm = sqrt( xu**2 + yu**2 )
-                xu = xu / xnorm
-                yu = yu / xnorm
-                p(1,1) = xu
-                p(2,1) = yu
-                p(1,2) = -yu
-                p(2,2) = xu
-            endif
+                xu = orig(1)-point(1)
+                yu = orig(2)-point(2)
+                xnorm = sqrt(xu**2+yu**2)
+                xu = xu/xnorm
+                yu = yu/xnorm
+                p(1, 1) = xu
+                p(2, 1) = yu
+                p(1, 2) = -yu
+                p(2, 2) = xu
+            end if
 !
             do i = 1, nno
-                if (.not.aniso) then
+                if (.not. aniso) then
                     fluglo(1) = lambda*dfdx(i)
                     fluglo(2) = lambda*dfdy(i)
                 else
-                    fluloc(1) = p(1,1)*dfdx(i) + p(2,1)*dfdy(i)
-                    fluloc(2) = p(1,2)*dfdx(i) + p(2,2)*dfdy(i)
+                    fluloc(1) = p(1, 1)*dfdx(i)+p(2, 1)*dfdy(i)
+                    fluloc(2) = p(1, 2)*dfdx(i)+p(2, 2)*dfdy(i)
                     fluloc(1) = lambor(1)*fluloc(1)
                     fluloc(2) = lambor(2)*fluloc(2)
-                    fluglo(1) = p(1,1)*fluloc(1) + p(1,2)*fluloc(2)
-                    fluglo(2) = p(2,1)*fluloc(1) + p(2,2)*fluloc(2)
-                endif
+                    fluglo(1) = p(1, 1)*fluloc(1)+p(1, 2)*fluloc(2)
+                    fluglo(2) = p(2, 1)*fluloc(1)+p(2, 2)*fluloc(2)
+                end if
 !
                 do j = 1, nno
-                    mrigt(c(ise,i),c(ise,j)) = mrigt(c(ise,i),c(ise,j)) +&
-                    & poids*( fluglo(1)*dfdx(j) + fluglo(2)*dfdy(j) )
+                    mrigt(c(ise, i), c(ise, j)) = mrigt(c(ise, i), c(ise, j))+&
+                    & poids*(fluglo(1)*dfdx(j)+fluglo(2)*dfdy(j))
 !
                 end do
             end do
@@ -194,8 +194,8 @@ subroutine te0076(option, nomte)
     ij = imattt-1
     do i = 1, nnop2
         do j = 1, i
-            ij = ij + 1
-            zr(ij) = mrigt(i,j)
+            ij = ij+1
+            zr(ij) = mrigt(i, j)
         end do
     end do
 end subroutine

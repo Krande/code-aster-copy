@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujma2(fami, kpg, ksp, mod, imat,&
-                  nmat, tempf, angmas, sigd, vind,&
-                  materd, materf, ndt, ndi, nvi,&
+subroutine hujma2(fami, kpg, ksp, mod, imat, &
+                  nmat, tempf, angmas, sigd, vind, &
+                  materd, materf, ndt, ndi, nvi, &
                   nr, matcst)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -65,10 +65,10 @@ subroutine hujma2(fami, kpg, ksp, mod, imat,&
     real(kind=8) :: ptrac, b, phi, m, pc0, degr, d, un, trois
     real(kind=8) :: matert(22, 2)
     integer :: i, j, iret
-    parameter   ( zero  = 0.d0 )
-    parameter   ( un    = 1.d0 )
-    parameter   ( trois = 3.d0 )
-    parameter   ( degr  = 0.0174532925199d0 )
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(trois=3.d0)
+    parameter(degr=0.0174532925199d0)
 !     ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 ! ---  NR     :  NB DE COMPOSANTES MAXIMUM DU SYSTEME NL
@@ -79,14 +79,14 @@ subroutine hujma2(fami, kpg, ksp, mod, imat,&
 ! ---  RECUPERATION DE MATERF, NDT, NDI, NVI ET MATERD
 ! ----------------------------------------------------------------------
     matcst = 'OUI'
-    call hujmat(fami, kpg, ksp, mod, imat,&
+    call hujmat(fami, kpg, ksp, mod, imat, &
                 tempf, matert, ndt, ndi, nvi)
 !
     do i = 1, 22
         do j = 1, 2
-            materd(i,j) = matert(i,j)
-            materf(i,j) = matert(i,j)
-        enddo
+            materd(i, j) = matert(i, j)
+            materf(i, j) = matert(i, j)
+        end do
     end do
 !
 ! ----------------------------------------------------------------------
@@ -97,28 +97,28 @@ subroutine hujma2(fami, kpg, ksp, mod, imat,&
         sigd(5) = zero
         sigd(6) = zero
         ndt = 6
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- CONTROLE DES EQUILIBRES DE SEUILS PLASTIQUES
 ! ----------------------------------------------------------------------
 ! --- 1 ORIENTATION DES CONTRAINTES SELON ANGMAS VERS REPERE LOCAL
     if (angmas(1) .eq. r8vide()) then
         call utmess('F', 'ALGORITH8_20')
-    endif
-    reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero)&
-     &         .or. (angmas(3).ne.zero)
-    call hujori('LOCAL', 1, reorie, angmas, sigd,&
+    end if
+    reorie = (angmas(1) .ne. zero) .or. (angmas(2) .ne. zero)&
+     &         .or. (angmas(3) .ne. zero)
+    call hujori('LOCAL', 1, reorie, angmas, sigd, &
                 bid66)
 !
 ! --- 2 INITIALISATION SEUIL DEVIATOIRE SI NUL
-    ptrac = materf(21,2)
+    ptrac = materf(21, 2)
     do i = 1, ndi
         if (vind(i) .eq. zero) then
             if (materf(13, 2) .eq. zero) then
                 vind(i) = 1.d-3
             else
-                vind(i) = materf(13,2)
-            endif
+                vind(i) = materf(13, 2)
+            end if
 !
             call hujcrd(i, matert, sigd, vind, seuil, iret)
             ASSERT(iret .eq. 0)
@@ -128,24 +128,24 @@ subroutine hujma2(fami, kpg, ksp, mod, imat,&
 !     APPROPRIEE
             if (seuil .gt. zero) then
                 call hujprj(i, sigd, tin, piso, q)
-                piso = piso - ptrac
-                b = materf(4,2)
-                phi = materf(5,2)
+                piso = piso-ptrac
+                b = materf(4, 2)
+                phi = materf(5, 2)
                 m = sin(degr*phi)
-                pc0 = materf(7,2)
+                pc0 = materf(7, 2)
                 vind(i) = -q/(m*piso*(un-b*log(piso/pc0)))
                 vind(23+i) = un
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
 !
 ! ---> 3 INITIALISATION SEUIL ISOTROPE SI NUL
     if (vind(4) .eq. zero) then
         if (materf(14, 2) .eq. zero) then
             vind(4) = 1.d-3
         else
-            vind(4) = materf(14,2)
-        endif
+            vind(4) = materf(14, 2)
+        end if
 !
         call hujcri(matert, sigd, vind, seuil)
 !
@@ -155,15 +155,15 @@ subroutine hujma2(fami, kpg, ksp, mod, imat,&
 !
         if (seuil .gt. zero) then
             piso = (sigd(1)+sigd(2)+sigd(3))/trois
-            d = materf(3,2)
-            pc0 = materf(7,2)
+            d = materf(3, 2)
+            pc0 = materf(7, 2)
             vind(4) = piso/(d*pc0)
             if (vind(4) .gt. 1.d0) then
                 call utmess('F', 'COMPOR1_83')
-            endif
-            vind(27)= un
-        endif
-    endif
+            end if
+            vind(27) = un
+        end if
+    end if
 !
 ! ---> 4 INITIALISATION SEUIL CYCLIQUE SI NUL
     do i = 1, ndi
@@ -171,26 +171,26 @@ subroutine hujma2(fami, kpg, ksp, mod, imat,&
             if (materf(18, 2) .eq. zero) then
                 vind(4+i) = 1.d-3
             else
-                vind(4+i) = materf(18,2)
-            endif
-        endif
-    enddo
+                vind(4+i) = materf(18, 2)
+            end if
+        end if
+    end do
 !
     if (vind(8) .eq. zero) then
         if (materf(19, 2) .eq. zero) then
             vind(8) = 1.d-3
         else
-            vind(8) = materf(19,2)
-        endif
-    endif
+            vind(8) = materf(19, 2)
+        end if
+    end if
 !
 ! --- 5 CONTROLE DES INDICATEURS DE PLASTICITE
     do i = 1, 4
-        if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i)=-un
-    enddo
+        if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i) = -un
+    end do
 !
 ! --- 7 ORIENTATION DES CONTRAINTES SELON ANGMAS VERS REPERE GLOBAL
-    call hujori('GLOBA', 1, reorie, angmas, sigd,&
+    call hujori('GLOBA', 1, reorie, angmas, sigd, &
                 bid66)
 !
 ! ----------------------------------------------------------------------

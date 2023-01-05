@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romAlgoNLInit(phenom, model, mesh, numeDof, resultName, paraAlgo, lLineSearch_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
@@ -32,12 +32,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=4), intent(in) :: phenom
-character(len=24), intent(in) :: model
-character(len=8), intent(in) :: mesh, resultName
-character(len=24), intent(in) :: numeDof
-type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
-aster_logical, intent(in), optional :: lLineSearch_
+    character(len=4), intent(in) :: phenom
+    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: mesh, resultName
+    character(len=24), intent(in) :: numeDof
+    type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
+    aster_logical, intent(in), optional :: lLineSearch_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,14 +68,14 @@ aster_logical, intent(in), optional :: lLineSearch_
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_37')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    l_hrom        = paraAlgo%l_hrom
+    l_hrom = paraAlgo%l_hrom
     l_hrom_corref = paraAlgo%l_hrom_corref
-    nbMode        = paraAlgo%ds_empi%nbMode
-    mode          = paraAlgo%ds_empi%mode
+    nbMode = paraAlgo%ds_empi%nbMode
+    mode = paraAlgo%ds_empi%mode
 !
 ! - Check ROM algorithm datastructure
 !
@@ -85,13 +85,13 @@ aster_logical, intent(in), optional :: lLineSearch_
 !
     if (l_hrom) then
         call romFieldNodesAreDefined(mode, paraAlgo%v_equa_int, numeDof, paraAlgo%grnode_int)
-    endif
+    end if
 !
 ! - Prepare the list of equation of internal interface
 !
     if (l_hrom_corref) then
         call romFieldNodesAreDefined(mode, paraAlgo%v_equa_sub, numeDof, paraAlgo%grnode_sub)
-    endif
+    end if
 !
 ! - Initializations for EF correction
 !
@@ -99,7 +99,7 @@ aster_logical, intent(in), optional :: lLineSearch_
 !
 ! - Create object for reduced coordinates
 !
-    call wkvect(paraAlgo%gamma, 'V V R', nbMode, vr = v_gamma)
+    call wkvect(paraAlgo%gamma, 'V V R', nbMode, vr=v_gamma)
 !
 ! - Create datastructure of table in results datastructure for the reduced coordinates
 !

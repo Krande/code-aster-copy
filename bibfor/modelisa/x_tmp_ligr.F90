@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,21 +102,21 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
     if (present(list_cells)) then
         ASSERT(present(n_list_cells))
         all_cells = .false.
-    endif
+    end if
     if (present(n_list_cells)) then
         ASSERT(present(list_cells))
-    endif
+    end if
 !
 ! - Give a name for temporary LIGREL used to compute GRAD_NEUT_R option
 !
-    liel   = ligrel//'.LIEL'
-    lgrf   = ligrel//'.LGRF'
-    nbno   = ligrel//'.NBNO'
+    liel = ligrel//'.LIEL'
+    lgrf = ligrel//'.LGRF'
+    nbno = ligrel//'.NBNO'
 !
 ! - Common definition for ligrel SD
 !
-    call wkvect(lgrf, 'V V K8', 2, vk8 = p_ligrel_lgrf)
-    call wkvect(nbno, 'V V I' , 1, vi  = p_ligrel_nbno)
+    call wkvect(lgrf, 'V V K8', 2, vk8=p_ligrel_lgrf)
+    call wkvect(nbno, 'V V I', 1, vi=p_ligrel_nbno)
     call jeecra(lgrf, 'DOCU', cval='MECA')
     p_ligrel_lgrf(1) = mesh
 !   no sd_model => no sd_partition to get for this ligrel :
@@ -136,20 +136,20 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 ! ----- Get list of all cells of dimension "ndim" that belong to mesh
 !
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
-        ASSERT(nbma.gt.0)
+        ASSERT(nbma .gt. 0)
         AS_ALLOCATE(vi=lmatout, size=nbma)
         AS_ALLOCATE(vi=lmatmp, size=nbma)
-        do i=1,nbma
+        do i = 1, nbma
             lmatout(i) = i
-            lmatmp(i)  = 0
-        enddo
+            lmatmp(i) = 0
+        end do
 !
         call utflm2(mesh, lmatout, nbma, ndim, ' ', nmaprin, lmatmp)
         ASSERT(nmaprin .gt. 0)
         AS_ALLOCATE(vi=lmaprin, size=nmaprin)
-        do i=1,nmaprin
+        do i = 1, nmaprin
             lmaprin(i) = lmatmp(i)
-        enddo
+        end do
         AS_DEALLOCATE(vi=lmatout)
         AS_DEALLOCATE(vi=lmatmp)
 !
@@ -159,7 +159,7 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 !
         call jeveuo(list_cells, 'L', vi=p_list_cells)
 !
-    endif
+    end if
 !
 ! - Get number of cells to treat
 !
@@ -167,12 +167,12 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
         ncells = nmaprin
     else
         ncells = n_list_cells
-    endif
+    end if
     ASSERT(ncells .gt. 0)
 !
 ! - Set modelisation type acording to dimension "ndim"
 !
-    phenom    = 'PRESENTATION    '
+    phenom = 'PRESENTATION    '
     modeli(1) = '                '
     modeli(2) = '2D_GEOM         '
     modeli(3) = '3D_GEOM         '
@@ -188,15 +188,15 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 !
 ! - Count number of GREL - Elements
 !
-    nb_grel    = 0
+    nb_grel = 0
     nu_typ_el2 = 0
-    do i=1,ncells
+    do i = 1, ncells
 !
         if (all_cells) then
             nu_ma = lmaprin(i)
         else
             nu_ma = p_list_cells(i)
-        endif
+        end if
 !
         nu_typ_ma = p_mesh_type_geom(nu_ma)
 !       current cell dimension != mesh dimension => fatal error
@@ -208,9 +208,9 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
         ASSERT(nu_typ_el1 .gt. 0)
         if (nu_typ_el1 .ne. nu_typ_el2) then
             nu_typ_el2 = nu_typ_el1
-            nb_grel    = nb_grel+1
-        endif
-    enddo
+            nb_grel = nb_grel+1
+        end if
+    end do
 !
 ! - Create LIEL
 !
@@ -221,17 +221,17 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 !
 ! - Store GREL in LIEL - Elements
 !
-    nu_typ_el2  = 0
-    nume_grel   = 0
-    long_grel   = 0
+    nu_typ_el2 = 0
+    nume_grel = 0
+    long_grel = 0
     idx_in_grel = 0
-    do i=1,ncells
+    do i = 1, ncells
 !
         if (all_cells) then
             nu_ma = lmaprin(i)
         else
             nu_ma = p_list_cells(i)
-        endif
+        end if
 !
         nu_typ_ma = p_mesh_type_geom(nu_ma)
         nu_typ_el1 = p_cata_typ_el(nu_typ_ma)
@@ -239,18 +239,18 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 ! ----- Create new GREL
 !
         if (nu_typ_el1 .ne. nu_typ_el2 .and. nu_typ_el2 .ne. 0) then
-            nume_grel   = nume_grel+1
-            long_grel   = long_grel+1
+            nume_grel = nume_grel+1
+            long_grel = long_grel+1
             idx_in_grel = idx_in_grel+1
             p_liel(idx_in_grel) = nu_typ_el2
             call jecroc(jexnum(liel, nume_grel))
             call jeecra(jexnum(liel, nume_grel), 'LONMAX', long_grel)
             long_grel = 0
-        endif
+        end if
 !
 ! ------ Add element in GREL
 !
-        long_grel   = long_grel+1
+        long_grel = long_grel+1
         idx_in_grel = idx_in_grel+1
         p_liel(idx_in_grel) = nu_ma
         nu_typ_el2 = nu_typ_el1
@@ -258,13 +258,13 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 ! ----- Last element
 !
         if (i .eq. ncells) then
-            nume_grel   = nume_grel+1
-            long_grel   = long_grel+1
+            nume_grel = nume_grel+1
+            long_grel = long_grel+1
             idx_in_grel = idx_in_grel+1
             p_liel(idx_in_grel) = nu_typ_el2
             call jecroc(jexnum(liel, nume_grel))
             call jeecra(jexnum(liel, nume_grel), 'LONMAX', long_grel)
-        endif
+        end if
     end do
 !
 ! - Automatic GREL size adaptation
@@ -283,7 +283,7 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 !
     if (all_cells) then
         AS_DEALLOCATE(vi=lmaprin)
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apinfr(sdappa, questi_, i_poin, valr)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -58,17 +58,17 @@ implicit none
     valr = 0.d0
     sdappa_proj = sdappa(1:19)//'.PROJ'
     sdappa_dist = sdappa(1:19)//'.DIST'
-    call jeveuo(sdappa_proj, 'L', vr = v_sdappa_proj)
-    call jeveuo(sdappa_dist, 'L', vr = v_sdappa_dist)
+    call jeveuo(sdappa_proj, 'L', vr=v_sdappa_proj)
+    call jeveuo(sdappa_dist, 'L', vr=v_sdappa_dist)
 !
     if (questi_ .eq. 'APPARI_PROJ_KSI1') then
         valr = v_sdappa_proj(2*(i_poin-1)+1)
-    else if (questi_.eq.'APPARI_PROJ_KSI2') then
+    else if (questi_ .eq. 'APPARI_PROJ_KSI2') then
         valr = v_sdappa_proj(2*(i_poin-1)+2)
-    else if (questi_.eq.'APPARI_DIST') then
+    else if (questi_ .eq. 'APPARI_DIST') then
         valr = v_sdappa_dist(4*(i_poin-1)+1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

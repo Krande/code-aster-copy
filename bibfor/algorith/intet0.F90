@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,55 +41,55 @@ subroutine intet0(angle, tet0, iax)
 !
     do i = 1, 10
         do j = 1, 10
-            tet0(i,j)=0.d0
+            tet0(i, j) = 0.d0
         end do
     end do
 !
-    a=cos(angle)
-    b=sin(angle)
+    a = cos(angle)
+    b = sin(angle)
 !
     if (iax .eq. 3) then
         do i = 1, 2
-            jj=3*(i-1)
-            tet0(jj+1,jj+1)=a
-            tet0(jj+2,jj+2)=a
-            tet0(jj+1,jj+2)=-b
-            tet0(jj+2,jj+1)=b
-            tet0(jj+3,jj+3)=1.d0
+            jj = 3*(i-1)
+            tet0(jj+1, jj+1) = a
+            tet0(jj+2, jj+2) = a
+            tet0(jj+1, jj+2) = -b
+            tet0(jj+2, jj+1) = b
+            tet0(jj+3, jj+3) = 1.d0
         end do
-        tet0(7,7)=1.d0
-        tet0(8,8)=1.d0
-        tet0(9,9)=1.d0
-        tet0(10,10)=1.d0
-    else if (iax.eq.2) then
+        tet0(7, 7) = 1.d0
+        tet0(8, 8) = 1.d0
+        tet0(9, 9) = 1.d0
+        tet0(10, 10) = 1.d0
+    else if (iax .eq. 2) then
         do i = 1, 2
-            jj=3*(i-1)
-            tet0(jj+1,jj+1)=a
-            tet0(jj+3,jj+3)=a
-            tet0(jj+1,jj+3)=b
-            tet0(jj+3,jj+1)=-b
-            tet0(jj+2,jj+2)=1.d0
+            jj = 3*(i-1)
+            tet0(jj+1, jj+1) = a
+            tet0(jj+3, jj+3) = a
+            tet0(jj+1, jj+3) = b
+            tet0(jj+3, jj+1) = -b
+            tet0(jj+2, jj+2) = 1.d0
         end do
-        tet0(7,7)=1.d0
-        tet0(8,8)=1.d0
-        tet0(9,9)=1.d0
-        tet0(10,10)=1.d0
-    else if (iax.eq.1) then
+        tet0(7, 7) = 1.d0
+        tet0(8, 8) = 1.d0
+        tet0(9, 9) = 1.d0
+        tet0(10, 10) = 1.d0
+    else if (iax .eq. 1) then
         do i = 1, 2
-            jj=3*(i-1)
-            tet0(jj+2,jj+2)=a
-            tet0(jj+3,jj+3)=a
-            tet0(jj+2,jj+3)=-b
-            tet0(jj+3,jj+2)=b
-            tet0(jj+1,jj+1)=1.d0
+            jj = 3*(i-1)
+            tet0(jj+2, jj+2) = a
+            tet0(jj+3, jj+3) = a
+            tet0(jj+2, jj+3) = -b
+            tet0(jj+3, jj+2) = b
+            tet0(jj+1, jj+1) = 1.d0
         end do
-        tet0(7,7)=1.d0
-        tet0(8,8)=1.d0
-        tet0(9,9)=1.d0
-        tet0(10,10)=1.d0
+        tet0(7, 7) = 1.d0
+        tet0(8, 8) = 1.d0
+        tet0(9, 9) = 1.d0
+        tet0(10, 10) = 1.d0
     else
         call utmess('F', 'ALGORITH13_28')
-    endif
+    end if
 !
 !
 end subroutine

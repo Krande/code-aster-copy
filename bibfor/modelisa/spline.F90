@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine spline(x, y, n, dy1, dyn,&
+subroutine spline(x, y, n, dy1, dyn, &
                   d2y, iret)
     implicit none
 ! DESCRIPTION : INTERPOLATION SPLINE CUBIQUE
@@ -84,28 +84,28 @@ subroutine spline(x, y, n, dy1, dyn,&
     if (n .lt. 3) then
         iret = 1
         goto 999
-    endif
+    end if
 !
-    bignum = 0.99d0 / r8miem()
+    bignum = 0.99d0/r8miem()
 !
     if (dble(abs(dy1)) .gt. bignum) then
         d2y(1) = 0.0d0
         work(1) = 0.0d0
     else
         d2y(1) = -0.5d0
-        work(1) = 3.0d0/(x(2)-x(1)) * ( (y(2)-y(1))/(x(2)-x(1)) - dy1 )
-    endif
+        work(1) = 3.0d0/(x(2)-x(1))*((y(2)-y(1))/(x(2)-x(1))-dy1)
+    end if
 !
     do i = 2, n-1
         sig = (x(i)-x(i-1))/(x(i+1)-x(i-1))
-        p = sig * d2y(i-1) + 2.0d0
-        d2y(i) = (sig-1.0d0) / p
-        work(i) = (&
-                  6.0d0 * (&
-                  (y(i+1)-y(i))/(x(i+1)-x(i)) - (y(i)- y(i-1))/(x(i)-x(i-1)) ) / (x(i+1)-x(i-1)&
-                  ) - sig * work(1+i-2&
-                  )&
-                  ) / p
+        p = sig*d2y(i-1)+2.0d0
+        d2y(i) = (sig-1.0d0)/p
+        work(i) = ( &
+                  6.0d0*( &
+                  (y(i+1)-y(i))/(x(i+1)-x(i))-(y(i)-y(i-1))/(x(i)-x(i-1)))/(x(i+1)-x(i-1) &
+                                                                            )-sig*work(1+i-2 &
+                                                                                       ) &
+                  )/p
     end do
 !
     if (dble(abs(dyn)) .gt. bignum) then
@@ -113,12 +113,12 @@ subroutine spline(x, y, n, dy1, dyn,&
         un = 0.0d0
     else
         qn = 0.5d0
-        un = 3.0d0/(x(n)-x(n-1)) * ( dyn - (y(n)-y(n-1))/(x(n)-x(n-1)) )
-    endif
+        un = 3.0d0/(x(n)-x(n-1))*(dyn-(y(n)-y(n-1))/(x(n)-x(n-1)))
+    end if
 !
     d2y(n) = (un-qn*work(1+n-2))/(qn*d2y(n-1)+1.0d0)
     do i = n-1, 1, -1
-        d2y(i) = d2y(i) * d2y(i+1) + work(i)
+        d2y(i) = d2y(i)*d2y(i+1)+work(i)
     end do
 !
 999 continue

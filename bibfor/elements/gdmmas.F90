@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gdmmas(kp, nno, pjacob, en, grani,&
+subroutine gdmmas(kp, nno, pjacob, en, grani, &
                   rot0, mass)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE LA
@@ -48,31 +48,31 @@ subroutine gdmmas(kp, nno, pjacob, en, grani,&
     zero = 0.d0
     do j = 1, 6
         do i = 1, 6
-            imas(i,j) = zero
+            imas(i, j) = zero
         end do
     end do
 !
     do i = 1, 3
-        imas(i,i) = grani(4)
+        imas(i, i) = grani(4)
     end do
 !
     do j = 1, 3
         do i = 1, 3
-            amat1(i,j) = grani(i) * rot0(j,i)
+            amat1(i, j) = grani(i)*rot0(j, i)
         end do
     end do
-    call promat(rot0, 3, 3, 3, amat1,&
+    call promat(rot0, 3, 3, 3, amat1, &
                 3, 3, 3, iro)
 !
     do j = 1, 3
         do i = 1, 3
-            imas(3+i,3+j) = iro(i,j)
+            imas(3+i, 3+j) = iro(i, j)
         end do
     end do
 !
     do j = 1, nno
         do i = 1, nno
-            coef = pjacob * en(i,kp) * en(j,kp)
+            coef = pjacob*en(i, kp)*en(j, kp)
             call cumuma(i, j, imas, coef, mass)
         end do
     end do

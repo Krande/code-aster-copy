@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36sp(nbm, ima, ipt, c, k,&
-                  cara, mati, pi, mi, matj,&
-                  pj, mj, mse, nbthp, nbthq,&
-                  ioc1, ioc2, spij, typeke, spmeca,&
+subroutine rc36sp(nbm, ima, ipt, c, k, &
+                  cara, mati, pi, mi, matj, &
+                  pj, mj, mse, nbthp, nbthq, &
+                  ioc1, ioc2, spij, typeke, spmeca, &
                   spther)
 ! aslint: disable=W1504
     implicit none
@@ -59,25 +59,25 @@ subroutine rc36sp(nbm, ima, ipt, c, k,&
 !
 ! --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 !
-    pij = abs( pi - pj )
+    pij = abs(pi-pj)
 !
 ! --- VARIATION DE MOMENT RESULTANT
 !
     mij = 0.d0
     do icmp = 1, 3
-        xx = mse(icmp) + abs( mi(icmp) - mj(icmp) )
-        mij = mij + xx**2
+        xx = mse(icmp)+abs(mi(icmp)-mj(icmp))
+        mij = mij+xx**2
     end do
-    mij = sqrt( mij )
+    mij = sqrt(mij)
 !
 ! --- LE MATERIAU
 !
-    e = max ( mati(2) , matj(2) )
-    nu = max ( mati(3) , matj(3) )
-    alpha = max ( mati(4) , matj(4) )
-    alphaa = max ( mati(7) , matj(7) )
-    alphab = max ( mati(8) , matj(8) )
-    eab = max ( mati(9) , matj(9) )
+    e = max(mati(2), matj(2))
+    nu = max(mati(3), matj(3))
+    alpha = max(mati(4), matj(4))
+    alphaa = max(mati(7), matj(7))
+    alphab = max(mati(8), matj(8))
+    eab = max(mati(9), matj(9))
 !
 ! --- LES CARACTERISTIQUES
 !
@@ -91,68 +91,68 @@ subroutine rc36sp(nbm, ima, ipt, c, k,&
 !
 ! ------ CALCUL DU SP:
 !        -------------
-        sp1 = k(1)*c(1)*pij*d0 / 2 / ep
-        sp2 = k(2)*c(2)*d0*mij / 2 / inert
-        sp3 = k(3)*e*alpha / 2 / (1.d0-nu)
+        sp1 = k(1)*c(1)*pij*d0/2/ep
+        sp2 = k(2)*c(2)*d0*mij/2/inert
+        sp3 = k(3)*e*alpha/2/(1.d0-nu)
 !
         sp4 = k(3)*c(3)*eab
-        sp5 = e*alpha / (1.d0-nu)
+        sp5 = e*alpha/(1.d0-nu)
 !
 ! ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 !
-        call rcsp01(nbm, ima, ipt, sp3, sp4,&
-                    sp5, alphaa, alphab, nbthp, ioc1,&
+        call rcsp01(nbm, ima, ipt, sp3, sp4, &
+                    sp5, alphaa, alphab, nbthp, ioc1, &
                     sp6)
 !
-        spp = sp1 + sp2 + sp6
+        spp = sp1+sp2+sp6
 !
 !
 ! ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
 !
-        call rcsp01(nbm, ima, ipt, sp3, sp4,&
-                    sp5, alphaa, alphab, nbthq, ioc2,&
+        call rcsp01(nbm, ima, ipt, sp3, sp4, &
+                    sp5, alphaa, alphab, nbthq, ioc2, &
                     sp6)
 !
-        spq = sp1 + sp2 + sp6
+        spq = sp1+sp2+sp6
 !
-        spij = max ( spp, spq )
+        spij = max(spp, spq)
 !
 ! --- CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
 !
-    else if (typeke.gt.0.d0) then
+    else if (typeke .gt. 0.d0) then
 !
 ! ------ CALCUL DU SP:
 !        -------------
-        sp1 = k(1)*c(1)*pij*d0 / 2 / ep
-        sp2 = k(2)*c(2)*d0*mij / 2 / inert
+        sp1 = k(1)*c(1)*pij*d0/2/ep
+        sp2 = k(2)*c(2)*d0*mij/2/inert
 !
-        spmeca=sp1+sp2
+        spmeca = sp1+sp2
 !
-        sp3 = k(3)*e*alpha / 2 / (1.d0-nu)
+        sp3 = k(3)*e*alpha/2/(1.d0-nu)
         sp4 = k(3)*c(3)*eab
-        sp5 = e*alpha / (1.d0-nu)
+        sp5 = e*alpha/(1.d0-nu)
 !
 ! ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 !
-        call rcsp01(nbm, ima, ipt, sp3, sp4,&
-                    sp5, alphaa, alphab, nbthp, ioc1,&
+        call rcsp01(nbm, ima, ipt, sp3, sp4, &
+                    sp5, alphaa, alphab, nbthp, ioc1, &
                     sp6)
 !
         spp = sp6
-        spther = max(spther,spp)
+        spther = max(spther, spp)
 !
 ! ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
 !
-        call rcsp01(nbm, ima, ipt, sp3, sp4,&
-                    sp5, alphaa, alphab, nbthq, ioc2,&
+        call rcsp01(nbm, ima, ipt, sp3, sp4, &
+                    sp5, alphaa, alphab, nbthq, ioc2, &
                     sp6)
 !
         spq = sp6
-        spther = max(spther,spq)
+        spther = max(spther, spq)
 !
     else
         call utmess('F', 'POSTRCCM_31')
 !
-    endif
+    end if
 !
 end subroutine

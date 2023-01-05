@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cnonor(nomo, gran, base, cno)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -41,13 +41,13 @@ implicit none
 #include "asterfort/vericp.h"
 #include "asterfort/wkvect.h"
 !
-character(len=1) :: base
-character(len=8) :: nomo, gran, cno
+    character(len=1) :: base
+    character(len=8) :: nomo, gran, cno
 ! BUT :     COMMANDE : CREA_CHAMP/OPERATION:'NORMALE'
 ! ----------------------------------------------------------------------
     integer :: nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
     integer :: ndim, nbno, nbnoeu, idim, nn, nbma, nbcomp, nbtyp, lonval, icomp
-    integer :: ic, iec, iand, jlma,   jnno, jval, jnbca, jdesc
+    integer :: ic, iec, iand, jlma, jnno, jval, jnbca, jdesc
     real(kind=8) :: valr(3)
     character(len=2) :: typval
     character(len=8) :: k8b, resu, noma, typmcl(4), nocmp(3), listyp(11)
@@ -65,13 +65,13 @@ character(len=8) :: nomo, gran, cno
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', gran), numgd)
     if (numgd .eq. 0) then
-        valk (1) = gran
+        valk(1) = gran
         call utmess('F', 'UTILITAI6_1', sk=valk(1))
-    endif
+    end if
     call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', gran), 'L', iacmp)
     call jeveuo(jexatr('&CATA.GD.NOMCMP', 'LONCUM'), 'L', iav)
-    ncmpmx = zi(iav+numgd) - zi(iav+numgd-1)
+    ncmpmx = zi(iav+numgd)-zi(iav+numgd-1)
 !
     call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
 !
@@ -106,17 +106,17 @@ character(len=8) :: nomo, gran, cno
         listyp(9) = 'SEG3'
         listyp(10) = 'SEG4'
         listyp(11) = 'TRIA7'
-    endif
+    end if
 !
 ! --- VERIFICATION QUE LES COMPOSANTES APPARTIENNENT A LA GRANDEUR
 !
     do i = 1, nbcomp
         call vericp(zk8(iacmp), nocmp(i), ncmpmx, iret)
         if (iret .ne. 0) then
-            valk (1) = gran
-            valk (2) = nocmp(i)
+            valk(1) = gran
+            valk(2) = nocmp(i)
             call utmess('F', 'UTILITAI6_11', nk=2, valk=valk)
-        endif
+        end if
     end do
 !
 ! --- LISTE DES MAILLES A TRAITER
@@ -128,20 +128,20 @@ character(len=8) :: nomo, gran, cno
     typmcl(1) = 'MAILLE'
     typmcl(2) = 'GROUP_MA'
 !
-    call reliem(' ', noma, 'NU_MAILLE', motclf, 1,&
+    call reliem(' ', noma, 'NU_MAILLE', motclf, 1, &
                 2, motcle, typmcl, mesmai, nbma)
     call jeveuo(mesmai, 'L', jlma)
 !
-    call nbnlma(noma, nbma   , zi(jlma), nbtyp, listyp,&
+    call nbnlma(noma, nbma, zi(jlma), nbtyp, listyp, &
                 nbno, l_error, elem_error)
     if (l_error) then
-        call utmess('F', 'CREACHAMP1_15', sk = elem_error)
-    endif
+        call utmess('F', 'CREACHAMP1_15', sk=elem_error)
+    end if
     call jeveuo('&&NBNLMA.LN', 'L', vi=ln)
 !
 ! --- DETERMINATION DES NORMALES
 !
-    call canort(noma, nbma, zi(jlma), ndim, nbno,&
+    call canort(noma, nbma, zi(jlma), ndim, nbno, &
                 ln, 1)
 !
     call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
@@ -164,14 +164,14 @@ character(len=8) :: nomo, gran, cno
 !
     do ii = 1, nbno
         ino = ln(ii)
-        call jenuno(jexnum(nomnoe, ino ), zk8(jnno+ino-1))
+        call jenuno(jexnum(nomnoe, ino), zk8(jnno+ino-1))
 !
         do idim = 1, ndim
             valr(idim) = normale(ndim*(ii-1)+idim)
-        enddo
+        end do
 !
-        call affeno(1, ino, nocmp, nbcomp, zk8(iacmp),&
-                    ncmpmx, valr, k8b, zi(jdesc), zr(jval),&
+        call affeno(1, ino, nocmp, nbcomp, zk8(iacmp), &
+                    ncmpmx, valr, k8b, zi(jdesc), zr(jval), &
                     k8b, typval, nec)
 !
     end do
@@ -182,20 +182,20 @@ character(len=8) :: nomo, gran, cno
     do ino = 1, nbnoeu
         icomp = 0
         do ic = 1, ncmpmx
-            iec = (ic-1)/30 + 1
-            jj = ic - 30* (iec-1)
+            iec = (ic-1)/30+1
+            jj = ic-30*(iec-1)
             ii = 2**jj
-            nn = iand(zi(jdesc+ (ino-1)*nec+iec-1),ii)
+            nn = iand(zi(jdesc+(ino-1)*nec+iec-1), ii)
             if (nn .gt. 0) then
-                icomp = icomp + 1
-            endif
+                icomp = icomp+1
+            end if
         end do
         zi(jnbca-1+ino) = icomp
-        lonval = lonval + icomp
+        lonval = lonval+icomp
     end do
 !
-    call afchno(resu, base, gran, noma, nbnoeu,&
-                zi(jnbca), zi(jdesc), lonval, typval, zr(jval),&
+    call afchno(resu, base, gran, noma, nbnoeu, &
+                zi(jnbca), zi(jdesc), lonval, typval, zr(jval), &
                 zc(jval), k8b)
 !
     call jedema()

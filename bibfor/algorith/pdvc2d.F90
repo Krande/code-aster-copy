@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 function pdvc2d(v1, v2)
 !
-implicit none
+    implicit none
 !
-real(kind=8) :: pdvc2d
-real(kind=8), intent(in) :: v1(2), v2(2)
+    real(kind=8) :: pdvc2d
+    real(kind=8), intent(in) :: v1(2), v2(2)
 !
-pdvc2d = v1(1)*v2(2)-v1(2)*v2(1)
+    pdvc2d = v1(1)*v2(2)-v1(2)*v2(1)
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
+subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc, &
                   dddepl, ddvite, ddacce)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -76,8 +76,8 @@ subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lstat = ndynlo(sddyna,'STATIQUE')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    lstat = ndynlo(sddyna, 'STATIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
 ! --- TYPE DE FORMULATION SCHEMA DYNAMIQUE GENERAL
 !
@@ -86,12 +86,12 @@ subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
         lvite = .false.
         lacce = .false.
     else if (ldyna) then
-        ldepl = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1
-        lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
-        lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
+        ldepl = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1
+        lvite = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 2
+        lacce = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CALCUL DES INCREMENTS
 !
@@ -100,11 +100,11 @@ subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
         if (coevit .ne. 0.d0) then
             call vtzero(ddvite)
             call vtaxpy(coevit, ddincr, ddvite)
-        endif
+        end if
         if (coeacc .ne. 0.d0) then
             call vtzero(ddacce)
             call vtaxpy(coeacc, ddincr, ddacce)
-        endif
+        end if
     else if (lvite) then
         call copisd('CHAMP_GD', 'V', ddincr, ddvite)
         call vtzero(dddepl)
@@ -121,7 +121,7 @@ subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     call jedema()

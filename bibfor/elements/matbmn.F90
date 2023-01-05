@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matbmn(nb1, vectt, dudxnx, jdn1nx, jdn2nx,&
+subroutine matbmn(nb1, vectt, dudxnx, jdn1nx, jdn2nx, &
                   b1mnx, b2mnx)
 !
     implicit none
@@ -27,19 +27,19 @@ subroutine matbmn(nb1, vectt, dudxnx, jdn1nx, jdn2nx,&
     integer :: nb1
 !
 !
-    real(kind=8) :: vectt ( 3 , 3 )
+    real(kind=8) :: vectt(3, 3)
 !
-    real(kind=8) :: dudxnx ( 9 )
+    real(kind=8) :: dudxnx(9)
 !
-    real(kind=8) :: jdn1nx ( 9 , 51 )
-    real(kind=8) :: jdn2nx ( 9 , 51 )
+    real(kind=8) :: jdn1nx(9, 51)
+    real(kind=8) :: jdn2nx(9, 51)
 !
-    real(kind=8) :: b1mnx ( 3 , 51 )
-    real(kind=8) :: b2mnx ( 3 , 51 )
+    real(kind=8) :: b1mnx(3, 51)
+    real(kind=8) :: b2mnx(3, 51)
 !
-    real(kind=8) :: hsm1 ( 3 , 9 )
+    real(kind=8) :: hsm1(3, 9)
 !
-    real(kind=8) :: hsm2 ( 3 , 9 )
+    real(kind=8) :: hsm2(3, 9)
 !
 !DEB
 !
@@ -50,10 +50,10 @@ subroutine matbmn(nb1, vectt, dudxnx, jdn1nx, jdn2nx,&
 !
 !---- INITIALISATION
 !
-    call r8inir(3 * 51, 0.d0, b1mnx, 1)
+    call r8inir(3*51, 0.d0, b1mnx, 1)
 !
-    call promat(hsm1, 3, 3, 9, jdn1nx,&
-                9, 9, 6 * nb1 + 3, b1mnx)
+    call promat(hsm1, 3, 3, 9, jdn1nx, &
+                9, 9, 6*nb1+3, b1mnx)
 !
 !
 !
@@ -61,10 +61,10 @@ subroutine matbmn(nb1, vectt, dudxnx, jdn1nx, jdn2nx,&
 !
 ! --- POUR LA DEFORMATION DIFFERENTIELLE   B2MNX
 !
-    call r8inir(3 * 51, 0.d0, b2mnx, 1)
+    call r8inir(3*51, 0.d0, b2mnx, 1)
 !
-    call promat(hsm2, 3, 3, 9, jdn2nx,&
-                9, 9, 6 * nb1 + 3, b2mnx)
+    call promat(hsm2, 3, 3, 9, jdn2nx, &
+                9, 9, 6*nb1+3, b2mnx)
 !
 !
 !FIN

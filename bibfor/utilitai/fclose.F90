@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine fclose(unit)
 !
     close (unit=unit, iostat=ierr)
     if (ierr .gt. 0) then
-        write(k4b,'(I3)') unit
+        write (k4b, '(I3)') unit
         call utmess('F', 'UTILITAI_77', sk=k4b)
-    endif
+    end if
 !
 end subroutine

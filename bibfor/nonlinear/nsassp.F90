@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nsassp(list_func_acti, ds_contact, ds_system,&
-                  hval_veasse   , cnpilo    , cndonn)
+subroutine nsassp(list_func_acti, ds_contact, ds_system, &
+                  hval_veasse, cnpilo, cndonn)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -40,11 +40,11 @@ implicit none
 #include "asterfort/nonlinDSVectCombAddAny.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: hval_veasse(*)
-character(len=19), intent(in) :: cnpilo, cndonn
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: hval_veasse(*)
+    character(len=19), intent(in) :: cnpilo, cndonn
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ character(len=19), intent(in) :: cnpilo, cndonn
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_19')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -87,8 +87,8 @@ character(len=19), intent(in) :: cnpilo, cndonn
 !
 ! - Active functionnalities
 !
-    l_macr = isfonc(list_func_acti,'MACR_ELEM_STAT')
-    l_pilo = isfonc(list_func_acti,'PILOTAGE')
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
+    l_pilo = isfonc(list_func_acti, 'PILOTAGE')
 !
 ! - Get dead Neumann loads and multi-step dynamic schemes forces
 !
@@ -109,7 +109,7 @@ character(len=19), intent(in) :: cnpilo, cndonn
 !
     if (ds_contact%l_cnctdf) then
         call nonlinDSVectCombAddAny(ds_contact%cnctdf, -1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Add LIAISON_UNIL penalized force
 !
@@ -117,23 +117,23 @@ character(len=19), intent(in) :: cnpilo, cndonn
         l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
         if (l_unil_pena) then
             call nonlinDSVectCombAddAny(ds_contact%cnunil, -1.d0, ds_vectcomb)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Add CONTINUE/XFEM contact force
 !
     if (ds_contact%l_cneltc) then
         call nonlinDSVectCombAddAny(ds_contact%cneltc, -1.d0, ds_vectcomb)
-    endif
+    end if
     if (ds_contact%l_cneltf) then
         call nonlinDSVectCombAddAny(ds_contact%cneltf, -1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Force from sub-structuring
 !
     if (l_macr) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNSSTR', -1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Get Dirichlet boundary conditions - B.U
 !
@@ -152,7 +152,7 @@ character(len=19), intent(in) :: cnpilo, cndonn
     call nonlinDSVectCombCompute(ds_vectcomb, cndonn)
     if (niv .ge. 2) then
         call nmdebg('VECT', cndonn, 6)
-    endif
+    end if
 !
     call nonlinDSVectCombInit(ds_vectcomb)
     if (l_pilo) then
@@ -160,13 +160,13 @@ character(len=19), intent(in) :: cnpilo, cndonn
         call nonlinDSVectCombAddHat(hval_veasse, 'CNFEPI', +1.d0, ds_vectcomb)
 ! ----- Get Dirichlet loads (for PILOTAGE)
         call nonlinDSVectCombAddHat(hval_veasse, 'CNDIPI', +1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Second member (PILOTAGE)
 !
     call nonlinDSVectCombCompute(ds_vectcomb, cnpilo)
     if (niv .ge. 2) then
         call nmdebg('VECT', cnpilo, 6)
-    endif
+    end if
 !
 end subroutine

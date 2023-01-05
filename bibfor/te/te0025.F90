@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine te0025(option, nomte)
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -81,7 +81,7 @@ subroutine te0025(option, nomte)
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         instan = zr(itemps)
-    endif
+    end if
 !
 ! ---- RECUPERATION DU VECTEUR DES DEFORMATIONS EN SORTIE :
 !      --------------------------------------------------
@@ -108,8 +108,8 @@ subroutine te0025(option, nomte)
     end do
     call ortrep(ndim, bary, repere)
 !
-    call epsvmc('RIGI', nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call epsvmc('RIGI', nno, ndim, nbsig, npg, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, nharm, option, epsm)
 !
 !         --------------------
@@ -118,7 +118,7 @@ subroutine te0025(option, nomte)
 !      --------------------
     do igau = 1, npg
         do isig = 1, nbsig
-            zr(idefo+nbsig* (igau-1)+isig-1) = epsm(nbsig* (igau-1)+ isig)
+            zr(idefo+nbsig*(igau-1)+isig-1) = epsm(nbsig*(igau-1)+isig)
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine cgtabl(table_container, nb_obje, obje_name, obje_sdname, nb_cham_theta)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,10 +31,10 @@ implicit none
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 !
-character(len=8), intent(in)  :: table_container
-integer, intent(in)           :: nb_obje, nb_cham_theta
-character(len=16), intent(in) :: obje_name(nb_obje)
-character(len=24), intent(in) :: obje_sdname(nb_obje)
+    character(len=8), intent(in)  :: table_container
+    integer, intent(in)           :: nb_obje, nb_cham_theta
+    character(len=16), intent(in) :: obje_name(nb_obje)
+    character(len=24), intent(in) :: obje_sdname(nb_obje)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,21 +53,21 @@ character(len=24), intent(in) :: obje_sdname(nb_obje)
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbpara = 4
-    character(len=19), parameter :: nompar(nbpara) = (/&
-        'NOM_OBJET ', 'TYPE_OBJET', 'NOM_SD    ', 'NUME_ORDRE'/)
-    character(len=19), parameter :: typpar(nbpara) = (/&
-        'K16', 'K16', 'K24', 'I  '/)
+    character(len=19), parameter :: nompar(nbpara) = (/ &
+                                    'NOM_OBJET ', 'TYPE_OBJET', 'NOM_SD    ', 'NUME_ORDRE'/)
+    character(len=19), parameter :: typpar(nbpara) = (/ &
+                                    'K16', 'K16', 'K24', 'I  '/)
 !
     integer, parameter :: l_nb_obje = 3
-    character(len=16), parameter :: l_obje_name(l_nb_obje) = (/&
-        'TABLE_G         ', 'CHAM_THETA      ', 'NB_CHAM_THETA   '/)
-    character(len=16), parameter :: l_obje_type(l_nb_obje) = (/&
-        'TABLE           ', 'CHAM_NO         ', 'ENTIER          '/)
+    character(len=16), parameter :: l_obje_name(l_nb_obje) = (/ &
+                                    'TABLE_G         ', 'CHAM_THETA      ', 'NB_CHAM_THETA   '/)
+    character(len=16), parameter :: l_obje_type(l_nb_obje) = (/ &
+                                    'TABLE           ', 'CHAM_NO         ', 'ENTIER          '/)
 !
     integer :: i_l_obj, i_obj, nume_store, nume_store_theta
     character(len=24) :: vk(3)
     character(len=16) :: obje_type
-    aster_logical, parameter :: debug= ASTER_FALSE
+    aster_logical, parameter :: debug = ASTER_FALSE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,9 +81,9 @@ character(len=24), intent(in) :: obje_sdname(nb_obje)
 !
 ! - Loop on objects to add new one
 !
-    if(debug) then
-        print*, "Create table_container in CALC_G"
-        print*, "Number of object: ", nb_obje
+    if (debug) then
+        print *, "Create table_container in CALC_G"
+        print *, "Number of object: ", nb_obje
     end if
 !
     nume_store_theta = 0
@@ -96,26 +96,26 @@ character(len=24), intent(in) :: obje_sdname(nb_obje)
             if (l_obje_name(i_l_obj) .eq. obje_name(i_obj)) then
                 obje_type = l_obje_type(i_l_obj)
                 exit
-            endif
+            end if
         end do
         ASSERT(obje_type .ne. ' ')
 !
 ! ----- Add object (new line)
 !
-        if(debug) then
-            print*, "OBJET NAME", i_obj, " : ", obje_name(i_obj)
-            print*, "OBJET TYPE", i_obj, " : ", obje_type
-            print*, "SD NAME   ", i_obj, " : ", obje_sdname(i_obj)
+        if (debug) then
+            print *, "OBJET NAME", i_obj, " : ", obje_name(i_obj)
+            print *, "OBJET TYPE", i_obj, " : ", obje_type
+            print *, "SD NAME   ", i_obj, " : ", obje_sdname(i_obj)
         end if
 !
         vk(1) = obje_name(i_obj)
         vk(2) = obje_type
         vk(3) = obje_sdname(i_obj)
 !
-        if(obje_name(i_obj)== "CHAM_THETA") then
-            nume_store_theta = nume_store_theta + 1
+        if (obje_name(i_obj) == "CHAM_THETA") then
+            nume_store_theta = nume_store_theta+1
             nume_store = nume_store_theta
-        elseif(obje_name(i_obj) == "NB_CHAM_THETA") then
+        elseif (obje_name(i_obj) == "NB_CHAM_THETA") then
             nume_store = nb_cham_theta
         else
             nume_store = 1

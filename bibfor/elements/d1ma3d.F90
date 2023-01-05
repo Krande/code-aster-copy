@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine d1ma3d(fami, mater, instan, poum, kpg,&
+subroutine d1ma3d(fami, mater, instan, poum, kpg, &
                   ksp, repere, xyzgau, d1)
 !.======================================================================
     implicit none
@@ -58,7 +58,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
     real(kind=8) :: coef1, coef2, coef3, deux, e, e1, e2
     real(kind=8) :: e3, un, zero
 !-----------------------------------------------------------------------
-    parameter (nbres = 9)
+    parameter(nbres=9)
 !
     integer :: icodre(nbres)
     character(len=8) :: nompar(2)
@@ -77,21 +77,21 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
     un = 1.0d0
     deux = 2.0d0
 !
-    if (instan.eq.r8vide())then
+    if (instan .eq. r8vide()) then
         nbpar = 0
     else
         nbpar = 1
         nompar(1) = 'INST'
         valpar(1) = instan
-    endif
+    end if
 !
     do i = 1, 6
         do j = 1, 6
-            d1(i,j) = zero
-            d1orth(i,j) = zero
-            work(i,j) = zero
-        enddo
-    enddo
+            d1(i, j) = zero
+            d1orth(i, j) = zero
+            work(i, j) = zero
+        end do
+    end do
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 !      --------------------------------------------
@@ -109,8 +109,8 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 ! ----   ET DU TEMPS
 !        -----------
-        call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, kpg, ksp, poum, mater, &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
 !
         e = valres(1)
@@ -118,45 +118,45 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 !
         coef1 = un/e
         coef2 = -nu/e
-        coef3 = deux*(un + nu)/e
+        coef3 = deux*(un+nu)/e
 !
-        d1(1,1) = coef1
-        d1(1,2) = coef2
-        d1(1,3) = coef2
+        d1(1, 1) = coef1
+        d1(1, 2) = coef2
+        d1(1, 3) = coef2
 !
-        d1(2,1) = coef2
-        d1(2,2) = coef1
-        d1(2,3) = coef2
+        d1(2, 1) = coef2
+        d1(2, 2) = coef1
+        d1(2, 3) = coef2
 !
-        d1(3,1) = coef2
-        d1(3,2) = coef2
-        d1(3,3) = coef1
+        d1(3, 1) = coef2
+        d1(3, 2) = coef2
+        d1(3, 3) = coef1
 !
-        d1(4,4) = coef3
-        d1(5,5) = coef3
-        d1(6,6) = coef3
+        d1(4, 4) = coef3
+        d1(5, 5) = coef3
+        d1(6, 6) = coef3
 !
 !      --------------
 ! ---- CAS ORTHOTROPE
 !      --------------
-    else if (phenom.eq.'ELAS_ORTH') then
+    else if (phenom .eq. 'ELAS_ORTH') then
 !
-        nomres(1)='E_L'
-        nomres(2)='E_T'
-        nomres(3)='E_N'
-        nomres(4)='NU_LT'
-        nomres(5)='NU_LN'
-        nomres(6)='NU_TN'
-        nomres(7)='G_LT'
-        nomres(8)='G_LN'
-        nomres(9)='G_TN'
+        nomres(1) = 'E_L'
+        nomres(2) = 'E_T'
+        nomres(3) = 'E_N'
+        nomres(4) = 'NU_LT'
+        nomres(5) = 'NU_LN'
+        nomres(6) = 'NU_TN'
+        nomres(7) = 'G_LT'
+        nomres(8) = 'G_LN'
+        nomres(9) = 'G_TN'
         nbv = 9
 !
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 ! ----   ET DU TEMPS
 !        -----------
-        call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, kpg, ksp, poum, mater, &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -169,19 +169,19 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
         nu31 = e3*nu13/e1
         nu32 = e3*nu23/e2
 !
-        d1orth(1,1) = un/e1
-        d1orth(1,2) = -nu21/e2
-        d1orth(1,3) = -nu31/e3
-        d1orth(2,2) = un/e2
-        d1orth(2,3) = -nu32/e3
-        d1orth(3,3) = un/e3
-        d1orth(2,1) = d1orth(1,2)
-        d1orth(3,1) = d1orth(1,3)
-        d1orth(3,2) = d1orth(2,3)
+        d1orth(1, 1) = un/e1
+        d1orth(1, 2) = -nu21/e2
+        d1orth(1, 3) = -nu31/e3
+        d1orth(2, 2) = un/e2
+        d1orth(2, 3) = -nu32/e3
+        d1orth(3, 3) = un/e3
+        d1orth(2, 1) = d1orth(1, 2)
+        d1orth(3, 1) = d1orth(1, 3)
+        d1orth(3, 2) = d1orth(2, 3)
 !
-        d1orth(4,4) = un/valres(7)
-        d1orth(5,5) = un/valres(8)
-        d1orth(6,6) = un/valres(9)
+        d1orth(4, 4) = un/valres(7)
+        d1orth(5, 5) = un/valres(8)
+        d1orth(6, 6) = un/valres(9)
 !
 ! ----   CALCUL DE LA MATRICE DE PASSAGE DU REPERE D'ORTHOTROPIE AU
 ! ----   REPERE GLOBAL POUR L'INVERSE DE LA MATRICE DE HOOKE
@@ -193,35 +193,35 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 ! ----     DE PASSAGE N'EST PAS L'IDENTITE)
 !        ----------------------------------
-        ASSERT((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
-            call utbtab('ZERO', 6, 6, d1orth, passag,&
+            call utbtab('ZERO', 6, 6, d1orth, passag, &
                         work, d1)
-        else if (irep.eq.0) then
+        else if (irep .eq. 0) then
             do i = 1, 6
                 do j = 1, 6
-                    d1(i,j) = d1orth(i,j)
-                enddo
-            enddo
-        endif
+                    d1(i, j) = d1orth(i, j)
+                end do
+            end do
+        end if
 !
 !      -----------------------
 ! ---- CAS ISOTROPE-TRANSVERSE
 !      -----------------------
-    else if (phenom.eq.'ELAS_ISTR') then
+    else if (phenom .eq. 'ELAS_ISTR') then
 !
-        nomres(1)='E_L'
-        nomres(2)='E_N'
-        nomres(3)='NU_LT'
-        nomres(4)='NU_LN'
-        nomres(5)='G_LN'
+        nomres(1) = 'E_L'
+        nomres(2) = 'E_N'
+        nomres(3) = 'NU_LT'
+        nomres(4) = 'NU_LN'
+        nomres(5) = 'G_LN'
         nbv = 5
 !
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 ! ----   ET DU TEMPS
 !        -----------
-        call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, kpg, ksp, poum, mater, &
+                    ' ', phenom, nbpar, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -230,18 +230,18 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
         nu13 = valres(4)
         nu31 = e3*nu13/e1
 !
-        d1orth(1,1) = un/e1
-        d1orth(1,2) = -nu12/e1
-        d1orth(1,3) = -nu31/e3
-        d1orth(2,1) = d1orth(1,2)
-        d1orth(2,2) = un/e1
-        d1orth(2,3) = -nu31/e3
-        d1orth(3,1) = d1orth(1,3)
-        d1orth(3,2) = d1orth(2,3)
-        d1orth(3,3) = un/e3
-        d1orth(4,4) = deux*(un+nu12)/e1
-        d1orth(5,5) = un/valres(5)
-        d1orth(6,6) = d1orth(5,5)
+        d1orth(1, 1) = un/e1
+        d1orth(1, 2) = -nu12/e1
+        d1orth(1, 3) = -nu31/e3
+        d1orth(2, 1) = d1orth(1, 2)
+        d1orth(2, 2) = un/e1
+        d1orth(2, 3) = -nu31/e3
+        d1orth(3, 1) = d1orth(1, 3)
+        d1orth(3, 2) = d1orth(2, 3)
+        d1orth(3, 3) = un/e3
+        d1orth(4, 4) = deux*(un+nu12)/e1
+        d1orth(5, 5) = un/valres(5)
+        d1orth(6, 6) = d1orth(5, 5)
 !
 ! ----   CALCUL DE LA MATRICE DE PASSAGE DU REPERE D'ORTHOTROPIE AU
 ! ----   REPERE GLOBAL POUR L'INVERSE DE LA MATRICE DE HOOKE
@@ -253,20 +253,20 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 ! ----     DE PASSAGE N'EST PAS L'IDENTITE)
 !        ----------------------------------
-        ASSERT((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
-            call utbtab('ZERO', 6, 6, d1orth, passag,&
+            call utbtab('ZERO', 6, 6, d1orth, passag, &
                         work, d1)
-        else if (irep.eq.0) then
+        else if (irep .eq. 0) then
             do i = 1, 6
                 do j = 1, 6
-                    d1(i,j) = d1orth(i,j)
-                enddo
-            enddo
-        endif
+                    d1(i, j) = d1orth(i, j)
+                end do
+            end do
+        end if
 !
     else
         call utmess('F', 'ELEMENTS_15', sk=phenom)
-    endif
+    end if
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

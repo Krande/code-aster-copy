@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,39 +34,39 @@ subroutine gdsmin()
     real(kind=8) :: jp, dj, jm, dfb(3, 3)
     real(kind=8) :: djdf(3, 3), dbtrdf(6, 3, 3)
 !
-    common /gdsmc/&
-     &            bem,betr,dvbetr,eqbetr,trbetr,&
-     &            jp,dj,jm,dfb,&
-     &            djdf,dbtrdf,&
-     &            kr,id,rac2,rc,ind,ind1,ind2
+    common/gdsmc/&
+     &            bem, betr, dvbetr, eqbetr, trbetr,&
+     &            jp, dj, jm, dfb,&
+     &            djdf, dbtrdf,&
+     &            kr, id, rac2, rc, ind, ind1, ind2
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
 !
     rac2 = sqrt(2.d0)
-    rc(1)=1.d0
-    rc(2)=1.d0
-    rc(3)=1.d0
-    rc(4)=rac2
-    rc(5)=rac2
-    rc(6)=rac2
+    rc(1) = 1.d0
+    rc(2) = 1.d0
+    rc(3) = 1.d0
+    rc(4) = rac2
+    rc(5) = rac2
+    rc(6) = rac2
 !
 !    KRONECKER
-    kr(1)=1.d0
-    kr(2)=1.d0
-    kr(3)=1.d0
-    kr(4)=0.d0
-    kr(5)=0.d0
-    kr(6)=0.d0
+    kr(1) = 1.d0
+    kr(2) = 1.d0
+    kr(3) = 1.d0
+    kr(4) = 0.d0
+    kr(5) = 0.d0
+    kr(6) = 0.d0
 !
 !    MATRICE IDENTITE
     call r8inir(36, 0.d0, id, 1)
-    id(1,1) = 1
-    id(2,2) = 1
-    id(3,3) = 1
-    id(4,4) = 1
-    id(5,5) = 1
-    id(6,6) = 1
+    id(1, 1) = 1
+    id(2, 2) = 1
+    id(3, 3) = 1
+    id(4, 4) = 1
+    id(5, 5) = 1
+    id(6, 6) = 1
 !
 !    MANIPULATION DES INDICES : IJ -> I
     ind1(1) = 1
@@ -85,14 +85,14 @@ subroutine gdsmin()
     ind2(6) = 2
 !
 !    MANIPULATION DES INDICES : I,J -> IJ
-    ind(1,1)=1
-    ind(1,2)=4
-    ind(1,3)=5
-    ind(2,1)=4
-    ind(2,2)=2
-    ind(2,3)=6
-    ind(3,1)=5
-    ind(3,2)=6
-    ind(3,3)=3
+    ind(1, 1) = 1
+    ind(1, 2) = 4
+    ind(1, 3) = 5
+    ind(2, 1) = 4
+    ind(2, 2) = 2
+    ind(2, 3) = 6
+    ind(3, 1) = 5
+    ind(3, 2) = 6
+    ind(3, 3) = 3
 !
 end subroutine

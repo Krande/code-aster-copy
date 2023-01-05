@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, iret, jdls2
     integer :: n1, n2, n3, n4, n5, n6
-    integer :: i,  nbmat, nbma, ncomp
-    integer :: ima, nbno,  adrm, numa, jgrma, igr, nbmat0
+    integer :: i, nbmat, nbma, ncomp
+    integer :: ima, nbno, adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3
     real(kind=8) :: ep, tens
     real(kind=8) :: ang(2), angx(2)
@@ -87,7 +87,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     call exisd('CARTE', cartgr, iret)
     if (iret .eq. 0) then
         call alcart('G', cartgr, noma, 'CACOQU_R')
-    endif
+    end if
     tmpngr = cartgr//'.NCMP'
     tmpvgr = cartgr//'.VALV'
     call jeveuo(tmpngr, 'E', jdcc)
@@ -97,7 +97,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     call wkvect('&&TMPMEMBRANE', 'V V K24', lmax, jdls)
     call wkvect('&&TMPMEMBRANE2', 'V V K8', lmax, jdls2)
 !
-    zk8(jdcc  ) = 'EP'
+    zk8(jdcc) = 'EP'
     zk8(jdcc+1) = 'ALPHA'
     zk8(jdcc+2) = 'BETA'
     zk8(jdcc+3) = 'TENS'
@@ -108,20 +108,20 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     do ioc = 1, nbocc
         ang(1) = 0.0d0
         ang(2) = 0.0d0
-        tens   = 0.0d0
+        tens = 0.0d0
 !
-        call getvem(noma, 'GROUP_MA', 'MEMBRANE', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'MEMBRANE', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'MEMBRANE', 'MAILLE', ioc,&
+        call getvem(noma, 'MAILLE', 'MEMBRANE', 'MAILLE', ioc, &
                     lmax, zk8(jdls2), nm)
 !
-        call getvr8('MEMBRANE', 'ANGL_REP_1', iocc=ioc, nbval=2, vect=ang,&
+        call getvr8('MEMBRANE', 'ANGL_REP_1', iocc=ioc, nbval=2, vect=ang, &
                     nbret=n1)
-        call getvr8('MEMBRANE', 'ANGL_REP_2', iocc=ioc, nbval=2, vect=ang,&
+        call getvr8('MEMBRANE', 'ANGL_REP_2', iocc=ioc, nbval=2, vect=ang, &
                     nbret=n2)
-        call getvr8('MEMBRANE', 'VECT_1', iocc=ioc, nbval=3, vect=axex,&
+        call getvr8('MEMBRANE', 'VECT_1', iocc=ioc, nbval=3, vect=axex, &
                     nbret=n3)
-        call getvr8('MEMBRANE', 'VECT_2', iocc=ioc, nbval=3, vect=axey,&
+        call getvr8('MEMBRANE', 'VECT_2', iocc=ioc, nbval=3, vect=axey, &
                     nbret=n4)
         call getvr8('MEMBRANE', 'EPAIS', iocc=ioc, scal=ep, nbret=n5)
         call getvr8('MEMBRANE', 'N_INIT', iocc=ioc, scal=tens, nbret=n6)
@@ -130,7 +130,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
             zr(jdvc) = ep
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         zr(jdvc+3) = tens
 !
@@ -140,28 +140,28 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
             if (n3 .eq. 0) then
                 zr(jdvc+1) = ang(1)
                 zr(jdvc+2) = ang(2)
-            endif
+            end if
 !           SI VECT_1 EST RENSEIGNE
             if (n1 .eq. 0) then
                 call normev(axex, xnorm)
                 if (xnorm .lt. epsi) then
                     call utmess('F', 'MODELISA_10')
-                endif
+                end if
                 call angvx(axex, angx(1), angx(2))
                 zr(jdvc+1) = angx(1)*r8rddg()
                 zr(jdvc+2) = angx(2)*r8rddg()
-            endif
+            end if
 ! ---       "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE
             if (ng .gt. 0) then
                 do i = 1, ng
                     call nocart(cartgr, 2, ncomp, groupma=zk24(jdls+i-1))
                 end do
-            endif
+            end if
 ! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
             if (nm .gt. 0) then
-                call nocart(cartgr, 3, ncomp, mode='NOM', nma=nm,&
+                call nocart(cartgr, 3, ncomp, mode='NOM', nma=nm, &
                             limano=zk8(jdls2))
-            endif
+            end if
 !
 !       SI ANGL_REP_2 OU VECT_2 SONT RENSEIGNES
         else
@@ -169,30 +169,30 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                 nbmat = 0
                 numa = -1
                 do igr = 0, ng-1
-                    kjexn = jexnom(nomagr,zk24(jdls+igr))
+                    kjexn = jexnom(nomagr, zk24(jdls+igr))
                     call jelira(kjexn, 'LONMAX', nbma)
                     call jeveuo(kjexn, 'L', jgrma)
-                    nbmat = nbmat + nbma
+                    nbmat = nbmat+nbma
                     do ima = 0, nbma-1
-                        numa = numa + 1
+                        numa = numa+1
                         nume_ma(numa+1) = zi(jgrma+ima)
                     end do
                 end do
             else
                 nbmat = nm
                 do ima = 0, nm-1
-                    kjexn = jexnom(nomama,zk8(jdls2+ima))
+                    kjexn = jexnom(nomama, zk8(jdls2+ima))
                     call jenonu(kjexn, nume_ma(ima+1))
                 end do
-            endif
+            end if
 !
 !           SI VECT_2 EST RENSEIGNE
             if (n2 .eq. 0) then
                 call normev(axey, xnorm)
                 if (xnorm .lt. epsi) then
                     call utmess('F', 'MODELISA_10')
-                endif
-            endif
+                end if
+            end if
 !
             do ima = 1, nbmat
 !               CALCUL DE LA NORMALE : VECTEUR Z LOCAL
@@ -203,12 +203,12 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                 noe2 = zi(adrm+2-1)
                 noe3 = zi(adrm+3-1)
                 do i = 1, 3
-                    vn1n2(i) = vale(1+3*(noe2-1)+i-1) - vale(1+3*( noe1-1)+i-1 )
-                    vn1n3(i) = vale(1+3*(noe3-1)+i-1) - vale(1+3*( noe1-1)+i-1 )
+                    vn1n2(i) = vale(1+3*(noe2-1)+i-1)-vale(1+3*(noe1-1)+i-1)
+                    vn1n3(i) = vale(1+3*(noe3-1)+i-1)-vale(1+3*(noe1-1)+i-1)
                 end do
-                vecnor(1) = vn1n2(2)*vn1n3(3) - vn1n2(3)*vn1n3(2)
-                vecnor(2) = vn1n2(3)*vn1n3(1) - vn1n2(1)*vn1n3(3)
-                vecnor(3) = vn1n2(1)*vn1n3(2) - vn1n2(2)*vn1n3(1)
+                vecnor(1) = vn1n2(2)*vn1n3(3)-vn1n2(3)*vn1n3(2)
+                vecnor(2) = vn1n2(3)*vn1n3(1)-vn1n2(1)*vn1n3(3)
+                vecnor(3) = vn1n2(1)*vn1n3(2)-vn1n2(2)*vn1n3(1)
                 call normev(vecnor, xnorm)
 !
 !               SI ANGL_REP_2 EST RENSEIGNE
@@ -219,24 +219,24 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                     call normev(axey, xnorm)
                     if (xnorm .lt. epsi) then
                         call utmess('F', 'MODELISA_10')
-                    endif
-                endif
+                    end if
+                end if
 
 !               CALCUL DU VECTEUR X LOCAL
-                axex(1) = axey(2)*vecnor(3) - axey(3)*vecnor(2)
-                axex(2) = axey(3)*vecnor(1) - axey(1)*vecnor(3)
-                axex(3) = axey(1)*vecnor(2) - axey(2)*vecnor(1)
+                axex(1) = axey(2)*vecnor(3)-axey(3)*vecnor(2)
+                axex(2) = axey(3)*vecnor(1)-axey(1)*vecnor(3)
+                axex(3) = axey(1)*vecnor(2)-axey(2)*vecnor(1)
                 call normev(axex, xnorm)
                 if (xnorm .lt. epsi) then
                     call utmess('F', 'MODELISA_10')
-                endif
+                end if
                 call angvx(axex, angx(1), angx(2))
-                zr(jdvc+1) = angx(1) * r8rddg()
-                zr(jdvc+2) = angx(2) * r8rddg()
-                call nocart(cartgr, 3, ncomp, mode='NUM', nma=1,&
+                zr(jdvc+1) = angx(1)*r8rddg()
+                zr(jdvc+2) = angx(2)*r8rddg()
+                call nocart(cartgr, 3, ncomp, mode='NUM', nma=1, &
                             limanu=[numa])
             end do
-        endif
+        end if
     end do
 !
     AS_DEALLOCATE(vi=nume_ma)

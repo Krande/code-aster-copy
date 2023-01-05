@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
+subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in, &
                   nb_cmp_out, val_out, ichk)
 !
     implicit none
@@ -56,7 +56,7 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ncsig
-    parameter   (ncsig=6)
+    parameter(ncsig=6)
     character(len=4) :: cmpsig(ncsig), cmpeps(ncsig), nomcmp(ncsig)
 !
     integer :: i
@@ -64,10 +64,10 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
     character(len=16) :: valk(2)
 !   COMMON LCIV2S/LCIV2E
     integer :: nt, nd
-    common /tdim/ nt,nd
+    common/tdim/nt, nd
 !
-    data cmpsig / 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
-    data cmpeps / 'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
+    data cmpsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
+    data cmpeps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,16 +80,16 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
 ! - Checking
 !
     if (crit .eq. 'VMIS' .or. crit .eq. 'INVA_2' .or. crit .eq. 'TRACE') then
-        ASSERT(nb_cmp_out.eq.1)
+        ASSERT(nb_cmp_out .eq. 1)
         if (name_gd .eq. 'SIEF_R') then
             nomcmp = cmpsig
-        else if (name_gd.eq.'EPSI_R') then
+        else if (name_gd .eq. 'EPSI_R') then
             nomcmp = cmpeps
         else
             valk(1) = crit
             valk(2) = name_gd
             call utmess('F', 'CHAMPS_7', nk=2, valk=valk)
-        endif
+        end if
 !       CELCES ASSURE QUE LES COMPOSANTES SONT DANS L'ORDRE DU CATALOGUE
 !       LE MEME QUE CELUI DE CMPSIG/CMPEPS
 !       IL SUFFIT DONC DE VERIFIER QUE :
@@ -97,13 +97,13 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
 !       - SI NBCMP=4, CE SONT LES 4 PREMIERES
         if (nb_val_in .ne. 4 .and. nb_val_in .ne. 6) then
             goto 999
-        endif
+        end if
         do i = 1, nb_val_in
             if (nomcmp(i) .ne. cmp_in(i)) then
                 goto 999
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
 ! - VMIS
     if (crit .eq. 'VMIS') then
@@ -111,13 +111,13 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
             valk(1) = crit
             valk(2) = name_gd
             call utmess('F', 'CHAMPS_7', nk=2, valk=valk)
-        endif
+        end if
         do i = 1, nd
             vale(i) = val_in(i)
-        enddo
+        end do
         do i = nd+1, nt
-            vale(i) = rac2 * val_in(i)
-        enddo
+            vale(i) = rac2*val_in(i)
+        end do
         val_out(1) = lciv2s(vale)
         ichk = 0
 !
@@ -127,25 +127,25 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
             valk(1) = crit
             valk(2) = name_gd
             call utmess('F', 'CHAMPS_7', nk=2, valk=valk)
-        endif
+        end if
         do i = 1, nd
             vale(i) = val_in(i)
-        enddo
+        end do
         do i = nd+1, nt
-            vale(i) = rac2 * val_in(i)
-        enddo
+            vale(i) = rac2*val_in(i)
+        end do
         val_out(1) = lciv2e(vale)
         ichk = 0
 !
 !-- TRACE
     else if (crit .eq. 'TRACE') then
-        val_out(1) = val_in(1) + val_in(2) + val_in(3)
+        val_out(1) = val_in(1)+val_in(2)+val_in(3)
         ichk = 0
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-999  continue
+999 continue
 !
 end subroutine

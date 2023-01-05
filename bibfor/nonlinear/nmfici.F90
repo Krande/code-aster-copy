@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmfici(nno, nddl, wref, vff, dfde,&
+subroutine nmfici(nno, nddl, wref, vff, dfde, &
                   geom, poids, b)
 !
 !
@@ -55,16 +55,16 @@ subroutine nmfici(nno, nddl, wref, vff, dfde,&
     poids = wref*jac
 !
 !    CALCUL DE LA BASE ORTHONORMEE LOCALE
-    noa1 = sqrt(cova(1,1)**2 + cova(2,1)**2 + cova(3,1)**2)
-    r(1,1) = cova(1,3)
-    r(1,2) = cova(2,3)
-    r(1,3) = cova(3,3)
-    r(2,1) = cova(1,1)/noa1
-    r(2,2) = cova(2,1)/noa1
-    r(2,3) = cova(3,1)/noa1
-    r(3,1) = r(1,2)*r(2,3) - r(1,3)*r(2,2)
-    r(3,2) = r(1,3)*r(2,1) - r(1,1)*r(2,3)
-    r(3,3) = r(1,1)*r(2,2) - r(1,2)*r(2,1)
+    noa1 = sqrt(cova(1, 1)**2+cova(2, 1)**2+cova(3, 1)**2)
+    r(1, 1) = cova(1, 3)
+    r(1, 2) = cova(2, 3)
+    r(1, 3) = cova(3, 3)
+    r(2, 1) = cova(1, 1)/noa1
+    r(2, 2) = cova(2, 1)/noa1
+    r(2, 3) = cova(3, 1)/noa1
+    r(3, 1) = r(1, 2)*r(2, 3)-r(1, 3)*r(2, 2)
+    r(3, 2) = r(1, 3)*r(2, 1)-r(1, 1)*r(2, 3)
+    r(3, 3) = r(1, 1)*r(2, 2)-r(1, 2)*r(2, 1)
 !
 !
 !    CONSTRUCTION DE LA MATRICE B

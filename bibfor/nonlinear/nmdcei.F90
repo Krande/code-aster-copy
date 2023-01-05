@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
+subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins, &
                   typext, dt0)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -73,7 +73,7 @@ subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
 !
 ! --- NOUVEAU NOMBRE D'INSTANTS
 !
-    nb_inst_new = nb_inst_ini + nb_inst_ins
+    nb_inst_new = nb_inst_ini+nb_inst_ins
 !
 ! --- ALLONGEMENT DE LA LISTE D'INSTANTS
 !
@@ -93,11 +93,11 @@ subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
         time = newins(i_inst)
         if (typext .eq. 'DECO') then
             zr(jtemps+i_inst+nume_inst-1) = time
-        else if (typext.eq.'ADAP') then
+        else if (typext .eq. 'ADAP') then
             zr(jtemps+i_inst+nume_inst) = time
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 ! --- VALEUR DU NOUVEAU DELTAT
@@ -108,16 +108,16 @@ subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
 !
     dtmin = r8maem()
     do i_inst = 1, nb_inst_new-1
-        deltat = zr(jtemps-1+i_inst+1) - zr(jtemps-1+i_inst)
-        dtmin = min(deltat,dtmin)
+        deltat = zr(jtemps-1+i_inst+1)-zr(jtemps-1+i_inst)
+        dtmin = min(deltat, dtmin)
     end do
 !
 ! --- ENREGISTREMENT INFOS
 !
-    call utdidt('E', sddisc, 'LIST', 'NBINST',&
-                vali_ = nb_inst_new)
-    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
-                valr_ = dtmin)
+    call utdidt('E', sddisc, 'LIST', 'NBINST', &
+                vali_=nb_inst_new)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN', &
+                valr_=dtmin)
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
-                  nnoini, nbnop, tspaq, nommet, nomcri,&
-                  nomfor, grdvie, forvie, forcri, nommai,&
+subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini, &
+                  nnoini, nbnop, tspaq, nommet, nomcri, &
+                  nomfor, grdvie, forvie, forcri, nommai, &
                   cnsr, nommap, post, valpar, vresu)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -124,13 +124,13 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
         call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
         chmat = chmat1//'.CHAMP_MAT'
         cesmat = '&&DTAUNO.CESMAT'
-        call carces(chmat, 'ELEM', ' ', 'V', cesmat,&
+        call carces(chmat, 'ELEM', ' ', 'V', cesmat, &
                     'A', iret)
         call jeveuo(cesmat//'.CESD', 'L', icesd)
         call jeveuo(cesmat//'.CESL', 'L', icesl)
         call jeveuo(cesmat//'.CESV', 'L', icesv)
 !
-    endif
+    end if
 !
 !  CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
 ! NOEUDS DU PAQUET DE MAILLES.
@@ -147,19 +147,19 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
         typma = nommai//'.TYPMAIL'
         call jeveuo(typma, 'L', jtypma)
 !
-    endif
+    end if
 !
     do inop = nnoini, nnoini+(nbnop-1)
 !
         if (inop .gt. nnoini) then
             kwork = 1
-            somnow = somnow + 1
-        endif
+            somnow = somnow+1
+        end if
 !
-        cnbno = cnbno + 1
+        cnbno = cnbno+1
         if ((l*int(nbnot/10.0d0)) .lt. cnbno) then
-            l = l + 1
-        endif
+            l = l+1
+        end if
 !
 ! RECUPERATION DU NOM DU MATERIAU AFFECTE A LA MAILLE OU AUX MAILLES
 ! QUI PORTENT LE NOEUD COURANT.
@@ -171,22 +171,22 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
             ki = 0
             optio = 'DOMA_NOEUD'
             do ima = 1, nbma
-                call rnomat(icesd, icesl, icesv, ima, nomcri,&
-                            adrma, jtypma, ki, optio, vala,&
+                call rnomat(icesd, icesl, icesv, ima, nomcri, &
+                            adrma, jtypma, ki, optio, vala, &
                             valb, coefpa, nommat)
             end do
 !
             call rcpare(nommat, 'FATIGUE', 'WOHLER', icodwo)
             if (icodwo .eq. 1) then
                 call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
-            endif
+            end if
 !
             if (ki .eq. 0) then
-                vali (1) = nunoe
-                vali (2) = nbma
+                vali(1) = nunoe
+                vali(2) = nbma
                 call utmess('A', 'PREPOST5_10', ni=2, vali=vali)
-            endif
-        endif
+            end if
+        end if
 !
 !        call jerazo('&&DTAUNO.VECTNO', tneces, 1)
 !
@@ -199,26 +199,26 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
             call recofa(nomcri, nommat, vala, valb, coefpa)
 !
-        endif
+        end if
 !
         ibidno = 1
 !
 !
 ! REMPACER PAR ACMATA
-        call acgrdo(nbordr, ordini, kwork, somnow, jrwork,&
-                    tspaq, ibidno, nommet, nommat, nomcri,&
-                    vala, coefpa, nomfor, grdvie, forvie,&
+        call acgrdo(nbordr, ordini, kwork, somnow, jrwork, &
+                    tspaq, ibidno, nommet, nommat, nomcri, &
+                    vala, coefpa, nomfor, grdvie, forvie, &
                     forcri, valpar, vresu)
 !
 ! AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
         if (.not. post) then
             do icmp = 1, 24
-                jad = 24*(nunoe-1) + icmp
-                zl(jcnrl - 1 + jad) = .true.
+                jad = 24*(nunoe-1)+icmp
+                zl(jcnrl-1+jad) = .true.
                 cnsv(jad) = vresu(icmp)
 !
             end do
-        endif
+        end if
 !
     end do
 !
@@ -226,7 +226,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     if (.not. post) then
         call detrsd('CHAM_ELEM_S', cesmat)
-    endif
+    end if
 !
 !
     call jedetr('&&DTAUNO.CNCINV')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmdorc(modelZ, chmateZ, l_etat_init, comporZ, carcriZ, mult_compZ_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmdocc.h"
@@ -28,11 +28,11 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !
-character(len=*), intent(in) :: modelZ, chmateZ
-aster_logical, intent(in) :: l_etat_init
-character(len=*), intent(in) :: comporZ
-character(len=*), intent(out) :: carcriZ
-character(len=*), optional, intent(in) :: mult_compZ_
+    character(len=*), intent(in) :: modelZ, chmateZ
+    aster_logical, intent(in) :: l_etat_init
+    character(len=*), intent(in) :: comporZ
+    character(len=*), intent(out) :: carcriZ
+    character(len=*), optional, intent(in) :: mult_compZ_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ character(len=*), optional, intent(in) :: mult_compZ_
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_2')
-    endif
+    end if
 
 ! - Get parameters from COMPORTEMENT keyword and prepare COMPOR map
     call nmdocc(model, chmate, l_etat_init, compor, 'V')
@@ -77,6 +77,6 @@ character(len=*), optional, intent(in) :: mult_compZ_
 ! - Get parameters from COMPORTEMENT keyword and prepare MULT_COMP <CARTE> (for crystals)
     if (present(mult_compZ_)) then
         call nmdocm(model, mult_compZ_, 'V')
-    endif
+    end if
 !
 end subroutine

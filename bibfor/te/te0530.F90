@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,15 +37,15 @@ subroutine te0530(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, ipg, iret
     integer :: jpvarc, ivrc
     integer :: nbvarc
-    parameter  ( nbvarc = 9)
+    parameter(nbvarc=9)
     character(len=8) :: nomvrc(nbvarc)
 !
 ! ---------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call jevech('PVARC_R', 'E', jpvarc)
-    rvid=r8vide()
+    rvid = r8vide()
 !
 !     VARC_R   = R    TEMP HYDR SECH IRRA CORR PTOT DIVU NEUT1 NEUT2
     nomvrc(1) = 'TEMP'
@@ -61,13 +61,13 @@ subroutine te0530(option, nomte)
     do ipg = 1, npg
 !
         do ivrc = 1, nbvarc
-            call rcvarc(' ', nomvrc(ivrc), '+', 'RIGI', ipg,&
+            call rcvarc(' ', nomvrc(ivrc), '+', 'RIGI', ipg, &
                         1, r1, iret)
             if (iret .eq. 0) then
-                zr(jpvarc-1+nbvarc*(ipg-1)+ivrc)=r1
+                zr(jpvarc-1+nbvarc*(ipg-1)+ivrc) = r1
             else
-                zr(jpvarc-1+nbvarc*(ipg-1)+ivrc)=rvid
-            endif
+                zr(jpvarc-1+nbvarc*(ipg-1)+ivrc) = rvid
+            end if
         end do
 !
     end do

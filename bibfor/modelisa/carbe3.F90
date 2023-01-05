@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine carbe3(charge)
     if (nbrbe3 .eq. 0) goto 999
 !
     beta = 0.0d0
-    betac = (1.0d0,0.0d0)
+    betac = (1.0d0, 0.0d0)
 !
     typcoe = 'REEL'
     typval = 'REEL'
@@ -104,18 +104,18 @@ subroutine carbe3(charge)
     call jemarq()
 !
     if (niv .eq. 2) then
-        write(ifm,*) 'NOMBRE RELATIONS RBE3 : ',nbrbe3
+        write (ifm, *) 'NOMBRE RELATIONS RBE3 : ', nbrbe3
 !       CALL JXVERI(' ')
-    endif
+    end if
 !
     call getres(nomres, concep, nomcmd)
     call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mode)
     call dismoi('DIM_GEOM', mode, 'MODELE', repi=dime)
-    dime2d=(dime.eq.2)
+    dime2d = (dime .eq. 2)
     if (niv .eq. 2) then
-        write(ifm,*) 'MODELE 2D : ',dime2d
-    endif
+        write (ifm, *) 'MODELE 2D : ', dime2d
+    end if
 !
     call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=noma)
 !
@@ -129,17 +129,17 @@ subroutine carbe3(charge)
 !        --------------------------------------------------
     maxles = 0
     do idxrbe = 1, nbrbe3
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_ESCL', idxrbe,&
+        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_ESCL', idxrbe, &
                     0, k8bid, nbgrou)
-        maxles = max(maxles,-nbgrou)
-        call getvem(noma, 'NOEUD', motfac, 'NOEUD_ESCL', idxrbe,&
+        maxles = max(maxles, -nbgrou)
+        call getvem(noma, 'NOEUD', motfac, 'NOEUD_ESCL', idxrbe, &
                     0, k8bid, nbnoeu)
-        maxles = max(maxles,-nbnoeu)
+        maxles = max(maxles, -nbnoeu)
     end do
 !
     if (maxles .eq. 0) then
         call utmess('F', 'MODELISA10_7')
-    endif
+    end if
     call wkvect('&&CARBE3.LISTESCL', 'V V K24', maxles, jlises)
 !
 !     -- CALCUL DE MAXDDL ET VERIFICATION DES NOEUDS ET GROUP_NO
@@ -150,31 +150,31 @@ subroutine carbe3(charge)
     maxesc = 0
     do idxrbe = 1, nbrbe3
 !
-        call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=maxles, vect=zk24(jlises),&
+        call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=maxles, vect=zk24(jlises), &
                     nbret=nbgrou)
         if (nbgrou .ne. 0) then
             do idxgro = 1, nbgrou
                 call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbnoeu)
                 if (nbnoeu .eq. 0) then
-                    call utmess('F', 'MODELISA10_8', sk=zk24(jlises-1+ idxgro))
-                endif
-                maxesc = maxesc + nbnoeu
-            enddo
+                    call utmess('F', 'MODELISA10_8', sk=zk24(jlises-1+idxgro))
+                end if
+                maxesc = maxesc+nbnoeu
+            end do
         else
             call getvtx(motfac, 'NOEUD_ESCL', iocc=idxrbe, nbval=0, nbret=nbnoeu)
             nbnoeu = -nbnoeu
-            maxesc = maxesc + nbnoeu
-        endif
+            maxesc = maxesc+nbnoeu
+        end if
 !
         cntddl = 1
-        cntddl = cntddl + maxesc * 6
-        maxddl = max(maxddl,cntddl)
+        cntddl = cntddl+maxesc*6
+        maxddl = max(maxddl, cntddl)
     end do
 !
     if (niv .eq. 2) then
-        write(ifm,*) 'MAXESC : ',maxesc
-        write(ifm,*) 'MAXDDL : ',maxddl
-    endif
+        write (ifm, *) 'MAXESC : ', maxesc
+        write (ifm, *) 'MAXDDL : ', maxddl
+    end if
 !
 !     -- ALLOCATION DES TABLEAUX DE TRAVAIL
 !     -------------------------------------
@@ -198,100 +198,100 @@ subroutine carbe3(charge)
 !     -----------------------------------
     do idxrbe = 1, nbrbe3
         if (niv .eq. 2) then
-            write(ifm,*) 'INDEX RELATION RBE3 : ',idxrbe
-        endif
+            write (ifm, *) 'INDEX RELATION RBE3 : ', idxrbe
+        end if
 !
         call getvtx(motfac, 'GROUP_NO_MAIT', iocc=idxrbe, nbval=0, nbret=nbent)
         nbent = -nbent
         if (nbent .ne. 0) then
-            call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_MAIT', idxrbe,&
+            call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_MAIT', idxrbe, &
                         1, gromai, nbent)
             call jeveuo(jexnom(grouno, gromai), 'L', jnogro)
             call jelira(jexnom(grouno, gromai), 'LONUTI', nbent)
             if (nbent .ne. 1) then
                 call utmess('F', 'MODELISA10_9', sk=gromai, si=nbent)
-            endif
+            end if
             call jenuno(jexnum(noeuma, zi(jnogro-1+1)), noemai)
-        endif
+        end if
 !
         call getvtx(motfac, 'NOEUD_MAIT', iocc=idxrbe, nbval=0, nbret=nbent)
         if (nbent .ne. 0) then
-            call getvem(noma, 'NOEUD', motfac, 'NOEUD_MAIT', idxrbe,&
+            call getvem(noma, 'NOEUD', motfac, 'NOEUD_MAIT', idxrbe, &
                         1, noemai, nbent)
-        endif
+        end if
 !
         call jenonu(jexnom(noma//'.NOMNOE', noemai), posmai)
         coomai(1) = vale(3*(posmai-1)+1)
         coomai(2) = vale(3*(posmai-1)+2)
         coomai(3) = vale(3*(posmai-1)+3)
         if (niv .eq. 2) then
-            write(ifm,*) 'COORDS : ',coomai, ' DU NOEUD MAITRE : ',&
-            noemai
-        endif
+            write (ifm, *) 'COORDS : ', coomai, ' DU NOEUD MAITRE : ', &
+                noemai
+        end if
 !
-        call getvtx(motfac, 'DDL_MAIT', iocc=idxrbe, nbval=6, vect=ddlmac,&
+        call getvtx(motfac, 'DDL_MAIT', iocc=idxrbe, nbval=6, vect=ddlmac, &
                     nbret=nbdlma)
 !
         do idxlig = 1, 6
             ddlmai(idxlig) = .false.
-        enddo
+        end do
 !
         do idxlig = 1, nbdlma
-            ddlcod = ddlmac(idxlig)(1:lxlgut(ddlmac(idxlig)))
+            ddlcod = ddlmac(idxlig) (1:lxlgut(ddlmac(idxlig)))
             if (ddltrr(1) .eq. ddlcod) then
                 ddlmai(1) = .true.
-            else if (ddltrr(2).eq.ddlcod) then
+            else if (ddltrr(2) .eq. ddlcod) then
                 ddlmai(2) = .true.
-            else if (ddltrr(3).eq.ddlcod) then
+            else if (ddltrr(3) .eq. ddlcod) then
                 ddlmai(3) = .true.
-            else if (ddltrr(4).eq.ddlcod) then
+            else if (ddltrr(4) .eq. ddlcod) then
                 ddlmai(4) = .true.
-            else if (ddltrr(5).eq.ddlcod) then
+            else if (ddltrr(5) .eq. ddlcod) then
                 ddlmai(5) = .true.
-            else if (ddltrr(6).eq.ddlcod) then
+            else if (ddltrr(6) .eq. ddlcod) then
                 ddlmai(6) = .true.
-            endif
-        enddo
+            end if
+        end do
 !
         call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=0, nbret=nbgrou)
         if (nbgrou .ne. 0) then
             nbgrou = -nbgrou
             nbnoeu = 0
-            call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=nbgrou, vect=zk24(jlises),&
+            call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=nbgrou, vect=zk24(jlises), &
                         nbret=nbent)
             cntnoe = 0
             do idxgro = 1, nbgrou
                 call jeveuo(jexnom(grouno, zk24(jlises-1+idxgro)), 'L', jnogro)
                 call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbent)
-                nbnoeu = nbnoeu + nbent
+                nbnoeu = nbnoeu+nbent
                 do idxnoe = 1, nbent
-                    cntnoe = cntnoe + 1
+                    cntnoe = cntnoe+1
                     call jenuno(jexnum(noeuma, zi(jnogro-1+idxnoe)), nomnoe)
                     zk8(jnoesc+cntnoe-1) = nomnoe
-                enddo
-            enddo
-        endif
+                end do
+            end do
+        end if
 !
         call getvtx(motfac, 'NOEUD_ESCL', iocc=idxrbe, nbval=0, nbret=nbent)
         if (nbent .ne. 0) then
             nbnoeu = -nbent
-            call getvtx(motfac, 'NOEUD_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zk8(jnoesc),&
+            call getvtx(motfac, 'NOEUD_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zk8(jnoesc), &
                         nbret=nbent)
-        endif
+        end if
 !
         if (niv .eq. 2) then
-            write(ifm,*) 'LISTE DES ',nbnoeu, ' NOEUDS ESCLAVES'
-            write(ifm,*) (zk8(jnoesc+idxlig-1),idxlig=1,nbnoeu)
-        endif
+            write (ifm, *) 'LISTE DES ', nbnoeu, ' NOEUDS ESCLAVES'
+            write (ifm, *) (zk8(jnoesc+idxlig-1), idxlig=1, nbnoeu)
+        end if
 !
-        call getvtx(motfac, 'DDL_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zk24(jddles),&
+        call getvtx(motfac, 'DDL_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zk24(jddles), &
                     nbret=nbddl)
 !
         if (nbddl .ne. 1 .and. nbddl .ne. nbnoeu) then
             vali(1) = nbddl
             vali(2) = nbnoeu
             call utmess('F', 'MODELISA10_10', ni=2, vali=vali)
-        endif
+        end if
 !
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR EXTRAIRE LES DDLS
 !       -----------------------------------------------------
@@ -302,58 +302,58 @@ subroutine carbe3(charge)
                     ddlstr = zk24(jddles-1+1)
                 else
                     ddlstr = zk24(jddles-1+idxnoe)
-                endif
+                end if
 !
 !           EXTRACTION DDL_ESCL
 !           -------------------------------------------------------
                 do idxlig = 1, 6
                     ddlesc(idxlig) = .false.
-                enddo
+                end do
 !
                 idxcol = 1
                 do idxlig = 1, lxlgut(ddlstr)
                     if (ddlstr(idxlig:idxlig) .eq. '-') then
                         ddlcod = ddlstr(idxcol:idxlig-1)
-                        idxcol = idxlig + 1
+                        idxcol = idxlig+1
                         fincod = .true.
-                    else if (idxlig.eq.lxlgut(ddlstr)) then
+                    else if (idxlig .eq. lxlgut(ddlstr)) then
                         ddlcod = ddlstr(idxcol:idxlig)
                         fincod = .true.
                     else
                         fincod = .false.
-                    endif
+                    end if
                     if (fincod) then
                         if (ddltrr(1) .eq. ddlcod) then
                             ddlesc(1) = .true.
-                        else if (ddltrr(2).eq.ddlcod) then
+                        else if (ddltrr(2) .eq. ddlcod) then
                             ddlesc(2) = .true.
-                        else if (ddltrr(3).eq.ddlcod) then
+                        else if (ddltrr(3) .eq. ddlcod) then
                             ddlesc(3) = .true.
-                        else if (ddltrr(4).eq.ddlcod) then
+                        else if (ddltrr(4) .eq. ddlcod) then
                             ddlesc(4) = .true.
-                        else if (ddltrr(5).eq.ddlcod) then
+                        else if (ddltrr(5) .eq. ddlcod) then
                             ddlesc(5) = .true.
-                        else if (ddltrr(6).eq.ddlcod) then
+                        else if (ddltrr(6) .eq. ddlcod) then
                             ddlesc(6) = .true.
                         else
                             call utmess('F', 'MODELISA10_11', sk=ddlcod)
-                        endif
-                    endif
-                enddo
-            endif
+                        end if
+                    end if
+                end do
+            end if
             do idxlig = 1, 6
                 if (ddlesc(idxlig)) then
-                    nbdles = nbdles + 1
+                    nbdles = nbdles+1
                     zk8(jnorel-1+nbdles) = zk8(jnoesc-1+idxnoe)
                     zk8(jddl-1+nbdles) = ddltrr(idxlig)
-                endif
+                end if
                 zl(jcescl-1+(idxnoe-1)*6+idxlig) = ddlesc(idxlig)
-            enddo
-        enddo
+            end do
+        end do
 !
         if (niv .eq. 2) then
-            write (ifm,*) 'NOMBRE DDL NOEUDS ESCLAVES : ',nbdles
-        endif
+            write (ifm, *) 'NOMBRE DDL NOEUDS ESCLAVES : ', nbdles
+        end if
 !
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR CALCULER Lc
 !       -----------------------------------------------
@@ -363,44 +363,44 @@ subroutine carbe3(charge)
             cooesc(1) = vale(3*(posesc-1)+1)
             cooesc(2) = vale(3*(posesc-1)+2)
             cooesc(3) = vale(3*(posesc-1)+3)
-            zr(jcoore-1+3*(idxnoe-1)+1) = cooesc(1) - coomai(1)
-            zr(jcoore-1+3*(idxnoe-1)+2) = cooesc(2) - coomai(2)
-            zr(jcoore-1+3*(idxnoe-1)+3) = cooesc(3) - coomai(3)
-            norme=zr(jcoore-1+3*(idxnoe-1)+1)*zr(jcoore-1+3*(idxnoe-1)&
-            +1)+ zr(jcoore-1+3*(idxnoe-1)+2)*zr(jcoore-1+3*(idxnoe-1)+&
-            2)+ zr(jcoore-1+3*(idxnoe-1)+3)*zr(jcoore-1+3*(idxnoe-1)+&
-            3)
+            zr(jcoore-1+3*(idxnoe-1)+1) = cooesc(1)-coomai(1)
+            zr(jcoore-1+3*(idxnoe-1)+2) = cooesc(2)-coomai(2)
+            zr(jcoore-1+3*(idxnoe-1)+3) = cooesc(3)-coomai(3)
+            norme = zr(jcoore-1+3*(idxnoe-1)+1)*zr(jcoore-1+3*(idxnoe-1) &
+                                         +1)+zr(jcoore-1+3*(idxnoe-1)+2)*zr(jcoore-1+3*(idxnoe-1)+ &
+                                          2)+zr(jcoore-1+3*(idxnoe-1)+3)*zr(jcoore-1+3*(idxnoe-1)+ &
+                                                                                                  3)
             if (norme .ne. 0.0d0) then
                 norme = sqrt(norme)
-            endif
-            lc = lc + norme
-        enddo
-        lc = lc / nbnoeu
+            end if
+            lc = lc+norme
+        end do
+        lc = lc/nbnoeu
         if (niv .eq. 2) then
-            write(ifm,*) 'LC : ',lc
-        endif
-        lcsqua = lc * lc
+            write (ifm, *) 'LC : ', lc
+        end if
+        lcsqua = lc*lc
 !
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR CALCULER W
 !       -------------------------------------------------------
         AS_ALLOCATE(vr=w, size=nbdles*nbdles)
-        call getvr8(motfac, 'COEF_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zr(jcofes),&
+        call getvr8(motfac, 'COEF_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zr(jcofes), &
                     nbret=nbcfes)
         if (nbcfes .lt. 0) then
             nbcfes = -nbcfes
-        endif
+        end if
 !
         if (nbddl .ne. 1 .and. nbcfes .ne. 1 .and. nbddl .ne. nbcfes) then
             vali(1) = nbddl
             vali(2) = nbcfes
             call utmess('F', 'MODELISA10_12', ni=2, vali=vali)
-        endif
+        end if
 !
         if (nbcfes .ne. 1 .and. nbcfes .ne. nbnoeu) then
             vali(1) = nbcfes
             vali(2) = nbnoeu
             call utmess('F', 'MODELISA10_13', ni=2, vali=vali)
-        endif
+        end if
 !
         nbcol = 0
         inilig = 0
@@ -409,43 +409,43 @@ subroutine carbe3(charge)
                 cofesc = zr(jcofes-1+1)
             else
                 cofesc = zr(jcofes-1+idxnoe)
-            endif
+            end if
 !
             frstco = .true.
             cntlig = 0
             do idxcol = 1, 6
                 if (zl(jcescl-1+(idxnoe-1)*6+idxcol)) then
-                    nbcol = nbcol + 1
+                    nbcol = nbcol+1
                     nblign = inilig
                     do idxlig = 1, 6
                         if (zl(jcescl-1+(idxnoe-1)*6+idxlig)) then
-                            nblign = nblign + 1
+                            nblign = nblign+1
                             if (frstco) then
-                                cntlig = cntlig + 1
-                            endif
+                                cntlig = cntlig+1
+                            end if
                             idxvec = nbdles*(nbcol-1)+nblign
                             if (idxlig .ne. idxcol) then
                                 w(idxvec) = 0.0d0
-                            else if (idxcol.le.3) then
+                            else if (idxcol .le. 3) then
                                 w(idxvec) = cofesc
                             else
-                                w(idxvec) = cofesc * lcsqua
-                            endif
-                        endif
-                    enddo
+                                w(idxvec) = cofesc*lcsqua
+                            end if
+                        end if
+                    end do
                     frstco = .false.
-                endif
-            enddo
-            inilig = inilig + cntlig
-        enddo
+                end if
+            end do
+            inilig = inilig+cntlig
+        end do
 !
         if (niv .eq. 2) then
-            write (ifm,*) 'IMPRESSION W'
+            write (ifm, *) 'IMPRESSION W'
             do idxlig = 1, nbdles
-                write (ifm,*) 'LIGNE : ',idxlig, (w(idxlig+&
-                nbdles*(idxcol-1)),idxcol=1,nbdles)
-            enddo
-        endif
+                write (ifm, *) 'LIGNE : ', idxlig, (w(idxlig+ &
+                                                      nbdles*(idxcol-1)), idxcol=1, nbdles)
+            end do
+        end if
 !
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR CALCULER S
 !       -------------------------------------------------------
@@ -459,68 +459,68 @@ subroutine carbe3(charge)
                 nblign = inilig
                 do idxlig = 1, 6
                     if (zl(jcescl-1+(idxnoe-1)*6+idxlig)) then
-                        nblign = nblign + 1
+                        nblign = nblign+1
                         if (frstco) then
-                            cntlig = cntlig + 1
-                        endif
+                            cntlig = cntlig+1
+                        end if
                         idxvec = nbdles*(idxcol-1)+nblign
-                        if ((idxlig.le.3 .and. idxcol.le.3) .or.&
-                            (idxlig.ge.4 .and. idxcol.ge.4)) then
+                        if ((idxlig .le. 3 .and. idxcol .le. 3) .or. &
+                            (idxlig .ge. 4 .and. idxcol .ge. 4)) then
                             if (idxlig .eq. idxcol) then
                                 s(idxvec) = 1.0d0
                             else
                                 s(idxvec) = 0.0d0
-                            endif
-                        else if (idxlig.ge.4 .and. idxcol.le.3) then
+                            end if
+                        else if (idxlig .ge. 4 .and. idxcol .le. 3) then
                             s(idxvec) = 0.0d0
                         else
                             if (idxlig .eq. 1 .and. idxcol .eq. 5) then
-                                s(idxvec) = zr(jcoore-1+3*( idxnoe-1)+3)
-                                else if (idxlig.eq.1 .and. idxcol.eq.6)&
-                            then
-                                s(idxvec) = -zr(jcoore-1+3*( idxnoe-1)+2)
-                                else if (idxlig.eq.2 .and. idxcol.eq.4)&
-                            then
-                                s(idxvec) = -zr(jcoore-1+3*( idxnoe-1)+3)
-                                else if (idxlig.eq.2 .and. idxcol.eq.6)&
-                            then
-                                s(idxvec) = zr(jcoore-1+3*( idxnoe-1)+1)
-                                else if (idxlig.eq.3 .and. idxcol.eq.4)&
-                            then
-                                s(idxvec) = zr(jcoore-1+3*( idxnoe-1)+2)
-                                else if (idxlig.eq.3 .and. idxcol.eq.5)&
-                            then
-                                s(idxvec) = -zr(jcoore-1+3*( idxnoe-1)+1)
+                                s(idxvec) = zr(jcoore-1+3*(idxnoe-1)+3)
+                            else if (idxlig .eq. 1 .and. idxcol .eq. 6) &
+                                then
+                                s(idxvec) = -zr(jcoore-1+3*(idxnoe-1)+2)
+                            else if (idxlig .eq. 2 .and. idxcol .eq. 4) &
+                                then
+                                s(idxvec) = -zr(jcoore-1+3*(idxnoe-1)+3)
+                            else if (idxlig .eq. 2 .and. idxcol .eq. 6) &
+                                then
+                                s(idxvec) = zr(jcoore-1+3*(idxnoe-1)+1)
+                            else if (idxlig .eq. 3 .and. idxcol .eq. 4) &
+                                then
+                                s(idxvec) = zr(jcoore-1+3*(idxnoe-1)+2)
+                            else if (idxlig .eq. 3 .and. idxcol .eq. 5) &
+                                then
+                                s(idxvec) = -zr(jcoore-1+3*(idxnoe-1)+1)
                             else
                                 s(idxvec) = 0.0d0
-                            endif
-                        endif
-                    endif
-                enddo
+                            end if
+                        end if
+                    end if
+                end do
                 frstco = .false.
-            enddo
-            inilig = inilig + cntlig
-        enddo
+            end do
+            inilig = inilig+cntlig
+        end do
 !
         if (niv .eq. 2) then
-            write (ifm,*) 'IMPRESSION S'
+            write (ifm, *) 'IMPRESSION S'
             do idxlig = 1, nbdles
-                write (ifm,*) 'LIGNE : ',idxlig, (s(idxlig+&
-                nbdles*(idxcol-1)),idxcol=1,6)
-            enddo
-        endif
+                write (ifm, *) 'LIGNE : ', idxlig, (s(idxlig+ &
+                                                      nbdles*(idxcol-1)), idxcol=1, 6)
+            end do
+        end if
 !
         AS_ALLOCATE(vr=xab, size=nbdles*6)
-        call utbtab('ZERO', nbdles, 6, w, s,&
+        call utbtab('ZERO', nbdles, 6, w, s, &
                     xab, stws)
 !
         if (niv .eq. 2) then
-            write (ifm,*) 'IMPRESSION MATRICE MGAUSS'
+            write (ifm, *) 'IMPRESSION MATRICE MGAUSS'
             do idxlig = 1, 6
-                write (ifm,*) 'LIGNE : ', idxlig, (stws(idxcol,&
-                idxlig),idxcol=1,6)
-            enddo
-        endif
+                write (ifm, *) 'LIGNE : ', idxlig, (stws(idxcol, &
+                                                         idxlig), idxcol=1, 6)
+            end do
+        end if
 !
         do idxlig = 1, 6
             do idxcol = 1, 6
@@ -528,27 +528,27 @@ subroutine carbe3(charge)
                     x(idxcol, idxlig) = 1.0d0
                 else
                     x(idxcol, idxlig) = 0.0d0
-                endif
-            enddo
-        enddo
+                end if
+            end do
+        end do
 !
-        call mgauss('NFSP', stws, x, 6, 6,&
+        call mgauss('NFSP', stws, x, 6, 6, &
                     6, rbid, iret)
 !
         if (iret .ne. 0) then
             ASSERT(.false.)
-        endif
+        end if
 !
         if (niv .eq. 2) then
-            write (ifm,*) 'IMPRESSION MATRICE X'
+            write (ifm, *) 'IMPRESSION MATRICE X'
             do idxlig = 1, 6
-                write (ifm,*) 'LIGNE : ',idxlig, (x(idxcol, idxlig),&
-                idxcol=1,6)
-            enddo
-        endif
+                write (ifm, *) 'LIGNE : ', idxlig, (x(idxcol, idxlig), &
+                                                    idxcol=1, 6)
+            end do
+        end if
 !
-        call pmppr(s, nbdles, 6, -1, w,&
-                   nbdles, nbdles, -1, xab, 6,&
+        call pmppr(s, nbdles, 6, -1, w, &
+                   nbdles, nbdles, -1, xab, 6, &
                    nbdles)
 !
         AS_DEALLOCATE(vr=w)
@@ -556,8 +556,8 @@ subroutine carbe3(charge)
 !
         AS_ALLOCATE(vr=b, size=nbdles*6)
 !
-        call pmppr(x, 6, 6, -1, xab,&
-                   6, nbdles, 1, b, 6,&
+        call pmppr(x, 6, 6, -1, xab, &
+                   6, nbdles, 1, b, 6, &
                    nbdles)
 !
         AS_DEALLOCATE(vr=xab)
@@ -572,18 +572,18 @@ subroutine carbe3(charge)
                 do idxcol = 1, nbdles
                     idxvec = 6*(idxcol-1)+idxlig
                     if (b(idxvec) .ne. 0) then
-                        idxter = idxter + 1
+                        idxter = idxter+1
                         zk8(jnzddl-1+idxter) = zk8(jddl-1+idxddl)
                         zk8(jnznor-1+idxter) = zk8(jnorel-1+idxddl)
                         zr(jcmur-1+idxter) = b(idxvec)
-                    endif
-                    idxddl = idxddl + 1
-                enddo
-                call afrela(zr(jcmur), zc(jcmuc), zk8(jnzddl), zk8( jnznor), zi(jdime),&
-                            zr(jdirec), idxter, beta, betac, betaf,&
+                    end if
+                    idxddl = idxddl+1
+                end do
+                call afrela(zr(jcmur), zc(jcmuc), zk8(jnzddl), zk8(jnznor), zi(jdime), &
+                            zr(jdirec), idxter, beta, betac, betaf, &
                             typcoe, typval, 0.d0, lisrel)
-            endif
-        enddo
+            end if
+        end do
 !
         AS_DEALLOCATE(vr=b)
 !

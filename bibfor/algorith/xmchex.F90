@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine xmchex(mesh, chpmod, chelex)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/celces.h"
@@ -55,12 +55,12 @@ implicit none
 !
 !
 !
-    integer, parameter :: nbcmp  = 2
-    character(len=8), parameter :: licmp(nbcmp) = (/ 'NPG_DYN ', 'NCMP_DYN'/)
+    integer, parameter :: nbcmp = 2
+    character(len=8), parameter :: licmp(nbcmp) = (/'NPG_DYN ', 'NCMP_DYN'/)
     character(len=19) :: valk(2), chelsi
     integer :: vali(1)
     integer :: iad, ima, nbma
-    integer :: jcesl,  jcesd
+    integer :: jcesl, jcesd
     integer, pointer :: cesd2(:) => null()
     integer, pointer :: cesv(:) => null()
 !
@@ -68,12 +68,11 @@ implicit none
 !
     call jemarq()
 
-
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE
 !
-    call cescre('V', chelex, 'ELEM', mesh, 'DCEL_I',&
+    call cescre('V', chelex, 'ELEM', mesh, 'DCEL_I', &
                 nbcmp, licmp, [-1], [-1], [-nbcmp])
 !
 ! --- ACCES AU CHAM_ELEM_S
@@ -90,24 +89,24 @@ implicit none
 ! --- AFFECTATION DES COMPOSANTES DU CHAM_ELEM_S
 !
     do ima = 1, nbma
-        call cesexi('C', jcesd, jcesl, ima, 1,&
+        call cesexi('C', jcesd, jcesl, ima, 1, &
                     1, 1, iad)
         if (iad .ge. 0) then
             vali(1) = 1
             valk(1) = chelex(1:19)
             valk(2) = 'ELEM'
             call utmess('F', 'CATAELEM_20', nk=2, valk=valk, si=vali(1))
-        endif
+        end if
         zl(jcesl-1-iad) = .true.
         cesv(1-1-iad) = cesd2(5+4*(ima-1)+2)
-        call cesexi('C', jcesd, jcesl, ima, 1,&
+        call cesexi('C', jcesd, jcesl, ima, 1, &
                     1, 2, iad)
         if (iad .ge. 0) then
             vali(1) = 1
             valk(1) = chelex(1:19)
             valk(2) = 'ELEM'
             call utmess('F', 'CATAELEM_20', nk=2, valk=valk, si=vali(1))
-        endif
+        end if
         zl(jcesl-1-iad) = .true.
         cesv(1-1-iad) = cesd2(5+4*(ima-1)+3)
     end do

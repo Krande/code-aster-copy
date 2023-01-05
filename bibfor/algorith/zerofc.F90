@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zerofc(func, xmin, xmax, prec, niter,&
+subroutine zerofc(func, xmin, xmax, prec, niter, &
                   dp, iret, nit)
     implicit none
 #include "asterfort/zeroco.h"
@@ -62,9 +62,9 @@ subroutine zerofc(func, xmin, xmax, prec, niter,&
 !       SOLUTION TROUVEE : ON SORT
         if (abs(y(4)) .lt. prec) then
             iret = 0
-            nit=i
+            nit = i
             goto 999
-        endif
+        end if
 !
         call zeroco(x, y)
 !

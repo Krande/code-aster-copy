@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine matela(icodma, materi, itemp, temp, e,&
+subroutine matela(icodma, materi, itemp, temp, e, &
                   nu)
     implicit none
 #include "asterfort/rcvalb.h"
@@ -38,12 +38,12 @@ subroutine matela(icodma, materi, itemp, temp, e,&
     integer :: nbres, nbpar, i
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    parameter    (nbres=2)
+    parameter(nbres=2)
     real(kind=8) :: valpar, valres(nbres)
     integer :: codres(nbres)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
-    data nomres / 'E', 'NU'/
+    data nomres/'E', 'NU'/
 !
     do i = 1, nbres
         valres(i) = 0.d0
@@ -56,9 +56,9 @@ subroutine matela(icodma, materi, itemp, temp, e,&
         nbpar = 1
         nompar = 'TEMP'
         valpar = temp
-    endif
-    call rcvalb('RIGI', 1, 1, '+', icodma,&
-                materi, 'ELAS', nbpar, nompar, [valpar],&
+    end if
+    call rcvalb('RIGI', 1, 1, '+', icodma, &
+                materi, 'ELAS', nbpar, nompar, [valpar], &
                 2, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)

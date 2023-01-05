@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,11 +48,11 @@ subroutine nmvcex(index, varcz, chamz)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    varc  = varcz
-    champ = varc//'.'// index
+    varc = varcz
+    champ = varc//'.'//index
     call exisd('CHAMP_GD', champ, iret)
     if (iret .eq. 0) then
         champ = ' '
-    endif
+    end if
     chamz = champ
 end subroutine

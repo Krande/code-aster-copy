@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,28 +17,28 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmtem(phase ,&
-                  ndim  , nne   ,nnm   ,&
-                  mprojn, mprojt,wpg   , jacobi,&
-                  ffe   , ffm   , &
-                  coefac, coefaf,coefff, lambda,&
-                  rese  , nrese,&
+subroutine mmmtem(phase, &
+                  ndim, nne, nnm, &
+                  mprojn, mprojt, wpg, jacobi, &
+                  ffe, ffm, &
+                  coefac, coefaf, coefff, lambda, &
+                  rese, nrese, &
                   matrem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/mmmmpb.h"
 #include "asterfort/pmavec.h"
 !
-character(len=4), intent(in) :: phase
-integer, intent(in) :: ndim, nne, nnm
-real(kind=8), intent(in) :: mprojn(3, 3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, jacobi
-real(kind=8), intent(in) :: ffe(9), ffm(9)
-real(kind=8), intent(in) :: coefac, coefaf, coefff, lambda
-real(kind=8), intent(in) :: rese(3), nrese
-real(kind=8), intent(out) :: matrem(27, 27)
+    character(len=4), intent(in) :: phase
+    integer, intent(in) :: ndim, nne, nnm
+    real(kind=8), intent(in) :: mprojn(3, 3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, jacobi
+    real(kind=8), intent(in) :: ffe(9), ffm(9)
+    real(kind=8), intent(in) :: coefac, coefaf, coefff, lambda
+    real(kind=8), intent(in) :: rese(3), nrese
+    real(kind=8), intent(out) :: matrem(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,28 +77,28 @@ real(kind=8), intent(out) :: matrem(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    d(:,:) = 0.d0
-    e(:,:) = 0.d0
-    g(:,:) = 0.d0
-    c1(:)  = 0.d0
-    c2(:)  = 0.d0
-    c3(:)  = 0.d0
-    d1(:)  = 0.d0
-    d2(:)  = 0.d0
-    d3(:)  = 0.d0
-    c1(:)  = mprojt(:,1)
-    c2(:)  = mprojt(:,2)
-    c3(:)  = mprojt(:,3)
+    d(:, :) = 0.d0
+    e(:, :) = 0.d0
+    g(:, :) = 0.d0
+    c1(:) = 0.d0
+    c2(:) = 0.d0
+    c3(:) = 0.d0
+    d1(:) = 0.d0
+    d2(:) = 0.d0
+    d3(:) = 0.d0
+    c1(:) = mprojt(:, 1)
+    c2(:) = mprojt(:, 2)
+    c3(:) = mprojt(:, 3)
 !
 ! - PRODUIT [E] = [Pt]x[Pt]
 !
-    e = matmul(mprojt,mprojt)
+    e = matmul(mprojt, mprojt)
 !
 ! - MATRICE DE PROJECTION SUR LA BOULE UNITE
 !
     if (phase .eq. 'GLIS') then
         call mmmmpb(rese, nrese, ndim, matprb)
-    endif
+    end if
 !
 ! - VECTEUR PROJ. BOULE SUR PLAN TGT
 !
@@ -107,18 +107,18 @@ real(kind=8), intent(out) :: matrem(27, 27)
         call pmavec('ZERO', 3, matprb, c2, d2)
         call pmavec('ZERO', 3, matprb, c3, d3)
 ! ----- MATRICE [G] = [{D1}{D2}{D3}]
-        g(:,1) = d1(:)
-        g(:,2) = d2(:)
-        g(:,3) = d3(:)
+        g(:, 1) = d1(:)
+        g(:, 2) = d2(:)
+        g(:, 3) = d3(:)
 ! ----- MATRICE [D] = [Pt]*[G]t
         do i = 1, ndim
             do j = 1, ndim
                 do k = 1, ndim
-                    d(i,j) = g(k,i)*mprojt(k,j) + d(i,j)
+                    d(i, j) = g(k, i)*mprojt(k, j)+d(i, j)
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - CALCUL DES TERMES
 !
@@ -129,13 +129,13 @@ real(kind=8), intent(out) :: matrem(27, 27)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrem(ii,jj) = matrem(ii,jj) -&
-                                        coefac*wpg*jacobi*ffe(i)*mprojn(l,k)*ffm(j)
+                        matrem(ii, jj) = matrem(ii, jj)- &
+                                         coefac*wpg*jacobi*ffe(i)*mprojn(l, k)*ffm(j)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 
     if (phase .eq. 'ADHE') then
         do i = 1, nne
@@ -144,13 +144,13 @@ real(kind=8), intent(out) :: matrem(27, 27)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrem(ii,jj) = matrem(ii,jj) +&
-                                        coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(k,l)*ffm(j)
+                        matrem(ii, jj) = matrem(ii, jj)+ &
+                                         coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(k, l)*ffm(j)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 
     if (phase .eq. 'GLIS') then
         do i = 1, nne
@@ -159,12 +159,12 @@ real(kind=8), intent(out) :: matrem(27, 27)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrem(ii,jj) = matrem(ii,jj) +&
-                                        coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l,k)*ffm(j)
+                        matrem(ii, jj) = matrem(ii, jj)+ &
+                                         coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l, k)*ffm(j)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 end subroutine

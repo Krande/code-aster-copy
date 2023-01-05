@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine glrc_calc_cst(lamf, muf, alf, gf, efp, qff)
     gf1 = gf
     gf2 = gf
 !
-    trot = efp(1) + efp(2)
+    trot = efp(1)+efp(2)
     trot2 = trot**2
 !
 ! -------- CALCUL DE QFF --------------------
@@ -69,17 +69,17 @@ subroutine glrc_calc_cst(lamf, muf, alf, gf, efp, qff)
     else
         qff(1) = 0.0d0
         qff(2) = 0.5d0*lamf*trot2
-    endif
+    end if
 !
-    do k = 1,2
+    do k = 1, 2
         if (efp(k) .gt. 0.0d0) then
-            qff(1) = qff(1) + muf*efp(k)**2
+            qff(1) = qff(1)+muf*efp(k)**2
         else
-            qff(2) = qff(2) + muf*efp(k)**2
-        endif
+            qff(2) = qff(2)+muf*efp(k)**2
+        end if
     end do
 !
-    qff(1) = alf*qff(1)*(1.0d0 - gf1)
-    qff(2) = alf*qff(2)*(1.0d0 - gf2)
+    qff(1) = alf*qff(1)*(1.0d0-gf1)
+    qff(2) = alf*qff(2)*(1.0d0-gf2)
 !
 end subroutine

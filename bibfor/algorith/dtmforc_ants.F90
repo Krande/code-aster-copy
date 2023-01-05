@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
-                        time  , depl   , vite  , fext)
+subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
+                        time, depl, vite, fext)
     implicit none
 !
 ! person_in_charge: hassan.berro at edf.fr
@@ -50,15 +50,15 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
 !
 !   -0.1- Input/output arguments
-    integer               , intent(in)  :: nl_ind
-    character(len=*)      , intent(in)  :: sd_dtm_
-    character(len=*)      , intent(in)  :: sd_nl_
-    integer     , pointer  :: buffdtm  (:)
-    integer     , pointer  :: buffnl   (:)
-    real(kind=8)          , intent(in)  :: time
-    real(kind=8), pointer  :: depl     (:)
-    real(kind=8), pointer  :: vite     (:)
-    real(kind=8), pointer :: fext     (:)
+    integer, intent(in)  :: nl_ind
+    character(len=*), intent(in)  :: sd_dtm_
+    character(len=*), intent(in)  :: sd_nl_
+    integer, pointer  :: buffdtm(:)
+    integer, pointer  :: buffnl(:)
+    real(kind=8), intent(in)  :: time
+    real(kind=8), pointer  :: depl(:)
+    real(kind=8), pointer  :: vite(:)
+    real(kind=8), pointer :: fext(:)
 !
 !   -0.2- Local variables
     aster_logical     :: multi_support
@@ -73,46 +73,46 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     character(len=8)  :: sd_dtm, sd_nl, monmot, obst_typ
     character(len=19) :: nomres
 !
-    integer         , pointer :: vindx(:)  => null()
-    real(kind=8)    , pointer :: coor_no(:)  => null()
-    real(kind=8)    , pointer :: origob (:)  => null()
-    real(kind=8)    , pointer :: coedep (:)  => null()
-    real(kind=8)    , pointer :: coevit (:)  => null()
-    real(kind=8)    , pointer :: psidel (:)  => null()
-    real(kind=8)    , pointer :: psidel1(:)  => null()
-    real(kind=8)    , pointer :: psidel2(:)  => null()
-    real(kind=8)    , pointer :: sincos_angle_a(:) => null()
-    real(kind=8)    , pointer :: sincos_angle_b(:) => null()
-    real(kind=8)    , pointer :: sincos_angle_g(:) => null()
-    real(kind=8)    , pointer :: sign_dyz(:)   => null()
-    real(kind=8)    , pointer :: dplmod (:)   => null()
-    real(kind=8)    , pointer :: dplmod1(:)   => null()
-    real(kind=8)    , pointer :: dplmod2(:)   => null()
-    real(kind=8)    , pointer :: vint(:) => null()
-    character(len=8), pointer :: nofdep(:)  => null()
-    character(len=8), pointer :: nofvit(:)  => null()
+    integer, pointer :: vindx(:) => null()
+    real(kind=8), pointer :: coor_no(:) => null()
+    real(kind=8), pointer :: origob(:) => null()
+    real(kind=8), pointer :: coedep(:) => null()
+    real(kind=8), pointer :: coevit(:) => null()
+    real(kind=8), pointer :: psidel(:) => null()
+    real(kind=8), pointer :: psidel1(:) => null()
+    real(kind=8), pointer :: psidel2(:) => null()
+    real(kind=8), pointer :: sincos_angle_a(:) => null()
+    real(kind=8), pointer :: sincos_angle_b(:) => null()
+    real(kind=8), pointer :: sincos_angle_g(:) => null()
+    real(kind=8), pointer :: sign_dyz(:) => null()
+    real(kind=8), pointer :: dplmod(:) => null()
+    real(kind=8), pointer :: dplmod1(:) => null()
+    real(kind=8), pointer :: dplmod2(:) => null()
+    real(kind=8), pointer :: vint(:) => null()
+    character(len=8), pointer :: nofdep(:) => null()
+    character(len=8), pointer :: nofvit(:) => null()
 !
 !
-    data par_coorno  /_COOR_NO1, _COOR_NO2/
+    data par_coorno/_COOR_NO1, _COOR_NO2/
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
-    sd_nl  = sd_nl_
+    sd_nl = sd_nl_
 !
-    call nlget(sd_nl, _INTERNAL_VARS      , vr=vint, buffer=buffnl)
+    call nlget(sd_nl, _INTERNAL_VARS, vr=vint, buffer=buffnl)
     call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
-    start  = vindx(nl_ind)
+    start = vindx(nl_ind)
 !
     deploc(1:6) = 0.d0
 !
     call dtmget(sd_dtm, _MULTI_AP, kscal=monmot, buffer=buffdtm)
     multi_support = monmot(1:3) .eq. 'OUI'
     if (multi_support) then
-        call dtmget(sd_dtm, _CALC_SD , kscal=nomres, buffer=buffdtm)
+        call dtmget(sd_dtm, _CALC_SD, kscal=nomres, buffer=buffdtm)
         call dtmget(sd_dtm, _NB_EXC_T, iscal=nbexci, buffer=buffdtm)
 
-        call jeveuo(nomres//'.FDEP','L', vk8=nofdep)
-        call jeveuo(nomres//'.FVIT','L', vk8=nofvit)
+        call jeveuo(nomres//'.FDEP', 'L', vk8=nofdep)
+        call jeveuo(nomres//'.FVIT', 'L', vk8=nofvit)
 
         AS_ALLOCATE(vr=coedep, size=nbexci)
         AS_ALLOCATE(vr=coevit, size=nbexci)
@@ -120,21 +120,21 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
             coedep(iex) = 0.d0
             coevit(iex) = 0.d0
             if (nofdep(iex) .ne. ' ') then
-                call fointe('F', nofdep(iex), 1, ['INST'], [time],&
+                call fointe('F', nofdep(iex), 1, ['INST'], [time], &
                             coedep(iex), ier)
-            endif
+            end if
             if (nofvit(iex) .ne. ' ') then
-                call fointe('F', nofvit(iex), 1, ['INST'], [time],&
+                call fointe('F', nofvit(iex), 1, ['INST'], [time], &
                             coevit(iex), ier)
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 
-    call nlget(sd_nl, _COOR_ORIGIN_OBSTACLE, iocc=nl_ind, vr=origob        , buffer=buffnl)
-    call nlget(sd_nl, _SINCOS_ANGLE_A      , iocc=nl_ind, vr=sincos_angle_a, buffer=buffnl)
-    call nlget(sd_nl, _SINCOS_ANGLE_B      , iocc=nl_ind, vr=sincos_angle_b, buffer=buffnl)
-    call nlget(sd_nl, _SINCOS_ANGLE_G      , iocc=nl_ind, vr=sincos_angle_g, buffer=buffnl)
-    call nlget(sd_nl, _SIGN_DYZ            , iocc=nl_ind, vr=sign_dyz      , buffer=buffnl)
+    call nlget(sd_nl, _COOR_ORIGIN_OBSTACLE, iocc=nl_ind, vr=origob, buffer=buffnl)
+    call nlget(sd_nl, _SINCOS_ANGLE_A, iocc=nl_ind, vr=sincos_angle_a, buffer=buffnl)
+    call nlget(sd_nl, _SINCOS_ANGLE_B, iocc=nl_ind, vr=sincos_angle_b, buffer=buffnl)
+    call nlget(sd_nl, _SINCOS_ANGLE_G, iocc=nl_ind, vr=sincos_angle_g, buffer=buffnl)
+    call nlget(sd_nl, _SIGN_DYZ, iocc=nl_ind, vr=sign_dyz, buffer=buffnl)
     sina = sincos_angle_a(1)
     cosa = sincos_angle_a(2)
     sinb = sincos_angle_b(1)
@@ -143,11 +143,11 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     cosg = sincos_angle_g(2)
 
     nbno = 1
-    call nlget(sd_nl, _OBST_TYP      , iocc=nl_ind, kscal=obst_typ, buffer=buffnl)
+    call nlget(sd_nl, _OBST_TYP, iocc=nl_ind, kscal=obst_typ, buffer=buffnl)
     call nlget(sd_nl, _MODAL_DEPL_NO1, iocc=nl_ind, vr=dplmod1, buffer=buffnl)
     if (multi_support) call nlget(sd_nl, _PSI_DELT_NO1, vr=psidel1, buffer=buffnl)
 
-    if (obst_typ(1:2).eq.'BI') then
+    if (obst_typ(1:2) .eq. 'BI') then
         nbno = 2
         call nlget(sd_nl, _MODAL_DEPL_NO2, iocc=nl_ind, vr=dplmod2, buffer=buffnl)
         if (multi_support) call nlget(sd_nl, _PSI_DELT_NO2, vr=psidel2, buffer=buffnl)
@@ -157,7 +157,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !       --- Point toward the modal displacement for the concerned node / 1 or 2 /
         dplmod => dplmod1
         if (multi_support) psidel => psidel1
-        if (ino.eq.2) then
+        if (ino .eq. 2) then
             dplmod => dplmod2
             if (multi_support) psidel => psidel2
         end if
@@ -170,22 +170,22 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
         else
             call tophys(dplmod, depl, depglo)
             call tophys(dplmod, vite, vitglo)
-        endif
+        end if
 
-        nullify(coor_no)
+        nullify (coor_no)
         call nlget(sd_nl, par_coorno(ino), iocc=nl_ind, vr=coor_no, buffer=buffnl)
         do i = 1, 3
-            depglo(i) = depglo(i) + coor_no(i)
+            depglo(i) = depglo(i)+coor_no(i)
         end do
 
-    !   --- Conversion of these vectors to the local basis
-        call gloloc(depglo,origob          ,sina,cosa,sinb,cosb,sing,cosg, deploc(1+(ino-1)*3))
-        call gloloc(vitglo,[0.d0,0.d0,0.d0],sina,cosa,sinb,cosb,sing,cosg, vitloc(1+(ino-1)*3))
+        !   --- Conversion of these vectors to the local basis
+        call gloloc(depglo, origob, sina, cosa, sinb, cosb, sing, cosg, deploc(1+(ino-1)*3))
+    call gloloc(vitglo, [0.d0, 0.d0, 0.d0], sina, cosa, sinb, cosb, sing, cosg, vitloc(1+(ino-1)*3))
     end do
 
-    if (nbno.eq.2) then
+    if (nbno .eq. 2) then
         do i = 1, 3
-            dvitlo(i) = vitloc(i) - vitloc(3+i)
+            dvitlo(i) = vitloc(i)-vitloc(3+i)
         end do
     else
         do i = 1, 3
@@ -193,16 +193,16 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
         end do
     end if
 !
-    call nlget(sd_nl, _GAP                  , iocc=nl_ind, rscal=xjeu  , buffer=buffnl)
-    call nlget(sd_nl, _STIF_NORMAL          , iocc=nl_ind, rscal=knorm , buffer=buffnl)
-    call nlget(sd_nl, _ANTISISMIC_K1        , iocc=nl_ind, rscal=coefk1, buffer=buffnl)
-    call nlget(sd_nl, _ANTISISMIC_K2        , iocc=nl_ind, rscal=coefk2, buffer=buffnl)
-    call nlget(sd_nl, _ANTISISMIC_SEUIL_FX  , iocc=nl_ind, rscal=coefpy, buffer=buffnl)
-    call nlget(sd_nl, _ANTISISMIC_C         , iocc=nl_ind, rscal=coefcc, buffer=buffnl)
+    call nlget(sd_nl, _GAP, iocc=nl_ind, rscal=xjeu, buffer=buffnl)
+    call nlget(sd_nl, _STIF_NORMAL, iocc=nl_ind, rscal=knorm, buffer=buffnl)
+    call nlget(sd_nl, _ANTISISMIC_K1, iocc=nl_ind, rscal=coefk1, buffer=buffnl)
+    call nlget(sd_nl, _ANTISISMIC_K2, iocc=nl_ind, rscal=coefk2, buffer=buffnl)
+    call nlget(sd_nl, _ANTISISMIC_SEUIL_FX, iocc=nl_ind, rscal=coefpy, buffer=buffnl)
+    call nlget(sd_nl, _ANTISISMIC_C, iocc=nl_ind, rscal=coefcc, buffer=buffnl)
     call nlget(sd_nl, _ANTISISMIC_PUIS_ALPHA, iocc=nl_ind, rscal=coefad, buffer=buffnl)
-    call nlget(sd_nl, _ANTISISMIC_DX_MAX    , iocc=nl_ind, rscal=xmax  , buffer=buffnl)
+    call nlget(sd_nl, _ANTISISMIC_DX_MAX, iocc=nl_ind, rscal=xmax, buffer=buffnl)
 !
-    call distno(deploc, sign_dyz, obst_typ, 0.d0, xjeu/2.,&
+    call distno(deploc, sign_dyz, obst_typ, 0.d0, xjeu/2., &
                 xjeu/2., dnorm, cost, sint)
 !
     fgloba(:) = 0.d0
@@ -210,42 +210,42 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
 !   --- Calculation of the anti sismic device's force in the local reference
 
-    call mdfdas(dnorm, vnorm, dvitlo, cost, sint,&
-                coefk1, coefk2, coefpy, coefcc, coefad,&
+    call mdfdas(dnorm, vnorm, dvitlo, cost, sint, &
+                coefk1, coefk2, coefpy, coefcc, coefad, &
                 xmax, fdispo, flocal)
 
 !   --- Conversion to the global (physical) reference
-    call locglo(flocal, sina, cosa, sinb, cosb,&
+    call locglo(flocal, sina, cosa, sinb, cosb, &
                 sing, cosg, fgloba)
 
 !   --- Generalized force on the first node
     call togene(dplmod1, fgloba, fext)
 !       --- Generalized force on the second node
-    if (nbno.eq.2) then
+    if (nbno .eq. 2) then
         call togene(dplmod2, fgloba, fext, coef=-1.d0)
-    endif
+    end if
 
 ! --------------------------------------------------------------------------------------------------
 !   --- Internal variables, storage
 !
     finish = vindx(nl_ind+1)
-    ASSERT((finish-start).eq.NBVARINT_ANTS)
+    ASSERT((finish-start) .eq. NBVARINT_ANTS)
 
 !   --- Anti sismic device's force
-    vint(start   ) = fdispo
+    vint(start) = fdispo
 
 !   --- Local displacement of node 1
-    vint(start+1 ) = deploc(1)
-    vint(start+2 ) = deploc(2)
-    vint(start+3 ) = deploc(3)
+    vint(start+1) = deploc(1)
+    vint(start+2) = deploc(2)
+    vint(start+3) = deploc(3)
 
 !   --- Local displacement of node 2
-    vint(start+4 ) = deploc(4)
-    vint(start+5 ) = deploc(5)
-    vint(start+6 ) = deploc(6)
+    vint(start+4) = deploc(4)
+    vint(start+5) = deploc(5)
+    vint(start+6) = deploc(6)
 
 !   --- Normal velocity (local)
-    vint(start+7 ) = vnorm
+    vint(start+7) = vnorm
 
     if (multi_support) then
         AS_DEALLOCATE(vr=coedep)

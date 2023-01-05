@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine coqucf(nomu)
     character(len=8), pointer :: cescf(:) => null()
     character(len=8), pointer :: cesco(:) => null()
 !
-    data   nomval  /'X','Y','Z'/
+    data nomval/'X', 'Y', 'Z'/
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -78,23 +78,23 @@ subroutine coqucf(nomu)
     cartco = nomu//'.CARCOQUE'
     call exisd('CARTE', cartco, iret)
 !     SI LA CARTE DE REELS N'EXISTE PAS : BIZARRE
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
 !     POUR TRACE DES INFORMATIONS DANS LE FICHIER DE MESSAGES
     call infniv(ifm, niv)
 !
     celsco = '&&COQUCF.CHSCO'
     celscf = '&&COQUCF.CHSCF'
 ! --- TRANSFORMATION DE LA CARTE DE REELS EN ELEM_S
-    call carces(cartco, 'ELEM', ' ', 'V', celsco,&
+    call carces(cartco, 'ELEM', ' ', 'V', celsco, &
                 'A', ibid)
 ! --- TRANSFORMATION DE LA CARTE DE FONCTIONS EN ELEM_S
-    call carces(cartcf, 'ELEM', ' ', 'V', celscf,&
+    call carces(cartcf, 'ELEM', ' ', 'V', celscf, &
                 'A', ibid)
     if (niv .ge. 2) then
-        write(ifm,'(A)') ' '
-        write(ifm,'(A)') 'TRANSFORMATION DES CARTES EN CHELEM_S'
-        write(ifm,'(A)') '  <'//cartco//'>  <'//cartcf//'>'
-    endif
+        write (ifm, '(A)') ' '
+        write (ifm, '(A)') 'TRANSFORMATION DES CARTES EN CHELEM_S'
+        write (ifm, '(A)') '  <'//cartco//'>  <'//cartcf//'>'
+    end if
 !
 ! --- VERIFICATION QUE LES NOMS DANS LES DEUX ELEM_S EXISTENT
 !        RECUPERATION DES NOMS DES COMPOSANTES DANS CELSCF
@@ -106,31 +106,31 @@ subroutine coqucf(nomu)
 !     ADRESSE DES NOMS DES COMPOSANTES
     call jeveuo(celscf//'.CESC', 'L', vk8=cescf)
     call jeveuo(celsco//'.CESC', 'L', vk8=cesco)
-    85 format('(',i3,'A9)')
+85  format('(', i3, 'A9)')
     if (niv .ge. 2) then
-        write(ifm,'(A,I3)') 'COMPOSANTES DE <'//cartco//'> ',nbcmpo
-        write(k24bid,85) nbcmpo
-        write(ifm,k24bid) (cesco(jj+1),jj=0, nbcmpo-1)
-        write(ifm,'(A,I3)') 'COMPOSANTES DE <'//cartcf//'> ',nbcmpf
-        write(k24bid,85) nbcmpf
-        write(ifm,k24bid) (cescf(jj+1),jj=0, nbcmpf-1)
-    endif
+        write (ifm, '(A,I3)') 'COMPOSANTES DE <'//cartco//'> ', nbcmpo
+        write (k24bid, 85) nbcmpo
+        write (ifm, k24bid) (cesco(jj+1), jj=0, nbcmpo-1)
+        write (ifm, '(A,I3)') 'COMPOSANTES DE <'//cartcf//'> ', nbcmpf
+        write (k24bid, 85) nbcmpf
+        write (ifm, k24bid) (cescf(jj+1), jj=0, nbcmpf-1)
+    end if
 !
     iret = 0
     do ii = 1, nbcmpf
         nmcmpf = cescf(ii)
-        jj = indik8( cesco, nmcmpf, 1 , nbcmpo )
+        jj = indik8(cesco, nmcmpf, 1, nbcmpo)
         if (jj .ne. 0) then
             if (niv .ge. 2) then
-                write(ifm,'(A)') 'COMPOSANTE <'//nmcmpf//'>'
-                write(ifm,'(A,I5)') '   INDEX DANS CARCOQUF ',ii
-                write(ifm,'(A,I5)') '   INDEX DANS CARCOQUE ',jj
-            endif
+                write (ifm, '(A)') 'COMPOSANTE <'//nmcmpf//'>'
+                write (ifm, '(A,I5)') '   INDEX DANS CARCOQUF ', ii
+                write (ifm, '(A,I5)') '   INDEX DANS CARCOQUE ', jj
+            end if
         else
-            iret = iret + 1
-        endif
+            iret = iret+1
+        end if
     end do
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
 ! --- INFORMATIONS SUR LE MAILLAGE
     call dismoi('NOM_MAILLA', cartco, 'CARTE', repk=nomma)
@@ -154,14 +154,14 @@ subroutine coqucf(nomu)
 !                 CALCUL DE LA FONCTION
 !                 AFFECTE LE RESULTAT A LA COMPOSANTE DE CELSCO
     if (niv .ge. 2) then
-        write(ifm,'(A)') 'VALEURS DES FONCTIONS'
-        write(ifm,90)
-    endif
+        write (ifm, '(A)') 'VALEURS DES FONCTIONS'
+        write (ifm, 90)
+    end if
     do ii = 1, nbmail
         lcoor = .false.
         do jj = 1, nbcmpf
             nmcmpf = cescf(jj)
-            call cesexi('C', jcesdf, jceslf, ii, 1,&
+            call cesexi('C', jcesdf, jceslf, ii, 1, &
                         1, jj, iad)
             if (iad .gt. 0) then
                 nomfct = cesvf(iad)
@@ -170,31 +170,31 @@ subroutine coqucf(nomu)
                         lcoor = .true.
                         iadr1 = zi(jtabco-1+ii)
                         iadr2 = zi(jtabco-1+ii+1)
-                        nbno = iadr2 - iadr1
+                        nbno = iadr2-iadr1
                         adrm = jconne-1+iadr1
 !                    CENTRE DE GRAVITE DE LA MAILLE
                         do icompo = 1, 3
                             valr(icompo) = 0.0d0
                             do inoeu = 1, nbno
                                 nunoe = zi(adrm-1+inoeu)
-                                valr(icompo) = valr(icompo) + zr( igeom+3*(nunoe-1)+icompo-1)
+                                valr(icompo) = valr(icompo)+zr(igeom+3*(nunoe-1)+icompo-1)
                             end do
                             valr(icompo) = valr(icompo)/nbno
                         end do
-                    endif
-                    call fointe('F', nomfct, 3, nomval, valr,&
+                    end if
+                    call fointe('F', nomfct, 3, nomval, valr, &
                                 fresu, iret)
                     if (niv .ge. 2) then
-                        write(ifm,91) ii,jj,(valr(icompo),icompo=1,3),&
-                        nomfct,fresu
-                    endif
+                        write (ifm, 91) ii, jj, (valr(icompo), icompo=1, 3), &
+                            nomfct, fresu
+                    end if
 !                 ON RECHERCHE DANS CELSCO LA COMPOSANTE CORRESPONDANTE
-                    kk = indik8( cesco, nmcmpf, 1 , nbcmpo )
-                    call cesexi('S', jcesdo, jceslo, ii, 1,&
+                    kk = indik8(cesco, nmcmpf, 1, nbcmpo)
+                    call cesexi('S', jcesdo, jceslo, ii, 1, &
                                 1, kk, iad)
                     cesvo(iad) = fresu
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
@@ -207,10 +207,10 @@ subroutine coqucf(nomu)
     call detrsd('CHAM_ELEM_S', celsco)
     call detrsd('CHAM_ELEM_S', celscf)
 !
-    90 format(' MAILLE_NB  : [ [  CENTRE DE GRAVITE ],',&
+90  format(' MAILLE_NB  : [ [  CENTRE DE GRAVITE ],',&
      &       '  FONCTION  ,  VALEUR       ]')
-    91 format("'",i7,"_",i1,"' : [ [",3(e18.10,","),"], '",&
-     &       a,"' ,",e18.10,"],")
+91  format("'", i7, "_", i1, "' : [ [", 3(e18.10, ","), "], '",&
+     &       a, "' ,", e18.10, "],")
 !
 999 continue
     call jedema()

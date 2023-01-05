@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine xreacg(model, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infdbg.h"
 #include "asterfort/xgecfi.h"
@@ -53,8 +53,8 @@ implicit none
 !
     call infdbg('XFEM', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<XFEM> ... REACTUALISATION DES FACETTES DE CONTACT'
-    endif
+        write (ifm, *) '<XFEM> ... REACTUALISATION DES FACETTES DE CONTACT'
+    end if
 !
     depla = ds_contact%sdcont_solv(1:14)//'.DEPG'
     call xgecfi(model, depla)

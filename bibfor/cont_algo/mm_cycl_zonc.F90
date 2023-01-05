@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -43,16 +43,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (laug_cont.gt.pres_near) then
+    if (laug_cont .gt. pres_near) then
         zone_cont = 1
-    elseif ((laug_cont.le.pres_near).and.(laug_cont.ge.r8prem())) then
+    elseif ((laug_cont .le. pres_near) .and. (laug_cont .ge. r8prem())) then
         zone_cont = 2
-    elseif ((laug_cont.ge.-pres_near).and.(laug_cont.le.r8prem())) then
+    elseif ((laug_cont .ge. -pres_near) .and. (laug_cont .le. r8prem())) then
         zone_cont = 3
-    elseif (laug_cont.lt.-pres_near) then
+    elseif (laug_cont .lt. -pres_near) then
         zone_cont = 4
     else
         ASSERT(.false.)
-    endif
+    end if
 
 end subroutine

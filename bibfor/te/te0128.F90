@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,19 +46,19 @@ subroutine te0128(option, nomte)
     integer :: i, ier, ino, itemp, itemps, j, jno
 !
 !-----------------------------------------------------------------------
-    data               nompar/'X','Y','Z','INST'/
+    data nompar/'X', 'Y', 'Z', 'INST'/
 ! DEB ------------------------------------------------------------------
     tz0 = r8t0()
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
 !
     if (option(11:14) .eq. 'COEF') then
         call jevech('PCOEFHF', 'L', iech)
-    else if (option(11:14).eq.'RAYO') then
+    else if (option(11:14) .eq. 'RAYO') then
         call jevech('PRAYONF', 'L', iray)
-    endif
+    end if
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
@@ -69,12 +69,12 @@ subroutine te0128(option, nomte)
 !    CALCUL DES PRODUITS VECTORIELS OMI   OMJ
 !
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -89,47 +89,47 @@ subroutine te0128(option, nomte)
             idec = (i-1)*ndim
             do j = 1, nno
                 jdec = (j-1)*ndim
-                nx = nx + zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sx(i,j)
-                ny = ny + zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sy(i,j)
-                nz = nz + zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sz(i,j)
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
             end do
         end do
-        jac = sqrt(nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
 !
         tpg = 0.d0
         xx = 0.d0
         yy = 0.d0
         zz = 0.d0
         do i = 1, nno
-            tpg = tpg + zr(itemp+i-1) * zr(ivf+ldec+i-1)
-            xx = xx + zr(igeom+3*i-3) * zr(ivf+ldec+i-1)
-            yy = yy + zr(igeom+3*i-2) * zr(ivf+ldec+i-1)
-            zz = zz + zr(igeom+3*i-1) * zr(ivf+ldec+i-1)
+            tpg = tpg+zr(itemp+i-1)*zr(ivf+ldec+i-1)
+            xx = xx+zr(igeom+3*i-3)*zr(ivf+ldec+i-1)
+            yy = yy+zr(igeom+3*i-2)*zr(ivf+ldec+i-1)
+            zz = zz+zr(igeom+3*i-1)*zr(ivf+ldec+i-1)
         end do
         valpar(1) = xx
         valpar(2) = yy
         valpar(3) = zz
         valpar(4) = zr(itemps)
         if (option(11:14) .eq. 'COEF') then
-            call fointe('A', zk8(iech), 4, nompar, valpar,&
+            call fointe('A', zk8(iech), 4, nompar, valpar, &
                         echnp1, ier)
             ASSERT(ier .eq. 0)
             do i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1) + jac* theta* zr( ipoids+ipg-1)* zr(ivf+ldec+i-1)&
-                                 &* echnp1 * tpg
+                zr(iveres+i-1) = zr(iveres+i-1)+jac*theta*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
+                                &*echnp1*tpg
             end do
-        else if (option(11:14).eq.'RAYO') then
-            call fointe('A', zk8(iray), 4, nompar, valpar,&
+        else if (option(11:14) .eq. 'RAYO') then
+            call fointe('A', zk8(iray), 4, nompar, valpar, &
                         sigma, ier)
             ASSERT(ier .eq. 0)
-            call fointe('A', zk8(iray+1), 4, nompar, valpar,&
+            call fointe('A', zk8(iray+1), 4, nompar, valpar, &
                         epsil, ier)
             ASSERT(ier .eq. 0)
             do i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1) + jac* theta* zr( ipoids+ipg-1)* zr(ivf+ldec+i-1)&
-                                 &* sigma* epsil* ( tpg + tz0 )**4
+                zr(iveres+i-1) = zr(iveres+i-1)+jac*theta*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
+                                &*sigma*epsil*(tpg+tz0)**4
             end do
-        endif
+        end if
 !
     end do
 ! FIN ------------------------------------------------------------------

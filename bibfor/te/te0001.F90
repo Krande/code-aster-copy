@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine te0001(option, nomte)
         do i = 1, 3
             angl(i) = zr(jdimp+nddl1+i)
         end do
-    else if (option.eq. 'CHAR_MECA_FORC_F') then
+    else if (option .eq. 'CHAR_MECA_FORC_F') then
         nbpar = 4
         nompar(1) = 'X'
         nompar(2) = 'Y'
@@ -76,8 +76,8 @@ subroutine te0001(option, nomte)
         call jevech('PFORNOF', 'L', jdimp)
         do i = 1, nddl1
             nomfon = zk8(jdimp-1+i)
-            ier=0
-            call fointe('FM', nomfon, nbpar, nompar, valpar,&
+            ier = 0
+            call fointe('FM', nomfon, nbpar, nompar, valpar, &
                         zr(jvec-1+i), ier)
         end do
         langl = zk8(jdimp+nddl1) .eq. 'UTILISAT'
@@ -85,15 +85,15 @@ subroutine te0001(option, nomte)
             dgrd = r8dgrd()
             do i = 1, 3
                 nomfon = zk8(jdimp+nddl1+i)
-                ier=0
-                call fointe('FM', nomfon, nbpar, nompar, valpar,&
+                ier = 0
+                call fointe('FM', nomfon, nbpar, nompar, valpar, &
                             angl(i), ier)
-                angl(i) = angl(i) * dgrd
+                angl(i) = angl(i)*dgrd
             end do
-        endif
+        end if
     else
         call utmess('F', 'ELEMENTS2_61', sk=option)
-    endif
+    end if
 !
 !     --- PROJECTION DANS LE REPERE ABSOLU ---
     if (langl) then
@@ -101,17 +101,17 @@ subroutine te0001(option, nomte)
         do i = 1, min(nddl, 3)
             vect(i) = 0.d0
             do j = 1, min(nddl, 3)
-                vect(i) = vect(i) + mat(j,i)*zr(jvec-1+j)
+                vect(i) = vect(i)+mat(j, i)*zr(jvec-1+j)
             end do
         end do
         do i = 4, min(nddl, 6)
             vect(i) = 0.d0
             do j = 4, min(nddl, 6)
-                vect(i) = vect(i) + mat(j-3,i-3)*zr(jvec-1+j)
+                vect(i) = vect(i)+mat(j-3, i-3)*zr(jvec-1+j)
             end do
         end do
         do i = 1, nddl
             zr(jvec-1+i) = vect(i)
         end do
-    endif
+    end if
 end subroutine

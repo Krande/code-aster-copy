@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cacono(noma, ndim, llist1, llist2, no1,&
+subroutine cacono(noma, ndim, llist1, llist2, no1, &
                   no2, norm1, norm2, inoma)
     implicit none
 #include "jeveux.h"
@@ -79,10 +79,10 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
     ipoi2 = 0
 !
     do ima = 1, nbma
-        ityp = zi(ilist+2* (ima-1)+2)
+        ityp = zi(ilist+2*(ima-1)+2)
         call panbno(ityp, nbnott)
-        nbno = nbnott(1) + nbnott(2) + nbnott(3)
-        numma = zi(ilist+2* (ima-1)+1)
+        nbno = nbnott(1)+nbnott(2)+nbnott(3)
+        numma = zi(ilist+2*(ima-1)+1)
         call jeveuo(jexnum(noma//'.CONNEX', numma), 'L', imad)
         do ino = 1, nbno
             if (zi(imad-1+ino) .eq. no1) then
@@ -90,16 +90,16 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
                 if (nbno .eq. 1) then
                     ipoi1 = 1
                     goto 100
-                endif
+                end if
                 inoma = 1
                 call pacoor(noma, numma, nbno, coor)
                 call canorm(coor, vecnor, ndim, ityp, inorm)
                 do j = 1, 3
-                    norm1(j) = norm1(j) + vecnor(j)
+                    norm1(j) = norm1(j)+vecnor(j)
                 end do
                 goto 100
 !
-            endif
+            end if
 !
         end do
 100     continue
@@ -108,10 +108,10 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
     call jeveuo(llist2, 'L', ilist)
     nbma = zi(ilist)
     do ima = 1, nbma
-        ityp = zi(ilist+2* (ima-1)+2)
+        ityp = zi(ilist+2*(ima-1)+2)
         call panbno(ityp, nbnott)
-        nbno = nbnott(1) + nbnott(2) + nbnott(3)
-        numma = zi(ilist+2* (ima-1)+1)
+        nbno = nbnott(1)+nbnott(2)+nbnott(3)
+        numma = zi(ilist+2*(ima-1)+1)
         call jeveuo(jexnum(noma//'.CONNEX', numma), 'L', imad)
         do ino = 1, nbno
             if (zi(imad-1+ino) .eq. no2) then
@@ -119,16 +119,16 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
                 if (nbno .eq. 1) then
                     ipoi2 = 1
                     goto 200
-                endif
+                end if
                 inoma = 1
                 call pacoor(noma, numma, nbno, coor)
                 call canorm(coor, vecnor, ndim, ityp, inorm)
                 do j = 1, 3
-                    norm2(j) = norm2(j) + vecnor(j)
+                    norm2(j) = norm2(j)+vecnor(j)
                 end do
                 goto 200
 !
-            endif
+            end if
 !
         end do
 200     continue
@@ -139,12 +139,12 @@ subroutine cacono(noma, ndim, llist1, llist2, no1,&
 !
     if (ipoi1 .eq. 1) then
         inoma = -1
-    else if (ipoi2.eq.1) then
+    else if (ipoi2 .eq. 1) then
         inoma = -2
-    endif
-    if ((ipoi1.eq.1) .and. (ipoi2.eq.1)) then
+    end if
+    if ((ipoi1 .eq. 1) .and. (ipoi2 .eq. 1)) then
         call utmess('F', 'MODELISA2_43')
-    endif
+    end if
 !
 ! FIN ------------------------------------------------------------------
     call jedema()

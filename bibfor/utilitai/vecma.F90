@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,17 +28,17 @@ subroutine vecma(mv, n, mp, m)
     integer :: k, i, j
 ! ----------------------------------------------------------------------
 !
-    ASSERT(n.ge.m*(m+1)/2)
+    ASSERT(n .ge. m*(m+1)/2)
 !
     k = 0
     do i = 1, m
         do j = 1, m
-            k = k + 1
-            mp(i,j) = mv(k)
-            mp(j,i) = mv(k)
+            k = k+1
+            mp(i, j) = mv(k)
+            mp(j, i) = mv(k)
             if (j .eq. i) goto 10
         end do
- 10     continue
+10      continue
     end do
 !
 end subroutine

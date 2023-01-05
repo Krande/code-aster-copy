@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 !
 subroutine comp_meca_init(ds_comporPara)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 !
-type(Behaviour_Para), intent(out) :: ds_comporPara
+    type(Behaviour_Para), intent(out) :: ds_comporPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,19 +40,19 @@ type(Behaviour_Para), intent(out) :: ds_comporPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ds_comporPara%rela_comp  = 'VIDE'
-    ds_comporPara%defo_comp  = 'VIDE'
-    ds_comporPara%type_comp  = 'VIDE'
-    ds_comporPara%type_cpla  = 'VIDE'
-    ds_comporPara%kit_comp   = 'VIDE'
-    ds_comporPara%mult_comp  = 'VIDE'
-    ds_comporPara%post_iter  = 'VIDE'
-    ds_comporPara%defo_ldc   = 'VIDE'
-    ds_comporPara%rigi_geom  = 'VIDE'
-    ds_comporPara%regu_visc  = 'VIDE'
-    ds_comporPara%nbVari     = 0
-    ds_comporPara%numeLaw    = 0
-    ds_comporPara%nbVariKit  = 0
+    ds_comporPara%rela_comp = 'VIDE'
+    ds_comporPara%defo_comp = 'VIDE'
+    ds_comporPara%type_comp = 'VIDE'
+    ds_comporPara%type_cpla = 'VIDE'
+    ds_comporPara%kit_comp = 'VIDE'
+    ds_comporPara%mult_comp = 'VIDE'
+    ds_comporPara%post_iter = 'VIDE'
+    ds_comporPara%defo_ldc = 'VIDE'
+    ds_comporPara%rigi_geom = 'VIDE'
+    ds_comporPara%regu_visc = 'VIDE'
+    ds_comporPara%nbVari = 0
+    ds_comporPara%numeLaw = 0
+    ds_comporPara%nbVariKit = 0
     ds_comporPara%numeLawKit = 0
 !
 end subroutine

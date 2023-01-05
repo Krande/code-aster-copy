@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmbouc(ds_contact   , loop_type  , operation_ ,&
+subroutine mmbouc(ds_contact, loop_type, operation_, &
                   loop_counter_, loop_state_, loop_locus_, loop_vale_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -77,10 +77,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    operation    = operation_
-    loop_state   = .false.
+    operation = operation_
+    loop_state = .false.
     loop_counter = 0
-    loop_indx    = 0
+    loop_indx = 0
 !
 ! - Find loop
 !
@@ -88,7 +88,7 @@ implicit none
     do i_loop = 1, nb_loop
         if (ds_contact%loop(i_loop)%type .eq. loop_type) then
             loop_indx = i_loop
-        endif
+        end if
     end do
     ASSERT(loop_indx .ge. 1 .and. loop_indx .le. ds_contact%nb_loop_maxi)
 !
@@ -96,60 +96,60 @@ implicit none
 !
     if (operation .eq. 'Init_Counter') then
         ds_contact%loop(loop_indx)%counter = 0
-    else if (operation.eq.'Incr_Counter') then
-        ds_contact%loop(loop_indx)%counter = ds_contact%loop(loop_indx)%counter +1
-    else if (operation.eq.'Read_Counter') then
+    else if (operation .eq. 'Incr_Counter') then
+        ds_contact%loop(loop_indx)%counter = ds_contact%loop(loop_indx)%counter+1
+    else if (operation .eq. 'Read_Counter') then
         loop_counter = ds_contact%loop(loop_indx)%counter
-    else if (operation.eq.'Set_Convergence') then
+    else if (operation .eq. 'Set_Convergence') then
         ds_contact%loop(loop_indx)%conv = .true.
-    else if (operation.eq.'Set_Divergence') then
+    else if (operation .eq. 'Set_Divergence') then
         ds_contact%loop(loop_indx)%conv = .false.
-    else if (operation.eq.'Set_Error') then
+    else if (operation .eq. 'Set_Error') then
         ds_contact%loop(loop_indx)%error = .true.
-    else if (operation.eq.'Set_NoError') then
+    else if (operation .eq. 'Set_NoError') then
         ds_contact%loop(loop_indx)%error = .false.
-    else if (operation.eq.'Is_Convergence') then
+    else if (operation .eq. 'Is_Convergence') then
         if (ds_contact%loop(loop_indx)%conv) then
             loop_state = .true.
         else
             loop_state = .false.
-        endif
-    else if (operation.eq.'Is_Divergence') then
+        end if
+    else if (operation .eq. 'Is_Divergence') then
         if (ds_contact%loop(loop_indx)%conv) then
             loop_state = .false.
         else
             loop_state = .true.
-        endif
-    else if (operation.eq.'Is_Error') then
+        end if
+    else if (operation .eq. 'Is_Error') then
         if (ds_contact%loop(loop_indx)%error) then
             loop_state = .true.
         else
             loop_state = .false.
-        endif
-    else if (operation.eq.'Is_NoError') then
+        end if
+    else if (operation .eq. 'Is_NoError') then
         if (ds_contact%loop(loop_indx)%error) then
             loop_state = .false.
         else
             loop_state = .true.
-        endif
-    else if (operation.eq.'Set_Locus') then
+        end if
+    else if (operation .eq. 'Set_Locus') then
         ds_contact%loop(loop_indx)%locus_calc = loop_locus_
-    else if (operation.eq.'Get_Locus') then
+    else if (operation .eq. 'Get_Locus') then
         loop_locus_ = ds_contact%loop(loop_indx)%locus_calc
-    else if (operation.eq.'Set_Vale') then
+    else if (operation .eq. 'Set_Vale') then
         ds_contact%loop(loop_indx)%vale_calc = loop_vale_
-    else if (operation.eq.'Get_Vale') then
+    else if (operation .eq. 'Get_Vale') then
         loop_vale_ = ds_contact%loop(loop_indx)%vale_calc
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (present(loop_counter_)) then
         loop_counter_ = loop_counter
-    endif
+    end if
 !
     if (present(loop_state_)) then
         loop_state_ = loop_state
-    endif
+    end if
 !
 end subroutine

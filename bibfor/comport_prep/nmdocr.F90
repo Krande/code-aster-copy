@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmdocr(model, carcri, base)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/carc_info.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !
-character(len=8), intent(in)  :: model
-character(len=24), intent(in) :: carcri
-character(len=1), intent(in) :: base
+    character(len=8), intent(in)  :: model
+    character(len=24), intent(in) :: carcri
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ character(len=1), intent(in) :: base
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_5')
-    endif
+    end if
 
 ! - Initialisations
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
@@ -81,6 +81,6 @@ character(len=1), intent(in) :: base
     call carc_save(mesh, carcri, behaviourPrepCrit)
 
 ! - Cleaning
-    deallocate(behaviourPrepCrit%v_crit)
+    deallocate (behaviourPrepCrit%v_crit)
 !
 end subroutine

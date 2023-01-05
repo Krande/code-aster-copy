@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,20 +53,20 @@ subroutine masyns(matas)
     mat19 = matas(1:19)
     call jelira(mat19//'.VALM', 'CLAS', cval=base)
     call jelira(mat19//'.VALM', 'TYPE', cval=ktyp)
-    ASSERT(ktyp.eq.'R'.or.ktyp.eq.'C')
+    ASSERT(ktyp .eq. 'R' .or. ktyp .eq. 'C')
     call jeveuo(mat19//'.REFA', 'E', vk24=refa)
-    ASSERT(refa(9).eq.'MS')
-    refa(9)='MR'
+    ASSERT(refa(9) .eq. 'MS')
+    refa(9) = 'MR'
 !
     call jelira(mat19//'.VALM', 'NMAXOC', nbloc)
-    ASSERT(nbloc.eq.1)
+    ASSERT(nbloc .eq. 1)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', lgbloc)
 !
 !
     call jedupo(mat19//'.VALM', 'V', '&&MASYNS.VALM', .false._1)
     call jedetr(mat19//'.VALM')
 !
-    call jecrec(mat19//'.VALM', base//' V '//ktyp, 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(mat19//'.VALM', base//' V '//ktyp, 'NU', 'DISPERSE', 'CONSTANT', &
                 2)
     call jeecra(mat19//'.VALM', 'LONMAX', lgbloc)
     call jecroc(jexnum(mat19//'.VALM', 1))
@@ -86,7 +86,7 @@ subroutine masyns(matas)
             zc(jvalms+i-1) = zc(jvalma+i-1)
             zc(jvalmi+i-1) = zc(jvalma+i-1)
         end do
-    endif
+    end if
     call jedetr('&&MASYNS.VALM')
 !
 !

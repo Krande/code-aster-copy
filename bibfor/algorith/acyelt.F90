@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim,&
+subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim, &
                   ideb, jdeb, x)
     implicit none
 !
@@ -76,12 +76,12 @@ subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim,&
     call jenonu(jexnom(nomcol(1:15)//'.REPE.MAT', nomob), ibid)
     call jeveuo(jexnum(nomcol, ibid), 'L', llob)
 !
-    iad = llob - 1
+    iad = llob-1
     do j = 1, nob
         do i = j, 1, -1
-            iad = iad + 1
-            call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
-                        1, ideb-1+i, jdeb-1+j, x, 1,&
+            iad = iad+1
+            call ampcpr(cmat, ndim, ndim, zr(iad), 1, &
+                        1, ideb-1+i, jdeb-1+j, x, 1, &
                         1)
         end do
     end do

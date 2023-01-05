@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,23 +72,23 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    matas=nomacr//'.RIGIMECA'
-    nu=nomacr
-    nu=nu(1:14)//'.NUME'
-    stock=nu(1:14)//'.SLCS'
+    matas = nomacr//'.RIGIMECA'
+    nu = nomacr
+    nu = nu(1:14)//'.NUME'
+    stock = nu(1:14)//'.SLCS'
     call jeveuo(stock//'.SCIB', 'L', vi=scib)
 !
 !
     call jeveuo(nomacr//'.DESM', 'L', vi=desm)
-    nddle=desm(4)
-    nddli=desm(5)
-    nddlt=nddli+nddle
+    nddle = desm(4)
+    nddli = desm(5)
+    nddlt = nddli+nddle
 !
 !
 !     -- ON RECOPIE VECIN DANS VECOUT POUR EVITER LES EFFETS DE BIAIS:
 !     ---------------------------------------------------------------
     do kk = 1, nddlt
-        zr(iaveou-1+kk)=zr(iavein-1+kk)
+        zr(iaveou-1+kk) = zr(iavein-1+kk)
     end do
 !
 !
@@ -96,45 +96,45 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 !     ------------------- -------------------------------------------
     call mtdscr(matas)
     call jeveuo(matas(1:19)//'.&INT', 'E', lmat)
-    call mrconl('MULT', lmat, nddlt, 'R', zr(iaveou),&
+    call mrconl('MULT', lmat, nddlt, 'R', zr(iaveou), &
                 1)
 !
 !
 !     -- CALCUL DE QI0 = (K_II**(-1))*F_I DANS : VECOUT(1->NDDLI):
 !     ------------------- ----------------------------------------
-    call jeveuo(zk24(zi(lmat+1))(1:19)//'.REFA', 'L', vk24=refa)
-    call jeveuo(refa(2)(1:14)//'.SLCS.SCHC', 'L', vi=vschc)
+    call jeveuo(zk24(zi(lmat+1)) (1:19)//'.REFA', 'L', vk24=refa)
+    call jeveuo(refa(2) (1:14)//'.SLCS.SCHC', 'L', vi=vschc)
     call mtdsc2(zk24(zi(lmat+1)), 'SCDI', 'L', iascdi)
     call mtdsc2(zk24(zi(lmat+1)), 'SCBL', 'L', iascbl)
     call jelira(matas//'.UALF', 'NMAXOC', nbbloc)
 !
-    call rldlr8(zk24(zi(lmat+1)), vschc, zi(iascdi), zi(iascbl), nddli,&
+    call rldlr8(zk24(zi(lmat+1)), vschc, zi(iascdi), zi(iascbl), nddli, &
                 nbbloc, zr(iaveou), 1)
 !
 !
 !     -- CALCUL DE FP_E = F_E-K_EI*QI0 DANS : VECOUT(NDDLI+1,NDDLT):
 !     -----------------------------------------------------------------
-    iblold=0
+    iblold = 0
     do j = 1, nddle
-        iblo=scib(nddli+j)
-        scdi=zi(iascdi-1+nddli+j)
-        schc=vschc(nddli+j)
+        iblo = scib(nddli+j)
+        scdi = zi(iascdi-1+nddli+j)
+        schc = vschc(nddli+j)
         if (iblo .ne. iblold) then
             if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
             call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-        endif
-        iblold=iblo
-        kk=0
+        end if
+        iblold = iblo
+        kk = 0
         do k = nddli+j+1-schc, nddli
-            kk=kk+1
-            zr(iaveou-1+nddli+j)=zr(iaveou-1+nddli+j)- zr(iaveou-1+k)*&
-            zr(jualf-1+scdi-schc+kk)
+            kk = kk+1
+            zr(iaveou-1+nddli+j) = zr(iaveou-1+nddli+j)-zr(iaveou-1+k)* &
+                                   zr(jualf-1+scdi-schc+kk)
         end do
     end do
     if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
 !
-    call jelibe(refa(2)(1:14)//'.SLCS.SCHC')
+    call jelibe(refa(2) (1:14)//'.SLCS.SCHC')
 !
     call jedema()
 end subroutine

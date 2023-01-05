@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calcdr(nbmat, mater, parame, derive, g,&
-                  i, q, devg, devgii, traceg,&
+subroutine calcdr(nbmat, mater, parame, derive, g, &
+                  i, q, devg, devgii, traceg, &
                   dfdl)
 !
-    implicit      none
+    implicit none
 #include "asterfort/drfdrg.h"
 #include "asterfort/drfdrs.h"
 #include "asterfort/drfnew.h"
@@ -53,16 +53,16 @@ subroutine calcdr(nbmat, mater, parame, derive, g,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRE --------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
+    parameter(mun=-1.0d0)
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU -----------------------------
 ! ======================================================================
-    mu = mater( 4,1)
-    k = mater( 5,1)
-    sigc = mater( 9,2)
-    gamcjs = mater(12,2)
+    mu = mater(4, 1)
+    k = mater(5, 1)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
 ! ======================================================================
 ! --- CALCUL DE H0, CALCUL INTERMEDIAIRE -------------------------------
 ! ======================================================================
@@ -74,22 +74,22 @@ subroutine calcdr(nbmat, mater, parame, derive, g,&
 ! ======================================================================
 ! --- CALCUL DE DUDG ---------------------------------------------------
 ! ======================================================================
-    call drudrg(parame, derive, h0, sigc, g,&
+    call drudrg(parame, derive, h0, sigc, g, &
                 i, dudg)
 ! ======================================================================
 ! --- CALCUL DE DFDS ---------------------------------------------------
 ! ======================================================================
-    call drfdrs(q, parame, h0, sigc, g,&
+    call drfdrs(q, parame, h0, sigc, g, &
                 duds, dfds)
 ! ======================================================================
 ! --- CALCUL DE DFDG ---------------------------------------------------
 ! ======================================================================
-    call drfdrg(parame, derive, h0, sigc, g,&
+    call drfdrg(parame, derive, h0, sigc, g, &
                 dudg, dfdg)
 ! ======================================================================
 ! --- CALCUL DE DFDL ---------------------------------------------------
 ! ======================================================================
-    call drfnew(devg, devgii, traceg, dfds, dfdg,&
+    call drfnew(devg, devgii, traceg, dfds, dfdg, &
                 mu, k, dfdl)
 ! ======================================================================
     call jedema()

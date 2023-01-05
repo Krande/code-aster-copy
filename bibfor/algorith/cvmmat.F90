@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cvmmat(fami, kpg, ksp, mod, imat,&
-                  nmat, materd, materf, matcst, typma,&
-                  ndt, ndi, nr, crit, vim,&
+subroutine cvmmat(fami, kpg, ksp, mod, imat, &
+                  nmat, materd, materf, matcst, typma, &
+                  ndt, ndi, nr, crit, vim, &
                   nvi, sigd)
     implicit none
 !    VISCOCHABOCHE : RECUPERATION DU MATERIAU A T ET T+DT
@@ -60,11 +60,11 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
     character(len=3) :: matcst
     character(len=11) :: meting
 !       ----------------------------------------------------------------
-    common /opti/   ioptio , idnr
-    common /meti/   meting
-    common /coed/   c1d , c2d
+    common/opti/ioptio, idnr
+    common/meti/meting
+    common/coed/c1d, c2d
 !       ----------------------------------------------------------------
-    data epsi       /1.d-15/
+    data epsi/1.d-15/
 !
 ! -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
 !
@@ -83,24 +83,24 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
         nr = 3*ndt+3
         nvi = 4*ndt+4
 ! - 3D
-    else if (mod(1:2).eq.'3D') then
+    else if (mod(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
         nr = 3*ndt+3
         nvi = 3*ndt+4
 ! - D_PLAN AXIS
-    else if (mod(1:6).eq.'D_PLAN'.or.mod(1:4).eq.'AXIS') then
+    else if (mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
         ndt = 4
         ndi = 3
         nr = 3*ndt+3
         nvi = 3*ndt+4
 ! - C_PLAN
-    else if (mod(1:6).eq.'C_PLAN') then
+    else if (mod(1:6) .eq. 'C_PLAN') then
         ndt = 4
         ndi = 3
         nr = 3*ndt+4
         nvi = 3*ndt+4
-    endif
+    end if
 !
 !
 ! -     VISCO-PLASTICITE --->  CALCUL DE LA MATRICE DE COMPORTEMENT
@@ -110,119 +110,119 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !
 ! -     RECUPERATION MATERIAU -----------------------------------------
 !
-    nomc(1) ='E'
-    nomc(2) ='NU'
-    nomc(3) ='ALPHA'
-    nomc(4) ='K_0'
-    nomc(5) ='A_K'
-    nomc(6) ='A_R'
-    nomc(7) ='K'
-    nomc(8) ='N'
-    nomc(9) ='ALP'
-    nomc(10) ='B'
-    nomc(11) ='M_R'
-    nomc(12) ='G_R'
-    nomc(13) ='MU'
-    nomc(14) ='Q_M'
-    nomc(15) ='Q_0'
-    nomc(16) ='QR_0'
-    nomc(17) ='ETA'
-    nomc(18) ='C1'
-    nomc(19) ='M_1'
-    nomc(20) ='D1'
-    nomc(21) ='G_X1'
-    nomc(22) ='G1_0'
-    nomc(23) ='C2'
-    nomc(24) ='M_2'
-    nomc(25) ='D2'
-    nomc(26) ='G_X2'
-    nomc(27) ='G2_0'
-    nomc(28) ='A_I'
+    nomc(1) = 'E'
+    nomc(2) = 'NU'
+    nomc(3) = 'ALPHA'
+    nomc(4) = 'K_0'
+    nomc(5) = 'A_K'
+    nomc(6) = 'A_R'
+    nomc(7) = 'K'
+    nomc(8) = 'N'
+    nomc(9) = 'ALP'
+    nomc(10) = 'B'
+    nomc(11) = 'M_R'
+    nomc(12) = 'G_R'
+    nomc(13) = 'MU'
+    nomc(14) = 'Q_M'
+    nomc(15) = 'Q_0'
+    nomc(16) = 'QR_0'
+    nomc(17) = 'ETA'
+    nomc(18) = 'C1'
+    nomc(19) = 'M_1'
+    nomc(20) = 'D1'
+    nomc(21) = 'G_X1'
+    nomc(22) = 'G1_0'
+    nomc(23) = 'C2'
+    nomc(24) = 'M_2'
+    nomc(25) = 'D2'
+    nomc(26) = 'G_X2'
+    nomc(27) = 'G2_0'
+    nomc(28) = 'A_I'
 !
     do j = 1, 2
         do i = 1, nmat
-            materd(i,j) = 0.d0
-            materf(i,j) = 0.d0
-        enddo
-    enddo
+            materd(i, j) = 0.d0
+            materf(i, j) = 0.d0
+        end do
+    end do
 !
 ! -     RECUPERATION MATERIAU A (T)
 !
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imat, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 3, nomc(1), materd(1, 1), cerr(1), 0)
 !
 !
     if (crit(13) .gt. 0.d0) then
         lgpg = 34
-        call rupmat(fami, kpg, ksp, imat, vim,&
+        call rupmat(fami, kpg, ksp, imat, vim, &
                     lgpg, materd(1, 1), sigd)
-    endif
+    end if
 !
 !
-    if (cerr(3) .ne. 0) materd(3,1) = 0.d0
+    if (cerr(3) .ne. 0) materd(3, 1) = 0.d0
 !
-    call rcvalt(fami, kpg, ksp, '-', imat,&
-                ' ', 'VISCOCHAB', 0, [' '], [0.d0],&
+    call rcvalt(fami, kpg, ksp, '-', imat, &
+                ' ', 'VISCOCHAB', 0, [' '], [0.d0], &
                 5, materd(1, 2), cerr(4), 2)
 !
 !
 !
 ! -     MISE A JOUR DU COMMUN COED POUR TRAITER LE CAS ANISOTHERME
 !
-    c1d = materd(15,2)
-    c2d = materd(20,2)
+    c1d = materd(15, 2)
+    c2d = materd(20, 2)
 !
 ! -     RECUPERATION MATERIAU A (T+DT)
 !
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 3, nomc(1), materf(1, 1), cerr(1), 0)
 !
 !
     if (crit(13) .gt. 0.d0) then
         lgpg = 34
-        call rupmat(fami, kpg, ksp, imat, vim,&
+        call rupmat(fami, kpg, ksp, imat, vim, &
                     lgpg, materf(1, 1), sigd)
-    endif
+    end if
 !
-    if (cerr(3) .ne. 0) materf(3,1) = 0.d0
+    if (cerr(3) .ne. 0) materf(3, 1) = 0.d0
 !
-    call rcvalt(fami, kpg, ksp, '+', imat,&
-                ' ', 'VISCOCHAB', 0, [' '], [0.d0],&
+    call rcvalt(fami, kpg, ksp, '+', imat, &
+                ' ', 'VISCOCHAB', 0, [' '], [0.d0], &
                 25, materf(1, 2), cerr(4), 2)
 !
 ! -     PARAMETRES DES LOIS DE COMPORTEMENT A 2 SEUILS
 !
 !       SI ETA=1, PAS DE MEMOIRE D'ECROUISSAGE
-    if (materd(14,2) .eq. 1.d0) then
+    if (materd(14, 2) .eq. 1.d0) then
         ioptio = 0
         idnr = 0
     else
         ioptio = 2
         idnr = ndt
-        nr=nr+ndt
-    endif
+        nr = nr+ndt
+    end if
 !
 ! -     MATERIAU CONSTANT ?
 !
     matcst = 'OUI'
     do i = 1, 2
-        if (abs ( materd(i,1) - materf(i,1) ) .gt. epsi) then
+        if (abs(materd(i, 1)-materf(i, 1)) .gt. epsi) then
             matcst = 'NON'
             goto 999
-        endif
+        end if
     end do
     do i = 1, 25
-        if (abs ( materd(i,2) - materf(i,2) ) .gt. epsi) then
+        if (abs(materd(i, 2)-materf(i, 2)) .gt. epsi) then
             matcst = 'NON'
             goto 999
-        endif
+        end if
     end do
 !
 999 continue
 !     NOMBRE DE COEF MATERIAU
-    materf(nmat,2)=25
-    materd(nmat,2)=25
+    materf(nmat, 2) = 25
+    materd(nmat, 2) = 25
 !
 end subroutine

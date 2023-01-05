@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,12 +83,12 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
     call dismoi('NOM_MAILLA', numout, 'NUME_DDL', repk=maiout)
 !
     if (maiin .ne. maiout) then
-        valk (1) = numin
-        valk (2) = maiin
-        valk (3) = numout
-        valk (4) = maiout
+        valk(1) = numin
+        valk(2) = maiin
+        valk(3) = numout
+        valk(4) = maiout
         call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
-    endif
+    end if
 !
 !
 !------------RECUPERATION DES DIMENSIONS DES NUMEROTATIONS--------------
@@ -110,20 +110,20 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !------------------BOUCLE SUR LES DDL-----------------------------------
 !
     do i = 1, neqout
-        nuno=nlldeou(1+2*(i-1))
-        ityp=nlldeou(1+2*(i-1)+1)
+        nuno = nlldeou(1+2*(i-1))
+        ityp = nlldeou(1+2*(i-1)+1)
         if (ityp .gt. 0) then
-            call cheddl(nlldein, neqin, nuno, ityp, iran,&
+            call cheddl(nlldein, neqin, nuno, ityp, iran, &
                         1)
             if (iran(1) .eq. 0) then
-                erreur=.true.
-                vali (1) = nuno
-                vali (2) = ityp
+                erreur = .true.
+                vali(1) = nuno
+                vali(2) = ityp
                 call utmess('A', 'ALGORITH12_63', ni=2, vali=vali)
             else
-                zi(ldcvn+i-1)=iran(1)
-            endif
-        endif
+                zi(ldcvn+i-1) = iran(1)
+            end if
+        end if
 !
     end do
 !
@@ -131,7 +131,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
     if (erreur) then
         call utmess('F', 'ALGORITH12_64')
-    endif
+    end if
 !
 !------------------------LIBERATION DES OBJETS -------------------------
 !

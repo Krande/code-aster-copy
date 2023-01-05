@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pacou3(xold, fold, g, p, x,&
-                  f, fvec, stpmax, check, tolx,&
-                  vecr1, vecr2, typflu, vecr3, amor,&
-                  masg, vecr4, vecr5, veci1, vg,&
+subroutine pacou3(xold, fold, g, p, x, &
+                  f, fvec, stpmax, check, tolx, &
+                  vecr1, vecr2, typflu, vecr3, amor, &
+                  masg, vecr4, vecr5, veci1, vg, &
                   indic, nbm, nmode, n)
 ! aslint: disable=W1504
     implicit none
@@ -44,14 +44,14 @@ subroutine pacou3(xold, fold, g, p, x,&
     real(kind=8) :: f2, fold2, rhs1, rhs2, slope, sum, temp
     real(kind=8) :: test, tmplam
 !-----------------------------------------------------------------------
-    parameter (alf=1.0d-4)
+    parameter(alf=1.0d-4)
 ! ******************   DEBUT DU CODE EXECUTABLE   **********************
 !
     check = .false.
 !
     sum = 0.00d0
     do i = 1, n
-        sum = sum + p(i)*p(i)
+        sum = sum+p(i)*p(i)
     end do
     sum = sqrt(sum)
 !
@@ -59,16 +59,16 @@ subroutine pacou3(xold, fold, g, p, x,&
         do i = 1, n
             p(i) = p(i)*stpmax/sum
         end do
-    endif
+    end if
 !
     slope = 0.0d0
     do i = 1, n
-        slope = slope + g(i)*p(i)
+        slope = slope+g(i)*p(i)
     end do
 !
     test = 0.0d0
     do i = 1, n
-        temp = abs(p(i))/max(abs(xold(i)),1.0d0)
+        temp = abs(p(i))/max(abs(xold(i)), 1.0d0)
         if (temp .gt. test) test = temp
     end do
 !
@@ -76,14 +76,14 @@ subroutine pacou3(xold, fold, g, p, x,&
     alam = 1.0d0
     first = .true.
 !
-  1 continue
+1   continue
     do i = 1, n
-        x(i) = xold(i) + alam*p(i)
+        x(i) = xold(i)+alam*p(i)
     end do
 !
-    f = pacou2(&
-        x, fvec, vecr1, vecr2, typflu, vecr3, amor, masg, vecr4, vecr5, veci1, vg, indic, nbm,&
-        nmode, n&
+    f = pacou2( &
+        x, fvec, vecr1, vecr2, typflu, vecr3, amor, masg, vecr4, vecr5, veci1, vg, indic, nbm, &
+        nmode, n &
         )
     if (alam .lt. alamin) then
         do i = 1, n
@@ -92,36 +92,36 @@ subroutine pacou3(xold, fold, g, p, x,&
         check = .true.
         goto 999
 !
-    else if (f.le.fold+alf*alam*slope) then
+    else if (f .le. fold+alf*alam*slope) then
         goto 999
 !
     else
         if (first) then
-            tmplam = -slope/ (2.0d0* (f-fold-slope))
+            tmplam = -slope/(2.0d0*(f-fold-slope))
             first = .false.
 !
         else
-            rhs1 = f - fold - alam*slope
-            rhs2 = f2 - fold2 - alam2*slope
-            a = (rhs1/alam**2-rhs2/alam**2)/ (alam-alam2)
-            b = (-alam2*rhs1/alam**2+alam*rhs2/alam2**2)/ (alam-alam2)
+            rhs1 = f-fold-alam*slope
+            rhs2 = f2-fold2-alam2*slope
+            a = (rhs1/alam**2-rhs2/alam**2)/(alam-alam2)
+            b = (-alam2*rhs1/alam**2+alam*rhs2/alam2**2)/(alam-alam2)
             if (abs(a) .le. 1.0d-30) then
-                tmplam = -slope/ (2.0d0*b)
+                tmplam = -slope/(2.0d0*b)
 !
             else
-                disc = b*b - 3.0d0*a*slope
-                tmplam = (-b+sqrt(disc))/ (3.0d0*a)
-            endif
+                disc = b*b-3.0d0*a*slope
+                tmplam = (-b+sqrt(disc))/(3.0d0*a)
+            end if
 !
             if (tmplam .gt. 0.5d0*alam) tmplam = 0.5d0*alam
-        endif
+        end if
 !
-    endif
+    end if
 !
     alam2 = alam
     f2 = f
     fold2 = fold
-    alam = max(tmplam,0.1d0*alam)
+    alam = max(tmplam, 0.1d0*alam)
     goto 1
 !
 999 continue

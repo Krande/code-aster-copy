@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlaexc(wantq, n, t, ldt, q,&
-                  ldq, j1, n1, n2, work,&
-                  info)
+subroutine ar_dlaexc(wantq, n, t, ldt, q, &
+                     ldq, j1, n1, n2, work, &
+                     info)
 !
 !     SUBROUTINE LAPACK PERMUTANT DEUX BLOCS DIAGONAUX D'UN MATRICE
 !     TRIANGULAIRE SUPERIEURE.
@@ -123,15 +123,15 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
     integer :: info, j1, ldq, ldt, n, n1, n2
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: q( ldq, * ), t( ldt, * ), work( * )
+    real(kind=8) :: q(ldq, *), t(ldt, *), work(*)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d+0, one = 1.0d+0 )
+    parameter(zero=0.0d+0, one=1.0d+0)
     real(kind=8) :: ten
-    parameter          ( ten = 1.0d+1 )
+    parameter(ten=1.0d+1)
     integer :: ldd, ldx
-    parameter          ( ldd = 4, ldx = 2 )
+    parameter(ldd=4, ldx=2)
 !     ..
 !     .. LOCAL SCALARS ..
     integer :: ierr, j2, j3, j4, k, nd
@@ -139,7 +139,7 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
     real(kind=8) :: tau2, temp, thresh, wi1, wi2, wr1, wr2, xnorm
 !     ..
 !     .. LOCAL ARRAYS ..
-    real(kind=8) :: d( ldd, 4 ), u( 3 ), u1( 3 ), u2( 3 ), x( ldx, 2 )
+    real(kind=8) :: d(ldd, 4), u(3), u1(3), u2(3), x(ldx, 2)
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -154,38 +154,38 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
     if (n .eq. 0 .or. n1 .eq. 0 .or. n2 .eq. 0) goto 999
     if (j1+n1 .gt. n) goto 999
 !
-    j2 = j1 + 1
-    j3 = j1 + 2
-    j4 = j1 + 3
+    j2 = j1+1
+    j3 = j1+2
+    j4 = j1+3
 !
     if (n1 .eq. 1 .and. n2 .eq. 1) then
 !
 !        SWAP TWO 1-BY-1 BLOCKS.
 !
-        t11 = t( j1, j1 )
-        t22 = t( j2, j2 )
+        t11 = t(j1, j1)
+        t22 = t(j2, j2)
 !
 !        DETERMINE THE TRANSFORMATION TO PERFORM THE INTERCHANGE.
 !
-        call ar_dlartg(t( j1, j2 ), t22-t11, cs, sn, temp)
+        call ar_dlartg(t(j1, j2), t22-t11, cs, sn, temp)
 !
 !        APPLY TRANSFORMATION TO THE MATRIX T.
 !
-        if (j3 .le. n) call drot(n-j1-1, t( j1, j3 ), ldt, t( j2, j3 ), ldt,&
+        if (j3 .le. n) call drot(n-j1-1, t(j1, j3), ldt, t(j2, j3), ldt, &
                                  cs, sn)
-        call drot(j1-1, t( 1, j1 ), 1, t( 1, j2 ), 1,&
+        call drot(j1-1, t(1, j1), 1, t(1, j2), 1, &
                   cs, sn)
 !
-        t( j1, j1 ) = t22
-        t( j2, j2 ) = t11
+        t(j1, j1) = t22
+        t(j2, j2) = t11
 !
         if (wantq) then
 !
 !           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-            call drot(n, q( 1, j1 ), 1, q( 1, j2 ), 1,&
+            call drot(n, q(1, j1), 1, q(1, j2), 1, &
                       cs, sn)
-        endif
+        end if
 !
     else
 !
@@ -194,30 +194,30 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
 !        COPY THE DIAGONAL BLOCK OF ORDER N1+N2 TO THE LOCAL ARRAY D
 !        AND COMPUTE ITS NORM.
 !
-        nd = n1 + n2
+        nd = n1+n2
 ! DUE TO CRP102 CALL DLACPY( 'FULL', ND, ND, T( J1, J1 ), LDT, D, LDD )
-        call dlacpy('F', nd, nd, t( j1, j1 ), ldt,&
+        call dlacpy('F', nd, nd, t(j1, j1), ldt, &
                     d, ldd)
 ! DUE TO CRP102 DNORM = DLANGE( 'MAX', ND, ND, D, LDD, WORK )
-        dnorm = dlange( 'M', nd, nd, d, ldd, work )
+        dnorm = dlange('M', nd, nd, d, ldd, work)
 !
 !        COMPUTE MACHINE-DEPENDENT THRESHOLD FOR TEST FOR ACCEPTING
 !        SWAP.
 !
-        eps = r8prem() * 0.5d0 * isbaem()
-        smlnum = r8miem() / eps
-        thresh = max( ten*eps*dnorm, smlnum )
+        eps = r8prem()*0.5d0*isbaem()
+        smlnum = r8miem()/eps
+        thresh = max(ten*eps*dnorm, smlnum)
 !
 !        SOLVE T11*X - X*T22 = SCALE*T12 FOR X.
 !
-        call ar_dlasy2(.false._1, .false._1, -1, n1, n2,&
-                    d, ldd, d( n1+1, n1+1 ), ldd, d( 1, n1+1 ),&
-                    ldd, scale, x, ldx, xnorm,&
-                    ierr)
+        call ar_dlasy2(.false._1, .false._1, -1, n1, n2, &
+                       d, ldd, d(n1+1, n1+1), ldd, d(1, n1+1), &
+                       ldd, scale, x, ldx, xnorm, &
+                       ierr)
 !
 !        SWAP THE ADJACENT DIAGONAL BLOCKS.
 !
-        k = n1 + n1 + n2 - 3
+        k = n1+n1+n2-3
 !
         select case (k)
         case (1)
@@ -226,43 +226,43 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
 !
 !           ( SCALE, X11, X12 ) H = ( 0, 0, * )
 !
-            u( 1 ) = scale
-            u( 2 ) = x( 1, 1 )
-            u( 3 ) = x( 1, 2 )
-            call ar_dlarfg(3, u( 3 ), u, 1, tau)
-            u( 3 ) = one
-            t11 = t( j1, j1 )
+            u(1) = scale
+            u(2) = x(1, 1)
+            u(3) = x(1, 2)
+            call ar_dlarfg(3, u(3), u, 1, tau)
+            u(3) = one
+            t11 = t(j1, j1)
 !
 !           PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 !
-            call dlarfx('L', 3, 3, u, tau,&
+            call dlarfx('L', 3, 3, u, tau, &
                         d, ldd, work)
-            call dlarfx('R', 3, 3, u, tau,&
+            call dlarfx('R', 3, 3, u, tau, &
                         d, ldd, work)
 !
 !           TEST WHETHER TO REJECT SWAP.
 !
-            if (max( abs( d( 3, 1 ) ), abs( d( 3, 2 ) ), abs( d( 3, 3 )-t11 ) ) .gt. thresh) &
-            goto 50
+            if (max(abs(d(3, 1)), abs(d(3, 2)), abs(d(3, 3)-t11)) .gt. thresh) &
+                goto 50
 !
 !           ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
-            call dlarfx('L', 3, n-j1+1, u, tau,&
-                        t( j1, j1 ), ldt, work)
-            call dlarfx('R', j2, 3, u, tau,&
-                        t( 1, j1 ), ldt, work)
+            call dlarfx('L', 3, n-j1+1, u, tau, &
+                        t(j1, j1), ldt, work)
+            call dlarfx('R', j2, 3, u, tau, &
+                        t(1, j1), ldt, work)
 !
-            t( j3, j1 ) = zero
-            t( j3, j2 ) = zero
-            t( j3, j3 ) = t11
+            t(j3, j1) = zero
+            t(j3, j2) = zero
+            t(j3, j3) = t11
 !
             if (wantq) then
 !
 !               ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-                call dlarfx('R', n, 3, u, tau,&
-                            q( 1, j1 ), ldq, work)
-            endif
+                call dlarfx('R', n, 3, u, tau, &
+                            q(1, j1), ldq, work)
+            end if
 !
         case (2)
 !           N1 = 2, N2 = 1: GENERATE ELEMENTARY REFLECTOR H SO THAT:
@@ -271,43 +271,43 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
 !             (  -X21 ) = ( 0 )
 !             ( SCALE ) = ( 0 )
 !
-            u( 1 ) = -x( 1, 1 )
-            u( 2 ) = -x( 2, 1 )
-            u( 3 ) = scale
-            call ar_dlarfg(3, u( 1 ), u( 2 ), 1, tau)
-            u( 1 ) = one
-            t33 = t( j3, j3 )
+            u(1) = -x(1, 1)
+            u(2) = -x(2, 1)
+            u(3) = scale
+            call ar_dlarfg(3, u(1), u(2), 1, tau)
+            u(1) = one
+            t33 = t(j3, j3)
 !
 !            PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 !
-            call dlarfx('L', 3, 3, u, tau,&
+            call dlarfx('L', 3, 3, u, tau, &
                         d, ldd, work)
-            call dlarfx('R', 3, 3, u, tau,&
+            call dlarfx('R', 3, 3, u, tau, &
                         d, ldd, work)
 !
 !            TEST WHETHER TO REJECT SWAP.
 !
-            if (max( abs( d( 2, 1 ) ), abs( d( 3, 1 ) ), abs( d( 1, 1 )-t33 ) ) .gt. thresh) &
-            goto 50
+            if (max(abs(d(2, 1)), abs(d(3, 1)), abs(d(1, 1)-t33)) .gt. thresh) &
+                goto 50
 !
 !            ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
-            call dlarfx('R', j3, 3, u, tau,&
-                        t( 1, j1 ), ldt, work)
-            call dlarfx('L', 3, n-j1, u, tau,&
-                        t( j1, j2 ), ldt, work)
+            call dlarfx('R', j3, 3, u, tau, &
+                        t(1, j1), ldt, work)
+            call dlarfx('L', 3, n-j1, u, tau, &
+                        t(j1, j2), ldt, work)
 !
-            t( j1, j1 ) = t33
-            t( j2, j1 ) = zero
-            t( j3, j1 ) = zero
+            t(j1, j1) = t33
+            t(j2, j1) = zero
+            t(j3, j1) = zero
 !
             if (wantq) then
 !
 !               ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-                call dlarfx('R', n, 3, u, tau,&
-                            q( 1, j1 ), ldq, work)
-            endif
+                call dlarfx('R', n, 3, u, tau, &
+                            q(1, j1), ldq, work)
+            end if
 !
         case (3)
 !
@@ -319,59 +319,59 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
 !                      ( SCALE    0  )   (  0  0 )
 !                      (    0  SCALE )   (  0  0 )
 !
-            u1( 1 ) = -x( 1, 1 )
-            u1( 2 ) = -x( 2, 1 )
-            u1( 3 ) = scale
-            call ar_dlarfg(3, u1( 1 ), u1( 2 ), 1, tau1)
-            u1( 1 ) = one
+            u1(1) = -x(1, 1)
+            u1(2) = -x(2, 1)
+            u1(3) = scale
+            call ar_dlarfg(3, u1(1), u1(2), 1, tau1)
+            u1(1) = one
 !
-            temp = -tau1*( x( 1, 2 )+u1( 2 )*x( 2, 2 ) )
-            u2( 1 ) = -temp*u1( 2 ) - x( 2, 2 )
-            u2( 2 ) = -temp*u1( 3 )
-            u2( 3 ) = scale
-            call ar_dlarfg(3, u2( 1 ), u2( 2 ), 1, tau2)
-            u2( 1 ) = one
+            temp = -tau1*(x(1, 2)+u1(2)*x(2, 2))
+            u2(1) = -temp*u1(2)-x(2, 2)
+            u2(2) = -temp*u1(3)
+            u2(3) = scale
+            call ar_dlarfg(3, u2(1), u2(2), 1, tau2)
+            u2(1) = one
 !
 !            PERFORM SWAP PROVISIONALLY ON DIAGONAL BLOCK IN D.
 !
-            call dlarfx('L', 3, 4, u1, tau1,&
+            call dlarfx('L', 3, 4, u1, tau1, &
                         d, ldd, work)
-            call dlarfx('R', 4, 3, u1, tau1,&
+            call dlarfx('R', 4, 3, u1, tau1, &
                         d, ldd, work)
-            call dlarfx('L', 3, 4, u2, tau2,&
-                        d( 2, 1 ), ldd, work)
-            call dlarfx('R', 4, 3, u2, tau2,&
-                        d( 1, 2 ), ldd, work)
+            call dlarfx('L', 3, 4, u2, tau2, &
+                        d(2, 1), ldd, work)
+            call dlarfx('R', 4, 3, u2, tau2, &
+                        d(1, 2), ldd, work)
 !
 !            TEST WHETHER TO REJECT SWAP.
 !
-            if (max(abs(d(3,1)), abs(d(3,2)), abs(d(4,1)), abs(d(4,2))) .gt. thresh) goto 50
+            if (max(abs(d(3, 1)), abs(d(3, 2)), abs(d(4, 1)), abs(d(4, 2))) .gt. thresh) goto 50
 !
 !            ACCEPT SWAP: APPLY TRANSFORMATION TO THE ENTIRE MATRIX T.
 !
-            call dlarfx('L', 3, n-j1+1, u1, tau1,&
-                        t( j1, j1 ), ldt, work)
-            call dlarfx('R', j4, 3, u1, tau1,&
-                        t( 1, j1 ), ldt, work)
-            call dlarfx('L', 3, n-j1+1, u2, tau2,&
-                        t( j2, j1 ), ldt, work)
-            call dlarfx('R', j4, 3, u2, tau2,&
-                        t( 1, j2 ), ldt, work)
+            call dlarfx('L', 3, n-j1+1, u1, tau1, &
+                        t(j1, j1), ldt, work)
+            call dlarfx('R', j4, 3, u1, tau1, &
+                        t(1, j1), ldt, work)
+            call dlarfx('L', 3, n-j1+1, u2, tau2, &
+                        t(j2, j1), ldt, work)
+            call dlarfx('R', j4, 3, u2, tau2, &
+                        t(1, j2), ldt, work)
 !
-            t( j3, j1 ) = zero
-            t( j3, j2 ) = zero
-            t( j4, j1 ) = zero
-            t( j4, j2 ) = zero
+            t(j3, j1) = zero
+            t(j3, j2) = zero
+            t(j4, j1) = zero
+            t(j4, j2) = zero
 !
             if (wantq) then
 !
 !               ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-                call dlarfx('R', n, 3, u1, tau1,&
-                            q( 1, j1 ), ldq, work)
-                call dlarfx('R', n, 3, u2, tau2,&
-                            q( 1, j2 ), ldq, work)
-            endif
+                call dlarfx('R', n, 3, u1, tau1, &
+                            q(1, j1), ldq, work)
+                call dlarfx('R', n, 3, u2, tau2, &
+                            q(1, j2), ldq, work)
+            end if
 !
         end select
 !
@@ -379,38 +379,38 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q,&
 !
 !           STANDARDIZE NEW 2-BY-2 BLOCK T11
 !
-            call ar_dlanv2(t( j1, j1 ), t( j1, j2 ), t( j2, j1 ), t( j2, j2 ), wr1,&
-                        wi1, wr2, wi2, cs, sn)
-            call drot(n-j1-1, t( j1, j1+2 ), ldt, t( j2, j1+2 ), ldt,&
+            call ar_dlanv2(t(j1, j1), t(j1, j2), t(j2, j1), t(j2, j2), wr1, &
+                           wi1, wr2, wi2, cs, sn)
+            call drot(n-j1-1, t(j1, j1+2), ldt, t(j2, j1+2), ldt, &
                       cs, sn)
-            call drot(j1-1, t( 1, j1 ), 1, t( 1, j2 ), 1,&
+            call drot(j1-1, t(1, j1), 1, t(1, j2), 1, &
                       cs, sn)
-            if (wantq) call drot(n, q( 1, j1 ), 1, q( 1, j2 ), 1,&
+            if (wantq) call drot(n, q(1, j1), 1, q(1, j2), 1, &
                                  cs, sn)
-        endif
+        end if
 !
         if (n1 .eq. 2) then
 !
 !           STANDARDIZE NEW 2-BY-2 BLOCK T22
 !
-            j3 = j1 + n2
-            j4 = j3 + 1
-            call ar_dlanv2(t( j3, j3 ), t( j3, j4 ), t( j4, j3 ), t( j4, j4 ), wr1,&
-                        wi1, wr2, wi2, cs, sn)
-            if (j3+2 .le. n) call drot(n-j3-1, t( j3, j3+2 ), ldt, t( j4, j3+2 ), ldt,&
+            j3 = j1+n2
+            j4 = j3+1
+            call ar_dlanv2(t(j3, j3), t(j3, j4), t(j4, j3), t(j4, j4), wr1, &
+                           wi1, wr2, wi2, cs, sn)
+            if (j3+2 .le. n) call drot(n-j3-1, t(j3, j3+2), ldt, t(j4, j3+2), ldt, &
                                        cs, sn)
-            call drot(j3-1, t( 1, j3 ), 1, t( 1, j4 ), 1,&
+            call drot(j3-1, t(1, j3), 1, t(1, j4), 1, &
                       cs, sn)
-            if (wantq) call drot(n, q( 1, j3 ), 1, q( 1, j4 ), 1,&
+            if (wantq) call drot(n, q(1, j3), 1, q(1, j4), 1, &
                                  cs, sn)
-        endif
+        end if
 !
-    endif
+    end if
     goto 999
 !
 !     EXIT WITH INFO = 1 IF SWAP WAS REJECTED.
 !
- 50 continue
+50  continue
     info = 1
 999 continue
 !

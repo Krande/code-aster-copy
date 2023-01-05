@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lislcm(lischa, ichar, motclc)
 !
-    implicit     none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -63,7 +63,7 @@ subroutine lislcm(lischa, ichar, motclc)
         call jeveuo(mocfch, 'L', jmcfc)
         motclc(1) = zi(jmcfc-1+2*(ichar-1)+1)
         motclc(2) = zi(jmcfc-1+2*(ichar-1)+2)
-    endif
+    end if
 !
     call jedema()
 end subroutine

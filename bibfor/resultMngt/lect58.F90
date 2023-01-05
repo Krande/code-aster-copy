@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lect58(fileUnit   ,&
-                  resultName , resultType , meshAst,&
-                  fieldNb    , fieldList  ,&
-                  storeAccess,&
-                  storeIndxNb, storeTimeNb,&
-                  storeIndx  , storeTime  ,&
-                  storeCrit  , storeEpsi)
+subroutine lect58(fileUnit, &
+                  resultName, resultType, meshAst, &
+                  fieldNb, fieldList, &
+                  storeAccess, &
+                  storeIndxNb, storeTimeNb, &
+                  storeIndx, storeTime, &
+                  storeCrit, storeEpsi)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -58,17 +58,17 @@ implicit none
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
 !
-integer, intent(in) :: fileUnit
-character(len=8), intent(in) :: resultName
-character(len=16), intent(in) :: resultType
-character(len=8), intent(in) :: meshAst
-integer, intent(in) :: fieldNb
-character(len=16), intent(in) :: fieldList(100)
-character(len=10), intent(in) :: storeAccess
-integer, intent(in) :: storeIndxNb, storeTimeNb
-character(len=19), intent(in) :: storeIndx, storeTime
-real(kind=8), intent(in) :: storeEpsi
-character(len=8), intent(in) :: storeCrit
+    integer, intent(in) :: fileUnit
+    character(len=8), intent(in) :: resultName
+    character(len=16), intent(in) :: resultType
+    character(len=8), intent(in) :: meshAst
+    integer, intent(in) :: fieldNb
+    character(len=16), intent(in) :: fieldList(100)
+    character(len=10), intent(in) :: storeAccess
+    integer, intent(in) :: storeIndxNb, storeTimeNb
+    character(len=19), intent(in) :: storeIndx, storeTime
+    real(kind=8), intent(in) :: storeEpsi
+    character(len=8), intent(in) :: storeCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,13 +122,13 @@ character(len=8), intent(in) :: storeCrit
     icham0 = 0
     inatu1 = 0
     nbabs1 = 0
-    prfnoe='N'
+    prfnoe = 'N'
 !
-    repem1 (  1 : 50 ) = '    -1                                            '
-    repem1 ( 51 : 80 ) = '                              '
-    cval = dcmplx(0.d0,0.d0)
-    czero = dcmplx(0.d0,0.d0)
-    cun = dcmplx(1.d0,0.d0)
+    repem1(1:50) = '    -1                                            '
+    repem1(51:80) = '                              '
+    cval = dcmplx(0.d0, 0.d0)
+    czero = dcmplx(0.d0, 0.d0)
+    cun = dcmplx(1.d0, 0.d0)
     ficab = .false.
     ficva = .false.
     vabs = '&&ABSCISSES'
@@ -142,7 +142,7 @@ character(len=8), intent(in) :: storeCrit
     fileName = ' '
     if (ulisop(fileUnit, fileName) .eq. 0) then
         call ulopen(fileUnit, ' ', ' ', 'NEW', 'O')
-    endif
+    end if
 !
 ! RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE : NBNMES
     call dismoi('NB_NO_MAILLA', meshAst, 'MAILLAGE', repi=nbnmes)
@@ -165,27 +165,27 @@ character(len=8), intent(in) :: storeCrit
 !
         rewind fileUnit
 !
- 10     continue
-        read (fileUnit, 780, end = 170) ligne
+10      continue
+        read (fileUnit, 780, end=170) ligne
         if (ligne .ne. repem1) goto 10
 !
-        read (fileUnit, '(A6)', end = 170, err = 160) kar
+        read (fileUnit, '(A6)', end=170, err=160) kar
         if (kar .eq. '    58') then
             nbrec = 11
         else
 ! POSITIONNEMENT A LA FIN DU DATASET
             goto 11
-        endif
+        end if
 !
 ! LECTURE DE L'ENTETE DU DATASET
         do irec = 1, nbrec
-            read (fileUnit,'(A80)',err=160) rec(irec)
+            read (fileUnit, '(A80)', err=160) rec(irec)
         end do
 !
 ! RECHERCHE DU NOMBRE DE VALEURS CONTENUES DANS LE DATASET
         irec = 7
         numefield = 2
-        call decod2(rec, irec, numefield, 0, nbabs,&
+        call decod2(rec, irec, numefield, 0, nbabs, &
                     rbid, trouve)
         if (.not. ficab) then
             call wkvect(vabs, 'V V R', nbabs, labs)
@@ -194,60 +194,60 @@ character(len=8), intent(in) :: storeCrit
         else
             if (nbabs .ne. nbabs1) then
                 call utmess('F', 'ALGORITH4_98')
-            endif
-        endif
+            end if
+        end if
 !
 !- RECHERCHE DE LA NATURE DU CHAMP
 !   REEL     --> INATUR = 2,4
 !   COMPLEXE --> INATUR = 5,6
         numefield = 1
-        call decod2(rec, irec, numefield, 0, inatur,&
+        call decod2(rec, irec, numefield, 0, inatur, &
                     rbid, trouve)
         if (nbmesu .eq. 0) then
             inatu1 = inatur
         else
             if (inatur .ne. inatu1) then
                 call utmess('F', 'ALGORITH4_99')
-            endif
-        endif
+            end if
+        end if
         if (inatur .eq. 5 .or. inatur .eq. 6) then
             if (resultType(1:6) .eq. 'DYNA_T') then
                 call utmess('F', 'ALGORITH5_1')
-            endif
+            end if
             zcmplx = .true.
             if (.not. ficva) then
                 call wkvect(valmes, 'V V C', nbabs*nbnmes*3, lvalc)
                 ficva = .true.
-            endif
+            end if
         else
             if (resultType(1:6) .eq. 'DYNA_H') then
                 call utmess('F', 'ALGORITH5_2')
-            endif
+            end if
             zcmplx = .false.
             if (.not. ficva) then
                 call wkvect(valmes, 'V V R', nbabs*nbnmes*3, lvalr)
                 ficva = .true.
-            endif
-        endif
+            end if
+        end if
 !
 ! RECUPERATION RANGEMENT DES VALEURS : EVEN / UNEVEN : ITYPE
         numefield = 3
-        call decod2(rec, irec, numefield, 0, itype,&
+        call decod2(rec, irec, numefield, 0, itype, &
                     rbid, trouve)
         if (itype .eq. 1) then
 ! RECUPERATION ABSCISSE MIN ET PAS : AMIN APAS
             numefield = 4
-            call decod2(rec, irec, numefield, 1, ibid,&
+            call decod2(rec, irec, numefield, 1, ibid, &
                         amin, trouve)
             numefield = 5
-            call decod2(rec, irec, numefield, 1, ibid,&
+            call decod2(rec, irec, numefield, 1, ibid, &
                         apas, trouve)
-        endif
+        end if
 !
 ! LECTURE DU TYPE DU CHAMP
         irec = 9
         numefield = 1
-        call decod2(rec, irec, numefield, 0, ichamp,&
+        call decod2(rec, irec, numefield, 0, ichamp, &
                     rbid, trouve)
 !
         if (ichamp .ne. icham0) goto 11
@@ -265,9 +265,9 @@ character(len=8), intent(in) :: storeCrit
                     nomgd = 'SIEF_C'
                 else
                     nomgd = 'SIEF_R'
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
         if (ichamp .eq. 3) then
             if (nbmesu .eq. 0) then
                 ncmp = 6
@@ -281,9 +281,9 @@ character(len=8), intent(in) :: storeCrit
                     call utmess('F', 'ALGORITH5_3')
                 else
                     nomgd = 'EPSI_R'
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
         if (ichamp .eq. 8 .or. ichamp .eq. 11 .or. ichamp .eq. 12) then
             if (nbmesu .eq. 0) then
                 ncmp = 12
@@ -303,50 +303,50 @@ character(len=8), intent(in) :: storeCrit
                     nomgd = 'DEPL_C'
                 else
                     nomgd = 'DEPL_R'
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
-        nbmesu = nbmesu + 1
+        nbmesu = nbmesu+1
 !
         if (nbmesu .gt. nbnmes*6) then
             call utmess('F', 'ALGORITH5_4')
-        endif
+        end if
 !
 ! LECTURE DU NUMERO DU NOEUD
         irec = 6
         numefield = 6
-        call decod2(rec, irec, numefield, 0, label,&
+        call decod2(rec, irec, numefield, 0, label, &
                     rbid, trouve)
         if (label .eq. 0) then
             ligne = rec(irec)
             labk8 = ligne(32:41)
-            call jenonu(jexnom (meshAst//'.NOMNOE', labk8), label)
+            call jenonu(jexnom(meshAst//'.NOMNOE', labk8), label)
         else
 ! PRE_IDEAS RAJOUTE UN 'N' DEVANT LE NUMERO DU NOEUD (VOIR ECRNEU)
             call codnop(labk8, prfnoe, 1, 1)
             call codent(label, 'G', labk8(2:8))
-            call jenonu(jexnom (meshAst//'.NOMNOE', labk8), label)
-        endif
-        zi(lcorr-1 + nbmesu) = label
+            call jenonu(jexnom(meshAst//'.NOMNOE', labk8), label)
+        end if
+        zi(lcorr-1+nbmesu) = label
 !
 ! LECTURE DU CODE DE LA DIRECTION DE MESURE
         irec = 6
         numefield = 7
-        call decod2(rec, irec, numefield, 0, idir,&
+        call decod2(rec, irec, numefield, 0, idir, &
                     rbid, trouve)
-        zi(lori-1 +nbmesu) = idir
+        zi(lori-1+nbmesu) = idir
 !
 ! LECTURE DES VALEURS
-        call lectvl(zcmplx, itype, nbabs, inatur, fileUnit,&
-                    nbmesu, labs, amin, apas, lvalc,&
+        call lectvl(zcmplx, itype, nbabs, inatur, fileUnit, &
+                    nbmesu, labs, amin, apas, lvalc, &
                     lvalr)
 !
-        read (fileUnit, 780, end = 170) ligne
+        read (fileUnit, 780, end=170) ligne
         if (ligne .ne. repem1) then
             vali = nbmesu
             call utmess('F', 'ALGORITH15_98', si=vali)
-        endif
+        end if
 !
         goto 10
 !
@@ -354,49 +354,49 @@ character(len=8), intent(in) :: storeCrit
 ! EN CAS D ERREUR DE LECTURE DU FICHIER UNV
         call utmess('F', 'ALGORITH5_5')
 !
- 11     continue
+11      continue
 ! POSITIONNEMENT A LA FIN DU DATASET
-        read ( fileUnit , 780 , end = 170 ) ligne
+        read (fileUnit, 780, end=170) ligne
         if (ligne .ne. repem1) goto 11
         goto 10
 !
 170     continue
 ! FIN LECTURE FICHIER UNV
 !
-        ifres = iunifi ('MESSAGE')
-        write(ifres,101) fileType,nbmesu
-101     format('NOM_CHAM : ',a16,'NOMBRE DE MESURES : ',i6)
+        ifres = iunifi('MESSAGE')
+        write (ifres, 101) fileType, nbmesu
+101     format('NOM_CHAM : ', a16, 'NOMBRE DE MESURES : ', i6)
         if (nbmesu .eq. 0) then
-            write(ifres,102) fileType
-102         format('AUCUN CHAMP ',a16,' TROUVE')
+            write (ifres, 102) fileType
+102         format('AUCUN CHAMP ', a16, ' TROUVE')
             call utmess('A', 'ALGORITH5_6')
             goto 999
-        endif
+        end if
 !
 ! CREATION DE SD_RESULTAT DYNA_TRANS / DYNA_HARMO / HARM_GENE : TYPRES
         if ((zcmplx) .and. (resultType(1:6) .eq. 'DYNA_T')) then
             call utmess('F', 'ALGORITH5_1')
-        endif
+        end if
 !
-        if ((.not.zcmplx) .and. (resultType(1:6) .ne. 'DYNA_T')) then
+        if ((.not. zcmplx) .and. (resultType(1:6) .ne. 'DYNA_T')) then
             call utmess('F', 'ALGORITH5_2')
-        endif
+        end if
 !
         if (iField .eq. 1) call rsagsd(resultName, nbabs)
-        noojb='12345678.00000.NUME.PRNO'
+        noojb = '12345678.00000.NUME.PRNO'
         call gnomsd(' ', noojb, 10, 14)
-        prfchn=noojb(1:19)
+        prfchn = noojb(1:19)
 !
         vudef = .false.
         vucont = .false.
         do fileIndx = 1, nbabs
-            fileTime = zr(labs-1 +fileIndx)
+            fileTime = zr(labs-1+fileIndx)
 ! --------- Check if field from file is in the selection list
-            call numeok(storeAccess,&
-                        storeIndxNb, storeTimeNb,&
-                        storeIndx  , storeTime  ,&
-                        storeCrit  , storeEpsi  ,&
-                        fileIndx   , fileTime   ,&
+            call numeok(storeAccess, &
+                        storeIndxNb, storeTimeNb, &
+                        storeIndx, storeTime, &
+                        storeCrit, storeEpsi, &
+                        fileIndx, fileTime, &
                         astock)
             !call numeok(storeAccess, fileIndx, fileTime, listr8, listis,&
             !            precis, storeCrit, storeEpsi, astock)
@@ -405,42 +405,42 @@ character(len=8), intent(in) :: storeCrit
                 call jeveuo(cns//'.CNSV', 'E', jcnsv)
                 call jeveuo(cns//'.CNSL', 'E', jcnsl)
                 do imes = 1, nbmesu
-                    icmp = zi(lori-1 + imes)
-                    ival = nbabs*(imes-1) + fileIndx
-                    ino = zi(lcorr-1 + imes)
+                    icmp = zi(lori-1+imes)
+                    ival = nbabs*(imes-1)+fileIndx
+                    ino = zi(lcorr-1+imes)
                     if (zcmplx) then
-                        cval = zc(lvalc-1 +ival)
+                        cval = zc(lvalc-1+ival)
                     else
-                        fileTime = zr(lvalr-1 +ival)
-                    endif
+                        fileTime = zr(lvalr-1+ival)
+                    end if
                     if (icmp .lt. 0) then
                         icmp = -icmp
                         if (zcmplx) then
                             cval = -cval
                         else
                             fileTime = -fileTime
-                        endif
-                    endif
+                        end if
+                    end if
                     if (nomgd(1:4) .eq. 'DEPL') then
 ! ON SUPPOSE QUE ICMP EST COMPRIS ENTRE -3 ET 3
-                        idir = (ino-1)*ncmp + (icmp-1)*3 + 3
+                        idir = (ino-1)*ncmp+(icmp-1)*3+3
                         if (zcmplx) then
-                            zc(jcnsv-1 + (ino-1)*ncmp+icmp) = cval
-                            zc(jcnsv-1 + idir+1) = czero
-                            zc(jcnsv-1 + idir+2) = czero
-                            zc(jcnsv-1 + idir+3) = czero
-                            zc(jcnsv-1 + idir+icmp) = cun
+                            zc(jcnsv-1+(ino-1)*ncmp+icmp) = cval
+                            zc(jcnsv-1+idir+1) = czero
+                            zc(jcnsv-1+idir+2) = czero
+                            zc(jcnsv-1+idir+3) = czero
+                            zc(jcnsv-1+idir+icmp) = cun
                         else
-                            zr(jcnsv-1 + (ino-1)*ncmp+icmp) = fileTime
-                            zr(jcnsv-1 + idir+1) = 0.d0
-                            zr(jcnsv-1 + idir+2) = 0.d0
-                            zr(jcnsv-1 + idir+3) = 0.d0
-                            zr(jcnsv-1 + idir+icmp) = 1.d0
-                        endif
-                        zl(jcnsl-1 + (ino-1)*ncmp+icmp) = .true.
-                        zl(jcnsl-1 + idir+1) = .true.
-                        zl(jcnsl-1 + idir+2) = .true.
-                        zl(jcnsl-1 + idir+3) = .true.
+                            zr(jcnsv-1+(ino-1)*ncmp+icmp) = fileTime
+                            zr(jcnsv-1+idir+1) = 0.d0
+                            zr(jcnsv-1+idir+2) = 0.d0
+                            zr(jcnsv-1+idir+3) = 0.d0
+                            zr(jcnsv-1+idir+icmp) = 1.d0
+                        end if
+                        zl(jcnsl-1+(ino-1)*ncmp+icmp) = .true.
+                        zl(jcnsl-1+idir+1) = .true.
+                        zl(jcnsl-1+idir+2) = .true.
+                        zl(jcnsl-1+idir+3) = .true.
 !
 ! TRAITEMENT DES ORIENTATIONS POUR DEPL
                         call getfac('REDEFI_ORIENT', nbocc)
@@ -448,76 +448,76 @@ character(len=8), intent(in) :: storeCrit
                             do iocc = 1, nbocc
                                 motcle(1) = 'NOEUD'
                                 tymocl(1) = 'NOEUD'
-                                call reliem(' ', meshAst, 'NU_NOEUD', 'REDEFI_ORIENT', iocc,&
+                                call reliem(' ', meshAst, 'NU_NOEUD', 'REDEFI_ORIENT', iocc, &
                                             1, motcle, tymocl, '&&DEFDIR', nbno2)
                                 call jeveuo('&&DEFDIR', 'L', iagno2)
                                 do i = 1, nbno2
-                                    if (zi(iagno2-1 +i) .eq. ino) then
-                                        call getvis('REDEFI_ORIENT', 'CODE_DIR', iocc=iocc,&
+                                    if (zi(iagno2-1+i) .eq. ino) then
+                                        call getvis('REDEFI_ORIENT', 'CODE_DIR', iocc=iocc, &
                                                     scal=icmpm, nbret=ibid)
                                         if (icmp .eq. icmpm) then
-                                            call getvr8('REDEFI_ORIENT', 'DIRECTION', iocc=iocc,&
+                                            call getvr8('REDEFI_ORIENT', 'DIRECTION', iocc=iocc, &
                                                         nbval=3, vect=dir, nbret=ibid)
                                             if (zcmplx) then
-                                                zc(jcnsv-1 + idir+1) = dcmplx( dir(1),0.d0)
-                                                zc(jcnsv-1 + idir+2) = dcmplx( dir(2),0.d0)
-                                                zc(jcnsv-1 + idir+3) = dcmplx( dir(3),0.d0)
+                                                zc(jcnsv-1+idir+1) = dcmplx(dir(1), 0.d0)
+                                                zc(jcnsv-1+idir+2) = dcmplx(dir(2), 0.d0)
+                                                zc(jcnsv-1+idir+3) = dcmplx(dir(3), 0.d0)
                                             else
-                                                zr(jcnsv-1 + idir+1) = dir(1)
-                                                zr(jcnsv-1 + idir+2) = dir(2)
-                                                zr(jcnsv-1 + idir+3) = dir(3)
-                                            endif
-                                        endif
-                                    endif
+                                                zr(jcnsv-1+idir+1) = dir(1)
+                                                zr(jcnsv-1+idir+2) = dir(2)
+                                                zr(jcnsv-1+idir+3) = dir(3)
+                                            end if
+                                        end if
+                                    end if
                                 end do
                                 call jedetr('&&DEFDIR')
                             end do
-                        endif
+                        end if
 ! FIN TRAITEMENT DES ORIENTATIONS POUR DEPL
-                    endif
+                    end if
 !
                     if (nomgd(1:4) .eq. 'SIEF') then
                         call getfac('REDEFI_ORIENT', nbocc)
-                        if ((nbocc.gt.0) .and. (.not. vucont)) then
+                        if ((nbocc .gt. 0) .and. (.not. vucont)) then
                             call utmess('A', 'ALGORITH5_9')
                             vucont = .true.
-                        endif
+                        end if
                         if (zcmplx) then
-                            zc(jcnsv-1 + (ino-1)*ncmp+icmp) = cval
+                            zc(jcnsv-1+(ino-1)*ncmp+icmp) = cval
                         else
-                            zr(jcnsv-1 + (ino-1)*ncmp+icmp) = fileTime
-                        endif
-                        zl(jcnsl-1 + (ino-1)*ncmp+icmp) = .true.
-                    endif
+                            zr(jcnsv-1+(ino-1)*ncmp+icmp) = fileTime
+                        end if
+                        zl(jcnsl-1+(ino-1)*ncmp+icmp) = .true.
+                    end if
 !
                     if (nomgd(1:4) .eq. 'EPSI') then
                         call getfac('REDEFI_ORIENT', nbocc)
-                        if ((nbocc.gt.0) .and. (.not. vudef)) then
+                        if ((nbocc .gt. 0) .and. (.not. vudef)) then
                             call utmess('A', 'ALGORITH5_10')
                             vudef = .true.
-                        endif
-                        zr(jcnsv-1 + (ino-1)*ncmp+icmp) = fileTime
-                        zl(jcnsl-1 + (ino-1)*ncmp+icmp) = .true.
-                    endif
+                        end if
+                        zr(jcnsv-1+(ino-1)*ncmp+icmp) = fileTime
+                        zl(jcnsl-1+(ino-1)*ncmp+icmp) = .true.
+                    end if
                 end do
 !
 ! RECUPERATION DU NOM DU CHAMP POUR NUMORD : NOMCH
-                call rsexch(' ', resultName, fileType, fileIndx, nomch,&
+                call rsexch(' ', resultName, fileType, fileIndx, nomch, &
                             iret)
-                call cnscno(cns, prfchn, 'NON', 'G', nomch,&
+                call cnscno(cns, prfchn, 'NON', 'G', nomch, &
                             'F', ibid)
 !
                 call rsnoch(resultName, fileType, fileIndx)
                 if (zcmplx) then
-                    call rsadpa(resultName, 'E', 1, 'FREQ', fileIndx,&
+                    call rsadpa(resultName, 'E', 1, 'FREQ', fileIndx, &
                                 0, sjv=jabs, styp=k8bid)
                 else
-                    call rsadpa(resultName, 'E', 1, 'INST', fileIndx,&
+                    call rsadpa(resultName, 'E', 1, 'INST', fileIndx, &
                                 0, sjv=jabs, styp=k8bid)
-                endif
-                zr(jabs) = zr(labs-1 + fileIndx)
+                end if
+                zr(jabs) = zr(labs-1+fileIndx)
                 call detrsd('CHAM_NO_S', cns)
-            endif
+            end if
         end do
 999     continue
     end do
@@ -529,6 +529,6 @@ character(len=8), intent(in) :: storeCrit
 !
     call jedema()
 !
-780 format ( a80 )
+780 format(a80)
 !
 end subroutine

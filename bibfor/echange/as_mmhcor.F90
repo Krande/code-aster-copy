@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,13 +44,13 @@ subroutine as_mmhcor(fid, maa, coo, modcoo, cret)
     modco4 = modcoo
     mdnon4 = mdnont
     mdnoi4 = mdnoit
-    call mmhcor(fidm, maa, mdnon4, mdnoi4, modco4,&
+    call mmhcor(fidm, maa, mdnon4, mdnoi4, modco4, &
                 coo, cret4)
     cret = cret4
 #else
     mdnont = -1
     mdnoit = -1
-    call mmhcor(fid, maa, mdnont, mdnoit, modcoo,&
+    call mmhcor(fid, maa, mdnont, mdnoit, modcoo, &
                 coo, cret)
 #endif
 !

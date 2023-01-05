@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,33 +18,33 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmtgeo(phase , l_large_slip,&
-                  ndim  , nne   , nnm   ,&
-                  wpg   , ffe   , ffm   , dffm  , ddffm ,&
-                  jacobi, coefac, coefff, jeu   , dlagrc,&
-                  mprojn,&
-                  mprt1n, mprt2n, mprnt1, mprnt2,&
-                  kappa , vech1 , vech2 , h     , hah   ,&
-                  mprt11, mprt12, mprt21, mprt22,&
+subroutine mmtgeo(phase, l_large_slip, &
+                  ndim, nne, nnm, &
+                  wpg, ffe, ffm, dffm, ddffm, &
+                  jacobi, coefac, coefff, jeu, dlagrc, &
+                  mprojn, &
+                  mprt1n, mprt2n, mprnt1, mprnt2, &
+                  kappa, vech1, vech2, h, hah, &
+                  mprt11, mprt12, mprt21, mprt22, &
                   matree, matrmm, matrem, matrme)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmgnuu.h"
 #include "asterfort/mmgtuu.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_large_slip
-integer, intent(in) :: ndim, nne, nnm
-real(kind=8), intent(in) :: wpg, ffe(9), ffm(9), dffm(2,9), ddffm(3,9)
-real(kind=8), intent(in) :: jacobi, coefac, coefff, jeu, dlagrc
-real(kind=8), intent(in) :: mprojn(3,3)
-real(kind=8), intent(in) :: mprt1n(3,3), mprt2n(3,3), mprnt1(3,3), mprnt2(3,3)
-real(kind=8), intent(in) :: kappa(2,2), vech1(3), vech2(3), h(2,2), hah(2,2)
-real(kind=8), intent(in) :: mprt11(3,3), mprt12(3,3), mprt21(3,3), mprt22(3,3)
-real(kind=8), intent(inout) :: matrem(27,27), matrme(27,27)
-real(kind=8), intent(inout) :: matree(27,27), matrmm(27,27)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_large_slip
+    integer, intent(in) :: ndim, nne, nnm
+    real(kind=8), intent(in) :: wpg, ffe(9), ffm(9), dffm(2, 9), ddffm(3, 9)
+    real(kind=8), intent(in) :: jacobi, coefac, coefff, jeu, dlagrc
+    real(kind=8), intent(in) :: mprojn(3, 3)
+    real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)
+    real(kind=8), intent(in) :: kappa(2, 2), vech1(3), vech2(3), h(2, 2), hah(2, 2)
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(inout) :: matrem(27, 27), matrme(27, 27)
+    real(kind=8), intent(inout) :: matree(27, 27), matrmm(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,24 +98,24 @@ real(kind=8), intent(inout) :: matree(27,27), matrmm(27,27)
 ! --------------------------------------------------------------------------------------------------
 !
     if (phase .ne. 'SANS') then
-        call mmgnuu(ndim  , nne   , nnm   ,&
-                    wpg   , ffe   , ffm   , dffm  ,&
-                    jacobi, coefac, jeu   , dlagrc,&
-                    mprojn,&
-                    mprt1n, mprt2n, mprnt1, mprnt2,&
-                    mprt11, mprt12, mprt21, mprt22,&
-                    kappa , vech1 , vech2 ,&
-                    h     , hah   , &
+        call mmgnuu(ndim, nne, nnm, &
+                    wpg, ffe, ffm, dffm, &
+                    jacobi, coefac, jeu, dlagrc, &
+                    mprojn, &
+                    mprt1n, mprt2n, mprnt1, mprnt2, &
+                    mprt11, mprt12, mprt21, mprt22, &
+                    kappa, vech1, vech2, &
+                    h, hah, &
                     matree, matrmm, matrem, matrme)
-    endif
+    end if
     if (phase .eq. 'GLIS' .and. l_large_slip) then
-        call mmgtuu(ndim  , nne   , nnm   ,&
-                    wpg   , ffe   , ffm   , dffm  , ddffm ,&
-                    jacobi, coefac, coefff, jeu   , dlagrc,&
-                    mprt1n, mprt2n, mprnt1, mprnt2,&
-                    kappa , vech1 , vech2 , h     ,&
-                    mprt11, mprt12, mprt21, mprt22,&
+        call mmgtuu(ndim, nne, nnm, &
+                    wpg, ffe, ffm, dffm, ddffm, &
+                    jacobi, coefac, coefff, jeu, dlagrc, &
+                    mprt1n, mprt2n, mprnt1, mprnt2, &
+                    kappa, vech1, vech2, h, &
+                    mprt11, mprt12, mprt21, mprt22, &
                     matrmm, matrem, matrme)
-    endif
+    end if
 !
 end subroutine

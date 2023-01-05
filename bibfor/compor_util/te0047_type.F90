@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 module te0047_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
@@ -51,19 +51,19 @@ implicit none
         !
         !   pgl     : matrice de passage global vers local
         !
-        aster_logical       :: lVect        = ASTER_FALSE
-        aster_logical       :: lMatr        = ASTER_FALSE
-        aster_logical       :: lVari        = ASTER_FALSE
-        aster_logical       :: lSigm        = ASTER_FALSE
-        aster_logical       :: lPred        = ASTER_FALSE
-        aster_logical       :: lMatrPred    = ASTER_FALSE
-        aster_logical       :: lTraceDbg    = ASTER_FALSE
+        aster_logical       :: lVect = ASTER_FALSE
+        aster_logical       :: lMatr = ASTER_FALSE
+        aster_logical       :: lVari = ASTER_FALSE
+        aster_logical       :: lSigm = ASTER_FALSE
+        aster_logical       :: lPred = ASTER_FALSE
+        aster_logical       :: lMatrPred = ASTER_FALSE
+        aster_logical       :: lTraceDbg = ASTER_FALSE
         !
-        character(len=16)   :: option       = ''
-        character(len=16)   :: nomte        = ''
-        character(len=16)   :: rela_comp    = ''
-        character(len=16)   :: defo_comp    = ''
-        character(len=16)   :: type_comp    = ''
+        character(len=16)   :: option = ''
+        character(len=16)   :: nomte = ''
+        character(len=16)   :: rela_comp = ''
+        character(len=16)   :: defo_comp = ''
+        character(len=16)   :: type_comp = ''
         !
         integer             :: ndim
         integer             :: nbt
@@ -79,15 +79,14 @@ implicit none
 !
 contains
 
-
     subroutine te0047_dscr_write(D)
         type(te0047_dscr), intent(in) :: D
         !
-        write(*,'(5(A16))')[character(16) ::'option','nomte','rela_comp','type_comp','defo_comp']
-        write(*,'(5(A16))') D%option, D%nomte, D%rela_comp, D%type_comp, D%defo_comp
+    write (*, '(5(A16))') [character(16) ::'option', 'nomte', 'rela_comp', 'type_comp', 'defo_comp']
+        write (*, '(5(A16))') D%option, D%nomte, D%rela_comp, D%type_comp, D%defo_comp
         !
-        write(*,'(A)')        'Vect Matr Vari Sigm Pred MPred '
-        write(*,'(6(L1,4X))')  D%lVect, D%lMatr, D%lVari, D%lSigm, D%lPred, D%lMatrPred
+        write (*, '(A)') 'Vect Matr Vari Sigm Pred MPred '
+        write (*, '(6(L1,4X))') D%lVect, D%lMatr, D%lVari, D%lSigm, D%lPred, D%lMatrPred
     end
 
 end module te0047_type

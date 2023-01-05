@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 subroutine jevete(nomobj, code, iad)
 ! aslint: disable=W0104
 
-use calcul_module, only : ca_iainel_, ca_ininel_, ca_nbobj_
+    use calcul_module, only: ca_iainel_, ca_ininel_, ca_nbobj_
 
-implicit none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/indk24.h"
@@ -29,7 +29,7 @@ implicit none
     character(len=*) :: nomobj
     character(len=1) :: code
     character(len=24) :: nomob2
-    integer ::  ii,   iad
+    integer ::  ii, iad
 !-------------------------------------------------------------------
 !  entrees:
 !     nomobj  : nombre de l'objet '&INEL.XXXX' dont on veut l'adresse
@@ -40,7 +40,7 @@ implicit none
 !                ( = 0 si l'objet n'existe pas).
 !-------------------------------------------------------------------
     nomob2 = nomobj
-    ii = indk24(zk24(ca_ininel_),nomob2,1,ca_nbobj_)
-    ASSERT(ii.ne.0)
+    ii = indk24(zk24(ca_ininel_), nomob2, 1, ca_nbobj_)
+    ASSERT(ii .ne. 0)
     iad = zi(ca_iainel_-1+ii)
 end subroutine

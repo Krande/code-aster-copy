@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,12 +56,12 @@ subroutine te0043(option, nomte)
     character(len=20) :: kmess(5)
 !     ------------------------------------------------------------------
 !
-    if ((option.ne.'CHAR_MECA_PESA_R') .and. (option.ne.'CHAR_MECA_ROTA_R')) then
+    if ((option .ne. 'CHAR_MECA_PESA_R') .and. (option .ne. 'CHAR_MECA_ROTA_R')) then
         kmess(1) = option
         kmess(2) = nomte
         kmess(3) = 'TE0043'
         call utmess('F', 'DISCRETS_14', nk=3, valk=kmess)
-    endif
+    end if
 !
 !
 !     ON VERIFIE QUE LES CARACTERISTIQUES ONT ETE AFFECTEES
@@ -72,13 +72,13 @@ subroutine te0043(option, nomte)
     if (infodi .ne. ibid) then
         call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
-    endif
+    end if
 !     DISCRET DE TYPE MASSE
     call infdis('DISM', infodi, r8bid, k8bid)
     if (infodi .eq. 0) then
         call utmess('A+', 'DISCRETS_26', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
-    endif
+    end if
 !
 !     [M] : SYMETRIQUE ?
     call infdis('SYMM', infodi, r8bid, k8bid)
@@ -88,7 +88,7 @@ subroutine te0043(option, nomte)
 !        NC       =  NOMBRE DE COMPOSANTE PAR NOEUD
 !        NDIM     =  DIMENSION DE L'ELEMENT
 !        ITYPE    =  TYPE DE L'ELEMENT
-    call infted(nomte, infodi, nbterm, nno, nc,&
+    call infted(nomte, infodi, nbterm, nno, nc, &
                 ndim, itype)
 !
 !     --- CALCUL DES VECTEURS ELEMENTAIRES ----
@@ -105,21 +105,21 @@ subroutine te0043(option, nomte)
             if (ndim .eq. 3) then
                 if (infodi .eq. 1) then
                     call utpslg(nno, nc, pgl, zr(ldis), mat)
-                else if (infodi.eq.2) then
+                else if (infodi .eq. 2) then
                     call utpplg(nno, nc, pgl, zr(ldis), mat)
-                endif
-            else if (ndim.eq.2) then
+                end if
+            else if (ndim .eq. 2) then
                 if (infodi .eq. 1) then
                     call ut2mlg(nno, nc, pgl, zr(ldis), mat)
-                else if (infodi.eq.2) then
+                else if (infodi .eq. 2) then
                     call ut2plg(nno, nc, pgl, zr(ldis), mat)
-                endif
-            endif
+                end if
+            end if
         else
             do i = 1, nbterm
                 mat(i) = zr(ldis+i-1)
             end do
-        endif
+        end if
 !
 !        --- CHAMP DE PESANTEUR ---
         call jevech('PPESANR', 'L', lpesa)
@@ -127,7 +127,7 @@ subroutine te0043(option, nomte)
         call jevech('PVECTUR', 'E', lvectu)
 !
 !        --- ON Y VA ---
-        lvectu = lvectu - 1
+        lvectu = lvectu-1
         if (nomte .eq. 'MECA_DIS_TR_L') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
@@ -136,25 +136,25 @@ subroutine te0043(option, nomte)
                 zr(lvectu+7) = mat(28)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+8) = mat(36)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+9) = mat(45)*zr(lpesa)*zr(lpesa+3)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(14)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(27)*zr(lpesa)*zr(lpesa+3)
                 zr(lvectu+7) = mat(79)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+8) = mat(92)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+9) = mat(105)*zr(lpesa)*zr(lpesa+3)
-            endif
-        else if (nomte.eq.'MECA_DIS_TR_N') then
+            end if
+        else if (nomte .eq. 'MECA_DIS_TR_N') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(03)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(06)*zr(lpesa)*zr(lpesa+3)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(08)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(15)*zr(lpesa)*zr(lpesa+3)
-            endif
-        else if (nomte.eq.'MECA_DIS_T_L') then
+            end if
+        else if (nomte .eq. 'MECA_DIS_T_L') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(03)*zr(lpesa)*zr(lpesa+2)
@@ -162,71 +162,71 @@ subroutine te0043(option, nomte)
                 zr(lvectu+4) = mat(10)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+5) = mat(15)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+6) = mat(21)*zr(lpesa)*zr(lpesa+3)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(08)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(15)*zr(lpesa)*zr(lpesa+3)
                 zr(lvectu+4) = mat(22)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+5) = mat(29)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+6) = mat(36)*zr(lpesa)*zr(lpesa+3)
-            endif
-        else if (nomte.eq.'MECA_DIS_T_N') then
+            end if
+        else if (nomte .eq. 'MECA_DIS_T_N') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(03)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(06)*zr(lpesa)*zr(lpesa+3)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(05)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(09)*zr(lpesa)*zr(lpesa+3)
-            endif
-        else if (nomte.eq.'MECA_2D_DIS_TR_L') then
+            end if
+        else if (nomte .eq. 'MECA_2D_DIS_TR_L') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(03)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+4) = mat(10)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+5) = mat(15)*zr(lpesa)*zr(lpesa+2)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(08)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+4) = mat(22)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+5) = mat(29)*zr(lpesa)*zr(lpesa+2)
-            endif
-        else if (nomte.eq.'MECA_2D_DIS_TR_N') then
+            end if
+        else if (nomte .eq. 'MECA_2D_DIS_TR_N') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(03)*zr(lpesa)*zr(lpesa+2)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(05)*zr(lpesa)*zr(lpesa+2)
-            endif
-        else if (nomte.eq.'MECA_2D_DIS_T_L') then
+            end if
+        else if (nomte .eq. 'MECA_2D_DIS_T_L') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(03)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(06)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+4) = mat(10)*zr(lpesa)*zr(lpesa+2)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(06)*zr(lpesa)*zr(lpesa+2)
                 zr(lvectu+3) = mat(11)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+4) = mat(16)*zr(lpesa)*zr(lpesa+2)
-            endif
-        else if (nomte.eq.'MECA_2D_DIS_T_N') then
+            end if
+        else if (nomte .eq. 'MECA_2D_DIS_T_N') then
             if (infodi .eq. 1) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(03)*zr(lpesa)*zr(lpesa+2)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 zr(lvectu+1) = mat(01)*zr(lpesa)*zr(lpesa+1)
                 zr(lvectu+2) = mat(04)*zr(lpesa)*zr(lpesa+2)
-            endif
+            end if
         else
             kmess(1) = option
             kmess(2) = nomte
             kmess(3) = 'TE0043'
             call utmess('F', 'DISCRETS_15', nk=3, valk=kmess)
-        endif
-    endif
+        end if
+    end if
 !
 !
     if (option .eq. 'CHAR_MECA_ROTA_R') then
@@ -242,12 +242,12 @@ subroutine te0043(option, nomte)
                 kmess(1) = nomte
                 kmess(2) = option
                 call utmess('F', 'CALCUL_37', nk=2, valk=kmess)
-            endif
-        endif
+            end if
+        end if
         call jevech('PVECTUR', 'E', lvectu)
         do i = 1, nno*nc
-            zr(lvectu-1+i)=0.0d0
+            zr(lvectu-1+i) = 0.0d0
         end do
-    endif
+    end if
 !
 end subroutine

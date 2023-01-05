@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pcfull(n, icpl, icpc, icpd, icplp,&
+subroutine pcfull(n, icpl, icpc, icpd, icplp, &
                   icpcp, ind, lca, ier)
 !                    S.P. PCFULL
 !                    -----------
@@ -107,11 +107,11 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
     integer :: ncremx, nzero
 !-----------------------------------------------------------------------
     do i = 1, n
-        ind(i)=0
+        ind(i) = 0
     end do
-    ic1=0
-    ic2=0
-    k1=1
+    ic1 = 0
+    ic2 = 0
+    k1 = 1
 !
 !
 !     FACTORISATION LOGIQUE : LIGNE PAR LIGNE
@@ -122,39 +122,39 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
 !       REMARQUE JP : LA FICHE 12292 MONTRE QUE CE TEST EST INSUFFISANT
 !       POUR NE PAS DEBORDER DU TABLEAU ICPCP, J'AI DU AJOUTER UN AUTRE
 !       TEST AVANT ICPCP(IC1)=JJ (VOIR CI-DESSOUS)
-        ncremx=i-icpc(k1)
+        ncremx = i-icpc(k1)
         if (ic1+ncremx .gt. lca) then
-            istop=i
+            istop = i
             goto 90
-        endif
+        end if
 !
 !       MISE A JOUR DU TABLEAU IND
-        k2=icpl(i)
+        k2 = icpl(i)
         do k = k1, k2
-            j=icpc(k)
-            ind(j)=i
+            j = icpc(k)
+            ind(j) = i
         end do
-        ind(i)=i
+        ind(i) = i
 !
 !       RECHERCHE DANS LA LIGNE I DES L(I,J) NON NULS
         do k = k1, icpd(i)
-            j=icpc(k)
+            j = icpc(k)
 !         RECHERCHE DANS LA LIGNE J DES U(J,JJ) NON NULS
             do l = icpd(j)+1, icpl(j)
-                jj=icpc(l)
+                jj = icpc(l)
 !           LE COEFFICIENT L(I,JJ) OU U(JJ,I) EXISTE-T-IL ?
                 if (ind(jj) .ne. i) then
 !             NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
-                    ic1=ic1+1
+                    ic1 = ic1+1
 !             STOCKAGE DE L'INDICE DE COLONNE DU COEFFICIENT LU(I,JJ)
                     if (ic1 .gt. lca) then
-                        istop=i
+                        istop = i
                         goto 90
-                    endif
-                    icpcp(ic1)=jj
+                    end if
+                    icpcp(ic1) = jj
 !             MISE A JOUR DU TABLEAU IND
-                    ind(jj)=i
-                endif
+                    ind(jj) = i
+                end if
             end do
         end do
 !
@@ -162,100 +162,100 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp,&
         call pctrii(icpcp(ic2+1), ic1-ic2)
 !
 !       MISE A JOUR DU POINTEUR ICPLP
-        icplp(i)=ic1
-        ic2=ic1
-        k1=k2+1
+        icplp(i) = ic1
+        ic2 = ic1
+        k1 = k2+1
     end do
-    icplp(0)=0
+    icplp(0) = 0
 !
 !
 !     TEST DE DEPASSEMENT DE DIMENSION (PROTECTION DES TABLEAUX)
-    k1=icpl(n)
-    kp1=icplp(n)
-    nzero=k1+kp1
+    k1 = icpl(n)
+    kp1 = icplp(n)
+    nzero = k1+kp1
     if (nzero .gt. lca) then
-        ier=nzero
+        ier = nzero
         goto 140
-    endif
+    end if
 !
 !
 !     CREATION DES TABLEAUX ICPL ET ICPC
 !     POUR LA MATRICE FACTORISEE : REUNION DES TABLEAUX ICPC ET ICPCP
 !     ---------------------------------------------------------------
-    k=nzero
+    k = nzero
     do i = n, 1, -1
-        icpl(i)=k
-        kp2=icplp(i-1)
-        k2=icpl(i-1)
- 60     continue
+        icpl(i) = k
+        kp2 = icplp(i-1)
+        k2 = icpl(i-1)
+60      continue
 !
         if (k1 .gt. k2) then
 !          LIGNE DE L EN COURS
             if (kp1 .gt. kp2) then
 !           LIGNE DE COEF EN COURS
                 if (icpc(k1) .lt. icpcp(kp1)) then
-                    icpc(k)=int(icpcp(kp1), 4)
-                    kp1=kp1-1
+                    icpc(k) = int(icpcp(kp1), 4)
+                    kp1 = kp1-1
                 else
-                    icpc(k)=icpc(k1)
-                    k1=k1-1
-                endif
+                    icpc(k) = icpc(k1)
+                    k1 = k1-1
+                end if
 !
             else
 !           LIGNE DE COEF FINIE
-                icpc(k)=icpc(k1)
-                k1=k1-1
-            endif
+                icpc(k) = icpc(k1)
+                k1 = k1-1
+            end if
 !
         else
 !         LIGNE DE L FINIE
             if (kp1 .gt. kp2) then
 !           LIGNE DE COEF EN COURS
-                icpc(k)=int(icpcp(kp1), 4)
-                kp1=kp1-1
+                icpc(k) = int(icpcp(kp1), 4)
+                kp1 = kp1-1
             else
                 goto 70
-            endif
-        endif
+            end if
+        end if
 !
-        k=k-1
+        k = k-1
         goto 60
 !
- 70     continue
+70      continue
     end do
     goto 140
 !
 !
- 90 continue
+90  continue
 !     DEPASSEMENT DE DIMENSION ON CALCULE IC1= PLACE A AJOUTER
     do i = istop, n
-        k2=icpl(i)
+        k2 = icpl(i)
         do k = k1, k2
-            j=icpc(k)
-            ind(j)=i
+            j = icpc(k)
+            ind(j) = i
         end do
-        ind(i)=i
+        ind(i) = i
         do k = k1, icpd(i)
-            j=icpc(k)
+            j = icpc(k)
             do l = icpd(j)+1, icpl(j)
-                jj=icpc(l)
+                jj = icpc(l)
                 if (jj .ge. i) goto 110
 !
                 if (ind(jj) .ne. i) then
 !             NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
-                    ic1=ic1+1
-                    ind(jj)=i
-                endif
+                    ic1 = ic1+1
+                    ind(jj) = i
+                end if
 110             continue
             end do
         end do
-        k1=k2+1
+        k1 = k2+1
     end do
 !
 !
 !     NZERO=TAILLE MAT INI. + TAILLE MAT REMPLIE
-    nzero=icpl(n)+ic1
-    ier=nzero
+    nzero = icpl(n)+ic1
+    ier = nzero
 140 continue
 !
 end subroutine

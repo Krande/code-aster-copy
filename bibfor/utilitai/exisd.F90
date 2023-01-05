@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'MODELE') then
+    else if (typ2sd .eq. 'MODELE') then
 !     ------------------------------
         ch8 = nomsd
         call jeexin(ch8//'.MAILLE', i1)
@@ -74,14 +74,14 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'PARTITION') then
+    else if (typ2sd .eq. 'PARTITION') then
 !     ------------------------------
         ch = nomsd
         call jeexin(ch//'.PRTI', i1)
         call jeexin(ch//'.PRTK', i2)
         if (i1*i2 .ne. 0) iret = 1
 !
-    else if (typ2sd.eq.'CARTE') then
+    else if (typ2sd .eq. 'CARTE') then
 !     ------------------------------
         ch = nomsd
         call jeexin(ch//'.NOMA', i1)
@@ -90,7 +90,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'CHAM_NO') then
+    else if (typ2sd .eq. 'CHAM_NO') then
 !     ------------------------------
         ch = nomsd
         call jeexin(ch//'.REFE', i1)
@@ -99,7 +99,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'CHAM_ELEM') then
+    else if (typ2sd .eq. 'CHAM_ELEM') then
 !     ------------------------------
         ch = nomsd
         call jeexin(ch//'.CELD', i1)
@@ -107,7 +107,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'RESUELEM') then
+    else if (typ2sd .eq. 'RESUELEM') then
 !     ------------------------------
         ch = nomsd
         call jeexin(ch//'.DESC', i1)
@@ -116,7 +116,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
-    else if ((typ2sd.eq.'CHAMP').or.(typ2sd.eq.'CHAMP_GD')) then
+    else if ((typ2sd .eq. 'CHAMP') .or. (typ2sd .eq. 'CHAMP_GD')) then
 !     -------------------------------------------------------------
         ch = nomsd
 !
@@ -137,7 +137,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'CHAM_NO_S') then
+    else if (typ2sd .eq. 'CHAM_NO_S') then
 !     ------------------------------------
         ch = nomsd
         call jeexin(ch//'.CNSD', i1)
@@ -146,7 +146,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'CHAM_ELEM_S') then
+    else if (typ2sd .eq. 'CHAM_ELEM_S') then
 !     --------------------------------------
         ch = nomsd
         call jeexin(ch//'.CESD', i1)
@@ -155,7 +155,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'TABLE') then
+    else if (typ2sd .eq. 'TABLE') then
 !     --------------------------------
         ch = nomsd
         call jeexin(ch//'.TBBA', i1)
@@ -164,7 +164,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
-    else if (typ2sd.eq.'RESULTAT') then
+    else if (typ2sd .eq. 'RESULTAT') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch//'.DESC', i1)
@@ -174,27 +174,27 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.TACH', i5)
         if (i1*i2*i3*i4*i5 .ne. 0) iret = 1
 !
-    else if (typ2sd.eq.'LIGREL') then
+    else if (typ2sd .eq. 'LIGREL') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch//'.LGRF', i1)
         call jeexin(ch//'.NBNO', i2)
         if (i1*i2 .ne. 0) iret = 1
 !
-    else if (typ2sd.eq.'FONCTION') then
+    else if (typ2sd .eq. 'FONCTION') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch//'.PROL', i1)
         if (i1 .ne. 0) iret = 1
 !
-    else if (typ2sd.eq.'MATR_ASSE') then
+    else if (typ2sd .eq. 'MATR_ASSE') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch//'.REFA', i2)
         call jeexin(ch//'.VALM', i3)
         if (i2*i3 .ne. 0) iret = 1
 !
-    else if (typ2sd.eq.'NUME_DDL') then
+    else if (typ2sd .eq. 'NUME_DDL') then
 !     -----------------------------------
         ch = nomsd
 
@@ -204,7 +204,7 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch(1:14)//'.NUME.NUEQ', i4)
         if (i1*i2*i3*i4 .ne. 0) iret = 1
 !
-    else if (typ2sd.eq.'PROF_CHNO') then
+    else if (typ2sd .eq. 'PROF_CHNO') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch(1:19)//'.PRNO', i1)
@@ -215,7 +215,7 @@ subroutine exisd(typesd, nomsd, iret)
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
-    endif
+    end if
 !
     call jedema()
 end subroutine

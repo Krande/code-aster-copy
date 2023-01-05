@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbr_DSInit(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dbrDSInitGreedy.h"
 #include "asterfort/dbr_paraDSInit.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/romSolveDSInit.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR), intent(out) :: cmdPara
+    type(ROM_DS_ParaDBR), intent(out) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ type(ROM_DS_ParaDBR), intent(out) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM19_1')
-    endif
+    end if
 !
 ! - Initialisation of datastructure for solving problems
 !
@@ -75,7 +75,7 @@ type(ROM_DS_ParaDBR), intent(out) :: cmdPara
 !
 ! - Initialization of datastructures for parameters
 !
-    call dbr_paraDSInit(paraPod, paraGreedy, paraTrunc, paraOrtho,&
+    call dbr_paraDSInit(paraPod, paraGreedy, paraTrunc, paraOrtho, &
                         cmdPara)
 !
 end subroutine

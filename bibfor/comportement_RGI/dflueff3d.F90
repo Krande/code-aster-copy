@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,17 +21,16 @@ subroutine dflueff3d(ccmax, dflu0, dflu1, dfin)
 !=====================================================================
 
 !   endommagement par fluage
-      implicit none
+    implicit none
 
-
-      real(kind=8), intent(in) :: dflu0, dfin,ccmax
-      real(kind=8), intent(out) :: dflu1
+    real(kind=8), intent(in) :: dflu0, dfin, ccmax
+    real(kind=8), intent(out) :: dflu1
 !
-      real(kind=8) :: dflu
+    real(kind=8) :: dflu
 !   calcul de l'edommagement effectif actuel en fonction de la consolidation
-      dflu=dfin*(1.d0-1.d0/ccmax)
+    dflu = dfin*(1.d0-1.d0/ccmax)
 
 !   condition de croissance de l endo de fluage
-      dflu1=dmax1(dflu0,dflu)
+    dflu1 = dmax1(dflu0, dflu)
 
 end subroutine

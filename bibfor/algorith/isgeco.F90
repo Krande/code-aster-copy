@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine isgeco(icod1, icod2, ndim, iopt, icod)
 #include "asterfort/isdeco.h"
     integer :: i, ik, iopt, nbcpmx, ndim
 !-----------------------------------------------------------------------
-    parameter (nbcpmx=300)
+    parameter(nbcpmx=300)
     integer :: icod1(1), icod2(1), icod(1)
     integer :: idec1(nbcpmx), idec2(nbcpmx), idec(nbcpmx)
 !
@@ -51,25 +51,25 @@ subroutine isgeco(icod1, icod2, ndim, iopt, icod)
 !
     if (iopt .eq. 1) then
         do i = 1, ndim
-            ik=idec1(i)+idec2(i)
+            ik = idec1(i)+idec2(i)
             if (ik .gt. 0) then
-                idec(i)=1
+                idec(i) = 1
             else
-                idec(i)=0
-            endif
+                idec(i) = 0
+            end if
         end do
-    endif
+    end if
 !
     if (iopt .eq. -1) then
         do i = 1, ndim
-            ik=idec1(i)-idec2(i)
+            ik = idec1(i)-idec2(i)
             if (ik .gt. 0) then
-                idec(i)=1
+                idec(i) = 1
             else
-                idec(i)=0
-            endif
+                idec(i) = 0
+            end if
         end do
-    endif
+    end if
 !
     call iscode(idec, icod, ndim)
 !

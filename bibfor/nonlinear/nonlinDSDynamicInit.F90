@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSDynamicInit(hval_incr, sddyna, ds_constitutive)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -39,9 +39,9 @@ implicit none
 #include "asterfort/trmult.h"
 #include "asterfort/zerlag.h"
 !
-character(len=19), intent(in) :: hval_incr(*)
-character(len=19), intent(in) :: sddyna
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,12 +72,12 @@ type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_13')
-    endif
+    end if
 !
 ! - Active functionnalities
 !
-    lDampMode     = ndynlo(sddyna,'AMOR_MODAL')
-    lMultiSupport = ndynlo(sddyna,'MULTI_APPUI')
+    lDampMode = ndynlo(sddyna, 'AMOR_MODAL')
+    lMultiSupport = ndynlo(sddyna, 'MULTI_APPUI')
 !
 ! - Modal damping: check numbering of equation
 !
@@ -87,10 +87,10 @@ type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
         call dismoi('PROF_CHNO', disp_prev, 'CHAM_NO', repk=pfcn1)
         call dismoi('PROF_CHNO', numeDof, 'NUME_DDL', repk=pfcn2)
-        if (.not.iden_nume(pfcn1, pfcn2)) then
+        if (.not. iden_nume(pfcn1, pfcn2)) then
             call utmess('F', 'DYNAMIQUE_54')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Multi-support analysis
 !
@@ -104,18 +104,18 @@ type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         numeDofDEEQ = numeDof//'.NUME.DEEQ'
         call jeveuo(numeDofDEEQ, 'L', jvNumeDofDEEQ)
 ! ----- Prepare loads for multi-support by projection
-        nbExci = ndynin(sddyna,'NBRE_EXCIT')
+        nbExci = ndynin(sddyna, 'NBRE_EXCIT')
         call ndynkk(sddyna, 'MUAP_MAPSID', multSuppProj)
         call jeveuo(multSuppProj, 'E', jvMultSuppProj)
         do iExci = 1, nbExci
-            call trmult(multSuppMode, iExci, mesh, nbEqua, jvNumeDofDEEQ,&
+            call trmult(multSuppMode, iExci, mesh, nbEqua, jvNumeDofDEEQ, &
                         zr(jvMultSuppProj+(iExci-1)*nbEqua), numeDof)
-            call zerlag(nbEqua, zi(jvNumeDofDEEQ), vectr = zr(jvMultSuppProj+(iExci-1)*nbEqua))
+            call zerlag(nbEqua, zi(jvNumeDofDEEQ), vectr=zr(jvMultSuppProj+(iExci-1)*nbEqua))
         end do
 ! ----- Check linear/DIS_* only !
         if (.not. ds_constitutive%lLinear .and. .not. ds_constitutive%lDisCtc) then
             call utmess('F', 'DYNAMIQUE1_1')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

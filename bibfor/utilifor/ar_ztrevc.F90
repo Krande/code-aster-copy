@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_ztrevc(side, howmny, select, n, t,&
-                     ldt, vl, ldvl, vr, ldvr,&
+subroutine ar_ztrevc(side, howmny, select, n, t, &
+                     ldt, vl, ldvl, vr, ldvr, &
                      mm, m, work, rwork, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
@@ -177,16 +177,16 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    aster_logical :: select( * )
-    real(kind=8) :: rwork( * )
-    complex(kind=8) :: t( ldt, * ), vl( ldvl, * ), vr( ldvr, * ), work( * )
+    aster_logical :: select(*)
+    real(kind=8) :: rwork(*)
+    complex(kind=8) :: t(ldt, *), vl(ldvl, *), vr(ldvr, *), work(*)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d+0, one = 1.0d+0 )
+    parameter(zero=0.0d+0, one=1.0d+0)
     complex(kind=8) :: cmzero, cmone
-    parameter          ( cmzero = ( 0.0d+0, 0.0d+0 ),&
-     &                   cmone = ( 1.0d+0, 0.0d+0 ) )
+    parameter(cmzero=(0.0d+0, 0.0d+0),&
+     &                   cmone=(1.0d+0, 0.0d+0))
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: allv, bothv, leftv, over, rightv, somev
@@ -207,13 +207,13 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
 !     DECODE AND TEST THE INPUT PARAMETERS
 !
-    bothv = lsame( side, 'B' )
-    rightv = lsame( side, 'R' ) .or. bothv
-    leftv = lsame( side, 'L' ) .or. bothv
+    bothv = lsame(side, 'B')
+    rightv = lsame(side, 'R') .or. bothv
+    leftv = lsame(side, 'L') .or. bothv
 !
-    allv = lsame( howmny, 'A' )
-    over = lsame( howmny, 'B' ) .or. lsame( howmny, 'O' )
-    somev = lsame( howmny, 'S' )
+    allv = lsame(howmny, 'A')
+    over = lsame(howmny, 'B') .or. lsame(howmny, 'O')
+    somev = lsame(howmny, 'S')
 !
 !     SET M TO THE NUMBER OF COLUMNS REQUIRED TO STORE THE SELECTED
 !     EIGENVECTORS.
@@ -221,33 +221,33 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
     if (somev) then
         m = 0
         do j = 1, n
-            if (select( j )) m = m + 1
+            if (select(j)) m = m+1
         end do
     else
         m = n
-    endif
+    end if
 !
     info4 = 0
-    if (.not.rightv .and. .not.leftv) then
+    if (.not. rightv .and. .not. leftv) then
         info4 = -1
-    else if (.not.allv .and. .not.over .and. .not.somev) then
+    else if (.not. allv .and. .not. over .and. .not. somev) then
         info4 = -2
-    else if (n.lt.0) then
+    else if (n .lt. 0) then
         info4 = -4
-    else if (ldt.lt.max( 1, n )) then
+    else if (ldt .lt. max(1, n)) then
         info4 = -6
-    else if (ldvl.lt.1 .or. ( leftv .and. ldvl.lt.n )) then
+    else if (ldvl .lt. 1 .or. (leftv .and. ldvl .lt. n)) then
         info4 = -8
-    else if (ldvr.lt.1 .or. ( rightv .and. ldvr.lt.n )) then
+    else if (ldvr .lt. 1 .or. (rightv .and. ldvr .lt. n)) then
         info4 = -10
-    else if (mm.lt.m) then
+    else if (mm .lt. m) then
         info4 = -11
-    endif
+    end if
     if (info4 .ne. 0) then
-        info=info4
+        info = info4
         call xerbla('ZTREVC', -info)
         goto 1000
-    endif
+    end if
 !
 !     QUICK RETURN IF POSSIBLE.
 !
@@ -257,21 +257,21 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
 !
     unfl = r8miem()
 ! DUE TO CRS512      OVFL = ONE / UNFL
-    ulp = r8prem() * 0.5d0 * isbaem()
-    smlnum = unfl*( n / ulp )
+    ulp = r8prem()*0.5d0*isbaem()
+    smlnum = unfl*(n/ulp)
 !
 !     STORE THE DIAGONAL ELEMENTS OF T IN WORKING ARRAY WORK.
 !
     do i = 1, n
-        work( i+n ) = t( i, i )
+        work(i+n) = t(i, i)
     end do
 !
 !     COMPUTE 1-NORM OF EACH COLUMN OF STRICTLY UPPER TRIANGULAR
 !     PART OF T TO CONTROL OVERFLOW IN TRIANGULAR SOLVER.
 !
-    rwork( 1 ) = zero
+    rwork(1) = zero
     do j = 2, n
-        rwork( j ) = dzasum( j-1, t( 1, j ), 1 )
+        rwork(j) = dzasum(j-1, t(1, j), 1)
     end do
 !
     if (rightv) then
@@ -282,65 +282,65 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
         do ki = n, 1, -1
 !
             if (somev) then
-                if (.not.select( ki )) goto 80
-            endif
-            smin = max( ulp*( cabs1( t( ki, ki ) ) ), smlnum )
+                if (.not. select(ki)) goto 80
+            end if
+            smin = max(ulp*(cabs1(t(ki, ki))), smlnum)
 !
-            work( 1 ) = cmone
+            work(1) = cmone
 !
 !           FORM RIGHT-HAND SIDE.
 !
-            do k = 1, ki - 1
-                work( k ) = -t( k, ki )
+            do k = 1, ki-1
+                work(k) = -t(k, ki)
             end do
 !
 !           SOLVE THE TRIANGULAR SYSTEM:
 !              (T(1:KI-1,1:KI-1) - T(KI,KI))*X = SCALE*WORK.
 !
-            do k = 1, ki - 1
-                t( k, k ) = t( k, k ) - t( ki, ki )
-                if (cabs1( t( k, k ) ) .lt. smin) t( k, k ) = smin
+            do k = 1, ki-1
+                t(k, k) = t(k, k)-t(ki, ki)
+                if (cabs1(t(k, k)) .lt. smin) t(k, k) = smin
             end do
 !
             if (ki .gt. 1) then
-                call zlatrs('U', 'N', 'N', 'Y', ki-1,&
-                            t, ldt, work( 1 ), scale, rwork,&
+                call zlatrs('U', 'N', 'N', 'Y', ki-1, &
+                            t, ldt, work(1), scale, rwork, &
                             info4)
-                work( ki ) = scale
-            endif
+                work(ki) = scale
+            end if
 !
 !           COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 !
-            if (.not.over) then
-                call zcopy(ki, work( 1 ), 1, vr( 1, is ), 1)
+            if (.not. over) then
+                call zcopy(ki, work(1), 1, vr(1, is), 1)
 !
-                ii = izamax( ki, vr( 1, is ), 1 )
-                remax = one / cabs1( vr( ii, is ) )
-                call zdscal(ki, remax, vr( 1, is ), 1)
+                ii = izamax(ki, vr(1, is), 1)
+                remax = one/cabs1(vr(ii, is))
+                call zdscal(ki, remax, vr(1, is), 1)
 !
-                do k = ki + 1, n
-                    vr( k, is ) = cmzero
+                do k = ki+1, n
+                    vr(k, is) = cmzero
                 end do
             else
-                if (ki .gt. 1) call zgemv('N', n, ki-1, cmone, vr,&
-                                          ldvr, work( 1 ), 1, dcmplx( scale ), vr( 1, ki ),&
+                if (ki .gt. 1) call zgemv('N', n, ki-1, cmone, vr, &
+                                          ldvr, work(1), 1, dcmplx(scale), vr(1, ki), &
                                           1)
 !
-                ii = izamax( n, vr( 1, ki ), 1 )
-                remax = one / cabs1( vr( ii, ki ) )
-                call zdscal(n, remax, vr( 1, ki ), 1)
-            endif
+                ii = izamax(n, vr(1, ki), 1)
+                remax = one/cabs1(vr(ii, ki))
+                call zdscal(n, remax, vr(1, ki), 1)
+            end if
 !
 !           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.
 !
-            do k = 1, ki - 1
-                t( k, k ) = work( k+n )
+            do k = 1, ki-1
+                t(k, k) = work(k+n)
             end do
 !
-            is = is - 1
- 80         continue
+            is = is-1
+80          continue
         end do
-    endif
+    end if
 !
     if (leftv) then
 !
@@ -350,68 +350,68 @@ subroutine ar_ztrevc(side, howmny, select, n, t,&
         do ki = 1, n
 !
             if (somev) then
-                if (.not.select( ki )) goto 130
-            endif
-            smin = max( ulp*( cabs1( t( ki, ki ) ) ), smlnum )
+                if (.not. select(ki)) goto 130
+            end if
+            smin = max(ulp*(cabs1(t(ki, ki))), smlnum)
 !
-            work( n ) = cmone
+            work(n) = cmone
 !
 !           FORM RIGHT-HAND SIDE.
 !
-            do k = ki + 1, n
-                work( k ) = -dconjg( t( ki, k ) )
+            do k = ki+1, n
+                work(k) = -dconjg(t(ki, k))
             end do
 !
 !           SOLVE THE TRIANGULAR SYSTEM:
 !              (T(KI+1:N,KI+1:N) - T(KI,KI))'*X = SCALE*WORK.
 !
-            do k = ki + 1, n
-                t( k, k ) = t( k, k ) - t( ki, ki )
-                if (cabs1( t( k, k ) ) .lt. smin) t( k, k ) = smin
+            do k = ki+1, n
+                t(k, k) = t(k, k)-t(ki, ki)
+                if (cabs1(t(k, k)) .lt. smin) t(k, k) = smin
             end do
 !
             if (ki .lt. n) then
-                call zlatrs('U', 'C', 'N', 'Y', n-ki,&
-                            t( ki+1, ki+1 ), ldt, work( ki+1 ), scale, rwork,&
+                call zlatrs('U', 'C', 'N', 'Y', n-ki, &
+                            t(ki+1, ki+1), ldt, work(ki+1), scale, rwork, &
                             info4)
-                work( ki ) = scale
-            endif
+                work(ki) = scale
+            end if
 !
 !           COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 !
-            if (.not.over) then
-                call zcopy(n-ki+1, work( ki ), 1, vl( ki, is ), 1)
+            if (.not. over) then
+                call zcopy(n-ki+1, work(ki), 1, vl(ki, is), 1)
 !
-                ii = izamax( n-ki+1, vl( ki, is ), 1 ) + ki - 1
-                remax = one / cabs1( vl( ii, is ) )
-                call zdscal(n-ki+1, remax, vl( ki, is ), 1)
+                ii = izamax(n-ki+1, vl(ki, is), 1)+ki-1
+                remax = one/cabs1(vl(ii, is))
+                call zdscal(n-ki+1, remax, vl(ki, is), 1)
 !
-                do k = 1, ki - 1
-                    vl( k, is ) = cmzero
+                do k = 1, ki-1
+                    vl(k, is) = cmzero
                 end do
             else
-                if (ki .lt. n) call zgemv('N', n, n-ki, cmone, vl( 1, ki+1 ),&
-                                          ldvl, work( ki+1 ), 1, dcmplx( scale ), vl( 1, ki ),&
+                if (ki .lt. n) call zgemv('N', n, n-ki, cmone, vl(1, ki+1), &
+                                          ldvl, work(ki+1), 1, dcmplx(scale), vl(1, ki), &
                                           1)
 !
-                ii = izamax( n, vl( 1, ki ), 1 )
-                remax = one / cabs1( vl( ii, ki ) )
-                call zdscal(n, remax, vl( 1, ki ), 1)
-            endif
+                ii = izamax(n, vl(1, ki), 1)
+                remax = one/cabs1(vl(ii, ki))
+                call zdscal(n, remax, vl(1, ki), 1)
+            end if
 !
 !           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.
 !
-            do k = ki + 1, n
-                t( k, k ) = work( k+n )
+            do k = ki+1, n
+                t(k, k) = work(k+n)
             end do
 !
-            is = is + 1
+            is = is+1
 130         continue
         end do
-    endif
+    end if
 !
 1000 continue
-    info=info4
+    info = info4
     call matfpe(1)
 !
 !     END OF ZTREVC

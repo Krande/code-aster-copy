@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,44 +63,44 @@ subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(jmat.ne.1)
-    ASSERT((iarret.eq.0) .or. (iarret.eq.1))
+    ASSERT(jmat .ne. 1)
+    ASSERT((iarret .eq. 0) .or. (iarret .eq. 1))
 !
     mater_type = mater_typez
-    ind = index(mater_type,'_FO')
-    ASSERT(ind.eq.0)
-    if (iarret.eq.0) then
+    ind = index(mater_type, '_FO')
+    ASSERT(ind .eq. 0)
+    if (iarret .eq. 0) then
         ASSERT((present(icodre)))
-    endif
+    end if
 !
     icodre_in = 1
     mater_keyword = ' '
-    nbmat    = zi(jmat)
+    nbmat = zi(jmat)
     do im = 1, nbmat
         imat = jmat+zi(jmat+nbmat+im)
         do icomp = 1, zi(imat+1)
-            if (mater_type .eq. zk32(zi(imat)+icomp-1)(1:len(mater_typez))) then
+            if (mater_type .eq. zk32(zi(imat)+icomp-1) (1:len(mater_typez))) then
                 if (mater_keyword .eq. ' ') then
-                    mater_keyword=zk32(zi(imat)+icomp-1)
+                    mater_keyword = zk32(zi(imat)+icomp-1)
                     icodre_in = 0
                 else
-                    if (mater_keyword.ne.zk32(zi(imat)+icomp-1)) then
+                    if (mater_keyword .ne. zk32(zi(imat)+icomp-1)) then
                         if (iarret .eq. 1) then
                             call utmess('F', 'COMPOR5_56', sk=mater_type)
                         else
                             icodre_in = 2
-                        endif
-                    endif
-                endif
-            endif
+                        end if
+                    end if
+                end if
+            end if
         end do
     end do
 !
-    if (( icodre_in .eq. 1 ) .and. ( iarret .eq. 1 )) then
+    if ((icodre_in .eq. 1) .and. (iarret .eq. 1)) then
         call utmess('F', 'COMPOR5_57', sk=mater_type)
-    endif
+    end if
     if (present(icodre)) then
         icodre = icodre_in
-    endif
+    end if
 !
 end subroutine

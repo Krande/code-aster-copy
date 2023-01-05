@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
-implicit none
+    implicit none
 !
 !    ATTENTION CETTE PROGRAMMATION SUPPOSE QUE L'OBJET NUEQ EST UN
 !    VECTEUR IDENTITE. A MODIFIER
@@ -84,7 +84,7 @@ implicit none
 !
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
-    parameter (nmocl=300)
+    parameter(nmocl=300)
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg, k8bid, cara
     character(len=8) :: noma, nomcmp(nmocl), option
@@ -98,9 +98,9 @@ implicit none
     integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, iop, numnop, nliai
     integer :: vali(2), nlili, nbterm, ncara, nddla, nbma, nbno, nno, nbec
     integer :: nbcmp
-    integer :: naxe, lonlis, k, j, in, ino,  i, ival, n1
+    integer :: naxe, lonlis, k, j, in, ino, i, ival, n1
     integer :: nbgno
-    integer ::   jlisma,     jgro
+    integer ::   jlisma, jgro
     integer ::  iaprno, idch2, idch1, ilisno, inom
     real(kind=8) :: ig(6), coorig(3), axepou(3), valr(9)
     real(kind=8) :: ayz, axx, ax, ay, axz, axy, ayy, azz, az, beta, dnorme, eps
@@ -129,9 +129,9 @@ implicit none
 !
     motfac = 'LIAISON_ELEM'
     call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
-    if ((option.ne.'COQ_POU') .and. (option.ne.'COQ_TUYA')) then
+    if ((option .ne. 'COQ_POU') .and. (option .ne. 'COQ_TUYA')) then
         call utmess('F', 'MODELISA6_39', sk=option)
-    endif
+    end if
 !
     call getfac(motfac, nliai)
     if (nliai .eq. 0) goto 130
@@ -148,7 +148,7 @@ implicit none
 ! --- VALEUR DU SECOND MEMBRE DES RELATIONS QUAND C'EST UN REEL
     beta = 0.0d0
 ! --- VALEUR DU SECOND MEMBRE DES RELATIONS QUAND C'EST UN COMPLEXE
-    betac = (0.0d0,0.0d0)
+    betac = (0.0d0, 0.0d0)
     eps = 1.d-2
     un = 1.0d0
     kcmp(1) = ' '
@@ -160,9 +160,9 @@ implicit none
     cmp(4) = 'DRX'
     cmp(5) = 'DRY'
     cmp(6) = 'DRZ'
-    ccmp(1) = (0.0d0,0.0d0)
-    ccmp(2) = (0.0d0,0.0d0)
-    ccmp(3) = (0.0d0,0.0d0)
+    ccmp(1) = (0.0d0, 0.0d0)
+    ccmp(2) = (0.0d0, 0.0d0)
+    ccmp(3) = (0.0d0, 0.0d0)
     do i = 1, 6
         icmp(i) = 0
     end do
@@ -202,12 +202,12 @@ implicit none
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
-    nddla = nbcmp - 1
+    nddla = nbcmp-1
     if (nddla .gt. nmocl) then
-        vali (1) = nmocl
-        vali (2) = nddla
+        vali(1) = nmocl
+        vali(2) = nddla
         call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
-    endif
+    end if
     do i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
@@ -220,7 +220,7 @@ implicit none
         call utmess('F', 'MODELISA_94')
     else
         call jeveuo(ligrmo//'.PRNM', 'L', vi=prnm)
-    endif
+    end if
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE :
 !     -----------------------------------------
@@ -231,17 +231,17 @@ implicit none
         call jenuno(jexnum(numddl//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA') goto 30
         k = i
- 30     continue
+30      continue
     end do
 !
-    ASSERT(k.ne.0)
+    ASSERT(k .ne. 0)
 !
     call jeveuo(jexnum(numddl//'.NUME.PRNO', k), 'L', iaprno)
 !
 ! --- ACQUISITION DE LA LISTE DES NOEUDS A LIER
 ! --- (CETTE LISTE EST NON REDONDANTE) :
 !     -------------------------------
-    call malin1(motfac, charge, iocc, 1, lisnoe,&
+    call malin1(motfac, charge, iocc, 1, lisnoe, &
                 lonlis)
     call jeveuo(lisnoe, 'L', ilisno)
 !
@@ -252,7 +252,7 @@ implicit none
 ! --- CREATION ET AFFECTATION DU VECTEUR DE K8 DE NOM LISMAI
 ! --- CONTENANT LES NOMS DES MAILLES FORMANT LE LIGREL A CREER :
 !     --------------------------------------------------------
-    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc,&
+    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
                 2, motcle(1), typmcl(1), lismai, nbma)
     call jeveuo(lismai, 'L', jlisma)
 !
@@ -264,34 +264,34 @@ implicit none
     nbno = 0
     nbgno = 0
 !
-    call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
+    call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc, &
                 0, k8bid, nbno)
 !
     if (nbno .eq. 0) then
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
+        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc, &
                     0, k8bid, nbgno)
         if (nbgno .eq. 0) then
             valk(1) = motfac
             valk(2) = option
             call utmess('F', 'MODELISA6_48', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     if (nbno .ne. 0) then
         nbno = -nbno
         if (nbno .ne. 1) then
             call utmess('F', 'MODELISA6_49')
-        endif
-        call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
+        end if
+        call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc, &
                     nbno, noepou, nno)
-    endif
+    end if
 !
     if (nbgno .ne. 0) then
         nbgno = -nbgno
         if (nbgno .ne. 1) then
             call utmess('F', 'MODELISA6_50')
-        endif
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
+        end if
+        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc, &
                     nbgno, nogrno, nno)
         call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1)
         if (n1 .ne. 1) then
@@ -300,23 +300,23 @@ implicit none
             call jeveuo(jexnom(grnoma, nogrno), 'L', jgro)
             in = zi(jgro+1-1)
             call jenuno(jexnum(noeuma, in), noepou)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DU VECTEUR ORIENTANT LA POUTRE ET DIRIGE
 ! --- DE LA PARTIE COQUE VERS LA PARTIE POUTRE :
 !     ----------------------------------------
-    call getvr8(motfac, 'AXE_POUTRE', iocc=iocc, nbval=3, vect=axepou,&
+    call getvr8(motfac, 'AXE_POUTRE', iocc=iocc, nbval=3, vect=axepou, &
                 nbret=naxe)
     if (naxe .eq. 0) then
         call utmess('F', 'MODELISA6_51')
-    endif
+    end if
 !
-    xnorm = sqrt(axepou(1)*axepou(1)+axepou(2)*axepou(2)+ axepou(3)*axepou(3))
+    xnorm = sqrt(axepou(1)*axepou(1)+axepou(2)*axepou(2)+axepou(3)*axepou(3))
 !
     if (xnorm .le. r8prem()) then
         call utmess('F', 'MODELISA6_52')
-    endif
+    end if
 !
     axepou(1) = axepou(1)/xnorm
     axepou(2) = axepou(2)/xnorm
@@ -330,7 +330,7 @@ implicit none
     nocmp(2) = 'Y'
     nocmp(3) = 'Z'
 !
-    call mecact('V', '&&RAPOCO.CAXE_POU', 'LIGREL', ligrel, 'GEOM_R',&
+    call mecact('V', '&&RAPOCO.CAXE_POU', 'LIGREL', ligrel, 'GEOM_R', &
                 ncmp=3, lnomcmp=nocmp, vr=axepou)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES :
@@ -338,7 +338,7 @@ implicit none
     call getvid(motfac, 'CARA_ELEM', iocc=iocc, scal=cara, nbret=ncara)
     if (ncara .eq. 0) then
         call utmess('F', 'MODELISA6_53')
-    endif
+    end if
 !
 ! ---  NUMERO DU NOEUD POUTRE A LIER :
 !      -----------------------------
@@ -346,9 +346,9 @@ implicit none
 !
 ! ---  COORDONNEES DU NOEUD POUTRE :
 !      ---------------------------
-    xpou = vale(3* (numnop-1)+1)
-    ypou = vale(3* (numnop-1)+2)
-    zpou = vale(3* (numnop-1)+3)
+    xpou = vale(3*(numnop-1)+1)
+    ypou = vale(3*(numnop-1)+2)
+    zpou = vale(3*(numnop-1)+3)
 !
 ! --- VERIFICATION DU FAIT QUE LES NOEUDS DE LISNOE (DONC
 ! --- APPARTENANT A LA COQUE)  PORTENT LES DDLS DE ROTATION :
@@ -359,12 +359,12 @@ implicit none
 !
         dg = prnm((ino-1)*nbec+1)
         do j = 4, 6
-            icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-            if (.not.exisdg([dg],icmp(j))) then
+            icmp(j) = indik8(nomcmp, cmp(j), 1, nddla)
+            if (.not. exisdg([dg], icmp(j))) then
                 valk(1) = zk8(ilisno+i-1)
                 valk(2) = cmp(j)
                 call utmess('F', 'MODELISA6_54', nk=2, valk=valk)
-            endif
+            end if
         end do
     end do
 !
@@ -373,12 +373,12 @@ implicit none
 !     ---------------------------------------------------
     dg = prnm((numnop-1)*nbec+1)
     do j = 1, 6
-        icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-        if (.not.exisdg([dg],icmp(j))) then
+        icmp(j) = indik8(nomcmp, cmp(j), 1, nddla)
+        if (.not. exisdg([dg], icmp(j))) then
             valk(1) = noepou
             valk(2) = cmp(j)
             call utmess('F', 'MODELISA6_45', nk=2, valk=valk)
-        endif
+        end if
     end do
 !
 ! --- CALCUL SUR CHAQUE ELEMENT DE BORD A RELIER A LA POUTRE
@@ -394,8 +394,8 @@ implicit none
     lpaout(1) = 'PCASECT'
     lchout(1) = '&&RAPOCO.PSECT'
 !
-    call calcul('S', 'CARA_SECT_POUT3', ligrel, 3, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT3', ligrel, 3, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! --- VECTEUR DES QUANTITES GEOMETRIQUES PRECITEES SOMMEES
@@ -422,7 +422,7 @@ implicit none
 !
     if (abs(s) .lt. r8prem()) then
         call utmess('F', 'MODELISA6_55')
-    endif
+    end if
     s1 = 1.0d0/s
 !
 ! --- COORDONNEES DU CENTRE GEOMETRIQUE G DE LA SECTION DE RACCORD
@@ -434,9 +434,9 @@ implicit none
 ! --- VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 ! --- NOEUD POUTRE A RACCORDER :
 !     ------------------------
-    dnorme = sqrt(&
-             (xpou-xg)* (xpou-xg)+ (ypou-yg)* (ypou-yg)+ (zpou-zg)* (zpou-zg)) / sqrt(s/3.1415926&
-             &5d0&
+    dnorme = sqrt( &
+             (xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/3.1415926&
+             &5d0 &
              )
     if (dnorme .gt. eps) then
         valr(1) = xg
@@ -450,26 +450,26 @@ implicit none
         valr(9) = dnorme
         valk(1) = option
         vali(1) = iocc
-        call utmess('A', 'CALCULEL3_80', sk=valk(1), si=vali(1), nr=9,&
+        call utmess('A', 'CALCULEL3_80', sk=valk(1), si=vali(1), nr=9, &
                     valr=valr)
-    endif
+    end if
 !
 ! --- CALCUL DU TENSEUR D'INERTIE EN G, CE TENSEUR EST SYMETRIQUE :
 ! --- ON CALCULE LES COMPOSANTES DE LA PARTIE SUPERIEURE PAR LIGNE
 !     ------------------------------------------------------------
 !
 ! ---    IGXX = AYY + AZZ -S*(YG*YG+ZG*ZG)
-    ig(1) = ayy + azz - s* (yg*yg+zg*zg)
+    ig(1) = ayy+azz-s*(yg*yg+zg*zg)
 ! ---    IGXY = -AXY + S*XG*YG
-    ig(2) = -axy + s*xg*yg
+    ig(2) = -axy+s*xg*yg
 ! ---    IGXZ = -AXZ + S*XG*ZG
-    ig(3) = -axz + s*xg*zg
+    ig(3) = -axz+s*xg*zg
 ! ---    IGYY = AZZ + AXX -S*(ZG*ZG+XG*XG)
-    ig(4) = azz + axx - s* (zg*zg+xg*xg)
+    ig(4) = azz+axx-s*(zg*zg+xg*xg)
 ! ---    IGYZ = -AYZ + S*YG*ZG
-    ig(5) = -ayz + s*yg*zg
+    ig(5) = -ayz+s*yg*zg
 ! ---    IGZZ = AXX + AYY -S*(XG*XG+YG*YG)
-    ig(6) = axx + ayy - s* (xg*xg+yg*yg)
+    ig(6) = axx+ayy-s*(xg*xg+yg*yg)
 !
 ! --- NOTATION DANS LA CARTE DE NOM '&&RAPOCO.CAORIGE' DES
 ! --- COORDONNEES DU CENTRE GEOMETRIQUE G DE LA SECTION DE RACCORD
@@ -483,7 +483,7 @@ implicit none
     coorig(2) = yg
     coorig(3) = zg
 !
-    call mecact('V', '&&RAPOCO.CAORIGE', 'LIGREL', ligrel, 'GEOM_R',&
+    call mecact('V', '&&RAPOCO.CAORIGE', 'LIGREL', ligrel, 'GEOM_R', &
                 ncmp=3, lnomcmp=nocmp, vr=coorig)
 !
 ! --- DETERMINATION DE 2 LISTES  DE VECTEURS PAR ELEMENT PRENANT
@@ -515,21 +515,21 @@ implicit none
     lchout(1) = '&&RAPOCO.VECT_XYZNI'
     lchout(2) = '&&RAPOCO.VECT2'
 !
-    call calcul('S', 'CARA_SECT_POUT4', ligrel, 4, lchin,&
-                lpain, 2, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT4', ligrel, 4, lchin, &
+                lpain, 2, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
 !     --------------------------------------------------------
 !
-    call memare('V', '&&RAPOCO', mod, ' ', ' ',&
+    call memare('V', '&&RAPOCO', mod, ' ', ' ', &
                 'CHAR_MECA')
 !
 ! --- ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
 !     ---------------------------------------------------------
     call jedetr('&&RAPOCO           .RELR')
     call reajre('&&RAPOCO', lchout(1), 'V')
-    call assvec('V', '&&RAPOCO.CH_DEPL_01', 1, '&&RAPOCO           .RELR', [1.d0],&
+    call assvec('V', '&&RAPOCO.CH_DEPL_01', 1, '&&RAPOCO           .RELR', [1.d0], &
                 numddl)
 !
     vale1 = '&&RAPOCO.CH_DEPL_01.VALE'
@@ -541,7 +541,7 @@ implicit none
     call jedetr('&&RAPOCO           .RELR')
     call reajre('&&RAPOCO', lchout(2), 'V')
 !
-    call assvec('V', '&&RAPOCO.CH_DEPL_02', 1, '&&RAPOCO           .RELR', [1.d0],&
+    call assvec('V', '&&RAPOCO.CH_DEPL_02', 1, '&&RAPOCO           .RELR', [1.d0], &
                 numddl)
 !
     vale2 = '&&RAPOCO.CH_DEPL_02.VALE'
@@ -552,7 +552,7 @@ implicit none
 !     ------------------------------------------------------------
 !
 ! ---     MAJORANT DU NOMBRE DE TERMES DANS UNE RELATION
-    nbterm = 5*lonlis + 3
+    nbterm = 5*lonlis+3
 ! ---     VECTEUR DU NOM DES NOEUDS
     AS_ALLOCATE(vk8=lisno, size=nbterm)
 ! ---     VECTEUR DU NOM DES DDLS
@@ -576,13 +576,13 @@ implicit none
 !     -S.DX(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DX(NOEUD_I) = 0
 !     --------------------------------------------------------------
 !
-    nbterm = lonlis + 1
+    nbterm = lonlis+1
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
-        ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
+        ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
         lisno(i) = zk8(ilisno+i-1)
         lisddl(i) = 'DX'
@@ -593,23 +593,23 @@ implicit none
     lisddl(1+lonlis+1-1) = 'DX'
     coer(1+lonlis+1-1) = -s
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! ---    DEUXIEME RELATION :
 !     -S.DY(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DY(NOEUD_I) = 0
 !     --------------------------------------------------------------
 !
-    nbterm = lonlis + 1
+    nbterm = lonlis+1
 ! ---   BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
-        ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
+        ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
         lisno(i) = zk8(ilisno+i-1)
         lisddl(i) = 'DY'
@@ -620,23 +620,23 @@ implicit none
     lisddl(1+lonlis+1-1) = 'DY'
     coer(1+lonlis+1-1) = -s
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! ---    TROISIEME RELATION :
 !     -S.DZ(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DZ(NOEUD_I) = 0
 !     --------------------------------------------------------------
 !
-    nbterm = lonlis + 1
+    nbterm = lonlis+1
 ! --- BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES
 ! ---    CHAMNO (SOMME/S_RACCORD(NI.DS))
-        ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
+        ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
         lisno(i) = zk8(ilisno+i-1)
         lisddl(i) = 'DZ'
@@ -647,10 +647,10 @@ implicit none
     lisddl(1+lonlis+1-1) = 'DZ'
     coer(1+lonlis+1-1) = -s
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! ---    DEUXIEME GROUPE DE RELATIONS TRADUISANT :
@@ -658,30 +658,30 @@ implicit none
 !         ------------------------------------------------------
 ! ---    QUATRIEME RELATION :
 !
-    nbterm = 5*lonlis + 3
+    nbterm = 5*lonlis+3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
+        ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
-        lisno(1+5* (i-1)+1-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+2-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+3-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+4-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+5-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+1-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+2-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+3-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+4-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+5-1) = zk8(ilisno+i-1)
 !
-        lisddl(1+5* (i-1)+1-1) = 'DZ'
-        lisddl(1+5* (i-1)+2-1) = 'DY'
-        lisddl(1+5* (i-1)+3-1) = 'DRX'
-        lisddl(1+5* (i-1)+4-1) = 'DRY'
-        lisddl(1+5* (i-1)+5-1) = 'DRZ'
+        lisddl(1+5*(i-1)+1-1) = 'DZ'
+        lisddl(1+5*(i-1)+2-1) = 'DY'
+        lisddl(1+5*(i-1)+3-1) = 'DRX'
+        lisddl(1+5*(i-1)+4-1) = 'DRY'
+        lisddl(1+5*(i-1)+5-1) = 'DRZ'
 !
-        coer(1+5* (i-1)+1-1) = zr(idch1-1+ival+2)
-        coer(1+5* (i-1)+2-1) = -zr(idch1-1+ival+3)
-        coer(1+5* (i-1)+3-1) = zr(idch2-1+ival+1)
-        coer(1+5* (i-1)+4-1) = zr(idch2-1+ival+2)
-        coer(1+5* (i-1)+5-1) = zr(idch2-1+ival+3)
+        coer(1+5*(i-1)+1-1) = zr(idch1-1+ival+2)
+        coer(1+5*(i-1)+2-1) = -zr(idch1-1+ival+3)
+        coer(1+5*(i-1)+3-1) = zr(idch2-1+ival+1)
+        coer(1+5*(i-1)+4-1) = zr(idch2-1+ival+2)
+        coer(1+5*(i-1)+5-1) = zr(idch2-1+ival+3)
     end do
 !
     lisno(1+5*lonlis+1-1) = noepou
@@ -696,38 +696,38 @@ implicit none
     coer(1+5*lonlis+2-1) = -ig(2)
     coer(1+5*lonlis+3-1) = -ig(3)
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! ---    CINQUIEME RELATION :
 !
-    nbterm = 5*lonlis + 3
+    nbterm = 5*lonlis+3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
+        ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
-        lisno(1+5* (i-1)+1-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+2-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+3-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+4-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+5-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+1-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+2-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+3-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+4-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+5-1) = zk8(ilisno+i-1)
 !
-        lisddl(1+5* (i-1)+1-1) = 'DX'
-        lisddl(1+5* (i-1)+2-1) = 'DZ'
-        lisddl(1+5* (i-1)+3-1) = 'DRX'
-        lisddl(1+5* (i-1)+4-1) = 'DRY'
-        lisddl(1+5* (i-1)+5-1) = 'DRZ'
+        lisddl(1+5*(i-1)+1-1) = 'DX'
+        lisddl(1+5*(i-1)+2-1) = 'DZ'
+        lisddl(1+5*(i-1)+3-1) = 'DRX'
+        lisddl(1+5*(i-1)+4-1) = 'DRY'
+        lisddl(1+5*(i-1)+5-1) = 'DRZ'
 !
-        coer(1+5* (i-1)+1-1) = zr(idch1-1+ival+3)
-        coer(1+5* (i-1)+2-1) = -zr(idch1-1+ival+1)
-        coer(1+5* (i-1)+3-1) = zr(idch2-1+ival+2)
-        coer(1+5* (i-1)+4-1) = zr(idch2-1+ival+4)
-        coer(1+5* (i-1)+5-1) = zr(idch2-1+ival+5)
+        coer(1+5*(i-1)+1-1) = zr(idch1-1+ival+3)
+        coer(1+5*(i-1)+2-1) = -zr(idch1-1+ival+1)
+        coer(1+5*(i-1)+3-1) = zr(idch2-1+ival+2)
+        coer(1+5*(i-1)+4-1) = zr(idch2-1+ival+4)
+        coer(1+5*(i-1)+5-1) = zr(idch2-1+ival+5)
     end do
 !
     lisno(1+5*lonlis+1-1) = noepou
@@ -742,38 +742,38 @@ implicit none
     coer(1+5*lonlis+2-1) = -ig(4)
     coer(1+5*lonlis+3-1) = -ig(5)
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! ---    SIXIEME RELATION :
 !
-    nbterm = 5*lonlis + 3
+    nbterm = 5*lonlis+3
 ! ---    BOUCLE SUR LES NOEUDS DES MAILLES DE BORD DE LA PARTIE COQUE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 ! ---    ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno+ (ino-1)* (nbec+2)+1-1) - 1
+        ival = zi(iaprno+(ino-1)*(nbec+2)+1-1)-1
 !
-        lisno(1+5* (i-1)+1-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+2-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+3-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+4-1) = zk8(ilisno+i-1)
-        lisno(1+5* (i-1)+5-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+1-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+2-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+3-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+4-1) = zk8(ilisno+i-1)
+        lisno(1+5*(i-1)+5-1) = zk8(ilisno+i-1)
 !
-        lisddl(1+5* (i-1)+1-1) = 'DY'
-        lisddl(1+5* (i-1)+2-1) = 'DX'
-        lisddl(1+5* (i-1)+3-1) = 'DRX'
-        lisddl(1+5* (i-1)+4-1) = 'DRY'
-        lisddl(1+5* (i-1)+5-1) = 'DRZ'
+        lisddl(1+5*(i-1)+1-1) = 'DY'
+        lisddl(1+5*(i-1)+2-1) = 'DX'
+        lisddl(1+5*(i-1)+3-1) = 'DRX'
+        lisddl(1+5*(i-1)+4-1) = 'DRY'
+        lisddl(1+5*(i-1)+5-1) = 'DRZ'
 !
-        coer(1+5* (i-1)+1-1) = zr(idch1-1+ival+1)
-        coer(1+5* (i-1)+2-1) = -zr(idch1-1+ival+2)
-        coer(1+5* (i-1)+3-1) = zr(idch2-1+ival+3)
-        coer(1+5* (i-1)+4-1) = zr(idch2-1+ival+5)
-        coer(1+5* (i-1)+5-1) = zr(idch2-1+ival+6)
+        coer(1+5*(i-1)+1-1) = zr(idch1-1+ival+1)
+        coer(1+5*(i-1)+2-1) = -zr(idch1-1+ival+2)
+        coer(1+5*(i-1)+3-1) = zr(idch2-1+ival+3)
+        coer(1+5*(i-1)+4-1) = zr(idch2-1+ival+5)
+        coer(1+5*(i-1)+5-1) = zr(idch2-1+ival+6)
     end do
 !
     lisno(1+5*lonlis+1-1) = noepou
@@ -788,16 +788,16 @@ implicit none
     coer(1+5*lonlis+2-1) = -ig(5)
     coer(1+5*lonlis+3-1) = -ig(6)
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
-    if ((option.eq.'COQ_TUYA')) then
-        call racotu(zi(iaprno), lonlis, zk8(ilisno), noepou, noma,&
+    if ((option .eq. 'COQ_TUYA')) then
+        call racotu(zi(iaprno), lonlis, zk8(ilisno), noepou, noma, &
                     ligrel, mod, cara, numddl, lisrel, coorig)
-    endif
+    end if
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL
 !     ---------------------------------

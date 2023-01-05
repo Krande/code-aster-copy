@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! aslint: disable=W1504,W1306
 !
-subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
-                  nddlm, ndim, pla, deplp, deplm,&
-                  ffp, ffc, dffc, saut, gradpf,&
-                  q1, q2, dpf, q1m, q2m,&
-                  sautm, gradpfm, pf, ffp2, psup,&
-                  pinf, job, jmate, t, dimuel,&
-                  lamb, jheavn, ncompn, ifiss, nfiss,&
-                  nfh, ifa, jheafa, ncomph, contac,&
+subroutine xfract(ds_thm, nvec, nnop, nnops, nddls, &
+                  nddlm, ndim, pla, deplp, deplm, &
+                  ffp, ffc, dffc, saut, gradpf, &
+                  q1, q2, dpf, q1m, q2m, &
+                  sautm, gradpfm, pf, ffp2, psup, &
+                  pinf, job, jmate, t, dimuel, &
+                  lamb, jheavn, ncompn, ifiss, nfiss, &
+                  nfh, ifa, jheafa, ncomph, contac, &
                   depl0, depl1, lambm, pfm)
 !
     use THM_type
@@ -68,10 +68,10 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
     real(kind=8) :: coefi
     aster_logical :: lmultc
 !
-    ASSERT(nvec.gt.0.and.nvec.le.3)
+    ASSERT(nvec .gt. 0 .and. nvec .le. 3)
 !
     call thmGetParaInit(jmate, ds_thm)
-    t=ds_thm%ds_parainit%temp_init
+    t = ds_thm%ds_parainit%temp_init
 !
 !   ========================================================================
 !   CALCUL DES GRANDEURS (DEPMOINS + INCREMENT)
@@ -96,39 +96,39 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
     do in = 1, nnop
         do i = 1, ncompn
-            heavn(in,i) = zi(jheavn-1+ncompn*(in-1)+i)
-        enddo
-    enddo
+            heavn(in, i) = zi(jheavn-1+ncompn*(in-1)+i)
+        end do
+    end do
 !
 !   CALCUL DU SAUT DE DEPLACEMENT +
 !
-    lmultc = nfiss.gt.1
-    coefi = xcalc_saut(1,0,1)
-    hea_fa(1:2)=0
-    if (.not.lmultc) then
-        hea_fa(1)=xcalc_code(1,he_inte=[-1])
-        hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    lmultc = nfiss .gt. 1
+    coefi = xcalc_saut(1, 0, 1)
+    hea_fa(1:2) = 0
+    if (.not. lmultc) then
+        hea_fa(1) = xcalc_code(1, he_inte=[-1])
+        hea_fa(2) = xcalc_code(1, he_inte=[+1])
     else
         hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
         hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
-    endif
+    end if
 !
     do i = 1, nnop
-        call hmdeca(i, nddls, nddlm, nnops, in,&
+        call hmdeca(i, nddls, nddlm, nnops, in, &
                     dec)
         do ifh = 1, nfh
-            coefi = xcalc_saut(&
-                    zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
-                    zi(jheavn-1+ncompn*(i-1)+ncompn)&
+            coefi = xcalc_saut( &
+                    zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2), &
+                    zi(jheavn-1+ncompn*(i-1)+ncompn) &
                     )
             do j = 1, ndim
-                saut(j) = saut(j) - coefi*ffp(i)*deplp(in+(ndim+dec)*ifh+j)
+                saut(j) = saut(j)-coefi*ffp(i)*deplp(in+(ndim+dec)*ifh+j)
                 if (nvec .ge. 2) then
-                    saut(j) = saut(j) - coefi*ffp(i)*deplm(in+(ndim+dec)*ifh+j)
-                endif
+                    saut(j) = saut(j)-coefi*ffp(i)*deplm(in+(ndim+dec)*ifh+j)
+                end if
                 if (present(depl0) .and. nvec .ge. 3) then
-                    saut(j) = saut(j) - coefi*ffp(i)*depl0(in+(ndim+dec)*ifh+j)
-                endif
+                    saut(j) = saut(j)-coefi*ffp(i)*depl0(in+(ndim+dec)*ifh+j)
+                end if
             end do
         end do
     end do
@@ -137,13 +137,13 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
     do i = 1, nnops
         pli = pla(i)
         ffi = ffc(i)
-        pf = pf + ffi*deplp(pli)
+        pf = pf+ffi*deplp(pli)
         if (nvec .ge. 2) then
-            pf = pf + ffi*deplm(pli)
-        endif
+            pf = pf+ffi*deplm(pli)
+        end if
         if (present(depl0) .and. nvec .ge. 3) then
-            pf = pf + ffi*depl0(pli)
-        endif
+            pf = pf+ffi*depl0(pli)
+        end if
     end do
 !   CALCUL DU GRADIENT DE PRE_FLU, DES MULTIPLICATEURS DE LAGRANGE
 !   ET DE DPRE_FLU (UTILE POUR LE CALCUL DE LA MASSE VOLUMIQUE) EN +
@@ -153,75 +153,75 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
             pli = pla(i)
             ffi = ffc(i)
             do j = 1, ndim
-                dffi(j)=dffc(i,j)
+                dffi(j) = dffc(i, j)
             end do
             do j = 1, ndim
-                gradpf(j) = gradpf(j) + dffi(j)*deplp(pli)
+                gradpf(j) = gradpf(j)+dffi(j)*deplp(pli)
                 if (nvec .ge. 2) then
-                    gradpf(j) = gradpf(j) + dffi(j)*deplm(pli)
-                endif
+                    gradpf(j) = gradpf(j)+dffi(j)*deplm(pli)
+                end if
             end do
 !
-            q1 = q1 + ffi*deplp(pli+1)
-            q2 = q2 + ffi*deplp(pli+2)
+            q1 = q1+ffi*deplp(pli+1)
+            q2 = q2+ffi*deplp(pli+2)
             if (nvec .ge. 2) then
-                q1 = q1 + ffi*deplm(pli+1)
-                q2 = q2 + ffi*deplm(pli+2)
-            endif
+                q1 = q1+ffi*deplm(pli+1)
+                q2 = q2+ffi*deplm(pli+2)
+            end if
 !
-            dpf = dpf + ffi*deplp(pli)
+            dpf = dpf+ffi*deplp(pli)
             if (job .eq. 'ACTU_VI') then
-                dpf = dpf - ffi*deplm(pli)
-            endif
+                dpf = dpf-ffi*deplm(pli)
+            end if
 !
         end do
-    endif
+    end if
 !
     if (contac .eq. 3) then
         do i = 1, nnops
             pli = pla(i)
             ffi = ffc(i)
             do j = 1, ndim
-                lamb(j) = lamb(j) + ffi*deplp(pli+2+j)
+                lamb(j) = lamb(j)+ffi*deplp(pli+2+j)
                 if (nvec .ge. 2) then
-                    lamb(j) = lamb(j) + ffi*deplm(pli+2+j)
-                endif
+                    lamb(j) = lamb(j)+ffi*deplm(pli+2+j)
+                end if
                 if (present(depl0) .and. nvec .ge. 3) then
-                    lamb(j) = lamb(j) + ffi*depl0(pli+2+j)
-                endif
+                    lamb(j) = lamb(j)+ffi*depl0(pli+2+j)
+                end if
             end do
         end do
-    endif
+    end if
 !
 !   CALCUL DE LA PRESSION DANS LE MASSIF POUR LA CONDITION DE CONTINUITE
 !   DE LA PRESSION MASSIF-FRACTURE (SECOND-MEMBRES UNIQUEMENT)
 !
     if (job .eq. 'VECTEUR') then
         do i = 1, nnops
-            call hmdeca(i, nddls, nddlm, nnops, in,&
+            call hmdeca(i, nddls, nddlm, nnops, in, &
                         dec)
 !
-            pinf = pinf + ffp2(i)*deplp(in+ndim+1)
-            psup = psup + ffp2(i)*deplp(in+ndim+1)
+            pinf = pinf+ffp2(i)*deplp(in+ndim+1)
+            psup = psup+ffp2(i)*deplp(in+ndim+1)
             if (nvec .ge. 2) then
-                pinf = pinf + ffp2(i)*deplm(in+ndim+1)
-                psup = psup + ffp2(i)*deplm(in+ndim+1)
-            endif
+                pinf = pinf+ffp2(i)*deplm(in+ndim+1)
+                psup = psup+ffp2(i)*deplm(in+ndim+1)
+            end if
 !
             do ifh = 1, nfh
-                pinf = pinf + xcalc_heav(&
-                       heavn(i,ifh),hea_fa(1),heavn(i,5))* deplp(in+(ndim+1)*(ifh+1))*ffp2(i)
-                psup = psup + xcalc_heav(&
-                       heavn(i,ifh),hea_fa(2),heavn(i,5))* deplp(in+(ndim+1)*(ifh+1))*ffp2(i)
+                pinf = pinf+xcalc_heav( &
+                       heavn(i, ifh), hea_fa(1), heavn(i, 5))*deplp(in+(ndim+1)*(ifh+1))*ffp2(i)
+                psup = psup+xcalc_heav( &
+                       heavn(i, ifh), hea_fa(2), heavn(i, 5))*deplp(in+(ndim+1)*(ifh+1))*ffp2(i)
                 if (nvec .ge. 2) then
-                    pinf = pinf + xcalc_heav(&
-                           heavn(i,ifh),hea_fa(1),heavn(i,5))* deplm(in+(ndim+1)*(ifh+1))*ffp2(i)
-                    psup = psup + xcalc_heav(&
-                           heavn(i,ifh),hea_fa(2),heavn(i,5))* deplm(in+(ndim+1)*(ifh+1))*ffp2(i)
-                endif
+                    pinf = pinf+xcalc_heav( &
+                           heavn(i, ifh), hea_fa(1), heavn(i, 5))*deplm(in+(ndim+1)*(ifh+1))*ffp2(i)
+                    psup = psup+xcalc_heav( &
+                           heavn(i, ifh), hea_fa(2), heavn(i, 5))*deplm(in+(ndim+1)*(ifh+1))*ffp2(i)
+                end if
             end do
         end do
-    endif
+    end if
 !   ========================================================================
 !   CALCUL DES GRANDEURS DEPMOINS SEULEMENT
 !   ========================================================================
@@ -231,14 +231,14 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
         if (present(depl1)) then
             do i = 1, nnop
                 do ifh = 1, nfh
-                    coefi = xcalc_saut(&
-                            zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
-                            zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                    coefi = xcalc_saut( &
+                            zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2), &
+                            zi(jheavn-1+ncompn*(i-1)+ncompn) &
                             )
-                    call hmdeca(i, nddls, nddlm, nnops, in,&
+                    call hmdeca(i, nddls, nddlm, nnops, in, &
                                 dec)
                     do j = 1, ndim
-                        sautm(j) = sautm(j) - coefi*ffp(i)*depl1(in+(ndim+dec)*ifh+j)
+                        sautm(j) = sautm(j)-coefi*ffp(i)*depl1(in+(ndim+dec)*ifh+j)
                     end do
                 end do
             end do
@@ -251,27 +251,27 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
                 ffi = ffc(i)
                 if (contac .eq. 3) then
                     do j = 1, ndim
-                        lambm(j) = lambm(j) + ffi*depl1(pli+2+j)
+                        lambm(j) = lambm(j)+ffi*depl1(pli+2+j)
                     end do
-                endif
-                pfm = pfm + ffi*depl1(pli)
+                end if
+                pfm = pfm+ffi*depl1(pli)
             end do
-        endif
-    else if (nvec.eq.2 .or. nvec.eq.1) then
+        end if
+    else if (nvec .eq. 2 .or. nvec .eq. 1) then
         do i = 1, nnop
             do ifh = 1, nfh
-                coefi = xcalc_saut(&
-                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2),&
-                        zi(jheavn-1+ncompn*(i-1)+ncompn)&
+                coefi = xcalc_saut( &
+                        zi(jheavn-1+ncompn*(i-1)+ifh), hea_fa(1), hea_fa(2), &
+                        zi(jheavn-1+ncompn*(i-1)+ncompn) &
                         )
-                call hmdeca(i, nddls, nddlm, nnops, in,&
+                call hmdeca(i, nddls, nddlm, nnops, in, &
                             dec)
                 do j = 1, ndim
-                    sautm(j) = sautm(j) - coefi*ffp(i)*deplm(in+(ndim+dec)*ifh+j)
+                    sautm(j) = sautm(j)-coefi*ffp(i)*deplm(in+(ndim+dec)*ifh+j)
                 end do
             end do
         end do
-    endif
+    end if
 !
 !   CALCUL DU GRADIENT DE PRE_FLU, DES MULTIPLICATEURS DE LAGRANGE
 !   ET DE DPRE_FLU (UTILE POUR LE CALCUL DE LA MASSE VOLUMIQUE) EN -
@@ -281,14 +281,14 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls,&
             pli = pla(i)
             ffi = ffc(i)
             do j = 1, ndim
-                dffi(j)=dffc(i,j)
+                dffi(j) = dffc(i, j)
             end do
             do j = 1, ndim
-                gradpfm(j) = gradpfm(j) + dffi(j)*deplm(pli)
+                gradpfm(j) = gradpfm(j)+dffi(j)*deplm(pli)
             end do
-            q1m = q1m + ffi*deplm(pli+1)
-            q2m = q2m + ffi*deplm(pli+2)
+            q1m = q1m+ffi*deplm(pli+1)
+            q2m = q2m+ffi*deplm(pli+2)
         end do
-    endif
+    end if
 !
 end subroutine

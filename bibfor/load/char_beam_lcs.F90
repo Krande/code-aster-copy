@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
-                         node_nume, node_name, cmp_name_loc,  n_keyword, cmp_valr_loc, &
-                         cmp_name_glo,cmp_acti_glo, cmp_valr_glo)
+subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, &
+                         node_nume, node_name, cmp_name_loc, n_keyword, cmp_valr_loc, &
+                         cmp_name_glo, cmp_acti_glo, cmp_valr_glo)
 !
     implicit none
 !
@@ -78,13 +78,13 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
     character(len=24) :: list_repe_elem
     integer :: nb_repe_elem, j_repe_elem
 !
-    data list_cmp /'DX','DY','DZ','DRX','DRY','DRZ'/
+    data list_cmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    ASSERT(n_keyword.le.6)
+    ASSERT(n_keyword .le. 6)
 !
 ! - Initializations
 !
@@ -92,7 +92,7 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
         cmp_valr_glo(i_cmp) = 0.d0
         cmp_acti_glo(i_cmp) = 0
         cmp_name_glo(i_cmp) = list_cmp(i_cmp)
-    enddo
+    end do
 !
 ! - Mesh for local coordinate system
 !
@@ -101,17 +101,17 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
     keyw_name(2) = 'GROUP_MA_REPE'
     keyw_type(2) = 'GROUP_MA'
     list_repe_elem = '&&REPE.MAILLE'
-    call reliem(model, mesh, 'NU_MAILLE', keywordfact, iocc,&
+    call reliem(model, mesh, 'NU_MAILLE', keywordfact, iocc, &
                 2, keyw_name, keyw_type, list_repe_elem, nb_repe_elem)
     if (nb_repe_elem .ne. 0) then
         call jeveuo(list_repe_elem, 'L', j_repe_elem)
     else
         j_repe_elem = 1
-    endif
+    end if
 !
 ! - Local coordinate system
 !
-    call matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
+    call matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
                 node_name, nb_repe_elem, zi(j_repe_elem), matr_glob_loca)
 !
 ! - Translation
@@ -119,22 +119,22 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
     do i_direc = 1, 3
         dloc(i_direc) = 0.d0
         rln1(i_direc) = 0.d0
-    enddo
+    end do
     do i_cmp = 1, n_keyword
         cmp_name = cmp_name_loc(i_cmp)
         if (cmp_name .eq. 'DX') then
             rln1(1) = 1.d0
             dloc(1) = cmp_valr_loc(i_cmp)
-        endif
+        end if
         if (cmp_name .eq. 'DY') then
             rln1(2) = 1.d0
             dloc(2) = cmp_valr_loc(i_cmp)
-        endif
+        end if
         if (cmp_name .eq. 'DZ') then
             rln1(3) = 1.d0
             dloc(3) = cmp_valr_loc(i_cmp)
-        endif
-    enddo
+        end if
+    end do
 !
     call utpvlg(1, 3, matr_glob_loca, dloc, dglo)
     call utpvlg(1, 3, matr_glob_loca, rln1, rgn1)
@@ -142,37 +142,37 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
     if (rgn1(1) .ne. 0.d0) then
         cmp_valr_glo(1) = dglo(1)
         cmp_acti_glo(1) = 1
-    endif
+    end if
     if (rgn1(2) .ne. 0.d0) then
         cmp_valr_glo(2) = dglo(2)
         cmp_acti_glo(2) = 1
-    endif
+    end if
     if (rgn1(3) .ne. 0.d0) then
         cmp_valr_glo(3) = dglo(3)
         cmp_acti_glo(3) = 1
-    endif
+    end if
 !
 ! - Rotation
 !
     do i_direc = 1, 3
         dloc(i_direc) = 0.d0
         rln1(i_direc) = 0.d0
-    enddo
+    end do
     do i_cmp = 1, n_keyword
         cmp_name = cmp_name_loc(i_cmp)
         if (cmp_name .eq. 'DRX') then
             rln1(1) = 1.d0
             dloc(1) = cmp_valr_loc(i_cmp)
-        endif
+        end if
         if (cmp_name .eq. 'DRY') then
             rln1(2) = 1.d0
             dloc(2) = cmp_valr_loc(i_cmp)
-        endif
+        end if
         if (cmp_name .eq. 'DRZ') then
             rln1(3) = 1.d0
             dloc(3) = cmp_valr_loc(i_cmp)
-        endif
-    enddo
+        end if
+    end do
 !
     call utpvlg(1, 3, matr_glob_loca, dloc, dglo)
     call utpvlg(1, 3, matr_glob_loca, rln1, rgn1)
@@ -180,15 +180,15 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
     if (rgn1(1) .ne. 0.d0) then
         cmp_valr_glo(4) = dglo(1)
         cmp_acti_glo(4) = 1
-    endif
+    end if
     if (rgn1(2) .ne. 0.d0) then
         cmp_valr_glo(5) = dglo(2)
         cmp_acti_glo(5) = 1
-    endif
+    end if
     if (rgn1(3) .ne. 0.d0) then
         cmp_valr_glo(6) = dglo(3)
         cmp_acti_glo(6) = 1
-    endif
+    end if
 !
     call jedema()
 end subroutine

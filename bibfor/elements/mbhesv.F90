@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
+subroutine mbhesv(imate, kpg, fami, aini, metrini, metrdef, sigpk2, dsigpk2)
 !
     implicit none
 #include "asterf_types.h"
@@ -29,7 +29,7 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
 !
     character(len=4) :: fami
     integer :: kpg, imate
-    real(kind=8) :: aini(2, 2),metrini(2, 2)
+    real(kind=8) :: aini(2, 2), metrini(2, 2)
     real(kind=8) :: metrdef(2, 2)
     real(kind=8) :: sigpk2(2, 2), dsigpk2(2, 2, 2, 2)
 ! ----------------------------------------------------------------------
@@ -65,22 +65,22 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS') then
-        nbv=2
-        nomres(1)='E'
-        nomres(2)='NU'
+        nbv = 2
+        nomres(1) = 'E'
+        nomres(2) = 'NU'
 
-        call rcvalb(fami, kpg, 1, '+', zi(imate),' ', phenom, 0, '', &
-                    [0.d0],nbv, nomres, valres, icodre, 1)
+        call rcvalb(fami, kpg, 1, '+', zi(imate), ' ', phenom, 0, '', &
+                    [0.d0], nbv, nomres, valres, icodre, 1)
 
         young = valres(1)
         nu = valres(2)
     else
         call utmess('F', 'MEMBRANE_4')
-    endif
+    end if
 
 ! - COEFFICIENTS DE LAME
-    lambda=young*nu/((1+nu)*(1-2*nu))
-    mu=young/(2*(1+nu))
+    lambda = young*nu/((1+nu)*(1-2*nu))
+    mu = young/(2*(1+nu))
 !
 ! -----------------------------------------------------------------
 ! ---          CALCUL DES CONTRAINTES DE PIOLA KIRCHOFF II      ---
@@ -95,12 +95,12 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
         do beta = 1, 2
             do gamma = 1, 2
                 do delta = 1, 2
-                    sigpk2(alpha,beta) = sigpk2(alpha,beta) +     &
-                           factor0*(0.5*(1-nu)*(                  &
-                           aini(alpha,gamma)*aini(beta,delta)  +  &
-                           aini(alpha,delta)*aini(beta,gamma)) +  &
-                           nu*aini(alpha,beta)*aini(gamma,delta)  &
-                           )*0.5*(metrdef(delta,gamma)-metrini(delta,gamma))
+                    sigpk2(alpha, beta) = sigpk2(alpha, beta)+ &
+                                          factor0*(0.5*(1-nu)*( &
+                                                   aini(alpha, gamma)*aini(beta, delta)+ &
+                                                   aini(alpha, delta)*aini(beta, gamma))+ &
+                                                   nu*aini(alpha, beta)*aini(gamma, delta) &
+                                                 )*0.5*(metrdef(delta, gamma)-metrini(delta, gamma))
                 end do
             end do
         end do
@@ -116,10 +116,10 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
         do beta = 1, 2
             do gamma = 1, 2
                 do delta = 1, 2
-                    dsigpk2(alpha,beta,gamma,delta) = mu*(  &
-                    aini(alpha,gamma)*aini(beta,delta)  +   &
-                    aini(alpha,delta)*aini(beta,gamma)) +   &
-                    factor1*aini(alpha,beta)*aini(gamma,delta)
+                    dsigpk2(alpha, beta, gamma, delta) = mu*( &
+                                                         aini(alpha, gamma)*aini(beta, delta)+ &
+                                                         aini(alpha, delta)*aini(beta, gamma))+ &
+                                                        factor1*aini(alpha, beta)*aini(gamma, delta)
                 end do
             end do
         end do

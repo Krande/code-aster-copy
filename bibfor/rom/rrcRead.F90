@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine rrcRead(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -38,7 +38,7 @@ implicit none
 #include "asterfort/romTableParaRead.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
+    type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,19 +71,19 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM16_1')
-    endif
+    end if
 !
 ! - Initializations
 !
     resultDomName = ' '
     resultRomName = ' '
-    modelDom      = ' '
-    modelRom      = ' '
-    k16bid        = ' '
+    modelDom = ' '
+    modelRom = ' '
+    k16bid = ' '
 !
 ! - Get input results datastructures (reduced)
 !
-    call getvid(' ', 'RESULTAT_REDUIT', scal = resultRomName)
+    call getvid(' ', 'RESULTAT_REDUIT', scal=resultRomName)
 !
 ! - Construct datastructure for result (reduced)
 !
@@ -95,9 +95,9 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 !
 ! - Construct datastructure for result (high fidelity)
 !
-    resultDom%resultType    = resultType
-    resultDom%resultName    = resultDomName
-    resultDom%nbStore       = resultRom%nbStore
+    resultDom%resultType = resultType
+    resultDom%resultName = resultDomName
+    resultDom%nbStore = resultRom%nbStore
     resultDom%lTablFromResu = ASTER_FALSE
 !
 ! - Get reduced coordinates table (from user ? )
@@ -107,23 +107,23 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 !
 ! - Get model from reduced results
 !
-    call dismoi('MODELE', resultRom%resultName, 'RESULTAT', repk = modelRom)
+    call dismoi('MODELE', resultRom%resultName, 'RESULTAT', repk=modelRom)
 !
 ! - Get model for high fidelity model
 !
-    call getvid(' ', 'MODELE', scal = modelDom)
+    call getvid(' ', 'MODELE', scal=modelDom)
 !
 ! - Select mesh
 !
-    call dismoi('NOM_MAILLA', modelDom, 'MODELE', repk = mesh)
+    call dismoi('NOM_MAILLA', modelDom, 'MODELE', repk=mesh)
 !
 ! - Save parameters in datastructure
 !
-    cmdPara%mesh      = mesh
+    cmdPara%mesh = mesh
     cmdPara%resultDom = resultDom
     cmdPara%resultRom = resultRom
-    cmdPara%modelDom  = modelDom
-    cmdPara%modelRom  = modelRom
+    cmdPara%modelDom = modelDom
+    cmdPara%modelRom = modelRom
 !
 ! - Get options to reconstruct fields
 !
@@ -133,30 +133,30 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 !
 ! - Allocate list of reconstructed fields
 !
-    allocate(cmdPara%fieldName(nbFieldBuild))
-    allocate(cmdPara%fieldBuild(nbFieldBuild))
+    allocate (cmdPara%fieldName(nbFieldBuild))
+    allocate (cmdPara%fieldBuild(nbFieldBuild))
 !
 ! - Read parameters
 !
     do iFieldBuild = 1, nbFieldBuild
 ! ----- Get base
-        call getvid(keywFact, 'BASE', iocc = iFieldBuild, scal = baseName, nbret = nbret)
+        call getvid(keywFact, 'BASE', iocc=iFieldBuild, scal=baseName, nbret=nbret)
         ASSERT(nbret .eq. 1)
         call romBaseGetInfo(baseName, base)
 
 ! ----- Get field type
-        call getvtx(keywFact, 'NOM_CHAM', iocc = iFieldBuild, scal = fieldName, nbret = nbret)
+        call getvtx(keywFact, 'NOM_CHAM', iocc=iFieldBuild, scal=fieldName, nbret=nbret)
         ASSERT(nbret .eq. 1)
 
 ! ----- Get operation
-        call getvtx(keywFact, 'OPERATION', iocc = iFieldBuild, scal = operation, nbret = nbret)
+        call getvtx(keywFact, 'OPERATION', iocc=iFieldBuild, scal=operation, nbret=nbret)
         ASSERT(nbret .eq. 1)
 
 ! ----- Get other parameters
-        lRIDTrunc    = ASTER_FALSE
+        lRIDTrunc = ASTER_FALSE
         grNodeInterf = ' '
-        call getvtx(keywFact, 'GROUP_NO_INTERF', iocc = iFieldBuild, scal = grNodeInterf,&
-                    nbret = nbret)
+        call getvtx(keywFact, 'GROUP_NO_INTERF', iocc=iFieldBuild, scal=grNodeInterf, &
+                    nbret=nbret)
         lRIDTrunc = nbret .ne. 0
 
 ! ----- Get reference field for complete domain from base
@@ -167,16 +167,16 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
         lLinearSolve = fieldName .eq. 'TEMP' .or. fieldName .eq. 'DEPL'
 
 ! ----- Construct datastructure
-        fieldBuild%operation          = operation
-        fieldBuild%lLinearSolve       = lLinearSolve
-        fieldBuild%lRIDTrunc          = lRIDTrunc
+        fieldBuild%operation = operation
+        fieldBuild%lLinearSolve = lLinearSolve
+        fieldBuild%lRIDTrunc = lRIDTrunc
         fieldBuild%grNodeRIDInterface = grNodeInterf
-        fieldBuild%base               = base
-        fieldBuild%fieldDom           = fieldDom
-        fieldBuild%fieldRom           = fieldRom
+        fieldBuild%base = base
+        fieldBuild%fieldDom = fieldDom
+        fieldBuild%fieldRom = fieldRom
 
 ! ----- Save datastructure
-        cmdPara%fieldName(iFieldBuild)  = fieldName
+        cmdPara%fieldName(iFieldBuild) = fieldName
         cmdPara%fieldBuild(iFieldBuild) = fieldBuild
 
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,9 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/as_deallocate.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in) :: sd_dtm_
-    character(len=*) , intent(in) :: sd_nl_
-    integer          , intent(in) :: icomp
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_nl_
+    integer, intent(in) :: icomp
 !
 !   -0.2- Local variables
     integer           :: i, j, ibid, iret, mxlevel
@@ -67,9 +67,9 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
     character(len=24) :: nomgr1, mdssno, numero, mdgene, nomk24
 !
     character(len=24), pointer :: refe(:) => null()
-    real(kind=8)     , pointer :: dplred(:) => null()
-    real(kind=8)     , pointer :: dplcho(:) => null()
-    real(kind=8)     , pointer :: bmodal_v(:) => null()
+    real(kind=8), pointer :: dplred(:) => null()
+    real(kind=8), pointer :: dplcho(:) => null()
+    real(kind=8), pointer :: bmodal_v(:) => null()
 !
 #define bmodal(m,n) bmodal_v((n-1)*neq+m)
 !
@@ -77,10 +77,10 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
     call jemarq()
 !
     sd_dtm = sd_dtm_
-    sd_nl  = sd_nl_
+    sd_nl = sd_nl_
     motfac = 'COMPORTEMENT'
     call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
-    i = mxlevel + 1
+    i = mxlevel+1
 !
 !   --- 1 - Basic information about the mesh and numbering
 !
@@ -90,12 +90,12 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
 
     if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
         nume1 = nume
-        call dismoi('NOM_MAILLA' , nume , 'NUME_DDL', repk=mesh1)
+        call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=mesh1)
         call nlsav(sd_nl, _NUMDDL_1, 1, iocc=i, kscal=nume1(1:8))
         call nlsav(sd_nl, _MESH_1, 1, iocc=i, kscal=mesh1)
 
 !   --- 1.2 - Case with double (or triple) projections (sub-structuring case)
-    else if (typnum(1:13).eq.'NUME_DDL_GENE') then
+    else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
         call jeveuo(nume//'      .NUME.REFN', 'L', vk24=refe)
         mdgene = refe(1)
 
@@ -119,14 +119,14 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
     call getvtx(motfac, 'NOM_CMP', iocc=icomp, scal=comp)
     call getvid(motfac, 'FONCTION', iocc=icomp, scal=fonc)
 !
-    ASSERT(ino.gt.0 .or. gno.gt.0)
+    ASSERT(ino .gt. 0 .or. gno .gt. 0)
 
     if (gno .ne. 0) then
-        call getvem(mesh1, 'GROUP_NO', motfac, 'GROUP_NO', icomp,&
-                        1, nomgr1, ibid)
+        call getvem(mesh1, 'GROUP_NO', motfac, 'GROUP_NO', icomp, &
+                    1, nomgr1, ibid)
         call utnono(' ', mesh1, 'NOEUD', nomgr1, noeu, iret)
 !             # Si le GROUP_NO contient plus d'un noeud
-        if (iret .eq. 1)  call utmess('F','ALGORITH5_57', sk=nomgr1)
+        if (iret .eq. 1) call utmess('F', 'ALGORITH5_57', sk=nomgr1)
     end if
 
     call jenonu(jexnom(mesh1//'.NOMNOE', noeu), inod)
@@ -143,8 +143,8 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
     if (comp(1:3) .eq. 'DRY') icmp = 5
     if (comp(1:3) .eq. 'DRZ') icmp = 6
 !
-    call posddl('NUME_DDL', nume1, noeu, comp, inod,&
-                    nuddl)
+    call posddl('NUME_DDL', nume1, noeu, comp, inod, &
+                nuddl)
 !
     if (nuddl .eq. 0) then
         valk = noeu
@@ -152,10 +152,10 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
         if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
             valk = sst1
             call utmess('F+', 'ALGORITH15_17', sk=valk)
-        endif
+        end if
         valk = comp
         call utmess('F', 'ALGORITH15_18', sk=valk)
-    endif
+    end if
 !
     call nlinivec(sd_nl, _MODAL_DEPL_NO1, 6*nbmode, iocc=i, vr=dplred)
 
@@ -165,44 +165,44 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
 ! ----- CALCUL DIRECT
     if (typnum .eq. 'NUME_DDL_SDASTER') then
         do j = 1, nbmode
-            dplred((j-1)*6+icmp) = bmodal(nuddl,j)
+            dplred((j-1)*6+icmp) = bmodal(nuddl, j)
         end do
 !
 ! ----- CALCUL PAR SOUS-STRUCTURATION
-    else if (typnum(1:13).eq.'NUME_DDL_GENE') then
+    else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
         AS_ALLOCATE(vr=dplcho, size=nbmode*6)
-        numero    = nume
+        numero = nume
         noecho(1) = noeu
         noecho(2) = sst1
         noecho(3) = nume1(1:8)
-        call resmod(bmodal_v, nbmode, neq, numero, mdgene,&
+        call resmod(bmodal_v, nbmode, neq, numero, mdgene, &
                     noecho, dplcho)
         do j = 1, nbmode
             dplred((j-1)*6+icmp) = dplcho(j+(icmp-1)*nbmode)
         end do
         AS_DEALLOCATE(vr=dplcho)
-    endif
+    end if
 
 !
 !   --- Special treatment to save NOEUD, NOM_CMP, and FONCTION in the NO_1 entry
 !       This could be used by POST_DYNA_MODA_T
     nomk24 = ' '
-    nomk24( 1:8)  = noeu
-    nomk24( 9:16) = comp
+    nomk24(1:8) = noeu
+    nomk24(9:16) = comp
     nomk24(17:24) = fonc
     call nlsav(sd_nl, _NL_TITLE, 1, iocc=i, kscal=nomk24)
 
 !
 !   --- 2 - Updating indices for sd_nl and sd_dtm
-    mxlevel = mxlevel + 1
+    mxlevel = mxlevel+1
     call nlsav(sd_nl, _MAX_LEVEL, 1, iscal=mxlevel)
     call dtmsav(sd_dtm, _NB_NONLI, 1, iscal=mxlevel)
 !
-    call nlget(sd_nl, _NB_REL_FV, iscal = nbrevi)
-    nbrevi = nbrevi + 1
-    call nlsav(sd_nl, _NB_REL_FV, 1, iscal = nbrevi)
+    call nlget(sd_nl, _NB_REL_FV, iscal=nbrevi)
+    nbrevi = nbrevi+1
+    call nlsav(sd_nl, _NB_REL_FV, 1, iscal=nbrevi)
 
-    call nlsav(sd_nl, _NL_TYPE , 1, iocc=i, iscal=NL_FV_RELATIONSHIP)
+    call nlsav(sd_nl, _NL_TYPE, 1, iocc=i, iscal=NL_FV_RELATIONSHIP)
 !
     call jedema()
 end subroutine

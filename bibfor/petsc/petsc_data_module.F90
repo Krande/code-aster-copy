@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 module petsc_data_module
 !
 #include "asterf_petsc.h"
-use aster_petsc_module
+    use aster_petsc_module
 !
-implicit none
+    implicit none
 ! aslint:disable=
-private
+    private
 #ifdef ASTER_HAVE_PETSC
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -43,30 +43,30 @@ private
 ! On ne peut pas creer directement un tableau de pointer,
 ! il faut passer par un artifice (type derive) :
 
- type p_int4
- sequence
-    integer(kind=4), pointer :: pi4(:)
- end type
+    type p_int4
+        sequence
+        integer(kind=4), pointer :: pi4(:)
+    end type
 
- integer, parameter, public :: nmxins=5
- character(len=19), public  :: nomats(nmxins), nosols(nmxins), nomat_courant
- character(len=14), public  :: nonus(nmxins),nonu_courant
- Mat, public :: ap(nmxins)
- KSP, public :: kp(nmxins)
- Vec, public :: b, x
- aster_logical, public :: user_ksp(nmxins)
+    integer, parameter, public :: nmxins = 5
+    character(len=19), public  :: nomats(nmxins), nosols(nmxins), nomat_courant
+    character(len=14), public  :: nonus(nmxins), nonu_courant
+    Mat, public :: ap(nmxins)
+    KSP, public :: kp(nmxins)
+    Vec, public :: b, x
+    aster_logical, public :: user_ksp(nmxins)
 ! Les variables suivantes sont utilisees par les preconditionneurs multigrille
- integer(kind=4), public :: tblocs(nmxins)
+    integer(kind=4), public :: tblocs(nmxins)
 !
 !----------------------------------------------------------------
 ! Variables globales pour la définition d'un preconditionneur
 ! simple precision ldlt_sp
- character(len=19), public :: spsomu, spmat, spsolv
- Vec, public :: xlocal, xglobal
- VecScatter, public :: xscatt
+    character(len=19), public :: spsomu, spmat, spsolv
+    Vec, public :: xlocal, xglobal
+    VecScatter, public :: xscatt
 !----------------------------------------------------------------
 !
-public :: get_mat_id, mat_record
+    public :: get_mat_id, mat_record
 !
 contains
 !
@@ -75,97 +75,97 @@ contains
 ! matas.
 ! Si on n'a pas créé de matrice PETSc, la fonction renvoie 0.
 !
-function get_mat_id( matas ) result ( kptsc )
-  !
-  ! Dummy arguments
-  character(len=19), intent(in) :: matas
-  integer :: kptsc
-  ! Local variables
-  character(len=14) :: nu
-  integer :: jnequ, nglo, k
-  PetscInt :: m, n
-  PetscErrorCode :: ierr
-  !
-  call jemarq()
+    function get_mat_id(matas) result(kptsc)
+        !
+        ! Dummy arguments
+        character(len=19), intent(in) :: matas
+        integer :: kptsc
+        ! Local variables
+        character(len=14) :: nu
+        integer :: jnequ, nglo, k
+        PetscInt :: m, n
+        PetscErrorCode :: ierr
+        !
+        call jemarq()
 !
 !   On cherche si la matrice est deja enregistree :
 !   -------------------------------------------------
 !   On teste le nom de la matrice, celui du nume_ddl,
 !   et la taille des matrices aster et petsc
-    call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
-    call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
-    nglo = zi(jnequ)
+        call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
+        call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
+        nglo = zi(jnequ)
 ! Valeur par défaut de kptsc
-    kptsc=0
+        kptsc = 0
 !
-    do k = 1, nmxins
-        if ((nomats(k).eq.matas) .and. (nonus (k).eq.nu )) then
+        do k = 1, nmxins
+            if ((nomats(k) .eq. matas) .and. (nonus(k) .eq. nu)) then
 ! si de plus le clone PETSc a ete cree, on verifie que les dimensions
 ! des matrices aster et petsc sont coherentes
-          if ( ap(k) .ne. PETSC_NULL_MAT ) then
-             call MatGetSize(ap(k), m, n, ierr)
-             ASSERT(ierr.eq.0)
-             ASSERT(m.eq.n)
-             ASSERT(nglo.le.n)
-          endif
+                if (ap(k) .ne. PETSC_NULL_MAT) then
+                    call MatGetSize(ap(k), m, n, ierr)
+                    ASSERT(ierr .eq. 0)
+                    ASSERT(m .eq. n)
+                    ASSERT(nglo .le. n)
+                end if
 ! la verification a ete effectuee avec succes, on renvoie k
-          kptsc = k
-        endif
-    enddo
-   call jedema()
-  !
-end function get_mat_id
+                kptsc = k
+            end if
+        end do
+        call jedema()
+        !
+    end function get_mat_id
 !
 !
 ! Retourne un identifiant libre pour stocker une nouvelle
 ! matrice. Si on ne trouve pas d'identifiant, on renvoie 0
-function get_new_mat_id() result (kptsc)
-  !
-  ! Dummy arguments
-  integer :: kptsc
-  ! Local variables
-  integer :: k
+    function get_new_mat_id() result(kptsc)
+        !
+        ! Dummy arguments
+        integer :: kptsc
+        ! Local variables
+        integer :: k
 !
 !   Y-a-t-il encore une place libre ? Calcul de kptsc :
 !   ---------------------------------------------------
-    kptsc = 0
-    do k = 1, nmxins
-        if (nomats(k) .eq. ' ') then
-            kptsc = k
-            exit
-        endif
-    end do
-end function get_new_mat_id
+        kptsc = 0
+        do k = 1, nmxins
+            if (nomats(k) .eq. ' ') then
+                kptsc = k
+                exit
+            end if
+        end do
+    end function get_new_mat_id
 !
 ! La routine mat_record enregistre la matrice matas
 ! i.e. determine son identifiant kptsc
 ! et note son nom dans les tableaux
-subroutine mat_record ( matas, solveu, kptsc )
-  ! Dummy arguments
-  character(len=19), intent(in) :: matas, solveu
-  integer, intent(out)          :: kptsc
-  ! Local variables
-  character(len=19) :: nu
-  !
-  call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
-  !
-  ! Verification : est-ce que la matrice est deja enregistree ?
-  kptsc = get_mat_id( matas )
-  if ( kptsc ==  0 ) then
-    kptsc = get_new_mat_id()
-    if ( kptsc == 0 ) then
-      call utmess('F', 'PETSC_3')
-    endif
-  !
-    ASSERT(nomats(kptsc).eq.' ')
-    ASSERT(nosols(kptsc).eq.' ')
-    ASSERT(nonus(kptsc).eq.' ')
-  !
-    nomats(kptsc) = matas
-    nonus(kptsc) = nu(1:14)
-    nosols(kptsc) = solveu
-  endif
+    subroutine mat_record(matas, solveu, kptsc)
+        ! Dummy arguments
+        character(len=19), intent(in) :: matas, solveu
+        integer, intent(out)          :: kptsc
+        ! Local variables
+        character(len=19) :: nu
+        !
+        call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
+        !
+        ! Verification : est-ce que la matrice est deja enregistree ?
+        kptsc = get_mat_id(matas)
+        if (kptsc == 0) then
+            kptsc = get_new_mat_id()
+            if (kptsc == 0) then
+                call utmess('F', 'PETSC_3')
+            end if
+            !
+            ASSERT(nomats(kptsc) .eq. ' ')
+            ASSERT(nosols(kptsc) .eq. ' ')
+            ASSERT(nonus(kptsc) .eq. ' ')
+            !
+            nomats(kptsc) = matas
+            nonus(kptsc) = nu(1:14)
+            nosols(kptsc) = solveu
+        end if
 !
-end subroutine mat_record
+    end subroutine mat_record
 #endif
 end module petsc_data_module

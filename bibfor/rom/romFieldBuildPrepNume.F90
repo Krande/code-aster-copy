@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldBuildPrepNume(mesh      , nbNodeMesh, listNode,&
+subroutine romFieldBuildPrepNume(mesh, nbNodeMesh, listNode, &
                                  fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/romFieldElemEquaToEqua.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-integer, intent(in) :: nbNodeMesh
-integer, pointer  :: listNode(:)
-type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nbNodeMesh
+    integer, pointer  :: listNode(:)
+    type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,33 +70,33 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM17_2')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    fieldRom           = fieldBuild%fieldRom
-    fieldDom           = fieldBuild%fieldDom
-    fieldSupp          = fieldBuild%fieldRom%fieldSupp
-    lRIDTrunc          = fieldBuild%lRIDTrunc
+    fieldRom = fieldBuild%fieldRom
+    fieldDom = fieldBuild%fieldDom
+    fieldSupp = fieldBuild%fieldRom%fieldSupp
+    lRIDTrunc = fieldBuild%lRIDTrunc
     grNodeRIDInterface = fieldBuild%grNodeRIDInterface
-    nbCmpName          = fieldDom%nbCmpName
-    nbEquaDom          = fieldDom%nbEqua
-    nbEquaRom          = fieldRom%nbEqua
+    nbCmpName = fieldDom%nbCmpName
+    nbEquaDom = fieldDom%nbEqua
+    nbEquaRom = fieldRom%nbEqua
 !
 ! - Allocate map for equations numbering from complete domain to reduced domain
 !
-    AS_ALLOCATE(vi = fieldBuild%equaRIDTotal, size = nbEquaDom)
+    AS_ALLOCATE(vi=fieldBuild%equaRIDTotal, size=nbEquaDom)
 !
 ! - Create map for equations numbering from complete domain to reduced domain
 !
     if (fieldSupp .eq. 'NOEU') then
-        call romFieldNodeEquaToEqua(fieldDom, fieldRom, nbNodeMesh, listNode,&
+        call romFieldNodeEquaToEqua(fieldDom, fieldRom, nbNodeMesh, listNode, &
                                     fieldBuild%equaRIDTotal)
     elseif (fieldSupp .eq. 'ELGA') then
         call romFieldElemEquaToEqua(fieldDom, fieldRom, fieldBuild%equaRIDTotal)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Total number of equations in RID
 !
@@ -108,19 +108,19 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
         ASSERT(fieldSupp .eq. 'NOEU')
 ! ----- Access to GROUP_NO at interface
         call jelira(jexnom(mesh//'.GROUPENO', grNodeRIDInterface), 'LONUTI', nbNodeGrno)
-        call jeveuo(jexnom(mesh//'.GROUPENO', grNodeRIDInterface), 'L'     , vi = grno)
+        call jeveuo(jexnom(mesh//'.GROUPENO', grNodeRIDInterface), 'L', vi=grno)
 
 ! ----- Create list of equations at interface
         ASSERT(nbCmpName*nbNodeGrno .le. nbEquaDom)
-        AS_ALLOCATE(vi = grnoInDom, size = nbEquaDom)
+        AS_ALLOCATE(vi=grnoInDom, size=nbEquaDom)
         do iNodeGrno = 1, nbNodeGrno
             do iCmpName = 1, nbCmpName
                 grnoInDom(iCmpName+nbCmpName*(grno(iNodeGrno)-1)) = 1
-            enddo
-        enddo
+            end do
+        end do
 
 ! ----- Create list of index of equations in RID_Trunc
-        AS_ALLOCATE(vi = fieldBuild%equaRIDTrunc, size = nbEquaDom)
+        AS_ALLOCATE(vi=fieldBuild%equaRIDTrunc, size=nbEquaDom)
         noeq = 0
         nord = 0
 
@@ -130,45 +130,45 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
                 numeEquaRom = fieldBuild%equaRIDTotal(numeEquaDom)
                 if (numeEquaRom .ne. 0) then
 ! ----------------- This equation is in RID
-                    nord = nord + 1
+                    nord = nord+1
                     if (grnoInDom(numeEquaDom) .eq. 0) then
 ! --------------------- This equation is not at interface
-                        noeq = noeq + 1
+                        noeq = noeq+1
                         fieldBuild%equaRIDTotal(numeEquaDom) = noeq
-                        fieldBuild%equaRIDTrunc(nord)        = noeq
+                        fieldBuild%equaRIDTrunc(nord) = noeq
                     else
 ! --------------------- This equation is at interface
                         fieldBuild%equaRIDTotal(numeEquaDom) = 0
-                    endif
-                endif
-            enddo
+                    end if
+                end if
+            end do
         elseif (fieldSupp .eq. 'ELGA') then
             do iEquaDom = 1, nbEquaDom
                 numeEquaDom = iEquaDom
                 numeEquaRom = fieldBuild%equaRIDTotal(numeEquaDom)
                 if (numeEquaRom .ne. 0) then
-                    noeq = noeq + 1
+                    noeq = noeq+1
                     fieldBuild%equaRIDTotal(numeEquaDom) = noeq
                     fieldBuild%equaRIDTrunc(numeEquaDom) = noeq
-                endif
+                end if
             end do
             ASSERT(noeq .eq. nbEquaRom)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
 ! ----- Final size
         if (fieldSupp .eq. 'NOEU') then
-            fieldBuild%nbEquaRIDTrunc = fieldBuild%nbEquaRIDTotal - nbNodeGrno*nbCmpName
+            fieldBuild%nbEquaRIDTrunc = fieldBuild%nbEquaRIDTotal-nbNodeGrno*nbCmpName
         elseif (fieldSupp .eq. 'ELGA') then
             fieldBuild%nbEquaRIDTrunc = fieldBuild%nbEquaRIDTotal
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
 ! ----- Clean
-        AS_DEALLOCATE(vi = grnoInDom)
-    endif
+        AS_DEALLOCATE(vi=grnoInDom)
+    end if
 !
 ! - Effective number of equation in RID
 !
@@ -176,7 +176,7 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
         fieldBuild%nbEquaRID = fieldBuild%nbEquaRIDTrunc
     else
         fieldBuild%nbEquaRID = fieldBuild%nbEquaRIDTotal
-    endif
+    end if
 !
 ! - Reinitialization of list of nodes
 !

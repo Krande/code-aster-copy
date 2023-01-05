@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmfint(model         , cara_elem      ,&
-                  ds_material   , ds_constitutive,&
-                  list_func_acti, iter_newt      , ds_measure, ds_system,&
-                  hval_incr     , hval_algo      , hhoField,&
-                  ldccvg        , sddynz_)
+subroutine nmfint(model, cara_elem, &
+                  ds_material, ds_constitutive, &
+                  list_func_acti, iter_newt, ds_measure, ds_system, &
+                  hval_incr, hval_algo, hhoField, &
+                  ldccvg, sddynz_)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
@@ -36,17 +36,17 @@ implicit none
 #include "asterfort/nmtime.h"
 #include "asterfort/utmess.h"
 !
-character(len=24), intent(in) :: model, cara_elem
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-integer, intent(in) :: list_func_acti(*)
-integer, intent(in) :: iter_newt
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-type(HHO_Field), intent(in) :: hhoField
-integer, intent(out) :: ldccvg
-character(len=*), optional, intent(in) :: sddynz_
+    character(len=24), intent(in) :: model, cara_elem
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: list_func_acti(*)
+    integer, intent(in) :: iter_newt
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    type(HHO_Field), intent(in) :: hhoField
+    integer, intent(out) :: ldccvg
+    character(len=*), optional, intent(in) :: sddynz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,37 +87,37 @@ character(len=*), optional, intent(in) :: sddynz_
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_25')
-    endif
+    end if
 !
 ! - Initializations
 !
-    base      = 'V'
-    option    = 'RAPH_MECA'
-    ldccvg    = 0
-    sddyna    = ' '
+    base = 'V'
+    option = 'RAPH_MECA'
+    ldccvg = 0
+    sddyna = ' '
     if (present(sddynz_)) then
         sddyna = sddynz_
-    endif
+    end if
 !
 ! - Active functionnalities
 !
-    l_xfem      = isfonc(list_func_acti, 'XFEM')
+    l_xfem = isfonc(list_func_acti, 'XFEM')
     l_macr_elem = isfonc(list_func_acti, 'MACR_ELEM_STAT')
-    l_hho       = isfonc(list_func_acti, 'HHO')
+    l_hho = isfonc(list_func_acti, 'HHO')
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , 'Integrate')
+    call nmtime(ds_measure, 'Init', 'Integrate')
     call nmtime(ds_measure, 'Launch', 'Integrate')
 !
 ! - Computation
 !
-    call merimo(base           ,&
-                l_xfem         , l_macr_elem, l_hho      ,&
-                model          , cara_elem  , iter_newt+1,&
-                ds_constitutive, ds_material, ds_system  ,&
-                hval_incr      , hval_algo  , hhoField   ,&
-                option         , ldccvg     , sddyna)
+    call merimo(base, &
+                l_xfem, l_macr_elem, l_hho, &
+                model, cara_elem, iter_newt+1, &
+                ds_constitutive, ds_material, ds_system, &
+                hval_incr, hval_algo, hhoField, &
+                option, ldccvg, sddyna)
 !
 ! - End timer
 !

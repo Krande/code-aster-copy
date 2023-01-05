@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ subroutine assert(cond, str_cond, fname, line)
     character(len=256) :: valk(2)
     integer :: vali(1)
     real(kind=8) :: rbid(1)
-    if (.not.cond) then
+    if (.not. cond) then
         valk(1) = str_cond
         valk(2) = fname
         vali(1) = line
-        call utmess('F', 'DVP_1', nk=2, valk=valk, si=vali(1),&
+        call utmess('F', 'DVP_1', nk=2, valk=valk, si=vali(1), &
                     sr=rbid(1))
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zerofb(func, x1, x2, tol, itmax,&
+subroutine zerofb(func, x1, x2, tol, itmax, &
                   zbrent, iret, iter)
 !
     implicit none
@@ -49,96 +49,96 @@ subroutine zerofb(func, x1, x2, tol, itmax,&
 ! OUT ITER    : NOMBRE D'ITERATIONS EFFECTUEES
 ! ----------------------------------------------------------------------
 !
-    eps=r8prem()
-    iret=0
-    iter=0
-    a=x1
-    b=x2
-    fa=func(a)
-    fb=func(b)
+    eps = r8prem()
+    iret = 0
+    iter = 0
+    a = x1
+    b = x2
+    fa = func(a)
+    fb = func(b)
 !
     if (fa .gt. 0.d0 .and. fb .gt. 0.d0 .or. fa .lt. 0.d0 .and. fb .lt. 0.d0) then
 !
-        iret=1
+        iret = 1
         goto 999
 !
-    endif
+    end if
 !
-    c=b
-    fc=fb
+    c = b
+    fc = fb
 !
     do iter = 1, itmax
 !
         if (fb .gt. 0.d0 .and. fc .gt. 0.d0 .or. fb .lt. 0.d0 .and. fc .lt. 0.d0) then
 !         RENAME A, B, C AND ADJUST BOUNDING INTERVAL D.
-            c=a
-            fc=fa
-            d=b-a
-            e=d
-        endif
+            c = a
+            fc = fa
+            d = b-a
+            e = d
+        end if
 !
         if (abs(fc) .lt. abs(fb)) then
-            a=b
-            b=c
-            c=a
-            fa=fb
-            fb=fc
-            fc=fa
-        endif
+            a = b
+            b = c
+            c = a
+            fa = fb
+            fb = fc
+            fc = fa
+        end if
 !
 !       CONVERGENCE CHECK.
-        tol1=2.d0*eps*abs(b)
-        xm=0.5d0*(c-b)
+        tol1 = 2.d0*eps*abs(b)
+        xm = 0.5d0*(c-b)
         if (abs(xm) .le. tol1 .or. abs(fb) .lt. tol) then
-            zbrent=b
+            zbrent = b
             goto 999
-        endif
+        end if
 !
         if (abs(e) .ge. tol1 .and. abs(fa) .gt. abs(fb)) then
 !         ATTEMPT INVERSE QUADRATIC INTERPOLATION.
-            s=fb/fa
+            s = fb/fa
             if (a .eq. c) then
-                p=2.d0*xm*s
-                q=1.d0-s
+                p = 2.d0*xm*s
+                q = 1.d0-s
             else
-                q=fa/fc
-                r=fb/fc
-                p=s*(2.d0*xm*q*(q-r)-(b-a)*(r-1.d0))
-                q=(q-1.d0)*(r-1.d0)*(s-1.d0)
-            endif
+                q = fa/fc
+                r = fb/fc
+                p = s*(2.d0*xm*q*(q-r)-(b-a)*(r-1.d0))
+                q = (q-1.d0)*(r-1.d0)*(s-1.d0)
+            end if
 !         CHECK WHETHER IN BOUNDS.
-            if (p .gt. 0.d0) q=-q
-            p=abs(p)
-            if (2.d0*p .lt. min(3.d0*xm*q-abs(tol1*q),abs(e*q))) then
+            if (p .gt. 0.d0) q = -q
+            p = abs(p)
+            if (2.d0*p .lt. min(3.d0*xm*q-abs(tol1*q), abs(e*q))) then
 !           ACCEPT INTERPOLATION.
-                e=d
-                d=p/q
+                e = d
+                d = p/q
             else
 !           INTERPOLATION FAILED, USE BISECTION.
-                d=xm
-                e=d
-            endif
+                d = xm
+                e = d
+            end if
         else
 !         BOUNDS DECREASING TOO SLOWLY, USE BISECTION.
-            d=xm
-            e=d
-        endif
+            d = xm
+            e = d
+        end if
 !
 !       MOVE LAST BEST GUESS TO A.
-        a=b
-        fa=fb
+        a = b
+        fa = fb
 !
 !       EVALUATE NEW TRIAL ROOT.
         if (abs(d) .gt. tol1) then
-            b=b+d
+            b = b+d
         else
-            b=b+sign(tol1,xm)
-        endif
-        fb=func(b)
+            b = b+sign(tol1, xm)
+        end if
+        fb = func(b)
     end do
 !
-    iret=1
-    zbrent=b
+    iret = 1
+    zbrent = b
 !
 999 continue
 end subroutine

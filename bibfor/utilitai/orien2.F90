@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,26 +39,26 @@ subroutine orien2(xp, xq, xr, angl)
     r = zero
     s = zero
     do i = 1, 3
-        xpq(i) = xq(i) - xp(i)
-        r = r + xpq(i)*xpq(i)
-        xpr(i) = xr(i) - xp(i)
-        s = s + xpr(i)*xpr(i)
+        xpq(i) = xq(i)-xp(i)
+        r = r+xpq(i)*xpq(i)
+        xpr(i) = xr(i)-xp(i)
+        s = s+xpr(i)*xpr(i)
     end do
     if (r .eq. zero) then
         call utmess('F', 'UTILITAI3_39')
-    endif
+    end if
     if (s .eq. zero) then
         call utmess('F', 'UTILITAI3_39')
-    endif
-    r = sqrt( r )
-    s = sqrt( s )
+    end if
+    r = sqrt(r)
+    s = sqrt(s)
     call orien1(xp, xq, angl)
     call matrot(angl, mro)
     call pmavec('ZERO', 3, mro, xpr, xxpr)
     if (xxpr(2) .eq. zero .and. xxpr(3) .eq. zero) then
         angl(3) = zero
     else
-        angl(3) = atan2 ( xxpr(3) , xxpr(2) )
-    endif
+        angl(3) = atan2(xxpr(3), xxpr(2))
+    end if
 !
 end subroutine

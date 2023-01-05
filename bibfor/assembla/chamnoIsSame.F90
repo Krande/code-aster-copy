@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine chamnoIsSame(chamno1_, chamno2_, ier)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/idenob.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 !
-character(len=*), intent(in) :: chamno1_, chamno2_
-integer, intent(out) :: ier
+    character(len=*), intent(in) :: chamno1_, chamno2_
+    integer, intent(out) :: ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,32 +68,32 @@ integer, intent(out) :: ier
     call jelira(refe1, 'LONMAX', nb_refe1)
     call jelira(refe2, 'LONMAX', nb_refe2)
     if (nb_refe1 .ne. nb_refe2) then
-        ier = ier + abs(nb_refe1-nb_refe2)
-    endif
-    call jeveuo(refe1, 'L', vk24 = v_refe1)
-    call jeveuo(refe2, 'L', vk24 = v_refe2)
+        ier = ier+abs(nb_refe1-nb_refe2)
+    end if
+    call jeveuo(refe1, 'L', vk24=v_refe1)
+    call jeveuo(refe2, 'L', vk24=v_refe2)
     if (v_refe1(1) .ne. v_refe2(1)) then
         ier = ier+1
-    endif
+    end if
 !
 ! - For PROFCHNO
 !
-    prchno1 = v_refe1(2)(1:19)
-    prchno2 = v_refe2(2)(1:19)
-    l_same = idenob(prchno1//'.DEEQ',prchno2//'.DEEQ')
-    if (.not.l_same) then
-        ier=ier+1
-    endif
-    l_same = idenob(prchno1//'.NUEQ',prchno2//'.NUEQ')
-    if (.not.l_same) then
-        ier=ier+1
-    endif
-    l_same = idenob(prchno1//'.LILI',prchno2//'.LILI')
+    prchno1 = v_refe1(2) (1:19)
+    prchno2 = v_refe2(2) (1:19)
+    l_same = idenob(prchno1//'.DEEQ', prchno2//'.DEEQ')
+    if (.not. l_same) then
+        ier = ier+1
+    end if
+    l_same = idenob(prchno1//'.NUEQ', prchno2//'.NUEQ')
+    if (.not. l_same) then
+        ier = ier+1
+    end if
+    l_same = idenob(prchno1//'.LILI', prchno2//'.LILI')
     if (l_same) then
-        l_same = idenob(prchno1//'.PRNO',prchno2//'.PRNO')
-        if (.not.l_same) then
-            ier=ier+1
-        endif
+        l_same = idenob(prchno1//'.PRNO', prchno2//'.PRNO')
+        if (.not. l_same) then
+            ier = ier+1
+        end if
     else
         nbno = 0
         call jelira(prchno1//'.LILI', 'NOMMAX', nb_ligr1)
@@ -102,26 +102,26 @@ integer, intent(out) :: ier
             call jenuno(jexnum(prchno1//'.LILI', 2), ligrel)
             call jeexin(ligrel(1:19)//'.NBNO', iexi)
             if (iexi .gt. 0) then
-                call jeveuo(ligrel(1:19)//'.NBNO', 'L', vi = v_nbno)
+                call jeveuo(ligrel(1:19)//'.NBNO', 'L', vi=v_nbno)
                 nbno = v_nbno(1)
                 if (nbno .ne. 0) then
-                    ier=ier+1
-                endif
-            endif
+                    ier = ier+1
+                end if
+            end if
         elseif (nb_ligr2 .eq. 2 .and. nb_ligr1 .eq. 1) then
             call jenuno(jexnum(prchno2//'.LILI', 2), ligrel)
             call jeexin(ligrel(1:19)//'.NBNO', iexi)
             if (iexi .gt. 0) then
-                call jeveuo(ligrel(1:19)//'.NBNO', 'L', vi = v_nbno)
+                call jeveuo(ligrel(1:19)//'.NBNO', 'L', vi=v_nbno)
                 nbno = v_nbno(1)
                 if (nbno .ne. 0) then
-                    ier=ier+1
-                endif
-            endif
+                    ier = ier+1
+                end if
+            end if
         else
-            ier=ier+1
-        endif
-    endif
+            ier = ier+1
+        end if
+    end if
 !
     call jedema()
 end subroutine

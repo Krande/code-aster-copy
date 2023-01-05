@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,8 @@ function erfcfo(x)
     real(kind=8) :: x, erfcs(21), erfccs(59), erc2cs(49), sqeps, sqrtpi, xmax
     real(kind=8) :: txmax, xsml, y
     aster_logical :: first
-    save erfcs,erc2cs,erfccs,sqrtpi,nterf,nterfc,nterc2,xsml,xmax,&
-     &     sqeps,first
+    save erfcs, erc2cs, erfccs, sqrtpi, nterf, nterfc, nterc2, xsml, xmax,&
+     &     sqeps, first
 !-----------------------------------------------------------------------
     integer :: nterc2, nterf, nterfc
     real(kind=8) :: eta
@@ -202,50 +202,50 @@ function erfcfo(x)
     data first/.true./
 !***FIRST EXECUTABLE STATEMENT  DERFC
     if (first) then
-        eta=0.1d0*rmirem()
-        nterf=inits(erfcs,21,eta)
-        nterfc=inits(erfccs,59,eta)
-        nterc2=inits(erc2cs,49,eta)
+        eta = 0.1d0*rmirem()
+        nterf = inits(erfcs, 21, eta)
+        nterfc = inits(erfccs, 59, eta)
+        nterc2 = inits(erc2cs, 49, eta)
 !
-        xsml=-sqrt(-log(sqrtpi*rmirem()))
-        txmax=sqrt(-log(sqrtpi*rminem()))
-        xmax=txmax-0.5d0*log(txmax)/txmax-0.01d0
-        sqeps=sqrt(2.0d0*rmirem())
-    endif
-    first=.false.
+        xsml = -sqrt(-log(sqrtpi*rmirem()))
+        txmax = sqrt(-log(sqrtpi*rminem()))
+        xmax = txmax-0.5d0*log(txmax)/txmax-0.01d0
+        sqeps = sqrt(2.0d0*rmirem())
+    end if
+    first = .false.
 !
     if (x .gt. xsml) goto 10
 !
 ! ERFC(X) = 1.0 - ERF(X)  FOR  X .LT. XSML
 !
-    erfcfo=2.0d0
+    erfcfo = 2.0d0
     goto 40
 !
- 10 continue
+10  continue
     if (x .gt. xmax) goto 30
-    y=abs(x)
+    y = abs(x)
     if (y .gt. 1.0d0) goto 20
 !
 ! ERFC(X) = 1.0 - ERF(X)  FOR ABS(X) .LE. 1.0
 !
-    if (y .lt. sqeps) erfcfo=1.0d0-2.0d0*x/sqrtpi
-    if (y .ge. sqeps) erfcfo=1.0d0-x*(1.0d0+ csevl(2.d0*x*x-1.d0,erfcs,nterf))
+    if (y .lt. sqeps) erfcfo = 1.0d0-2.0d0*x/sqrtpi
+    if (y .ge. sqeps) erfcfo = 1.0d0-x*(1.0d0+csevl(2.d0*x*x-1.d0, erfcs, nterf))
     goto 40
 !
 ! ERFC(X) = 1.0 - ERF(X)  FOR  1.0 .LT. ABS(X) .LE. XMAX
 !
- 20 continue
-    y=y*y
-    if (y .le. 4.d0) erfcfo=exp(-y)/abs(x)* (0.5d0+csevl((8.d0/y-5.d0)/3.d0,erc2cs, nterc2))
-    if (y .gt. 4.d0) erfcfo=exp(-y)/abs(x)* (0.5d0+csevl(8.d0/y-1.d0,erfccs,nterfc))
-    if (x .lt. 0.d0) erfcfo=2.0d0-erfcfo
+20  continue
+    y = y*y
+    if (y .le. 4.d0) erfcfo = exp(-y)/abs(x)*(0.5d0+csevl((8.d0/y-5.d0)/3.d0, erc2cs, nterc2))
+    if (y .gt. 4.d0) erfcfo = exp(-y)/abs(x)*(0.5d0+csevl(8.d0/y-1.d0, erfccs, nterfc))
+    if (x .lt. 0.d0) erfcfo = 2.0d0-erfcfo
     goto 40
 !
- 30 continue
+30  continue
 !
 !     CAS X TROP GRAND
 !
-    erfcfo=0.d0
+    erfcfo = 0.d0
 !
- 40 continue
+40  continue
 end function

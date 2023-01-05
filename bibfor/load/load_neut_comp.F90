@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neut_comp(type_calc, stop_calc, model     , time_curr     , time      ,&
-                          load_name, load_nume, nb_in_maxi, nb_in_prep    , lpain     ,&
-                          lchin    , base     , resu_elem , matr_vect_elem, time_move_,&
-                          i_load_  )
+subroutine load_neut_comp(type_calc, stop_calc, model, time_curr, time, &
+                          load_name, load_nume, nb_in_maxi, nb_in_prep, lpain, &
+                          lchin, base, resu_elem, matr_vect_elem, time_move_, &
+                          i_load_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -81,7 +81,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum=11)
+    parameter(nb_type_neum=11)
 !
     integer :: i_type_neum, nb_in_add
     character(len=16) :: load_option
@@ -96,17 +96,17 @@ implicit none
 ! ----- Get information about load
 !
         if (present(time_move_)) then
-            call load_neut_spec('MOVE'     , type_calc  , model      , time_curr   , time       ,&
-                                load_name  , load_nume  , i_type_neum, nb_type_neum, nb_in_maxi ,&
-                                nb_in_prep , lchin      , lpain      , nb_in_add   , lpaout     ,&
-                                load_ligrel, load_option,&
-                                time_move_ = time_move_)
+            call load_neut_spec('MOVE', type_calc, model, time_curr, time, &
+                                load_name, load_nume, i_type_neum, nb_type_neum, nb_in_maxi, &
+                                nb_in_prep, lchin, lpain, nb_in_add, lpaout, &
+                                load_ligrel, load_option, &
+                                time_move_=time_move_)
         else
-            call load_neut_spec('STAT'     , type_calc  , model      , time_curr   , time       ,&
-                                load_name  , load_nume  , i_type_neum, nb_type_neum, nb_in_maxi ,&
-                                nb_in_prep , lchin      , lpain      , nb_in_add   , lpaout     ,&
+            call load_neut_spec('STAT', type_calc, model, time_curr, time, &
+                                load_name, load_nume, i_type_neum, nb_type_neum, nb_in_maxi, &
+                                nb_in_prep, lchin, lpain, nb_in_add, lpaout, &
                                 load_ligrel, load_option)
-        endif
+        end if
 !
         if (load_option .ne. 'No_Load') then
 !
@@ -119,26 +119,26 @@ implicit none
 ! --------- Attach load to RESU_ELEM
 !
             if (present(i_load_)) then
-                call corich('E', resu_elem, ichin_ = i_load_)
+                call corich('E', resu_elem, ichin_=i_load_)
             else
-                call corich('E', resu_elem, ichin_ = -1)
-            endif
+                call corich('E', resu_elem, ichin_=-1)
+            end if
 !
 ! --------- Number of fields
 !
-            nbin  = nb_in_prep+nb_in_add
+            nbin = nb_in_prep+nb_in_add
             nbout = 1
 !
 ! --------- Computation
 !
-            call calcul(stop_calc, load_option, load_ligrel, nbin  , lchin,&
-                        lpain    , nbout      , resu_elem  , lpaout, base ,&
+            call calcul(stop_calc, load_option, load_ligrel, nbin, lchin, &
+                        lpain, nbout, resu_elem, lpaout, base, &
                         'OUI')
 !
 ! --------- Copying output field
 !
             call reajre(matr_vect_elem, resu_elem, base)
-        endif
+        end if
     end do
 
 end subroutine

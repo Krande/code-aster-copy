@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
+subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg, &
                   nmief, normm)
     implicit none
 !
@@ -45,45 +45,45 @@ subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
     zero = 1.0d-6
     nmief = 0
 !
-    nomres(1)='MPCST'
+    nomres(1) = 'MPCST'
 !
-    call rcvalb('FPG1', 1, 1, '+', zimat,&
-                ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zimat, &
+                ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0], &
                 1, nomres, valres, icodre, 1)
 !
     if (valres(1) .eq. 0.d0) then
-        nomres(1)='MAXMP1'
-        nomres(2)='MAXMP2'
-        nomres(3)='MINMP1'
-        nomres(4)='MINMP2'
+        nomres(1) = 'MAXMP1'
+        nomres(2) = 'MAXMP2'
+        nomres(3) = 'MINMP1'
+        nomres(4) = 'MINMP2'
 !
-        call rcvalb('FPG1', 1, 1, '+', zimat,&
-                    ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
+        call rcvalb('FPG1', 1, 1, '+', zimat, &
+                    ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0], &
                     4, nomres, valres, icodre, 1)
 !
-        nmplas(1,1)=valres(1)
-        nmplas(1,2)=valres(2)
-        nmplas(1,3)=0.d0
-        nmplas(2,1)=valres(3)
-        nmplas(2,2)=valres(4)
-        nmplas(2,3)=0.d0
+        nmplas(1, 1) = valres(1)
+        nmplas(1, 2) = valres(2)
+        nmplas(1, 3) = 0.d0
+        nmplas(2, 1) = valres(3)
+        nmplas(2, 2) = valres(4)
+        nmplas(2, 3) = 0.d0
     else
         nomres(1) = 'FMEX1'
         nomres(2) = 'FMEX2'
         nomres(3) = 'FMEY1'
         nomres(4) = 'FMEY2'
         do i = 1, 2
-            call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 0, nmplas(1, i),&
+            call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 0, nmplas(1, i), &
                         ier)
-            nmief = nmief + ier
+            nmief = nmief+ier
 !
-            call cdnfon(zimat, nomres(2*i), nmnbn(i), 0, nmplas(2, i),&
+            call cdnfon(zimat, nomres(2*i), nmnbn(i), 0, nmplas(2, i), &
                         ier)
-            nmief = nmief + ier
+            nmief = nmief+ier
         end do
-    endif
+    end if
 !
-    nmzef = zero * (normm**2)
-    nmzeg = zero * normm
+    nmzef = zero*(normm**2)
+    nmzeg = zero*normm
 !
 end subroutine

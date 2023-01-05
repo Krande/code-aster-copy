@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtcro3(m, n, a, nmax, x,&
+subroutine mtcro3(m, n, a, nmax, x, &
                   y)
     implicit none
 #include "asterfort/utmess.h"
@@ -43,20 +43,20 @@ subroutine mtcro3(m, n, a, nmax, x,&
 !-----------------------------------------------------------------------
     integer :: i, j
 !-----------------------------------------------------------------------
-    data zero    /0.d0/
+    data zero/0.d0/
 ! ----------------------------------------------------------------------
 !
 !
-    if (( m.le.0 ) .and. ( n.le.0 )) then
+    if ((m .le. 0) .and. (n .le. 0)) then
         call utmess('A', 'ALGELINE2_13')
-    endif
+    end if
 !
     do j = 1, n
-        if (x( j ) .ne. zero) then
+        if (x(j) .ne. zero) then
             do i = 1, m
-                y( i ) = y( i ) - x( j )*a( i, j )
+                y(i) = y(i)-x(j)*a(i, j)
             end do
-        endif
+        end if
     end do
 !
 !

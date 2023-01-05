@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ function pbflkz(i, z, long, ln, kcalcu)
 !-----------------------------------------------------------------------
     real(kind=8) :: u
 !-----------------------------------------------------------------------
-    j = dcmplx(0.d0,1.d0)
+    j = dcmplx(0.d0, 1.d0)
     u = z*ln/long
     ju = j*u
-    pbflkz = kcalcu(i,1) * dcmplx(exp(ju)) + kcalcu(i,2) * dcmplx(exp(-1.d0*ju)) + kcalcu(i,3) * &
-             &dcmplx(exp(u)) + kcalcu(i,4) * dcmplx(exp(-1.d0*u))
+    pbflkz = kcalcu(i, 1)*dcmplx(exp(ju))+kcalcu(i, 2)*dcmplx(exp(-1.d0*ju))+kcalcu(i, 3)* &
+             &dcmplx(exp(u))+kcalcu(i, 4)*dcmplx(exp(-1.d0*u))
 !
 end function

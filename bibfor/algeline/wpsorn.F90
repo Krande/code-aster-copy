@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
-                  nbvect, nfreq, tolsor, vect, resid,&
-                  workd, workl, lonwl, selec, dsor,&
-                  vpr, vpi, sigma, vaux, workv,&
-                  ddlexc, ddllag, neqact, maxitr, ifm,&
-                  niv, priram, alpha, nconv, flage,&
+subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq, &
+                  nbvect, nfreq, tolsor, vect, resid, &
+                  workd, workl, lonwl, selec, dsor, &
+                  vpr, vpi, sigma, vaux, workv, &
+                  ddlexc, ddllag, neqact, maxitr, ifm, &
+                  niv, priram, alpha, nconv, flage, &
                   vaur, vauc, vaul, solveu)
 !
 !---------------------------------------------------------------------
@@ -137,7 +137,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
     character(len=2) :: which
 !
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !------------------------------------------------------------------
@@ -167,7 +167,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
         mode = 3
     else
         mode = 4
-    endif
+    end if
     sigmar = dble(sigma)
     sigmai = dimag(sigma)
     rvec = .true.
@@ -187,37 +187,37 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
     call wkvect('&&WPSORN.VECTEUR.AUX.U3R', 'V V R', nbeq, au3)
     call wkvect('&&WPSORN.VECTEUR.AUX.VC ', 'V V C', nbeq, av)
 !******************************************************************
- 20 continue
+20  continue
 !
 ! CALCUL DES VALEURS PROPRES DE (OP)
-    call dnaupd(ido, bmat, 2*nbeq, which, nfreq,&
-                tolsor, resid, nbvect, vaur, 2*nbeq,&
-                iparam, ipntr, workd, workl, lonwl,&
+    call dnaupd(ido, bmat, 2*nbeq, which, nfreq, &
+                tolsor, resid, nbvect, vaur, 2*nbeq, &
+                iparam, ipntr, workd, workl, lonwl, &
                 info, 2*neqact, alpha)
 !
 ! NOMBRE DE MODES CONVERGES
     nconv = iparam(5)
 !
 ! GESTION DES FLAGS D'ERREURS
-    if ((info.eq.1) .and. (niv.ge.1)) then
-        vali (1) = maxitr
+    if ((info .eq. 1) .and. (niv .ge. 1)) then
+        vali(1) = maxitr
         call utmess('I', 'ALGELINE6_89', si=vali(1))
-    else if (info.eq.2) then
+    else if (info .eq. 2) then
         call utmess('F', 'ALGELINE3_72')
-    else if ((info.eq.3).and.(niv.ge.1)) then
+    else if ((info .eq. 3) .and. (niv .ge. 1)) then
         call utmess('I', 'ALGELINE6_90')
-    else if (info.eq.-7) then
+    else if (info .eq. -7) then
         call utmess('F', 'ALGELINE3_73')
-    else if (info.eq.-8) then
+    else if (info .eq. -8) then
         call utmess('F', 'ALGELINE3_74')
-    else if (info.eq.-9) then
+    else if (info .eq. -9) then
         call utmess('F', 'ALGELINE3_75')
-    else if ((info.eq.-9999).and.(niv.ge.1)) then
+    else if ((info .eq. -9999) .and. (niv .ge. 1)) then
         call utmess('F', 'ALGELINE6_91')
-    else if (info.lt.0) then
-        vali (1) = info
+    else if (info .lt. 0) then
+        vali(1) = info
         call utmess('F', 'ALGELINE4_82', si=vali(1))
-    endif
+    end if
 !
 !---------------------------------------------------------------------
 ! ZONE GERANT LA 'REVERSE COMMUNICATION' VIA IDO
@@ -228,25 +228,25 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! 2/ CALCUL DE Y = (OP)* X AVEC DDL CINEMATIQUEMENT BLOQUES
 ! X <- X*DDL_LAGRANGE
         do j = 1, nbeq
-            vaux(j) = 0.d0 * workd(ipntr(1)+j-1) * ddllag(j)
+            vaux(j) = 0.d0*workd(ipntr(1)+j-1)*ddllag(j)
             vaux(j+nbeq) = workd(ipntr(1)+nbeq+j-1)*ddllag(j)
         end do
-        call wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
-                    ddlexc, vaux(1), vaux(nbeq+1), workd(ipntr(1)), workd(ipntr(1)+nbeq),&
-                    zr(au1), zr(au2), zr(au3), zc(av), nbeq,&
+        call wp2ay1(appr, lmatra, lmasse, lamor, sigma, &
+                    ddlexc, vaux(1), vaux(nbeq+1), workd(ipntr(1)), workd(ipntr(1)+nbeq), &
+                    zr(au1), zr(au2), zr(au3), zc(av), nbeq, &
                     solveu)
         do j = 1, nbeq
-            vaux(j) = workd(ipntr(1)+j-1) * ddlexc(j)
+            vaux(j) = workd(ipntr(1)+j-1)*ddlexc(j)
             vaux(j+nbeq) = workd(ipntr(1)+nbeq+j-1)*ddlexc(j)
         end do
-        call wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
-                    ddlexc, vaux(1), vaux(nbeq+1), workd(ipntr(1)), workd(ipntr(1)+nbeq),&
-                    zr(au1), zr(au2), zr(au3), zc(av), nbeq,&
+        call wp2ay1(appr, lmatra, lmasse, lamor, sigma, &
+                    ddlexc, vaux(1), vaux(nbeq+1), workd(ipntr(1)), workd(ipntr(1)+nbeq), &
+                    zr(au1), zr(au2), zr(au3), zc(av), nbeq, &
                     solveu)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
-            workd(ipntr(2)+j-1) = workd(ipntr(1)+j-1) *ddlexc(j)
-            workd(ipntr(2)+nbeq+j-1) = workd(ipntr(1)+nbeq+j-1)* ddlexc(j)
+            workd(ipntr(2)+j-1) = workd(ipntr(1)+j-1)*ddlexc(j)
+            workd(ipntr(2)+nbeq+j-1) = workd(ipntr(1)+nbeq+j-1)*ddlexc(j)
         end do
         goto 20
 !
@@ -256,25 +256,25 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! X <- (OP)*X
         do j = 1, nbeq
             workd(ipntr(3)+j-1) = workd(ipntr(3)+j-1)*ddlexc(j)
-            workd(ipntr(3)+nbeq+j-1) = workd(ipntr(3)+nbeq+j-1)* ddlexc(j)
+            workd(ipntr(3)+nbeq+j-1) = workd(ipntr(3)+nbeq+j-1)*ddlexc(j)
         end do
-        call wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
-                    ddlexc, workd( ipntr(3)), workd(ipntr(3)+nbeq), vaux(1), vaux(nbeq+1),&
-                    zr(au1), zr(au2), zr(au3), zc(av), nbeq,&
+        call wp2ay1(appr, lmatra, lmasse, lamor, sigma, &
+                    ddlexc, workd(ipntr(3)), workd(ipntr(3)+nbeq), vaux(1), vaux(nbeq+1), &
+                    zr(au1), zr(au2), zr(au3), zc(av), nbeq, &
                     solveu)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
-            workd(ipntr(2)+j-1) = vaux(j) * ddlexc(j)
-            workd(ipntr(2)+nbeq+j-1) = vaux(j+nbeq) * ddlexc(j)
+            workd(ipntr(2)+j-1) = vaux(j)*ddlexc(j)
+            workd(ipntr(2)+nbeq+j-1) = vaux(j+nbeq)*ddlexc(j)
         end do
         goto 20
 !
     else if (ido .eq. 2) then
 ! X <- X*DDL_BLOQUE  (PRODUIT SCALAIRE= L2)
         do j = 1, nbeq
-            workd(ipntr(2)+j-1)=workd(ipntr(1)+j-1) * ddlexc(j)
-            workd(ipntr(2)+nbeq+j-1)=workd(ipntr(1)+nbeq+j-1)* ddlexc(&
-            j)
+            workd(ipntr(2)+j-1) = workd(ipntr(1)+j-1)*ddlexc(j)
+            workd(ipntr(2)+nbeq+j-1) = workd(ipntr(1)+nbeq+j-1)*ddlexc( &
+                                       j)
         end do
 ! RETOUR VERS DNAUPD
         goto 20
@@ -282,44 +282,44 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! GESTION DES MODES CONVERGES
     else if (ido .eq. 99) then
         if (nconv .lt. nfreq) then
-            vali (1) = nconv
-            vali (2) = nfreq
+            vali(1) = nconv
+            vali(2) = nfreq
             call utmess('A', 'ALGELINE5_49', ni=2, vali=vali)
             flage = .false.
-        else if (nconv.gt.nfreq) then
-            vali(1)=nconv
-            vali(2)=nfreq
+        else if (nconv .gt. nfreq) then
+            vali(1) = nconv
+            vali(2) = nfreq
             call utmess('I', 'ALGELINE5_50', ni=2, vali=vali)
-            nconv=nfreq
-        endif
+            nconv = nfreq
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !--------------------------------------------------------------------
 ! CALCUL DES MODES PROPRES APPROCHES DU PB INITIAL
 !
     info = 0
-    call dneupd(rvec, 'A', selec, dsor, dsor(1, 2),&
-                vaur, 2*nbeq, sigmar, sigmai, workv,&
-                bmat, 2*nbeq, which, nfreq, tolsor,&
-                resid, nbvect, vaur, 2*nbeq, iparam,&
+    call dneupd(rvec, 'A', selec, dsor, dsor(1, 2), &
+                vaur, 2*nbeq, sigmar, sigmai, workv, &
+                bmat, 2*nbeq, which, nfreq, tolsor, &
+                resid, nbvect, vaur, 2*nbeq, iparam, &
                 ipntr, workd, workl, lonwl, info)
 !
 ! GESTION DES FLAGS D'ERREURS
     if (info .eq. 1) then
         call utmess('F', 'ALGELINE3_74')
-    else if (info.eq.-7) then
+    else if (info .eq. -7) then
         call utmess('F', 'ALGELINE3_73')
-    else if (info.eq.-8) then
+    else if (info .eq. -8) then
         call utmess('F', 'ALGELINE3_98')
-    else if (info.eq.-9) then
+    else if (info .eq. -9) then
         call utmess('F', 'ALGELINE3_99')
-    else if (info.eq.-14) then
+    else if (info .eq. -14) then
         call utmess('F', 'ALGELINE3_78')
-    else if (info.lt.0) then
-        vali (1) = info
+    else if (info .lt. 0) then
+        vali(1) = info
         call utmess('F', 'ALGELINE4_82', si=vali(1))
-    endif
+    end if
 !--------------------------------------------------------------------
 ! TESTS ET POST-TRAITEMENTS
 !
@@ -331,8 +331,8 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 !  59  CONTINUE
 !
     do j = 1, nconv
-        vpr(j) = dsor(j,1)
-        vpi(j) = dsor(j,2)
+        vpr(j) = dsor(j, 1)
+        vpi(j) = dsor(j, 2)
     end do
 !
 !      REMPLISSAGE DE VAUC AVEC VAUR
@@ -342,15 +342,15 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 !
     do j = 2, nconv, 2
         do i = 1, 2*nbeq
-            vaul(i,j/2)=dcmplx(vaur(i,j-1),vaur(i,j))
+            vaul(i, j/2) = dcmplx(vaur(i, j-1), vaur(i, j))
         end do
     end do
 !
 !
     do j = 2, nconv, 2
         do i = 1, 2*nbeq
-            vauc(i,j-1)=vaul(i,j/2)
-            vauc(i,j)=dconjg(vaul(i,j/2))
+            vauc(i, j-1) = vaul(i, j/2)
+            vauc(i, j) = dconjg(vaul(i, j/2))
         end do
     end do
 !*****************************************************************
@@ -358,7 +358,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
     do j = 1, nconv
         do i = 1, nbeq
 !     --- REMPLISSAGE DU VECT PAR LA PARTIE BASSE DE VECTA
-            vect(i,j)= vauc(i+nbeq,j)
+            vect(i, j) = vauc(i+nbeq, j)
         end do
     end do
 !

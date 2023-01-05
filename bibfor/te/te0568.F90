@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0568(nomopt, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/lcsena.h"
 #include "asterfort/lcvect.h"
 !
-character(len=16), intent(in) :: nomopt, nomte
+    character(len=16), intent(in) :: nomopt, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,61 +69,61 @@ character(len=16), intent(in) :: nomopt, nomte
 !
 ! - Initializations
 !
-    vcont(1:55)          = 0.d0
+    vcont(1:55) = 0.d0
     elem_mast_coor(1:27) = 0.d0
     elem_slav_coor(1:27) = 0.d0
     elem_mast_coop(1:27) = 0.d0
     elem_slav_coop(1:27) = 0.d0
-    debug                = ASTER_FALSE
-    ASSERT(nomopt.eq.'CHAR_MECA_CONT')
+    debug = ASTER_FALSE
+    ASSERT(nomopt .eq. 'CHAR_MECA_CONT')
 !
 ! - Get informations about contact element
 !
-    call lcelem(nomte         , elem_dime     ,&
-                l_axis        , &
-                nb_dof        , nb_lagr       , indi_lagc   ,&
-                elem_slav_code, elga_fami_slav, nb_node_slav,&
+    call lcelem(nomte, elem_dime, &
+                l_axis, &
+                nb_dof, nb_lagr, indi_lagc, &
+                elem_slav_code, elga_fami_slav, nb_node_slav, &
                 elem_mast_code, elga_fami_mast, nb_node_mast)
     ASSERT(nb_dof .le. 55)
     ASSERT(elga_fami_slav .eq. elga_fami_mast)
 !
 ! - Get indicators
 !
-    call lcstco(l_upda_jaco , l_norm_smooth, i_reso_geom ,&
-                lagrc_curr  , gap_curr     ,&
-                indi_cont   , &
-                gapi        , nmcp         ,&
-                nb_poin_inte, poin_inte_sl , poin_inte_ma)
+    call lcstco(l_upda_jaco, l_norm_smooth, i_reso_geom, &
+                lagrc_curr, gap_curr, &
+                indi_cont, &
+                gapi, nmcp, &
+                nb_poin_inte, poin_inte_sl, poin_inte_ma)
 !
 ! - Get initial coordinates
 !
-    call lcgeominit(elem_dime     ,&
-                    nb_node_slav  , nb_node_mast  ,&
+    call lcgeominit(elem_dime, &
+                    nb_node_slav, nb_node_mast, &
                     elem_mast_init, elem_slav_init)
 !
 ! - Compute updated geometry
 !
-    call lcgeog(elem_dime     , i_reso_geom   ,&
-                nb_lagr       , indi_lagc     ,&
-                nb_node_slav  , nb_node_mast  ,&
-                elem_mast_init, elem_slav_init,&
+    call lcgeog(elem_dime, i_reso_geom, &
+                nb_lagr, indi_lagc, &
+                nb_node_slav, nb_node_mast, &
+                elem_mast_init, elem_slav_init, &
                 elem_mast_coor, elem_slav_coor)
 !
 ! - Compute vector
 !
     if (indi_cont .eq. 1) then
-        call lcvect(elem_dime     , l_axis        , l_upda_jaco   , l_norm_smooth ,&
-                    nb_lagr       , indi_lagc     , lagrc_curr    , elga_fami_slav,&
-                    nb_node_slav  , elem_slav_code, elem_slav_init, elem_slav_coor,&
-                    nb_node_mast  , elem_mast_code, elem_mast_init, elem_mast_coor,&
-                    nb_poin_inte  , poin_inte_sl  , poin_inte_ma  ,&
-                    vcont         , gapi          , nmcp)
+        call lcvect(elem_dime, l_axis, l_upda_jaco, l_norm_smooth, &
+                    nb_lagr, indi_lagc, lagrc_curr, elga_fami_slav, &
+                    nb_node_slav, elem_slav_code, elem_slav_init, elem_slav_coor, &
+                    nb_node_mast, elem_mast_code, elem_mast_init, elem_mast_coor, &
+                    nb_poin_inte, poin_inte_sl, poin_inte_ma, &
+                    vcont, gapi, nmcp)
     elseif (indi_cont .eq. 0) then
-        call lcsena(elem_dime , nb_lagr, nb_node_slav, indi_lagc, &
+        call lcsena(elem_dime, nb_lagr, nb_node_slav, indi_lagc, &
                     lagrc_curr, vcont)
     else
 !
-    endif
+    end if
 !
 ! - Write vector
 !

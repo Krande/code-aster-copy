@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,13 +54,13 @@ subroutine tbexip(nomta, para, exist, typpar)
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_79', sk=nomtab)
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
     nbpara = tbnp(1)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_80', sk=nomtab)
-    endif
+    end if
 !
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
 !
@@ -71,9 +71,9 @@ subroutine tbexip(nomta, para, exist, typpar)
             exist = .true.
             typpar = tblp(4*(ipar-1)+2)
             goto 12
-        endif
+        end if
     end do
- 12 continue
+12  continue
 !
     call jedema()
 end subroutine

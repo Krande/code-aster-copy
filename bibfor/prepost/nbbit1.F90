@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ subroutine nbbit1(ec, nb1)
 !
         test = 2*test
 !
-        if (iand(ec,test) .gt. 0) then
+        if (iand(ec, test) .gt. 0) then
 !
-            nb1 = nb1 + 1
+            nb1 = nb1+1
 !
-        endif
+        end if
 !
     end do
 !

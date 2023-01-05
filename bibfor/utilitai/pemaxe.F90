@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
-                  chpost, nbcmp, nomcmp, nuord, inst,&
+subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
+                  chpost, nbcmp, nomcmp, nuord, inst, &
                   nbmail, numemail)
 !
     implicit none
@@ -92,7 +92,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 !
     call jemarq()
 !
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
@@ -110,23 +110,23 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
         list_ma(:) = 1
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
-    nompar(1)='CHAMP_GD'
-    nompar(2)='NUME_ORDRE'
-    nompar(3)='INST'
-    nompar(4)=lieu
-    mima(1)=inst
-    mamax(1)=nomcha
-    mamax(2)=nomlie
+    nompar(1) = 'CHAMP_GD'
+    nompar(2) = 'NUME_ORDRE'
+    nompar(3) = 'INST'
+    nompar(4) = lieu
+    mima(1) = inst
+    mamax(1) = nomcha
+    mamax(2) = nomlie
 !
     call tbexip(resu, lieu, exist, k8b)
-    if (.not.exist) then
+    if (.not. exist) then
         call tbajpa(resu, 1, nompar(4), 'K24')
-    endif
+    end if
 !
 ! --- CALCULS DES CHAMPS SIMPLES:
-    cesout='&&PEMAXC_CESOUT'
+    cesout = '&&PEMAXC_CESOUT'
 !
     call celces(chpost, 'V', cesout)
     call jeveuo(cesout//'.CESV', 'L', vr=cesv)
@@ -148,72 +148,72 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
         end do
-    endif
+    end if
 !
     do icmp = 1, nbcmp
-        nucmp=indik8(zk8(jcmpgd),nomcmp(icmp),1,ncmpm)
-        vmin=r8maem()
-        vmax=-r8maem()
+        nucmp = indik8(zk8(jcmpgd), nomcmp(icmp), 1, ncmpm)
+        vmin = r8maem()
+        vmax = -r8maem()
 !
         do ima = 1, nbma
             if (list_ma(ima) == 1) then
-                nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-                nbsp=zi(jcesd-1+5+4*(ima-1)+2)
-                ASSERT(nbsp.eq.1)
+                nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+                nbsp = zi(jcesd-1+5+4*(ima-1)+2)
+                ASSERT(nbsp .eq. 1)
                 do ipt = 1, nbpt
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 1, nucmp, iad)
                     if (iad .gt. 0) then
                         if (vmax .lt. cesv(iad)) then
-                            vmax=cesv(iad)
-                            nmax=ima
-                            pmax=ipt
-                        endif
+                            vmax = cesv(iad)
+                            nmax = ima
+                            pmax = ipt
+                        end if
                         if (vmin .gt. cesv(iad)) then
-                            vmin=cesv(iad)
-                            nmin=ima
-                            pmin=ipt
-                        endif
-                    endif
+                            vmin = cesv(iad)
+                            nmin = ima
+                            pmin = ipt
+                        end if
+                    end if
                 end do
-            endif
+            end if
         end do
 !
-        nompar(4+6*(icmp-1)+1)='MAX_'//nomcmp(icmp)
-        nompar(4+6*(icmp-1)+2)='MA_MAX_'//nomcmp(icmp)
-        nompar(4+6*(icmp-1)+3)='PT_MAX_'//nomcmp(icmp)
-        nompar(4+6*(icmp-1)+4)='MIN_'//nomcmp(icmp)
-        nompar(4+6*(icmp-1)+5)='MA_MIN_'//nomcmp(icmp)
-        nompar(4+6*(icmp-1)+6)='PT_MIN_'//nomcmp(icmp)
+        nompar(4+6*(icmp-1)+1) = 'MAX_'//nomcmp(icmp)
+        nompar(4+6*(icmp-1)+2) = 'MA_MAX_'//nomcmp(icmp)
+        nompar(4+6*(icmp-1)+3) = 'PT_MAX_'//nomcmp(icmp)
+        nompar(4+6*(icmp-1)+4) = 'MIN_'//nomcmp(icmp)
+        nompar(4+6*(icmp-1)+5) = 'MA_MIN_'//nomcmp(icmp)
+        nompar(4+6*(icmp-1)+6) = 'PT_MIN_'//nomcmp(icmp)
 !
-        mima(1+2*(icmp-1)+1)=vmax
-        mima(1+2*(icmp-1)+2)=vmin
+        mima(1+2*(icmp-1)+1) = vmax
+        mima(1+2*(icmp-1)+2) = vmin
 !
         call jenuno(jexnum(nommai, nmin), knmin)
         call jenuno(jexnum(nommai, nmax), knmax)
 !
-        mamax(2+2*(icmp-1)+1)=knmax
-        mamax(2+2*(icmp-1)+2)=knmin
-        ptmax(1+2*(icmp-1)+1)=pmax
-        ptmax(1+2*(icmp-1)+2)=pmin
+        mamax(2+2*(icmp-1)+1) = knmax
+        mamax(2+2*(icmp-1)+2) = knmin
+        ptmax(1+2*(icmp-1)+1) = pmax
+        ptmax(1+2*(icmp-1)+2) = pmin
 !
         call tbexip(resu, nompar(4+6*(icmp-1)+1), exist, k8b)
-        if (.not.exist) then
+        if (.not. exist) then
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+1), 'R')
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+2), 'K16')
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+3), 'I')
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+4), 'R')
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+5), 'K16')
             call tbajpa(resu, 1, nompar(4+6*(icmp-1)+6), 'I')
-        endif
+        end if
     end do
 !
-    npara=6*nbcmp
-    ptmax(1)=nuord
+    npara = 6*nbcmp
+    ptmax(1) = nuord
 !
 ! --- ON REMPLIT LA TABLE
-    nbpara=4+npara
-    call tbajli(resu, nbpara, nompar, ptmax, mima,&
+    nbpara = 4+npara
+    call tbajli(resu, nbpara, nompar, ptmax, mima, &
                 [cbid], mamax, 0)
 !
     call jedetr('&&PEMAXC_IND.MAILLE')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cakg2d(optioz, result, modele, depla, theta,&
-                  mate, mateco, lischa, symech, fondf, noeud,&
-                  time, iord, nbprup, noprup,&
+subroutine cakg2d(optioz, result, modele, depla, theta, &
+                  mate, mateco, lischa, symech, fondf, noeud, &
+                  time, iord, nbprup, noprup, &
                   lmoda, puls, compor)
     implicit none
 !
@@ -96,13 +96,13 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 ! CORPS DU PROGRAMME
 !
     integer :: nbmxpa
-    parameter (nbmxpa = 20)
+    parameter(nbmxpa=20)
 !
     integer :: nbinmx, nboumx
-    parameter   (nbinmx=50,nboumx=1)
+    parameter(nbinmx=50, nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-    integer :: i, ibid,  inorma, nsig, ifm, niv, jnor, jbasfo
+    integer :: i, ibid, inorma, nsig, ifm, niv, jnor, jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
     integer :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
     integer :: iret, livi(nbmxpa), nbchar, pbtype
@@ -110,7 +110,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     integer :: mxstac
     complex(kind=8) :: livc(nbmxpa)
     aster_logical :: lfonc, lxfem
-    parameter   (mxstac=1000)
+    parameter(mxstac=1000)
     character(len=2) :: codret
     character(len=8) :: noma, fond, licmp(6), is_axi, fiss
     character(len=16) :: option, optio2
@@ -138,7 +138,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !     (VOIR CRS 1404)
 !
     call lisnnb(lischa, nbchar)
-    ASSERT(nbchar.le.mxstac)
+    ASSERT(nbchar .le. mxstac)
     call infniv(ifm, niv)
     option = optioz
     if (optioz .eq. 'CALC_K_X') option = 'CALC_K_G_XFEM'
@@ -160,8 +160,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 
     chsigi = '&&CAKG2D.CHSIGI'
     celmod = '&&CAKG2D.CELMOD'
-    sigelno= '&&CAKG2D.SIGELNO'
-    sigseno= '&&CAKG2D.SIGSENO'
+    sigelno = '&&CAKG2D.SIGELNO'
+    sigseno = '&&CAKG2D.SIGSENO'
 
 !   RECUPERATION DE L'ETAT INITIAL
     call getvid('ETAT_INIT', 'SIGM', iocc=1, scal=chsigi, nbret=nsig)
@@ -175,37 +175,37 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
 
 !       Verification du type de champ
-        pbtype=0
-        if (.not.lxfem) then
+        pbtype = 0
+        if (.not. lxfem) then
 !         cas FEM : verif que le champ est soit ELNO, soit NOEU, soit ELGA
-          if (ino1.eq.1 .and. ino2.eq.1 .and. inga.eq.1) pbtype=1
+            if (ino1 .eq. 1 .and. ino2 .eq. 1 .and. inga .eq. 1) pbtype = 1
         elseif (lxfem) then
 !         cas X-FEM : verif que le champ est ELGA (seul cas autorise)
-          if (inga.eq.1) pbtype=1
-        endif
-        if (pbtype.eq.1) call utmess('F', 'RUPTURE1_12')
+            if (inga .eq. 1) pbtype = 1
+        end if
+        if (pbtype .eq. 1) call utmess('F', 'RUPTURE1_12')
 
 !       transformation si champ ELGA
-        if (inga.eq.0) then
+        if (inga .eq. 0) then
 
 !           traitement du champ pour les elements finis classiques
-            call detrsd('CHAMP',celmod)
-            call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
+            call detrsd('CHAMP', celmod)
+            call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod, &
                         iret, ' ')
-            call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
+            call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V', &
                         sigelno, modele)
             call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
 
 !           calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM
-            if (lxfem) call xelgano(modele,chsigi,sigseno)
+            if (lxfem) call xelgano(modele, chsigi, sigseno)
 !            call imprsd('CHAMP',chsigi,6,'chsigi')
 
-        endif
-    endif
+        end if
+    end if
 !
 !
 !   RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
-    call vrcins(modele, mate, 'BIDON', time, chvarc,&
+    call vrcins(modele, mate, 'BIDON', time, chvarc, &
                 codret)
     call vrcref(modele, mate(1:8), 'BIDON   ', chvref(1:19))
 !
@@ -218,8 +218,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     chepsi = '&&CAKG2D.EPSI'
     chpesa = '&&CAKG2D.PESA'
     chrota = '&&CAKG2D.ROTA'
-    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
-                chpres, chepsi, chpesa, chrota, lfonc,&
+    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
+                chpres, chepsi, chpesa, chrota, lfonc, &
                 time, iord)
     if (lfonc) then
         pavolu = 'PFFVOLU'
@@ -232,7 +232,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         pa1d2d = 'PFR1D2D'
         papres = 'PPRESSR'
         optio2 = 'CALC_K_G_XFEM'
-    endif
+    end if
 !
 ! OBJET DECRIVANT LE MAILLAGE
 !
@@ -251,13 +251,13 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     call dismoi('AXIS', modele, 'MODELE', repk=is_axi)
 !
 !   OBJET CONTENANT LES NOEUDS DU FOND DE FISSURE
-    if (.not.lxfem) then
+    if (.not. lxfem) then
         fond = fondf(1:8)
         obj2 = fond//'.FOND.NOEU'
         call jelira(obj2, 'LONMAX', lobj2)
         if (lobj2 .ne. 1) then
             call utmess('F', 'RUPTURE1_10')
-        endif
+        end if
         call jeveuo(obj2, 'L', iadrno)
         call jenonu(jexnom(nomno, zk8(iadrno)), nunoff)
 !
@@ -272,7 +272,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
             rcmp(4) = zr(inorma-1+2)
             rcmp(5) = -zr(inorma-1+2)
             rcmp(6) = zr(inorma-1+1)
-        else if (iret.eq.0) then
+        else if (iret .eq. 0) then
             basefo = fond//'.BASEFOND'
             call jeveuo(basefo, 'L', jbasfo)
 !           ATTENTION, ON NE SE SERT PAS DU VECTEUR NORMAL DE BASEFOND
@@ -282,8 +282,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
             rcmp(5) = -zr(jbasfo-1+4)
             rcmp(6) = zr(jbasfo-1+3)
 
-        endif
-    endif
+        end if
+    end if
 !
 !
 !   CREATION OBJET CONTENANT COORDONNEES DU NOEUD DE FOND
@@ -301,10 +301,10 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !Recuperation du numero du fond de fissure pour FEM et XFEM
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 
-    if (.not.lxfem) then
+    if (.not. lxfem) then
 !       cas FEM
-        rcmp(1) = zr(iadrco+ndim* (nunoff-1))
-        rcmp(2) = zr(iadrco+ndim* (nunoff-1)+1)
+        rcmp(1) = zr(iadrco+ndim*(nunoff-1))
+        rcmp(2) = zr(iadrco+ndim*(nunoff-1)+1)
     else
 !       cas X-FEM
         call jeveuo(fiss//'.FONDFISS', 'L', jfond)
@@ -317,13 +317,13 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         rcmp(6) = zr(jnor-1+4*(numfon-1)+3)
 !         rcmp(5) = zr(jnor-1+4*(numfon-1)+1)
 !         rcmp(6) = zr(jnor-1+4*(numfon-1)+2)
-        write(ifm,*)'   '
-        write(ifm,*)'    TRAITEMENT DU FOND DE FISSURE NUMERO ',numfon
-        write(ifm,*)'    NOMME ',noeud
-        write(ifm,*)'    DE COORDONNEES',rcmp(1),rcmp(2)
-        write(ifm,*)'    LA NORMALE A LA FISSURE EN CE POINT EST ',&
-     &                                              rcmp(5),rcmp(6)
-    endif
+        write (ifm, *) '   '
+        write (ifm, *) '    TRAITEMENT DU FOND DE FISSURE NUMERO ', numfon
+        write (ifm, *) '    NOMME ', noeud
+        write (ifm, *) '    DE COORDONNEES', rcmp(1), rcmp(2)
+        write (ifm, *) '    LA NORMALE A LA FISSURE EN CE POINT EST ',&
+     &                                              rcmp(5), rcmp(6)
+    end if
     zr(iadrff) = rcmp(1)
     zr(iadrff+1) = rcmp(2)
     zr(iadrff+2) = rcmp(3)
@@ -331,7 +331,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     zr(iadrff+4) = rcmp(5)
     zr(iadrff+5) = rcmp(6)
 !
-    call mecact('V', chfond, 'MAILLA', noma, 'FISS_R',&
+    call mecact('V', chfond, 'MAILLA', noma, 'FISS_R', &
                 ncmp=6, lnomcmp=licmp, vr=rcmp)
 !
 !
@@ -429,47 +429,47 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
     chtime = '&&CAKG2D.CH_INST_R'
     if (option .eq. 'CALC_K_G_XFEM_F') then
-        call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
+        call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
                     ncmp=1, nomcmp='INST   ', sr=time)
-        nchin = nchin + 1
+        nchin = nchin+1
         lpain(nchin) = 'PTEMPSR'
         lchin(nchin) = chtime
-    endif
+    end if
 !
     if (lmoda) then
         chpuls = '&&CAKG2D.PULS'
-        call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ',&
+        call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ', &
                     ncmp=1, nomcmp='FREQ   ', sr=puls)
-        nchin = nchin + 1
+        nchin = nchin+1
         lpain(nchin) = 'PPULPRO'
         lchin(nchin) = chpuls
-    endif
+    end if
 
 !   CHAMP DE CONTRAINTE INITIALE
     if (nsig .ne. 0) then
-      if (inga .eq. 0) then
+        if (inga .eq. 0) then
 !       champ de contrainte initiale transforme en ELNO
-        lpain(nchin+1) = 'PSIGINR'
-        lchin(nchin+1)=sigelno
-        nchin = nchin + 1
+            lpain(nchin+1) = 'PSIGINR'
+            lchin(nchin+1) = sigelno
+            nchin = nchin+1
 
 !       si X-FEM : champ de contrainte initiale transforme en SE-ELNO
-        if (lxfem) then
-            lpain(nchin+1) = 'PSIGISE'
-            lchin(nchin+1) = sigseno
-            nchin = nchin + 1
-        endif
+            if (lxfem) then
+                lpain(nchin+1) = 'PSIGISE'
+                lchin(nchin+1) = sigseno
+                nchin = nchin+1
+            end if
 
-      else
+        else
 !       champ de contrainte initiale donne par l'uutilisateur (NOEUD ou ELNO)
-        lpain(nchin+1) = 'PSIGINR'
-        lchin(nchin+1) = chsigi
-        nchin = nchin + 1
-      endif
-    endif
+            lpain(nchin+1) = 'PSIGINR'
+            lchin(nchin+1) = chsigi
+            nchin = nchin+1
+        end if
+    end if
 !
-    call calcul('S', optio2, ligrmo, nchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', optio2, ligrmo, nchin, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 
 !  SOMMATION DES FIC ET G ELEMENTAIRES
@@ -484,7 +484,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         do i = 1, 5
             valg(i) = valg(i)/rcmp(1)
         end do
-    endif
+    end if
 !
     if (symech .eq. 'OUI') then
         valg(1) = 2.d0*valg(1)
@@ -492,15 +492,15 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         valg(1+2) = 0.d0
         valg(1+3) = 2.d0*valg(1+3)
         valg(1+4) = 0.d0
-    endif
+    end if
 !
-    girwin = valg(1+1)*valg(1+1) + valg(1+2)*valg(1+2)
+    girwin = valg(1+1)*valg(1+1)+valg(1+2)*valg(1+2)
 !
 ! IMPRESSION DE K1,K2,G ET ECRITURE DANS LA TABLE RESU
 !
     if (niv .ge. 2) then
         call impfic(valg, zk8(iadrno), rcmp, ifm, lxfem)
-    endif
+    end if
 !
 !    if (lxfem .and. (option(1:8).eq.'CALC_K_G') .and. (.not.lmoda)) then
 !     call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
@@ -508,22 +508,22 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
     call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
 
-    if (.not.lxfem) then
+    if (.not. lxfem) then
         call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno), livk)
-    endif
+    end if
     if (lmoda) then
         call tbajvi(result, nbprup, 'NUME_MODE', iord, livi)
     else
         call tbajvi(result, nbprup, 'NUME_ORDRE', iord, livi)
         call tbajvr(result, nbprup, 'INST', time, livr)
-    endif
+    end if
     call tbajvr(result, nbprup, 'COOR_X', rcmp(1), livr)
     call tbajvr(result, nbprup, 'COOR_Y', rcmp(2), livr)
     call tbajvr(result, nbprup, 'K1', valg(1+3), livr)
     call tbajvr(result, nbprup, 'K2', valg(1+4), livr)
     call tbajvr(result, nbprup, 'G', valg(1), livr)
     call tbajvr(result, nbprup, 'G_IRWIN', girwin, livr)
-    call tbajli(result, nbprup, noprup, livi, livr,&
+    call tbajli(result, nbprup, noprup, livi, livr, &
                 livc, livk, 0)
 !
     call detrsd('CHAMP_GD', chtime)

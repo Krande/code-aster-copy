@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apelem_inside(pair_tole   , elem_dime, elem_code, elem_coor,&
-                         nb_poin_coor, poin_coor,&
+subroutine apelem_inside(pair_tole, elem_dime, elem_code, elem_coor, &
+                         nb_poin_coor, poin_coor, &
                          nb_poin_inte, poin_inte)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/ptinma.h"
@@ -29,11 +29,11 @@ implicit none
     real(kind=8), intent(in) :: pair_tole
     integer, intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
-    real(kind=8), intent(in) :: elem_coor(elem_dime-1,4)
+    real(kind=8), intent(in) :: elem_coor(elem_dime-1, 4)
     integer, intent(in) :: nb_poin_coor
-    real(kind=8), intent(in) :: poin_coor(elem_dime-1,4)
+    real(kind=8), intent(in) :: poin_coor(elem_dime-1, 4)
     integer, intent(inout) :: nb_poin_inte
-    real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
+    real(kind=8), intent(inout) :: poin_inte(elem_dime-1, 16)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,38 +61,38 @@ implicit none
     if (elem_code .eq. 'SE2') then
         do i_node = 1, nb_poin_coor
             xpt = poin_coor(1, i_node)
-            if (xpt .ge. (-1.d0-pair_tole) .and.&
-                xpt .le. ( 1.d0+pair_tole)) then
-                nb_poin_inte              = nb_poin_inte+1
-                ASSERT(nb_poin_inte.le.16)
-                poin_inte(1,nb_poin_inte) = xpt
-            endif
+            if (xpt .ge. (-1.d0-pair_tole) .and. &
+                xpt .le. (1.d0+pair_tole)) then
+                nb_poin_inte = nb_poin_inte+1
+                ASSERT(nb_poin_inte .le. 16)
+                poin_inte(1, nb_poin_inte) = xpt
+            end if
         end do
     elseif (elem_code .eq. 'TR3') then
         do i_node = 1, nb_poin_coor
-            xpt=poin_coor(1,i_node)
-            ypt=poin_coor(2,i_node)
-            if (xpt .ge. -pair_tole .and.&
-                ypt .ge. -pair_tole .and.&
-               (ypt+xpt).le.(1.d0+pair_tole)) then
-                nb_poin_inte              = nb_poin_inte+1
-                ASSERT(nb_poin_inte.le.16)
-                poin_inte(1,nb_poin_inte) = xpt
-                poin_inte(2,nb_poin_inte) = ypt
-            endif
+            xpt = poin_coor(1, i_node)
+            ypt = poin_coor(2, i_node)
+            if (xpt .ge. -pair_tole .and. &
+                ypt .ge. -pair_tole .and. &
+                (ypt+xpt) .le. (1.d0+pair_tole)) then
+                nb_poin_inte = nb_poin_inte+1
+                ASSERT(nb_poin_inte .le. 16)
+                poin_inte(1, nb_poin_inte) = xpt
+                poin_inte(2, nb_poin_inte) = ypt
+            end if
         end do
     elseif (elem_code .eq. 'QU4') then
         do i_node = 1, nb_poin_coor
-            xpt=poin_coor(1,i_node)
-            ypt=poin_coor(2,i_node)
-            call ptinma(4, elem_dime, elem_code, elem_coor, pair_tole,&
-                        xpt         , ypt      , test)
-            if (test.eq.1) then
-                nb_poin_inte              = nb_poin_inte+1
-                ASSERT(nb_poin_inte.le.16)
-                poin_inte(1,nb_poin_inte) = xpt
-                poin_inte(2,nb_poin_inte) = ypt
-            endif
+            xpt = poin_coor(1, i_node)
+            ypt = poin_coor(2, i_node)
+            call ptinma(4, elem_dime, elem_code, elem_coor, pair_tole, &
+                        xpt, ypt, test)
+            if (test .eq. 1) then
+                nb_poin_inte = nb_poin_inte+1
+                ASSERT(nb_poin_inte .le. 16)
+                poin_inte(1, nb_poin_inte) = xpt
+                poin_inte(2, nb_poin_inte) = ypt
+            end if
         end do
     else
         ASSERT(.false.)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldSave(operation, resultName, numeStore,&
-                        field    , fieldValeC_,&
-                        nbEquaR_ , equaCToR_  , fieldValeR_)
+subroutine romFieldSave(operation, resultName, numeStore, &
+                        field, fieldValeC_, &
+                        nbEquaR_, equaCToR_, fieldValeR_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,14 +33,14 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 !
-character(len=*), intent(in) :: operation
-character(len=8), intent(in) :: resultName
-integer, intent(in) :: numeStore
-type(ROM_DS_Field), intent(in) :: field
-real(kind=8), optional, pointer :: fieldValeC_(:)
-integer, optional, intent(in) :: nbEquaR_
-integer, optional, pointer :: equaCToR_(:)
-real(kind=8), optional, pointer :: fieldValeR_(:)
+    character(len=*), intent(in) :: operation
+    character(len=8), intent(in) :: resultName
+    integer, intent(in) :: numeStore
+    type(ROM_DS_Field), intent(in) :: field
+    real(kind=8), optional, pointer :: fieldValeC_(:)
+    integer, optional, intent(in) :: nbEquaR_
+    integer, optional, pointer :: equaCToR_(:)
+    real(kind=8), optional, pointer :: fieldValeR_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,11 +78,11 @@ real(kind=8), optional, pointer :: fieldValeR_(:)
     fieldRefe = field%fieldRefe
     fieldName = field%fieldName
     fieldSupp = field%fieldSupp
-    nbEqua    = field%nbEqua
+    nbEqua = field%nbEqua
 !
 ! - Get field in output results datastructure
 !
-    call rsexch(' '      , resultName , fieldName,&
+    call rsexch(' ', resultName, fieldName, &
                 numeStore, resultField, iret)
     ASSERT(iret .eq. 100)
 !
@@ -90,14 +90,14 @@ real(kind=8), optional, pointer :: fieldValeR_(:)
 !
     call copisd('CHAMP_GD', 'G', fieldRefe, resultField)
     if (fieldSupp .eq. 'NOEU') then
-        call jeveuo(resultField(1:19)//'.VALE', 'E', vr = valeWrite)
+        call jeveuo(resultField(1:19)//'.VALE', 'E', vr=valeWrite)
         call jelira(resultField(1:19)//'.VALE', 'LONMAX', nbEquaRead)
     elseif (fieldSupp .eq. 'ELGA') then
-        call jeveuo(resultField(1:19)//'.CELV', 'E', vr = valeWrite)
+        call jeveuo(resultField(1:19)//'.CELV', 'E', vr=valeWrite)
         call jelira(resultField(1:19)//'.CELV', 'LONMAX', nbEquaRead)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     ASSERT(nbEqua .eq. nbEquaRead)
 !
 ! - Set value in field
@@ -120,12 +120,12 @@ real(kind=8), optional, pointer :: fieldValeR_(:)
                 valeWrite(iEqua) = fieldValeC_(iEqua)
             else
                 valeWrite(iEqua) = fieldValeR_(equaNume)
-            endif
-        enddo
+            end if
+        end do
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Notification in results datastructure
 !

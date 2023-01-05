@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@ subroutine elg_calcxl(x1, vlag)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use elg_data_module
+    use aster_petsc_module
+    use elg_data_module
 
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
@@ -65,18 +65,18 @@ use elg_data_module
     PetscInt :: n1, n2, n3
     KSPConvergedReason :: reason
     PetscErrorCode :: ierr
-    PetscScalar, parameter :: neg_rone=-1.d0
+    PetscScalar, parameter :: neg_rone = -1.d0
     PetscOffset :: xidxay, xidxl
     Vec :: bx, y, ay, xtmp
     PetscInt :: its
     PetscReal :: aster_petsc_real
     integer :: methode
-    integer, parameter :: lsqr=1, cg=2
+    integer, parameter :: lsqr = 1, cg = 2
 
 !----------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
-    info=niv.eq.2
+    info = niv .eq. 2
     debug = .false.
     !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
@@ -91,30 +91,30 @@ use elg_data_module
 !     ----------------------------------------------------------
     call MatGetSize(elg_context(ke)%matc, n2, n1, ierr)
 !   le système est-il bien  sur-déterminé ?
-    ASSERT( n1 > n2 )
+    ASSERT(n1 > n2)
 !
 !     -- vérifs :
     call VecGetSize(x1, n3, ierr)
-    ASSERT(n3.eq.n1)
+    ASSERT(n3 .eq. n1)
     call VecGetSize(vlag, n3, ierr)
-    ASSERT(n3.eq.n2)
+    ASSERT(n3 .eq. n2)
 
 !
 !
 !     -- calcul de BX = B*x :
     call VecDuplicate(x1, bx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call MatMult(elg_context(ke)%matb, x1, bx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
 !
 !     -- calcul de Y = b - B*x :
     call VecDuplicate(elg_context(ke)%vecb, y, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call VecCopy(elg_context(ke)%vecb, y, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call VecAXPY(y, neg_rone, bx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                      Solve the linear system
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,58 +125,58 @@ use elg_data_module
 !
 !   -- Compute AY = A*Y
 !
-      call elg_allocvr(ay, int(n2))
-      call MatMult(elg_context(ke)%matc, y, ay, ierr)
-      ASSERT( ierr==0 )
+    call elg_allocvr(ay, int(n2))
+    call MatMult(elg_context(ke)%matc, y, ay, ierr)
+    ASSERT(ierr == 0)
 !
 !   -- Solve the linear system
-      call KSPSolve( elg_context(ke)%ksp, ay, vlag, ierr)
-      ASSERT( ierr==0 )
+    call KSPSolve(elg_context(ke)%ksp, ay, vlag, ierr)
+    ASSERT(ierr == 0)
 !
 !   -- Free memory
-      call VecDestroy(ay, ierr)
-      ASSERT( ierr==0 )
+    call VecDestroy(ay, ierr)
+    ASSERT(ierr == 0)
 !
 !  Check the reason why KSP solver ended
 !
-      call KSPGetConvergedReason(elg_context(ke)%ksp, reason, ierr)
-      ASSERT( ierr==0 )
-    if (reason<0) then
-      call utmess('F','ELIMLAGR_8')
-    endif
+    call KSPGetConvergedReason(elg_context(ke)%ksp, reason, ierr)
+    ASSERT(ierr == 0)
+    if (reason < 0) then
+        call utmess('F', 'ELIMLAGR_8')
+    end if
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                     Check solution and clean up
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !  Check the error ||C^T*vlag - y||
 !
     if (info) then
-      call VecDuplicate(y, xtmp , ierr)
-      ASSERT( ierr==0 )
-      call MatMultTranspose(elg_context(ke)%matc, vlag, xtmp, ierr)
-      ASSERT( ierr==0 )
-      call VecAXPY(xtmp,neg_rone,y ,ierr)
-      ASSERT( ierr==0 )
-      call VecNorm(xtmp,norm_2,norm,ierr)
-      ASSERT( ierr==0 )
-      call KSPGetIterationNumber(elg_context(ke)%ksp,its,ierr)
-      ASSERT( ierr==0 )
+        call VecDuplicate(y, xtmp, ierr)
+        ASSERT(ierr == 0)
+        call MatMultTranspose(elg_context(ke)%matc, vlag, xtmp, ierr)
+        ASSERT(ierr == 0)
+        call VecAXPY(xtmp, neg_rone, y, ierr)
+        ASSERT(ierr == 0)
+        call VecNorm(xtmp, norm_2, norm, ierr)
+        ASSERT(ierr == 0)
+        call KSPGetIterationNumber(elg_context(ke)%ksp, its, ierr)
+        ASSERT(ierr == 0)
 
-     if (debug .and. rang==0) then
-         write(6,100) norm,its
-     endif
-  100 format(' ELG CALCXL: Norm of error = ',e11.4,',  iterations = ',i5)
-      call VecDestroy(xtmp, ierr)
-      ASSERT( ierr==0 )
-    endif
+        if (debug .and. rang == 0) then
+            write (6, 100) norm, its
+        end if
+100     format(' ELG CALCXL: Norm of error = ', e11.4, ',  iterations = ', i5)
+        call VecDestroy(xtmp, ierr)
+        ASSERT(ierr == 0)
+    end if
 !
 !  Free work space.  All PETSc objects should be destroyed when they
 !  are no longer needed.
     call VecDestroy(bx, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call VecDestroy(y, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
     call VecDestroy(ay, ierr)
-    ASSERT( ierr==0 )
+    ASSERT(ierr == 0)
 !
     call jedema()
 !

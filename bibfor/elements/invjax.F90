@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine invjax(stop, nno, ndim, nderiv, dff,&
+subroutine invjax(stop, nno, ndim, nderiv, dff, &
                   coor, invjac, ipb, ndim_coor_)
 ! aslint: disable=W1306
-    implicit   none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/matinv.h"
     integer :: nno, ndim, nderiv, ipb
@@ -53,7 +53,7 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 ! ----------------------------------------------------------------------
 !
     ipb = 0
-    if(present(ndim_coor_)) then
+    if (present(ndim_coor_)) then
         ndim_coor = ndim_coor_
     else
         ndim_coor = ndim
@@ -63,28 +63,28 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 !
     do jdim = 1, nderiv
         do idim = 1, ndim
-            jacobi(idim,jdim) = dff(jdim,1) * coor(idim)
+            jacobi(idim, jdim) = dff(jdim, 1)*coor(idim)
         end do
     end do
 !
     do ino = 2, nno
         do jdim = 1, nderiv
             do idim = 1, ndim
-                jacobi(idim,jdim) = jacobi(idim,jdim) + dff(jdim,ino) * coor(ndim_coor*(ino-1)+idim)
+                jacobi(idim, jdim) = jacobi(idim, jdim)+dff(jdim, ino)*coor(ndim_coor*(ino-1)+idim)
             end do
         end do
     end do
     if (ndim .ne. nderiv) then
-        ASSERT(ndim.eq.nderiv+1)
+        ASSERT(ndim .eq. nderiv+1)
         if (nderiv .eq. 1) then
-            jacobi(1,2) = -1*jacobi(2,1)
-            jacobi(2,2) = jacobi(1,1)
-        else if (nderiv.eq.2) then
-            jacobi(1,3) = jacobi(2,1)*jacobi(3,2)-jacobi(3,1)*jacobi( 2,2)
-            jacobi(2,3) = jacobi(3,1)*jacobi(1,2)-jacobi(1,1)*jacobi( 3,2)
-            jacobi(3,3) = jacobi(1,1)*jacobi(2,2)-jacobi(2,1)*jacobi( 1,2)
-        endif
-    endif
+            jacobi(1, 2) = -1*jacobi(2, 1)
+            jacobi(2, 2) = jacobi(1, 1)
+        else if (nderiv .eq. 2) then
+            jacobi(1, 3) = jacobi(2, 1)*jacobi(3, 2)-jacobi(3, 1)*jacobi(2, 2)
+            jacobi(2, 3) = jacobi(3, 1)*jacobi(1, 2)-jacobi(1, 1)*jacobi(3, 2)
+            jacobi(3, 3) = jacobi(1, 1)*jacobi(2, 2)-jacobi(2, 1)*jacobi(1, 2)
+        end if
+    end if
 !
 ! --- INVERSE DE LA JACOBIENNE
 !
@@ -93,12 +93,12 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 !
     do i = 1, 3
         do j = 1, 3
-            invjac(i,j)=0.d0
+            invjac(i, j) = 0.d0
         end do
     end do
     do i = 1, ndim
         do j = 1, ndim
-            invjac(i,j)=inv(i,j)
+            invjac(i, j) = inv(i, j)
         end do
     end do
 !

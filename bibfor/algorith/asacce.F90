@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asacce(nomsy, monoap, nbsup, neq,&
-                  nbmode, id, moncha, vecmod, momec,&
-                  gamma0, recmor, recmod, nbdis, nopara,&
+subroutine asacce(nomsy, monoap, nbsup, neq, &
+                  nbmode, id, moncha, vecmod, momec, &
+                  gamma0, recmor, recmod, nbdis, nopara, &
                   nordr, recmot)
     implicit none
 #include "asterf_types.h"
@@ -59,75 +59,75 @@ subroutine asacce(nomsy, monoap, nbsup, neq,&
     real(kind=8) :: xxx
     character(len=8) :: nomcmp(3)
 !     ------------------------------------------------------------------
-    data nomcmp / 'DX' , 'DY' , 'DZ' /
+    data nomcmp/'DX', 'DY', 'DZ'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
 
-    recmot(:,:,id) = recmod(:,:,id)
+    recmot(:, :, id) = recmod(:, :, id)
 
 !   SOMME DES CARRES DES REPONSES PERIO ET RIGIDES
-    do ioc =1, nbsup
+    do ioc = 1, nbsup
         do in = 1, neq
 !         VALEUR DE IOC REFERENCE A ASCORM.F
-            recmor(ioc,in,id) = recmor(ioc,in,id)* recmor(ioc,in,id)
-            recmot(ioc,in,id) = recmot(ioc,in,id)+ recmor(ioc,in,id)
-        enddo
-    enddo
+            recmor(ioc, in, id) = recmor(ioc, in, id)*recmor(ioc, in, id)
+            recmot(ioc, in, id) = recmot(ioc, in, id)+recmor(ioc, in, id)
+        end do
+    end do
 !
     if (nomsy(1:4) .eq. 'ACCE') then
         if (monoap) then
-            is=nbsup
+            is = nbsup
 !
 !           --- CONTRIBUTION MODALE ---
             call wkvect('&&ASTRON.VECTEUR_MODA', 'V V R', neq, jmod)
             do im = 1, nbmode
-                call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im),&
+                call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im), &
                             0, sjv=ival, istop=0)
                 xxx = zr(ival)
                 do in = 1, neq
-                    zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in,im)
-                enddo
-            enddo
+                    zr(jmod+in-1) = zr(jmod+in-1)+xxx*vecmod(in, im)
+                end do
+            end do
 !
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
-            call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
-                        list_equa = zi(juni))
+            call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq, &
+                        list_equa=zi(juni))
 !
             do in = 1, neq
-                xxx = gamma0(id) * ( zi(juni+in-1) - zr(jmod+in-1) )
-                recmot(is,in,id) = recmot(is,in,id) + xxx*xxx
-            enddo
+                xxx = gamma0(id)*(zi(juni+in-1)-zr(jmod+in-1))
+                recmot(is, in, id) = recmot(is, in, id)+xxx*xxx
+            end do
             call jedetr('&&ASTRON.VECTEUR_UNIT')
             call jedetr('&&ASTRON.VECTEUR_MODA')
         else
-            is=1
+            is = 1
 !
 !           --- CONTRIBUTION MODALE ---
             call wkvect('&&ASTRON.VECTEUR_MODA', 'V V R', neq, jmod)
             do im = 1, nbmode
-                call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im),&
+                call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im), &
                             0, sjv=ival, istop=0)
                 xxx = zr(ival)
                 do in = 1, neq
-                    zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in,im)
-                enddo
-            enddo
+                    zr(jmod+in-1) = zr(jmod+in-1)+xxx*vecmod(in, im)
+                end do
+            end do
 !
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
-            call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
-                        list_equa = zi(juni))
+            call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq, &
+                        list_equa=zi(juni))
 !
             do in = 1, neq
-                xxx = gamma0(is+nbsup*(id-1)) * ( zi(juni+in-1) - zr(jmod+in-1) )
-                recmot(is,in,id) = recmot(is,in,id) + xxx*xxx
-            enddo
+                xxx = gamma0(is+nbsup*(id-1))*(zi(juni+in-1)-zr(jmod+in-1))
+                recmot(is, in, id) = recmot(is, in, id)+xxx*xxx
+            end do
             call jedetr('&&ASTRON.VECTEUR_UNIT')
             call jedetr('&&ASTRON.VECTEUR_MODA')
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

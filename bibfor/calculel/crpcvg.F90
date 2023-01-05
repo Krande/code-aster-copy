@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
+subroutine crpcvg(ma1, ma2, gma1, gma2, tran, &
                   prec, lima1, lima2, linoeu)
     implicit none
 #include "asterf_types.h"
@@ -91,10 +91,10 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
     call jelira(jexnom(grpma1, gma1), 'LONUTI', nbma1)
     call jelira(jexnom(grpma2, gma2), 'LONUTI', nbma2)
     if (nbma1 .ne. nbma2) then
-        valk (1) = gma1
-        valk (2) = gma2
+        valk(1) = gma1
+        valk(2) = gma2
         call utmess('F', 'CALCULEL5_67', nk=2, valk=valk)
-    endif
+    end if
 !
     call jeveuo(jexnom(grpma1, gma1), 'L', jgma1)
     call jeveuo(jexnom(grpma2, gma2), 'L', jgma2)
@@ -116,17 +116,17 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
             nutyp2 = zi(jtyma2-1+ima2)
 !
             do ino = 1, nbnoma(ima1)
-                ino1 = numgl1(ima1,ino)
-                ino2 = numgl2(ima2,ino)
+                ino1 = numgl1(ima1, ino)
+                ino2 = numgl2(ima2, ino)
                 x1 = zr(jcoor1-1+3*(ino1-1)+1)
                 y1 = zr(jcoor1-1+3*(ino1-1)+2)
                 z1 = zr(jcoor1-1+3*(ino1-1)+3)
                 x2 = zr(jcoor2-1+3*(ino2-1)+1)
                 y2 = zr(jcoor2-1+3*(ino2-1)+2)
                 z2 = zr(jcoor2-1+3*(ino2-1)+3)
-                v1 = abs ( x2 - x1 - tran(1) )
-                v2 = abs ( y2 - y1 - tran(2) )
-                v3 = abs ( z2 - z1 - tran(3) )
+                v1 = abs(x2-x1-tran(1))
+                v2 = abs(y2-y1-tran(2))
+                v3 = abs(z2-z1-tran(3))
                 erreur = .false.
                 if (v1 .gt. prec) erreur = .true.
                 if (v2 .gt. prec) erreur = .true.
@@ -136,7 +136,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !               GROUP_MA_FINAL (iteration suivante de la boucle 100)
                 if (erreur) then
                     goto 100
-                endif
+                end if
 !
                 linoeu(ino2) = ino1
 !
@@ -146,10 +146,10 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !           correspondance avec la maille ima1
 !           on verifie leur type
             if (nutyp1 .ne. nutyp2) then
-                valk (1) = gma1
-                valk (2) = gma2
+                valk(1) = gma1
+                valk(2) = gma2
                 call utmess('F', 'CALCULEL5_68', nk=2, valk=valk)
-            endif
+            end if
 !
 !           on stocke ima1 et ima2
 !           et on passe a la maille suivante dans GROUP_MA_INIT
@@ -162,11 +162,11 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !
 !       si on passe ici, c'est que l'on n'a trouve aucune maille de
 !       GROUP_MA_FINAL en correspondance avec la maille ima1 de GROUP_MA_INIT
-        call getvtx('PERM_CHAM', 'GROUP_MA_INIT', iocc=1, nbval=1, vect=nom_gr1,&
+        call getvtx('PERM_CHAM', 'GROUP_MA_INIT', iocc=1, nbval=1, vect=nom_gr1, &
                     nbret=ibid)
-        call getvtx('PERM_CHAM', 'GROUP_MA_FINAL', iocc=1, nbval=1, vect=nom_gr2,&
+        call getvtx('PERM_CHAM', 'GROUP_MA_FINAL', iocc=1, nbval=1, vect=nom_gr2, &
                     nbret=ibid)
-        call jenuno(jexnum(ma1//'.NOMMAI', ima1 ), noma1)
+        call jenuno(jexnum(ma1//'.NOMMAI', ima1), noma1)
         valk(1) = nom_gr1
         valk(2) = nom_gr2
         valk(3) = noma1
@@ -175,9 +175,9 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
         valr(1) = tran(1)
         valr(2) = tran(2)
         valr(3) = tran(3)
-        call utmess('F', 'CALCULEL5_69', nk=5, valk=valk, nr=3,&
+        call utmess('F', 'CALCULEL5_69', nk=5, valk=valk, nr=3, &
                     valr=valr)
- 10     continue
+10      continue
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lcmate(BEHinteg,&
-                  fami, kpg, ksp, comp, mod,&
-                  imat, nmat, tempd, tempf, tref, impexp,&
-                  typma, hsr, materd, materf, matcst,&
-                  nbcomm, cpmono, angmas, pgl, itmax,&
-                  toler, ndt, ndi, nr, crit,&
-                  nvi, vind, nfs, nsg, toutms,&
+subroutine lcmate(BEHinteg, &
+                  fami, kpg, ksp, comp, mod, &
+                  imat, nmat, tempd, tempf, tref, impexp, &
+                  typma, hsr, materd, materf, matcst, &
+                  nbcomm, cpmono, angmas, pgl, itmax, &
+                  toler, ndt, ndi, nr, crit, &
+                  nvi, vind, nfs, nsg, toutms, &
                   nhsr, numhsr, sigd, mult_comp_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/cvmmat.h"
@@ -47,7 +47,7 @@ implicit none
 #include "asterfort/rsvmat.h"
 #include "asterfort/vecmat.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !       RECUPERATION DU MATERIAU A TEMPF ET TEMPD
 ! In  BEHinteg         : parameters for integration of behaviour
@@ -98,10 +98,10 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 ! -     INITIALISATION DE MATERD ET MATERF A 0.
 !
     do i = 1, nmat
-        materd(i,1) = 0.d0
-        materd(i,2) = 0.d0
-        materf(i,1) = 0.d0
-        materf(i,2) = 0.d0
+        materd(i, 1) = 0.d0
+        materd(i, 2) = 0.d0
+        materf(i, 1) = 0.d0
+        materf(i, 2) = 0.d0
     end do
 ! - For number of phases when is not a crystal behaviour (issue30310)
     nbcomm(1) = 1
@@ -109,112 +109,112 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     mult_comp = ' '
     if (present(mult_comp_)) then
         mult_comp = mult_comp_
-    endif
+    end if
     rela_comp = comp(1)
-    read (comp(2),'(I16)') nvi
+    read (comp(2), '(I16)') nvi
     if (rela_comp .eq. 'ROUSS_PR') then
-        call rslmat(fami, kpg, ksp, mod, imat,&
-                    nmat, materd, materf, matcst, ndt,&
+        call rslmat(fami, kpg, ksp, mod, imat, &
+                    nmat, materd, materf, matcst, ndt, &
                     ndi, nr, nvi, vind)
 !
     else if (rela_comp .eq. 'ROUSS_VISC') then
-        call rsvmat(fami, kpg, ksp, mod, imat,&
-                    nmat, materd, materf, matcst, ndt,&
+        call rsvmat(fami, kpg, ksp, mod, imat, &
+                    nmat, materd, materf, matcst, ndt, &
                     ndi, nr, nvi, vind)
 !
     else if (rela_comp .eq. 'VISCOCHAB') then
-        call cvmmat(fami, kpg, ksp, mod, imat,&
-                    nmat, materd, materf, matcst, typma,&
-                    ndt, ndi, nr, crit, vind,&
+        call cvmmat(fami, kpg, ksp, mod, imat, &
+                    nmat, materd, materf, matcst, typma, &
+                    ndt, ndi, nr, crit, vind, &
                     nvi, sigd)
 !
-    else if (rela_comp.eq.'VENDOCHAB'.or.rela_comp.eq.'VISC_ENDO_LEMA') then
-        call vecmat(fami, kpg, ksp, mod, rela_comp,&
-                    imat, nmat, materd, materf, matcst,&
+    else if (rela_comp .eq. 'VENDOCHAB' .or. rela_comp .eq. 'VISC_ENDO_LEMA') then
+        call vecmat(fami, kpg, ksp, mod, rela_comp, &
+                    imat, nmat, materd, materf, matcst, &
                     typma, ndt, ndi, nr, nvi)
 !
     else if (rela_comp(1:6) .eq. 'LAIGLE') then
-        call lglmat(mod, imat, nmat, tempd, materd,&
-                    materf, matcst, ndt, ndi, nr,&
+        call lglmat(mod, imat, nmat, tempd, materd, &
+                    materf, matcst, ndt, ndi, nr, &
                     nvi)
 !
-    elseif (( rela_comp .eq. 'HOEK_BROWN' ).or. ( rela_comp .eq. 'HOEK_BROWN_EFF' ))then
-        call hbrmat(mod, imat, nmat, tempd, materd,&
-                    materf, matcst, ndt, ndi, nr,&
+    elseif ((rela_comp .eq. 'HOEK_BROWN') .or. (rela_comp .eq. 'HOEK_BROWN_EFF')) then
+        call hbrmat(mod, imat, nmat, tempd, materd, &
+                    materf, matcst, ndt, ndi, nr, &
                     nvi)
 !
     else if (rela_comp .eq. 'MONOCRISTAL') then
         ASSERT(mult_comp .ne. ' ')
-        call lcmmat(fami, kpg, ksp, mult_comp, mod,&
-                    imat, nmat, angmas, pgl, materd,&
-                    materf, matcst, nbcomm, cpmono, ndt,&
-                    ndi, nr, nvi, hsr, nfs,&
+        call lcmmat(fami, kpg, ksp, mult_comp, mod, &
+                    imat, nmat, angmas, pgl, materd, &
+                    materf, matcst, nbcomm, cpmono, ndt, &
+                    ndi, nr, nvi, hsr, nfs, &
                     nsg, toutms, vind, impexp)
-        typma='COHERENT'
+        typma = 'COHERENT'
         if (mod .ne. '3D') then
-            sigd(5)=0.d0
-            sigd(6)=0.d0
-        endif
+            sigd(5) = 0.d0
+            sigd(6) = 0.d0
+        end if
 !
     else if (rela_comp .eq. 'POLYCRISTAL') then
         ASSERT(mult_comp .ne. ' ')
-        call lcmmap(fami, kpg, ksp, mult_comp, mod,&
-                    imat, nmat, angmas, pgl, materd,&
-                    materf, matcst, nbcomm, cpmono, ndt,&
-                    ndi, nr, nvi, nfs, nsg,&
+        call lcmmap(fami, kpg, ksp, mult_comp, mod, &
+                    imat, nmat, angmas, pgl, materd, &
+                    materf, matcst, nbcomm, cpmono, ndt, &
+                    ndi, nr, nvi, nfs, nsg, &
                     nhsr, numhsr, hsr)
-        typma='COHERENT'
+        typma = 'COHERENT'
 !
     else if (rela_comp .eq. 'IRRAD3M') then
-        call irrmat(fami, kpg, ksp, mod, imat,&
-                    nmat, itmax, toler, materd, materf,&
+        call irrmat(fami, kpg, ksp, mod, imat, &
+                    nmat, itmax, toler, materd, materf, &
                     matcst, ndt, ndi, nr, nvi)
 !
     else if (rela_comp .eq. 'LETK') then
-        call lkimat(mod, imat, nmat, materd, materf,&
+        call lkimat(mod, imat, nmat, materd, materf, &
                     matcst, ndt, ndi, nvi, nr)
-        typma='COHERENT'
+        typma = 'COHERENT'
 !
-    else if (rela_comp.eq.'LKR') then
-        call srimat(mod,imat,nmat,tempd,tempf,tref,materd,materf,&
-                    matcst,ndt,ndi,nvi,nr)
-        typma='COHERENT'
+    else if (rela_comp .eq. 'LKR') then
+        call srimat(mod, imat, nmat, tempd, tempf, tref, materd, materf, &
+                    matcst, ndt, ndi, nvi, nr)
+        typma = 'COHERENT'
 !
     else if (rela_comp .eq. 'HAYHURST') then
-        call haymat(fami, kpg, ksp, mod, imat,&
-                    nmat, '-', materd(1, 1), materd(1, 2), nvi,&
+        call haymat(fami, kpg, ksp, mod, imat, &
+                    nmat, '-', materd(1, 1), materd(1, 2), nvi, &
                     nr)
-        call haymat(fami, kpg, ksp, mod, imat,&
-                    nmat, '+', materf(1, 1), materf(1, 2), nvi,&
+        call haymat(fami, kpg, ksp, mod, imat, &
+                    nmat, '+', materf(1, 1), materf(1, 2), nvi, &
                     nr)
         call matect(materd, materf, nmat, matcst)
-        typma='COHERENT'
+        typma = 'COHERENT'
 !
     else if (rela_comp .eq. 'HUJEUX') then
-        call hujma2(fami, kpg, ksp, mod, imat,&
-                    nmat, tempf, angmas, sigd, vind,&
-                    materd, materf, ndt, ndi, nvi,&
+        call hujma2(fami, kpg, ksp, mod, imat, &
+                    nmat, tempf, angmas, sigd, vind, &
+                    materd, materf, ndt, ndi, nvi, &
                     nr, matcst)
-        typma='COHERENT'
+        typma = 'COHERENT'
 !
     else
 !
 ! CAS GENERAL
 !
-        call lcmatt(fami, kpg, ksp, mod, imat,&
-                    nmat, '-', rela_comp, materd(1, 1), materd(1, 2),&
+        call lcmatt(fami, kpg, ksp, mod, imat, &
+                    nmat, '-', rela_comp, materd(1, 1), materd(1, 2), &
                     typma, ndt, ndi, nr, nvi)
-        call lcmatt(fami, kpg, ksp, mod, imat,&
-                    nmat, '+', rela_comp, materf(1, 1), materf(1, 2),&
+        call lcmatt(fami, kpg, ksp, mod, imat, &
+                    nmat, '+', rela_comp, materf(1, 1), materf(1, 2), &
                     typma, ndt, ndi, nr, nvi)
 !
         call matect(materd, materf, nmat, matcst)
 !
-    endif
+    end if
 !
 !     - DANS LCPLNL ON DIMENSIONNE DES TABLES AVEC (NDT+NVI) QUI SONT
 !       ENSUITE UTILISEES PAR NEWTON
 !     - LA DIMENSION DU SYSTEME DIFFERENTIEL EST NR
 !     ==> IL FAUT DONC NDT+NVI >= NR
-    ASSERT((ndt+nvi).ge.nr)
+    ASSERT((ndt+nvi) .ge. nr)
 end subroutine

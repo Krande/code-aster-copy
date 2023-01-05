@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,10 +62,10 @@ subroutine op0078()
             do j = i+1, nbcham
                 if (champ(i) .eq. champ(j)) then
                     call utmess('E', 'ALGORITH9_30')
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
     call getvid(' ', 'RESULTAT', scal=resin, nbret=ir)
     call tran78(nomres, typres, resin)

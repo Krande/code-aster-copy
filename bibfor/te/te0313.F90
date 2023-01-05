@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine te0313(option, nomte)
 !
-use THM_type
-use Behaviour_module, only : behaviourOption
+    use THM_type
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,7 +38,7 @@ implicit none
 #include "asterfort/thmGetElemModel.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,39 +90,39 @@ character(len=16), intent(in) :: option, nomte
     call thmGetElemModel(ds_thm)
     if (ds_thm%ds_elem%l_weak_coupling) then
         call utmess('F', 'CHAINAGE_12')
-    endif
+    end if
 !
 ! - Preparation
 !
-    call caeihm(ds_thm, nomte, axi, perman, mecani, press1,&
-                press2, tempe, dimdef, dimcon, ndim,&
-                nno1, nno2, npi, npg, dimuel,&
-                ipoids, ivf1, idf1, ivf2, idf2,&
-                jgano, iu, ip, ipf, iq,&
+    call caeihm(ds_thm, nomte, axi, perman, mecani, press1, &
+                press2, tempe, dimdef, dimcon, ndim, &
+                nno1, nno2, npi, npg, dimuel, &
+                ipoids, ivf1, idf1, ivf2, idf2, &
+                jgano, iu, ip, ipf, iq, &
                 modint)
 !
     call tecael(iadzi, iazk24)
     nomail = zk24(iazk24-1+3) (1:8)
 !
 ! RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
-    if ((option .eq. 'FORC_NODA') .or. (option(1:9).eq.'RIGI_MECA' ) .or.&
-        (option(1:9).eq.'RAPH_MECA' ) .or. (option(1:9).eq.'FULL_MECA' )) then
+    if ((option .eq. 'FORC_NODA') .or. (option(1:9) .eq. 'RIGI_MECA') .or. &
+        (option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
 !
         call jevech('PCAMASS', 'L', icamas)
         if (zr(icamas) .lt. 0.d0) then
             call utmess('F', 'ELEMENTS5_48')
-        endif
+        end if
 !
 ! DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS
         call eiangl(ndim, nno2, zr(icamas+1), ang)
-    endif
+    end if
 ! =====================================================================
 ! --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 ! =====================================================================
 ! --- 2. OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA -------------
 ! =====================================================================
-    if ((option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
-        (option(1:9).eq.'FULL_MECA' )) then
+    if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'RAPH_MECA') .or. &
+        (option(1:9) .eq. 'FULL_MECA')) then
 ! ----- Input fields
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PMATERC', 'L', imate)
@@ -133,11 +133,11 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCONTMR', 'L', icontm)
-        read (zk16(icompo-1+NVAR),'(I16)') nbvari
+        read (zk16(icompo-1+NVAR), '(I16)') nbvari
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo),&
-                             lMatr , lVect ,&
-                             lVari , lSigm ,&
+        call behaviourOption(option, zk16(icompo), &
+                             lMatr, lVect, &
+                             lVari, lSigm, &
                              codret)
 ! ----- Output fields
         imatuu = ismaem()
@@ -146,52 +146,52 @@ character(len=16), intent(in) :: option, nomte
         ivarip = ismaem()
         if (lMatr) then
             call jevech('PMATUNS', 'E', imatuu)
-        endif
+        end if
         if (lVari) then
             call jevech('PVARIPR', 'E', ivarip)
-        endif
+        end if
         if (lSigm) then
             call jevech('PCONTPR', 'E', icontp)
             call jevech('PCODRET', 'E', jcret)
             zi(jcret) = 0
-        endif
+        end if
         if (lVect) then
             call jevech('PVECTUR', 'E', ivectu)
-        endif
+        end if
 ! ----- Integration
         codret = 0
         if (option(1:9) .eq. 'RIGI_MECA') then
-            call aseihm(ds_thm, option,&
-                        lSigm, lVari, lMatr, lVect,&
-                        axi, ndim, nno1, nno2,&
-                        npi, npg, dimuel, dimdef, dimcon,&
-                        nbvari, zi(imate), iu, ip, ipf,&
-                        iq, mecani, press1, press2, tempe,&
-                        zr(ivf1), zr(ivf2), zr(idf2), zr(iinstm), zr(iinstp),&
-                        zr(ideplm), zr(ideplm), zr(icontm), zr(icontm), zr(ivarim),&
-                        zr(ivarim), nomail, zr(ipoids), zr(igeom), ang,&
-                        zk16(icompo), perman, zr(ivectu), zr(imatuu),&
+            call aseihm(ds_thm, option, &
+                        lSigm, lVari, lMatr, lVect, &
+                        axi, ndim, nno1, nno2, &
+                        npi, npg, dimuel, dimdef, dimcon, &
+                        nbvari, zi(imate), iu, ip, ipf, &
+                        iq, mecani, press1, press2, tempe, &
+                        zr(ivf1), zr(ivf2), zr(idf2), zr(iinstm), zr(iinstp), &
+                        zr(ideplm), zr(ideplm), zr(icontm), zr(icontm), zr(ivarim), &
+                        zr(ivarim), nomail, zr(ipoids), zr(igeom), ang, &
+                        zk16(icompo), perman, zr(ivectu), zr(imatuu), &
                         codret)
         else
             do li = 1, dimuel
-                zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
+                zr(ideplp+li-1) = zr(ideplm+li-1)+zr(ideplp+li-1)
             end do
-            call aseihm(ds_thm, option,&
-                        lSigm, lVari, lMatr, lVect,&
-                        axi, ndim, nno1, nno2,&
-                        npi, npg, dimuel, dimdef, dimcon,&
-                        nbvari, zi(imate), iu, ip, ipf,&
-                        iq, mecani, press1, press2, tempe,&
-                        zr(ivf1), zr(ivf2), zr(idf2), zr(iinstm), zr(iinstp),&
-                        zr(ideplm), zr(ideplp), zr(icontm), zr(icontp), zr(ivarim),&
-                        zr(ivarip), nomail, zr(ipoids), zr(igeom), ang,&
-                        zk16(icompo), perman, zr(ivectu), zr(imatuu),&
+            call aseihm(ds_thm, option, &
+                        lSigm, lVari, lMatr, lVect, &
+                        axi, ndim, nno1, nno2, &
+                        npi, npg, dimuel, dimdef, dimcon, &
+                        nbvari, zi(imate), iu, ip, ipf, &
+                        iq, mecani, press1, press2, tempe, &
+                        zr(ivf1), zr(ivf2), zr(idf2), zr(iinstm), zr(iinstp), &
+                        zr(ideplm), zr(ideplp), zr(icontm), zr(icontp), zr(ivarim), &
+                        zr(ivarip), nomail, zr(ipoids), zr(igeom), ang, &
+                        zk16(icompo), perman, zr(ivectu), zr(imatuu), &
                         codret)
             if (lSigm) then
                 zi(jcret) = codret
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! ======================================================================
 ! --- 3. OPTION : FORC_NODA --------------------------------------------
@@ -211,26 +211,26 @@ character(len=16), intent(in) :: option, nomte
         call tecach('ONO', 'PINSTMR', 'L', iretm, iad=iinstm)
         call tecach('ONO', 'PINSTPR', 'L', iretp, iad=iinstp)
         if (iretm .eq. 0 .and. iretp .eq. 0) then
-            dt = zr(iinstp) - zr(iinstm)
+            dt = zr(iinstp)-zr(iinstm)
             fnoevo = .true.
         else
             fnoevo = .false.
             dt = 0.d0
-        endif
+        end if
 !
 ! ======================================================================
 ! --- PARAMETRES EN SORTIE ---------------------------------------------
 ! ======================================================================
         call jevech('PVECTUR', 'E', ivectu)
 !
-        call fneihm(ds_thm, fnoevo, dt, perman, nno1, nno2,&
-                    npi, npg, zr(ipoids), iu, ip,&
-                    ipf, iq, zr(ivf1), zr(ivf2), zr(idf2),&
-                    zr(igeom), ang, zr( icontm), r, zr(ivectu),&
-                    mecani, press1, press2, dimdef,&
+        call fneihm(ds_thm, fnoevo, dt, perman, nno1, nno2, &
+                    npi, npg, zr(ipoids), iu, ip, &
+                    ipf, iq, zr(ivf1), zr(ivf2), zr(idf2), &
+                    zr(igeom), ang, zr(icontm), r, zr(ivectu), &
+                    mecani, press1, press2, dimdef, &
                     dimcon, dimuel, ndim, axi)
 !
-    endif
+    end if
 !
 ! ======================================================================
 ! --- 4. OPTION : SIEF_ELNO ---------------------------------------
@@ -239,9 +239,9 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PCONTRR', 'L', ichg)
         call jevech('PSIEFNOR', 'E', ichn)
         nb_strain_meca = mecani(6)
-        call poeihm(nomte, option, modint, jgano, nno1,&
+        call poeihm(nomte, option, modint, jgano, nno1, &
                     nno2, dimcon, nb_strain_meca, zr(ichg), zr(ichn))
-    endif
+    end if
 !
 ! ======================================================================
 ! --- 5. OPTION : VARI_ELNO ---------------------------------------
@@ -249,15 +249,15 @@ character(len=16), intent(in) :: option, nomte
     if (option .eq. 'VARI_ELNO') then
         call tecach('OOO', 'PVARIGR', 'L', iret, nval=7, itab=itabin)
         call tecach('OOO', 'PVARINR', 'E', iret, nval=7, itab=itabou)
-        ichg=itabin(1)
-        ichn=itabou(1)
+        ichg = itabin(1)
+        ichn = itabou(1)
 !
         call jevech('PCOMPOR', 'L', icompo)
-        read (zk16(icompo-1+NVAR),'(I16)') nbvari
-        read (zk16(icompo-1+MECA_NVAR),'(I16)') nb_vari_meca
-        call poeihm(nomte, option, modint, jgano, nno1,&
+        read (zk16(icompo-1+NVAR), '(I16)') nbvari
+        read (zk16(icompo-1+MECA_NVAR), '(I16)') nb_vari_meca
+        call poeihm(nomte, option, modint, jgano, nno1, &
                     nno2, nbvari, nb_vari_meca, zr(ichg), zr(ichn))
-    endif
+    end if
 !
 ! ======================================================================
 end subroutine

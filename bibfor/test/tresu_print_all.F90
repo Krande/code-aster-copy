@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tresu_print_all(refer, legend, llab, typres, nbref,&
-                           rela, tole, ssigne, refr, valr,&
-                           refi, vali, refc, valc, ignore,&
+subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
+                           rela, tole, ssigne, refr, valr, &
+                           refi, vali, refc, valc, ignore, &
                            compare)
     implicit none
 !
@@ -57,30 +57,30 @@ subroutine tresu_print_all(refer, legend, llab, typres, nbref,&
     skip = .false.
     if (present(ignore)) then
         skip = ignore
-    endif
+    end if
 !
     arg_cmp = 1.d0
     if (present(compare)) then
         arg_cmp = compare
-    endif
+    end if
 !
     typ = typres(1:1)
 !
     select case (typ)
-        case ('I')
-        call tresu_print(refer, legend, llab, nbref, rela,&
-                         tole, ssigne, refi=refi, vali=vali, ignore=skip,&
+    case ('I')
+        call tresu_print(refer, legend, llab, nbref, rela, &
+                         tole, ssigne, refi=refi, vali=vali, ignore=skip, &
                          compare=arg_cmp)
-        case ('R')
-        call tresu_print(refer, legend, llab, nbref, rela,&
-                         tole, ssigne, refr=refr, valr=valr, ignore=skip,&
+    case ('R')
+        call tresu_print(refer, legend, llab, nbref, rela, &
+                         tole, ssigne, refr=refr, valr=valr, ignore=skip, &
                          compare=arg_cmp)
-        case ('C')
-        call tresu_print(refer, legend, llab, nbref, rela,&
-                         tole, ssigne, refc=refc, valc=valc, ignore=skip,&
+    case ('C')
+        call tresu_print(refer, legend, llab, nbref, rela, &
+                         tole, ssigne, refc=refc, valc=valc, ignore=skip, &
                          compare=arg_cmp)
     case default
-        ASSERT(typ.eq.'I' .or. typ.eq.'R' .or. typ.eq.'C')
+        ASSERT(typ .eq. 'I' .or. typ .eq. 'R' .or. typ .eq. 'C')
     end select
 !
 end subroutine tresu_print_all

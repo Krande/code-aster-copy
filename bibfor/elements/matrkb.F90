@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
+subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc, &
                   alpha, rig1, coef)
     implicit none
 !
@@ -29,7 +29,7 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
     real(kind=8) :: ktdc(ndimx, ndimx), rig1(nddlx, nddlx)
     real(kind=8) :: alpha, coef
 !
-    real(kind=8) :: rigrl ( 2 , 2 )
+    real(kind=8) :: rigrl(2, 2)
     real(kind=8) :: xmin
 !
     integer :: i1, i2, i, ib, ir, in, ii
@@ -41,9 +41,9 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
 !     RECHERCHE DU MINIMUM DE LA MATRICE KTDC = INF DES TERMES DIAGONAUX
 !
 !
-    xmin = 1.d0 / r8prem ( )
+    xmin = 1.d0/r8prem()
 !
-    nb2 = nb1 + 1
+    nb2 = nb1+1
 !
     do in = 1, nb2
 !
@@ -53,10 +53,10 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
 !
 !----------- NOEUDS DE SERENDIP
             do jj = 1, 2
-                jr = 5 * ( in - 1 ) + jj + 3
+                jr = 5*(in-1)+jj+3
                 do ii = 1, 2
-                    ir = 5 * ( in - 1 ) + ii + 3
-                    rigrl ( ii , jj ) = ktdc ( ir , jr )
+                    ir = 5*(in-1)+ii+3
+                    rigrl(ii, jj) = ktdc(ir, jr)
                 end do
             end do
 !
@@ -64,99 +64,99 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
 !
 !----------- SUPERNOEUD
             do jj = 1, 2
-                jr = 5 * nb1 + jj
+                jr = 5*nb1+jj
                 do ii = 1, 2
-                    ir = 5 * nb1 + ii
-                    rigrl ( ii , jj ) = ktdc ( ir , jr )
+                    ir = 5*nb1+ii
+                    rigrl(ii, jj) = ktdc(ir, jr)
                 end do
             end do
 !
-        endif
+        end if
 !
 !-------    ON COMPARE LES DEUX PREMIERS TERMES DIAGONAUX DE RIGRL
 !
-        if (rigrl ( 1 , 1 ) .lt. xmin) xmin = rigrl ( 1 , 1 )
-        if (rigrl ( 2 , 2 ) .lt. xmin) xmin = rigrl ( 2 , 2 )
+        if (rigrl(1, 1) .lt. xmin) xmin = rigrl(1, 1)
+        if (rigrl(2, 2) .lt. xmin) xmin = rigrl(2, 2)
 !
     end do
 !
 !
-    coef=alpha * xmin
+    coef = alpha*xmin
 !
 !     RAIDEUR ASSOCIEE A LA ROTATION FICTIVE = COEF = ALPHA * INF
 !
     do i = 1, nddlet
         do j = 1, nddlet
-            rig1(i,j)=0.d0
+            rig1(i, j) = 0.d0
         end do
     end do
 !
 !     CONSTRUCTION DE KBARRE = KTILD EXTENDU  :  (NDDLET,NDDLET)
 !
-    kompti=-1
-    komptj=-1
+    kompti = -1
+    komptj = -1
 !
-    nb2=nb1+1
+    nb2 = nb1+1
 !
     do ib = 1, nb2
-        kompti=kompti+1
+        kompti = kompti+1
         do jb = 1, nb2
-            komptj=komptj+1
-            if ((ib.le.nb1) .and. (jb.le.nb1)) then
+            komptj = komptj+1
+            if ((ib .le. nb1) .and. (jb .le. nb1)) then
                 do i = 1, 5
-                    i1=5*(ib-1)+i
-                    i2=i1+kompti
+                    i1 = 5*(ib-1)+i
+                    i2 = i1+kompti
                     do j = 1, 5
-                        j1=5*(jb-1)+j
-                        j2=j1+komptj
-                        rig1(i2,j2)=ktdc(i1,j1)
+                        j1 = 5*(jb-1)+j
+                        j2 = j1+komptj
+                        rig1(i2, j2) = ktdc(i1, j1)
                     end do
                 end do
 !
-            else if ((ib.le.nb1).and.(jb.eq.nb2)) then
+            else if ((ib .le. nb1) .and. (jb .eq. nb2)) then
                 do i = 1, 5
-                    i1=5*(ib-1)+i
-                    i2=i1+kompti
+                    i1 = 5*(ib-1)+i
+                    i2 = i1+kompti
                     do j = 1, 2
-                        j1=5*nb1+j
-                        j2=j1+komptj
-                        rig1(i2,j2)=ktdc(i1,j1)
+                        j1 = 5*nb1+j
+                        j2 = j1+komptj
+                        rig1(i2, j2) = ktdc(i1, j1)
                     end do
                 end do
 !
-            else if ((ib.eq.nb2).and.(jb.le.nb1)) then
+            else if ((ib .eq. nb2) .and. (jb .le. nb1)) then
                 do i = 1, 2
-                    i1=5*nb1+i
-                    i2=i1+kompti
+                    i1 = 5*nb1+i
+                    i2 = i1+kompti
                     do j = 1, 5
-                        j1=5*(jb-1)+j
-                        j2=j1+komptj
-                        rig1(i2,j2)=ktdc(i1,j1)
+                        j1 = 5*(jb-1)+j
+                        j2 = j1+komptj
+                        rig1(i2, j2) = ktdc(i1, j1)
                     end do
                 end do
 !
-            else if ((ib.eq.nb2).and.(jb.eq.nb2)) then
+            else if ((ib .eq. nb2) .and. (jb .eq. nb2)) then
                 do i = 1, 2
-                    i1=5*nb1+i
-                    i2=i1+kompti
+                    i1 = 5*nb1+i
+                    i2 = i1+kompti
                     do j = 1, 2
-                        j1=5*nb1+j
-                        j2=j1+komptj
-                        rig1(i2,j2)=ktdc(i1,j1)
+                        j1 = 5*nb1+j
+                        j2 = j1+komptj
+                        rig1(i2, j2) = ktdc(i1, j1)
                     end do
                 end do
 !
-            endif
+            end if
 !
         end do
 !
         if (ib .le. nb1) then
-            rig1(6*ib,6*ib)=coef
+            rig1(6*ib, 6*ib) = coef
         else
-            rig1(nddlet,nddlet)=coef
-        endif
+            rig1(nddlet, nddlet) = coef
+        end if
 !
-        komptj=-1
+        komptj = -1
     end do
 !
 end subroutine

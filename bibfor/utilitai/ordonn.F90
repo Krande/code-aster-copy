@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ subroutine ordonn(nomfon, iret)
 !
     call jemarq()
 !
-    chval=nomfon//'.VALE'
+    chval = nomfon//'.VALE'
     call jeveuo(nomfon//'.PROL', 'L', vk24=prol)
-    typfon = prol(1)(1:16)
+    typfon = prol(1) (1:16)
 !
     isnap = .false.
     inv = .false.
@@ -70,15 +70,15 @@ subroutine ordonn(nomfon, iret)
     if (typfon .eq. 'CONSTANT') then
 !        ON N'A RIEN A FAIRE
 !     --------------------------------------------
-    else if (typfon.eq.'INTERPRE') then
+    else if (typfon .eq. 'INTERPRE') then
 !        ON N'A RIEN A FAIRE
 !     --------------------------------------------
-    else if (typfon.eq.'FONCTION') then
+    else if (typfon .eq. 'FONCTION') then
         call jeveuo(chval, 'E', ival)
         call jelira(chval, 'LONUTI', nbval)
-        nbpts=nbval/2
+        nbpts = nbval/2
         if (nbpts .eq. 1) goto 999
-        ier=0
+        ier = 0
         call foverf(zr(ival), nbpts, ier)
         if (ier .eq. 0) then
             if (iret .eq. 1) then
@@ -87,22 +87,22 @@ subroutine ordonn(nomfon, iret)
             else
                 codmes = 'A'
                 call uttrif(zr(ival), nbpts, typfon)
-            endif
-        else if (ier.eq.-2) then
+            end if
+        else if (ier .eq. -2) then
             codmes = 'A'
             inv = .true.
             call ordon1(zr(ival), nbpts)
-        else if (ier.eq.1 .or. ier.eq.-1) then
+        else if (ier .eq. 1 .or. ier .eq. -1) then
             codmes = 'F'
             goto 999
-        endif
+        end if
 !     --------------------------------------------
-    else if (typfon.eq.'FONCT_C') then
+    else if (typfon .eq. 'FONCT_C') then
         call jeveuo(chval, 'E', ival)
         call jelira(chval, 'LONUTI', nbval)
-        nbpts=nbval/3
+        nbpts = nbval/3
         if (nbpts .eq. 1) goto 999
-        ier=0
+        ier = 0
         call foverf(zr(ival), nbpts, ier)
         if (ier .eq. 0) then
             if (iret .eq. 1) then
@@ -111,35 +111,35 @@ subroutine ordonn(nomfon, iret)
             else
                 codmes = 'A'
                 call uttrif(zr(ival), nbpts, typfon)
-            endif
-        else if (ier.eq.-2) then
+            end if
+        else if (ier .eq. -2) then
             codmes = 'A'
             inv = .true.
             call ordon2(zr(ival), nbpts)
-        else if (ier.eq.1 .or. ier.eq.-1) then
+        else if (ier .eq. 1 .or. ier .eq. -1) then
             codmes = 'F'
             goto 999
-        endif
+        end if
 !     --------------------------------------------
-    else if (typfon.eq.'NAPPE') then
-        isnap=.true.
+    else if (typfon .eq. 'NAPPE') then
+        isnap = .true.
         call jeveuo(nomfon//'.PARA', 'E', vr=para)
         call jelira(nomfon//'.PARA', 'LONUTI', nbpara)
-        ier=0
+        ier = 0
         call foverf(para, nbpara, ier)
         if (ier .le. 0) then
 !           LES PARAMETRES NE SONT PAS CROISSANTS (SENS LARGE)
             call ordonp(nomfon)
             call utmess('A', 'UTILITAI3_37')
-        endif
+        end if
 !        VERIFIER CHAQUE FONCTION COMME CI-DESSUS
-        typfon='FONCTION'
+        typfon = 'FONCTION'
         do i = 1, nbpara
             call jelira(jexnum(chval, i), 'LONMAX', nbval)
             call jeveuo(jexnum(chval, i), 'E', ival)
-            nbpts=nbval/2
+            nbpts = nbval/2
             if (nbpts .eq. 1) goto 99
-            ier=0
+            ier = 0
             call foverf(zr(ival), nbpts, ier)
             if (ier .eq. 0) then
                 if (iret .eq. 1) then
@@ -148,21 +148,21 @@ subroutine ordonn(nomfon, iret)
                 else
                     codmes = 'A'
                     call uttrif(zr(ival), nbpts, typfon)
-                endif
-            else if (ier.eq.-2) then
+                end if
+            else if (ier .eq. -2) then
                 codmes = 'A'
                 inv = .true.
                 call ordon1(zr(ival), nbpts)
-            else if (ier.eq.1 .or. ier.eq.-1) then
+            else if (ier .eq. 1 .or. ier .eq. -1) then
                 codmes = 'F'
                 goto 999
-            endif
- 99         continue
+            end if
+99          continue
         end do
 !     --------------------------------------------
     else
         call utmess('F', 'UTILITAI3_38')
-    endif
+    end if
 !
 999 continue
 !
@@ -171,14 +171,14 @@ subroutine ordonn(nomfon, iret)
             call utmess(codmes//'+', 'FONCT0_62', sk=nomfon)
         else
             call utmess(codmes//'+', 'FONCT0_63', sk=nomfon)
-        endif
+        end if
         if (codmes .eq. 'F') then
             call utmess(codmes, 'FONCT0_64')
         else if (codmes .eq. 'A' .and. .not. inv) then
             call utmess(codmes, 'FONCT0_65')
         else if (codmes .eq. 'A' .and. inv) then
             call utmess(codmes, 'FONCT0_66')
-        endif
-    endif
+        end if
+    end if
     call jedema()
 end subroutine

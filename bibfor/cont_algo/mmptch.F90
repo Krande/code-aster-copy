@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mmptch(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jerazo.h"
 #include "asterfort/jelira.h"
@@ -56,23 +56,23 @@ implicit none
     sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
     sdappa_tgel = sdappa(1:19)//'.TGEL'
     sdappa_tgno = sdappa(1:19)//'.TGNO'
-    length=cfdisi(ds_contact%sdcont_defi,'NNOCO' )
-    call jerazo(sdappa_tgno,6*length,1)
-    length=0
+    length = cfdisi(ds_contact%sdcont_defi, 'NNOCO')
+    call jerazo(sdappa_tgno, 6*length, 1)
+    length = 0
     call jelira(sdappa_tgel, 'LONT', length)
-    call jerazo(sdappa_tgel, length ,1)
+    call jerazo(sdappa_tgel, length, 1)
     sdappa_mpib = sdappa(1:19)//'.MPIB'
     sdappa_mpic = sdappa(1:19)//'.MPIC'
-    call jeexin(sdappa_mpib,iret)
+    call jeexin(sdappa_mpib, iret)
     if (iret .eq. 0) then
-        call wkvect(sdappa_mpib,'V V K16',1,vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-        call wkvect(sdappa_mpic,'V V K16',1,vk16=valk)
-        valk(1)='MPI_INCOMPLET'
+        call wkvect(sdappa_mpib, 'V V K16', 1, vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+        call wkvect(sdappa_mpic, 'V V K16', 1, vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
     else
-        call jeveuo(sdappa_mpib, 'E',vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-        call jeveuo(sdappa_mpic, 'E',vk16=valk)
-        valk(1)='MPI_INCOMPLET'
-    endif
+        call jeveuo(sdappa_mpib, 'E', vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+        call jeveuo(sdappa_mpic, 'E', vk16=valk)
+        valk(1) = 'MPI_INCOMPLET'
+    end if
 end subroutine

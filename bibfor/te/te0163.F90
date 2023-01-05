@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine te0163(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     zero = 0.d0
 !
@@ -71,7 +71,7 @@ subroutine te0163(option, nomte)
         nddl = 6
     else
         nddl = 3
-    endif
+    end if
 !
 !
 !   calcul des vecteurs elementaires
@@ -86,9 +86,9 @@ subroutine te0163(option, nomte)
 !   Longueur et recuperation pointeur sur coordonnees des noeuds
     xl = lonele(igeom=igeom)
 !   vecteur normé axe seg2
-    e1 = zr(igeom+4) - zr(igeom+1)
-    e2 = zr(igeom+5) - zr(igeom+2)
-    e3 = zr(igeom+6) - zr(igeom+3)
+    e1 = zr(igeom+4)-zr(igeom+1)
+    e2 = zr(igeom+5)-zr(igeom+2)
+    e3 = zr(igeom+6)-zr(igeom+3)
     e1 = e1/xl
     e2 = e2/xl
     e3 = e3/xl
@@ -100,9 +100,9 @@ subroutine te0163(option, nomte)
     do ima = 1, nbma
         no1 = zi(jlima+2*ima-2)
         no2 = zi(jlima+2*ima-1)
-        g1 = vale(1+3*no2-3) - vale(1+3*no1-3)
-        g2 = vale(1+3*no2-2) - vale(1+3*no1-2)
-        g3 = vale(1+3*no2-1) - vale(1+3*no1-1)
+        g1 = vale(1+3*no2-3)-vale(1+3*no1-3)
+        g2 = vale(1+3*no2-2)-vale(1+3*no1-2)
+        g3 = vale(1+3*no2-1)-vale(1+3*no1-1)
         s = sqrt(g1**2+g2**2+g3**2)
         f1 = g1/s
         f2 = g2/s
@@ -114,25 +114,25 @@ subroutine te0163(option, nomte)
             r2 = -vale(1+3*no2-2)
             r3 = -vale(1+3*no2-1)
             do i = 1, nno
-                r1 = r1 + zr(igeom+1+3*(i-1))*zr(ivf+k+i-1)
-                r2 = r2 + zr(igeom+2+3*(i-1))*zr(ivf+k+i-1)
-                r3 = r3 + zr(igeom+3+3*(i-1))*zr(ivf+k+i-1)
-            enddo
-            q1 = r1 + g1
-            q2 = r2 + g2
-            q3 = r3 + g3
-            b1 = f2*q3 - f3*q2
-            b2 = f3*q1 - f1*q3
-            b3 = f1*q2 - f2*q1
+                r1 = r1+zr(igeom+1+3*(i-1))*zr(ivf+k+i-1)
+                r2 = r2+zr(igeom+2+3*(i-1))*zr(ivf+k+i-1)
+                r3 = r3+zr(igeom+3+3*(i-1))*zr(ivf+k+i-1)
+            end do
+            q1 = r1+g1
+            q2 = r2+g2
+            q3 = r3+g3
+            b1 = f2*q3-f3*q2
+            b2 = f3*q1-f1*q3
+            b3 = f1*q2-f2*q1
             d = sqrt(b1**2+b2**2+b3**2)
             dd = d/sqrt(q1**2+q2**2+q3**2)
             if (dd .lt. 1.d-8) goto 40
             b1 = b1/d
             b2 = b2/d
             b3 = b3/d
-            u(1) = e2*b3 - e3*b2
-            u(2) = e3*b1 - e1*b3
-            u(3) = e1*b2 - e2*b1
+            u(1) = e2*b3-e3*b2
+            u(2) = e3*b1-e1*b3
+            u(3) = e1*b2-e2*b1
             s = sqrt(q1**2+q2**2+q3**2)
             q1 = q1/s
             q2 = q2/s
@@ -141,21 +141,21 @@ subroutine te0163(option, nomte)
             r1 = r1/s
             r2 = r2/s
             r3 = r3/s
-            s = f1* (q1-r1) + f2* (q2-r2) + f3* (q3-r3)
+            s = f1*(q1-r1)+f2*(q2-r2)+f3*(q3-r3)
             s = s/d/2.d0
             do i = 1, nno
                 do j = 1, 3
-                    zr(ivect-1+j+nddl* (i-1)) = zr(&
-                                                ivect-1+j+nddl*(i- 1)) + s*u(j)*poids(kp)*zr(ivf+&
-                                                &k+i-1&
+                    zr(ivect-1+j+nddl*(i-1)) = zr( &
+                                                ivect-1+j+nddl*(i-1))+s*u(j)*poids(kp)*zr(ivf+&
+                                                &k+i-1 &
                                                 )
-                enddo
-            enddo
- 40         continue
+                end do
+            end do
+40          continue
         end do
-    enddo
+    end do
 !
- 60 continue
+60  continue
 !
     call jedema()
 end subroutine

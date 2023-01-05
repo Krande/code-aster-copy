@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsllin(mod, nmat, materd, materf, matcst,&
+subroutine rsllin(mod, nmat, materd, materf, matcst, &
                   deps, sigd, vind, sigf, theta)
     implicit none
 !       INTEGRATION ELASTIQUE LINEAIRE ISOTROPE SUR DT POUR
@@ -44,40 +44,40 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
     real(kind=8) :: dsig(6), deps(6), thde(6)
     real(kind=8) :: rho, f, f0, un, theta
 !
-    parameter       ( un     = 1.d0   )
+    parameter(un=1.d0)
 !
     character(len=8) :: mod
     character(len=3) :: matcst
     integer :: ndt, ndi
-    common /tdim/ ndt, ndi
+    common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !
 ! --    CALCUL DE RHO
 !
     f = vind(2)
-    f0 = materf(3,2)
+    f0 = materf(3, 2)
     rho = (un-f)/(un-f0)
 !
     if (matcst(1:3) .eq. 'OUI') then
 !
 ! --INTEGRATION ELASTIQUE : SIGF = SIGD+ RHO HOOKF DEPS
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
-        thde(1:ndt) = theta * deps(1:ndt)
-        sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), thde(1:ndt))
-        sigf(1:ndt) = rho * sigf(1:ndt)
-        sigf(1:ndt) = sigd(1:ndt) + sigf(1:ndt)
+        thde(1:ndt) = theta*deps(1:ndt)
+        sigf(1:ndt) = matmul(hookf(1:ndt, 1:ndt), thde(1:ndt))
+        sigf(1:ndt) = rho*sigf(1:ndt)
+        sigf(1:ndt) = sigd(1:ndt)+sigf(1:ndt)
     else
 !                                                  -1
 ! --DEFORMATION ELASTIQUE A T ET T+DT : EPSEF = HOOKD/RHO  SIGD + DEPS
 ! --INTEGRATION ELASTIQUE :              SIGF = RHO*HOOKF EPSEF
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
-        ident(1:ndt,1:ndt) = matmul(dkooh(1:ndt,1:ndt), hookf(1:ndt,1:ndt))
-        sigf(1:ndt) = matmul(ident(1:ndt,1:ndt), sigd(1:ndt))
-        thde(1:ndt) = theta * deps(1:ndt)
-        dsig(1:ndt) = matmul(hookf(1:ndt,1:ndt), thde(1:ndt))
-        dsig(1:ndt) = rho * dsig(1:ndt)
-        sigf(1:ndt) = sigf(1:ndt) + dsig(1:ndt)
-    endif
+        ident(1:ndt, 1:ndt) = matmul(dkooh(1:ndt, 1:ndt), hookf(1:ndt, 1:ndt))
+        sigf(1:ndt) = matmul(ident(1:ndt, 1:ndt), sigd(1:ndt))
+        thde(1:ndt) = theta*deps(1:ndt)
+        dsig(1:ndt) = matmul(hookf(1:ndt, 1:ndt), thde(1:ndt))
+        dsig(1:ndt) = rho*dsig(1:ndt)
+        sigf(1:ndt) = sigf(1:ndt)+dsig(1:ndt)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -82,37 +82,37 @@ implicit none
 !
     call jemarq()
 !
-    chno        = chnoz
-    list_node   = list_nodez
-    nuage       = nuagez
+    chno = chnoz
+    list_node = list_nodez
+    nuage = nuagez
     l_crea_nual = .false.
 !
-    call jeveuo(chno//'.DESC', 'L', vi = p_desc)
+    call jeveuo(chno//'.DESC', 'L', vi=p_desc)
     idx_gd = p_desc(1)
-    num    = p_desc(2)
+    num = p_desc(2)
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
     call jenuno(jexnum('&CATA.GD.NOMGD', idx_gd), gran_name)
     nb_ec = nbec(idx_gd)
     AS_ALLOCATE(vi=cmp_name, size=ncmpmx)
     AS_ALLOCATE(vi=ent_cod, size=nb_ec)
 !
-    call jeveuo(chno//'.REFE', 'L', vk24 = p_refe)
-    mesh     = p_refe(1)(1:8)
-    profchno = p_refe(2)(1:19)
+    call jeveuo(chno//'.REFE', 'L', vk24=p_refe)
+    mesh = p_refe(1) (1:8)
+    profchno = p_refe(2) (1:19)
 !
-    call nueq_chck(profchno, l_error= .true.)
+    call nueq_chck(profchno, l_error=.true.)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_point)
     call jeveuo(mesh//'.COORDO    .VALE', 'L', kcoor)
 !
     if (list_node .ne. ' ') then
         call jelira(list_node, 'LONUTI', nb_point)
-        call jeveuo(list_node, 'L', vi = p_list_node)
+        call jeveuo(list_node, 'L', vi=p_list_node)
     else
-        call wkvect('&&CNONUA.NOEUD', 'V V I', nb_point, vi = p_list_node)
+        call wkvect('&&CNONUA.NOEUD', 'V V I', nb_point, vi=p_list_node)
         do i_pt = 1, nb_point
             p_list_node(i_pt) = i_pt
         end do
-    endif
+    end if
 !
     call jelira(chno//'.VALE', 'TYPE', cval=type_scal)
     call jeveuo(chno//'.VALE', 'L', kvale)
@@ -122,7 +122,7 @@ implicit none
         itype = 2
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !     --SI LE CHAMP EST A REPRESENTATION CONSTANTE ---
@@ -135,7 +135,7 @@ implicit none
         do i_cmp_mx = 1, ncmpmx
             if (exisdg(ent_cod, i_cmp_mx)) then
                 cmp_name(i_cmp_mx) = i_cmp_mx
-            endif
+            end if
         end do
     else
 !
@@ -148,39 +148,39 @@ implicit none
         call jeveuo(jexnum(profchno//'.PRNO', i_ligr_mesh), 'L', iaprno)
         do i_pt = 1, nb_point
             nume_pt = p_list_node(i_pt)
-            ncmp    = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2 )
+            ncmp = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+2)
             if (ncmp .ne. 0) then
                 do i_ec = 1, nb_ec
-                    ent_cod(i_ec) = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2+i_ec )
+                    ent_cod(i_ec) = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+2+i_ec)
                 end do
                 icompt = 0
                 do i_cmp = 1, ncmpmx
-                    if (exisdg(ent_cod, i_cmp )) then
-                        icompt = icompt + 1
+                    if (exisdg(ent_cod, i_cmp)) then
+                        icompt = icompt+1
                         cmp_name(i_cmp) = i_cmp
-                    endif
+                    end if
                 end do
                 if (prem) then
                     nb_cmp_max = icompt
                     prem = .false.
                 else
                     if (nb_cmp_max .ne. icompt) then
-                        nb_cmp_max = max( nb_cmp_max , icompt )
+                        nb_cmp_max = max(nb_cmp_max, icompt)
                         l_crea_nual = .true.
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
-    endif
+    end if
 !
 ! - Create NUAGE datastructure
 !
-    call crenua(nuagez     , gran_name, nb_point, nb_dim, nb_cmp_max,&
+    call crenua(nuagez, gran_name, nb_point, nb_dim, nb_cmp_max, &
                 l_crea_nual)
 !
 ! - Set .NUAI
 !
-    call jeveuo(nuage//'.NUAI', 'E', vi = p_nuai)
+    call jeveuo(nuage//'.NUAI', 'E', vi=p_nuai)
     p_nuai(1) = nb_point
     p_nuai(2) = nb_dim
     p_nuai(3) = nb_cmp_max
@@ -189,14 +189,14 @@ implicit none
     i_cmp = 0
     do i_cmp_mx = 1, ncmpmx
         if (cmp_name(i_cmp_mx) .ne. 0) then
-            i_cmp = i_cmp + 1
+            i_cmp = i_cmp+1
             p_nuai(5+i_cmp) = cmp_name(i_cmp_mx)
-        endif
+        end if
     end do
 !
 ! - Set .NUAX
 !
-    call jeveuo(nuage//'.NUAX', 'E', vr = p_nuax)
+    call jeveuo(nuage//'.NUAX', 'E', vr=p_nuax)
     do i_pt = 1, nb_point
         do i_dim = 1, nb_dim
             p_nuax(nb_dim*(i_pt-1)+i_dim) = zr(kcoor-1+3*(i_pt-1)+i_dim)
@@ -207,8 +207,8 @@ implicit none
 !
     call jeveuo(nuage//'.NUAV', 'E', jnuav)
     if (l_crea_nual) then
-        call jeveuo(nuage//'.NUAL', 'E', vl = p_nual)
-    endif
+        call jeveuo(nuage//'.NUAL', 'E', vl=p_nual)
+    end if
 !
 !     --SI LE CHAMP EST A REPRESENTATION CONSTANTE ---
 !
@@ -216,18 +216,18 @@ implicit none
         ncmp = -num
         do i_pt = 1, nb_point
             nume_pt = p_list_node(i_pt)
-            ival = ncmp * ( nume_pt - 1 )
+            ival = ncmp*(nume_pt-1)
             icompt = 0
             do i_cmp = 1, ncmpmx
-                if (exisdg(ent_cod, i_cmp )) then
-                    icompt = icompt + 1
-                    k = nb_cmp_max*(i_pt-1) + icompt
+                if (exisdg(ent_cod, i_cmp)) then
+                    icompt = icompt+1
+                    k = nb_cmp_max*(i_pt-1)+icompt
                     if (itype .eq. 1) then
                         zr(jnuav+k-1) = zr(kvale-1+ival+i_cmp)
                     else
                         zc(jnuav+k-1) = zc(kvale-1+ival+i_cmp)
-                    endif
-                endif
+                    end if
+                end if
             end do
         end do
     else
@@ -239,31 +239,31 @@ implicit none
         call jeveuo(jexnum(profchno//'.PRNO', i_ligr_mesh), 'L', iaprno)
         do i_pt = 1, nb_point
             nume_pt = p_list_node(i_pt)
-            ival    = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+1 )
-            ncmp    = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2 )
+            ival = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+1)
+            ncmp = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+2)
             if (ncmp .ne. 0) then
                 do i_ec = 1, nb_ec
-                    ent_cod(i_ec) = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2+i_ec)
+                    ent_cod(i_ec) = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+2+i_ec)
                 end do
                 icompt = 0
                 do i_cmp_mx = 1, ncmpmx
                     if (exisdg(ent_cod, i_cmp_mx)) then
-                        icompt = icompt + 1
+                        icompt = icompt+1
                         ieq = zi(ianueq-1+ival-1+icompt)
-                        k = nb_cmp_max*(i_pt-1) + icompt
+                        k = nb_cmp_max*(i_pt-1)+icompt
                         if (l_crea_nual) then
                             p_nual(k) = .true.
-                        endif
+                        end if
                         if (itype .eq. 1) then
                             zr(jnuav+k-1) = zr(kvale-1+ieq)
                         else
                             zc(jnuav+k-1) = zc(kvale-1+ieq)
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
     AS_DEALLOCATE(vi=cmp_name)
     AS_DEALLOCATE(vi=ent_cod)

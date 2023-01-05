@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltf21(p, front, frn, n, t1,&
+subroutine mltf21(p, front, frn, n, t1, &
                   t2, eps, ier)
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
@@ -34,48 +34,48 @@ subroutine mltf21(p, front, frn, n, t1,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     m = p/2
-    r = p - 2*m
+    r = p-2*m
     l = n
     dia2 = -n
     do j = 1, m
-        jj=j
+        jj = j
 !                    TRAVAIL SUR LE BLOC TRIANGULAIRE
 !     MODIFS POUR STOCKAGE DGEMV
-        dia1 = dia2 + n + 1
-        dia2 = dia1 + n + 1
-        dia21 = dia2 + 1
-        l = l - 2
+        dia1 = dia2+n+1
+        dia2 = dia1+n+1
+        dia21 = dia2+1
+        l = l-2
         coef1 = front(dia1+1)
         if (abs(front(dia1)) .le. eps) then
             ier = 1
             goto 30
         else
             front(dia1+1) = front(dia1+1)/front(dia1)
-            front(dia2) = front(dia2) - front(dia1+1)*coef1
+            front(dia2) = front(dia2)-front(dia1+1)*coef1
 !                                            TRAVAIL SUR LES 2 COLONNES
-            call colni2(front(dia1+2), front(dia21), l, front(dia1), front(dia2),&
+            call colni2(front(dia1+2), front(dia21), l, front(dia1), front(dia2), &
                         coef1, t1, t2, eps, ier)
             if (ier .ne. 0) goto 30
 !                                    MISE A JOUR DES COLONNES
-            n1 = p - 2*j
+            n1 = p-2*j
 !     MODIFS POUR STOCKAGE DGEMV
-            call col21j(front(dia1), front(dia21+n), frn, j, l,&
+            call col21j(front(dia1), front(dia21+n), frn, j, l, &
                         n, n1, t1, t2)
-        endif
+        end if
     end do
 !                          TRAVAIL SUR LE RESTE DES COLONNES
 !                                            DU SUPERNOEUD
     if (r .eq. 1) then
-        jj = m + 1
+        jj = m+1
 !     MODIFS POUR STOCKAGE DGEMV
-        dia1 = dia2 + n + 1
-        dia2 = dia1 + l
-        l = l - 1
-        call colni1(front(dia1+1), l, front(dia1), t1, eps,&
+        dia1 = dia2+n+1
+        dia2 = dia1+l
+        l = l-1
+        call colni1(front(dia1+1), l, front(dia1), t1, eps, &
                     ier)
         if (ier .ne. 0) goto 30
         call col11j(front(dia1), frn, l, t1)
-    endif
- 30 continue
-    if (ier .gt. 0) ier = ier + 2* (jj-1)
+    end if
+30  continue
+    if (ier .gt. 0) ier = ier+2*(jj-1)
 end subroutine

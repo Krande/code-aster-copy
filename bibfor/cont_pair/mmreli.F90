@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
+subroutine mmreli(alias, nno, ndim, coorma, coorpt, &
                   ksi1, ksi2, dksi1, dksi2, alpha)
 ! person_in_charge: mickael.abbas at edf.fr
     implicit none
@@ -60,34 +60,34 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
     real(kind=8) :: alpha2, ksia2, ga2, res2
     real(kind=8) :: coeffa, coeffb, unsdet
     real(kind=8) :: omega1, amin, amax
-    parameter   (omega1=1.d-4,amin=1.d-1,amax=5.d-1)
+    parameter(omega1=1.d-4, amin=1.d-1, amax=5.d-1)
     integer :: nadamx, iada
-    parameter   (nadamx=2)
+    parameter(nadamx=2)
 !
 ! ----------------------------------------------------------------------
 !                                  __
 ! --- CALCUL DE G(0)  ==  1/2 * || \/D(KSI) ||^2
 !
-    call mmresi(alias, nno, ndim, coorma, coorpt,&
+    call mmresi(alias, nno, ndim, coorma, coorpt, &
                 ksi1, ksi2, g0)
 !
 ! --- CALCUL DE G'(0) == -2 * G(0)
 !
-    gp0 = -2.d0 * g0
+    gp0 = -2.d0*g0
 !
 ! ----------------------------------------------------------------------
 !
 ! --- PREMIER PARAMETRE D'AVANCEMENT (ALPHA == 1)
 !
     alpha1 = 1.d0
-    ksia1 = ksi1 + alpha1 * dksi1
-    ksia2 = ksi2 + alpha1 * dksi2
-    call mmresi(alias, nno, ndim, coorma, coorpt,&
+    ksia1 = ksi1+alpha1*dksi1
+    ksia2 = ksi2+alpha1*dksi2
+    call mmresi(alias, nno, ndim, coorma, coorpt, &
                 ksia1, ksia2, ga1)
     if (ga1 .le. (g0+omega1*gp0)) then
         alpha = alpha1
         goto 999
-    endif
+    end if
     res1 = ga1-g0-gp0*alpha1
 !
 ! ----------------------------------------------------------------------
@@ -95,16 +95,16 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
 ! --- DEUXIEME PARAMETRE D'AVANCEMENT AVEC APPROXIMATION QUADRATIQUE
 !
     alpha2 = -gp0/(2.d0*res1)
-    if (alpha2 .lt. amin*alpha1) alpha2=amin*alpha1
-    if (alpha2 .gt. amax*alpha1) alpha2=amax*alpha1
-    ksia1 = ksi1 + alpha2 * dksi1
-    ksia2 = ksi2 + alpha2 * dksi2
-    call mmresi(alias, nno, ndim, coorma, coorpt,&
+    if (alpha2 .lt. amin*alpha1) alpha2 = amin*alpha1
+    if (alpha2 .gt. amax*alpha1) alpha2 = amax*alpha1
+    ksia1 = ksi1+alpha2*dksi1
+    ksia2 = ksi2+alpha2*dksi2
+    call mmresi(alias, nno, ndim, coorma, coorpt, &
                 ksia1, ksia2, ga2)
     if (ga2 .le. (g0+omega1*gp0*alpha2)) then
         alpha = alpha2
         goto 999
-    endif
+    end if
     res2 = ga2-g0-gp0*alpha2
 !
 ! ----------------------------------------------------------------------
@@ -113,9 +113,9 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
 !
     do iada = 1, nadamx
 !
-        ASSERT(abs(alpha1 - alpha2).gt.r8prem())
-        unsdet = (1.d0 / (alpha1 - alpha2))
-        coeffa = unsdet*( res1/alpha1**2- res2/alpha2**2)
+        ASSERT(abs(alpha1-alpha2) .gt. r8prem())
+        unsdet = (1.d0/(alpha1-alpha2))
+        coeffa = unsdet*(res1/alpha1**2-res2/alpha2**2)
         coeffb = unsdet*(-alpha2*res1/alpha1**2+alpha1*res2/alpha2**2)
         alpha1 = alpha2
         ga1 = ga2
@@ -123,18 +123,18 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
         if (abs(coeffa) .le. r8prem()) then
             alpha = alpha2
             goto 999
-        endif
-        alpha2 = (-coeffb+sqrt(coeffb*coeffb-3.d0*coeffa*gp0))/ (3.d0*coeffa)
-        if (alpha2 .lt. amin*alpha1) alpha2=amin*alpha1
-        if (alpha2 .gt. amax*alpha1) alpha2=amax*alpha1
-        ksia1 = ksi1 + alpha2 * dksi1
-        ksia2 = ksi2 + alpha2 * dksi2
-        call mmresi(alias, nno, ndim, coorma, coorpt,&
+        end if
+        alpha2 = (-coeffb+sqrt(coeffb*coeffb-3.d0*coeffa*gp0))/(3.d0*coeffa)
+        if (alpha2 .lt. amin*alpha1) alpha2 = amin*alpha1
+        if (alpha2 .gt. amax*alpha1) alpha2 = amax*alpha1
+        ksia1 = ksi1+alpha2*dksi1
+        ksia2 = ksi2+alpha2*dksi2
+        call mmresi(alias, nno, ndim, coorma, coorpt, &
                     ksia1, ksia2, ga2)
         if (ga2 .le. (g0+omega1*gp0*alpha2)) then
             alpha = alpha2
             goto 999
-        endif
+        end if
         res2 = ga2-g0-gp0*alpha2
 !
     end do

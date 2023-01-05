@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
+subroutine rigflu(modele, time, nomcmp, tps, nbchar, &
                   char, mate, mateco, solvez, ma, nu)
     implicit none
 #include "jeveux.h"
@@ -49,9 +49,9 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
     character(len=8) :: modele, nomcmp(6), char, ma, mel
     character(len=24) :: time, fomult
     character(len=19) :: solveu, list_load, maprec, mel19
-    data maprec   /'&&OP0152.MAPREC'/
-    data list_load   /'&&OP0152.INFCHA'/
-    data fomult   /'&&OP0152.LIFCTS'/
+    data maprec/'&&OP0152.MAPREC'/
+    data list_load/'&&OP0152.INFCHA'/
+    data fomult/'&&OP0152.LIFCTS'/
 !   ------------------------------------------------------------------
 !
     ma = '&MATAS'
@@ -61,10 +61,10 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
 !
 !-----  CALCUL DE LA MATRICE ELEMENTAIRE DE RAIDEUR DU FLUIDE
 !
-    call mecact('V', time, 'MODELE', modele//'.MODELE', 'INST_R',&
+    call mecact('V', time, 'MODELE', modele//'.MODELE', 'INST_R', &
                 ncmp=6, lnomcmp=nomcmp, vr=tps)
 !
-    call merith(modele, nbchar, char, mate, mateco, ' ',&
+    call merith(modele, nbchar, char, mate, mateco, ' ', &
                 time, mel, nh, 'V')
 !
     call getvid(' ', 'CHARGE', scal=char, nbret=nchar)
@@ -76,8 +76,8 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
 !
 !----------------  NUMEROTATION
 !
-    call numero(nu, 'VV',&
-                modelz = modele , list_loadz = list_load)
+    call numero(nu, 'VV', &
+                modelz=modele, list_loadz=list_load)
 
 !
 !---------------- ASSEMBLAGE
@@ -88,7 +88,7 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
 !
 !------- FACTORISATION LDLT DE LA MATRICE DE RAIDEUR
 !
-    call preres(solveu, 'V', ierr, maprec, ma,&
+    call preres(solveu, 'V', ierr, maprec, ma, &
                 ibid, -9999)
 !
 !

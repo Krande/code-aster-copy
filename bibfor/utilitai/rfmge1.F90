@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,16 +67,16 @@ subroutine rfmge1(modgen)
     if (n1 .eq. 1) interp(2) = interp(1)
 !
     knume = '&&RFMGE1.NUME_ORDR'
-    call rsutnu(modgen, ' ', 1, knume, nbordr,&
+    call rsutnu(modgen, ' ', 1, knume, nbordr, &
                 epsi, crit, iret)
     if (iret .ne. 0) then
         call utmess('F', 'UTILITAI4_11')
-    endif
+    end if
     call jeveuo(knume, 'L', jordr)
 !
 !     --- CREATION DE LA FONCTION ---
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro) = 'FONCTION        '
     zk24(lpro+1) = interp(1)//interp(2)
@@ -85,21 +85,21 @@ subroutine rfmge1(modgen)
     zk24(lpro+5) = nomfon
 !
     call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
-    lfon = lvar + nbordr - 1
+    lfon = lvar+nbordr-1
 !
     call getvtx(' ', 'NOM_PARA_RESU', scal=npara, nbret=n1)
     if (n1 .ne. 0) then
         zk24(lpro+3) = npara
         do iord = 1, nbordr
-            call rsadpa(modgen, 'L', 1, 'FREQ', zi(jordr+iord-1),&
+            call rsadpa(modgen, 'L', 1, 'FREQ', zi(jordr+iord-1), &
                         0, sjv=iad, styp=k8b)
             zr(lvar-1+iord) = zr(iad)
-            call rsadpa(modgen, 'L', 1, npara, zi(jordr+iord-1),&
+            call rsadpa(modgen, 'L', 1, npara, zi(jordr+iord-1), &
                         0, sjv=iad, styp=k8b)
             zr(lfon-1+iord) = zr(iad)
         end do
         goto 999
-    endif
+    end if
 !
     call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=n1)
     call getvis(' ', 'NUME_CMP_GENE', scal=ncmp, nbret=n1)
@@ -108,9 +108,9 @@ subroutine rfmge1(modgen)
 !
     do iord = 1, nbordr
 !
-        call rsexch('F', modgen, nomcha, zi(jordr+iord-1), noch19,&
+        call rsexch('F', modgen, nomcha, zi(jordr+iord-1), noch19, &
                     iret)
-        call rsadpa(modgen, 'L', 1, 'FREQ', zi(jordr+iord-1),&
+        call rsadpa(modgen, 'L', 1, 'FREQ', zi(jordr+iord-1), &
                     0, sjv=iad, styp=k8b)
         zr(lvar+iord) = zr(iad)
 !
@@ -118,12 +118,12 @@ subroutine rfmge1(modgen)
         call jelira(noch19//'.VALE', 'TYPE', cval=k16b)
         if (k16b(1:1) .ne. 'R') then
             call utmess('F', 'UTILITAI4_17')
-        endif
+        end if
 !
         call jeveuo(noch19//'.REFE', 'L', vk24=refe)
-        mode = refe(1)(1:8)
+        mode = refe(1) (1:8)
         if (mode .eq. '        ') then
-            nugene = refe(2)(1:14)
+            nugene = refe(2) (1:14)
             call jeveuo(nugene//'.NUME.DEEQ', 'L', vi=deeq)
             call jeveuo(nugene//'.NUME.NEQU', 'L', vi=nequ)
             nbmode = nequ(1)
@@ -131,7 +131,7 @@ subroutine rfmge1(modgen)
             do i = 1, nbmode
                 istru = deeq(1+2*(i-1)+2-1)
                 if (istru .lt. 0) goto 110
-                im = im + 1
+                im = im+1
                 if (im .eq. ncmp) goto 114
 110             continue
             end do
@@ -140,7 +140,7 @@ subroutine rfmge1(modgen)
             im = i
         else
             im = ncmp
-        endif
+        end if
 !
         zr(lfon+iord) = vale(im)
 !

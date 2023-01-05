@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrMainPod(paraPod, baseOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -36,8 +36,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/dbr_calcpod_rate.h"
 !
-type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
-type(ROM_DS_Empi), intent(in) :: baseOut
+    type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
+    type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,18 +65,18 @@ type(ROM_DS_Empi), intent(in) :: baseOut
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_58')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    toleSVD       = paraPod%toleSVD
-    nbSnap        = paraPod%snap%nbSnap
-    nbModeMaxi    = paraPod%nbModeMaxi
+    toleSVD = paraPod%toleSVD
+    nbSnap = paraPod%snap%nbSnap
+    nbModeMaxi = paraPod%nbModeMaxi
 !
 ! - Get size of snapshots matrix
 !
-    call dbr_calcpod_size(baseOut, paraPod%snap,&
-                          m      , n)
+    call dbr_calcpod_size(baseOut, paraPod%snap, &
+                          m, n)
 !
 ! - Create snapshots matrix Q
 !
@@ -105,15 +105,15 @@ type(ROM_DS_Empi), intent(in) :: baseOut
 ! - Save the reduced coordinates in a table
 !
     do iSnap = 1, nbSnap
-        call romTableSave(paraPod%tablReduCoor%tablResu, nbMode, v_gamma,&
-                          numeSnap_ = iSnap)
+        call romTableSave(paraPod%tablReduCoor%tablResu, nbMode, v_gamma, &
+                          numeSnap_=iSnap)
     end do
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = q)
-    AS_DEALLOCATE(vr = v)
-    AS_DEALLOCATE(vr = s)
-    AS_DEALLOCATE(vr = v_gamma)
+    AS_DEALLOCATE(vr=q)
+    AS_DEALLOCATE(vr=v)
+    AS_DEALLOCATE(vr=s)
+    AS_DEALLOCATE(vr=v_gamma)
 !
 end subroutine

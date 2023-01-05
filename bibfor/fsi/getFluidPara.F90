@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getFluidPara(j_mater,&
-                        rho_   , cele_r_, pesa_)
+subroutine getFluidPara(j_mater, &
+                        rho_, cele_r_, pesa_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 !
-integer, intent(in) :: j_mater
-real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_
+    integer, intent(in) :: j_mater
+    real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,40 +55,40 @@ real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_
 ! --------------------------------------------------------------------------------------------------
 !
     fami = 'FPG1'
-    ipg  = 1
+    ipg = 1
     ispg = 1
     poum = '+'
 !
     if (present(pesa_)) then
-        call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                    ' ' , 'FLUIDE', 0, ' ', [0.d0],&
+        call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                    ' ', 'FLUIDE', 0, ' ', [0.d0], &
                     nb_resu, resu_name, resu_vale, icodre, 1)
-        rho    = resu_vale(1)
+        rho = resu_vale(1)
         cele_r = resu_vale(2)
-        pesa   = resu_vale(3)
+        pesa = resu_vale(3)
     else
         if (present(cele_r_)) then
-            call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                        ' ' , 'FLUIDE', 0, ' ', [0.d0],&
+            call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                        ' ', 'FLUIDE', 0, ' ', [0.d0], &
                         2, resu_name, resu_vale, icodre, 1)
-            rho    = resu_vale(1)
+            rho = resu_vale(1)
             cele_r = resu_vale(2)
         else
-            call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                        ' ' , 'FLUIDE', 0, ' ', [0.d0],&
+            call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                        ' ', 'FLUIDE', 0, ' ', [0.d0], &
                         1, resu_name, resu_vale, icodre, 1)
-            rho    = resu_vale(1)
-        endif
-    endif
+            rho = resu_vale(1)
+        end if
+    end if
 !
     if (present(rho_)) then
         rho_ = rho
-    endif
+    end if
     if (present(cele_r_)) then
         cele_r_ = cele_r
-    endif
+    end if
     if (present(pesa_)) then
         pesa_ = pesa
-    endif
+    end if
 !
 end subroutine

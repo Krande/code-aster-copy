@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
+subroutine mmimp4(ifm, noma, nummae, iptm, indcoi, &
                   indcon, indfri, indfrn, lfrot, &
-                  lgliss, jeu,  lambdc)
+                  lgliss, jeu, lambdc)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -34,8 +34,8 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
     integer :: iptm
     integer :: indcoi, indcon
     integer :: indfri, indfrn
-    aster_logical :: lfrot,  lgliss
-    real(kind=8) :: jeu,  lambdc
+    aster_logical :: lfrot, lgliss
+    real(kind=8) :: jeu, lambdc
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,23 +78,23 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
 ! --- REPERAGE MAILLE ESCLAVE
 !
     call jenuno(jexnum(noma//'.NOMMAI', nummae), nomesc)
-    write(ifm,1000) nomesc
-    write(ifm,2000) iptm
-    1000 format (' <CONTACT>     * LA MAILLE ESCLAVE ',a8)
-    2000 format (' <CONTACT>     ** DONT LE POINT DE CONTACT ',i3)
+    write (ifm, 1000) nomesc
+    write (ifm, 2000) iptm
+1000 format(' <CONTACT>     * LA MAILLE ESCLAVE ', a8)
+2000 format(' <CONTACT>     ** DONT LE POINT DE CONTACT ', i3)
 !
 ! --- PROPRIETES (FORMULATION)
 !
-    write(ifm,1002)
+    write (ifm, 1002)
 
-    1002 format (' <CONTACT>        (FORMULATION DEPLACEMENT)')
+1002 format(' <CONTACT>        (FORMULATION DEPLACEMENT)')
 !
 ! --- PROPRIETES (GLISSIERE)
 !
     if (lgliss) then
-        write(ifm,3001)
-    endif
-    3001 format (' <CONTACT>        (GLISSIERE)')
+        write (ifm, 3001)
+    end if
+3001 format(' <CONTACT>        (GLISSIERE)')
 !
 ! --- ETAT DE CONTACT INITIAL
 !
@@ -102,9 +102,9 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
         statut = ' PAS EN CONTACT '
     else
         statut = ' EN CONTACT     '
-    endif
-    write(ifm,5000) statut
-    5000 format (' <CONTACT>         -> ETAT DE CONTACT    INITIAL:',a16)
+    end if
+    write (ifm, 5000) statut
+5000 format(' <CONTACT>         -> ETAT DE CONTACT    INITIAL:', a16)
 !
 ! --- ETAT DE FROTTEMENT INITIAL
 !
@@ -113,17 +113,17 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
             statut = ' ADHERENT '
         else
             statut = ' GLISSANT '
-        endif
-        write(ifm,5001) statut
-    endif
-    5001 format (' <CONTACT>         -> ETAT DE FROTTEMENT INITIAL:',a16)
+        end if
+        write (ifm, 5001) statut
+    end if
+5001 format(' <CONTACT>         -> ETAT DE FROTTEMENT INITIAL:', a16)
 !
 ! --- PROPRIETES (JEUX)
 !
-     write(ifm,6000) jeu,lambdc
+    write (ifm, 6000) jeu, lambdc
 
-    6000 format (' <CONTACT>         <> JEU:',e10.3,&
-     &        ' - LAGS_C :',e10.3)
+6000 format(' <CONTACT>         <> JEU:', e10.3,&
+    &        ' - LAGS_C :', e10.3)
 !
 !
 ! --- ETAT DE CONTACT FINAL
@@ -132,9 +132,9 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
         statut = ' PAS EN CONTACT '
     else
         statut = ' EN CONTACT     '
-    endif
-    write(ifm,7000) statut
-    7000 format (' <CONTACT>         -> ETAT DE CONTACT    FINAL  :',a16)
+    end if
+    write (ifm, 7000) statut
+7000 format(' <CONTACT>         -> ETAT DE CONTACT    FINAL  :', a16)
 !
 ! --- ETAT DE FROTTEMENT FINAL
 !
@@ -143,9 +143,9 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
             statut = ' ADHERENT '
         else
             statut = ' GLISSANT '
-        endif
-        write(ifm,7001) statut
-    endif
-    7001 format (' <CONTACT>         -> ETAT DE FROTTEMENT FINAL  :',a16)
+        end if
+        write (ifm, 7001) statut
+    end if
+7001 format(' <CONTACT>         -> ETAT DE FROTTEMENT FINAL  :', a16)
 !
 end subroutine

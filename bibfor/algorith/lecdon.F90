@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - Copyright EDF 2009  *
 ! This file is part of code_aster.
 !
@@ -127,7 +127,7 @@ subroutine lecdon(ficext, unitpa, prdeff)
     character(len=6) :: ctype
 !
     integer :: palmax
-    parameter (palmax=20)
+    parameter(palmax=20)
     character(len=6) :: typpal(palmax)
     character(len=3) :: finpal(palmax)
     character(len=8) :: cnpal(palmax), cnod
@@ -142,8 +142,8 @@ subroutine lecdon(ficext, unitpa, prdeff)
 !
 !     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 !     ------------------------------------------------------------
-    cpal='C_PAL'
-    npal='N_PAL'
+    cpal = 'C_PAL'
+    npal = 'N_PAL'
 !
 !     RESERVATION MEMOIRE POUR LES "COMMON"  ASTER
 !     --------------------------------------------
@@ -152,62 +152,62 @@ subroutine lecdon(ficext, unitpa, prdeff)
         call wkvect(cpal, 'G V K8', (3*palmax), zcpal)
     else
         call jeveuo(cpal, 'E', zcpal)
-    endif
+    end if
     call jeexin(npal, iret)
     if (iret .eq. 0) then
         call wkvect(npal, 'G V I', (1+palmax), znpal)
     else
         call jeveuo(npal, 'E', znpal)
-    endif
+    end if
 !
     if (ficext) then
 !
 !     LECTURE DU FICHIER FIC_DON
 !     --------------------------
-        if (niv .ge. 2) write(ifm, *)'ASTEREDYOS: ', nomprg,&
-                        ' DEBUT LECTURE DU FICHIER FIC_DON UNITE LOGIQUE ', unitpa
-        k16nom ='                '
-        if (ulisop ( unitpa, k16nom ) .eq. 0) then
+        if (niv .ge. 2) write (ifm, *) 'ASTEREDYOS: ', nomprg, &
+            ' DEBUT LECTURE DU FICHIER FIC_DON UNITE LOGIQUE ', unitpa
+        k16nom = '                '
+        if (ulisop(unitpa, k16nom) .eq. 0) then
             call ulopen(unitpa, ' ', ' ', 'NEW', 'O')
-        endif
-        read(unitpa,*)nbpal
-        if (niv .ge. 2) write(ifm, *)'ASTEREDYOS: ', nomprg, ' ON A LU NBPAL =', nbpal
+        end if
+        read (unitpa, *) nbpal
+        if (niv .ge. 2) write (ifm, *) 'ASTEREDYOS: ', nomprg, ' ON A LU NBPAL =', nbpal
         if (nbpal .gt. palmax) then
             call utmess('F', 'EDYOS_43')
-        endif
+        end if
 !
 !     REMPLISSAGE "COMMON" ASTER POUR LE NOMBRE DE PALIERS
 !     ----------------------------------------------------
-        zi(znpal)=nbpal
+        zi(znpal) = nbpal
 !
 !     BOUCLE DE LECTURE SUR LES PALIERS
 !     ---------------------------------
         do ipal = 1, nbpal
-            cnod='        '
-            read(unitpa,*)numpal,cnod,ctype
-            typpal(numpal)=ctype
-            cnpal(ipal)=cnod
+            cnod = '        '
+            read (unitpa, *) numpal, cnod, ctype
+            typpal(numpal) = ctype
+            cnpal(ipal) = cnod
 !
             if (ipal .lt. 10) then
-                write(carac1,'(I1)')ipal
-                finpal(ipal)='_'//carac1
+                write (carac1, '(I1)') ipal
+                finpal(ipal) = '_'//carac1
             else
-                write(carac2,'(I2)')ipal
-                finpal(ipal)='_'//carac2
-            endif
+                write (carac2, '(I2)') ipal
+                finpal(ipal) = '_'//carac2
+            end if
 !
 !
 !   REMPLISSAGE "COMMON" ASTER POUR LES PALIERS (TYPE,TERMINAISON,NOEUD)
 !   --------------------------------------------------------------------
-            zk8(zcpal+(ipal-1))=ctype
-            zk8(zcpal+palmax+(ipal-1))=finpal(ipal)
-            zk8(zcpal+(2*palmax)+(ipal-1))=cnpal(ipal)
-            if (niv .ge. 2) write(ifm, * )'ASTEREDYOS : LECDON : CTYPE - FINPAL - CNPAL=', ctype,&
-                            ' -- ', finpal(ipal), ' -- ', cnpal(ipal)
+            zk8(zcpal+(ipal-1)) = ctype
+            zk8(zcpal+palmax+(ipal-1)) = finpal(ipal)
+            zk8(zcpal+(2*palmax)+(ipal-1)) = cnpal(ipal)
+            if (niv .ge. 2) write (ifm, *) 'ASTEREDYOS : LECDON : CTYPE - FINPAL - CNPAL=', ctype, &
+                ' -- ', finpal(ipal), ' -- ', cnpal(ipal)
 !
 !   REMPLISSAGE "COMMON" ASTER POUR LES NUMEROS DES NOEUDS DES PALIERS
 !   ------------------------------------------------------------------
-            zi(znpal+1+(ipal-1))=ipal
+            zi(znpal+1+(ipal-1)) = ipal
         end do
 !
 !     FIN DE BOUCLE DE LECTURE SUR LES PALIERS
@@ -217,16 +217,16 @@ subroutine lecdon(ficext, unitpa, prdeff)
 !     ECRITURE DES VARIABLES LUES
 !     ---------------------------
         if (niv .ge. 2) then
-            write(ifm,*)'ASTEREDYOS: ',nomprg,&
+            write (ifm, *) 'ASTEREDYOS: ', nomprg,&
      &              ' - FIN LECTURE DU FICHIER FIC_DON '
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' - NOMBRE DE PALIERS: ',nbpal
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' - NOMBRE DE PALIERS: ', nbpal
             do ipal = 1, nbpal
-                write(ifm,*)'ASTEREDYOS PALIER :',ipal,' TYPE :',&
-                typpal(ipal), ' NOEUD ASTER : ',cnpal(ipal)
+                write (ifm, *) 'ASTEREDYOS PALIER :', ipal, ' TYPE :', &
+                    typpal(ipal), ' NOEUD ASTER : ', cnpal(ipal)
             end do
-        endif
+        end if
 !
-        if (ulisop ( unitpa, k16nom ) .ne. 0) call ulopen(-unitpa, ' ', ' ', 'NEW', 'O')
+        if (ulisop(unitpa, k16nom) .ne. 0) call ulopen(-unitpa, ' ', ' ', 'NEW', 'O')
 !
     else
 !
@@ -235,8 +235,8 @@ subroutine lecdon(ficext, unitpa, prdeff)
         call getfac('PALIER_EDYOS', nbpal)
         if (nbpal .gt. palmax) then
             call utmess('F', 'EDYOS_43')
-        endif
-        zi(znpal)=nbpal
+        end if
+        zi(znpal) = nbpal
         do ipal = 1, nbpal
             call getvtx('PALIER_EDYOS', 'GROUP_NO', iocc=ipal, nbval=0, nbret=n2)
             if (abs(n2) .eq. 0) then
@@ -246,19 +246,19 @@ subroutine lecdon(ficext, unitpa, prdeff)
                 else
                     ngr = -n2
                     ngr = 1
-                    call getvtx('PALIER_EDYOS', 'NOEUD', iocc=ipal, nbval=ngr, vect=cnpal(ipal),&
+                    call getvtx('PALIER_EDYOS', 'NOEUD', iocc=ipal, nbval=ngr, vect=cnpal(ipal), &
                                 nbret=n2)
-                endif
+                end if
             else
                 ngr = -n2
                 ngr = 1
-                call getvtx('PALIER_EDYOS', 'GROUP_NO', iocc=ipal, nbval=ngr, vect=cnpal(ipal),&
+                call getvtx('PALIER_EDYOS', 'GROUP_NO', iocc=ipal, nbval=ngr, vect=cnpal(ipal), &
                             nbret=n2)
-            endif
-            call getvtx('PALIER_EDYOS', 'TYPE_EDYOS', iocc=ipal, nbval=ngr, vect=ctype,&
+            end if
+            call getvtx('PALIER_EDYOS', 'TYPE_EDYOS', iocc=ipal, nbval=ngr, vect=ctype, &
                         nbret=n2)
-            zk8(zcpal+(2*palmax)+(ipal-1))=cnpal(ipal)
-            zk8(zcpal+(ipal-1))=ctype
+            zk8(zcpal+(2*palmax)+(ipal-1)) = cnpal(ipal)
+            zk8(zcpal+(ipal-1)) = ctype
         end do
 !
         niv = 3
@@ -266,25 +266,25 @@ subroutine lecdon(ficext, unitpa, prdeff)
         do ipal = 1, nbpal
 !
             if (ipal .lt. 10) then
-                write(carac1,'(I1)')ipal
-                finpal(ipal)='_'//carac1
+                write (carac1, '(I1)') ipal
+                finpal(ipal) = '_'//carac1
             else
-                write(carac2,'(I2)')ipal
-                finpal(ipal)='_'//carac2
-            endif
-            zk8(zcpal+palmax+(ipal-1))=finpal(ipal)
-            if (niv .ge. 2) write(ifm, * )'ASTEREDYOS : LECDON : CTYPE - FINPAL - CNPAL=',&
-                            zk8(zcpal+(ipal-1)), ' -- ', finpal(ipal), ' -- ',&
-                            zk8(zcpal+(2*palmax)+(ipal-1))
-            zi(znpal+1+(ipal-1))=ipal
+                write (carac2, '(I2)') ipal
+                finpal(ipal) = '_'//carac2
+            end if
+            zk8(zcpal+palmax+(ipal-1)) = finpal(ipal)
+            if (niv .ge. 2) write (ifm, *) 'ASTEREDYOS : LECDON : CTYPE - FINPAL - CNPAL=', &
+                zk8(zcpal+(ipal-1)), ' -- ', finpal(ipal), ' -- ', &
+                zk8(zcpal+(2*palmax)+(ipal-1))
+            zi(znpal+1+(ipal-1)) = ipal
         end do
         if (niv .ge. 2) then
-            write(ifm,*)'ASTEREDYOS: ',nomprg,&
+            write (ifm, *) 'ASTEREDYOS: ', nomprg,&
      &              ' - FIN LECTURE ARGUMENTS PALIERS '
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' - NOMBRE PALIERS: ',&
-            nbpal
-        endif
-    endif
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' - NOMBRE PALIERS: ', &
+                nbpal
+        end if
+    end if
 !
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0572(option, nomte)
 !
     integer :: ndim, nfh, nfe, igeom, nnop, jpintt, imate, itps, jstno
     integer :: imattt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, nddlno
-    integer :: heavn(27,5), ino, ig, jheavn, ncompn, jtab(7), iret
+    integer :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
     character(len=8) :: elrefp
 !
 ! ----------------------------------------------------------------------
@@ -75,33 +75,33 @@ subroutine te0572(option, nomte)
 !
 !     ELT DE REF PARENT : RECUP NDIM ET NNOP (NOEUDS PARENT)
 !     -> RQ : 'RIGI' POUR LA FAMILLE DE PG EST DONC SANS CONSQUENCE
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
 !     NBRE DE DDLS PAR NOEUD
     call xthini(nomte, nfh, nfe)
     nddlno = 1+nfh+nfe
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
-    if (nfh.gt.0) then
-      call jevech('PHEA_NO', 'L', jheavn)
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nnop
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
-        enddo
-      enddo
-    endif
+    if (nfh .gt. 0) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn .eq. 5)
+        do ino = 1, nnop
+            do ig = 1, ncompn
+                heavn(ino, ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            end do
+        end do
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE LA MATRICE DE MASSE ELEMENTAIRE
 ! ----------------------------------------------------------------------
 !
-    call xmasth(ndim, elrefp, nnop, imate, itps,&
-                igeom, zi(jlonch), zi(jcnset), jpintt, zr(jlsn),&
-                zr(jlst), heavn, zr(jbaslo), zi(jheavt), nfh, nfe,&
+    call xmasth(ndim, elrefp, nnop, imate, itps, &
+                igeom, zi(jlonch), zi(jcnset), jpintt, zr(jlsn), &
+                zr(jlst), heavn, zr(jbaslo), zi(jheavt), nfh, nfe, &
                 zr(imattt))
 !
 ! ----------------------------------------------------------------------
@@ -109,7 +109,7 @@ subroutine te0572(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
-    call xthddl(nfh, nddlno, nnop, zi(jstno), option,&
+    call xthddl(nfh, nddlno, nnop, zi(jstno), option, &
                 nomte, mat=zr(imattt))
 !
 end subroutine

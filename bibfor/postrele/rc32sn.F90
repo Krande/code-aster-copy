@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rc32sn(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
+subroutine rc32sn(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet, &
                   sigmoypres, snther, sp3, spmeca3)
     implicit none
 #include "asterf_types.h"
@@ -48,12 +48,12 @@ subroutine rc32sn(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !
     call getvtx(' ', 'METHODE', scal=methode, nbret=n1)
     if (methode .eq. 'TRESCA') then
-        call rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
+        call rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet, &
                      sigmoypres, snther, sp3, spmeca3)
     else
-        call rc32snb(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
+        call rc32snb(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet, &
                      sigmoypres, snther, sp3, spmeca3)
-    endif
+    end if
 !
     call jedema()
 !

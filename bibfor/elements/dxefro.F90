@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,42 +38,42 @@ subroutine dxefro(ne, t2iu, edgle, edglc)
 !     ATTENTION : LES DEFORMATIONS GENERALISEES SONT ATTENDUES SOUS LA FORME
 !     EXX EYY EXY ET NON PAS SOUS LA FORME EXX EYY 2EXY.
 !     ------------------------------------------------------------------
-    real(kind=8) :: nle(2,2), mle(2,2), qle(2)
-    real(kind=8) :: nlc(2,2), mlc(2,2), qlc(2)
-    real(kind=8) ::t2ui(2,2), xab(2,2)
+    real(kind=8) :: nle(2, 2), mle(2, 2), qle(2)
+    real(kind=8) :: nlc(2, 2), mlc(2, 2), qlc(2)
+    real(kind=8) ::t2ui(2, 2), xab(2, 2)
     integer :: i
 !
 !   Transposée de t2iu pour changement de repère des efforts tranchants
-    t2ui(1,1) = t2iu(1,1)
-    t2ui(2,1) = t2iu(1,2)
-    t2ui(1,2) = t2iu(2,1)
-    t2ui(2,2) = t2iu(2,2)
+    t2ui(1, 1) = t2iu(1, 1)
+    t2ui(2, 1) = t2iu(1, 2)
+    t2ui(1, 2) = t2iu(2, 1)
+    t2ui(2, 2) = t2iu(2, 2)
 !
     do i = 1, ne
-        nle(1,1) = edgle(1+8*(i-1))
-        nle(2,1) = edgle(3+8*(i-1))
-        nle(1,2) = edgle(3+8*(i-1))
-        nle(2,2) = edgle(2+8*(i-1))
+        nle(1, 1) = edgle(1+8*(i-1))
+        nle(2, 1) = edgle(3+8*(i-1))
+        nle(1, 2) = edgle(3+8*(i-1))
+        nle(2, 2) = edgle(2+8*(i-1))
 !
-        mle(1,1) = edgle(4+8*(i-1))
-        mle(2,1) = edgle(6+8*(i-1))
-        mle(1,2) = edgle(6+8*(i-1))
-        mle(2,2) = edgle(5+8*(i-1))
+        mle(1, 1) = edgle(4+8*(i-1))
+        mle(2, 1) = edgle(6+8*(i-1))
+        mle(1, 2) = edgle(6+8*(i-1))
+        mle(2, 2) = edgle(5+8*(i-1))
 !
-        qle(1)   = edgle(7+8*(i-1))
-        qle(2)   = edgle(8+8*(i-1))
+        qle(1) = edgle(7+8*(i-1))
+        qle(2) = edgle(8+8*(i-1))
 !
         call utbtab('ZERO', 2, 2, nle, t2iu, xab, nlc)
         call utbtab('ZERO', 2, 2, mle, t2iu, xab, mlc)
         call pmavec('ZERO', 2, t2ui, qle, qlc)
 !
-        edglc(1+8*(i-1)) = nlc(1,1)
-        edglc(2+8*(i-1)) = nlc(2,2)
-        edglc(3+8*(i-1)) = nlc(2,1)
+        edglc(1+8*(i-1)) = nlc(1, 1)
+        edglc(2+8*(i-1)) = nlc(2, 2)
+        edglc(3+8*(i-1)) = nlc(2, 1)
 !
-        edglc(4+8*(i-1)) = mlc(1,1)
-        edglc(5+8*(i-1)) = mlc(2,2)
-        edglc(6+8*(i-1)) = mlc(2,1)
+        edglc(4+8*(i-1)) = mlc(1, 1)
+        edglc(5+8*(i-1)) = mlc(2, 2)
+        edglc(6+8*(i-1)) = mlc(2, 1)
 !
         edglc(7+8*(i-1)) = qlc(1)
         edglc(8+8*(i-1)) = qlc(2)

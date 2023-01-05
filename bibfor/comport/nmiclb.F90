@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
-                  imate, xlong0, aire, tmoins, tplus,&
-                  dlong0, effnom, vim, effnop, vip,&
+subroutine nmiclb(fami, kpg, ksp, option, rela_comp, &
+                  imate, xlong0, aire, tmoins, tplus, &
+                  dlong0, effnom, vim, effnop, vip, &
                   klv, fono, epsm, carcri, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,8 +37,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imate, neq, nbt,kpg,ksp, codret
-    parameter (neq=6,nbt=21)
+    integer :: imate, neq, nbt, kpg, ksp, codret
+    parameter(neq=6, nbt=21)
 !
     real(kind=8) :: xlong0, aire, tmoins, tplus, dlong0, carcri(CARCRI_SIZE), epsm
     real(kind=8) :: effnom, vim(*), effnop, vip(*), fono(neq), klv(nbt)
@@ -81,34 +81,34 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    elas   = .false.
-    isot   = .false.
-    cine   = .false.
-    corr   = .false.
+    elas = .false.
+    isot = .false.
+    cine = .false.
+    corr = .false.
     implex = option .eq. 'RIGI_MECA_IMPLEX' .or. option .eq. 'RAPH_MECA_IMPLEX'
     isotli = .false.
-    relax  = .false.
-    if       (rela_comp.eq. 'ELAS') then
+    relax = .false.
+    if (rela_comp .eq. 'ELAS') then
         elas = .true.
     else if ((rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
              (rela_comp .eq. 'VMIS_ISOT_TRAC')) then
         isot = .true.
         if (rela_comp .eq. 'VMIS_ISOT_LINE') then
             isotli = .true.
-        endif
+        end if
     else if (rela_comp .eq. 'VMIS_CINE_LINE') then
         cine = .true.
     else if (rela_comp .eq. 'CORR_ACIER') then
         corr = .true.
     else if (rela_comp .eq. 'RELAX_ACIER') then
         relax = .true.
-    endif
+    end if
 
     if (implex) then
-        if ((.not.elas) .and. (.not.isotli)) then
-            call utmess('F', 'POUTRE0_49', sk = rela_comp)
-        endif
-    endif
+        if ((.not. elas) .and. (.not. isotli)) then
+            call utmess('F', 'POUTRE0_49', sk=rela_comp)
+        end if
+    end if
 !
     klv = 0.d0
     fono = 0.d0
@@ -117,100 +117,100 @@ implicit none
     deps = dlong0/xlong0
     sigm = effnom/aire
 !
-    if (isot .and. (.not.implex)) then
+    if (isot .and. (.not. implex)) then
 !       Caractéristiques élastiques a t-
-        call rcvalb(fami,kpg,ksp,'-',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        em=val(1)
+        em = val(1)
 !       Caractéristiques élastiques a t+
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        ep=val(1)
+        ep = val(1)
 !
-        call verift(fami,kpg,ksp, 'T', imate, epsth_=depsth)
-        depsm=deps-depsth
-        call nm1dis(fami,kpg,ksp, imate, em, ep, sigm, depsm, vim, option,&
+        call verift(fami, kpg, ksp, 'T', imate, epsth_=depsth)
+        depsm = deps-depsth
+        call nm1dis(fami, kpg, ksp, imate, em, ep, sigm, depsm, vim, option, &
                     rela_comp, ' ', sigp, vip, dsde)
     else if (cine) then
 !       Caractéristiques élastiques a t-
-        call rcvalb(fami,kpg,ksp,'-',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        em=val(1)
+        em = val(1)
 !       Caractéristiques élastiques a t+
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        ep=val(1)
+        ep = val(1)
 !
-        call verift(fami,kpg,ksp, 'T', imate, epsth_=depsth)
+        call verift(fami, kpg, ksp, 'T', imate, epsth_=depsth)
         depsm = deps-depsth
-        call nm1dci(fami,kpg,ksp, imate, em, ep, sigm, depsm, vim, option,&
+        call nm1dci(fami, kpg, ksp, imate, em, ep, sigm, depsm, vim, option, &
                     ' ', sigp, vip, dsde)
     else if (relax) then
-        call verift(fami,kpg,ksp, 'T', imate, epsth_=depsth)
+        call verift(fami, kpg, ksp, 'T', imate, epsth_=depsth)
         depsm = deps-depsth
-        call relax_acier_cable(fami,kpg,ksp, imate, sigm, epsm, depsm, vim, option,&
+        call relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, depsm, vim, option, &
                                ' ', sigp, vip, dsde)
     else if (elas) then
 !       Caractéristiques élastiques a t-
-        call rcvalb(fami,kpg,ksp,'-',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        em=val(1)
+        em = val(1)
 !       Caractéristiques élastiques a t+
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        ep=val(1)
+        ep = val(1)
 !
         dsde = ep
         vip(1) = 0.d0
-        call verift(fami,kpg,ksp, 'T', imate, epsth_=depsth)
-        sigp = ep* (sigm/em+deps-depsth)
+        call verift(fami, kpg, ksp, 'T', imate, epsth_=depsth)
+        sigp = ep*(sigm/em+deps-depsth)
     else if (corr) then
 !       Caractéristiques élastiques a t-
-        call rcvalb(fami,kpg,ksp,'-',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        em=val(1)
+        em = val(1)
 !       Caractéristiques élastiques a t+
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        ep=val(1)
+        ep = val(1)
 !
-        call nm1dco(fami,kpg,ksp, option, imate, ' ', ep, sigm, epsm, deps,&
+        call nm1dco(fami, kpg, ksp, option, imate, ' ', ep, sigm, epsm, deps, &
                     vim, sigp, vip, dsde, carcri, codret)
     else if (implex) then
 !       Caractéristiques élastiques a t-
-        call rcvalb(fami,kpg,ksp,'-',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        em=val(1)
+        em = val(1)
 !       Caractéristiques élastiques a t+
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
-        ep=val(1)
+        ep = val(1)
 !
-        call lcimpl(fami,kpg,ksp, imate, em, ep, sigm, tmoins, tplus, deps,&
+        call lcimpl(fami, kpg, ksp, imate, em, ep, sigm, tmoins, tplus, deps, &
                     vim, option, sigp, vip, dsde)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 !   Calcul du coefficient non nul de la matrice tangente
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
-        xrig    =  dsde*aire/xlong0
-        klv(1)  =  xrig
-        klv(7)  = -xrig
-        klv(10) =  xrig
-    endif
+        xrig = dsde*aire/xlong0
+        klv(1) = xrig
+        klv(7) = -xrig
+        klv(10) = xrig
+    end if
 !
 !   Calcul des forces nodales
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        effnop  =  sigp*aire
+        effnop = sigp*aire
         fono(1) = -effnop
-        fono(4) =  effnop
-    endif
+        fono(4) = effnop
+    end if
 !
     if (implex) then
-        effnop  =  sigp*aire
+        effnop = sigp*aire
         fono(1) = -effnop
-        fono(4) =  effnop
-    endif
+        fono(4) = effnop
+    end if
 !
 end subroutine

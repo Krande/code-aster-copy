@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine apmamd(kptsc)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
 
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -75,8 +75,8 @@ use petsc_data_module
     PetscInt :: mm, nn
 !
     character(len=19) :: nomat, nosolv
-    character(len=16), parameter :: idxi1='&&APMAMD.IDXI1__', idxi2='&&APMAMD.IDXI2__'
-    character(len=16), parameter :: trans1='&&APMAMD.TRANS1_', trans2='&&APMAMD.TRANS2_'
+    character(len=16), parameter :: idxi1 = '&&APMAMD.IDXI1__', idxi2 = '&&APMAMD.IDXI2__'
+    character(len=16), parameter :: trans1 = '&&APMAMD.TRANS1_', trans2 = '&&APMAMD.TRANS2_'
     character(len=14) :: nonu
 !
     aster_logical :: lmnsy
@@ -113,28 +113,28 @@ use petsc_data_module
     nglo = zi(jnequ)
     neql = to_petsc_int(nloc)
     neqg = to_petsc_int(nglo)
-    nz=zi(jsmdi-1+nloc)
+    nz = zi(jsmdi-1+nloc)
 !
 ! La matrice Aster est-elle symétrique ?
     call jelira(nomat//'.VALM', 'NMAXOC', nvalm)
     if (nvalm .eq. 1) then
-        lmnsy=.false.
-    else if (nvalm.eq.2) then
-        lmnsy=.true.
+        lmnsy = .false.
+    else if (nvalm .eq. 2) then
+        lmnsy = .true.
     else
         ASSERT(.false.)
-    endif
+    end if
 ! Vérification de la cohérence entre le(s) tableau(x) stockant les
 ! valeurs de la matrice nomat et sa structure creuse (telle que définie
 ! dans nonu)
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
     call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
-    ASSERT(nlong.eq.nz)
+    ASSERT(nlong .eq. nz)
     if (lmnsy) then
         call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvalm2)
         call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong)
-        ASSERT(nlong.eq.nz)
-    endif
+        ASSERT(nlong .eq. nz)
+    end if
 !
 #if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxi1, 'V V S', nloc, vi4=v_dxi1)
@@ -146,20 +146,20 @@ use petsc_data_module
     call wkvect(trans1, 'V V R', nloc, jdval1)
     call wkvect(trans2, 'V V R', nloc, jdval2)
 !
-    iterm=0
-    jterm=0
+    iterm = 0
+    jterm = 0
 !
 !  Recopie de la matrice
 !  C'est PETSc qui s'occupe de la recopie des termes vers
 !  le bon processeur
 !
 ! Envoi de Aloc(1,1)
-    call MatSetValue(a, to_petsc_int(zi(jnugll)-1), to_petsc_int(zi(jnugll)-1), zr(jvalm),&
+    call MatSetValue(a, to_petsc_int(zi(jnugll)-1), to_petsc_int(zi(jnugll)-1), zr(jvalm), &
                      ADD_VALUES, ierr)
-    ASSERT(ierr==0)
+    ASSERT(ierr == 0)
 !
     do jcoll = 2, nloc
-        nzdeb = zi(jsmdi+jcoll-2) + 1
+        nzdeb = zi(jsmdi+jcoll-2)+1
         nzfin = zi(jsmdi+jcoll-1)
 ! Indice colonne global (F) de la colonne locale jcoll
         jcolg = zi(jnugll+jcoll-1)
@@ -167,46 +167,46 @@ use petsc_data_module
             iligl = zi4(jsmhc-1+k)
             iligg = zi(jnugll-1+iligl)
 ! Compteur de termes sur la colonne locale jcoll
-            iterm=iterm+1
-            valm=zr(jvalm-1+k)
+            iterm = iterm+1
+            valm = zr(jvalm-1+k)
 ! Stockage dans val1 de A(iligg,jcolg)
-            zr(jdval1+iterm-1)=valm
+            zr(jdval1+iterm-1) = valm
 ! et de son indice ligne global (C)
-            v_dxi1(iterm)=to_petsc_int(iligg-1)
+            v_dxi1(iterm) = to_petsc_int(iligg-1)
 ! On passe à la *ligne* jcoll
             if (iligg .ne. jcolg) then
 ! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg)
 ! qui a déjà été rencontré dans la *colonne* jcoll
 ! Compteur de termes sur la ligne jcoll
-                jterm=jterm+1
+                jterm = jterm+1
                 if (.not. lmnsy) then
 ! si la matrice ASTER est symétrique
 ! la ligne jcoll est la transposée de la colonne jcoll
 ! on reprend la valeur lue depuis valm
-                    valm=zr(jvalm-1+k)
+                    valm = zr(jvalm-1+k)
                 else
 ! si la matrice ASTER n'est pas symétrique
 ! on lit les termes de la ligne jcoll depuis valm2
-                    valm=zr(jvalm2-1+k)
-                endif
+                    valm = zr(jvalm2-1+k)
+                end if
 ! on stocke dans val2
-                zr(jdval2+jterm-1)=valm
+                zr(jdval2+jterm-1) = valm
 ! avec l'indice colonne global (C) correspondant
-                v_dxi2(jterm)=to_petsc_int(iligg-1)
-            endif
+                v_dxi2(jterm) = to_petsc_int(iligg-1)
+            end if
         end do
 ! Envoi de la colonne jcolg
         mm = to_petsc_int(iterm)
-        call MatSetValues(a, mm, v_dxi1(1:mm), one, [to_petsc_int(jcolg-1)],&
+        call MatSetValues(a, mm, v_dxi1(1:mm), one, [to_petsc_int(jcolg-1)], &
                           zr(jdval1-1+1:jdval1-1+mm), ADD_VALUES, ierr)
-        ASSERT(ierr==0)
+        ASSERT(ierr == 0)
 ! Envoi de la ligne jcolg
         nn = to_petsc_int(jterm)
-        call MatSetValues(a, one, [to_petsc_int(jcolg-1)], nn , v_dxi2(1:nn),&
+        call MatSetValues(a, one, [to_petsc_int(jcolg-1)], nn, v_dxi2(1:nn), &
                           zr(jdval2-1+1:jdval2-1+nn), ADD_VALUES, ierr)
-        ASSERT(ierr==0)
-        iterm=0
-        jterm=0
+        ASSERT(ierr == 0)
+        iterm = 0
+        jterm = 0
     end do
 !
     call jelibe(nonu//'.SMOS.SMDI')

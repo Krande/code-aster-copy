@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine flexib(basmod, nbmod, flex, nl, nc,&
+subroutine flexib(basmod, nbmod, flex, nl, nc, &
                   numl, numc)
     implicit none
 !  P. RICHARD     DATE 09/04/91
@@ -74,22 +74,22 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid,  iord, iran, j
+    integer :: i, ibid, iord, iran, j
     integer :: jj, k, kk, ldkge, ldmge, llcham, lldes
-    integer :: llnoc, llnol,  ltextc, ltextl, ltorc
+    integer :: llnoc, llnol, ltextc, ltextl, ltorc
     integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
     integer :: numc, numl
     real(kind=8) :: toto, xkgen, xx
     integer, pointer :: deeq(:) => null()
     character(len=8), pointer :: idc_type(:) => null()
 !-----------------------------------------------------------------------
-    data pgc /'FLEXIB'/
+    data pgc/'FLEXIB'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
     do i = 1, nl
         do j = 1, nc
-            flex(i,j)=0.d0
+            flex(i, j) = 0.d0
         end do
     end do
 !
@@ -101,12 +101,12 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     if (intf .eq. '        ') then
         valk = basmod
         call utmess('F', 'ALGORITH13_17', sk=valk)
-    endif
+    end if
 !
 ! --- TEST SUR LE TYPE D'INTERFACE
 !
     call jeveuo(intf//'.IDC_TYPE', 'L', vk8=idc_type)
-    typint=idc_type(numc)
+    typint = idc_type(numc)
     call jelibe(intf//'.IDC_TYPE')
     if (typint .eq. 'AUCUN   ') goto 999
 !
@@ -120,19 +120,19 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
-    numddl(15:19)='.NUME'
+    numddl(15:19) = '.NUME'
     call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DES INTERFACES
 !
-    noeint=intf//'.IDC_LINO'
+    noeint = intf//'.IDC_LINO'
 !
     if (numl .gt. 0) then
         call jelira(jexnum(noeint, numl), 'LONMAX', nbnol)
         call jeveuo(jexnum(noeint, numl), 'L', llnol)
     else
-        nbnol=0
-    endif
+        nbnol = 0
+    end if
 !
     call jelira(jexnum(noeint, numc), 'LONMAX', nbnoc)
     call jeveuo(jexnum(noeint, numc), 'L', llnoc)
@@ -141,33 +141,33 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldes)
     call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
-    nbnot=nbnot/3
+    nbnot = nbnot/3
 !
 ! --- RECUPERATION DES NUMEROS D'ORDRE DES DEFORMEES (COLONNES)
 !     ET RANGS DES DDL D'INTERFACE (LIGNES) DANS VECTEUR ASSEMBLE
 !
 ! --- RECUPERATION NUMERO ORDRE DEFORMEES ET RANG DDL POUR COLONNES
 !
-    kbid=' '
-    call bmnodi(basmod, kbid, '        ', numc, nc,&
+    kbid = ' '
+    call bmnodi(basmod, kbid, '        ', numc, nc, &
                 zi(ltorc), ibid)
-    call bmradi(basmod, kbid, '        ', numc, nc,&
+    call bmradi(basmod, kbid, '        ', numc, nc, &
                 zi(ltextc), ibid)
 !
 ! --- RECUPERATION DDL PHYSIQUES POUR LES LIGNES
 !
     if (numl .gt. 0) then
-        call bmradi(basmod, kbid, '        ', numl, nl,&
+        call bmradi(basmod, kbid, '        ', numl, nl, &
                     zi(ltextl), ibid)
     else
         do i = 1, neq
-            zi(ltextl+i-1)=i
+            zi(ltextl+i-1) = i
         end do
-    endif
+    end if
 !
     if (numl .gt. 0) then
         call jelibe(jexnum(noeint, numl))
-    endif
+    end if
     call jelibe(jexnum(noeint, numc))
     call jelibe(intf//'.IDC_DEFO')
 !
@@ -175,7 +175,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
     do i = 1, nc
         call wkvect('&&'//pgc//'.VECT', 'V V R', neq, ltvec)
-        iord=zi(ltorc+i-1)
+        iord = zi(ltorc+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
@@ -185,9 +185,9 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 !  EXTRACTION DDL
 !
-            iran=zi(ltextl+j-1)
-            xx=zr(ltvec+iran-1)
-            flex(j,i)=xx
+            iran = zi(ltextl+j-1)
+            xx = zr(ltvec+iran-1)
+            flex(j, i) = xx
         end do
         call jelibe(chamva)
         call jedetr('&&'//pgc//'.VECT')
@@ -197,10 +197,10 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
     do i = 1, nbmod
 !
-        call rsadpa(basmod, 'L', 1, 'RIGI_GENE', i,&
+        call rsadpa(basmod, 'L', 1, 'RIGI_GENE', i, &
                     0, sjv=ldkge, styp=k8bid)
-        xkgen=zr(ldkge)
-        call rsadpa(basmod, 'L', 1, 'MASS_GENE', i,&
+        xkgen = zr(ldkge)
+        call rsadpa(basmod, 'L', 1, 'MASS_GENE', i, &
                     0, sjv=ldmge, styp=k8bid)
 !
         call dcapno(basmod, 'DEPL    ', i, chamva)
@@ -211,10 +211,10 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
         do j = 1, nc
             do k = 1, nl
-                jj=zi(ltextc+j-1)
-                kk=zi(ltextl+k-1)
-                toto=zr(ltvec+jj-1)*zr(ltvec+kk-1)/xkgen
-                flex(k,j)=flex(k,j)-toto
+                jj = zi(ltextc+j-1)
+                kk = zi(ltextl+k-1)
+                toto = zr(ltvec+jj-1)*zr(ltvec+kk-1)/xkgen
+                flex(k, j) = flex(k, j)-toto
             end do
         end do
         call jelibe(chamva)

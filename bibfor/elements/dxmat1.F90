@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,10 +72,10 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
     dx = dx/norm
     dy = dy/norm
     dz = dz/norm
-    ps = dx*pgl(3,1) + dy*pgl(3,2) + dz*pgl(3,3)
-    pjdx = dx - ps*pgl(3,1)
-    pjdy = dy - ps*pgl(3,2)
-    pjdz = dz - ps*pgl(3,3)
+    ps = dx*pgl(3, 1)+dy*pgl(3, 2)+dz*pgl(3, 3)
+    pjdx = dx-ps*pgl(3, 1)
+    pjdy = dy-ps*pgl(3, 2)
+    pjdz = dz-ps*pgl(3, 3)
     norm = sqrt(pjdx*pjdx+pjdy*pjdy+pjdz*pjdz)
 !     ------------------------------------------------
     indith = 0
@@ -85,14 +85,14 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
     if (phenom .eq. 'ELAS') then
         if (norm .le. r8prem()) then
             call utmess('F', 'PLATE1_40')
-        endif
+        end if
         nomres(1) = 'E'
         nomres(2) = 'NU'
         nomres(3) = 'ALPHA'
     else if (phenom .eq. 'ELAS_GLRC') then
         if (norm .le. r8prem()) then
             call utmess('F', 'PLATE1_40')
-        endif
+        end if
         nomres(1) = 'E_M'
         nomres(2) = 'NU_M'
         nomres(3) = 'E_F'
@@ -103,7 +103,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
         goto 90
     else
         call utmess('F', 'ELEMENTS_44', sk=phenom)
-    endif
+    end if
 !
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
@@ -116,78 +116,78 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
     if (phenom .eq. 'ELAS') then
 !        ------ MATERIAU ISOTROPE ------------------------------------
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
                     2, nomres, valres, icodre, 1)
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
                     1, nomres(3), valres(3), icodre(3), 0)
-        if ((icodre(3).ne.0) .or. (valres(3).eq.0.d0)) then
+        if ((icodre(3) .ne. 0) .or. (valres(3) .eq. 0.d0)) then
             indith = -1
             goto 90
-        endif
+        end if
         young = valres(1)
         nu = valres(2)
         alphat = valres(3)
         young = young*alphat
 !
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
-        cdf = young*epais*epais*epais/12.d0/ (1.d0-nu*nu)
-        df(1,1) = cdf
-        df(1,2) = cdf*nu
-        df(2,1) = df(1,2)
-        df(2,2) = df(1,1)
+        cdf = young*epais*epais*epais/12.d0/(1.d0-nu*nu)
+        df(1, 1) = cdf
+        df(1, 2) = cdf*nu
+        df(2, 1) = df(1, 2)
+        df(2, 2) = df(1, 1)
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
-        cdm = epais*young/ (1.d0-nu*nu)
-        dm(1,1) = cdm
-        dm(1,2) = cdm*nu
-        dm(2,1) = dm(1,2)
-        dm(2,2) = dm(1,1)
+        cdm = epais*young/(1.d0-nu*nu)
+        dm(1, 1) = cdm
+        dm(1, 2) = cdm*nu
+        dm(2, 1) = dm(1, 2)
+        dm(2, 2) = dm(1, 1)
 !
     else if (phenom .eq. 'ELAS_GLRC') then
 !        ------ MATERIAU GLRC ------------------------------------
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
                     2, nomres, valres, icodre, 1)
 !
         em = valres(1)
         num = valres(2)
 !
-        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], &
                     3, nomres(3), valres(3), icodre(3), 0)
-        if ((icodre(5).ne.0) .or. (valres(5).eq.0.d0)) then
+        if ((icodre(5) .ne. 0) .or. (valres(5) .eq. 0.d0)) then
             indith = -1
             goto 90
-        endif
+        end if
 !
         if (icodre(3) .eq. 0) then
             ef = valres(3)
         else
             ef = em
-        endif
+        end if
 !
         if (icodre(4) .eq. 0) then
             nuf = valres(4)
         else
             nuf = num
-        endif
+        end if
 !
         alphat = valres(5)
         em = em*alphat
         ef = ef*alphat
 !
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
-        cdf = ef*epais*epais*epais/12.d0/ (1.d0-nuf*nuf)
-        df(1,1) = cdf
-        df(1,2) = cdf*nuf
-        df(2,1) = df(1,2)
-        df(2,2) = df(1,1)
+        cdf = ef*epais*epais*epais/12.d0/(1.d0-nuf*nuf)
+        df(1, 1) = cdf
+        df(1, 2) = cdf*nuf
+        df(2, 1) = df(1, 2)
+        df(2, 2) = df(1, 1)
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
-        cdm = epais*em/ (1.d0-num*num)
-        dm(1,1) = cdm
-        dm(1,2) = cdm*num
-        dm(2,1) = dm(1,2)
-        dm(2,2) = dm(1,1)
+        cdm = epais*em/(1.d0-num*num)
+        dm(1, 1) = cdm
+        dm(1, 2) = cdm*num
+        dm(2, 1) = dm(1, 2)
+        dm(2, 2) = dm(1, 1)
 !
-    endif
+    end if
 !
 90  continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
+subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
                   prefix, ndinit)
     implicit none
 #include "asterf_types.h"
@@ -66,12 +66,12 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     character(len=24) :: typmav, connev, nodimv, nomnov, grpnov, gpptnn, coovav
     character(len=24) :: coodsv, coorev, nommav, grpmav, gpptnm
     integer :: versio
-    parameter ( versio = 1 )
+    parameter(versio=1)
 !  --- TABLEAU DE DECOUPAGE
     integer :: ntyele, maxel, maxno
-    parameter (ntyele = 28)
-    parameter (maxel  = 48)
-    parameter (maxno  =  8)
+    parameter(ntyele=28)
+    parameter(maxel=48)
+    parameter(maxno=8)
     integer :: tdec(ntyele, maxel, maxno)
     integer :: typd(ntyele, 3)
 !     ------------------------------------------------------------------
@@ -141,33 +141,33 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm+ima-1)), typm)
 !
         if (typm .eq. 'QUAD4') then
-            nbmail = nbmail- 1
-            nbtri = nbtri + 2
-            iq4 = iq4 + 1
+            nbmail = nbmail-1
+            nbtri = nbtri+2
+            iq4 = iq4+1
             zi(jdec-1+ima) = 2
 !
         else if (typm .eq. 'QUAD8') then
-            nbmail = nbmail- 1
-            nbtri = nbtri + 6
-            iq8 = iq8 + 1
+            nbmail = nbmail-1
+            nbtri = nbtri+6
+            iq8 = iq8+1
             zi(jdec-1+ima) = 6
 !
         else if (typm .eq. 'QUAD9') then
-            nbmail = nbmail- 1
-            nbtri = nbtri + 6
-            iq9 = iq9 + 1
+            nbmail = nbmail-1
+            nbtri = nbtri+6
+            iq9 = iq9+1
             zi(jdec-1+ima) = 6
-        endif
+        end if
     end do
 !
     if (niv .ge. 1) then
-        write(ifm,1000) 1
-        if (iq4 .ne. 0) write(ifm,1002) iq4, 'QUAD4', 2*iq4, 'TRIA3'
-        if (iq8 .ne. 0) write(ifm,1002) iq8, 'QUAD8', 6*iq8, 'TRIA3'
-        if (iq9 .ne. 0) write(ifm,1002) iq9, 'QUAD9', 6*iq9, 'TRIA3'
-    endif
+        write (ifm, 1000) 1
+        if (iq4 .ne. 0) write (ifm, 1002) iq4, 'QUAD4', 2*iq4, 'TRIA3'
+        if (iq8 .ne. 0) write (ifm, 1002) iq8, 'QUAD8', 6*iq8, 'TRIA3'
+        if (iq9 .ne. 0) write (ifm, 1002) iq9, 'QUAD9', 6*iq9, 'TRIA3'
+    end if
 !
-    nbmail = nbmail + nbtri
+    nbmail = nbmail+nbtri
 !
     call jedupo(nodimv, base, nodime, logic)
     call jedupo(nomnov, base, nomnoe, logic)
@@ -187,7 +187,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !
 ! 4.1. ==> CREATION DU .NOMMAI ET DU .CONNEX
 !
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3' ), typtri)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typtri)
 !
     call jecreo(nommai, base//' N K8')
     call jeecra(nommai, 'NOMMAX', ival=nbmail)
@@ -197,7 +197,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
     call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
-    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmail)
     call jeecra(connex, 'LONT', ival=nbnomx*nbmail)
 !
@@ -210,7 +210,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
         gpptnm = nomaou//'.PTRNOMMAI'
         call jecreo(gpptnm, 'G N K24')
         call jeecra(gpptnm, 'NOMMAX', ival=nbgrm)
-        call jecrec(grpmai, base//' V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
+        call jecrec(grpmai, base//' V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', &
                     nbgrm)
 !     --- BCLE SUR LES GROUP_MA DU MAILLAGE INITIAL
         do i = 1, nbgrm
@@ -222,8 +222,8 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             do j = 1, nbmag
                 im = zi(jgrma-1+j)
                 if (zi(jdec-1+im) .ne. 0) then
-                    nbma2 = nbma2 - 1 + zi(jdec-1+im)
-                endif
+                    nbma2 = nbma2-1+zi(jdec-1+im)
+                end if
             end do
             call jecroc(jexnom(grpmai, nomg))
 !        --- LE NOUVEAU GROUP_MA CONTIENDRA NBMA2 MAILLES
@@ -231,21 +231,21 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', ival=nbma2)
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', ival=0)
             if (niv .gt. 1) then
-                write(ifm,*) 'GROUP_MA '//nomg,' (',i,') PASSE DE ',&
-                nbmag,' A ',nbma2,' MAILLES'
-            endif
+                write (ifm, *) 'GROUP_MA '//nomg, ' (', i, ') PASSE DE ', &
+                    nbmag, ' A ', nbma2, ' MAILLES'
+            end if
         end do
 !     --- VECTEUR POUR STOCKER TEMPORAIREMENT LA LISTE DES GROUP_MA
 !         D'UNE MAILLE
         call wkvect('&&CMQUTR.LISTE_GROUP_MA ', 'V V I', nbmag, jlgrma)
-    endif
+    end if
 !
 !====
 ! 5. ON PARCOURT LES MAILLES DU MAILLAGE INITIAL
 !====
 !
     lgpref = lxlgut(prefix)
-    imav = ndinit - 1
+    imav = ndinit-1
 !
     do ima = 1, nbmat
 !
@@ -260,7 +260,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
         if (igrma .ne. 0) then
 !        --- GROUP_MA CONTENANT IMA
             call ingrma(nomain, nima, zi(jlgrma), nbgm, ier)
-        endif
+        end if
 !
 ! 5.1. ==> ON REGARDE SI LA MAILLE IMA DOIT ETRE DECOUPEE...
 !
@@ -275,7 +275,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             else
                 valk = nima
                 call utmess('F', 'ALGELINE4_7', sk=valk)
-            endif
+            end if
 !
 ! 5.2.1. ==> TYPE DE MAILLE ET CONNECTIVITE
 !
@@ -295,12 +295,12 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                     ig = zi(jlgrma-1+i)
                     call jeveuo(jexnum(grpmai, ig), 'E', jgrma)
                     call jelira(jexnum(grpmai, ig), 'LONUTI', ival=im)
-                    im = im + 1
+                    im = im+1
 !                  print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                     zi(jgrma-1+im) = ima2
                     call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
                 end do
-            endif
+            end if
 !
 ! 5.3. ==> LA MAILLE IMA DOIT ETRE DECOUPE
 !
@@ -309,12 +309,12 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             nbpt = 3
             nbtri = zi(jdec-1+ima)
             do i = 1, nbtri
-                imav = imav + 1
+                imav = imav+1
                 call codent(imav, 'G', knume)
                 lgnd = lxlgut(knume)
                 if (lgnd+lgpref .gt. 8) then
                     call utmess('F', 'ALGELINE_17')
-                endif
+                end if
                 nomg = prefix(1:lgpref)//knume
                 call jeexin(jexnom(nommai, nomg), iret)
                 if (iret .eq. 0) then
@@ -322,7 +322,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 else
                     valk = nomg
                     call utmess('F', 'ALGELINE4_7', sk=valk)
-                endif
+                end if
 !
                 call jenonu(jexnom(nommai, nomg), ima2)
                 zi(iatyma-1+ima2) = typtri
@@ -339,16 +339,16 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                         ig = zi(jlgrma-1+j)
                         call jeveuo(jexnum(grpmai, ig), 'E', jgrma)
                         call jelira(jexnum(grpmai, ig), 'LONUTI', ival=im)
-                        im = im + 1
+                        im = im+1
 !                     print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                         zi(jgrma-1+im) = ima2
                         call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
                     end do
-                endif
+                end if
 !
             end do
 !
-        endif
+        end if
 !
 !  --- MAILLE SUIVANTE
 !
@@ -365,7 +365,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
         call jedetr(gpptnn)
         call jecreo(gpptnn, base//' N K24')
         call jeecra(gpptnn, 'NOMMAX', ival=nbgrno)
-        call jecrec(grpnoe, base//' V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
+        call jecrec(grpnoe, base//' V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', &
                     nbgrno)
         do i = 1, nbgrno
             call jenuno(jexnum(grpnov, i), nomg)
@@ -373,12 +373,12 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             call jelira(jexnum(grpnov, i), 'LONUTI', ival=nbno)
             call jeexin(jexnom(grpnoe, nomg), iret)
             if (iret .eq. 0) then
-                call jecroc(jexnom( grpnoe, nomg ))
+                call jecroc(jexnom(grpnoe, nomg))
             else
 !           --- NE DEVRAIT PAS ARRIVER !
                 valk = nomg
                 call utmess('F', 'ALGELINE4_11', sk=valk)
-            endif
+            end if
             call jeecra(jexnom(grpnoe, nomg), 'LONMAX', ival=max(1, nbno))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', ival=nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
@@ -386,7 +386,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 zi(jgg-1+j) = zi(jvg-1+j)
             end do
         end do
-    endif
+    end if
 !
 !
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :
@@ -394,9 +394,9 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !
 !
 !
-    1000 format('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ',i4)
-    1002 format('  MODIFICATION DE ',i6,' MAILLES ',a8,&
-     &                     ' EN ',i6,' MAILLES ',a8)
+1000 format('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ', i4)
+1002 format('  MODIFICATION DE ', i6, ' MAILLES ', a8,&
+    &                     ' EN ', i6, ' MAILLES ', a8)
 !
     call jedema()
 !

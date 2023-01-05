@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,33 +49,33 @@ subroutine arljac(nno, ndim, dff, coor, invjac)
 !
 ! --- JACOBIENNE EN XE
 !
-    jacobi(:,:) = 0.d0
+    jacobi(:, :) = 0.d0
     do i = 1, ndim
         do j = 1, ndim
             do k = 1, nno
-                jacobi(i,j) = jacobi(i,j) + dff(j,k) * coor(ndim*(k-1)+i)
+                jacobi(i, j) = jacobi(i, j)+dff(j, k)*coor(ndim*(k-1)+i)
             end do
         end do
     end do
 !
     if (ndim == 2) then
-        jacobi(3,3) = 1.d0
+        jacobi(3, 3) = 1.d0
     else if (ndim == 1) then
-        jacobi(3,3) = 1.d0
-        jacobi(2,2) = 1.d0
-    endif
+        jacobi(3, 3) = 1.d0
+        jacobi(2, 2) = 1.d0
+    end if
 !
 ! --- INVERSE DE LA JACOBIENNE
 !
     call matinv('S', 3, jacobi, temp, det)
     do i = 1, 3
         do j = 1, 3
-            invjac(i,j) = 0.d0
+            invjac(i, j) = 0.d0
         end do
     end do
     do i = 1, ndim
         do j = 1, ndim
-            invjac(i,j) = temp(i,j)
+            invjac(i, j) = temp(i, j)
         end do
     end do
 !

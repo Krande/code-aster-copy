@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0157()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -81,9 +81,9 @@ implicit none
     ifi = 0
     fich = ' '
     call getvis(' ', 'UNITE', scal=ifi, nbret=n)
-    if (.not. ulexis( ifi )) then
+    if (.not. ulexis(ifi)) then
         call ulopen(ifi, ' ', fich, 'NEW', 'O')
-    endif
+    end if
 !
     motfac = 'GENE'
     call getfac(motfac, nocc)
@@ -92,15 +92,15 @@ implicit none
 !
 !        --- SEPARATION DES DIFFERENTES OCCURENCES---
 !
-        if (form .eq. 'RESULTAT') write(ifi,'(/,1X,80(''-''))')
+        if (form .eq. 'RESULTAT') write (ifi, '(/,1X,80(''-''))')
 !
         call getvid(motfac, 'RESU_GENE', iocc=iocc, scal=gene, nbret=nr)
         call gettco(gene, typcon)
 !
 !        --- ECRITURE DU TITRE ---
 !
-        lResu    = ASTER_TRUE
-        lField   = ASTER_FALSE
+        lResu = ASTER_TRUE
+        lField = ASTER_FALSE
         meshName = ' '
         call irtitr(lResu, lField, gene, meshName, form, ifi, titre)
 !
@@ -109,7 +109,7 @@ implicit none
         if (typcon .eq. 'MODE_GENE') then
             call getvtx(motfac, 'INFO_GENE', iocc=iocc, scal=k8b, nbret=n01)
             if (k8b(1:3) .eq. 'OUI') call rsinfo(gene, ifi)
-        endif
+        end if
 !
 !        --- QUELS SONT LES NOM_CHAMP A IMPRIMER ---
 !
@@ -117,16 +117,16 @@ implicit none
         call getvtx(motfac, 'TOUT_CHAM', iocc=iocc, scal=toucha, nbret=n21)
         call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n22)
         if (n22 .lt. 0) then
-            nbnosy = - n22
+            nbnosy = -n22
             call wkvect('&&OP0157.NOM_SYMB', 'V V K16', nbnosy, jnosy)
-            call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=nbnosy, vect=zk16( jnosy),&
+            call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=nbnosy, vect=zk16(jnosy), &
                         nbret=n)
         else if (toucha .eq. 'OUI') then
             if (typcon .eq. 'MODE_GENE') then
                 call jelira(gene//'.DESC', 'NOMUTI', nbnosy)
                 call wkvect('&&OP0157.NOM_SYMB', 'V V K16', nbnosy, jnosy)
                 do isy = 1, nbnosy
-                    call jenuno(jexnum(gene//'.DESC', isy), zk16(jnosy- 1+isy))
+                    call jenuno(jexnum(gene//'.DESC', isy), zk16(jnosy-1+isy))
                 end do
             else
                 nbnosy = 3
@@ -134,11 +134,11 @@ implicit none
                 zk16(jnosy+1-1) = 'DEPL'
                 zk16(jnosy+2-1) = 'VITE'
                 zk16(jnosy+3-1) = 'ACCE'
-            endif
+            end if
         else if (toucha .eq. 'NON') then
             nbnosy = 0
             jnosy = 1
-        endif
+        end if
 !
 !        --- QUELS SONT LES CMP_GENE A IMPRIMER ---
 !
@@ -152,9 +152,9 @@ implicit none
         else if (n22 .lt. 0) then
             nbcmpg = -n22
             call wkvect('&&OP0157.NOM_CMPG', 'V V I', nbcmpg, jcmpg)
-            call getvis(motfac, 'NUME_CMP_GENE', iocc=iocc, nbval=nbcmpg, vect=zi(jcmpg),&
+            call getvis(motfac, 'NUME_CMP_GENE', iocc=iocc, nbval=nbcmpg, vect=zi(jcmpg), &
                         nbret=n)
-        endif
+        end if
 !
 !        --- ON RECHERCHE LES PARAMETRES A ECRIRE ---
 !
@@ -168,9 +168,9 @@ implicit none
         else if (n10 .ne. 0) then
             nbpara = -n10
             call wkvect('&&OP0157.NOMUTI_PARA', 'V V K16', nbpara, jpara)
-            call getvtx(motfac, 'NOM_PARA', iocc=iocc, nbval=nbpara, vect=zk16( jpara),&
+            call getvtx(motfac, 'NOM_PARA', iocc=iocc, nbval=nbpara, vect=zk16(jpara), &
                         nbret=n)
-        endif
+        end if
 !
 !        --- LES ACCES ---
 !
@@ -183,24 +183,24 @@ implicit none
             knum = '&&OP0157.NUME_ORDRE'
             call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=np)
             call getvtx(motfac, 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
-            call rsutnu(gene, motfac, iocc, knum, nbordr,&
+            call rsutnu(gene, motfac, iocc, knum, nbordr, &
                         prec, crit, iret)
             if (iret .ne. 0) goto 12
             call jeveuo(knum, 'L', jordr)
-            elseif ((typcon.eq.'HARM_GENE') .or.(typcon.eq.'TRAN_GENE'))&
-        then
+        elseif ((typcon .eq. 'HARM_GENE') .or. (typcon .eq. 'TRAN_GENE')) &
+            then
             kdisc = '&&OP0157.DISCRET'
             krang = '&&OP0157.NUME_ORDRE'
             interp = 'NON'
-            call rstran(interp, gene, motfac, iocc, kdisc,&
+            call rstran(interp, gene, motfac, iocc, kdisc, &
                         krang, nbdisc, iret)
             if (iret .ne. 0) goto 12
             call jeexin(kdisc, ire2)
             if (ire2 .gt. 0) then
                 call jeveuo(kdisc, 'E', jdisc)
                 call jeveuo(krang, 'E', jrang)
-            endif
-        endif
+            end if
+        end if
 !
 !        --- HISTOR ---
 !
@@ -208,12 +208,12 @@ implicit none
         call getvtx(motfac, 'INFO_CMP_GENE', iocc=iocc, scal=k8b, nbret=n)
         if (k8b(1:3) .eq. 'NON') lhist = .false.
 !
-        call irgene(iocc, gene, form, ifi, nbnosy,&
-                    zk16(jnosy), nbcmpg, zi(jcmpg), nbpara, zk16(jpara),&
-                    nbordr, zi(jordr), nbdisc, zr(jdisc), zi(jrang),&
+        call irgene(iocc, gene, form, ifi, nbnosy, &
+                    zk16(jnosy), nbcmpg, zi(jcmpg), nbpara, zk16(jpara), &
+                    nbordr, zi(jordr), nbdisc, zr(jdisc), zi(jrang), &
                     lhist)
 !
- 12     continue
+12      continue
         call jedetr('&&OP0157.NOM_SYMB')
         call jedetr('&&OP0157.NOM_CMPG')
         call jedetr('&&OP0157.NOMUTI_PARA')

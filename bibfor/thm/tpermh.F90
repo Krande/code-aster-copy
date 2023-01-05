@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tpermh(ndim , angl_naut, aniso, perm_coef,&
+subroutine tpermh(ndim, angl_naut, aniso, perm_coef, &
                   tperm)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"
 !
-integer, intent(in) :: ndim
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: aniso
-real(kind=8), intent(in) :: perm_coef(4)
-real(kind=8), intent(out) :: tperm(ndim, ndim)
+    integer, intent(in) :: ndim
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: aniso
+    real(kind=8), intent(in) :: perm_coef(4)
+    real(kind=8), intent(out) :: tperm(ndim, ndim)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,34 +58,34 @@ real(kind=8), intent(out) :: tperm(ndim, ndim)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    work(:,:)  = 0.d0
-    tk2(:,:)   = 0.d0
-    perml(:,:) = 0.d0
-    tperm(1:ndim,1:ndim) = 0.d0
+    work(:, :) = 0.d0
+    tk2(:, :) = 0.d0
+    perml(:, :) = 0.d0
+    tperm(1:ndim, 1:ndim) = 0.d0
 !
     if (aniso .eq. 0) then
-        tperm(1,1) = perm_coef(1)
-        tperm(2,2) = perm_coef(1)
+        tperm(1, 1) = perm_coef(1)
+        tperm(2, 2) = perm_coef(1)
         if (ndim .eq. 3) then
-            tperm(3,3) = perm_coef(1)
-        endif
+            tperm(3, 3) = perm_coef(1)
+        end if
     else if (aniso .eq. 1) then
-        perml(1,1) = perm_coef(2)
-        perml(2,2) = perm_coef(2)
-        perml(3,3) = perm_coef(3)
+        perml(1, 1) = perm_coef(2)
+        perml(2, 2) = perm_coef(2)
+        perml(3, 3) = perm_coef(3)
         call matrot(angl_naut, passag)
         call utbtab('ZERO', 3, 3, perml, passag, work, tperm)
     else if (aniso .eq. 2) then
-        perml(1,1) = perm_coef(2)
-        perml(2,2) = perm_coef(4)
+        perml(1, 1) = perm_coef(2)
+        perml(2, 2) = perm_coef(4)
         call matrot(angl_naut, passag)
         call utbtab('ZERO', 3, 3, perml, passag, work, tk2)
-        tperm(1,1) = tk2(1,1)
-        tperm(2,2) = tk2(2,2)
-        tperm(1,2) = tk2(1,2)
-        tperm(2,1) = tk2(2,1)
+        tperm(1, 1) = tk2(1, 1)
+        tperm(2, 2) = tk2(2, 2)
+        tperm(1, 2) = tk2(1, 2)
+        tperm(2, 1) = tk2(2, 1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

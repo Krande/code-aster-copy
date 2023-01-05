@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,74 +44,74 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     !!! Variables globales
     !!!
 
-    integer :: nbmat,retcom
-    real(kind=8) :: mater(nbmat,2),s(6),dhds(6),ds2hds(6)
+    integer :: nbmat, retcom
+    real(kind=8) :: mater(nbmat, 2), s(6), dhds(6), ds2hds(6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndt,ndi,i,k
-    real(kind=8) :: pref,r0c,rtheta
-    real(kind=8) :: kron(6),iden6(6,6)
-    real(kind=8) :: a(6),b(6,6),bt(6,6)
-    real(kind=8) :: sii,rcos3t,ptit
-    common /tdim/ ndt, ndi
+    integer :: ndt, ndi, i, k
+    real(kind=8) :: pref, r0c, rtheta
+    real(kind=8) :: kron(6), iden6(6, 6)
+    real(kind=8) :: a(6), b(6, 6), bt(6, 6)
+    real(kind=8) :: sii, rcos3t, ptit
+    common/tdim/ndt, ndi
 
-    data kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 
-    data iden6 /1.d0,0.d0,0.d0,0.d0,0.d0,0.d0,&
-               &0.d0,1.d0,0.d0,0.d0,0.d0,0.d0,&
-               &0.d0,0.d0,1.d0,0.d0,0.d0,0.d0,&
-               &0.d0,0.d0,0.d0,1.d0,0.d0,0.d0,&
-               &0.d0,0.d0,0.d0,0.d0,1.d0,0.d0,&
-               &0.d0,0.d0,0.d0,0.d0,0.d0,1.d0/
+    data iden6/1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0,&
+               &0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0,&
+               &0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0,&
+               &0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0,&
+               &0.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0,&
+               &0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 
     !!!
     !!! Recuperation des parametres du modele
     !!!
 
-    pref=mater(1,2)
+    pref = mater(1, 2)
 
     !!!
     !!! Calcul du deviateur et verification qu'il n'est pas nul
     !!!
 
-    retcom=0
-    ptit=r8miem()
+    retcom = 0
+    ptit = r8miem()
 
     sii = norm2(s(1:ndt))
 
-    if (sii.lt.ptit) then
-        retcom=1
+    if (sii .lt. ptit) then
+        retcom = 1
         goto 1000
-    endif
+    end if
 
     !!!
     !!! Recuperation de r(theta) et r0c
     !!!
 
-    rcos3t=cos3t(s,pref,1.0d-8)
-    call srhtet(nbmat,mater,rcos3t,r0c,rtheta)
+    rcos3t = cos3t(s, pref, 1.0d-8)
+    call srhtet(nbmat, mater, rcos3t, r0c, rtheta)
 
     !!!
     !!! Calcul du premier terme
     !!!
 
-    call r8inir(6,0.d0,a,1)
-    do i=1,ndt
-        a(i)=dhds(i)*sii+rtheta*s(i)/sii
+    call r8inir(6, 0.d0, a, 1)
+    do i = 1, ndt
+        a(i) = dhds(i)*sii+rtheta*s(i)/sii
     end do
 
     !!!
     !!! Calcul du second terme
     !!!
 
-    call r8inir(6*6,0.d0,b,1)
+    call r8inir(6*6, 0.d0, b, 1)
 
-    do i=1,ndt
-        do k=1,ndt
-            b(i,k)=iden6(i,k)-kron(i)*kron(k)/3.d0
+    do i = 1, ndt
+        do k = 1, ndt
+            b(i, k) = iden6(i, k)-kron(i)*kron(k)/3.d0
         end do
     end do
 
@@ -119,10 +119,10 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     !!! Resultat final
     !!!
 
-    call r8inir(6,0.d0,ds2hds,1)
-    bt(1:ndt,1:ndt) = transpose(b(1:ndt,1:ndt))
-    ds2hds(1:ndt) = matmul(bt(1:ndt,1:ndt), a(1:ndt))
+    call r8inir(6, 0.d0, ds2hds, 1)
+    bt(1:ndt, 1:ndt) = transpose(b(1:ndt, 1:ndt))
+    ds2hds(1:ndt) = matmul(bt(1:ndt, 1:ndt), a(1:ndt))
 
-1000  continue
+1000 continue
 
 end subroutine

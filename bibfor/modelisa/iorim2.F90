@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@ function iorim2(num1, n1, num2, n2, reorie)
 !     DONNEES POUR TRIA3,TRIA6,TRIA7,QUAD4,QUAD8,QUAD9
 !     NOMBRE DE SOMMETS EN FONCTION DU NOMBRE DE NOEUDS DE L'ELEMENT
     integer :: nso(9), nso1, nso2, i1, j1, i2, j2, i, k, l
-    data nso /0,0,3,4,0,3,3,4,4/
+    data nso/0, 0, 3, 4, 0, 3, 3, 4, 4/
 !
 #define egal(i1,j1,i2,j2) (num1(i1).eq.num2(i2)).and. \
-    (num1(j1).eq.num2(j2))
+    (num1(j1) .eq. num2(j2))
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -47,19 +47,19 @@ function iorim2(num1, n1, num2, n2, reorie)
     nso2 = nso(n2)
 !     BOUCLES SUR LES ARETES
     do i1 = 1, nso1
-        j1 = i1 + 1
+        j1 = i1+1
         if (j1 .gt. nso1) j1 = 1
         do i2 = 1, nso2
-            j2 = i2 + 1
+            j2 = i2+1
             if (j2 .gt. nso2) j2 = 1
-            if (egal(i1,j1,i2,j2)) then
+            if (egal(i1, j1, i2, j2)) then
                 iorim2 = -1
                 goto 100
-            endif
-            if (egal(i1,j1,j2,i2)) then
+            end if
+            if (egal(i1, j1, j2, i2)) then
                 iorim2 = 1
                 goto 100
-            endif
+            end if
         end do
     end do
     iorim2 = 0
@@ -79,7 +79,7 @@ function iorim2(num1, n1, num2, n2, reorie)
                 num2(nso2+i) = l
                 num2(2*nso2+1-i) = k
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end function

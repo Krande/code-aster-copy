@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine te0309(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ij, imattt, ino, j, jno
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -54,19 +54,19 @@ subroutine te0309(option, nomte)
     call jevech('PMATTTR', 'E', imattt)
 !
     do i = 1, ndim
-        zr(imattt + i -1) = 0.0d0
+        zr(imattt+i-1) = 0.0d0
     end do
 !
 !
 !     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -74,8 +74,8 @@ subroutine te0309(option, nomte)
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
     do ipg = 1, npg1
-        kdec=(ipg-1)*nno*ndim
-        ldec=(ipg-1)*nno
+        kdec = (ipg-1)*nno*ndim
+        ldec = (ipg-1)*nno
 !
 !
         nx = 0.0d0
@@ -92,9 +92,9 @@ subroutine te0309(option, nomte)
             do j = 1, nno
                 jdec = (j-1)*ndim
 !
-                nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
 !
 !
 !
@@ -103,7 +103,7 @@ subroutine te0309(option, nomte)
 !
 !        CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
-        jac = sqrt (nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
 !
         norm(1) = nx/jac
         norm(2) = ny/jac
@@ -112,9 +112,9 @@ subroutine te0309(option, nomte)
         if (option(11:11) .eq. 'X') then
             do i = 1, nno
                 do j = 1, i
-                    ij = (i-1)*i/2 +j
-                    zr(imattt + ij -1) = zr(imattt + ij -1) +jac*zr( ipoids+ipg-1)*norm(1)* zr(iv&
-                                         &f+ldec+i-1)*zr(ivf+ ldec+j-1)
+                    ij = (i-1)*i/2+j
+                    zr(imattt+ij-1) = zr(imattt+ij-1)+jac*zr(ipoids+ipg-1)*norm(1)*zr(iv&
+                                         &f+ldec+i-1)*zr(ivf+ldec+j-1)
                 end do
             end do
         else
@@ -123,9 +123,9 @@ subroutine te0309(option, nomte)
 !
                 do i = 1, nno
                     do j = 1, i
-                        ij = (i-1)*i/2 +j
-                        zr(imattt + ij -1) = zr(imattt + ij -1) +jac*zr(ipoids+ipg-1)*norm(2)* zr&
-                                             &(ivf+ldec+i- 1)*zr(ivf+ldec+j-1)
+                        ij = (i-1)*i/2+j
+                        zr(imattt+ij-1) = zr(imattt+ij-1)+jac*zr(ipoids+ipg-1)*norm(2)*zr&
+                                             &(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                     end do
                 end do
 !
@@ -134,15 +134,15 @@ subroutine te0309(option, nomte)
 !
                     do i = 1, nno
                         do j = 1, i
-                            ij = (i-1)*i/2 +j
-                            zr(imattt + ij -1) = zr(imattt + ij -1) +jac*zr(ipoids+ipg-1)*norm(3)&
-                                                 &* zr(ivf+ ldec+i-1)*zr(ivf+ldec+j-1)
+                            ij = (i-1)*i/2+j
+                            zr(imattt+ij-1) = zr(imattt+ij-1)+jac*zr(ipoids+ipg-1)*norm(3)&
+                                             &*zr(ivf+ldec+i-1)*zr(ivf+ldec+j-1)
                         end do
                     end do
 !
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
     end do
 !

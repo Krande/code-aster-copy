@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine op0028()
 !
-implicit none
+    implicit none
 !
 #include "asterc/getres.h"
 #include "asterfort/dfllad.h"
@@ -62,12 +62,12 @@ implicit none
 !
     if (list_method .eq. 'AUTO') then
         call dfllad(sdlist)
-    endif
+    end if
 !
 ! - Print debug
 !
     if (niv .ge. 1) then
         call dflldb(sdlist)
-    endif
+    end if
 
 end subroutine

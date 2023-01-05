@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ subroutine giecas(nfic, ndim, nbobj)
     call jeexin('&&GILIRE.NOMOBJ', iret)
     if (iret .eq. 0) then
         call utmess('F', 'PREPOST_46')
-    endif
+    end if
     call jeveuo('&&GILIRE.NOMOBJ', 'L', vk8=vnomobj)
     call jeveuo('&&GILIRE.DESCOBJ', 'L', vi=descobj)
     call jeveuo('&&GILIRE.CUMUL_ELE', 'L', vi=cumul_ele)
@@ -101,27 +101,27 @@ subroutine giecas(nfic, ndim, nbobj)
 !     -----------------------------------------------------------------
 !     --ECRITURE DU TITRE:
 !     -----------------------------------------------------------------
-    write(nfic,*) 'TITRE'
-    write(nfic,*) '%  GIBI FECIT'
-    write(nfic,*) 'FINSF'
-    write(nfic,*) '%'
+    write (nfic, *) 'TITRE'
+    write (nfic, *) '%  GIBI FECIT'
+    write (nfic, *) 'FINSF'
+    write (nfic, *) '%'
 !
 !     -----------------------------------------------------------------
 !     --ECRITURE DES NOEUDS:
 !     -----------------------------------------------------------------
     if (ndim .eq. 3) then
-        write(nfic,*) 'COOR_3D'
-    else if (ndim.eq.2) then
-        write(nfic,*) 'COOR_2D'
-    else if (ndim.eq.1) then
-        write(nfic,*) 'COOR_1D'
+        write (nfic, *) 'COOR_3D'
+    else if (ndim .eq. 2) then
+        write (nfic, *) 'COOR_2D'
+    else if (ndim .eq. 1) then
+        write (nfic, *) 'COOR_1D'
     else
         call utmess('F', 'PREPOST_53')
-    endif
-    indir =.false.
+    end if
+    indir = .false.
     call jeexin('&&GILIRE.INDIRECT', iret)
     if (iret .ne. 0) then
-        indir =.true.
+        indir = .true.
         call jelira('&&GILIRE.INDIRECT', 'LONMAX', nbnoto)
         call jeveuo('&&GILIRE.INDIRECT', 'L', iaptin)
         call wkvect('&&GILIRE.NOENOM', 'V V I', nbnoto, inutri)
@@ -131,24 +131,24 @@ subroutine giecas(nfic, ndim, nbobj)
         if (nbelim .gt. 0) then
             vali = nbelim
             call utmess('I', 'PREPOST5_19', si=vali)
-        endif
+        end if
     else
-        nbnoto=ncoo/ndim
-    endif
+        nbnoto = ncoo/ndim
+    end if
 !
     do ino = 1, nbnoto
         if (indir) then
             nono = zi(inutri-1+ino)
         else
             nono = ino
-        endif
+        end if
         call codent(nono, 'G', k7bid)
-        write(nfic,1001) 'N'//k7bid, (coordo(ndim*(nono-1)+j),j=&
-        1,ndim)
+        write (nfic, 1001) 'N'//k7bid, (coordo(ndim*(nono-1)+j), j= &
+                                        1, ndim)
     end do
 !
-    write(nfic,*) 'FINSF'
-    write(nfic,*) '%'
+    write (nfic, *) 'FINSF'
+    write (nfic, *) '%'
 !
 !     -----------------------------------------------------------------
 !     --ECRITURE DES MAILLES:
@@ -166,82 +166,82 @@ subroutine giecas(nfic, ndim, nbobj)
 !
 !
     do il = 1, nbobj
-        zl(iecrit+il-1)=.false.
+        zl(iecrit+il-1) = .false.
     end do
     imb = 1
     do ima = 1, nbobno
         ii = objet_num(ima)
-        if (.not.(zl(iecrit+ii-1))) then
+        if (.not. (zl(iecrit+ii-1))) then
             zi(itrnu+imb-1) = ii
-            imb =imb + 1
-            zl(iecrit+ii-1)=.true.
-        endif
+            imb = imb+1
+            zl(iecrit+ii-1) = .true.
+        end if
     end do
 !
     do i = 1, nbobno
         ii = objet_num(i)
         nbsoob = descobj(4*(ii-1)+1)
-        nomobj=vnomobj(2*(ii-1)+1)
+        nomobj = vnomobj(2*(ii-1)+1)
         if (nbsoob .ne. 0) then
             call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', vi=soob)
             do kk = 1, nbsoob
                 jj = soob(kk)
-                if (.not.(zl(iecrit+jj-1))) then
-                    zi(itrnu+imb-1)= jj
-                    zl(iecrit+jj-1)=.true.
-                    imb =imb + 1
-                endif
+                if (.not. (zl(iecrit+jj-1))) then
+                    zi(itrnu+imb-1) = jj
+                    zl(iecrit+jj-1) = .true.
+                    imb = imb+1
+                end if
             end do
-        endif
+        end if
     end do
 !
 ! ON SUPPRIME UN IMB CAR ON EN COMPTE UN DE PLUS DANS LA FIN DE BOUCLE
 !
-    imb =imb-1
+    imb = imb-1
 !
 ! ON TRIE LA TABLE
 !
     if (imb .gt. 1) then
         call uttrii(zi(itrnu), imb)
-    endif
+    end if
 !
     icoma = 0
     nbelt = 0
     nbelc = 0
 !
     do i = 1, nbobj
-        trouve =.false.
+        trouve = .false.
         do jj = 1, imb
             ii = zi(itrnu+jj-1)
             if (i .eq. ii) then
                 trouve = .true.
                 goto 13
-            endif
+            end if
         end do
- 13     continue
+13      continue
 !
-        nbno =descobj(4*(i-1)+3)
-        nbele =descobj(4*(i-1)+4)
-        nomobj =vnomobj(2*(i-1)+1)
-        tymail =vnomobj(2*(i-1)+2)
+        nbno = descobj(4*(i-1)+3)
+        nbele = descobj(4*(i-1)+4)
+        nomobj = vnomobj(2*(i-1)+1)
+        tymail = vnomobj(2*(i-1)+2)
         nbelt = nbelt+nbele
-        if (trouve) nbelc = nbelc +nbele
+        if (trouve) nbelc = nbelc+nbele
 !
 !        -- SI L'OBJET EST 1 OBJET SIMPLE , ON ECRIT SES MAILLES:
         if (nbele .gt. 0) then
-            call giecma(nfic, trouve, nbele, nomobj, tymail,&
-                        nbno, zl( iecrma), icoma)
-        endif
+            call giecma(nfic, trouve, nbele, nomobj, tymail, &
+                        nbno, zl(iecrma), icoma)
+        end if
     end do
     if (nbelc .gt. 9999999) then
         vali = nbelc
         call utmess('F', 'PREPOST6_2', si=vali)
-    endif
-    nmelim = nbelt - nbelc
+    end if
+    nmelim = nbelt-nbelc
     if (nmelim .gt. 0) then
         vali = nmelim
         call utmess('I', 'PREPOST5_20', si=vali)
-    endif
+    end if
 !
 !     -----------------------------------------------------------------
 !     --ECRITURE DES GROUP_NO:
@@ -253,19 +253,19 @@ subroutine giecas(nfic, ndim, nbobj)
         call jeveuo('&&GILIRE.POINT_NUM', 'L', vi=point_num)
         call jelira('&&GILIRE.POINT_NOM', 'LONMAX', nbnono)
     else
-        nbnono=0
-    endif
+        nbnono = 0
+    end if
 !
     do i = 1, nbnono
-        nomno =point_nom(i)
+        nomno = point_nom(i)
         if (nomno(1:1) .eq. '#') goto 3
-        numno =point_num(i)
+        numno = point_num(i)
         call codent(numno, 'G', k7bid)
-        write(nfic,*) 'GROUP_NO'
-        write(nfic,1002) nomno,'N'//k7bid
-        write(nfic,*) 'FINSF'
-        write(nfic,*) '%'
-  3     continue
+        write (nfic, *) 'GROUP_NO'
+        write (nfic, 1002) nomno, 'N'//k7bid
+        write (nfic, *) 'FINSF'
+        write (nfic, *) '%'
+3       continue
     end do
 !
 !     -----------------------------------------------------------------
@@ -274,74 +274,74 @@ subroutine giecas(nfic, ndim, nbobj)
 !
     call jelira('&&GILIRE.OBJET_NOM', 'LONMAX', nbobno)
     do ii = 1, nbobj
-        trouve =.false.
+        trouve = .false.
         do inu = 1, nbobno
             if (objet_num(inu) .eq. ii) then
                 trouve = .true.
-                nomobg=objet_nom(inu)
+                nomobg = objet_nom(inu)
                 if (nomobg(1:1) .eq. '#') goto 21
-                write(nfic,*) 'GROUP_MA'
-                write(nfic,*) '  ',nomobg
-                nbsoob =descobj(4*(ii-1)+1)
+                write (nfic, *) 'GROUP_MA'
+                write (nfic, *) '  ', nomobg
+                nbsoob = descobj(4*(ii-1)+1)
                 if (nbsoob .eq. 0) then
 !
 !           -- ON FAIT COMME SI L'OBJET SE CONTENAIT LUI-MEME:
-                    nbsoob=1
-                    magoui=.true.
+                    nbsoob = 1
+                    magoui = .true.
                 else
-                    magoui=.false.
-                    nomobj=vnomobj(2*(ii-1)+1)
+                    magoui = .false.
+                    nomobj = vnomobj(2*(ii-1)+1)
                     call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', vi=ssob)
-                endif
+                end if
                 do j = 1, nbsoob
 !
 !        -- L'OBJET EST 1 OBJET COMPOSE, ON ECRIT SES MAILLES:
                     if (magoui) then
-                        jj= ii
+                        jj = ii
                     else
-                        jj= ssob(j)
-                    endif
-                    nomobj=vnomobj(2*(jj-1)+1)
-                    nbno =descobj(4*(jj-1)+3)
-                    nbele =descobj(4*(jj-1)+4)
+                        jj = ssob(j)
+                    end if
+                    nomobj = vnomobj(2*(jj-1)+1)
+                    nbno = descobj(4*(jj-1)+3)
+                    nbele = descobj(4*(jj-1)+4)
                     nbfois = nbele/7
-                    nbrest= nbele-7*nbfois
-                    icok= cumul_ele(jj)
+                    nbrest = nbele-7*nbfois
+                    icok = cumul_ele(jj)
 !
                     do k = 1, nbfois
                         do kk = 1, 7
-                            icok=icok+1
-                            call codent(zi(ianema-1+icok), 'G', k7nom( kk))
-                            k8nom(kk)='M'//k7nom(kk)
+                            icok = icok+1
+                            call codent(zi(ianema-1+icok), 'G', k7nom(kk))
+                            k8nom(kk) = 'M'//k7nom(kk)
                         end do
-                        write(nfic,1003) (k8nom(l),l=1,7)
+                        write (nfic, 1003) (k8nom(l), l=1, 7)
                     end do
 !
                     do kk = 1, nbrest
-                        icok=icok+1
+                        icok = icok+1
                         call codent(zi(ianema-1+icok), 'G', k7nom(kk))
-                        k8nom(kk)='M'//k7nom(kk)
+                        k8nom(kk) = 'M'//k7nom(kk)
                     end do
-                    write(nfic,1003) (k8nom(l),l=1,nbrest)
+                    write (nfic, 1003) (k8nom(l), l=1, nbrest)
 !
                 end do
-                write(nfic,*) 'FINSF'
-                write(nfic,*) '%'
-            endif
- 21         continue
+                write (nfic, *) 'FINSF'
+                write (nfic, *) '%'
+            end if
+21          continue
         end do
 !
     end do
 !
 !     -- ON ECRIT LE "FIN" FINAL ET ON REMBOBINE LE FICHIER:
 !     ------------------------------------------------------
-    write(nfic,*) 'FIN'
-    rewind(nfic)
+    write (nfic, *) 'FIN'
+    rewind (nfic)
 !
     call jedetc('V', '&&GILIRE', 1)
-    1001 format(1x,a8,1x,1pd21.14,1x,1pd21.14,1x,1pd21.14)
-    1002 format(1x,a8,1x,a8)
-    1003 format(7(1x,a8))
+1001 format(1x, a8, 1x, 1pd21.14, 1x, 1pd21.14, 1x, 1pd21.14)
+1002 format(1x, a8, 1x, a8)
+1003 format(7(1x, a8))
 !
     call jedema()
 end subroutine

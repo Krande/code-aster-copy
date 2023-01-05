@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine te0469(option, nomte)
     integer :: nbnomx, ndim, nno, nnos, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    parameter (nbnomx=27)
+    parameter(nbnomx=27)
     character(len=8) :: nompar(4)
     character(len=16) :: nomte, option
     real(kind=8) :: fx(nbnomx), fy(nbnomx), fz(nbnomx), valpar(4)
@@ -57,7 +57,7 @@ subroutine te0469(option, nomte)
 ! --- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! --- INTEGRATION ET INTERPOLATION
 !      ----------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 ! --- INITIALISATIONS :
@@ -94,16 +94,16 @@ subroutine te0469(option, nomte)
 !      -----------------------------------
         do igau = 1, npg
 !
-            idecpg = nno* (igau-1)
+            idecpg = nno*(igau-1)
 !
 !
 ! ---    CALCUL DE LA FORCE LINEIQUE AUX POINTS D'INTEGRATION :
 !        -----------------------------------------------------
             do ino = 1, nno
 !
-                fxlin(igau) = fxlin(igau) + zr(ivf+idecpg+ino-1)* zr(idflin+1-1)
-                fylin(igau) = fylin(igau) + zr(ivf+idecpg+ino-1)* zr(idflin+2-1)
-                fzlin(igau) = fzlin(igau) + zr(ivf+idecpg+ino-1)* zr(idflin+3-1)
+                fxlin(igau) = fxlin(igau)+zr(ivf+idecpg+ino-1)*zr(idflin+1-1)
+                fylin(igau) = fylin(igau)+zr(ivf+idecpg+ino-1)*zr(idflin+2-1)
+                fzlin(igau) = fzlin(igau)+zr(ivf+idecpg+ino-1)*zr(idflin+3-1)
             end do
         end do
 !
@@ -111,21 +111,21 @@ subroutine te0469(option, nomte)
 !        -----------------------------------
         do igau = 1, npg
 !
-            idecpg = nno* (igau-1)
+            idecpg = nno*(igau-1)
 !
 ! ---    CALCUL DU PRODUIT JACOBIEN*POIDS AU POINT D'INTEGRATION
 ! ---    COURANT :
 !        -------
-            call vff3d(nno, zr(ipoids+igau-1), zr(idfdk+idecpg), zr( igeom), jacob)
+            call vff3d(nno, zr(ipoids+igau-1), zr(idfdk+idecpg), zr(igeom), jacob)
 !
 ! ---    CALCUL DE LA CONTRIBUTION AU VECTEUR DES FORCES NODALES
 ! ---    DU CHARGEMENT LINEIQUE AU POINT D'INTEGRATION COURANT :
 !        -----------------------------------------------------
             do ino = 1, nno
 !
-                fx(ino) = fx(ino) + zr(ivf+idecpg+ino-1)*fxlin(igau)* jacob
-                fy(ino) = fy(ino) + zr(ivf+idecpg+ino-1)*fylin(igau)* jacob
-                fz(ino) = fz(ino) + zr(ivf+idecpg+ino-1)*fzlin(igau)* jacob
+                fx(ino) = fx(ino)+zr(ivf+idecpg+ino-1)*fxlin(igau)*jacob
+                fy(ino) = fy(ino)+zr(ivf+idecpg+ino-1)*fylin(igau)*jacob
+                fz(ino) = fz(ino)+zr(ivf+idecpg+ino-1)*fzlin(igau)*jacob
             end do
 !
         end do
@@ -134,7 +134,7 @@ subroutine te0469(option, nomte)
 ! --- CAS OU LES DONNEES DES FORCES LINEIQUES SONT DES FONCTIONS
 ! --- DES COORDONNEES ET DU TEMPS :
 !     ---------------------------
-    else if (option.eq.'CHAR_MECA_FF1D3D') then
+    else if (option .eq. 'CHAR_MECA_FF1D3D') then
 !
 ! ---  RECUPERATION DES NOMS DES FONCTIONS REPRESENTANT LA FORCE
 ! ---  LINEIQUE A APPLIQUER SUR L'ELEMENT D'ARETE :
@@ -158,7 +158,7 @@ subroutine te0469(option, nomte)
 !      -----------------------------------
         do igau = 1, npg
 !
-            idecpg = nno* (igau-1)
+            idecpg = nno*(igau-1)
 !
             do i = 1, 3
                 xyzgau(i) = zero
@@ -169,11 +169,11 @@ subroutine te0469(option, nomte)
 !        -----------------------------------------------------
             do ino = 1, nno
 !
-                idecno = 3* (ino-1) - 1
+                idecno = 3*(ino-1)-1
 !
-                xyzgau(1) = xyzgau(1) + zr(ivf+idecpg+ino-1)* zr( igeom+1+idecno)
-                xyzgau(2) = xyzgau(2) + zr(ivf+idecpg+ino-1)* zr( igeom+2+idecno)
-                xyzgau(3) = xyzgau(3) + zr(ivf+idecpg+ino-1)* zr( igeom+3+idecno)
+                xyzgau(1) = xyzgau(1)+zr(ivf+idecpg+ino-1)*zr(igeom+1+idecno)
+                xyzgau(2) = xyzgau(2)+zr(ivf+idecpg+ino-1)*zr(igeom+2+idecno)
+                xyzgau(3) = xyzgau(3)+zr(ivf+idecpg+ino-1)*zr(igeom+3+idecno)
             end do
 !
 ! ---    INTERPOLATION DES FORCES LINEIQUES EN FONCTION DES
@@ -183,40 +183,40 @@ subroutine te0469(option, nomte)
             valpar(2) = xyzgau(2)
             valpar(3) = xyzgau(3)
 !
-            call fointe('FM', zk8(idflin+1-1), 4, nompar, valpar,&
+            call fointe('FM', zk8(idflin+1-1), 4, nompar, valpar, &
                         forlin(1), ier)
-            call fointe('FM', zk8(idflin+2-1), 4, nompar, valpar,&
+            call fointe('FM', zk8(idflin+2-1), 4, nompar, valpar, &
                         forlin(2), ier)
-            call fointe('FM', zk8(idflin+3-1), 4, nompar, valpar,&
+            call fointe('FM', zk8(idflin+3-1), 4, nompar, valpar, &
                         forlin(3), ier)
 !
 ! ---    CALCUL DU PRODUIT JACOBIEN*POIDS AU POINT D'INTEGRATION
 ! ---    COURANT :
 !        -------
-            call vff3d(nno, zr(ipoids+igau-1), zr(idfdk+idecpg), zr( igeom), jacob)
+            call vff3d(nno, zr(ipoids+igau-1), zr(idfdk+idecpg), zr(igeom), jacob)
 !
 ! ---    CALCUL DE LA CONTRIBUTION AU VECTEUR DES FORCES NODALES
 ! ---    DU CHARGEMENT LINEIQUE AU POINT D'INTEGRATION COURANT :
 !        -----------------------------------------------------
             do ino = 1, nno
 !
-                fx(ino) = fx(ino) + zr(ivf+idecpg+ino-1)*forlin(1)* jacob
-                fy(ino) = fy(ino) + zr(ivf+idecpg+ino-1)*forlin(2)* jacob
-                fz(ino) = fz(ino) + zr(ivf+idecpg+ino-1)*forlin(3)* jacob
+                fx(ino) = fx(ino)+zr(ivf+idecpg+ino-1)*forlin(1)*jacob
+                fy(ino) = fy(ino)+zr(ivf+idecpg+ino-1)*forlin(2)*jacob
+                fz(ino) = fz(ino)+zr(ivf+idecpg+ino-1)*forlin(3)*jacob
             end do
 !
         end do
 !
-    endif
+    end if
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR FORCES NODALES EN SORTIE :
 !      ---------------------------------------------------------------
     call jevech('PVECTUR', 'E', ivectu)
 !
     do ino = 1, nno
-        zr(ivectu+3* (ino-1)+1-1) = fx(ino)
-        zr(ivectu+3* (ino-1)+2-1) = fy(ino)
-        zr(ivectu+3* (ino-1)+3-1) = fz(ino)
+        zr(ivectu+3*(ino-1)+1-1) = fx(ino)
+        zr(ivectu+3*(ino-1)+2-1) = fy(ino)
+        zr(ivectu+3*(ino-1)+3-1) = fz(ino)
     end do
 !
 end subroutine

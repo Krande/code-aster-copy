@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine xmmres(depdel, modele, cnsinr, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -47,10 +47,10 @@ implicit none
 #include "blas/ddot.h"
 #include "asterfort/xcalc_saut.h"
 !
-character(len=19) :: cnsinr
-character(len=19) :: depdel
-character(len=8) :: modele
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19) :: cnsinr
+    character(len=19) :: depdel
+    character(len=8) :: modele
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,11 +67,11 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: jcesl1, jcesl2, jcesl3, jcesl4, jcesl5,  ndime
+    integer :: jcesl1, jcesl2, jcesl3, jcesl4, jcesl5, ndime
     integer :: jcesd1, jcesd2, jcesd3, jcesd4, jcesd5
-    integer ::  jconl,  jfrol, jdepl
+    integer ::  jconl, jfrol, jdepl
     integer ::  nbma, ima, iad, i, ia, in, iadb, k
-    integer :: ninter,  itypma, nuno,  jconx2, j, ndim
+    integer :: ninter, itypma, nuno, jconx2, j, ndim
     integer ::   jcnslr
     integer :: nsom, nosom(2), ar(12, 3), nbar, zresu
     integer :: zxain
@@ -113,7 +113,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --- INITIALISATIONS
 !
-    coefj=xcalc_saut(1,0,1)
+    coefj = xcalc_saut(1, 0, 1)
     faclos = '&&XMMRES.FACLOS'
     aintes = '&&XMMRES.AINTES'
     pintes = '&&XMMRES.PINTES'
@@ -173,8 +173,8 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jeveuo(basecs//'.CESL', 'L', jcesl4)
     call jeveuo(lstno//'.CESL', 'L', jcesl5)
 !
-    ASSERT(zi(jcesd1).eq.zi(jcesd2))
-    ASSERT(zi(jcesd1).eq.zi(jcesd3))
+    ASSERT(zi(jcesd1) .eq. zi(jcesd2))
+    ASSERT(zi(jcesd1) .eq. zi(jcesd3))
 !
 ! --- DONNEES RELATIVES AU MAILLAGE
 !
@@ -194,8 +194,8 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --- TRANSFORMATION ET REDUCTION DES CHAM_NOEU
 !
-    call xmmred(ndim, depdel, depdes, lagcn, depcn,&
-                cneltc, fconts, fctcn, cneltf, ffrots,&
+    call xmmred(ndim, depdel, depdes, lagcn, depcn, &
+                cneltc, fconts, fctcn, cneltf, ffrots, &
                 ffrocn)
 !
 ! --- ACCES CHAM_NO
@@ -218,17 +218,17 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
     do ima = 1, nbma
 !
-        itypma=typmail(ima)
+        itypma = typmail(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !       NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-        ndime= tmdim(itypma)
+        ndime = tmdim(itypma)
 !
 !       ON ZAPPE LES MAILLES DE BORD (MAILLES NON PRINCIPALES)
         if (ndim .ne. ndime) goto 100
 !
         call conare(typma, ar, nbar)
 !
-        call cesexi('C', jcesd1, jcesl1, ima, 1,&
+        call cesexi('C', jcesd1, jcesl1, ima, 1, &
                     1, 1, iad)
         if (iad .le. 0) goto 100
 !
@@ -237,86 +237,86 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 !       BOUCLE SUR LES POINTS D'INTERSECTION
         do i = 1, ninter
-            call cesexi('S', jcesd2, jcesl2, ima, 1,&
+            call cesexi('S', jcesd2, jcesl2, ima, 1, &
                         1, zxain*(i-1)+1, iad)
-            ASSERT(iad.gt.0)
+            ASSERT(iad .gt. 0)
             ia = nint(cesv2(iad))
-            ASSERT(ia.le.nbar)
-            call cesexi('S', jcesd2, jcesl2, ima, 1,&
+            ASSERT(ia .le. nbar)
+            call cesexi('S', jcesd2, jcesl2, ima, 1, &
                         1, zxain*(i-1)+2, iad)
-            ASSERT(iad.gt.0)
+            ASSERT(iad .gt. 0)
             in = nint(cesv2(iad))
-            call cesexi('S', jcesd2, jcesl2, ima, 1,&
+            call cesexi('S', jcesd2, jcesl2, ima, 1, &
                         1, zxain*(i-1)+3, iad)
-            ASSERT(iad.gt.0)
-            longar =cesv2(iad)
-            call cesexi('S', jcesd2, jcesl2, ima, 1,&
+            ASSERT(iad .gt. 0)
+            longar = cesv2(iad)
+            call cesexi('S', jcesd2, jcesl2, ima, 1, &
                         1, zxain*(i-1)+4, iad)
-            ASSERT(iad.gt.0)
+            ASSERT(iad .gt. 0)
             alpha = cesv2(iad)
 !
 !         ADRESSE DU DEBUT MEMOIRE DE LA BASE COVARIANTE
-            call cesexi('S', jcesd4, jcesl4, ima, 1,&
+            call cesexi('S', jcesd4, jcesl4, ima, 1, &
                         1, ndim*ndim*(i-1)+1, iadb)
-            ASSERT(iadb.gt.0)
+            ASSERT(iadb .gt. 0)
 !
 !         RECUPERATION DES COORDONNES DU POINT D'INTERSECTION
-            xyz(3)=0.d0
+            xyz(3) = 0.d0
             do j = 1, ndim
-                call cesexi('S', jcesd3, jcesl3, ima, 1,&
+                call cesexi('S', jcesd3, jcesl3, ima, 1, &
                             1, ndim*(i-1)+j, iad)
-                ASSERT(iad.gt.0)
-                xyz(j)=cesv3(iad)
+                ASSERT(iad .gt. 0)
+                xyz(j) = cesv3(iad)
             end do
 !
 !         RECUP DES NUMEROS GLOBAUX DES NOEUDS DE L'ARETE/NOEUD SOMMET
             if (in .gt. 0) then
                 nsom = 1
                 nosom(1) = connex(zi(jconx2+ima-1)+in-1)
-                ff(1)=1.d0
-                mult=0.5d0
-            else if (ia.gt.0) then
+                ff(1) = 1.d0
+                mult = 0.5d0
+            else if (ia .gt. 0) then
                 nsom = 2
-                nosom(1)=connex(zi(jconx2+ima-1)+ar(ia,1)-1)
-                nosom(2)=connex(zi(jconx2+ima-1)+ar(ia,2)-1)
-                ff(1) = 1.d0 - alpha/longar
+                nosom(1) = connex(zi(jconx2+ima-1)+ar(ia, 1)-1)
+                nosom(2) = connex(zi(jconx2+ima-1)+ar(ia, 2)-1)
+                ff(1) = 1.d0-alpha/longar
                 ff(2) = alpha/longar
-                mult=1.0d0
+                mult = 1.0d0
             else
                 goto 120
-            endif
+            end if
 !
 !         RECUPERATION DU NUMERO DU NOEUD OU EST STOCKE LE LAGS_C
-            if (xfem_cont(1) .eq. 1 .or. xfem_cont(1).eq.2 .or. xfem_cont(1) .eq. 3) then
+            if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 2 .or. xfem_cont(1) .eq. 3) then
 !           CAS LAGRANGES AUX NOEUDS
 !           CONT_NOEU SUR LE PREMIER NOEUD DE L'ARETE
                 if (ia .ne. 0) then
-                    nuno=connex(zi(jconx2+ima-1)+ar(ia,1)-1)
-                else if (in.ne.0) then
-                    nuno=connex(zi(jconx2+ima-1)+in-1)
-                endif
-            endif
+                    nuno = connex(zi(jconx2+ima-1)+ar(ia, 1)-1)
+                else if (in .ne. 0) then
+                    nuno = connex(zi(jconx2+ima-1)+in-1)
+                end if
+            end if
 !         VERIFICATION SI ON A DEJA ENREGISTRE CE POINT
             if (zi(jdejca+nuno-1) .eq. 1) goto 120
 !         RACINE DE R AU POINT D'INTERSECTION
             levels = 0.d0
             do k = 1, nsom
-                call cesexi('C', jcesd5, jcesl5, ima, k,&
+                call cesexi('C', jcesd5, jcesl5, ima, k, &
                             1, 1, iad)
 !         C'EST FAUX MAIS C'ETAIT DEJA COMME CA
 !         IL FAUT RECUPERER LES FF DE FORMES
-                levels = levels + cesv5(iad)
+                levels = levels+cesv5(iad)
             end do
-            rr =sqrt(abs(levels))
+            rr = sqrt(abs(levels))
 !
 !         RECUP NORMALE, VECTEURS TANGENTS AU POINT D'INTERSECTION
-            n(3)=0.d0
-            tau1(3)=0.d0
+            n(3) = 0.d0
+            tau1(3) = 0.d0
 !
             do j = 1, ndim
-                n(j) =cesv4(iadb-1+j)
-                tau1(j)=cesv4(iadb-1+ndim+j)
-                if (ndim .eq. 3) tau2(j)=cesv4(iadb-1+2*ndim+j)
+                n(j) = cesv4(iadb-1+j)
+                tau1(j) = cesv4(iadb-1+ndim+j)
+                if (ndim .eq. 3) tau2(j) = cesv4(iadb-1+2*ndim+j)
             end do
 !
 !         INDICATEUR DE CONTACT
@@ -328,32 +328,32 @@ type(NL_DS_Contact), intent(in) :: ds_contact
                 do k = 1, nsom
 !             DDL HEAVISIDE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+j)) then
-                        saut(j) = saut(j) - coefj * ff(k) * depv(2*ndim*(nosom(k)-1)+j)
-                    endif
+                        saut(j) = saut(j)-coefj*ff(k)*depv(2*ndim*(nosom(k)-1)+j)
+                    end if
 !             DDL ASYMPTOTIQUE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+ndim+j)) then
-                        saut(j) = saut(j) - 2.d0 * ff(k) * rr * depv(2*ndim*(nosom(k)-1)+nd&
+                        saut(j) = saut(j)-2.d0*ff(k)*rr*depv(2*ndim*(nosom(k)-1)+nd&
                                   &im+j)
-                    endif
+                    end if
                 end do
             end do
-            jeu = ddot(ndim,n,1,saut,1)
+            jeu = ddot(ndim, n, 1, saut, 1)
 !
 !         RNX, RNY, RNZ SONT LES 3 COMPOSANTES DE RNXYZ
             rnxyz(:) = 0.d0
             do j = 1, ndim
                 do k = 1, nsom
-                    rnxyz(j) = rnxyz(j) + ff(k) * mult * vcont(3* ndim*(nosom(k)-1)+j)
+                    rnxyz(j) = rnxyz(j)+ff(k)*mult*vcont(3*ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jconl-1+3*ndim*(nosom(k)-1)+ndim+1)) then
-                        rnxyz(j) = rnxyz(j) - ff(k) * mult * vcont(3*ndim*(nosom(k)-1)+ndim&
+                        rnxyz(j) = rnxyz(j)-ff(k)*mult*vcont(3*ndim*(nosom(k)-1)+ndim&
                                    &+j)
-                    endif
+                    end if
 !             DDL ASYMPTOTIQUE
                     if (zl(jconl-1+3*ndim*(nosom(k)-1)+2*ndim+1)) then
-                        rnxyz(j) = rnxyz(j) - ff(k) * rr * mult * vcont(3*ndim*(nosom(k)-1)+&
+                        rnxyz(j) = rnxyz(j)-ff(k)*rr*mult*vcont(3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
-                    endif
+                    end if
                 end do
             end do
             call normev(rnxyz, rn)
@@ -366,7 +366,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
             call xmafr1(ndim, n, p)
             do j = 1, ndim
                 do k = 1, ndim
-                    glit(j)=glit(j)+p(j,k)*saut(k)
+                    glit(j) = glit(j)+p(j, k)*saut(k)
                 end do
             end do
             call normev(glit, gli)
@@ -377,27 +377,27 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
             do j = 1, ndim
                 do k = 1, nsom
-                    if(zl(jlagl-1+ndim*(nosom(k)-1)+1)) then
-                        lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*( nosom(k)-1)+2) * tau1(j)
-                        if (ndim .eq. 3) lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*(nosom(k)-1)&
-                                                 &+3) * tau2(j)
-                    endif
+                    if (zl(jlagl-1+ndim*(nosom(k)-1)+1)) then
+                        lagfro(j) = lagfro(j)+ff(k)*lagv(ndim*(nosom(k)-1)+2)*tau1(j)
+                        if (ndim .eq. 3) lagfro(j) = lagfro(j)+ff(k)*lagv(ndim*(nosom(k)-1)&
+                                                 &+3)*tau2(j)
+                    end if
                 end do
             end do
 !
             do j = 1, ndim
                 do k = 1, nsom
-                    rtxyz(j) = rtxyz(j) + ff(k) * mult * frot(3* ndim*(nosom(k)-1)+j)
+                    rtxyz(j) = rtxyz(j)+ff(k)*mult*frot(3*ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jfrol-1+3*ndim*(nosom(k)-1)+ndim+1)) then
-                        rtxyz(j) = rtxyz(j) - ff(k) * mult * frot(3*ndim*(nosom(k)-1)+ndim&
+                        rtxyz(j) = rtxyz(j)-ff(k)*mult*frot(3*ndim*(nosom(k)-1)+ndim&
                                    &+j)
-                    endif
+                    end if
 !             DDL ASYMPTOTIQUE
                     if (zl(jfrol-1+3*ndim*(nosom(k)-1)+2*ndim+1)) then
-                        rtxyz(j) = rtxyz(j) - ff(k) * rr * mult * frot(3*ndim*(nosom(k)-1)+&
+                        rtxyz(j) = rtxyz(j)-ff(k)*rr*mult*frot(3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
-                    endif
+                    end if
                 end do
             end do
 !
@@ -420,51 +420,51 @@ type(NL_DS_Contact), intent(in) :: ds_contact
                 rtgx = 0.d0
                 rtgy = 0.d0
                 rtgz = 0.d0
-            endif
+            end if
 !
 !         LAGRANGES AUX NOEUDS, CONT_NOEU SUR LE PREMIER NOEUD DE L'AR
-            cnsvr(zresu*(nuno-1)+1)=cont
-            cnsvr(zresu*(nuno-1)+2)=jeu
-            cnsvr(zresu*(nuno-1)+3)=rn
-            cnsvr(zresu*(nuno-1)+4)=rnx
-            cnsvr(zresu*(nuno-1)+5)=rny
-            cnsvr(zresu*(nuno-1)+6)=rnz
-            cnsvr(zresu*(nuno-1)+9)=gli
-            cnsvr(zresu*(nuno-1)+10)=rtax
-            cnsvr(zresu*(nuno-1)+11)=rtay
-            cnsvr(zresu*(nuno-1)+12)=rtaz
-            cnsvr(zresu*(nuno-1)+13)=rtgx
-            cnsvr(zresu*(nuno-1)+14)=rtgy
-            cnsvr(zresu*(nuno-1)+15)=rtgz
-            cnsvr(zresu*(nuno-1)+16)= rnx + rtax + rtgx
-            cnsvr(zresu*(nuno-1)+17)= rny + rtay + rtgy
-            cnsvr(zresu*(nuno-1)+18)= rnz + rtaz + rtgz
-            cnsvr(zresu*(nuno-1)+19)= sqrt((rnx+rtax+rtgx)**2 +&
-            (rny+rtay+rtgy)**2 + (rnz+rtaz+rtgz)**2)
-            cnsvr(zresu*(nuno-1)+25)=xyz(1)
-            cnsvr(zresu*(nuno-1)+26)=xyz(2)
-            cnsvr(zresu*(nuno-1)+27)=xyz(3)
+            cnsvr(zresu*(nuno-1)+1) = cont
+            cnsvr(zresu*(nuno-1)+2) = jeu
+            cnsvr(zresu*(nuno-1)+3) = rn
+            cnsvr(zresu*(nuno-1)+4) = rnx
+            cnsvr(zresu*(nuno-1)+5) = rny
+            cnsvr(zresu*(nuno-1)+6) = rnz
+            cnsvr(zresu*(nuno-1)+9) = gli
+            cnsvr(zresu*(nuno-1)+10) = rtax
+            cnsvr(zresu*(nuno-1)+11) = rtay
+            cnsvr(zresu*(nuno-1)+12) = rtaz
+            cnsvr(zresu*(nuno-1)+13) = rtgx
+            cnsvr(zresu*(nuno-1)+14) = rtgy
+            cnsvr(zresu*(nuno-1)+15) = rtgz
+            cnsvr(zresu*(nuno-1)+16) = rnx+rtax+rtgx
+            cnsvr(zresu*(nuno-1)+17) = rny+rtay+rtgy
+            cnsvr(zresu*(nuno-1)+18) = rnz+rtaz+rtgz
+            cnsvr(zresu*(nuno-1)+19) = sqrt((rnx+rtax+rtgx)**2+ &
+                                            (rny+rtay+rtgy)**2+(rnz+rtaz+rtgz)**2)
+            cnsvr(zresu*(nuno-1)+25) = xyz(1)
+            cnsvr(zresu*(nuno-1)+26) = xyz(2)
+            cnsvr(zresu*(nuno-1)+27) = xyz(3)
 !
-            zl(jcnslr-1+zresu*(nuno-1)+1)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+2)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+3)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+4)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+5)=.true.
-            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+6)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+9)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+10)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+11)=.true.
-            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+12)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+13)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+14)=.true.
-            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+15)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+16)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+17)=.true.
-            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+18)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+19)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+25)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+26)=.true.
-            zl(jcnslr-1+zresu*(nuno-1)+27)=.true.
+            zl(jcnslr-1+zresu*(nuno-1)+1) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+2) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+3) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+4) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+5) = .true.
+            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+6) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+9) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+10) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+11) = .true.
+            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+12) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+13) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+14) = .true.
+            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+15) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+16) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+17) = .true.
+            if (ndim .eq. 3) zl(jcnslr-1+zresu*(nuno-1)+18) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+19) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+25) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+26) = .true.
+            zl(jcnslr-1+zresu*(nuno-1)+27) = .true.
             zi(jdejca+nuno-1) = 1
 !
 120         continue

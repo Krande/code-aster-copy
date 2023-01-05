@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
@@ -56,26 +56,26 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_ligr      = 0
+    nb_ligr = 0
     nb_list_ligr = 2
     do i_matr_elem = 1, nb_matr_elem
-        matr_elem = list_matr_elem(i_matr_elem)(1:19)
+        matr_elem = list_matr_elem(i_matr_elem) (1:19)
         call jeexin(matr_elem//'.RELR', iret)
         if (iret .ne. 0) then
             call jelira(matr_elem//'.RELR', 'LONUTI', nb_resu_elem)
-            nb_list_ligr = nb_list_ligr + nb_resu_elem
-        endif
+            nb_list_ligr = nb_list_ligr+nb_resu_elem
+        end if
     end do
 !
 ! - Create object
 !
-    AS_ALLOCATE(vk24 = list_ligr, size = nb_list_ligr)
+    AS_ALLOCATE(vk24=list_ligr, size=nb_list_ligr)
 !
 ! - Set ligrel in object
 !
     nb_ligr = 0
     do i_matr_elem = 1, nb_matr_elem
-        matr_elem = list_matr_elem(i_matr_elem)(1:19)
+        matr_elem = list_matr_elem(i_matr_elem) (1:19)
 !
 ! ----- Substructuration matrix
 !
@@ -83,43 +83,43 @@ implicit none
         if (nb_subs .gt. 0) then
             call dismoi('NOM_MODELE', matr_elem, 'MATR_ELEM', repk=ligr_name)
             ligr_name = ligr_name(1:8)//'.MODELE'
-            l_found   = .false.
+            l_found = .false.
             do i_list_ligr = 1, nb_ligr
                 if (ligr_name .eq. list_ligr(i_list_ligr)) then
-                    l_found   = .true.
-                endif
+                    l_found = .true.
+                end if
             end do
-            if (.not.l_found) then
-                nb_ligr = nb_ligr + 1
+            if (.not. l_found) then
+                nb_ligr = nb_ligr+1
                 list_ligr(nb_ligr) = ligr_name
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Standard matrix
 !
         call jeexin(matr_elem//'.RELR', iret)
         if (iret .ne. 0) then
-            call jeveuo(matr_elem//'.RELR', 'L', vk24 = list_resu_elem)
+            call jeveuo(matr_elem//'.RELR', 'L', vk24=list_resu_elem)
             call jelira(matr_elem//'.RELR', 'LONUTI', nb_resu_elem)
             do i_resu_elem = 1, nb_resu_elem
-                resu_elem = list_resu_elem(i_resu_elem)(1:19)
+                resu_elem = list_resu_elem(i_resu_elem) (1:19)
                 call jeexin(resu_elem//'.NOLI', iret)
                 if (iret .ne. 0) then
-                    call jeveuo(resu_elem//'.NOLI', 'L', vk24 = resu_elem_noli)
-                    ligr_name = resu_elem_noli(1)(1:19)
-                    l_found   = .false.
+                    call jeveuo(resu_elem//'.NOLI', 'L', vk24=resu_elem_noli)
+                    ligr_name = resu_elem_noli(1) (1:19)
+                    l_found = .false.
                     do i_list_ligr = 1, nb_ligr
                         if (ligr_name .eq. list_ligr(i_list_ligr)) then
-                            l_found   = .true.
-                        endif
+                            l_found = .true.
+                        end if
                     end do
-                    if (.not.l_found) then
-                        nb_ligr = nb_ligr + 1
+                    if (.not. l_found) then
+                        nb_ligr = nb_ligr+1
                         list_ligr(nb_ligr) = ligr_name
-                     endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
     end do
 !
 end subroutine

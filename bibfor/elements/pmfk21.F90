@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine pmfk21(sk, casect, a, xl, &
-                  xjx, xig, g, alfay,&
+                  xjx, xig, g, alfay, &
                   alfaz, ey, ez)
     implicit none
 #include "asterc/r8gaem.h"
@@ -77,10 +77,10 @@ subroutine pmfk21(sk, casect, a, xl, &
 !-----------------------------------------------------------------------
     integer :: i
 !-----------------------------------------------------------------------
-    parameter (zero=0.d0)
-    data ip/0,1,3,6,10,15,21,28,36,45,55,66,78,91/
+    parameter(zero=0.d0)
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91/
 ! ---------------------------------------------------------------------
-    do i = 1,105
+    do i = 1, 105
         sk(i) = zero
     end do
 !
@@ -88,7 +88,7 @@ subroutine pmfk21(sk, casect, a, xl, &
     if (abs(g) .lt. 1.d0/r8gaem()) then
         if (abs(casect(1)) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
-    endif
+    end if
 !
 !     1/ TRACTION - COMPRESSION
 !     -------------------------
@@ -105,45 +105,45 @@ subroutine pmfk21(sk, casect, a, xl, &
     xl3 = xl*xl2
     eiy = casect(5)
     eiz = casect(4)
-    phiy = (12.d0*eiz*alfay)/ (g*a*xl2)
-    phiz = (12.d0*eiy*alfaz)/ (g*a*xl2)
+    phiy = (12.d0*eiz*alfay)/(g*a*xl2)
+    phiz = (12.d0*eiy*alfaz)/(g*a*xl2)
 !
 !        2.2) REMPLISSAGE DE LA MATRICE
 !
 !        FLEXION DANS LE PLAN XOY
-    sk(ip(2)+2) = 12.d0*eiz/ ((1.d0+phiy)*xl3)
-    sk(ip(6)+2) = 6.d0*eiz/ ((1.d0+phiy)*xl2)
+    sk(ip(2)+2) = 12.d0*eiz/((1.d0+phiy)*xl3)
+    sk(ip(6)+2) = 6.d0*eiz/((1.d0+phiy)*xl2)
     sk(ip(9)+2) = -sk(ip(2)+2)
     sk(ip(13)+2) = sk(ip(6)+2)
-    sk(ip(6)+6) = (4.d0+phiy)*eiz/ ((1.d0+phiy)*xl)
+    sk(ip(6)+6) = (4.d0+phiy)*eiz/((1.d0+phiy)*xl)
     sk(ip(9)+6) = -sk(ip(6)+2)
-    sk(ip(13)+6) = (2.d0-phiy)*eiz/ ((1.d0+phiy)*xl)
+    sk(ip(13)+6) = (2.d0-phiy)*eiz/((1.d0+phiy)*xl)
     sk(ip(9)+9) = sk(ip(2)+2)
     sk(ip(13)+9) = -sk(ip(6)+2)
     sk(ip(13)+13) = sk(ip(6)+6)
 !
 !        FLEXION DANS LE PLAN XOZ
-    sk(ip(3)+3) = 12.d0*eiy/ ((1.d0+phiz)*xl3)
-    sk(ip(5)+3) = -6.d0*eiy/ ((1.d0+phiz)*xl2)
+    sk(ip(3)+3) = 12.d0*eiy/((1.d0+phiz)*xl3)
+    sk(ip(5)+3) = -6.d0*eiy/((1.d0+phiz)*xl2)
     sk(ip(10)+3) = -sk(ip(3)+3)
     sk(ip(12)+3) = sk(ip(5)+3)
-    sk(ip(5)+5) = (4.d0+phiz)*eiy/ ((1.d0+phiz)*xl)
+    sk(ip(5)+5) = (4.d0+phiz)*eiy/((1.d0+phiz)*xl)
     sk(ip(10)+5) = -sk(ip(5)+3)
-    sk(ip(12)+5) = (2.d0-phiz)*eiy/ ((1.d0+phiz)*xl)
+    sk(ip(12)+5) = (2.d0-phiz)*eiy/((1.d0+phiz)*xl)
     sk(ip(10)+10) = sk(ip(3)+3)
     sk(ip(12)+10) = -sk(ip(5)+3)
     sk(ip(12)+12) = sk(ip(5)+5)
 !
 !     3/ TORSION ET GAUCHISSEMENT
 !     ---------------------------
-    sk(ip(4)+4) = (3.d0*g*xjx/ (5.d0*xl/2.d0)) + (12.d0*e*xig/xl3)
-    sk(ip(7)+4) = (g*xjx/10.d0) + (6.0d0*e*xig/xl2)
-    sk(ip(7)+7) = (2.d0*g*xjx*xl/15.d0) + (4.d0*e*xig/xl)
+    sk(ip(4)+4) = (3.d0*g*xjx/(5.d0*xl/2.d0))+(12.d0*e*xig/xl3)
+    sk(ip(7)+4) = (g*xjx/10.d0)+(6.0d0*e*xig/xl2)
+    sk(ip(7)+7) = (2.d0*g*xjx*xl/15.d0)+(4.d0*e*xig/xl)
     sk(ip(11)+4) = -sk(ip(4)+4)
     sk(ip(11)+7) = -sk(ip(7)+4)
     sk(ip(11)+11) = sk(ip(4)+4)
     sk(ip(14)+4) = sk(ip(7)+4)
-    sk(ip(14)+7) = - (g*xjx*xl/30.d0) + (2.d0*e*xig/xl)
+    sk(ip(14)+7) = -(g*xjx*xl/30.d0)+(2.d0*e*xig/xl)
     sk(ip(14)+11) = -sk(ip(7)+4)
     sk(ip(14)+14) = sk(ip(7)+7)
 !
@@ -151,5 +151,5 @@ subroutine pmfk21(sk, casect, a, xl, &
 !     -----------------------------------------------------------------
     call pouex7(sk(1), ey, ez)
 !
-999  continue
+999 continue
 end subroutine

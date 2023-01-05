@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function isdiri(list_load, load_type_2)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -53,13 +53,13 @@ implicit none
     lelim = ischar(list_load, 'DIRI', 'ELIM')
     ldual = ischar(list_load, 'DIRI', 'DUAL')
     if (load_type_2 .eq. '    ') then
-        isdiri = lelim.or.ldual
-    else if (load_type_2.eq.'ELIM') then
+        isdiri = lelim .or. ldual
+    else if (load_type_2 .eq. 'ELIM') then
         isdiri = lelim
-    else if (load_type_2.eq.'DUAL') then
+    else if (load_type_2 .eq. 'DUAL') then
         isdiri = ldual
     else
         ASSERT(.false.)
-    endif
+    end if
 
 end function

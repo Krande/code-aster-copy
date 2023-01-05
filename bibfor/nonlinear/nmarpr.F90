@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmarpr(result, sddisc, lreuse, numder, insder,&
+subroutine nmarpr(result, sddisc, lreuse, numder, insder, &
                   numarc)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -85,13 +85,13 @@ subroutine nmarpr(result, sddisc, lreuse, numder, insder,&
             call nmttch(result, inst2, numder)
             numarc = numder
         else
-            numarc = numder + 1
-        endif
+            numarc = numder+1
+        end if
 !
     else
-        ASSERT(numder.eq.0)
+        ASSERT(numder .eq. 0)
         numarc = 0
-    endif
+    end if
 !
     call jedema()
 !

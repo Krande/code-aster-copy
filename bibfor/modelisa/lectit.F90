@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lectit(ifl, icl, iv, rv, cv,&
-                  cnl, mcl, nbm, nbg, dim,&
+subroutine lectit(ifl, icl, iv, rv, cv, &
+                  cnl, mcl, nbm, nbg, dim, &
                   nbt, irteti)
     implicit none
 !       PREMIERE LECTURE DES DONNEES POUR  UN MOT CLE DE TYPE TITRE
@@ -58,23 +58,23 @@ subroutine lectit(ifl, icl, iv, rv, cv,&
 !
     call tesmcl(icl, iv, cv, mcl(1), irtet)
     if (irtet .eq. 1) goto 3
-    if (nbg .ge. 1) write(ifm,*)' ----- LECTIT'
+    if (nbg .ge. 1) write (ifm, *) ' ----- LECTIT'
 !
 ! - LIRE LIGNE SUIVANTE
 !
-  4 continue
+4   continue
     call lirlig(ifl, cnl, lig, 1)
 !
-    if (nbg .ge. 1) write(ifm,*)'       LIRLIG :',cnl,lig
+    if (nbg .ge. 1) write (ifm, *) '       LIRLIG :', cnl, lig
 !
 ! - LIRE PREMIER ITEM DE LA LIGNE
 !
     ideb = 1
-    call lxscan(lig, ideb, icl, iv, rv,&
+    call lxscan(lig, ideb, icl, iv, rv, &
                 cv)
 !
-    if (nbg .ge. 1) write(ifm, *)'       LXSCAN : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
-                    ' CV(1:8) = ', cv(1:8), ' IDEB = ', ideb
+    if (nbg .ge. 1) write (ifm, *) '       LXSCAN : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
+        ' CV(1:8) = ', cv(1:8), ' IDEB = ', ideb
 !
 !
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
@@ -84,19 +84,19 @@ subroutine lectit(ifl, icl, iv, rv, cv,&
         goto 1
     else if (irtet .eq. 2) then
         goto 2
-    endif
-    dim(1) = dim(1) + 1
-    nbt(1) = nbt(1) + 1
+    end if
+    dim(1) = dim(1)+1
+    nbt(1) = nbt(1)+1
 !
     goto 4
 !
-  1 continue
+1   continue
     irteti = 1
     goto 999
-  2 continue
+2   continue
     irteti = 2
     goto 999
-  3 continue
+3   continue
     irteti = 0
     goto 999
 !

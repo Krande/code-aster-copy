@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
+subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst, &
                       nboccv, carte)
     implicit none
 #include "asterf_types.h"
@@ -101,14 +101,14 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
     call jelira(resu19//'.ORDR', 'LONUTI', nbord)
     ASSERT(nbord .ge. 1)
     AS_ALLOCATE(vi=vcode, size=nbord)
-    do iord=1,nbord
+    do iord = 1, nbord
         call rsexch(' ', evol, 'TEMP_ELGA', vordr(iord), chamel, vcode(iord))
-    enddo
+    end do
 !   verif de coherence (pb par ex. si on a fait une mauvaise utilisation de CREA_RESU)
     icode_ini = vcode(1)
-    do iord=1,nbord
+    do iord = 1, nbord
         ASSERT(vcode(iord) .eq. icode_ini)
-    enddo
+    end do
     AS_DEALLOCATE(vi=vcode)
     if (icode_ini .ne. 0) goto 999
 !
@@ -123,18 +123,18 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
 !   -> on recupere modevo via le ligrel de definition des cham_elem
 !      TEMP_ELGA, ligrel qui doit lui aussi etre unique
     AS_ALLOCATE(vk24=vligr, size=nbord)
-    do iord=1,nbord
+    do iord = 1, nbord
         call rsexch(' ', evol, 'TEMP_ELGA', vordr(iord), chamel, ibid)
         call jeveuo(chamel//'.CELK', 'L', vk24=vcelk)
         ligrch = vcelk(1)
         call exisd('LIGREL', ligrch, iret)
         ASSERT(iret .eq. 1)
         vligr(iord) = ligrch
-    enddo
+    end do
     ligrch = vligr(1)
-    do iord=1,nbord
+    do iord = 1, nbord
         ASSERT(vligr(iord) .eq. ligrch)
-    enddo
+    end do
     AS_DEALLOCATE(vk24=vligr)
     modevo = ligrch(1:8)
     call exisd('MODELE', modevo, iret)
@@ -164,7 +164,7 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
 !
 !   recup de la dimension du probleme
     call dismoi('DIM_GEOM', modein, 'MODELE', repi=ndim)
-    ASSERT( (ndim .eq. 2) .or. (ndim .eq. 3) )
+    ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !
     lismai = '&&XVARCT.NUM_MAILLES'
     mesmai = '&&XVARCT.MES_MAILLES'

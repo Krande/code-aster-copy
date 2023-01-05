@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine dfllli(listr8_sdaster, dtmin, nb_inst)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
@@ -63,19 +63,19 @@ implicit none
 !
     if (nb_inst .lt. 2) then
         call utmess('F', 'DISCRETISATION_95')
-    endif
+    end if
 !
 ! - Minimum time between two steps
 !
     do i_inst = 1, nb_inst-1
-        deltat = v_vale(1+i_inst) - v_vale(i_inst)
-        dtmin = min(deltat,dtmin)
+        deltat = v_vale(1+i_inst)-v_vale(i_inst)
+        dtmin = min(deltat, dtmin)
     end do
 !
 ! - List must increase
 !
     if (dtmin .le. r8prem()) then
         call utmess('F', 'DISCRETISATION_87')
-    endif
+    end if
 !
 end subroutine

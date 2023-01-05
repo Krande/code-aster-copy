@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine i2extf(m, f, conec, type, n1,&
+subroutine i2extf(m, f, conec, type, n1, &
                   n2)
     implicit none
 !
@@ -70,20 +70,20 @@ subroutine i2extf(m, f, conec, type, n1,&
 !
     call jeveuo(jexnum(conec, m), 'L', adrm)
     call jeveuo(type, 'L', iatyma)
-    atypm=iatyma-1+m
+    atypm = iatyma-1+m
     call jenuno(jexnum('&CATA.TM.NOMTM', zi(atypm)), typm)
 !
     if ((typm .eq. 'SEG2') .or. (typm .eq. 'SEG3')) then
 !
         n1 = zi(adrm)
-        n2 = zi(adrm + 1)
+        n2 = zi(adrm+1)
 !
     else
 !
         call jelira(jexnum(conec, m), 'LONMAX', nbn)
         call i2nbrf(nbn, nbf)
 !
-        n1 = zi(adrm + f-1)
+        n1 = zi(adrm+f-1)
 !
         if (f .eq. nbf) then
 !
@@ -91,11 +91,11 @@ subroutine i2extf(m, f, conec, type, n1,&
 !
         else
 !
-            n2 = zi(adrm + f)
+            n2 = zi(adrm+f)
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

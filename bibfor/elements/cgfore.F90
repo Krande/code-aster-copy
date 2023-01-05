@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cgfore(ndim, nno1, nno2, npg, wref,&
-                  vff1, vff2, dffr1, a, geom,&
-                  tang, iu, iuc, im, forref,&
+subroutine cgfore(ndim, nno1, nno2, npg, wref, &
+                  vff1, vff2, dffr1, a, geom, &
+                  tang, iu, iuc, im, forref, &
                   sigref, depref, vect)
 !
     implicit none
@@ -58,33 +58,33 @@ subroutine cgfore(ndim, nno1, nno2, npg, wref,&
 !
     do g = 1, npg
 !
-        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g),&
-                    geom, tang, wg, l, b,&
+        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g), &
+                    geom, tang, wg, l, b, &
                     courb)
 !        VECTEUR FINT:U
-        sig1r=forref
-        sig2r=sigref*sqrt(a)
-        sig3r=depref
+        sig1r = forref
+        sig2r = sigref*sqrt(a)
+        sig3r = depref
         do n = 1, nno1
 !         POUR EVITER LES 0 SUR LES DDLS DX DY DZ DE GAINE
-            t1=0.d0
+            t1 = 0.d0
             do i = 1, ndim
-                t1 = t1+abs(b(i,n)*sig1r)
+                t1 = t1+abs(b(i, n)*sig1r)
             end do
             do i = 1, ndim
-                kk = iu(i,n)
-                vect(kk) = vect(kk) + wg*t1/3.d0
+                kk = iu(i, n)
+                vect(kk) = vect(kk)+wg*t1/3.d0
             end do
-            kk=iuc(n)
-            t1=abs(b(4,n)*sig1r)+abs(l(n)*sig2r)
-            vect(kk)=vect(kk)+wg*t1
+            kk = iuc(n)
+            t1 = abs(b(4, n)*sig1r)+abs(l(n)*sig2r)
+            vect(kk) = vect(kk)+wg*t1
         end do
 !
 !        VECTEUR FINT:M
         do n = 1, nno2
             kk = im(n)
-            t1 = abs(vff2(n,g)*sig3r)
-            vect(kk) = vect(kk) + wg*t1
+            t1 = abs(vff2(n, g)*sig3r)
+            vect(kk) = vect(kk)+wg*t1
         end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,11 +79,11 @@ subroutine calimc(chargz)
     character(len=3) :: ttran
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i2, i3,   iaprno
+    integer :: i, i2, i3, iaprno
     integer :: ibid, icmp, icmp2, idbase
-    integer :: iddl, iddl2,    ii
+    integer :: iddl, iddl2, ii
     integer :: imod, imod2, inoe, iocc, j, j2
-    integer :: j3, jj,   k,  n2
+    integer :: j3, jj, k, n2
     integer :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
     integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq, nueq2
     integer :: nmc, nbmdy2
@@ -100,8 +100,8 @@ subroutine calimc(chargz)
     character(len=24), pointer :: mael_refe(:) => null()
     integer, pointer :: lino(:) => null()
 !-----------------------------------------------------------------------
-    data liscmp   /'DX      ','DY      ','DZ      ',&
-     &               'DRX     ','DRY     ','DRZ     '/
+    data liscmp/'DX      ', 'DY      ', 'DZ      ',&
+     &               'DRX     ', 'DRY     ', 'DRZ     '/
 !     ------------------------------------------------------------------
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -122,7 +122,7 @@ subroutine calimc(chargz)
 ! --- UNE FONCTION, DANS NOTRE CAS C'EST UN REEL
 !
     beta = zero
-    betac = (0.0d0,0.0d0)
+    betac = (0.0d0, 0.0d0)
     betaf = '&FOZERO'
 !
     charge = chargz
@@ -144,9 +144,9 @@ subroutine calimc(chargz)
     do iocc = 1, nliai
         call getvid(motfac, 'MACR_ELEM_DYNA', iocc=iocc, scal=macrel, nbret=nmc)
         call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
-        basemo = mael_refe(1)(1:8)
-        call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
-                    cbid, rbid, k8b, nbmode, 1,&
+        basemo = mael_refe(1) (1:8)
+        call rsorac(basemo, 'LONUTI', 0, rbid, k8b, &
+                    cbid, rbid, k8b, nbmode, 1, &
                     ibid)
         call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numedd)
         call dismoi('NOM_MAILLA', numedd(1:14), 'NUME_DDL', repk=mailla)
@@ -163,11 +163,11 @@ subroutine calimc(chargz)
         nec = nbmode(1)/nbntot
         if (nec .eq. 0) then
             call utmess('F', 'ALGORITH_52')
-        endif
+        end if
         nbndyn = nbmdyn/nec
         nbndef = nbntot-nbndyn
         nbnde2 = nbmdef/nec
-        ASSERT(nbndef.eq.nbnde2)
+        ASSERT(nbndef .eq. nbnde2)
 !       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
         AS_ALLOCATE(vk8=ncmpsd, size=2*nbmdef)
         call jeveuo(macrel//'.LINO', 'L', vi=lino)
@@ -203,7 +203,7 @@ subroutine calimc(chargz)
             nbterm = nbmdef+1
         else
             nbterm = nbmdef+nec*nbnoe
-        endif
+        end if
 !
 ! ---   CREATION DES TABLEAUX DE TRAVAIL NECESSAIRES A L'AFFECTATION
 ! ---   DE LA LISTE_RELA
@@ -232,7 +232,7 @@ subroutine calimc(chargz)
             nec2 = 3
         else
             nec2 = nec
-        endif
+        end if
         if (typlia .ne. 'RIGIDE') goto 101
 !
 !       CAS RIGIDE
@@ -254,7 +254,7 @@ subroutine calimc(chargz)
                 if (icmp .gt. nueq) goto 26
                 do ii = 1, nbndef
                     do jj = 1, nec
-                        k = k + 1
+                        k = k+1
                         nomnoe = ncmpsd(1+2*nec*(ii-1)+2*jj-2)
                         nomcmp = ncmpsd(1+2*nec*(ii-1)+2*jj-1)
                         imod = nbmdyn+(ii-1)*nec+jj
@@ -273,11 +273,11 @@ subroutine calimc(chargz)
 !
 ! ---   AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !       ------------------------------------------
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nbterm, beta, betac, betaf,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nbterm, beta, betac, betaf, &
                             typcoe, typval, 0.d0, lisrel)
 !
- 26             continue
+26              continue
             end do
         end do
         goto 102
@@ -296,7 +296,7 @@ subroutine calimc(chargz)
                     iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                     nueq = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                     do j2 = 1, nec
-                        k = k + 1
+                        k = k+1
                         nomcmp = ncmpin(1+2*nec*(i2-1)+2*j2-1)
                         if (nomcmp .eq. 'DX') icmp = 1
                         if (nomcmp .eq. 'DY') icmp = 2
@@ -307,14 +307,14 @@ subroutine calimc(chargz)
                         if (icmp .gt. nueq) goto 27
                         lisno(k) = nomnoe
                         lisddl(k) = nomcmp
-                        coer(k) = -zr(idbase+(imod-1)*neq+iddl- 1+icmp-1 )
+                        coer(k) = -zr(idbase+(imod-1)*neq+iddl-1+icmp-1)
                     end do
- 27                 continue
+27                  continue
                 end do
                 do ii = 1, nbndef
                     nomnoe = ncmpsd(1+2*nec*(ii-1))
                     do jj = 1, nec
-                        k = k + 1
+                        k = k+1
                         nomcmp = ncmpsd(1+2*nec*(ii-1)+2*jj-1)
                         imod2 = nbmdyn+(ii-1)*nec+jj
                         vale = zero
@@ -324,7 +324,7 @@ subroutine calimc(chargz)
                             iddl2 = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
                             nueq2 = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                             do j3 = 1, nec
-                                nmcmp2 = ncmpin(1+2*nec*(i3-1)+2*j3- 1)
+                                nmcmp2 = ncmpin(1+2*nec*(i3-1)+2*j3-1)
                                 if (nmcmp2 .eq. 'DX') icmp2 = 1
                                 if (nmcmp2 .eq. 'DY') icmp2 = 2
                                 if (nmcmp2 .eq. 'DZ') icmp2 = 3
@@ -332,12 +332,12 @@ subroutine calimc(chargz)
                                 if (nmcmp2 .eq. 'DRY') icmp2 = 5
                                 if (nmcmp2 .eq. 'DRZ') icmp2 = 6
                                 if (icmp2 .gt. nueq2) goto 28
-                                vale = vale + zr(&
-                                       idbase+(imod-1)*neq+ iddl2-1+icmp2-1)* zr(idbase+(imod2-1)&
-                                       &* neq+iddl2-1+icmp2-1&
-                                       )
+                                vale = vale+zr( &
+                                       idbase+(imod-1)*neq+iddl2-1+icmp2-1)*zr(idbase+(imod2-1)&
+                                                                             &*neq+iddl2-1+icmp2-1 &
+                                                                               )
                             end do
- 28                         continue
+28                          continue
                         end do
                         lisno(k) = nomnoe
                         lisddl(k) = nomcmp
@@ -346,8 +346,8 @@ subroutine calimc(chargz)
                 end do
 ! ---   AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !       ------------------------------------------
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nbterm, beta, betac, betaf,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nbterm, beta, betac, betaf, &
                             typcoe, typval, 0.d0, lisrel)
             end do
         end do
@@ -375,7 +375,7 @@ subroutine calimc(chargz)
 !     ------
     call jedetr(lisrel)
 !
- 40 continue
+40  continue
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

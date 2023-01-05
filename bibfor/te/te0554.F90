@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine te0554(nomopt, nomte)
 !    call tecael(iadzi, iazk24, noms=0)
     call tecael(iadzi, iazk24)
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PSIG3D', 'L', isig)
@@ -73,7 +73,7 @@ subroutine te0554(nomopt, nomte)
         vt2(i) = 0.d0
         vno(i) = 0.d0
         do j = i, 3
-            sigg(i,j)=0.d0
+            sigg(i, j) = 0.d0
         end do
     end do
 !
@@ -88,44 +88,44 @@ subroutine te0554(nomopt, nomte)
 !
         do ifonc = 1, nnop
             iaux1 = igeom-1+2*(ifonc-1)
-            iaux2 = (ino-1)*nnop*2 + ifonc
-            vtan1(1) = vtan1(1) + zr(iaux1+1)*dff(iaux2)
-            vtan1(2) = vtan1(2) + zr(iaux1+2)*dff(iaux2)
+            iaux2 = (ino-1)*nnop*2+ifonc
+            vtan1(1) = vtan1(1)+zr(iaux1+1)*dff(iaux2)
+            vtan1(2) = vtan1(2)+zr(iaux1+2)*dff(iaux2)
             vtan2(3) = 1.d0
         end do
 !
-        vt1(1)=vt1(1)+vtan1(1)
-        vt1(2)=vt1(2)+vtan1(2)
-        vt1(3)=vt1(3)+vtan1(3)
-        vt2(1)=vt2(1)+vtan2(1)
-        vt2(2)=vt2(2)+vtan2(2)
-        vt2(3)=vt2(3)+vtan2(3)
+        vt1(1) = vt1(1)+vtan1(1)
+        vt1(2) = vt1(2)+vtan1(2)
+        vt1(3) = vt1(3)+vtan1(3)
+        vt2(1) = vt2(1)+vtan2(1)
+        vt2(2) = vt2(2)+vtan2(2)
+        vt2(3) = vt2(3)+vtan2(3)
 !
-        sigg(1,1)=sigg(1,1)+zr(isig+4*(ino-1))
-        sigg(2,2)=sigg(2,2)+zr(isig+4*(ino-1)+1)
-        sigg(3,3)=sigg(3,3)+zr(isig+4*(ino-1)+2)
-        sigg(1,2)=sigg(1,2)+zr(isig+4*(ino-1)+3)
+        sigg(1, 1) = sigg(1, 1)+zr(isig+4*(ino-1))
+        sigg(2, 2) = sigg(2, 2)+zr(isig+4*(ino-1)+1)
+        sigg(3, 3) = sigg(3, 3)+zr(isig+4*(ino-1)+2)
+        sigg(1, 2) = sigg(1, 2)+zr(isig+4*(ino-1)+3)
 !
     end do
 ! --- ------------------------------------------------------------------
 ! --- VECTEURS TANGENTS PAR MOYENNE DE CHAQUE COMPOSANTE
-    vt1(1)=vt1(1)/nnop
-    vt1(2)=vt1(2)/nnop
-    vt1(3)=vt1(3)/nnop
-    vt2(1)=vt2(1)/nnop
-    vt2(2)=vt2(2)/nnop
-    vt2(3)=vt2(3)/nnop
+    vt1(1) = vt1(1)/nnop
+    vt1(2) = vt1(2)/nnop
+    vt1(3) = vt1(3)/nnop
+    vt2(1) = vt2(1)/nnop
+    vt2(2) = vt2(2)/nnop
+    vt2(3) = vt2(3)/nnop
 ! --- ------------------------------------------------------------------
 ! --- TENSEUR DES CONTRAINTES PAR MOYENNE DE CHAQUE COMPOSANTE
-    sigg(1,1)=sigg(1,1)/nnop
-    sigg(2,2)=sigg(2,2)/nnop
-    sigg(3,3)=sigg(3,3)/nnop
-    sigg(1,2)=sigg(1,2)/nnop
-    sigg(1,3)=sigg(1,3)/nnop
-    sigg(2,3)=sigg(2,3)/nnop
-    sigg(2,1)=  sigg(1,2)
-    sigg(3,1)=  sigg(1,3)
-    sigg(3,2)=  sigg(2,3)
+    sigg(1, 1) = sigg(1, 1)/nnop
+    sigg(2, 2) = sigg(2, 2)/nnop
+    sigg(3, 3) = sigg(3, 3)/nnop
+    sigg(1, 2) = sigg(1, 2)/nnop
+    sigg(1, 3) = sigg(1, 3)/nnop
+    sigg(2, 3) = sigg(2, 3)/nnop
+    sigg(2, 1) = sigg(1, 2)
+    sigg(3, 1) = sigg(1, 3)
+    sigg(3, 2) = sigg(2, 3)
 !
     call normev(vt1, nort1)
     call normev(vt2, nort2)
@@ -133,56 +133,56 @@ subroutine te0554(nomopt, nomte)
     call normev(vno, norno)
     call provec(vno, vt1, vt2)
 !
-    det=vt1(1)*vt2(2)*vno(3)+vt2(1)*vno(2)*vt1(3)+vno(1)*vt1(2)*vt2(3)&
+    det = vt1(1)*vt2(2)*vno(3)+vt2(1)*vno(2)*vt1(3)+vno(1)*vt1(2)*vt2(3)&
      &   -vno(1)*vt2(2)*vt1(3)-vt1(1)*vno(2)*vt2(3)-vt2(1)*vt1(2)*vno(3)
-    ASSERT(abs(det).gt.prec)
+    ASSERT(abs(det) .gt. prec)
 !
 !
-    mgl(1,1) = vno(1)
-    mgl(2,1) = vt1(1)
-    mgl(3,1) = vt2(1)
-    mgl(1,2) = vno(2)
-    mgl(2,2) = vt1(2)
-    mgl(3,2) = vt2(2)
-    mgl(1,3) = vno(3)
-    mgl(2,3) = vt1(3)
-    mgl(3,3) = vt2(3)
+    mgl(1, 1) = vno(1)
+    mgl(2, 1) = vt1(1)
+    mgl(3, 1) = vt2(1)
+    mgl(1, 2) = vno(2)
+    mgl(2, 2) = vt1(2)
+    mgl(3, 2) = vt2(2)
+    mgl(1, 3) = vno(3)
+    mgl(2, 3) = vt1(3)
+    mgl(3, 3) = vt2(3)
 !
-    mlg(1,1) = vno(1)
-    mlg(2,1) = vno(2)
-    mlg(3,1) = vno(3)
-    mlg(1,2) = vt1(1)
-    mlg(2,2) = vt1(2)
-    mlg(3,2) = vt1(3)
-    mlg(1,3) = vt2(1)
-    mlg(2,3) = vt2(2)
-    mlg(3,3) = vt2(3)
+    mlg(1, 1) = vno(1)
+    mlg(2, 1) = vno(2)
+    mlg(3, 1) = vno(3)
+    mlg(1, 2) = vt1(1)
+    mlg(2, 2) = vt1(2)
+    mlg(3, 2) = vt1(3)
+    mlg(1, 3) = vt2(1)
+    mlg(2, 3) = vt2(2)
+    mlg(3, 3) = vt2(3)
 !
-    mtmp = matmul(sigg,mlg)
-    sigl = matmul(mgl,mtmp)
+    mtmp = matmul(sigg, mlg)
+    sigl = matmul(mgl, mtmp)
 !
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DES OPTIONS : SIRO_ELEM_SIT1 & SIRO_ELEM_SIT2
 !
-    zr(isigm-1+8) = sigg(1,1)*vt1(1)+sigg(1,2)*vt1(2)
-    zr(isigm-1+9) = sigg(2,1)*vt1(1)+sigg(2,2)*vt1(2)
-    zr(isigm-1+10)= sigg(3,3)*vt1(3)
-    zr(isigm-1+11)= sigl(2,2)
+    zr(isigm-1+8) = sigg(1, 1)*vt1(1)+sigg(1, 2)*vt1(2)
+    zr(isigm-1+9) = sigg(2, 1)*vt1(1)+sigg(2, 2)*vt1(2)
+    zr(isigm-1+10) = sigg(3, 3)*vt1(3)
+    zr(isigm-1+11) = sigl(2, 2)
 !
-    zr(isigm-1+12)= sigg(1,1)*vt2(1)+sigg(1,2)*vt2(2)
-    zr(isigm-1+13)= sigg(2,1)*vt2(1)+sigg(2,2)*vt2(2)
-    zr(isigm-1+14)= sigg(3,3)*vt2(3)
-    zr(isigm-1+15)= sigl(3,3)
+    zr(isigm-1+12) = sigg(1, 1)*vt2(1)+sigg(1, 2)*vt2(2)
+    zr(isigm-1+13) = sigg(2, 1)*vt2(1)+sigg(2, 2)*vt2(2)
+    zr(isigm-1+14) = sigg(3, 3)*vt2(3)
+    zr(isigm-1+15) = sigl(3, 3)
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DES OPTIONS : SIRO_ELEM_SIGN & SIRO_ELEM_SIGT
-    zr(isigm-1+1)= sigg(1,1)*vno(1)+sigg(1,2)*vno(2)
-    zr(isigm-1+2)= sigg(2,1)*vno(1)+sigg(2,2)*vno(2)
-    zr(isigm-1+3)= sigg(3,3)*vno(3)
-    zr(isigm-1+4)= sigl(1,1)
-    zr(isigm-1+5)= sigg(1,1)*vt1(1)+sigg(1,2)*vt1(2)
-    zr(isigm-1+6)= sigg(2,1)*vt1(1)+sigg(2,2)*vt1(2)
-    zr(isigm-1+7)= sigg(3,3)*vt1(3)
-    zr(isigm-1+16)= sigl(2,1)
+    zr(isigm-1+1) = sigg(1, 1)*vno(1)+sigg(1, 2)*vno(2)
+    zr(isigm-1+2) = sigg(2, 1)*vno(1)+sigg(2, 2)*vno(2)
+    zr(isigm-1+3) = sigg(3, 3)*vno(3)
+    zr(isigm-1+4) = sigl(1, 1)
+    zr(isigm-1+5) = sigg(1, 1)*vt1(1)+sigg(1, 2)*vt1(2)
+    zr(isigm-1+6) = sigg(2, 1)*vt1(1)+sigg(2, 2)*vt1(2)
+    zr(isigm-1+7) = sigg(3, 3)*vt1(3)
+    zr(isigm-1+16) = sigl(2, 1)
 !
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine ledome(option, nomo, materi, mate, carele)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/utmess.h"
 !
-character(len=8) :: nomo
-character(len=24) :: mate, carele
-character(len=8) :: materi
-character(len=2) :: option
+    character(len=8) :: nomo
+    character(len=24) :: mate, carele
+    character(len=8) :: materi
+    character(len=2) :: option
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,27 +64,27 @@ character(len=2) :: option
     call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n)
     if (nomo .ne. ' ') then
         call dismoi('BESOIN_MATER', nomo, 'MODELE', repk=repons)
-        if ((n.eq.0) .and. (repons(1:3).eq.'OUI') .and. (option(1:1) .eq.'O')) then
+        if ((n .eq. 0) .and. (repons(1:3) .eq. 'OUI') .and. (option(1:1) .eq. 'O')) then
             call utmess('A', 'CALCULEL3_40')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CREATION DE LA CARTE DU MATERIAU CODE
 !
     if (n .ne. 0) then
-        call rcmfmc(materi, mate, l_ther_ = ASTER_FALSE)
+        call rcmfmc(materi, mate, l_ther_=ASTER_FALSE)
     else
         mate = ' '
-    endif
+    end if
 !
 ! --- RECUPERER LES CARACTERISTIQUES ELEMENTAIRES
 !
     call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n)
     if (nomo .ne. ' ') then
         call dismoi('EXI_RDM', nomo, 'MODELE', repk=repons)
-        if ((n.eq.0) .and. (repons(1:3).eq.'OUI') .and. (option(1:1) .eq.'O')) then
+        if ((n .eq. 0) .and. (repons(1:3) .eq. 'OUI') .and. (option(1:1) .eq. 'O')) then
             call utmess('A', 'CALCULEL3_39')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

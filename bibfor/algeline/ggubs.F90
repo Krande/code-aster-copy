@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,12 @@ subroutine ggubs(dseed, nr, r)
 !-----------------------------------------------------------------------
     integer :: i, idseed
 !-----------------------------------------------------------------------
-    data    d2p31m/2147483647.d0/, d2p31/2147483648.d0/
+    data d2p31m/2147483647.d0/, d2p31/2147483648.d0/
 !     ------------------------------------------------------------------
     do i = 1, nr
 !        DSEED  = AMOD(16807.*DSEED,D2P31M)
         idseed = int(16807.d0*dseed/d2p31m)
         dseed = 16807.d0*dseed-idseed*d2p31m
-        r(i) = dseed / d2p31
+        r(i) = dseed/d2p31
     end do
 end subroutine

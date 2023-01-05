@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1,&
+subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
                   tau2)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/cfdisi.h"
@@ -69,39 +69,39 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    model_ndim = cfdisi(ds_contact%sdcont_defi,'NDIM')
+    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
 !
 ! --- NOMBRE DE DIRECTIONS A EXCLURE POUR LA ZONE
 !
-    ndirex = mminfi(ds_contact%sdcont_defi,'EXCL_DIR',i_zone)
+    ndirex = mminfi(ds_contact%sdcont_defi, 'EXCL_DIR', i_zone)
 !
 ! --- REDEFINITION DU REPERE SI NECESSAIRE (UNE DIRECTION EXCLUE EN 3D)
 !
-    if ((model_ndim.eq.3) .and. (ndirex.eq.1)) then
+    if ((model_ndim .eq. 3) .and. (ndirex .eq. 1)) then
 ! ----- DIRECTION D'EXCLUSION
-        vdirex(1) = mminfr(ds_contact%sdcont_defi,'EXCL_FROT_DIRX',i_zone )
-        vdirex(2) = mminfr(ds_contact%sdcont_defi,'EXCL_FROT_DIRY',i_zone )
-        vdirex(3) = mminfr(ds_contact%sdcont_defi,'EXCL_FROT_DIRZ',i_zone )
+        vdirex(1) = mminfr(ds_contact%sdcont_defi, 'EXCL_FROT_DIRX', i_zone)
+        vdirex(2) = mminfr(ds_contact%sdcont_defi, 'EXCL_FROT_DIRY', i_zone)
+        vdirex(3) = mminfr(ds_contact%sdcont_defi, 'EXCL_FROT_DIRZ', i_zone)
 ! ----- ON LA PROJETTE SUR LE PLAN TANGENT
         call dcopy(3, tau1, 1, tau1fr, 1)
         call dcopy(3, tau2, 1, tau2fr, 1)
-        extau1 = ddot(3,vdirex,1,tau1,1)
-        extau2 = ddot(3,vdirex,1,tau2,1)
+        extau1 = ddot(3, vdirex, 1, tau1, 1)
+        extau2 = ddot(3, vdirex, 1, tau2, 1)
         call dscal(3, extau1, tau1fr, 1)
-        call daxpy(3, extau2, tau2fr, 1, tau1fr,&
+        call daxpy(3, extau2, tau2fr, 1, tau1fr, &
                    1)
         call normev(tau1fr, norme)
         if (norme .le. r8prem()) then
             call cfnomm(mesh, ds_contact%sdcont_defi, 'MAIL', elem_mast_indx, elem_mast_name)
-            call utmess('F', 'CONTACT3_18', sk=elem_mast_name, si=i_zone, nr=3,&
+            call utmess('F', 'CONTACT3_18', sk=elem_mast_name, si=i_zone, nr=3, &
                         valr=vdirex)
-        endif
+        end if
 ! ----- ON CALCULE TAU2FR PAR PROD. VECT.
         call mmnorm(model_ndim, tau1, tau2, norm, norme)
         call provec(tau1fr, norm, tau2fr)
 ! ----- RECOPIE
         call dcopy(3, tau1fr, 1, tau1, 1)
         call dcopy(3, tau2fr, 1, tau2, 1)
-    endif
+    end if
 !
 end subroutine

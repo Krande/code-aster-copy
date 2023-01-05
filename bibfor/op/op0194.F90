@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0194()
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -53,7 +53,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret, n1, n2, n3, numpha
-    integer :: nbtrou, ier,  nbOption, nb, iOption
+    integer :: nbtrou, ier, nbOption, nb, iOption
     integer :: nbStore, numeStore0, numeStoreInit
     real(kind=8) :: inst, prec
     character(len=8) :: crit, temper, temper2, model
@@ -61,7 +61,7 @@ implicit none
     character(len=19), parameter :: compor = '&&OP0194.COMPOR'
     character(len=24) :: chmeta, phasin, mateco, chmate
     character(len=24), parameter :: listOptionsJv = '&&OP0194.LES_OPTION'
-    character(len=16), parameter :: keywordfact  = 'COMPORTEMENT'
+    character(len=16), parameter :: keywordfact = 'COMPORTEMENT'
     integer :: i_comp, nbocc
     character(len=16) :: phase_type
     character(len=19), parameter :: listStoreJv = '&&OP0194.LISTSTORE'
@@ -82,24 +82,24 @@ implicit none
     call rs_get_liststore(temper, nbStore)
     if (nbStore .lt. 2) then
         call utmess('F', 'META1_1')
-    endif
-    call wkvect(listStoreJv, 'V V I', nbStore, vi = listStore)
+    end if
+    call wkvect(listStoreJv, 'V V I', nbStore, vi=listStore)
     call rs_get_liststore(temper, nbStore, listStore)
     numeStore0 = listStore(1)
 
 ! - Get main parameters
     mateco = ' '
-    model  = ' '
+    model = ' '
     chmate = ' '
     call rslesd(temper, numeStore0, model, chmate)
     if (chmate .ne. ' ') then
-        call rcmfmc(chmate, mateco, l_ther_ = ASTER_TRUE)
-    endif
+        call rcmfmc(chmate, mateco, l_ther_=ASTER_TRUE)
+    end if
 !
 ! - Get options to compute
     call getvtx(' ', 'OPTION', nbval=0, nbret=nb)
     nbOption = -nb
-    call wkvect(listOptionsJv, 'V V K16', nbOption, vk16 = listOption)
+    call wkvect(listOptionsJv, 'V V K16', nbOption, vk16=listOption)
     call getvtx(' ', 'OPTION', nbval=nbOption, vect=listOption, nbret=nb)
 
 ! - Compute options
@@ -122,7 +122,7 @@ implicit none
                 call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=temper2, nbret=n1)
                 if (temper2 .ne. temper) then
                     call utmess('F', 'META1_2')
-                endif
+                end if
                 call getvis('ETAT_INIT', 'NUME_INIT', iocc=1, scal=numeStoreInit, nbret=n2)
                 if (n2 .eq. 0) then
                     call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=inst, nbret=n3)
@@ -133,14 +133,14 @@ implicit none
                         call utmess('F', 'UTILITAI6_51', sk=temper, sr=inst)
                     else if (nbtrou .gt. 1) then
                         call utmess('F', 'UTILITAI6_52', sk=temper, si=nbtrou, sr=inst)
-                    endif
-                endif
+                    end if
+                end if
                 call rsexch('F', temper, 'META_ELNO', numeStoreInit, phasin, iret)
                 numpha = numeStoreInit
-            endif
+            end if
 
 ! --------- Compute
-            call smevol(temper, model, chmate, mateco, compor, option,&
+            call smevol(temper, model, chmate, mateco, compor, option, &
                         phasin, numpha)
 !
             call detrsd('CARTE', '&&NMDORC.COMPOR')
@@ -149,18 +149,18 @@ implicit none
             nbocc = 0
             call getfac(keywordfact, nbocc)
             do i_comp = 1, nbocc
-                call getvtx(keywordfact, 'RELATION', iocc = i_comp, scal = phase_type, nbret=iret)
+                call getvtx(keywordfact, 'RELATION', iocc=i_comp, scal=phase_type, nbret=iret)
                 if (iret .ne. 0) then
-                    if (phase_type(1:5) .ne. 'ACIER' .and. option.eq.'DURT_ELNO') then
+                    if (phase_type(1:5) .ne. 'ACIER' .and. option .eq. 'DURT_ELNO') then
                         call utmess('F', 'META1_3', sk=phase_type)
-                    endif
-                endif
+                    end if
+                end if
             end do
-            call calcop(option, listOptionsJv, temper, temper, listStoreJv,&
+            call calcop(option, listOptionsJv, temper, temper, listStoreJv, &
                         nbStore, resultType, iret)
             if (iret .eq. 0) cycle
 !
-        endif
+        end if
     end do
 !
     call jedetr(listOptionsJv)

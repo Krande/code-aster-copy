@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine jjallt(lonoi, ic, gi, typei, ltypi,&
+subroutine jjallt(lonoi, ic, gi, typei, ltypi, &
                   ci, jctab, jcdyn)
 ! aslint: disable=C1002,W0405
     implicit none
@@ -41,44 +41,44 @@ subroutine jjallt(lonoi, ic, gi, typei, ltypi,&
 !
     integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1), izk24(1)
     integer :: izk32(1), izk80(1), jbid, izi4(1), jcdyn
-    equivalence    (izr,zr),(izc,zc),(izl,zl),(izk8,zk8),(izk16,zk16),&
-     &               (izk24,zk24),(izk32,zk32),(izk80,zk80),(izi4,zi4)
+    equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16),&
+     &               (izk24, zk24), (izk32, zk32), (izk80, zk80), (izi4, zi4)
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     jctab = 0
     if (typei(1:1) .eq. 'I') then
-        call jjalls(lonoi, ic, gi, typei, ltypi,&
+        call jjalls(lonoi, ic, gi, typei, ltypi, &
                     ci, zi, jbid, jctab, jcdyn)
     else if (typei .eq. 'S') then
-        call jjalls(lonoi, ic, gi, typei, ltypi,&
+        call jjalls(lonoi, ic, gi, typei, ltypi, &
                     ci, izi4, jbid, jctab, jcdyn)
     else if (typei(1:1) .eq. 'R') then
-        call jjalls(lonoi, ic, gi, typei, ltypi,&
+        call jjalls(lonoi, ic, gi, typei, ltypi, &
                     ci, izr, jbid, jctab, jcdyn)
     else if (typei(1:1) .eq. 'C') then
-        call jjalls(lonoi, ic, gi, typei, ltypi,&
+        call jjalls(lonoi, ic, gi, typei, ltypi, &
                     ci, izc, jbid, jctab, jcdyn)
     else if (typei(1:1) .eq. 'K') then
         if (ltypi .eq. 8) then
-            call jjalls(lonoi, ic, gi, typei, ltypi,&
+            call jjalls(lonoi, ic, gi, typei, ltypi, &
                         ci, izk8, jbid, jctab, jcdyn)
         else if (ltypi .eq. 16) then
-            call jjalls(lonoi, ic, gi, typei, ltypi,&
+            call jjalls(lonoi, ic, gi, typei, ltypi, &
                         ci, izk16, jbid, jctab, jcdyn)
         else if (ltypi .eq. 24) then
-            call jjalls(lonoi, ic, gi, typei, ltypi,&
+            call jjalls(lonoi, ic, gi, typei, ltypi, &
                         ci, izk24, jbid, jctab, jcdyn)
         else if (ltypi .eq. 32) then
-            call jjalls(lonoi, ic, gi, typei, ltypi,&
+            call jjalls(lonoi, ic, gi, typei, ltypi, &
                         ci, izk32, jbid, jctab, jcdyn)
         else if (ltypi .eq. 80) then
-            call jjalls(lonoi, ic, gi, typei, ltypi,&
+            call jjalls(lonoi, ic, gi, typei, ltypi, &
                         ci, izk80, jbid, jctab, jcdyn)
-        endif
+        end if
     else if (typei(1:1) .eq. 'L') then
-        call jjalls(lonoi, ic, gi, typei, ltypi,&
+        call jjalls(lonoi, ic, gi, typei, ltypi, &
                     ci, izl, jbid, jctab, jcdyn)
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

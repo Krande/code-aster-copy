@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utintc(zrino2, zrino1, zrjno2, zrjno1, x3,&
-                  y3, inst, insold, k8cart, ltheta,&
-                  nsomm, valfp, valfm, ifm, niv,&
+subroutine utintc(zrino2, zrino1, zrjno2, zrjno1, x3, &
+                  y3, inst, insold, k8cart, ltheta, &
+                  nsomm, valfp, valfm, ifm, niv, &
                   option)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -72,63 +72,63 @@ subroutine utintc(zrino2, zrino1, zrjno2, zrjno1, x3,&
     valpar(1) = zrino2
     valpar(2) = zrino1
     valpar(3) = inst
-    call fointe('FM', k8cart, 3, nompar, valpar,&
+    call fointe('FM', k8cart, 3, nompar, valpar, &
                 valfp(1), icode)
     valpar(1) = zrjno2
     valpar(2) = zrjno1
-    call fointe('FM', k8cart, 3, nompar, valpar,&
+    call fointe('FM', k8cart, 3, nompar, valpar, &
                 valfp(2), icode)
     if (nsomm .eq. 3) then
         valpar(1) = x3
         valpar(2) = y3
-        call fointe('FM', k8cart, 3, nompar, valpar,&
+        call fointe('FM', k8cart, 3, nompar, valpar, &
                     valfp(3), icode)
-    endif
+    end if
     if (ltheta) then
 !
 ! INTERPOLATION CHAMP K8CART A L'INSTANT -
         valpar(1) = zrino2
         valpar(2) = zrino1
         valpar(3) = insold
-        call fointe('FM', k8cart, 3, nompar, valpar,&
+        call fointe('FM', k8cart, 3, nompar, valpar, &
                     valfm(1), icode)
         valpar(1) = zrjno2
         valpar(2) = zrjno1
-        call fointe('FM', k8cart, 3, nompar, valpar,&
+        call fointe('FM', k8cart, 3, nompar, valpar, &
                     valfm(2), icode)
         if (nsomm .eq. 3) then
             valpar(1) = x3
             valpar(2) = y3
-            call fointe('FM', k8cart, 3, nompar, valpar,&
+            call fointe('FM', k8cart, 3, nompar, valpar, &
                         valfm(3), icode)
-        endif
-    endif
+        end if
+    end if
 !
 ! AFFICHAGES
     if (niv .eq. 2) then
         if (nsomm .eq. 3) then
-            write(ifm,*)' X    ',zrino2,zrjno2,x3
-            write(ifm,*)' Y    ',zrino1,zrjno1,y3
+            write (ifm, *) ' X    ', zrino2, zrjno2, x3
+            write (ifm, *) ' Y    ', zrino1, zrjno1, y3
             if (option .eq. 1) then
-                write(ifm,*)' VALFP ',valfp(1),valfp(2),valfp(3)
-            else if (option.eq.2) then
-                write(ifm,*)' VALHP ',valfp(1),valfp(2),valfp(3)
+                write (ifm, *) ' VALFP ', valfp(1), valfp(2), valfp(3)
+            else if (option .eq. 2) then
+                write (ifm, *) ' VALHP ', valfp(1), valfp(2), valfp(3)
             else
-                write(ifm,*)' VALTP ',valfp(1),valfp(2),valfp(3)
-            endif
-            if (ltheta) write(ifm,*)'     M ', valfm(1),valfm(2),valfm(3)
+                write (ifm, *) ' VALTP ', valfp(1), valfp(2), valfp(3)
+            end if
+            if (ltheta) write (ifm, *) '     M ', valfm(1), valfm(2), valfm(3)
         else
-            write(ifm,*)' X    ',zrino2,zrjno2
-            write(ifm,*)' Y    ',zrino1,zrjno1
+            write (ifm, *) ' X    ', zrino2, zrjno2
+            write (ifm, *) ' Y    ', zrino1, zrjno1
             if (option .eq. 1) then
-                write(ifm,*)' VALFP ',valfp(1),valfp(2)
-            else if (option.eq.2) then
-                write(ifm,*)' VALHP ',valfp(1),valfp(2)
+                write (ifm, *) ' VALFP ', valfp(1), valfp(2)
+            else if (option .eq. 2) then
+                write (ifm, *) ' VALHP ', valfp(1), valfp(2)
             else
-                write(ifm,*)' VALTP ',valfp(1),valfp(2)
-            endif
-            if (ltheta) write(ifm,*)'     M ',valfm(1),valfm(2)
-        endif
-    endif
+                write (ifm, *) ' VALTP ', valfp(1), valfp(2)
+            end if
+            if (ltheta) write (ifm, *) '     M ', valfm(1), valfm(2)
+        end if
+    end if
 !
 end subroutine

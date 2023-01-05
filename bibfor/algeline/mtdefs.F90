@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ subroutine mtdefs(matout, matin, base, typc)
         do ival = 0, nbval-1
             zk24(jrefao+ival) = zk24(jrefai+ival)
         end do
-    endif
+    end if
 !
 !
 !     -- CREATION DE LA COLLECTION .VALM :
@@ -112,7 +112,7 @@ subroutine mtdefs(matout, matin, base, typc)
     call jelira(valm, 'NMAXOC', nbbloc)
     call jelira(jexnum(valm, 1), 'LONMAX', lgbloc)
     valm = nomout//'.VALM'
-    call jecrec(valm, classe//' V '//type, 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(valm, classe//' V '//type, 'NU', 'DISPERSE', 'CONSTANT', &
                 nbbloc)
     call jeecra(valm, 'LONMAX', lgbloc)
     do ibloc = 1, nbbloc

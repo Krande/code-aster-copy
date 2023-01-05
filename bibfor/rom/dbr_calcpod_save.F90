@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine dbr_calcpod_save(base, nbMode, nbSnapRedu, baseSing, baseValeR)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/romBaseSave.h"
 #include "asterfort/dbr_calcpod_savel.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-integer, intent(in) :: nbMode, nbSnapRedu
-real(kind=8), pointer :: baseValeR(:), baseSing(:)
+    type(ROM_DS_Empi), intent(in) :: base
+    integer, intent(in) :: nbMode, nbSnapRedu
+    real(kind=8), pointer :: baseValeR(:), baseSing(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,11 +48,11 @@ real(kind=8), pointer :: baseValeR(:), baseSing(:)
 ! --------------------------------------------------------------------------------------------------
 !
     if (base%baseType .eq. 'LINEIQUE') then
-        call dbr_calcpod_savel(base    , nbMode  , nbSnapRedu,&
+        call dbr_calcpod_savel(base, nbMode, nbSnapRedu, &
                                baseSing, baseValeR)
     else
-        call romBaseSave(base     , nbMode   , nbSnapRedu,&
+        call romBaseSave(base, nbMode, nbSnapRedu, &
                          baseValeR, baseSing)
-    endif
+    end if
 !
 end subroutine

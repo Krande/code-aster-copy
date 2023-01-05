@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine te0312(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-implicit none
+    implicit none
 
 #include "jeveux.h"
 #include "MultiFiber_type.h"
@@ -56,7 +56,7 @@ implicit none
 !
     integer :: lmater, icompo, iret, ig, icp
     integer :: icodre(2), kpg, spt
-    real(kind=8)      :: bendog(1),kdessi(1),alpha(1)
+    real(kind=8)      :: bendog(1), kdessi(1), alpha(1)
     character(len=8)  :: fami, poum, materi
     character(len=16) :: mult_comp
 !
@@ -64,16 +64,16 @@ implicit none
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
-    integer,            pointer :: cpri(:)   => null()
-    character(len=24) , pointer :: cprk24(:) => null()
+    integer, pointer :: cpri(:) => null()
+    character(len=24), pointer :: cprk24(:) => null()
 !.......................................................................
 !
     call jevech('PMATERC', 'L', lmater)
-    fami='FPG1'; kpg=1; spt=1; poum='+'
+    fami = 'FPG1'; kpg = 1; spt = 1; poum = '+'
 !
     IsPmf = ASTER_FALSE
 !   Si c'est une PMF : Il peut y avoir plusieurs matériaux sur la maille
-    if ( lteatt('TYPMOD2','PMF') ) then
+    if (lteatt('TYPMOD2', 'PMF')) then
         call jevech('PCOMPOR', 'L', icompo)
         mult_comp = zk16(icompo-1+MULTCOMP)
         ! Récupération de la SD_COMPOR où le comportement des groupes de fibres est stocké
@@ -84,44 +84,44 @@ implicit none
         ! Ceinture et bretelle : seulement pour les multifibres
         ASSERT(cpri(MULTI_FIBER_TYPE) .eq. 3)
         ! Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug)
         IsPmf = ASTER_TRUE
     else
         materi = ' '
         nbgrfi = 1
-    endif
+    end if
     !
     ! On boucle sur les groupes de fibre pour aller chercher le matériau du groupe
-    do ig=1, nbgrfi
-        if ( IsPmf ) then
-            icp=(nug(ig)-1)*MULTI_FIBER_SIZEK + MULTI_FIBER_MATER
-            materi=cprk24(icp)(1:8)
-        endif
+    do ig = 1, nbgrfi
+        if (IsPmf) then
+            icp = (nug(ig)-1)*MULTI_FIBER_SIZEK+MULTI_FIBER_MATER
+            materi = cprk24(icp) (1:8)
+        end if
         !
-        if (option.eq.'CHAR_MECA_HYDR_R') then
+        if (option .eq. 'CHAR_MECA_HYDR_R') then
             call rcvalb(fami, kpg, spt, poum, zi(lmater), materi, 'ELAS', &
                         0, ' ', [0.d0], 1, 'B_ENDOGE', bendog, icodre, 0)
             ! BENDOGE ABSENT => CHARGEMENT NUL
-            if ((icodre(1).eq.0) .and. (bendog(1).ne.0.d0)) then
+            if ((icodre(1) .eq. 0) .and. (bendog(1) .ne. 0.d0)) then
                 call utmess('F', 'ELEMENTS_22', sk=nomte)
-            endif
-        else if (option.eq.'CHAR_MECA_SECH_R') then
+            end if
+        else if (option .eq. 'CHAR_MECA_SECH_R') then
             call rcvalb(fami, kpg, spt, poum, zi(lmater), materi, 'ELAS', &
                         0, ' ', [0.d0], 1, 'K_DESSIC', kdessi, icodre, 0)
             ! KDESSI ABSENT => CHARGEMENT NUL
-            if ((icodre(1).eq.0) .and. (kdessi(1).ne.0.d0)) then
+            if ((icodre(1) .eq. 0) .and. (kdessi(1) .ne. 0.d0)) then
                 call utmess('F', 'ELEMENTS_23', sk=nomte)
-            endif
-        else if (option.eq.'CHAR_MECA_TEMP_R') then
+            end if
+        else if (option .eq. 'CHAR_MECA_TEMP_R') then
             call rcvalb(fami, kpg, spt, poum, zi(lmater), materi, 'ELAS', &
                         0, ' ', [0.d0], 1, 'ALPHA', alpha, icodre, 0)
             ! ALPHA ABSENT => CHARGEMENT NUL
-            if ((icodre(1).eq.0) .and. (alpha(1).ne.0.d0)) then
+            if ((icodre(1) .eq. 0) .and. (alpha(1) .ne. 0.d0)) then
                 call utmess('F', 'ELEMENTS_19', sk=nomte)
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
-    enddo
+        end if
+    end do
 !
 end subroutine

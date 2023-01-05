@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine approj(mesh          , newgeo        , sdcont_defi , node_mast_indx, l_pair_dire,&
-                  pair_vect     , iter_maxi     , epsi_maxi   , tole_proj_ext , poin_coor  ,&
-                  elem_mast_mini, proj_stat_mini, ksi1_mini   , ksi2_mini     , tau1_mini  ,&
-                  tau2_mini     , dist_mini     , vect_pm_mini)
+subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
+                  pair_vect, iter_maxi, epsi_maxi, tole_proj_ext, poin_coor, &
+                  elem_mast_mini, proj_stat_mini, ksi1_mini, ksi2_mini, tau1_mini, &
+                  tau2_mini, dist_mini, vect_pm_mini)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
@@ -104,25 +104,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dist_mini         = r8gaem()
-    ksi1_mini         = r8gaem()
-    ksi2_mini         = r8gaem()
-    tau1_mini(1:3)    = 0.d0
-    tau2_mini(1:3)    = 0.d0
+    dist_mini = r8gaem()
+    ksi1_mini = r8gaem()
+    ksi2_mini = r8gaem()
+    tau1_mini(1:3) = 0.d0
+    tau2_mini(1:3) = 0.d0
     vect_pm_mini(1:3) = 0.d0
-    elem_mast_mini    = 0
-    proj_stat_mini    = -1
+    elem_mast_mini = 0
+    proj_stat_mini = -1
 !
 ! - No node excluded
 !
-    ASSERT(node_mast_indx.ne.0)
+    ASSERT(node_mast_indx .ne. 0)
 !
 ! - Dimension of the mesh
 !
     call dismoi('DIM_GEOM', mesh, 'MAILLAGE', repi=mesh_ndim)
     ASSERT((mesh_ndim == 2) .or. (mesh_ndim == 3))
 !
-    l_cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_disc = cfdisl(sdcont_defi, 'FORMUL_DISCRETE')
 !
 ! - Number of elements attached to master node
 !
@@ -146,17 +146,17 @@ implicit none
 !
 ! ----- Parameters of master element
 !
-        call aptypm(mesh, elem_mast_nume, elem_mast_ndim, elem_mast_nbnode, elem_mast_type,&
+        call aptypm(mesh, elem_mast_nume, elem_mast_ndim, elem_mast_nbnode, elem_mast_type, &
                     elem_mast_name)
 !
 ! ----- Coordinates of master elements
 !
         call apcoma(mesh, newgeo, elem_mast_nume, elem_mast_nbnode, elem_mast_coor)
 !
-        if((elem_mast_ndim .lt. mesh_ndim) .and. .not.l_cont_disc) then
+        if ((elem_mast_ndim .lt. mesh_ndim) .and. .not. l_cont_disc) then
 ! ----- The nodes have to be in the plane xOy (problem for shell element)
             do ino = 1, elem_mast_nbnode
-                if(abs(elem_mast_coor(3*(ino-1)+3)) > r8prem()) then
+                if (abs(elem_mast_coor(3*(ino-1)+3)) > r8prem()) then
                     call utmess('F', 'APPARIEMENT_12', ni=2, vali=[mesh_ndim, elem_mast_ndim])
                 end if
             end do
@@ -164,34 +164,34 @@ implicit none
 !
 ! ----- No POI1 master element
 !
-        l_poi1 = elem_mast_type.eq.'PO1'
+        l_poi1 = elem_mast_type .eq. 'PO1'
         if (l_poi1) then
             call utmess('F', 'APPARIEMENT_36', sk=elem_mast_name)
-        endif
+        end if
 !
 ! ----- Projection of node on master element
 !
-        call mmproj(elem_mast_type, elem_mast_nbnode, elem_mast_ndim, elem_mast_coor, poin_coor,&
-                    iter_maxi     , epsi_maxi       , tole_proj_ext , l_pair_dire   , pair_vect,&
-                    ksi1          , ksi2            , tau1          , tau2          , proj_stat,&
+        call mmproj(elem_mast_type, elem_mast_nbnode, elem_mast_ndim, elem_mast_coor, poin_coor, &
+                    iter_maxi, epsi_maxi, tole_proj_ext, l_pair_dire, pair_vect, &
+                    ksi1, ksi2, tau1, tau2, proj_stat, &
                     niverr)
 !
 ! ----- Management of error
 !
         if (niverr .eq. 1) then
             call utmess('F', 'APPARIEMENT_13', sk=elem_mast_name, nr=3, valr=poin_coor)
-        endif
+        end if
 !
 ! ----- Compute distance
 !
-        call apdist(elem_mast_type, elem_mast_coor, elem_mast_nbnode, ksi1, ksi2,&
-                    poin_coor     , dist          , vect_pm)
+        call apdist(elem_mast_type, elem_mast_coor, elem_mast_nbnode, ksi1, ksi2, &
+                    poin_coor, dist, vect_pm)
 !
 ! ----- Select nearest element
 !
-        call apchoi(dist        , dist_mini, elem_mast_indx, elem_mast_mini, tau1     ,&
-                    tau1_mini   , tau2     , tau2_mini     , ksi1          , ksi1_mini,&
-                    ksi2        , ksi2_mini, proj_stat     , proj_stat_mini, vect_pm  ,&
+        call apchoi(dist, dist_mini, elem_mast_indx, elem_mast_mini, tau1, &
+                    tau1_mini, tau2, tau2_mini, ksi1, ksi1_mini, &
+                    ksi2, ksi2_mini, proj_stat, proj_stat_mini, vect_pm, &
                     vect_pm_mini)
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
+subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat, &
                   factol, factou, typsym)
 ! person_in_charge: olivier.boiteau at edf.fr
 ! COMPIL PARAL
@@ -65,7 +65,7 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
         call jeveuo(jexnum(valm, ip), 'L', mats)
         ip = 2
         call jeveuo(jexnum(valm, ip), 'L', mati)
-    endif
+    end if
 !
 !===================================================================
 !     CREATION D'UNE COLLECTION DISPERSEE
@@ -76,25 +76,25 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
     call jeexin(factol, irefac)
     if (irefac .gt. 0) then
         call jedetr(factol)
-    endif
+    end if
     call jelira(jexnum(valm, ip), 'CLAS', cval=base)
 !
-    call jecrec(factol, base(1:1)//' V R ', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(factol, base(1:1)//' V R ', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbloc)
     do ib = 1, nbloc
         call jecroc(jexnum(factol, ib))
         lgblib = lgbloc(ib)
         call jeecra(jexnum(factol, ib), 'LONMAX', lgblib)
     end do
-    fin =0
+    fin = 0
     if (typsym .eq. 0) then
 !     CAS NON-SYMETRIQUE
         call jeexin(factou, irefac)
         if (irefac .gt. 0) then
             call jedetr(factou)
-        endif
+        end if
         call jelira(jexnum(valm, ip), 'CLAS', cval=base)
-        call jecrec(factou, base(1:1)//' V R ', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec(factou, base(1:1)//' V R ', 'NU', 'DISPERSE', 'VARIABLE', &
                     nbloc)
         do ib = 1, nbloc
             call jecroc(jexnum(factou, ib))
@@ -109,16 +109,16 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
                 zr(ifacu+i-1) = 0.d0
             end do
             deb = fin
-            fin = deb + lgbloc(ib)
-            deb = deb + 1
+            fin = deb+lgbloc(ib)
+            deb = deb+1
             do i1 = 1, lonmat
                 if (adinit(i1) .le. 0) then
-                    code =-1
-                    adprov = - adinit(i1)
+                    code = -1
+                    adprov = -adinit(i1)
                 else
-                    code =1
+                    code = 1
                     adprov = adinit(i1)
-                endif
+                end if
                 if (adprov .gt. fin) goto 120
                 if (adprov .lt. deb) goto 120
                 if (code .gt. 0) then
@@ -127,7 +127,7 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
                 else
                     zr(ifacl+adprov-deb) = zr(mats+i1-1)
                     zr(ifacu+adprov-deb) = zr(mati+i1-1)
-                endif
+                end if
 120             continue
             end do
             call jelibe(jexnum(factol, ib))
@@ -144,8 +144,8 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
                 zr(ifacl+i-1) = 0.d0
             end do
             deb = fin
-            fin = deb + lgbloc(ib)
-            deb = deb + 1
+            fin = deb+lgbloc(ib)
+            deb = deb+1
             do i1 = 1, lonmat
                 adprov = adinit(i1)
                 if (adprov .gt. fin) goto 125
@@ -157,7 +157,7 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
         end do
         ip = 1
         call jelibe(jexnum(valm, ip))
-    endif
+    end if
     call jelibe(valm)
     call jedema()
 end subroutine

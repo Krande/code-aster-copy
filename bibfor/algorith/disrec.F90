@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine disrec(pz, az, bz, r, h)
     p(2) = pz(2)
 !
 !     VERIFICATIONS
-    ASSERT(a.gt.0.d0 .and. b.gt.0.d0)
+    ASSERT(a .gt. 0.d0 .and. b .gt. 0.d0)
     if (a .lt. b) then
 !       SI A EST PLUS PETIT QUE B, ON INVERSE A ET B
 !       ET AUSSI LES COORDONNÉES DU POINT P
@@ -61,22 +61,22 @@ subroutine disrec(pz, az, bz, r, h)
         temp = p(1)
         p(1) = p(2)
         p(2) = temp
-    endif
+    end if
 !
 !     DEFINITION DE QUELQUES VARIABLES UTILES
 !     ---------------------------------------
 !
 !     ABSCISSE ET ORDONNEE DU POINT P (TOUJOURS POSITIVES)
-    x=abs(p(1))
-    y=abs(p(2))
+    x = abs(p(1))
+    y = abs(p(2))
 !
 !     ABSCISSE ET ORDONNEE DU CENTRE DU CONGE
     xc = a-r
     yc = b-r
 !
-    ASSERT(a.ge.b)
-    ASSERT(x.ge.0.d0)
-    ASSERT(y.ge.0.d0)
+    ASSERT(a .ge. b)
+    ASSERT(x .ge. 0.d0)
+    ASSERT(y .ge. 0.d0)
 !
 !     CALCUL DE LA DISTANCE SIGNEE
 !     ----------------------------
@@ -86,7 +86,7 @@ subroutine disrec(pz, az, bz, r, h)
 !       ZONE 1
         h = y-b
 !
-    else if (y.le.x+b-a .and. y.le.yc) then
+    else if (y .le. x+b-a .and. y .le. yc) then
 !
 !       ZONE 2
         h = x-a
@@ -94,8 +94,8 @@ subroutine disrec(pz, az, bz, r, h)
     else
 !
 !       ZONE 3
-        h = sqrt( (x-xc)**2 + (y-yc)**2 ) - r
+        h = sqrt((x-xc)**2+(y-yc)**2)-r
 !
-    endif
+    end if
 !
 end subroutine

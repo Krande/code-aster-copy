@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,25 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apinte_norm(elem_dime       , &
-                       elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                       elem_slav_coor  , elem_slav_code,&
-                       mast_norm       , slav_norm)
+subroutine apinte_norm(elem_dime, &
+                       elem_mast_nbnode, elem_mast_coor, elem_mast_code, &
+                       elem_slav_coor, elem_slav_code, &
+                       mast_norm, slav_norm)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/apelem_getcenter.h"
 #include "asterfort/apnorm.h"
 !
-integer, intent(in) :: elem_dime
-integer, intent(in) :: elem_mast_nbnode
-real(kind=8), intent(in) :: elem_mast_coor(3,9)
-character(len=8), intent(in) :: elem_mast_code
-real(kind=8), intent(in) :: elem_slav_coor(3,9)
-character(len=8), intent(in) :: elem_slav_code
-real(kind=8), intent(out) :: mast_norm(3), slav_norm(3)
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: elem_mast_nbnode
+    real(kind=8), intent(in) :: elem_mast_coor(3, 9)
+    character(len=8), intent(in) :: elem_mast_code
+    real(kind=8), intent(in) :: elem_slav_coor(3, 9)
+    character(len=8), intent(in) :: elem_slav_code
+    real(kind=8), intent(out) :: mast_norm(3), slav_norm(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ real(kind=8), intent(out) :: mast_norm(3), slav_norm(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    debug        = ASTER_FALSE
+    debug = ASTER_FALSE
     mast_norm(:) = 0.d0
     slav_norm(:) = 0.d0
 !
@@ -70,26 +70,26 @@ real(kind=8), intent(out) :: mast_norm(3), slav_norm(3)
 !
 !    ASSERT(elem_mast_code .eq. 'SE2' .or. elem_mast_code .eq. 'TR3' .or.elem_mast_code .eq. 'QU4')
     call apelem_getcenter(elem_mast_code, ksi1_cent, ksi2_cent)
-    call apnorm(elem_mast_nbnode, elem_mast_code, elem_dime, elem_mast_coor,&
-                ksi1_cent       , ksi2_cent     , mast_norm)
+    call apnorm(elem_mast_nbnode, elem_mast_code, elem_dime, elem_mast_coor, &
+                ksi1_cent, ksi2_cent, mast_norm)
     if (debug) then
-        write(*,*) ".. Master/Norm: ", mast_norm
-    endif
+        write (*, *) ".. Master/Norm: ", mast_norm
+    end if
 !
 ! - Linearization of reference element for slave element
 !
-    if (elem_slav_code .eq. 'TR3' .or.&
+    if (elem_slav_code .eq. 'TR3' .or. &
         elem_slav_code .eq. 'TR6') then
-        elem_line_code   = 'TR3'
+        elem_line_code = 'TR3'
         elem_line_nbnode = 3
-    elseif (elem_slav_code .eq. 'QU4' .or.&
+    elseif (elem_slav_code .eq. 'QU4' .or. &
             elem_slav_code .eq. 'QU8' .or. &
             elem_slav_code .eq. 'QU9') then
-        elem_line_code   = 'QU4'
+        elem_line_code = 'QU4'
         elem_line_nbnode = 4
-    elseif (elem_slav_code .eq. 'SE2' .or.&
+    elseif (elem_slav_code .eq. 'SE2' .or. &
             elem_slav_code .eq. 'SE3') then
-        elem_line_code   = 'SE2'
+        elem_line_code = 'SE2'
         elem_line_nbnode = 2
     else
         ASSERT(ASTER_FALSE)
@@ -98,10 +98,10 @@ real(kind=8), intent(out) :: mast_norm(3), slav_norm(3)
 ! - Compute slave element normal (at center)
 !
     call apelem_getcenter(elem_line_code, ksi1_cent, ksi2_cent)
-    call apnorm(elem_line_nbnode, elem_line_code, elem_dime, elem_slav_coor,&
-                ksi1_cent       , ksi2_cent     , slav_norm)
+    call apnorm(elem_line_nbnode, elem_line_code, elem_dime, elem_slav_coor, &
+                ksi1_cent, ksi2_cent, slav_norm)
     if (debug) then
-        write(*,*) ".. Slave/Norm: ", slav_norm
-    endif
+        write (*, *) ".. Slave/Norm: ", slav_norm
+    end if
 !
 end subroutine

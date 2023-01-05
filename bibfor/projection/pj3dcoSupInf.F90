@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pj3dcoSupInf(modelZ, meshNbNode,&
-                        nbCellMast, cellMast,&
-                        nbNodeSlav, nodeSlav, geomSlavJv,&
-                        corre1, corre2, corre3,&
+subroutine pj3dcoSupInf(modelZ, meshNbNode, &
+                        nbCellMast, cellMast, &
+                        nbNodeSlav, nodeSlav, geomSlavJv, &
+                        corre1, corre2, corre3, &
                         chnormZ, thickness)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
@@ -34,14 +34,14 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: modelZ
-integer, intent(in):: meshNbNode
-integer, intent(in) :: nbCellMast, cellMast(nbCellMast)
-integer, intent(in) :: nbNodeSlav, nodeSlav(nbNodeSlav)
-character(len=24), intent(in) :: geomSlavJv
-character(len=16), intent(in) :: corre1, corre2, corre3
-character(len=*), intent(in) :: chnormZ
-real(kind=8), intent(in) :: thickness
+    character(len=*), intent(in) :: modelZ
+    integer, intent(in):: meshNbNode
+    integer, intent(in) :: nbCellMast, cellMast(nbCellMast)
+    integer, intent(in) :: nbNodeSlav, nodeSlav(nbNodeSlav)
+    character(len=24), intent(in) :: geomSlavJv
+    character(len=16), intent(in) :: corre1, corre2, corre3
+    character(len=*), intent(in) :: chnormZ
+    real(kind=8), intent(in) :: thickness
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ real(kind=8), intent(in) :: thickness
 !
     call jemarq()
 !
-    call jeveuo(geomSlavJv, 'E', vr = geomSlav)
+    call jeveuo(geomSlavJv, 'E', vr=geomSlav)
     model = modelZ
     chnorm = chnormZ
 
@@ -80,14 +80,14 @@ real(kind=8), intent(in) :: thickness
     ASSERT(nbCmp .eq. 3)
 
 ! - Compute normal vector with thickness
-    call wkvect(corre3, 'V V R', 3*meshNbNode, vr = thickNormal)
+    call wkvect(corre3, 'V V R', 3*meshNbNode, vr=thickNormal)
     do iNodeSlav = 1, nbNodeSlav
         nodeNume = nodeSlav(iNodeSlav)
         do iDime = 1, 3
-            if (.not.cnsl(3*(nodeNume-1)+iDime)) then
+            if (.not. cnsl(3*(nodeNume-1)+iDime)) then
                 call utmess('F', 'CHAMPS_2', sk=chnorm)
-            endif
-            thickNormal(3*(nodeNume-1)+iDime) = cnsv(3*(nodeNume-1)+iDime) * thickness
+            end if
+            thickNormal(3*(nodeNume-1)+iDime) = cnsv(3*(nodeNume-1)+iDime)*thickness
         end do
     end do
 
@@ -95,31 +95,31 @@ real(kind=8), intent(in) :: thickness
     do iNodeSlav = 1, nbNodeSlav
         nodeNume = nodeSlav(iNodeSlav)
         do iDime = 1, 3
-            geomSlav(3*(nodeNume-1)+iDime) = geomSlav(3*(nodeNume-1)+iDime)+&
+            geomSlav(3*(nodeNume-1)+iDime) = geomSlav(3*(nodeNume-1)+iDime)+ &
                                              thickNormal(3*(nodeNume-1)+iDime)/2.d0
         end do
     end do
-    call pj3dco('PARTIE', model, model, nbCellMast, cellMast,&
-                nbNodeSlav, nodeSlav, ' ', geomSlavJv, corre1,&
+    call pj3dco('PARTIE', model, model, nbCellMast, cellMast, &
+                nbNodeSlav, nodeSlav, ' ', geomSlavJv, corre1, &
                 lDistMaxi, distMaxi, distAlarm)
 
 ! - Compute projection for inferior plane
     do iNodeSlav = 1, nbNodeSlav
         nodeNume = nodeSlav(iNodeSlav)
         do iDime = 1, 3
-            geomSlav(3*(nodeNume-1)+iDime) = geomSlav(3*(nodeNume-1)+iDime)-&
-                                                      thickNormal(3*(nodeNume-1)+iDime)
+            geomSlav(3*(nodeNume-1)+iDime) = geomSlav(3*(nodeNume-1)+iDime)- &
+                                             thickNormal(3*(nodeNume-1)+iDime)
         end do
     end do
-    call pj3dco('PARTIE', model, model, nbCellMast, cellMast,&
-                nbNodeSlav, nodeSlav, ' ', geomSlavJv, corre2,&
+    call pj3dco('PARTIE', model, model, nbCellMast, cellMast, &
+                nbNodeSlav, nodeSlav, ' ', geomSlavJv, corre2, &
                 lDistMaxi, distMaxi, distAlarm)
 
 ! - Push back geometry
     do iNodeSlav = 1, nbNodeSlav
         nodeNume = nodeSlav(iNodeSlav)
         do iDime = 1, 3
-            geomSlav(3*(nodeNume-1)+iDime) = geomSlav(3*(nodeNume-1)+iDime)+&
+            geomSlav(3*(nodeNume-1)+iDime) = geomSlav(3*(nodeNume-1)+iDime)+ &
                                              thickNormal(3*(nodeNume-1)+iDime)/2.d0
         end do
     end do

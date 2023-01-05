@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3dtr(corrMeshTemp, corrMesh,&
-                  cellListType, cellListCode,&
-                  geom1, geom2,&
-                  dala,&
+subroutine pj3dtr(corrMeshTemp, corrMesh, &
+                  cellListType, cellListCode, &
+                  geom1, geom2, &
+                  dala, &
                   listInterc_, nbInterc_)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterf_types.h"
@@ -49,13 +49,13 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-character(len=16), intent(in) :: corrMesh, corrMeshTemp
-character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
-integer, intent(in) :: cellListType(MT_NTYMAX)
-real(kind=8), intent(in) :: geom1(*), geom2(*)
-real(kind=8), intent(in) :: dala
-character(len=16), optional, intent(in)  :: listInterc_
-integer, optional, intent(in)  :: nbInterc_
+    character(len=16), intent(in) :: corrMesh, corrMeshTemp
+    character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
+    integer, intent(in) :: cellListType(MT_NTYMAX)
+    real(kind=8), intent(in) :: geom1(*), geom2(*)
+    real(kind=8), intent(in) :: dala
+    character(len=16), optional, intent(in)  :: listInterc_
+    integer, optional, intent(in)  :: nbInterc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,78 +108,78 @@ integer, optional, intent(in)  :: nbInterc_
 
 !     0.1 : TETRAEDRE :
 !     -----------------
-    cntetr(1,1)=1
-    cntetr(2,1)=2
-    cntetr(3,1)=3
-    cntetr(4,1)=4
+    cntetr(1, 1) = 1
+    cntetr(2, 1) = 2
+    cntetr(3, 1) = 3
+    cntetr(4, 1) = 4
 
 !     0.2 : PENTAEDRE :
 !     -----------------
-    cnpent(1,1)=1
-    cnpent(2,1)=3
-    cnpent(3,1)=6
-    cnpent(4,1)=5
+    cnpent(1, 1) = 1
+    cnpent(2, 1) = 3
+    cnpent(3, 1) = 6
+    cnpent(4, 1) = 5
 
-    cnpent(1,2)=1
-    cnpent(2,2)=6
-    cnpent(3,2)=4
-    cnpent(4,2)=5
+    cnpent(1, 2) = 1
+    cnpent(2, 2) = 6
+    cnpent(3, 2) = 4
+    cnpent(4, 2) = 5
 
-    cnpent(1,3)=1
-    cnpent(2,3)=3
-    cnpent(3,3)=5
-    cnpent(4,3)=2
+    cnpent(1, 3) = 1
+    cnpent(2, 3) = 3
+    cnpent(3, 3) = 5
+    cnpent(4, 3) = 2
 
 !     0.3 : HEXAEDRE :
 !     -----------------
-    cnhexa(1,1)=1
-    cnhexa(2,1)=4
-    cnhexa(3,1)=8
-    cnhexa(4,1)=6
+    cnhexa(1, 1) = 1
+    cnhexa(2, 1) = 4
+    cnhexa(3, 1) = 8
+    cnhexa(4, 1) = 6
 
-    cnhexa(1,2)=1
-    cnhexa(2,2)=8
-    cnhexa(3,2)=6
-    cnhexa(4,2)=5
+    cnhexa(1, 2) = 1
+    cnhexa(2, 2) = 8
+    cnhexa(3, 2) = 6
+    cnhexa(4, 2) = 5
 
-    cnhexa(1,3)=1
-    cnhexa(2,3)=4
-    cnhexa(3,3)=6
-    cnhexa(4,3)=2
+    cnhexa(1, 3) = 1
+    cnhexa(2, 3) = 4
+    cnhexa(3, 3) = 6
+    cnhexa(4, 3) = 2
 
-    cnhexa(1,4)=2
-    cnhexa(2,4)=4
-    cnhexa(3,4)=8
-    cnhexa(4,4)=7
+    cnhexa(1, 4) = 2
+    cnhexa(2, 4) = 4
+    cnhexa(3, 4) = 8
+    cnhexa(4, 4) = 7
 
-    cnhexa(1,5)=2
-    cnhexa(2,5)=8
-    cnhexa(3,5)=6
-    cnhexa(4,5)=7
+    cnhexa(1, 5) = 2
+    cnhexa(2, 5) = 8
+    cnhexa(3, 5) = 6
+    cnhexa(4, 5) = 7
 
-    cnhexa(1,6)=2
-    cnhexa(2,6)=4
-    cnhexa(3,6)=7
-    cnhexa(4,6)=3
+    cnhexa(1, 6) = 2
+    cnhexa(2, 6) = 4
+    cnhexa(3, 6) = 7
+    cnhexa(4, 6) = 3
 
 !     0.4 : PYRAMIDE :
 !     -----------------
-    cnpyra(1,1)=1
-    cnpyra(2,1)=2
-    cnpyra(3,1)=3
-    cnpyra(4,1)=5
+    cnpyra(1, 1) = 1
+    cnpyra(2, 1) = 2
+    cnpyra(3, 1) = 3
+    cnpyra(4, 1) = 5
 
-    cnpyra(1,2)=1
-    cnpyra(2,2)=3
-    cnpyra(3,2)=4
-    cnpyra(4,2)=5
+    cnpyra(1, 2) = 1
+    cnpyra(2, 2) = 3
+    cnpyra(3, 2) = 4
+    cnpyra(4, 2) = 5
 
 !   General parameters
     call jeveuo(corrMeshTemp//'.PJXX_K1', 'L', vk24=pjxx_k1)
     call jeveuo(corrMeshTemp//'.PJEF_CF', 'L', vr=pjef_cf)
     call jeveuo(corrMeshTemp//'.PJEF_TR', 'L', vi=pjef_tr)
-    mesh1=pjxx_k1(1)(1:8)
-    mesh2=pjxx_k1(2)(1:8)
+    mesh1 = pjxx_k1(1) (1:8)
+    mesh2 = pjxx_k1(2) (1:8)
     call dismoi('NB_NO_MAILLA', mesh1, 'MAILLAGE', repi=nbNode1)
     call dismoi('NB_NO_MAILLA', mesh2, 'MAILLAGE', repi=nbNode2)
     call dismoi('NB_MA_MAILLA', mesh1, 'MAILLAGE', repi=nbCell1)
@@ -194,28 +194,28 @@ integer, optional, intent(in)  :: nbInterc_
 
 ! - Allocate corrMesh
     call wkvect(corrMesh//'.PJXX_K1', 'V V K24', 5, j2xxk1)
-    zk24(j2xxk1-1+1)=mesh1
-    zk24(j2xxk1-1+2)=mesh2
-    zk24(j2xxk1-1+3)='COLLOCATION'
+    zk24(j2xxk1-1+1) = mesh1
+    zk24(j2xxk1-1+2) = mesh2
+    zk24(j2xxk1-1+3) = 'COLLOCATION'
 
 ! - Create .pjef_nb and .pjef_m1
     call wkvect(corrMesh//'.PJEF_NB', 'V V I', nbNode2, i2conb)
     call wkvect(corrMesh//'.PJEF_M1', 'V V I', nbNode2, i2com1)
-    ideca2=0
+    ideca2 = 0
     do iNode2 = 1, nbNode2
 !       ITR : TETR4 ASSOCIE A INO2
-        itr=pjef_tr(iNode2)
+        itr = pjef_tr(iNode2)
         if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
-        ima1=tetr4(1+6*(itr-1)+5)
-        nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
-        zi(i2conb-1+iNode2)=nbno
-        zi(i2com1-1+iNode2)=ima1
-        ideca2=ideca2+nbno
-    enddo
+        ima1 = tetr4(1+6*(itr-1)+5)
+        nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
+        zi(i2conb-1+iNode2) = nbno
+        zi(i2com1-1+iNode2) = ima1
+        ideca2 = ideca2+nbno
+    end do
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
-    endif
+    end if
 
     loin2 = .false.
     nbnod = 0
@@ -227,8 +227,8 @@ integer, optional, intent(in)  :: nbInterc_
     call wkvect(corrMesh//'.PJEF_NU', 'V V I', ideca2, i2conu)
     call wkvect(corrMesh//'.PJEF_CF', 'V V R', ideca2, i2cocf)
     call wkvect(corrMesh//'.PJEF_CO', 'V V R', 3*nbNode2, i2coco)
-    ideca1=0
-    ideca2=0
+    ideca1 = 0
+    ideca2 = 0
     do iNode2 = 1, nbNode2
 !       ITR : TETR4 ASSOCIE A INO2
         itr = pjef_tr(iNode2)
@@ -237,13 +237,13 @@ integer, optional, intent(in)  :: nbInterc_
         ima1 = tetr4(1+6*(itr-1)+5)
 !       ITYPM : TYPE DE LA MAILLE IMA1
         itypm = typmail(ima1)
-        nutm = indiis(cellListType,itypm,1,MT_NTYMAX)
+        nutm = indiis(cellListType, itypm, 1, MT_NTYMAX)
         ASSERT(nutm .ne. 0)
         elrefa = cellListCode(nutm)
         ityp = tetr4(1+6*(itr-1)+6)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
 
-        call elrfno(elrefa, ndim = ndim, nno  = nno, nodeCoor = crrefe)
+        call elrfno(elrefa, ndim=ndim, nno=nno, nodeCoor=crrefe)
         ASSERT(nbno .eq. nno)
 
 !       determination des coordonnees de iNode2 dans l'element de reference
@@ -253,122 +253,122 @@ integer, optional, intent(in)  :: nbInterc_
 
         if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10') then
             do kk = 1, 4
-                x1 = crrefe(1, cntetr(kk,ityp))
-                x2 = crrefe(2, cntetr(kk,ityp))
-                x3 = crrefe(3, cntetr(kk,ityp))
-                ksi = ksi + pjef_cf(ideca1+kk)*x1
-                eta = eta + pjef_cf(ideca1+kk)*x2
-                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
-            enddo
+                x1 = crrefe(1, cntetr(kk, ityp))
+                x2 = crrefe(2, cntetr(kk, ityp))
+                x3 = crrefe(3, cntetr(kk, ityp))
+                ksi = ksi+pjef_cf(ideca1+kk)*x1
+                eta = eta+pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta+pjef_cf(ideca1+kk)*x3
+            end do
 
-        else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or. elrefa.eq.'P18') then
+        else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18') then
             do kk = 1, 4
-                x1 = crrefe(1, cnpent(kk,ityp))
-                x2 = crrefe(2, cnpent(kk,ityp))
-                x3 = crrefe(3, cnpent(kk,ityp))
-                ksi = ksi + pjef_cf(ideca1+kk)*x1
-                eta = eta + pjef_cf(ideca1+kk)*x2
-                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
-            enddo
+                x1 = crrefe(1, cnpent(kk, ityp))
+                x2 = crrefe(2, cnpent(kk, ityp))
+                x3 = crrefe(3, cnpent(kk, ityp))
+                ksi = ksi+pjef_cf(ideca1+kk)*x1
+                eta = eta+pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta+pjef_cf(ideca1+kk)*x3
+            end do
 
-        else if (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
-                 elrefa.eq.'H27' .or. elrefa.eq.'HE9') then
+        else if (elrefa .eq. 'HE8' .or. elrefa .eq. 'H20' .or. &
+                 elrefa .eq. 'H27' .or. elrefa .eq. 'HE9') then
             do kk = 1, 4
-                x1 = crrefe(1, cnhexa(kk,ityp))
-                x2 = crrefe(2, cnhexa(kk,ityp))
-                x3 = crrefe(3, cnhexa(kk,ityp))
-                ksi = ksi + pjef_cf(ideca1+kk)*x1
-                eta = eta + pjef_cf(ideca1+kk)*x2
-                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
-            enddo
+                x1 = crrefe(1, cnhexa(kk, ityp))
+                x2 = crrefe(2, cnhexa(kk, ityp))
+                x3 = crrefe(3, cnhexa(kk, ityp))
+                ksi = ksi+pjef_cf(ideca1+kk)*x1
+                eta = eta+pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta+pjef_cf(ideca1+kk)*x3
+            end do
 
-        else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
+        else if (elrefa .eq. 'PY5' .or. elrefa .eq. 'P13') then
             do kk = 1, 4
-                x1 = crrefe(1, cnpyra(kk,ityp))
-                x2 = crrefe(2, cnpyra(kk,ityp))
-                x3 = crrefe(3, cnpyra(kk,ityp))
-                ksi = ksi + pjef_cf(ideca1+kk)*x1
-                eta = eta + pjef_cf(ideca1+kk)*x2
-                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
-            enddo
+                x1 = crrefe(1, cnpyra(kk, ityp))
+                x2 = crrefe(2, cnpyra(kk, ityp))
+                x3 = crrefe(3, cnpyra(kk, ityp))
+                ksi = ksi+pjef_cf(ideca1+kk)*x1
+                eta = eta+pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta+pjef_cf(ideca1+kk)*x3
+            end do
 
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         xr1(1) = ksi
         xr1(2) = eta
         xr1(3) = dzeta
 
 !       -- on essaye d'ameliorer la precision de xr1(*) en utilisant reereg :
         do ino = 1, nbno
-            nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
+            nuno = connex(1+zi(ilcnx1-1+ima1)-2+ino)
             do kdim = 1, ndim
-                cooele(ndim*(ino-1)+kdim)=geom1(3*(nuno-1)+kdim)
-            enddo
-        enddo
-        call reereg('C', elrefa, nno, cooele, geom2(3*(iNode2-1)+1),&
+                cooele(ndim*(ino-1)+kdim) = geom1(3*(nuno-1)+kdim)
+            end do
+        end do
+        call reereg('C', elrefa, nno, cooele, geom2(3*(iNode2-1)+1), &
                     ndim, xr2, iret)
 
 !       -- on regarde si iNode2 est exterieur a ima1 :
         call pjeflo(elrefa, ndim, iret, xr2, disprj)
-        lext= (disprj.gt.1.0d-02)
+        lext = (disprj .gt. 1.0d-02)
 
 !       -- on choisit la meilleure approximation entre xr1 et xr2:
-        call pjefmi(elrefa, nno, cooele, geom2(3*(iNode2-1)+1), ndim,&
+        call pjefmi(elrefa, nno, cooele, geom2(3*(iNode2-1)+1), ndim, &
                     xr1, xr2, lext, xr3, distv)
 
-        if (distv.lt.dala) then
-            lext=.false.
+        if (distv .lt. dala) then
+            lext = .false.
         else
             if (nint(disprj) .eq. 999) then
-                loin2=.true.
+                loin2 = .true.
             else if (disprj .gt. 1.0d-01) then
 !               on regarde si le noeud est deja projete par une autre
 !               occurrence de VIS_A_VIS
-                if (present(nbInterc_))then
+                if (present(nbInterc_)) then
                     if (nbInterc_ .ne. 0) then
                         call jeveuo(listInterc_, 'L', vi=vinterc)
-                    endif
-                    do ino = 1,nbInterc_
-                        if (iNode2 .eq. vinterc(ino))then
-                            zi(i2conb-1+iNode2)=0
+                    end if
+                    do ino = 1, nbInterc_
+                        if (iNode2 .eq. vinterc(ino)) then
+                            zi(i2conb-1+iNode2) = 0
                             call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
-                            call utmess('A','CALCULEL5_47', si=vinterc(nbInterc_+1), sk=nodeName2)
+                            call utmess('A', 'CALCULEL5_47', si=vinterc(nbInterc_+1), sk=nodeName2)
                             exit
-                        endif
-                    enddo
-                endif
-                if (zi(i2conb-1+iNode2).ne.0)then
-                    loin2=.true.
-                    nbnodm = nbnodm + 1
-                    lino_loin(nbnodm)=iNode2
-                    call inslri(nbmax, nbnod, tdmin2, tino2m, distv,iNode2)
+                        end if
+                    end do
+                end if
+                if (zi(i2conb-1+iNode2) .ne. 0) then
+                    loin2 = .true.
+                    nbnodm = nbnodm+1
+                    lino_loin(nbnodm) = iNode2
+                    call inslri(nbmax, nbnod, tdmin2, tino2m, distv, iNode2)
                 else
-                    ideca1=ideca1+4
+                    ideca1 = ideca1+4
                     cycle
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 
-        zr(i2coco-1+3*(iNode2-1)+1)=xr3(1)
-        zr(i2coco-1+3*(iNode2-1)+2)=xr3(2)
-        zr(i2coco-1+3*(iNode2-1)+3)=xr3(3)
+        zr(i2coco-1+3*(iNode2-1)+1) = xr3(1)
+        zr(i2coco-1+3*(iNode2-1)+2) = xr3(2)
+        zr(i2coco-1+3*(iNode2-1)+3) = xr3(3)
 
         call elrfvf(elrefa, xr3, ff)
         do ino = 1, nbno
-            nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
+            nuno = connex(1+zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
             zr(i2cocf-1+ideca2+ino) = ff(ino)
-        enddo
+        end do
 
-        ideca1=ideca1+4
-        ideca2=ideca2+nbno
-    enddo
+        ideca1 = ideca1+4
+        ideca2 = ideca2+nbno
+    end do
 
 ! - Alarm message
     if (loin2) then
-        call pjloin(nbnod,nbnodm,mesh2,geom2,nbmax,tino2m,tdmin2,lino_loin)
-    endif
+        call pjloin(nbnod, nbnodm, mesh2, geom2, nbmax, tino2m, tdmin2, lino_loin)
+    end if
 
     AS_DEALLOCATE(vi=lino_loin)
 

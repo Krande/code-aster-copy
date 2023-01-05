@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,14 +30,14 @@ function r8sqrt(a, b)
 !-----------------------------------------------------------------------
     real(kind=8) :: r8sqrt
 !-----------------------------------------------------------------------
-    p = max(abs(a),abs(b))
+    p = max(abs(a), abs(b))
     if (p .eq. 0.0d0) goto 20
-    r = (min(abs(a),abs(b))/p)**2
+    r = (min(abs(a), abs(b))/p)**2
 10  continue
-    t = 4.0d0 + r
+    t = 4.0d0+r
     if (t .eq. 4.0d0) goto 20
     s = r/t
-    u = 1.0d0 + 2.0d0*s
+    u = 1.0d0+2.0d0*s
     p = u*p
     r = (s/u)**2*r
     goto 10

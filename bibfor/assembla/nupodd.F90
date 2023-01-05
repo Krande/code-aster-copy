@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -138,28 +138,28 @@ subroutine nupodd(nu, base, rang, nbproc)
     call jelira(jexnum(nu//'.NUME.PRNO', 1), 'LONMAX', n1)
 !
 !     -- CALCUL DU NOMBRE D'ENTIERS CODES :
-    nec=n1/nbnoma-2
+    nec = n1/nbnoma-2
 !
 !---- RECHERCHE DU TABLEAU PARTITION
     call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
     call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
     call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
-    ldist=.false.
-    ldgrel=.false.
+    ldist = .false.
+    ldgrel = .false.
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     if (partit .ne. ' ') then
-        ASSERT(nbproc.gt.1)
-        ldist=.true.
+        ASSERT(nbproc .gt. 1)
+        ldist = .true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
+        ldgrel = prtk(1) .eq. 'SOUS_DOMAINE' .or. prtk(1) .eq. 'GROUP_ELEM'
         if (ldgrel) then
-            jnumsd=1
+            jnumsd = 1
         else
             call jeveuo(partit//'.NUPR', 'L', jnumsd)
-        endif
-    endif
+        end if
+    end if
     ASSERT(ldist)
 !
 !---- LECTURE DE LA CONNECTIVITE
@@ -167,91 +167,91 @@ subroutine nupodd(nu, base, rang, nbproc)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
     call jeveuo(nu//'.NUML.NEQU', 'L', vi=nequ)
-    neql=nequ(1)
+    neql = nequ(1)
     call wkvect(nu//'.NUML.PDDL', base(1:1)//' V I', neql, jpddl)
     call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
     do iddl = 0, neql-1
-        zi(jpddl+iddl)=nbproc+1
+        zi(jpddl+iddl) = nbproc+1
     end do
 !
 !---- CREATION DU TABLEAU DE POSSESSION DES DDL LOCAUX
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
         if (ili .eq. 2) then
-            ASSERT(nomlig.eq.ligrmo)
-        endif
+            ASSERT(nomlig .eq. ligrmo)
+        end if
         do igr = 1, zzngel(ili)
-            nel=zznelg(ili,igr)
+            nel = zznelg(ili, igr)
             do iel = 1, nel
-                numa=zzliel(ili,igr,iel)
-                ASSERT(numa.ne.0)
+                numa = zzliel(ili, igr, iel)
+                ASSERT(numa .ne. 0)
 !
                 if (numa .gt. 0) then
                     if (ldgrel) then
-                        numpro=mod(igr,nbproc)
+                        numpro = mod(igr, nbproc)
                     else
-                        numpro=zi(jnumsd-1+numa)
-                    endif
+                        numpro = zi(jnumsd-1+numa)
+                    end if
 !             -- MAILLE DU MAILLAGE :
-                    nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
+                    nbno = zi(jconx2+numa)-zi(jconx2+numa-1)
                     do ino = 1, nbno
-                        nuno=connex(zi(jconx2+numa-1)+ino-1)
+                        nuno = connex(zi(jconx2+numa-1)+ino-1)
 !
-                        ddl1g=zzprno(1,nuno,1)
-                        nddl=zzprno(1,nuno,2)
-                        ddl1l=nugl(ddl1g)
+                        ddl1g = zzprno(1, nuno, 1)
+                        nddl = zzprno(1, nuno, 2)
+                        ddl1l = nugl(ddl1g)
                         if (ddl1l .eq. 0) goto 40
-                        curpro=zi(jpddl+ddl1l-1)
+                        curpro = zi(jpddl+ddl1l-1)
 !
                         if (numpro .lt. curpro) then
-                            curpro=numpro
+                            curpro = numpro
                         else
                             goto 40
-                        endif
+                        end if
 !
                         do iddl = 1, nddl
-                            zi(jpddl+ddl1l+iddl-2)=curpro
+                            zi(jpddl+ddl1l+iddl-2) = curpro
                         end do
- 40                     continue
+40                      continue
                     end do
 !
                 else
                     if (ldgrel) then
-                        numpro=mod(igr,nbproc)
+                        numpro = mod(igr, nbproc)
                     else
-                        numpro=0
-                    endif
+                        numpro = 0
+                    end if
 !             -- MAILLE TARDIVE :
-                    numa=-numa
-                    nbno=zznsup(ili,numa)
+                    numa = -numa
+                    nbno = zznsup(ili, numa)
                     do k1 = 1, nbno
-                        nuno=zznema(ili,numa,k1)
+                        nuno = zznema(ili, numa, k1)
                         if (nuno .lt. 0) then
-                            nuno=-nuno
-                            ilib=ili
+                            nuno = -nuno
+                            ilib = ili
                         else
-                            ilib=1
-                        endif
-                        ddl1g=zzprno(ilib,nuno,1)
-                        nddl=zzprno(ilib,nuno,2)
-                        ddl1l=nugl(ddl1g)
-                        curpro=zi(jpddl+ddl1l-1)
+                            ilib = 1
+                        end if
+                        ddl1g = zzprno(ilib, nuno, 1)
+                        nddl = zzprno(ilib, nuno, 2)
+                        ddl1l = nugl(ddl1g)
+                        curpro = zi(jpddl+ddl1l-1)
 !
                         if (numpro .lt. curpro) then
-                            curpro=numpro
+                            curpro = numpro
                         else
                             goto 70
-                        endif
+                        end if
 !
                         do iddl = 1, nddl
-                            ddl1l=nugl(1+ddl1g+iddl-2)
+                            ddl1l = nugl(1+ddl1g+iddl-2)
                             if (ddl1l .eq. 0) goto 60
-                            zi(jpddl+ddl1l-1)=curpro
- 60                         continue
+                            zi(jpddl+ddl1l-1) = curpro
+60                          continue
                         end do
- 70                     continue
+70                      continue
                     end do
-                endif
+                end if
             end do
         end do
     end do

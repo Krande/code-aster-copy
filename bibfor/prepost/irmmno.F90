@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
+subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
                   nomnoe, nosdfu)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
@@ -65,10 +65,10 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'IRMMNO' )
+    parameter(nompro='IRMMNO')
 !
     integer :: edfuin
-    parameter (edfuin=0)
+    parameter(edfuin=0)
 !
     integer :: codret
     integer :: iaux
@@ -90,15 +90,15 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
     call infniv(ifm, nivinf)
     if (nivinf .gt. 1) then
         call cpu_time(start1)
-        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES NOEUDS : '
-    endif
+        write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES NOEUDS : '
+    end if
 !
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
     lfu = .false._1
-    if(nosdfu.ne.' ') then
+    if (nosdfu .ne. ' ') then
         lfu = .true._1
         call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
         call jeveuo(nosdfu//'.NOEU', 'L', jno)
@@ -107,18 +107,18 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
         nbnot = zi(jnbno+2)
         call as_mfrall(1, filter, codret)
 !
-        call as_mfrblc(idfimd, nbnot, 1, ndim, 0,&
-                    edfuin, 2, "", start, nbnol,&
-                    1, nbnol, 0, filter(1), codret)
+        call as_mfrblc(idfimd, nbnot, 1, ndim, 0, &
+                       edfuin, 2, "", start, nbnol, &
+                       1, nbnol, 0, filter(1), codret)
         if (codret .ne. 0) then
-            saux08='mfrblc'
+            saux08 = 'mfrblc'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
     else
         jnbno = 0
         jno = 0
         nbnol = nbnoeu
-    endif
+    end if
 !
 !====
 ! 2. ECRITURE DES COORDONNEES DES NOEUDS
@@ -135,31 +135,31 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     call wkvect('&&'//nompro//'.COORDO', 'V V R', nbnol*ndim, jcoord)
 !
-    if(lfu) then
+    if (lfu) then
         cmpt = 0
         do iaux = 0, nbnoeu-1
-            if(zi(jno+iaux).gt.0) then
+            if (zi(jno+iaux) .gt. 0) then
                 do jaux = 0, ndim-1
                     zr(jcoord+ndim*cmpt+jaux) = coordo(3*iaux+jaux+1)
-                enddo
-                cmpt = cmpt + 1
-            endif
-        enddo
+                end do
+                cmpt = cmpt+1
+            end if
+        end do
         call as_mmhcaw(idfimd, nomamd, filter(1), zr(jcoord), codret)
     else
         do iaux = 0, nbnoeu-1
             do jaux = 0, ndim-1
                 zr(jcoord+ndim*iaux+jaux) = coordo(3*iaux+jaux+1)
-            enddo
-        enddo
-        call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu,&
+            end do
+        end do
+        call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu, &
                        codret)
-    endif
+    end if
 !
     if (codret .ne. 0) then
-        saux08='mmhcow'
+        saux08 = 'mmhcow'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     call jedetr('&&'//nompro//'.COORDO')
 !
@@ -168,13 +168,13 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 ! 3. LA FIN
 !====
 !
-    if(lfu) then
+    if (lfu) then
         call as_mfrdea(1, filter, codret)
         if (codret .ne. 0) then
-            saux08='mfrdea'
+            saux08 = 'mfrdea'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
-    endif
+        end if
+    end if
 !
     call jedetr('&&'//nompro//'NOMNOE')
 !
@@ -182,7 +182,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     if (nivinf .gt. 1) then
         call cpu_time(end1)
-        write (ifm,*) '<',nompro,'> FIN ECRITURE DES NOEUDS EN ', end1-start1, 'SEC'
-    endif
+        write (ifm, *) '<', nompro, '> FIN ECRITURE DES NOEUDS EN ', end1-start1, 'SEC'
+    end if
 !
 end subroutine

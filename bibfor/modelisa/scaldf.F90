@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine scaldf(nbfonc, nbp, nbmr, disc, vale,&
+subroutine scaldf(nbfonc, nbp, nbmr, disc, vale, &
                   defm, b)
     implicit none
 !     CALCUL DES PRODUITS SCALAIRES ENTRE LES DEFORMEES MODALES ET LES
@@ -47,15 +47,15 @@ subroutine scaldf(nbfonc, nbp, nbmr, disc, vale,&
 !
     do imr = 1, nbmr
         do ifo = 1, nbfonc
-            b(ifo,imr) = 0.d0
+            b(ifo, imr) = 0.d0
             do ip = 1, nbp-1
-                dx = disc(ip+1) - disc(ip)
-                y1 = vale(ip,ifo)*defm(ip,imr)
-                y2 = vale(ip+1,ifo)*defm(ip+1,imr)
-                yy = y1 + y2
-                b(ifo,imr) = b(ifo,imr) + yy * dx
+                dx = disc(ip+1)-disc(ip)
+                y1 = vale(ip, ifo)*defm(ip, imr)
+                y2 = vale(ip+1, ifo)*defm(ip+1, imr)
+                yy = y1+y2
+                b(ifo, imr) = b(ifo, imr)+yy*dx
             end do
-            b(ifo,imr) = b(ifo,imr)/2.d0
+            b(ifo, imr) = b(ifo, imr)/2.d0
         end do
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,29 +60,29 @@ subroutine mnlaft(x, y, h, nt, pq)
     call wkvect('&&mnlaft.yf', 'V V C', nt, iyf)
     call wkvect('&&mnlaft.xft', 'V V C', nt, ixyf)
 !
-    zc(ixf)=dcmplx(nt*x(1),0.d0)
-    zc(iyf)=dcmplx(nt*y(1),0.d0)
+    zc(ixf) = dcmplx(nt*x(1), 0.d0)
+    zc(iyf) = dcmplx(nt*y(1), 0.d0)
     do k = 1, h
-        zc(ixf-1+k+1)=dcmplx(nt/2.d0*x(k+1), nt/2.d0*x(h+k+1))
-        zc(ixf-1+nt-k+1)=dcmplx(nt/2.d0*x(k+1),-nt/2.d0*x(h+k+1))
+        zc(ixf-1+k+1) = dcmplx(nt/2.d0*x(k+1), nt/2.d0*x(h+k+1))
+        zc(ixf-1+nt-k+1) = dcmplx(nt/2.d0*x(k+1), -nt/2.d0*x(h+k+1))
 !
-        zc(iyf-1+k+1)=dcmplx(nt/2.d0*y(k+1),nt/2.d0*y(h+k+1))
-        zc(iyf-1+nt-k+1)=dcmplx(nt/2.d0*y(k+1),-nt/2.d0*y(h+k+1))
+        zc(iyf-1+k+1) = dcmplx(nt/2.d0*y(k+1), nt/2.d0*y(h+k+1))
+        zc(iyf-1+nt-k+1) = dcmplx(nt/2.d0*y(k+1), -nt/2.d0*y(h+k+1))
     end do
 !
     call fft(zc(ixf), nt, -1)
     call fft(zc(iyf), nt, -1)
 !
     do k = 1, nt
-        zc(ixyf-1+k)=dcmplx(dble(zc(ixf-1+k))*dble(zc(iyf-1+k)),0.d0)
+        zc(ixyf-1+k) = dcmplx(dble(zc(ixf-1+k))*dble(zc(iyf-1+k)), 0.d0)
     end do
 !
     call fft(zc(ixyf), nt, 1)
 !
-    pq(1)=dble(zc(ixyf))/nt
+    pq(1) = dble(zc(ixyf))/nt
     do k = 1, h
-        pq(k+1)=2.d0*dble(zc(ixyf-1+k+1))/nt
-        pq(h+k+1)=2.d0*aimag(zc(ixyf-1+k+1))/nt
+        pq(k+1) = 2.d0*dble(zc(ixyf-1+k+1))/nt
+        pq(h+k+1) = 2.d0*aimag(zc(ixyf-1+k+1))/nt
     end do
 !
     call jedetr('&&mnlaft.xf')

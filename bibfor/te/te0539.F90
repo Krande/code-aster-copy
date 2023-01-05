@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine te0539(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,7 +43,7 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,14 +88,14 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get element parameters
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call elref1(elref)
     ASSERT(nno .le. 27)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, ibid, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, ibid, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 ibid)
 !
 ! - Type of finite element
@@ -104,24 +104,24 @@ character(len=16), intent(in) :: option, nomte
         typmod(1) = '3D'
         typmod(2) = ' '
     else
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             typmod(1) = 'AXIS'
-        else if (lteatt('C_PLAN','OUI')) then
+        else if (lteatt('C_PLAN', 'OUI')) then
             typmod(1) = 'C_PLAN'
-        else if (lteatt('D_PLAN','OUI')) then
+        else if (lteatt('D_PLAN', 'OUI')) then
             typmod(1) = 'D_PLAN'
         else
             ASSERT(lteatt('C_PLAN', 'OUI'))
-        endif
+        end if
         typmod(2) = ' '
-    endif
+    end if
 !
 ! - General options
 !
-    l_nonlin = (option(1:9).eq.'FULL_MECA').or.&
-               (option.eq.'RAPH_MECA').or.&
-               (option(1:10).eq.'RIGI_MECA_')
-    l_line   = option .eq. 'RIGI_MECA'
+    l_nonlin = (option(1:9) .eq. 'FULL_MECA') .or. &
+               (option .eq. 'RAPH_MECA') .or. &
+               (option(1:10) .eq. 'RIGI_MECA_')
+    l_line = option .eq. 'RIGI_MECA'
     ASSERT(l_nonlin .or. l_line)
     lVect = ASTER_FALSE
     lMatr = ASTER_FALSE
@@ -129,7 +129,7 @@ character(len=16), intent(in) :: option, nomte
     lSigm = ASTER_FALSE
     if (l_line) then
         lMatr = ASTER_TRUE
-    endif
+    end if
     lMatrPred = option(1:9) .eq. 'RIGI_MECA'
 !
 ! - Get input fields
@@ -148,9 +148,9 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PCARCRI', 'L', icarcr)
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-        lgpg = max(jtab(6),1)*jtab(7)
-        npg  = jtab(2)
-    endif
+        lgpg = max(jtab(6), 1)*jtab(7)
+        npg = jtab(2)
+    end if
 !
 ! - Get input fields for XFEM
 !
@@ -163,32 +163,32 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq. 'XH') then
+    if (enr(1:2) .eq. 'XH') then
         call jevech('PHEA_NO', 'L', jheavn)
-    endif
-    if ((ibid.eq.0) .and. ltequa(elref,enr)) then
+    end if
+    if ((ibid .eq. 0) .and. ltequa(elref, enr)) then
         call jevech('PPMILTO', 'L', jpmilt)
-    endif
+    end if
     if (nfiss .gt. 1) then
         call jevech('PFISNO', 'L', jfisno)
-    endif
+    end if
 !
 ! - Rigidity matrix (linear)
 !
     if (l_line) then
         call jevech('PMATUUR', 'E', imatuu)
-        lgpg   = 0
+        lgpg = 0
         compor = ' '
-        call xnmel(nno, nfh, nfe, ddlc,&
-                   ddlm, igeom, typmod, option, zi( imate),&
-                   compor, lgpg, crit, jpintt, zi(jcnset),&
-                   zi(jheavt), zi( jlonch), zr(jbaslo), zr(iinstm), zr( iinstp), ibid, zr(jlsn),&
-                   zr(jlst), sig, vi, zr(imatuu), ibid,&
-                   codret, jpmilt, nfiss, jheavn, jstno,&
+        call xnmel(nno, nfh, nfe, ddlc, &
+                   ddlm, igeom, typmod, option, zi(imate), &
+                   compor, lgpg, crit, jpintt, zi(jcnset), &
+                   zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ibid, zr(jlsn), &
+                   zr(jlst), sig, vi, zr(imatuu), ibid, &
+                   codret, jpmilt, nfiss, jheavn, jstno, &
                    l_line, l_nonlin, lMatr, lVect, lSigm)
         matsym = .true.
         goto 999
-    endif
+    end if
 !
 ! - Compute barycentric center
 !
@@ -205,9 +205,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name (non-linear case)
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -221,59 +221,59 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call nmtstm(zr(icarcr), imatuu, matsym)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
 !
 ! - HYPER-ELASTICITE
 !
     if (type_comp .eq. 'COMP_ELAS') then
         if (lMatrPred) then
-            call xnmel(nno, nfh, nfe, ddlc,&
-                       ddlm, igeom, typmod, option, zi(imate),&
-                       zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
-                       zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr( iinstp),ideplm,zr(jlsn),&
-                       zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), ivectu,&
-                       codret, jpmilt, nfiss, jheavn, jstno,&
+            call xnmel(nno, nfh, nfe, ddlc, &
+                       ddlm, igeom, typmod, option, zi(imate), &
+                       zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset), &
+                     zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplm, zr(jlsn), &
+                       zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), ivectu, &
+                       codret, jpmilt, nfiss, jheavn, jstno, &
                        l_line, l_nonlin, lMatr, lVect, lSigm)
         else
             do li = 1, nddl
-                zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
+                zr(ideplp+li-1) = zr(ideplm+li-1)+zr(ideplp+li-1)
             end do
-            call xnmel(nno, nfh, nfe, ddlc,&
-                       ddlm, igeom, typmod, option, zi(imate),&
-                       zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
-                       zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr( iinstp),ideplp,zr(jlsn),&
-                       zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), ivectu,&
-                       codret, jpmilt, nfiss, jheavn, jstno,&
+            call xnmel(nno, nfh, nfe, ddlc, &
+                       ddlm, igeom, typmod, option, zi(imate), &
+                       zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset), &
+                     zi(jheavt), zi(jlonch), zr(jbaslo), zr(iinstm), zr(iinstp), ideplp, zr(jlsn), &
+                       zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), ivectu, &
+                       codret, jpmilt, nfiss, jheavn, jstno, &
                        l_line, l_nonlin, lMatr, lVect, lSigm)
-        endif
+        end if
     else
 !
 ! - HYPO-ELASTICITE
 !
         if (defo_comp .eq. 'PETIT') then
-            call xnmpl(nno, nfh, nfe, ddlc, ddlm,&
-                       igeom, zr(iinstm), zr( iinstp), ideplp, zr(icontm),&
-                       zr(ivarip), typmod, option, zi( imate), zk16(icompo),&
-                       lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt),&
-                       zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst),&
-                       zr(icontp), zr(ivarim), zr(imatuu), ivectu, codret,&
-                       jpmilt, nfiss, jheavn, jstno,&
+            call xnmpl(nno, nfh, nfe, ddlc, ddlm, &
+                       igeom, zr(iinstm), zr(iinstp), ideplp, zr(icontm), &
+                       zr(ivarip), typmod, option, zi(imate), zk16(icompo), &
+                       lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt), &
+                       zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst), &
+                       zr(icontp), zr(ivarim), zr(imatuu), ivectu, codret, &
+                       jpmilt, nfiss, jheavn, jstno, &
                        lMatr, lVect, lSigm)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !
@@ -281,35 +281,35 @@ character(len=16), intent(in) :: option, nomte
     call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
-    endif
+    end if
 
 !   OPTIONS RELATIVES A UNE MATRICE UNIQUEMENT
-    if (option .eq. 'RIGI_MECA' ) then
-        call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false._1, matsym,&
-                    option, nomte, ddlm, nfiss, jfisno,&
+    if (option .eq. 'RIGI_MECA') then
+        call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                    nno, nnos, zi(jstno), .false._1, matsym, &
+                    option, nomte, ddlm, nfiss, jfisno, &
                     mat=zr(imatuu))
 !   OPTIONS RELATIVES A UN VECTEUR UNIQUEMENT
     else if (option .eq. 'RAPH_MECA') then
-        call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false._1, matsym,&
-                    option, nomte, ddlm, nfiss, jfisno,&
+        call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                    nno, nnos, zi(jstno), .false._1, matsym, &
+                    option, nomte, ddlm, nfiss, jfisno, &
                     vect=zr(ivectu))
 !   OPTIONS RELATIVES A UNE MATRICE ET UN VECTEUR
-    else if (option .eq. 'FULL_MECA'.or. option .eq. 'RIGI_MECA_TANG') then
-        call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false._1, matsym,&
-                    option, nomte, ddlm, nfiss, jfisno,&
+    else if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
+        call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                    nno, nnos, zi(jstno), .false._1, matsym, &
+                    option, nomte, ddlm, nfiss, jfisno, &
                     mat=zr(imatuu), vect=zr(ivectu))
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Save return code
 !
     if (lSigm) then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret
-    endif
+    end if
 !
 end subroutine

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hyp3di(c11, c22, c33, c12, c13,&
-                  c23, c10, c01, c20, ciso,&
+subroutine hyp3di(c11, c22, c33, c12, c13, &
+                  c23, c10, c01, c20, ciso, &
                   codret)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -82,10 +82,10 @@ subroutine hyp3di(c11, c22, c33, c12, c13,&
     t10 = c13**2
     t12 = t1*c33-c11*t3-t5*c33+2*t7*c23-t10*c22
     t13 = t12**(1.d0/3.d0)
-    if ((t13.eq.0.d0) .or. (t12.eq.0.d0)) then
-        codret=1
+    if ((t13 .eq. 0.d0) .or. (t12 .eq. 0.d0)) then
+        codret = 1
         goto 99
-    endif
+    end if
     t14 = 1.d0/t13
     t15 = c11+c22+c33
     t16 = 1.d0/t12
@@ -285,104 +285,104 @@ subroutine hyp3di(c11, c22, c33, c12, c13,&
     t379 = df(17)
     t381 = df(9)
     t383 = df(1)
-    grd(1,1) = t379*c33+t381-t156*t3+t383*c22
+    grd(1, 1) = t379*c33+t381-t156*t3+t383*c22
     t385 = c01*t27
     t386 = df(12)
-    grd(1,2) = t385+t386*c33+t381-t156*t10+t383*c11
-    grd(1,3) = t385+t379*c11+t386*c22+t381+t156*t56
+    grd(1, 2) = t385+t386*c33+t381-t156*t10+t383*c11
+    grd(1, 3) = t385+t379*c11+t386*c22+t381+t156*t56
     t393 = df(4)
-    grd(1,4) = t393*c13+2*df(3)*c12
-    grd(1,5) = 2*df(5)*c13+t393*c12
-    grd(1,6) = 2*t156*t7+2*df(2)*c23
+    grd(1, 4) = t393*c13+2*df(3)*c12
+    grd(1, 5) = 2*df(5)*c13+t393*c12
+    grd(1, 6) = 2*t156*t7+2*df(2)*c23
     t406 = dfr0(17)
     t408 = dfr0(9)
     t410 = dfr0(1)
-    grd(2,1) = t385+t406*c33+t408-t196*t3+t410*c22
+    grd(2, 1) = t385+t406*c33+t408-t196*t3+t410*c22
     t412 = dfr0(12)
-    grd(2,2) = t412*c33+t408-t196*t10+t410*c11
-    grd(2,3) = t385+t406*c11+t412*c22+t408+t196*t56
+    grd(2, 2) = t412*c33+t408-t196*t10+t410*c11
+    grd(2, 3) = t385+t406*c11+t412*c22+t408+t196*t56
     t419 = dfr0(4)
-    grd(2,4) = t419*c13+2*dfr0(3)*c12
-    grd(2,5) = 2*dfr0(5)*c13+t419*c12
-    grd(2,6) = 2*t196*t7+2*dfr0(2)*c23
+    grd(2, 4) = t419*c13+2*dfr0(3)*c12
+    grd(2, 5) = 2*dfr0(5)*c13+t419*c12
+    grd(2, 6) = 2*t196*t7+2*dfr0(2)*c23
     t433 = dfr1(9)
     t435 = dfr1(1)
-    grd(3,1) = t385+dfr1(12)*c33+t433-t234*t3+t435*c22
+    grd(3, 1) = t385+dfr1(12)*c33+t433-t234*t3+t435*c22
     t437 = dfr1(12)
-    grd(3,2) = t385+t437*c33+t433-t234*t10+t435*c11
-    grd(3,3) = dfr1(12)*c11+t437*c22+t433+t234*t56
+    grd(3, 2) = t385+t437*c33+t433-t234*t10+t435*c11
+    grd(3, 3) = dfr1(12)*c11+t437*c22+t433+t234*t56
     t444 = dfr1(4)
-    grd(3,4) = t444*c13+2*dfr1(3)*c12
-    grd(3,5) = 2*dfr1(5)*c13+t444*c12
-    grd(3,6) = 2*t234*t7+2*dfr1(2)*c23
+    grd(3, 4) = t444*c13+2*dfr1(3)*c12
+    grd(3, 5) = 2*dfr1(5)*c13+t444*c12
+    grd(3, 6) = 2*t234*t7+2*dfr1(2)*c23
     t458 = dfr2(9)
     t460 = dfr2(1)
-    grd(4,1) = dfr2(12)*c33+t458-t282*t3+t460*c22
+    grd(4, 1) = dfr2(12)*c33+t458-t282*t3+t460*c22
     t462 = dfr2(12)
-    grd(4,2) = t462*c33+t458-t282*t10+t460*c11
-    grd(4,3) = -2*dfr3(30)*c12+dfr2(12)*c11+t462*c22+t458+t282*t56
+    grd(4, 2) = t462*c33+t458-t282*t10+t460*c11
+    grd(4, 3) = -2*dfr3(30)*c12+dfr2(12)*c11+t462*c22+t458+t282*t56
     t471 = 2*t385
     t474 = dfr2(4)
-    grd(4,4) = -t471-2*dfr3(30)*c33+t474*c13+2*dfr2(3)*c12
-    grd(4,5) = 2*dfr3(30)*c23+2*dfr2(5)*c13+t474*c12
-    grd(4,6) = 2*dfr3(30)*c13+2*t282*t7+2*dfr2(2)*c23
+    grd(4, 4) = -t471-2*dfr3(30)*c33+t474*c13+2*dfr2(3)*c12
+    grd(4, 5) = 2*dfr3(30)*c23+2*dfr2(5)*c13+t474*c12
+    grd(4, 6) = 2*dfr3(30)*c13+2*t282*t7+2*dfr2(2)*c23
     t491 = dfr3(9)
     t493 = dfr3(1)
-    grd(5,1) = dfr3(12)*c33+t491-t327*t3+t493*c22
+    grd(5, 1) = dfr3(12)*c33+t491-t327*t3+t493*c22
     t497 = dfr3(12)
-    grd(5,2) = -2*dfr4(32)*c13+t497*c33+t491-t327*t10+t493*c11
-    grd(5,3) = dfr3(12)*c11+t497*c22+t491+t327*t56
+    grd(5, 2) = -2*dfr4(32)*c13+t497*c33+t491-t327*t10+t493*c11
+    grd(5, 3) = dfr3(12)*c11+t497*c22+t491+t327*t56
     t506 = dfr3(4)
-    grd(5,4) = 2*dfr4(32)*c23+t506*c13+2*dfr3(3)*c12
-    grd(5,5) = -t471-2*dfr4(32)*c22+2*dfr3(5)*c13+t506*c12
-    grd(5,6) = 2*dfr4(32)*c12+2*t327*t7+2*dfr3(2)*c23
+    grd(5, 4) = 2*dfr4(32)*c23+t506*c13+2*dfr3(3)*c12
+    grd(5, 5) = -t471-2*dfr4(32)*c22+2*dfr3(5)*c13+t506*c12
+    grd(5, 6) = 2*dfr4(32)*c12+2*t327*t7+2*dfr3(2)*c23
     t525 = dfr4(9)
     t527 = dfr4(1)
-    grd(6,1) = -2*t374*c23+dfr4(12)*c33+t525-t372*t3+t527*c22
+    grd(6, 1) = -2*t374*c23+dfr4(12)*c33+t525-t372*t3+t527*c22
     t529 = dfr4(12)
-    grd(6,2) = t529*c33+t525-t372*t10+t527*c11
-    grd(6,3) = dfr4(12)*c11+t529*c22+t525+t372*t56
+    grd(6, 2) = t529*c33+t525-t372*t10+t527*c11
+    grd(6, 3) = dfr4(12)*c11+t529*c22+t525+t372*t56
     t536 = dfr4(4)
-    grd(6,4) = t536*c13+2.d0*dfr4(3)*c12
-    grd(6,5) = 2.d0*dfr4(5)*c13+t536*c12
-    grd(6,6) = -2.d0*t385-2.d0*t374*c11+2.d0*t372*t7+2.d0*dfr4(2)*c23
+    grd(6, 4) = t536*c13+2.d0*dfr4(3)*c12
+    grd(6, 5) = 2.d0*dfr4(5)*c13+t536*c12
+    grd(6, 6) = -2.d0*t385-2.d0*t374*c11+2.d0*t372*t7+2.d0*dfr4(2)*c23
 !
-    ciso(1,1) = 4.d0*grd(1,1)
-    ciso(1,2) = 4.d0*grd(1,2)
-    ciso(1,3) = 4.d0*grd(1,3)
-    ciso(1,4) = 4.d0*grd(1,4)
-    ciso(1,5) = 4.d0*grd(1,5)
-    ciso(1,6) = 4.d0*grd(1,6)
-    ciso(2,1) = 4.d0*grd(2,1)
-    ciso(2,2) = 4.d0*grd(2,2)
-    ciso(2,3) = 4.d0*grd(2,3)
-    ciso(2,4) = 4.d0*grd(2,4)
-    ciso(2,5) = 4.d0*grd(2,5)
-    ciso(2,6) = 4.d0*grd(2,6)
-    ciso(3,1) = 4.d0*grd(3,1)
-    ciso(3,2) = 4.d0*grd(3,2)
-    ciso(3,3) = 4.d0*grd(3,3)
-    ciso(3,4) = 4.d0*grd(3,4)
-    ciso(3,5) = 4.d0*grd(3,5)
-    ciso(3,6) = 4.d0*grd(3,6)
-    ciso(4,1) = 4.d0*grd(4,1)
-    ciso(4,2) = 4.d0*grd(4,2)
-    ciso(4,3) = 4.d0*grd(4,3)
-    ciso(4,4) = 4.d0*grd(4,4)
-    ciso(4,5) = 4.d0*grd(4,5)
-    ciso(4,6) = 4.d0*grd(4,6)
-    ciso(5,1) = 4.d0*grd(5,1)
-    ciso(5,2) = 4.d0*grd(5,2)
-    ciso(5,3) = 4.d0*grd(5,3)
-    ciso(5,4) = 4.d0*grd(5,4)
-    ciso(5,5) = 4.d0*grd(5,5)
-    ciso(5,6) = 4.d0*grd(5,6)
-    ciso(6,1) = 4.d0*grd(6,1)
-    ciso(6,2) = 4.d0*grd(6,2)
-    ciso(6,3) = 4.d0*grd(6,3)
-    ciso(6,4) = 4.d0*grd(6,4)
-    ciso(6,5) = 4.d0*grd(6,5)
-    ciso(6,6) = 4.d0*grd(6,6)
+    ciso(1, 1) = 4.d0*grd(1, 1)
+    ciso(1, 2) = 4.d0*grd(1, 2)
+    ciso(1, 3) = 4.d0*grd(1, 3)
+    ciso(1, 4) = 4.d0*grd(1, 4)
+    ciso(1, 5) = 4.d0*grd(1, 5)
+    ciso(1, 6) = 4.d0*grd(1, 6)
+    ciso(2, 1) = 4.d0*grd(2, 1)
+    ciso(2, 2) = 4.d0*grd(2, 2)
+    ciso(2, 3) = 4.d0*grd(2, 3)
+    ciso(2, 4) = 4.d0*grd(2, 4)
+    ciso(2, 5) = 4.d0*grd(2, 5)
+    ciso(2, 6) = 4.d0*grd(2, 6)
+    ciso(3, 1) = 4.d0*grd(3, 1)
+    ciso(3, 2) = 4.d0*grd(3, 2)
+    ciso(3, 3) = 4.d0*grd(3, 3)
+    ciso(3, 4) = 4.d0*grd(3, 4)
+    ciso(3, 5) = 4.d0*grd(3, 5)
+    ciso(3, 6) = 4.d0*grd(3, 6)
+    ciso(4, 1) = 4.d0*grd(4, 1)
+    ciso(4, 2) = 4.d0*grd(4, 2)
+    ciso(4, 3) = 4.d0*grd(4, 3)
+    ciso(4, 4) = 4.d0*grd(4, 4)
+    ciso(4, 5) = 4.d0*grd(4, 5)
+    ciso(4, 6) = 4.d0*grd(4, 6)
+    ciso(5, 1) = 4.d0*grd(5, 1)
+    ciso(5, 2) = 4.d0*grd(5, 2)
+    ciso(5, 3) = 4.d0*grd(5, 3)
+    ciso(5, 4) = 4.d0*grd(5, 4)
+    ciso(5, 5) = 4.d0*grd(5, 5)
+    ciso(5, 6) = 4.d0*grd(5, 6)
+    ciso(6, 1) = 4.d0*grd(6, 1)
+    ciso(6, 2) = 4.d0*grd(6, 2)
+    ciso(6, 3) = 4.d0*grd(6, 3)
+    ciso(6, 4) = 4.d0*grd(6, 4)
+    ciso(6, 5) = 4.d0*grd(6, 5)
+    ciso(6, 6) = 4.d0*grd(6, 6)
 !
 99  continue
 end subroutine

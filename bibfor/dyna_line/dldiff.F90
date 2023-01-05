@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dldiff(result, force1, lcrea, lamort, neq,&
-                  imat, masse, rigid, amort, dep0,&
-                  vit0, acc0, fexte, famor, fliai,&
-                  t0, nchar, nveca, liad, lifo,&
-                  modele, mate, mateco, carele, charge, infoch,&
-                  fomult, numedd, nume, numrep, ds_energy,&
+subroutine dldiff(result, force1, lcrea, lamort, neq, &
+                  imat, masse, rigid, amort, dep0, &
+                  vit0, acc0, fexte, famor, fliai, &
+                  t0, nchar, nveca, liad, lifo, &
+                  modele, mate, mateco, carele, charge, infoch, &
+                  fomult, numedd, nume, numrep, ds_energy, &
                   sd_obsv, mesh)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -100,7 +100,7 @@ implicit none
     real(kind=8) :: fexte(*), famor(*), fliai(*)
     aster_logical :: lamort, lcrea
     type(NL_DS_Energy), intent(inout) :: ds_energy
-    integer, parameter :: nbtyar  = 6
+    integer, parameter :: nbtyar = 6
     integer :: iwk0, iwk1, iwk2
     integer :: ifm, niv
     integer :: ieq, iexcl, perc, freqpr, last_prperc
@@ -150,7 +150,7 @@ implicit none
     call wkvect('&&DLDIFF.F0', 'V V R', neq, iwk0)
     call wkvect('&&DLDIFF.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLDIFF.F2', 'V V R', neq, iwk2)
-    call vtcreb('&&DLDIFF.DEPL1', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&DLDIFF.DEPL1', 'V', 'R', nume_ddlz=numedd)
     call jeveuo('&&DLDIFF.DEPL1     '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLDIFF.VITE1', 'V V R', neq, ivite1)
     call wkvect('&&DLDIFF.VITE2', 'V V R', neq, ivite2)
@@ -158,11 +158,11 @@ implicit none
 !
     deuxpi = r8depi()
     iarchi = nume
-    ener   = ds_energy%l_comp
+    ener = ds_energy%l_comp
 !
 ! 1.4. ==> PARAMETRES D'INTEGRATION
 !
-    call dltins(nbgrpa, lispas, libint, linbpa, npatot,&
+    call dltins(nbgrpa, lispas, libint, linbpa, npatot, &
                 t0, lisins)
     call jeveuo(lispas, 'L', jlpas)
     call jeveuo(libint, 'L', jbint)
@@ -170,27 +170,27 @@ implicit none
 !
 ! 1.5. ==> EXTRACTION DIAGONALE M ET CALCUL VITESSE INITIALE
 !
-    call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=sop, arret='C',&
+    call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=sop, arret='C', &
                 ier=ibid)
     if (sop .eq. 'MASS_MECA_DIAG') then
         call extdia(masse, numedd, 2, zr(iwk1))
     else
         call utmess('F', 'DYNALINE1_13')
-    endif
+    end if
 !
     dt1 = zr(jlpas)
     r8bid = dt1/2.d0
     do ieq = 1, neq
         if (zr(iwk1+ieq-1) .ne. 0.d0) then
-            zr(iwk1+ieq-1)=1.0d0/zr(iwk1+ieq-1)
-        endif
-        vit0(1+ieq) = vit0(1+ieq) - r8bid*acc0(1+ieq)
+            zr(iwk1+ieq-1) = 1.0d0/zr(iwk1+ieq-1)
+        end if
+        vit0(1+ieq) = vit0(1+ieq)-r8bid*acc0(1+ieq)
     end do
 !
 ! 1.6. ==> --- ARCHIVAGE ---
 !
     lisarc = '&&DLDIFF.ARCHIVAGE'
-    call dyarch(npatot, lisins, lisarc, nbordr, 1,&
+    call dyarch(npatot, lisins, lisarc, nbordr, 1, &
                 nbexcl, typ1)
     call jeveuo(lisarc, 'E', jstoc)
 !
@@ -205,18 +205,18 @@ implicit none
         typear(4) = '         '
         typear(5) = '         '
         typear(6) = '         '
-    endif
+    end if
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ARCHIVAGE_14')
-    endif
+    end if
     do iexcl = 1, nbexcl
         if (typ1(iexcl) .eq. 'DEPL') then
             typear(1) = '    '
-        else if (typ1(iexcl).eq.'VITE') then
+        else if (typ1(iexcl) .eq. 'VITE') then
             typear(2) = '    '
-        else if (typ1(iexcl).eq.'ACCE') then
+        else if (typ1(iexcl) .eq. 'ACCE') then
             typear(3) = '    '
-        endif
+        end if
     end do
 !
 !====
@@ -224,10 +224,10 @@ implicit none
 !====
 !
     t0 = zr(jbint)
-    call dltcrr(result, neq, nbordr, iarchi, ' ',&
-                t0, lcrea, typres, masse, rigid,&
-                amort, dep0, vit0, acc0, fexte,&
-                famor, fliai, numedd, nume, nbtyar,&
+    call dltcrr(result, neq, nbordr, iarchi, ' ', &
+                t0, lcrea, typres, masse, rigid, &
+                amort, dep0, vit0, acc0, fexte, &
+                famor, fliai, numedd, nume, nbtyar, &
                 typear)
 !
 !
@@ -259,17 +259,17 @@ implicit none
 ! 3.1.2. ==> VERIFICATION DU PAS DE TEMPS
 !
         call extdia(rigid, numedd, 2, zr(iwk2))
-        ibid=0
-        dtmax=dt
+        ibid = 0
+        dtmax = dt
         do ieq = 1, neq
             if (zr(iwk1+ieq-1) .ne. 0.d0) then
-                omeg = sqrt( zr(iwk2+ieq-1) * zr(iwk1+ieq-1) )
+                omeg = sqrt(zr(iwk2+ieq-1)*zr(iwk1+ieq-1))
                 dtm = 5.d-02*deuxpi/omeg
                 if (dtmax .gt. dtm) then
-                    dtmax=dtm
-                    ibid=1
-                endif
-            endif
+                    dtmax = dtm
+                    ibid = 1
+                end if
+            end if
         end do
 !
         if (ibid .eq. 1) then
@@ -277,9 +277,9 @@ implicit none
             vali(2) = igrpa
             valr(1) = dt
             valr(2) = dtmax
-            call utmess('F', 'DYNAMIQUE_12', ni=2, vali=vali, nr=2,&
+            call utmess('F', 'DYNAMIQUE_12', ni=2, vali=vali, nr=2, &
                         valr=valr)
-        endif
+        end if
 ! ==> FIN DE VERIFICATION
 !
 !
@@ -292,25 +292,25 @@ implicit none
             ipas = ipas+1
             if (ipas .gt. npatot) goto 99
             istoc = 0
-            temps = t0 + dt*ipepa
+            temps = t0+dt*ipepa
             call uttcpu('CPU.DLDIFF.2', 'DEBUT', ' ')
             archiv = zi(jstoc+ipas-1)
 !
-            call dldif0(result, force1, neq, istoc, iarchi,&
-                        lamort, imat, masse, rigid, amort,&
-                        dep0, vit0, acc0, vale, zr(ivite1),&
-                        zr(iacce1), zr(ivite2), fexte(1), famor(1), fliai(1),&
-                        nchar, nveca, liad, lifo, modele,&
-                        ener, mate, mateco, carele, charge,&
-                        infoch, fomult, numedd, dt, temps,&
-                        zr(iwk0), zr(iwk1), archiv, nbtyar, typear,&
+            call dldif0(result, force1, neq, istoc, iarchi, &
+                        lamort, imat, masse, rigid, amort, &
+                        dep0, vit0, acc0, vale, zr(ivite1), &
+                        zr(iacce1), zr(ivite2), fexte(1), famor(1), fliai(1), &
+                        nchar, nveca, liad, lifo, modele, &
+                        ener, mate, mateco, carele, charge, &
+                        infoch, fomult, numedd, dt, temps, &
+                        zr(iwk0), zr(iwk1), archiv, nbtyar, typear, &
                         numrep, ds_energy)
 !
             if (archiv .eq. 1) lastarch = temps
             perc = int(100.d0*(real(ipas)/real(npatot)))
             if (perc .ne. last_prperc) then
-                if (mod(perc,freqpr) .eq. 0) then
-                    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, ipas], nr=2,&
+                if (mod(perc, freqpr) .eq. 0) then
+                    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, ipas], nr=2, &
                                 valr=[temps, lastarch])
                     last_prperc = perc
                 end if
@@ -321,8 +321,8 @@ implicit none
             l_obsv = ASTER_FALSE
             call lobs(sd_obsv, ipas, temps, l_obsv)
             if (l_obsv) then
-                call nmobse(mesh, sd_obsv  , temps)
-            endif
+                call nmobse(mesh, sd_obsv, temps)
+            end if
 !
 !
 ! 3.5. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
@@ -337,8 +337,8 @@ implicit none
                     valr(1) = tps2(4)
                     valr(2) = tps2(1)
                     goto 99
-                endif
-            endif
+                end if
+            end if
 !
 ! ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
         end do
@@ -351,11 +351,11 @@ implicit none
             valr(1) = tps1(4)
             valr(2) = tps1(1)
             goto 99
-        endif
+        end if
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
     end do
 !
- 99 continue
+99  continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -370,12 +370,12 @@ implicit none
 !
         alarm = 0
 !
-        call dlarch(result, neq, istoc, iarchi, ' ',&
-                    alarm, temps, nbexcl, typear, masse,&
-                    vale, zr(ivite1), zr( iacce1), fexte(1+neq), famor(1+neq),&
+        call dlarch(result, neq, istoc, iarchi, ' ', &
+                    alarm, temps, nbexcl, typear, masse, &
+                    vale, zr(ivite1), zr(iacce1), fexte(1+neq), famor(1+neq), &
                     fliai(1+neq))
 !
-    endif
+    end if
 !
 !====
 ! 5. LA FIN
@@ -385,12 +385,12 @@ implicit none
 !
     if (etausr() .eq. 1) then
         call sigusr()
-    endif
+    end if
 !
     if (istop .eq. 1) then
-        call utmess('Z', 'DYNAMIQUE_10', ni=2, vali=vali, nr=2,&
+        call utmess('Z', 'DYNAMIQUE_10', ni=2, vali=vali, nr=2, &
                     valr=valr, num_except=ASTER_TIMELIMIT_ERROR)
-    endif
+    end if
 !
 !     --- DESTRUCTION DES OBJETS DE TRAVAIL ---
 !

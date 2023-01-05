@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mmreas(mesh, ds_contact, hval_incr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -83,13 +83,13 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... MISE A JOUR DES SEUILS DE FROTTEMENT'
-    endif
+        write (ifm, *) '<CONTACT> ... MISE A JOUR DES SEUILS DE FROTTEMENT'
+    end if
 !
 ! --- INITIALISATIONS
 !
-    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
-    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    ndimg = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    nzoco = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     ibid = 0
 !
 ! --- RECUPERATION DES QCQS DONNEES
@@ -107,8 +107,8 @@ implicit none
     cnslbd = '&&REACLM.CNSLBD'
     !print*, 'dans mmreas'
     !call nmdebg('VECT', depplu, ifm)
-    call mmfield_prep(depplu, cnslbd,&
-                      l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
+    call mmfield_prep(depplu, cnslbd, &
+                      l_sort_=.true._1, nb_cmp_=1, list_cmp_=['LAGS_C  '])
 !
 ! --- BOUCLE SUR LES ZONES
 !
@@ -117,16 +117,16 @@ implicit none
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
-        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
-        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
-        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',izone )
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', izone)
+        nbmae = mminfi(ds_contact%sdcont_defi, 'NBMAE', izone)
+        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', izone)
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', izone)
         if (lveri) then
             goto 25
-        endif
+        end if
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
@@ -134,7 +134,7 @@ implicit none
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
-            posmae = jdecme + imae
+            posmae = jdecme+imae
             call cfnumm(ds_contact%sdcont_defi, posmae, nummae)
 !
 ! ------- INFOS SUR LA MAILLE
@@ -155,12 +155,12 @@ implicit none
 !
 ! --------- COORDONNEES ACTUALISEES DU POINT DE CONTACT
 !
-                ksipc1 = zr(jtabf+ztabf*(iptc-1)+3 )
-                ksipc2 = zr(jtabf+ztabf*(iptc-1)+4 )
+                ksipc1 = zr(jtabf+ztabf*(iptc-1)+3)
+                ksipc2 = zr(jtabf+ztabf*(iptc-1)+4)
 !
 ! --------- MULTIPLICATEUR DE LAGRANGE DE CONTACT DU POINT
 !
-                call mmvalp_scal(ndimg, aliase, nne, ksipc1,&
+                call mmvalp_scal(ndimg, aliase, nne, ksipc1, &
                                  ksipc2, mlagc, lambdc)
 !
 ! --------- SAUVEGARDE
@@ -169,10 +169,10 @@ implicit none
 !
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
-                iptc = iptc + 1
+                iptc = iptc+1
             end do
         end do
- 25     continue
+25      continue
     end do
 !
     call detrsd('CHAM_NO_S', cnslbd)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine mdveri()
         call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, nbval=0, nbret=nm)
         if (nm .ne. 0) then
             kf = kf+1
-        endif
+        end if
     end do
 !
 !     COHERENCE MATRICES
@@ -64,24 +64,24 @@ subroutine mdveri()
     call getvid(' ', 'MATR_RIGI', scal=matr2, nbret=ibid)
     call jeveuo(matr1//'           .REFA', 'L', jref1)
     call jeveuo(matr2//'           .REFA', 'L', vk24=vref2)
-    ref1=zk24(jref1)
-    ref2=vref2(1)
+    ref1 = zk24(jref1)
+    ref2 = vref2(1)
     if (ref1(1:8) .ne. ref2(1:8)) then
         call utmess('E', 'ALGORITH5_42')
-    endif
+    end if
 !
 !     COHERENCE SOUS LE MC EXCIT/VECT_ASSE_GENE ET LES MATRICES
-    basemo=ref1(1:8)
+    basemo = ref1(1:8)
     do i = 1, nbexc
-        call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, nbval=ibid, vect=channo,&
+        call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, nbval=ibid, vect=channo, &
                     nbret=nm)
         if (nm .ne. 0) then
             call jeveuo(channo//'           .REFE', 'L', jref1)
-            ref1=zk24(jref1)
+            ref1 = zk24(jref1)
             if (ref1(1:8) .ne. basemo) then
                 call utmess('E', 'ALGORITH5_42')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !

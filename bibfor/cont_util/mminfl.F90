@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function mminfl(sdcont_defi_, question_, i_zone_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mminfp.h"
@@ -55,8 +55,8 @@ implicit none
         i_zone = i_zone_
     else
         i_zone = 1
-    endif
+    end if
     sdcont_defi = sdcont_defi_
-    call mminfp(i_zone, sdcont_defi, question_, vale_l_ = vale_l)
+    call mminfp(i_zone, sdcont_defi, question_, vale_l_=vale_l)
     mminfl = vale_l
 end function

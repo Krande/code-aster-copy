@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine pjspco(moa1, moa2, corres, base, noca, &
-                  method, isole )
+                  method, isole)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine pjspco(moa1, moa2, corres, base, noca, &
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    ASSERT(base.eq.'V')
+    ASSERT(base .eq. 'V')
 !
 !   Création du maillage "sous-point" (masp) et remplissage du .PJEF_SP dans la sd corres
 !   qui est un tableau référencant, pour chaque noeud du maillage :
@@ -59,17 +59,17 @@ subroutine pjspco(moa1, moa2, corres, base, noca, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if ( .not.isole .and. (method.eq.'SOUS_POINT_RIGI') ) then
+    if (.not. isole .and. (method .eq. 'SOUS_POINT_RIGI')) then
         call utmess('F', 'CALCULEL5_28')
-    endif
-    masp='&&PJSPCO'
-    if ( method.eq.'SOUS_POINT_MATER' ) then
+    end if
+    masp = '&&PJSPCO'
+    if (method .eq. 'SOUS_POINT_MATER') then
         call pjmasp(moa2, masp, corres, noca)
-    else if ( method.eq.'SOUS_POINT_RIGI' ) then
+    else if (method .eq. 'SOUS_POINT_RIGI') then
         call pjrisp(moa2, masp, corres, noca)
     else
-        ASSERT( .false. )
-    endif
+        ASSERT(.false.)
+    end if
 !
 !   Appel à la routine "usuelle" pjefco
     call pjefco(moa1, masp, corres, 'V')

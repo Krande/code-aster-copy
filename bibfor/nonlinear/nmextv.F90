@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmextv(nb_cmp_vale, func_name, v_cmp_name, v_cmp_vale, nb_vale,&
+subroutine nmextv(nb_cmp_vale, func_name, v_cmp_name, v_cmp_vale, nb_vale, &
                   vale_resu)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/fointe.h"
 !
@@ -62,10 +62,10 @@ implicit none
         end do
         nb_vale = nb_cmp_vale
     else
-        call fointe('FM', func_name, nb_cmp_vale, v_cmp_name, v_cmp_vale,&
+        call fointe('FM', func_name, nb_cmp_vale, v_cmp_name, v_cmp_vale, &
                     valr, icode)
         vale_resu(1) = valr
         nb_vale = 1
-    endif
+    end if
 !
 end subroutine

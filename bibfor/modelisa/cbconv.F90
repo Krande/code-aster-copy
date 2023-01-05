@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine cbconv(char)
     call getfac('CONVECTION', nconv)
     if (nconv .gt. 1) then
         call utmess('F', 'MODELISA3_60')
-    else if (nconv.eq.1) then
+    else if (nconv .eq. 1) then
         carte = char//'.CHTH.CONVE'
         call jecreo(carte//'.VALE', 'G V K8')
         call jeecra(carte//'.VALE', 'LONMAX', 1)
@@ -61,6 +61,6 @@ subroutine cbconv(char)
         call getvid('CONVECTION', 'VITESSE', iocc=1, scal=vitess, nbret=nvites)
         vale(1) = vitess
         call chpver('F', vale(1), 'NOEU', 'DEPL_R', ier)
-    endif
+    end if
     call jedema()
 end subroutine

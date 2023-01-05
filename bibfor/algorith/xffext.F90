@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
+subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr, &
                   nbptex)
 !
 !
@@ -70,18 +70,18 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
         ptasso = 0
 !
         do ima = 1, nmafon
-            if ((zi(jlistp-1+2*(ima-1)+1).eq.ipt) .and. (zi(jlistp-1+ 2*(ima-1)+2).ne.0)&
-                .and. (ptasso.ne.zi(jlistp-1+2*(ima-1)+ 2) )) then
+            if ((zi(jlistp-1+2*(ima-1)+1) .eq. ipt) .and. (zi(jlistp-1+2*(ima-1)+2) .ne. 0) &
+                .and. (ptasso .ne. zi(jlistp-1+2*(ima-1)+2))) then
 !
                 ptasso = zi(jlistp-1+2*(ima-1)+2)
-                nocc = nocc + 1
+                nocc = nocc+1
 !
-                elseif ((zi(jlistp-1+2*(ima-1)+2).eq.ipt) .and. (&
-            ptasso.ne.zi(jlistp-1+2*(ima-1)+1) )) then
+            elseif ((zi(jlistp-1+2*(ima-1)+2) .eq. ipt) .and. ( &
+                    ptasso .ne. zi(jlistp-1+2*(ima-1)+1))) then
 !
                 ptasso = zi(jlistp-1+2*(ima-1)+1)
-                nocc = nocc + 1
-            endif
+                nocc = nocc+1
+            end if
 !
             if (nocc .eq. 2) goto 10
 !
@@ -90,21 +90,21 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
 !       UNE SEULE OCCURENCE DU POINT IPT:
 !       C'EST UN POINT EXTREMITE DU FOND DE FISSURE
         if (nocc .eq. 1) then
-            nbptex = nbptex + 1
+            nbptex = nbptex+1
             zi(jptext-1+nbptex) = ipt
-        endif
- 10     continue
+        end if
+10      continue
     end do
 !
 !     ON DOIT AVOIR UN NOMBRE PAIR D'EXTREMITES
-    ASSERT(mod(nbptex, 2).eq.0)
+    ASSERT(mod(nbptex, 2) .eq. 0)
 !
     zk16(jinfo-1+3) = 'OUVERT'
 !     CAS D'UN FOND FERME SI ABSCENCE D'EXTREMITES
     if (nbptex .eq. 0) then
         zk16(jinfo-1+3) = 'FERME'
         zi(jptext-1+1) = 1
-    endif
+    end if
 !
     call jedema()
 end subroutine

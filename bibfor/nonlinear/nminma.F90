@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nminma(lischa, sddyna, numedd,&
+subroutine nminma(lischa, sddyna, numedd, &
                   numfix, meelem, measse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,9 +36,9 @@ implicit none
 #include "asterfort/asmama.h"
 #include "asterfort/asmaam.h"
 !
-character(len=19) :: lischa, sddyna
-character(len=24) :: numedd, numfix
-character(len=19) :: meelem(*), measse(*)
+    character(len=19) :: lischa, sddyna
+    character(len=24) :: numedd, numfix
+    character(len=19) :: meelem(*), measse(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,16 +68,16 @@ character(len=19) :: meelem(*), measse(*)
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','MECANONLINE13_22')
-    endif
+        call utmess('I', 'MECANONLINE13_22')
+    end if
 !
 ! --- INITIALISATIONS
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lexpl = ndynlo(sddyna,'EXPLICITE')
-    limpl = ndynlo(sddyna,'IMPLICITE')
-    lamor = ndynlo(sddyna,'MAT_AMORT')
-    lktan = ndynlo(sddyna,'RAYLEIGH_KTAN')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
+    limpl = ndynlo(sddyna, 'IMPLICITE')
+    lamor = ndynlo(sddyna, 'MAT_AMORT')
+    lktan = ndynlo(sddyna, 'RAYLEIGH_KTAN')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -96,26 +96,26 @@ character(len=19) :: meelem(*), measse(*)
             optass = 'AVEC_DIRICHLET'
         else
             ASSERT(.false.)
-        endif
+        end if
         if (niv .ge. 2) then
-            call utmess('I','MECANONLINE13_23')
-        endif
+            call utmess('I', 'MECANONLINE13_23')
+        end if
         if (optass .eq. ' ') then
             call asmama(memass, ' ', numfix, lischa, masse)
-        else if (optass.eq.'AVEC_DIRICHLET') then
+        else if (optass .eq. 'AVEC_DIRICHLET') then
             call asmama(memass, mediri, numedd, lischa, masse)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- ASSEMBLAGE DE LA MATRICE AMORTISSEMENT
 !
-    if (lamor .and. .not.lktan) then
+    if (lamor .and. .not. lktan) then
         if (niv .ge. 2) then
-            call utmess('I','MECANONLINE13_24')
-        endif
+            call utmess('I', 'MECANONLINE13_24')
+        end if
         call asmaam(meamor, numedd, lischa, amort)
         call mtdscr(amort)
-    endif
+    end if
 !
     call jedema()
 end subroutine

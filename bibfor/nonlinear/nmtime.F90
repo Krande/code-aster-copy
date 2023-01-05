@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmtime(ds_measure, operation_, device_type_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -59,31 +59,31 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    operation      = operation_
+    operation = operation_
     list_time(1:7) = 0.d0
 !
 ! - Get current device
 !
     call GetDevice(ds_measure, device_type_, device)
-    timer_type  = device%timer_name
+    timer_type = device%timer_name
     device_type = device%type
 !
 ! - Find timer
 !
-    nb_timer   = ds_measure%nb_timer
+    nb_timer = ds_measure%nb_timer
     timer_indx = 0
     do i_timer = 1, nb_timer
         if (ds_measure%timer(i_timer)%type .eq. timer_type) then
-            ASSERT(timer_indx.eq.0)
+            ASSERT(timer_indx .eq. 0)
             timer_indx = i_timer
-        endif
+        end if
     end do
 !
 ! - Get current timer
 !
-    ASSERT(timer_indx.ne.0)
-    timer     = ds_measure%timer(timer_indx)
-    cpu_name  = timer%cpu_name
+    ASSERT(timer_indx .ne. 0)
+    timer = ds_measure%timer(timer_indx)
+    cpu_name = timer%cpu_name
 !
 ! - Operations
 !
@@ -95,26 +95,26 @@ implicit none
     elseif (operation .eq. 'Stop') then
         call uttcpu(cpu_name, 'FIN', ' ')
         call uttcpr(cpu_name, 7, list_time)
-        time = list_time(7) - timer%time_init
+        time = list_time(7)-timer%time_init
         timer%time_init = list_time(7)
-        if (timer_type.eq.'Store') then
+        if (timer_type .eq. 'Store') then
             ds_measure%store_mean_time = list_time(4)
-        endif
-        if (timer_type.eq.'Time_Step') then
-            ds_measure%step_mean_time   = list_time(4)
+        end if
+        if (timer_type .eq. 'Time_Step') then
+            ds_measure%step_mean_time = list_time(4)
             ds_measure%step_remain_time = list_time(1)
-        endif
-        if (timer_type.eq.'Newt_Iter') then
-            ds_measure%iter_mean_time   = list_time(4)
+        end if
+        if (timer_type .eq. 'Newt_Iter') then
+            ds_measure%iter_mean_time = list_time(4)
             ds_measure%iter_remain_time = list_time(1)
-        endif
+        end if
         call nmrtim(ds_measure, device_type, time)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Save timer
 !
-    ds_measure%timer(timer_indx)   = timer
+    ds_measure%timer(timer_indx) = timer
 !
 end subroutine

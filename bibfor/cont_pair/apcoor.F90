@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apcoor(v_connex , v_connex_lcum, jv_geom  ,&
-                  elem_nume, elem_nbnode  , elem_dime,&
+subroutine apcoor(v_connex, v_connex_lcum, jv_geom, &
+                  elem_nume, elem_nbnode, elem_dime, &
                   elem_coor)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jexnum.h"
 !
-integer, pointer :: v_connex(:)
-integer, pointer :: v_connex_lcum(:)
-integer, intent(in) :: jv_geom, elem_nume, elem_nbnode, elem_dime
-real(kind=8), intent(out) :: elem_coor(27)
+    integer, pointer :: v_connex(:)
+    integer, pointer :: v_connex_lcum(:)
+    integer, intent(in) :: jv_geom, elem_nume, elem_nbnode, elem_dime
+    real(kind=8), intent(out) :: elem_coor(27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,13 +61,13 @@ real(kind=8), intent(out) :: elem_coor(27)
     do i_node = 1, elem_nbnode
         node_nume = v_connex(v_connex_lcum(elem_nume)-1+i_node)
         if (debug) then
-            write(*,*)"noeud", node_nume
+            write (*, *) "noeud", node_nume
         end if
         do i_dime = 1, elem_dime
             elem_coor(3*(i_node-1)+i_dime) = zr(jv_geom+3*(node_nume-1)+i_dime-1)
             if (debug) then
-                write(*,*) i_dime, elem_coor(3*(i_node-1)+i_dime)
-            endif
+                write (*, *) i_dime, elem_coor(3*(i_node-1)+i_dime)
+            end if
         end do
     end do
 !

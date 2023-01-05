@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,18 +40,18 @@ subroutine gdcltg(df, e)
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
     integer :: ij, kl, i, j, l, il, jl, ind12(3, 3)
     real(kind=8) :: tre, coef, betr(6)
-    data    ind12 /1,4,5, 4,2,6, 5,6,3/
+    data ind12/1, 4, 5, 4, 2, 6, 5, 6, 3/
 ! ----------------------------------------------------------------------
 !
 !
@@ -60,9 +60,9 @@ subroutine gdcltg(df, e)
 ! ----------------------------------------------------
 !
     call r8inir(9, 0.d0, djdf, 1)
-    djdf(1,1) = jp
-    djdf(2,2) = jp
-    djdf(3,3) = jp
+    djdf(1, 1) = jp
+    djdf(2, 2) = jp
+    djdf(3, 3) = jp
 !
 !
 !  CALCUL DE LA DERIVEE DE DETR / DF : DETRDF(AB,P,Q)
@@ -77,10 +77,10 @@ subroutine gdcltg(df, e)
         i = ind1(ij)
         j = ind2(ij)
         do l = 1, 3
-            il = ind12(i,l)
-            jl = ind12(j,l)
-            detrdf(ij,i,l) = detrdf(ij,i,l) - 0.5d0*rc(ij)*betr(jl)/ rc(jl)
-            detrdf(ij,j,l) = detrdf(ij,j,l) - 0.5d0*rc(ij)*betr(il)/ rc(il)
+            il = ind12(i, l)
+            jl = ind12(j, l)
+            detrdf(ij, i, l) = detrdf(ij, i, l)-0.5d0*rc(ij)*betr(jl)/rc(jl)
+            detrdf(ij, j, l) = detrdf(ij, j, l)-0.5d0*rc(ij)*betr(il)/rc(il)
         end do
     end do
 !
@@ -91,25 +91,25 @@ subroutine gdcltg(df, e)
     call r8inir(36, 0.d0, dtaude, 1)
 !
 !    TERME D(E.E)/DE  DE DTAU/DE
-    dtaude(1,1) = 2*e(1)
-    dtaude(2,2) = 2*e(2)
-    dtaude(3,3) = 2*e(3)
-    dtaude(4,1) = e(4)
-    dtaude(4,2) = e(4)
-    dtaude(5,1) = e(5)
-    dtaude(5,3) = e(5)
-    dtaude(6,2) = e(6)
-    dtaude(6,3) = e(6)
-    dtaude(4,4) = e(1)+e(2)
-    dtaude(5,5) = e(1)+e(3)
-    dtaude(6,6) = e(2)+e(3)
-    dtaude(5,4) = e(6)/rac2
-    dtaude(6,4) = e(5)/rac2
-    dtaude(6,5) = e(4)/rac2
+    dtaude(1, 1) = 2*e(1)
+    dtaude(2, 2) = 2*e(2)
+    dtaude(3, 3) = 2*e(3)
+    dtaude(4, 1) = e(4)
+    dtaude(4, 2) = e(4)
+    dtaude(5, 1) = e(5)
+    dtaude(5, 3) = e(5)
+    dtaude(6, 2) = e(6)
+    dtaude(6, 3) = e(6)
+    dtaude(4, 4) = e(1)+e(2)
+    dtaude(5, 5) = e(1)+e(3)
+    dtaude(6, 6) = e(2)+e(3)
+    dtaude(5, 4) = e(6)/rac2
+    dtaude(6, 4) = e(5)/rac2
+    dtaude(6, 5) = e(4)/rac2
 !
     do ij = 1, 6
         do kl = ij+1, 6
-            dtaude(ij,kl) = dtaude(kl,ij)
+            dtaude(ij, kl) = dtaude(kl, ij)
         end do
     end do
     call dscal(36, 2*deuxmu, dtaude, 1)
@@ -117,18 +117,18 @@ subroutine gdcltg(df, e)
 !    TERME EN (2E-1) X 1  DE DTAU / DE
     do ij = 1, 6
         do kl = 1, 3
-            dtaude(ij,kl) = dtaude(ij,kl) + lambda*(2*e(ij)-kr(ij))
+            dtaude(ij, kl) = dtaude(ij, kl)+lambda*(2*e(ij)-kr(ij))
         end do
     end do
 !
 !    TERME EN ID  DE DTAU/DE
     tre = e(1)+e(2)+e(3)
-    coef = 2*(lambda*tre+cother) - deuxmu
-    dtaude(1,1) = dtaude(1,1) + coef
-    dtaude(2,2) = dtaude(2,2) + coef
-    dtaude(3,3) = dtaude(3,3) + coef
-    dtaude(4,4) = dtaude(4,4) + coef
-    dtaude(5,5) = dtaude(5,5) + coef
-    dtaude(6,6) = dtaude(6,6) + coef
+    coef = 2*(lambda*tre+cother)-deuxmu
+    dtaude(1, 1) = dtaude(1, 1)+coef
+    dtaude(2, 2) = dtaude(2, 2)+coef
+    dtaude(3, 3) = dtaude(3, 3)+coef
+    dtaude(4, 4) = dtaude(4, 4)+coef
+    dtaude(5, 5) = dtaude(5, 5)+coef
+    dtaude(6, 6) = dtaude(6, 6)+coef
 !
 end subroutine

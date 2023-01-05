@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine xmelem(mesh, model, ds_contact, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -68,12 +68,12 @@ implicit none
     call jemarq()
     call infdbg('XFEM', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<XFEM  > CREATION DES CHAM_ELEM'
-    endif
+        write (ifm, *) '<XFEM  > CREATION DES CHAM_ELEM'
+    end if
 
 ! --- MODELE HM-XFEM ?
 
-    lxthm=isfonc(list_func_acti,'THM')
+    lxthm = isfonc(list_func_acti, 'THM')
 
 !
 ! --- INITIALISATIONS
@@ -86,14 +86,14 @@ implicit none
     nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
-    endif
+    end if
     if (nfiss .le. 0) then
         call utmess('F', 'XFEM_3')
-    endif
+    end if
 !
 ! --- ON VA CHERCHER LE TYPE DE CONTACT: STANDARD OU MORTAR?
 !
-    call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
+    call jeveuo(model//'.XFEM_CONT', 'L', vi=xfem_cont)
     contac = xfem_cont(1)
     xindco = ds_contact%sdcont_solv(1:14)//'.XFIN'
     xmemco = ds_contact%sdcont_solv(1:14)//'.XMEM'
@@ -109,92 +109,92 @@ implicit none
 ! ---
 !
     if (lxthm) then
-       if(contac.eq.3) then
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindco, 'PINDCOI', 'RIGI_CONT', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindcp, 'PINDCOI', 'RIGI_CONT', list_func_acti)
-       else if(contac.eq.2) then
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindco, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindcp, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
-       endif
+        if (contac .eq. 3) then
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindco, 'PINDCOI', 'RIGI_CONT', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindcp, 'PINDCOI', 'RIGI_CONT', list_func_acti)
+        else if (contac .eq. 2) then
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindco, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindcp, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
+        end if
 !
 ! --- SI CONTACT CLASSIQUE, CHAMPS COHESIFS COLLOCATION PTS GAUSS
 !
-       if(contac.eq.3) then
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xcohes, 'PCOHES', 'RIGI_CONT', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xcohep, 'PCOHES', 'XCVBCA', list_func_acti)
+        if (contac .eq. 3) then
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xcohes, 'PCOHES', 'RIGI_CONT', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xcohep, 'PCOHES', 'XCVBCA', list_func_acti)
 !
 ! --- SI CONTACT MORTAR, CHAMPS ELNO
 !
-       else if(contac.eq.2) then
-           call xmele3(mesh, model, ligrel, nfiss,&
-                       xcohes, 'PCOHES', 'RIGI_CONT_M', list_func_acti)
-           call xmele3(mesh, model, ligrel, nfiss,&
-                       xcohep, 'PCOHES', 'XCVBCA_MORTAR', list_func_acti)
-       else
-           ASSERT(.false.)
-       endif
+        else if (contac .eq. 2) then
+            call xmele3(mesh, model, ligrel, nfiss, &
+                        xcohes, 'PCOHES', 'RIGI_CONT_M', list_func_acti)
+            call xmele3(mesh, model, ligrel, nfiss, &
+                        xcohep, 'PCOHES', 'XCVBCA_MORTAR', list_func_acti)
+        else
+            ASSERT(.false.)
+        end if
     else
-       if(contac.eq.1.or.contac.eq.3) then
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindco, 'PINDCOI', 'RIGI_CONT', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xmemco, 'PMEMCON', 'XCVBCA', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindcp, 'PINDCOI', 'RIGI_CONT', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xmemcp, 'PMEMCON', 'XCVBCA', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xseuco, 'PSEUIL', 'RIGI_CONT', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xseucp, 'PSEUIL', 'XREACL', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xgliss, 'PGLISS', 'XCVBCA', list_func_acti)
-       else if(contac.eq.2) then
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindco, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xmemco, 'PMEMCON', 'XCVBCA_MORTAR', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xindcp, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xmemcp, 'PMEMCON', 'XCVBCA_MORTAR', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xseuco, 'PSEUIL', 'RIGI_CONT_M', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xseucp, 'PSEUIL', 'RIGI_CONT_M', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xgliss, 'PGLISS', 'XCVBCA_MORTAR', list_func_acti)
-       endif
+        if (contac .eq. 1 .or. contac .eq. 3) then
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindco, 'PINDCOI', 'RIGI_CONT', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xmemco, 'PMEMCON', 'XCVBCA', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindcp, 'PINDCOI', 'RIGI_CONT', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xmemcp, 'PMEMCON', 'XCVBCA', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xseuco, 'PSEUIL', 'RIGI_CONT', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xseucp, 'PSEUIL', 'XREACL', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xgliss, 'PGLISS', 'XCVBCA', list_func_acti)
+        else if (contac .eq. 2) then
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindco, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xmemco, 'PMEMCON', 'XCVBCA_MORTAR', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xindcp, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xmemcp, 'PMEMCON', 'XCVBCA_MORTAR', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xseuco, 'PSEUIL', 'RIGI_CONT_M', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xseucp, 'PSEUIL', 'RIGI_CONT_M', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xgliss, 'PGLISS', 'XCVBCA_MORTAR', list_func_acti)
+        end if
 !
 ! --- SI CONTACT CLASSIQUE, CHAMPS COHESIFS COLLOCATION PTS GAUSS
 !
-       if(contac.eq.1.or.contac.eq.3) then
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xcohes, 'PCOHES', 'RIGI_CONT', list_func_acti)
-           call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                       xcohep, 'PCOHES', 'XCVBCA', list_func_acti)
+        if (contac .eq. 1 .or. contac .eq. 3) then
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xcohes, 'PCOHES', 'RIGI_CONT', list_func_acti)
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
+                        xcohep, 'PCOHES', 'XCVBCA', list_func_acti)
 !
 ! --- SI CONTACT MORTAR, CHAMPS ELNO
 !
-       else if (contac.eq.2) then
-           call xmele3(mesh, model, ligrel, nfiss,&
-                       xcohes, 'PCOHES', 'RIGI_CONT_M', list_func_acti)
-           call xmele3(mesh, model, ligrel, nfiss,&
-                       xcohep, 'PCOHES', 'XCVBCA_MORTAR', list_func_acti)
-       else
-           ASSERT(.false.)
-       endif
-    endif
+        else if (contac .eq. 2) then
+            call xmele3(mesh, model, ligrel, nfiss, &
+                        xcohes, 'PCOHES', 'RIGI_CONT_M', list_func_acti)
+            call xmele3(mesh, model, ligrel, nfiss, &
+                        xcohep, 'PCOHES', 'XCVBCA_MORTAR', list_func_acti)
+        else
+            ASSERT(.false.)
+        end if
+    end if
 !
 ! ---
 !
-    call xmele2(mesh, model, ds_contact, ligrel, nfiss,&
+    call xmele2(mesh, model, ds_contact, ligrel, nfiss, &
                 xdonco)
 !
     call jedema()

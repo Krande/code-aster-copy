@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
+subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln, &
                   grlt, compo, vect)
 !
     implicit none
@@ -60,59 +60,59 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
     call jeveuo(grlt//'.CNSV', 'E', jgrtno)
     lsn1 = lsn(noeu1)
     lsn2 = lsn(noeu2)
-    eps=r8prem()
-    norm(1)=0.d0
-    norm(2)=0.d0
-    norm(3)=0.d0
-    tang(1)=0.d0
-    tang(2)=0.d0
-    tang(3)=0.d0
+    eps = r8prem()
+    norm(1) = 0.d0
+    norm(2) = 0.d0
+    norm(3) = 0.d0
+    tang(1) = 0.d0
+    tang(2) = 0.d0
+    tang(3) = 0.d0
 !
-    if ((abs(lsn1).le.eps) .and. (abs(lsn2).le.eps)) then
+    if ((abs(lsn1) .le. eps) .and. (abs(lsn2) .le. eps)) then
         do i = 1, ndim
-            norm(i) = norm(i)+ grnno(ndim*(noeu1-1)+i)
+            norm(i) = norm(i)+grnno(ndim*(noeu1-1)+i)
         end do
     else
         do i = 1, ndim
-            norm(i) = norm(i)+ abs(lsn1)*grnno(ndim*(noeu2-1)+i) + abs(lsn2)*grnno(ndim*(noeu1-1)&
+            norm(i) = norm(i)+abs(lsn1)*grnno(ndim*(noeu2-1)+i)+abs(lsn2)*grnno(ndim*(noeu1-1)&
                       &+i)
         end do
-    endif
-    normn=sqrt(norm(1)**2+norm(2)**2+norm(3)**2)
-    norm(1)=norm(1)/normn
-    norm(2)=norm(2)/normn
-    norm(3)=norm(3)/normn
+    end if
+    normn = sqrt(norm(1)**2+norm(2)**2+norm(3)**2)
+    norm(1) = norm(1)/normn
+    norm(2) = norm(2)/normn
+    norm(3) = norm(3)/normn
 !
     if (compo(1:4) .eq. 'DTAN') then
         if (ndim .eq. 2) then
-            tang(1)=norm(2)
-            tang(2)=-norm(1)
-        else if (ndim.eq.3) then
-            tang2(1)=1.d0
-            tang2(2)=0.d0
-            tang2(3)=0.d0
+            tang(1) = norm(2)
+            tang(2) = -norm(1)
+        else if (ndim .eq. 3) then
+            tang2(1) = 1.d0
+            tang2(2) = 0.d0
+            tang2(3) = 0.d0
             call provec(norm, tang2, tang)
-            normt=sqrt(tang(1)**2+tang(2)**2+tang(3)**2)
+            normt = sqrt(tang(1)**2+tang(2)**2+tang(3)**2)
             if (normt .le. eps) then
-                tang(1)=0.d0
-                tang(2)=1.d0
-                tang(3)=0.d0
+                tang(1) = 0.d0
+                tang(2) = 1.d0
+                tang(3) = 0.d0
             else
-                tang(1)=tang(1)/normt
-                tang(2)=tang(2)/normt
-                tang(3)=tang(3)/normt
-            endif
+                tang(1) = tang(1)/normt
+                tang(2) = tang(2)/normt
+                tang(3) = tang(3)/normt
+            end if
             call provec(norm, tang, tang2)
-        endif
-    endif
+        end if
+    end if
 !
     do i = 1, ndim
         if (compo .eq. 'DNOR') then
-            vect(i)=norm(i)
-        else if (compo.eq.'DTAN2') then
-            vect(i)=tang2(i)
-        else if (compo.eq.'DTAN') then
-            vect(i)=tang(i)
-        endif
+            vect(i) = norm(i)
+        else if (compo .eq. 'DTAN2') then
+            vect(i) = tang2(i)
+        else if (compo .eq. 'DTAN') then
+            vect(i) = tang(i)
+        end if
     end do
 end subroutine

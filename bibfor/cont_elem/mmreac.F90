@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmreac(elem_dime     , nb_node_slav  , nb_node_mast,&
-                  jv_disp       , jv_disp_incr  , ppe,&
-                  elem_slav_init, elem_mast_init,&
-                  elem_slav_coor, elem_mast_coor,&
-                  nbdm_         , nb_lagr_      , indi_lagc_,&
+subroutine mmreac(elem_dime, nb_node_slav, nb_node_mast, &
+                  jv_disp, jv_disp_incr, ppe, &
+                  elem_slav_init, elem_mast_init, &
+                  elem_slav_coor, elem_mast_coor, &
+                  nbdm_, nb_lagr_, indi_lagc_, &
                   ddepmam_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 !
-integer, intent(in) :: elem_dime, nb_node_slav, nb_node_mast
-integer, intent(in) :: jv_disp, jv_disp_incr
-real(kind=8), intent(in) :: ppe
-real(kind=8), intent(in) :: elem_slav_init(nb_node_slav, elem_dime)
-real(kind=8), intent(in) :: elem_mast_init(nb_node_mast, elem_dime)
-real(kind=8), intent(out) :: elem_slav_coor(nb_node_slav, elem_dime)
-real(kind=8), intent(out) :: elem_mast_coor(nb_node_mast, elem_dime)
-integer, optional, intent(in) :: nbdm_, nb_lagr_, indi_lagc_(10)
-real(kind=8), optional, intent(out) :: ddepmam_(9, 3)
+    integer, intent(in) :: elem_dime, nb_node_slav, nb_node_mast
+    integer, intent(in) :: jv_disp, jv_disp_incr
+    real(kind=8), intent(in) :: ppe
+    real(kind=8), intent(in) :: elem_slav_init(nb_node_slav, elem_dime)
+    real(kind=8), intent(in) :: elem_mast_init(nb_node_mast, elem_dime)
+    real(kind=8), intent(out) :: elem_slav_coor(nb_node_slav, elem_dime)
+    real(kind=8), intent(out) :: elem_mast_coor(nb_node_mast, elem_dime)
+    integer, optional, intent(in) :: nbdm_, nb_lagr_, indi_lagc_(10)
+    real(kind=8), optional, intent(out) :: ddepmam_(9, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,11 +69,11 @@ real(kind=8), optional, intent(out) :: ddepmam_(9, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    elem_slav_coor(:,:)  = 0.d0
-    elem_mast_coor(:,:)  = 0.d0
+    elem_slav_coor(:, :) = 0.d0
+    elem_mast_coor(:, :) = 0.d0
     if (present(ddepmam_)) then
-        ddepmam_(:,:) = 0.d0
-    endif
+        ddepmam_(:, :) = 0.d0
+    end if
     deca = 0
 !
 ! - Slave nodes
@@ -83,10 +83,10 @@ real(kind=8), optional, intent(out) :: ddepmam_(9, 3)
             deca = (i_node_slav-1)*(nbdm_-elem_dime)
         else
             deca = deca+indi_lagc_(i_node_slav)
-        endif
+        end if
         do i_dime = 1, elem_dime
-            elem_slav_coor(i_node_slav, i_dime) =&
-                elem_slav_init(i_node_slav, i_dime)+&
+            elem_slav_coor(i_node_slav, i_dime) = &
+                elem_slav_init(i_node_slav, i_dime)+ &
                 zr(jv_disp+(i_node_slav-1)*(elem_dime)+deca+i_dime-1)+ &
                 ppe*zr(jv_disp_incr+(i_node_slav-1)*(elem_dime)+deca+i_dime-1)
         end do
@@ -98,17 +98,17 @@ real(kind=8), optional, intent(out) :: ddepmam_(9, 3)
         deca = nb_node_slav*nbdm_
     else
         deca = nb_node_slav*elem_dime+nb_lagr_
-    endif
+    end if
     do i_node_mast = 1, nb_node_mast
         do i_dime = 1, elem_dime
-            elem_mast_coor(i_node_mast, i_dime) =&
-                elem_mast_init(i_node_mast, i_dime)+&
-                zr(jv_disp+(i_node_mast-1)*elem_dime+deca+i_dime-1)+&
+            elem_mast_coor(i_node_mast, i_dime) = &
+                elem_mast_init(i_node_mast, i_dime)+ &
+                zr(jv_disp+(i_node_mast-1)*elem_dime+deca+i_dime-1)+ &
                 ppe*zr(jv_disp_incr+(i_node_mast-1)*elem_dime+deca+i_dime-1)
             if (present(ddepmam_)) then
-                ddepmam_(i_node_mast, i_dime) =&
+                ddepmam_(i_node_mast, i_dime) = &
                     zr(jv_disp_incr+(i_node_mast-1)*elem_dime+deca+i_dime-1)
-            endif
+            end if
         end do
     end do
 !

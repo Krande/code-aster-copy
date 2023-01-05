@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,66 +38,66 @@ subroutine rsutc2(typres, nomch, nomgd, typsd)
     if (nomch .eq. 'DEPL') then
         nomgd = 'DEPL_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'VITE') then
+    else if (nomch .eq. 'VITE') then
         nomgd = 'DEPL_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'ACCE') then
+    else if (nomch .eq. 'ACCE') then
         nomgd = 'DEPL_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'TEMP') then
+    else if (nomch .eq. 'TEMP') then
         nomgd = 'TEMP_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'VARI_ELNO') then
+    else if (nomch .eq. 'VARI_ELNO') then
         nomgd = 'VARI_R'
         typsd = 'ELNO'
-    else if (nomch.eq.'EPSA_ELNO') then
+    else if (nomch .eq. 'EPSA_ELNO') then
         nomgd = 'EPSI_R'
         typsd = 'ELNO'
-    else if (nomch.eq.'SIEF_ELNO') then
+    else if (nomch .eq. 'SIEF_ELNO') then
         nomgd = 'SIEF_R'
         typsd = 'ELNO'
-    else if (nomch.eq.'SIGM_ELNO') then
+    else if (nomch .eq. 'SIGM_ELNO') then
         nomgd = 'SIEF_R'
         typsd = 'ELNO'
-    else if (nomch.eq.'PRES') then
+    else if (nomch .eq. 'PRES') then
         nomgd = 'PRES_R'
         typsd = 'ELNO'
-    else if (nomch.eq.'FVOL_3D') then
+    else if (nomch .eq. 'FVOL_3D') then
         nomgd = 'FORC_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'FVOL_2D') then
+    else if (nomch .eq. 'FVOL_2D') then
         nomgd = 'FORC_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'FSUR_3D') then
+    else if (nomch .eq. 'FSUR_3D') then
         nomgd = 'FORC_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'FSUR_2D') then
+    else if (nomch .eq. 'FSUR_2D') then
         nomgd = 'FORC_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'EPSI_NOEU') then
+    else if (nomch .eq. 'EPSI_NOEU') then
         nomgd = 'EPSI_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'VITE_VENT') then
+    else if (nomch .eq. 'VITE_VENT') then
         nomgd = 'DEPL_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'T_EXT') then
+    else if (nomch .eq. 'T_EXT') then
         nomgd = 'TEMP_R'
         typsd = 'NOEU'
-    else if (nomch.eq.'COEF_H') then
+    else if (nomch .eq. 'COEF_H') then
         nomgd = 'COEH_R'
         typsd = 'NOEU'
     else
 !
         call utmess('F', 'PREPOST4_76')
-    endif
+    end if
 !
 !--- TRAITEMENT DES CHAMPS DE DEPLACEMENTS COMPLEXES
 !
     if (nomgd .eq. 'DEPL_R') then
-        if (typres .eq. 'DYNA_HARMO' .or. typres .eq. 'HARM_GENE' .or. typres .eq.&
+        if (typres .eq. 'DYNA_HARMO' .or. typres .eq. 'HARM_GENE' .or. typres .eq. &
             'MODE_MECA_C') then
             nomgd = 'DEPL_C'
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

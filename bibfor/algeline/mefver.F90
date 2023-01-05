@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
 !
 !
     pi = r8pi()
-    pis2 = pi / 2.d0
+    pis2 = pi/2.d0
     epsit = 1.d-5
 !
     if (iencei .eq. 2) then
@@ -72,51 +72,51 @@ subroutine mefver(ndim, som, xint, yint, rint)
 !
 ! ---    MISE EN ORDRE DES SOMMETS DE L ENCEINTE
 !
-        ux(1) = xsom(2) - xsom(1)
-        uy(1) = ysom(2) - ysom(1)
-        ux(2) = xsom(3) - xsom(1)
-        uy(2) = ysom(3) - ysom(1)
-        ux(3) = xsom(4) - xsom(1)
-        uy(3) = ysom(4) - ysom(1)
+        ux(1) = xsom(2)-xsom(1)
+        uy(1) = ysom(2)-ysom(1)
+        ux(2) = xsom(3)-xsom(1)
+        uy(2) = ysom(3)-ysom(1)
+        ux(3) = xsom(4)-xsom(1)
+        uy(3) = ysom(4)-ysom(1)
 !
         do i = 2, 3
-            norm = (ux(i)*ux(i)+uy(i)*uy(i)) * (ux(1)*ux(1)+uy(1)*uy( 1))
+            norm = (ux(i)*ux(i)+uy(i)*uy(i))*(ux(1)*ux(1)+uy(1)*uy(1))
             norm = sqrt(norm)
             if (norm .eq. 0.d0) then
                 call utmess('F', 'ALGELINE_88')
-            endif
-            a(i-1) = acos((ux(i)*ux(1)+uy(i)*uy(1)) / norm)
-            a1 = asin((ux(1)*uy(i)-uy(1)*ux(i)) / norm)
-            if (a1 .lt. 0.d0) a(i-1) = 2*pi - a(i-1)
+            end if
+            a(i-1) = acos((ux(i)*ux(1)+uy(i)*uy(1))/norm)
+            a1 = asin((ux(1)*uy(i)-uy(1)*ux(i))/norm)
+            if (a1 .lt. 0.d0) a(i-1) = 2*pi-a(i-1)
         end do
 !
         if (a(1) .lt. a(2) .and. a(2) .lt. pi) then
             ind(1) = 2
             ind(2) = 3
             ind(3) = 4
-        else if (a(1).gt.a(2) .and.a(1).lt.pi) then
+        else if (a(1) .gt. a(2) .and. a(1) .lt. pi) then
             ind(1) = 2
             ind(2) = 4
             ind(3) = 3
-        else if (a(1).lt.pis2.and.a(2).gt.pi) then
+        else if (a(1) .lt. pis2 .and. a(2) .gt. pi) then
             ind(1) = 4
             ind(2) = 2
             ind(3) = 3
-        else if (a(2).lt.pis2.and.a(1).gt.pi) then
+        else if (a(2) .lt. pis2 .and. a(1) .gt. pi) then
             ind(1) = 3
             ind(2) = 2
             ind(3) = 4
-        else if (a(1).lt.a(2).and.a(1).gt.pi) then
+        else if (a(1) .lt. a(2) .and. a(1) .gt. pi) then
             ind(1) = 3
             ind(2) = 4
             ind(3) = 2
-        else if (a(1).gt.a(2).and.a(2).gt.pi) then
+        else if (a(1) .gt. a(2) .and. a(2) .gt. pi) then
             ind(1) = 4
             ind(2) = 3
             ind(3) = 2
         else
             call utmess('F', 'ALGELINE_89')
-        endif
+        end if
 !
         do i = 1, 3
             som(2*(i+1)-1) = xsom(ind(i))
@@ -129,28 +129,28 @@ subroutine mefver(ndim, som, xint, yint, rint)
             ysom(i) = som(2*i)
         end do
 !
-        ux(1) = xsom(2) - xsom(1)
-        uy(1) = ysom(2) - ysom(1)
-        ux(2) = xsom(4) - xsom(1)
-        uy(2) = ysom(4) - ysom(1)
-        ux(3) = xsom(4) - xsom(3)
-        uy(3) = ysom(4) - ysom(3)
-        ux(4) = xsom(3) - xsom(2)
-        uy(4) = ysom(3) - ysom(2)
+        ux(1) = xsom(2)-xsom(1)
+        uy(1) = ysom(2)-ysom(1)
+        ux(2) = xsom(4)-xsom(1)
+        uy(2) = ysom(4)-ysom(1)
+        ux(3) = xsom(4)-xsom(3)
+        uy(3) = ysom(4)-ysom(3)
+        ux(4) = xsom(3)-xsom(2)
+        uy(4) = ysom(3)-ysom(2)
 !
         do i = 1, 2
             vect(i) = ux(i)*uy(i+2)-uy(i)*ux(i+2)
         end do
 !
-        norm = (ux(2)*ux(2)+uy(2)*uy(2)) * (ux(1)*ux(1)+uy(1)*uy(1))
+        norm = (ux(2)*ux(2)+uy(2)*uy(2))*(ux(1)*ux(1)+uy(1)*uy(1))
         norm = sqrt(norm)
         if (norm .eq. 0.d0) then
             call utmess('F', 'ALGELINE_88')
-        endif
-        a(1) = acos((ux(2)*ux(1)+uy(2)*uy(1)) / norm)
+        end if
+        a(1) = acos((ux(2)*ux(1)+uy(2)*uy(1))/norm)
         if ((abs(a(1)-pis2)+abs(vect(1))+abs(vect(2))) .gt. epsit) then
             call utmess('F', 'ALGELINE_89')
-        endif
+        end if
 !
 !
 ! ---    VERIFICATION DE L INCLUSION DES CYLINDRES DANS L ENCEINTE
@@ -159,36 +159,36 @@ subroutine mefver(ndim, som, xint, yint, rint)
 ! ---    NORMALISATION DES VECTEURS U(1) ET U(2)
         do i = 1, 2
             long(i) = sqrt(ux(i)*ux(i)+uy(i)*uy(i))
-            ux(i) = ux(i) / long(i)
-            uy(i) = uy(i) / long(i)
+            ux(i) = ux(i)/long(i)
+            uy(i) = uy(i)/long(i)
         end do
 !
         do i = 1, nbcyl
             do j = 1, 2
-                proj = ux(j)*(xint(i)-xsom(1)) + uy(j)*(yint(i)-ysom( 1))
+                proj = ux(j)*(xint(i)-xsom(1))+uy(j)*(yint(i)-ysom(1))
                 if ((proj-rint(i)) .lt. 0.d0 .or. (proj+rint(i)) .gt. long(j)) then
-                    write(note(1:3),'(I3.3)') i
+                    write (note(1:3), '(I3.3)') i
                     call utmess('F', 'ALGELINE_90', sk=note)
 !
-                endif
+                end if
             end do
         end do
 !
 ! ---    VERIFICATION DE L INCLUSION DES CYLINDRES DANS L ENCEINTE
 ! ---    CIRCULAIRE
 !
-    else if (iencei.eq.1) then
+    else if (iencei .eq. 1) then
         xext = som(1)
         yext = som(2)
         rext = som(3)
         do i = 1, nbcyl
-            diff = sqrt((xext-xint(i))**2 + (yext-yint(i))**2)
+            diff = sqrt((xext-xint(i))**2+(yext-yint(i))**2)
             if ((diff+rint(i)) .gt. rext) then
-                write(note(1:3),'(I3.3)') i
+                write (note(1:3), '(I3.3)') i
                 call utmess('F', 'ALGELINE_81', sk=note)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 end subroutine

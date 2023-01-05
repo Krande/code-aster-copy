@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndcrdy(result, sddyna)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: result
-character(len=19), intent(out) :: sddyna
+    character(len=8), intent(in) :: result
+    character(len=19), intent(out) :: sddyna
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,8 +75,8 @@ character(len=19), intent(out) :: sddyna
     if (nomcmd(1:4) .eq. 'DYNA') then
         zk16(jtsch+1-1) = 'DYNAMIQUE'
         if (niv .ge. 2) then
-            call utmess('I','MECANONLINE13_13')
-        endif
+            call utmess('I', 'MECANONLINE13_13')
+        end if
         psch = sddyna(1:15)//'.PARA_SCH'
         losd = sddyna(1:15)//'.INFO_SD'
         nosd = sddyna(1:15)//'.NOM_SD'
@@ -101,7 +101,7 @@ character(len=19), intent(out) :: sddyna
         call wkvect(vecabs, 'V V K24', 3, jvecab)
     else
         zk16(jtsch+1-1) = 'STATIQUE'
-    endif
+    end if
 !
     call jedema()
 !

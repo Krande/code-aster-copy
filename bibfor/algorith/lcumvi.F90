@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,31 +58,31 @@ subroutine lcumvi(cmp, vim, epsfm)
 !
     if (cmp(1:2) .eq. 'FP') then
         do i = 1, 3
-            epsfm(i)=(vim(1)+vim(2))
+            epsfm(i) = (vim(1)+vim(2))
         end do
-        epsfm(1)=epsfm(1)+vim(3)+vim(4)
-        epsfm(2)=epsfm(2)+vim(5)+vim(6)
-        epsfm(3)=epsfm(3)+vim(7)+vim(8)
-        epsfm(4)=vim(12)+vim(13)
-        epsfm(5)=vim(14)+vim(15)
-        epsfm(6)=vim(16)+vim(17)
-    else if (cmp(1:2).eq.'FD') then
-        epsfm(1)=vim(9)
-        epsfm(2)=vim(10)
-        epsfm(3)=vim(11)
-        epsfm(4)=vim(18)
-        epsfm(5)=vim(19)
-        epsfm(6)=vim(20)
-    else if (cmp(1:2).eq.'FT') then
+        epsfm(1) = epsfm(1)+vim(3)+vim(4)
+        epsfm(2) = epsfm(2)+vim(5)+vim(6)
+        epsfm(3) = epsfm(3)+vim(7)+vim(8)
+        epsfm(4) = vim(12)+vim(13)
+        epsfm(5) = vim(14)+vim(15)
+        epsfm(6) = vim(16)+vim(17)
+    else if (cmp(1:2) .eq. 'FD') then
+        epsfm(1) = vim(9)
+        epsfm(2) = vim(10)
+        epsfm(3) = vim(11)
+        epsfm(4) = vim(18)
+        epsfm(5) = vim(19)
+        epsfm(6) = vim(20)
+    else if (cmp(1:2) .eq. 'FT') then
         do i = 1, 3
-            epsfm(i)=(vim(1)+vim(2))
+            epsfm(i) = (vim(1)+vim(2))
         end do
-        epsfm(1)=epsfm(1)+vim(3)+vim(4)+vim(9)
-        epsfm(2)=epsfm(2)+vim(5)+vim(6)+vim(10)
-        epsfm(3)=epsfm(3)+vim(7)+vim(8)+vim(11)
-        epsfm(4)=vim(12)+vim(13)+vim(18)
-        epsfm(5)=vim(14)+vim(15)+vim(19)
-        epsfm(6)=vim(16)+vim(17)+vim(20)
-    endif
+        epsfm(1) = epsfm(1)+vim(3)+vim(4)+vim(9)
+        epsfm(2) = epsfm(2)+vim(5)+vim(6)+vim(10)
+        epsfm(3) = epsfm(3)+vim(7)+vim(8)+vim(11)
+        epsfm(4) = vim(12)+vim(13)+vim(18)
+        epsfm(5) = vim(14)+vim(15)+vim(19)
+        epsfm(6) = vim(16)+vim(17)+vim(20)
+    end if
 !
 end subroutine

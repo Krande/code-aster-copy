@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,29 +16,29 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcsees(elem_dime    , nb_node_slav   , nb_lagr ,&
-                  l_norm_smooth,&
-                  indi_lagc    , lagrc          ,&
-                  poidpg       , shape_slav_func,&
-                  jaco_upda    , dist_vect      ,&
-                  vtmp )
+subroutine lcsees(elem_dime, nb_node_slav, nb_lagr, &
+                  l_norm_smooth, &
+                  indi_lagc, lagrc, &
+                  poidpg, shape_slav_func, &
+                  jaco_upda, dist_vect, &
+                  vtmp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-integer, intent(in) :: elem_dime
-integer, intent(in) :: nb_node_slav, nb_lagr
-aster_logical, intent(in) :: l_norm_smooth
-integer, intent(in) :: indi_lagc(10)
-real(kind=8), intent(in) :: lagrc
-real(kind=8), intent(in) :: poidpg
-real(kind=8), intent(in) :: shape_slav_func(9)
-real(kind=8), intent(in) :: jaco_upda, dist_vect(3)
-real(kind=8), intent(inout) :: vtmp(55)
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: nb_node_slav, nb_lagr
+    aster_logical, intent(in) :: l_norm_smooth
+    integer, intent(in) :: indi_lagc(10)
+    real(kind=8), intent(in) :: lagrc
+    real(kind=8), intent(in) :: poidpg
+    real(kind=8), intent(in) :: shape_slav_func(9)
+    real(kind=8), intent(in) :: jaco_upda, dist_vect(3)
+    real(kind=8), intent(inout) :: vtmp(55)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,29 +68,29 @@ real(kind=8), intent(inout) :: vtmp(55)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    shift      = 0
-    jj         = 0
-    r_nb_lagr  = real(nb_lagr,kind=8)
+    shift = 0
+    jj = 0
+    r_nb_lagr = real(nb_lagr, kind=8)
 !
     if (l_norm_smooth) then
         call jevech('PSNO', 'L', jv_norm)
-        do i_node_slav=1, nb_node_slav
-            shift=shift+indi_lagc(i_node_slav)
-            do i_dime=1, elem_dime
-                jj=(i_node_slav-1)*elem_dime+shift+i_dime
-                vtmp(jj)= vtmp(jj)+&
-                          (zr(jv_norm+(i_node_slav-1)*elem_dime+i_dime-1))*&
-                          jaco_upda*poidpg*shape_slav_func(i_node_slav)*lagrc
+        do i_node_slav = 1, nb_node_slav
+            shift = shift+indi_lagc(i_node_slav)
+            do i_dime = 1, elem_dime
+                jj = (i_node_slav-1)*elem_dime+shift+i_dime
+                vtmp(jj) = vtmp(jj)+ &
+                           (zr(jv_norm+(i_node_slav-1)*elem_dime+i_dime-1))* &
+                           jaco_upda*poidpg*shape_slav_func(i_node_slav)*lagrc
             end do
         end do
     else
-        do i_node_slav=1, nb_node_slav
-            shift=shift+indi_lagc(i_node_slav)
-            do i_dime=1, elem_dime
-                jj=(i_node_slav-1)*elem_dime+shift+i_dime
-                vtmp(jj)= vtmp(jj)+&
-                          dist_vect(i_dime)*&
-                          jaco_upda*poidpg*shape_slav_func(i_node_slav)*lagrc
+        do i_node_slav = 1, nb_node_slav
+            shift = shift+indi_lagc(i_node_slav)
+            do i_dime = 1, elem_dime
+                jj = (i_node_slav-1)*elem_dime+shift+i_dime
+                vtmp(jj) = vtmp(jj)+ &
+                           dist_vect(i_dime)* &
+                           jaco_upda*poidpg*shape_slav_func(i_node_slav)*lagrc
             end do
         end do
     end if

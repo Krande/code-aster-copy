@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinDSPostTimeStepSave(mod45       , sdmode         , sdstab ,&
-                                    inst        , nume_inst      , nb_freq,&
+subroutine nonlinDSPostTimeStepSave(mod45, sdmode, sdstab, &
+                                    inst, nume_inst, nb_freq, &
                                     nfreq_calibr, ds_posttimestep)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -36,11 +36,11 @@ implicit none
 #include "asterfort/rsadpa.h"
 #include "asterfort/copisd.h"
 !
-character(len=4), intent(in) :: mod45
-character(len=8), intent(in) :: sdmode, sdstab
-integer, intent(in) :: nume_inst, nb_freq, nfreq_calibr
-real(kind=8), intent(in) :: inst
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    character(len=4), intent(in) :: mod45
+    character(len=8), intent(in) :: sdmode, sdstab
+    integer, intent(in) :: nume_inst, nb_freq, nfreq_calibr
+    real(kind=8), intent(in) :: inst
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
     character(len=19) :: field
     integer :: iret, nb_dof_stab, nb_freq_save, i_freq, jv_para
     integer :: vali(3)
-    complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
+    complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(4)
     character(len=24) :: ds_name, valk(3)
     character(len=16) :: mode_type, object_type
@@ -68,8 +68,8 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... Stores for post-treatment at each time step'
-    endif
+        write (ifm, *) '<MECANONLINE> ... Stores for post-treatment at each time step'
+    end if
 !
 ! - Type of object
 !
@@ -83,7 +83,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         nb_freq_save = nb_freq
     else
         nb_freq_save = 1
-    endif
+    end if
 !
     do i_freq = 1, nb_freq_save
         if (mod45 .eq. 'VIBR') then
@@ -114,10 +114,10 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
                 valk(1) = mode_type
                 valk(2) = ' '
                 valk(3) = ' '
-            endif
-            call tbajli(ds_posttimestep%table_io%tablName,&
-                        ds_posttimestep%table_io%nbPara,&
-                        ds_posttimestep%table_io%paraName,&
+            end if
+            call tbajli(ds_posttimestep%table_io%tablName, &
+                        ds_posttimestep%table_io%nbPara, &
+                        ds_posttimestep%table_io%paraName, &
                         vali, valr, [c16bid], valk, 0)
         else if (mod45 .eq. 'FLAM') then
             if (nb_dof_stab .eq. 0) then
@@ -148,13 +148,13 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
                     valk(1) = mode_type
                     valk(2) = ' '
                     valk(3) = ' '
-                endif
-                call tbajli(ds_posttimestep%table_io%tablName,&
-                            ds_posttimestep%table_io%nbPara,&
-                            ds_posttimestep%table_io%paraName,&
+                end if
+                call tbajli(ds_posttimestep%table_io%tablName, &
+                            ds_posttimestep%table_io%nbPara, &
+                            ds_posttimestep%table_io%paraName, &
                             vali, valr, [c16bid], valk, 0)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - For stability
@@ -189,12 +189,12 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
                 valk(1) = mode_type
                 valk(2) = ' '
                 valk(3) = ' '
-            endif
-            call tbajli(ds_posttimestep%table_io%tablName,&
-                        ds_posttimestep%table_io%nbPara,&
-                        ds_posttimestep%table_io%paraName,&
+            end if
+            call tbajli(ds_posttimestep%table_io%tablName, &
+                        ds_posttimestep%table_io%nbPara, &
+                        ds_posttimestep%table_io%paraName, &
                         vali, valr, [c16bid], valk, 0)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

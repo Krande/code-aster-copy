@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_pene_loop(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -75,7 +75,7 @@ implicit none
     aster_logical :: l_veri, l_exis_glis
     aster_logical :: loop_cont_conv, l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot
-    aster_logical :: l_frot,l_pena_cont
+    aster_logical :: l_frot, l_pena_cont
     integer :: type_adap, continue_calcul
     character(len=24) :: sdcont_cyccoe, sdcont_cyceta
     real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
@@ -86,67 +86,67 @@ implicit none
     real(kind=8), pointer :: v_sdcont_apjeu(:) => null()
     character(len=24) :: sdcont_pene
     real(kind=8), pointer :: v_sdcont_pene(:) => null()
-    real(kind=8) ::  dist_max,vale_pene
+    real(kind=8) ::  dist_max, vale_pene
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... ACTIVATION/DESACTIVATION'
-    endif
+        write (ifm, *) '<CONTACT> ... ACTIVATION/DESACTIVATION'
+    end if
 !
 ! - Initializations
 !
-    l_glis=ASTER_FALSE
-    l_veri=ASTER_FALSE
-    l_exis_glis=ASTER_FALSE
-    loop_cont_conv=ASTER_FALSE
-    l_loop_cont=ASTER_FALSE
-    l_frot_zone=ASTER_FALSE
-    l_pena_frot=ASTER_FALSE
-    l_frot=ASTER_FALSE
-    l_pena_cont=ASTER_FALSE
+    l_glis = ASTER_FALSE
+    l_veri = ASTER_FALSE
+    l_exis_glis = ASTER_FALSE
+    loop_cont_conv = ASTER_FALSE
+    l_loop_cont = ASTER_FALSE
+    l_frot_zone = ASTER_FALSE
+    l_pena_frot = ASTER_FALSE
+    l_frot = ASTER_FALSE
+    l_pena_cont = ASTER_FALSE
     loop_cont_conv = ASTER_TRUE
     loop_cont_vali = 0
     continue_calcul = 0
-    indi_cont_curr=0
-    gap=0.0
-    time_curr=0.0
-    dist_max=1.0
-    vale_pene=1.0
+    indi_cont_curr = 0
+    gap = 0.0
+    time_curr = 0.0
+    dist_max = 1.0
+    vale_pene = 1.0
 !
 ! - Parameters
 !
-    l_exis_glis  = cfdisl(ds_contact%sdcont_defi,'EXIS_GLISSIERE')
-    l_loop_cont  = cfdisl(ds_contact%sdcont_defi,'CONT_BOUCLE')
-    type_adap    = cfdisi(ds_contact%sdcont_defi,'TYPE_ADAPT')
-    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM' )
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
-    l_frot       = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
+    l_exis_glis = cfdisl(ds_contact%sdcont_defi, 'EXIS_GLISSIERE')
+    l_loop_cont = cfdisl(ds_contact%sdcont_defi, 'CONT_BOUCLE')
+    type_adap = cfdisi(ds_contact%sdcont_defi, 'TYPE_ADAPT')
+    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    l_frot = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
 !
 ! - Acces to contact objects
 !
     ztabf = cfmmvd('ZTABF')
     sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     sdcont_jsupco = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
-    sdcont_apjeu  = ds_contact%sdcont_solv(1:14)//'.APJEU'
-    call jeveuo(sdcont_tabfin, 'L', vr = v_sdcont_tabfin)
-    call jeveuo(sdcont_jsupco, 'L', vr = v_sdcont_jsupco)
-    call jeveuo(sdcont_apjeu , 'L', vr = v_sdcont_apjeu)
+    sdcont_apjeu = ds_contact%sdcont_solv(1:14)//'.APJEU'
+    call jeveuo(sdcont_tabfin, 'L', vr=v_sdcont_tabfin)
+    call jeveuo(sdcont_jsupco, 'L', vr=v_sdcont_jsupco)
+    call jeveuo(sdcont_apjeu, 'L', vr=v_sdcont_apjeu)
 !
 ! - Acces to cycling objects
 !
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
-    call jeveuo(sdcont_cyceta, 'L', vi = v_sdcont_cyceta)
-    call jeveuo(sdcont_cyccoe, 'L', vr = v_sdcont_cyccoe)
+    call jeveuo(sdcont_cyceta, 'L', vi=v_sdcont_cyceta)
+    call jeveuo(sdcont_cyccoe, 'L', vr=v_sdcont_cyccoe)
 
 !
 ! - Access to penetration objects
 !
     sdcont_pene = ds_contact%sdcont_solv(1:14)//'.PENETR'
-    call jeveuo(sdcont_pene, 'E', vr = v_sdcont_pene)
+    call jeveuo(sdcont_pene, 'E', vr=v_sdcont_pene)
 !
 !
 ! - Get current time
@@ -162,15 +162,14 @@ implicit none
 !
 ! ----- Parameters of zone
 !
-        l_glis       = mminfl(ds_contact%sdcont_defi,'GLISSIERE_ZONE' , i_zone)
-        l_veri       = mminfl(ds_contact%sdcont_defi,'VERIF'          , i_zone)
-        nb_elem_slav = mminfi(ds_contact%sdcont_defi,'NBMAE'          , i_zone)
-        jdecme       = mminfi(ds_contact%sdcont_defi,'JDECME'         , i_zone)
-        l_frot_zone  = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone)
-        l_pena_frot  = mminfl(ds_contact%sdcont_defi,'ALGO_FROT_PENA' , i_zone)
-        l_pena_cont  = mminfl(ds_contact%sdcont_defi,'ALGO_CONT_PENA' , i_zone)
-        vale_pene    = mminfr(ds_contact%sdcont_defi,'PENE_MAXI' , i_zone)
-
+        l_glis = mminfl(ds_contact%sdcont_defi, 'GLISSIERE_ZONE', i_zone)
+        l_veri = mminfl(ds_contact%sdcont_defi, 'VERIF', i_zone)
+        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE', i_zone)
+        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', i_zone)
+        l_frot_zone = mminfl(ds_contact%sdcont_defi, 'FROTTEMENT_ZONE', i_zone)
+        l_pena_frot = mminfl(ds_contact%sdcont_defi, 'ALGO_FROT_PENA', i_zone)
+        l_pena_cont = mminfl(ds_contact%sdcont_defi, 'ALGO_CONT_PENA', i_zone)
+        vale_pene = mminfr(ds_contact%sdcont_defi, 'PENE_MAXI', i_zone)
 
 !
 ! ----- Loop on slave elements
@@ -180,7 +179,7 @@ implicit none
 !
 ! --------- Slave element index in contact datastructure
 !
-            elem_slav_indx = jdecme + i_elem_slav
+            elem_slav_indx = jdecme+i_elem_slav
 !
 ! --------- Number of integration points on element
 !
@@ -192,41 +191,41 @@ implicit none
 !
 ! ------------- Get informations from
 !
-                gap            = v_sdcont_apjeu(i_cont_poin)
+                gap = v_sdcont_apjeu(i_cont_poin)
                 indi_cont_curr = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23))
 !
 ! Information for convergence : PENE_MAXI
-                    dist_max      = vale_pene*ds_contact%arete_min
-                    if (l_pena_cont .and. indi_cont_curr .eq. 1 ) then
-                        ds_contact%continue_pene = 0
-                        v_sdcont_pene((i_cont_poin-1)+1)  = abs(gap)
-                        ! On cherche le max des penetrations
-                        if (i_cont_poin .gt. 1 ) then
-                            if (v_sdcont_pene((i_cont_poin-1)+1) .gt. &
-                                v_sdcont_pene((i_cont_poin-1)+1-1)) then
-                                ds_contact%calculated_penetration =&
-                                        v_sdcont_pene((i_cont_poin-1)+1)
-                            else
-                                ds_contact%calculated_penetration =&
-                                        v_sdcont_pene((i_cont_poin-1)+1-1)
-                            endif
+                dist_max = vale_pene*ds_contact%arete_min
+                if (l_pena_cont .and. indi_cont_curr .eq. 1) then
+                    ds_contact%continue_pene = 0
+                    v_sdcont_pene((i_cont_poin-1)+1) = abs(gap)
+                    ! On cherche le max des penetrations
+                    if (i_cont_poin .gt. 1) then
+                        if (v_sdcont_pene((i_cont_poin-1)+1) .gt. &
+                            v_sdcont_pene((i_cont_poin-1)+1-1)) then
+                            ds_contact%calculated_penetration = &
+                                v_sdcont_pene((i_cont_poin-1)+1)
                         else
-                            ds_contact%calculated_penetration = v_sdcont_pene((i_cont_poin-1)+1)
-                        endif
-                        if (ds_contact%iteration_newton .ge. ds_contact%it_adapt_maxi-6) then
-                                ds_contact%continue_pene = 1.0
-                         endif
+                            ds_contact%calculated_penetration = &
+                                v_sdcont_pene((i_cont_poin-1)+1-1)
+                        end if
+                    else
+                        ds_contact%calculated_penetration = v_sdcont_pene((i_cont_poin-1)+1)
+                    end if
+                    if (ds_contact%iteration_newton .ge. ds_contact%it_adapt_maxi-6) then
+                        ds_contact%continue_pene = 1.0
+                    end if
 !                    elseif (l_pena_cont .and. (indi_cont_curr .eq. 0) .and.&
 !                            (ds_contact%calculated_penetration .le. 1.d-299)) then
 !                    ! PENALISATION ADAPTATIF ACTIF mais pas encore de contact,
 !                    ! la penetration n'a pas de sens
 !                        ds_contact%continue_pene = 5
-                    endif
+                end if
 
 !
 ! ------------- Next contact point
 !
-                i_cont_poin = i_cont_poin + 1
+                i_cont_poin = i_cont_poin+1
             end do
         end do
     end do

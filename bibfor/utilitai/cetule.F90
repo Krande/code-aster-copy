@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine cetule(model0, tbgrca, codret)
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
     integer :: nbmcle
-    parameter  ( nbmcle = 3 )
+    parameter(nbmcle=3)
 !
 ! DECLARATION PARAMETRES D'APPELS
 ! -------------------------------
@@ -71,13 +71,13 @@ subroutine cetule(model0, tbgrca, codret)
     character(len=19) :: table
 !
 !     ------------------------------------------------------------------
-    data nomgrd / 'LONGUEUR', 'PRESSION', 'TEMP' /
+    data nomgrd/'LONGUEUR', 'PRESSION', 'TEMP'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    ibid=0
-    rbid=0.d0
-    cbid=(0.d0,0.d0)
+    ibid = 0
+    rbid = 0.d0
+    cbid = (0.d0, 0.d0)
 !
     modele = model0(1:8)
 !
@@ -85,9 +85,9 @@ subroutine cetule(model0, tbgrca, codret)
 ! 1. VALEURS PAR DEFAUT (R8VIDE ? VOIR TE0500)
 !====
 !
-    do 10 , iaux = 1 , nbmcle
-    tbgrca(iaux) = -1.d0
-    10 end do
+    do 10, iaux = 1, nbmcle
+        tbgrca(iaux) = -1.d0
+10  end do
 !
 !====
 ! 2. REPERAGE DE LA TABLE
@@ -99,7 +99,7 @@ subroutine cetule(model0, tbgrca, codret)
         codret = 0
     else
         codret = 1
-    endif
+    end if
 !
 !====
 ! 3. DECODAGE DE LA TABLE
@@ -107,27 +107,27 @@ subroutine cetule(model0, tbgrca, codret)
 !
     if (codret .eq. 0) then
 !
-        do 30 , iaux = 1 , nbmcle
+        do 30, iaux = 1, nbmcle
 !
-        call tbliva(table, 1, 'GRANDEUR', [ibid], [rbid],&
-                    [cbid], nomgrd( iaux), kbid, [rbid], 'VALE',&
-                    ctype, vali, valeur, valc, valk,&
-                    iret)
+            call tbliva(table, 1, 'GRANDEUR', [ibid], [rbid], &
+                        [cbid], nomgrd(iaux), kbid, [rbid], 'VALE', &
+                        ctype, vali, valeur, valc, valk, &
+                        iret)
 !
-        if (iret .eq. 0) then
+            if (iret .eq. 0) then
 !
-            tbgrca(iaux) = valeur
+                tbgrca(iaux) = valeur
 !
-        else if (iret.ge.2) then
+            else if (iret .ge. 2) then
 !
-            codret = 2
+                codret = 2
 !
-        endif
+            end if
 !
- 30     continue
+30          continue
 !
-    endif
+            end if
 !
-    call jedema()
+            call jedema()
 !
-end subroutine
+            end subroutine

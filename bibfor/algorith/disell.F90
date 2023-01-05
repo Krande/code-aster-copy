@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,9 +45,9 @@ subroutine disell(pz, az, bz, h)
     real(kind=8) :: eps, epsc, ba, r, z, cosx, sinx, t, a0, a1, a2, a3, a4, k
     real(kind=8) :: phi, qq, rr, dd
     real(kind=8) :: tt, phit, theta, dphi, dr, dz, rac, temp
-    parameter    (eps  = 1.d-6)
-    parameter    (epsc = 1.d-6)
-    parameter    (nitmx=100)
+    parameter(eps=1.d-6)
+    parameter(epsc=1.d-6)
+    parameter(nitmx=100)
     aster_logical :: linsid
 !
 ! ----------------------------------------------------------------------
@@ -56,10 +56,10 @@ subroutine disell(pz, az, bz, h)
 !
 !     COPIE LOCALE DES ARGUMENTS D'ENTREE
 !     SINON ON RISQUE DE LES MODIFIER
-    a=az
-    b=bz
-    p(1)=pz(1)
-    p(2)=pz(2)
+    a = az
+    b = bz
+    p(1) = pz(1)
+    p(2) = pz(2)
 !
 !     ON NOTE R ET Z LES COORDONNES DANS LE PLAN POUR ETRE EN
 !     CONFORMITE AVEC LES NOTATIONS DU PAPIER DE RÉFÉRENCE
@@ -70,7 +70,7 @@ subroutine disell(pz, az, bz, h)
 !     H EST POSITIF A L'EXTERIEUR DE L'ELLIPSE
 !
 !     VERIFICATIONS
-    ASSERT(a.gt.0.d0 .and. b.gt.0.d0)
+    ASSERT(a .gt. 0.d0 .and. b .gt. 0.d0)
     if (a .lt. b) then
 !       SI A EST PLUS PETIT QUE B, ON INVERSE A ET B
 !       ET AUSSI LES COORDONNÉES DU POINT P
@@ -80,31 +80,31 @@ subroutine disell(pz, az, bz, h)
         temp = p(1)
         p(1) = p(2)
         p(2) = temp
-    endif
+    end if
 !
 !     DEFINITION DE QUELQUES VARIABLES UTILES
 !     ---------------------------------------
 !
 !     ABSCISSE (TOUJOURS POSITIVE) ET ORDONNEE DU POINT P
-    r=abs(p(1))
-    z=p(2)
+    r = abs(p(1))
+    z = p(2)
 !
 !     RAPPORT B/A = (1-F)
-    ba=b/a
-    ASSERT(ba.le.1.d0)
+    ba = b/a
+    ASSERT(ba .le. 1.d0)
 !
 !     TRAITEMENT DU CAS PARTICULIER : POINT = CENTRE O
     if (sqrt(r**2+z**2) .lt. eps*a) then
         h = -b
         goto 999
-    endif
+    end if
 !
 !
 !     ITERATION 0 (= PREDICTION)
 !     --------------------------
 !
 !     TEST SI LE POINT EST A L'INTERIEUR DE L'ELLIPSE
-    linsid = ba**2*(r**2-a**2)+z**2.le.0.d0
+    linsid = ba**2*(r**2-a**2)+z**2 .le. 0.d0
     cosx = r/sqrt(r**2+z**2)
     sinx = z/sqrt(r**2+z**2)
     t = z/(r+sqrt(r**2+z**2))
@@ -115,13 +115,13 @@ subroutine disell(pz, az, bz, h)
     a1 = ba**2*r*cosx+z*sinx
     a0 = ba**2*(r**2-a**2)+z**2
     k = a0/(a1+sqrt(a1**2-a2*a0))
-    phi = atan2(z-k*sinx,ba**2*(r-k*cosx))
+    phi = atan2(z-k*sinx, ba**2*(r-k*cosx))
 !
 !     SI LA PREDICTION EST LA SOLUTION (CAS DU CERCLE PAR EX), ON SORT
     if (abs(k) .lt. eps*sqrt(r**2+z**2)) then
         h = k
         goto 999
-    endif
+    end if
 !
 !
 !     BOUCLE PRINCIPALE
@@ -139,9 +139,9 @@ subroutine disell(pz, az, bz, h)
 !
 !       REDUCTION DU POLYNOME EN DEGRE 3 PAR SUBSTITUTION DE LA
 !       RACINE CONNUE (T)
-        a3 = a3 + t
-        a2 = a2 + t*a3
-        a1 = a1 + t*a2
+        a3 = a3+t
+        a2 = a2+t*a3
+        a1 = a1+t*a2
 !
 !       RECHERCHE DES AUTRES RACINES REELLES
         qq = (3.d0*a2-a3**2)/9.d0
@@ -150,26 +150,26 @@ subroutine disell(pz, az, bz, h)
 !
         if (dd .ge. 0.d0) then
 !
-            tt = sign(&
-                 1.d0, rr+sqrt(dd))*(abs(rr+sqrt(dd))**(1.d0/3.d0) ) +sign(1.d0,&
-                 rr-sqrt(dd))*(abs(rr-sqrt(dd))**(1.d0/3.d0)&
-                 ) -a3/3.d0
-            phit = atan2( z*(1.d0+tt**2)-2.d0*k*tt, ba**2*(r*(1.d0+tt** 2) -k*(1.d0-tt**2)) )
+            tt = sign( &
+                 1.d0, rr+sqrt(dd))*(abs(rr+sqrt(dd))**(1.d0/3.d0))+sign(1.d0, &
+                                                       rr-sqrt(dd))*(abs(rr-sqrt(dd))**(1.d0/3.d0) &
+                                                                                       )-a3/3.d0
+            phit = atan2(z*(1.d0+tt**2)-2.d0*k*tt, ba**2*(r*(1.d0+tt**2)-k*(1.d0-tt**2)))
         else
             qq = -qq
             theta = trigom('ACOS', rr/(qq*sqrt(qq)))
             tt = 2.d0*sqrt(qq)*cos(theta/3.d0)-a3/3.d0
-            phit = atan2( z*(1.d0+tt**2)-2.d0*k*tt, ba**2*(r*(1.d0+tt** 2) -k*(1.d0-tt**2)) )
+            phit = atan2(z*(1.d0+tt**2)-2.d0*k*tt, ba**2*(r*(1.d0+tt**2)-k*(1.d0-tt**2)))
             if (phit*phi .lt. 0.d0) then
                 tt = 2.d0*sqrt(qq)*cos((theta+r8depi())/3.d0)-a3/3.d0
-                phit = atan2( z*(1.d0+tt**2)-2.d0*k*tt, ba**2*(r*(1.d0+ tt**2) -k*(1.d0-tt**2)) )
+                phit = atan2(z*(1.d0+tt**2)-2.d0*k*tt, ba**2*(r*(1.d0+tt**2)-k*(1.d0-tt**2)))
                 if (phit*phi .lt. 0.d0) then
-                    tt = 2.d0*sqrt(qq)*cos((theta+2.d0*r8depi())/3.d0) -a3/3.d0
-                    phit = atan2(z*(1.d0+tt**2)-2.d0*k*tt, ba**2* (r*(1.d0+tt**2)-k*(1.d0-tt**2))&
-                           )
-                endif
-            endif
-        endif
+                    tt = 2.d0*sqrt(qq)*cos((theta+2.d0*r8depi())/3.d0)-a3/3.d0
+                    phit = atan2(z*(1.d0+tt**2)-2.d0*k*tt, ba**2*(r*(1.d0+tt**2)-k*(1.d0-tt**2)) &
+                                 )
+                end if
+            end if
+        end if
 !
 !       POINT DONT L'ANGLE EST AU MILIEU DE PHI ET PHIT
         dphi = abs(phit-phi)/2.d0
@@ -182,7 +182,7 @@ subroutine disell(pz, az, bz, h)
         if (dphi .lt. epsc) then
             h = r*cos(phi)+z*sin(phi)-a*rac
             goto 999
-        endif
+        end if
 !
         dr = r-a*cos(phi)/rac
         dz = z-a*ba**2*sin(phi)/rac

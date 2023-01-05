@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matrth(fami, npg, young, nu, alpha,&
+subroutine matrth(fami, npg, young, nu, alpha, &
                   indith)
 !
     implicit none
@@ -45,7 +45,7 @@ subroutine matrth(fami, npg, young, nu, alpha,&
     integer :: indith, jcou, jmate
     real(kind=8) :: temp
 !-----------------------------------------------------------------------
-    indith=0
+    indith = 0
     nompar = 'TEMP'
 !
     call jevech('PMATERC', 'L', jmate)
@@ -56,19 +56,19 @@ subroutine matrth(fami, npg, young, nu, alpha,&
 !
         call jevech('PNBSP_I', 'L', jcou)
 !
-        nomres(1)='E'
-        nomres(2)='NU'
-        nomres(3)='ALPHA'
+        nomres(1) = 'E'
+        nomres(2) = 'NU'
+        nomres(3) = 'ALPHA'
 !
-        call moytem(fami, npg, 3*zi(jcou), '+', temp,&
+        call moytem(fami, npg, 3*zi(jcou), '+', temp, &
                     iret)
-        call rcvala(zi(jmate), ' ', phenom, 1, nompar,&
-                    [temp], 3, nomres, valres, icodre,&
+        call rcvala(zi(jmate), ' ', phenom, 1, nompar, &
+                    [temp], 3, nomres, valres, icodre, &
                     1)
         if (icodre(3) .ne. 0) then
             indith = -1
             goto 999
-        endif
+        end if
 !
 !     MATERIAU ISOTROPE
 !
@@ -77,25 +77,25 @@ subroutine matrth(fami, npg, young, nu, alpha,&
         alpha = valres(3)
 !
     else if (phenom .eq. 'ELAS_ORTH') then
-        nomres(1)='ALPHA_L'
-        nomres(2)='ALPHA_T'
-        call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, 0, nompar, [temp],&
+        nomres(1) = 'ALPHA_L'
+        nomres(2) = 'ALPHA_T'
+        call rcvalb(fami, 1, 1, '+', zi(jmate), &
+                    ' ', phenom, 0, nompar, [temp], &
                     2, nomres, valres, icodre, 1)
         if (icodre(1) .ne. 0) then
             indith = -1
             goto 999
         else
-            if ((valres(1).eq.0.d0) .and. (valres(2).eq.0.d0)) then
+            if ((valres(1) .eq. 0.d0) .and. (valres(2) .eq. 0.d0)) then
                 indith = -1
                 goto 999
             else
                 call utmess('F', 'ELEMENTS2_33')
-            endif
-        endif
+            end if
+        end if
     else
         call utmess('F', 'ELEMENTS_45', sk=phenom)
-    endif
+    end if
 !
 !
 999 continue

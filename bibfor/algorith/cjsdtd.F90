@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,14 +34,14 @@ subroutine cjsdtd(mod, q, dtddq)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    parameter     ( zero   = 0.d0   )
-    parameter     ( deux   = 2.d0   )
-    parameter     ( trois  = 3.d0   )
-    parameter     ( quatre = 4.d0   )
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
+    parameter(quatre=4.d0)
 !
     character(len=8) :: mod
 !
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
 !-----------------------------------------------------------------------
 !
@@ -59,83 +59,83 @@ subroutine cjsdtd(mod, q, dtddq)
 !
     if (mod(1:2) .eq. '3D') then
 !
-        dtddq(1,1) = ( - q(2) - q(3) ) / trois
-        dtddq(2,1) = ( - q(2) + deux*q(3) ) / trois
-        dtddq(3,1) = ( deux*q(2) - q(3) ) / trois
-        dtddq(4,1) = zero
-        dtddq(5,1) = zero
-        dtddq(6,1) = - q(6)
+        dtddq(1, 1) = (-q(2)-q(3))/trois
+        dtddq(2, 1) = (-q(2)+deux*q(3))/trois
+        dtddq(3, 1) = (deux*q(2)-q(3))/trois
+        dtddq(4, 1) = zero
+        dtddq(5, 1) = zero
+        dtddq(6, 1) = -q(6)
 !
 !
-        dtddq(1,2) = ( - q(1) + deux*q(3) ) / trois
-        dtddq(2,2) = ( - q(1) - q(3) ) / trois
-        dtddq(3,2) = ( deux*q(1) - q(3) ) / trois
-        dtddq(4,2) = zero
-        dtddq(5,2) = - q(5)
-        dtddq(6,2) = zero
+        dtddq(1, 2) = (-q(1)+deux*q(3))/trois
+        dtddq(2, 2) = (-q(1)-q(3))/trois
+        dtddq(3, 2) = (deux*q(1)-q(3))/trois
+        dtddq(4, 2) = zero
+        dtddq(5, 2) = -q(5)
+        dtddq(6, 2) = zero
 !
 !
-        dtddq(1,3) = ( - q(1) + deux*q(2) ) / trois
-        dtddq(2,3) = ( deux*q(1) - q(2) ) / trois
-        dtddq(3,3) = ( - q(1) - q(2) ) / trois
-        dtddq(4,3) = - q(4)
-        dtddq(5,3) = zero
-        dtddq(6,3) = zero
+        dtddq(1, 3) = (-q(1)+deux*q(2))/trois
+        dtddq(2, 3) = (deux*q(1)-q(2))/trois
+        dtddq(3, 3) = (-q(1)-q(2))/trois
+        dtddq(4, 3) = -q(4)
+        dtddq(5, 3) = zero
+        dtddq(6, 3) = zero
 !
 !
-        dtddq(1,4) = deux * q(4) / trois / deux
-        dtddq(2,4) = deux * q(4) / trois / deux
-        dtddq(3,4) = - quatre * q(4) / trois / deux
-        dtddq(4,4) = - q(3)
-        dtddq(5,4) = q(6) / rc2
-        dtddq(6,4) = q(5) / rc2
+        dtddq(1, 4) = deux*q(4)/trois/deux
+        dtddq(2, 4) = deux*q(4)/trois/deux
+        dtddq(3, 4) = -quatre*q(4)/trois/deux
+        dtddq(4, 4) = -q(3)
+        dtddq(5, 4) = q(6)/rc2
+        dtddq(6, 4) = q(5)/rc2
 !
 !
-        dtddq(1,5) = deux * q(5) / trois / deux
-        dtddq(2,5) = - quatre * q(5) / trois / deux
-        dtddq(3,5) = deux * q(5) / trois / deux
-        dtddq(4,5) = q(6) / rc2
-        dtddq(5,5) = - q(2)
-        dtddq(6,5) = q(5) / rc2
+        dtddq(1, 5) = deux*q(5)/trois/deux
+        dtddq(2, 5) = -quatre*q(5)/trois/deux
+        dtddq(3, 5) = deux*q(5)/trois/deux
+        dtddq(4, 5) = q(6)/rc2
+        dtddq(5, 5) = -q(2)
+        dtddq(6, 5) = q(5)/rc2
 !
 !
-        dtddq(1,6) = - quatre * q(6) / trois / deux
-        dtddq(2,6) = deux * q(6) / trois / deux
-        dtddq(3,6) = deux * q(6) / trois / deux
-        dtddq(4,6) = q(5) / rc2
-        dtddq(5,6) = q(4) / rc2
-        dtddq(6,6) = - q(1)
+        dtddq(1, 6) = -quatre*q(6)/trois/deux
+        dtddq(2, 6) = deux*q(6)/trois/deux
+        dtddq(3, 6) = deux*q(6)/trois/deux
+        dtddq(4, 6) = q(5)/rc2
+        dtddq(5, 6) = q(4)/rc2
+        dtddq(6, 6) = -q(1)
 !
 !
 !
 ! - MODELISATION 2D : D_PLAN ET AXIS
 !
-        else if ( mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS'&
-    ) then
+    else if (mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS' &
+             ) then
 !
 !
-        dtddq(1,1) = ( - q(2) - q(3) ) / trois
-        dtddq(2,1) = ( - q(2) + deux*q(3) ) / trois
-        dtddq(3,1) = ( deux*q(2) - q(3) ) / trois
-        dtddq(4,1) = zero
+        dtddq(1, 1) = (-q(2)-q(3))/trois
+        dtddq(2, 1) = (-q(2)+deux*q(3))/trois
+        dtddq(3, 1) = (deux*q(2)-q(3))/trois
+        dtddq(4, 1) = zero
 !
 !
-        dtddq(1,2) = ( - q(1) + deux*q(3) ) / trois
-        dtddq(2,2) = ( - q(1) - q(3) ) / trois
-        dtddq(3,2) = ( deux*q(1) - q(3) ) / trois
-        dtddq(4,2) = zero
+        dtddq(1, 2) = (-q(1)+deux*q(3))/trois
+        dtddq(2, 2) = (-q(1)-q(3))/trois
+        dtddq(3, 2) = (deux*q(1)-q(3))/trois
+        dtddq(4, 2) = zero
 !
 !
-        dtddq(1,3) = ( - q(1) + deux*q(2) ) / trois
-        dtddq(2,3) = ( deux*q(1) - q(2) ) / trois
-        dtddq(3,3) = ( - q(1) - q(2) ) / trois
-        dtddq(4,3) = - q(4)
+        dtddq(1, 3) = (-q(1)+deux*q(2))/trois
+        dtddq(2, 3) = (deux*q(1)-q(2))/trois
+        dtddq(3, 3) = (-q(1)-q(2))/trois
+        dtddq(4, 3) = -q(4)
 !
 !
-        dtddq(1,4) = deux * q(4) / trois / deux
-        dtddq(2,4) = deux * q(4) / trois / deux
-        dtddq(3,4) = - quatre * q(4) / trois / deux
-        dtddq(4,4) = - q(3)
+        dtddq(1, 4) = deux*q(4)/trois/deux
+        dtddq(2, 4) = deux*q(4)/trois/deux
+        dtddq(3, 4) = -quatre*q(4)/trois/deux
+        dtddq(4, 4) = -q(3)
 !
 !
 !
@@ -143,6 +143,6 @@ subroutine cjsdtd(mod, q, dtddq)
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
         call utmess('F', 'ALGORITH2_15')
-    endif
+    end if
 !
 end subroutine

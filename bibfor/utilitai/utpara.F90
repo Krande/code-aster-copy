@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
     character(len=5) :: suffix
     character(len=19) :: noms2
     integer :: nbpamx, nbpara
-    parameter (nbpamx=100)
+    parameter(nbpamx=100)
     character(len=32) :: para, lipara(nbpamx)
     character(len=16) :: nopara
     character(len=8) :: liacce(nbpamx), litype(nbpamx)
@@ -68,14 +68,14 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
     call jecreo(noms2//'.NOVA', bas1//' N K16')
     call jeecra(noms2//'.NOVA', 'NOMMAX', nbpara)
     do i = 1, nbpara
-        para=lipara(i)
-        i1= index(para,'#')
-        ASSERT(i1.ge.2)
-        nopara=para(1:i1-1)
+        para = lipara(i)
+        i1 = index(para, '#')
+        ASSERT(i1 .ge. 2)
+        nopara = para(1:i1-1)
         call jecroc(jexnom(noms2//'.NOVA', nopara))
     end do
 !
-    call jecrec(noms2//'.TAVA', bas1//' V K8', 'NU', 'CONTIG', 'CONSTANT',&
+    call jecrec(noms2//'.TAVA', bas1//' V K8', 'NU', 'CONTIG', 'CONSTANT', &
                 nbpara)
     call jeecra(noms2//'.TAVA', 'LONMAX', 4)
 !
@@ -83,54 +83,54 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !     -- CALCUL DE NBR, NBC, NBI, NBK8, ... :
 !     -- CALCUL DE LIACCE et LITYPE :
 !     ----------------------------------------
-    nbr=0
-    nbc=0
-    nbi=0
-    nbk8=0
-    nbk16=0
-    nbk24=0
-    nbk32=0
-    nbk80=0
+    nbr = 0
+    nbc = 0
+    nbi = 0
+    nbk8 = 0
+    nbk16 = 0
+    nbk24 = 0
+    nbk32 = 0
+    nbk80 = 0
     do i = 1, nbpara
-        para=lipara(i)
-        i1= index(para,'#')
-        ASSERT(para(i1:i1+2).eq.'#A#'.or.para(i1:i1+2).eq.'#P#')
-        type=para(i1+3:32)
-        litype(i)=type
-        acces=para(i1+1:i1+1)
+        para = lipara(i)
+        i1 = index(para, '#')
+        ASSERT(para(i1:i1+2) .eq. '#A#' .or. para(i1:i1+2) .eq. '#P#')
+        type = para(i1+3:32)
+        litype(i) = type
+        acces = para(i1+1:i1+1)
         if (acces .eq. 'A') then
-            liacce(i)='ACCES'
+            liacce(i) = 'ACCES'
         else
-            liacce(i)='PARA'
-        endif
+            liacce(i) = 'PARA'
+        end if
         if (type .eq. 'R') then
-            nbr=nbr+1
-        else if (type.eq.'C') then
-            nbc=nbc+1
-        else if (type.eq.'I') then
-            nbi=nbi+1
-        else if (type.eq.'K8') then
-            nbk8=nbk8+1
-        else if (type.eq.'K16') then
-            nbk16=nbk16+1
-        else if (type.eq.'K24') then
-            nbk24=nbk24+1
-        else if (type.eq.'K32') then
-            nbk32=nbk32+1
-        else if (type.eq.'K80') then
-            nbk80=nbk80+1
+            nbr = nbr+1
+        else if (type .eq. 'C') then
+            nbc = nbc+1
+        else if (type .eq. 'I') then
+            nbi = nbi+1
+        else if (type .eq. 'K8') then
+            nbk8 = nbk8+1
+        else if (type .eq. 'K16') then
+            nbk16 = nbk16+1
+        else if (type .eq. 'K24') then
+            nbk24 = nbk24+1
+        else if (type .eq. 'K32') then
+            nbk32 = nbk32+1
+        else if (type .eq. 'K80') then
+            nbk80 = nbk80+1
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 !
 !     -- PARAMETRES REELS :
 !     ---------------------
     if (nbr .gt. 0) then
-        suffix='.RSPR'
-        n1=nbr
-        n2=n1*nbordr
+        suffix = '.RSPR'
+        n1 = nbr
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V R', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
         do i = 1, n2
@@ -138,66 +138,66 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         end do
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            type=litype(i)
-            acces=liacce(i)
+            para = lipara(i)
+            i1 = index(para, '#')
+            type = litype(i)
+            acces = liacce(i)
             if (type .eq. 'R') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !     -- PARAMETRES COMPLEXES :
 !     -------------------------
     if (nbc .gt. 0) then
-        suffix='.RSPC'
-        n1=nbc
-        n2=n1*nbordr
+        suffix = '.RSPC'
+        n1 = nbc
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V C', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
         do i = 1, n2
-            zc(jpara+i-1) = dcmplx(rundef,rundef)
+            zc(jpara+i-1) = dcmplx(rundef, rundef)
         end do
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            type=litype(i)
-            acces=liacce(i)
-            acces=para(i1+1:i1+1)
+            para = lipara(i)
+            i1 = index(para, '#')
+            type = litype(i)
+            acces = liacce(i)
+            acces = para(i1+1:i1+1)
             if (type .eq. 'C') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !     -- PARAMETRES ENTIERS :
 !     ---------------------
     if (nbi .gt. 0) then
-        suffix='.RSPI'
-        n1=nbi
-        n2=n1*nbordr
+        suffix = '.RSPI'
+        n1 = nbi
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V I', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
         do i = 1, n2
@@ -205,180 +205,180 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         end do
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            acces=para(i1+1:i1+1)
-            type=litype(i)
-            acces=liacce(i)
+            para = lipara(i)
+            i1 = index(para, '#')
+            acces = para(i1+1:i1+1)
+            type = litype(i)
+            acces = liacce(i)
             if (type .eq. 'I') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !     -- PARAMETRES K8 :
 !     ---------------------
     if (nbk8 .gt. 0) then
-        suffix='.RSP8'
-        n1=nbk8
-        n2=n1*nbordr
+        suffix = '.RSP8'
+        n1 = nbk8
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K8', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            acces=para(i1+1:i1+1)
-            type=litype(i)
-            acces=liacce(i)
+            para = lipara(i)
+            i1 = index(para, '#')
+            acces = para(i1+1:i1+1)
+            type = litype(i)
+            acces = liacce(i)
             if (type .eq. 'K8') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !     -- PARAMETRES K16 :
 !     ---------------------
     if (nbk16 .gt. 0) then
-        suffix='.RS16'
-        n1=nbk16
-        n2=n1*nbordr
+        suffix = '.RS16'
+        n1 = nbk16
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K16', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            acces=para(i1+1:i1+1)
-            type=litype(i)
-            acces=liacce(i)
+            para = lipara(i)
+            i1 = index(para, '#')
+            acces = para(i1+1:i1+1)
+            type = litype(i)
+            acces = liacce(i)
             if (type .eq. 'K16') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !     -- PARAMETRES K24 :
 !     ---------------------
     if (nbk24 .gt. 0) then
-        suffix='.RS24'
-        n1=nbk24
-        n2=n1*nbordr
+        suffix = '.RS24'
+        n1 = nbk24
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K24', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            acces=para(i1+1:i1+1)
-            type=litype(i)
-            acces=liacce(i)
+            para = lipara(i)
+            i1 = index(para, '#')
+            acces = para(i1+1:i1+1)
+            type = litype(i)
+            acces = liacce(i)
             if (type .eq. 'K24') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !     -- PARAMETRES K32 :
 !     ---------------------
     if (nbk32 .gt. 0) then
-        suffix='.RS32'
-        n1=nbk32
-        n2=n1*nbordr
+        suffix = '.RS32'
+        n1 = nbk32
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K32', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            acces=para(i1+1:i1+1)
-            type=litype(i)
-            acces=liacce(i)
+            para = lipara(i)
+            i1 = index(para, '#')
+            acces = para(i1+1:i1+1)
+            type = litype(i)
+            acces = liacce(i)
             if (type .eq. 'K32') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !     -- PARAMETRES K80 :
 !     ---------------------
     if (nbk80 .gt. 0) then
-        suffix='.RS80'
-        n1=nbk80
-        n2=n1*nbordr
+        suffix = '.RS80'
+        n1 = nbk80
+        n2 = n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K80', n2, jpara)
         call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
-        ico=0
+        ico = 0
         do i = 1, nbpara
-            para=lipara(i)
-            i1= index(para,'#')
-            acces=para(i1+1:i1+1)
-            type=litype(i)
-            acces=liacce(i)
+            para = lipara(i)
+            i1 = index(para, '#')
+            acces = para(i1+1:i1+1)
+            type = litype(i)
+            acces = liacce(i)
             if (type .eq. 'K80') then
-                ico=ico+1
-                nopara= para(1:i1-1)
+                ico = ico+1
+                nopara = para(1:i1-1)
                 call jenonu(jexnom(noms2//'.NOVA', nopara), i1)
                 call jeveuo(jexnum(noms2//'.TAVA', i1), 'E', jtava)
                 zk8(jtava-1+1) = suffix
                 call codent(ico, 'G', zk8(jtava-1+2))
                 zk8(jtava-1+3) = ch8
                 zk8(jtava-1+4) = acces
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
     call jedema()

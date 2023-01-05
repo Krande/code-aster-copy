@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xlagsp(mesh        , model , crack, algo_lagr, nb_dim,&
+subroutine xlagsp(mesh, model, crack, algo_lagr, nb_dim, &
                   sdline_crack, l_pilo, tabai, l_ainter)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -85,7 +85,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbcmp
-    parameter    (nbcmp = 14)
+    parameter(nbcmp=14)
 !
     integer :: nb_node_mesh, nbar, nbarto, itypma
     integer :: ar(12, 3), na, nb, nunoa, nb_edge_max
@@ -108,9 +108,9 @@ implicit none
     integer :: iad2, iad3, iad4, ninter, pint, ifiss
     character(len=24) :: grp(3), gr, elfis_heav, elfis_ctip, elfis_hect
     character(len=6) :: nompro
-    parameter (nompro = 'XLAGSP')
+    parameter(nompro='XLAGSP')
     integer :: nmaenr, ienr, jgrp, jxc, ier, jnbpt
-    integer :: noeco(2),nuno1,nuno2,jlis,naren
+    integer :: noeco(2), nuno1, nuno2, jlis, naren
     character(len=8) ::  kbid
     aster_logical :: relpre, enleve
     integer :: nuno_1, nuno_2, ia2, decalage
@@ -122,8 +122,8 @@ implicit none
     aster_logical, pointer :: tab_enl(:) => null()
 !
 !   tolerances --- absolue et relative --- pour determiner si deux valeurs du critere sont egales
-    real(kind=8), parameter :: atol=1.e-12
-    real(kind=8), parameter :: rtol=1.e-12
+    real(kind=8), parameter :: atol = 1.e-12
+    real(kind=8), parameter :: rtol = 1.e-12
     aster_logical :: near
 !
 ! --------------------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ implicit none
     chslo = '&&XLAGSP.CHSLO'
     chsba = '&&XLAGSP.CHSBA'
     chsai = '&&XLAGSP.CHSAI'
-    ASSERT(nb_dim.le.3)
+    ASSERT(nb_dim .le. 3)
 !
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.LO EN CHAMP SIMPLE
 !
@@ -171,16 +171,16 @@ implicit none
 !
 ! --- SI SDLINE_CRACK EXISTE (PROPAGATION), ON LE LIT
 !
-    call jeexin(sdline_crack,ier)
+    call jeexin(sdline_crack, ier)
     relpre = .false.
-    if(ier.ne.0) then
-        call jelira(sdline_crack,'LONUTI',naren,kbid)
+    if (ier .ne. 0) then
+        call jelira(sdline_crack, 'LONUTI', naren, kbid)
         naren = naren/2
-        if(naren.ne.0) then
-           relpre = .true.
-           call jeveuo(sdline_crack,'L',jlis)
-        endif
-    endif
+        if (naren .ne. 0) then
+            relpre = .true.
+            call jeveuo(sdline_crack, 'L', jlis)
+        end if
+    end if
 !
 ! --- RECUPERATION DE DONNEES RELATIVES AU MAILLAGE
 !
@@ -197,7 +197,7 @@ implicit none
     else
         lmulti = .false.
         ifiss = 1
-    endif
+    end if
 ! --- RECUPERATION DU COMPTAGE DES FISSURES VUES PAR LES MAILLES
     if (lmulti) call jeveuo('&&XCONTA.NBSP', 'E', jnbpt)
 !
@@ -207,7 +207,7 @@ implicit none
     nb_edge_max = nb_node_mesh
 !
     nbarto = 0
-    ASSERT(nbcmp.eq.zxbas)
+    ASSERT(nbcmp .eq. zxbas)
     tabno = '&&XLAGSP.TABNO'
     tabint = '&&XLAGSP.TABINT'
     tabcri = '&&XLAGSP.TABCRI'
@@ -224,14 +224,14 @@ implicit none
 !
 ! --- CREATION DE LA LISTE DES ARETES COUPEES
 !
-    elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
-    elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
-    elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
-    call xelfis_lists(crack, model, elfis_heav,&
+    elfis_heav = '&&'//nompro//'.ELEMFISS.HEAV'
+    elfis_ctip = '&&'//nompro//'.ELEMFISS.CTIP'
+    elfis_hect = '&&'//nompro//'.ELEMFISS.HECT'
+    call xelfis_lists(crack, model, elfis_heav, &
                       elfis_ctip, elfis_hect)
-    grp(1)=elfis_heav
-    grp(2)=elfis_ctip
-    grp(3)=elfis_hect
+    grp(1) = elfis_heav
+    grp(2) = elfis_ctip
+    grp(3) = elfis_hect
 !
 ! --- REPERAGE NUM LOCAL DE FISSURE POUR CHAQUE MAILLE
 ! --- ENRICHIE
@@ -248,9 +248,9 @@ implicit none
             ima = zi(jgrp-1+ienr)
             if (lmulti) then
                 zi(jnbpt-1+ima) = zi(jnbpt-1+ima)+1
-            endif
+            end if
         end do
- 10     continue
+10      continue
     end do
 !
 !   menage
@@ -278,7 +278,7 @@ implicit none
 !
 ! --- RECUPERATION DU NOMBRE DE POINT D'INTERSECTIONS
 !
-        call cesexi('C', jcesd2, jcesl2, ima, 1,&
+        call cesexi('C', jcesd2, jcesl2, ima, 1, &
                     ifiss, 1, iad2)
         ninter = cesv2(iad2)
 ! --- NINTER DOIT DÉPENDRE DE LA FISS QUI COUPE SI ELEMENT XH2C,3C OU 4C
@@ -299,59 +299,59 @@ implicit none
 !
 ! --- NUMERO DE L'ARETE INTERSECTEES
 !
-            call cesexi('S', jcesd3, jcesl3, ima, 1,&
-                        ifiss, zxain*(pint-1)+ 1, iad3)
-            ASSERT(iad3.gt.0)
-            ia=nint(cesv3(iad3))
+            call cesexi('S', jcesd3, jcesl3, ima, 1, &
+                        ifiss, zxain*(pint-1)+1, iad3)
+            ASSERT(iad3 .gt. 0)
+            ia = nint(cesv3(iad3))
 ! - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
-            if (getexm('PILOTAGE','DIRE_PILO') .eq. 1) then
+            if (getexm('PILOTAGE', 'DIRE_PILO') .eq. 1) then
                 call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=0, nbret=npil)
-                npil=-npil
+                npil = -npil
                 if (npil .ge. 1) then
                     if (ia .eq. 0) then
-                        call cesexi('S', jcesd3, jcesl3, ima, 1,&
+                        call cesexi('S', jcesd3, jcesl3, ima, 1, &
                                     ifiss, zxain*(pint-1)+2, iad3)
-                        na=nint(cesv3(iad3))
-                        nb=na
+                        na = nint(cesv3(iad3))
+                        nb = na
                     else
-                        na = ar(ia,1)
-                        nb = ar(ia,2)
-                    endif
-                endif
+                        na = ar(ia, 1)
+                        nb = ar(ia, 2)
+                    end if
+                end if
 ! --- SI CE N'EST PAS UNE ARETE COUPEE, ON SORT
             else
                 if (ia .eq. 0) goto 110
-                na = ar(ia,1)
-                nb = ar(ia,2)
-            endif
+                na = ar(ia, 1)
+                nb = ar(ia, 2)
+            end if
 !
 ! --- RECUPERATION DES NOEUDS
 !
             nunoa = connex(zi(jconx2+ima-1)+na-1)
             nunob = connex(zi(jconx2+ima-1)+nb-1)
-            nunom=0
+            nunom = 0
 !
 ! --- EST-CE QUE L'ARETE EST DEJA VUE ?
 !
             do i = 1, nbarto
 !             ARETE DEJA VUE
-                if (nunoa .eq. zi(jtabno-1+3*(i-1)+1) .and. nunob .eq. zi( jtabno-1+3*(i-1)+2)) &
-                goto 110
-                if (nunoa .eq. zi(jtabno-1+3*(i-1)+2) .and. nunob .eq. zi( jtabno-1+3*(i-1)+1)) &
-                goto 110
+                if (nunoa .eq. zi(jtabno-1+3*(i-1)+1) .and. nunob .eq. zi(jtabno-1+3*(i-1)+2)) &
+                    goto 110
+                if (nunoa .eq. zi(jtabno-1+3*(i-1)+2) .and. nunob .eq. zi(jtabno-1+3*(i-1)+1)) &
+                    goto 110
             end do
 !
 ! --- NOUVELLE ARETE
 !
             nbarto = nbarto+1
-            ASSERT(nbarto.lt.nb_edge_max)
+            ASSERT(nbarto .lt. nb_edge_max)
             zi(jtabno-1+3*(nbarto-1)+1) = nunoa
             zi(jtabno-1+3*(nbarto-1)+2) = nunob
             zi(jtabno-1+3*(nbarto-1)+3) = nunom
             do i = 1, nb_dim
-                call cesexi('S', jcesd4, jcesl4, ima, 1,&
-                            ifiss, nb_dim*(pint- 1)+i, iad4)
-                ASSERT(iad4.gt.0)
+                call cesexi('S', jcesd4, jcesl4, ima, 1, &
+                            ifiss, nb_dim*(pint-1)+i, iad4)
+                ASSERT(iad4 .gt. 0)
                 c(i) = cesv4(iad4)
                 zr(jtabin-1+nb_dim*(nbarto-1)+i) = c(i)
             end do
@@ -360,99 +360,99 @@ implicit none
         end do
 !
     end do
- 99 continue
+99  continue
 !
 ! --- SI NLISEQ EXISTE, ON ENLEVE LES ARETES HYPERSTATIQUES POUR L'ANCIEN ESPACE
 !
-    if(relpre) then
+    if (relpre) then
 !
-        AS_ALLOCATE(vl=tab_enl,size=nbarto)
+        AS_ALLOCATE(vl=tab_enl, size=nbarto)
 !
-        do ia = 1,nbarto
+        do ia = 1, nbarto
 !
             enleve = .false.
             nunoa = zi(jtabno-1+3*(ia-1)+1)
             nunob = zi(jtabno-1+3*(ia-1)+2)
             noeco(1) = 0
             noeco(2) = 0
-            do i=1,naren
+            do i = 1, naren
                 nuno1 = zi(jlis-1+2*(i-1)+1)
                 nuno2 = zi(jlis-1+2*(i-1)+2)
 !
 !               SI ARETE VITALE PRECEDENTE, ON LA GARDE
-                if(nunoa.eq.nuno1.and.nunob.eq.nuno2) goto 882
-                if(nunoa.eq.nuno2.and.nunob.eq.nuno1) goto 882
+                if (nunoa .eq. nuno1 .and. nunob .eq. nuno2) goto 882
+                if (nunoa .eq. nuno2 .and. nunob .eq. nuno1) goto 882
 !
 !               ON REGARDE LES NOEUDS REPERTORIES DS NLISEQ PRECEDENT
-                if(nunoa.eq.nuno1.or.nunoa.eq.nuno2) then
-                    if(noeco(1).eq.0) then
+                if (nunoa .eq. nuno1 .or. nunoa .eq. nuno2) then
+                    if (noeco(1) .eq. 0) then
                         noeco(1) = nunoa
-                    elseif(nunoa.ne.noeco(1)) then
+                    elseif (nunoa .ne. noeco(1)) then
                         noeco(2) = nunoa
-                    endif
-                endif
+                    end if
+                end if
 !
-                if(nunob.eq.nuno1.or.nunob.eq.nuno2) then
-                   if(noeco(1).eq.0) then
-                       noeco(1) = nunob
-                   elseif(nunob.ne.noeco(1)) then
-                       noeco(2) = nunob
-                   endif
-                endif
+                if (nunob .eq. nuno1 .or. nunob .eq. nuno2) then
+                    if (noeco(1) .eq. 0) then
+                        noeco(1) = nunob
+                    elseif (nunob .ne. noeco(1)) then
+                        noeco(2) = nunob
+                    end if
+                end if
             end do
-            if(noeco(1).ne.0.and.noeco(2).ne.0) enleve = .true.
+            if (noeco(1) .ne. 0 .and. noeco(2) .ne. 0) enleve = .true.
 !           Ajout
 !           On regarde si un des noeuds connecte a une ancienne arete
 !           vitale qui n est plus intersectee
 !           Si oui, on laisse l arete
-            if(enleve) then
-              do i=1,naren
-                 nuno1 = zi(jlis-1+2*(i-1)+1)
-                 nuno2 = zi(jlis-1+2*(i-1)+2)
+            if (enleve) then
+                do i = 1, naren
+                    nuno1 = zi(jlis-1+2*(i-1)+1)
+                    nuno2 = zi(jlis-1+2*(i-1)+2)
 !
 !                Ancienne arete vitale connectee
-                 if(noeco(1).eq.nuno1.or.noeco(1).eq.nuno2.or.&
-                    noeco(2).eq.nuno1.or.noeco(2).eq.nuno2) then
-                    do ia2=1,nbarto
-                         nuno_1 = zi(jtabno-1+3*(ia2-1)+1)
-                         nuno_2 = zi(jtabno-1+3*(ia2-1)+2)
+                    if (noeco(1) .eq. nuno1 .or. noeco(1) .eq. nuno2 .or. &
+                        noeco(2) .eq. nuno1 .or. noeco(2) .eq. nuno2) then
+                        do ia2 = 1, nbarto
+                            nuno_1 = zi(jtabno-1+3*(ia2-1)+1)
+                            nuno_2 = zi(jtabno-1+3*(ia2-1)+2)
 !
-                         if((nuno_1.eq.nuno1.and.nuno_2.eq.nuno2).or.&
-                            (nuno_1.eq.nuno2.and.nuno_2.eq.nuno1)) goto 881
+                            if ((nuno_1 .eq. nuno1 .and. nuno_2 .eq. nuno2) .or. &
+                                (nuno_1 .eq. nuno2 .and. nuno_2 .eq. nuno1)) goto 881
 !
-                     end do
+                        end do
 !                    Arete vitale perdue pour le nouvel espace
-                     enleve = .false.
-                     goto 882
-881                  continue
-                 endif
-              end do
-            endif
+                        enleve = .false.
+                        goto 882
+881                     continue
+                    end if
+                end do
+            end if
 !
 !           Si on doit enlever l arete
-882        continue
-           tab_enl(ia) = enleve
+882         continue
+            tab_enl(ia) = enleve
         end do
 !
         decalage = 0
-        do ia=1, nbarto
-            if(tab_enl(ia)) then
-               decalage = decalage+1
+        do ia = 1, nbarto
+            if (tab_enl(ia)) then
+                decalage = decalage+1
             else
-               zi(jtabno-1+3*(ia-decalage-1)+1) = zi(jtabno-1+3*(ia-1)+1)
-               zi(jtabno-1+3*(ia-decalage-1)+2) = zi(jtabno-1+3*(ia-1)+2)
-               zi(jtabno-1+3*(ia-decalage-1)+3) = zi(jtabno-1+3*(ia-1)+3)
-               do i=1,nb_dim
-               zr(jtabin-1+nb_dim*(ia-decalage-1)+i) = zr(jtabin-1+nb_dim*(ia-1)+i)
-               end do
-            endif
+                zi(jtabno-1+3*(ia-decalage-1)+1) = zi(jtabno-1+3*(ia-1)+1)
+                zi(jtabno-1+3*(ia-decalage-1)+2) = zi(jtabno-1+3*(ia-1)+2)
+                zi(jtabno-1+3*(ia-decalage-1)+3) = zi(jtabno-1+3*(ia-1)+3)
+                do i = 1, nb_dim
+                    zr(jtabin-1+nb_dim*(ia-decalage-1)+i) = zr(jtabin-1+nb_dim*(ia-1)+i)
+                end do
+            end if
         end do
 !
-        do ia =nbarto-decalage+1,nbarto
+        do ia = nbarto-decalage+1, nbarto
             zi(jtabno-1+3*(ia-1)+1) = 0
             zi(jtabno-1+3*(ia-1)+2) = 0
             zi(jtabno-1+3*(ia-1)+3) = 0
-            do i=1,nb_dim
+            do i = 1, nb_dim
                 zr(jtabin-1+nb_dim*(ia-1)+i) = 0.d0
             end do
         end do
@@ -460,7 +460,7 @@ implicit none
         nbarto = nbarto-decalage
 !
         AS_DEALLOCATE(vl=tab_enl)
-    endif
+    end if
 !
 ! --- CRITERE POUR DEPARTAGER LES ARETES HYPERSTATIQUES:
 !     LONGUEUR DE FISSURE CONTROLÏ¿ŒE, I.E.
@@ -472,70 +472,70 @@ implicit none
         nunob = zi(jtabno-1+3*(ia-1)+2)
         nunom = zi(jtabno-1+3*(ia-1)+3)
         do i = 1, nb_dim
-            c(i)=zr(jtabin-1+nb_dim*(ia-1)+i)
+            c(i) = zr(jtabin-1+nb_dim*(ia-1)+i)
         end do
-        dist1=r8maem()
-        dist2=r8maem()
-        ia1=0
-        ia2=0
+        dist1 = r8maem()
+        dist2 = r8maem()
+        ia1 = 0
+        ia2 = 0
 !
         do iia = 1, nbarto
             nunoaa = zi(jtabno-1+3*(iia-1)+1)
             nunobb = zi(jtabno-1+3*(iia-1)+2)
-            if ((nunoa.eq.nunoaa.and.nunob.ne.nunobb) .or.&
-                ( nunoa.eq.nunobb.and.nunob.ne.nunoaa)) then
+            if ((nunoa .eq. nunoaa .and. nunob .ne. nunobb) .or. &
+                (nunoa .eq. nunobb .and. nunob .ne. nunoaa)) then
 !           NUNOA CONNECTE LES DEUX ARETES
                 do i = 1, nb_dim
-                    cc(i)=zr(jtabin-1+nb_dim*(iia-1)+i)
+                    cc(i) = zr(jtabin-1+nb_dim*(iia-1)+i)
                 end do
-                lon=0.d0
+                lon = 0.d0
                 do i = 1, nb_dim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
                 end do
-                lon=sqrt(lon)
+                lon = sqrt(lon)
 !
 !               lon est-il egal a dist1 ?
-                near = abs(lon-dist1) .le. (atol + dist1*rtol)
+                near = abs(lon-dist1) .le. (atol+dist1*rtol)
                 if (lon .lt. dist1 .and. .not. near) then
-                    dist1=lon
-                    ia1=iia
-                endif
-            endif
-            if ((nunoa.ne.nunoaa.and.nunob.eq.nunobb) .or.&
-                ( nunoa.ne.nunobb.and.nunob.eq.nunoaa)) then
+                    dist1 = lon
+                    ia1 = iia
+                end if
+            end if
+            if ((nunoa .ne. nunoaa .and. nunob .eq. nunobb) .or. &
+                (nunoa .ne. nunobb .and. nunob .eq. nunoaa)) then
 !           NUNOB CONNECTE LES DEUX ARETES
                 do i = 1, nb_dim
-                    cc(i)=zr(jtabin-1+nb_dim*(iia-1)+i)
+                    cc(i) = zr(jtabin-1+nb_dim*(iia-1)+i)
                 end do
-                lon=0.d0
+                lon = 0.d0
                 do i = 1, nb_dim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
                 end do
-                lon=sqrt(lon)
+                lon = sqrt(lon)
 !               lon est-il egal a dist2 ?
-                near = abs(lon-dist2) .le. (atol + dist2*rtol)
+                near = abs(lon-dist2) .le. (atol+dist2*rtol)
                 if (lon .lt. dist2 .and. .not. near) then
-                    dist2=lon
-                    ia2=iia
-                endif
-            endif
+                    dist2 = lon
+                    ia2 = iia
+                end if
+            end if
         end do
-        lon=0.d0
+        lon = 0.d0
         if (ia2 .ne. 0) then
-            lon=lon+dist2
-        endif
+            lon = lon+dist2
+        end if
         if (ia1 .ne. 0) then
-            lon=lon+dist1
-        endif
+            lon = lon+dist1
+        end if
 !
-        zr(jtabcr-1+1*(ia-1)+1)=lon
+        zr(jtabcr-1+1*(ia-1)+1) = lon
 !
     end do
 !
 ! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !
-    call xlagsc(nb_dim, nb_node_mesh, nbarto, nb_edge_max, algo_lagr,&
-                jtabno, jtabin      , jtabcr, crack      , sdline_crack,&
+    call xlagsc(nb_dim, nb_node_mesh, nbarto, nb_edge_max, algo_lagr, &
+                jtabno, jtabin, jtabcr, crack, sdline_crack, &
                 l_pilo, tabai, l_ainter)
 !
 ! --- SI LE MULTI-HEAVISIDE EST ACTIF, ON CREE UNE SD SUPPLEMENTAIRE
@@ -555,10 +555,10 @@ implicit none
 ! --- AFFICHAGE LISTE REL. LINEAIRES
 !
     if (niv .ge. 2) then
-        write(ifm,*) '<XFEM  > LISTE DES RELATIONS LINEAIRES'
-        call utimsd(ifm, -1, .true._1, .true._1, sdline_crack,&
+        write (ifm, *) '<XFEM  > LISTE DES RELATIONS LINEAIRES'
+        call utimsd(ifm, -1, .true._1, .true._1, sdline_crack, &
                     1, ' ', perm='OUI')
-    endif
+    end if
 !
     call jedema()
 end subroutine

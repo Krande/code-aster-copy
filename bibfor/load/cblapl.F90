@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 subroutine cblapl(load, mesh, model)
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/calapl.h"
 !
-character(len=8), intent(in) :: load, mesh, model
+    character(len=8), intent(in) :: load, mesh, model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,6 +47,6 @@ character(len=8), intent(in) :: load, mesh, model
     call getfac(keywordfact, nbOcc)
     if (nbOcc .ne. 0) then
         call calapl(load, mesh, model, nbOcc)
-    endif
+    end if
 !
 end subroutine

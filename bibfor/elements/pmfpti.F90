@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmfpti(num,poids,vff, xl, xi,&
+subroutine pmfpti(num, poids, vff, xl, xi, &
                   wi, b, g)
     implicit none
     integer :: num
-    real(kind=8) :: poids(*), vff(2,*), xl, xi, wi, b(4), g
+    real(kind=8) :: poids(*), vff(2, *), xl, xi, wi, b(4), g
 ! -----------------------------------------------------------
 ! ---  POSITION ET POIDS DES POINTS DE GAUSS + MATRICE B
 !         DE L'ELEMENT POUTRE EULER (HERMITE)
@@ -35,29 +35,29 @@ subroutine pmfpti(num,poids,vff, xl, xi,&
 
     integer :: ino
     real(kind=8) :: un, deux, quatre, six, douze
-    parameter (un=1.d0,deux=2.d0,quatre=4.d0,six=6.d0,douze=12.d0)
+    parameter(un=1.d0, deux=2.d0, quatre=4.d0, six=6.d0, douze=12.d0)
     real(kind=8) :: xp(2)
-    data xp /0.d0 , 1.d0/
+    data xp/0.d0, 1.d0/
 !
     xi = 0.d0
     if (num .gt. 0) then
 !       NUM=1 OU 2 : POINTS DE GAUSS
-        do ino = 1,2
-            xi = xi + xp(ino)*vff(ino,num)
-        enddo
+        do ino = 1, 2
+            xi = xi+xp(ino)*vff(ino, num)
+        end do
 !       LE JACOBIEN L/2 EST MIS DIRECTEMENT DANS LE POIDS
-        wi=poids(num)*xl/deux
+        wi = poids(num)*xl/deux
     else
 !       NUM=-1 OU -2 : NOEUDS
-        xi=xp(-num)
-    endif
+        xi = xp(-num)
+    end if
 !     -- ON NE STOCKE PAS LES 0. DE LA MATRICE B,
 !        ON NE CALCULE PAS LES OPPOSES
-    b(1)=un/xl
-    b(2)=(-six+douze*xi)/xl/xl
-    b(3)=(-quatre+six*xi)/xl
-    b(4)=(-deux+six*xi)/xl
+    b(1) = un/xl
+    b(2) = (-six+douze*xi)/xl/xl
+    b(3) = (-quatre+six*xi)/xl
+    b(4) = (-deux+six*xi)/xl
 !
-    g=(-deux*xi+un)*quatre/xl
+    g = (-deux*xi+un)*quatre/xl
 !
 end subroutine

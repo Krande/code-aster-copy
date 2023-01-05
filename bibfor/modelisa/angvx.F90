@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,12 +32,12 @@ subroutine angvx(gx, alpha, beta)
     if (abs(gx(2)) .le. tst .and. abs(gx(1)) .le. tst) then
         alpha = 0.d0
     else
-        alpha = atan2(gx(2),gx(1))
-    endif
-    p = sqrt( gx(1)*gx(1) + gx(2)*gx(2) )
+        alpha = atan2(gx(2), gx(1))
+    end if
+    p = sqrt(gx(1)*gx(1)+gx(2)*gx(2))
     if (abs(gx(3)) .le. tst .and. abs(p) .le. tst) then
         beta = 0.d0
     else
-        beta = - atan2(gx(3),p)
-    endif
+        beta = -atan2(gx(3), p)
+    end if
 end subroutine

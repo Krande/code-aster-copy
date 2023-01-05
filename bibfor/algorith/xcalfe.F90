@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcalfe(he, lsng, lstg, baslog, fe,&
+subroutine xcalfe(he, lsng, lstg, baslog, fe, &
                   dgdgl, iret)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -61,19 +61,19 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
     call xbasgl(3, baslog, 1, p, invp)
 !
 !     COORDONNÉES POLAIRES DU POINT
-    rg=sqrt(lsng**2+lstg**2)
+    rg = sqrt(lsng**2+lstg**2)
 !
     if (rg .gt. r8prem()) then
 !       LE POINT N'EST PAS SUR LE FOND DE FISSURE
-        tg = he * abs(atan2(lsng,lstg))
-        iret=1
+        tg = he*abs(atan2(lsng, lstg))
+        iret = 1
     else
 !       LE POINT EST SUR LE FOND DE FISSURE :
 !       L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
 !       ON NE FERA PAS LE CALCUL DES DÉRIVÉES
-        tg=0.d0
-        iret=0
-    endif
+        tg = 0.d0
+        iret = 0
+    end if
 !
 !     FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE -> FE
     call xdeffe(rg, tg, fe)
@@ -88,17 +88,17 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 !
 !     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
     do i = 1, 4
-        dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
-        dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
-        dgdlo(i,3)=0.d0
+        dgdlo(i, 1) = dgdpo(i, 1)*cos(tg)-dgdpo(i, 2)*sin(tg)/rg
+        dgdlo(i, 2) = dgdpo(i, 1)*sin(tg)+dgdpo(i, 2)*cos(tg)/rg
+        dgdlo(i, 3) = 0.d0
     end do
 !
 !     DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
     do i = 1, 4
         do j = 1, 3
-            dgdgl(i,j)=0.d0
+            dgdgl(i, j) = 0.d0
             do k = 1, 3
-                dgdgl(i,j)=dgdgl(i,j)+dgdlo(i,k)*invp(k,j)
+                dgdgl(i, j) = dgdgl(i, j)+dgdlo(i, k)*invp(k, j)
             end do
         end do
     end do

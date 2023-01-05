@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,33 +60,33 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
     integer :: n1, n2, n3, n4, ndim
 !-----------------------------------------------------------------------
     call jemarq()
-    nbno=0
+    nbno = 0
 !
 !
 !
     call jeexin('&&SSDEU1.WK1', iret)
     if (iret .le. 0) then
-        ndim=100
+        ndim = 100
         call wkvect('&&SSDEU1.WK1', 'V V K8', ndim, iawk1)
     else
         call jelira('&&SSDEU1.WK1', 'LONMAX', ndim)
         call jeveuo('&&SSDEU1.WK1', 'E', iawk1)
-    endif
+    end if
 !
 !
 !     --CAS NOEUD:
 !     ------------
-    call getvem(noma, 'NOEUD', 'EXTERIEUR', 'NOEUD', 1,&
+    call getvem(noma, 'NOEUD', 'EXTERIEUR', 'NOEUD', 1, &
                 0, kbi81, n1)
     if (n1 .ne. 0) then
-        n3=-n1
+        n3 = -n1
         if (ndim .lt. n3) then
             call jedetr('&&SSDEU1.WK1')
             call wkvect('&&SSDEU1.WK1', 'V V K8', 2*n3, iawk1)
-        endif
-        call getvem(noma, 'NOEUD', 'EXTERIEUR', 'NOEUD', 1,&
-                    n3, zk8( iawk1), ibid)
-        nbno=nbno+n3
+        end if
+        call getvem(noma, 'NOEUD', 'EXTERIEUR', 'NOEUD', 1, &
+                    n3, zk8(iawk1), ibid)
+        nbno = nbno+n3
         if (motcle .eq. 'LISTE') then
             do i = 1, n3
                 call jenonu(jexnom(noma//'.NOMNOE', zk8(iawk1-1+i)), iliste(i))
@@ -94,41 +94,41 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
                     valk(1) = zk8(iawk1-1+i)
                     valk(2) = noma
                     call utmess('F', 'SOUSTRUC_48', nk=2, valk=valk)
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --CAS GROUP_NO:
 !     ---------------
-    call getvem(noma, 'GROUP_NO', 'EXTERIEUR', 'GROUP_NO', 1,&
+    call getvem(noma, 'GROUP_NO', 'EXTERIEUR', 'GROUP_NO', 1, &
                 0, kbi81, n2)
     if (n2 .ne. 0) then
-        n3=-n2
+        n3 = -n2
         call jedetr('&&SSDEU1.WK1')
         call wkvect('&&SSDEU1.WK1', 'V V K24', 2*n3, iawk1)
-        call getvem(noma, 'GROUP_NO', 'EXTERIEUR', 'GROUP_NO', 1,&
+        call getvem(noma, 'GROUP_NO', 'EXTERIEUR', 'GROUP_NO', 1, &
                     n3, zk24(iawk1), ibid)
-        ico=nbno
+        ico = nbno
         do i = 1, n3
             call jeexin(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), iret)
             if (iret .eq. 0) then
                 valk(1) = zk24(iawk1-1+i)
                 valk(2) = noma
                 call utmess('F', 'SOUSTRUC_49', nk=2, valk=valk)
-            endif
+            end if
             call jelira(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), 'LONMAX', n4)
-            nbno= nbno+n4
+            nbno = nbno+n4
             if (motcle .eq. 'LISTE') then
                 call jeveuo(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), 'L', iagpno)
                 do ii = 1, n4
-                    ico= ico+1
-                    iliste(ico)= zi(iagpno-1+ii)
+                    ico = ico+1
+                    iliste(ico) = zi(iagpno-1+ii)
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 !

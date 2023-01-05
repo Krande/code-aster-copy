@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
-                  idir, igrp, xint, yint, rint,&
+subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp, &
+                  idir, igrp, xint, yint, rint, &
                   sgn, orig, beta, a, b)
     implicit none
 !
@@ -75,7 +75,7 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
     nima = ndim(7)
     nima2 = ndim(8)
     nbtot = nbcyl*(2*nima+1)*(2*nima+1)
-    nbfin = nbtot + 4*(nima2)*(nima2+2*nima+1)
+    nbfin = nbtot+4*(nima2)*(nima2+2*nima+1)
 !
 !
     pi = r8pi()
@@ -90,25 +90,25 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
             rayi = rayi*rint(i)
 !
             do k = 1, nbtot
-                dc = sqrt(&
-                     ( xint(k)-xint(i))*(xint(k)-xint(i))+ (yint(k)-yint(i))*(yint(k)-yint(i) ))
+                dc = sqrt( &
+                     (xint(k)-xint(i))*(xint(k)-xint(i))+(yint(k)-yint(i))*(yint(k)-yint(i)))
 !
                 if (dc .ne. 0.d0) then
                     if (abs(abs(dc)-abs(xint(k)-xint(i))) .gt. epsit) then
-                        fic = trigom('ACOS',(xint(k)-xint(i))/dc)
+                        fic = trigom('ACOS', (xint(k)-xint(i))/dc)
                         if ((yint(k)-yint(i)) .lt. 0.d0) then
                             fic = 2.d0*pi-fic
-                        endif
+                        end if
                     else
-                        fic = pi / 2.d0 * (&
-                              1.d0 - ( ( xint(k)-xint(i))/ dc) / abs(((xint(k)-xint(i))/dc ) ))
+                        fic = pi/2.d0*( &
+                              1.d0-((xint(k)-xint(i))/dc)/abs(((xint(k)-xint(i))/dc)))
                         if ((yint(k)-yint(i)) .lt. 0.d0) then
                             fic = 2.d0*pi-fic
-                        endif
-                    endif
+                        end if
+                    end if
                 else
                     fic = 0.d0
-                endif
+                end if
 !
                 if (k .ne. i) then
                     rayk = rint(k)
@@ -118,47 +118,47 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                         rayk = rint(k)*rayk
                         dc1 = dc*dc1
                         nl = 2*l+2*nbtron*(orig(k)-1)
-                        coef = mefac2(l,j)*rayi*rayk/dc1
+                        coef = mefac2(l, j)*rayi*rayk/dc1
                         coef = coef*((-1)**l)
                         arg = (j+l)*fic-l*beta(k)
-                        a(nj-1,nl-1) = coef*cos(arg)+a(nj-1,nl-1)
-                        a(nj,nl-1) = coef*sin(arg)+a(nj,nl-1)
-                        a(nj-1,nl) = sgn(k)*coef*sin(arg)+a(nj-1,nl)
-                        a(nj,nl) = -sgn(k)*coef*cos(arg)+a(nj,nl)
+                        a(nj-1, nl-1) = coef*cos(arg)+a(nj-1, nl-1)
+                        a(nj, nl-1) = coef*sin(arg)+a(nj, nl-1)
+                        a(nj-1, nl) = sgn(k)*coef*sin(arg)+a(nj-1, nl)
+                        a(nj, nl) = -sgn(k)*coef*cos(arg)+a(nj, nl)
                     end do
 !
                 else
                     nl = 2*j+2*nbtron*(orig(k)-1)
-                    a(nj-1,nl-1) = a(nj-1,nl-1)-j
-                    a(nj,nl) = a(nj,nl)-j
-                endif
+                    a(nj-1, nl-1) = a(nj-1, nl-1)-j
+                    a(nj, nl) = a(nj, nl)-j
+                end if
             end do
 !
             do k = nbtot+1, nbfin
-                dc = sqrt(&
-                     ( xint(k)-xint(i))*(xint(k)-xint(i))+ (yint(k)-yint(i))*(yint(k)-yint(i) ))
+                dc = sqrt( &
+                     (xint(k)-xint(i))*(xint(k)-xint(i))+(yint(k)-yint(i))*(yint(k)-yint(i)))
 !
                 if (dc .ne. 0.d0) then
                     if (abs(abs(dc)-abs(xint(k)-xint(i))) .gt. epsit) then
-                        fic = trigom('ACOS',(xint(k)-xint(i))/dc)
+                        fic = trigom('ACOS', (xint(k)-xint(i))/dc)
                         if ((yint(k)-yint(i)) .lt. 0.d0) then
                             fic = 2.d0*pi-fic
-                        endif
+                        end if
                     else
-                        fic = pi / 2.d0 * (&
-                              1.d0 - ( ( xint(k)-xint(i))/ dc) / abs(((xint(k)-xint(i))/dc ) ))
+                        fic = pi/2.d0*( &
+                              1.d0-((xint(k)-xint(i))/dc)/abs(((xint(k)-xint(i))/dc)))
                         if ((yint(k)-yint(i)) .lt. 0.d0) then
                             fic = 2.d0*pi-fic
-                        endif
-                    endif
+                        end if
+                    end if
                 else
                     fic = 0.d0
-                endif
+                end if
                 dc1 = dc**j
 !
                 do l = 1, nbtron
                     dc1 = dc1*dc
-                    coef = mefac2(l,j)*(rayi)/dc1
+                    coef = mefac2(l, j)*(rayi)/dc1
                     coef = coef*((-1)**l)
                     arg = (l+j)*fic-l*beta(k)
                     coef1 = coef*cos(arg)
@@ -167,10 +167,10 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                     do m = 1, nbcyl
                         nm = 2*nbtron*(m-1)+2*l
                         arg = rint(m)**(l+1)
-                        a(nj-1,nm-1) = coef1*arg+a(nj-1,nm-1)
-                        a(nj,nm-1) = coef2*arg+a(nj,nm-1)
-                        a(nj-1,nm) = sgn(k)*coef2*arg+a(nj-1,nm)
-                        a(nj,nm) = -sgn(k)*coef1*arg+a(nj,nm)
+                        a(nj-1, nm-1) = coef1*arg+a(nj-1, nm-1)
+                        a(nj, nm-1) = coef2*arg+a(nj, nm-1)
+                        a(nj-1, nm) = sgn(k)*coef2*arg+a(nj-1, nm)
+                        a(nj, nm) = -sgn(k)*coef1*arg+a(nj, nm)
                     end do
                 end do
             end do
@@ -178,7 +178,7 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
 !
         if (numgrp(i) .eq. igrp) then
             b(2*nbtron*(i-1)+idir) = 1.d0
-        endif
+        end if
     end do
 !
 end subroutine

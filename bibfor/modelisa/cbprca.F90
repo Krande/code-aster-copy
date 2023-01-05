@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cbprca(phenom_, load)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/gettco.h"
 #include "asterfort/assert.h"
@@ -61,20 +61,20 @@ implicit none
 !
 ! ----- Check
 !
-        ASSERT(nb_occ.eq.1)
+        ASSERT(nb_occ .eq. 1)
         call dismoi('NB_CHAMP_UTI', evol_char, 'RESULTAT', repi=nb_cham)
         if (nb_cham .le. 0) then
             call utmess('F', 'CHARGES3_1', sk=evol_char)
-        endif
+        end if
         call gettco(evol_char, type_sd)
         ASSERT(type_sd .eq. 'EVOL_CHAR')
 !
 ! ----- Save
 !
         object = obje_pref(1:13)//'.EVOL.CHAR'
-        call wkvect(object, 'G V K8', 1, vk8 = p_object)
+        call wkvect(object, 'G V K8', 1, vk8=p_object)
         p_object(1) = evol_char
 
-    endif
+    end if
 
 end subroutine

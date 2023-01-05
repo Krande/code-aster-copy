@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmflin(ds_posttimestep, matass, freqr, linsta)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
-character(len=19) :: matass
-aster_logical :: linsta
-real(kind=8) :: freqr
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    character(len=19) :: matass
+    aster_logical :: linsta
+    real(kind=8) :: freqr
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,39 +68,39 @@ real(kind=8) :: freqr
     if (abs(freqr0) .gt. 1.d30) then
         ds_posttimestep%stab_para%prev_freq = freqr
         freqr0 = freqr
-    endif
+    end if
     l_geom_matr = ds_posttimestep%stab_para%l_geom_matr
-    prec        = ds_posttimestep%stab_para%instab_prec
-    sign        = ds_posttimestep%stab_para%instab_sign
+    prec = ds_posttimestep%stab_para%instab_prec
+    sign = ds_posttimestep%stab_para%instab_sign
 !
 ! --- DETECTION INSTABILITE
 !
     if (.not. l_geom_matr) then
         call jeveuo(matass//'.REFA', 'L', vk24=refa)
-        if (refa(11)(1:11) .ne. 'MPI_COMPLET') then
+        if (refa(11) (1:11) .ne. 'MPI_COMPLET') then
             call utmess('F', 'MECANONLINE6_13')
-        endif
+        end if
         ldist = ASTER_FALSE
         call dismoi('MATR_HPC', matass, 'MATR_ASSE', repk=mathpc)
-        lmhpc = mathpc.eq.'OUI'
+        lmhpc = mathpc .eq. 'OUI'
         call echmat(matass, ldist, lmhpc, minmat, maxmat)
-        if (((freqr0*freqr).lt.0.d0) .or. (abs(freqr).lt.(prec*minmat))) then
+        if (((freqr0*freqr) .lt. 0.d0) .or. (abs(freqr) .lt. (prec*minmat))) then
             linsta = ASTER_TRUE
-        endif
+        end if
     else
         valtst = ASTER_FALSE
         if (sign .eq. 'POSITIF') then
-            valtst = ((freqr.ge.0.d0).and.(abs(freqr).lt.(1.d0+prec)))
-        else if (sign.eq.'NEGATIF') then
-            valtst = ((freqr.le.0.d0).and.(abs(freqr).lt.(1.d0+prec)))
-        else if (sign.eq.'POSITIF_NEGATIF') then
-            valtst = (abs(freqr).lt.(1.d0+prec))
+            valtst = ((freqr .ge. 0.d0) .and. (abs(freqr) .lt. (1.d0+prec)))
+        else if (sign .eq. 'NEGATIF') then
+            valtst = ((freqr .le. 0.d0) .and. (abs(freqr) .lt. (1.d0+prec)))
+        else if (sign .eq. 'POSITIF_NEGATIF') then
+            valtst = (abs(freqr) .lt. (1.d0+prec))
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         if (valtst) then
             linsta = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

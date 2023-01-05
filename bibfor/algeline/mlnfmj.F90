@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlnfmj(nb, n, p, frontl, frontu,&
-                  frnl, frnu, adper, t1, t2,&
+subroutine mlnfmj(nb, n, p, frontl, frontu, &
+                  frnl, frnu, adper, t1, t2, &
                   cl, cu)
 ! person_in_charge: olivier.boiteau at edf.fr
 !
@@ -34,29 +34,29 @@ subroutine mlnfmj(nb, n, p, frontl, frontu,&
     real(kind=8) :: t1(p, nb, *), t2(p, nb, *), alpha, beta
     real(kind=8) :: cl(nb, nb, *), cu(nb, nb, *)
     integer :: i, kb, j, ib, ia, ind, add
-    m=n-p
-    nmb=m/nb
-    restm = m -(nb*nmb)
-    decal = adper(p+1) - 1
-    tra='N'
-    trb='N'
-    alpha=-1.d0
-    beta=0.d0
+    m = n-p
+    nmb = m/nb
+    restm = m-(nb*nmb)
+    decal = adper(p+1)-1
+    tra = 'N'
+    trb = 'N'
+    alpha = -1.d0
+    beta = 0.d0
 !
     !$OMP PARALLEL DO DEFAULT(PRIVATE) &
     !$OMP SHARED(N,M,P,NMB,NB,RESTM,FRONTL,FRONTU,ADPER,DECAL,FRNL,FRNU) &
     !$OMP SHARED(T1,T2,CL,CU,TRA,TRB,ALPHA,BETA) &
     !$OMP SCHEDULE(STATIC,1)
     do kb = 1, nmb
-        numprc = asthread_getnum() + 1
+        numprc = asthread_getnum()+1
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
-        k = nb*(kb-1) + 1 +p
+        k = nb*(kb-1)+1+p
         do i = 1, p
-            add= n*(i-1) + k
+            add = n*(i-1)+k
             do j = 1, nb
-                t1(i,j,numprc) = frontu(add)
-                t2(i,j,numprc) = frontl(add)
-                add = add + 1
+                t1(i, j, numprc) = frontu(add)
+                t2(i, j, numprc) = frontl(add)
+                add = add+1
             end do
         end do
 !     BLOC DIAGONAL
@@ -65,104 +65,104 @@ subroutine mlnfmj(nb, n, p, frontl, frontu,&
 !     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 !
         do ib = kb, nmb
-            ia = k + nb*(ib-kb)
-            it=1
-            call dgemm(tra, trb, nb, nb, p,&
-                       alpha, frontl(ia), n, t1(it, 1, numprc), p,&
+            ia = k+nb*(ib-kb)
+            it = 1
+            call dgemm(tra, trb, nb, nb, p, &
+                       alpha, frontl(ia), n, t1(it, 1, numprc), p, &
                        beta, cl(1, 1, numprc), nb)
-            call dgemm(tra, trb, nb, nb, p,&
-                       alpha, frontu(ia), n, t2(it, 1, numprc), p,&
+            call dgemm(tra, trb, nb, nb, p, &
+                       alpha, frontu(ia), n, t2(it, 1, numprc), p, &
                        beta, cu(1, 1, numprc), nb)
 !     RECOPIE
 !
 !
             do i = 1, nb
-                i1=i-1
+                i1 = i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                 if (ib .eq. kb) then
-                    j1= i
-                    ind = adper(k + i1) - decal
+                    j1 = i
+                    ind = adper(k+i1)-decal
                 else
-                    j1=1
-                    ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                endif
+                    j1 = 1
+                    ind = adper(k+i1)-decal+nb*(ib-kb)-i1
+                end if
                 do j = j1, nb
-                    frnl(ind) = frnl(ind) +cl(j,i,numprc)
-                    frnu(ind) = frnu(ind) +cu(j,i,numprc)
-                    ind = ind +1
+                    frnl(ind) = frnl(ind)+cl(j, i, numprc)
+                    frnu(ind) = frnu(ind)+cu(j, i, numprc)
+                    ind = ind+1
                 end do
             end do
         end do
 !
         if (restm .gt. 0) then
-            ib = nmb + 1
-            ia = k + nb*(ib-kb)
-            it=1
-            call dgemm(tra, trb, restm, nb, p,&
-                       alpha, frontl(ia), n, t1(it, 1, numprc), p,&
+            ib = nmb+1
+            ia = k+nb*(ib-kb)
+            it = 1
+            call dgemm(tra, trb, restm, nb, p, &
+                       alpha, frontl(ia), n, t1(it, 1, numprc), p, &
                        beta, cl(1, 1, numprc), nb)
-            call dgemm(tra, trb, restm, nb, p,&
-                       alpha, frontu(ia), n, t2(it, 1, numprc), p,&
+            call dgemm(tra, trb, restm, nb, p, &
+                       alpha, frontu(ia), n, t2(it, 1, numprc), p, &
                        beta, cu(1, 1, numprc), nb)
 !     RECOPIE
 !
 !
             do i = 1, nb
-                i1=i-1
+                i1 = i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
-                j1=1
-                ind = adper(k + i1) - decal + nb*(ib-kb) - i1
+                j1 = 1
+                ind = adper(k+i1)-decal+nb*(ib-kb)-i1
                 do j = j1, restm
-                    frnl(ind) = frnl(ind) +cl(j,i,numprc)
-                    frnu(ind) = frnu(ind) +cu(j,i,numprc)
-                    ind = ind +1
+                    frnl(ind) = frnl(ind)+cl(j, i, numprc)
+                    frnu(ind) = frnu(ind)+cu(j, i, numprc)
+                    ind = ind+1
                 end do
             end do
 !
 !
-        endif
+        end if
     end do
     !$OMP END PARALLEL DO
-    numprc=1
+    numprc = 1
     if (restm .gt. 0) then
         kb = 1+nmb
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTLALE (ABSOLU DE 1 A N)
-        k = nb*(kb-1) + 1 +p
+        k = nb*(kb-1)+1+p
         do i = 1, p
-            add= n*(i-1) + k
+            add = n*(i-1)+k
             do j = 1, restm
-                t1(i,j,1) = frontu(add)
-                t2(i,j,1) = frontl(add)
-                add = add + 1
+                t1(i, j, 1) = frontu(add)
+                t2(i, j, 1) = frontl(add)
+                add = add+1
             end do
         end do
 !     BLOC DIAGONAL
 !
         ib = kb
-        ia = k + nb*(ib-kb)
-        it=1
-        call dgemm(tra, trb, restm, restm, p,&
-                   alpha, frontl(ia), n, t1(it, 1, 1), p,&
+        ia = k+nb*(ib-kb)
+        it = 1
+        call dgemm(tra, trb, restm, restm, p, &
+                   alpha, frontl(ia), n, t1(it, 1, 1), p, &
                    beta, cl(1, 1, numprc), nb)
-        call dgemm(tra, trb, restm, restm, p,&
-                   alpha, frontu(ia), n, t2(it, 1, 1), p,&
+        call dgemm(tra, trb, restm, restm, p, &
+                   alpha, frontu(ia), n, t2(it, 1, 1), p, &
                    beta, cu(1, 1, numprc), nb)
 !     RECOPIE
 !
 !
         do i = 1, restm
-            i1=i-1
+            i1 = i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
-            j1= i
-            ind = adper(k + i1) - decal
+            j1 = i
+            ind = adper(k+i1)-decal
 !
             do j = j1, restm
 !
-                frnl(ind) = frnl(ind) +cl(j,i,numprc)
-                frnu(ind) = frnu(ind) +cu(j,i,numprc)
-                ind = ind +1
+                frnl(ind) = frnl(ind)+cl(j, i, numprc)
+                frnu(ind) = frnu(ind)+cu(j, i, numprc)
+                ind = ind+1
             end do
         end do
 !
-    endif
+    end if
 end subroutine

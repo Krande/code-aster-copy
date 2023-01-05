@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/mmelty.h"
 !
@@ -64,17 +64,17 @@ implicit none
 !
 ! --- CAS DES COQUES_3D: PAS DE DX/DY/DZ SUR NOEUD MILIEU
 !
-    if ((nno .eq.9) .and. (nnosd .eq.8)) then
+    if ((nno .eq. 9) .and. (nnosd .eq. 8)) then
         alias = 'QU8'
-    endif
-    if ((nno .eq.7) .and. (nnosd .eq.6)) then
+    end if
+    if ((nno .eq. 7) .and. (nnosd .eq. 6)) then
         alias = 'TR6'
-    endif
+    end if
 !
 ! --- CAS DES QUAD8 EN 3D: 4 NOEUDS ET RELATIONS LINEAIRES
 !
-    if ((nno .eq.8) .and. (nnosd .eq.4)) then
+    if ((nno .eq. 8) .and. (nnosd .eq. 4)) then
         alias = 'QU4'
-    endif
+    end if
 !
 end subroutine

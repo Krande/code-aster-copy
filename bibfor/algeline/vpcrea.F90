@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpcrea(icond, modes, masse, amor, raide,&
+subroutine vpcrea(icond, modes, masse, amor, raide, &
                   nume, ier)
     implicit none
 #include "jeveux.h"
@@ -46,40 +46,40 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 !
 !     VERIFICATION DE L'EXISTENCE DES MATRICES ET DE LA NUMEROTATION
     call exisd('MATR_ASSE', raide, imat(1))
-    nomat(1)=raide
+    nomat(1) = raide
     call exisd('MATR_ASSE', masse, imat(2))
-    nomat(2)=masse
+    nomat(2) = masse
     call exisd('MATR_ASSE', amor, imat(3))
-    nomat(3)=amor
+    nomat(3) = amor
     call exisd('NUME_DDL', nume, i4)
-    nume2=nume(1:14)
+    nume2 = nume(1:14)
 !
 !     VERIFICATION DE LA COHERENCE DES MATRICES ET DE LA NUMEROTATION
     do i = 1, 3
         if (imat(i) .ne. 0) then
             call dismoi('NOM_NUME_DDL', nomat(i), 'MATR_ASSE', repk=numtmp)
-            numat(i)=numtmp(1:14)
+            numat(i) = numtmp(1:14)
         else
-            numat(i)=' '
-        endif
+            numat(i) = ' '
+        end if
     end do
     if (i4 .ne. 0) then
         do i = 1, 3
-            if ((numat(i).ne.nume2) .and. (numat(i).ne.' ')) then
+            if ((numat(i) .ne. nume2) .and. (numat(i) .ne. ' ')) then
                 call utmess('F', 'ALGELINE3_60', sk=nomat(i))
-            endif
+            end if
         end do
-        numddl=nume
+        numddl = nume
     else
         do i = 1, 3
             if (imat(i) .ne. 0) then
-                numddl=numat(i)
+                numddl = numat(i)
                 goto 101
             else
-                numddl=' '
-            endif
+                numddl = ' '
+            end if
         end do
-    endif
+    end if
 !
 101 continue
 !
@@ -92,13 +92,13 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
         matric(2) = masse
         matric(3) = amor
 !       call refdaj('F',modes,nbmodes,numddl,'DYNAMIQUE',matric,iret)
-        call refdaj('F', modes, -1, numddl, 'DYNAMIQUE',&
+        call refdaj('F', modes, -1, numddl, 'DYNAMIQUE', &
                     matric, iret)
     else
         call dismoi('REF_RIGI_PREM', modes, 'RESU_DYNA', repk=raide2)
         call dismoi('REF_MASS_PREM', modes, 'RESU_DYNA', repk=masse2)
         call dismoi('REF_AMOR_PREM', modes, 'RESU_DYNA', repk=amor2, arret='C')
-        if ((raide.ne.raide2) .or. (masse.ne.masse2) .or. (amor.ne.amor2)) ier = 1
+        if ((raide .ne. raide2) .or. (masse .ne. masse2) .or. (amor .ne. amor2)) ier = 1
         if (ier .ne. 0) then
             valk(1) = modes
             valk(2) = raide2
@@ -108,8 +108,8 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
                 call utmess('F', 'ALGELINE3_61', nk=4, valk=valk)
             else
                 call utmess('F', 'ALGELINE3_62', nk=3, valk=valk)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
     call jedema()
 end subroutine

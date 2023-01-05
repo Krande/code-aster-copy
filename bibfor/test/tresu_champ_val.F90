@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
-                           ivari, nocmp, nbref, tbtxt, refi,&
-                           refr, refc, typres, epsi, crit,&
+subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp, &
+                           ivari, nocmp, nbref, tbtxt, refi, &
+                           refr, refc, typres, epsi, crit, &
                            llab, ssigne, ignore, compare)
     implicit none
 #include "asterf_types.h"
@@ -83,23 +83,23 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     skip = .false.
     if (present(ignore)) then
         skip = ignore
-    endif
+    end if
 !
     ordgrd = 1.d0
     if (present(compare)) then
         ordgrd = compare
-    endif
+    end if
 !
     call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=nomma)
     l_parallel_mesh = isParallelMesh(nomma)
 !
-    call utch19(cham19, nomma, nomail, nonoeu, nupo,&
-                nusp, ivari, nocmp, typres, valr,&
+    call utch19(cham19, nomma, nomail, nonoeu, nupo, &
+                nusp, ivari, nocmp, typres, valr, &
                 valc, vali, ier)
 
-    if(l_parallel_mesh) then
+    if (l_parallel_mesh) then
         rank = -1
-        if( ier == 0 ) then
+        if (ier == 0) then
             call asmpi_info(rank=irank)
             rank = irank
         end if
@@ -107,21 +107,21 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
         call asmpi_comm_vect('MPI_MAX', 'I', sci=rank)
     end if
 
-    ASSERT( ier .eq. 0 )
+    ASSERT(ier .eq. 0)
 
-    if(l_parallel_mesh) then
-        if( typres == 'R') then
+    if (l_parallel_mesh) then
+        if (typres == 'R') then
             call asmpi_comm_vect('BCAST', 'R', bcrank=rank, scr=valr)
-        elseif( typres == 'I' ) then
+        elseif (typres == 'I') then
             call asmpi_comm_vect('BCAST', 'I', bcrank=rank, sci=vali)
-        elseif( typres == 'C' ) then
+        elseif (typres == 'C') then
             call asmpi_comm_vect('BCAST', 'C', bcrank=rank, scc=valc)
-        endif
+        end if
     end if
 
-    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
-                         crit, epsi, ssigne, refr, valr,&
-                         refi, vali, refc, valc, ignore=skip,&
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
+                         crit, epsi, ssigne, refr, valr, &
+                         refi, vali, refc, valc, ignore=skip, &
                          compare=ordgrd)
 !
 end subroutine

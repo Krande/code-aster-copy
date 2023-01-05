@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
-                  nbcpno, desc, nb_equa, typval, rval,&
+subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
+                  nbcpno, desc, nb_equa, typval, rval, &
                   cval, kval)
     implicit none
 #include "jeveux.h"
@@ -68,8 +68,8 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
 !
 ! - Create NODE field
 !
-    call vtcreb(chamno      , base                  , typval,&
-                meshz = mesh, prof_chnoz = prof_chno, idx_gdz = idx_gd, nb_equa_inz = nb_equa)
+    call vtcreb(chamno, base, typval, &
+                meshz=mesh, prof_chnoz=prof_chno, idx_gdz=idx_gd, nb_equa_inz=nb_equa)
 !
 !     --- AFFECTATION DU .PRNO DE L'OBJET PROF_CHNO ---
 !
@@ -80,10 +80,10 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
         prno((nec+2)*(ino-1)+1) = idec
         prno((nec+2)*(ino-1)+2) = nbcpno(ino)
         do inec = 1, nec
-            ii = ii + 1
+            ii = ii+1
             prno((nec+2)*(ino-1)+2+inec) = desc(ii)
         end do
-        idec = idec + nbcpno(ino)
+        idec = idec+nbcpno(ino)
     end do
 !
 !     --- AFFECTATION DU .VALE DE L'OBJET CHAMNO ---
@@ -91,36 +91,36 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
     call jeveuo(chamno//'.VALE', 'E', lvale)
     call jeveuo(prof_chno//'.NUEQ', 'E', lnueq)
     do ino = 1, nb_node
-        i1 = prno((nec+2)*(ino-1)+1) + lnueq - 1
+        i1 = prno((nec+2)*(ino-1)+1)+lnueq-1
         do ic = 1, ncmpmx
-            iec = ( ic - 1 ) / 30 + 1
-            jj = ic - 30 * ( iec - 1 )
+            iec = (ic-1)/30+1
+            jj = ic-30*(iec-1)
             ii = 2**jj
-            nn = iand( desc((ino-1)*nec+iec) , ii )
+            nn = iand(desc((ino-1)*nec+iec), ii)
             if (nn .gt. 0) then
                 if (typval(1:1) .eq. 'R') then
                     zr(lvale-1+zi(i1)) = rval((ino-1)*ncmpmx+ic)
-                else if (typval(1:1).eq.'C') then
+                else if (typval(1:1) .eq. 'C') then
                     zc(lvale-1+zi(i1)) = cval((ino-1)*ncmpmx+ic)
-                else if (typval(1:2).eq.'K8') then
+                else if (typval(1:2) .eq. 'K8') then
                     zk8(lvale-1+zi(i1)) = kval((ino-1)*ncmpmx+ic)
-                endif
-                i1 = i1 + 1
-            endif
+                end if
+                i1 = i1+1
+            end if
         end do
     end do
 !
 ! - Create object local components (field) => global components (catalog)
 !
-    call cmpcha(chamno, cmp_name, cata_to_field, field_to_cata, nb_cmpz = ncmp)
+    call cmpcha(chamno, cmp_name, cata_to_field, field_to_cata, nb_cmpz=ncmp)
 !
 ! - Compute .DEEQ object
 !
-    call pteequ(prof_chno    , base, nb_equa, idx_gd, ncmp,&
+    call pteequ(prof_chno, base, nb_equa, idx_gd, ncmp, &
                 field_to_cata)
-    AS_DEALLOCATE(vi = cata_to_field)
-    AS_DEALLOCATE(vi = field_to_cata)
-    AS_DEALLOCATE(vk8 = cmp_name)
+    AS_DEALLOCATE(vi=cata_to_field)
+    AS_DEALLOCATE(vi=field_to_cata)
+    AS_DEALLOCATE(vk8=cmp_name)
 !
     call jedema()
 end subroutine

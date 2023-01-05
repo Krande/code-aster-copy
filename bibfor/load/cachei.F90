@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
-character(len=5), intent(in) :: param
-character(len=*), intent(in) :: keywordFactZ
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
+    character(len=5), intent(in) :: param
+    character(len=*), intent(in) :: keywordFactZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ character(len=*), intent(in) :: keywordFactZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, nchei, ncmp, jvale, jvalv,  iocc, nxx, nyy, nzz
+    integer :: i, nchei, ncmp, jvale, jvalv, iocc, nxx, nyy, nzz
     integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
     integer :: nbtou, nbma, jma, nepsi
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
@@ -79,11 +79,11 @@ character(len=*), intent(in) :: keywordFactZ
 !
     if (valeType .eq. 'REEL') then
         call alcart('G', carte, mesh, 'EPSI_R')
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         call alcart('G', carte, mesh, 'EPSI_F')
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
@@ -97,9 +97,9 @@ character(len=*), intent(in) :: keywordFactZ
     vncmp(4) = 'EPXY'
     vncmp(5) = 'EPXZ'
     vncmp(6) = 'EPYZ'
-    vncmp(7)  = 'EPX'
-    vncmp(8)  = 'KY'
-    vncmp(9)  = 'KZ'
+    vncmp(7) = 'EPX'
+    vncmp(8) = 'KY'
+    vncmp(9) = 'KZ'
     vncmp(10) = 'EXX'
     vncmp(11) = 'EYY'
     vncmp(12) = 'EXY'
@@ -109,12 +109,12 @@ character(len=*), intent(in) :: keywordFactZ
     if (valeType .eq. 'REEL') then
         do i = 1, ncmp
             zr(jvalv-1+i) = 0.d0
-        enddo
+        end do
     else
         do i = 1, ncmp
             zk8(jvalv-1+i) = '&FOZERO'
-        enddo
-    endif
+        end do
+    end if
     call nocart(carte, 1, ncmp)
 !
     mesmai = '&&CACHEI.MES_MAILLES'
@@ -147,7 +147,7 @@ character(len=*), intent(in) :: keywordFactZ
 !
             do i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
-            enddo
+            end do
 !
             if (nxx .ne. 0) zr(jvalv-1+1) = epxx
             if (nyy .ne. 0) zr(jvalv-1+2) = epyy
@@ -172,18 +172,18 @@ character(len=*), intent(in) :: keywordFactZ
             call getvid(keywordFact, 'EPXY', iocc=iocc, scal=kepxy, nbret=nxy)
             call getvid(keywordFact, 'EPXZ', iocc=iocc, scal=kepxz, nbret=nxz)
             call getvid(keywordFact, 'EPYZ', iocc=iocc, scal=kepyz, nbret=nyz)
-            call getvid(keywordFact, 'EPX' , iocc=iocc, scal=kepx , nbret=nex )
-            call getvid(keywordFact, 'KY'  , iocc=iocc, scal=kxky , nbret=nky )
-            call getvid(keywordFact, 'KZ'  , iocc=iocc, scal=kxkz , nbret=nkz )
-            call getvid(keywordFact, 'EXX' , iocc=iocc, scal=kxexx, nbret=nexx)
-            call getvid(keywordFact, 'EYY' , iocc=iocc, scal=kxeyy, nbret=neyy)
-            call getvid(keywordFact, 'EXY' , iocc=iocc, scal=kxexy, nbret=nexy)
-            call getvid(keywordFact, 'KXX' , iocc=iocc, scal=kxkxx, nbret=nkxx)
-            call getvid(keywordFact, 'KYY' , iocc=iocc, scal=kxkyy, nbret=nkyy)
-            call getvid(keywordFact, 'KXY' , iocc=iocc, scal=kxkxy, nbret=nkxy)
+            call getvid(keywordFact, 'EPX', iocc=iocc, scal=kepx, nbret=nex)
+            call getvid(keywordFact, 'KY', iocc=iocc, scal=kxky, nbret=nky)
+            call getvid(keywordFact, 'KZ', iocc=iocc, scal=kxkz, nbret=nkz)
+            call getvid(keywordFact, 'EXX', iocc=iocc, scal=kxexx, nbret=nexx)
+            call getvid(keywordFact, 'EYY', iocc=iocc, scal=kxeyy, nbret=neyy)
+            call getvid(keywordFact, 'EXY', iocc=iocc, scal=kxexy, nbret=nexy)
+            call getvid(keywordFact, 'KXX', iocc=iocc, scal=kxkxx, nbret=nkxx)
+            call getvid(keywordFact, 'KYY', iocc=iocc, scal=kxkyy, nbret=nkyy)
+            call getvid(keywordFact, 'KXY', iocc=iocc, scal=kxkxy, nbret=nkxy)
             do i = 1, ncmp
                 zk8(jvalv-1+i) = '&FOZERO'
-            enddo
+            end do
             if (nxx .ne. 0) zk8(jvalv-1+1) = kepxx
             if (nyy .ne. 0) zk8(jvalv-1+2) = kepyy
             if (nzz .ne. 0) zk8(jvalv-1+3) = kepzz
@@ -191,30 +191,30 @@ character(len=*), intent(in) :: keywordFactZ
             if (nxz .ne. 0) zk8(jvalv-1+5) = kepxz
             if (nyz .ne. 0) zk8(jvalv-1+6) = kepyz
 
-            if (nex  .ne. 0) zk8(jvalv-1+7)  = kepx
-            if (nky  .ne. 0) zk8(jvalv-1+8)  = kxky
-            if (nkz  .ne. 0) zk8(jvalv-1+9)  = kxkz
+            if (nex .ne. 0) zk8(jvalv-1+7) = kepx
+            if (nky .ne. 0) zk8(jvalv-1+8) = kxky
+            if (nkz .ne. 0) zk8(jvalv-1+9) = kxkz
             if (nexx .ne. 0) zk8(jvalv-1+10) = kxexx
             if (neyy .ne. 0) zk8(jvalv-1+11) = kxeyy
             if (nexy .ne. 0) zk8(jvalv-1+12) = kxexy
             if (nkxx .ne. 0) zk8(jvalv-1+13) = kxkxx
             if (nkyy .ne. 0) zk8(jvalv-1+14) = kxkyy
             if (nkxy .ne. 0) zk8(jvalv-1+15) = kxkxy
-        endif
+        end if
 !
         call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ncmp)
         else
-            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc, 2, motcle, typmcl,&
+            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc, 2, motcle, typmcl, &
                         mesmai, nbma)
             if (nbma .eq. 0) goto 20
             call jeveuo(mesmai, 'L', jma)
             call nocart(carte, 3, ncmp, mode='NUM', nma=nbma, limanu=zi(jma))
             call jedetr(mesmai)
-        endif
- 20     continue
-    enddo
+        end if
+20      continue
+    end do
 !
     call jedema()
 end subroutine

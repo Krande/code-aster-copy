@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function jjcodn(icre, nomrep, nomec, irep, crep,&
+function jjcodn(icre, nomrep, nomec, irep, crep, &
                 nmax, nuti)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -31,7 +31,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
     integer :: i, idehco, idenom, iin, in, j, jin
     integer :: jjcodn, k, ll, lnom, lorep, ne
 !-----------------------------------------------------------------------
-    parameter      ( ilorep=1,ideno=2,ilnom=3,iluti=5,idehc=6)
+    parameter(ilorep=1, ideno=2, ilnom=3, iluti=5, idehc=6)
     integer :: iret
     character(len=32) :: cle, nom, valk(2)
     aster_logical :: rinser
@@ -40,38 +40,38 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
     rinser = .false.
     iret = 0
     lorep = irep(ilorep)
-    idenom = irep(ideno )
+    idenom = irep(ideno)
     lnom = irep(ilnom)
-    idehco = irep(idehc )
-    ll = min ( lnom , len(nomec) )
+    idehco = irep(idehc)
+    ll = min(lnom, len(nomec))
     nom = nomec(1:ll)
-    i = jxhcod (nom,lorep)
+    i = jxhcod(nom, lorep)
     ne = 1
     valk(1) = nom
     valk(2) = nomrep
 !
-  5 continue
+5   continue
     if (irep(idehco+i) .eq. 0 .and. .not. rinser) then
         if (icre .eq. 3) then
             if (nuti .ge. nmax) then
                 call utmess('F', 'JEVEUX1_33', sk=valk(2))
             else
-                j = nuti + 1
+                j = nuti+1
                 do k = 1, ll
                     crep(idenom+lnom*(j-1)+k) = nomec(k:k)
                 end do
-                nuti = nuti + 1
+                nuti = nuti+1
                 irep(iluti) = nuti
                 irep(idehco+i) = j
                 iret = j
-            endif
+            end if
         else
             if (icre .eq. 0) then
                 iret = 0
             else
                 call utmess('F', 'JEVEUX1_34', nk=2, valk=valk)
-            endif
-        endif
+            end if
+        end if
     else
         j = irep(idehco+i)
         do k = 1, ll
@@ -89,20 +89,20 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
                 irep(idehco+i) = -j
                 crep(idenom+lnom*(j-1)+1) = '?'
                 iret = -j
-            endif
+            end if
         else
             if (j .lt. 0 .and. .not. rinser) then
                 if (icre .eq. 3) then
                     rinser = .true.
                     jin = j
                     iin = i
-                endif
-            endif
-            if (ne .eq. 1) in = jxhcod (nom,lorep-2)
-            ne = ne + 1
-            i = 1 + mod (i+in,lorep)
+                end if
+            end if
+            if (ne .eq. 1) in = jxhcod(nom, lorep-2)
+            ne = ne+1
+            i = 1+mod(i+in, lorep)
             if (ne .le. lorep) then
-                j = irep ( idehco + i )
+                j = irep(idehco+i)
                 if (j .eq. 0 .and. rinser) goto 10
                 goto 5
             else
@@ -110,18 +110,18 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
                     call utmess('F', 'JEVEUX1_36', nk=2, valk=valk)
                 else if (icre .eq. 0) then
                     iret = 0
-                endif
-            endif
-        endif
-    endif
- 10 continue
+                end if
+            end if
+        end if
+    end if
+10  continue
     if (rinser) then
         irep(idehco+iin) = -jin
         do k = 1, ll
             crep(idenom+lnom*(-jin-1)+k) = nomec(k:k)
         end do
         iret = -jin
-    endif
+    end if
     jjcodn = iret
 ! FIN ------------------------------------------------------------------
 end function

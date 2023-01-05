@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 !
 subroutine romGreedyAlgoDSInit(ds_solveDOM, ds_solveROM, ds_algoGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
-type(ROM_DS_Solve), intent(in)       :: ds_solveDOM
-type(ROM_DS_Solve), intent(in)       :: ds_solveROM
-type(ROM_DS_AlgoGreedy), intent(out) :: ds_algoGreedy
+    type(ROM_DS_Solve), intent(in)       :: ds_solveDOM
+    type(ROM_DS_Solve), intent(in)       :: ds_solveROM
+    type(ROM_DS_AlgoGreedy), intent(out) :: ds_algoGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ type(ROM_DS_AlgoGreedy), intent(out) :: ds_algoGreedy
 !
     ds_algoGreedy%coef_redu = '&&OP0053.COEF_REDU'
     ds_algoGreedy%resi_vect = '&&OP0053.RESI_VECT'
-    ds_algoGreedy%solveDOM  = ds_solveDOM
-    ds_algoGreedy%solveROM  = ds_solveROM
+    ds_algoGreedy%solveDOM = ds_solveDOM
+    ds_algoGreedy%solveROM = ds_solveROM
 !
 end subroutine

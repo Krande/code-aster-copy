@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine calich(chargz, phenom)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -103,7 +103,7 @@ implicit none
 ! --- UNE FONCTION, DANS NOTRE CAS C'EST UN REEL
 !
     beta = zero
-    betac = (0.0d0,0.0d0)
+    betac = (0.0d0, 0.0d0)
     betaf = '&FOZERO'
 !
     cham19 = '                   '
@@ -130,7 +130,7 @@ implicit none
         call getvid(motfac, 'CHAM_NO', iocc=iocc, scal=chamno, nbret=nb)
         if (nb .eq. 0) then
             call utmess('F', 'CHARGES2_10')
-        endif
+        end if
 !
         cham19(1:8) = chamno
 !
@@ -139,18 +139,18 @@ implicit none
         call jeexin(cham19//'.VALE', iret)
         if (iret .eq. 0) then
             call utmess('F', 'CHARGES2_11')
-        endif
+        end if
 !
 ! ---   VERIFICATION DU TYPE DU CHAMP
 !       -----------------------------
         call dismoi('TYPE_CHAMP', chamno, 'CHAM_NO', repk=tych)
-        ASSERT(tych.eq.'NOEU')
+        ASSERT(tych .eq. 'NOEU')
 !
 ! ---   RECUPERATION DE LA VALEUR DU SECOND MEMBRE DE LA RELATION
 ! ---   LINEAIRE
 !       --------
         call getvr8(motfac, 'COEF_IMPO', iocc=iocc, scal=beta, nbret=nb)
-        ASSERT(nb.ne.0)
+        ASSERT(nb .ne. 0)
 !
 ! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMNO :
 !       ----------------------------------------------
@@ -160,7 +160,7 @@ implicit none
 ! ---   LES INCONNUES ASSOCIEES A LA GRANDEUR DE NOM NOMGD
 !       --------------------------------------------------
         call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-        ASSERT(nbec.le.10)
+        ASSERT(nbec .le. 10)
 !
 ! ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO
 !       -------------------------------------------
@@ -199,15 +199,15 @@ implicit none
         k = 0
         do i = 1, nequa
             if (vvale(i) .ne. zero) then
-                k = k + 1
-            endif
+                k = k+1
+            end if
         end do
 !
         nbterm = k
 
-        if (nbterm.eq.0) then
+        if (nbterm .eq. 0) then
             call utmess('F', 'CHARGES2_12')
-        endif
+        end if
 !
 ! ---   CREATION DES TABLEAUX DE TRAVAIL NECESSAIRES A L'AFFECTATION
 ! ---   DE LA LISTE_RELA
@@ -239,11 +239,11 @@ implicit none
 !
 ! ---     INO  : NUMERO DU NOEUD INO CORRESPONDANT AU DDL IEQUA
 !
-            ino = deeq(1+2* (iequa-1)+1-1)
+            ino = deeq(1+2*(iequa-1)+1-1)
 !
 ! ---     NUCMP  : NUMERO DE COMPOSANTE CORRESPONDANTE AU DDL IEQUA
 !
-            nucmp = deeq(1+2* (iequa-1)+2-1)
+            nucmp = deeq(1+2*(iequa-1)+2-1)
 !
 ! ---     ON NE PREND PAS EN COMPTE LES MULTIPLICATEURS DE LAGRANGE
 ! ---     (CAS OU NUCMP < 0)
@@ -257,13 +257,13 @@ implicit none
                 vale = vvale(iequa)
 !
                 if (vale .ne. zero) then
-                    k = k + 1
+                    k = k+1
                     nomcmp = zk8(inocmp+nucmp-1)
                     lisno(k) = nomnoe
                     lisddl(k) = nomcmp
                     coer(k) = vale
-                endif
-            endif
+                end if
+            end if
 !
         end do
 !
@@ -271,8 +271,8 @@ implicit none
 !
 ! ---   AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !       ------------------------------------------
-        call afrela(coer, coec, lisddl, lisno, dime,&
-                    direct, nbterm, beta, betac, betaf,&
+        call afrela(coer, coec, lisddl, lisno, dime, &
+                    direct, nbterm, beta, betac, betaf, &
                     typcoe, typval, 0.d0, lisrel)
 !
 ! ---   MENAGE :
@@ -288,15 +288,15 @@ implicit none
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
-    if (phenom.eq.'MECA') then
-    endif
+    if (phenom .eq. 'MECA') then
+    end if
     call aflrch(lisrel, charge, 'LIN')
 !
 ! --- MENAGE :
 !     ------
     call jedetr(lisrel)
 !
- 40 continue
+40  continue
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

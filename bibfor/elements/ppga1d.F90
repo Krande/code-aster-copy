@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ppga1d(ndim, nno, npg, poids, vff,&
+subroutine ppga1d(ndim, nno, npg, poids, vff, &
                   dff, geom, pg)
     implicit none
 #include "jeveux.h"
@@ -47,14 +47,14 @@ subroutine ppga1d(ndim, nno, npg, poids, vff,&
 !
     do g = 1, npg
         do i = 1, ndim+1
-            pg(i,g) = 0.d0
+            pg(i, g) = 0.d0
         end do
     end do
 !
     do g = 1, npg
         do i = 1, ndim
             do j = 1, nno
-                pg(i,g) = pg(i,g) + geom(i,j)*vff(j,g)
+                pg(i, g) = pg(i, g)+geom(i, j)*vff(j, g)
             end do
         end do
     end do
@@ -70,14 +70,14 @@ subroutine ppga1d(ndim, nno, npg, poids, vff,&
         dzdk = 0.d0
 !        COMPOSANTES DU VECTEUR TANGENT
         do j = 1, nno
-            dxdk = dxdk + geom(1,j)*dff(j,g)
-            dydk = dydk + geom(2,j)*dff(j,g)
-            if (ndim .eq. 3) dzdk = dzdk + geom(3,j)*dff(j,g)
+            dxdk = dxdk+geom(1, j)*dff(j, g)
+            dydk = dydk+geom(2, j)*dff(j, g)
+            if (ndim .eq. 3) dzdk = dzdk+geom(3, j)*dff(j, g)
         end do
 !        JACOBIEN 1D == DERIVEE DE L'ABSCISSE CURVILIGNE
         jac = sqrt(dxdk**2+dydk**2+dzdk**2)
 !
-        pg(ndim+1,g) = jac*poids(g)
+        pg(ndim+1, g) = jac*poids(g)
     end do
 !
 999 continue

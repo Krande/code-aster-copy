@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine amogen(mat19)
     integer :: nbid, jamog, iamog, idiff
     integer :: vali(3)
     integer :: iamat, n, m, m2, i, iam, iak, j, nbamor, nlist
-    integer :: iblo,  ialime, iaconl,  jrefa2, iadesc, n2, n1
+    integer :: iblo, ialime, iaconl, jrefa2, iadesc, n2, n1
     real(kind=8) :: kmin, valmin, kmax, rk
     integer, pointer :: desc(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -52,75 +52,75 @@ subroutine amogen(mat19)
     call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
     call getvid(nomcmd, 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
     call jeveuo(masse//'           .DESC', 'E', vi=desc)
-    n=desc(2)
+    n = desc(2)
     call jelira(masse//'           .VALM', 'LONMAX', m)
     call jelira(raid//'           .VALM', 'LONMAX', m2)
     if (m2 .ne. m) then
-        vali (1) = m
-        vali (2) = m2
+        vali(1) = m
+        vali(2) = m2
         call utmess('F', 'ALGELINE5_28', ni=2, vali=vali)
-    endif
+    end if
 !
     if (n1 .ne. 0) then
         nbamor = -n1
     else
         call getvid(nomcmd, 'LIST_AMOR', iocc=1, scal=listam, nbret=nlist)
         call jelira(listam//'           .VALE', 'LONMAX', nbamor)
-    endif
+    end if
 !
     if (nbamor .gt. n) then
 !
-        vali (1) = n
-        vali (2) = nbamor
-        vali (3) = n
+        vali(1) = n
+        vali(2) = nbamor
+        vali(3) = n
         call utmess('A', 'ALGELINE5_29', ni=3, vali=vali)
         call wkvect('&&AMORMA.AMORTI', 'V V R8', n, jamog)
         if (n1 .ne. 0) then
-            call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=n, vect=zr(jamog),&
+            call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=n, vect=zr(jamog), &
                         nbret=nbid)
         else
             call jeveuo(listam//'           .VALE', 'L', iamog)
             do i = 1, n
                 zr(jamog+i-1) = zr(iamog+i-1)
             end do
-        endif
+        end if
     else
         call wkvect('&&AMORMA.AMORTI', 'V V R8', n, jamog)
         if (n1 .ne. 0) then
-            call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamog),&
+            call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamog), &
                         nbret=nbid)
         else
             call jeveuo(listam//'           .VALE', 'L', iamog)
             do i = 1, nbamor
                 zr(jamog+i-1) = zr(iamog+i-1)
             end do
-        endif
+        end if
         if (nbamor .lt. n) then
             do i = nbamor+1, n
                 zr(jamog+i-1) = zr(jamog+nbamor-1)
             end do
 !
-            idiff = n - nbamor
-            vali (1) = idiff
-            vali (2) = n
-            vali (3) = idiff
+            idiff = n-nbamor
+            vali(1) = idiff
+            vali(2) = n
+            vali(3) = idiff
             call utmess('I', 'ALGELINE5_30', ni=3, vali=vali)
-        endif
-    endif
-    iblo=1
+        end if
+    end if
+    iblo = 1
     call jeveuo(masse//'           .REFA', 'E', vk24=refa)
 !
 !   CREATION DES BASES DE DONNEES DE LA MATRICE A GENERER.
 !   SUIVANT LE MODELE DE OP0071
 !
-    call jecrec(mat19//'.VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(mat19//'.VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 1)
     call jecroc(jexnum(mat19//'.VALM', iblo))
     call jeecra(mat19//'.VALM', 'LONMAX', m)
     call wkvect(mat19//'.LIME', 'G V K24', 1, ialime)
     call wkvect(mat19//'.CONL', 'G V R', n, iaconl)
     call wkvect(mat19//'.REFA', 'G V K24', 20, jrefa2)
-    zk24(jrefa2-1+11)='MPI_COMPLET'
+    zk24(jrefa2-1+11) = 'MPI_COMPLET'
     zk24(jrefa2-1+1) = refa(1)
     zk24(jrefa2-1+2) = refa(2)
     zk24(jrefa2-1+9) = 'MS'
@@ -139,38 +139,38 @@ subroutine amogen(mat19)
         zr(iaconl+i-1) = 1.0d0
     end do
 !
-    iblo=1
+    iblo = 1
     call jeveuo(jexnum(masse//'           .VALM', iblo), 'L', iam)
     call jeveuo(jexnum(raid//'           .VALM', iblo), 'E', iak)
     call jeveuo(jexnum(mat19//'.VALM', iblo), 'E', iamat)
     do i = 1, m
-        zr(iamat-1+i)=0d0
+        zr(iamat-1+i) = 0d0
     end do
-    kmin=0.d0
-    kmax=0.00001d0
-    valmin=1.d-4
+    kmin = 0.d0
+    kmax = 0.00001d0
+    valmin = 1.d-4
     do i = 1, n
         if (m .eq. n*(n+1)/2) then
-            j=i*(i+1)/2-1
-        else if (m.eq.n) then
-            j=i-1
+            j = i*(i+1)/2-1
+        else if (m .eq. n) then
+            j = i-1
         else
             goto 190
-        endif
+        end if
         if (zr(iak+j) .lt. (0.0d0)) then
-            kmin=min(kmin,zr(iak+j))
-            zr(iak+j)=0.0d0
+            kmin = min(kmin, zr(iak+j))
+            zr(iak+j) = 0.0d0
         else
-            kmax=max(kmax,zr(iak+j))
-        endif
-        zr(iamat+j)=2.0d0*zr(jamog+i-1)*sqrt(abs(zr(iam+j)*zr(iak+j)))
+            kmax = max(kmax, zr(iak+j))
+        end if
+        zr(iamat+j) = 2.0d0*zr(jamog+i-1)*sqrt(abs(zr(iam+j)*zr(iak+j)))
 190     continue
     end do
-    rk=kmin/kmax
+    rk = kmin/kmax
     if (abs(rk) .ge. valmin) then
         call utmess('A', 'PREPOST4_20')
 !         CALL UTMESS('F','PREPOST4_21')
-    endif
+    end if
     call jedetr('&&AMORMA.AMORTI')
     call jedema()
 end subroutine

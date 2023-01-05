@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 subroutine te0000(numc, opt, te)
 ! aslint: disable=W1501
 
-use calcul_module, only : ca_capoiz_, ca_ianoop_, ca_ianote_, ca_iel_, ca_nbelgr_,&
-    ca_lparal_, ca_paral_
+    use calcul_module, only: ca_capoiz_, ca_ianoop_, ca_ianote_, ca_iel_, ca_nbelgr_, &
+                             ca_lparal_, ca_paral_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -650,17 +650,17 @@ implicit none
 
 !   -- avant d'augmenter la plage des numeros (au dela de 600),
 !      il faut utiliser les numeros "vides" (les routines de 25 lignes)
-    ASSERT(numc.gt.0)
-    ASSERT(numc.le.600)
+    ASSERT(numc .gt. 0)
+    ASSERT(numc .le. 600)
 
     nomte = zk16(ca_ianote_-1+te)
     nomopt = zk16(ca_ianoop_-1+opt)
 
     do ca_iel_ = 1, ca_nbelgr_
         if (ca_lparal_) then
-            if (.not.ca_paral_(ca_iel_)) cycle
-        endif
-        ca_capoiz_=0
+            if (.not. ca_paral_(ca_iel_)) cycle
+        end if
+        ca_capoiz_ = 0
         select case (numc)
         case (1)
             call te0001(nomopt, nomte)

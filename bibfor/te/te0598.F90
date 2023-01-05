@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0598(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -57,22 +57,22 @@ implicit none
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
-    ASSERT(ntrou.ge.2)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,npg=npg,&
-                    jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
+    ASSERT(ntrou .ge. 2)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, npg=npg, &
+                     jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, npg=npg, &
+                     jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
 !
 ! - TYPE DE MODELISATION
-    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS  '
-    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
         call utmess('F', 'ELEMENTS_34', sk=nomte)
-    endif
+    end if
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
@@ -83,36 +83,36 @@ implicit none
 ! - CALCUL DE REFE_FORC_NODA
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
 !
-        if (lteatt('INCO','C2 ')) then
+        if (lteatt('INCO', 'C2 ')) then
 ! --------- Get index of dof
             call niinit(typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
 !
-            call nurfpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
+            call nurfpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp, &
                         typmod, zr(igeom), sigref, epsref, zr(ivectu))
-        elseif (lteatt('INCO','C2O')) then
+        elseif (lteatt('INCO', 'C2O')) then
             call terefe('PI_REFE', 'MECA_INCO', piref)
 ! --------- Get index of dof
             call niinit(typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
 !
-            call norfpd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
+            call norfpd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1, &
                         vu, vp, vpi, typmod, nomte, zr(igeom), sigref, epsref, piref, zr(ivectu))
         else
             valk = zk16(icompo+2)
             call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
-    else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
+        end if
+    else if (zk16(icompo+2) (1:8) .eq. 'GDEF_LOG') then
 !
-        if (.not.lteatt('INCO','C2 ')) then
+        if (.not. lteatt('INCO', 'C2 ')) then
             valk = zk16(icompo+2)
             call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
+        end if
 ! ----- Get index of dof
         call niinit(typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
 !
-        call nurfgd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
+        call nurfgd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp, &
                     typmod, zr(igeom), sigref, epsref, zr(ivectu))
     else
         call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,9 +37,9 @@ subroutine get_jvbasename(bas_, numext, path)
 #include "asterfort/utmess.h"
 !
     character(len=128) :: repglo, repvol
-    common /banvje/ repglo, repvol
+    common/banvje/repglo, repvol
     integer :: lrepgl, lrepvo
-    common /balvje/ lrepgl,lrepvo
+    common/balvje/lrepgl, lrepvo
 !
     integer :: nchar
     character(len=4) :: base
@@ -57,7 +57,7 @@ subroutine get_jvbasename(bas_, numext, path)
         fname(6:7) = '?'
     elseif (numext == -2) then
         fname(6:7) = '*'
-    endif
+    end if
 
 !TODO Use environment variables for glob & vola directories
     dir = '.'
@@ -67,13 +67,13 @@ subroutine get_jvbasename(bas_, numext, path)
         dir = repvol(1:lrepvo)
     else if (base .eq. 'elem') then
         call get_environment_variable('ASTER_ELEMENTSDIR', dir, nchar)
-        if (nchar > 512 - 9) then
-            call utmess('F', 'JEVEUX_3', sk='ASTER_ELEMENTSDIR', si=512 - 9)
+        if (nchar > 512-9) then
+            call utmess('F', 'JEVEUX_3', sk='ASTER_ELEMENTSDIR', si=512-9)
         elseif (nchar == 0) then
             dir = '.'
             nchar = 1
-        endif
-    endif
+        end if
+    end if
     nom512 = dir(1:lxlgut(dir))//'/'//fname
     ASSERT(len(path) >= lxlgut(nom512))
     path = nom512

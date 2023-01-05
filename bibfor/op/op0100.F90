@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine op0100()
 !
     real(kind=8) :: time, rinf, rsup, puls
     character(len=6) :: nompro
-    parameter  ( nompro = 'OP0100' )
+    parameter(nompro='OP0100')
     character(len=8) :: modele, resu, k8bid, calsig, resuc2
     character(len=8) :: nomfis, litypa(nxpara), symech, config
     character(len=8) :: table_g, noma, thetai, noeud, typfis, typfon, table_container
@@ -97,7 +97,7 @@ subroutine op0100()
     character(len=24), pointer :: obje_sdname(:) => null()
     character(len=24), pointer :: v_chtheta(:) => null()
 
-    parameter  ( resuc2 = '&&MECALG' )
+    parameter(resuc2='&&MECALG')
 !
     aster_logical :: exitim, connex, milieu
     aster_logical :: incr, lmoda
@@ -131,8 +131,8 @@ subroutine op0100()
 !     - LNOFF
 !     - LISS, NDEG
 !     - TYPDIS
-    call cglect(resu, modele, ndim, option,&
-                typfis, nomfis, fonoeu, chfond, basfon,&
+    call cglect(resu, modele, ndim, option, &
+                typfis, nomfis, fonoeu, chfond, basfon, &
                 taillr, config, lnoff, liss, ndeg, typdis)
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
@@ -140,15 +140,15 @@ subroutine op0100()
     coorn = noma//'.COORDO    .VALE'
     call jeveuo(coorn, 'L', iadrco)
 !     RECUPERATION DES COORDONNEES POINTS FOND DE FISSURE ET ABSC CURV
-    if (typfis.ne.'THETA') then
+    if (typfis .ne. 'THETA') then
         call jeveuo(chfond, 'L', iadfis)
     else
-        iadfis=0
-    endif
+        iadfis = 0
+    end if
 !     RECUPERATION DU NOM DES NOEUDS DU FOND DE FISSURE
     if (typfis .eq. 'FONDFISS') then
         call jeveuo(fonoeu, 'L', iadnoe)
-    endif
+    end if
 !
 !     RECUPERATION DU CONCEPT DE SORTIE : table_container
     call getres(table_container, k16bid, k16bid)
@@ -170,8 +170,8 @@ subroutine op0100()
             lmoda = .true.
         else
             call utmess('F', 'RUPTURE0_27')
-        endif
-    endif
+        end if
+    end if
 !
 !     PREMIER NUME_ORDRE
     iord0 = zi(ivec)
@@ -181,7 +181,7 @@ subroutine op0100()
 !
 !     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
 !     -> COMPOR, INCR
-    call cgleco(resu, modele, mate, iord0, compor(1:19),&
+    call cgleco(resu, modele, mate, iord0, compor(1:19), &
                 incr)
 !
 !     ATTENTION, INCR EST MAL GERE : VOIR MECAGL !!
@@ -192,19 +192,19 @@ subroutine op0100()
 !      ---------------- DEBUT DU GROS PAQUET A EPURER ---------------
 !
 !     ON RECHERCHE LA PRESENCE DE SYMETRIE
-    symech='NON'
+    symech = 'NON'
     if (typfis .eq. 'FONDFISS') then
         call dismoi('SYME', nomfis, 'FOND_FISS', repk=symech)
-    endif
+    end if
 !
 !     CALCUL DU CHAMP THETA (2D)
     if (ndim .eq. 2) then
 !
 !
-        call gver2d(1, noeud,rinf, rsup)
-        call gcou2d('G', theta, noma, nomno, noeud,zr(iadrco), rinf, &
+        call gver2d(1, noeud, rinf, rsup)
+        call gcou2d('G', theta, noma, nomno, noeud, zr(iadrco), rinf, &
                     rsup, config)
-    endif
+    end if
 !
 !     DETERMINATION AUTOMATIQUE DE THETA (CAS 3D)
     if (ndim .eq. 3 .and. typfis .eq. 'FISSURE') then
@@ -215,22 +215,22 @@ subroutine op0100()
             connex = .true.
         else
             connex = .false.
-        endif
+        end if
 !
         if (liss .eq. 'LEGENDRE' .or. liss .eq. 'MIXTE') then
             if (connex) call utmess('F', 'RUPTURE0_90')
-        endif
+        end if
 !
         grlt = nomfis//'.GRLTNO'
 !
-        call gveri3(chfond, taillr, config, lnoff,&
+        call gveri3(chfond, taillr, config, lnoff, &
                     liss, ndeg, trav1, trav2, trav3, typdis)
-        call gcour3(thetai, noma, coorn, lnoff, trav1,&
-                    trav2, trav3, chfond, connex, grlt,&
-                    liss, basfon, ndeg, milieu,&
+        call gcour3(thetai, noma, coorn, lnoff, trav1, &
+                    trav2, trav3, chfond, connex, grlt, &
+                    liss, basfon, ndeg, milieu, &
                     ndimte, typdis, nomfis)
 !
-    else if (ndim.eq. 3 .and.typfis.eq.'FONDFISS') then
+    else if (ndim .eq. 3 .and. typfis .eq. 'FONDFISS') then
 !
 !       A FAIRE : DISMOI POUR RECUP CONNEX ET METTRE DANS CGLECT
         call dismoi('TYPE_FOND', nomfis, 'FOND_FISS', repk=typfon)
@@ -238,22 +238,22 @@ subroutine op0100()
             connex = .true.
         else
             connex = .false.
-        endif
+        end if
 !
         if (liss .eq. 'LEGENDRE' .or. liss .eq. 'MIXTE') then
             if (connex) then
                 call utmess('F', 'RUPTURE0_90')
-            endif
-        endif
+            end if
+        end if
 !
-        call gveri3(chfond, taillr, config, lnoff, liss,&
+        call gveri3(chfond, taillr, config, lnoff, liss, &
                     ndeg, trav1, trav2, trav3, option)
-        call gcour2(thetai, noma, nomno, coorn,&
-                    lnoff, trav1, trav2, trav3, fonoeu, chfond, basfon,&
-                    nomfis, connex, stok4, liss,&
+        call gcour2(thetai, noma, nomno, coorn, &
+                    lnoff, trav1, trav2, trav3, fonoeu, chfond, basfon, &
+                    nomfis, connex, stok4, liss, &
                     ndeg, milieu, ndimte, norfon)
 !
-    endif
+    end if
 !
 !     MENAGE
     if (ndim .eq. 3) then
@@ -265,7 +265,7 @@ subroutine op0100()
         if (iret .ne. 0) call jedetr(trav3)
         call jeexin(stok4, iret)
         if (iret .ne. 0) call jedetr(stok4)
-    endif
+    end if
 !
 !      ---------------- FIN DU GROS PAQUET A EPURER -----------------
 !
@@ -275,48 +275,48 @@ subroutine op0100()
 !
 !     CREATION DE LA table_g
 !
-    call cgcrtb(table_g, option, ndim, typfis, nxpara,&
+    call cgcrtb(table_g, option, ndim, typfis, nxpara, &
                 lmoda, nbpara, linopa, litypa)
 !
 !!    ARRET POUR CONTROLE DEVELOPPEMENT DANS CGCRTB
 !    ASSERT(.false.)
 !
 !
-    if (ndim.eq. 3 .and.option.eq.'CALC_K_G') then
+    if (ndim .eq. 3 .and. option .eq. 'CALC_K_G') then
 !
 !       -------------------------------
 !       3.3. ==> CALCUL DE KG (3D LOC)
 !       -------------------------------
 !
-        basloc=nomfis//'.BASLOC'
+        basloc = nomfis//'.BASLOC'
         call xcourb(basloc, noma, modele, courb)
 !
         do i = 1, nbord
             iord = zi(ivec-1+i)
             call medomg(resu, iord, modele, mate, mateco, lischa)
-            call rsexch('F', resu, 'DEPL', iord, depla,&
+            call rsexch('F', resu, 'DEPL', iord, depla, &
                         iret)
 !
             if (lmoda) then
-                call rsadpa(resu, 'L', 1, 'OMEGA2', iord,&
+                call rsadpa(resu, 'L', 1, 'OMEGA2', iord, &
                             0, sjv=ipuls, styp=k8bid)
                 puls = zr(ipuls)
                 puls = sqrt(puls)
                 time = 0.d0
             else
-                call rsadpa(resu, 'L', 1, 'INST', iord,&
+                call rsadpa(resu, 'L', 1, 'INST', iord, &
                             0, sjv=jinst, styp=k8bid)
                 time = zr(jinst)
                 exitim = .true.
-            endif
+            end if
 !
 !
-            call cakg3d(option, table_g, modele, depla, thetai,&
-                        mate, mateco, compor, lischa, symech, chfond,&
-                        lnoff, basloc, courb, iord, ndeg,&
-                        liss, ndimte,&
-                        exitim, time, nbpara, linopa, nomfis,&
-                        lmoda, puls, milieu,&
+            call cakg3d(option, table_g, modele, depla, thetai, &
+                        mate, mateco, compor, lischa, symech, chfond, &
+                        lnoff, basloc, courb, iord, ndeg, &
+                        liss, ndimte, &
+                        exitim, time, nbpara, linopa, nomfis, &
+                        lmoda, puls, milieu, &
                         connex, iadfis, iadnoe, typdis)
 !
         end do
@@ -335,9 +335,9 @@ subroutine op0100()
             zk16(jopt) = 'VARI_ELNO'
             zk16(jopt+1) = 'EPSP_ELNO'
 !
-            call ccbcop(resu, resuc2, vecord, nbord, lisopt,&
+            call ccbcop(resu, resuc2, vecord, nbord, lisopt, &
                         nbropt)
-        endif
+        end if
 !
         do i = 1, nbord
             call jemarq()
@@ -345,57 +345,57 @@ subroutine op0100()
             iord = zi(ivec-1+i)
             call medomg(resu, iord, modele, mate, mateco, lischa)
 !
-            call rsexch('F', resu, 'DEPL', iord, depla,&
+            call rsexch('F', resu, 'DEPL', iord, depla, &
                         iret)
-            call rsexch(' ', resu, 'VITE', iord, chvite,&
+            call rsexch(' ', resu, 'VITE', iord, chvite, &
                         iret)
             if (iret .ne. 0) then
                 chvite = ' '
             else
-                call rsexch(' ', resu, 'ACCE', iord, chacce,&
+                call rsexch(' ', resu, 'ACCE', iord, chacce, &
                             iret)
-            endif
+            end if
 !
             if (lmoda) then
-                call rsadpa(resu, 'L', 1, 'OMEGA2', iord,&
+                call rsadpa(resu, 'L', 1, 'OMEGA2', iord, &
                             0, sjv=ipuls, styp=k8bid)
                 puls = zr(ipuls)
                 puls = sqrt(puls)
                 time = 0.d0
             else
-                call rsadpa(resu, 'L', 1, 'INST', iord,&
+                call rsadpa(resu, 'L', 1, 'INST', iord, &
                             0, sjv=jinst, styp=k8bid)
                 time = zr(jinst)
                 exitim = .true.
-            endif
+            end if
 !
-            if (option(1:6).eq.'CALC_G'.and. ndim.eq. 2) then
+            if (option(1:6) .eq. 'CALC_G' .and. ndim .eq. 2) then
 !
-                call mecalg(option, table_g, modele, depla, theta,&
-                            mate, mateco, lischa, symech, compor, incr,&
-                            time, iord, nbpara, linopa, chvite,&
+                call mecalg(option, table_g, modele, depla, theta, &
+                            mate, mateco, lischa, symech, compor, incr, &
+                            time, iord, nbpara, linopa, chvite, &
                             chacce, calsig, iadfis, iadnoe)
 !
-            else if (option(1:6).eq.'CALC_G'.and. ndim .eq.3) then
+            else if (option(1:6) .eq. 'CALC_G' .and. ndim .eq. 3) then
 !
-                call mecagl(option, table_g, modele, depla, thetai,&
-                            mate, mateco, compor, lischa, symech, chfond,&
-                            lnoff, iord, ndeg, liss,&
-                            milieu, ndimte, exitim,&
-                            time, nbpara, linopa, chvite, chacce,&
+                call mecagl(option, table_g, modele, depla, thetai, &
+                            mate, mateco, compor, lischa, symech, chfond, &
+                            lnoff, iord, ndeg, liss, &
+                            milieu, ndimte, exitim, &
+                            time, nbpara, linopa, chvite, chacce, &
                             calsig, fonoeu, incr, iadfis, &
                             norfon, connex)
 !
-            else if (option(1:6).eq.'CALC_K'.and. ndim .eq. 2) then
+            else if (option(1:6) .eq. 'CALC_K' .and. ndim .eq. 2) then
 !
-                call cakg2d(option, table_g, modele, depla, theta,&
-                            mate, mateco, lischa, symech, nomfis, noeud,&
-                            time, iord, nbpara, linopa,&
+                call cakg2d(option, table_g, modele, depla, theta, &
+                            mate, mateco, lischa, symech, nomfis, noeud, &
+                            time, iord, nbpara, linopa, &
                             lmoda, puls, compor)
 !
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
             call jedema()
         end do
@@ -406,14 +406,14 @@ subroutine op0100()
                 call jeveuo(resuc2//'           .ORDR', 'L', vi=ordr)
                 call rsrusd(resuc2, ordr(1))
                 call detrsd('RESULTAT', resuc2)
-            endif
+            end if
 !
             call jedetr('&&MECALCG.VECTORDR')
             call jedetr('&&MECALG')
             call rsmena(resu)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- Create table_container to store (calc_g and cham_theta)
 !
@@ -428,25 +428,25 @@ subroutine op0100()
     AS_ALLOCATE(vk16=obje_name, size=nb_cham_theta+2)
     AS_ALLOCATE(vk24=obje_sdname, size=nb_cham_theta+2)
 !
-    obje_name(1)   = "TABLE_G"
+    obje_name(1) = "TABLE_G"
     obje_sdname(1) = table_g
-    nb_objet       = 1
+    nb_objet = 1
 !
     if (ndim .eq. 2) then
-        nb_objet              = nb_objet + 1
-        obje_name(nb_objet)   = "NB_CHAM_THETA"
+        nb_objet = nb_objet+1
+        obje_name(nb_objet) = "NB_CHAM_THETA"
         obje_sdname(nb_objet) = " "
-        nb_objet              = nb_objet + 1
-        obje_name(nb_objet)   = "CHAM_THETA"
+        nb_objet = nb_objet+1
+        obje_name(nb_objet) = "CHAM_THETA"
         obje_sdname(nb_objet) = theta
     else if (ndim .eq. 3) then
         call jeveuo(thetai, 'L', vk24=v_chtheta)
-        nb_objet              = nb_objet + 1
-        obje_name(nb_objet)   = "NB_CHAM_THETA"
+        nb_objet = nb_objet+1
+        obje_name(nb_objet) = "NB_CHAM_THETA"
         obje_sdname(nb_objet) = " "
         do icham = 1, nb_cham_theta
-            nb_objet              = nb_objet + 1
-            obje_name(nb_objet)   = "CHAM_THETA"
+            nb_objet = nb_objet+1
+            obje_name(nb_objet) = "CHAM_THETA"
             obje_sdname(nb_objet) = v_chtheta(icham)
         end do
     else

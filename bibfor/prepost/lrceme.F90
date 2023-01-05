@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
-                  nommod, nomgd, typent, nbcmpv, ncmpva,&
-                  ncmpvm, prolz, iinst, numpt, numord,&
-                  inst, crit, prec, nrofic, option,&
+subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
+                  nommod, nomgd, typent, nbcmpv, ncmpva, &
+                  ncmpvm, prolz, iinst, numpt, numord, &
+                  inst, crit, prec, nrofic, option, &
                   param, nbpgma, nbpgmm, nbspmm, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     LECTURE D'UN CHAMP AUX ELEMENTS - FORMAT MED
@@ -107,7 +107,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'LRCEME' )
+    parameter(nompro='LRCEME')
 !
     integer :: iaux, naux, unite, nbcham, nbcmp, jcmp
     integer :: tycha, junit
@@ -118,7 +118,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     integer :: ifm, nivinf, nseqca
     integer :: jnocmp, ncmprf, jcmpva, nbcmpa, iret, i, j, nncp
     integer :: edlect
-    parameter (edlect=0)
+    parameter(edlect=0)
 !
     character(len=1) :: saux01
     character(len=8) :: saux08
@@ -135,9 +135,9 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'DEBUT DE '//nompro
-    endif
-    1001 format(/,10('='),a,10('='),/)
+        write (ifm, 1001) 'DEBUT DE '//nompro
+    end if
+1001 format(/, 10('='), a, 10('='),/)
 !
 !====
 ! 1. ALLOCATION D'UN CHAM_ELEM_S  (CHAMES)
@@ -145,12 +145,12 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
 ! 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 !
-    call jenonu(jexnom ( '&CATA.GD.NOMGD', nomgd ), iaux)
+    call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), iaux)
     if (iaux .eq. 0) then
         call utmess('F', 'MED_65')
-    endif
-    call jeveuo(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'L', jnocmp)
-    call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf)
+    end if
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmprf)
 !
 ! 1.2. ==> ALLOCATION DU CHAM_ELEM_S
 !
@@ -165,23 +165,23 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
         call jeveuo(ncmpva, 'L', jcmpva)
         call jelira(ncmpva, 'LONMAX', nbcmpa)
         if (nomgd(1:4) .eq. 'VARI') then
-            jnocmp=jcmpva
-            ncmprf=nbcmpa
-        else if (nbcmpa.le.ncmprf) then
+            jnocmp = jcmpva
+            ncmprf = nbcmpa
+        else if (nbcmpa .le. ncmprf) then
             do i = 1, nbcmpa
-                ttt=.false.
+                ttt = .false.
                 do j = 1, ncmprf
                     if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) then
-                        ttt=.true.
-                    endif
+                        ttt = .true.
+                    end if
                 end do
-                if (.not.ttt) then
+                if (.not. ttt) then
                     call utmess('F', 'MED_66')
-                endif
+                end if
             end do
         else
             call utmess('F', 'MED_70')
-        endif
+        end if
 !
     else
 !
@@ -192,31 +192,31 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
             nofimd = 'fort.'//saux08
         else
             nofimd = kfic(1:200)
-        endif
+        end if
         call as_med_open(idfimd, nofimd, edlect, iret)
         call as_mfdnfd(idfimd, nbcham, iret)
         do i = 1, nbcham
             call as_mfdnfc(idfimd, i, nbcmp, iret)
             call wkvect('&&LRCEME.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&LRCEME.UNITCMP', 'V V K16', nbcmp, junit)
-            call as_mfdfdi(idfimd, i, nomcha, tycha, zk16(jcmp),&
+            call as_mfdfdi(idfimd, i, nomcha, tycha, zk16(jcmp), &
                            zk16(junit), nseqca, iret)
             if (nomcha .eq. nochmd) then
-                ncmprf=nbcmp
+                ncmprf = nbcmp
                 call wkvect('&&LRCEME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)
                 do j = 1, nbcmp
-                    zk8(jnocmp+j-1)=zk16(jcmp+j-1)(1:8)
+                    zk8(jnocmp+j-1) = zk16(jcmp+j-1) (1:8)
                 end do
                 call jedetr('&&LRCEME.NOMCMP_K16')
                 call jedetr('&&LRCEME.UNITCMP')
                 call as_mficlo(idfimd, iret)
                 goto 780
-            endif
+            end if
             call jedetr('&&LRCEME.NOMCMP_K16')
             call jedetr('&&LRCEME.UNITCMP')
         end do
         call as_mficlo(idfimd, iret)
-    endif
+    end if
 !
 780 continue
 !
@@ -224,11 +224,11 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 ! 3. LECTURE POUR CHAQUE TYPE DE SUPPORT
 !====
 !
-    call lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
-                option, param, typech, typent, nbpgma,&
-                nbpgmm, nbspmm, nbcmpv, ncmpva, ncmpvm,&
-                iinst, numpt, numord, inst, crit,&
-                prec, nomgd, ncmprf, jnocmp, chames,&
+    call lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
+                option, param, typech, typent, nbpgma, &
+                nbpgmm, nbspmm, nbcmpv, ncmpva, ncmpvm, &
+                iinst, numpt, numord, inst, crit, &
+                prec, nomgd, ncmprf, jnocmp, chames, &
                 codret)
 !
     call jeveuo(chames//'.CESL', 'E', jcesl)
@@ -240,23 +240,23 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
     if (typech(1:4) .eq. 'CART') then
         call cescar(chames, chanom, 'V')
-        nncp=0
+        nncp = 0
     else
-        call cescel(chames, ligrel, option, param, prolz,&
+        call cescel(chames, ligrel, option, param, prolz, &
                     nncp, 'V', chanom, 'F', ibid)
-    endif
+    end if
     if (nncp .gt. 0) then
-        iaux=0
+        iaux = 0
         call jelira(chames//'.CESL', 'LONMAX', naux)
         do i = 1, naux
-            if (zl(jcesl+i-1)) iaux=iaux+1
+            if (zl(jcesl+i-1)) iaux = iaux+1
         end do
-        vali (1) = iaux
-        vali (2) = nncp
-        valk (1) = nochmd
-        call utmess('A', 'MED_83', nk=1, valk=valk, ni=2,&
+        vali(1) = iaux
+        vali(2) = nncp
+        valk(1) = nochmd
+        call utmess('A', 'MED_83', nk=1, valk=valk, ni=2, &
                     vali=vali)
-    endif
+    end if
 !
     call detrsd('CHAM_ELEM_S', chames)
 !
@@ -266,7 +266,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
     if (codret .ne. 0) then
         call utmess('A', 'MED_55', sk=chanom)
-    endif
+    end if
 !
 !      IF(TYPECH(1:4).EQ.'ELGA')THEN
 !        CALL JEDETR('&&LRCEME_NBPG_MAILLE')
@@ -275,7 +275,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     call jedema()
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'FIN DE '//nompro
-    endif
+        write (ifm, 1001) 'FIN DE '//nompro
+    end if
 !
 end subroutine

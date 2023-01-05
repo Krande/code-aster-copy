@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,16 +47,16 @@ subroutine te0074(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
+        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PFLUXNR', 'L', iflu)
@@ -74,24 +74,24 @@ subroutine te0074(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
         do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         coorse, nx, ny, poids)
             if (laxi) then
                 r = 0.d0
                 do i = 1, nno
-                    l = (kp-1)*nno + i
-                    r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
+                    l = (kp-1)*nno+i
+                    r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
                 end do
                 poids = poids*r
-            endif
+            end if
             do i = 1, nno
-                li = ivf + (kp-1)*nno + i - 1
-                vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)*zr( iflu)
+                li = ivf+(kp-1)*nno+i-1
+                vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*zr(iflu)
             end do
         end do
 !

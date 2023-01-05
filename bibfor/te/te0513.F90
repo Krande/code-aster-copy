@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,11 +75,11 @@ subroutine te0513(option, nomte)
 !
     zero = 0.0d0
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
-    idfdy = idfdx + 1
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+    idfdy = idfdx+1
 !     COQUE ==> 6 DDL PAR NOEUD
-    nddlno=6
+    nddlno = 6
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -90,7 +90,7 @@ subroutine te0513(option, nomte)
             zr(isect+i-1) = zero
         end do
 !
-    else if (option.eq.'CARA_SECT_POUT4') then
+    else if (option .eq. 'CARA_SECT_POUT4') then
         call jevech('PORIGIN', 'L', iorig)
         call jevech('PVECTU1', 'E', ivect1)
         call jevech('PVECTU2', 'E', ivect2)
@@ -100,16 +100,16 @@ subroutine te0513(option, nomte)
             zr(ivect2+i-1) = zero
         end do
 !
-    endif
+    end if
 !
 !     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -130,24 +130,24 @@ subroutine te0513(option, nomte)
                 idec = idfdx+kdec+(i-1)*ndim
                 do j = 1, nno
                     jdec = idfdy+kdec+(j-1)*ndim
-                    nx = nx + zr(idec)*zr(jdec)*sx(i,j)
-                    ny = ny + zr(idec)*zr(jdec)*sy(i,j)
-                    nz = nz + zr(idec)*zr(jdec)*sz(i,j)
+                    nx = nx+zr(idec)*zr(jdec)*sx(i, j)
+                    ny = ny+zr(idec)*zr(jdec)*sy(i, j)
+                    nz = nz+zr(idec)*zr(jdec)*sz(i, j)
                 end do
             end do
 !
 !           LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE
-            jac = sqrt (nx*nx + ny*ny + nz*nz)
+            jac = sqrt(nx*nx+ny*ny+nz*nz)
             sigau = zr(ipoids+ipg-1)*jac
 !           CALCUL DE AX, AY, AZ = SOMME(X.DS, Y.DS, Z.DS)
             axgau = zero
             aygau = zero
             azgau = zero
             do ino = 1, nno
-                i = igeom + 3*(ino-1) -1
-                axgau = axgau + zr(ivf+ldec+ino-1) * zr(i+1)
-                aygau = aygau + zr(ivf+ldec+ino-1) * zr(i+2)
-                azgau = azgau + zr(ivf+ldec+ino-1) * zr(i+3)
+                i = igeom+3*(ino-1)-1
+                axgau = axgau+zr(ivf+ldec+ino-1)*zr(i+1)
+                aygau = aygau+zr(ivf+ldec+ino-1)*zr(i+2)
+                azgau = azgau+zr(ivf+ldec+ino-1)*zr(i+3)
             end do
 !
 !---        CALCUL DE  AXX, AYY, AZZ, AXY, AXZ, AYZ
@@ -157,50 +157,50 @@ subroutine te0513(option, nomte)
             zgau = zero
 !
             do ino = 1, nno
-                i = igeom + 3*(ino-1) -1
-                xgau = xgau + zr(ivf+ldec+ino-1) * zr(i+1)
-                ygau = ygau + zr(ivf+ldec+ino-1) * zr(i+2)
-                zgau = zgau + zr(ivf+ldec+ino-1) * zr(i+3)
+                i = igeom+3*(ino-1)-1
+                xgau = xgau+zr(ivf+ldec+ino-1)*zr(i+1)
+                ygau = ygau+zr(ivf+ldec+ino-1)*zr(i+2)
+                zgau = zgau+zr(ivf+ldec+ino-1)*zr(i+3)
             end do
 !
-            axxgau = xgau * xgau
-            ayygau = ygau * ygau
-            azzgau = zgau * zgau
-            axygau = xgau * ygau
-            axzgau = xgau * zgau
-            ayzgau = ygau * zgau
+            axxgau = xgau*xgau
+            ayygau = ygau*ygau
+            azzgau = zgau*zgau
+            axygau = xgau*ygau
+            axzgau = xgau*zgau
+            ayzgau = ygau*zgau
 !
 !           CALCUL DE A1 = S
-            zr(isect+1-1) = zr(isect+1-1) + sigau
+            zr(isect+1-1) = zr(isect+1-1)+sigau
 !           AX
-            zr(isect+2-1) = zr(isect+2-1) + axgau* sigau
+            zr(isect+2-1) = zr(isect+2-1)+axgau*sigau
 !           AY
-            zr(isect+3-1) = zr(isect+3-1) + aygau* sigau
+            zr(isect+3-1) = zr(isect+3-1)+aygau*sigau
 !           AZ
-            zr(isect+4-1) = zr(isect+4-1) + azgau* sigau
+            zr(isect+4-1) = zr(isect+4-1)+azgau*sigau
 !           AXX
-            zr(isect+5-1) = zr(isect+5-1) + axxgau*sigau
+            zr(isect+5-1) = zr(isect+5-1)+axxgau*sigau
 !           AYY
-            zr(isect+6-1) = zr(isect+6-1) + ayygau*sigau
+            zr(isect+6-1) = zr(isect+6-1)+ayygau*sigau
 !           AZZ
-            zr(isect+7-1) = zr(isect+7-1) + azzgau*sigau
+            zr(isect+7-1) = zr(isect+7-1)+azzgau*sigau
 !           AXY
-            zr(isect+8-1) = zr(isect+8-1) + axygau*sigau
+            zr(isect+8-1) = zr(isect+8-1)+axygau*sigau
 !           AXZ
-            zr(isect+9-1) = zr(isect+9-1) + axzgau*sigau
+            zr(isect+9-1) = zr(isect+9-1)+axzgau*sigau
 !           AYZ
-            zr(isect+10-1) = zr(isect+10-1) + ayzgau*sigau
+            zr(isect+10-1) = zr(isect+10-1)+ayzgau*sigau
         end do
 !---     FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
-        i = igeom - 1
+        i = igeom-1
 !        ARETE 1
-        vt1(1) = zr(i+4) - zr(i+1)
-        vt1(2) = zr(i+5) - zr(i+2)
-        vt1(3) = zr(i+6) - zr(i+3)
+        vt1(1) = zr(i+4)-zr(i+1)
+        vt1(2) = zr(i+5)-zr(i+2)
+        vt1(3) = zr(i+6)-zr(i+3)
 !        ARETE 2
-        vt2(1) = zr(i+7) - zr(i+1)
-        vt2(2) = zr(i+8) - zr(i+2)
-        vt2(3) = zr(i+9) - zr(i+3)
+        vt2(1) = zr(i+7)-zr(i+1)
+        vt2(2) = zr(i+8)-zr(i+2)
+        vt2(3) = zr(i+9)-zr(i+3)
 !        VECTEUR NORMAL VN = VT1^VT2
         call provec(vt1, vt2, vnn)
 !        VECTEUR TANGENT 2
@@ -220,7 +220,7 @@ subroutine te0513(option, nomte)
 !    ---------------------------
 !--- - OPTION : CARA_SECT_POUT4-
 !    ---------------------------
-    else if (option.eq.'CARA_SECT_POUT4') then
+    else if (option .eq. 'CARA_SECT_POUT4') then
 !        BOUCLE SUR LES POINTS DE GAUSS
         do ipg = 1, npg1
             kdec = (ipg-1)*nno*ndim
@@ -233,19 +233,19 @@ subroutine te0513(option, nomte)
                 idec = idfdx+kdec+(i-1)*ndim
                 do j = 1, nno
                     jdec = idfdy+kdec+(j-1)*ndim
-                    nx = nx + zr(idec)*zr(jdec)*sx(i,j)
-                    ny = ny + zr(idec)*zr(jdec)*sy(i,j)
-                    nz = nz + zr(idec)*zr(jdec)*sz(i,j)
+                    nx = nx+zr(idec)*zr(jdec)*sx(i, j)
+                    ny = ny+zr(idec)*zr(jdec)*sy(i, j)
+                    nz = nz+zr(idec)*zr(jdec)*sz(i, j)
                 end do
             end do
 !
 !           LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE
-            jac = sqrt (nx*nx + ny*ny + nz*nz)
+            jac = sqrt(nx*nx+ny*ny+nz*nz)
             sigau = zr(ipoids+ipg-1)*jac
 !           VECT1(I) = SOMME(NI.DS, 0, 0, 0, 0, 0)
             do ino = 1, nno
                 i = ivect1+nddlno*(ino-1)
-                zr(i) = zr(i) + zr(ivf+ldec+ino-1)*sigau
+                zr(i) = zr(i)+zr(ivf+ldec+ino-1)*sigau
             end do
 !
 !           VECT2(I) = SOMME(X*NI.DS, Y*NI.DS, Z*NI.DS, 0, 0, 0)
@@ -253,23 +253,23 @@ subroutine te0513(option, nomte)
             ygau = zero
             zgau = zero
 !
-            do  ino = 1, nno
-                i = igeom + 3*(ino-1) -1
+            do ino = 1, nno
+                i = igeom+3*(ino-1)-1
                 j = ivf+ldec+ino-1
-                xgau = xgau + zr(j) * zr(i+1)
-                ygau = ygau + zr(j) * zr(i+2)
-                zgau = zgau + zr(j) * zr(i+3)
+                xgau = xgau+zr(j)*zr(i+1)
+                ygau = ygau+zr(j)*zr(i+2)
+                zgau = zgau+zr(j)*zr(i+3)
             end do
 !
             do ino = 1, nno
                 i = ivect2+nddlno*(ino-1)-1
                 j = ivf+ldec+ino-1
-                zr(i+1) = zr(i+1) + zr(j)*(xgau-zr(iorig+1-1))*sigau
-                zr(i+2) = zr(i+2) + zr(j)*(ygau-zr(iorig+2-1))*sigau
-                zr(i+3) = zr(i+3) + zr(j)*(zgau-zr(iorig+3-1))*sigau
+                zr(i+1) = zr(i+1)+zr(j)*(xgau-zr(iorig+1-1))*sigau
+                zr(i+2) = zr(i+2)+zr(j)*(ygau-zr(iorig+2-1))*sigau
+                zr(i+3) = zr(i+3)+zr(j)*(zgau-zr(iorig+3-1))*sigau
             end do
         end do
 !---  FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !---   ET FIN DE L'OPTION 'CARA_SECT_POUT4'
-    endif
+    end if
 end subroutine

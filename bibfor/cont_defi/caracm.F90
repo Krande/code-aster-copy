@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine caracm(sdcont, nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfmmvd.h"
@@ -52,7 +52,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    jv_base     = 'G'
+    jv_base = 'G'
     sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Datastructure for contact definition
@@ -72,11 +72,11 @@ implicit none
 !
 ! - Creation
 !
-    call wkvect(sdcont_methco, jv_base//' V I' , zmeth*nb_cont_zone, j_sdcont_methco)
-    call wkvect(sdcont_dirapp, jv_base//' V R' , 3*nb_cont_zone    , j_sdcont_dirapp)
-    call wkvect(sdcont_dirnor, jv_base//' V R' , zdirn*nb_cont_zone, j_sdcont_dirnor)
-    call wkvect(sdcont_jeufo1, jv_base//' V K8', nb_cont_zone      , j_sdcont_jeufo1)
-    call wkvect(sdcont_jeufo2, jv_base//' V K8', nb_cont_zone      , j_sdcont_jeufo2)
-    call wkvect(sdcont_toleco, jv_base//' V R' , ztole*nb_cont_zone, j_sdcont_toleco)
+    call wkvect(sdcont_methco, jv_base//' V I', zmeth*nb_cont_zone, j_sdcont_methco)
+    call wkvect(sdcont_dirapp, jv_base//' V R', 3*nb_cont_zone, j_sdcont_dirapp)
+    call wkvect(sdcont_dirnor, jv_base//' V R', zdirn*nb_cont_zone, j_sdcont_dirnor)
+    call wkvect(sdcont_jeufo1, jv_base//' V K8', nb_cont_zone, j_sdcont_jeufo1)
+    call wkvect(sdcont_jeufo2, jv_base//' V K8', nb_cont_zone, j_sdcont_jeufo2)
+    call wkvect(sdcont_toleco, jv_base//' V R', ztole*nb_cont_zone, j_sdcont_toleco)
 !
 end subroutine

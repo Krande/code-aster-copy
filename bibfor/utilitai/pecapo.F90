@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine pecapo(resu, modele, cara, nh)
 !
     integer :: nbtors, nbgauc, nbcisa, iret, nt, ibid, nopt, ntab, nct, ilign, ncty, nctz, ngm
     integer :: ngi, ngri, idgrmi, nrt, nbrt
-    parameter    ( nbtors = 1 , nbgauc = 1 , nbcisa = 8 , nbrt = 1 )
+    parameter(nbtors=1, nbgauc=1, nbcisa=8, nbrt=1)
     real(kind=8) :: valpar(nbcisa), ay, az, ey, ez, pcty, pctz, r8b, rt, jx, s, yg, zg, iy, iz
     real(kind=8) :: alpha, iomega
     character(len=8) :: k8b, temper, tempe1, tempe2, ptors(nbtors), pgauc(nbgauc), pcisa(nbcisa)
@@ -64,11 +64,11 @@ subroutine pecapo(resu, modele, cara, nh)
     integer :: icodre(1)
     integer :: ilignm, n1
 !     ------------------------------------------------------------------
-    data  ptors / 'JX'      /
-    data  prt   / 'RT'      /
-    data  pgauc / 'JG'      /
-    data  pcisa / 'AY'      ,  'AZ'      ,  'EY'      ,  'EZ'      ,&
-     &              'PCTY'    ,  'PCTZ'    ,  'KY'      ,  'KZ'      /
+    data ptors/'JX'/
+    data prt/'RT'/
+    data pgauc/'JG'/
+    data pcisa/'AY', 'AZ', 'EY', 'EZ',&
+     &              'PCTY', 'PCTZ', 'KY', 'KZ'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -82,28 +82,28 @@ subroutine pecapo(resu, modele, cara, nh)
         call tbcopi('G', nomtab, resu)
     else
         call utmess('F', 'UTILITAI3_59')
-    endif
+    end if
 !
     option = 'MASS_INER'
 !
-    call mecham(option, modele, cara, nh, chgeom,&
+    call mecham(option, modele, cara, nh, chgeom, &
                 chcara, chharm, iret)
 !
 ! --- RECUPERATION DU MAILLAGE INITIAL :
 !     --------------------------------
     call tbexp2(resu, 'TYPE_OBJET')
-    call tbliva(resu, 0, k8b, [ibid], [r8b],&
-                [c16b], k8b, k8b, [r8b], 'TYPE_OBJET',&
-                k8b, ibid, r8b, c16b, typobj,&
+    call tbliva(resu, 0, k8b, [ibid], [r8b], &
+                [c16b], k8b, k8b, [r8b], 'TYPE_OBJET', &
+                k8b, ibid, r8b, c16b, typobj, &
                 iret)
-    if (typobj.ne.'MAILLAGE') call utmess('F', 'MODELISA2_89')
+    if (typobj .ne. 'MAILLAGE') call utmess('F', 'MODELISA2_89')
 
     call tbexp2(resu, 'NOM_SD')
-    call tbliva(resu, 0, k8b, [ibid], [r8b],&
-                [c16b], k8b, k8b, [r8b], 'NOM_SD',&
-                k8b, ibid, r8b, c16b, noma,&
+    call tbliva(resu, 0, k8b, [ibid], [r8b], &
+                [c16b], k8b, k8b, [r8b], 'NOM_SD', &
+                k8b, ibid, r8b, c16b, noma, &
                 iret)
-    nomail=noma
+    nomail = noma
 !
     ngm = 0
     nt = 0
@@ -116,27 +116,27 @@ subroutine pecapo(resu, modele, cara, nh)
         if (ngm .ne. 0) then
             ngm = 1
             call getvtx('CARA_POUTRE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma)
-            noma=nogrma
+            noma = nogrma
             call getvr8('CARA_POUTRE', 'LONGUEUR', iocc=1, scal=hh, nbret=n1)
             call getvtx('CARA_POUTRE', 'LIAISON', iocc=1, scal=ll, nbret=n1)
             call getvid('CARA_POUTRE', 'MATERIAU', iocc=1, scal=mater, nbret=n1)
             if (n1 .eq. 0) then
-                nu(1)=0.d0
+                nu(1) = 0.d0
             else
                 k8b = ' '
-                call rcvale(mater, 'ELAS', 0, k8b, [r8b],&
+                call rcvale(mater, 'ELAS', 0, k8b, [r8b], &
                             1, 'NU      ', nu(1), icodre(1), 1)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! ---   RECUPERATION DU NUMERO DE LIGNE DE LA TABLE RESULTAT POUR LA
 ! ---   VARIABLE "NOMA" :
 !       ---------------
     call tbexp2(resu, 'LIEU')
-    call tbnuli(resu, 1, 'LIEU', [ibid], [r8b],&
+    call tbnuli(resu, 1, 'LIEU', [ibid], [r8b], &
                 [c16b], nomail, [r8b], k8b, ilignm)
-    call tbnuli(resu, 1, 'LIEU', [ibid], [r8b],&
+    call tbnuli(resu, 1, 'LIEU', [ibid], [r8b], &
                 [c16b], noma, [r8b], k8b, ilign)
     if (ilign .lt. 0) ilign = 0
 !
@@ -146,17 +146,17 @@ subroutine pecapo(resu, modele, cara, nh)
     call getvtx('CARA_POUTRE', 'OPTION', iocc=1, nbval=0, nbret=nopt)
     if (nopt .eq. 0) then
         call utmess('F', 'UTILITAI3_60')
-    endif
+    end if
 !
     call getvtx('CARA_POUTRE', 'OPTION', iocc=1, scal=option, nbret=nopt)
 !
 ! ---   LES SEULES OPTIONS PERMISES, POUR LE MOMENT, SONT
 ! ---   'CARA_TORSION' ET 'CARA_CISAILLEMENT':
 !       ------------------------------------
-    if (option .ne. 'CARA_TORSION' .and. option .ne. 'CARA_CISAILLEMEN' .and. option .ne.&
+    if (option .ne. 'CARA_TORSION' .and. option .ne. 'CARA_CISAILLEMEN' .and. option .ne. &
         'CARA_GAUCHI') then
         call utmess('F', 'UTILITAI3_61', sk=option)
-    endif
+    end if
 !
 !     -----------------------------------------------------------
 ! --- -CALCUL DE LA CONSTANTE DE TORSION
@@ -168,20 +168,20 @@ subroutine pecapo(resu, modele, cara, nh)
     if (option .eq. 'CARA_TORSION') then
         call getvr8('CARA_POUTRE', 'RT', iocc=1, nbval=0, nbret=nrt)
         if (nrt .ne. 0) then
-            nrt=-nrt
+            nrt = -nrt
             call getvr8('CARA_POUTRE', 'RT', iocc=1, scal=rt, nbret=nrt)
-        endif
+        end if
 !
 ! --- RECUPERATION DU RESULTAT DE TYPE EVOL_THER DONT L'INTEGRALE
 ! --- SUR LA SECTION DE LA POUTRE VA DONNER LA CONSTANTE DE TORSION :
 !     -------------------------------------------------------------
         call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, nbval=0, nbret=nct)
         if (nct .ne. 0) then
-            nct=-nct
+            nct = -nct
             call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, scal=temper, nbret=nct)
         else
             call utmess('F', 'UTILITAI3_62')
-        endif
+        end if
 !
 ! --- RECUPERATION DES MAILLES DE BORD CONSTITUANT LES
 ! --- CONTOURS INTERIEURS :
@@ -190,11 +190,11 @@ subroutine pecapo(resu, modele, cara, nh)
         if (ngi .ne. 0) then
             ngi = -ngi
             call wkvect('&&PECAPO.GRMA_INTE', 'V V K24', ngi, idgrmi)
-            call getvtx('CARA_POUTRE', 'GROUP_MA_INTE', iocc=1, nbval=ngi, vect=zk24(idgrmi),&
+            call getvtx('CARA_POUTRE', 'GROUP_MA_INTE', iocc=1, nbval=ngi, vect=zk24(idgrmi), &
                         nbret=ngri)
         else
             call wkvect('&&PECAPO.GRMA_INTE', 'V V K24', 1, idgrmi)
-        endif
+        end if
 !
 ! --- CALCUL DE LA CONSTANTE DE TORSION JX :
 !     ------------------------------------
@@ -203,10 +203,10 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- AJOUT DE JX ET RT DANS LA TABLE 'RESU' :
 !     --------------------------------------
         if (nrt .ne. 0) then
-            call tbajli(resu, nbrt, prt, [ibid], [rt],&
+            call tbajli(resu, nbrt, prt, [ibid], [rt], &
                         [c16b], k8b, ilign)
-        endif
-        call tbajli(resu, nbtors, ptors, [ibid], [jx],&
+        end if
+        call tbajli(resu, nbtors, ptors, [ibid], [jx], &
                     [c16b], k8b, ilign)
 !         ILIGN = 1
 !
@@ -214,7 +214,7 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- -CALCUL DES COEFFICIENTS DE CISAILLEMENT -
 ! --- -ET DES COORDONNEES DU CENTRE DE TORSION -
 !     ------------------------------------------
-    else if (option.eq.'CARA_CISAILLEMEN') then
+    else if (option .eq. 'CARA_CISAILLEMEN') then
 !
 ! --- RECUPERATION DE 2 RESULTATS DE TYPE EVOL_THER DESTINES A
 ! --- CALCULER LES COEFFICIENTS DE CISAILLEMENT ET LES COORDONNEES
@@ -225,14 +225,14 @@ subroutine pecapo(resu, modele, cara, nh)
             call getvid('CARA_POUTRE', 'LAPL_PHI_Y', iocc=1, scal=tempe1, nbret=ncty)
         else
             call utmess('F', 'UTILITAI3_63')
-        endif
+        end if
 !
         call getvid('CARA_POUTRE', 'LAPL_PHI_Z', iocc=1, nbval=0, nbret=nctz)
         if (nctz .ne. 0) then
             call getvid('CARA_POUTRE', 'LAPL_PHI_Z', iocc=1, scal=tempe2, nbret=nctz)
         else
             call utmess('F', 'UTILITAI3_64')
-        endif
+        end if
 !
 ! --- RECUPERATION DANS LA TABLE DE LA SURFACE DE LA SECTION S,
 ! --- DES INERTIES PRINCIPALES IY ET IZ, DE L'ANGLE ALPHA FORME
@@ -246,49 +246,49 @@ subroutine pecapo(resu, modele, cara, nh)
         call tbexp2(resu, 'ALPHA')
         call tbexp2(resu, 'CDG_Y')
         call tbexp2(resu, 'CDG_Z')
-        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                    [c16b], noma, k8b, [r8b], 'A',&
-                    k8b, ibid, s, c16b, k8b,&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                    [c16b], noma, k8b, [r8b], 'A', &
+                    k8b, ibid, s, c16b, k8b, &
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'MODELISA2_89')
-        endif
-        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                    [c16b], noma, k8b, [r8b], 'IY',&
-                    k8b, ibid, iy, c16b, k8b,&
+        end if
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                    [c16b], noma, k8b, [r8b], 'IY', &
+                    k8b, ibid, iy, c16b, k8b, &
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'MODELISA2_89')
-        endif
-        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                    [c16b], noma, k8b, [r8b], 'IZ',&
-                    k8b, ibid, iz, c16b, k8b,&
+        end if
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                    [c16b], noma, k8b, [r8b], 'IZ', &
+                    k8b, ibid, iz, c16b, k8b, &
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE_7')
-        endif
-        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                    [c16b], noma, k8b, [r8b], 'ALPHA',&
-                    k8b, ibid, alpha, c16b, k8b,&
+        end if
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                    [c16b], noma, k8b, [r8b], 'ALPHA', &
+                    k8b, ibid, alpha, c16b, k8b, &
                     iret)
         ASSERT(iret .eq. 0)
-        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                    [c16b], noma, k8b, [r8b], 'CDG_Y',&
-                    k8b, ibid, yg, c16b, k8b,&
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                    [c16b], noma, k8b, [r8b], 'CDG_Y', &
+                    k8b, ibid, yg, c16b, k8b, &
                     iret)
-        ASSERT(iret.eq.0)
-        call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                    [c16b], noma, k8b, [r8b], 'CDG_Z',&
-                    k8b, ibid, zg, c16b, k8b,&
+        ASSERT(iret .eq. 0)
+        call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                    [c16b], noma, k8b, [r8b], 'CDG_Z', &
+                    k8b, ibid, zg, c16b, k8b, &
                     iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
 !
 ! --- CALCUL DES COORDONNEES DU CENTRE DE CISAILLEMENT/TORSION EY ET EZ
 ! --- ET DES COEFFICIENTS DE CISAILLEMENT
 ! --- (OU PLUTOT DE LEUR INVERSE) AY ET AZ :
 !     ------------------------------------
-        call pecap2(chgeom, iy, iz, s, alpha,&
-                    yg, zg, tempe1, tempe2, ay,&
+        call pecap2(chgeom, iy, iz, s, alpha, &
+                    yg, zg, tempe1, tempe2, ay, &
                     az, ey, ez, pcty, pctz)
 !
 !     ON CHANGE DE SIGNE EY EZ CAR ON ATTEND CG ET NON PAS GC
@@ -301,53 +301,53 @@ subroutine pecapo(resu, modele, cara, nh)
         valpar(6) = -pctz
         valpar(7) = 0.d0
         valpar(8) = 0.d0
-        call tbajli(resu, nbcisa, pcisa, [ibid], valpar,&
+        call tbajli(resu, nbcisa, pcisa, [ibid], valpar, &
                     [c16b], k8b, ilign)
         if (nomail .ne. noma) then
             call tbexp2(resu, 'KY')
             call tbexp2(resu, 'KZ')
 !       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'A',&
-                        k8b, ibid, seq, c16b, k8b,&
-                        iret)
-            ASSERT(iret.eq.0)
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'IY',&
-                        k8b, ibid, iyeq, c16b, k8b,&
-                        iret)
-            ASSERT(iret.eq.0)
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'IZ',&
-                        k8b, ibid, izeq, c16b, k8b,&
-                        iret)
-            ASSERT(iret.eq.0)
-!
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'KY',&
-                        k8b, ibid, ky, c16b, k8b,&
-                        iret)
-            if (iret .ne. 0) ky=0.d0
-!
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'KZ',&
-                        k8b, ibid, kz, c16b, k8b,&
-                        iret)
-            if (iret .ne. 0) kz=0.d0
-!
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'ALPHA',&
-                        k8b, ibid, alpheq, c16b, k8b,&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'A', &
+                        k8b, ibid, seq, c16b, k8b, &
                         iret)
             ASSERT(iret .eq. 0)
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'CDG_Y',&
-                        k8b, ibid, ygeq, c16b, k8b,&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'IY', &
+                        k8b, ibid, iyeq, c16b, k8b, &
                         iret)
             ASSERT(iret .eq. 0)
-            call tbliva(resu, 1, 'LIEU', [ibid], [r8b],&
-                        [c16b], nomail, k8b, [r8b], 'CDG_Z',&
-                        k8b, ibid, zgeq, c16b, k8b,&
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'IZ', &
+                        k8b, ibid, izeq, c16b, k8b, &
+                        iret)
+            ASSERT(iret .eq. 0)
+!
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'KY', &
+                        k8b, ibid, ky, c16b, k8b, &
+                        iret)
+            if (iret .ne. 0) ky = 0.d0
+!
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'KZ', &
+                        k8b, ibid, kz, c16b, k8b, &
+                        iret)
+            if (iret .ne. 0) kz = 0.d0
+!
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'ALPHA', &
+                        k8b, ibid, alpheq, c16b, k8b, &
+                        iret)
+            ASSERT(iret .eq. 0)
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'CDG_Y', &
+                        k8b, ibid, ygeq, c16b, k8b, &
+                        iret)
+            ASSERT(iret .eq. 0)
+            call tbliva(resu, 1, 'LIEU', [ibid], [r8b], &
+                        [c16b], nomail, k8b, [r8b], 'CDG_Z', &
+                        k8b, ibid, zgeq, c16b, k8b, &
                         iret)
             ASSERT(iret .eq. 0)
 !
@@ -370,44 +370,44 @@ subroutine pecapo(resu, modele, cara, nh)
 !
 !         SEUL LE RAPPORT E/G EST IMPORTANT
 !
-            gg=1.d0/2.d0/(1.d0+nu(1))
-            ee=1.d0
-            ksi=1.d0
-            if (ll .eq. 'ROTULE') ksi=4.d0
+            gg = 1.d0/2.d0/(1.d0+nu(1))
+            ee = 1.d0
+            ksi = 1.d0
+            if (ll .eq. 'ROTULE') ksi = 4.d0
             c1 = 12.d0*ee*iz
             c2 = 12.d0*ee*iy
-            phi1=c1/( (s/ay)*gg*(hh**2) )
-            phi2=c2/( (s/az)*gg*(hh**2) )
-            k1=c1/(hh**3*(ksi+phi1))
-            k2=c2/(hh**3*(ksi+phi2))
+            phi1 = c1/((s/ay)*gg*(hh**2))
+            phi2 = c2/((s/az)*gg*(hh**2))
+            k1 = c1/(hh**3*(ksi+phi1))
+            k2 = c2/(hh**3*(ksi+phi2))
 !
             alphar = (alpha-alpheq)*r8dgrd()
             cos2 = cos(alphar)**2
             sin2 = sin(alphar)**2
-            ky=ky+ ( k1 * cos2 + k2 * sin2)
-            kz=kz+ ( k1 * sin2 + k2 * cos2)
+            ky = ky+(k1*cos2+k2*sin2)
+            kz = kz+(k1*sin2+k2*cos2)
 !
-            kyeq=(12.d0*ee*izeq)/ (gg*seq*hh**2)/( 12.d0*ee*izeq/ky/&
-            hh**3 -1.d0 )
+            kyeq = (12.d0*ee*izeq)/(gg*seq*hh**2)/(12.d0*ee*izeq/ky/ &
+                                                   hh**3-1.d0)
 !
-            kzeq=(12.d0*ee*iyeq)/ (gg*seq*hh**2)/( 12.d0*ee*iyeq/kz/&
-            hh**3 -1.d0 )
+            kzeq = (12.d0*ee*iyeq)/(gg*seq*hh**2)/(12.d0*ee*iyeq/kz/ &
+                                                   hh**3-1.d0)
 !
 !         NOUVEAUX AY ET AZ POUR LE MAILLAGE
             valpar(1) = 1.d0/kyeq
             valpar(2) = 1.d0/kzeq
-            call tbajli(resu, 2, pcisa(1), [ibid], valpar(1),&
+            call tbajli(resu, 2, pcisa(1), [ibid], valpar(1), &
                         [c16b], k8b, ilignm)
             valpar(7) = ky
             valpar(8) = kz
-            call tbajli(resu, 2, pcisa(7), [ibid], valpar(7),&
+            call tbajli(resu, 2, pcisa(7), [ibid], valpar(7), &
                         [c16b], k8b, ilignm)
-        endif
+        end if
 !
 !     ------------------------------------------
 ! --- -CALCUL DE LA CONSTANTE DE GAUCHISSEMENT -
 !     ------------------------------------------
-    else if (option.eq.'CARA_GAUCHI') then
+    else if (option .eq. 'CARA_GAUCHI') then
 !
 ! --- RECUPERATION DU RESULTAT DE TYPE EVOL_THER DONT L'INTEGRALE
 ! --- SUR LA SECTION DE LA POUTRE VA DONNER LA CONSTANTE DE
@@ -418,15 +418,15 @@ subroutine pecapo(resu, modele, cara, nh)
             call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, scal=temper, nbret=nct)
         else
             call utmess('F', 'UTILITAI3_62')
-        endif
+        end if
 !
 ! --- CALCUL DE LA CONSTANTE DE GAUCHISSEMENT IOMEGA :
 !     ----------------------------------------------
         call pecap3(chgeom, temper, iomega)
 !
-        call tbajli(resu, nbgauc, pgauc, [ibid], [iomega],&
+        call tbajli(resu, nbgauc, pgauc, [ibid], [iomega], &
                     [c16b], k8b, ilign)
-    endif
+    end if
 !
 ! --- MENAGE
     call jedetr('&&PECAPO.GRMA_INTE')

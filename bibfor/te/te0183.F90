@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0183(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
@@ -26,7 +26,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/getFluidPara.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,18 +51,17 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
 
-
 ! - Input fields
     call jevech('PGEOMER', 'L', jvGeom)
     call jevech('PMATERC', 'L', jvMate)
     call jevech('PVITEFC', 'L', jvLoad)
 
 ! - Get element parameters
-    call elrefe_info(fami='RIGI',&
-                     nno=nbNode, npg=npg, ndim=cellDime,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nbNode, npg=npg, ndim=cellDime, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShapeX)
     ASSERT(nbNode .le. 9)
-    jvDShapeY = jvDShapeX + 1
+    jvDShapeY = jvDShapeX+1
     ndof = nbNode
 
 ! - Get material properties
@@ -77,12 +76,12 @@ character(len=16), intent(in) :: option, nomte
 
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
     do ino = 1, nbNode
-        i = jvGeom + 3*(ino-1) -1
+        i = jvGeom+3*(ino-1)-1
         do jno = 1, nbNode
-            j = jvGeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = jvGeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 
@@ -99,23 +98,23 @@ character(len=16), intent(in) :: option, nomte
             idec = (i-1)*cellDime
             do j = 1, nbNode
                 jdec = (j-1)*cellDime
-                nx = nx + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sx(i,j)
-                ny = ny + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sy(i,j)
-                nz = nz + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sz(i,j)
+                nx = nx+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sx(i, j)
+                ny = ny+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sy(i, j)
+                nz = nz+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sz(i, j)
             end do
         end do
 
 ! ----- Compute jacobian
-        jac   = sqrt (nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
 
 ! ----- Get value of speed
         speedVale = zc(jvLoad-1+1)
 
 ! ----- Compute vector
         do i = 1, nbNode
-            zc(jvVect+i-1) = zc(jvVect+i-1) + &
-                             jac*zr(jvWeight+ipg-1) *&
-                             zr(jvShape+ldec+i-1) * speedVale * rho
+            zc(jvVect+i-1) = zc(jvVect+i-1)+ &
+                             jac*zr(jvWeight+ipg-1)* &
+                             zr(jvShape+ldec+i-1)*speedVale*rho
         end do
 
     end do

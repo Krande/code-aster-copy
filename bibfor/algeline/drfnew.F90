@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine drfnew(devg, devgii, traceg, dfds, dfdg,&
+subroutine drfnew(devg, devgii, traceg, dfds, dfdg, &
                   mu, k, dfdl)
 !
     implicit none
@@ -43,11 +43,11 @@ subroutine drfnew(devg, devgii, traceg, dfds, dfdg,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -57,13 +57,13 @@ subroutine drfnew(devg, devgii, traceg, dfds, dfdg,&
         vect1(ii) = deux*mu*devg(ii)
     end do
     do ii = 1, ndi
-        vect1(ii) = vect1(ii) + k*traceg
+        vect1(ii) = vect1(ii)+k*traceg
     end do
-    scal1=ddot(ndt,dfds,1,vect1,1)
+    scal1 = ddot(ndt, dfds, 1, vect1, 1)
 ! ======================================================================
 ! --- CALCUL FINAL -----------------------------------------------------
 ! ======================================================================
-    dfdl = mun * scal1 + dfdg*sqrt(deux/trois)*devgii
+    dfdl = mun*scal1+dfdg*sqrt(deux/trois)*devgii
 ! ======================================================================
     call jedema()
 ! ======================================================================

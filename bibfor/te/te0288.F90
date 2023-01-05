@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,9 +72,9 @@ subroutine te0288(option, nomte)
 !
 !
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
-    data    nomres /'E','NU','ALPHA'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'RIGI', 'XINT', 'BID', 'RIGI', 'XINT'/
+    data nomres/'E', 'NU', 'ALPHA'/
 !
 !
     call elref1(elrefp)
@@ -87,15 +87,15 @@ subroutine te0288(option, nomte)
     do i = 1, nnop
         thet = 0.d0
         do j = 1, ndim
-            thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
+            thet = thet+abs(zr(ithet+ndim*(i-1)+j-1))
         end do
-        if (thet .lt. r8prem()) compt = compt + 1
+        if (thet .lt. r8prem()) compt = compt+1
     end do
     if (compt .eq. nnop) goto 999
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                ibid, ibid, ibid, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, singu, ddlc, &
+                ibid, ibid, ibid, ddlm, nfiss, &
                 contac)
 !
 !
@@ -109,15 +109,15 @@ subroutine te0288(option, nomte)
         compor(i) = zk16(icomp+i-1)
     end do
 !
-    incr = compor(4).eq.'COMP_INCR'
-    grand = compor(3).eq.'GROT_GDEP'
+    incr = compor(4) .eq. 'COMP_INCR'
+    grand = compor(3) .eq. 'GROT_GDEP'
 !
 !    if (incr) then
 !        call utmess('F', 'XFEM_48')
 !    endif
     if (grand) then
         call utmess('F', 'XFEM_49')
-    endif
+    end if
 !
 !
 !     ------------------------------------------------------------------
@@ -138,52 +138,52 @@ subroutine te0288(option, nomte)
     if (enr(1:2) .eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
 !
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if (ibid .eq. 0 .and. ltequa(elrefp,enr)) call jevech('PPMILTO', 'L', jpmilt)
+    if (ibid .eq. 0 .and. ltequa(elrefp, enr)) call jevech('PPMILTO', 'L', jpmilt)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
-    fami_se=fami(ndim+irese)
+        irese = 0
+    end if
+    fami_se = fami(ndim+irese)
     if (nfe .gt. 0) then
-        if (ndim .eq. 3 .and. count(zi((jstno-1+1):(jstno-1+nnop)).eq.-2) .eq. 0) fami_se='XGEO'
-    endif
+        if (ndim .eq. 3 .and. count(zi((jstno-1+1):(jstno-1+nnop)) .eq. -2) .eq. 0) fami_se = 'XGEO'
+    end if
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, nno=nno, npg=npg)
 !
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
     call xcgfvo(option, ndim, nnop, fno)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=zi(jlonch-1+1)
+    nse = zi(jlonch-1+1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
         do in = 1, nno
-            ino=zi(jcnset-1+nno*(ise-1)+in)
+            ino = zi(jcnset-1+nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
-                    1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-&
-                    1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
-                    1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
+                                                              1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- &
+                                                              1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- &
+                                                              1)+j)
+                end if
             end do
         end do
 !
-        call xgelem(elrefp, ndim, coorse, igeom, jheavt,&
-                    ise, nfh, ddlc, ddlm, nfe,&
-                    zr(jbaslo), nnop, idepl, zr(jlsn), zr(jlst),&
-                    igthet, fno, nfiss, jheavn, jstno,&
+        call xgelem(elrefp, ndim, coorse, igeom, jheavt, &
+                    ise, nfh, ddlc, ddlm, nfe, &
+                    zr(jbaslo), nnop, idepl, zr(jlsn), zr(jlst), &
+                    igthet, fno, nfiss, jheavn, jstno, &
                     incr)
 !
 !
@@ -196,32 +196,32 @@ subroutine te0288(option, nomte)
     if (option .eq. 'CALC_G_XFEM') then
 !       SI LA PRESSION N'EST CONNUE SUR AUCUN NOEUD, ON LA PREND=0.
         call jevecd('PPRESSR', ipres, 0.d0)
-    else if (option.eq.'CALC_G_XFEM_F') then
+    else if (option .eq. 'CALC_G_XFEM_F') then
         call jevech('PPRESSF', 'L', ipref)
         call jevech('PTEMPSR', 'L', itemps)
 !
 !       RECUPERATION DES PRESSIONS AUX NOEUDS PARENTS
-        nompar(1)='X'
-        nompar(2)='Y'
-        if (ndim .eq. 3) nompar(3)='Z'
-        if (ndim .eq. 3) nompar(4)='INST'
-        if (ndim .eq. 2) nompar(3)='INST'
+        nompar(1) = 'X'
+        nompar(2) = 'Y'
+        if (ndim .eq. 3) nompar(3) = 'Z'
+        if (ndim .eq. 3) nompar(4) = 'INST'
+        if (ndim .eq. 2) nompar(3) = 'INST'
         do i = 1, nnop
             do j = 1, ndim
                 valpar(j) = zr(igeom+ndim*(i-1)+j-1)
             end do
-            valpar(ndim+1)= zr(itemps)
-            call fointe('FM', zk8(ipref), 4, nompar, valpar,&
+            valpar(ndim+1) = zr(itemps)
+            call fointe('FM', zk8(ipref), 4, nompar, valpar, &
                         presn(i), icode)
         end do
-    endif
+    end if
 !
 !     SI LA VALEUR DE LA PRESSION EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
     do i = 1, nnop
         if (option .eq. 'CALC_G_XFEM') pres = abs(zr(ipres-1+i))
         if (option .eq. 'CALC_G_XFEM_F') pres = abs(presn(i))
-        if (pres .lt. r8prem()) compt = compt + 1
+        if (pres .lt. r8prem()) compt = compt+1
     end do
     if (compt .eq. nnop) goto 999
 !
@@ -232,38 +232,38 @@ subroutine te0288(option, nomte)
     call jevech('PBASECO', 'L', jbasec)
 !
 !     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
-    ninter=zi(jlongc-1+1)
-    nface=zi(jlongc-1+2)
-    nptf=zi(jlongc-1+3)
+    ninter = zi(jlongc-1+1)
+    nface = zi(jlongc-1+2)
+    nptf = zi(jlongc-1+3)
     if (ninter .lt. ndim) goto 999
 !
     do i = 1, nface
         do j = 1, nptf
-            cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
+            cface(i, j) = zi(jcface-1+ndim*(i-1)+j)
         end do
     end do
 !
 !     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS !!
 !     LE MATÉRIAU DOIT ETRE HOMOGENE DANS TOUT L'ELEMENT
-    call rcvad2('XFEM', 1, 1, '+', zi(imate),&
-                'ELAS', 3, nomres, valres, devres,&
+    call rcvad2('XFEM', 1, 1, '+', zi(imate), &
+                'ELAS', 3, nomres, valres, devres, &
                 icodre)
-    if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
+    if ((icodre(1) .ne. 0) .or. (icodre(2) .ne. 0)) then
         call utmess('F', 'RUPTURE1_25')
-    endif
+    end if
     if (icodre(3) .ne. 0) then
         valres(3) = 0.d0
         devres(3) = 0.d0
-    endif
+    end if
 !
 !     BOUCLE SUR LES FACETTES
 !
     do ifa = 1, nface
-        call xsifle(ndim, ifa, jptint, cface, igeom,&
-                    nfh, jheavn, singu, nfe, ddlc,&
-                    ddlm, jlsn, jlst, jstno, ipres,&
-                    ipref, itemps, idepl, nnop, valres,&
-                    zr( jbaslo), ithet, nompar, option, igthet,&
+        call xsifle(ndim, ifa, jptint, cface, igeom, &
+                    nfh, jheavn, singu, nfe, ddlc, &
+                    ddlm, jlsn, jlst, jstno, ipres, &
+                    ipref, itemps, idepl, nnop, valres, &
+                    zr(jbaslo), ithet, nompar, option, igthet, &
                     jbasec, contac)
     end do
 !

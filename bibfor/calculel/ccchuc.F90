@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
-                  crit, norm, nb_form, name_form, list_ordr,&
+subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, &
+                  crit, norm, nb_form, name_form, list_ordr, &
                   nb_ordr, iocc)
 !
     implicit none
@@ -129,7 +129,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
 !
 ! - Size of output field
 !
-    call ccchci('NBCMP', type_comp, crit, norm, nb_form,&
+    call ccchci('NBCMP', type_comp, crit, norm, nb_form, &
                 nb_cmp_resu)
     call wkvect(work_out_val, 'V V R', nb_cmp_resu, j_resu)
 !
@@ -145,7 +145,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
 ! ----- Get input field
 !
         numord = zi(jordr-1+iord)
-        call rsexch(' ', sdresu_in, field_type, numord, field_in,&
+        call rsexch(' ', sdresu_in, field_type, numord, field_in, &
                     iret)
         if (iret .ne. 0) then
             if (sdresu_in .eq. sdresu_out) then
@@ -154,7 +154,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                 vali(1) = numord
                 call utmess('F', 'CHAMPS_6', nk=2, valk=valk, si=vali(1))
             else
-                call rsexch(' ', sdresu_out, field_type, numord, field_in,&
+                call rsexch(' ', sdresu_out, field_type, numord, field_in, &
                             iret)
                 if (iret .ne. 0) then
                     valk(1) = field_type
@@ -162,9 +162,9 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                     valk(3) = sdresu_out
                     vali(1) = numord
                     call utmess('F', 'CHAMPS_9', nk=3, valk=valk, si=vali(1))
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ----- Get input field properties
 !
@@ -175,8 +175,8 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                 call dismoi('NOM_LIGREL', field_in, 'CHAMP', repk=ligrel_old)
                 call dismoi('NOM_MODELE', field_in, 'CHAMP', repk=model)
                 call dismoi('NOM_MAILLA', model, 'MODELE', repk=nomail)
-                n0 = getexm(' ','GROUP_MA')
-                n1 = getexm(' ','MAILLE')
+                n0 = getexm(' ', 'GROUP_MA')
+                n1 = getexm(' ', 'MAILLE')
                 list_elem = '&&CCCHUC.MES_MAILLES'
                 if (n0+n1 .ne. 0) then
                     call getvtx(' ', 'MAILLE', nbval=0, nbret=n2)
@@ -186,15 +186,15 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                         motcle(2) = 'MAILLE'
                         typmcl(1) = 'GROUP_MA'
                         typmcl(2) = 'MAILLE'
-                        call reliem(' ', nomail, 'NU_MAILLE', ' ', 1,&
+                        call reliem(' ', nomail, 'NU_MAILLE', ' ', 1, &
                                     2, motcle, typmcl, list_elem, nb_elem_in)
                         ASSERT(nb_elem_in .ne. 0)
-                    endif
-                endif
+                    end if
+                end if
             else
                 call dismoi('NOM_MAILLA', field_in, 'CHAMP', repk=ma)
-                n0 = getexm(' ','GROUP_MA')
-                n1 = getexm(' ','MAILLE')
+                n0 = getexm(' ', 'GROUP_MA')
+                n1 = getexm(' ', 'MAILLE')
                 list_node = '&&CCCHUC.MES_NOEUDS'
                 if (n0+n1 .ne. 0) then
                     call getvtx(' ', 'MAILLE', nbval=0, nbret=n2)
@@ -204,16 +204,16 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                         motcle(2) = 'MAILLE'
                         typmcl(1) = 'GROUP_MA'
                         typmcl(2) = 'MAILLE'
-                        call reliem(' ', ma, 'NU_NOEUD', ' ', 1,&
+                        call reliem(' ', ma, 'NU_NOEUD', ' ', 1, &
                                     2, motcle, typmcl, list_node, nb_node_in)
                         ASSERT(nb_node_in .ne. 0)
-                    endif
-                endif
-            endif
-            ASSERT(type_field_in.ne.'CART' .and. type_field_in.ne.'RESL')
+                    end if
+                end if
+            end if
+            ASSERT(type_field_in .ne. 'CART' .and. type_field_in .ne. 'RESL')
             call codent(nume_field_out, 'D0', cnum)
             name_field_out = 'UT'//cnum//'_'//type_field_in
-        endif
+        end if
 !
 ! ----- Type of output field
 !
@@ -221,11 +221,11 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
         if (type_comp .eq. 'NORME') then
             if (type_field_in .eq. 'NOEU') then
                 call utmess('F', 'CHAMPS_17')
-            endif
+            end if
             ASSERT(type_field_in(1:2) .eq. 'EL')
             type_field_out = 'ELEM'
             name_field_out = 'UT'//cnum//'_ELEM'
-        endif
+        end if
 !
 ! ----- Compute CHAM_UTIL
 !
@@ -243,7 +243,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                 nb_node = zi(jchsd-1+1)
             else
                 nb_node = nb_node_in
-            endif
+            end if
 !
 ! --------- Create output field
 !
@@ -251,38 +251,38 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
             do icmp = 1, nb_cmp_resu
                 call codent(icmp, 'G', cnum)
                 zk8(jcmp-1+icmp) = 'X'//cnum
-            enddo
+            end do
             ASSERT(type_field_out .eq. 'NOEU')
-            call cnscre(ma, 'NEUT_R', nb_cmp_resu, zk8(jcmp), 'V',&
+            call cnscre(ma, 'NEUT_R', nb_cmp_resu, zk8(jcmp), 'V', &
                         field_out_s)
 !
 ! --------- Compute on <CHAM_NO>
 !
-            call ccchuc_chamno(field_in_s, field_out_s, nb_node, list_node, nb_cmp, type_comp,&
-                               crit, nb_form, name_form, nomgd, nb_cmp_resu,&
+            call ccchuc_chamno(field_in_s, field_out_s, nb_node, list_node, nb_cmp, type_comp, &
+                               crit, nb_form, name_form, nomgd, nb_cmp_resu, &
                                work_out_val, nb_node_new, ichk)
 !
 ! --------- Print
 !
             if (ichk .eq. 0) then
-                if (nb_node_new .ne. nb_node)then
+                if (nb_node_new .ne. nb_node) then
                     vali(1) = numord
                     vali(2) = nb_node_new
                     vali(3) = nb_node
                     vali(4) = iocc
                     call utmess('A', 'CHAMPS_10', ni=4, vali=vali)
-                endif
+                end if
             else
                 vali(1) = numord
                 vali(2) = iocc
                 call utmess('F', 'CHAMPS_15', ni=2, vali=vali)
-            endif
+            end if
 !
         else
 !
             typs = 'CHAM_ELEM_S'
             if (type_comp .eq. 'NORME') then
-                call ccchuc_norm(norm, model, nomgd, field_in, type_field_in,&
+                call ccchuc_norm(norm, model, nomgd, field_in, type_field_in, &
                                  field_out)
             else
 !
@@ -290,11 +290,11 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
 !
                 call celces(field_in, 'V', field_in_s)
                 call jeveuo(field_in_s//'.CESD', 'L', jchsd)
-                if (nb_elem_in .eq.0) then
+                if (nb_elem_in .eq. 0) then
                     nb_elem = zi(jchsd-1+1)
                 else
                     nb_elem = nb_elem_in
-                endif
+                end if
                 nb_cmp = zi(jchsd-1+2)
 !
 ! ------------- Work vector for element in output field
@@ -303,51 +303,51 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
 !
 ! ------------- Create output field
 !
-                call cescrm('V', field_out_s, type_field_out, 'NEUT_R', nb_cmp_resu,&
+                call cescrm('V', field_out_s, type_field_out, 'NEUT_R', nb_cmp_resu, &
                             ' ', field_in_s)
 !
 ! ------------- Compute on <CHAM_ELEM>
 !
-                call ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, type_comp,&
-                                   crit, nb_form, name_form, nomgd, nb_cmp_resu,&
+                call ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, type_comp, &
+                                   crit, nb_form, name_form, nomgd, nb_cmp_resu, &
                                    work_out_val, list_elem_new, nb_elem_new, ichk)
 !
 ! ------------- Print
 !
                 if (ichk .eq. 0) then
-                    if (nb_elem_new .ne. nb_elem)then
+                    if (nb_elem_new .ne. nb_elem) then
                         vali(1) = numord
                         vali(2) = nb_elem_new
                         vali(3) = nb_elem
                         vali(4) = iocc
                         call utmess('A', 'CHAMPS_8', ni=4, vali=vali)
-                    endif
+                    end if
                 else
                     vali(1) = numord
                     vali(2) = iocc
                     call utmess('F', 'CHAMPS_15', ni=2, vali=vali)
-                endif
+                end if
 !
 ! ------------- Manage <LIGREL> - Create new if necessary
 !
                 if (nb_elem_in > 0) nb_elem = -nb_elem
-                call ccchuc_ligr(model, list_elem_stor, nb_elem,&
-                                 nb_elem_new, list_elem_new, ligrel_old,&
+                call ccchuc_ligr(model, list_elem_stor, nb_elem, &
+                                 nb_elem_new, list_elem_new, ligrel_old, &
                                  ligrel_new)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Save in result
 !
-        call rsexch(' ', sdresu_out, name_field_out, numord, field_out_sd,&
+        call rsexch(' ', sdresu_out, name_field_out, numord, field_out_sd, &
                     iret)
         if (iret .ne. 100) then
             valk(1) = name_field_out
             valk(2) = sdresu_out
             call utmess('F', 'CHAMPS_14', nk=2, valk=valk)
-        endif
+        end if
         if (type_field_in .eq. 'NOEU') then
-            call cnscno(field_out_s, ' ', 'UNUSED', 'G', field_out_sd,&
+            call cnscno(field_out_s, ' ', 'UNUSED', 'G', field_out_sd, &
                         'F', iret)
         else
             if (type_comp .eq. 'NORME') then
@@ -355,11 +355,11 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
                 call copisd('CHAMP_GD', 'G', field_out, field_out_sd)
                 call detrsd('CHAMP', field_out)
             else
-                call cescel(field_out_s, ligrel_new, ' ', ' ', 'OUI',&
+                call cescel(field_out_s, ligrel_new, ' ', ' ', 'OUI', &
                             ibid, 'G', field_out_sd, 'F', iret)
-            endif
-        endif
-        ASSERT(iret.eq.0)
+            end if
+        end if
+        ASSERT(iret .eq. 0)
         call rsnoch(sdresu_out, name_field_out, numord)
 !
         call detrsd(typs, field_in_s)

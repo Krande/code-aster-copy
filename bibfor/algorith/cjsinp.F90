@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
+subroutine cjsinp(mater, epsd, deps, sigf, vinf, &
                   niter, nvi, nivcjs, ndec, epscon)
 !
     implicit none
@@ -84,26 +84,26 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
     real(kind=8) :: xiil
     character(len=4) :: nivcjs
 ! ======================================================================
-    parameter     ( un   = 1.d0   )
-    parameter     ( zero = 0.d0   )
-    parameter     ( deux = 2.d0   )
-    parameter     ( trois= 3.d0   )
-    parameter     ( epssig = 1.d-8   )
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
+    parameter(epssig=1.d-8)
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- PROPRIETES CJS MATERIAU ------------------------------------------
 ! ======================================================================
-    rm = mater(2,2)
-    rc = mater(5,2)
-    c = mater(8,2)
-    gamma = mater(9,2)
-    mucjs = mater(10,2)
-    pco = mater(11,2)
-    pa = mater(12,2)
-    qinit = mater(13,2)
+    rm = mater(2, 2)
+    rc = mater(5, 2)
+    c = mater(8, 2)
+    gamma = mater(9, 2)
+    mucjs = mater(10, 2)
+    pco = mater(11, 2)
+    pa = mater(12, 2)
+    qinit = mater(13, 2)
 ! ======================================================================
 ! --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES ---------------------
 ! ======================================================================
@@ -111,24 +111,24 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
         xf(i) = vinf(i+2)
     end do
 ! ======================================================================
-    i1f = trace(ndi,sigf)
+    i1f = trace(ndi, sigf)
     if ((i1f+qinit) .eq. 0.d0) then
-        i1f = -qinit+1.d-12 * pa
+        i1f = -qinit+1.d-12*pa
         pref = abs(pa)
     else
         pref = abs(i1f+qinit)
-    endif
+    end if
 ! ======================================================================
-    call cjsqco(gamma, sigf, xf, pref, epssig,&
-                i1f, s, sii, siirel, cos3ts,&
-                hts, dets, q, qii, qiirel,&
+    call cjsqco(gamma, sigf, xf, pref, epssig, &
+                i1f, s, sii, siirel, cos3ts, &
+                hts, dets, q, qii, qiirel, &
                 cos3tq, htq, detq)
 ! ======================================================================
     xii = norm2(xf(1:ndt))
 !
     epsv = zero
     do i = 1, ndi
-        epsv = epsv + epsd(i)+ deps(i)
+        epsv = epsv+epsd(i)+deps(i)
     end do
 ! ======================================================================
 ! --- CAS CJS3 ---------------------------------------------------------
@@ -136,30 +136,30 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
     if (nivcjs .eq. 'CJS3') then
         pc = pco*exp(-c*epsv)
         if (xii .le. epssig) then
-            phio= un
+            phio = un
         else if (siirel .le. epssig) then
             cosa = un
             cosdif = un
-            rr = rc + mucjs*max(zero,log(trois*pc/(i1f+qinit)))
-            phio = cosa/( rr - hts/htq*rm*cosdif)
+            rr = rc+mucjs*max(zero, log(trois*pc/(i1f+qinit)))
+            phio = cosa/(rr-hts/htq*rm*cosdif)
         else
-            cosa = ( qii*qii - sii*sii - i1f*i1f*xii*xii ) / (deux* sii*i1f*xii)
+            cosa = (qii*qii-sii*sii-i1f*i1f*xii*xii)/(deux*sii*i1f*xii)
 !
-            tangs = sqrt(un-cos3ts*cos3ts) / cos3ts
-            tangq = sqrt(un-cos3tq*cos3tq) / cos3tq
-            tetas = atan2(tangs,1.d0) / trois
-            tetaq = atan2(tangq,1.d0) / trois
+            tangs = sqrt(un-cos3ts*cos3ts)/cos3ts
+            tangq = sqrt(un-cos3tq*cos3tq)/cos3tq
+            tetas = atan2(tangs, 1.d0)/trois
+            tetaq = atan2(tangq, 1.d0)/trois
             cosdif = cos(tetas-tetaq)
 !
-            rr = rc + mucjs*max(zero,log(trois*pc/(i1f+qinit)))
-            phio = cosa/( rr - hts/htq*rm*cosdif)
-        endif
-        xiil=un/(phio*hts)
-    endif
+            rr = rc+mucjs*max(zero, log(trois*pc/(i1f+qinit)))
+            phio = cosa/(rr-hts/htq*rm*cosdif)
+        end if
+        xiil = un/(phio*hts)
+    end if
 !
     if (nivcjs .eq. 'CJS2' .or. nivcjs .eq. 'CJS3') then
         vinf(ndt+5) = abs((i1f+qinit)/(vinf(1)*trois))
-    endif
+    end if
     vinf(ndt+6) = niter
     vinf(ndt+7) = epscon
     vinf(ndt+8) = ndec
@@ -168,25 +168,25 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
         if ((abs(i1f+qinit)/pref) .lt. epssig) then
             vinf(ndt+3) = un
         else
-            vinf(ndt+3)=abs(qii*htq/(rm*(i1f+qinit)))
-        endif
-    else if (nivcjs.eq.'CJS2') then
+            vinf(ndt+3) = abs(qii*htq/(rm*(i1f+qinit)))
+        end if
+    else if (nivcjs .eq. 'CJS2') then
         r = vinf(2)
         vinf(ndt+4) = r/rm
         if ((abs(r*(i1f+qinit))/pref) .lt. epssig) then
             vinf(ndt+3) = un
         else
-            vinf(ndt+3)=abs(qii*htq/(r*(i1f+qinit)))
-        endif
-    else if (nivcjs.eq.'CJS3') then
+            vinf(ndt+3) = abs(qii*htq/(r*(i1f+qinit)))
+        end if
+    else if (nivcjs .eq. 'CJS3') then
         r = vinf(2)
         vinf(ndt+4) = xii/xiil
         if ((abs(r*(i1f+qinit))/pref) .lt. epssig) then
             vinf(ndt+3) = un
         else
-            vinf(ndt+3)=abs(qii*htq/(r*(i1f+qinit)))
-        endif
-    endif
+            vinf(ndt+3) = abs(qii*htq/(r*(i1f+qinit)))
+        end if
+    end if
 ! ======================================================================
     call jedema()
 ! ======================================================================

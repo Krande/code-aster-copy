@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine alrslt(nout, lchout, lpaout, base)
-use calcul_module, only : ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_,&
-    ca_ligrel_, ca_option_, ca_ldist_, ca_nuop_
-implicit none
+    use calcul_module, only: ca_iachoi_, ca_iachok_, ca_iaobtr_, ca_nbobtr_, &
+                             ca_ligrel_, ca_option_, ca_ldist_, ca_nuop_
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -74,34 +74,33 @@ implicit none
                 dcel = nochou
             else
                 dcel = ' '
-            endif
-            call alchml(ca_ligrel_, ca_option_, nompar, base, nochou,&
+            end if
+            call alchml(ca_ligrel_, ca_option_, nompar, base, nochou, &
                         iret, dcel)
 !           -- les cham_elems sont incomplets si ca_ldist_
             if (ca_ldist_) then
                 call jeveuo(nochou//'.CELK', 'E', vk24=celk)
-                celk(7)='MPI_INCOMPLET'
-            endif
+                celk(7) = 'MPI_INCOMPLET'
+            end if
 
         else
 !           -- sinon --> resuelem
             call detrsd('RESUELEM', nochou)
-            ASSERT((code.ge.3).and.(code.le.5))
+            ASSERT((code .ge. 3) .and. (code .le. 5))
             call alresl(ca_nuop_, ca_ligrel_, nochou, nompar, base)
 !           -- les resu_elems sont incomplets en ca_ldist_
             if (ca_ldist_) then
                 call jeveuo(nochou//'.NOLI', 'E', vk24=noli)
-                noli(3)='MPI_INCOMPLET'
-            endif
-        endif
+                noli(3) = 'MPI_INCOMPLET'
+            end if
+        end if
     end do
 
-
     call wkvect('&&CALCUL.LCHOU_I', 'V V I', max(2*nout, 2), ca_iachoi_)
-    ca_nbobtr_ = ca_nbobtr_ + 1
+    ca_nbobtr_ = ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.LCHOU_I'
     call wkvect('&&CALCUL.LCHOU_K8', 'V V K8', max(2*nout, 2), ca_iachok_)
-    ca_nbobtr_ = ca_nbobtr_ + 1
+    ca_nbobtr_ = ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.LCHOU_K8'
 
     do i = 1, nout
@@ -116,17 +115,17 @@ implicit none
 
         call dismoi('NOM_GD', nochou, 'CHAMP', repk=nomgd)
         call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-        zk8(ca_iachok_-1+2* (i-1)+2) = tsca
+        zk8(ca_iachok_-1+2*(i-1)+2) = tsca
         call dismoi('TYPE_CHAMP', nochou, 'CHAMP', repk=tych)
         if (tych(1:2) .eq. 'EL') then
-            call jeveuo(nochou//'.CELD', 'E', zi(ca_iachoi_-1+2* (i-1)+1))
-            call jeveuo(nochou//'.CELV', 'E', zi(ca_iachoi_-1+2* (i-1)+2))
-            zk8(ca_iachok_-1+2* (i-1)+1) = 'CHML'
+            call jeveuo(nochou//'.CELD', 'E', zi(ca_iachoi_-1+2*(i-1)+1))
+            call jeveuo(nochou//'.CELV', 'E', zi(ca_iachoi_-1+2*(i-1)+2))
+            zk8(ca_iachok_-1+2*(i-1)+1) = 'CHML'
         else
-            call jeveuo(nochou//'.DESC', 'E', zi(ca_iachoi_-1+2* (i-1)+1))
-            zk8(ca_iachok_-1+2* (i-1)+1) = 'RESL'
-        endif
- 30     continue
+            call jeveuo(nochou//'.DESC', 'E', zi(ca_iachoi_-1+2*(i-1)+1))
+            zk8(ca_iachok_-1+2*(i-1)+1) = 'RESL'
+        end if
+30      continue
     end do
 
 end subroutine

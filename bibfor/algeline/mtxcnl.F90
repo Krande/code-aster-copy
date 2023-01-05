@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
+subroutine mtxcnl(cumul, typcst, const, typmat, lmat, &
                   typres, lres, neq)
     implicit none
 #include "jeveux.h"
@@ -40,9 +40,9 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
 !-----------------------------------------------------------------------
     integer :: ival, neq
 !-----------------------------------------------------------------------
-    zero= 0.d0
+    zero = 0.d0
     un = 1.d0
-    cun = dcmplx(un,0.d0)
+    cun = dcmplx(un, 0.d0)
 !
     if (cumul .eq. 'CUMU') then
         rcum = un
@@ -56,8 +56,8 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
             do ival = 0, neq-1
                 zc(lres+ival) = cun
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! --- MATRICE REELLE EN RESULTAT
 !
@@ -66,40 +66,40 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
             if (typcst(1:1) .eq. 'R') then
                 do ival = 0, neq-1
                     if (zr(lmat+ival) .ne. un) then
-                        zr(lres+ival) = rcum*zr(lres+ival) + const(1)* zr(lmat+ival)
-                    endif
+                        zr(lres+ival) = rcum*zr(lres+ival)+const(1)*zr(lmat+ival)
+                    end if
                 end do
             else
-                valk (1) = typres
-                valk (2) = typmat
-                valk (3) = typcst(1:1)
+                valk(1) = typres
+                valk(2) = typmat
+                valk(3) = typcst(1:1)
                 call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
-            endif
+            end if
         else if (typmat .eq. 'C') then
             if (typcst(1:1) .eq. 'R') then
                 do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
-                        zr(lres+ival) = rcum*zr(lres+ival) + const(1)* dble(zc(lmat+ival))
-                    endif
+                        zr(lres+ival) = rcum*zr(lres+ival)+const(1)*dble(zc(lmat+ival))
+                    end if
                 end do
             else if (typcst(1:1) .eq. 'C') then
-                c8cst = dcmplx(const(1),const(2))
+                c8cst = dcmplx(const(1), const(2))
                 do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
-                        zr(lres+ival) = rcum*zr(lres+ival) + dble( c8cst*zc(lmat+ival))
-                    endif
+                        zr(lres+ival) = rcum*zr(lres+ival)+dble(c8cst*zc(lmat+ival))
+                    end if
                 end do
             else
-                valk (1) = typres
-                valk (2) = typmat
-                valk (3) = typcst(1:1)
+                valk(1) = typres
+                valk(2) = typmat
+                valk(3) = typcst(1:1)
                 call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
-            endif
+            end if
         else
-            valk (1) = typres
-            valk (2) = typmat
+            valk(1) = typres
+            valk(2) = typmat
             call utmess('F', 'ALGELINE4_27', nk=2, valk=valk)
-        endif
+        end if
 !
 ! --- MATRICE COMPLEXE EN RESULTAT
 !
@@ -108,51 +108,51 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
             if (typcst(1:1) .eq. 'R') then
                 do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
-                        zc(lres+ival) = rcum*zc(lres+ival) + const(1)* zc(lmat+ival)
-                    endif
+                        zc(lres+ival) = rcum*zc(lres+ival)+const(1)*zc(lmat+ival)
+                    end if
                 end do
             else if (typcst(1:1) .eq. 'C') then
-                c8cst = dcmplx(const(1),const(2))
+                c8cst = dcmplx(const(1), const(2))
                 do ival = 0, neq-1
                     if (zc(lmat+ival) .ne. cun) then
-                        zc(lres+ival) = rcum*zc(lres+ival) + c8cst*zc( lmat+ival)
-                    endif
+                        zc(lres+ival) = rcum*zc(lres+ival)+c8cst*zc(lmat+ival)
+                    end if
                 end do
             else
-                valk (1) = typres
-                valk (2) = typmat
-                valk (3) = typcst(1:1)
+                valk(1) = typres
+                valk(2) = typmat
+                valk(3) = typcst(1:1)
                 call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
-            endif
+            end if
         else if (typmat .eq. 'R') then
             if (typcst(1:1) .eq. 'R') then
                 do ival = 0, neq-1
                     if (zr(lmat+ival) .ne. un) then
-                        zc(lres+ival) = rcum*zc(lres+ival) + const(1)* zr(lmat+ival)
-                    endif
+                        zc(lres+ival) = rcum*zc(lres+ival)+const(1)*zr(lmat+ival)
+                    end if
                 end do
             else if (typcst(1:1) .eq. 'C') then
-                c8cst = dcmplx(const(1),const(2))
+                c8cst = dcmplx(const(1), const(2))
                 do ival = 0, neq-1
                     if (zr(lmat+ival) .ne. un) then
-                        zc(lres+ival) = rcum*zc(lres+ival) + c8cst*zr( lmat+ival)
-                    endif
+                        zc(lres+ival) = rcum*zc(lres+ival)+c8cst*zr(lmat+ival)
+                    end if
                 end do
             else
-                valk (1) = typres
-                valk (2) = typmat
-                valk (3) = typcst(1:1)
+                valk(1) = typres
+                valk(2) = typmat
+                valk(3) = typcst(1:1)
                 call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
-            endif
+            end if
         else
-            valk (1) = typres
-            valk (2) = typmat
+            valk(1) = typres
+            valk(2) = typmat
             call utmess('F', 'ALGELINE4_27', nk=2, valk=valk)
-        endif
+        end if
     else
-        valk (1) = typres
+        valk(1) = typres
         call utmess('F', 'ALGELINE4_31', sk=valk(1))
 !
-    endif
+    end if
 !
 end subroutine

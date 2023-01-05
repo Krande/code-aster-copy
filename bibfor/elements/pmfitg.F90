@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,36 +69,36 @@ subroutine pmfitg(typfib, nf, ncarf, vf, vs)
 !
     vs(:) = 0.0d0
 !
-    if ( typfib.eq.1 ) then
+    if (typfib .eq. 1) then
 !       caractéristiques utiles par fibre : Y  Z  AIRE
         do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            aire = vf(3,ii)
+            yy = vf(1, ii)
+            zz = vf(2, ii)
+            aire = vf(3, ii)
 !
-            vs(1) = vs(1) + aire
-            vs(2) = vs(2) + yy*aire
-            vs(3) = vs(3) + zz*aire
-            vs(4) = vs(4) + yy*yy*aire
-            vs(5) = vs(5) + zz*zz*aire
-            vs(6) = vs(6) + yy*zz*aire
-        enddo
-    else if ( typfib.eq.2 ) then
+            vs(1) = vs(1)+aire
+            vs(2) = vs(2)+yy*aire
+            vs(3) = vs(3)+zz*aire
+            vs(4) = vs(4)+yy*yy*aire
+            vs(5) = vs(5)+zz*zz*aire
+            vs(6) = vs(6)+yy*zz*aire
+        end do
+    else if (typfib .eq. 2) then
 !       caractéristiques utiles par fibre : Y  Z  AIRE  YP  ZP  GX
         do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            aire = vf(3,ii)
+            yy = vf(1, ii)
+            zz = vf(2, ii)
+            aire = vf(3, ii)
 !
-            vs(1) = vs(1) + aire
-            vs(2) = vs(2) + yy*aire
-            vs(3) = vs(3) + zz*aire
-            vs(4) = vs(4) + yy*yy*aire
-            vs(5) = vs(5) + zz*zz*aire
-            vs(6) = vs(6) + yy*zz*aire
-        enddo
+            vs(1) = vs(1)+aire
+            vs(2) = vs(2)+yy*aire
+            vs(3) = vs(3)+zz*aire
+            vs(4) = vs(4)+yy*yy*aire
+            vs(5) = vs(5)+zz*zz*aire
+            vs(6) = vs(6)+yy*zz*aire
+        end do
     else
         call utmess('F', 'ELEMENTS2_40', si=typfib)
-    endif
+    end if
 !
 end subroutine

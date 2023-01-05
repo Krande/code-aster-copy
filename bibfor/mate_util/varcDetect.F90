@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine varcDetect(mate, l_temp, l_hydr, l_ptot, l_sech, l_epsa, l_meta)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmvcd2.h"
 !
-character(len=24), intent(in) :: mate
-aster_logical, intent(out) :: l_temp, l_hydr, l_ptot
-aster_logical, intent(out) :: l_sech, l_epsa, l_meta
+    character(len=24), intent(in) :: mate
+    aster_logical, intent(out) :: l_temp, l_hydr, l_ptot
+    aster_logical, intent(out) :: l_sech, l_epsa, l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,13 +50,13 @@ aster_logical, intent(out) :: l_sech, l_epsa, l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call nmvcd2('HYDR'   , mate, l_hydr)
-    call nmvcd2('PTOT'   , mate, l_ptot)
-    call nmvcd2('SECH'   , mate, l_sech)
-    call nmvcd2('EPSA'   , mate, l_epsa)
-    call nmvcd2('M_ZIRC' , mate, l_zirc)
+    call nmvcd2('HYDR', mate, l_hydr)
+    call nmvcd2('PTOT', mate, l_ptot)
+    call nmvcd2('SECH', mate, l_sech)
+    call nmvcd2('EPSA', mate, l_epsa)
+    call nmvcd2('M_ZIRC', mate, l_zirc)
     call nmvcd2('M_ACIER', mate, l_steel)
-    call nmvcd2('TEMP'   , mate, l_temp)
-    l_meta = l_temp .and. (l_zirc.or.l_steel)
+    call nmvcd2('TEMP', mate, l_temp)
+    l_meta = l_temp .and. (l_zirc .or. l_steel)
 !
 end subroutine

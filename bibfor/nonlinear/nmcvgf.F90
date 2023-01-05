@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmcvgf(sddisc, sderro, valinc, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/nmacto.h"
@@ -64,13 +64,13 @@ implicit none
     if (etnewt .ne. 'CONV') then
         if (etnewt .eq. 'STOP') then
             call nmeceb(sderro, 'FIXE', 'STOP')
-        else if (etnewt.eq.'ERRE') then
+        else if (etnewt .eq. 'ERRE') then
             call nmeceb(sderro, 'FIXE', 'ERRE')
         else
             ASSERT(.false.)
-        endif
+        end if
         goto 99
-    endif
+    end if
 !
 ! --- ETAT DE LA BOUCLE DE POINT FIXE
 !
@@ -80,11 +80,11 @@ implicit none
 !
     if (etfixe .eq. 'STOP') then
         goto 99
-    endif
+    end if
 !
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact,&
+    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
                 'FIXE')
 !
 ! --- UN EVENEMENT SE DECLENCHE
@@ -92,7 +92,7 @@ implicit none
     call nmacto(sddisc, ievdac)
     if (ievdac .gt. 0) then
         call nmeceb(sderro, 'FIXE', 'EVEN')
-    endif
+    end if
 !
 99  continue
 !

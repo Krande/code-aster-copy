@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
+subroutine excent(sens, excen, nbpoin, nbcmp, lreel, &
                   reffin, reffou, ceffin, ceffou)
     implicit none
 #include "asterf_types.h"
@@ -51,42 +51,42 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
 !     ------------------------------------------------------------------
 !
     if (sens .eq. 'MOY') then
-        rsign=-1.d0
-    else if (sens.eq.'MAIL') then
-        rsign=+1.d0
+        rsign = -1.d0
+    else if (sens .eq. 'MAIL') then
+        rsign = +1.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     if (lreel) then
         do k = 1, nbpoin*nbcmp
-            reffou(k)=reffin(k)
+            reffou(k) = reffin(k)
         end do
 !
         do i = 1, nbpoin
-            reffou((i-1)*nbcmp+4)=reffou((i-1)*nbcmp+4)+ rsign*excen*&
-            reffou((i-1)*nbcmp+1)
-            reffou((i-1)*nbcmp+5)=reffou((i-1)*nbcmp+5)+ rsign*excen*&
-            reffou((i-1)*nbcmp+2)
-            reffou((i-1)*nbcmp+6)=reffou((i-1)*nbcmp+6)+ rsign*excen*&
-            reffou((i-1)*nbcmp+3)
+            reffou((i-1)*nbcmp+4) = reffou((i-1)*nbcmp+4)+rsign*excen* &
+                                    reffou((i-1)*nbcmp+1)
+            reffou((i-1)*nbcmp+5) = reffou((i-1)*nbcmp+5)+rsign*excen* &
+                                    reffou((i-1)*nbcmp+2)
+            reffou((i-1)*nbcmp+6) = reffou((i-1)*nbcmp+6)+rsign*excen* &
+                                    reffou((i-1)*nbcmp+3)
         end do
 !
 !
     else
         do k = 1, nbpoin*nbcmp
-            ceffou(k)=ceffin(k)
+            ceffou(k) = ceffin(k)
         end do
 !
         do i = 1, nbpoin
-            ceffou((i-1)*nbcmp+4)=ceffou((i-1)*nbcmp+4)+ rsign*excen*&
-            ceffou((i-1)*nbcmp+1)
-            ceffou((i-1)*nbcmp+5)=ceffou((i-1)*nbcmp+5)+ rsign*excen*&
-            ceffou((i-1)*nbcmp+2)
-            ceffou((i-1)*nbcmp+6)=ceffou((i-1)*nbcmp+6)+ rsign*excen*&
-            ceffou((i-1)*nbcmp+3)
+            ceffou((i-1)*nbcmp+4) = ceffou((i-1)*nbcmp+4)+rsign*excen* &
+                                    ceffou((i-1)*nbcmp+1)
+            ceffou((i-1)*nbcmp+5) = ceffou((i-1)*nbcmp+5)+rsign*excen* &
+                                    ceffou((i-1)*nbcmp+2)
+            ceffou((i-1)*nbcmp+6) = ceffou((i-1)*nbcmp+6)+rsign*excen* &
+                                    ceffou((i-1)*nbcmp+3)
         end do
 !
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine arlver(modele, lgma, nbgma, nomsd, model,&
+subroutine arlver(modele, lgma, nbgma, nomsd, model, &
                   cine)
 !
 !
@@ -79,7 +79,7 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
     integer :: liste(nbgma)
 !
     character(len=6) :: nompro
-    parameter (nompro='ARLVER')
+    parameter(nompro='ARLVER')
 !
 ! ---------------------------------------------------------------------
 !
@@ -114,19 +114,19 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
         call jeexin(jexnom(noma(1:8)//'.GROUPEMA', lgma(igma)), iret)
         if (iret == 0) then
             ASSERT(.false.)
-        endif
+        end if
         call jeveuo(jexnom(noma(1:8)//'.GROUPEMA', lgma(igma)), 'L', jgma)
         call jelira(jexnom(noma(1:8)//'.GROUPEMA', lgma(igma)), 'LONMAX', nbma, k8bid)
-        ninit = ninit + nbma
+        ninit = ninit+nbma
         do ima = 1, nbma
             numa = zi(jgma-1+ima)
             iligr = zi(jrepe+2*(numa-1))
             if (iligr /= 0) then
                 if (zi(jcompt-1+iligr) == 0) then
                     zi(jte-1+iligr) = zi(jtyel-1+numa)
-                endif
-                zi(jcompt-1+iligr) = zi(jcompt-1+iligr) + 1
-            endif
+                end if
+                zi(jcompt-1+iligr) = zi(jcompt-1+iligr)+1
+            end if
         end do
     end do
 !
@@ -136,7 +136,7 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
     do iligr = 1, nbligr
         if (zi(jcompt-1+iligr) /= 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', zi(jte-1+iligr)), nomte)
-            eltok = arlelt(nomte,modte,cinte)
+            eltok = arlelt(nomte, modte, cinte)
             if (.not. eltok) then
                 zi(jcompt-1+iligr) = 0
                 goto 30
@@ -147,22 +147,22 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
                 else
                     if (modte /= model) then
                         ASSERT(.false.)
-                    endif
+                    end if
                     if (cinte /= cine) then
                         ASSERT(.false.)
-                    endif
-                endif
-                ntot = ntot + zi(jcompt-1+iligr)
-            endif
-        endif
- 30     continue
+                    end if
+                end if
+                ntot = ntot+zi(jcompt-1+iligr)
+            end if
+        end if
+30      continue
     end do
 !
 ! --- AUCUNE MAILLE DU GROUPE N'EST UTILISABLE
 !
     if (ntot == 0) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- ALLOCATION .GROUPEMA
 !
@@ -179,14 +179,14 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model,&
             iligr = zi(jrepe+2*(numa-1))
             if ((iligr /= 0) .and. (zi(jcompt-1+iligr) /= 0)) then
                 zi(jgroup+icompt) = numa
-                icompt = icompt + 1
-            endif
+                icompt = icompt+1
+            end if
         end do
     end do
 !
     if (icompt /= ntot) then
         ASSERT(.false.)
-    endif
+    end if
     nbgma = ntot
     call tri(zi(jgroup), liste, 0, nbgma)
 !

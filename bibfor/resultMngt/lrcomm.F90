@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu_, lVeriVari_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -39,10 +39,10 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-aster_logical, intent(in) :: lReuse
-character(len=8), intent(in) :: resultName
-character(len=8), intent(in):: model, fieldMate, caraElem
-aster_logical, intent(in), optional :: lLireResu_, lVeriVari_
+    aster_logical, intent(in) :: lReuse
+    character(len=8), intent(in) :: resultName
+    character(len=8), intent(in):: model, fieldMate, caraElem
+    aster_logical, intent(in), optional :: lLireResu_, lVeriVari_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,11 +84,11 @@ aster_logical, intent(in), optional :: lLireResu_, lVeriVari_
     lLireResu = ASTER_FALSE
     if (present(lLireResu_)) then
         lLireResu = lLireResu_
-    endif
+    end if
     lVeriVari = ASTER_TRUE
     if (present(lVeriVari_)) then
         lVeriVari = lVeriVari_
-    endif
+    end if
 !
 ! - Name of constant fields
 !
@@ -101,18 +101,18 @@ aster_logical, intent(in), optional :: lLireResu_, lVeriVari_
     call getfac('COMPORTEMENT', nbOcc)
     if (nbOcc .gt. 0) then
         lKeywfactCompor = ASTER_TRUE
-    endif
+    end if
 !
 ! - Get number of storing slots in results datastructure
 !
     call rs_get_liststore(resultName, storeNb)
     if (storeNb .le. 0) then
         call utmess('F', 'RESULT2_97')
-    endif
+    end if
 !
 ! - Get list of storing slots in results datastructure
 !
-    AS_ALLOCATE(vi = storeList, size = storeNb)
+    AS_ALLOCATE(vi=storeList, size=storeNb)
     call rs_get_liststore(resultName, storeNb, storeList)
 !
 ! - Manage behaviour field
@@ -122,72 +122,72 @@ aster_logical, intent(in), optional :: lLireResu_, lVeriVari_
         call nmdorc(model, fieldMate, lInitialState, compor, carcri)
         if (niv .ge. 2) then
             call comp_info(model, compor)
-        endif
+        end if
         do iStore = 1, storeNb
             storeNume = storeList(iStore)
             call rsexch(' ', resultName, 'COMPORTEMENT', storeNume, fieldToSave, iret)
             if (lReuse .and. (.not. lKeywfactCompor)) then
 ! ------------- reuse sans COMPORTEMENT
-                if (iret .eq. 100)  then
+                if (iret .eq. 100) then
                     if (storeNume .eq. 1) then
 ! --------------------- 1er instant : pas de précédent instant : => ELAS
                         call copisd('CHAMP_GD', 'G', compor, fieldToSave)
                     else
 ! --------------------- Get at previous storing index
-                        call rsexch(' ', resultName, 'COMPORTEMENT', storeNume-1,&
+                        call rsexch(' ', resultName, 'COMPORTEMENT', storeNume-1, &
                                     fieldPrevious, iret)
 ! --------------------- copier la carte COMPORTEMENT du précédent instant
                         call copisd('CHAMP_GD', 'G', fieldPrevious, fieldToSave)
-                    endif
+                    end if
                     call rsnoch(resultName, 'COMPORTEMENT', storeNume)
-                endif
+                end if
             else
 ! ------------- Autres cas (sans reuse, reuse avec compor), ou lire_resu
                 if (iret .le. 100) then
 ! ----------------- copier compor (ELAS ou celui donné par utilisateurs)
                     call copisd('CHAMP_GD', 'G', compor, fieldToSave)
                     call rsnoch(resultName, 'COMPORTEMENT', storeNume)
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 ! - Check comportment
 !
     do iStore = 1, storeNb
         storeNume = storeList(iStore)
 ! ----- Get internal state variables
-        call rsexch(' ', resultName, 'VARI_ELGA', storeNume, variElga,iret)
+        call rsexch(' ', resultName, 'VARI_ELGA', storeNume, variElga, iret)
         if (iret .eq. 0) then
             if (model .eq. ' ') then
-                call utmess('F','RESULT2_17')
-            endif
+                call utmess('F', 'RESULT2_17')
+            end if
             call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
             if (lReuse .and. (.not. lKeywfactCompor)) then
                 ! pour le cas reuse sans COMPORTEMENT
                 ! vérifier entre VARI_ELGA existant et carte de comportement du resu
                 call rsexch(' ', resultName, 'COMPORTEMENT', storeNume, compor, iret)
-            endif
+            end if
             call nmdoco(model, caraElem, compor)
             if (lVeriVari) then
 ! ------------- Check consistency of internal state variables with behaviour
                 typeStop = 'A'
-                call vrcomp(compor, variElga, modelLigrel, iret, typeStop_ = typeStop,&
-                            verbose_ = verbose, lModiVari_ = lModiVari)
+                call vrcomp(compor, variElga, modelLigrel, iret, typeStop_=typeStop, &
+                            verbose_=verbose, lModiVari_=lModiVari)
                 if (iret .eq. 1) then
                     call utmess(typeStop, 'RESULT1_1')
-                endif
+                end if
 ! ------------- Change internal variable field
                 if (lModiVari) then
                     call vrcom2(compor, variElga, modelLigrel, lLireResu)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi = storeList)
+    AS_DEALLOCATE(vi=storeList)
 !
     call jedema()
 !

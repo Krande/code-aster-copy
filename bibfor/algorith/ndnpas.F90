@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
+subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
                   valinc, solalg)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,11 +42,11 @@ implicit none
 #include "asterfort/nmdebg.h"
 #include "blas/dcopy.h"
 !
-integer :: numins
-character(len=24) :: numedd
-character(len=19) :: sddyna, sddisc
-character(len=19) :: solalg(*), valinc(*)
-integer :: fonact(*)
+    integer :: numins
+    character(len=24) :: numedd
+    character(len=19) :: sddyna, sddisc
+    character(len=19) :: solalg(*), valinc(*)
+    integer :: fonact(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,8 +69,8 @@ integer :: fonact(*)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: zero, un, deux
-    parameter    (un   = 1.d0,deux = 2.d0)
-    parameter    (zero = 0.d0)
+    parameter(un=1.d0, deux=2.d0)
+    parameter(zero=0.d0)
 !
     character(len=24) :: cfsc
     real(kind=8), pointer :: coef_sch(:) => null()
@@ -96,25 +96,25 @@ integer :: fonact(*)
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> INITIALISATIONS EN DYNAMIQUE'
-    endif
+        write (ifm, *) '<MECANONLINE> INITIALISATIONS EN DYNAMIQUE'
+    end if
 !
 ! --- INITIALISATIONS
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins)
-    deltat = instap - instam
+    instam = diinst(sddisc, numins-1)
+    instap = diinst(sddisc, numins)
+    deltat = instap-instam
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lexge = ndynlo(sddyna,'EXPL_GENE')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
-    lmuap = ndynlo(sddyna,'MULTI_APPUI')
-    lgrot = isfonc(fonact,'GD_ROTA')
-    lexpl = ndynlo(sddyna,'EXPLICITE')
-    lmpas = ndynlo(sddyna,'MULTI_PAS')
-    limpl = ndynlo(sddyna,'IMPLICITE')
+    lexge = ndynlo(sddyna, 'EXPL_GENE')
+    lctcc = isfonc(fonact, 'CONT_CONTINU')
+    lmuap = ndynlo(sddyna, 'MULTI_APPUI')
+    lgrot = isfonc(fonact, 'GD_ROTA')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
+    lmpas = ndynlo(sddyna, 'MULTI_PAS')
+    limpl = ndynlo(sddyna, 'IMPLICITE')
 !
 ! --- ACCES SD DYNA
 !
@@ -123,30 +123,30 @@ integer :: fonact(*)
 !
 ! --- TYPE DE FORMULATION SCHEMA DYNAMIQUE GENERAL
 !
-    ldepl = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1
-    lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
-    lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
-    if (lgrot .and. .not.ldepl) then
+    ldepl = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1
+    lvite = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 2
+    lacce = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3
+    if (lgrot .and. .not. ldepl) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES)
 !
-    lnewma = ndynlo(sddyna,'FAMILLE_NEWMARK')
-    if (.not.(lnewma)) then
+    lnewma = ndynlo(sddyna, 'FAMILLE_NEWMARK')
+    if (.not. (lnewma)) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- HHT COMPLET (MULTI-PAS)
 !
-    lhhtc = ndynlo(sddyna,'HHT_COMPLET')
+    lhhtc = ndynlo(sddyna, 'HHT_COMPLET')
 !
 ! --- COEFFICIENTS DU SCHEMA EN TEMPS
 !
-    beta = ndynre(sddyna,'BETA')
-    gamma = ndynre(sddyna,'GAMMA')
-    phi = ndynre(sddyna,'PHI')
-    alpha = ndynre(sddyna,'ALPHA')
+    beta = ndynre(sddyna, 'BETA')
+    gamma = ndynre(sddyna, 'GAMMA')
+    phi = ndynre(sddyna, 'PHI')
+    alpha = ndynre(sddyna, 'ALPHA')
 !
 ! --- COEFFICIENTS POUR MATRICES
 !
@@ -161,24 +161,24 @@ integer :: fonact(*)
             coemas = un
         else
             ASSERT(.false.)
-        endif
+        end if
         if (lhhtc) then
             coeamo = coeamo/(un+alpha)
             coemas = coemas/(un+alpha)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     coef_sch(1) = coerig
     coef_sch(2) = coeamo
     coef_sch(3) = coemas
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... COEF. RIGI.: ',coerig
-        write (ifm,*) '<MECANONLINE> ... COEF. AMOR.: ',coeamo
-        write (ifm,*) '<MECANONLINE> ... COEF. MASS.: ',coemas
-    endif
+        write (ifm, *) '<MECANONLINE> ... COEF. RIGI.: ', coerig
+        write (ifm, *) '<MECANONLINE> ... COEF. AMOR.: ', coeamo
+        write (ifm, *) '<MECANONLINE> ... COEF. MASS.: ', coemas
+    end if
 !
 ! --- COEFFICIENTS POUR MISE A JOUR DEPL/VITE/ACCE
 !
@@ -194,19 +194,19 @@ integer :: fonact(*)
             coeacc = un
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
     coef_sch(13) = coedep
     coef_sch(14) = coevit
     coef_sch(15) = coeacc
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... COEF. DEPL.: ',coedep
-        write (ifm,*) '<MECANONLINE> ... COEF. VITE.: ',coevit
-        write (ifm,*) '<MECANONLINE> ... COEF. ACCE.: ',coeacc
-    endif
+        write (ifm, *) '<MECANONLINE> ... COEF. DEPL.: ', coedep
+        write (ifm, *) '<MECANONLINE> ... COEF. VITE.: ', coevit
+        write (ifm, *) '<MECANONLINE> ... COEF. ACCE.: ', coeacc
+    end if
 !
 ! --- COEFFICIENTS POUR PREDICTEURS
 !
@@ -223,7 +223,7 @@ integer :: fonact(*)
             coefa(3) = (deux*beta-un)/(deux*beta)
         else if (lacce) then
             if (lexpl) then
-                if (ndynlo(sddyna,'TCHAMWA')) then
+                if (ndynlo(sddyna, 'TCHAMWA')) then
                     coefd(1) = un
                     coefd(2) = deltat
                     coefd(3) = deltat*deltat*phi
@@ -243,7 +243,7 @@ integer :: fonact(*)
                     coefa(1) = zero
                     coefa(2) = zero
                     coefa(3) = zero
-                endif
+                end if
             else
                 coefd(1) = un
                 coefd(2) = deltat
@@ -254,20 +254,20 @@ integer :: fonact(*)
                 coefa(1) = zero
                 coefa(2) = zero
                 coefa(3) = un
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    coef_sch(4)  = coefd(1)
-    coef_sch(5)  = coefd(2)
-    coef_sch(6)  = coefd(3)
-    coef_sch(7)  = coefv(1)
-    coef_sch(8)  = coefv(2)
-    coef_sch(9)  = coefv(3)
+    coef_sch(4) = coefd(1)
+    coef_sch(5) = coefd(2)
+    coef_sch(6) = coefd(3)
+    coef_sch(7) = coefv(1)
+    coef_sch(8) = coefv(2)
+    coef_sch(9) = coefv(3)
     coef_sch(10) = coefa(1)
     coef_sch(11) = coefa(2)
     coef_sch(12) = coefa(3)
@@ -290,13 +290,13 @@ integer :: fonact(*)
             coeex2 = un
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         coeext = zero
         coeint = zero
         coeequ = un
         coeex2 = un
-    endif
+    end if
     coef_sch(16) = coeext
     coef_sch(17) = coeequ
     coef_sch(18) = coeint
@@ -304,12 +304,12 @@ integer :: fonact(*)
 !
     if (lmpas) then
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N-1: ',coeext
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N  : ',coeex2
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. INT. N-1: ',coeint
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EQU.    : ',coeequ
-        endif
-    endif
+            write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. EXT. N-1: ', coeext
+            write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. EXT. N  : ', coeex2
+            write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. INT. N-1: ', coeint
+            write (ifm, *) '<MECANONLINE> ... MULTI-PAS F. EQU.    : ', coeequ
+        end if
+    end if
 !
 ! --- COEFFICENT POUR CALCUL FORCE D'INERTIE DE REFERENCE (NDINER)
 !
@@ -318,15 +318,15 @@ integer :: fonact(*)
             coiner = un/(beta*deltat)
         else
             coiner = un/deltat
-        endif
+        end if
     else
         coiner = un/deltat
-    endif
+    end if
     coef_sch(23) = coiner
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... COEF. FORC. INERTIE REF: ',&
-        coiner
-    endif
+        write (ifm, *) '<MECANONLINE> ... COEF. FORC. INERTIE REF: ', &
+            coiner
+    end if
 !
 ! --- COEFFICIENTS DEVANT MATRICE POUR TERME DE RAPPEL DYNAMIQUE
 !
@@ -338,10 +338,10 @@ integer :: fonact(*)
     coef_sch(22) = coerri
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... COEF. FDYNA RIGI: ',coerri
-        write (ifm,*) '<MECANONLINE> ... COEF. FDYNA AMOR: ',coeram
-        write (ifm,*) '<MECANONLINE> ... COEF. FDYNA MASS: ',coerma
-    endif
+        write (ifm, *) '<MECANONLINE> ... COEF. FDYNA RIGI: ', coerri
+        write (ifm, *) '<MECANONLINE> ... COEF. FDYNA AMOR: ', coeram
+        write (ifm, *) '<MECANONLINE> ... COEF. FDYNA MASS: ', coerma
+    end if
 !
 ! - Save previous time
 !
@@ -351,7 +351,7 @@ integer :: fonact(*)
 !
     if (lmuap) then
         call ndmuap(numins, numedd, sddyna, sddisc)
-    endif
+    end if
 !
 ! --- INITIALISATION DES DEPL. GENERALISES SI PROJECTION MODALE
 !
@@ -362,7 +362,7 @@ integer :: fonact(*)
         call ndynkk(sddyna, 'PRMO_DEPGEP', depgep)
         call ndynkk(sddyna, 'PRMO_VITGEP', vitgep)
         call ndynkk(sddyna, 'PRMO_ACCGEP', accgep)
-        nbmodp = ndynin(sddyna,'NBRE_MODE_PROJ')
+        nbmodp = ndynin(sddyna, 'NBRE_MODE_PROJ')
         call jeveuo(accgem, 'E', jaccgm)
         call jeveuo(accgep, 'E', jaccgp)
         call jeveuo(vitgem, 'E', jvitgm)
@@ -376,15 +376,15 @@ integer :: fonact(*)
 ! --- PREDICTION DEPLACEMENT GENERALISE
 !
         do imode = 1, nbmodp
-            zr(jdepgp+imode-1) = zr(jdepgm+imode-1) + coefd(2)*zr( jvitgm+imode-1) + coefd(3)*zr(&
+            zr(jdepgp+imode-1) = zr(jdepgm+imode-1)+coefd(2)*zr(jvitgm+imode-1)+coefd(3)*zr(&
                                  &jaccgm+imode-1)
         end do
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE> ...... PRED. DEPL. GENE'
+            write (ifm, *) '<MECANONLINE> ...... PRED. DEPL. GENE'
             call nmdebg('VECT', depgep, ifm)
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedema()
 !

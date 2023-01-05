@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine op0175()
 !
     call getres(resuc1, concep, nomcmd)
     call getvid(' ', 'RESULTAT', scal=resu, nbret=n0)
-    resu19=resu
+    resu19 = resu
 !
 !
 !     -- CHOIX DES INSTANTS DE CALCUL :
@@ -75,22 +75,22 @@ subroutine op0175()
     nuord = nume_ordre(1)
 !
     call rsadpa(resu, 'L', 1, 'MODELE', nuord, 0, sjv=jpara)
-    model=zk8(jpara)
-    ASSERT(model.ne.' ')
+    model = zk8(jpara)
+    ASSERT(model .ne. ' ')
     call rsadpa(resu, 'L', 1, 'CARAELEM', nuord, 0, sjv=jpara)
-    caraElem=zk8(jpara)
-    if (caraElem .eq.  ' ') then
+    caraElem = zk8(jpara)
+    if (caraElem .eq. ' ') then
         call getvtx(' ', 'CARA_ELEM', scal=caraElem, nbret=ie)
-    endif
+    end if
     ASSERT(caraElem .ne. ' ')
 !
 !     -- 1. ON CREE LE CHAMP DE DONNEES (CHFER1) :
 !     ---------------------------------------------
-    chfer1='&&OP0175.CHFER1'
+    chfer1 = '&&OP0175.CHFER1'
     call w175af(model, chfer1)
     if (niv .gt. 1) then
         call imprsd('CARTE', chfer1, 6, 'CHFER1=')
-    endif
+    end if
 !
 !     -- 2. ON APPELLE L'OPTION FERRAILLAGE :
 !     -------------------------------------------
@@ -98,15 +98,15 @@ subroutine op0175()
         nuordr = nume_ordre(i)
         call rsexch('F', resu19, 'EFGE_ELNO', nuordr, chefge, iret)
         call rsexch(' ', resu19, 'FERRAILLAGE', nuordr, chfer2, iret)
-        if (resu19.eq.resuc1) then
+        if (resu19 .eq. resuc1) then
             if (iret .eq. 0) then
-                call utmess('A', 'CALCULEL_88', si=nuordr ,sk=resu19)
-            endif
-        endif
+                call utmess('A', 'CALCULEL_88', si=nuordr, sk=resu19)
+            end if
+        end if
         call w175ca(model, caraElem, chfer1, chefge, chfer2)
         if (niv .gt. 1) then
             call imprsd('CHAMP', chfer2, 6, 'CHFER2=')
-        endif
+        end if
         call rsnoch(resu19, 'FERRAILLAGE', nuordr)
     end do
 !

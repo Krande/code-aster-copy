@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_chck(model, mesh, chmate,&
+subroutine comp_meca_chck(model, mesh, chmate, &
                           fullElemField, lInitialState, behaviourPrepPara)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lccree.h"
@@ -39,10 +39,10 @@ implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
 !
-character(len=8), intent(in) :: model, mesh, chmate
-character(len=19), intent(in) :: fullElemField
-aster_logical, intent(in) :: lInitialState
-type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+    character(len=8), intent(in) :: model, mesh, chmate
+    character(len=19), intent(in) :: fullElemField
+    aster_logical, intent(in) :: lInitialState
+    type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,19 +77,19 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
 ! --------------------------------------------------------------------------------------------------
 !
     nbFactorKeyword = behaviourPrepPara%nb_comp
-    lNeedDeborst   = ASTER_FALSE
+    lNeedDeborst = ASTER_FALSE
     lElasByDefault = ASTER_FALSE
-    lDistParallel  = ASTER_FALSE
+    lDistParallel = ASTER_FALSE
 
 ! - MPI initialisation
     call asmpi_comm('GET', mpiCurr)
     call asmpi_info(mpiCurr, size=nbCPU)
 
 ! - Generic properties
-    call dismoi('EXI_VARC', chmate, 'CHAM_MATER', repk = answer)
+    call dismoi('EXI_VARC', chmate, 'CHAM_MATER', repk=answer)
     lExistVarc = answer .eq. 'OUI'
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
-    call dismoi('PARTITION', modelLigrel, 'LIGREL', repk = partit)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call dismoi('PARTITION', modelLigrel, 'LIGREL', repk=partit)
 
 ! - Distributed parallelism
     lDistParallel = partit .ne. ' ' .and. nbCPU .gt. 1
@@ -98,7 +98,7 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
     do iFactorKeyword = 1, nbFactorKeyword
 
 ! ----- Get list of cells where behaviour is defined
-        call comp_read_mesh(mesh, keywordfact, iFactorKeyword,&
+        call comp_read_mesh(mesh, keywordfact, iFactorKeyword, &
                             cellAffe, lAllCellAffe, nbCellAffe)
 
 ! ----- Get main parameters for this behaviour
@@ -106,8 +106,8 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
         defoComp = behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
         typeComp = behaviourPrepPara%v_para(iFactorKeyword)%type_comp
         reguVisc = behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
-        lMfront  = behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_offi .or.&
-                   behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_proto
+        lMfront = behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_offi .or. &
+                  behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_proto
         exteDefo = behaviourPrepPara%v_paraExte(iFactorKeyword)%strain_model
 
 ! ----- Coding comportment (Python)
@@ -115,10 +115,10 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
         call lccree(1, defoComp, defoCompPY)
 
 ! ----- Check the consistency of the modelization with the behaviour
-        call compMecaChckModel(iFactorKeyword,&
-                               model       , fullElemField ,&
-                               lAllCellAffe, cellAffe      , nbCellAffe  ,&
-                               relaComp, relaCompPY  , chmate, typeComp,&
+        call compMecaChckModel(iFactorKeyword, &
+                               model, fullElemField, &
+                               lAllCellAffe, cellAffe, nbCellAffe, &
+                               relaComp, relaCompPY, chmate, typeComp, &
                                lElasByDefault, lNeedDeborst, lIncoUpo)
 
 ! ----- Select plane stress algorithm
@@ -127,45 +127,45 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
         behaviourPrepPara%v_para(iFactorKeyword)%type_cpla = typeCpla
 
 ! ----- Check the consistency of the strain model with the behaviour
-        call compMecaChckStrain(iFactorKeyword,&
-                                model       , fullElemField,&
-                                lAllCellAffe, cellAffe     , nbCellAffe,&
-                                lMfront     , exteDefo     ,&
-                                defoComp    , defoCompPY   ,&
-                                relaComp    , relaCompPY)
+        call compMecaChckStrain(iFactorKeyword, &
+                                model, fullElemField, &
+                                lAllCellAffe, cellAffe, nbCellAffe, &
+                                lMfront, exteDefo, &
+                                defoComp, defoCompPY, &
+                                relaComp, relaCompPY)
 
 ! ----- Check REGU_VISC
         if (reguVisc .ne. 'VIDE') then
             call lctest(relaCompPY, 'REGU_VISC', reguVisc, lctestIret)
             if (lctestIret .eq. 0) then
-                call utmess('F', 'COMPOR1_33', nk = 2, valk = [reguVisc, relaComp])
-            endif
-        endif
+                call utmess('F', 'COMPOR1_33', nk=2, valk=[reguVisc, relaComp])
+            end if
+        end if
 
 ! ----- No Deborst allowed with large strains models
         if (lNeedDeborst .and. defoComp .eq. 'GDEF_LOG') then
             call utmess('F', 'COMPOR1_13')
-        endif
+        end if
         if (lNeedDeborst .and. defoComp .eq. 'SIMO_MIEHE') then
             call utmess('F', 'COMPOR1_13')
-        endif
+        end if
 
 ! ----- No INCO_UPO modelization with GDEF_LOG
         if (lIncoUpo .and. defoComp .eq. 'GDEF_LOG') then
             call utmess('F', 'COMPOR1_16')
-        endif
+        end if
 
 ! ----- No ENDO_HETEROGENE whith distributed parallelism
         if (relaComp .eq. 'ENDO_HETEROGENE') then
             if (lDistParallel) then
                 call utmess('F', 'COMPOR5_25')
-            endif
-         endif
+            end if
+        end if
 
 ! ----- Warning if ELASTIC comportment and initial state
         if (lInitialState .and. typeComp .eq. 'COMP_ELAS') then
             call utmess('A', 'COMPOR1_61')
-        endif
+        end if
 
 ! ----- Coding comportment (Python)
         call lcdiscard(relaCompPY)
@@ -176,18 +176,18 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
 ! - General
     if (lNeedDeborst) then
         call utmess('I', 'COMPOR5_20')
-    endif
+    end if
     if (lElasByDefault) then
         call utmess('I', 'COMPOR5_21')
-    endif
+    end if
     if (lExistVarc .and. behaviourPrepPara%lTotalStrain) then
         call utmess('A', 'COMPOR4_17')
-    endif
+    end if
     if (behaviourPrepPara%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')
-    endif
+    end if
     if (behaviourPrepPara%nb_comp .ge. 99999) then
         call utmess('A', 'COMPOR4_65')
-    endif
+    end if
 !
 end subroutine

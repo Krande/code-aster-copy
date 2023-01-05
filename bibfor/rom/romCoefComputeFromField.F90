@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romCoefComputeFromField(base, v_field, v_vect)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,8 +32,8 @@ implicit none
 #include "blas/dgemm.h"
 #include "blas/dgesv.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-real(kind=8), pointer :: v_field(:), v_vect(:)
+    type(ROM_DS_Empi), intent(in) :: base
+    real(kind=8), pointer :: v_field(:), v_vect(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,8 +62,8 @@ real(kind=8), pointer :: v_field(:), v_vect(:)
 !
 ! - Allocate objects
 !
-    AS_ALLOCATE(vr = v_matr, size = nbMode*nbMode)
-    AS_ALLOCATE(vi4 = IPIV, size = nbMode)
+    AS_ALLOCATE(vr=v_matr, size=nbMode*nbMode)
+    AS_ALLOCATE(vi4=IPIV, size=nbMode)
 !
 ! - Create [PHI] matrix for primal base
 !
@@ -71,19 +71,19 @@ real(kind=8), pointer :: v_field(:), v_vect(:)
 !
 ! - COmpute reduced coefficients
 !
-    call dgemm('T', 'N', nbMode, 1, nbEqua, 1.d0,&
+    call dgemm('T', 'N', nbMode, 1, nbEqua, 1.d0, &
                v_matr_phi, nbEqua, v_field, nbEqua, 0.d0, v_vect, nbMode)
-    call dgemm('T', 'N', nbMode, nbMode, nbEqua, 1.d0,&
+    call dgemm('T', 'N', nbMode, nbMode, nbEqua, 1.d0, &
                v_matr_phi, nbEqua, v_matr_phi, nbEqua, 0.d0, v_matr, nbMode)
     call dgesv(nbMode, 1, v_matr, nbMode, IPIV, v_vect, nbMode, info)
     if (info .ne. 0) then
         call utmess('F', 'ROM6_32')
-    endif
+    end if
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = v_matr)
-    AS_DEALLOCATE(vr = v_matr_phi)
-    AS_DEALLOCATE(vi4 = IPIV)
+    AS_DEALLOCATE(vr=v_matr)
+    AS_DEALLOCATE(vr=v_matr_phi)
+    AS_DEALLOCATE(vi4=IPIV)
 !
 end subroutine

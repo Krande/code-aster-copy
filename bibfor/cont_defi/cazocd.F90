@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cazocd(sdcont, keywf, i_zone, nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -65,24 +65,24 @@ implicit none
 !
     coef_pena_frot = 0.d0
     coef_pena_cont = 0.d0
-    coef_frot      = 0.d0
+    coef_frot = 0.d0
     coef_matr_frot = 0.d0
-    glis_alarm     = 0.d0
-    s_glis         = ' '
+    glis_alarm = 0.d0
+    s_glis = ' '
 !
 ! - Datastructure for contact definition
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_caradf = sdcont_defi(1:16)//'.CARADF'
-    call jeveuo(sdcont_caradf, 'E', vr = v_sdcont_caradf)
+    call jeveuo(sdcont_caradf, 'E', vr=v_sdcont_caradf)
     zcmdf = cfmmvd('ZCMDF')
 !
 ! - Parameters
 !
-    l_cont_acti = cfdisl(sdcont_defi,'CONT_ACTI')
-    l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
-    l_frot_pena = cfdisl(sdcont_defi,'FROT_PENA')
-    l_cont_pena = cfdisl(sdcont_defi,'CONT_PENA')
+    l_cont_acti = cfdisl(sdcont_defi, 'CONT_ACTI')
+    l_frot = cfdisl(sdcont_defi, 'FROTTEMENT')
+    l_frot_pena = cfdisl(sdcont_defi, 'FROT_PENA')
+    l_cont_pena = cfdisl(sdcont_defi, 'CONT_PENA')
 !
 ! - Friction
 !
@@ -91,32 +91,32 @@ implicit none
         v_sdcont_caradf(zcmdf*(i_zone-1)+4) = coef_frot
         call getvr8(keywf, 'COEF_MATR_FROT', iocc=i_zone, scal=coef_matr_frot)
         v_sdcont_caradf(zcmdf*(i_zone-1)+1) = coef_matr_frot
-    endif
+    end if
 !
 ! - Parameters of penalization
 !
     if (l_cont_pena) then
         call getvr8(keywf, 'E_N', iocc=i_zone, scal=coef_pena_cont, nbret=noc)
-        ASSERT(noc.gt.0)
+        ASSERT(noc .gt. 0)
         v_sdcont_caradf(zcmdf*(i_zone-1)+2) = coef_pena_cont
-    endif
+    end if
 !
     if (l_frot_pena) then
         call getvr8(keywf, 'E_T', iocc=i_zone, scal=coef_pena_frot, nbret=noc)
         v_sdcont_caradf(zcmdf*(i_zone-1)+3) = coef_pena_frot
-    endif
+    end if
 !
 ! - Bilateral contact: on all zones
 !
     if (l_cont_acti) then
-        call cazouu(keywf, nb_cont_zone, 'GLISSIERE','T')
+        call cazouu(keywf, nb_cont_zone, 'GLISSIERE', 'T')
         call getvtx(keywf, 'GLISSIERE', iocc=1, scal=s_glis)
         if (s_glis .eq. 'OUI') then
             v_sdcont_caradf(zcmdf*(i_zone-1)+6) = 1.d0
-            call cazouu(keywf, nb_cont_zone, 'ALARME_JEU','R8')
+            call cazouu(keywf, nb_cont_zone, 'ALARME_JEU', 'R8')
             call getvr8(keywf, 'ALARME_JEU', iocc=1, scal=glis_alarm)
             v_sdcont_caradf(zcmdf*(i_zone-1)+5) = glis_alarm
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

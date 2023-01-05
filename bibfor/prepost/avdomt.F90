@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
 !
     do ivect = 1, nbvec
         do icycl = 1, ncycl(ivect)
-            adrs = (ivect-1)*nbordr + icycl
-            domtot(ivect) = domtot(ivect) + zr(jdomel+adrs)
+            adrs = (ivect-1)*nbordr+icycl
+            domtot(ivect) = domtot(ivect)+zr(jdomel+adrs)
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     use cara_elem_carte_type
     implicit none
     integer :: nbocc
-    type (cara_elem_info) :: infdonn
+    type(cara_elem_info) :: infdonn
     character(len=24) :: grplmax(*)
     integer :: lmax
-    type (cara_elem_carte) :: infcarte(*)
+    type(cara_elem_carte) :: infcarte(*)
     integer :: nbdisc
     integer :: zjdlm(*)
 !
@@ -68,7 +68,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     integer :: ivr(4)
     real(kind=8) :: lamasse, valfongro, surfacetotale, zero(6)
     real(kind=8) :: eta, maillesurf(2), maillecdg(3)
-    character(len= 8) :: typm, fongro, discretm, discretk, nommaille
+    character(len=8) :: typm, fongro, discretm, discretk, nommaille
     character(len=24) :: magrma, connex
 
     integer :: jdc(3), jdv(3), dimcar
@@ -80,31 +80,31 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     character(len=8) :: noma
 !
 ! --------------------------------------------------------------------------------------------------
-    integer     ,pointer :: noeuds(:)       => null()
-    real(kind=8),pointer :: coord(:)        => null()
+    integer, pointer :: noeuds(:) => null()
+    real(kind=8), pointer :: coord(:) => null()
 !
-    integer     ,pointer :: nummaisur(:)        => null()
-    integer     ,pointer :: lstnumnoe(:)        => null()
-    integer     ,pointer :: lstnummaipoi1(:)    => null()
-    integer     ,pointer :: lstpoi1surch(:)     => null()
-    real(kind=8),pointer :: lstcoenoe(:)        => null()
+    integer, pointer :: nummaisur(:) => null()
+    integer, pointer :: lstnumnoe(:) => null()
+    integer, pointer :: lstnummaipoi1(:) => null()
+    integer, pointer :: lstpoi1surch(:) => null()
+    real(kind=8), pointer :: lstcoenoe(:) => null()
 ! --------------------------------------------------------------------------------------------------
     integer           :: vmessi(4)
     character(len=24) :: vmessk(6)
 ! --------------------------------------------------------------------------------------------------
 !
-    if ( nbocc.eq.0 ) goto 999
+    if (nbocc .eq. 0) goto 999
 !
     call jemarq()
 !
-    noma   = infdonn%maillage
+    noma = infdonn%maillage
     nbnoeu = infdonn%nbnoeu
-    ndim   = infdonn%dimmod
+    ndim = infdonn%dimmod
     nbmail = infdonn%nbmail
     ivr(:) = infdonn%ivr(:)
 !
 !   Pour les discrets c'est obligatoirement du 2d ou 3d
-    ASSERT( (ndim.eq.2).or.(ndim.eq.3) )
+    ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !
 !   Les cartes sont déjà construites : ace_crea_carte
     cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
@@ -113,16 +113,16 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     dimcar = infcarte(ACE_CAR_DINFO)%nbr_cmp
 !
     cart(1) = infcarte(ACE_CAR_DISCK)%nom_carte
-    jdc(1)  = infcarte(ACE_CAR_DISCK)%adr_cmp
-    jdv(1)  = infcarte(ACE_CAR_DISCK)%adr_val
+    jdc(1) = infcarte(ACE_CAR_DISCK)%adr_cmp
+    jdv(1) = infcarte(ACE_CAR_DISCK)%adr_val
 !
     cart(2) = infcarte(ACE_CAR_DISCM)%nom_carte
-    jdc(2)  = infcarte(ACE_CAR_DISCM)%adr_cmp
-    jdv(2)  = infcarte(ACE_CAR_DISCM)%adr_val
+    jdc(2) = infcarte(ACE_CAR_DISCM)%adr_cmp
+    jdv(2) = infcarte(ACE_CAR_DISCM)%adr_val
 !
     cart(3) = infcarte(ACE_CAR_DISCA)%nom_carte
-    jdc(3)  = infcarte(ACE_CAR_DISCA)%adr_cmp
-    jdv(3)  = infcarte(ACE_CAR_DISCA)%adr_val
+    jdc(3) = infcarte(ACE_CAR_DISCA)%adr_cmp
+    jdv(3) = infcarte(ACE_CAR_DISCA)%adr_val
 !
     ifm = ivr(4)
 !
@@ -135,31 +135,31 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     AS_ALLOCATE(vi=lstnummaipoi1, size=nbdisc)
     compte_maille = 0
 !   Les mailles de la 1ère occurrence
-    call getvtx('MASS_REP','GROUP_MA_POI1', iocc=1, nbval=lmax, vect=grplmax, nbret=nbgrp)
+    call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=1, nbval=lmax, vect=grplmax, nbret=nbgrp)
 !   on éclate les GROUP_MA en mailles
     do ii = 1, nbgrp
         call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, grplmax(ii)), 'L', ldgm)
-        if ( compte_maille+nb .gt. nbdisc ) then
+        if (compte_maille+nb .gt. nbdisc) then
             vmessi(1) = 1
             vmessi(2) = nb
             vmessi(3) = nbdisc
             vmessi(4) = compte_maille
             vmessk(1) = grplmax(ii)
-            call utmess('F', 'AFFECARAELEM_21',nk=1,valk=vmessk,ni=4,vali=vmessi)
-        endif
+            call utmess('F', 'AFFECARAELEM_21', nk=1, valk=vmessk, ni=4, vali=vmessi)
+        end if
         do jj = ldgm, ldgm+nb-1
-            compte_maille = compte_maille + 1
+            compte_maille = compte_maille+1
             lstnummaipoi1(compte_maille) = zi(jj)
-        enddo
-    enddo
+        end do
+    end do
 !   Les mailles des autres occurrences
-    if ( nbocc .ge. 2 ) then
+    if (nbocc .ge. 2) then
         AS_ALLOCATE(vi=lstpoi1surch, size=nbdisc)
         nbsurchpoi1 = 0
         nbsurchpoi2 = 0
         do iocc = 2, nbocc
-            call getvtx('MASS_REP','GROUP_MA_POI1',iocc=iocc,nbval=lmax,vect=grplmax,nbret=nbgrp)
+          call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=lmax, vect=grplmax, nbret=nbgrp)
 !           on éclate les GROUP_MA en mailles
             do ii = 1, nbgrp
                 kk = compte_maille
@@ -167,49 +167,49 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
                 call jeveuo(jexnom(magrma, grplmax(ii)), 'L', ldgm)
                 do jj = ldgm, ldgm+nb-1
                     imail = zi(jj)
-                    if ( in_liste_entier(imail, lstnummaipoi1(1:compte_maille)) ) then
-                        if ( .not. in_liste_entier(imail, lstpoi1surch(1:nbsurchpoi2)) ) then
-                            if ( nbsurchpoi2 .lt. nbdisc ) then
-                                nbsurchpoi2 = nbsurchpoi2 + 1
+                    if (in_liste_entier(imail, lstnummaipoi1(1:compte_maille))) then
+                        if (.not. in_liste_entier(imail, lstpoi1surch(1:nbsurchpoi2))) then
+                            if (nbsurchpoi2 .lt. nbdisc) then
+                                nbsurchpoi2 = nbsurchpoi2+1
                                 lstpoi1surch(nbsurchpoi2) = imail
-                            endif
-                        endif
-                        nbsurchpoi1 = nbsurchpoi1 + 1
+                            end if
+                        end if
+                        nbsurchpoi1 = nbsurchpoi1+1
                     else
-                        compte_maille = compte_maille + 1
-                        if ( compte_maille .gt. nbdisc ) then
+                        compte_maille = compte_maille+1
+                        if (compte_maille .gt. nbdisc) then
                             vmessi(1) = iocc
                             vmessi(2) = nb
                             vmessi(3) = nbdisc
                             vmessi(4) = kk
                             vmessk(1) = grplmax(ii)
-                            call utmess('F', 'AFFECARAELEM_21',nk=1,valk=vmessk,ni=4,vali=vmessi)
-                        endif
+                           call utmess('F', 'AFFECARAELEM_21', nk=1, valk=vmessk, ni=4, vali=vmessi)
+                        end if
                         lstnummaipoi1(compte_maille) = imail
-                    endif
-                enddo
-            enddo
-        enddo
-        if ( nbsurchpoi1 .ne. 0 ) then
+                    end if
+                end do
+            end do
+        end do
+        if (nbsurchpoi1 .ne. 0) then
             vmessk(1) = 'MASS_REP'
             vmessi(1) = nbocc
             vmessi(2) = nbsurchpoi1
-            call utmess('I', 'AFFECARAELEM_20',nk=1,valk=vmessk,ni=2,vali=vmessi)
-            if ( ivr(3).eq.2 ) then
-                write(ifm,'(A,I3,A)') 'Liste des ',nbsurchpoi2,' mailles concernées :'
-                do ii = 1 , nbsurchpoi2
-                    call jenuno(jexnum(noma//'.NOMMAI', lstpoi1surch(ii)), nommaille )
-                    if ( mod(ii,8).eq.0 ) then
-                        write(ifm,'(A8)') nommaille
+            call utmess('I', 'AFFECARAELEM_20', nk=1, valk=vmessk, ni=2, vali=vmessi)
+            if (ivr(3) .eq. 2) then
+                write (ifm, '(A,I3,A)') 'Liste des ', nbsurchpoi2, ' mailles concernées :'
+                do ii = 1, nbsurchpoi2
+                    call jenuno(jexnum(noma//'.NOMMAI', lstpoi1surch(ii)), nommaille)
+                    if (mod(ii, 8) .eq. 0) then
+                        write (ifm, '(A8)') nommaille
                     else
-                        write(ifm,'(A8,2X)',advance="no") nommaille
-                    endif
-                enddo
-                write(ifm,*)
-            endif
-        endif
+                        write (ifm, '(A8,2X)', advance="no") nommaille
+                    end if
+                end do
+                write (ifm, *)
+            end if
+        end if
         AS_DEALLOCATE(vi=lstpoi1surch)
-    endif
+    end if
     AS_DEALLOCATE(vi=lstnummaipoi1)
 !
     do iocc = 1, nbocc
@@ -219,7 +219,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
         else
 !           En 3D la dimension n'est pas encore déterminée
             appui = -1
-        endif
+        end if
 !       Pour les messages
         vmessi(1) = iocc
         vmessk(1) = 'MASS_REP'
@@ -231,7 +231,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
         do ii = 1, nbgrp
             call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
             call jeveuo(jexnom(magrma, grplmax(ii)), 'L', ldgm)
-            nb_mail_grp = nb_mail_grp + nb
+            nb_mail_grp = nb_mail_grp+nb
             do jj = ldgm, ldgm+nb-1
                 imail = zi(jj)
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ltypmail-1+imail)), typm)
@@ -239,23 +239,23 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 !               La dimension de la première maille définit l'appui si pas encore déterminé
                 if (appui .eq. -1) then
                     appui = ntopo
-                    if ( (appui.ne.1).and.(appui.ne.2) ) then
+                    if ((appui .ne. 1) .and. (appui .ne. 2)) then
                         vmessk(2) = grplmax(ii)
-                        call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3) )
+                        call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
                         vmessk(4) = typm
                         vmessi(2) = appui
-                        call utmess('F', 'AFFECARAELEM_11',nk=4,valk=vmessk,ni=2,vali=vmessi)
-                    endif
-                endif
+                        call utmess('F', 'AFFECARAELEM_11', nk=4, valk=vmessk, ni=2, vali=vmessi)
+                    end if
+                end if
                 if (ntopo .ne. appui) then
                     vmessk(2) = grplmax(ii)
 !                   Maille courante qui va pas bien
-                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3) )
+                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
                     vmessk(4) = typm
                     vmessi(2) = appui
-                    if ( ndim .eq. 3) then
+                    if (ndim .eq. 3) then
 !                       Maille de définition de la topologie du groupe
-                        call jenuno(jexnum(noma//'.NOMMAI', zi(ldgm)), vmessk(5) )
+                        call jenuno(jexnum(noma//'.NOMMAI', zi(ldgm)), vmessk(5))
                         call jenuno(jexnum('&CATA.TM.NOMTM', zi(ltypmail-1+zi(ldgm))), vmessk(6))
                         vmessi(3) = ntopo
 !                       vmessi(1) N°occurrence
@@ -267,7 +267,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 !                       vmessk(4) Type de la maille courante
 !                       vmessk(5) Nom de la 1ère maille du groupe
 !                       vmessk(6) Type de la 1ère maille du groupe
-                        call utmess('F', 'AFFECARAELEM_23',nk=6,valk=vmessk,ni=3,vali=vmessi)
+                        call utmess('F', 'AFFECARAELEM_23', nk=6, valk=vmessk, ni=3, vali=vmessi)
                     else
 !                       vmessi(1) N°occurrence
 !                       vmessi(2) Topologie =1 on est en 2D
@@ -276,52 +276,52 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 !                       vmessk(2) Nom du groupe
 !                       vmessk(3) Nom de la maille courante
 !                       vmessk(4) Type de la maille courante
-                        call utmess('F', 'AFFECARAELEM_10',nk=4,valk=vmessk,ni=3,vali=vmessi)
-                    endif
-                endif
+                        call utmess('F', 'AFFECARAELEM_10', nk=4, valk=vmessk, ni=3, vali=vmessi)
+                    end if
+                end if
 !               Noeuds de la maille
                 call jelira(jexnum(connex, imail), 'LONMAX', nm)
                 call jeveuo(jexnum(connex, imail), 'L', vi=noeuds)
 !               Si pas le bon nombre de noeuds
-                if ( .not. in_liste_entier(nm,[2, 3, 4, 6, 7, 8, 9]) ) then
+                if (.not. in_liste_entier(nm, [2, 3, 4, 6, 7, 8, 9])) then
                     vmessk(2) = grplmax(ii)
-                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3) )
+                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
                     vmessk(4) = typm
                     vmessk(5) = '2 3 4 6 7 8 9'
                     vmessi(2) = nm
-                    call utmess('F', 'AFFECARAELEM_13',nk=5,valk=vmessk,ni=2,vali=vmessi)
-                endif
+                    call utmess('F', 'AFFECARAELEM_13', nk=5, valk=vmessk, ni=2, vali=vmessi)
+                end if
 !               Tout semble ok
-                nb_noeu_grp = nb_noeu_grp + nm
-            enddo
-        enddo
+                nb_noeu_grp = nb_noeu_grp+nm
+            end do
+        end do
 !
 !       La masse à répartir
         call getvr8('MASS_REP', 'VALE', iocc=iocc, scal=lamasse)
 !       Le type de masse : TOTALE LINEIQUE SURFACIQUE
         call getvtx('MASS_REP', 'TYPE', iocc=iocc, scal=masse_type)
 !
-        if ( appui.eq.2 .and. masse_type.eq.'LINEIQUE' ) then
-            call utmess('F', 'AFFECARAELEM_17',nk=1,valk=vmessk,ni=1,vali=vmessi)
-        endif
-        if ( appui.eq.1 .and. masse_type.eq.'SURFACIQUE' ) then
-            call utmess('F', 'AFFECARAELEM_18',nk=1,valk=vmessk,ni=1,vali=vmessi)
-        endif
+        if (appui .eq. 2 .and. masse_type .eq. 'LINEIQUE') then
+            call utmess('F', 'AFFECARAELEM_17', nk=1, valk=vmessk, ni=1, vali=vmessi)
+        end if
+        if (appui .eq. 1 .and. masse_type .eq. 'SURFACIQUE') then
+            call utmess('F', 'AFFECARAELEM_18', nk=1, valk=vmessk, ni=1, vali=vmessi)
+        end if
 !
-        if ( masse_type.eq.'TOTALE' ) then
+        if (masse_type .eq. 'TOTALE') then
             repartition = .true.
         else
             repartition = .false.
-        endif
-        call getvid('MASS_REP', 'FONC_MULT', iocc=iocc, scal=fongro,  nbret=nfct)
-        ASSERT( nfct.eq.0 .or. nfct.eq.1 )
+        end if
+        call getvid('MASS_REP', 'FONC_MULT', iocc=iocc, scal=fongro, nbret=nfct)
+        ASSERT(nfct .eq. 0 .or. nfct .eq. 1)
 !
 !       Numéro des mailles de surface, pour vérifier qu'il n'y a pas de doublon
         AS_ALLOCATE(vi=nummaisur, size=nb_mail_grp)
 !       Numéro des noeuds de la surface, maille POI1, la masse pondérée
-        AS_ALLOCATE(vi=lstnumnoe,     size=nb_noeu_grp)
+        AS_ALLOCATE(vi=lstnumnoe, size=nb_noeu_grp)
         AS_ALLOCATE(vi=lstnummaipoi1, size=nb_noeu_grp)
-        AS_ALLOCATE(vr=lstcoenoe,     size=nb_noeu_grp)
+        AS_ALLOCATE(vr=lstcoenoe, size=nb_noeu_grp)
 !
         lstnumnoe(:) = 0
         lstcoenoe(:) = 0.0
@@ -339,41 +339,41 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
             do jj = ldgm, ldgm+nb-1
                 imail = zi(jj)
 !               Vérification que la maille n'est pas en double dans les groupes
-                if ( in_liste_entier(imail, nummaisur(1:compte_maille)) ) then
+                if (in_liste_entier(imail, nummaisur(1:compte_maille))) then
                     vmessk(2) = grplmax(ii)
-                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3) )
-                    call utmess('F', 'AFFECARAELEM_12',nk=3,valk=vmessk,ni=1,vali=vmessi)
-                endif
+                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
+                    call utmess('F', 'AFFECARAELEM_12', nk=3, valk=vmessk, ni=1, vali=vmessi)
+                end if
 !               Calcul sur la maille
-                compte_maille = compte_maille + 1
+                compte_maille = compte_maille+1
                 nummaisur(compte_maille) = imail
                 call jelira(jexnum(connex, imail), 'LONMAX', nm)
                 call jeveuo(jexnum(connex, imail), 'L', vi=noeuds)
-                call calcul_cara_maille( coord, noeuds(1:nm), appui, maillesurf, maillecdg )
-                surfacetotale = surfacetotale + maillesurf(1)
+                call calcul_cara_maille(coord, noeuds(1:nm), appui, maillesurf, maillecdg)
+                surfacetotale = surfacetotale+maillesurf(1)
                 valfongro = 1.0
-                if ( nfct.eq.1 ) then
-                    call fointe('F ', fongro, 3, ['X','Y','Z'], maillecdg, valfongro, iret)
-                endif
-                do kk = 1 , nm
-                    ok = in_liste_entier(noeuds(kk), lstnumnoe(1:nb_noeud_uniq),indx=ll)
-                    if ( .not. ok ) then
-                        nb_noeud_uniq = nb_noeud_uniq + 1
+                if (nfct .eq. 1) then
+                    call fointe('F ', fongro, 3, ['X', 'Y', 'Z'], maillecdg, valfongro, iret)
+                end if
+                do kk = 1, nm
+                    ok = in_liste_entier(noeuds(kk), lstnumnoe(1:nb_noeud_uniq), indx=ll)
+                    if (.not. ok) then
+                        nb_noeud_uniq = nb_noeud_uniq+1
                         lstnumnoe(nb_noeud_uniq) = noeuds(kk)
                         lstcoenoe(nb_noeud_uniq) = lamasse*maillesurf(2)*valfongro
                     else
-                        lstcoenoe(ll) = lstcoenoe(ll) + lamasse*maillesurf(2)*valfongro
-                    endif
-                enddo
-            enddo
-        enddo
+                        lstcoenoe(ll) = lstcoenoe(ll)+lamasse*maillesurf(2)*valfongro
+                    end if
+                end do
+            end do
+        end do
 !
 !       Doit-on diviser par la surface totale
-        if ( repartition ) then
-            do ll = 1 , nb_noeud_uniq
+        if (repartition) then
+            do ll = 1, nb_noeud_uniq
                 lstcoenoe(ll) = lstcoenoe(ll)/surfacetotale
-            enddo
-        endif
+            end do
+        end if
 !
 !       on éclate les GROUP_MA_POI1 pour vérifier que les noeuds sont dans le GROUP_MA
         call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=lmax, vect=grplmax, nbret=nbgrp)
@@ -383,91 +383,91 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
             do jj = ldgm, ldgm+nb-1
                 imail = zi(jj)
 !               Si la maille n'est pas affectée
-                if ( zjdlm(imail) .eq. 0 ) then
+                if (zjdlm(imail) .eq. 0) then
                     vmessk(2) = grplmax(ii)
-                    call jenuno(jexnum(noma//'.NOMMAI', imail ), vmessk(3) )
-                    call utmess('F', 'AFFECARAELEM_22',nk=3,valk=vmessk,ni=1,vali=vmessi)
-                endif
+                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
+                    call utmess('F', 'AFFECARAELEM_22', nk=3, valk=vmessk, ni=1, vali=vmessi)
+                end if
 !               Si la maille n'a pas 1 noeud
                 call jelira(jexnum(connex, imail), 'LONMAX', nm)
-                if ( nm.ne.1 ) then
+                if (nm .ne. 1) then
                     vmessk(2) = grplmax(ii)
-                    call jenuno(jexnum(noma//'.NOMMAI', imail ), vmessk(3) )
-                    call utmess('F', 'AFFECARAELEM_16',nk=3,valk=vmessk,ni=1,vali=vmessi)
-                endif
+                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
+                    call utmess('F', 'AFFECARAELEM_16', nk=3, valk=vmessk, ni=1, vali=vmessi)
+                end if
                 call jeveuo(jexnum(connex, imail), 'L', vi=noeuds)
-                ok = in_liste_entier(noeuds(1), lstnumnoe(1:nb_noeud_uniq),indx=kk)
+                ok = in_liste_entier(noeuds(1), lstnumnoe(1:nb_noeud_uniq), indx=kk)
 !               Si le noeud POI1 n'est pas dans la liste des noeuds de la surface ==> Pas bien
-                if ( .not. ok ) then
+                if (.not. ok) then
                     vmessk(2) = grplmax(ii)
-                    call jenuno(jexnum(noma//'.NOMMAI', imail ), vmessk(3) )
-                    call utmess('F', 'AFFECARAELEM_14',nk=3,valk=vmessk,ni=1,vali=vmessi)
-                endif
+                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
+                    call utmess('F', 'AFFECARAELEM_14', nk=3, valk=vmessk, ni=1, vali=vmessi)
+                end if
 !               Si on déjà mis une maille POI1 en face du noeud  ==> Pas bien
-                if ( lstnummaipoi1(kk) .ne. -2 ) then
+                if (lstnummaipoi1(kk) .ne. -2) then
                     vmessk(2) = grplmax(ii)
-                    call jenuno(jexnum(noma//'.NOMMAI', imail ), vmessk(3) )
-                    call jenuno(jexnum(noma//'.NOMMAI', lstnummaipoi1(kk) ), vmessk(4) )
-                    call jenuno(jexnum(noma//'.NOMNOE', noeuds(1) ), vmessk(5) )
-                    call utmess('F', 'AFFECARAELEM_19',nk=5,valk=vmessk,ni=1,vali=vmessi)
-                endif
+                    call jenuno(jexnum(noma//'.NOMMAI', imail), vmessk(3))
+                    call jenuno(jexnum(noma//'.NOMMAI', lstnummaipoi1(kk)), vmessk(4))
+                    call jenuno(jexnum(noma//'.NOMNOE', noeuds(1)), vmessk(5))
+                    call utmess('F', 'AFFECARAELEM_19', nk=5, valk=vmessk, ni=1, vali=vmessi)
+                end if
                 lstnummaipoi1(kk) = imail
-            enddo
-        enddo
+            end do
+        end do
 !       La relation doit être bijective ==> on ne doit plus avoir lstnummaipoi1 = -2.
 !           Tous les noeuds doivent avoir une maille POI1 en face
-        do ll = 1 , nb_noeud_uniq
-            if ( lstnummaipoi1(ll) .eq. -2 ) then
-                call jenuno(jexnum(noma//'.NOMNOE', lstnumnoe(ll) ), vmessk(2) )
-                call utmess('F', 'AFFECARAELEM_15',nk=2,valk=vmessk,ni=1,vali=vmessi)
-            endif
-        enddo
+        do ll = 1, nb_noeud_uniq
+            if (lstnummaipoi1(ll) .eq. -2) then
+                call jenuno(jexnum(noma//'.NOMNOE', lstnumnoe(ll)), vmessk(2))
+                call utmess('F', 'AFFECARAELEM_15', nk=2, valk=vmessk, ni=1, vali=vmessi)
+            end if
+        end do
 !
         AS_DEALLOCATE(vi=nummaisur)
 !
-        if ( ivr(3).eq.2 ) then
-            write(ifm,100) iocc, surfacetotale
-        endif
+        if (ivr(3) .eq. 2) then
+            write (ifm, 100) iocc, surfacetotale
+        end if
         lamasse = 0.0
 !       Par défaut on est dans le repère global, matrices symétriques
         irep = 1; isym = 1; eta = 0.0; zero(:) = 0.0
         discretm = 'M_T_D_N'; discretk = 'K_T_D_N'
-        do ii = 1 , nb_noeud_uniq
+        do ii = 1, nb_noeud_uniq
             iv = 1
-            if ( ivr(3).eq.2 ) then
-                call jenuno(jexnum(noma//'.NOMMAI', lstnummaipoi1(ii) ), vmessk(1) )
-                call jenuno(jexnum(noma//'.NOMNOE', lstnumnoe(ii) ), vmessk(2) )
-                write(ifm,110) vmessk(1), vmessk(2) ,lstcoenoe(ii)
-            endif
-            lamasse = lamasse + lstcoenoe(ii)
+            if (ivr(3) .eq. 2) then
+                call jenuno(jexnum(noma//'.NOMMAI', lstnummaipoi1(ii)), vmessk(1))
+                call jenuno(jexnum(noma//'.NOMNOE', lstnumnoe(ii)), vmessk(2))
+                write (ifm, 110) vmessk(1), vmessk(2), lstcoenoe(ii)
+            end if
+            lamasse = lamasse+lstcoenoe(ii)
             call affdis(ndim, irep, eta, discretm, lstcoenoe(ii:), &
-                        jdc, jdv, ivr, iv, ['K','M','A'], &
-                        ncmp, ll, jdcinf, jdvinf, isym )
-            call nocart(cart(ll), 3, ncmp,   mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
-            call nocart(cartdi,   3, dimcar, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
+                        jdc, jdv, ivr, iv, ['K', 'M', 'A'], &
+                        ncmp, ll, jdcinf, jdvinf, isym)
+            call nocart(cart(ll), 3, ncmp, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
+            call nocart(cartdi, 3, dimcar, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
 !           On met 0 sur les raideurs
             iv = 1
             call affdis(ndim, irep, eta, discretk, zero, &
-                        jdc, jdv, ivr, iv, ['K','M','A'], &
-                        ncmp, ll, jdcinf, jdvinf, isym )
-            call nocart(cart(ll), 3, ncmp,   mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
-            call nocart(cartdi,   3, dimcar, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
-        enddo
-        if ( ivr(3).eq.2 ) then
-            write(ifm,120) lamasse
-        endif
+                        jdc, jdv, ivr, iv, ['K', 'M', 'A'], &
+                        ncmp, ll, jdcinf, jdvinf, isym)
+            call nocart(cart(ll), 3, ncmp, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
+            call nocart(cartdi, 3, dimcar, mode='NUM', nma=1, limanu=[lstnummaipoi1(ii)])
+        end do
+        if (ivr(3) .eq. 2) then
+            write (ifm, 120) lamasse
+        end if
 !
         AS_DEALLOCATE(vi=lstnumnoe)
         AS_DEALLOCATE(vr=lstcoenoe)
         AS_DEALLOCATE(vi=lstnummaipoi1)
-    enddo
+    end do
 !
 !   Pour l'impression des valeurs affectées : Maille , Noeud , valeur
-100 format(/,'OCCURRENCE : ',i4,'. SURFACE TOTALE : ',1pe12.5 )
-110 format(  '   MAILLE : ',A8,'. NOEUD : ',A8, '. MASSE : ',1pe12.5)
-120 format(  '==>POUR CETTE OCCURRENCE. MASSE TOTALE : ',1pe12.5)
+100 format(/, 'OCCURRENCE : ', i4, '. SURFACE TOTALE : ', 1pe12.5)
+110 format('   MAILLE : ', A8, '. NOEUD : ', A8, '. MASSE : ', 1pe12.5)
+120 format('==>POUR CETTE OCCURRENCE. MASSE TOTALE : ', 1pe12.5)
 !
-call jedema()
+    call jedema()
 !
 999 continue
 end subroutine

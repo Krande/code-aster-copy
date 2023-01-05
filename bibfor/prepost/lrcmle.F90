@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
-                  numord, typent, typgeo, iprof, ntvale,&
+subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt, &
+                  numord, typent, typgeo, iprof, ntvale, &
                   nomprf, codret)
 !_____________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -66,13 +66,13 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 !
 !
     integer :: edfuin
-    parameter (edfuin=0)
+    parameter(edfuin=0)
     integer :: edall
-    parameter (edall=0)
+    parameter(edall=0)
     integer :: edcomp
-    parameter (edcomp=2)
+    parameter(edcomp=2)
     integer :: iterma
-    parameter (iterma=1)
+    parameter(iterma=1)
 !
     integer :: ifm, nivinf
 !
@@ -90,18 +90,18 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
-        write(ifm,*) 'NB CMP :',nbcmfi,'  NB TOTAL VALEURS :',nbvato
-    endif
+        write (ifm, *) 'NB CMP :', nbcmfi, '  NB TOTAL VALEURS :', nbvato
+    end if
 !
 !====
 ! 2. LECTURE DU NOM DU PROFIL
 !====
 !
-    call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
-                   typgeo, iterma, nomamd, nomprf, nomloc,&
+    call as_mfdonp(idfimd, nochmd, numpt, numord, typent, &
+                   typgeo, iterma, nomamd, nomprf, nomloc, &
                    nbprof, codret)
-    call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
-                   numpt, numord, iprof, nomprf, edcomp,&
+    call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd, &
+                   numpt, numord, iprof, nomprf, edcomp, &
                    taipro, nomloc, nip, n, codret)
 !
 !====
@@ -110,13 +110,13 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 !
     call wkvect(ntvale, 'V V R', nbcmfi*nbvato, advale)
 !
-    call as_mfdrpr(idfimd, nochmd, zr(advale), edfuin, edall,&
-                   nomprf, edcomp, typent, typgeo, numpt,&
+    call as_mfdrpr(idfimd, nochmd, zr(advale), edfuin, edall, &
+                   nomprf, edcomp, typent, typgeo, numpt, &
                    numord, codret)
 !
     if (codret .ne. 0) then
-        saux08='mfdrpr'
+        saux08 = 'mfdrpr'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 end subroutine

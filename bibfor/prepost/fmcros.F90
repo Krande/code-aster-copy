@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fmcros(nbfonc, nbptot, sigm, rd0, rtau0,&
+subroutine fmcros(nbfonc, nbptot, sigm, rd0, rtau0, &
                   rcrit, rphmax, rtaua)
     implicit none
 !
@@ -52,6 +52,6 @@ subroutine fmcros(nbfonc, nbptot, sigm, rd0, rtau0,&
 !
     ra = (rtau0-rd0/sqrt(3.d0))/(rd0/3.d0)
     rb = rtau0
-    rcrit = rtaua + ra * rphmax - rb
+    rcrit = rtaua+ra*rphmax-rb
 !
 end subroutine

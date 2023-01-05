@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
-                  ncmpmx, val, kval, desc, valglo,&
+subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd, &
+                  ncmpmx, val, kval, desc, valglo, &
                   kvalgl, type, nec)
     implicit none
 #include "asterc/indik8.h"
@@ -52,29 +52,29 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
 !
     nocoaf = 0
     do icmp = 1, nbcmp
-        j = indik8 ( ncmpgd, nocmp(icmp), 1, ncmpmx )
+        j = indik8(ncmpgd, nocmp(icmp), 1, ncmpmx)
         if (j .ne. 0) then
-            iec = ( j - 1 ) / 30 + 1
-            jj = j - 30 * ( iec - 1 )
-            desc((ino-1)*nec+iec) = ior(desc((ino-1)*nec+iec),2**jj)
+            iec = (j-1)/30+1
+            jj = j-30*(iec-1)
+            desc((ino-1)*nec+iec) = ior(desc((ino-1)*nec+iec), 2**jj)
         else
             valk = nocmp(icmp)
             call utmess('F', 'CALCULEL5_65', sk=valk)
-        endif
-        nocoaf = nocoaf + 1
-        ind = j + (ino-1)*ncmpmx
+        end if
+        nocoaf = nocoaf+1
+        ind = j+(ino-1)*ncmpmx
         if (type(1:1) .eq. 'R') then
             valglo(ind) = val(icmp)
         else
             kvalgl(ind) = kval(icmp)
-        endif
+        end if
     end do
 !
     if (nocoaf .ne. nbcmp) then
-        vali (1) = ioc
-        vali (2) = nocoaf
-        vali (3) = nbcmp
+        vali(1) = ioc
+        vali(2) = nocoaf
+        vali(3) = nbcmp
         call utmess('F', 'CALCULEL5_66', ni=3, vali=vali)
-    endif
+    end if
 !
 end subroutine

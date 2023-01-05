@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
-                  epm, dp, sp, xi, f,&
+subroutine nmtasp(ndimsi, crit, mat, sigel, vim, &
+                  epm, dp, sp, xi, f, &
                   iret)
 !
     implicit none
@@ -54,9 +54,9 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
 !    EXAMEN DE LA SOLUTION SP = SP-
 !
     sp = vim(2)
-    call nmtacr(1, ndimsi, mat, sigel, vim,&
-                epm, dp, sp, xi, f,&
-                g, fds, gds, fdp, gdp,&
+    call nmtacr(1, ndimsi, mat, sigel, vim, &
+                epm, dp, sp, xi, f, &
+                g, fds, gds, fdp, gdp, &
                 fdx, gdx, dpmax, sig, tang)
     if (g .lt. mat(4)*crit(3)) goto 999
     x(2) = sp
@@ -66,9 +66,9 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
 !    EXAMEN DE LA SOLUTION SP = S
 !
     sp = mat(11)
-    call nmtacr(1, ndimsi, mat, sigel, vim,&
-                epm, dp, sp, xi, f,&
-                g, fds, gds, fdp, gdp,&
+    call nmtacr(1, ndimsi, mat, sigel, vim, &
+                epm, dp, sp, xi, f, &
+                g, fds, gds, fdp, gdp, &
                 fdx, gdx, dpmax, sig, tang)
     if (g .gt. -mat(4)*crit(3)) goto 999
     x(1) = mat(11)
@@ -87,9 +87,9 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
     do niter = 1, int(crit(1))
         if (abs(y(4)) .lt. mat(4)*crit(3)) goto 110
         call zeroco(x, y)
-        call nmtacr(1, ndimsi, mat, sigel, vim,&
-                    epm, dp, x(4), xi, ff(4),&
-                    y(4), fds, gds, fdp, gdp,&
+        call nmtacr(1, ndimsi, mat, sigel, vim, &
+                    epm, dp, x(4), xi, ff(4), &
+                    y(4), fds, gds, fdp, gdp, &
                     fdx, gdx, dpmax, sig, tang)
     end do
     iret = 1

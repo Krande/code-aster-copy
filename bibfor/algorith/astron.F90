@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
-                  nsupp, neq, nbmode, id, vecmod,&
-                  momec, gamma0, nomsup, reasup, recmor,&
+subroutine astron(nomsy, psmo, monoap, muapde, nbsup, &
+                  nsupp, neq, nbmode, id, vecmod, &
+                  momec, gamma0, nomsup, reasup, recmor, &
                   recmop, nopara, nordr)
     implicit none
 #include "asterf_types.h"
@@ -70,9 +70,9 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
     character(len=16) :: monacc, acces(3)
     character(len=19) :: chextr
 !     ------------------------------------------------------------------
-    data nomcmp / 'DX' , 'DY' , 'DZ' /
-    data acces  / 'ACCE    X       ' , 'ACCE    Y       ',&
-     &              'ACCE    Z       ' /
+    data nomcmp/'DX', 'DY', 'DZ'/
+    data acces/'ACCE    X       ', 'ACCE    Y       ',&
+     &              'ACCE    Z       '/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -81,91 +81,91 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
         if (nomsy(1:4) .eq. 'VITE') then
             call utmess('A', 'SEISME_10', sk=nomsy)
             goto 9999
-        endif
+        end if
         if (monoap) then
 !
 !           --- CONTRIBUTION MODALE ---
             call wkvect('&&ASTRON.VECTEUR_MODA', 'V V R', neq, jmod)
             do im = 1, nbmode
-                call rsadpa(momec, 'L', 1, nopara(1), nordr(im),&
+                call rsadpa(momec, 'L', 1, nopara(1), nordr(im), &
                             0, sjv=ival, istop=0)
                 omega2 = zr(ival)
-                call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im),&
+                call rsadpa(momec, 'L', 1, nopara(2+id), nordr(im), &
                             0, sjv=ival, istop=0)
-                xxx = zr(ival) / omega2
+                xxx = zr(ival)/omega2
                 do in = 1, neq
-                    zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in,im)
-                enddo
-            enddo
+                    zr(jmod+in-1) = zr(jmod+in-1)+xxx*vecmod(in, im)
+                end do
+            end do
 !
 !           --- DEFORMEE STATIQUE ---
-            call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces(id),&
-                        cbid, r8b, k8b, tordr, 1,&
+            call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces(id), &
+                        cbid, r8b, k8b, tordr, 1, &
                         nbtrou)
-            iordr=tordr(1)
-            call rsexch('F', psmo, nomsy, iordr, chextr,&
+            iordr = tordr(1)
+            call rsexch('F', psmo, nomsy, iordr, chextr, &
                         iret)
             call jeexin(chextr//'.VALE', ibid)
             if (ibid .gt. 0) then
                 call jeveuo(chextr//'.VALE', 'L', jvale)
             else
                 call jeveuo(chextr//'.CELV', 'L', jvale)
-            endif
+            end if
 !
             do in = 1, neq
-                xxx = gamma0(id) * ( zr(jvale+in-1) - zr(jmod+in-1) )
-                recmor(nbsup,in,id) = recmor(nbsup,in,id) + xxx
-            enddo
+                xxx = gamma0(id)*(zr(jvale+in-1)-zr(jmod+in-1))
+                recmor(nbsup, in, id) = recmor(nbsup, in, id)+xxx
+            end do
             call jedetr('&&ASTRON.VECTEUR_MODA')
 !
         else
 !
             cmp = nomcmp(id)
             do is = 1, nsupp(id)
-                noeu = nomsup(is,id)
+                noeu = nomsup(is, id)
                 monacc = noeu//cmp
-                call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, monacc,&
-                            cbid, r8b, k8b, tordr, 1,&
+                call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, monacc, &
+                            cbid, r8b, k8b, tordr, 1, &
                             nbtrou)
-                iordr=tordr(1)
-                call rsexch('F', psmo, nomsy, iordr, chextr,&
+                iordr = tordr(1)
+                call rsexch('F', psmo, nomsy, iordr, chextr, &
                             iret)
                 call jeexin(chextr//'.VALE', ibid)
                 if (ibid .gt. 0) then
                     call jeveuo(chextr//'.VALE', 'L', jvale)
                 else
                     call jeveuo(chextr//'.CELV', 'L', jvale)
-                endif
+                end if
 !
 !              --- CONTRIBUTION MODALE ---
                 call wkvect('&&ASTRON.VECTEUR_MODA', 'V V R', neq, jmod)
                 do im = 1, nbmode
-                    rni = -un*reasup(is,im,id)
-                    call rsadpa(momec, 'L', 1, nopara(1), nordr(im),&
+                    rni = -un*reasup(is, im, id)
+                    call rsadpa(momec, 'L', 1, nopara(1), nordr(im), &
                                 0, sjv=ival, istop=0)
                     omega2 = zr(ival)
-                    call rsadpa(momec, 'L', 1, nopara(2), nordr(im),&
+                    call rsadpa(momec, 'L', 1, nopara(2), nordr(im), &
                                 0, sjv=ival, istop=0)
                     xxx = rni/(zr(ival)*omega2*omega2)
                     do in = 1, neq
-                        zr(jmod+in-1) = zr(jmod+in-1) + xxx*vecmod(in, im)
-                    enddo
-                enddo
+                        zr(jmod+in-1) = zr(jmod+in-1)+xxx*vecmod(in, im)
+                    end do
+                end do
                 if (muapde) then
                     do in = 1, neq
-                        xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
-                        recmor(is,in,id) = recmor(is,in,id) + xxx
-                    enddo
+                        xxx = gamma0(is+nbsup*(id-1))*(zr(jvale+in-1)-zr(jmod+in-1))
+                        recmor(is, in, id) = recmor(is, in, id)+xxx
+                    end do
                 else
                     do in = 1, neq
-                        xxx = gamma0(is+nbsup*(id-1)) * ( zr(jvale+in-1) - zr(jmod+in- 1) )
-                        recmor(1,in,id) = recmor(1,in,id) + xxx
-                    enddo
-                endif
+                        xxx = gamma0(is+nbsup*(id-1))*(zr(jvale+in-1)-zr(jmod+in-1))
+                        recmor(1, in, id) = recmor(1, in, id)+xxx
+                    end do
+                end if
                 call jedetr('&&ASTRON.VECTEUR_MODA')
-            enddo
-        endif
-    endif
+            end do
+        end if
+    end if
 !
 9999 continue
     call jedema()

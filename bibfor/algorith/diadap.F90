@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 function diadap(sddisc, i_adap)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -26,9 +26,9 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/getAdapEvent.h"
 !
-aster_logical :: diadap
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: i_adap
+    aster_logical :: diadap
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: i_adap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,13 +62,13 @@ integer, intent(in) :: i_adap
 !
 ! ----- RECUP DU SEUIL SUR LE NB DE SUCCES CONSECUTIFS
 !
-        call utdidt('L', sddisc, 'ADAP', 'NB_INCR_SEUIL', index_= i_adap,&
-                    vali_ = nbinse)
+        call utdidt('L', sddisc, 'ADAP', 'NB_INCR_SEUIL', index_=i_adap, &
+                    vali_=nbinse)
 !
 ! ----- RECUP DU NB DE SUCCES CONSECUTIFS
 !
-        call utdidt('L', sddisc, 'ADAP', 'NB_EVEN_OK', index_= i_adap,&
-                    vali_ = nbok)
+        call utdidt('L', sddisc, 'ADAP', 'NB_EVEN_OK', index_=i_adap, &
+                    vali_=nbok)
         if (nbok .lt. nbinse) then
             diadap = .false.
         else
@@ -78,11 +78,11 @@ integer, intent(in) :: i_adap
             diadap = .true.
 !         REMISE A ZERO DE NBOK
             nbok = 0
-            call utdidt('E', sddisc, 'ADAP', 'NB_EVEN_OK', index_= i_adap,&
-                        vali_ = nbok)
-        endif
+            call utdidt('E', sddisc, 'ADAP', 'NB_EVEN_OK', index_=i_adap, &
+                        vali_=nbok)
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end function

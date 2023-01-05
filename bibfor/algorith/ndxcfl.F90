@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ndxcfl(mate, mateco, cara_elem, sddyna, sddisc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -57,7 +57,7 @@ implicit none
 !
 ! - Active functionnalities
 !
-    l_proj_modal = ndynlo(sddyna,'PROJ_MODAL')
+    l_proj_modal = ndynlo(sddyna, 'PROJ_MODAL')
 !
 ! - Compute CFL condition
 !
@@ -66,6 +66,6 @@ implicit none
         call pascom(mode_meca, sddyna, sddisc)
     else
         call pascou(mate, mateco, cara_elem, sddyna, sddisc)
-    endif
+    end if
 !
 end subroutine

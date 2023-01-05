@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xbsig(ndim, nnop, nfh, nfe,&
-                 ddlc, ddlm, igeom, compor, jpintt,&
-                 cnset, heavt, lonch, basloc, sigma,&
-                 nbsig, idepl, lsn, lst, ivectu,&
+subroutine xbsig(ndim, nnop, nfh, nfe, &
+                 ddlc, ddlm, igeom, compor, jpintt, &
+                 cnset, heavt, lonch, basloc, sigma, &
+                 nbsig, idepl, lsn, lst, ivectu, &
                  jpmilt, nfiss, jheavn, jstno, imate)
 !
 ! aslint: disable=W1306,W1504
@@ -76,8 +76,8 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
     integer :: ncompn, heavn(nnop, 5)
     integer :: irese, nno, ifiss, ig
 !
-    data          elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data          fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -85,54 +85,54 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
     call elref1(elrefp)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2, &
                 itab=jtab)
     ncomp = jtab(2)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO ET NPG
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,npg=npg)
+        irese = 0
+    end if
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg)
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
-    if (nfh.gt.0) then
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-      ASSERT(ncompn.eq.5)
-      do ino = 1, nnop
-        do ig = 1 , ncompn
-          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
-        enddo
-      enddo
-    endif
+    if (nfh .gt. 0) then
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        ASSERT(ncompn .eq. 5)
+        do ino = 1, nnop
+            do ig = 1, ncompn
+                heavn(ino, ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            end do
+        end do
+    end if
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=lonch(1)
+    nse = lonch(1)
 !
 !       BOUCLE SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=cnset(nno*(ise-1)+in)
+            ino = cnset(nno*(ise-1)+in)
 !
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
-                    1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-&
-                    1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
-                    1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
+                                                              1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- &
+                                                              1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- &
+                                                              1)+j)
+                end if
             end do
         end do
 !
@@ -142,19 +142,19 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
         end do
 !
 !       DEBUT DE LA ZONE MÉMOIRE DE SIGMA CORRESPONDANTE
-        idecpg = npg * (ise-1)
-        idebs = nbsig * idecpg
+        idecpg = npg*(ise-1)
+        idebs = nbsig*idecpg
         codopt = 1
         if (ndim .eq. 3) then
-            ASSERT(nbsig.eq.6)
-        else if (ndim.eq.2) then
-            ASSERT(nbsig.eq.4)
-        endif
+            ASSERT(nbsig .eq. 6)
+        else if (ndim .eq. 2) then
+            ASSERT(nbsig .eq. 4)
+        end if
 !
-        call xxbsig(elrefp, elrese(ndim+irese), ndim, coorse,&
-                    igeom, he, nfh, ddlc, ddlm,&
-                    nfe, basloc, nnop, npg, sigma(idebs+1),&
-                    compor, idepl, lsn, lst, nfiss,&
+        call xxbsig(elrefp, elrese(ndim+irese), ndim, coorse, &
+                    igeom, he, nfh, ddlc, ddlm, &
+                    nfe, basloc, nnop, npg, sigma(idebs+1), &
+                    compor, idepl, lsn, lst, nfiss, &
                     heavn, jstno, codopt, ivectu, imate)
 !
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine checkSuperElement(optionZ, modelZ)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -26,7 +26,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: optionZ, modelZ
+    character(len=*), intent(in) :: optionZ, modelZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,8 +64,8 @@ character(len=*), intent(in) :: optionZ, modelZ
                     call jeexin(superElementName//'.MAEL_MASS_VALE', iexi)
                     if (iexi .eq. 0) then
                         call utmess('E', 'SUPERELEMENT1_1')
-                    endif
-                endif
+                    end if
+                end if
             end do
         else if (option .eq. 'RIGI_MECA') then
             do iCell = 1, nbSuperCell
@@ -74,8 +74,8 @@ character(len=*), intent(in) :: optionZ, modelZ
                     call jeexin(superElementName//'.MAEL_RAID_VALE', iexi)
                     if (iexi .eq. 0) then
                         call utmess('E', 'SUPERELEMENT1_2')
-                    endif
-                endif
+                    end if
+                end if
             end do
         else if (option .eq. 'AMOR_MECA') then
             do iCell = 1, nbSuperCell
@@ -84,10 +84,10 @@ character(len=*), intent(in) :: optionZ, modelZ
                     call jeexin(superElementName//'.MAEL_AMOR_VALE', iexi)
                     if (iexi .eq. 0) then
                         call utmess('F', 'SUPERELEMENT1_3')
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

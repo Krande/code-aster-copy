@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcPrepDataMeca(model          , mate          , mateco   , cara_elem,&
-                            disp_prev      , disp_cumu_inst, vari_prev, sigm_prev,&
-                            time_prev      , time_curr     ,&
-                            ds_constitutive, ds_material   , ds_system,&
-                            hval_incr      , hval_algo     ,&
-                            vediri         , vefnod        ,&
-                            vevarc_prev    , vevarc_curr)
+subroutine calcPrepDataMeca(model, mate, mateco, cara_elem, &
+                            disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
+                            time_prev, time_curr, &
+                            ds_constitutive, ds_material, ds_system, &
+                            hval_incr, hval_algo, &
+                            vediri, vefnod, &
+                            vevarc_prev, vevarc_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmch1p.h"
@@ -46,16 +46,16 @@ implicit none
 #include "asterfort/nmvcre.h"
 #include "asterfort/sgcomp.h"
 !
-character(len=24), intent(in) :: model, mate, mateco, cara_elem
-character(len=19), intent(in) :: disp_prev, disp_cumu_inst
-character(len=19), intent(in) :: vari_prev, sigm_prev
-real(kind=8), intent(in) :: time_prev, time_curr
-type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-type(NL_DS_Material), intent(out) :: ds_material
-type(NL_DS_System), intent(out) :: ds_system
-character(len=19), intent(out) :: hval_incr(:), hval_algo(:)
-character(len=19), intent(out) :: vediri, vefnod
-character(len=19), intent(out) :: vevarc_prev, vevarc_curr
+    character(len=24), intent(in) :: model, mate, mateco, cara_elem
+    character(len=19), intent(in) :: disp_prev, disp_cumu_inst
+    character(len=19), intent(in) :: vari_prev, sigm_prev
+    real(kind=8), intent(in) :: time_prev, time_curr
+    type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+    type(NL_DS_Material), intent(out) :: ds_material
+    type(NL_DS_System), intent(out) :: ds_system
+    character(len=19), intent(out) :: hval_incr(:), hval_algo(:)
+    character(len=19), intent(out) :: vediri, vefnod
+    character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,7 +107,7 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 !
 ! - Put displacements in "hat-variables"
 !
-    call nmcha0('VALINC', 'DEPMOI', disp_prev     , hval_incr)
+    call nmcha0('VALINC', 'DEPMOI', disp_prev, hval_incr)
     call nmcha0('SOLALG', 'DEPDEL', disp_cumu_inst, hval_algo)
 !
 ! - Compute current displacements
@@ -115,7 +115,7 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
     if (disp_prev .ne. ' ') then
         call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
         call mvnume(disp_prev, disp_cumu_inst, disp_curr)
-    endif
+    end if
 !
 ! - Check and put stress in "hat-variables"
 !
@@ -123,17 +123,17 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
         call sgcomp(ds_constitutive%compor, sigm_prev, modelLigrel, iret)
         if (iret .eq. 1) then
             call utmess('F', 'CALCUL1_6')
-        endif
+        end if
         call chpver('F', sigm_prev, 'ELGA', 'SIEF_R', iret)
         call nmcha0('VALINC', 'SIGMOI', sigm_prev, hval_incr)
-    endif
+    end if
 !
 ! - Check and put internal variables in "hat-variables"
 !
     if (vari_prev .ne. ' ') then
         call chpver('F', vari_prev, 'ELGA', 'VARI_R', iret)
         call nmcha0('VALINC', 'VARMOI', vari_prev, hval_incr)
-    endif
+    end if
 !
 ! - Get command variables
 !
@@ -150,14 +150,14 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 !
     call jeexin(ds_constitutive%compor(1:19)//'.CESD', iret)
     if (iret .gt. 0 .and. vari_prev .ne. ' ') then
-        call vrcomp(ds_constitutive%compor, vari_prev, modelLigrel, iret, lModiVari_= lModiVari)
+        call vrcomp(ds_constitutive%compor, vari_prev, modelLigrel, iret, lModiVari_=lModiVari)
         if (iret .eq. 1) then
             call utmess('F', 'CALCUL1_5')
-        endif
+        end if
         if (lModiVari) then
             call vrcom2(ds_constitutive%compor, vari_prev, modelLigrel, ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Datastructures name (automatic génération)
 !
@@ -178,10 +178,10 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 !
 ! - Prepare datastructures
 !
-    ds_material%mater  = mate
+    ds_material%mater = mate
     ds_material%mateco = mateco
-    ds_material%varc_refe  = varc_refe
-    ds_system%merigi       = merigi
-    ds_system%veinte       = veinte
+    ds_material%varc_refe = varc_refe
+    ds_system%merigi = merigi
+    ds_system%veinte = veinte
 !
 end subroutine

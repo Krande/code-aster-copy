@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
-                      npgsn, nso, nbcou, geom, cara,&
+subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr, &
+                      npgsn, nso, nbcou, geom, cara, &
                       valpg, outno, lzr, matr, lgreen)
 !
     implicit none
@@ -63,31 +63,31 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
 !
 ! ----------------------------------------------------------------------
 !
-    zero=0.0d0
+    zero = 0.0d0
 !
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
-    endif
+    end if
 !
-    epais=cara(1)
+    epais = cara(1)
 !
-    call vectan(nb1, nb2, geom, lzr, vecta,&
+    call vectan(nb1, nb2, geom, lzr, vecta, &
                 vectn, vectpt)
 !
-    kpgs=0
+    kpgs = 0
     do icou = 1, nbcou
         do inte = 1, npge
             do intsn = 1, npgsn
-                kpgs=kpgs+1
-                k1=6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
+                kpgs = kpgs+1
+                k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                 do i = 1, 6
-                    matpg(i,kpgs)=valpg(k1+i)
+                    matpg(i, kpgs) = valpg(k1+i)
                 end do
             end do
         end do
     end do
 !
-    ncmp=6
+    ncmp = 6
 !
     if (lgreen) then
 !
@@ -96,7 +96,7 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
 !     --------------
         do i = 1, 6
             do j = 1, kpgs
-                pk2(i,j)=matpg(i,j)
+                pk2(i, j) = matpg(i, j)
             end do
         end do
 !
@@ -104,20 +104,20 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
 ! --- SECONDE ESPECE PK2 EN CONTRAINTES DE CAUCHY :
 !     -------------------------------------------
         call pk2cau(nomte, ncmp, pk2, matpg)
-    endif
+    end if
 !
 ! ---  DETERMINATION DES REPERES  LOCAUX DE L'ELEMENT AUX POINTS
 ! ---  D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR
 !      --------------------------------------------------------------
-    k=0
+    k = 0
     do intsr = 1, npgsr
-        call vectgt(0, nb1, geom, zero, intsr,&
+        call vectgt(0, nb1, geom, zero, intsr, &
                     lzr, epais, vectn, vectg, vectt)
 !
         do j = 1, 3
             do i = 1, 3
-                k=k+1
-                lzr(2000+k)=vectt(i,j)
+                k = k+1
+                lzr(2000+k) = vectt(i, j)
             end do
         end do
     end do
@@ -126,14 +126,14 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
     do icou = 1, nbcou
         do ic = 1, ncmp
             do i = 1, npge*nso
-                l=npge*npgsn*(i-1)
-                s=0.d0
+                l = npge*npgsn*(i-1)
+                s = 0.d0
                 do j = 1, npge*npgsn
-                    jj=(icou-1)*npge*npgsn+j
-                    s=s+matr(l+j)*matpg(ic,jj)
+                    jj = (icou-1)*npge*npgsn+j
+                    s = s+matr(l+j)*matpg(ic, jj)
                 end do
-                ii=(icou-1)*npge*nso+i
-                matno(ic,ii)=s
+                ii = (icou-1)*npge*nso+i
+                matno(ic, ii) = s
             end do
         end do
     end do
@@ -152,54 +152,54 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr,&
     do icou = 1, nbcou
         do nordo = -1, 1
 !
-            isp=npge*(icou-1)+nordo+2
+            isp = npge*(icou-1)+nordo+2
 !
             do i = 1, ncmp
                 do j = 1, nso
-                    jj=nso*(nordo+1)+nso*npge*(icou-1)+j
-                    matgn(i,j)=matno(i,jj)
+                    jj = nso*(nordo+1)+nso*npge*(icou-1)+j
+                    matgn(i, j) = matno(i, jj)
                 end do
                 if (nomte .eq. 'MEC3QU9H') then
-                    matgn(i,5)=(matgn(i,1)+matgn(i,2))/2.d0
-                    matgn(i,6)=(matgn(i,2)+matgn(i,3))/2.d0
-                    matgn(i,7)=(matgn(i,3)+matgn(i,4))/2.d0
-                    matgn(i,8)=(matgn(i,4)+matgn(i,1))/2.d0
-                    matgn(i,9)=(matgn(i,1)+matgn(i,2)+matgn(i,3)+&
-                    matgn(i,4))/ 4.d0
-                else if (nomte.eq.'MEC3TR7H') then
-                    matgn(i,4)=(matgn(i,1)+matgn(i,2))/2.d0
-                    matgn(i,5)=(matgn(i,2)+matgn(i,3))/2.d0
-                    matgn(i,6)=(matgn(i,3)+matgn(i,1))/2.d0
-                    matgn(i,7)=(matgn(i,1)+matgn(i,2)+matgn(i,3))/&
-                    3.d0
-                endif
+                    matgn(i, 5) = (matgn(i, 1)+matgn(i, 2))/2.d0
+                    matgn(i, 6) = (matgn(i, 2)+matgn(i, 3))/2.d0
+                    matgn(i, 7) = (matgn(i, 3)+matgn(i, 4))/2.d0
+                    matgn(i, 8) = (matgn(i, 4)+matgn(i, 1))/2.d0
+                    matgn(i, 9) = (matgn(i, 1)+matgn(i, 2)+matgn(i, 3)+ &
+                                   matgn(i, 4))/4.d0
+                else if (nomte .eq. 'MEC3TR7H') then
+                    matgn(i, 4) = (matgn(i, 1)+matgn(i, 2))/2.d0
+                    matgn(i, 5) = (matgn(i, 2)+matgn(i, 3))/2.d0
+                    matgn(i, 6) = (matgn(i, 3)+matgn(i, 1))/2.d0
+                    matgn(i, 7) = (matgn(i, 1)+matgn(i, 2)+matgn(i, 3))/ &
+                                  3.d0
+                end if
             end do
 !
             if (lgreen) then
-                call vdsiro(nb2, 1, matevn, 'IU', 'N',&
+                call vdsiro(nb2, 1, matevn, 'IU', 'N', &
                             matgn, matgnu)
                 call caurtg(nomte, ncmp, matgnu, signo)
             else
-                call vdsiro(nb2, 1, matevn, 'IU', 'N',&
+                call vdsiro(nb2, 1, matevn, 'IU', 'N', &
                             matgn, signo)
-            endif
+            end if
 !
             if (option .eq. 'EPSI_ELNO') then
                 do icmp = 1, ncmp
                     do ino = 1, nb2
-                        outno ( (ino-1)*ncmp*nbcou*npge+(isp-1)* ncmp+icmp)= matgn(icmp,ino)
+                        outno((ino-1)*ncmp*nbcou*npge+(isp-1)*ncmp+icmp) = matgn(icmp, ino)
                     end do
                 end do
-                else if ((option.eq.'SIEF_ELNO') .or. (&
-            option.eq.'SIGM_ELNO')) then
+            else if ((option .eq. 'SIEF_ELNO') .or. ( &
+                     option .eq. 'SIGM_ELNO')) then
                 do icmp = 1, ncmp
                     do ino = 1, nb2
-                        outno((ino-1)*ncmp*nbcou*npge+(isp-1)*ncmp+icmp)= signo(icmp,ino)
+                        outno((ino-1)*ncmp*nbcou*npge+(isp-1)*ncmp+icmp) = signo(icmp, ino)
                     end do
                 end do
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
         end do
     end do

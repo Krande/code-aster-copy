@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmcrlm(listr8_sdaster, sddisc, list_inst_work)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=19), intent(in) :: list_inst_work
-character(len=19), intent(in) :: sddisc
-character(len=19), intent(in) :: listr8_sdaster
+    character(len=19), intent(in) :: list_inst_work
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: listr8_sdaster
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ character(len=19), intent(in) :: listr8_sdaster
 ! --------------------------------------------------------------------------------------------------
 !
     sddisc_linf = sddisc(1:19)//'.LINF'
-    dtmin       = r8maem()
+    dtmin = r8maem()
 !
 ! - Access to list of times
 !
@@ -71,20 +71,20 @@ character(len=19), intent(in) :: listr8_sdaster
 !
     if (nb_inst .lt. 2) then
         call utmess('F', 'DISCRETISATION_95')
-    endif
+    end if
 !
 ! - Minimum time between two steps
 !
     do i_inst = 1, nb_inst-1
-        deltat = v_vale(1+i_inst) - v_vale(i_inst)
-        dtmin  = min(deltat,dtmin)
+        deltat = v_vale(1+i_inst)-v_vale(i_inst)
+        dtmin = min(deltat, dtmin)
     end do
 !
 ! - List must increase
 !
     if (dtmin .le. r8prem()) then
         call utmess('F', 'DISCRETISATION_87')
-    endif
+    end if
 !
 ! - Copy listr8sdaster in list of times
 !
@@ -92,16 +92,16 @@ character(len=19), intent(in) :: listr8_sdaster
 !
 ! - Create information vector
 !
-    call wkvect(sddisc_linf, 'V V R', SIZE_LLINR, vr = v_sddisc_linf)
+    call wkvect(sddisc_linf, 'V V R', SIZE_LLINR, vr=v_sddisc_linf)
 !
 ! - Update information vector
 !
     list_method = 'MANUEL'
-    call utdidt('E', sddisc, 'LIST', 'METHODE',&
-                valk_ = list_method)
-    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
-                valr_ = dtmin)
-    call utdidt('E', sddisc, 'LIST', 'NBINST',&
-                vali_ = nb_inst)
+    call utdidt('E', sddisc, 'LIST', 'METHODE', &
+                valk_=list_method)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN', &
+                valr_=dtmin)
+    call utdidt('E', sddisc, 'LIST', 'NBINST', &
+                vali_=nb_inst)
 !
 end subroutine

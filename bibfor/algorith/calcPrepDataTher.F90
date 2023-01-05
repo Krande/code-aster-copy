@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcPrepDataTher(model        , temp_prev     , incr_temp   ,&
-                            time_curr    , deltat        , theta       , khi,&
-                            time         , temp_curr     ,&
-                            ve_charther  , me_mtanther   , ve_dirichlet,&
+subroutine calcPrepDataTher(model, temp_prev, incr_temp, &
+                            time_curr, deltat, theta, khi, &
+                            time, temp_curr, &
+                            ve_charther, me_mtanther, ve_dirichlet, &
                             ve_evolther_l, ve_evolther_nl, ve_resither)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mvnume.h"
@@ -32,16 +32,16 @@ implicit none
 #include "asterfort/mecact.h"
 #include "asterc/r8vide.h"
 !
-character(len=24), intent(in) :: model
-character(len=19), intent(in) :: temp_prev, incr_temp
-real(kind=8), intent(in) :: time_curr, deltat, theta, khi
-character(len=24), intent(out) :: time
-character(len=19), intent(out) :: temp_curr
-character(len=24), intent(out) :: ve_charther
-character(len=24), intent(out) :: me_mtanther
-character(len=24), intent(out) :: ve_evolther_l, ve_evolther_nl
-character(len=24), intent(out) :: ve_resither
-character(len=*), intent(out) :: ve_dirichlet
+    character(len=24), intent(in) :: model
+    character(len=19), intent(in) :: temp_prev, incr_temp
+    real(kind=8), intent(in) :: time_curr, deltat, theta, khi
+    character(len=24), intent(out) :: time
+    character(len=19), intent(out) :: temp_curr
+    character(len=24), intent(out) :: ve_charther
+    character(len=24), intent(out) :: me_mtanther
+    character(len=24), intent(out) :: ve_evolther_l, ve_evolther_nl
+    character(len=24), intent(out) :: ve_resither
+    character(len=*), intent(out) :: ve_dirichlet
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,14 +71,14 @@ character(len=*), intent(out) :: ve_dirichlet
 !
     real(kind=8) :: tpsthe(6)
     character(len=19) :: ligrmo
-    character(len=8), parameter :: nomcmp(6) = (/'INST    ','DELTAT  ',&
-                                                 'THETA   ','KHI     ',&
-                                                 'R       ','RHO     '/)
+    character(len=8), parameter :: nomcmp(6) = (/'INST    ', 'DELTAT  ', &
+                                                 'THETA   ', 'KHI     ', &
+                                                 'R       ', 'RHO     '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     temp_curr = '&&OP0026.TEMPPLU'
-    time      = '&&OP0026.CHTPS'
+    time = '&&OP0026.CHTPS'
 !
 ! - Get LIGREL
 !
@@ -105,7 +105,7 @@ character(len=*), intent(out) :: ve_dirichlet
     tpsthe(4) = khi
     tpsthe(5) = r8vide()
     tpsthe(6) = r8vide()
-    call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
+    call mecact('V', time, 'MODELE', ligrmo, 'INST_R', &
                 ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
 end subroutine

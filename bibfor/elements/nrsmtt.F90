@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,6 @@ subroutine nrsmtt(troisk, j, epsthe, m)
 !
     real(kind=8) :: troisk, j, epsthe, m
 !
-    m=-troisk/2.d0*epsthe*(j-1/j)
+    m = -troisk/2.d0*epsthe*(j-1/j)
 !
 end subroutine

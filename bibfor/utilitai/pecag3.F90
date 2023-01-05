@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
+subroutine pecag3(ndim, nsymx, nsymy, noma, motcle, &
                   nbmail, noment, valpar)
     implicit none
 #include "asterf_types.h"
@@ -55,25 +55,25 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
     real(kind=8) :: zmin
 !-----------------------------------------------------------------------
     call jemarq()
-    noma8=noma
+    noma8 = noma
     mlggma = noma8//'.GROUPEMA'
     mlgcox = noma8//'.CONNEX'
     mlgval = noma8//'.COORDO    .VALE'
     call jeveuo(mlgval, 'L', jcoor)
     call jelira(mlgval, 'LONMAX', nbnoeu)
-    nbnoeu = nbnoeu / 3
+    nbnoeu = nbnoeu/3
 !
     if (ndim .eq. 2) then
         cdx = valpar(13)
         cdy = valpar(14)
-        alpha = r8dgrd() * valpar(20)
-        cosa = cos ( alpha )
-        sina = sin ( alpha )
+        alpha = r8dgrd()*valpar(20)
+        cosa = cos(alpha)
+        sina = sin(alpha)
     else
         call utmess('F', 'UTILITAI3_48')
         cdx = valpar(19)
         cdy = valpar(20)
-    endif
+    end if
     xmax = -r8maem()
     xmin = r8maem()
     ymax = -r8maem()
@@ -85,18 +85,18 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
 !
     if (motcle(1:4) .eq. 'TOUT') then
         do i = 1, nbnoeu
-            x0 = zr(jcoor-1+3*(i-1)+1) - cdx
-            y0 = zr(jcoor-1+3*(i-1)+2) - cdy
-            x = x0*cosa + y0*sina
-            y = y0*cosa - x0*sina
-            r = sqrt ( x*x + y*y )
-            xmax = max ( xmax , x )
-            xmin = min ( xmin , x )
-            ymax = max ( ymax , y )
-            ymin = min ( ymin , y )
+            x0 = zr(jcoor-1+3*(i-1)+1)-cdx
+            y0 = zr(jcoor-1+3*(i-1)+2)-cdy
+            x = x0*cosa+y0*sina
+            y = y0*cosa-x0*sina
+            r = sqrt(x*x+y*y)
+            xmax = max(xmax, x)
+            xmin = min(xmin, x)
+            ymax = max(ymax, y)
+            ymin = min(ymin, y)
             zmax = 0.d0
-            zmin= 0.d0
-            rmax = max ( rmax , r )
+            zmin = 0.d0
+            rmax = max(rmax, r)
         end do
 !
     else if (motcle(1:6) .eq. 'MAILLE') then
@@ -108,16 +108,16 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                 nuno = zi(jdes+in-1)
                 x0 = zr(jcoor-1+3*(nuno-1)+1)-cdx
                 y0 = zr(jcoor-1+3*(nuno-1)+2)-cdy
-                x = x0*cosa + y0*sina
-                y = y0*cosa - x0*sina
-                r = sqrt ( x*x + y*y )
-                xmax = max ( xmax , x )
-                xmin = min ( xmin , x )
-                ymax = max ( ymax , y )
-                ymin = min ( ymin , y )
+                x = x0*cosa+y0*sina
+                y = y0*cosa-x0*sina
+                r = sqrt(x*x+y*y)
+                xmax = max(xmax, x)
+                xmin = min(xmin, x)
+                ymax = max(ymax, y)
+                ymin = min(ymin, y)
                 zmax = 0.d0
                 zmin = 0.d0
-                rmax = max ( rmax , r )
+                rmax = max(rmax, r)
             end do
         end do
 !
@@ -133,57 +133,57 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                     nuno = zi(jdes+in-1)
                     x0 = zr(jcoor-1+3*(nuno-1)+1)-cdx
                     y0 = zr(jcoor-1+3*(nuno-1)+2)-cdy
-                    x = x0*cosa + y0*sina
-                    y = y0*cosa - x0*sina
-                    r = sqrt ( x*x + y*y )
-                    xmax = max ( xmax , x )
-                    xmin = min ( xmin , x )
-                    ymax = max ( ymax , y )
-                    ymin = min ( ymin , y )
+                    x = x0*cosa+y0*sina
+                    y = y0*cosa-x0*sina
+                    r = sqrt(x*x+y*y)
+                    xmax = max(xmax, x)
+                    xmin = min(xmin, x)
+                    ymax = max(ymax, y)
+                    ymin = min(ymin, y)
                     zmax = 0.d0
                     zmin = 0.d0
-                    rmax = max ( rmax , r )
+                    rmax = max(rmax, r)
                 end do
             end do
         end do
-    endif
-    rx=max(abs(xmax),(abs(xmin)))
-    ry=max(abs(ymax),(abs(ymin)))
+    end if
+    rx = max(abs(xmax), (abs(xmin)))
+    ry = max(abs(ymax), (abs(ymin)))
 !
     if (nsymx) then
         x0 = 1.d0
         y0 = 0.d0
-        x = x0*cosa + y0*sina
-        y = y0*cosa - x0*sina
+        x = x0*cosa+y0*sina
+        y = y0*cosa-x0*sina
         if (abs(abs(x)-1.d0) .le. 1.d-5) then
-            tamp = max( abs(ymin) , abs(ymax) )
+            tamp = max(abs(ymin), abs(ymax))
             ymin = -tamp
             ymax = tamp
         else
-            tamp = max( abs(xmin) , abs(xmax) )
+            tamp = max(abs(xmin), abs(xmax))
             xmin = -tamp
             xmax = tamp
-        endif
-    endif
+        end if
+    end if
     if (nsymy) then
         x0 = 0.d0
         y0 = 1.d0
-        x = x0*cosa + y0*sina
-        y = y0*cosa - x0*sina
+        x = x0*cosa+y0*sina
+        y = y0*cosa-x0*sina
         if (abs(abs(y)-1.d0) .le. 1.d-5) then
-            tamp = max( abs(xmin) , abs(xmax) )
+            tamp = max(abs(xmin), abs(xmax))
             xmin = -tamp
             xmax = tamp
         else
-            tamp = max( abs(ymin) , abs(ymax) )
+            tamp = max(abs(ymin), abs(ymax))
             ymin = -tamp
             ymax = tamp
-        endif
-    endif
+        end if
+    end if
     if (ndim .eq. 2) then
-        valpar( 7) = xmax
-        valpar( 8) = ymax
-        valpar( 9) = xmin
+        valpar(7) = xmax
+        valpar(8) = ymax
+        valpar(9) = xmin
         valpar(10) = ymin
         valpar(11) = rmax
         valpar(42) = rx
@@ -196,7 +196,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
         valpar(15) = ymin
         valpar(16) = zmin
         valpar(17) = rmax
-    endif
+    end if
 !
     call jedema()
 !

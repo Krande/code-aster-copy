@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,14 +70,14 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
     if (etinst .ne. 'CONV') then
         if (etinst .eq. 'STOP') then
             call nmeceb(sderro, 'CALC', 'STOP')
-        else if (etinst.eq.'ERRE') then
+        else if (etinst .eq. 'ERRE') then
             call nmeceb(sderro, 'CALC', 'ERRE')
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         call nmevcv(sderro, fonact, 'CALC')
-    endif
+    end if
 !
     call nmleeb(sderro, 'CALC', etcalc)
 !
@@ -89,17 +89,17 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
 ! --- ON EST AU DERNIER PAS
 !
     if (etcalc .eq. 'STOP') then
-        if (.not.mtcpup) goto 99
-    endif
+        if (.not. mtcpup) goto 99
+    end if
 !
 ! --- CONVERGENCE DU CALCUL: DERNIER PAS !
 !
     call nmfinp(sddisc, numins, lstop)
     if (lstop) then
         call nmeceb(sderro, 'CALC', 'CONV')
-    endif
+    end if
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
+subroutine lcoptg(nmat, mater, nr, nvi, drdy, &
                   sigeps, dsde, iret)
 !     CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY(DY)
 !     POUR LE MODELE BETON_BURGER
@@ -36,7 +36,7 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
 #include "asterfort/mgauss.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
     integer :: nmat, nr, iret, ndt, ndi, i, j, k, nvi, norm, sigeps
     real(kind=8) :: hook(6, 6), drdy(nr, nr), dsde(6, 6), mater(nmat, 2)
@@ -48,13 +48,13 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
 ! --- RECHERCHE DU MAXIMUM DE DRDY
 ! === =================================================================
 !
-    norm=0
+    norm = 0
     if (norm .eq. 0) goto 30
 !
     maxi = 0.d0
     do i = 1, nr
         do j = 1, nr
-            if(abs(drdy(i,j)).gt.maxi)maxi = abs(drdy(i,j))
+            if (abs(drdy(i, j)) .gt. maxi) maxi = abs(drdy(i, j))
         end do
     end do
 !
@@ -64,33 +64,33 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
     mini = r8prem()*maxi
     do i = 1, nr
         do j = 1, nr
-            if(abs(drdy(i,j)).lt.mini)drdy(i,j) = 0.d0
+            if (abs(drdy(i, j)) .lt. mini) drdy(i, j) = 0.d0
         end do
     end do
 !
- 30 continue
+30  continue
 !
 ! === =================================================================
 ! --- SEPARATION DES TERMES DU JACOBIEN
 ! === =================================================================
     do i = 1, ndt
         do j = 1, ndt
-            y0(i,j) = drdy(i,j)
+            y0(i, j) = drdy(i, j)
         end do
     end do
     do i = 1, ndt
         do j = 1, nvi
-            y1(i,j) = drdy(i,j+ndt)
+            y1(i, j) = drdy(i, j+ndt)
         end do
     end do
     do i = 1, nvi
         do j = 1, ndt
-            y2(i,j) = drdy(i+ndt,j)
+            y2(i, j) = drdy(i+ndt, j)
         end do
     end do
     do i = 1, nvi
         do j = 1, nvi
-            y3(i,j) = drdy(i+ndt,j+ndt)
+            y3(i, j) = drdy(i+ndt, j+ndt)
         end do
     end do
 !
@@ -108,40 +108,40 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
 ! --- CONSTRUCTION TENSEUR CONSTITUTIF TANGENT DSDE
 ! === =================================================================
 !     Y2=INVERSE(Y3)*Y2
-    call mgauss(cargau, y3, y2, nvi, nvi,&
+    call mgauss(cargau, y3, y2, nvi, nvi, &
                 ndt, det, iret)
     if (iret .gt. 1) then
-        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
+        dsde(1:ndt, 1:ndt) = hook(1:ndt, 1:ndt)
         goto 999
-    endif
+    end if
 ! --- PRODUIT DU TERME (Y3)^-1 * Y2 = Y4
-    call promat(y1, ndt, ndt, nvi, y2,&
+    call promat(y1, ndt, ndt, nvi, y2, &
                 nvi, nvi, ndt, y4)
 !
 ! --- DIFFERENCE DE MATRICE (DR1DY1 - Y4) = Y5
     do i = 1, ndt
         do j = 1, ndt
-            y5(i,j)=y0(i,j)-y4(i,j)
+            y5(i, j) = y0(i, j)-y4(i, j)
         end do
     end do
 !
 ! --- INVERSION DU TERME Y5
     call r8inir(ndt*ndt, 0.d0, dsdeb, 1)
     do i = 1, ndt
-        dsdeb(i,i) = 1.d0
+        dsdeb(i, i) = 1.d0
     end do
-    call mgauss(cargau, y5, dsdeb, ndt, ndt,&
+    call mgauss(cargau, y5, dsdeb, ndt, ndt, &
                 ndt, det, iret)
 !
     if (iret .gt. 1) then
-        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
+        dsde(1:ndt, 1:ndt) = hook(1:ndt, 1:ndt)
     else
         call r8inir(36, 0.d0, dsde, 1)
         if (sigeps .eq. 1) then
             do i = 1, ndt
                 do j = 1, ndt
                     do k = 1, ndt
-                        dsde(i,j)=dsdeb(i,j)
+                        dsde(i, j) = dsdeb(i, j)
                     end do
                 end do
             end do
@@ -149,13 +149,13 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
             do i = 1, ndt
                 do j = 1, ndt
                     do k = 1, ndt
-                        dsde(i,j)=dsde(i,j)+hook(i,k)*dsdeb(k,j)
+                        dsde(i, j) = dsde(i, j)+hook(i, k)*dsdeb(k, j)
                     end do
                 end do
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 999 continue
 end subroutine

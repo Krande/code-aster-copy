@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,9 +37,9 @@ function lcroyi()
 #include "asterfort/utmess.h"
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
-    common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
+    common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
+     &               pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
@@ -51,11 +51,11 @@ function lcroyi()
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 !
@@ -65,16 +65,16 @@ function lcroyi()
 !
 ! 1 - CALCUL DU MAJORANT
 !
-    e = sig1*fonc / rpm
+    e = sig1*fonc/rpm
     ysup = log(e)
     y = ysup
     call lcrofs(y, dp, s, ds)
 !
 ! 2 - CALCUL DU MINORANT
 !
-    call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                p = pm+dp, rp = rp, rprim = pente, airerp = aire)
-    e = sig1*fonc / rp
+    call rcfonc('V', 1, jprolp, jvalep, nbvalp, &
+                p=pm+dp, rp=rp, rprim=pente, airerp=aire)
+    e = sig1*fonc/rp
     yinf = max(0.d0, log(e))
 !
 ! 3 - RESOLUTION PAR UNE METHODE DE NEWTON ENTRE LES BORNES
@@ -82,8 +82,8 @@ function lcroyi()
     do iter = 1, itemax
         if (abs(s)/sigy .le. prec) goto 100
 !
-        y = y - s/ds
-        if (y .le. yinf .or. y .ge. ysup) y=(yinf+ysup)/2
+        y = y-s/ds
+        if (y .le. yinf .or. y .ge. ysup) y = (yinf+ysup)/2
 !
         call lcrofs(y, dp, s, ds)
         if (s .le. 0) yinf = y

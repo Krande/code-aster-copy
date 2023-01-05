@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,13 @@ subroutine rsvnmi(t, vm)
 !
     do i = 1, 3, 1
 !
-        inv = inv + t(i)*t(i)
+        inv = inv+t(i)*t(i)
 !
     end do
 !
     do i = 4, 6, 1
 !
-        inv = inv + 2.0d0*t(i)*t(i)
+        inv = inv+2.0d0*t(i)*t(i)
 !
     end do
 !

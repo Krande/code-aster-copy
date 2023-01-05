@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
+subroutine pjefmi(elrefp, nnop, coor, xg, ndim, &
                   x1, x2, lext, xmi, distv)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -70,49 +70,49 @@ implicit none
 !   -- calcul de xr1 : geometrie reelle de x1 :
 !   --------------------------------------------
     call elrfvf(elrefp, x1, ff, nno)
-    ASSERT(nno.eq.nnop)
-    xr1(1:ndim)=0.d0
+    ASSERT(nno .eq. nnop)
+    xr1(1:ndim) = 0.d0
     do idim = 1, ndim
         do ino = 1, nno
-            xr1(idim)=xr1(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
+            xr1(idim) = xr1(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
         end do
     end do
 !
 !
 !   -- calcul de xr2 : geometrie reelle de x2 :
 !   --------------------------------------------
-    if (.not.lext) then
+    if (.not. lext) then
         call elrfvf(elrefp, x2, ff, nno)
-        xr2(1:ndim)=0.d0
+        xr2(1:ndim) = 0.d0
         do idim = 1, ndim
             do ino = 1, nno
-                xr2(idim)=xr2(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
+                xr2(idim) = xr2(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
             end do
         end do
-    endif
+    end if
 !
 !
 !   -- calcul de distv
 !   -- quelle est la meilleure approximation de xg ?
 !   -------------------------------------------------
-    d1=0.d0
-    d2=0.d0
+    d1 = 0.d0
+    d2 = 0.d0
     do k = 1, ndim
-        d1=d1+(xr1(k)-xg(k))**2
-        if (.not.lext) d2=d2+(xr2(k)-xg(k))**2
+        d1 = d1+(xr1(k)-xg(k))**2
+        if (.not. lext) d2 = d2+(xr2(k)-xg(k))**2
     end do
 !
     if (lext) then
-        xmi(1:ndim)=x1(1:ndim)
-        distv=sqrt(d1)
+        xmi(1:ndim) = x1(1:ndim)
+        distv = sqrt(d1)
     else
         if (d1 .le. d2) then
-            xmi(1:ndim)=x1(1:ndim)
-            distv=sqrt(d1)
+            xmi(1:ndim) = x1(1:ndim)
+            distv = sqrt(d1)
         else
-            xmi(1:ndim)=x2(1:ndim)
-            distv=sqrt(d2)
-        endif
-    endif
+            xmi(1:ndim) = x2(1:ndim)
+            distv = sqrt(d2)
+        end if
+    end if
 !
 end subroutine

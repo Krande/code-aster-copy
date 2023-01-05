@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine comp_meca_read(l_etat_init, behaviourPrepPara, model)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/mfront_get_nbvari.h"
@@ -38,9 +38,9 @@ implicit none
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_meca_l.h"
 !
-aster_logical, intent(in) :: l_etat_init
-type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
-character(len=8), intent(in), optional :: model
+    aster_logical, intent(in) :: l_etat_init
+    type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
+    character(len=8), intent(in), optional :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,10 +73,10 @@ character(len=8), intent(in), optional :: model
     lTotalStrain = ASTER_FALSE
 
 ! - Pointer to list of elements in model
-    if ( present(model) ) then
-        call jeveuo(model//'.MAILLE', 'L', vi = modelCell)
-        call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-    endif
+    if (present(model)) then
+        call jeveuo(model//'.MAILLE', 'L', vi=modelCell)
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    end if
 
 ! - Read informations
     do iFactorKeyword = 1, nbFactorKeyword
@@ -85,16 +85,16 @@ character(len=8), intent(in), optional :: model
         call compGetRelation(factorKeyword, iFactorKeyword, rela_comp)
 
 ! ----- Detection of specific cases
-        call comp_meca_l(rela_comp, 'KIT'    , l_kit)
+        call comp_meca_l(rela_comp, 'KIT', l_kit)
         call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
 
 ! ----- Get DEFORMATION from command file
         defo_comp = 'VIDE'
-        call getvtx(factorKeyword, 'DEFORMATION', iocc = iFactorKeyword, scal = defo_comp)
+        call getvtx(factorKeyword, 'DEFORMATION', iocc=iFactorKeyword, scal=defo_comp)
 
 ! ----- Get RIGI_GEOM from command file
         rigi_geom = ' '
-        call getvtx(factorKeyword, 'RIGI_GEOM', iocc = iFactorKeyword,&
+        call getvtx(factorKeyword, 'RIGI_GEOM', iocc=iFactorKeyword, &
                     scal=rigi_geom, nbret=iret)
         if (iret .eq. 0) then
             rigi_geom = 'VIDE'
@@ -102,15 +102,15 @@ character(len=8), intent(in), optional :: model
 
 ! ----- Damage post-treatment
         post_iter = 'VIDE'
-        call getvtx(factorKeyword, 'POST_ITER', iocc = iFactorKeyword,&
+        call getvtx(factorKeyword, 'POST_ITER', iocc=iFactorKeyword, &
                     scal=post_iter, nbret=iret)
         if (iret .eq. 0) then
             post_iter = 'VIDE'
-        endif
+        end if
 
 ! ----- Viscuous regularization
         regu_visc = 'VIDE'
-        call getvtx(factorKeyword, 'REGU_VISC', iocc = iFactorKeyword, scal=answer, nbret=iret)
+        call getvtx(factorKeyword, 'REGU_VISC', iocc=iFactorKeyword, scal=answer, nbret=iret)
         if (iret .eq. 1) then
             if (answer .eq. 'OUI') then
                 regu_visc = 'REGU_VISC_ELAS'
@@ -118,14 +118,14 @@ character(len=8), intent(in), optional :: model
                 regu_visc = 'VIDE'
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
+            end if
+        end if
 
 ! ----- For KIT
         kit_comp = 'VIDE'
         if (l_kit) then
             call comp_meca_rkit(factorKeyword, iFactorKeyword, rela_comp, kit_comp, l_etat_init)
-        endif
+        end if
 
 ! ----- Get mechanical part of behaviour
         meca_comp = 'VIDE'
@@ -134,15 +134,15 @@ character(len=8), intent(in), optional :: model
 ! ----- Get multi-material *CRISTAL
         mult_comp = 'VIDE'
         if (l_cristal) then
-            call getvid(factorKeyword, 'COMPOR', iocc = iFactorKeyword, scal = mult_comp)
-        endif
+            call getvid(factorKeyword, 'COMPOR', iocc=iFactorKeyword, scal=mult_comp)
+        end if
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
         type_cpla = 'VIDE'
-        call getExternalBehaviourPara(mesh, modelCell, rela_comp, kit_comp,&
-                                    l_comp_external, behaviourPrepPara%v_paraExte(iFactorKeyword),&
-                                    factorKeyword, iFactorKeyword,&
-                                    type_cpla_out_ = type_cpla)
+        call getExternalBehaviourPara(mesh, modelCell, rela_comp, kit_comp, &
+                                    l_comp_external, behaviourPrepPara%v_paraExte(iFactorKeyword), &
+                                      factorKeyword, iFactorKeyword, &
+                                      type_cpla_out_=type_cpla)
 
 ! ----- Select type of behaviour (incremental or total)
         type_comp = 'VIDE'
@@ -153,7 +153,7 @@ character(len=8), intent(in), optional :: model
         call comp_meca_deflc(rela_comp, defo_comp, defo_ldc)
         if (defo_ldc .eq. 'TOTALE') then
             lTotalStrain = ASTER_TRUE
-        endif
+        end if
 
 ! ----- Save parameters
         behaviourPrepPara%v_para(iFactorKeyword)%rela_comp = rela_comp
@@ -161,32 +161,32 @@ character(len=8), intent(in), optional :: model
         behaviourPrepPara%v_para(iFactorKeyword)%defo_comp = defo_comp
         behaviourPrepPara%v_para(iFactorKeyword)%type_comp = type_comp
         behaviourPrepPara%v_para(iFactorKeyword)%type_cpla = type_cpla
-        behaviourPrepPara%v_para(iFactorKeyword)%kit_comp  = kit_comp
+        behaviourPrepPara%v_para(iFactorKeyword)%kit_comp = kit_comp
         behaviourPrepPara%v_para(iFactorKeyword)%mult_comp = mult_comp
         behaviourPrepPara%v_para(iFactorKeyword)%post_iter = post_iter
-        behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc  = defo_ldc
+        behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc = defo_ldc
         behaviourPrepPara%v_para(iFactorKeyword)%rigi_geom = rigi_geom
         behaviourPrepPara%v_para(iFactorKeyword)%regu_visc = regu_visc
 
     end do
 
     if (behaviourPrepPara%lDebug) then
-        WRITE(6,*) "Données lues: ",nbFactorKeyword," occurrences."
+        WRITE (6, *) "Données lues: ", nbFactorKeyword, " occurrences."
         do iFactorKeyword = 1, nbFactorKeyword
-            WRITE(6,*) "- Occurrence : ",iFactorKeyword
-            WRITE(6,*) "--- rela_comp : ",behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
-            WRITE(6,*) "--- meca_comp : ",behaviourPrepPara%v_para(iFactorKeyword)%meca_comp
-            WRITE(6,*) "--- defo_comp : ",behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
-            WRITE(6,*) "--- type_comp : ",behaviourPrepPara%v_para(iFactorKeyword)%type_comp
-            WRITE(6,*) "--- type_cpla : ",behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
-            WRITE(6,*) "--- kit_comp  : ",behaviourPrepPara%v_para(iFactorKeyword)%kit_comp
-            WRITE(6,*) "--- mult_comp : ",behaviourPrepPara%v_para(iFactorKeyword)%mult_comp
-            WRITE(6,*) "--- post_iter : ",behaviourPrepPara%v_para(iFactorKeyword)%post_iter
-            WRITE(6,*) "--- defo_ldc  : ",behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc
-            WRITE(6,*) "--- rigi_geom : ",behaviourPrepPara%v_para(iFactorKeyword)%rigi_geom
-            WRITE(6,*) "--- regu_visc : ",behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
+            WRITE (6, *) "- Occurrence : ", iFactorKeyword
+            WRITE (6, *) "--- rela_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
+            WRITE (6, *) "--- meca_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%meca_comp
+            WRITE (6, *) "--- defo_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
+            WRITE (6, *) "--- type_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%type_comp
+            WRITE (6, *) "--- type_cpla : ", behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
+            WRITE (6, *) "--- kit_comp  : ", behaviourPrepPara%v_para(iFactorKeyword)%kit_comp
+            WRITE (6, *) "--- mult_comp : ", behaviourPrepPara%v_para(iFactorKeyword)%mult_comp
+            WRITE (6, *) "--- post_iter : ", behaviourPrepPara%v_para(iFactorKeyword)%post_iter
+            WRITE (6, *) "--- defo_ldc  : ", behaviourPrepPara%v_para(iFactorKeyword)%defo_ldc
+            WRITE (6, *) "--- rigi_geom : ", behaviourPrepPara%v_para(iFactorKeyword)%rigi_geom
+            WRITE (6, *) "--- regu_visc : ", behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
         end do
-    endif
+    end if
 
 ! - Is at least ONE behaviour is not incremental ?
     behaviourPrepPara%lTotalStrain = lTotalStrain

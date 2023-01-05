@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ini002(nomte, nmax, itabl, k24tab, nval)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -63,7 +63,7 @@ implicit none
 !
 ! --- RECUPERATION DE LA LISTE DES ELREFE CORRESPONDANTS AU NOMTE
     call elref2(nomte, 10, lirefe, nbelr)
-    ASSERT(nbelr.ge.0)
+    ASSERT(nbelr .ge. 0)
 !
 !
 !     --BOUCLE SUR LES ELREFE :
@@ -79,35 +79,35 @@ implicit none
         if (nujni .eq. 2) then
             call jni002(elrefe, 10, liobj, nbobj)
 !
-        else if (nujni.eq.15) then
+        else if (nujni .eq. 15) then
             call jni015(elrefe, 10, liobj, nbobj)
 !
-        else if (nujni.eq.80) then
+        else if (nujni .eq. 80) then
             call jni080(elrefe, 10, liobj, nbobj)
 !
-        else if (nujni.eq.91) then
+        else if (nujni .eq. 91) then
             call jni091(elrefe, 10, liobj, nbobj)
 !
-        else if (nujni.eq.92) then
+        else if (nujni .eq. 92) then
             call jni092(elrefe, 10, liobj, nbobj)
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-        nb_val = nb_val + nbobj
-        ASSERT(nb_val.le.nmax)
+        nb_val = nb_val+nbobj
+        ASSERT(nb_val .le. nmax)
 !
         if (present(k24tab)) then
             do k = 1, nbobj
                 k24tab(nb_val-nbobj+k) = liobj(k)
             end do
-        endif
+        end if
     end do
 !
     if (present(nval)) then
         nval = nb_val
-    endif
+    end if
 !
 !     RECUPERATION DES ADRESSES DES OBJETS CREES :
 !     ---------------------------------------------
@@ -116,8 +116,8 @@ implicit none
             call jeexin(k24tab(kk), iret)
             if (iret .gt. 0) then
                 call jeveuo(k24tab(kk), 'L', itabl(kk))
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine gmatr1(nnoff, ndeg, abscur, xl, matr)
 
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -51,14 +51,14 @@ implicit none
 !
 ! ......................................................................
 
-    integer, parameter :: npg=14,nbnomx=3
-    integer            :: nseg, iadpol, i ,j
+    integer, parameter :: npg = 14, nbnomx = 3
+    integer            :: nseg, iadpol, i, j
     integer            :: ipg, js, iseg, jstmp, istok
     integer            :: ino, nno
     integer            :: conn(3)
     real(kind=8)       :: xpg(npg), wpg(npg)
     real(kind=8)       :: a(ndeg+1, ndeg+1)
-    real(kind=8)       :: g1, g2,jac
+    real(kind=8)       :: g1, g2, jac
     real(kind=8)       :: ff(nbnomx), dff(3, nbnomx), ksi(1)
     character(len=24)  :: stemp
     character(len=8)   :: elrefe
@@ -66,7 +66,7 @@ implicit none
 !....................................................................
 
 !    COOR ET POID DU POINT DE GAUSS
-    data xpg /  -.1080549487073437,&
+    data xpg/-.1080549487073437,&
      &           .1080549487073437,&
      &          -.3191123689278897,&
      &           .3191123689278897,&
@@ -81,7 +81,7 @@ implicit none
      &          -.9862838086968123,&
      &           .9862838086968123/
 !
-    data wpg /    .2152638534631578,&
+    data wpg/.2152638534631578,&
      &            .2152638534631578,&
      &            .2051984637212956,&
      &            .2051984637212956,&
@@ -119,7 +119,7 @@ implicit none
 !   INITIALISATION DE LA MATRICE
     do i = 1, ndeg+1
         do j = 1, ndeg+1
-            a(i,j) = 0.d0
+            a(i, j) = 0.d0
         end do
     end do
 !
@@ -130,13 +130,13 @@ implicit none
         conn(2) = iseg+1
 
 !       CALCUL DES COORDONNEES DES POINTS DE GAUSS DU SEGMENT DANS L'ESPACE REEL
-        do ipg = 1,npg
+        do ipg = 1, npg
             ksi(1) = xpg(ipg)
             call elrfvf(elrefe, ksi, ff, nno)
 
             zr(jstmp-1+ipg) = 0.d0
             do ino = 1, nno
-               zr(jstmp-1+ipg) = zr(jstmp-1+ipg) + zr(js-1+conn(ino))*ff(ino)
+                zr(jstmp-1+ipg) = zr(jstmp-1+ipg)+zr(js-1+conn(ino))*ff(ino)
             end do
 
         end do
@@ -145,7 +145,7 @@ implicit none
         call glegen(ndeg, npg, xl, stemp, zr(iadpol))
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DU SEGMENT
-        do ipg = 1,npg
+        do ipg = 1, npg
 !
 !          CALCUL DES FONCTIONS DE FORMES ET DERIVEES
             ksi(1) = xpg(ipg)
@@ -155,7 +155,7 @@ implicit none
 !           CALCUL DU JACOBIEN (SEGM DE REFERENCE --> SEGM REEL)
             jac = 0.d0
             do ino = 1, nno
-               jac = jac + zr(js-1+conn(ino))*dff(1, ino)
+                jac = jac+zr(js-1+conn(ino))*dff(1, ino)
             end do
 
 !           CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE
@@ -166,8 +166,8 @@ implicit none
                 do j = 1, ndeg+1
 
                     g2 = zr(iadpol+(j-1)*npg+ipg-1)
-                    a(i,j) = a(i,j)+g1*g2*wpg(ipg)*jac
-                    zr(istok+(i-1)*(ndeg+1)+j-1) = a(i,j)
+                    a(i, j) = a(i, j)+g1*g2*wpg(ipg)*jac
+                    zr(istok+(i-1)*(ndeg+1)+j-1) = a(i, j)
 
                 end do
             end do

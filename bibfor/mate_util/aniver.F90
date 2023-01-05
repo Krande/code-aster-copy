@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine aniver(mate, v_mate_func)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dortvp.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterc/r8prem.h"
 !
-character(len=8), intent(in) :: mate
-aster_logical, pointer :: v_mate_func(:)
+    character(len=8), intent(in) :: mate
+    aster_logical, pointer :: v_mate_func(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ aster_logical, pointer :: v_mate_func(:)
     m2blan = ' '
     k8bid = ' '
 !
-    dorth(:,:) = zero
+    dorth(:, :) = zero
 !
     e1 = zero
     e2 = zero
@@ -94,14 +94,14 @@ aster_logical, pointer :: v_mate_func(:)
 ! --- BOUCLE SUR LES RELATIONS DE COMPORTEMENT :
 !     ----------------------------------------
     do i_mate = 1, mate_nb
-        nomrc = vnomrc(i_mate)(1:16)
+        nomrc = vnomrc(i_mate) (1:16)
         call rccome(mate, vnomrc(i_mate), iret, k11_ind_nomrc=k11)
-        if ( iret .ne. 0 ) cycle
+        if (iret .ne. 0) cycle
         noobrc = mate//k11
 !
 ! --- SI LE MATERIAU N'EST PAS UNE FONCTION :
 !     -------------------------------------
-        if (.not.(v_mate_func(i_mate))) then
+        if (.not. (v_mate_func(i_mate))) then
 !
 ! ---   ON NE TRAITE QUE LES CAS ISOTROPE-TRANSVERSE ET ORTHOTROPE :
 !       ----------------------------------------------------------
@@ -121,17 +121,17 @@ aster_logical, pointer :: v_mate_func(:)
 ! ---     A L'ORTHOTROPIE ET A L'ISOTROPIE TRANSVERSE DANS
 ! ---     LE TABLEAU DU NOM DES COMPOSANTES :
 !         ---------------------------------
-                iel = indk16(valk,'E_L',1,nbr)
-                iet = indk16(valk,'E_T',1,nbr)
-                ien = indk16(valk,'E_N',1,nbr)
+                iel = indk16(valk, 'E_L', 1, nbr)
+                iet = indk16(valk, 'E_T', 1, nbr)
+                ien = indk16(valk, 'E_N', 1, nbr)
 !
-                iglt = indk16(valk,'G_LT',1,nbr)
-                igtn = indk16(valk,'G_TN',1,nbr)
-                igln = indk16(valk,'G_LN',1,nbr)
+                iglt = indk16(valk, 'G_LT', 1, nbr)
+                igtn = indk16(valk, 'G_TN', 1, nbr)
+                igln = indk16(valk, 'G_LN', 1, nbr)
 !
-                inult = indk16(valk,'NU_LT',1,nbr)
-                inutn = indk16(valk,'NU_TN',1,nbr)
-                inuln = indk16(valk,'NU_LN',1,nbr)
+                inult = indk16(valk, 'NU_LT', 1, nbr)
+                inutn = indk16(valk, 'NU_TN', 1, nbr)
+                inuln = indk16(valk, 'NU_LN', 1, nbr)
 !
 ! ---     RECUPERATION DES COMPOSANTES RELATIVES A L'ORTHOTROPIE
 ! ---     ET A L'ISOTROPIE TRANSVERSE :
@@ -166,18 +166,18 @@ aster_logical, pointer :: v_mate_func(:)
                         if (e3 .le. r8prem()) cycle
 !
                         c1 = e1/(un+nu12)
-                        delta = un - nu12 - deux*nu13*nu13*e3/e1
+                        delta = un-nu12-deux*nu13*nu13*e3/e1
 !
-                        dorth(1,1) = c1*(un - nu13*nu13*e3/e1)/delta
-                        dorth(1,2) = c1*((un - nu13*nu13*e3/e1)/delta - un)
-                        dorth(1,3) = e3*nu13/delta
-                        dorth(2,1) = dorth(1,2)
-                        dorth(2,2) = dorth(1,1)
-                        dorth(2,3) = dorth(1,3)
-                        dorth(3,1) = dorth(1,3)
-                        dorth(3,2) = dorth(2,3)
-                        dorth(3,3) = e3*(un - nu12)/delta
-                        dorth(4,4) = undemi*c1
+                        dorth(1, 1) = c1*(un-nu13*nu13*e3/e1)/delta
+                        dorth(1, 2) = c1*((un-nu13*nu13*e3/e1)/delta-un)
+                        dorth(1, 3) = e3*nu13/delta
+                        dorth(2, 1) = dorth(1, 2)
+                        dorth(2, 2) = dorth(1, 1)
+                        dorth(2, 3) = dorth(1, 3)
+                        dorth(3, 1) = dorth(1, 3)
+                        dorth(3, 2) = dorth(2, 3)
+                        dorth(3, 3) = e3*(un-nu12)/delta
+                        dorth(4, 4) = undemi*c1
 !
 ! ---         CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
 !             ----------------------------------------------
@@ -185,36 +185,36 @@ aster_logical, pointer :: v_mate_func(:)
 !
 ! ---       TRAITEMENT DU CAS 3D :
 !           --------------------
-                    else if (igln.ne.0) then
+                    else if (igln .ne. 0) then
                         ndim = 3
                         if (ien .eq. 0) cycle
                         if (e3 .le. r8prem()) cycle
 !
                         c1 = e1/(un+nu12)
-                        delta = un - nu12 - deux*nu13*nu13*e3/e1
+                        delta = un-nu12-deux*nu13*nu13*e3/e1
 !
-                        dorth(1,1) = c1*(un - nu13*nu13*e3/e1)/delta
-                        dorth(1,2) = c1*((un - nu13*nu13*e3/e1)/delta - un)
-                        dorth(1,3) = e3*nu13/delta
-                        dorth(2,1) = dorth(1,2)
-                        dorth(2,2) = dorth(1,1)
-                        dorth(2,3) = dorth(1,3)
-                        dorth(3,1) = dorth(1,3)
-                        dorth(3,2) = dorth(2,3)
-                        dorth(3,3) = e3*(un - nu12)/delta
-                        dorth(4,4) = undemi*c1
-                        dorth(5,5) = g13
-                        dorth(6,6) = dorth(5,5)
+                        dorth(1, 1) = c1*(un-nu13*nu13*e3/e1)/delta
+                        dorth(1, 2) = c1*((un-nu13*nu13*e3/e1)/delta-un)
+                        dorth(1, 3) = e3*nu13/delta
+                        dorth(2, 1) = dorth(1, 2)
+                        dorth(2, 2) = dorth(1, 1)
+                        dorth(2, 3) = dorth(1, 3)
+                        dorth(3, 1) = dorth(1, 3)
+                        dorth(3, 2) = dorth(2, 3)
+                        dorth(3, 3) = e3*(un-nu12)/delta
+                        dorth(4, 4) = undemi*c1
+                        dorth(5, 5) = g13
+                        dorth(6, 6) = dorth(5, 5)
 !
 ! ---         CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
 !             ----------------------------------------------
                         call dortvp(ndim, nomrc, dorth, m2blan)
 !
-                    endif
+                    end if
 !
 ! ---     TRAITEMENT DU CAS DE L'ORTHOTROPIE :
 !         ----------------------------------
-                else if (nomrc.eq.'ELAS_ORTH') then
+                else if (nomrc .eq. 'ELAS_ORTH') then
 !
 ! ---       SI G13 = 0 , ON PEUT SUPPOSER QUE L'ON EST EN 2D :
 !           ------------------------------------------------
@@ -226,7 +226,7 @@ aster_logical, pointer :: v_mate_func(:)
                         if (ien .eq. 0) then
                             call utmess('A', 'MATERIAL2_10')
                             goto 100
-                        endif
+                        end if
 !
 ! ---         TRAITEMENT DES CAS DES DEFORMATIONS PLANES
 ! ---         ET DE L'AXISYMETRIE :
@@ -234,19 +234,19 @@ aster_logical, pointer :: v_mate_func(:)
                         nu21 = e2*nu12/e1
                         nu31 = e3*nu13/e1
                         nu32 = e3*nu23/e2
-                        delta = un-nu23*nu32-nu31*nu13-nu21*nu12 -deux*nu23*nu31*nu12
+                        delta = un-nu23*nu32-nu31*nu13-nu21*nu12-deux*nu23*nu31*nu12
 !
-                        dorth(1,1) = (un - nu23*nu32)*e1/delta
-                        dorth(1,2) = (nu21 + nu31*nu23)*e1/delta
-                        dorth(1,3) = (nu31 + nu21*nu32)*e1/delta
-                        dorth(2,2) = (un - nu31*nu13)*e2/delta
-                        dorth(2,3) = (nu32 + nu31*nu12)*e2/delta
-                        dorth(3,3) = (un - nu21*nu12)*e3/delta
-                        dorth(2,1) = dorth(1,2)
-                        dorth(3,1) = dorth(1,3)
-                        dorth(3,2) = dorth(2,3)
+                        dorth(1, 1) = (un-nu23*nu32)*e1/delta
+                        dorth(1, 2) = (nu21+nu31*nu23)*e1/delta
+                        dorth(1, 3) = (nu31+nu21*nu32)*e1/delta
+                        dorth(2, 2) = (un-nu31*nu13)*e2/delta
+                        dorth(2, 3) = (nu32+nu31*nu12)*e2/delta
+                        dorth(3, 3) = (un-nu21*nu12)*e3/delta
+                        dorth(2, 1) = dorth(1, 2)
+                        dorth(3, 1) = dorth(1, 3)
+                        dorth(3, 2) = dorth(2, 3)
 !
-                        dorth(4,4) = g12
+                        dorth(4, 4) = g12
 !
 ! ---         CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
 !             ----------------------------------------------
@@ -256,17 +256,17 @@ aster_logical, pointer :: v_mate_func(:)
 !             ----------------------------------------
 100                     continue
 !
-                        dorth(:,:)=zero
+                        dorth(:, :) = zero
 !
                         nu21 = e2*nu12/e1
                         delta = un-nu12*nu21
 !
-                        dorth(1,1) = e1/delta
-                        dorth(1,2) = nu12*e2/delta
-                        dorth(2,2) = e2/delta
-                        dorth(2,1) = dorth(1,2)
+                        dorth(1, 1) = e1/delta
+                        dorth(1, 2) = nu12*e2/delta
+                        dorth(2, 2) = e2/delta
+                        dorth(2, 1) = dorth(1, 2)
 !
-                        dorth(4,4) = g12
+                        dorth(4, 4) = g12
 !
 ! ---         CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
 !             ----------------------------------------------
@@ -274,7 +274,7 @@ aster_logical, pointer :: v_mate_func(:)
 !
 ! ---       TRAITEMENT DU CAS 3D :
 !           --------------------
-                    else if (igln.ne.0) then
+                    else if (igln .ne. 0) then
                         ndim = 3
                         if (iet .eq. 0) cycle
                         if (e2 .le. r8prem()) cycle
@@ -282,48 +282,48 @@ aster_logical, pointer :: v_mate_func(:)
                         if (ien .eq. 0) then
                             ndim = 2
 !
-                            dorth(:,:)=zero
+                            dorth(:, :) = zero
 !
                             nu21 = e2*nu12/e1
                             delta = un-nu12*nu21
 !
-                            dorth(1,1) = e1/delta
-                            dorth(1,2) = nu12*e2/delta
-                            dorth(2,2) = e2/delta
-                            dorth(2,1) = dorth(1,2)
+                            dorth(1, 1) = e1/delta
+                            dorth(1, 2) = nu12*e2/delta
+                            dorth(2, 2) = e2/delta
+                            dorth(2, 1) = dorth(1, 2)
 !
-                            dorth(4,4) = g12
+                            dorth(4, 4) = g12
 !
 ! ---           CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
                             call dortvp(ndim, nomrc, dorth, 'CP')
-                        endif
+                        end if
 !
                         nu21 = e2*nu12/e1
                         nu31 = e3*nu13/e1
                         nu32 = e3*nu23/e2
-                        delta = un-nu23*nu32-nu31*nu13-nu21*nu12 -deux*nu23*nu31*nu12
+                        delta = un-nu23*nu32-nu31*nu13-nu21*nu12-deux*nu23*nu31*nu12
 !
-                        dorth(1,1) = (un - nu23*nu32)*e1/delta
-                        dorth(1,2) = (nu21 + nu31*nu23)*e1/delta
-                        dorth(1,3) = (nu31 + nu21*nu32)*e1/delta
-                        dorth(2,2) = (un - nu31*nu13)*e2/delta
-                        dorth(2,3) = (nu32 + nu31*nu12)*e2/delta
-                        dorth(3,3) = (un - nu21*nu12)*e3/delta
-                        dorth(2,1) = dorth(1,2)
-                        dorth(3,1) = dorth(1,3)
-                        dorth(3,2) = dorth(2,3)
+                        dorth(1, 1) = (un-nu23*nu32)*e1/delta
+                        dorth(1, 2) = (nu21+nu31*nu23)*e1/delta
+                        dorth(1, 3) = (nu31+nu21*nu32)*e1/delta
+                        dorth(2, 2) = (un-nu31*nu13)*e2/delta
+                        dorth(2, 3) = (nu32+nu31*nu12)*e2/delta
+                        dorth(3, 3) = (un-nu21*nu12)*e3/delta
+                        dorth(2, 1) = dorth(1, 2)
+                        dorth(3, 1) = dorth(1, 3)
+                        dorth(3, 2) = dorth(2, 3)
 !
-                        dorth(4,4) = g12
-                        dorth(5,5) = g13
-                        dorth(6,6) = g23
+                        dorth(4, 4) = g12
+                        dorth(5, 5) = g13
+                        dorth(6, 6) = g23
 !
 ! ---         CALCUL DES VALEURS PROPRES DE LA MATRICE DORTH :
 !             ----------------------------------------------
                         call dortvp(ndim, nomrc, dorth, m2blan)
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
     end do
 !
 end subroutine

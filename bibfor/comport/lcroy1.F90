@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ function lcroy1()
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
-    common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
+    common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
+     &               pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
@@ -58,11 +58,11 @@ function lcroy1()
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 !
 ! ----------------------------------------------------------------------
@@ -82,17 +82,17 @@ function lcroy1()
 ! RESOLUTION DE L'EQUATION SANS LE TERME DE TRACE
 ! LCROTY RESOUD UNE EQUATION DU TYPE Y*EXP(Y)=CONSTANTE
 !
-        call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
-                    e = young, nu = nu, p = pm, rp = rp, rprim = pente,&
-                    airerp = aire, sieleq = 2.d0*mu*eqetr, dp = dp)
+        call rcfonc('E', 1, jprolp, jvalep, nbvalp, &
+                    e=young, nu=nu, p=pm, rp=rp, rprim=pente, &
+                    airerp=aire, sieleq=2.d0*mu*eqetr, dp=dp)
         yinf = lcroty(dp*unk*fonc/sig1, prec, itemax)
-    endif
+    end if
 !
 ! 2 - CALCUL DU MAJORANT
 ! LCROTY RESOUD UNE EQUATION DU TYPE Y*EXP(Y)=CONSTANTE
 !
     call lcrofg(yinf, dp, s, seuil, dseuil)
-    if (seuil .lt. 0.d0) yinf=0.d0
+    if (seuil .lt. 0.d0) yinf = 0.d0
     call lcrofg(yinf, dp, s, seuil, dseuil)
 !
     t = (deuxmu*eqetr-s)/(3.d0*mu)
@@ -105,8 +105,8 @@ function lcroy1()
     do iter = 1, itemax
         if (abs(seuil)/sigy .le. prec) goto 100
 !
-        y = y - seuil/dseuil
-        if (y .le. yinf .or. y .ge. ysup) y=(yinf+ysup)/2
+        y = y-seuil/dseuil
+        if (y .le. yinf .or. y .ge. ysup) y = (yinf+ysup)/2
 !
         call lcrofg(y, dp, s, seuil, dseuil)
 !

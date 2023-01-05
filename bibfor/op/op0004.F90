@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,55 +78,55 @@ subroutine op0004()
     else
         defonc = .true.
         call getfac('DEFI_FONCTION', nbfonc)
-    endif
+    end if
 !
     if (nbpara .ne. nbfonc) then
-        vali (1) = nbpara
-        vali (2) = nbfonc
+        vali(1) = nbpara
+        vali(2) = nbfonc
         call utmess('F', 'UTILITAI8_3', ni=2, vali=vali)
-    endif
+    end if
 !
 !     --- VERIFICATION DE LA CROISSANCE DES PARAMETRES ---
     if (verif .eq. 'CROISSANT') then
         call wkvect('&&OP0004.TEMP.PARA', 'V V R', nbpara, lparc)
         call getvr8(' ', 'PARA', nbval=nbpara, vect=zr(lparc), nbret=n)
 !        VERIF QUE LES PARA SONT STRICT CROISSANTS
-        iret=2
+        iret = 2
         call foverf(zr(lparc), nbpara, iret)
         if (iret .ne. 2) then
             call utmess('F', 'UTILITAI2_72')
-        endif
+        end if
         call jedetr('&&OP0004.TEMP.PARA')
-    endif
+    end if
 !
     if (defonc) then
         do iocc = 1, nbfonc
             call getvr8('DEFI_FONCTION', 'VALE', iocc=iocc, nbval=0, nbret=nv)
             nv = -nv
-            if (mod(nv,2) .ne. 0) then
-                vali (1) = iocc
+            if (mod(nv, 2) .ne. 0) then
+                vali(1) = iocc
                 call utmess('F', 'UTILITAI8_4', si=vali(1))
-            endif
+            end if
             if (verif .eq. 'CROISSANT') then
-                nbcoup = nv / 2
+                nbcoup = nv/2
                 call wkvect('&&OP0004.TEMP.PARA', 'V V R', nv, lpara)
                 call wkvect('&&OP0004.TEMP.PAR2', 'V V R', nbcoup, lpar2)
-                call getvr8('DEFI_FONCTION', 'VALE', iocc=iocc, nbval=nv, vect=zr(lpara),&
+                call getvr8('DEFI_FONCTION', 'VALE', iocc=iocc, nbval=nv, vect=zr(lpara), &
                             nbret=nbval)
                 do i = 0, nbcoup-1
                     zr(lpar2+i) = zr(lpara+2*i)
                 end do
 !              VERIF QUE LES PARA SONT STRICT CROISSANTS
-                iret=2
+                iret = 2
                 call foverf(zr(lpar2), nbcoup, iret)
                 if (iret .ne. 2) then
                     call utmess('F', 'UTILITAI2_72')
-                endif
+                end if
                 call jedetr('&&OP0004.TEMP.PARA')
                 call jedetr('&&OP0004.TEMP.PAR2')
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -134,17 +134,17 @@ subroutine op0004()
     call infniv(ifm, niv)
 !
 !   --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
-    nprol = 7 + 2*nbfonc
-    ASSERT(lxlgut(nomfon).le.24)
+    nprol = 7+2*nbfonc
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', nprol, lpro)
-    zk24(lpro ) = 'NAPPE   '
+    zk24(lpro) = 'NAPPE   '
     call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=l1)
     if (l1 .eq. 1) interp(2) = interp(1)
     zk24(lpro+1) = interp(1)//interp(2)
     call getvtx(' ', 'NOM_PARA', scal=zk24(lpro+2), nbret=l)
     call getvtx(' ', 'NOM_RESU', scal=zk24(lpro+3), nbret=l)
-    call getvtx(' ', 'PROL_GAUCHE', scal=zk24(lpro+4)(1:1), nbret=l)
-    call getvtx(' ', 'PROL_DROITE', scal=zk24(lpro+4)(2:2), nbret=l)
+    call getvtx(' ', 'PROL_GAUCHE', scal=zk24(lpro+4) (1:1), nbret=l)
+    call getvtx(' ', 'PROL_DROITE', scal=zk24(lpro+4) (2:2), nbret=l)
     zk24(lpro+5) = nomfon
 !
 !   --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
@@ -157,19 +157,19 @@ subroutine op0004()
         mxva = 0
         do ifonc = 1, nbfonc
             call getvr8('DEFI_FONCTION', 'VALE', iocc=ifonc, nbval=0, nbret=nbval)
-            mxva = max(mxva,-nbval)
+            mxva = max(mxva, -nbval)
         end do
         call wkvect('&&OP0004.VALEURS.LUES', 'V V R', mxva, jval)
         call wkvect('&&OP0004.POINTEURS.F', 'V V I', nbfonc, ladrf)
         do ifonc = 1, nbfonc
             zk24(lnomf+ifonc-1) = '&&OP0004.F'
-            call codent(ifonc, 'G', zk24(lnomf+ifonc-1)(11:19))
-            zk24(lnomf+ifonc-1)(20:24) = '.VALE'
-            call getvr8('DEFI_FONCTION', 'VALE', iocc=ifonc, nbval=mxva, vect=zr(jval),&
+            call codent(ifonc, 'G', zk24(lnomf+ifonc-1) (11:19))
+            zk24(lnomf+ifonc-1) (20:24) = '.VALE'
+            call getvr8('DEFI_FONCTION', 'VALE', iocc=ifonc, nbval=mxva, vect=zr(jval), &
                         nbret=nbval)
             call wkvect(zk24(lnomf+ifonc-1), 'V V R', nbval, lval)
             zi(ladrf+ifonc-1) = lval
-            nbcoup = nbval / 2
+            nbcoup = nbval/2
             do ival = 1, nbcoup
                 zr(lval-1+ival) = zr(jval-1+2*ival-1)
                 zr(lval-1+nbcoup+ival) = zr(jval-1+2*ival)
@@ -179,36 +179,36 @@ subroutine op0004()
 !               ET REMISE DES ABSCISSES EN ORDRE CROISSANT
 !           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
             if (verif .ne. 'CROISSANT') then
-                iret2=0
+                iret2 = 0
                 call foverf(zr(lval), nbcoup, iret2)
                 if (iret2 .eq. 0) then
-                    typfon='FONCTION'
+                    typfon = 'FONCTION'
                     call uttrif(zr(lval), nbcoup, typfon)
                     valk = nomfon
                     call utmess('A', 'UTILITAI8_5', sk=valk)
-                else if (iret2.lt.0) then
+                else if (iret2 .lt. 0) then
                     call ordon1(zr(lval), nbcoup)
-                    vali (1) = ifonc
+                    vali(1) = ifonc
                     call utmess('A', 'UTILITAI8_6', si=vali(1))
-                endif
-            endif
+                end if
+            end if
 !
-            call getvtx('DEFI_FONCTION', 'INTERPOL', iocc=ifonc, nbval=2, vect=interp,&
+            call getvtx('DEFI_FONCTION', 'INTERPOL', iocc=ifonc, nbval=2, vect=interp, &
                         nbret=l1)
             if (l1 .eq. 1) interp(2) = interp(1)
             zk24(lpro+6+2*ifonc-1) = interp(1)//interp(2)
-            call getvtx('DEFI_FONCTION', 'PROL_GAUCHE', iocc=ifonc,&
-                        scal=zk24(lpro+6+2*ifonc)(1:1), nbret=l)
-            call getvtx('DEFI_FONCTION', 'PROL_DROITE', iocc=ifonc,&
-                        scal=zk24(lpro+6+2*ifonc)(2:2), nbret=l)
+            call getvtx('DEFI_FONCTION', 'PROL_GAUCHE', iocc=ifonc, &
+                        scal=zk24(lpro+6+2*ifonc) (1:1), nbret=l)
+            call getvtx('DEFI_FONCTION', 'PROL_DROITE', iocc=ifonc, &
+                        scal=zk24(lpro+6+2*ifonc) (2:2), nbret=l)
         end do
     else
         call getvid(' ', 'FONCTION', nbval=nbfonc, vect=zk24(lnomf), nbret=n)
         call fovern(zk24(lnomf), nbfonc, zk24(lpro), iret)
-    endif
+    end if
 !
 !   --- CREATION ET REMPLISSAGE DE LA COLLECTION NOMFON.VALE ---
-    call jecrec(nomfon//'.VALE', 'G V R', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(nomfon//'.VALE', 'G V R', 'NU', 'CONTIG', 'VARIABLE', &
                 nbfonc)
     call foston(nomfon//'.VALE', zk24(lnomf), nbfonc)
 !
@@ -216,7 +216,7 @@ subroutine op0004()
 !       CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
     if (verif .ne. 'CROISSANT') then
         call ordonn(nomfon, 0)
-    endif
+    end if
 !
 !   --- CREATION D'UN TITRE ---
     call titre()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
+subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
                   ma2, jnivgr)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -92,7 +92,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
             call jenuno(jexnum(ma1//'.NOMMAI', dirma(i)), noma2)
             call jecroc(jexnom(ma2//'.NOMMAI', noma2))
             typm2(dirma(i)) = typm1(i)
-        endif
+        end if
     end do
 !
 !     .NOMNOE
@@ -100,16 +100,16 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
         if (dirno(i) .ne. 0) then
             call jenuno(jexnum(ma1//'.NOMNOE', dirno(i)), nono2)
             call jecroc(jexnom(ma2//'.NOMNOE', nono2))
-        endif
+        end if
     end do
 !
 !     .COORDO
     do i = 1, nbno
         if (dirno(i) .ne. 0) then
             do j = 1, 3
-                coo2(3*(dirno(i)-1)+j)=coo1(3*(i-1)+j)
+                coo2(3*(dirno(i)-1)+j) = coo1(3*(i-1)+j)
             end do
-        endif
+        end if
     end do
 !
 !     .CONNEX
@@ -122,9 +122,9 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
             do j = 1, n
                 ino1 = zi(iacon1-1+j)
                 ino2 = dirno(ino1)
-                zi(iacon2-1+j)=ino2
+                zi(iacon2-1+j) = ino2
             end do
-        endif
+        end if
     end do
 !
 !     .GROUPENO
@@ -133,8 +133,8 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
         call jelira(jexnum(ma2//'.GROUPENO', i), 'LONUTI', n)
         do j = 1, n
             if (dirno(zi(iagno-1+j)) .ne. 0) then
-                zi(iagno-1+j)=dirno(zi(iagno-1+j))
-            endif
+                zi(iagno-1+j) = dirno(zi(iagno-1+j))
+            end if
         end do
     end do
 !
@@ -150,11 +150,11 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
             ima = zi(iagma1-1+i)
             if (dirma(ima) .ne. 0) then
 !           NIVEAU DE REMPLISSAGE DU GROUP_MA
-                zi(jnivgr-1+i2) = zi(jnivgr-1+i2) + 1
+                zi(jnivgr-1+i2) = zi(jnivgr-1+i2)+1
                 zi(iagma2-1+zi(jnivgr-1+i2)) = dirma(ima)
-            endif
+            end if
         end do
-        ASSERT(zi(jnivgr-1+i2).le.n2)
+        ASSERT(zi(jnivgr-1+i2) .le. n2)
     end do
 !
     call jedema()

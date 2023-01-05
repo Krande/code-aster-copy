@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/tbliva.h"
 #include "asterfort/utdidt.h"
 !
-integer :: i_echec, i_echec_acti
-character(len=19) :: sddisc, vale(*)
+    integer :: i_echec, i_echec_acti
+    character(len=19) :: sddisc, vale(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,60 +58,60 @@ character(len=19) :: sddisc, vale(*)
     character(len=8) :: k8bid, crit, typext
     complex(kind=8) :: c16bid
     character(len=16) :: nocham, nocmp
-    parameter   (typext = 'MAX_ABS')
+    parameter(typext='MAX_ABS')
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... DELTA_GRANDEUR'
-    endif
+        write (ifm, *) '<MECANONLINE> ... DELTA_GRANDEUR'
+    end if
 !
 ! --- INITIALISATIONS
 !
     i_echec_acti = 0
-    r8bid        = 0.d0
+    r8bid = 0.d0
 !
 ! --- PARAMETRES
 !
-    call utdidt('L', sddisc, 'ECHE', 'NOM_CHAM', index_ = i_echec,&
-                valk_ = nocham)
-    call utdidt('L', sddisc, 'ECHE', 'NOM_CMP', index_ = i_echec,&
-                valk_ = nocmp)
-    call utdidt('L', sddisc, 'ECHE', 'VALE_REF', index_ = i_echec,&
-                valr_ = valref)
-    call utdidt('L', sddisc, 'ECHE', 'CRIT_COMP', index_ = i_echec,&
-                valk_ = crit)
+    call utdidt('L', sddisc, 'ECHE', 'NOM_CHAM', index_=i_echec, &
+                valk_=nocham)
+    call utdidt('L', sddisc, 'ECHE', 'NOM_CMP', index_=i_echec, &
+                valk_=nocmp)
+    call utdidt('L', sddisc, 'ECHE', 'VALE_REF', index_=i_echec, &
+                valr_=valref)
+    call utdidt('L', sddisc, 'ECHE', 'CRIT_COMP', index_=i_echec, &
+                valk_=crit)
 !
 ! --- DVAL :MAX EN VALEUR ABSOLUE DU DELTA(CHAMP+CMP)
 !
-    if (vale(1)(1:8) .eq. '&&OP0033') then
+    if (vale(1) (1:8) .eq. '&&OP0033') then
 !
 !       RESULTAT DE CALC_POINT_MAT OP0033, FORMAT_TABLE='CMP_COLONNE',
-        call tbacce(vale(1)(1:16), 1, nocmp, 'L', ibid,&
+        call tbacce(vale(1) (1:16), 1, nocmp, 'L', ibid, &
                     dval, c16bid, k8bid)
-    else if (vale(1)(1:8).eq.'&&OPB033') then
+    else if (vale(1) (1:8) .eq. '&&OPB033') then
 !
 !       RESULTAT DE CALC_POINT_MAT OP0033, FORMAT_TABLE='CMP_LIGNE',
-        call tbliva(vale(1)(1:16), 1, 'CMP', [ibid], [r8bid],&
-                    [c16bid], nocmp, 'EGAL', [0.d0], 'VALEUR',&
-                    k8bid, ibid, dval, c16bid, k8bid,&
+        call tbliva(vale(1) (1:16), 1, 'CMP', [ibid], [r8bid], &
+                    [c16bid], nocmp, 'EGAL', [0.d0], 'VALEUR', &
+                    k8bid, ibid, dval, c16bid, k8bid, &
                     ier)
         if (ier .ne. 0) then
-            dval=0.d0
-        endif
+            dval = 0.d0
+        end if
     else
 !
 !       RESULTAT DE STAT_NON_LINE
         call extdch(typext, vale, nocham, nocmp, dval)
-    endif
+    end if
 !
-    ASSERT(crit.eq.'GT')
+    ASSERT(crit .eq. 'GT')
 !
     if (dval .gt. valref) then
         i_echec_acti = i_echec
-    endif
+    end if
 !
     call jedema()
 end subroutine

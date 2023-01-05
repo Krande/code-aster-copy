@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,8 @@ subroutine te0085(option, nomte)
     integer :: jgano, ndim, nnos
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -55,29 +55,29 @@ subroutine te0085(option, nomte)
     call jevech('PVECTUR', 'E', ivectu)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre(1), 1)
 !
     do kp = 1, npg
         k = nno*(kp-1)
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
-        poids = poids * rho(1) * zr(ipesa)
-        if (lteatt('AXIS','OUI')) then
-            rx= 0.d0
+        poids = poids*rho(1)*zr(ipesa)
+        if (lteatt('AXIS', 'OUI')) then
+            rx = 0.d0
             do i = 1, nno
-                rx= rx+ zr(igeom+2*i-2)*zr(ivf+k+i-1)
+                rx = rx+zr(igeom+2*i-2)*zr(ivf+k+i-1)
             end do
             poids = poids*rx
             do i = 1, nno
-                zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
+                zr(ivectu+2*i-1) = zr(ivectu+2*i-1)+poids*zr(ipesa+2)*zr(ivf+k+i-1)
             end do
         else
             do i = 1, nno
-                zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids*zr(ipesa+ 1)*zr(ivf+k+i-1)
-                zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
+                zr(ivectu+2*i-2) = zr(ivectu+2*i-2)+poids*zr(ipesa+1)*zr(ivf+k+i-1)
+                zr(ivectu+2*i-1) = zr(ivectu+2*i-1)+poids*zr(ipesa+2)*zr(ivf+k+i-1)
             end do
-        endif
+        end if
     end do
 end subroutine

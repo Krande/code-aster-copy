@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,22 +17,22 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmgnee(ndim  , nne   , wpg   , ffe   ,&
-                  jacobi, coefac, jeu   , dlagrc,&
-                  kappa , vech1 , vech2 , h     , hah   ,&
-                  mprt11, mprt12, mprt21, mprt22,&
+subroutine mmgnee(ndim, nne, wpg, ffe, &
+                  jacobi, coefac, jeu, dlagrc, &
+                  kappa, vech1, vech2, h, hah, &
+                  mprt11, mprt12, mprt21, mprt22, &
                   matree)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-integer, intent(in) :: ndim, nne
-real(kind=8), intent(in) :: ffe(9)
-real(kind=8), intent(in) :: wpg, jacobi, coefac, jeu, dlagrc
-real(kind=8), intent(in) :: kappa(2,2), vech1(3), vech2(3), h(2,2), hah(2,2)
-real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3,3), mprt21(3, 3), mprt22(3, 3)
-real(kind=8), intent(inout) :: matree(27, 27)
+    integer, intent(in) :: ndim, nne
+    real(kind=8), intent(in) :: ffe(9)
+    real(kind=8), intent(in) :: wpg, jacobi, coefac, jeu, dlagrc
+    real(kind=8), intent(in) :: kappa(2, 2), vech1(3), vech2(3), h(2, 2), hah(2, 2)
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(inout) :: matree(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,65 +76,65 @@ real(kind=8), intent(inout) :: matree(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    alpha  = 1.d-5
-    e(:,:) = 0.d0
-    d(:,:) = 0.d0
-    g(:,:) = 0.d0
-    f(:,:) = 0.d0
+    alpha = 1.d-5
+    e(:, :) = 0.d0
+    d(:, :) = 0.d0
+    g(:, :) = 0.d0
+    f(:, :) = 0.d0
 !
-    e(1,1) = h(1,1)*vech1(1)*vech1(1)
-    e(1,2) = h(1,1)*vech1(1)*vech1(2)
-    e(1,3) = h(1,1)*vech1(1)*vech1(3)
-    e(2,1) = h(1,1)*vech1(2)*vech1(1)
-    e(2,2) = h(1,1)*vech1(2)*vech1(2)
-    e(2,3) = h(1,1)*vech1(2)*vech1(3)
-    e(3,1) = h(1,1)*vech1(3)*vech1(1)
-    e(3,2) = h(1,1)*vech1(3)*vech1(2)
-    e(3,3) = h(1,1)*vech1(3)*vech1(3)
+    e(1, 1) = h(1, 1)*vech1(1)*vech1(1)
+    e(1, 2) = h(1, 1)*vech1(1)*vech1(2)
+    e(1, 3) = h(1, 1)*vech1(1)*vech1(3)
+    e(2, 1) = h(1, 1)*vech1(2)*vech1(1)
+    e(2, 2) = h(1, 1)*vech1(2)*vech1(2)
+    e(2, 3) = h(1, 1)*vech1(2)*vech1(3)
+    e(3, 1) = h(1, 1)*vech1(3)*vech1(1)
+    e(3, 2) = h(1, 1)*vech1(3)*vech1(2)
+    e(3, 3) = h(1, 1)*vech1(3)*vech1(3)
 !
-    d(1,1) = h(1,2)*vech1(1)*vech2(1)
-    d(1,2) = h(1,2)*vech1(1)*vech2(2)
-    d(1,3) = h(1,2)*vech1(1)*vech2(3)
-    d(2,1) = h(1,2)*vech1(2)*vech2(1)
-    d(2,2) = h(1,2)*vech1(2)*vech2(2)
-    d(2,3) = h(1,2)*vech1(2)*vech2(3)
-    d(3,1) = h(1,2)*vech1(3)*vech2(1)
-    d(3,2) = h(1,2)*vech1(3)*vech2(2)
-    d(3,3) = h(1,2)*vech1(3)*vech2(3)
+    d(1, 1) = h(1, 2)*vech1(1)*vech2(1)
+    d(1, 2) = h(1, 2)*vech1(1)*vech2(2)
+    d(1, 3) = h(1, 2)*vech1(1)*vech2(3)
+    d(2, 1) = h(1, 2)*vech1(2)*vech2(1)
+    d(2, 2) = h(1, 2)*vech1(2)*vech2(2)
+    d(2, 3) = h(1, 2)*vech1(2)*vech2(3)
+    d(3, 1) = h(1, 2)*vech1(3)*vech2(1)
+    d(3, 2) = h(1, 2)*vech1(3)*vech2(2)
+    d(3, 3) = h(1, 2)*vech1(3)*vech2(3)
 !
-    g(1,1) = h(2,1)*vech2(1)*vech2(1)
-    g(1,2) = h(2,1)*vech2(1)*vech2(2)
-    g(1,3) = h(2,1)*vech2(1)*vech2(3)
-    g(2,1) = h(2,1)*vech2(2)*vech2(1)
-    g(2,2) = h(2,1)*vech2(2)*vech2(2)
-    g(2,3) = h(2,1)*vech2(2)*vech2(3)
-    g(3,1) = h(2,1)*vech2(3)*vech2(1)
-    g(3,2) = h(2,1)*vech2(3)*vech2(2)
-    g(3,3) = h(2,1)*vech2(3)*vech2(3)
+    g(1, 1) = h(2, 1)*vech2(1)*vech2(1)
+    g(1, 2) = h(2, 1)*vech2(1)*vech2(2)
+    g(1, 3) = h(2, 1)*vech2(1)*vech2(3)
+    g(2, 1) = h(2, 1)*vech2(2)*vech2(1)
+    g(2, 2) = h(2, 1)*vech2(2)*vech2(2)
+    g(2, 3) = h(2, 1)*vech2(2)*vech2(3)
+    g(3, 1) = h(2, 1)*vech2(3)*vech2(1)
+    g(3, 2) = h(2, 1)*vech2(3)*vech2(2)
+    g(3, 3) = h(2, 1)*vech2(3)*vech2(3)
 !
-    f(1,1) = h(2,2)*vech2(1)*vech2(1)
-    f(1,2) = h(2,2)*vech2(1)*vech2(2)
-    f(1,3) = h(2,2)*vech2(1)*vech2(3)
-    f(2,1) = h(2,2)*vech2(2)*vech2(1)
-    f(2,2) = h(2,2)*vech2(2)*vech2(2)
-    f(2,3) = h(2,2)*vech2(2)*vech2(3)
-    f(3,1) = h(2,2)*vech2(3)*vech2(1)
-    f(3,2) = h(2,2)*vech2(3)*vech2(2)
-    f(3,3) = h(2,2)*vech2(3)*vech2(3)
+    f(1, 1) = h(2, 2)*vech2(1)*vech2(1)
+    f(1, 2) = h(2, 2)*vech2(1)*vech2(2)
+    f(1, 3) = h(2, 2)*vech2(1)*vech2(3)
+    f(2, 1) = h(2, 2)*vech2(2)*vech2(1)
+    f(2, 2) = h(2, 2)*vech2(2)*vech2(2)
+    f(2, 3) = h(2, 2)*vech2(2)*vech2(3)
+    f(3, 1) = h(2, 2)*vech2(3)*vech2(1)
+    f(3, 2) = h(2, 2)*vech2(3)*vech2(2)
+    f(3, 3) = h(2, 2)*vech2(3)*vech2(3)
 !
 ! LES MATRICES KAPPA INFLUENCENT LA CONVERGENCE DE LA METHODE :
 ! ON LE DEBRANCHE AUTOMATIQUEMENT SI SA VALEUR EST TROP GRANDE COMPARATIVEMENT A MATREE
 !
-    supkap = kappa(1,1)
+    supkap = kappa(1, 1)
     do i = 1, 2
         do j = 1, 2
-            if (kappa(i,j) .ge. supkap) supkap = kappa(i,j)
+            if (kappa(i, j) .ge. supkap) supkap = kappa(i, j)
         end do
     end do
-    supmat = matree(1,1)
+    supmat = matree(1, 1)
     do i = 1, 27
-        do j= 1, 27
-            if (matree(i,j) .ge. supmat) supmat = matree(i,j)
+        do j = 1, 27
+            if (matree(i, j) .ge. supmat) supmat = matree(i, j)
         end do
     end do
 !
@@ -148,39 +148,39 @@ real(kind=8), intent(inout) :: matree(27, 27)
             do inoe2 = 1, nne
                 do idim2 = 1, ndim
                     do idim1 = 1, ndim
-                       ii = ndim*(inoe1-1)+idim1
-                       jj = ndim*(inoe2-1)+idim2
-                       matree(ii,jj) = matree(ii,jj) - &
-                            (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*e(idim1,idim2)*ffe(inoe2) - &
-                            (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*d(idim1,idim2)*ffe(inoe2) - &
-                            (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*g(idim1,idim2)*ffe(inoe2) - &
-                            (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*f(idim1,idim2)*ffe(inoe2)
+                        ii = ndim*(inoe1-1)+idim1
+                        jj = ndim*(inoe2-1)+idim2
+                        matree(ii, jj) = matree(ii, jj)- &
+                             (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*e(idim1, idim2)*ffe(inoe2)- &
+                             (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*d(idim1, idim2)*ffe(inoe2)- &
+                             (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*g(idim1, idim2)*ffe(inoe2)- &
+                                (dlagrc-coefac*jeu)*wpg*jacobi*ffe(inoe1)*f(idim1, idim2)*ffe(inoe2)
                     end do
                 end do
             end do
         end do
 ! ----- CONTRIBUTION 3 :
 ! ----- JEU*{[(delta XI*H)+(NORM.d(delta YPR)/delta XI)]A[(delta XI*H)+(NORM.d(delta YPR)/delta XI)]
-        if (ndim .eq.3) then
+        if (ndim .eq. 3) then
             do inoe1 = 1, nne
                 do inoe2 = 1, nne
                     do idim2 = 1, ndim
                         do idim1 = 1, ndim
                             ii = ndim*(inoe1-1)+idim1
                             jj = ndim*(inoe2-1)+idim2
-                            matree(ii,jj) = matree(ii,jj) + &
-     (dlagrc-coefac*jeu)* wpg*jacobi*jeu*ffe(inoe1)                  * &
-  mprt11(idim1,idim2)*(kappa(1,1)**2*hah(1,1)+2.d0*kappa(1,1)*kappa(1,2)*hah(1,2)     + &
-     kappa(1,2)**2*hah(2,2))*ffe(inoe2)                         + &
-    (dlagrc-coefac*jeu)* wpg*jacobi*jeu*ffe(inoe1)                   * &
-  mprt12(idim1,idim2)*(kappa(2,1)*kappa(1,1)*hah(1,1)+2.d0*kappa(1,1)*kappa(2,2)*hah(1,2) + &
-    kappa(1,2)**2*hah(2,2))*ffe(inoe2)                         + &
-    (dlagrc-coefac*jeu)* wpg*jacobi*jeu*ffe(inoe1)                   * &
-  mprt21(idim1,idim2)*(kappa(2,1)*kappa(1,1)*hah(1,1)+2.d0*kappa(1,2)*kappa(2,1)*hah(1,2) + &
-    kappa(1,2)*kappa(2,2)*hah(2,2))*ffe(inoe2)                     + &
-    (dlagrc-coefac*jeu)* wpg*jacobi*jeu*ffe(inoe1)                   * &
-  mprt22(idim1,idim2)*(kappa(2,1)**2*hah(1,1)+2.d0*kappa(1,2)*kappa(2,2)*hah(1,2)     + &
-    kappa(2,2)**2*hah(2,2))*ffe(inoe2)
+                            matree(ii, jj) = matree(ii, jj)+ &
+                                             (dlagrc-coefac*jeu)*wpg*jacobi*jeu*ffe(inoe1)* &
+            mprt11(idim1, idim2)*(kappa(1, 1)**2*hah(1, 1)+2.d0*kappa(1, 1)*kappa(1, 2)*hah(1, 2)+ &
+                                                             kappa(1, 2)**2*hah(2, 2))*ffe(inoe2)+ &
+                                             (dlagrc-coefac*jeu)*wpg*jacobi*jeu*ffe(inoe1)* &
+   mprt12(idim1, idim2)*(kappa(2, 1)*kappa(1, 1)*hah(1, 1)+2.d0*kappa(1, 1)*kappa(2, 2)*hah(1, 2)+ &
+                                                             kappa(1, 2)**2*hah(2, 2))*ffe(inoe2)+ &
+                                             (dlagrc-coefac*jeu)*wpg*jacobi*jeu*ffe(inoe1)* &
+   mprt21(idim1, idim2)*(kappa(2, 1)*kappa(1, 1)*hah(1, 1)+2.d0*kappa(1, 2)*kappa(2, 1)*hah(1, 2)+ &
+                                                    kappa(1, 2)*kappa(2, 2)*hah(2, 2))*ffe(inoe2)+ &
+                                             (dlagrc-coefac*jeu)*wpg*jacobi*jeu*ffe(inoe1)* &
+            mprt22(idim1, idim2)*(kappa(2, 1)**2*hah(1, 1)+2.d0*kappa(1, 2)*kappa(2, 2)*hah(1, 2)+ &
+                                                                kappa(2, 2)**2*hah(2, 2))*ffe(inoe2)
                         end do
                     end do
                 end do
@@ -192,15 +192,15 @@ real(kind=8), intent(inout) :: matree(27, 27)
                         do idim1 = 1, ndim
                             ii = ndim*(inoe1-1)+idim1
                             jj = ndim*(inoe2-1)+idim2
-                            matree(ii,jj) = matree(ii,jj) + &
-     (dlagrc-coefac*jeu)* wpg*jacobi*jeu*ffe(inoe1) * &
-  mprt11(idim1,idim2)*(kappa(1,1)**2*hah(1,1)+2.d0*kappa(1,1)*kappa(1,2)*hah(1,2)     + &
-     kappa(1,2)**2*hah(2,2))*ffe(inoe2)
+                            matree(ii, jj) = matree(ii, jj)+ &
+                                             (dlagrc-coefac*jeu)*wpg*jacobi*jeu*ffe(inoe1)* &
+            mprt11(idim1, idim2)*(kappa(1, 1)**2*hah(1, 1)+2.d0*kappa(1, 1)*kappa(1, 2)*hah(1, 2)+ &
+                                                                kappa(1, 2)**2*hah(2, 2))*ffe(inoe2)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

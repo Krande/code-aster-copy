@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lgicfc(refe,ndim, nno, nnob, npg, nddl, axi, &
-                  geom,ddl, vff, vffb, idff, idffb,&
-                  iw, sief,fint)
+subroutine lgicfc(refe, ndim, nno, nnob, npg, nddl, axi, &
+                  geom, ddl, vff, vffb, idff, idffb, &
+                  iw, sief, fint)
 
-use bloc_fe_module, only: prod_sb, add_fint
+    use bloc_fe_module, only: prod_sb, add_fint
 
     implicit none
 #include "asterf_types.h"
@@ -28,10 +28,10 @@ use bloc_fe_module, only: prod_sb, add_fint
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmbeps.h"
 #include "blas/dgemv.h"
-    aster_logical :: refe,axi
+    aster_logical :: refe, axi
     integer       :: ndim, nno, nnob, npg, nddl, idff, idffb, iw
-    real(kind=8)  :: geom(ndim,nno),ddl(nddl),vff(nno, npg), vffb(nnob, npg)
-    real(kind=8)  :: sief(3*ndim+4,npg)
+    real(kind=8)  :: geom(ndim, nno), ddl(nddl), vff(nno, npg), vffb(nnob, npg)
+    real(kind=8)  :: sief(3*ndim+4, npg)
     real(kind=8)  :: fint(nddl)
 ! ----------------------------------------------------------------------
 !  CALCUL DES ELEMENTS CINEMATIQUES POUR LA MODELISATION GRAD_VARI_INCO
@@ -54,22 +54,22 @@ use bloc_fe_module, only: prod_sb, add_fint
 ! OUT W      POIDS DES POINTS DE GAUSS REELS
 ! OUT NI2LDC CONVERSION CONTRAINTE STOCKEE -> CONTRAINTE LDC (AVEC RAC2)
 ! ----------------------------------------------------------------------
-    real(kind=8), parameter :: vrac2(6) = (/ 1.d0,1.d0,1.d0,sqrt(2.d0),sqrt(2.d0),sqrt(2.d0) /)
+    real(kind=8), parameter :: vrac2(6) = (/1.d0, 1.d0, 1.d0, sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)/)
 ! ----------------------------------------------------------------------
-    integer       :: g,n,i
-    integer       :: nnu,nng,nnq,ndu,ndg,ndq,neu,neg,neq
-    integer       :: xu(ndim,nno),xg(2,nnob),xq(2,nnob)
-    real(kind=8)  :: depl(ndim,nno)
-    real(kind=8)  :: dffb(nnob,ndim)
-    real(kind=8)  :: r_ini,r_def,dff_ini(nno,ndim),dff_def(nno,ndim),poids_ini,poids_def
-    real(kind=8)  :: bu(2*ndim,ndim,nno),bg(2+ndim,2,nnob),bq(2,2,nnob)
-    real(kind=8)  :: siefu(2*ndim),siefg(2+ndim),siefq(2)
+    integer       :: g, n, i
+    integer       :: nnu, nng, nnq, ndu, ndg, ndq, neu, neg, neq
+    integer       :: xu(ndim, nno), xg(2, nnob), xq(2, nnob)
+    real(kind=8)  :: depl(ndim, nno)
+    real(kind=8)  :: dffb(nnob, ndim)
+    real(kind=8)  :: r_ini, r_def, dff_ini(nno, ndim), dff_def(nno, ndim), poids_ini, poids_def
+    real(kind=8)  :: bu(2*ndim, ndim, nno), bg(2+ndim, 2, nnob), bq(2, 2, nnob)
+    real(kind=8)  :: siefu(2*ndim), siefg(2+ndim), siefq(2)
     real(kind=8)  :: rbid
 
 ! ----------------------------------------------------------------------
 
 !   Tests de coherence
-    ASSERT(nddl.eq.nno*ndim + nnob*4)
+    ASSERT(nddl .eq. nno*ndim+nnob*4)
 
 !   Initialisation
     nnu = nno
@@ -83,22 +83,21 @@ use bloc_fe_module, only: prod_sb, add_fint
     neq = 2
 
     fint = 0
-    rbid=0.d0
+    rbid = 0.d0
 
     ! tableaux de reference bloc (depl,inco,grad) -> numero du ddl
-    forall (i=1:ndg,n=1:nng) xg(i,n) = (n-1)*(ndu+ndg+ndq) + ndu + ndq + i
-    forall (i=1:ndq,n=1:nnq) xq(i,n) = (n-1)*(ndu+ndg+ndq) + ndu + i
-    forall (i=1:ndu,n=1:nng) xu(i,n) = (n-1)*(ndu+ndg+ndq) + i
-    forall (i=1:ndu,n=nng+1:nnu) xu(i,n) = (ndu+ndg+ndq)*nng + (n-1-nng)*ndu + i
+    forall (i=1:ndg, n=1:nng) xg(i, n) = (n-1)*(ndu+ndg+ndq)+ndu+ndq+i
+    forall (i=1:ndq, n=1:nnq) xq(i, n) = (n-1)*(ndu+ndg+ndq)+ndu+i
+    forall (i=1:ndu, n=1:nng) xu(i, n) = (n-1)*(ndu+ndg+ndq)+i
+    forall (i=1:ndu, n=nng+1:nnu) xu(i, n) = (ndu+ndg+ndq)*nng+(n-1-nng)*ndu+i
 
     ! Decompactage du deplacement
-    forall (i=1:ndu, n=1:nnu) depl(i,n) = ddl(xu(i,n))
+    forall (i=1:ndu, n=1:nnu) depl(i, n) = ddl(xu(i, n))
 
-
-    gauss: do g = 1,npg
+    gauss: do g = 1, npg
 
         ! Calcul des derivees des fonctions de forme P1 (geometrie initiale)
-        call dfdmip(ndim, nnob, axi, geom, g, iw, vffb(1,g), idffb, rbid, rbid,dffb)
+        call dfdmip(ndim, nnob, axi, geom, g, iw, vffb(1, g), idffb, rbid, rbid, dffb)
 
         ! Calcul du poids d'integration (geometrie initiale)
         call dfdmip(ndim, nno, axi, geom, g, iw, vff(1, g), idff, r_ini, poids_ini, dff_ini)
@@ -107,23 +106,23 @@ use bloc_fe_module, only: prod_sb, add_fint
         call dfdmip(ndim, nno, axi, geom+depl, g, iw, vff(1, g), idff, r_def, poids_def, dff_def)
 
         ! Calcul de la matrice BU (geometrie deformee)
-        call nmbeps(axi,r_def,vff(:,g),dff_def,bu)
+        call nmbeps(axi, r_def, vff(:, g), dff_def, bu)
 
         ! Matrice BG (geometrie initiale)
         bg = 0
-        bg(1,1,:) = vffb(:,g)
-        bg(2,2,:) = vffb(:,g)
-        bg(3:neg,1,:) = transpose(dffb)
+        bg(1, 1, :) = vffb(:, g)
+        bg(2, 2, :) = vffb(:, g)
+        bg(3:neg, 1, :) = transpose(dffb)
 
         ! Matrice BQ (geometrie initiale)
         bq = 0
-        bq(1,1,:) = vffb(:,g)
-        bq(2,2,:) = vffb(:,g)
+        bq(1, 1, :) = vffb(:, g)
+        bq(2, 2, :) = vffb(:, g)
 
         ! Extraction des blocs de contraintes generalisees (dont contrainte mecanique de Cauchy)
-        siefu = sief(1:neu,g)*vrac2(1:neu)
-        siefq = sief(neu+1:neu+neq,g)
-        siefg = sief(neu+neq+1:neu+neq+neg,g)
+        siefu = sief(1:neu, g)*vrac2(1:neu)
+        siefq = sief(neu+1:neu+neq, g)
+        siefg = sief(neu+neq+1:neu+neq+neg, g)
 
         ! Matrices corrigees si REFE_FORC_NODA
         if (refe) then
@@ -133,10 +132,9 @@ use bloc_fe_module, only: prod_sb, add_fint
         end if
 
         ! Calcul des contributions aux forces interieures
-        call add_fint(fint,xu,poids_def*prod_sb(siefu,bu))
-        call add_fint(fint,xg,poids_ini*prod_sb(siefg,bg))
-        call add_fint(fint,xq,poids_ini*prod_sb(siefq,bq))
-
+        call add_fint(fint, xu, poids_def*prod_sb(siefu, bu))
+        call add_fint(fint, xg, poids_ini*prod_sb(siefg, bg))
+        call add_fint(fint, xq, poids_ini*prod_sb(siefq, bq))
 
     end do gauss
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ntcrar.h"
@@ -59,22 +59,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_evol    = .false._1
-    result    = ds_inout%result
+    l_evol = .false._1
+    result = ds_inout%result
     init_time = ds_inout%init_time
-    l_reuse   = ds_inout%l_reuse
+    l_reuse = ds_inout%l_reuse
 !
 ! - Transient computation ?
 !
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=list_inst, nbret=nocc)
     if (nocc .eq. 0) then
-        if (.not.lostat) then
+        if (.not. lostat) then
             call utmess('F', 'DISCRETISATION_8')
-        endif
+        end if
         l_evol = .false.
     else
         l_evol = .true.
-    endif
+    end if
 !
 ! - Create time discretization datastructure and storing datastructure
 !
@@ -83,6 +83,6 @@ implicit none
         call ntcrar(result, sddisc, l_reuse)
     else
         call ntcra0(sddisc)
-    endif
+    end if
 !
 end subroutine

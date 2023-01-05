@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,24 +46,24 @@ subroutine mnlind(n, deb, cle, vect, ind)
     aster_logical :: lstp
 !
     if (n .lt. 0) then
-        ind=-999
+        ind = -999
     else
-        lstp=.true.
-        indt=1
- 10     continue
+        lstp = .true.
+        indt = 1
+10      continue
         if (lstp) then
             if (abs(cle-vect(indt)) .lt. 1.d-8) then
-                lstp=.false.
-                ind=deb+indt
+                lstp = .false.
+                ind = deb+indt
             else
-                indt=indt+1
+                indt = indt+1
                 if (indt .gt. n) then
-                    lstp=.false.
-                    ind=-999
-                endif
-            endif
+                    lstp = .false.
+                    ind = -999
+                end if
+            end if
             goto 10
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

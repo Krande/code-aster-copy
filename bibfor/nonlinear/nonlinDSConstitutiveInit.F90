@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/cesvar.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: cara_elem
-type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-aster_logical, intent(in), optional :: verbose_
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: cara_elem
+    type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+    aster_logical, intent(in), optional :: verbose_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,9 +66,9 @@ aster_logical, intent(in), optional :: verbose_
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_2')
-    endif
+    end if
 !
-    if( present( verbose_ ) ) then
+    if (present(verbose_)) then
         verbose = verbose_
     else
         verbose = ASTER_TRUE
@@ -87,46 +87,46 @@ aster_logical, intent(in), optional :: verbose_
 !
 ! - Look if geometric matrix is included in global tangent matrix
 !
-    call jeveuo(ds_constitutive%compor(1:19)//'.VALE', 'L', vk16 = v_compor_vale)
-    call jeveuo(ds_constitutive%compor(1:19)//'.DESC', 'L', vi   = v_compor_desc)
+    call jeveuo(ds_constitutive%compor(1:19)//'.VALE', 'L', vk16=v_compor_vale)
+    call jeveuo(ds_constitutive%compor(1:19)//'.DESC', 'L', vi=v_compor_desc)
     nb_affe = v_compor_desc(3)
     do i_affe = 1, nb_affe
-        if ((v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)).eq.'GROT_GDEP') .or.&
-            (v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)).eq.'SIMO_MIEHE') .or.&
-            (v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)).eq.'GDEF_LOG')) then
+        if ((v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .eq. 'GROT_GDEP') .or. &
+            (v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .eq. 'SIMO_MIEHE') .or. &
+            (v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .eq. 'GDEF_LOG')) then
             ds_constitutive%l_matr_geom = ASTER_TRUE
-        endif
-    enddo
+        end if
+    end do
 !
 ! - Check if linear
 !
     lLinear = ASTER_TRUE
     do i_affe = 1, nb_affe
-        if ((v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).ne.'ELAS')) then
+        if ((v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)) .ne. 'ELAS')) then
             lLinear = ASTER_FALSE
-        endif
-        if ((v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)).ne.'PETIT')) then
+        end if
+        if ((v_compor_vale(DEFO+COMPOR_SIZE*(i_affe-1)) .ne. 'PETIT')) then
             lLinear = ASTER_FALSE
-        endif
-    enddo
+        end if
+    end do
     ds_constitutive%lLinear = lLinear
 !
 ! - Check if DIS_*
 !
     lDisCtc = ASTER_FALSE
     do i_affe = 1, nb_affe
-        if ((v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'DIS_CHOC') .or.&
-            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'DIS_CONTACT') .or.&
-            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'CHOC_ENDO_PENA') .or.&
-            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'CHOC_ENDO')) then
+        if ((v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)) .eq. 'DIS_CHOC') .or. &
+            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)) .eq. 'DIS_CONTACT') .or. &
+            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)) .eq. 'CHOC_ENDO_PENA') .or. &
+            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)) .eq. 'CHOC_ENDO')) then
             lDisCtc = ASTER_TRUE
-        endif
-    enddo
+        end if
+    end do
     ds_constitutive%lDisCtc = lDisCtc
 !
 ! - Print informations about COMPORTEMENT keyword
 !
-    if( verbose ) call comp_info(model, ds_constitutive%compor)
+    if (verbose) call comp_info(model, ds_constitutive%compor)
 !
 ! - Preallocation of output stress field for prediction
 !

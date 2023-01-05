@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine romFieldBuildClean(fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/romBaseClean.h"
 #include "asterfort/romFieldClean.h"
 !
-type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
+    type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,13 +45,13 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
     call romFieldClean(fieldBuild%fieldRom)
     call romFieldClean(fieldBuild%fieldDom)
     call romBaseClean(fieldBuild%base)
-    AS_DEALLOCATE(vi = fieldBuild%equaRIDTotal)
-    AS_DEALLOCATE(vi = fieldBuild%equaRIDTrunc)
-    AS_DEALLOCATE(vr = fieldBuild%matrPhi)
-    AS_DEALLOCATE(vr = fieldBuild%matrPhiRID)
-    AS_DEALLOCATE(vr = fieldBuild%fieldTransientVale)
+    AS_DEALLOCATE(vi=fieldBuild%equaRIDTotal)
+    AS_DEALLOCATE(vi=fieldBuild%equaRIDTrunc)
+    AS_DEALLOCATE(vr=fieldBuild%matrPhi)
+    AS_DEALLOCATE(vr=fieldBuild%matrPhiRID)
+    AS_DEALLOCATE(vr=fieldBuild%fieldTransientVale)
     if (fieldBuild%operation .eq. 'GAPPY_POD') then
-        AS_DEALLOCATE(vr = fieldBuild%reduMatr)
-    endif
+        AS_DEALLOCATE(vr=fieldBuild%reduMatr)
+    end if
 !
 end subroutine

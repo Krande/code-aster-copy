@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmadcp(sddisc, ds_contact, i_event_acti, retpen)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -74,15 +74,15 @@ implicit none
 ! --- INITIALISATIONS
 !
     retpen = 1
-    call utdidt('L', sddisc, 'ECHE', 'PENE_MAXI', index_ = i_event_acti,&
-                valr_ = pene_maxi)
-    call utdidt('L', sddisc, 'ECHE', 'COEF_MAXI', index_ = i_event_acti,&
-                valr_ = coef_maxi)
+    call utdidt('L', sddisc, 'ECHE', 'PENE_MAXI', index_=i_event_acti, &
+                valr_=pene_maxi)
+    call utdidt('L', sddisc, 'ECHE', 'COEF_MAXI', index_=i_event_acti, &
+                valr_=coef_maxi)
 !
 ! - Get contact parameters
 !
-    nbliai       = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
 !
 ! --- ACCES OBJETS DU CONTACT
 !
@@ -102,10 +102,10 @@ implicit none
         jeumax = zr(jctevp+3*(i_zone-1)+2-1)
         if (jeufin .le. 0.d0) then
             jeufin = abs(jeufin)
-            jeumax = max(jeumax,jeufin)
+            jeumax = max(jeumax, jeufin)
         else
-            jeumin = max(jeumin,jeufin)
-        endif
+            jeumin = max(jeumin, jeufin)
+        end if
         zr(jctevp+3*(i_zone-1)+1-1) = jeumin
         zr(jctevp+3*(i_zone-1)+2-1) = jeumax
         zr(jctevp+3*(i_zone-1)+3-1) = jeufin
@@ -120,23 +120,23 @@ implicit none
             if (newcoe .gt. coef_maxi) then
                 newcoe = coef_maxi
                 retpen = 0
-            endif
+            end if
             call cfmmco(ds_contact, i_zone, 'E_N', 'E', newcoe)
-        endif
+        end if
         if (retpen .eq. 1) then
             call utmess('I', 'MECANONLINE10_46', si=i_zone, sr=newcoe)
-        endif
+        end if
     end do
 !
 ! --- AFFICHAGE
 !
     if (retpen .eq. 0) then
         call utmess('I', 'MECANONLINE10_44')
-    else if (retpen.eq.1) then
+    else if (retpen .eq. 1) then
         call utmess('I', 'MECANONLINE10_45')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

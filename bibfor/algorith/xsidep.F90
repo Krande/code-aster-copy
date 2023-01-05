@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
-                  igeom, typmod, imate, compor, jpintt,&
-                  cnset, heavt, lonch, basloc, idepl,&
-                  lsn, lst, sig, jpmilt, nfiss,&
+subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm, &
+                  igeom, typmod, imate, compor, jpintt, &
+                  cnset, heavt, lonch, basloc, idepl, &
+                  lsn, lst, sig, jpmilt, nfiss, &
                   jheavn, jstno)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -79,8 +79,8 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     integer :: irese, nno, jtab(7), ncomp, iret
     integer :: jstno
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 !
 !
 !     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
@@ -89,7 +89,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     call elref1(elrefp)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2, &
                 itab=jtab)
     ncomp = jtab(2)
 !
@@ -97,49 +97,49 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     call elrefe_info(fami='RIGI', ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
+        irese = 0
+    end if
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
     if (nfh .gt. 0 .or. nfe .gt. 0) then
-        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
                     itab=jtab)
         ncompn = jtab(2)/jtab(3)
-        ASSERT(ncompn.eq.5)
+        ASSERT(ncompn .eq. 5)
         do ino = 1, nnop
             do ig = 1, ncompn
-                heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
-            enddo
-        enddo
-    endif
+                heavn(ino, ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            end do
+        end do
+    end if
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=lonch(1)
+    nse = lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=cnset(nno*(ise-1)+in)
+            ino = cnset(nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
-                    1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-&
-                    1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
-                    1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
+                                                              1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- &
+                                                              1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- &
+                                                              1)+j)
+                end if
             end do
         end do
 !
@@ -149,29 +149,29 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
         end do
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG CORRESPONDANTE
-        idecpg = npg * (ise-1)
-        idebs = nbsig * idecpg
+        idecpg = npg*(ise-1)
+        idebs = nbsig*idecpg
 !
         if (ndim .eq. 3) then
 !
-            ASSERT(nbsig.eq.6)
+            ASSERT(nbsig .eq. 6)
 !
-            call xside3(elrefp, ndim, coorse, elrese(ndim+irese), igeom,&
-                        he, nfh, ddlc, ddlm, nfe,&
-                        basloc, nnop, npg, idecpg, imate,&
-                        compor, idepl, lsn, lst, nfiss,&
+            call xside3(elrefp, ndim, coorse, elrese(ndim+irese), igeom, &
+                        he, nfh, ddlc, ddlm, nfe, &
+                        basloc, nnop, npg, idecpg, imate, &
+                        compor, idepl, lsn, lst, nfiss, &
                         heavn, jstno, sig(idebs+1))
-        else if (ndim.eq.2) then
+        else if (ndim .eq. 2) then
 !
-            ASSERT(nbsig.eq.4)
+            ASSERT(nbsig .eq. 4)
 !
-            call xside2(elrefp, ndim, coorse, elrese(ndim+irese), igeom,&
-                        he, nfh, ddlc, ddlm, nfe,&
-                        basloc, nnop, npg, idecpg, typmod,&
-                        imate, compor, idepl, lsn, lst,&
+            call xside2(elrefp, ndim, coorse, elrese(ndim+irese), igeom, &
+                        he, nfh, ddlc, ddlm, nfe, &
+                        basloc, nnop, npg, idecpg, typmod, &
+                        imate, compor, idepl, lsn, lst, &
                         nfiss, heavn, jstno, sig(idebs+1))
 !
-        endif
+        end if
 !
     end do
 !

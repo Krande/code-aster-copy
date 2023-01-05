@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,24 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaPlasTransf(poum     , fami     , kpg       , ksp       , j_mater,&
-                                 meta_type, nb_phasis, phase_incr, phase_cold,&
-                                 kpt      , fpt)
+subroutine metaGetParaPlasTransf(poum, fami, kpg, ksp, j_mater, &
+                                 meta_type, nb_phasis, phase_incr, phase_cold, &
+                                 kpt, fpt)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/Metallurgy_type.h"
 !
-character(len=1), intent(in) :: poum
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg, ksp
-integer, intent(in) :: j_mater
-integer, intent(in) :: meta_type
-integer, intent(in) :: nb_phasis
-real(kind=8), intent(in) :: phase_incr(*), phase_cold
-real(kind=8), intent(out) :: kpt(*), fpt(*)
+    character(len=1), intent(in) :: poum
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg, ksp
+    integer, intent(in) :: j_mater
+    integer, intent(in) :: meta_type
+    integer, intent(in) :: nb_phasis
+    real(kind=8), intent(in) :: phase_incr(*), phase_cold
+    real(kind=8), intent(out) :: kpt(*), fpt(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ real(kind=8), intent(out) :: kpt(*), fpt(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_resu = nb_phasis - 1
+    nb_resu = nb_phasis-1
 !
 ! - Coefficient K
 !
@@ -79,9 +79,9 @@ real(kind=8), intent(out) :: kpt(*), fpt(*)
         resu_name(2) = 'F2_K'
     else
         ASSERT(ASTER_FALSE)
-    endif
-    call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                ' ', 'META_PT', 0, ' ', [0.d0],&
+    end if
+    call rcvalb(fami, kpg, ksp, poum, j_mater, &
+                ' ', 'META_PT', 0, ' ', [0.d0], &
                 nb_resu, resu_name, resu_vale, codret, 2)
     do i_resu = 1, nb_resu
         kpt(i_resu) = resu_vale(i_resu)
@@ -99,16 +99,16 @@ real(kind=8), intent(out) :: kpt(*), fpt(*)
         resu_name(2) = 'F2_D_F_META'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     do i_resu = 1, nb_resu
         if (phase_incr(i_resu) .gt. 0.d0) then
-            call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                        ' ', 'META_PT', 1, 'META', [phase_cold],&
+            call rcvalb(fami, kpg, ksp, poum, j_mater, &
+                        ' ', 'META_PT', 1, 'META', [phase_cold], &
                         1, resu_name(i_resu), resu_vale(i_resu), codret, 2)
             fpt(i_resu) = resu_vale(i_resu)
         else
             fpt(i_resu) = 0.d0
-        endif
+        end if
     end do
 !
 end subroutine

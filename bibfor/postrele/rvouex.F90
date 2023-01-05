@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
+subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac, &
                   lstnac, iret)
     implicit none
 #include "jeveux.h"
@@ -77,10 +77,10 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
 !  VARIABLES LOCALES
 !  -----------------
-    integer :: adr,  acncin, alsmac, alsnac, acmp, adrvlc, arepe
+    integer :: adr, acncin, alsmac, alsnac, acmp, adrvlc, arepe
     integer :: nbtma, nbm, nbmac, nbnac, nbmalu
     integer :: i, in, n, m, libre, n1, ibid, igrel, jnuma, j
-    integer :: ibib, imolo,  n2, kk, ier, nbvari, nbr
+    integer :: ibib, imolo, n2, kk, ier, nbvari, nbr
     integer :: ii, jmmail, nbtrou, nbcmp, nbcmp1, nc, jcmp, jcmp1, ntc
     character(len=4) :: docu
     character(len=8) :: nmaila, nomgd, resuco, nomvar, num
@@ -90,7 +90,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
     character(len=24) :: ncncin, nrepe, lismai, malist, nomobj, valk(3)
     integer, pointer :: celd(:) => null()
     integer, pointer :: entier(:) => null()
-    data nbvari /100/
+    data nbvari/100/
 !**********************************************************************
 !
     call jemarq()
@@ -112,16 +112,16 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !          -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 !
             call celcel('NBVARI_CST', nchp19, 'V', '&&RVOUEX.CHAMEL1')
-            nchp19= '&&RVOUEX.CHAMEL1'
+            nchp19 = '&&RVOUEX.CHAMEL1'
             call celver(nchp19, 'NBSPT_1', 'COOL', kk)
             if (kk .eq. 1) then
                 call dismoi('NOM_GD', nchp19, 'CHAMP', repk=nomgd)
                 call utmess('I', 'PREPOST_36', sk=nomgd)
                 call celcel('PAS_DE_SP', nchp19, 'V', '&&RVOUEX.CHAMEL2')
-                nchp19= '&&RVOUEX.CHAMEL2'
-            endif
+                nchp19 = '&&RVOUEX.CHAMEL2'
+            end if
             call jelira(nchp19//'.CELD', 'DOCU', cval=docu)
-        endif
+        end if
 !
         call dismoi('NOM_MAILLA', nchp19, 'CHAMP', repk=nmaila)
         nconec = nmaila//'.CONNEX'
@@ -136,7 +136,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
         if (nc .lt. 0) then
             nbcmp = -nc
             call wkvect('&&RVOUEX.NOM_CMP', 'V V K8', nbcmp, jcmp)
-            call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+            call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp), &
                         nbret=nc)
 !
 ! VERIFICATION QUE LES COMPOSANTES DEMANDEES
@@ -150,8 +150,8 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 call utncmp(nchp19, nbcmp1, nomobj)
                 call jeveuo(nomobj, 'L', jcmp1)
                 call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nchsym, nbret=n1)
-                nbr=nbcmp1
-                if (zk8(jcmp1) .eq. 'VARI') nbr=nbvari
+                nbr = nbcmp1
+                if (zk8(jcmp1) .eq. 'VARI') nbr = nbvari
                 do i = 1, nbcmp
                     do j = 1, nbr
                         if (zk8(jcmp1) .eq. 'VARI') then
@@ -160,7 +160,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                             if (zk8(jcmp-1+i) .eq. nomvar) goto 102
                         else
                             if (zk8(jcmp-1+i) .eq. zk8(jcmp1-1+j)) goto 102
-                        endif
+                        end if
                     end do
                     valk(1) = zk8(jcmp-1+i)
                     valk(2) = nchsym
@@ -168,32 +168,32 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                     call utmess('F', 'POSTRELE_65', nk=3, valk=valk)
 102                 continue
                 end do
-            endif
+            end if
 !
-            call utmach(nchp19, nbcmp, zk8(jcmp), 'NU', malist,&
+            call utmach(nchp19, nbcmp, zk8(jcmp), 'NU', malist, &
                         nbtrou)
             if (nbtrou .ne. 0) call jeveuo(malist, 'L', jmmail)
             call jedetr('&&RVOUEX.NOM_CMP')
-        endif
+        end if
 !
         call getvtx(mcf, 'TOUT_CMP', iocc=iocc, nbval=0, nbret=ntc)
         if (ntc .lt. 0) then
             nomobj = '&&RVOUEX.NOMCMP.USER'
             call utncmp(nchp19, nbcmp, nomobj)
             call jeveuo(nomobj, 'L', jcmp)
-            call utmach(nchp19, nbcmp, zk8(jcmp), 'NU', malist,&
+            call utmach(nchp19, nbcmp, zk8(jcmp), 'NU', malist, &
                         nbtrou)
             if (nbtrou .ne. 0) call jeveuo(malist, 'L', jmmail)
             call jedetr(nomobj)
-        endif
+        end if
 !
         if (docu .eq. 'CHML') then
 !             ----------------
             call jeveuo(nchp19//'.CELK', 'L', adr)
-            nrepe = zk24(adr)(1:19)//'.REPE'
+            nrepe = zk24(adr) (1:19)//'.REPE'
             call jeveuo(nrepe, 'L', arepe)
 !
-            call rvgnoe(mcf, iocc, nmaila, lstnac, 0,&
+            call rvgnoe(mcf, iocc, nmaila, lstnac, 0, &
                         [ibid])
 !
             call getvtx(mcf, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
@@ -206,10 +206,10 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 motcle(2) = 'MAILLE'
                 typmcl(1) = 'GROUP_MA'
                 typmcl(2) = 'MAILLE'
-                call reliem(' ', nmaila, 'NU_MAILLE', mcf, iocc,&
+                call reliem(' ', nmaila, 'NU_MAILLE', mcf, iocc, &
                             2, motcle, typmcl, lismai, nbmalu)
                 call jeveuo(lismai, 'L', jnuma)
-            endif
+            end if
 !
             call jeexin(ncncin, n2)
             if (n2 .eq. 0) call cncinv(nmaila, [ibid], 0, 'V', ncncin)
@@ -226,15 +226,15 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
             call jeveuo(jexnum(ncncin, 1), 'L', acncin)
 !
             do in = 1, nbnac, 1
-                n = zi(alsnac + in-1)
-                nbm = zi(adrvlc + n+1-1) - zi(adrvlc + n-1)
-                adr = zi(adrvlc + n-1)
+                n = zi(alsnac+in-1)
+                nbm = zi(adrvlc+n+1-1)-zi(adrvlc+n-1)
+                adr = zi(adrvlc+n-1)
 !
-                call i2trgi(entier, zi(acncin + adr-1), nbm, libre)
+                call i2trgi(entier, zi(acncin+adr-1), nbm, libre)
 !
             end do
 !
-            nbmac = libre - 1
+            nbmac = libre-1
             libre = 1
 !
             call jeveuo(nchp19//'.CELD', 'L', vi=celd)
@@ -247,7 +247,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                     end do
                     goto 110
 114                 continue
-                endif
+                end if
                 if (m .ne. 0) then
                     if (nbmalu .ne. 0) then
                         do j = 1, nbmalu, 1
@@ -255,32 +255,32 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                         end do
                         goto 110
 404                     continue
-                    endif
-                    igrel = zi(arepe + 2*(m-1))
-                    imolo=celd(celd(4+igrel) +2)
+                    end if
+                    igrel = zi(arepe+2*(m-1))
+                    imolo = celd(celd(4+igrel)+2)
                     if (igrel .ne. 0 .and. imolo .gt. 0) then
                         entier(libre) = entier(i)
-                        libre = libre + 1
-                    endif
-                endif
+                        libre = libre+1
+                    end if
+                end if
 110             continue
             end do
 !
-            nbmac = libre - 1
+            nbmac = libre-1
 !
             if (nbmac .gt. 0) then
 !
                 call wkvect(lstmac, 'V V I', nbmac, alsmac)
 !
                 do i = 1, nbmac, 1
-                    zi(alsmac + i-1) = entier(i)
+                    zi(alsmac+i-1) = entier(i)
                 end do
 !
             else
 !
                 iret = 0
 !
-            endif
+            end if
 !
             call jedetr('&&RVOUEX.LISTE.ENTIER')
             call jedetr('&&RVOUEX.NUME_MAIL')
@@ -289,12 +289,12 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !             ----------------
 !
 !
-            call rvgnoe(mcf, iocc, nmaila, lstnac, nbtrou,&
-                            zi(jmmail))
+            call rvgnoe(mcf, iocc, nmaila, lstnac, nbtrou, &
+                        zi(jmmail))
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedetr(malist)
     call detrsd('CHAM_ELEM', '&&RVOUEX.CHAMEL1')

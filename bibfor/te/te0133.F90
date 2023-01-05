@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ subroutine te0133(option, nomte)
     aster_logical :: interf
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    ASSERT(nnos.le.8)
+    ASSERT(nnos .le. 8)
 !
-    interf = lteatt('INTERFACE','OUI')
-    if (interf) ndim = ndim + 1
+    interf = lteatt('INTERFACE', 'OUI')
+    if (interf) ndim = ndim+1
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PREPLO1', 'E', jrepl1)
@@ -80,29 +80,29 @@ subroutine te0133(option, nomte)
 !     UY LA DEUXIEME
 !     UZ LA TROISIEME
 !
-    ux(1) = pgl(1,1)
-    ux(2) = pgl(1,2)
-    ux(3) = pgl(1,3)
+    ux(1) = pgl(1, 1)
+    ux(2) = pgl(1, 2)
+    ux(3) = pgl(1, 3)
 !
-    uy(1) = pgl(2,1)
-    uy(2) = pgl(2,2)
-    uy(3) = pgl(2,3)
+    uy(1) = pgl(2, 1)
+    uy(2) = pgl(2, 2)
+    uy(3) = pgl(2, 3)
 !
-    uz(1) = pgl(3,1)
-    uz(2) = pgl(3,2)
-    uz(3) = pgl(3,3)
+    uz(1) = pgl(3, 1)
+    uz(2) = pgl(3, 2)
+    uz(3) = pgl(3, 3)
 !
     do i = 1, 2
-        zr(jrepl1-1+i)=ux(i)
-        zr(jrepl2-1+i)=uy(i)
+        zr(jrepl1-1+i) = ux(i)
+        zr(jrepl2-1+i) = uy(i)
     end do
 !
     if (ndim .eq. 3) then
-        zr(jrepl1-1+3)=ux(3)
-        zr(jrepl2-1+3)=uy(3)
+        zr(jrepl1-1+3) = ux(3)
+        zr(jrepl2-1+3) = uy(3)
         do i = 1, 3
-            zr(jrepl3-1+i)=uz(i)
+            zr(jrepl3-1+i) = uz(i)
         end do
-    endif
+    end if
 !
 end subroutine

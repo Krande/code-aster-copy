@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
-                  isph, tdt, hini, hfin, afps,&
+subroutine lcumfs(vari, nvari, cmat, nmat, iflu, &
+                  isph, tdt, hini, hfin, afps, &
                   bfps, cfps)
 !
 !
@@ -83,9 +83,9 @@ subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
     if (ifpo .eq. 1) then
         hini = 1.d0
         hfin = 1.d0
-    endif
+    end if
 !
-    dh = hfin - hini
+    dh = hfin-hini
 !
 ! TEST SI TDT = 0
 !
@@ -97,7 +97,7 @@ subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
         bfps = 0.d0
         cfps = 0.d0
         goto 10
-    endif
+    end if
 !
 ! RECUPERATION DES VARIABLES INTERNES INITIALES
 !
@@ -113,16 +113,16 @@ subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
 !
 !          => EQUATION (3.6-4) ET (3.6-5)
 !
-        tsph = vrsp / rrsp
+        tsph = vrsp/rrsp
         tsexp = exp(-tdt/tsph)
-        asr = (tsexp - 1.d0) * ersp
-        bsr = 1.d0/rrsp*(&
-              tsexp*(&
-              -hini*(2*tsph/tdt+1.d0) + hfin*tsph/ tdt) + hini*(2.d0*(tsph-tdt)/tdt+1.d0) - hfin*&
-              &(tsph-tdt&
-              )/tdt&
+        asr = (tsexp-1.d0)*ersp
+        bsr = 1.d0/rrsp*( &
+              tsexp*( &
+              -hini*(2*tsph/tdt+1.d0)+hfin*tsph/tdt)+hini*(2.d0*(tsph-tdt)/tdt+1.d0)-hfin*&
+              &(tsph-tdt &
+              )/tdt &
               )
-        csr = hini/(tdt*rrsp)*( tsph*tsexp - (tsph - tdt) )
+        csr = hini/(tdt*rrsp)*(tsph*tsexp-(tsph-tdt))
 !
 !    CONSTRUCTION DE LA MATRICE SPHERIQUE IRREVERSIBLE
 !
@@ -142,32 +142,32 @@ subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
 !
 !      CALCUL DE PARAMETRES MATERIAUX
 !
-        call lcump1(cmat, nmat, ambda1, ambda2, x1,&
+        call lcump1(cmat, nmat, ambda1, ambda2, x1, &
                     x2)
-        deno = x1 * x2 - 1.d0
+        deno = x1*x2-1.d0
 !
-        ASSERT(deno.ne.0.d0)
+        ASSERT(deno .ne. 0.d0)
 !
 !
-        var1 = (x1*x2*exp(ambda1*tdt) - exp(ambda2*tdt))/deno - 1.d0
-        var2 = (x1*( exp(ambda1*tdt) - exp(ambda2*tdt) ))/deno
+        var1 = (x1*x2*exp(ambda1*tdt)-exp(ambda2*tdt))/deno-1.d0
+        var2 = (x1*(exp(ambda1*tdt)-exp(ambda2*tdt)))/deno
 !
-        asr = var1 * ersp - var2 * eisp
-        bsr = dh* ( -var1/rrsp + var2/risp )
-        csr = hini* ( -var1/rrsp + var2/risp )
+        asr = var1*ersp-var2*eisp
+        bsr = dh*(-var1/rrsp+var2/risp)
+        csr = hini*(-var1/rrsp+var2/risp)
 !
 !    CONSTRUCTION DE LA MATRICE SPHERIQUE IRREVERSIBLE
 !
 !          => EQUATION (3.6-8) ET (3.6-10)
 !
 !
-        var1 = x2 * ( exp(ambda1*tdt) - exp(ambda2*tdt) )/deno
-        var2 = ( exp(ambda1*tdt) - x1*x2*exp(ambda2*tdt))/deno + 1.d0
+        var1 = x2*(exp(ambda1*tdt)-exp(ambda2*tdt))/deno
+        var2 = (exp(ambda1*tdt)-x1*x2*exp(ambda2*tdt))/deno+1.d0
 !
-        asi = var1 * ersp - var2 * eisp
-        bsi = dh* ( -var1/rrsp + var2/risp )
-        csi = hini* ( -var1/rrsp + var2/risp )
-    endif
+        asi = var1*ersp-var2*eisp
+        bsi = dh*(-var1/rrsp+var2/risp)
+        csi = hini*(-var1/rrsp+var2/risp)
+    end if
 !
 !  CONSTRUCTION DE LA MATRICE TOTAL :
 !
@@ -181,18 +181,18 @@ subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
 !        => EQUATION (3.6-13)
 !
     if (iflu .eq. 0) then
-        afps = asr + asi
-        bfps = bsr + bsi
-        cfps = csr + csi
-    else if (iflu.eq.1) then
+        afps = asr+asi
+        bfps = bsr+bsi
+        cfps = csr+csi
+    else if (iflu .eq. 1) then
         afps = asr
         bfps = bsr
         cfps = csr
-    else if (iflu.eq.2) then
+    else if (iflu .eq. 2) then
         afps = asi
         bfps = bsi
         cfps = csi
-    endif
+    end if
 !
 10  continue
 !

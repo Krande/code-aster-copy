@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ subroutine duplisp(celssp, celasp, carel, base)
 #include "asterfort/nbelem.h"
 #include "asterfort/utmess.h"
 !
-              character(len=*), intent(in) :: celssp
-              character(len=*), intent(in) :: celasp
-              character(len=*), intent(in) :: carel
-              character(len=*), intent(in) :: base
+    character(len=*), intent(in) :: celssp
+    character(len=*), intent(in) :: celasp
+    character(len=*), intent(in) :: carel
+    character(len=*), intent(in) :: base
 ! ------------------------------------------------------------------
 ! but : transformer un cham_elem sans sous-points (celssp)
 !       en 1 cham_elem avec des sous-points (celasp)
@@ -51,13 +51,13 @@ subroutine duplisp(celssp, celasp, carel, base)
 ! carel     in/jxout k19 : sd cara_elem
 !------------------------------------------------------------------
 
-    character(len=19) :: cel1,cel2,canbsp,ligrel
+    character(len=19) :: cel1, cel2, canbsp, ligrel
     character(len=16) :: option
-    character(len=8) :: nompar,mailla,nomgd,tsca
-    integer :: igr,numa,icmp,ipt,nbpt
-    integer ::  illiel, mxnbsp,mxvari,nbspt1,nbspt2
-    integer :: ispt1,ispt2,iret,nbgr,imolo,lgcata,jmolo,iel,ncdyn
-    integer :: ieq1,ieq2, adiel1, adiel2,jcelv1,jcelv2
+    character(len=8) :: nompar, mailla, nomgd, tsca
+    integer :: igr, numa, icmp, ipt, nbpt
+    integer ::  illiel, mxnbsp, mxvari, nbspt1, nbspt2
+    integer :: ispt1, ispt2, iret, nbgr, imolo, lgcata, jmolo, iel, ncdyn
+    integer :: ieq1, ieq2, adiel1, adiel2, jcelv1, jcelv2
     integer :: nbel, nbcmp
     integer, pointer :: liel(:) => null()
     integer, pointer :: celd1(:) => null()
@@ -72,7 +72,6 @@ subroutine duplisp(celssp, celasp, carel, base)
     cel2 = celasp
     canbsp = '&&CHRPEL.NBSP'
 
-
 !   1. calcul de : mailla, ligrel, option, param, canbsp
 !                  nomgd, mxnbsp, mxvari, tsca
 !   ----------------------------------------------
@@ -85,18 +84,16 @@ subroutine duplisp(celssp, celasp, carel, base)
     call dismoi('MXVARI', cel1, 'CHAM_ELEM', repi=mxvari)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     call cesvar(carel, ' ', ligrel, canbsp)
-    if(mxnbsp.gt.1) then
-        call utmess('F','CALCULEL2_57')
-    endif
-    nbspt1=1
-    ispt1=1
-
+    if (mxnbsp .gt. 1) then
+        call utmess('F', 'CALCULEL2_57')
+    end if
+    nbspt1 = 1
+    ispt1 = 1
 
 !   2. allocation de cel2 :
 !   --------------------------------
     call alchml(ligrel, option, nompar, base, cel2, iret, canbsp)
-    ASSERT (iret.eq.0)
-
+    ASSERT(iret .eq. 0)
 
 !   3. duplication des valeurs de cel1 dans cel2:
 !   ---------------------------------------------
@@ -115,43 +112,43 @@ subroutine duplisp(celssp, celasp, carel, base)
 
         lgcata = celd1(celd1(4+igr)+3)
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-        diff = (zi(jmolo-1+4).gt.10000)
-        ASSERT(.not.diff)
-        nbpt = mod(zi(jmolo-1+4),10000)
-        nbel = nbelem(ligrel,igr)
-        nbcmp=lgcata/nbpt
-        ASSERT(lgcata.eq.nbcmp*nbpt)
+        diff = (zi(jmolo-1+4) .gt. 10000)
+        ASSERT(.not. diff)
+        nbpt = mod(zi(jmolo-1+4), 10000)
+        nbel = nbelem(ligrel, igr)
+        nbcmp = lgcata/nbpt
+        ASSERT(lgcata .eq. nbcmp*nbpt)
 
         do iel = 1, nbel
-            numa = numail(igr,iel)
+            numa = numail(igr, iel)
             if (numa .lt. 0) goto 210
 
-            nbspt1 = celd1(celd1(4+igr)+4+4* (iel-1)+1)
-            nbspt2 = celd2(celd2(4+igr)+4+4* (iel-1)+1)
-            adiel1 = celd1(celd1(4+igr)+4+4* (iel-1)+4)
-            adiel2 = celd2(celd2(4+igr)+4+4* (iel-1)+4)
-            ncdyn = celd1(celd1(4+igr)+4+4* (iel-1)+ 2)
+            nbspt1 = celd1(celd1(4+igr)+4+4*(iel-1)+1)
+            nbspt2 = celd2(celd2(4+igr)+4+4*(iel-1)+1)
+            adiel1 = celd1(celd1(4+igr)+4+4*(iel-1)+4)
+            adiel2 = celd2(celd2(4+igr)+4+4*(iel-1)+4)
+            ncdyn = celd1(celd1(4+igr)+4+4*(iel-1)+2)
 !           -- cel2 a ete alloue avec ncdyn=0. Il faut corriger :
-            celd2(celd2(4+igr)+4+4* (iel-1)+ 2)=ncdyn
-            ncdyn=max(ncdyn,1)
+            celd2(celd2(4+igr)+4+4*(iel-1)+2) = ncdyn
+            ncdyn = max(ncdyn, 1)
 
             do ipt = 1, nbpt
                 do ispt2 = 1, nbspt2
                     do icmp = 1, nbcmp*ncdyn
-                        ieq1 = adiel1 - 1 + ((ipt-1)*nbspt1+ispt1-1)* nbcmp*ncdyn + icmp
-                        ieq2 = adiel2 - 1 + ((ipt-1)*nbspt2+ispt2-1)* nbcmp*ncdyn + icmp
+                        ieq1 = adiel1-1+((ipt-1)*nbspt1+ispt1-1)*nbcmp*ncdyn+icmp
+                        ieq2 = adiel2-1+((ipt-1)*nbspt2+ispt2-1)*nbcmp*ncdyn+icmp
 
                         if (tsca .eq. 'R') then
-                            zr(jcelv2-1+ieq2)=zr(jcelv1-1+ieq1)
+                            zr(jcelv2-1+ieq2) = zr(jcelv1-1+ieq1)
                         elseif (tsca .eq. 'C') then
-                            zc(jcelv2-1+ieq2)=zc(jcelv1-1+ieq1)
+                            zc(jcelv2-1+ieq2) = zc(jcelv1-1+ieq1)
                         elseif (tsca .eq. 'I') then
-                            zi(jcelv2-1+ieq2)=zi(jcelv1-1+ieq1)
+                            zi(jcelv2-1+ieq2) = zi(jcelv1-1+ieq1)
                         elseif (tsca .eq. 'K8') then
-                            zk8(jcelv2-1+ieq2)=zk8(jcelv1-1+ieq1)
+                            zk8(jcelv2-1+ieq2) = zk8(jcelv1-1+ieq1)
                         else
                             ASSERT(.false.)
-                        endif
+                        end if
                     end do
                 end do
             end do
@@ -160,10 +157,9 @@ subroutine duplisp(celssp, celasp, carel, base)
 220     continue
     end do
 
-
 !   Menage :
 !   --------
-    call detrsd('CHAM_ELEM_S',canbsp)
+    call detrsd('CHAM_ELEM_S', canbsp)
 
     call jedema()
 end subroutine

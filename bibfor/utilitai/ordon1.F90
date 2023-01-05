@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine ordon1(vale, nb)
     call dcopy(nb, vale(nb+1), 1, yrbid, 1)
     call ordr8(xbid, nb, iord)
     do i = 1, nb
-        vale(i)=xbid(iord(i))
-        vale(nb+i)=yrbid(iord(i))
+        vale(i) = xbid(iord(i))
+        vale(nb+i) = yrbid(iord(i))
     end do
 !
 end subroutine

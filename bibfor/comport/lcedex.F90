@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcedex(option, imate, npg, lgpg, s,&
+subroutine lcedex(option, imate, npg, lgpg, s, &
                   q, vim, vip, alphap, dalfs)
 !
 !
@@ -67,42 +67,42 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 ! - INITIALISATIONS :
 ! -------------------
 !
-    resi = option.eq.'RAPH_MECA' .or. option.eq.'FULL_MECA'
-    rigi = option.eq.'FULL_MECA' .or. option.eq.'RIGI_MECA_TANG'
+    resi = option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA'
+    rigi = option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG'
 !
-    coef1=0.d0
-    coef2=0.d0
-    coef3=0.d0
+    coef1 = 0.d0
+    coef2 = 0.d0
+    coef3 = 0.d0
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES :
 ! ---------------------------------------
     nomres(1) = 'GC'
     nomres(2) = 'SIGM_C'
-    fami='FPG1'
-    kpg2=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg2, spt, poum, imate,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg2 = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg2, spt, poum, imate, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 2, nomres, valres, icodre, 2)
 !
     gc = valres(1)
     sigmc = valres(2)
     lc = gc/sigmc
-    seuil = vim(3,1)
+    seuil = vim(3, 1)
 !
 ! CALCUL DU SAUT DANS L'ELEMENT : 'ALPHAP'
 ! -----------------------------------------
 !
     if (resi) then
-        call nmedal(alphap, sigmc, gc, s, q,&
+        call nmedal(alphap, sigmc, gc, s, q, &
                     seuil)
-    endif
+    end if
 !
     if (option .eq. 'RIGI_MECA_TANG') then
-        alphap(1)=vim(1,1)
-        alphap(2)=vim(2,1)
-    endif
+        alphap(1) = vim(1, 1)
+        alphap(2) = vim(2, 1)
+    end if
 !
 !
 !  MISE A JOUR DES VARIABLES INTERNES
@@ -117,37 +117,37 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
     if (resi) then
 !
-        norma = sqrt( alphap(1)**2 + alphap(2)**2 )
+        norma = sqrt(alphap(1)**2+alphap(2)**2)
 !
         if (norma .le. seuil) then
 !
-            elas=.true.
+            elas = .true.
             do kpg = 1, npg
-                vip(1,kpg) = alphap(1)
-                vip(2,kpg) = alphap(2)
-                vip(3,kpg) = vim(3,kpg)
-                vip(4,kpg) = 0.d0
-                vip(5,kpg) = vim(5,kpg)
-                vip(6,kpg) = s(1) + q(1,1)*alphap(1) + q(1,2)*alphap( 2)
-                vip(7,kpg) = s(2) + q(2,1)*alphap(1) + q(2,2)*alphap( 2)
+                vip(1, kpg) = alphap(1)
+                vip(2, kpg) = alphap(2)
+                vip(3, kpg) = vim(3, kpg)
+                vip(4, kpg) = 0.d0
+                vip(5, kpg) = vim(5, kpg)
+                vip(6, kpg) = s(1)+q(1, 1)*alphap(1)+q(1, 2)*alphap(2)
+                vip(7, kpg) = s(2)+q(2, 1)*alphap(1)+q(2, 2)*alphap(2)
             end do
 !
         else
 !
-            elas=.false.
+            elas = .false.
             do kpg = 1, npg
-                vip(1,kpg) = alphap(1)
-                vip(2,kpg) = alphap(2)
-                vip(3,kpg) = norma
-                vip(4,kpg) = 1.d0
-                vip(5,kpg) = 1.d0 - exp(-norma/lc)
-                vip(6,kpg) = s(1) + q(1,1)*alphap(1) + q(1,2)*alphap( 2)
-                vip(7,kpg) = s(2) + q(2,1)*alphap(1) + q(2,2)*alphap( 2)
+                vip(1, kpg) = alphap(1)
+                vip(2, kpg) = alphap(2)
+                vip(3, kpg) = norma
+                vip(4, kpg) = 1.d0
+                vip(5, kpg) = 1.d0-exp(-norma/lc)
+                vip(6, kpg) = s(1)+q(1, 1)*alphap(1)+q(1, 2)*alphap(2)
+                vip(7, kpg) = s(2)+q(2, 1)*alphap(1)+q(2, 2)*alphap(2)
             end do
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 ! CALCUL DE DALFS TERME LIE AU COMPORTEMENT, NECESSAIRE POUR LA
@@ -158,7 +158,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
 !       CALCUL DE LA DERIVEE DU VECTEUR CONTRAINTE
 !       PAR RAPPORT AU SAUT : 'DSIALF'
-        if (option .eq. 'RIGI_MECA_TANG') elas=(nint(vim(4,1)).eq.0)
+        if (option .eq. 'RIGI_MECA_TANG') elas = (nint(vim(4, 1)) .eq. 0)
 !
         if (elas) then
 !
@@ -167,22 +167,22 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
             else
                 coef1 = sigmc*exp(-sigmc*seuil/gc)/seuil
                 call r8inir(4, 0.d0, dsialf, 1)
-                dsialf(1,1) = coef1
-                dsialf(2,2) = coef1
-            endif
+                dsialf(1, 1) = coef1
+                dsialf(2, 2) = coef1
+            end if
         else
 !
-            norma = sqrt( alphap(1)**2 + alphap(2)**2 )
+            norma = sqrt(alphap(1)**2+alphap(2)**2)
             coef2 = sigmc*exp(-sigmc*norma/gc)/norma
-            coef3 = - coef2*( (1/norma) + sigmc/gc )/norma
+            coef3 = -coef2*((1/norma)+sigmc/gc)/norma
 !
             call r8inir(4, 0.d0, dsialf, 1)
-            dsialf(1,1) = coef2 + coef3*alphap(1)*alphap(1)
-            dsialf(1,2) = coef3*alphap(1)*alphap(2)
-            dsialf(2,1) = coef3*alphap(2)*alphap(1)
-            dsialf(2,2) = coef2 + coef3*alphap(2)*alphap(2)
+            dsialf(1, 1) = coef2+coef3*alphap(1)*alphap(1)
+            dsialf(1, 2) = coef3*alphap(1)*alphap(2)
+            dsialf(2, 1) = coef3*alphap(2)*alphap(1)
+            dsialf(2, 2) = coef2+coef3*alphap(2)*alphap(2)
 !
-        endif
+        end if
 !
 !       CALCUL DES DALFS : DERIVEE DE ALPHA PAR RAPPORT A S :
 !       DALFS  = (DSIALF  - Q  )^-1
@@ -198,23 +198,23 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
             do i = 1, 2
                 do j = 1, 2
-                    h(i,j) = dsialf(i,j) - q(i,j)
+                    h(i, j) = dsialf(i, j)-q(i, j)
                 end do
             end do
 !
-            det = h(1,1)*h(2,2) - h(1,2)**2
+            det = h(1, 1)*h(2, 2)-h(1, 2)**2
 !
             if (abs(det) .le. 1.d-16) then
                 call utmess('F', 'ALGORITH4_48')
-            endif
+            end if
 !
-            dalfs(1,1) = h(2,2)/det
-            dalfs(2,2) = h(1,1)/det
-            dalfs(1,2) = -h(1,2)/det
-            dalfs(2,1) = -h(1,2)/det
+            dalfs(1, 1) = h(2, 2)/det
+            dalfs(2, 2) = h(1, 1)/det
+            dalfs(1, 2) = -h(1, 2)/det
+            dalfs(2, 1) = -h(1, 2)/det
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnline(imat, xcdl, parcho, adime, xvect,&
-                  ninc, nd, nchoc, h, hf,&
+subroutine mnline(imat, xcdl, parcho, adime, xvect, &
+                  ninc, nd, nchoc, h, hf, &
                   xline)
     implicit none
 !
@@ -105,105 +105,105 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
     call wkvect('&&MNLINE.VECT2', 'V V R', neq*(2*h+1), ivect2)
 ! --- COPIE DE XVECT DANS UN VECTEUR AVEC DDLS NON-ACTIFS
     do j = 1, 2*h+1
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                zr(ivect1-1+(j-1)*neq+k)=zr(ivect-1+(j-1)*nd+i)
+                i = i+1
+                zr(ivect1-1+(j-1)*neq+k) = zr(ivect-1+(j-1)*nd+i)
                 if (abs(zr(ivect-1+(j-1)*nd+i)-1.d0) .lt. 1.d-16) then
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 ! ----------------------------------------------------------------------
 ! --- EQUATION DE LA DYNAMIQUE (TRAITEMENT DU DEPLACEMENT)
 ! --- XLINE(1:ND*(2*H+1))=K*XVECT(1:ND*(2*H+1))
 ! ----------------------------------------------------------------------
-    call mrmult('ZERO', imat(1), zr(ivect1), zr(ivect2), 2*h+1,&
+    call mrmult('ZERO', imat(1), zr(ivect1), zr(ivect2), 2*h+1, &
                 .false._1)
 ! --- COPIE DE XVECT1 DANS XVECT EN SUPPRIMANT LES DDLS NON ACTIFS
     do j = 1, 2*h+1
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                zr(iline-1+(j-1)*nd+i)=zr(ivect2-1+(j-1)*neq+k)/zr(&
-                iadim)
-            endif
+                i = i+1
+                zr(iline-1+(j-1)*nd+i) = zr(ivect2-1+(j-1)*neq+k)/zr( &
+                                         iadim)
+            end if
         end do
     end do
 ! ----------------------------------------------------------------------
 ! --- EQUATION DE LA DYNAMIQUE (TRAITEMENT DE LA FORCE NON-LINEAIRE)
 ! --- XLINE(1:ND*(2*H+1))=XLINE(1:ND*(2*H+1))+F
 ! ----------------------------------------------------------------------
-    neqs=0
+    neqs = 0
     do i = 1, nchoc
-        eta=reg(i)
-        jeu=vjeu(i)/jeumax(1)
-        ncmp=vncmp(i)
+        eta = reg(i)
+        jeu = vjeu(i)/jeumax(1)
+        ncmp = vncmp(i)
         do j = 1, ncmp
-            nddl=vnddl(6*(i-1)+j)
+            nddl = vnddl(6*(i-1)+j)
 ! ---       CSTE & COS
-            call daxpy(h+1, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2* hf+1)), 1, zr(iline-1+nddl),&
+            call daxpy(h+1, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2*hf+1)), 1, zr(iline-1+nddl), &
                        nd)
 ! ---       SIN
-            call daxpy(h, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2* hf+1)+hf+1), 1,&
+            call daxpy(h, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2*hf+1)+hf+1), 1, &
                        zr(iline-1+nd*(h+1)+nddl), nd)
         end do
-        neqs=neqs+vneqs(i)
+        neqs = neqs+vneqs(i)
     end do
 ! ----------------------------------------------------------------------
 ! --- EQUATION SUPPLEMENTAIRE POUR DEFINIR LA FORCE NON-LINEAIRE
 ! --- XLINE(ND*(2*H+1)+1:ND*(2*H+1)+2*NCHOC*(2*HF+1))
 ! ----------------------------------------------------------------------
-    neqs=0
+    neqs = 0
     do i = 1, nchoc
-        alpha=raid(i)/zr(iadim-1+1)
-        eta=reg(i)
-        jeu=vjeu(i)/jeumax(1)
-        if (type(i)(1:7) .eq. 'BI_PLAN') then
-            nddl=vnddl(6*(i-1)+1)
+        alpha = raid(i)/zr(iadim-1+1)
+        eta = reg(i)
+        jeu = vjeu(i)/jeumax(1)
+        if (type(i) (1:7) .eq. 'BI_PLAN') then
+            nddl = vnddl(6*(i-1)+1)
 ! ---     F -ETA*XG
 ! ---       -ETA*XG (CSTE & COS)
-            call daxpy(h+1, -eta/jeu, zr(ivect-1+nddl), nd,&
-                       zr(iline-1+ nd*(2*h+1)+neqs*(2*hf+1)+1), 1)
+            call daxpy(h+1, -eta/jeu, zr(ivect-1+nddl), nd, &
+                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1)
 ! ---       -ETA*XG (SIN)
-            call daxpy(h, -eta/jeu, zr(ivect-1+nd*(h+1)+nddl), nd,&
+            call daxpy(h, -eta/jeu, zr(ivect-1+nd*(h+1)+nddl), nd, &
                        zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+hf+2), 1)
 ! ---      + F
-            call daxpy(2*hf+1, 1.d0, zr(ivect-1+nd*(2*h+1)+neqs*(2*hf+1) +1), 1,&
+            call daxpy(2*hf+1, 1.d0, zr(ivect-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1, &
                        zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1)
 ! ---     Z
-            call daxpy(2*hf+1, 1.d0, zr(ivect-1+nd*(2*h+1)+(neqs+1)*(2* hf+1)+1), 1,&
+            call daxpy(2*hf+1, 1.d0, zr(ivect-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1, &
                        zr(iline-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1)
-        else if (type(i)(1:6).eq.'CERCLE') then
-            nddlx=vnddl(6*(i-1)+1)
-            nddly=vnddl(6*(i-1)+2)
+        else if (type(i) (1:6) .eq. 'CERCLE') then
+            nddlx = vnddl(6*(i-1)+1)
+            nddly = vnddl(6*(i-1)+2)
 ! ---     + ORIG1*[FN]
-            call daxpy(2*hf+1, orig(1+3*(i-1))/jeu, zr(ivect+nd*(2*h+ 1)+(neqs+3)*(2*hf+1)), 1,&
-                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+ 1)+1), 1)
+            call daxpy(2*hf+1, orig(1+3*(i-1))/jeu, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, &
+                       zr(iline-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1)
 ! ---     + ORIG2*[FN]
-            call daxpy(2*hf+1, orig(1+3*(i-1)+1)/jeu, zr(ivect+nd*(2* h+1)+(neqs+3)*(2*hf+1)), 1,&
-                       zr(iline-1+nd*(2*h+1)+(neqs+1)* (2*hf+1)+1), 1)
+            call daxpy(2*hf+1, orig(1+3*(i-1)+1)/jeu, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1)
 ! ---     + 2*ORIG1*UX + 2*ORIG2*UY (CSTE & COS)
-            call daxpy(h+1, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+ nddlx), nd,&
+            call daxpy(h+1, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nddlx), nd, &
                        zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), 1)
-            call daxpy(h+1, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+ nddly), nd,&
+            call daxpy(h+1, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nddly), nd, &
                        zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), 1)
 ! ---     + 2*ORIG1*UX + 2*ORIG2*UY (SIN)
-            call daxpy(h, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nd*(h+ 1)+nddlx), nd,&
-                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+ 2), 1)
-            call daxpy(h, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nd*( h+1)+nddly), nd,&
-                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+ hf+2), 1)
+            call daxpy(h, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nd*(h+1)+nddlx), nd, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+2), 1)
+            call daxpy(h, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nd*(h+1)+nddly), nd, &
+                       zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+2), 1)
 ! ---     FN
-            call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1,&
+            call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, &
                        zr(iline+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1)
-        else if (type(i)(1:4).eq.'PLAN') then
+        else if (type(i) (1:4) .eq. 'PLAN') then
 ! ---     F
-            call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1,&
+            call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1, &
                        zr(iline+nd*(2*h+1)+neqs*(2*hf+1)), 1)
-        endif
-        neqs=neqs+vneqs(i)
+        end if
+        neqs = neqs+vneqs(i)
     end do
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS

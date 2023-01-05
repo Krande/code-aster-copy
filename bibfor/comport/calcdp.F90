@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
+subroutine calcdp(crit, seuil, dt, rprim, mutrbe, &
                   sigm0, epsi0, coefm, dp, iret)
     implicit none
 #include "asterfort/calcfp.h"
@@ -44,17 +44,17 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
     integer :: iter, iret
 !
 ! INITIALISATION
-    r0 = mutrbe + rprim
+    r0 = mutrbe+rprim
 !
 ! ESSAI PLASTIQUE PUR (DP = DPMAX)
 !
     dpplas = seuil/r0
     dp = dpplas
 !    CALCUL DU SEUIL
-    call calcfp(mutrbe, rprim, seuil, dt, dp,&
-                sigm0, epsi0, coefm, fplas, fprim,&
+    call calcfp(mutrbe, rprim, seuil, dt, dp, &
+                sigm0, epsi0, coefm, fplas, fprim, &
                 dfprim)
-    if (abs(fprim) / (1.d0+seuil) .lt. crit(3)) goto 999
+    if (abs(fprim)/(1.d0+seuil) .lt. crit(3)) goto 999
 !
     dpmax = dpplas
     x(1) = dp
@@ -64,22 +64,22 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
 !
 !------EXAMEN DE LA SOLUTION DP=DPMIN
     dpmin = 0.d0
-    dp =dpmin
-    call calcfp(mutrbe, rprim, seuil, dt, dp,&
-                sigm0, epsi0, coefm, fplas, fprim,&
+    dp = dpmin
+    call calcfp(mutrbe, rprim, seuil, dt, dp, &
+                sigm0, epsi0, coefm, fplas, fprim, &
                 dfprim)
     x(2) = dp
     y(2) = fprim
 !
 !     AMELIORATION DES BORNES PAR ESTMATION DE DP^VP
     arg = (dpmax/dt/epsi0)**(1.d0/coefm)
-    test = sigm0 * log(arg+sqrt(arg**2+1))
+    test = sigm0*log(arg+sqrt(arg**2+1))
 !
     if (fplas .lt. test) then
-        dp = dt*epsi0* (sinh(fplas/sigm0) )**coefm
+        dp = dt*epsi0*(sinh(fplas/sigm0))**coefm
         if ((dp .ge. dpmin) .and. (dp .le. dpmax)) then
-            call calcfp(mutrbe, rprim, seuil, dt, dp,&
-                        sigm0, epsi0, coefm, fplas, fprim,&
+            call calcfp(mutrbe, rprim, seuil, dt, dp, &
+                        sigm0, epsi0, coefm, fplas, fprim, &
                         dfprim)
             if (abs(fprim)/(1.d0+seuil) .lt. crit(3)) goto 999
             if (fprim .lt. 0) then
@@ -88,9 +88,9 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
             else
                 x(2) = dp
                 y(2) = fprim
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !------CALCUL DE DP : EQUATION SCALAIRE FPRIM = 0 AVEC DPMIN< DP < DPMAX
     x(3) = x(1)
@@ -101,29 +101,29 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
 !
         call zeroco(x, y)
         dp = x(4)
-        call calcfp(mutrbe, rprim, seuil, dt, dp,&
-                    sigm0, epsi0, coefm, fplas, fprim,&
+        call calcfp(mutrbe, rprim, seuil, dt, dp, &
+                    sigm0, epsi0, coefm, fplas, fprim, &
                     dfprim)
         if (abs(fprim)/(1.d0+seuil) .lt. crit(3)) goto 999
 !
-        dpnew=dp-fprim/dfprim
+        dpnew = dp-fprim/dfprim
         if ((dpnew .ge. dpmin) .and. (dpnew .le. dpmax)) then
-            call calcfp(mutrbe, rprim, seuil, dt, dpnew,&
-                        sigm0, epsi0, coefm, fplas, fpnew,&
+            call calcfp(mutrbe, rprim, seuil, dt, dpnew, &
+                        sigm0, epsi0, coefm, fplas, fpnew, &
                         dfprim)
 !
             if (abs(fpnew)/(1.d0+seuil) .lt. crit(3)) then
-                dp=dpnew
+                dp = dpnew
                 goto 999
-            endif
+            end if
             if (abs(fpnew)/(1.d0+seuil) .lt. abs(fprim)/(1.d0+seuil)) then
-                dp=dpnew
+                dp = dpnew
                 fprim = fpnew
-            endif
+            end if
 !
-        endif
-        y(4)=fprim
-        x(4)=dp
+        end if
+        y(4) = fprim
+        x(4) = dp
     end do
 !
     iret = 1

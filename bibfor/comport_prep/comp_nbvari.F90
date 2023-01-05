@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp ,&
-                       post_iter, meca_comp, mult_comp, regu_visc,&
-                       libr_name, subr_name, model_dim, model_mfront,&
-                       nbVariUMAT,&
+subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
+                       post_iter, meca_comp, mult_comp, regu_visc, &
+                       libr_name, subr_name, model_dim, model_mfront, &
+                       nbVariUMAT, &
                        nbVari, numeLaw, nbVariKit, numeLawKit)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,14 +33,14 @@ implicit none
 #include "asterfort/comp_nbvari_ext.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-character(len=16), intent(in) :: kit_comp(4), post_iter, meca_comp
-character(len=16), intent(in) :: mult_comp, regu_visc
-character(len=255), intent(in) :: libr_name, subr_name
-integer, intent(in) :: model_dim
-character(len=16), intent(in) :: model_mfront
-integer, intent(in) :: nbVariUMAT
-integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
+    character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
+    character(len=16), intent(in) :: kit_comp(4), post_iter, meca_comp
+    character(len=16), intent(in) :: mult_comp, regu_visc
+    character(len=255), intent(in) :: libr_name, subr_name
+    integer, intent(in) :: model_dim
+    character(len=16), intent(in) :: model_mfront
+    integer, intent(in) :: nbVariUMAT
+    integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,10 +92,10 @@ integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
 ! - Get number of internal state variables for KIT
     nbVariFromKit = 0
     if (l_kit) then
-        call comp_nbvari_kit(kit_comp,&
-                             l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg,&
+        call comp_nbvari_kit(kit_comp, &
+                             l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg, &
                              nbVariFromKit, nbVariKit, numeLawKit)
-    endif
+    end if
 
 ! - Special for CRISTAL
     nbVariCrystal = 0
@@ -103,13 +103,13 @@ integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
         call jeveuo(mult_comp(1:8)//'.CPRI', 'L', vi=cpri)
         nbVariCrystal = cpri(3)
         if (defo_comp .eq. 'SIMO_MIEHE') then
-            nbVariCrystal = nbVariCrystal + 3 + 9
-        endif
-    endif
+            nbVariCrystal = nbVariCrystal+3+9
+        end if
+    end if
 
 ! - Get number of internal state variables
-    call comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
-                         kit_comp, post_iter, regu_visc,&
+    call comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
+                         kit_comp, post_iter, regu_visc, &
                          nbVari, numeLaw)
 
 ! - Get number of internal state variables for external behaviours
@@ -119,17 +119,17 @@ integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
     call comp_meca_l(meca_comp, 'MFRONT_OFFI', l_mfront_offi)
     call comp_meca_l(meca_comp, 'UMAT', l_umat)
     if (l_exte_comp) then
-        call comp_nbvari_ext(l_umat        , nbVariUMAT   ,&
-                             l_mfront_proto, l_mfront_offi,&
-                             libr_name     , subr_name    ,&
-                             model_dim     , model_mfront ,&
+        call comp_nbvari_ext(l_umat, nbVariUMAT, &
+                             l_mfront_proto, l_mfront_offi, &
+                             libr_name, subr_name, &
+                             model_dim, model_mfront, &
                              nbVariExte)
         nbVariKit(4) = nbVariExte
-    endif
+    end if
 
 ! - Total number of internal state variables
-    nbVari = nbVariFromKit + nbVari
-    nbVari = nbVariCrystal + nbVari
-    nbVari = nbVariExte + nbVari
+    nbVari = nbVariFromKit+nbVari
+    nbVari = nbVariCrystal+nbVari
+    nbVari = nbVariExte+nbVari
 !
 end subroutine

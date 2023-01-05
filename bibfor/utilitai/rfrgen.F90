@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,10 +73,10 @@ subroutine rfrgen(trange)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, idbase, iddl, idinsg, idvecf,  ie
+    integer :: i, idbase, iddl, idinsg, idvecf, ie
     integer :: ier, ierd, ii, inoeud, iordr
-    integer :: ip,   iret, itresu, jfon, jinst
-    integer ::  lfon, lg1, lg2, lordr,  lpro
+    integer :: ip, iret, itresu, jfon, jinst
+    integer ::  lfon, lg1, lg2, lordr, lpro
     integer :: lvar, n1, n2, n3, nbexci, nbinsg
     integer :: nbmode, nbordr, nbpas, neq
     integer :: nfonct, ngn, numcmp
@@ -106,13 +106,13 @@ subroutine rfrgen(trange)
         else
 !CC  FONCTIONNALITE NON DEVELOPPEE
             ASSERT(.false.)
-        endif
+        end if
         goto 999
 ! TRAITEMENT DU HARM_GENE
     else if (tysd .eq. 'HARM_GENE') then
         call rfhge2(trange)
         goto 999
-    endif
+    end if
 ! TRAITEMENT DU TRAN_GENE
     resu = trange
     interp(1) = 'LIN '
@@ -134,26 +134,26 @@ subroutine rfrgen(trange)
     call jeexin(resu//'.'//nomcha(1:4), iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_23', sk=nomcha)
-    endif
+    end if
     call jeveuo(resu//'.'//nomcha(1:4), 'L', itresu)
 !
     nomacc = 'INST'
     knume = '&&RFRGEN.NUME_ORDR'
     kinst = '&&RFRGEN.INSTANT'
-    call rstran(intres, resu, ' ', 1, kinst,&
+    call rstran(intres, resu, ' ', 1, kinst, &
                 knume, nbordr, ie)
     if (ie .ne. 0) then
         call utmess('F', 'UTILITAI4_24')
-    endif
+    end if
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
         call jeveuo(kinst, 'L', jinst)
         call jeveuo(knume, 'L', lordr)
-    endif
+    end if
 !
 !     --- REMPLISSAGE DU .PROL ---
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro) = 'FONCTION'
     zk24(lpro+1) = interp(1)//interp(2)
@@ -178,12 +178,12 @@ subroutine rfrgen(trange)
         end do
 !
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
-        lfon = lvar + nbordr
+        lfon = lvar+nbordr
         if (intres(1:3) .ne. 'NON') then
             call jeveuo(resu//'.DISC', 'L', idinsg)
             call jelira(resu//'.DISC', 'LONMAX', nbinsg)
             do iordr = 0, nbordr-1
-                call extrac(intres, epsi, crit, nbinsg-2, zr(idinsg),&
+                call extrac(intres, epsi, crit, nbinsg-2, zr(idinsg), &
                             zr(jinst+iordr), dt, 1, rep1, ierd)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = rep1(1)
@@ -194,7 +194,7 @@ subroutine rfrgen(trange)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = dt(iordr+1)
             end do
-        endif
+        end if
         AS_DEALLOCATE(vr=dt)
 !
 !----------------------------------------------------------------------
@@ -208,15 +208,15 @@ subroutine rfrgen(trange)
         if (n1 .ne. 0) then
             if (numcmp .gt. nbmode) then
                 call utmess('F', 'UTILITAI4_14')
-            endif
+            end if
             call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
-            lfon = lvar + nbordr
+            lfon = lvar+nbordr
             if (intres(1:3) .ne. 'NON') then
                 call jeveuo(resu//'.DISC', 'L', idinsg)
                 call jelira(resu//'.DISC', 'LONMAX', nbinsg)
                 call wkvect('&&RFRGEN.VECTGENF', 'V V R', nbmode, idvecf)
                 do iordr = 0, nbordr-1
-                    call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
+                    call extrac(intres, epsi, crit, nbinsg, zr(idinsg), &
                                 zr(jinst+iordr), zr(itresu), nbmode, zr(idvecf), ierd)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = zr(idvecf+numcmp-1)
@@ -227,30 +227,30 @@ subroutine rfrgen(trange)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = zr(itresu+nbmode*(ii-1)+numcmp-1)
                 end do
-            endif
+            end if
         else
             call dismoi('BASE_MODALE', resu, 'RESU_DYNA', repk=basemo)
             call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nume)
             call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=noma)
 !
             call dismoi('NB_EQUA', nume, 'NUME_DDL', repi=neq)
-            call wkvect('&&RFRGEN.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
+            call wkvect('&&RFRGEN.VECT.PROPRE', 'V V R', neq*nbmode, idbase)
             call copmod(basemo, numer=nume, bmodr=zr(idbase), nbmodes=nbmode, nequa=neq)
 !
             call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
             if (ngn .ne. 0) then
-                call utnono(' ', noma, 'NOEUD', nogno, nomno,&
-                                    iret)
-                 if (iret .eq. 10) then
-                      call utmess('F', 'ELEMENTS_67', sk=nogno)
-                 else if (iret.eq.1) then
-                      valk(1) = nogno
-                      valk(2) = nomno
-                      call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-                 endif
-                 noeud= nomno
-            endif
-            call posddl('NUME_DDL', nume, noeud, cmp, inoeud,&
+                call utnono(' ', noma, 'NOEUD', nogno, nomno, &
+                            iret)
+                if (iret .eq. 10) then
+                    call utmess('F', 'ELEMENTS_67', sk=nogno)
+                else if (iret .eq. 1) then
+                    valk(1) = nogno
+                    valk(2) = nomno
+                    call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
+                end if
+                noeud = nomno
+            end if
+            call posddl('NUME_DDL', nume, noeud, cmp, inoeud, &
                         iddl)
             if (inoeud .eq. 0) then
                 lg1 = lxlgut(noeud)
@@ -261,7 +261,7 @@ subroutine rfrgen(trange)
                 valk(1) = cmp(1:lg2)
                 valk(2) = noeud(1:lg1)
                 call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
-            endif
+            end if
 !
 !        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
             nfonct = 0
@@ -271,20 +271,20 @@ subroutine rfrgen(trange)
 !           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
                     call utmess('F', 'UTILITAI4_26')
                     goto 999
-                endif
-                zk24(lpro+3)(5:8) = '_ABS'
-            endif
+                end if
+                zk24(lpro+3) (5:8) = '_ABS'
+            end if
 !        --------------------------------------------------------------
             call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
-            lfon = lvar + nbordr
+            lfon = lvar+nbordr
             if (intres(1:3) .ne. 'NON') then
                 call jeveuo(resu//'.DISC', 'L', idinsg)
                 call jelira(resu//'.DISC', 'LONMAX', nbinsg)
                 AS_ALLOCATE(vr=vectgene, size=nbmode)
                 do iordr = 0, nbordr-1
-                    call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
+                    call extrac(intres, epsi, crit, nbinsg, zr(idinsg), &
                                 zr(jinst+iordr), zr(itresu), nbmode, vectgene, ierd)
-                    call mdgep2(neq, nbmode, zr(idbase), vectgene, iddl,&
+                    call mdgep2(neq, nbmode, zr(idbase), vectgene, iddl, &
                                 rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
@@ -294,48 +294,48 @@ subroutine rfrgen(trange)
             else
                 do iordr = 0, nbordr-1
                     ii = zi(lordr+iordr)
-                    call mdgep2(neq, nbmode, zr(idbase), zr(itresu+ nbmode*(ii-1)), iddl,&
+                    call mdgep2(neq, nbmode, zr(idbase), zr(itresu+nbmode*(ii-1)), iddl, &
                                 rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
                 end do
-            endif
+            end if
             monmot(1) = 'NON'
             monmot(2) = 'NON'
             nonmot = 'NON'
             call getvtx(' ', 'MULT_APPUI', scal=monmot(1), nbret=n1)
             call getvtx(' ', 'CORR_STAT', scal=monmot(2), nbret=n2)
-            if (monmot(1) .eq. 'OUI' .or. monmot(2) .eq. 'OUI') nonmot= 'OUI'
+            if (monmot(1) .eq. 'OUI' .or. monmot(2) .eq. 'OUI') nonmot = 'OUI'
             if (nonmot(1:3) .eq. 'OUI') then
                 call jeexin(resu//'.F'//nomcha(1:3), iret)
-                if ( iret .eq. 0 ) then
+                if (iret .eq. 0) then
                     call utmess('F', 'SEISME_45', sk=nomcha)
-                endif
+                end if
                 call jeveuo(resu//'.F'//nomcha(1:3), 'L', jfon)
                 call jeveuo(resu//'.IPSD', 'L', vr=ipsd)
                 call jelira(resu//'.F'//nomcha(1:3), 'LONMAX', nbexci)
-                nbexci = nbexci / 2
+                nbexci = nbexci/2
                 do iordr = 0, nbordr-1
-                    call mdgep4(neq, nbexci, ipsd, zr(lvar+ iordr), zk8(jfon),&
+                    call mdgep4(neq, nbexci, ipsd, zr(lvar+iordr), zk8(jfon), &
                                 iddl, rep)
-                    zr(lfon+iordr) = zr(lfon+iordr) + rep
+                    zr(lfon+iordr) = zr(lfon+iordr)+rep
                 end do
-            endif
+            end if
             call jedetr('&&RFRGEN.VECT.PROPRE')
 !
 !        --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT ---
             if (nfonct .ne. 0) then
                 do i = 0, nbordr-1
                     iret = 0
-                    call fointe('F', fonct, 1, 'INST', zr(jinst+i),&
+                    call fointe('F', fonct, 1, 'INST', zr(jinst+i), &
                                 alpha, ier)
 !              --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT ---
-                    zr(lfon+i) = zr(lfon+i) + alpha
+                    zr(lfon+i) = zr(lfon+i)+alpha
                 end do
-            endif
-        endif
+            end if
+        end if
 !     ---------------------------------------------------------------
-    endif
+    end if
     call jedetr(knume)
     call jedetr(kinst)
 999 continue

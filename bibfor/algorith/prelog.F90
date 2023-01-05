@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine prelog(ndim, lgpg, vim, gn, lamb,&
-                  logl, fPrev, fCurr, epslPrev, epslIncr,&
+subroutine prelog(ndim, lgpg, vim, gn, lamb, &
+                  logl, fPrev, fCurr, epslPrev, epslIncr, &
                   tlogPrev, lCorr, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/deflog.h"
@@ -28,14 +28,14 @@ implicit none
 #include "asterc/r8prem.h"
 #include "blas/dcopy.h"
 !
-integer, intent(in) :: ndim, lgpg
-real(kind=8), intent(in) :: vim(lgpg)
-real(kind=8), intent(in) :: fPrev(3, 3), fCurr(3, 3)
-real(kind=8), intent(out) :: epslPrev(6), epslIncr(6)
-real(kind=8), intent(out) :: tlogPrev(6)
-real(kind=8), intent(out) :: gn(3, 3), lamb(3), logl(3)
-aster_logical, intent(in) :: lCorr
-integer, intent(out) :: iret
+    integer, intent(in) :: ndim, lgpg
+    real(kind=8), intent(in) :: vim(lgpg)
+    real(kind=8), intent(in) :: fPrev(3, 3), fCurr(3, 3)
+    real(kind=8), intent(out) :: epslPrev(6), epslIncr(6)
+    real(kind=8), intent(out) :: tlogPrev(6)
+    real(kind=8), intent(out) :: gn(3, 3), lamb(3), logl(3)
+    aster_logical, intent(in) :: lCorr
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,11 +77,11 @@ integer, intent(out) :: iret
     if (detf .le. r8prem()) then
         iret = 1
         goto 999
-    endif
+    end if
     call deflog(ndim, fPrev, epslPrev, gn, lamb, logl, iret)
     if (iret .ne. 0) then
         goto 999
-    endif
+    end if
 
 ! - Compute kinematic at end of step
     if (lCorr) then
@@ -89,13 +89,13 @@ integer, intent(out) :: iret
         if (detf .le. r8prem()) then
             iret = 1
             goto 999
-        endif
+        end if
         call deflog(ndim, fCurr, epslCurr, gn, lamb, logl, iret)
-        if (iret .ne. 0)  then
+        if (iret .ne. 0) then
             goto 999
-        endif
-        epslIncr(1:6) = epslCurr(1:6) - epslPrev(1:6)
-    endif
+        end if
+        epslIncr(1:6) = epslCurr(1:6)-epslPrev(1:6)
+    end if
 
 ! - Get previous stress from internal state variables
     call dcopy(2*ndim, vim(lgpg-6+1), 1, tlogPrev, 1)

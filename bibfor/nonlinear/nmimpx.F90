@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmimpx(ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nonlinDSColumnWriteValue.h"
 #include "asterfort/iunifi.h"
 !
-type(NL_DS_Print), intent(in) :: ds_print
+    type(NL_DS_Print), intent(in) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,17 +47,17 @@ type(NL_DS_Print), intent(in) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mesg_unit       = iunifi('MESSAGE')
+    mesg_unit = iunifi('MESSAGE')
 !
 ! - Get parameters
 !
-    sep_line        = ds_print%table_cvg%sep_line
-    line_width      = ds_print%table_cvg%width
+    sep_line = ds_print%table_cvg%sep_line
+    line_width = ds_print%table_cvg%width
 !
 ! - Print line
 !
-    call nonlinDSColumnWriteValue(line_width,&
-                                  output_unit_ = mesg_unit,&
-                                  value_k_     = sep_line)
+    call nonlinDSColumnWriteValue(line_width, &
+                                  output_unit_=mesg_unit, &
+                                  value_k_=sep_line)
 !
 end subroutine

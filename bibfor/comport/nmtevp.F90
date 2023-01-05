@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
-                  deps, sigm, vim, option, sigp,&
+subroutine nmtevp(fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, crit, instam, instap, &
+                  deps, sigm, vim, option, sigp, &
                   vip, dsidep, demu, cinco, iret)
 !
 ! person_in_charge: sebastien.fayolle at edf.fr
@@ -71,8 +71,8 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !               = 1  => PAS DE PROBLEME
 !               = 0  => ECHEC DANS L'INTEGRATION DE LA LOI
 !
-    common /rconm9/acook,bcook,ccook,npuis,mpuis,&
-     &               epsp0,troom,tmelt,tp,dinst,sieleq,deuxmu,rprim,pm
+    common/rconm9/acook, bcook, ccook, npuis, mpuis,&
+     &               epsp0, troom, tmelt, tp, dinst, sieleq, deuxmu, rprim, pm
 !
     aster_logical :: plasti, inco, dech
 !
@@ -95,31 +95,31 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     character(len=16) :: nomres(8)
     character(len=16) :: meth
 !
-    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
-    character(len=6), parameter :: epsa(6) = (/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
-                                            'EPSAYZ'/)
+    real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
+    character(len=6), parameter :: epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', 'EPSAXY', 'EPSAXZ', &
+                                               'EPSAYZ'/)
 ! DEB ------------------------------------------------------------------
 !
 !     -- 1 INITIALISATIONS :
 !     ----------------------
     inco = typmod(2) .eq. 'INCO'
-    dech = option(11:14).eq.'ELAS'
+    dech = option(11:14) .eq. 'ELAS'
     if (inco) then
         co = 0.d0
     else
         co = 1.d0
-    endif
+    end if
     ndimsi = 2*ndim
     rac2 = sqrt(2.d0)
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------
-    nomres(1)='E'
-    nomres(2)='NU'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
 !
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tm, iret3)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tp, iret4)
 !
     do k = 1, 6
@@ -128,13 +128,13 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     end do
 !
     do k = 1, ndimsi
-        call rcvarc(' ', epsa(k), '-', fami, kpg,&
+        call rcvarc(' ', epsa(k), '-', fami, kpg, &
                     ksp, defam(k), iret5)
-        if (iret5 .ne. 0) defam(k)=0.d0
+        if (iret5 .ne. 0) defam(k) = 0.d0
 !
-        call rcvarc(' ', epsa(k), '+', fami, kpg,&
+        call rcvarc(' ', epsa(k), '+', fami, kpg, &
                     ksp, defap(k), iret5)
-        if (iret5 .ne. 0) defap(k)=0.d0
+        if (iret5 .ne. 0) defap(k) = 0.d0
     end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
@@ -144,8 +144,8 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
         defap(k) = defap(k)*rac2
     end do
 !
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres(1), valres(1), codret(1), 1)
     em = valres(1)
     num = valres(2)
@@ -154,9 +154,9 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
         troikm = deumum
     else
         troikm = em/(1.d0-2.d0*num)
-    endif
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    end if
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres(1), valres(1), codret(1), 1)
     e = valres(1)
     nu = valres(2)
@@ -167,55 +167,55 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     else
         deuxmu = e/(1.d0+nu)
         troisk = e/(1.d0-2.d0*nu)
-    endif
-    call verift(fami, kpg, ksp, 'T', imate,&
+    end if
+    call verift(fami, kpg, ksp, 'T', imate, &
                 epsth_=epsthe)
 !
     if (iret4 .eq. 0) then
-        nomres(1)='ALPHA'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        nomres(1) = 'ALPHA'
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, nomres(1), valres(1), codret(1), 0)
         if (codret(1) .ne. 0) valres(1) = 0.d0
         alpha = valres(1)
     else
         alpha = 0.d0
-    endif
+    end if
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------
-    plasti=(vim(2).ge.0.5d0)
+    plasti = (vim(2) .ge. 0.5d0)
 !
-    nomres(1)='A'
-    nomres(2)='B'
-    nomres(3)='N_PUIS'
-    nomres(4)='C'
-    nomres(5)='M_PUIS'
-    nomres(6)='EPSP0'
-    nomres(7)='TROOM'
-    nomres(8)='TMELT'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_COOK', 0, ' ', [0.d0],&
+    nomres(1) = 'A'
+    nomres(2) = 'B'
+    nomres(3) = 'N_PUIS'
+    nomres(4) = 'C'
+    nomres(5) = 'M_PUIS'
+    nomres(6) = 'EPSP0'
+    nomres(7) = 'TROOM'
+    nomres(8) = 'TMELT'
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ECRO_COOK', 0, ' ', [0.d0], &
                 3, nomres, valres, codret, 1)
     acook = valres(1)
     bcook = valres(2)
     npuis = valres(3)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_COOK', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ECRO_COOK', 0, ' ', [0.d0], &
                 5, nomres(4), valres(4), codret(4), 0)
 !
     if (codret(4) .ne. 0) then
         valres(4) = 0.d0
         valres(6) = 1.d0
-    endif
+    end if
     ccook = valres(4)
     epsp0 = valres(6)
     if (codret(5) .ne. 0) then
         valres(5) = 0.d0
         valres(7) = -1.d0
         valres(8) = 1.d0
-    endif
+    end if
     mpuis = valres(5)
     troom = valres(7)
     tmelt = valres(8)
@@ -224,65 +224,65 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     if (iret3 .ne. 0 .and. iret4 .ne. 0) then
         tm = troom
         tp = troom
-    endif
+    end if
 !
-    call eccook(acook, bcook, ccook, npuis, mpuis,&
-                epsp0, troom, tmelt, tm, vim(4),&
+    call eccook(acook, bcook, ccook, npuis, mpuis, &
+                epsp0, troom, tmelt, tm, vim(4), &
                 vim(1), vim(3), rp, rprim)
 !
 !
     demu = deuxmu
     if (inco) then
-        cinco =(1.d0-2.d0*nu)/nu
-    endif
+        cinco = (1.d0-2.d0*nu)/nu
+    end if
 !
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :
 !     --------------------------------
 !
     depsmo = 0.d0
     do k = 1, 3
-        depsth(k) = deps(k) -epsthe -(defap(k)-defam(k))
+        depsth(k) = deps(k)-epsthe-(defap(k)-defam(k))
         depsth(k+3) = deps(k+3)-(defap(k+3)-defam(k+3))
-        depsmo = depsmo + depsth(k)
+        depsmo = depsmo+depsth(k)
     end do
     depsmo = depsmo/3.d0
     do k = 1, ndimsi
-        depsdv(k) = depsth(k) - depsmo * kron(k)*co
+        depsdv(k) = depsth(k)-depsmo*kron(k)*co
     end do
 !
 !     -- 5 CALCUL DE SIGMP :
 !     ----------------------
     sigmmo = 0.d0
     do k = 1, 3
-        sigmmo = sigmmo + sigm(k)
+        sigmmo = sigmmo+sigm(k)
     end do
-    sigmmo = sigmmo /3.d0
+    sigmmo = sigmmo/3.d0
     do k = 1, ndimsi
-        sigmp(k)=deuxmu/deumum*(sigm(k)-sigmmo*kron(k)) + troisk/&
-        troikm*sigmmo*kron(k)
+        sigmp(k) = deuxmu/deumum*(sigm(k)-sigmmo*kron(k))+troisk/ &
+                   troikm*sigmmo*kron(k)
     end do
 !
 !     -- 6 CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
 !     -------------------------------------------------------
     sigmmo = 0.d0
     do k = 1, 3
-        sigmmo = sigmmo + sigmp(k)
+        sigmmo = sigmmo+sigmp(k)
     end do
-    sigmmo = sigmmo /3.d0
+    sigmmo = sigmmo/3.d0
     sieleq = 0.d0
     do k = 1, ndimsi
-        sigmdv(k) = sigmp(k)- sigmmo * kron(k)
-        sigel(k) = sigmdv(k) + deuxmu * depsdv(k)
-        sieleq = sieleq + sigel(k)**2
+        sigmdv(k) = sigmp(k)-sigmmo*kron(k)
+        sigel(k) = sigmdv(k)+deuxmu*depsdv(k)
+        sieleq = sieleq+sigel(k)**2
     end do
     sieleq = sqrt(1.5d0*sieleq)
-    seuil = sieleq - rp
+    seuil = sieleq-rp
 !
 !=======================================================================
 !     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
 !=======================================================================
 !
-    dp=0.d0
+    dp = 0.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
 !       -- 7.1 CALCUL DE DP :
@@ -290,67 +290,67 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
         if (seuil .le. 0.d0) then
             dp = 0.d0
             vip(2) = 0.d0
-            vip(3)=dp
-            vip(4)=dinst
+            vip(3) = dp
+            vip(4) = dinst
         else
 !
             pm = vim(1)
 !
-            dp0 = (sieleq - rp)/(1.5d0*deuxmu)
-            call eccook(acook, bcook, ccook, npuis, mpuis,&
-                        epsp0, troom, tmelt, tp, dinst,&
+            dp0 = (sieleq-rp)/(1.5d0*deuxmu)
+            call eccook(acook, bcook, ccook, npuis, mpuis, &
+                        epsp0, troom, tmelt, tp, dinst, &
                         pm, dp0, sigy, rprim0)
-            precr = crit(3) * sigy
+            precr = crit(3)*sigy
             niter = nint(crit(1))
 !     -------------------------------------------------------
 !
 ! ---        F0 < 0 , ON CHERCHE DPMAX PAS TROP GRAND TEL QUE FMAX < 0
 !
-            fmax=sigy
-            dpmax=dp0
-            coef1=2.d0
+            fmax = sigy
+            dpmax = dp0
+            coef1 = 2.d0
             if (abs(fmax) .le. precr) then
                 dp = dpmax
-                iter=1
+                iter = 1
                 goto 50
-            else if (fmax.gt.0.d0) then
+            else if (fmax .gt. 0.d0) then
 !               FMAX > 0.
 !               VERIFICATION QUE DPMAX N'EST PAS TROP GRAND.BRACKETTING
                 do i = 1, niter
                     dpmax = dpmax/coef1
-                    fmax=nmcri9(dpmax)
+                    fmax = nmcri9(dpmax)
                     if (abs(fmax) .le. precr) then
                         dp = dpmax
-                        iter=i
+                        iter = i
                         goto 50
-                    else if (fmax.lt.0.d0) then
+                    else if (fmax .lt. 0.d0) then
 !                     ON RECALCULE LA VALEUR PRECEDENTE DE DPMAX
                         dpmax = dpmax*coef1
-                        fmax=nmcri9(dpmax)
+                        fmax = nmcri9(dpmax)
                         goto 21
-                    endif
+                    end if
                 end do
                 goto 21
 !
             else
 !               FMAX <0. On augmente DPMAX jusqu'A ce que F(DPMAX) > 0
                 do i = 1, niter
-                    fmax=nmcri9(dpmax)
+                    fmax = nmcri9(dpmax)
                     if (abs(fmax) .le. precr) then
                         dp = dpmax
-                        iter=i
+                        iter = i
                         goto 50
-                    else if (fmax.gt.0.d0) then
+                    else if (fmax .gt. 0.d0) then
                         goto 21
                     else
                         dpmax = dpmax*coef1
-                    endif
+                    end if
                 end do
                 call utmess('A', 'ALGORITH6_79')
                 goto 21
-            endif
+            end if
 !
- 21         continue
+21          continue
 !
 !
 !     -------------------------------------------------------
@@ -359,38 +359,38 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !            RECUPERATION DE L'ALGORITHME DE RESOLUTION 1D
             call utlcal('VALE_NOM', meth, crit(6))
 !     -------------------------------------------------------
-            call zerofr(2, meth, nmcri9, 0.d0, dpmax,&
+            call zerofr(2, meth, nmcri9, 0.d0, dpmax, &
                         precr, niter, dp, iret, iter)
 !
- 50         continue
+50          continue
 !
-            vip(2)=iter
+            vip(2) = iter
 !
             if (iret .eq. 1) then
                 goto 999
-            endif
+            end if
 !
-            call eccook(acook, bcook, ccook, npuis, mpuis,&
-                        epsp0, troom, tmelt, tp, dinst,&
+            call eccook(acook, bcook, ccook, npuis, mpuis, &
+                        epsp0, troom, tmelt, tp, dinst, &
                         pm, dp, rp, rprim)
-            vip(3)=dp
-            vip(4)=dinst
+            vip(3) = dp
+            vip(4) = dinst
 !
-        endif
+        end if
 !
-        vip(1) = vim(1) + dp
-        plasti=(vip(2).ge.0.5d0)
+        vip(1) = vim(1)+dp
+        plasti = (vip(2) .ge. 0.5d0)
 !
 !         -- 7.2 CALCUL DE SIGP :
 !         -----------------------
 !
         sieleq = 0.d0
-        sigpmo = sigmmo + co*troisk*depsmo
+        sigpmo = sigmmo+co*troisk*depsmo
         do k = 1, ndimsi
-            sigpdv(k) = sigmdv(k) + deuxmu * depsdv(k)
+            sigpdv(k) = sigmdv(k)+deuxmu*depsdv(k)
             sigpdv(k) = sigpdv(k)*rp/(rp+1.5d0*deuxmu*dp)
-            sieleq = sieleq + sigpdv(k)**2
-            sigp(k) = sigpdv(k) + sigpmo*kron(k)
+            sieleq = sieleq+sigpdv(k)**2
+            sigp(k) = sigpdv(k)+sigpmo*kron(k)
         end do
         sieleq = sqrt(1.5d0*sieleq)
 !
@@ -400,32 +400,32 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !         ------------------------------------------------
 !         FACTEUR DE TAYLOR-QUINNEY
         khi = 0.9d0
-        dirr = khi * sieleq * dp/dinst
+        dirr = khi*sieleq*dp/dinst
 !
 !         -- 7.3.2 CALCUL DES DISSIPATIONS THERMOELASTIQUE :
 !         --------------------------------------------------
         dte = 0.d0
-        if ((e.ne.em) .or. (nu.ne.num)) then
+        if ((e .ne. em) .or. (nu .ne. num)) then
             dgdtsg = (deuxmu-deumum)/(tp-tm)/deuxmu
             dkdtsk = (troisk-troikm)/(tp-tm)/troisk
         else
             dgdtsg = 0.d0
             dkdtsk = 0.d0
-        endif
+        end if
 !
         do k = 1, ndimsi
             if (plasti) then
-                epspet = (deps(k)-3.d0*sigpdv(k)*dp/(2.d0*sieleq))/ dinst
+                epspet = (deps(k)-3.d0*sigpdv(k)*dp/(2.d0*sieleq))/dinst
             else
                 epspet = deps(k)/dinst
-            endif
-            tpdsdt=tp*(dgdtsg*sigp(k) +kron(k)*((dkdtsk-dgdtsg)*&
-            sigpmo-troisk*alpha))
-            dte = dte + tpdsdt*epspet
+            end if
+            tpdsdt = tp*(dgdtsg*sigp(k)+kron(k)*((dkdtsk-dgdtsg)* &
+                                                 sigpmo-troisk*alpha))
+            dte = dte+tpdsdt*epspet
         end do
-        vip(5) = dte + dirr
+        vip(5) = dte+dirr
 !
-    endif
+    end if
 !
 !=======================================================================
 !     -- 8 CALCUL DE DSIDEP(6,6) :
@@ -434,58 +434,58 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !
         if (option(1:10) .eq. 'RIGI_MECA_') then
 !         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
-            rp=0.d0
+            rp = 0.d0
             do k = 1, ndimsi
                 sigdv(k) = sigmdv(k)
-                rp = rp + sigdv(k)**2
+                rp = rp+sigdv(k)**2
             end do
             rp = sqrt(1.5d0*rp)
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
-            if (compor(1)(1:5) .eq. 'VMIS_') then
+            if (compor(1) (1:5) .eq. 'VMIS_') then
                 do k = 1, ndimsi
                     sigdv(k) = sigpdv(k)
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !       -- 8.1 PARTIE PLASTIQUE:
         do k = 1, ndimsi
             do l = 1, ndimsi
-                dsidep(k,l) = 0.d0
+                dsidep(k, l) = 0.d0
             end do
         end do
 !
-        a=1.d0
-        if (.not.dech) then
-            if (compor(1)(1:5) .eq. 'VMIS_') then
+        a = 1.d0
+        if (.not. dech) then
+            if (compor(1) (1:5) .eq. 'VMIS_') then
                 sigeps = 0.d0
                 do k = 1, ndimsi
-                    sigeps = sigeps + sigdv(k)*depsdv(k)
+                    sigeps = sigeps+sigdv(k)*depsdv(k)
                 end do
                 if (plasti .and. sigeps .ge. 0.d0) then
                     a = 1.d0+1.5d0*deuxmu*dp/rp
-                    coef = - (1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/ rp**2 *(1.d0 - dp*rprim/rp&
+                    coef = -(1.5d0*deuxmu)**2/(1.5d0*deuxmu+rprim)/rp**2*(1.d0-dp*rprim/rp&
                            & )/a
                     do k = 1, ndimsi
                         do l = 1, ndimsi
-                            dsidep(k,l) = coef*sigdv(k)*sigdv(l)
+                            dsidep(k, l) = coef*sigdv(k)*sigdv(l)
                         end do
                     end do
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 !       -- 8.2 PARTIE ELASTIQUE:
         do k = 1, 3
             do l = 1, 3
-                dsidep(k,l) = dsidep(k,l)+co*(troisk/3.d0-deuxmu/( 3.d0*a))
+                dsidep(k, l) = dsidep(k, l)+co*(troisk/3.d0-deuxmu/(3.d0*a))
             end do
         end do
         do k = 1, ndimsi
-            dsidep(k,k) = dsidep(k,k) + deuxmu/a
+            dsidep(k, k) = dsidep(k, k)+deuxmu/a
         end do
-    endif
+    end if
 !=======================================================================
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,16 +71,16 @@ subroutine te0331(option, nomte)
     integer :: iret
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-    poids=0.d0
-    dsigwb=0.d0
-    volume=0.d0
-    volact=0.d0
-    dvol=0.d0
+    poids = 0.d0
+    dsigwb = 0.d0
+    volume = 0.d0
+    volact = 0.d0
+    dvol = 0.d0
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     nomres(1) = 'M'
     nomres(2) = 'VOLU_REFE'
@@ -97,14 +97,14 @@ subroutine te0331(option, nomte)
     call jevech('PSIGISG', 'E', isigis)
 !
     call tecach('OOO', 'PVARIPG', 'L', iret, nval=7, itab=jtab)
-    nbvari = max(jtab(6),1)*jtab(7)
+    nbvari = max(jtab(6), 1)*jtab(7)
     call jevech('PCOMPOR', 'L', icompo)
     rela_comp = zk16(icompo-1+RELA_NAME)
 !
     call psvari(rela_comp, nbvari, ipopp, ipoppt)
 !
-    optcal(1) = zk24(issopt)(1:16)
-    optcal(2) = zk24(issopt)(17:19)
+    optcal(1) = zk24(issopt) (1:16)
+    optcal(2) = zk24(issopt) (17:19)
 !
     cong = 0.d0
     epsq = 0.d0
@@ -122,16 +122,16 @@ subroutine te0331(option, nomte)
 !
     if (optcal(1) .eq. 'SIGM_ELMOY') then
         tmoy = 0.d0
-    endif
+    end if
 !
 !
 !     --- RECUPERATION DES DONNEES MATERIAU ---
 !
-    call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, 1, 1, '+', zi(imate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 3, nomres, valres, icodre, 1)
-    call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, 1, 1, '+', zi(imate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, nomres(3), valres(3), icodre(3), 1)
     if (icodre(3) .ne. 0) valres(3) = 1.d-6
     m = valres(1)
@@ -142,93 +142,93 @@ subroutine te0331(option, nomte)
 !
 !=================================================================
 !=================================================================
-    if ((optcal(1).eq.'SIGM_ELMOY') .and. (optcal(2).eq.'NON')) then
+    if ((optcal(1) .eq. 'SIGM_ELMOY') .and. (optcal(2) .eq. 'NON')) then
         do kp = 1, npg
-            k=(kp-1)*nno
-            r=0.d0
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            k = (kp-1)*nno
+            r = 0.d0
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
-                do  ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                do ii = 1, nno
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
+                poids = poids*r
+            end if
 ! VOLUME PLASTIFIE
-            pp =zr(ivarig+nbvari*(kp-1)+ipopp-1)
+            pp = zr(ivarig+nbvari*(kp-1)+ipopp-1)
             if (pp .ge. seuil) then
-                dvol=poids
-                volume=volume+dvol
+                dvol = poids
+                volume = volume+dvol
                 do ii = 1, 4
-                    cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
+                    cong(ii) = cong(ii)+dvol*zr(icong+4*kp+ii-5)
                 end do
 !           --- TEMPERATURE MOYENNE
                 call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, 1, tg, iret)
                 if (iret .ne. 0) tg = 0.d0
-                tmoy = tmoy + tg*dvol
-            endif
+                tmoy = tmoy+tg*dvol
+            end if
 ! VOLUME PLASTIQUE ACTIF
-            if (rela_comp .eq. 'LEMAITRE' .and. (pp.ge.seuil)) then
+            if (rela_comp .eq. 'LEMAITRE' .and. (pp .ge. seuil)) then
                 ppt = 1.d0
             else
-                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
-            endif
+                ppt = zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+            end if
             if (ppt .ge. (1.0d0)) then
-                dvol=poids
-                volact=volact+dvol
-            endif
+                dvol = poids
+                volact = volact+dvol
+            end if
         end do
 !
         sigi = 0.d0
-        if ((volact.ne.0.d0) .and. (volume.ne.0.d0)) then
-            sig(1) =cong(1)/volume
-            sig(2) =cong(2)/volume
-            sig(3) =cong(3)/volume
-            sig(4) =cong(4)/volume
+        if ((volact .ne. 0.d0) .and. (volume .ne. 0.d0)) then
+            sig(1) = cong(1)/volume
+            sig(2) = cong(2)/volume
+            sig(3) = cong(3)/volume
+            sig(4) = cong(4)/volume
             call vpri2d(sig, sigi)
 !
             tmoy = tmoy/volume
-            call rcvalb(fami, 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tmoy],&
+            call rcvalb(fami, 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tmoy], &
                         1, nomres(4), valres(4), icodre(4), 1)
             sref = valres(4)
             sigi = sigi/sref
-        endif
-        sigold=zr(isigie)
+        end if
+        sigold = zr(isigie)
         if (sigi .gt. sigold) then
-            zr(isigis)=sigi
+            zr(isigis) = sigi
         else
-            zr(isigis)=zr(isigie)
-        endif
-        sigi=zr(isigis)
+            zr(isigis) = zr(isigie)
+        end if
+        sigi = zr(isigis)
 !
-        dsigwb=volume/v0*(sigi**m)
+        dsigwb = volume/v0*(sigi**m)
 !=================================================================
 !=================================================================
-    elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'OUI')) then
+    elseif ((optcal(1) .eq. 'SIGM_ELGA') .and. (optcal(2) .eq. 'OUI')) then
         do kp = 1, npg
-            r=0.d0
-            k=(kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            r = 0.d0
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
                 do ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
-            volume=poids
+                poids = poids*r
+            end if
+            volume = poids
             call jevech('PDEFORR', 'L', idefg)
             do ii = 1, 4
-                cong(ii)=zr(icong+4*kp+ii-5)
-                epsq(ii)=zr(idefg+4*kp+ii-5)
+                cong(ii) = zr(icong+4*kp+ii-5)
+                epsq(ii) = zr(idefg+4*kp+ii-5)
             end do
-            pp=zr(ivarig+nbvari*(kp-1)+ipopp-1)
-            if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
+            pp = zr(ivarig+nbvari*(kp-1)+ipopp-1)
+            if (rela_comp .eq. 'LEMAITRE' .and. (pp .ge. seuil)) then
                 ppt = 1.d0
             else
-                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
-            endif
+                ppt = zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+            end if
 !
             signew = 0.d0
             if (ppt .ge. (1.d0)) then
@@ -249,68 +249,68 @@ subroutine te0331(option, nomte)
                 tdp(5) = 0.d0
                 tdp(6) = 0.d0
                 call epdcp(tc, tdp, sigi, epsgi)
-                call rcvalb(fami, kp, 1, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', [0.d0],&
+                call rcvalb(fami, kp, 1, '+', zi(imate), &
+                            ' ', phenom, 0, ' ', [0.d0], &
                             1, nomres(4), valres(4), icodre(4), 1)
                 sref = valres(4)
 !
-                signew=exp((-epsgi/2.d0))*sigi/sref
-            endif
-            sigold=zr(isigie+kp-1)
+                signew = exp((-epsgi/2.d0))*sigi/sref
+            end if
+            sigold = zr(isigie+kp-1)
             if (signew .gt. sigold) then
-                zr(isigis+kp-1)=signew
+                zr(isigis+kp-1) = signew
             else
-                zr(isigis+kp-1)=zr(isigie+kp-1)
-            endif
-            signew=zr(isigis+kp-1)
-            dsigwb=dsigwb+volume*(signew**m)/v0
+                zr(isigis+kp-1) = zr(isigie+kp-1)
+            end if
+            signew = zr(isigis+kp-1)
+            dsigwb = dsigwb+volume*(signew**m)/v0
 !
         end do
 !=================================================================
 !=================================================================
-      elseif ((optcal(1).eq.'SIGM_ELMOY').and.(optcal(2).eq.'OUI')) then
+    elseif ((optcal(1) .eq. 'SIGM_ELMOY') .and. (optcal(2) .eq. 'OUI')) then
 !
         do kp = 1, npg
-            r=0.d0
-            k=(kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            r = 0.d0
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
                 do ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
+                poids = poids*r
+            end if
 ! VOL PLASTIFIE
-            pp =zr(ivarig+nbvari*(kp-1)+ipopp-1)
+            pp = zr(ivarig+nbvari*(kp-1)+ipopp-1)
             call jevech('PDEFORR', 'L', idefg)
             if (pp .ge. seuil) then
-                dvol=poids
-                volume=volume+dvol
+                dvol = poids
+                volume = volume+dvol
                 do ii = 1, 4
-                    cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
-                    epsq(ii)=epsq(ii)+dvol*zr(idefg+4*kp+ii-5)
+                    cong(ii) = cong(ii)+dvol*zr(icong+4*kp+ii-5)
+                    epsq(ii) = epsq(ii)+dvol*zr(idefg+4*kp+ii-5)
                 end do
 !           --- TEMPERATURE MOYENNE
-                call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+                call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, &
                             1, tg, iret)
                 if (iret .ne. 0) tg = 0.d0
-                tmoy = tmoy + tg*dvol
-            endif
+                tmoy = tmoy+tg*dvol
+            end if
 ! VOL PLASTIQUE ACTIF
-            if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
+            if (rela_comp .eq. 'LEMAITRE' .and. (pp .ge. seuil)) then
                 ppt = 1.d0
             else
-                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
-            endif
+                ppt = zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+            end if
             if (ppt .ge. (1.0d0)) then
-                dvol=poids
-                volact=volact+dvol
-            endif
+                dvol = poids
+                volact = volact+dvol
+            end if
         end do
 !
         signew = 0.d0
-        if ((volact.ne.(0.d0)) .and. (volume.ne.0.d0)) then
+        if ((volact .ne. (0.d0)) .and. (volume .ne. 0.d0)) then
             tc(1) = cong(1)/volume
             tc(2) = cong(2)/volume
             tc(3) = cong(3)/volume
@@ -326,71 +326,71 @@ subroutine te0331(option, nomte)
             tdp(6) = 0.d0
             call epdcp(tc, tdp, sigi, epsgi)
             tmoy = tmoy/volume
-            call rcvalb(fami, 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tmoy],&
+            call rcvalb(fami, 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tmoy], &
                         1, nomres(4), valres(4), icodre(4), 1)
             sref = valres(4)
-            signew=exp((-epsgi/2.d0))*sigi/sref
-        endif
-        sigold=zr(isigie)
+            signew = exp((-epsgi/2.d0))*sigi/sref
+        end if
+        sigold = zr(isigie)
         if (signew .gt. sigold) then
-            zr(isigis)=signew
+            zr(isigis) = signew
         else
-            zr(isigis)=zr(isigie)
-        endif
-        signew= zr(isigis)
-        dsigwb=volume*(signew**m)/v0
+            zr(isigis) = zr(isigie)
+        end if
+        signew = zr(isigis)
+        dsigwb = volume*(signew**m)/v0
 !=================================================================
 !=================================================================
-    elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'NON')) then
+    elseif ((optcal(1) .eq. 'SIGM_ELGA') .and. (optcal(2) .eq. 'NON')) then
         do kp = 1, npg
-            k=(kp-1)*nno
-            r=0.d0
+            k = (kp-1)*nno
+            r = 0.d0
             do ii = 1, 4
-                cong(ii)=zr(icong+(4*kp)-5+ii)
+                cong(ii) = zr(icong+(4*kp)-5+ii)
             end do
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
             if (laxi) then
                 do ii = 1, nno
-                    r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
+                    r = r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
                 end do
-                poids=poids*r
-            endif
-            volume=poids
+                poids = poids*r
+            end if
+            volume = poids
 !
             sigi = 0.d0
-            pp=zr(ivarig+nbvari*(kp-1)+ipopp-1)
-            if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
+            pp = zr(ivarig+nbvari*(kp-1)+ipopp-1)
+            if (rela_comp .eq. 'LEMAITRE' .and. (pp .ge. seuil)) then
                 ppt = 1.d0
             else
-                ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
-            endif
+                ppt = zr(ivarig+nbvari*(kp-1)+ipoppt-1)
+            end if
             if (ppt .ge. (1.d0)) then
 ! CALCUL DE SIGI
                 call vpri2d(cong, sigi)
-                call rcvalb(fami, kp, 1, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', [0.d0],&
+                call rcvalb(fami, kp, 1, '+', zi(imate), &
+                            ' ', phenom, 0, ' ', [0.d0], &
                             1, nomres(4), valres(4), icodre(4), 1)
                 sref = valres(4)
                 sigi = sigi/sref
-            endif
-            sigold=zr(isigie+kp-1)
+            end if
+            sigold = zr(isigie+kp-1)
             if (sigi .gt. sigold) then
-                zr(isigis+kp-1)=sigi
+                zr(isigis+kp-1) = sigi
             else
-                zr(isigis+kp-1)=zr(isigie+kp-1)
-            endif
-            sigi=zr(isigis+kp-1)
-            dsigwb=dsigwb+volume*(sigi**m)/v0
+                zr(isigis+kp-1) = zr(isigie+kp-1)
+            end if
+            sigi = zr(isigis+kp-1)
+            dsigwb = dsigwb+volume*(sigi**m)/v0
         end do
     else
 !        OPTION DE CALCUL NON VALIDE
         ASSERT(.false.)
-    endif
+    end if
 !=================================================================
 !=================================================================
-    zr(iweib)=dsigwb
+    zr(iweib) = dsigwb
 !
 !     DESTRUCTION DES OBJETS CREES DANS LA BASE
 !

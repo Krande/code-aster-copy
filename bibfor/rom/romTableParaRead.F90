@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine romTableParaRead(tablReduCoor)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/getvid.h"
 !
-type(ROM_DS_TablReduCoor), intent(inout) :: tablReduCoor
+    type(ROM_DS_TablReduCoor), intent(inout) :: tablReduCoor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,10 +47,10 @@ type(ROM_DS_TablReduCoor), intent(inout) :: tablReduCoor
 ! --------------------------------------------------------------------------------------------------
 !
     lTablFromUser = ASTER_FALSE
-    tablUserName  = ' '
-    call getvid(' ', 'TABL_COOR_REDUIT', scal = tablUserName, nbret = nocc)
+    tablUserName = ' '
+    call getvid(' ', 'TABL_COOR_REDUIT', scal=tablUserName, nbret=nocc)
     lTablFromUser = nocc .gt. 0
     tablReduCoor%lTablFromUser = lTablFromUser
-    tablReduCoor%tablUserName  = tablUserName
+    tablReduCoor%tablUserName = tablUserName
 !
 end subroutine

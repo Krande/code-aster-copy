@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'RVPAR0' )
+    parameter(nompro='RVPAR0')
 !
     integer :: ifm, niv
     integer :: iocc, iaux
@@ -73,7 +73,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 !
     if (niv .ge. 2) then
         call utmess('I', 'POSTRELE_8', sk=nomtab)
-    endif
+    end if
 !
     nomstr = '&&'//nompro//'.NOMPARAMS'
 !
@@ -91,58 +91,58 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 !
     nbtabl = 0
 !
-    do 22 , iocc = 1, nbpost
+    do 22, iocc = 1, nbpost
 !
 ! 2.2.1. ==> EST-CE UN RESULTAT ?
 !
-    call getvid(mcf, 'RESULTAT', iocc=iocc, nbval=0, nbret=nbresu)
+        call getvid(mcf, 'RESULTAT', iocc=iocc, nbval=0, nbret=nbresu)
 !
 !
 ! 2.2.2.1. ==> ON CHERCHE SI CETTE CONFIGURATION EST DEJA ENREGISTREE ;
 !              SI OUI, ON PASSE AU PARAMETRE SUIVANT (GOTO 220)
 !
-    do 222 , iaux = 1 , nbtabl
-    if (zk8(admemo+2*iaux-2) .eq. nomtab) goto 220
-222 continue
+        do 222, iaux = 1, nbtabl
+            if (zk8(admemo+2*iaux-2) .eq. nomtab) goto 220
+222         continue
 !
 ! 2.2.2.2. ==> LA CONFIGURATION EST NOUVELLE
 !              ON L'ENREGISTRE, EN ALLONGEANT EVENTUELLEMENT SI LA PLACE
 !              RESERVEE EST TROP PETITE
 !
-    if (nbtabl .ge. nbtbmx) then
-        nbtbmx = nbtbmx + 50
-        iaux = 2*nbtbmx
-        call juveca(nomstr, iaux)
-        call jeveuo(nomstr, 'E', admemo)
-    endif
-    call jelira(nomstr, 'LONUTI', iaux)
-    iaux = iaux + 2
-    call jeecra(nomstr, 'LONUTI', iaux)
+            if (nbtabl .ge. nbtbmx) then
+                nbtbmx = nbtbmx+50
+                iaux = 2*nbtbmx
+                call juveca(nomstr, iaux)
+                call jeveuo(nomstr, 'E', admemo)
+            end if
+            call jelira(nomstr, 'LONUTI', iaux)
+            iaux = iaux+2
+            call jeecra(nomstr, 'LONUTI', iaux)
 !
-    nbtabl = nbtabl + 1
-    zk8(admemo+2*nbtabl-2) = nomtab
+            nbtabl = nbtabl+1
+            zk8(admemo+2*nbtabl-2) = nomtab
 !
-    22 end do
+22      end do
 !
-220 continue
+220     continue
 !
 !====
 ! 3. ON INITIALISE LES TABLES DEMANDEES
 !====
 !
-    do 30 , iaux = 1 , nbtabl
+        do 30, iaux = 1, nbtabl
 !
-    nomtab = zk8(admemo+2*iaux-2)
-    call rvpara(nomtab, mcf, nbpost)
+            nomtab = zk8(admemo+2*iaux-2)
+            call rvpara(nomtab, mcf, nbpost)
 !
-    30 end do
+30      end do
 !
 !====
 ! 4. MENAGE
 !====
 !
-    call jedetr(nomstr)
+        call jedetr(nomstr)
 !
-    call jedema()
+        call jedema()
 !
-end subroutine
+        end subroutine

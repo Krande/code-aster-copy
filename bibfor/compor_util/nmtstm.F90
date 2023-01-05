@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 
 subroutine nmtstm(carcri, jv_matr, l_matr_symm)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Behaviour_type.h"
 !
-real(kind=8), intent(in) :: carcri(*)
-aster_logical, intent(out) :: l_matr_symm
-integer, intent(out) :: jv_matr
+    real(kind=8), intent(in) :: carcri(*)
+    aster_logical, intent(out) :: l_matr_symm
+    integer, intent(out) :: jv_matr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,10 +45,10 @@ integer, intent(out) :: jv_matr
     l_matr_symm = .true.
     if (nint(carcri(CARCRI_MATRSYME)) .gt. 0) then
         l_matr_symm = .false.
-    endif
+    end if
     if (l_matr_symm) then
         call jevech('PMATUUR', 'E', jv_matr)
     else
         call jevech('PMATUNS', 'E', jv_matr)
-    endif
+    end if
 end subroutine

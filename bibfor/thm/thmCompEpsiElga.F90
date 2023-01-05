@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine thmCompEpsiElga(ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/thmGetGene.h"
 #include "asterfort/thmGetElemIntegration.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,7 +75,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Cannot compute for finite volume
 !
-    ASSERT(.not.l_vf)
+    ASSERT(.not. l_vf)
 !
 ! - Get type of integration
 !
@@ -83,8 +83,8 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf  , ndim ,&
-                    mecani, press1  , press2, tempe)
+    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+                    mecani, press1, press2, tempe)
 !
 ! - Get reference elements
 !
@@ -92,11 +92,11 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get informations about element
 !
-    call thmGetElemInfo(l_vf, elrefe, elref2,&
+    call thmGetElemInfo(l_vf, elrefe, elref2, &
                         nno, nnos, nnom, &
-                        jv_gano, jv_poids, jv_poids2,&
-                        jv_func, jv_func2, jv_dfunc, jv_dfunc2,&
-                        inte_type, npi   , npi2    , npg)
+                        jv_gano, jv_poids, jv_poids2, &
+                        jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                        inte_type, npi, npi2, npg)
     ASSERT(npi .le. 27)
     ASSERT(nno .le. 20)
 !
@@ -109,11 +109,11 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get dimensions about element
 !
-    call thmGetElemDime(ndim     , nnos   , nnom   ,&
-                        mecani   , press1 , press2 , tempe ,&
-                        nddls    , nddlm  ,&
-                        nddl_meca, nddl_p1, nddl_p2,&
-                        dimdep   , dimdef , dimcon , dimuel)
+    call thmGetElemDime(ndim, nnos, nnom, &
+                        mecani, press1, press2, tempe, &
+                        nddls, nddlm, &
+                        nddl_meca, nddl_p1, nddl_p2, &
+                        dimdep, dimdef, dimcon, dimuel)
 !
 ! - Input fields
 !
@@ -122,14 +122,14 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Compute strains
 !
-    call epsthm(ds_thm   , l_axi      , ndim       ,&
-                addeme   , addep1     , addep2     , addete   ,&
-                nno      , nnos       , &
-                dimuel   , dimdef     , nddls      , nddlm    ,&
-                nddl_meca, nddl_p1    , nddl_p2    ,&
-                npi      , zr(jv_geom), zr(jv_disp),&
-                jv_poids , jv_poids2  ,&
-                jv_func  , jv_func2   , jv_dfunc, jv_dfunc2,&
+    call epsthm(ds_thm, l_axi, ndim, &
+                addeme, addep1, addep2, addete, &
+                nno, nnos, &
+                dimuel, dimdef, nddls, nddlm, &
+                nddl_meca, nddl_p1, nddl_p2, &
+                npi, zr(jv_geom), zr(jv_disp), &
+                jv_poids, jv_poids2, &
+                jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
                 epsm)
 !
 ! - Output field

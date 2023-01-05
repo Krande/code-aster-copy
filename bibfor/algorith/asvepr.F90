@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
     newnom = '.0000000'
     vecele = vecelz
-    ASSERT(typres.eq.'R'.or.typres.eq.'C')
+    ASSERT(typres .eq. 'R' .or. typres .eq. 'C')
 !
 ! --- LE VECT_ELEM EXISTE-IL ?
 !
@@ -103,7 +103,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
         nbvec = 0
     else
         call jelira(vecele//'.RELR', 'LONUTI', nbvec)
-    endif
+    end if
 !
 ! --- NOM DU CHAMNO
 !
@@ -120,10 +120,10 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
         call jeveuo(vachar, 'L', jvacha)
         call jelira(vachar, 'LONMAX', nbvach)
         do ivach = 1, nbvach
-            call detrsd('CHAMP_GD', zk24(jvacha-1+ivach)(1:19))
+            call detrsd('CHAMP_GD', zk24(jvacha-1+ivach) (1:19))
         end do
         call jedetr(vachar)
-    endif
+    end if
 !
 ! --- CREATION DU VACHAR
 !
@@ -134,17 +134,17 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     if (nbvec .eq. 0) then
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, ichin_ = -2)
-        call vtcreb(chamno, 'V', typres,&
-                    nume_ddlz = numedd)
+        call corich('E', chamno, ichin_=-2)
+        call vtcreb(chamno, 'V', typres, &
+                    nume_ddlz=numedd)
         zk24(jvacha-1+1) = chamno
         goto 99
-    endif
+    end if
 !
 ! --- CREER L'OBJET .RERR DU VECT_ELEM
 !
     call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-    call memare('V', '&&ASVEPR', modele, ' ', ' ',&
+    call memare('V', '&&ASVEPR', modele, ' ', ' ', &
                 'CHAR_MECA')
 !
 ! --- INITIALISER L'OBJET .RELR DU VECT_ELEM
@@ -168,13 +168,13 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! ----- ENREGISTREMENT DU NUMERO DE LA CHARGE DANS LE CHAM_NO
 !
-        call corich('L', resuel, ichout_ = ichar)
-        call corich('E', chamno, ichin_ = ichar)
+        call corich('L', resuel, ichout_=ichar)
+        call corich('E', chamno, ichin_=ichar)
 !
 ! ----- TYPE DU RESU_ELEM
 !
         call dismoi('TYPE_CHAMP', resuel, 'CHAMP', repk=tyresl)
-        ASSERT(tyresl.eq.'RESL'.or.tyresl.eq.'NOEU')
+        ASSERT(tyresl .eq. 'RESL' .or. tyresl .eq. 'NOEU')
 !
 ! ----- SI LE RESU_ELEM EST UN VRAI RESU_ELEM (ISSU DE CALCUL)
 !
@@ -184,14 +184,14 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
             call dismoi('TYPE_SCA', resuel, 'RESUELEM', repk=typsca)
             if (typsca .eq. 'R') then
                 ityprs = 1
-            else if (typsca.eq.'C') then
+            else if (typsca .eq. 'C') then
                 ityprs = 2
             else
                 ASSERT(.false.)
-            endif
-            call assvec('V', chamno, 1, '&&ASVEPR           .RELR', [1.d0],&
-                        numedd, vectScalType_ = ityprs)
-        endif
+            end if
+            call assvec('V', chamno, 1, '&&ASVEPR           .RELR', [1.d0], &
+                        numedd, vectScalType_=ityprs)
+        end if
 !
 ! ----- SI LE RESU_ELEM EST UN FAUX RESU_ELEM (CHAM_NO)
 !
@@ -199,10 +199,10 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
             call lisltc(lischa, ichar, typech)
             typchn = 'R'
             if (typech .eq. 'COMP') typchn = 'C'
-            call vtcreb(chamno, 'V', typchn,&
-                        nume_ddlz = numedd)
+            call vtcreb(chamno, 'V', typchn, &
+                        nume_ddlz=numedd)
             call vtcopy(resuel, chamno, 'F', ibid)
-        endif
+        end if
 !
     end do
     call jedetr('&&ASVEPR           .RELR')
@@ -212,7 +212,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
     if (typres .eq. 'C') then
         call chor2c(lischa, vecele)
-    endif
+    end if
 !
 ! --- DESTRUCTION DU VECT_ELEM
 !
@@ -225,7 +225,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     call jedetr(vecele//'.RELR')
     call jedetr(vecele//'.RERR')
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

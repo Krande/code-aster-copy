@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
+subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
                   nbtet)
     implicit none
 !
@@ -66,7 +66,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     integer :: numg
     real(kind=8) :: angle, pi, x
 !-----------------------------------------------------------------------
-    parameter   (nbcpmx=300)
+    parameter(nbcpmx=300)
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, nomnoe, tyd, intf, kbid
     real(kind=8) :: xd(10), xg(10), xtd(10), xtg(10), tet0(10, 10)
@@ -77,12 +77,12 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !-----------------------------------------------------------------------
 !
-    data nook /.false./
+    data nook/.false./
 !
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    pi=r8pi()
+    pi = r8pi()
 !
 !-----------------RECUPERATION DES CONCEPTS AMONT-----------------------
 !
@@ -97,7 +97,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
 !
 !
@@ -123,71 +123,71 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     call jelira(jexnum(intf//'.IDC_LINO', numg), 'LONMAX', nbnog)
 !
     if (nbnod .ne. nbnog) then
-        vali (1) = nbnod
-        vali (2) = nbnog
+        vali(1) = nbnod
+        vali(2) = nbnog
         call utmess('F', 'ALGORITH14_99', ni=2, vali=vali)
-    endif
+    end if
 !
 !
 !--------------RECUPERATION NOMBRE DE DDL AUX INTERFACES----------------
 !
-    kbid=' '
-    call bmnodi(basmod, kbid, '          ', numd, 0,&
+    kbid = ' '
+    call bmnodi(basmod, kbid, '          ', numd, 0, &
                 ibid, nbddr)
-    kbid=' '
-    call bmnodi(basmod, kbid, '          ', numg, 0,&
+    kbid = ' '
+    call bmnodi(basmod, kbid, '          ', numg, 0, &
                 ibid, nbdga)
     if (nbdga .ne. nbddr) then
-        vali (1) = nbddr
-        vali (2) = nbdga
+        vali(1) = nbddr
+        vali(2) = nbdga
         call utmess('F', 'ALGORITH15_1', ni=2, vali=vali)
-    endif
+    end if
 !
 !
     if (nbddr .ne. nbtet) then
-        vali (1) = nbddr
-        vali (2) = nbtet
+        vali(1) = nbddr
+        vali(2) = nbtet
         call utmess('F', 'ALGORITH15_2', ni=2, vali=vali)
-    endif
+    end if
 !
 !----------------------CALCUL DU TETA ELEMENTAIRE-----------------------
 !
-    angle=2*pi/nbsec
+    angle = 2*pi/nbsec
     call intet0(angle, tet0, 3)
 !
 !
-    nbdcou=0
+    nbdcou = 0
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'DEPL_R'), 'L', jnocmp)
     do i = 1, nbnod
-        inod=zi(llnod+i-1)
+        inod = zi(llnod+i-1)
 !******************************************************************
 !        ICODD=ZI(LLDESC+2*NBNOT+INOD-1)
-        inog=zi(llnog+i-1)
+        inog = zi(llnog+i-1)
 !        ICODG=ZI(LLDESC+2*NBNOT+INOG-1)
         call isdeco(zi(lldesc+2*nbnot+(inod-1)*nbec+1-1), idecd, nbcmp)
         call isdeco(zi(lldesc+2*nbnot+(inog-1)*nbec+1-1), idecg, nbcmp)
 !******************************************************************
         do j = 1, 10
             if (idecd(j) .eq. 1) then
-                xd(j)=1.d0
+                xd(j) = 1.d0
             else
-                xd(j)=0.d0
-            endif
+                xd(j) = 0.d0
+            end if
 !
             if (idecg(j) .eq. 1) then
-                xg(j)=1.d0
+                xg(j) = 1.d0
             else
-                xg(j)=0.d0
-            endif
+                xg(j) = 0.d0
+            end if
         end do
 !
 !
         do j = 1, 10
-            xtd(j)=0.d0
-            xtg(j)=0.d0
+            xtd(j) = 0.d0
+            xtg(j) = 0.d0
             do k = 1, 10
-                xtd(j)=xtd(j)+abs(tet0(j,k))*xd(k)
-                xtg(j)=xtg(j)+abs(tet0(k,j))*xg(k)
+                xtd(j) = xtd(j)+abs(tet0(j, k))*xd(k)
+                xtg(j) = xtg(j)+abs(tet0(k, j))*xg(k)
             end do
         end do
 !
@@ -197,75 +197,75 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
         do j = 1, 6
 
             if (xtd(j) .gt. 0.d0 .and. xg(j) .eq. 0.d0) then
-                noer=zi(lldesc+inog-1)
+                noer = zi(lldesc+inog-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=zk8(jnocmp-1+j)
+                tyd = zk8(jnocmp-1+j)
                 call utmess('E', 'ALGORITH15_3')
-                valk (1) = tyd
-                valk (2) = nomnoe
+                valk(1) = tyd
+                valk(2) = nomnoe
                 call utmess('E', 'ALGORITH15_4', nk=2, valk=valk)
-                nook=.true.
-            endif
+                nook = .true.
+            end if
             if (xtg(j) .gt. 0.d0 .and. xd(j) .eq. 0.d0) then
-                noer=zi(lldesc+inod-1)
+                noer = zi(lldesc+inod-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=zk8(jnocmp-1+j)
+                tyd = zk8(jnocmp-1+j)
                 call utmess('E', 'ALGORITH15_3')
-                valk (1) = tyd
-                valk (2) = nomnoe
+                valk(1) = tyd
+                valk(2) = nomnoe
                 call utmess('E', 'ALGORITH15_6', nk=2, valk=valk)
-                nook=.true.
-            endif
-        enddo
+                nook = .true.
+            end if
+        end do
 !
         if (nook) then
             call utmess('F', 'ALGORITH15_7')
-        endif
+        end if
 
         do j = 7, nbcmp
-            if (idecd(j).eq. 1.d0) then
-                noer=zi(lldesc+inod-1)
+            if (idecd(j) .eq. 1.d0) then
+                noer = zi(lldesc+inod-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=zk8(jnocmp-1+j)
-                valk (1) = tyd
-                valk (2) = nomnoe
+                tyd = zk8(jnocmp-1+j)
+                valk(1) = tyd
+                valk(2) = nomnoe
                 call utmess('E', 'ALGORITH15_5', nk=2, valk=valk)
-                nook=.true.
-            endif
-            if (idecg(j).eq. 1.d0) then
-                noer=zi(lldesc+inog-1)
+                nook = .true.
+            end if
+            if (idecg(j) .eq. 1.d0) then
+                noer = zi(lldesc+inog-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=zk8(jnocmp-1+j)
-                valk (1) = tyd
-                valk (2) = nomnoe
+                tyd = zk8(jnocmp-1+j)
+                valk(1) = tyd
+                valk(2) = nomnoe
                 call utmess('E', 'ALGORITH15_5', nk=2, valk=valk)
-                nook=.true.
-            endif
-        enddo
+                nook = .true.
+            end if
+        end do
 !
         if (nook) then
             call utmess('F', 'ALGORITH15_9')
-        endif
+        end if
 !
-        iloci=0
-        icomp=0
+        iloci = 0
+        icomp = 0
         do j = 1, 10
             if (idecg(j) .gt. 0) then
-                iloci=iloci+1
-                ilocj=0
-                icomp=icomp+1
+                iloci = iloci+1
+                ilocj = 0
+                icomp = icomp+1
                 do k = 1, 10
                     if (idecd(k) .gt. 0) then
-                        ilocj=ilocj+1
-                        x=tet0(j,k)
-                        call amppr(teta, nbddr, nbddr, [x], 1,&
-                                   1, nbdcou+ iloci, nbdcou+ilocj)
-                    endif
+                        ilocj = ilocj+1
+                        x = tet0(j, k)
+                        call amppr(teta, nbddr, nbddr, [x], 1, &
+                                   1, nbdcou+iloci, nbdcou+ilocj)
+                    end if
                 end do
-            endif
+            end if
         end do
 !
-        nbdcou=nbdcou+icomp
+        nbdcou = nbdcou+icomp
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine mateMFrontToAsterProperties(mfront_name, aster_name_, index_, l_anis_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-character(len=16), intent(inout) :: mfront_name
-character(len=16), optional, intent(inout) :: aster_name_
-integer, optional, intent(out) :: index_
-aster_logical, optional, intent(out) :: l_anis_
+    character(len=16), intent(inout) :: mfront_name
+    character(len=16), optional, intent(inout) :: aster_name_
+    integer, optional, intent(out) :: index_
+    aster_logical, optional, intent(out) :: l_anis_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,21 +51,21 @@ aster_logical, optional, intent(out) :: l_anis_
     integer, parameter :: nb_keyw_max = 13
     character(len=16) :: aster_name
     character(len=16), parameter :: mfront_keyw(nb_keyw_max) = &
-            (/'YoungModulus    ','PoissonRatio    ','ThermalExpansion',&
-              'MassDensity     ',&
-              'YoungModulus1   ','YoungModulus2   ','YoungModulus3   ',&
-              'PoissonRatio12  ','PoissonRatio23  ','PoissonRatio13  ',&
-              'ShearModulus12  ','ShearModulus23  ','ShearModulus13  '/)
+                                    (/'YoungModulus    ', 'PoissonRatio    ', 'ThermalExpansion', &
+                                      'MassDensity     ', &
+                                      'YoungModulus1   ', 'YoungModulus2   ', 'YoungModulus3   ', &
+                                      'PoissonRatio12  ', 'PoissonRatio23  ', 'PoissonRatio13  ', &
+                                      'ShearModulus12  ', 'ShearModulus23  ', 'ShearModulus13  '/)
     character(len=16), parameter :: aster_keyw(nb_keyw_max) = &
-            (/'E               ','NU              ','ALPHA           ',&
-              'RHO             ',&
-              'E_L             ','E_T             ','E_N             ',&
-              'NU_LT           ','NU_TN           ','NU_LN           ',&
-              'G_LT            ','G_TN            ','G_LN            '/)
+                                    (/'E               ', 'NU              ', 'ALPHA           ', &
+                                      'RHO             ', &
+                                      'E_L             ', 'E_T             ', 'E_N             ', &
+                                      'NU_LT           ', 'NU_TN           ', 'NU_LN           ', &
+                                      'G_LT            ', 'G_TN            ', 'G_LN            '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    indexE        = 0
+    indexE = 0
     l_find_mfront = mfront_name .eq. ' '
 !
 ! - Find name of property for ELAS
@@ -74,31 +74,31 @@ aster_logical, optional, intent(out) :: l_anis_
         if (l_find_mfront) then
             ASSERT(present(aster_name_))
             if (aster_name_ .eq. aster_keyw(i_keyw)) then
-                indexE      = i_keyw
+                indexE = i_keyw
                 mfront_name = mfront_keyw(indexE)
                 exit
-            endif
+            end if
         else
             if (mfront_name .eq. mfront_keyw(i_keyw)) then
-                indexE     = i_keyw
+                indexE = i_keyw
                 aster_name = aster_keyw(indexE)
                 exit
-            endif
-        endif
+            end if
+        end if
     end do
 !
     if (present(aster_name_)) then
         aster_name_ = aster_name
-    endif
+    end if
     if (present(index_)) then
         index_ = indexE
-    endif
+    end if
     if (present(l_anis_)) then
         if (indexE .eq. ianis) then
             l_anis_ = ASTER_TRUE
         else
             l_anis_ = ASTER_FALSE
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

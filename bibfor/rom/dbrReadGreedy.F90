@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrReadGreedy(paraGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/romMultiParaRead.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
+    type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,32 +58,32 @@ type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_2')
-    endif
+    end if
 !
 ! - Initializations
 !
-    stabFSI    = ' '
-    orthoBase  = ' '
+    stabFSI = ' '
+    orthoBase = ' '
     nbModeMaxi = 0
 !
 ! - Maximum number of modes
 !
-    call getvis(' ', 'NB_MODE' , scal = nbModeMaxi, nbret = nocc)
+    call getvis(' ', 'NB_MODE', scal=nbModeMaxi, nbret=nocc)
     ASSERT(nocc .eq. 1 .and. nbModeMaxi .ge. 1)
 !
 ! - If we orthogonalize basis
 !
-    call getvtx(' ', 'ORTHO_BASE', scal = orthoBase)
+    call getvtx(' ', 'ORTHO_BASE', scal=orthoBase)
     lOrthoBase = orthoBase .eq. 'OUI'
 !
 ! - If we stabilise the basis for FSI transient problem
 !
-    call getvtx(' ', 'TYPE_BASE', scal = stabFSI)
+    call getvtx(' ', 'TYPE_BASE', scal=stabFSI)
     lStabFSI = stabFSI .eq. 'IFS_STAB'
 !
 ! - Read tolerance
 !
-    call getvr8(' ', 'TOLE_GLOUTON', scal = toleGreedy)
+    call getvr8(' ', 'TOLE_GLOUTON', scal=toleGreedy)
 !
 ! - Read data for multiparametric problems
 !
@@ -97,7 +97,7 @@ type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
 !
     paraGreedy%nbModeMaxi = nbModeMaxi
     paraGreedy%lOrthoBase = lOrthoBase
-    paraGreedy%lStabFSI   = lStabFSI
+    paraGreedy%lStabFSI = lStabFSI
     paraGreedy%toleGreedy = toleGreedy
 !
 end subroutine

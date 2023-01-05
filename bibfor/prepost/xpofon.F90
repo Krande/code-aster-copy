@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !       NGFON  : NOMBRE TOTAL DE FOND DE FISSURES
 !     =================================================================
 !     ------------------------------------------------------------------
-    integer :: jnom,  jnfond
+    integer :: jnom, jnfond
     integer :: iret, ifiss, ifon
     integer :: ndim, nfiss, nfond, nbnol
     character(len=8) :: fiss, mo, malini
@@ -67,9 +67,9 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE INITIAL
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=malini)
     call dismoi('DIM_GEOM', mo, 'MODELE', repi=ndim)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+    if (.not. (ndim .eq. 2 .or. ndim .eq. 3)) then
         call utmess('F', 'MODELISA2_6')
-    endif
+    end if
 !
     if (ndim .eq. 2) then
 !
@@ -80,21 +80,21 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                 call ltnotb(fiss, 'NB_FOND_FISS', nomta1)
                 call jeveuo(nomta1//'.0001', 'L', jnfond)
                 nfond = zi(jnfond)
-                ngfon = ngfon + nfond
-                nftot = nftot + nfond
-                mftot = mftot + nfond
-                nfcomf = nfcomf + nfond
-            endif
+                ngfon = ngfon+nfond
+                nftot = nftot+nfond
+                mftot = mftot+nfond
+                nfcomf = nfcomf+nfond
+            end if
         end do
 !
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
 !
         do ifiss = 1, nfiss
 !
             fiss = zk8(jnom)
-            call dismoi('TYPE_DISCONTINUITE',fiss,'FISS_XFEM',repk=typdis)
+            call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
             call jeexin(fiss//'.FONDFISS', iret)
-            if (iret .ne. 0.and.typdis.eq.'FISSURE') then
+            if (iret .ne. 0 .and. typdis .eq. 'FISSURE') then
 !
                 call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
 !
@@ -105,22 +105,22 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                 call jeveuo(nomta2//'.TBNP', 'L', vi=tbnp)
 !
                 nfond = zi(jnfond)
-                ngfon = ngfon + nfond
+                ngfon = ngfon+nfond
                 do ifon = 1, nfond
-                    nbnol = fondmult(1+ 2*ifon -1) - fondmult(1+ 2* ifon -2)
+                    nbnol = fondmult(1+2*ifon-1)-fondmult(1+2*ifon-2)
                     if (nbnol .ne. 0) then
-                        mftot = mftot + nbnol
-                        nfcomf = nfcomf + 2*nbnol
+                        mftot = mftot+nbnol
+                        nfcomf = nfcomf+2*nbnol
                     else
 !               SI MAILLE POI1 EN 3D
-                        mftot = mftot + 1
-                        nfcomf = nfcomf + 1
-                    endif
+                        mftot = mftot+1
+                        nfcomf = nfcomf+1
+                    end if
                 end do
-                nftot = nftot + tbnp(2)
+                nftot = nftot+tbnp(2)
 !
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine lisllc(lischa, ichar, prefob)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -59,8 +59,8 @@ subroutine lisllc(lischa, ichar, prefob)
     if (nbchar .ne. 0) then
         precha = lischa(1:19)//'.PREO'
         call jeveuo(precha, 'L', jprec)
-        prefob = zk24(jprec-1+ichar)(1:13)
-    endif
+        prefob = zk24(jprec-1+ichar) (1:13)
+    end if
 !
     call jedema()
 end subroutine

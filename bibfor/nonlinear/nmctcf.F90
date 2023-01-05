@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmctcf(mesh, model, sderro, hval_incr, ds_print, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -79,14 +79,14 @@ implicit none
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> MISE A JOUR DU SEUIL DE TRESCA'
-    endif
+        write (ifm, *) '<MECANONLINE> MISE A JOUR DU SEUIL DE TRESCA'
+    end if
 !
 ! - Initializations
 !
-    loop_fric_conv  = .false.
-    loop_fric_node  = ' '
-    loop_fric_vale  = r8vide()
+    loop_fric_conv = .false.
+    loop_fric_node = ' '
+    loop_fric_vale = r8vide()
     call mmbouc(ds_contact, 'Fric', 'Set_NoError')
 !
 ! - Get fields
@@ -95,26 +95,26 @@ implicit none
 !
 ! - Get contact parameters
 !
-    l_cont_cont    = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
-    l_cont_xfem    = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
 !
 ! - Get friction loop parameters
 !
     loop_fric_disp = ds_contact%sdcont_solv(1:14)//'.DEPF'
-    iter_fric_maxi = cfdisi(ds_contact%sdcont_defi,'ITER_FROT_MAXI')
+    iter_fric_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_FROT_MAXI')
 !
 ! - Update triggers
 !
     if (l_cont_xfem) then
-        if (.not.l_cont_xfem_gg) then
+        if (.not. l_cont_xfem_gg) then
             call xreacl(mesh, model, hval_incr, ds_contact)
-        endif
+        end if
     else if (l_cont_cont) then
         call mmreas(mesh, ds_contact, hval_incr)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Compute friction criterion
 !
@@ -122,17 +122,17 @@ implicit none
 !
 ! - Get final loop state
 !
-    call mmbouc(ds_contact, 'Fric', 'Is_Convergence', loop_state_ = loop_fric_conv)
-    call mmbouc(ds_contact, 'Fric', 'Get_Locus'     , loop_locus_ = loop_fric_node)
-    call mmbouc(ds_contact, 'Fric', 'Get_Vale'      , loop_vale_  = loop_fric_vale)
-    call mmbouc(ds_contact, 'Fric', 'Read_Counter'  , loop_fric_count)
+    call mmbouc(ds_contact, 'Fric', 'Is_Convergence', loop_state_=loop_fric_conv)
+    call mmbouc(ds_contact, 'Fric', 'Get_Locus', loop_locus_=loop_fric_node)
+    call mmbouc(ds_contact, 'Fric', 'Get_Vale', loop_vale_=loop_fric_vale)
+    call mmbouc(ds_contact, 'Fric', 'Read_Counter', loop_fric_count)
 !
 ! - Too many iterations ?
 !
-    if ((.not.loop_fric_conv) .and. (loop_fric_count .eq. iter_fric_maxi)) then
+    if ((.not. loop_fric_conv) .and. (loop_fric_count .eq. iter_fric_maxi)) then
         call mmbouc(ds_contact, 'Fric', 'Set_Error')
-    endif
-    call mmbouc(ds_contact, 'Fric', 'Is_Error', loop_state_ = loop_fric_error)
+    end if
+    call mmbouc(ds_contact, 'Fric', 'Is_Error', loop_state_=loop_fric_error)
 !
 ! - Save events
 !
@@ -141,7 +141,7 @@ implicit none
         call nmcrel(sderro, 'DIVE_FIXF', .false._1)
     else
         call nmcrel(sderro, 'DIVE_FIXF', .true._1)
-    endif
+    end if
 !
 ! - Set values in convergence table for contact geoemtry informations
 !
@@ -150,8 +150,8 @@ implicit none
 !
 ! - Update reference displacement for friction loop
 !
-    if (.not.loop_fric_conv) then
+    if (.not. loop_fric_conv) then
         call copisd('CHAMP_GD', 'V', disp_curr, loop_fric_disp)
-    endif
+    end if
 !
 end subroutine

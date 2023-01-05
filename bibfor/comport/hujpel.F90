@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujpel(fami, kpg, ksp, etatd, mod,&
-                  crit, imat, nmat, materf, angmas,&
-                  deps, sigd, nvi, vind, sigf,&
+subroutine hujpel(fami, kpg, ksp, etatd, mod, &
+                  crit, imat, nmat, materf, angmas, &
+                  deps, sigd, nvi, vind, sigf, &
                   vinf, iret)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -53,43 +53,43 @@ subroutine hujpel(fami, kpg, ksp, etatd, mod,&
     integer :: i
     real(kind=8) :: zero, un, bid66(6, 6), matert(22, 2)
     aster_logical :: reorie
-    parameter      (zero = 0.d0)
-    parameter      (un   = 1.d0)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
 !       ----------------------------------------------------------------
     if (mod(1:6) .eq. 'D_PLAN') then
         do i = 5, 6
             deps(i) = zero
             sigd(i) = zero
-        enddo
-    endif
+        end do
+    end if
 !
-    if (( (vind(24) .eq. zero) .or. (vind(24) .eq. -un .and. vind(28) .eq. zero) ) .and.&
-        ( (vind(25) .eq. zero) .or. (vind(25) .eq. -un .and. vind(29) .eq. zero) ) .and.&
-        ( (vind(26) .eq. zero) .or. (vind(26) .eq. -un .and. vind(30) .eq. zero) ) .and.&
-        ( (vind(27) .eq. zero) .or. (vind(27) .eq. -un .and. vind(31) .eq. zero) )) then
+    if (((vind(24) .eq. zero) .or. (vind(24) .eq. -un .and. vind(28) .eq. zero)) .and. &
+        ((vind(25) .eq. zero) .or. (vind(25) .eq. -un .and. vind(29) .eq. zero)) .and. &
+        ((vind(26) .eq. zero) .or. (vind(26) .eq. -un .and. vind(30) .eq. zero)) .and. &
+        ((vind(27) .eq. zero) .or. (vind(27) .eq. -un .and. vind(31) .eq. zero))) then
         etatd = 'ELASTIC'
     else
         etatd = 'PLASTIC'
-    endif
+    end if
 !
 ! --- ORIENTATION DES CONTRAINTES SELON ANGMAS VERS REPERE LOCAL
     if (angmas(1) .eq. r8vide()) then
         call utmess('F', 'ALGORITH8_20')
-    endif
-    reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero)&
-     &          .or. (angmas(3).ne.zero)
-    call hujori('LOCAL', 1, reorie, angmas, sigd,&
+    end if
+    reorie = (angmas(1) .ne. zero) .or. (angmas(2) .ne. zero)&
+     &          .or. (angmas(3) .ne. zero)
+    call hujori('LOCAL', 1, reorie, angmas, sigd, &
                 bid66)
-    call hujori('LOCAL', 1, reorie, angmas, deps,&
+    call hujori('LOCAL', 1, reorie, angmas, deps, &
                 bid66)
 !
     do i = 1, 22
-        matert(i,1) = materf(i,1)
-        matert(i,2) = materf(i,2)
-    enddo
+        matert(i, 1) = materf(i, 1)
+        matert(i, 2) = materf(i, 2)
+    end do
 !
-    call hujpre(fami, kpg, ksp, etatd, mod,&
-                imat, matert, deps, sigd,&
+    call hujpre(fami, kpg, ksp, etatd, mod, &
+                imat, matert, deps, sigd, &
                 sigf, vind, iret)
     vinf(1:nvi) = vind(1:nvi)
 !

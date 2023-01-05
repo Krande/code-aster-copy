@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcrls(sddisc   , list_inst  , nume_ini, nume_end, l_init_noexist,&
+subroutine nmcrls(sddisc, list_inst, nume_ini, nume_end, l_init_noexist, &
                   inst_init, nb_inst_new, dtmin)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8maem.h"
@@ -67,22 +67,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utdidt('L', sddisc, 'LIST', 'NBINST',&
-                vali_ = nb_inst)
+    call utdidt('L', sddisc, 'LIST', 'NBINST', &
+                vali_=nb_inst)
 !
 ! - Final number of time steps
 !
-    nb_inst_new = (nume_end-nume_ini) + 1
-    ASSERT(nb_inst_new.le.nb_inst)
+    nb_inst_new = (nume_end-nume_ini)+1
+    ASSERT(nb_inst_new .le. nb_inst)
 !
 ! - Acces to list of times
 !
-    call jeveuo(list_inst, 'L', vr = v_list_inst)
+    call jeveuo(list_inst, 'L', vr=v_list_inst)
 !
 ! - Create new list of time
 !
     sddisc_ditr = sddisc(1:19)//'.DITR'
-    call wkvect(sddisc_ditr, 'V V R', nb_inst_new, vr = v_sddisc_ditr)
+    call wkvect(sddisc_ditr, 'V V R', nb_inst_new, vr=v_sddisc_ditr)
 !
 ! - Update new list of time
 !
@@ -96,8 +96,8 @@ implicit none
 !
     dtmin = r8maem()
     do i_inst = 1, nb_inst_new-1
-        deltat = v_sddisc_ditr(i_inst+1) - v_sddisc_ditr(i_inst)
-        dtmin  = min(deltat,dtmin)
+        deltat = v_sddisc_ditr(i_inst+1)-v_sddisc_ditr(i_inst)
+        dtmin = min(deltat, dtmin)
     end do
 !
 ! - Initial time doesn't exist in list of times => change for real initial time
@@ -108,7 +108,7 @@ implicit none
             valr(1) = inst_init
             valr(2) = v_sddisc_ditr(2)
             call utmess('F', 'DISCRETISATION_2', nr=2, valr=valr)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

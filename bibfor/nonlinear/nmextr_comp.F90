@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmextr_comp(field     , field_disc , field_type     , meshz    , modelz   ,&
-                       cara_elemz, ds_material, ds_constitutive, disp_curr, strx_curr,&
-                       varc_curr , time       , ligrelz)
+subroutine nmextr_comp(field, field_disc, field_type, meshz, modelz, &
+                       cara_elemz, ds_material, ds_constitutive, disp_curr, strx_curr, &
+                       varc_curr, time, ligrelz)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -33,19 +33,19 @@ implicit none
 #include "asterfort/meharm.h"
 #include "asterfort/mecact.h"
 !
-character(len=19), intent(in) :: field
-character(len=24), intent(in) :: field_type
-character(len=4), intent(in) :: field_disc
-character(len=*), intent(in) :: modelz
-character(len=*), intent(in) :: meshz
-character(len=*), intent(in) :: cara_elemz
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=*), intent(in) :: disp_curr
-character(len=*), intent(in) :: strx_curr
-character(len=*), intent(in) :: varc_curr
-real(kind=8), intent(in) :: time
-character(len=*), optional, intent(in) :: ligrelz
+    character(len=19), intent(in) :: field
+    character(len=24), intent(in) :: field_type
+    character(len=4), intent(in) :: field_disc
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: cara_elemz
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=*), intent(in) :: disp_curr
+    character(len=*), intent(in) :: strx_curr
+    character(len=*), intent(in) :: varc_curr
+    real(kind=8), intent(in) :: time
+    character(len=*), optional, intent(in) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ character(len=*), optional, intent(in) :: ligrelz
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=15)
+    parameter(nbout=1, nbin=15)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -85,8 +85,8 @@ character(len=*), optional, intent(in) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(field_type.eq.'EPSI_ELGA')
-    ASSERT(field_disc.eq.'ELGA')
+    ASSERT(field_type .eq. 'EPSI_ELGA')
+    ASSERT(field_disc .eq. 'ELGA')
     option = 'EPSI_ELGA'
     chtime = '&&NMEXTR_COMP.CHTIME'
     chharm = '&&NMEXTR_COMP.CHHARM'
@@ -94,12 +94,12 @@ character(len=*), optional, intent(in) :: ligrelz
         ligrel = ligrelz
     else
         ligrel = modelz(1:8)//'.MODELE'
-    endif
+    end if
     n_harm = 0
 !
 ! - Time field
 !
-    call mecact('V', chtime, 'MAILLA', meshz, 'INST_R',&
+    call mecact('V', chtime, 'MAILLA', meshz, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=time)
 !
 ! - Geometry field
@@ -116,37 +116,37 @@ character(len=*), optional, intent(in) :: ligrelz
 !
 ! - Init fields
 !
-    call inical(nbin  , lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Input fields
 !
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = chgeom(1:19)
-    lpain(2)  = 'PDEPLAR'
-    lchin(2)  = disp_curr(1:19)
-    lpain(3)  = 'PMATERC'
-    lchin(3)  = ds_material%mateco(1:19)
-    lpain(4)  = 'PTEMPSR'
-    lchin(4)  = chtime(1:19)
-    lpain(5)  = 'PVARCPR'
-    lchin(5)  = varc_curr(1:19)
-    lpain(6)  = 'PVARCRR'
-    lchin(6)  = ds_material%varc_refe(1:19)
-    lpain(7)  = 'PCACOQU'
-    lchin(7)  = chcara(7)(1:19)
-    lpain(8)  = 'PCOMPOR'
-    lchin(8)  = ds_constitutive%compor(1:19)
-    lpain(9)  = 'PCAGEPO'
-    lchin(9)  = chcara(5)(1:19)
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom(1:19)
+    lpain(2) = 'PDEPLAR'
+    lchin(2) = disp_curr(1:19)
+    lpain(3) = 'PMATERC'
+    lchin(3) = ds_material%mateco(1:19)
+    lpain(4) = 'PTEMPSR'
+    lchin(4) = chtime(1:19)
+    lpain(5) = 'PVARCPR'
+    lchin(5) = varc_curr(1:19)
+    lpain(6) = 'PVARCRR'
+    lchin(6) = ds_material%varc_refe(1:19)
+    lpain(7) = 'PCACOQU'
+    lchin(7) = chcara(7) (1:19)
+    lpain(8) = 'PCOMPOR'
+    lchin(8) = ds_constitutive%compor(1:19)
+    lpain(9) = 'PCAGEPO'
+    lchin(9) = chcara(5) (1:19)
     lpain(10) = 'PCAORIE'
-    lchin(10) = chcara(1)(1:19)
+    lchin(10) = chcara(1) (1:19)
     lpain(11) = 'PNBSP_I'
-    lchin(11) = chcara(16)(1:19)
+    lchin(11) = chcara(16) (1:19)
     lpain(12) = 'PFIBRES'
-    lchin(12) = chcara(17)(1:19)
+    lchin(12) = chcara(17) (1:19)
     lpain(13) = 'PCAMASS'
-    lchin(13) = chcara(12)(1:19)
+    lchin(13) = chcara(12) (1:19)
     lpain(14) = 'PHARMON'
     lchin(14) = chharm(1:19)
     lpain(15) = 'PSTRXMR'
@@ -159,8 +159,8 @@ character(len=*), optional, intent(in) :: ligrelz
 !
 ! - Computation
 !
-    call calcul('S'  , option, ligrel, nbin  , lchin,&
-                lpain, nbout , lchout, lpaout, 'V'  ,&
+    call calcul('S', option, ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
 end subroutine

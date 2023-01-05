@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lccong(nr, itmax, toler, iter, r,&
+subroutine lccong(nr, itmax, toler, iter, r, &
                   rini, yd, dy, irtet)
 !     CONTROLE DE LA CONVERGENCE DU NEWTON LOCAL DE LETK
 !                   - CONTROLE DU NOMBRE D ITERATIONS
@@ -46,32 +46,32 @@ subroutine lccong(nr, itmax, toler, iter, r,&
 ! --- CALCUL DE LA NORME DE RINI ET DE R(Y)
 ! === ==================================================================
 !
-    e1=0.d0
-    e1ini=0.d0
+    e1 = 0.d0
+    e1ini = 0.d0
     do i = 1, 6
         e1 = max(e1, abs(r(i)))
         e1ini = max(e1ini, abs(rini(i)))
     end do
 !     R8PREM CAR R HOMOGENE A DES DEFORMATIONS
-    errr(1)=e1
+    errr(1) = e1
     if (e1ini .gt. r8prem()) then
-        errr(1)=e1/e1ini
-    endif
+        errr(1) = e1/e1ini
+    end if
 !
-    e2=0.d0
-    e2ini=0.d0
+    e2 = 0.d0
+    e2ini = 0.d0
     do i = 7, nr
         e2 = max(e2, abs(r(i)))
         e2ini = max(e2ini, abs(yd(i)+dy(i)))
     end do
 !
-    errr(2)=e2
+    errr(2) = e2
     if (e2ini .gt. r8prem()) then
-        errr(2)=e2/e2ini
-    endif
+        errr(2) = e2/e2ini
+    end if
 !
 !     MAX DES 6 PREMIERS TERMES ET DES SUIVANTS
-    err=max(errr(1),errr(2))
+    err = max(errr(1), errr(2))
 !
 ! === =================================================================
 ! --- TEST DE CONVERGENCE PAR RAPPORT A TOLER
@@ -79,7 +79,7 @@ subroutine lccong(nr, itmax, toler, iter, r,&
     if (err .lt. toler) then
         irtet = 0
         goto 999
-    endif
+    end if
 !
 ! === ==================================================================
 ! --- SI NON CONVERGENCE: TEST DU N°ITERATION
@@ -88,7 +88,7 @@ subroutine lccong(nr, itmax, toler, iter, r,&
         irtet = 1
     else
         irtet = 3
-    endif
+    end if
 !
 999 continue
 !

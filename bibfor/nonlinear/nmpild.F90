@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmpild(numedd, sddyna, solalg, eta, rho,&
+subroutine nmpild(numedd, sddyna, solalg, eta, rho, &
                   offset)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,9 +34,9 @@ implicit none
 #include "asterfort/nmpilk.h"
 #include "asterfort/utmess.h"
 !
-character(len=24) :: numedd
-character(len=19) :: solalg(*), sddyna
-real(kind=8) :: eta, rho, offset
+    character(len=24) :: numedd
+    character(len=19) :: solalg(*), sddyna
+    real(kind=8) :: eta, rho, offset
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,11 +68,11 @@ real(kind=8) :: eta, rho, offset
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_49')
-    endif
+    end if
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
 
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
@@ -90,14 +90,14 @@ real(kind=8) :: eta, rho, offset
 !
 ! --- CALCUL DE LA DIRECTION DE DESCENTE
 !
-    call nmpilk(deppr1, deppr2, ddepla, neq, eta,&
+    call nmpilk(deppr1, deppr2, ddepla, neq, eta, &
                 rho, offset)
     if (ldyna) then
-        call nmpilk(vitpr1, vitpr2, dvitla, neq, eta,&
+        call nmpilk(vitpr1, vitpr2, dvitla, neq, eta, &
                     rho, offset)
-        call nmpilk(accpr1, accpr2, daccla, neq, eta,&
+        call nmpilk(accpr1, accpr2, daccla, neq, eta, &
                     rho, offset)
-    endif
+    end if
 !
 ! --- AFFICHAGE
 !
@@ -121,8 +121,8 @@ real(kind=8) :: eta, rho, offset
             call nmdebg('VECT', accpr2, ifm)
             call utmess('I', 'MECANONLINE13_55')
             call nmdebg('VECT', daccla, ifm)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

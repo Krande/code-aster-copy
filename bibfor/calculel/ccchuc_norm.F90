@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
+subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in, &
                        field_out)
 !
     implicit none
@@ -68,7 +68,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cmp_max
-    parameter (nb_cmp_max=30)
+    parameter(nb_cmp_max=30)
     integer :: iexist
     character(len=19) :: modelLigrel, celmod
     character(len=19) :: field_in_s, field_neut_s, field_neut, field_neut_mod
@@ -100,12 +100,12 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 !
 ! - Compute <CARTE> with informations on Gauss points
 !
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
     call exisd('CHAMP', chgaus, iexist)
     if (iexist .eq. 0) then
         call megeom(model, chgeom)
         call calc_coor_elga(model, modelLigrel, chgeom, chgaus)
-    endif
+    end if
 !
 ! - Create <CHAM_ELEM_S> from input field
 !
@@ -121,19 +121,19 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     call wkvect(list_cmp_neut, 'V V K8', nb_cmp, j_liscmp_ne)
     do icmp = 1, nb_cmp
         call codent(icmp, 'G', ki)
-        zk8(j_liscmp_ne-1+icmp)='X'//ki(1:len(ki))
-    enddo
+        zk8(j_liscmp_ne-1+icmp) = 'X'//ki(1:len(ki))
+    end do
 !
 ! - Construction of <CARTE> of <NEUT_R> by selection of components
 !
-    call calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp, norm,&
-                        'NORM', list_cmp, nb_coef_user, coef_user, chcoef,&
+    call calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp, norm, &
+                        'NORM', list_cmp, nb_coef_user, coef_user, chcoef, &
                         chcalc, nb_cmp_act)
 !
 ! - Transform input field in NEUT_R
 !
     call jeveuo(list_cmp, 'L', j_liscmp_in)
-    call chsut1(field_in_s, 'NEUT_R', nb_cmp, zk8(j_liscmp_in), zk8(j_liscmp_ne),&
+    call chsut1(field_in_s, 'NEUT_R', nb_cmp, zk8(j_liscmp_in), zk8(j_liscmp_ne), &
                 'V', field_neut_s)
 !
 ! - Convert CHAMELEM_S field to CHAMELEM field
@@ -144,42 +144,42 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
         option = 'TOU_INI_ELGA'
     else
         ASSERT(.false.)
-    endif
-    call nopar2(option,'NEUT_R','OUT', nopar)
-    call cescel(field_neut_s, modelLigrel, option, nopar, 'OUI',&
+    end if
+    call nopar2(option, 'NEUT_R', 'OUT', nopar)
+    call cescel(field_neut_s, modelLigrel, option, nopar, 'OUI', &
                 nncp, 'V', field_neut, 'F', iret)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
 ! - Change type of field
 !
     if (norm .eq. 'L2') then
         option = 'NORME_L2'
-    else if (norm.eq.'FROBENIUS') then
+    else if (norm .eq. 'FROBENIUS') then
         option = 'NORME_FROB'
     else
         ASSERT(.false.)
-    endif
+    end if
     if (type_field_in .eq. 'ELGA') then
         field_neut_mod = field_neut
     else
         nopar = 'PCHAMPG'
         celmod = '&&PENORM.CELMOD'
-        call alchml(modelLigrel, option, nopar, 'V', celmod,&
+        call alchml(modelLigrel, option, nopar, 'V', celmod, &
                     ibid, ' ')
         if (ibid .ne. 0) then
             valk(1) = modelLigrel
             valk(2) = nopar
             valk(3) = option
             call utmess('F', 'UTILITAI3_23', nk=3, valk=valk)
-        endif
-        call chpchd(field_neut, 'ELGA', celmod, 'OUI', 'V',&
+        end if
+        call chpchd(field_neut, 'ELGA', celmod, 'OUI', 'V', &
                     field_neut_mod, model)
         call detrsd('CHAMP', celmod)
-    endif
+    end if
 !
 ! - Compute Norm (integration on finite element)
 !
-    call calc_norm_elem(norm, modelLigrel, chcoef, chgaus, chcalc,&
+    call calc_norm_elem(norm, modelLigrel, chcoef, chgaus, chcalc, &
                         field_neut_mod, field_out)
 !
     call jedetr(chcoef)

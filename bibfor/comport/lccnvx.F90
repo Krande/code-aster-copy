@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lccnvx(fami, kpg, ksp, rela_comp, mod,&
-                  imat, nmat, materf, sigd,&
-                  sigf, deps, vind, vinf, nbcomm,&
-                  cpmono, pgl, nvi, vp, vecp,&
-                  hsr, nfs, nsg, toutms, timed,&
+subroutine lccnvx(fami, kpg, ksp, rela_comp, mod, &
+                  imat, nmat, materf, sigd, &
+                  sigf, deps, vind, vinf, nbcomm, &
+                  cpmono, pgl, nvi, vp, vecp, &
+                  hsr, nfs, nsg, toutms, timed, &
                   timef, &
                   seuil, iret)
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
 ! --- BUT : CONVEXE ELASTO PLASTIQUE A T+DT POUR (SIGF , VIND) DONNES --
 ! ----------------------------------------------------------------------
 ! IN  : FAMI   :  FAMILLE DES POINTS DE GAUSS  -------------------------
@@ -73,12 +73,12 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod,&
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
 ! ======================================================================
-    if (rela_comp  .eq. 'ROUSS_PR') then
-        call rslcvx(fami, kpg, ksp, imat, nmat,&
+    if (rela_comp .eq. 'ROUSS_PR') then
+        call rslcvx(fami, kpg, ksp, imat, nmat, &
                     materf, sigf, vind, seuil)
 ! ======================================================================
-    else if (rela_comp  .eq. 'ROUSS_VISC') then
-        call rslcvx(fami, kpg, ksp, imat, nmat,&
+    else if (rela_comp .eq. 'ROUSS_VISC') then
+        call rslcvx(fami, kpg, ksp, imat, nmat, &
                     materf, sigf, vind, seuil)
 ! ======================================================================
     else if (rela_comp .eq. 'VISCOCHAB') then
@@ -87,31 +87,31 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, mod,&
     else if (rela_comp .eq. 'LAIGLE') then
         call lglcvx(sigf, vind, nmat, materf, seuil)
 ! ======================================================================
-    elseif (( rela_comp .eq. 'HOEK_BROWN').or. ( rela_comp .eq. 'HOEK_BROWN_EFF')) then
-        call hbrcvx(sigf, vind, nmat, materf, seuil,&
+    elseif ((rela_comp .eq. 'HOEK_BROWN') .or. (rela_comp .eq. 'HOEK_BROWN_EFF')) then
+        call hbrcvx(sigf, vind, nmat, materf, seuil, &
                     vp, vecp)
 ! ======================================================================
-    else if (rela_comp.eq. 'MONOCRISTAL') then
-        call lcmmvx(sigf, vind, nmat, materf, nbcomm,&
-                    cpmono, pgl, nvi, hsr, nfs,&
-                    nsg, toutms, timed, timef, deps,&
+    else if (rela_comp .eq. 'MONOCRISTAL') then
+        call lcmmvx(sigf, vind, nmat, materf, nbcomm, &
+                    cpmono, pgl, nvi, hsr, nfs, &
+                    nsg, toutms, timed, timef, deps, &
                     seuil)
 ! ======================================================================
     else if (rela_comp .eq. 'IRRAD3M') then
-        call irrcvx(fami, kpg, ksp, nmat, materf,&
+        call irrcvx(fami, kpg, ksp, nmat, materf, &
                     sigf, vind, seuil)
 ! ======================================================================
     else if (rela_comp .eq. 'LETK') then
-        call lkcnvx(sigd, sigf, nvi, vind, nmat,&
+        call lkcnvx(sigd, sigf, nvi, vind, nmat, &
                     materf, seuil, vinf)
 ! ======================================================================
     else if (rela_comp .eq. 'LKR') then
-        call srcnvx(sigd,sigf,nvi,vind,nmat,materf,seuil,vinf)
+        call srcnvx(sigd, sigf, nvi, vind, nmat, materf, seuil, vinf)
 ! ======================================================================
     else if (rela_comp .eq. 'HUJEUX') then
-        call hujcvx(mod, nmat, materf, vinf, deps,&
+        call hujcvx(mod, nmat, materf, vinf, deps, &
                     sigd, sigf, seuil, iret)
 ! ======================================================================
-    endif
+    end if
 ! ======================================================================
 end subroutine

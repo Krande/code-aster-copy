@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
-                  imate, poum, deps, sigm, option,&
+subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
+                  imate, poum, deps, sigm, option, &
                   angmas, sigp, dsidep)
     implicit none
 #include "asterf_types.h"
@@ -42,12 +42,12 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     character(len=16), intent(in):: phenom
     integer, intent(in)          :: imate
     character(len=*), intent(in) :: poum
-    real(kind=8),intent(in)      :: deps(2*ndim)
-    real(kind=8),intent(in)      :: sigm(2*ndim)
+    real(kind=8), intent(in)      :: deps(2*ndim)
+    real(kind=8), intent(in)      :: sigm(2*ndim)
     character(len=16), intent(in):: option
-    real(kind=8),intent(in)      :: angmas(3)
-    real(kind=8),intent(out)     :: sigp(2*ndim)
-    real(kind=8),intent(out)     :: dsidep(2*ndim,2*ndim)
+    real(kind=8), intent(in)      :: angmas(3)
+    real(kind=8), intent(out)     :: sigp(2*ndim)
+    real(kind=8), intent(out)     :: dsidep(2*ndim, 2*ndim)
 !
 ! --------------------------------------------------------------------
 !  IN    FAMI   : FAMILLE DE POINT DE GAUSS
@@ -75,7 +75,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     real(kind=8) :: epsth_anis(3), deplth(6), depgth(6)
     real(kind=8) :: depghy, depgse, depgepsa(6)
     real(kind=8) :: depsme(6), rac2, epsm2(6)
-    real(kind=8) :: work(3,3), deplth_mat(3,3), depgth_mat(3,3)
+    real(kind=8) :: work(3, 3), deplth_mat(3, 3), depgth_mat(3, 3)
     real(kind=8) :: sigm2(2*ndim)
     integer :: ndimsi, i, j
     aster_logical :: vrai
@@ -83,91 +83,91 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
     rbid = r8vide()
 !
-    if (phenom.eq.'ELAS_ISTR' .and. ndim.eq.2)then
+    if (phenom .eq. 'ELAS_ISTR' .and. ndim .eq. 2) then
         call utmess('F', 'ELEMENTS3_2')
-    endif
+    end if
 
-    rac2=sqrt(2.d0)
-    ndimsi=ndim*2
+    rac2 = sqrt(2.d0)
+    ndimsi = ndim*2
     dsidep = 0
     depgth = 0
 !
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
         do i = 1, ndimsi
             if (i .le. 3) then
-                depstr(i)=deps(i)
+                depstr(i) = deps(i)
             else
-                depstr(i)=deps(i)*rac2
-            endif
+                depstr(i) = deps(i)*rac2
+            end if
         end do
-    endif
+    end if
 !
     if (angmas(1) .eq. r8vide()) then
         call utmess('F', 'ALGORITH8_20')
-    endif
+    end if
 !
-    repere(1)=1.d0
-    repere(2)=angmas(1)
+    repere(1) = 1.d0
+    repere(2) = angmas(1)
 !
 ! - VERIFICATION DE L'ELEMENT
 !
     vrai = .false.
     if (fami .eq. 'PMAT') then
 !        ON VIENT DE OP0033
-        repere(3)=angmas(2)
-        repere(4)=angmas(3)
+        repere(3) = angmas(2)
+        repere(4) = angmas(3)
         vrai = .true.
     else
-        if (lteatt('DIM_TOPO_MAILLE','3')) then
-            repere(3)=angmas(2)
-            repere(4)=angmas(3)
+        if (lteatt('DIM_TOPO_MAILLE', '3')) then
+            repere(3) = angmas(2)
+            repere(4) = angmas(3)
             vrai = .true.
-        else if (lteatt('C_PLAN','OUI')) then
+        else if (lteatt('C_PLAN', 'OUI')) then
             vrai = .true.
-        else if (lteatt('D_PLAN','OUI')) then
+        else if (lteatt('D_PLAN', 'OUI')) then
             vrai = .true.
-        else if (lteatt('AXIS','OUI')) then
+        else if (lteatt('AXIS', 'OUI')) then
             vrai = .true.
-        endif
-    endif
+        end if
+    end if
 !
-    if (.not.vrai) then
+    if (.not. vrai) then
         call utmess('F', 'ALGORITH8_22')
-    endif
+    end if
 !
 ! - MATRICES TANGENTES
 !
     if (fami .eq. 'PMAT') then
 !        ON VIENT DE OP0033
         if (option .eq. 'RIGI_MECA_TANG') then
-            call dmat3d(fami, imate, rbid, '-', kpg,&
+            call dmat3d(fami, imate, rbid, '-', kpg, &
                         ksp, repere, xyzgau, hookf)
         else
-            call d1ma3d(fami, imate, rbid, '-', kpg,&
+            call d1ma3d(fami, imate, rbid, '-', kpg, &
                         ksp, repere, xyzgau, mkooh)
-            call dmat3d(fami, imate, rbid, '+', kpg,&
+            call dmat3d(fami, imate, rbid, '+', kpg, &
                         ksp, repere, xyzgau, hookf)
-        endif
+        end if
 !
     else
         if (option .eq. 'RIGI_MECA_TANG') then
-            call dmatmc(fami, imate, rbid, '-', kpg,&
+            call dmatmc(fami, imate, rbid, '-', kpg, &
                         ksp, repere, xyzgau, ndimsi, hookf)
         else
-            call d1mamc(fami, imate, rbid, '-', kpg,&
+            call d1mamc(fami, imate, rbid, '-', kpg, &
                         ksp, repere, xyzgau, ndimsi, mkooh)
-            call dmatmc(fami, imate, rbid, '+', kpg,&
+            call dmatmc(fami, imate, rbid, '+', kpg, &
                         ksp, repere, xyzgau, ndimsi, hookf)
-        endif
-    endif
+        end if
+    end if
 !
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
         do i = 1, ndimsi
             do j = 1, ndimsi
-                dsidep(i,j)=hookf(ndimsi*(j-1)+i)
+                dsidep(i, j) = hookf(ndimsi*(j-1)+i)
             end do
         end do
-    endif
+    end if
 !
 ! - INTEGRATION
 !
@@ -177,25 +177,25 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !       DANS LE REPERE LOCAL
         if (phenom .eq. 'ELAS_ORTH') then
 !
-            call verift(fami, kpg, ksp, poum, imate,&
+            call verift(fami, kpg, ksp, poum, imate, &
                         epsth_anis_=epsth_anis)
             deplth(1) = epsth_anis(1)
             deplth(2) = epsth_anis(2)
             deplth(3) = epsth_anis(3)
 !
-        else if (phenom.eq.'ELAS_ISTR') then
+        else if (phenom .eq. 'ELAS_ISTR') then
 !
-            call verift(fami, kpg, ksp, poum, imate,&
+            call verift(fami, kpg, ksp, poum, imate, &
                         epsth_anis_=epsth_anis)
             deplth(1) = epsth_anis(1)
             deplth(2) = epsth_anis(1)
             deplth(3) = epsth_anis(2)
 !
-        endif
+        end if
 !
-        deplth(4)=0.d0
-        deplth(5)=0.d0
-        deplth(6)=0.d0
+        deplth(4) = 0.d0
+        deplth(5) = 0.d0
+        deplth(6) = 0.d0
 !
 !       RECUPERATION DE LA MATRICE DE PASSAGE
 !
@@ -203,32 +203,32 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
 !       PASSAGE DU TENSEUR DES DEFORMATIONS THERMIQUES DANS LE REPERE GLOBAL
 !
-        do i = 1,3
-            deplth_mat(i,i) = deplth(i)
-        enddo
-        deplth_mat(1,2) = deplth(4)
-        deplth_mat(1,3) = deplth(5)
-        deplth_mat(2,3) = deplth(6)
-        deplth_mat(2,1) = deplth_mat(1,2)
-        deplth_mat(3,1) = deplth_mat(1,3)
-        deplth_mat(3,2) = deplth_mat(2,3)
+        do i = 1, 3
+            deplth_mat(i, i) = deplth(i)
+        end do
+        deplth_mat(1, 2) = deplth(4)
+        deplth_mat(1, 3) = deplth(5)
+        deplth_mat(2, 3) = deplth(6)
+        deplth_mat(2, 1) = deplth_mat(1, 2)
+        deplth_mat(3, 1) = deplth_mat(1, 3)
+        deplth_mat(3, 2) = deplth_mat(2, 3)
 !
-        call utbtab('ZERO', 3, 3, deplth_mat, p,&
-                  work, depgth_mat)
+        call utbtab('ZERO', 3, 3, deplth_mat, p, &
+                    work, depgth_mat)
 !
-        depgth(1) = depgth_mat(1,1)
-        depgth(2) = depgth_mat(2,2)
-        depgth(3) = depgth_mat(3,3)
-        depgth(4) = depgth_mat(1,2)
-        depgth(5) = depgth_mat(1,3)
-        depgth(6) = depgth_mat(2,3)
+        depgth(1) = depgth_mat(1, 1)
+        depgth(2) = depgth_mat(2, 2)
+        depgth(3) = depgth_mat(3, 3)
+        depgth(4) = depgth_mat(1, 2)
+        depgth(5) = depgth_mat(1, 3)
+        depgth(6) = depgth_mat(2, 3)
 !
 !   RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION (SCALAIRE)
 !       IDENTIQUES DANS LES 2 REPERES L ET G CAR ISOTROPES
-        call verifh(fami, kpg , ksp , poum , imate ,&
-                     depghy)
-        call verifs(fami, kpg , ksp , poum , imate ,&
-                     depgse)
+        call verifh(fami, kpg, ksp, poum, imate, &
+                    depghy)
+        call verifs(fami, kpg, ksp, poum, imate, &
+                    depgse)
 !
 !   DEFORMATIONS ANELASTIQUES EPSAXX, EPSAYY, EPSAZZ, EPSAXY, EPSAXZ, EPSAYZ
 !       DEFINIES DANS LE REPERE GLOBAL
@@ -240,53 +240,53 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
         do i = 1, ndimsi
             if (i .le. 3) then
-                depsme(i)=depstr(i)-depgth(i)-depghy-depgse-depgepsa(i)
+                depsme(i) = depstr(i)-depgth(i)-depghy-depgse-depgepsa(i)
             else
-                depsme(i)=depstr(i)-2.0*depgth(i)-2.0*depgepsa(i)
-            endif
+                depsme(i) = depstr(i)-2.0*depgth(i)-2.0*depgepsa(i)
+            end if
         end do
 !
 ! CONTRAINTE A L ETAT +
         sigm2 = sigm
         do i = 4, ndimsi
-            sigm2(i)=sigm2(i)/rac2
+            sigm2(i) = sigm2(i)/rac2
         end do
-        
+
 ! MODIFICATION DE SIGM POUR PRENDRE EN COMPTE LA VARIATION DE
 ! COEF ELASTIQUES AVEC LA TEMPERATURE
 !
         do i = 1, ndimsi
-            epsm2(i)=0.d0
+            epsm2(i) = 0.d0
             do j = 1, ndimsi
-                epsm2(i)=epsm2(i)+mkooh(ndimsi*(j-1)+i)*sigm2(j)
+                epsm2(i) = epsm2(i)+mkooh(ndimsi*(j-1)+i)*sigm2(j)
             end do
         end do
 !
         do i = 1, ndimsi
-            sigp(i)=0.d0
+            sigp(i) = 0.d0
             do j = 1, ndimsi
-                sigp(i)=sigp(i)+hookf(ndimsi*(j-1)+i)*(depsme(j)+&
-                epsm2(j))
+                sigp(i) = sigp(i)+hookf(ndimsi*(j-1)+i)*(depsme(j)+ &
+                                                         epsm2(j))
             end do
         end do
 !
 ! REMISE AU FORMAT ASTER DES VALEURS EXTRA DIAGONALES
         do i = 4, ndimsi
-            sigp(i)=sigp(i)*rac2
+            sigp(i) = sigp(i)*rac2
         end do
-    endif
+    end if
 !
-    if  (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
+    if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
         do i = 1, ndimsi
             do j = 4, ndimsi
-                dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
+                dsidep(i, j) = dsidep(i, j)*sqrt(2.d0)
             end do
         end do
         do i = 4, ndimsi
             do j = 1, ndimsi
-                dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
+                dsidep(i, j) = dsidep(i, j)*sqrt(2.d0)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

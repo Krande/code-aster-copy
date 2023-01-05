@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lissav(lischa, ichar , charge, typech, genrec,&
-                  motclc, prefob, typapp, nomfct, typfct,&
-                  phase , npuis )
+subroutine lissav(lischa, ichar, charge, typech, genrec, &
+                  motclc, prefob, typapp, nomfct, typfct, &
+                  phase, npuis)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -101,17 +101,17 @@ subroutine lissav(lischa, ichar , charge, typech, genrec,&
     call jeveuo(typfon, 'E', jtfon)
     call jeveuo(valfon, 'E', jvfon)
 !
-    zk8 (jncha-1+ichar) = charge
-    zi  (jgenc-1+ichar) = genrec
-    zi  (jmcfc-1+2*(ichar-1)+1) = motclc(1)
-    zi  (jmcfc-1+2*(ichar-1)+2) = motclc(2)
-    zk8 (jtypc-1+ichar) = typech
+    zk8(jncha-1+ichar) = charge
+    zi(jgenc-1+ichar) = genrec
+    zi(jmcfc-1+2*(ichar-1)+1) = motclc(1)
+    zi(jmcfc-1+2*(ichar-1)+2) = motclc(2)
+    zk8(jtypc-1+ichar) = typech
     zk16(jtypa-1+ichar) = typapp
     zk24(jprec-1+ichar) = prefob
-    zk8 (jnfon-1+ichar) = nomfct
+    zk8(jnfon-1+ichar) = nomfct
     zk16(jtfon-1+ichar) = typfct
-    zr  (jvfon-1+2*(ichar-1)+1) = phase
-    zr  (jvfon-1+2*(ichar-1)+2) = npuis
+    zr(jvfon-1+2*(ichar-1)+1) = phase
+    zr(jvfon-1+2*(ichar-1)+2) = npuis
 !
     call jedema()
 end subroutine

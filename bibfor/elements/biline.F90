@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,9 +41,9 @@ function biline(nordre, vect1, amat, vect2)
     do i = 1, nordre
         produi = zero
         do j = 1, nordre
-            k = k + 1
-            produi = produi + amat(k)*vect2(j)
+            k = k+1
+            produi = produi+amat(k)*vect2(j)
         end do
-        biline = biline + vect1(i)*produi
+        biline = biline+vect1(i)*produi
     end do
 end function

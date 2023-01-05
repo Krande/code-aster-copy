@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    infch2=infcha
+    infch2 = infcha
     if (infch2 .eq. ' ') goto 999
 !
     call jeexin(infch2//'.LCHA', iret1)
@@ -87,7 +87,7 @@ subroutine ascima(infcha, nu, matass, cumul)
             if (infc(ich+1) .lt. 0) then
                 nchci = nchci+1
                 zk24(jlchci-1+nchci) = lcha(ich)
-            endif
+            end if
         end do
         if (nchci .eq. 0) goto 999
         call asschc(matass, nchci, zk24(jlchci), nu, cumul)
@@ -98,7 +98,7 @@ subroutine ascima(infcha, nu, matass, cumul)
         call jeveuo(infcha, 'L', jlchci)
         call jelira(infcha, 'LONMAX', nchci)
         call asschc(matass, nchci, zk24(jlchci), nu, cumul)
-    endif
+    end if
 !
 !
 !

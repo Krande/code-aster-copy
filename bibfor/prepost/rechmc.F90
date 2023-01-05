@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
+subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb, &
                   norev, sigmrv, nomdb, sigmdb)
 !
     implicit none
@@ -61,8 +61,8 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
-    cbid=(0.d0,0.d0)
-    ibid=0
+    cbid = (0.d0, 0.d0)
+    ibid = 0
     lcrit = 'RELATIF'
     lprec = 1.0d-06
     tmprev = '&&RECHMC.TMPREV'
@@ -78,8 +78,8 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
 ! ======================================================================
 ! --- RECUPERATION DES SOUS-TABLES ASSOCIEES A L'INSTANT COURANT -------
 ! ======================================================================
-    call tbextb(tabrev, 'V', tmprev, 1, 'INST',&
-                'EQ', [ibid], [temps], [cbid], k8b,&
+    call tbextb(tabrev, 'V', tmprev, 1, 'INST', &
+                'EQ', [ibid], [temps], [cbid], k8b, &
                 [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
@@ -89,9 +89,9 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
         valk(1) = tabrev
         valk(2) = 'INST'
         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-    endif
-    call tbextb(tabmdb, 'V', tmpmdb, 1, 'INST',&
-                'EQ', [ibid], [temps], [cbid], k8b,&
+    end if
+    call tbextb(tabmdb, 'V', tmpmdb, 1, 'INST', &
+                'EQ', [ibid], [temps], [cbid], k8b, &
                 [lprec], lcrit, iret)
     if (iret .eq. 10) then
         valk(1) = 'INST'
@@ -101,7 +101,7 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
         valk(1) = tabmdb
         valk(2) = 'INST'
         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-    endif
+    end if
 ! ======================================================================
 ! --- PROBLEME EN DIMENSION 2 ------------------------------------------
 ! ======================================================================
@@ -110,25 +110,25 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE CONTRAINTE SIYY COTE REVETEMENT ------
 ! ======================================================================
-            call tbexve(tmprev, 'SIYY', sigmrv, 'V', norev,&
+            call tbexve(tmprev, 'SIYY', sigmrv, 'V', norev, &
                         k8b)
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE CONTRAINTE SIYY COTE METAL DE BASE ---
 ! ======================================================================
-            call tbexve(tmpmdb, 'SIYY', sigmdb, 'V', nomdb,&
+            call tbexve(tmpmdb, 'SIYY', sigmdb, 'V', nomdb, &
                         k8b)
         else
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE CONTRAINTE SIZZ COTE REVETEMENT ------
 ! ======================================================================
-            call tbexve(tmprev, 'SIZZ', sigmrv, 'V', norev,&
+            call tbexve(tmprev, 'SIZZ', sigmrv, 'V', norev, &
                         k8b)
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE CONTRAINTE SIZZ COTE METAL DE BASE ---
 ! ======================================================================
-            call tbexve(tmpmdb, 'SIZZ', sigmdb, 'V', nomdb,&
+            call tbexve(tmpmdb, 'SIZZ', sigmdb, 'V', nomdb, &
                         k8b)
-        endif
+        end if
 ! ======================================================================
 ! --- PROBLEME EN DIMENSION 3 ------------------------------------------
 ! ======================================================================
@@ -137,12 +137,12 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE CONTRAINTE SIZZ COTE REVETEMENT ------
 ! ======================================================================
-            call tbexve(tmprev, 'SIZZ', sigmrv, 'V', norev,&
+            call tbexve(tmprev, 'SIZZ', sigmrv, 'V', norev, &
                         k8b)
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE CONTRAINTE SIZZ COTE METAL DE BASE ---
 ! ======================================================================
-            call tbexve(tmpmdb, 'SIZZ', sigmdb, 'V', nomdb,&
+            call tbexve(tmpmdb, 'SIZZ', sigmdb, 'V', nomdb, &
                         k8b)
         else
 ! ======================================================================
@@ -151,52 +151,52 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
 ! ======================================================================
             call wkvect(sigmrv, 'V V R8', norev, jsigmr)
             call wkvect(sigmdb, 'V V R8', nomdb, jsigmb)
-            call tbexve(tmprev, 'COOR_X', coorxx, 'V', norev,&
+            call tbexve(tmprev, 'COOR_X', coorxx, 'V', norev, &
                         k8b)
-            call tbexve(tmprev, 'COOR_Y', cooryy, 'V', norev,&
+            call tbexve(tmprev, 'COOR_Y', cooryy, 'V', norev, &
                         k8b)
             call jeveuo(coorxx, 'L', jcoorx)
             call jeveuo(cooryy, 'L', jcoory)
-            rt = zr(jcoorx)*zr(jcoorx) + zr(jcoory)*zr(jcoory)
-            cost = zr(jcoorx)*zr(jcoorx) / rt
-            sint = zr(jcoory)*zr(jcoory) / rt
-            sicot = 2 * zr(jcoorx)*zr(jcoory) / rt
+            rt = zr(jcoorx)*zr(jcoorx)+zr(jcoory)*zr(jcoory)
+            cost = zr(jcoorx)*zr(jcoorx)/rt
+            sint = zr(jcoory)*zr(jcoory)/rt
+            sicot = 2*zr(jcoorx)*zr(jcoory)/rt
 ! ======================================================================
 ! --- RECUPERATION DES LISTES DE CONTRAINTE SIXX - SIYY - SIXY ---------
 ! --- COTE REVETEMENT --------------------------------------------------
 ! ======================================================================
-            call tbexve(tmprev, 'SIXX', revxx, 'V', norev,&
+            call tbexve(tmprev, 'SIXX', revxx, 'V', norev, &
                         k8b)
-            call tbexve(tmprev, 'SIYY', revyy, 'V', norev,&
+            call tbexve(tmprev, 'SIYY', revyy, 'V', norev, &
                         k8b)
-            call tbexve(tmprev, 'SIXY', revxy, 'V', norev,&
+            call tbexve(tmprev, 'SIXY', revxy, 'V', norev, &
                         k8b)
             call jeveuo(revxx, 'L', jrevxx)
             call jeveuo(revyy, 'L', jrevyy)
             call jeveuo(revxy, 'L', jrevxy)
             do ii = 1, norev
-                zr(jsigmr-1+ii) = sint * zr(jrevxx-1+ii) + cost * zr( jrevyy-1+ii) - sicot* zr(jr&
+                zr(jsigmr-1+ii) = sint*zr(jrevxx-1+ii)+cost*zr(jrevyy-1+ii)-sicot*zr(jr&
                                   &evxy-1+ii)
             end do
 ! ======================================================================
 ! --- RECUPERATION DES LISTES DE CONTRAINTE SIXX - SIYY - SIXY ---------
 ! --- COTE METAL DE BASE -----------------------------------------------
 ! ======================================================================
-            call tbexve(tmpmdb, 'SIXX', mdbxx, 'V', nomdb,&
+            call tbexve(tmpmdb, 'SIXX', mdbxx, 'V', nomdb, &
                         k8b)
-            call tbexve(tmpmdb, 'SIYY', mdbyy, 'V', nomdb,&
+            call tbexve(tmpmdb, 'SIYY', mdbyy, 'V', nomdb, &
                         k8b)
-            call tbexve(tmpmdb, 'SIXY', mdbxy, 'V', nomdb,&
+            call tbexve(tmpmdb, 'SIXY', mdbxy, 'V', nomdb, &
                         k8b)
             call jeveuo(mdbxx, 'L', jmdbxx)
             call jeveuo(mdbyy, 'L', jmdbyy)
             call jeveuo(mdbxy, 'L', jmdbxy)
             do ii = 1, nomdb
-                zr(jsigmb-1+ii) = sint * zr(jmdbxx-1+ii) + cost * zr( jmdbyy-1+ii) - sicot* zr(jm&
+                zr(jsigmb-1+ii) = sint*zr(jmdbxx-1+ii)+cost*zr(jmdbyy-1+ii)-sicot*zr(jm&
                                   &dbxy-1+ii)
             end do
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! --- DESTRUCTION DES TABLES INUTILES ----------------------------------
 ! ======================================================================

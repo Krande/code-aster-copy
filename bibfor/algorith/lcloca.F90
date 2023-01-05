@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcloca(coeft, nmat, nbcomm, nphas, sigi,&
+subroutine lcloca(coeft, nmat, nbcomm, nphas, sigi, &
                   vini, iphas, granb, loca, sigg)
 !
 !
@@ -59,33 +59,33 @@ subroutine lcloca(coeft, nmat, nbcomm, nphas, sigi,&
 !    1 variable : indic
 ! ======================================================================
 !
-    mu=coeft(nbcomm((nphas+2),1)+0)
+    mu = coeft(nbcomm((nphas+2), 1)+0)
 !
 ! --  METHODE LOCALISATION
     if (loca .eq. 'BZ') then
         call lcdevi(sigi, dev)
-        norme = lcnrts( dev )
-        evpcum=vini(7)
+        norme = lcnrts(dev)
+        evpcum = vini(7)
         if (norme .gt. r8miem()) then
-            alpha=norme/(norme+1.5d0*mu*evpcum)
+            alpha = norme/(norme+1.5d0*mu*evpcum)
         else
-            alpha=0.d0
-        endif
+            alpha = 0.d0
+        end if
 !        EVP - EVPG(IPHAS)
-        ievpg=7+6*(iphas-1)
+        ievpg = 7+6*(iphas-1)
         do i = 1, 6
-            sigg(i)=sigi(i)+alpha*mu*(vini(i)-vini(ievpg+i))
+            sigg(i) = sigi(i)+alpha*mu*(vini(i)-vini(ievpg+i))
         end do
 !
-    else if (loca.eq.'BETA') then
+    else if (loca .eq. 'BETA') then
 !        EVP - EVPG(IPHAS)
-        ievpg=7+6*(iphas-1)
+        ievpg = 7+6*(iphas-1)
         do i = 1, 6
-            sigg(i)=sigi(i)+mu*(granb(i)-vini(ievpg+i))
+            sigg(i) = sigi(i)+mu*(granb(i)-vini(ievpg+i))
         end do
 !
 !
     else
         call utmess('F', 'ALGORITH4_63', sk=loca)
-    endif
+    end if
 end subroutine

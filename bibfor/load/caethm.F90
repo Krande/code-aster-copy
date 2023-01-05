@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine caethm(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -36,8 +36,8 @@ implicit none
 #include "asterfort/getelem.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,16 +73,16 @@ character(len=4), intent(in) :: valeType
     if (iret .ne. 0) then
         call jeveuo(model//'.NFIS', 'L', jnfis)
         nfiss = zi(jnfis)
-    endif
+    end if
     call getfac(keywordFact, nech)
     if (nech .eq. 0) goto 99
     if (nfiss .ne. 0) then
-       call utmess('F', 'XFEM_48')
-    endif
+        call utmess('F', 'XFEM_48')
+    end if
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType,&
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
                         nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', jvalv)
@@ -110,14 +110,14 @@ character(len=4), intent(in) :: valeType
                 call getvid(keywordFact, 'PRE2_EXT', iocc=iocc, scal=zk8(jvalv+5), nbret=nbOcc)
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             call jeveuo(listCell, 'L', jvCell)
-            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell,&
+            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell, &
                         limanu=zi(jvCell))
             call jedetr(listCell)
-        endif
+        end if
     end do
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

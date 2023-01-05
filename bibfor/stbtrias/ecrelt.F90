@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
+subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail, &
                   mint, mant, limail, nbmtot)
     implicit none
 !     ===============================================================
@@ -113,50 +113,50 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
     integer, pointer :: info(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    prfnoe='N'
-    prfmai='M'
+    prfnoe = 'N'
+    prfmai = 'M'
     do ifo = 1, 35
-        chfoma(ifo)=' '
+        chfoma(ifo) = ' '
     end do
 !
-    chfoma(1)='%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
-    chfoma(2)='%FORMAT=(1*NOM_DE_MAILLE,3*NOM_DE_NOEUD)'
-    chfoma(3)='%FORMAT=(1*NOM_DE_MAILLE,6*NOM_DE_NOEUD)'
-    chfoma(4)='%FORMAT=(1*NOM_DE_MAIILE,9*NOM_DE_NOEUD)'
-    chfoma(5)='%FORMAT=(1*NOM_DE_MAILLE,4*NOM_DE_NOEUD)'
-    chfoma(6)='%FORMAT=(1*NOM_DE_MAILLE,8*NOM_DE_NOEUD)'
-    chfoma(7)='%FORMAT=(1*NOM_DE_MAILLE,12*NOM_DE_NOEUD)'
-    chfoma(8)='%FORMAT=(1*NOM_DE_MAILLE,6*NOM_DE_NOEUD)'
-    chfoma(9)='%FORMAT=(1*NOM_DE_MAILLE,12*NOM_DE_NOEUD)'
-    chfoma(10)='%FORMAT=(1*NOM_DE_MAILLE,18*NOM_DE_NOEUD)'
-    chfoma(11)='%FORMAT=(1*NOM_DE_MAILLE,8*NOM_DE_NOEUD)'
-    chfoma(12)='%FORMAT=(1*NOM_DE_MAILLE,16*NOM_DE_NOEUD)'
-    chfoma(13)='%FORMAT=(1*NOM_DE_MAILLE,24*NOM_DE_NOEUD)'
-    chfoma(14)='%FORMAT=(1*NOM_DE_MAILLE,4*NOM_DE_NOEUD)'
-    chfoma(15)='%FORMAT=(1*NOM_DE_MAILLE,10*NOM_DE_NOEUD)'
-    chfoma(16)='%FORMAT=(1*NOM_DE_MAILLE,6*NOM_DE_NOEUD)'
-    chfoma(17)='%FORMAT=(1*NOM_DE_MAILLE,15*NOM_DE_NOEUD)'
-    chfoma(18)='%FORMAT=(1*NOM_DE_MAILLE,24*NOM_DE_NOEUD)'
-    chfoma(19)='%FORMAT=(1*NOM_DE_MAILLE,8*NOM_DE_NOEUD)'
-    chfoma(20)='%FORMAT=(1*NOM_DE_MAILLE,20*NOM_DE_NOEUD)'
-    chfoma(21)='%FORMAT=(1*NOM_DE_MAILLE,32*NOM_DE_NOEUD)'
-    chfoma(29)='%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
-    chfoma(30)='%FORMAT=(1*NOM_DE_MAILLE,1*NOM_DE_NOEUD)'
-    chfoma(31)='%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
-    chfoma(32)='%FORMAT=(1*NOM_DE_MAILLE,1*NOM_DE_NOEUD)'
-    chfoma(33)='%FORMAT=(1*NOM_DE_MAILLE,1*NOM_DE_NOEUD)'
-    chfoma(34)='%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
-    chfoma(35)='%FORMAT=(1*NOM_DE_MAILLE,3*NOM_DE_NOEUD)'
+    chfoma(1) = '%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
+    chfoma(2) = '%FORMAT=(1*NOM_DE_MAILLE,3*NOM_DE_NOEUD)'
+    chfoma(3) = '%FORMAT=(1*NOM_DE_MAILLE,6*NOM_DE_NOEUD)'
+    chfoma(4) = '%FORMAT=(1*NOM_DE_MAIILE,9*NOM_DE_NOEUD)'
+    chfoma(5) = '%FORMAT=(1*NOM_DE_MAILLE,4*NOM_DE_NOEUD)'
+    chfoma(6) = '%FORMAT=(1*NOM_DE_MAILLE,8*NOM_DE_NOEUD)'
+    chfoma(7) = '%FORMAT=(1*NOM_DE_MAILLE,12*NOM_DE_NOEUD)'
+    chfoma(8) = '%FORMAT=(1*NOM_DE_MAILLE,6*NOM_DE_NOEUD)'
+    chfoma(9) = '%FORMAT=(1*NOM_DE_MAILLE,12*NOM_DE_NOEUD)'
+    chfoma(10) = '%FORMAT=(1*NOM_DE_MAILLE,18*NOM_DE_NOEUD)'
+    chfoma(11) = '%FORMAT=(1*NOM_DE_MAILLE,8*NOM_DE_NOEUD)'
+    chfoma(12) = '%FORMAT=(1*NOM_DE_MAILLE,16*NOM_DE_NOEUD)'
+    chfoma(13) = '%FORMAT=(1*NOM_DE_MAILLE,24*NOM_DE_NOEUD)'
+    chfoma(14) = '%FORMAT=(1*NOM_DE_MAILLE,4*NOM_DE_NOEUD)'
+    chfoma(15) = '%FORMAT=(1*NOM_DE_MAILLE,10*NOM_DE_NOEUD)'
+    chfoma(16) = '%FORMAT=(1*NOM_DE_MAILLE,6*NOM_DE_NOEUD)'
+    chfoma(17) = '%FORMAT=(1*NOM_DE_MAILLE,15*NOM_DE_NOEUD)'
+    chfoma(18) = '%FORMAT=(1*NOM_DE_MAILLE,24*NOM_DE_NOEUD)'
+    chfoma(19) = '%FORMAT=(1*NOM_DE_MAILLE,8*NOM_DE_NOEUD)'
+    chfoma(20) = '%FORMAT=(1*NOM_DE_MAILLE,20*NOM_DE_NOEUD)'
+    chfoma(21) = '%FORMAT=(1*NOM_DE_MAILLE,32*NOM_DE_NOEUD)'
+    chfoma(29) = '%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
+    chfoma(30) = '%FORMAT=(1*NOM_DE_MAILLE,1*NOM_DE_NOEUD)'
+    chfoma(31) = '%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
+    chfoma(32) = '%FORMAT=(1*NOM_DE_MAILLE,1*NOM_DE_NOEUD)'
+    chfoma(33) = '%FORMAT=(1*NOM_DE_MAILLE,1*NOM_DE_NOEUD)'
+    chfoma(34) = '%FORMAT=(1*NOM_DE_MAILLE,2*NOM_DE_NOEUD)'
+    chfoma(35) = '%FORMAT=(1*NOM_DE_MAILLE,3*NOM_DE_NOEUD)'
 !
 !     ECRITURE DES MAILLES
 !     ====================
 !
     chmail = '        '
-    chenti='NBOBJ=      '
-    chlign='NBLIGT=      '
-    chlige='NBLIGE=      '
-    chnomi='NUMIN=      '
-    chnoma='NUMAX=      '
+    chenti = 'NBOBJ=      '
+    chlign = 'NBLIGT=      '
+    chlige = 'NBLIGE=      '
+    chnomi = 'NUMIN=      '
+    chnoma = 'NUMAX=      '
 !
 !  --> N  D'UNITES LOGIQUES DES FICHIERS
 !
@@ -169,9 +169,9 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
     do nte = 1, nbtyma
         ipos = 0
         if (nbmail(nte) .eq. 0) goto 10
-        nblie=3
-        nblif=1
-        nblit=nbmail(nte)*limail(nte)+nblie+nblif+1
+        nblie = 3
+        nblif = 1
+        nblit = nbmail(nte)*limail(nte)+nblie+nblif+1
 !
         call codent(nbmail(nte), 'G', chenti(7:12))
         call codent(nblit, 'G', chlign(8:13))
@@ -184,14 +184,14 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
         call jjmmaa(ct, aut)
 !
 !  --> ECRITURE DE L'ENTETE DANS LE FICHIER NEUTRE
-        write (unit=imod,fmt='(A,3X,A,3X,A,3X,A,3X,A,3X,A)') nomail(&
-        nte),'NOM=INDEFINI',chenti,chlige,chlign
-        write(imod,'(11X,A,18X,A)') chnomi,chnoma
-        write (imod,'(11X,2A,11X,A,A2,A,A2,A,A4)')'AUTEUR=',aut,&
-        'DATE=',ct(1)(1:2),'/',ct(2)(1:2),'/',ct(3)
+        write (unit=imod, fmt='(A,3X,A,3X,A,3X,A,3X,A,3X,A)') nomail( &
+            nte), 'NOM=INDEFINI', chenti, chlige, chlign
+        write (imod, '(11X,A,18X,A)') chnomi, chnoma
+        write (imod, '(11X,2A,11X,A,A2,A,A2,A,A4)') 'AUTEUR=', aut, &
+            'DATE=', ct(1) (1:2), '/', ct(2) (1:2), '/', ct(3)
 !
 !  --> ECRITURE DU FORMAT DANS LE FICHIER NEUTRE
-        write(imod,'(A)') chfoma(nte)
+        write (imod, '(A)') chfoma(nte)
 !
         do ima = 1, nbmtot
             ityp = info((ima-1)*4+2)
@@ -205,32 +205,32 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
                 do in = 1, neul
                     neu2(in) = conn(ipos+in)
                     call codnop(chtab(in), prfnoe, 1, 1)
-                    call codent(neu2(in), 'G', chtab(in)(2:8))
+                    call codent(neu2(in), 'G', chtab(in) (2:8))
                 end do
 !
-                idiv=int(neul/8)
-                irest=mod(neul,8)
+                idiv = int(neul/8)
+                irest = mod(neul, 8)
                 if (irest .ne. 0) then
-                    write (imod,202) chmail, (chtab(i),i=1,neul)
+                    write (imod, 202) chmail, (chtab(i), i=1, neul)
                 else
                     do k = 1, idiv
-                        l=8*(k-1)
+                        l = 8*(k-1)
                         if (idiv .eq. 1) then
-                            write(imod,'(A,8(1X,A))') chmail, (chtab(&
-                            i),i=1,8)
+                            write (imod, '(A,8(1X,A))') chmail, (chtab( &
+                                                                 i), i=1, 8)
                         else
-                            write(imod,'(8X,8(1X,A))') (chtab(i),i=1+&
-                            l,8+l)
-                        endif
+                            write (imod, '(8X,8(1X,A))') (chtab(i), i=1+ &
+                                                          l, 8+l)
+                        end if
                     end do
-                endif
-            endif
-            ipos = ipos + neul
+                end if
+            end if
+            ipos = ipos+neul
         end do
-        write (imod,'(A)') 'FINSF'
-        write(imod,'(A)') '%'
- 10     continue
+        write (imod, '(A)') 'FINSF'
+        write (imod, '(A)') '%'
+10      continue
     end do
-    202 format (a,8 (1x,a),/, (8x,8 (1x,a)))
+202 format(a, 8(1x, a), /, (8x, 8(1x, a)))
     call jedema()
 end subroutine

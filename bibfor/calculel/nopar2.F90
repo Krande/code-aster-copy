@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nopar2(nomopt, nomgd, statut, nompar, istop,&
+subroutine nopar2(nomopt, nomgd, statut, nompar, istop, &
                   iret)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -67,13 +67,13 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop,&
     character(len=24) :: valk(3)
 !
 ! DEB-------------------------------------------------------------------
-    nomop2=nomopt
-    nomgd2=nomgd
-    statu2=statut
+    nomop2 = nomopt
+    nomgd2 = nomgd
+    statu2 = statut
     istop2 = 1
     if (present(istop)) then
         istop2 = istop
-    endif
+    end if
 !
     call jenonu(jexnom('&CATA.OP.NOMOPT', nomop2), opt)
     if (nomgd2 .ne. ' ') call jenonu(jexnom('&CATA.GD.NOMGD', nomgd2), gd)
@@ -82,93 +82,93 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop,&
     nbin = zi(iadesc-1+2)
     nbout = zi(iadesc-1+3)
 !
-    nbtrou=0
-    outrou=' '
+    nbtrou = 0
+    outrou = ' '
 !
 !
     if (statu2 .eq. 'OUT') then
         if (nomgd2 .eq. ' ') then
-            ASSERT(nbout.eq.1)
-            nbtrou=nbtrou+1
-            itrou=1
-            outrou='OUT'
+            ASSERT(nbout .eq. 1)
+            nbtrou = nbtrou+1
+            itrou = 1
+            outrou = 'OUT'
         else
             do kk = 1, nbout
                 gd2 = zi(iadesc-1+4+nbin+kk)
                 if (gd .eq. gd2) then
-                    nbtrou=nbtrou+1
-                    itrou=kk
-                    outrou='OUT'
-                endif
+                    nbtrou = nbtrou+1
+                    itrou = kk
+                    outrou = 'OUT'
+                end if
             end do
-        endif
+        end if
 !
-    else if (statu2.eq.'IN') then
+    else if (statu2 .eq. 'IN') then
         do kk = 1, nbin
             gd2 = zi(iadesc-1+4+kk)
             if (gd .eq. gd2) then
-                nbtrou=nbtrou+1
-                itrou=kk
-                outrou='IN'
-            endif
+                nbtrou = nbtrou+1
+                itrou = kk
+                outrou = 'IN'
+            end if
         end do
 !
-    else if (statu2.eq.'INOUT') then
+    else if (statu2 .eq. 'INOUT') then
         do kk = 1, nbout
             gd2 = zi(iadesc-1+4+nbin+kk)
             if (gd .eq. gd2) then
-                nbtrou=nbtrou+1
-                itrou=kk
-                outrou='OUT'
-            endif
+                nbtrou = nbtrou+1
+                itrou = kk
+                outrou = 'OUT'
+            end if
         end do
 !
         if (nbtrou .eq. 0) then
             do kk = 1, nbin
                 gd2 = zi(iadesc-1+4+kk)
                 if (gd .eq. gd2) then
-                    nbtrou=nbtrou+1
-                    itrou=kk
-                    outrou='IN'
-                endif
+                    nbtrou = nbtrou+1
+                    itrou = kk
+                    outrou = 'IN'
+                end if
             end do
-        endif
+        end if
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (nbtrou .eq. 1) then
         if (outrou .eq. 'OUT') then
-            nompar=zk8(iaoppa-1+nbin+itrou)
+            nompar = zk8(iaoppa-1+nbin+itrou)
 !
-        else if (outrou.eq.'IN') then
-            nompar=zk8(iaoppa-1+itrou)
+        else if (outrou .eq. 'IN') then
+            nompar = zk8(iaoppa-1+itrou)
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-    else if (istop2.eq.1) then
+    else if (istop2 .eq. 1) then
         if (nbtrou .eq. 0) then
             valk(1) = statu2
             valk(2) = nomgd2
             valk(3) = nomop2
             call utmess('F', 'CALCULEL3_84', nk=3, valk=valk)
-        endif
+        end if
         if (nbtrou .gt. 1) then
             valk(1) = statu2
             valk(2) = nomgd2
             valk(3) = nomop2
             call utmess('F', 'CALCULEL3_85', nk=3, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     if (present(iret)) then
         iret = 0
         if (nbtrou .ne. 1) iret = 1
     else
-        ASSERT(istop2.eq.1)
-    endif
+        ASSERT(istop2 .eq. 1)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
+subroutine rsutn1(resu, nopara, motcle, iocc, objveu, &
                   nbordr)
     implicit none
 #include "jeveux.h"
@@ -65,12 +65,12 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
 !     --- RECUPERATION DES NUMEROS D'ORDRE ---
 !
     knume = '&&RSUTN1.NUME_ORDR'
-    call rsutnu(resu, motcle, iocc, knume, nbtord,&
+    call rsutnu(resu, motcle, iocc, knume, nbtord, &
                 prec, crit, iret)
     if (iret .ne. 0) then
         k8b = resu
         call utmess('F', 'UTILITAI4_49', sk=k8b)
-    endif
+    end if
     call jeveuo(knume, 'L', lordr)
 !
 !     --- VERIFICATION QUE LE NOPARA EXISTE DANS LA SD RESULTAT ---
@@ -83,25 +83,25 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
             if (nopara .eq. acces(iordr)) goto 12
         end do
         k8b = resu
-        valk (1) = nopara
-        valk (2) = k8b
+        valk(1) = nopara
+        valk(2) = k8b
         call utmess('F', 'UTILITAI6_84', nk=2, valk=valk)
 12      continue
     else
         call utmess('F', 'UTILITAI4_50')
-    endif
+    end if
     call jedetr('&&RSUTN1.PARA.ACCES')
 !
     ii = 0
     do iordr = 1, nbtord
         call rsutrg(resu, zi(lordr+iordr-1), irang, nrang)
         if (irang .ne. 0) then
-            ii = ii + 1
-        endif
+            ii = ii+1
+        end if
     end do
     if (ii .eq. 0) then
         call utmess('F', 'UTILITAI4_51', sk=nopara)
-    endif
+    end if
 !
 !     --- LISTE DES NUMEROS D'ORDRE ---
 !
@@ -110,9 +110,9 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
     do iordr = 1, nbtord
         call rsutrg(resu, zi(lordr+iordr-1), irang, nrang)
         if (irang .ne. 0) then
-            nbordr = nbordr + 1
+            nbordr = nbordr+1
             zi(jordr+nbordr-1) = zi(lordr+iordr-1)
-        endif
+        end if
     end do
 !
     call jedetr('&&RSUTN1.NUME_ORDR')

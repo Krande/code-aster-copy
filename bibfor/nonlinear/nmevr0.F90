@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmevr0(sddisc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/getFailAction.h"
 !
-character(len=19) :: sddisc
+    character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
 !
-    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_ = nb_fail)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
 !
 ! --- DESACTIVATION DES EVENEMENTS
 !
@@ -61,7 +61,7 @@ character(len=19) :: sddisc
         if (action_type .eq. FAIL_ACT_ITER) then
             itesup = 0
             call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
-        endif
+        end if
     end do
 !
 end subroutine

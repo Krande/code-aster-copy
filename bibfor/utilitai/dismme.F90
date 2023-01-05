@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,108 +62,108 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
 !
     nomob = nomobz
     call jeveuo(nomob//'.RERR', 'L', vk24=rerr)
-    mo = rerr(1)(1:8)
+    mo = rerr(1) (1:8)
 !
     if (questi .eq. 'NOM_MODELE') then
         repk = mo
 !
-    else if (questi.eq.'TYPE_MATRICE') then
-        repk='SYMETRI'
+    else if (questi .eq. 'TYPE_MATRICE') then
+        repk = 'SYMETRI'
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do i = 1, nbresu
-                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                call jeexin(zk24(ialire-1+i) (1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 1
                 call dismre(questi, zk24(ialire-1+i), repi, typmat, i1)
-                if ((i1.eq.0) .and. (typmat.eq.'NON_SYM')) then
-                    repk='NON_SYM'
+                if ((i1 .eq. 0) .and. (typmat .eq. 'NON_SYM')) then
+                    repk = 'NON_SYM'
                     goto 999
-                endif
-  1             continue
+                end if
+1               continue
             end do
-        endif
+        end if
 !
-    else if (questi.eq.'ZERO') then
-        repk='OUI'
+    else if (questi .eq. 'ZERO') then
+        repk = 'OUI'
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do i = 1, nbresu
-                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                call jeexin(zk24(ialire-1+i) (1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 4
                 call dismre(questi, zk24(ialire-1+i), repi, zero, i1)
-                if ((i1.eq.0) .and. (zero.eq.'NON')) then
-                    repk='NON'
+                if ((i1 .eq. 0) .and. (zero .eq. 'NON')) then
+                    repk = 'NON'
                     goto 999
-                endif
-  4             continue
+                end if
+4               continue
             end do
-        endif
+        end if
 !
-    else if (questi.eq.'PARTITION') then
-        repk=' '
+    else if (questi .eq. 'PARTITION') then
+        repk = ' '
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do i = 1, nbresu
-                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                call jeexin(zk24(ialire-1+i) (1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 2
                 call dismre(questi, zk24(ialire-1+i), repi, partit, i1)
-                if (partit .ne. ' ' .and. repk .eq. ' ') repk=partit
+                if (partit .ne. ' ' .and. repk .eq. ' ') repk = partit
                 if (partit .ne. ' ') then
-                    ASSERT(repk.eq.partit)
-                endif
-  2             continue
+                    ASSERT(repk .eq. partit)
+                end if
+2               continue
             end do
-        endif
+        end if
 !
-    else if (questi.eq.'MPI_COMPLET') then
-        repk=' '
+    else if (questi .eq. 'MPI_COMPLET') then
+        repk = ' '
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
             call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do i = 1, nbresu
-                call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
+                call jeexin(zk24(ialire-1+i) (1:19)//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 3
                 call dismre(questi, zk24(ialire-1+i), repi, kmpic, i1)
                 if (i .eq. 1) then
-                    repk=kmpic
+                    repk = kmpic
                 else
-                    ASSERT(repk.eq.kmpic)
-                endif
-  3             continue
+                    ASSERT(repk .eq. kmpic)
+                end if
+3               continue
             end do
-        endif
+        end if
 !
-    else if (questi.eq.'CHAM_MATER') then
-        repk=rerr(4)
+    else if (questi .eq. 'CHAM_MATER') then
+        repk = rerr(4)
 !
-    else if (questi.eq.'CARA_ELEM') then
-        repk=rerr(5)
+    else if (questi .eq. 'CARA_ELEM') then
+        repk = rerr(5)
 !
-    else if (questi.eq.'NOM_MAILLA') then
+    else if (questi .eq. 'NOM_MAILLA') then
         call dismmo(questi, mo, repi, repk, ierd)
 !
-    else if (questi.eq.'PHENOMENE') then
+    else if (questi .eq. 'PHENOMENE') then
         call dismmo(questi, mo, repi, repk, ierd)
 !
-    else if (questi.eq.'SUR_OPTION') then
-        repk= rerr(2)(1:16)
+    else if (questi .eq. 'SUR_OPTION') then
+        repk = rerr(2) (1:16)
 !
-    else if (questi.eq.'NB_SS_ACTI') then
+    else if (questi .eq. 'NB_SS_ACTI') then
         if (rerr(3) .eq. 'OUI_SOUS_STRUC') then
             call dismmo(questi, mo, repi, repk, ierd)
         else
-            repi= 0
-        endif
+            repi = 0
+        end if
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
 999 continue
     repkz = repk

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mecham(optionZ, modelZ, cara, nh, chgeoz,&
+subroutine mecham(optionZ, modelZ, cara, nh, chgeoz, &
                   chcara, chharz, iret)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/checkSuperElement.h"
 !
-integer :: iret, nh
-character(len=*), intent(in) :: optionZ, modelZ
-character(len=*) :: cara
-character(len=*) :: chgeoz, chcara(*), chharz
+    integer :: iret, nh
+    character(len=*), intent(in) :: optionZ, modelZ
+    character(len=*) :: cara
+    character(len=*) :: chgeoz, chcara(*), chharz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,12 +66,12 @@ character(len=*) :: chgeoz, chcara(*), chharz
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    chgeom=' '
-    chharm=' '
+    chgeom = ' '
+    chharm = ' '
     option = optionZ
 !
-    ASSERT(modelZ(1:1).ne.' ')
-    model=modelZ
+    ASSERT(modelZ(1:1) .ne. ' ')
+    model = modelZ
 
 ! - Check if super-elements have been computed
     call checkSuperElement(option, model)
@@ -81,21 +81,21 @@ character(len=*) :: chgeoz, chcara(*), chharz
     call dismoi('EXI_ELEM', model, 'MODELE', repk=exiele)
     call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nbSuperElement)
     if (exiele(1:3) .eq. 'OUI') then
-        iret=0
+        iret = 0
     else
-        iret=1
-    endif
+        iret = 1
+    end if
     if (iret .eq. 1 .and. nbSuperElement .eq. 0) then
         call utmess('F', 'CALCULEL3_35')
-    endif
+    end if
 !
     if (iret .ne. 1) then
         call megeom(model, chgeom)
         call mecara(cara, chcara)
         call meharm(model, nh, chharm)
-    endif
+    end if
 !
-    chgeoz=chgeom
-    chharz=chharm
+    chgeoz = chgeom
+    chharz = chharm
     call jedema()
 end subroutine

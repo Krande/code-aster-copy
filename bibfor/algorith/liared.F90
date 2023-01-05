@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
-                  ncolia, promod, nlipro, ncopro, taille,&
+subroutine liared(nomres, fmli, iblo, liamod, nlilia, &
+                  ncolia, promod, nlipro, ncopro, taille, &
                   indcol, nbcol)
     implicit none
 !  O. NICOLAS     DATE 01/08/04
@@ -70,7 +70,7 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 !-- VARIABLES DE LA ROUTINE
     integer :: i1, j1, k1, l1, lliamo, lpromo, ltemp, lpro
     real(kind=8) :: temp, eps, coeff
-    parameter    (eps=2.3d-16)
+    parameter(eps=2.3d-16)
 !
 !-----------------------------------------------------------------------
 !
@@ -85,35 +85,35 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
         call jeveuo(promod, 'L', lpromo)
 !
         if (liamod .eq. promod) then
-            coeff=-1.d0
+            coeff = -1.d0
         else
-            coeff=1.d0
-        endif
+            coeff = 1.d0
+        end if
 !
 !-- TEST SUR LA PRESENCE DE COLONNES DE ZEROS DANS LE PROJECTEUR
 !-- ET DETERMINATION DE LA TAILLE DE LA MATRICE DE LIAISON SI CA N'A
 !-- PAS DEJA ETE FAIT
 !
         if (indcol(1:5) .eq. 'BLANC') then
-            indcol='&&INDCOLONNES_NON_ZERO'
+            indcol = '&&INDCOLONNES_NON_ZERO'
             call wkvect(indcol, 'V V I', ncopro, lpro)
             do i1 = 1, ncopro
-                zi(lpro+i1-1)=0
+                zi(lpro+i1-1) = 0
             end do
-            nbcol=0
+            nbcol = 0
             do j1 = 1, ncopro
-                temp=0.d0
+                temp = 0.d0
                 do i1 = 1, nlipro
-                    temp=temp+zr(lpromo+(j1-1)*nlipro+i1-1)**2
+                    temp = temp+zr(lpromo+(j1-1)*nlipro+i1-1)**2
                 end do
                 if (sqrt(temp)/nlipro .gt. eps) then
-                    zi(lpro+nbcol)=j1
-                    nbcol=nbcol+1
-                endif
+                    zi(lpro+nbcol) = j1
+                    nbcol = nbcol+1
+                end if
             end do
         else
             call jeveuo(indcol, 'L', lpro)
-        endif
+        end if
 !
 ! --- CREATION DE LA NOUVELLE MATRICE DE LIAISON
 !
@@ -124,7 +124,7 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 ! --- INITIALISATION DES MATRICES ORIENTEES DE LIAISON----------
 !
         do i1 = 1, nbcol*ncolia
-            zr(ltemp+i1-1)=0.d0
+            zr(ltemp+i1-1) = 0.d0
         end do
 !
 !
@@ -160,20 +160,20 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 !
         do j1 = 1, ncolia
             do k1 = 1, nlipro
-                temp=zr(lliamo+(j1-1)*nlilia+k1-1)
+                temp = zr(lliamo+(j1-1)*nlilia+k1-1)
                 do l1 = 1, nbcol
-                    i1=zi(lpro+l1-1)
-                    zr(ltemp+(j1-1)*nbcol+l1-1)= zr(ltemp+(j1-1)*&
-                    nbcol+l1-1)+ coeff*temp*zr(lpromo+(i1-1)*nlipro+&
-                    k1-1)
+                    i1 = zi(lpro+l1-1)
+                    zr(ltemp+(j1-1)*nbcol+l1-1) = zr(ltemp+(j1-1)* &
+                                                   nbcol+l1-1)+coeff*temp*zr(lpromo+(i1-1)*nlipro+ &
+                                                                               k1-1)
                 end do
             end do
         end do
 !
-    endif
+    end if
 !
-    taille(1)=nbcol
-    taille(2)=ncolia
+    taille(1) = nbcol
+    taille(2) = ncolia
 !
     call jedema()
 !

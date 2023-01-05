@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
-                  si2, yh, yb, zh, zb,&
-                  u1, u2, u3, u4, n,&
+subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr, &
+                  si2, yh, yb, zh, zb, &
+                  u1, u2, u3, u4, n, &
                   solveu)
     implicit none
 #include "jeveux.h"
@@ -65,18 +65,18 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
 ! INIT. OBJETS ASTER
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    matass=zk24(zi(ldrf+1))
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(ldrf+1))
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
     zero = 0.0d0
     if (si2 .eq. zero) then
 !        --- DECALAGE REEL ---
         if (sr .eq. zero) then
 !           --- DECALAGE NUL ---
-            call mrmult('ZERO', lraide, yh, zh, 1,&
+            call mrmult('ZERO', lraide, yh, zh, 1, &
                         .false._1)
-            call mrmult('ZERO', lmasse, yb, zb, 1,&
+            call mrmult('ZERO', lmasse, yb, zb, 1, &
                         .false._1)
             do i = 1, n, 1
                 zb(i) = -zb(i)
@@ -84,46 +84,46 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
 !
         else
 !           --- DECALAGE NON NUL ---
-            call mrmult('ZERO', lamor, yh, u1, 1,&
+            call mrmult('ZERO', lamor, yh, u1, 1, &
                         .false._1)
-            call mrmult('ZERO', lmasse, yb, u3, 1,&
+            call mrmult('ZERO', lmasse, yb, u3, 1, &
                         .false._1)
-            call mrmult('ZERO', lmasse, yh, u2, 1,&
+            call mrmult('ZERO', lmasse, yh, u2, 1, &
                         .false._1)
-            call mrmult('ZERO', lraide, yh, u4, 1,&
+            call mrmult('ZERO', lraide, yh, u4, 1, &
                         .false._1)
             do i = 1, n, 1
-                zh(i) = u4(i) + sr*(u1(i) + u3(i))
-                zb(i) = -u3(i) + sr* u2(i)
+                zh(i) = u4(i)+sr*(u1(i)+u3(i))
+                zb(i) = -u3(i)+sr*u2(i)
             end do
-        endif
+        end if
 !
     else
 !        --- DECALAGE COMPLEXE ---
-        call mrmult('ZERO', lamor, yh, u1, 1,&
+        call mrmult('ZERO', lamor, yh, u1, 1, &
                     .false._1)
-        call mrmult('ZERO', lmasse, yb, u2, 1,&
+        call mrmult('ZERO', lmasse, yb, u2, 1, &
                     .false._1)
-        call mrmult('ZERO', lmasse, yh, u3, 1,&
+        call mrmult('ZERO', lmasse, yh, u3, 1, &
                     .false._1)
         do i = 1, n, 1
-            u4(i) = u1(i) + sr*u3(i) + u2(i)
+            u4(i) = u1(i)+sr*u3(i)+u2(i)
         end do
 !
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, u4, [cbid],&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, u4, [cbid], &
                     criter, .false._1, 0, iret)
-        call mrmult('ZERO', lamor, u4, zh, 1,&
+        call mrmult('ZERO', lamor, u4, zh, 1, &
                     .false._1)
-        call mrmult('ZERO', lmasse, u4, zb, 1,&
+        call mrmult('ZERO', lmasse, u4, zb, 1, &
                     .false._1)
 !
         do i = 1, n, 1
-            zh(i) = si2*(zh(i) - u3(i) + sr*zb(i)) + sr*(u1(i) + u2(i) )
-            zb(i) = si2* zb(i) + sr*u3(i) - u2(i)
+            zh(i) = si2*(zh(i)-u3(i)+sr*zb(i))+sr*(u1(i)+u2(i))
+            zb(i) = si2*zb(i)+sr*u3(i)-u2(i)
         end do
-        call mrmult('CUMU', lraide, yh, zh, 1,&
+        call mrmult('CUMU', lraide, yh, zh, 1, &
                     .false._1)
-    endif
+    end if
 !
 end subroutine

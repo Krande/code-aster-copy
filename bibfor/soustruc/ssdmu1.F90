@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,18 +16,18 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ssdmu1(dref, crit, prec, geo1, geo2,&
+subroutine ssdmu1(dref, crit, prec, geo1, geo2, &
                   iconf)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
-character(len=*) :: crit
-real(kind=8) :: prec, geo1(3), geo2(3), dref
-character(len=8) :: crit2
-real(kind=8) :: dist, a1, a2, a3
-integer :: iconf
+    character(len=*) :: crit
+    real(kind=8) :: prec, geo1(3), geo2(3), dref
+    character(len=8) :: crit2
+    real(kind=8) :: dist, a1, a2, a3
+    integer :: iconf
 !
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -45,19 +45,19 @@ integer :: iconf
 !       ICONF: 0 --> LES 2 NOEUDS SONT CONFONDUS. (1 SINON)
 ! ----------------------------------------------------------------------
 !
-    crit2=crit
-    a1= geo1(1)-geo2(1)
-    a2= geo1(2)-geo2(2)
-    a3= geo1(3)-geo2(3)
-    dist= sqrt(a1**2+a2**2+a3**2)
+    crit2 = crit
+    a1 = geo1(1)-geo2(1)
+    a2 = geo1(2)-geo2(2)
+    a3 = geo1(3)-geo2(3)
+    dist = sqrt(a1**2+a2**2+a3**2)
 !
-    iconf=1
+    iconf = 1
     if (crit2(1:6) .eq. 'ABSOLU') then
-        if (dist .le. prec) iconf=0
-    else if (crit2(1:7).eq.'RELATIF') then
-        if (dist .le. prec*dref) iconf=0
+        if (dist .le. prec) iconf = 0
+    else if (crit2(1:7) .eq. 'RELATIF') then
+        if (dist .le. prec*dref) iconf = 0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

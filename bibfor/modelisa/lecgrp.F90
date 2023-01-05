@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lecgrp(ifl, icl, iv, rv, cv,&
-                  cnl, mcl, nbm, nbg, dim,&
+subroutine lecgrp(ifl, icl, iv, rv, cv, &
+                  cnl, mcl, nbm, nbg, dim, &
                   nbt, ier, irteti)
     implicit none
 !       PREMIERE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE GROUPE
@@ -68,25 +68,25 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
         numtcl = i
         nbtav = nbt(numtcl)
         goto 5
-  4     continue
+4       continue
     end do
     goto 3
 !
 ! ----- LIRE ITEM SUIVANT ( = NOM DU GROUPE ?)
 !
-  5 continue
-    inom=1
-    ilec=1
-    deblig=0
-    call lirtet(ifl, ilec, inom, cnl, nom,&
+5   continue
+    inom = 1
+    ilec = 1
+    deblig = 0
+    call lirtet(ifl, ilec, inom, cnl, nom, &
                 icl, iv, rv, cv, deblig)
 !
     if (nom .eq. 'INDEFINI') then
 !
 ! -----    LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
 !
-        if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
-                        ' CV(1:24) = ', cv(1:24), ' DEBLIG =', deblig
+        if (nbg .ge. 1) write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
+            ' CV(1:24) = ', cv(1:24), ' DEBLIG =', deblig
         call verdbl(deblig, cnl, ier, irtet)
         if (irtet .eq. 1) goto 2
         call tesfin(icl, iv, cv, irtet)
@@ -94,8 +94,8 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
             goto 7
         else if (irtet .eq. 2) then
             goto 8
-        endif
-        call vermot(icl, iv, cv, cnl, ier,&
+        end if
+        call vermot(icl, iv, cv, cnl, ier, &
                     irtet)
         if (irtet .eq. 1) goto 2
         nom = cv(1:iv)
@@ -108,63 +108,63 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
             goto 7
         else if (irtet .eq. 2) then
             goto 8
-        endif
-        call vermot(icl, iv, cv, cnl, ier,&
+        end if
+        call vermot(icl, iv, cv, cnl, ier, &
                     irtet)
         if (irtet .eq. 1) goto 2
-        nbt(numtcl) = nbt(numtcl) + 1
-    endif
+        nbt(numtcl) = nbt(numtcl)+1
+    end if
 !
 ! ----- LECTURE DES NOMS DE NOEUDS OU MAILLES DU GROUPE
 !
-  6 continue
-    call liritm(ifl, icl, iv, rv, cv,&
+6   continue
+    call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 1)
-    if (nbg .ge. 1) write(ifm, *)'       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv,&
-                    ' CV(1:24) = ', cv(1:24), ' DEBLIG =', deblig
+    if (nbg .ge. 1) write (ifm, *) '       LIRITM : ICL = ', icl, ' IV = ', iv, ' RV = ', rv, &
+        ' CV(1:24) = ', cv(1:24), ' DEBLIG =', deblig
 !
     if (deblig .eq. 1) call tesfin(icl, iv, cv, irtet)
     if (irtet .eq. 1) then
         goto 7
     else if (irtet .eq. 2) then
         goto 8
-    endif
+    end if
 !
-    call vermot(icl, iv, cv, cnl, ier,&
+    call vermot(icl, iv, cv, cnl, ier, &
                 irtet)
     if (irtet .eq. 1) goto 2
 !
-    nbt(numtcl) = nbt(numtcl) + 1
+    nbt(numtcl) = nbt(numtcl)+1
     goto 6
 !
-  7 continue
+7   continue
     ifn = 0
     goto 9
-  8 continue
+8   continue
     ifn = 1
 !
-  9 continue
+9   continue
     if ((nbtav-nbt(numtcl)) .eq. 0) then
         valk(1) = cnl
         valk(2) = nom
         call utmess('A', 'MODELISA4_80', nk=2, valk=valk)
 !         -- ON VA CREER UN GROUPE VIDE DE LONGUEUR 1 :
-        dim(numtcl) = dim(numtcl) + 1
-        nbt(numtcl) = nbt(numtcl) + 1
+        dim(numtcl) = dim(numtcl)+1
+        nbt(numtcl) = nbt(numtcl)+1
         goto 2
-    endif
+    end if
 !
-    dim(numtcl) = dim(numtcl) + 1
+    dim(numtcl) = dim(numtcl)+1
     if (ifn .eq. 0) goto 1
     if (ifn .eq. 1) goto 2
 !
-  1 continue
+1   continue
     irteti = 1
     goto 999
-  2 continue
+2   continue
     irteti = 2
     goto 999
-  3 continue
+3   continue
     irteti = 0
     goto 999
 !

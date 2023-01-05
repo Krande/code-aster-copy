@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine dbr_pod_incr(lReuse, base, paraPod,&
+subroutine dbr_pod_incr(lReuse, base, paraPod, &
                         q, s, v, nbModeOut, nbSnapOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -44,11 +44,11 @@ implicit none
 #include "blas/dgemm.h"
 #include "blas/dgesv.h"
 !
-aster_logical, intent(in) :: lReuse
-type(ROM_DS_Empi), intent(in) :: base
-type(ROM_DS_ParaDBR_POD) , intent(in) :: paraPod
-real(kind=8), pointer :: q(:), s(:), v(:)
-integer, intent(out) :: nbModeOut, nbSnapOut
+    aster_logical, intent(in) :: lReuse
+    type(ROM_DS_Empi), intent(in) :: base
+    type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
+    real(kind=8), pointer :: q(:), s(:), v(:)
+    integer, intent(out) :: nbModeOut, nbSnapOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,17 +77,17 @@ integer, intent(out) :: nbModeOut, nbSnapOut
     character(len=8) :: baseName
     real(kind=8) :: norm_q, norm_r
     integer(kind=4) :: info
-    real(kind=8), pointer :: qi(:)   => null()
-    real(kind=8), pointer :: ri(:)   => null()
-    real(kind=8), pointer :: rt(:)   => null()
-    real(kind=8), pointer :: vt(:)   => null()
-    real(kind=8), pointer :: g(:)    => null()
-    real(kind=8), pointer :: gt(:)   => null()
-    real(kind=8), pointer :: kv(:)   => null()
-    real(kind=8), pointer :: kt(:)   => null()
+    real(kind=8), pointer :: qi(:) => null()
+    real(kind=8), pointer :: ri(:) => null()
+    real(kind=8), pointer :: rt(:) => null()
+    real(kind=8), pointer :: vt(:) => null()
+    real(kind=8), pointer :: g(:) => null()
+    real(kind=8), pointer :: gt(:) => null()
+    real(kind=8), pointer :: kv(:) => null()
+    real(kind=8), pointer :: kt(:) => null()
     integer(kind=4), pointer :: IPIV(:) => null()
-    real(kind=8), pointer :: b(:)    => null()
-    real(kind=8), pointer :: v_gamma(:)    => null()
+    real(kind=8), pointer :: b(:) => null()
+    real(kind=8), pointer :: v_gamma(:) => null()
     character(len=24) :: mode, fieldName
     character(len=4) :: fieldSupp
     integer :: iret
@@ -104,41 +104,41 @@ integer, intent(out) :: nbModeOut, nbSnapOut
 !
 ! - Get parameters
 !
-    mode         = '&&IPOD_MODE'
-    nbEqua       = base%mode%nbEqua
-    nbModeMaxi   = paraPod%nbModeMaxi
+    mode = '&&IPOD_MODE'
+    nbEqua = base%mode%nbEqua
+    nbModeMaxi = paraPod%nbModeMaxi
     nbSnapResult = paraPod%snap%nbSnap
-    toleIncr     = paraPod%toleIncr
-    toleSVD      = paraPod%toleSVD
+    toleIncr = paraPod%toleIncr
+    toleSVD = paraPod%toleSVD
     ASSERT(paraPod%baseType .eq. '3D')
 !
 ! - Properties of previous base
 !
-    baseName     = base%resultName
-    nbModePrev   = base%nbMode
-    nbSnapPrev   = base%nbSnap
-    fieldName    = base%mode%fieldName
-    fieldSupp    = base%mode%fieldSupp
+    baseName = base%resultName
+    nbModePrev = base%nbMode
+    nbSnapPrev = base%nbSnap
+    fieldName = base%mode%fieldName
+    fieldSupp = base%mode%fieldSupp
 !
 ! - Get previous reduced coordinates when reuse
 !
     if (lReuse) then
         call romTableRead(paraPod%tablReduCoor)
         call tbSuppressAllLines(paraPod%tablReduCoor%tablResu%tablName)
-    endif
+    end if
 !
 ! - Allocate objects
 !
-    AS_ALLOCATE(vr = qi, size = nbEqua)
-    AS_ALLOCATE(vr = ri, size = nbEqua)
-    AS_ALLOCATE(vr = rt, size = nbEqua)
+    AS_ALLOCATE(vr=qi, size=nbEqua)
+    AS_ALLOCATE(vr=ri, size=nbEqua)
+    AS_ALLOCATE(vr=rt, size=nbEqua)
     if (.not. lReuse) then
         ASSERT(nbModePrev .eq. 0)
         ASSERT(nbSnapPrev .eq. 0)
-    endif
-    AS_ALLOCATE(vr = vt, size = nbEqua * (nbSnapResult + nbModePrev))
-    AS_ALLOCATE(vr = gt, size = (nbSnapResult + nbModePrev) * (nbSnapResult + nbSnapPrev))
-    AS_ALLOCATE(vr = g , size = (nbSnapResult + nbModePrev) * (nbSnapResult + nbSnapPrev))
+    end if
+    AS_ALLOCATE(vr=vt, size=nbEqua*(nbSnapResult+nbModePrev))
+    AS_ALLOCATE(vr=gt, size=(nbSnapResult+nbModePrev)*(nbSnapResult+nbSnapPrev))
+    AS_ALLOCATE(vr=g, size=(nbSnapResult+nbModePrev)*(nbSnapResult+nbSnapPrev))
 !
 ! - Initialize algorithm
 !
@@ -147,50 +147,50 @@ integer, intent(out) :: nbModeOut, nbSnapOut
         do iMode = 1, nbModePrev
             call rsexch(' ', baseName, fieldName, iMode, mode, iret)
             if (fieldSupp .eq. 'NOEU') then
-                call jeveuo(mode(1:19)//'.VALE', 'L', vr = v_mode)
+                call jeveuo(mode(1:19)//'.VALE', 'L', vr=v_mode)
             elseif (fieldSupp .eq. 'ELGA') then
-                call jeveuo(mode(1:19)//'.CELV', 'L', vr = v_mode)
+                call jeveuo(mode(1:19)//'.CELV', 'L', vr=v_mode)
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             do iEqua = 1, nbEqua
                 vt(iEqua+nbEqua*(iMode-1)) = v_mode(iEqua)
             end do
-        enddo
+        end do
 ! ----- Add previous reduced coordinates in gT
-        do iCoorRedu = 1, nbModePrev  * nbSnapPrev
+        do iCoorRedu = 1, nbModePrev*nbSnapPrev
             gt(iCoorRedu) = paraPod%tablReduCoor%coorRedu(iCoorRedu)
-        enddo
+        end do
     else
 ! ----- Add first snap in v
         qi(1:nbEqua) = q(1:nbEqua)
         call norm_frobenius(nbEqua, qi, norm_q)
         if (norm_q .le. r8prem()) then
             norm_q = 1.d-16*sqrt(nbEqua*1.d0)
-        endif
+        end if
         vt(1:nbEqua) = qi(1:nbEqua)/norm_q
 ! ----- Add norm of first snap in gT
-        gt(1)        = norm_q
-    endif
+        gt(1) = norm_q
+    end if
 !
 ! - Suppress previous result datastructure
 !
     if (lReuse) then
         call detrsd('RESULTAT', baseName)
         call romBaseCreate(base, nbModePrev)
-    endif
+    end if
 !
 ! - Set bounds of algorithm
 !
     if (lReuse) then
         iAlgoSnap = nbModePrev
-        iAlgoIni  = nbSnapPrev + 1
-        iAlgoEnd  = nbSnapResult + nbSnapPrev
+        iAlgoIni = nbSnapPrev+1
+        iAlgoEnd = nbSnapResult+nbSnapPrev
     else
         iAlgoSnap = 1
-        iAlgoIni  = 2
-        iAlgoEnd  = nbSnapResult
-    endif
+        iAlgoIni = 2
+        iAlgoEnd = nbSnapResult
+    end if
 !
 ! - Main algorithm
 !
@@ -199,43 +199,43 @@ integer, intent(out) :: nbModeOut, nbSnapOut
         if (lReuse) then
             do iEqua = 1, nbEqua
                 qi(iEqua) = q(iEqua+nbEqua*(iAlgo-nbSnapPrev-1))
-            enddo
+            end do
         else
             do iEqua = 1, nbEqua
                 qi(iEqua) = q(iEqua+nbEqua*(iAlgo-1))
-            enddo
-        endif
+            end do
+        end if
 
 ! ----- Compute norm of current snapshot
         call norm_frobenius(nbEqua, qi, norm_q)
         if (norm_q .le. r8prem()) then
             cycle
-        endif
+        end if
 
 ! ----- Compute {kt} = [v]^T {q} (projection of current snaphot on base)
-        AS_ALLOCATE(vr  = kt  , size = iAlgoSnap)
-        call dgemm('T', 'N', iAlgoSnap, 1, nbEqua, 1.d0,&
-                   vt, nbEqua,&
-                   qi, nbEqua,&
+        AS_ALLOCATE(vr=kt, size=iAlgoSnap)
+        call dgemm('T', 'N', iAlgoSnap, 1, nbEqua, 1.d0, &
+                   vt, nbEqua, &
+                   qi, nbEqua, &
                    0.d0, kt, iAlgoSnap)
 
 ! ----- Compute [kv] = [v]^T [v]
-        AS_ALLOCATE(vr  = kv  , size = iAlgoSnap*iAlgoSnap)
-        call dgemm('T', 'N', iAlgoSnap, iAlgoSnap, nbEqua, 1.d0,&
-                   vt, nbEqua,&
-                   vt, nbEqua,&
+        AS_ALLOCATE(vr=kv, size=iAlgoSnap*iAlgoSnap)
+        call dgemm('T', 'N', iAlgoSnap, iAlgoSnap, nbEqua, 1.d0, &
+                   vt, nbEqua, &
+                   vt, nbEqua, &
                    0.d0, kv, iAlgoSnap)
 
 ! ----- Solve [v]^T [v] {Y} = [v]^T {q} => {Y} are reduced coordinates
-        AS_ALLOCATE(vi4 = IPIV, size = iAlgoSnap)
+        AS_ALLOCATE(vi4=IPIV, size=iAlgoSnap)
         call dgesv(iAlgoSnap, 1, kv, iAlgoSnap, IPIV, kt, iAlgoSnap, info)
 
 ! ----- Compute residu {r} = [v] {Y}
-        call dgemm('N', 'N', nbEqua, 1, iAlgoSnap, 1.d0,&
-                   vt, nbEqua,&
-                   kt, iAlgoSnap,&
+        call dgemm('N', 'N', nbEqua, 1, iAlgoSnap, 1.d0, &
+                   vt, nbEqua, &
+                   kt, iAlgoSnap, &
                    0.d0, rt, nbEqua)
-        ri = qi - rt
+        ri = qi-rt
 
 ! ----- Compute norm of residu
         call norm_frobenius(nbEqua, ri, norm_r)
@@ -244,8 +244,8 @@ integer, intent(out) :: nbModeOut, nbSnapOut
         if (norm_r/norm_q .ge. toleIncr) then
 ! --------- Add mode (residu !) at current iAlgoSnap iteration
             do iEqua = 1, nbEqua
-                vt(iEqua + nbEqua*iAlgoSnap) = ri(iEqua)/norm_r
-            enddo
+                vt(iEqua+nbEqua*iAlgoSnap) = ri(iEqua)/norm_r
+            end do
 
 ! --------- Add singular value
 ! --------- G matrice rectangulaire en quatre morceaux.
@@ -257,42 +257,42 @@ integer, intent(out) :: nbModeOut, nbSnapOut
 ! --------- Valeurs haut-gauche
             do iSnap = 1, iAlgoSnap
                 g(iSnap+(iAlgoSnap+1)*(iAlgo-1)) = kt(iSnap)
-                do k = 1, iAlgo - 1
-                    g(iSnap+(iAlgoSnap+1)*(k-1))= gt(iSnap+iAlgoSnap*(k-1))
-                enddo
-            enddo
+                do k = 1, iAlgo-1
+                    g(iSnap+(iAlgoSnap+1)*(k-1)) = gt(iSnap+iAlgoSnap*(k-1))
+                end do
+            end do
 
 ! --------- Valeurs bas-gauche
-            do k = 1, iAlgo - 1
-                g((iAlgoSnap+1)*k)= 0.d0
-            enddo
+            do k = 1, iAlgo-1
+                g((iAlgoSnap+1)*k) = 0.d0
+            end do
 
 ! --------- Valeur bas-droite
-            g((iAlgoSnap + 1)*iAlgo) = norm_r
+            g((iAlgoSnap+1)*iAlgo) = norm_r
 
 ! --------- Valeurs haut-droite
-            do k = 1, (iAlgoSnap + 1)*iAlgo
+            do k = 1, (iAlgoSnap+1)*iAlgo
                 gt(k) = g(k)
-            enddo
+            end do
 
 ! --------- Next snap
-            iAlgoSnap = iAlgoSnap + 1
+            iAlgoSnap = iAlgoSnap+1
 
         else
             do iSnap = 1, iAlgoSnap
                 gt(iSnap+iAlgoSnap*(iAlgo-1)) = kt(iSnap)
-            enddo
-        endif
-        AS_DEALLOCATE(vr = kt)
-        AS_DEALLOCATE(vr = kv)
-        AS_DEALLOCATE(vi4 = IPIV)
-    enddo
+            end do
+        end if
+        AS_DEALLOCATE(vr=kt)
+        AS_DEALLOCATE(vr=kv)
+        AS_DEALLOCATE(vi4=IPIV)
+    end do
 !
 ! - Deallocate objects
 !
-    AS_DEALLOCATE(vr = qi)
-    AS_DEALLOCATE(vr = ri)
-    AS_DEALLOCATE(vr = rt)
+    AS_DEALLOCATE(vr=qi)
+    AS_DEALLOCATE(vr=ri)
+    AS_DEALLOCATE(vr=rt)
 !
 ! - Final number of snapshots in base
 !
@@ -300,7 +300,7 @@ integer, intent(out) :: nbModeOut, nbSnapOut
 !
 ! - Prepare matrix of reduced coordinates
 !
-    do iSnap = 1, iAlgoSnap * nbSnapOut
+    do iSnap = 1, iAlgoSnap*nbSnapOut
         g(iSnap) = gt(iSnap)
     end do
 !
@@ -314,40 +314,40 @@ integer, intent(out) :: nbModeOut, nbSnapOut
 !
 ! - Compute matrix of singular vector: V <= V * B (dim : [nbModeOut x nbEqua] )
 !
-    AS_ALLOCATE(vr = v, size = nbEqua*nbModeOut)
-    call dgemm('N', 'N', nbEqua, nbModeOut, iAlgoSnap, 1.d0,&
-               vt, nbEqua,&
-               b, iAlgoSnap,&
+    AS_ALLOCATE(vr=v, size=nbEqua*nbModeOut)
+    call dgemm('N', 'N', nbEqua, nbModeOut, iAlgoSnap, 1.d0, &
+               vt, nbEqua, &
+               b, iAlgoSnap, &
                0.d0, v, nbEqua)
 !
 ! - Compute reduced coordinates G <= B^T G (dim : [nbModeOut x nbSnapOut] )
 !
-    AS_ALLOCATE(vr = v_gamma, size = nbModeOut*nbSnapOut)
-    call dgemm('T', 'N', nbModeOut, nbSnapOut, iAlgoSnap, 1.d0,&
-               b, iAlgoSnap,&
-               gt, iAlgoSnap,&
+    AS_ALLOCATE(vr=v_gamma, size=nbModeOut*nbSnapOut)
+    call dgemm('T', 'N', nbModeOut, nbSnapOut, iAlgoSnap, 1.d0, &
+               b, iAlgoSnap, &
+               gt, iAlgoSnap, &
                0.d0, v_gamma, nbModeOut)
 !
 ! - Save the reduced coordinates in a table
 !
     if (niv .ge. 2) then
-        call utmess('I', 'ROM5_39', ni = 2, vali = [nbSnapOut, nbModeOut])
-    endif
+        call utmess('I', 'ROM5_39', ni=2, vali=[nbSnapOut, nbModeOut])
+    end if
     do iSnap = 1, nbSnapOut
-        call romTableSave(paraPod%tablReduCoor%tablResu, nbModeOut, v_gamma,&
-                          numeSnap_ = iSnap)
+        call romTableSave(paraPod%tablReduCoor%tablResu, nbModeOut, v_gamma, &
+                          numeSnap_=iSnap)
     end do
 !
 ! - Debug print
 !
-    call utmess('I', 'ROM7_14', si = nbSnapOut)
+    call utmess('I', 'ROM7_14', si=nbSnapOut)
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = v_gamma)
-    AS_DEALLOCATE(vr = vt)
-    AS_DEALLOCATE(vr = gt)
-    AS_DEALLOCATE(vr = g)
-    AS_DEALLOCATE(vr = b)
+    AS_DEALLOCATE(vr=v_gamma)
+    AS_DEALLOCATE(vr=vt)
+    AS_DEALLOCATE(vr=gt)
+    AS_DEALLOCATE(vr=g)
+    AS_DEALLOCATE(vr=b)
 !
 end subroutine

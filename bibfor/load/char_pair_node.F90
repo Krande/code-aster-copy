@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine char_pair_node(mesh, nb_node,&
+subroutine char_pair_node(mesh, nb_node, &
                           list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -84,8 +84,8 @@ implicit none
 !
 ! - Initializations
 !
-    ier       = 0
-    i_error   = 0
+    ier = 0
+    i_error = 0
     cent(1:3) = 0.d0
     tran(1:3) = 0.d0
     call jeveuo(mesh//'.COORDO    .VALE', 'L', jgeom_init)
@@ -119,7 +119,7 @@ implicit none
 !
 ! ----- Apply transformation for translation/rotation
 !
-        call parotr(mesh, jgeom_init, nume_node_1, 0, cent,&
+        call parotr(mesh, jgeom_init, nume_node_1, 0, cent, &
                     matr_rota, tran, x1)
 !
 ! ----- Find nearest node
@@ -131,12 +131,12 @@ implicit none
             x2(1) = zr(jgeom_init+3*(nume_node_2-1)-1+1)
             x2(2) = zr(jgeom_init+3*(nume_node_2-1)-1+2)
             x2(3) = zr(jgeom_init+3*(nume_node_2-1)-1+3)
-            dist = padist( 3, x1, x2 )
+            dist = padist(3, x1, x2)
             if (dist .lt. dist_mini) then
                 dist_mini = dist
                 ino_mini = ino_2
-            endif
-        enddo
+            end if
+        end do
 !
 ! ----- No nearest node found
 !
@@ -145,19 +145,19 @@ implicit none
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
             call utmess('E', 'CHARGES2_50', sk=name_node_1)
             goto 99
-        endif
+        end if
         nume_node_2 = zi(j_node_i2-1+ino_mini)
 !
 ! ----- Nearest node found
 !
-        nume_node_2 = zi(j_node_i2 -1+ino_mini)
+        nume_node_2 = zi(j_node_i2-1+ino_mini)
         nume_node_a = zi(j_node_inv-1+ino_mini)
         if (nume_node_a .eq. 0) then
             zi(j_node_o1-1+ino_1) = nume_node_1
             zi(j_node_o2-1+ino_1) = nume_node_2
             zi(j_node_inv-1+ino_mini) = nume_node_2
         else
-            ier = ier + 1
+            ier = ier+1
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_a), name_node_a)
@@ -165,7 +165,7 @@ implicit none
             valk(2) = name_node_1
             valk(3) = name_node_a
             call utmess('E', 'CHARGES2_51', nk=3, valk=valk)
-        endif
+        end if
     end do
 !
 ! - Conflict: two nodes have same neighbour
@@ -173,7 +173,7 @@ implicit none
     if (ier .ne. 0) then
         i_error = 1
         goto 99
-    endif
+    end if
 !
     do i_no = 1, nb_node
         zi(j_node_inv-1+i_no) = 0
@@ -197,14 +197,14 @@ implicit none
 !
 ! --------- Apply transformation for translation/rotation
 !
-            call parotr(mesh, jgeom_init, nume_node_1, 0, cent,&
+            call parotr(mesh, jgeom_init, nume_node_1, 0, cent, &
                         matr_rota, tran, x1)
-            dist = padist( 3, x1, x2 )
+            dist = padist(3, x1, x2)
             if (dist .lt. dist_mini) then
                 dist_mini = dist
                 ino_mini = ino_1
-            endif
-        enddo
+            end if
+        end do
 !
 ! ----- No nearest node found
 !
@@ -213,19 +213,19 @@ implicit none
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
             call utmess('F', 'CHARGES2_50', sk=name_node_2)
             goto 99
-        endif
+        end if
         nume_node_1 = zi(j_node_i1-1+ino_mini)
 !
 ! ----- Nearest node found
 !
-        nume_node_1 = zi(j_node_i1 -1+ino_mini)
+        nume_node_1 = zi(j_node_i1-1+ino_mini)
         nume_node_a = zi(j_node_inv-1+ino_mini)
         if (nume_node_a .eq. 0) then
             zi(j_node_o3-1+ino_2) = nume_node_2
             zi(j_node_o4-1+ino_2) = nume_node_1
             zi(j_node_inv-1+ino_mini) = nume_node_1
         else
-            ier = ier + 1
+            ier = ier+1
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_a), name_node_a)
@@ -233,7 +233,7 @@ implicit none
             valk(2) = name_node_2
             valk(3) = name_node_a
             call utmess('E', 'CHARGES2_51', nk=3, valk=valk)
-        endif
+        end if
     end do
 !
 ! - Conflict: two nodes have same neighbour
@@ -241,7 +241,7 @@ implicit none
     if (ier .ne. 0) then
         i_error = 1
         goto 99
-    endif
+    end if
 !
 ! - Check: (list_node_1 -> list_node_2) == (list_node_2 -> list_node_1)
 !
@@ -259,25 +259,25 @@ implicit none
             if (nume_node_2 .eq. nume_node_3) then
                 iexcor = 1
                 if (nume_node_1 .ne. nume_node_4) then
-                    ier = ier + 1
+                    ier = ier+1
                     valk(1) = name_node_1
                     valk(2) = name_node_2
                     valk(3) = name_node_4
                     call utmess('E', 'CHARGES2_51', nk=3, valk=valk)
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
         if (iexcor .eq. 0) then
-            ier = ier + 1
+            ier = ier+1
             valk(1) = name_node_1
             call utmess('E', 'CHARGES2_52', sk=valk(1))
-        endif
-    enddo
+        end if
+    end do
 !
     if (ier .ne. 0) then
         i_error = 1
         goto 99
-    endif
+    end if
 !
 99  continue
 !

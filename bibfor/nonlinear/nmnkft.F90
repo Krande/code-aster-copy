@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine nmnkft(solver, sddisc, iterat_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmlere.h"
 #include "asterfort/nmlerr.h"
 !
-character(len=19), intent(in) :: solver, sddisc
-integer, optional, intent(in) :: iterat_
+    character(len=19), intent(in) :: solver, sddisc
+    integer, optional, intent(in) :: iterat_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,20 +59,20 @@ integer, optional, intent(in) :: iterat_
             call nmlere(sddisc, 'L', 'VCHAR', iterat, resold(1))
         else
             call nmlere(sddisc, 'L', 'VMAXI', iterat-1, resold(1))
-        endif
+        end if
         call nmlerr(sddisc, 'L', 'ITER_NEWTON_KRYLOV', epsold, ibid)
         call nmlere(sddisc, 'L', 'VMAXI', iterat, resnew(1))
         if (resold(1) .eq. 0.d0) then
-            epsi=epsold
+            epsi = epsold
             goto 10
-        endif
+        end if
         if ((0.9d0*epsold**2) .gt. 0.2d0) then
-            epsi=min(max(0.1d0*resnew(1)**2/resold(1)**2,0.9d0*epsold**2),4.d-1*epsold)
+            epsi = min(max(0.1d0*resnew(1)**2/resold(1)**2, 0.9d0*epsold**2), 4.d-1*epsold)
         else
             epsmin = slvr(1)
-            epsi=max(min(0.1d0*resnew(1)**2/resold(1)**2,4.d-1*epsold),epsmin)
-        endif
-    endif
+            epsi = max(min(0.1d0*resnew(1)**2/resold(1)**2, 4.d-1*epsold), epsmin)
+        end if
+    end if
 !
 10  continue
 !
@@ -82,6 +82,6 @@ integer, optional, intent(in) :: iterat_
 !
 ! --- COPIE DE LA PRECISION CALCULEE DANS LA SD SOLVEUR
 !
-    slvr(2)=epsi
+    slvr(2) = epsi
 !
 end subroutine

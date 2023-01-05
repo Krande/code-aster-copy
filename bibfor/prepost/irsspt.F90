@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
-                  nomcmp, lsup, linf, lmax, lmin,&
+subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp, &
+                  nomcmp, lsup, linf, lmax, lmin, &
                   borinf, borsup)
     implicit none
 #include "asterf_types.h"
@@ -98,37 +98,37 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !     ------------------------------------
 !     SI L'UTILISATEUR A RENSEIGNE NOM_CMP
     if (nbcmp .ne. 0) then
-        ncmp=0
+        ncmp = 0
         do i = 1, nbcmp
-            icmp=indik8(cesc,nomcmp(i),1,ncmpc)
+            icmp = indik8(cesc, nomcmp(i), 1, ncmpc)
             if (icmp .ne. 0) then
-                num_cmp_cham(ncmp+1)=icmp
-                ncmp=ncmp+1
-            endif
+                num_cmp_cham(ncmp+1) = icmp
+                ncmp = ncmp+1
+            end if
         end do
     else
 !       SINON TOUT_CMP='OUI'
         do i = 1, ncmpc
-            num_cmp_cham(i)=i
+            num_cmp_cham(i) = i
         end do
-        ncmp=ncmpc
-    endif
+        ncmp = ncmpc
+    end if
 !
 ! --- ON RECUPERE LES MAILLES AD-HOC:
 !     -------------------------------
 !     SI L'UTILISATEUR A RENSEIGNE MAILLE/GROUP_MA
     if (nbmat .ne. 0) then
         do i = 1, nbmat
-            num_mail_cham(i)=nummai(i)
+            num_mail_cham(i) = nummai(i)
         end do
-        nbma=nbmat
+        nbma = nbmat
     else
 !        SINON
         do i = 1, nbmac
-            num_mail_cham(i)=i
+            num_mail_cham(i) = i
         end do
-        nbma=nbmac
-    endif
+        nbma = nbmac
+    end if
 !
 !
 ! --- RECUPERATION DES VALEURS MIN/MAX
@@ -136,23 +136,23 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !
 !     BOUCLE SUR LES COMPOSANTES
     do i = 1, ncmp
-        icmp=num_cmp_cham(i)
+        icmp = num_cmp_cham(i)
 !
 !       LMAxxx : BOOLEEN INDIQUANT LE PREMIER PASSAGE
 !       LORS DU DES MAILLES POUR STOCKER LES VALEURS
-        lmamin=.true.
-        lmamax=.true.
+        lmamin = .true.
+        lmamax = .true.
 !
 !       BOUCLE SUR LES MAILLES
         do j = 1, nbma
-            ima=num_mail_cham(j)
-            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-            nbsp=zi(jcesd-1+5+4*(ima-1)+2)
+            ima = num_mail_cham(j)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = zi(jcesd-1+5+4*(ima-1)+2)
 !
 !         LPTxxx : BOOLEEN INDIQUANT LE PREMIER PASSAGE
 !         LORS DU PARCOURT DES POINTS POUR STOCKER LES VALEURS MIN/MAX
-            lptmin=.true.
-            lptmax=.true.
+            lptmin = .true.
+            lptmax = .true.
 !
 !         BOUCLE SUR LES POINTS
             do ipt = 1, nbpt
@@ -164,67 +164,67 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !
 !           LSPxxx : BOOLEEN INDIQUANT LE PREMIER PASSAGE
 !           LORS DU PARCOURT DES SOUS-POINTS POUR STOCKER LES VALEURS
-                lspmin=.true.
-                lspmax=.true.
+                lspmin = .true.
+                lspmax = .true.
 !
 !           BOUCLE SUR LES SOUS-POINTS:
                 do isp = 1, nbsp
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
 !
-                        valr=cesv(iad)
+                        valr = cesv(iad)
 !
 !                SI VALE_MAX
                         if (lmax) then
 !                  SI BORNE_SUP
                             if (lsup) then
                                 if ((valr-borsup) .gt. 0.d0) goto 80
-                            endif
+                            end if
 !                  SI BORNE_INF
                             if (linf) then
                                 if ((valr-borinf) .lt. 0.d0) goto 80
-                            endif
+                            end if
 !                  PREMIER PASSAGE
                             if (lspmax) then
-                                vspma3=valr
-                                ispma3=isp
-                                lspmax=.false.
+                                vspma3 = valr
+                                ispma3 = isp
+                                lspmax = .false.
                             else
                                 if (valr .gt. vspma3) then
-                                    vspma3=valr
-                                    ispma3=isp
-                                endif
-                            endif
-                        endif
+                                    vspma3 = valr
+                                    ispma3 = isp
+                                end if
+                            end if
+                        end if
 !
 !                SI VALE_MIN
                         if (lmin) then
 !                  SI BORNE_SUP
                             if (lsup) then
                                 if ((valr-borsup) .gt. 0.d0) goto 80
-                            endif
+                            end if
 !                  SI BORNE_INF
                             if (linf) then
                                 if ((valr-borinf) .lt. 0.d0) goto 80
-                            endif
+                            end if
 !                  PREMIER PASSAGE
                             if (lspmin) then
-                                vspmi3=valr
-                                ispmi3=isp
-                                lspmin=.false.
+                                vspmi3 = valr
+                                ispmi3 = isp
+                                lspmin = .false.
                             else
                                 if (valr .lt. vspmi3) then
-                                    vspmi3=valr
-                                    ispmi3=isp
-                                endif
-                            endif
-                        endif
+                                    vspmi3 = valr
+                                    ispmi3 = isp
+                                end if
+                            end if
+                        end if
 !
-                    endif
+                    end if
 !
 !           FIN BOUCLE SUR LES SOUS-POINTS
- 80                 continue
+80                  continue
                 end do
 !
 !           VPTMA2: VALEUR MAX SUR TOUS LES POINTS
@@ -235,40 +235,40 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !           ISPMI2: NUMERO DU SOUS_POINT ASSOCIE A IPTMI2
 !
 !           SI VALE_MAX
-                if (lmax .and. .not.lspmax) then
+                if (lmax .and. .not. lspmax) then
 !             PREMIER PASSAGE
                     if (lptmax) then
-                        iptma2=ipt
-                        vptma2=vspma3
-                        ispma2=ispma3
-                        lptmax=.false.
+                        iptma2 = ipt
+                        vptma2 = vspma3
+                        ispma2 = ispma3
+                        lptmax = .false.
                     else
 !               ON REACTUALISE LA VALEUR MAX
                         if (vptma2 .lt. vspma3) then
-                            vptma2=vspma3
-                            iptma2=ipt
-                            ispma2=ispma3
-                        endif
-                    endif
-                endif
+                            vptma2 = vspma3
+                            iptma2 = ipt
+                            ispma2 = ispma3
+                        end if
+                    end if
+                end if
 !
 !           SI VALE_MIN
-                if (lmin .and. .not.lspmin) then
+                if (lmin .and. .not. lspmin) then
 !             PREMIER PASSAGE
                     if (lptmin) then
-                        iptmi2=ipt
-                        vptmi2=vspmi3
-                        ispmi2=ispmi3
-                        lptmin=.false.
+                        iptmi2 = ipt
+                        vptmi2 = vspmi3
+                        ispmi2 = ispmi3
+                        lptmin = .false.
                     else
 !               ON REACTUALISE LA VALEUR MIN
                         if (vptmi2 .gt. vspmi3) then
-                            vptmi2=vspmi3
-                            iptmi2=ipt
-                            ispmi2=ispmi3
-                        endif
-                    endif
-                endif
+                            vptmi2 = vspmi3
+                            iptmi2 = ipt
+                            ispmi2 = ispmi3
+                        end if
+                    end if
+                end if
 !
 !         FIN BOUCLE SUR LES POINTS
             end do
@@ -283,44 +283,44 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !         ISPMIN: NUMERO DU SOUS_POINT ASSOCIE A IPTMIN
 !
 !         SI VALE_MAX
-            if (lmax .and. .not.lptmax) then
+            if (lmax .and. .not. lptmax) then
 !           PREMIER PASSAGE
                 if (lmamax) then
-                    imamax=ima
-                    vmamax=vptma2
-                    iptmax=iptma2
-                    ispmax=ispma2
-                    lmamax=.false.
+                    imamax = ima
+                    vmamax = vptma2
+                    iptmax = iptma2
+                    ispmax = ispma2
+                    lmamax = .false.
                 else
 !             ON REACTUALISE LA VALEUR MAX
                     if (vmamax .lt. vptma2) then
-                        vmamax=vptma2
-                        iptmax=iptma2
-                        ispmax=ispma2
-                        imamax=ima
-                    endif
-                endif
-            endif
+                        vmamax = vptma2
+                        iptmax = iptma2
+                        ispmax = ispma2
+                        imamax = ima
+                    end if
+                end if
+            end if
 !
 !         SI VALE_MIN
-            if (lmin .and. .not.lptmin) then
+            if (lmin .and. .not. lptmin) then
 !           PREMIER PASSAGE
                 if (lmamin) then
-                    imamin=ima
-                    vmamin=vptmi2
-                    iptmin=iptmi2
-                    ispmin=ispmi2
-                    lmamin=.false.
+                    imamin = ima
+                    vmamin = vptmi2
+                    iptmin = iptmi2
+                    ispmin = ispmi2
+                    lmamin = .false.
                 else
 !             ON REACTUALISE LA VALEUR MIN
                     if (vmamin .gt. vptmi2) then
-                        vmamin=vptmi2
-                        iptmin=iptmi2
-                        ispmin=ispmi2
-                        imamin=ima
-                    endif
-                endif
-            endif
+                        vmamin = vptmi2
+                        iptmin = iptmi2
+                        ispmin = ispmi2
+                        imamin = ima
+                    end if
+                end if
+            end if
 !
 !     FIN BOUCLE SUR LES MAILLES
         end do
@@ -329,28 +329,28 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !     IMPRESSIONS
 !     -----------
 !
-        if (lmax .and. .not.lmamax) then
+        if (lmax .and. .not. lmamax) then
             call jenuno(jexnum(ma//'.NOMMAI', imamax), noma)
-            write(unite,*)' '
-            write(unite,2000)'LA VALEUR MAXIMALE DE ',cesc(1+icmp-&
-            1), 'EST: ',vmamax
-            write(unite,2001)'OBTENUE DANS LA MAILLE ',noma,&
-     &    'AU SOUS_POINT ',ispmax,' DU POINT ',iptmax
-        endif
+            write (unite, *) ' '
+            write (unite, 2000) 'LA VALEUR MAXIMALE DE ', cesc(1+icmp- &
+                                                               1), 'EST: ', vmamax
+            write (unite, 2001) 'OBTENUE DANS LA MAILLE ', noma,&
+     &    'AU SOUS_POINT ', ispmax, ' DU POINT ', iptmax
+        end if
 !
-        if (lmin .and. .not.lmamin) then
+        if (lmin .and. .not. lmamin) then
             call jenuno(jexnum(ma//'.NOMMAI', imamin), noma)
-            write(unite,*)' '
-            write(unite,2000)'LA VALEUR MINIMALE DE ',cesc(1+icmp-&
-            1), 'EST: ',vmamin
-            write(unite,2001)'OBTENUE DANS LA MAILLE ',noma,&
-     &    'AU SOUS_POINT ',ispmin,' DU POINT ',iptmin
-        endif
+            write (unite, *) ' '
+            write (unite, 2000) 'LA VALEUR MINIMALE DE ', cesc(1+icmp- &
+                                                               1), 'EST: ', vmamin
+            write (unite, 2001) 'OBTENUE DANS LA MAILLE ', noma,&
+     &    'AU SOUS_POINT ', ispmin, ' DU POINT ', iptmin
+        end if
 !
     end do
 !
-    2000 format(3(a),e12.5)
-    2001 format(3(a),i3,a,i3)
+2000 format(3(a), e12.5)
+2001 format(3(a), i3, a, i3)
 !
     AS_DEALLOCATE(vi=num_cmp_cham)
     AS_DEALLOCATE(vi=num_mail_cham)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
+subroutine as_mfdcre(fid, cha, nomamd, type, comp, &
                      unit, ncomp, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -42,12 +42,12 @@ subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
     fidm = to_med_idt(fid)
     ncomp4 = ncomp
     type4 = type
-    call mfdcre(fidm, cha, type4, ncomp4, comp,&
+    call mfdcre(fidm, cha, type4, ncomp4, comp, &
                 unit, unidt, nomamd, cret4)
     cret = cret4
 #else
     unidt = ' '
-    call mfdcre(fid, cha, type, ncomp, comp,&
+    call mfdcre(fid, cha, type, ncomp, comp, &
                 unit, unidt, nomamd, cret)
 #endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine aprend(sdappa, sdcont_defi, newgeo)
 !
-implicit none
+    implicit none
 !
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -78,34 +78,34 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('APPARIEMENT', ifm, niv)
-    one_proc=.false.
+    one_proc = .false.
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> RECH. NOEUD PLUS PROCHE'
-    endif
+        write (ifm, *) '<APPARIEMENT> RECH. NOEUD PLUS PROCHE'
+    end if
 !
 ! - Acces to pairing datastructure
 !
     sdappa_infp = sdappa(1:19)//'.INFP'
     sdappa_appa = sdappa(1:19)//'.APPA'
     sdappa_dist = sdappa(1:19)//'.DIST'
-    call jeveuo(sdappa_infp, 'L', vi = v_sdappa_infp)
-    call jeveuo(sdappa_appa, 'E', vi = v_sdappa_appa)
-    call jeveuo(sdappa_dist, 'E', vr = v_sdappa_dist)
+    call jeveuo(sdappa_infp, 'L', vi=v_sdappa_infp)
+    call jeveuo(sdappa_appa, 'E', vi=v_sdappa_appa)
+    call jeveuo(sdappa_dist, 'E', vr=v_sdappa_dist)
 !
 ! - Acces to contact datastructure
 !
     sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
-    call jeveuo(sdcont_noeuco, 'L', vi = v_sdcont_noeuco)
+    call jeveuo(sdcont_noeuco, 'L', vi=v_sdcont_noeuco)
 !
 ! - Acces to updated geometry
 !
     newgeo_vale = newgeo(1:19)//'.VALE'
-    call jeveuo(newgeo_vale, 'L', vr = v_newgeo_vale)
+    call jeveuo(newgeo_vale, 'L', vr=v_newgeo_vale)
 !
 ! - Get parameters
 !
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
-    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    nt_poin = cfdisi(sdcont_defi, 'NTPT')
 !
 ! - Loop on contact zones
 !
@@ -114,38 +114,38 @@ implicit none
 !
 ! ----- Parameters on current zone
 !
-        jdecnm       = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
-        pair_tole    = mminfr(sdcont_defi, 'DIST_APPA', i_zone)
-        nb_poin      = mminfi(sdcont_defi, 'NBPT'     , i_zone)
-        nb_node_mast = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
-        l_pair_dire  = mminfi(sdcont_defi, 'TYPE_APPA', i_zone).eq.1
+        jdecnm = mminfi(sdcont_defi, 'JDECNM', i_zone)
+        pair_tole = mminfr(sdcont_defi, 'DIST_APPA', i_zone)
+        nb_poin = mminfi(sdcont_defi, 'NBPT', i_zone)
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM', i_zone)
+        l_pair_dire = mminfi(sdcont_defi, 'TYPE_APPA', i_zone) .eq. 1
         if (l_pair_dire) then
             pair_vect(1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
             pair_vect(2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
             pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)
-        endif
+        end if
 !
 ! ----- Mpi informations
 !
         call asmpi_comm('GET', mpicou)
-        call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
-        if(one_proc)then
+        call asmpi_info(mpicou, rank=i_proc, size=nb_proc)
+        if (one_proc) then
             nb_proc = 1
-        endif
-        nb_poin_mpi  = int(nb_poin/nb_proc)
+        end if
+        nb_poin_mpi = int(nb_poin/nb_proc)
         nbr_poin_mpi = nb_poin-nb_poin_mpi*nb_proc
-        idx_start   = 1+(i_proc)*nb_poin_mpi
-        idx_end     = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*int((i_proc+1)/nb_proc))
+        idx_start = 1+(i_proc)*nb_poin_mpi
+        idx_end = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*int((i_proc+1)/nb_proc))
 !
 ! ----- Loop on points
 !
         do i = idx_start, idx_end
 !
-            dist_mini      = r8gaem()
-            l_proj_tole    = .false.
-            l_poin_excl    = .false.
+            dist_mini = r8gaem()
+            l_proj_tole = .false.
+            l_poin_excl = .false.
             node_mini_indx = 0
-            pair_type      = 0
+            pair_type = 0
 !
 ! --------- Coordinates of point
 !
@@ -161,7 +161,7 @@ implicit none
 !
 ! ------------- Current node
 !
-                node_mast_indx = jdecnm + i_node_mast
+                node_mast_indx = jdecnm+i_node_mast
                 node_mast_nume = v_sdcont_noeuco(node_mast_indx)
                 node_mast_coor(1) = v_newgeo_vale(3*(node_mast_nume-1)+1)
                 node_mast_coor(2) = v_newgeo_vale(3*(node_mast_nume-1)+2)
@@ -170,43 +170,43 @@ implicit none
 ! ------------- Compute distance
 !
                 if (l_pair_dire) then
-                    normd = sqrt(pair_vect(1)*pair_vect(1)+&
-                                 pair_vect(2)*pair_vect(2)+&
+                    normd = sqrt(pair_vect(1)*pair_vect(1)+ &
+                                 pair_vect(2)*pair_vect(2)+ &
                                  pair_vect(3)*pair_vect(3))
-                    normv = sqrt((poin_coor(1)-node_mast_coor(1))**2+&
-                                 (poin_coor(2)-node_mast_coor(2))**2+&
+                    normv = sqrt((poin_coor(1)-node_mast_coor(1))**2+ &
+                                 (poin_coor(2)-node_mast_coor(2))**2+ &
                                  (poin_coor(3)-node_mast_coor(3))**2)
                     if (normv .le. r8prem()) then
                         dist = 1.d0
                     else
-                        dist = abs((poin_coor(1)-node_mast_coor(1))*pair_vect(1)+&
-                                   (poin_coor(2)-node_mast_coor(2))*pair_vect(2)+&
-                                   (poin_coor(3)-node_mast_coor(3))*pair_vect(3))/&
-                                   (normd*normv)
-                    endif
+                        dist = abs((poin_coor(1)-node_mast_coor(1))*pair_vect(1)+ &
+                                   (poin_coor(2)-node_mast_coor(2))*pair_vect(2)+ &
+                                   (poin_coor(3)-node_mast_coor(3))*pair_vect(3))/ &
+                               (normd*normv)
+                    end if
                 else
-                    dist = sqrt((poin_coor(1)-node_mast_coor(1))**2+&
-                                (poin_coor(2)-node_mast_coor(2))**2+&
+                    dist = sqrt((poin_coor(1)-node_mast_coor(1))**2+ &
+                                (poin_coor(2)-node_mast_coor(2))**2+ &
                                 (poin_coor(3)-node_mast_coor(3))**2)
-                endif
-                vect_pm(1) = node_mast_coor(1) - poin_coor(1)
-                vect_pm(2) = node_mast_coor(2) - poin_coor(2)
-                vect_pm(3) = node_mast_coor(3) - poin_coor(3)
+                end if
+                vect_pm(1) = node_mast_coor(1)-poin_coor(1)
+                vect_pm(2) = node_mast_coor(2)-poin_coor(2)
+                vect_pm(3) = node_mast_coor(3)-poin_coor(3)
 !
 ! ------------- Select distance
 !
                 if (dist .lt. dist_mini) then
                     node_mini_indx = node_mast_indx
-                    dist_mini      = dist
+                    dist_mini = dist
                     call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
                     if (pair_tole .gt. 0.d0) then
                         if (dist .le. pair_tole) then
                             l_proj_tole = .true.
-                        endif
+                        end if
                     else
                         l_proj_tole = .true.
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
 ! --------- Check TOLE_APPA
@@ -215,19 +215,19 @@ implicit none
                 pair_type = 1
             else
                 pair_type = -2
-            endif
+            end if
 !
 ! --------- Excluded node
 !
             if (l_poin_excl) then
                 pair_type = -1
-            endif
+            end if
 !
 ! --------- Some checks
 !
-            ASSERT(pair_type.ne.0)
-            ASSERT(node_mini_indx.ne.0)
-            ASSERT((pair_type.eq.-2).or.(pair_type.eq.-1).or. (pair_type.eq.1))
+            ASSERT(pair_type .ne. 0)
+            ASSERT(node_mini_indx .ne. 0)
+            ASSERT((pair_type .eq. -2) .or. (pair_type .eq. -1) .or. (pair_type .eq. 1))
 !
 ! --------- Save
 !
@@ -243,9 +243,9 @@ implicit none
 !
 ! ----- Next zone
 !
-            i_poin = i_poin + nb_poin
+        i_poin = i_poin+nb_poin
     end do
 !
-    ASSERT((i_poin).eq.nt_poin)
+    ASSERT((i_poin) .eq. nt_poin)
 !
 end subroutine

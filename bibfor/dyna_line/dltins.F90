@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
+subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot, &
                   tinit, lisins)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=24) :: lispas, libint, linbpa, lisins
+    character(len=24) :: lispas, libint, linbpa, lisins
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,7 +79,7 @@ character(len=24) :: lispas, libint, linbpa, lisins
         linbpa = li//'           .NBPA'
 !
         lisins = li//'           .VALE'
-        npatot = nbinst - 1
+        npatot = nbinst-1
 !
 !
 !        --- SI REPRISE, IL FAUT SE RECALER ---
@@ -88,50 +88,50 @@ character(len=24) :: lispas, libint, linbpa, lisins
             do iint = 1, nbgrpa
                 if (tinit .lt. zr(jbint+iint)) goto 102
             end do
-            valr (1) = tinit
-            valr (2) = zr(jbint+nbgrpa)
+            valr(1) = tinit
+            valr(2) = zr(jbint+nbgrpa)
             call utmess('F', 'DYNALINE1_89', nr=2, valr=valr)
 102         continue
-            eps = zr(jlpas+iint-1) / 10.d0
-            if (abs(zr(jbint+iint)-tinit) .lt. eps) iint = iint + 1
-            nbintn = nbgrpa - iint + 1
+            eps = zr(jlpas+iint-1)/10.d0
+            if (abs(zr(jbint+iint)-tinit) .lt. eps) iint = iint+1
+            nbintn = nbgrpa-iint+1
 !           --- ON CREE UNE NOUVELLE LISTE ---
             call wkvect('&&COMDLT.LI_BINT', 'V V R', nbintn+1, jbin2)
             call wkvect('&&COMDLT.LI_LPAS', 'V V R', nbintn, jlpa2)
             call wkvect('&&COMDLT.LI_NBPA', 'V V I', nbintn, jnbp2)
             j = 0
             do i = iint+1, nbgrpa
-                j = j + 1
+                j = j+1
                 zi(jnbp2+j) = zi(jnbpa+i-1)
                 zr(jbin2+j) = zr(jbint+i-1)
                 zr(jlpa2+j) = zr(jlpas+i-1)
             end do
-            j = j + 1
+            j = j+1
             zr(jbin2+j) = zr(jbint+nbgrpa)
 !           --- POUR LE PREMIER INTERVALLE ---
             zr(jbin2) = tinit
             nbpd = 0
             if (iint .ne. 1) then
                 do i = 1, iint-1
-                    nbpd = nbpd + zi(jnbpa+i-1)
+                    nbpd = nbpd+zi(jnbpa+i-1)
                 end do
-            endif
+            end if
             if (nbgrpa .eq. 1) then
-                nbpf = nbinst - 1
+                nbpf = nbinst-1
             else
-                nbpf = nbpd + zi(jnbpa+iint-1)
-            endif
-            eps = zr(jlpas+iint-1) / 10.d0
+                nbpf = nbpd+zi(jnbpa+iint-1)
+            end if
+            eps = zr(jlpas+iint-1)/10.d0
             do iv = nbpd, nbpf
                 if (abs(zr(jvale+iv)-tinit) .lt. eps) goto 122
             end do
-            valr (1) = tinit
-            valr (2) = zr(jlpas+iint-1)
-            valr (3) = zr(jbint+iint-1)
-            valr (4) = zr(jbint+iint)
+            valr(1) = tinit
+            valr(2) = zr(jlpas+iint-1)
+            valr(3) = zr(jbint+iint-1)
+            valr(4) = zr(jbint+iint)
             call utmess('F', 'DYNALINE1_90', nr=4, valr=valr)
 122         continue
-            zi(jnbp2) = nbpf - iv
+            zi(jnbp2) = nbpf-iv
             zr(jlpa2) = zr(jlpas+iint-1)
             lispas = '&&COMDLT.LI_LPAS'
             libint = '&&COMDLT.LI_BINT'
@@ -142,9 +142,9 @@ character(len=24) :: lispas, libint, linbpa, lisins
             nbgrpa = nbintn
             npatot = 0
             do ip = 1, nbgrpa
-                npatot = npatot + zi(jnbpa+ip-1)
+                npatot = npatot+zi(jnbpa+ip-1)
             end do
-            nbinst = npatot + 1
+            nbinst = npatot+1
             call wkvect('&&COMDLT.FI_JVALE', 'V V R', nbinst, jvale)
             j = 0
             zr(jvale) = tinit
@@ -152,13 +152,13 @@ character(len=24) :: lispas, libint, linbpa, lisins
                 dt = zr(jlpas+i-1)
                 nbp = zi(jnbpa+i-1)
                 t0 = zr(jbint+i-1)
-                do  k = 1, nbp
-                    j = j + 1
-                    zr(jvale+j) = t0 + k*dt
+                do k = 1, nbp
+                    j = j+1
+                    zr(jvale+j) = t0+k*dt
                 end do
             end do
-            lisins= '&&COMDLT.FI_JVALE'
-        endif
+            lisins = '&&COMDLT.FI_JVALE'
+        end if
 !
         call getvis('INCREMENT', 'NUME_FIN', iocc=1, scal=numef, nbret=n1)
         if (n1 .eq. 0) then
@@ -169,18 +169,18 @@ character(len=24) :: lispas, libint, linbpa, lisins
             call jelira(li//'           .VALE', 'LONUTI', nbinsr)
             if (numef .ge. nbinsr) goto 999
             tfin = zr(jvalr+numef)
-        endif
+        end if
 !
         if (tfin .lt. zr(jbint)) then
-            valr (1) = tfin
-            valr (2) = zr(jbint)
+            valr(1) = tfin
+            valr(2) = zr(jbint)
             call utmess('F', 'DYNALINE1_91', nr=2, valr=valr)
-        else if (tfin.ge.zr(jbint+nbgrpa)) then
+        else if (tfin .ge. zr(jbint+nbgrpa)) then
             goto 999
-        endif
+        end if
 !        --- DANS QUEL INTERVALLE SE SITUE L'INSTANT ---
         do iint = 1, nbgrpa
-            eps = zr(jlpas+iint-1) / 10.d0
+            eps = zr(jlpas+iint-1)/10.d0
             if (abs(zr(jbint+iint)-tfin) .lt. eps) exit
             if (tfin .lt. zr(jbint+iint)) exit
         end do
@@ -198,20 +198,20 @@ character(len=24) :: lispas, libint, linbpa, lisins
 !        --- POUR LE DERNIER INTERVALLE ---
         nbpd = 0
         do i = 1, iint-1
-            nbpd = nbpd + zi(jnbpa+i-1)
+            nbpd = nbpd+zi(jnbpa+i-1)
         end do
-        nbpf = nbpd + zi(jnbpa+iint-1)
-        eps = zr(jlpas+iint-1) / 10.d0
+        nbpf = nbpd+zi(jnbpa+iint-1)
+        eps = zr(jlpas+iint-1)/10.d0
         do iv = nbpd, nbpf
             if (abs(zr(jvale+iv)-tfin) .lt. eps) goto 232
         end do
-        valr (1) = tfin
-        valr (2) = zr(jlpas+iint-1)
-        valr (3) = zr(jbint+iint-1)
-        valr (4) = zr(jbint+iint)
+        valr(1) = tfin
+        valr(2) = zr(jlpas+iint-1)
+        valr(3) = zr(jbint+iint-1)
+        valr(4) = zr(jbint+iint)
         call utmess('F', 'DYNALINE1_92', nr=4, valr=valr)
-232      continue
-        zi(jnbp2+iint-1) = iv - nbpd
+232     continue
+        zi(jnbp2+iint-1) = iv-nbpd
         lispas = '&&COMDLT.LI_LPASF'
         libint = '&&COMDLT.LI_BINTF'
         linbpa = '&&COMDLT.LI_NBPAF'
@@ -221,25 +221,25 @@ character(len=24) :: lispas, libint, linbpa, lisins
         nbgrpa = nbintn
         npatot = 0
         do ip = 1, nbgrpa
-            npatot = npatot + zi(jnbpa+ip-1)
+            npatot = npatot+zi(jnbpa+ip-1)
         end do
-        nbinst = npatot + 1
+        nbinst = npatot+1
         call wkvect('&&COMDLT.FI_JVALF', 'V V R', nbinst, jvale)
         zr(jvale) = zr(jbint)
-        j=0
+        j = 0
         do i = 1, nbgrpa
             dt = zr(jlpas+i-1)
             nbp = zi(jnbpa+i-1)
             t0 = zr(jbint+i-1)
             do k = 1, nbp
-                j = j + 1
-                zr(jvale+j) = t0 + k*dt
+                j = j+1
+                zr(jvale+j) = t0+k*dt
             end do
         end do
-        lisins='&&COMDLT.FI_JVALF'
+        lisins = '&&COMDLT.FI_JVALF'
 !
         goto 999
-    endif
+    end if
 !
 !     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "PAS" ---
 !
@@ -247,7 +247,7 @@ character(len=24) :: lispas, libint, linbpa, lisins
     call getvr8('INCREMENT', 'PAS', iocc=1, scal=dt, nbret=ibid)
     if (dt .eq. 0.d0) then
         call utmess('F', 'DYNALINE1_12')
-    endif
+    end if
     call wkvect('&&COMDLT.LI_BINT', 'V V R', 2, jbin2)
     call wkvect('&&COMDLT.LI_LPAS', 'V V R', 1, jlpa2)
     call wkvect('&&COMDLT.LI_NBPA', 'V V I', 1, jnbp2)
@@ -256,13 +256,13 @@ character(len=24) :: lispas, libint, linbpa, lisins
     zr(jbin2) = tinit
     zr(jbin2+1) = tfin
     zr(jlpa2) = dt
-    nbgrpa=1
+    nbgrpa = 1
     lispas = '&&COMDLT.LI_LPAS'
     libint = '&&COMDLT.LI_BINT'
     linbpa = '&&COMDLT.LI_NBPA'
     call wkvect('&&COMDLT.LI_VALE', 'V V R', npatot+1, jval2)
     do i = 0, npatot
-        zr(jval2+i)=tinit+i*dt
+        zr(jval2+i) = tinit+i*dt
     end do
     lisins = '&&COMDLT.LI_VALE'
 !

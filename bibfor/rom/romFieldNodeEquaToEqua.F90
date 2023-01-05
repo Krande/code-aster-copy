@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romFieldNodeEquaToEqua(fieldA, fieldB, nbNodeMesh, listNode, equaAToB)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/romFieldNodeFromEqua.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(in) :: fieldA, fieldB
-integer, intent(in) :: nbNodeMesh
-integer, pointer :: listNode(:), equaAToB(:)
+    type(ROM_DS_Field), intent(in) :: fieldA, fieldB
+    integer, intent(in) :: nbNodeMesh
+    integer, pointer :: listNode(:), equaAToB(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,38 +78,38 @@ integer, pointer :: listNode(:), equaAToB(:)
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM11_37')
-    endif
+    end if
 !
 ! - Parameters on fields
 !
     fieldRefeA = fieldA%fieldRefe
     fieldSuppA = fieldA%fieldSupp
-    nbEquaA    = fieldA%nbEqua
+    nbEquaA = fieldA%nbEqua
     ASSERT(fieldSuppA .eq. 'NOEU')
     fieldRefeB = fieldB%fieldRefe
     fieldSuppB = fieldB%fieldSupp
-    nbEquaB    = fieldB%nbEqua
+    nbEquaB = fieldB%nbEqua
     ASSERT(fieldSuppB .eq. 'NOEU')
 !
 ! - Access to numbering for domain A
 !
-    call dismoi('PROF_CHNO', fieldRefeA, 'CHAM_NO', repk = profChnoA)
-    call jeveuo(profChnoA(1:19)//'.DEEQ', 'L', vi = deeqA)
+    call dismoi('PROF_CHNO', fieldRefeA, 'CHAM_NO', repk=profChnoA)
+    call jeveuo(profChnoA(1:19)//'.DEEQ', 'L', vi=deeqA)
 !
 ! - Access to numbering for domain B
 !
-    call dismoi('PROF_CHNO', fieldRefeB, 'CHAM_NO', repk = profChnoB)
-    call jeveuo(profChnoB(1:19)//'.DEEQ', 'L', vi = deeqB)
-    call jeveuo(jexnum(profChnoB(1:19)//'.PRNO', iLigrMesh), 'L', vi = prnoB)
-    call jeveuo(profChnoB(1:19)//'.NUEQ', 'L', vi = nueqB)
+    call dismoi('PROF_CHNO', fieldRefeB, 'CHAM_NO', repk=profChnoB)
+    call jeveuo(profChnoB(1:19)//'.DEEQ', 'L', vi=deeqB)
+    call jeveuo(jexnum(profChnoB(1:19)//'.PRNO', iLigrMesh), 'L', vi=prnoB)
+    call jeveuo(profChnoB(1:19)//'.NUEQ', 'L', vi=nueqB)
 !
 ! - Get informations about physical quantity
 !
     physNumeA = 0
-    nb_ec    = 0
-    call dismoi('NUM_GD', fieldRefeA, 'CHAM_NO', repi = physNumeA)
+    nb_ec = 0
+    call dismoi('NUM_GD', fieldRefeA, 'CHAM_NO', repi=physNumeA)
     ASSERT(physNumeA .ne. 0)
-    call dismoi('NUM_GD', fieldRefeB, 'CHAM_NO', repi = physNumeB)
+    call dismoi('NUM_GD', fieldRefeB, 'CHAM_NO', repi=physNumeB)
     ASSERT(physNumeA .eq. physNumeB)
     nb_ec = nbec(physNumeA)
     ASSERT(nb_ec .le. nbEcMax)
@@ -124,7 +124,7 @@ integer, pointer :: listNode(:), equaAToB(:)
         numeEquaA = iEquaA
 ! ----- Get equation information in domain A
         numeNode = deeqA(2*(numeEquaA-1)+1)
-        numeCmp  = deeqA(2*(numeEquaA-1)+2)
+        numeCmp = deeqA(2*(numeEquaA-1)+2)
 ! ----- For physical node
         if (numeNode .gt. 0 .and. numeCmp .gt. 0) then
             if (listNode(numeNode) .eq. 0) then
@@ -132,23 +132,23 @@ integer, pointer :: listNode(:), equaAToB(:)
                 equaAToB(numeEquaA) = 0
             else
 ! ------------- This node is in affected in domain B
-                numeDofB    = prnoB((nb_ec+2)*(numeNode-1)+1) - 1
+                numeDofB = prnoB((nb_ec+2)*(numeNode-1)+1)-1
 ! ------------- Index of equation in domain B
-                numeEquaB   = nueqB(numeDofB + numeCmp)
+                numeEquaB = nueqB(numeDofB+numeCmp)
                 ASSERT(deeqB(2*(numeEquaB-1)+1) .eq. numeNode)
                 ASSERT(deeqB(2*(numeEquaB-1)+2) .eq. numeCmp)
 ! ------------- Save index of equation in domain B
                 equaAToB(numeEquaA) = numeEquaB
-            endif
-        endif
+            end if
+        end if
 ! ----- Non-Physical node (Lagrange)
         if (numeNode .gt. 0 .and. numeCmp .lt. 0) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 ! ----- Non-Physical node (Lagrange) - LIAISON_DDL
         if (numeNode .eq. 0 .and. numeCmp .eq. 0) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end do
 !
 ! - Reinitialization of list of nodes

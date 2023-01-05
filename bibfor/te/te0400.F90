@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine te0400(option, nomte)
 !
 !
     integer :: ninter, nnonsx
-    parameter    ( ninter = 3 ,nnonsx=540 )
+    parameter(ninter=3, nnonsx=540)
 !
     integer :: ndim, nnop, nno, nse, nnotot
     integer :: jcnset, jlonch, ivoisx
@@ -59,8 +59,8 @@ subroutine te0400(option, nomte)
     character(len=8) :: elrese(6), fami(6), elrefp
     integer :: vcninx(990)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'RIGI', 'XINT', 'BID', 'RIGI', 'XINT'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -71,11 +71,11 @@ subroutine te0400(option, nomte)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
+        irese = 0
+    end if
 !
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno)
 !
@@ -92,16 +92,16 @@ subroutine te0400(option, nomte)
 !
 ! --- CALCUL DE LA CONNECTIVITE INVERSE
 !
-    ASSERT((nse+1)*nnotot.le.nnonsx)
+    ASSERT((nse+1)*nnotot .le. nnonsx)
     do i = 1, nnonsx
-        vcninx(i)=0
+        vcninx(i) = 0
     end do
-    call xcninv(nnotot, nse, nnop, nno, jcnset,&
+    call xcninv(nnotot, nse, nnop, nno, jcnset, &
                 vcninx)
 !
 ! --- CALCUL DE LA SD VOISIN PAR SOUS ELEMENTS
 !
-    call xvoise(nnotot, nse, nnop, nno, jcnset,&
+    call xvoise(nnotot, nse, nnop, nno, jcnset, &
                 vcninx, zi(ivoisx))
 !
 !

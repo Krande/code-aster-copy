@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine irrlnf(nmat, materf, yf, eloupl, vinf)
 !     INDICATEUR PLASTIQUE
     vinf(5) = eloupl
 !     IRRADIATION
-    vinf(6) = materf(18,2)
+    vinf(6) = materf(18, 2)
 !     TEMPERATURE
-    vinf(7) = materf(22,2)
+    vinf(7) = materf(22, 2)
 end subroutine

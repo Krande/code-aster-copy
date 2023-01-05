@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,19 +47,19 @@ subroutine te0159(nomopt, nomte)
     integer :: npg2
     real(kind=8) :: omega1, omega2, omega3, rho(1), wij
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PROTATR', 'L', irota)
     call jevech('PMATUNS', 'E', imatuu)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'RHO', rho(1), icodre, 1)
     omega1 = zr(irota+1)*zr(irota)
     omega2 = zr(irota+2)*zr(irota)
@@ -69,7 +69,7 @@ subroutine te0159(nomopt, nomte)
         do l = 1, 3
             do i = 1, nno
                 do j = 1, nno
-                    a(k,l,i,j) = 0.d0
+                    a(k, l, i, j) = 0.d0
                 end do
             end do
         end do
@@ -80,7 +80,7 @@ subroutine te0159(nomopt, nomte)
     do kp = 1, npg2
 !
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
 !
         do i = 1, nno
@@ -88,16 +88,16 @@ subroutine te0159(nomopt, nomte)
                 wij = rho(1)*poids*zr(ivf+l+i-1)*zr(ivf+l+j-1)
                 if (nomopt .eq. 'MECA_GYRO') then
                     wij = 2*wij
-                endif
-                a(1,1,i,j) = a(1,1,i,j) + 0.d0
-                a(2,2,i,j) = a(2,2,i,j) + 0.d0
-                a(3,3,i,j) = a(3,3,i,j) + 0.d0
-                a(2,1,i,j) = a(2,1,i,j) + omega3*wij
-                a(3,1,i,j) = a(3,1,i,j) - omega2*wij
-                a(3,2,i,j) = a(3,2,i,j) + omega1*wij
-                a(1,2,i,j) = a(1,2,i,j) - omega3*wij
-                a(1,3,i,j) = a(1,3,i,j) + omega2*wij
-                a(2,3,i,j) = a(2,3,i,j) - omega1*wij
+                end if
+                a(1, 1, i, j) = a(1, 1, i, j)+0.d0
+                a(2, 2, i, j) = a(2, 2, i, j)+0.d0
+                a(3, 3, i, j) = a(3, 3, i, j)+0.d0
+                a(2, 1, i, j) = a(2, 1, i, j)+omega3*wij
+                a(3, 1, i, j) = a(3, 1, i, j)-omega2*wij
+                a(3, 2, i, j) = a(3, 2, i, j)+omega1*wij
+                a(1, 2, i, j) = a(1, 2, i, j)-omega3*wij
+                a(1, 3, i, j) = a(1, 3, i, j)+omega2*wij
+                a(2, 3, i, j) = a(2, 3, i, j)-omega1*wij
             end do
         end do
     end do
@@ -109,10 +109,10 @@ subroutine te0159(nomopt, nomte)
         do l = 1, 3
             do i = 1, nno
                 do j = 1, nno
-                    ik = 3 * nno * (3 * (i-1) + k - 1)
-                    jl = 3 * (j-1) + l - 1
-                    ijkl = ik + jl + 1
-                    zr(imatuu+ijkl-1) = a(k,l,i,j)
+                    ik = 3*nno*(3*(i-1)+k-1)
+                    jl = 3*(j-1)+l-1
+                    ijkl = ik+jl+1
+                    zr(imatuu+ijkl-1) = a(k, l, i, j)
                 end do
             end do
         end do

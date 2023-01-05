@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine peeint(tableOut, model, nbocc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -54,9 +54,9 @@ implicit none
 #include "asterfort/rsGetOneBehaviourFromResult.h"
 #include "asterfort/convertFieldNodeToNeutElem.h"
 !
-integer :: nbocc
-character(len=8) :: model
-character(len=19) :: tableOut
+    integer :: nbocc
+    character(len=8) :: model
+    character(len=19) :: tableOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,14 +66,14 @@ character(len=19) :: tableOut
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbParaResult = 4, nbParaField = 2, nbCmpOk = 6
-    character(len=8), parameter :: paraTypeResult(nbParaResult) = (/'K16','I  ','R  ','R  '/)
-    character(len=8), parameter :: paraTypeField(nbParaField) = (/'K16','R  '/)
-    character(len=16), parameter :: paraNameResult(nbParaResult) = (/'NOM_CHAM  ','NUME_ORDRE',&
-                                                                     'INST      ','VOL       '/)
-    character(len=16), parameter :: paraNameField(nbParaField) = (/'CHAM_GD ','VOL     '/)
-    character(len=3), parameter :: cmpNameOk(nbCmpOk) = (/'N  ','VY ','VZ ','MT ','MFY','MFZ'/)
+    character(len=8), parameter :: paraTypeResult(nbParaResult) = (/'K16', 'I  ', 'R  ', 'R  '/)
+    character(len=8), parameter :: paraTypeField(nbParaField) = (/'K16', 'R  '/)
+    character(len=16), parameter :: paraNameResult(nbParaResult) = (/'NOM_CHAM  ', 'NUME_ORDRE', &
+                                                                     'INST      ', 'VOL       '/)
+    character(len=16), parameter :: paraNameField(nbParaField) = (/'CHAM_GD ', 'VOL     '/)
+    character(len=3), parameter :: cmpNameOk(nbCmpOk) = (/'N  ', 'VY ', 'VZ ', 'MT ', 'MFY', 'MFZ'/)
     integer :: iret, ibid, iocc, nbret
-    integer :: cellNume,  cmpNume, numeStore
+    integer :: cellNume, cmpNume, numeStore
     integer :: iCmp, iCellCompute, iGroup, iStore, iCell, iCmpOk
     integer :: nbCellMesh, nbCellUser, nbCell, nbCellFilter, nbCellCompute
     integer :: nbCmp, nbStore, nbCmpField, nbGroup, nbVari
@@ -81,7 +81,7 @@ character(len=19) :: tableOut
     real(kind=8) :: inst
     character(len=8) :: mesh, resultIn, cellName, physName
     character(len=4) :: fieldSupp, lStructElem
-    character(len=8), parameter :: locaNameAll ='TOUT', locaNameGroup = 'GROUP_MA'
+    character(len=8), parameter :: locaNameAll = 'TOUT', locaNameGroup = 'GROUP_MA'
     character(len=24), parameter :: locaNameUnion = 'UNION_GROUP_MA', locaNameCell = 'MAILLE'
     character(len=24), parameter :: keywFact = 'INTEGRALE'
     character(len=24), parameter :: listCellUser = '&&PEEINT.CELL_USER'
@@ -89,7 +89,7 @@ character(len=19) :: tableOut
     character(len=24) :: numeStoreJv, timeStoreJv, compor
     character(len=19) :: field, fieldFromUser
     character(len=19), parameter :: ligrel = '&&PEEINT.LIGREL'
-    character(len=19), parameter :: cespoi ='&&PEEINT.CESPOI'
+    character(len=19), parameter :: cespoi = '&&PEEINT.CESPOI'
     character(len=19) :: fieldInput
     character(len=24) :: fieldName, groupName
     aster_logical :: convToNeut, lFromField, lFromResult, lVariName, lCmpOk
@@ -113,27 +113,27 @@ character(len=19) :: tableOut
 !
 ! - Main parameters
 !
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi = nbCellMesh)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
 !
 ! - Origin of fields
 !
-    call getvid(' ', 'RESULTAT', scal = resultIn, nbret = nbret)
+    call getvid(' ', 'RESULTAT', scal=resultIn, nbret=nbret)
     lFromResult = nbret .ne. 0
-    call getvid(' ', 'CHAM_GD' , scal = fieldFromUser, nbret = nbret)
-    lFromField  = nbret .ne. 0
+    call getvid(' ', 'CHAM_GD', scal=fieldFromUser, nbret=nbret)
+    lFromField = nbret .ne. 0
     if (lFromField) then
         ASSERT(.not. lFromResult)
         fieldInput = 'TMP_CHAMP_GD'
         call copisd('CHAMP', 'V', fieldFromUser, fieldInput)
-    endif
+    end if
 !
 ! - Select storing index from user
 !
-    call rsSelectStoringIndex(resultIn, lFromField ,&
-                              nbStore , numeStoreJv, timeStoreJv)
-    call jeveuo(numeStoreJv, 'L', vi = listNumeStore)
-    call jeveuo(timeStoreJv, 'L', vr = listTimeStore)
+    call rsSelectStoringIndex(resultIn, lFromField, &
+                              nbStore, numeStoreJv, timeStoreJv)
+    call jeveuo(numeStoreJv, 'L', vi=listNumeStore)
+    call jeveuo(timeStoreJv, 'L', vr=listTimeStore)
 !
 ! - Create table
 !
@@ -142,7 +142,7 @@ character(len=19) :: tableOut
         call tbajpa(tableOut, nbParaResult, paraNameResult, paraTypeResult)
     else
         call tbajpa(tableOut, nbParaField, paraNameField, paraTypeField)
-    endif
+    end if
 !
     do iocc = 1, nbocc
 
@@ -150,10 +150,10 @@ character(len=19) :: tableOut
         call getelem(mesh, keywFact, iocc, 'F', listCellUser, nbCellUser, l_keep_propz=ASTER_TRUE)
 
 ! ----- Sort with topological dimension of cells
-        call getvtx(keywFact, 'TYPE_MAILLE', iocc = iocc, scal = filterTypeName, nbret = iret)
+        call getvtx(keywFact, 'TYPE_MAILLE', iocc=iocc, scal=filterTypeName, nbret=iret)
         if (iret .eq. 0) then
-           listCellFilter = listCellUser
-           nbCellFilter   = nbCellUser
+            listCellFilter = listCellUser
+            nbCellFilter = nbCellUser
         else
             if (filterTypeName .eq. '1D') then
                 filterTypeNume = 1
@@ -163,73 +163,73 @@ character(len=19) :: tableOut
                 filterTypeNume = 3
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             listCellFilter = '&&PEEINT.MAILLES_FILTRE'
-            call utflmd(mesh        , listCellUser  , nbCellUser, filterTypeNume, ' ',&
+            call utflmd(mesh, listCellUser, nbCellUser, filterTypeNume, ' ', &
                         nbCellFilter, listCellFilter)
             if (nbCellFilter .eq. 0) then
                 call utmess('F', 'PREPOST2_8')
             else
-                call utmess('I','PREPOST2_7', si= (nbCellUser - nbCellFilter))
-            endif
-        endif
+                call utmess('I', 'PREPOST2_7', si=(nbCellUser-nbCellFilter))
+            end if
+        end if
 
 ! ----- Create LIGREL
-        call jeveuo(listCellFilter, 'L', vi = cellFilter)
+        call jeveuo(listCellFilter, 'L', vi=cellFilter)
         call exlim1(cellFilter, nbCellFilter, model, 'V', ligrel)
 
 ! ----- Get name of components
-        call getvtx(keywFact, 'NOM_CMP', iocc = iocc, nbval = 0, nbret = nbCmp)
-        nbCmp     = -nbCmp
+        call getvtx(keywFact, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbCmp)
+        nbCmp = -nbCmp
         lVariName = ASTER_FALSE
 
         if (nbCmp .eq. 0) then
 ! --------- Get list for internal state variables
             lVariName = ASTER_TRUE
-            call getvtx(keywFact, 'NOM_VARI', iocc = iocc, nbval = 0, nbret = nbVari)
-            nbVari    = -nbVari
+            call getvtx(keywFact, 'NOM_VARI', iocc=iocc, nbval=0, nbret=nbVari)
+            nbVari = -nbVari
             ASSERT(nbVari .gt. 0)
             if (nbVari .gt. 0) then
                 if (.not. lFromResult) then
                     call utmess('F', 'POSTELEM_6')
-                endif
-            endif
-            AS_ALLOCATE(vk16 = variName, size = nbVari)
-            call getvtx(keywFact, 'NOM_VARI', iocc = iocc, nbval = nbVari, vect = variName)
+                end if
+            end if
+            AS_ALLOCATE(vk16=variName, size=nbVari)
+            call getvtx(keywFact, 'NOM_VARI', iocc=iocc, nbval=nbVari, vect=variName)
 ! --------- Get behaviour (only one !)
             if (lFromResult) then
                 call rsGetOneBehaviourFromResult(resultIn, nbStore, listNumeStore, compor)
                 if (compor .eq. '#SANS') then
                     call utmess('F', 'RESULT1_5')
-                endif
+                end if
                 if (compor .eq. '#PLUSIEURS') then
                     call utmess('F', 'RESULT1_6')
-                endif
+                end if
             else
                 call utmess('F', 'RESULT1_7')
-            endif
+            end if
 
 ! --------- Get name of internal state variables
             nbCmp = nbVari
-            AS_ALLOCATE(vk8 = cmpName, size = nbCmp)
-            AS_ALLOCATE(vk8 = cmpNameAll, size = nbCellFilter*nbCmp)
-            call varinonu(model       , compor    ,&
-                          nbCellFilter, cellFilter,&
-                          nbVari      , variName  , cmpNameAll)
+            AS_ALLOCATE(vk8=cmpName, size=nbCmp)
+            AS_ALLOCATE(vk8=cmpNameAll, size=nbCellFilter*nbCmp)
+            call varinonu(model, compor, &
+                          nbCellFilter, cellFilter, &
+                          nbVari, variName, cmpNameAll)
         else
-            AS_ALLOCATE(vk8 = cmpName, size = nbCmp)
-            call getvtx(keywFact, 'NOM_CMP', iocc = iocc, nbval = nbCmp, vect=cmpName, nbret=iret)
-        endif
+            AS_ALLOCATE(vk8=cmpName, size=nbCmp)
+            call getvtx(keywFact, 'NOM_CMP', iocc=iocc, nbval=nbCmp, vect=cmpName, nbret=iret)
+        end if
 
 ! ----- Copy name of components
-        AS_ALLOCATE(vk8 = cmpNameInit, size = nbCmp)
+        AS_ALLOCATE(vk8=cmpNameInit, size=nbCmp)
         do iCmp = 1, nbCmp
             if (lVariName) then
-                cmpNameInit(iCmp) = variName(iCmp)(1:8)
+                cmpNameInit(iCmp) = variName(iCmp) (1:8)
                 cmpName(icmp) = cmpNameAll((icmp-1)*nbCellFilter+1)
             else
                 cmpNameInit(iCmp) = cmpName(iCmp)
-            endif
+            end if
         end do
 
 ! ----- No structural elements !
@@ -239,48 +239,48 @@ character(len=19) :: tableOut
             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), pdtElemType)
             call jeveuo(model//'.MAILLE', 'L', vi=listElemType)
 !           Check components
-            do iCmp=1, nbCmp
+            do iCmp = 1, nbCmp
                 lCmpOk = .false.
-                do iCmpOk=1, nbCmpOk
-                    if (cmpNameInit(iCmp).eq. cmpNameOk(iCmpOk))then
+                do iCmpOk = 1, nbCmpOk
+                    if (cmpNameInit(iCmp) .eq. cmpNameOk(iCmpOk)) then
                         lCmpOk = .true.
                         exit
-                    endif
-                enddo
+                    end if
+                end do
                 if (.not. lCmpOk) call utmess('F', 'UTILITAI8_60')
-            enddo
+            end do
 !           Check elements types
             do iCell = 1, nbCellFilter
                 if (listElemType(cellFilter(iCell)) .ne. pdtElemType) then
                     call utmess('F', 'UTILITAI8_60')
-                endif
-            enddo
-        endif
+                end if
+            end do
+        end if
 
 ! ----- Loop on storing index
         do iStore = 1, nbStore
             if (lFromResult) then
                 numeStore = listNumeStore(iStore)
-                inst      = listTimeStore(iStore)
-                call getvtx(keywFact, 'NOM_CHAM', iocc = iocc, scal = fieldName, nbret = iret)
-                if (iret .eq. 0)  then
+                inst = listTimeStore(iStore)
+                call getvtx(keywFact, 'NOM_CHAM', iocc=iocc, scal=fieldName, nbret=iret)
+                if (iret .eq. 0) then
                     call utmess('F', 'POSTELEM_4')
-                endif
-                if (fieldName.eq.'FORC_NODA' .or. fieldName.eq.'REAC_NODA') then
+                end if
+                if (fieldName .eq. 'FORC_NODA' .or. fieldName .eq. 'REAC_NODA') then
                     call utmess('F', 'POSTELEM_5')
-                endif
+                end if
                 call rsexch('F', resultIn, fieldName, numeStore, fieldInput, iret)
             else
                 numeStore = nbStore
                 fieldName = fieldFromUser
-            endif
+            end if
 !
             call dismoi('TYPE_CHAMP', fieldInput, 'CHAMP', repk=fieldSupp, arret='C', ier=iret)
-            call dismoi('NOM_GD'    , fieldInput, 'CHAMP', repk=physName , arret='C', ier=iret)
+            call dismoi('NOM_GD', fieldInput, 'CHAMP', repk=physName, arret='C', ier=iret)
 !
             if (physName(6:6) .eq. 'C') then
                 exit
-            endif
+            end if
 !
 ! --------- Prepare field
             convToNeut = ASTER_FALSE
@@ -288,11 +288,11 @@ character(len=19) :: tableOut
                 field = fieldInput
             else
                 convToNeut = ASTER_TRUE
-                field      = '&&PEEINT.FIELD'
-                call convertFieldNodeToNeutElem(model,&
-                                                ligrel    , fieldInput , field      ,&
+                field = '&&PEEINT.FIELD'
+                call convertFieldNodeToNeutElem(model, &
+                                                ligrel, fieldInput, field, &
                                                 nbCmpField, cmpNameNode, cmpNameNeut)
-            endif
+            end if
 !
             call dismoi('TYPE_CHAMP', field, 'CHAMP', repk=fieldSupp, arret='C', ier=iret)
             ASSERT(fieldSupp(1:2) .eq. 'EL')
@@ -302,33 +302,33 @@ character(len=19) :: tableOut
                     cmpNume = indik8(cmpNameNode, cmpNameInit(iCmp), 1, nbCmpField)
                     cmpName(iCmp) = cmpNameNeut(cmpNume)
                 end do
-                AS_DEALLOCATE(vk8 = cmpNameNode)
-                AS_DEALLOCATE(vk8 = cmpNameNeut)
-            endif
+                AS_DEALLOCATE(vk8=cmpNameNode)
+                AS_DEALLOCATE(vk8=cmpNameNeut)
+            end if
 !
 ! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'TOUT'
             call getvtx(keywFact, 'TOUT', iocc=iocc, nbval=0, nbret=iret)
             if (iret .ne. 0) then
                 nbCellCompute = nbCellMesh
-                AS_ALLOCATE(vi = cellCompute, size = nbCellCompute)
+                AS_ALLOCATE(vi=cellCompute, size=nbCellCompute)
                 do iCellCompute = 1, nbCellCompute
                     cellCompute(iCellCompute) = iCellCompute
                 end do
-                call peecal(fieldSupp  , tableOut     , fieldName  ,&
-                            locaNameAll, locaNameAll  ,&
-                            cellCompute, nbCellCompute,&
-                            model      , lFromResult  , field      ,&
-                            nbCmp      , cmpName      , cmpNameInit,&
-                            numeStore  , inst         , iocc       ,&
-                            ligrel     , cespoi)
-                AS_DEALLOCATE(vi = cellCompute)
-            endif
+                call peecal(fieldSupp, tableOut, fieldName, &
+                            locaNameAll, locaNameAll, &
+                            cellCompute, nbCellCompute, &
+                            model, lFromResult, field, &
+                            nbCmp, cmpName, cmpNameInit, &
+                            numeStore, inst, iocc, &
+                            ligrel, cespoi)
+                AS_DEALLOCATE(vi=cellCompute)
+            end if
 !
 ! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
             call getvtx(keywFact, 'GROUP_MA', iocc=iocc, nbval=0, nbret=nbret)
             if (nbret .ne. 0) then
                 nbGroup = -nbret
-                AS_ALLOCATE(vk24 = groupCell, size = nbGroup)
+                AS_ALLOCATE(vk24=groupCell, size=nbGroup)
                 call getvtx(keywFact, 'GROUP_MA', iocc=iocc, nbval=nbGroup, vect=groupCell)
                 do iGroup = 1, nbGroup
                     groupName = groupCell(iGroup)
@@ -336,54 +336,54 @@ character(len=19) :: tableOut
                     if (iret .eq. 0) then
                         call utmess('A', 'UTILITAI3_46', sk=groupName)
                         cycle
-                    endif
+                    end if
                     call jelira(jexnom(mesh//'.GROUPEMA', groupName), 'LONUTI', nbCellCompute)
                     if (nbCellCompute .eq. 0) then
                         call utmess('A', 'UTILITAI3_47', sk=groupName)
                         cycle
-                    endif
+                    end if
                     call jeveuo(jexnom(mesh//'.GROUPEMA', groupName), 'L', vi=cellCompute)
-                    call peecal(fieldSupp    , tableOut     , fieldName  ,&
-                                locaNameGroup, groupName    ,&
-                                cellCompute  , nbCellCompute,&
-                                model        , lFromResult  , field      ,&
-                                nbCmp        , cmpName      , cmpNameInit,&
-                                numeStore    , inst         , iocc       ,&
-                                ligrel       , cespoi)
+                    call peecal(fieldSupp, tableOut, fieldName, &
+                                locaNameGroup, groupName, &
+                                cellCompute, nbCellCompute, &
+                                model, lFromResult, field, &
+                                nbCmp, cmpName, cmpNameInit, &
+                                numeStore, inst, iocc, &
+                                ligrel, cespoi)
                 end do
 ! --- UNION
                 if (nbGroup > 1) then
                     call umalma(mesh, groupCell, nbGroup, cellCompute, nbCellCompute)
-                    ASSERT(nbCellCompute>0)
-                    call peecal(fieldSupp  , tableOut    , fieldName,&
-                                locaNameGroup, locaNameUnion,&
-                                cellCompute, nbCellCompute,&
-                                model, lFromResult, field, nbCmp, cmpName,&
+                    ASSERT(nbCellCompute > 0)
+                    call peecal(fieldSupp, tableOut, fieldName, &
+                                locaNameGroup, locaNameUnion, &
+                                cellCompute, nbCellCompute, &
+                                model, lFromResult, field, nbCmp, cmpName, &
                                 cmpNameInit, numeStore, inst, iocc, ligrel, cespoi)
-                    AS_DEALLOCATE(vi = cellCompute)
+                    AS_DEALLOCATE(vi=cellCompute)
                 end if
-                AS_DEALLOCATE(vk24 = groupCell)
+                AS_DEALLOCATE(vk24=groupCell)
 
-            endif
+            end if
 !
 ! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'MAILLE'
             call getvtx(keywFact, 'MAILLE', iocc=iocc, nbval=0, nbret=nbret)
             if (nbret .ne. 0) then
-                nbCell        = - nbret
+                nbCell = -nbret
                 nbCellCompute = nbCell
-                AS_ALLOCATE(vk8 = cellNames, size = nbCellCompute)
-                call getvtx(keywFact, 'MAILLE', iocc=iocc, nbval=nbCellCompute, vect = cellNames)
+                AS_ALLOCATE(vk8=cellNames, size=nbCellCompute)
+                call getvtx(keywFact, 'MAILLE', iocc=iocc, nbval=nbCellCompute, vect=cellNames)
                 do iCellCompute = 1, nbCellCompute
                     cellName = cellNames(iCellCompute)
                     call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
-                    call peecal(fieldSupp, tableOut, fieldName,&
+                    call peecal(fieldSupp, tableOut, fieldName, &
                                 locaNameCell, cellName, &
-                                [cellNume], 1,&
+                                [cellNume], 1, &
                                 model, lFromResult, field, nbCmp, cmpName, &
                                 cmpNameInit, numeStore, inst, iocc, ligrel, cespoi)
                 end do
-                AS_DEALLOCATE(vk8 = cellNames)
-            endif
+                AS_DEALLOCATE(vk8=cellNames)
+            end if
         end do
 !
         call jedetr(listCellUser)
@@ -391,10 +391,10 @@ character(len=19) :: tableOut
         call detrsd('LIGREL', ligrel)
         call detrsd('CHAM_ELEM_S', cespoi)
         call jedetr(cespoi//'.PDSM')
-        AS_DEALLOCATE(vk16 = variName)
-        AS_DEALLOCATE(vk8  = cmpName)
-        AS_DEALLOCATE(vk8  = cmpNameAll)
-        AS_DEALLOCATE(vk8  = cmpNameInit)
+        AS_DEALLOCATE(vk16=variName)
+        AS_DEALLOCATE(vk8=cmpName)
+        AS_DEALLOCATE(vk8=cmpNameAll)
+        AS_DEALLOCATE(vk8=cmpNameInit)
     end do
 !
 ! - Clean
@@ -403,7 +403,7 @@ character(len=19) :: tableOut
     call jedetr(timeStoreJv)
     if (lFromField) then
         call detrsd('CHAMP', fieldInput)
-    endif
+    end if
 !
     call jedema()
 !

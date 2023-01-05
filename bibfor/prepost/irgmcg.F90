@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
-                  nbordr, coord, connx, point, nobj,&
-                  nbel, nbcmpi, nomcmp, lresu, para,&
+subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr, &
+                  nbordr, coord, connx, point, nobj, &
+                  nbel, nbcmpi, nomcmp, lresu, para, &
                   nomaou, versio)
     implicit none
 #include "asterf_types.h"
@@ -50,11 +50,11 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
     integer :: ordr(*), connx(*), point(*)
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
     integer :: neletr
-    parameter (neletr =  8)
+    parameter(neletr=8)
     integer :: ntyele, maxel, maxno
-    parameter (ntyele = 28)
-    parameter (maxel  = 48)
-    parameter (maxno  =  8)
+    parameter(ntyele=28)
+    parameter(maxel=48)
+    parameter(maxno=8)
     integer :: tdec(ntyele, maxel, maxno)
     integer :: typd(ntyele, 3)
     integer :: tord(neletr)
@@ -110,7 +110,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 ! --- ORDRE D'IMPRESSION DES VALEURS
     call irgmor(tord, versio)
 !
-    nbord2 = max(1,nbordr)
+    nbord2 = max(1, nbordr)
     numold = nomaou//'.NUMOLD         '
 !
     AS_ALLOCATE(vi=cesd, size=nbord2)
@@ -123,12 +123,12 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !
     do ior = 1, nbord2
         if (lresu) then
-            call rsexch(' ', nomcon, chamsy, ordr(ior), noch19,&
+            call rsexch(' ', nomcon, chamsy, ordr(ior), noch19, &
                         iret)
             if (iret .ne. 0) goto 60
         else
             noch19 = nomcon
-        endif
+        end if
         call codent(ior, 'D0', k8b)
         champs = '&&IRGMCG.CH'//k8b
         call celces(noch19, 'V', champs)
@@ -143,12 +143,12 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
         call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
         if (tsca .ne. 'R') then
             call utmess('F', 'ALGORITH2_63')
-        endif
+        end if
 !
         type = cesk(3)
         if (type(1:4) .ne. 'ELGA' .and. type(1:4) .ne. 'ELEM') then
             call utmess('F', 'PREPOST2_56')
-        endif
+        end if
 !
         if (ior .eq. 1) then
             jcesc = cesc(ior)
@@ -160,29 +160,29 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
             AS_ALLOCATE(vk8=vnocmp, size=nbcmp)
             do icmp = 1, nbcmp
                 do ima = 1, nbma
-                    nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-                    nbsp = zi(jcesd-1+5+4* (ima-1)+2)
+                    nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+                    nbsp = zi(jcesd-1+5+4*(ima-1)+2)
                     do ipt = 1, nbpt
                         do isp = 1, nbsp
-                            call cesexi('C', jcesd, jcesl, ima, ipt,&
+                            call cesexi('C', jcesd, jcesl, ima, ipt, &
                                         isp, icmp, iad)
                             if (iad .gt. 0) goto 40
                         end do
                     end do
                 end do
                 goto 50
- 40             continue
-                ncmpu = ncmpu + 1
+40              continue
+                ncmpu = ncmpu+1
                 vnocmp(ncmpu) = zk8(jcesc-1+icmp)
- 50             continue
+50              continue
             end do
         else
             if (zi(cesd(ior)-1+2) .ne. nbcmp) then
                 call utmess('F', 'PREPOST2_53')
-            endif
-        endif
+            end if
+        end if
 !
- 60     continue
+60      continue
     end do
 !
 ! --- RECUPERATION DU TABLEAU DE CORRESPONDANCE ENTRE NUMERO DES
@@ -191,7 +191,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !     ***************
     call jeveuo(numold, 'L', jnumol)
     do i = 1, ntyele
-        nbel2(i)=0
+        nbel2(i) = 0
     end do
 !
 ! --- BOUCLE SUR LE NOMBRE DE COMPOSANTES DU CHAM_ELEM
@@ -200,7 +200,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
         nbcmpd = nbcmp
     else
         nbcmpd = nbcmpi
-    endif
+    end if
 !
     do k = 1, nbcmpd
 !
@@ -209,14 +209,14 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
                 if (vnocmp(ix) .eq. nomcmp(k)) then
                     icmp = ix
                     goto 80
-                endif
+                end if
             end do
             k8b = nomcmp(k)
             call utmess('F', 'PREPOST2_54', sk=k8b)
- 80         continue
+80          continue
         else
             icmp = k
-        endif
+        end if
         nocmp = vnocmp(icmp)
 !
 ! ----- PREMIER PASSAGE POUR DETERMINER SI LE CHAMP A ECRIRE EXISTE
@@ -228,29 +228,29 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !
         do ine = 1, neletr
 !         I=NUM DE L'ELEMENT DANS LE CATALOGUE
-            i=tord(ine)
+            i = tord(ine)
             if (nbel(i) .ne. 0) then
                 iadmm = 0
 !           NBNO=NBRE DE NOEUDS DE CET ELEMENT
-                nbno = typd(i,3)
+                nbno = typd(i, 3)
                 call jeveuo(nobj(i), 'L', jel(i))
                 do iq = 1, nbel(i)
                     ima = zi(jel(i)-1+iq)
-                    call irgmg1(zi(jnumol), ima, nbord2, cesd, cesl,&
-                                cesv, partie, jtype, nbno, icmp,&
+                    call irgmg1(zi(jnumol), ima, nbord2, cesd, cesl, &
+                                cesv, partie, jtype, nbno, icmp, &
                                 ifi, iwri, iadmax)
-                    iadmm = max(iadmax,iadmm)
+                    iadmm = max(iadmax, iadmm)
                 end do
                 if (iadmm .gt. 0) nbel2(i) = nbel(i)
-            endif
+            end if
         end do
 !
 !
 ! ----- ECRITURE DE L'ENTETE DE View
 !       ****************************
 !
-        call irgmpv(ifi, lresu, nomcon, chamsy, nbord2,&
-                    para, nocmp, nbel2, .true._1, .false._1,&
+        call irgmpv(ifi, lresu, nomcon, chamsy, nbord2, &
+                    para, nocmp, nbel2, .true._1, .false._1, &
                     .false._1, versio)
 !
         iwri = .true.
@@ -259,10 +259,10 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 !
         do ine = 1, neletr
 !         I=NUM DE L'ELEMENT DANS LE CATALOGUE
-            i=tord(ine)
+            i = tord(ine)
             if (nbel2(i) .ne. 0) then
 !           NBNO=NBRE DE NOEUDS DE CET ELEMENT
-                nbno = typd(i,3)
+                nbno = typd(i, 3)
                 call jeveuo(nobj(i), 'L', jel(i))
                 do iq = 1, nbel(i)
                     ima = zi(jel(i)-1+iq)
@@ -271,20 +271,20 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
                         listno(inoe) = connx(ipoin-1+inoe)
                     end do
                     do j = 1, 3
-                        write(ifi,1000) (coord(3*(listno(inoe)-1)+j),&
-                        inoe=1,nbno)
+                        write (ifi, 1000) (coord(3*(listno(inoe)-1)+j), &
+                                           inoe=1, nbno)
                     end do
-                    call irgmg1(zi(jnumol), ima, nbord2, cesd, cesl,&
-                                cesv, partie, jtype, nbno, icmp,&
+                    call irgmg1(zi(jnumol), ima, nbord2, cesd, cesl, &
+                                cesv, partie, jtype, nbno, icmp, &
                                 ifi, iwri, iadmax)
                 end do
-            endif
+            end if
         end do
 !
 ! ----- FIN D'ECRITURE DE View
 !       **********************
 !
-        write (ifi,1010) '$EndView'
+        write (ifi, 1010) '$EndView'
 !
     end do
 !
@@ -296,7 +296,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
     call jedetr('&&IRGMCG.TYPE')
     call jedema()
 !
-    1000 format (1p,4(e15.8,1x))
-    1010 format (a8)
+1000 format(1p, 4(e15.8, 1x))
+1010 format(a8)
 !
 end subroutine

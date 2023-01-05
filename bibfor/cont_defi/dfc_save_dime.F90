@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dfc_save_dime(sdcont      , mesh        , model_ndim, nb_cont_zone, nb_cont_surf,&
+subroutine dfc_save_dime(sdcont, mesh, model_ndim, nb_cont_zone, nb_cont_surf, &
                          nb_cont_elem, nb_cont_node)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -62,7 +62,7 @@ implicit none
 !
 ! - Save contact counters - Total counters
 !
-    call dimeco(sdcont      , model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem,&
+    call dimeco(sdcont, model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem, &
                 nb_cont_node)
 !
 end subroutine

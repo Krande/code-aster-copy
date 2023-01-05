@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine te0584(option, nomte)
 !
 !
     integer :: nbrddm
-    parameter (nbrddm=156)
+    parameter(nbrddm=156)
     real(kind=8) :: b(4, nbrddm)
     real(kind=8) :: vin(nbrddm), mat(4, nbrddm)
     real(kind=8) :: vtemp(nbrddm), pass(nbrddm, nbrddm)
@@ -42,9 +42,9 @@ subroutine te0584(option, nomte)
     integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
     integer :: npg, ipoids, ivf
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &
+                     jdfd2=jdfd2, jgano=jgano)
 !
 !
     m = 3
@@ -52,29 +52,29 @@ subroutine te0584(option, nomte)
 !
 !     FORMULE GENERALE
 !
-    nbrddl = nno* (6+3+6* (m-1))
+    nbrddl = nno*(6+3+6*(m-1))
 !
 !     VERIFS PRAGMATIQUES
 !
     if (nbrddl .gt. nbrddm) then
         call utmess('F', 'ELEMENTS4_40')
-    endif
+    end if
     if (nomte .eq. 'MET3SEG3') then
         if (nbrddl .ne. 63) then
             call utmess('F', 'ELEMENTS4_41')
-        endif
-    else if (nomte.eq.'MET6SEG3') then
+        end if
+    else if (nomte .eq. 'MET6SEG3') then
         if (nbrddl .ne. 117) then
             call utmess('F', 'ELEMENTS4_41')
-        endif
-    else if (nomte.eq.'MET3SEG4') then
+        end if
+    else if (nomte .eq. 'MET3SEG4') then
         if (nbrddl .ne. 84) then
             call utmess('F', 'ELEMENTS4_41')
-        endif
+        end if
     else
         call utmess('F', 'ELEMENTS4_42')
-    endif
+    end if
 !
-    call tusief(option, nomte, nbrddl, b, vin,&
+    call tusief(option, nomte, nbrddl, b, vin, &
                 mat, pass, vtemp)
 end subroutine

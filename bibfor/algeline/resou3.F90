@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
-                  chsecm, chsolu, base, rsolu, csolu,&
+subroutine resou3(matass, matpre, solveu, chcine, nsecm, &
+                  chsecm, chsolu, base, rsolu, csolu, &
                   criter, prepos, istop, iret)
     implicit none
 #include "asterf_types.h"
@@ -98,9 +98,9 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    matas1=matass
-    solve1=solveu
-    chtrav=' '
+    matas1 = matass
+    solve1 = solveu
+    chtrav = ' '
 !
     call dismoi('XFEM', matass, 'MATR_ASSE', repk=kxfem)
     ASSERT(kxfem .eq. 'XFEM_PRECOND')
@@ -109,33 +109,33 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
 !   MISE A L ECHELLE DU SECOND MEMBRE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (nsecm .eq. 0) then
-       chtrav='&&XFEM_RESOUD.TRAV'
-       secm19=chsecm
-       call copisd(' ', base, secm19, chtrav)
-       call jeveuo(secm19//'.VALE', 'L', jsecm)
-       call jeveuo(chtrav//'.VALE', 'E', jtrav)
-       call xfem_pc_rhs(matas1, nsecm, zr(jsecm), zr(jtrav))
+        chtrav = '&&XFEM_RESOUD.TRAV'
+        secm19 = chsecm
+        call copisd(' ', base, secm19, chtrav)
+        call jeveuo(secm19//'.VALE', 'L', jsecm)
+        call jeveuo(chtrav//'.VALE', 'E', jtrav)
+        call xfem_pc_rhs(matas1, nsecm, zr(jsecm), zr(jtrav))
     else
-       call xfem_pc_rhs(matas1, nsecm, rsolu)
-    endif
+        call xfem_pc_rhs(matas1, nsecm, rsolu)
+    end if
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   RESOLUTION
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    call resou2(matass, matpre, solveu, chcine, nsecm,&
-                  chtrav, chsolu, base, rsolu, csolu,&
-                  criter, prepos, istop, iret)
+    call resou2(matass, matpre, solveu, chcine, nsecm, &
+                chtrav, chsolu, base, rsolu, csolu, &
+                criter, prepos, istop, iret)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   MISE A L ECHELLE DE LA SOLUTION
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (nsecm .eq. 0) then
-       solu19=chsolu
-       call jeveuo(solu19//'.VALE', 'E', jsolu)
-       call xfem_pc_sol(matas1, nsecm, zr(jsolu))
+        solu19 = chsolu
+        call jeveuo(solu19//'.VALE', 'E', jsolu)
+        call xfem_pc_sol(matas1, nsecm, zr(jsolu))
     else
-       call xfem_pc_sol(matas1, nsecm, rsolu)
-    endif
+        call xfem_pc_sol(matas1, nsecm, rsolu)
+    end if
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   NETTOYAGES

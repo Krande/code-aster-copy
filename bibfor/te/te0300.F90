@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,10 +80,10 @@ subroutine te0300(option, nomte)
     eps = r8prem()
     depi = r8depi()
     axi = .false.
-    if (lteatt('AXIS','OUI')) axi = .true.
+    if (lteatt('AXIS', 'OUI')) axi = .true.
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevech('PTHETAR', 'L', ithet)
     tcla = 0.d0
@@ -95,11 +95,11 @@ subroutine te0300(option, nomte)
 !
     compt = 0
     do i = 1, nno
-        thx = zr(ithet+2* (i-1))
-        thy = zr(ithet+2* (i-1)+1)
-        if ((abs(thx).lt.eps) .and. (abs(thy).lt.eps)) then
-            compt = compt + 1
-        endif
+        thx = zr(ithet+2*(i-1))
+        thy = zr(ithet+2*(i-1)+1)
+        if ((abs(thx) .lt. eps) .and. (abs(thy) .lt. eps)) then
+            compt = compt+1
+        end if
     end do
     if (compt .eq. nno) goto 110
 !
@@ -108,7 +108,7 @@ subroutine te0300(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PFISSR', 'L', ifond)
-    if ((option.eq.'CALC_K_G_XFEM_F') .or. (option.eq.'G_MODA_F')) then
+    if ((option .eq. 'CALC_K_G_XFEM_F') .or. (option .eq. 'G_MODA_F')) then
         fonc = .true.
         call jevech('PFF1D2D', 'L', iforf)
         call jevech('PPRESSF', 'L', ipref)
@@ -121,7 +121,7 @@ subroutine te0300(option, nomte)
         fonc = .false.
         call jevech('PFR1D2D', 'L', iforc)
         call jevech('PPRESSR', 'L', ipres)
-    endif
+    end if
 !
     nomres(1) = 'E'
     nomres(2) = 'NU'
@@ -133,16 +133,16 @@ subroutine te0300(option, nomte)
     if (fonc) then
         do i = 1, nno
             do j = 1, 2
-                valpar(j) = zr(igeom+2* (i-1)+j-1)
+                valpar(j) = zr(igeom+2*(i-1)+j-1)
             end do
             do j = 1, 2
-                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
-                            presn(2* (i-1)+j), icode)
-                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
-                            forcn(2* (i-1)+j), icode)
+                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar, &
+                            presn(2*(i-1)+j), icode)
+                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar, &
+                            forcn(2*(i-1)+j), icode)
             end do
         end do
-    endif
+    end if
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -165,26 +165,26 @@ subroutine te0300(option, nomte)
         do i = 1, nno
             vf = zr(ivf+k+i-1)
             dfde = zr(idfdk+k+i-1)
-            xg = xg + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-            yg = yg + zr(igeom+2* (i-1)+1)*zr(ivf+k+i-1)
-            dxde = dxde + dfde*zr(igeom+2* (i-1))
-            dyde = dyde + dfde*zr(igeom+2* (i-1)+1)
-            ux = ux + vf*zr(idepl+2* (i-1))
-            uy = uy + vf*zr(idepl+2* (i-1)+1)
-            thx = thx + vf*zr(ithet+2* (i-1))
-            thy = thy + vf*zr(ithet+2* (i-1)+1)
-            dthxde = dthxde + dfde*zr(ithet+2* (i-1))
-            dthyde = dthyde + dfde*zr(ithet+2* (i-1)+1)
+            xg = xg+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+            yg = yg+zr(igeom+2*(i-1)+1)*zr(ivf+k+i-1)
+            dxde = dxde+dfde*zr(igeom+2*(i-1))
+            dyde = dyde+dfde*zr(igeom+2*(i-1)+1)
+            ux = ux+vf*zr(idepl+2*(i-1))
+            uy = uy+vf*zr(idepl+2*(i-1)+1)
+            thx = thx+vf*zr(ithet+2*(i-1))
+            thy = thy+vf*zr(ithet+2*(i-1)+1)
+            dthxde = dthxde+dfde*zr(ithet+2*(i-1))
+            dthyde = dthyde+dfde*zr(ithet+2*(i-1)+1)
         end do
 !
         if (fonc) then
             valpar(1) = xg
             valpar(2) = yg
             do j = 1, 2
-                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar,&
-                            presg( j), icode)
-                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
-                            forcg( j), icode)
+                call fointe('FM', zk8(ipref+j-1), 3, nompar, valpar, &
+                            presg(j), icode)
+                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar, &
+                            forcg(j), icode)
             end do
         else
             presg(1) = 0.d0
@@ -193,27 +193,27 @@ subroutine te0300(option, nomte)
             forcg(2) = 0.d0
             do i = 1, nno
                 do j = 1, 2
-                    presg(j) = presg(j) + zr(ipres+2* (i-1)+j-1)*zr( ivf+k+i-1)
-                    forcg(j) = forcg(j) + zr(iforc+2* (i-1)+j-1)*zr( ivf+k+i-1)
+                    presg(j) = presg(j)+zr(ipres+2*(i-1)+j-1)*zr(ivf+k+i-1)
+                    forcg(j) = forcg(j)+zr(iforc+2*(i-1)+j-1)*zr(ivf+k+i-1)
                 end do
             end do
-        endif
+        end if
 !
-        call rcvad2(fami, kp, 1, '+', zi(imate),&
-                    'ELAS', 3, nomres, valres, devres,&
+        call rcvad2(fami, kp, 1, '+', zi(imate), &
+                    'ELAS', 3, nomres, valres, devres, &
                     icodre)
-        if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
+        if ((icodre(1) .ne. 0) .or. (icodre(2) .ne. 0)) then
             call utmess('F', 'RUPTURE1_25')
-        endif
+        end if
         if (icodre(3) .ne. 0) then
             valres(3) = 0.d0
             devres(3) = 0.d0
-        endif
+        end if
 !
-        dpk = 3.d0 - 4.d0*valres(2)
-        cpk = (3.d0-valres(2))/ (1.d0+valres(2))
-        cform = (1.d0+valres(2))/ (sqrt(depi)*valres(1))
-        dcoefk = valres(1)/ (1.d0-valres(2)*valres(2))
+        dpk = 3.d0-4.d0*valres(2)
+        cpk = (3.d0-valres(2))/(1.d0+valres(2))
+        cform = (1.d0+valres(2))/(sqrt(depi)*valres(1))
+        dcoefk = valres(1)/(1.d0-valres(2)*valres(2))
         ccoefk = valres(1)
         mu = valres(1)/(2.d0*(1.d0+valres(2)))
 !
@@ -223,36 +223,36 @@ subroutine te0300(option, nomte)
         else
             ck = cpk
             coefk = ccoefk
-        endif
+        end if
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    CALCUL DES COOR. CYL.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
-        p(:,:)=0.d0
-        invp(:,:)=0.d0
+        p(:, :) = 0.d0
+        invp(:, :) = 0.d0
         do ino = 1, nno
-            ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
-            basloc((6*(ino-1)+1):(6*(ino-1)+6))=zr((ifond-1+1):(ifond-1+6))
-        enddo
-        call coor_cyl(2, nno, basloc, zr(igeom), ffp,&
+            ffp(ino) = zr(ivf-1+nno*(kp-1)+ino)
+            basloc((6*(ino-1)+1):(6*(ino-1)+6)) = zr((ifond-1+1):(ifond-1+6))
+        end do
+        call coor_cyl(2, nno, basloc, zr(igeom), ffp, &
                       p, invp, rpol, phi, l_not_zero)
 ! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
-        e1(:)=0.d0
-        e1(1:2)=p(1:2,1)
-        e2(:)=0.d0
-        e2(1:2)=p(1:2,2)
+        e1(:) = 0.d0
+        e1(1:2) = p(1:2, 1)
+        e2(:) = 0.d0
+        e2(1:2) = p(1:2, 2)
         call provec(e1, e2, e3)
-        p(3,3)=e3(3)
-        invp(3,3)=e3(3)
+        p(3, 3) = e3(3)
+        invp(3, 3) = e3(3)
 ! BRICOLAGE POUR DETERMINER LE SIGNE DE LA PHI
-        pt_ree=[xg,yg]-zr((ifond-1+1):(ifond-1+2))
+        pt_ree = [xg, yg]-zr((ifond-1+1):(ifond-1+2))
 !
-        pt_loc(:)=0.d0
+        pt_loc(:) = 0.d0
         do i = 1, 2
             do ind = 1, 2
-                pt_loc(i)=pt_loc(i)+invp(i,ind)*pt_ree(ind)
-            enddo
-        enddo
+                pt_loc(i) = pt_loc(i)+invp(i, ind)*pt_ree(ind)
+            end do
+        end do
 !
         if ((abs(pt_loc(2)) .lt. 1.0d-8) .and. (pt_loc(1) .lt. 0.0d0)) then
 !
@@ -260,44 +260,44 @@ subroutine te0300(option, nomte)
 ! SUR LA LEVRE X2 < 0
 !
             xno1 = zr(igeom)
-            yno1 = zr(igeom + 1)
-            xno2 = zr(igeom + 2)
-            yno2 = zr(igeom + 3)
-            d1 = (&
-                 (&
-                 xno1-zr(ifond-1+1)) * (xno1-zr(ifond-1+1))) + ((yno1-zr(ifond-1+2)) * (yno1-zr(i&
-                 &fond-1+2)&
-                 )&
+            yno1 = zr(igeom+1)
+            xno2 = zr(igeom+2)
+            yno2 = zr(igeom+3)
+            d1 = ( &
+                 ( &
+                 xno1-zr(ifond-1+1))*(xno1-zr(ifond-1+1)))+((yno1-zr(ifond-1+2))*(yno1-zr(i&
+                 &fond-1+2) &
+                 ) &
                  )
-            d2 = (&
-                 (&
-                 xno2-zr(ifond-1+1)) * (xno2-zr(ifond-1+1))) + ((yno2-zr(ifond-1+2)) * (yno2-zr(i&
-                 &fond-1+2)&
-                 )&
+            d2 = ( &
+                 ( &
+                 xno2-zr(ifond-1+1))*(xno2-zr(ifond-1+1)))+((yno2-zr(ifond-1+2))*(yno2-zr(i&
+                 &fond-1+2) &
+                 ) &
                  )
             if (d2 .gt. d1) then
-                phi = -1.0d0 * phi
+                phi = -1.0d0*phi
             else
                 phi = abs(phi)
-            endif
-        endif
+            end if
+        end if
 !
         if (axi .and. (xg .lt. r8prem())) then
             call utmess('F', 'RUPTURE0_56')
-        endif
+        end if
 !
 ! --------- champs singuliers
-        call xdeffk(ck, mu, rpol, phi, 2,&
+        call xdeffk(ck, mu, rpol, phi, 2, &
                     fkpo(1:2, 1:2))
 !
-        u1s(:)=0.d0
-        u2s(:)=0.d0
+        u1s(:) = 0.d0
+        u2s(:) = 0.d0
         do i = 1, 2
             do ind = 1, 2
-                u1s(i) = u1s(i) + p(i,ind)*fkpo(1,ind)
-                u2s(i) = u2s(i) + p(i,ind)*fkpo(2,ind)
-            enddo
-        enddo
+                u1s(i) = u1s(i)+p(i, ind)*fkpo(1, ind)
+                u2s(i) = u2s(i)+p(i, ind)*fkpo(2, ind)
+            end do
+        end do
 !        print*,' *** KOR ***'
 !        print*,'  - rg, phig',rpol, phi
 !        print*,'  - ori',zr((ifond-1+1):(ifond-1+2))
@@ -311,20 +311,20 @@ subroutine te0300(option, nomte)
 !
         pres = presg(1)
         cisa = presg(2)
-        fx = forcg(1) - (dyde*pres-dxde*cisa)/dsde
-        fy = forcg(2) + (dxde*pres+dyde*cisa)/dsde
+        fx = forcg(1)-(dyde*pres-dxde*cisa)/dsde
+        fy = forcg(2)+(dxde*pres+dyde*cisa)/dsde
 !
         if (fonc) then
             do i = 1, nno
                 dfde = zr(idfdk+k+i-1)
-                presno = presn(2* (i-1)+1)
-                cisano = presn(2* (i-1)+2)
-                fxno = forcn(2* (i-1)+1) - (dyde*presno-dxde*cisano)/ dsde
-                fyno = forcn(2* (i-1)+2) + (dxde*presno+dyde*cisano)/ dsde
-                dfxde = dfxde + dfde*fxno
-                dfyde = dfyde + dfde*fyno
+                presno = presn(2*(i-1)+1)
+                cisano = presn(2*(i-1)+2)
+                fxno = forcn(2*(i-1)+1)-(dyde*presno-dxde*cisano)/dsde
+                fyno = forcn(2*(i-1)+2)+(dxde*presno+dyde*cisano)/dsde
+                dfxde = dfxde+dfde*fxno
+                dfyde = dfyde+dfde*fyno
             end do
-        endif
+        end if
 !
         poids = zr(ipoids+kp-1)
         if (axi) poids = poids*xg
@@ -332,9 +332,9 @@ subroutine te0300(option, nomte)
         divthe = (dthxde*dxde+dthyde*dyde)/dsde
         if (axi) divthe = divthe+(thx*dsde/xg)
 !
-        tcla1 = tcla1 + poids* ( (divthe*fx+dfxde*the)*u1s(1)+ (divthe* fy+dfyde*the)*u1s(2))
-        tcla2 = tcla2 + poids* ( (divthe*fx+dfxde*the)*u2s(1)+ (divthe* fy+dfyde*the)*u2s(2))
-        tcla = tcla + poids* ( (divthe*fx+dfxde*the)*ux+ (divthe*fy+ dfyde*the)*uy)
+        tcla1 = tcla1+poids*((divthe*fx+dfxde*the)*u1s(1)+(divthe*fy+dfyde*the)*u1s(2))
+        tcla2 = tcla2+poids*((divthe*fx+dfxde*the)*u2s(1)+(divthe*fy+dfyde*the)*u2s(2))
+        tcla = tcla+poids*((divthe*fx+dfxde*the)*ux+(divthe*fy+dfyde*the)*uy)
 !
     end do
 !

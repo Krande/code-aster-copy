@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
+subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai, &
                   nbqcou, nbtcou, nbrsec, nbrfib, nbrgrf, nugrfi)
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
     integer :: nmaxfi
-    parameter (nmaxfi=10)
+    parameter(nmaxfi=10)
     integer :: jcesdi, jcesli, nummai, nbqcou, nbtcou, jcesvi
     integer :: nbrsec, nbrfib, nbrgrf, nugrfi(nmaxfi), jcesci
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -52,7 +52,7 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
 !
     integer :: nbrcmp, numgrf, icmp, iad
 !
-    nugrfi(1:nmaxfi)=0
+    nugrfi(1:nmaxfi) = 0
 !
     nbqcou = 0
     nbtcou = 0
@@ -67,24 +67,24 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
         call cesexi('C', jcesdi, jcesli, nummai, 1, 1, icmp, iad)
 !
         if (iad .gt. 0) then
-            if      (zk8(jcesci+icmp-1).eq.'COQ_NCOU') then
-                nbqcou=zi(jcesvi-1+iad)
-            else if (zk8(jcesci+icmp-1).eq.'TUY_NCOU') then
-                nbtcou=zi(jcesvi-1+iad)
-            else if (zk8(jcesci+icmp-1).eq.'TUY_NSEC') then
-                nbrsec=zi(jcesvi-1+iad)
-            else if (zk8(jcesci+icmp-1).eq.'NBFIBR') then
-                nbrfib=zi(jcesvi-1+iad)
-            else if (zk8(jcesci+icmp-1).eq.'NBGRFI') then
-                nbrgrf=zi(jcesvi-1+iad)
-            else if (zk8(jcesci+icmp-1)(1:3).eq.'NUG') then
-                nugrfi(numgrf)=zi(jcesvi-1+iad)
-                numgrf=numgrf+1
-            endif
-        endif
-    enddo
+            if (zk8(jcesci+icmp-1) .eq. 'COQ_NCOU') then
+                nbqcou = zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1) .eq. 'TUY_NCOU') then
+                nbtcou = zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1) .eq. 'TUY_NSEC') then
+                nbrsec = zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1) .eq. 'NBFIBR') then
+                nbrfib = zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1) .eq. 'NBGRFI') then
+                nbrgrf = zi(jcesvi-1+iad)
+            else if (zk8(jcesci+icmp-1) (1:3) .eq. 'NUG') then
+                nugrfi(numgrf) = zi(jcesvi-1+iad)
+                numgrf = numgrf+1
+            end if
+        end if
+    end do
     if (nbrfib .ne. 0) then
-        ASSERT(nbrgrf.ne.0)
-    endif
+        ASSERT(nbrgrf .ne. 0)
+    end if
 !
 end subroutine

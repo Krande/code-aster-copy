@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
+subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
                   nd, nchoc, h, nbpt, xeng)
     implicit none
 !
@@ -122,25 +122,25 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         call dscal(nd, 0.d0, zr(imdy), 1)
         call dscal(nd, 0.d0, zr(iky), 1)
 !
-        omega=zr(ius-1+ind*ninc)
+        omega = zr(ius-1+ind*ninc)
         call dcopy(nd*(2*h+1), zr(ius+(ind-1)*ninc), 1, zr(ix), 1)
 ! ----------------------------------------------------------------------
 ! --- PASSAGE EN TEMPOREL (t=T/4)
 ! ----------------------------------------------------------------------
 ! ---   PI
-        pi=r8pi()
+        pi = r8pi()
         call dcopy(nd, zr(ix), 1, zr(iy), 1)
-        ratio=4.d0
+        ratio = 4.d0
         do k = 1, h
 ! ---     COS
-            call daxpy(nd, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(iy),&
+            call daxpy(nd, dcos(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(iy), &
                        1)
-            call daxpy(nd, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(idy),&
+            call daxpy(nd, k*omega*dcos(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(idy), &
                        1)
 ! ---     SIN
-            call daxpy(nd, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(iy),&
+            call daxpy(nd, dsin(2*k*pi/ratio), zr(ix-1+nd*(h+k)+1), 1, zr(iy), &
                        1)
-            call daxpy(nd, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(idy),&
+            call daxpy(nd, -k*omega*dsin(2*k*pi/ratio), zr(ix-1+nd*k+1), 1, zr(idy), &
                        1)
         end do
 ! ----------------------------------------------------------------------
@@ -150,57 +150,57 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         call dscal(nd, 0.d0, dye, 1)
         call dscal(nd, 0.d0, kye, 1)
         call dscal(nd, 0.d0, mdye, 1)
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                ye(k)=zr(iy-1+i)
-                dye(k)=zr(idy-1+i)
-            endif
+                i = i+1
+                ye(k) = zr(iy-1+i)
+                dye(k) = zr(idy-1+i)
+            end if
         end do
-        call mrmult('ZERO', imat(1), ye, kye, 1,&
+        call mrmult('ZERO', imat(1), ye, kye, 1, &
                     .false._1)
-        call mrmult('ZERO', imat(2), dye, mdye, 1,&
+        call mrmult('ZERO', imat(2), dye, mdye, 1, &
                     .false._1)
         call dscal(nd, 0.d0, zr(iky), 1)
         call dscal(nd, 0.d0, zr(imdy), 1)
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                zr(iky-1+i)=kye(k)
-                zr(imdy-1+i)=mdye(k)
-            endif
+                i = i+1
+                zr(iky-1+i) = kye(k)
+                zr(imdy-1+i) = mdye(k)
+            end if
         end do
-        e=ddot(nd, zr(iy),1,zr(iky),1)/2
-        e=e+ddot(nd,zr(idy),1,zr(imdy),1)/2
+        e = ddot(nd, zr(iy), 1, zr(iky), 1)/2
+        e = e+ddot(nd, zr(idy), 1, zr(imdy), 1)/2
         do k = 1, nchoc
-            alpha=raid(k)
-            jeu=vjeu(k)
-            if (type(k)(1:4) .eq. 'PLAN') then
-                nddl=vnddl(6*(k-1)+1)
+            alpha = raid(k)
+            jeu = vjeu(k)
+            if (type(k) (1:4) .eq. 'PLAN') then
+                nddl = vnddl(6*(k-1)+1)
                 if (zr(iy-1+nddl) .gt. jeu) then
-                    e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
-                endif
-            else if (type(k)(1:7).eq.'BI_PLAN') then
-                nddl=vnddl(6*(k-1)+1)
+                    e = e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
+                end if
+            else if (type(k) (1:7) .eq. 'BI_PLAN') then
+                nddl = vnddl(6*(k-1)+1)
                 if (zr(iy-1+nddl) .gt. jeu) then
-                    e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
-                else if (zr(iy-1+nddl).lt.(-1.d0*jeu)) then
-                    e=e+0.5*alpha*(zr(iy-1+nddl)+jeu)**2
-                endif
-            else if (type(k)(1:6).eq.'CERCLE') then
-                nddlx=vnddl(6*(k-1)+1)
-                nddly=vnddl(6*(k-1)+2)
-                origx=orig(3*(k-1)+1)
-                origy=orig(3*(k-1)+2)
-                rayon=sqrt((zr(iy-1+nddlx)-origx)**2+(zr(iy-1+nddly)-origy)**2)
+                    e = e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
+                else if (zr(iy-1+nddl) .lt. (-1.d0*jeu)) then
+                    e = e+0.5*alpha*(zr(iy-1+nddl)+jeu)**2
+                end if
+            else if (type(k) (1:6) .eq. 'CERCLE') then
+                nddlx = vnddl(6*(k-1)+1)
+                nddly = vnddl(6*(k-1)+2)
+                origx = orig(3*(k-1)+1)
+                origy = orig(3*(k-1)+2)
+                rayon = sqrt((zr(iy-1+nddlx)-origx)**2+(zr(iy-1+nddly)-origy)**2)
                 if (rayon .gt. jeu) then
-                    e=e+alpha*(rayon-jeu)**2
-                endif
-            endif
+                    e = e+alpha*(rayon-jeu)**2
+                end if
+            end if
         end do
-        zr(ieng-1+ind)=e
+        zr(ieng-1+ind) = e
     end do
 !
     call jedetr('&&MNLENG.X')

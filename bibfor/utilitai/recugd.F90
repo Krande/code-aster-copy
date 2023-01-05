@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
+subroutine recugd(caelem, nomcmp, valres, nbgd, iassef, &
                   iassmx)
     implicit none
 !
@@ -63,17 +63,17 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
     call jeveuo(carav, 'L', icarv)
     call jeveuo(carad, 'L', icard)
 !
-    kexnom = jexnom('&CATA.GD.NOMCMP','CAGEPO')
+    kexnom = jexnom('&CATA.GD.NOMCMP', 'CAGEPO')
     call jelira(kexnom, 'LONMAX', nbcmp)
     call jeveuo(kexnom, 'L', icmp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('NB_EC', 'CAGEPO', 'GRANDEUR', repi=nbec)
 !     TOUTES LES COMPOSANTES DOIVENT ETRE DANS LA GRANDEUR
     do jj = 1, nbgd
-        irang = indik8( zk8(icmp) , nomcmp(jj) , 1 , nbcmp )
+        irang = indik8(zk8(icmp), nomcmp(jj), 1, nbcmp)
         if (irang .eq. 0) then
             call utmess('E', 'UTILITAI4_8', sk=nomcmp(jj))
-        endif
+        end if
     end do
 !
     do ii = 1, iassef
@@ -81,18 +81,18 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
 !
         do jj = 1, nbgd
 !           RANG DANS LA GRANDEUR
-            irang = indik8( zk8(icmp) , nomcmp(jj) , 1 , nbcmp )
+            irang = indik8(zk8(icmp), nomcmp(jj), 1, nbcmp)
 !           RANG DANS LA CARTE
             iranv = 0
             do ll = 1, irang
-                if (exisdg([icode],ll)) iranv = iranv + 1
+                if (exisdg([icode], ll)) iranv = iranv+1
             end do
 !           ON MET A ZERO SI INEXISTANT
             if (iranv .eq. 0) then
                 valres(nbgd*(ii-1)+jj) = 0.0d0
             else
-                valres(nbgd*(ii-1)+jj) = zr(icarv-1+nbcmp*(ii-1)+ iranv)
-            endif
+                valres(nbgd*(ii-1)+jj) = zr(icarv-1+nbcmp*(ii-1)+iranv)
+            end if
         end do
     end do
 !

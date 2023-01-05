@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,9 +49,9 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in) :: sd_dtm_
-    character(len=*) , intent(in) :: sd_int_
-    integer          , intent(in) :: oldcase
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_int_
+    integer, intent(in) :: oldcase
     integer, pointer              :: buffdtm(:)
     integer, pointer              :: buffint(:)
 !
@@ -62,35 +62,35 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
     character(len=8)      :: sd_dtm, sd_int
     character(len=24)     :: mat_jv, invphi_jv, fadd_jv
 
-    real(kind=8), pointer :: phi0_v(:)     => null()
-    real(kind=8), pointer :: phi1_v(:)     => null()
-    real(kind=8), pointer :: transd_v(:)   => null()
-    real(kind=8), pointer :: transf_v(:)   => null()
-    real(kind=8), pointer :: field(:)      => null()
-    real(kind=8), pointer :: resfield(:)   => null()
-    real(kind=8), pointer :: mat(:)        => null()
-    real(kind=8), pointer :: mat_a(:)      => null()
-    real(kind=8), pointer :: mat_a_0(:)    => null()
-    real(kind=8), pointer :: fnl_add(:)    => null()
-    real(kind=8), pointer :: mgen(:)       => null()
-    real(kind=8), pointer :: kgen(:)       => null()
-    real(kind=8), pointer :: agen(:)       => null()
+    real(kind=8), pointer :: phi0_v(:) => null()
+    real(kind=8), pointer :: phi1_v(:) => null()
+    real(kind=8), pointer :: transd_v(:) => null()
+    real(kind=8), pointer :: transf_v(:) => null()
+    real(kind=8), pointer :: field(:) => null()
+    real(kind=8), pointer :: resfield(:) => null()
+    real(kind=8), pointer :: mat(:) => null()
+    real(kind=8), pointer :: mat_a(:) => null()
+    real(kind=8), pointer :: mat_a_0(:) => null()
+    real(kind=8), pointer :: fnl_add(:) => null()
+    real(kind=8), pointer :: mgen(:) => null()
+    real(kind=8), pointer :: kgen(:) => null()
+    real(kind=8), pointer :: agen(:) => null()
 
-    real(kind=8), pointer :: phi1t_phi1_f(:)     => null()
+    real(kind=8), pointer :: phi1t_phi1_f(:) => null()
     real(kind=8), pointer :: phi1t_phi1_f_inv(:) => null()
 
 #define ptpi(row,col) phi1t_phi1_f_inv((col-1)*nbmode+row)
 
 !
 !   0 - Initializations
-    sd_dtm  = sd_dtm_
-    sd_int  = sd_int_
+    sd_dtm = sd_dtm_
+    sd_int = sd_int_
 !
     call dtmget(sd_int, _NL_CASE, iscal=newcase, buffer=buffdtm)
     call dtmget(sd_int, _NB_MODES, iscal=nbmode, buffer=buffdtm)
 
     call dtmcase_coder(newcase, case1k7)
-    call jeveuo(sd_dtm // '.PRJ_BAS.' //case1k7, 'E', vr=phi1_v)
+    call jeveuo(sd_dtm//'.PRJ_BAS.'//case1k7, 'E', vr=phi1_v)
 
     ! write(*,*) '*******************************************************************************'
     ! write(*,*) ' PRJ_BAS >', case1k7, '< =', phi1_v
@@ -102,32 +102,32 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 !
 !   --- Calculate A = [Phi1]_t . ( [Phi1]_t . [Phi1] ) ^ -1
 
-    invphi_jv = sd_dtm //'.INV_PHI.'//case1k7
+    invphi_jv = sd_dtm//'.INV_PHI.'//case1k7
     call jeexin(invphi_jv, iret)
-    if (iret.eq.0) then
+    if (iret .eq. 0) then
         call wkvect(invphi_jv, 'V V R', nbmode*nbmode, vr=mat_a)
 
         AS_ALLOCATE(vr=phi1t_phi1_f, size=nbmode*nbmode)
         AS_ALLOCATE(vr=phi1t_phi1_f_inv, size=nbmode*nbmode)
         do i = 1, nbmode
-            ptpi(i,i) = 1.d0
+            ptpi(i, i) = 1.d0
             do j = i+1, nbmode
-                ptpi(i,j) = 0.d0
+                ptpi(i, j) = 0.d0
             end do
         end do
-        call prmama(3, phi1_v, nbmode, nbmode, nbmode,&
-                    phi1_v, nbmode, nbmode, nbmode, phi1t_phi1_f,&
+        call prmama(3, phi1_v, nbmode, nbmode, nbmode, &
+                    phi1_v, nbmode, nbmode, nbmode, phi1t_phi1_f, &
                     nbmode, nbmode, nbmode, iret2)
         call trlds(phi1t_phi1_f, nbmode, nbmode, iret2)
-        if (iret2.ne.0) then
+        if (iret2 .ne. 0) then
             ! write(*,*) "Error in triangularizing matrix Phi-t Phi (basis) on line", iret2
             ! write(*,*) "phi1_v = ", phi1_v
             ! write(*,*) "phi1t_phi1_f = ", phi1t_phi1_f
             ASSERT(.false.)
         end if
         call rrlds(phi1t_phi1_f, nbmode, nbmode, phi1t_phi1_f_inv, nbmode)
-        call prmama(4, phi1t_phi1_f_inv, nbmode, nbmode, nbmode,&
-                    phi1_v, nbmode, nbmode, nbmode, mat_a,&
+        call prmama(4, phi1t_phi1_f_inv, nbmode, nbmode, nbmode, &
+                    phi1_v, nbmode, nbmode, nbmode, mat_a, &
                     nbmode, nbmode, nbmode, iret)
         AS_DEALLOCATE(vr=phi1t_phi1_f)
         AS_DEALLOCATE(vr=phi1t_phi1_f_inv)
@@ -139,12 +139,12 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         call jeveuo(invphi_jv, 'E', vr=transd_v)
     else
         call dtmcase_coder(oldcase, case0k7)
-        call jeveuo(sd_dtm // '.PRJ_BAS.' //case0k7, 'E', vr=phi0_v)
+        call jeveuo(sd_dtm//'.PRJ_BAS.'//case0k7, 'E', vr=phi0_v)
         AS_ALLOCATE(nbmode*nbmode, vr=transd_v)
         ! write(*,*) ' old PRJ_BAS >', case0k7, '< =', phi0_v
 
-        call prmama(1, mat_a, nbmode, nbmode, nbmode,&
-                    phi0_v, nbmode, nbmode, nbmode, transd_v,&
+        call prmama(1, mat_a, nbmode, nbmode, nbmode, &
+                    phi0_v, nbmode, nbmode, nbmode, transd_v, &
                     nbmode, nbmode, nbmode, iret)
         ! write(*,*) ' phi1_v^(-1) x phi0_v = ', transd_v
     end if
@@ -160,12 +160,12 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 !   --- Note that B = ([Phi0]_t)^-1 = (A0)_t since we always have a square <Phi> matrix
 
     if (oldcase .eq. 0) then
-        call jeveuo(sd_dtm // '.PRJ_BAS.' //case1k7, 'E', vr=transf_v)
+        call jeveuo(sd_dtm//'.PRJ_BAS.'//case1k7, 'E', vr=transf_v)
     else
         AS_ALLOCATE(nbmode*nbmode, vr=transf_v)
-        call jeveuo(sd_dtm //'.INV_PHI.'//case0k7, 'E', vr=mat_a_0)
-        call prmama(1, mat_a_0, nbmode, nbmode, nbmode,&
-                    phi1_v, nbmode, nbmode, nbmode, transf_v,&
+        call jeveuo(sd_dtm//'.INV_PHI.'//case0k7, 'E', vr=mat_a_0)
+        call prmama(1, mat_a_0, nbmode, nbmode, nbmode, &
+                    phi1_v, nbmode, nbmode, nbmode, transf_v, &
                     nbmode, nbmode, nbmode, iret)
     end if
 
@@ -199,7 +199,7 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
     end do
 
     AS_DEALLOCATE(vr=field)
-    fadd_jv = sd_dtm // '.ADDED_F.'//case1k7
+    fadd_jv = sd_dtm//'.ADDED_F.'//case1k7
     call jeveuo(fadd_jv, 'E', vr=field)
     call dtmget(sd_dtm, _F_NL_ADD, vr=fnl_add, buffer=buffdtm)
     call pmtvec('ZERO', nbmode, transf_v, field, fnl_add)
@@ -208,65 +208,65 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 !   4 - Update matrices
 !
     call intget(sd_int, MASS_FUL, iocc=1, savejv=mat_jv, lonvec=iret, buffer=buffint)
-    if (iret.gt.0) call jedetr(mat_jv)
+    if (iret .gt. 0) call jedetr(mat_jv)
     call intget(sd_int, RIGI_FUL, iocc=1, savejv=mat_jv, lonvec=iret, buffer=buffint)
-    if (iret.gt.0) call jedetr(mat_jv)
+    if (iret .gt. 0) call jedetr(mat_jv)
 
     if (newcase .ne. 0) then
-        call jeveuo(sd_dtm // '.PRJ_MAS.' //case1k7, 'L', vr=mat)
+        call jeveuo(sd_dtm//'.PRJ_MAS.'//case1k7, 'L', vr=mat)
         call intsav(sd_int, MASS_DIA, nbmode, iocc=1, rvect=mat)
-        nullify(mat)
-        call jeveuo(sd_dtm // '.PRJ_RIG.' //case1k7, 'L', vr=mat)
+        nullify (mat)
+        call jeveuo(sd_dtm//'.PRJ_RIG.'//case1k7, 'L', vr=mat)
         call intsav(sd_int, RIGI_DIA, nbmode, iocc=1, rvect=mat)
-        nullify(mat)
+        nullify (mat)
 !       --- SINCE MASS = IDENTITY MATRIX => NO NEED TO MULTIPLY BY M^-1 FOR AMOR_DIA
-        call jeveuo(sd_dtm // '.PRJ_AMO.' //case1k7, 'L', vr=mat)
+        call jeveuo(sd_dtm//'.PRJ_AMO.'//case1k7, 'L', vr=mat)
         call intsav(sd_int, AMOR_DIA, nbmode, iocc=1, rvect=mat)
-        nullify(mat)
+        nullify (mat)
 
         if (nbmode .gt. 1) then
-            call jeveuo(sd_dtm // '.PRJ_AM2.' //case1k7, 'L', vr=mat)
+            call jeveuo(sd_dtm//'.PRJ_AM2.'//case1k7, 'L', vr=mat)
             call intsav(sd_int, AMOR_FUL, nbmode*nbmode, iocc=1, rvect=mat, buffer=buffint)
         else
             call intget(sd_int, AMOR_FUL, iocc=1, savejv=mat_jv, lonvec=iret, buffer=buffint)
-            if (iret.gt.0) call jedetr(mat_jv)
+            if (iret .gt. 0) call jedetr(mat_jv)
         end if
     else
         call intget(sd_int, AMOR_FUL, iocc=1, savejv=mat_jv, lonvec=iret, buffer=buffint)
-        if (iret.gt.0) call jedetr(mat_jv)
+        if (iret .gt. 0) call jedetr(mat_jv)
 
 !        --- Mass
-         call dtmget(sd_dtm, _MASS_FUL, lonvec=lvec)
-         if (lvec.gt.0) then
+        call dtmget(sd_dtm, _MASS_FUL, lonvec=lvec)
+        if (lvec .gt. 0) then
             call intinivec(sd_int, MASS_FUL, lvec, iocc=1, vr=mgen)
             call dtmget(sd_dtm, _MASS_FUL, rvect=mgen, buffer=buffdtm)
-         endif
-         call dtmget(sd_dtm, _MASS_DIA, lonvec=lvec, buffer=buffdtm)
-         call intget(sd_int, MASS_DIA, iocc=1, vr=mgen)
-         call dtmget(sd_dtm, _MASS_DIA, rvect=mgen, buffer=buffdtm)
+        end if
+        call dtmget(sd_dtm, _MASS_DIA, lonvec=lvec, buffer=buffdtm)
+        call intget(sd_int, MASS_DIA, iocc=1, vr=mgen)
+        call dtmget(sd_dtm, _MASS_DIA, rvect=mgen, buffer=buffdtm)
 !
 !       --- Stifness
         call dtmget(sd_dtm, _RIGI_FUL, lonvec=lvec)
-        if (lvec.gt.0) then
+        if (lvec .gt. 0) then
             call intinivec(sd_int, RIGI_FUL, lvec, iocc=1, vr=kgen)
             call dtmget(sd_dtm, _RIGI_FUL, rvect=kgen, buffer=buffdtm)
-        endif
+        end if
         call dtmget(sd_dtm, _RIGI_DIA, lonvec=lvec, buffer=buffdtm)
         call intget(sd_int, RIGI_DIA, iocc=1, vr=kgen)
         call dtmget(sd_dtm, _RIGI_DIA, rvect=kgen, buffer=buffdtm)
 !
 !       --- Damping
         call dtmget(sd_dtm, _AMOR_FUL, lonvec=lvec)
-        if (lvec.gt.0) then
+        if (lvec .gt. 0) then
             call intinivec(sd_int, AMOR_FUL, lvec, iocc=1, vr=agen)
             call dtmget(sd_dtm, _AMOR_FUL, rvect=agen, buffer=buffdtm)
-        endif
+        end if
         call dtmget(sd_dtm, _AMOR_DIA, lonvec=lvec)
         call intinivec(sd_int, AMOR_DIA, lvec, iocc=1, vr=agen)
         call dtmget(sd_dtm, _AMOR_DIA, rvect=agen, buffer=buffdtm)
     end if
 
-    nullify(buffint)
+    nullify (buffint)
     call intbuff(sd_int, buffint, level=level)
 
     ! call utimsd(6, 2, .false._1, .true._1, sd_int, 1, 'V')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,19 +39,19 @@ subroutine zerod2(x, y, z)
         x(1) = x(3)
         y(1) = y(3)
         z(1) = z(3)
-    endif
+    end if
 !
     if (y(3) .gt. 0.d0) then
         x(2) = x(3)
         y(2) = y(3)
         z(2) = z(3)
-    endif
+    end if
 !
 !    CONSTRUCTION D'UN NOUVEL ESTIME
     if (x(1) .eq. x(2)) then
         call utmess('F', 'ALGORITH9_84')
-    endif
-    xp = (x(1) + x(2)) / 2.d0
+    end if
+    xp = (x(1)+x(2))/2.d0
 !
 !    DECALAGE DES ITERES
     x(3) = xp

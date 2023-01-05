@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ module parameters_module
 !
 #include "asterf_types.h"
 !
-    integer, parameter :: ST_ER     =  1
-    integer, parameter :: ST_OK     =  0
-    integer, parameter :: ST_ER_PR0 =  4
-    integer, parameter :: ST_ER_OTH =  8
+    integer, parameter :: ST_ER = 1
+    integer, parameter :: ST_OK = 0
+    integer, parameter :: ST_ER_PR0 = 4
+    integer, parameter :: ST_ER_OTH = 8
     integer, parameter :: ST_UN_OTH = 16
     integer, parameter :: ST_EXCEPT = 32
 !

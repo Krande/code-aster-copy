@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine comp_meca_deflc(rela_comp, defo_comp, defo_ldc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lccree.h"
@@ -27,9 +27,9 @@ implicit none
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 !
-character(len=16), intent(in) :: rela_comp
-character(len=16), intent(in) :: defo_comp
-character(len=16), intent(out) :: defo_ldc
+    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: defo_comp
+    character(len=16), intent(out) :: defo_ldc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,14 +64,14 @@ character(len=16), intent(out) :: defo_ldc
         defo_ldc = defo_ldc_rela
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! deform_ldc should not be 'MECANIQUE' if the kinematik is 'SIMO_MIEHE'
 ! MFRONT is the only exception
 !
     l_deformlc = (defo_ldc_rela .eq. 'MECANIQUE') .and. (defo_comp .eq. 'SIMO_MIEHE') &
-    .and. (rela_comp .ne. 'MFRONT')
-    ASSERT(.not.l_deformlc)
+                 .and. (rela_comp .ne. 'MFRONT')
+    ASSERT(.not. l_deformlc)
 
     ASSERT((defo_ldc .eq. 'MECANIQUE') .or. (defo_ldc .eq. 'TOTALE') .or. (defo_ldc .eq. 'OLD'))
 !

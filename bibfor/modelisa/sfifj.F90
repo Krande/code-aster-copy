@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine sfifj(nomres)
     character(len=16), pointer :: vate(:) => null()
     real(kind=8), pointer :: vare(:) => null()
 !
-    data         deuxpi/6.28318530718d0/,yang/.false./
+    data deuxpi/6.28318530718d0/, yang/.false./
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -92,10 +92,10 @@ subroutine sfifj(nomres)
 !
 ! RECUPERATION DE LA FREQUENCE MINIMALE ET MAX DES MODES
 !
-        call rsadpa(base, 'L', 1, 'FREQ', ordr(1),&
+        call rsadpa(base, 'L', 1, 'FREQ', ordr(1), &
                     0, sjv=jpara, styp=k8b)
         fmin = zr(jpara)
-        call rsadpa(base, 'L', 1, 'FREQ', ordr(nbm),&
+        call rsadpa(base, 'L', 1, 'FREQ', ordr(nbm), &
                     0, sjv=jpara, styp=k8b)
         fmax = zr(jpara)
     else
@@ -103,7 +103,7 @@ subroutine sfifj(nomres)
         call chpver('F', chamno, 'NOEU', 'DEPL_R', ier)
         call getvid(' ', 'CHAM_NO', nbval=0, nbret=ncham)
         nbm = -ncham
-    endif
+    end if
 !
 ! RECUPERATION DE LA FREQUENCE MINIMALE ET MAX DE LA PLAGE
 ! DE FREQUENCE ETUDIEE
@@ -112,33 +112,33 @@ subroutine sfifj(nomres)
     call getvr8(' ', 'FREQ_FIN', scal=ffin, nbret=nfin)
     if ((ffin-finit) .lt. r8prem()) then
         call utmess('F', 'MODELISA6_97')
-    endif
+    end if
 !
     if (nfinit .lt. 0) then
         if (ncham .ne. 0) then
             call utmess('F', 'MODELISA6_98')
-        endif
+        end if
         valr = fmin
         call utmess('I', 'MODELISA9_15', sr=valr)
-        finit=fmin
-    endif
+        finit = fmin
+    end if
     if (nfin .lt. 0) then
         if (ncham .ne. 0) then
             call utmess('F', 'MODELISA6_99')
-        endif
+        end if
         valr = fmax
         call utmess('I', 'MODELISA9_16', sr=valr)
-        ffin=fmax
-    endif
+        ffin = fmax
+    end if
 !
 ! DISCRETISATION FREQUENTIELLE
     call getvis(' ', 'NB_POIN', scal=nbpoin, nbret=npoin)
 !
 ! PAS FREQUENTIEL
-    df = (ffin-finit) / (nbpoin-1)
+    df = (ffin-finit)/(nbpoin-1)
     if (df .lt. r8prem()) then
         call utmess('F', 'MODELISA7_1')
-    endif
+    end if
 !
 ! CALCUL DE L'ACCEPTANCE
 !
@@ -156,18 +156,18 @@ subroutine sfifj(nomres)
         kste = vare(6)
         dhyd = vare(7)
 ! LONGUEURS DE CORRELATION
-        long1=vare(1)
-        long2=vare(2)
+        long1 = vare(1)
+        long2 = vare(2)
 ! VITESSE CONVECTIVE RADIALE (METHODE AU-YANG)
-        uc=vare(8)*uflui
+        uc = vare(8)*uflui
 ! VITESSE CONVECTIVE ORTHORADIALE (METHODE AU-YANG)
-        ut=vare(9)*uflui
+        ut = vare(9)*uflui
 !
 ! CALCUL DE LA FREQUENCE DE COUPURE PRONE PAR LE MODELE
 ! ET COMPARAISON AVEC LA FREQUENCE DE COUPURE DONNEE PAR
 ! L UTILISATEUR
 !
-        fmodel = 10.d0 * uflui / dhyd
+        fmodel = 10.d0*uflui/dhyd
         fcoup_red = 0.d0
         if (fcoupu .le. fmodel) then
             valr = fcoupu
@@ -176,7 +176,7 @@ subroutine sfifj(nomres)
             call utmess('I', 'MODELISA9_18', sr=valr)
             call utmess('I', 'MODELISA9_19')
             fcoup = fcoupu
-            fcoup_red = fcoup * dhyd / uflui
+            fcoup_red = fcoup*dhyd/uflui
         else
             valr = fcoupu
             call utmess('I', 'MODELISA9_20', sr=valr)
@@ -185,82 +185,82 @@ subroutine sfifj(nomres)
             call utmess('I', 'MODELISA9_22')
             fcoup = fmodel
             fcoup_red = 10.d0
-        endif
+        end if
 !
 ! RECUPERATION DE LA METHOD DE LA FONCTION
 ! DE COHERENCE
 !
-        method = vate(11)(1:8)
-    else if (vate(1).eq.'SPEC_CORR_CONV_2') then
-        uflui=vare(1)
-        fcoup=vare(2)
-        method=vate(5)(1:8)
-        fonct =vate(2)
+        method = vate(11) (1:8)
+    else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
+        uflui = vare(1)
+        fcoup = vare(2)
+        method = vate(5) (1:8)
+        fonct = vate(2)
 !       on fixe à 1 les longueurs de corrélation pour fix de bug
         long1 = 1
         long2 = 1
 !       on fixe les valeurs de uc et ut pour fix un bug
         uc = 0.65d0*uflui
         ut = 0.65d0*uflui
-    else if (vate(1).eq.'SPEC_CORR_CONV_3') then
-        fonct =vate(2)
+    else if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
+        fonct = vate(2)
         goto 10
-    endif
+    end if
 !
 !
 ! RECUPERATION DES DIRECTIONS DU PLAN DE LA PLANCHE
     if (method(1:6) .eq. 'CORCOS') then
         call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
-        nvecx=-nvecx
+        nvecx = -nvecx
         if (nvecx .gt. 0) then
             AS_ALLOCATE(vr=vecx, size=3)
             call getvr8(' ', 'VECT_X', nbval=nvecx, vect=vecx, nbret=nbid)
-        endif
+        end if
         call getvr8(' ', 'VECT_Y', nbval=0, nbret=nvecy)
-        nvecy=-nvecy
+        nvecy = -nvecy
         if (nvecy .gt. 0) then
             AS_ALLOCATE(vr=vecy, size=3)
             call getvr8(' ', 'VECT_Y', nbval=nvecy, vect=vecy, nbret=nbid)
-        endif
+        end if
         if (nvecx .lt. 0 .or. nvecy .lt. 0) then
             call utmess('F', 'MODELISA7_2')
-        endif
+        end if
 !
 ! VECTEUR Z LOCAL = VECT-X VECTORIEL VECT-Y
         AS_ALLOCATE(vr=vecz, size=3)
-        vecz(1)=vecx(1+1)*vecy(1+2)-vecy(1+1)*vecx(1+2)
-        vecz(1+1)=vecx(1+2)*vecy(1)-vecy(1+2)*vecx(1)
-        vecz(1+2)=vecx(1)*vecy(1+1)-vecy(1)*vecx(1+1)
+        vecz(1) = vecx(1+1)*vecy(1+2)-vecy(1+1)*vecx(1+2)
+        vecz(1+1) = vecx(1+2)*vecy(1)-vecy(1+2)*vecx(1)
+        vecz(1+2) = vecx(1)*vecy(1+1)-vecy(1)*vecx(1+1)
         do in = 1, 3
-            dir(1,in)=vecx(in)
-            dir(2,in)=vecy(in)
-            dir(3,in)=vecz(in)
+            dir(1, in) = vecx(in)
+            dir(2, in) = vecy(in)
+            dir(3, in) = vecz(in)
         end do
-    else if (method(1:7).eq.'AU_YANG') then
+    else if (method(1:7) .eq. 'AU_YANG') then
         yang = .true.
         call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
-        nvecx=-nvecx
+        nvecx = -nvecx
         if (nvecx .gt. 0) then
             call getvr8(' ', 'VECT_X', nbval=nvecx, vect=dir(1, 1), nbret=nbid)
-        endif
+        end if
         call getvr8(' ', 'ORIG_AXE', nbval=0, nbret=nveco)
-        nveco=-nveco
+        nveco = -nveco
         if (nveco .gt. 0) then
             call getvr8(' ', 'ORIG_AXE', nbval=nveco, vect=dir(1, 2), nbret=nbid)
-        endif
+        end if
         if (nvecx .lt. 0 .or. nveco .lt. 0) then
             call utmess('F', 'MODELISA7_3')
-        endif
-    endif
+        end if
+    end if
 !
 ! VALEURS NON DEPENDANTES DE LA FREQUENCE
 !
- 10 continue
+10  continue
     if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
         call accep2(base(1:8), nbm, pg, phi, sphi)
     else
         call accep1(base(1:8), ligrmo, nbm, dir, yang)
-    endif
+    end if
 !
 !
 ! CAS SPEC_CORR_CONV_1 ET 2
@@ -270,24 +270,24 @@ subroutine sfifj(nomres)
     chnumj = nomres//'.NUMJ'
     call wkvect(chnumj, 'G V I', mxval, lnumj)
     chvale = nomres//'.VALE'
-    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 mxval)
     chfreq = nomres//'.DISC'
     call wkvect(chfreq, 'G V R', nbpoin, lfreq)
 !
     do iff = 0, nbpoin-1
-        f=finit+iff*df
+        f = finit+iff*df
         zr(lfreq+iff) = f
     end do
 !
 !  POUR LE CAS SPEC_CORR_CONV_3
     if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
 ! TABLE CONTENANT LES FONCTIONS DE FORME
-        is=vate(2)
+        is = vate(2)
         do iff = 0, nbpoin-1
-            f=finit+iff*df
+            f = finit+iff*df
             zr(lfreq+iff) = f
-            call evalis(is, pg, phi, sphi, f,&
+            call evalis(is, pg, phi, sphi, f, &
                         iff, nomres)
         end do
     else
@@ -295,7 +295,7 @@ subroutine sfifj(nomres)
         do im2 = 1, nbm
 !
             do im1 = im2, nbm
-                ij = ij + 1
+                ij = ij+1
 !
                 zi(lnumi-1+ij) = im1
                 zi(lnumj-1+ij) = im2
@@ -305,7 +305,7 @@ subroutine sfifj(nomres)
                     nbabs = nbpoin
                 else
                     nbabs = 2*nbpoin
-                endif
+                end if
 !
                 call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
                 call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
@@ -316,35 +316,35 @@ subroutine sfifj(nomres)
 !
                 ier = 0
                 do iff = 0, nbpoin-1
-                    f=finit+iff*df
+                    f = finit+iff*df
                     if (f .gt. fcoup) then
                         prs = 0.d0
-                    else if (vate(1).eq.'SPEC_CORR_CONV_2') then
+                    else if (vate(1) .eq. 'SPEC_CORR_CONV_2') then
                         puls = deuxpi*f
-                        call fointe('F', fonct, 1, ['PULS'], [puls],&
+                        call fointe('F', fonct, 1, ['PULS'], [puls], &
                                     prs, ier)
-                        call accept(f, nbm, method, im2, im1,&
-                                    uflui, jc, dir, uc, ut,&
+                        call accept(f, nbm, method, im2, im1, &
+                                    uflui, jc, dir, uc, ut, &
                                     long1, long2)
                     else
-                        prs = dspprs(kste,uflui,dhyd,rho,f,fcoup_red)
-                        call accept(f, nbm, method, im2, im1,&
-                                    uflui, jc, dir, uc, ut,&
+                        prs = dspprs(kste, uflui, dhyd, rho, f, fcoup_red)
+                        call accept(f, nbm, method, im2, im1, &
+                                    uflui, jc, dir, uc, ut, &
                                     long1, long2)
-                    endif
+                    end if
                     if (im1 .eq. im2) then
-                        zr(lvale+iff)=prs*jc
+                        zr(lvale+iff) = prs*jc
                     else
-                        zr(lvale+2*iff)=prs*jc
-                        zr(lvale+2*iff+1)=0.d0
-                    endif
+                        zr(lvale+2*iff) = prs*jc
+                        zr(lvale+2*iff+1) = 0.d0
+                    end if
                 end do
 !
             end do
 !
         end do
 !
-    endif
+    end if
 !
     AS_DEALLOCATE(vr=vecx)
     AS_DEALLOCATE(vr=vecy)
@@ -355,7 +355,7 @@ subroutine sfifj(nomres)
         call jedetc('V', '&&329', 1)
         call jedetc('V', '&&V.M', 1)
         call jedetc('V', '&&GROTAB.TAB', 1)
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmforc_acci(list_func_acti,&
-                       model         , cara_elem      , nume_dof ,&
-                       list_load     , sddyna         ,&
-                       ds_material   , ds_constitutive, ds_system,&
-                       ds_measure    , ds_inout       ,&
-                       sddisc        , nume_inst      ,&
-                       hval_incr     , hval_algo      ,&
-                       hval_veelem   , hval_veasse    ,&
+subroutine nmforc_acci(list_func_acti, &
+                       model, cara_elem, nume_dof, &
+                       list_load, sddyna, &
+                       ds_material, ds_constitutive, ds_system, &
+                       ds_measure, ds_inout, &
+                       sddisc, nume_inst, &
+                       hval_incr, hval_algo, &
+                       hval_veelem, hval_veasse, &
                        hval_measse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -47,19 +47,19 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=24), intent(in) :: model, cara_elem, nume_dof
-character(len=19), intent(in) :: list_load, sddyna
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_InOut), intent(in) :: ds_inout
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
-character(len=19), intent(in) :: hval_measse(*)
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: model, cara_elem, nume_dof
+    character(len=19), intent(in) :: list_load, sddyna
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
+    character(len=19), intent(in) :: hval_measse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,66 +100,66 @@ character(len=19), intent(in) :: hval_measse(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_3')
-    endif
+    end if
 !
 ! - Get time
 !
     ASSERT(nume_inst .eq. 0)
     time_prev = 0.d0
-    time_curr = diinst(sddisc,nume_inst)
+    time_curr = diinst(sddisc, nume_inst)
 !
 ! - Active functionnalities
 !
-    l_impe = ndynlo(sddyna,'IMPE_ABSO')
-    l_macr = isfonc(list_func_acti,'MACR_ELEM_STAT')
+    l_impe = ndynlo(sddyna, 'IMPE_ABSO')
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 !
 ! - Compute loads
 !
-    call nonlinLoadCompute('ACCI'     , list_load      ,&
-                           model      , cara_elem      , nume_dof  , list_func_acti,&
-                           ds_material, ds_constitutive, ds_measure,&
-                           time_prev  , time_curr      ,&
-                           hval_incr  , hval_algo      ,&
+    call nonlinLoadCompute('ACCI', list_load, &
+                           model, cara_elem, nume_dof, list_func_acti, &
+                           ds_material, ds_constitutive, ds_measure, &
+                           time_prev, time_curr, &
+                           hval_incr, hval_algo, &
                            hval_veelem, hval_veasse)
 !
 ! - Compute loads (for dynamic)
 !
-    call nonlinLoadDynaCompute('ACCI'     , sddyna     ,&
-                               model      , nume_dof   ,&
-                               ds_material, ds_measure , ds_inout,&
-                               time_prev  , time_curr  ,&
+    call nonlinLoadDynaCompute('ACCI', sddyna, &
+                               model, nume_dof, &
+                               ds_material, ds_measure, ds_inout, &
+                               time_prev, time_curr, &
                                hval_veelem, hval_veasse)
 !
 ! - Compute impedance
 !
     if (l_impe) then
-        call nonlinDynaImpeCompute('Prediction', sddyna     ,&
-                                   model       , nume_dof   ,&
-                                   ds_material , ds_measure ,&
-                                   hval_incr   ,&
-                                   hval_veelem , hval_veasse)
-    endif
+        call nonlinDynaImpeCompute('Prediction', sddyna, &
+                                   model, nume_dof, &
+                                   ds_material, ds_measure, &
+                                   hval_incr, &
+                                   hval_veelem, hval_veasse)
+    end if
 !
 ! - Compute sub-structuring effect on second member
 !
     if (l_macr) then
-        call nmchex(hval_incr  , 'VALINC', 'DEPPLU', disp_curr)
+        call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
         call nmchex(hval_veasse, 'VEASSE', 'CNSSTR', cnsstr)
-        call nonlinSubStruCompute(ds_measure , disp_curr,&
+        call nonlinSubStruCompute(ds_measure, disp_curr, &
                                   hval_measse, cnsstr)
-    endif
+    end if
 !
 ! - Compute nodal force BT . SIGMA (No integration of behaviour)
 !
-    call nonlinNForceCompute(model      , cara_elem      , list_func_acti,&
-                             ds_material, ds_constitutive,&
-                             ds_measure , ds_system      ,&
-                             time_prev  , time_curr      ,&
-                             hval_incr  , hval_algo      )
-    call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0],&
+    call nonlinNForceCompute(model, cara_elem, list_func_acti, &
+                             ds_material, ds_constitutive, &
+                             ds_measure, ds_system, &
+                             time_prev, time_curr, &
+                             hval_incr, hval_algo)
+    call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], &
                 ds_system%nume_dof)
     if (niv .ge. 2) then
         call nmdebg('VECT', ds_system%cnfnod, 6)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                  matopa, mxresf, neqact, nblagr, omemax,&
-                  omemin, omeshi, solveu, vecblo, veclag,&
-                  sigma, npivot, flage, nconv, vpinf, vpmax, mod45b,&
+subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                  matopa, mxresf, neqact, nblagr, omemax, &
+                  omemin, omeshi, solveu, vecblo, veclag, &
+                  sigma, npivot, flage, nconv, vpinf, vpmax, mod45b, &
                   vecstb, vecedd, nbddl, vecsdd, nbddl2, csta)
 !
 ! ROUTINE EFFECTUANT LE CALCUL MODAL PARAMETRE DANS EIGSOL PAR LA METHODE DE SORENSEN
@@ -61,7 +61,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
     integer, intent(in) :: mxresf, neqact, nblagr, nbddl, nbddl2
     real(kind=8), intent(in)    :: omeshi
     complex(kind=8), intent(in) :: sigma
-    character(len=4) , intent(in) :: mod45b
+    character(len=4), intent(in) :: mod45b
     character(len=19), intent(in) :: eigsol, matopa, solveu
     character(len=24), intent(in) :: vecrer, vecrei, vecrek, vecvp, vecblo, veclag
     character(len=24), intent(in) :: vecstb, vecedd, vecsdd
@@ -70,7 +70,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !
     integer, intent(out) :: nconv
     real(kind=8), intent(out) :: vpinf, vpmax, csta
-    aster_logical , intent(out) :: flage
+    aster_logical, intent(out) :: flage
 !
 !
 ! --- INPUT/OUTPUT
@@ -114,36 +114,36 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
         priram(8) = 2
     else
         priram(:) = 0
-    endif
-    quapi2=r8depi()*r8depi()
-    izero=0
-    rzero=0.d0
-    kmetho='SORENSEN'
-    nconv=0
-    flage=.false.
+    end if
+    quapi2 = r8depi()*r8depi()
+    izero = 0
+    rzero = 0.d0
+    kmetho = 'SORENSEN'
+    nconv = 0
+    flage = .false.
     call jeveuo(vecrer, 'E', lresur)
     call jeveuo(vecrei, 'E', lresui)
     call jeveuo(vecrek, 'E', lresuk)
     call jeveuo(vecvp, 'E', lvec)
     call jeveuo(vecblo, 'L', lprod)
     call jeveuo(veclag, 'L', lddl)
-    if (mod45b(1:4).EQ.'SOR1') then
+    if (mod45b(1:4) .EQ. 'SOR1') then
         call jeveuo(vecstb, 'E', jstab)
         call jeveuo(vecedd, 'L', eddl)
         call jeveuo(vecsdd, 'L', eddl2)
-    endif
+    end if
 !
 ! --- LECTURE DES DONNEES DE EIGSOL
 !
-    call vplecs(eigsol, maxitr_=maxitr,&
-                nbvect_=nbvect, nfreq_=nfreq,&
-                alpha_=alpha, omecor_=omecor,&
-                precdc_=precdc, precsh_=precsh,&
-                tolsor_=tolsor, appr_=appr,&
-                method_=method, optiof_=optiof, stoper_=stoper,&
-                typres_=typres, amor_=amor, masse_=masse, raide_=raide,&
+    call vplecs(eigsol, maxitr_=maxitr, &
+                nbvect_=nbvect, nfreq_=nfreq, &
+                alpha_=alpha, omecor_=omecor, &
+                precdc_=precdc, precsh_=precsh, &
+                tolsor_=tolsor, appr_=appr, &
+                method_=method, optiof_=optiof, stoper_=stoper, &
+                typres_=typres, amor_=amor, masse_=masse, raide_=raide, &
                 lc_=lc, lkr_=lkr, lns_=lns, lpg_=lpg)
-    ASSERT(method(1:8).eq.'SORENSEN')
+    ASSERT(method(1:8) .eq. 'SORENSEN')
 !
 ! ---  DESCRIPTEURS MATRICES
     call jeveuo(raide//'.&INT', 'E', lraide)
@@ -152,8 +152,8 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
     if (lc) then
         call jeveuo(amor//'.&INT', 'E', lamor)
     else
-        lamor=0
-    endif
+        lamor = 0
+    end if
     call jeveuo(matopa//'.&INT', 'E', lmatra)
 !
 ! --- PRE-ALLOCATIONS MEMOIRE
@@ -163,7 +163,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     ------------------------------------------------------------------
 !     -------  SORENSEN PB GENERALISE REEL SYMETRIQUE  --------
 !     ------------------------------------------------------------------
-    if ((.not.lc) .and. lkr .and. (.not.lns)) then
+    if ((.not. lc) .and. lkr .and. (.not. lns)) then
         call wkvect('&&VPCALS.RESID', 'V V R', neq, lresid)
         call wkvect('&&VPCALS.VECT.WORKD', 'V V R', 3*neq, lworkd)
         call wkvect('&&VPCALS.VECT.WORKL', 'V V R', lonwl, lworkl)
@@ -173,7 +173,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     --------------------------------- ---------------------------------
 !     -------  SORENSEN PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 !     ------------------------------------------------------------------
-    else if ((.not.lc) .and. (lns .or. (.not.lkr))) then
+    else if ((.not. lc) .and. (lns .or. (.not. lkr))) then
         call wkvect('&&VPCALS.RESID', 'V V C', neq, lresid)
         call wkvect('&&VPCALS.VECT.WORKD', 'V V C', 3*neq, lworkd)
         call wkvect('&&VPCALS.VECT.WORKL', 'V V C', lonwl, lworkl)
@@ -214,7 +214,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     -------  SORENSEN PB QUADRATIQUE COMPLEXE SYM  -------------------
 !     -------  APPROCHE COMPLEXE                     -------------------
 !     ------------------------------------------------------------------
-    else if ((.not.lkr) .and. lc) then
+    else if ((.not. lkr) .and. lc) then
         call wkvect('&&VPCALS.RESID', 'V V C', 2*neq, lresid)
         call wkvect('&&VPCALS.VECT.WORKD', 'V V C', 6*neq, lworkd)
         call wkvect('&&VPCALS.VECT.WORKL', 'V V C', lonwl, lworkl)
@@ -225,48 +225,48 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
         call wkvect('&&VPCALS.VECT.AUR', 'V V R', 2*neq*(nbvect+1), laur)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CAS PARTICULIER DE NMOP45 + FLAMBEMENT SANS MATRICE GEOMETRIQUE
 !
-    if (mod45b(1:4).EQ.'SOR1') then
+    if (mod45b(1:4) .EQ. 'SOR1') then
         redem = 0
-        call vpsor1(        lmatra, neq, nbvect, nfreq,&
-                    tolsor, zr(lvec), zr(lresid), zr(lworkd), zr(lworkl),&
-                    lonwl, zl(lselec), zr(ldsor), omeshi, zr(laux),&
-                    zr(lworkv), zi(lprod), zi(lddl), zi(eddl), nbddl, neqact, maxitr,&
-                    ifm, niv, priram, alpha,omecor,&
-                    nconv, flage, solveu,&
+        call vpsor1(lmatra, neq, nbvect, nfreq, &
+                    tolsor, zr(lvec), zr(lresid), zr(lworkd), zr(lworkl), &
+                    lonwl, zl(lselec), zr(ldsor), omeshi, zr(laux), &
+                    zr(lworkv), zi(lprod), zi(lddl), zi(eddl), nbddl, neqact, maxitr, &
+                    ifm, niv, priram, alpha, omecor, &
+                    nconv, flage, solveu, &
                     nbddl2, zi(eddl2), zr(jstab), csta, redem)
-        call rectfr(nconv, nconv, omeshi, npivot, nblagr,&
+        call rectfr(nconv, nconv, omeshi, npivot, nblagr, &
                     zr(ldsor), nfreq+1, zi(lresui), zr(lresur), mxresf)
-        nfreq1=nfreq+1
-        call vpbost(typres, nconv, nconv, omeshi, zr(ldsor),&
+        nfreq1 = nfreq+1
+        call vpbost(typres, nconv, nconv, omeshi, zr(ldsor), &
                     nfreq1, vpinf, vpmax, precdc, method, omecor)
-        if (typres(1:9) .eq. 'DYNAMIQUE')&
-        call vpordi(1, 0, nconv, zr(lresur+mxresf), zr(lvec), neq, zi(lresui))
+        if (typres(1:9) .eq. 'DYNAMIQUE') &
+            call vpordi(1, 0, nconv, zr(lresur+mxresf), zr(lvec), neq, zi(lresui))
 !
         do imet = 1, nconv
-           zi(lresui-1+mxresf+imet) = izero
-           zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
+            zi(lresui-1+mxresf+imet) = izero
+            zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !       SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-           if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
-              zr(lresur-1+2*mxresf+imet) = rzero
-              zk24(lresuk-1+ mxresf+imet)= kmetho
-        enddo
+            if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
+            zr(lresur-1+2*mxresf+imet) = rzero
+            zk24(lresuk-1+mxresf+imet) = kmetho
+        end do
         if (typres(1:9) .ne. 'DYNAMIQUE') then
             call vpordo(0, 0, nconv, zr(lresur+mxresf), zr(lvec), neq)
             do imet = 1, nconv
-              zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
-              zi(lresui-1+imet) = imet
-            enddo
-        endif
+                zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
+                zi(lresui-1+imet) = imet
+            end do
+        end if
         goto 99
-    endif
+    end if
 !
 ! --- CALCUL MODAL PROPREMENT DIT
 !
-    if (.not.lc) then
+    if (.not. lc) then
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -274,67 +274,67 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
-        if (lkr .and. (.not.lns)) then
+        if (lkr .and. (.not. lns)) then
 !     ------------------------------------------------------------------
 !     -------  SORENSEN PB GENERALISE REEL SYMETRIQUE  --------
 !     ------------------------------------------------------------------
-            call vpsorn(lmasse, lmatra, neq, nbvect, nfreq,&
-                        tolsor, zr(lvec), zr(lresid), zr(lworkd), zr(lworkl),&
-                        lonwl, zl(lselec), zr(ldsor), omeshi, zr(laux),&
-                        zr(lworkv), zi(lprod), zi(lddl), neqact, maxitr,&
-                        ifm, niv, priram, alpha, omecor,&
+            call vpsorn(lmasse, lmatra, neq, nbvect, nfreq, &
+                        tolsor, zr(lvec), zr(lresid), zr(lworkd), zr(lworkl), &
+                        lonwl, zl(lselec), zr(ldsor), omeshi, zr(laux), &
+                        zr(lworkv), zi(lprod), zi(lddl), neqact, maxitr, &
+                        ifm, niv, priram, alpha, omecor, &
                         nconv, flage, solveu)
-            call rectfr(nconv, nconv, omeshi, npivot, nblagr,&
+            call rectfr(nconv, nconv, omeshi, npivot, nblagr, &
                         zr(ldsor), nfreq+1, zi(lresui), zr(lresur), mxresf)
-            nfreq1=nfreq+1
-            call vpbost(typres, nconv, nconv, omeshi, zr(ldsor),&
-                        nfreq1, vpinf, vpmax, precdc, method,&
+            nfreq1 = nfreq+1
+            call vpbost(typres, nconv, nconv, omeshi, zr(ldsor), &
+                        nfreq1, vpinf, vpmax, precdc, method, &
                         omecor)
-            if (typres(1:9) .eq. 'DYNAMIQUE')&
-              call vpordi(1, 0, nconv, zr(lresur+mxresf), zr(lvec), neq, zi(lresui))
+            if (typres(1:9) .eq. 'DYNAMIQUE') &
+                call vpordi(1, 0, nconv, zr(lresur+mxresf), zr(lvec), neq, zi(lresui))
 !
             do imet = 1, nconv
                 zi(lresui-1+mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-                if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
+                if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
-                zk24(lresuk-1+ mxresf+imet)= kmetho
-            enddo
+                zk24(lresuk-1+mxresf+imet) = kmetho
+            end do
             if (typres(1:9) .ne. 'DYNAMIQUE') then
                 call vpordo(0, 0, nconv, zr(lresur+mxresf), zr(lvec), neq)
                 do imet = 1, nconv
-                    zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
+                    zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                     zi(lresui-1+imet) = imet
-                enddo
-            endif
+                end do
+            end if
 !
-        else if (lns .or. (.not.lkr)) then
+        else if (lns .or. (.not. lkr)) then
 !     ------------------------------------------------------------------
 !     -------  SORENSEN PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 !     ------------------------------------------------------------------
-            call vpsorc(lmasse, lmatra, neq, nbvect, nfreq,&
-                        tolsor, zc(lvec), zc(lresid), zc(lworkd), zc(lworkl),&
-                        lonwl, zl(lselec), zc(ldsor), sigma, zc(laux),&
-                        zc(lworkv), zr( lworkr), zi(lprod), zi(lddl), neqact,&
-                        maxitr, ifm, niv, priram, abs(alpha),&
+            call vpsorc(lmasse, lmatra, neq, nbvect, nfreq, &
+                        tolsor, zc(lvec), zc(lresid), zc(lworkd), zc(lworkl), &
+                        lonwl, zl(lselec), zc(ldsor), sigma, zc(laux), &
+                        zc(lworkv), zr(lworkr), zi(lprod), zi(lddl), neqact, &
+                        maxitr, ifm, niv, priram, abs(alpha), &
                         nconv, flage, solveu)
             npivot = nblagr
-            nfreq1=nfreq+1
-            call rectfc(nconv, nconv, sigma, npivot, nblagr,&
+            nfreq1 = nfreq+1
+            call rectfc(nconv, nconv, sigma, npivot, nblagr, &
                         zc(ldsor), nfreq1, zi(lresui), zr(lresur), nfreq)
-            call vpbosc(typres, nconv, nconv, sigma, zc(ldsor),&
-                        nfreq1, vpinf, vpmax, precdc, method,&
+            call vpbosc(typres, nconv, nconv, sigma, zc(ldsor), &
+                        nfreq1, vpinf, vpmax, precdc, method, &
                         omecor)
             do imet = 1, nconv
-                zi(lresui-1+ mxresf+imet) = izero
+                zi(lresui-1+mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
-                zk24(lresuk-1+ mxresf+imet)= kmetho
-            enddo
+                zk24(lresuk-1+mxresf+imet) = kmetho
+            end do
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     else
 !
@@ -346,45 +346,45 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !
         if (lkr) then
             select case (appr)
-                case('R','I')
+            case ('R', 'I')
 !     ------------------------------------------------------------------
 !     -------  SORENSEN PB QUADRATIQUE REEL  SYM  ----------------------
 !     -------  APPROCHE REELLE OU IMAGINAIRE      ----------------------
 !     ------------------------------------------------------------------
-                call wpsorn(appr, lmasse, lamor, lmatra, neq,&
-                            nbvect, nfreq, tolsor, zc(lvec), zr(lresid),&
-                            zr(lworkd), zr(lworkl), lonwl, zl(lselec), zr(ldsor),&
-                            zr(lsurdr), zr(ldiagr), sigma, zr(laux), zr(lworkv),&
-                            zi(lprod), zi(lddl), neqact, maxitr, ifm,&
-                            niv, priram, abs(alpha), nconv, flage,&
+                call wpsorn(appr, lmasse, lamor, lmatra, neq, &
+                            nbvect, nfreq, tolsor, zc(lvec), zr(lresid), &
+                            zr(lworkd), zr(lworkl), lonwl, zl(lselec), zr(ldsor), &
+                            zr(lsurdr), zr(ldiagr), sigma, zr(laux), zr(lworkv), &
+                            zi(lprod), zi(lddl), neqact, maxitr, ifm, &
+                            niv, priram, abs(alpha), nconv, flage, &
                             zr(laur), zc(lauc), zc(laul), solveu)
-                nfreq = nconv / 2
-                call wp3vec(appr, optiof, nfreq, nconv, neq,&
-                            sigma, zr(lsurdr), zr(ldiagr), zc(lvec), mxresf,&
+                nfreq = nconv/2
+                call wp3vec(appr, optiof, nfreq, nconv, neq, &
+                            sigma, zr(lsurdr), zr(ldiagr), zc(lvec), mxresf, &
                             zi(lresui), zr(lresur), zi(lprod), zc(lauc), omecor)
-                case('C')
+            case ('C')
 !     ------------------------------------------------------------------
 !     -------  SORENSEN PB QUADRATIQUE REEL, SYM OU NON  ---------------
 !     -------  APPROCHE COMPLEXE                         ---------------
 !     ------------------------------------------------------------------
-                call wpsorc(lmasse, lamor, lmatra, neq, nbvect,&
-                            nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd),&
-                            zc(lworkl), lonwl, zl(lselec), zc(ldsor), sigma,&
-                            zc(laux), zc(lworkv), zi(lprod), zi(lddl), neqact,&
-                            maxitr, ifm, niv, priram, abs(alpha),&
+                call wpsorc(lmasse, lamor, lmatra, neq, nbvect, &
+                            nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd), &
+                            zc(lworkl), lonwl, zl(lselec), zc(ldsor), sigma, &
+                            zc(laux), zc(lworkv), zi(lprod), zi(lddl), neqact, &
+                            maxitr, ifm, niv, priram, abs(alpha), &
                             nconv, flage, zc(lauc), zr(laur), solveu)
-                nfreq = nconv / 2
-                call wp4vec(nfreq, nconv, neq, sigma, zc(ldsor),&
-                            zc(lvec), mxresf, zi(lresui), zr(lresur), zi(lprod),&
+                nfreq = nconv/2
+                call wp4vec(nfreq, nconv, neq, sigma, zc(ldsor), &
+                            zc(lvec), mxresf, zi(lresui), zr(lresur), zi(lprod), &
                             zc(lauc), omecor)
             case default
                 ASSERT(.false.)
             end select
             do imet = 1, nfreq
                 zi(lresui-1+mxresf+imet) = izero
-                zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
+                zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                 zk24(lresuk-1+mxresf+imet) = kmetho
-            enddo
+            end do
 !
         else
 !     ------------------------------------------------------------------
@@ -393,29 +393,29 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     ------------------------------------------------------------------
             if (lns) then
                 ASSERT(.false.)
-            endif
-            call wpsorc(lmasse, lamor, lmatra, neq, nbvect,&
-                        nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd),&
-                        zc(lworkl), lonwl, zl(lselec), zc(ldsor), sigma,&
-                        zc(laux), zc(lworkv), zi(lprod), zi(lddl), neqact,&
-                        maxitr, ifm, niv, priram, abs(alpha),&
+            end if
+            call wpsorc(lmasse, lamor, lmatra, neq, nbvect, &
+                        nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd), &
+                        zc(lworkl), lonwl, zl(lselec), zc(ldsor), sigma, &
+                        zc(laux), zc(lworkv), zi(lprod), zi(lddl), neqact, &
+                        maxitr, ifm, niv, priram, abs(alpha), &
                         nconv, flage, zc(lauc), zr(laur), solveu)
-            nfreq = nconv / 2
-            call wp5vec(nfreq, nconv, neq, zc(ldsor), zc(lvec),&
+            nfreq = nconv/2
+            call wp5vec(nfreq, nconv, neq, zc(ldsor), zc(lvec), &
                         mxresf, zi(lresui), zr(lresur), zc(lauc))
             do imet = 1, nfreq
                 zi(lresui-1+mxresf+imet) = izero
-                zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
+                zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                 zk24(lresuk-1+mxresf+imet) = kmetho
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! ---- NOMBRE DE MODES CONVERGES
 ! ---- SI LE SOLVEUR MODAL A BIEN ACHEVE SON TRAVAIL ON FAIT CETTE AFFEC
 ! ---- TATION SINON ON NE TIENT COMPTE QUE DES NCONV MODES REELLEMENT CV
- 99 continue
-    if (.not.flage) nconv = nfreq
+99  continue
+    if (.not. flage) nconv = nfreq
 !
 !     ------------------------------------------------------------------
 !     -------------------- CORRECTION : OPTION BANDE -------------------
@@ -424,44 +424,44 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 ! --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
     mfreq = nconv
     if (optiof(1:5) .eq. 'BANDE') then
-        if (lc .or. lns .or. .not.lkr) then
-          ASSERT(.false.)
-        endif
-        if ((typres(1:9).ne.'DYNAMIQUE').and.(mod45b(1:4).ne.'OP45')) then
-          rbid = omemin
-          omemin=-omemax
-          omemax=-rbid
-        endif
-        do ifreq = mfreq - 1, 0, -1
-            if ((zr(lresur+mxresf+ifreq).gt.omemax) .or. (zr(lresur+ mxresf+ifreq).lt.omemin)) &
-            nconv = nconv - 1
-        enddo
-        if ((typres(1:9).ne.'DYNAMIQUE').and.(mod45b(1:4).ne.'OP45')) then
-          rbid = omemin
-          omemin=-omemax
-          omemax=-rbid
-        endif
+        if (lc .or. lns .or. .not. lkr) then
+            ASSERT(.false.)
+        end if
+        if ((typres(1:9) .ne. 'DYNAMIQUE') .and. (mod45b(1:4) .ne. 'OP45')) then
+            rbid = omemin
+            omemin = -omemax
+            omemax = -rbid
+        end if
+        do ifreq = mfreq-1, 0, -1
+            if ((zr(lresur+mxresf+ifreq) .gt. omemax) .or. (zr(lresur+mxresf+ifreq) .lt. omemin)) &
+                nconv = nconv-1
+        end do
+        if ((typres(1:9) .ne. 'DYNAMIQUE') .and. (mod45b(1:4) .ne. 'OP45')) then
+            rbid = omemin
+            omemin = -omemax
+            omemax = -rbid
+        end if
         if (mfreq .ne. nconv) call utmess('I', 'ALGELINE2_17')
-    endif
+    end if
 !
 ! ---  ON AJUSTE LA VALEUR NFREQ DE LA SD EIGENSOLVER
-    if (mod45b(1:4).eq.'OP45') then
-      call vpecri(eigsol, 'I', 1, k24bid, rbid, nfreq)
-    endif
+    if (mod45b(1:4) .eq. 'OP45') then
+        call vpecri(eigsol, 'I', 1, k24bid, rbid, nfreq)
+    end if
 
 !
 !
 ! --- NETTOYAGE OBJETS TEMPORAIRES
 !
     call jedetr('&&VPCALS.SELECT')
-    if ((.not.lc) .and. lkr .and. (.not.lns)) then
+    if ((.not. lc) .and. lkr .and. (.not. lns)) then
         call jedetr('&&VPCALS.RESID')
         call jedetr('&&VPCALS.VECT.WORKD')
         call jedetr('&&VPCALS.VECT.WORKL')
         call jedetr('&&VPCALS.VECT.WORKV')
         call jedetr('&&VPCALS.VAL.PRO')
         call jedetr('&&VPCALS.VECT.AUX')
-    else if ((.not.lc) .and. (lns .or. (.not.lkr))) then
+    else if ((.not. lc) .and. (lns .or. (.not. lkr))) then
         call jedetr('&&VPCALS.RESID')
         call jedetr('&&VPCALS.VECT.WORKD')
         call jedetr('&&VPCALS.VECT.WORKL')
@@ -490,7 +490,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
         call jedetr('&&VPCALS.VECT.WORKL')
         call jedetr('&&VPCALS.VECT.WORKV')
         call jedetr('&&VPCALS.VAL.PRO')
-    else if ((.not.lkr) .and. lc) then
+    else if ((.not. lkr) .and. lc) then
         call jedetr('&&VPCALS.RESID')
         call jedetr('&&VPCALS.VECT.WORKD')
         call jedetr('&&VPCALS.VECT.WORKL')
@@ -499,7 +499,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
         call jedetr('&&VPCALS.VECT.AUX')
         call jedetr('&&VPCALS.VECT.AUC')
         call jedetr('&&VPCALS.VECT.AUR')
-    endif
+    end if
     call jedema()
 !
 !     FIN DE VPCALS

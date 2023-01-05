@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -65,7 +65,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     list_elem_affe = '&&COMPTHERSAVE.LIST'
-    keywordfact    = 'COMPORTEMENT'
+    keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nocc)
 !
 ! - Access to COMPOR <CARTE>
@@ -84,28 +84,28 @@ implicit none
 ! ----- Get options
 !
         nb_vari = vali(1)
-        rela_comp = valk(1)(1:16)
+        rela_comp = valk(1) (1:16)
 !
 ! ----- Set options in COMPOR <CARTE>
 !
         valv(1) = rela_comp
-        write (valv(2),'(I16)') nb_vari
+        write (valv(2), '(I16)') nb_vari
 !
 ! ----- Get list of elements where comportment is defined
 !
-        call comp_read_mesh(mesh          , keywordfact, iocc        ,&
-                            list_elem_affe, l_affe_all , nb_elem_affe)
+        call comp_read_mesh(mesh, keywordfact, iocc, &
+                            list_elem_affe, l_affe_all, nb_elem_affe)
 !
 ! ----- Affect in COMPOR <CARTE>
 !
         if (l_affe_all) then
             call nocart(compor, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
-            call nocart(compor, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = v_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+            call nocart(compor, 3, nb_cmp, mode='NUM', nma=nb_elem_affe, &
+                        limanu=v_elem_affe)
             call jedetr(list_elem_affe)
-        endif
+        end if
     end do
 !
     call jedetr(compor//'.NCMP')

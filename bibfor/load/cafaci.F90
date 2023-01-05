@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cafaci(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -50,8 +50,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,7 +120,7 @@ character(len=4), intent(in) :: valeType
 ! - Initializations
 !
     list_rela = '&&CAFACI.RLLISTE'
-    coef_cplx_unit = (1.d0,0.d0)
+    coef_cplx_unit = (1.d0, 0.d0)
     coef_real_unit = 1.d0
     dof_name = 'DEPL'
 
@@ -134,7 +134,7 @@ character(len=4), intent(in) :: valeType
     coef_type = 'REEL'
     if (valeType .eq. 'COMP') then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Create list of excluded keywords for using nume_node char_read_keyw
 !
@@ -147,7 +147,7 @@ character(len=4), intent(in) :: valeType
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 !
 ! - Local coordinate system (dummy)
 !
@@ -156,12 +156,12 @@ character(len=4), intent(in) :: valeType
 !
 ! - Xfem fields
 !
-    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat,&
+    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat, &
                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
-    endif
+    end if
 !
 ! - Loop on factor keyword
 !
@@ -171,54 +171,54 @@ character(len=4), intent(in) :: valeType
 !
         list_node = '&&CAFACI.LIST_NODE'
         list_elem = '&&CAFACI.LIST_ELEM'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node,&
+        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
                      nb_node)
-        call getelem(mesh, keywordfact, iocc, 'F', list_elem,&
+        call getelem(mesh, keywordfact, iocc, 'F', list_elem, &
                      nb_elem)
         call jeveuo(list_node, 'L', jlino)
         call jeveuo(list_elem, 'L', jlima)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
-                            n_max_keyword, n_keyword, keywordlist, nbterm, vale_real,&
+        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl, &
+                            n_max_keyword, n_keyword, keywordlist, nbterm, vale_real, &
                             vale_func, vale_cplx)
 !
 ! ----- Detection of DNOR, DTAN and others
 !
-        call char_read_val(keywordfact, iocc, 'DNOR', valeType, val_nb_dnor,&
+        call char_read_val(keywordfact, iocc, 'DNOR', valeType, val_nb_dnor, &
                            val_r_dnor, val_f_dnor, val_c_dnor, val_t_dnor)
-        l_dnor = val_nb_dnor.gt.0
-        call char_read_val(keywordfact, iocc, 'DTAN', valeType, val_nb_dtan,&
+        l_dnor = val_nb_dnor .gt. 0
+        call char_read_val(keywordfact, iocc, 'DTAN', valeType, val_nb_dtan, &
                            val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
-        l_dtan = val_nb_dtan.gt.0
-        l_ocmp = n_keyword.gt.0
+        l_dtan = val_nb_dtan .gt. 0
+        l_ocmp = n_keyword .gt. 0
 !
 ! ----- Some verifications
 !
         if (geomDime .eq. 3 .and. l_dtan) then
             call utmess('F', 'CHARGES2_63')
-        endif
+        end if
         if (valeType .eq. 'FONC') then
             if (l_dnor .or. l_dtan) then
-                if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
+                if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
                     call utmess('F', 'CHARGES2_6')
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ----- Normals and/or tangents
 !
         if (l_dnor) then
-            call canort(mesh, nb_elem, zi(jlima), geomDime, nb_node,&
+            call canort(mesh, nb_elem, zi(jlima), geomDime, nb_node, &
                         zi(jlino), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
-        endif
+        end if
         if (l_dtan) then
-            call canort(mesh, nb_elem, zi(jlima), geomDime, nb_node,&
+            call canort(mesh, nb_elem, zi(jlima), geomDime, nb_node, &
                         zi(jlino), 2)
             call jeveuo('&&CANORT.TANGENT', 'L', vr=tangent)
-        endif
+        end if
 !
 ! ----- If DNOR exists
 !
@@ -232,22 +232,22 @@ character(len=4), intent(in) :: valeType
 !
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*nume_node)) then
-                        call xddlim(model, dof_name, name_node, nume_node, val_r_dnor,&
-                                    val_c_dnor, val_f_dnor, valeType, ibid, list_rela,&
-                                    geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                        call xddlim(model, dof_name, name_node, nume_node, val_r_dnor, &
+                                    val_c_dnor, val_f_dnor, valeType, ibid, list_rela, &
+                                    geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno, &
                                     ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                         goto 105
-                    endif
-                endif
+                    end if
+                end if
 !
                 repe_type = geomDime
-                call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [repe_type],&
-                            repe_defi, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
+                call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [repe_type], &
+                            repe_defi, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor, &
                             coef_type, valeType, 0.d0, list_rela)
 !
 105             continue
-            enddo
-        endif
+            end do
+        end if
 !
 ! ----- If DTAN exists
 !
@@ -256,27 +256,27 @@ character(len=4), intent(in) :: valeType
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, geomDime
-                    repe_defi(idim) = tangent(geomDime* (ino-1)+idim)
+                    repe_defi(idim) = tangent(geomDime*(ino-1)+idim)
                 end do
 !
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*nume_node)) then
-                        call xddlim(model, dof_name, name_node, nume_node, val_r_dtan,&
-                                    val_c_dtan, val_f_dtan, valeType, ibid, list_rela,&
-                                    geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                        call xddlim(model, dof_name, name_node, nume_node, val_r_dtan, &
+                                    val_c_dtan, val_f_dtan, valeType, ibid, list_rela, &
+                                    geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno, &
                                     ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                         goto 115
-                    endif
-                endif
+                    end if
+                end if
 !
                 repe_type = geomDime
-                call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [geomDime],&
-                            repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
+                call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [geomDime], &
+                            repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan, &
                             coef_type, valeType, 0.d0, list_rela)
 !
 115             continue
-            enddo
-        endif
+            end do
+        end if
 !
 ! ----- If other components exist
 !
@@ -291,13 +291,13 @@ character(len=4), intent(in) :: valeType
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afddli(model, geomDime, nbcmp, zk8(inom), nume_node, name_node,&
-                            zi(jprnm-1+ (nume_node- 1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
-                            coef_type, n_keyword, keywordlist, nbterm, valeType,&
-                            vale_real, vale_func, vale_cplx, icompt, list_rela,&
-                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                call afddli(model, geomDime, nbcmp, zk8(inom), nume_node, name_node, &
+                            zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
+                            coef_type, n_keyword, keywordlist, nbterm, valeType, &
+                            vale_real, vale_func, vale_cplx, icompt, list_rela, &
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno, &
                             ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
-            enddo
+            end do
 !
 ! --------- Components doesn't exist on all nodes
 !
@@ -305,12 +305,12 @@ character(len=4), intent(in) :: valeType
                 keyword = keywordlist(i_keyword)
                 if (icompt(i_keyword) .eq. 0) then
                     call utmess('F', 'CHARGES2_45', sk=keyword)
-                endif
-            enddo
+                end if
+            end do
 !
             AS_DEALLOCATE(vi=icompt)
 !
-        endif
+        end if
 !
         call jedetr(list_node)
         call jedetr(list_elem)
@@ -331,7 +331,7 @@ character(len=4), intent(in) :: valeType
         call detrsd('CHAM_ELEM_S', ch_xfem_stat)
         call detrsd('CHAM_ELEM_S', ch_xfem_lnno)
         call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
-    endif
+    end if
 !
 999 continue
     call jedema()

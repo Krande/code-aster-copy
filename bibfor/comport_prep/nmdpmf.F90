@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmdpmf(compor, chmate)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -72,13 +72,13 @@ implicit none
 !        DE AFFE_MATERIAU / AFFE_COMPOR AVEC RCCOMP
 !
 !     CHAM_ELEM_S DE TRAVAIL
-    chs(1)='&&NMDPMF.CHS1'
-    chs(2)='&&NMDPMF.CHS2'
-    chs3  ='&&NMDPMF.CHS3'
-    chsx  ='&&NMDPMF.CHSX'
+    chs(1) = '&&NMDPMF.CHS1'
+    chs(2) = '&&NMDPMF.CHS2'
+    chs3 = '&&NMDPMF.CHS3'
+    chsx = '&&NMDPMF.CHSX'
 !
 !     ON RECUPERE LA CARTE COMPOR ==> CHAM_ELEM_S
-    call carces(compor, 'ELEM', ' ', 'V', chs(1),&
+    call carces(compor, 'ELEM', ' ', 'V', chs(1), &
                 'A', ibid)
 !
 !     VERIFICATION QU'UN COMPORTEMENT MULTI-FIBRES A ETE AFFECTE
@@ -86,18 +86,18 @@ implicit none
     call exisd('CARTE', chmate//'.COMPOR', iret)
     if (iret .eq. 0) then
         call utmess('F', 'COMPOR1_73')
-    endif
+    end if
 !
-    call carces(chmate//'.COMPOR', 'ELEM', ' ', 'V', chsx,&
+    call carces(chmate//'.COMPOR', 'ELEM', ' ', 'V', chsx, &
                 'A', ibid)
 !
 !   ON ENLEVE LA CARTE LES COMPOSANTES DE COMPOR A CONSERVER
-    call cesred(chsx, 0, [ibid], -4, licmp,&
+    call cesred(chsx, 0, [ibid], -4, licmp, &
                 'V', chs(2))
 !
 !     FUSION DES CHAM_ELEM_S + COPIE DANS "COMPOR"
     call detrsd('CARTE', compor)
-    call cesfus(2, chs, lcumu, lcoer, lcoec,&
+    call cesfus(2, chs, lcumu, lcoer, lcoec, &
                 lcoc, 'V', chs3)
     call cescar(chs3, compor, 'V')
 !

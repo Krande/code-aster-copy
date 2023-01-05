@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmveso(rb, nb, rp, np, drbdb,&
-                  drbdp, drpdb, drpdp, dp, dbeta,&
+subroutine nmveso(rb, nb, rp, np, drbdb, &
+                  drbdp, drpdb, drpdp, dp, dbeta, &
                   nr, cplan)
     implicit none
 !
@@ -38,10 +38,10 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 !-----------------------------------------------------------------------
     integer :: nmod, i, iret
     real(kind=8) :: zero, un, mun, det
-    parameter  ( nmod = 25 )
-    parameter  ( zero = 0.d0   )
-    parameter  ( un   = 1.d0   )
-    parameter  ( mun   = -1.d0   )
+    parameter(nmod=25)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(mun=-1.d0)
 !
     real(kind=8) :: drdy(nmod, nmod), r(nmod)
 !
@@ -52,36 +52,36 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 !                     DRDY = ( DRBDB, DRBDP )
 !                            ( DRPDB, DRPDP )
 !
-    call lcicma(drbdb, nb, nb, nb, nb,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drbdb, nb, nb, nb, nb, &
+                1, 1, drdy, nmod, nmod, &
                 1, 1)
-    call lcicma(drbdp, nb, np, nb, np,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drbdp, nb, np, nb, np, &
+                1, 1, drdy, nmod, nmod, &
                 1, nb+1)
-    call lcicma(drpdb, np, nb, np, nb,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drpdb, np, nb, np, nb, &
+                1, 1, drdy, nmod, nmod, &
                 nb+1, 1)
-    call lcicma(drpdp, np, np, np, np,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drpdp, np, np, np, np, &
+                1, 1, drdy, nmod, nmod, &
                 nb+1, nb+1)
 !
 !-- 1.2. INITIALISATION R = ( -RB , -RP )
 !
-    r(1:nb) = mun * rb
-    r(nb+1:nb+1+np) = mun * rp
+    r(1:nb) = mun*rb
+    r(nb+1:nb+1+np) = mun*rp
 !
 !-- 2. RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 !
     if (cplan) then
         r(3) = zero
         do i = 1, nr
-            drdy(i,3) = zero
-            drdy(3,i) = zero
+            drdy(i, 3) = zero
+            drdy(3, i) = zero
         end do
-        drdy(3,3) = un
-    endif
+        drdy(3, 3) = un
+    end if
 !
-    call mgauss('NFVP', drdy, r, nmod, nr,&
+    call mgauss('NFVP', drdy, r, nmod, nr, &
                 1, det, iret)
     call lceqvn(nb, r, dbeta)
     call lceqvn(np, r(nb+1), dp)

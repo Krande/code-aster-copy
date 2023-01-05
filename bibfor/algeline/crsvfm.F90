@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,32 +65,32 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz, re
 !
     call jeexin(solvbd, iret)
     if (iret .eq. 0) then
-      call detrsd('SOLVEUR', solvbd)
-    endif
+        call detrsd('SOLVEUR', solvbd)
+    end if
 !
 !     LA MATRICE EST-ELLE NON SYMETRIQUE ?
     call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=symk)
     if (symk .eq. 'SYMETRI') then
-        syme='OUI'
-    else if (symk.eq.'NON_SYM') then
-        syme='NON'
+        syme = 'OUI'
+    else if (symk .eq. 'NON_SYM') then
+        syme = 'NON'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    ASSERT((rank == 'L').or.(rank=='F'))
-    ASSERT((prec == 'S').or.(prec =='D'))
-    if ( rank == 'F' ) then
+    ASSERT((rank == 'L') .or. (rank == 'F'))
+    ASSERT((prec == 'S') .or. (prec == 'D'))
+    if (rank == 'F') then
         kacmum = 'AUTO'
-    elseif ( rank == 'L') then
+    elseif (rank == 'L') then
         kacmum = 'LR'
-    endif
+    end if
 
-    if ( prec == 'S' ) then
+    if (prec == 'S') then
         mixpre = 'OUI'
-    elseif ( prec == 'D') then
-        mixpre ='NON'
-    endif
+    elseif (prec == 'D') then
+        mixpre = 'NON'
+    end if
 !
     zslvk = sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')
@@ -110,7 +110,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz, re
         zk24(jslvk-1+3) = 'NONSYM'
     else
         zk24(jslvk-1+3) = 'SYMGEN'
-    endif
+    end if
 !     RENUM
     zk24(jslvk-1+4) = renum
 !     ACCELERATION

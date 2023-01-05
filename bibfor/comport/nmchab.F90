@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
-                  deps, sigm, vim, option, sigp,&
+subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, crit, instam, instap, &
+                  deps, sigm, vim, option, sigp, &
                   vip, dsidep, iret)
 ! person_in_charge: jean-michel.proix at edf.fr
 !.======================================================================
@@ -92,15 +92,15 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(3), option
-    common/fchab/mat,pm,sigedv,epspm,alfam,alfa2m,deuxmu,rpvm,rpvp,&
-     &    qm,qp,ksim,ksip,dt,n1,n2,depsp,&
-     &    beta1,beta2,ndimsi,nbvar,visc,memo,idelta
+    common/fchab/mat, pm, sigedv, epspm, alfam, alfa2m, deuxmu, rpvm, rpvp,&
+     &    qm, qp, ksim, ksip, dt, n1, n2, depsp,&
+     &    beta1, beta2, ndimsi, nbvar, visc, memo, idelta
     integer :: ndimsi, i, niter, visc, memo, idelta
-    data    kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
-    iret=0
-    call nmcham(fami, kpg, ksp, imate, compor,&
-                matel, mat, nbvar, memo, visc,&
+    iret = 0
+    call nmcham(fami, kpg, ksp, imate, compor, &
+                matel, mat, nbvar, memo, visc, &
                 idelta, coef)
 !
 !     NBVARI=2+6*NBVAR+MEMO*14
@@ -129,11 +129,11 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
         delta1 = mat(17)
         delta2 = mat(18)
     else
-        delta1=1.d0
-        delta2=1.d0
-    endif
-    n1=1.d0
-    n2=1.d0
+        delta1 = 1.d0
+        delta2 = 1.d0
+    end if
+    n1 = 1.d0
+    n2 = 1.d0
 !
 ! --- INITIALISATIONS :
 !
@@ -141,15 +141,15 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     dp = 0.d0
     call r8inir(6, 0.d0, depsp, 1)
     seuil = 0.d0
-    dt = instap - instam
+    dt = instap-instam
     pm = vim(1)
     plast = vim(2)
-    niter=0
+    niter = 0
     if (memo .eq. 0) then
-        rpm = rinf + (r0-rinf)*exp(-b*pm)
-    else if (memo.eq.1) then
+        rpm = rinf+(r0-rinf)*exp(-b*pm)
+    else if (memo .eq. 1) then
         rpvm = vim(15)
-        rpm = rpvm + r0
+        rpm = rpvm+r0
         qm = vim(16)
         call r8inir(6, 0.d0, ksim, 1)
         call r8inir(6, 0.d0, ksip, 1)
@@ -157,12 +157,12 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
         call r8inir(6, 0.d0, epspp, 1)
         call dcopy(ndimsi, vim(17), 1, ksim, 1)
         call dcopy(ndimsi, vim(23), 1, epspm, 1)
-        qp=qm
+        qp = qm
         call dcopy(ndimsi, ksim, 1, ksip, 1)
         rpvp = rpvm
-    endif
-    cm = cinf * (un + (k-un)*exp(-w*pm))
-    c2m = c2inf * (un + (k-un)*exp(-w*pm))
+    end if
+    cm = cinf*(un+(k-un)*exp(-w*pm))
+    c2m = c2inf*(un+(k-un)*exp(-w*pm))
 !
     call dcopy(ndimsi, vim(3), 1, alfam, 1)
     call dscal(ndimsi-3, rac2, alfam(4), 1)
@@ -171,37 +171,37 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
         call dscal(ndimsi-3, rac2, alfa2m(4), 1)
     else
         call r8inir(6, 0.d0, alfa2m, 1)
-    endif
+    end if
 !
 ! --- CALCUL DE DEPSMO ET DEPSDV :
     depsmo = 0.d0
     call dcopy(ndimsi, deps, 1, depsth, 1)
-    call daxpy(3, -coef, kron, 1, depsth,&
+    call daxpy(3, -coef, kron, 1, depsth, &
                1)
-    depsmo=trace(3,depsth)/3.d0
+    depsmo = trace(3, depsth)/3.d0
     call dcopy(ndimsi, depsth, 1, depsdv, 1)
-    call daxpy(3, -depsmo, kron, 1, depsdv,&
+    call daxpy(3, -depsmo, kron, 1, depsdv, &
                1)
 !
 !       -------------------------------------------------
-    sigmmo=trace(3,sigm)/3.d0
+    sigmmo = trace(3, sigm)/3.d0
     do i = 1, ndimsi
-        sigmp(i)= deuxmu/deumum*(sigm(i)-sigmmo*kron(i)) + troisk/&
-        troikm*sigmmo*kron(i)
+        sigmp(i) = deuxmu/deumum*(sigm(i)-sigmmo*kron(i))+troisk/ &
+                   troikm*sigmmo*kron(i)
     end do
 !     SIGMMO A PU CHANGER A CAUSE DE TROISK/TROIKM
-    sigmmo=trace(3,sigmp)/3.d0
+    sigmmo = trace(3, sigmp)/3.d0
 !
 ! --- CALCUL DU SEUIL :
     sieleq = 0.d0
     do i = 1, ndimsi
-        sigmdv(i) = sigmp(i)- sigmmo*kron(i)
-        sigedv(i) = sigmdv(i) + deuxmu * depsdv(i)
+        sigmdv(i) = sigmp(i)-sigmmo*kron(i)
+        sigedv(i) = sigmdv(i)+deuxmu*depsdv(i)
         sigel(i) = sigedv(i)-cm*alfam(i)/1.5d0-c2m*alfa2m(i)/1.5d0
-        sieleq = sieleq + sigel(i)*sigel(i)
+        sieleq = sieleq+sigel(i)*sigel(i)
     end do
     sieleq = sqrt(1.5d0*sieleq)
-    seuil = sieleq - rpm
+    seuil = sieleq-rpm
 !
 ! --- CALCUL DE SIGP,VIP
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -216,97 +216,97 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
             call nmchdp(crit, seuil, dp, iret, niter)
             if (iret .gt. 0) goto 999
             plast = un
-        endif
+        end if
 !
-        pp = pm + dp
-        gammap = gamma0 * (ainf + (un-ainf)*exp(-b*pp))
-        gamm2p = gamm20 * (ainf + (un-ainf)*exp(-b*pp))
+        pp = pm+dp
+        gammap = gamma0*(ainf+(un-ainf)*exp(-b*pp))
+        gamm2p = gamm20*(ainf+(un-ainf)*exp(-b*pp))
 !
         if (memo .eq. 1) then
             call dcopy(ndimsi, epspm, 1, epspp, 1)
-            call daxpy(ndimsi, 1.d0, depsp, 1, epspp,&
+            call daxpy(ndimsi, 1.d0, depsp, 1, epspp, &
                        1)
-        endif
+        end if
 !
         do i = 1, ndimsi
             if (cinf .ne. 0.d0) then
                 dalfa(i) = (n1*depsp(i)-gammap*delta1*dp*alfam(i))
                 dalfa(i) = dalfa(i)/(un+gammap*delta1*dp)
             else
-                dalfa(i)=0.d0
-            endif
+                dalfa(i) = 0.d0
+            end if
             if (nbvar .eq. 2) then
                 if (c2inf .ne. 0.d0) then
-                    dalfa2(i) = (n2*depsp(i)-gamm2p*delta2*dp*alfa2m( i))
-                    dalfa2(i) = dalfa2(i) /(un+gamm2p*delta2*dp)
+                    dalfa2(i) = (n2*depsp(i)-gamm2p*delta2*dp*alfa2m(i))
+                    dalfa2(i) = dalfa2(i)/(un+gamm2p*delta2*dp)
                 else
-                    dalfa2(i)=0.d0
-                endif
-            endif
+                    dalfa2(i) = 0.d0
+                end if
+            end if
         end do
 !
         do i = 1, ndimsi
-            alfa(i) = alfam(i) + dalfa(i)
+            alfa(i) = alfam(i)+dalfa(i)
             if (nbvar .eq. 2) then
-                alfa2(i) = alfa2m(i) + dalfa2(i)
-            endif
-            sigpdv(i) = sigedv(i) - deuxmu * depsp(i)
-            sigp(i) = sigpdv(i) + (sigmmo + troisk*depsmo)*kron(i)
+                alfa2(i) = alfa2m(i)+dalfa2(i)
+            end if
+            sigpdv(i) = sigedv(i)-deuxmu*depsp(i)
+            sigp(i) = sigpdv(i)+(sigmmo+troisk*depsmo)*kron(i)
         end do
 !
-    endif
+    end if
 !
 ! ---- CALCUL DE LA MATRICE DE COMPORTEMENT TANGENTE COHERENTE DSIDEP
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
-        call nmchat(matel, mat, nbvar, memo, visc,&
-                    plast, sigmdv, depsdv, pm, dp,&
-                    ndimsi, dt, rpvp, qp, vim,&
-                    idelta, n1, n2, beta1, beta2,&
+        call nmchat(matel, mat, nbvar, memo, visc, &
+                    plast, sigmdv, depsdv, pm, dp, &
+                    ndimsi, dt, rpvp, qp, vim, &
+                    idelta, n1, n2, beta1, beta2, &
                     dsidep)
 !
-    endif
+    end if
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        vip(1)=pp
-        vip(2)=niter
+        vip(1) = pp
+        vip(2) = niter
         call dcopy(ndimsi, alfa, 1, vip(3), 1)
         call dscal(ndimsi-3, unrac2, vip(6), 1)
         if (nbvar .eq. 2) then
             call dcopy(ndimsi, alfa2, 1, vip(9), 1)
             call dscal(ndimsi-3, unrac2, vip(12), 1)
-        endif
+        end if
         if (memo .eq. 1) then
-            vip(15)=rpvp
-            vip(16)=qp
+            vip(15) = rpvp
+            vip(16) = qp
             call dcopy(ndimsi, ksip, 1, vip(17), 1)
             call dcopy(ndimsi, epspp, 1, vip(23), 1)
-        endif
-    endif
+        end if
+    end if
 !
 !     Critere de radialite
     if (option(1:9) .ne. 'RIGI_MECA') then
         if (crit(10) .gt. 0.d0) then
 !           CALCUL DE X1, X2
-            cp =cinf * (un + (k-un)*exp(-w*pp))
-            c2p =c2inf *(un + (k-un)*exp(-w*pp))
+            cp = cinf*(un+(k-un)*exp(-w*pp))
+            c2p = c2inf*(un+(k-un)*exp(-w*pp))
             call dcopy(ndimsi, alfam, 1, xm, 1)
             call dcopy(ndimsi, alfa, 1, xp, 1)
             call dscal(ndimsi, cm/1.5d0, xm, 1)
             call dscal(ndimsi, cp/1.5d0, xp, 1)
             if (nbvar .eq. 2) then
-                call daxpy(ndimsi, c2m/1.5d0, alfa2m, 1, xm,&
+                call daxpy(ndimsi, c2m/1.5d0, alfa2m, 1, xm, &
                            1)
-                call daxpy(ndimsi, c2p/1.5d0, alfa2, 1, xp,&
+                call daxpy(ndimsi, c2p/1.5d0, alfa2, 1, xp, &
                            1)
-            endif
-            call radial(ndimsi, sigm, sigp, vim(2), vip(2),&
+            end if
+            call radial(ndimsi, sigm, sigp, vim(2), vip(2), &
                         1, xm, xp, radi)
 !
             if (radi .gt. crit(10)) then
-                iret=2
-            endif
-        endif
-    endif
+                iret = 2
+            end if
+        end if
+    end if
 !
 999 continue
 end subroutine

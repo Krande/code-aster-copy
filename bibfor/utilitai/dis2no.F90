@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,6 @@ function dis2no(geom, ino1, ino2)
         a(i) = geom(3*(ino1-1)+i)
         b(i) = geom(3*(ino2-1)+i)
     end do
-    dis2no = padist(3,a,b)
+    dis2no = padist(3, a, b)
 !
 end function

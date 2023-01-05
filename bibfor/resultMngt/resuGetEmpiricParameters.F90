@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuGetEmpiricParameters(resultType  , fieldNb   , fieldList    ,&
+subroutine resuGetEmpiricParameters(resultType, fieldNb, fieldList, &
                                     empiNumePlan, empiSnapNb, empiFieldType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/getvis.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: resultType
-integer, intent(in) :: fieldNb
-character(len=16), intent(in) :: fieldList(100)
-integer, intent(out) :: empiNumePlan, empiSnapNb
-character(len=24), intent(out) :: empiFieldType
+    character(len=16), intent(in) :: resultType
+    integer, intent(in) :: fieldNb
+    character(len=16), intent(in) :: fieldList(100)
+    integer, intent(out) :: empiNumePlan, empiSnapNb
+    character(len=24), intent(out) :: empiFieldType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,8 +52,8 @@ character(len=24), intent(out) :: empiFieldType
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    empiNumePlan  = 0
-    empiSnapNb    = 0
+    empiNumePlan = 0
+    empiSnapNb = 0
     empiFieldType = ' '
 !
 ! - Get
@@ -61,13 +61,13 @@ character(len=24), intent(out) :: empiFieldType
     if (resultType .eq. 'MODE_EMPI') then
         if (fieldNb .ne. 1) then
             call utmess('F', 'RESULT2_18')
-        endif
+        end if
         empiFieldType = fieldList(1)
         call getvis(' ', 'NUME_PLAN', scal=empiNumePlan, nbret=nbOcc)
         if (nbOcc .eq. 0) then
             empiNumePlan = 0
-        endif
+        end if
         empiSnapNb = 0
-    endif
+    end if
 !
 end subroutine

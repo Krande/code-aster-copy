@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 
 subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 !
-character(len=*), intent(in) :: modelZ
-character(len=19), intent(in) :: ligrel
-character(len=19), intent(in) :: chgeom
-character(len=19), intent(in) :: chgaus
+    character(len=*), intent(in) :: modelZ
+    character(len=19), intent(in) :: ligrel
+    character(len=19), intent(in) :: chgeom
+    character(len=19), intent(in) :: chgaus
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,30 +48,30 @@ character(len=19), intent(in) :: chgaus
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = chgeom
-    nbchin    = 1
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom
+    nbchin = 1
 !   si le modele comporte des elements X-FEM, on ajoute les
 !   champs ad hoc
     call dismoi('NB_FISS_XFEM', modelZ, 'MODELE', repi=nfiss)
-    if (nfiss.gt.0) then
-         lpain(2) = 'PPINTTO'
-         lchin(2) = modelZ(1:8)//'.TOPOSE.PIN'
-         lpain(3) = 'PPMILTO'
-         lchin(3) = modelZ(1:8)//'.TOPOSE.PMI'
-         lpain(4) = 'PCNSETO'
-         lchin(4) = modelZ(1:8)//'.TOPOSE.CNS'
-         lpain(5) = 'PLONCHA'
-         lchin(5) = modelZ(1:8)//'.TOPOSE.LON'
-         nbchin   = 5
-    endif
+    if (nfiss .gt. 0) then
+        lpain(2) = 'PPINTTO'
+        lchin(2) = modelZ(1:8)//'.TOPOSE.PIN'
+        lpain(3) = 'PPMILTO'
+        lchin(3) = modelZ(1:8)//'.TOPOSE.PMI'
+        lpain(4) = 'PCNSETO'
+        lchin(4) = modelZ(1:8)//'.TOPOSE.CNS'
+        lpain(5) = 'PLONCHA'
+        lchin(5) = modelZ(1:8)//'.TOPOSE.LON'
+        nbchin = 5
+    end if
 !
     lpaout(1) = 'PCOORPG'
     lchout(1) = chgaus
-    option    = 'COOR_ELGA'
+    option = 'COOR_ELGA'
 
-    call calcul('S', option, ligrel, nbchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrel, nbchin, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 end subroutine

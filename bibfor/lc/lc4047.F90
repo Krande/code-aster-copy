@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,39 +17,39 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc4047(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod,&
+subroutine lc4047(fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, &
                   icomp, nvi, dsidep, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/lcbrgm.h"
 #include "asterfort/assert.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-integer, intent(in) :: ndim
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam
-real(kind=8), intent(in) :: instap
-real(kind=8), intent(in) :: epsm(*)
-real(kind=8), intent(in) :: deps(*)
-real(kind=8), intent(in) :: sigm(*)
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(out) :: sigp(*)
-real(kind=8), intent(out) :: vip(*)
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: icomp
-integer, intent(in) :: nvi
-real(kind=8), intent(out) :: dsidep(*)
-integer, intent(out) :: codret
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(in) :: epsm(*)
+    real(kind=8), intent(in) :: deps(*)
+    real(kind=8), intent(in) :: sigm(*)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(out) :: sigp(*)
+    real(kind=8), intent(out) :: vip(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(*)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,8 +61,8 @@ integer, intent(out) :: codret
 !
     ASSERT(typmod(2) .eq. 'GRADSIGM')
 !
-    call lcbrgm(ndim, typmod, imate, epsm, deps,&
-                vim, option, sigp, vip, dsidep,&
+    call lcbrgm(ndim, typmod, imate, epsm, deps, &
+                vim, option, sigp, vip, dsidep, &
                 codret)
 !
 end subroutine

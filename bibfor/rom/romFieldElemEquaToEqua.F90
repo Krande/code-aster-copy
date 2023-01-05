@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romFieldElemEquaToEqua(fieldA, fieldB, equaAToB)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -32,8 +32,8 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utchdl.h"
 !
-type(ROM_DS_Field), intent(in) :: fieldA, fieldB
-integer, pointer :: equaAToB(:)
+    type(ROM_DS_Field), intent(in) :: fieldA, fieldB
+    integer, pointer :: equaAToB(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,24 +71,24 @@ integer, pointer :: equaAToB(:)
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM11_37')
-    endif
+    end if
 !
 ! - Get parameters
 !
     fieldRefeA = fieldA%fieldRefe
     fieldSuppA = fieldA%fieldSupp
-    nbEquaA    = fieldA%nbEqua
+    nbEquaA = fieldA%nbEqua
     ASSERT(fieldSuppA .eq. 'ELGA')
     fieldRefeB = fieldB%fieldRefe
     fieldSuppB = fieldB%fieldSupp
-    nbEquaB    = fieldB%nbEqua
-    nbCmpName  = fieldB%nbCmpName
+    nbEquaB = fieldB%nbEqua
+    nbCmpName = fieldB%nbCmpName
     ASSERT(fieldSuppB .eq. 'ELGA')
-    call dismoi('NOM_LIGREL', fieldRefeB(1:19), 'CHAMP', repk = ligrName)
-    call dismoi('NOM_MAILLA', ligrName, 'LIGREL', repk = mesh)
-    call dismoi('NB_GREL', ligrName, 'LIGREL', repi = nbGrel)
-    call jeveuo(fieldRefeB(1:19)//'.CELD', 'L', vi = celd)
-    call jeveuo(fieldRefeB(1:19)//'.CELV', 'L', vr = celv)
+    call dismoi('NOM_LIGREL', fieldRefeB(1:19), 'CHAMP', repk=ligrName)
+    call dismoi('NOM_MAILLA', ligrName, 'LIGREL', repk=mesh)
+    call dismoi('NB_GREL', ligrName, 'LIGREL', repi=nbGrel)
+    call jeveuo(fieldRefeB(1:19)//'.CELD', 'L', vi=celd)
+    call jeveuo(fieldRefeB(1:19)//'.CELV', 'L', vr=celv)
 !
 ! - Loop on field B
 !
@@ -102,7 +102,7 @@ integer, pointer :: equaAToB(:)
         nbElem = celd(celd(4+iGrel)+1)
 
 ! ----- Get number of points (Gauss points) for each such element
-        call jeveuo(jexnum('&CATA.TE.MODELOC', locaNume), 'L', vi = modloc)
+        call jeveuo(jexnum('&CATA.TE.MODELOC', locaNume), 'L', vi=modloc)
 
 ! ----- Check: ELGA field only with constant number of components on each point
         ASSERT(modloc(1) == 3)
@@ -111,7 +111,7 @@ integer, pointer :: equaAToB(:)
         nbPt = modloc(4)
 
 ! ----- Get list of elements
-        call jeveuo(jexnum(ligrName(1:19)//'.LIEL', iGrel), 'L', vi = liel)
+        call jeveuo(jexnum(ligrName(1:19)//'.LIEL', iGrel), 'L', vi=liel)
 
         do iElem = 1, nbElem
 ! --------- Current element
@@ -127,12 +127,12 @@ integer, pointer :: equaAToB(:)
                     cmpName = fieldB%listCmpName(iCmpName)
 
 ! ----------------- Get the equation number for this component in field A
-                    call utchdl(fieldRefeA, mesh, elemName, ' ', iPt,&
-                                1, iCmpName, cmpName, numeEquaA, nogranz = ASTER_TRUE)
+                    call utchdl(fieldRefeA, mesh, elemName, ' ', iPt, &
+                                1, iCmpName, cmpName, numeEquaA, nogranz=ASTER_TRUE)
 
 ! ----------------- Set equation numbering
                     ASSERT(numeEquaA .gt. 0)
-                    numeEquaB = numeEquaB + 1
+                    numeEquaB = numeEquaB+1
                     ASSERT(numeEquaA .le. nbEquaA)
                     ASSERT(numeEquaB .le. nbEquaB)
                     equaAToB(numeEquaA) = numeEquaB

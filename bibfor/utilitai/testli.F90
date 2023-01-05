@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@ subroutine testli(ima, numa, nma, kma, ierr)
     integer :: ierr, ima, jma, kma, nma
     integer :: numa(nma)
 !-----------------------------------------------------------------------
-    ierr=0
+    ierr = 0
     do jma = 1, nma
-        kma=numa(jma)
+        kma = numa(jma)
         if (ima .eq. kma) then
-            ierr=1
+            ierr = 1
             goto 20
-        endif
+        end if
     end do
- 20 continue
+20  continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,19 +42,19 @@ function sdeiso(vect)
 ! ----------------------------------------------------------------------
 !
     integer :: zslvk, zslvr, zslvi
-    parameter (zslvk=20,zslvr=15 ,zslvi=15)
+    parameter(zslvk=20, zslvr=15, zslvi=15)
 !
 ! ----------------------------------------------------------------------
 !
 !
     if (vect .eq. 'ZSLVK') then
         sdeiso = zslvk
-    else if (vect.eq.'ZSLVR') then
+    else if (vect .eq. 'ZSLVR') then
         sdeiso = zslvr
-    else if (vect.eq.'ZSLVI') then
+    else if (vect .eq. 'ZSLVI') then
         sdeiso = zslvi
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end function

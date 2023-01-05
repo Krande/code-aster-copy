@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dltini(lcrea, nume, result, depini, vitini,&
-                  accini, fexini, famini, fliini, neq,&
+subroutine dltini(lcrea, nume, result, depini, vitini, &
+                  accini, fexini, famini, fliini, neq, &
                   numedd, inchac, ds_energy)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,8 +42,8 @@ implicit none
 #include "asterfort/vtcreb.h"
 #include "blas/dcopy.h"
 !
-character(len=8), intent(in) :: result
-type(NL_DS_Energy), intent(out) :: ds_energy
+    character(len=8), intent(in) :: result
+    type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ type(NL_DS_Energy), intent(out) :: ds_energy
 ! - Energy management
     call nonlinDSEnergyCreate(ds_energy)
     call getfac('ENERGIE', iret)
-    ds_energy%l_comp  = iret.gt.0
+    ds_energy%l_comp = iret .gt. 0
     ds_energy%command = 'DYNA_VIBRA'
     call nonlinDSEnergyInit(result, ds_energy)
 
@@ -98,54 +98,54 @@ type(NL_DS_Energy), intent(out) :: ds_energy
         call utmess('I', 'DYNAMIQUE_78', sk=reuse)
 !
 !        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
-        call rsexch(' ', reuse, 'DEPL', nume, champ,&
+        call rsexch(' ', reuse, 'DEPL', nume, champ, &
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'DYNALINE1_25')
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, depini, 1)
-        endif
-        call rsexch(' ', reuse, 'VITE', nume, champ,&
+        end if
+        call rsexch(' ', reuse, 'VITE', nume, champ, &
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'DYNALINE1_26')
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, vitini, 1)
-        endif
-        call rsexch(' ', reuse, 'ACCE', nume, champ,&
+        end if
+        call rsexch(' ', reuse, 'ACCE', nume, champ, &
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'DYNALINE1_27')
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, accini, 1)
-        endif
-        call rsexch(' ', reuse, 'FORC_EXTE', nume, champ,&
+        end if
+        call rsexch(' ', reuse, 'FORC_EXTE', nume, champ, &
                     iret)
         if (iret .eq. 0) then
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, fexini, 1)
-        endif
-        call rsexch(' ', reuse, 'FORC_AMOR', nume, champ,&
+        end if
+        call rsexch(' ', reuse, 'FORC_AMOR', nume, champ, &
                     iret)
         if (iret .eq. 0) then
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, famini, 1)
-        endif
-        call rsexch(' ', reuse, 'FORC_LIAI', nume, champ,&
+        end if
+        call rsexch(' ', reuse, 'FORC_LIAI', nume, champ, &
                     iret)
         if (iret .eq. 0) then
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, fliini, 1)
-        endif
+        end if
 !
 !        --- CREE-T-ON UNE NOUVELLE STRUCTURE ? ---
         if (result .eq. reuse) then
             lcrea = .false.
             call rsrusd(result, nume+1)
-        endif
+        end if
 !====
 ! 4. --- RECUPERATION DES CONDITIONS INITIALES ---
 !====
@@ -154,7 +154,7 @@ type(NL_DS_Energy), intent(out) :: ds_energy
         call jeexin(result(1:8)//'           .REFD', ire)
         if (ire .gt. 0) then
             lcrea = .false.
-        endif
+        end if
 !
         nume = 0
         call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=champ, nbret=ndi)
@@ -162,9 +162,9 @@ type(NL_DS_Energy), intent(out) :: ds_energy
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = '&&COMDLT.DEPINI'
-            call vtcreb(cham2, 'V', 'R',&
-                        nume_ddlz = numedd,&
-                        nb_equa_outz = neq)
+            call vtcreb(cham2, 'V', 'R', &
+                        nume_ddlz=numedd, &
+                        nb_equa_outz=neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, depini, 1)
@@ -178,9 +178,9 @@ type(NL_DS_Energy), intent(out) :: ds_energy
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = '&&COMDLT.VITINI'
-            call vtcreb(cham2, 'V', 'R',&
-                        nume_ddlz = numedd,&
-                        nb_equa_outz = neq)
+            call vtcreb(cham2, 'V', 'R', &
+                        nume_ddlz=numedd, &
+                        nb_equa_outz=neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, vitini, 1)
@@ -188,7 +188,7 @@ type(NL_DS_Energy), intent(out) :: ds_energy
         else
             vit = 'nul'
         end if
-        call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep,vit])
+        call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep, vit])
 
 !
         call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=champ, nbret=nai)
@@ -196,9 +196,9 @@ type(NL_DS_Energy), intent(out) :: ds_energy
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 0
             cham2 = '&&COMDLT.ACCINI'
-            call vtcreb(cham2, 'V', 'R',&
-                        nume_ddlz = numedd,&
-                        nb_equa_outz = neq)
+            call vtcreb(cham2, 'V', 'R', &
+                        nume_ddlz=numedd, &
+                        nb_equa_outz=neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, accini, 1)
@@ -207,11 +207,11 @@ type(NL_DS_Energy), intent(out) :: ds_energy
             call utmess('I', 'DYNAMIQUE_84', sk='calculee')
         end if
 !
-    endif
+    end if
 !
     if (ds_energy%l_comp) then
         call utmess('I', 'ETATINIT_5')
-    endif
+    end if
 !
     call jedema()
 end subroutine

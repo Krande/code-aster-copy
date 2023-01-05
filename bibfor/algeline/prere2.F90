@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prere2(solveu, base, iret, matpre, matass,&
+subroutine prere2(solveu, base, iret, matpre, matass, &
                   npvneg, istop)
     implicit none
 #include "jeveux.h"
@@ -71,8 +71,8 @@ subroutine prere2(solveu, base, iret, matpre, matass,&
 !----------------------------------------------------------------------
     call jemarq()
 !
-    matas1=matass
-    solve1=solveu
+    matas1 = matass
+    solve1 = solveu
 !
 !   1. CALCUL DE KELLAG :
 !   -------------------------------------
@@ -81,14 +81,14 @@ subroutine prere2(solveu, base, iret, matpre, matass,&
 !
 !   2. SI ELIM_LAGR /= 'OUI', ON APPELLE SIMPLEMENT PRERE1 :
 !   --------------------------------------------------------
-    if (.not.(kellag.eq.'OUI')) then
-        call prere1(solve1, base, iret, matpre, matas1,&
+    if (.not. (kellag .eq. 'OUI')) then
+        call prere1(solve1, base, iret, matpre, matas1, &
                     npvneg, istop)
     else
-        call elg_preres(solve1, base, iret, matpre, matas1,&
+        call elg_preres(solve1, base, iret, matpre, matas1, &
                         npvneg, istop)
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

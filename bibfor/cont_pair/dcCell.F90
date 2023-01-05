@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 
 subroutine dcCell(elem_code, elin_sub, elin_nbnode, elin_nbsub, elin_code)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
 !
     character(len=8), intent(in) :: elem_code
-    integer, intent(out) :: elin_sub(3,8)
+    integer, intent(out) :: elin_sub(3, 8)
     integer, intent(out) :: elin_nbnode(8)
     integer, intent(out) :: elin_nbsub
-    character(len=8),intent(out) :: elin_code
+    character(len=8), intent(out) :: elin_code
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,55 +60,55 @@ implicit none
     elin_nbsub = 0
 !
     if (elem_code .eq. 'SE2') then
-        elin_code      = 'SE2'
-        elin_nbsub     = 1
+        elin_code = 'SE2'
+        elin_nbsub = 1
         elin_nbnode(1) = 2
-        elin_sub(1:2,1)  = [1,2]
+        elin_sub(1:2, 1) = [1, 2]
     elseif (elem_code .eq. 'SE3') then
-        elin_code      = 'SE2'
-        elin_nbsub     = 2
+        elin_code = 'SE2'
+        elin_nbsub = 2
         elin_nbnode(1) = 2
-        elin_sub(1:2,1)  = [1,3]
+        elin_sub(1:2, 1) = [1, 3]
         elin_nbnode(2) = 2
-        elin_sub(1:2,2)  = [3,2]
+        elin_sub(1:2, 2) = [3, 2]
     elseif (elem_code .eq. 'TR3') then
-        elin_code      = 'TR3'
-        elin_nbsub     = 1
+        elin_code = 'TR3'
+        elin_nbsub = 1
         elin_nbnode(1) = 3
-        elin_sub(1:3,1)  = [1,2,3]
+        elin_sub(1:3, 1) = [1, 2, 3]
     elseif (elem_code .eq. 'TR6' .or. elem_code .eq. 'TR7') then
-        elin_code      = 'TR3'
-        elin_nbsub     = 4
+        elin_code = 'TR3'
+        elin_nbsub = 4
         elin_nbnode(1) = 3
-        elin_sub(1:3,1)  = [1,4,6]
+        elin_sub(1:3, 1) = [1, 4, 6]
         elin_nbnode(2) = 3
-        elin_sub(1:3,2)  = [4,2,5]
+        elin_sub(1:3, 2) = [4, 2, 5]
         elin_nbnode(3) = 3
-        elin_sub(1:3,3)  = [5,3,6]
+        elin_sub(1:3, 3) = [5, 3, 6]
         elin_nbnode(4) = 3
-        elin_sub(1:3,4)  = [6,5,3]
+        elin_sub(1:3, 4) = [6, 5, 3]
     elseif (elem_code .eq. 'QU4') then
-        elin_code      = 'TR3'
-        elin_nbsub     = 2
+        elin_code = 'TR3'
+        elin_nbsub = 2
         elin_nbnode(1) = 3
-        elin_sub(1:3,1)  = [1,2,3]
+        elin_sub(1:3, 1) = [1, 2, 3]
         elin_nbnode(2) = 3
-        elin_sub(1:3,2)  = [3,4,1]
+        elin_sub(1:3, 2) = [3, 4, 1]
     elseif (elem_code .eq. 'QU8' .or. elem_code .eq. 'QU9') then
-        elin_code      = 'TR3'
-        elin_nbsub     = 6
+        elin_code = 'TR3'
+        elin_nbsub = 6
         elin_nbnode(1) = 3
-        elin_sub(1:3,1)  = [1,5,8]
+        elin_sub(1:3, 1) = [1, 5, 8]
         elin_nbnode(2) = 3
-        elin_sub(1:3,2)  = [5,2,6]
+        elin_sub(1:3, 2) = [5, 2, 6]
         elin_nbnode(3) = 3
-        elin_sub(1:3,3)  = [6,3,7]
+        elin_sub(1:3, 3) = [6, 3, 7]
         elin_nbnode(4) = 3
-        elin_sub(1:3,4)  = [7,4,8]
+        elin_sub(1:3, 4) = [7, 4, 8]
         elin_nbnode(5) = 3
-        elin_sub(1:3,5)  = [8,5,6]
+        elin_sub(1:3, 5) = [8, 5, 6]
         elin_nbnode(6) = 3
-        elin_sub(1:3,6)  = [6,7,8]
+        elin_sub(1:3, 6) = [6, 7, 8]
     else
         ASSERT(ASTER_FALSE)
     end if

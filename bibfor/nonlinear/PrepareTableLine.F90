@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine PrepareTableLine(table, col_sep, table_line)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-type(NL_DS_Table), intent(in) :: table
-character(len=1), intent(in) :: col_sep
-character(len=512), intent(out) :: table_line
+    type(NL_DS_Table), intent(in) :: table
+    character(len=1), intent(in) :: col_sep
+    character(len=512), intent(out) :: table_line
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,24 +52,24 @@ character(len=512), intent(out) :: table_line
 !
 ! - Get parameters
 !
-    nb_cols         = table%nb_cols
-    line_width      = table%width
+    nb_cols = table%nb_cols
+    line_width = table%width
     ASSERT(line_width .le. 512)
     ASSERT(nb_cols .le. table%nb_cols_maxi)
 !
 ! - Prepare line
 !
     table_line(1:1) = col_sep
-    total_width     = 1
+    total_width = 1
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            width       = 16
-            total_width = total_width + width + 1
-            ASSERT(total_width + width + 1 .le. 512)
+            width = 16
+            total_width = total_width+width+1
+            ASSERT(total_width+width+1 .le. 512)
             table_line(total_width:total_width) = col_sep
-        endif
+        end if
     end do
 !
-    ASSERT(total_width.eq.line_width)
+    ASSERT(total_width .eq. line_width)
 !
 end subroutine

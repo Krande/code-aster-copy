@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,32 +44,32 @@ function idensd(typesd, sd1, sd2)
 ! ----------------------------------------------------------------------
     call jemarq()
     typ2sd = typesd
-    idensd=.true.
+    idensd = .true.
 !
     if (sd1 .eq. sd2) goto 999
 !
 !
     if (typ2sd .eq. 'PROF_CHNO') then
 !     --------------------------------
-        pchn1=sd1
-        pchn2=sd2
-        iden=idenob(pchn1//'.LILI',pchn2//'.LILI')
-        if (.not.iden) goto 998
-        iden=idenob(pchn1//'.PRNO',pchn2//'.PRNO')
-        if (.not.iden) goto 998
-        iden=idenob(pchn1//'.DEEQ',pchn2//'.DEEQ')
-        if (.not.iden) goto 998
-        iden=idenob(pchn1//'.NUEQ',pchn2//'.NUEQ')
-        if (.not.iden) goto 998
+        pchn1 = sd1
+        pchn2 = sd2
+        iden = idenob(pchn1//'.LILI', pchn2//'.LILI')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.PRNO', pchn2//'.PRNO')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.DEEQ', pchn2//'.DEEQ')
+        if (.not. iden) goto 998
+        iden = idenob(pchn1//'.NUEQ', pchn2//'.NUEQ')
+        if (.not. iden) goto 998
 !
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
-    endif
+    end if
 !
     goto 999
 998 continue
-    idensd=.false.
+    idensd = .false.
 !
 999 continue
     call jedema()

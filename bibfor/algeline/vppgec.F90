@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vppgec(lmasse, lamor, lraide, masseg, amorg,&
+subroutine vppgec(lmasse, lamor, lraide, masseg, amorg, &
                   raideg, vect, neq, nbvect, iddl)
     implicit none
 #include "jeveux.h"
@@ -49,38 +49,38 @@ subroutine vppgec(lmasse, lamor, lraide, masseg, amorg,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data  vecaux/'&&VPPGEN.VECTEUR.AUX0'/
-    data  vecau1/'&&VPPGEN.VECTEUR.AUX1'/
+    data vecaux/'&&VPPGEN.VECTEUR.AUX0'/
+    data vecau1/'&&VPPGEN.VECTEUR.AUX1'/
 !     ------------------------------------------------------------------
     call jemarq()
     call wkvect(vecaux, 'V V C', neq, laux)
     call wkvect(vecau1, 'V V C', neq, laux1)
-    laux = laux - 1
-    laux1= laux1- 1
+    laux = laux-1
+    laux1 = laux1-1
 !     ------------------------------------------------------------------
 !     ----------------- CALCUL DE LA MASSE GENERALISEE -----------------
 !     ------------------------------------------------------------------
     if (lmasse .ne. 0) then
         do ivect = 1, nbvect
-            call mcmult('ZERO', lmasse, vect(1, ivect), zc(laux+1), 1,&
+            call mcmult('ZERO', lmasse, vect(1, ivect), zc(laux+1), 1, &
                         .false._1)
-            cval = dcmplx(0.d0,0.d0)
+            cval = dcmplx(0.d0, 0.d0)
             do ieq = 1, neq
-                cval = cval + dconjg(vect(ieq,ivect)) * zc(laux+ieq)
+                cval = cval+dconjg(vect(ieq, ivect))*zc(laux+ieq)
             end do
             masseg(ivect) = dble(cval)
         end do
-    endif
+    end if
 !     ------------------------------------------------------------------
 !     --------------- CALCUL DE L'AMORTISSEMENT GENERALISE -------------
 !     ------------------------------------------------------------------
     if (lamor .ne. 0) then
         do ivect = 1, nbvect
-            call mcmult('ZERO', lamor, vect(1, ivect), zc(laux+1), 1,&
+            call mcmult('ZERO', lamor, vect(1, ivect), zc(laux+1), 1, &
                         .false._1)
-            cval = dcmplx(0.d0,0.d0)
+            cval = dcmplx(0.d0, 0.d0)
             do ieq = 1, neq
-                cval = cval + dconjg(vect(ieq,ivect)) * zc(laux+ieq)
+                cval = cval+dconjg(vect(ieq, ivect))*zc(laux+ieq)
             end do
             amorg(ivect) = dble(cval)
         end do
@@ -88,24 +88,24 @@ subroutine vppgec(lmasse, lamor, lraide, masseg, amorg,&
         do ivect = 1, nbvect
             amorg(ivect) = 0.d0
         end do
-    endif
+    end if
 !     ------------------------------------------------------------------
 !     ---------------- CALCUL DE LA RAIDEUR GENERALISEE ----------------
 !     ------------------------------------------------------------------
     if (lraide .ne. 0) then
         do ivect = 1, nbvect
             do ieq = 1, neq
-                zc(laux1+ieq) = vect(ieq,ivect)*iddl(ieq)
+                zc(laux1+ieq) = vect(ieq, ivect)*iddl(ieq)
             end do
-            call mcmult('ZERO', lraide, zc(laux1+1), zc(laux+1), 1,&
+            call mcmult('ZERO', lraide, zc(laux1+1), zc(laux+1), 1, &
                         .false._1)
-            cval = dcmplx(0.d0,0.d0)
+            cval = dcmplx(0.d0, 0.d0)
             do ieq = 1, neq
-                cval = cval + vect(ieq,ivect)*zc(laux+ieq)*iddl(ieq)
+                cval = cval+vect(ieq, ivect)*zc(laux+ieq)*iddl(ieq)
             end do
             raideg(ivect) = dble(cval)
         end do
-    endif
+    end if
 !     ------------------------------------------------------------------
     call jedetr(vecaux)
     call jedetr(vecau1)

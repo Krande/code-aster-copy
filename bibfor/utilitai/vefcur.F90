@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
+subroutine vefcur(vec1, nbn, knom, vec2, nbvale, &
                   nomnoe)
     implicit none
 !   VERIFICATION DE LA DEFINITION DE LA FONCTION : EXISTENCE DES NOEUDS
@@ -49,11 +49,11 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
             if (vec1(jj) .eq. numn) then
                 vec2(i) = jj
                 it = 1
-            endif
+            end if
         end do
         if (it .ne. 1) then
             call utmess('F', 'UTILITAI5_59')
-        endif
+        end if
         it = 0
     end do
     do i = 1, nbvale
@@ -63,7 +63,7 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
             if (vec2(jj) .lt. jp) then
                 ji = jj
                 jp = vec2(jj)
-            endif
+            end if
         end do
         vec2(ji) = vec2(i)
         vec2(i) = jp

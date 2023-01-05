@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine epseff(applic, nb1, depl, btild, sgmtd,&
+subroutine epseff(applic, nb1, depl, btild, sgmtd, &
                   epsi, wgt, effint)
     implicit none
 !
@@ -28,16 +28,16 @@ subroutine epseff(applic, nb1, depl, btild, sgmtd,&
 !-----------------------------------------------------------------------
     integer :: i, k, nddle
 !-----------------------------------------------------------------------
-    nddle=5*nb1+2
+    nddle = 5*nb1+2
     if (applic .eq. 'DEFORM') then
 !
 !     CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
 !     EPSXX, EPSYY, EPSXY, EPSXZ, EPSYZ (CE SONT LES COMPOSANTES TILDE)
 !
         do i = 1, 5
-            epsi(i)=0.d0
+            epsi(i) = 0.d0
             do k = 1, nddle
-                epsi(i)=epsi(i)+btild(i,k)*depl(k)
+                epsi(i) = epsi(i)+btild(i, k)*depl(k)
             end do
         end do
 !
@@ -46,12 +46,12 @@ subroutine epseff(applic, nb1, depl, btild, sgmtd,&
 !     CALCULS DES EFFORTS INTERIEURS
 !
         do i = 1, nddle
-            effinb(i)=0.d0
+            effinb(i) = 0.d0
             do k = 1, 5
-                effinb(i)=effinb(i)+btild(k,i)*sgmtd(k)
+                effinb(i) = effinb(i)+btild(k, i)*sgmtd(k)
             end do
-            effint(i)=effint(i)+wgt*effinb(i)
+            effint(i) = effint(i)+wgt*effinb(i)
         end do
 !
-    endif
+    end if
 end subroutine

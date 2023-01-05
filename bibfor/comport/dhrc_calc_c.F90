@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,21 +58,21 @@ subroutine dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
 !
     integer :: k, l
 !
-    cp1(:,:) = 0.0d0
-    cp2(:,:) = 0.0d0
-    cs1(:,:) = 0.0d0
-    cs2(:,:) = 0.0d0
+    cp1(:, :) = 0.0d0
+    cp2(:, :) = 0.0d0
+    cs1(:, :) = 0.0d0
+    cs2(:, :) = 0.0d0
 !
     do k = 1, 2
         do l = 1, 2
-            c(k,l,1)=0.5d0*c0(k,l,1)*((ac(k,l,1)+gc(k,l,1)*vint(1))/(ac(k,l,1)+vint(1))+1.d0)
-            c(k,l,2)=0.5d0*c0(k,l,2)*((ac(k,l,2)+gc(k,l,2)*vint(2))/(ac(k,l,2)+vint(2))+1.d0)
+       c(k, l, 1) = 0.5d0*c0(k, l, 1)*((ac(k, l, 1)+gc(k, l, 1)*vint(1))/(ac(k, l, 1)+vint(1))+1.d0)
+       c(k, l, 2) = 0.5d0*c0(k, l, 2)*((ac(k, l, 2)+gc(k, l, 2)*vint(2))/(ac(k, l, 2)+vint(2))+1.d0)
 !
-            cp1(k,l)=0.5d0*c0(k,l,1)*ac(k,l,1)*(gc(k,l,1)-1.0d0)/(ac(k,l,1)+vint(1))**2
-            cp2(k,l)=0.5d0*c0(k,l,2)*ac(k,l,2)*(gc(k,l,2)-1.0d0)/(ac(k,l,2)+vint(2))**2
+            cp1(k, l) = 0.5d0*c0(k, l, 1)*ac(k, l, 1)*(gc(k, l, 1)-1.0d0)/(ac(k, l, 1)+vint(1))**2
+            cp2(k, l) = 0.5d0*c0(k, l, 2)*ac(k, l, 2)*(gc(k, l, 2)-1.0d0)/(ac(k, l, 2)+vint(2))**2
 !
-            cs1(k,l)=-c0(k,l,1)*ac(k,l,1)*(gc(k,l,1)-1.0d0)/(ac(k,l,1)+vint(1))**3
-            cs2(k,l)=-c0(k,l,2)*ac(k,l,2)*(gc(k,l,2)-1.0d0)/(ac(k,l,2)+vint(2))**3
+            cs1(k, l) = -c0(k, l, 1)*ac(k, l, 1)*(gc(k, l, 1)-1.0d0)/(ac(k, l, 1)+vint(1))**3
+            cs2(k, l) = -c0(k, l, 2)*ac(k, l, 2)*(gc(k, l, 2)-1.0d0)/(ac(k, l, 2)+vint(2))**3
         end do
     end do
 !

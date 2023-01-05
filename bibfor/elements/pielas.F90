@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pielas(BEHinteg,&
-                  ndim, npg, kpg, compor, typmod,&
-                  mate, lgpg, vim, epsm,&
-                  epsp, epsd, sigma, etamin, etamax,&
+subroutine pielas(BEHinteg, &
+                  ndim, npg, kpg, compor, typmod, &
+                  mate, lgpg, vim, epsm, &
+                  epsp, epsd, sigma, etamin, etamax, &
                   tau, copilo)
 
-use Behaviour_type
+    use Behaviour_type
 
-use endo_loca_module, only: &
-    ELE_law             => CONSTITUTIVE_LAW, &
-    ELE_Init            => Init, &
-    ELE_PathFollowing   => PathFollowing
+    use endo_loca_module, only: &
+        ELE_law => CONSTITUTIVE_LAW, &
+        ELE_Init => Init, &
+        ELE_PathFollowing => PathFollowing
 
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
@@ -41,17 +41,17 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-integer :: ndim, kpg, npg
-integer :: mate
-character(len=8) :: typmod(*)
-character(len=16) :: compor(*)
-integer :: lgpg
-real(kind=8) :: vim(lgpg, npg)
-real(kind=8) :: epsm(6), epsp(6), epsd(6)
-real(kind=8) :: copilo(5, npg)
-real(kind=8) :: etamin, etamax, tau
-real(kind=8) :: sigma(6)
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    integer :: ndim, kpg, npg
+    integer :: mate
+    character(len=8) :: typmod(*)
+    character(len=16) :: compor(*)
+    integer :: lgpg
+    real(kind=8) :: vim(lgpg, npg)
+    real(kind=8) :: epsm(6), epsp(6), epsd(6)
+    real(kind=8) :: copilo(5, npg)
+    real(kind=8) :: etamin, etamax, tau
+    real(kind=8) :: sigma(6)
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,13 +80,11 @@ real(kind=8) :: sigma(6)
 ! IN  TAU    : 2ND MEMBRE DE L'EQUATION F(ETA)=TAU
 ! OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
 ! ---------------------------------------------------------------------
-    integer      :: ndimsi,nsol,sgn(2)
-    real(kind=8) :: sol(2),eps0(2*ndim),eps1(2*ndim)
+    integer      :: ndimsi, nsol, sgn(2)
+    real(kind=8) :: sol(2), eps0(2*ndim), eps1(2*ndim)
     type(ELE_LAW):: ELE_ldc
     character(len=16):: option
 ! ---------------------------------------------------------------------
-
-
 
 ! --- INITIALISATIONS
 
@@ -95,71 +93,69 @@ real(kind=8) :: sigma(6)
 !
 ! --- CALCUL SUIVANT COMPORTEMENT
 !
-    if (compor(1).eq.'VMIS_ISOT_TRAC' .or. compor(1) .eq.'VMIS_ISOT_LINE') then
-        call pipepl(ndim, compor(1), typmod, tau, mate,&
-                    sigma, vim(1, kpg), epsp, epsd, copilo(1, kpg),&
+    if (compor(1) .eq. 'VMIS_ISOT_TRAC' .or. compor(1) .eq. 'VMIS_ISOT_LINE') then
+        call pipepl(ndim, compor(1), typmod, tau, mate, &
+                    sigma, vim(1, kpg), epsp, epsd, copilo(1, kpg), &
                     copilo(2, kpg), copilo(3, kpg), copilo(4, kpg), copilo(5, kpg))
 !
-    else if (compor(1).eq.'ENDO_ISOT_BETON') then
-        call daxpy(ndimsi, 1.d0, epsm, 1, epsp,&
+    else if (compor(1) .eq. 'ENDO_ISOT_BETON') then
+        call daxpy(ndimsi, 1.d0, epsm, 1, epsp, &
                    1)
 !
         if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
             call utmess('F', 'MECANONLINE_60', sk=compor(1))
-        endif
+        end if
 !
-        call pipeds(ndim, typmod, tau, mate, vim(1, kpg),&
-                    epsm, epsp, epsd, etamin, etamax,&
-                    copilo(1, kpg), copilo(2, kpg), copilo(3, kpg), copilo(4, kpg),&
+        call pipeds(ndim, typmod, tau, mate, vim(1, kpg), &
+                    epsm, epsp, epsd, etamin, etamax, &
+                    copilo(1, kpg), copilo(2, kpg), copilo(3, kpg), copilo(4, kpg), &
                     copilo(5, kpg))
 !
 
+    else if (compor(1) .eq. 'ENDO_LOCA_EXP') then
 
-    else if (compor(1).eq.'ENDO_LOCA_EXP') then
-
-        eps0 = epsm(1:ndimsi) + epsp(1:ndimsi)
+        eps0 = epsm(1:ndimsi)+epsp(1:ndimsi)
         eps1 = epsd(1:ndimsi)
 
         ELE_ldc = ELE_Init(ndimsi, option, 'NONE', kpg, 1, mate, 100, 0.d0, 0.d0)
-        call ELE_PathFollowing(ELE_ldc, vim(1,kpg)+tau, eps0, eps1, etamin, etamax, &
+        call ELE_PathFollowing(ELE_ldc, vim(1, kpg)+tau, eps0, eps1, etamin, etamax, &
                                1.d-6, nsol, sol, sgn)
         if (ELE_ldc%exception .ne. 0) call utmess('F', 'PILOTAGE_83')
 
         if (nsol .eq. 0) then
-            copilo(5,kpg) = 0.d0
+            copilo(5, kpg) = 0.d0
         else if (nsol .eq. 1) then
-            copilo(1,kpg) = tau - sgn(1)*sol(1)
-            copilo(2,kpg) = sgn(1)
-        else if (nsol.eq.2) then
-            copilo(1,kpg) = tau - sgn(1)*sol(1)
-            copilo(2,kpg) = sgn(1)
-            copilo(3,kpg) = tau - sgn(2)*sol(2)
-            copilo(4,kpg) = sgn(2)
+            copilo(1, kpg) = tau-sgn(1)*sol(1)
+            copilo(2, kpg) = sgn(1)
+        else if (nsol .eq. 2) then
+            copilo(1, kpg) = tau-sgn(1)*sol(1)
+            copilo(2, kpg) = sgn(1)
+            copilo(3, kpg) = tau-sgn(2)*sol(2)
+            copilo(4, kpg) = sgn(2)
         end if
 
-
-    else if (compor(1).eq.'ENDO_ORTH_BETON') then
-        call daxpy(ndimsi, 1.d0, epsm, 1, epsp,&
+    else if (compor(1) .eq. 'ENDO_ORTH_BETON') then
+        call daxpy(ndimsi, 1.d0, epsm, 1, epsp, &
                    1)
 !
         if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
             call utmess('F', 'MECANONLINE_60', sk=compor(1))
-        endif
+        end if
 !
-        call pipedo(ndim, typmod, tau, mate, vim(1, kpg),&
-                    epsm, epsp, epsd, etamin, etamax,&
-                    copilo(1, kpg), copilo(2, kpg), copilo(3, kpg), copilo(4, kpg),&
+        call pipedo(ndim, typmod, tau, mate, vim(1, kpg), &
+                    epsm, epsp, epsd, etamin, etamax, &
+                    copilo(1, kpg), copilo(2, kpg), copilo(3, kpg), copilo(4, kpg), &
                     copilo(5, kpg))
-    else if (compor(1).eq.'BETON_DOUBLE_DP') then
-        call daxpy(ndimsi, 1.d0, epsm, 1, epsp,&
+    else if (compor(1) .eq. 'BETON_DOUBLE_DP') then
+        call daxpy(ndimsi, 1.d0, epsm, 1, epsp, &
                    1)
 !
-        call pipedp(BEHinteg,&
-                    kpg, 1, ndim, typmod, mate,&
-                    epsm, sigma, vim(1, kpg), epsp, epsd,&
+        call pipedp(BEHinteg, &
+                    kpg, 1, ndim, typmod, mate, &
+                    epsm, sigma, vim(1, kpg), epsp, epsd, &
                     copilo(1, kpg), copilo(2, kpg))
 !
     else
         call utmess('F', 'PILOTAGE_88', sk=compor(1))
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mlfc16(nommat, npivot, neq, typsym, eps,&
+subroutine mlfc16(nommat, npivot, neq, typsym, eps, &
                   renumz)
 ! person_in_charge: olivier.boiteau at edf.fr
-use superv_module
+    use superv_module
     implicit none
 #include "jeveux.h"
 #include "asterc/llbloc.h"
@@ -122,8 +122,8 @@ use superv_module
 !
     call infniv(ifm, niv)
 !----------------------------------------------------------------------
-    nb=llbloc()
-    nb=nb/2
+    nb = llbloc()
+    nb = nb/2
     noma19 = nommat
     npivot = 0
 !
@@ -133,10 +133,10 @@ use superv_module
     call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
     nomloc = nu//'.MLTF.LOCL'
     nomadi = nu//'.MLTF.ADNT'
-    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
-                nomp05, nomp06, nomp07, nomp08, nomp09,&
-                nomp10, nomp11, nomp12, nomp13, nomp14,&
-                nomp15, nomp16, nomp17, nomp18, nomp19,&
+    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04, &
+                nomp05, nomp06, nomp07, nomp08, nomp09, &
+                nomp10, nomp11, nomp12, nomp13, nomp14, &
+                nomp15, nomp16, nomp17, nomp18, nomp19, &
                 nomp20)
     ierr = 0
     factol(1:19) = nommat
@@ -157,12 +157,12 @@ use superv_module
     call jelibe(nomp01)
     call wkvect(nomadj, ' V V I ', lonmat, adjnit)
     do i = 0, lonmat-1
-        zi(adjnit+i)=zi(adinit+i)
+        zi(adjnit+i) = zi(adinit+i)
     end do
     call jelibe(nomadi)
 !
 !
-    call mltasc(nbloc, zi(lgbloc), zi(adjnit), nommat, lonmat,&
+    call mltasc(nbloc, zi(lgbloc), zi(adjnit), nommat, lonmat, &
                 factol, factou, typsym)
     call jedetr(nomadj)
 !
@@ -172,30 +172,30 @@ use superv_module
 !
     mxbloc = 0
     do i = 1, nbloc
-        mxbloc = max(mxbloc,zi(lgbloc+i-1))
+        mxbloc = max(mxbloc, zi(lgbloc+i-1))
     end do
     lpmax = zi(lgsn)
-    mxmate= lpmax*(lpmax+1)/2
+    mxmate = lpmax*(lpmax+1)/2
     do i = 1, nbsn-1
         ln = zi(lgsn+i)
-        mxmate = max(mxmate,ln*(ln+1)/2)
-        lpmax = max(lpmax,ln)
+        mxmate = max(mxmate, ln*(ln+1)/2)
+        lpmax = max(lpmax, ln)
     end do
     if (niv .ge. 2) then
-        write (ifm,*) ' AVANT FACTORISATION '//'LONGUEURS DISPONIBLES ',&
-     &        it(1),'ET ',it(2),'LONGUEUR DE LA PILE ',lgpile,&
-     &        ', PLUS GRAND BLOC DE FACTOL ',mxbloc
-        write (ifm,*) 'PLUS GRAND BLOC DE MATRICES FRONTALES: ',&
-        mxmate
-        write (ifm,*) ' NOMBRE DE PROCESSEURS : ',nproc
-        write (ifm,*) ' TYPSYM : ',typsym
-    endif
+        write (ifm, *) ' AVANT FACTORISATION '//'LONGUEURS DISPONIBLES ',&
+     &        it(1), 'ET ', it(2), 'LONGUEUR DE LA PILE ', lgpile,&
+     &        ', PLUS GRAND BLOC DE FACTOL ', mxbloc
+        write (ifm, *) 'PLUS GRAND BLOC DE MATRICES FRONTALES: ', &
+            mxmate
+        write (ifm, *) ' NOMBRE DE PROCESSEURS : ', nproc
+        write (ifm, *) ' TYPSYM : ', typsym
+    end if
 !
 ! ######################################################################
 !
 !     ON ALLOUE LA PILE
     call wkvect(nompil, ' V V C ', lgpile, pile)
-    if (niv .eq. 2) write (ifm,*) ' => PILE TOUT EN MEMOIRE '
+    if (niv .eq. 2) write (ifm, *) ' => PILE TOUT EN MEMOIRE '
     call wkvect(nompr1, ' V V C ', mxbloc, adbl1)
 !
 !
@@ -216,7 +216,7 @@ use superv_module
     call jeveuo(nomp17, 'L', ncbloc)
     call jeveuo(nomp18, 'L', decal)
     call jeveuo(nomp20, 'L', seq)
-    ltempr=nb*lpmax*nproc
+    ltempr = nb*lpmax*nproc
     call wkvect(nmprt1, ' V V C ', ltempr, trav1)
     call wkvect(nmprt2, ' V V C ', ltempr, trav2)
     call wkvect(nmprcl, ' V V C ', nproc*nb**2, cl)
@@ -229,11 +229,11 @@ use superv_module
 !     3.2)                               ASSEMBLAGE ET FACTORISATION
 !     APPEL A MLTFAS1
     call jedetr(nompr1)
-    call mltcc1(nbloc, zi(ncbloc), zi(decal), zi(supnd), zi(fils),&
-                zi(frere), zi(seq), zi(lgsn), zi(lfront), zi(adress),&
-                zi4(local), zi(adpile), zi(nbass), zc(pile), lgpile,&
-                zi(tempi), zc(trav1), zc(trav2), factol, factou,&
-                typsym, zi(tabi2), eps, ierr, nb,&
+    call mltcc1(nbloc, zi(ncbloc), zi(decal), zi(supnd), zi(fils), &
+                zi(frere), zi(seq), zi(lgsn), zi(lfront), zi(adress), &
+                zi4(local), zi(adpile), zi(nbass), zc(pile), lgpile, &
+                zi(tempi), zc(trav1), zc(trav2), factol, factou, &
+                typsym, zi(tabi2), eps, ierr, nb, &
                 zc(cl), zc(cu))
     if (ierr .gt. 0) goto 9998
 !
@@ -247,23 +247,23 @@ use superv_module
     isnd = 0
     do ib = 1, nbloc
         call jeveuo(jexnum(factol, ib), 'L', ifac)
-        adfac0 = ifac - 1
+        adfac0 = ifac-1
 !
         do nc = 1, zi(ncbloc+ib-1)
-            isnd = isnd + 1
+            isnd = isnd+1
             sni = zi(seq+isnd-1)
-            long =zi(adress+sni) - zi(adress+sni-1)
+            long = zi(adress+sni)-zi(adress+sni-1)
             do k = 1, zi(lgsn+sni-1)
-                adfac = adfac0 + (k-1)*long + k
+                adfac = adfac0+(k-1)*long+k
                 zc(ldiag-1+zi(supnd-1+sni)+k-1) = zc(adfac)
             end do
-            adfac0 = adfac0 + long*zi(lgsn+sni-1)
+            adfac0 = adfac0+long*zi(lgsn+sni-1)
         end do
         call jelibe(jexnum(factol, ib))
     end do
 !     PIVOTS NEGATIFS :
     do i = 1, neq
-        if (abs(zc(ldiag+i-1)) .lt. 0.d0) npivot = npivot - 1
+        if (abs(zc(ldiag+i-1)) .lt. 0.d0) npivot = npivot-1
     end do
     call jeveuo(noma19//'.DIGS', 'E', vc=digs)
     do i = 1, neq
@@ -277,18 +277,18 @@ use superv_module
 9998 continue
     if (ierr .ne. 0) then
         npivot = zi(anc-1+ierr)
-    endif
+    end if
 !
     call jeveuo(noma19//'.REFA', 'E', vk24=refa)
-    refa(8)='DECT'
+    refa(8) = 'DECT'
 !
 !
     call uttcpu('CPU.MLFC16', 'FIN', ' ')
     if (niv .eq. 2) then
         call uttcpr('CPU.MLFC16', 7, temps)
-        write (ifm,*) ' FACTORISATION DE LA MATRICE.'//'TEMPS CPU',&
-            temps(3),' + TEMPS CPU SYSTEME ',temps(6), ' TEMPS ELAPSED ',temps(7)
-    endif
+        write (ifm, *) ' FACTORISATION DE LA MATRICE.'//'TEMPS CPU', &
+            temps(3), ' + TEMPS CPU SYSTEME ', temps(6), ' TEMPS ELAPSED ', temps(7)
+    end if
     call jedetr(nomdia)
     call jedetr(nmprt1)
     call jedetr(nmprt2)

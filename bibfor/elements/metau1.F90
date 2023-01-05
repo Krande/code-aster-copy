@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine metau1(l_meta)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/verift.h"
 #include "asterfort/Metallurgy_type.h"
 !
-aster_logical, intent(out) :: l_meta
+    aster_logical, intent(out) :: l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,15 +67,15 @@ aster_logical, intent(out) :: l_meta
 ! - Get metallurgy type
 !
     call metaGetType(meta_type, nb_phasis)
-    ASSERT(nb_phasis.le.5)
+    ASSERT(nb_phasis .le. 5)
     if (meta_type .eq. META_NONE) then
         l_meta = .false.
         goto 999
-    endif
+    end if
 !
 ! - Finite element informations
 !
-    call elrefe_info(fami='RIGI', nno=nb_node, npg=npg, jpoids=ipoids, jvf=ivf,&
+    call elrefe_info(fami='RIGI', nno=nb_node, npg=npg, jpoids=ipoids, jvf=ivf, &
                      jdfde=idfde)
 !
 ! - Geometry
@@ -100,45 +100,45 @@ aster_logical, intent(out) :: l_meta
 !
 ! ----- Shape functions derivatives
 !
-        call dfdm2d(nb_node, kp, ipoids, idfde, zr(j_geom),&
+        call dfdm2d(nb_node, kp, ipoids, idfde, zr(j_geom), &
                     poids, dfdx, dfdy)
 !
 ! ----- Axi-symmetric case
 !
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             r = 0.d0
             do i_node = 1, nb_node
-                r = r + zr(j_geom+2* (i_node-1))*zr(ivf+k+i_node-1)
+                r = r+zr(j_geom+2*(i_node-1))*zr(ivf+k+i_node-1)
             end do
             poids = poids*r
             do i_node = 1, nb_node
                 k = (kp-1)*nb_node
-                dfdx(i_node) = dfdx(i_node) + zr(ivf+k+i_node-1)/r
+                dfdx(i_node) = dfdx(i_node)+zr(ivf+k+i_node-1)/r
             end do
-        endif
+        end if
 !
 ! ----- Compute thermic strain
 !
-        call verift('RIGI', kp, 1, '+', j_mater,&
+        call verift('RIGI', kp, 1, '+', j_mater, &
                     epsth_meta_=epsth)
 !
 ! ----- Get elastic parameters
 !
         call get_elas_id(j_mater, elas_id, elas_keyword)
-        call get_elas_para('RIGI', j_mater, '+', kp, ispg,&
-                           elas_id  , elas_keyword,&
-                           e_ = young, nu_ = nu)
-        ASSERT(elas_id.eq.1)
+        call get_elas_para('RIGI', j_mater, '+', kp, ispg, &
+                           elas_id, elas_keyword, &
+                           e_=young, nu_=nu)
+        ASSERT(elas_id .eq. 1)
 !
 ! ----- Compute
 !
-        coef  = young/(1.d0-2.d0*nu)
+        coef = young/(1.d0-2.d0*nu)
         poids = poids*coef*epsth
 !
         do i_node = 1, nb_node
             k = (kp-1)*nb_node
-            zr(j_vect+2*i_node-2) = zr(j_vect+2*i_node-2) + poids*dfdx(i_node)
-            zr(j_vect+2*i_node-1) = zr(j_vect+2*i_node-1) + poids*dfdy(i_node)
+            zr(j_vect+2*i_node-2) = zr(j_vect+2*i_node-2)+poids*dfdx(i_node)
+            zr(j_vect+2*i_node-1) = zr(j_vect+2*i_node-1)+poids*dfdy(i_node)
         end do
     end do
 !

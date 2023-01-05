@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine nonlinDSVectCombCompute(ds_vectcomb, vect_resu)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
 !
-type(NL_DS_VectComb), intent(in) :: ds_vectcomb
-character(len=19), intent(in) :: vect_resu
+    type(NL_DS_VectComb), intent(in) :: ds_vectcomb
+    character(len=19), intent(in) :: vect_resu
 !
 ! --------------------------------------------------------------------------------------------------
 !

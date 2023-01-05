@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W1306
 !
-subroutine nmpl2d(fami    , nno      , npg   ,&
-                  ipoids  , ivf      , idfde ,&
-                  geom    , typmod   , option, imate ,&
-                  compor  , mult_comp, lgpg  , carcri,&
-                  instam  , instap   ,&
-                  dispPrev, dispIncr ,&
-                  angmas  , sigmPrev , vim   ,&
-                  matsym  , sigmCurr , vip   ,&
-                  matuu   , vectu    , codret)
+subroutine nmpl2d(fami, nno, npg, &
+                  ipoids, ivf, idfde, &
+                  geom, typmod, option, imate, &
+                  compor, mult_comp, lgpg, carcri, &
+                  instam, instap, &
+                  dispPrev, dispIncr, &
+                  angmas, sigmPrev, vim, &
+                  matsym, sigmCurr, vip, &
+                  matuu, vectu, codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,24 +40,24 @@ implicit none
 #include "asterfort/nmgeom.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: nno, npg
-integer, intent(in) :: ipoids, ivf, idfde
-real(kind=8), intent(in) :: geom(2, nno)
-character(len=8), intent(in) :: typmod(*)
-character(len=16), intent(in) :: option
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*), mult_comp
-real(kind=8), intent(in) :: carcri(*)
-integer, intent(in) :: lgpg
-real(kind=8), intent(in) :: instam, instap
-real(kind=8), intent(inout) :: dispPrev(2, nno), dispIncr(2, nno)
-real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(inout) :: sigmPrev(4, npg), vim(lgpg, npg)
-aster_logical, intent(in) :: matsym
-real(kind=8), intent(inout) :: sigmCurr(4, npg), vip(lgpg, npg)
-real(kind=8), intent(inout) :: matuu(*), vectu(2, nno)
-integer, intent(inout) :: codret
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: nno, npg
+    integer, intent(in) :: ipoids, ivf, idfde
+    real(kind=8), intent(in) :: geom(2, nno)
+    character(len=8), intent(in) :: typmod(*)
+    character(len=16), intent(in) :: option
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*), mult_comp
+    real(kind=8), intent(in) :: carcri(*)
+    integer, intent(in) :: lgpg
+    real(kind=8), intent(in) :: instam, instap
+    real(kind=8), intent(inout) :: dispPrev(2, nno), dispIncr(2, nno)
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(inout) :: sigmPrev(4, npg), vim(lgpg, npg)
+    aster_logical, intent(in) :: matsym
+    real(kind=8), intent(inout) :: sigmCurr(4, npg), vip(lgpg, npg)
+    real(kind=8), intent(inout) :: matuu(*), vectu(2, nno)
+    integer, intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,12 +115,12 @@ integer, intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    grand  = ASTER_FALSE
-    axi    = typmod(1) .eq. 'AXIS'
-    cod    = 0
-    lSigm  = L_SIGM(option)
-    lVect  = L_VECT(option)
-    lMatr  = L_MATR(option)
+    grand = ASTER_FALSE
+    axi = typmod(1) .eq. 'AXIS'
+    cod = 0
+    lSigm = L_SIGM(option)
+    lVect = L_VECT(option)
+    lMatr = L_MATR(option)
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -128,11 +128,11 @@ integer, intent(inout) :: codret
 !
 ! - Prepare external state variables
 !
-    call behaviourPrepESVAElem(carcri   , typmod  ,&
-                               nno      , npg     , ndim ,&
-                               ipoids   , ivf     , idfde,&
-                               geom     , BEHinteg,&
-                               dispPrev , dispIncr)
+    call behaviourPrepESVAElem(carcri, typmod, &
+                               nno, npg, ndim, &
+                               ipoids, ivf, idfde, &
+                               geom, BEHinteg, &
+                               dispPrev, dispIncr)
 !
 ! - Loop on Gauss points
 !
@@ -140,30 +140,30 @@ integer, intent(inout) :: codret
         epsiPrev = 0.d0
         epsiIncr = 0.d0
 ! ----- Kinematic - Previous strains
-        call nmgeom(ndim    , nno   , axi , grand, geom ,&
-                    kpg     , ipoids, ivf , idfde, dispPrev,&
-                    .true._1, poids , dfdi, f    , epsiPrev,&
+        call nmgeom(ndim, nno, axi, grand, geom, &
+                    kpg, ipoids, ivf, idfde, dispPrev, &
+                    .true._1, poids, dfdi, f, epsiPrev, &
                     r)
 ! ----- Kinematic - Increment of strains
-        call nmgeom(ndim    , nno   , axi , grand, geom ,&
-                    kpg     , ipoids, ivf , idfde, dispIncr,&
-                    .true._1, poids , dfdi, f    , epsiIncr ,&
+        call nmgeom(ndim, nno, axi, grand, geom, &
+                    kpg, ipoids, ivf, idfde, dispIncr, &
+                    .true._1, poids, dfdi, f, epsiIncr, &
                     r)
 ! ----- Kinematic - Product [F].[B]
         do i_node = 1, nno
             do i_dime = 1, ndim
-                def(1,i_node,i_dime) = f(i_dime,1)*dfdi(i_node,1)
-                def(2,i_node,i_dime) = f(i_dime,2)*dfdi(i_node,2)
-                def(3,i_node,i_dime) = 0.d0
-                def(4,i_node,i_dime) = (f(i_dime,1)*dfdi(i_node,2) +&
-                                        f(i_dime,2)*dfdi(i_node,1))/rac2
+                def(1, i_node, i_dime) = f(i_dime, 1)*dfdi(i_node, 1)
+                def(2, i_node, i_dime) = f(i_dime, 2)*dfdi(i_node, 2)
+                def(3, i_node, i_dime) = 0.d0
+                def(4, i_node, i_dime) = (f(i_dime, 1)*dfdi(i_node, 2)+ &
+                                          f(i_dime, 2)*dfdi(i_node, 1))/rac2
             end do
         end do
         if (axi) then
             do i_node = 1, nno
-                def(3,i_node,1) = f(3,3)*zr(ivf+i_node+(kpg-1)*nno-1)/r
+                def(3, i_node, 1) = f(3, 3)*zr(ivf+i_node+(kpg-1)*nno-1)/r
             end do
-        endif
+        end if
 ! ----- Prepare stresses
         do i_tens = 1, 3
             sigmPrep(i_tens) = sigmPrev(i_tens, kpg)
@@ -171,28 +171,28 @@ integer, intent(inout) :: codret
         sigmPrep(4) = sigmPrev(4, kpg)*rac2
 ! ----- Compute behaviour
         sigmPost = 0.d0
-        call nmcomp(BEHinteg   ,&
-                    fami       , kpg        , 1       , ndim  , typmod  ,&
-                    imate      , compor     , carcri  , instam, instap  ,&
-                    6          , epsiPrev   , epsiIncr, 6     , sigmPrep,&
-                    vim(1, kpg), option     , angmas  ,&
-                    sigmPost   , vip(1, kpg), 36      , dsidep          ,&
-                    cod(kpg)   , mult_comp)
+        call nmcomp(BEHinteg, &
+                    fami, kpg, 1, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    6, epsiPrev, epsiIncr, 6, sigmPrep, &
+                    vim(1, kpg), option, angmas, &
+                    sigmPost, vip(1, kpg), 36, dsidep, &
+                    cod(kpg), mult_comp)
         if (cod(kpg) .eq. 1) then
             goto 999
-        endif
+        end if
 ! ----- Rigidity matrix
         if (lMatr) then
             if (matsym) then
                 do i_node = 1, nno
                     do i_dime = 1, ndim
-                        kkd = (ndim*(i_node-1)+i_dime-1) * (ndim*(i_node-1)+i_dime) /2
+                        kkd = (ndim*(i_node-1)+i_dime-1)*(ndim*(i_node-1)+i_dime)/2
                         do i_tens = 1, sz_tens
                             sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1,i_node,i_dime)*dsidep(1,i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2,i_node,i_dime)*dsidep(2,i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3,i_node,i_dime)*dsidep(3,i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4,i_node,i_dime)*dsidep(4,i_tens)
+                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
                         end do
                         do j = 1, ndim
                             do m = 1, i_node
@@ -200,13 +200,13 @@ integer, intent(inout) :: codret
                                     j1 = i_dime
                                 else
                                     j1 = ndim
-                                endif
-                                tmp = def(1,m,j)*sig(1) + def(2,m,j)*sig(2)+&
-                                      def(3,m,j)*sig(3) + def(4,m,j)*sig(4)
+                                end if
+                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
+                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)
                                 if (j .le. j1) then
-                                    kk = kkd + ndim*(m-1)+j
-                                    matuu(kk) = matuu(kk) + tmp*poids
-                                endif
+                                    kk = kkd+ndim*(m-1)+j
+                                    matuu(kk) = matuu(kk)+tmp*poids
+                                end if
                             end do
                         end do
                     end do
@@ -216,57 +216,57 @@ integer, intent(inout) :: codret
                     do i_dime = 1, ndim
                         do i_tens = 1, sz_tens
                             sig(i_tens) = 0.d0
-                            sig(i_tens) = sig(i_tens)+def(1,i_node,i_dime)*dsidep(1,i_tens)
-                            sig(i_tens) = sig(i_tens)+def(2,i_node,i_dime)*dsidep(2,i_tens)
-                            sig(i_tens) = sig(i_tens)+def(3,i_node,i_dime)*dsidep(3,i_tens)
-                            sig(i_tens) = sig(i_tens)+def(4,i_node,i_dime)*dsidep(4,i_tens)
+                            sig(i_tens) = sig(i_tens)+def(1, i_node, i_dime)*dsidep(1, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(2, i_node, i_dime)*dsidep(2, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(3, i_node, i_dime)*dsidep(3, i_tens)
+                            sig(i_tens) = sig(i_tens)+def(4, i_node, i_dime)*dsidep(4, i_tens)
                         end do
                         do j = 1, ndim
                             do m = 1, nno
-                                tmp = def(1,m,j)*sig(1) + def(2,m,j)*sig(2)+&
-                                      def(3,m,j)*sig(3) + def(4,m,j)*sig(4)
-                                kk = ndim*nno*(ndim*(i_node-1)+i_dime-1) + ndim*(m-1)+j
-                                matuu(kk) = matuu(kk) + tmp*poids
+                                tmp = def(1, m, j)*sig(1)+def(2, m, j)*sig(2)+ &
+                                      def(3, m, j)*sig(3)+def(4, m, j)*sig(4)
+                                kk = ndim*nno*(ndim*(i_node-1)+i_dime-1)+ndim*(m-1)+j
+                                matuu(kk) = matuu(kk)+tmp*poids
                             end do
                         end do
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
 ! ----- Internal forces
         if (lVect) then
             do i_node = 1, nno
                 do i_dime = 1, ndim
                     do i_tens = 1, sz_tens
-                        vectu(i_dime,i_node) = vectu(i_dime,i_node)+&
-                                               poids*def(i_tens,i_node,i_dime)*sigmPost(i_tens)
+                        vectu(i_dime, i_node) = vectu(i_dime, i_node)+ &
+                                                poids*def(i_tens, i_node, i_dime)*sigmPost(i_tens)
                     end do
                 end do
             end do
-        endif
+        end if
 ! ----- Cauchy stresses
         if (lSigm) then
             do i_tens = 1, 3
-                sigmCurr(i_tens,kpg) = sigmPost(i_tens)
+                sigmCurr(i_tens, kpg) = sigmPost(i_tens)
             end do
-            sigmCurr(4,kpg) = sigmPost(4)/rac2
-        endif
+            sigmCurr(4, kpg) = sigmPost(4)/rac2
+        end if
 ! ----- Cauchy stresses for IMPLEX
         if (option .eq. 'RIGI_MECA_IMPLEX') then
             do i_tens = 1, 3
-                sigmCurr(i_tens,kpg) = sigmPost(i_tens)
+                sigmCurr(i_tens, kpg) = sigmPost(i_tens)
             end do
-            sigmCurr(4,kpg) = sigmPost(4)/rac2
-        endif
+            sigmCurr(4, kpg) = sigmPost(4)/rac2
+        end if
     end do
 !
 ! - For POST_ITER='CRIT_RUPT'
 !
     if (carcri(13) .gt. 0.d0) then
-        call crirup(fami  , imate , ndim, npg, lgpg,&
-                    option, compor, sigmCurr, vip, vim ,&
+        call crirup(fami, imate, ndim, npg, lgpg, &
+                    option, compor, sigmCurr, vip, vim, &
                     instam, instap)
-    endif
+    end if
 !
 999 continue
 !

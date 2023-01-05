@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,15 +59,15 @@ subroutine te0008(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS
 !
     zero = 0.d0
     nharm = zero
-    nbinco = nno * ndim
-    ASSERT(nbinco.le.81)
+    nbinco = nno*ndim
+    ASSERT(nbinco .le. 81)
 !
 ! --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !
@@ -85,11 +85,11 @@ subroutine te0008(option, nomte)
     if (option .eq. 'FORC_NODA') then
         call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
         call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
-        if ((iretd.eq.0) .and. (iretc.eq.0)) then
-            if (zk16(icomp+2)(1:6) .ne. 'PETIT ') then
+        if ((iretd .eq. 0) .and. (iretc .eq. 0)) then
+            if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
                 call daxpy(nbinco, 1.d0, zr(idepl), 1, geo, 1)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- CONTRAINTES AUX POINTS D'INTEGRATION
 !
@@ -97,15 +97,15 @@ subroutine te0008(option, nomte)
 !
 ! ----- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 !
-        call bsigmc(nno, ndim, nbsig, npg1, ipoids,&
-                    ivf, idfde, geo, nharm, zr(icontm),&
+        call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
+                    ivf, idfde, geo, nharm, zr(icontm), &
                     bsigm)
 !
 ! ----- AFFECTATION DU VECTEUR EN SORTIE
 !
         call dcopy(nbinco, bsigm, 1, zr(ivectu), 1)
 !
-    else if (option.eq.'REFE_FORC_NODA') then
+    else if (option .eq. 'REFE_FORC_NODA') then
 !
         call terefe('SIGM_REFE', 'MECA_ISO', sigref)
 !
@@ -115,8 +115,8 @@ subroutine te0008(option, nomte)
         do i = 1, nbsig*npg1
 !
             sigtmp(i) = sigref
-            call bsigmc(nno, ndim, nbsig, npg1, ipoids,&
-                        ivf, idfde, geo, nharm, sigtmp,&
+            call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
+                        ivf, idfde, geo, nharm, sigtmp, &
                         bsigm)
 !
             do j = 1, nbinco
@@ -129,6 +129,6 @@ subroutine te0008(option, nomte)
 !
         call daxpy(nbinco, 1.d0/npg1, ftemp, 1, zr(ivectu), 1)
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmjp(mod, nmat, mater, timed, timef,&
-                  comp, nbcomm, cpmono, pgl, nfs,&
-                  nsg, toutms, hsr, nr, nvi,&
-                  sigd, itmax, toler, vinf, vind,&
+subroutine lcmmjp(mod, nmat, mater, timed, timef, &
+                  comp, nbcomm, cpmono, pgl, nfs, &
+                  nsg, toutms, hsr, nr, nvi, &
+                  sigd, itmax, toler, vinf, vind, &
                   dsde, drdy, option, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -73,22 +73,22 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     character(len=16) :: comp(*), option
     character(len=24) :: cpmono(5*nmat+1)
     aster_logical :: bnews(3), mtrac
-    parameter       ( un   =  1.d0   )
-    parameter       ( zero =  0.d0   )
-    common /tdim/ ndt,ndi
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
-    data  i6        /un     , zero  , zero  , zero  ,zero  ,zero,&
-     &                 zero   , un    , zero  , zero  ,zero  ,zero,&
-     &                 zero   , zero  , un    , zero  ,zero  ,zero,&
-     &                 zero   , zero  , zero  , un    ,zero  ,zero,&
-     &                 zero   , zero  , zero  , zero  ,un    ,zero,&
-     &                 zero   , zero  , zero  , zero  ,zero  ,un/
+    common/polycr/irr, decirr, nbsyst, decal, gdef
+    data i6/un, zero, zero, zero, zero, zero,&
+     &                 zero, un, zero, zero, zero, zero,&
+     &                 zero, zero, un, zero, zero, zero,&
+     &                 zero, zero, zero, un, zero, zero,&
+     &                 zero, zero, zero, zero, un, zero,&
+     &                 zero, zero, zero, zero, zero, un/
 !
 ! -  INITIALISATION
 !
-    ns=nr-ndt
-    iret=0
+    ns = nr-ndt
+    iret = 0
 !
 !     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
     if (option .eq. 'RIGI_MECA_TANG') then
@@ -96,60 +96,60 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
         call r8inir(nr, 0.d0, dy, 1)
         call r8inir(9, 0.d0, df, 1)
 !       call r8inir(ndt, 0.d0, sigd, 1)
-        call lcafyd(comp, mater, mater, nbcomm, cpmono,&
-                    nmat, mod, nvi, vind, vinf,&
+        call lcafyd(comp, mater, mater, nbcomm, cpmono, &
+                    nmat, mod, nvi, vind, vinf, &
                     sigd, nr, yd, bnews, mtrac)
         call dcopy(nr, yd, 1, yf, 1)
-        call lcmmja(mod, nmat, mater, timed,&
-                    timef, itmax, toler, nbcomm, cpmono,&
-                    pgl, nfs, nsg, toutms, hsr,&
-                    nr, nvi, vind, df, yf,&
+        call lcmmja(mod, nmat, mater, timed, &
+                    timef, itmax, toler, nbcomm, cpmono, &
+                    pgl, nfs, nsg, toutms, hsr, &
+                    nr, nvi, vind, df, yf, &
                     yd, dy, drdy, iret)
         if (iret .gt. 0) goto 999
-    endif
+    end if
 !
 ! - RECUPERER LES SOUS-MATRICES BLOC
 !
     do k = 1, 6
         do j = 1, 6
-            z0(k,j)=drdy(k,j)
+            z0(k, j) = drdy(k, j)
         end do
     end do
     do k = 1, 6
         do j = 1, ns
-            z1(k,j)=drdy(k,ndt+j)
+            z1(k, j) = drdy(k, ndt+j)
         end do
     end do
     do k = 1, ns
         do j = 1, 6
-            z2(k,j)=drdy(ndt+k,j)
+            z2(k, j) = drdy(ndt+k, j)
         end do
     end do
     do k = 1, ns
         do j = 1, ns
-            z3(k,j)=drdy(ndt+k,ndt+j)
+            z3(k, j) = drdy(ndt+k, ndt+j)
         end do
     end do
 !     Z2=INVERSE(Z3)*Z2
 !     CALL MGAUSS ('NCSP',Z3, Z2, NS, NS, 6, DET, IRET )
-    call mgauss('NCWP', z3, z2, ns, ns,&
+    call mgauss('NCWP', z3, z2, ns, ns, &
                 6, det, iret)
     if (iret .gt. 0) goto 999
 !
 !     KYL=Z1*INVERSE(Z3)*Z2
-    call promat(z1, 6, 6, ns, z2,&
+    call promat(z1, 6, 6, ns, z2, &
                 ns, ns, 6, kyl)
 !
 !     Z0=Z0+Z1*INVERSE(Z3)*Z2
     do k = 1, 6
         do j = 1, 6
-            z0(k,j)=z0(k,j)-kyl(k,j)
+            z0(k, j) = z0(k, j)-kyl(k, j)
         end do
     end do
 !
     call dcopy(36, i6, 1, zinv, 1)
 !     CALL MGAUSS ('NCSP',Z0, ZINV, 6, 6, 6, DET, IRET )
-    call mgauss('NCWP', z0, zinv, 6, 6,&
+    call mgauss('NCWP', z0, zinv, 6, 6, &
                 6, det, iret)
     if (iret .gt. 0) goto 999
 !
@@ -161,9 +161,9 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 !
     else
 !
-        call lcmmkg(zinv, nvi, vind, vinf, nmat,&
+        call lcmmkg(zinv, nvi, vind, vinf, nmat, &
                     mater, mod, nr, dsde)
 !
-    endif
+    end if
 999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
+subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin, &
                   epsmax, dom)
     implicit none
 #include "jeveux.h"
@@ -48,7 +48,7 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
     integer :: i, ier, nbpar
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    data zero  /1.d-13/
+    data zero/1.d-13/
 !
     call jemarq()
 !
@@ -61,7 +61,7 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
         delta = (abs(epsmax(i)-epsmin(i)))/2.d0
         if (delta .gt. epmax-zero) then
             epmax = delta
-            call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+            call rcvale(nommat, pheno, nbpar, nompar, [delta], &
                         1, nomres, nrupt(1), icodre(1), 2)
             dom(i) = 1.d0/nrupt(1)
         else
@@ -69,15 +69,15 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
             nomp(2) = 'EPSI'
             valp(1) = epmax
             valp(2) = delta
-            call fointe('F ', nomnap, 2, nomp, valp,&
+            call fointe('F ', nomnap, 2, nomp, valp, &
                         dsigm, ier)
             nomp(2) = 'SIGM'
-            call fointe('F ', nomfo1, 1, [nomp(2)], [dsigm],&
+            call fointe('F ', nomfo1, 1, [nomp(2)], [dsigm], &
                         depsi, ier)
-            call rcvale(nommat, pheno, nbpar, nompar, [depsi],&
+            call rcvale(nommat, pheno, nbpar, nompar, [depsi], &
                         1, nomres, nrupt(1), icodre(1), 2)
             dom(i) = 1.d0/nrupt(1)
-        endif
+        end if
     end do
 !
     call jedema()

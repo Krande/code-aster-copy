@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,10 +59,10 @@ subroutine celcel(transf, cel1, base, cel2)
 !
 !     ------------------------------------------------------------------
     integer :: ima, ipt, ispt, icmp, nbma, ibid
-    integer :: jcesd1, jcesl1,  jcesc1
-    integer :: jcesd2, jcesl2,   nbgrel, igrel, debugr, nbel
+    integer :: jcesd1, jcesl1, jcesc1
+    integer :: jcesd2, jcesl2, nbgrel, igrel, debugr, nbel
     integer :: nbpt, nbspt, ncmp2, iad1, iad2, imolo, nbspmx, iel, nbsp
-    integer :: ncmpg, nbvamx,    nncp, ico
+    integer :: ncmpg, nbvamx, nncp, ico
     character(len=19) :: ces1, ces2, ligrel, cel11, cel22
     character(len=16) :: optini, nompar
     character(len=8) :: ma, nomgd, typces, kbid
@@ -87,7 +87,7 @@ subroutine celcel(transf, cel1, base, cel2)
 !         -- IL N'Y A RIEN A FAIRE : NBVARI EST CST !
             call copisd('CHAMP_GD', base, cel1, cel2)
             goto 80
-        endif
+        end if
 !
 !       1- ON TRANSFORME CEL1 EN CHAM_ELEM_S : CES1
 !       -------------------------------------------
@@ -107,7 +107,7 @@ subroutine celcel(transf, cel1, base, cel2)
         nbma = zi(jcesd1-1+1)
         ncmpg = zi(jcesd1-1+2)
         nbvamx = zi(jcesd1-1+5)
-        ASSERT(ncmpg.eq.nbvamx)
+        ASSERT(ncmpg .eq. nbvamx)
 !
 !       2.1 : CALCUL DE 2 VECTEURS CONTENANT LE NOMBRE DE
 !             POINTS DE SOUS-POINTS DES MAILLES
@@ -115,13 +115,13 @@ subroutine celcel(transf, cel1, base, cel2)
         AS_ALLOCATE(vi=vnbpt, size=nbma)
         AS_ALLOCATE(vi=vnbspt, size=nbma)
         do ima = 1, nbma
-            vnbpt(ima) = zi(jcesd1-1+5+4* (ima-1)+1)
-            vnbspt(ima) = zi(jcesd1-1+5+4* (ima-1)+2)
+            vnbpt(ima) = zi(jcesd1-1+5+4*(ima-1)+1)
+            vnbspt(ima) = zi(jcesd1-1+5+4*(ima-1)+2)
         end do
 !
 !       2.2 : ALLOCATION DE CES2 :
 !       ---------------------------------------------------
-        call cescre('V', ces2, typces, ma, nomgd,&
+        call cescre('V', ces2, typces, ma, nomgd, &
                     -nbvamx, kbid, vnbpt, vnbspt, [-nbvamx])
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
@@ -133,26 +133,26 @@ subroutine celcel(transf, cel1, base, cel2)
 !       3- ON RECOPIE LES VALEURS DE CES1 DANS CES2 :
 !       ---------------------------------------------
         do ima = 1, nbma
-            nbpt = zi(jcesd1-1+5+4* (ima-1)+1)
-            nbspt = zi(jcesd1-1+5+4* (ima-1)+2)
+            nbpt = zi(jcesd1-1+5+4*(ima-1)+1)
+            nbspt = zi(jcesd1-1+5+4*(ima-1)+2)
 !
-            ncmp2 = zi(jcesd2-1+5+4* (ima-1)+3)
+            ncmp2 = zi(jcesd2-1+5+4*(ima-1)+3)
 !
             do ipt = 1, nbpt
                 do ispt = 1, nbspt
                     do icmp = 1, ncmp2
-                        call cesexi('C', jcesd1, jcesl1, ima, ipt,&
+                        call cesexi('C', jcesd1, jcesl1, ima, ipt, &
                                     ispt, icmp, iad1)
-                        call cesexi('C', jcesd2, jcesl2, ima, ipt,&
+                        call cesexi('C', jcesd2, jcesl2, ima, ipt, &
                                     ispt, icmp, iad2)
-                        ASSERT(iad2.lt.0)
+                        ASSERT(iad2 .lt. 0)
                         zl(jcesl2-1-iad2) = .true.
                         if (iad1 .gt. 0) then
                             cesv2(1-1-iad2) = cesv1(iad1)
 !
                         else
                             cesv2(1-1-iad2) = 0.d0
-                        endif
+                        end if
                     end do
                 end do
             end do
@@ -167,7 +167,7 @@ subroutine celcel(transf, cel1, base, cel2)
         ligrel = celk(1)
         optini = celk(2)
         nompar = celk(6)
-        call cescel(ces2, ligrel, optini, nompar, 'NON',&
+        call cescel(ces2, ligrel, optini, nompar, 'NON', &
                     nncp, base, cel2, 'F', ibid)
 !
 !
@@ -179,7 +179,7 @@ subroutine celcel(transf, cel1, base, cel2)
         call detrsd('CHAM_ELEM_S', ces2)
 !
 !
-    else if (transf.eq.'PAS_DE_SP') then
+    else if (transf .eq. 'PAS_DE_SP') then
 !     =====================================
 !
         call copisd('CHAMP_GD', base, cel1, cel2)
@@ -189,7 +189,7 @@ subroutine celcel(transf, cel1, base, cel2)
 !
 !       -- ON MET A ZERO LE MODE LOCAL DES GRELS QUI ONT DES
 !          SOUS-POINTS :
-        ico=0
+        ico = 0
         do igrel = 1, nbgrel
             debugr = celd(4+igrel)
             nbel = celd(debugr+1)
@@ -197,28 +197,28 @@ subroutine celcel(transf, cel1, base, cel2)
             if (imolo .gt. 0) then
                 nbspmx = 0
                 do iel = 1, nbel
-                    nbsp = celd(debugr+4+4* (iel-1)+1)
-                    nbspmx = max(nbspmx,nbsp)
+                    nbsp = celd(debugr+4+4*(iel-1)+1)
+                    nbspmx = max(nbspmx, nbsp)
                 end do
                 if (nbspmx .gt. 1) then
                     celd(debugr+2) = 0
                 else
-                    ico=ico+1
-                endif
-            endif
+                    ico = ico+1
+                end if
+            end if
         end do
         if (ico .eq. 0) then
-            valk(1)=cel1
-            valk(2)=nomgd
+            valk(1) = cel1
+            valk(2) = nomgd
             call utmess('F', 'CALCULEL2_40', nk=2, valk=valk)
-        endif
+        end if
 !
 !
     else
 !       CAS RESTANT A PROGRAMMER ...
         ASSERT(.false.)
-    endif
+    end if
 !
- 80 continue
+80  continue
     call jedema()
 end subroutine

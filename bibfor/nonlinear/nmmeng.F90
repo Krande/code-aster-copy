@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmmeng(list_func_acti,&
-                  ds_algorom    , ds_print, ds_measure , ds_material,&
-                  ds_energy     , ds_inout, ds_posttimestep, hhoField)
+subroutine nmmeng(list_func_acti, &
+                  ds_algorom, ds_print, ds_measure, ds_material, &
+                  ds_energy, ds_inout, ds_posttimestep, hhoField)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -39,15 +39,15 @@ implicit none
 #include "asterfort/nonlinDSPostTimeStepClean.h"
 #include "asterfort/nonlinDSInOutClean.h"
 !
-integer, intent(in) :: list_func_acti(*)
-type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
-type(NL_DS_Print), intent(inout) :: ds_print
-type(NL_DS_Energy), intent(inout) :: ds_energy
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Material), intent(inout) :: ds_material
-type(NL_DS_InOut), intent(inout) :: ds_inout
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
-type(HHO_Field), intent(in) :: hhoField
+    integer, intent(in) :: list_func_acti(*)
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Energy), intent(inout) :: ds_energy
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Material), intent(inout) :: ds_material
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    type(HHO_Field), intent(in) :: hhoField
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,15 +72,15 @@ type(HHO_Field), intent(in) :: hhoField
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_rom = isfonc(list_func_acti,'ROM')
-    l_hho = isfonc(list_func_acti,'HHO')
+    l_rom = isfonc(list_func_acti, 'ROM')
+    l_hho = isfonc(list_func_acti, 'HHO')
 !
     if (l_rom) then
         call romAlgoNLClean(ds_algorom)
-    endif
+    end if
 !
     if (l_hho) then
-        AS_DEALLOCATE(vi = hhoField%v_info_cine)
+        AS_DEALLOCATE(vi=hhoField%v_info_cine)
     end if
 !
 ! - De-allocate

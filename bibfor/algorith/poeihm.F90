@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine poeihm(nomte, option, modint, jgao, nno1,&
+subroutine poeihm(nomte, option, modint, jgao, nno1, &
                   nno2, ncmp, nvim, vpg, vno)
     implicit none
 #include "asterfort/assert.h"
@@ -47,11 +47,11 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
     integer :: ndim, nno, npg, ndim2, nno2, nnos2, npg2, nno3, nnos3
     integer :: nno1, nnos1
     integer :: nvmax, npgmax, nnosma, dimmax, nnomax, ntrou
-    parameter (nvmax  = 60)
-    parameter (npgmax = 8 )
-    parameter (nnosma = 8 )
-    parameter (dimmax = 31)
-    parameter (nnomax = 20)
+    parameter(nvmax=60)
+    parameter(npgmax=8)
+    parameter(nnosma=8)
+    parameter(dimmax=31)
+    parameter(nnomax=20)
     real(kind=8) :: vpg1(npgmax*nvmax), vpg2(nnosma*nvmax)
     real(kind=8) :: spg1(npgmax*dimmax), spg2(nnosma*dimmax)
     real(kind=8) :: varpg1(nnomax*nvmax), varso1(nnomax*nvmax)
@@ -61,9 +61,9 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
     real(kind=8) :: vno1(nnomax*dimmax)
     integer :: next(3), next2(3), nmil(2)
 !
-    data next  /1,2,5/
-    data next2 /4,3,7/
-    data nmil  /8,6/
+    data next/1, 2, 5/
+    data next2/4, 3, 7/
+    data nmil/8, 6/
 ! =====================================================================
     if (modint .ne. 'RED') then
         call ppgan2(jgao, 1, ncmp, vpg, vno1)
@@ -95,21 +95,21 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
         call elref2(nomte, 2, lielrf, ntrou)
 !
 !
-        call elrefe_info(elrefe=lielrf(1), fami='MASS', ndim=ndim, nno=nno1, nnos=nnos1,&
+        call elrefe_info(elrefe=lielrf(1), fami='MASS', ndim=ndim, nno=nno1, nnos=nnos1, &
                          npg=npg, jgano=jgapg1)
 !
-        call elrefe_info(elrefe=lielrf(2), fami='MASS', ndim=ndim, nno=nno2, nnos=nnos2,&
+        call elrefe_info(elrefe=lielrf(2), fami='MASS', ndim=ndim, nno=nno2, nnos=nnos2, &
                          npg=npg, jgano=jgapg2)
 ! =====================================================================
 ! --- MATRICE DE PASSAGE SOMMETS -> SOMMETS : JGASO ------------------
 ! =====================================================================
-        call elrefe_info(elrefe=lielrf(1), fami='NOEU_S', ndim=ndim2, nno=nno3, nnos=nnos3,&
+        call elrefe_info(elrefe=lielrf(1), fami='NOEU_S', ndim=ndim2, nno=nno3, nnos=nnos3, &
                          npg=npg2, jgano=jgaso1)
 !
-        call elrefe_info(elrefe=lielrf(2), fami='NOEU_S', ndim=ndim2, nno=nno3, nnos=nnos3,&
+        call elrefe_info(elrefe=lielrf(2), fami='NOEU_S', ndim=ndim2, nno=nno3, nnos=nnos3, &
                          npg=npg2, jgano=jgaso2)
 !
-        nno=2*nno1+nno2
+        nno = 2*nno1+nno2
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
@@ -149,7 +149,7 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
                     vno((nmil(i)-1)*ncmp+j) = sefso1((i-1)*ncmp+j)
                 end do
             end do
-        endif
+        end if
         if (option .eq. 'VARI_ELNO  ') then
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
@@ -183,7 +183,7 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
                     vno((nmil(i)-1)*ncmp+j) = varso1((i-1)*ncmp+j)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 ! =====================================================================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cuacat(indic, nbliac, ajliai, spliai, lmat,&
-                  indfac, deficu, resocu, solveu, cncine,&
+subroutine cuacat(indic, nbliac, ajliai, spliai, lmat, &
+                  indfac, deficu, resocu, solveu, cncine, &
                   xjvmax)
 !
 !
-    implicit      none
+    implicit none
 #include "asterfort/cuaca1.h"
 #include "asterfort/cuaca2.h"
     integer :: indic
@@ -62,10 +62,10 @@ subroutine cuacat(indic, nbliac, ajliai, spliai, lmat,&
 ! ----------------------------------------------------------------------
 !
     if (indic .ne. -1) then
-        call cuaca1(deficu, resocu, solveu, lmat, cncine,&
+        call cuaca1(deficu, resocu, solveu, lmat, cncine, &
                     nbliac, ajliai)
-    endif
-    call cuaca2(deficu, resocu, nbliac, spliai, indfac,&
+    end if
+    call cuaca2(deficu, resocu, nbliac, spliai, indfac, &
                 lmat, xjvmax)
 !
     indic = 1

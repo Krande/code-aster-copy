@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,17 +61,17 @@ subroutine pacoor(nomma, ima, nbno, coor)
     if (nbcmp .eq. 2) then
         if (nbno .gt. 0) x(3) = 0.d0
         if (nbno .eq. 0) coor(3) = 0.d0
-    endif
+    end if
     call jeveuo(vale, 'L', idvale)
     if (nbno .gt. 0) then
         call jeveuo(jexnum(connex, ima), 'L', idconn)
         call jelira(jexnum(connex, ima), 'LONMAX', nbnomx)
         if (nbno .gt. nbnomx) then
             call utmess('F', 'MODELISA6_5')
-        endif
+        end if
         do inoma = 1, nbno
             ino = zi(idconn-1+inoma)
-            idino = idvale+ nbcmp*(ino-1)-1
+            idino = idvale+nbcmp*(ino-1)-1
             do icmp = 1, nbcmp
                 x(icmp) = zr(idino+icmp)
             end do
@@ -80,13 +80,13 @@ subroutine pacoor(nomma, ima, nbno, coor)
                 coor(icoor+i) = x(i)
             end do
         end do
-    else if (nbno.eq.0) then
-        idino = idvale+ nbcmp*(ima-1)-1
+    else if (nbno .eq. 0) then
+        idino = idvale+nbcmp*(ima-1)-1
         do icmp = 1, nbcmp
             coor(icmp) = zr(idino+icmp)
         end do
     else
         call utmess('F', 'MODELISA6_6')
-    endif
+    end if
     call jedema()
 end subroutine

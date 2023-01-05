@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine isOptionPossible(ligrel_, option_, para_name_,&
-                            l_all_ , l_some_)
+subroutine isOptionPossible(ligrel_, option_, para_name_, &
+                            l_all_, l_some_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nbgrel.h"
@@ -66,11 +66,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrel    = ligrel_
-    option    = option_
+    ligrel = ligrel_
+    option = option_
     para_name = para_name_
-    l_all     = .true.
-    l_some    = .false.
+    l_all = .true.
+    l_some = .false.
 !
 ! - Access to catalog
 !
@@ -78,29 +78,29 @@ implicit none
 !
 ! - Loop on GREL
 !
-    ngrel     = nbgrel(ligrel)
+    ngrel = nbgrel(ligrel)
     do igrel = 1, ngrel
-        te    = typele(ligrel, igrel)
-        mode  = modat2(indx_option, te, para_name)
-        call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', vi = v_liel)
+        te = typele(ligrel, igrel)
+        mode = modat2(indx_option, te, para_name)
+        call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', vi=v_liel)
         call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', v_liel(nel)), nomte)
         call teattr('S', 'DIM_TOPO_MODELI', dmo, ier, typel=nomte)
         call teattr('S', 'DIM_TOPO_MAILLE', dma, ier, typel=nomte)
         if (dmo .eq. dma) then
             if (mode .eq. 0) then
-                l_all  = .false.
+                l_all = .false.
             else
                 l_some = .true.
-            endif
-        endif
+            end if
+        end if
     end do
 !
     if (present(l_all_)) then
-        l_all_  = l_all
-    endif
+        l_all_ = l_all
+    end if
     if (present(l_some_)) then
         l_some_ = l_some
-    endif
+    end if
 !
 end subroutine

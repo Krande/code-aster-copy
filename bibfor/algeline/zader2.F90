@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zader2(uplo, n, alpha, x, incx,&
+subroutine zader2(uplo, n, alpha, x, incx, &
                   y, incy, a, lda)
     implicit none
 #include "asterf_types.h"
@@ -45,53 +45,53 @@ subroutine zader2(uplo, n, alpha, x, incx,&
     aster_logical :: upper
     real(kind=8) :: dble
 !
-    if (n .eq. 0 .or. alpha .eq. (0.0d0,0.0d0)) goto 999
+    if (n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0)) goto 999
 !
     ix = 1
     iy = 1
-    if (incx .lt. 0) ix = 1 - (n-1)*incx
-    if (incy .lt. 0) iy = 1 - (n-1)*incy
+    if (incx .lt. 0) ix = 1-(n-1)*incx
+    if (incy .lt. 0) iy = 1-(n-1)*incy
 !
-    upper = (uplo(1:1).eq.'U') .or. (uplo(1:1).eq.'u')
+    upper = (uplo(1:1) .eq. 'U') .or. (uplo(1:1) .eq. 'u')
 !
     do j = 1, n
         tempx = dconjg(alpha*x(ix))
         tempy = alpha*dconjg(y(iy))
         if (upper) then
             if (incx .ge. 0) then
-                call zaxpy(j-1, tempy, x, incx, a(1, j),&
+                call zaxpy(j-1, tempy, x, incx, a(1, j), &
                            1)
             else
-                call zaxpy(j-1, tempy, x(ix-incx), incx, a(1, j),&
+                call zaxpy(j-1, tempy, x(ix-incx), incx, a(1, j), &
                            1)
-            endif
+            end if
             if (incy .ge. 0) then
-                call zaxpy(j-1, tempx, y, incy, a(1, j),&
+                call zaxpy(j-1, tempx, y, incy, a(1, j), &
                            1)
             else
-                call zaxpy(j-1, tempx, y(iy-incy), incy, a(1, j),&
+                call zaxpy(j-1, tempx, y(iy-incy), incy, a(1, j), &
                            1)
-            endif
+            end if
         else
             if (incx .ge. 0) then
-                call zaxpy(n-j, tempy, x(ix+incx), incx, a(j+1, j),&
+                call zaxpy(n-j, tempy, x(ix+incx), incx, a(j+1, j), &
                            1)
             else
-                call zaxpy(n-j, tempy, x, incx, a(j+1, j),&
+                call zaxpy(n-j, tempy, x, incx, a(j+1, j), &
                            1)
-            endif
+            end if
             if (incy .ge. 0) then
-                call zaxpy(n-j, tempx, y(iy+incy), incy, a(j+1, j),&
+                call zaxpy(n-j, tempx, y(iy+incy), incy, a(j+1, j), &
                            1)
             else
-                call zaxpy(n-j, tempx, y, incy, a(j+1, j),&
+                call zaxpy(n-j, tempx, y, incy, a(j+1, j), &
                            1)
-            endif
-        endif
-        temp1 = a(j,j) + y(iy)*tempx + x(ix)*tempy
-        a(j,j) = dble(temp1)
-        ix = ix + incx
-        iy = iy + incy
+            end if
+        end if
+        temp1 = a(j, j)+y(iy)*tempx+x(ix)*tempy
+        a(j, j) = dble(temp1)
+        ix = ix+incx
+        iy = iy+incy
     end do
 !
 999 continue

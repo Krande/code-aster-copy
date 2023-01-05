@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfcoef(ds_contact    , model_ndim , nb_node_mast, nods_mast_indx, coef_node,&
-                  node_slav_indx, norm       , tau1        , tau2          , coef_cont,&
-                  coef_fric_x   , coef_fric_y, nb_dof_tot  , dof_indx)
+subroutine cfcoef(ds_contact, model_ndim, nb_node_mast, nods_mast_indx, coef_node, &
+                  node_slav_indx, norm, tau1, tau2, coef_cont, &
+                  coef_fric_x, coef_fric_y, nb_dof_tot, dof_indx)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -88,28 +88,28 @@ implicit none
 !
 ! - Initializations
 !
-    coef_cont(1:30)   = 0.d0
+    coef_cont(1:30) = 0.d0
     coef_fric_x(1:30) = 0.d0
     coef_fric_y(1:30) = 0.d0
-    dof_indx (1:30)   = 0
+    dof_indx(1:30) = 0
 !
 ! - Access to contact datastructure
 !
     sdcont_nbddl = ds_contact%sdcont_solv(1:14)//'.NBDDL'
     sdcont_ddlco = ds_contact%sdcont_solv(1:14)//'.DDLCO'
-    call jeveuo(sdcont_nbddl, 'L', vi = v_sdcont_nbddl)
-    call jeveuo(sdcont_ddlco, 'L', vi = v_sdcont_ddlco)
+    call jeveuo(sdcont_nbddl, 'L', vi=v_sdcont_nbddl)
+    call jeveuo(sdcont_ddlco, 'L', vi=v_sdcont_ddlco)
 !
 ! - For slave nodes
 !
-    jdecdl      = v_sdcont_nbddl(node_slav_indx)
-    nb_dof_slav = v_sdcont_nbddl(node_slav_indx+1) - v_sdcont_nbddl(node_slav_indx)
+    jdecdl = v_sdcont_nbddl(node_slav_indx)
+    nb_dof_slav = v_sdcont_nbddl(node_slav_indx+1)-v_sdcont_nbddl(node_slav_indx)
 !
     do i_dime = 1, model_ndim
-        coef_cont(i_dime)   = 1.d0 * norm(i_dime)
-        coef_fric_x(i_dime) = 1.d0 * tau1(i_dime)
-        coef_fric_y(i_dime) = 1.d0 * tau2(i_dime)
-        dof_indx(i_dime)    = v_sdcont_ddlco(jdecdl+i_dime)
+        coef_cont(i_dime) = 1.d0*norm(i_dime)
+        coef_fric_x(i_dime) = 1.d0*tau1(i_dime)
+        coef_fric_y(i_dime) = 1.d0*tau2(i_dime)
+        dof_indx(i_dime) = v_sdcont_ddlco(jdecdl+i_dime)
     end do
     jdecal = nb_dof_slav
 !
@@ -117,15 +117,15 @@ implicit none
 !
     do i_node_mast = 1, nb_node_mast
         node_mast_indx = nods_mast_indx(i_node_mast)
-        jdecdl         = v_sdcont_nbddl(node_mast_indx)
-        nb_dof_mast    = v_sdcont_nbddl(node_mast_indx+1) - v_sdcont_nbddl(node_mast_indx)
+        jdecdl = v_sdcont_nbddl(node_mast_indx)
+        nb_dof_mast = v_sdcont_nbddl(node_mast_indx+1)-v_sdcont_nbddl(node_mast_indx)
         do i_dime = 1, nb_dof_mast
-            coef_cont(jdecal+i_dime)   = coef_node(i_node_mast) * norm(i_dime)
-            coef_fric_x(jdecal+i_dime) = coef_node(i_node_mast) * tau1(i_dime)
-            coef_fric_y(jdecal+i_dime) = coef_node(i_node_mast) * tau2(i_dime)
-            dof_indx(jdecal+i_dime)    = v_sdcont_ddlco(jdecdl+i_dime)
+            coef_cont(jdecal+i_dime) = coef_node(i_node_mast)*norm(i_dime)
+            coef_fric_x(jdecal+i_dime) = coef_node(i_node_mast)*tau1(i_dime)
+            coef_fric_y(jdecal+i_dime) = coef_node(i_node_mast)*tau2(i_dime)
+            dof_indx(jdecal+i_dime) = v_sdcont_ddlco(jdecdl+i_dime)
         end do
-        jdecal = jdecal + nb_dof_mast
+        jdecal = jdecal+nb_dof_mast
     end do
 !
 ! - Total number of dof

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cjsqco(gamma, sig, x, pref, epssig,&
-                  i1, s, sii, siirel, cos3ts,&
-                  hts, dets, q, qii, qiirel,&
+subroutine cjsqco(gamma, sig, x, pref, epssig, &
+                  i1, s, sii, siirel, cos3ts, &
+                  hts, dets, q, qii, qiirel, &
                   cos3tq, htq, detq)
     implicit none
 !     CALCUL DE GRANDEURS UTILES
@@ -56,25 +56,25 @@ subroutine cjsqco(gamma, sig, x, pref, epssig,&
     real(kind=8) :: i1, sii, siirel, cos3ts, qii, qiirel, cos3tq
     real(kind=8) :: hts, dets, htq, detq
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
 ! --- CALCUL DES ANGLES DE LODE POUR S ET Q ----------------------------
 ! ======================================================================
     call lcdevi(sig, s)
     call lcdete(s, dets)
     sii = norm2(s(1:ndt))
-    siirel = sii / pref
+    siirel = sii/pref
     cos3ts = cos3t(s, pref, epssig)
 !
     call cjsqij(s, i1, x, q)
     call lcdete(q, detq)
     qii = norm2(q(1:ndt))
-    qiirel = qii / pref
+    qiirel = qii/pref
     cos3tq = cos3t(q, pref, epssig)
 ! ======================================================================
 ! --- CALCUL DE HT POUR LES ANGLES DE LODE DE S ET Q -------------------
 ! ======================================================================
-    hts = hlode(gamma,cos3ts)
-    htq = hlode(gamma,cos3tq)
+    hts = hlode(gamma, cos3ts)
+    htq = hlode(gamma, cos3tq)
 ! ======================================================================
 end subroutine

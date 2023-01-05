@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,73 +47,73 @@ subroutine loncar(ndim, typma, coord, l)
 !     NDIM EST LA DIMENSION DU MAILLAGE
 !     POUR LES MAILLES DE BORD, CE N'EST PAS LA DIMENSION DE LA MAILLE
 !
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
+    ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
 !
     if (typma(1:4) .eq. 'HEXA') then
 !
 !       LA LONGUEUR CARACTÉRISTIQUE EST LA GRANDE DIAGONALE N1-N7
-        l=sqrt( (coord(1)-coord(19))**2 + (coord(2)-coord(20))**2&
-        + (coord(3)-coord(21))**2 )
+        l = sqrt((coord(1)-coord(19))**2+(coord(2)-coord(20))**2 &
+                 +(coord(3)-coord(21))**2)
 !
-    else if (typma(1:5).eq.'PENTA') then
+    else if (typma(1:5) .eq. 'PENTA') then
 !
 !       LA LONGUEUR CARACTÉRISTIQUE EST ((N3-N1)*(N3-N2)*(N3-N6))^(1/3)
-        ar(1)=sqrt((coord(7)-coord(1))**2 + (coord(8)-coord(2))**2&
-        + (coord(9)-coord(3))**2 )
-        ar(2)=sqrt((coord(7)-coord(4))**2 + (coord(8)-coord(5))**2&
-        + (coord(9)-coord(6))**2 )
-        ar(3)=sqrt((coord(7)-coord(16))**2 + (coord(8)-coord(17))**2&
-        + (coord(9)-coord(18))**2 )
-        l=(ar(1)*ar(2)*ar(3))**(1.d0/3.d0)
+        ar(1) = sqrt((coord(7)-coord(1))**2+(coord(8)-coord(2))**2 &
+                     +(coord(9)-coord(3))**2)
+        ar(2) = sqrt((coord(7)-coord(4))**2+(coord(8)-coord(5))**2 &
+                     +(coord(9)-coord(6))**2)
+        ar(3) = sqrt((coord(7)-coord(16))**2+(coord(8)-coord(17))**2 &
+                     +(coord(9)-coord(18))**2)
+        l = (ar(1)*ar(2)*ar(3))**(1.d0/3.d0)
 !
-    else if (typma(1:5).eq.'PYRAM') then
+    else if (typma(1:5) .eq. 'PYRAM') then
 !
 !       M : MILIEU DE LA FACE QUADRANGLE
         do i = 1, 3
-            m(i) = (coord( 3*(1-1)+i) + coord(3*(2-1)+i) + coord(3*(3- 1)+i) + coord(3*(4-1)+i )&
-                   ) / 4.d0
+            m(i) = (coord(3*(1-1)+i)+coord(3*(2-1)+i)+coord(3*(3-1)+i)+coord(3*(4-1)+i) &
+                    )/4.d0
         end do
 !
 !       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N3)*(M-N5))^(1/2)
-        ar(1)=sqrt( (coord(3*(3-1)+1)-coord(3*(1-1)+1))**2 + (coord(3*&
-        (3-1)+2)-coord(3*(1-1)+2))**2 + (coord(3*(3-1)+3)-coord(3*(1-&
-        1)+3))**2 )
-        ar(2)=sqrt( ( m(1)-coord(3*(5-1)+1))**2 + ( m(2)-coord(3*(5-1)&
-        +2))**2 + ( m(3)-coord(3*(5-1)+3))**2 )
-        l=sqrt(ar(1)*ar(2))
+        ar(1) = sqrt((coord(3*(3-1)+1)-coord(3*(1-1)+1))**2+(coord(3* &
+                                       (3-1)+2)-coord(3*(1-1)+2))**2+(coord(3*(3-1)+3)-coord(3*(1- &
+                                                                                          1)+3))**2)
+        ar(2) = sqrt((m(1)-coord(3*(5-1)+1))**2+(m(2)-coord(3*(5-1) &
+                                                            +2))**2+(m(3)-coord(3*(5-1)+3))**2)
+        l = sqrt(ar(1)*ar(2))
 !
-    else if (typma(1:5).eq.'TETRA') then
+    else if (typma(1:5) .eq. 'TETRA') then
 !
 !       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
         do i = 1, 3
-            ar(i)=sqrt((coord(1)-coord(3*i+1))**2 + (coord(2)-coord(3*&
-            i+2))**2 + (coord(3)-coord(3*i+3))**2 )
+            ar(i) = sqrt((coord(1)-coord(3*i+1))**2+(coord(2)-coord(3* &
+                                                                i+2))**2+(coord(3)-coord(3*i+3))**2)
         end do
-        l=(ar(1)*ar(2)*ar(3))**(1.d0/3.d0)
+        l = (ar(1)*ar(2)*ar(3))**(1.d0/3.d0)
 !
-    else if (typma(1:4).eq.'QUAD') then
+    else if (typma(1:4) .eq. 'QUAD') then
 !
 !     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         do i = 1, 2
-            ar(i) = (coord(1)-coord(ndim*i+1))**2 + (coord(2)-coord( ndim*i+2) )**2
-            if (ndim .eq. 3) ar(i) = ar(i) + (coord(3)-coord(ndim*i+3)) **2
+            ar(i) = (coord(1)-coord(ndim*i+1))**2+(coord(2)-coord(ndim*i+2))**2
+            if (ndim .eq. 3) ar(i) = ar(i)+(coord(3)-coord(ndim*i+3))**2
         end do
-        l=(sqrt(ar(1)*ar(2)))**(1.d0/2.d0)
+        l = (sqrt(ar(1)*ar(2)))**(1.d0/2.d0)
 !
-    else if (typma(1:4).eq.'TRIA') then
+    else if (typma(1:4) .eq. 'TRIA') then
 !
 !     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         do i = 1, 2
-            ar(i) = (coord(1)-coord(ndim*i+1))**2 + (coord(2)-coord( ndim*i+2) )**2
-            if (ndim .eq. 3) ar(i) = ar(i) + (coord(3)-coord(ndim*i+3)) **2
+            ar(i) = (coord(1)-coord(ndim*i+1))**2+(coord(2)-coord(ndim*i+2))**2
+            if (ndim .eq. 3) ar(i) = ar(i)+(coord(3)-coord(ndim*i+3))**2
         end do
-        l=(sqrt(ar(1)*ar(2)))**(1.d0/2.d0)
+        l = (sqrt(ar(1)*ar(2)))**(1.d0/2.d0)
 !
-    else if (typma(1:3).eq.'SEG') then
+    else if (typma(1:3) .eq. 'SEG') then
 !
 !       LA LONGUEUR CARACTÉRISTIQUE EST (N1-N2)^(1/2)
-        l = (coord(1)-coord(ndim+1))**2 + (coord(2)-coord(ndim+2))**2
-        if (ndim .eq. 3) l = l + (coord(3)-coord(ndim+3))**2
+        l = (coord(1)-coord(ndim+1))**2+(coord(2)-coord(ndim+2))**2
+        if (ndim .eq. 3) l = l+(coord(3)-coord(ndim+3))**2
         l = sqrt(l)
 !
     else
@@ -121,6 +121,6 @@ subroutine loncar(ndim, typma, coord, l)
 !       TYPE D'ELEMENT FINI PAS TRAITE
         ASSERT(.false.)
 !
-    endif
+    end if
 !
 end subroutine

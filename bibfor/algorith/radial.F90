@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine radial(nbsig, sigm, sigp, indm, indp,&
+subroutine radial(nbsig, sigm, sigp, indm, indp, &
                   icine, xm, xp, normdn)
 !
 !     BUT:
@@ -55,7 +55,7 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
     real(kind=8) :: dn1n2(6), ndn, preci, trt1, trt2
 ! ......................................................................
 !
-    if ((nint(indm).gt.0.d0) .and. (nint(indp).gt.0.d0)) then
+    if ((nint(indm) .gt. 0.d0) .and. (nint(indp) .gt. 0.d0)) then
 !
         call dcopy(nbsig, sigm, 1, tensm, 1)
         call dcopy(nbsig, sigp, 1, tensp, 1)
@@ -63,29 +63,29 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
         zernor = r8prem()
         if (icine .eq. 1) then
 !
-            call daxpy(nbsig, -1.d0, xm, 1, tensm,&
+            call daxpy(nbsig, -1.d0, xm, 1, tensm, &
                        1)
-            call daxpy(nbsig, -1.d0, xp, 1, tensp,&
+            call daxpy(nbsig, -1.d0, xp, 1, tensp, &
                        1)
 !
-        endif
+        end if
 !
 !        PART HYDROSTATIQUE DES CONTRAINTES
-        trt1 = ( tensm(1)+tensm(2)+tensm(3))/3.d0
-        trt2 = ( tensp(1)+tensp(2)+tensp(3))/3.d0
+        trt1 = (tensm(1)+tensm(2)+tensm(3))/3.d0
+        trt2 = (tensp(1)+tensp(2)+tensp(3))/3.d0
 !        PART DEVIATORIQUE DES CONTRAINTES
 !
         call dcopy(nbsig, tensm, 1, devm, 1)
         call dcopy(nbsig, tensp, 1, devp, 1)
         do i = 1, 3
-            devm(i)=devm(i)-trt1
-            devp(i)=devp(i)-trt2
+            devm(i) = devm(i)-trt1
+            devp(i) = devp(i)-trt2
         end do
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVM(4),1)
 !         CALL DSCAL(NBSIG-3,SQRT(2.D0),DEVP(4),1)
-        smeq=sqrt(ddot(nbsig,devm,1,devm,1))
-        speq=sqrt(ddot(nbsig,devp,1,devp,1))
-        preci=1.d3*zernor*max(smeq,speq)
+        smeq = sqrt(ddot(nbsig, devm, 1, devm, 1))
+        speq = sqrt(ddot(nbsig, devp, 1, devp, 1))
+        preci = 1.d3*zernor*max(smeq, speq)
 !
 ! ----      DANS LE CAS OU NORME(TENSM) = 0  OU NORME(DTENSMA) = 0 :
 ! ----      ON MET L'INDICATEUR A 0 :
@@ -101,16 +101,16 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
 !
 !          CALCUL DE LA DIFFERENCE N1 - N2
 !
-            call daxpy(nbsig, -1.d0, n2, 1, dn1n2,&
+            call daxpy(nbsig, -1.d0, n2, 1, dn1n2, &
                        1)
-            ndn=sqrt(ddot(nbsig,dn1n2,1,dn1n2,1))
+            ndn = sqrt(ddot(nbsig, dn1n2, 1, dn1n2, 1))
             normdn = ndn/2.d0
-        endif
+        end if
 !
     else
 !        PAS D'INDICATEUR. ON NE FAIT RIEN
         normdn = 0.d0
 !
-    endif
+    end if
 !
 end subroutine

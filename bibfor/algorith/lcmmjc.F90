@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir,&
-                  is, necrci, dgamms, alphmr, dalpha,&
+subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir, &
+                  is, necrci, dgamms, alphmr, dalpha, &
                   sgnr, daldgr)
     implicit none
 #include "asterc/r8prem.h"
@@ -48,9 +48,9 @@ subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir,&
 !     ----------------------------------------------------------------
 !
 !
-    iec=nbcomm(ifa,2)
-    nuecin=nint(coeft(iec))
-    daldgr=0.d0
+    iec = nbcomm(ifa, 2)
+    nuecin = nint(coeft(iec))
+    daldgr = 0.d0
 !
 !--------------------------------------------------------------------
 !     POUR UN NOUVEL ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF
@@ -59,23 +59,23 @@ subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir,&
 !      IF (NECRCI.EQ.'ECRO_CINE1') THEN
     if (nuecin .eq. 1) then
 !          D=COEFT(IEC-1+1)
-        d=coeft(iec+1)
-        daldgr=0.d0
+        d = coeft(iec+1)
+        daldgr = 0.d0
         if (is .eq. ir) then
-            daldgr=(1.d0-d*alphmr*sgnr)/(1.d0+d*abs(dgamms))**2
-        endif
-    endif
+            daldgr = (1.d0-d*alphmr*sgnr)/(1.d0+d*abs(dgamms))**2
+        end if
+    end if
 !
 !      IF (NECRCI.EQ.'ECRO_CINE2') THEN
     if (nuecin .eq. 2) then
-        daldgr=0.d0
+        daldgr = 0.d0
         if (is .eq. ir) then
             if (abs(dgamms) .gt. r8prem()) then
-                daldgr=dalpha/dgamms
+                daldgr = dalpha/dgamms
             else
-                daldgr=1.d0
-            endif
-        endif
-    endif
+                daldgr = 1.d0
+            end if
+        end if
+    end if
 !
 end subroutine

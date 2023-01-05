@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine modirepresu(resuou, resuin )
+subroutine modirepresu(resuou, resuin)
 !
     implicit none
     character(len=19) :: resuou, resuin
@@ -67,8 +67,8 @@ subroutine modirepresu(resuou, resuin )
     real(kind=8) :: prec
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-    character(len= 8) :: crit, tych, nomma, model, modelRefe
-    character(len= 8) :: carele, exipla, exicoq
+    character(len=8) :: crit, tych, nomma, model, modelRefe
+    character(len=8) :: carele, exipla, exicoq
     character(len=16) :: option, tysd, type, type_cham, repere
     character(len=19) :: knum
     character(len=19) :: chams1, chams0, chafus, chs(2), ligrel
@@ -77,9 +77,9 @@ subroutine modirepresu(resuou, resuin )
 !
     aster_logical :: lreuse, lcumu(2), lcoc(2), effort_elno, lModelVariable
 !
-    data lcumu/.false.,.false./
-    data lcoc/.false.,.false./
-    data lcoer/1.d0,1.d0/
+    data lcumu/.false., .false./
+    data lcoc/.false., .false./
+    data lcoer/1.d0, 1.d0/
 ! ---------------------------------------------------------------------
     call jemarq()
 !
@@ -92,8 +92,8 @@ subroutine modirepresu(resuou, resuin )
     lreuse = .false.
     if (resuin .eq. resuou) then
         lreuse = .true.
-        resuou ='MODIREPE'
-    endif
+        resuou = 'MODIREPE'
+    end if
 !
     call jelira(resuin//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) goto 999
@@ -105,16 +105,16 @@ subroutine modirepresu(resuou, resuin )
 !   DEFINITION DU REPERE UTILISE
     call getvtx(' ', 'REPERE', scal=repere, nbret=i)
 
-    if ( lreuse ) then
-       if ( i .eq. 0) then
-          call utmess('F', 'MODELISA3_14')
-       endif
-       if ( (repere.ne.'COQUE_INTR_UTIL') .and. &
-            (repere.ne.'COQUE_UTIL_INTR') .and. &
-            (repere.ne.'UTILISATEUR') ) then
-          call utmess('F', 'MODELISA3_15', nk=1, valk=repere )
-       endif
-    endif
+    if (lreuse) then
+        if (i .eq. 0) then
+            call utmess('F', 'MODELISA3_14')
+        end if
+        if ((repere .ne. 'COQUE_INTR_UTIL') .and. &
+            (repere .ne. 'COQUE_UTIL_INTR') .and. &
+            (repere .ne. 'UTILISATEUR')) then
+            call utmess('F', 'MODELISA3_15', nk=1, valk=repere)
+        end if
+    end if
 !
 !   RECUPERATION DES NUMEROS D'ORDRE DE LA STRUCTURE DE DONNEES DE TYPE RESULTAT RESU A PARTIR
 !   DES VARIABLES D'ACCES UTILISATEUR 'NUME_ORDRE','FREQ','INST','NOEUD_CMP'
@@ -125,28 +125,28 @@ subroutine modirepresu(resuou, resuin )
     call rsutnu(resuin, ' ', 1, knum, nbordr, prec, crit, iret)
     if (iret .eq. 10) then
         call utmess('F', 'CALCULEL4_8', sk=resuin)
-    endif
+    end if
     if (iret .ne. 0) then
         call utmess('F', 'ALGORITH3_41')
-    endif
+    end if
     call jeveuo(knum, 'L', jordr)
     call rscrsd('G', resuou, tysd, nbordr)
 !
     lModelVariable = ASTER_FALSE
     modelRefe = " "
     do ioc = 1, nocc
-        call getvtx('MODI_CHAM', 'NOM_CHAM',  iocc=ioc, scal=option,    nbret=n0)
+        call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
-        call getvtx('MODI_CHAM', 'NOM_CMP',   iocc=ioc, nbval=0,        nbret=n1)
-        nbcmp = - n1
-        if ( type_cham.eq.'VECT_3D' ) then
-            if ((nbcmp.ne.3).and.(nbcmp.ne.6)) then
-                call utmess('F', 'ALGORITH2_36',si=nbcmp)
-            endif
-            if (nbcmp.eq.6) then
+        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=ioc, nbval=0, nbret=n1)
+        nbcmp = -n1
+        if (type_cham .eq. 'VECT_3D') then
+            if ((nbcmp .ne. 3) .and. (nbcmp .ne. 6)) then
+                call utmess('F', 'ALGORITH2_36', si=nbcmp)
+            end if
+            if (nbcmp .eq. 6) then
                 type_cham = 'VECTR_3D'
-            endif
-        endif
+            end if
+        end if
         do iord = 1, nbordr
             call jemarq()
             call jerecu('V')
@@ -158,58 +158,58 @@ subroutine modirepresu(resuou, resuin )
 !           CHAMP1 SERA ENSUITE RECREE SUR LA BASE GLOBALE
             call copisd('CHAMP_GD', 'V', champ0, champ1)
 !           RECUPERATION DU MODELE ASSOCIE AU CHAMP
-            model='';carele=''
-            call rslesd(resuin(1:8), iordr, model_ = model, cara_elem_ = carele)
+            model = ''; carele = ''
+            call rslesd(resuin(1:8), iordr, model_=model, cara_elem_=carele)
             if (iord .eq. 1) then
                 modelRefe = model
             else
-                if (modelRefe.ne.model) then
+                if (modelRefe .ne. model) then
                     lModelVariable = ASTER_TRUE
-                endif
-            endif
+                end if
+            end if
             if (model .ne. '') then
                 call dismoi('EXI_PLAQUE', model, 'MODELE', repk=exipla)
-                call dismoi('EXI_COQUE',  model, 'MODELE', repk=exicoq)
-                if ( ((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and. &
-                     ((type_cham.eq.'TENS_2D').or.(type_cham.eq.'TENS_3D')) .and.&
-                     (repere.eq.'UTILISATEUR') ) then
+                call dismoi('EXI_COQUE', model, 'MODELE', repk=exicoq)
+                if (((exipla(1:3) .eq. 'OUI') .or. (exicoq(1:3) .eq. 'OUI')) .and. &
+                    ((type_cham .eq. 'TENS_2D') .or. (type_cham .eq. 'TENS_3D')) .and. &
+                    (repere .eq. 'UTILISATEUR')) then
                     call utmess('F', 'ALGORITH3_7')
-                endif
-            endif
+                end if
+            end if
 !           Dans le cas 'VECTR_3D'
 !               Obligatoire : modèle , cara_elem
 !                             repere = UTILISATEUR
 !                             option = EFGE_ELNO ou SIEF_ELNO
-            if (type_cham.eq.'VECTR_3D') then
-                effort_elno = (option.eq.'EFGE_ELNO').or.(option.eq.'SIEF_ELNO')
-                if ( (model.eq.'').or.(carele.eq.'').or.(repere.ne.'UTILISATEUR').or. &
-                     (.not. effort_elno) ) then
+            if (type_cham .eq. 'VECTR_3D') then
+                effort_elno = (option .eq. 'EFGE_ELNO') .or. (option .eq. 'SIEF_ELNO')
+                if ((model .eq. '') .or. (carele .eq. '') .or. (repere .ne. 'UTILISATEUR') .or. &
+                    (.not. effort_elno)) then
                     call utmess('F', 'ALGORITH2_32')
-                endif
-            endif
+                end if
+            end if
 !
 !           RECUPERATION DE LA NATURE DES CHAMPS (CHAM_NO OU CHAM_ELEM)
             if (tych(1:4) .eq. 'NOEU') then
-                if (type_cham.eq.'VECTR_3D') then
+                if (type_cham .eq. 'VECTR_3D') then
                     call utmess('F', 'ALGORITH2_31')
-                endif
+                end if
                 call chrpno(champ1, repere, nbcmp, ioc, type_cham)
-            else if (tych(1:2).eq.'EL') then
+            else if (tych(1:2) .eq. 'EL') then
                 call chrpel(champ1, repere, nbcmp, ioc, type_cham, &
                             option, model, carele, lModelVariable)
             else
                 valk(1) = tych
                 valk(2) = champ1
                 call utmess('A', 'ALGORITH9_69', nk=2, valk=valk)
-            endif
+            end if
             call rsnoch(resuou, option, iordr)
             call jedema()
-        enddo
-    enddo
+        end do
+    end do
 !
     nompar = '&&OP0191.NOMS_PARA'
     call rsnopa(resuin, 2, nompar, nbac, nbpa)
-    nbpara = nbac + nbpa
+    nbpara = nbac+nbpa
     call jeveuo(nompar, 'L', jpa)
     do iord = 1, nbordr
         iordr = zi(jordr-1+iord)
@@ -218,23 +218,23 @@ subroutine modirepresu(resuou, resuin )
             call rsadpa(resuou, 'E', 1, zk16(jpa+j-1), iordr, 1, sjv=iadou, styp=type)
             if (type(1:1) .eq. 'I') then
                 zi(iadou) = zi(iadin)
-            else if (type(1:1).eq.'R') then
+            else if (type(1:1) .eq. 'R') then
                 zr(iadou) = zr(iadin)
-            else if (type(1:1).eq.'C') then
+            else if (type(1:1) .eq. 'C') then
                 zc(iadou) = zc(iadin)
-            else if (type(1:3).eq.'K80') then
+            else if (type(1:3) .eq. 'K80') then
                 zk80(iadou) = zk80(iadin)
-            else if (type(1:3).eq.'K32') then
+            else if (type(1:3) .eq. 'K32') then
                 zk32(iadou) = zk32(iadin)
-            else if (type(1:3).eq.'K24') then
+            else if (type(1:3) .eq. 'K24') then
                 zk24(iadou) = zk24(iadin)
-            else if (type(1:3).eq.'K16') then
+            else if (type(1:3) .eq. 'K16') then
                 zk16(iadou) = zk16(iadin)
-            else if (type(1:2).eq.'K8') then
+            else if (type(1:2) .eq. 'K8') then
                 zk8(iadou) = zk8(iadin)
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
 !
     call titre()
     if (niv .eq. 2) call rsinfo(resuou, ifm)
@@ -253,13 +253,13 @@ subroutine modirepresu(resuou, resuin )
                 call jemarq()
                 call jerecu('V')
                 iordr = zi(jordr-1+iord)
-                call rsexch('F', resuin, option, iordr, champ0,iret)
-                call rsexch(' ', resuou, option, iordr, champ1,iret)
-                chams0='&&CHRPEL.CHAMS0'
-                chams1='&&CHRPEL.CHAMS1'
-                chafus='&&CHRPEL.CHAFUS'
-                chs(1) =chams0
-                chs(2) =chams1
+                call rsexch('F', resuin, option, iordr, champ0, iret)
+                call rsexch(' ', resuou, option, iordr, champ1, iret)
+                chams0 = '&&CHRPEL.CHAMS0'
+                chams1 = '&&CHRPEL.CHAMS1'
+                chafus = '&&CHRPEL.CHAFUS'
+                chs(1) = chams0
+                chs(2) = chams1
                 call celces(champ0, 'V', chams0)
                 call celces(champ1, 'V', chams1)
                 call cesfus(2, chs, lcumu, lcoer, lcoec, lcoc(1), 'V', chafus)
@@ -267,13 +267,13 @@ subroutine modirepresu(resuou, resuin )
                 call cescel(chafus, ligrel, option, ' ', 'NAN', nncp, 'G', champ0, 'F', ibid)
                 call detrsd('CHAMP', champ1)
                 call jedema()
-            enddo
-        enddo
+            end do
+        end do
         call detrsd('CHAMP', chams0)
         call detrsd('CHAMP', chams1)
         call detrsd('CHAMP', chafus)
         call detrsd('RESULTAT', resuou)
-    endif
+    end if
 !
     call jedema()
 end subroutine

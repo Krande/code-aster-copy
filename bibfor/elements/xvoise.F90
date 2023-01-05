@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
+subroutine xvoise(nnotot, nse, nnop, nno, jcnset, &
                   cninv, cvoise)
     implicit none
 #include "jeveux.h"
     integer :: nvois
-    parameter (nvois=3)
+    parameter(nvois=3)
     integer :: nnotot, nse, nnop, nno, jcnset
     integer :: cninv(nnotot, nse+1), cvoise(nvois, nse)
 !
@@ -71,17 +71,17 @@ subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
 !
 ! ------- RECUPERATION DE LA NUMEROTATION XFEM
 !
-            ino=zi(jcnset-1+nno*(ise-1)+in)
+            ino = zi(jcnset-1+nno*(ise-1)+in)
 !
 ! ------- NUMEROTATION PROPRE A LA CONNECTIVITE INVERSE
 !
             if (ino .lt. 1000) then
-                jno=ino
+                jno = ino
             else
-                jno=ino-1000+nnop
-            endif
+                jno = ino-1000+nnop
+            end if
 !
-            nbmav1=cninv(jno,1)
+            nbmav1 = cninv(jno, 1)
 !
 ! --------------------------------------------------------------------
 ! -------  BOUCLE SUR LES VOISINS POTENTIELS CONTENANT "JNO"  --------
@@ -89,8 +89,8 @@ subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
 !
             do imav1 = 1, nbmav1
 !
-                indma1=imav1+1
-                numav1=cninv(jno,indma1)
+                indma1 = imav1+1
+                numav1 = cninv(jno, indma1)
 !
 ! --------- ON S'ASSURE QUE LE VOISIN POTENTIEL N'EST PAS LE
 ! --------- SOUS-ELEMENT COURANT
@@ -101,24 +101,24 @@ subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
 ! ----------- RESPECT DE LA NUMEROTATION AU SEIN DU SOUS-ELEMENT
 !
                     if (in .eq. nno) then
-                        insui=1
+                        insui = 1
                     else
-                        insui=in+1
-                    endif
+                        insui = in+1
+                    end if
 !
 ! ----------- RECUPERATION DE LA NUMEROTATION XFEM
 !
-                    inosui=zi(jcnset-1+nno*(ise-1)+insui)
+                    inosui = zi(jcnset-1+nno*(ise-1)+insui)
 !
 ! ----------- NUMEROTATION PROPRE A LA CONNECTIVITE INVERSE
 !
                     if (inosui .lt. 1000) then
-                        jnosui=inosui
+                        jnosui = inosui
                     else
-                        jnosui=inosui-1000+nnop
-                    endif
+                        jnosui = inosui-1000+nnop
+                    end if
 !
-                    nbmav2=cninv(jnosui,1)
+                    nbmav2 = cninv(jnosui, 1)
 !
 ! --------------------------------------------------------------------
 ! ----  BOUCLE SUR LES VOISINS POTENTIELS CONTENANT "JNOSUI"  --------
@@ -126,19 +126,19 @@ subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
 !
                     do imav2 = 1, nbmav2
 !
-                        indma2=imav2+1
-                        numav2=cninv(jnosui,indma2)
+                        indma2 = imav2+1
+                        numav2 = cninv(jnosui, indma2)
 !
 ! ------------- ON LOCALISE LE VOISIN SITUE EN VIS-À-VIS DE L'ARRETE
 ! ------------- [JNO,JNOSUI] (S'IL EXISTE), PUIS ON L'ECRIT DANS ZI()
 !
                         if (numav2 .eq. numav1) then
-                            cvoise(in,ise)=numav1
-                        endif
+                            cvoise(in, ise) = numav1
+                        end if
 !
                     end do
 !
-                endif
+                end if
 !
             end do
 !

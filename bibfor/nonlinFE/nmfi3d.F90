@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 
-subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
-                  vff, dfde, mate, option, geom,&
-                  deplm, ddepl, sigm, sigp, fint,&
-                  ktan, vim, vip, carcri, compor,&
-                  matsym, coopg, tm, tp, lMatr, lVect, lSigm,&
+subroutine nmfi3d(nno, nddl, npg, lgpg, wref, &
+                  vff, dfde, mate, option, geom, &
+                  deplm, ddepl, sigm, sigp, fint, &
+                  ktan, vim, vip, carcri, compor, &
+                  matsym, coopg, tm, tp, lMatr, lVect, lSigm, &
                   codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -39,14 +39,14 @@ implicit none
 #include "asterfort/r8inir.h"
 #include "blas/ddot.h"
 !
-integer :: nno, nddl, npg, lgpg, mate, codret
-real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg), carcri(*)
-real(kind=8) :: geom(nddl), deplm(nddl), ddepl(nddl), tm, tp
-real(kind=8) :: fint(nddl), ktan(*), coopg(4, npg)
-real(kind=8) :: sigm(3, npg), sigp(3, npg), vim(lgpg, npg), vip(lgpg, npg)
-character(len=16) :: option, compor(*)
-aster_logical :: matsym
-aster_logical, intent(in) :: lMatr, lVect, lSigm
+    integer :: nno, nddl, npg, lgpg, mate, codret
+    real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg), carcri(*)
+    real(kind=8) :: geom(nddl), deplm(nddl), ddepl(nddl), tm, tp
+    real(kind=8) :: fint(nddl), ktan(*), coopg(4, npg)
+    real(kind=8) :: sigm(3, npg), sigp(3, npg), vim(lgpg, npg), vip(lgpg, npg)
+    character(len=16) :: option, compor(*)
+    aster_logical :: matsym
+    aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
 !-----------------------------------------------------------------------
 !  OPTIONS DE MECANIQUE NON LINEAIRE POUR LES JOINTS 3D (TE0206)
@@ -82,7 +82,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids
     real(kind=8) :: angmas(3)
     type(Behaviour_Integ) :: BEHinteg
-    character(len=8), parameter :: typmod(2)=(/'3D      ','ELEMJOIN'/)
+    character(len=8), parameter :: typmod(2) = (/'3D      ', 'ELEMJOIN'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,14 +100,14 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
     if (lVect) then
         call r8inir(nddl, 0.d0, fint, 1)
-    endif
+    end if
     if (lMatr) then
         if (matsym) then
             call r8inir((nddl*(nddl+1))/2, 0.d0, ktan, 1)
         else
             call r8inir(nddl*nddl, 0.d0, ktan, 1)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Loop on Gauss points
 !
@@ -116,49 +116,49 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 ! CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
 ! DEPLACEMENTS AUX NOEUDS , AINSI QUE LE POIDS DES PG :
 !
-        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg),&
+        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg), &
                     geom, poids, b)
 !
 ! CALCUL DU SAUT DE DEPLACEMENT - : SUM, ET DE L'INCREMENT : DSU
 ! AU POINT DE GAUSS KPG
 !
-        sum(1) = ddot(nddl,b(1,1),3,deplm,1)
-        sum(2) = ddot(nddl,b(2,1),3,deplm,1)
-        sum(3) = ddot(nddl,b(3,1),3,deplm,1)
+        sum(1) = ddot(nddl, b(1, 1), 3, deplm, 1)
+        sum(2) = ddot(nddl, b(2, 1), 3, deplm, 1)
+        sum(3) = ddot(nddl, b(3, 1), 3, deplm, 1)
         if (lVect) then
-            dsu(1) = ddot(nddl,b(1,1),3,ddepl,1)
-            dsu(2) = ddot(nddl,b(2,1),3,ddepl,1)
-            dsu(3) = ddot(nddl,b(3,1),3,ddepl,1)
-        endif
+            dsu(1) = ddot(nddl, b(1, 1), 3, ddepl, 1)
+            dsu(2) = ddot(nddl, b(2, 1), 3, ddepl, 1)
+            dsu(3) = ddot(nddl, b(3, 1), 3, ddepl, 1)
+        end if
 ! ----- Compute behaviour
         code(kpg) = 0
-        sigmo     = 0.d0
+        sigmo = 0.d0
         do n = 1, 3
-            sigmo(n) = sigm(n,kpg)
+            sigmo(n) = sigm(n, kpg)
         end do
 !
-        BEHinteg%elem%coor_elga(kpg,1:3) = coopg(1:3,kpg)
+        BEHinteg%elem%coor_elga(kpg, 1:3) = coopg(1:3, kpg)
 !
         sigma = 0.d0
-        call nmcomp(BEHinteg,&
-                    'RIGI', kpg, 1, 3, typmod,&
-                    mate, compor, carcri, tm, tp,&
-                    3, sum, dsu, 6, sigmo,&
+        call nmcomp(BEHinteg, &
+                    'RIGI', kpg, 1, 3, typmod, &
+                    mate, compor, carcri, tm, tp, &
+                    3, sum, dsu, 6, sigmo, &
                     vim(1, kpg), option, angmas, &
                     sigma, vip(1, kpg), 36, dsidep, codret)
 ! ----- Stresses
         if (lSigm) then
             do n = 1, 3
-                sigp(n,kpg) = sigma(n)
+                sigp(n, kpg) = sigma(n)
             end do
-        endif
+        end if
 ! ----- Internal forces
         if (lVect) then
             ASSERT(lSigm)
             do ni = 1, nddl
-                fint(ni) = fint(ni) + poids*ddot(3,b(1,ni),1,sigma,1)
+                fint(ni) = fint(ni)+poids*ddot(3, b(1, ni), 1, sigma, 1)
             end do
-        endif
+        end if
 ! ----- Rigidity matrix
         if (lMatr) then
             if (matsym) then
@@ -168,7 +168,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
                         kk = kk+1
                         do p = 1, 3
                             do q = 1, 3
-                                ktan(kk) = ktan(kk) + poids*b(p,ni)* dsidep(p,q)*b(q,mj)
+                                ktan(kk) = ktan(kk)+poids*b(p, ni)*dsidep(p, q)*b(q, mj)
                             end do
                         end do
                     end do
@@ -180,13 +180,13 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
                         kk = kk+1
                         do p = 1, 3
                             do q = 1, 3
-                                ktan(kk) = ktan(kk) + poids*b(p,ni)* dsidep(p,q)*b(q,mj)
+                                ktan(kk) = ktan(kk)+poids*b(p, ni)*dsidep(p, q)*b(q, mj)
                             end do
                         end do
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call codere(code, npg, codret)

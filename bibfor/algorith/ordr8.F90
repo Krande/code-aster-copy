@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,21 +43,21 @@ subroutine ordr8(tab, nb, iord)
     real(kind=8) :: vmin
 !-----------------------------------------------------------------------
     do i = 1, nb
-        iord(i)=i
+        iord(i) = i
     end do
 !
     do i = 1, nb-1
-        vmin=tab(iord(i))
-        iormin=i
+        vmin = tab(iord(i))
+        iormin = i
         do j = i+1, nb
             if (tab(iord(j)) .lt. vmin) then
-                vmin=tab(iord(j))
-                iormin=j
-            endif
+                vmin = tab(iord(j))
+                iormin = j
+            end if
         end do
-        itemp=iord(i)
-        iord(i)=iord(iormin)
-        iord(iormin)=itemp
+        itemp = iord(i)
+        iord(i) = iord(iormin)
+        iord(iormin) = itemp
     end do
 !
 end subroutine

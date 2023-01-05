@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
+subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
                   nuconn, versio)
 ! aslint: disable=
     implicit none
@@ -65,11 +65,11 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
     integer :: jnuma, jtypma, jgroma, jnbnma, jnoma, jnbmag, jnbtym
     integer :: jindma, jtag, jgr
 !
-    parameter   (nbmxte=19)
+    parameter(nbmxte=19)
     integer :: nbno(nbmxte)
     integer, pointer :: noeuds(:) => null()
-    data        nbno/ 2, 3, 4, 4, 8, 6, 5, 3, 6, 9,10,27,&
-     &                      18,14, 1, 8,20,15,13/
+    data nbno/2, 3, 4, 4, 8, 6, 5, 3, 6, 9, 10, 27,&
+     &                      18, 14, 1, 8, 20, 15, 13/
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 !
 ! --- LECTURE DU NOMBRE D'ELEMENTS :
 !     ----------------------------
-    read(igmsh,'(I10)') nbmail
+    read (igmsh, '(I10)') nbmail
 !
 ! --- CREATION DE VECTEURS DE TRAVAIL :
 !     -------------------------------
@@ -122,9 +122,9 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 ! --- TAGS POUR LE FORMAT VERSION 2 :
 ! --- DIMENSIONNE A 2*NBMAIL CAR 2 TAGS PAS DEFAUT DANS GMSH
     if (versio .eq. 2) then
-        call jecrec('&&PREGMS.TAGS', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec('&&PREGMS.TAGS', 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                     nbmail)
-    endif
+    end if
 !
 ! --- LECTURE DES ENREGISTREMENTS RELATIFS AUX MAILLES ET AFFECTATION
 ! --- DES VECTEURS DE TRAVAIL :
@@ -142,37 +142,37 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 !
         if (versio .eq. 1) then
 !
-            read(igmsh,*) zi(jnuma+ima-1),zi(jtypma+ima-1), zi(jgroma+&
-            ima-1),ibid,zi(jnbnma+ima-1), (zi(jnoma+ij+k-1),k=1,zi(&
-            jnbnma+ima-1))
+            read (igmsh, *) zi(jnuma+ima-1), zi(jtypma+ima-1), zi(jgroma+ &
+                                       ima-1), ibid, zi(jnbnma+ima-1), (zi(jnoma+ij+k-1), k=1, zi( &
+                                                                                      jnbnma+ima-1))
 !
-        else if (versio.eq.2) then
+        else if (versio .eq. 2) then
 !
-            read(igmsh,*) ibid,ibid,nbtag
+            read (igmsh, *) ibid, ibid, nbtag
 !
             call jecroc(jexnum('&&PREGMS.TAGS', ima))
             call jeecra(jexnum('&&PREGMS.TAGS', ima), 'LONMAX', nbtag)
             call jeveuo(jexnum('&&PREGMS.TAGS', ima), 'E', jtag)
 !
-            backspace(igmsh)
-            read(igmsh,*) zi(jnuma+ima-1),zi(jtypma+ima-1), nbtag,(zi(&
-            jtag-1+k),k=1,nbtag), (zi(jnoma+ij+k-1),k=1,nbno(zi(&
-            jtypma+ima-1)))
+            backspace (igmsh)
+            read (igmsh, *) zi(jnuma+ima-1), zi(jtypma+ima-1), nbtag, (zi( &
+                                          jtag-1+k), k=1, nbtag), (zi(jnoma+ij+k-1), k=1, nbno(zi( &
+                                                                                     jtypma+ima-1)))
 !
-            zi(jnbnma+ima-1)=nbno(zi(jtypma+ima-1))
-            zi(jgroma+ima-1)=zi(jtag-1+1)
+            zi(jnbnma+ima-1) = nbno(zi(jtypma+ima-1))
+            zi(jgroma+ima-1) = zi(jtag-1+1)
             if (nbtag .eq. 0) then
-                zi(jgroma+ima-1)=0
-            endif
+                zi(jgroma+ima-1) = 0
+            end if
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !      INDICATION DES NOEUDS QUI NE SONT PAS ORPHELINS
         ityp = zi(jtypma+ima-1)
         do ino = 1, nbnoma(ityp)
-            node = zi(jnoma+ij+nuconn(ityp,ino)-1)
+            node = zi(jnoma+ij+nuconn(ityp, ino)-1)
             noeuds(node+1) = 1
         end do
 !
@@ -184,19 +184,19 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
                     exisgr = .true.
                     indgro = i
                     goto 30
-                endif
+                end if
             end do
- 30         continue
-            if (.not.exisgr) then
-                nbgrou = nbgrou + 1
+30          continue
+            if (.not. exisgr) then
+                nbgrou = nbgrou+1
                 indgro = nbgrou
                 zi(jindma+indgro-1) = zi(jgroma+ima-1)
-            endif
-        endif
-        zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1) + 1
+            end if
+        end if
+        zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1)+1
 !
-        ij = ij + zi(jnbnma+ima-1)
-        zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+ 1
+        ij = ij+zi(jnbnma+ima-1)
+        zi(jnbtym+zi(jtypma+ima-1)-1) = zi(jnbtym+zi(jtypma+ima-1)-1)+1
     end do
 !
     if (nbgrou .ne. 0) then
@@ -206,7 +206,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 !
 ! --- CREATION DE LA COLLECTION DES GROUPES DE MAILLES :
 !     ------------------------------------------------
-        call jecrec('&&PREGMS.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+        call jecrec('&&PREGMS.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                     indmax)
         call jeecra('&&PREGMS.LISTE.GROUP_MA', 'LONT', nbmail)
 !
@@ -233,24 +233,24 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
                         exisgr = .true.
                         indgro = i
                         goto 70
-                    endif
+                    end if
                 end do
- 70             continue
-                if (.not.exisgr) then
-                    nbgrou = nbgrou + 1
+70              continue
+                if (.not. exisgr) then
+                    nbgrou = nbgrou+1
                     indgro = nbgrou
-                endif
-            endif
-            zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1) + 1
+                end if
+            end if
+            zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1)+1
 !
             zi(jindma+indgro-1) = zi(jgroma+ima-1)
             call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', indgro), 'E', jgr)
             zi(jgr+zi(jnbmag+indgro-1)-1) = zi(jnuma+ima-1)
         end do
 !
-    endif
+    end if
 !
-    write(imes,*) 'NOMBRE DE MAILLES : ',nbmail
+    write (imes, *) 'NOMBRE DE MAILLES : ', nbmail
 !
     call jedema()
 !

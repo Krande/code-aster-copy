@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
+subroutine utnono(mess, nomma, type, nomgrp, nomobj, &
                   iret)
     implicit none
 #include "jeveux.h"
@@ -73,26 +73,26 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
         nom = '.NOMMAI         '
     else
         goto 999
-    endif
+    end if
 !
     call jeexin(jexnom(nomma//typgrp, nomgrp), iret1)
     if (iret1 .gt. 0) then
         call jelira(jexnom(nomma//typgrp, nomgrp), 'LONUTI', nbno)
     else
-        nbno=0
-    endif
+        nbno = 0
+    end if
     if (nbno .eq. 0) then
         if (typm .eq. ' ') goto 999
         if (type(1:5) .eq. 'NOEUD') then
             call utmess(typm, 'ELEMENTS_67', sk=nomgrp)
         else
             call utmess(typm, 'ELEMENTS_73', sk=nomgrp)
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
     iret = 0
-    ASSERT(nbno.gt.0)
+    ASSERT(nbno .gt. 0)
     if (nbno .ne. 1) then
         iret = 1
         if (typm .ne. ' ') then
@@ -105,10 +105,10 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
                 valk(1) = nomgrp
                 valk(2) = knbno
                 call utmess(typm, 'CALCULEL5_21', nk=2, valk=valk)
-            endif
+            end if
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
     call jeveuo(jexnom(nomma//typgrp, nomgrp), 'L', iad)
     call jenuno(jexnum(nomma//nom, zi(iad)), nomobj)

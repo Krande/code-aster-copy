@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
+subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex, &
                   nmost1, modsta)
 !    C. DUVAL
 !-----------------------------------------------------------------------
@@ -68,29 +68,29 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 !-----------------------------------------------------------------------
     call jemarq()
     call getvid(' ', 'MODE_STAT', nbval=0, nbret=n)
-    nmost1=-n
+    nmost1 = -n
     if (n .ne. 0) then
         call getvid(' ', 'MODE_STAT', scal=modsta, nbret=ibid)
-    endif
+    end if
 !
 !---------CONSTITUTION DE LA LISTE DES ADRESSES DES MODES STATIQUES
 !
     if (graexc .ne. 'DEPL_R') goto 999
 !
-    k24bd1=modsta//'           .NOEU'
+    k24bd1 = modsta//'           .NOEU'
 !     CALL JELIRA(K24BD1,'LONMAX',NMOST2,K24BD2)
 !     CALL JEVEUO(K24BD1,'L',IAD1)
     call jelira(modsta//'           .ORDR', 'LONMAX', nmost2)
     call jeveuo(modsta//'           .ORDR', 'L', vi=ordr)
     call wkvect('&&OP0131.LISTADORMOSTA', 'V V I', nnoeex, ilorms)
     do i1 = 1, nnoeex
-        zi(ilorms+i1-1)=0
+        zi(ilorms+i1-1) = 0
         do i2 = 1, nmost2
-            call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', ordr(i2),&
+            call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', ordr(i2), &
                         0, sjv=jpara, styp=kbid)
             if ((zk8(ilnoex+i1-1)//zk8(ilcpex+i1-1)) .eq. zk16(jpara)) then
-                zi(ilorms+i1-1)=i2
-            endif
+                zi(ilorms+i1-1) = i2
+            end if
         end do
     end do
 !
@@ -99,23 +99,23 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     call wkvect('&&OP0131.LISTADRMODSTA', 'V V I', nnoeex, ilamst)
     call wkvect('&&OP0131.LISTADRMODSTAC', 'V V I', nnoeex, ilamsc)
     do i1 = 1, nnoeex
-        i2=zi(ilorms+i1-1)
+        i2 = zi(ilorms+i1-1)
         if (i2 .eq. 0) then
             call utmess('F', 'ALGORITH10_33')
-        endif
-        k24bd1=modsta//'           .TACH'
+        end if
+        k24bd1 = modsta//'           .TACH'
         call jenonu(jexnom(k24bd1(1:19)//'.DESC', 'DEPL'), ibid)
         call jeveuo(jexnum(k24bd1, ibid), 'L', i3)
         call jenonu(jexnom(k24bd1(1:19)//'.DESC', grdmod), ibid)
         call jeveuo(jexnum(k24bd1, ibid), 'L', i3b)
-        k24bd2=zk24(i3+i2-1)
-        k24bd3=k24bd2(1:19)//'.VALE'
+        k24bd2 = zk24(i3+i2-1)
+        k24bd3 = k24bd2(1:19)//'.VALE'
         call jeveut(k24bd3, 'L', i4)
-        zi(ilamst+i1-1)=i4
-        k24bd2=zk24(i3b+i2-1)
-        k24bd3=k24bd2(1:19)//'.VALE'
+        zi(ilamst+i1-1) = i4
+        k24bd2 = zk24(i3b+i2-1)
+        k24bd3 = k24bd2(1:19)//'.VALE'
         call jeveut(k24bd3, 'L', i4)
-        zi(ilamsc+i1-1)=i4
+        zi(ilamsc+i1-1) = i4
     end do
 999 continue
     call jedema()

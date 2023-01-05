@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load_type,&
-                          ligrel_calc, nb_in_maxi, nb_in_prep, lpain      , lchin    ,&
-                          base       , resu_elem , vect_elem , iden_direct, name_inputz)
+subroutine load_neum_comp(stop, i_load, load_name, load_nume, load_type, &
+                          ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                          base, resu_elem, vect_elem, iden_direct, name_inputz)
 !
     implicit none
 !
@@ -77,13 +77,13 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum=19)
+    parameter(nb_type_neum=19)
 !
     integer :: iexist, i_type_neum, nb_in_add
     character(len=16) :: load_option
     character(len=24) :: load_ligrel
     integer :: nbout, nbin
-    character(len=8) :: lpaout, newnom,noma,kret
+    character(len=8) :: lpaout, newnom, noma, kret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,15 +94,15 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load
 ! ----- Get information about load
 !
         if (present(iden_direct)) then
-            call load_neum_spec(load_name   , load_nume  , load_type  , ligrel_calc, i_type_neum,&
-                                nb_type_neum, nb_in_maxi , nb_in_prep , lchin      , lpain      ,&
-                                nb_in_add   , load_ligrel, load_option, iden_direct = iden_direct,&
-                                name_inputz = name_inputz)
+            call load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_neum, &
+                                nb_type_neum, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                                nb_in_add, load_ligrel, load_option, iden_direct=iden_direct, &
+                                name_inputz=name_inputz)
         else
-            call load_neum_spec(load_name   , load_nume  , load_type  , ligrel_calc, i_type_neum,&
-                                nb_type_neum, nb_in_maxi , nb_in_prep , lchin      , lpain      ,&
-                                nb_in_add   , load_ligrel, load_option)
-        endif
+            call load_neum_spec(load_name, load_nume, load_type, ligrel_calc, i_type_neum, &
+                                nb_type_neum, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                                nb_in_add, load_ligrel, load_option)
+        end if
 !
         if (load_option .ne. 'No_Load') then
 !
@@ -111,11 +111,11 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load
             newnom = resu_elem(10:16)
             call gcnco2(newnom)
             resu_elem(10:16) = newnom(2:8)
-            call corich('E', resu_elem, ichin_ = i_load)
+            call corich('E', resu_elem, ichin_=i_load)
 !
 ! --------- Number of fields
 !
-            nbin  = nb_in_prep+nb_in_add
+            nbin = nb_in_prep+nb_in_add
             nbout = 1
 !
 ! --------- Computation (or not)
@@ -124,10 +124,10 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load
                 call copisd('CHAMP_GD', base, load_ligrel(1:8), resu_elem)
             else
 
-                call calcul(stop , load_option, load_ligrel, nbin  , lchin,&
-                            lpain, nbout      , resu_elem  , lpaout, base ,&
+                call calcul(stop, load_option, load_ligrel, nbin, lchin, &
+                            lpain, nbout, resu_elem, lpaout, base, &
                             'OUI')
-            endif
+            end if
 !
 ! --------- Copying output field
 !
@@ -137,12 +137,12 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load
                 call dismoi('PARALLEL_MESH', noma, 'MAILLAGE', repk=kret)
             else
                 kret = 'NON'
-            endif
-            if ( kret.eq.'NON' ) then
-                ASSERT((iexist.gt.0).or.(stop.eq.'C'))
-            endif
+            end if
+            if (kret .eq. 'NON') then
+                ASSERT((iexist .gt. 0) .or. (stop .eq. 'C'))
+            end if
             call reajre(vect_elem, resu_elem, base)
-        endif
+        end if
     end do
 
 end subroutine

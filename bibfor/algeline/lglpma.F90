@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine lglpma(n, a, b, c)
         do j = 1, n
             v = 0.0d0
             do k = 1, n
-                v = v + a(i,k)*b(k,j)
+                v = v+a(i, k)*b(k, j)
             end do
-            c(i,j) = v
+            c(i, j) = v
         end do
     end do
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
-                  cnsln, cnslt, grln, grlt, corres,&
+subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma, &
+                  cnsln, cnslt, grln, grlt, corres, &
                   ndim, ndomp, edomg)
     implicit none
 !
@@ -134,10 +134,10 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
     call infniv(ifm, niv)
 !
     if (niv .ge. 0) then
-        write(ifm,*)
-        write(ifm,*)'   PROJECTION DES LEVEL SETS SUR LE MAILLAGE'//&
+        write (ifm, *)
+        write (ifm, *) '   PROJECTION DES LEVEL SETS SUR LE MAILLAGE'//&
      &                  ' PHYSIQUE'
-    endif
+    end if
 !
 !     RETREIVE THE LIST OF THE NODES IN THE DOMAIN ON THE PHYSICAL MESH
     call jelira(ndomp, 'LONMAX', nunopr)
@@ -157,14 +157,14 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
 !        CREATE THE "CONNECTION" TABLE BETWEEN THE PHYSICAL AND
 !        AUXILIARY MESHES
     if (ndim .eq. 2) then
-        call pj2dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom),&
-                    nunopr, zi(jnto), ' ', ' ', corres,&
+        call pj2dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom), &
+                    nunopr, zi(jnto), ' ', ' ', corres, &
                     ldmax, distma, 0.d0)
     else
-        call pj3dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom),&
-                    nunopr, zi(jnto), ' ', ' ', corres,&
+        call pj3dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom), &
+                    nunopr, zi(jnto), ' ', ' ', corres, &
                     ldmax, distma, 0.d0)
-    endif
+    end if
 !
 !        CREATE TWO TEMPORARY FIELDS WHERE THE PROJECTED VALUES WILL BE
 !        STORED
@@ -175,13 +175,13 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
 !        STRUCTURES ARE AUTOMATICALLY DESTROYED BY THE SUBROUTINE
 !        "CNSPRJ"
     call cnsprj(dcnsln, corres, 'G', tmplsn, ibid)
-    ASSERT(ibid.eq.0)
+    ASSERT(ibid .eq. 0)
 !
 !        PROJECTION OF THE TANGENTIAL LEVELSET. THE EXISTING FIELD DATA
 !        STRUCTURES ARE AUTOMATICALLY DESTROYED BY THE SUBROUTINE
 !        "CNSPRJ"
     call cnsprj(dcnslt, corres, 'G', tmplst, ibid)
-    ASSERT(ibid.eq.0)
+    ASSERT(ibid .eq. 0)
 !
     call jedetr(corres)
 !
@@ -224,31 +224,31 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
 ! ----------------------------------------------------------------------
 !
     if (niv .ge. 0) then
-        write(ifm,*)'   CALCUL DES GRADIENTS DES LEVEL SETS SUR'//&
+        write (ifm, *) '   CALCUL DES GRADIENTS DES LEVEL SETS SUR'//&
      &                  ' LE MAILLAGE PHYSIQUE'
-    endif
+    end if
 !
 !        NORMAL LEVEL SET
     cnols = '&&OP0010.GR.CNOLS'
     celgls = '&&OP0010.GR.CELGLS'
     chams = '&&OP0010.GR.CHAMS'
 !
-    call cnscno(cnsln, ' ', 'NON', 'V', cnols,&
+    call cnscno(cnsln, ' ', 'NON', 'V', cnols, &
                 'F', ibid)
-    lpain(1)='PGEOMER'
-    lchin(1)=noma//'.COORDO'
-    lpain(2)='PNEUTER'
-    lchin(2)=cnols
-    lpaout(1)='PGNEUTR'
+    lpain(1) = 'PGEOMER'
+    lchin(1) = noma//'.COORDO'
+    lpain(2) = 'PNEUTER'
+    lchin(2) = cnols
+    lpaout(1) = 'PGNEUTR'
     celgls = '&&OP0010.GR.CELGLS'
-    lchout(1)=celgls
+    lchout(1) = celgls
 !
-    call calcul('S', 'GRAD_NEUT_R', ligrel, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'GRAD_NEUT_R', ligrel, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     call celces(celgls, 'V', chams)
-    call cescns(chams, ' ', 'V', grln, ' ',&
+    call cescns(chams, ' ', 'V', grln, ' ', &
                 ibid)
 !
     call detrsd('CHAM_NO', cnols)
@@ -256,22 +256,22 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
     call detrsd('CHAM_ELEM_S', chams)
 !
 !        TANGENTIAL LEVEL SET
-    call cnscno(cnslt, ' ', 'NON', 'V', cnols,&
+    call cnscno(cnslt, ' ', 'NON', 'V', cnols, &
                 'F', ibid)
-    lpain(1)='PGEOMER'
-    lchin(1)=noma//'.COORDO'
-    lpain(2)='PNEUTER'
-    lchin(2)=cnols
-    lpaout(1)='PGNEUTR'
+    lpain(1) = 'PGEOMER'
+    lchin(1) = noma//'.COORDO'
+    lpain(2) = 'PNEUTER'
+    lchin(2) = cnols
+    lpaout(1) = 'PGNEUTR'
     celgls = '&&OP0010.GR.CELGLS'
-    lchout(1)=celgls
+    lchout(1) = celgls
 !
-    call calcul('S', 'GRAD_NEUT_R', ligrel, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'GRAD_NEUT_R', ligrel, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     call celces(celgls, 'V', chams)
-    call cescns(chams, ' ', 'V', grlt, ' ',&
+    call cescns(chams, ' ', 'V', grlt, ' ', &
                 ibid)
 !
     call detrsd('CHAM_NO', cnols)

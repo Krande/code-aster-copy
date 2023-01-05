@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,9 @@ subroutine cetucr(motfac, model0)
 ! DECLARATION VARIABLES LOCALES
 !
     integer :: nbpar
-    parameter  ( nbpar = 2 )
+    parameter(nbpar=2)
     integer :: nbmcle
-    parameter  ( nbmcle = 3 )
+    parameter(nbmcle=3)
 !     ------------------------------------------------------------------
     integer :: n1, ibid, iaux
     real(kind=8) :: vr
@@ -60,13 +60,13 @@ subroutine cetucr(motfac, model0)
     character(len=16) :: motcle(nbmcle)
     character(len=19) :: table
 !     ------------------------------------------------------------------
-    data motcle / 'LONGUEUR', 'PRESSION', 'TEMPERATURE' /
-    data nomgrd / 'LONGUEUR', 'PRESSION', 'TEMP' /
+    data motcle/'LONGUEUR', 'PRESSION', 'TEMPERATURE'/
+    data nomgrd/'LONGUEUR', 'PRESSION', 'TEMP'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    ibid=0
-    cbid=(0.d0,0.d0)
+    ibid = 0
+    cbid = (0.d0, 0.d0)
 !
     modele = model0
 !
@@ -91,21 +91,21 @@ subroutine cetucr(motfac, model0)
 !
     call tbcrsd(table, 'G')
 !
-    nompar(1)='GRANDEUR'
-    typpar(1)='K8'
-    nompar(2)='VALE'
-    typpar(2)='R'
+    nompar(1) = 'GRANDEUR'
+    typpar(1) = 'K8'
+    nompar(2) = 'VALE'
+    typpar(2) = 'R'
     call tbajpa(table, nbpar, nompar, typpar)
 !
 ! 2.2. ==> LECTURE ET STOCKAGE DES VALEURS PRESENTES
 !
-    do iaux = 1 , nbmcle
+    do iaux = 1, nbmcle
         call getvr8(motfac, motcle(iaux), iocc=1, scal=vr, nbret=n1)
         if (n1 .gt. 0) then
             vk = nomgrd(iaux)
-            call tbajli(table, nbpar, nompar, [ibid], [vr],&
+            call tbajli(table, nbpar, nompar, [ibid], [vr], &
                         [cbid], vk, 0)
-        endif
+        end if
     end do
 !
     call jedema()

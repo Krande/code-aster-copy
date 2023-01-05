@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine carc_init(mesh, carcri, base)
 !
-implicit none
+    implicit none
 
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
@@ -31,9 +31,9 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=8) , intent(in) :: mesh
-character(len=19) , intent(in) :: carcri
-character(len=1), intent(in) :: base
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: carcri
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ character(len=1), intent(in) :: base
 
 ! - Read catalog
     call jenonu(jexnom('&CATA.GD.NOMGD', physQuantityName), physQuantityNume)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'L', vk8 = cataNomcmp)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'L', vk8=cataNomcmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'LONMAX', nbCmp)
     ASSERT(nbCmp .eq. CARCRI_SIZE)
 
@@ -70,14 +70,14 @@ character(len=1), intent(in) :: base
     call alcart(base, carcri, mesh, physQuantityName)
 
 ! - Acces to <CARTE>
-    call jeveuo(carcri(1:19)//'.NCMP', 'E', vk8 = carcriNcmp)
-    call jeveuo(carcri(1:19)//'.VALV', 'E', vr  = carcriValv)
+    call jeveuo(carcri(1:19)//'.NCMP', 'E', vk8=carcriNcmp)
+    call jeveuo(carcri(1:19)//'.VALV', 'E', vr=carcriValv)
 
 ! - Init <CARTE>
     do iCmp = 1, nbCmp
         carcriNcmp(iCmp) = cataNomcmp(iCmp)
         carcriValv(iCmp) = 0.d0
-    enddo
+    end do
 
 ! - Default values
     carcriValv(1) = 10

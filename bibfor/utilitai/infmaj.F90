@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine infmaj()
 #include "asterfort/getvis.h"
 #include "asterfort/iunifi.h"
     integer :: nivuti, nivpgm, unite
-    common / inf001 / nivuti , nivpgm , unite
+    common/inf001/nivuti, nivpgm, unite
 !-----FIN DE INF001-----------------------------------------------------
 !
     integer :: info, nbval
@@ -42,11 +42,11 @@ subroutine infmaj()
 !
     info = 1
 !
-    linfo = getexm ( ' ' , 'INFO' )
+    linfo = getexm(' ', 'INFO')
 !
     if (linfo .eq. 1) then
         call getvis(' ', 'INFO', scal=info, nbret=nbval)
-    endif
+    end if
 !
     nivuti = info
     nivpgm = info

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine comp_meca_full(model, comp_elas, full_elem_s)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
@@ -67,17 +67,17 @@ implicit none
         ligrel = model(1:8)//'.MODELE    .LIEL'
         elas_elem_s = '&&CRCMEL.CES1'
         elas_elem = '&&CRCMEL.CEL1'
-        call carces(comp_elas, 'ELEM', ' ', 'V', elas_elem_s,&
+        call carces(comp_elas, 'ELEM', ' ', 'V', elas_elem_s, &
                     'A', ibid)
-        call cescel(elas_elem_s, ligrel, 'FULL_MECA', 'PCOMPOR', 'OUI',&
+        call cescel(elas_elem_s, ligrel, 'FULL_MECA', 'PCOMPOR', 'OUI', &
                     ibid, 'V', elas_elem, 'A', ibid)
         call exisd('CHAMP', elas_elem, iexi)
         if (iexi .eq. 0) then
             call utmess('F', 'MECANONLINE_3')
-        endif
+        end if
         call celces(elas_elem, 'V', full_elem_s)
         call detrsd('CHAMP', elas_elem_s)
         call detrsd('CHAMP', elas_elem)
-    endif
+    end if
 !
 end subroutine

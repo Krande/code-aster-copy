@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
+subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr, &
                   nbsg1, nbsg2, nbsg3, saltij)
     implicit none
     integer :: nbp12, nbp23, nbp13, nbsigr, nbsg1, nbsg2, nbsg3
@@ -34,7 +34,7 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
         if (nbp12 .eq. 0) then
 !           BLOC 1_2
             do i1 = 1, nbsg1
-                isl = 4*(i1-1)*nbsigr + 4*nbsg1
+                isl = 4*(i1-1)*nbsigr+4*nbsg1
                 do i2 = 1, nbsg2
                     saltij(isl+4*(i2-1)+1) = 0.d0
                     saltij(isl+4*(i2-1)+2) = 0.d0
@@ -44,7 +44,7 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
             end do
 !           BLOC 2_1
             do i1 = 1, nbsg2
-                isl = 4*nbsigr*nbsg1 + 4*(i1-1)*nbsigr
+                isl = 4*nbsigr*nbsg1+4*(i1-1)*nbsigr
                 do i2 = 1, nbsg1
                     saltij(isl+4*(i2-1)+1) = 0.d0
                     saltij(isl+4*(i2-1)+2) = 0.d0
@@ -52,13 +52,13 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
                     saltij(isl+4*(i2-1)+4) = 0.d0
                 end do
             end do
-        endif
+        end if
 !
     else if (typass .eq. '2_3') then
         if (nbp23 .eq. 0) then
 !           BLOC 2_3
             do i1 = 1, nbsg2
-                isl = 4*nbsigr*nbsg1 + 4*(i1-1)*nbsigr + 4*(nbsg1+ nbsg2)
+                isl = 4*nbsigr*nbsg1+4*(i1-1)*nbsigr+4*(nbsg1+nbsg2)
                 do i2 = 1, nbsg3
                     saltij(isl+4*(i2-1)+1) = 0.d0
                     saltij(isl+4*(i2-1)+2) = 0.d0
@@ -68,7 +68,7 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
             end do
 !           BLOC 3_2
             do i1 = 1, nbsg3
-                isl = 4*nbsigr*(nbsg1+nbsg2) + 4*(i1-1)*nbsigr + 4* nbsg1
+                isl = 4*nbsigr*(nbsg1+nbsg2)+4*(i1-1)*nbsigr+4*nbsg1
                 do i2 = 1, nbsg2
                     saltij(isl+4*(i2-1)+1) = 0.d0
                     saltij(isl+4*(i2-1)+2) = 0.d0
@@ -76,13 +76,13 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
                     saltij(isl+4*(i2-1)+4) = 0.d0
                 end do
             end do
-        endif
+        end if
 !
     else if (typass .eq. '1_3') then
         if (nbp13 .eq. 0) then
 !           BLOC 1_3
             do i1 = 1, nbsg1
-                isl = 4*(i1-1)*nbsigr + 4*(nbsg1+nbsg2)
+                isl = 4*(i1-1)*nbsigr+4*(nbsg1+nbsg2)
                 do i2 = 1, nbsg3
                     saltij(isl+4*(i2-1)+1) = 0.d0
                     saltij(isl+4*(i2-1)+2) = 0.d0
@@ -92,7 +92,7 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
             end do
 !           BLOC 3_1
             do i1 = 1, nbsg3
-                isl = 4*nbsigr*(nbsg1+nbsg2) + 4*nbsigr*(i1-1)
+                isl = 4*nbsigr*(nbsg1+nbsg2)+4*nbsigr*(i1-1)
                 do i2 = 1, nbsg1
                     saltij(isl+4*(i2-1)+1) = 0.d0
                     saltij(isl+4*(i2-1)+2) = 0.d0
@@ -100,7 +100,7 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr,&
                     saltij(isl+4*(i2-1)+4) = 0.d0
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

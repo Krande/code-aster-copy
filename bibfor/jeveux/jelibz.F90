@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,51 +28,51 @@ subroutine jelibz(clas)
 !
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
     integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
     integer :: jtype, n, nmax
 !-----------------------------------------------------------------------
-    parameter      ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
-    common /nomcje/  nomuti , nomos , nomco , nomoc , bl32
+    common/nomcje/nomuti, nomos, nomco, nomoc, bl32
     integer :: ivnmax, idiadm, idmarq, idnum
-    parameter    ( ivnmax = 0   , idiadm = 3 ,&
-     &               idmarq = 4   ,&
-     &                 idnum  = 10 )
+    parameter(ivnmax=0, idiadm=3,&
+     &               idmarq=4,&
+     &                 idnum=10)
 ! ----------------------------------------------------------------------
     integer :: ncla1, ncla2, ibacol, ibmarq, ic, id, ix
     integer :: j, k, marqi, iclasi
     character(len=32) :: crnom, d32
     character(len=1) :: kclas
-    data             d32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
+    data d32/'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 ! DEB ------------------------------------------------------------------
     kclas = clas
     iclasi = iclas
     if (kclas .eq. ' ') then
         ncla1 = 1
-        ncla2 = index ( classe , '$' ) - 1
+        ncla2 = index(classe, '$')-1
         if (ncla2 .lt. 0) ncla2 = n
     else
-        ncla1 = index ( classe , kclas)
+        ncla1 = index(classe, kclas)
         ncla2 = ncla1
-    endif
+    end if
     do ic = ncla1, ncla2
         do j = 1, nremax(ic)
             crnom = rnom(jrnom(ic)+j)
@@ -86,37 +86,37 @@ subroutine jelibz(clas)
                 nomoc = d32
                 if (iclasi .ne. iclaco) then
                     nomos = d32
-                endif
+                end if
                 ibacol = iadm(jiadm(ic)+2*j-1)
                 if (ibacol .eq. 0) goto 150
-                id = iszon(jiszon + ibacol + idiadm)
+                id = iszon(jiszon+ibacol+idiadm)
                 if (id .gt. 0) then
 !
 ! ------------- COLLECTION DISPERSEE ( OBJETS DE COLLECTION )
 !
-                    ix = iszon(jiszon + ibacol + idmarq)
+                    ix = iszon(jiszon+ibacol+idmarq)
                     ibmarq = iadm(jiadm(ic)+2*ix-1)
-                    nmax = iszon(jiszon+ibacol+ivnmax )
+                    nmax = iszon(jiszon+ibacol+ivnmax)
                     do k = 1, nmax
                         marqi = iszon(jiszon+ibmarq-1+2*k-1)
                         if (marqi .eq. -1) then
                             call jjlide('JELIBZ', crnom, 2)
                             goto 171
-                        endif
+                        end if
                     end do
-                endif
+                end if
 !
 ! ---------- COLLECTION CONTIGUE OU DISPERSEE ( OBJETS ATTRIBUTS )
 !
                 do k = idnum, 1, -1
-                    id = iszon(jiszon + ibacol + k)
+                    id = iszon(jiszon+ibacol+k)
                     if (id .gt. 0) then
                         marqi = imarq(jmarq(ic)+2*id-1)
                         if (marqi .eq. -1) then
                             call jjlide('JELIBZ', crnom, 2)
                             goto 171
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
 171             continue
             else
@@ -130,12 +130,12 @@ subroutine jelibz(clas)
                 if (iclasi .ne. iclaos) then
                     nomco = d32
                     nomoc = d32
-                endif
+                end if
                 marqi = imarq(jmarq(ic)+2*j-1)
                 if (marqi .eq. -1) then
                     call jjlide('JELIBZ', crnom, 1)
-                endif
-            endif
+                end if
+            end if
 150         continue
         end do
     end do

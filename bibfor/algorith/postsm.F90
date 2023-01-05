@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine postsm(option, fm, df, sigm, sigp,&
+subroutine postsm(option, fm, df, sigm, sigp, &
                   dsidep)
 !
 !
@@ -40,27 +40,27 @@ subroutine postsm(option, fm, df, sigm, sigp,&
     integer :: kl, p, q, i
     real(kind=8) :: jm, dj, jp, tau(6), j, mat(6, 3, 3), id(3, 3), rc(6)
 !
-    data    id   /1.d0, 0.d0, 0.d0,&
+    data id/1.d0, 0.d0, 0.d0,&
      &              0.d0, 1.d0, 0.d0,&
      &              0.d0, 0.d0, 1.d0/
 !
     real(kind=8) :: rac2
-    parameter    (rac2 = sqrt(2.d0))
-    data    rc /1.d0, 1.d0, 1.d0, rac2, rac2, rac2/
+    parameter(rac2=sqrt(2.d0))
+    data rc/1.d0, 1.d0, 1.d0, rac2, rac2, rac2/
 !
 !
-    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+    resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
+    rigi = option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL'
 !
-    jm=fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
-     &  -fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
-     &  +fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))&
+     &  -fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2))&
+     &  +fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
-    dj=df(1,1)*(df(2,2)*df(3,3)-df(2,3)*df(3,2))&
-     &  -df(2,1)*(df(1,2)*df(3,3)-df(1,3)*df(3,2))&
-     &  +df(3,1)*(df(1,2)*df(2,3)-df(1,3)*df(2,2))
+    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))&
+     &  -df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(3, 2))&
+     &  +df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
 !
-    jp=jm*dj
+    jp = jm*dj
 !
     if (resi) then
         call dscal(6, jp, sigp, 1)
@@ -70,7 +70,7 @@ subroutine postsm(option, fm, df, sigm, sigp,&
         call dcopy(6, sigm, 1, tau, 1)
         call dscal(6, jm, tau, 1)
         j = jm
-    endif
+    end if
 !
 !
     if (rigi) then
@@ -79,17 +79,17 @@ subroutine postsm(option, fm, df, sigm, sigp,&
         do kl = 1, 6
             do p = 1, 3
                 do q = 1, 3
-                    dsidep(kl,p,q) = tau(kl)*id(p,q)
+                    dsidep(kl, p, q) = tau(kl)*id(p, q)
                     do i = 1, 3
-                        dsidep(kl,p,q) = dsidep(kl,p,q) + mat(kl,p,i)* df(q,i)
+                        dsidep(kl, p, q) = dsidep(kl, p, q)+mat(kl, p, i)*df(q, i)
                     end do
 !
-                    dsidep(kl,p,q) = dsidep(kl,p,q)*rc(kl)
+                    dsidep(kl, p, q) = dsidep(kl, p, q)*rc(kl)
 !
                 end do
             end do
         end do
-    endif
+    end if
 !
     call dscal(3, rac2, sigp(4), 1)
 !

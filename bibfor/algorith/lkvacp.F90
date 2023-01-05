@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lkvacp(nbmat, mater, paraep, varpl)
 !
-    implicit      none
+    implicit none
     integer :: nbmat
     real(kind=8) :: paraep(3), mater(nbmat, 2), varpl(4)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE------------------------
@@ -39,16 +39,16 @@ subroutine lkvacp(nbmat, mater, paraep, varpl)
 ! ===============================================================
 ! --- INITIALISATION DE PARAMETRES ------------------------------
 ! ===============================================================
-    parameter       ( un     =  1.0d0   )
-    parameter       ( deux   =  2.0d0   )
-    parameter       ( trois  =  3.0d0   )
-    parameter       ( six    =  6.0d0   )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
 !
 ! ===============================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ----------------------
 ! ===============================================================
-    sigc = mater(3,2)
-    gamcjs = mater(5,2)
+    sigc = mater(3, 2)
+    gamcjs = mater(5, 2)
 ! ===============================================================
 !---- CALCUL DE Kd(XIP)------------------------------------------
 ! ===============================================================
@@ -56,16 +56,16 @@ subroutine lkvacp(nbmat, mater, paraep, varpl)
 ! ===============================================================
 !---- CALCUL DE Ad(XIP)------------------------------------------
 ! ===============================================================
-    h0c = (un - gamcjs)**(un/six)
-    adxip = -paraep(3) * kdxip/sqrt(six)/sigc/h0c
+    h0c = (un-gamcjs)**(un/six)
+    adxip = -paraep(3)*kdxip/sqrt(six)/sigc/h0c
 ! ===============================================================
 !---- CALCUL DE Bd(XIP)------------------------------------------
 ! ===============================================================
-    bdxip = paraep(3) * kdxip/trois/sigc
+    bdxip = paraep(3)*kdxip/trois/sigc
 ! ===============================================================
 !---- CALCUL DE Dd(XIP)------------------------------------------
 ! ===============================================================
-    ddxip = paraep(2) * kdxip
+    ddxip = paraep(2)*kdxip
 ! ===============================================================
 ! --- STOCKAGE --------------------------------------------------
 ! ===============================================================

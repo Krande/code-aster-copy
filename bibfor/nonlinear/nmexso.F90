@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmexso(mesh, ds_inout, sddyna, nume_dof)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -89,7 +89,7 @@ implicit none
 !
 ! - Get parameters
 !
-    result      = ds_inout%result
+    result = ds_inout%result
 !
 ! --- INITIALISATIONS
 !
@@ -144,7 +144,7 @@ implicit none
         magrno = mesh(1:8)//'.GROUPENO'
         call jelira(jexnom(magrno, gnintf), 'LONUTI', ival=nbno)
         call jeveuo(jexnom(magrno, gnintf), 'L', idno)
-    endif
+    end if
 !
 ! --- NOMBRE DE DDL INTERNES
 !
@@ -154,7 +154,7 @@ implicit none
     nddint = 0
     do ino = 1, nbno
         inoe = zi(idno+ino-1)
-        ncmp = zi(aprno + (nec+2)*(inoe-1) + 2 - 1 )
+        ncmp = zi(aprno+(nec+2)*(inoe-1)+2-1)
         nddint = nddint+ncmp
     end do
 !
@@ -162,11 +162,11 @@ implicit none
 !
     tabequ = sdexso(1:15)//'.EQINT'
     call wkvect(tabequ, 'V V I', nddint, ieqint)
-    iddint=0
+    iddint = 0
     do ino = 1, nbno
         inoe = zi(idno+ino-1)
-        ncmp = zi(aprno + (nec+2)*(inoe-1) + 2 - 1 )
-        iddl = zi(aprno + (nec+2)*(inoe-1) + 1 - 1 )
+        ncmp = zi(aprno+(nec+2)*(inoe-1)+2-1)
+        iddl = zi(aprno+(nec+2)*(inoe-1)+1-1)
         do icmp = 1, ncmp
             iddint = iddint+1
             zi(ieqint+iddint-1) = iddl+icmp-1
@@ -175,10 +175,10 @@ implicit none
 !
 ! --- OUVERTURE DES FICHIERS
 !
-    if (unirig .ne. ' ') read (unirig,'(I24)') uniter
-    if (unimas .ne. ' ') read (unimas,'(I24)') unitem
-    if (uniamo .ne. ' ') read (uniamo,'(I24)') unitea
-    if (unifor .ne. ' ') read (unifor,'(I24)') unitef
+    if (unirig .ne. ' ') read (unirig, '(I24)') uniter
+    if (unimas .ne. ' ') read (unimas, '(I24)') unitem
+    if (uniamo .ne. ' ') read (uniamo, '(I24)') unitea
+    if (unifor .ne. ' ') read (unifor, '(I24)') unitef
 !
 ! --- QUEL FICHIER VA DONNER LA FREQUENCE ?
 !
@@ -188,84 +188,84 @@ implicit none
             unifrq = unitea
         else
             unifrq = unitem
-        endif
+        end if
     else
         unifrq = uniter
-    endif
+    end if
 !
     if (unifrq .eq. 0) then
         ASSERT(.false.)
-    endif
+    end if
     if (unifrq .eq. uniter) then
         call utmess('I', 'DYNAMIQUE_20')
-    endif
+    end if
     if (unifrq .eq. unitem) then
         call utmess('I', 'DYNAMIQUE_21')
-    endif
+    end if
     if (unifrq .eq. unitea) then
         call utmess('I', 'DYNAMIQUE_22')
-    endif
+    end if
 !
 ! --- FICHIER BINAIRE ?
-    read (veiss(8),'(I24)') ibin
+    read (veiss(8), '(I24)') ibin
 !
 ! --- LECTURE DU PAS D'ACTUALISATION
 !
-    if (ibin.eq.0) then
-      rewind unifrq
-      read(unifrq,*) ainst,pas
+    if (ibin .eq. 0) then
+        rewind unifrq
+        read (unifrq, *) ainst, pas
     else
-      open(unit=unifrq,form='unformatted',status='old',access='stream')
-      read(unifrq) ainst,pas,nbm
-    endif
+        open (unit=unifrq, form='unformatted', status='old', access='stream')
+        read (unifrq) ainst, pas, nbm
+    end if
     nfreq = nint(ainst)
     call utmess('I', 'DYNAMIQUE_23', si=nfreq, sr=pas)
 !
 ! --- TABLEAU DES FREQUENCES
 !
     call wkvect(tabfrq, 'V V R', nfreq, jfrq)
-    if (ibin.eq.0) then
-      do ifreq = 1, nfreq
-        zr(jfrq+ifreq-1) = (ifreq-1)*pas
-      end do
+    if (ibin .eq. 0) then
+        do ifreq = 1, nfreq
+            zr(jfrq+ifreq-1) = (ifreq-1)*pas
+        end do
     else
-      read(unifrq) (zr(jfrq+ifreq-1),ifreq=1,nfreq)
-    endif
+        read (unifrq) (zr(jfrq+ifreq-1), ifreq=1, nfreq)
+    end if
 !
 ! --- VERIFICATIONS
 !
     if (unitem .ne. 0) then
         if (unifrq .ne. unitem) then
-            if (ibin.eq.0) then
-              rewind unitem
-              read(unitem,*) ainst,pasm
+            if (ibin .eq. 0) then
+                rewind unitem
+                read (unitem, *) ainst, pasm
             else
-              open(unit=unitem,form='unformatted',status='old',access='stream')
-              read(unitem) ainst,pasm,nbm
-            endif
+                open (unit=unitem, form='unformatted', status='old', access='stream')
+                read (unitem) ainst, pasm, nbm
+            end if
             nfreqm = int(ainst)
             if (nfreqm .ne. nfreq) then
                 call utmess('F', 'DYNAMIQUE_30')
-            endif
-            if (ibin.ne.0) read(unitem) (zr(jfrq+ifreq-1),ifreq=1,nfreq)
-        endif
-    endif
+            end if
+            if (ibin .ne. 0) read (unitem) (zr(jfrq+ifreq-1), ifreq=1, nfreq)
+        end if
+    end if
     if (unitea .ne. 0) then
         if (unifrq .ne. unitea) then
-            if (ibin.eq.0) then
-              rewind unitea
-              read(unitea,*) ainst,pasa
+            if (ibin .eq. 0) then
+                rewind unitea
+                read (unitea, *) ainst, pasa
             else
-              open(unit=unitea,form='unformatted',status='old',access='stream')
-              read(unitea) ainst,pasa,nbm
-            endif
+                open (unit=unitea, form='unformatted', status='old', access='stream')
+                read (unitea) ainst, pasa, nbm
+            end if
             nfreqa = int(ainst)
             if (nfreqa .ne. nfreq) then
                 call utmess('F', 'DYNAMIQUE_31')
-            endif
-            if (ibin.ne.0) read(unitea) (zr(jfrq+ifreq-1),ifreq=1,nfreq)
-        endif
-    endif
+            end if
+            if (ibin .ne. 0) read (unitea) (zr(jfrq+ifreq-1), ifreq=1, nfreq)
+        end if
+    end if
 !
 ! --- TAILLE TABLEAUX
 !
@@ -280,7 +280,7 @@ implicit none
     zr(iddint-1+2) = unitef
     zr(iddint-1+3) = nddint
     ipasm = veiss(7)
-    read (ipasm,'(I24)') npasm
+    read (ipasm, '(I24)') npasm
     zr(iddint-1+4) = npasm
 !
 ! --- LECTURE MATRICE REDUITE RIGIDITE A L'INTERFACE
@@ -288,62 +288,62 @@ implicit none
     tabrig = sdexso(1:15)//'.RIGT'
     call wkvect(tabrig, 'V V R', nbmod2*nfreq, jrig)
     if (uniter .ne. 0) then
-      if (ibin.eq.0) then
-        do ifreq = 1, nfreq
-            read(uniter,*) rinst
-            read(uniter,100) &
-                ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-        end do
-      else
-        do ifreq = 1, nfreq
-            read(uniter) &
-                ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-        end do
-        close(unit=uniter)
-      endif
-    endif
+        if (ibin .eq. 0) then
+            do ifreq = 1, nfreq
+                read (uniter, *) rinst
+                read (uniter, 100) &
+                    ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1, nbmode), i1=1, nbmode)
+            end do
+        else
+            do ifreq = 1, nfreq
+                read (uniter) &
+                    ((zr(jrig+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1, nbmode), i1=1, nbmode)
+            end do
+            close (unit=uniter)
+        end if
+    end if
 !
 ! --- LECTURE MATRICE REDUITE MASSE A L'INTERFACE
 !
     tabmas = sdexso(1:15)//'.MAST'
     call wkvect(tabmas, 'V V R', nbmod2*nfreq, jmas)
     if (unitem .ne. 0) then
-      if (ibin.eq.0) then
-        do ifreq = 1, nfreq
-            read(unitem,*) rinst
-            read(unitem,100) &
-                ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-        end do
-      else
-        do ifreq = 1, nfreq
-            read(unitem) &
-                ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-        end do
-        close(unit=unitem)
-      endif
-    endif
+        if (ibin .eq. 0) then
+            do ifreq = 1, nfreq
+                read (unitem, *) rinst
+                read (unitem, 100) &
+                    ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1, nbmode), i1=1, nbmode)
+            end do
+        else
+            do ifreq = 1, nfreq
+                read (unitem) &
+                    ((zr(jmas+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1, nbmode), i1=1, nbmode)
+            end do
+            close (unit=unitem)
+        end if
+    end if
 !
 ! --- LECTURE MATRICE REDUITE AMORTISSEMENT A L'INTERFACE
 !
     tabamo = sdexso(1:15)//'.AMOT'
     call wkvect(tabamo, 'V V R', nbmod2*nfreq, jamo)
     if (unitea .ne. 0) then
-      if (ibin.eq.0) then
-        do ifreq = 1, nfreq
-            read(unitea,*) rinst
-            read(unitea,100) &
-                ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-        end do
-      else
-        do ifreq = 1, nfreq
-            read(unitea) &
-                ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1,nbmode),i1=1,nbmode)
-        end do
-        close(unit=unitea)
-      endif
-    endif
+        if (ibin .eq. 0) then
+            do ifreq = 1, nfreq
+                read (unitea, *) rinst
+                read (unitea, 100) &
+                    ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1, nbmode), i1=1, nbmode)
+            end do
+        else
+            do ifreq = 1, nfreq
+                read (unitea) &
+                    ((zr(jamo+(ifreq-1)*nbmod2+(i2-1)*nbmode+i1-1), i2=1, nbmode), i1=1, nbmode)
+            end do
+            close (unit=unitea)
+        end if
+    end if
 !
     call jedetr(tabfrq)
-100 format((6(1x,1pe13.6)))
+100 format((6(1x, 1pe13.6)))
     call jedema()
 end subroutine

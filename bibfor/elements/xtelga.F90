@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
-                  lonch, cnset, jpintt, lsn, lst,&
-                  heavn, basloc, heavt, nfh, nfe,&
+subroutine xtelga(ndim, elrefp, nnop, igeom, tempno, &
+                  lonch, cnset, jpintt, lsn, lst, &
+                  heavn, basloc, heavt, nfh, nfe, &
                   temppg)
 ! person_in_charge: sam.cuvilliez at edf.fr
 ! aslint: disable=W1306
@@ -79,16 +79,16 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     integer :: nbddl, hea_se
     integer :: mxstac
 !
-    parameter   (mxstac=1000)
+    parameter(mxstac=1000)
 !
-    data    elrese /'SE2','TR3','TE4'/
-    data    fami   /'BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4'/
+    data fami/'BID', 'XINT', 'XINT'/
 !
 !-----------------------------------------------------------------------
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    ASSERT(nnop.le.mxstac)
+    ASSERT(nnop .le. mxstac)
 !
 !     NBRE DE DDLS PAR NOEUD
     nbddl = 1+nfh+nfe
@@ -97,7 +97,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     call elrefe_info(elrefe=elrese(ndim), fami=fami(ndim), nno=nno, npg=npg, jvf=ivf)
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
-    nse=lonch(1)
+    nse = lonch(1)
 !
 !
 ! ----------------------------------------------------------------------
@@ -108,20 +108,20 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 !
 !       VALEUR (CSTE) DE LA FONCTION HEAVISIDE SUR LE SS-ELT
         he = 1.d0*heavt(ise)
-        hea_se=xcalc_code(1, he_real=[he])
+        hea_se = xcalc_code(1, he_real=[he])
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TETRA/TRIA -> COORDS NOEUDS
         do in = 1, nno
-            ino=cnset(nno*(ise-1)+in)
+            ino = cnset(nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
-                    1)+j)
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
+                                                              1)+j)
                 else
                     ASSERT(.false.)
-                endif
+                end if
             end do
         end do
 !
@@ -135,13 +135,13 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
             xg(:) = 0.d0
             do j = 1, ndim
                 do in = 1, nno
-                    xg(j)=xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*(&
-                    in-1)+j)
+                    xg(j) = xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*( &
+                                                                  in-1)+j)
                 end do
             end do
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
                         xe, ff, dfdi=dfdi)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
@@ -151,71 +151,71 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 lsng = 0.d0
                 lstg = 0.d0
                 do inp = 1, nnop
-                    lsng = lsng + lsn(inp) * ff(inp)
-                    lstg = lstg + lst(inp) * ff(inp)
+                    lsng = lsng+lsn(inp)*ff(inp)
+                    lstg = lstg+lst(inp)*ff(inp)
                     do j = 1, 3*ndim
-                        baslog(j) = baslog(j) + basloc(3*ndim*(inp-1)+ j) * ff(inp)
+                        baslog(j) = baslog(j)+basloc(3*ndim*(inp-1)+j)*ff(inp)
                     end do
                 end do
 !           FONCTION D'ENRICHISSEMENT (MECA) AU PG ET DÉRIVÉES
                 if (ndim .eq. 2) then
-                    call xcalf2(he, lsng, lstg, baslog, femec,&
+                    call xcalf2(he, lsng, lstg, baslog, femec, &
                                 dgdmec, iret)
-                else if (ndim.eq.3) then
-                    call xcalfe(he, lsng, lstg, baslog, femec,&
+                else if (ndim .eq. 3) then
+                    call xcalfe(he, lsng, lstg, baslog, femec, &
                                 dgdmec, iret)
-                endif
+                end if
 !           PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
 !           CAR ON SE TROUVE SUR LE FOND DE FISSURE
-                ASSERT(iret.ne.0)
+                ASSERT(iret .ne. 0)
 !           ON NE GARDE QUE LES ENRICHISSEMENTS UTILES EN THERMIQUE
                 feth = femec(1)
                 do j = 1, ndim
-                    dgdth(j) = dgdmec(1,j)
+                    dgdth(j) = dgdmec(1, j)
                 end do
-            endif
+            end if
 ! ------- FIN SI ENRICHISSEMENT SINGULIER
 !
 !         FFENR : TABLEAU DES FF ENRICHIES
             do inp = 1, nnop
 !           DDL CLASSIQUE (TEMP)
-                ffenr(inp,1) = ff(inp)
+                ffenr(inp, 1) = ff(inp)
                 do j = 1, ndim
-                    dffenr(inp,1,j) = dfdi(inp,j)
+                    dffenr(inp, 1, j) = dfdi(inp, j)
                 end do
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
-                    ffenr(inp,1+nfh) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*ff(inp)
+                    ffenr(inp, 1+nfh) = xcalc_heav(heavn(inp, 1), hea_se, heavn(inp, 5))*ff(inp)
                     do j = 1, ndim
-                        dffenr(inp,1+nfh,j) = xcalc_heav(&
-                                              heavn(inp,1),hea_se,heavn(inp,5))* dfdi(inp,j)
+                        dffenr(inp, 1+nfh, j) = xcalc_heav( &
+                                                heavn(inp, 1), hea_se, heavn(inp, 5))*dfdi(inp, j)
                     end do
-                endif
+                end if
 !           DDL CRACK-TIP (E1)
                 if (nfe .eq. 1) then
-                    ffenr(inp,1+nfh+nfe) = feth*ff(inp)
+                    ffenr(inp, 1+nfh+nfe) = feth*ff(inp)
                     do j = 1, ndim
-                        dffenr(inp,1+nfh+nfe,j) = feth*dfdi(inp,j) + ff(inp)*dgdth(j)
+                        dffenr(inp, 1+nfh+nfe, j) = feth*dfdi(inp, j)+ff(inp)*dgdth(j)
                     end do
-                endif
+                end if
             end do
 !
 !         CALCUL DE TEMP AU PG ET DE SES DERIVEES
             tem = 0.d0
-            dtem= 0.d0
+            dtem = 0.d0
             do inp = 1, nnop
                 do kddl = 1, nbddl
-                    tem = tem + tempno(nbddl*(inp-1)+kddl)*ffenr(inp, kddl)
+                    tem = tem+tempno(nbddl*(inp-1)+kddl)*ffenr(inp, kddl)
                     do j = 1, ndim
-                        dtem(j) = dtem(j) + tempno(nbddl*(inp-1)+kddl)*dffenr(inp,kddl,j)
+                        dtem(j) = dtem(j)+tempno(nbddl*(inp-1)+kddl)*dffenr(inp, kddl, j)
                     end do
                 end do
             end do
 !
 !         ECRITURE DE TEMP ET DE SES DERIVEES AU PG
-            temppg(npg * (ndim+1) * (ise-1)+(kpg-1) * ndim + kpg) = tem
+            temppg(npg*(ndim+1)*(ise-1)+(kpg-1)*ndim+kpg) = tem
             do j = 1, ndim
-                temppg (npg * (ndim+1) * (ise-1)+(kpg-1) * ndim + kpg + j) = dtem(j)
+                temppg(npg*(ndim+1)*(ise-1)+(kpg-1)*ndim+kpg+j) = dtem(j)
             end do
 !
         end do

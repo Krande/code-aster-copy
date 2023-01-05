@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmextk(mesh     , model      ,&
-                  keyw_fact, i_keyw_fact,&
-                  field    , field_type , field_s  , field_disc,&
-                  list_node, list_elem  , list_poin, list_spoi ,&
-                  nb_node  , nb_elem    , nb_poin  , nb_spoi   ,&
-                  compor   , list_cmp   , list_vari, nb_cmp    , type_sele_cmp)
+subroutine nmextk(mesh, model, &
+                  keyw_fact, i_keyw_fact, &
+                  field, field_type, field_s, field_disc, &
+                  list_node, list_elem, list_poin, list_spoi, &
+                  nb_node, nb_elem, nb_poin, nb_spoi, &
+                  compor, list_cmp, list_vari, nb_cmp, type_sele_cmp)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -40,20 +40,20 @@ implicit none
 #include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: mesh, model
-character(len=16), intent(in) :: keyw_fact
-integer, intent(in) :: i_keyw_fact
-character(len=19), intent(in) :: field
-character(len=24), intent(in) :: field_type
-character(len=24), intent(in) :: field_s
-character(len=4), intent(in) :: field_disc
-integer, intent(in) :: nb_node, nb_elem, nb_poin, nb_spoi
-character(len=24), intent(in) :: list_node, list_elem, list_poin, list_spoi
-character(len=19), optional, intent(in) :: compor
-character(len=24), intent(in) :: list_cmp
-character(len=24), intent(in) :: list_vari
-integer, intent(out) :: nb_cmp
-character(len=8), intent(out) :: type_sele_cmp
+    character(len=8), intent(in) :: mesh, model
+    character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: i_keyw_fact
+    character(len=19), intent(in) :: field
+    character(len=24), intent(in) :: field_type
+    character(len=24), intent(in) :: field_s
+    character(len=4), intent(in) :: field_disc
+    integer, intent(in) :: nb_node, nb_elem, nb_poin, nb_spoi
+    character(len=24), intent(in) :: list_node, list_elem, list_poin, list_spoi
+    character(len=19), optional, intent(in) :: compor
+    character(len=24), intent(in) :: list_cmp
+    character(len=24), intent(in) :: list_vari
+    integer, intent(out) :: nb_cmp
+    character(len=8), intent(out) :: type_sele_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,7 +110,7 @@ character(len=8), intent(out) :: type_sele_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_cmp        = 0
+    nb_cmp = 0
     type_sele_cmp = ' '
 !
 ! - Get reduced field (CHAM_ELEM_S)
@@ -121,48 +121,48 @@ character(len=8), intent(out) :: type_sele_cmp
         call jeveuo(field_s(1:19)//'.CESV', 'L', jcesv)
         call jeveuo(field_s(1:19)//'.CESC', 'L', vk8=cesc)
         nb_cmp_maxi = zi(jcesd+4)
-    endif
+    end if
 !
 ! - Number and name of components
 !
     call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=0, nbret=n1)
-    if (n1.lt.0) then
+    if (n1 .lt. 0) then
         nb_cmp = -n1
-        if ((nb_cmp.lt.1) .or. (nb_cmp.gt.nb_para_maxi)) then
+        if ((nb_cmp .lt. 1) .or. (nb_cmp .gt. nb_para_maxi)) then
             vali(1) = nb_para_maxi
             vali(2) = nb_cmp
             call utmess('F', 'EXTRACTION_12', ni=2, vali=vali)
-        endif
+        end if
 
-        call wkvect(list_cmp, 'V V K8', nb_cmp, vk8 = v_list_cmp)
-        call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_cmp,&
+        call wkvect(list_cmp, 'V V K8', nb_cmp, vk8=v_list_cmp)
+        call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_cmp, &
                     nbret=iret)
         type_sele_cmp = 'NOM_CMP'
     else
         call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=0, nbret=n1)
-        ASSERT(n1.lt.0)
-        ASSERT(field_type.eq.'VARI_ELGA')
+        ASSERT(n1 .lt. 0)
+        ASSERT(field_type .eq. 'VARI_ELGA')
         nb_cmp = -n1
-        call wkvect(list_cmp , 'V V K8', nb_elem*nb_cmp, vk8 = v_list_cmp)
-        call wkvect(list_vari, 'V V K16', nb_cmp, vk16 = v_list_vari)
-        call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_vari,&
+        call wkvect(list_cmp, 'V V K8', nb_elem*nb_cmp, vk8=v_list_cmp)
+        call wkvect(list_vari, 'V V K16', nb_cmp, vk16=v_list_vari)
+        call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_vari, &
                     nbret=iret)
-        call jeveuo(list_elem, 'L', vi = v_list_elem)
+        call jeveuo(list_elem, 'L', vi=v_list_elem)
         call varinonu(model, compor, nb_elem, v_list_elem, nb_cmp, v_list_vari, v_list_cmp)
         type_sele_cmp = 'NOM_VARI'
-    endif
+    end if
 !
 ! - Check components
 !
     if (field_disc .eq. 'NOEU') then
 
         call exisd('CHAM_NO', field, iret)
-        if (iret.ne.1) call utmess('F','EXTRACTION_1', sk=field_type)
+        if (iret .ne. 1) call utmess('F', 'EXTRACTION_1', sk=field_type)
 !
 ! ----- For nodes
 !
-        if(nb_node > 0) then
-            call jeveuo(list_node, 'L', vi = v_list_node)
+        if (nb_node > 0) then
+            call jeveuo(list_node, 'L', vi=v_list_node)
             do i_node = 1, nb_node
 !
 ! --------- Current node
@@ -171,24 +171,24 @@ character(len=8), intent(out) :: type_sele_cmp
                 call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume), node_name)
                 do i_cmp = 1, nb_cmp
                     cmp_name = v_list_cmp(i_cmp)
-                    call posddl('CHAM_NO', field, node_name, cmp_name, nuno,&
+                    call posddl('CHAM_NO', field, node_name, cmp_name, nuno, &
                                 nuddl)
-                    if ((nuno.eq.0) .or. (nuddl.eq.0)) then
+                    if ((nuno .eq. 0) .or. (nuddl .eq. 0)) then
                         valk(1) = node_name
                         valk(2) = cmp_name
                         call utmess('F', 'EXTRACTION_20', nk=2, valk=valk)
-                    endif
+                    end if
                 end do
             end do
         end if
-    else if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
+    else if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
 !
 ! ----- For elements
 !
-        if(nb_elem > 0) then
-            call jeveuo(list_elem, 'L', vi = v_list_elem)
-            call jeveuo(list_poin, 'L', vi = v_list_poin)
-            call jeveuo(list_spoi, 'L', vi = v_list_spoi)
+        if (nb_elem > 0) then
+            call jeveuo(list_elem, 'L', vi=v_list_elem)
+            call jeveuo(list_poin, 'L', vi=v_list_poin)
+            call jeveuo(list_spoi, 'L', vi=v_list_spoi)
             do i_elem = 1, nb_elem
 !
 ! --------- Current element
@@ -216,45 +216,45 @@ character(len=8), intent(out) :: type_sele_cmp
                         cmp_name = v_list_cmp(nb_cmp*(i_elem-1)+ipar)
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
 !
 ! ------------- For VARI_ELGA field
 !
                     if (field_type(1:4) .eq. 'VARI') then
                         cmp_vari_name = cmp_name(2:8)//' '
                         call lxliis(cmp_vari_name, i_vari, iret)
-                        if (iret.ne.0) then
+                        if (iret .ne. 0) then
                             call utmess('F', 'EXTRACTION_22', sk=cmp_name)
-                        endif
+                        end if
                     else
                         i_vari = 0
-                    endif
+                    end if
 
                     if (field_type(1:4) .eq. 'VARI') then
                         i_cmp = i_vari
                     else
                         do i_cmp_maxi = 1, nb_cmp_maxi
                             if (cmp_name .eq. cesc(i_cmp_maxi)) then
-                                i_cmp=i_cmp_maxi
-                            endif
+                                i_cmp = i_cmp_maxi
+                            end if
                         end do
-                    endif
+                    end if
                     do ipi = 1, npi
                         num = v_list_poin(ipi)
-                        ASSERT(num.ne.0)
+                        ASSERT(num .ne. 0)
                         do ispi = 1, nspi
                             snum = v_list_spoi(ispi)
-                            ASSERT(snum.ne.0)
-                            call cesexi('C', jcesd, jcesl, elem_nume, num,&
+                            ASSERT(snum .ne. 0)
+                            call cesexi('C', jcesd, jcesl, elem_nume, num, &
                                         snum, i_cmp, iad)
                             if (iad .eq. 0) then
                                 valk(1) = elem_name
                                 valk(2) = cmp_name
                                 vali(1) = num
                                 vali(2) = snum
-                                call utmess('F', 'EXTRACTION_21', nk=2, valk=valk, ni=2,&
+                                call utmess('F', 'EXTRACTION_21', nk=2, valk=valk, ni=2, &
                                             vali=vali)
-                            endif
+                            end if
                         end do
                     end do
                 end do
@@ -262,6 +262,6 @@ character(len=8), intent(out) :: type_sele_cmp
         end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

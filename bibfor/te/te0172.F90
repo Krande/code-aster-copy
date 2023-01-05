@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0172(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    a    = 0.d0
+    a = 0.d0
     mmat = 0.d0
 !
 ! - Input fields
@@ -65,22 +65,22 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     ndim=ndim, nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', &
+                     ndim=ndim, nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
     ASSERT(nno .le. 9)
 !
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ POUR LE CALCUL
 ! - DE L'ELEMENT DE SURFACE AU POINT DE GAUSS
 !
     do ino = 1, nno
-        ino1 = jv_geom + 3*(ino-1) -1
+        ino1 = jv_geom+3*(ino-1)-1
         do jno = 1, nno
-            ino2 = jv_geom + 3*(jno-1) -1
-            sx(ino,jno) = zr(ino1+2)*zr(ino2+3) - zr(ino1+3)*zr(ino2+2)
-            sy(ino,jno) = zr(ino1+3)*zr(ino2+1) - zr(ino1+1)*zr(ino2+3)
-            sz(ino,jno) = zr(ino1+1)*zr(ino2+2) - zr(ino1+2)*zr(ino2+1)
+            ino2 = jv_geom+3*(jno-1)-1
+            sx(ino, jno) = zr(ino1+2)*zr(ino2+3)-zr(ino1+3)*zr(ino2+2)
+            sy(ino, jno) = zr(ino1+3)*zr(ino2+1)-zr(ino1+1)*zr(ino2+3)
+            sz(ino, jno) = zr(ino1+1)*zr(ino2+2)-zr(ino1+2)*zr(ino2+1)
         end do
     end do
 !
@@ -99,37 +99,37 @@ character(len=16), intent(in) :: option, nomte
         do ino1 = 1, nno
             idec = (ino1-1)*ndim
             do ino2 = 1, nno
-                jdec =(ino2-1)*ndim
-                norm(1) = norm(1) + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(ino1,ino2)
-                norm(2) = norm(2) + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(ino1,ino2)
-                norm(3) = norm(3) + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(ino1,ino2)
+                jdec = (ino2-1)*ndim
+                norm(1) = norm(1)+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(ino1, ino2)
+                norm(2) = norm(2)+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(ino1, ino2)
+                norm(3) = norm(3)+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(ino1, ino2)
             end do
         end do
         if (fsi_form .eq. 'FSI_UPPHI') then
             do ino1 = 1, nno
                 do ino2 = 1, ino1
                     do idim = 1, 3
-                        a(idim,4,ino1,ino2) = a(idim,4,ino1,ino2) +&
-                                              zr(ipoids+ipg-1) * norm(idim) * rho *&
-                                              zr(ivf+ldec+ino1-1) * zr(ivf+ldec+ino2-1)
+                        a(idim, 4, ino1, ino2) = a(idim, 4, ino1, ino2)+ &
+                                                 zr(ipoids+ipg-1)*norm(idim)*rho* &
+                                                 zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)
                     end do
                 end do
             end do
         elseif (fsi_form .eq. 'FSI_UP') then
             do ino1 = 1, nno
-               do ino2 = 1, nno
-                   do idim = 1, 3
-                       ind1 = 4*(ino1-1)+idim
-                       ind2 = 4*(ino2-1)+4
-                       mmat(ind2,ind1) = mmat(ind2,ind1) +&
-                                         zr(ipoids+ipg-1) * norm(idim) * rho *&
-                                         zr(ivf+ldec+ino1-1) * zr(ivf+ldec+ino2-1)
-                   end do
-               end do
+                do ino2 = 1, nno
+                    do idim = 1, 3
+                        ind1 = 4*(ino1-1)+idim
+                        ind2 = 4*(ino2-1)+4
+                        mmat(ind2, ind1) = mmat(ind2, ind1)+ &
+                                           zr(ipoids+ipg-1)*norm(idim)*rho* &
+                                           zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)
+                    end do
+                end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
     end do
 !
 ! - Output field
@@ -139,7 +139,7 @@ character(len=16), intent(in) :: option, nomte
         do ino1 = 1, nno
             do ino2 = 1, ino1
                 do idim = 1, 3
-                    a(4,idim,ino1,ino2) = a(idim,4,ino1,ino2)
+                    a(4, idim, ino1, ino2) = a(idim, 4, ino1, ino2)
                 end do
             end do
         end do
@@ -148,8 +148,8 @@ character(len=16), intent(in) :: option, nomte
                 do ino1 = 1, nno
                     ik = ((4*ino1+k-5)*(4*ino1+k-4))/2
                     do ino2 = 1, ino1
-                        ijkl = ik + 4*(ino2-1) + l
-                        zr(jv_matr+ijkl-1) = a(k,l,ino1,ino2)
+                        ijkl = ik+4*(ino2-1)+l
+                        zr(jv_matr+ijkl-1) = a(k, l, ino1, ino2)
                     end do
                 end do
             end do
@@ -159,11 +159,11 @@ character(len=16), intent(in) :: option, nomte
         do ino2 = 1, 4*nno
             do ino1 = 1, 4*nno
                 ij = ino2+4*nno*(ino1-1)
-                zr(jv_matr+ij-1) = mmat(ino1,ino2)
-            enddo
-        enddo
+                zr(jv_matr+ij-1) = mmat(ino1, ino2)
+            end do
+        end do
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 end subroutine

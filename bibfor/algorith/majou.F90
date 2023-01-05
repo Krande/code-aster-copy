@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine majou(model, modmec, solveu, num, nu,&
-                 ma, mate, mateco, moint, ndble, icor,&
+subroutine majou(model, modmec, solveu, num, nu, &
+                 ma, mate, mateco, moint, ndble, icor, &
                  tabad)
     implicit none
 !
@@ -92,7 +92,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! DEFINI
 !-----------------------------------------------------------------------
     integer :: iadirg, iadpr, iadx, iady, iadz, idesp
-    integer :: irefp, iret, ivalp,   jpara, nbnumo
+    integer :: irefp, iret, ivalp, jpara, nbnumo
 !
     real(kind=8) :: bid, ebid
     real(kind=8), pointer :: vale(:) => null()
@@ -114,10 +114,10 @@ subroutine majou(model, modmec, solveu, num, nu,&
     chamnz = '&&MAJOU.CHAMNZ'
     iadz = 1
 !
-    call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', tmod, 1,&
+    call rsorac(modmec, 'LONUTI', ibid, bid, k8bid, &
+                cbid, ebid, 'ABSOLU', tmod, 1, &
                 nbid)
-    nbmode=tmod(1)
+    nbmode = tmod(1)
 !
 !
 ! CREATION DE VECTEURS CONTENANT LES NOMS DES VECTEURS DE CHAMP AUX
@@ -137,7 +137,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
         call jeecra('&&MAJOU.TZSTO', 'LONMAX', nbmode)
         call jeecra('&&MAJOU.TZSTO', 'LONUTI', nbmode)
         call jeveut('&&MAJOU.TZSTO', 'E', iadz)
-    endif
+    end if
     call jecreo('&&MAJOU.PRES', 'V V K24')
     call jeecra('&&MAJOU.PRES', 'LONMAX', nbmode)
     call jeecra('&&MAJOU.PRES', 'LONUTI', nbmode)
@@ -149,19 +149,19 @@ subroutine majou(model, modmec, solveu, num, nu,&
     call jeveut('&&TABIRG', 'E', iadirg)
 !
     do i = 1, nbmode
-        zi(iadirg+i-1)=i
+        zi(iadirg+i-1) = i
     end do
 !
 ! FORMATION DU TABLEAU DES ADRESSES DES TABLEAUX
 !
-    tabad(1)=iadx
-    tabad(2)=iady
-    tabad(3)=iadz
-    tabad(4)=iadpr
-    tabad(5)=iadirg
+    tabad(1) = iadx
+    tabad(2) = iady
+    tabad(3) = iadz
+    tabad(4) = iadpr
+    tabad(5) = iadirg
 !
 ! RECUPERATION DES NOMS DE MAILLAGES
-    call rsexch('F', modmec, 'DEPL', 1, nomcha,&
+    call rsexch('F', modmec, 'DEPL', 1, nomcha, &
                 iret)
     call dismoi('NOM_MAILLA', nomcha(1:19), 'CHAM_NO', repk=mailla)
     call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
@@ -169,11 +169,11 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! RECUPERATION DES MODES SELECTIONNES
 !
     call getvis(' ', 'NUME_MODE_MECA', nbval=0, nbret=n15)
-    nbsel=-1*n15
+    nbsel = -1*n15
     if (nbsel .gt. 0) then
         call wkvect(tempor, 'V V I', nbsel, idsel)
         call getvis(' ', 'NUME_MODE_MECA', nbval=nbsel, vect=zi(idsel), nbret=n16)
-    endif
+    end if
 !
 ! VERIFICATION QUE LES NUMEROS DES MODES DONNES PAR L'USER
 ! CORRESPONDENT A DES NUMEROS EXISTANTS DANS LES LES MODES
@@ -183,7 +183,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
     call jeveuo(modmec//'           .ORDR', 'L', vi=ordr)
     do jj = 1, nbsel
         do kk = 1, nbnumo
-            call rsadpa(modmec, 'L', 1, 'NUME_MODE', ordr(kk),&
+            call rsadpa(modmec, 'L', 1, 'NUME_MODE', ordr(kk), &
                         0, sjv=jpara, styp=k8bid)
             if (zi(idsel+jj-1) .eq. zi(jpara)) goto 100
         end do
@@ -206,113 +206,113 @@ subroutine majou(model, modmec, solveu, num, nu,&
                 if (ilires .eq. zi(idsel+ii)) goto 22
             end do
             goto 1
- 22         continue
-        endif
+22          continue
+        end if
 !
 !
-        call rsexch('F', modmec, 'DEPL', ilires, nomcha,&
+        call rsexch('F', modmec, 'DEPL', ilires, nomcha, &
                     iret)
-        call alimrs(mate, mateco, mailla, maflui, moint, ndble,&
+        call alimrs(mate, mateco, mailla, maflui, moint, ndble, &
                     num, nomcha(1:19), chamnx, 'DX', icor)
-        call alimrs(mate, mateco, mailla, maflui, moint, ndble,&
+        call alimrs(mate, mateco, mailla, maflui, moint, ndble, &
                     num, nomcha(1:19), chamny, 'DY', icor)
         if (model .eq. '3D') then
-            call alimrs(mate, mateco, mailla, maflui, moint, ndble,&
-                        num, nomcha(1: 19), chamnz, 'DZ', icor)
-        endif
+            call alimrs(mate, mateco, mailla, maflui, moint, ndble, &
+                        num, nomcha(1:19), chamnz, 'DZ', icor)
+        end if
 !
 !
 !
 !---------ON TRANSPORTE CE MODE TRANSFORME EN TEMPERATURE
 !-----SUR LES CONTOURS DE LA INTERFACE FLUIDE
 !
-        typcst(1) ='R'
-        typcst(2) ='R'
+        typcst(1) = 'R'
+        typcst(2) = 'R'
 !
-        const(1) =1.0d0
-        const(2) =1.0d0
+        const(1) = 1.0d0
+        const(2) = 1.0d0
 !
-        typech(1) ='R'
-        typech(2) ='R'
+        typech(1) = 'R'
+        typech(2) = 'R'
 !
         nomch(1) = vesolx(1:8)
         nomch(2) = vesoly(1:8)
 !
 !
-        call calflu(chamnx, moint, mate, mateco, num, vesolx,&
+        call calflu(chamnx, moint, mate, mateco, num, vesolx, &
                     nbdesc, nbrefe, nbvale, 'X')
-        call calflu(chamny, moint, mate, mateco, num, vesoly,&
+        call calflu(chamny, moint, mate, mateco, num, vesoly, &
                     nbdesc, nbrefe, nbvale, 'Y')
 !
-        vestoc='&&MAJOU.TPXSTO'
-        call prstoc(chamnx, vestoc, ilires, ilires, iadx,&
+        vestoc = '&&MAJOU.TPXSTO'
+        call prstoc(chamnx, vestoc, ilires, ilires, iadx, &
                     nbvale, nbrefe, nbdesc)
 !
-        vestoc='&&MAJOU.TPYSTO'
-        call prstoc(chamny, vestoc, ilires, ilires, iady,&
+        vestoc = '&&MAJOU.TPYSTO'
+        call prstoc(chamny, vestoc, ilires, ilires, iady, &
                     nbvale, nbrefe, nbdesc)
 !
         if (model .eq. '3D') then
-            call calflu(chamnz, moint, mate, mateco, num, vesolz,&
+            call calflu(chamnz, moint, mate, mateco, num, vesolz, &
                         nbdesc, nbrefe, nbvale, 'Z')
-            vestoc='&&MAJOU.TPZSTO'
-            call prstoc(chamnz, vestoc, ilires, ilires, iadz,&
+            vestoc = '&&MAJOU.TPZSTO'
+            call prstoc(chamnz, vestoc, ilires, ilires, iadz, &
                         nbvale, nbrefe, nbdesc)
-        endif
+        end if
 !
 !---ON RECOMBINE LES DEUX (TROIS)CHAMPS AUX NOEUDS DE TEMP ET ON CALCULE
 !-----LE FLUX FLUIDE TOTAL.....
 !
 !
-        call vtcmbl(2, typcst, const, typech, nomch,&
+        call vtcmbl(2, typcst, const, typech, nomch, &
                     'R', chcomb)
 !
         if (model .eq. '3D') then
 !
-            typcst(1) ='R'
-            typcst(2) ='R'
+            typcst(1) = 'R'
+            typcst(2) = 'R'
 !
-            const(1) =1.0d0
-            const(2) =1.0d0
+            const(1) = 1.0d0
+            const(2) = 1.0d0
 !
-            typech(1) ='R'
-            typech(2) ='R'
+            typech(1) = 'R'
+            typech(2) = 'R'
 !
             nomch(1) = chcomb(1:8)
             nomch(2) = vesolz(1:8)
 !
-            call vtcmbl(2, typcst, const, typech, nomch,&
+            call vtcmbl(2, typcst, const, typech, nomch, &
                         'R', chcmb2)
 !
-        endif
+        end if
 !
         if (model .eq. '3D') then
-            tampon=chcmb2
+            tampon = chcmb2
         else
-            tampon=chcomb
-        endif
+            tampon = chcomb
+        end if
 !
-        call chnucn(tampon, nu, 0, k8bid, 'V',&
+        call chnucn(tampon, nu, 0, k8bid, 'V', &
                     chflu)
 !
 !----ON RESOUT L EQUATION DE LAPLACE
 !
         call jeveuo(chflu//'.VALE', 'E', vr=vale)
-        call resoud(ma, ' ', solveu, ' ', 1,&
-                    ' ', ' ', ' ', vale, [cbid],&
+        call resoud(ma, ' ', solveu, ' ', 1, &
+                    ' ', ' ', ' ', vale, [cbid], &
                     ' ', .true._1, 0, iret)
 !
 !
 !--------ON REPLONGE LA PRESSION SUR L INTERFACE
 !-----------------QU 'ON STOCKE
 !
-        call chnucn(chflu, num, 0, k8bid, 'V',&
+        call chnucn(chflu, num, 0, k8bid, 'V', &
                     vepr)
 !
-        vestoc= '&&MAJOU.VESTOC'
-        call prstoc(vepr, vestoc, ilires, ilires, iadpr,&
+        vestoc = '&&MAJOU.VESTOC'
+        call prstoc(vepr, vestoc, ilires, ilires, iadpr, &
                     nbvale, nbrefe, nbdesc)
-  1     continue
+1       continue
     end do
 !
 ! CREATION DE TABLEAUX NULS POUR LA PRESSION ET LES
@@ -329,41 +329,41 @@ subroutine majou(model, modmec, solveu, num, nu,&
 !
 ! TABLEAUX POUR LA PRESSION
 !
-            vestoc= '&&MAJOU.VESTOC'
+            vestoc = '&&MAJOU.VESTOC'
             zk24(iadpr+ilires-1) = vestoc(1:14)//chaine(1:5)
-            call wkvect(zk24(iadpr+ilires-1)(1:19)//'.VALE', 'V V R', nbvale, ivalp)
-            call wkvect(zk24(iadpr+ilires-1)(1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-            call wkvect(zk24(iadpr+ilires-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
+            call wkvect(zk24(iadpr+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
+            call wkvect(zk24(iadpr+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
+            call wkvect(zk24(iadpr+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
 ! TABLEAUX POUR LES DEPLACEMENTS EN X
 !
-            vestoc= '&&MAJOU.TPXSTO'
+            vestoc = '&&MAJOU.TPXSTO'
             zk24(iadx+ilires-1) = vestoc(1:14)//chaine(1:5)
-            call wkvect(zk24(iadx+ilires-1)(1:19)//'.VALE', 'V V R', nbvale, ivalp)
-            call wkvect(zk24(iadx+ilires-1)(1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-            call wkvect(zk24(iadx+ilires-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
+            call wkvect(zk24(iadx+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
+            call wkvect(zk24(iadx+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
+            call wkvect(zk24(iadx+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
 ! TABLEAUX POUR LES DEPLACEMENTS EN Y
 !
-            vestoc= '&&MAJOU.TPYSTO'
+            vestoc = '&&MAJOU.TPYSTO'
             zk24(iady+ilires-1) = vestoc(1:14)//chaine(1:5)
-            call wkvect(zk24(iady+ilires-1)(1:19)//'.VALE', 'V V R', nbvale, ivalp)
-            call wkvect(zk24(iady+ilires-1)(1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-            call wkvect(zk24(iady+ilires-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
+            call wkvect(zk24(iady+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
+            call wkvect(zk24(iady+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
+            call wkvect(zk24(iady+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
 ! TABLEAUX POUR LES DEPLACEMENTS EN Z
 !
             if (model .eq. '3D') then
-                vestoc= '&&MAJOU.TPZSTO'
+                vestoc = '&&MAJOU.TPZSTO'
                 zk24(iadz+ilires-1) = vestoc(1:14)//chaine(1:5)
-                call wkvect(zk24(iadz+ilires-1)(1:19)//'.VALE', 'V V R', nbvale, ivalp)
-                call wkvect(zk24(iadz+ilires-1)(1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-                call wkvect(zk24(iadz+ilires-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
-            endif
+                call wkvect(zk24(iadz+ilires-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
+                call wkvect(zk24(iadz+ilires-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
+                call wkvect(zk24(iadz+ilires-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
+            end if
 !
-  3         continue
+3           continue
         end do
-    endif
+    end if
 !
 ! --- MENAGE
 !

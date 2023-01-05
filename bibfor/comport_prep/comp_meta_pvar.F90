@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine comp_meta_pvar(model, compor_cart, compor_info)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcdiscard.h"
@@ -43,9 +43,9 @@ implicit none
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: model
-character(len=19), intent(in) :: compor_cart
-character(len=19), intent(in) :: compor_info
+    character(len=8), intent(in) :: model
+    character(len=19), intent(in) :: compor_cart
+    character(len=19), intent(in) :: compor_info
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,32 +91,32 @@ character(len=19), intent(in) :: compor_info
 !
 ! - Access to mesh
 !
-    call dismoi('NOM_MAILLA'  , compor_cart, 'CARTE'   , repk=mesh)
-    call dismoi('NB_MA_MAILLA', mesh       , 'MAILLAGE', repi=nb_elem_mesh)
+    call dismoi('NOM_MAILLA', compor_cart, 'CARTE', repk=mesh)
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !
 ! - Access to model
 !
     ligrmo = model(1:8)//'.MODELE'
-    call jeveuo(model//'.MAILLE', 'L', vi = v_model_elem)
+    call jeveuo(model//'.MAILLE', 'L', vi=v_model_elem)
 !
 ! - Access to COMPOR
 !
-    call jeveuo(compor_cart//'.DESC', 'L', vi   = v_compor_desc)
-    call jeveuo(compor_cart//'.VALE', 'L', vk16 = v_compor_vale)
+    call jeveuo(compor_cart//'.DESC', 'L', vi=v_compor_desc)
+    call jeveuo(compor_cart//'.VALE', 'L', vk16=v_compor_vale)
     call jelira(compor_cart//'.VALE', 'LONMAX', nb_vale)
-    call jeveuo(jexnum(compor_cart//'.LIMA', 1), 'L', vi = v_compor_lima)
-    call jeveuo(jexatr(compor_cart//'.LIMA', 'LONCUM'), 'L', vi = v_compor_lima_lc)
-    nb_zone    = v_compor_desc(3)
+    call jeveuo(jexnum(compor_cart//'.LIMA', 1), 'L', vi=v_compor_lima)
+    call jeveuo(jexatr(compor_cart//'.LIMA', 'LONCUM'), 'L', vi=v_compor_lima_lc)
+    nb_zone = v_compor_desc(3)
     nb_cmp_max = nb_vale/v_compor_desc(2)
 !
 ! - Extend field on model
 !
     call etenca(compor_cart, ligrmo, iret)
-    call jeveuo(compor_cart//'.PTMA', 'L', vi = v_compor_ptma)
+    call jeveuo(compor_cart//'.PTMA', 'L', vi=v_compor_ptma)
 !
 ! - Create list of zones: for each zone (in CARTE), how many elements
 !
-    call wkvect(compor_info(1:19)//'.ZONE', 'V V I', nb_zone, vi = v_zone)
+    call wkvect(compor_info(1:19)//'.ZONE', 'V V I', nb_zone, vi=v_zone)
 !
 ! - Count number of elements by zone (in CARTE)
 !
@@ -124,29 +124,29 @@ character(len=19), intent(in) :: compor_info
         i_zone = v_compor_ptma(i_elem)
         if (i_zone .ne. 0 .and. v_model_elem(i_elem) .ne. 0) then
             v_zone(i_zone) = v_zone(i_zone)+1
-        endif
+        end if
     end do
 !
 ! - Count total of internal variables
 !
-    nt_vari     = 0
+    nt_vari = 0
     nb_vari_max = 0
     do i_zone = 1, nb_zone
-        read (v_compor_vale(nb_cmp_max*(i_zone-1)+2),'(I16)') nb_vari
-        nt_vari      = nt_vari+nb_vari
-        nb_vari_maxi = max(nb_vari_maxi,nb_vari)
+        read (v_compor_vale(nb_cmp_max*(i_zone-1)+2), '(I16)') nb_vari
+        nt_vari = nt_vari+nb_vari
+        nb_vari_maxi = max(nb_vari_maxi, nb_vari)
     end do
-    AS_ALLOCATE(vi = v_zone_read, size = nb_zone)
+    AS_ALLOCATE(vi=v_zone_read, size=nb_zone)
 !
 ! - No internal variables names
 !
     if (nt_vari .eq. 0) then
         goto 99
-    endif
+    end if
 !
 ! - Create list of comportment information
 !
-    call wkvect(compor_info(1:19)//'.RELA', 'V V K16', 2*nb_zone, vk16 = v_rela)
+    call wkvect(compor_info(1:19)//'.RELA', 'V V K16', 2*nb_zone, vk16=v_rela)
 !
 ! - Create list of internal variables names
 !
@@ -163,44 +163,44 @@ character(len=19), intent(in) :: compor_info
         else
             ASSERT(i_zone .ne. 0)
             l_zone_read = v_zone_read(i_zone) .eq. 1
-        endif
+        end if
         if (.not. l_zone_read) then
 ! --------- Get parameters
             phase_type = v_compor_vale(nb_cmp_max*(i_zone-1)+1)
             model_meta = v_compor_vale(nb_cmp_max*(i_zone-1)+3)
-            read (v_compor_vale(nb_cmp_max*(i_zone-1)+2),'(I16)') nb_vari
-            read (v_compor_vale(nb_cmp_max*(i_zone-1)+4),'(I16)') nume_comp
+            read (v_compor_vale(nb_cmp_max*(i_zone-1)+2), '(I16)') nb_vari
+            read (v_compor_vale(nb_cmp_max*(i_zone-1)+4), '(I16)') nume_comp
 ! --------- Create composite comportment
             nb_comp_elem = 2
             comp_elem(1) = phase_type
             comp_elem(2) = model_meta
             call lccree(nb_comp_elem, comp_elem, comp_code_py)
 ! --------- Save names of relation
-            v_rela(2*(i_zone-1) + 1) = phase_type
-            v_rela(2*(i_zone-1) + 2) = model_meta
+            v_rela(2*(i_zone-1)+1) = phase_type
+            v_rela(2*(i_zone-1)+2) = model_meta
 ! --------- Save name of internal variables
             call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
-            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16 = v_vari)
+            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16=v_vari)
             call lcvari(comp_code_py, nb_vari, v_vari)
             call lcdiscard(comp_code_py)
 ! --------- Save current zone
             v_zone_read(i_zone) = 1
-            nb_zone_acti        = nb_zone_acti + 1
-        endif
+            nb_zone_acti = nb_zone_acti+1
+        end if
     end do
 !
- 99 continue
+99  continue
 !
 ! - Save general information
 !
-    call wkvect(compor_info(1:19)//'.INFO', 'V V I', 5, vi = v_info)
+    call wkvect(compor_info(1:19)//'.INFO', 'V V I', 5, vi=v_info)
     v_info(1) = nb_elem_mesh
     v_info(2) = nb_zone
     v_info(3) = nb_vari_maxi
     v_info(4) = nt_vari
     v_info(5) = nb_zone_acti
 !
-    AS_DEALLOCATE(vi = v_zone_read)
+    AS_DEALLOCATE(vi=v_zone_read)
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,6 @@ function is_enr_line()
     aster_logical :: is_enr_line
 !-----------------------------------------------------------------------
 !
-    is_enr_line=.true._1
+    is_enr_line = .true._1
 !
 end function

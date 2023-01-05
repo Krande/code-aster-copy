@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
 !     ------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iadgd, iancmp,  ibid, icode, igdco, igdli
+    integer :: iadgd, iancmp, ibid, icode, igdco, igdli
     integer :: nmax, numgd
     character(len=8), pointer :: typegd(:) => null()
 !-----------------------------------------------------------------------
@@ -70,95 +70,95 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
     if (questl(1:7) .eq. 'NUM_GD ') then
         call jenonu(jexnom('&CATA.GD.NOMGD', nomob), repi)
         goto 9999
-    endif
+    end if
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomob), ibid)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', ibid), 'L', iadgd)
-    icode=zi(iadgd)
+    icode = zi(iadgd)
 !
     if (questi(1:12) .eq. 'TYPE_MATRICE') then
         if (icode .le. 3) then
-            repk=' '
-        else if (icode.eq.4) then
-            repk='SYMETRI'
-        else if (icode.eq.5) then
-            repk='NON_SYM'
-        endif
+            repk = ' '
+        else if (icode .eq. 4) then
+            repk = 'SYMETRI'
+        else if (icode .eq. 5) then
+            repk = 'NON_SYM'
+        end if
 !
-    else if (questi(1:9).eq.'NUM_GD_SI') then
+    else if (questi(1:9) .eq. 'NUM_GD_SI') then
         if (icode .eq. 1) then
             call jenonu(jexnom('&CATA.GD.NOMGD', nomob), repi)
-        else if (icode.eq.3) then
-            repi=zi(iadgd-1+4)
-        else if (icode.eq.4) then
-            repi=zi(iadgd-1+4)
-        else if (icode.eq.5) then
-            igdli=zi(iadgd-1+4)
-            igdco=zi(iadgd-1+5)
+        else if (icode .eq. 3) then
+            repi = zi(iadgd-1+4)
+        else if (icode .eq. 4) then
+            repi = zi(iadgd-1+4)
+        else if (icode .eq. 5) then
+            igdli = zi(iadgd-1+4)
+            igdco = zi(iadgd-1+5)
             if (igdli .ne. igdco) then
                 call utmess('F', 'UTILITAI_57')
-                ierd=1
+                ierd = 1
                 goto 9999
             else
-                repi=igdli
-            endif
+                repi = igdli
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-    else if (questi(1:9).eq.'NOM_GD_SI') then
+    else if (questi(1:9) .eq. 'NOM_GD_SI') then
         if (icode .eq. 5) then
-            igdli=zi(iadgd-1+4)
-            igdco=zi(iadgd-1+5)
+            igdli = zi(iadgd-1+4)
+            igdco = zi(iadgd-1+5)
             if (igdli .ne. igdco) then
                 call utmess('F', 'UTILITAI_59')
-                ierd=1
+                ierd = 1
                 goto 9999
             else
-                numgd=igdli
+                numgd = igdli
                 call jenuno(jexnum('&CATA.GD.NOMGD', numgd), repk)
-            endif
-        else if (icode.le.2) then
-            repk=nomob
+            end if
+        else if (icode .le. 2) then
+            repk = nomob
         else
-            numgd=zi(iadgd-1+4)
+            numgd = zi(iadgd-1+4)
             call jenuno(jexnum('&CATA.GD.NOMGD', numgd), repk)
-        endif
+        end if
 !
-    else if (questi.eq.'NB_EC') then
+    else if (questi .eq. 'NB_EC') then
         if (icode .ge. 3) then
             call utmess('F', 'UTILITAI_60')
-            ierd=1
+            ierd = 1
             goto 9999
-        endif
-        repi= zi(iadgd-1+3)
+        end if
+        repi = zi(iadgd-1+3)
 !
-        else if ((questi.eq.'NB_CMP_MAX') .or.(questi.eq.'NU_CMP_LAGR'))&
-    then
+    else if ((questi .eq. 'NB_CMP_MAX') .or. (questi .eq. 'NU_CMP_LAGR')) &
+        then
         if (icode .ge. 3) then
             call utmess('F', 'UTILITAI_60')
-            ierd=1
+            ierd = 1
             goto 9999
-        endif
+        end if
         call jelira(jexnom('&CATA.GD.NOMCMP', nomob), 'LONMAX', nmax)
         if (questi .eq. 'NB_CMP_MAX') then
-            repi=nmax
-        else if (questi.eq.'NU_CMP_LAGR') then
+            repi = nmax
+        else if (questi .eq. 'NU_CMP_LAGR') then
             call jeveuo(jexnom('&CATA.GD.NOMCMP', nomob), 'L', iancmp)
-            repi=indik8(zk8(iancmp),'LAGR',1,nmax)
+            repi = indik8(zk8(iancmp), 'LAGR', 1, nmax)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-    else if (questi.eq.'TYPE_SCA') then
+    else if (questi .eq. 'TYPE_SCA') then
         call jeveuo('&CATA.GD.TYPEGD', 'L', vk8=typegd)
         call jenonu(jexnom('&CATA.GD.NOMGD', nomob), numgd)
-        repk= typegd(numgd)
+        repk = typegd(numgd)
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
-9999  continue
+9999 continue
     repkz = repk
     call jedema()
 end subroutine

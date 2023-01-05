@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine thmCompGravity(ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,7 +38,7 @@ implicit none
 #include "asterfort/thmGetGene.h"
 #include "asterfort/thmGetElemIntegration.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,7 +79,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Cannot compute for finite volume
 !
-    ASSERT(.not.l_vf)
+    ASSERT(.not. l_vf)
 !
 ! - Get type of integration
 !
@@ -87,8 +87,8 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf  , ndim ,&
-                    mecani, press1  , press2, tempe)
+    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+                    mecani, press1, press2, tempe)
 !
 ! - Get input/output fields
 !
@@ -100,8 +100,8 @@ type(THM_DS), intent(inout) :: ds_thm
 ! - Get volumic mass
 !
     call rccoma(zi(jv_mater), 'THM_DIFFU', 1, phenom, icodre(1))
-    call rcvalb('FPG1', 1, 1, '+', zi(jv_mater),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(jv_mater), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
 ! - Get reference elements
@@ -110,27 +110,27 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get informations about element
 !
-    call thmGetElemInfo(l_vf, elrefe, elref2,&
+    call thmGetElemInfo(l_vf, elrefe, elref2, &
                         nno, nnos, nnom, &
-                        jv_gano, jv_poids, jv_poids2,&
-                        jv_func, jv_func2, jv_dfunc, jv_dfunc2,&
-                        inte_type, npi   , npi2    , npg)
+                        jv_gano, jv_poids, jv_poids2, &
+                        jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                        inte_type, npi, npi2, npg)
     ASSERT(npi .le. 27)
     ASSERT(nno .le. 20)
 !
 ! - Get dimensions of generalized vectors
 !
-    call thmGetGeneDime(ndim  ,&
-                        mecani, press1, press2, tempe,&
+    call thmGetGeneDime(ndim, &
+                        mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon)
 !
 ! - Get dimensions about element
 !
-    call thmGetElemDime(ndim     , nnos   , nnom   , &
-                        mecani   , press1 , press2 , tempe ,&
-                        nddls    , nddlm  , &
-                        nddl_meca, nddl_p1, nddl_p2,&
-                        dimdep   , dimdef , dimcon , dimuel)
+    call thmGetElemDime(ndim, nnos, nnom, &
+                        mecani, press1, press2, tempe, &
+                        nddls, nddlm, &
+                        nddl_meca, nddl_p1, nddl_p2, &
+                        dimdep, dimdef, dimcon, dimuel)
 !
 ! - Initializations
 !
@@ -140,24 +140,24 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Compute
 !
-    nnom = nno - nnos
+    nnom = nno-nnos
     if (ndim .eq. 3) then
         do kpg = 1, npg
             l = (kpg-1)*nno
             call dfdm3d(nno, kpg, jv_poids, jv_dfunc, zr(jv_geom), poids)
             coef = rho(1)*poids*zr(jv_pesa)
             do i = 1, nnos
-                ii = nddls* (i-1)
+                ii = nddls*(i-1)
                 do j = 1, 3
-                    zr(jv_vect+ii+j-1) = zr(jv_vect+ii+j-1) +&
-                        coef*zr(jv_func+l+i-1)*zr(jv_pesa+j)
+                    zr(jv_vect+ii+j-1) = zr(jv_vect+ii+j-1)+ &
+                                         coef*zr(jv_func+l+i-1)*zr(jv_pesa+j)
                 end do
             end do
             do i = 1, nnom
                 ii = nnos*nddls+nddlm*(i-1)
                 do j = 1, 3
-                    zr(jv_vect+ii+j-1) = zr(jv_vect+ii+j-1) +&
-                        coef*zr(jv_func+l+i+nnos-1)*zr(jv_pesa+j)
+                    zr(jv_vect+ii+j-1) = zr(jv_vect+ii+j-1)+ &
+                                         coef*zr(jv_func+l+i+nnos-1)*zr(jv_pesa+j)
                 end do
             end do
         end do
@@ -169,34 +169,34 @@ type(THM_DS), intent(inout) :: ds_thm
             if (l_axi) then
                 rx = 0.d0
                 do i = 1, nno
-                    rx = rx + zr(jv_geom+2*i-2)*zr(jv_func+k+i-1)
+                    rx = rx+zr(jv_geom+2*i-2)*zr(jv_func+k+i-1)
                 end do
                 poids = poids*rx
                 do i = 1, nnos
-                    zr(jv_vect+nddls*(i-1)-1+2) = zr(jv_vect+nddls*(i-1)-1+2) +&
-                        poids*zr(jv_pesa+2)*zr(jv_func+k+i-1)
+                    zr(jv_vect+nddls*(i-1)-1+2) = zr(jv_vect+nddls*(i-1)-1+2)+ &
+                                                  poids*zr(jv_pesa+2)*zr(jv_func+k+i-1)
                 end do
                 do i = 1, nnom
-                    zr(jv_vect+nddls*nnos+nddlm*(i-1)-1+2) = zr(jv_vect+nddls*nnos+nddlm*(i-1)+1)+&
-                        poids*zr( jv_pesa+2)*zr(jv_func+k+i+nnos-1 )
+                    zr(jv_vect+nddls*nnos+nddlm*(i-1)-1+2) = zr(jv_vect+nddls*nnos+nddlm*(i-1)+1)+ &
+                                                          poids*zr(jv_pesa+2)*zr(jv_func+k+i+nnos-1)
                 end do
             else
                 do i = 1, nnos
-                    zr(jv_vect+nddls*(i-1)-1+1) = zr(jv_vect+nddls*(i-1)-1+1) + &
-                        poids*zr(jv_pesa+1)*zr(jv_func+k+i-1)
-                    zr(jv_vect+nddls*(i-1)-1+2) =zr(jv_vect+nddls*(i-1)-1+2) +&
-                        poids*zr(jv_pesa+2)*zr(jv_func+k+i-1)
+                    zr(jv_vect+nddls*(i-1)-1+1) = zr(jv_vect+nddls*(i-1)-1+1)+ &
+                                                  poids*zr(jv_pesa+1)*zr(jv_func+k+i-1)
+                    zr(jv_vect+nddls*(i-1)-1+2) = zr(jv_vect+nddls*(i-1)-1+2)+ &
+                                                  poids*zr(jv_pesa+2)*zr(jv_func+k+i-1)
                 end do
                 do i = 1, nnom
-                    zr(jv_vect+nddls*nnos+nddlm*(i-1)) = zr(jv_vect+nddls*nnos+nddlm*(i-1)) +&
-                        poids*zr(jv_pesa+1)*zr(jv_func+k+i+nnos-1)
-                    zr(jv_vect+nddls*nnos+nddlm*(i-1)+1)= zr(jv_vect+nddls*nnos+nddlm*(i-1)+1) +&
-                        poids*zr(jv_pesa+2)*zr(jv_func+k+i+nnos-1)
+                    zr(jv_vect+nddls*nnos+nddlm*(i-1)) = zr(jv_vect+nddls*nnos+nddlm*(i-1))+ &
+                                                         poids*zr(jv_pesa+1)*zr(jv_func+k+i+nnos-1)
+                    zr(jv_vect+nddls*nnos+nddlm*(i-1)+1) = zr(jv_vect+nddls*nnos+nddlm*(i-1)+1)+ &
+                                                          poids*zr(jv_pesa+2)*zr(jv_func+k+i+nnos-1)
                 end do
-            endif
+            end if
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apchar(typcha, k24rc, nk, lambda, theta,&
-                  lraide, lmasse, ldynam, solveu, lamor,&
+subroutine apchar(typcha, k24rc, nk, lambda, theta, &
+                  lraide, lmasse, ldynam, solveu, lamor, &
                   lc, impr, ifapm, ind)
     implicit none
 #include "asterf_types.h"
@@ -80,17 +80,17 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
     character(len=24), pointer :: slvk(:) => null()
 !
 !     ------------------------------------------------------------------
-    data typcst /'C','C','C'/
-    data nomddl /'        '/
+    data typcst/'C', 'C', 'C'/
+    data nomddl/'        '/
 !     ------------------------------------------------------------------
 !
 !   --- MISCELLANEOUS ---
     call jemarq()
-    prec=r8prem()*100.d0
-    prec1=1.d0-prec
-    pi=r8pi()
-    nkm1=nk-1
-    rmin=r8miem()*100
+    prec = r8prem()*100.d0
+    prec1 = 1.d0-prec
+    pi = r8pi()
+    nkm1 = nk-1
+    rmin = r8miem()*100
 !
 !     ------------------------------------------------------------------
 !     ------------------- METHOD ROMBOUT -------------------------------
@@ -103,19 +103,19 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 !   --- WITH THE HELP OF COMPENSATED ARITHMETIC                    ---
 !   --- (CF. LANGLOIS, GRAILLAT, LOUVET).                          ---
         call jeveuo(k24rc, 'L', jmatc)
-        caux2=zc(jmatc+nk)
+        caux2 = zc(jmatc+nk)
         do j = nkm1, 0, -1
-            caux2=caux2*lambda+zc(jmatc+j)
+            caux2 = caux2*lambda+zc(jmatc+j)
         end do
 !
 !     ------------------------------------------------------------------
 !     ------------------- METHOD LDLT ----------------------------------
 !     ------------------------------------------------------------------
-    else if (typcha(1:4).eq.'LDLT') then
+    else if (typcha(1:4) .eq. 'LDLT') then
 !   --- COMPUTATION THANKS TO THE TRADITIONNAL LDLT FACTORIZATION ---
 !   --- STEP 1: COMPUTATION OF THE SHIFTED DYNAMIC MATRIX         ---
 !
-        if (.not.lc) then
+        if (.not. lc) then
 !   --- COMPUTE DYNAM=(1.D0,0.D0)*RAIDE - (RE(LAMBDA),IM(LAMBDA))*MASSE
             nbcmb = 2
             coef(1) = 1.d0
@@ -137,31 +137,31 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
             nmat(2) = zk24(zi(lamor+1))
             nmat(3) = zk24(zi(lraide+1))
             nmatsh = zk24(zi(ldynam+1))
-        endif
+        end if
         call mtdscr(nmatsh)
         call jeveuo(nmatsh(1:19)//'.&INT', 'E', lmatsh)
-        call mtcmbl(nbcmb, typcst, coef, nmat, nmatsh,&
+        call mtcmbl(nbcmb, typcst, coef, nmat, nmatsh, &
                     nomddl, ' ', 'ELIM=')
 !
 !   --- STEP 1.5: IF LINEAR SOLVER='MUMPS'
 !   --- WE CHANGE TWO PARAMETERS OF THE SD_SOLVER RECORD TO ORDER MUMPS
 !   --- TO COMPUTE THE DETERMINANT WITHOUT KEEPING THE FACTORS
         call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
-        metres=slvk(1)
+        metres = slvk(1)
         call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
         if (metres(1:5) .eq. 'MUMPS') then
-            slvi(4)=1
-            slvi(5)=1
-        endif
+            slvi(4) = 1
+            slvi(5) = 1
+        end if
 !
 !   --- STEP 2: FACTORIZATION OF THIS DYNAMIC MATRIX              ---
-        matpre=' '
-        iret=0
-        matpre=' '
-        call preres(solveu, 'V', iret, matpre, nmatsh(1:19),&
+        matpre = ' '
+        iret = 0
+        matpre = ' '
+        call preres(solveu, 'V', iret, matpre, nmatsh(1:19), &
                     ibid, 2)
-        valr(1)=dble(lambda)
-        valr(2)=dimag(lambda)
+        valr(1) = dble(lambda)
+        valr(2) = dimag(lambda)
 !
         if (iret .ge. 1) then
 !   --- ERROR CASE: LAMBDA IS CLOSE TO AN EIGENVALUE              ---
@@ -175,42 +175,42 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 !   --- THIS TIP IS ACTIVED ONLY FOR LDLT AND MULT_FRONT LINEAR   ---
 !   --- SOLVER. FOR MUMPS, WE USE THE DETERMINANT COMPUTE BY THE  ---
 !   --- THE TOOL.                                                 ---
-            call mtdete(2, metres, lmatsh, r8bid, ibid,&
+            call mtdete(2, metres, lmatsh, r8bid, ibid, &
                         caux2)
-        endif
+        end if
 !
     else
 !
 !   --- ILLEGAL OPTION ---
         ASSERT(.false.)
 !
-    endif
+    end if
 !
 !
 !   --- PROCEDURE TO CORRECT SOME APPROXIMATIONS ---
 !   --- IN THE COMPUTATION OF ARG(PC(LAMBDA))    ---
-    rauxx=dble(caux2)
-    rauxy=dimag(caux2)
-    rauxm=sqrt(rauxx*rauxx+rauxy*rauxy)
-    if (rauxm .lt. rmin) rauxm=1.d0
-    rauxx=rauxx/rauxm
-    rauxy=rauxy/rauxm
-    if (abs(rauxx) .lt. prec) rauxx=prec
-    if (abs(rauxx) .gt. prec1) rauxx=sign(1.d0,rauxx)
-    if (abs(rauxy) .lt. prec) rauxy=prec
-    if (abs(rauxy) .gt. prec1) rauxy=sign(1.d0,rauxy)
-    theta=atan2(rauxy,rauxx)
-    if (abs(theta) .lt. prec) theta=0.d0
-    if (theta .lt. 0.d0) theta=2*pi+theta
+    rauxx = dble(caux2)
+    rauxy = dimag(caux2)
+    rauxm = sqrt(rauxx*rauxx+rauxy*rauxy)
+    if (rauxm .lt. rmin) rauxm = 1.d0
+    rauxx = rauxx/rauxm
+    rauxy = rauxy/rauxm
+    if (abs(rauxx) .lt. prec) rauxx = prec
+    if (abs(rauxx) .gt. prec1) rauxx = sign(1.d0, rauxx)
+    if (abs(rauxy) .lt. prec) rauxy = prec
+    if (abs(rauxy) .gt. prec1) rauxy = sign(1.d0, rauxy)
+    theta = atan2(rauxy, rauxx)
+    if (abs(theta) .lt. prec) theta = 0.d0
+    if (theta .lt. 0.d0) theta = 2*pi+theta
 !
 !   --- FOR DEBUGING ONLY ---
     if (impr .eq. 'OUI') then
 !   --- SCALE COEFFICIENT TO MATCH THE VISUALISATION CURVES ---
 !   --- RINDC=NB_POINT_CONTOUR_REF/NB_POINT_CONTOUR_TEST    ---
-        rindc=1000.d0/10.d0
-        rindc=1.d0
-        rayon=1.d0+ind*(1.d0/50.d0)*rindc
-        write(ifapm,*)rayon*dble(caux2),rayon*dimag(caux2)
-    endif
+        rindc = 1000.d0/10.d0
+        rindc = 1.d0
+        rayon = 1.d0+ind*(1.d0/50.d0)*rindc
+        write (ifapm, *) rayon*dble(caux2), rayon*dimag(caux2)
+    end if
     call jedema()
 end subroutine

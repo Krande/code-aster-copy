@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,20 +77,20 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !           EST REFERENCEE DANS LE .REFD DE LA BASE MODALE MODE_MECA
         call getvid(' ', 'MODE_MECA', scal=k8b, nbret=iret)
         if (iret .gt. 0) then
-            call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
+            call rsexch(' ', modmec, 'DEPL', 1, nomcha, &
                         iret)
             call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matas)
             call jeveuo(matas//'.LIME', 'L', vk24=lime)
-            call jeveuo(lime(1)(1:8)//'           .RELR', 'L', vk24=resu)
-            call jeveuo(resu(1)(1:19)//'.NOLI', 'L', vk24=noli)
+            call jeveuo(lime(1) (1:8)//'           .RELR', 'L', vk24=resu)
+            call jeveuo(resu(1) (1:19)//'.NOLI', 'L', vk24=noli)
             call dismoi('NOM_MODELE', noli(1), "LIGREL", repk=modele)
         else
 !         --- DEFORMEES MODALES PAR DES CHAM_NO MAIS AUCUNE INFORMATION
 !             N'EST PRESENTE SUR LE MODELE EF...
 !             CE BLINDAGE EST REDONDANT AVEC LES REGLES DU CATALOGUE
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 !     --- SCRUTER LES MOTS CLE TOUT/GROUP_MA/MAILLE POUR CREER
 !         UN LIGREL "REDUIT" DANS LIGRMO
@@ -101,12 +101,12 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         call detrsd('LIGREL', ligrmo)
         ligrmo = '&&ACCEP1.MODELE         '
         modele = ligrmo(1:8)
-    endif
+    end if
 !
     call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
     if (partit .ne. ' ') then
         call utmess('F', 'CALCULEL_25', sk=ligrmo)
-    endif
+    end if
 !
 ! CALCULS ELEMENTAIRES
     call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
@@ -123,26 +123,26 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         ncham = -ncham
         AS_ALLOCATE(vk8=vec, size=ncham)
         call getvid(' ', 'CHAM_NO', nbval=ncham, vect=vec, nbret=nn)
-    endif
+    end if
 ! BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
     do i = 1, nbm
         call codent(i, 'D0', incr)
         vetel = '&&V.M'//incr(5:7)
         lchout(1) = vetel//'.VE000'
         if (ncham .eq. 0) then
-            call rsexch(' ', modmec, 'DEPL', i, nomcha,&
+            call rsexch(' ', modmec, 'DEPL', i, nomcha, &
                         iret)
         else
             if (i .le. ncham) nomcha = vec(i)
-        endif
+        end if
         lchin(2) = nomcha//'.VALE'
         call codent(1, 'D0', lchout(1) (12:14))
         chharm = '&&ACCEP1.NUME_HARM'
-        call mecact('V', chharm, 'MODELE', modele, 'NUMMOD',&
+        call mecact('V', chharm, 'MODELE', modele, 'NUMMOD', &
                     ncmp=1, nomcmp='NUM', si=i)
         lchin(3) = chharm
-        call calcul('S', option, ligrmo, 3, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, 3, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
         call detrsd('CARTE', chharm)
     end do
@@ -159,13 +159,13 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !
     nbelto = 0
     do igr = 1, ngrel
-        nbelgr = nbelem(ligrmo,igr)
-        nbelto = nbelto + nbelgr
+        nbelgr = nbelem(ligrmo, igr)
+        nbelto = nbelto+nbelgr
     end do
 !
 ! TAILLE DU TABLEAU
 !          NTAIL=16*NBELTO*NBM
-    ntail = 24*nbelto*nbm + 1
+    ntail = 24*nbelto*nbm+1
     call wkvect('&&GROTAB.TAB', 'V V R', ntail, itab)
 ! NOMBRE D'ELEMENTS PAR MODE
 !
@@ -176,7 +176,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         imode = 'CHBIDON'
         call codent(imo, 'D0', imode)
         do igr = 1, ngrel
-            nbelgr = nbelem(ligrmo,igr)
+            nbelgr = nbelem(ligrmo, igr)
             call jeveuo(jexnum(ligrmo(1:19)//'.LIEL', igr), 'L', ialiel)
             do iel = 1, nbelgr
                 ima = zi(ialiel-1+iel)
@@ -186,26 +186,26 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                 call jelira('&&329.M'//imode//'.EL'//ielem, 'LONMAX', n1)
                 do ipg = 1, n1
                     zr(itab+ii-1) = zr(ive+ipg-1)
-                    ii = ii + 1
-                    if (mod(ii,6) .eq. 5) then
-                        if (.not.yang) then
+                    ii = ii+1
+                    if (mod(ii, 6) .eq. 5) then
+                        if (.not. yang) then
                             zr(itab+ii-1) = 0.d0
                             zr(itab+ii) = 0.d0
-                            ii = ii + 2
+                            ii = ii+2
                         else
-                            v1 = zr(itab+ii-4) - dir(1,2)
-                            v2 = zr(itab+ii-3) - dir(2,2)
-                            v3 = zr(itab+ii-2) - dir(3,2)
-                            haut = v1*dir(1,1) + v2*dir(2,1) + v3*dir( 3,1)
-                            w1 = v1 - haut*dir(1,1)
-                            w2 = v2 - haut*dir(2,1)
-                            w3 = v3 - haut*dir(3,1)
+                            v1 = zr(itab+ii-4)-dir(1, 2)
+                            v2 = zr(itab+ii-3)-dir(2, 2)
+                            v3 = zr(itab+ii-2)-dir(3, 2)
+                            haut = v1*dir(1, 1)+v2*dir(2, 1)+v3*dir(3, 1)
+                            w1 = v1-haut*dir(1, 1)
+                            w2 = v2-haut*dir(2, 1)
+                            w3 = v3-haut*dir(3, 1)
                             zr(itab+ii-1) = haut
-                            ii = ii + 1
-                            rayon2 = w1*w1 + w2*w2 + w3*w3
+                            ii = ii+1
+                            rayon2 = w1*w1+w2*w2+w3*w3
                             if (rayon2 .le. 0.d0) then
                                 call utmess('F', 'MODELISA_6')
-                            endif
+                            end if
                             if (ii .eq. 6) then
                                 refer = rayon2
                                 rayon = sqrt(rayon2)
@@ -218,15 +218,15 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                             else
                                 if (abs(rayon2-refer) .gt. 1.d-3) then
                                     call utmess('F', 'MODELISA_6')
-                                endif
-                                rap1 = (ref2*w3-ref3*w2)*dir(1,1) + (ref3*w1-ref1*w3)*dir(2,1) + &
-                                       &(ref1*w2- ref2*w1)*dir(3,1)
-                                rap2 = ref1*w1 + ref2*w2 + ref3*w3
-                                zr(itab+ii-1) = atan2(rap1,rap2)
-                                ii = ii + 1
-                            endif
-                        endif
-                    endif
+                                end if
+                                rap1 = (ref2*w3-ref3*w2)*dir(1, 1)+(ref3*w1-ref1*w3)*dir(2, 1)+ &
+                                       &(ref1*w2-ref2*w1)*dir(3, 1)
+                                rap2 = ref1*w1+ref2*w2+ref3*w3
+                                zr(itab+ii-1) = atan2(rap1, rap2)
+                                ii = ii+1
+                            end if
+                        end if
+                    end if
                 end do
             end do
         end do

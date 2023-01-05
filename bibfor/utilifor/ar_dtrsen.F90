@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -220,9 +220,9 @@
 !  CANNOT DIFFER FROM SIGMA-MIN(C) BY MORE THAN A FACTOR OF SQRT(N1*N2).
 !
 !  WHEN SEP IS SMALL, SMALL CHANGES IN T CAN CAUSE LARGE CHANGES IN
-subroutine ar_dtrsen(job, compq, select, n, t,&
-                     ldt, q, ldq, wr, wi,&
-                     m, s, sep, work, lwork,&
+subroutine ar_dtrsen(job, compq, select, n, t, &
+                     ldt, q, ldq, wr, wi, &
+                     m, s, sep, work, lwork, &
                      iwork, liwork, info)
 !  THE INVARIANT SUBSPACE. AN APPROXIMATE BOUND ON THE MAXIMUM ANGULAR
 !  ERROR IN THE COMPUTED RIGHT INVARIANT SUBSPACE IS
@@ -255,12 +255,12 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
     real(kind=8) :: s, sep, rbid(1)
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    aster_logical :: select( * )
-    integer :: iwork( * )
-    real(kind=8) :: q( ldq, * ), t( ldt, * ), wi( * ), work( * ), wr( * )
+    aster_logical :: select(*)
+    integer :: iwork(*)
+    real(kind=8) :: q(ldq, *), t(ldt, *), wi(*), work(*), wr(*)
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d+0, one = 1.0d+0 )
+    parameter(zero=0.0d+0, one=1.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: pair, swap, wantbh, wantq, wants, wantsp
@@ -275,21 +275,21 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 !
 !     DECODE AND TEST THE INPUT PARAMETERS
 !
-    wantbh = lsame( job, 'B' )
-    wants = lsame( job, 'E' ) .or. wantbh
-    wantsp = lsame( job, 'V' ) .or. wantbh
-    wantq = lsame( compq, 'V' )
+    wantbh = lsame(job, 'B')
+    wants = lsame(job, 'E') .or. wantbh
+    wantsp = lsame(job, 'V') .or. wantbh
+    wantq = lsame(compq, 'V')
 !
     info = 0
-    if (.not.lsame( job, 'N' ) .and. .not.wants .and. .not.wantsp) then
+    if (.not. lsame(job, 'N') .and. .not. wants .and. .not. wantsp) then
         info = -1
-    else if (.not.lsame( compq, 'N' ) .and. .not.wantq) then
+    else if (.not. lsame(compq, 'N') .and. .not. wantq) then
         info = -2
-    else if (n.lt.0) then
+    else if (n .lt. 0) then
         info = -4
-    else if (ldt.lt.max( 1, n )) then
+    else if (ldt .lt. max(1, n)) then
         info = -6
-    else if (ldq.lt.1 .or. ( wantq .and. ldq.lt.n )) then
+    else if (ldq .lt. 1 .or. (wantq .and. ldq .lt. n)) then
         info = -8
     else
 !
@@ -303,42 +303,42 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
                 pair = .false.
             else
                 if (k .lt. n) then
-                    if (t( k+1, k ) .eq. zero) then
-                        if (select( k )) m = m + 1
+                    if (t(k+1, k) .eq. zero) then
+                        if (select(k)) m = m+1
                     else
                         pair = .true.
-                        if (select( k ) .or. select( k+1 )) m = m + 2
-                    endif
+                        if (select(k) .or. select(k+1)) m = m+2
+                    end if
                 else
-                    if (select( n )) m = m + 1
-                endif
-            endif
+                    if (select(n)) m = m+1
+                end if
+            end if
         end do
 !
         n1 = m
-        n2 = n - m
+        n2 = n-m
         nn = n1*n2
 !
-        if (lwork .lt. 1 .or. ( ( wants .and. .not.wantsp ) .and. lwork.lt.nn ) .or.&
-            ( wantsp .and. lwork.lt.2*nn )) then
+        if (lwork .lt. 1 .or. ((wants .and. .not. wantsp) .and. lwork .lt. nn) .or. &
+            (wantsp .and. lwork .lt. 2*nn)) then
             info = -15
-            else if( liwork.lt.1 .or. ( wantsp .and. liwork.lt.nn ) )&
-        then
+        else if (liwork .lt. 1 .or. (wantsp .and. liwork .lt. nn)) &
+            then
             info = -17
-        endif
-    endif
+        end if
+    end if
     if (info .ne. 0) then
         call xerbla('DTRSEN', -info)
         goto 1000
-    endif
+    end if
 !
 !     QUICK RETURN IF POSSIBLE.
 !
     if (m .eq. n .or. m .eq. 0) then
         if (wants) s = one
-        if (wantsp) sep = dlange( '1', n, n, t, ldt, work )
+        if (wantsp) sep = dlange('1', n, n, t, ldt, work)
         goto 40
-    endif
+    end if
 !
 !     COLLECT THE SELECTED BLOCKS AT THE TOP-LEFT CORNER OF T.
 !
@@ -348,21 +348,21 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
         if (pair) then
             pair = .false.
         else
-            swap = select( k )
+            swap = select(k)
             if (k .lt. n) then
-                if (t( k+1, k ) .ne. zero) then
+                if (t(k+1, k) .ne. zero) then
                     pair = .true.
-                    swap = swap .or. select( k+1 )
-                endif
-            endif
+                    swap = swap .or. select(k+1)
+                end if
+            end if
             if (swap) then
-                ks = ks + 1
+                ks = ks+1
 !
 !              SWAP THE K-TH BLOCK TO POSITION KS.
 !
                 ierr = 0
                 kk = k
-                if (k .ne. ks) call ar_dtrexc(compq, n, t, ldt, q,&
+                if (k .ne. ks) call ar_dtrexc(compq, n, t, ldt, q, &
                                               ldq, kk, ks, work, ierr)
                 if (ierr .eq. 1 .or. ierr .eq. 2) then
 !
@@ -372,10 +372,10 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
                     if (wants) s = zero
                     if (wantsp) sep = zero
                     goto 40
-                endif
-                if (pair) ks = ks + 1
-            endif
-        endif
+                end if
+                if (pair) ks = ks+1
+            end if
+        end if
     end do
 !
     if (wants) then
@@ -384,22 +384,22 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 !
 !           T11*R - R*T22 = SCALE*T12
 !
-        call dlacpy('F', n1, n2, t( 1, n1+1 ), ldt,&
+        call dlacpy('F', n1, n2, t(1, n1+1), ldt, &
                     work, n1)
-        call ar_dlrsyl('N', 'N', -1, n1, n2,&
-                       t, ldt, t( n1+1, n1+1 ), ldt, work,&
+        call ar_dlrsyl('N', 'N', -1, n1, n2, &
+                       t, ldt, t(n1+1, n1+1), ldt, work, &
                        n1, scale, ierr)
 !
 !        ESTIMATE THE RECIPROCAL OF THE CONDITION NUMBER OF THE CLUSTER
 !        OF EIGENVALUES.
 !
-        rnorm = dlange( 'F', n1, n2, work, n1, rbid )
+        rnorm = dlange('F', n1, n2, work, n1, rbid)
         if (rnorm .eq. zero) then
             s = one
         else
-            s = scale / ( sqrt( scale*scale / rnorm+rnorm )* sqrt( rnorm ) )
-        endif
-    endif
+            s = scale/(sqrt(scale*scale/rnorm+rnorm)*sqrt(rnorm))
+        end if
+    end if
 !
     if (wantsp) then
 !
@@ -407,44 +407,44 @@ subroutine ar_dtrsen(job, compq, select, n, t,&
 !
         est = zero
         kase = 0
- 30     continue
-        call ar_dlacon(nn, work( nn+1 ), work, iwork, est,&
+30      continue
+        call ar_dlacon(nn, work(nn+1), work, iwork, est, &
                        kase)
         if (kase .ne. 0) then
             if (kase .eq. 1) then
 !
 !              SOLVE  T11*R - R*T22 = SCALE*X.
 !
-                call ar_dlrsyl('N', 'N', -1, n1, n2,&
-                               t, ldt, t( n1+1, n1+1 ), ldt, work,&
+                call ar_dlrsyl('N', 'N', -1, n1, n2, &
+                               t, ldt, t(n1+1, n1+1), ldt, work, &
                                n1, scale, ierr)
             else
 !
 !              SOLVE  T11'*R - R*T22' = SCALE*X.
 !
-                call ar_dlrsyl('T', 'T', -1, n1, n2,&
-                               t, ldt, t( n1+1, n1+1 ), ldt, work,&
+                call ar_dlrsyl('T', 'T', -1, n1, n2, &
+                               t, ldt, t(n1+1, n1+1), ldt, work, &
                                n1, scale, ierr)
-            endif
+            end if
             goto 30
-        endif
+        end if
 !
-        sep = scale / est
-    endif
+        sep = scale/est
+    end if
 !
- 40 continue
+40  continue
 !
 !     STORE THE OUTPUT EIGENVALUES IN WR AND WI.
 !
     do k = 1, n
-        wr( k ) = t( k, k )
-        wi( k ) = zero
+        wr(k) = t(k, k)
+        wi(k) = zero
     end do
-    do k = 1, n - 1
-        if (t( k+1, k ) .ne. zero) then
-            wi( k ) = sqrt( abs( t( k, k+1 ) ) )* sqrt( abs( t( k+1, k ) ) )
-            wi( k+1 ) = -wi( k )
-        endif
+    do k = 1, n-1
+        if (t(k+1, k) .ne. zero) then
+            wi(k) = sqrt(abs(t(k, k+1)))*sqrt(abs(t(k+1, k)))
+            wi(k+1) = -wi(k)
+        end if
     end do
 1000 continue
     call matfpe(1)

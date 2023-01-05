@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,47 +36,47 @@ subroutine angrot(v1, v2, axe, angle)
     real(kind=8) :: epsi
     integer :: i
 !
-    epsi=1.d-10
+    epsi = 1.d-10
     call angvec(v1, v2, angle)
     if (abs(angle) .le. 1.d-6) then
         goto 999
-    endif
+    end if
     if (abs(angle-r8pi()) .le. 1.d-6) then
         goto 999
-    endif
+    end if
     do i = 1, 3
-        axe2(i)=axe(i)
+        axe2(i) = axe(i)
     end do
     call normev(axe2, nv3)
     if (nv3 .lt. epsi) then
         call utmess('F', 'UTILITAI_5')
-    endif
+    end if
     call provec(v1, v2, v1v2)
     call provec(v1v2, axe2, verif)
     call normev(verif, nv3)
     if (nv3 .gt. epsi) then
         call utmess('F', 'UTILITAI_6')
-    endif
+    end if
     call normev(v1v2, nv3)
     if (nv3 .lt. epsi) then
-        pscal=0.d0
+        pscal = 0.d0
         do i = 1, 3
-            pscal=pscal+v1(i)*v2(i)
+            pscal = pscal+v1(i)*v2(i)
         end do
         if (pscal .gt. 0.d0) then
-            angle=0.d0
+            angle = 0.d0
         else
-            angle=r8pi()
-        endif
+            angle = r8pi()
+        end if
     else
         pscal = 0.d0
         do i = 1, 3
-            pscal = pscal + axe2(i)*v1v2(i)
+            pscal = pscal+axe2(i)*v1v2(i)
         end do
         if (abs(abs(pscal)-1.d0) .gt. epsi) then
             call utmess('F', 'UTILITAI_7')
-        endif
-        angle= angle*pscal
-    endif
+        end if
+        angle = angle*pscal
+    end if
 999 continue
 end subroutine

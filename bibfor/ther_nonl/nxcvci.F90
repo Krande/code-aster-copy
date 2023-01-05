@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nxcvci(model , &
-                  charge, infoch  , fomult, numedd, tempmoi,&
-                  instap, cncine  )
+subroutine nxcvci(model, &
+                  charge, infoch, fomult, numedd, tempmoi, &
+                  instap, cncine)
 !
 !
-implicit none
+    implicit none
 !
 !
 ! BUT : CALCULER LE CHAM_NO CNCINE QUI CONTIENT  L'INCREMENT DE
@@ -46,7 +46,7 @@ implicit none
 #include "asterfort/vtcmbl.h"
 #include "asterfort/vtcreb.h"
 
-character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: model
     character(len=24) :: charge, infoch, fomult, numedd
     character(len=19) :: tempmoi, cncine
     character(len=24) :: l2cnci(2), cncinm, cncinp, dlci
@@ -63,26 +63,26 @@ character(len=24), intent(in) :: model
 !
     call jemarq()
 
-    if (cncine .eq. ' ') cncine='&&ASCAVC.VCI'
+    if (cncine .eq. ' ') cncine = '&&ASCAVC.VCI'
 !
 !     -- CREATION DE CNCINE = 0. PARTOUT :
 !     --------------------------------------
     call exisd('CHAMP_GD', cncine, iret)
     if (iret .eq. 0) then
-        call vtcreb(cncine, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
-    endif
+        call vtcreb(cncine, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
+    end if
     call jelira(cncine(1:19)//'.VALE', 'LONMAX', ival=neq)
     call jelira(tempmoi(1:19)//'.VALE', 'LONMAX', ival=neq2)
-    ASSERT(neq.eq.neq2)
+    ASSERT(neq .eq. neq2)
     call jeveuo(cncine(1:19)//'.VALE', 'E', vr=vale)
 !
 !
 !     -- Y-A-T-IL DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
-    lvcine=.false.
+    lvcine = .false.
     call jeveuo(infoch, 'L', jinfc)
     do ichar = 1, zi(jinfc)
-        if (zi(jinfc+ichar) .lt. 0) lvcine=.true.
+        if (zi(jinfc+ichar) .lt. 0) lvcine = .true.
     end do
 !
 !     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
@@ -90,19 +90,19 @@ character(len=24), intent(in) :: model
     call jeveuo(charge, 'L', jlchar)
     call jelira(charge, 'LONMAX', ival=nbchar)
     do ichar = 1, nbchar
-        char1=zk24(jlchar-1+ichar)(1:8)
+        char1 = zk24(jlchar-1+ichar) (1:8)
     end do
 !
 !     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, IL N'Y A RIEN A FAIRE:
 !     -----------------------------------------------------------------
-    if (.not.lvcine) goto 999
+    if (.not. lvcine) goto 999
 !
 !
 !     -- S'IL Y A DES CHARGES CINEMATIQUES :
 !     -----------------------------------------------------------------
-    cncinm='&&NMCHAR.CNCIMM'
-    cncinp='&&NMCHAR.CNCIMP'
-    dlci  ='&&NMCHAR.DLCI'
+    cncinm = '&&NMCHAR.CNCIMM'
+    cncinp = '&&NMCHAR.CNCIMP'
+    dlci = '&&NMCHAR.DLCI'
 !
 !
 !     CALCUL DE TIMP+ :
@@ -118,19 +118,19 @@ character(len=24), intent(in) :: model
     call jeveuo(cncinm(1:19)//'.VALE', 'E', vr=cncim)
     do ieq = 1, neq
         if (v_dlci(ieq) .eq. 0) then
-            cncim(ieq)=0.d0
-        endif
+            cncim(ieq) = 0.d0
+        end if
     end do
 !
 !     DIFFERENCE TIMP+ - TIMP- :
 !     ---------------------------
-    coefr(1)=-1.d0
-    coefr(2)=+1.d0
-    l2cnci(1)=cncinm
-    l2cnci(2)=cncinp
-    typch(1)='R'
-    typch(2)='R'
-    call vtcmbl(2, typch, coefr, typch, l2cnci,&
+    coefr(1) = -1.d0
+    coefr(2) = +1.d0
+    l2cnci(1) = cncinm
+    l2cnci(2) = cncinp
+    typch(1) = 'R'
+    typch(2) = 'R'
+    call vtcmbl(2, typch, coefr, typch, l2cnci, &
                 typch(1), cncine)
 !
 !     MENAGE :

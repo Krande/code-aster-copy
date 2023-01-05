@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine trapez(x, y, npt, aire)
 !
     do i = 1, npt-1
 !
-        aire = aire + ((x(i+1)-x(i)) * (y(i+1)+y(i)) / 2.0d0)
+        aire = aire+((x(i+1)-x(i))*(y(i+1)+y(i))/2.0d0)
 !
     end do
 end subroutine

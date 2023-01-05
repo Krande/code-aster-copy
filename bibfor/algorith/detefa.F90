@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine detefa(nnose, pi1, pi2, it, typma,&
+subroutine detefa(nnose, pi1, pi2, it, typma, &
                   ainter, cnset, n)
     implicit none
 !
@@ -49,53 +49,53 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
     integer :: i, j, zxain
     aster_logical :: found
 !-----------------------------------------------------------------------
-    zxain=xxmmvd('ZXAIN')
+    zxain = xxmmvd('ZXAIN')
     call conare(typma, ar, nbar)
-    a1=nint(ainter(zxain*(pi1-1)+1))
-    a2=nint(ainter(zxain*(pi2-1)+1))
+    a1 = nint(ainter(zxain*(pi1-1)+1))
+    a2 = nint(ainter(zxain*(pi2-1)+1))
 !
 !     CAS OU LA FISSURE COINCIDE AVEC UNE ARETE NON TRAITE ICI
-    ASSERT((a1.ne.0).or.(a2.ne.0))
+    ASSERT((a1 .ne. 0) .or. (a2 .ne. 0))
 !
     do i = 1, 3
-        n(i)=0
+        n(i) = 0
     end do
-    found=.false.
+    found = .false.
 !
 !     CAS UN DES DEUX POINTS D'INTERSECTION EST CONFONDU AVEC UN NOEUD
 !     SOMMET, CALCULE LES 3 INDICES DANS L'ELEMENT ENFANT
-    if ((a1.eq.0) .and. (a2.ne.0)) then
-        n1=ar(a2,1)
-        n(1)=cnset(nnose*(it-1)+n1)
-        n2=ar(a2,2)
-        n(2)=cnset(nnose*(it-1)+n2)
-        n(3)=nint(ainter(zxain*(pi1-1)+2))
+    if ((a1 .eq. 0) .and. (a2 .ne. 0)) then
+        n1 = ar(a2, 1)
+        n(1) = cnset(nnose*(it-1)+n1)
+        n2 = ar(a2, 2)
+        n(2) = cnset(nnose*(it-1)+n2)
+        n(3) = nint(ainter(zxain*(pi1-1)+2))
 !
-    else if ((a1.ne.0).and.(a2.eq.0)) then
-        n1=ar(a1,1)
-        n(1)=cnset(nnose*(it-1)+n1)
-        n2=ar(a1,2)
-        n(2)=cnset(nnose*(it-1)+n2)
-        n(3)=nint(ainter(zxain*(pi2-1)+2))
+    else if ((a1 .ne. 0) .and. (a2 .eq. 0)) then
+        n1 = ar(a1, 1)
+        n(1) = cnset(nnose*(it-1)+n1)
+        n2 = ar(a1, 2)
+        n(2) = cnset(nnose*(it-1)+n2)
+        n(3) = nint(ainter(zxain*(pi2-1)+2))
 !
 !     CAS LES DEUX POINTS D'INTERSECTIONS NE SONT PAS CONFONDU AVEC
 !     LES NOEUDS SOMMETS, CALCULE LES 3 INDICES DANS L'ELEMENT ENFANT
-    else if ((a1.ne.0).and.(a2.ne.0)) then
+    else if ((a1 .ne. 0) .and. (a2 .ne. 0)) then
         do i = 1, 2
             do j = 1, 2
-                if (ar(a1,i) .eq. ar(a2,j)) then
+                if (ar(a1, i) .eq. ar(a2, j)) then
 !                if (cnset(nnose*(it-1)+ar(a1,i)) .eq. cnset(nnose*(it-1)+ar(a2,j))) then
-                    found=.true.
-                    n3=ar(a1,i)
-                    n1=ar(a1,3-i)
-                    n2=ar(a2,3-j)
-                endif
+                    found = .true.
+                    n3 = ar(a1, i)
+                    n1 = ar(a1, 3-i)
+                    n2 = ar(a2, 3-j)
+                end if
             end do
         end do
         ASSERT(found)
-        n(1)=cnset(nnose*(it-1)+n1)
-        n(2)=cnset(nnose*(it-1)+n2)
-        n(3)=cnset(nnose*(it-1)+n3)
-    endif
+        n(1) = cnset(nnose*(it-1)+n1)
+        n(2) = cnset(nnose*(it-1)+n2)
+        n(3) = cnset(nnose*(it-1)+n3)
+    end if
 !
 end subroutine

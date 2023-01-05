@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine cvnorm(mat, vect, ndim, iretou)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data zero /0.d0/
+    data zero/0.d0/
 !
 !-----------------------------------------------------------------------
 !
@@ -54,10 +54,10 @@ subroutine cvnorm(mat, vect, ndim, iretou)
     if (abs(normec) .eq. zero) then
         iretou = 1
         goto 999
-    endif
-    normec=dcmplx(sqrt(abs(dble(normec))),0.d0)
+    end if
+    normec = dcmplx(sqrt(abs(dble(normec))), 0.d0)
     do i = 1, ndim
-        vect(i)=vect(i)/normec
+        vect(i) = vect(i)/normec
     end do
 999 continue
 end subroutine

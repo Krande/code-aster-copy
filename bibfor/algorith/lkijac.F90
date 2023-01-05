@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lkijac(mod, nmat, materf, timed, timef,&
-                  yf, deps, nr, nvi, vind,&
+subroutine lkijac(mod, nmat, materf, timed, timef, &
+                  yf, deps, nr, nvi, vind, &
                   vinf, yd, dy, drdy, iret)
 ! person_in_charge: alexandre.foucault at edf.fr
 ! aslint: disable=W1306
@@ -94,12 +94,12 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     real(kind=8) :: dsdsig(6, 6), dgtvds(6, 6), dgtpds(6, 6), kron3(6, 6)
     real(kind=8) :: devgp(6), devgv(6), dgtpdx(6), dgtvdx(6), dxiv
     aster_logical :: plas
-    parameter       (zero  =  0.d0 )
-    parameter       (un    =  1.d0 )
-    parameter       (deux  =  2.d0 )
-    parameter       (trois =  3.d0 )
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
 !     --------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !     --------------------------------------------------------------
 ! ------------------------------------------------------------------
 ! --- PASSAGE EN CONVENTION MECANIQUE DES SOLS
@@ -111,9 +111,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- VARIABLES LOCALES TEMPORAIRES
 ! ------------------------------------------------------------------
-    mident(:,:) = zero
+    mident(:, :) = zero
     do i = 1, ndt
-        mident(i,i) = un
+        mident(i, i) = un
     end do
 !
     varv = 0
@@ -125,22 +125,22 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         vint(1) = yf(ndt+2)
     else
         vint(1) = vind(1)
-    endif
+    end if
     if (yf(ndt+3) .ge. vind(3)) then
         vint(3) = yf(ndt+3)
     else
         vint(3) = vind(3)
-    endif
+    end if
 ! --- INCREMENT DE TEMPS
-    dt = timef - timed
+    dt = timef-timed
 ! --- CONSTRUCTION TENSEUR DEVIATOIRE DES CONTRAINTES ET 1ER INVARIA
     call lcdevi(sigft, devsig)
     i1 = sigft(1)+sigft(2)+sigft(3)
 ! --- DONNEES MATERIAU : VALEUR MAX DE XIV; XI_PIC
-    xivmax = materf(20,2)
-    xippic = materf(18,2)
+    xivmax = materf(20, 2)
+    xippic = materf(18, 2)
 ! --- CONSTRUCTION TENSEUR ELASTIQUE NON LINEAIRE DSDENL
-    call lkelas(ndi, ndt, nmat, materf, depst,&
+    call lkelas(ndi, ndt, nmat, materf, depst, &
                 sigft, dsdenl, kk, mu)
 ! ------------------------------------------------------------------
 ! --- A) - BUT : CALCUL DE LA DEFORMATION VISQUEUSE -DEPSV- ET DU
@@ -152,11 +152,11 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- A-3) CALCUL SEUIL VISQUEUX PAR RAPPORT A YF(1:6)=SIGF ->SEUILV
 ! --- A-3-1)  XIT   = YF(NDT+3)
     seuilv = zero
-    call lkcriv(vint(3), i1, devsig, vint, nmat,&
+    call lkcriv(vint(3), i1, devsig, vint, nmat, &
                 materf, ucriv, seuilv)
     if (seuilv .ge. zero) then
-        call lkdgde(valv, vint(3), dt, seuilv, ucriv,&
-                    i1, devsig, vint, nmat, materf,&
+        call lkdgde(valv, vint(3), dt, seuilv, ucriv, &
+                    i1, devsig, vint, nmat, materf, &
                     depsv, dgamv, retcom)
     else
         dgamv = zero
@@ -165,46 +165,46 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         end do
         seuilv = zero
         ucriv = zero
-    endif
+    end if
 ! ------------------------------------------------------------------
 ! --- B) - BUT : CALCUL DE LA DEFORMATION PLASTIQUE -DEPSP- ET DU
 ! ---       PARAMETRE D ECROUISSAGE PLASTIQUE -DGAMP-
 ! ------------------------------------------------------------------
-    call lkdhds(nmat, materf, i1, devsig, dhds,&
+    call lkdhds(nmat, materf, i1, devsig, dhds, &
                 retcom)
-    call lkds2h(nmat, materf, i1, devsig, dhds,&
+    call lkds2h(nmat, materf, i1, devsig, dhds, &
                 ds2hds, retcom)
 ! --- B-1) CALCUL FONCTION SEUIL PLASTIQUE EN YF
     seuilp = zero
-    call lkcrip(i1, devsig, vint, nmat, materf,&
+    call lkcrip(i1, devsig, vint, nmat, materf, &
                 ucrip, seuilp)
 ! --- B-1-B-2) INDICATEUR CONTRACTANCE OU DILATANCE -> VARV = 0 OU 1
 ! --- B-1-B-2)-1) CALCUL POSITION YF PAR RAPPORT SEUIL VISQUEUX MAX
     seuivm = zero
-    call lkcriv(xivmax, i1, devsig, vint, nmat,&
+    call lkcriv(xivmax, i1, devsig, vint, nmat, &
                 materf, ucrim, seuivm)
 ! --- B-1-B-2)-2) TEST SUR SEUIL >0 OU <0 POUR DEFINIR VARV
     if (seuivm .le. zero) then
         varv = 0
     else
         varv = 1
-    endif
+    end if
 ! --- B-2)SI SEUILP >= 0 ALORS PLASTICITE A PRENDRE EN COMPTE
-    if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then
+    if ((seuilp .ge. zero) .or. (vinf(7) .gt. zero)) then
 ! --- B-2-B-1) INDICATEUR ANGLE DE DILATANCE PLASTIQUE PSI -> 0 OU 1
         if (yf(ndt+2) .le. xippic) then
             valp = 0
         else
             valp = 1
-        endif
+        end if
 ! --- B-2-B-3) CALCUL DE DF/DSIG
         call lkvarp(vint, nmat, materf, paraep)
         call lkvacp(nmat, materf, paraep, varpl)
         call lkdepp(vint, nmat, materf, paraep, derpar)
-        call lkdfds(nmat, materf, devsig, paraep, varpl,&
+        call lkdfds(nmat, materf, devsig, paraep, varpl, &
                     ds2hds, ucrip, dfdsp)
 ! --- B-2-B-4) CALCUL DE G_EP
-        bprimp = lkbpri (valp,vint,nmat,materf,paraep,i1,devsig)
+        bprimp = lkbpri(valp, vint, nmat, materf, paraep, i1, devsig)
         vecnp(:) = zero
         call lkcaln(devsig, bprimp, vecnp, retcom)
         call lkcalg(dfdsp, vecnp, gp, devgii)
@@ -213,35 +213,35 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
             depse(i) = depst(i)-yf(ndt+1)*gp(i)-depsv(i)
         end do
 ! --- CALCUL DE DGP/DSIGMA
-        call lkdgds(nmat, materf, paraep, varpl, devsig,&
-                    i1, valp, ds2hds, vecnp, dfdsp,&
-                    bprimp, nvi, vint, dhds, dgpds,&
+        call lkdgds(nmat, materf, paraep, varpl, devsig, &
+                    i1, valp, ds2hds, vecnp, dfdsp, &
+                    bprimp, nvi, vint, dhds, dgpds, &
                     iret)
 ! --- PRODUIT MATRICIEL HOOK_NL*D_LAMBDA*DGP/DSIGMA
-        dldgds(1:ndt,1:ndt) = dlambd * dgpds(1:ndt,1:ndt)
-        hnldgp(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dldgds(1:ndt,1:ndt))
+        dldgds(1:ndt, 1:ndt) = dlambd*dgpds(1:ndt, 1:ndt)
+        hnldgp(1:ndt, 1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), dldgds(1:ndt, 1:ndt))
 ! --- CALCUL DE D(DFPDSIG)/DXI
         plas = .true.
-        call lkfsxi(nmat, materf, i1, devsig, ds2hds,&
-                    plas, vint(1), paraep, varpl, dfsdxp,&
+        call lkfsxi(nmat, materf, i1, devsig, ds2hds, &
+                    plas, vint(1), paraep, varpl, dfsdxp, &
                     dpadxp)
 ! --- CALCUL DE DN/DXI
-        call lkdndx(nmat, materf, i1, devsig, bprimp,&
+        call lkdndx(nmat, materf, i1, devsig, bprimp, &
                     valp, paraep, vint(1), derpar, dndxip)
 ! --- PAS DE PLASTICITE A GERER
     else
         do i = 1, ndt
             depse(i) = depst(i)-depsv(i)
         end do
-        hnldgp(:,:) = zero
-        dgpds(:,:) = zero
+        hnldgp(:, :) = zero
+        dgpds(:, :) = zero
         dfdsp(:) = zero
         gp(:) = zero
         vecnp(:) = zero
         dfsdxp(:) = zero
         dndxip(:) = zero
         devgii = zero
-    endif
+    end if
 ! ##################################################################
 ! --- CALCUL DE DR1/DY
 ! ##################################################################
@@ -249,23 +249,23 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- I.1 CALCUL DE DR1DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR ELASTIQUE LINEAIRE
-    mue = materf(4,1)
-    ke = materf(5,1)
-    hook(:,:) = zero
+    mue = materf(4, 1)
+    ke = materf(5, 1)
+    hook(:, :) = zero
     do i = 1, ndi
         do j = 1, ndi
-            hook(i,j) = ke - deux*mue/trois
+            hook(i, j) = ke-deux*mue/trois
         end do
     end do
 !
     do i = 1, ndt
-        hook(i,i) = hook(i,i) + deux*mue
+        hook(i, i) = hook(i, i)+deux*mue
     end do
 ! --- INCREMENT CONTRAINTE "ELASTIQUE"
-    dsige(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
+    dsige(1:ndt) = matmul(hook(1:ndt, 1:ndt), depse(1:ndt))
 ! --- PRODUIT TENSORIEL DSIGE X VECTEUR(IDENTITE) (=1 1 1 0 0 0)
-    patm = materf(1,2)
-    nelas = materf(2,2)
+    patm = materf(1, 2)
+    nelas = materf(2, 2)
     vident(:) = zero
     do i = 1, ndi
         vident(i) = nelas/trois/patm*(i1/(trois*patm))**(nelas-un)
@@ -274,32 +274,32 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- CALCUL DE DFV/DSIGMA
     call lkvarv(vint(3), nmat, materf, paravi)
     call lkvacv(nmat, materf, paravi, varavi)
-    bprimv = lkbpri (valv,vint,nmat,materf,paravi,i1,devsig)
+    bprimv = lkbpri(valv, vint, nmat, materf, paravi, i1, devsig)
     call lkcaln(devsig, bprimv, vecnv, retcom)
-    call lkdfds(nmat, materf, devsig, paravi, varavi,&
+    call lkdfds(nmat, materf, devsig, paravi, varavi, &
                 ds2hds, ucriv, dfvdsi)
 ! --- CALCUL DE G_VISQUEUX
     call lkcalg(dfvdsi, vecnv, gv, devgiv)
 ! --- CALCUL DE DGV/DSIGMA
-    call lkdgds(nmat, materf, paravi, varavi, devsig,&
-                i1, valv, ds2hds, vecnv, dfvdsi,&
-                bprimv, nvi, vint, dhds, dgvds,&
+    call lkdgds(nmat, materf, paravi, varavi, devsig, &
+                i1, valv, ds2hds, vecnv, dfvdsi, &
+                bprimv, nvi, vint, dhds, dgvds, &
                 iret)
 ! --- PRODUIT MATRICIEL HOOK_NL*PHIV*DGV/DSIGMA
-    av = materf(21,2)
-    nv = materf(22,2)
-    phiv = av * (seuilv/patm)**nv
-    dsgvds(1:ndt,1:ndt) = phiv * dgvds(1:ndt,1:ndt)
-    hnldgv(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dsgvds(1:ndt,1:ndt))
+    av = materf(21, 2)
+    nv = materf(22, 2)
+    phiv = av*(seuilv/patm)**nv
+    dsgvds(1:ndt, 1:ndt) = phiv*dgvds(1:ndt, 1:ndt)
+    hnldgv(1:ndt, 1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), dsgvds(1:ndt, 1:ndt))
 ! --- PRODUIT MATRICIEL HOOK_NL*DPHIV/DSIG*GV
     dphiv = av*nv/patm*(seuilv/patm)**(nv-un)
-    dphvds(1:ndt) = dphiv * dfvdsi(1:ndt)
-    hnlgv(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gv(1:ndt))
+    dphvds(1:ndt) = dphiv*dfvdsi(1:ndt)
+    hnlgv(1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), gv(1:ndt))
     call lcprte(hnlgv, dphvds, hnldfg)
 ! --- ASSEMBLAGE FINAL
     do i = 1, ndt
         do j = 1, ndt
-            drdy(i,j) = -(mident(i,j)-dhokds(i,j)+hnldgp(i,j) +hnldgv( i,j)*dt+hnldfg(i,j)*dt)/mu
+           drdy(i, j) = -(mident(i, j)-dhokds(i, j)+hnldgp(i, j)+hnldgv(i, j)*dt+hnldfg(i, j)*dt)/mu
         end do
     end do
 ! ------------------------------------------------------------------
@@ -307,14 +307,14 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
     if (vinf(7) .eq. zero) then
         do i = 1, ndt
-            drdy(i,ndt+1) = zero
+            drdy(i, ndt+1) = zero
         end do
     else
-        vetemp(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gp(1:ndt))
+        vetemp(1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), gp(1:ndt))
         do i = 1, ndt
-            drdy(i,ndt+1) = vetemp(i)/mu
+            drdy(i, ndt+1) = vetemp(i)/mu
         end do
-    endif
+    end if
 ! ------------------------------------------------------------------
 ! --- I.3 CALCUL DE DR1DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
@@ -324,51 +324,51 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     term2 = dot_product(dfdsp(1:ndt), dndxip(1:ndt))
     term3 = dot_product(dfdsp(1:ndt), vecnp(1:ndt))
     do i = 1, ndt
-        dgpdxi(i) = dfsdxp(i)-term1*vecnp(i)-term2*vecnp(i) -term3* dndxip(i)
+        dgpdxi(i) = dfsdxp(i)-term1*vecnp(i)-term2*vecnp(i)-term3*dndxip(i)
     end do
 ! --- ASSEMBLAGE FINAL --- DR1DY3 = DSDENL*DLAMBD*DGPDXI
-    dr1dy3(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dgpdxi(1:ndt))
-    dr1dy4(1:ndt) = dlambd * dr1dy3(1:ndt)
+    dr1dy3(1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), dgpdxi(1:ndt))
+    dr1dy4(1:ndt) = dlambd*dr1dy3(1:ndt)
     do i = 1, ndt
-        drdy(i,ndt+2) = dr1dy4(i)/mu
+        drdy(i, ndt+2) = dr1dy4(i)/mu
     end do
 ! ------------------------------------------------------------------
 ! --- I.4 CALCUL DE DR1DY4 -> Y4 = XIVP
 ! ------------------------------------------------------------------
-    dxiv = min(dgamv,xivmax-yd(ndt+3))
+    dxiv = min(dgamv, xivmax-yd(ndt+3))
     if (abs(dxiv-dgamv) .lt. r8prem()) then
 ! --- CALCUL DE D(DFVDSIG)/DXIV
         plas = .false.
-        call lkfsxi(nmat, materf, i1, devsig, ds2hds,&
-                    plas, vint(3), paravi, varavi, dfsdxv,&
+        call lkfsxi(nmat, materf, i1, devsig, ds2hds, &
+                    plas, vint(3), paravi, varavi, dfsdxv, &
                     dpadxv)
 ! --- CALCUL DE DN/DXI
-        call lkdndx(nmat, materf, i1, devsig, bprimv,&
+        call lkdndx(nmat, materf, i1, devsig, bprimv, &
                     valv, paravi, vint(3), dpadxv, dndxiv)
 ! --- ASSEMBLAGE DE DGVDXIV =
         term1 = dot_product(dfsdxv(1:ndt), vecnv(1:ndt))
         term2 = dot_product(dfvdsi(1:ndt), dndxiv(1:ndt))
         term3 = dot_product(dfvdsi(1:ndt), vecnv(1:ndt))
         do i = 1, ndt
-            dgvdxi(i) = dfsdxv(i)-term1*vecnv(i)-term2*vecnv(i) -term3*dndxiv(i)
+            dgvdxi(i) = dfsdxv(i)-term1*vecnv(i)-term2*vecnv(i)-term3*dndxiv(i)
         end do
 ! --- CALCUL DE D(PHIV)/DXIV =
-        call lkdfdx(nmat, materf, ucriv, i1, devsig,&
+        call lkdfdx(nmat, materf, ucriv, i1, devsig, &
                     paravi, varavi, dpadxv, dfdxiv)
 ! --- ASSEMBLAGE DE DR1DY4
         dphidx = dphiv*dfdxiv
-        dphdxg(1:ndt) = dphidx * gv(1:ndt)
-        phdgdx(1:ndt) = phiv * dgvdxi(1:ndt)
-        vetemp(1:ndt) = dphdxg(1:ndt) + phdgdx(1:ndt)
-        dr1dy4(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), vetemp(1:ndt))
+        dphdxg(1:ndt) = dphidx*gv(1:ndt)
+        phdgdx(1:ndt) = phiv*dgvdxi(1:ndt)
+        vetemp(1:ndt) = dphdxg(1:ndt)+phdgdx(1:ndt)
+        dr1dy4(1:ndt) = matmul(dsdenl(1:ndt, 1:ndt), vetemp(1:ndt))
         do i = 1, ndt
-            drdy(i,ndt+3)= dr1dy4(i)/mu*dt
+            drdy(i, ndt+3) = dr1dy4(i)/mu*dt
         end do
     else
         do i = 1, ndt
-            drdy(i,ndt+3)= zero
+            drdy(i, ndt+3) = zero
         end do
-    endif
+    end if
 ! ##################################################################
 ! --- CALCUL DE DR2/DY
 ! ##################################################################
@@ -378,39 +378,39 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- II.1 CALCUL DE DR2DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
         do i = 1, ndt
-            drdy(ndt+1,i) = zero
+            drdy(ndt+1, i) = zero
         end do
 ! ------------------------------------------------------------------
 ! --- II.2 CALCUL DE DR2DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
-        drdy(ndt+1,ndt+1) = un
+        drdy(ndt+1, ndt+1) = un
 ! ------------------------------------------------------------------
 ! --- II.3 CALCUL DE DR2DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
-        drdy(ndt+1,ndt+2) = zero
+        drdy(ndt+1, ndt+2) = zero
     else
 ! ------------------------------------------------------------------
 ! --- II.1 CALCUL DE DR2DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
         do i = 1, ndt
-            drdy(ndt+1,i) = -dfdsp(i)/mu
+            drdy(ndt+1, i) = -dfdsp(i)/mu
         end do
 ! ------------------------------------------------------------------
 ! --- II.2 CALCUL DE DR2DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
-        drdy(ndt+1,ndt+1) = zero
+        drdy(ndt+1, ndt+1) = zero
 ! ------------------------------------------------------------------
 ! --- II.3 CALCUL DE DR2DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
 ! --- RECUPERATION DE DF/DXIP -------------------------------------
-        call lkdfdx(nmat, materf, ucrip, i1, devsig,&
+        call lkdfdx(nmat, materf, ucrip, i1, devsig, &
                     paraep, varpl, derpar, dfdxip)
-        drdy(ndt+1,ndt+2) = dfdxip/mu
-    endif
+        drdy(ndt+1, ndt+2) = dfdxip/mu
+    end if
 ! ------------------------------------------------------------------
 ! --- II.4 CALCUL DE DR2DY4 -> Y4 = XIVP
 ! ------------------------------------------------------------------
-    drdy(ndt+1,ndt+3) = zero
+    drdy(ndt+1, ndt+3) = zero
 ! ##################################################################
 ! --- CALCUL DE DR3/DY
 ! ##################################################################
@@ -423,74 +423,74 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         kron(i) = un
     end do
 ! --- CONSTRUCTION DE DS/DSIGMA
-    unstro = un / trois
+    unstro = un/trois
     call lcprte(kron, kron, kron2)
-    kron3(1:ndt,1:ndt) = unstro * kron2(1:ndt,1:ndt)
-    dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron3(1:ndt,1:ndt)
+    kron3(1:ndt, 1:ndt) = unstro*kron2(1:ndt, 1:ndt)
+    dsdsig(1:ndt, 1:ndt) = mident(1:ndt, 1:ndt)-kron3(1:ndt, 1:ndt)
 ! --- CONSTRUCTION DE DEVG
     call lcdevi(gv, devgv)
     call lcdevi(gp, devgp)
 ! --- CONSTRUCTION DE D(DEVGII)/DSIGMA
-    dgtvds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgvds(1:ndt,1:ndt))
-    dgtpds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgpds(1:ndt,1:ndt))
+    dgtvds(1:ndt, 1:ndt) = matmul(dsdsig(1:ndt, 1:ndt), dgvds(1:ndt, 1:ndt))
+    dgtpds(1:ndt, 1:ndt) = matmul(dsdsig(1:ndt, 1:ndt), dgpds(1:ndt, 1:ndt))
     dgivds(:) = zero
     dgipds(:) = zero
-    if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then
+    if ((seuilp .ge. zero) .or. (vinf(7) .gt. zero)) then
         do i = 1, ndt
             do j = 1, ndt
-                dgivds(i) = dgivds(i)+devgv(j)/devgiv*dgtvds(j,i)
-                dgipds(i) = dgipds(i)+devgp(j)/devgii*dgtpds(j,i)
+                dgivds(i) = dgivds(i)+devgv(j)/devgiv*dgtvds(j, i)
+                dgipds(i) = dgipds(i)+devgp(j)/devgii*dgtpds(j, i)
             end do
         end do
     else
         do i = 1, ndt
             do j = 1, ndt
-                dgivds(i) = dgivds(i)+devgv(j)/devgiv*dgtvds(j,i)
+                dgivds(i) = dgivds(i)+devgv(j)/devgiv*dgtvds(j, i)
             end do
         end do
-    endif
+    end if
     if (varv .eq. 0) then
         do i = 1, ndt
-            drdy(ndt+2,i) = dlambd*sqrt(deux/trois)*dgipds(i)
+            drdy(ndt+2, i) = dlambd*sqrt(deux/trois)*dgipds(i)
         end do
     else
         do i = 1, ndt
-            drdy(ndt+2,i) = sqrt(deux/trois)*(dlambd*dgipds(i)+ (dphvds(i)*devgiv+phiv*dgivds(i))&
-                            &*dt)
+            drdy(ndt+2, i) = sqrt(deux/trois)*(dlambd*dgipds(i)+(dphvds(i)*devgiv+phiv*dgivds(i))&
+                                              &*dt)
         end do
-    endif
+    end if
 ! ------------------------------------------------------------------
 ! --- III.2 CALCUL DE DR3DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
 ! --- APPLICATION DE LA CONDITION DE KHUN-TUCKER SUR R(NDT+1)
     if (vinf(7) .eq. zero) then
-        drdy(ndt+2,ndt+1) = zero
+        drdy(ndt+2, ndt+1) = zero
     else
-        drdy(ndt+2,ndt+1) = -devgii*sqrt(deux/trois)
-    endif
+        drdy(ndt+2, ndt+1) = -devgii*sqrt(deux/trois)
+    end if
 ! ------------------------------------------------------------------
 ! --- III.3 CALCUL DE DR3DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
-    dgtpdx(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgpdxi(1:ndt))
+    dgtpdx(1:ndt) = matmul(dsdsig(1:ndt, 1:ndt), dgpdxi(1:ndt))
     dgipdx = dot_product(devgp(1:ndt), dgtpdx(1:ndt))
     if (vinf(7) .gt. zero) then
-        drdy(ndt+2,ndt+2)= un - dlambd*sqrt(deux/trois) *dgipdx/&
-        devgii
+        drdy(ndt+2, ndt+2) = un-dlambd*sqrt(deux/trois)*dgipdx/ &
+                             devgii
     else
-        drdy(ndt+2,ndt+2)= un
-    endif
+        drdy(ndt+2, ndt+2) = un
+    end if
 ! ------------------------------------------------------------------
 ! --- III.4 CALCUL DE DR3DY4 -> Y4 = XIVP
 ! ------------------------------------------------------------------
 ! --- TEST POUR SAVOIR SI ON EST EN BUTEE SUR XIVP
-    dgtvdx(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgvdxi(1:ndt))
+    dgtvdx(1:ndt) = matmul(dsdsig(1:ndt, 1:ndt), dgvdxi(1:ndt))
     dgivdx = dot_product(devgv(1:ndt), dgtvdx(1:ndt))
     if (abs(dxiv-dgamv) .lt. r8prem()) then
-        drdy(ndt+2,ndt+3)= -(dphidx*devgiv+phiv*dgivdx/devgiv)&
-        *sqrt(deux/trois)*dt
+        drdy(ndt+2, ndt+3) = -(dphidx*devgiv+phiv*dgivdx/devgiv) &
+                             *sqrt(deux/trois)*dt
     else
-        drdy(ndt+2,ndt+3)= zero
-    endif
+        drdy(ndt+2, ndt+3) = zero
+    end if
 ! ##################################################################
 ! --- CALCUL DE DR4/DY
 ! ##################################################################
@@ -500,39 +500,39 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- IV.1 CALCUL DE DR4DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
         do i = 1, ndt
-            drdy(ndt+3,i) = (dphvds(i)*devgiv+phiv*dgivds(i)) *sqrt( deux/trois )*dt
+            drdy(ndt+3, i) = (dphvds(i)*devgiv+phiv*dgivds(i))*sqrt(deux/trois)*dt
         end do
 ! ------------------------------------------------------------------
 ! --- IV.2 CALCUL DE DR4DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
-        drdy(ndt+3,ndt+1) = zero
+        drdy(ndt+3, ndt+1) = zero
 ! ------------------------------------------------------------------
 ! --- IV.3 CALCUL DE DR4DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
-        drdy(ndt+3,ndt+2) = zero
+        drdy(ndt+3, ndt+2) = zero
 ! ------------------------------------------------------------------
 ! --- IV.4 CALCUL DE DR4DY4 -> Y4 = XIVP
 ! ------------------------------------------------------------------
-        drdy(ndt+3,ndt+3) = un - sqrt(deux/trois)*dt* (dphidx*devgiv+ phiv*dgivdx/devgiv)
+        drdy(ndt+3, ndt+3) = un-sqrt(deux/trois)*dt*(dphidx*devgiv+phiv*dgivdx/devgiv)
     else
 ! ------------------------------------------------------------------
 ! --- IV.1 CALCUL DE DR4DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
         do i = 1, ndt
-            drdy(ndt+3,i) = zero
+            drdy(ndt+3, i) = zero
         end do
 ! ------------------------------------------------------------------
 ! --- IV.2 CALCUL DE DR4DY2 -> Y2 = DLAMBDA
 ! ------------------------------------------------------------------
-        drdy(ndt+3,ndt+1) = zero
+        drdy(ndt+3, ndt+1) = zero
 ! ------------------------------------------------------------------
 ! --- IV.3 CALCUL DE DR4DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
-        drdy(ndt+3,ndt+2) = zero
+        drdy(ndt+3, ndt+2) = zero
 ! ------------------------------------------------------------------
 ! --- IV.4 CALCUL DE DR4DY4 -> Y4 = XIVP
 ! ------------------------------------------------------------------
-        drdy(ndt+3,ndt+3) = un
-    endif
+        drdy(ndt+3, ndt+3) = un
+    end if
 !
 end subroutine

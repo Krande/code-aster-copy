@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine atasmo(neq, az, apddl, apptr, numedz,&
+subroutine atasmo(neq, az, apddl, apptr, numedz, &
                   ataz, basez, nblia, nmul, numatz)
     implicit none
 !
@@ -82,7 +82,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     integer :: neq, nblia, nmul
     integer :: apddl(*), apptr(*)
 ! -----  VARIABLES LOCALES
-    integer :: j, k, iimax, jhbid, idsuiv, dimacv,  jconl, nblig, nblig2
+    integer :: j, k, iimax, jhbid, idsuiv, dimacv, jconl, nblig, nblig2
     integer ::  ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
     integer :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, jrefa
     integer :: i, jsmde, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
@@ -117,8 +117,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !
 !
     call jelira(a, 'NMAXOC', nblig2)
-    ASSERT(nblig.gt.0)
-    ASSERT(nblig.le.nblig2)
+    ASSERT(nblig .gt. 0)
+    ASSERT(nblig .le. nblig2)
 !
     ksmdi = numddl//'.SMOS.SMDI'
     call wkvect(ksmdi, base//' V I', neq, jsmdi)
@@ -149,20 +149,20 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     do j = 1, nmul
         do ilig = 1, nblia
             call jeveuo(jexnum(a, ilig+(j-1)*nblia), 'L', idligm)
-            nddltm = apptr(ilig+1) - apptr(ilig)
+            nddltm = apptr(ilig+1)-apptr(ilig)
             nddlt = 0
             do i = 1, nddltm
-                if (zr(idligm-1+i) .ne. 0.d0) nddlt = nddlt + 1
+                if (zr(idligm-1+i) .ne. 0.d0) nddlt = nddlt+1
             end do
 !           ASSERT(NDDLT.GT.0)
             acompac_nbt(ilig+(j-1)*nblia) = nddlt
-            acompac_1er(ilig+(j-1)*nblia) = dimacv + 1
-            dimacv = dimacv + nddlt
+            acompac_1er(ilig+(j-1)*nblia) = dimacv+1
+            dimacv = dimacv+nddlt
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
         end do
     end do
 !       ASSERT(DIMACV.GT.0)
-    dimacv = max(dimacv,1)
+    dimacv = max(dimacv, 1)
 !
 !
 !     3. COMPACTAGE DE A : ON NE CONSERVE QUE LES TERMES /= 0 AINSI
@@ -174,15 +174,15 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     do j = 1, nmul
         do ilig = 1, nblia
             call jeveuo(jexnum(a, ilig+(j-1)*nblia), 'L', idligm)
-            nddlt = apptr(ilig+1) - apptr(ilig)
+            nddlt = apptr(ilig+1)-apptr(ilig)
             jdecal = apptr(ilig)
             kdeb = k
             do i = 1, nddlt
                 if (zr(idligm-1+i) .ne. 0.d0) then
-                    k = k + 1
+                    k = k+1
                     zi(jaci-1+k) = apddl(jdecal+i)
                     zr(jacv-1+k) = zr(idligm-1+i)
-                endif
+                end if
             end do
 !         ON DOIT TRIER LE TABLEAU DES NUMEROS D'EQUATIONS
 !         CAR MOINSR S'ATTEND A UN TABLEAU ORDONNE
@@ -203,7 +203,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !     4.1 : ON FORCE LA PRESENCE DES TERMES DIAGONAUX:
     do ieq = 1, neq
         zi(idlm) = ieq
-        call moinsr(zi(idlm), 1, idlm, jsmdi, idsuiv,&
+        call moinsr(zi(idlm), 1, idlm, jsmdi, idsuiv, &
                     ksuiv, jhbid, khbid, iilib, iimax)
     end do
 !
@@ -212,12 +212,12 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     do ilig = 1, nblig
 !       NDDLT : NOMBRE DE TERMES NON NULS POUR ILIG
         nddlt = acompac_nbt(ilig)
-        idlm = jaci - 1 + acompac_1er(ilig)
+        idlm = jaci-1+acompac_1er(ilig)
 !
 !       -- INSERTION DES COLONNES DE L'ELEMENT DANS
 !           LA STRUCTURE CHAINEE
-        do iddl = 0, nddlt - 1
-            call moinsr(zi(idlm+iddl), iddl+1, idlm, jsmdi, idsuiv,&
+        do iddl = 0, nddlt-1
+            call moinsr(zi(idlm+iddl), iddl+1, idlm, jsmdi, idsuiv, &
                         ksuiv, jhbid, khbid, iilib, iimax)
         end do
     end do
@@ -227,7 +227,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !     (ZI(JSMDI),SMHC) DE LA MATRICE
     ksmhc = numddl//'.SMOS.SMHC'
     call wkvect(ksmhc, base//' V S', iimax, jsmhc)
-    call moinip(neq, ncoef, zi(jsmdi), zi(idsuiv), zi(jhbid),&
+    call moinip(neq, ncoef, zi(jsmdi), zi(idsuiv), zi(jhbid), &
                 zi4(jsmhc))
 !
 !
@@ -260,7 +260,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !     7. OBJET: MATR_ASSE.VALM :
 !     --------------------------------------------------
     kvalm = ata//'.VALM'
-    call jecrec(kvalm, base//' V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(kvalm, base//' V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 1)
     call jeecra(kvalm, 'LONMAX', ncoef)
     call jecroc(jexnum(kvalm, 1))
@@ -268,21 +268,21 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     do ilig = 1, nblig
 !       NDDLT : NOMBRE DE TERMES NON NULS POUR ILIG
         nddlt = acompac_nbt(ilig)
-        idlm = jaci - 1 + acompac_1er(ilig)
+        idlm = jaci-1+acompac_1er(ilig)
         decal = acompac_1er(ilig)
 !
 !       -- CALCUL DE .VALM(II,JJ) :
         do j = 1, nddlt
             vj = zr(jacv-1+decal-1+j)
             jj = zi(jaci-1+decal-1+j)
-            ASSERT(jj.le.neq)
+            ASSERT(jj .le. neq)
             ii2 = zi(jsmdi-1+jj)
             if (jj .eq. 1) then
                 ii1 = 1
             else
-                ii1 = zi(jsmdi-1+jj-1) + 1
-            endif
-            ASSERT(ii2.ge.ii1)
+                ii1 = zi(jsmdi-1+jj-1)+1
+            end if
+            ASSERT(ii2 .ge. ii1)
             do i = 1, j
                 vi = zr(jacv-1+decal-1+i)
                 ii = zi(jaci-1+decal-1+i)
@@ -293,7 +293,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
                 end do
                 ASSERT(.false.)
 110             continue
-                zr(jvalm-1+iii) = zr(jvalm-1+iii) + vij
+                zr(jvalm-1+iii) = zr(jvalm-1+iii)+vij
             end do
         end do
     end do

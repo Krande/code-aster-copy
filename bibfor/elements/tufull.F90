@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tufull(option, nFourier, nbrddl, deplm, deplp,&
+subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
                   b, ktild, effint, pass, vtemp)
 !
-use Behaviour_type
-use Behaviour_module, only : behaviourOption, behaviourInit
+    use Behaviour_type
+    use Behaviour_module, only: behaviourOption, behaviourInit
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -50,7 +50,7 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
 !
-character(len=16) :: option
+    character(len=16) :: option
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,13 +65,13 @@ character(len=16) :: option
 !
     integer :: nbres, nbrddl, nc, kpgs, nbcoum, nbsecm
     integer :: vali, jcret, nFourier
-    parameter (nbres=9)
+    parameter(nbres=9)
     character(len=16) :: nomres(nbres)
     character(len=8) :: typmod(2)
     character(len=32) :: elasKeyword
     integer :: valret(nbres)
     real(kind=8) :: valres(nbres), xpg(4)
-    parameter (nbsecm=32,nbcoum=10)
+    parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: h, a, l, fi, gxz, rac2, sinfi, rbid(4), pi, deuxpi
     real(kind=8) :: deplm(nbrddl), deplp(nbrddl), b(4, nbrddl), pgl4(3, 3)
@@ -100,21 +100,21 @@ character(len=16) :: option
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     integer                 :: lg_varip
-    real(kind=8),allocatable:: varip(:)
-    character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ','EP1'/)
+    real(kind=8), allocatable:: varip(:)
+    character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
                      jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2)
 !
-    nc        = nbrddl* (nbrddl+1)/2
-    pi        = r8pi()
-    deuxpi    = 2.d0*pi
-    rac2      = sqrt(2.d0)
+    nc = nbrddl*(nbrddl+1)/2
+    pi = r8pi()
+    deuxpi = 2.d0*pi
+    rac2 = sqrt(2.d0)
     typmod(1) = 'C_PLAN  '
     typmod(2) = ' '
-    codret    = 0
+    codret = 0
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -141,21 +141,21 @@ character(len=16) :: option
     call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icompo)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
     call jevech('PNBSP_I', 'L', jnbspi)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCAORIE', 'L', lorien)
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
 !
-    read (zk16(icompo-1+NVAR),'(I16)') nbvari
+    read (zk16(icompo-1+NVAR), '(I16)') nbvari
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     type_comp = zk16(icompo-1+INCRELAS)
@@ -168,43 +168,43 @@ character(len=16) :: option
     nbsec = zi(jnbspi-1+2)
     if (nbcou*nbsec .le. 0) then
         call utmess('F', 'TUYAU0_46')
-    endif
+    end if
     if (nbcou .gt. nbcoum) then
         vali = nbcoum
         call utmess('F', 'TUYAU0_2', si=vali)
-    endif
+    end if
     if (nbsec .gt. nbsecm) then
         vali = nbsecm
         call utmess('F', 'TUYAU0_3', si=vali)
-    endif
-    ndimv = npg*nbvari* (2*nbsec+1)* (2*nbcou+1)
+    end if
+    ndimv = npg*nbvari*(2*nbsec+1)*(2*nbcou+1)
 !
 ! - Get output fields
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
-    
+    end if
+
     lg_varip = npg*lgpg
-    allocate(varip(lg_varip))
+    allocate (varip(lg_varip))
     if (lVari) then
         call jevech('PVARIMP', 'L', ivarix)
         varip = zr(ivarix:ivarix+lg_varip-1)
     else
         varip = zr(ivarim:ivarim+lg_varip-1)
-    endif
+    end if
 !
     call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
     r1 = vale_cara1(1)
-    h  = vale_cara1(2)
-    a  = r1-h/2.d0
+    h = vale_cara1(2)
+    a = r1-h/2.d0
 ! A= RMOY, H = EPAISSEUR, L = LONGUEUR
 !
 !
@@ -215,7 +215,7 @@ character(len=16) :: option
 !  LES POIDS POUR L'INTEGRATION DANS L'EPAISSEUR
 !
     poicou(1) = 1.d0/3.d0
-    do i = 1, nbcou - 1
+    do i = 1, nbcou-1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
     end do
@@ -225,7 +225,7 @@ character(len=16) :: option
 !  LES POIDS POUR L'INTEGRATION SUR LA CIRCONFERENCE
 !
     poisec(1) = 1.d0/3.d0
-    do i = 1, nbsec - 1
+    do i = 1, nbsec-1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
     end do
@@ -234,16 +234,16 @@ character(len=16) :: option
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
 !
-    call carcou(zr(lorien), l, pgl, rayon, theta,&
-                pgl1, pgl2, pgl3, pgl4, nno,&
+    call carcou(zr(lorien), l, pgl, rayon, theta, &
+                pgl1, pgl2, pgl3, pgl4, nno, &
                 omega, icoud2)
     if (icoud2 .ge. 10) then
-        icoude = icoud2 - 10
+        icoude = icoud2-10
         mmt = 0
     else
         icoude = icoud2
         mmt = 1
-    endif
+    end if
 !
 ! - Get time
 !
@@ -264,16 +264,16 @@ character(len=16) :: option
         deplp(i) = zr(ideplp-1+i)
     end do
     if (icoude .eq. 0) then
-        call vlggl(nno, nbrddl, pgl, deplm, 'GL',&
+        call vlggl(nno, nbrddl, pgl, deplm, 'GL', &
                    pass, vtemp)
-        call vlggl(nno, nbrddl, pgl, deplp, 'GL',&
+        call vlggl(nno, nbrddl, pgl, deplp, 'GL', &
                    pass, vtemp)
     else
-        call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
+        call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3, &
                     pgl4, deplm, 'GL', pass, vtemp)
-        call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
+        call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3, &
                     pgl4, deplp, 'GL', pass, vtemp)
-    endif
+    end if
 !
 !===============================================================
 !     RECUPERATION COMPORTEMENT POUR TERME DE CISAILLEMENT
@@ -290,58 +290,58 @@ character(len=16) :: option
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
-        do icou = 1, 2*nbcou + 1
+        do icou = 1, 2*nbcou+1
             if (mmt .eq. 0) then
                 r = a
             else
-                r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
-            endif
+                r = a+(icou-1)*h/(2.d0*nbcou)-h/2.d0
+            end if
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 !
-            do isect = 1, 2*nbsec + 1
-                kpgs = kpgs + 1
+            do isect = 1, 2*nbsec+1
+                kpgs = kpgs+1
                 if (icoude .eq. 0) then
-                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect) *&
-                          (l/2.d0)*h*deuxpi/ (4.d0*nbcou*nbsec)*r
-                    call bcoude(igau, icou, isect, l, h,&
-                                a, nFourier, nno, nbcou, nbsec,&
+                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)* &
+                          (l/2.d0)*h*deuxpi/(4.d0*nbcou*nbsec)*r
+                    call bcoude(igau, icou, isect, l, h, &
+                                a, nFourier, nno, nbcou, nbsec, &
                                 zr(ivf), zr(idfdk), zr(jdfd2), mmt, b)
                 else if (icoude .eq. 1) then
-                    fi = (isect-1)*deuxpi/ (2.d0*nbsec)
+                    fi = (isect-1)*deuxpi/(2.d0*nbsec)
 !               FI = FI - OMEGA
                     sinfi = sin(fi)
-                    l = theta* (rayon+r*sinfi)
-                    call bcoudc(igau, icou, isect, h, a,&
-                                nFourier, omega, xpg, nno, nbcou,&
-                                nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon,&
+                    l = theta*(rayon+r*sinfi)
+                    call bcoudc(igau, icou, isect, h, a, &
+                                nFourier, omega, xpg, nno, nbcou, &
+                                nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon, &
                                 theta, mmt, b)
-                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect) *&
-                          (l/2.d0)*h*deuxpi/ (4.d0*nbcou*nbsec)*r
+                    wgt = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)* &
+                          (l/2.d0)*h*deuxpi/(4.d0*nbcou*nbsec)*r
                 else
                     ASSERT(ASTER_FALSE)
-                endif
+                end if
 !
-                k1 = 6* (kpgs-1)
-                k2 = lgpg* (igau-1) + ((2*nbsec+1)* (icou-1)+ (isect- 1))* nbvari
+                k1 = 6*(kpgs-1)
+                k2 = lgpg*(igau-1)+((2*nbsec+1)*(icou-1)+(isect-1))*nbvari
 !
 ! ======= CALCUL DES DEFORMATIONS ET INCREMENTS DE DEFORMATION
 !
-                call epsett('DEFORM', nbrddl, deplm, b, rbid,&
+                call epsett('DEFORM', nbrddl, deplm, b, rbid, &
                             epsi, wgt, rbid)
                 eps2d(1) = epsi(1)
                 eps2d(2) = epsi(2)
                 eps2d(3) = 0.d0
                 eps2d(4) = epsi(3)/rac2
 !
-                call epsett('DEFORM', nbrddl, deplp, b, rbid,&
+                call epsett('DEFORM', nbrddl, deplp, b, rbid, &
                             depsi, wgt, rbid)
                 deps2d(1) = depsi(1)
                 deps2d(2) = depsi(2)
                 deps2d(3) = 0.d0
                 deps2d(4) = depsi(3)/rac2
 !
-                gxz = epsi(4) + depsi(4)
+                gxz = epsi(4)+depsi(4)
 !
 !  RAPPEL DU VECTEUR CONTRAINTE
 !
@@ -353,12 +353,12 @@ character(len=16) :: option
 !
 !
 ! -    APPEL A LA LOI DE COMPORTEMENT
-                ksp=(icou-1)*(2*nbsec+1) + isect
+                ksp = (icou-1)*(2*nbsec+1)+isect
                 sigma = 0.d0
-                call nmcomp(BEHinteg,&
-                            'RIGI', igau, ksp, 2, typmod,&
-                            zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
-                            6, eps2d, deps2d, 6, sign,&
+                call nmcomp(BEHinteg, &
+                            'RIGI', igau, ksp, 2, typmod, &
+                            zi(imate), zk16(icompo), zr(icarcr), instm, instp, &
+                            6, eps2d, deps2d, 6, sign, &
                             zr(ivarim+k2), option, angmas, &
                             sigma, varip(1+k2), 36, dsidep, cod)
 !
@@ -368,49 +368,49 @@ character(len=16) :: option
                     nomres(2) = 'NU'
                 else
                     call utmess('F', 'TUYAU0_44', sk=elasKeyword)
-                endif
+                end if
 !
-                call rcvalb('RIGI', igau, ksp, '+', zi(imate),&
-                            ' ', elasKeyword, 0, ' ', [0.d0],&
+                call rcvalb('RIGI', igau, ksp, '+', zi(imate), &
+                            ' ', elasKeyword, 0, ' ', [0.d0], &
                             nbv, nomres, valres, valret, 1)
 !
-                cisail = valres(1)/ (1.d0+valres(2))
+                cisail = valres(1)/(1.d0+valres(2))
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
                 if (cod .ne. 0) then
                     if (codret .ne. 1) then
                         codret = cod
-                    endif
-                endif
+                    end if
+                end if
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
 !
                 if (lMatr) then
 !
-                    dtild(1,1) = dsidep(1,1)
-                    dtild(1,2) = dsidep(1,2)
-                    dtild(1,3) = dsidep(1,4)/rac2
-                    dtild(1,4) = 0.d0
+                    dtild(1, 1) = dsidep(1, 1)
+                    dtild(1, 2) = dsidep(1, 2)
+                    dtild(1, 3) = dsidep(1, 4)/rac2
+                    dtild(1, 4) = 0.d0
 !
-                    dtild(2,1) = dsidep(2,1)
-                    dtild(2,2) = dsidep(2,2)
-                    dtild(2,3) = dsidep(2,4)/rac2
-                    dtild(2,4) = 0.d0
+                    dtild(2, 1) = dsidep(2, 1)
+                    dtild(2, 2) = dsidep(2, 2)
+                    dtild(2, 3) = dsidep(2, 4)/rac2
+                    dtild(2, 4) = 0.d0
 !
-                    dtild(3,1) = dsidep(4,1)/rac2
-                    dtild(3,2) = dsidep(4,2)/rac2
-                    dtild(3,3) = dsidep(4,4)/2.d0
-                    dtild(3,4) = 0.d0
+                    dtild(3, 1) = dsidep(4, 1)/rac2
+                    dtild(3, 2) = dsidep(4, 2)/rac2
+                    dtild(3, 3) = dsidep(4, 4)/2.d0
+                    dtild(3, 4) = 0.d0
 !
-                    dtild(4,1) = 0.d0
-                    dtild(4,2) = 0.d0
-                    dtild(4,3) = 0.d0
-                    dtild(4,4) = cisail/2.d0
+                    dtild(4, 1) = 0.d0
+                    dtild(4, 2) = 0.d0
+                    dtild(4, 3) = 0.d0
+                    dtild(4, 4) = cisail/2.d0
 !
 !  LE DERNIER TERME C'EST R DU  R DFI DX DZETA
 !
                     call kcoude(nbrddl, wgt, b, dtild, ktild)
-                endif
+                end if
 !
                 if (lSigm) then
 !
@@ -420,16 +420,16 @@ character(len=16) :: option
                     zr(icontp-1+k1+4) = sigma(4)/rac2
                     zr(icontp-1+k1+5) = cisail*gxz/2.d0
                     zr(icontp-1+k1+6) = 0.d0
-                endif
+                end if
                 if (lVect) then
                     ASSERT(lSigm)
                     sgmtd(1) = zr(icontp-1+k1+1)
                     sgmtd(2) = zr(icontp-1+k1+2)
                     sgmtd(3) = zr(icontp-1+k1+4)
                     sgmtd(4) = cisail*gxz/2.d0
-                    call epsett('EFFORI', nbrddl, rbid, b, sgmtd,&
+                    call epsett('EFFORI', nbrddl, rbid, b, sgmtd, &
                                 rbid, wgt, effint)
-                endif
+                end if
             end do
         end do
     end do
@@ -440,26 +440,26 @@ character(len=16) :: option
         if (icoude .eq. 0) then
             call klg(nno, nbrddl, pgl, ktild)
         else if (icoude .eq. 1) then
-            call klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
+            call klgcou(nno, nbrddl, pgl1, pgl2, pgl3, &
                         pgl4, ktild)
-        endif
+        end if
         call mavec(ktild, nbrddl, zr(imatuu), nc)
-    endif
+    end if
 !
 ! STOCKAGE DES EFFORTS INTERIEURS
     if (lVect) then
 !     CHANGEMENT DE REPERE : REPERE LOCAL AU REPERE GLOBAL
         if (icoude .eq. 0) then
-            call vlggl(nno, nbrddl, pgl, effint, 'LG',&
+            call vlggl(nno, nbrddl, pgl, effint, 'LG', &
                        pass, vtemp)
         else
-            call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
+            call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3, &
                         pgl4, effint, 'LG', pass, vtemp)
-        endif
+        end if
         do i = 1, nbrddl
             zr(ivectu-1+i) = effint(i)
         end do
-    endif
+    end if
 !
 ! STOCKAGE DES VARIABLES INTERNES
 
@@ -467,12 +467,10 @@ character(len=16) :: option
         call jevech('PVARIPR', 'E', ivarip)
         zr(ivarip:ivarip+lg_varip-1) = varip(1:lg_varip)
     end if
-    
-    
 
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !
-    deallocate(varip)
+    deallocate (varip)
 end subroutine

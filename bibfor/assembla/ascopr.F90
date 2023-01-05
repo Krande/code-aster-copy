@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
+subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax, &
                   jresl, rcoef, jvalm)
     implicit none
 #include "asterf_types.h"
@@ -47,61 +47,61 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !
 !     -- SI ON ASSEMBLE UNE MATRICE ELEMENTAIRE SYMETRIQUE DANS
 !        UNE MATRICE ASSEMBLEE NON SYMETRIQUE, IL FAUT COPIER 2 FOIS
-    nbfois=1
+    nbfois = 1
     if (lmasym) then
         ASSERT(lmesym)
     else
-        if (lmesym) nbfois=2
-    endif
+        if (lmesym) nbfois = 2
+    end if
 !
 !
     do kfois = 1, nbfois
 !
         if (kfois .eq. 1) then
-            permbl(1)=1
-            permbl(2)=2
+            permbl(1) = 1
+            permbl(2) = 2
         else
-            permbl(1)=2
-            permbl(2)=1
-        endif
+            permbl(1) = 2
+            permbl(2) = 1
+        end if
 !
 !
         if (tt .eq. 'RR') then
 !       ---------------------------
             do j = 1, nrmax
-                ibloc=zi(jtmp2-1+2*(j-1)+1)
-                jvalb=jvalm(permbl(ibloc))
-                iadloc=zi(jtmp2-1+2*(j-1)+2)
-                zr(jvalb+iadloc-1)=zr(jvalb+iadloc-1)+rcoef*zr(jresl-&
-                1+j)
+                ibloc = zi(jtmp2-1+2*(j-1)+1)
+                jvalb = jvalm(permbl(ibloc))
+                iadloc = zi(jtmp2-1+2*(j-1)+2)
+                zr(jvalb+iadloc-1) = zr(jvalb+iadloc-1)+rcoef*zr(jresl- &
+                                                                 1+j)
             end do
 !
 !
-        else if (tt.eq.'CC') then
+        else if (tt .eq. 'CC') then
 !       ---------------------------
             do j = 1, nrmax
-                ibloc=zi(jtmp2-1+2*(j-1)+1)
-                jvalb=jvalm(permbl(ibloc))
-                iadloc=zi(jtmp2-1+2*(j-1)+2)
-                zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+rcoef*zc(jresl-&
-                1+j)
+                ibloc = zi(jtmp2-1+2*(j-1)+1)
+                jvalb = jvalm(permbl(ibloc))
+                iadloc = zi(jtmp2-1+2*(j-1)+2)
+                zc(jvalb+iadloc-1) = zc(jvalb+iadloc-1)+rcoef*zc(jresl- &
+                                                                 1+j)
             end do
 !
 !
-        else if (tt.eq.'RC') then
+        else if (tt .eq. 'RC') then
 !       ---------------------------
             do j = 1, nrmax
-                ibloc=zi(jtmp2-1+2*(j-1)+1)
-                jvalb=jvalm(permbl(ibloc))
-                iadloc=zi(jtmp2-1+2*(j-1)+2)
-                zc(jvalb+iadloc-1)=zc(jvalb+iadloc-1)+ dcmplx(rcoef*&
-                zr(jresl-1+j),0.d0)
+                ibloc = zi(jtmp2-1+2*(j-1)+1)
+                jvalb = jvalm(permbl(ibloc))
+                iadloc = zi(jtmp2-1+2*(j-1)+2)
+                zc(jvalb+iadloc-1) = zc(jvalb+iadloc-1)+dcmplx(rcoef* &
+                                                               zr(jresl-1+j), 0.d0)
             end do
 !
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     end do
 !

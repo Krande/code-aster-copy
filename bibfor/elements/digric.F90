@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine digric(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use te0047_type
-implicit none
+    use te0047_type
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/dicrgr.h"
@@ -36,8 +36,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 !
-type(te0047_dscr), intent(in) :: for_discret
-integer, intent(out)          :: iret
+    type(te0047_dscr), intent(in) :: for_discret
+    integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ integer, intent(out)          :: iret
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_11', nk=5, valk=messak)
-    endif
+    end if
 !   paramètres en entrée
     call jevech('PMATERC', 'L', imat)
     call jevech('PVARIMR', 'L', ivarim)
@@ -69,13 +69,13 @@ integer, intent(out)          :: iret
     ivarip = 1
     if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
-    endif
+    end if
     if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
     neq = for_discret%nno*for_discret%nc
 !
     call dicrgr('RIGI', for_discret%option, neq, for_discret%nc, zi(imat), &
@@ -85,5 +85,5 @@ integer, intent(out)          :: iret
     if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imat)
         call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-    endif
+    end if
 end subroutine

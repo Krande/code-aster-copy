@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,17 +49,17 @@ subroutine rc32ma()
     call rccome(mater, 'ELAS', icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'POSTRCCM_7', sk='ELAS')
-    endif
+    end if
 !
     call rccome(mater, 'FATIGUE', icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
-    endif
+    end if
 !
     call rccome(mater, 'RCCM', icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'POSTRCCM_7', sk='RCCM')
-    endif
+    end if
 !
 ! --- ON STOCKE 7 VALEURS : E, NU, ALPHA, E_REFE, SM, M_KE, N_KE
 !     POUR LES 2 ETATS STABILISES DE CHAQUE SITUATION
@@ -78,13 +78,13 @@ subroutine rc32ma()
     nopa = ' '
     tempa = 0.d0
 !
-    call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
+    call rcvale(mater, 'ELAS', nbpa, nopa, [tempa], &
                 3, nocmp(1), para(1), icodre, 2)
 !
-    call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
+    call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa], &
                 1, nocmp(4), para(4), icodre, 2)
 !
-    call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
+    call rcvale(mater, 'RCCM', nbpa, nopa, [tempa], &
                 3, nocmp(5), para(5), icodre, 2)
 !
     do i = 1, 7

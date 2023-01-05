@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,26 +88,26 @@ subroutine cfgccj(resoco, nbliai, conjug)
 ! --- COEFFICIENT DE DIRECTION
 !
     if (conjug) then
-        numer = ddot(nbliai,zr(jsgrap),1,zr(jsgprp),1)
-        numer2 = ddot(nbliai,zr(jsgrap),1,zr(jsgprm),1)
-        denom = ddot(nbliai,zr(jsgram),1,zr(jsgprm),1)
+        numer = ddot(nbliai, zr(jsgrap), 1, zr(jsgprp), 1)
+        numer2 = ddot(nbliai, zr(jsgrap), 1, zr(jsgprm), 1)
+        denom = ddot(nbliai, zr(jsgram), 1, zr(jsgprm), 1)
         gamma = (numer-numer2)/denom
-    endif
+    end if
 !
 ! --- MISE A JOUR DIRECTION
 !
     call dscal(nbliai, gamma, zr(jdirec), 1)
-    call daxpy(nbliai, 1.d0, zr(jsgprp), 1, zr(jdirec),&
+    call daxpy(nbliai, 1.d0, zr(jsgprp), 1, zr(jdirec), &
                1)
 !
 ! --- AFFICHAGE
 !
     if (conjug) then
         if (niv .eq. 2) then
-            write (ifm,*) '<CONTACT><CALC> CONJUGAISON DES DIRECTIONS '//&
-     &      'DE RECHERCHE, GAMMA=',gamma
-        endif
-    endif
+            write (ifm, *) '<CONTACT><CALC> CONJUGAISON DES DIRECTIONS '//&
+     &      'DE RECHERCHE, GAMMA=', gamma
+        end if
+    end if
 !
     call jedema()
 !

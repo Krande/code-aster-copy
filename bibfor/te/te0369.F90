@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0369(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,23 +63,23 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
     ASSERT(nno .le. 9)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndofbynode = 2
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndofbynode = 1
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, cele_r_ = celer)
+    call getFluidPara(j_mater, cele_r_=celer)
 !
 ! - Output field
 !
@@ -91,12 +91,12 @@ character(len=16), intent(in) :: option, nomte
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
     do ino = 1, nno
-        i = jv_geom + 3*(ino-1) -1
+        i = jv_geom+3*(ino-1)-1
         do jno = 1, nno
-            j = jv_geom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = jv_geom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -113,19 +113,19 @@ character(len=16), intent(in) :: option, nomte
             idec = (i-1)*ndim
             do j = 1, nno
                 jdec = (j-1)*ndim
-                nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
             end do
         end do
 ! ----- Compute jacobian
-        jac = sqrt (nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
 ! ----- Compute vector
         do i = 1, nno
             ii = ndofbynode*i
-            zr(jv_vect+ii-1) = zr(jv_vect+ii-1) +&
-                               jac*zr(ipoids+ipg-1) *&
-                               zr(ivf+ldec+i-1) * zr(jv_onde+ipg-1) / celer
+            zr(jv_vect+ii-1) = zr(jv_vect+ii-1)+ &
+                               jac*zr(ipoids+ipg-1)* &
+                               zr(ivf+ldec+i-1)*zr(jv_onde+ipg-1)/celer
         end do
     end do
 !

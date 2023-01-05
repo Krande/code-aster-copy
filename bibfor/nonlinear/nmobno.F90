@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmobno(sd_obsv, keyw_fact, nb_keyw_fact)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/wkvect.h"
 !
-integer, intent(in) :: nb_keyw_fact
-character(len=19), intent(in) :: sd_obsv
-character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: nb_keyw_fact
+    character(len=19), intent(in) :: sd_obsv
+    character(len=16), intent(in) :: keyw_fact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,19 +55,19 @@ character(len=16), intent(in) :: keyw_fact
 ! - Create vector for title
 !
     obsv_titl = sd_obsv(1:14)//'     .TITR'
-    call wkvect(obsv_titl, 'V V K16', nb_keyw_fact, vk16 = v_obsv_titl)
+    call wkvect(obsv_titl, 'V V K16', nb_keyw_fact, vk16=v_obsv_titl)
 !
 ! - Set titles
 !
     do i_keyw_fact = 1, nb_keyw_fact
-        write(chaine,'(I1)') i_keyw_fact
+        write (chaine, '(I1)') i_keyw_fact
         title = 'OBSERVATION_'//chaine
         call getvtx(keyw_fact, 'TITRE', iocc=i_keyw_fact, nbval=0, nbret=nb_title)
-        nb_title = - nb_title
-        ASSERT(nb_title.le.1)
+        nb_title = -nb_title
+        ASSERT(nb_title .le. 1)
         if (nb_title .ne. 0) then
             call getvtx(keyw_fact, 'TITRE', iocc=i_keyw_fact, nbval=nb_title, vect=title)
-        endif
+        end if
         v_obsv_titl(i_keyw_fact) = title
     end do
 !

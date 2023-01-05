@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,18 +55,18 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
             call jelira(jexnom(magrma, nogp), 'LONUTI', nma)
             call jeveuo(jexnom(magrma, nogp), 'L', ldgm)
             do in = 0, nma-1
-                noemaf = max(noemaf,zi(ldgm+in))
+                noemaf = max(noemaf, zi(ldgm+in))
             end do
-            noemax = noemax + nma
-        endif
+            noemax = noemax+nma
+        end if
         if (ngl .ne. 0) then
             call jelira(jexnom(magrma, nogl), 'LONUTI', nma)
             call jeveuo(jexnom(magrma, nogl), 'L', ldgm)
             do in = 0, nma-1
-                noemaf = max(noemaf,zi(ldgm+in))
+                noemaf = max(noemaf, zi(ldgm+in))
             end do
-            noemax = noemax + nma
-        endif
+            noemax = noemax+nma
+        end if
     end do
 !
     call jedema()

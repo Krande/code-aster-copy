@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
+subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui, &
                   h, d1i, d2i, x3i, epi)
     implicit none
 #include "asterf_types.h"
@@ -68,35 +68,35 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
         nomres(i) = 'C'//num//'_V'//val
     end do
     r8bid = 0.d0
-    call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                [r8bid], 9, nomres, valres, icodre,&
+    call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ', &
+                [r8bid], 9, nomres, valres, icodre, &
                 1)
     epi = valres(1)
     ordi = valres(3)
-    h(1,1) = valres(4)
-    h(1,2) = valres(5)
-    h(1,3) = valres(6)
-    h(2,2) = valres(7)
-    h(2,3) = valres(8)
-    h(3,3) = valres(9)
-    h(2,1) = h(1,2)
-    h(3,1) = h(1,3)
-    h(3,2) = h(2,3)
+    h(1, 1) = valres(4)
+    h(1, 2) = valres(5)
+    h(1, 3) = valres(6)
+    h(2, 2) = valres(7)
+    h(2, 3) = valres(8)
+    h(3, 3) = valres(9)
+    h(2, 1) = h(1, 2)
+    h(3, 1) = h(1, 3)
+    h(3, 2) = h(2, 3)
 !     ----- CALCUL DE Z ------------------------------------------------
-    x3i = ordi + excen
+    x3i = ordi+excen
     if (iniv .lt. 0) then
-        x3i = x3i - epi/2.d0
-    else if (iniv.gt.0) then
-        x3i = x3i + epi/2.d0
-    endif
+        x3i = x3i-epi/2.d0
+    else if (iniv .gt. 0) then
+        x3i = x3i+epi/2.d0
+    end if
 !     ----- CALCUL DE D1I ET D2I ---------------------------------------
 !
-    dx1i(:,:) = 0.d0
-    dx2i(:,:) = 0.d0
+    dx1i(:, :) = 0.d0
+    dx2i(:, :) = 0.d0
 !
-    if (.not.lcalct) then
+    if (.not. lcalct) then
         goto 999
-    endif
+    end if
 !
     do jcou = 1, icou
         call codent(jcou, 'G', num)
@@ -104,33 +104,33 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
             call codent(i, 'G', val)
             nomres(i) = 'C'//num//'_V'//val
         end do
-        call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 1, nomres, valres, icodre,&
+        call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ', &
+                    [r8bid], 1, nomres, valres, icodre, &
                     1)
         epi = valres(1)
-        call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 1, nomres(3), valres(3), icodre(3),&
+        call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ', &
+                    [r8bid], 1, nomres(3), valres(3), icodre(3), &
                     1)
         ordi = valres(3)
-        call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 12, nomres(16), valres(16), icodre(16),&
+        call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ', &
+                    [r8bid], 12, nomres(16), valres(16), icodre(16), &
                     1)
 !
 !      RECUP MATRICE AI = H(Z).HF-1
 !
-        ai(1,1) = valres(16)
-        ai(2,1) = valres(17)
-        ai(3,1) = valres(18)
-        ai(1,2) = valres(19)
-        ai(2,2) = valres(20)
-        ai(3,2) = valres(21)
-        ai(1,3) = valres(22)
-        ai(2,3) = valres(23)
-        ai(3,3) = valres(24)
+        ai(1, 1) = valres(16)
+        ai(2, 1) = valres(17)
+        ai(3, 1) = valres(18)
+        ai(1, 2) = valres(19)
+        ai(2, 2) = valres(20)
+        ai(3, 2) = valres(21)
+        ai(1, 3) = valres(22)
+        ai(2, 3) = valres(23)
+        ai(3, 3) = valres(24)
 !
 !      PASSAGE DANS LE REPERE INTRINSEQUE A L'ELEMENT
 !
-        call utbtab('ZERO', 3, 3, ai, t1ve,&
+        call utbtab('ZERO', 3, 3, ai, t1ve, &
                     xab1, ai)
 !
 !         TERMES DE LA MATRICE INTERVENANT DANS D1(Z)
@@ -138,21 +138,21 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 !      DAI1 MATRICE (2,2) CONSTANTE PAR COUCHE
 !      TERME 1,1 : A11+A33 TERME 1,2 : A13+A32
 !      TERME 2,1 : A31+A23 TERME 2,2 : A22+A33
-        da1i(1,1) = ai(1,1) + ai(3,3)
-        da1i(1,2) = ai(1,3) + ai(3,2)
-        da1i(2,1) = ai(3,1) + ai(2,3)
-        da1i(2,2) = ai(2,2) + ai(3,3)
+        da1i(1, 1) = ai(1, 1)+ai(3, 3)
+        da1i(1, 2) = ai(1, 3)+ai(3, 2)
+        da1i(2, 1) = ai(3, 1)+ai(2, 3)
+        da1i(2, 2) = ai(2, 2)+ai(3, 3)
 !         TERMES DE LA MATRICE INTERVENANT DANS D2(Z)
 !      CF. DHAT-BATOZ VOL 2 PAGE 243
 !      DAI2 MATRICE (2,4) CONSTANTE PAR COUCHE
-        da2i(1,1) = ai(1,1) - ai(3,3)
-        da2i(1,2) = ai(1,3) - ai(3,2)
-        da2i(1,3) = ai(1,2)*2.d0
-        da2i(1,4) = ai(3,1)*2.d0
-        da2i(2,1) = ai(3,1) - ai(2,3)
-        da2i(2,2) = ai(3,3) - ai(2,2)
-        da2i(2,3) = ai(3,2)*2.d0
-        da2i(2,4) = ai(2,1)*2.d0
+        da2i(1, 1) = ai(1, 1)-ai(3, 3)
+        da2i(1, 2) = ai(1, 3)-ai(3, 2)
+        da2i(1, 3) = ai(1, 2)*2.d0
+        da2i(1, 4) = ai(3, 1)*2.d0
+        da2i(2, 1) = ai(3, 1)-ai(2, 3)
+        da2i(2, 2) = ai(3, 3)-ai(2, 2)
+        da2i(2, 3) = ai(3, 2)*2.d0
+        da2i(2, 4) = ai(2, 1)*2.d0
 !
 !
 !      D1(Z)=SOMME(-T,Z)(-Z/2*DA1I DZ)
@@ -161,8 +161,8 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 !
         do k = 1, 2
             do l = 1, 2
-                d1i(k,l) = dx1i(k,l) + ((ordi-epi/2.d0)**2-x3i*x3i)* da1i(k,l)/4.d0
-                dx1i(k,l) = dx1i(k,l) - epi*ordi*da1i(k,l)/2.d0
+                d1i(k, l) = dx1i(k, l)+((ordi-epi/2.d0)**2-x3i*x3i)*da1i(k, l)/4.d0
+                dx1i(k, l) = dx1i(k, l)-epi*ordi*da1i(k, l)/2.d0
             end do
         end do
 !
@@ -172,8 +172,8 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 !
         do k = 1, 2
             do l = 1, 4
-                d2i(k,l) = dx2i(k,l) + ((ordi-epi/2.d0)**2-x3i*x3i)* da2i(k,l)/4.d0
-                dx2i(k,l) = dx2i(k,l) - epi*ordi*da2i(k,l)/2.d0
+                d2i(k, l) = dx2i(k, l)+((ordi-epi/2.d0)**2-x3i*x3i)*da2i(k, l)/4.d0
+                dx2i(k, l) = dx2i(k, l)-epi*ordi*da2i(k, l)/2.d0
             end do
         end do
     end do
@@ -182,7 +182,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 !
 !     MATRICE H DANS LE REPERE INTRINSEQUE DE L'ELEMENT
 !
-    call utbtab('ZERO', 3, 3, h, t1ve,&
+    call utbtab('ZERO', 3, 3, h, t1ve, &
                 xab1, h)
 !
 end subroutine

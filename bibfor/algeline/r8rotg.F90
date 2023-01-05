@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine r8rotg(da, db, dc, ds)
 !-----------------------------------------------------------------------
     if (abs(da) .gt. abs(db)) then
 !                                       ABS(DA) .GT. ABS(DB)
-        u = da + da
+        u = da+da
         v = db/u
 !                     U ET R MEME SIGNE QUE DA
         r = sqrt(.25d0+v**2)*u
@@ -49,7 +49,7 @@ subroutine r8rotg(da, db, dc, ds)
 !                                   ABS(DA) .LE. ABS(DB)
     else
         if (db .ne. 0.0d0) then
-            u = db + db
+            u = db+db
             v = da/u
 !
 !                   U ET R ONT MEME SIGNE QUE
@@ -62,13 +62,13 @@ subroutine r8rotg(da, db, dc, ds)
                 db = 1.0d0/dc
             else
                 db = 1.0d0
-            endif
+            end if
         else
 !                                   DA = DB = 0.D0
             dc = 1.0d0
             ds = 0.0d0
             da = 0.0d0
             db = 0.0d0
-        endif
-    endif
+        end if
+    end if
 end subroutine

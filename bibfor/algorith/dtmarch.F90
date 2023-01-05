@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,25 +59,25 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     character(len=24) :: nomres
     type(c_ptr) :: pc
 
-    integer         , pointer :: vindx(:)    => null()
-    integer         , pointer :: allocs(:)   => null()
-    integer         , pointer :: isto(:)     => null()
-    integer         , pointer :: iorsto(:)   => null()
-    real(kind=8)    , pointer :: depgen(:)   => null()
-    real(kind=8)    , pointer :: vitgen(:)   => null()
-    real(kind=8)    , pointer :: accgen(:)   => null()
-    real(kind=8)    , pointer :: depl0(:)    => null()
-    real(kind=8)    , pointer :: vite0(:)    => null()
-    real(kind=8)    , pointer :: acce0(:)    => null()
-    real(kind=8)    , pointer :: phi(:)      => null()
-    real(kind=8)    , pointer :: temsto(:)   => null()
-    real(kind=8)    , pointer :: passto(:)   => null()
-    real(kind=8)    , pointer :: depsto(:)   => null()
-    real(kind=8)    , pointer :: vitsto(:)   => null()
-    real(kind=8)    , pointer :: accsto(:)   => null()
-    real(kind=8)    , pointer :: vint(:)     => null()
-    real(kind=8)    , pointer :: vintsto(:)     => null()
-    integer         , pointer :: buffnl(:)   => null()
+    integer, pointer :: vindx(:) => null()
+    integer, pointer :: allocs(:) => null()
+    integer, pointer :: isto(:) => null()
+    integer, pointer :: iorsto(:) => null()
+    real(kind=8), pointer :: depgen(:) => null()
+    real(kind=8), pointer :: vitgen(:) => null()
+    real(kind=8), pointer :: accgen(:) => null()
+    real(kind=8), pointer :: depl0(:) => null()
+    real(kind=8), pointer :: vite0(:) => null()
+    real(kind=8), pointer :: acce0(:) => null()
+    real(kind=8), pointer :: phi(:) => null()
+    real(kind=8), pointer :: temsto(:) => null()
+    real(kind=8), pointer :: passto(:) => null()
+    real(kind=8), pointer :: depsto(:) => null()
+    real(kind=8), pointer :: vitsto(:) => null()
+    real(kind=8), pointer :: accsto(:) => null()
+    real(kind=8), pointer :: vint(:) => null()
+    real(kind=8), pointer :: vintsto(:) => null()
+    integer, pointer :: buffnl(:) => null()
 !
 !   0 - Initializations
     call jemarq()
@@ -85,18 +85,18 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     sd_dtm = sd_dtm_
     sd_int = sd_int_
 
-    call dtmget(sd_dtm, _ARCH_STO, vi=isto     , buffer=buffdtm)
-    call intget(sd_int,  IND_ARCH, iscal=index , buffer=buffint)
+    call dtmget(sd_dtm, _ARCH_STO, vi=isto, buffer=buffdtm)
+    call intget(sd_int, IND_ARCH, iscal=index, buffer=buffint)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode, buffer=buffdtm)
 
     call dtmget(sd_dtm, _IARCH_SD, iscal=iarch_sd)
 
-    if (iarch_sd.gt.0) then
+    if (iarch_sd .gt. 0) then
         call codent(iarch_sd, 'D0', intk)
         nomres = '&&AD'//intk
-        call jelira(nomres(1:8)//'           .ORDR','LONMAX', nbsauv)
-        if (isto(1).ge.(nbsauv)) then
-            iarch_sd = iarch_sd + 1
+        call jelira(nomres(1:8)//'           .ORDR', 'LONMAX', nbsauv)
+        if (isto(1) .ge. (nbsauv)) then
+            iarch_sd = iarch_sd+1
             call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=iarch_sd)
             call dtmallo(sd_dtm)
             call codent(iarch_sd, 'D0', intk)
@@ -105,33 +105,33 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     else
         call dtmget(sd_dtm, _CALC_SD, kscal=nomres, buffer=buffdtm)
         call dtmget(sd_dtm, _ARCH_NB, iscal=nbsauv, buffer=buffdtm)
-        if (isto(1).ge.(nbsauv)) then
+        if (isto(1) .ge. (nbsauv)) then
             ASSERT(.false.)
         end if
     end if
 
-    call intget(sd_int, STEP , iocc=index, rscal=dt,   buffer=buffint)
+    call intget(sd_int, STEP, iocc=index, rscal=dt, buffer=buffint)
     call intget(sd_int, INDEX, iocc=index, iscal=ipas, buffer=buffint)
-    call intget(sd_int, TIME , iocc=index, rscal=t,    buffer=buffint)
+    call intget(sd_int, TIME, iocc=index, rscal=t, buffer=buffint)
 
     call dtmget(sd_dtm, _NL_CASE, iscal=nlcase, buffer=buffdtm)
 
     call intget(sd_int, DEPL, iocc=index, lonvec=iret, buffer=buffint)
-    if (iret.ne.0) then
-        if (nlcase.eq.0) then
-            call intget(sd_int, DEPL ,iocc=index, vr=depgen, buffer=buffint)
-            call intget(sd_int, VITE ,iocc=index, vr=vitgen, buffer=buffint)
-            call intget(sd_int, ACCE ,iocc=index, vr=accgen, buffer=buffint)
+    if (iret .ne. 0) then
+        if (nlcase .eq. 0) then
+            call intget(sd_int, DEPL, iocc=index, vr=depgen, buffer=buffint)
+            call intget(sd_int, VITE, iocc=index, vr=vitgen, buffer=buffint)
+            call intget(sd_int, ACCE, iocc=index, vr=accgen, buffer=buffint)
         else
 !           --- Implicit treatment of chocs, project the acceleration to the
 !               previous basis : [Phi] x ACCE
 !               Same treatment is done for displacement and velocity
 !
-            call dtmcase_coder (nlcase, casek7)
-            call jeveuo(sd_dtm // '.PRJ_BAS.' //casek7, 'E', vr=phi)
-            call intget(sd_int, DEPL , iocc=index , vr=depl0, buffer=buffint)
-            call intget(sd_int, VITE , iocc=index , vr=vite0, buffer=buffint)
-            call intget(sd_int, ACCE , iocc=index , vr=acce0, buffer=buffint)
+            call dtmcase_coder(nlcase, casek7)
+            call jeveuo(sd_dtm//'.PRJ_BAS.'//casek7, 'E', vr=phi)
+            call intget(sd_int, DEPL, iocc=index, vr=depl0, buffer=buffint)
+            call intget(sd_int, VITE, iocc=index, vr=vite0, buffer=buffint)
+            call intget(sd_int, ACCE, iocc=index, vr=acce0, buffer=buffint)
             call dtmget(sd_dtm, _IMP_DEPL, vr=depgen, buffer=buffdtm)
             call dtmget(sd_dtm, _IMP_VITE, vr=vitgen, buffer=buffdtm)
             call dtmget(sd_dtm, _IMP_ACCE, vr=accgen, buffer=buffdtm)
@@ -144,7 +144,7 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     end if
 !
 !
-    call dtmget(sd_dtm, _IND_ALOC, vi=allocs,buffer=buffdtm)
+    call dtmget(sd_dtm, _IND_ALOC, vi=allocs, buffer=buffdtm)
 !
 !   [jordr, jdisc, jptem, jdepl , jvite, jacce,
 !    jfcho, jdcho, jvcho, jadcho, jredc, jredd,
@@ -159,7 +159,7 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     call jgetptc(allocs(3)+isto(1), pc, vr=zr(1))
     call c_f_pointer(pc, passto, [1])
 
-    ind = nbmode * isto(1)
+    ind = nbmode*isto(1)
 
     call jgetptc(allocs(4)+ind, pc, vr=zr(1))
     call c_f_pointer(pc, depsto, [nbmode])
@@ -177,10 +177,10 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     call dcopy(nbmode, accgen, 1, accsto, 1)
 !
 !   Optional information (nonlinearities)
-    call dtmget(sd_dtm, _NB_NONLI,iscal=nbnoli, buffer=buffdtm)
-    if (nbnoli.gt.0) then
-        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl , buffer=buffdtm)
-        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl   , buffer=buffdtm)
+    call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli, buffer=buffdtm)
+    if (nbnoli .gt. 0) then
+        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
 
         call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
         nbvint = vindx(nbnoli+1)-1
@@ -194,7 +194,7 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
         call dcopy(nbvint, vint, 1, vintsto, 1)
     end if
 
-    isto(1) = isto(1) + 1
+    isto(1) = isto(1)+1
     call jedema()
 !
 end subroutine

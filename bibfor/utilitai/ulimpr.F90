@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,49 +24,49 @@ subroutine ulimpr(impr)
 !     IMPRESSION DES TABLES DECRIVANT LES UNITES LOGIQUE OUVERTES
 !
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     integer :: i
     character(len=8) :: ktyp, kacc, keta
 !
-    write(impr,999) 'LA TABLE A CONTENU JUSQU''A ',nbfile,&
+    write (impr, 999) 'LA TABLE A CONTENU JUSQU''A ', nbfile,&
      &                ' ASSOCIATION(S)'
     do i = 1, nbfile
-        write(impr,1000) namefi(i)
-        ktyp='?'
+        write (impr, 1000) namefi(i)
+        ktyp = '?'
         if (typefi(i) .eq. 'A') then
-            ktyp='ASCII'
+            ktyp = 'ASCII'
         else if (typefi(i) .eq. 'B') then
-            ktyp='BINARY'
+            ktyp = 'BINARY'
         else if (typefi(i) .eq. 'L') then
-            ktyp='LIBRE'
-        endif
-        kacc='?'
+            ktyp = 'LIBRE'
+        end if
+        kacc = '?'
         if (accefi(i) .eq. 'N') then
-            kacc='NEW'
+            kacc = 'NEW'
         else if (accefi(i) .eq. 'O') then
-            kacc='OLD'
+            kacc = 'OLD'
         else if (accefi(i) .eq. 'A') then
-            kacc='APPEND'
-        endif
-        keta='?'
+            kacc = 'APPEND'
+        end if
+        keta = '?'
         if (etatfi(i) .eq. 'O') then
-            keta='OPEN'
+            keta = 'OPEN'
         else if (etatfi(i) .eq. 'F') then
-            keta='CLOSE'
+            keta = 'CLOSE'
         else if (etatfi(i) .eq. 'R') then
-            keta='RESERVE '
-        endif
-        write(impr,1001) ddname(i),unitfi(i),ktyp,kacc,keta,modifi(i)
+            keta = 'RESERVE '
+        end if
+        write (impr, 1001) ddname(i), unitfi(i), ktyp, kacc, keta, modifi(i)
     end do
 !
-    999 format (a,i4,a)
-    1000 format (1x,a)
-    1001 format (6x,a16,i3,3(1x,a8),1x,a1)
+999 format(a, i4, a)
+1000 format(1x, a)
+1001 format(6x, a16, i3, 3(1x, a8), 1x, a1)
 end subroutine

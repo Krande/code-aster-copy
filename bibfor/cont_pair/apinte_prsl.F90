@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,25 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apinte_prsl(proj_tole       , elem_dime     , &
+subroutine apinte_prsl(proj_tole, elem_dime, &
                        elem_mast_nbnode, elem_mast_coor, &
-                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                       proj_coor       , iret)
+                       elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
+                       proj_coor, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmnewt.h"
 !
-real(kind=8), intent(in) :: proj_tole
-integer, intent(in) :: elem_dime
-integer, intent(in) :: elem_mast_nbnode
-real(kind=8), intent(in) :: elem_mast_coor(3,9)
-integer, intent(in) :: elem_slav_nbnode
-real(kind=8), intent(in) :: elem_slav_coor(3,9)
-character(len=8), intent(in) :: elem_slav_code
-real(kind=8), intent(out) :: proj_coor(elem_dime-1,4)
-integer, intent(out) :: iret
+    real(kind=8), intent(in) :: proj_tole
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: elem_mast_nbnode
+    real(kind=8), intent(in) :: elem_mast_coor(3, 9)
+    integer, intent(in) :: elem_slav_nbnode
+    real(kind=8), intent(in) :: elem_slav_coor(3, 9)
+    character(len=8), intent(in) :: elem_slav_code
+    real(kind=8), intent(out) :: proj_coor(elem_dime-1, 4)
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,19 +64,19 @@ integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    debug  = ASTER_FALSE
+    debug = ASTER_FALSE
     l_reli = ASTER_FALSE
-    proj_coor(elem_dime-1,4) = 0.d0
+    proj_coor(elem_dime-1, 4) = 0.d0
     if (debug) then
-        write(*,*) ".. Project master nodes in slave element parametric space"
-    endif
+        write (*, *) ".. Project master nodes in slave element parametric space"
+    end if
 !
     if (elem_slav_code .eq. "QU4") then
-         elin_slav_code = "TR3"
-         elin_slav_nbnode =  3
+        elin_slav_code = "TR3"
+        elin_slav_nbnode = 3
     else
-         elin_slav_code = elem_slav_code
-         elin_slav_nbnode = elem_slav_nbnode
+        elin_slav_code = elem_slav_code
+        elin_slav_nbnode = elem_slav_nbnode
     end if
     do i_node = 1, elem_mast_nbnode
 ! ----- Get coordinates of master nodes
@@ -86,11 +86,11 @@ integer, intent(out) :: iret
         end do
 ! ----- Projection on slave element
         l_reli = ASTER_FALSE
-        call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime,&
-                    elem_slav_coor, noma_coor       , 75       ,&
-                    proj_tole     , ksi1            , ksi2     ,&
-                    tau1          , tau2            ,&
-                    iret        , l_reli)
+        call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime, &
+                    elem_slav_coor, noma_coor, 75, &
+                    proj_tole, ksi1, ksi2, &
+                    tau1, tau2, &
+                    iret, l_reli)
 ! ----- Get parametric coordinates of projection
         if (iret .eq. 0) then
             proj_coor(1, i_node) = ksi1
@@ -100,11 +100,11 @@ integer, intent(out) :: iret
         else
 ! --------- Projection failed => try line search
             l_reli = ASTER_TRUE
-            call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime,&
-                        elem_slav_coor, noma_coor       , 75       ,&
-                        proj_tole     , ksi1            , ksi2     ,&
-                        tau1          , tau2            ,&
-                        iret        , l_reli)
+            call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime, &
+                        elem_slav_coor, noma_coor, 75, &
+                        proj_tole, ksi1, ksi2, &
+                        tau1, tau2, &
+                        iret, l_reli)
             if (iret .eq. 0) then
                 proj_coor(1, i_node) = ksi1
                 if (elem_dime .eq. 3) then
@@ -112,9 +112,9 @@ integer, intent(out) :: iret
                 end if
             else
                 go to 99
-            endif
-        endif
+            end if
+        end if
     end do
 !
-99 continue
+99  continue
 end subroutine

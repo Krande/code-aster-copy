@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,9 +66,9 @@ subroutine te0489(option, nomte)
 !
 !
     integer :: mxcmel
-    parameter (mxcmel=162)
+    parameter(mxcmel=162)
     integer :: nbpgmx
-    parameter (nbpgmx=27)
+    parameter(nbpgmx=27)
 !
     integer :: jtab(7)
     integer :: iret, npg1, ipoids, ivf, idfde, jgano, icompo
@@ -134,7 +134,7 @@ subroutine te0489(option, nomte)
     nbsig = nbsigm()
 !
 ! ---- RECUPERATION DU NOMBRE DE COMPOSANTES
-    call tecach('OOO', 'PDERAMG', 'L', iret, nval=7,&
+    call tecach('OOO', 'PDERAMG', 'L', iret, nval=7, &
                 itab=jtab)
     idera1 = jtab(1)
     nbcmp = jtab(2)/jtab(3)
@@ -146,7 +146,7 @@ subroutine te0489(option, nomte)
 !
 ! ---- RECUPERATION DES CONTRAINTES A L'INSTANT T :
 !
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=3,&
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=3, &
                 itab=jtab)
     npg = jtab(3)
     isigtm = jtab(1)
@@ -155,9 +155,9 @@ subroutine te0489(option, nomte)
 !
     call jevech('PCONTPR', 'L', isigtp)
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    ASSERT(npg.eq.npg1)
+    ASSERT(npg .eq. npg1)
 !
 ! ---- AFFECTATION DES VECTEURS DE TRAVAIL SIGMA1 ET SIGMA2
 ! ---- REPRESENTANT LES TENSEURS DE CONTRAINTES RESPECTIVEMENT
@@ -167,11 +167,11 @@ subroutine te0489(option, nomte)
 !
     do igau = 1, npg
         do i = 1, nbsig
-            k = k + 1
-            sigt1(i+ (igau-1)*nbsig) = zr(isigtm+k-1)
-            sigt2(i+ (igau-1)*nbsig) = zr(isigtp+k-1)
-            sigma1(i+ (igau-1)*nbsig) = zr(isigtm+k-1)
-            sigma2(i+ (igau-1)*nbsig) = zr(isigtp+k-1)
+            k = k+1
+            sigt1(i+(igau-1)*nbsig) = zr(isigtm+k-1)
+            sigt2(i+(igau-1)*nbsig) = zr(isigtp+k-1)
+            sigma1(i+(igau-1)*nbsig) = zr(isigtm+k-1)
+            sigma2(i+(igau-1)*nbsig) = zr(isigtp+k-1)
         end do
     end do
 !
@@ -183,25 +183,25 @@ subroutine te0489(option, nomte)
 !
         do igau = 1, npg
 !
-            trsig1 = sigma1(&
-                     1+ (igau-1)*nbsig) + sigma1(2+ (igau-1)* nbsig) + sigma1(3+ (igau-1)*nbsig)
+            trsig1 = sigma1( &
+                     1+(igau-1)*nbsig)+sigma1(2+(igau-1)*nbsig)+sigma1(3+(igau-1)*nbsig)
 !
-            trsig2 = sigma2(&
-                     1+ (igau-1)*nbsig) + sigma2(2+ (igau-1)* nbsig) + sigma2(3+ (igau-1)*nbsig)
-            sigma1(1+ (igau-1)*nbsig) = sigma1(1+ (igau-1)*nbsig ) - untier*trsig1
-            sigma1(2+ (igau-1)*nbsig) = sigma1(2+ (igau-1)*nbsig ) - untier*trsig1
-            sigma1(3+ (igau-1)*nbsig) = sigma1(3+ (igau-1)*nbsig ) - untier*trsig1
+            trsig2 = sigma2( &
+                     1+(igau-1)*nbsig)+sigma2(2+(igau-1)*nbsig)+sigma2(3+(igau-1)*nbsig)
+            sigma1(1+(igau-1)*nbsig) = sigma1(1+(igau-1)*nbsig)-untier*trsig1
+            sigma1(2+(igau-1)*nbsig) = sigma1(2+(igau-1)*nbsig)-untier*trsig1
+            sigma1(3+(igau-1)*nbsig) = sigma1(3+(igau-1)*nbsig)-untier*trsig1
 !
-            sigma2(1+ (igau-1)*nbsig) = sigma2(1+ (igau-1)*nbsig ) - untier*trsig2
-            sigma2(2+ (igau-1)*nbsig) = sigma2(2+ (igau-1)*nbsig ) - untier*trsig2
-            sigma2(3+ (igau-1)*nbsig) = sigma2(3+ (igau-1)*nbsig ) - untier*trsig2
+            sigma2(1+(igau-1)*nbsig) = sigma2(1+(igau-1)*nbsig)-untier*trsig2
+            sigma2(2+(igau-1)*nbsig) = sigma2(2+(igau-1)*nbsig)-untier*trsig2
+            sigma2(3+(igau-1)*nbsig) = sigma2(3+(igau-1)*nbsig)-untier*trsig2
         end do
 !
 ! ---- DANS LE CAS D'UN ECROUISSAGE CINEMATIQUE
 ! ---- RECUPERATION DES COMPOSANTES DU TENSEUR DE RAPPEL
 ! ---- AUX INSTANTS T ET T+DT :
 !      ----------------------
-    else if (compor(1:14).eq.'VMIS_CINE_LINE') then
+    else if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
 !
         call jevech('PVARIMR', 'L', idvar1)
         call jevech('PVARIPR', 'L', idvar2)
@@ -214,8 +214,8 @@ subroutine te0489(option, nomte)
 !
         do igau = 1, npg
             do i = 1, nbsig
-                x1(i+ (igau-1)*nbsig) = zr(idvar1+i+ (igau-1)*nbvarint- 1)
-                x2(i+ (igau-1)*nbsig) = zr(idvar2+i+ (igau-1)*nbvarint- 1)
+                x1(i+(igau-1)*nbsig) = zr(idvar1+i+(igau-1)*nbvarint-1)
+                x2(i+(igau-1)*nbsig) = zr(idvar2+i+(igau-1)*nbvarint-1)
             end do
         end do
 !
@@ -226,14 +226,14 @@ subroutine te0489(option, nomte)
         k = 0
         do igau = 1, npg
             do i = 1, nbsig
-                k = k + 1
+                k = k+1
 !
-                sigt1(i+ (igau-1)*nbsig) = zr(isigtm+k-1)
+                sigt1(i+(igau-1)*nbsig) = zr(isigtm+k-1)
 !     &                                -X1(I+ (IGAU-1)*NBSIG)
-                sigt2(i+ (igau-1)*nbsig) = zr(isigtp+k-1)
+                sigt2(i+(igau-1)*nbsig) = zr(isigtp+k-1)
 !     &                                -X2(I+ (IGAU-1)*NBSIG)
-                sigma1(i+ (igau-1)*nbsig) = zr(isigtm+k-1) - x1(i+ ( igau-1)*nbsig)
-                sigma2(i+ (igau-1)*nbsig) = zr(isigtp+k-1) - x2(i+ ( igau-1)*nbsig)
+                sigma1(i+(igau-1)*nbsig) = zr(isigtm+k-1)-x1(i+(igau-1)*nbsig)
+                sigma2(i+(igau-1)*nbsig) = zr(isigtp+k-1)-x2(i+(igau-1)*nbsig)
             end do
         end do
 !
@@ -243,36 +243,36 @@ subroutine te0489(option, nomte)
 !
         do igau = 1, npg
 !
-            trsig1 = sigma1(&
-                     1+ (igau-1)*nbsig) + sigma1(2+ (igau-1)* nbsig) + sigma1(3+ (igau-1)*nbsig)
+            trsig1 = sigma1( &
+                     1+(igau-1)*nbsig)+sigma1(2+(igau-1)*nbsig)+sigma1(3+(igau-1)*nbsig)
 !
-            trsig2 = sigma2(&
-                     1+ (igau-1)*nbsig) + sigma2(2+ (igau-1)* nbsig) + sigma2(3+ (igau-1)*nbsig)
+            trsig2 = sigma2( &
+                     1+(igau-1)*nbsig)+sigma2(2+(igau-1)*nbsig)+sigma2(3+(igau-1)*nbsig)
 !
-            trx1 = x1( 1+ (igau-1)*nbsig) + x1(2+ (igau-1)*nbsig) + x1(3+ (igau-1)*nbsig )
+            trx1 = x1(1+(igau-1)*nbsig)+x1(2+(igau-1)*nbsig)+x1(3+(igau-1)*nbsig)
 !
-            trx2 = x2( 1+ (igau-1)*nbsig) + x2(2+ (igau-1)*nbsig) + x2(3+ (igau-1)*nbsig )
+            trx2 = x2(1+(igau-1)*nbsig)+x2(2+(igau-1)*nbsig)+x2(3+(igau-1)*nbsig)
 !
-            sigma1(1+ (igau-1)*nbsig) = sigma1( 1+ (igau-1)*nbsig ) - untier* (trsig1-trx1 )
-            sigma1(2+ (igau-1)*nbsig) = sigma1( 2+ (igau-1)*nbsig ) - untier* (trsig1-trx1 )
-            sigma1(3+ (igau-1)*nbsig) = sigma1( 3+ (igau-1)*nbsig ) - untier* (trsig1-trx1 )
-            sigma1(4+ (igau-1)*nbsig) = sigma1(4+ (igau-1)*nbsig)
+            sigma1(1+(igau-1)*nbsig) = sigma1(1+(igau-1)*nbsig)-untier*(trsig1-trx1)
+            sigma1(2+(igau-1)*nbsig) = sigma1(2+(igau-1)*nbsig)-untier*(trsig1-trx1)
+            sigma1(3+(igau-1)*nbsig) = sigma1(3+(igau-1)*nbsig)-untier*(trsig1-trx1)
+            sigma1(4+(igau-1)*nbsig) = sigma1(4+(igau-1)*nbsig)
 !
-            sigma2(1+ (igau-1)*nbsig) = sigma2( 1+ (igau-1)*nbsig ) - untier* (trsig2-trx2 )
-            sigma2(2+ (igau-1)*nbsig) = sigma2( 2+ (igau-1)*nbsig ) - untier* (trsig2-trx2 )
-            sigma2(3+ (igau-1)*nbsig) = sigma2( 3+ (igau-1)*nbsig ) - untier* (trsig2-trx2 )
-            sigma2(4+ (igau-1)*nbsig) = sigma2(4+ (igau-1)*nbsig)
+            sigma2(1+(igau-1)*nbsig) = sigma2(1+(igau-1)*nbsig)-untier*(trsig2-trx2)
+            sigma2(2+(igau-1)*nbsig) = sigma2(2+(igau-1)*nbsig)-untier*(trsig2-trx2)
+            sigma2(3+(igau-1)*nbsig) = sigma2(3+(igau-1)*nbsig)-untier*(trsig2-trx2)
+            sigma2(4+(igau-1)*nbsig) = sigma2(4+(igau-1)*nbsig)
 !
             if (ndim .eq. 3) then
-                sigma1(5+ (igau-1)*nbsig) = sigma1(5+ (igau-1)*nbsig)
-                sigma1(6+ (igau-1)*nbsig) = sigma1(6+ (igau-1)*nbsig)
+                sigma1(5+(igau-1)*nbsig) = sigma1(5+(igau-1)*nbsig)
+                sigma1(6+(igau-1)*nbsig) = sigma1(6+(igau-1)*nbsig)
 !
-                sigma2(5+ (igau-1)*nbsig) = sigma2(5+ (igau-1)*nbsig)
-                sigma2(6+ (igau-1)*nbsig) = sigma2(6+ (igau-1)*nbsig)
-            endif
+                sigma2(5+(igau-1)*nbsig) = sigma2(5+(igau-1)*nbsig)
+                sigma2(6+(igau-1)*nbsig) = sigma2(6+(igau-1)*nbsig)
+            end if
         end do
 !
-    endif
+    end if
 !
 ! ---- CALCUL DE L'INDICATEUR LOCAL DE DECHARGE DCHA :
 ! ----  I = (NORME(SIGMA2) - NORME(SIGMA1))/NORME(SIGMA2) :
@@ -282,12 +282,12 @@ subroutine te0489(option, nomte)
 !
 !
 ! ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE ERR_RADI
-    read(zk16(icompo-1+2),'(I16)')nbvari
+    read (zk16(icompo-1+2), '(I16)') nbvari
     call jevech('PVARIMR', 'L', idvar1)
     call jevech('PVARIPR', 'L', idvar2)
     call jevech('PMATERC', 'L', imate)
-    call radipg(sigt1, sigt2, npg, nbsig, radit,&
-                cosang, 1, compor, zi(imate), nbvari,&
+    call radipg(sigt1, sigt2, npg, nbsig, radit, &
+                cosang, 1, compor, zi(imate), nbvari, &
                 zr(idvar1), zr(idvar2))
 !
     if (compor(1:9) .eq. 'VMIS_ISOT') then
@@ -301,8 +301,8 @@ subroutine te0489(option, nomte)
 ! ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE RADI:
 ! ----  I = 1- ABS(SIGMA1:DSIGMA)/(NORME(SIGMA1)*NORME(DSIGMA) :
 !      -------------------------------------------------------
-        call radipg(sigma1, sigma2, npg, nbsig, radiv,&
-                    cosang, 0, compor, imate, nbvari,&
+        call radipg(sigma1, sigma2, npg, nbsig, radiv, &
+                    cosang, 0, compor, imate, nbvari, &
                     zr(idvar1), zr(idvar2))
 !
 ! ---- CALCUL DE L'INDICATEUR LOCAL IND_DCHA et VAL_DCHA
@@ -322,147 +322,147 @@ subroutine te0489(option, nomte)
 ! --- DEFORMATION PLASTIQUE CUMULEE
             pm = zr(idvar1-1+(igau-1)*nbvari+1)
             pp = zr(idvar2-1+(igau-1)*nbvari+1)
-            dp = pp - pm
+            dp = pp-pm
             dchaxm = zr(idera1-1+(igau-1)*nbcmp+3)
 !
             if (pm .le. zernor) then
                 dchax(igau) = 1.d0
-            else if (abs(dchaxm+2.d0).gt.zernor) then
+            else if (abs(dchaxm+2.d0) .gt. zernor) then
                 if (dp .gt. zernor) then
                     if (cosang(igau) .gt. zernor) then
                         dchax(igau) = 2.d0
                     else
                         dchax(igau) = -2.d0
-                    endif
-                else if (dp.le.zernor) then
+                    end if
+                else if (dp .le. zernor) then
                     if (abs(dchaxm+1.d0) .gt. zernor) then
 ! --- RECUPERATION DES CARACTERISTIQUES DE LA LOI DE COMPORTEMENT
                         if (compor .eq. 'VMIS_ISOT_LINE') then
                             nomres(1) = 'D_SIGM_EPSI'
                             nomres(2) = 'SY'
-                            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_LINE', ibid, ' ', [0.d0],&
+                            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                                        ' ', 'ECRO_LINE', ibid, ' ', [0.d0], &
                                         2, nomres, valres, icodre, 2)
                             dsde = valres(1)
                             rp0 = valres(2)
 !
                             nomres(1) = 'E'
-                            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ELAS', ibid, ' ', [0.d0],&
+                            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                                        ' ', 'ELAS', ibid, ' ', [0.d0], &
                                         1, nomres, valres, icodre, 2)
                             e = valres(1)
                             rp = dsde*e/(e-dsde)*pm+rp0
 !
                         else if (compor(10:14) .eq. '_PUIS') then
                             nomres(1) = 'E'
-                            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ELAS', ibid, ' ', [0.d0],&
+                            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                                        ' ', 'ELAS', ibid, ' ', [0.d0], &
                                         1, nomres, valres, icodre, 2)
                             e = valres(1)
 !
-                            nomres(1)='SY'
-                            nomres(2)='A_PUIS'
-                            nomres(3)='N_PUIS'
-                            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_PUIS', ibid, ' ', [0.d0],&
+                            nomres(1) = 'SY'
+                            nomres(2) = 'A_PUIS'
+                            nomres(3) = 'N_PUIS'
+                            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                                        ' ', 'ECRO_PUIS', ibid, ' ', [0.d0], &
                                         3, nomres, valres, icodre, 2)
                             sigy = valres(1)
                             alfafa = valres(2)
                             coco = e/alfafa/sigy
                             unsurn = 1.d0/valres(3)
-                            rp = sigy * (coco*pp)**unsurn + sigy
+                            rp = sigy*(coco*pp)**unsurn+sigy
 !
                         else if (compor(10:14) .eq. '_TRAC') then
-                            call rcvarc(' ', 'TEMP', '-', fami, igau,&
+                            call rcvarc(' ', 'TEMP', '-', fami, igau, &
                                         1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', [tp], para_vale,&
+                            call rctype(zi(imate), 1, 'TEMP', [tp], para_vale, &
                                         para_type)
                             if (para_type .eq. 'TEMP') then
-                                call utmess('F', 'COMPOR5_5', sk = para_type)
-                            endif
-                            call rctrac(zi(imate), 1, 'SIGM', para_vale, jprolp,&
+                                call utmess('F', 'COMPOR5_5', sk=para_type)
+                            end if
+                            call rctrac(zi(imate), 1, 'SIGM', para_vale, jprolp, &
                                         jvalep, nbvalp, e)
-                            call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                                        sigy = rp0)
-                            call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                                        p = pm, rp = rp)
+                            call rcfonc('S', 1, jprolp, jvalep, nbvalp, &
+                                        sigy=rp0)
+                            call rcfonc('V', 1, jprolp, jvalep, nbvalp, &
+                                        p=pm, rp=rp)
                         else
                             call utmess('F', 'ELEMENTS_32')
-                        endif
+                        end if
 ! --- CALCUL DE X
                         cst1 = (rp-rp0)/rp
                         do isig = 1, nbsig
-                            xrapel(idecal+isig)=sigt1(isig+(igau-1)*&
-                            nbsig)*cst1
+                            xrapel(idecal+isig) = sigt1(isig+(igau-1)* &
+                                                        nbsig)*cst1
                         end do
 !
                         do isig = 1, nbsig
-                            sigmx(isig) = sigt1( isig+(igau-1)*nbsig ) - xrapel(idecal+isig )
+                            sigmx(isig) = sigt1(isig+(igau-1)*nbsig)-xrapel(idecal+isig)
                         end do
 !
-                        trace=(sigmx(1)+sigmx(2)+sigmx(3))/3.d0
+                        trace = (sigmx(1)+sigmx(2)+sigmx(3))/3.d0
                         sigmx(1) = sigmx(1)-trace
                         sigmx(2) = sigmx(2)-trace
                         sigmx(3) = sigmx(3)-trace
-                        sigeqn = sqrt(1.5d0)*norsig(sigmx,nbsig)
+                        sigeqn = sqrt(1.5d0)*norsig(sigmx, nbsig)
 !
                         if (abs(sigeqn-rp0) .le. zernor) then
                             dchax(igau) = -1.d0
                         else
                             dchax(igau) = -2.d0
-                            dchay(igau) = norsig(sigmx,nbsig)/rp0
-                        endif
-                    else if (abs(dchaxm+1.d0).le.zernor) then
+                            dchay(igau) = norsig(sigmx, nbsig)/rp0
+                        end if
+                    else if (abs(dchaxm+1.d0) .le. zernor) then
                         do isig = 1, nbsig
-                            sigmx(isig) = sigt1(isig)- zr(idera1-1+( igau-1)*nbcmp+2+isig)
+                            sigmx(isig) = sigt1(isig)-zr(idera1-1+(igau-1)*nbcmp+2+isig)
                         end do
-                        trace=(sigmx(1)+sigmx(2)+sigmx(3))/3.d0
+                        trace = (sigmx(1)+sigmx(2)+sigmx(3))/3.d0
                         sigmx(1) = sigmx(1)-trace
                         sigmx(2) = sigmx(2)-trace
                         sigmx(3) = sigmx(3)-trace
 !
-                        sigeqn = sqrt(1.5d0)*norsig(sigmx,nbsig)
+                        sigeqn = sqrt(1.5d0)*norsig(sigmx, nbsig)
                         if (compor .eq. 'VMIS_ISOT_LINE') then
                             nomres(1) = 'SY'
-                            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+                            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                                        ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                                         1, nomres, valres, icodre, 2)
                             rp0 = valres(1)
                         else if (compor(10:14) .eq. '_PUIS') then
-                            nomres(1)='SY'
-                            call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_PUIS', 0, ' ', [0.d0],&
+                            nomres(1) = 'SY'
+                            call rcvalb(fami, igau, 1, '+', zi(imate), &
+                                        ' ', 'ECRO_PUIS', 0, ' ', [0.d0], &
                                         1, nomres, valres, icodre, 2)
                             rp0 = valres(1)
                         else if (compor(10:14) .eq. '_TRAC') then
-                            call rcvarc(' ', 'TEMP', '-', fami, igau,&
+                            call rcvarc(' ', 'TEMP', '-', fami, igau, &
                                         1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', [tp], para_vale,&
+                            call rctype(zi(imate), 1, 'TEMP', [tp], para_vale, &
                                         para_type)
                             if (para_type .eq. 'TEMP') then
-                                call utmess('F', 'COMPOR5_5', sk = para_type)
-                            endif
-                            call rctrac(zi(imate), 1, 'SIGM', para_vale, jprolp,&
+                                call utmess('F', 'COMPOR5_5', sk=para_type)
+                            end if
+                            call rctrac(zi(imate), 1, 'SIGM', para_vale, jprolp, &
                                         jvalep, nbvalp, e)
-                            call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                                        sigy = rp0)
-                            call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                                        p = pm, rp = rp)
+                            call rcfonc('S', 1, jprolp, jvalep, nbvalp, &
+                                        sigy=rp0)
+                            call rcfonc('V', 1, jprolp, jvalep, nbvalp, &
+                                        p=pm, rp=rp)
                         else
                             call utmess('F', 'ELEMENTS_32')
-                        endif
+                        end if
                         if (sigeqn .le. rp0) then
                             dchax(igau) = -1.d0
                         else
                             dchax(igau) = -2.d0
-                            dchay(igau) = norsig(sigmx,nbsig)/rp0
+                            dchay(igau) = norsig(sigmx, nbsig)/rp0
                             do isig = 1, nbsig
-                                xrapel((igau-1)*6+isig)=zr(idera1+(&
-                                igau-1)*nbcmp +3+isig)
+                                xrapel((igau-1)*6+isig) = zr(idera1+( &
+                                                             igau-1)*nbcmp+3+isig)
                             end do
-                        endif
-                    endif
-                endif
+                        end if
+                    end if
+                end if
             else
 !  IND_DCHA = -2 AU PAS PRECEDENT T-DT
 !        ON STOCKE DANS LE PAS COURANT T, LES VALEURS OBTENUES
@@ -470,12 +470,12 @@ subroutine te0489(option, nomte)
                 dchax(igau) = -2.d0
                 dchay(igau) = zr(idera1+(igau-1)*nbcmp-1+4)
                 do isig = 1, nbsig
-                    xrapel((igau-1)*6+isig)=zr(idera1+(igau-1)*nbcmp+&
-                    3+isig)
+                    xrapel((igau-1)*6+isig) = zr(idera1+(igau-1)*nbcmp+ &
+                                                 3+isig)
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 ! ---- AVEC LE VECTEUR DES INDICATEURS LOCAUX :
@@ -487,7 +487,7 @@ subroutine te0489(option, nomte)
         zr(idera2+(igau-1)*nbcmp-1+3) = dchax(igau)
         zr(idera2+(igau-1)*nbcmp-1+4) = dchay(igau)
         do isig = 1, nbsig
-            zr(idera2+(igau-1)*nbcmp+3+isig)=xrapel((igau-1)*6+isig)
+            zr(idera2+(igau-1)*nbcmp+3+isig) = xrapel((igau-1)*6+isig)
         end do
         zr(idera2+(igau-1)*nbcmp-1+11) = radiv(igau)
         zr(idera2+(igau-1)*nbcmp-1+12) = radit(igau)

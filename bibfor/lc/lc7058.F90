@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc7058(BEHinteg,&
-                  fami    , kpg   , ksp   , ndim  , typmod,&
-                  imate   , compor, carcri, instam, instap,&
-                  neps    , epsm  , deps  , nsig  , sigm  ,&
-                  nvi     , vim   , option, angmas,&
-                  sigp    , vip   , dsidep, codret)
+subroutine lc7058(BEHinteg, &
+                  fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, carcri, instam, instap, &
+                  neps, epsm, deps, nsig, sigm, &
+                  nvi, vim, option, angmas, &
+                  sigp, vip, dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/mfront_behaviour.h"
 #include "asterfort/mfront_get_mater_value.h"
@@ -38,26 +38,26 @@ implicit none
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg, ksp, ndim
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam, instap
-integer, intent(in) :: neps
-real(kind=8), intent(in) :: epsm(*), deps(*)
-integer, intent(in) :: nsig
-real(kind=8), intent(in) :: sigm(6)
-integer, intent(in) :: nvi
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(out) :: sigp(6)
-real(kind=8), intent(out) :: vip(nvi)
-real(kind=8), intent(out) :: dsidep(6, 6)
-integer, intent(out) :: codret
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg, ksp, ndim
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam, instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(*), deps(*)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(6)
+    integer, intent(in) :: nvi
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(out) :: sigp(6)
+    real(kind=8), intent(out) :: vip(nvi)
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,28 +108,28 @@ integer, intent(out) :: codret
     character(len=16) :: rela_comp, defo_comp
     aster_logical :: l_simomiehe, l_grotgdep, l_czm, l_pred
     integer :: ntens, ndi
-    common/tdim/  ntens  , ndi
+    common/tdim/ntens, ndi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ndi            = 3
-    codret         = 0
-    nprops         = npropmax
-    rela_comp      = compor(RELA_NAME)
-    defo_comp      = compor(DEFO)
-    l_pred         = option(1:9) .eq. 'RIGI_MECA'
+    ndi = 3
+    codret = 0
+    nprops = npropmax
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    l_pred = option(1:9) .eq. 'RIGI_MECA'
 !
 ! - Finite element
 !
-    l_czm          = typmod(2).eq.'ELEMJOIN'
+    l_czm = typmod(2) .eq. 'ELEMJOIN'
     ASSERT(l_czm)
-    ntens          = 6
+    ntens = 6
 !
 ! - Strain model
 !
-    l_simomiehe    = defo_comp .eq. 'SIMO_MIEHE'
-    l_grotgdep     = ASTER_FALSE
-    l_czm          = typmod(2).eq.'ELEMJOIN'
+    l_simomiehe = defo_comp .eq. 'SIMO_MIEHE'
+    l_grotgdep = ASTER_FALSE
+    l_czm = typmod(2) .eq. 'ELEMJOIN'
     ASSERT(.not. l_simomiehe)
 !
 ! - Pointer to MFRONT function
@@ -138,34 +138,34 @@ integer, intent(out) :: codret
 !
 ! - Get temperature
 !
-    temp  = BEHinteg%esva%temp_prev
+    temp = BEHinteg%esva%temp_prev
     dtemp = BEHinteg%esva%temp_incr
 !
 ! - Get material properties
 !
-    call mfront_get_mater_value(BEHinteg , rela_comp,&
-                                fami     , kpg      , ksp, imate,&
-                                nprops   , props)
+    call mfront_get_mater_value(BEHinteg, rela_comp, &
+                                fami, kpg, ksp, imate, &
+                                nprops, props)
 !
 ! - Get type of modelization
 !
-    if ( typmod(1)(1:4).eq.'AXIS' ) then
+    if (typmod(1) (1:4) .eq. 'AXIS') then
         nummod = 4
-    else if ( typmod(1)(1:6).eq.'C_PLAN' ) then
+    else if (typmod(1) (1:6) .eq. 'C_PLAN') then
         nummod = 5
-    else if ( typmod(1)(1:6).eq.'D_PLAN' ) then
+    else if (typmod(1) (1:6) .eq. 'D_PLAN') then
         nummod = 6
-    else if ( typmod(1)(1:2).eq.'3D' ) then
+    else if (typmod(1) (1:2) .eq. '3D') then
         nummod = 3
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Prepare strains
 !
-    call mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred,&
-                             neps       , epsm      , deps  ,&
-                             stran      , dstran)
+    call mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred, &
+                             neps, epsm, deps, &
+                             stran, dstran)
 !
 ! - Number of internal state variables
 !
@@ -175,14 +175,14 @@ integer, intent(out) :: codret
 !
     time(1) = instap-instam
     time(2) = instam
-    dtime   = instap-instam
+    dtime = instap-instam
 !
 ! - Anisotropic case
 !
     call matrot(angmas, drott)
-    do i = 1,3
-        do j = 1,3
-            drot(j,i) = drott(i,j)
+    do i = 1, 3
+        do j = 1, 3
+            drot(j, i) = drott(i, j)
         end do
     end do
 !
@@ -212,7 +212,7 @@ integer, intent(out) :: codret
         ddsdde(1) = 4.d0
     else if (option .eq. 'RAPH_MECA') then
         ddsdde(1) = 0.d0
-    endif
+    end if
 !
 ! - Call MFront
 !
@@ -221,21 +221,21 @@ integer, intent(out) :: codret
         call dcopy(nsig, sigm, 1, sigp, 1)
         call dscal(3, usrac2, sigp(4), 1)
         vip(1:nstatv) = vim(1:nstatv)
-        call mfront_behaviour(pfcmfr, sigp, vip, ddsdde,&
-                              stran, dstran, dtime,&
-                              temp, dtemp,&
-                              BEHinteg%exte%predef, BEHinteg%exte%dpred,&
-                              ntens, nstatv, props,&
+        call mfront_behaviour(pfcmfr, sigp, vip, ddsdde, &
+                              stran, dstran, dtime, &
+                              temp, dtemp, &
+                              BEHinteg%exte%predef, BEHinteg%exte%dpred, &
+                              ntens, nstatv, props, &
                               nprops, drot, pnewdt, nummod)
-    else if (option(1:9).eq. 'RIGI_MECA') then
+    else if (option(1:9) .eq. 'RIGI_MECA') then
         sigp = sigm
-        call mfront_behaviour(pfcmfr, sigm, vim, ddsdde,&
-                              stran, dstran, dtime,&
-                              temp, dtemp,&
-                              BEHinteg%exte%predef, BEHinteg%exte%dpred,&
-                              ntens, nstatv, props, nprops,&
+        call mfront_behaviour(pfcmfr, sigm, vim, ddsdde, &
+                              stran, dstran, dtime, &
+                              temp, dtemp, &
+                              BEHinteg%exte%predef, BEHinteg%exte%dpred, &
+                              ntens, nstatv, props, nprops, &
                               drot, pnewdt, nummod)
-    endif
+    end if
 !
     !if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
     !    write(6,*)' '
@@ -249,24 +249,24 @@ integer, intent(out) :: codret
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call dscal(3, rac2, sigp(4), 1)
-    endif
+    end if
 !
 ! - Convert matrix
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        dsidep(:,:) = 0.d0
+        dsidep(:, :) = 0.d0
         do i = 1, 3
             do j = 1, 3
-                dsidep(i,j) = ddsdde(3*(i-1)+j)
+                dsidep(i, j) = ddsdde(3*(i-1)+j)
             end do
         end do
-    endif
+    end if
 !
 ! - Return code from MFront
 !
     if (pnewdt .lt. 0.0d0) then
         if (pnewdt .lt. -0.99d0 .and. pnewdt .gt. -1.01d0) then
-            codret=1
+            codret = 1
         else if (pnewdt .lt. -1.99d0 .and. pnewdt .gt. -2.01d0) then
             call utmess('F', 'MFRONT_1')
         else if (pnewdt .lt. -2.99d0 .and. pnewdt .gt. -3.01d0) then
@@ -275,7 +275,7 @@ integer, intent(out) :: codret
             codret = 1
         else
             call utmess('F', 'MFRONT_3')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

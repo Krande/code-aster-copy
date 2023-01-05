@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,54 +63,54 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
     call jeveuo(infore, 'E', jifre)
     info = infz
 !
-    ASSERT((action.eq.'E').or.(action.eq.'L'))
+    ASSERT((action .eq. 'E') .or. (action .eq. 'L'))
 !
     if (info .eq. 'VRELA') then
         if (action .eq. 'E') then
             zr(jifre+3*iterat+1-1) = valr(1)
         else
             valr(1) = zr(jifre+3*iterat+1-1)
-        endif
-    else if (info.eq.'VMAXI') then
+        end if
+    else if (info .eq. 'VMAXI') then
         if (action .eq. 'E') then
             zr(jifre+3*iterat+2-1) = valr(1)
         else
             valr(1) = zr(jifre+3*iterat+2-1)
-        endif
-    else if (info.eq.'VCHAR') then
+        end if
+    else if (info .eq. 'VCHAR') then
         if (action .eq. 'E') then
             zr(jifre+3*iterat+3-1) = valr(1)
         else
             valr(1) = zr(jifre+3*iterat+3-1)
-        endif
+        end if
 !
-    else if (info.eq.'VRELA_TOUS') then
+    else if (info .eq. 'VRELA_TOUS') then
         if (action .eq. 'L') then
             do iter = 0, iterat
                 valr(iter+1) = zr(jifre+3*iter+1-1)
             end do
         else
             ASSERT(.false.)
-        endif
-    else if (info.eq.'VMAXI_TOUS') then
+        end if
+    else if (info .eq. 'VMAXI_TOUS') then
         if (action .eq. 'L') then
             do iter = 0, iterat
                 valr(iter+1) = zr(jifre+3*iter+2-1)
             end do
         else
             ASSERT(.false.)
-        endif
-    else if (info.eq.'VCHAR_TOUS') then
+        end if
+    else if (info .eq. 'VCHAR_TOUS') then
         if (action .eq. 'L') then
             do iter = 0, iterat
                 valr(iter+1) = zr(jifre+3*iter+3-1)
             end do
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

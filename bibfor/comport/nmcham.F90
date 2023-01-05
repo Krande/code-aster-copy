@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcham(fami, kpg, ksp, imate, compor,&
-                  matel, mat, nbvar, memo, visc,&
+subroutine nmcham(fami, kpg, ksp, imate, compor, &
+                  matel, mat, nbvar, memo, visc, &
                   idelta, coef)
 !
     implicit none
@@ -48,62 +48,62 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     character(len=8) :: nomemo(4)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
-    nbvar=0
-    if (compor(1)(6:9) .eq. 'CIN1') then
-        nbvar=1
-    else if (compor(1)(6:9) .eq. 'CIN2') then
-        nbvar=2
-    else if (compor(1)(6:9) .eq. 'MEMO') then
-        nbvar=2
+    nbvar = 0
+    if (compor(1) (6:9) .eq. 'CIN1') then
+        nbvar = 1
+    else if (compor(1) (6:9) .eq. 'CIN2') then
+        nbvar = 2
+    else if (compor(1) (6:9) .eq. 'MEMO') then
+        nbvar = 2
     else
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
-    endif
+    end if
 !
-    if (compor(1)(1:4) .eq. 'VMIS') then
-        visc=0
-    else if (compor(1)(1:4) .eq. 'VISC') then
-        visc=1
+    if (compor(1) (1:4) .eq. 'VMIS') then
+        visc = 0
+    else if (compor(1) (1:4) .eq. 'VISC') then
+        visc = 1
     else
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
-    endif
+    end if
 !
-    memo=0
+    memo = 0
 !
-    if (compor(1)(11:14) .eq. 'MEMO') then
-        memo=1
-    else if (compor(1)(6:9) .eq. 'MEMO') then
-        memo=1
-    endif
+    if (compor(1) (11:14) .eq. 'MEMO') then
+        memo = 1
+    else if (compor(1) (6:9) .eq. 'MEMO') then
+        memo = 1
+    end if
 !
-    if (compor(1)(11:14) .eq. 'NRAD') then
-        nrad=1
+    if (compor(1) (11:14) .eq. 'NRAD') then
+        nrad = 1
     else
-        nrad=0
-    endif
+        nrad = 0
+    end if
 !
 ! --- INITIALISATIONS :
 !     ===============
     un = 1.0d0
 !
-    call verift(fami, kpg, ksp, 'T', imate,&
+    call verift(fami, kpg, ksp, 'T', imate, &
                 epsth_=coef)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELASTIQUES :
 !     ============================================
-    nomres(1)='E'
-    nomres(2)='NU'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
 !
 ! ---  CARACTERISTIQUES A L'INSTANT PRECEDENT :
 !      --------------------------------------
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres(1), matel(1), icodre(1), 1)
 !
 ! ---  CARACTERISTIQUES A L'INSTANT ACTUEL :
 !      -----------------------------------
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres(1), matel(3), icodre(1), 1)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES D'ECROUISSAGE :
@@ -117,18 +117,18 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     if (nbvar .eq. 1) then
         nomres(4) = 'C_I'
         nomres(7) = 'G_0'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'CIN1_CHAB', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'CIN1_CHAB', 0, ' ', [0.d0], &
                     8, nomres, valres, icodre, 1)
-    else if (nbvar.eq.2) then
+    else if (nbvar .eq. 2) then
         nomres(4) = 'C1_I'
         nomres(7) = 'G1_0'
         nomres(9) = 'C2_I'
-        nomres(10)= 'G2_0'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'CIN2_CHAB', 0, ' ', [0.d0],&
+        nomres(10) = 'G2_0'
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'CIN2_CHAB', 0, ' ', [0.d0], &
                     10, nomres, valres, icodre, 1)
-    endif
+    end if
 !
     r0 = valres(1)
     rinf = valres(2)
@@ -143,7 +143,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     if (nbvar .eq. 2) then
         c2inf = valres(9)
         gamm20 = valres(10)
-    endif
+    end if
 !
     mat(1) = r0
     mat(2) = rinf
@@ -155,54 +155,54 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     mat(8) = ainf
 !
     if (b < 0.d0) then
-        valk(1)=compor(1)
-        valk(2)='b'
+        valk(1) = compor(1)
+        valk(2) = 'b'
         call utmess('A', 'COMPOR1_84', nk=2, valk=valk, sr=b)
-    endif
+    end if
 !
     if (w < 0.d0) then
-        valk(1)=compor(1)
-        valk(2)='w'
+        valk(1) = compor(1)
+        valk(2) = 'w'
         call utmess('A', 'COMPOR1_84', nk=2, valk=valk, sr=w)
-    endif
+    end if
 !
 !     IDELTA : TYPE DE NON PROPORTIONNALITE
     if (nrad .eq. 1) then
         nomres(1) = 'DELTA1'
         nomres(2) = 'DELTA2'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'CIN2_NRAD', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'CIN2_NRAD', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 1)
         delta1 = valres(1)
         delta2 = valres(2)
         mat(17) = delta1
         mat(18) = delta2
-        idelta=0
-        epsi=r8prem()
+        idelta = 0
+        epsi = r8prem()
         if (abs(delta1-1.d0) .gt. epsi) then
             if (abs(delta2-1.d0) .gt. epsi) then
-                idelta=3
+                idelta = 3
             else
-                idelta=1
-            endif
+                idelta = 1
+            end if
         else
             if (abs(delta2-1.d0) .gt. epsi) then
-                idelta=2
-            endif
-        endif
+                idelta = 2
+            end if
+        end if
 !        UTILE POUR LE CAS DES FONCTIONS
-        if ((delta1.gt.(1.d0+epsi)) .or. (delta1.lt.-epsi)) then
+        if ((delta1 .gt. (1.d0+epsi)) .or. (delta1 .lt. -epsi)) then
             call utmess('F', 'COMPOR1_80', sr=delta1)
-        endif
-        if ((delta2.gt.(1.d0+epsi)) .or. (delta2.lt.-epsi)) then
+        end if
+        if ((delta2 .gt. (1.d0+epsi)) .or. (delta2 .lt. -epsi)) then
             call utmess('F', 'COMPOR1_81', sr=delta2)
-        endif
+        end if
     else
         delta1 = 1.d0
         delta2 = 1.d0
         mat(17) = delta1
         mat(18) = delta2
-    endif
+    end if
 !
 !
     if (nbvar .eq. 2) then
@@ -211,7 +211,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     else
         mat(9) = 0.d0
         mat(10) = 0.d0
-    endif
+    end if
 !
     if (visc .eq. 1) then
 !
@@ -220,8 +220,8 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
         nomres(1) = 'N'
         nomres(2) = 'UN_SUR_K'
         nomres(3) = 'UN_SUR_M'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'LEMAITRE', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'LEMAITRE', 0, ' ', [0.d0], &
                     3, nomres, valres, icodre, 0)
 !
         if (icodre(1) .eq. 0) then
@@ -229,29 +229,29 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
             unskvi = valres(2)
             if (valden .le. 0.d0) then
                 call utmess('F', 'ALGORITH6_67')
-            endif
+            end if
             if (unskvi .eq. 0.d0) then
                 call utmess('F', 'ALGORITH6_68')
-            endif
+            end if
             kvi = un/unskvi
             if (valres(3) .ne. 0.d0) then
                 call utmess('F', 'ALGORITH6_69')
-            endif
+            end if
         else
-            texte(1)=compor(1)
-            texte(2)="VMIS"//compor(1)(5:16)
-            call utmess('F', 'COMPOR1_32',nk=2, valk=texte)
-        endif
+            texte(1) = compor(1)
+            texte(2) = "VMIS"//compor(1) (5:16)
+            call utmess('F', 'COMPOR1_32', nk=2, valk=texte)
+        end if
     else
         valden = un
         kvi = 0.d0
-    endif
-    mat(11)=valden
-    mat(12)=kvi
-    mat(13)=0.d0
-    mat(14)=0.d0
-    mat(15)=0.d0
-    mat(16)=0.d0
+    end if
+    mat(11) = valden
+    mat(12) = kvi
+    mat(13) = 0.d0
+    mat(14) = 0.d0
+    mat(15) = 0.d0
+    mat(16) = 0.d0
 !
     if (memo .eq. 1) then
 ! ---    RECUPERATION DES CARACTERISTIQUES MEMOIRE :
@@ -260,9 +260,9 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
         nomemo(2) = 'Q_0     '
         nomemo(3) = 'Q_M     '
         nomemo(4) = 'MU      '
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'MEMO_ECRO', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'MEMO_ECRO', 0, ' ', [0.d0], &
                     4, nomemo, mat(13), icodre, 1)
 !
-    endif
+    end if
 end subroutine

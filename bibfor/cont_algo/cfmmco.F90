@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfmmco(ds_contact, i_zone, coef_type_, action, valr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -65,8 +65,8 @@ implicit none
 !
 ! - Get parameters
 !
-    coef_type    = coef_type_
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    coef_type = coef_type_
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     ASSERT(i_zone .le. nb_cont_zone)
     ASSERT(i_zone .ge. 1)
 !
@@ -74,28 +74,28 @@ implicit none
 !
     ztaco = cfmmvd('ZTACO')
     sdcont_tabcof = ds_contact%sdcont_solv(1:14)//'.TABL.COEF'
-    call jeveuo(sdcont_tabcof, 'E', vr = v_sdcont_tabcof)
+    call jeveuo(sdcont_tabcof, 'E', vr=v_sdcont_tabcof)
 !
     if (action .eq. 'E') then
         if (coef_type .eq. 'E_N') then
             v_sdcont_tabcof(ztaco*(i_zone-1)+1) = valr
-        else if (coef_type .eq.'E_T') then
+        else if (coef_type .eq. 'E_T') then
             v_sdcont_tabcof(ztaco*(i_zone-1)+2) = valr
         else
             ASSERT(.false.)
-        endif
-    else if (action.eq.'L') then
+        end if
+    else if (action .eq. 'L') then
         valr = 0.d0
         if (coef_type .eq. 'E_N') then
             valr = v_sdcont_tabcof(ztaco*(i_zone-1)+1)
-        else if (coef_type .eq.'E_T') then
+        else if (coef_type .eq. 'E_T') then
             valr = v_sdcont_tabcof(ztaco*(i_zone-1)+2)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

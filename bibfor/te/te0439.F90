@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine te0439(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
-    integer :: nno, npg, i, imatuu, ndim, nnos, jgano,iret_cmp
+    integer :: nno, npg, i, imatuu, ndim, nnos, jgano, iret_cmp
     integer :: ipoids, ivf, idfde, igeom, imate, icacoq, icompo
     integer :: kpg, n, j, kkd, k
     integer :: kk, nddl, l
@@ -58,16 +58,16 @@ subroutine te0439(option, nomte)
 !
     grdef = ASTER_FALSE
 !
-    if(iret_cmp == 0) then
-        grdef = (zk16 ( icompo + 2 )(1:9) .eq. 'GROT_GDEP')
+    if (iret_cmp == 0) then
+        grdef = (zk16(icompo+2) (1:9) .eq. 'GROT_GDEP')
     end if
 !
-    ldiag = (option(1:10).eq.'MASS_MECA_')
+    ldiag = (option(1:10) .eq. 'MASS_MECA_')
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     fami = 'MASS'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call r8inir(9*9*3*3, 0.d0, a, 1)
 !
@@ -85,8 +85,8 @@ subroutine te0439(option, nomte)
 !
 ! - DIRECTION DE REFERENCE POUR UN COMPORTEMENT ANISOTROPE
 !
-    alpha = zr(icacoq+1) * r8dgrd()
-    beta = zr(icacoq+2) * r8dgrd()
+    alpha = zr(icacoq+1)*r8dgrd()
+    beta = zr(icacoq+2)*r8dgrd()
 !
 ! - EPAISSEUR (VALABLE UNIQUEMENT POUR GROT_GDEP)
 !
@@ -98,16 +98,16 @@ subroutine te0439(option, nomte)
 !
         h = zr(icacoq)
     else
-        if(iret_cmp .ne. 0) then
+        if (iret_cmp .ne. 0) then
 ! - La carte COMPOR n'est pas présente, c'est probablement que l'on est dans CALC_MATR_ELEM
 !  On vérifie que l'épaisseur soit bien de 1
-            if ( abs(zr(icacoq) - 1.d0).gt.r8prem() ) then
+            if (abs(zr(icacoq)-1.d0) .gt. r8prem()) then
                 call utmess('F', 'MEMBRANE_11')
-            endif
+            end if
         end if
 !
         h = 1.d0
-    endif
+    end if
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS : ON CALCULE D'ABORD LA
 !      CONTRAINTE ET/OU LA RIGIDITE SI NECESSAIRE PUIS
@@ -120,37 +120,37 @@ subroutine te0439(option, nomte)
 !   ET DES DERIVEES DE FONCTION DE FORME
 !
         do n = 1, nno
-            vff(n) =zr(ivf+(kpg-1)*nno+n-1)
-            dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
-            dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-        enddo
+            vff(n) = zr(ivf+(kpg-1)*nno+n-1)
+            dff(1, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2)
+            dff(2, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
+        end do
 !
 ! - MASS_MECA
 !
-    if (grdef) then
-        call rcvalb(fami, kpg, 1, '+', zi(imate),&
-               ' ', 'ELAS', 0, ' ', [0.d0],&
-               1, 'RHO', rho, codres, 1)
-    else
-        call rcvalb(fami, kpg, 1, '+', zi(imate),&
-               ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
-               1, 'RHO', rho, codres, 1)
-    endif
+        if (grdef) then
+            call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        1, 'RHO', rho, codres, 1)
+        else
+            call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                        ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0], &
+                        1, 'RHO', rho, codres, 1)
+        end if
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
 !
         call mbcine(nno, zr(igeom), dff, alpha, beta, b, jac)
 !
-        wgt = wgt + rho(1)*zr(ipoids+kpg-1)*jac*h
+        wgt = wgt+rho(1)*zr(ipoids+kpg-1)*jac*h
 !
         do n = 1, nno
             do i = 1, n
                 coef = rho(1)*zr(ipoids+kpg-1)*jac*vff(n)*vff(i)*h
-                a(1,1,n,i) = a(1,1,n,i) + coef
-                a(2,2,n,i) = a(2,2,n,i) + coef
-                a(3,3,n,i) = a(3,3,n,i) + coef
-            enddo
-        enddo
+                a(1, 1, n, i) = a(1, 1, n, i)+coef
+                a(2, 2, n, i) = a(2, 2, n, i)+coef
+                a(3, 3, n, i) = a(3, 3, n, i)+coef
+            end do
+        end do
 !
     end do
 !
@@ -164,10 +164,10 @@ subroutine te0439(option, nomte)
         call r8inir(3, 0.d0, somme, 1)
         do i = 1, 3
             do j = 1, nno
-                somme(i) = somme(i) + a(i,i,j,j)
-            enddo
+                somme(i) = somme(i)+a(i, i, j, j)
+            end do
             alfam(i) = wgt/somme(i)
-        enddo
+        end do
 !
 ! ---   CALCUL DU FACTEUR DE DIAGONALISATION
 !
@@ -177,29 +177,29 @@ subroutine te0439(option, nomte)
 !
         do j = 1, nno
             do i = 1, 3
-                diag(i,j) = a(i,i,j,j)*alfam(i)
-            enddo
-        enddo
+                diag(i, j) = a(i, i, j, j)*alfam(i)
+            end do
+        end do
 !
-        a(:,:,:,:) = 0.d0
+        a(:, :, :, :) = 0.d0
         do k = 1, 3
             do i = 1, nno
-                a(k,k,i,i) = diag(k,i)
-            enddo
-        enddo
-    endif
+                a(k, k, i, i) = diag(k, i)
+            end do
+        end do
+    end if
 !
 !
     do k = 1, nddl
         do l = 1, nddl
             do i = 1, nno
-                kkd = ((nddl*(i-1)+k-1)* (nddl*(i-1)+k))/2
+                kkd = ((nddl*(i-1)+k-1)*(nddl*(i-1)+k))/2
                 do j = 1, i
-                    kk = kkd + nddl * (j-1) + l
-                    zr(imatuu+kk-1) = a(k,l,i,j)
-                enddo
-            enddo
-        enddo
-    enddo
+                    kk = kkd+nddl*(j-1)+l
+                    zr(imatuu+kk-1) = a(k, l, i, j)
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine vdrepe(nomtez, matevn, matevg)
 !
 ! --- NOMBRE DE POINTS D'INTEGRATION DE L'ELEMENT (SOUS-INTEGRE) :
 !     ----------------------------------------------------------
-    npgsr= zi(lzi-1+3)
+    npgsr = zi(lzi-1+3)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
@@ -80,8 +80,8 @@ subroutine vdrepe(nomtez, matevn, matevg)
 !     ============================
     call jevech('PCACOQU', 'L', jcoqu)
 !
-    alpha = zr(jcoqu+1) * r8dgrd()
-    beta = zr(jcoqu+2) * r8dgrd()
+    alpha = zr(jcoqu+1)*r8dgrd()
+    beta = zr(jcoqu+2)*r8dgrd()
 !
 ! --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 ! --- AUX NOEUDS DE L'ELEMENT AU REPERE UTILISATEUR :
@@ -101,8 +101,8 @@ subroutine vdrepe(nomtez, matevn, matevg)
         k = 0
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                pgl(i,j) = zr(lzr+idec+(ino-1)*9+k-1)
+                k = k+1
+                pgl(i, j) = zr(lzr+idec+(ino-1)*9+k-1)
             end do
         end do
 !
@@ -111,17 +111,17 @@ subroutine vdrepe(nomtez, matevn, matevg)
 ! ---   COURANT :
 !       -------
 !
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, &
                     c, s)
 !
 !       -- (C,S) N'EST PAS TOUJOURS EXACTEMENT DE NORME=1:
-        c=c/sqrt(c*c+s*s)
-        s=s/sqrt(c*c+s*s)
+        c = c/sqrt(c*c+s*s)
+        s = s/sqrt(c*c+s*s)
 !
-        matevn(1,1,ino) = c
-        matevn(2,1,ino) = s
-        matevn(1,2,ino) = -s
-        matevn(2,2,ino) = c
+        matevn(1, 1, ino) = c
+        matevn(2, 1, ino) = s
+        matevn(1, 2, ino) = -s
+        matevn(2, 2, ino) = c
 !
     end do
 !
@@ -145,8 +145,8 @@ subroutine vdrepe(nomtez, matevn, matevg)
         k = 0
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                pgl(i,j) = zr(lzr+idec+(igau-1)*9+k-1)
+                k = k+1
+                pgl(i, j) = zr(lzr+idec+(igau-1)*9+k-1)
             end do
         end do
 !
@@ -154,17 +154,17 @@ subroutine vdrepe(nomtez, matevn, matevg)
 ! ---   UTILISATEUR SUR LE FEUILLET TANGENT A LA COQUE AU POINT
 ! ---   D'INTEGRATION COURANT :
 !       ---------------------
-        call coqrep(pgl, alpha, beta, r8bid4, r8bid4,&
+        call coqrep(pgl, alpha, beta, r8bid4, r8bid4, &
                     c, s)
 !
 !       -- (C,S) N'EST PAS TOUJOURS EXACTEMENT DE NORME=1:
-        c=c/sqrt(c*c+s*s)
-        s=s/sqrt(c*c+s*s)
+        c = c/sqrt(c*c+s*s)
+        s = s/sqrt(c*c+s*s)
 !
-        matevg(1,1,igau) = c
-        matevg(2,1,igau) = s
-        matevg(1,2,igau) = -s
-        matevg(2,2,igau) = c
+        matevg(1, 1, igau) = c
+        matevg(2, 1, igau) = s
+        matevg(1, 2, igau) = -s
+        matevg(2, 2, igau) = c
 !
     end do
 !

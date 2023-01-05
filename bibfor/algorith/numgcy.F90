@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,23 +60,23 @@ subroutine numgcy(nugene, modgen)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: icompl, icomps, ifimes,  llprof, nblia
+    integer :: icompl, icomps, ifimes, llprof, nblia
     integer :: nblig, nbmod, nbsst, neq
     integer, pointer :: mael_raid_desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    ifimes=iunifi('MESSAGE')
+    ifimes = iunifi('MESSAGE')
 !-----------------------------------------------------------------------
 !
-    kbid=' '
-    defli=modgen//'      .MODG.LIDF'
-    fprofl=modgen//'      .MODG.LIPR'
-    nomsst=modgen//'      .MODG.SSNO'
-    prof_gene=nugene//'.NUME'
-    stomor=nugene//'.SMOS'
-    lili=prof_gene//'.LILI'
-    prno=prof_gene//'.PRNO'
-    orig=prof_gene//'.ORIG'
+    kbid = ' '
+    defli = modgen//'      .MODG.LIDF'
+    fprofl = modgen//'      .MODG.LIPR'
+    nomsst = modgen//'      .MODG.SSNO'
+    prof_gene = nugene//'.NUME'
+    stomor = nugene//'.SMOS'
+    lili = prof_gene//'.LILI'
+    prno = prof_gene//'.PRNO'
+    orig = prof_gene//'.ORIG'
 
 ! ON RECUPERE LE NOMBRE DE LIAISON
     call jelira(defli, 'NMAXOC', nblia)
@@ -86,36 +86,36 @@ subroutine numgcy(nugene, modgen)
 !----------------------BOUCLES DE COMPTAGE DES DDL----------------------
 !
 ! ICOMPS EST LE NOMBRE TOTAL DE MODES DANS LES SOUS-STRUCTURES
-    icomps=0
+    icomps = 0
 ! ICOMPS EST LE NOMBRE TOTAL DE MODES D'INTERFACE DANS LES
 ! SOUS-STRUCTURES
-    icompl=0
+    icompl = 0
 !
 !   BOUCLE SUR LES SOUS-STRUCTURES
 !
     do i = 1, nbsst
-        call mgutdm(modgen, kbid, i, 'NOM_MACR_ELEM', ibid,&
+        call mgutdm(modgen, kbid, i, 'NOM_MACR_ELEM', ibid, &
                     nomcou)
         call jeveuo(nomcou//'.MAEL_RAID_DESC', 'L', vi=mael_raid_desc)
-        nbmod=mael_raid_desc(2)
-        icomps=icomps+nbmod
+        nbmod = mael_raid_desc(2)
+        icomps = icomps+nbmod
     end do
 !
 !   BOUCLE SUR LES LIAISONS
 !
     call jeveuo(fprofl, 'L', llprof)
     do i = 1, nblia
-        nblig=zi(llprof+(i-1)*9)
-        icompl=icompl+nblig
+        nblig = zi(llprof+(i-1)*9)
+        icompl = icompl+nblig
     end do
 !
-    neq=icomps-icompl
+    neq = icomps-icompl
 !
-    write (ifimes,*)'+++ NOMBRE DE SOUS-STRUCTURES: ',nbsst
-    write (ifimes,*)'+++ NOMBRE DE LIAISONS: ',nblia
-    write (ifimes,*)'+++ NOMBRE TOTAL D''EQUATIONS: ',neq
-    write (ifimes,*)'+++ DONT NOMBRE D''EQUATIONS STRUCTURE: ',icomps
-    write (ifimes,*)'+++ DONT NOMBRE D''EQUATIONS LIAISON: ',icompl
+    write (ifimes, *) '+++ NOMBRE DE SOUS-STRUCTURES: ', nbsst
+    write (ifimes, *) '+++ NOMBRE DE LIAISONS: ', nblia
+    write (ifimes, *) '+++ NOMBRE TOTAL D''EQUATIONS: ', neq
+    write (ifimes, *) '+++ DONT NOMBRE D''EQUATIONS STRUCTURE: ', icomps
+    write (ifimes, *) '+++ DONT NOMBRE D''EQUATIONS LIAISON: ', icompl
 !  ON REMPLIT LE NUME_DDL COMME S'IL N'Y AVAIT QU'UNE SEULE SOUS
 !  STRUCTURE.
     nb_sstr = 1
@@ -123,15 +123,15 @@ subroutine numgcy(nugene, modgen)
 !
 ! - Create PROF_GENE
 !
-    call profgene_crsd(prof_gene, 'G', neq, nb_sstr = nb_sstr, nb_link = nb_link,&
-                       model_genez = modgen, gran_namez = 'DEPL_R')
+    call profgene_crsd(prof_gene, 'G', neq, nb_sstr=nb_sstr, nb_link=nb_link, &
+                       model_genez=modgen, gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !
     call jenonu(jexnom(lili, '&SOUSSTR'), i_ligr_sstr)
-    ASSERT(i_ligr_sstr.eq.1)
-    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi = prgene_prno)
-    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi = prgene_orig)
+    ASSERT(i_ligr_sstr .eq. 1)
+    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi=prgene_orig)
     prgene_prno(1) = 1
     prgene_prno(2) = neq
     prgene_orig(1) = 1
@@ -139,8 +139,8 @@ subroutine numgcy(nugene, modgen)
 ! - Set links
 !
     call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
-    call jeveuo(jexnum(prno, i_ligr_link), 'E', vi = prgene_prno)
-    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_orig)
+    call jeveuo(jexnum(prno, i_ligr_link), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi=prgene_orig)
     prgene_prno(1) = 0
     prgene_orig(1) = 1
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 
 subroutine infdbg(optioz, ifm, niv)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infniv.h"
 !
-character(len=*) :: optioz
-integer :: ifm, niv
+    character(len=*) :: optioz
+    integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,7 +42,7 @@ integer :: ifm, niv
 ! ----------------------------------------------------------------------
 !
     character(len=16) :: czcont, czmeca, czpilo, czfact, czappa, czsolv
-    common /czdbg/czcont,czmeca,czpilo,czfact,czappa, czsolv
+    common/czdbg/czcont, czmeca, czpilo, czfact, czappa, czsolv
     character(len=16) :: option
 !
 ! ----------------------------------------------------------------------
@@ -51,29 +51,29 @@ integer :: ifm, niv
 !
     if (option .eq. 'CONTACT') then
         call infniv(ifm, niv)
-        if (czcont .ne. 'CONTACT') niv=1
-    else if (option.eq.'XFEM') then
+        if (czcont .ne. 'CONTACT') niv = 1
+    else if (option .eq. 'XFEM') then
         call infniv(ifm, niv)
-    elseif (option.eq.'MECANONLINE') then
+    elseif (option .eq. 'MECANONLINE') then
         call infniv(ifm, niv)
-        if (czmeca .ne. 'MECANONLINE') niv=1
-    else if (option.eq.'PRE_CALCUL') then
+        if (czmeca .ne. 'MECANONLINE') niv = 1
+    else if (option .eq. 'PRE_CALCUL') then
         call infniv(ifm, niv)
         niv = 1
-    else if (option.eq.'PILOTE') then
+    else if (option .eq. 'PILOTE') then
         call infniv(ifm, niv)
-        if (czpilo .ne. 'PILOTE') niv=1
-    else if (option .eq.'SOLVEUR') then
+        if (czpilo .ne. 'PILOTE') niv = 1
+    else if (option .eq. 'SOLVEUR') then
         call infniv(ifm, niv)
-        if (czsolv .ne. 'SOLVEUR') niv=1
-    else if (option .eq.'FACTOR') then
+        if (czsolv .ne. 'SOLVEUR') niv = 1
+    else if (option .eq. 'FACTOR') then
         call infniv(ifm, niv)
-        if (czfact .ne. 'FACTOR') niv=1
-    else if (option.eq.'APPARIEMENT') then
+        if (czfact .ne. 'FACTOR') niv = 1
+    else if (option .eq. 'APPARIEMENT') then
         call infniv(ifm, niv)
-        if (czappa .ne. 'APPARIEMENT') niv=1
+        if (czappa .ne. 'APPARIEMENT') niv = 1
     else
         call infniv(ifm, niv)
-    endif
+    end if
 !
 end subroutine

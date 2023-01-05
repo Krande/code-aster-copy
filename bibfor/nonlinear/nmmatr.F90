@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmmatr(phasez, fonact    , lischa, numedd, sddyna,&
+subroutine nmmatr(phasez, fonact, lischa, numedd, sddyna, &
                   numins, ds_contact, meelem, measse, matass)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ascoma.h"
@@ -40,15 +40,15 @@ implicit none
 #include "asterfort/lccmst.h"
 #include "asterfort/utmess.h"
 !
-character(len=*) :: phasez
-character(len=19) :: matass
-character(len=19) :: sddyna
-type(NL_DS_Contact), intent(in) :: ds_contact
-integer :: fonact(*)
-integer :: numins
-character(len=19) :: meelem(*), measse(*)
-character(len=24) :: numedd
-character(len=19) :: lischa
+    character(len=*) :: phasez
+    character(len=19) :: matass
+    character(len=19) :: sddyna
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer :: fonact(*)
+    integer :: numins
+    character(len=19) :: meelem(*), measse(*)
+    character(len=24) :: numedd
+    character(len=19) :: lischa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,7 +93,7 @@ character(len=19) :: lischa
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_41')
-    endif
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -108,42 +108,42 @@ character(len=19) :: lischa
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lctcd         = isfonc(fonact,'CONT_DISCRET')
-    lunil         = isfonc(fonact,'LIAISON_UNILATER')
-    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
-    l_cont_lac    = isfonc(fonact,'CONT_LAC')
-    lamor         = ndynlo(sddyna,'MAT_AMORT')
-    ldyna         = ndynlo(sddyna,'DYNAMIQUE')
-    lexpl         = ndynlo(sddyna,'EXPLICITE')
-    lshima        = ndynlo(sddyna,'COEF_MASS_SHIFT')
+    lctcd = isfonc(fonact, 'CONT_DISCRET')
+    lunil = isfonc(fonact, 'LIAISON_UNILATER')
+    l_neum_undead = isfonc(fonact, 'NEUM_UNDEAD')
+    l_cont_lac = isfonc(fonact, 'CONT_LAC')
+    lamor = ndynlo(sddyna, 'MAT_AMORT')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
+    lshima = ndynlo(sddyna, 'COEF_MASS_SHIFT')
 !
 ! --- PREMIER PAS DE TEMPS ?
 !
-    lprem = numins.le.1
+    lprem = numins .le. 1
 !
 ! --- SUPPRESSION ANCIENNE MATRICE ASSEMBLEE
 !
     if (ldyna) then
         call detrsd('MATR_ASSE', matass)
-    endif
+    end if
 !
 ! --- COEFFICIENTS POUR MATRICES
 !
     if (ldyna) then
-        coerig = ndynre(sddyna,'COEF_MATR_RIGI')
-        coeamo = ndynre(sddyna,'COEF_MATR_AMOR')
-        coemas = ndynre(sddyna,'COEF_MATR_MASS')
-        coeshi = ndynre(sddyna,'COEF_MASS_SHIFT')
+        coerig = ndynre(sddyna, 'COEF_MATR_RIGI')
+        coeamo = ndynre(sddyna, 'COEF_MATR_AMOR')
+        coemas = ndynre(sddyna, 'COEF_MATR_MASS')
+        coeshi = ndynre(sddyna, 'COEF_MASS_SHIFT')
     else
         coerig = 1.d0
-    endif
+    end if
     typcst(1) = 'R'
     typcst(2) = 'R'
     typcst(3) = 'R'
 !
 ! --- DECALAGE DE LA MATRICE MASSE (COEF_MASS_SHIFT)
 !
-    if (lshima .and. lprem .and. (phase.eq.'PREDICTION')) then
+    if (lshima .and. lprem .and. (phase .eq. 'PREDICTION')) then
         typcsm(1) = 'R'
         typcsm(2) = 'R'
         coemam(1) = 1.d0
@@ -151,13 +151,13 @@ character(len=19) :: lischa
         limam(1) = masse
         limam(2) = rigid
         if (lexpl) then
-            call mtcmbl(2, typcsm, coemam, limam, masse,&
+            call mtcmbl(2, typcsm, coemam, limam, masse, &
                         ' ', ' ', 'ELIM=')
         else
-            call mtcmbl(2, typcsm, coemam, limam, masse,&
+            call mtcmbl(2, typcsm, coemam, limam, masse, &
                         'LAGR', ' ', 'ELIM=')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- MATRICES ET COEFFICIENTS
 !
@@ -182,10 +182,10 @@ character(len=19) :: lischa
                     nbmat = 3
                 else
                     nbmat = 2
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 ! --- DEFINITION DE LA STRUCTURE DE LA MATRICE
 !
@@ -197,49 +197,49 @@ character(len=19) :: lischa
                 call mtdefs(matass, masse, 'V', 'R')
             else
                 call mtdefs(matass, rigid, 'V', 'R')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- ASSEMBLAGE
 !
     if (ldyna) then
-        call mtcmbl(nbmat, typcst, coemat, limat, matass,&
+        call mtcmbl(nbmat, typcst, coemat, limat, matass, &
                     nomddl, ' ', 'ELIM=')
     else
         matass = rigid
-    endif
+    end if
     if (phase .eq. 'ACCEL_INIT') then
         goto 999
-    endif
+    end if
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
     if (l_neum_undead) then
         call ascoma(meelem, numedd, lischa, matass)
-    endif
+    end if
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DU FROTTEMENT
 !
-    if (lctcd .and. (phase.eq.'CORRECTION')) then
+    if (lctcd .and. (phase .eq. 'CORRECTION')) then
         call nmasfr(ds_contact, matass)
-    endif
+    end if
 !
 ! - Special post-treatment for LAC contact method
 !
     if (l_cont_lac) then
         call lccmst(ds_contact, matass)
-    endif
+    end if
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DE PENALISATION
 ! --- AVEC LES LIAISONS UNILATERALES
 !
-    if (lunil .and. (phase.eq.'CORRECTION')) then
+    if (lunil .and. (phase .eq. 'CORRECTION')) then
         l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
         if (l_unil_pena) then
             call nmasun(ds_contact, matass)
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
 !     : DDGAMV : DERIVEE DU PARAMETRE D ECROUISSAGE VISQUEUX PAR  RAPPORT A DEPS
 ! ===================================================================================
 
-    implicit    none
+    implicit none
 
 #include "asterfort/lcdevi.h"
 #include "asterfort/r8inir.h"
@@ -49,8 +49,8 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
     !!!
 
     integer :: i, k, ndi, ndt
-    real(kind=8) :: devia(6,6), deviat(6,6)
-    common /tdim/   ndt , ndi
+    real(kind=8) :: devia(6, 6), deviat(6, 6)
+    common/tdim/ndt, ndi
 
     !!!
     !!! Deviateur du tenseur des def. visco.
@@ -62,13 +62,13 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
     !!! Calcul de dgamv
     !!!
 
-    dgamv=0.d0
+    dgamv = 0.d0
 
-    do i=1, ndt
-        dgamv=dgamv+ddepsv(i)**2
+    do i = 1, ndt
+        dgamv = dgamv+ddepsv(i)**2
     end do
 
-    dgamv=sqrt(2.d0/3.d0*dgamv)
+    dgamv = sqrt(2.d0/3.d0*dgamv)
 
     !!!
     !!! Matrice de projection dev.
@@ -76,17 +76,17 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
 
     call r8inir(6*6, 0.d0, devia, 1)
 
-    do i=1, 3
-        do k=1, 3
-            devia(i,k)=-1.d0/3.d0
+    do i = 1, 3
+        do k = 1, 3
+            devia(i, k) = -1.d0/3.d0
         end do
     end do
 
-    do i=1, ndt
-        devia(i,i)=devia(i,i)+1.d0
+    do i = 1, ndt
+        devia(i, i) = devia(i, i)+1.d0
     end do
 
-    deviat(1:ndt,1:ndt) = transpose(devia(1:ndt,1:ndt))
+    deviat(1:ndt, 1:ndt) = transpose(devia(1:ndt, 1:ndt))
 
     !!!
     !!! Calcul de dgamv/deps
@@ -94,15 +94,15 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
 
     call r8inir(6, 0.d0, ddgamv, 1)
 
-    if (dgamv.le.0.d0) then
-        do i=1, ndt
-            ddgamv(i)=0.d0
+    if (dgamv .le. 0.d0) then
+        do i = 1, ndt
+            ddgamv(i) = 0.d0
         end do
     else
-        ddgamv(1:ndt) = matmul(deviat(1:ndt,1:ndt), ddepsv(1:ndt))
+        ddgamv(1:ndt) = matmul(deviat(1:ndt, 1:ndt), ddepsv(1:ndt))
         do i = 1, ndt
-            ddgamv(i)=2.d0/3.d0*ddgamv(i)/dgamv
+            ddgamv(i) = 2.d0/3.d0*ddgamv(i)/dgamv
         end do
-    endif
+    end if
 
 end subroutine

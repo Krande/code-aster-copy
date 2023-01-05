@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
-                  jinter, ifa, cface, ipg, nnop,&
-                  nnops, igeom, jbasec, xg, jac, ffp,&
+subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
+                  jinter, ifa, cface, ipg, nnop, &
+                  nnops, igeom, jbasec, xg, jac, ffp, &
                   ffpc, dfdi, nd, tau1, tau2, dfdic)
     implicit none
 !
@@ -37,7 +37,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nnop, 3)
     real(kind=8) :: nd(3), tau1(ndim), tau2(ndim), xg(3)
     character(len=8) :: elrefp, fpg, elrefc, elc
-    real(kind=8), intent(out), optional :: dfdic(nnops,3)
+    real(kind=8), intent(out), optional :: dfdic(nnops, 3)
 !
 !
 !                   CALCUL DU JACOBIEN DE LA TRANSFORMATION FACETTE
@@ -73,11 +73,11 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 ! ----------------------------------------------------------------------
 !
 !
-    call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nno,&
-                     jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nno, &
+                     jpoids=ipoidf, jvf=ivff, jdfde=idfdef)
 !
-    ASSERT(nno.eq.3.or.nno.eq.6)
-    ASSERT(ndim.eq.3)
+    ASSERT(nno .eq. 3 .or. nno .eq. 6)
+    ASSERT(ndim .eq. 3)
 !
 ! --- INITIALISATION
     nd(:) = 0.d0
@@ -90,29 +90,29 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     ffpc(:) = 0.d0
     do i = 1, nnop
         do j = 1, ndim
-            dfdi(i,j) = 0.d0
+            dfdi(i, j) = 0.d0
         end do
     end do
 !
 ! --- COORDONNÉES DES NOEUDS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
     do i = 1, 18
-        coor3d(i)=0.d0
+        coor3d(i) = 0.d0
     end do
     do i = 1, nno
         do j = 1, ndim
-            coor3d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
+            coor3d((i-1)*ndim+j) = zr(jinter-1+ndim*(cface(ifa, i)-1)+j)
         end do
     end do
 !     CALCUL DE JAC EN 3D
     k = 2*(ipg-1)*nno
-    call dfdm2b(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor3d,&
+    call dfdm2b(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor3d, &
                 jac, nd)
 !
 ! --- COORDONNEES REELLES 3D DU POINT DE GAUSS IPG
     xg(:) = 0.d0
     do j = 1, nno
         do i = 1, ndim
-          xg(i)=xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor3d(ndim*(j-1)+i)
+            xg(i) = xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor3d(ndim*(j-1)+i)
         end do
     end do
 !
@@ -120,37 +120,37 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
     do j = 1, ndim
         do k = 1, nno
-            grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                      ndim*ndim*(k-1)+j)
-            grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                      ndim*ndim*(k-1)+j+ndim)
+            grln(j) = grln(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
+                                                          ndim*ndim*(k-1)+j)
+            grlt(j) = grlt(j)+zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ &
+                                                          ndim*ndim*(k-1)+j+ndim)
         end do
     end do
 !
-    ps=ddot(ndim,grln,1,nd,1)
-    if (ps.lt.0.d0) nd(1:3) = -nd(1:3)
-    ps=ddot(ndim,grlt,1,nd,1)
+    ps = ddot(ndim, grln, 1, nd, 1)
+    if (ps .lt. 0.d0) nd(1:3) = -nd(1:3)
+    ps = ddot(ndim, grlt, 1, nd, 1)
     do j = 1, ndim
-        tau1(j)=grlt(j)-ps*nd(j)
+        tau1(j) = grlt(j)-ps*nd(j)
     end do
 !
     call normev(tau1, norme)
 !
     if (norme .lt. 1.d-12) then
 !       ESSAI AVEC LE PROJETE DE OX
-        tau1(1)=1.d0-nd(1)*nd(1)
-        tau1(2)=0.d0-nd(1)*nd(2)
-        if (ndim .eq. 3) tau1(3)=0.d0-nd(1)*nd(3)
+        tau1(1) = 1.d0-nd(1)*nd(1)
+        tau1(2) = 0.d0-nd(1)*nd(2)
+        if (ndim .eq. 3) tau1(3) = 0.d0-nd(1)*nd(3)
         call normev(tau1, norm2)
         if (norm2 .lt. 1.d-12) then
 !         ESSAI AVEC LE PROJETE DE OY
-            tau1(1)=0.d0-nd(2)*nd(1)
-            tau1(2)=1.d0-nd(2)*nd(2)
-            if (ndim .eq. 3) tau1(3)=0.d0-nd(2)*nd(3)
+            tau1(1) = 0.d0-nd(2)*nd(1)
+            tau1(2) = 1.d0-nd(2)*nd(2)
+            if (ndim .eq. 3) tau1(3) = 0.d0-nd(2)*nd(3)
             call normev(tau1, norm2)
-        endif
-        ASSERT(norm2.gt.1.d-12)
-    endif
+        end if
+        ASSERT(norm2 .gt. 1.d-12)
+    end if
     call provec(nd, tau1, tau2)
     call reeref(elrefp, nnop, zr(igeom), xg, 3, xe, ffp, dfdi=dfdi)
 !

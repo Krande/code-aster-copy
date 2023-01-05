@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0500(option, nomte)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR TEMPORELLE
 !      SUR UN ELEMENT ISOPARAMETRIQUE POUR LES MODELISATIONS HM SATUREES
 !
@@ -60,13 +60,13 @@ character(len=16) :: option, nomte
 ! DECLARATION VARIABLES LOCALES
 !
     integer :: nbre1, nbrr1
-    parameter ( nbre1 = 1 , nbrr1 = 2 )
+    parameter(nbre1=1, nbrr1=2)
 !
     integer :: nbre2
-    parameter ( nbre2 = 2 )
+    parameter(nbre2=2)
 !
     integer :: nbre3, nbrr3
-    parameter ( nbre3 = 1 , nbrr3 = 2 )
+    parameter(nbre3=1, nbrr3=2)
 !
     integer :: ndim, nno
 !
@@ -97,13 +97,13 @@ character(len=16) :: option, nomte
     character(len=8) :: nomrr3(nbrr3), nomrr4(nbrr3), nomre2(nbre2), nomre3(nbre3), fami, poum
     character(len=8) :: nomrr2(nbrr1)
 !
-    data nomre1 / 'PERM_IN'    /
-    data nomrr1 / 'PERMIN_L','PERMIN_N' /
-    data nomrr2 / 'PERMIN_L','PERMIN_T'/
-    data nomre2 / 'RHO','VISC' /
-    data nomre3 / 'E'          /
-    data nomrr3 / 'E_L','E_N' /
-    data nomrr4 / 'E_L','E_T' /
+    data nomre1/'PERM_IN'/
+    data nomrr1/'PERMIN_L', 'PERMIN_N'/
+    data nomrr2/'PERMIN_L', 'PERMIN_T'/
+    data nomre2/'RHO', 'VISC'/
+    data nomre3/'E'/
+    data nomrr3/'E_L', 'E_N'/
+    data nomrr4/'E_L', 'E_T'/
     type(THM_DS) :: ds_thm
 !
 ! ------------------------------------------------------------------
@@ -112,15 +112,15 @@ character(len=16) :: option, nomte
 !
 ! - Get all parameters for current element
 !
-    call thmGetElemPara(ds_thm   , l_axi    , l_steady ,&
-                        type_elem, inte_type, ndim     ,&
-                        mecani   , press1   , press2   , tempe  ,&
-                        dimdep   , dimdef   , dimcon   , dimuel ,&
-                        nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2,&
-                        nno      , nnos     ,&
-                        npi      , npg      ,&
-                        jv_poids , jv_func  , jv_dfunc ,&
-                        jv_poids2, jv_func2 , jv_dfunc2,&
+    call thmGetElemPara(ds_thm, l_axi, l_steady, &
+                        type_elem, inte_type, ndim, &
+                        mecani, press1, press2, tempe, &
+                        dimdep, dimdef, dimcon, dimuel, &
+                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                        nno, nnos, &
+                        npi, npg, &
+                        jv_poids, jv_func, jv_dfunc, &
+                        jv_poids2, jv_func2, jv_dfunc2, &
                         jv_gano)
 
 ! =====================================================================
@@ -131,7 +131,7 @@ character(len=16) :: option, nomte
         time = zr(itab(1))
     else
         call utmess('F', 'INDICATEUR_11')
-    endif
+    end if
 ! =====================================================================
 ! 3. INITIALISATIONS/RECUPERATION DE LA GEOMETRIE ET DES CHAMPS LOCAUX
 ! =====================================================================
@@ -168,42 +168,42 @@ character(len=16) :: option, nomte
     nompar(1) = 'INST'
     valpar(1) = time
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_DIFFU', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THM_DIFFU', 1, nompar, [valpar], &
                 nbre1, nomre1, valre1, codme1, 0, nan='OUI')
 !
     if (codme1(1) .eq. 0) then
         permin = valre1(1)
-    else if (codme1(1).eq.1) then
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_DIFFU', 1, nompar, [valpar],&
+    else if (codme1(1) .eq. 1) then
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THM_DIFFU', 1, nompar, [valpar], &
                     nbrr1, nomrr1, valrr1, codmr1, 0, nan='OUI')
-        if (( codmr1(1).eq.0 ) .and. ( codmr1(2).eq.0 )) then
+        if ((codmr1(1) .eq. 0) .and. (codmr1(2) .eq. 0)) then
             permin = sqrt(valrr1(1)**2+valrr1(2)**2+valrr1(1)**2)
         else
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'THM_DIFFU', 1, nompar, [valpar],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', 'THM_DIFFU', 1, nompar, [valpar], &
                         nbrr1, nomrr2, valrr2, codmr2, 0, nan='OUI')
-            if (( codmr2(1).eq.0 ) .and. ( codmr2(2).eq.0 )) then
+            if ((codmr2(1) .eq. 0) .and. (codmr2(2) .eq. 0)) then
                 permin = sqrt(valrr2(1)**2+valrr2(2)**2)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else
         call utmess('F', 'ELEMENTS4_78', sk=nomre1(1))
-    endif
+    end if
 !
 ! --- C. MASSE VOLUMIQUE DU LIQUIDE
 !        VISCOSITE DYNAMIQUE DU LIQUIDE
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_LIQU', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THM_LIQU', 1, nompar, [valpar], &
                 nbre2, nomre2, valre2, codme2, 1)
 !
     if (codme2(1) .eq. 0 .and. codme2(2) .eq. 0) then
@@ -211,35 +211,35 @@ character(len=16) :: option, nomte
         viscli = valre2(2)
     else
         call utmess('F', 'ELEMENTS4_69', sk=nomre2(1)//nomre2(2))
-    endif
+    end if
 !
 ! --- D. MODULE DE YOUNG
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'ELAS', 1, nompar, [valpar], &
                 nbre3, nomre3, valre3, codme3, 0)
 !
     if (codme3(1) .eq. 0) then
         myoung = valre3(1)
-    else if (codme3(1).eq.1) then
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS_ISTR', 1, nompar, [valpar],&
+    else if (codme3(1) .eq. 1) then
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'ELAS_ISTR', 1, nompar, [valpar], &
                     nbrr3, nomrr3, valrr3, codmr3, 0)
-        if (( codmr3(1).eq.0 ) .and. ( codmr3(2).eq.0 )) then
+        if ((codmr3(1) .eq. 0) .and. (codmr3(2) .eq. 0)) then
             myoung = sqrt(valrr3(1)**2+valrr3(2)**2)
         else
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'ELAS_ORTH', 1, nompar, [valpar],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', 'ELAS_ORTH', 1, nompar, [valpar], &
                         nbrr3, nomrr4, valrr4, codmr4, 0)
-            if (( codmr4(1).eq.0 ) .and. ( codmr4(2).eq.0 )) then
+            if ((codmr4(1) .eq. 0) .and. (codmr4(2) .eq. 0)) then
                 myoung = sqrt(valrr4(1)**2+valrr4(2)**2)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else
         call utmess('F', 'ELEMENTS4_71', sk=nomre3(1))
-    endif
+    end if
 !
 ! 3.5 CALCUL DU COEFFICIENT D'ADIMENSIONNEMENT
 !
@@ -257,18 +257,18 @@ character(len=16) :: option, nomte
 !
                 else
                     call utmess('F', 'INDICATEUR_20')
-                endif
+                end if
             else
                 valk = 'pression'
                 call utmess('F', 'INDICATEUR_21', sk=valk)
-            endif
+            end if
         else
             call utmess('F', 'INDICATEUR_22')
-        endif
+        end if
     else
         valk = 'longueur'
         call utmess('F', 'INDICATEUR_21', sk=valk)
-    endif
+    end if
 !
 ! =====================================================================
 ! 4. CALCUL DE L'INDICATEUR TEMPOREL
@@ -280,34 +280,34 @@ character(len=16) :: option, nomte
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !
-    do ipi = 1,npg
+    do ipi = 1, npg
 !
-    kpi = ipi
+        kpi = ipi
 !
-    if (ndim .eq. 2) then
+        if (ndim .eq. 2) then
 ! =====================================================================
 ! => EN DIMENSION 2
 ! =====================================================================
 !
 ! 4.2. ON RECUPERE LES POIDS D'INTEGRATION AUX POINTS DE GAUSS
 !
-        call dfdm2d(nnos, kpi, jv_poids2, jv_dfunc2, zr(igeom),&
-                    poids2)
+            call dfdm2d(nnos, kpi, jv_poids2, jv_dfunc2, zr(igeom), &
+                        poids2)
 !
-        iaux = nbcmp*(kpi-1)
+            iaux = nbcmp*(kpi-1)
 !
-        fluhpx = zr(isigap+iaux+8+5)
-        fluhmx = zr(isigam+iaux+8+5)
+            fluhpx = zr(isigap+iaux+8+5)
+            fluhmx = zr(isigam+iaux+8+5)
 !
-        fluhpy = zr(isigap+iaux+9+5)
-        fluhmy = zr(isigam+iaux+9+5)
+            fluhpy = zr(isigap+iaux+9+5)
+            fluhmy = zr(isigam+iaux+9+5)
 !
-        tertps = tertps + raux*poids2*((fluhpx-fluhmx)**2+(fluhpy- fluhmy)**2)
+            tertps = tertps+raux*poids2*((fluhpx-fluhmx)**2+(fluhpy-fluhmy)**2)
 !
-    else
-        iaux = lxlgut(option)
-        call utmess('F', 'INDICATEUR_92', sk=option(1:iaux))
-    endif
+        else
+            iaux = lxlgut(option)
+            call utmess('F', 'INDICATEUR_92', sk=option(1:iaux))
+        end if
 !
     end do
 !

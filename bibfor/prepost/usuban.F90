@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,150 +54,150 @@ subroutine usuban(mater, isupp, para, ier)
                 if (isupp .eq. 1) then
                     para(1) = 1.2d-13
                 else
-                endif
+                end if
             else if (mate .eq. 'I600TT_I600') then
                 if (isupp .eq. 1) then
                     para(1) = 4.5d-14
                 else
-                endif
+                end if
             else if (mate .eq. 'I600TT_I600TT') then
                 if (isupp .eq. 1) then
                     para(1) = 1.4d-15
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_I600CR') then
                 if (isupp .eq. 1) then
                     para(1) = 7.2d-14
                 else
-                endif
+                end if
             else if (mate .eq. 'I600TT_I600CR') then
                 if (isupp .eq. 1) then
                     para(1) = 9.1d-16
                 else
-                endif
+                end if
             else if (mate .eq. 'I690TT_I600CR') then
                 if (isupp .eq. 1) then
                     para(1) = 1.2d-15
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_Z10C13') then
                 if (isupp .eq. 1) then
                     para(1) = 9.9d-14
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_A405') then
                 if (isupp .eq. 1) then
                     para(1) = 6.2d-14
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_A405') then
                 if (isupp .eq. 1) then
                     para(1) = 4.1d-16
                 else
-                endif
+                end if
             else if (mate .eq. 'I600TT_Z6C13') then
                 if (isupp .eq. 1) then
                     para(1) = 9.2d-15
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_Z6C13') then
                 if (isupp .eq. 1) then
                     para(1) = 7.1d-15
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_Z6C13') then
                 if (isupp .eq. 1) then
                     para(1) = 7.7d-15
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_A347') then
                 if (isupp .eq. 1) then
                     para(1) = 1.0d-13
                 else
-                endif
-            endif
+                end if
+            end if
 !
         else if (type .eq. 'TUBE_ALESAGE') then
             if (mate .eq. 'I690_Z10C13') then
                 if (isupp .eq. 1) then
                     para(1) = 6.0d-17
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_I600') then
                 if (isupp .eq. 1) then
                     para(1) = 1.6d-13
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_I600') then
                 if (isupp .eq. 1) then
                     para(1) = 5.2d-14
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_I600CR') then
                 if (isupp .eq. 1) then
                     para(1) = 2.2d-15
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_I600CR') then
                 if (isupp .eq. 1) then
                     para(1) = 4.4d-15
                 else
-                endif
-            endif
+                end if
+            end if
 !
         else if (type .eq. 'TUBE_4_ENCO') then
             if (mate .eq. 'I600_Z10C13') then
                 if (isupp .eq. 1) then
                     para(1) = 2.4d-16
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_Z10C13') then
                 if (isupp .eq. 1) then
                     para(1) = 8.2d-17
                 else
-                endif
+                end if
             else if (mate .eq. 'I600_A405') then
                 if (isupp .eq. 1) then
                     para(1) = 6.5d-14
                 else
-                endif
+                end if
             else if (mate .eq. 'I600TT_A405') then
                 if (isupp .eq. 1) then
                     para(1) = 1.4d-15
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_A405') then
                 if (isupp .eq. 1) then
                     para(1) = 7.8d-15
                 else
-                endif
-            endif
+                end if
+            end if
 !
         else if (type .eq. 'TUBE_3_ENCO') then
             if (mate .eq. 'I600_Z10C13') then
                 if (isupp .eq. 1) then
                     para(1) = 2.5d-16
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_Z10C13') then
                 if (isupp .eq. 1) then
                     para(1) = 2.4d-16
                 else
-                endif
-            endif
+                end if
+            end if
 !
         else if (type .eq. 'TUBE_TUBE') then
             if (mate .eq. 'I600_I600') then
                 if (isupp .eq. 1) then
                     para(1) = 1.8d-13
                 else
-                endif
+                end if
             else if (mate .eq. 'I690_I690') then
                 if (isupp .eq. 1) then
                     para(1) = 1.0d-12
                 else
-                endif
-            endif
+                end if
+            end if
 !
         else if (type .eq. 'GRAPPE_ALESAGE') then
             if (mate .eq. 'A304L_A304L') then
@@ -205,26 +205,26 @@ subroutine usuban(mater, isupp, para, ier)
                     para(1) = 10.d-15
                 else
                     para(1) = 15.d-15
-                endif
+                end if
             else if (mate .eq. 'A316L_A304L') then
                 if (isupp .eq. 1) then
                     para(1) = 10.d-15
                 else
                     para(1) = 5.d-15
-                endif
+                end if
             else if (mate .eq. 'NITRURE_A304L') then
                 if (isupp .eq. 1) then
                     para(1) = 0.1d-15
                 else
                     para(1) = 70.d-15
-                endif
+                end if
             else if (mate .eq. 'CHROME_A304L') then
                 if (isupp .eq. 1) then
                     para(1) = 0.1d-15
                 else
                     para(1) = 50.d-15
-                endif
-            endif
+                end if
+            end if
 !
         else if (type .eq. 'GRAPPE_1_ENCO') then
             if (mate .eq. 'A304L_A304L') then
@@ -232,25 +232,25 @@ subroutine usuban(mater, isupp, para, ier)
                     para(1) = 20.d-15
                 else
                     para(1) = 20.d-15
-                endif
+                end if
             else if (mate .eq. 'A316L_A304L') then
                 if (isupp .eq. 1) then
                     para(1) = 30.d-15
                 else
                     para(1) = 20.d-15
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         if (para(1) .eq. 9999d0) then
-            ier = ier + 1
+            ier = ier+1
             lk = lxlgut(mate)
             lt = lxlgut(type)
-            valk (1) = type(1:lt)
-            valk (2) = mate(1:lk)
-            valk (3) = ' '
+            valk(1) = type(1:lt)
+            valk(2) = mate(1:lk)
+            valk(3) = ' '
             call utmess('E', 'PREPOST5_77', nk=3, valk=valk)
-        endif
+        end if
 !
 ! **********************************************************************
 !                 M O D E L E     K W U _ E P R I
@@ -276,19 +276,19 @@ subroutine usuban(mater, isupp, para, ier)
                     para(4) = 5.d0
                     para(5) = 10.d0
                 else
-                endif
-            endif
+                end if
+            end if
         else if (type .eq. 'GRAPPE_ALESAGE') then
-        endif
+        end if
         if (para(1) .eq. 9999d0) then
-            ier = ier + 1
+            ier = ier+1
             lk = lxlgut(mate)
             lt = lxlgut(type)
-            valk (1) = type(1:lt)
-            valk (2) = mate(1:lk)
-            valk (3) = ' '
+            valk(1) = type(1:lt)
+            valk(2) = mate(1:lk)
+            valk(3) = ' '
             call utmess('E', 'PREPOST5_77', nk=3, valk=valk)
-        endif
+        end if
 !
 ! **********************************************************************
 !                 M O D E L E     E D F _ M Z
@@ -311,20 +311,20 @@ subroutine usuban(mater, isupp, para, ier)
                     para(3) = 1.2d0
                     para(4) = 2.44d-08
                 else
-                endif
-            endif
+                end if
+            end if
         else if (type .eq. 'GRAPPE_ALESAGE') then
-        endif
+        end if
         if (para(1) .eq. 9999d0) then
-            ier = ier + 1
+            ier = ier+1
             lk = lxlgut(mate)
             lt = lxlgut(type)
-            valk (1) = type(1:lt)
-            valk (2) = mate(1:lk)
-            valk (3) = ' '
+            valk(1) = type(1:lt)
+            valk(2) = mate(1:lk)
+            valk(3) = ' '
             call utmess('E', 'PREPOST5_77', nk=3, valk=valk)
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

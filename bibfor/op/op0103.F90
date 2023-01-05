@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine op0103()
 #include "asterfort/asmpi_info.h"
     character(len=8) :: model
     character(len=24) :: kdis
-    integer :: ib,nbproc,n1
+    integer :: ib, nbproc, n1
     mpi_int :: mrank, msize
 !------------------------------------------------------------------
 !
@@ -41,15 +41,15 @@ subroutine op0103()
 !   -- modification de la partition  :
 !   ---------------------------------------------------
     call getvid(' ', 'MODELE', scal=model, nbret=ib)
-    ASSERT(ib.eq.1)
+    ASSERT(ib .eq. 1)
     call asmpi_info(rank=mrank, size=msize)
     nbproc = to_aster_int(msize)
     call getvtx('DISTRIBUTION', 'METHODE', iocc=1, scal=kdis, nbret=n1)
-    ASSERT(n1.eq.1)
-    if (nbproc.eq.1) kdis='CENTRALISE'
+    ASSERT(n1 .eq. 1)
+    if (nbproc .eq. 1) kdis = 'CENTRALISE'
 
 !   -- pour MODI_MODELE : 'SOUS_DOMAINE' == 'GROUP_ELEM'
-    if (kdis.eq.'SOUS_DOMAINE') kdis='GROUP_ELEM'
+    if (kdis .eq. 'SOUS_DOMAINE') kdis = 'GROUP_ELEM'
 
     call ajlipa(model, 'G', kdis)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine fonno6(resu, noma, ndim, &
-                  iseg, nseg, noe, indr, nbnoel,&
+                  iseg, nseg, noe, indr, nbnoel, &
                   vnor, vdir, basseg, vect, sens)
 ! aslint: disable=W1306
     implicit none
@@ -70,7 +70,7 @@ subroutine fonno6(resu, noma, ndim, &
 !
 !       ----------------------------------------------------
 !
-    integer ::  iamase, ityp, iatyma, jtano,  jbasse
+    integer ::  iamase, ityp, iatyma, jtano, jbasse
     integer :: i, j, iret, inp, compt, ino, ifl
     integer :: ilev, itano, itane
     integer :: nblev, nn
@@ -81,7 +81,7 @@ subroutine fonno6(resu, noma, ndim, &
     character(len=8) :: type
     character(len=8), pointer :: mail(:) => null()
     real(kind=8), pointer :: dtan_extremite(:) => null()
-    parameter    (angmax=2.5d0)
+    parameter(angmax=2.5d0)
 !
 !     -----------------------------------------------------------------
 !
@@ -112,10 +112,10 @@ subroutine fonno6(resu, noma, ndim, &
 !     --------------------------------------------------------
 !
 !     ALPHA = ANGLE ENTRE LES 2 VECTEURS (EN DEGRES)
-    s = vdir(1,1)*vdir(2,1) + vdir(1,2)*vdir(2,2) + vdir(1,3)*vdir(2,3)
+    s = vdir(1, 1)*vdir(2, 1)+vdir(1, 2)*vdir(2, 2)+vdir(1, 3)*vdir(2, 3)
 !
 !     ATTENTION, NE JAMAIS UTILISER LA FONCTION FORTRAN ACOS
-    alpha = trigom('ACOS',s)*180.d0/r8pi()
+    alpha = trigom('ACOS', s)*180.d0/r8pi()
 !
 !     CAS SYMETRIQUE
     if (syme .eq. 'OUI') then
@@ -124,17 +124,17 @@ subroutine fonno6(resu, noma, ndim, &
 !       QUE L'HYPOTHESE DE LEVRES COLLEES EST FAUSSE : ON PLANTE
         if (abs(alpha-180.d0) .gt. angmax) then
             call utmess('F', 'RUPTURE0_34')
-        endif
+        end if
 !
-    else if (syme.eq.'NON') then
+    else if (syme .eq. 'NON') then
 !
 !       ANGLE DOIT ETRE EGAL A 0+-5 DEGRES, SINON CA VEUT DIRE
 !       QUE L'HYPOTHESE DE LEVRES COLLEES EST FAUSSE : ON PLANTE
         if (abs(alpha) .gt. 2.d0*angmax) then
             call utmess('F', 'RUPTURE0_34')
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 !     2) DANS LE CAS SYMETRIQUE, RECHERCHE DU BON VECTEUR DIRECTION
@@ -159,41 +159,41 @@ subroutine fonno6(resu, noma, ndim, &
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
                 call dismoi('NBNO_TYPMAIL', type, 'TYPE_MAILLE', repi=nn)
                 do inp = 1, 2
-                    compt=0
+                    compt = 0
                     do j = 1, nn
                         do ino = 1, nbnoel
-                            if (zi(iamase-1 + j) .eq. noe(indr(inp),ino)) then
+                            if (zi(iamase-1+j) .eq. noe(indr(inp), ino)) then
                                 compt = compt+1
-                            endif
+                            end if
                         end do
                     end do
 !             ON A TROUVE UNE FACE COINCIDENTE A UNE LEVRE, ON SORT
                     if (compt .eq. nbnoel) then
                         ifl = inp
                         goto 300
-                    endif
+                    end if
                 end do
             end do
 !
 !       SI LES LEVRES NE SONT PAS DONNEES, ON TENTE AVEC DTAN_ORIG
-        else if (itano.ne.0) then
+        else if (itano .ne. 0) then
 !
 !         LE VECTEUR DIRECTION RETENU EST CELUI DANS LE SENS DE DTAN_ORI
-            s = zr(jtano)*vdir(1,1) + zr(jtano+1)*vdir(1,2) + zr( jtano+2)*vdir(1,3)
+            s = zr(jtano)*vdir(1, 1)+zr(jtano+1)*vdir(1, 2)+zr(jtano+2)*vdir(1, 3)
 !
             if (s .ge. 0d0) then
-                ifl=1
+                ifl = 1
             else
 !           ON EST SUR QUE CELUI CI EST BON CAR L'ANGLE EST ENVIRON 180
-                ifl=2
-            endif
+                ifl = 2
+            end if
 !
 !       SINON, ON PLANTE CAR ON NE SAIT PAS QUELLE DIRECTION CHOISIR
         else
             call utmess('F', 'RUPTURE0_8')
-        endif
+        end if
 !
-    endif
+    end if
 !
 300 continue
 !
@@ -203,31 +203,31 @@ subroutine fonno6(resu, noma, ndim, &
 !     CAS OU IL FAUT PRENDRE LA MOYENNE DES 2 VECTEURS
     if (syme .eq. 'NON') then
 !
-        ndir = sqrt(&
-               ( vdir(1,1)+vdir(2,1))**2 + (vdir(1,2)+vdir(2,2)) **2 + (vdir(1,3)+vdir(2,3) )**2)
+        ndir = sqrt( &
+               (vdir(1, 1)+vdir(2, 1))**2+(vdir(1, 2)+vdir(2, 2))**2+(vdir(1, 3)+vdir(2, 3))**2)
 !
-        nnor = sqrt(&
-               ( vnor(1,1)+vnor(2,1))**2 + (vnor(1,2)+vnor(2,2)) **2 + (vnor(1,3)+vnor(2,3) )**2)
+        nnor = sqrt( &
+               (vnor(1, 1)+vnor(2, 1))**2+(vnor(1, 2)+vnor(2, 2))**2+(vnor(1, 3)+vnor(2, 3))**2)
 !
         do i = 1, ndim
-            vecdir(i) = (vdir(1,i)+vdir(2,i))/ndir
-            vecnor(i) = sens*(vnor(1,i)+vnor(2,i))/nnor
+            vecdir(i) = (vdir(1, i)+vdir(2, i))/ndir
+            vecnor(i) = sens*(vnor(1, i)+vnor(2, i))/nnor
         end do
 !
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
-        if ((iseg.eq.1) .and. (ilev.ne.0)) then
-            p = ddot(ndim,vecnor,1,vect,1)
+        if ((iseg .eq. 1) .and. (ilev .ne. 0)) then
+            p = ddot(ndim, vecnor, 1, vect, 1)
             if (p .lt. 0.d0) then
                 sens = -1.d0
                 do i = 1, ndim
                     vecnor(i) = sens*vecnor(i)
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !     CAS OU IL NE FAUT PRENDRE QU'UN SEUL VECTEUR
-    else if (syme.eq.'OUI') then
+    else if (syme .eq. 'OUI') then
 !
 !       POUR LE 1ER VECTEUR, ON CONNAIT DEJA IFL
         if (iseg .eq. 1) then
@@ -236,50 +236,50 @@ subroutine fonno6(resu, noma, ndim, &
 !
 !       POUR LES AUTRES SEGMENTS, ON PROCEDE PAR CONTINUITE
 !       DES VDIR AVEC LE VECTEUR PRECEDENT
-        else if (iseg.gt.1) then
+        else if (iseg .gt. 1) then
 !
-            prvd1 = vdir(1,1)*zr(jbasse-1+2*ndim*(iseg-1-1)+1+ndim) + vdir(1,2)*zr(jbasse-1+2*ndi&
-                    &m*(iseg-1-1)+2+ndim) + vdir(1, 3)*zr(jbasse-1+2*ndim*(iseg-1-1)+3+ndim)
+            prvd1 = vdir(1, 1)*zr(jbasse-1+2*ndim*(iseg-1-1)+1+ndim)+vdir(1, 2)*zr(jbasse-1+2*ndi&
+                    &m*(iseg-1-1)+2+ndim)+vdir(1, 3)*zr(jbasse-1+2*ndim*(iseg-1-1)+3+ndim)
 !
-            prvd2 = vdir(2,1)*zr(jbasse-1+2*ndim*(iseg-1-1)+1+ndim) + vdir(2,2)*zr(jbasse-1+2*ndi&
-                    &m*(iseg-1-1)+2+ndim) + vdir(2, 3)*zr(jbasse-1+2*ndim*(iseg-1-1)+3+ndim)
+            prvd2 = vdir(2, 1)*zr(jbasse-1+2*ndim*(iseg-1-1)+1+ndim)+vdir(2, 2)*zr(jbasse-1+2*ndi&
+                    &m*(iseg-1-1)+2+ndim)+vdir(2, 3)*zr(jbasse-1+2*ndim*(iseg-1-1)+3+ndim)
 !
             if (prvd1 .gt. 0) then
 !           LE VECTEUR VDIR PRECEDENT EST EN CONFORMITE AVEC IFL=1
-                ifl=1
-            else if (prvd2.gt.0) then
+                ifl = 1
+            else if (prvd2 .gt. 0) then
 !           LE VECTEUR VDIR PRECEDENT EST EN CONFORMITE AVEC IFL=2
-                ifl=2
+                ifl = 2
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
-        endif
+        end if
 !
-        ASSERT(ifl.ne.0)
+        ASSERT(ifl .ne. 0)
 !
-        ndir = sqrt( vdir(ifl,1)**2 + vdir(ifl,2)**2 + vdir(ifl,3)**2 )
+        ndir = sqrt(vdir(ifl, 1)**2+vdir(ifl, 2)**2+vdir(ifl, 3)**2)
 !
-        nnor = sqrt( vnor(ifl,1)**2 + vnor(ifl,2)**2 + vnor(ifl,3)**2 )
+        nnor = sqrt(vnor(ifl, 1)**2+vnor(ifl, 2)**2+vnor(ifl, 3)**2)
 !
         do i = 1, ndim
-            vecdir(i) = vdir(ifl,i)/ndir
-            vecnor(i) = sens*vnor(ifl,i)/nnor
+            vecdir(i) = vdir(ifl, i)/ndir
+            vecnor(i) = sens*vnor(ifl, i)/nnor
         end do
 !
 !       LE VECTEUR NORMAL DOIT ALLER DE LA LEVRE INF
 !       VERS LA LEVRE SUP
-        if ((iseg.eq.1) .and. (ilev.ne.0)) then
-            p = ddot(ndim,vecnor,1,vect,1)
+        if ((iseg .eq. 1) .and. (ilev .ne. 0)) then
+            p = ddot(ndim, vecnor, 1, vect, 1)
             if (p .lt. 0.d0) then
                 sens = -1.d0
                 do i = 1, ndim
                     vecnor(i) = sens*vecnor(i)
                 end do
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
 !
 !     4) VERIFICATION DE LA COHERENCE DE DTAN_ORIG/EXTR ET AFFECTATION
@@ -287,25 +287,25 @@ subroutine fonno6(resu, noma, ndim, &
 !
 !     SI DTAN_ORIG EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
     if (itano .ne. 0 .and. iseg .eq. 1) then
-        s = ddot(ndim,zr(jtano),1,vecdir,1)
+        s = ddot(ndim, zr(jtano), 1, vecdir, 1)
         if (s .le. 0.d0) then
             call utmess('A', 'RUPTURE0_35', nr=3, valr=vecdir)
-        endif
+        end if
         do i = 1, ndim
             vecdir(i) = zr(jtano-1+i)
         end do
-    endif
+    end if
 !
 !     SI DTAN_EXTR EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
     if (itane .ne. 0 .and. iseg .eq. nseg) then
-        s = ddot(ndim,dtan_extremite,1,vecdir,1)
+        s = ddot(ndim, dtan_extremite, 1, vecdir, 1)
         if (s .le. 0.d0) then
             call utmess('A', 'RUPTURE0_36', nr=3, valr=vecdir)
-        endif
+        end if
         do i = 1, ndim
             vecdir(i) = dtan_extremite(i)
         end do
-    endif
+    end if
 !
 !
 !     5) ECRITURE DE LA BASE PAR SEGMENT DU FOND
@@ -326,12 +326,12 @@ subroutine fonno6(resu, noma, ndim, &
         do i = 1, ndim
             vnprec(i) = zr(jbasse-1+2*ndim*(iseg-2)+i)
         end do
-        s = ddot(ndim,vecnor,1,vnprec,1)
-        beta = trigom('ACOS',s)*180.d0/r8pi()
+        s = ddot(ndim, vecnor, 1, vnprec, 1)
+        beta = trigom('ACOS', s)*180.d0/r8pi()
         if (abs(beta) .gt. 10.d0) then
             call utmess('A', 'RUPTURE0_61')
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ngpipe(typilo, npg, neps, nddl, b,&
-                  ni2ldc, typmod, mat, compor, lgpg,&
-                  ddlm, sigm, vim, ddld, ddl0,&
+subroutine ngpipe(typilo, npg, neps, nddl, b, &
+                  ni2ldc, typmod, mat, compor, lgpg, &
+                  ddlm, sigm, vim, ddld, ddl0, &
                   ddl1, tau, etamin, etamax, copilo)
 !
 !
@@ -61,7 +61,7 @@ subroutine ngpipe(typilo, npg, neps, nddl, b,&
 ! OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
 ! ----------------------------------------------------------------------
     integer :: npgmax, epsmax
-    parameter (npgmax=27,epsmax=20)
+    parameter(npgmax=27, epsmax=20)
 ! ----------------------------------------------------------------------
     integer :: g, nepg, ieg
     real(kind=8) :: sigmam(0:epsmax*npgmax-1)
@@ -74,24 +74,24 @@ subroutine ngpipe(typilo, npg, neps, nddl, b,&
 !
 ! -- INITIALISATION
 !
-    ASSERT (compor(3).eq.'PETIT')
+    ASSERT(compor(3) .eq. 'PETIT')
     call r8inir(npg*5, r8vide(), copilo, 1)
     nepg = neps*npg
 !
 !
 ! -- DEFORMATIONS
 !
-    call dgemv('N', nepg, nddl, 1.d0, b,&
-               nepg, ddlm, 1, 0.d0, epsm,&
+    call dgemv('N', nepg, nddl, 1.d0, b, &
+               nepg, ddlm, 1, 0.d0, epsm, &
                1)
-    call dgemv('N', nepg, nddl, 1.d0, b,&
-               nepg, ddld, 1, 0.d0, epsp,&
+    call dgemv('N', nepg, nddl, 1.d0, b, &
+               nepg, ddld, 1, 0.d0, epsp, &
                1)
-    call dgemv('N', nepg, nddl, 1.d0, b,&
-               nepg, ddl0, 1, 1.d0, epsp,&
+    call dgemv('N', nepg, nddl, 1.d0, b, &
+               nepg, ddl0, 1, 1.d0, epsp, &
                1)
-    call dgemv('N', nepg, nddl, 1.d0, b,&
-               nepg, ddl1, 1, 0.d0, epsd,&
+    call dgemv('N', nepg, nddl, 1.d0, b, &
+               nepg, ddl1, 1, 0.d0, epsd, &
                1)
 !
 !
@@ -100,13 +100,13 @@ subroutine ngpipe(typilo, npg, neps, nddl, b,&
         do ieg = 0, nepg-1
             sigmam(ieg) = sigm(ieg)*ni2ldc(ieg)
         end do
-    endif
+    end if
 !
 ! -- TRAITEMENT DE CHAQUE POINT DE GAUSS
 !
     do g = 1, npg
-        call pil000(typilo, compor, neps, tau, mat,&
-                    vim(1, g), sigmam(os(g)), epsm(os(g)), epsp(os(g)), epsd(os(g)),&
+        call pil000(typilo, compor, neps, tau, mat, &
+                    vim(1, g), sigmam(os(g)), epsm(os(g)), epsp(os(g)), epsd(os(g)), &
                     typmod, etamin, etamax, copilo(1, g))
     end do
 !

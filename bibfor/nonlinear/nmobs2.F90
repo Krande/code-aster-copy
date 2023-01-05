@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmobs2(meshz         , sd_obsv   , tabl_name    , time         , title,&
-                  field_disc    , field_type, field_s      ,&
-                  nb_elem       , nb_node   , nb_poin      , nb_spoi      , nb_cmp   ,&
-                  type_extr_elem, type_extr , type_extr_cmp, type_sele_cmp,&
-                  list_node     , list_elem , list_poin    , list_spoi,&
-                  list_cmp      , list_vari ,&
-                  field     , work_node    , work_elem    , nb_obsf_effe)
+subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
+                  field_disc, field_type, field_s, &
+                  nb_elem, nb_node, nb_poin, nb_spoi, nb_cmp, &
+                  type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp, &
+                  list_node, list_elem, list_poin, list_spoi, &
+                  list_cmp, list_vari, &
+                  field, work_node, work_elem, nb_obsf_effe)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -106,7 +106,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer nb_para_maxi
-    parameter    (nb_para_maxi=20)
+    parameter(nb_para_maxi=20)
     character(len=16) :: v_cmp_name(nb_para_maxi)
 !
     integer :: i_node, i_elem, i_poin, i_spoi, i_cmp
@@ -140,41 +140,41 @@ implicit none
         if (iret .eq. 0) then
             call sdmpic('CHAM_ELEM', field)
             call celces(field, 'V', field_s)
-        endif
+        end if
         call jeveuo(field_s(1:19)//'.CESD', 'L', vi=cesd)
-    endif
+    end if
 !
 ! - Number of nodes for loop
 !
     if (field_disc .eq. 'NOEU') then
         if (type_extr .eq. 'VALE') then
             nb_node_r = nb_node
-        elseif ((type_extr.eq.'MIN').or.&
-                (type_extr.eq.'MAX').or.&
-                (type_extr.eq.'MAXI_ABS').or.&
-                (type_extr.eq.'MINI_ABS').or.&
-                (type_extr.eq.'MOY')) then
+        elseif ((type_extr .eq. 'MIN') .or. &
+                (type_extr .eq. 'MAX') .or. &
+                (type_extr .eq. 'MAXI_ABS') .or. &
+                (type_extr .eq. 'MINI_ABS') .or. &
+                (type_extr .eq. 'MOY')) then
             nb_node_r = 1
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Number of elements for loop
 !
     if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         if (type_extr .eq. 'VALE') then
             nb_elem_r = nb_elem
-        elseif ((type_extr.eq.'MIN').or.&
-                (type_extr.eq.'MAX').or.&
-                (type_extr.eq.'MAXI_ABS').or.&
-                (type_extr.eq.'MINI_ABS').or.&
-                (type_extr.eq.'MOY')) then
+        elseif ((type_extr .eq. 'MIN') .or. &
+                (type_extr .eq. 'MAX') .or. &
+                (type_extr .eq. 'MAXI_ABS') .or. &
+                (type_extr .eq. 'MINI_ABS') .or. &
+                (type_extr .eq. 'MOY')) then
             nb_elem_r = 1
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Number for components for loop
 !
@@ -182,15 +182,15 @@ implicit none
         nb_cmp_r = nb_cmp
     else
         nb_cmp_r = 1
-    endif
+    end if
 !
 ! - Get name of components
 !
-    call jeveuo(list_cmp , 'L', vk8 = v_list_cmp)
+    call jeveuo(list_cmp, 'L', vk8=v_list_cmp)
     if (type_sele_cmp .eq. 'NOM_VARI') then
-        call jeveuo(list_vari, 'L', vk16 = v_list_vari)
-    endif
-    ASSERT(nb_cmp.le.nb_para_maxi)
+        call jeveuo(list_vari, 'L', vk16=v_list_vari)
+    end if
+    ASSERT(nb_cmp .le. nb_para_maxi)
     do i_cmp = 1, nb_cmp
         if (type_sele_cmp .eq. 'NOM_CMP') then
             v_cmp_name(i_cmp) = v_list_cmp(i_cmp)
@@ -198,16 +198,16 @@ implicit none
             v_cmp_name(i_cmp) = v_list_vari(i_cmp)
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 ! - For node discretization
 !
     if (field_disc .eq. 'NOEU' .and. nb_node > 0) then
-        call jeveuo(work_node, 'L', vr = v_work_node)
-        call jeveuo(list_node, 'L', vi = v_list_node)
-        if(l_pmesh) then
-            call jeveuo(meshz(1:8)//'.NULOGL', 'L', vi = v_nonulg)
+        call jeveuo(work_node, 'L', vr=v_work_node)
+        call jeveuo(list_node, 'L', vi=v_list_node)
+        if (l_pmesh) then
+            call jeveuo(meshz(1:8)//'.NULOGL', 'L', vi=v_nonulg)
         end if
 !
         do i_node = 1, nb_node_r
@@ -216,43 +216,43 @@ implicit none
 !
             node_nume = v_list_node(i_node)
             call jenuno(jexnum(meshz(1:8)//'.NOMNOE', node_nume), node_name)
-            if(l_pmesh) then
+            if (l_pmesh) then
                 nume_glob = v_nonulg(node_nume)
             end if
 !
 ! --------- Write values
 !
             do i_cmp = 1, nb_cmp_r
-                vale_r   = v_work_node(i_cmp+nb_cmp*(i_node-1))
+                vale_r = v_work_node(i_cmp+nb_cmp*(i_node-1))
                 cmp_name = v_cmp_name(i_cmp)
-                if(l_pmesh) then
+                if (l_pmesh) then
 
-                    call nmobsz(sd_obsv  , tabl_name    , title         , field_type, field_disc,&
-                            type_extr, type_extr_cmp, type_extr_elem, type_sele_cmp, cmp_name,&
-                            time     , vale_r   ,&
-                            node_namez = node_name, glob_numez=nume_glob)
+                    call nmobsz(sd_obsv, tabl_name, title, field_type, field_disc, &
+                                type_extr, type_extr_cmp, type_extr_elem, type_sele_cmp, cmp_name, &
+                                time, vale_r, &
+                                node_namez=node_name, glob_numez=nume_glob)
                 else
-                    call nmobsz(sd_obsv  , tabl_name    , title         , field_type, field_disc,&
-                            type_extr, type_extr_cmp, type_extr_elem, type_sele_cmp, cmp_name,&
-                            time     , vale_r   ,&
-                            node_namez = node_name)
+                    call nmobsz(sd_obsv, tabl_name, title, field_type, field_disc, &
+                                type_extr, type_extr_cmp, type_extr_elem, type_sele_cmp, cmp_name, &
+                                time, vale_r, &
+                                node_namez=node_name)
                 end if
-                nb_obsf_effe = nb_obsf_effe + 1
+                nb_obsf_effe = nb_obsf_effe+1
             end do
         end do
-    endif
+    end if
 !
 ! - For element discretization
 !
     if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
-        if(nb_elem > 0) then
-            call jeveuo(work_elem, 'L', vr = v_work_elem)
-            call jeveuo(list_elem, 'L', vi = v_list_elem)
+        if (nb_elem > 0) then
+            call jeveuo(work_elem, 'L', vr=v_work_elem)
+            call jeveuo(list_elem, 'L', vi=v_list_elem)
         end if
 !
-        if(nb_poin > 0) then
-            call jeveuo(list_poin, 'L', vi = v_list_poin)
-            call jeveuo(list_spoi, 'L', vi = v_list_spoi)
+        if (nb_poin > 0) then
+            call jeveuo(list_poin, 'L', vi=v_list_poin)
+            call jeveuo(list_spoi, 'L', vi=v_list_spoi)
         end if
 !
         do i_elem = 1, nb_elem_r
@@ -284,11 +284,11 @@ implicit none
                 else
                     nb_poin_r = 1
                     nb_spoi_r = 1
-                endif
+                end if
             else
                 nb_poin_r = 1
                 nb_spoi_r = 1
-            endif
+            end if
 !
             do i_poin = 1, nb_poin_r
                 do i_spoi = 1, nb_spoi_r
@@ -301,27 +301,27 @@ implicit none
                     else
                         poin_nume = i_poin
                         spoi_nume = i_spoi
-                    endif
+                    end if
 !
 ! ----------------- Write values
 !
                     do i_cmp = 1, nb_cmp_r
-                        vale_r   = v_work_elem(nb_cmp*nb_poin*nb_spoi*(i_elem-1)+&
-                                               nb_poin*nb_spoi*(i_cmp-1)+&
-                                               nb_spoi*(i_poin-1)+&
-                                               (i_spoi-1)+1)
+                        vale_r = v_work_elem(nb_cmp*nb_poin*nb_spoi*(i_elem-1)+ &
+                                             nb_poin*nb_spoi*(i_cmp-1)+ &
+                                             nb_spoi*(i_poin-1)+ &
+                                             (i_spoi-1)+1)
                         cmp_name = v_cmp_name(i_cmp)
-                        call nmobsz(sd_obsv  , tabl_name    , title, field_type   , field_disc,&
-                                    type_extr, type_extr_cmp, type_extr_elem,&
-                                    type_sele_cmp, cmp_name,&
-                                    time     , vale_r   ,&
-                                    elem_namez = elem_name,&
-                                    poin_numez = poin_nume, spoi_numez = spoi_nume)
-                        nb_obsf_effe = nb_obsf_effe + 1
+                        call nmobsz(sd_obsv, tabl_name, title, field_type, field_disc, &
+                                    type_extr, type_extr_cmp, type_extr_elem, &
+                                    type_sele_cmp, cmp_name, &
+                                    time, vale_r, &
+                                    elem_namez=elem_name, &
+                                    poin_numez=poin_nume, spoi_numez=spoi_nume)
+                        nb_obsf_effe = nb_obsf_effe+1
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 end subroutine

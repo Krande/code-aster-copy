@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmevcx(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -57,8 +57,8 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_disc  = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
     i_echec_acti = 0
 !
     if (l_cont_disc) then
@@ -67,6 +67,6 @@ implicit none
         call nmevcc(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,29 +17,29 @@
 ! --------------------------------------------------------------------
 
 subroutine rcrot(nbabsc, phi, vale, sigm)
-    implicit   none
-    integer :: nbabsc,i
-    real(kind=8) :: phi, vale(4,nbabsc), sigm(4,nbabsc)
+    implicit none
+    integer :: nbabsc, i
+    real(kind=8) :: phi, vale(4, nbabsc), sigm(4, nbabsc)
 !     CALCULER LA TENSEUR DES CONTRAINTES ECRITE AVEC LA BASE LOCALE D'UN SEGMENT AXISYMETRIQUE
 !
 !
 !     ------------------------------------------------------------------
-    real(kind=8) :: rot(2,2), valr(2,2), sigr(2,2)
+    real(kind=8) :: rot(2, 2), valr(2, 2), sigr(2, 2)
 ! DEB ------------------------------------------------------------------
-    rot(1,1) = cos(phi)
-    rot(1,2) = -sin(phi)
-    rot(2,1) = sin(phi)
-    rot(2,2) = cos(phi)
+    rot(1, 1) = cos(phi)
+    rot(1, 2) = -sin(phi)
+    rot(2, 1) = sin(phi)
+    rot(2, 2) = cos(phi)
     do i = 1, nbabsc
-        valr(1,1) = vale(1,i)
-        valr(1,2) = vale(4,i)
-        valr(2,1) = vale(4,i)
-        valr(2,2) = vale(2,i)
-        sigr = matmul(matmul(transpose(rot),valr),rot)
-        sigm(1,i) = sigr(1,1)
-        sigm(2,i) = sigr(2,2)
-        sigm(3,i) = vale(3,i)
-        sigm(4,i) = sigr(1,2)
+        valr(1, 1) = vale(1, i)
+        valr(1, 2) = vale(4, i)
+        valr(2, 1) = vale(4, i)
+        valr(2, 2) = vale(2, i)
+        sigr = matmul(matmul(transpose(rot), valr), rot)
+        sigm(1, i) = sigr(1, 1)
+        sigm(2, i) = sigr(2, 2)
+        sigm(3, i) = vale(3, i)
+        sigm(4, i) = sigr(1, 2)
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function pacou2(x, fvec, vecr1, vecr2, typflu,&
-                vecr3, amor, masg, vecr4, vecr5,&
-                veci1, vg, indic, nbm, nmode,&
+function pacou2(x, fvec, vecr1, vecr2, typflu, &
+                vecr3, amor, masg, vecr4, vecr5, &
+                veci1, vg, indic, nbm, nmode, &
                 n)
     implicit none
 !
@@ -37,12 +37,12 @@ function pacou2(x, fvec, vecr1, vecr2, typflu,&
     integer :: i, indic, nbm, nmode
     real(kind=8) :: pacou2, sum
 !-----------------------------------------------------------------------
-    call pacouf(x, fvec, vecr1, vecr2, typflu,&
-                vecr3, amor, masg, vecr4, vecr5,&
+    call pacouf(x, fvec, vecr1, vecr2, typflu, &
+                vecr3, amor, masg, vecr4, vecr5, &
                 veci1, vg, indic, nbm, nmode)
     sum = 0.0d0
     do i = 1, n
-        sum = sum + fvec(i)*fvec(i)
+        sum = sum+fvec(i)*fvec(i)
     end do
     pacou2 = 0.5d0*sum
 !

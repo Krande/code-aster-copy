@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,21 +18,21 @@
 
 function cubic_root(x)
 !
-      implicit none
+    implicit none
 !
-      real(kind=8), intent(in) :: x
-      real(kind=8) :: cubic_root
+    real(kind=8), intent(in) :: x
+    real(kind=8) :: cubic_root
 !
 !
 !    RACINE CUBIQUE
 !
 ! IN  X : NOMBRE
 !
-      if(x.lt.0.d0) then
-          cubic_root = -((-x)**(1.d0/3.d0))
-      else
-          cubic_root = x**(1.d0/3.d0)
-      endif
+    if (x .lt. 0.d0) then
+        cubic_root = -((-x)**(1.d0/3.d0))
+    else
+        cubic_root = x**(1.d0/3.d0)
+    end if
 !
 !
 end function

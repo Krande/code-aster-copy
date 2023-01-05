@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,15 +46,15 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
     integer, pointer :: nbelrefe(:) => null()
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', nomte), nute)
-    ASSERT(nute.gt.0)
+    ASSERT(nute .gt. 0)
 !
     call jeveuo('&CATA.TE.NBELREFE', 'L', vi=nbelrefe)
     call jeveuo('&CATA.TE.NOELREFE', 'L', vk8=noelrefe)
 !
-    ntrou = nbelrefe(2* (nute-1)+1)
-    iad = nbelrefe(2* (nute-1)+2)
+    ntrou = nbelrefe(2*(nute-1)+1)
+    iad = nbelrefe(2*(nute-1)+2)
 !
-    ASSERT(ntrou.le.dim)
+    ASSERT(ntrou .le. dim)
 !
     do k = 1, ntrou
         lielrf(k) = noelrefe(iad-1+k)

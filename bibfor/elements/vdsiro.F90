@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdsiro(np, nbsp, matev, sens, goun,&
+subroutine vdsiro(np, nbsp, matev, sens, goun, &
                   tens1, tens2)
     implicit none
 ! BUT : CHANGER LE REPERE : INTRINSEQUE <-> UTILISATEUR
@@ -73,8 +73,8 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
     integer :: i, kpt, ksp, kpt2
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
-    ASSERT(sens.eq.'IU'.or.sens.eq.'UI')
-    ASSERT(goun.eq.'G'.or.goun.eq.'N')
+    ASSERT(sens .eq. 'IU' .or. sens .eq. 'UI')
+    ASSERT(goun .eq. 'G' .or. goun .eq. 'N')
 !
 ! --- BOUCLE SUR LES POINTS OU SONT CALCULES LES TENSEURS
 ! --- (I.E. LES NOEUDS OU LES POINTS D'INTEGRATION) :
@@ -83,40 +83,40 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
 !
 !       -- IL Y A UN BUG DANS VDREPE : ON NE CALCULE PAS
 !          LES MATRICES POUR FAMI='MASS'
-        kpt2=kpt
-        if (goun .eq. 'G') kpt2=1
+        kpt2 = kpt
+        if (goun .eq. 'G') kpt2 = 1
 !
 !       -- RECOPIE DE MATEV(KPT) DANS MATTMP :
-        mattmp(1,1)=matev(1,1,kpt2)
-        mattmp(2,2)=matev(2,2,kpt2)
+        mattmp(1, 1) = matev(1, 1, kpt2)
+        mattmp(2, 2) = matev(2, 2, kpt2)
 !
 !
         if (sens .eq. 'IU') then
-            mattmp(1,2)=matev(1,2,kpt2)
-            mattmp(2,1)=matev(2,1,kpt2)
+            mattmp(1, 2) = matev(1, 2, kpt2)
+            mattmp(2, 1) = matev(2, 1, kpt2)
         else
-            mattmp(1,2)=matev(2,1,kpt2)
-            mattmp(2,1)=matev(1,2,kpt2)
-        endif
+            mattmp(1, 2) = matev(2, 1, kpt2)
+            mattmp(2, 1) = matev(1, 2, kpt2)
+        end if
 !
         do ksp = 1, nbsp
-            i=(kpt-1)*nbsp+ksp
+            i = (kpt-1)*nbsp+ksp
             workel(1) = tens1(1+6*(i-1))
             workel(2) = tens1(4+6*(i-1))
             workel(3) = tens1(4+6*(i-1))
             workel(4) = tens1(2+6*(i-1))
 !
-            call utbtab('ZERO', 2, 2, workel, mattmp(1, 1),&
+            call utbtab('ZERO', 2, 2, workel, mattmp(1, 1), &
                         xab, worklo)
 !
             tens2(1+6*(i-1)) = worklo(1)
             tens2(2+6*(i-1)) = worklo(4)
             tens2(3+6*(i-1)) = tens1(3+6*(i-1))
             tens2(4+6*(i-1)) = worklo(2)
-            tampon(1)=tens1(5+6*(i-1))
-            tampon(2)=tens1(6+6*(i-1))
-            tens2(5+6*(i-1)) = tampon(1) * mattmp(1,1) + tampon(2) * mattmp(2,1)
-            tens2(6+6*(i-1)) = tampon(1) * mattmp(1,2) + tampon(2) * mattmp(2,2)
+            tampon(1) = tens1(5+6*(i-1))
+            tampon(2) = tens1(6+6*(i-1))
+            tens2(5+6*(i-1)) = tampon(1)*mattmp(1, 1)+tampon(2)*mattmp(2, 1)
+            tens2(6+6*(i-1)) = tampon(1)*mattmp(1, 2)+tampon(2)*mattmp(2, 2)
 !
         end do
     end do

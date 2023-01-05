@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
+subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs, &
                   nbcmps, nomgds, ipcmps)
     implicit none
 !
@@ -74,149 +74,149 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 !
     do icmas = 1, ncmpmx
         if (nomcmp(icmas) .eq. 'DX') then
-            nbdepl= nbdepl+1
-            videpl(1)=icmas
-        else if (nomcmp(icmas).eq.'DY') then
-            nbdepl= nbdepl+1
-            videpl(2)=icmas
-        else if (nomcmp(icmas).eq.'DZ') then
-            nbdepl= nbdepl+1
-            videpl(3)=icmas
-        else if (nomcmp(icmas).eq.'DRX') then
-            nbdepl= nbdepl+1
-            videpl(4)=icmas
-        else if (nomcmp(icmas).eq.'DRY') then
-            nbdepl= nbdepl+1
-            videpl(5)=icmas
-        else if (nomcmp(icmas).eq.'DRZ') then
-            nbdepl= nbdepl+1
-            videpl(6)=icmas
+            nbdepl = nbdepl+1
+            videpl(1) = icmas
+        else if (nomcmp(icmas) .eq. 'DY') then
+            nbdepl = nbdepl+1
+            videpl(2) = icmas
+        else if (nomcmp(icmas) .eq. 'DZ') then
+            nbdepl = nbdepl+1
+            videpl(3) = icmas
+        else if (nomcmp(icmas) .eq. 'DRX') then
+            nbdepl = nbdepl+1
+            videpl(4) = icmas
+        else if (nomcmp(icmas) .eq. 'DRY') then
+            nbdepl = nbdepl+1
+            videpl(5) = icmas
+        else if (nomcmp(icmas) .eq. 'DRZ') then
+            nbdepl = nbdepl+1
+            videpl(6) = icmas
 !
-        else if (nomcmp(icmas).eq.'FLUX') then
-            nbflu= nbflu+1
-            viflu(1)=icmas
-        else if (nomcmp(icmas).eq.'FLUY') then
-            nbflu= nbflu+1
-            viflu(2)=icmas
-        else if (nomcmp(icmas).eq.'FLUZ') then
-            nbflu= nbflu+1
-            viflu(3)=icmas
+        else if (nomcmp(icmas) .eq. 'FLUX') then
+            nbflu = nbflu+1
+            viflu(1) = icmas
+        else if (nomcmp(icmas) .eq. 'FLUY') then
+            nbflu = nbflu+1
+            viflu(2) = icmas
+        else if (nomcmp(icmas) .eq. 'FLUZ') then
+            nbflu = nbflu+1
+            viflu(3) = icmas
 !
-        else if (nomcmp(icmas).eq.'TEMP') then
-            nbtemp= nbtemp+1
-            vitemp(1)=icmas
+        else if (nomcmp(icmas) .eq. 'TEMP') then
+            nbtemp = nbtemp+1
+            vitemp(1) = icmas
 !
-        else if (nomcmp(icmas).eq.'PRES') then
-            nbpres= nbpres+1
-            vipres(1)=icmas
+        else if (nomcmp(icmas) .eq. 'PRES') then
+            nbpres = nbpres+1
+            vipres(1) = icmas
 !
-        else if (nomcmp(icmas).eq.'SIXX') then
-            nbsigm= nbsigm+1
+        else if (nomcmp(icmas) .eq. 'SIXX') then
+            nbsigm = nbsigm+1
             visigm(1) = icmas
-        else if (nomcmp(icmas).eq.'SIXY') then
-            nbsigm= nbsigm+1
+        else if (nomcmp(icmas) .eq. 'SIXY') then
+            nbsigm = nbsigm+1
             visigm(2) = icmas
-        else if (nomcmp(icmas).eq.'SIYY') then
-            nbsigm= nbsigm+1
+        else if (nomcmp(icmas) .eq. 'SIYY') then
+            nbsigm = nbsigm+1
             visigm(3) = icmas
-        else if (nomcmp(icmas).eq.'SIXZ') then
-            nbsigm= nbsigm+1
+        else if (nomcmp(icmas) .eq. 'SIXZ') then
+            nbsigm = nbsigm+1
             visigm(4) = icmas
-        else if (nomcmp(icmas).eq.'SIYZ') then
-            nbsigm= nbsigm+1
+        else if (nomcmp(icmas) .eq. 'SIYZ') then
+            nbsigm = nbsigm+1
             visigm(5) = icmas
-        else if (nomcmp(icmas).eq.'SIZZ') then
-            nbsigm= nbsigm+1
+        else if (nomcmp(icmas) .eq. 'SIZZ') then
+            nbsigm = nbsigm+1
             visigm(6) = icmas
 !
 !
-        else if (nomcmp(icmas).eq.'EPXX') then
-            nbepsm= nbepsm+1
+        else if (nomcmp(icmas) .eq. 'EPXX') then
+            nbepsm = nbepsm+1
             viepsm(1) = icmas
-        else if (nomcmp(icmas).eq.'EPXY') then
-            nbepsm= nbepsm+1
+        else if (nomcmp(icmas) .eq. 'EPXY') then
+            nbepsm = nbepsm+1
             viepsm(2) = icmas
-        else if (nomcmp(icmas).eq.'EPYY') then
-            nbepsm= nbepsm+1
+        else if (nomcmp(icmas) .eq. 'EPYY') then
+            nbepsm = nbepsm+1
             viepsm(3) = icmas
-        else if (nomcmp(icmas).eq.'EPXZ') then
-            nbepsm= nbepsm+1
+        else if (nomcmp(icmas) .eq. 'EPXZ') then
+            nbepsm = nbepsm+1
             viepsm(4) = icmas
-        else if (nomcmp(icmas).eq.'EPYZ') then
-            nbepsm= nbepsm+1
+        else if (nomcmp(icmas) .eq. 'EPYZ') then
+            nbepsm = nbepsm+1
             viepsm(5) = icmas
-        else if (nomcmp(icmas).eq.'EPZZ') then
-            nbepsm= nbepsm+1
+        else if (nomcmp(icmas) .eq. 'EPZZ') then
+            nbepsm = nbepsm+1
             viepsm(6) = icmas
 !
         else
-            nbvari= nbvari+1
-            vivari(nbvari)= icmas
-        endif
+            nbvari = nbvari+1
+            vivari(nbvari) = icmas
+        end if
     end do
 !
 !  --- RECHERCHE DES GRANDEURS SUPERTAB ASSOCIEES A LA GRANDEUR ASTER---
 !
     if (nbdepl .ne. 0) then
         if (nomsym .eq. 'DEPL' .or. nomsym .eq. 'VITE' .or. nomsym .eq. 'ACCE') then
-            nbchs=nbchs+1
+            nbchs = nbchs+1
             nomchs(nbchs) = 'DEPL'
             nbcmps(nbchs) = nbdepl
             nomgds(nbchs) = 'DEPL'
             if (nomsym .eq. 'DEPL') nomgds(nbchs) = 'DEPL'
             if (nomsym .eq. 'VITE') nomgds(nbchs) = 'VITE'
             if (nomsym .eq. 'ACCE') nomgds(nbchs) = 'ACCE'
-        endif
-    endif
+        end if
+    end if
     if (nbflu .ne. 0) then
-        nbchs=nbchs+1
+        nbchs = nbchs+1
         nomchs(nbchs) = 'FLUX'
         nbcmps(nbchs) = nbflu
         nomgds(nbchs) = 'FLUX'
-    endif
+    end if
     if (nbtemp .ne. 0) then
-        nbchs=nbchs+1
+        nbchs = nbchs+1
         nomchs(nbchs) = 'TEMP'
         nbcmps(nbchs) = nbtemp
         nomgds(nbchs) = 'TEMP'
-    endif
+    end if
     if (nbsigm .ne. 0) then
-        nbchs=nbchs+1
+        nbchs = nbchs+1
         nomchs(nbchs) = 'SIGM'
         nbcmps(nbchs) = nbsigm
         nomgds(nbchs) = 'SIGM'
-    endif
+    end if
     if (nbepsm .ne. 0) then
-        nbchs=nbchs+1
+        nbchs = nbchs+1
         nomchs(nbchs) = 'EPSI'
         nbcmps(nbchs) = nbepsm
         nomgds(nbchs) = 'EPSI'
-    endif
+    end if
     if (nbpres .ne. 0) then
-        nbchs=nbchs+1
+        nbchs = nbchs+1
         nomchs(nbchs) = 'PRES'
         nbcmps(nbchs) = nbpres
         nomgds(nbchs) = 'PRES'
-    endif
+    end if
     if (nbvari .ne. 0) then
-        ient =nbvari/6
-        ires =nbvari-(ient*6)
+        ient = nbvari/6
+        ires = nbvari-(ient*6)
         if (ient .ne. 0) then
             do ivar = 1, ient
-                nomchs(nbchs+ivar)= 'VARI'
-                nbcmps(nbchs+ivar)= 6
-                nomgds(nbchs+ivar)= 'VARI'
+                nomchs(nbchs+ivar) = 'VARI'
+                nbcmps(nbchs+ivar) = 6
+                nomgds(nbchs+ivar) = 'VARI'
             end do
-        endif
+        end if
         if (ires .ne. 0) then
-            nomchs(nbchs+ient+1)= 'VARI'
-            nbcmps(nbchs+ient+1)= ires
-            nomgds(nbchs+ient+1)= 'VARI'
+            nomchs(nbchs+ient+1) = 'VARI'
+            nbcmps(nbchs+ient+1) = ires
+            nomgds(nbchs+ient+1) = 'VARI'
             nbchs = nbchs+ient+1
         else
             nbchs = nbchs+ient
-        endif
-    endif
+        end if
+    end if
 !
 !  ---- POSITIONS DES COMPOSANTES SUPERTAB DANS LA GRANDEUR ASTER ----
 !
@@ -227,42 +227,42 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 !      => on suppose que les cas courants, la premiere grandeur est la bonne
 !      => nbchs=1
 !      Puis, on verifie que ipcmps(k) > 0 (c'est un indice dans des tableaux)
-    nbchs=1
+    nbchs = 1
     do i = 1, nbchs
         if (nomchs(i) .eq. 'DEPL') then
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = videpl(j)
-            enddo
+            end do
         else if (nomchs(i) .eq. 'PRES') then
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = vipres(j)
-            enddo
-        else if (nomchs(i).eq.'FLUX') then
+            end do
+        else if (nomchs(i) .eq. 'FLUX') then
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = viflu(j)
-            enddo
-        else if (nomchs(i).eq.'TEMP') then
+            end do
+        else if (nomchs(i) .eq. 'TEMP') then
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = vitemp(j)
-            enddo
-        else if (nomchs(i).eq.'SIGM') then
+            end do
+        else if (nomchs(i) .eq. 'SIGM') then
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = visigm(j)
-            enddo
-        else if (nomchs(i).eq.'EPSI') then
+            end do
+        else if (nomchs(i) .eq. 'EPSI') then
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = viepsm(j)
-            enddo
-        else if (nomchs(i).eq.'VARI') then
-            iva =iva + 1
+            end do
+        else if (nomchs(i) .eq. 'VARI') then
+            iva = iva+1
             do j = 1, nbcmps(i)
                 ipcmps((i-1)*ncmpmx+j) = vivari((iva-1)*6+j)
-            enddo
-        endif
+            end do
+        end if
 !
         do j = 1, nbcmps(i)
-            ASSERT (ipcmps((i-1)*ncmpmx+j).gt.0)
-        enddo
+            ASSERT(ipcmps((i-1)*ncmpmx+j) .gt. 0)
+        end do
 !
     end do
 !

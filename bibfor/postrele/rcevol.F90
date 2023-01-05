@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -111,11 +111,11 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     lamorc = .false.
     lsymm = .false.
 !
-    call getvtx(' ', 'AXIS', scal = symm, nbret = n1)
+    call getvtx(' ', 'AXIS', scal=symm, nbret=n1)
     if (symm .eq. 'OUI') then
         lsymm = .true.
         call utmess('I', 'POSTRCCM_58')
-    endif
+    end if
 !
     do i = 1, nbopt
         if (option(i) .eq. 'PM_PB') then
@@ -127,12 +127,12 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
             lsn = .true.
         else if (option(i) .eq. 'AMORCAGE') then
             lamorc = .true.
-        endif
+        end if
     end do
 !
     if (lamorc .and. (lpmpb .or. lsn .or. lfatig)) then
         call utmess('F', 'POSTRCCM_3')
-    endif
+    end if
 !
     kemixt = .false.
     call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=n1)
@@ -145,7 +145,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     if (lamorc) then
         call rcevoa(typtab, nommat)
         goto 999
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !                            LE MATERIAU
@@ -173,20 +173,20 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !                    TRAITEMENT DU MOT CLE FACTEUR TRANSITOIRE
 !         --------------------------------------------------------------
 !
-            if (lsn .and. .not.lfatig .and. nbtran .gt. 1) then
-                call rcev22(nbinti, kinti, j, csili, cinst,&
-                            csiex, lfatig, flexio, lrocht, cnoc,&
+            if (lsn .and. .not. lfatig .and. nbtran .gt. 1) then
+                call rcev22(nbinti, kinti, j, csili, cinst, &
+                            csiex, lfatig, flexio, lrocht, cnoc, &
                             cresu, cresp, lsymm)
             else
-                call rcevo2(nbinti, kinti, csili, cinst, csiex,&
-                            kemixt, cstex, csmex, lfatig, flexio,&
+                call rcevo2(nbinti, kinti, csili, cinst, csiex, &
+                            kemixt, cstex, csmex, lfatig, flexio, &
                             lrocht, cnoc, cresu, cresp, lsymm)
-            endif
+            end if
 !
             if (lrocht .and. symax .eq. r8vide()) then
                 call utmess('A', 'POSTRCCM_4')
                 lrocht = .false.
-            endif
+            end if
 !
 !         --------------------------------------------------------------
 !                          TRAITEMENT DES OPTIONS
@@ -197,13 +197,13 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
             if (flexio) call rcevse(csili, cinst, csneo, csnee, lsymm)
 !
             if (lfatig) then
-                call rcevsp(csiex, kemixt, cstex, csmex, cinst,&
-                            cspo, cspe, cspto, cspte, cspmo,&
+                call rcevsp(csiex, kemixt, cstex, csmex, cinst, &
+                            cspo, cspe, cspto, cspte, cspmo, &
                             cspme)
-                call rcevfa(nommat, para, sm, cnoc, csno,&
-                            csne, cspo, cspe, kemixt, cspto,&
+                call rcevfa(nommat, para, sm, cnoc, csno, &
+                            csne, cspo, cspe, kemixt, cspto, &
                             cspte, cspmo, cspme, cfao, cfae)
-            endif
+            end if
 !
 !         --------------------------------------------------------------
 !                                 ARCHIVAGE
@@ -211,23 +211,23 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
             if (typtab .eq. 'VALE_MAX') then
 !
-                call rcevom(csili, cinst, cnoc, sm, lfatig,&
-                            lpmpb, lsn, csno, csne, flexio,&
-                            csneo, csnee, cfao, cfae, cspo,&
-                            cspe, cresu, kinti, i, j,&
-                            lrocht, symax, cresp, kemixt, cspto,&
+                call rcevom(csili, cinst, cnoc, sm, lfatig, &
+                            lpmpb, lsn, csno, csne, flexio, &
+                            csneo, csnee, cfao, cfae, cspo, &
+                            cspe, cresu, kinti, i, j, &
+                            lrocht, symax, cresp, kemixt, cspto, &
                             cspte, cspmo, cspme, lsymm)
 !
             else
 !
-                call rcevod(csili, cinst, cnoc, sm, lfatig,&
-                            lpmpb, lsn, csno, csne, flexio,&
-                            csneo, csnee, cfao, cfae, cspo,&
-                            cspe, cresu, kinti, i, j,&
-                            lrocht, symax, cresp, kemixt, cspto,&
+                call rcevod(csili, cinst, cnoc, sm, lfatig, &
+                            lpmpb, lsn, csno, csne, flexio, &
+                            csneo, csnee, cfao, cfae, cspo, &
+                            cspe, cresu, kinti, i, j, &
+                            lrocht, symax, cresp, kemixt, cspto, &
                             cspte, cspmo, cspme, lsymm)
 !
-            endif
+            end if
 !
             call jedetr(cinst)
             call jedetr(cresu)
@@ -250,7 +250,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
                 call jedetr(cspme)
                 call jedetr(cspto)
                 call jedetr(cspte)
-            endif
+            end if
 !
         end do
 !

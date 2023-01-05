@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine mdsize(nomres, nbsauv, nbmode, nbnoli)
 !-----------------------------------------------------------------------
     integer :: nbsauv, nbmode, nbnoli, nbvint, jdesc, nbstoc
 !-----------------------------------------------------------------------
-    nbstoc = nbsauv * nbmode
+    nbstoc = nbsauv*nbmode
     call jeecra(nomres//'           .DEPL', 'LONUTI', nbstoc)
     call jeecra(nomres//'           .VITE', 'LONUTI', nbstoc)
     call jeecra(nomres//'           .ACCE', 'LONUTI', nbstoc)
@@ -46,8 +46,8 @@ subroutine mdsize(nomres, nbsauv, nbmode, nbnoli)
     if (nbnoli .gt. 0) then
         call jeveuo(nomres//'           .DESC', 'L', jdesc)
         nbvint = zi(jdesc+3)
-        nbstoc = nbvint * nbsauv
+        nbstoc = nbvint*nbsauv
         call jeecra(nomres//'        .NL.VINT', 'LONUTI', nbstoc)
-    endif
+    end if
 
 end subroutine

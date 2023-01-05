@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine appcrs(kptsc, lmd)
 !
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
     implicit none
 
 #include "jeveux.h"
@@ -111,111 +111,111 @@ use petsc_data_module
 !     -- CES PC NE SONT PAS PARALLELISES
 !     -- ON UTILISE DONC DES VERSIONS PAR BLOC
 !     ----------------------------------------
-    if ((precon.eq.'LDLT_INC') .or. (precon.eq.'SOR')) then
+    if ((precon .eq. 'LDLT_INC') .or. (precon .eq. 'SOR')) then
         if (nbproc .gt. 1) then
-            kspp=ksp
+            kspp = ksp
             call KSPGetPC(kspp, pcp, ierr)
-            ASSERT(ierr.eq.0)
+            ASSERT(ierr .eq. 0)
             call PCSetType(pcp, PCBJACOBI, ierr)
-            ASSERT(ierr.eq.0)
+            ASSERT(ierr .eq. 0)
             call KSPSetUp(kspp, ierr)
-            ASSERT(ierr.eq.0)
+            ASSERT(ierr .eq. 0)
             call PCBJacobiGetSubKSP(pcp, nlocal, first, (/PETSC_NULL_KSP/), ierr)
-            ASSERT(ierr.eq.0)
-            ASSERT( nlocal == 1 )
+            ASSERT(ierr .eq. 0)
+            ASSERT(nlocal == 1)
             call PCBJacobiGetSubKSP(pcp, nlocal, first, subksp, ierr)
-            ASSERT(ierr.eq.0)
-            ksp=subksp(1)
+            ASSERT(ierr .eq. 0)
+            ksp = subksp(1)
         else
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 !     -- choix du preconditionneur :
 !     -------------------------------
     call KSPGetPC(ksp, pc, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !-----------------------------------------------------------------------
     if (precon .eq. 'LDLT_INC') then
         call PCSetType(pc, PCILU, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call PCFactorSetLevels(pc, fill, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call PCFactorSetFill(pc, fillp, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call PCFactorSetMatOrderingType(pc, MATORDERINGNATURAL, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !-----------------------------------------------------------------------
-    else if ((precon.eq.'LDLT_SP').or.(precon.eq.'LDLT_DP')) then
+    else if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
 !       CREATION SOLVEUR BIDON SIMPLE PRECISION/LOW_RANK
-        spsomu = zk24(jslvk-1+3)(1:19)
+        spsomu = zk24(jslvk-1+3) (1:19)
         pcpiv = zi(jslvi-1+7)
         usersm = zk24(jslvk-1+9)
         blreps = zr(jslvr-1+4)
         renum = zk24(jslvk-1+4)
         redmpi = zi(jslvi-1+1)
-        if ( precon == 'LDLT_SP' ) then
-           prec='S'
-        else if ( precon == 'LDLT_DP' ) then
-           prec='D'
-        endif
-        if ( blreps < r8prem()) then
-           rank='F'
+        if (precon == 'LDLT_SP') then
+            prec = 'S'
+        else if (precon == 'LDLT_DP') then
+            prec = 'D'
+        end if
+        if (blreps < r8prem()) then
+            rank = 'F'
         else
-           rank='L'
-        endif
-        call crsvfm(spsomu, nomat, prec, rank, pcpiv, usersm, blreps, renum, redmpi )
+            rank = 'L'
+        end if
+        call crsvfm(spsomu, nomat, prec, rank, pcpiv, usersm, blreps, renum, redmpi)
 !        CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
-        if (lmd.or.lmhpc) then
+        if (lmd .or. lmhpc) then
             if (lmd) then
-               call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
-               call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
-               call jeveuo(nonu//'.NUML.PDDL', 'L', jprddl)
-               nloc = zi(jnequl)
-               neq = to_petsc_int(zi(jnequ))
+                call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
+                call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
+                call jeveuo(nonu//'.NUML.PDDL', 'L', jprddl)
+                nloc = zi(jnequl)
+                neq = to_petsc_int(zi(jnequ))
             else
-               call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
-               call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
-               nloc = zi(jnequ)
-               neq = to_petsc_int(zi(jnequ+1))
+                call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
+                call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
+                nloc = zi(jnequ)
+                neq = to_petsc_int(zi(jnequ+1))
             end if
             ndprop = 0
             do jcoll = 0, nloc-1
                 if (zi(jprddl+jcoll) .eq. rang) ndprop = ndprop+to_petsc_int(1)
             end do
 !
-            ASSERT( xlocal == PETSC_NULL_VEC )
+            ASSERT(xlocal == PETSC_NULL_VEC)
             call VecCreateMPI(mpicou, ndprop, neq, xlocal, ierr)
         else
             call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
-            neq=to_petsc_int(nsmdi)
-            ASSERT( xlocal == PETSC_NULL_VEC )
+            neq = to_petsc_int(nsmdi)
+            ASSERT(xlocal == PETSC_NULL_VEC)
             call VecCreateMPI(mpicou, PETSC_DECIDE, neq, xlocal, ierr)
-        endif
-        ASSERT(ierr.eq.0)
+        end if
+        ASSERT(ierr .eq. 0)
 !
-        ASSERT( xscatt == PETSC_NULL_VECSCATTER )
-        ASSERT( xglobal == PETSC_NULL_VEC )
-        call VecCreateSeq( PETSC_COMM_SELF, to_petsc_int(neq), xglobal, ierr )
-        ASSERT( ierr == 0 )
+        ASSERT(xscatt == PETSC_NULL_VECSCATTER)
+        ASSERT(xglobal == PETSC_NULL_VEC)
+        call VecCreateSeq(PETSC_COMM_SELF, to_petsc_int(neq), xglobal, ierr)
+        ASSERT(ierr == 0)
 ! On passe PETSC_NULL_VEC en lieu et place de xglobal en entrée de VecScatterCreateToAll
 ! car ainsi, il n'est pas realloué
         call VecScatterCreateToAll(xlocal, xscatt, PETSC_NULL_VEC, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !-----------------------------------------------------------------------
-    else if (precon.eq.'SOR') then
+    else if (precon .eq. 'SOR') then
         call PCSetType(pc, PCSOR, ierr)
-        ASSERT(ierr.eq.0)
-    endif
+        ASSERT(ierr .eq. 0)
+    end if
 !-----------------------------------------------------------------------
 !
 !     CREATION EFFECTIVE DES PRECONDITIONNEURS RETARDES
-    if ((precon.eq.'LDLT_INC') .or. (precon.eq.'SOR')) then
+    if ((precon .eq. 'LDLT_INC') .or. (precon .eq. 'SOR')) then
         call PCSetUp(pc, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_14')
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !

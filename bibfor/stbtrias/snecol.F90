@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine snecol(imod, nbnode)
     call jemarq()
 !
 !
-    prfnoe='N'
+    prfnoe = 'N'
     icmax = 256
     do i = 1, icmax
         logiq(i) = .false.
@@ -81,26 +81,26 @@ subroutine snecol(imod, nbnode)
         call codnop(chnode, prfnoe, 1, 1)
         call codent(inum, 'G', chnode(2:8))
         icol = noeuds((i-1)*3+3)
-        ipos = icol + 1
+        ipos = icol+1
         if (ipos .gt. icmax) then
             call utmess('A', 'STBTRIAS_2')
             goto 100
-        endif
-        if (.not.logiq(ipos)) then
-            logiq(ipos)= .true.
+        end if
+        if (.not. logiq(ipos)) then
+            logiq(ipos) = .true.
             call codent(icol, 'G', kbid)
-            call wkvect('&&PRESUP.COUL'//kbid, 'V V K8', nbmax+1, jpo( ipos))
-        endif
+            call wkvect('&&PRESUP.COUL'//kbid, 'V V K8', nbmax+1, jpo(ipos))
+        end if
         nbno = jnomb(ipos)
-        nbtot= jmax(ipos)
+        nbtot = jmax(ipos)
         if (nbno .ge. nbtot) then
             call codent(icol, 'G', kbid)
-            nbtot = nbtot + nbmax
+            nbtot = nbtot+nbmax
             jmax(ipos) = nbtot
             call juveca('&&PRESUP.COUL'//kbid, nbtot+1)
             call jeveuo('&&PRESUP.COUL'//kbid, 'E', jpo(ipos))
-        endif
-        jnomb(ipos) = nbno + 1
+        end if
+        jnomb(ipos) = nbno+1
         zk8(jpo(ipos)-1+nbno+1) = chnode
 100     continue
     end do
@@ -111,13 +111,13 @@ subroutine snecol(imod, nbnode)
         if (logiq(ic)) then
             call codent((ic-1), 'G', kbid)
             chgrou = 'COUL_'//kbid
-            write(imod,'(A,4X,2A)')'GROUP_NO','NOM=',chgrou
+            write (imod, '(A,4X,2A)') 'GROUP_NO', 'NOM=', chgrou
             nbno = jnomb(ic)
-            write (imod,'(8(2X,A))') (zk8(jpo(ic)-1+j),j=1,nbno)
-            write (imod,'(A)') 'FINSF'
-            write (imod,'(A)') '%'
+            write (imod, '(8(2X,A))') (zk8(jpo(ic)-1+j), j=1, nbno)
+            write (imod, '(A)') 'FINSF'
+            write (imod, '(A)') '%'
             call jedetr('&&PRESUP.COUL'//kbid)
-        endif
+        end if
     end do
 !
     call jedema()

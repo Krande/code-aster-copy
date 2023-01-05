@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine zerop2(b, c, x, n)
 !
     real(kind=8) :: delta, rac
 !
-    delta = b**2 - 4*c
+    delta = b**2-4*c
     if (delta .lt. 0) then
         n = 0
     else
@@ -41,6 +41,6 @@ subroutine zerop2(b, c, x, n)
         rac = sqrt(delta)
         x(1) = (-b+rac)/2
         x(2) = (-b-rac)/2
-    endif
+    end if
 !
 end subroutine

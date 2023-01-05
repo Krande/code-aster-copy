@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !
     integer :: i, ii, ima, ifiss, ino, n
     integer :: nbno, nbnot, nfiss, nmax, nbmalo, nbmala
-    integer :: jlmas, idlist,  jtem3, jtem4
+    integer :: jlmas, idlist, jtem3, jtem4
     integer :: ibid, test, valeno
     character(len=8) :: noma, nomail, fiss
     character(len=16) :: motfac, typgrp
@@ -71,7 +71,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- INITIALISATIONS :
 !     ================
-    nbmala=0
+    nbmala = 0
     nbma = 0
     motfac = mofaz
     noma = nomaz
@@ -82,13 +82,13 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     call getvid(motfac, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
     nfiss = -nfiss
     AS_ALLOCATE(vk8=vfiss, size=nfiss)
-    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=vfiss,&
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=vfiss, &
                 nbret=ibid)
 !
 !
 ! --- TYPE DE MAILLE = 'HEAVISIDE', 'CRACKTIP' OU  'MIXTE'
 !     ====================================================
-    if ((typgrp.eq.'HEAVISIDE') .or. (typgrp.eq.'CRACKTIP') .or. (typgrp.eq.'MIXTE')) then
+    if ((typgrp .eq. 'HEAVISIDE') .or. (typgrp .eq. 'CRACKTIP') .or. (typgrp .eq. 'MIXTE')) then
 !
         call wkvect('&&CGMAXF.TEM3', 'V V I', nfiss, jtem3)
         call wkvect('&&CGMAXF.TEM4', 'V V I', nfiss, jtem4)
@@ -98,20 +98,20 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
             maifis = '.MAILFISS.HEAV'
 !
 ! ---   TYPE DE MAILLE = 'CRACKTIP'
-        else if (typgrp.eq.'CRACKTIP') then
+        else if (typgrp .eq. 'CRACKTIP') then
             maifis = '.MAILFISS.CTIP'
 !
 ! ---   TYPE DE MAILLE =
-        else if (typgrp.eq.'MIXTE') then
+        else if (typgrp .eq. 'MIXTE') then
             maifis = '.MAILFISS.HECT'
-        endif
+        end if
 ! ---   BOUCLE SUR TOUTES LES FISSURES
         do ifiss = 1, nfiss
             fiss = vfiss(ifiss)
             call jeveuo(fiss//maifis, 'L', zi(jtem3-1+ifiss))
             call jelira(fiss//maifis, 'LONMAX', n)
             zi(jtem4-1+ifiss) = n
-            nbma = nbma + n
+            nbma = nbma+n
         end do
 ! ---   CREATION ET REMPLISSAGE DU VECTEUR DE SORTIE
         if (nbma .gt. 0) then
@@ -119,27 +119,27 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
             do ifiss = 1, nfiss
                 jlmas = zi(jtem3-1+ifiss)
                 do i = 1, zi(jtem4-1+ifiss)
-                    nbmala = nbmala + 1
+                    nbmala = nbmala+1
                     zi(idlist+nbmala-1) = zi(jlmas+i-1)
                     call jenuno(jexnum(noma//'.NOMMAI', zi(jlmas+i-1)), nomail)
                 end do
             end do
-        endif
+        end if
         call jedetr('&&CGMAXF.TEM3')
         call jedetr('&&CGMAXF.TEM4')
 !
 ! --- TYPE DE MAILLE = 'XFEM'
 !     ============================
-    else if (typgrp.eq.'XFEM') then
+    else if (typgrp .eq. 'XFEM') then
 !
         lisman = '&&CGMAXF.TEM1'
-        call xtmafi(0, vfiss, nfiss, lismai,&
+        call xtmafi(0, vfiss, nfiss, lismai, &
                     lisman, nbma, mesh=noma)
         call jedetr(lisman)
 !
 ! --- TYPE DE MAILLE = 'FISSUREE'
 !     ============================
-    else if (typgrp.eq.'FISSUREE') then
+    else if (typgrp .eq. 'FISSUREE') then
 !
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
         call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nmax)
@@ -147,7 +147,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !       POUR DIMENSIONNER GROSSIEREMENT LA LISTE DES MAILLES
         lisman = '&&CGMAXF.TEM1'
         lismar = '&&CGMAXF.TEM2'
-        call xtmafi(0, vfiss, nfiss, lismar,&
+        call xtmafi(0, vfiss, nfiss, lismar, &
                     lisman, nbma, mesh=noma)
         call jedetr(lismar)
         call jedetr(lisman)
@@ -166,14 +166,14 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !         RECUPERATION DE TOUTES MAILLES XFEM DE LA FISSURE COURANTE
             lisman = '&&CGMAXF.TEM1'
-            call xtmafi(0, fiss, 1, lismar,&
+            call xtmafi(0, fiss, 1, lismar, &
                         lisman, nbmala, mesh=noma)
             call jeveuo(lismar, 'L', jlmas)
 !
 !         POUR CHAQUE MAILLE XFEM DE LA FISSURE COURANTE
             do ii = 1, nbmala
 !           RECUPERATION DES NOEUDS
-                call gmgnre(noma, nbnot, zi(jtem3), zi(jlmas+ii-1), 1,&
+                call gmgnre(noma, nbnot, zi(jtem3), zi(jlmas+ii-1), 1, &
                             zi(jtem4), nbno, 'TOUS')
 !           TRI DES NOEUDS SELON LEUR STATUS XFEM
                 test = 1
@@ -181,14 +181,14 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
                     valeno = vale(1+zi(jtem4+ino-1)-1)
                     if (valeno .eq. 0) then
                         test = 0
-                    endif
+                    end if
                 end do
 !           MAILLES QUI REPOSENT SUR LES NOEUDS AU STATUS <> 0
                 if (test .eq. 1) then
-                    nbmalo = nbmalo + 1
+                    nbmalo = nbmalo+1
                     tem5(nbmalo) = zi(jlmas+ii-1)
                     call jenuno(jexnum(noma//'.NOMMAI', tem5(nbmalo)), nomail)
-                endif
+                end if
             end do
             call jedetr(lismar)
             call jedetr(lisman)
@@ -203,7 +203,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
         AS_DEALLOCATE(vi=tem5)
         nbma = nbmalo
 !
-    endif
+    end if
 !
 ! --- FIN
 !     ===

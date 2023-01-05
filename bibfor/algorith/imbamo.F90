@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine imbamo(nomres)
 !
     real(kind=8) :: freq, genek, genem
 !-----------------------------------------------------------------------
-    parameter    (nbpabm=8)
+    parameter(nbpabm=8)
     character(len=8) :: nomres, intf, nomnoe, nomcmp
     character(len=19) :: raid, mass, typeba, valk(4)
     character(len=14) :: numref
@@ -51,10 +51,10 @@ subroutine imbamo(nomres)
 !
 !-----------------------------------------------------------------------
 !
-    data  bmpara/&
-     &  'NUME_MODE  '     , 'FREQ'       , 'NORME'           ,&
-     &  'NOEUD_CMP'       , 'TYPE_DEFO'          , 'OMEGA2'   ,&
-     &  'MASS_GENE'      , 'RIGI_GENE'/
+    data bmpara/&
+     &  'NUME_MODE  ', 'FREQ', 'NORME',&
+     &  'NOEUD_CMP', 'TYPE_DEFO', 'OMEGA2',&
+     &  'MASS_GENE', 'RIGI_GENE'/
 !
 !-----------------------------------------------------------------------
 !
@@ -82,68 +82,68 @@ subroutine imbamo(nomres)
         call dismoi('NB_MODES_STA', nomres, 'RESULTAT', repi=nbdef)
         call dismoi('NB_MODES_DYN', nomres, 'RESULTAT', repi=nbmod)
 !
-        valk(1)=intf
-        valk(2)=numref
-        valk(3)=raid
-        valk(4)=mass
-        vali(1)=nbmod
-        vali(2)=nbdef
-        call utmess('I', 'ALGELINE6_2', nk=4, valk=valk, ni=2,&
+        valk(1) = intf
+        valk(2) = numref
+        valk(3) = raid
+        valk(4) = mass
+        vali(1) = nbmod
+        vali(2) = nbdef
+        call utmess('I', 'ALGELINE6_2', nk=4, valk=valk, ni=2, &
                     vali=vali)
 !
-    endif
+    end if
 !
 !   CAS D'UNE BASE DE TYPE CYCLIQUE
 !
     if (typeba(1:8) .eq. 'CYCLIQUE') then
         call dismoi('NOM_MODE_CYCL', intf, 'INTERF_DYNA', repk=rescyc)
 !
-        valk(1)=intf
-        valk(2)=numref
+        valk(1) = intf
+        valk(2) = numref
         call utmess('I', 'ALGELINE6_3', nk=2, valk=valk)
 !
-    endif
+    end if
 !
 ! CAS D'UNE BASE DE RITZ
 !
     if (typeba(1:4) .eq. 'RITZ') then
 !
-        valk(1)=numref
-        vali(1)=nbtot
+        valk(1) = numref
+        vali(1) = nbtot
         call utmess('I', 'ALGELINE6_4', sk=valk(1), si=vali(1))
 !
-    endif
+    end if
 !
     call utmess('I', 'ALGELINE6_5')
 !
     do i = 1, nbtot
 !
-        call rsadpa(nomres, 'L', nbpabm, bmpara, i,&
+        call rsadpa(nomres, 'L', nbpabm, bmpara, i, &
                     0, tjv=ldpar, styp=k8bid, istop=0)
 !
-        typdef=zk16(ldpar(5))
+        typdef = zk16(ldpar(5))
 !
-        vali(1)=i
+        vali(1) = i
         if (typdef .eq. 'PROPRE') then
 !
-            freq=zr(ldpar(2))
-            genek=zr(ldpar(8))
-            genem=zr(ldpar(7))
-            valr(1)=freq
-            valr(2)=genem
-            valr(3)=genek
+            freq = zr(ldpar(2))
+            genek = zr(ldpar(8))
+            genem = zr(ldpar(7))
+            valr(1) = freq
+            valr(2) = genem
+            valr(3) = genek
             call utmess('I', 'ALGELINE6_6', si=vali(1), nr=3, valr=valr)
 !
         else
 !
-            nomnoe=zk16(ldpar(4))(1:8)
-            nomcmp=zk16(ldpar(4))(9:16)
-            valk(1)=typdef
-            valk(2)=nomnoe
-            valk(3)=nomcmp
+            nomnoe = zk16(ldpar(4)) (1:8)
+            nomcmp = zk16(ldpar(4)) (9:16)
+            valk(1) = typdef
+            valk(2) = nomnoe
+            valk(3) = nomcmp
             call utmess('I', 'ALGELINE6_7', nk=3, valk=valk, si=vali(1))
 !
-        endif
+        end if
     end do
 !
     call jedema()

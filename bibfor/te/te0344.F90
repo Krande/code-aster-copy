@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,20 +67,20 @@ subroutine te0344(option, nomte)
     aster_logical :: okopt
 ! --------------------------------------------------------------------------------------------------
     integer :: nbres
-    parameter  (nbres=2)
+    parameter(nbres=2)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
     character(len=8) :: nompar
-    data nomres/'E','NU'/
+    data nomres/'E', 'NU'/
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 2
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','TVAR'/
+    data noms_cara/'A1', 'TVAR'/
 ! --------------------------------------------------------------------------------------------------
 !
-    okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
+    okopt = (option .eq. 'SIPM_ELNO') .or. (option .eq. 'SIPO_ELNO')
     ASSERT(okopt)
 !
 !   recuperation des caracteristiques materiaux
@@ -88,12 +88,12 @@ subroutine te0344(option, nomte)
 !
 !   option valide avec un seul phenomene : elas
     jmat = zi(lmater)
-    nbmat= zi(jmat)
+    nbmat = zi(jmat)
 !   un seul materiau
     if (nbmat .ne. 1) then
         messk(1) = option
         call utmess('F', 'ELEMENTS4_59', sk=messk(1))
-    endif
+    end if
 !   le 1er materiau
     imat = jmat+zi(jmat+nbmat+1)
 !   seul elas est autorise
@@ -102,8 +102,8 @@ subroutine te0344(option, nomte)
             messk(1) = option
             messk(2) = zk32(zi(imat)+icomp-1)
             call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
-        endif
-    enddo
+        end if
+    end do
 !
     nbpar = 0
     nompar = '  '
@@ -115,12 +115,12 @@ subroutine te0344(option, nomte)
     call moytem('RIGI', npg, 1, '+', valpar, iret)
     nbpar = 1
     nompar = 'TEMP'
-    call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar], &
                 2, nomres, valres, codres, 1)
 !
     e = valres(1)
     nu = valres(2)
-    g = e / ( 2.d0 * ( 1.d0 + nu ) )
+    g = e/(2.d0*(1.d0+nu))
 !   recuperation des carac des sections utiles, longueur et pgl
     nno = 2
     nc = 7
@@ -139,7 +139,7 @@ subroutine te0344(option, nomte)
     call jevech('PDEPLAR', 'L', jdepl)
     do i = 1, 14
         ugr(i) = zr(jdepl+i-1)
-    enddo
+    end do
 !   vecteur deplacement local  ULR = PGL * UGR
     call utpvgl(nno, nc, pgl, ugr, ulr)
 !   vecteur effort local  FLR = KLC * ULR
@@ -151,42 +151,42 @@ subroutine te0344(option, nomte)
     ugr(8) = -ugr(1)
 !   calcul des forces induites
     do i = 1, 7
-        flr(i) = flr(i) - klc(i,1)*ugr(1)
-        flr(i+7) = flr(i+7) - klc(i+7,1+7)*ugr(1+7)
-     enddo
+        flr(i) = flr(i)-klc(i, 1)*ugr(1)
+        flr(i+7) = flr(i+7)-klc(i+7, 1+7)*ugr(1+7)
+    end do
 !   prise en compte des efforts repartis
     call tecach('ONO', 'PFR1D1D', 'L', iret, iad=lforcr)
     if (lforcr .ne. 0) then
-        call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a,  xl, 1, nno, ncc, pgl, fe, fi)
+        call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a, xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
-            flr(i) = flr(i) - fe(i)
-            flr(i+7) = flr(i+7) - fe(i+6)
-        enddo
-    endif
+            flr(i) = flr(i)-fe(i)
+            flr(i+7) = flr(i+7)-fe(i+6)
+        end do
+    end if
 !   prise en compte des efforts repartis (sous forme de fonction)
     call tecach('ONO', 'PFF1D1D', 'L', iret, iad=lforcf)
     if (lforcf .ne. 0) then
         call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a, xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
-            flr(i) = flr(i) - fe(i)
-            flr(i+7) = flr(i+7) - fe(i+6)
-        enddo
-    endif
+            flr(i) = flr(i)-fe(i)
+            flr(i+7) = flr(i+7)-fe(i+6)
+        end do
+    end if
 !   archivage
     if (option .eq. 'SIPM_ELNO') then
         call jevech('PSIMXRR', 'E', jeffo)
         do i = 1, 6
             fe(i) = flr(i)
             fe(i+6) = flr(i+7)
-        enddo
+        end do
         call posigr(nomte, fe, zr(jeffo))
-    else if (option.eq.'SIPO_ELNO') then
+    else if (option .eq. 'SIPO_ELNO') then
         call jevech('PCONTPO', 'E', jeffo)
         do i = 1, 6
             fe(i) = flr(i)
             fe(i+6) = flr(i+7)
-        enddo
+        end do
         call posipr(nomte, fe, zr(jeffo))
-    endif
+    end if
 !
 end subroutine

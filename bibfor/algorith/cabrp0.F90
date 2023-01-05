@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
-                  idfde, idfde2, geom, dimdef, dimuel,&
-                  ndim, nddls, nddlm, nno, nnos,&
-                  nnom, axi, regula, b, poids,&
+subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2, &
+                  idfde, idfde2, geom, dimdef, dimuel, &
+                  ndim, nddls, nddlm, nno, nnos, &
+                  nnom, axi, regula, b, poids, &
                   poids2)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -62,7 +62,7 @@ subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- INITIALISATION DE LA MATRICE B -----------------------------------
 ! ======================================================================
-    b(:,:) = 0.d0
+    b(:, :) = 0.d0
     adder1 = regula(1)
     adder2 = regula(2)
     adder3 = regula(3)
@@ -73,27 +73,27 @@ subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- CAS QUADRATIQUES -------------------------------------------------
 ! ======================================================================
-        call dfdm2d(nno, kpi, ipoids, idfde, geom,&
+        call dfdm2d(nno, kpi, ipoids, idfde, geom, &
                     poids, dfdi(1, 1), dfdi(1, 2))
 ! ======================================================================
 ! --- CAS LINEAIRES ----------------------------------------------------
 ! ======================================================================
-        call dfdm2d(nnos, kpi, ipoid2, idfde2, geom,&
+        call dfdm2d(nnos, kpi, ipoid2, idfde2, geom, &
                     poids2, dfdi2(1, 1), dfdi2(1, 2))
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
 ! ======================================================================
 ! --- CAS QUADRATIQUES -------------------------------------------------
 ! ======================================================================
-        call dfdm3d(nno, kpi, ipoids, idfde, geom,&
+        call dfdm3d(nno, kpi, ipoids, idfde, geom, &
                     poids, dfdi(1, 1), dfdi(1, 2), dfdi(1, 3))
 ! ======================================================================
 ! --- CAS LINEAIRES ----------------------------------------------------
 ! ======================================================================
-        call dfdm3d(nnos, kpi, ipoid2, idfde2, geom,&
+        call dfdm3d(nnos, kpi, ipoid2, idfde2, geom, &
                     poids2, dfdi2(1, 1), dfdi2(1, 2), dfdi2(1, 3))
     else
         call utmess('F', 'ALGORITH6_13')
-    endif
+    end if
 ! ======================================================================
 ! --- REMPLISSAGE DE L OPERATEUR B -------------------------------------
 ! ======================================================================
@@ -101,17 +101,17 @@ subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
     do n = 1, nnos
         do i = 1, ndim
-            b(adder1,(n-1)*nddls+i) = b(adder1,(n-1)*nddls+i)-dfdi(n, i)
+            b(adder1, (n-1)*nddls+i) = b(adder1, (n-1)*nddls+i)-dfdi(n, i)
         end do
-        b(adder1,(n-1)*nddls+ndim+1) = b(adder1, (n-1)*nddls+ndim+1) + zr(ivf2+n+(kpi-1)*nnos-1)
+        b(adder1, (n-1)*nddls+ndim+1) = b(adder1, (n-1)*nddls+ndim+1)+zr(ivf2+n+(kpi-1)*nnos-1)
     end do
 ! ======================================================================
 ! --- SUR LES NOEUDS MILIEUX -------------------------------------------
 ! ======================================================================
     do n = 1, nnom
         do i = 1, ndim
-            b(adder1,nnos*nddls+(n-1)*nddlm+i)= b(adder1,nnos*nddls+(&
-            n-1)*nddlm+i)-dfdi(n+nnos,i)
+            b(adder1, nnos*nddls+(n-1)*nddlm+i) = b(adder1, nnos*nddls+( &
+                                                    n-1)*nddlm+i)-dfdi(n+nnos, i)
         end do
     end do
 ! ======================================================================
@@ -122,8 +122,8 @@ subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
     do n = 1, nnos
         do i = 1, ndim
-            b(adder2-1+i,(n-1)*nddls+ndim+1)= b(adder2-1+i,(n-1)*&
-            nddls+ndim+1)+dfdi2(n,i)
+            b(adder2-1+i, (n-1)*nddls+ndim+1) = b(adder2-1+i, (n-1)* &
+                                                  nddls+ndim+1)+dfdi2(n, i)
         end do
     end do
 ! ======================================================================
@@ -133,6 +133,6 @@ subroutine cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- SUR LES NOEUDS CENTRAUX ------------------------------------------
 ! ======================================================================
-    b(adder3,dimuel)=1.0d0
+    b(adder3, dimuel) = 1.0d0
 ! ======================================================================
 end subroutine

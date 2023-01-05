@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,11 @@ function iipff(i, ndim, nfh, nfe)
     integer ::i, ndim, nfh, nfe, iipff
 !-----------------------------------------------------------------------
 !
-     iipff=i
-     if (nfe.gt.0) then
-        if (i.gt.1+nfh) then
-          iipff=int((i-(1+nfh)-1)/ndim)+1+nfh+1
-        endif
-     endif
+    iipff = i
+    if (nfe .gt. 0) then
+        if (i .gt. 1+nfh) then
+            iipff = int((i-(1+nfh)-1)/ndim)+1+nfh+1
+        end if
+    end if
 !
 end function

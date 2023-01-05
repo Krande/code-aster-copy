@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine te0100(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -44,7 +44,7 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +86,7 @@ character(len=16), intent(in) :: option, nomte
     real(kind=8) :: sdepl(3*9), svect(3*9), scont(6*9), smatr(3*9*3*9)
     real(kind=8) :: epsilo
     real(kind=8) :: varia(2*3*9*3*9)
-    real(kind=8),dimension(:),allocatable:: geom_updated
+    real(kind=8), dimension(:), allocatable:: geom_updated
 ! --------------------------------------------------------------------------------------------------
 !
     icontp = 1
@@ -95,32 +95,32 @@ character(len=16), intent(in) :: option, nomte
     ivectu = 1
     ivarix = 1
     jv_codret = 1
-    fami   = 'RIGI'
+    fami = 'RIGI'
     codret = 0
 !
 ! - Get element parameters
 !
-    call elrefe_info(fami=fami, nno=nno, npg=npg,&
+    call elrefe_info(fami=fami, nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .le. 9)
 !
 ! - Type of finite element
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
-    else if (lteatt('C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN', 'OUI')) then
         typmod(1) = 'C_PLAN'
-    else if (lteatt('D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
     else
         ASSERT(ASTER_FALSE)
-    endif
-    
-    if (lteatt('TYPMOD2','ELEMDISC')) then
+    end if
+
+    if (lteatt('TYPMOD2', 'ELEMDISC')) then
         typmod(2) = 'ELEMDISC'
     else
         typmod(2) = ' '
-    endif
+    end if
 !
 ! - Get input fields
 !
@@ -136,7 +136,7 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMULCOM', 'L', jv_mult_comp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Compute barycentric center
 !
@@ -153,9 +153,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -168,135 +168,126 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call nmtstm(zr(icarcr), imatuu, matsym)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontp)
         call dcopy(npg*sz_tens, zr(icontm), 1, zr(icontp), 1)
-    endif
+    end if
 
-    
-    
 500 continue
 
     if (defo_comp .eq. 'PETIT') then
 
         if (typmod(2) .eq. 'ELEMDISC') then
-            call nmed2d(nno       , npg   , ipoids, ivf      , idfde       ,&
-                        zr(igeom) , typmod, option, zi(imate), zk16(icompo),&
-                        lgpg      , ideplm, ideplp, zr(icontm),&
-                        zr(ivarim), dfdi  , def   , zr(icontp), zr(ivarip) ,&
+            call nmed2d(nno, npg, ipoids, ivf, idfde, &
+                        zr(igeom), typmod, option, zi(imate), zk16(icompo), &
+                        lgpg, ideplm, ideplp, zr(icontm), &
+                        zr(ivarim), dfdi, def, zr(icontp), zr(ivarip), &
                         zr(imatuu), ivectu, codret)
             if (codret .ne. 0) goto 999
-            
-        else
-            call nmpl2d(fami        , nno       , npg       ,&
-                        ipoids      , ivf       , idfde     ,&
-                        zr(igeom)   , typmod    , option    , zi(imate),&
-                        zk16(icompo), mult_comp , lgpg      , zr(icarcr),&
-                        zr(iinstm)  , zr(iinstp),&
-                        zr(ideplm)  , zr(ideplp),&
-                        angl_naut   , zr(icontm), zr(ivarim),&
-                        matsym      , zr(icontp), zr(ivarip),&
-                        zr(imatuu)  , zr(ivectu), codret)
-            if (codret .ne. 0) goto 999
-        endif
 
+        else
+            call nmpl2d(fami, nno, npg, &
+                        ipoids, ivf, idfde, &
+                        zr(igeom), typmod, option, zi(imate), &
+                        zk16(icompo), mult_comp, lgpg, zr(icarcr), &
+                        zr(iinstm), zr(iinstp), &
+                        zr(ideplm), zr(ideplp), &
+                        angl_naut, zr(icontm), zr(ivarim), &
+                        matsym, zr(icontp), zr(ivarip), &
+                        zr(imatuu), zr(ivectu), codret)
+            if (codret .ne. 0) goto 999
+        end if
 
     else if (defo_comp .eq. 'PETIT_REAC') then
 
         ncd = nno*ndim
-        allocate(geom_updated(ncd))
-        geom_updated = zr(igeom:igeom+ncd-1) + zr(ideplm:ideplm+ncd-1) + zr(ideplp:ideplp+ncd-1)
+        allocate (geom_updated(ncd))
+        geom_updated = zr(igeom:igeom+ncd-1)+zr(ideplm:ideplm+ncd-1)+zr(ideplp:ideplp+ncd-1)
 
-        call nmpl2d(fami        , nno       , npg       ,&
-                    ipoids      , ivf       , idfde     ,&
-                    geom_updated, typmod    , option    , zi(imate),&
-                    zk16(icompo), mult_comp , lgpg      , zr(icarcr),&
-                    zr(iinstm)  , zr(iinstp),&
-                    zr(ideplm)  , zr(ideplp),&
-                    angl_naut   , zr(icontm), zr(ivarim),&
-                    matsym      , zr(icontp), zr(ivarip),&
-                    zr(imatuu)  , zr(ivectu), codret)
-        deallocate(geom_updated)
+        call nmpl2d(fami, nno, npg, &
+                    ipoids, ivf, idfde, &
+                    geom_updated, typmod, option, zi(imate), &
+                    zk16(icompo), mult_comp, lgpg, zr(icarcr), &
+                    zr(iinstm), zr(iinstp), &
+                    zr(ideplm), zr(ideplp), &
+                    angl_naut, zr(icontm), zr(ivarim), &
+                    matsym, zr(icontp), zr(ivarip), &
+                    zr(imatuu), zr(ivectu), codret)
+        deallocate (geom_updated)
         if (codret .ne. 0) goto 999
 
-
     else if (defo_comp .eq. 'SIMO_MIEHE') then
-        call nmgpfi(fami      , option      , typmod    , ndim      , nno       ,&
-                    npg       , ipoids      , zr(ivf)   , idfde     , zr(igeom) ,&
-                    dfdi      , zk16(icompo), zi(imate) , mult_comp , lgpg      , zr(icarcr),&
-                    angl_naut , zr(iinstm)  , zr(iinstp), zr(ideplm), zr(ideplp),&
-                    zr(icontm), zr(ivarim)  , zr(icontp), zr(ivarip), zr(ivectu),&
+        call nmgpfi(fami, option, typmod, ndim, nno, &
+                    npg, ipoids, zr(ivf), idfde, zr(igeom), &
+                    dfdi, zk16(icompo), zi(imate), mult_comp, lgpg, zr(icarcr), &
+                    angl_naut, zr(iinstm), zr(iinstp), zr(ideplm), zr(ideplp), &
+                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), &
                     zr(imatuu), codret)
         if (codret .ne. 0) goto 999
 
-                    
     else if (defo_comp .eq. 'GREEN_LAGRANGE') then
-        call nmgrla(option      , typmod    ,&
-                    fami        , zi(imate) ,&
-                    2           , nno         , npg       , lgpg     ,&
-                    ipoids      , ivf       , zr(ivf)  , idfde,&
-                    zk16(icompo), zr(icarcr), mult_comp,&
-                    zr(iinstm)  , zr(iinstp),&
-                    zr(igeom)   , zr(ideplm),&
-                    zr(ideplp)  , angl_naut, &
-                    zr(icontm)  , zr(icontp),&
-                    zr(ivarim)  , zr(ivarip),&
-                    matsym      , zr(imatuu), zr(ivectu),&
+        call nmgrla(option, typmod, &
+                    fami, zi(imate), &
+                    2, nno, npg, lgpg, &
+                    ipoids, ivf, zr(ivf), idfde, &
+                    zk16(icompo), zr(icarcr), mult_comp, &
+                    zr(iinstm), zr(iinstp), &
+                    zr(igeom), zr(ideplm), &
+                    zr(ideplp), angl_naut, &
+                    zr(icontm), zr(icontp), &
+                    zr(ivarim), zr(ivarip), &
+                    matsym, zr(imatuu), zr(ivectu), &
                     codret)
         if (codret .ne. 0) goto 999
-                    
-                    
+
     else if (defo_comp .eq. 'GROT_GDEP') then
-        call nmgr2d(option      , typmod    ,&
-                    fami        , zi(imate) ,&
-                    nno         , npg       , lgpg     ,&
-                    ipoids      , ivf       , zr(ivf)  , idfde,&
-                    zk16(icompo), zr(icarcr), mult_comp,&
-                    zr(iinstm)  , zr(iinstp),&
-                    zr(igeom)   , zr(ideplm),&
-                    zr(ideplp)  ,&
-                    zr(icontm)  , zr(icontp),&
-                    zr(ivarim)  , zr(ivarip),&
-                    matsym      , zr(imatuu), zr(ivectu),&
+        call nmgr2d(option, typmod, &
+                    fami, zi(imate), &
+                    nno, npg, lgpg, &
+                    ipoids, ivf, zr(ivf), idfde, &
+                    zk16(icompo), zr(icarcr), mult_comp, &
+                    zr(iinstm), zr(iinstp), &
+                    zr(igeom), zr(ideplm), &
+                    zr(ideplp), &
+                    zr(icontm), zr(icontp), &
+                    zr(ivarim), zr(ivarip), &
+                    matsym, zr(imatuu), zr(ivectu), &
                     codret)
         if (codret .ne. 0) goto 999
-                    
-                    
+
     else if (defo_comp .eq. 'GDEF_LOG') then
-        call nmdlog(fami      , option    , typmod      , ndim      , nno       ,&
-                    npg       , ipoids    , ivf         , zr(ivf)   , idfde     ,&
-                    zr(igeom) , dfdi      , zk16(icompo), mult_comp , zi(imate) , lgpg,&
-                    zr(icarcr), angl_naut , zr(iinstm)  , zr(iinstp), matsym    ,&
-                    zr(ideplm), zr(ideplp), zr(icontm)  , zr(ivarim), zr(icontp),&
-                    zr(ivarip), zr(ivectu), zr(imatuu)  , codret)
+        call nmdlog(fami, option, typmod, ndim, nno, &
+                    npg, ipoids, ivf, zr(ivf), idfde, &
+                    zr(igeom), dfdi, zk16(icompo), mult_comp, zi(imate), lgpg, &
+                    zr(icarcr), angl_naut, zr(iinstm), zr(iinstp), matsym, &
+                    zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
+                    zr(ivarip), zr(ivectu), zr(imatuu), codret)
         if (codret .ne. 0) goto 999
-                    
+
     else
         ASSERT(ASTER_FALSE)
-    endif
-
+    end if
 
 ! ----- Calcul eventuel de la matrice TGTE par PERTURBATION
 
     call tgveri(option, zr(icarcr), zk16(icompo), nno, zr(igeom), &
-                ndim, ndim*nno, zr(ideplp), sdepl, zr(ivectu),&
-                svect, sz_tens*npg, zr(icontp), scont, npg*lgpg,&
-                zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym,&
+                ndim, ndim*nno, zr(ideplp), sdepl, zr(ivectu), &
+                svect, sz_tens*npg, zr(icontp), scont, npg*lgpg, &
+                zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym, &
                 epsilo, varia, iret)
     if (iret .ne. 0) goto 500
-
 
 999 continue
 !
@@ -305,6 +296,6 @@ character(len=16), intent(in) :: option, nomte
     if (lSigm) then
         call jevech('PCODRET', 'E', jv_codret)
         zi(jv_codret) = codret
-    endif
+    end if
 !
 end subroutine

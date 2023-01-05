@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine vebume(model_, disp_, list_load, vect_elemz, scaling, base)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -62,7 +62,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=3)
+    parameter(nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -82,35 +82,35 @@ implicit none
 ! - Initializations
 !
     vect_elem = vect_elemz
-    model     = model_
-    disp      = disp_
-    newnom    = '.0000000'
-    chalph    = '&&VEBUME.CH_NEUT_R'
+    model = model_
+    disp = disp_
+    newnom = '.0000000'
+    chalph = '&&VEBUME.CH_NEUT_R'
     resu_elem = '&&VEBUME.???????'
-    option    = 'MECA_BU_R'
+    option = 'MECA_BU_R'
 !
 ! - Init fields
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load    , v_load_name, v_load_info,&
-                        list_load_ = list_load)
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
+                        list_load_=list_load)
     if (load_empty) then
         goto 99
-    endif
+    end if
 !
 ! - Cart for Lagrange conditionner
 !
-    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ',&
+    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ', &
                 ncmp=1, nomcmp='X1', sr=scaling)
 !
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, ' ', ' ',&
+    call memare(base, vect_elem, model, ' ', ' ', &
                 'CHAR_MECA')
     call reajre(vect_elem, ' ', base)
 !
@@ -128,10 +128,10 @@ implicit none
 ! - Computation
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
-        if (      ischar_iden(v_load_info, i_load, nb_load, 'DIRI', 'DUAL',&
-                              load_name=v_load_name(i_load)) .and.&
-            .not. ischar_iden(v_load_info, i_load, nb_load, 'DIRI', 'SUIV',&
+        load_name = v_load_name(i_load) (1:8)
+        if (ischar_iden(v_load_info, i_load, nb_load, 'DIRI', 'DUAL', &
+                        load_name=v_load_name(i_load)) .and. &
+            .not. ischar_iden(v_load_info, i_load, nb_load, 'DIRI', 'SUIV', &
                               load_name=v_load_name(i_load))) then
             ligrch = load_name//'.CHME.LIGRE'
             call jeexin(load_name//'.CHME.LIGRE.LIEL', iret)
@@ -148,22 +148,22 @@ implicit none
 !
             call gcnco2(newnom)
             resu_elem(10:16) = newnom(2:8)
-            call corich('E', resu_elem, ichin_ = i_load)
+            call corich('E', resu_elem, ichin_=i_load)
             lchout(1) = resu_elem
 !
 ! --------- Computation
 !
-            call calcul('S', option, ligrch, nbin, lchin,&
-                        lpain, nbout, lchout, lpaout, 'V',&
+            call calcul('S', option, ligrch, nbin, lchin, &
+                        lpain, nbout, lchout, lpaout, 'V', &
                         'OUI')
 !
 ! --------- Copying output field
 !
             call reajre(vect_elem, lchout(1), base)
-        endif
+        end if
     end do
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

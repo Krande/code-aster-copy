@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,22 +65,22 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !---------------- VARIABLES LOCALES  --------------------------
     character(len=8) :: moa, nomo1, noma1, cdim1
     integer :: ndim, iagma1, nbma1, ditopo, typm1, dim1
-    integer :: nb1, kma,   n1, iexi
+    integer :: nb1, kma, n1, iexi
     integer, pointer :: repe(:) => null()
     integer, pointer :: tmdim(:) => null()
     integer, pointer :: typmail(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    moa=moa1
+    moa = moa1
     call jeexin(moa//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
-        nomo1=moa
+        nomo1 = moa
         call dismoi('NOM_MAILLA', nomo1, 'MODELE', repk=noma1)
     else
-        nomo1=' '
-        noma1=moa
-    endif
+        nomo1 = ' '
+        noma1 = moa
+    end if
     call jeveuo(noma1//'.TYPMAIL', 'L', vi=typmail)
 !
 !
@@ -89,16 +89,16 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
     if (iocc .eq. 0) then
         call getvtx(' ', 'CAS_FIGURE', scal=ncas, nbret=n1)
         if (n1 .eq. 1) goto 30
-    elseif (iocc .gt.0)then
+    elseif (iocc .gt. 0) then
         call getvtx('VIS_A_VIS', 'CAS_FIGURE', iocc=iocc, scal=ncas, nbret=n1)
         if (n1 .eq. 1) goto 30
     else
         iocc = -iocc
         call getvtx('VIS_A_VIS', 'CAS_FIGURE', iocc=iocc, scal=ncas, nbret=n1)
-        if (n1 .eq. 1)then
-            if (ncas.eq.'0D') goto 30
-        endif
-    endif
+        if (n1 .eq. 1) then
+            if (ncas .eq. '0D') goto 30
+        end if
+    end if
 !
 !
 !     CALCUL DE LVAVIS, IAGMA1, NBMA1 (MAILLES CONCERNEES) :
@@ -110,33 +110,33 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
         call dismoi('NB_MA_MAILLA', noma1, 'MAILLAGE', repi=nb1)
         if (nomo1 .ne. ' ') then
             call jeveuo(nomo1//'.MODELE    .REPE', 'L', vi=repe)
-        endif
+        end if
 !
         call wkvect('&&PJEFCA.LIMA1', 'V V I', nb1, iagma1)
-        nbma1=0
+        nbma1 = 0
         do kma = 1, nb1
             if (nomo1 .ne. ' ') then
 !          -- SI C'EST UNE MAILLE DU MODELE :
                 if (repe(2*(kma-1)+1) .gt. 0) then
-                    nbma1=nbma1+1
-                    zi(iagma1-1+nbma1)=kma
-                endif
+                    nbma1 = nbma1+1
+                    zi(iagma1-1+nbma1) = kma
+                end if
             else
-                nbma1=nbma1+1
-                zi(iagma1-1+nbma1)=kma
-            endif
+                nbma1 = nbma1+1
+                zi(iagma1-1+nbma1) = kma
+            end if
         end do
-    endif
+    end if
 !
 !
 !     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
 !     --------------------------------------------------------
     call dismoi('Z_QUASI_ZERO', noma1, 'MAILLAGE', repk=cdim1)
     if (cdim1 .eq. 'OUI') then
-        ndim=2
+        ndim = 2
     else
-        ndim=3
-    endif
+        ndim = 3
+    end if
 !
 !
 !
@@ -146,33 +146,33 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !
 !     -- ON PARCOURT LES MAILLES DE LIMA1 POUR DETERMINER
 !        LA PLUS GRANDE DIMENSION TOPOLOGIQUE : 3,2,1 : DITOPO
-    ditopo=-1
+    ditopo = -1
     do kma = 1, nbma1
-        typm1=typmail(zi(iagma1-1+kma))
-        dim1=tmdim(typm1)
-        ditopo=max(ditopo,dim1)
+        typm1 = typmail(zi(iagma1-1+kma))
+        dim1 = tmdim(typm1)
+        ditopo = max(ditopo, dim1)
     end do
 !
     if (ditopo .eq. 3) then
-        ASSERT(ndim.eq.3)
-        ncas='3D'
-    else if (ditopo.eq.1 .or. ditopo.eq.0) then
-        ncas='1.5D'
-    else if (ditopo.eq.2) then
+        ASSERT(ndim .eq. 3)
+        ncas = '3D'
+    else if (ditopo .eq. 1 .or. ditopo .eq. 0) then
+        ncas = '1.5D'
+    else if (ditopo .eq. 2) then
         if (ndim .eq. 2) then
-            ncas='2D'
-        else if (ndim.eq.3) then
-            ncas='2.5D'
+            ncas = '2D'
+        else if (ndim .eq. 3) then
+            ncas = '2.5D'
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     call jedetr('&&PJEFCA.LIMA1')
 !
- 30 continue
+30  continue
     call jedema()
 end subroutine

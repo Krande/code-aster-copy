@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 
 subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
 
-use calcul_module, only : ca_iachii_, ca_ialiel_, ca_igr_, ca_iichin_, &
-    ca_illiel_, ca_nbelgr_, ca_ncmpmx_, ca_nec_, ca_iel_, ca_paral_, ca_lparal_, ca_iachid_
+    use calcul_module, only: ca_iachii_, ca_ialiel_, ca_igr_, ca_iichin_, &
+             ca_illiel_, ca_nbelgr_, ca_ncmpmx_, ca_nec_, ca_iel_, ca_paral_, ca_lparal_, ca_iachid_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -44,46 +44,46 @@ implicit none
 !   Si la carte est constante:
 !   --------------------------
     if (ngrmx .eq. 1 .and. zi(desc-1+4) .eq. 1) then
-        debgd = 3 + 2*ngrmx + 1
+        debgd = 3+2*ngrmx+1
         deb2 = debugr
         do ca_iel_ = 1, ca_nbelgr_
             if (ca_lparal_) then
-                if (.not.ca_paral_(ca_iel_)) then
-                    deb2=deb2+ncmp
+                if (.not. ca_paral_(ca_iel_)) then
+                    deb2 = deb2+ncmp
                     cycle
-                endif
-            endif
+                end if
+            end if
             call trigd(zi(desc-1+debgd), 1, dg, deb2, .false._1, 0, 0)
-        enddo
+        end do
         goto 999
-    endif
+    end if
 !
 !   Si la carte n'est pas constante :
 !   ---------------------------------
-    ptma = zi(ca_iachii_-1+ca_iachid_* (ca_iichin_-1)+6)
-    ptms = zi(ca_iachii_-1+ca_iachid_* (ca_iichin_-1)+7)
+    ptma = zi(ca_iachii_-1+ca_iachid_*(ca_iichin_-1)+6)
+    ptms = zi(ca_iachii_-1+ca_iachid_*(ca_iichin_-1)+7)
     deb2 = debugr
     do ca_iel_ = 1, ca_nbelgr_
         if (ca_lparal_) then
-            if (.not.ca_paral_(ca_iel_)) then
-                deb2=deb2+ncmp
+            if (.not. ca_paral_(ca_iel_)) then
+                deb2 = deb2+ncmp
                 cycle
-            endif
-        endif
+            end if
+        end if
 !       recherche du numero de l'entite correspondant a la maille ima:
-        ima = numail(ca_igr_,ca_iel_)
+        ima = numail(ca_igr_, ca_iel_)
         if (ima .lt. 0) then
             ient = zi(ptms-1-ima)
         else
             ient = zi(ptma-1+ima)
-        endif
+        end if
         if (ient .eq. 0) then
-            deb2=deb2+ncmp
+            deb2 = deb2+ncmp
             cycle
-        endif
+        end if
 !       recopie
-        debgd = 3 + 2*ngrmx + (ient-1)*ca_nec_ + 1
-        indval = (ient-1)*ca_ncmpmx_ + 1
+        debgd = 3+2*ngrmx+(ient-1)*ca_nec_+1
+        indval = (ient-1)*ca_ncmpmx_+1
         call trigd(zi(desc-1+debgd), indval, dg, deb2, .false._1, 0, 0)
     end do
 

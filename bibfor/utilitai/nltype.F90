@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,12 +27,12 @@ function nltype(inttyp)
     character(len=16) :: nltype
     character(len=16) :: nltypes(_NL_NB_TYPES)
 
-    data  nltypes /'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ',&
-                   'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ',&
-                   'PALIER_EDYOS    ', 'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ',&
-                   'YACS            '/
+    data nltypes/'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ', &
+        'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ', &
+        'PALIER_EDYOS    ', 'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', &
+        'YACS            '/
 !
 !
-    ASSERT((inttyp.gt.0).and.(inttyp.le._NL_NB_TYPES))
+    ASSERT((inttyp .gt. 0) .and. (inttyp .le. _NL_NB_TYPES))
     nltype = nltypes(inttyp)
 end function

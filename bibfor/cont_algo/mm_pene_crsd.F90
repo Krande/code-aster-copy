@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_pene_crsd(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
@@ -53,8 +53,8 @@ implicit none
 !
 ! - Initializations
 !
-    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
-    nb_cont_zone  = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
 !
 ! - Pentration saving
 !
@@ -67,7 +67,7 @@ implicit none
 !   p_sdcont_pene_zone : 2 --> store the current zone for print in
 !   convergence table (=0 if standard)
 !   see mmopti for initialization
-    call wkvect(sdcont_pene, 'V V R', nb_cont_poin, vr = p_sdcont_pene)
+    call wkvect(sdcont_pene, 'V V R', nb_cont_poin, vr=p_sdcont_pene)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine apvsmbh(kptsc, rsolu)
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 ! aslint:disable=
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
 
     implicit none
 
@@ -76,7 +76,7 @@ use petsc_data_module
 ! -- DEBUG
     step = -1
     dbg = ASTER_FALSE .and. step == nstep
-    nstep = nstep + 1
+    nstep = nstep+1
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicomm)
@@ -89,20 +89,20 @@ use petsc_data_module
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     call jeveuo(nonu//'.NUME.NULG', 'L', jnugll)
     call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
-    if(dbg) then
+    if (dbg) then
         call jeexin(nonu//'.NUME.NULS', iret)
-        if(iret == 0) then
+        if (iret == 0) then
             call crnustd(nonu)
         end if
         call jeveuo(nonu//'.NUME.NULS', 'L', vi=v_nuls)
         call jeveuo(nonu//'.NUME.DEEG', 'L', vi=v_deeg)
-        print*, "DEBUG IN APVSMBH"
+        print *, "DEBUG IN APVSMBH"
     end if
     nloc = zi(jnequ)
-    nglo = zi(jnequ + 1)
+    nglo = zi(jnequ+1)
     ndprop = 0
-    do jcoll = 0, nloc - 1
-        if ( zi(jprddl + jcoll) .eq. rang ) ndprop = ndprop + 1
+    do jcoll = 0, nloc-1
+        if (zi(jprddl+jcoll) .eq. rang) ndprop = ndprop+1
     end do
     ndprop4 = to_petsc_int(ndprop)
     call VecCreate(mpicomm, b, ierr)
@@ -120,22 +120,22 @@ use petsc_data_module
 #endif
     call wkvect('&&APMAIN.VALEURS', 'V V R', ndprop, jvaleu)
     iterm = 0
-    do jcoll = 0, nloc - 1
-        if ( zi(jprddl + jcoll) .eq. rang ) then
-            v_indic(iterm + 1) = to_petsc_int(zi(jnugll + jcoll))
-            zr(jvaleu + iterm) = rsolu(jcoll + 1)
-            iterm = iterm + 1
+    do jcoll = 0, nloc-1
+        if (zi(jprddl+jcoll) .eq. rang) then
+            v_indic(iterm+1) = to_petsc_int(zi(jnugll+jcoll))
+            zr(jvaleu+iterm) = rsolu(jcoll+1)
+            iterm = iterm+1
 !
-            if(dbg) then
-                nuno  = v_deeg(2*(jcoll) + 1)
-                nucmp = v_deeg(2*(jcoll) + 2)
+            if (dbg) then
+                nuno = v_deeg(2*(jcoll)+1)
+                nucmp = v_deeg(2*(jcoll)+2)
 !                    numéro noeud global, num comp du noeud, nume eq std, rhs, nume eq glob
-                write(601+rang,*) nuno, nucmp, v_nuls(jcoll+1), rsolu(jcoll + 1)
+                write (601+rang, *) nuno, nucmp, v_nuls(jcoll+1), rsolu(jcoll+1)
                 !,zi(jnugll + jcoll)
             end if
-        endif
+        end if
     end do
-    if(dbg) flush(601+rang)
+    if (dbg) flush (601+rang)
     nn = to_petsc_int(iterm)
     call VecSetValues(b, nn, v_indic(1), zr(jvaleu), INSERT_VALUES, ierr)
     call jedetr('&&APMAIN.INDICES')

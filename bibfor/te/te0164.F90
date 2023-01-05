@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,12 +50,12 @@ subroutine te0164(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
         do ino = 1, nno
             do i = 1, nc
-                zr(ivectu+(ino-1)*nc+i-1)=forref
+                zr(ivectu+(ino-1)*nc+i-1) = forref
             end do
         end do
 !
-    else if (option.eq.'FORC_NODA') then
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    else if (option .eq. 'FORC_NODA') then
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
         call jevete('&INEL.CABPOU.YTY', 'L', iyty)
         nordre = 3*nno
@@ -74,19 +74,19 @@ subroutine te0164(option, nomte)
             end do
         else
             do i = 1, 3*nno
-                w(i) = zr(idepla-1+i) + zr(ideplp-1+i)
+                w(i) = zr(idepla-1+i)+zr(ideplp-1+i)
             end do
-        endif
+        end if
         do kp = 1, npg
             k = (kp-1)*nordre*nordre
-            jacobi=sqrt(biline(nordre,zr(igeom),zr(iyty+k),zr(igeom)))
+            jacobi = sqrt(biline(nordre, zr(igeom), zr(iyty+k), zr(igeom)))
             nx = zr(lsigma-1+kp)
-            call matvec(nordre, zr(iyty+k), 2, zr(igeom), w,&
+            call matvec(nordre, zr(iyty+k), 2, zr(igeom), w, &
                         ytywpq)
             coef = nx*zr(ipoids-1+kp)/jacobi
             do i = 1, nordre
-                zr(jefint-1+i) = zr(jefint-1+i) + coef*ytywpq(i)
+                zr(jefint-1+i) = zr(jefint-1+i)+coef*ytywpq(i)
             end do
         end do
-    endif
+    end if
 end subroutine

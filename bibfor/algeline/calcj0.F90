@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,25 +37,25 @@ subroutine calcj0(t, sigpri, valp)
 !-----------------------------------------------------------------------
     integer :: nitjac
 !-----------------------------------------------------------------------
-    data   nperm ,tol,toldyn    /12,1.d-10,1.d-2/
+    data nperm, tol, toldyn/12, 1.d-10, 1.d-2/
 ! ----------------------------------------------------------------------
 !     ON RECALCULE LES TERMES REELS DU TENSEURS SACHANT
 !     QUE LES TERMES NON DIAGONAUX ONT ETE MULTIPLIE PAR SQRT(2)
 !
     do i = 1, 6
-        tb(i)=t(i)
+        tb(i) = t(i)
 !      IF (I.GT.3) TB(I)=T(I)/RAC2
     end do
 !
 !     REANRANGEMENT POUR LA ROUTINE JACOBI EN COLONNE
 !     A=(XX YY ZZ XY XZ YZ)->B=(XX XY XZ YY YZ ZZ)
 !
-    ts(1)=tb(1)
-    ts(2)=tb(4)
-    ts(3)=tb(5)
-    ts(4)=tb(2)
-    ts(5)=tb(6)
-    ts(6)=tb(3)
+    ts(1) = tb(1)
+    ts(2) = tb(4)
+    ts(3) = tb(5)
+    ts(4) = tb(2)
+    ts(5) = tb(6)
+    ts(6) = tb(3)
 !
 !     MATRICE UNITE = (1 0 0 1 0 1) (POUR JACOBI)
     tu(1) = 1.d0
@@ -69,10 +69,10 @@ subroutine calcj0(t, sigpri, valp)
     nbvec = 3
     itype = 2
     iordre = 2
-    call jacobi(nbvec, nperm, tol, toldyn, ts,&
-                tu, vecp, valp(1), jacaux, nitjac,&
+    call jacobi(nbvec, nperm, tol, toldyn, ts, &
+                tu, vecp, valp(1), jacaux, nitjac, &
                 itype, iordre)
 !
-    sigpri=max(valp(1),valp(2),valp(3))
+    sigpri = max(valp(1), valp(2), valp(3))
 !
 end subroutine

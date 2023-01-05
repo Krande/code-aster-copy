@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine caecha(load, model, mesh, geomDime, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-integer, intent(in) :: geomDime
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    integer, intent(in) :: geomDime
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ character(len=4), intent(in) :: valeType
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'ECHANGE'
-    integer :: necha, ncmp, jvalv1, jvalv2,   n, ncmp1, ncmp2, ncmps(2)
+    integer :: necha, ncmp, jvalv1, jvalv2, n, ncmp1, ncmp2, ncmps(2)
     integer :: iocc
     real(kind=8) :: r8b
     character(len=8) :: k8b
@@ -74,12 +74,12 @@ character(len=4), intent(in) :: valeType
     if (valeType .eq. 'REEL') then
         call alcart('G', carte1, mesh, 'COEH_R')
         call alcart('G', carte2, mesh, 'TEMP_R')
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         call alcart('G', carte1, mesh, 'COEH_F')
         call alcart('G', carte2, mesh, 'TEMP_F')
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jeveuo(carte1//'.NCMP', 'E', vk8=vncmp1)
     call jeveuo(carte1//'.VALV', 'E', jvalv1)
@@ -109,7 +109,7 @@ character(len=4), intent(in) :: valeType
         zk8(jvalv2-1+1) = '&FOZERO'
         zk8(jvalv2-1+2) = '&FOZERO'
         zk8(jvalv2-1+3) = '&FOZERO'
-    endif
+    end if
     call nocart(carte1, 1, ncmp)
     call nocart(carte2, 1, ncmp)
 !
@@ -121,84 +121,84 @@ character(len=4), intent(in) :: valeType
         if (valeType .eq. 'REEL') then
             call getvr8(keywordFact, 'COEF_H', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1= ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'H'
                 zr(jvalv1-1+ncmp1) = r8b
-            endif
+            end if
             call getvr8(keywordFact, 'COEF_H_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'H_INF'
                 zr(jvalv1-1+ncmp1) = r8b
-            endif
+            end if
             call getvr8(keywordFact, 'COEF_H_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'H_SUP'
                 zr(jvalv1-1+ncmp1) = r8b
-            endif
+            end if
             call getvr8(keywordFact, 'TEMP_EXT', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'TEMP'
                 zr(jvalv2-1+ncmp2) = r8b
-            endif
+            end if
             call getvr8(keywordFact, 'TEMP_EXT_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'TEMP_INF'
                 zr(jvalv2-1+ncmp2) = r8b
-            endif
+            end if
             call getvr8(keywordFact, 'TEMP_EXT_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'TEMP_SUP'
                 zr(jvalv2-1+ncmp2) = r8b
-            endif
+            end if
         else
             call getvid(keywordFact, 'COEF_H', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'H'
                 zk8(jvalv1-1+ncmp1) = k8b
-            endif
+            end if
             call getvid(keywordFact, 'COEF_H_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'H_INF'
                 zk8(jvalv1-1+ncmp1) = k8b
-            endif
+            end if
             call getvid(keywordFact, 'COEF_H_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'H_SUP'
                 zk8(jvalv1-1+ncmp1) = k8b
-            endif
+            end if
             call getvid(keywordFact, 'TEMP_EXT', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'TEMP'
                 zk8(jvalv2-1+ncmp2) = k8b
-            endif
+            end if
             call getvid(keywordFact, 'TEMP_EXT_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'TEMP_INF'
                 zk8(jvalv2-1+ncmp2) = k8b
-            endif
+            end if
             call getvid(keywordFact, 'TEMP_EXT_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'TEMP_SUP'
                 zk8(jvalv2-1+ncmp2) = k8b
-            endif
-        endif
+            end if
+        end if
 !
         cartes(1) = carte1
         cartes(2) = carte2
         ncmps(1) = ncmp1
         ncmps(2) = ncmp2
-        call char_affe_neum(model , mesh, geomDime, keywordFact, iocc, 2,&
+        call char_affe_neum(model, mesh, geomDime, keywordFact, iocc, 2, &
                             cartes, ncmps)
 !
     end do

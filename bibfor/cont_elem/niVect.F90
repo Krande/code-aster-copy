@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 subroutine niVect(parameters, geom, vect_cont, vect_fric)
 !
-use contact_module
-use contact_type
-use contact_nitsche_module
+    use contact_module
+    use contact_type
+    use contact_nitsche_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,9 +32,9 @@ implicit none
 #include "blas/dgemv.h"
 #include "contact_module.h"
 !
-type(ContactParameters), intent(in) :: parameters
-type(ContactGeom), intent(in) :: geom
-real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
+    type(ContactParameters), intent(in) :: parameters
+    type(ContactGeom), intent(in) :: geom
+    real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,7 +73,7 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 ! - Get quadrature (slave side)
 !
     call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
-                    geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
+                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
 !
@@ -101,41 +101,41 @@ real(kind=8), intent(out) :: vect_cont(MAX_NITS_DOFS), vect_fric(MAX_NITS_DOFS)
 ! ----- Compute contact quantities
 !
         call niElemCont(parameters, geom, nits, coor_qp_sl, hF, &
-                    stress_nn, gap, gamma_c, projRmVal, l_cont_qp,&
-                    stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
-                    dGap=dGap, jump_t=jump_t, dStress_nn=dStress_nn)
+                        stress_nn, gap, gamma_c, projRmVal, l_cont_qp, &
+                        stress_t, vT, gamma_f, projBsVal, l_fric_qp, &
+                        dGap=dGap, jump_t=jump_t, dStress_nn=dStress_nn)
 !
 ! ------ CONTACT PART (always computed)
 !
-        if(l_cont_qp) then
+        if (l_cont_qp) then
 !
 ! ------ Compute displacement (slave and master side)
 !        term: (H*[stress_nn + gamma_c * gap(u)]_R-, D(gap(u))[v])
 !
-            call remappingVect(geom, dofsMap, dGap, vect_cont, weight_sl_qp * projRmVal)
-            coeff = weight_sl_qp * projRmVal
+            call remappingVect(geom, dofsMap, dGap, vect_cont, weight_sl_qp*projRmVal)
+            coeff = weight_sl_qp*projRmVal
         end if
 !
-        if(parameters%vari_cont .ne. CONT_VARI_RAPI) then
+        if (parameters%vari_cont .ne. CONT_VARI_RAPI) then
 !
 ! ------ Compute displacement (slave and master side)
 !     term: theta * (gamma_c^-1 ([stress_nn + gamma_c * gap(u)]_R- - stress_nn), D(stress_nn(u))[v])
 !
-            coeff = weight_sl_qp * parameters%vari_cont * (projRmVal - stress_nn) / gamma_c
+            coeff = weight_sl_qp*parameters%vari_cont*(projRmVal-stress_nn)/gamma_c
             call daxpy(slav_dofs, coeff, dStress_nn, 1, vect_cont, 1)
         end if
 !
 ! ------ FRICTION PART (computed only if friction)
 !
-        if(parameters%l_fric) then
+        if (parameters%l_fric) then
 !
 ! ------ Compute displacement (slave and master side) (TO REMAP)
 !        term: ([stress_t - gamma_f * vT(u)]_Bs, (v^s-v^m)_tang)
 !
-            if(l_fric_qp) then
+            if (l_fric_qp) then
                 coeff = weight_sl_qp
                 call dgemv('N', total_dofs, geom%elem_dime-1, coeff, jump_t, MAX_LAGA_DOFS, &
-                            projBsVal, 1, 1.d0, vect_fric, 1)
+                           projBsVal, 1, 1.d0, vect_fric, 1)
             end if
         end if
     end do

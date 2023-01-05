@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !
 !
-    integer :: nbgrel, nbma, nbtm,   ima, tm
-    integer :: te,  igr, ico, jphmod, kmod, jlgrf
+    integer :: nbgrel, nbma, nbtm, ima, tm
+    integer :: te, igr, ico, jphmod, kmod, jlgrf
     integer :: nbel, jnbno
     character(len=19) :: ligr19, phen1
     integer, pointer :: liel(:) => null()
@@ -57,12 +57,12 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    ligr19=ligrel
-    phen1=pheno
+    ligr19 = ligrel
+    phen1 = pheno
 !
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call jenonu(jexnom('&CATA.'//phen1(1:13)//'.MODL', modeli), kmod)
-    ASSERT(kmod.gt.0)
+    ASSERT(kmod .gt. 0)
     call jeveuo(jexnum('&CATA.'//phen1, kmod), 'L', jphmod)
 !
 !
@@ -71,66 +71,66 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
     AS_ALLOCATE(vi=litm, size=nbtm)
-    nbel=0
+    nbel = 0
     do ima = 1, nbma
-        tm= typmail(ima)
-        ASSERT(tm.gt.0)
-        te= zi(jphmod-1+tm)
+        tm = typmail(ima)
+        ASSERT(tm .gt. 0)
+        te = zi(jphmod-1+tm)
         if (te .gt. 0) then
-            nbel=nbel+1
-            litm(tm)=litm(tm)+1
-        endif
+            nbel = nbel+1
+            litm(tm) = litm(tm)+1
+        end if
     end do
 !
 !
 !     -- CALCUL DE NBGREL :
-    nbgrel=0
+    nbgrel = 0
     do tm = 1, nbtm
-        if (litm(tm) .gt. 0) nbgrel=nbgrel+1
+        if (litm(tm) .gt. 0) nbgrel = nbgrel+1
     end do
 !
 !
 !     -- ALLOCATION ET REMPLISSAGE DE L'OBJET .LIEL :
 !     -------------------------------------------------------
-    call jecrec(ligr19//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(ligr19//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbgrel)
     call jeecra(ligr19//'.LIEL', 'LONT', nbel+nbgrel, ' ')
     call jeveuo(ligr19//'.LIEL', 'E', vi=liel)
 !
-    igr=0
-    ico=0
+    igr = 0
+    ico = 0
     do tm = 1, nbtm
         if (litm(tm) .gt. 0) then
-            igr=igr+1
-            te= zi(jphmod-1+tm)
-            ASSERT(te.gt.0)
-            nbel=0
+            igr = igr+1
+            te = zi(jphmod-1+tm)
+            ASSERT(te .gt. 0)
+            nbel = 0
             do ima = 1, nbma
                 if (typmail(ima) .eq. tm) then
-                    nbel=nbel+1
-                    ico=ico+1
-                    liel(ico)=ima
-                endif
+                    nbel = nbel+1
+                    ico = ico+1
+                    liel(ico) = ima
+                end if
             end do
-            ASSERT(nbel.gt.0)
+            ASSERT(nbel .gt. 0)
             call jecroc(jexnum(ligr19//'.LIEL', igr))
             call jeecra(jexnum(ligr19//'.LIEL', igr), 'LONMAX', nbel+1)
-            ico=ico+1
-            liel(ico)=te
-        endif
+            ico = ico+1
+            liel(ico) = te
+        end if
     end do
 !
 !
 !     -- OBJET .LGRF :
 !     ----------------
     call wkvect(ligr19//'.LGRF', 'V V K8', 3, jlgrf)
-    zk8(jlgrf-1+1)=ma
+    zk8(jlgrf-1+1) = ma
 !
 !
 !     -- OBJET .NBNO :
 !     ----------------
     call wkvect(ligr19//'.NBNO', 'V V I', 1, jnbno)
-    zi(jnbno-1+1)=0
+    zi(jnbno-1+1) = 0
 !
 !
 !     -- ON "ADAPTE" LA TAILLE DES GRELS DU LIGREL :

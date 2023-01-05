@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
+subroutine dil2gr(imate, compor, ndim, regula, dimdef, &
                   defgep, sigp, dsde2g)
 ! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT ELASTIQUE POUR LA PARTIE --
 ! ---       SECOND GRADIENT --------------------------------------------
@@ -37,36 +37,36 @@ subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
 ! ======================================================================
 ! --- DEFINITION DES DONNEES INITIALES ---------------------------------
 ! ======================================================================
-    data ncra  / 'A1','A2','A3','A4','A5' /
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    data ncra/'A1', 'A2', 'A3', 'A4', 'A5'/
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     if (compor(1) .eq. 'ELAS') then
         do i = 1, ndim
             do j = 1, ndim
-                dsde2g(j,i)=0.0d0
+                dsde2g(j, i) = 0.0d0
             end do
         end do
-        call rcvalb(fami, kpg, spt, poum, imate,&
-                    ' ', 'ELAS_2NDG', 0, ' ', [0.0d0],&
+        call rcvalb(fami, kpg, spt, poum, imate, &
+                    ' ', 'ELAS_2NDG', 0, ' ', [0.0d0], &
                     1, ncra(1), val(1), icodre(1), 1)
-        call rcvalb(fami, kpg, spt, poum, imate,&
-                    ' ', 'ELAS_2NDG', 0, ' ', [0.0d0],&
+        call rcvalb(fami, kpg, spt, poum, imate, &
+                    ' ', 'ELAS_2NDG', 0, ' ', [0.0d0], &
                     1, ncra(3), val(3), icodre(3), 1)
         do i = 1, ndim
-            dsde2g(i,i)=(1+ndim)*(val(1)-val(3))
+            dsde2g(i, i) = (1+ndim)*(val(1)-val(3))
         end do
 !
         adder2 = regula(2)
         do i = 1, ndim
-            sigp(i)=0.0d0
+            sigp(i) = 0.0d0
             do j = 1, ndim
-                sigp(i)=sigp(i)+dsde2g(i,j)*defgep(adder2-1+j)
+                sigp(i) = sigp(i)+dsde2g(i, j)*defgep(adder2-1+j)
             end do
         end do
     else
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
-    endif
+    end if
 ! ======================================================================
 end subroutine

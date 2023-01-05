@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,38 +47,38 @@ subroutine te0293(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATZZR', 'E', imattt)
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     do kp = 1, npg
-        k=(kp-1)*nno
+        k = (kp-1)*nno
         if (ndim .eq. 2) then
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
         else
-            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy, dfdz)
-        endif
+        end if
 !
         if (laxi) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 !
-        ij = imattt - 1
+        ij = imattt-1
         do i = 1, nno
             do j = 1, i
-                ij = ij + 1
-                zr(ij) = zr(ij) + poids * zr(ivf+k+i-1) * zr(ivf+k+j- 1)
+                ij = ij+1
+                zr(ij) = zr(ij)+poids*zr(ivf+k+i-1)*zr(ivf+k+j-1)
             end do
         end do
     end do

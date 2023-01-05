@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apsave_patch(mesh          , sdappa        , i_zone,&
-                        patch_weight_t, nb_proc, list_pair_zmpi,&
-                        list_nbptit_zmpi,list_ptitsl_zmpi,list_ptitma_zmpi,&
-                        li_ptgausma_zmpi,&
-                        nb_pair_zmpi, list_pair_zone,list_nbptit_zone, list_ptitsl_zone,&
-                        list_ptitma_zone,li_ptgausma_zone,nb_pair_zone, i_proc)
+subroutine apsave_patch(mesh, sdappa, i_zone, &
+                        patch_weight_t, nb_proc, list_pair_zmpi, &
+                        list_nbptit_zmpi, list_ptitsl_zmpi, list_ptitma_zmpi, &
+                        li_ptgausma_zmpi, &
+                        nb_pair_zmpi, list_pair_zone, list_nbptit_zone, list_ptitsl_zone, &
+                        list_ptitma_zone, li_ptgausma_zone, nb_pair_zone, i_proc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
@@ -74,7 +74,7 @@ implicit none
     integer :: i_patch, patch_indx, patch_jdec, nb_patch, deca, idx_start, idx_end
     integer :: i_proc2, nb_pair_init
     integer, pointer :: v_mesh_lpatch(:) => null()
-    character(len=24) :: sdappa_wpat,njv_aux, njv_aux2, njv_aux3, njv_aux4, njv_aux5
+    character(len=24) :: sdappa_wpat, njv_aux, njv_aux2, njv_aux3, njv_aux4, njv_aux5
     real(kind=8), pointer :: v_sdappa_wpat(:) => null()
     integer, pointer :: v_sdappa_dcl(:) => null()
     integer, pointer :: list_tmp(:) => null()
@@ -93,9 +93,9 @@ implicit none
 !
 ! - Access to patch
 !
-    call jeveuo(jexnum(mesh//'.PATCH',1), 'L', vi = v_mesh_lpatch)
-    call jeveuo(sdappa(1:19)//'.DCL', 'L', vi = v_sdappa_dcl)
-    nb_patch   = v_mesh_lpatch(2*(v_sdappa_dcl(i_zone)-1)+2)
+    call jeveuo(jexnum(mesh//'.PATCH', 1), 'L', vi=v_mesh_lpatch)
+    call jeveuo(sdappa(1:19)//'.DCL', 'L', vi=v_sdappa_dcl)
+    nb_patch = v_mesh_lpatch(2*(v_sdappa_dcl(i_zone)-1)+2)
     patch_jdec = v_mesh_lpatch(2*(v_sdappa_dcl(i_zone)-1)+1)-1
 
 !
@@ -106,7 +106,7 @@ implicit none
     njv_aux3 = sdappa(1:19)//'.AUX3 '
     njv_aux4 = sdappa(1:19)//'.AUX4 '
     njv_aux5 = sdappa(1:19)//'.AUX5 '
-    nb_pair_init=0
+    nb_pair_init = 0
     call sdmpic('SD_APPA_LAC1', sdappa)
 !
 ! - Not first contact element
@@ -116,66 +116,66 @@ implicit none
 ! ----- Get old contact elements and copy them in temporary one
 !
         nb_pair_init = nb_pair_zone
-        AS_ALLOCATE(vi = list_tmp, size = 3*nb_pair_init)
-        AS_ALLOCATE(vi = list_tmp2, size = nb_pair_init)
-        AS_ALLOCATE(vr = list_tmp3, size = 16*nb_pair_init)
-        AS_ALLOCATE(vr = list_tmp4, size = 16*nb_pair_init)
-        AS_ALLOCATE(vr = list_tmp5, size = 72*nb_pair_init)
-        list_tmp(1:3*nb_pair_init)   = list_pair_zone(1:3*nb_pair_init)
-        list_tmp2(1:nb_pair_init)    = list_nbptit_zone(1:nb_pair_init)
+        AS_ALLOCATE(vi=list_tmp, size=3*nb_pair_init)
+        AS_ALLOCATE(vi=list_tmp2, size=nb_pair_init)
+        AS_ALLOCATE(vr=list_tmp3, size=16*nb_pair_init)
+        AS_ALLOCATE(vr=list_tmp4, size=16*nb_pair_init)
+        AS_ALLOCATE(vr=list_tmp5, size=72*nb_pair_init)
+        list_tmp(1:3*nb_pair_init) = list_pair_zone(1:3*nb_pair_init)
+        list_tmp2(1:nb_pair_init) = list_nbptit_zone(1:nb_pair_init)
         list_tmp3(1:16*nb_pair_init) = list_ptitsl_zone(1:16*nb_pair_init)
         list_tmp4(1:16*nb_pair_init) = list_ptitma_zone(1:16*nb_pair_init)
         list_tmp5(1:72*nb_pair_init) = li_ptgausma_zone(1:72*nb_pair_init)
     end if
-    do i_proc2=1, nb_proc
-        nb_pair_zone=nb_pair_zone+nb_pair_zmpi(i_proc2)
+    do i_proc2 = 1, nb_proc
+        nb_pair_zone = nb_pair_zone+nb_pair_zmpi(i_proc2)
     end do
     if (nb_pair_zone .ne. 0) then
 !
 ! - Re-allocate list of contact elements
 !
-        AS_DEALLOCATE(vi = list_pair_zone)
-        AS_ALLOCATE(vi = list_pair_zone, size = 3*nb_pair_zone)
-        AS_DEALLOCATE(vi = list_nbptit_zone)
-        AS_ALLOCATE(vi = list_nbptit_zone, size = nb_pair_zone)
-        AS_DEALLOCATE(vr = list_ptitsl_zone)
-        AS_ALLOCATE(vr = list_ptitsl_zone, size = 16*nb_pair_zone)
-        AS_DEALLOCATE(vr = list_ptitma_zone)
-        AS_ALLOCATE(vr = list_ptitma_zone, size = 16*nb_pair_zone)
-        AS_DEALLOCATE(vr = li_ptgausma_zone)
-        AS_ALLOCATE(vr = li_ptgausma_zone, size = 72*nb_pair_zone)
-        call wkvect(njv_aux,"V V I", 3*nb_pair_zone, vi=list_aux)
-        call wkvect(njv_aux2,"V V I", nb_pair_zone, vi=list_aux2)
-        call wkvect(njv_aux3,"V V R", 16*nb_pair_zone, vr=list_aux3)
-        call wkvect(njv_aux4,"V V R", 16*nb_pair_zone, vr=list_aux4)
-        call wkvect(njv_aux5,"V V R", 72*nb_pair_zone, vr=list_aux5)
+        AS_DEALLOCATE(vi=list_pair_zone)
+        AS_ALLOCATE(vi=list_pair_zone, size=3*nb_pair_zone)
+        AS_DEALLOCATE(vi=list_nbptit_zone)
+        AS_ALLOCATE(vi=list_nbptit_zone, size=nb_pair_zone)
+        AS_DEALLOCATE(vr=list_ptitsl_zone)
+        AS_ALLOCATE(vr=list_ptitsl_zone, size=16*nb_pair_zone)
+        AS_DEALLOCATE(vr=list_ptitma_zone)
+        AS_ALLOCATE(vr=list_ptitma_zone, size=16*nb_pair_zone)
+        AS_DEALLOCATE(vr=li_ptgausma_zone)
+        AS_ALLOCATE(vr=li_ptgausma_zone, size=72*nb_pair_zone)
+        call wkvect(njv_aux, "V V I", 3*nb_pair_zone, vi=list_aux)
+        call wkvect(njv_aux2, "V V I", nb_pair_zone, vi=list_aux2)
+        call wkvect(njv_aux3, "V V R", 16*nb_pair_zone, vr=list_aux3)
+        call wkvect(njv_aux4, "V V R", 16*nb_pair_zone, vr=list_aux4)
+        call wkvect(njv_aux5, "V V R", 72*nb_pair_zone, vr=list_aux5)
 
 !
 ! ----- Add new pairs
 !
         deca = 0
         do i_proc2 = 1, i_proc
-            deca = deca + nb_pair_zmpi(i_proc2)
+            deca = deca+nb_pair_zmpi(i_proc2)
         end do
-        if (nb_pair_zmpi(i_proc+1).ne.0) then
-            idx_start = 1 + 3*(deca+nb_pair_init)
-            idx_end   = 3*(nb_pair_zmpi(i_proc+1) + deca + nb_pair_init)
+        if (nb_pair_zmpi(i_proc+1) .ne. 0) then
+            idx_start = 1+3*(deca+nb_pair_init)
+            idx_end = 3*(nb_pair_zmpi(i_proc+1)+deca+nb_pair_init)
             ASSERT(idx_end-idx_start+1 .eq. 3*nb_pair_zmpi(i_proc+1))
-            list_aux(idx_start:idx_end)=list_pair_zmpi(1:3*nb_pair_zmpi(i_proc+1))
-            idx_start = 1 + (deca+nb_pair_init)
-            idx_end   = (nb_pair_zmpi(i_proc+1) + deca + nb_pair_init)
+            list_aux(idx_start:idx_end) = list_pair_zmpi(1:3*nb_pair_zmpi(i_proc+1))
+            idx_start = 1+(deca+nb_pair_init)
+            idx_end = (nb_pair_zmpi(i_proc+1)+deca+nb_pair_init)
             list_aux2(idx_start:idx_end) = list_nbptit_zmpi(1:nb_pair_zmpi(i_proc+1))
-            idx_start = 1 + 16*(deca+nb_pair_init)
-            idx_end   = 16*(nb_pair_zmpi(i_proc+1) + deca + nb_pair_init)
+            idx_start = 1+16*(deca+nb_pair_init)
+            idx_end = 16*(nb_pair_zmpi(i_proc+1)+deca+nb_pair_init)
             list_aux3(idx_start:idx_end) = list_ptitsl_zmpi(1:16*nb_pair_zmpi(i_proc+1))
             list_aux4(idx_start:idx_end) = list_ptitma_zmpi(1:16*nb_pair_zmpi(i_proc+1))
-            idx_start = 1 + 72*(deca+nb_pair_init)
-            idx_end   = 72*(nb_pair_zmpi(i_proc+1) + deca + nb_pair_init)
+            idx_start = 1+72*(deca+nb_pair_init)
+            idx_end = 72*(nb_pair_zmpi(i_proc+1)+deca+nb_pair_init)
             list_aux5(idx_start:idx_end) = li_ptgausma_zmpi(1:72*nb_pair_zmpi(i_proc+1))
-        endif
+        end if
         call sdmpic('SD_APPA_LAC2', sdappa)
 
-        list_pair_zone(:)   = list_aux(:)
+        list_pair_zone(:) = list_aux(:)
         list_nbptit_zone(:) = list_aux2(:)
         list_ptitsl_zone(:) = list_aux3(:)
         list_ptitma_zone(:) = list_aux4(:)
@@ -183,8 +183,8 @@ implicit none
 !
 ! ----- Copy old pairs
 !
-        list_pair_zone(1:3*nb_pair_init)    = list_tmp(1:3*nb_pair_init)
-        list_nbptit_zone(1:nb_pair_init)    = list_tmp2(1:nb_pair_init)
+        list_pair_zone(1:3*nb_pair_init) = list_tmp(1:3*nb_pair_init)
+        list_nbptit_zone(1:nb_pair_init) = list_tmp2(1:nb_pair_init)
         list_ptitsl_zone(1:16*nb_pair_init) = list_tmp3(1:16*nb_pair_init)
         list_ptitma_zone(1:16*nb_pair_init) = list_tmp4(1:16*nb_pair_init)
         li_ptgausma_zone(1:72*nb_pair_init) = list_tmp5(1:72*nb_pair_init)
@@ -193,7 +193,7 @@ implicit none
 ! - Access to pairing datastructures
 !
     sdappa_wpat = sdappa(1:19)//'.WPAT'
-    call jeveuo(sdappa_wpat, 'E', vr = v_sdappa_wpat)
+    call jeveuo(sdappa_wpat, 'E', vr=v_sdappa_wpat)
 !
 ! - Init
 !
@@ -208,11 +208,11 @@ implicit none
         call jedetr(njv_aux3)
         call jedetr(njv_aux4)
         call jedetr(njv_aux5)
-        AS_DEALLOCATE(vi = list_tmp)
-        AS_DEALLOCATE(vi = list_tmp2)
-        AS_DEALLOCATE(vr = list_tmp3)
-        AS_DEALLOCATE(vr = list_tmp4)
-        AS_DEALLOCATE(vr = list_tmp5)
+        AS_DEALLOCATE(vi=list_tmp)
+        AS_DEALLOCATE(vi=list_tmp2)
+        AS_DEALLOCATE(vr=list_tmp3)
+        AS_DEALLOCATE(vr=list_tmp4)
+        AS_DEALLOCATE(vr=list_tmp5)
     end if
 !
 end subroutine

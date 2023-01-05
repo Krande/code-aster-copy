@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,13 +52,13 @@ subroutine listap(motfac, iexci, typapp)
 !
 ! ----------------------------------------------------------------------
 !
-    eximc = getexm(motfac,'TYPE_CHARGE')
+    eximc = getexm(motfac, 'TYPE_CHARGE')
 !
     if (eximc .eq. 1) then
         call getvtx(motfac, 'TYPE_CHARGE', iocc=iexci, scal=typapp, nbret=n)
-        ASSERT(n.eq.1)
+        ASSERT(n .eq. 1)
     else
         typapp = 'FIXE_CSTE'
-    endif
+    end if
 !
 end subroutine

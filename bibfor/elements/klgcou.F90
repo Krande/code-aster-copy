@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
+subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3, &
                   pgl4, k)
 ! aslint: disable=W1306
     implicit none
@@ -40,10 +40,10 @@ subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
     do i = 1, nbrddl
         do j = 1, nbrddl
             if (i .eq. j) then
-                p(i,j)=1.d0
+                p(i, j) = 1.d0
             else
-                p(i,j)=0.d0
-            endif
+                p(i, j) = 0.d0
+            end if
         end do
     end do
 !
@@ -51,50 +51,50 @@ subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
 !  DE POUTRE (UX, UY, UZ, TETAX, TETAY, ET TETAZ) PAR LA MATRICE
 !  DE PASSAGE (3*3) PGL.
 !
-    l=1
-    m=(l-1)*nbrddl/nno
+    l = 1
+    m = (l-1)*nbrddl/nno
     do i = 1, 3
         do j = 1, 3
-            p(m+i,m+j)=pgl1(i,j)
-            p(m+3+i,m+3+j)=pgl1(i,j)
+            p(m+i, m+j) = pgl1(i, j)
+            p(m+3+i, m+3+j) = pgl1(i, j)
         end do
     end do
-    l=2
-    m=(l-1)*nbrddl/nno
+    l = 2
+    m = (l-1)*nbrddl/nno
     do i = 1, 3
         do j = 1, 3
-            p(m+i,m+j)=pgl2(i,j)
-            p(m+3+i,m+3+j)=pgl2(i,j)
+            p(m+i, m+j) = pgl2(i, j)
+            p(m+3+i, m+3+j) = pgl2(i, j)
         end do
     end do
-    l=3
-    m=(l-1)*nbrddl/nno
+    l = 3
+    m = (l-1)*nbrddl/nno
     do i = 1, 3
         do j = 1, 3
-            p(m+i,m+j)=pgl3(i,j)
-            p(m+3+i,m+3+j)=pgl3(i,j)
+            p(m+i, m+j) = pgl3(i, j)
+            p(m+3+i, m+3+j) = pgl3(i, j)
         end do
     end do
 !
     if (nno .eq. 4) then
 !
-        l=4
-        m=(l-1)*nbrddl/nno
+        l = 4
+        m = (l-1)*nbrddl/nno
         do i = 1, 3
             do j = 1, 3
-                p(m+i,m+j)=pgl4(i,j)
-                p(m+3+i,m+3+j)=pgl4(i,j)
+                p(m+i, m+j) = pgl4(i, j)
+                p(m+3+i, m+3+j) = pgl4(i, j)
             end do
         end do
 !
-    endif
+    end if
 !
 !
 ! INITIALISATION A ZERO DE LA MATRICE KTEMP
 !
     do i = 1, nbrddl
         do j = 1, nbrddl
-            ktemp(i,j)=0.d0
+            ktemp(i, j) = 0.d0
         end do
     end do
 !
@@ -103,7 +103,7 @@ subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
     do i = 1, nbrddl
         do j = 1, nbrddl
             do l = 1, nbrddl
-                ktemp(i,j)=ktemp(i,j)+p(l,i)*k(l,j)
+                ktemp(i, j) = ktemp(i, j)+p(l, i)*k(l, j)
             end do
         end do
     end do
@@ -112,7 +112,7 @@ subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
 !
     do i = 1, nbrddl
         do j = 1, nbrddl
-            k(i,j)=0.d0
+            k(i, j) = 0.d0
         end do
     end do
 !
@@ -121,7 +121,7 @@ subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
     do i = 1, nbrddl
         do j = 1, nbrddl
             do l = 1, nbrddl
-                k(i,j)=k(i,j)+ktemp(i,l)*p(l,j)
+                k(i, j) = k(i, j)+ktemp(i, l)*p(l, j)
             end do
         end do
     end do

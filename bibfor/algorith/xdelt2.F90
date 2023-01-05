@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine xdelt2(elp, n, ndime, ksi,&
-                  ptint, ndim, tabco, tabls, ipp, ip,&
+subroutine xdelt2(elp, n, ndime, ksi, &
+                  ptint, ndim, tabco, tabls, ipp, ip, &
                   delta)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -70,9 +70,9 @@ implicit none
     pint1(:) = 0.d0
     pint2(:) = 0.d0
 !
-    do  i = 1, ndim
-        pint1(i)=ptint(ndim*(ipp-1)+i)
-        pint2(i)=ptint(ndim*(ip-1)+i)
+    do i = 1, ndim
+        pint1(i) = ptint(ndim*(ipp-1)+i)
+        pint2(i) = ptint(ndim*(ip-1)+i)
     end do
 !
 !     CALCUL DES FONCTIONS DE FORME DE L'ELEMENT EN KSI
@@ -82,13 +82,13 @@ implicit none
     call elrfdf(elp, ksi, dff)
 !
     r(:) = 0.d0
-    jac(:,:) = 0.d0
+    jac(:, :) = 0.d0
 ! --- CALCUL DE R1,DERIVEES PREMIERES DE R1 EN KSI
 ! ---           R1 : LEVEL SET NORMALE
-    do  j = 1, nno
-        r(1)=r(1)+ff(j)*tabls(j)
+    do j = 1, nno
+        r(1) = r(1)+ff(j)*tabls(j)
         do i = 1, ndime
-            jac(1,i)=jac(1,i)+dff(i,j)*tabls(j)
+            jac(1, i) = jac(1, i)+dff(i, j)*tabls(j)
         end do
     end do
 !
@@ -107,23 +107,23 @@ implicit none
 !                   Z = SUM(FF*TABCO(1))
 !                   NOR = (XII-XI,YII-YI,ZII-ZI)
 !
-    do  i = 1, ndim
+    do i = 1, ndim
         do j = 1, nno
-            p(i)=p(i)+ff(j)*tabco(ndim*(j-1)+i)
+            p(i) = p(i)+ff(j)*tabco(ndim*(j-1)+i)
         end do
-        m(i)=0.5d0*(pint1(i)+pint2(i))
-        nor(i)=pint2(i)-pint1(i)
-        r(2)=r(2)+(p(i)-m(i))*nor(i)
+        m(i) = 0.5d0*(pint1(i)+pint2(i))
+        nor(i) = pint2(i)-pint1(i)
+        r(2) = r(2)+(p(i)-m(i))*nor(i)
     end do
 !
 !     CALCUL DES DERIVEES PREMIERES DE R2 EN KSI
-    do  i = 1, ndime
+    do i = 1, ndime
         do k = 1, ndim
-            dx=0.d0
+            dx = 0.d0
             do j = 1, nno
-                dx=dx+dff(i,j)*tabco(ndim*(j-1)+k)
+                dx = dx+dff(i, j)*tabco(ndim*(j-1)+k)
             end do
-            jac(2,i)=jac(2,i)+dx*nor(k)
+            jac(2, i) = jac(2, i)+dx*nor(k)
         end do
     end do
 !
@@ -134,36 +134,36 @@ implicit none
 ! --- RECUPERATION DES COORDONNEES DANS L'ESPACE DE REFERENCE DES
 ! --- NOEUDS DE L'ELEMENT PARENT
         refcoo = 0.d0
-        call elrfno(elp, nodeCoor = refcoo)
+        call elrfno(elp, nodeCoor=refcoo)
 !
 ! ---  CALCUL DES VECTEURS N(1)N(2) ET N(1)N(3)
         v1(:) = 0.d0
         v2(:) = 0.d0
         do i = 1, ndim
-            v1(i)=refcoo(i, n(2)) - refcoo(i, n(1))
-            v2(i)=refcoo(i, n(3)) - refcoo(i, n(1))
+            v1(i) = refcoo(i, n(2))-refcoo(i, n(1))
+            v2(i) = refcoo(i, n(3))-refcoo(i, n(1))
         end do
 !
 ! calcul de la NORMALE a la face
         call provec(v1, v2, nf)
 !
         do i = 1, ndim
-            r(3)     = r(3)+nf(i)*(ksi(i)-refcoo(i, n(1)))
-            jac(3,i) = nf(i)
+            r(3) = r(3)+nf(i)*(ksi(i)-refcoo(i, n(1)))
+            jac(3, i) = nf(i)
         end do
-    endif
+    end if
 !
-    det=0.d0
-    inv(:,:) = 0.d0
+    det = 0.d0
+    inv(:, :) = 0.d0
 ! --- CALCUL L'INVERSE DE LA MATRICE JACOBIENNE
     call matinv('S', ndime, jac, inv, det)
 !
     delta(:) = 0.d0
 ! --- CALCUL DES QUANTITES A ANNULER
 !     CALCUL DE DELTAS
-    do  i = 1, ndime
+    do i = 1, ndime
         do j = 1, ndime
-            delta(i)=delta(i)+inv(i,j)*r(j)
+            delta(i) = delta(i)+inv(i, j)*r(j)
         end do
     end do
 !

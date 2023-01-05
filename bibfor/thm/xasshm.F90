@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,26 @@
 ! aslint: disable=W1504,W1306
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xasshm(ds_thm,&
-                  nno, npg, npi, ipoids, ivf,&
-                  idfde, igeom, geom, carcri, deplm,&
-                  deplp, contm, contp, varim, varip,&
-                  defgem, defgep, drds, drdsr, dsde,&
-                  b, dfdi, dfdi2, r, sigbar,&
-                  c, ck, cs, matuu, vectu,&
-                  rinstm, rinstp, option, j_mater, mecani,&
-                  press1, press2, tempe, dimdef, dimcon,&
-                  dimuel, nbvari, nddls, nddlm, nmec,&
-                  np1, ndim, compor, axi, modint,&
-                  codret, nnop, nnops, nnopm, enrmec,&
-                  dimenr, heavt, lonch, cnset, jpintt,&
-                  jpmilt, jheavn, angmas,dimmat, enrhyd,&
-                  nfiss, nfh, jfisno, work1, work2,&
+subroutine xasshm(ds_thm, &
+                  nno, npg, npi, ipoids, ivf, &
+                  idfde, igeom, geom, carcri, deplm, &
+                  deplp, contm, contp, varim, varip, &
+                  defgem, defgep, drds, drdsr, dsde, &
+                  b, dfdi, dfdi2, r, sigbar, &
+                  c, ck, cs, matuu, vectu, &
+                  rinstm, rinstp, option, j_mater, mecani, &
+                  press1, press2, tempe, dimdef, dimcon, &
+                  dimuel, nbvari, nddls, nddlm, nmec, &
+                  np1, ndim, compor, axi, modint, &
+                  codret, nnop, nnops, nnopm, enrmec, &
+                  dimenr, heavt, lonch, cnset, jpintt, &
+                  jpmilt, jheavn, angmas, dimmat, enrhyd, &
+                  nfiss, nfh, jfisno, work1, work2, &
                   lVect, lMatr, lVari, lSigm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -57,26 +57,26 @@ implicit none
 #include "asterfort/thmGetBehaviourChck.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-integer :: dimmat, npg, dimuel
-integer :: npi, ipoids, ivf, idfde, j_mater, dimdef, dimcon, nnop
-integer :: nbvari, nddls, nddlm, nmec, np1, ndim, codret
-integer :: mecani(5), press1(7), press2(7), tempe(5)
-integer ::  nfiss, nfh, jfisno
-integer :: addeme, addep1, ii, jj, in, jheavn
-integer :: kpi, ipi
-integer :: i, j, n, k, kji, nb_vari_meca
-real(kind=8) :: geom(ndim, nnop), carcri(*), poids
-real(kind=8) :: deplp(dimuel), deplm(dimuel)
-real(kind=8) :: matuu(dimuel*dimuel), matri(dimmat, dimmat)
-real(kind=8) :: rinstp, rinstm, vectu(dimuel)
-real(kind=8) :: defgem(dimdef), defgep(dimdef)
-real(kind=8) :: dt, parm_theta, ta1
-real(kind=8) :: angmas(3)
-aster_logical :: axi
-character(len=3) :: modint
-character(len=16) :: option, compor(*)
-aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
+    type(THM_DS), intent(inout) :: ds_thm
+    integer :: dimmat, npg, dimuel
+    integer :: npi, ipoids, ivf, idfde, j_mater, dimdef, dimcon, nnop
+    integer :: nbvari, nddls, nddlm, nmec, np1, ndim, codret
+    integer :: mecani(5), press1(7), press2(7), tempe(5)
+    integer ::  nfiss, nfh, jfisno
+    integer :: addeme, addep1, ii, jj, in, jheavn
+    integer :: kpi, ipi
+    integer :: i, j, n, k, kji, nb_vari_meca
+    real(kind=8) :: geom(ndim, nnop), carcri(*), poids
+    real(kind=8) :: deplp(dimuel), deplm(dimuel)
+    real(kind=8) :: matuu(dimuel*dimuel), matri(dimmat, dimmat)
+    real(kind=8) :: rinstp, rinstm, vectu(dimuel)
+    real(kind=8) :: defgem(dimdef), defgep(dimdef)
+    real(kind=8) :: dt, parm_theta, ta1
+    real(kind=8) :: angmas(3)
+    aster_logical :: axi
+    character(len=3) :: modint
+    character(len=16) :: option, compor(*)
+    aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,8 +130,8 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
     integer :: ise, yaenrm, adenme, nse
     integer :: adenhy, yaenrh, ifiss, fisno(nnop, nfiss)
     integer :: lonch(10), ino, cnset(*)
-    integer :: jpintt, jpmilt, igeom, iret , jtab(7)
-    integer :: heavn(nnop,5), ig, ncompn
+    integer :: jpintt, jpmilt, igeom, iret, jtab(7)
+    integer :: heavn(nnop, 5), ig, ncompn
     real(kind=8) ::  coorse(81), xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
     real(kind=8) :: ff(nnop), ff2(nnops), he(nfiss), congem(dimcon)
@@ -140,7 +140,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
     real(kind=8) :: dsde(dimcon, dimenr), b(dimenr, dimuel)
     real(kind=8) :: r(dimenr), sigbar(dimenr), c(dimenr)
     real(kind=8) :: ck(dimenr), cs(dimenr)
-    real(kind=8) :: contm(*), contp(*), vintm(nbvari) , vintp(nbvari)
+    real(kind=8) :: contm(*), contp(*), vintm(nbvari), vintp(nbvari)
     real(kind=8) :: varim(*), varip(*), temp
     real(kind=8) :: work1(dimcon, dimuel), work2(dimenr, dimuel)
     character(len=8) :: elrefp, elref2
@@ -151,7 +151,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
     ASSERT(dimuel .le. dimmat)
 !
     congep = 0.d0
-    vintp  = 0.d0
+    vintp = 0.d0
     codret = 0
 
 !     ON RECUPERE A PARTIR DE L'ELEMENT QUADRATIQUE L'ELEMENT LINEAIRE
@@ -172,7 +172,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 ! --- CALCUL DE CONSTANTES TEMPORELLES --------------------------------
 ! =====================================================================
     dt = rinstp-rinstm
-    parm_theta  = carcri(PARM_THETA_THM)
+    parm_theta = carcri(PARM_THETA_THM)
     ta1 = 1.d0-parm_theta
 ! =====================================================================
 ! --- CREATION DES MATRICES DE SELECTION ------------------------------
@@ -185,7 +185,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 ! =====================================================================
 ! --- INITIALISATION --------------------------------------------------
 ! =====================================================================
-    c(1:dimenr)  = 1.d0
+    c(1:dimenr) = 1.d0
     cs(1:dimenr) = 1.d0
 ! =====================================================================
 ! --- SI INTEGRATION REDUITE, ON MET A 0 CERTAINS COEFFICIENTS --------
@@ -198,14 +198,14 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
             do i = 1, 6
                 cs(addeme-1+ndim+i) = 0.d0
             end do
-        endif
+        end if
         if (ds_thm%ds_elem%l_dof_pre1) then
             c(addep1) = 0.d0
             do i = 1, ndim
                 cs(addep1-1+1+i) = 0.d0
             end do
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! --- FIN CALCUL C,CS --------------------------------------------------
 ! ======================================================================
@@ -213,18 +213,18 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 ! ======================================================================
     if (lVect) then
         do i = 1, dimuel
-            vectu(i)=0.d0
+            vectu(i) = 0.d0
         end do
-    endif
+    end if
 ! ======================================================================
 ! --- INITIALISATION DF(MATUU) ET MATRI --------------------------------
 ! ======================================================================
     if (lMatr) then
         do i = 1, dimuel*dimuel
-            matuu(i)=0.d0
+            matuu(i) = 0.d0
         end do
-        matri(:,:) = 0.d0
-    endif
+        matri(:, :) = 0.d0
+    end if
 !
 ! - Get parameters for behaviour
 !
@@ -245,54 +245,54 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 !
 ! - Get initial parameters (THM_INIT)
 !
-    call thmGetParaInit(j_mater, ds_thm, l_check_ = ASTER_TRUE)
+    call thmGetParaInit(j_mater, ds_thm, l_check_=ASTER_TRUE)
 !
 !     RECUPERATION DE LA CONNECTIVITE FISSURE - DDL HEAVISIDES
 !     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNE
     if (nfiss .eq. 1) then
         do ino = 1, nnop
-            fisno(ino,1) = 1
+            fisno(ino, 1) = 1
         end do
     else
         do i = 1, nfh
 !    ON REMPLIT JUSQU'A NFH <= NFISS
             do ino = 1, nnop
-                fisno(ino,i) = zi(jfisno-1+(ino-1)*nfh+i)
+                fisno(ino, i) = zi(jfisno-1+(ino-1)*nfh+i)
             end do
         end do
-    endif
+    end if
 !
 ! =====================================================================
 ! --- MISE EN OEUVRE DE LA METHODE XFEM -------------------------------
 ! =====================================================================
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMEN
-    nse=lonch(1)
+    nse = lonch(1)
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
     call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, itab=jtab)
     ncompn = jtab(2)/jtab(3)
-    ASSERT(ncompn.eq.5)
+    ASSERT(ncompn .eq. 5)
     do in = 1, nnop
-        do ig = 1 , ncompn
-            heavn(in,ig) = zi(jheavn-1+ncompn*(in-1)+ig)
-        enddo
-    enddo
+        do ig = 1, ncompn
+            heavn(in, ig) = zi(jheavn-1+ncompn*(in-1)+ig)
+        end do
+    end do
 !
 !     BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !     BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=cnset(nno*(ise-1)+in)
+            ino = cnset(nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000-1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000-1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000-1)+j)
+                end if
             end do
         end do
 !
@@ -312,7 +312,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
             xg(:) = 0.d0
             do j = 1, ndim
                 do in = 1, nno
-                    xg(j)=xg(j)+zr(ivf-1+nno*(ipi-1)+in)* coorse(ndim*(in-1)+j)
+                    xg(j) = xg(j)+zr(ivf-1+nno*(ipi-1)+in)*coorse(ndim*(in-1)+j)
                 end do
             end do
 !
@@ -321,39 +321,39 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 !
 !     CALCUL DES FF ET DES DERIVEES DFDI POUR L'ELEMENT PARENTS
 !     QUDRATIQUE (MECANIQUE)
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
                         xe, ff, dfdi)
 !
 !     CALCUL DES FF2 ET DES DERIVEES DFDI2 POUR L'ELEMENT LINEAIRE
 !     ASSOCIE A ELREFP (HYDRAULIQUE)
-            call reeref(elref2, nnops, zr(igeom), xg, ndim,&
+            call reeref(elref2, nnops, zr(igeom), xg, ndim, &
                         bid3, ff2, dfdi2)
 ! =====================================================================
 ! --- CALCUL DE LA MATRICE B AU POINT D'INTEGRATION -------------------
 ! =====================================================================
-            call xcabhm(ds_thm,&
-                        nddls, nddlm, nnop, nnops, nnopm,&
-                        dimuel, ndim, kpi, ff, ff2,&
+            call xcabhm(ds_thm, &
+                        nddls, nddlm, nnop, nnops, nnopm, &
+                        dimuel, ndim, kpi, ff, ff2, &
                         dfdi, dfdi2, b, nmec, &
-                        addeme, addep1, np1, axi,&
-                        ivf, ipoids, idfde, poids, coorse,&
-                        nno, geom, yaenrm, adenme, dimenr,&
+                        addeme, addep1, np1, axi, &
+                        ivf, ipoids, idfde, poids, coorse, &
+                        nno, geom, yaenrm, adenme, dimenr, &
                         he, heavn, yaenrh, adenhy, nfiss, nfh)
 ! =====================================================================
 ! --- CALCUL INTERMEDIAIRE POUR LES DEF GENERALISEES AVEC XFEM --------
 ! =====================================================================
             do i = 1, dimenr
-                degem1(i)=0.d0
-                degep1(i)=0.d0
+                degem1(i) = 0.d0
+                degep1(i) = 0.d0
                 do n = 1, dimuel
-                    degem1(i)=degem1(i)+b(i,n)*deplm(n)
-                    degep1(i)=degep1(i)+b(i,n)*deplp(n)
+                    degem1(i) = degem1(i)+b(i, n)*deplm(n)
+                    degep1(i) = degep1(i)+b(i, n)*deplp(n)
                 end do
             end do
 ! =====================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES ----------------------------
 ! =====================================================================
-            call xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
+            call xdefhm(dimdef, dimenr, addeme, adenme, addep1, &
                         ndim, degem1, degep1, defgem, defgep, adenhy, nfh)
 ! ======================================================================
 ! --- APPEL A LA ROUTINE EQUTHM ----------------------------------------
@@ -369,7 +369,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
                 do i = 1, nbvari
                     vintp(i) = varip(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i)
                 end do
-            endif
+            end if
             do i = 1, dimcon
                 congem(i) = contm(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)
             end do
@@ -377,30 +377,30 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
                 do i = 1, dimcon
                     congep(i) = contp(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)
                 end do
-            endif
-            call xequhm(ds_thm, j_mater, option, parm_theta, ta1, ndim,&
-                        kpi, npg, dimenr, enrmec,&
-                        dimdef, dimcon, nbvari, defgem, congem,&
-                        vintm, defgep, congep,&
-                        vintp, mecani, press1, press2, tempe,&
-                        rinstp, dt, r, drds, dsde,&
+            end if
+            call xequhm(ds_thm, j_mater, option, parm_theta, ta1, ndim, &
+                        kpi, npg, dimenr, enrmec, &
+                        dimdef, dimcon, nbvari, defgem, congem, &
+                        vintm, defgep, congep, &
+                        vintp, mecani, press1, press2, tempe, &
+                        rinstp, dt, r, drds, dsde, &
                         codret, angmas, enrhyd, nfh)
             do i = 1, nbvari
-                varim(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i)=vintm(i)
+                varim(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i) = vintm(i)
             end do
             if (lVari) then
                 do i = 1, nbvari
-                    varip(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i)=vintp(i)
+                    varip(npi*(ise-1)*nbvari+(kpi-1)*nbvari+i) = vintp(i)
                 end do
-            endif
+            end if
             do i = 1, dimcon
-                contm(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)=congem(i)
+                contm(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i) = congem(i)
             end do
             if (lSigm) then
                 do i = 1, dimcon
-                    contp(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i)=congep(i)
+                    contp(npi*(ise-1)*dimcon+(kpi-1)*dimcon+i) = congep(i)
                 end do
-            endif
+            end if
 ! ======================================================================
 ! --- ATTENTION CI-DESSOUS IL N'Y A PAS D'IMPACT DE CALCUL -------------
 ! --- ON RECOPIE POUR LA METHODE D'INTEGRATION SELECTIVE LES CONTRAINTES
@@ -420,20 +420,20 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
                 if (kpi .gt. npg) then
                     if (lSigm) then
                         do i = 1, 6
-                            contp((kpi-1)*dimcon+i)=contp((kpi-npg-1)*dimcon+i)
+                            contp((kpi-1)*dimcon+i) = contp((kpi-npg-1)*dimcon+i)
                         end do
-                    endif
+                    end if
                     nb_vari_meca = ds_thm%ds_behaviour%nb_vari_meca
                     if (lVari) then
                         do i = 1, nb_vari_meca
-                            varip((kpi-1)*nbvari+i) = varip((kpi-npg-1)* nbvari+i)
+                            varip((kpi-1)*nbvari+i) = varip((kpi-npg-1)*nbvari+i)
                         end do
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
             if (codret .ne. 0) then
                 goto 99
-            endif
+            end if
 ! ======================================================================
 ! --- CONTRIBUTION DU POINT D'INTEGRATION KPI A LA MATRICE TANGENTE ET -
 ! --- AU RESIDU --------------------------------------------------------
@@ -448,22 +448,22 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
                 ck(1:dimenr) = c(1:dimenr)
             else
                 ck(1:dimenr) = cs(1:dimenr)
-            endif
+            end if
 ! ======================================================================
 ! --- CALCUL DE MATUU (MATRI) ------------------------------------------
 ! ======================================================================
             if (lMatr) then
                 do i = 1, dimenr
                     do j = 1, dimcon
-                        drdsr(i,j)=drds(i,j)
+                        drdsr(i, j) = drds(i, j)
                     end do
                 end do
 ! ======================================================================
 ! --- ON ASSEMBLE: DF=BT.CK.DRDSR.DSDE.B.POIDS -------------------------
 ! ======================================================================
-                call pmathm(dimmat, dimenr, dimcon, dimuel, dsde,&
+                call pmathm(dimmat, dimenr, dimcon, dimuel, dsde, &
                             drdsr, ck, b, poids, work1, work2, matri)
-            endif
+            end if
 ! ======================================================================
 ! --- CALCUL DE VECTUU -------------------------------------------------
 ! ======================================================================
@@ -478,23 +478,23 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 ! ======================================================================
                 do i = 1, dimuel
                     do k = 1, dimenr
-                        vectu(i)=vectu(i)+b(k,i)*sigbar(k)*poids
+                        vectu(i) = vectu(i)+b(k, i)*sigbar(k)*poids
                     end do
                 end do
-            endif
+            end if
         end do
 ! ======================================================================
 ! --- SORTIE DE BOUCLE SUR LES POINTS D'INTEGRATION --------------------
 ! ======================================================================
         if (lMatr) then
-            kji=1
+            kji = 1
             do ii = 1, dimuel
                 do jj = 1, dimuel
-                    matuu(kji) = matri(ii,jj)
-                    kji= kji + 1
+                    matuu(kji) = matri(ii, jj)
+                    kji = kji+1
                 end do
             end do
-        endif
+        end if
 ! ======================================================================
 99      continue
 ! ======================================================================

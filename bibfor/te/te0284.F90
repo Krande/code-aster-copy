@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,8 +55,8 @@ subroutine te0284(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     dimcoo = ndim
 !
 ! --- INITIALISATIONS :
@@ -67,7 +67,7 @@ subroutine te0284(option, nomte)
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
     nbsig = nbsigm()
-    if (nbsig .eq. 6) ndim=3
+    if (nbsig .eq. 6) ndim = 3
 !
     do i = 1, nbsig*npg
         epsi(i) = zero
@@ -84,8 +84,8 @@ subroutine te0284(option, nomte)
     if (iharmo .eq. 0) then
         nharm = zero
     else
-        nharm = dble( zi(iharmo) )
-    endif
+        nharm = dble(zi(iharmo))
+    end if
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -93,18 +93,18 @@ subroutine te0284(option, nomte)
     if (ndim .eq. dimcoo) then
         do i = 1, ndim*nno
             xyz(i) = zr(igeom+i-1)
-        enddo
+        end do
     else
         do i = 1, nno
             do idim = 1, ndim
                 if (idim .le. dimcoo) then
-                    xyz(idim+ndim*(i-1)) = zr(igeom-1+idim+dimcoo*(i- 1))
+                    xyz(idim+ndim*(i-1)) = zr(igeom-1+idim+dimcoo*(i-1))
                 else
                     xyz(idim+ndim*(i-1)) = 0.d0
-                endif
-            enddo
-        enddo
-    endif
+                end if
+            end do
+        end do
+    end if
 !
 ! ---- RECUPERATION DU MATERIAU
 !      ------------------------
@@ -120,7 +120,7 @@ subroutine te0284(option, nomte)
     do i = 1, nno
         do idim = 1, dimcoo
             bary(idim) = bary(idim)+zr(igeom+idim+dimcoo*(i-1)-1)/nno
-        enddo
+        end do
     end do
     call ortrep(dimcoo, bary, repere)
 !
@@ -133,21 +133,21 @@ subroutine te0284(option, nomte)
 ! ---- CONSTRUCTION DU VECTEUR DES DEFORMATIONS INITIALES DEFINIES AUX
 ! ---- POINTS D'INTEGRATION A PARTIR DES DONNEES UTILISATEUR
 !      -----------------------------------------------------
-    call epsimc(option, zr(igeom), nno, npg, ndim,&
+    call epsimc(option, zr(igeom), nno, npg, ndim, &
                 nbsig, zr(ivf), epsi)
 !
 ! ---- CALCUL DU VECTEUR DES CONTRAINTES INITIALES AUX POINTS
 ! ---- D'INTEGRATION
 !      -------------
-    call sigimc(fami, nno, ndim, nbsig, npg,&
-                zr(ivf), xyz, instan, zi(imate), repere,&
+    call sigimc(fami, nno, ndim, nbsig, npg, &
+                zr(ivf), xyz, instan, zi(imate), repere, &
                 epsi, sigi)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES DUES AUX CONTRAINTES INITIALES
 ! ---- (I.E. BT*SIG_INITIALES)
 !      ----------------------
-    call bsigmc(nno, ndim, nbsig, npg, ipoids,&
-                ivf, idfde, zr(igeom), nharm, sigi,&
+    call bsigmc(nno, ndim, nbsig, npg, ipoids, &
+                ivf, idfde, zr(igeom), nharm, sigi, &
                 bsigma)
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE

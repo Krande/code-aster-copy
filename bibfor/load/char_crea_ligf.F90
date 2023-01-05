@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,33 +59,33 @@ subroutine char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
 !
 ! ----- General objects
 !
-        call wkvect(ligrch//'.LGRF', 'G V K8', 3, vk8 = p_ligrch_lgrf)
+        call wkvect(ligrch//'.LGRF', 'G V K8', 3, vk8=p_ligrch_lgrf)
         p_ligrch_lgrf(1) = mesh
-        call wkvect(ligrch//'.NBNO', 'G V I', 1, vi = p_ligrch_nbno)
+        call wkvect(ligrch//'.NBNO', 'G V I', 1, vi=p_ligrch_nbno)
         p_ligrch_nbno(1) = 0
 !
 ! ----- Number of GRoup of ELements
 !
-        nb_grel      = nb_elem_late
+        nb_grel = nb_elem_late
 !
 ! ----- LGNS object
 !
         nb_node_late = nb_elem_late*nb_noel_maxi
-        call wkvect(ligrch//'.LGNS', 'G V I', nb_node_late, vi = p_ligrch_lgns)
+        call wkvect(ligrch//'.LGNS', 'G V I', nb_node_late, vi=p_ligrch_lgns)
 !
 ! ----- LIEL object
 !
-        lont_liel    = 2*nb_elem_late
-        call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+        lont_liel = 2*nb_elem_late
+        call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                     nb_grel)
-        call jeecra(ligrch//'.LIEL', 'LONT', ival = lont_liel)
+        call jeecra(ligrch//'.LIEL', 'LONT', ival=lont_liel)
 !
 ! ----- NEMA object
 !
-        lont_nema    = 2*nb_elem_late*(nb_noel_maxi+1)
-        call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+        lont_nema = 2*nb_elem_late*(nb_noel_maxi+1)
+        call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                     nb_grel)
-        call jeecra(ligrch//'.NEMA', 'LONT', ival = lont_nema)
+        call jeecra(ligrch//'.NEMA', 'LONT', ival=lont_nema)
 !
-    endif
+    end if
 end subroutine

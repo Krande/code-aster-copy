@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,11 +47,11 @@ subroutine te0169(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
         do ino = 1, nno
             do i = 1, nc
-                zr(ivectu+(ino-1)*nc+i-1)=forref
+                zr(ivectu+(ino-1)*nc+i-1) = forref
             end do
         end do
 !
-    else if (option.eq.'FORC_NODA') then
+    else if (option .eq. 'FORC_NODA') then
 !
 !        PARAMETRES EN ENTREE
         call jevech('PGEOMER', 'L', igeom)
@@ -64,32 +64,32 @@ subroutine te0169(option, nomte)
 !
         if (ideplp .eq. 0) then
             do i = 1, 9
-                w(i)=zr(idepla-1+i)
+                w(i) = zr(idepla-1+i)
             end do
         else
             do i = 1, 9
-                w(i)=zr(idepla-1+i)+zr(ideplp-1+i)
+                w(i) = zr(idepla-1+i)+zr(ideplp-1+i)
             end do
-        endif
+        end if
 !
         do kc = 1, 3
-            l1(kc) = w(kc )+zr(igeom-1+kc)-w(6+kc)-zr(igeom+5+kc)
+            l1(kc) = w(kc)+zr(igeom-1+kc)-w(6+kc)-zr(igeom+5+kc)
         end do
         do kc = 1, 3
             l2(kc) = w(3+kc)+zr(igeom+2+kc)-w(6+kc)-zr(igeom+5+kc)
         end do
-        norml1=ddot(3,l1,1,l1,1)
-        norml2=ddot(3,l2,1,l2,1)
-        norml1 = sqrt (norml1)
-        norml2 = sqrt (norml2)
+        norml1 = ddot(3, l1, 1, l1, 1)
+        norml2 = ddot(3, l2, 1, l2, 1)
+        norml1 = sqrt(norml1)
+        norml2 = sqrt(norml2)
 !
-        coef1 = zr(lsigma) / norml1
-        coef2 = zr(lsigma) / norml2
+        coef1 = zr(lsigma)/norml1
+        coef2 = zr(lsigma)/norml2
 !
         do i = 1, 3
-            zr(jefint+i-1) = coef1 * l1(i)
-            zr(jefint+i+2) = coef2 * l2(i)
-            zr(jefint+i+5) = -zr(jefint+i-1) - zr(jefint+i+2)
+            zr(jefint+i-1) = coef1*l1(i)
+            zr(jefint+i+2) = coef2*l2(i)
+            zr(jefint+i+5) = -zr(jefint+i-1)-zr(jefint+i+2)
         end do
-    endif
+    end if
 end subroutine

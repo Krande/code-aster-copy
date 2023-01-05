@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmrede(list_func_acti, sddyna     ,&
-                  sdnume        , nb_equa    , matass,&
-                  ds_material   , ds_contact ,&
-                  cnfext        , cnfint     , cndiri, cnsstr,&
-                  hval_measse   , hval_incr  ,&
-                  r_char_vale   , r_char_indx)
+subroutine nmrede(list_func_acti, sddyna, &
+                  sdnume, nb_equa, matass, &
+                  ds_material, ds_contact, &
+                  cnfext, cnfint, cndiri, cnsstr, &
+                  hval_measse, hval_incr, &
+                  r_char_vale, r_char_indx)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,17 +38,17 @@ implicit none
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndiner.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: sddyna, sdnume
-integer, intent(in) :: nb_equa
-character(len=19), intent(in) :: matass
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19), intent(in) :: cnfext, cnfint, cndiri, cnsstr
-character(len=19), intent(in) :: hval_measse(*)
-character(len=19), intent(in) :: hval_incr(*)
-real(kind=8), intent(out) :: r_char_vale
-integer, intent(out) :: r_char_indx
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sddyna, sdnume
+    integer, intent(in) :: nb_equa
+    character(len=19), intent(in) :: matass
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: cnfext, cnfint, cndiri, cnsstr
+    character(len=19), intent(in) :: hval_measse(*)
+    character(len=19), intent(in) :: hval_incr(*)
+    real(kind=8), intent(out) :: r_char_vale
+    integer, intent(out) :: r_char_indx
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,11 +106,11 @@ integer, intent(out) :: r_char_indx
 !
 ! - Active functionnalities
 !
-    l_dyna      = ndynlo(sddyna,'DYNAMIQUE')
-    l_load_cine = isfonc(list_func_acti,'DIRI_CINE')
-    l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
-    l_cont_lac  = isfonc(list_func_acti,'CONT_LAC')
-    l_macr      = isfonc(list_func_acti,'MACR_ELEM_STAT')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
+    l_load_cine = isfonc(list_func_acti, 'DIRI_CINE')
+    l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
+    l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
     l_unil_pena = ASTER_FALSE
 !
 ! - Compute inertial force
@@ -118,20 +118,20 @@ integer, intent(out) :: r_char_indx
     if (l_dyna) then
         cniner = '&&CNPART.CHP1'
         call ndiner(nb_equa, sddyna, hval_incr, hval_measse, cniner)
-    endif
+    end if
 !
 ! - For kinematic loads
 !
     if (l_load_cine) then
-        call jeveuo(matass(1:19)//'.CCID', 'L', vi = v_ccid)
-    endif
+        call jeveuo(matass(1:19)//'.CCID', 'L', vi=v_ccid)
+    end if
 !
 ! - For contact dof
 !
     if (l_cont_cont .or. l_cont_lac) then
         sdnuco = sdnume(1:19)//'.NUCO'
-        call jeveuo(sdnuco, 'L', vi = v_sdnuco)
-    endif
+        call jeveuo(sdnuco, 'L', vi=v_sdnuco)
+    end if
 !
 ! - Access
 !
@@ -141,85 +141,85 @@ integer, intent(out) :: r_char_indx
     call jeveuo(ds_material%fvarc_curr(1:19)//'.VALE', 'L', vr=v_fvarc_curr)
     if (l_dyna) then
         call jeveuo(cniner(1:19)//'.VALE', 'L', vr=v_cniner)
-    endif
+    end if
     if (ds_contact%l_cnctdf) then
         call jeveuo(ds_contact%cnctdf(1:19)//'.VALE', 'L', vr=v_cnctdf)
-    endif
+    end if
     if (ds_contact%l_cnunil) then
         l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
         if (l_unil_pena) then
             call jeveuo(ds_contact%cnunil(1:19)//'.VALE', 'L', vr=v_cnunil)
-        endif
-    endif
+        end if
+    end if
     if (ds_contact%l_cneltc) then
         call jeveuo(ds_contact%cneltc(1:19)//'.VALE', 'L', vr=v_cneltc)
-    endif
+    end if
     if (ds_contact%l_cneltf) then
         call jeveuo(ds_contact%cneltf(1:19)//'.VALE', 'L', vr=v_cneltf)
-    endif
+    end if
     if (l_macr) then
         call jeveuo(cnsstr(1:19)//'.VALE', 'L', vr=v_cnsstr)
-    endif
+    end if
 !
 ! - Compute
 !
     do i_equa = 1, nb_equa
 ! ----- Select support force
         appui = 0.d0
-        fext  = 0.d0
+        fext = 0.d0
         if (l_load_cine) then
             if (v_ccid(i_equa) .eq. 1) then
-                appui = - v_cnfint(i_equa)
-                fext  = 0.d0
+                appui = -v_cnfint(i_equa)
+                fext = 0.d0
                 if (l_macr) then
-                    appui = appui - v_cnsstr(i_equa)
-                endif
+                    appui = appui-v_cnsstr(i_equa)
+                end if
                 if (ds_contact%l_cneltc) then
-                    appui = appui - v_cneltc(i_equa)
-                endif
+                    appui = appui-v_cneltc(i_equa)
+                end if
                 if (ds_contact%l_cneltf) then
-                    appui = appui - v_cneltf(i_equa)
-                endif
+                    appui = appui-v_cneltf(i_equa)
+                end if
             else
                 appui = v_cndiri(i_equa)
                 if (ds_contact%l_cnctdf) then
-                    appui = appui + v_cnctdf(i_equa)
-                endif
-                if (ds_contact%l_cnunil.and.l_unil_pena) then
-                    appui = appui + v_cnunil(i_equa)
-                endif
+                    appui = appui+v_cnctdf(i_equa)
+                end if
+                if (ds_contact%l_cnunil .and. l_unil_pena) then
+                    appui = appui+v_cnunil(i_equa)
+                end if
                 fext = v_cnfext(i_equa)
-            endif
+            end if
         else
             appui = v_cndiri(i_equa)
             if (ds_contact%l_cnctdf) then
-                appui = appui + v_cnctdf(i_equa)
-            endif
-            if (ds_contact%l_cnunil.and.l_unil_pena) then
-                appui = appui + v_cnunil(i_equa)
-            endif
+                appui = appui+v_cnctdf(i_equa)
+            end if
+            if (ds_contact%l_cnunil .and. l_unil_pena) then
+                appui = appui+v_cnunil(i_equa)
+            end if
             fext = v_cnfext(i_equa)
-        endif
+        end if
 ! ----- Compute value
         val2 = abs(appui-fext)+abs(v_fvarc_curr(i_equa))
 ! ----- Exclude contact dof
         if (l_cont_cont .or. l_cont_lac) then
             if (v_sdnuco(i_equa) .eq. 1) then
                 cycle
-            endif
-        endif
+            end if
+        end if
 ! ----- Get maximum value (static)
         if (r_char_vale .le. val2) then
             r_char_vale = val2
             r_char_indx = i_equa
-        endif
+        end if
 ! ----- Get maximum value (dynamic)
         if (l_dyna) then
             if (r_char_vale .le. abs(v_cniner(i_equa))) then
                 r_char_vale = abs(v_cniner(i_equa))
                 r_char_indx = i_equa
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

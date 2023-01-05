@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSMeasureRead(ds_measure)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 !
-type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,19 +53,19 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_13')
-    endif
+    end if
 !
 ! - Initializations
 !
     keywfact = 'MESURE'
     unit_csv = 0
-    l_table  = ASTER_FALSE
-    l_csv    = ASTER_FALSE
+    l_table = ASTER_FALSE
+    l_csv = ASTER_FALSE
 !
 ! - Read parameters
 !
     call getvtx(keywfact, 'TABLE', iocc=1, scal=answer)
-    l_table = answer.eq.'OUI'
+    l_table = answer .eq. 'OUI'
     call getvis(keywfact, 'UNITE', iocc=1, scal=unit_csv, nbret=noc)
     if (noc .eq. 0) then
         l_csv = ASTER_FALSE
@@ -74,13 +74,13 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
             l_csv = ASTER_FALSE
         else
             l_csv = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
 !
 ! - Save parameters
 !
-    ds_measure%l_table        = l_table
-    ds_measure%table%l_csv    = l_csv
+    ds_measure%l_table = l_table
+    ds_measure%table%l_csv = l_csv
     ds_measure%table%unit_csv = unit_csv
 !
 end subroutine

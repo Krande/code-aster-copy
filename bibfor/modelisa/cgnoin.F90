@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,44 +74,44 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- INITIALISATIONS :
 !     ---------------
-    r8b=0.d0
-    motfac=mofaz
-    noma2=nomaz
-    lisnoi=lisnoz
+    r8b = 0.d0
+    motfac = mofaz
+    noma2 = nomaz
+    lisnoi = lisnoz
 !
 !
 ! --- RECUPERATION DES MAILLES DE GROUP_MA_1 :
 !     -----------------------------------------
     call getvid(motfac, 'MAILLAGE_INCL', iocc=iocc, scal=noma1, nbret=n1)
-    if (n1 .eq. 0) noma1=noma2
-    mesma1='&&CGNOIN.MAILLE1'
-    nbmc=1
-    motcle(1)='GROUP_MA_INCL'
-    tymocl(1)='GROUP_MA'
-    call reliem(' ', noma1, 'NU_MAILLE', motfac, iocc,&
+    if (n1 .eq. 0) noma1 = noma2
+    mesma1 = '&&CGNOIN.MAILLE1'
+    nbmc = 1
+    motcle(1) = 'GROUP_MA_INCL'
+    tymocl(1) = 'GROUP_MA'
+    call reliem(' ', noma1, 'NU_MAILLE', motfac, iocc, &
                 nbmc, motcle, tymocl, mesma1, nbno1)
-    ASSERT(nbno1.gt.0)
+    ASSERT(nbno1 .gt. 0)
     call jeveuo(mesma1, 'L', jma1)
 !
 !
 ! --- RECUPERATION DES NOEUDS DE GROUP_MA :
 !     ------------------------------------------
-    mesno2='&&CGNOIN.NOEUD2'
-    nbmc=1
-    motcle(1)='GROUP_MA'
-    tymocl(1)='GROUP_MA'
-    call reliem(' ', noma2, 'NU_NOEUD', motfac, iocc,&
+    mesno2 = '&&CGNOIN.NOEUD2'
+    nbmc = 1
+    motcle(1) = 'GROUP_MA'
+    tymocl(1) = 'GROUP_MA'
+    call reliem(' ', noma2, 'NU_NOEUD', motfac, iocc, &
                 nbmc, motcle, tymocl, mesno2, nbno2)
-    ASSERT(nbno2.gt.0)
+    ASSERT(nbno2 .gt. 0)
     call jeveuo(mesno2, 'L', jno2)
 !
 !
 ! --- CREATION DE LA SD CORRESP_2_MAILLA   :
 !     -----------------------------------------
-    corres='&&CGNOIN.CORRES'
+    corres = '&&CGNOIN.CORRES'
     call getvtx(motfac, 'CAS_FIGURE', iocc=iocc, scal=ncas, nbret=n1)
 !
-    l_dmax=.true.
+    l_dmax = .true.
     call getvr8(motfac, 'DISTANCE_MAX', iocc=iocc, scal=dmax, nbret=n1)
     if (n1 .eq. 0) then
 !
@@ -119,30 +119,30 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !       SOIENT SUREMENT RETENUS, IL FAUT UNE PETITE TOLERANCE :
 !       0.01*AR_MIN :
         call ltnotb(noma2, 'CARA_GEOM', tablg)
-        call tbliva(tablg, 0, ' ', [ibid], [r8b],&
-                    [c16b], k8bid, k8bid, [r8b], 'AR_MIN',&
-                    k8bid, ibid, armin, c16b, k8bid,&
+        call tbliva(tablg, 0, ' ', [ibid], [r8b], &
+                    [c16b], k8bid, k8bid, [r8b], 'AR_MIN', &
+                    k8bid, ibid, armin, c16b, k8bid, &
                     iret)
-        ASSERT(iret.eq.0)
-        ASSERT(armin.gt.0.d0)
-        dmax=0.01d0*armin
-    endif
+        ASSERT(iret .eq. 0)
+        ASSERT(armin .gt. 0.d0)
+        dmax = 0.01d0*armin
+    end if
 !
     if (ncas .eq. '2D') then
-        call pj2dco('PARTIE', noma1, noma2, nbno1, zi(jma1),&
-                    nbno2, zi(jno2), ' ', ' ', corres,&
+        call pj2dco('PARTIE', noma1, noma2, nbno1, zi(jma1), &
+                    nbno2, zi(jno2), ' ', ' ', corres, &
                     l_dmax, dmax, 0.d0)
-    else if (ncas.eq.'3D') then
-        call pj3dco('PARTIE', noma1, noma2, nbno1, zi(jma1),&
-                    nbno2, zi(jno2), ' ', ' ', corres,&
+    else if (ncas .eq. '3D') then
+        call pj3dco('PARTIE', noma1, noma2, nbno1, zi(jma1), &
+                    nbno2, zi(jno2), ' ', ' ', corres, &
                     l_dmax, dmax, 0.d0)
-    else if (ncas.eq.'2.5D') then
-        call pj4dco('PARTIE', noma1, noma2, nbno1, zi(jma1),&
-                    nbno2, zi(jno2), ' ', ' ', corres,&
+    else if (ncas .eq. '2.5D') then
+        call pj4dco('PARTIE', noma1, noma2, nbno1, zi(jma1), &
+                    nbno2, zi(jno2), ' ', ' ', corres, &
                     l_dmax, dmax, 0.d0)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 ! --- EXPLOITATION DE LA SD CORRESP_2_MAILLA POUR DETERMINER
@@ -153,12 +153,12 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)
 !
 !
-    nbno=0
+    nbno = 0
     do ino2 = 1, nbno2
         if (pjef_nb(ino2) .gt. 0) then
-            nbno=nbno+1
-            litrav(nbno)=ino2
-        endif
+            nbno = nbno+1
+            litrav(nbno) = ino2
+        end if
     end do
 !
 !
@@ -168,7 +168,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !     --------------------------------------------------------
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
     do i = 1, nbno
-        zi(jlisno-1+i)=litrav(i)
+        zi(jlisno-1+i) = litrav(i)
     end do
 !
     AS_DEALLOCATE(vi=litrav)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     vecele = vecelz
     if (vecele .eq. ' ') then
         vecele = '&&VELAME'
-    endif
+    end if
     resuel = '&&VELAME.???????'
     depmoi = depmoz
 !
@@ -89,14 +89,14 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
             call jeveuo(infcha, 'L', jinf)
             lonlis = (zi(jinf+2*nchar+2))*nchar
             if (lonlis .eq. 0) bidon = .true.
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     -- ALLOCATION DU VECT_ELEM RESULTAT :
 !     -------------------------------------
     call detrsd('VECT_ELEM', vecele)
-    call memare('V', vecele, modele(1:8), ' ', ' ',&
+    call memare('V', vecele, modele(1:8), ' ', ' ', &
                 'CHAR_MECA')
     call reajre(vecele, ' ', 'V')
     if (bidon) goto 40
@@ -107,11 +107,11 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
 !     REACTUALISATION DE LA GEOMETRIE SI DEPMOI EXISTE
     if (depmoi .ne. ' ') then
         chgeo2 = '&&VELAME.CH_GEOMER'
-        call vtgpld('CUMU', 1.d0, chgeom, depmoi, 'V',&
+        call vtgpld('CUMU', 1.d0, chgeom, depmoi, 'V', &
                     chgeo2)
     else
         chgeo2 = chgeom
-    endif
+    end if
 !
 !
     option = 'CHAR_MECA_FRLAPL'
@@ -137,28 +137,28 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
                     lcmp(2) = 'NOGEOM'
                     kcmp(1) = chgeom(1:8)
                     kcmp(2) = chgeo2(1:19)
-                    call mecact('V', chlapl, 'MODELE', modele, 'FLAPLA  ',&
+                    call mecact('V', chlapl, 'MODELE', modele, 'FLAPLA  ', &
                                 ncmp=2, lnomcmp=lcmp, vk=kcmp)
                     lchin(1) = chlapl
                     ifla = 1
-                endif
+                end if
                 call gcnco2(newnom)
                 resuel(10:16) = newnom(2:8)
-                call corich('E', resuel, ichin_ = icha)
+                call corich('E', resuel, ichin_=icha)
 !
-                call calcul('S', option, ligrmo, 3, lchin,&
-                            lpain, 1, resuel, paout, 'V',&
+                call calcul('S', option, ligrmo, 3, lchin, &
+                            lpain, 1, resuel, paout, 'V', &
                             'OUI')
                 call reajre(vecele, resuel, 'V')
             else
                 goto 20
-            endif
+            end if
         end do
- 20     continue
+20      continue
 !
     end do
 !
- 40 continue
+40  continue
     vecelz = vecele
 !
     call jedema()

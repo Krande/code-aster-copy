@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine mmapin(mesh, ds_contact, ds_measure)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,17 +54,17 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_15')
-    endif
+        call utmess('I', 'CONTACT5_15')
+    end if
 !
 ! - Initializations
 !
-    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
 ! - Geometric actualisation and pairing
 !
-    if (.not.l_all_verif) then
+    if (.not. l_all_verif) then
         call mmctcg(mesh, ds_contact, ds_measure)
-    endif
+    end if
 !
 end subroutine

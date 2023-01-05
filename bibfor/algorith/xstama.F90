@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xstama(noma, nbma, nmafis, jmafis,&
-                  ncouch, lisnoe, stano, cnslt, cnsln,&
-                  jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
+subroutine xstama(noma, nbma, nmafis, jmafis, &
+                  ncouch, lisnoe, stano, cnslt, cnsln, &
+                  jmafon, jmaen1, jmaen2, jmaen3, nmafon, &
                   nmaen1, nmaen2, nmaen3, typdis)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -83,7 +83,7 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
 !
 !
 !
-    integer :: jma,    jconx2
+    integer :: jma, jconx2
     integer :: ima, itypma, j, idim, ndim
     integer :: nuno, ifm, niv
     integer :: nbnoe, ino, nabs, jdlino, nbnoma
@@ -100,7 +100,7 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
     call jemarq()
     call infdbg('XFEM', ifm, niv)
 !
-    mai=noma//'.TYPMAIL'
+    mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
@@ -108,8 +108,8 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
 !
 !     1) STATUT DES MAILLES SANS TENIR COMPTE DE NB_COUCHES
 !     --------------------------------------------------
-    call xstam1(noma, nbma, nmafis, zi(jmafis),&
-                stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3),&
+    call xstam1(noma, nbma, nmafis, zi(jmafis), &
+                stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3), &
                 nmafon, nmaen1, nmaen2, nmaen3, typdis, cnslt)
 !
 !     S'IL N'Y A PAS DE MAILLES DE FOND, ON SORT
@@ -133,27 +133,27 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
         hff = r8maem()
         do j = 1, nmafon
             ima = zi(jmafon-1+j)
-            itypma=zi(jma-1+ima)
+            itypma = zi(jma-1+ima)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
 !         CONSTRUCTION DES COORDONNES DE LA MAILLE
-            nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
+            nbnoma = zi(jconx2+ima)-zi(jconx2+ima-1)
             AS_ALLOCATE(vr=macoord, size=ndim*nbnoma)
             do ino = 1, nbnoma
                 nuno = connex(zi(jconx2+ima-1)+ino-1)
                 do idim = 1, ndim
-                    macoord(ndim*(ino-1)+idim)=vale(3*(nuno-&
-                    1)+idim)
+                    macoord(ndim*(ino-1)+idim) = vale(3*(nuno- &
+                                                         1)+idim)
                 end do
             end do
 !
             call loncar(ndim, typma, macoord, diam)
             AS_DEALLOCATE(vr=macoord)
-            hff = min(hff,diam)
+            hff = min(hff, diam)
         end do
 !
         rayon = hff*ncouch
-        write(ifm,*)'LE RAYON D ENRICHISSEMENT EQUIVALENT EST ',rayon
+        write (ifm, *) 'LE RAYON D ENRICHISSEMENT EQUIVALENT EST ', rayon
 !
 !       ON MODIFIE L'ENRICHISSEMENT DES NOEUDS (MAJ STANO)
 !       SI ANCIEN STANO = 0 -> 2
@@ -161,14 +161,14 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
         call jelira(lisnoe, 'LONMAX', nbnoe)
         call jeveuo(lisnoe, 'L', jdlino)
         do ino = 1, nbnoe
-            nabs=zi(jdlino-1+(ino-1)+1)
+            nabs = zi(jdlino-1+(ino-1)+1)
             if (abs(stano(nabs)) .le. 1) then
-                lsn=lnsv((nabs-1)+1)
-                lst=ltsv((nabs-1)+1)
+                lsn = lnsv((nabs-1)+1)
+                lst = ltsv((nabs-1)+1)
                 if (sqrt(lsn**2+lst**2) .le. rayon) then
-                    stano(nabs) = stano(nabs) + 2
-                endif
-            endif
+                    stano(nabs) = stano(nabs)+2
+                end if
+            end if
         end do
 !
         call jerazo('&&XENRCH.MAFOND', nmafis, 1)
@@ -177,11 +177,11 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
         call jerazo('&&XENRCH.MAENR3', nbma, 1)
 !
 !       ON RECOMMENCE L'ENRICHISSEMENT DES MAILLES AVEC LE NOUVEAU STANO
-        call xstam1(noma, nbma, nmafis, zi(jmafis),&
-                    stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3),&
+        call xstam1(noma, nbma, nmafis, zi(jmafis), &
+                    stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3), &
                     nmafon, nmaen1, nmaen2, nmaen3, typdis, cnslt)
 !
-    endif
+    end if
 !
 999 continue
 !

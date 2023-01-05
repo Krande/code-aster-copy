@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine affpou(tmp, tmpf, fcx, nom, isec,&
-                  ivar, car, ncar, val, tab,&
+subroutine affpou(tmp, tmpf, fcx, nom, isec, &
+                  ivar, car, ncar, val, tab, &
                   exp, nbo, ioc, ier)
     implicit none
 #include "jeveux.h"
@@ -79,14 +79,14 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
             valk(1) = ioc
             valk(2) = nom
             call utmess('A', 'MODELISA_92', nk=2, valk=valk)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
         if (iisec .ne. isec) then
             valk(1) = ioc
             valk(2) = nom
             call utmess('A', 'MODELISA_93', nk=2, valk=valk)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
 !
     else
         call jecroc(jexnom(tmp, nom))
@@ -94,24 +94,24 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
         do i = 1, nbo
             zr(jdge+i-1) = tst
         end do
-    endif
+    end if
 !
 ! --- VERIFICATION QUE LES AY, AZ SONT >= 1
     do i = 1, ncar
-        if ((car(i)(1:2).eq.'AY') .or. (car(i)(1:2).eq.'AZ')) then
+        if ((car(i) (1:2) .eq. 'AY') .or. (car(i) (1:2) .eq. 'AZ')) then
             if (val(i) .lt. 1.0d0) then
                 valkm = car(i)
                 valrm = val(i)
                 call utmess('A', 'MODELISA_23', sk=valkm, sr=valrm)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !     --- NOM DE LA FONCTION DU CX
     call jenonu(jexnom(tmpf, nom), num)
     if (num .eq. 0) then
         call jecroc(jexnom(tmpf, nom))
-    endif
+    end if
     call jeveuo(jexnom(tmpf, nom), 'E', jdgef)
     zk8(jdgef) = fcx
 !
@@ -134,19 +134,19 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
         if (car(i) .eq. 'H1      ' .or. car(i) .eq. 'H       ') then
             zr(jdge+23) = val(i)
             zr(jdge+24) = val(i)
-        endif
+        end if
         if (car(i) .eq. 'H2      ' .or. car(i) .eq. 'H       ') then
             zr(jdge+27) = val(i)
             zr(jdge+28) = val(i)
-        endif
+        end if
         if (car(i) .eq. 'EP1     ' .or. car(i) .eq. 'EP      ') then
             zr(jdge+25) = val(i)
             zr(jdge+26) = val(i)
-        endif
+        end if
         if (car(i) .eq. 'EP2     ' .or. car(i) .eq. 'EP      ') then
             zr(jdge+29) = val(i)
             zr(jdge+30) = val(i)
-        endif
+        end if
     end do
 !
 !     --- TYPE/GEOMETRIE  DE SECTION ---

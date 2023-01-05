@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mmglis(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -65,8 +65,8 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... GESTION GLISSIERE'
-    endif
+        write (ifm, *) '<CONTACT> ... GESTION GLISSIERE'
+    end if
 !
 ! --- ACCES SD CONTACT
 !
@@ -76,7 +76,7 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    nzoco = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     iptc = 1
 !
 ! --- BOUCLE SUR LES ZONES
@@ -85,17 +85,17 @@ implicit none
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', izone)
         if (lveri) then
             goto 25
-        endif
+        end if
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
-        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
-        nbmae = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
-        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME' ,izone )
-        lgliss = mminfl(ds_contact%sdcont_defi,'GLISSIERE_ZONE' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', izone)
+        nbmae = mminfi(ds_contact%sdcont_defi, 'NBMAE', izone)
+        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', izone)
+        lgliss = mminfl(ds_contact%sdcont_defi, 'GLISSIERE_ZONE', izone)
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
@@ -103,7 +103,7 @@ implicit none
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
-            posmae = jdecme + imae
+            posmae = jdecme+imae
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
 !
@@ -116,14 +116,14 @@ implicit none
                     xs = nint(zr(jtabf+ztabf*(iptc-1)+22))
                     if (xs .eq. 1) then
                         zr(jtabf+ztabf*(iptc-1)+17) = 1.d0
-                    endif
-                    iptc = iptc + 1
+                    end if
+                    iptc = iptc+1
                 end do
             else
-                iptc = iptc + nptm
-            endif
+                iptc = iptc+nptm
+            end if
         end do
- 25     continue
+25      continue
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdfdas(dnorm, vnorm, vitloc, cost, sint,&
-                  coefk1, coefk2, coefpy, coefc, coefad,&
+subroutine mdfdas(dnorm, vnorm, vitloc, cost, sint, &
+                  coefk1, coefk2, coefpy, coefc, coefad, &
                   xmax, fdispo, flocal)
     implicit none
 !
@@ -47,14 +47,14 @@ subroutine mdfdas(dnorm, vnorm, vitloc, cost, sint,&
 !-----------------------------------------------------------------------
     real(kind=8) :: dnorm, vnorm
 !-----------------------------------------------------------------------
-    vnorm = vitloc(2)*cost + vitloc(3)*sint
+    vnorm = vitloc(2)*cost+vitloc(3)*sint
     if (abs(vnorm) .lt. r8prem()) then
-        fdispo = -coefk2*dnorm - (coefk1-coefk2)*dnorm/sqrt(1.d0+( coefk1*dnorm/coefpy)**2)
+        fdispo = -coefk2*dnorm-(coefk1-coefk2)*dnorm/sqrt(1.d0+(coefk1*dnorm/coefpy)**2)
     else
-        fdispo = -coefk2*dnorm - (coefk1-coefk2)*dnorm/sqrt(1.d0+( coefk1*dnorm/coefpy)**2) - coe&
-                 &fc*sign(1.d0,vnorm)*abs(vnorm* dnorm/xmax)**coefad
-    endif
-    flocal(1)=0.d0
-    flocal(2)=fdispo*cost
-    flocal(3)=fdispo*sint
+        fdispo = -coefk2*dnorm-(coefk1-coefk2)*dnorm/sqrt(1.d0+(coefk1*dnorm/coefpy)**2)-coe&
+                 &fc*sign(1.d0, vnorm)*abs(vnorm*dnorm/xmax)**coefad
+    end if
+    flocal(1) = 0.d0
+    flocal(2) = fdispo*cost
+    flocal(3) = fdispo*sint
 end subroutine

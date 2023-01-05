@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
     integer :: numether, numepres, numemeca, n4, nbinst, jinst, nbabsc, jabsc
     integer :: i, j, m, ibid, iret, ndim, jcont, nbinst2, jdepsi, itrouve
     integer :: jj, jfen, n5(14), jtemp, n6, n7, jtempy, nbtempy, ii
-    parameter  ( ncmp = 6 )
+    parameter(ncmp=6)
     character(len=8) :: nocmp(ncmp), crit(2), table1, table2, table3
     character(len=8) :: tableok, k8b, table4, table5
     real(kind=8) :: prec(2), vale(2), diff(6), nul(6), equi(3)
@@ -103,8 +103,8 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
     crit(1) = 'RELATIF'
     crit(2) = 'RELATIF'
 !
-    situ(1)=iocc1
-    situ(2)=iocc2
+    situ(1) = iocc1
+    situ(2) = iocc2
 !
     nul(1) = 0.d0
     nul(2) = 0.d0
@@ -135,7 +135,7 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
     end do
 !
     instany = '&&RC32.INSTANTYOUNG'
-    call tbexv1(table5, 'TEMP', instany, 'V', nbtempy,&
+    call tbexv1(table5, 'TEMP', instany, 'V', nbtempy, &
                 k8b)
     call jeveuo(instany, 'L', jtempy)
 !
@@ -159,27 +159,27 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
                 call getvis(motclf, 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n4)
                 if (numether .eq. nume1) then
                     call getvid(motclf, 'TABL_RESU_THER', iocc=ither, scal=table1, nbret=n4)
-                endif
+                end if
             end do
-        endif
+        end if
 !
         if (n2 .ne. 0) then
             do ipres = 1, nbpres, 1
                 call getvis(motclf2, 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n4)
                 if (numepres .eq. nume2) then
                     call getvid(motclf2, 'TABL_RESU_PRES', iocc=ipres, scal=table2, nbret=n4)
-                endif
+                end if
             end do
-        endif
+        end if
 !
         if (n3 .ne. 0) then
             do imeca = 1, nbmeca, 1
                 call getvis(motclf3, 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n4)
                 if (numemeca .eq. nume3) then
                     call getvid(motclf3, 'TABL_RESU_MECA', iocc=imeca, scal=table3, nbret=n4)
-                endif
+                end if
             end do
-        endif
+        end if
 !
 ! ------ RECUPERATION DES INSTANTS ET DES ABSCISSES
 !
@@ -191,7 +191,7 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
             tableok = table2
         else
             tableok = table3
-        endif
+        end if
 !
 ! --------- on verifie l'ordre des noeuds de la table
 !
@@ -200,14 +200,14 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
 ! --------- on recupere les instants de la table
 !
         instan = '&&RC32.INSTANT'
-        call tbexv1(tableok, valek(1), instan, 'V', nbinst,&
+        call tbexv1(tableok, valek(1), instan, 'V', nbinst, &
                     k8b)
         call jeveuo(instan, 'L', jinst)
 !
 ! --------- on recupere les abscisses curvilignes de la table
 !
         abscur = '&&RC32.ABSC_CURV'
-        call tbexv1(tableok, valek(2), abscur, 'V', nbabsc,&
+        call tbexv1(tableok, valek(2), abscur, 'V', nbabsc, &
                     k8b)
         call jeveuo(abscur, 'L', jabsc)
 !
@@ -215,7 +215,7 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
             vale(2) = zr(jabsc)
         else
             vale(2) = zr(jabsc+nbabsc-1)
-        endif
+        end if
 !
 ! ------ STOCKAGE DES CONTRAINTES POUR LE CALCUL DU FEN
 !
@@ -231,50 +231,50 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
 !
 ! --------- on recupere la temperature a l 'instant i
 !
-            call tbliva(table4, 2, valek, [ibid], vale,&
-                        [cbid], k8b, crit, prec, 'TEMP',&
-                        k8b, ibid, temp, cbid, k8b,&
+            call tbliva(table4, 2, valek, [ibid], vale, &
+                        [cbid], k8b, crit, prec, 'TEMP', &
+                        k8b, ibid, temp, cbid, k8b, &
                         iret)
             if (iret .ne. 0) then
-                valk (1) = table4
-                valk (2) = 'TEMP'
-                valk (3) = valek(1)
-                valk (4) = valek(2)
-                call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                valk(1) = table4
+                valk(2) = 'TEMP'
+                valk(3) = valek(1)
+                valk(4) = valek(2)
+                call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                             valr=vale)
-            endif
-            zr(jtemp+j-1)=temp
+            end if
+            zr(jtemp+j-1) = temp
 !
             do m = 1, ncmp
 !
 ! --------- on recupere les contraintes(t) a l 'instant i
 !
                 if (n1 .ne. 0) then
-                    call tbliva(table1, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(m),&
-                                k8b, ibid, contraintesth, cbid, k8b,&
+                    call tbliva(table1, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(m), &
+                                k8b, ibid, contraintesth, cbid, k8b, &
                                 iret)
-                endif
+                end if
 !
                 if (n2 .ne. 0) then
-                    call tbliva(table2, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(m),&
-                                k8b, ibid, contraintespr, cbid, k8b,&
+                    call tbliva(table2, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(m), &
+                                k8b, ibid, contraintespr, cbid, k8b, &
                                 iret)
-                endif
+                end if
 !
                 if (n3 .ne. 0) then
-                    call tbliva(table3, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(m),&
-                                k8b, ibid, contraintesmec, cbid, k8b,&
+                    call tbliva(table3, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(m), &
+                                k8b, ibid, contraintesmec, cbid, k8b, &
                                 iret)
-                endif
-                zr(jcont+(j-1)*ncmp+m-1)= contraintesth+contraintespr+contraintesmec
+                end if
+                zr(jcont+(j-1)*ncmp+m-1) = contraintesth+contraintespr+contraintesmec
                 if (j .ge. 2) then
-                    diff(m)= zr(jcont+(j-1)*ncmp+m-1)-zr(jcont+(j-2)*ncmp+m-1)
+                    diff(m) = zr(jcont+(j-1)*ncmp+m-1)-zr(jcont+(j-2)*ncmp+m-1)
                     if (m .eq. ncmp) then
                         tmoy = (zr(jtemp+j-1)+zr(jtemp+j-2))/2
-                        if (lcqeqv(diff,nul) .eq. 'OUI') then
+                        if (lcqeqv(diff, nul) .eq. 'OUI') then
                             tresca = 0.d0
                         else
                             call rcjaco(diff, equi)
@@ -283,58 +283,58 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
                                 prinmax = equi(1)
                             else
                                 prinmax = equi(2)
-                            endif
+                            end if
                             if (abs(prinmax) .lt. abs(equi(3))) then
                                 prinmax = equi(3)
-                            endif
+                            end if
 ! --------- si cette cont. princ. max est <0, la vitesse de déformation est nulle
                             if (prinmax .lt. 0) then
                                 tresca = 0.d0
-! --------- si cette cont. princ. max est >0, 
+! --------- si cette cont. princ. max est >0,
 ! --------- la vitesse de déformation vaut ke_pond*tresca/(E*(ti+1-ti))
                             else
-                                tresca = max (&
-                                         abs(equi(1)-equi(2)), abs(equi(1)-equi(3)),&
-                                         abs(equi(2)-equi(3))&
+                                tresca = max( &
+                                         abs(equi(1)-equi(2)), abs(equi(1)-equi(3)), &
+                                         abs(equi(2)-equi(3)) &
                                          )
-                            endif
-                        endif
+                            end if
+                        end if
 ! --------- calcul de e
                         tempmin = zr(jtempy)
                         tempmax = zr(jtempy)
                         ii = 0
 120                     continue
-                        ii=ii+1
+                        ii = ii+1
                         tempii = zr(jtempy+ii)
                         if (tmoy .ge. tempii) then
                             tempmin = tempii
                             goto 120
-                        endif
+                        end if
                         if (abs(tmoy-tempmin) .lt. 1e-6) then
                             tempmax = tmoy
                         else
                             tempmax = tempii
-                        endif
-                        call tbliva(table5, 1, val, [ibid], [tempmin],&
-                                    [cbid], k8b, crit, prec, 'YOUNG',&
-                                    k8b, ibid, emin, cbid, k8b,&
+                        end if
+                        call tbliva(table5, 1, val, [ibid], [tempmin], &
+                                    [cbid], k8b, crit, prec, 'YOUNG', &
+                                    k8b, ibid, emin, cbid, k8b, &
                                     iret)
                         if (iret .eq. 1) then
-                            valk(1)=table5
-                            valk(2)='YOUNG'
+                            valk(1) = table5
+                            valk(2) = 'YOUNG'
                             call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
-                        endif
-                        call tbliva(table5, 1, val, [ibid], [tempmax],&
-                                    [cbid], k8b, crit, prec, 'YOUNG',&
-                                    k8b, ibid, emax, cbid, k8b,&
+                        end if
+                        call tbliva(table5, 1, val, [ibid], [tempmax], &
+                                    [cbid], k8b, crit, prec, 'YOUNG', &
+                                    k8b, ibid, emax, cbid, k8b, &
                                     iret)
                         if (abs(tempmin-tempmax) .lt. 1e-6) then
                             e = emin
                         else
-                            e = ((emin-emax)/(tempmin-tempmax))*(tmoy-tempmin) + emin
-                        endif
+                            e = ((emin-emax)/(tempmin-tempmax))*(tmoy-tempmin)+emin
+                        end if
 ! --------- calcul de delta_epsilon
-                        zr(jdepsi+j-2) = ke_pond*tresca /e
+                        zr(jdepsi+j-2) = ke_pond*tresca/e
 ! --------- calcul de epsilon_point puis epsilon_point*
                         epsiet = zr(jdepsi+j-2)/(zr(jinst+j-1)-zr(jinst+j-2))
                         if (epsiet*100 .lt. epsiinf) then
@@ -342,8 +342,8 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
                         else if (epsiet*100 .gt. epsisup) then
                             epset = 0.d0
                         else
-                            epset = log10(100*epsiet /epsisup)/log10(exp(1.d0))
-                        endif
+                            epset = log10(100*epsiet/epsisup)/log10(exp(1.d0))
+                        end if
 ! --------- calcul de t*
                         if (tmoy .lt. tinf) then
                             tet = valtinf
@@ -351,19 +351,19 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
                             tet = valtsup
                         else
                             tet = (tmoy-valtmoynum)/valtmoyden
-                        endif
+                        end if
 !
                         zr(jfen+j-2) = exp((a+b*epset)*set*oet*tet+c)
-                    endif
-                endif
+                    end if
+                end if
             end do
         end do
 !
-        nume(i)= 0.d0
-        deno(i)= 0.d0
+        nume(i) = 0.d0
+        deno(i) = 0.d0
         do jj = 1, nbinst-1
-            nume(i)= nume(i)+(zr(jdepsi+jj-1))*(zr(jfen+jj-1))
-            deno(i)= deno(i)+zr(jdepsi+jj-1)
+            nume(i) = nume(i)+(zr(jdepsi+jj-1))*(zr(jfen+jj-1))
+            deno(i) = deno(i)+zr(jdepsi+jj-1)
         end do
 !
         call jedetr(instan)
@@ -381,7 +381,7 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
         fen = 1
     else
         fen = (nume(1)+nume(2))/(deno(1)+deno(2))
-    endif
+    end if
 !
     call jedema()
 end subroutine

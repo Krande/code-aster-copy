@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
             h(1) = 1.d00
             h(2) = 1.d00
 !
-        else if (npgxyz(i).eq.3) then
+        else if (npgxyz(i) .eq. 3) then
 !
             npari = 3
             a(1) = -sqrt(3.d0/5.d0)
@@ -61,7 +61,7 @@ subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
             h(2) = 8.d0/9.d0
             h(3) = h(1)
 !
-        else if (npgxyz(i).eq.4) then
+        else if (npgxyz(i) .eq. 4) then
 !
             npari = 4
             a(1) = -sqrt((3.d0+2.d0*sqrt(6.d0/5.d0))/7.d0)
@@ -73,22 +73,22 @@ subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
             h(3) = h(2)
             h(4) = h(1)
 !
-        endif
+        end if
 !
         do j = 1, npari
-            coord(i,j) = a(j)
-            hpgxyz(i,j) = h(j)
+            coord(i, j) = a(j)
+            hpgxyz(i, j) = h(j)
         end do
     end do
     npi = 0
     do i = 1, npgxyz(1)
         do j = 1, npgxyz(2)
             do k = 1, npgxyz(3)
-                npi = npi + 1
-                xpg( npi ) = coord(1,i)
-                ypg( npi ) = coord(2,j)
-                zpg( npi ) = coord(3,k)
-                hpg( npi ) = hpgxyz(1,i)*hpgxyz(2,j)*hpgxyz(3,k)
+                npi = npi+1
+                xpg(npi) = coord(1, i)
+                ypg(npi) = coord(2, j)
+                zpg(npi) = coord(3, k)
+                hpg(npi) = hpgxyz(1, i)*hpgxyz(2, j)*hpgxyz(3, k)
             end do
         end do
     end do

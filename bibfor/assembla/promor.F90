@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -145,11 +145,11 @@ subroutine promor(nuz, base, printz)
 !
     call infniv(ifm, niv)
     call jemarq()
-    nu=nuz
+    nu = nuz
     printt = ASTER_TRUE
-    if(present(printz)) then
+    if (present(printz)) then
         printt = printz
-    endif
+    end if
 !
 !
     call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
@@ -159,41 +159,41 @@ subroutine promor(nuz, base, printz)
 !---- QUEL TYPE DE PARTITION ?
 !     LDIST=.TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES
 !     LDGREL=.TRUE. : DISTRIBUTION DE TYPE 'GROUP_ELEM'
-    ldist=.false.
-    ldgrel=.false.
+    ldist = .false.
+    ldgrel = .false.
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 
-    if(mo .ne. ' ') then
+    if (mo .ne. ' ') then
         call dismoi('NOM_LIGREL', mo, 'MODELE', repk=nomlig)
         call dismoi('PARTITION', nomlig, 'LIGREL', repk=partit)
 !
         if (partit .ne. ' ') then
-            ldist=.true.
+            ldist = .true.
             call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-            ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
-            if (.not.ldgrel) then
+            ldgrel = prtk(1) .eq. 'SOUS_DOMAINE' .or. prtk(1) .eq. 'GROUP_ELEM'
+            if (.not. ldgrel) then
                 call jeveuo(partit//'.NUPR', 'L', vi=maille)
-            endif
-        endif
+            end if
+        end if
     end if
 !
     call jeexin(ma//'.CONNEX', iret)
     if (iret .gt. 0) then
         call jeveuo(ma//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    endif
+    end if
 !
     if (mo .eq. ' ') then
-        nbss=0
+        nbss = 0
     else
         call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbss)
         if (nbss .gt. 0) then
             call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
             call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
-        endif
-    endif
+        end if
+    end if
 !
 !
     call jeveuo(nu//'     .ADNE', 'E', vi=adne)
@@ -201,8 +201,8 @@ subroutine promor(nuz, base, printz)
 !
 !     -- CAS MATR_DISTRIBUE='OUI' => LMADIS=.TRUE.
     call jeexin(nu//'.NUML.DELG', imd)
-    lmadis=(imd.ne.0)
-    if (.not.lmadis) then
+    lmadis = (imd .ne. 0)
+    if (.not. lmadis) then
         call jeveuo(nu//'.NUME.NEQU', 'L', iadequ)
         call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili)
         call jeveuo(nu//'.NUME.PRNO', 'L', idprn1)
@@ -214,10 +214,10 @@ subroutine promor(nuz, base, printz)
         call jeveuo(nu//'.NUML.PRNO', 'L', idprn1)
         call jeveuo(jexatr(nu//'.NUML.PRNO', 'LONCUM'), 'L', idprn2)
         call jeveuo(nu//'.NUML.NUEQ', 'L', jnueq)
-    endif
+    end if
 !
-    nec=nbec(igd)
-    nequ=zi(iadequ)
+    nec = nbec(igd)
+    nequ = zi(iadequ)
 !
 !
 !
@@ -228,7 +228,7 @@ subroutine promor(nuz, base, printz)
 !                  STRUCTURE COMPACTE (SMDI,SMHC) DE LA MATRICE
 !     CES 2 OBJETS SONT AGRANDIS SI NECESSAIRE DANS MOINSR.F
 !     ON COMMENCE AVEC IIMAX=10
-    iimax=10
+    iimax = 10
     call wkvect('&&PROMOR.NOIP', 'V V I', iimax, jnoip)
     call wkvect('&&PROMOR.NOSUIV', 'V V I', iimax, jsuiv)
 !
@@ -236,7 +236,7 @@ subroutine promor(nuz, base, printz)
 !
 !     -- ALLOCATION DU VECTEUR &&PROMOR.ANCIEN.LM
 !     CE VECTEUR SERA AGRANDI SI NECESSAIRE
-    mxddlt=100
+    mxddlt = 100
     call wkvect('&&PROMOR.ANCIEN.LM', 'V V I', mxddlt, jalm)
 !
 !
@@ -255,10 +255,10 @@ subroutine promor(nuz, base, printz)
 !     ISUIV(II)     : MAILLON SUIVANT DE LA MEME CHAINE.
 !
 !     NEQX   : COMPTEUR DU NOMBRE D'EQUATION (CONTROLE)
-    neqx=0
+    neqx = 0
 !
 !     IILIB  : 1-ERE PLACE LIBRE
-    iilib=1
+    iilib = 1
 !
 !
 !     -- BOUCLE SUR LES LIGREL DE NU//'.NUME.LILI' :
@@ -270,8 +270,8 @@ subroutine promor(nuz, base, printz)
         if (nomlig(1:8) .eq. mo) then
             call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbss)
         else
-            nbss=0
-        endif
+            nbss = 0
+        end if
         if (exiele .eq. 'NON') goto 90
 !
 !
@@ -279,149 +279,149 @@ subroutine promor(nuz, base, printz)
 !       --------------------------------------------
         do igr = 1, zzngel(ili)
             if (lmadis) then
-                if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 80
-            endif
-            nel=zznelg(ili,igr)
+                if (ldgrel .and. mod(igr, nbproc) .ne. rang) goto 80
+            end if
+            nel = zznelg(ili, igr)
             do iel = 1, nel
-                nddlt=0
-                numa=zzliel(ili,igr,iel)
+                nddlt = 0
+                numa = zzliel(ili, igr, iel)
 !
                 if (numa .gt. 0) then
 !                   -- MAILLES DU MAILLAGE :
-                    if (lmadis .and. ldist .and. .not.ldgrel) then
+                    if (lmadis .and. ldist .and. .not. ldgrel) then
                         if (maille(numa) .ne. rang) goto 70
-                    endif
+                    end if
 !
-                    nnoe=zznbne(numa)
+                    nnoe = zznbne(numa)
                     do k1 = 1, nnoe
-                        n1=zzconx(numa,k1)
-                        iad1=zzprno(1,n1,1)
-                        nddl1=zzprno(1,n1,2)
+                        n1 = zzconx(numa, k1)
+                        iad1 = zzprno(1, n1, 1)
+                        nddl1 = zzprno(1, n1, 2)
                         if (mxddlt .lt. (nddlt+nddl1)) then
-                            mxddlt=2*(nddlt+nddl1)
+                            mxddlt = 2*(nddlt+nddl1)
                             call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
                             call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
-                        endif
+                        end if
                         do iddl = 1, nddl1
-                            zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
-                            iddl-1)
+                            zi(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+ &
+                                                       iddl-1)
                         end do
-                        nddlt=nddlt+nddl1
+                        nddlt = nddlt+nddl1
                     end do
 !
                 else
 !                   -- MAILLES TARDIVES :
-                    if (lmadis .and. ldist .and. .not.ldgrel) then
+                    if (lmadis .and. ldist .and. .not. ldgrel) then
                         if (rang .ne. 0) goto 70
-                    endif
+                    end if
 !
-                    numa=-numa
-                    nnoe=zznsup(ili,numa)
+                    numa = -numa
+                    nnoe = zznsup(ili, numa)
                     do k1 = 1, nnoe
-                        n1=zznema(ili,numa,k1)
+                        n1 = zznema(ili, numa, k1)
                         if (n1 .lt. 0) then
-                            n1=-n1
-                            iad1=zzprno(ili,n1,1)
-                            nddl1=zzprno(ili,n1,2)
+                            n1 = -n1
+                            iad1 = zzprno(ili, n1, 1)
+                            nddl1 = zzprno(ili, n1, 2)
                         else
-                            iad1=zzprno(1,n1,1)
-                            nddl1=zzprno(1,n1,2)
-                        endif
+                            iad1 = zzprno(1, n1, 1)
+                            nddl1 = zzprno(1, n1, 2)
+                        end if
                         if (mxddlt .lt. (nddlt+nddl1)) then
-                            mxddlt=2*(nddlt+nddl1)
+                            mxddlt = 2*(nddlt+nddl1)
                             call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
                             call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
-                        endif
+                        end if
                         do iddl = 1, nddl1
-                            zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+&
-                            iddl-1)
+                            zi(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+ &
+                                                       iddl-1)
                         end do
-                        nddlt=nddlt+nddl1
+                        nddlt = nddlt+nddl1
                     end do
-                endif
+                end if
 !
 !       -- TRI EN ORDRE CROISSANT POUR L'INSERTION DES COLONNES
-                ASSERT(nddlt.le.mxddlt)
+                ASSERT(nddlt .le. mxddlt)
                 call uttrii(zi(jalm), nddlt)
 !
 !       -- INSERTION DES COLONNES DE L'ELEMENT DANS
 !           LA STRUCTURE CHAINEE
                 do iddl = 0, nddlt-1
-                    jddl=jsmdi+zi(jalm+iddl)-1
-                    if (zi(jddl) .eq. 0) neqx=neqx+1
-                    call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv,&
+                    jddl = jsmdi+zi(jalm+iddl)-1
+                    if (zi(jddl) .eq. 0) neqx = neqx+1
+                    call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv, &
                                 '&&PROMOR.NOSUIV', jnoip, '&&PROMOR.NOIP', iilib, iimax)
                 end do
- 70             continue
+70              continue
             end do
- 80         continue
+80          continue
         end do
 !
 !
 !
 !       3. TRAITEMENT DES SOUS-STRUCTURES STATIQUES :
 !       ---------------------------------------------
- 90     continue
+90      continue
         if (nbss .gt. 0) then
             do ima = 1, nbsma
                 if (sssa(ima) .eq. 0) goto 130
-                nddlt=0
+                nddlt = 0
                 call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
                 call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
                 do k1 = 1, nnoe
-                    n1=zi(iamail-1+k1)
-                    ASSERT(n1.ne.0)
-                    iad1=zzprno(1,n1,1)
-                    nddl1=zzprno(1,n1,2)
+                    n1 = zi(iamail-1+k1)
+                    ASSERT(n1 .ne. 0)
+                    iad1 = zzprno(1, n1, 1)
+                    nddl1 = zzprno(1, n1, 2)
                     if (mxddlt .lt. (nddlt+nddl1)) then
-                        mxddlt=2*(nddlt+nddl1)
+                        mxddlt = 2*(nddlt+nddl1)
                         call juveca('&&PROMOR.ANCIEN.LM', mxddlt)
                         call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
-                    endif
+                    end if
                     do iddl = 1, nddl1
-                        zi(jalm+nddlt+iddl-1)=zi(jnueq-1+iad1+iddl-1)
+                        zi(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+iddl-1)
                     end do
-                    nddlt=nddlt+nddl1
+                    nddlt = nddlt+nddl1
                 end do
 !
-                ASSERT(nddlt.le.mxddlt)
+                ASSERT(nddlt .le. mxddlt)
                 call uttrii(zi(jalm), nddlt)
                 do iddl = 0, nddlt-1
-                    jddl=jsmdi+zi(jalm+iddl)-1
-                    if (zi(jddl) .eq. 0) neqx=neqx+1
-                    call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv,&
+                    jddl = jsmdi+zi(jalm+iddl)-1
+                    if (zi(jddl) .eq. 0) neqx = neqx+1
+                    call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv, &
                                 '&&PROMOR.NOSUIV', jnoip, '&&PROMOR.NOIP', iilib, iimax)
                 end do
 130             continue
             end do
-        endif
+        end if
     end do
 !
-    if ((neqx.ne.nequ) .and. (.not.lmadis)) then
-        vali(1)=nequ
-        vali(2)=neqx
+    if ((neqx .ne. nequ) .and. (.not. lmadis)) then
+        vali(1) = nequ
+        vali(2) = neqx
         call utmess('F', 'ASSEMBLA_65', ni=2, vali=vali)
-    endif
+    end if
 !
 !
 !
 !     DESIMBRIQUATION DE CHAINES POUR OBTENIR LA STRUCTURE COMPACTE
 !     (SMDI,SMHC) DE LA MATRICE
     call wkvect(nu//'.SMOS.SMH1', base//' V S', iimax, jsmh1)
-    call moinip(neqx, ncoef, zi(jsmdi), zi(jsuiv), zi(jnoip),&
+    call moinip(neqx, ncoef, zi(jsmdi), zi(jsuiv), zi(jnoip), &
                 zi4(jsmh1))
     call wkvect(nu//'.SMOS.SMHC', base//' V S', ncoef, jsmhc)
     do iddl = 1, ncoef
-        zi4(jsmhc+iddl-1)=zi4(jsmh1+iddl-1)
+        zi4(jsmhc+iddl-1) = zi4(jsmh1+iddl-1)
     end do
     call jedetr(nu//'.SMOS.SMH1')
 !
 !
 !     -- CREATION ET REMPLISSAGE DE .SMDE
     call wkvect(nu//'.SMOS.SMDE', base//' V I', 6, jsmde)
-    zi(jsmde-1+1)=nequ
-    zi(jsmde-1+2)=ncoef
-    zi(jsmde-1+3)=1
+    zi(jsmde-1+1) = nequ
+    zi(jsmde-1+2) = ncoef
+    zi(jsmde-1+3) = 1
 !
 !
     call jedetr('&&PROMOR.NOIP')
@@ -434,9 +434,9 @@ subroutine promor(nuz, base, printz)
         vali(3) = 2*ncoef-nequ
         rcoef = ncoef
         requ = nequ
-        valr(1) = (100.d0*(2.d0*rcoef-requ)) / (requ*requ)
+        valr(1) = (100.d0*(2.d0*rcoef-requ))/(requ*requ)
         call utmess('I', 'FACTOR_2', ni=3, vali=vali, sr=valr(1))
-    endif
+    end if
 !
     call jedema()
 !

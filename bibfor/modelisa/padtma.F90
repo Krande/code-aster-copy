@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine padtma(coor1, coor2, nbnott, icoupl, dmin,&
+subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, &
                   no_err)
     implicit none
 #include "jeveux.h"
@@ -62,13 +62,13 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin,&
     integer :: kdeb2, n, nbno, nbperm, nbsom, nno
     real(kind=8) :: dmin, s
 !-----------------------------------------------------------------------
-    data iperm /1,2,3,              2,1,3,&
-     &            1,2,3,4,5,6,        2,3,1,5,6,4,        3,1,2,6,4,5,&
-     &            1,3,2,6,5,4,        3,2,1,5,4,6,        2,1,3,4,6,5,&
-     &            1,2,3,4,5,6,7,8,    2,3,4,1,6,7,8,5,&
-     &            3,4,1,2,7,8,5,6,    4,1,2,3,8,5,6,7,&
-     &            2,1,4,3,5,8,7,6,    3,2,1,4,6,5,8,7,&
-     &            4,3,2,1,7,6,5,8,    1,4,3,2,8,7,6,5       /
+    data iperm/1, 2, 3, 2, 1, 3,&
+     &            1, 2, 3, 4, 5, 6, 2, 3, 1, 5, 6, 4, 3, 1, 2, 6, 4, 5,&
+     &            1, 3, 2, 6, 5, 4, 3, 2, 1, 5, 4, 6, 2, 1, 3, 4, 6, 5,&
+     &            1, 2, 3, 4, 5, 6, 7, 8, 2, 3, 4, 1, 6, 7, 8, 5,&
+     &            3, 4, 1, 2, 7, 8, 5, 6, 4, 1, 2, 3, 8, 5, 6, 7,&
+     &            2, 1, 4, 3, 5, 8, 7, 6, 3, 2, 1, 4, 6, 5, 8, 7,&
+     &            4, 3, 2, 1, 7, 6, 5, 8, 1, 4, 3, 2, 8, 7, 6, 5/
 ! --- DEBUT
 ! --- ORIENTATION DES MAILLES
     no_err = 0
@@ -82,7 +82,7 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin,&
             xn1(i) = coor1(3+i)-coor1(i)
             xn2(i) = coor2(3+i)-coor2(i)
         end do
-    else if (nbsom.le.4) then
+    else if (nbsom .le. 4) then
         if (nbsom .eq. 3) then
             kdeb1 = 6
             kdeb2 = 24
@@ -91,7 +91,7 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin,&
             kdeb1 = 42
             kdeb2 = 74
             nno = 8
-        endif
+        end if
         do i = 1, 3
             x1(i) = coor1(3+i)-coor1(i)
             x2(i) = coor1(6+i)-coor1(3+i)
@@ -106,14 +106,14 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin,&
         xn2(3) = x3(1)*x4(2)-x3(2)*x4(1)
     else
         call utmess('F', 'MODELISA6_7')
-    endif
-    s=0.d0
+    end if
+    s = 0.d0
     do i = 1, 3
-        s= s+ xn1(i)*xn2(i)
+        s = s+xn1(i)*xn2(i)
     end do
     if (s .gt. 0) then
         kdeb0 = kdeb1
-    else if (s.lt.0) then
+    else if (s .lt. 0) then
         kdeb0 = kdeb2
     else
         if (present(no_err)) then
@@ -122,25 +122,25 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin,&
         else
             call utmess('F', 'MODELISA6_8')
         end if
-    endif
+    end if
     dmin = 99999999.d0
     nbperm = nbsom
     if (nbsom .eq. 2) nbperm = nbsom-1
     do n = 1, nbperm
-        kdeb =kdeb0 + (n-1)*nno
+        kdeb = kdeb0+(n-1)*nno
         d = 0.d0
         do j = 1, nbsom
             k = iperm(kdeb+j)
-            d = d + padist( 3, coor1(3*(j-1)+1), coor2(3*(k-1)+1) )
+            d = d+padist(3, coor1(3*(j-1)+1), coor2(3*(k-1)+1))
         end do
         if (d .lt. dmin) then
             dmin = d
             ideb = kdeb
-        endif
+        end if
     end do
 ! --- VIS A VIS DES NOEUDS DES ARRETES ET INTERIEURS
     do i = 1, nbno
         icoupl(i) = iperm(ideb+i)
     end do
-  8 continue
+8   continue
 end subroutine

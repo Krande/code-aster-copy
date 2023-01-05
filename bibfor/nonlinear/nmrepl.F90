@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmrepl(modele         , numedd, ds_material, carele    , ds_system,&
-                  ds_constitutive, lischa, ds_algopara, fonact    , iterat   ,&
-                  ds_measure     , sdpilo, sdnume     , ds_contact,&
-                  deltat         , valinc, solalg     , veelem    , veasse   ,&
-                  sddisc         , etan  , ds_conv    , eta       , offset   ,&
-                  ldccvg         , pilcvg, matass )
+subroutine nmrepl(modele, numedd, ds_material, carele, ds_system, &
+                  ds_constitutive, lischa, ds_algopara, fonact, iterat, &
+                  ds_measure, sdpilo, sdnume, ds_contact, &
+                  deltat, valinc, solalg, veelem, veasse, &
+                  sddisc, etan, ds_conv, eta, offset, &
+                  ldccvg, pilcvg, matass)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/ismaem.h"
@@ -47,21 +47,21 @@ implicit none
 #include "asterfort/nmrelp.h"
 #include "asterfort/nmrep2.h"
 !
-integer :: fonact(*)
-integer :: iterat
-real(kind=8) :: deltat, eta, etan, offset
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_System), intent(in) :: ds_system
-character(len=24) :: modele, numedd, carele
-character(len=19) :: veelem(*), veasse(*)
-character(len=19) :: solalg(*), valinc(*)
-type(NL_DS_Conv), intent(inout) :: ds_conv
-integer :: pilcvg, ldccvg
+    integer :: fonact(*)
+    integer :: iterat
+    real(kind=8) :: deltat, eta, etan, offset
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=24) :: modele, numedd, carele
+    character(len=19) :: veelem(*), veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    integer :: pilcvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -138,8 +138,8 @@ integer :: pilcvg, ldccvg
 !
     call infdbg('PILOTAGE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<PILOTAGE> ... PILOTAGE AVEC RECH_LINE'
-    endif
+        write (ifm, *) '<PILOTAGE> ... PILOTAGE AVEC RECH_LINE'
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -152,11 +152,11 @@ integer :: pilcvg, ldccvg
     ldccvg = -1
     k19bla = ' '
     call nmchai('VEASSE', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zveass)
+    ASSERT(nmax .eq. zveass)
     call nmchai('VALINC', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zvalin)
+    ASSERT(nmax .eq. zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zsolal)
+    ASSERT(nmax .eq. zsolal)
 !
 ! --- PARAMETRES RECHERCHE LINEAIRE
 !
@@ -166,7 +166,7 @@ integer :: pilcvg, ldccvg
     rhoexm = -ds_algopara%line_search%rho_excl
     rhoexp = ds_algopara%line_search%rho_excl
     relirl = ds_algopara%line_search%resi_rela
-    ASSERT(itrlmx.le.1000)
+    ASSERT(itrlmx .le. 1000)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -189,12 +189,12 @@ integer :: pilcvg, ldccvg
 ! --- FONCTIONS DE PILOTAGE LINEAIRES : RECHERCHE LINEAIRE STANDARD
 !
     if (typilo .eq. 'DDL_IMPO') then
-        call nmrelp(modele         , numedd     , ds_material, carele    , ds_system ,&
-                    ds_constitutive, lischa     , fonact     , iterat    , ds_measure,&
-                    sdnume         , ds_algopara, ds_contact , valinc    ,&
-                    solalg         , veelem     , veasse     , ds_conv   , ldccvg)
+        call nmrelp(modele, numedd, ds_material, carele, ds_system, &
+                    ds_constitutive, lischa, fonact, iterat, ds_measure, &
+                    sdnume, ds_algopara, ds_contact, valinc, &
+                    solalg, veelem, veasse, ds_conv, ldccvg)
         goto 999
-    endif
+    end if
 !
 ! --- PREPARATION DES ZONES TEMPORAIRES POUR ITERATION COURANTE
 !
@@ -227,9 +227,9 @@ integer :: pilcvg, ldccvg
 !
 ! --- CALCUL DE F(RHO=0)
 !
-    call nmpilr(fonact, numedd, matass, veasse, ds_contact, ds_system%cnfint,&
-                etan  , f0)
-    fcvg = abs(relirl * f0)
+    call nmpilr(fonact, numedd, matass, veasse, ds_contact, ds_system%cnfint, &
+                etan, f0)
+    fcvg = abs(relirl*f0)
 !
 ! --- INITIALISATION ET DIRECTION DE DESCENTE
 !
@@ -249,9 +249,9 @@ integer :: pilcvg, ldccvg
 !
 ! ----- RESOLUTION DE L'EQUATION DE PILOTAGE: NVELLE DIRECT. DE DESCENTE
 !
-        call nmpilo(sdpilo, deltat     , rho            , solalg    , veasse,&
-                    modele, ds_material, ds_constitutive, ds_contact, valinc,&
-                    nbatte, numedd     , nbeffe         , proeta    , pilcvg,&
+        call nmpilo(sdpilo, deltat, rho, solalg, veasse, &
+                    modele, ds_material, ds_constitutive, ds_contact, valinc, &
+                    nbatte, numedd, nbeffe, proeta, pilcvg, &
                     carele)
         if (pilcvg .eq. 1) goto 999
 !
@@ -259,7 +259,7 @@ integer :: pilcvg, ldccvg
 !
         offset = etan*(1-rho)
         do n = 1, nbeffe
-            proeta(n) = proeta(n) + offset
+            proeta(n) = proeta(n)+offset
         end do
 !
 ! ----- Get right vectors
@@ -270,19 +270,19 @@ integer :: pilcvg, ldccvg
 !
 ! ----- Select ETA
 !
-        call nmceta(modele         , numedd    , ds_material, carele,&
-                    ds_constitutive, ds_contact, lischa     , fonact        , ds_measure,&
-                    sdpilo         , iterat    , sdnume     , valint(1, act), solalg    ,&
-                    veelem         , veasst    , sddisc     , nbeffe        , irecli    ,&
-                    proeta         , offset    , rho        , eta           , ldccvg    ,&
-                    pilcvg         , residu    , matass     , ds_system2)
+        call nmceta(modele, numedd, ds_material, carele, &
+                    ds_constitutive, ds_contact, lischa, fonact, ds_measure, &
+                    sdpilo, iterat, sdnume, valint(1, act), solalg, &
+                    veelem, veasst, sddisc, nbeffe, irecli, &
+                    proeta, offset, rho, eta, ldccvg, &
+                    pilcvg, residu, matass, ds_system2)
 !
 ! ----- PB CVG: S'IL EXISTE DEJA UN RHO OPTIMAL, ON LE CONSERVE ET ON SORT
 !
         if (ldccvg .gt. 0) then
             if (exopt) goto 100
             goto 999
-        endif
+        end if
 !
 ! ---    SI ON A PAS ENCORE CONVERGE LE PILO :
 ! ---      * ON PREND UN PILO CONVERGE QQ SOIT LE RESIDU
@@ -290,10 +290,10 @@ integer :: pilcvg, ldccvg
 ! ---      * ON CHERCHE A BAISSER LE RESIDU AVEC UN PILO CONVERGE
 !
         if (pilopt .gt. 0) then
-            mieux = ((pilcvg.eq.0).or.(pilcvg.eq.2).or.( residu.lt.fopt))
+            mieux = ((pilcvg .eq. 0) .or. (pilcvg .eq. 2) .or. (residu .lt. fopt))
         else
-            mieux = (((pilcvg.eq.0).or.(pilcvg.eq.2)).and. ( residu.lt.fopt))
-        endif
+            mieux = (((pilcvg .eq. 0) .or. (pilcvg .eq. 2)) .and. (residu .lt. fopt))
+        end if
 !
         if (mieux) then
             exopt = .true.
@@ -302,12 +302,12 @@ integer :: pilcvg, ldccvg
             pilopt = pilcvg
             fopt = residu
             opt = act
-            act = 3 - act
-        endif
+            act = 3-act
+        end if
 !
 ! ---   MEMOIRE DES RESIDUS ATTEINTS
 !
-        nbsto = nbsto + 1
+        nbsto = nbsto+1
         memfg(nbsto) = residu
 !
 ! ---   ARRET SI SATISFACTION DU CRITERE
@@ -317,16 +317,16 @@ integer :: pilcvg, ldccvg
 ! ---   ARRET SI IL N'Y A PLUS D'AMELIORATIONS SIGNIFICATIVES
 !
         if (nbsto .ge. 3) then
-            fgmax = max(memfg(nbsto),memfg(nbsto-1),memfg(nbsto-2))
-            fgmin = min(memfg(nbsto),memfg(nbsto-1),memfg(nbsto-2))
-            amelio = fgmin / fgmax
+            fgmax = max(memfg(nbsto), memfg(nbsto-1), memfg(nbsto-2))
+            fgmin = min(memfg(nbsto), memfg(nbsto-1), memfg(nbsto-2))
+            amelio = fgmin/fgmax
             if (amelio .gt. 0.95d0) goto 100
-        endif
+        end if
 !
 ! ---   CALCUL DE RHO(N+1) PAR INTERPOLATION QUADRATIQUE AVEC BORNES
 !
         g(pos) = residu
-        call nmrep2(nr, r, g, fcvg, rhomin,&
+        call nmrep2(nr, r, g, fcvg, rhomin, &
                     rhomax, rhoexm, rhoexp, pos)
         rho = r(pos)
     end do
@@ -353,7 +353,7 @@ integer :: pilcvg, ldccvg
         call copisd('CHAMP_GD', 'V', varplt, varplu)
         call copisd('CHAMP_GD', 'V', cnfint2(opt), ds_system%cnfint)
         call copisd('CHAMP_GD', 'V', cndiri2(opt), cndiri)
-    endif
+    end if
 !
 ! - Save results of line search
 !
@@ -364,6 +364,6 @@ integer :: pilcvg, ldccvg
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    ASSERT(pilcvg.ge.0)
+    ASSERT(pilcvg .ge. 0)
 !
 end subroutine

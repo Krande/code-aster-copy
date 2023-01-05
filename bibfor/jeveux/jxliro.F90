@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,40 +36,40 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
 !
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: jadm, jusadi, ladm, n, nde
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
 !
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
     integer :: nitecr, kmarq
-    common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
-     &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
-     &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
+    common/ificje/nblmax(n), nbluti(n), longbl(n),&
+     &                 kitlec(n), kitecr(n), kiadm(n),&
+     &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
     aster_logical :: litlec
-    common /lficje/  litlec(n)
-    common /jusadi/  jusadi(n)
+    common/lficje/litlec(n)
+    common/jusadi/jusadi(n)
 ! ----------------------------------------------------------------------
     integer :: iadmo, kadd, ladd, lgbl, lso2
     aster_logical :: lpetit
-    parameter      ( nde = 6)
+    parameter(nde=6)
 ! ----------------------------------------------------------------------
 ! REMARQUE : LE PARAMETER NDE EST AUSSI DEFINI DANS JXECRO
 !
 ! DEB ------------------------------------------------------------------
     jadm = iadmi
-    ladm = iszon(jiszon + jadm - 3 )
+    ladm = iszon(jiszon+jadm-3)
     kadd = iaddi(1)
     ladd = iaddi(2)
     lgbl = 1024*longbl(ic)*lois
-    iadmo = ( jadm - 1 ) * lois + ladm + 1
+    iadmo = (jadm-1)*lois+ladm+1
     lso2 = lso
-    if (mod(lso,lois) .ne. 0) lso2 = (1 + lso/lois) * lois
-    lpetit = ( lso .lt. lgbl-nde*lois )
+    if (mod(lso, lois) .ne. 0) lso2 = (1+lso/lois)*lois
+    lpetit = (lso .lt. lgbl-nde*lois)
 !
     if (iaddi(1) .eq. 0) then
         call utmess('F', 'JEVEUX1_59')
@@ -87,22 +87,22 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
                 call jxdeps(kitecr(ic)+ladd+1, iadmo, lso)
             else
                 if (litlec(ic)) then
-                    call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0,&
+                    call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0, &
                                 0)
-                    iusadi ( jusadi(ic) + 3*iitlec(ic)-2 ) = 0
-                    iusadi ( jusadi(ic) + 3*iitlec(ic)-1 ) = 0
-                endif
+                    iusadi(jusadi(ic)+3*iitlec(ic)-2) = 0
+                    iusadi(jusadi(ic)+3*iitlec(ic)-1) = 0
+                end if
                 call jxlirb(ic, kadd, kitlec(ic)+1, lgbl)
                 call jxdeps(kitlec(ic)+1+ladd, iadmo, lso)
                 iitlec(ic) = kadd
                 litlec(ic) = .false.
-            endif
+            end if
         else
 !
 ! ------- GROS  OBJET
 !
             call jxlirb(ic, kadd, iadmo, lso2)
-        endif
-    endif
+        end if
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

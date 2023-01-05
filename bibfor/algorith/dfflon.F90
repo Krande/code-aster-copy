@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff,&
+subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
                   typfon, d)
 !
     implicit none
@@ -71,49 +71,49 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff,&
 !     CAS PARTICULIER DU PREMIER NOEUD DU FOND DE FISSURE
     if (inoff .eq. 1) then
 !
-        call jenonu(jexnom(nomnoe, nonoff(inoff )), nunoi)
+        call jenonu(jexnom(nomnoe, nonoff(inoff)), nunoi)
         call jenonu(jexnom(nomnoe, nonoff(inoff+1)), nunoj)
 !
-        dij = dis2no(geom,nunoi,nunoj)
+        dij = dis2no(geom, nunoi, nunoj)
         d = dij
 !
         if (typfon .eq. 'FERME') then
 !         ATTENTION, LE DERNIER NOEUD (EN POSITION NBNOFF) = LE 1ER
-            call jenonu(jexnom(nomnoe, nonoff(nbnoff )), nunoi)
+            call jenonu(jexnom(nomnoe, nonoff(nbnoff)), nunoi)
             call jenonu(jexnom(nomnoe, nonoff(nbnoff-1)), nunoh)
-            dih = dis2no(geom,nunoi,nunoh)
-            d = min(dij,dih)
-        endif
+            dih = dis2no(geom, nunoi, nunoh)
+            d = min(dij, dih)
+        end if
 !
 !     CAS PARTICULIER DU DENIER NOEUD DU FOND DE FISSURE
-    else if (inoff.eq.nbnoff) then
+    else if (inoff .eq. nbnoff) then
 !
-        call jenonu(jexnom(nomnoe, nonoff(inoff )), nunoi)
+        call jenonu(jexnom(nomnoe, nonoff(inoff)), nunoi)
         call jenonu(jexnom(nomnoe, nonoff(inoff-1)), nunoh)
 !
-        dih = dis2no(geom,nunoi,nunoh)
+        dih = dis2no(geom, nunoi, nunoh)
         d = dih
 !
         if (typfon .eq. 'FERME') then
 !         ATTENTION, LE PREMIER NOEUD = LE DERNIER
             call jenonu(jexnom(nomnoe, nonoff(1)), nunoi)
             call jenonu(jexnom(nomnoe, nonoff(2)), nunoj)
-            dij = dis2no(geom,nunoi,nunoj)
-            d = min(dij,dih)
-        endif
+            dij = dis2no(geom, nunoi, nunoj)
+            d = min(dij, dih)
+        end if
 !
 !     CAS GENERAL
     else
 !
         call jenonu(jexnom(nomnoe, nonoff(inoff-1)), nunoh)
-        call jenonu(jexnom(nomnoe, nonoff(inoff )), nunoi)
+        call jenonu(jexnom(nomnoe, nonoff(inoff)), nunoi)
         call jenonu(jexnom(nomnoe, nonoff(inoff+1)), nunoj)
 !
-        dih = dis2no(geom,nunoi,nunoh)
-        dij = dis2no(geom,nunoi,nunoj)
-        d = min(dij,dih)
+        dih = dis2no(geom, nunoi, nunoh)
+        dij = dis2no(geom, nunoi, nunoj)
+        d = min(dij, dih)
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

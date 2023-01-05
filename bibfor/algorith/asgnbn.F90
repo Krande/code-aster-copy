@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asgnbn(ibla, nbloc, bloca, nbterm, inobl, iadbl,&
+subroutine asgnbn(ibla, nbloc, bloca, nbterm, inobl, iadbl, &
                   nomblo, numblo, fact)
     implicit none
 !
@@ -66,32 +66,32 @@ subroutine asgnbn(ibla, nbloc, bloca, nbterm, inobl, iadbl,&
     call jemarq()
     if (numblo .eq. 0) then
 ! provisoire, a modifier
-        if (ibla.gt.nbloc) then
-            iblo = ibla - nbloc
-            call jelira(nomblo,'NMAXOC',ntria)
-            call jeveuo(jexnum(nomblo,ntria), 'L', llblo)
+        if (ibla .gt. nbloc) then
+            iblo = ibla-nbloc
+            call jelira(nomblo, 'NMAXOC', ntria)
+            call jeveuo(jexnum(nomblo, ntria), 'L', llblo)
         else
             iblo = ibla
-            call jeveuo(jexnum(nomblo,1), 'L', llblo)
+            call jeveuo(jexnum(nomblo, 1), 'L', llblo)
         end if
     else
-        if (ibla.gt.nbloc) then
-            iblo = ibla - nbloc
+        if (ibla .gt. nbloc) then
+            iblo = ibla-nbloc
         else
             iblo = ibla
         end if
         call jeveuo(jexnum(nomblo, numblo), 'L', llblo)
-    endif
+    end if
 !
-    do  i = 1, nbterm
+    do i = 1, nbterm
         if (inobl(i) .eq. iblo) then
-            bloca(iadbl(i))=bloca(iadbl(i))+(fact*zr(llblo+i-1))
-        endif
+            bloca(iadbl(i)) = bloca(iadbl(i))+(fact*zr(llblo+i-1))
+        end if
     end do
 !
     if (numblo .eq. 0) then
     else
-    endif
+    end if
 !
     call jedema()
 end subroutine

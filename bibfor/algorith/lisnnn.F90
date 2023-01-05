@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,24 +59,24 @@ subroutine lisnnn(motfac, iexci, charge)
 !
 ! --- CHARGE SPECIFIQUE VECT_ASSE
 !
-    eximve = getexm(motfac,'VECT_ASSE')
+    eximve = getexm(motfac, 'VECT_ASSE')
     if (eximve .eq. 1) then
         call getvid(motfac, 'VECT_ASSE', iocc=iexci, scal=charge, nbret=nval)
-        ASSERT(nval.ge.0)
-    endif
+        ASSERT(nval .ge. 0)
+    end if
 !
 ! --- CHARGE SPECIFIQUE VECT_ASSE_GENE
 !
-    eximvg = getexm(motfac,'VECT_ASSE_GENE')
+    eximvg = getexm(motfac, 'VECT_ASSE_GENE')
     if (eximvg .eq. 1) then
         call getvid(motfac, 'VECT_ASSE_GENE', iocc=iexci, scal=charge, nbret=nval)
-        ASSERT(nval.ge.0)
-    endif
+        ASSERT(nval .ge. 0)
+    end if
 !
 ! --- CHARGE STANDARD
 !
     call getvid(motfac, 'CHARGE', iocc=iexci, scal=charge, nbret=nval)
-    ASSERT(nval.ge.0)
+    ASSERT(nval .ge. 0)
 !
     call jedema()
 end subroutine

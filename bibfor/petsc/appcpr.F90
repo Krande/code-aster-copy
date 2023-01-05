@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@ subroutine appcpr(kptsc)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 ! person_in_charge: natacha.bereux at edf.fr
-use aster_petsc_module
-use petsc_data_module
-use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
-    augmented_lagrangian_setup, augmented_lagrangian_destroy
-use lmp_module, only : lmp_apply_right, lmp_destroy
-use lmp_data_module, only : reac_lmp
-use aster_fieldsplit_module, only : mfield_setup
+    use aster_petsc_module
+    use petsc_data_module
+    use augmented_lagrangian_module, only: augmented_lagrangian_apply, &
+                                           augmented_lagrangian_setup, augmented_lagrangian_destroy
+    use lmp_module, only: lmp_apply_right, lmp_destroy
+    use lmp_data_module, only: reac_lmp
+    use aster_fieldsplit_module, only: mfield_setup
 
-implicit none
+    implicit none
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -127,13 +127,13 @@ implicit none
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
     lmd = matd == 'OUI'
     call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=matd)
-    lmhpc = matd.eq.'OUI'
-    ASSERT(.not.(lmd .and. lmhpc))
+    lmhpc = matd .eq. 'OUI'
+    ASSERT(.not. (lmd .and. lmhpc))
 !
-    lmp_is_active = slvk(6) =='GMRES_LMP'
-    if ( lmp_is_active .and. precon/= 'LDLT_SP' ) then
-       call utmess('F',  'PETSC_28')
-    endif
+    lmp_is_active = slvk(6) == 'GMRES_LMP'
+    if (lmp_is_active .and. precon /= 'LDLT_SP') then
+        call utmess('F', 'PETSC_28')
+    end if
     reacpr = slvi(6)
 !
     fill = niremp
@@ -162,40 +162,40 @@ implicit none
 !           TOUT DE SUITE CAR ON NE VEUT PAS ETRE OBLIGE
 !           D'APPELER KSPSetUp
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 !   -- VERIFICATIONS COMPLEMENTAIRES POUR LES PRE-CONDITIONNEURS MULTIGRILLES
 !   -- DEFINITION DU NOYAU UNIQUEMENT EN MODELISATION SOLIDE (2D OU 3D)
 !   -------------------------------------------------------------------------
-    if ((precon  ==  'ML') .or. (precon  ==  'BOOMER') .or. (precon == 'GAMG')) then
+    if ((precon == 'ML') .or. (precon == 'BOOMER') .or. (precon == 'GAMG')) then
 !       -- PAS DE LAGRANGE
-        call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',ier=iret)
-        if (iret  ==  0) then
-            if (exilag  ==  'OUI') then
+        call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C', ier=iret)
+        if (iret == 0) then
+            if (exilag == 'OUI') then
                 call utmess('F', 'PETSC_18')
-            endif
-        endif
+            end if
+        end if
 !       -- NOMBRE CONSTANT DE DDLS PAR NOEUD
-        bs=tblocs(kptsc)
+        bs = tblocs(kptsc)
         if (bs .le. 0) then
             call utmess('A', 'PETSC_18')
         else
-        bs = abs(bs)
-        endif
-    endif
+            bs = abs(bs)
+        end if
+    end if
 
-    if ((precon  ==  'ML') .or. (precon  ==  'BOOMER') .or. (precon == 'GAMG')) then
+    if ((precon == 'ML') .or. (precon == 'BOOMER') .or. (precon == 'GAMG')) then
 !       -- CREATION DES MOUVEMENTS DE CORPS RIGIDE --
 !           * VECTEUR RECEPTABLE DES COORDONNEES AVEC TAILLE DE BLOC
 !
 !       dimgeo = 3 signifie que le maillage est 3D et que les noeuds ne sont pas
 !       tous dans le plan z=0
 !       c'est une condition nécessaire au pré-calcul des modes de corps rigides
-        if ( dimgeo == 3 ) then
+        if (dimgeo == 3) then
             call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
             call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
-            call jeveuo(nomail//'.COORDO    .VALE','L',vr=coordo)
+            call jeveuo(nomail//'.COORDO    .VALE', 'L', vr=coordo)
             !
             call VecCreate(mpicomm, coords, ierr)
             call VecSetBlockSize(coords, bs, ierr)
@@ -203,18 +203,18 @@ implicit none
             if (lmd) then
                 call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
                 call jeveuo(nonu//'.NUML.PDDL', 'L', vi=prddl)
-                neqg=zi(jnequ)
-                nloc=zi(jnequl)
+                neqg = zi(jnequ)
+                nloc = zi(jnequl)
                 ! Nb de ddls dont le proc courant est propriétaire (pour PETSc)
                 ndprop = 0
                 do il = 1, nloc
-                   if (prddl(il) == rang ) then
-                       ndprop = ndprop + 1
-                   endif
+                    if (prddl(il) == rang) then
+                        ndprop = ndprop+1
+                    end if
                 end do
-    !
+                !
                 call VecSetSizes(coords, to_petsc_int(ndprop), to_petsc_int(neqg), ierr)
-            ! la matrice est issue d'un ParallelMesh
+                ! la matrice est issue d'un ParallelMesh
             else if (lmhpc) then
                 call jeveuo(nonu//'.NUME.PDDL', 'L', vi=prddl)
                 call jeveuo(nonu//'.NUME.NEQU', 'L', jnequl)
@@ -222,103 +222,103 @@ implicit none
                 neqg = zi(jnequl+1)
                 ndprop = 0
                 do il = 1, nloc
-                   if (prddl(il) == rang ) then
-                        ndprop = ndprop + 1
-                    endif
-                enddo
+                    if (prddl(il) == rang) then
+                        ndprop = ndprop+1
+                    end if
+                end do
                 call VecSetSizes(coords, to_petsc_int(ndprop), to_petsc_int(neqg), ierr)
-            ! la matrice est centralisée
+                ! la matrice est centralisée
             else
-                neqg=zi(jnequ)
+                neqg = zi(jnequ)
                 call VecSetSizes(coords, PETSC_DECIDE, to_petsc_int(neqg), ierr)
-            endif
-    !
+            end if
+            !
             call VecSetType(coords, VECMPI, ierr)
-    !           * REMPLISSAGE DU VECTEUR
-    !             coords: vecteur PETSc des coordonnées des noeuds du maillage,
-    !             dans l'ordre de la numérotation PETSc des équations
+            !           * REMPLISSAGE DU VECTEUR
+            !             coords: vecteur PETSc des coordonnées des noeuds du maillage,
+            !             dans l'ordre de la numérotation PETSc des équations
             if (lmd) then
-              call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
-              call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
-              do il = 1, nloc
-                ! Indice global PETSc (F) correspondant à l'indice local il
-                igp_f = nlgp( il )
-                ! Indice global Aster (F) correspondant à l'indice local il
-                iga_f = nulg( il )
-                ! Noeud auquel est associé le ddl global Aster iga_f
-                numno = deeq( (iga_f -1)* 2 +1 )
-                ! Composante (X, Y ou Z) à laquelle est associé
-                ! le ddl global Aster iga_f
-                icmp  = deeq( (iga_f -1)* 2 +2 )
-                ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
-                ! Valeur de la coordonnée (X,Y ou Z) icmp du noeud numno
-                val = coordo( dimgeo_b*(numno-1)+icmp )
-                ! On met à jour le vecteur PETSc des coordonnées
-                nterm=1
-                call VecSetValues( coords, nterm, [to_petsc_int(igp_f - 1)], [val], &
-                  INSERT_VALUES, ierr )
-                ASSERT( ierr == 0 )
-              enddo
-                call VecAssemblyBegin( coords, ierr )
-                call VecAssemblyEnd( coords, ierr )
-                ASSERT( ierr == 0 )
-            ! la matrice est issue d'un ParallelMesh
+                call jeveuo(nonu//'.NUML.NULG', 'L', vi=nulg)
+                call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
+                do il = 1, nloc
+                    ! Indice global PETSc (F) correspondant à l'indice local il
+                    igp_f = nlgp(il)
+                    ! Indice global Aster (F) correspondant à l'indice local il
+                    iga_f = nulg(il)
+                    ! Noeud auquel est associé le ddl global Aster iga_f
+                    numno = deeq((iga_f-1)*2+1)
+                    ! Composante (X, Y ou Z) à laquelle est associé
+                    ! le ddl global Aster iga_f
+                    icmp = deeq((iga_f-1)*2+2)
+                    ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
+                    ! Valeur de la coordonnée (X,Y ou Z) icmp du noeud numno
+                    val = coordo(dimgeo_b*(numno-1)+icmp)
+                    ! On met à jour le vecteur PETSc des coordonnées
+                    nterm = 1
+                    call VecSetValues(coords, nterm, [to_petsc_int(igp_f-1)], [val], &
+                                      INSERT_VALUES, ierr)
+                    ASSERT(ierr == 0)
+                end do
+                call VecAssemblyBegin(coords, ierr)
+                call VecAssemblyEnd(coords, ierr)
+                ASSERT(ierr == 0)
+                ! la matrice est issue d'un ParallelMesh
             else if (lmhpc) then
                 call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
                 do il = 1, nloc
-                    if (prddl(il) == rang ) then
+                    if (prddl(il) == rang) then
                         ! Noeud auquel est associé le ddl Aster ieq
-                        numno = deeq( (il -1)* 2 +1 )
+                        numno = deeq((il-1)*2+1)
                         ! Composante (X, Y ou Z) à laquelle est associé
                         ! le ddl Aster ieq
-                        icmp  = deeq( (il -1)* 2 +2 )
+                        icmp = deeq((il-1)*2+2)
                         ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
                         ! Valeur de la coordonnée (X,Y ou Z) icmp du noeud numno
-                        val = coordo( dimgeo_b*(numno-1)+icmp )
+                        val = coordo(dimgeo_b*(numno-1)+icmp)
                         ! On met à jour le vecteur PETSc des coordonnées
-                        nterm=1
+                        nterm = 1
                         ! Indice global Aster (F) correspondant à l'indice local il
-                        iga_f = nulg( il )
-                        call VecSetValues( coords, nterm, [to_petsc_int(iga_f)], [val], &
-                          INSERT_VALUES, ierr )
-                        ASSERT( ierr == 0 )
-                    endif
-                enddo
-            ! la matrice est centralisée
+                        iga_f = nulg(il)
+                        call VecSetValues(coords, nterm, [to_petsc_int(iga_f)], [val], &
+                                          INSERT_VALUES, ierr)
+                        ASSERT(ierr == 0)
+                    end if
+                end do
+                ! la matrice est centralisée
             else
-              call VecGetOwnershipRange(coords, low, high, ierr)
-              call VecGetArray(coords,xx_v, xx_i, ierr)
-              ix=0
-              do ieq = low+1, high
-                ! Noeud auquel est associé le ddl Aster ieq
-                numno = deeq( (ieq -1)* 2 +1 )
-                ! Composante (X, Y ou Z) à laquelle est associé
-                ! le ddl Aster ieq
-                icmp  = deeq( (ieq -1)* 2 +2 )
-                ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
-                ix=ix+1
-                xx_v(xx_i+ ix) = coordo( dimgeo*(numno-1)+icmp )
-              end do
-             !
-              call VecRestoreArray(coords,xx_v, xx_i, ierr)
-              ASSERT(ierr==0)
-            endif
+                call VecGetOwnershipRange(coords, low, high, ierr)
+                call VecGetArray(coords, xx_v, xx_i, ierr)
+                ix = 0
+                do ieq = low+1, high
+                    ! Noeud auquel est associé le ddl Aster ieq
+                    numno = deeq((ieq-1)*2+1)
+                    ! Composante (X, Y ou Z) à laquelle est associé
+                    ! le ddl Aster ieq
+                    icmp = deeq((ieq-1)*2+2)
+                    ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
+                    ix = ix+1
+                    xx_v(xx_i+ix) = coordo(dimgeo*(numno-1)+icmp)
+                end do
+                !
+                call VecRestoreArray(coords, xx_v, xx_i, ierr)
+                ASSERT(ierr == 0)
+            end if
             !
             !
-    !           * CALCUL DES MODES A PARTIR DES COORDONNEES
-            if (bs.le.3) then
+            !           * CALCUL DES MODES A PARTIR DES COORDONNEES
+            if (bs .le. 3) then
                 call MatNullSpaceCreateRigidBody(coords, sp, ierr)
                 ASSERT(ierr == 0)
                 call MatSetNearNullSpace(a, sp, ierr)
                 ASSERT(ierr == 0)
                 call MatNullSpaceDestroy(sp, ierr)
                 ASSERT(ierr == 0)
-            endif
+            end if
             call VecDestroy(coords, ierr)
             ASSERT(ierr == 0)
-            endif
+        end if
 ! Si dimgeo /= 3 on ne pré-calcule pas les modes de corps rigides
-        endif
+    end if
 
 !
 !     -- CHOIX DU PRECONDITIONNEUR :
@@ -326,7 +326,7 @@ implicit none
     call KSPGetPC(ksp, pc, ierr)
     ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
-    if (precon  ==  'LDLT_INC') then
+    if (precon == 'LDLT_INC') then
         call PCSetType(pc, PCILU, ierr)
         ASSERT(ierr == 0)
         call PCFactorSetLevels(pc, to_petsc_int(fill), ierr)
@@ -335,58 +335,58 @@ implicit none
         ASSERT(ierr == 0)
         call PCFactorSetMatOrderingType(pc, MATORDERINGNATURAL, ierr)
         ASSERT(ierr == 0)
-    !-----------------------------------------------------------------------
-    else if (precon.eq.'BLOC_LAGR') then
-        call KSPGetPC(ksp,pc,ierr)
+        !-----------------------------------------------------------------------
+    else if (precon .eq. 'BLOC_LAGR') then
+        call KSPGetPC(ksp, pc, ierr)
         ASSERT(ierr == 0)
-        call PCSetType(pc,PCSHELL,ierr)
+        call PCSetType(pc, PCSHELL, ierr)
         ASSERT(ierr == 0)
-        call PCShellSetSetUp(pc,augmented_lagrangian_setup, ierr )
+        call PCShellSetSetUp(pc, augmented_lagrangian_setup, ierr)
         ASSERT(ierr == 0)
-        call PCShellSetDestroy(pc, augmented_lagrangian_destroy, ierr )
-        ASSERT( ierr == 0 )
+        call PCShellSetDestroy(pc, augmented_lagrangian_destroy, ierr)
+        ASSERT(ierr == 0)
 !       Si LMP, on définit un préconditionneur à gauche et à droite
-        if ( lmp_is_active ) then
-             ASSERT( ierr == 0 )
-             call PCShellSetName(pc,"Symmetric Preconditionner: Left BLOC_LAGR, right LMP", ierr )
-             ASSERT( ierr == 0 )
-             call PCShellSetApplySymmetricLeft(pc, augmented_lagrangian_apply, ierr)
-             ASSERT(ierr == 0)
-             call PCShellSetApplySymmetricRight(pc, lmp_apply_right,ierr)
-             ASSERT(ierr == 0)
-             call KSPSetPCSide(ksp,PC_SYMMETRIC,ierr)
-             ASSERT( ierr == 0 )
+        if (lmp_is_active) then
+            ASSERT(ierr == 0)
+            call PCShellSetName(pc, "Symmetric Preconditionner: Left BLOC_LAGR, right LMP", ierr)
+            ASSERT(ierr == 0)
+            call PCShellSetApplySymmetricLeft(pc, augmented_lagrangian_apply, ierr)
+            ASSERT(ierr == 0)
+            call PCShellSetApplySymmetricRight(pc, lmp_apply_right, ierr)
+            ASSERT(ierr == 0)
+            call KSPSetPCSide(ksp, PC_SYMMETRIC, ierr)
+            ASSERT(ierr == 0)
         else
-             call PCShellSetName(pc,"BLOC_LAGR Preconditionner", ierr )
-             ASSERT(ierr == 0)
-             call PCShellSetApply(pc,augmented_lagrangian_apply,ierr)
-             ASSERT(ierr == 0)
-        endif
+            call PCShellSetName(pc, "BLOC_LAGR Preconditionner", ierr)
+            ASSERT(ierr == 0)
+            call PCShellSetApply(pc, augmented_lagrangian_apply, ierr)
+            ASSERT(ierr == 0)
+        end if
 !-----------------------------------------------------------------------
-    else if ((precon == 'LDLT_SP').or.(precon.eq.'LDLT_DP')) then
+    else if ((precon == 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
         call PCSetType(pc, PCSHELL, ierr)
         ASSERT(ierr == 0)
 !       LDLT_SP/LDLT_DP FAIT APPEL A DEUX ROUTINES EXTERNES
         call PCShellSetSetUp(pc, ldsp1, ierr)
         ASSERT(ierr == 0)
 !       Si LMP, on définit un préconditionneur à gauche et à droite
-        if ( lmp_is_active ) then
-             ASSERT( ierr == 0 )
-             call PCShellSetName(pc,"Symmetric Preconditionner: Left LDLT_XP, right LMP", ierr )
-             ASSERT( ierr == 0 )
-             call PCShellSetApplySymmetricLeft(pc, ldsp2, ierr)
-             ASSERT(ierr == 0)
-             call PCShellSetApplySymmetricRight(pc, lmp_apply_right,ierr)
-             ASSERT(ierr == 0)
-             call KSPSetPCSide(ksp,PC_SYMMETRIC,ierr)
-             ASSERT(ierr == 0)
+        if (lmp_is_active) then
+            ASSERT(ierr == 0)
+            call PCShellSetName(pc, "Symmetric Preconditionner: Left LDLT_XP, right LMP", ierr)
+            ASSERT(ierr == 0)
+            call PCShellSetApplySymmetricLeft(pc, ldsp2, ierr)
+            ASSERT(ierr == 0)
+            call PCShellSetApplySymmetricRight(pc, lmp_apply_right, ierr)
+            ASSERT(ierr == 0)
+            call KSPSetPCSide(ksp, PC_SYMMETRIC, ierr)
+            ASSERT(ierr == 0)
 !       Pour le préconditionneur LDLT_XP, on définit reac_lmp à partir de reac_precond
-             reac_lmp = reacpr/2
+            reac_lmp = reacpr/2
         else
-             call PCShellSetName(pc,"LDLT_XP Preconditionner", ierr )
-             call PCShellSetApply(pc, ldsp2, ierr)
-             ASSERT( ierr == 0 )
-        endif
+            call PCShellSetName(pc, "LDLT_XP Preconditionner", ierr)
+            call PCShellSetApply(pc, ldsp2, ierr)
+            ASSERT(ierr == 0)
+        end if
 !
         ASSERT(spmat == ' ')
         spmat = nomat
@@ -404,7 +404,7 @@ implicit none
     else if (precon == 'FIELDSPLIT') then
         call PCSetType(pc, PCFIELDSPLIT, ierr)
         ASSERT(ierr == 0)
-        call mfield_setup( kptsc, nonu )
+        call mfield_setup(kptsc, nonu)
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
@@ -412,7 +412,7 @@ implicit none
         call PCSetType(pc, PCML, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', sk=precon)
-        endif
+        end if
         ASSERT(ierr == 0)
 !        CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, '-pc_ml_CoarsenScheme', 'Uncoupled', ierr)
@@ -427,8 +427,8 @@ implicit none
         call PCSetType(pc, PCHYPRE, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', sk=precon)
-        endif
-        call PetscOptionsSetValue(PETSC_NULL_OPTIONS,'-pc_hypre_type', 'boomeramg', ierr)
+        end if
+        call PetscOptionsSetValue(PETSC_NULL_OPTIONS, '-pc_hypre_type', 'boomeramg', ierr)
         ASSERT(ierr == 0)
 !        CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue(PETSC_NULL_OPTIONS, &
@@ -445,20 +445,20 @@ implicit none
         call PCSetFromOptions(pc, ierr)
         ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
-     else if (precon == 'GAMG') then
+    else if (precon == 'GAMG') then
         call PCSetType(pc, PCGAMG, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', 1, precon)
-        endif
+        end if
 !       CHOIX DE LA VARIANTE AGGREGATED
 !        call PCGAMGSetType(pc, "agg", ierr)
 !        ASSERT(ierr == 0)
 !       CHOIX DU NOMBRE DE LISSAGES
-        nsmooth=1
+        nsmooth = 1
         call PCGAMGSetNSmooths(pc, nsmooth, ierr)
         ASSERT(ierr == 0)
 !
-        call PetscOptionsSetValue( PETSC_NULL_OPTIONS,'-pc_gamg_verbose', '2', ierr)
+        call PetscOptionsSetValue(PETSC_NULL_OPTIONS, '-pc_gamg_verbose', '2', ierr)
         ASSERT(ierr == 0)
 !       APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
@@ -473,7 +473,7 @@ implicit none
 !-----------------------------------------------------------------------
     else if (precon == 'HPDDM') then
 !       HPDDM works only in hpc mode
-        if (.not.lmhpc) call utmess('F','PETSC_23')
+        if (.not. lmhpc) call utmess('F', 'PETSC_23')
 !       Set HPPDM pc
         call PCSetType(pc, PCHPDDM, ierr)
         ASSERT(ierr == 0)
@@ -481,7 +481,7 @@ implicit none
         call MatCreate(PETSC_COMM_SELF, auxMat, ierr)
         ASSERT(ierr == 0)
 !       Set the block size here because we have it easily
-        bs=tblocs(kptsc)
+        bs = tblocs(kptsc)
         call MatSetBlockSize(auxMat, bs, ierr)
         ASSERT(ierr == 0)
 !       Transfer the local code_aster matrix to the PETSc one
@@ -495,14 +495,14 @@ implicit none
 #else
         AS_ALLOCATE(size=size(nulg), vi=nulg_ip)
 #endif
-        nulg_ip(1:size(nulg)) = (/ (to_petsc_int(nulg(i)), i=1,size(nulg)) /)
-        call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_ip, PETSC_COPY_VALUES,&
-                                auxIS, ierr)
+        nulg_ip(1:size(nulg)) = (/(to_petsc_int(nulg(i)), i=1, size(nulg))/)
+       call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_ip, PETSC_COPY_VALUES, &
+                             auxIS, ierr)
         ASSERT(ierr == 0)
 
         if (ASTER_FALSE) call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
 !       Set the Neumann matrix
-        call PCHPDDMSetAuxiliaryMat(pc,auxIS,auxMat,PETSC_NULL_FUNCTION,PETSC_NULL_INTEGER,ierr)
+       call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, PETSC_NULL_INTEGER, ierr)
         ASSERT(ierr == 0)
         call ISDestroy(auxIS, ierr)
         call MatDestroy(auxMat, ierr)
@@ -513,33 +513,33 @@ implicit none
         if (syme .eq. 'SYMETRI') factor = 'cholesky'
 
         call codent(int(nbproc/2), 'D', nbproc_str, 'F')
-        myopt = '-prefix_push pc_hpddm_ ' // &
-        '-prefix_push levels_1_ ' // &
-        '-pc_type asm ' // &
-        '-sub_mat_mumps_icntl_14 5000 ' // &
-        '-sub_mat_mumps_icntl_24 1 ' // &
-        '-sub_mat_mumps_icntl_25 0 ' // &
-        '-sub_mat_mumps_cntl_3 1.e-50 ' // &
-        '-sub_mat_mumps_cntl_5 0. ' // &
-        '-eps_nev 30 ' // &
-        '-sub_pc_type ' // factor // ' ' //&
-        '-sub_pc_factor_mat_solver_type mumps ' // &
-        '-st_pc_factor_mat_solver_type mumps ' // &
-        '-st_share_sub_ksp ' // &
-        '-prefix_pop ' // &
-        '-prefix_push coarse_ ' // &
-        '-pc_factor_mat_solver_type mumps ' // &
-        '-sub_pc_type ' // factor // ' ' //&
-        '-mat_mumps_icntl_14 5000 ' //&
-        '-mat_mumps_icntl_24 1 ' //&
-        '-mat_mumps_icntl_25 0 ' //&
-        '-mat_mumps_cntl_3 1.e-50 ' //&
-        '-mat_mumps_cntl_5 0. ' //&
-        '-p ' // trim(nbproc_str) // ' ' // &
-        '-prefix_pop ' // &
-        '-define_subdomains ' // &
-        '-has_neumann ' // &
-        '-prefix_pop '
+        myopt = '-prefix_push pc_hpddm_ '// &
+                '-prefix_push levels_1_ '// &
+                '-pc_type asm '// &
+                '-sub_mat_mumps_icntl_14 5000 '// &
+                '-sub_mat_mumps_icntl_24 1 '// &
+                '-sub_mat_mumps_icntl_25 0 '// &
+                '-sub_mat_mumps_cntl_3 1.e-50 '// &
+                '-sub_mat_mumps_cntl_5 0. '// &
+                '-eps_nev 30 '// &
+                '-sub_pc_type '//factor//' '// &
+                '-sub_pc_factor_mat_solver_type mumps '// &
+                '-st_pc_factor_mat_solver_type mumps '// &
+                '-st_share_sub_ksp '// &
+                '-prefix_pop '// &
+                '-prefix_push coarse_ '// &
+                '-pc_factor_mat_solver_type mumps '// &
+                '-sub_pc_type '//factor//' '// &
+                '-mat_mumps_icntl_14 5000 '// &
+                '-mat_mumps_icntl_24 1 '// &
+                '-mat_mumps_icntl_25 0 '// &
+                '-mat_mumps_cntl_3 1.e-50 '// &
+                '-mat_mumps_cntl_5 0. '// &
+                '-p '//trim(nbproc_str)//' '// &
+                '-prefix_pop '// &
+                '-define_subdomains '// &
+                '-has_neumann '// &
+                '-prefix_pop '
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
         ASSERT(ierr == 0)
         call PCSetFromOptions(pc, ierr)
@@ -558,20 +558,20 @@ implicit none
 !-----------------------------------------------------------------------
     else
         ASSERT(.false.)
-    endif
+    end if
 !-----------------------------------------------------------------------
 !
 !     CREATION EFFECTIVE DU PRECONDITIONNEUR
     call PCSetUp(pc, ierr)
 !     ANALYSE DU CODE RETOUR
     if (ierr .ne. 0) then
-        if ((precon  ==  'LDLT_SP').or.(precon == 'LDLT_DP')) then
+        if ((precon == 'LDLT_SP') .or. (precon == 'LDLT_DP')) then
 !           ERREUR : PCENT_PIVOT PAS SUFFISANT
             call utmess('F', 'PETSC_15')
         else
             call utmess('F', 'PETSC_14')
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !

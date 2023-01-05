@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0009(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
+subroutine lc0009(fami, kpg, ksp, ndim, imate, &
+                  compor, crit, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, &
                   nvi, dsidep, codret)
     implicit none
 #include "asterfort/lclbr1.h"
@@ -72,7 +72,7 @@ subroutine lc0009(fami, kpg, ksp, ndim, imate,&
 !               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 !               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 ! ======================================================================
-    call lclbr1(fami, kpg, ksp, ndim, typmod,&
+    call lclbr1(fami, kpg, ksp, ndim, typmod, &
                 imate, compor, epsm, deps, &
                 option, sigp, dsidep)
 end subroutine

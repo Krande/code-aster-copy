@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     integer, pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
-    r8b=0.d0
+    r8b = 0.d0
     zero = 0.0d0
     undemi = 0.5d0
     deux = 2.0d0
@@ -146,19 +146,19 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     call dismoi('TYPE_RESU', temper, 'RESULTAT', repk=typres)
     if (typres .ne. 'EVOL_THER') then
         call utmess('F', 'UTILITAI3_50')
-    endif
+    end if
 !
 ! --- RECUPERATION DU NOMBRE D'ORDRES DU RESULTAT :
 !     -------------------------------------------
-    call rsutnu(temper, ' ', 0, knum, nbordr,&
+    call rsutnu(temper, ' ', 0, knum, nbordr, &
                 prec, crit, iret)
     if (nbordr .ne. 1) then
         call utmess('F', 'UTILITAI3_51', sk=temper)
-    endif
+    end if
 !
 ! --- RECUPERATION DU CHAMP DE TEMPERATURES DU RESULTAT :
 !     -------------------------------------------------
-    call rsexch('F', temper, 'TEMP', 0, chtemp,&
+    call rsexch('F', temper, 'TEMP', 0, chtemp, &
                 iret)
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
@@ -185,8 +185,8 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     lpaout(1) = 'PCASECT'
     lchout(1) = '&&PECAP1.INTEG'
 !
-    call calcul('S', 'CARA_TORSION', ligrth, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_TORSION', ligrth, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! --- SOMMATION DES INTEGRALES PRECEDENTES SUR LA SECTION DE LA POUTRE
@@ -211,23 +211,23 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
         call jeexin(noma//'           .LTNT', iret1)
         if (iret1 .ne. 0) then
             call ltnotb(noma, 'CARA_GEOM', nomt19)
-            call tbliva(nomt19, 0, ' ', [ibid], [r8b],&
-                        [cbid], k8bid, k8bid, [r8b], 'X_MIN',&
-                        k8bid, ibid, xmin, cbid, k8bid,&
+            call tbliva(nomt19, 0, ' ', [ibid], [r8b], &
+                        [cbid], k8bid, k8bid, [r8b], 'X_MIN', &
+                        k8bid, ibid, xmin, cbid, k8bid, &
                         iret2)
             if (iret2 .ne. 0) then
                 call utmess('F', 'MODELISA2_13')
-            endif
-            call tbliva(nomt19, 0, ' ', [ibid], [r8b],&
-                        [cbid], k8bid, k8bid, [r8b], 'Y_MIN',&
-                        k8bid, ibid, ymin, cbid, k8bid,&
+            end if
+            call tbliva(nomt19, 0, ' ', [ibid], [r8b], &
+                        [cbid], k8bid, k8bid, [r8b], 'Y_MIN', &
+                        k8bid, ibid, ymin, cbid, k8bid, &
                         iret2)
             if (iret2 .ne. 0) then
                 call utmess('F', 'MODELISA2_13')
-            endif
+            end if
         else
             call utmess('F', 'UTILITAI3_53')
-        endif
+        end if
 !
 ! --- RECUPERATION DE LA TEMPERATURE AU PREMIER NOEUD DU GROUP_MA :
 !     ===========================================================
@@ -275,8 +275,8 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---   POINTEUR DANS LE TABLEAU DES NUMEROS D'EQUATIONS ASSOCIE
 ! ---   AU PREMIER NOEUD :
 !       ----------------
-        call posddl('CHAM_NO', chtemp, nomnoe, 'TEMP', nunoeu,&
-                    dof_nume)
+            call posddl('CHAM_NO', chtemp, nomnoe, 'TEMP', nunoeu, &
+                        dof_nume)
 !
 ! ---   TEMPERATURE AU PREMIER NOEUD DE LA PREMIERE MAILLE DU CONTOUR
 ! ---   INTERIEUR COURANT :
@@ -312,24 +312,24 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---     SANS ERREUR LA FORMULE DONNANT LA SURFACE DETERMINEE
 ! ---     PAR LE SEGMENT ET SA PROJECTION SUR L'AXE Y :
 !         -------------------------------------------
-                x1 = coor(1+3* (zi(jdes)-1)+1-1) - xmin
-                y1 = coor(1+3* (zi(jdes)-1)+2-1) - ymin
-                x2 = coor(1+3* (zi(jdes+1)-1)+1-1) - xmin
-                y2 = coor(1+3* (zi(jdes+1)-1)+2-1) - ymin
+                x1 = coor(1+3*(zi(jdes)-1)+1-1)-xmin
+                y1 = coor(1+3*(zi(jdes)-1)+2-1)-ymin
+                x2 = coor(1+3*(zi(jdes+1)-1)+1-1)-xmin
+                y2 = coor(1+3*(zi(jdes+1)-1)+2-1)-ymin
 !
 ! ---    AIRE DU TRAPEZE DETERMINE PAR L'ELEMENT SEGMENT COURANT
 ! ---    ET PAR SA PROJECTION SUR L'AXE Y :
 !        --------------------------------
-                strap = strap + undemi* (x1+x2)* (y2-y1)
+                strap = strap+undemi*(x1+x2)*(y2-y1)
             end do
 !
 ! ---  MISE A JOUR DE LA CONSTANTE DE TORSION, ELLE EST AUGMENTEE
 ! ---  DE 2*AIRE(TROU)*TEMP(1) :
 !      -----------------------
-            ct = ct + deux*temp*abs(strap)
+            ct = ct+deux*temp*abs(strap)
         end do
 !
-    endif
+    end if
 !
     call detrsd('CHAMP_GD', '&&PECAP1.INTEG')
 !.============================ FIN DE LA ROUTINE ======================

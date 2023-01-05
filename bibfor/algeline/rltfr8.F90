@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,15 +81,15 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
     if (nbsol .gt. 4) then
         call rlbfr8(nommat, neq, xsol, nbsol, typsym)
         goto 999
-    endif
+    end if
 !
     call dismoi('NOM_NUME_DDL', nommat, 'MATR_ASSE', repk=nu)
     factol(1:19) = nommat
     factou(1:19) = nommat
-    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
-                nomp05, nomp06, nomp07, nomp08, nomp09,&
-                nomp10, nomp11, nomp12, nomp13, nomp14,&
-                nomp15, nomp16, nomp17, nomp18, nomp19,&
+    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04, &
+                nomp05, nomp06, nomp07, nomp08, nomp09, &
+                nomp10, nomp11, nomp12, nomp13, nomp14, &
+                nomp15, nomp16, nomp17, nomp18, nomp19, &
                 nomp20)
 !
 !                                ALLOCATION DES POINTEURS ENTIERS
@@ -106,16 +106,16 @@ subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
     call jeveuo(nu//'.MLTF.GLOB', 'L', global)
 !
     nbsn = zi(desc+1)
-    nbloc= zi(desc+2)
+    nbloc = zi(desc+2)
 !                               ALLOCATION TABLEAU REEL PROVISOIRE
     call wkvect('&&RLTFR8.POINTER.REELS  ', 'V V R', neq, pointr)
     call wkvect('&&RLTFR8.POINTER.ADRESSE', 'V V I', neq, ad)
     call wkvect('&&RLTFR8.POINTER.TRAVAIL', 'V V R', neq, trav)
 !
     do i = 1, nbsol
-        call mltdra(nbloc, zi(lgbloc), zi(ncbloc), zi(decal), zi(seq),&
-                    nbsn, neq, zi(supnd), zi(adress), zi4(global),&
-                    zi(lgsn), factol, factou, xsol(1, i), zr(pointr),&
+        call mltdra(nbloc, zi(lgbloc), zi(ncbloc), zi(decal), zi(seq), &
+                    nbsn, neq, zi(supnd), zi(adress), zi4(global), &
+                    zi(lgsn), factol, factou, xsol(1, i), zr(pointr), &
                     zi(nouv), zi(anc), zi(ad), zr(trav), typsym)
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,22 +16,22 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function appmas(appmasm,&
-                phi    , phim  ,&
-                satur  , saturm,&
-                rho    , rhom  ,&
-                epsv   , epsvm)
+function appmas(appmasm, &
+                phi, phim, &
+                satur, saturm, &
+                rho, rhom, &
+                epsv, epsvm)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
-real(kind=8), intent(in) :: appmasm
-real(kind=8), intent(in) :: phi, phim
-real(kind=8), intent(in) :: satur, saturm
-real(kind=8), intent(in) :: rho, rhom
-real(kind=8), intent(in) :: epsv, epsvm
-real(kind=8) :: appmas
+    real(kind=8), intent(in) :: appmasm
+    real(kind=8), intent(in) :: phi, phim
+    real(kind=8), intent(in) :: satur, saturm
+    real(kind=8), intent(in) :: rho, rhom
+    real(kind=8), intent(in) :: epsv, epsvm
+    real(kind=8) :: appmas
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,6 +54,6 @@ real(kind=8) :: appmas
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    appmas = appmasm + phi*satur*rho*(1.d0+epsv) - phim*saturm*rhom*(1.d0+epsvm)
+    appmas = appmasm+phi*satur*rho*(1.d0+epsv)-phim*saturm*rhom*(1.d0+epsvm)
 !
 end function

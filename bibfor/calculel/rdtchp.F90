@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
+subroutine rdtchp(corrn, corrm, ch1, ch2, base, &
                   noma, nomare, ligrel, cret)
     implicit none
 #include "jeveux.h"
@@ -62,54 +62,54 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
 !
     call jemarq()
 !
-    ASSERT(noma.ne.nomare)
-    ASSERT(ch1.ne.ch2)
+    ASSERT(noma .ne. nomare)
+    ASSERT(ch1 .ne. ch2)
 !
     call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych)
 !
-    ch1s='&&RDTCHP'//'.CH1S'
-    ch2s='&&RDTCHP'//'.CH2S'
+    ch1s = '&&RDTCHP'//'.CH1S'
+    ch2s = '&&RDTCHP'//'.CH2S'
 !
-    cret=0
+    cret = 0
     if (tych .eq. 'NOEU') then
         call cnocns(ch1, 'V', ch1s)
         call rdtcns(nomare, corrn, ch1s, 'V', ch2s)
-        call cnscno(ch2s, ' ', 'NON', base, ch2,&
+        call cnscno(ch2s, ' ', 'NON', base, ch2, &
                     ' ', cret)
         call detrsd('CHAM_NO_S', ch1s)
         call detrsd('CHAM_NO_S', ch2s)
 !
 !
-    else if (tych(1:2).eq.'EL') then
+    else if (tych(1:2) .eq. 'EL') then
         call celces(ch1, 'V', ch1s)
-        call rdtces(nomare, corrm, ch1s, 'V', ch2s,&
+        call rdtces(nomare, corrm, ch1s, 'V', ch2s, &
                     cret)
         if (cret .eq. 0) then
             call dismoi('NOM_OPTION', ch1, 'CHAMP', repk=option)
-            call cescel(ch2s, ligrel, option, ' ', 'OUI',&
+            call cescel(ch2s, ligrel, option, ' ', 'OUI', &
                         nncp, base, ch2, 'F', iret)
-            ASSERT(iret.eq.0)
-            ASSERT(nncp.eq.0)
-        endif
+            ASSERT(iret .eq. 0)
+            ASSERT(nncp .eq. 0)
+        end if
         call detrsd('CHAM_ELEM_S', ch1s)
         call detrsd('CHAM_ELEM_S', ch2s)
 !
 !
-    else if (tych.eq.'CART') then
-        call carces(ch1, 'ELEM', ' ', 'V', ch1s,&
+    else if (tych .eq. 'CART') then
+        call carces(ch1, 'ELEM', ' ', 'V', ch1s, &
                     'A', iret)
-        ASSERT(iret.eq.0)
-        call rdtces(nomare, corrm, ch1s, 'V', ch2s,&
+        ASSERT(iret .eq. 0)
+        call rdtces(nomare, corrm, ch1s, 'V', ch2s, &
                     cret)
         call cescar(ch2s, ch2, base)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
         call detrsd('CHAM_ELEM_S', ch1s)
         call detrsd('CHAM_ELEM_S', ch2s)
 !
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !

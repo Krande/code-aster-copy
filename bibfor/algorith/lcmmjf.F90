@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
-                  nbcomm, dt, necoul, is, ir,&
-                  nbsys, vind, dy, nfs, nsg,&
-                  hsr, rp, alphap, dalpha, gammap,&
-                  dgamma, sgns, dgdtau, dgdal, dfdr,&
+subroutine lcmmjf(taus, coeft, materf, ifa, nmat, &
+                  nbcomm, dt, necoul, is, ir, &
+                  nbsys, vind, dy, nfs, nsg, &
+                  hsr, rp, alphap, dalpha, gammap, &
+                  dgamma, sgns, dgdtau, dgdal, dfdr, &
                   petith, iret)
 ! aslint: disable=W1504
     implicit none
@@ -73,69 +73,69 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
 !
 !     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 !
-    ifl=nbcomm(ifa,1)
-    nuecou=nint(coeft(ifl))
-    iret=0
+    ifl = nbcomm(ifa, 1)
+    nuecou = nint(coeft(ifl))
+    iret = 0
 !
 !      IF (NECOUL.EQ.'MONO_VISC1') THEN
     if (nuecou .eq. 1) then
 !
-        n=coeft(ifl+1)
-        k=coeft(ifl+2)
-        c=coeft(ifl+3)
+        n = coeft(ifl+1)
+        k = coeft(ifl+2)
+        c = coeft(ifl+3)
 !
-        ftau=taus-c*alphap
-        crit=abs(ftau)-rp
+        ftau = taus-c*alphap
+        crit = abs(ftau)-rp
 !
 !         dF/dTau
 !
         if (crit .gt. 0.d0) then
-            dgdtau=(n*dt/(k**n))*(crit**(n-1))
-            dgdal=-c*dgdtau
-            dfdr=-sgns*dgdtau
+            dgdtau = (n*dt/(k**n))*(crit**(n-1))
+            dgdal = -c*dgdtau
+            dfdr = -sgns*dgdtau
         else
-            dgdtau=0.d0
-            dgdal=0.d0
-            dfdr=0.d0
-        endif
+            dgdtau = 0.d0
+            dgdal = 0.d0
+            dfdr = 0.d0
+        end if
 !
         if (abs(ftau) .le. r8miem()) then
-            sgns=1.d0
+            sgns = 1.d0
         else
-            sgns=ftau/abs(ftau)
-        endif
+            sgns = ftau/abs(ftau)
+        end if
 !
 !      IF (NECOUL.EQ.'MONO_VISC2') THEN
-    else if (nuecou.eq.2) then
+    else if (nuecou .eq. 2) then
 !
-        n=coeft(ifl+1)
-        k=coeft(ifl+2)
-        c=coeft(ifl+3)
-        a=coeft(ifl+4)
-        d=coeft(ifl+5)
+        n = coeft(ifl+1)
+        k = coeft(ifl+2)
+        c = coeft(ifl+3)
+        a = coeft(ifl+4)
+        d = coeft(ifl+5)
 !
-        ftau=taus-c*alphap-a*gammap
+        ftau = taus-c*alphap-a*gammap
 !
-        crit=abs(ftau)-rp + 0.5d0*c*d*alphap**2
+        crit = abs(ftau)-rp+0.5d0*c*d*alphap**2
         if (abs(ftau) .le. r8miem()) then
-            sgns=1.d0
+            sgns = 1.d0
         else
-            sgns=ftau/abs(ftau)
-        endif
+            sgns = ftau/abs(ftau)
+        end if
 !
         if (crit .gt. 0.d0) then
-            dgdtau=(n*dt/(k**n))*(crit**(n-1))
+            dgdtau = (n*dt/(k**n))*(crit**(n-1))
         else
-            dgdtau=0.d0
-        endif
+            dgdtau = 0.d0
+        end if
 !
 !         DGDAL
-        dgdal=(-c*sgns+d*alphap*dalpha)*dgdtau*sgns
+        dgdal = (-c*sgns+d*alphap*dalpha)*dgdtau*sgns
 !
 !         DFDR
-        dfdr=-sgns*dgdtau
+        dfdr = -sgns*dgdtau
 !
-    else if (nuecou.eq.4) then
+    else if (nuecou .eq. 4) then
 !             MATRICE JACOBIENNE DU SYSTEME :
 !  R1 = D-1*SIGMA - (D_M-1*SIGMA_M)-(DEPS-DEPS_TH)+Somme(ms*Gamma_s)=0
 !  R2 = dALPHA - g(Taus,alphas)*h(alphas)
@@ -143,36 +143,36 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
 !
 ! ON VEUT CALCULER :
 !        dg(taus,alphas)/dtaus
-        dgdtau=0.d0
+        dgdtau = 0.d0
 !        dg(taus,alphas)/dalphar
-        dgdal=0.d0
+        dgdal = 0.d0
 !        dh(alphas)/dalphar
-        dhdal=0.d0
+        dhdal = 0.d0
 !        DFDR=DHDAL
-        dfdr=0.d0
+        dfdr = 0.d0
 !
-        k =coeft(ifl+1)
-        taur =coeft(ifl+2)
-        tau0 =coeft(ifl+3)
-        gamma0 =coeft(ifl+4)
-        deltg0 =coeft(ifl+5)
-        bsd =coeft(ifl+6)
-        gcb =coeft(ifl+7)
-        kdcs =coeft(ifl+8)
-        p =coeft(ifl+9)
-        q =coeft(ifl+10)
-        tperd =coeft(ifl+11)
+        k = coeft(ifl+1)
+        taur = coeft(ifl+2)
+        tau0 = coeft(ifl+3)
+        gamma0 = coeft(ifl+4)
+        deltg0 = coeft(ifl+5)
+        bsd = coeft(ifl+6)
+        gcb = coeft(ifl+7)
+        kdcs = coeft(ifl+8)
+        p = coeft(ifl+9)
+        q = coeft(ifl+10)
+        tperd = coeft(ifl+11)
         if (materf(nmat) .eq. 0) then
             cisa2 = (materf(1)/2.d0/(1.d0+materf(2)))**2
         else
             cisa2 = (materf(36)/2.d0)**2
-        endif
-        tauv=abs(taus)-tau0
+        end if
+        tauv = abs(taus)-tau0
         if (abs(taus) .le. r8miem()) then
-            sgns=1.d0
+            sgns = 1.d0
         else
-            sgns=taus/abs(taus)
-        endif
+            sgns = taus/abs(taus)
+        end if
         if (tauv .gt. 0.d0) then
             som = 0.d0
             taumu = 0.d0
@@ -181,57 +181,57 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
                 alpha = vind(3*(iu-1)+1)+dy(iu)
 !             PARTIE POSITIVE DE ALPHA
                 if (alpha .gt. 0.d0) then
-                    taumu = taumu + hsr(is,iu)*alpha
+                    taumu = taumu+hsr(is, iu)*alpha
                     if (iu .ne. is) som = som+alpha
-                endif
+                end if
             end do
-            alphas= vind(3*(is-1)+1)+dy(is)
-            som=sqrt(som)
-            taumu = cisa2 * taumu/tauv
+            alphas = vind(3*(is-1)+1)+dy(is)
+            som = sqrt(som)
+            taumu = cisa2*taumu/tauv
             tauef = tauv-taumu
             if (tauef .gt. 0.d0) then
-                aux= (1.d0-(tauef/taur)**p)
+                aux = (1.d0-(tauef/taur)**p)
                 if (aux .le. 0.d0) then
-                    iret=1
+                    iret = 1
                     goto 999
-                endif
-                tabs=tperd+273.15d0
+                end if
+                tabs = tperd+273.15d0
 !              PROTECTION DE l'EXPONENTIELLE
-                deltgg=deltg0*(aux**q)
-                terme=-deltgg/k/tabs
+                deltgg = deltg0*(aux**q)
+                terme = -deltgg/k/tabs
                 if (terme .gt. 10.d0) then
-                    iret=1
+                    iret = 1
                     goto 999
-                endif
+                end if
 !              CALCUL DE dg/dtau
-                petitg=gamma0*exp(terme)*dt
-                petith=bsd+som/kdcs-gcb*alphas
-                if (petith .lt. 0.d0) petith=0.d0
-                cs=-(p*q*deltg0/taur)
-                cs=cs*(aux**(q-1.d0))*(tauef/taur)**(p-1.d0)
-                dtedto=sgns*(1.d0+taumu/tauv)
-                dggdto=cs*dtedto
-                dgdtau =-petitg*sgns*dggdto/k/tabs
+                petitg = gamma0*exp(terme)*dt
+                petith = bsd+som/kdcs-gcb*alphas
+                if (petith .lt. 0.d0) petith = 0.d0
+                cs = -(p*q*deltg0/taur)
+                cs = cs*(aux**(q-1.d0))*(tauef/taur)**(p-1.d0)
+                dtedto = sgns*(1.d0+taumu/tauv)
+                dggdto = cs*dtedto
+                dgdtau = -petitg*sgns*dggdto/k/tabs
 !
 !              CALCUL DE dgs/dalphar
-                dtedal=-cisa2/tauv*hsr(is,ir)
-                dggdal=cs*dtedal
-                dgdal=-petitg/k/tabs*dggdal
+                dtedal = -cisa2/tauv*hsr(is, ir)
+                dggdal = cs*dtedal
+                dgdal = -petitg/k/tabs*dggdal
 !
 !              CALCUL DE dhs/dalphar
-                deltsr=0.d0
-                if (ir .eq. is) deltsr=1.d0
+                deltsr = 0.d0
+                if (ir .eq. is) deltsr = 1.d0
 !
                 if (petith .gt. 0.d0) then
                     if (som .gt. 0.d0) then
-                        dhdal=(1-deltsr)/som/2.d0/kdcs-gcb*deltsr
-                    endif
+                        dhdal = (1-deltsr)/som/2.d0/kdcs-gcb*deltsr
+                    end if
                 else
-                    dhdal=0.d0
-                endif
-                dfdr=dhdal
-            endif
-        endif
-    endif
+                    dhdal = 0.d0
+                end if
+                dfdr = dhdal
+            end if
+        end if
+    end if
 999 continue
 end subroutine

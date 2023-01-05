@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
+subroutine rsingu(ndim, nelem, nbr, nalpha, degre, &
                   prec, erreur, alpha, types, re)
 ! aslint: disable=W1306
     implicit none
@@ -66,128 +66,128 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
 !
 ! 1 - CALCUL DE L ERREUR TOTALE
 !
-    errtot=0.d0
+    errtot = 0.d0
     do inel = 1, nelem
-        errtot=errtot+erreur(inel)**2
+        errtot = errtot+erreur(inel)**2
 ! ------POUR L ERREUR EN QUANTITE D INTERET QUI PEUT ETRE NEGATIVE
-        erreur(inel)=abs(erreur(inel))
+        erreur(inel) = abs(erreur(inel))
     end do
-    errtot=sqrt(errtot)
+    errtot = sqrt(errtot)
 !
 ! 2 - CALCUL DE RE
 !
-    ordre=degre
-    d=ndim
-    prec0=prec*errtot
+    ordre = degre
+    d = ndim
+    prec0 = prec*errtot
 !
 ! 2.1 - CAS OU AUCUN ELEMENT N EST SINGULIER
 !
     if (nalpha .eq. 1) then
 !
-        cumm=0.d0
+        cumm = 0.d0
 !
         do inel = 1, nelem
             if (nbr(inel) .eq. 3) then
                 if (lqi) then
-                    cumm=cumm+(erreur(inel)**(d/(2.d0*ordre+d)))
+                    cumm = cumm+(erreur(inel)**(d/(2.d0*ordre+d)))
                 else
-                    cumm=cumm+(erreur(inel)**(2.d0*d/(2.d0*ordre+d)))
-                endif
-            endif
+                    cumm = cumm+(erreur(inel)**(2.d0*d/(2.d0*ordre+d)))
+                end if
+            end if
         end do
 !
-        cumm=cumm**(1.d0/(2.d0*ordre))
+        cumm = cumm**(1.d0/(2.d0*ordre))
 !
         do inel = 1, nelem
             if (nbr(inel) .eq. 3) then
                 if (lqi) then
-                    re(inel)=erreur(inel)**(1.d0/(2.d0*ordre+d))
-                    re(inel)=1.d0/(re(inel)*cumm)
-                    re(inel)=(prec0**(1.d0/ordre))*re(inel)
+                    re(inel) = erreur(inel)**(1.d0/(2.d0*ordre+d))
+                    re(inel) = 1.d0/(re(inel)*cumm)
+                    re(inel) = (prec0**(1.d0/ordre))*re(inel)
                 else
-                    re(inel)=erreur(inel)**(2.d0/(2.d0*ordre+d))
-                    re(inel)=1.d0/(re(inel)*cumm)
-                    re(inel)=(prec0**(1.d0/2.d0*ordre))*re(inel)
-                endif
-            endif
+                    re(inel) = erreur(inel)**(2.d0/(2.d0*ordre+d))
+                    re(inel) = 1.d0/(re(inel)*cumm)
+                    re(inel) = (prec0**(1.d0/2.d0*ordre))*re(inel)
+                end if
+            end if
         end do
 !
 ! 2.2 - CAS OU CERTAINS ELEMENTS SONT SINGULIERS
 ! 2.2.1 - CALCUL DES COEFFICIENTS AE ET BE POUR SIMPLIFIER EXPRESSION
 !
     else
-        mu=0.d0
+        mu = 0.d0
         do inel = 1, nelem
             if (nbr(inel) .eq. 3) then
-                ae(inel)=2.d0*alpha(inel)/(2.d0*alpha(inel)+d)
+                ae(inel) = 2.d0*alpha(inel)/(2.d0*alpha(inel)+d)
                 if (lqi) then
-                    be(inel)=erreur(inel)**(d/(2.d0*alpha(inel)))
+                    be(inel) = erreur(inel)**(d/(2.d0*alpha(inel)))
                 else
-                    be(inel)=erreur(inel)**(d/alpha(inel))
-                endif
-                be(inel)=d*be(inel)/(2.d0*alpha(inel))
-                be(inel)=be(inel)**ae(inel)
-                mu=mu+(erreur(inel)**(2.d0*ordre/(2.d0*ordre+d)))
-            endif
+                    be(inel) = erreur(inel)**(d/alpha(inel))
+                end if
+                be(inel) = d*be(inel)/(2.d0*alpha(inel))
+                be(inel) = be(inel)**ae(inel)
+                mu = mu+(erreur(inel)**(2.d0*ordre/(2.d0*ordre+d)))
+            end if
         end do
 !
 ! 2.2.2 - RECHERCHE DU LAGRANGIEN MU PAR MEHODE DE NEWTON
 !         OU DICHOTOMIE
 !
-        mu=mu/(prec0**2.d0)
-        mu=mu**((2.d0*ordre+d)/(2.d0*ordre))
-        mu=d*mu/(2.d0*ordre)
-        iter=1
+        mu = mu/(prec0**2.d0)
+        mu = mu**((2.d0*ordre+d)/(2.d0*ordre))
+        mu = d*mu/(2.d0*ordre)
+        iter = 1
 !
- 70     continue
+70      continue
 !
         if (iter .le. 15) then
             if (lqi) then
-                fonc=-prec0
+                fonc = -prec0
             else
-                fonc=-(prec0**2.d0)
-            endif
-            dfonc=0.d0
+                fonc = -(prec0**2.d0)
+            end if
+            dfonc = 0.d0
             do inel = 1, nelem
                 if (nbr(inel) .eq. 3) then
-                    fonc=fonc+be(inel)/(mu**ae(inel))
-                    dfonc=dfonc-ae(inel)*be(inel)/(mu**(ae(inel)+1.d0)&
-                    )
-                endif
+                    fonc = fonc+be(inel)/(mu**ae(inel))
+                    dfonc = dfonc-ae(inel)*be(inel)/(mu**(ae(inel)+1.d0) &
+                                                     )
+                end if
             end do
 !
             if (abs(fonc) .le. 1.d-06) goto 60
             if (fonc .ge. 0.d0) then
-                mu=mu-fonc/dfonc
-                iter=iter+1
+                mu = mu-fonc/dfonc
+                iter = iter+1
                 goto 70
             else
-                mu=mu/2.d0
-                iter=iter+1
+                mu = mu/2.d0
+                iter = iter+1
                 goto 70
-            endif
+            end if
 !
- 60         continue
+60          continue
 !
             do inel = 1, nelem
                 if (nbr(inel) .eq. 3) then
                     if (lqi) then
-                        re(inel)=d/(2.d0*mu*alpha(inel)*erreur(inel))
+                        re(inel) = d/(2.d0*mu*alpha(inel)*erreur(inel))
                     else
-                        re(inel)=d/(2.d0*mu*alpha(inel)*(erreur(inel)&
-                        **2.d0))
-                    endif
-                    re(inel)=re(inel)**(1.d0/(2.d0*alpha(inel)+d))
-                endif
+                        re(inel) = d/(2.d0*mu*alpha(inel)*(erreur(inel) &
+                                                           **2.d0))
+                    end if
+                    re(inel) = re(inel)**(1.d0/(2.d0*alpha(inel)+d))
+                end if
             end do
 !
         else
 !
             call utmess('F', 'CALCULEL3_99')
 !
-        endif
+        end if
 !
 !
-    endif
+    end if
 !
 end subroutine

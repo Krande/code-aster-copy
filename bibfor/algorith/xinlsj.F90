@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 !
 !
     real(kind=8) :: point(3), dist, dmin
-    integer :: jjonf, jjonc, jjon3,  ino, nbno, iret, ibid
-    integer :: nfini, ifiss, nfis2, nfis3, ifis2, ifis3, cpt,  nfisd
-    integer ::  jcnsl, jcnsvn, coefln(10),  iadrco, nuno
+    integer :: jjonf, jjonc, jjon3, ino, nbno, iret, ibid
+    integer :: nfini, ifiss, nfis2, nfis3, ifis2, ifis3, cpt, nfisd
+    integer ::  jcnsl, jcnsvn, coefln(10), iadrco, nuno
     character(len=8) :: ch, nomfis(10)
     character(len=19) :: cnsln, cnslt, jonfis, joncoe
     character(len=8), pointer :: vfiss(:) => null()
@@ -71,14 +71,14 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     call jemarq()
 !
 ! --- INITIALISATIONS
-    call r8inir(ndim, 0.d0, point,1)
+    call r8inir(ndim, 0.d0, point, 1)
     nfiss = -nfiss
-    cnsln= '&&XINLSJ.CNSLN'
-    cnslt= '&&XINLSJ.CNSLT'
+    cnsln = '&&XINLSJ.CNSLN'
+    cnslt = '&&XINLSJ.CNSLT'
     AS_ALLOCATE(vk8=vfiss, size=nfiss)
-    call getvid('JONCTION', 'FISSURE', iocc=1, nbval=nfiss, vect=vfiss,&
+    call getvid('JONCTION', 'FISSURE', iocc=1, nbval=nfiss, vect=vfiss, &
                 nbret=ibid)
-    call getvr8('JONCTION', 'POINT', iocc=1, nbval=3, vect=point,&
+    call getvr8('JONCTION', 'POINT', iocc=1, nbval=3, vect=point, &
                 nbret=ibid)
 !
 ! --- ACCES AU MAILLAGE
@@ -90,11 +90,11 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 !
     dmin = r8maem()
     do ino = 1, nbno
-        dist = padist(ndim,point,zr(iadrco+(ino-1)*3+1-1))
+        dist = padist(ndim, point, zr(iadrco+(ino-1)*3+1-1))
         if (dist .lt. dmin) then
             nuno = ino
             dmin = dist
-        endif
+        end if
     end do
 !
 ! --- ON AJOUTE LES FISSURES DECLARÉES DANS LE MOT CLÉ JONCTION
@@ -110,15 +110,15 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! --- ELLE SERA AJOUTÉ DANS LA BOUCLE 60
                     if (zk8(jjon3-1+ifis3) .eq. vfiss(ifiss)) goto 50
                 end do
-            endif
+            end if
         end do
-        cpt = cpt +1
+        cpt = cpt+1
         nomfis(cpt) = vfiss(ifiss)
         call cnocns(nomfis(cpt)//'.LNNO', 'V', cnsln)
         call jeveuo(cnsln//'.CNSV', 'L', jcnsvn)
-        ASSERT(zr(jcnsvn-1+nuno).ne.0.d0)
-        coefln(cpt) = nint(sign(1.d0,-1.d0*zr(jcnsvn-1+nuno)))
- 50     continue
+        ASSERT(zr(jcnsvn-1+nuno) .ne. 0.d0)
+        coefln(cpt) = nint(sign(1.d0, -1.d0*zr(jcnsvn-1+nuno)))
+50      continue
     end do
 !
     nfini = 1
@@ -127,7 +127,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! --- ON AJOUTE TOUTES LES FISSURES CONNECTÉES PRECEDEMENT
 ! --- SAUF CELLES QUI CONTIENNENT LA FISSURE FISS EN COURS
 !
- 90 continue
+90  continue
     do ifiss = nfini, nfiss
         call jeexin(nomfis(ifiss)//'.JONFISS', iret)
         if (iret .ne. 0) then
@@ -144,7 +144,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
                     do ifis3 = 1, nfis3
                         if (zk8(jjon3-1+ifis3) .eq. fiss) goto 70
                     end do
-                endif
+                end if
 ! --- ON VERIFIE QU'ON A PAS DEJA STOCKÉ LA FISSURE DANS LA LISTE
                 do ifis3 = 1, cpt
                     if (zk8(jjonf-1+ifis2) .eq. nomfis(ifis3)) goto 70
@@ -153,14 +153,14 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
                 cpt = cpt+1
                 nomfis(cpt) = zk8(jjonf-1+ifis2)
                 coefln(cpt) = zi(jjonc-1+ifis2)
- 70             continue
+70              continue
             end do
-        endif
+        end if
     end do
     nfini = nfiss+1
     nfiss = cpt
     if (nfini .le. nfiss) goto 90
-    ASSERT(nfiss.le.10)
+    ASSERT(nfiss .le. 10)
 !
 ! --- CRÉATION DES SD GLOBALES JONFISS ET JONCOEF
 !
@@ -182,7 +182,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! --- CRÉATION DE LA SD CNSLJ : LSJ(IFISS,1) = COEF*LSN(IFISS)
 !                               LSJ(IFISS,2) = LST(IFISS)
 !
-    call cnscre(noma, 'N120_R', 2*nfiss, licmp, 'V',&
+    call cnscre(noma, 'N120_R', 2*nfiss, licmp, 'V', &
                 cnslj)
     call jeveuo(cnslj//'.CNSV', 'E', vr=cnsv)
     call jeveuo(cnslj//'.CNSL', 'E', jcnsl)
@@ -193,14 +193,14 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         call jeveuo(cnslt//'.CNSV', 'L', vr=cnsvt)
         do ino = 1, nbno
             zl(jcnsl-1+2*nfiss*(ino-1)+2*(ifiss-1)+1) = .true.
-            cnsv(2*nfiss*(ino-1)+2*(ifiss-1)+1) = coefln(ifiss)* zr(jcnsvn-1+ino)
+            cnsv(2*nfiss*(ino-1)+2*(ifiss-1)+1) = coefln(ifiss)*zr(jcnsvn-1+ino)
             zl(jcnsl-1+2*nfiss*(ino-1)+2*(ifiss-1)+2) = .true.
             if (ifiss .le. nfisd) then
                 cnsv(2*nfiss*(ino-1)+2*(ifiss-1)+2) = -1
             else
 ! --- CRITERE SUR LA LST POUR LES FISS NON DECLAREES PAR L'UTILISATEUR
                 cnsv(2*nfiss*(ino-1)+2*(ifiss-1)+2) = cnsvt(ino)
-            endif
+            end if
         end do
     end do
 !

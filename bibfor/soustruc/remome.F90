@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine remome(promes, modmes, nommac)
 !
     vref = nommac//'.PROJM    .PJMRF'
     call jeveuo(vref, 'L', lref)
-    nomcha=zk16(lref-1 +2)
+    nomcha = zk16(lref-1+2)
 !
     call jeveuo(vrange, 'L', lrange)
     call jeveuo(vnoeud, 'L', lnoeud)
@@ -92,17 +92,17 @@ subroutine remome(promes, modmes, nommac)
     chs = '&&MESURE.CHS'
 !
 ! RECUPERATION DU NB DE VECTEURS PROPRES IDENTIFIES : NBMTOT
-    call rsorac(modmes, 'LONUTI', 0, rbid, k8bid,&
-                cbid, rbid, 'ABSOLU', tord, 1,&
+    call rsorac(modmes, 'LONUTI', 0, rbid, k8bid, &
+                cbid, rbid, 'ABSOLU', tord, 1, &
                 ibid)
-    nbmtot=tord(1)
+    nbmtot = tord(1)
 !
 !
 ! BOUCLE SUR LES NUMEROS ORDRE
 !
     do numord = 1, nbmtot
 !        -> EXISTENCE DES CHAMPS DANS LA STRUCTURE DE DONNEES MESURE
-        call rsexch('F', modmes, nomcha, ordr(numord), chamno,&
+        call rsexch('F', modmes, nomcha, ordr(numord), chamno, &
                     iret)
         if (numord .le. 1) then
             call jeveuo(chamno//'.DESC', 'L', vi=desc)
@@ -115,9 +115,9 @@ subroutine remome(promes, modmes, nommac)
             else
                 zcmplx = .false.
                 call wkvect(vmes, 'G V R', nbmesu*nbmtot, lmesu)
-            endif
+            end if
             call jeecra(vmes, 'LONUTI', nbmesu*nbmtot)
-        endif
+        end if
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
         call detrsd('CHAM_NO_S', chs)
@@ -131,17 +131,17 @@ subroutine remome(promes, modmes, nommac)
         nbcmp = cnsd(2)
 !
         do imes = 1, nbmesu
-            ino = zi(lnoeud-1 +imes)
+            ino = zi(lnoeud-1+imes)
 !
 ! DIRECTION DE MESURE (VECTEUR DIRECTEUR)
             do ii = 1, 3
-                vori(ii) = zr(lori-1 + (imes-1)*3 +ii)
+                vori(ii) = zr(lori-1+(imes-1)*3+ii)
             end do
 !
 ! NORMALISATION DU VECTEUR DIRECTEUR
             val = 0.d0
             do ii = 1, 3
-                val = val + vori(ii)*vori(ii)
+                val = val+vori(ii)*vori(ii)
             end do
             val = sqrt(val)
             do ii = 1, 3
@@ -150,29 +150,29 @@ subroutine remome(promes, modmes, nommac)
 !
             if (zcmplx) then
                 do icmp = 1, nbcmp
-                    if (cnsc(icmp) .eq. 'DX') vectc(1) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
-                    if (cnsc(icmp) .eq. 'DY') vectc(2) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
-                    if (cnsc(icmp) .eq. 'DZ') vectc(3) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp )
+                    if (cnsc(icmp) .eq. 'DX') vectc(1) = zc(jcnsv-1+(ino-1)*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DY') vectc(2) = zc(jcnsv-1+(ino-1)*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DZ') vectc(3) = zc(jcnsv-1+(ino-1)*nbcmp+icmp)
                 end do
 !
-                valc = dcmplx(0.d0,0.d0)
+                valc = dcmplx(0.d0, 0.d0)
 !
                 do ii = 1, 3
-                    valc = valc + vectc(ii) * vori(ii)
+                    valc = valc+vectc(ii)*vori(ii)
                 end do
-                zc(lmesu-1 +(numord-1)*nbmesu+imes) = valc
+                zc(lmesu-1+(numord-1)*nbmesu+imes) = valc
             else
                 do icmp = 1, nbcmp
-                    if (cnsc(icmp) .eq. 'DX') vect(1) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
-                    if (cnsc(icmp) .eq. 'DY') vect(2) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
-                    if (cnsc(icmp) .eq. 'DZ') vect(3) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DX') vect(1) = zr(jcnsv-1+(ino-1)*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DY') vect(2) = zr(jcnsv-1+(ino-1)*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DZ') vect(3) = zr(jcnsv-1+(ino-1)*nbcmp+icmp)
                 end do
                 val = 0.d0
                 do ii = 1, 3
-                    val = val + vect(ii) * vori(ii)
+                    val = val+vect(ii)*vori(ii)
                 end do
-                zr(lmesu-1 +(numord-1)*nbmesu+imes) = val
-            endif
+                zr(lmesu-1+(numord-1)*nbmesu+imes) = val
+            end if
         end do
 !
 ! FIN BOUCLE SUR NUMERO ORDRE

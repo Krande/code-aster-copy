@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
+subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec, &
                   nommet)
 ! person_in_charge: van-xuan.tran at edf.fr
 ! aslint: disable=W1501
@@ -82,7 +82,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
     if (nommet(1:15) .eq. 'CERCLE_APPROCHE') then
         goto 777
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -124,23 +124,23 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
         call jerazo('&&RAYCIR.DOM2', nbordr*2, 1)
 !
         do iordr = 1, nbordr
-            n1 = n1 + 1
-            cui = zr( jvecpg + (n1-1)*2 )
-            cvi = zr( jvecpg + (n1-1)*2 + 1 )
+            n1 = n1+1
+            cui = zr(jvecpg+(n1-1)*2)
+            cvi = zr(jvecpg+(n1-1)*2+1)
 !
             !
             if (cui .lt. cumin) then
                 cumin = cui
-            endif
+            end if
             if (cui .gt. cumax) then
                 cumax = cui
-            endif
+            end if
             if (cvi .lt. cvmin) then
                 cvmin = cvi
-            endif
+            end if
             if (cvi .gt. cvmax) then
                 cvmax = cvi
-            endif
+            end if
         end do
 !
 !-----------------------------------------------------------------------
@@ -148,77 +148,77 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !  |  TRAITEMENT DES CAS PARTICULIERS  |
 !  ------------------------------------
 !
-        hypot = sqrt((cumax-cumin)**2 + (cvmax-cvmin)**2)
-        vtest0 = sqrt( ( cumin+((cumax-cumin)/2.0d0))**2+ (cvmin+(( cvmax-cvmin)/2.0d0) )**2 )
+        hypot = sqrt((cumax-cumin)**2+(cvmax-cvmin)**2)
+        vtest0 = sqrt((cumin+((cumax-cumin)/2.0d0))**2+(cvmin+((cvmax-cvmin)/2.0d0))**2)
         if (vtest0 .gt. epsilo) then
             vtest1 = hypot/vtest0
         else
             vtest1 = 1.0d0
-        endif
+        end if
 !
 ! 1.1 CAS OU TOUS LES POINTS SONT DANS UNE BOITE DONT LE CENTRE EST
 !     VOISIN DE ZERO ET DONT LA NORME EST INFERIEURE A EPSILO.
 !
         if (hypot .lt. epsilo) then
-            zr(jdtau + (ivect-1)) = 0.0d0
-            zi(jvecn + (ivect-1)) = ivect
+            zr(jdtau+(ivect-1)) = 0.0d0
+            zi(jvecn+(ivect-1)) = ivect
             goto 30
 !
 ! 1.2 CAS OU L HYPOTENUSE DE LA BOITE EST PETITE DEVANT LES
 !     COORDONNEES EXTREMES DE LA BOITE => PETITE VALEUR DU CISAILLEMENT.
 !
         else if (vtest1 .lt. epsil1) then
-            zr(jdtau + (ivect-1)) = hypot/2.0d0
-            zi(jvecn + (ivect-1)) = ivect
+            zr(jdtau+(ivect-1)) = hypot/2.0d0
+            zi(jvecn+(ivect-1)) = ivect
             goto 30
 !
 ! 1.3 CAS OU TOUS LES POINTS SONT ALIGNES HORIZONTALEMENT
 !
         else if (((cvmax-cvmin)/hypot) .lt. epsil1) then
-            zr(jdtau + (ivect-1)) = hypot/2.0d0
-            zi(jvecn + (ivect-1)) = ivect
+            zr(jdtau+(ivect-1)) = hypot/2.0d0
+            zi(jvecn+(ivect-1)) = ivect
             goto 30
 !
 ! 1.4 CAS OU TOUS LES POINTS SONT ALIGNES VERTICALEMENT
 !
         else if (((cumax-cumin)/hypot) .lt. epsil1) then
-            zr(jdtau + (ivect-1)) = hypot/2.0d0
-            zi(jvecn + (ivect-1)) = ivect
+            zr(jdtau+(ivect-1)) = hypot/2.0d0
+            zi(jvecn+(ivect-1)) = ivect
             goto 30
-        endif
+        end if
 !
 !-----------------------------------------------------------------------
 !
 ! NOUS FAISONS UNE CORRECTION BARYCENTRIQUE
 !
-        cuo1 = cumin + (cumax - cumin)/2.0d0
-        cvo1 = cvmin + (cvmax - cvmin)/2.0d0
+        cuo1 = cumin+(cumax-cumin)/2.0d0
+        cvo1 = cvmin+(cvmax-cvmin)/2.0d0
 !
-        if ((cumax - cumin) .ge. (cvmax - cvmin)) then
-            diamin = cumax - cumin
-            raymin = (cumax - cumin)/2.0d0
+        if ((cumax-cumin) .ge. (cvmax-cvmin)) then
+            diamin = cumax-cumin
+            raymin = (cumax-cumin)/2.0d0
             cuomi1 = 0.0d0
-            cvomi1 = -(cvmax - cvmin)/2.0d0
+            cvomi1 = -(cvmax-cvmin)/2.0d0
             cuomi2 = 0.0d0
-            cvomi2 = (cvmax - cvmin)/2.0d0
-            etir = (cvmax - cvmin)/(cumax - cumin)
+            cvomi2 = (cvmax-cvmin)/2.0d0
+            etir = (cvmax-cvmin)/(cumax-cumin)
             oricad = 'HORIZ'
         else
-            diamin = cvmax - cvmin
-            raymin = (cvmax - cvmin)/2.0d0
-            cuomi1 = -(cumax - cumin)/2.0d0
+            diamin = cvmax-cvmin
+            raymin = (cvmax-cvmin)/2.0d0
+            cuomi1 = -(cumax-cumin)/2.0d0
             cvomi1 = 0.0d0
-            cuomi2 = (cumax - cumin)/2.0d0
+            cuomi2 = (cumax-cumin)/2.0d0
             cvomi2 = 0.0d0
-            etir = (cumax - cumin)/(cvmax - cvmin)
+            etir = (cumax-cumin)/(cvmax-cvmin)
             oricad = 'VERTI'
-        endif
+        end if
 !
 ! REDEFINITION DES POINTS EXTREMES DU CADRE APRES LA CORRECTION
 ! BARYCENTRIQUE (ON A TRANSLAT2 LE CADRE AUTOUR DE ZERO)
 !
-        cumin = -(cumax - cumin)/2.0d0
-        cvmin = -(cvmax - cvmin)/2.0d0
+        cumin = -(cumax-cumin)/2.0d0
+        cvmin = -(cvmax-cvmin)/2.0d0
         cumax = abs(cumin)
         cvmax = abs(cvmin)
 !
@@ -230,62 +230,62 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
         nbpts4 = 0
         nbptd1 = 0
         nbptd2 = 0
-        n1 = n1 - nbordr
+        n1 = n1-nbordr
         do iordr = 1, nbordr
-            n1 = n1 + 1
-            cui = zr( jvecpg + (n1-1)*2 ) - cuo1
-            cvi = zr( jvecpg + (n1-1)*2 + 1 ) - cvo1
+            n1 = n1+1
+            cui = zr(jvecpg+(n1-1)*2)-cuo1
+            cvi = zr(jvecpg+(n1-1)*2+1)-cvo1
 !
-            disto1 = sqrt((0.0d0 - cui)**2 + (0.0d0 - cvi)**2)
-            dists(1) = sqrt((cumin - cui)**2 + (cvmax - cvi)**2)
-            dists(2) = sqrt((cumax - cui)**2 + (cvmax - cvi)**2)
-            dists(3) = sqrt((cumax - cui)**2 + (cvmin - cvi)**2)
-            dists(4) = sqrt((cumin - cui)**2 + (cvmin - cvi)**2)
-            distd1 = sqrt((cuomi1 - cui)**2 + (cvomi1 - cvi)**2)
-            distd2 = sqrt((cuomi2 - cui)**2 + (cvomi2 - cvi)**2)
+            disto1 = sqrt((0.0d0-cui)**2+(0.0d0-cvi)**2)
+            dists(1) = sqrt((cumin-cui)**2+(cvmax-cvi)**2)
+            dists(2) = sqrt((cumax-cui)**2+(cvmax-cvi)**2)
+            dists(3) = sqrt((cumax-cui)**2+(cvmin-cvi)**2)
+            dists(4) = sqrt((cumin-cui)**2+(cvmin-cvi)**2)
+            distd1 = sqrt((cuomi1-cui)**2+(cvomi1-cvi)**2)
+            distd2 = sqrt((cuomi2-cui)**2+(cvomi2-cvi)**2)
 !
             indsec = 0
             do i = 1, 4
                 if ((dists(i) .gt. diamin) .and. (indsec .eq. 0)) then
                     if (cui .ge. 0.0d0) then
                         if (cvi .ge. 0.0d0) then
-                            zr(jsec2 + nbpts2*2) = cui
-                            zr(jsec2 + nbpts2*2 +1) = cvi
-                            nbpts2 = nbpts2 + 1
+                            zr(jsec2+nbpts2*2) = cui
+                            zr(jsec2+nbpts2*2+1) = cvi
+                            nbpts2 = nbpts2+1
                             indsec = 1
                         else
-                            zr(jsec3 + nbpts3*2) = cui
-                            zr(jsec3 + nbpts3*2 +1) = cvi
-                            nbpts3 = nbpts3 + 1
+                            zr(jsec3+nbpts3*2) = cui
+                            zr(jsec3+nbpts3*2+1) = cvi
+                            nbpts3 = nbpts3+1
                             indsec = 1
-                        endif
+                        end if
                     else
                         if (cvi .ge. 0.0d0) then
-                            zr(jsec1 + nbpts1*2) = cui
-                            zr(jsec1 + nbpts1*2 +1) = cvi
-                            nbpts1 = nbpts1 + 1
+                            zr(jsec1+nbpts1*2) = cui
+                            zr(jsec1+nbpts1*2+1) = cvi
+                            nbpts1 = nbpts1+1
                             indsec = 1
                         else
-                            zr(jsec4 + nbpts4*2) = cui
-                            zr(jsec4 + nbpts4*2 +1) = cvi
-                            nbpts4 = nbpts4 + 1
+                            zr(jsec4+nbpts4*2) = cui
+                            zr(jsec4+nbpts4*2+1) = cvi
+                            nbpts4 = nbpts4+1
                             indsec = 1
-                        endif
-                    endif
-                endif
+                        end if
+                    end if
+                end if
             end do
 !
             if ((distd1 .gt. raymin) .or. (disto1 .gt. raymin)) then
-                zr(jdom1 + nbptd1*2) = cui
-                zr(jdom1 + nbptd1*2 + 1) = cvi
-                nbptd1 = nbptd1 + 1
-            endif
+                zr(jdom1+nbptd1*2) = cui
+                zr(jdom1+nbptd1*2+1) = cvi
+                nbptd1 = nbptd1+1
+            end if
 !
             if ((distd2 .gt. raymin) .or. (disto1 .gt. raymin)) then
-                zr(jdom2 + nbptd2*2) = cui
-                zr(jdom2 + nbptd2*2 + 1) = cvi
-                nbptd2 = nbptd2 + 1
-            endif
+                zr(jdom2+nbptd2*2) = cui
+                zr(jdom2+nbptd2*2+1) = cvi
+                nbptd2 = nbptd2+1
+            end if
         end do
 !
 ! RECHERCHE DES 2 POINTS LES PLUS ELOIGNES PARMI LES POINTS DES
@@ -308,55 +308,55 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
         do i = 1, 24
             coorpt(i) = 0.0d0
         end do
-        if (( nbpts1 .gt. 0 ) .and. ( nbpts2 .gt. 0 )) then
+        if ((nbpts1 .gt. 0) .and. (nbpts2 .gt. 0)) then
             if ((oricad .eq. 'HORIZ') .or. ((oricad .eq. 'VERTI') .and. (etir .ge. cetir))) then
-                call dimax1(jsec1, jsec2, nbpts1, nbpts2, dmaxi(1),&
+                call dimax1(jsec1, jsec2, nbpts1, nbpts2, dmaxi(1), &
                             coorpt(1), coorpt(2), coorpt(3), coorpt(4))
             else
                 dmaxi(1) = 0.0d0
-            endif
-        endif
+            end if
+        end if
 !
-        if (( nbpts1 .gt. 0 ) .and. ( nbpts3 .gt. 0 )) then
-            call dimax1(jsec1, jsec3, nbpts1, nbpts3, dmaxi(2),&
+        if ((nbpts1 .gt. 0) .and. (nbpts3 .gt. 0)) then
+            call dimax1(jsec1, jsec3, nbpts1, nbpts3, dmaxi(2), &
                         coorpt(5), coorpt(6), coorpt(7), coorpt(8))
         else
             dmaxi(2) = 0.0d0
-        endif
+        end if
 !
-        if (( nbpts1 .gt. 0 ) .and. ( nbpts4 .gt. 0 )) then
+        if ((nbpts1 .gt. 0) .and. (nbpts4 .gt. 0)) then
             if ((oricad .eq. 'VERTI') .or. ((oricad .eq. 'HORIZ') .and. (etir .ge. cetir))) then
-                call dimax1(jsec1, jsec4, nbpts1, nbpts4, dmaxi(3),&
+                call dimax1(jsec1, jsec4, nbpts1, nbpts4, dmaxi(3), &
                             coorpt(9), coorpt(10), coorpt(11), coorpt(12))
             else
                 dmaxi(3) = 0.0d0
-            endif
-        endif
+            end if
+        end if
 !
-        if (( nbpts2 .gt. 0 ) .and. ( nbpts3 .gt. 0 )) then
+        if ((nbpts2 .gt. 0) .and. (nbpts3 .gt. 0)) then
             if ((oricad .eq. 'VERTI') .or. ((oricad .eq. 'HORIZ') .and. (etir .ge. cetir))) then
-                call dimax1(jsec2, jsec3, nbpts2, nbpts3, dmaxi(4),&
+                call dimax1(jsec2, jsec3, nbpts2, nbpts3, dmaxi(4), &
                             coorpt(13), coorpt(14), coorpt(15), coorpt(16))
             else
                 dmaxi(4) = 0.0d0
-            endif
-        endif
+            end if
+        end if
 !
-        if (( nbpts2 .gt. 0 ) .and. ( nbpts4 .gt. 0 )) then
-            call dimax1(jsec2, jsec4, nbpts2, nbpts4, dmaxi(5),&
+        if ((nbpts2 .gt. 0) .and. (nbpts4 .gt. 0)) then
+            call dimax1(jsec2, jsec4, nbpts2, nbpts4, dmaxi(5), &
                         coorpt(17), coorpt(18), coorpt(19), coorpt(20))
         else
             dmaxi(5) = 0.0d0
-        endif
+        end if
 !
-        if (( nbpts3 .gt. 0 ) .and. ( nbpts4 .gt. 0 )) then
+        if ((nbpts3 .gt. 0) .and. (nbpts4 .gt. 0)) then
             if ((oricad .eq. 'HORIZ') .or. ((oricad .eq. 'VERTI') .and. (etir .ge. cetir))) then
-                call dimax1(jsec3, jsec4, nbpts3, nbpts4, dmaxi(6),&
+                call dimax1(jsec3, jsec4, nbpts3, nbpts4, dmaxi(6), &
                             coorpt(21), coorpt(22), coorpt(23), coorpt(24))
             else
                 dmaxi(6) = 0.0d0
-            endif
-        endif
+            end if
+        end if
 !
         dmax = 0.0d0
         n = 0
@@ -364,30 +364,30 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
             if (dmaxi(i) .gt. dmax) then
                 dmax = dmaxi(i)
                 n = i
-            endif
+            end if
         end do
-        cuppe1 = coorpt((n-1)*4 + 1)
-        cvppe1 = coorpt((n-1)*4 + 2)
-        cuppe2 = coorpt((n-1)*4 + 3)
-        cvppe2 = coorpt((n-1)*4 + 4)
+        cuppe1 = coorpt((n-1)*4+1)
+        cvppe1 = coorpt((n-1)*4+2)
+        cuppe2 = coorpt((n-1)*4+3)
+        cvppe2 = coorpt((n-1)*4+4)
 !
 ! CALCUL DU CENTRE DU SEGMENT LE PLUS LONG ET DE SA LONGUEUR.
 !
 !
-        dun = abs(cuppe1 - cuppe2)/2.0d0
-        dvn = abs(cvppe1 - cvppe2)/2.0d0
+        dun = abs(cuppe1-cuppe2)/2.0d0
+        dvn = abs(cvppe1-cvppe2)/2.0d0
         if (cuppe1 .lt. cuppe2) then
-            cuon = cuppe1 + dun
+            cuon = cuppe1+dun
         else
-            cuon = cuppe2 + dun
-        endif
+            cuon = cuppe2+dun
+        end if
         if (cvppe1 .lt. cvppe2) then
-            cvon = cvppe1 + dvn
+            cvon = cvppe1+dvn
         else
-            cvon = cvppe2 + dvn
-        endif
+            cvon = cvppe2+dvn
+        end if
 !
-        dsegn = sqrt((cuppe1 - cuppe2)**2 + (cvppe1 - cvppe2)**2)
+        dsegn = sqrt((cuppe1-cuppe2)**2+(cvppe1-cvppe2)**2)
         rsegn = dsegn/2.0d0
 !
 ! ON CHERCHE SI IL EXISTE DES POINTS Pi TELS QUE LEURS DISTANCES AU
@@ -401,21 +401,21 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
         if (oricad(1:5) .eq. 'HORIZ') then
             if (cvon .lt. 0.0d0) then
-                call dimax2(jdom1, nbptd1, cuon, cvon, rsegn,&
+                call dimax2(jdom1, nbptd1, cuon, cvon, rsegn, &
                             cupn, cvpn, ireth)
             else
-                call dimax2(jdom2, nbptd2, cuon, cvon, rsegn,&
+                call dimax2(jdom2, nbptd2, cuon, cvon, rsegn, &
                             cupn, cvpn, ireth)
-            endif
+            end if
         else if (oricad(1:5) .eq. 'VERTI') then
             if (cuon .lt. 0.0d0) then
-                call dimax2(jdom1, nbptd1, cuon, cvon, rsegn,&
+                call dimax2(jdom1, nbptd1, cuon, cvon, rsegn, &
                             cupn, cvpn, iretv)
             else
-                call dimax2(jdom2, nbptd2, cuon, cvon, rsegn,&
+                call dimax2(jdom2, nbptd2, cuon, cvon, rsegn, &
                             cupn, cvpn, iretv)
-            endif
-        endif
+            end if
+        end if
 !
 ! ON CHERCHE LE PLUS PETIT CERCLE CIRCONSCRIT PAR LA METHODE DU CERCLE
 ! PASSANT PAR TROIS POINTS.
@@ -424,7 +424,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
 100     continue
 !
-        nboucl = nboucl + 1
+        nboucl = nboucl+1
 !
         if (ireth .eq. 1) then
             if (nboucl .eq. 1) then
@@ -434,88 +434,88 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 cvpn1 = cvppe2
                 cupn2 = cupn
                 cvpn2 = cvpn
-                call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
+                call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
                             cvpn2, cuon, cvon, ray3pt)
 !
                 if (cvon .lt. 0.0d0) then
-                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt,&
+                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt, &
                                 cupn, cvpn, ireth)
                 else
-                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt,&
+                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt, &
                                 cupn, cvpn, ireth)
-                endif
+                end if
                 goto 100
 !
             else if (nboucl .gt. 1) then
                 zr(jcoorp) = cupn0
-                zr(jcoorp + 1) = cvpn0
-                zr(jcoorp + 2) = cupn1
-                zr(jcoorp + 3) = cvpn1
-                zr(jcoorp + 4) = cupn2
-                zr(jcoorp + 5) = cvpn2
-                zr(jcoorp + 6) = cupn
-                zr(jcoorp + 7) = cvpn
-                zr(jcoorp + 8) = cupn0
-                zr(jcoorp + 9) = cvpn0
-                zr(jcoorp + 10) = cupn1
-                zr(jcoorp + 11) = cvpn1
+                zr(jcoorp+1) = cvpn0
+                zr(jcoorp+2) = cupn1
+                zr(jcoorp+3) = cvpn1
+                zr(jcoorp+4) = cupn2
+                zr(jcoorp+5) = cvpn2
+                zr(jcoorp+6) = cupn
+                zr(jcoorp+7) = cvpn
+                zr(jcoorp+8) = cupn0
+                zr(jcoorp+9) = cvpn0
+                zr(jcoorp+10) = cupn1
+                zr(jcoorp+11) = cvpn1
 !
                 ray3pt = r8maem()
                 k = 0
 !
                 do i = 1, 3
-                    cupn0 = zr(jcoorp + i*2)
-                    cvpn0 = zr(jcoorp + i*2 + 1)
-                    cupn1 = zr(jcoorp + i*2 + 2)
-                    cvpn1 = zr(jcoorp + i*2 + 3)
-                    cupn2 = zr(jcoorp + i*2 + 4)
-                    cvpn2 = zr(jcoorp + i*2 + 5)
-                    call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
+                    cupn0 = zr(jcoorp+i*2)
+                    cvpn0 = zr(jcoorp+i*2+1)
+                    cupn1 = zr(jcoorp+i*2+2)
+                    cvpn1 = zr(jcoorp+i*2+3)
+                    cupn2 = zr(jcoorp+i*2+4)
+                    cvpn2 = zr(jcoorp+i*2+5)
+                    call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
                                 cvpn2, cuoi, cvoi, rmin3p)
 !
-                    call dimax2(jcoorp, 4, cuoi, cvoi, rmin3p,&
+                    call dimax2(jcoorp, 4, cuoi, cvoi, rmin3p, &
                                 cupn, cvpn, iret3p)
 !
                     if (iret3p .eq. 0) then
-                        k = k + 1
-                    endif
+                        k = k+1
+                    end if
 !
                     if ((rmin3p .lt. ray3pt) .and. (iret3p .eq. 0)) then
                         ray3pt = rmin3p
                         cuon = cuoi
                         cvon = cvoi
                         vcer3pt(1) = cupn0
-                        vcer3pt(1 + 1) = cvpn0
-                        vcer3pt(1 + 2) = cupn1
-                        vcer3pt(1 + 3) = cvpn1
-                        vcer3pt(1 + 4) = cupn2
-                        vcer3pt(1 + 5) = cvpn2
-                    endif
+                        vcer3pt(1+1) = cvpn0
+                        vcer3pt(1+2) = cupn1
+                        vcer3pt(1+3) = cvpn1
+                        vcer3pt(1+4) = cupn2
+                        vcer3pt(1+5) = cvpn2
+                    end if
 !
                 end do
                 if (k .eq. 0) then
                     call utmess('F', 'PREPOST4_59')
-                endif
+                end if
 !
                 if (cvon .lt. 0.0d0) then
-                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt,&
+                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt, &
                                 cupn, cvpn, ireth)
                 else
-                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt,&
+                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt, &
                                 cupn, cvpn, ireth)
-                endif
+                end if
 !
                 if (ireth .eq. 1) then
                     cupn0 = vcer3pt(1)
-                    cvpn0 = vcer3pt(1 + 1)
-                    cupn1 = vcer3pt(1 + 2)
-                    cvpn1 = vcer3pt(1 + 3)
-                    cupn2 = vcer3pt(1 + 4)
-                    cvpn2 = vcer3pt(1 + 5)
-                endif
+                    cvpn0 = vcer3pt(1+1)
+                    cupn1 = vcer3pt(1+2)
+                    cvpn1 = vcer3pt(1+3)
+                    cupn2 = vcer3pt(1+4)
+                    cvpn2 = vcer3pt(1+5)
+                end if
 !
                 goto 100
-            endif
+            end if
 !
         else if (iretv .eq. 1) then
             if (nboucl .eq. 1) then
@@ -525,104 +525,104 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 cvpn1 = cvppe2
                 cupn2 = cupn
                 cvpn2 = cvpn
-                write(6,*) 'raycir 521', cupn0, cvpn0, cupn1,&
-                          cvpn1, cupn2,cvpn2
+                write (6, *) 'raycir 521', cupn0, cvpn0, cupn1, &
+                    cvpn1, cupn2, cvpn2
 !
-                call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
+                call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
                             cvpn2, cuon, cvon, ray3pt)
 !
                 if (cuon .lt. 0.0d0) then
-                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt,&
+                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt, &
                                 cupn, cvpn, iretv)
                 else
-                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt,&
+                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt, &
                                 cupn, cvpn, iretv)
-                endif
+                end if
 !
                 goto 100
 !
             else if (nboucl .gt. 1) then
                 zr(jcoorp) = cupn0
-                zr(jcoorp + 1) = cvpn0
-                zr(jcoorp + 2) = cupn1
-                zr(jcoorp + 3) = cvpn1
-                zr(jcoorp + 4) = cupn2
-                zr(jcoorp + 5) = cvpn2
-                zr(jcoorp + 6) = cupn
-                zr(jcoorp + 7) = cvpn
-                zr(jcoorp + 8) = cupn0
-                zr(jcoorp + 9) = cvpn0
-                zr(jcoorp + 10) = cupn1
-                zr(jcoorp + 11) = cvpn1
+                zr(jcoorp+1) = cvpn0
+                zr(jcoorp+2) = cupn1
+                zr(jcoorp+3) = cvpn1
+                zr(jcoorp+4) = cupn2
+                zr(jcoorp+5) = cvpn2
+                zr(jcoorp+6) = cupn
+                zr(jcoorp+7) = cvpn
+                zr(jcoorp+8) = cupn0
+                zr(jcoorp+9) = cvpn0
+                zr(jcoorp+10) = cupn1
+                zr(jcoorp+11) = cvpn1
 !
                 ray3pt = r8maem()
                 k = 0
 !
                 do i = 1, 3
-                    cupn0 = zr(jcoorp + i*2)
-                    cvpn0 = zr(jcoorp + i*2 + 1)
-                    cupn1 = zr(jcoorp + i*2 + 2)
-                    cvpn1 = zr(jcoorp + i*2 + 3)
-                    cupn2 = zr(jcoorp + i*2 + 4)
-                    cvpn2 = zr(jcoorp + i*2 + 5)
-                    call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
+                    cupn0 = zr(jcoorp+i*2)
+                    cvpn0 = zr(jcoorp+i*2+1)
+                    cupn1 = zr(jcoorp+i*2+2)
+                    cvpn1 = zr(jcoorp+i*2+3)
+                    cupn2 = zr(jcoorp+i*2+4)
+                    cvpn2 = zr(jcoorp+i*2+5)
+                    call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
                                 cvpn2, cuoi, cvoi, rmin3p)
 !
-                    call dimax2(jcoorp, 4, cuoi, cvoi, rmin3p,&
+                    call dimax2(jcoorp, 4, cuoi, cvoi, rmin3p, &
                                 cupn, cvpn, iret3p)
 !
                     if (iret3p .eq. 0) then
-                        k = k + 1
-                    endif
+                        k = k+1
+                    end if
 !
                     if ((rmin3p .lt. ray3pt) .and. (iret3p .eq. 0)) then
                         ray3pt = rmin3p
                         cuon = cuoi
                         cvon = cvoi
                         vcer3pt(1) = cupn0
-                        vcer3pt(1 + 1) = cvpn0
-                        vcer3pt(1 + 2) = cupn1
-                        vcer3pt(1 + 3) = cvpn1
-                        vcer3pt(1 + 4) = cupn2
-                        vcer3pt(1 + 5) = cvpn2
-                    endif
+                        vcer3pt(1+1) = cvpn0
+                        vcer3pt(1+2) = cupn1
+                        vcer3pt(1+3) = cvpn1
+                        vcer3pt(1+4) = cupn2
+                        vcer3pt(1+5) = cvpn2
+                    end if
 !
                 end do
                 if (k .eq. 0) then
                     call utmess('F', 'PREPOST4_59')
-                endif
+                end if
 !
                 if (cuon .lt. 0.0d0) then
-                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt,&
+                    call dimax2(jdom1, nbptd1, cuon, cvon, ray3pt, &
                                 cupn, cvpn, iretv)
                 else
-                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt,&
+                    call dimax2(jdom2, nbptd2, cuon, cvon, ray3pt, &
                                 cupn, cvpn, iretv)
-                endif
+                end if
 !
                 if (iretv .eq. 1) then
                     cupn0 = vcer3pt(1)
-                    cvpn0 = vcer3pt(1 + 1)
-                    cupn1 = vcer3pt(1 + 2)
-                    cvpn1 = vcer3pt(1 + 3)
-                    cupn2 = vcer3pt(1 + 4)
-                    cvpn2 = vcer3pt(1 + 5)
-                endif
+                    cvpn0 = vcer3pt(1+1)
+                    cupn1 = vcer3pt(1+2)
+                    cvpn1 = vcer3pt(1+3)
+                    cupn2 = vcer3pt(1+4)
+                    cvpn2 = vcer3pt(1+5)
+                end if
 !
                 goto 100
-            endif
+            end if
 !
         else
             if (nboucl .eq. 1) then
-                zr(jdtau + (ivect-1)) = rsegn
-                zi(jvecn + (ivect-1)) = ivect
+                zr(jdtau+(ivect-1)) = rsegn
+                zi(jvecn+(ivect-1)) = ivect
             else if (nboucl .gt. 1) then
-                zr(jdtau + (ivect-1)) = ray3pt
-                zi(jvecn + (ivect-1)) = ivect
-            endif
-        endif
+                zr(jdtau+(ivect-1)) = ray3pt
+                zi(jvecn+(ivect-1)) = ivect
+            end if
+        end if
 !
- 30     continue
+30      continue
     end do
 !
     goto 999
@@ -648,8 +648,8 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
         cuo1 = 0.0d0
         cvo1 = 0.0d0
         do iordr = 1, nbordr
-            cuo1 = cuo1 + zr( jvecpg + (iordr-1)*2 + (ivect-1)*nbordr* 2 )
-            cvo1 = cvo1 + zr( jvecpg + (iordr-1)*2 + (ivect-1)*nbordr* 2 + 1 )
+            cuo1 = cuo1+zr(jvecpg+(iordr-1)*2+(ivect-1)*nbordr*2)
+            cvo1 = cvo1+zr(jvecpg+(iordr-1)*2+(ivect-1)*nbordr*2+1)
         end do
 !
         cuo1 = cuo1/nbordr
@@ -665,33 +665,33 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
 300     continue
 !
-        n = n + 1
+        n = n+1
         if (n .gt. nbordr) then
-            n = n - nbordr
-        endif
+            n = n-nbordr
+        end if
 !
-        cutau = zr(jvecpg + (n-1)*2 + (ivect-1)*nbordr*2)
-        cvtau = zr(jvecpg + (n-1)*2 + (ivect-1)*nbordr*2 + 1)
+        cutau = zr(jvecpg+(n-1)*2+(ivect-1)*nbordr*2)
+        cvtau = zr(jvecpg+(n-1)*2+(ivect-1)*nbordr*2+1)
 !
 !
-        dist = sqrt((cutau - cuon)**2 + (cvtau - cvon)**2)
-        p = dist - rayon
+        dist = sqrt((cutau-cuon)**2+(cvtau-cvon)**2)
+        p = dist-rayon
 !
         if (p .gt. epsilo) then
             nbr = 0
-            rayon = rayon + x*p
-            cuon = cutau + rayon*((cutau - cuon)/sqrt((cutau - cuon)** 2))
-            cvon = cvtau + rayon*((cvtau - cvon)/sqrt((cvtau - cvon)** 2))
+            rayon = rayon+x*p
+            cuon = cutau+rayon*((cutau-cuon)/sqrt((cutau-cuon)**2))
+            cvon = cvtau+rayon*((cvtau-cvon)/sqrt((cvtau-cvon)**2))
         else
-            nbr = nbr + 1
-        endif
+            nbr = nbr+1
+        end if
 !
         if (nbr .lt. nbordr) then
             goto 300
         else
-            zr(jdtau + (ivect-1)) = rayon
-            zi(jvecn + (ivect-1)) = ivect
-        endif
+            zr(jdtau+(ivect-1)) = rayon
+            zi(jvecn+(ivect-1)) = ivect
+        end if
 !
     end do
 !

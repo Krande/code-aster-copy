@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine epsvmc(fami   , nno    , ndim  , nbsig, npg   ,&
-                  j_poids, j_vf   , j_dfde, xyz  , disp  ,&
-                  time   , repere, nharm, option,  epsi   )
+subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
+                  j_poids, j_vf, j_dfde, xyz, disp, &
+                  time, repere, nharm, option, epsi)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -86,60 +86,60 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     zero = 0.d0
-    un   = 1.d0
+    un = 1.d0
     deux = 2.d0
-    ASSERT(nbsig*npg.le.162)
-    epsi     (1:nbsig*npg)   = zero
-    epsi_tota(1:nbsig*npg)   = zero
+    ASSERT(nbsig*npg .le. 162)
+    epsi(1:nbsig*npg) = zero
+    epsi_tota(1:nbsig*npg) = zero
     epsi_tota_g(1:nbsig*npg) = zero
-    epsi_varc(1:nbsig*npg)   = zero
+    epsi_varc(1:nbsig*npg) = zero
     if (option(4:4) .eq. 'L') then
-        call epslmc(nno   , ndim   , nbsig,&
-                    npg   , j_poids, j_vf ,&
-                    j_dfde, xyz    , disp ,&
+        call epslmc(nno, ndim, nbsig, &
+                    npg, j_poids, j_vf, &
+                    j_dfde, xyz, disp, &
                     epsi)
     else
 !
 ! - Total strains: first order (small strains)
 !
-        call eps1mc(nno, ndim, nbsig, npg, j_poids,&
-                    j_vf, j_dfde, xyz, disp, nharm,&
+        call eps1mc(nno, ndim, nbsig, npg, j_poids, &
+                    j_vf, j_dfde, xyz, disp, nharm, &
                     epsi_tota)
 !
 ! - Total strains: second order (large strains)
 !
         if (option(4:4) .eq. 'G') then
-            call eps2mc(nno, ndim, nbsig, npg, j_poids,&
+            call eps2mc(nno, ndim, nbsig, npg, j_poids, &
                         j_vf, j_dfde, xyz, disp, epsi_tota_g)
-        endif
+        end if
 !
 ! - Total strains
 !
         do i = 1, nbsig*npg
-            epsi(i) = epsi_tota(i) + epsi_tota_g(i)
+            epsi(i) = epsi_tota(i)+epsi_tota_g(i)
         end do
-    endif
+    end if
 !
 ! - Compute variable commands strains (thermics, drying, etc.)
 !
-    if (option(1:4).eq.'EPME'.or.option(1:4).eq.'EPMG'.or.lteatt('C_PLAN','OUI')) then
+    if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG' .or. lteatt('C_PLAN', 'OUI')) then
         call jevech('PMATERC', 'L', imate)
-        call epthmc(fami, nno, ndim, nbsig, npg,&
-                    zr(j_vf), xyz, repere, time, zi(imate),&
+        call epthmc(fami, nno, ndim, nbsig, npg, &
+                    zr(j_vf), xyz, repere, time, zi(imate), &
                     option, epsi_varc)
-    endif
+    end if
 !
 ! - Mechanical strains
 !
     if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG') then
         do i = 1, nbsig*npg
-            epsi(i) = epsi_tota(i) + epsi_tota_g(i) - epsi_varc(i)
+            epsi(i) = epsi_tota(i)+epsi_tota_g(i)-epsi_varc(i)
         end do
-    endif
+    end if
 !
 ! - 2D model
 !
-    if (lteatt('C_PLAN','OUI')) then
+    if (lteatt('C_PLAN', 'OUI')) then
 !
 ! ----- Plane stress
 !
@@ -163,33 +163,33 @@ implicit none
 !
 ! --------- Hooke matrix for iso-parametric elements
 !
-            call dmatmc(fami, zi(imate), time, '+', kpg,&
-                        1, repere, xyzgau, nbsig, d,&
+            call dmatmc(fami, zi(imate), time, '+', kpg, &
+                        1, repere, xyzgau, nbsig, d, &
                         l_modi_cp)
 !
             if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG') then
-                epsi(nbsig*(kpg-1)+3) = -un/d(3,3)*&
-                                         (d(3,1)*epsi(nbsig*(kpg-1)+1)+&
-                                          d(3,2)*epsi(nbsig*(kpg-1)+2)+&
-                                          d(3,4)*epsi(nbsig*(kpg-1)+4)*deux)
+                epsi(nbsig*(kpg-1)+3) = -un/d(3, 3)* &
+                                        (d(3, 1)*epsi(nbsig*(kpg-1)+1)+ &
+                                         d(3, 2)*epsi(nbsig*(kpg-1)+2)+ &
+                                         d(3, 4)*epsi(nbsig*(kpg-1)+4)*deux)
             else
-                epsi(nbsig*(kpg-1)+3) = -un/d(3,3)*&
-                                         (d(3,1)*(epsi(nbsig*(kpg-1)+1)-&
-                                                  epsi_varc(nbsig*(kpg-1)+1))+&
-                                          d(3,2)*(epsi(nbsig*(kpg-1)+2)-&
-                                                  epsi_varc(nbsig*(kpg-1)+2))+&
-                                          d(3,4)*(epsi(nbsig*(kpg-1)+4)-&
-                                                  epsi_varc(nbsig*(kpg-1)+4))*deux)+&
-                                         epsi_varc(nbsig*(kpg-1)+3)
-            endif
+                epsi(nbsig*(kpg-1)+3) = -un/d(3, 3)* &
+                                        (d(3, 1)*(epsi(nbsig*(kpg-1)+1)- &
+                                                  epsi_varc(nbsig*(kpg-1)+1))+ &
+                                         d(3, 2)*(epsi(nbsig*(kpg-1)+2)- &
+                                                  epsi_varc(nbsig*(kpg-1)+2))+ &
+                                         d(3, 4)*(epsi(nbsig*(kpg-1)+4)- &
+                                                  epsi_varc(nbsig*(kpg-1)+4))*deux)+ &
+                                        epsi_varc(nbsig*(kpg-1)+3)
+            end if
         end do
-    else if (lteatt('D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN', 'OUI')) then
 !
 ! ----- Plane strain: EPZZ = 0
 !
         do kpg = 1, npg
             epsi(nbsig*(kpg-1)+3) = zero
         end do
-    endif
+    end if
 !
 end subroutine

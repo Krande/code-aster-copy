@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
+subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp, &
                   base, cns2z)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
@@ -92,7 +92,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     if (cns2 .eq. cns1) then
         call copisd('CHAM_NO_S', 'V', cns1, '&&CNSRED.CNS1')
         cns1 = '&&CNSRED.CNS1'
-    endif
+    end if
 !
 !
     call jeveuo(cns1//'.CNSD', 'L', vi=cn1d)
@@ -108,23 +108,23 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
-    ASSERT(nbcmp.ge.0)
+    ASSERT(nbcmp .ge. 0)
     if (nbcmp .gt. 0) then
         ncmp2 = nbcmp
     else
         ncmp2 = ncmp1
-    endif
+    end if
 !
 !
 !     1- CREATION DE CNS2 :
 !     ---------------------------------------
     if (nbcmp .gt. 0) then
-        call cnscre(ma, nomgd, ncmp2, licmp, base,&
+        call cnscre(ma, nomgd, ncmp2, licmp, base, &
                     cns2)
     else
-        call cnscre(ma, nomgd, ncmp2, cn1c, base,&
+        call cnscre(ma, nomgd, ncmp2, cn1c, base, &
                     cns2)
-    endif
+    end if
     call jeveuo(cns2//'.CNSD', 'L', jcn2d)
     call jeveuo(cns2//'.CNSC', 'L', vk8=cn2c)
     call jeveuo(cns2//'.CNSV', 'E', jcn2v)
@@ -138,7 +138,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
         exino(kno) = .false.
     end do
 !
-    ASSERT(nbno.ge.0)
+    ASSERT(nbno .ge. 0)
     if (nbno .eq. 0) then
         do kno = 1, nbnom
             exino(kno) = .true.
@@ -148,41 +148,41 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
         do kno = 1, nbno
             exino(lino(kno)) = .true.
         end do
-    endif
+    end if
 !
 !     3- REMPLISSAGE DES OBJETS .CNSL ET .CNSV :
 !     ------------------------------------------
 !
     do icmp2 = 1, ncmp2
         nocmp = cn2c(icmp2)
-        icmp1 = indik8(cn1c,nocmp,1,ncmp1)
+        icmp1 = indik8(cn1c, nocmp, 1, ncmp1)
         if (icmp1 .eq. 0) goto 50
 !
 !
         do ino = 1, nbnom
             if (exino(ino)) then
-                if (zl(jcn1l-1+ (ino-1)*ncmp1+icmp1)) then
-                    zl(jcn2l-1+ (ino-1)*ncmp2+icmp2) = .true.
+                if (zl(jcn1l-1+(ino-1)*ncmp1+icmp1)) then
+                    zl(jcn2l-1+(ino-1)*ncmp2+icmp2) = .true.
 !
                     if (tsca .eq. 'R') then
-                        zr(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zr( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-                    else if (tsca.eq.'C') then
-                        zc(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zc( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-                    else if (tsca.eq.'I') then
-                        zi(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zi( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-                    else if (tsca.eq.'L') then
-                        zl(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zl( jcn1v-1+ (ino-1)*ncmp1+icmp1 )
-                    else if (tsca.eq.'K8') then
-                        zk8(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zk8( jcn1v- 1+ (ino-1 )*ncmp1+icmp1 )
+                        zr(jcn2v-1+(ino-1)*ncmp2+icmp2) = zr(jcn1v-1+(ino-1)*ncmp1+icmp1)
+                    else if (tsca .eq. 'C') then
+                        zc(jcn2v-1+(ino-1)*ncmp2+icmp2) = zc(jcn1v-1+(ino-1)*ncmp1+icmp1)
+                    else if (tsca .eq. 'I') then
+                        zi(jcn2v-1+(ino-1)*ncmp2+icmp2) = zi(jcn1v-1+(ino-1)*ncmp1+icmp1)
+                    else if (tsca .eq. 'L') then
+                        zl(jcn2v-1+(ino-1)*ncmp2+icmp2) = zl(jcn1v-1+(ino-1)*ncmp1+icmp1)
+                    else if (tsca .eq. 'K8') then
+                        zk8(jcn2v-1+(ino-1)*ncmp2+icmp2) = zk8(jcn1v-1+(ino-1)*ncmp1+icmp1)
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
 !
-                endif
-            endif
+                end if
+            end if
 !
         end do
- 50     continue
+50      continue
     end do
 !
 !

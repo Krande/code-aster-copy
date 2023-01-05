@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
+subroutine remngl(nomres, typsd, modcyc, profno, indirf, &
                   mailsk)
     implicit none
 !-----------------------------------------------------------------------
@@ -89,7 +89,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     integer :: ldmge, ldom2, ldomo, ldotm, ldtyd, llcham
     integer ::    llmoc
     integer :: lmass, ltetax, ltetgd, ltflax, ltfldr, ltflga, ltinds
-    integer :: ltorf, ltorto,  ltveco, ltvere, ltvezt, mdiapa
+    integer :: ltorf, ltorto, ltveco, ltvere, ltvezt, mdiapa
     integer :: nbcmp, nbdax, nbddg, nbddr, nbdia, nbmoc, nbmod
     integer :: nbnot, nborc, nbsec, nddcou, neq, neqsec, numa
     integer :: numd, numg
@@ -102,8 +102,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     integer, pointer :: cycl_nbsc(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
 !-----------------------------------------------------------------------
-    data depl   /'DEPL            '/
-    data typsup /'MODE_MECA       '/
+    data depl/'DEPL            '/
+    data typsup/'MODE_MECA       '/
 !
 !-----------------------------------------------------------------------
 !
@@ -114,10 +114,10 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----VERIFICATION DU TYPE DE STRUCTURE RESULTAT------------------------
 !
     if (typsd .ne. typsup(1)) then
-        valk (1) = typsd
-        valk (2) = typsup(1)
+        valk(1) = typsd
+        valk(2) = typsup(1)
         call utmess('F', 'ALGORITH14_4', nk=2, valk=valk)
-    endif
+    end if
 !
 !-----REMPLISSAGE DU CREFE POUR CREATION CHAMNO-------------------------
 !
@@ -127,7 +127,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----RECUPERATION DE LA BASE MODALE AMONT------------------------------
 !
     call jeveuo(modcyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
-    basmod = cycl_refe(3)(1:8)
+    basmod = cycl_refe(3) (1:8)
 !
 !-----RECUPERATION DU .DESC---------------------------------------------
 !
@@ -146,7 +146,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
     call jeveuo(modcyc//'.CYCL_DIAM', 'L', vi=cycl_diam)
     call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia)
-    nbdia = nbdia / 2
+    nbdia = nbdia/2
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
 !
@@ -158,7 +158,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------
 !
     call jelira(profno//'.DEEQ', 'LONMAX', neq)
-    neq = neq / 2
+    neq = neq/2
 !
 !-----RECUPERATION DES FREQUENCES---------------------------------------
 !
@@ -169,9 +169,9 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass, arret='C')
     call mtexis(mass, ier)
     if (ier .eq. 0) then
-        valk (1) = mass(1:8)
+        valk(1) = mass(1:8)
         call utmess('F', 'ALGORITH12_39', sk=valk(1))
-    endif
+    end if
     call mtdscr(mass)
     call jeveuo(mass(1:19)//'.&INT', 'E', lmass)
 !
@@ -190,49 +190,49 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----CALCUL DES MATRICES DE FLEXIBILITE RESIDUELLE---------------------
 !
-    kbid=' '
-    call bmnodi(basmod, kbid, '         ', numd, 0,&
+    kbid = ' '
+    call bmnodi(basmod, kbid, '         ', numd, 0, &
                 ibid(1), nbddr)
-    flexdr='&&REMNGL.FLEX.DROITE'
+    flexdr = '&&REMNGL.FLEX.DROITE'
     call wkvect(flexdr, 'V V R', nbddr*neqsec, ltfldr)
     ibid(1) = 0
-    call flexib(basmod, nbmod, zr(ltfldr), neqsec, nbddr,&
+    call flexib(basmod, nbmod, zr(ltfldr), neqsec, nbddr, &
                 ibid(1), numd)
 !
-    flexga='&&REMNGL.FLEX.GAUCHE'
+    flexga = '&&REMNGL.FLEX.GAUCHE'
     call wkvect(flexga, 'V V R', nbddr*neqsec, ltflga)
-    call flexib(basmod, nbmod, zr(ltflga), neqsec, nbddr,&
+    call flexib(basmod, nbmod, zr(ltflga), neqsec, nbddr, &
                 ibid(1), numg)
 !
     if (numa .gt. 0) then
-        flexax='&&REMNGL.FLEX.AXE'
-        kbid=' '
-        call bmnodi(basmod, kbid, '         ', numa, 0,&
+        flexax = '&&REMNGL.FLEX.AXE'
+        kbid = ' '
+        call bmnodi(basmod, kbid, '         ', numa, 0, &
                     ibid(1), nbdax)
         call wkvect(flexax, 'V V R', nbdax*neqsec, ltflax)
-        call flexib(basmod, nbmod, zr(ltflax), neqsec, nbddr,&
+        call flexib(basmod, nbmod, zr(ltflax), neqsec, nbddr, &
                     ibid(1), numa)
-    endif
+    end if
 !
 !-----CALCUL DES MATRICES DE CHANGEMENT DE BASE TETA--------------------
 !
-    tetgd='&&REMNGL.TETGD'
+    tetgd = '&&REMNGL.TETGD'
     call wkvect(tetgd, 'V V R', nbddr*nbddr, ltetgd)
-    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd),&
+    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd), &
                 nbddr)
 !
     if (numa .gt. 0) then
-        tetax='&&REMNGL.TETAX'
+        tetax = '&&REMNGL.TETAX'
         call wkvect(tetax, 'V V R', nbdax*nbdax, ltetax)
-        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax),&
+        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax), &
                     nbdax)
-    endif
+    end if
 !
 !-----CLASSEMENT DES MODES PROPRES--------------------------------------
 !
     nbmoc = 0
     do iddi = 1, nbdia
-        nbmoc = nbmoc + cycl_diam(1+nbdia+iddi-1)
+        nbmoc = nbmoc+cycl_diam(1+nbdia+iddi-1)
     end do
     call wkvect('&&REMNGL.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&REMNGL.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
@@ -243,13 +243,13 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
         icomp = 0
         idicou = 0
         do jj = 1, nbdia
-            icomp = icomp + cycl_diam(1+nbdia+jj-1)
+            icomp = icomp+cycl_diam(1+nbdia+jj-1)
             if (icomp .ge. iormo .and. idicou .eq. 0) idicou = jj
         end do
-        nborc = nborc + 1
+        nborc = nborc+1
         zi(ltorf+iormo-1) = nborc
         idiam = cycl_diam(idicou)
-        if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
+        if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc+1
     end do
     call jedetr('&&REMNGL.ORDRE.TMPO')
 !
@@ -261,7 +261,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
     AS_ALLOCATE(vr=teta_secteur, size=nbsec)
     do i = 1, nbsec
-        teta_secteur(i) = depi*(i-1) / nbsec
+        teta_secteur(i) = depi*(i-1)/nbsec
     end do
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
@@ -273,7 +273,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !     RESTITUTION
 !***********************************************************************
 !
-    nbddg = nbmod + nbddr + nbdax
+    nbddg = nbmod+nbddr+nbdax
     icomp = 0
     inum = 0
 !
@@ -285,21 +285,21 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
         idiam = cycl_diam(idi)
         beta = (depi/nbsec)*idiam
-        dephc = dcmplx(cos(beta),sin(beta))
+        dephc = dcmplx(cos(beta), sin(beta))
 !
 !  BOUCLE SUR LES MODES PROPRES DU DIAMETRE COURANT
 !
         do i = 1, cycl_diam(1+nbdia+idi-1)
-            icomp = icomp + 1
-            inum = inum +1
+            icomp = icomp+1
+            inum = inum+1
             iorc = zi(ltorf+icomp-1)
-            iad = llmoc + ((icomp-1)*nbddg)
+            iad = llmoc+((icomp-1)*nbddg)
 !
 !***********************************************************************
 !      RESTITUTION DU MODE PROPRE REEL (PARTIE RELLE)
 !***********************************************************************
 !
-            call rsexch(' ', nomres, depl, inum, chamva,&
+            call rsexch(' ', nomres, depl, inum, chamva, &
                         ier)
             call vtcrea(chamva, crefe, 'G', 'R', neq)
             call rsnoch(nomres, depl, inum)
@@ -307,30 +307,30 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  CALCUL MODE COMPLEXE SECTEUR DE BASE
 !
-            call remnbn(basmod, nbmod, nbddr, nbdax, flexdr,&
-                        flexga, flexax, tetgd, tetax, zc(iad),&
+            call remnbn(basmod, nbmod, nbddr, nbdax, flexdr, &
+                        flexga, flexax, tetgd, tetax, zc(iad), &
                         zc(ltveco), neqsec, beta)
 !
 !  CALCUL MASSE GENERALISEE
 !
-            call genecy(zc(ltveco), zc(ltveco), neqsec, lmass, para,&
+            call genecy(zc(ltveco), zc(ltveco), neqsec, lmass, para, &
                         nbsec, beta, beta, zc(ltvezt))
 !
 !  COMMUN POUR MODE_MECA ET BASE_MODALE
 !
-            call rsadpa(nomres, 'E', 1, 'FREQ', inum,&
+            call rsadpa(nomres, 'E', 1, 'FREQ', inum, &
                         0, sjv=ldfreq, styp=k8b)
-            call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum,&
+            call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum, &
                         0, sjv=ldkge, styp=k8b)
-            call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum,&
+            call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum, &
                         0, sjv=ldmge, styp=k8b)
-            call rsadpa(nomres, 'E', 1, 'OMEGA2', inum,&
+            call rsadpa(nomres, 'E', 1, 'OMEGA2', inum, &
                         0, sjv=ldom2, styp=k8b)
-            call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum,&
+            call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum, &
                         0, sjv=ldomo, styp=k8b)
-            call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
+            call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum, &
                         0, sjv=ldotm, styp=k8b)
-            fact = 1.d0 / (para(1)**0.5d0)
+            fact = 1.d0/(para(1)**0.5d0)
             genek = (cycl_freq(icomp)*depi)**2
             zr(ldfreq) = cycl_freq(icomp)
             zr(ldkge) = genek
@@ -341,7 +341,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  SPECIFIQUE A BASE_MODALE
 !
-            call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum,&
+            call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum, &
                         0, sjv=ldtyd, styp=k8b)
             zk16(ldtyd) = 'PROPRE          '
 !
@@ -351,8 +351,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                 if (k .gt. 1) then
                     dephco = dephc
                 else
-                    dephco = dcmplx(1.d0,0.d0)
-                endif
+                    dephco = dcmplx(1.d0, 0.d0)
+                end if
                 do j = 1, neqsec
                     zc(ltveco+j-1) = zc(ltveco+j-1)*dephco
                     zr(ltvere+j-1) = dble(zc(ltveco+j-1))
@@ -369,7 +369,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-            call rotchm(profno, zr(llcham), teta_secteur, nbsec, skeleton,&
+            call rotchm(profno, zr(llcham), teta_secteur, nbsec, skeleton, &
                         nbnot, nbcmp, 3)
 !
 !***********************************************************************
@@ -377,21 +377,21 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !***********************************************************************
 !
             if (idiam .ne. 0 .and. idiam .ne. mdiapa) then
-                iorc = iorc + 1
-                inum = inum + 1
+                iorc = iorc+1
+                inum = inum+1
 !
 !  CALCUL MODE COMPLEXE SECTEUR DE BASE
 !
-                call remnbn(basmod, nbmod, nbddr, nbdax, flexdr,&
-                            flexga, flexax, tetgd, tetax, zc(iad),&
+                call remnbn(basmod, nbmod, nbddr, nbdax, flexdr, &
+                            flexga, flexax, tetgd, tetax, zc(iad), &
                             zc(ltveco), neqsec, beta)
 !
 !  CALCUL MASSE GENERALISEE
 !
-                call genecy(zc(ltveco), zc(ltveco), neqsec, lmass, para,&
+                call genecy(zc(ltveco), zc(ltveco), neqsec, lmass, para, &
                             nbsec, beta, beta, zc(ltvezt))
 !
-                call rsexch(' ', nomres, depl, inum, chamva,&
+                call rsexch(' ', nomres, depl, inum, chamva, &
                             ier)
                 call vtcrea(chamva, crefe, 'G', 'R', neq)
                 call rsnoch(nomres, depl, inum)
@@ -399,19 +399,19 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  COMMUN POUR MODE_MECA ET BASE_MODALE
 !
-                call rsadpa(nomres, 'E', 1, 'FREQ', inum,&
+                call rsadpa(nomres, 'E', 1, 'FREQ', inum, &
                             0, sjv=ldfreq, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum,&
+                call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum, &
                             0, sjv=ldkge, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum,&
+                call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum, &
                             0, sjv=ldmge, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'OMEGA2', inum,&
+                call rsadpa(nomres, 'E', 1, 'OMEGA2', inum, &
                             0, sjv=ldom2, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum,&
+                call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum, &
                             0, sjv=ldomo, styp=k8b)
-                call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
+                call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum, &
                             0, sjv=ldotm, styp=k8b)
-                fact = 1.d0 / (para(2)**0.5d0)
+                fact = 1.d0/(para(2)**0.5d0)
                 genek = (cycl_freq(icomp)*depi)**2
                 zr(ldfreq) = cycl_freq(icomp)
                 zr(ldkge) = genek
@@ -422,7 +422,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  SPECIFIQUE A BASE_MODALE
 !
-                call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum,&
+                call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum, &
                             0, sjv=ldtyd, styp=k8b)
                 zk16(ldtyd) = 'PROPRE          '
 !
@@ -432,15 +432,15 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                     if (k .gt. 1) then
                         dephco = dephc
                     else
-                        dephco = dcmplx(1.d0,0.d0)
-                    endif
+                        dephco = dcmplx(1.d0, 0.d0)
+                    end if
                     do j = 1, neqsec
                         zc(ltveco+j-1) = zc(ltveco+j-1)*dephco
                         zr(ltvere+j-1) = dimag(zc(ltveco+j-1))
                     end do
                     call jeveuo(jexnum(indirf, k), 'L', ltinds)
                     call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
-                    nddcou = nddcou / 2
+                    nddcou = nddcou/2
                     do j = 1, nddcou
                         ieqi = zi(ltinds+(j-1)*2)
                         ieqf = zi(ltinds+(j-1)*2+1)
@@ -450,10 +450,10 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-                call rotchm(profno, zr(llcham), teta_secteur, nbsec, skeleton,&
+                call rotchm(profno, zr(llcham), teta_secteur, nbsec, skeleton, &
                             nbnot, nbcmp, 3)
 !
-            endif
+            end if
 !
         end do
     end do
@@ -469,7 +469,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     if (numa .gt. 0) then
         call jedetr('&&REMNGL.FLEX.AXE')
         call jedetr('&&REMNGL.TETAX')
-    endif
+    end if
 !
     call jedema()
 end subroutine

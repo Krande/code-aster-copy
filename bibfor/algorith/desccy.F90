@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,39 +52,39 @@ subroutine desccy(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid(1),  ldnoea, ldnoed, ldnoeg, ldnumg
-    integer :: lldesc,  nba, nbd, nbda, nbdd, nbdg
+    integer :: ibid(1), ldnoea, ldnoed, ldnoeg, ldnumg
+    integer :: lldesc, nba, nbd, nbda, nbdd, nbdg
     integer :: nbg, nbmcal, nbmod, nbmod1, nbmod2, nbnot, nboc
     integer :: nbtemp, numa, numd, numg, n1
     integer, pointer :: cycl_nuin(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    kbid=' '
+    kbid = ' '
 !-----------------------------------------------------------------------
 !
 !------------------RECUPERATION CONCEPT AMONT---------------------------
 !
     call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
-    intf=cycl_refe(2)
-    basmod=cycl_refe(3)
+    intf = cycl_refe(2)
+    basmod = cycl_refe(3)
 !
 !-----RECUPERATION NUMEROS INTERFACES DROITE GAUCHE ET AXE--------------
 !
     call jeveuo(nomres//'.CYCL_NUIN', 'L', vi=cycl_nuin)
-    numd=cycl_nuin(1)
-    numg=cycl_nuin(2)
-    numa=cycl_nuin(3)
+    numd = cycl_nuin(1)
+    numg = cycl_nuin(2)
+    numa = cycl_nuin(3)
 !
 !----------RECUPERATION DU DESCRIPTEUR DES DEFORMEES STATIQUES----------
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldesc)
     call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
-    nbnot=nbnot/3
+    nbnot = nbnot/3
 !
 !--------RECUPERATION DES DEFINITIONS DES INTERFACES DROITE ET GAUCHE---
 !
-    noeint=intf//'.IDC_LINO'
+    noeint = intf//'.IDC_LINO'
 !
     call jeveuo(jexnum(noeint, numd), 'L', ldnoed)
     call jelira(jexnum(noeint, numd), 'LONMAX', nbd)
@@ -95,40 +95,40 @@ subroutine desccy(nomres)
     if (numa .gt. 0) then
         call jeveuo(jexnum(noeint, numa), 'L', ldnoea)
         call jelira(jexnum(noeint, numa), 'LONMAX', nba)
-    endif
+    end if
 !
     if (nbg .ne. nbd) then
-        vali (1) = nbd
-        vali (2) = nbg
+        vali(1) = nbd
+        vali(2) = nbg
         call utmess('F', 'ALGORITH12_79', ni=2, vali=vali)
-    endif
+    end if
 !
 !------COMPTAGE DEFORMEES STATIQUES INTERFACE DROITE GAUCHE-------------
 !
-    call bmnodi(basmod, kbid, '        ', numd, 0,&
+    call bmnodi(basmod, kbid, '        ', numd, 0, &
                 ibid, nbdd)
-    kbid=' '
-    call bmnodi(basmod, kbid, '        ', numg, 0,&
+    kbid = ' '
+    call bmnodi(basmod, kbid, '        ', numg, 0, &
                 ibid, nbdg)
 !
 !--------------TEST SUR NOMBRE DE DDL AUX INTERFACES--------------------
 !
     if (nbdd .ne. nbdg) then
-        vali (1) = nbdd
-        vali (2) = nbdg
+        vali(1) = nbdd
+        vali(2) = nbdg
         call utmess('F', 'ALGORITH12_80', ni=2, vali=vali)
-    endif
+    end if
 !
 !-----COMPTAGE NOMBRE DEFORMEES STATIQUE SUR EVENTUELLE INTERFACE AXE---
 !
-    nbda=0
+    nbda = 0
     if (numa .gt. 0) then
-        kbid=' '
-        call bmnodi(basmod, kbid, '        ', numa, 0,&
+        kbid = ' '
+        call bmnodi(basmod, kbid, '        ', numa, 0, &
                     ibid, nbda)
     else
-        nbda=0
-    endif
+        nbda = 0
+    end if
 !
 !--------DETERMINATION DU NOMBRE DE MODES PROPRES DE LA BASE------------
 !
@@ -143,30 +143,30 @@ subroutine desccy(nomres)
 !
     if (n1 .eq. 0) then
         nbmod1 = nbmod2
-    endif
+    end if
 
-    nbmod=min(nbmod1,nbmod2)
+    nbmod = min(nbmod1, nbmod2)
     if (nbmod .eq. 0) then
         call utmess('F', 'ALGORITH12_81')
-    endif
+    end if
 !
 !---------DETERMINATION DU NOMBRE DE MODES PROPRES A CALCULER-----------
 !
     call getvis('CALCUL', 'NMAX_FREQ', iocc=1, nbval=0, nbret=nboc)
 !
     if (nboc .eq. 0) then
-        nbmcal=nbmod
+        nbmcal = nbmod
     else
         call getvis('CALCUL', 'NMAX_FREQ', iocc=1, scal=nbmcal, nbret=ibid(1))
-    endif
+    end if
 !
     if (nbmcal .gt. nbmod) then
-        nbtemp=nbmcal-nbmod
-        vali (1) = nbmcal
-        vali (2) = nbmod
-        vali (3) = nbtemp
+        nbtemp = nbmcal-nbmod
+        vali(1) = nbmcal
+        vali(2) = nbmod
+        vali(3) = nbtemp
         call utmess('A', 'ALGORITH12_82', ni=3, vali=vali)
-    endif
+    end if
 !
 !----------------ALLOCATION DE L'OBJET .DESC----------------------------
 !
@@ -174,10 +174,10 @@ subroutine desccy(nomres)
 !
 !------------------CREATION DE LA NUMEROTATION--------------------------
 !
-    zi(ldnumg)=nbmod
-    zi(ldnumg+1)=nbdd
-    zi(ldnumg+2)=nbda
-    zi(ldnumg+3)=nbmcal
+    zi(ldnumg) = nbmod
+    zi(ldnumg+1) = nbdd
+    zi(ldnumg+2) = nbda
+    zi(ldnumg+3) = nbmcal
 !
     call jedema()
 end subroutine

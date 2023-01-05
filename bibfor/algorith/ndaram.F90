@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,10 +72,10 @@ subroutine ndaram(result, sddyna, numarc)
 !
 ! --- ARCHIVAGE NOM TRAN_GENE_NOLI
 !
-    call rsadpa(result, 'E', 1, 'TRAN_GENE_NOLI', numarc,&
+    call rsadpa(result, 'E', 1, 'TRAN_GENE_NOLI', numarc, &
                 0, sjv=jpara, styp=k8bid)
     zk24(jpara) = trgene
-    nbmodp = ndynin(sddyna,'NBRE_MODE_PROJ')
+    nbmodp = ndynin(sddyna, 'NBRE_MODE_PROJ')
 !
 ! --- NOM VECTEURS DEPL/VITE/ACCE GENERALISES
 !
@@ -94,7 +94,7 @@ subroutine ndaram(result, sddyna, numarc)
     call ndynkk(sddyna, 'PRMO_DEPGEP', depgep)
     call ndynkk(sddyna, 'PRMO_VITGEP', vitgep)
     call ndynkk(sddyna, 'PRMO_ACCGEP', accgep)
-    nbmodp = ndynin(sddyna,'NBRE_MODE_PROJ')
+    nbmodp = ndynin(sddyna, 'NBRE_MODE_PROJ')
     call jeveuo(accgep, 'L', jaccgp)
     call jeveuo(vitgep, 'L', jvitgp)
     call jeveuo(depgep, 'L', jdepgp)

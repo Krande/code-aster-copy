@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpvpsi(nbmat, mater, se, seqe, i1e,&
+subroutine dpvpsi(nbmat, mater, se, seqe, i1e, &
                   fonecr, dp, sig)
 ! -----REACTUALISATION DES CONTRAINTES SI VISCOPLASTICITE ------------
 ! --- VISC_DRUC_PRAG --------------------------------------------------
@@ -31,15 +31,15 @@ subroutine dpvpsi(nbmat, mater, se, seqe, i1e,&
     real(kind=8) :: k, mu, troisk, trois, un
     real(kind=8) :: i1, dev(6)
     real(kind=8) :: beta
-    parameter ( trois  =  3.0d0 )
-    parameter ( un     =  1.0d0 )
+    parameter(trois=3.0d0)
+    parameter(un=1.0d0)
 ! ====================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ====================================================================
 ! --- AFFECTATION DES VARIABLES --------------------------------------
 ! ====================================================================
-    mu = mater(4,1)
-    k = mater(5,1)
+    mu = mater(4, 1)
+    k = mater(5, 1)
     troisk = trois*k
     beta = fonecr(3)
 ! ====================================================================
@@ -51,7 +51,7 @@ subroutine dpvpsi(nbmat, mater, se, seqe, i1e,&
 ! ====================================================================
 ! --- MISE A JOUR DU PREMIER INVARIANT -------------------------------
 ! ====================================================================
-    i1 = i1e - trois*troisk*beta*dp
+    i1 = i1e-trois*troisk*beta*dp
 ! ====================================================================
 ! --- MISE A JOUR DU VECTEUR DE CONTRAINTES --------------------------
 ! ====================================================================
@@ -59,7 +59,7 @@ subroutine dpvpsi(nbmat, mater, se, seqe, i1e,&
         sig(ii) = dev(ii)
     end do
     do ii = 1, ndi
-        sig(ii) = sig(ii) + i1/trois
+        sig(ii) = sig(ii)+i1/trois
     end do
 ! ====================================================================
 end subroutine

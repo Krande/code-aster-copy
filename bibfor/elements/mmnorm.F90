@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mmnorm(ndim, tau1, tau2, norm, noor_)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -64,15 +64,15 @@ implicit none
         norm(1) = -tau1(2)
         norm(2) = tau1(1)
         norm(3) = 0.d0
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         call provec(tau2, tau1, norm)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call normev(norm, noor)
     if (present(noor_)) then
         noor_ = noor
-    endif
+    end if
 !
 end subroutine

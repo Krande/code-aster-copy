@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine lspini(solveu)
     precon = slvk(2)
 !
 ! --- REMISE A ZERO
-    if (precon .eq. 'LDLT_SP'.or.precon .eq. 'LDLT_DP') then
+    if (precon .eq. 'LDLT_SP' .or. precon .eq. 'LDLT_DP') then
         call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
-        slvi(5)=0
-    endif
+        slvi(5) = 0
+    end if
 !
     call jedema()
 end subroutine

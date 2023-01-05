@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,71 +106,71 @@ subroutine catang(noma, nbma, listma, nbno, listno)
         call jenuno(jexnum('&CATA.TM.NOMTM', typmail(1+listma(i)-1)), ntyp)
         if (ntyp(1:3) .ne. 'SEG') then
             ASSERT(.false.)
-        endif
+        end if
 !
-        jco=iacnx1-1+zi(ilcnx1+listma(i)-1)
-        ino1=zi(jco)
-        ino2=zi(jco+1)
+        jco = iacnx1-1+zi(ilcnx1+listma(i)-1)
+        ino1 = zi(jco)
+        ino2 = zi(jco+1)
         do j = 1, 3
-            vale1(j)=zr(jcoor+3*(ino1-1)+j-1)
-            vale2(j)=zr(jcoor+3*(ino2-1)+j-1)
+            vale1(j) = zr(jcoor+3*(ino1-1)+j-1)
+            vale2(j) = zr(jcoor+3*(ino2-1)+j-1)
         end do
 !
         if (ntyp(1:4) .eq. 'SEG2') then
 !
             do j = 1, 3
-                vale(j)=vale2(j)-vale1(j)
+                vale(j) = vale2(j)-vale1(j)
             end do
             call normev(vale, norm)
 !
 !            -- PREMIER NOEUD DE LA MAILLE J
-            noeu_mail(1+3*(i-1))=ino1
-            tang_mail(1+9*(i-1)) =vale(1)
-            tang_mail(1+9*(i-1)+1)=vale(2)
-            tang_mail(1+9*(i-1)+2)=vale(3)
+            noeu_mail(1+3*(i-1)) = ino1
+            tang_mail(1+9*(i-1)) = vale(1)
+            tang_mail(1+9*(i-1)+1) = vale(2)
+            tang_mail(1+9*(i-1)+2) = vale(3)
 !            -- SECOND NOEUD DE LA MAILLE J
-            noeu_mail(1+3*(i-1)+1)=ino2
-            tang_mail(1+9*(i-1)+3)=vale(1)
-            tang_mail(1+9*(i-1)+4)=vale(2)
-            tang_mail(1+9*(i-1)+5)=vale(3)
+            noeu_mail(1+3*(i-1)+1) = ino2
+            tang_mail(1+9*(i-1)+3) = vale(1)
+            tang_mail(1+9*(i-1)+4) = vale(2)
+            tang_mail(1+9*(i-1)+5) = vale(3)
 !            -- NOEUD MILIEU DE LA MAILLE J
-            noeu_mail(1+3*(i-1)+2)=0
-            tang_mail(1+9*(i-1)+6)=0.d0
-            tang_mail(1+9*(i-1)+7)=0.d0
-            tang_mail(1+9*(i-1)+8)=0.d0
+            noeu_mail(1+3*(i-1)+2) = 0
+            tang_mail(1+9*(i-1)+6) = 0.d0
+            tang_mail(1+9*(i-1)+7) = 0.d0
+            tang_mail(1+9*(i-1)+8) = 0.d0
 !
-        else if (ntyp(1:4).eq.'SEG3') then
+        else if (ntyp(1:4) .eq. 'SEG3') then
 !
-            ino3=zi(jco+2)
+            ino3 = zi(jco+2)
             do j = 1, 3
-                vale3(j)=zr(jcoor+3*(ino3-1)+j-1)
-                valu(j) =vale3(j)-vale1(j)
-                valv(j) =vale2(j)-vale3(j)
+                vale3(j) = zr(jcoor+3*(ino3-1)+j-1)
+                valu(j) = vale3(j)-vale1(j)
+                valv(j) = vale2(j)-vale3(j)
             end do
             call normev(valu, norm)
             call normev(valv, norm)
             do j = 1, 3
-                vale(j)=valu(j)+valv(j)
+                vale(j) = valu(j)+valv(j)
             end do
             call normev(vale, norm)
 !
 !            -- PREMIER NOEUD DE LA MAILLE J
-            noeu_mail(1+3*(i-1))=ino1
-            tang_mail(1+9*(i-1)) =valu(1)
-            tang_mail(1+9*(i-1)+1)=valu(2)
-            tang_mail(1+9*(i-1)+2)=valu(3)
+            noeu_mail(1+3*(i-1)) = ino1
+            tang_mail(1+9*(i-1)) = valu(1)
+            tang_mail(1+9*(i-1)+1) = valu(2)
+            tang_mail(1+9*(i-1)+2) = valu(3)
 !            -- SECOND NOEUD DE LA MAILLE J
-            noeu_mail(1+3*(i-1)+1)=ino2
-            tang_mail(1+9*(i-1)+3)=valv(1)
-            tang_mail(1+9*(i-1)+4)=valv(2)
-            tang_mail(1+9*(i-1)+5)=valv(3)
+            noeu_mail(1+3*(i-1)+1) = ino2
+            tang_mail(1+9*(i-1)+3) = valv(1)
+            tang_mail(1+9*(i-1)+4) = valv(2)
+            tang_mail(1+9*(i-1)+5) = valv(3)
 !            -- NOEUD MILIEU DE LA MAILLE J
-            noeu_mail(1+3*(i-1)+2)=ino3
-            tang_mail(1+9*(i-1)+6)=vale(1)
-            tang_mail(1+9*(i-1)+7)=vale(2)
-            tang_mail(1+9*(i-1)+8)=vale(3)
+            noeu_mail(1+3*(i-1)+2) = ino3
+            tang_mail(1+9*(i-1)+6) = vale(1)
+            tang_mail(1+9*(i-1)+7) = vale(2)
+            tang_mail(1+9*(i-1)+8) = vale(3)
 !
-        endif
+        end if
     end do
 !
 ! --- 2.ON CONSTRUIT LES VECTEURS TANGENTS AUX NOEUDS
@@ -184,17 +184,17 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !     PARTIE DES MAILLES FOURNIES PAR L'UTILISATEUR
 !
     do j = 1, 3*nbnoma
-        tang_noeu(j)=0.d0
+        tang_noeu(j) = 0.d0
     end do
     do j = 1, nbma
         do i = 1, 3
-            ino=noeu_mail(1+3*(j-1)+i-1)
+            ino = noeu_mail(1+3*(j-1)+i-1)
             if (ino .gt. 0) then
                 do k = 1, 3
-                    tang_noeu(1+3*(ino-1)+k-1)=tang_noeu(1+3*(ino-1)+k-1)+&
-                    tang_mail(1+9*(j-1)+3*(i-1)+k-1)
+                    tang_noeu(1+3*(ino-1)+k-1) = tang_noeu(1+3*(ino-1)+k-1)+ &
+                                                 tang_mail(1+9*(j-1)+3*(i-1)+k-1)
                 end do
-            endif
+            end if
         end do
     end do
 !
@@ -202,21 +202,21 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !     DEMANDES PAR L'UTILISATEUR (PRISE EN COMPTE DE SANS_XXXX)
 !
     do j = 1, 3*nbno
-        zr(jtang-1+j)=0.d0
+        zr(jtang-1+j) = 0.d0
     end do
     do j = 1, nbma
         do i = 1, 3
-            ino=noeu_mail(1+3*(j-1)+i-1)
-            i1= indiis(listno,ino,1,nbno)
+            ino = noeu_mail(1+3*(j-1)+i-1)
+            i1 = indiis(listno, ino, 1, nbno)
             if (i1 .gt. 0) then
-                vale(1)=tang_noeu(1+3*(ino-1))
-                vale(2)=tang_noeu(1+3*(ino-1)+1)
-                vale(3)=tang_noeu(1+3*(ino-1)+2)
+                vale(1) = tang_noeu(1+3*(ino-1))
+                vale(2) = tang_noeu(1+3*(ino-1)+1)
+                vale(3) = tang_noeu(1+3*(ino-1)+2)
                 call normev(vale, norm)
                 do k = 1, 3
                     zr(jtang-1+3*(i1-1)+k) = vale(k)
                 end do
-            endif
+            end if
         end do
     end do
 !

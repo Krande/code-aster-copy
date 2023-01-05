@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine unista(h, ldh, v, ldv, ddlsta,&
-                  n, vectp, csta, beta, etat,&
+subroutine unista(h, ldh, v, ldv, ddlsta, &
+                  n, vectp, csta, beta, etat, &
                   ldynfa, ddlexc, redem)
 !-----------------------------------------------------------------------
 !
@@ -88,7 +88,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
     real(kind=8) :: gama, det
     real(kind=8) :: vtest, err
     real(kind=8) :: zero, one
-    parameter (one = 1.0d+0, zero = 0.0d+0)
+    parameter(one=1.0d+0, zero=0.0d+0)
     character(len=4) :: cara
 !
     call infniv(ifm, niv)
@@ -112,10 +112,10 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
 !     1ER APPEL A LA METHODE DES PUISSANCES
 !
-        call mppsta(h, ldh, v, ldv, ddlsta,&
+        call mppsta(h, ldh, v, ldv, ddlsta, &
                     n, zr(vectt), ddlexc, indico, proj)
 !
-    endif
+    end if
 !
     if (etat .eq. 1) then
 !
@@ -125,7 +125,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
         do i = 1, ldh
             do j = 1, ldh
-                zr(q+(j-1)*ldh+i-1) = -h(i,j)
+                zr(q+(j-1)*ldh+i-1) = -h(i, j)
             end do
         end do
         do i = 1, ldh
@@ -136,27 +136,27 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !
         proj = 1
 !
-        call mppsta(zr(q), ldh, v, ldv, ddlsta,&
+        call mppsta(zr(q), ldh, v, ldv, ddlsta, &
                     n, zr(vectt), ddlexc, indico, proj)
 !
-    endif
+    end if
 !
-    err = dnrm2(ldv,zr(vectt),1)
+    err = dnrm2(ldv, zr(vectt), 1)
     call dscal(ldv, one/err, zr(vectt), 1)
-    call mrmult('ZERO', ldynfa, zr(vectt), zr(xsol), 1,&
+    call mrmult('ZERO', ldynfa, zr(vectt), zr(xsol), 1, &
                 .true._1)
 !
     vtest = 0.d0
     do i = 1, ldv
-        vtest = vtest +zr(vectt+i-1)*zr(xsol+i-1)
+        vtest = vtest+zr(vectt+i-1)*zr(xsol+i-1)
         if (ddlsta(i) .eq. 0 .and. proj .eq. 1) then
             if (zr(vectt+i-1) .lt. zero) then
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     end do
 !
-    write (ifm,*) 'VAL1_STAB : ',vtest
+    write (ifm, *) 'VAL1_STAB : ', vtest
 !
     if (vtest .lt. 0.d0 .or. etat .eq. 0) then
         do i = 1, ldv
@@ -164,7 +164,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
         end do
         csta = vtest
         goto 300
-    endif
+    end if
 !
 !     CALCUL DU CRITERE
 !
@@ -174,79 +174,79 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
                 zr(b+(i-1)*ldh+j-1) = 1.d0
             else
                 zr(b+(i-1)*ldh+j-1) = 0.d0
-            endif
+            end if
         end do
     end do
 !
-    cara='NFSP'
+    cara = 'NFSP'
 !
-    call mgauss(cara, h, zr(b), ldh, ldh,&
+    call mgauss(cara, h, zr(b), ldh, ldh, &
                 ldh, det, iret)
 !
     proj = 0
 !
-    call mppsta(zr(b), ldh, v, ldv, ddlsta,&
+    call mppsta(zr(b), ldh, v, ldv, ddlsta, &
                 n, zr(vect2), ddlexc, indico, proj)
 !
-    err = dnrm2(ldv,zr(vect2),1)
+    err = dnrm2(ldv, zr(vect2), 1)
     call dscal(ldv, one/err, zr(vect2), 1)
-    call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1,&
+    call mrmult('ZERO', ldynfa, zr(vect2), zr(xsol), 1, &
                 .true._1)
     vtest = 0.d0
     do i = 1, ldv
-        vtest = vtest +zr(vect2+i-1)*zr(xsol+i-1)
+        vtest = vtest+zr(vect2+i-1)*zr(xsol+i-1)
     end do
 !
 !      WRITE (IFM,*) 'VAL_PROPRE_MAX : ',VTEST
 !
     do i = 1, ldh
         do j = 1, ldh
-            zr(q+(i-1)*ldh+j-1) = -zr(b+(i-1)*ldh+j-1)- zr(b+(j-1)* ldh+i-1)
+            zr(q+(i-1)*ldh+j-1) = -zr(b+(i-1)*ldh+j-1)-zr(b+(j-1)*ldh+i-1)
         end do
     end do
     do i = 1, ldh
 !        Q(I,I) = 2*VTEST*(1.D0/4.D0)+Q(I,I)
-        zr(q+(i-1)*ldh+i-1) = 2*vtest*(1.5d0/2.d0)+ zr(q+(i-1)*ldh+i- 1)
+        zr(q+(i-1)*ldh+i-1) = 2*vtest*(1.5d0/2.d0)+zr(q+(i-1)*ldh+i-1)
     end do
 !
     if (redem .eq. 0) then
         do i = 1, ldv
             vectp(i) = zr(vectt+i-1)
         end do
-    endif
+    end if
 !
     indico = 1
     proj = 1
 !
-    call mppsta(zr(q), ldh, v, ldv, ddlsta,&
+    call mppsta(zr(q), ldh, v, ldv, ddlsta, &
                 n, vectp, ddlexc, indico, proj)
 !
-    err = dnrm2(ldv,vectp,1)
+    err = dnrm2(ldv, vectp, 1)
     call dscal(ldv, one/err, vectp, 1)
-    call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1,&
+    call mrmult('ZERO', ldynfa, vectp, zr(xsol), 1, &
                 .true._1)
     vtest = 0.d0
     do i = 1, ldv
-        vtest = vtest +vectp(i)*zr(xsol+i-1)
+        vtest = vtest+vectp(i)*zr(xsol+i-1)
         if (ddlsta(i) .eq. 0) then
             if (vectp(i) .lt. zero) then
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     end do
 !
-    write (ifm,*) 'VAL2_STAB : ',vtest
-    write (ifm,9070)
-    write (ifm,9080)
+    write (ifm, *) 'VAL2_STAB : ', vtest
+    write (ifm, 9070)
+    write (ifm, 9080)
 !
     csta = vtest
 !
 300 continue
 !
-    redem = redem +1
+    redem = redem+1
 !
-    9070 format (72(' '))
-    9080 format (72('-'))
+9070 format(72(' '))
+9080 format(72('-'))
 !
 ! ----------------------------------------------
 !

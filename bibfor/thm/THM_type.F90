@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 module THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/THM_type.h"
@@ -54,7 +54,7 @@ implicit none
 ! - Behaviour
     type THM_Behaviour
 ! ----- Name of deformation algorithm
-        character(len=16) :: defo      = ' '
+        character(len=16) :: defo = ' '
 ! ----- Name of behaviour law for coupling
         character(len=16) :: rela_thmc = ' '
 ! ----- Name of behaviour law for mechanic
@@ -72,7 +72,7 @@ implicit none
 ! ----- Index of behaviour law for hydraulic
         integer :: nume_hydr = 0
 ! ----- Total number of internal variables
-        integer :: nb_vari   = 0
+        integer :: nb_vari = 0
 ! ----- Number of internal variables for coupling
         integer :: nb_vari_thmc = 0
 ! ----- Number of internal variables for mechanic
@@ -99,11 +99,11 @@ implicit none
 ! ----- Flag for mechanic
         aster_logical :: l_meca = ASTER_FALSE
 ! ----- Total number of pressures (0, 1 or 2)
-        integer :: nb_pres     = 0
+        integer :: nb_pres = 0
 ! ----- Number of phases by pressure
         integer :: nb_phase(2) = 0
 ! ----- Type of saturation
-        integer :: satur_type  = SATURATED
+        integer :: satur_type = SATURATED
 ! ----- Flag for Bishop stresses
         aster_logical :: l_stress_bishop = ASTER_TRUE
     end type THM_Behaviour
@@ -121,20 +121,20 @@ implicit none
     type THM_Biot
         integer      :: type = BIOT_TYPE_ISOT
         real(kind=8) :: coef = 0.d0
-        real(kind=8) :: l    = 0.d0
-        real(kind=8) :: n    = 0.d0
-        real(kind=8) :: t    = 0.d0
+        real(kind=8) :: l = 0.d0
+        real(kind=8) :: n = 0.d0
+        real(kind=8) :: t = 0.d0
     end type THM_Biot
 
 ! - Elasticity parameters
     type THM_Elas
-        integer :: id  = 0
+        integer :: id = 0
         character(len=16) :: keyword = ' '
         real(kind=8) :: e = 0.d0, nu = 0.d0, g = 0.d0
         real(kind=8) :: e_l = 0.d0, e_t = 0.d0, e_n = 0.d0
         real(kind=8) :: nu_lt = 0.d0, nu_ln = 0.d0, nu_tn = 0.d0
         real(kind=8) :: g_lt = 0.d0, g_ln = 0.d0, g_tn = 0.d0
-        real(kind=8) :: d(6,6) = 0.d0
+        real(kind=8) :: d(6, 6) = 0.d0
     end type THM_Elas
 
 ! - Thermic parameters
@@ -152,47 +152,46 @@ implicit none
 
 ! - Hydraulic parameters
     type THM_Hydr
-        real(kind=8) :: n        = 0.d0
-        real(kind=8) :: pr       = 0.d0
-        real(kind=8) :: sr       = 0.d0
-        real(kind=8) :: smax     = 0.d0
-        real(kind=8) :: satuma   = 0.d0
-        real(kind=8) :: emmag    = 0.d0
-        real(kind=8) :: pentree  = 0.d0
+        real(kind=8) :: n = 0.d0
+        real(kind=8) :: pr = 0.d0
+        real(kind=8) :: sr = 0.d0
+        real(kind=8) :: smax = 0.d0
+        real(kind=8) :: satuma = 0.d0
+        real(kind=8) :: emmag = 0.d0
+        real(kind=8) :: pentree = 0.d0
         aster_logical :: l_emmag = ASTER_FALSE
     end type THM_Hydr
 
 ! - Gaz parameters
     type THM_Gaz
-        real(kind=8) :: mass_mol    = 0.d0
-        real(kind=8) :: visc        = 0.d0
+        real(kind=8) :: mass_mol = 0.d0
+        real(kind=8) :: visc = 0.d0
         real(kind=8) :: dvisc_dtemp = 0.d0
-        real(kind=8) :: cp          = 0.d0
+        real(kind=8) :: cp = 0.d0
     end type THM_Gaz
 
 ! - Liquid parameters
     type THM_Liquid
-        real(kind=8) :: rho         = 0.d0
-        real(kind=8) :: unsurk      = 0.d0
-        real(kind=8) :: visc        = 0.d0
+        real(kind=8) :: rho = 0.d0
+        real(kind=8) :: unsurk = 0.d0
+        real(kind=8) :: visc = 0.d0
         real(kind=8) :: dvisc_dtemp = 0.d0
-        real(kind=8) :: cp          = 0.d0
-        real(kind=8) :: alpha       = 0.d0
+        real(kind=8) :: cp = 0.d0
+        real(kind=8) :: alpha = 0.d0
     end type THM_Liquid
 
 ! - Dissolved air
     type THM_Ad
-        real(kind=8) :: cp         = 0.d0
+        real(kind=8) :: cp = 0.d0
         real(kind=8) :: coef_henry = 0.d0
     end type THM_Ad
 
 ! Solid (homogeneous)
     type THM_Solid
-        real(kind=8) :: rho   = 0.d0
+        real(kind=8) :: rho = 0.d0
         real(kind=8) :: r_gaz = 0.d0
-        real(kind=8) :: cp    = 0.d0
+        real(kind=8) :: cp = 0.d0
     end type THM_Solid
-
 
 ! - Calcul BJH pour la loi 'HYDR_TABBAL'
 
@@ -205,7 +204,6 @@ implicit none
 
     end type THM_BJH
 
-
 ! - Material parameters
     type THM_Material
 ! ----- For Biot coefficient (evolution of porosity)
@@ -217,19 +215,19 @@ implicit none
 ! ----- For hydraulic
         type(THM_Hydr)    :: hydr
 ! ----- For hydraulic
-        aster_logical     :: l_gaz    = ASTER_FALSE
+        aster_logical     :: l_gaz = ASTER_FALSE
         type(THM_Gaz)     :: gaz
 ! ----- For hydraulic
-        aster_logical     :: l_steam  = ASTER_FALSE
+        aster_logical     :: l_steam = ASTER_FALSE
         type(THM_Gaz)     :: steam
 ! ----- For liquid
         aster_logical     :: l_liquid = ASTER_FALSE
         type(THM_Liquid)  :: liquid
 ! ----- For dissolved air
-        aster_logical     :: l_ad     = ASTER_FALSE
+        aster_logical     :: l_ad = ASTER_FALSE
         type(THM_Ad)      :: ad
 ! ----- For solid
-        aster_logical     :: l_r_gaz  = ASTER_FALSE
+        aster_logical     :: l_r_gaz = ASTER_FALSE
         type(THM_Solid)   :: solid
 
 ! ----- For BJH approach

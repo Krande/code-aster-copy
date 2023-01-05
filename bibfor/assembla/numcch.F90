@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine numcch(modelz, list_loadz, list_ligr, nb_ligr)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -58,8 +58,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     list_load = list_loadz
-    model     = modelz
-    nb_ligr   = 0
+    model = modelz
+    nb_ligr = 0
 !
 ! - List of load names
 !
@@ -68,13 +68,13 @@ implicit none
     call jeexin(list_load_name, iret)
     if (iret .ne. 0) then
         call jelira(list_load_name, 'LONMAX', nb_load)
-        call jeveuo(list_load_name, 'L', vk24 = l_load_name)
-    endif
+        call jeveuo(list_load_name, 'L', vk24=l_load_name)
+    end if
     nb_list_ligr = nb_load+1
 !
 ! - Create object
 !
-    AS_ALLOCATE(vk24 = list_ligr, size = nb_list_ligr)
+    AS_ALLOCATE(vk24=list_ligr, size=nb_list_ligr)
 !
 ! - LIGREL for model
 !
@@ -82,26 +82,26 @@ implicit none
     if (iret .gt. 0) then
         nb_ligr = 1
         list_ligr(nb_ligr) = model(1:8)//'.MODELE'
-    endif
+    end if
 !
 ! - LIGREL for loads
 !
     do i_load = 1, nb_load
-        load_name = l_load_name(i_load)(1:8)
+        load_name = l_load_name(i_load) (1:8)
         call jeexin(load_name(1:8)//'.TYPE', ier)
         if (ier .gt. 0) then
-            call jeveuo(load_name(1:8)//'.TYPE', 'L', vk8 = load_type)
-            ligr_name = load_name(1:8)//'.CH'//load_type(1)(1:2)// '.LIGRE'
+            call jeveuo(load_name(1:8)//'.TYPE', 'L', vk8=load_type)
+            ligr_name = load_name(1:8)//'.CH'//load_type(1) (1:2)//'.LIGRE'
             call jeexin(ligr_name(1:19)//'.LIEL', iret)
         else
-            ligr_name = l_load_name(i_load)(1:19)
+            ligr_name = l_load_name(i_load) (1:19)
             call jeexin(ligr_name//'.LIEL', iret)
-        endif
+        end if
 !
         if (iret .gt. 0) then
-            nb_ligr = nb_ligr + 1
+            nb_ligr = nb_ligr+1
             list_ligr(nb_ligr) = ligr_name
-        endif
+        end if
     end do
 
 !

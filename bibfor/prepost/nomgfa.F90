@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,12 +50,12 @@ subroutine nomgfa(nogr, nbgr, dgf, nogrf, nbgf)
     saux56 = ' '
 !
     nbgf = 0
-    do 10 , iaux = 1,nbgr
-    if (exigfa(dgf,iaux)) then
-        nbgf = nbgf + 1
-        nogrf(nbgf)(1:24) = nogr(iaux)
-        nogrf(nbgf)(25:80) = saux56
-    endif
-    10 end do
+    do 10, iaux = 1, nbgr
+    if (exigfa(dgf, iaux)) then
+        nbgf = nbgf+1
+        nogrf(nbgf) (1:24) = nogr(iaux)
+        nogrf(nbgf) (25:80) = saux56
+    end if
+10  end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine c3drep(nomte, epais, alpha, beta, coord,&
+subroutine c3drep(nomte, epais, alpha, beta, coord, &
                   numnoe, pgl)
     implicit none
 #include "jeveux.h"
@@ -45,61 +45,61 @@ subroutine c3drep(nomte, epais, alpha, beta, coord,&
     real(kind=8), pointer :: desr(:) => null()
     integer, pointer :: desi(:) => null()
 !
-    zero=0.d0
+    zero = 0.d0
     call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', vi=desi)
     call jeveuo('&INEL.'//nomte(1:8)//'.DESR', 'L', vr=desr)
-    nb1  =desi(1)
-    nb2  =desi(2)
-    npgsr=desi(3)
+    nb1 = desi(1)
+    nb2 = desi(2)
+    npgsr = desi(3)
 !
 !     -- POUR REMPLIR LZR+1090+...  ET CALCULER VECTN :
-    call vectan(nb1, nb2, coord, desr, vecta,&
+    call vectan(nb1, nb2, coord, desr, vecta, &
                 vectn, vectpt)
 !
 !     -- POUR REMPLIR LZR+2000+... :
 !     -- QUELLE VALEUR POUR IND ? FICHE ???
 ! ind=0 => calcul aux points d'intégration réduite
 ! ind=1 => calcul aux points d'intégration normale
-    ind =0
+    ind = 0
     k = 0
     do intsr = 1, npgsr
-        call vectgt(ind, nb1, coord, zero, intsr,&
+        call vectgt(ind, nb1, coord, zero, intsr, &
                     desr, epais, vectn, vectg, vectt)
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                desr(1+2000+k-1) = vectt(i,j)
+                k = k+1
+                desr(1+2000+k-1) = vectt(i, j)
             end do
         end do
     end do
 !
-    call vdrep2(alpha, beta, desi, desr, matevn,&
+    call vdrep2(alpha, beta, desi, desr, matevn, &
                 matevg)
 !
-    vectmp(1,1) = matevn(1,1,numnoe)
-    vectmp(1,2) = matevn(1,2,numnoe)
-    vectmp(2,1) = matevn(2,1,numnoe)
-    vectmp(2,2) = matevn(2,2,numnoe)
-    vectmp(1,3) = 0.d0
-    vectmp(2,3) = 0.d0
-    vectmp(3,3) = 1.d0
-    vectmp(3,1) = 0.d0
-    vectmp(3,2) = 0.d0
+    vectmp(1, 1) = matevn(1, 1, numnoe)
+    vectmp(1, 2) = matevn(1, 2, numnoe)
+    vectmp(2, 1) = matevn(2, 1, numnoe)
+    vectmp(2, 2) = matevn(2, 2, numnoe)
+    vectmp(1, 3) = 0.d0
+    vectmp(2, 3) = 0.d0
+    vectmp(3, 3) = 1.d0
+    vectmp(3, 1) = 0.d0
+    vectmp(3, 2) = 0.d0
 !
     k = 0
     do j = 1, 3
         do i = 1, 3
-            k = k + 1
-            pgltmp(i,j) = desr(1+1090+(numnoe-1)*9+k-1)
+            k = k+1
+            pgltmp(i, j) = desr(1+1090+(numnoe-1)*9+k-1)
         end do
     end do
     do i = 1, 3
         do j = 1, 3
             v = 0.d0
             do k = 1, 3
-                v = v + vectmp(i,k) * pgltmp(k,j)
+                v = v+vectmp(i, k)*pgltmp(k, j)
             end do
-            pgl(i,j) = v
+            pgl(i, j) = v
         end do
     end do
 !

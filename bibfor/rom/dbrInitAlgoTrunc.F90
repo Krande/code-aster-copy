@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrInitAlgoTrunc(paraTrunc)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/romFieldNodesAreDefined.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
+    type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,12 +59,12 @@ type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_32')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    noojb    = '12345678.00000.NUME.PRNO'
-    mode     = paraTrunc%baseInit%mode
+    noojb = '12345678.00000.NUME.PRNO'
+    mode = paraTrunc%baseInit%mode
     modelRom = paraTrunc%modelRom
     modelDom = paraTrunc%baseInit%mode%model
 !
@@ -72,21 +72,21 @@ type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
 !
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_33')
-    endif
+    end if
     numeRom = '12345678.NUMED'
     call gnomsd(' ', noojb, 10, 14)
     numeRom = noojb(1:14)
-    call numero(numeRom, 'VV', modelz = modelRom)
+    call numero(numeRom, 'VV', modelz=modelRom)
 !
 ! - Create numbering for DOM
 !
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_34')
-    endif
+    end if
     numeDom = '12345678.NUMED'
     call gnomsd(' ', noojb, 10, 14)
     numeDom = noojb(1:14)
-    call numero(numeDom, 'VV', modelz = modelDom)
+    call numero(numeDom, 'VV', modelz=modelDom)
 !
 ! - Extract list of nodes on reduced model
 !
@@ -94,13 +94,13 @@ type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
 !
 ! - Prepare the list of equations from list of nodes
 !
-    call romFieldNodesAreDefined(mode, paraTrunc%equaRom, numeDom,&
-                                 nbNode_   = nbNodeRom,&
-                                 listNode_ = numeNodeRom)
+    call romFieldNodesAreDefined(mode, paraTrunc%equaRom, numeDom, &
+                                 nbNode_=nbNodeRom, &
+                                 listNode_=numeNodeRom)
 !
 ! - Save parameters
 !
-    call dismoi('NB_EQUA', numeRom, 'NUME_DDL', repi = nbEquaRom)
+    call dismoi('NB_EQUA', numeRom, 'NUME_DDL', repi=nbEquaRom)
     paraTrunc%nbEquaRom = nbEquaRom
 !
 end subroutine

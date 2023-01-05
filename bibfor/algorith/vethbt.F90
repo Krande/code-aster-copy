@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vethbt(model    , lload_name, lload_info, cara_elem, mate,&
-                  temp_iter, vect_elem , base)
+subroutine vethbt(model, lload_name, lload_info, cara_elem, mate, &
+                  temp_iter, vect_elem, base)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -31,14 +31,14 @@ implicit none
 #include "asterfort/reajre.h"
 #include "asterfort/detrsd.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: lload_name
-character(len=24), intent(in) :: lload_info
-character(len=24), intent(in) :: cara_elem
-character(len=24), intent(in) :: mate
-character(len=24), intent(in) :: temp_iter
-character(len=24), intent(in) :: vect_elem
-character(len=1), intent(in) :: base
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: lload_name
+    character(len=24), intent(in) :: lload_info
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: temp_iter
+    character(len=24), intent(in) :: vect_elem
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,8 +59,8 @@ character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer , parameter :: nbin = 2
-    integer , parameter :: nbout = 1
+    integer, parameter :: nbin = 2
+    integer, parameter :: nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
     character(len=16) :: option
@@ -75,8 +75,8 @@ character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    newnom    = '.0000000'
-    option    = 'THER_BTLA_R'
+    newnom = '.0000000'
+    option = 'THER_BTLA_R'
     resu_elem = vect_elem(1:8)//'.0000000'
 !
 ! - Init fields
@@ -85,7 +85,7 @@ character(len=1), intent(in) :: base
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
                         lload_name, lload_info)
 !
 ! - Allocate result
@@ -107,26 +107,26 @@ character(len=1), intent(in) :: base
 !
     if (nb_load .gt. 0) then
         do i_load = 1, nb_load
-            load_name = v_load_name(i_load)(1:8)
+            load_name = v_load_name(i_load) (1:8)
             load_nume = v_load_info(i_load+1)
             if (load_nume .gt. 0) then
-                ligrch   = load_name//'.CHTH.LIGRE'
+                ligrch = load_name//'.CHTH.LIGRE'
 ! ------------- Input field
                 lpain(2) = 'PDDLMUR'
                 lchin(2) = load_name//'.CHTH.CMULT'
 ! ------------- Generate new RESU_ELEM name
                 call gcnco2(newnom)
                 resu_elem(10:16) = newnom(2:8)
-                call corich('E', resu_elem, ichin_ = -1)
+                call corich('E', resu_elem, ichin_=-1)
                 lchout(1) = resu_elem
 ! ------------- Computation
-                call calcul('S'  , option, ligrch, nbin  , lchin,&
-                            lpain, nbout , lchout, lpaout, base ,&
+                call calcul('S', option, ligrch, nbin, lchin, &
+                            lpain, nbout, lchout, lpaout, base, &
                             'OUI')
 ! ------------- Copying output field
                 call reajre(vect_elem, lchout(1), 'V')
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

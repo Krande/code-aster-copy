@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine te0307(option, nomte)
     integer :: icode, itemp, jgano, nbres, ndim, nnos
     real(kind=8) :: theta
 !-----------------------------------------------------------------------
-    parameter (nbres=3)
+    parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg
     real(kind=8) :: coenp1
@@ -49,10 +49,10 @@ subroutine te0307(option, nomte)
 !
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
@@ -62,16 +62,16 @@ subroutine te0307(option, nomte)
 !
     theta = zr(itemps+2)
     do kp = 1, npg
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         z = 0.d0
         tpg = 0.d0
         do i = 1, nno
-            l = (kp-1)*nno + i
-            r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
-            z = z + zr(igeom+2*i-1)*zr(ivf+l-1)
-            tpg = tpg + zr(itemp+i-1)*zr(ivf+l-1)
+            l = (kp-1)*nno+i
+            r = r+zr(igeom+2*i-2)*zr(ivf+l-1)
+            z = z+zr(igeom+2*i-1)*zr(ivf+l-1)
+            tpg = tpg+zr(itemp+i-1)*zr(ivf+l-1)
         end do
         if (laxi) poids = poids*r
         valpar(1) = r
@@ -80,11 +80,11 @@ subroutine te0307(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'INST'
         valpar(3) = zr(itemps)
-        call fointe('FM', zk8(icoefh), 3, nompar, valpar,&
+        call fointe('FM', zk8(icoefh), 3, nompar, valpar, &
                     coenp1, icode)
         do i = 1, nno
-            li = ivf + (kp-1)*nno + i - 1
-            zr(iveres+i-1) = zr(iveres+i-1) - poids*zr(li)*theta* coenp1*tpg
+            li = ivf+(kp-1)*nno+i-1
+            zr(iveres+i-1) = zr(iveres+i-1)-poids*zr(li)*theta*coenp1*tpg
         end do
     end do
 end subroutine

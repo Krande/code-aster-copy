@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
-                  connex, point, nomast, typma, titre,&
-                  nbtitr, nbgrno, nomgno, nbgrma, nomgma,&
+subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
+                  connex, point, nomast, typma, titre, &
+                  nbtitr, nbgrno, nomgno, nbgrma, nomgma, &
                   nommai, nomnoe, infmed, lfichUniq, nosdfu)
 !
     use as_med_module, only: as_med_open
@@ -47,15 +47,15 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/irmhpc.h"
 !
-integer :: connex(*), typma(*), point(*)
-integer :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma
-integer :: infmed, nbtitr
-character(len=80) :: titre(*)
-character(len=8) :: nommai(*), nomnoe(*), nomast
-character(len=24) :: nomgno(*), nomgma(*)
-real(kind=8) :: coordo(*)
-aster_logical, optional :: lfichUniq
-character(len=8), optional :: nosdfu
+    integer :: connex(*), typma(*), point(*)
+    integer :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma
+    integer :: infmed, nbtitr
+    character(len=80) :: titre(*)
+    character(len=8) :: nommai(*), nomnoe(*), nomast
+    character(len=24) :: nomgno(*), nomgma(*)
+    real(kind=8) :: coordo(*)
+    aster_logical, optional :: lfichUniq
+    character(len=8), optional :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,11 +106,11 @@ character(len=8), optional :: nosdfu
     character(len=255) :: kfic
     character(len=64) :: valk(2)
     aster_logical :: existm, ficexi, lfu
-    character(len=16), parameter :: nocoor(3) = (/'X               ',&
-                                                  'Y               ',&
+    character(len=16), parameter :: nocoor(3) = (/'X               ', &
+                                                  'Y               ', &
                                                   'Z               '/)
-    character(len=16), parameter :: uncoor(3) = (/'INCONNU         ',&
-                                                  'INCONNU         ',&
+    character(len=16), parameter :: uncoor(3) = (/'INCONNU         ', &
+                                                  'INCONNU         ', &
                                                   'INCONNU         '/)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -120,20 +120,20 @@ character(len=8), optional :: nosdfu
     call infniv(ifm, niv)
     if (niv .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DU MAILLAGE MED : '
-    endif
+        write (ifm, *) '<', nompro, '> DEBUT ECRITURE DU MAILLAGE MED : '
+    end if
 !
-    if(present(lfichUniq)) then
+    if (present(lfichUniq)) then
         nom_sd_par = ' '
-        if(lfichUniq) then
+        if (lfichUniq) then
             ASSERT(present(nosdfu))
             nom_sd_par = nosdfu
-        endif
+        end if
         lfu = lfichUniq
     else
         nom_sd_par = ' '
         lfu = .false._1
-    endif
+    end if
 !
 ! 1.2. ==> NOM DU FICHIER MED
 !
@@ -143,14 +143,14 @@ character(len=8), optional :: nosdfu
         nofimd = 'fort.'//saux08
     else
         nofimd = kfic(1:200)
-    endif
+    end if
     if (lfu .and. nofimd(1:1) .ne. "/") then
         call utmess("F", "MED_11", sk=nofimd)
-    endif
+    end if
 !
     if (niv .gt. 1) then
-        write (ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',nofimd
-    endif
+        write (ifm, *) '<', nompro, '> NOM DU FICHIER MED : ', nofimd
+    end if
 !
 ! - Generate name of mesh for MED
 !
@@ -162,13 +162,13 @@ character(len=8), optional :: nosdfu
 !
     iaux = 0
     ifimed = 0
-    call mdexma(nofimd, ifimed, nomamd, iaux, existm,&
+    call mdexma(nofimd, ifimed, nomamd, iaux, existm, &
                 jaux, codret)
 !
     if (existm) then
 !
-        valk (1) = nofimd(1:32)
-        valk (2) = nomamd
+        valk(1) = nofimd(1:32)
+        valk(2) = nomamd
         call utmess('A', 'MED_67', nk=2, valk=valk)
 !
 !     ------------------------------------------------------------------
@@ -184,36 +184,36 @@ character(len=8), optional :: nosdfu
 !      SOIT 'LECTURE_AJOUT' (CELA SIGNIFIE QUE LE FICHIER EST ENRICHI).
 !
 !     TEST L'EXISTENCE DU FICHIER
-        inquire(file=nofimd,exist=ficexi)
+        inquire (file=nofimd, exist=ficexi)
         if (ficexi) then
             edmode = edlect
-            if(lfu) then
+            if (lfu) then
                 call as_med_open(fid, nofimd, edmode, codret, .true._1)
             else
                 call as_med_open(fid, nofimd, edmode, codret)
-            endif
+            end if
             if (codret .ne. 0) then
                 edmode = edcrea
             else
                 edmode = edleaj
                 call as_mficlo(fid, codret)
                 if (codret .ne. 0) then
-                    saux08='mficlo'
+                    saux08 = 'mficlo'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
-            endif
+                end if
+            end if
         else
             edmode = edcrea
-        endif
-        if(lfu) then
+        end if
+        if (lfu) then
             call as_med_open(fid, nofimd, edmode, codret, .true._1)
         else
             call as_med_open(fid, nofimd, edmode, codret)
-        endif
+        end if
         if (codret .ne. 0) then
-            saux08='mfiope'
+            saux08 = 'mfiope'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
         if (infmed .ge. 2) then
             saux16(edlect) = 'LECTURE SEULE.  '
@@ -223,7 +223,7 @@ character(len=8), optional :: nosdfu
             valk(1) = saux08
             valk(2) = saux16(edmode)
             call utmess('I', 'MED_40', nk=2, valk=valk)
-        endif
+        end if
 !
 ! 2.2. ==> CREATION DU MAILLAGE AU SENS MED (TYPE MED_NON_STRUCTURE)
 !
@@ -233,19 +233,19 @@ character(len=8), optional :: nosdfu
 !GN      PRINT *,EDNSTR
         desc = 'CREE PAR CODE_ASTER'
         descdt = 'SANS UNITES'
-        call as_mmhcre(fid, nomamd, ndim, ednstr, desc,&
+        call as_mmhcre(fid, nomamd, ndim, ednstr, desc, &
                        descdt, edcart, nocoor, uncoor, codret)
         if (codret .ne. 0) then
-            saux08='mmhcre'
+            saux08 = 'mmhcre'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
 ! 2.3. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
 !            DANS CATALOGUE
 !          . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 !          . VERIF COHERENCE AVEC LE CATALOGUE
 !
-        call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
+        call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                     modnum, nuanom, numnoa)
 !
 !====
@@ -256,13 +256,13 @@ character(len=8), optional :: nosdfu
 !
             call irmdes(fid, titre, nbtitr, infmed)
 !
-        endif
+        end if
 !
 !====
 ! 4. LES NOEUDS
 !====
 !
-        call irmmno(fid, nomamd, ndim, nbnoeu, coordo,&
+        call irmmno(fid, nomamd, ndim, nbnoeu, coordo, &
                     nomnoe, nom_sd_par)
 !
 !====
@@ -271,9 +271,9 @@ character(len=8), optional :: nosdfu
 !
         saux06 = nompro
 !
-        call irmmma(fid, nomamd, nbmail, connex, point,&
-                    typma, nommai, saux06, nbtyp, typgeo,&
-                    nomtyp, nnotyp, renumd, nmatyp, infmed,&
+        call irmmma(fid, nomamd, nbmail, connex, point, &
+                    typma, nommai, saux06, nbtyp, typgeo, &
+                    nomtyp, nnotyp, renumd, nmatyp, infmed, &
                     modnum, nuanom, nom_sd_par)
 !
 !====
@@ -282,8 +282,8 @@ character(len=8), optional :: nosdfu
 !
         saux06 = nompro
 !
-        call irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
-                    nbgrno, nomgno, nbgrma, nomgma, saux06,&
+        call irmmfa(fid, nomamd, nbnoeu, nbmail, nomast, &
+                    nbgrno, nomgno, nbgrma, nomgma, saux06, &
                     typgeo, nomtyp, nmatyp, infmed, nom_sd_par)
 !
 !====
@@ -296,9 +296,9 @@ character(len=8), optional :: nosdfu
 ! 8. IMPRESSION NUMEROTATION GLOBALE ET JOINTS EN HPC
 !====
 !
-        if(isParallelMesh(nomast) .and. (.not.lfu)) then
+        if (isParallelMesh(nomast) .and. (.not. lfu)) then
             call irmhpc(fid, nomamd, nomast, nbnoeu)
-        endif
+        end if
 !
 !====
 ! 9. FERMETURE DU FICHIER MED
@@ -306,9 +306,9 @@ character(len=8), optional :: nosdfu
 !
         call as_mficlo(fid, codret)
         if (codret .ne. 0) then
-            saux08='mficlo'
+            saux08 = 'mficlo'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
 !====
 ! 10. LA FIN
@@ -316,13 +316,13 @@ character(len=8), optional :: nosdfu
 !
         call jedetc('V', '&&'//nompro, 1)
 !
-    endif
+    end if
 !
     if (niv .gt. 1) then
         call cpu_time(end_time)
-        write (ifm,*) '<',nompro,'> FIN ECRITURE DU MAILLAGE MED EN ', &
+        write (ifm, *) '<', nompro, '> FIN ECRITURE DU MAILLAGE MED EN ', &
             end_time-start_time, "sec."
-    endif
+    end if
 !
     call jedema()
 !

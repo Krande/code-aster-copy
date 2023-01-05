@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,13 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 !
     call jemarq()
 !
-    lg1 = lxlgut( formr )
-    lg2 = lxlgut( typtes )
+    lg1 = lxlgut(formr)
+    lg2 = lxlgut(typtes)
     form1 = '(&
-            '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', ' //formr(1:lg1)//',&
-            '' )''&
-            )'
-    form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' )'' )'
+&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)//',&
+&            '' )''&
+&            )'
+    form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC_I = '', I9, '' )'' )'
 !
     call jeveuo(nomsd//'.TBLP', 'L', vk24=tblp)
     call jeveuo(nomsd//'.TBNP', 'L', vi=tbnp)
@@ -75,77 +75,77 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
         call tbexip(nomsd, nomsym, exist, type)
         if (.not. exist) goto 400
 !
-        lg = lxlgut( nomsym )
+        lg = lxlgut(nomsym)
         call jeveuo(tblp(1+4*(ipar-1)+2), 'L', jvale)
         call jeveuo(tblp(1+4*(ipar-1)+3), 'L', jvall)
 !
-        form3 = '( ''TEST_TABLE(TABLE= '',A8,'', NOM_PARA= '''''// nomsym(1:lg )//''''', '' )'
+        form3 = '( ''TEST_TABLE(TABLE= '',A8,'', NOM_PARA= '''''//nomsym(1:lg)//''''', '' )'
 !
         if (type .eq. 'I') then
 !             -------------
-            write(ific,form3) nomsd(1:8)
-            write(ific,4020) preci
+            write (ific, form3) nomsd(1:8)
+            write (ific, 4020) preci
 !
             if (typtes .eq. 'SOMM_ABS') then
                 vali = 0
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) vali = vali+abs(zi(jvale+ i-1))
+                    if (zi(jvall+i-1) .eq. 1) vali = vali+abs(zi(jvale+i-1))
                 end do
             else if (typtes .eq. 'SOMM') then
                 vali = 0
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) vali = vali + zi(jvale+i- 1)
+                    if (zi(jvall+i-1) .eq. 1) vali = vali+zi(jvale+i-1)
                 end do
             else if (typtes .eq. 'MAX') then
                 vali = -ismaem()
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) vali = max(vali,zi(jvale+ i-1))
+                    if (zi(jvall+i-1) .eq. 1) vali = max(vali, zi(jvale+i-1))
                 end do
             else if (typtes .eq. 'MIN') then
                 vali = ismaem()
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) vali = min(vali,zi(jvale+ i-1))
+                    if (zi(jvall+i-1) .eq. 1) vali = min(vali, zi(jvale+i-1))
                 end do
-            endif
-            if (vali .eq. 0) write(ific,4010)
-            write(ific,form2) vali
+            end if
+            if (vali .eq. 0) write (ific, 4010)
+            write (ific, form2) vali
 !
         else if (type .eq. 'R') then
 !                 -------------
-            write(ific,form3) nomsd(1:8)
-            write(ific,4020) preci
+            write (ific, form3) nomsd(1:8)
+            write (ific, 4020) preci
 !
             if (typtes .eq. 'SOMM_ABS') then
                 valr = 0.d0
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) valr = valr+abs(zr(jvale+ i-1))
+                    if (zi(jvall+i-1) .eq. 1) valr = valr+abs(zr(jvale+i-1))
                 end do
             else if (typtes .eq. 'SOMM') then
                 valr = 0.d0
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) valr = valr + zr(jvale+i- 1)
+                    if (zi(jvall+i-1) .eq. 1) valr = valr+zr(jvale+i-1)
                 end do
             else if (typtes .eq. 'MAX') then
                 valr = -r8maem()
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) valr = max(valr,zr(jvale+ i-1))
+                    if (zi(jvall+i-1) .eq. 1) valr = max(valr, zr(jvale+i-1))
                 end do
             else if (typtes .eq. 'MIN') then
                 valr = r8maem()
                 do i = 1, nblign
-                    if (zi(jvall+i-1) .eq. 1) valr = min(valr,zr(jvale+ i-1))
+                    if (zi(jvall+i-1) .eq. 1) valr = min(valr, zr(jvale+i-1))
                 end do
-            endif
-            if (abs(valr) .le. r8prem()) write(ific,4010)
-            write(ific,form1) valr
-        endif
+            end if
+            if (abs(valr) .le. r8prem()) write (ific, 4010)
+            write (ific, form1) valr
+        end if
 400     continue
     end do
 !
     call jedema()
 !
-    4010 format ('            CRITERE= ''ABSOLU'', ')
+4010 format('            CRITERE= ''ABSOLU'', ')
 !
-    4020 format ('            TOLE_MACHINE= ',a10,',')
+4020 format('            TOLE_MACHINE= ', a10, ',')
 !
 end subroutine

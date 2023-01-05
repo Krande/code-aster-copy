@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine epsreg(npi, ipoids, ipoid2, ivf, ivf2,&
-                  idfde, idfde2, geom, dimdef, dimuel,&
-                  ndim, nddls, nddlm, nno, nnos,&
+subroutine epsreg(npi, ipoids, ipoid2, ivf, ivf2, &
+                  idfde, idfde2, geom, dimdef, dimuel, &
+                  ndim, nddls, nddlm, nno, nnos, &
                   nnom, axi, regula, deplp, defgep)
 ! aslint: disable=W1306
     implicit none
@@ -40,18 +40,18 @@ subroutine epsreg(npi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! --- DEFINITION DE L'OPERATEUR B (DEFINI PAR E=B.U) -------------------
 ! ======================================================================
-        call cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
-                    idfde, idfde2, geom, dimdef, dimuel,&
-                    ndim, nddls, nddlm, nno, nnos,&
-                    nnom, axi, regula, b, poids,&
+        call cabr2g(kpi, ipoids, ipoid2, ivf, ivf2, &
+                    idfde, idfde2, geom, dimdef, dimuel, &
+                    ndim, nddls, nddlm, nno, nnos, &
+                    nnom, axi, regula, b, poids, &
                     poids2)
 ! ======================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
 ! ======================================================================
         do i = 1, dimdef
-            defgep((kpi-1)*dimdef+i)=0.0d0
+            defgep((kpi-1)*dimdef+i) = 0.0d0
             do n = 1, dimuel
-                defgep((kpi-1)*dimdef+i) = defgep( (kpi-1)*dimdef+i) + b(i,n)*deplp(n)
+                defgep((kpi-1)*dimdef+i) = defgep((kpi-1)*dimdef+i)+b(i, n)*deplp(n)
             end do
         end do
     end do

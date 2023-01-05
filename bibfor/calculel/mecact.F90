@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
-                  ncmp, nomcmp, si, sr, sc,&
-                  sk, lnomcmp, vi, vr, vc,&
+subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
+                  ncmp, nomcmp, si, sr, sc, &
+                  sk, lnomcmp, vi, vr, vc, &
                   vk)
 ! aslint: disable=W1306
 !-----------------------------------------------------------------------
@@ -91,80 +91,80 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
     call jemarq()
 !
 !   DETERMINATION DU TYPE DE CARTE A AFFECTER
-    ASSERT(EXCLUS2(si,vi))
-    ASSERT(EXCLUS2(sr,vr))
-    ASSERT(EXCLUS2(sc,vc))
-    ASSERT(EXCLUS2(sk,vk))
-    if (UN_PARMI2(si,vi)) then
-        j=1
-    else if (UN_PARMI2(sr,vr)) then
-        j=2
-    else if (UN_PARMI2(sc,vc)) then
-        j=3
+    ASSERT(EXCLUS2(si, vi))
+    ASSERT(EXCLUS2(sr, vr))
+    ASSERT(EXCLUS2(sc, vc))
+    ASSERT(EXCLUS2(sk, vk))
+    if (UN_PARMI2(si, vi)) then
+        j = 1
+    else if (UN_PARMI2(sr, vr)) then
+        j = 2
+    else if (UN_PARMI2(sc, vc)) then
+        j = 3
     else
-        ASSERT(UN_PARMI2(sk,vk))
-        j=4
-    endif
+        ASSERT(UN_PARMI2(sk, vk))
+        j = 4
+    end if
 !
 !   AFFECTATION DES VARIABLES LOCALES EN FONCTION DES ARGUMENTS
     if (ncmp .gt. 1) then
-        ASSERT(UN_PARMI4(vi,vr,vc,vk))
+        ASSERT(UN_PARMI4(vi, vr, vc, vk))
         do i = 1, ncmp
-            licmp(i)=lnomcmp(i)
+            licmp(i) = lnomcmp(i)
         end do
         select case (j)
         case (1)
             do i = 1, ncmp
-                icmp(i)=vi(i)
+                icmp(i) = vi(i)
             end do
         case (2)
             do i = 1, ncmp
-                rcmp(i)=vr(i)
+                rcmp(i) = vr(i)
             end do
         case (3)
             do i = 1, ncmp
-                ccmp(i)=vc(i)
+                ccmp(i) = vc(i)
             end do
         case (4)
             do i = 1, ncmp
-                kcmp(i)=vk(i)
+                kcmp(i) = vk(i)
             end do
         end select
     else
-        ASSERT(UN_PARMI4(si,sr,sc,sk))
+        ASSERT(UN_PARMI4(si, sr, sc, sk))
         licmp(1) = nomcmp
         select case (j)
         case (1)
-            icmp(1)=si
+            icmp(1) = si
         case (2)
-            rcmp(1)=sr
+            rcmp(1) = sr
         case (3)
-            ccmp(1)=sc
+            ccmp(1) = sc
         case (4)
-            kcmp(1)=sk
+            kcmp(1) = sk
         end select
-    endif
+    end if
 !
 !
     mocle = moclez
     nomgd = nomgdz
 !
-    bas2=base
+    bas2 = base
 !
 !     -- RECUPERATION DU NOM DU MAILLAGE:
     nommo2 = nomco
     nomca2 = nomcar
     if (mocle(1:6) .eq. 'MAILLA') then
         noma = nommo2(1:8)
-    else if (mocle(1:6).eq.'MODELE') then
+    else if (mocle(1:6) .eq. 'MODELE') then
         call jeveuo(nommo2(1:8)//'.MODELE    .LGRF', 'L', ianoma)
         noma = zk8(ianoma-1+1)
-    else if (mocle(1:6).eq.'LIGREL') then
+    else if (mocle(1:6) .eq. 'LIGREL') then
         call jeveuo(nommo2(1:19)//'.LGRF', 'L', ianoma)
         noma = zk8(ianoma-1+1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !     -- SI LA CARTE EXISTE DEJA , ON LA DETRUIT COMPLETEMENT:
 !
@@ -194,24 +194,24 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
         zk8(jncmp-1+i) = licmp(i)
         if (type(1:1) .eq. 'R') then
             zr(jvalv-1+i) = rcmp(i)
-        endif
+        end if
         if (type(1:1) .eq. 'C') then
             zc(jvalv-1+i) = ccmp(i)
-        endif
+        end if
         if (type(1:1) .eq. 'I') then
             zi(jvalv-1+i) = icmp(i)
-        endif
+        end if
         if (type(1:1) .eq. 'K') then
             if (ltyp .eq. 8) then
                 zk8(jvalv-1+i) = kcmp(i)
-            else if (ltyp.eq.16) then
+            else if (ltyp .eq. 16) then
                 zk16(jvalv-1+i) = kcmp(i)
-            else if (ltyp.eq.24) then
+            else if (ltyp .eq. 24) then
                 zk24(jvalv-1+i) = kcmp(i)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !     -- ON NOTE DANS LA CARTE LES VALEURS VOULUES :

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
 !
     integer :: nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
-    integer :: iad2,  jce1d,  jce1v, jce1l, icmp1,  jce2d
+    integer :: iad2, jce1d, jce1v, jce1l, icmp1, jce2d
     integer ::  jce2v, jce2l, icmp2, ima, ima1, ima2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
@@ -71,7 +71,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
     nomgd2 = ce2k(2)
     ncmp2 = zi(jce2d-1+2)
 !
-    ASSERT(nomgd2.eq.nomgd)
+    ASSERT(nomgd2 .eq. nomgd)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
@@ -85,50 +85,50 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
         nbpt2 = zi(jce2d-1+5+4*(ima2-1)+1)
         nbsp2 = zi(jce2d-1+5+4*(ima2-1)+2)
-        ASSERT(nbpt2.eq.nbpt)
-        ASSERT(nbsp2.eq.nbsp)
+        ASSERT(nbpt2 .eq. nbpt)
+        ASSERT(nbsp2 .eq. nbsp)
 !
         do icmp2 = 1, ncmp2
 !
             nocmp = ce2c(icmp2)
 !
-            icmp1 = indik8( ce1c, nocmp, 1, ncmp1 )
+            icmp1 = indik8(ce1c, nocmp, 1, ncmp1)
             if (icmp1 .eq. 0) goto 20
 !
             do ipt = 1, nbpt
 !
                 do isp = 1, nbsp
 !
-                    call cesexi('C', jce1d, jce1l, ima1, ipt,&
+                    call cesexi('C', jce1d, jce1l, ima1, ipt, &
                                 isp, icmp1, iad1)
                     if (iad1 .le. 0) goto 40
                     if (.not. zl(jce1l-1+iad1)) goto 40
-                    call cesexi('C', jce2d, jce2l, ima2, ipt,&
+                    call cesexi('C', jce2d, jce2l, ima2, ipt, &
                                 isp, icmp2, iad2)
-                    ASSERT(iad2.gt.0)
+                    ASSERT(iad2 .gt. 0)
 !
                     zl(jce2l-1+iad2) = .true.
 !
                     if (tsca .eq. 'R') then
                         zr(jce2v-1+iad2) = zr(jce1v-1+iad1)
-                    else if (tsca.eq.'C') then
+                    else if (tsca .eq. 'C') then
                         zc(jce2v-1+iad2) = zc(jce1v-1+iad1)
-                    else if (tsca.eq.'I') then
+                    else if (tsca .eq. 'I') then
                         zi(jce2v-1+iad2) = zi(jce1v-1+iad1)
-                    else if (tsca.eq.'L') then
+                    else if (tsca .eq. 'L') then
                         zl(jce2v-1+iad2) = zl(jce1v-1+iad1)
-                    else if (tsca.eq.'K8') then
+                    else if (tsca .eq. 'K8') then
                         zk8(jce2v-1+iad2) = zk8(jce1v-1+iad1)
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
 !
- 40                 continue
+40                  continue
                 end do
 !
             end do
 !
- 20         continue
+20          continue
         end do
 !
     end do

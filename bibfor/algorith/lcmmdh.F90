@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
-                  nfs, nsg, hsr, nbsys, is,&
+subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap, &
+                  nfs, nsg, hsr, nbsys, is, &
                   nuecou, hs, soms1, soms2, soms3)
     implicit none
 #include "asterc/r8miem.h"
@@ -46,92 +46,92 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
 !     ----------------------------------------------------------------
 !
 !
-    rmin=r8miem()
-    ifl=nbcomm(ifa,1)
-    iei=nbcomm(ifa,3)
+    rmin = r8miem()
+    ifl = nbcomm(ifa, 1)
+    iei = nbcomm(ifa, 3)
 !
 !     LOI D'ECOULEMENT DD-CFC
 !
-    if ((nuecou.eq.5) .or. (nuecou.eq.8)) then
-        a =coeft(ifl+3)
-        b =coeft(ifl+4)
-        y =coeft(ifl+6)
+    if ((nuecou .eq. 5) .or. (nuecou .eq. 8)) then
+        a = coeft(ifl+3)
+        b = coeft(ifl+4)
+        y = coeft(ifl+6)
 !
-        beta =coeft(iei+2)
+        beta = coeft(iei+2)
 !         NUMHSR=NINT(COEFT(IEI+5))
 !
 !        EVOLUTION DE LA DENSITE DE DISLO
-        termea=0.d0
-        denom=0.d0
-        numer=0.d0
+        termea = 0.d0
+        denom = 0.d0
+        numer = 0.d0
         do iu = 1, 12
 !            PARTIE POSITIVE DE ALPHA
             if (alphap(iu) .gt. 0.d0) then
-                denom=denom+sqrt(hsr(is,iu)*alphap(iu))
-            endif
+                denom = denom+sqrt(hsr(is, iu)*alphap(iu))
+            end if
         end do
 !        SOMME SUR FOREST(S)
         if (denom .gt. rmin) then
 !           TERME AU NUMERATEUR SUR FOREST(S)
-            termea=0.d0
+            termea = 0.d0
             do iv = 1, 12
-                is3=(is-1)/3
-                iv3=(iv-1)/3
+                is3 = (is-1)/3
+                iv3 = (iv-1)/3
                 if (is3 .ne. iv3) then
 !                 PARTIE POSITIVE DE ALPHA
                     if (alphap(iv) .gt. 0.d0) then
-                        numer=numer+sqrt(hsr(is,iv))*alphap(iv)
-                    endif
-                endif
+                        numer = numer+sqrt(hsr(is, iv))*alphap(iv)
+                    end if
+                end if
             end do
-            termea=a*numer/denom
-        endif
+            termea = a*numer/denom
+        end if
 !
 !        SOMME SUR COPLA(S)
-        termeb=0.d0
+        termeb = 0.d0
         if (nbsys .eq. 12) then
             do iv = 1, 12
-                is3=(is-1)/3
-                iv3=(iv-1)/3
+                is3 = (is-1)/3
+                iv3 = (iv-1)/3
 !           PARTIE POSITIVE DE ALPHA
                 if (is3 .eq. iv3) then
                     if (alphap(iv) .gt. 0.d0) then
-                        termeb=termeb+sqrt(hsr(is,iv)*alphap(iv))
-                    endif
-                endif
+                        termeb = termeb+sqrt(hsr(is, iv)*alphap(iv))
+                    end if
+                end if
             end do
-        else if (nbsys.eq.1) then
-            alphas=alphap(is)
+        else if (nbsys .eq. 1) then
+            alphas = alphap(is)
 !           PARTIE POSITIVE DE ALPHA
             if (alphas .gt. 0.d0) then
-                termeb=termeb+sqrt(hsr(is,is)*alphas)
-            endif
+                termeb = termeb+sqrt(hsr(is, is)*alphas)
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-        call lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&
+        call lcmmdc(coeft, ifa, nmat, nbcomm, alphap, &
                     is, ceff, dcdals)
 !
 !        TERME -Y*RHO_S
         if (alphap(is) .gt. 0.d0) then
-            termey=-y*alphap(is)/beta
+            termey = -y*alphap(is)/beta
         else
-            termey=0.d0
-        endif
-        hs=(termea+termeb*b*ceff+termey)
+            termey = 0.d0
+        end if
+        hs = (termea+termeb*b*ceff+termey)
         soms1 = denom
         soms2 = numer
         soms3 = termeb
-    endif
+    end if
 !
 !     LOI D'ECOULEMENT ECP-CFC
 !
     if (nuecou .eq. 6) then
-        beta =coeft(ifl+3)
-        unsurd=coeft(ifl+4)
-        gc0 =coeft(ifl+6)
-        k =coeft(ifl+7)
+        beta = coeft(ifl+3)
+        unsurd = coeft(ifl+4)
+        gc0 = coeft(ifl+6)
+        k = coeft(ifl+7)
 !
 !        NUMHSR=NINT(COEFT(IEI+2))
 !
@@ -139,21 +139,21 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
 !
         denom = 0.d0
         do iu = 1, 12
-            if ((iu.ne.is) .and. (alphap(iu).gt.0.d0)) then
-                denom = denom + alphap(iu)
-            endif
+            if ((iu .ne. is) .and. (alphap(iu) .gt. 0.d0)) then
+                denom = denom+alphap(iu)
+            end if
         end do
         denom = sqrt(denom)
 !
-        hs = beta*unsurd + denom/k
+        hs = beta*unsurd+denom/k
 !
         if (alphap(is) .gt. 0.d0) then
-            hs=hs-gc0*alphap(is)/beta
-        endif
+            hs = hs-gc0*alphap(is)/beta
+        end if
 !
-        soms1=0.d0
-        soms2=0.d0
-        soms3=0.d0
-    endif
+        soms1 = 0.d0
+        soms2 = 0.d0
+        soms3 = 0.d0
+    end if
 !
 end subroutine

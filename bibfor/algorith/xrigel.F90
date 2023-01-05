@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom,&
-                  jpintt, cnset, heavt, lonch, basloc,&
-                  lsn, lst, sig, matuu, jpmilt,&
+subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom, &
+                  jpintt, cnset, heavt, lonch, basloc, &
+                  lsn, lst, sig, matuu, jpmilt, &
                   heavn, jstno, imate)
 !
     implicit none
@@ -75,8 +75,8 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom,&
     character(len=8) :: elrefp, elrese(6), fami(6)
 !
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,38 +89,38 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom,&
     call elrefe_info(fami='RIGI', ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-    if (.not.iselli(elrefp) .and. ndim .le. 2) then
-        irese=3
+    if (.not. iselli(elrefp) .and. ndim .le. 2) then
+        irese = 3
     else
-        irese=0
-    endif
+        irese = 0
+    end if
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=lonch(1)
+    nse = lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=cnset(nno*(ise-1)+in)
+            ino = cnset(nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
-                    1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-&
-                    1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
-                    1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
+                                                              1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- &
+                                                              1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- &
+                                                              1)+j)
+                end if
             end do
         end do
 !
@@ -129,24 +129,24 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom,&
         he = heavt(ise)
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG CORRESPONDANTE
-        idecpg = npg * (ise-1)
-        idebs = nbsig * idecpg
+        idecpg = npg*(ise-1)
+        idebs = nbsig*idecpg
 !
         if (ndim .eq. 3) then
-            ASSERT(nbsig.eq.6)
-            call xrige3(elrefp, ndim, coorse, igeom, he,&
-                        heavn, ddlh, ddlc, nfe, basloc,&
-                        nnop, npg, lsn, lst, sig(idebs+1),&
+            ASSERT(nbsig .eq. 6)
+            call xrige3(elrefp, ndim, coorse, igeom, he, &
+                        heavn, ddlh, ddlc, nfe, basloc, &
+                        nnop, npg, lsn, lst, sig(idebs+1), &
                         matuu, jstno, imate)
 !
-        else if (ndim.eq.2) then
-            ASSERT(nbsig.eq.4)
-            call xrige2(elrefp, elrese(ndim+irese), ndim, coorse, igeom,&
-                        he, heavn, ddlh, ddlc, nfe,&
-                        basloc, nnop, npg, lsn, lst,&
-                        sig( idebs+1), matuu, jstno, imate)
+        else if (ndim .eq. 2) then
+            ASSERT(nbsig .eq. 4)
+            call xrige2(elrefp, elrese(ndim+irese), ndim, coorse, igeom, &
+                        he, heavn, ddlh, ddlc, nfe, &
+                        basloc, nnop, npg, lsn, lst, &
+                        sig(idebs+1), matuu, jstno, imate)
 !
-        endif
+        end if
 !
     end do
 !

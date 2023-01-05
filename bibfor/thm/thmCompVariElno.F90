@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine thmCompVariElno(ds_thm)
 !
-use Behaviour_type
-use THM_type
+    use Behaviour_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/thmGetElemIntegration.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,14 +76,14 @@ type(THM_DS), intent(inout) :: ds_thm
 ! - Parameters from behaviour
 !
     call jevech('PCOMPOR', 'L', jv_compo)
-    read (zk16(jv_compo-1+NVAR),'(I16)') ncmp
-    read (zk16(jv_compo-1+MECA_NVAR),'(I16)') nvim
+    read (zk16(jv_compo-1+NVAR), '(I16)') ncmp
+    read (zk16(jv_compo-1+MECA_NVAR), '(I16)') nvim
 !
 ! - Compute
 !
     call jevech('PVARIGR', 'L', jv_varielga)
     call jevech('PVARINR', 'E', jv_varielno)
-    call posthm(option, inte_type, jv_gano, ncmp, nvim,&
+    call posthm(option, inte_type, jv_gano, ncmp, nvim, &
                 zr(jv_varielga), zr(jv_varielno))
 !
 end subroutine

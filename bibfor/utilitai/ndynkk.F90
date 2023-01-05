@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndynkk(sddyna, chaine, nomsd)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 !
-character(len=19) :: sddyna
-character(len=*) :: chaine
-character(len=19) :: nomsd
+    character(len=19) :: sddyna
+    character(len=*) :: chaine
+    character(len=19) :: nomsd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ character(len=19) :: nomsd
 !
 ! --- INITIALISATIONS
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     nomsd = ' '
 !
 ! --- ACCES AUX OBJETS DE LA SD SDDYNA
@@ -82,81 +82,81 @@ character(len=19) :: nomsd
         call jeveuo(tcha, 'L', jtcha)
     else
         goto 999
-    endif
+    end if
 !
     if (chaine(1:6) .eq. 'DEPENT') then
         cham24 = zk24(jvecen+1-1)
-    else if (chaine(1:6).eq.'VITENT') then
+    else if (chaine(1:6) .eq. 'VITENT') then
         cham24 = zk24(jvecen+2-1)
-    else if (chaine(1:6).eq.'ACCENT') then
+    else if (chaine(1:6) .eq. 'ACCENT') then
         cham24 = zk24(jvecen+3-1)
-    else if (chaine(1:6).eq.'DEPABS') then
+    else if (chaine(1:6) .eq. 'DEPABS') then
         cham24 = zk24(jvecab+1-1)
-    else if (chaine(1:6).eq.'VITABS') then
+    else if (chaine(1:6) .eq. 'VITABS') then
         cham24 = zk24(jvecab+2-1)
-    else if (chaine(1:6).eq.'ACCABS') then
+    else if (chaine(1:6) .eq. 'ACCABS') then
         cham24 = zk24(jvecab+3-1)
 !
-    else if (chaine(1:6).eq.'STADYN') then
+    else if (chaine(1:6) .eq. 'STADYN') then
         cham24 = zk24(jnosd-1+4)
 !
-    else if (chaine(1:11).eq.'OLDP_VEFEDO') then
+    else if (chaine(1:11) .eq. 'OLDP_VEFEDO') then
         cham24 = zk24(jveol+1-1)
-    else if (chaine(1:11).eq.'OLDP_VEFSDO') then
+    else if (chaine(1:11) .eq. 'OLDP_VEFSDO') then
         cham24 = zk24(jveol+2-1)
-    else if (chaine(1:11).eq.'OLDP_VEDIDO') then
+    else if (chaine(1:11) .eq. 'OLDP_VEDIDO') then
         cham24 = zk24(jveol+3-1)
-    else if (chaine(1:11).eq.'OLDP_VEDIDI') then
+    else if (chaine(1:11) .eq. 'OLDP_VEDIDI') then
         cham24 = zk24(jveol+4-1)
-    else if (chaine(1:11).eq.'OLDP_VEFINT') then
+    else if (chaine(1:11) .eq. 'OLDP_VEFINT') then
         cham24 = zk24(jveol+5-1)
-    else if (chaine(1:11).eq.'OLDP_VEONDP') then
+    else if (chaine(1:11) .eq. 'OLDP_VEONDP') then
         cham24 = zk24(jveol+6-1)
-    else if (chaine(1:11).eq.'OLDP_VELAPL') then
+    else if (chaine(1:11) .eq. 'OLDP_VELAPL') then
         cham24 = zk24(jveol+7-1)
-    else if (chaine(1:11).eq.'OLDP_VESSTF') then
+    else if (chaine(1:11) .eq. 'OLDP_VESSTF') then
         cham24 = zk24(jveol+8-1)
 !
-    else if (chaine(1:11).eq.'OLDP_CNFEDO') then
+    else if (chaine(1:11) .eq. 'OLDP_CNFEDO') then
         cham24 = zk24(jvaol+1-1)
-    else if (chaine(1:11).eq.'OLDP_CNFSDO') then
+    else if (chaine(1:11) .eq. 'OLDP_CNFSDO') then
         cham24 = zk24(jvaol+2-1)
-    else if (chaine(1:11).eq.'OLDP_CNDIDO') then
+    else if (chaine(1:11) .eq. 'OLDP_CNDIDO') then
         cham24 = zk24(jvaol+3-1)
-    else if (chaine(1:11).eq.'OLDP_CNDIDI') then
+    else if (chaine(1:11) .eq. 'OLDP_CNDIDI') then
         cham24 = zk24(jvaol+4-1)
-    else if (chaine(1:11).eq.'OLDP_CNFINT') then
+    else if (chaine(1:11) .eq. 'OLDP_CNFINT') then
         cham24 = zk24(jvaol+5-1)
-    else if (chaine(1:11).eq.'OLDP_CNONDP') then
+    else if (chaine(1:11) .eq. 'OLDP_CNONDP') then
         cham24 = zk24(jvaol+6-1)
-    else if (chaine(1:11).eq.'OLDP_CNLAPL') then
+    else if (chaine(1:11) .eq. 'OLDP_CNLAPL') then
         cham24 = zk24(jvaol+7-1)
-    else if (chaine(1:11).eq.'OLDP_CNSSTF') then
+    else if (chaine(1:11) .eq. 'OLDP_CNSSTF') then
         cham24 = zk24(jvaol+8-1)
-    else if (chaine(1:11).eq.'OLDP_CNCINE') then
+    else if (chaine(1:11) .eq. 'OLDP_CNCINE') then
         cham24 = zk24(jvaol+9-1)
-    else if (chaine(1:11).eq.'OLDP_CNVISS') then
+    else if (chaine(1:11) .eq. 'OLDP_CNVISS') then
         cham24 = zk24(jvaol+10-1)
-    else if (chaine(1:11).eq.'OLDP_CNSSTR') then
+    else if (chaine(1:11) .eq. 'OLDP_CNSSTR') then
         cham24 = zk24(jvaol+11-1)
-    else if (chaine(1:11).eq.'OLDP_CNELTC') then
+    else if (chaine(1:11) .eq. 'OLDP_CNELTC') then
         cham24 = zk24(jvaol+12-1)
-    else if (chaine(1:11).eq.'OLDP_CNELTF') then
+    else if (chaine(1:11) .eq. 'OLDP_CNELTF') then
         cham24 = zk24(jvaol+13-1)
 !
-    else if (chaine(1:6).eq.'CHONDP') then
+    else if (chaine(1:6) .eq. 'CHONDP') then
         cham24 = zk24(jtcha+1-1)
 !
 ! --- SD AMORTISSEMENT MODAL
 !
-    else if (chaine(1:6).eq.'SDAMMO') then
-        sdammo = zk24(jnosd-1+2)(1:19)
+    else if (chaine(1:6) .eq. 'SDAMMO') then
+        sdammo = zk24(jnosd-1+2) (1:19)
         cham24 = sdammo
 !
 ! --- SD EXCIT_SOL
 !
-    else if (chaine(1:6).eq.'SDEXSO') then
-        sdexso = zk24(jnosd-1+5)(1:15)
+    else if (chaine(1:6) .eq. 'SDEXSO') then
+        sdexso = zk24(jnosd-1+5) (1:15)
         cham24 = sdexso
 ! - Static modes for multi-support
     else if (chaine .eq. 'multSuppMode') then
@@ -167,72 +167,72 @@ character(len=19) :: nomsd
 !
 ! --- SD PROJECTION MODALE
 !
-    else if (chaine(1:11).eq.'PRMO_DEPGEM') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_DEPGEM') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.DGM'
-    else if (chaine(1:11).eq.'PRMO_DEPGEP') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_DEPGEP') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.DGP'
-    else if (chaine(1:11).eq.'PRMO_VITGEM') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_VITGEM') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.VGM'
-    else if (chaine(1:11).eq.'PRMO_VITGEP') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_VITGEP') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.VGP'
-    else if (chaine(1:11).eq.'PRMO_ACCGEM') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_ACCGEM') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.AGM'
-    else if (chaine(1:11).eq.'PRMO_ACCGEP') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_ACCGEP') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.AGP'
-    else if (chaine(1:11).eq.'PRMO_BASMOD') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_BASMOD') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.BAM'
-    else if (chaine(1:11).eq.'PRMO_MASGEN') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_MASGEN') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.MAG'
-    else if (chaine(1:11).eq.'PRMO_RIGGEN') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_RIGGEN') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.RIG'
-    else if (chaine(1:11).eq.'PRMO_AMOGEN') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_AMOGEN') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.AMOG'
-    else if (chaine(1:11).eq.'PRMO_FONGEN') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_FONGEN') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.FOG'
-    else if (chaine(1:11).eq.'PRMO_FORGEN') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_FORGEN') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.FRG'
-    else if (chaine(1:11).eq.'PRMO_ACCGCN') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_ACCGCN') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.AGN'
-    else if (chaine(1:11).eq.'PRMO_VALFON') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_VALFON') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.VAF'
-    else if (chaine(1:11).eq.'PRMO_FMODAL') then
-        sdprmo = zk24(jnosd-1+3)(1:15)
+    else if (chaine(1:11) .eq. 'PRMO_FMODAL') then
+        sdprmo = zk24(jnosd-1+3) (1:15)
         cham24 = sdprmo(1:15)//'.FMD'
 !
 ! --- SD MULTI_APPUi
 !
-    else if (chaine(1:11).eq.'MUAP_MAFDEP') then
-        sdmuap = zk24(jnosd-1+1)(1:15)
+    else if (chaine(1:11) .eq. 'MUAP_MAFDEP') then
+        sdmuap = zk24(jnosd-1+1) (1:15)
         cham24 = sdmuap(1:15)//'.FDP'
-    else if (chaine(1:11).eq.'MUAP_MAFVIT') then
-        sdmuap = zk24(jnosd-1+1)(1:15)
+    else if (chaine(1:11) .eq. 'MUAP_MAFVIT') then
+        sdmuap = zk24(jnosd-1+1) (1:15)
         cham24 = sdmuap(1:15)//'.FVT'
-    else if (chaine(1:11).eq.'MUAP_MAFACC') then
-        sdmuap = zk24(jnosd-1+1)(1:15)
+    else if (chaine(1:11) .eq. 'MUAP_MAFACC') then
+        sdmuap = zk24(jnosd-1+1) (1:15)
         cham24 = sdmuap(1:15)//'.FAC'
-    else if (chaine(1:11).eq.'MUAP_MAMULA') then
-        sdmuap = zk24(jnosd-1+1)(1:15)
+    else if (chaine(1:11) .eq. 'MUAP_MAMULA') then
+        sdmuap = zk24(jnosd-1+1) (1:15)
         cham24 = sdmuap(1:15)//'.MUA'
-    else if (chaine(1:11).eq.'MUAP_MAPSID') then
-        sdmuap = zk24(jnosd-1+1)(1:15)
+    else if (chaine(1:11) .eq. 'MUAP_MAPSID') then
+        sdmuap = zk24(jnosd-1+1) (1:15)
         cham24 = sdmuap(1:15)//'.PSD'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     nomsd = cham24(1:19)
 !

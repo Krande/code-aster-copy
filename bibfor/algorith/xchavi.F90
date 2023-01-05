@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
+subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit, &
                   jbeta, ndim, nfonn, sifval)
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -63,11 +63,11 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
 !
 !       LONGUEUR CARACTERISTIQUE MAILLAGE
 !       SERT POUR LA LONGUEUR D INFLUENCE
-    loncar = ( zr(jffis-1+4*(actpoi+sifval-1)+4) - zr(jffis-1+4* actpoi+4) ) / sifval
+    loncar = (zr(jffis-1+4*(actpoi+sifval-1)+4)-zr(jffis-1+4*actpoi+4))/sifval
     loncar = abs(loncar)
     pi = r8pi()
     call getvis(' ', 'NB_POINT_FOND', scal=nbptfo, nbret=ibid)
-    linf = ( zr(jffis-1+4*(actpoi+sifval-1)+4) - zr(jffis-1+4* actpoi+4) ) / nbptfo
+    linf = (zr(jffis-1+4*(actpoi+sifval-1)+4)-zr(jffis-1+4*actpoi+4))/nbptfo
     linf = abs(linf)
 !
     do i = 1, sifval
@@ -81,13 +81,13 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
 !
 !       ON REORTHOGONALISE (cf XPRVIT)
         call normev(n, mtast)
-        ASSERT(mtast.gt.0.d0)
+        ASSERT(mtast .gt. 0.d0)
         call provec(n, t, b)
         call normev(b, mtast)
-        ASSERT(mtast.gt.0.d0)
+        ASSERT(mtast .gt. 0.d0)
         call provec(b, n, tast)
         call normev(tast, mtast)
-        ASSERT(mtast.gt.0.d0)
+        ASSERT(mtast .gt. 0.d0)
         do j = 1, ndim
             t(j) = tast(j)
         end do
@@ -108,17 +108,17 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
 !
 !           DISTANCE PT NOUVEAU FRONT/PT ANCIEN FRONT
             do j = 1, ndim
-                ci(j)=zr(jfon-1+11*(ipt-1)+j)
-                mi(j)=ci(j)-m(j)
+                ci(j) = zr(jfon-1+11*(ipt-1)+j)
+                mi(j) = ci(j)-m(j)
             end do
 !
 !           DISTANCE PT PLAN (SIGNEE)
-            vitn = ddot(3,mi,1,b,1)
+            vitn = ddot(3, mi, 1, b, 1)
 !
 !           CALCUL DU VECTEUR VITESSE DS LE PLAN VECV
 !           ET SA DIRECTION NORMALISEE DIR
             do j = 1, ndim
-                vecv(j) = mi(j) - vitn*b(j)
+                vecv(j) = mi(j)-vitn*b(j)
                 dir(j) = vecv(j)
             end do
             call normev(dir, vnor)
@@ -130,29 +130,29 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
             if (poids .gt. 0.d0) then
                 linter = .true.
                 poiav = poitot
-                poitot = poitot + poids
-                if ((ddot(3,vecv,1,t,1)) .le. lcalc) then
+                poitot = poitot+poids
+                if ((ddot(3, vecv, 1, t, 1)) .le. lcalc) then
                     vpnt = vpnt*poiav/poitot
                 else
-                    vpnt = vpnt*poiav/poitot + vnor*poids/poitot
-                    sinb = ddot(3,dir,1,n,1)
-                    cosb = ddot(3,dir,1,t,1)
-                    beta1 = beta1*poiav/poitot + (atan2(sinb,cosb))*poids/poitot
-                endif
-            endif
+                    vpnt = vpnt*poiav/poitot+vnor*poids/poitot
+                    sinb = ddot(3, dir, 1, n, 1)
+                    cosb = ddot(3, dir, 1, t, 1)
+                    beta1 = beta1*poiav/poitot+(atan2(sinb, cosb))*poids/poitot
+                end if
+            end if
 !
         end do
 !
 !       STOCKAGE VITESSE ET ANGLE
 !       PROPAGATION MINIMALE LPROP
 !
-        if (.not.linter) then
+        if (.not. linter) then
             zr(jvit-1+i) = -2.d0
-        else if (vpnt.gt.lprop) then
+        else if (vpnt .gt. lprop) then
             zr(jvit-1+i) = vpnt
         else
             zr(jvit-1+i) = 0.d0
-        endif
+        end if
         zr(jbeta-1+i) = beta1
 !
     end do
@@ -170,14 +170,14 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
                     if (zr(jvit-1+j) .ge. 0.d0) goto 500
                 end do
 500             continue
-            else if (i.gt.sifval/2) then
+            else if (i .gt. sifval/2) then
                 do j = i-1, sifval/2, -1
                     if (zr(jvit-1+j) .ge. 0.d0) zr(jvit-1+i) = zr(jvit-1+j)
                     if (zr(jvit-1+j) .ge. 0.d0) zr(jbeta-1+i) = zr(jbeta-1+j)
                     if (zr(jvit-1+j) .ge. 0.d0) goto 505
                 end do
 505             continue
-            endif
-        endif
+            end if
+        end if
     end do
 end subroutine

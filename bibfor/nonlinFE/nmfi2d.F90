@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nmfi2d(npg, lgpg, mate, option, geom,&
-                  deplm, ddepl, sigmo, sigma, fint,&
-                  ktan, vim, vip, tm, tp,&
-                  carcri, compor, typmod, lMatr, lVect, lSigm,&
+subroutine nmfi2d(npg, lgpg, mate, option, geom, &
+                  deplm, ddepl, sigmo, sigma, fint, &
+                  ktan, vim, vip, tm, tp, &
+                  carcri, compor, typmod, lMatr, lVect, lSigm, &
                   codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,13 +38,13 @@ implicit none
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmfisa.h"
 !
-integer :: mate, npg, lgpg, codret
-real(kind=8) :: geom(2, 4), deplm(8), ddepl(8), tm, tp
-real(kind=8) :: fint(8), ktan(8, 8), sigmo(6, npg), sigma(6, npg)
-real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
-character(len=8) :: typmod(*)
-character(len=16) :: option, compor(*)
-aster_logical, intent(in) :: lMatr, lVect, lSigm
+    integer :: mate, npg, lgpg, codret
+    real(kind=8) :: geom(2, 4), deplm(8), ddepl(8), tm, tp
+    real(kind=8) :: fint(8), ktan(8, 8), sigmo(6, npg), sigma(6, npg)
+    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
+    character(len=8) :: typmod(*)
+    character(len=16) :: option, compor(*)
+    aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,7 +83,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    axi    = typmod(1) .eq. 'AXIS'
+    axi = typmod(1) .eq. 'AXIS'
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -95,18 +95,18 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
     if (lVect) then
         fint = 0.d0
-    endif
+    end if
     if (lMatr) then
         ktan = 0.d0
-    endif
+    end if
 !
 ! - Get element parameters
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS
-    call gedisc(2, nno, npg, zr(ivf), geom,&
+    call gedisc(2, nno, npg, zr(ivf), geom, &
                 coopg)
 !
 ! - Loop on Gauss points
@@ -124,52 +124,52 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
         sum = 0.d0
         dsu = 0.d0
         do j = 1, 8
-            sum(1) = sum(1) + b(1,j)*deplm(j)
-            sum(2) = sum(2) + b(2,j)*deplm(j)
+            sum(1) = sum(1)+b(1, j)*deplm(j)
+            sum(2) = sum(2)+b(2, j)*deplm(j)
         end do
         if (lVect) then
             do j = 1, 8
-                dsu(1) = dsu(1) + b(1,j)*ddepl(j)
-                dsu(2) = dsu(2) + b(2,j)*ddepl(j)
+                dsu(1) = dsu(1)+b(1, j)*ddepl(j)
+                dsu(2) = dsu(2)+b(2, j)*ddepl(j)
             end do
-        endif
+        end if
 ! ----- Compute behaviour
         code(kpg) = 0
-        BEHinteg%elem%coor_elga(kpg,1:2) = coopg(1:2,kpg)
+        BEHinteg%elem%coor_elga(kpg, 1:2) = coopg(1:2, kpg)
         sigmPost = 0.d0
-        call nmcomp(BEHinteg,&
-                    'RIGI', kpg, 1, 2, typmod,&
-                    mate, compor, carcri, tm, tp,&
-                    2, sum, dsu, 1, sigmo(1, kpg),&
+        call nmcomp(BEHinteg, &
+                    'RIGI', kpg, 1, 2, typmod, &
+                    mate, compor, carcri, tm, tp, &
+                    2, sum, dsu, 1, sigmo(1, kpg), &
                     vim(1, kpg), option, angmas, &
                     sigmPost, vip(1, kpg), 36, dsidep, codret)
 
         if (lSigm) then
-           sigma(1,kpg) = sigmPost(1)
-           sigma(2,kpg) = sigmPost(2)
-        endif
+            sigma(1, kpg) = sigmPost(1)
+            sigma(2, kpg) = sigmPost(2)
+        end if
 ! ----- Internal forces
         if (lVect) then
 !       Il faudrait séparer les deux => petit travail de réflexion
             ASSERT(lSigm)
             do i = 1, 8
                 do q = 1, 2
-                    fint(i) = fint(i) + poids*b(q,i)*sigma(q,kpg)
+                    fint(i) = fint(i)+poids*b(q, i)*sigma(q, kpg)
                 end do
             end do
-        endif
+        end if
 ! ----- Rigidity matrix
         if (lMatr) then
             do i = 1, 8
                 do j = 1, 8
                     do q = 1, 2
                         do s = 1, 2
-                            ktan(i,j) = ktan(i,j)+ poids*b(q,i)* dsidep(q,s)*b(s,j)
+                            ktan(i, j) = ktan(i, j)+poids*b(q, i)*dsidep(q, s)*b(s, j)
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     end do
 !
     call codere(code, npg, codret)

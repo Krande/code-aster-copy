@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hypela(fami, kpg, ksp, ndim,&
-                  typmod, imate, crit, eps,&
+subroutine hypela(fami, kpg, ksp, ndim, &
+                  typmod, imate, crit, eps, &
                   option, sig, dsidep, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/hyp3ci.h"
@@ -41,13 +41,13 @@ implicit none
     integer, intent(in)          :: kpg
     integer, intent(in)          :: ksp
     integer, intent(in)          :: ndim
-    character(len=8),intent(in)  :: typmod(*)
+    character(len=8), intent(in)  :: typmod(*)
     integer, intent(in)          :: imate
-    real(kind=8),intent(in)      :: crit(*)
-    real(kind=8),intent(in)      :: eps(2*ndim)
+    real(kind=8), intent(in)      :: crit(*)
+    real(kind=8), intent(in)      :: eps(2*ndim)
     character(len=16), intent(in):: option
-    real(kind=8),intent(out)     :: sig(6)
-    real(kind=8),intent(out)     :: dsidep(6,6)
+    real(kind=8), intent(out)     :: sig(6)
+    real(kind=8), intent(out)     :: dsidep(6, 6)
     integer, intent(out)         :: codret
 
 !
@@ -95,13 +95,13 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    dsidep(:,:) = 0.d0
-    poum = merge('-','+',option(1:9).eq.'RIGI_MECA')
+    dsidep(:, :) = 0.d0
+    poum = merge('-', '+', option(1:9) .eq. 'RIGI_MECA')
 !
 ! --- LECTURE DES CARACTERISTIQUES MATERIAU
 !
-    call hypmat(fami, kpg, ksp, poum, imate,&
-                    c10, c01, c20, k)
+    call hypmat(fami, kpg, ksp, poum, imate, &
+                c10, c01, c20, k)
 !
 ! --- A PRIORI ON A CONVERGE
 !
@@ -111,15 +111,15 @@ implicit none
 !
     epstot = 0
     do i = 1, 3
-        epstot( i)=eps(i)
+        epstot(i) = eps(i)
     end do
-    do i = 4,2*ndim
-        epstot(i)=eps(i)/sqrt(2.d0)
+    do i = 4, 2*ndim
+        epstot(i) = eps(i)/sqrt(2.d0)
     end do
 !
 ! --- CALCUL CONTRAINTES ET MATRICE TANGENTE
 !
-    if (typmod(1) .eq. '3D' .or. typmod(1) .eq. '3D_SI' .or. typmod(1)(1:6) .eq. 'D_PLAN') then
+    if (typmod(1) .eq. '3D' .or. typmod(1) .eq. '3D_SI' .or. typmod(1) (1:6) .eq. 'D_PLAN') then
 ! --- CALCUL DES ELONGATIONS
         c11 = 2.d0*epstot(1)+1.d0
         c12 = 2.d0*epstot(4)
@@ -128,47 +128,47 @@ implicit none
         c13 = 2.d0*epstot(5)
         c23 = 2.d0*epstot(6)
 ! --- CALCUL DES CONTRAINTES ISOTROPIQUES
-        call hyp3ci(c11, c22, c33, c12, c13,&
-                    c23, c10, c01, c20, siso,&
+        call hyp3ci(c11, c22, c33, c12, c13, &
+                    c23, c10, c01, c20, siso, &
                     codret)
         if (codret .eq. 1) then
             goto 99
-        endif
+        end if
 ! --- CALCUL DES CONTRAINTES VOLUMIQUES
-        call hyp3cv(c11, c22, c33, c12, c13,&
+        call hyp3cv(c11, c22, c33, c12, c13, &
                     c23, k, svol, codret)
         if (codret .eq. 1) then
             goto 99
-        endif
+        end if
 ! --- CALCUL DE LA MATRICE TANGENTE (PARTIE ISOTROPIQUE)
-        call hyp3di(c11, c22, c33, c12, c13,&
-                    c23, c10, c01, c20, ciso,&
+        call hyp3di(c11, c22, c33, c12, c13, &
+                    c23, c10, c01, c20, ciso, &
                     codret)
         if (codret .eq. 1) then
             goto 99
-        endif
+        end if
 ! --- CALCUL DE LA MATRICE TANGENTE (PARTIE VOLUMIQUE)
-        call hyp3dv(c11, c22, c33, c12, c13,&
+        call hyp3dv(c11, c22, c33, c12, c13, &
                     c23, k, cvol, codret)
         if (codret .eq. 1) then
             goto 99
-        endif
+        end if
 
 ! --- ASSEMBLAGE VOLUMIQUE/ISOTROPIQUE
 ! --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
 ! --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
         do i = 1, 3
-            sig( i) = siso( i)+svol( i)
+            sig(i) = siso(i)+svol(i)
             sig(3+i) = (siso(3+i)+svol(3+i))/2.d0
             do j = 1, 3
-                dsidep( i, j) = ciso( i, j)+cvol( i, j)
-                dsidep(3+i, j) = (ciso(3+i, j)+cvol(3+i, j))/sqrt( 2.d0)
-                dsidep( i,3+j) = (ciso( i,3+j)+cvol( i,3+j))/sqrt( 2.d0)
-                dsidep(3+i,3+j) = (ciso(3+i,3+j)+cvol(3+i,3+j))/ 2.d0
+                dsidep(i, j) = ciso(i, j)+cvol(i, j)
+                dsidep(3+i, j) = (ciso(3+i, j)+cvol(3+i, j))/sqrt(2.d0)
+                dsidep(i, 3+j) = (ciso(i, 3+j)+cvol(i, 3+j))/sqrt(2.d0)
+                dsidep(3+i, 3+j) = (ciso(3+i, 3+j)+cvol(3+i, 3+j))/2.d0
             end do
         end do
-    else if (typmod(1)(1:6) .eq. 'C_PLAN') then
-        epsi   = abs(crit(3))
+    else if (typmod(1) (1:6) .eq. 'C_PLAN') then
+        epsi = abs(crit(3))
         nitmax = abs(nint(crit(1)))
 
 ! --- CALCUL DES ELONGATIONS
@@ -177,26 +177,26 @@ implicit none
         c22 = 2.d0*epstot(2)+1.d0
         c33 = 1.d0
 ! --- CALCUL DES CONTRAINTES
-        call hypcpc(c11, c22, c33, c12, k,&
-                    c10, c01, c20, nitmax, epsi,&
+        call hypcpc(c11, c22, c33, c12, k, &
+                    c10, c01, c20, nitmax, epsi, &
                     sig, codret)
         if (codret .eq. 1) then
             goto 99
-        endif
+        end if
 ! --- CALCUL DE LA MATRICE TANGENTE
-        call hypcpd(c11, c22, c33, c12, k,&
+        call hypcpd(c11, c22, c33, c12, k, &
                     c10, c01, c20, dsidep, codret)
         if (codret .eq. 1) then
             goto 99
-        endif
+        end if
 ! --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
 ! --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
         do i = 1, 3
             sig(3+i) = sig(3+i)/2.d0
             do j = 1, 3
                 dsidep(3+i, j) = dsidep(3+i, j)/sqrt(2.d0)
-                dsidep( i,3+j) = dsidep( i,3+j)/sqrt(2.d0)
-                dsidep(3+i,3+j) = dsidep(3+i,3+j)/ 2.d0
+                dsidep(i, 3+j) = dsidep(i, 3+j)/sqrt(2.d0)
+                dsidep(3+i, 3+j) = dsidep(3+i, 3+j)/2.d0
             end do
         end do
 ! --- PRISE EN COMPTE DE L'HYPOTHESE DE CONTRAINTES PLANES DANS DSIDEP
@@ -204,14 +204,14 @@ implicit none
             if (m .ne. 3) then
                 do l = 1, 2*ndim
                     if (l .ne. 3) then
-                        dsidep(m,l )= dsidep(m,l) - 1.d0/dsidep(3,3)*dsidep(m,3)*dsidep(3,l)
-                    endif
+                        dsidep(m, l) = dsidep(m, l)-1.d0/dsidep(3, 3)*dsidep(m, 3)*dsidep(3, l)
+                    end if
                 end do
-            endif
+            end if
         end do
     else
         call utmess('F', 'ELASHYPER_97', sk=typmod(1))
-    endif
+    end if
 !
 ! --- POST-TRAITEMENT DES CONTRAINTES (PAS DE NOTATION DE VOIGT)
 !

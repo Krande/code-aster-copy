@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,9 +41,9 @@ function rsmxno(nomsd)
         call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
         ival = ordr(1)
         do k = 1, nbordr
-            ival = max (ival,ordr(k))
+            ival = max(ival, ordr(k))
         end do
-    endif
+    end if
     rsmxno = ival
 !
     call jedema()

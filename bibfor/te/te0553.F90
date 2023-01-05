@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0553(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/assert.h"
 !#include "asterc/r8vide.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,9 +59,9 @@ character(len=16), intent(in) :: option, nomte
     integer :: nno, npg, ipoids, ivf, idfde, igeom
     integer :: ldec, i, l, mater, ndim2
     character(len=8) :: nompar(2)
-    integer :: imate, j,  ll, ndim
-    character(len=16), parameter :: nomres(5) = (/'E        ', 'NU       ',&
-                                                  'RHO      ',&
+    integer :: imate, j, ll, ndim
+    character(len=16), parameter :: nomres(5) = (/'E        ', 'NU       ', &
+                                                  'RHO      ', &
                                                   'COEF_AMOR', 'LONG_CARA'/)
     integer :: ideplm, ideplp, ivectu
     integer :: nnos
@@ -71,16 +71,16 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
 !
     mater = zi(imate)
-    fami='RIGI'
-    poum='+'
+    fami = 'RIGI'
+    poum = '+'
     ASSERT(ndim .ne. 2)
-    ndim2=ndim+1
+    ndim2 = ndim+1
 !
     nompar(1) = 'X'
     nompar(2) = 'Y'
@@ -91,10 +91,10 @@ character(len=16), intent(in) :: option, nomte
 !
 !     VITESSE UNITAIRE DANS LES 3 DIRECTIONS
 !
-    vituni(1,1) = 1.d0
-    vituni(1,2) = 0.d0
-    vituni(2,1) = 0.d0
-    vituni(2,2) = 1.d0
+    vituni(1, 1) = 1.d0
+    vituni(1, 2) = 0.d0
+    vituni(2, 1) = 0.d0
+    vituni(2, 2) = 1.d0
 !
     vect = 0.d0
 !
@@ -104,22 +104,22 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get material properties
 !
-        idecpg = nno* (kpg-1) - 1
+        idecpg = nno*(kpg-1)-1
         ! ----- Coordinates for current Gauss point
         xygau(:) = 0.d0
         do i = 1, nno
-            idecno = ndim2* (i-1) - 1
+            idecno = ndim2*(i-1)-1
             do j = 1, ndim2
-                xygau(j) = xygau(j) + zr(ivf+i+idecpg)*zr(igeom+j+idecno)
-            enddo
+                xygau(j) = xygau(j)+zr(ivf+i+idecpg)*zr(igeom+j+idecno)
+            end do
         end do
 !
-        call rcvalb(fami, kpg, 1, poum, mater,&
-                    ' ', 'ELAS', 2, nompar, xygau,&
+        call rcvalb(fami, kpg, 1, poum, mater, &
+                    ' ', 'ELAS', 2, nompar, xygau, &
                     4, nomres, valres, icodre, 1)
 !       appel LONG_CARA en iarret = 0
-        call rcvalb(fami, kpg, 1, poum, mater,&
-                    ' ', 'ELAS', 2, nompar, xygau,&
+        call rcvalb(fami, kpg, 1, poum, mater, &
+                    ' ', 'ELAS', 2, nompar, xygau, &
                     1, nomres(5), valres(5), icodre(5), 0)
 !
         e = valres(1)
@@ -130,56 +130,56 @@ character(len=16), intent(in) :: option, nomte
         usl0 = 0.d0
         if (icodre(5) .eq. 0) then
             l0 = valres(5)
-            usl0=1.d0/l0
-        endif
-        lambda = e*nu/ (1.d0+nu)/ (1.d0-2.d0*nu)
-        mu = e/2.d0/ (1.d0+nu)
+            usl0 = 1.d0/l0
+        end if
+        lambda = e*nu/(1.d0+nu)/(1.d0-2.d0*nu)
+        mu = e/2.d0/(1.d0+nu)
         if (lDamp) then
             rhocp = coef_amor*sqrt((lambda+2.d0*mu)*rho)
             rhocs = coef_amor*sqrt(mu*rho)
         else
             rhocp = (lambda+2.d0*mu)*usl0
             rhocs = mu*usl0
-        endif
+        end if
 !
         ldec = (kpg-1)*nno
-        call vff2dn(ndim, nno, kpg, ipoids, idfde,&
+        call vff2dn(ndim, nno, kpg, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
-        jac = sqrt(nx*nx + ny*ny)
+        jac = sqrt(nx*nx+ny*ny)
 !
 !        --- CALCUL DE LA NORMALE UNITAIRE ---
 !
-        nux = nx / jac
-        nuy = ny / jac
+        nux = nx/jac
+        nuy = ny/jac
 !
 !        --- CALCUL DE V.N ---
 !
         scal = 0.d0
         do i = 1, nno
             do j = 1, 2
-                scal = nux*zr(ivf+ldec+i-1)*vituni(j,1)
-                scal = scal + nuy*zr(ivf+ldec+i-1)*vituni(j,2)
+                scal = nux*zr(ivf+ldec+i-1)*vituni(j, 1)
+                scal = scal+nuy*zr(ivf+ldec+i-1)*vituni(j, 2)
 !
 !        --- CALCUL DE LA VITESSE NORMALE ET DE LA VITESSE TANGENCIELLE
 !
                 vnx = nux*scal
                 vny = nuy*scal
-                vtx = zr(ivf+ldec+i-1)*vituni(j,1)
-                vty = zr(ivf+ldec+i-1)*vituni(j,2)
-                vtx = vtx - vnx
-                vty = vty - vny
+                vtx = zr(ivf+ldec+i-1)*vituni(j, 1)
+                vty = zr(ivf+ldec+i-1)*vituni(j, 2)
+                vtx = vtx-vnx
+                vty = vty-vny
 !
 !        --- CALCUL DU VECTEUR CONTRAINTE
 !
-                taux = rhocp*vnx + rhocs*vtx
-                tauy = rhocp*vny + rhocs*vty
+                taux = rhocp*vnx+rhocs*vtx
+                tauy = rhocp*vny+rhocs*vty
 !
 !        --- CALCUL DU VECTEUR ELEMENTAIRE
 !
                 do l = 1, nno
-                    ll = 2*l - 1
-                    vect(i,j,ll) = vect(i,j,ll) + taux*zr(ivf+ldec+l-1)*poids
-                    vect(i,j,ll+1)=vect(i,j,ll+1)+tauy*zr(ivf+ldec+l-1)*poids
+                    ll = 2*l-1
+                    vect(i, j, ll) = vect(i, j, ll)+taux*zr(ivf+ldec+l-1)*poids
+                    vect(i, j, ll+1) = vect(i, j, ll+1)+tauy*zr(ivf+ldec+l-1)*poids
                 end do
             end do
         end do
@@ -188,7 +188,7 @@ character(len=16), intent(in) :: option, nomte
     do i = 1, nno
         do j = 1, 2
             do ldec = 1, 2*nno
-                matr(2* (i-1)+j,ldec) = vect(i,j,ldec)
+                matr(2*(i-1)+j, ldec) = vect(i, j, ldec)
             end do
         end do
     end do
@@ -197,25 +197,25 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
 !
 !       --- PASSAGE AU STOCKAGE TRIANGULAIRE
 !
     if (lMatr .or. lDamp) then
         call writeMatrix('PMATUUR', 2*nno, 2*nno, ASTER_TRUE, matr)
-    endif
+    end if
     if (lVect) then
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
         do i = 1, 2*nno
-            depla(i) = zr(ideplm+i-1) + zr(ideplp+i-1)
+            depla(i) = zr(ideplm+i-1)+zr(ideplp+i-1)
             zr(ivectu+i-1) = 0.d0
         end do
         do i = 1, 2*nno
             do j = 1, 2*nno
-                zr(ivectu+i-1) = zr(ivectu+i-1) + matr(i,j)*depla(j)
+                zr(ivectu+i-1) = zr(ivectu+i-1)+matr(i, j)*depla(j)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,14 +66,14 @@ subroutine xdelt3(ndim, ksi, tabls, delta)
 ! --- CALCUL DE FCTG,D1FCTG,D2FCTG EN KSI
 ! ---           FCTG : LEVEL SET NORMALE
     do i = 1, nno
-        fctg = fctg + ff(i)*tabls(i)
-        dfctg=dfctg+tabls(i)*dff(1,i)
+        fctg = fctg+ff(i)*tabls(i)
+        dfctg = dfctg+tabls(i)*dff(1, i)
     end do
 !
 ! --- CALCUL DES QUANTITES A MINIMISER
 !     CALCUL DE DELTAS
 !
-    delta=fctg/dfctg
+    delta = fctg/dfctg
 !
     call jedema()
 end subroutine

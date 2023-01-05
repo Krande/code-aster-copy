@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcomp(jv_mater , metaPara , nume_comp, nb_phase,&
-                  dt10     , dt21     , inst2    ,&
-                  tno0     , tno1     , tno2     ,&
+subroutine nzcomp(jv_mater, metaPara, nume_comp, nb_phase, &
+                  dt10, dt21, inst2, &
+                  tno0, tno1, tno2, &
                   meta_prev, meta_curr)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,13 +32,13 @@ implicit none
 #include "asterfort/zedgar.h"
 #include "asterfort/Metallurgy_type.h"
 !
-integer, intent(in) :: jv_mater
-type(META_MaterialParameters), intent(in) :: metaPara
-integer, intent(in) :: nume_comp, nb_phase
-real(kind=8), intent(in) :: dt10, dt21, inst2
-real(kind=8), intent(in) :: tno0, tno1, tno2
-real(kind=8), intent(in) :: meta_prev(*)
-real(kind=8), intent(out) :: meta_curr(*)
+    integer, intent(in) :: jv_mater
+    type(META_MaterialParameters), intent(in) :: metaPara
+    integer, intent(in) :: nume_comp, nb_phase
+    real(kind=8), intent(in) :: dt10, dt21, inst2
+    real(kind=8), intent(in) :: tno0, tno1, tno2
+    real(kind=8), intent(in) :: meta_prev(*)
+    real(kind=8), intent(out) :: meta_curr(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,14 +66,14 @@ real(kind=8), intent(out) :: meta_curr(*)
     select case (nume_comp)
 !
     case (2)
-        call zacier(metaPara%steel, nb_phase,&
-                    tno0, tno1, tno2,&
-                    dt10, dt21,&
+        call zacier(metaPara%steel, nb_phase, &
+                    tno0, tno1, tno2, &
+                    dt10, dt21, &
                     meta_prev, meta_curr)
     case (1)
-        call zedgar(jv_mater, nb_phase,&
-                    tno1, tno2,&
-                    inst2, dt21,&
+        call zedgar(jv_mater, nb_phase, &
+                    tno1, tno2, &
+                    inst2, dt21, &
                     meta_prev, meta_curr)
     case default
         ASSERT(ASTER_FALSE)

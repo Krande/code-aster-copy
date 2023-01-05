@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cjstid(mod, mater, nvi, eps, sig,&
+subroutine cjstid(mod, mater, nvi, eps, sig, &
                   vin, dsde)
     implicit none
 !     CALCUL DE LA MATRICE TANGENTE DU PROBLEME CONTINU DE LA LOI CJS
@@ -53,95 +53,95 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
     real(kind=8) :: truc, signe, coef3, coef4, coef5
     character(len=8) :: mod
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
-    parameter   ( epssig = 1.d-8 )
-    data          kron  /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data          mun5  /-1.5d0/
-    data          zero  / 0.d0 /
-    data          d12   / .5d0 /
-    data          un    / 1.d0 /
-    data          deux  / 2.d0 /
-    data          trois / 3.d0 /
+    parameter(epssig=1.d-8)
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
+    data mun5/-1.5d0/
+    data zero/0.d0/
+    data d12/.5d0/
+    data un/1.d0/
+    data deux/2.d0/
+    data trois/3.d0/
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! - RECUPERATION DES GRANDEURS UTILES : I1, VARIABLES INTERNES R ET X, -
 ! --- PARAMETRES CJS, RIGIDITE HOOK ------------------------------------
 ! ======================================================================
-    pa = mater(12,2)
-    qinit = mater(13,2)
+    pa = mater(12, 2)
+    qinit = mater(13, 2)
 ! ======================================================================
 ! --- CALCUL DE LA TRACE DE SIG ----------------------------------------
 ! ======================================================================
-    i1 = trace(ndi,sig)
+    i1 = trace(ndi, sig)
     if ((i1+qinit) .eq. 0.0d0) then
-        i1 = -qinit+1.d-12 * pa
+        i1 = -qinit+1.d-12*pa
         pref = abs(pa)
     else
         pref = abs(i1+qinit)
-    endif
+    end if
 ! ======================================================================
     qiso = vin(1)
     r = vin(2)
     do i = 1, ndt
-       x(i) = vin(i+2)
+        x(i) = vin(i+2)
     end do
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES MATERIAUX -------------------------------
 ! ======================================================================
-    koe = mater(1,1)/trois/( un-deux*mater(2,1) )
-    beta = mater(1,2)
-    rm = mater(2,2)
-    n = mater(3,2)
-    kop = mater(4,2)
-    rc = mater(5,2)
-    a = mater(6,2)
-    b = mater(7,2)
-    c = mater(8,2)
-    gamma = mater(9,2)
-    mucjs = mater(10,2)
-    pco = mater(11,2)
-    pa = mater(12,2)
-    ke = koe * ((i1+qinit)/trois/pa)**n
-    kp = kop * (qiso/pa)**n
+    koe = mater(1, 1)/trois/(un-deux*mater(2, 1))
+    beta = mater(1, 2)
+    rm = mater(2, 2)
+    n = mater(3, 2)
+    kop = mater(4, 2)
+    rc = mater(5, 2)
+    a = mater(6, 2)
+    b = mater(7, 2)
+    c = mater(8, 2)
+    gamma = mater(9, 2)
+    mucjs = mater(10, 2)
+    pco = mater(11, 2)
+    pa = mater(12, 2)
+    ke = koe*((i1+qinit)/trois/pa)**n
+    kp = kop*(qiso/pa)**n
 ! ======================================================================
 ! --- OPERATEUR DE RIGIDITE CALCULE A ITERARTION -----------------------
 ! ======================================================================
-    e = mater(1,1) * ((i1+qinit)/trois/pa)**n
-    nu = mater(2,1)
-    al = e * (un-nu) / (un+nu) / (un-deux*nu)
-    la = nu * e / (un+nu) / (un-deux*nu)
-    mu = e * d12 / (un+nu)
-    hook(:,:) = zero
+    e = mater(1, 1)*((i1+qinit)/trois/pa)**n
+    nu = mater(2, 1)
+    al = e*(un-nu)/(un+nu)/(un-deux*nu)
+    la = nu*e/(un+nu)/(un-deux*nu)
+    mu = e*d12/(un+nu)
+    hook(:, :) = zero
 ! ======================================================================
 ! --- 3D/DP/AX ---------------------------------------------------------
 ! ======================================================================
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-       do i = 1, ndi
-          do j = 1, ndi
-             if (i .eq. j) hook(i,j) = al
-             if (i .ne. j) hook(i,j) = la
-          end do
-       end do
-       do i = ndi+1, ndt
-          do j = ndi+1, ndt
-             if (i .eq. j) hook(i,j) = deux* mu
-          end do
-       end do
+        do i = 1, ndi
+            do j = 1, ndi
+                if (i .eq. j) hook(i, j) = al
+                if (i .ne. j) hook(i, j) = la
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
+                if (i .eq. j) hook(i, j) = deux*mu
+            end do
+        end do
 
 ! ======================================================================
 ! --- CP/1D ------------------------------------------------------------
 ! ======================================================================
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
         call utmess('F', 'ALGORITH2_15')
-    endif
+    end if
 ! ======================================================================
 ! --- LOIS D'ECOUISSAGE DES VARIABLES INTERNES R ET X ------------------
 ! ======================================================================
 ! --- ECROUISSAGE ISOTROPE ---------------------------------------------
 ! ======================================================================
-    gr = - a * (un-r/rm)**deux * (i1+qinit) * ((i1+qinit)/trois/pa)**mun5
+    gr = -a*(un-r/rm)**deux*(i1+qinit)*((i1+qinit)/trois/pa)**mun5
 ! ======================================================================
 ! --- ECROUISSAGE CINEMATIQUE ------------------------------------------
 ! ======================================================================
@@ -149,23 +149,23 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
     sii = norm2(s(1:ndt))
     siirel = sii/pref
     cos3ts = cos3t(s, pref, epssig)
-    hts = hlode(gamma,cos3ts)
+    hts = hlode(gamma, cos3ts)
 ! ======================================================================
     call cjsqij(s, i1, x, q)
     qii = norm2(q(1:ndt))
     cos3tq = cos3t(q, pref, epssig)
-    htq = hlode(gamma,cos3tq)
+    htq = hlode(gamma, cos3tq)
 ! ======================================================================
 ! --- CALCUL DE Q ------------------------------------------------------
 ! ======================================================================
-    call calcq(q, gamma, pref, epssig, qq,&
+    call calcq(q, gamma, pref, epssig, qq, &
                codret)
 ! ======================================================================
 ! --- CALCUL DE PC (CONTRAINTE MOYENNE CRITIQUE) -----------------------
 ! ======================================================================
     qqii = norm2(qq(1:ndt))
     xii = norm2(x(1:ndt))
-    epsv = trace(ndi,eps)
+    epsv = trace(ndi, eps)
     pc = pco*exp(-c*epsv)
 ! ======================================================================
 ! --- CALCUL DE LA FONCTION PHI ----------------------------------------
@@ -175,110 +175,110 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
     else if (siirel .le. epssig) then
         cosa = un
         cosdif = un
-        rr = rc + mucjs*max(zero,log(trois*pc/(i1+qinit)))
-        phio = cosa/( rr - hts/htq*rm*cosdif)
-        phi = phio * hts * qqii
+        rr = rc+mucjs*max(zero, log(trois*pc/(i1+qinit)))
+        phio = cosa/(rr-hts/htq*rm*cosdif)
+        phi = phio*hts*qqii
     else
-        cosa = ( qii*qii - sii*sii - i1*xii*i1*xii ) / (deux*sii*i1* xii)
+        cosa = (qii*qii-sii*sii-i1*xii*i1*xii)/(deux*sii*i1*xii)
 !
-        tangs = sqrt(un-cos3ts*cos3ts) / cos3ts
-        tangq = sqrt(un-cos3tq*cos3tq) / cos3tq
-        tetas = atan2(tangs,1.d0) / trois
-        tetaq = atan2(tangq,1.d0) / trois
+        tangs = sqrt(un-cos3ts*cos3ts)/cos3ts
+        tangq = sqrt(un-cos3tq*cos3tq)/cos3tq
+        tetas = atan2(tangs, 1.d0)/trois
+        tetaq = atan2(tangq, 1.d0)/trois
         cosdif = cos(tetas-tetaq)
 !
-        rr = rc + mucjs*max(zero,log(trois*pc/(i1+qinit)))
-        phio = cosa/( rr - hts/htq*rm*cosdif)
-        phi = phio * hts * qqii
-    endif
+        rr = rc+mucjs*max(zero, log(trois*pc/(i1+qinit)))
+        phio = cosa/(rr-hts/htq*rm*cosdif)
+        phi = phio*hts*qqii
+    end if
 !
     do i = 1, ndt
-       gx(i) = (i1+qinit)/b*( qq(i) + phi*x(i) ) * ((i1+qinit)/trois/ pa)**mun5
+        gx(i) = (i1+qinit)/b*(qq(i)+phi*x(i))*((i1+qinit)/trois/pa)**mun5
     end do
 ! ======================================================================
 ! --- LOI D'ECOULEMENT DU MECANISME DEVIATOIRE -------------------------
 ! ======================================================================
-    truc = dot_product(qq(1:ndt), x(1:ndt)) - r
+    truc = dot_product(qq(1:ndt), x(1:ndt))-r
 !
     do i = 1, ndi
-       dfdds(i) = qq(i) - truc
+        dfdds(i) = qq(i)-truc
     end do
 !
     do i = ndi+1, ndt
-       dfdds(i) = qq(i)
+        dfdds(i) = qq(i)
     end do
 !
-    siic = -rc * (i1+qinit) / hts
+    siic = -rc*(i1+qinit)/hts
     signe = vin(nvi-1)
-    betapr = beta * (sii/siic - un) * signe
-    coef4 = un / sqrt( betapr*betapr + trois )
-    coef3 = coef4 * betapr / sii
+    betapr = beta*(sii/siic-un)*signe
+    coef4 = un/sqrt(betapr*betapr+trois)
+    coef3 = coef4*betapr/sii
 !
     do i = 1, ndt
-       norm(i) = coef3 * s(i) + coef4 * kron(i)
+        norm(i) = coef3*s(i)+coef4*kron(i)
     end do
 !
     truc = dot_product(dfdds(1:ndt), norm(1:ndt))
     do i = 1, ndt
-       gd(i) = dfdds(i) - truc * norm(i)
+        gd(i) = dfdds(i)-truc*norm(i)
     end do
 !
     trgd = zero
     do i = 1, ndi
-       trgd = trgd + gd(i)
+        trgd = trgd+gd(i)
     end do
 ! ======================================================================
 ! --- MODULE PLASTIQUE DEVIATOIRE : HDEV -------------------------------
 ! ======================================================================
     qgx = zero
     do i = 1, ndt
-       qgx = qgx + qq(i) * gx(i)
+        qgx = qgx+qq(i)*gx(i)
     end do
-    hdev = (i1+qinit) * (- gr + qgx)
+    hdev = (i1+qinit)*(-gr+qgx)
 ! ======================================================================
 ! --- CALCUL DU TERME DFDDS.HOOK.GD : DFHGD ----------------------------
 ! ======================================================================
     dfhgd = zero
     do i = 1, ndt
-       do j = 1, ndt
-          dfhgd = dfhgd + dfdds(i)*hook(i,j)*gd(j)
-       end do
+        do j = 1, ndt
+            dfhgd = dfhgd+dfdds(i)*hook(i, j)*gd(j)
+        end do
     end do
 ! ======================================================================
 ! --- CALCUL DU TERME HOOK.GD : HGD ------------------------------------
 ! ======================================================================
     hgd(:) = zero
     do i = 1, ndt
-       do j = 1, ndt
-          hgd(i) = hgd(i) + hook(i,j)*gd(j)
-       end do
+        do j = 1, ndt
+            hgd(i) = hgd(i)+hook(i, j)*gd(j)
+        end do
     end do
 ! ======================================================================
 ! --- CALCUL DU TERME HOOK.KRON : HK -----------------------------------
 ! ======================================================================
     hk(:) = zero
     do i = 1, ndt
-       do j = 1, ndt
-          hk(i) = hk(i) + hook(i,j)*kron(j)
-       end do
+        do j = 1, ndt
+            hk(i) = hk(i)+hook(i, j)*kron(j)
+        end do
     end do
 ! ======================================================================
 ! --- CALCUL DU TERME DFDDS.HOOK : DFH ---------------------------------
 ! ======================================================================
     dfh(:) = zero
     do i = 1, ndt
-       do j = 1, ndt
-          dfh(i) = dfh(i) + dfdds(j)*hook(j,i)
-       end do
+        do j = 1, ndt
+            dfh(i) = dfh(i)+dfdds(j)*hook(j, i)
+        end do
     end do
 ! ======================================================================
 ! --- CALCUL DU TERME DFDDS.HOOK.K : DFHK ------------------------------
 ! ======================================================================
     dfhk = zero
     do i = 1, ndt
-       do j = 1, ndt
-          dfhk = dfhk + dfdds(i)*hook(i,j)*kron(j)
-       end do
+        do j = 1, ndt
+            dfhk = dfhk+dfdds(i)*hook(i, j)*kron(j)
+        end do
     end do
 ! ======================================================================
 ! --- CALCUL DU TERME (KE+KP)*(HDEV+DFHGD)-1/3*KE*TRGD*DFHK : COEF5 ----
@@ -289,14 +289,14 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
     t1(:) = zero
     do i = 1, ndt
-       t1(i) = ke/coef5*((hdev+dfhgd)*kron(i) - trgd*dfh(i))
+        t1(i) = ke/coef5*((hdev+dfhgd)*kron(i)-trgd*dfh(i))
     end do
 ! ======================================================================
 ! --- CALCUL DU TERME ((KE+KP)*DFH-1/3*KE*DFHK*KRON)/COEF5 : T2 --------
 ! ======================================================================
     t2(:) = zero
     do i = 1, ndt
-       t2(i) = ((ke+kp)*dfh(i) - ke/trois*dfhk*kron(i))/coef5
+        t2(i) = ((ke+kp)*dfh(i)-ke/trois*dfhk*kron(i))/coef5
     end do
 ! ======================================================================
 ! --- CALCUL DE DSDE(I,J,K,L) = ----------------------------------------
@@ -309,11 +309,11 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- C'EST A DIRE :  DSDE = HOOK - HK*T1/TROIS - HGD*T2 ---------------
 ! ======================================================================
-    dsde(:,:) = 0.d0
+    dsde(:, :) = 0.d0
     do i = 1, ndt
-       do j = 1, ndt
-          dsde(i,j) = hook(i,j) - hk(i)*t1(j)/trois - hgd(i)*t2(j)
-       end do
+        do j = 1, ndt
+            dsde(i, j) = hook(i, j)-hk(i)*t1(j)/trois-hgd(i)*t2(j)
+        end do
     end do
 ! ======================================================================
     call jedema()

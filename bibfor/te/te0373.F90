@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0373(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,10 +66,10 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get element parameters
 !
-    l_axis = (lteatt('AXIS','OUI'))
+    l_axis = (lteatt('AXIS', 'OUI'))
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .le. 3)
     if (fsi_form .eq. 'FSI_UPPHI') then
@@ -77,13 +77,13 @@ character(len=16), intent(in) :: option, nomte
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndofbynode = 1
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, cele_r_ = celer)
+    call getFluidPara(j_mater, cele_r_=celer)
 !
 ! - Output field
 !
@@ -99,20 +99,20 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
-        call vff2dn(ndim, nno, ipg, ipoids, idfde,&
+        call vff2dn(ndim, nno, ipg, ipoids, idfde, &
                     zr(jv_geom), nx, ny, poids)
         if (l_axis) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(jv_geom+2*(i-1))*zr(ivf+ldec+i-1)
+                r = r+zr(jv_geom+2*(i-1))*zr(ivf+ldec+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 ! ----- Compute vector
         do i = 1, nno
             ii = ndofbynode*i
-            zr(jv_vect+ii-1) = zr(jv_vect+ii-1) +&
-                               poids*zr(jv_onde+ipg-1)* zr(ivf+ldec+i-1)/celer
+            zr(jv_vect+ii-1) = zr(jv_vect+ii-1)+ &
+                               poids*zr(jv_onde+ipg-1)*zr(ivf+ldec+i-1)/celer
         end do
     end do
 !

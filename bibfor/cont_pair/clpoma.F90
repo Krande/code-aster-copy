@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine clpoma(elem_dime, elem_code, elem_coor, elem_nbnode, elem_weight)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/elraga.h"
 #include "asterfort/subaco.h"
@@ -26,11 +26,11 @@ implicit none
 #include "asterfort/sumetr.h"
 #include "asterfort/assert.h"
 !
-integer, intent(in) :: elem_dime
-character(len=8), intent(in) :: elem_code
-real(kind=8), intent(in) :: elem_coor(3,9)
-integer, intent(in) :: elem_nbnode
-real(kind=8), intent(out) :: elem_weight
+    integer, intent(in) :: elem_dime
+    character(len=8), intent(in) :: elem_code
+    real(kind=8), intent(in) :: elem_coor(3, 9)
+    integer, intent(in) :: elem_nbnode
+    real(kind=8), intent(out) :: elem_weight
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,19 +61,19 @@ real(kind=8), intent(out) :: elem_weight
 !
 ! - Select integration scheme
 !
-    if (elem_code.eq. 'SE2') then
+    if (elem_code .eq. 'SE2') then
         gauss_family = 'FPG3'
-    elseif (elem_code.eq. 'SE3') then
+    elseif (elem_code .eq. 'SE3') then
         gauss_family = 'FPG3'
-    elseif (elem_code.eq. 'TR3') then
+    elseif (elem_code .eq. 'TR3') then
         gauss_family = 'FPG3'
-    elseif (elem_code.eq. 'TR6') then
+    elseif (elem_code .eq. 'TR6') then
         gauss_family = 'FPG6'
-    elseif (elem_code.eq. 'QU4') then
+    elseif (elem_code .eq. 'QU4') then
         gauss_family = 'FPG9'
-    elseif (elem_code.eq. 'QU8') then
+    elseif (elem_code .eq. 'QU8') then
         gauss_family = 'FPG9'
-    elseif (elem_code.eq. 'QU9') then
+    elseif (elem_code .eq. 'QU9') then
         gauss_family = 'FPG9'
     else
         ASSERT(.false.)
@@ -82,7 +82,7 @@ real(kind=8), intent(out) :: elem_weight
 ! - Get integration scheme
 !
     ndim = elem_dime-1
-    call elraga(elem_code   , gauss_family, ndim, nb_gauss, gauss_coor,&
+    call elraga(elem_code, gauss_family, ndim, nb_gauss, gauss_coor, &
                 gauss_weight)
 !
 ! - Loop on integration points
@@ -91,20 +91,20 @@ real(kind=8), intent(out) :: elem_weight
         jacobi = 0.d0
         coptg1 = gauss_coor((elem_dime-1)*(i_gauss-1)+1)
         coptg2 = gauss_coor((elem_dime-1)*(i_gauss-1)+2)
-        call mmdonf(elem_dime, elem_nbnode, elem_code, coptg1, coptg2,&
+        call mmdonf(elem_dime, elem_nbnode, elem_code, coptg1, coptg2, &
                     dff)
         if ((elem_dime-1) .eq. 2) then
             call subaco(elem_nbnode, dff, elem_coor, cova)
             call sumetr(cova, metr, jacobi)
         else if ((elem_dime-1) .eq. 1) then
-            dxdk=0.d0
-            dydk=0.d0
-            dzdk=0.d0
+            dxdk = 0.d0
+            dydk = 0.d0
+            dzdk = 0.d0
             do ino = 1, elem_nbnode
-                dxdk = dxdk + elem_coor(1,ino)*dff(1,ino)
-                dydk = dydk + elem_coor(2,ino)*dff(1,ino)
+                dxdk = dxdk+elem_coor(1, ino)*dff(1, ino)
+                dydk = dydk+elem_coor(2, ino)*dff(1, ino)
                 if (elem_dime .eq. 3) then
-                    dzdk = dzdk + elem_coor(3,ino)*dff(1,ino)
+                    dzdk = dzdk+elem_coor(3, ino)*dff(1, ino)
                 end if
             end do
             jacobi = sqrt(dxdk**2+dydk**2+dzdk**2)

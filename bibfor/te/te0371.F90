@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,19 +47,19 @@ subroutine te0371(option, nomte)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfrde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATUUR', 'E', imatuu)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'FLUIDE', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
 !     INITIALISATION DE LA MATRICE
@@ -68,7 +68,7 @@ subroutine te0371(option, nomte)
         do l = 1, 2
             do i = 1, nno
                 do j = 1, i
-                    a(k,l,i,j) = 0.d0
+                    a(k, l, i, j) = 0.d0
                 end do
             end do
         end do
@@ -81,15 +81,15 @@ subroutine te0371(option, nomte)
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
 !
-        dxde=0.d0
-        dxdk=0.d0
-        dyde=0.d0
-        dydk=0.d0
+        dxde = 0.d0
+        dxdk = 0.d0
+        dyde = 0.d0
+        dydk = 0.d0
         do i = 1, nno
-            dxde=dxde+zr(igeom+3*(i-1))*zr(idfrde+kdec+(i-1)*ndim)
-            dxdk=dxdk+zr(igeom+3*(i-1))*zr(idfrde+kdec+(i-1)*ndim+1)
-            dyde=dyde+zr(igeom+3*(i-1)+1)*zr(idfrde+kdec+(i-1)*ndim)
-            dydk=dydk+zr(igeom+3*(i-1)+1)*zr(idfrde+kdec+(i-1)*ndim+1)
+            dxde = dxde+zr(igeom+3*(i-1))*zr(idfrde+kdec+(i-1)*ndim)
+            dxdk = dxdk+zr(igeom+3*(i-1))*zr(idfrde+kdec+(i-1)*ndim+1)
+            dyde = dyde+zr(igeom+3*(i-1)+1)*zr(idfrde+kdec+(i-1)*ndim)
+            dydk = dydk+zr(igeom+3*(i-1)+1)*zr(idfrde+kdec+(i-1)*ndim+1)
         end do
         jac = dxde*dydk-dxdk*dyde
         poids = abs(jac)*zr(ipoids+ipg-1)
@@ -100,7 +100,7 @@ subroutine te0371(option, nomte)
 !
         do ino = 1, nno
             do jno = 1, ino
-                a(1,2,ino,jno) = a(1,2,ino,jno) + poids * rho(1) * zr(ivf+ldec+ino-1) * zr(ivf+ld&
+                a(1, 2, ino, jno) = a(1, 2, ino, jno)+poids*rho(1)*zr(ivf+ldec+ino-1)*zr(ivf+ld&
                                  &ec+jno-1)
             end do
         end do
@@ -108,7 +108,7 @@ subroutine te0371(option, nomte)
 !
     do ino = 1, nno
         do jno = 1, ino
-            a(2,1,ino,jno) = a(1,2,ino,jno)
+            a(2, 1, ino, jno) = a(1, 2, ino, jno)
         end do
     end do
 !
@@ -119,10 +119,10 @@ subroutine te0371(option, nomte)
     do k = 1, 2
         do l = 1, 2
             do i = 1, nno
-                ik = ((2*i+k-3) * (2*i+k-2)) / 2
+                ik = ((2*i+k-3)*(2*i+k-2))/2
                 do j = 1, i
-                    ijkl = ik + 2 * (j-1) + l
-                    zr(imatuu+ijkl-1) = a(k,l,i,j)
+                    ijkl = ik+2*(j-1)+l
+                    zr(imatuu+ijkl-1) = a(k, l, i, j)
                 end do
             end do
         end do

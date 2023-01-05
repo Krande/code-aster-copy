@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0319(option, nomte)
 !-----------------------------------------------------------------------
     integer :: l, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -63,24 +63,24 @@ subroutine te0319(option, nomte)
 !
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemps)],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
                     1, nomres, valres, icodre, 1)
         lambda = valres(1)
-    else if (phenom.eq.'THER_ORTH') then
+    else if (phenom .eq. 'THER_ORTH') then
         call utmess('F', 'ELEMENTS2_67')
-    else if (phenom.eq.'THER_NL_ORTH') then
+    else if (phenom .eq. 'THER_NL_ORTH') then
         call utmess('F', 'ELEMENTS2_67')
-    else if (phenom.ne.'THER_NL') then
+    else if (phenom .ne. 'THER_NL') then
         call utmess('F', 'ELEMENTS2_63')
-    endif
+    end if
 !
     a = 0.d0
     b = 0.d0
     c = 0.d0
     do kp = 1, npg1
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy, dfdz)
 !
 !     CALCUL DU GRADIENT DE TEMPERATURE AUX POINTS DE GAUSS
@@ -91,25 +91,25 @@ subroutine te0319(option, nomte)
         fluxz = 0.0d0
 !
         do i = 1, nno
-            tpg = tpg + zr(itempe-1+i)*zr(ivf+l+i-1)
-            fluxx = fluxx + zr(itempe-1+i)*dfdx(i)
-            fluxy = fluxy + zr(itempe-1+i)*dfdy(i)
-            fluxz = fluxz + zr(itempe-1+i)*dfdz(i)
+            tpg = tpg+zr(itempe-1+i)*zr(ivf+l+i-1)
+            fluxx = fluxx+zr(itempe-1+i)*dfdx(i)
+            fluxy = fluxy+zr(itempe-1+i)*dfdy(i)
+            fluxz = fluxz+zr(itempe-1+i)*dfdz(i)
         end do
 !
         if (phenom .eq. 'THER_NL') then
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA', valres, icodre, 1)
             lambda = valres(1)
-        endif
+        end if
 !
-        a = a - lambda*fluxx/npg1
-        b = b - lambda*fluxy/npg1
-        c = c - lambda*fluxz/npg1
+        a = a-lambda*fluxx/npg1
+        b = b-lambda*fluxy/npg1
+        c = c-lambda*fluxz/npg1
     end do
     do kp = 1, npg1
-        zr(iflux+ (kp-1)) = (a**2+b**2+c**2)/lambda
+        zr(iflux+(kp-1)) = (a**2+b**2+c**2)/lambda
     end do
 ! FIN ------------------------------------------------------------------
 end subroutine

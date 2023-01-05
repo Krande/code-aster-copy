@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,47 +50,47 @@ subroutine ibbase(ier)
     integer :: i, ibase, ideb, indbas, indcas, ltt
     integer :: mxbase, mxcas, nb, nbbase, n
 !-----------------------------------------------------------------------
-    parameter   ( mxbase = 2 , n = 5 )
+    parameter(mxbase=2, n=5)
     integer :: banbbl(mxbase), balgbl(mxbase), balgre(mxbase)
 !
 !     --- VALEURS PAR DEFAUTS DES BASES --------------------------------
     integer :: presba(mxbase)
-    character(len=16) :: nomba (mxbase), nom
-    character(len=16) :: stin (mxbase), stout (mxbase)
+    character(len=16) :: nomba(mxbase), nom
+    character(len=16) :: stin(mxbase), stout(mxbase)
     character(len=16) :: cas
     character(len=32) :: titrba(mxbase)
 !
 !     --- VALEURS PAR DEFAUTS DES CAS ----------------------------------
-    parameter   ( mxcas  = 3 )
-    character(len=16) :: casca (mxcas)
+    parameter(mxcas=3)
+    character(len=16) :: casca(mxcas)
     character(len=24) :: valk(3)
     integer :: nbblca(mxbase, mxcas), lgblca(mxbase, mxcas)
     integer :: lgreca(mxbase, mxcas)
     integer :: vali(2), info
 !
     integer :: lfic, mfic
-    common /fenvje/  lfic(n),mfic
+    common/fenvje/lfic(n), mfic
 !
-    data      nomba  /'GLOBALE '   , 'VOLATILE'   /
-    data      presba /    0        ,     0        /
-    data      titrba /'BASEGLOBALE', 'BASEVOLATILE'/
-    data      stin   /'........'   , 'DEBUT   '    /
-    data      stout  /'SAUVE   '   , 'SAUVE   '    /
+    data nomba/'GLOBALE ', 'VOLATILE'/
+    data presba/0, 0/
+    data titrba/'BASEGLOBALE', 'BASEVOLATILE'/
+    data stin/'........', 'DEBUT   '/
+    data stout/'SAUVE   ', 'SAUVE   '/
 !
 !
-    data casca  /'PETIT           ','MOYEN           ','GROS            '/
+    data casca/'PETIT           ', 'MOYEN           ', 'GROS            '/
 !
 !     TAILLE(GLOBALE)        PETIT   MOYEN      GROS
     data&
-     &  (nbblca(1,i),i=1,3)/   0      , 0     ,    0        /,&
-     &  (lgblca(1,i),i=1,3)/ 100   ,  100     ,  100        /,&
-     &  (lgreca(1,i),i=1,3)/2000   , 4000     , 6000        /
+     &  (nbblca(1, i), i=1, 3)/0, 0, 0/,&
+     &  (lgblca(1, i), i=1, 3)/100, 100, 100/,&
+     &  (lgreca(1, i), i=1, 3)/2000, 4000, 6000/
 !
 !     TAILLE(VOLATILE)       PETIT   MOYEN      GROS
     data&
-     &  (nbblca(2,i),i=1,3)/   0   ,    0     ,    0         /,&
-     &  (lgblca(2,i),i=1,3)/ 100   ,  100     ,  100         /,&
-     &  (lgreca(2,i),i=1,3)/2000   , 2000     , 2000         /
+     &  (nbblca(2, i), i=1, 3)/0, 0, 0/,&
+     &  (lgblca(2, i), i=1, 3)/100, 100, 100/,&
+     &  (lgreca(2, i), i=1, 3)/2000, 2000, 2000/
 !
 !     ------------------------------------------------------------------
 !
@@ -103,9 +103,9 @@ subroutine ibbase(ier)
 !
     indcas = 1
     do indbas = 1, mxbase
-        banbbl(indbas) = nbblca(indbas,indcas)
-        balgbl(indbas) = lgblca(indbas,indcas)
-        balgre(indbas) = lgreca(indbas,indcas)
+        banbbl(indbas) = nbblca(indbas, indcas)
+        balgbl(indbas) = lgblca(indbas, indcas)
+        balgre(indbas) = lgreca(indbas, indcas)
     end do
 !
 !     --- NOMBRE DE BASES SPECIFIEES PAR L'UTILISATEUR -----------------
@@ -119,20 +119,20 @@ subroutine ibbase(ier)
         call utremt(nom, nomba, mxbase, indbas)
         if (indbas .eq. 0) then
             indbas = 1
-            ier = ier + 1
-            vali (1) = mxbase
-            valk (1) = nom
-            valk (2) = nomba(1)
-            valk (3) = nomba(2)
+            ier = ier+1
+            vali(1) = mxbase
+            valk(1) = nom
+            valk(2) = nomba(1)
+            valk(3) = nomba(2)
             call utmess('E', 'SUPERVIS_81', nk=3, valk=valk, si=vali(1))
         else
             if (presba(indbas) .ne. 0) then
-                ier = ier + 1
+                ier = ier+1
                 call utmess('E', 'SUPERVIS_13', sk=nom)
             else
                 presba(indbas) = 1
-            endif
-        endif
+            end if
+        end if
 !
 !        --- MOT CLE "CAS" ---------------------------------------------
 !
@@ -141,21 +141,21 @@ subroutine ibbase(ier)
             call utremt(cas, casca, mxcas, indcas)
             if (indcas .eq. 0) then
                 indcas = 1
-                ier = ier + 1
-                vali (1)= mxcas
-                valk (1) = cas
-                valk (2) = casca(1)
-                valk (3) = casca(2)
+                ier = ier+1
+                vali(1) = mxcas
+                valk(1) = cas
+                valk(2) = casca(1)
+                valk(3) = casca(2)
                 call utmess('E', 'SUPERVIS_82', nk=3, valk=valk, si=vali(1))
-            endif
-        endif
+            end if
+        end if
 !
 !        ---NOMBRE DE BLOC D'ENREGISTREMENT ----------------------------
-        banbbl(indbas) = nbblca(indbas,indcas)
+        banbbl(indbas) = nbblca(indbas, indcas)
         call getvis(motfac, 'NMAX_ENRE', iocc=ibase, scal=banbbl(indbas), nbret=nb)
 !
 !        --- LONGUEUR D'UN BLOC D'ENREGISTREMENT -----------------------
-        balgbl(indbas) = lgblca(indbas,indcas)
+        balgbl(indbas) = lgblca(indbas, indcas)
         call getvis(motfac, 'LONG_ENRE', iocc=ibase, scal=balgbl(indbas), nbret=nb)
 !
 !       valeur par defaut issue du common
@@ -163,14 +163,14 @@ subroutine ibbase(ier)
 !
         ltt = banbbl(indbas)*balgbl(indbas)*loisem()
         if (ltt .gt. mofiem()) then
-            ier = ier + 1
-            vali (1) = ltt
-            vali (2) = mofiem()
+            ier = ier+1
+            vali(1) = ltt
+            vali(2) = mofiem()
             call utmess('E', 'SUPERVIS_83', ni=2, vali=vali)
-        endif
+        end if
 !
 !        --- MOT CLE "LONG_REPE" ---------------------------------------
-        balgre(indbas) = lgreca(indbas,indcas)
+        balgre(indbas) = lgreca(indbas, indcas)
         call getvis(motfac, 'LONG_REPE', iocc=ibase, scal=balgre(indbas), nbret=nb)
 !
 !        --- MOT CLE "TITRE" -------------------------------------------
@@ -184,11 +184,11 @@ subroutine ibbase(ier)
         call utremt('GLOBALE', nomba, mxbase, indbas)
         if (indbas .gt. 0) then
             if (stin(indbas) .ne. 'POURSUITE') then
-                ier = ier + 1
+                ier = ier+1
                 call utmess('E', 'SUPERVIS_14', sk=stin(indbas))
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !     --- DEFINITION DES UNITES LOGIQUES DES BASES DE DONNEES ---
 !
@@ -201,12 +201,12 @@ subroutine ibbase(ier)
 !        --- INITIALISATION DE CHAQUE BASE ---
         ideb = 1
         do ibase = ideb, mxbase
-            call jeinif(stin(ibase), stout(ibase), nomba(ibase)(1:8), nomba(ibase)(1:1),&
-                        balgre(ibase), banbbl(ibase), balgbl( ibase))
+            call jeinif(stin(ibase), stout(ibase), nomba(ibase) (1:8), nomba(ibase) (1:1), &
+                        balgre(ibase), banbbl(ibase), balgbl(ibase))
         end do
     else
 !
         call utmess('E', 'SUPERVIS_15')
-    endif
+    end if
 !
 end subroutine

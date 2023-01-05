@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function dmvpdt(rho12, alp12, h11, h12,&
-                satur, phi  ,&
-                pvp  , temp)
+function dmvpdt(rho12, alp12, h11, h12, &
+                satur, phi, &
+                pvp, temp)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: rho12, alp12, h11, h12
-real(kind=8), intent(in) :: satur, phi
-real(kind=8), intent(in) :: pvp, temp
-real(kind=8) :: dmvpdt
+    real(kind=8), intent(in) :: rho12, alp12, h11, h12
+    real(kind=8), intent(in) :: satur, phi
+    real(kind=8), intent(in) :: pvp, temp
+    real(kind=8) :: dmvpdt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,6 +47,6 @@ real(kind=8) :: dmvpdt
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dmvpdt = rho12*(rho12*phi*(1.d0-satur)*(h12-h11)/pvp/temp - 3.d0*alp12)
+    dmvpdt = rho12*(rho12*phi*(1.d0-satur)*(h12-h11)/pvp/temp-3.d0*alp12)
 !
 end function

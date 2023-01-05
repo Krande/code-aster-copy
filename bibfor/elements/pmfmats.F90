@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine pmfmats(icdmat, nomats)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-implicit none
+    implicit none
 
 #include "jeveux.h"
 #include "MultiFiber_type.h"
@@ -51,16 +51,16 @@ implicit none
     integer, pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-    if (.not.lteatt('TYPMOD2','PMF')) then
-        nomats=' '
+    if (.not. lteatt('TYPMOD2', 'PMF')) then
+        nomats = ' '
     else
         call jevech('PCOMPOR', 'L', icompo)
         call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
-        call jeveuo(zk16(icompo-1+MULTCOMP)(1:8)//'.CPRI', 'L', vi=cpri)
+        call jeveuo(zk16(icompo-1+MULTCOMP) (1:8)//'.CPRI', 'L', vi=cpri)
         ! Nombre de groupe de fibre
-        nbgfmx=cpri(MULTI_FIBER_NBGRFIBR)
+        nbgfmx = cpri(MULTI_FIBER_NBGRFIBR)
         ! Le matériau de torsion c'est le dernier
-        nomats=zk24(isdcom-1+nbgfmx*MULTI_FIBER_SIZEK+1)(1:8)
-    endif
+        nomats = zk24(isdcom-1+nbgfmx*MULTI_FIBER_SIZEK+1) (1:8)
+    end if
 
 end subroutine

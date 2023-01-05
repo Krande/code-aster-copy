@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-subroutine cgleco(resu, modele, mate, iord0, compor,&
+subroutine cgleco(resu, modele, mate, iord0, compor, &
                   incr)
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -38,12 +38,12 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: iord0
-character(len=8), intent(in) :: resu
-character(len=8), intent(in) :: modele
-character(len=8), intent(in) :: mate
-character(len=19), intent(out) :: compor
-aster_logical, intent(out) :: incr
+    integer, intent(in) :: iord0
+    character(len=8), intent(in) :: resu
+    character(len=8), intent(in) :: modele
+    character(len=8), intent(in) :: mate
+    character(len=19), intent(out) :: compor
+    aster_logical, intent(out) :: incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,14 +102,14 @@ aster_logical, intent(out) :: incr
             limpel = .true.
             call comp_init(mesh, compor, 'V')
             call comp_meca_elas(compor, l_etat_init)
-        endif
+        end if
     else
 ! ----- Get COMPORTEMENT from command file
         call nmdocc(modele, mate, l_etat_init, compor, 'V')
         if (niv .ge. 2) then
             call comp_info(modele, compor)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Incremental comportement or not ?
 !
@@ -119,12 +119,12 @@ aster_logical, intent(out) :: incr
         call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
         if (repk .eq. 'ELAS') then
             incr = .false.
-        else if (repk.eq.'INCR'.or.repk.eq.'MIXTE') then
+        else if (repk .eq. 'INCR' .or. repk .eq. 'MIXTE') then
             incr = .true.
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 !  -Si Comportement dans CALC_G(alors RELATION est renseigne) ---> emission d'un message d'alarme !
 !    normalement le comportement est recupere dans Meca_stat ou stat_non_line.
@@ -141,8 +141,8 @@ aster_logical, intent(out) :: incr
 !
     if (incr) then
         call cgvein(compor)
-    endif
+    end if
 !
     call jedema()
 !
-    end subroutine
+end subroutine

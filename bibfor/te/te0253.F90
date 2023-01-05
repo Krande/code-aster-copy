@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 subroutine te0253(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -36,7 +36,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ character(len=16), intent(in) :: option, nomte
     integer :: jv_geom, jv_mate
     integer :: jv_vect, jv_codret, jv_matr
     character(len=16) :: rela_comp
-    real(kind=8) :: a(2, 2, 9, 9), mmat(9,9)
+    real(kind=8) :: a(2, 2, 9, 9), mmat(9, 9)
     real(kind=8) :: b(18, 18), ul(18), c(171)
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, rho, celer
@@ -75,8 +75,8 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    a     = 0.d0
-    mmat  = 0.d0
+    a = 0.d0
+    mmat = 0.d0
     lVect = ASTER_FALSE
     lMatr = ASTER_FALSE
     lVari = ASTER_FALSE
@@ -84,20 +84,20 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Check behaviour
 !
-    if (option(1:9) .eq. 'FULL_MECA' .or.&
-        option .eq. 'RAPH_MECA' .or.&
+    if (option(1:9) .eq. 'FULL_MECA' .or. &
+        option .eq. 'RAPH_MECA' .or. &
         option .eq. 'RIGI_MECA_TANG') then
         call jevech('PCOMPOR', 'L', jv_compo)
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(jv_compo),&
-                             lMatr , lVect ,&
-                             lVari , lSigm ,&
+        call behaviourOption(option, zk16(jv_compo), &
+                             lMatr, lVect, &
+                             lVari, lSigm, &
                              codret)
         rela_comp = zk16(jv_compo-1+RELA_NAME)
         if (rela_comp .ne. 'ELAS') then
             call utmess('F', 'FLUID1_1')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Input fields
 !
@@ -107,13 +107,13 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    l_axis = (lteatt('AXIS','OUI'))
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg,&
+    l_axis = (lteatt('AXIS', 'OUI'))
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .le. 9)
     nno2 = nno*2
-    nt2  = nno*(nno2+1)
+    nt2 = nno*(nno2+1)
 !
 ! - Get material properties for fluid
 !
@@ -124,51 +124,51 @@ character(len=16), intent(in) :: option, nomte
 !
     do ipg = 1, npg
         k = (ipg-1)*nno
-        call dfdm2d(nno  , ipg , ipoids, idfde, zr(jv_geom),&
+        call dfdm2d(nno, ipg, ipoids, idfde, zr(jv_geom), &
                     poids, dfdx, dfdy)
         if (l_axis) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(jv_geom+2*(i-1))*zr(ivf+k+i-1)
+                r = r+zr(jv_geom+2*(i-1))*zr(ivf+k+i-1)
             end do
             poids = poids*r
-        endif
+        end if
         if (fsi_form .eq. 'FSI_UPPHI') then
             do i = 1, nno
                 do j = 1, i
                     if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
-                        a(1,1,i,j) = 0.d0
+                        a(1, 1, i, j) = 0.d0
                     else
-                        a(1,1,i,j) = a(1,1,i,j) +&
-                                     poids*zr(ivf+k+i-1)*zr(ivf+k+j-1)/rho/celer/celer
-                    endif
+                        a(1, 1, i, j) = a(1, 1, i, j)+ &
+                                        poids*zr(ivf+k+i-1)*zr(ivf+k+j-1)/rho/celer/celer
+                    end if
                 end do
             end do
         elseif (fsi_form .eq. 'FSI_UP') then
             do j = 1, nno
                 do i = 1, j
                     if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
-                        mmat(i,j) = 0.d0
+                        mmat(i, j) = 0.d0
                     else
-                        mmat(i,j) = mmat(i,j) +&
-                                    poids*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j))
-                    endif
+                        mmat(i, j) = mmat(i, j)+ &
+                                     poids*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j))
+                    end if
                 end do
             end do
         elseif (fsi_form .eq. 'FSI_UPSI') then
             do j = 1, nno
                 do i = 1, j
                     if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
-                        mmat(i,j) = 0.d0
+                        mmat(i, j) = 0.d0
                     else
-                        mmat(i,j) = mmat(i,j) -rho*&
-                                    poids*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j))
-                    endif
+                        mmat(i, j) = mmat(i, j)-rho* &
+                                     poids*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j))
+                    end if
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
     end do
 !
 ! - Compute result
@@ -179,13 +179,13 @@ character(len=16), intent(in) :: option, nomte
                 do i = 1, nno
                     ik = ((2*i+k-3)*(2*i+k-2))/2
                     do j = 1, i
-                        ijkl = ik + 2*(j-1) + l
-                        c(ijkl) = a(k,l,i,j)
+                        ijkl = ik+2*(j-1)+l
+                        c(ijkl) = a(k, l, i, j)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - Save matrix
 !
@@ -193,27 +193,27 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PMATUUC', 'E', jv_matr)
         if (fsi_form .eq. 'FSI_UPPHI') then
             do i = 1, nt2
-                zc(jv_matr+i-1) = dcmplx(c(i),0.d0)
+                zc(jv_matr+i-1) = dcmplx(c(i), 0.d0)
             end do
         elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
             do j = 1, nno
                 do i = 1, j
-                    ij = (j-1)*j/2 + i
-                    zc(jv_matr+ij-1) = dcmplx(mmat(i,j),0.d0)
+                    ij = (j-1)*j/2+i
+                    zc(jv_matr+ij-1) = dcmplx(mmat(i, j), 0.d0)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
-    elseif (option(1:9) .eq. 'FULL_MECA' ) then
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
+    elseif (option(1:9) .eq. 'FULL_MECA') then
         call jevech('PMATUUR', 'E', jv_matr)
-        if (fsi_form .eq. 'FSI_UPPHI' ) then
+        if (fsi_form .eq. 'FSI_UPPHI') then
             do i = 1, nt2
                 zr(jv_matr+i-1) = c(i)
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
     elseif (option(1:9) .eq. 'RIGI_MECA') then
         call jevech('PMATUUR', 'E', jv_matr)
         if (fsi_form .eq. 'FSI_UPPHI') then
@@ -222,15 +222,15 @@ character(len=16), intent(in) :: option, nomte
             end do
         elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
             do j = 1, nno
-               do i = 1, j
-                  ij = (j-1)*j/2 + i
-                  zr(jv_matr+ij-1) = mmat(i,j)
-               end do
+                do i = 1, j
+                    ij = (j-1)*j/2+i
+                    zr(jv_matr+ij-1) = mmat(i, j)
+                end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
-    endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
+    end if
 !
 ! - Save vector
 !
@@ -241,25 +241,25 @@ character(len=16), intent(in) :: option, nomte
             call jevech('PDEPLPR', 'L', jv_deplp)
             do i = 1, nno2
                 zr(jv_vect+i-1) = 0.d0
-                ul(i) = zr(jv_deplm+i-1) + zr(jv_deplp+i-1)
+                ul(i) = zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
             end do
             nn = 0
             do n1 = 1, nno2
                 do n2 = 1, n1
-                    nn = nn + 1
-                    b(n1,n2) = c(nn)
-                    b(n2,n1) = c(nn)
+                    nn = nn+1
+                    b(n1, n2) = c(nn)
+                    b(n2, n1) = c(nn)
                 end do
             end do
             do n1 = 1, nno2
                 do n2 = 1, nno2
-                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1) + b(n1,n2)*ul(n2)
+                    zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+b(n1, n2)*ul(n2)
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
-    endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
+    end if
 !
 ! - Save return code
 !
@@ -268,8 +268,8 @@ character(len=16), intent(in) :: option, nomte
             call jevech('PCODRET', 'E', jv_codret)
             zi(jv_codret) = 0
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
-    endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
+    end if
 !
 end subroutine

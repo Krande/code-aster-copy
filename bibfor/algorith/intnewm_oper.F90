@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine intnewm_oper(nbequ, par, mgen, kgen, agen, &
 #include "asterfort/trlds.h"
 !
 !   -0.1- Input/output arguments
-    integer     , intent(in)           :: nbequ
+    integer, intent(in)           :: nbequ
     real(kind=8)                       :: par(:)
     real(kind=8), pointer  :: mgen(:), kgen(:), agen(:)
     real(kind=8), pointer :: ktilda(:), ftild1(:), ftild2(:), ftild3(:)
@@ -70,119 +70,119 @@ subroutine intnewm_oper(nbequ, par, mgen, kgen, agen, &
         if (kdiag) then
             if (cdiag) then
                 do i = 1, nbequ
-                    ftild2(i) = a(1)*mgen(i) + a(2)*agen(i)*mgen(i)
-                    ktilda(i) = ftild2(i) + kgen(i)
-                    ftild1(i) = a(3)*mgen(i) + a(5)*agen(i)*mgen(i)
-                    ftild3(i) = a(4)*mgen(i) + a(6)*agen(i)*mgen(i)
+                    ftild2(i) = a(1)*mgen(i)+a(2)*agen(i)*mgen(i)
+                    ktilda(i) = ftild2(i)+kgen(i)
+                    ftild1(i) = a(3)*mgen(i)+a(5)*agen(i)*mgen(i)
+                    ftild3(i) = a(4)*mgen(i)+a(6)*agen(i)*mgen(i)
                 end do
             else
                 do i = 1, nbequ
-                    ft2(i,i) = a(1)*mgen(i) + a(2)*c(i,i)
-                    kt (i,i) = ft2(i,i) + kgen(i)
-                    ft1(i,i) = a(3)*mgen(i) + a(5)*c(i,i)
-                    ft3(i,i) = a(4)*mgen(i) + a(6)*c(i,i)
+                    ft2(i, i) = a(1)*mgen(i)+a(2)*c(i, i)
+                    kt(i, i) = ft2(i, i)+kgen(i)
+                    ft1(i, i) = a(3)*mgen(i)+a(5)*c(i, i)
+                    ft3(i, i) = a(4)*mgen(i)+a(6)*c(i, i)
                     do j = i+1, nbequ
-                        kt (i,j) = a(2)*c(i,j)
-                        kt (j,i) = a(2)*c(j,i)
-                        ft1(i,j) = a(5)*c(i,j)
-                        ft1(j,i) = a(5)*c(j,i)
-                        ft2(i,j) = kt(i,j)
-                        ft2(j,i) = kt(j,i)
-                        ft3(i,j) = a(6)*c(i,j)
-                        ft3(j,i) = a(6)*c(j,i)
+                        kt(i, j) = a(2)*c(i, j)
+                        kt(j, i) = a(2)*c(j, i)
+                        ft1(i, j) = a(5)*c(i, j)
+                        ft1(j, i) = a(5)*c(j, i)
+                        ft2(i, j) = kt(i, j)
+                        ft2(j, i) = kt(j, i)
+                        ft3(i, j) = a(6)*c(i, j)
+                        ft3(j, i) = a(6)*c(j, i)
                     end do
                 end do
             end if
         else
             if (cdiag) then
                 do i = 1, nbequ
-                    ftild2(i) = a(1)*mgen(i) + a(2)*agen(i)*mgen(i)
-                    kt  (i,i) = ftild2(i) + k(i,i)
-                    ftild1(i) = a(3)*mgen(i) + a(5)*agen(i)*mgen(i)
-                    ftild3(i) = a(4)*mgen(i) + a(6)*agen(i)*mgen(i)
+                    ftild2(i) = a(1)*mgen(i)+a(2)*agen(i)*mgen(i)
+                    kt(i, i) = ftild2(i)+k(i, i)
+                    ftild1(i) = a(3)*mgen(i)+a(5)*agen(i)*mgen(i)
+                    ftild3(i) = a(4)*mgen(i)+a(6)*agen(i)*mgen(i)
                     do j = i+1, nbequ
-                        kt (i,j) = k(i,j)
-                        kt (j,i) = k(j,i)
+                        kt(i, j) = k(i, j)
+                        kt(j, i) = k(j, i)
                     end do
                 end do
             else
                 do i = 1, nbequ
-                    ft2(i,i) = a(1)*mgen(i) + a(2)*c(i,i)
-                    kt (i,i) = ft2(i,i) + k(i,i)
-                    ft1(i,i) = a(3)*mgen(i) + a(5)*c(i,i)
-                    ft3(i,i) = a(4)*mgen(i) + a(6)*c(i,i)
+                    ft2(i, i) = a(1)*mgen(i)+a(2)*c(i, i)
+                    kt(i, i) = ft2(i, i)+k(i, i)
+                    ft1(i, i) = a(3)*mgen(i)+a(5)*c(i, i)
+                    ft3(i, i) = a(4)*mgen(i)+a(6)*c(i, i)
                     do j = i+1, nbequ
-                        ft2(i,j) = a(2)*c(i,j)
-                        ft2(j,i) = a(2)*c(j,i)
-                        kt (i,j) = ft2(i,j) + k(i,j)
-                        kt (j,i) = ft2(j,i) + k(j,i)
-                        ft1(i,j) = a(5)*c(i,j)
-                        ft1(j,i) = a(5)*c(j,i)
-                        ft3(i,j) = a(6)*c(i,j)
-                        ft3(j,i) = a(6)*c(j,i)
+                        ft2(i, j) = a(2)*c(i, j)
+                        ft2(j, i) = a(2)*c(j, i)
+                        kt(i, j) = ft2(i, j)+k(i, j)
+                        kt(j, i) = ft2(j, i)+k(j, i)
+                        ft1(i, j) = a(5)*c(i, j)
+                        ft1(j, i) = a(5)*c(j, i)
+                        ft3(i, j) = a(6)*c(i, j)
+                        ft3(j, i) = a(6)*c(j, i)
                     end do
                 end do
             end if
-        endif
+        end if
 
 !   --- M is not diagonal, K is supposed to be full as well
     else
         if (cdiag) then
             do i = 1, nbequ
-                ft2(i,i) = a(1)*m(i,i) + a(2)*agen(i)*m(i,i)
-                kt (i,i) = ft2(i,i) + k(i,i)
-                ft1(i,i) = a(3)*m(i,i) + a(5)*agen(i)*m(i,i)
-                ft3(i,i) = a(4)*m(i,i) + a(6)*agen(i)*m(i,i)
+                ft2(i, i) = a(1)*m(i, i)+a(2)*agen(i)*m(i, i)
+                kt(i, i) = ft2(i, i)+k(i, i)
+                ft1(i, i) = a(3)*m(i, i)+a(5)*agen(i)*m(i, i)
+                ft3(i, i) = a(4)*m(i, i)+a(6)*agen(i)*m(i, i)
                 do j = i+1, nbequ
-                    ft2(i,j) = a(1)*m(i,j)
-                    ft2(j,i) = a(1)*m(j,i)
-                    kt (i,j) = ft2(i,j) + k(i,j)
-                    kt (j,i) = ft2(i,j) + k(j,i)
-                    ft1(i,j) = a(3)*m(i,j)
-                    ft1(j,i) = a(3)*m(j,i)
-                    ft3(i,j) = a(4)*m(i,j)
-                    ft3(j,i) = a(4)*m(j,i)
+                    ft2(i, j) = a(1)*m(i, j)
+                    ft2(j, i) = a(1)*m(j, i)
+                    kt(i, j) = ft2(i, j)+k(i, j)
+                    kt(j, i) = ft2(i, j)+k(j, i)
+                    ft1(i, j) = a(3)*m(i, j)
+                    ft1(j, i) = a(3)*m(j, i)
+                    ft3(i, j) = a(4)*m(i, j)
+                    ft3(j, i) = a(4)*m(j, i)
                 end do
             end do
         else
             do i = 1, nbequ
-                ft2(i,i) = a(1)*m(i,i) + a(2)*c(i,i)
-                kt (i,i) = ft2(i,i) + k(i,i)
-                ft1(i,i) = a(3)*m(i,i) + a(5)*c(i,i)
-                ft3(i,i) = a(4)*m(i,i) + a(6)*c(i,i)
+                ft2(i, i) = a(1)*m(i, i)+a(2)*c(i, i)
+                kt(i, i) = ft2(i, i)+k(i, i)
+                ft1(i, i) = a(3)*m(i, i)+a(5)*c(i, i)
+                ft3(i, i) = a(4)*m(i, i)+a(6)*c(i, i)
                 do j = i+1, nbequ
-                    ft2(i,j) = a(1)*m(i,j) + a(2)*c(i,j)
-                    ft2(j,i) = a(1)*m(j,i) + a(2)*c(j,i)
-                    kt (i,j) = ft2(i,j) + k(i,j)
-                    kt (j,i) = ft2(j,i) + k(j,i)
-                    ft1(i,j) = a(3)*m(i,j) + a(5)*c(i,j)
-                    ft1(j,i) = a(3)*m(j,i) + a(5)*c(j,i)
-                    ft3(i,j) = a(4)*m(i,j) + a(6)*c(i,j)
-                    ft3(j,i) = a(4)*m(j,i) + a(6)*c(j,i)
+                    ft2(i, j) = a(1)*m(i, j)+a(2)*c(i, j)
+                    ft2(j, i) = a(1)*m(j, i)+a(2)*c(j, i)
+                    kt(i, j) = ft2(i, j)+k(i, j)
+                    kt(j, i) = ft2(j, i)+k(j, i)
+                    ft1(i, j) = a(3)*m(i, j)+a(5)*c(i, j)
+                    ft1(j, i) = a(3)*m(j, i)+a(5)*c(j, i)
+                    ft3(i, j) = a(4)*m(i, j)+a(6)*c(i, j)
+                    ft3(j, i) = a(4)*m(j, i)+a(6)*c(j, i)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 
     norm_coef = -1.d25
     do i = 1, size(ktilda)
-        if (abs(ktilda(i)).gt.norm_coef) norm_coef = abs(ktilda(i))
+        if (abs(ktilda(i)) .gt. norm_coef) norm_coef = abs(ktilda(i))
     end do
 
-    ASSERT(norm_coef.gt.1.d-25)
-    do i=1, size(ftild1)
+    ASSERT(norm_coef .gt. 1.d-25)
+    do i = 1, size(ftild1)
         ftild1(i) = ftild1(i)/norm_coef
         ftild2(i) = ftild2(i)/norm_coef
         ftild3(i) = ftild3(i)/norm_coef
     end do
 
-    do i=1, size(ktilda)
+    do i = 1, size(ktilda)
         ktilda(i) = ktilda(i)/norm_coef
     end do
 
 !   --- Factorize ktilda if needed for later resolution for displacement
-    if (size(ktilda).gt.nbequ) then
+    if (size(ktilda) .gt. nbequ) then
         call trlds(ktilda, nbequ, nbequ, iret)
-    endif
+    end if
 
 end subroutine

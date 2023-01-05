@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
+subroutine fointc(codmes, nomf, nbpu, nompu, valpu, &
                   resure, resuim, ier)
     implicit none
 #include "jeveux.h"
@@ -56,16 +56,16 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
     character(len=24) :: chprol, chvale
 !     ------------------------------------------------------------------
     integer :: mxsave
-    parameter   (mxsave=4)
+    parameter(mxsave=4)
     integer :: isvnxt, nextsv(mxsave), isvind, isave
     character(len=24) :: svprgd(mxsave)
     character(len=24) :: svinte(mxsave)
     character(len=19) :: svnomf(mxsave)
-    save         svnomf,svprgd,svinte
-    save         isvnxt,isvind
-    data         svnomf/mxsave*'????????'/
-    data         isvnxt/mxsave/
-    data         nextsv/2,3,4,1/,isvind/1/
+    save svnomf, svprgd, svinte
+    save isvnxt, isvind
+    data svnomf/mxsave*'????????'/
+    data isvnxt/mxsave/
+    data nextsv/2, 3, 4, 1/, isvind/1/
 !     ------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
@@ -80,7 +80,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
     call jemarq()
 !
     ier = 0
-    epsi = sqrt ( r8prem() )
+    epsi = sqrt(r8prem())
     resure = r8vide()
     resuim = r8vide()
     nomfon = nomf
@@ -93,18 +93,18 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
     if (zk24(lprol) .eq. 'INTERPRE') then
 !        -- SI LA FONCTION EST REELLE, FIINTF NE CALCULE QUE
 !           RESU(1). IL FAUT DONC INITIALISER RESU(2).
-        resu(2)=0.d0
-        call fiintf(nomf, nbpu, nompu, valpu, ier,&
+        resu(2) = 0.d0
+        call fiintf(nomf, nbpu, nompu, valpu, ier, &
                     'A', resu)
         if (ier .gt. 0) then
             ier = 110
             goto 999
-        endif
-        resure=resu(1)
-        resuim=resu(2)
+        end if
+        resure = resu(1)
+        resuim = resu(2)
         goto 999
 !
-    endif
+    end if
 !
 ! --- LES AUTRES TYPES DE FONCTION ---
 !
@@ -114,7 +114,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
         if (nomfon .eq. svnomf(i)) then
             isave = i
             goto 11
-        endif
+        end if
     end do
 !
 ! --- MEMORISATION DES INFORMATIONS NOUVELLES
@@ -131,62 +131,62 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 !
     call jeveuo(chvale, 'L', lvale)
     call jelira(chvale, 'LONUTI', nbvale)
-    nbvale = nbvale / 3
-    lfonc = lvale + nbvale - 1
+    nbvale = nbvale/3
+    lfonc = lvale+nbvale-1
 !
     i = isvind
-    call folocx(zr(lvale), nbvale, valr, prolgd, i,&
+    call folocx(zr(lvale), nbvale, valr, prolgd, i, &
                 epsi, coli, ier)
     if (ier .ne. 0) goto 999
 !
     if (coli .eq. 'C') then
-        i1 = 1 + 2 * ( i - 1 )
+        i1 = 1+2*(i-1)
         resure = zr(lfonc+i1)
         resuim = zr(lfonc+i1+1)
 !
-    else if (coli.eq.'I') then
-        if (interp.eq.'LIN LIN ') then
-            i1 = 1 + 2 * ( i - 1 )
-            i2 = 1 + 2 * i
-            resure = linlin( valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+ i), zr(lfonc+i2) )
-            resuim = linlin( valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1) )
-        else if (interp.eq.'LIN LOG ') then
-            i1 = 1 + 2 * ( i - 1 )
-            i2 = 1 + 2 * i
-            resure = linlog( valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+ i), zr(lfonc+i2) )
-            resuim = linlog( valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1) )
-        else if (interp.eq.'LOG LOG ') then
-            i1 = 1 + 2 * ( i - 1 )
-            i2 = 1 + 2 * i
-            resure = loglog( valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+ i), zr(lfonc+i2) )
-            resuim = loglog( valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1) )
-        else if (interp.eq.'LOG LIN ') then
-            i1 = 1 + 2 * ( i - 1 )
-            i2 = 1 + 2 * i
-            resure = loglin( valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+ i), zr(lfonc+i2) )
-            resuim = loglin( valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1) )
+    else if (coli .eq. 'I') then
+        if (interp .eq. 'LIN LIN ') then
+            i1 = 1+2*(i-1)
+            i2 = 1+2*i
+            resure = linlin(valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+i), zr(lfonc+i2))
+            resuim = linlin(valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1))
+        else if (interp .eq. 'LIN LOG ') then
+            i1 = 1+2*(i-1)
+            i2 = 1+2*i
+            resure = linlog(valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+i), zr(lfonc+i2))
+            resuim = linlog(valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1))
+        else if (interp .eq. 'LOG LOG ') then
+            i1 = 1+2*(i-1)
+            i2 = 1+2*i
+            resure = loglog(valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+i), zr(lfonc+i2))
+            resuim = loglog(valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1))
+        else if (interp .eq. 'LOG LIN ') then
+            i1 = 1+2*(i-1)
+            i2 = 1+2*i
+            resure = loglin(valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+i), zr(lfonc+i2))
+            resuim = loglin(valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1))
         else
             ier = 230
             call utmess('A', 'UTILITAI2_17', sk=interp)
             goto 999
-        endif
+        end if
 !
-    else if (coli.eq.'E') then
-        i1 = 1 + 2 * ( i - 1 )
-        i2 = 1 + 2 * i
-        resure = linlin( valr,zr(lvale+i-1),zr(lfonc+i1), zr(lvale+i), zr(lfonc+i2))
-        resuim = linlin( valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1) )
+    else if (coli .eq. 'E') then
+        i1 = 1+2*(i-1)
+        i2 = 1+2*i
+        resure = linlin(valr, zr(lvale+i-1), zr(lfonc+i1), zr(lvale+i), zr(lfonc+i2))
+        resuim = linlin(valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1))
 !
     else
         ier = 240
         call utmess('A', 'PREPOST3_6', sk=coli)
-    endif
+    end if
 !
-999  continue
+999 continue
 !
     if (ier .ne. 0 .and. codmes .ne. ' ') then
         call utmess(codmes, 'FONCT0_9', sk=nomf)
-    endif
+    end if
 !
     call jedema()
 end subroutine

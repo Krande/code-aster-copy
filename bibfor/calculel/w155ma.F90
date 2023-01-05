@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
-                  motfac, jce2d, jce2l, jce2v, jce5d,&
-                  jce5l, jce5v, ksp1, ksp2, c1,&
+subroutine w155ma(numa, nucou, nicou, nangl, nufib, &
+                  motfac, jce2d, jce2l, jce2v, jce5d, &
+                  jce5l, jce5v, ksp1, ksp2, c1, &
                   c2, iret)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,92 +55,92 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iret=0
+    iret = 0
 !
 ! --------------------------------------------------------------------------------------------------
     iposi = 2
 !   Calcul de iposi=1,2,3 : position dans la couche
     if (motfac .eq. 'EXTR_COQUE' .or. motfac .eq. 'EXTR_TUYAU') then
         if (nicou .eq. 'INF') then
-            iposi=1
-        else if (nicou.eq.'MOY') then
-            iposi=2
-        else if (nicou.eq.'SUP') then
-            iposi=3
+            iposi = 1
+        else if (nicou .eq. 'MOY') then
+            iposi = 2
+        else if (nicou .eq. 'SUP') then
+            iposi = 3
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
     if (motfac .eq. 'EXTR_COQUE') then
-        ASSERT(nucou.ge.1)
+        ASSERT(nucou .ge. 1)
 !       extr_coque est utilise pour les coques : cmp1 = coq_ncou
         call cesexi('C', jce2d, jce2l, numa, 1, 1, 1, iad2a)
         if (iad2a .le. 0) then
-            iret=1
+            iret = 1
             goto 999
         else
-            nbcou=zi(jce2v-1+iad2a)
-            npgh=3
-        endif
+            nbcou = zi(jce2v-1+iad2a)
+            npgh = 3
+        end if
         if (nucou .gt. nbcou) then
             call utmess('F', 'CALCULEL2_14')
-        endif
+        end if
 
-        ksp1=((nucou-1)*npgh)+iposi
-        ksp2=ksp1
-        c1=1.d0
-        c2=0.d0
+        ksp1 = ((nucou-1)*npgh)+iposi
+        ksp2 = ksp1
+        c1 = 1.d0
+        c2 = 0.d0
 !
 ! --------------------------------------------------------------------------------------------------
-    else if (motfac.eq.'EXTR_PMF') then
-        ASSERT(nufib.ge.1)
+    else if (motfac .eq. 'EXTR_PMF') then
+        ASSERT(nufib .ge. 1)
 !       CMP4 = NBFIBR
         call cesexi('C', jce2d, jce2l, numa, 1, 1, 4, iad2)
         if (iad2 .le. 0) then
-            iret=1
+            iret = 1
             goto 999
-        endif
-        nbfib=zi(jce2v-1+iad2)
+        end if
+        nbfib = zi(jce2v-1+iad2)
         if (nufib .gt. nbfib) then
             call utmess('F', 'CALCULEL2_16')
-        endif
-        ksp1=nufib
-        ksp2=ksp1
-        c1=1.d0
-        c2=0.d0
+        end if
+        ksp1 = nufib
+        ksp2 = ksp1
+        c1 = 1.d0
+        c2 = 0.d0
 !
 ! --------------------------------------------------------------------------------------------------
-    else if (motfac.eq.'EXTR_TUYAU') then
-        ASSERT(nucou.ge.1)
+    else if (motfac .eq. 'EXTR_TUYAU') then
+        ASSERT(nucou .ge. 1)
 !       CMP2 = TUY_NCOU
         call cesexi('C', jce2d, jce2l, numa, 1, 1, 2, iad2)
         if (iad2 .le. 0) then
-            iret=1
+            iret = 1
             goto 999
-        endif
-        nbcou=zi(jce2v-1+iad2)
+        end if
+        nbcou = zi(jce2v-1+iad2)
         if (nucou .gt. nbcou) then
             call utmess('F', 'CALCULEL2_14')
-        endif
+        end if
 !       CMP3 = TUY_NSEC
         call cesexi('C', jce2d, jce2l, numa, 1, 1, 3, iad2)
-        ASSERT(iad2.gt.0)
-        nbsec=zi(jce2v-1+iad2)
+        ASSERT(iad2 .gt. 0)
+        nbsec = zi(jce2v-1+iad2)
         if (nucou .gt. nbcou) then
             call utmess('F', 'CALCULEL2_14')
-        endif
-        icou=2*(nucou-1)+iposi
+        end if
+        icou = 2*(nucou-1)+iposi
 !       CMP1 = ANGZZK
         call cesexi('C', jce5d, jce5l, numa, 1, 1, 1, iad2)
         omega = zr(jce5v-1+iad2)
 !
 !       Morceau de code extrait de te0597 (supprimée en version 11.2.1)
-        pi     = r8pi()
-        angle  = nangl*pi/180.d0
+        pi = r8pi()
+        angle = nangl*pi/180.d0
 !       Angle d'un secteur
-        dxa    = pi/nbsec
+        dxa = pi/nbsec
 !       On va faire V = [ v1*(an2 - angle) + v2*(angle - an1)] / dxa
 !           an1 <= angle <= an2
 !           Si angle = an2  =>  V = v2   (an2-an1)=dxa
@@ -148,28 +148,28 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 !           poi1 = (an2-angle)/dxa
 !           poi2 = (angle-an1)/dxa
 !       Le secteur
-        isect  = int((omega+angle)/dxa)+1
+        isect = int((omega+angle)/dxa)+1
         poi(1) = 1.d0-((omega+angle)/dxa+1.d0-isect)
         poi(2) = 1.d0-(isect-(omega+angle)/dxa)
-        if ( isect.gt.(2*nbsec) ) then
-            isect = isect - 2*nbsec
-        endif
-        if ( isect.lt.1 ) then
-            isect = isect + 2*nbsec
-        endif
-        if ( (isect.le.0) .or. (isect.gt.(2*nbsec)) ) then
+        if (isect .gt. (2*nbsec)) then
+            isect = isect-2*nbsec
+        end if
+        if (isect .lt. 1) then
+            isect = isect+2*nbsec
+        end if
+        if ((isect .le. 0) .or. (isect .gt. (2*nbsec))) then
             call utmess('F', 'ELEMENTS4_51')
-        endif
+        end if
 !       Fin morceau te0597
 !
 !       Numéro des sous-points
-        ksp1 = (2*nbsec+1)*(icou-1) + isect
+        ksp1 = (2*nbsec+1)*(icou-1)+isect
         ksp2 = ksp1+1
-        c1=poi(1)
-        c2=poi(2)
+        c1 = poi(1)
+        c2 = poi(2)
     else
         ASSERT(.false.)
-    endif
+    end if
 
 999 continue
 end subroutine

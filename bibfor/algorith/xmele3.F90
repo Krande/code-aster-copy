@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmele3(mesh , model , ligrel, nfiss, chelem,&
+subroutine xmele3(mesh, model, ligrel, nfiss, chelem, &
                   param, option, list_func_acti)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -89,16 +89,16 @@ implicit none
     real(kind=8), pointer :: cesv(:) => null()
     aster_logical :: lxthm
 !
-    data licmp3    / 'X1', 'X2', 'X3'/
-    data licmp5    / 'X1', 'X2', 'X3', 'X4', 'X5'/
+    data licmp3/'X1', 'X2', 'X3'/
+    data licmp5/'X1', 'X2', 'X3', 'X4', 'X5'/
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<XFEM  > CREATION DU CHAM_ELEM PINDCOI '
-    endif
+        write (ifm, *) '<XFEM  > CREATION DU CHAM_ELEM PINDCOI '
+    end if
 !
 ! --- INITIALISATIONS CHAMPS SIMPLES DE TRAVAIL
 !
@@ -111,47 +111,47 @@ implicit none
     call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
 !
-    lxthm=isfonc(list_func_acti,'THM')
+    lxthm = isfonc(list_func_acti, 'THM')
     chnbsp = '&&XMELE3.NBSP'
     call wkvect(chnbsp, 'V V I', nbma, jnbsp)
 !
-    ASSERT(param.eq.'PCOHES')
+    ASSERT(param .eq. 'PCOHES')
     nomgd = 'NEUT_R'
 !
     if (lxthm) then
-       ncmp = 5
+        ncmp = 5
     else
-       ncmp = 3
-    endif
+        ncmp = 3
+    end if
     if (lxthm) then
 ! --- REMPLISSAGE DES SOUS POINTS POUR LA MULTU-FISSURATION
-       do ifis = 1, nfiss
-          nomfis = fiss(ifis)
-          grp = nomfis(1:8)//'.MAILFISS.CONT'
-          call jeexin(grp, iret)
-          if (iret .ne. 0) then
-             call jeveuo(grp, 'L', jgrp)
-             call jelira(grp, 'LONMAX', nmaenr, k8bid)
-             do i = 1, nmaenr
-                ima = zi(jgrp-1+i)
-                ASSERT(ima.le.nbma)
-                zi(jnbsp-1+ima)=3
-             end do
-          endif
-       end do
-    endif
+        do ifis = 1, nfiss
+            nomfis = fiss(ifis)
+            grp = nomfis(1:8)//'.MAILFISS.CONT'
+            call jeexin(grp, iret)
+            if (iret .ne. 0) then
+                call jeveuo(grp, 'L', jgrp)
+                call jelira(grp, 'LONMAX', nmaenr, k8bid)
+                do i = 1, nmaenr
+                    ima = zi(jgrp-1+i)
+                    ASSERT(ima .le. nbma)
+                    zi(jnbsp-1+ima) = 3
+                end do
+            end if
+        end do
+    end if
 !
 ! --- TEST EXISTENCE DU CHAM_ELEM OU NON
 !
     call exisd('CHAM_ELEM', chelem, iret)
     if (iret .eq. 0) then
         if (lxthm) then
-           call cescre('V', chelsi, 'ELNO', mesh, nomgd,&
-                       ncmp, licmp5, [-1], zi(jnbsp), [-ncmp])
+            call cescre('V', chelsi, 'ELNO', mesh, nomgd, &
+                        ncmp, licmp5, [-1], zi(jnbsp), [-ncmp])
         else
-           call cescre('V', chelsi, 'ELNO', mesh, nomgd,&
-                       ncmp, licmp3, [-1], [-1], [-ncmp])
-        endif
+            call cescre('V', chelsi, 'ELNO', mesh, nomgd, &
+                        ncmp, licmp3, [-1], [-1], [-ncmp])
+        end if
 !
 !
 ! --- ACCES AU CHAM_ELEM_S
@@ -187,35 +187,35 @@ implicit none
                     do ino = 1, nno
                         do icmp = 1, ncmp
                             if (lxthm) then
-                               do ipt = 1, 3
-                                  call cesexi('S', jcesd, jcesl, ima, ino,&
-                                              ipt, icmp, iad)
-                                  zl(jcesl-1+abs(iad)) = .true.
-                                  cesv(abs(iad)) = valr
-                               end do
+                                do ipt = 1, 3
+                                    call cesexi('S', jcesd, jcesl, ima, ino, &
+                                                ipt, icmp, iad)
+                                    zl(jcesl-1+abs(iad)) = .true.
+                                    cesv(abs(iad)) = valr
+                                end do
                             else
-                               call cesexi('S', jcesd, jcesl, ima, ino,&
-                                           1, icmp, iad)
-                               zl(jcesl-1+abs(iad)) = .true.
-                               cesv(abs(iad)) = valr
-                            endif
+                                call cesexi('S', jcesd, jcesl, ima, ino, &
+                                            1, icmp, iad)
+                                zl(jcesl-1+abs(iad)) = .true.
+                                cesv(abs(iad)) = valr
+                            end if
                         end do
                     end do
                 end do
-            endif
+            end if
         end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !
 ! on autorise un prolongement par zero
 ! sinon, il faudrait mettre NON a la place de OUI
-        call cescel(chelsi, ligrel, option, param, 'NON',&
+        call cescel(chelsi, ligrel, option, param, 'NON', &
                     ib1, 'V', chelem, 'F', ibid)
 !
 ! --- MENAGE
 !
         call detrsd('CHAM_ELEM_S', chelsi)
-    endif
+    end if
 !
     call jedetr(chnbsp)
 !

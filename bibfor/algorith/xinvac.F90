@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,45 +46,45 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 !.....................................................................
 !
 !
-    itemax=500
-    epsmax=1.d-9
-    name='XINVAC'
-    ptint(1)=0.d0
+    itemax = 500
+    epsmax = 1.d-9
+    name = 'XINVAC'
+    ptint(1) = 0.d0
 !
 !    CALCUL DE COEF1, COEF2, COEF3, D
-    coef1=0.d0
-    coef2=0.d0
-    coef3=0.d0
+    coef1 = 0.d0
+    coef2 = 0.d0
+    coef3 = 0.d0
     pt1(:) = 0.d0
     pt2(:) = 0.d0
     pt3(:) = 0.d0
 !
     do i = 1, ndim
-        pt1(i)=tabar(i)
-        pt2(i)=tabar(ndim+i)
-        pt3(i)=tabar(2*ndim+i)
-    end do
-!
-    do  i = 1, ndim
-        coef1 = coef1 + (pt1(i)-2*pt3(i)+pt2(i))* (pt1(i)-2*pt3(i)+ pt2(i))
+        pt1(i) = tabar(i)
+        pt2(i) = tabar(ndim+i)
+        pt3(i) = tabar(2*ndim+i)
     end do
 !
     do i = 1, ndim
-        coef2 = coef2 + (pt2(i)-pt1(i))*(pt1(i)-2*pt3(i)+pt2(i))
+        coef1 = coef1+(pt1(i)-2*pt3(i)+pt2(i))*(pt1(i)-2*pt3(i)+pt2(i))
     end do
 !
-    do  i = 1, ndim
-        coef3 = coef3 + (pt2(i)-pt1(i))*(pt2(i)-pt1(i))/4
+    do i = 1, ndim
+        coef2 = coef2+(pt2(i)-pt1(i))*(pt1(i)-2*pt3(i)+pt2(i))
     end do
 !
-    d = coef2*coef2 - 4*coef1*coef3
+    do i = 1, ndim
+        coef3 = coef3+(pt2(i)-pt1(i))*(pt2(i)-pt1(i))/4
+    end do
+!
+    d = coef2*coef2-4*coef1*coef3
 !
 !    CALCUL COORDONNEES DE REFERENCE DU POINT
 !
     if (abs(coef1) .le. r8prem()) then
         ksi(1) = (s/sqrt(coef3))-1
-    else if (abs(coef1).gt.r8prem()) then
+    else if (abs(coef1) .gt. r8prem()) then
         call utmess('F', 'XFEM_65')
-    endif
+    end if
 !
 end subroutine

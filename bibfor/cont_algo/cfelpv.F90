@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfelpv(numlia, sdcont_solv, nbliai, lelpiv)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeveuo.h"
@@ -47,14 +47,14 @@ implicit none
 ! ======================================================================
 
     sdcont_liot = sdcont_solv(1:14)//'.LIOT'
-    call jeveuo(sdcont_liot, 'L', vi = v_sdcont_liot)
+    call jeveuo(sdcont_liot, 'L', vi=v_sdcont_liot)
 ! ======================================================================
     lelpiv = .false.
     do iote = 1, v_sdcont_liot(4*nbliai+1)
         if (v_sdcont_liot(iote) .eq. numlia) then
             lelpiv = .true.
             goto 100
-        endif
+        end if
     end do
 100 continue
 !

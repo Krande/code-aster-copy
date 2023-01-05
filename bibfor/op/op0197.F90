@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine op0197()
 !
     integer :: nbparr, nbpark, nbpars, nbpart, info, kk
     integer :: valii
-    parameter    ( nbparr = 4, nbpark = 3, nbpars=3, nbpart=3 )
+    parameter(nbparr=4, nbpark=3, nbpars=3, nbpart=3)
     character(len=6) :: chtemp
     character(len=8) :: tapait, k8bid, cara, typarr(nbparr), typars(nbpars)
     character(len=8) :: typart(nbpart), tabtri, typark(nbpark), tabout, resu
@@ -95,16 +95,16 @@ subroutine op0197()
     real(kind=8), pointer :: nom_inssig(:) => null()
     character(len=8), pointer :: vale(:) => null()
 !
-    data noparr / 'NURES', 'INST','SIGMA_WEIBULL','PROBA_WEIBULL'/
-    data typarr / 'I','R','R','R' /
-    data nopark / 'ITER_K', 'M(K)','SIGU(K)' /
-    data typark / 'I','R','R' /
-    data nopars / 'SIGMA_WEIBULL', 'PROBA_THE', 'PROBA_EXP'/
-    data typars / 'R','R','R'/
-    data nopart / 'TEMP','M', 'SIGMA_U'/
-    data typart / 'R','R','R' /
-    data chcop1 / '&&OPTIW1' /
-    data chcop2/ '&&OPTIW2' /
+    data noparr/'NURES', 'INST', 'SIGMA_WEIBULL', 'PROBA_WEIBULL'/
+    data typarr/'I', 'R', 'R', 'R'/
+    data nopark/'ITER_K', 'M(K)', 'SIGU(K)'/
+    data typark/'I', 'R', 'R'/
+    data nopars/'SIGMA_WEIBULL', 'PROBA_THE', 'PROBA_EXP'/
+    data typars/'R', 'R', 'R'/
+    data nopart/'TEMP', 'M', 'SIGMA_U'/
+    data typart/'R', 'R', 'R'/
+    data chcop1/'&&OPTIW1'/
+    data chcop2/'&&OPTIW2'/
 !     ------------------------------------------------------------------
     c16b = dcmplx(0., 0.)
     call jemarq()
@@ -139,14 +139,14 @@ subroutine op0197()
     recm = .false.
     recs = .false.
     do i = 1, nbcal
-        if (parcal(i)(1:1) .eq. 'M') then
+        if (parcal(i) (1:1) .eq. 'M') then
             calm = .false.
             recm = .true.
-        endif
-        if (parcal(i)(1:9) .eq. 'SIGM_REFE') then
+        end if
+        if (parcal(i) (1:9) .eq. 'SIGM_REFE') then
             cals = .false.
             recs = .true.
-        endif
+        end if
     end do
 !
 !     --- LECTURE DES BASES DE RESULTATS (MOT-CLE RESU) ---
@@ -165,7 +165,7 @@ subroutine op0197()
     call wkvect('&&OP0197.SIGMA_K', 'V V R', nbresu, isigk)
     call wkvect('&&OP0197.SIGMA_KP', 'V V R', nbresu, isigkp)
     collec = '&&OP0197.INST_RUPT'
-    call jecrec(collec, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(collec, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbresu)
     tabout = 'TABLE1'
     tabtri = 'TABLE2'
@@ -176,7 +176,7 @@ subroutine op0197()
     do iresu = 1, nbresu
 !
         call getvid('RESU', 'MODELE', iocc=iresu, scal=zk8(imod-1+iresu), nbret=n1)
-        call getvid('RESU', 'CHAM_MATER', iocc=iresu, scal=zk8(ichmat-1+ iresu), nbret=n1)
+        call getvid('RESU', 'CHAM_MATER', iocc=iresu, scal=zk8(ichmat-1+iresu), nbret=n1)
         call getvr8('RESU', 'TEMPE', iocc=iresu, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             ntemp = ntemp+1
@@ -188,11 +188,11 @@ subroutine op0197()
                 if (zr(itemp-1+iresu) .eq. zr(itpsi-1+i)) then
                     ntpsi = ntpsi-1
                     zi(itpre-1+iresu) = i
-                endif
+                end if
             end do
         else
             zi(itpre-1+iresu) = 1
-        endif
+        end if
 !
 !      --- LECTURE DE LA LISTE D'INSTANTS DE RUPTURE (TRI CROISSANT)
 !
@@ -201,38 +201,38 @@ subroutine op0197()
         call jecroc(jexnum(collec, iresu))
         call jeecra(jexnum(collec, iresu), 'LONMAX', nbins)
         call jeveuo(jexnum(collec, iresu), 'E', iinst)
-        call getvr8('RESU', 'LIST_INST_RUPT', iocc=iresu, nbval=nbins, vect=zr( iinst),&
+        call getvr8('RESU', 'LIST_INST_RUPT', iocc=iresu, nbval=nbins, vect=zr(iinst), &
                     nbret=n1)
         nbold = nbins
         call uttrir(nbins, zr(iinst), 0.d0)
         if (nbins .ne. nbold) then
             call utmess('F', 'UTILITAI3_28')
-        endif
+        end if
         zi(irent+iresu-1) = nbins
-        nrupt = nrupt + nbins
+        nrupt = nrupt+nbins
         call jeecra(jexnum(collec, iresu), 'LONUTI', nbins)
         if (nbins .le. 1) then
             call utmess('F', 'UTILITAI3_29')
-        endif
+        end if
 !
 !       ON TESTE SI LES INSTANTS DE RUPTURE MIN ET MAX SONT
 !       DANS LES INSTANTS DE CALCUL
 !
         call getvid('RESU', 'EVOL_NOLI', iocc=iresu, scal=resu, nbret=n1)
         call rs_getfirst(resu, nume_first, inst_first)
-        call rs_getlast(resu, nume_last , inst_last)
+        call rs_getlast(resu, nume_last, inst_last)
         tpsmin = inst_first
         tpsmax = inst_last
         if (zr(iinst) .lt. tpsmin) then
-            valrr (1) = zr(iinst)
-            valrr (2) = tpsmin
+            valrr(1) = zr(iinst)
+            valrr(2) = tpsmin
             call utmess('F', 'UTILITAI6_53', nr=2, valr=valrr)
-        endif
+        end if
         if (zr(iinst+nbins-1) .gt. tpsmax) then
-            valrr (1) = zr(iinst+nbins-1)
-            valrr (2) = tpsmax
+            valrr(1) = zr(iinst+nbins-1)
+            valrr(2) = tpsmax
             call utmess('F', 'UTILITAI6_54', nr=2, valr=valrr)
-        endif
+        end if
 !
     end do
 !
@@ -249,13 +249,13 @@ subroutine op0197()
                 if (ntpsi .gt. 1) dept = .true.
             else
                 dept = .false.
-            endif
-        endif
+            end if
+        end if
 !
     else
         dept = .false.
         ntpsi = 1
-    endif
+    end if
 !
 !     --- CREATION DES TABLES DE RESULTATS
 !
@@ -265,12 +265,12 @@ subroutine op0197()
         call tbajpa(nomres, nbpars, nopars, typars)
     else
         call tbajpa(nomres, 2, nopars, typars)
-    endif
+    end if
     if (dept) then
         call tbajpa(nomres, nbpart, nopart, typart)
     else
         call tbajpa(nomres, 2, nopart(2), typart(2))
-    endif
+    end if
 !
     call wkvect('&&OP0197.NOPARK', 'V V K16', ntpsi+2, inopa)
     call wkvect('&&OP0197.VALPAR', 'V V R', ntpsi+1, ivapa)
@@ -285,8 +285,8 @@ subroutine op0197()
         else
             ibid = int(zr(itpsi-1+i))
             call codent(ibid, 'G', chtemp)
-            zk16(inopa+1+i) = nopark(3)(1:7)//'_T:'//chtemp
-        endif
+            zk16(inopa+1+i) = nopark(3) (1:7)//'_T:'//chtemp
+        end if
         zk8(itypa+1+i) = typark(3)
     end do
     tapait = '&&PAR_IT'
@@ -310,31 +310,31 @@ subroutine op0197()
         call jelira(zk24(ikvak-1+iresu), 'LONMAX', imc)
 !
         do i = 1, imc
-            if (zk16(iweik + i-1) .eq. 'M       ') then
-                mini=zr(iweir + i-1)
-            endif
-            if (zk16(iweik + i-1) .eq. 'VOLU_REFE') then
-                vini=zr(iweir + i-1)
-            endif
-            if (zk16(iweik + i-1) .eq. 'SIGM_REFE') then
-                zr(isigi-1+iresu)=zr(iweir + i-1)
-            endif
+            if (zk16(iweik+i-1) .eq. 'M       ') then
+                mini = zr(iweir+i-1)
+            end if
+            if (zk16(iweik+i-1) .eq. 'VOLU_REFE') then
+                vini = zr(iweir+i-1)
+            end if
+            if (zk16(iweik+i-1) .eq. 'SIGM_REFE') then
+                zr(isigi-1+iresu) = zr(iweir+i-1)
+            end if
         end do
 !
         if (iresu .gt. 1) then
             if (mini .ne. minip) then
                 call utmess('F', 'UTILITAI3_31')
-            endif
+            end if
             if (zr(isigi-1+iresu) .ne. zr(isigi-2+iresu)) then
                 call utmess('F', 'UTILITAI3_32')
-            endif
-        endif
+            end if
+        end if
         minip = mini
 !
     end do
-    valrr (1) = mini
-    valrr (2) = vini
-    valrr (3) = zr(isigi)
+    valrr(1) = mini
+    valrr(2) = vini
+    valrr(3) = zr(isigi)
     call utmess('I', 'UTILITAI6_55', nr=3, valr=valrr)
 !
     call wkvect('&&OP0197.NOM_TABLPE', 'V V K16', nbresu, itabw)
@@ -357,13 +357,13 @@ subroutine op0197()
 !
 !     --- NOUVELLE ITERATION DE RECALAGE
 !
-    nbite = nbite + 1
+    nbite = nbite+1
 !
     if (impr) then
-        write(ifm,*) '***************************'
-        write(ifm,*) 'ITERATION DE RECALAGE NO ',nbite
-        write(ifm,*) '***************************'
-    endif
+        write (ifm, *) '***************************'
+        write (ifm, *) 'ITERATION DE RECALAGE NO ', nbite
+        write (ifm, *) '***************************'
+    end if
 !
     mk = mkp
     do iresu = 1, ntpsi
@@ -390,7 +390,7 @@ subroutine op0197()
             if (vale(i) .eq. zk8(anomm2)) then
                 call copisd(' ', 'V', zk8(anomm2), chcop2)
                 vale(i) = chcop2
-            endif
+            end if
         end do
 !
         call jedetr('&&OP0197.L_NOM_MAT')
@@ -399,47 +399,47 @@ subroutine op0197()
         call jeveuo(chcop2//k11//'.VALK', 'L', iweik)
 !
         do i = 1, imc
-            if (zk16(iweik + i-1) .eq. 'M       ') then
-                zr(iweir + i-1) = mk
-            endif
-            if (zk16(iweik + i-1) .eq. 'VOLU_REFE') then
-                zr(iweir + i-1) = vini
-            endif
-            if (zk16(iweik + i-1) .eq. 'SIGM_REFE') then
-                zr(iweir + i-1) = zr(isigk+zi(itpre-1+iresu)-1)
-            endif
+            if (zk16(iweik+i-1) .eq. 'M       ') then
+                zr(iweir+i-1) = mk
+            end if
+            if (zk16(iweik+i-1) .eq. 'VOLU_REFE') then
+                zr(iweir+i-1) = vini
+            end if
+            if (zk16(iweik+i-1) .eq. 'SIGM_REFE') then
+                zr(iweir+i-1) = zr(isigk+zi(itpre-1+iresu)-1)
+            end if
         end do
 !
         call jedetc('V', '.MATE_CODE', 9)
         call jedetc('V', '.CODI', 20)
         mateco = ' '
-        call rcmfmc(chcop1, mateco, l_ther_ = ASTER_FALSE)
+        call rcmfmc(chcop1, mateco, l_ther_=ASTER_FALSE)
 !
 !
 !       DETERMINATION DU NOM DES 2 TABLES A CREER:
-        noobj ='12345678.TB00000   .TBNP'
+        noobj = '12345678.TB00000   .TBNP'
         call gnomsd(' ', noobj, 12, 16)
-        zk16(itabw-1+iresu)=noobj(1:16)
-        read(noobj(12:16),'(I5)') kk
-        kk=kk+1
+        zk16(itabw-1+iresu) = noobj(1:16)
+        read (noobj(12:16), '(I5)') kk
+        kk = kk+1
         call codent(kk, 'D0', noobj(12:16))
-        zk16(itabr-1+iresu)=noobj(1:16)
+        zk16(itabr-1+iresu) = noobj(1:16)
 !
         nchar = 0
         call wkvect('&&OP0197.CHARGES', 'V V K8', 1, jcha)
 !
         if (impr) then
-            write(ifm,*) '*******************'
-            write(ifm,*) '**** RESULTAT NO ',iresu
-            write(ifm,*) '*******************'
-            write(ifm,*)&
+            write (ifm, *) '*******************'
+            write (ifm, *) '**** RESULTAT NO ', iresu
+            write (ifm, *) '*******************'
+            write (ifm, *)&
      &    'ETAPE 1 > CALCUL DES SIGMA WEIBULL : APPEL PEWEIB'
-        endif
+        end if
 !
 !        --- CALCUL DES SIGMA_WEIBULL
 !
         cara = '        '
-        call peweib(zk16(itabw-1+iresu), zk8(imod-1+iresu), chcop1, mateco, cara, chcop1,&
+        call peweib(zk16(itabw-1+iresu), zk8(imod-1+iresu), chcop1, mateco, cara, chcop1, &
                     0, 1, iresu, nomcmd)
         call jedetr('&&TE0331')
         call jedetr('&&OP0197.CHARGES')
@@ -447,11 +447,11 @@ subroutine op0197()
 !       --- INTERPOLATION SUR LA BASE DE CALCUL DES VALEURS
 !       --- DES CONTRAINTES DE WEIBULL AUX INSTANTS DE RUPTURE
 !
-        call tbexve(zk16(itabw-1+iresu), 'SIGMA_WEIBULL', '&&OP0197.NOM_VECSIG', 'V', nbval,&
+        call tbexve(zk16(itabw-1+iresu), 'SIGMA_WEIBULL', '&&OP0197.NOM_VECSIG', 'V', nbval, &
                     k8bid)
-        call tbexve(zk16(itabw-1+iresu), 'PROBA_WEIBULL', '&&OP0197.NOM_VECPRO', 'V', nbval,&
+        call tbexve(zk16(itabw-1+iresu), 'PROBA_WEIBULL', '&&OP0197.NOM_VECPRO', 'V', nbval, &
                     k8bid)
-        call tbexve(zk16(itabw-1+iresu), 'INST', '&&OP0197.NOM_INSSIG', 'V', nbval,&
+        call tbexve(zk16(itabw-1+iresu), 'INST', '&&OP0197.NOM_INSSIG', 'V', nbval, &
                     k8bid)
         call jelira(jexnum(collec, iresu), 'LONUTI', nbins)
         call jeveuo(jexnum(collec, iresu), 'L', iinst)
@@ -459,35 +459,35 @@ subroutine op0197()
         call jeveuo('&&OP0197.NOM_VECPRO', 'L', ipro)
 !
         if (impr) then
-            write(ifm,*) 'TABLEAU DES SIGMA WEIBULL : '
+            write (ifm, *) 'TABLEAU DES SIGMA WEIBULL : '
             do it = 1, nbval
-                write(ifm,*) 'SIGW(',it,') = ',zr(isig+it-1)
+                write (ifm, *) 'SIGW(', it, ') = ', zr(isig+it-1)
             end do
-            write(ifm,*) 'TABLEAU DES PROBA WEIBULL : '
+            write (ifm, *) 'TABLEAU DES PROBA WEIBULL : '
             do it = 1, nbval
-                write(ifm,*) 'PRW(',it,') = ',zr(ipro+it-1)
+                write (ifm, *) 'PRW(', it, ') = ', zr(ipro+it-1)
             end do
-        endif
+        end if
 !
         call jeveuo('&&OP0197.NOM_INSSIG', 'L', vr=nom_inssig)
 !
         call tbcrsd(zk16(itabr-1+iresu), 'V')
         call tbajpa(zk16(itabr-1+iresu), nbparr, noparr, typarr)
 !
-        if (impr) write(ifm,*) 'ETAPE 2 > INTERPOLATION SIGMA WEIBULL'
+        if (impr) write (ifm, *) 'ETAPE 2 > INTERPOLATION SIGMA WEIBULL'
         do it = 1, nbins
-            if (impr) write(ifm, *) 'INTERPOLATION NO ', it, ' / TEMPS = ', zr(iinst+it-1)
-            call interp(nom_inssig, zr(isig), nbval, zr(iinst+it-1), sigint,&
+            if (impr) write (ifm, *) 'INTERPOLATION NO ', it, ' / TEMPS = ', zr(iinst+it-1)
+            call interp(nom_inssig, zr(isig), nbval, zr(iinst+it-1), sigint, &
                         iseg)
-            call interp(nom_inssig, zr(ipro), nbval, zr(iinst+it-1), proint,&
+            call interp(nom_inssig, zr(ipro), nbval, zr(iinst+it-1), proint, &
                         iseg)
             vali(1) = iresu
             valr(1) = zr(iinst+it-1)
             valr(2) = sigint
             valr(3) = proint
-            call tbajli(zk16(itabr-1+iresu), nbparr, noparr, vali, valr,&
+            call tbajli(zk16(itabr-1+iresu), nbparr, noparr, vali, valr, &
                         [c16b], k8bid, 0)
-            if (impr) write(ifm,*) 'SIGMA WEIBULL :',sigint
+            if (impr) write (ifm, *) 'SIGMA WEIBULL :', sigint
         end do
 !
         call jedetr('&&OP0197.NOM_VECPRO')
@@ -502,39 +502,39 @@ subroutine op0197()
 !  ---   FUSION DES TABLES DE CONTRAINTES DE WEIBULL POUR
 !  ---   TOUTES LES BASES DE RESULATS
 !
-    call tbfutb(tabout, 'G', nbresu, zk16(itabr), ' ',&
+    call tbfutb(tabout, 'G', nbresu, zk16(itabr), ' ', &
                 ' ', [ibid], [r8bid], [c16b], k8bid)
 !
 !  ---   TRI DE LA TABLE DES CONTRAINTES DE WEIBULL
 !
-    call tbtrtb(tabout, 'G', tabtri, 1, noparr(3),&
+    call tbtrtb(tabout, 'G', tabtri, 1, noparr(3), &
                 'CR', 0.d0, 'ABSOLU  ')
-    call tbexve(tabtri, 'NURES', '&&OP0197.NOM_NURES', 'V', nrupt,&
+    call tbexve(tabtri, 'NURES', '&&OP0197.NOM_NURES', 'V', nrupt, &
                 k8bid)
     call jeveuo('&&OP0197.NOM_NURES', 'L', vi=nom_nures)
-    call tbexve(tabtri, 'SIGMA_WEIBULL', '&&OP0197.NOM_VECSIG', 'V', nrupt,&
+    call tbexve(tabtri, 'SIGMA_WEIBULL', '&&OP0197.NOM_VECSIG', 'V', nrupt, &
                 k8bid)
     call jeveuo('&&OP0197.NOM_VECSIG', 'L', isig)
-    call tbexve(tabtri, 'PROBA_WEIBULL', '&&OP0197.NOM_VECPRO', 'V', nrupt,&
+    call tbexve(tabtri, 'PROBA_WEIBULL', '&&OP0197.NOM_VECPRO', 'V', nrupt, &
                 k8bid)
     call jeveuo('&&OP0197.NOM_VECPRO', 'L', ipro)
     call detrsd('TABLE', tabtri)
     call detrsd('TABLE', tabout)
 !
     if (impr) then
-        write(ifm,*) 'ETAPE 3 > FUSION ET TRI DES SIGMA WEIBULL'
+        write (ifm, *) 'ETAPE 3 > FUSION ET TRI DES SIGMA WEIBULL'
         do it = 1, nrupt
-            write(ifm,*) 'SIGW(',it,') = ',zr(isig+it-1)
+            write (ifm, *) 'SIGW(', it, ') = ', zr(isig+it-1)
         end do
-        write(ifm,*) 'ETAPE 4 > OPTIMISATION DES PARAMETRES'
-    endif
+        write (ifm, *) 'ETAPE 4 > OPTIMISATION DES PARAMETRES'
+    end if
 !
 !  ---   CALCUL DE M ET SIGMA-U AU RANG K+1 PAR UNE
 !        DES DEUX METHODES DE RECALAGE
 !
-    call optimw(method, nrupt, zr(ix), zr(iy), zr(ipth),&
-                zr(isig), zi(irent), nom_nures, nbresu, calm,&
-                cals, mk, zr(isigk), mkp, zr(isigkp),&
+    call optimw(method, nrupt, zr(ix), zr(iy), zr(ipth), &
+                zr(isig), zi(irent), nom_nures, nbresu, calm, &
+                cals, mk, zr(isigk), mkp, zr(isigkp), &
                 impr, ifm, dept, zi(itpre), ntpsi)
 !
 !  ---   STOCKAGE DANS LA TABLE TABL_PARA_ITER
@@ -545,17 +545,17 @@ subroutine op0197()
     do iresu = 1, ntpsi
         zr(ivapa+iresu) = zr(isigkp+iresu-1)
     end do
-    call tbajli(tapait, ntpsi+2, zk16(inopa), vali, zr(ivapa),&
+    call tbajli(tapait, ntpsi+2, zk16(inopa), vali, zr(ivapa), &
                 [c16b], k8bid, 0)
 !
 !  ---   CALCUL CRITERE DE CONVERGENCE (MK,MK+1,SUK,SUK+1)
 !
     maxcs = 0.d0
     do iresu = 1, ntpsi
-        if (( abs( (zr(isigkp+iresu-1) - zr(isigk+iresu-1) )/ zr(isigk+ iresu-1) ) ) .gt.&
+        if ((abs((zr(isigkp+iresu-1)-zr(isigk+iresu-1))/zr(isigk+iresu-1))) .gt. &
             maxcs) then
-            maxcs = abs( (zr(isigkp+iresu-1) - zr(isigk+iresu-1)) / zr(isigk+iresu-1 ) )
-        endif
+            maxcs = abs((zr(isigkp+iresu-1)-zr(isigk+iresu-1))/zr(isigk+iresu-1))
+        end if
     end do
 !
     if ((abs((mkp-mk)/mk)) .le. epsi) calm = .true.
@@ -564,15 +564,15 @@ subroutine op0197()
 !     SI SIGMA A CONVERGE ALORS QUE M RESTE A CALER
 !     ALORS ON CONTINUE A CALER M ET SIGMA
 !
-    if ((recm.and.recs) .and. (cals.and.(.not.calm))) cals = .false.
+    if ((recm .and. recs) .and. (cals .and. (.not. calm))) cals = .false.
 !
-    test = max((abs((mkp-mk)/mk)),maxcs)
+    test = max((abs((mkp-mk)/mk)), maxcs)
     if (impr) then
-        write(ifm,*) 'CONVERGENCE POUR M-K : ',abs((mkp-mk)/mk)
-        write(ifm,*) 'CONVERGENCE POUR SIGMA-K : ',maxcs
-        if (calm) write(ifm,*) ' --> LE PARAMETRE M EST CALE'
-        if (cals) write(ifm,*) ' --> LE PARAMETRE SIGMA EST CALE'
-    endif
+        write (ifm, *) 'CONVERGENCE POUR M-K : ', abs((mkp-mk)/mk)
+        write (ifm, *) 'CONVERGENCE POUR SIGMA-K : ', maxcs
+        if (calm) write (ifm, *) ' --> LE PARAMETRE M EST CALE'
+        if (cals) write (ifm, *) ' --> LE PARAMETRE SIGMA EST CALE'
+    end if
 !
 !        STOCKAGE DANS LA TABLE TABL_PROBA_SIGW
 !        TABLE PROBA-SIGMA EXPERIENCE/THEORIE : SIGW(I),PF(SIGW),PF(I)
@@ -583,14 +583,14 @@ subroutine op0197()
             valr(2) = zr(ipro+it-1)
             if (method(1:9) .eq. 'REGR_LINE') then
                 valr(3) = zr(ipth+it-1)
-                call tbajli(nomres, nbpars, nopars, [ibid], valr,&
+                call tbajli(nomres, nbpars, nopars, [ibid], valr, &
                             [c16b], k8bid, 0)
             else
-                call tbajli(nomres, 2, nopars, [ibid], valr,&
+                call tbajli(nomres, 2, nopars, [ibid], valr, &
                             [c16b], k8bid, 0)
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedetr('&&OP0197.NOM_VECSIG')
     call jedetr('&&OP0197.NOM_VECPRO')
@@ -607,28 +607,28 @@ subroutine op0197()
             valr(2) = mkp
             valr(3) = zr(isigkp+iresu-1)
             if (dept) then
-                call tbajli(nomres, nbpart, nopart, [ibid], valr,&
+                call tbajli(nomres, nbpart, nopart, [ibid], valr, &
                             [c16b], k8bid, 0)
             else
-                call tbajli(nomres, 2, nopart(2), [ibid], valr(2),&
+                call tbajli(nomres, 2, nopart(2), [ibid], valr(2), &
                             [c16b], k8bid, 0)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !     ---  BOUCLAGE SI NON CONVERGENCE
 !          ET NOMBRE D'ITERATIONS MAX NON ATTEINT
 !
-    if (((.not.calm).or.(.not.cals)) .and. nbite .lt. nitmax) goto 200
+    if (((.not. calm) .or. (.not. cals)) .and. nbite .lt. nitmax) goto 200
     if (nbite .eq. nitmax) then
         call utmess('F', 'UTILITAI2_53')
-    endif
+    end if
 !
     valii = nbite
-    valrr (1) = test
+    valrr(1) = test
     call utmess('I', 'UTILITAI6_56', si=valii, sr=valrr(1))
 !
-    call tbimpr(tapait, 'EXCEL', ifm, ntpsi+2, zk16(inopa),&
+    call tbimpr(tapait, 'EXCEL', ifm, ntpsi+2, zk16(inopa), &
                 0, '1PE12.5')
 !
     call jedema()

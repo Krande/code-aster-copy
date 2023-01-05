@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ subroutine xtempc(nfiss, fiss, fonree, char)
     character(len=8) :: noma, nomo, betaf, nomnoe(1), ddlh(1), ddle(1)
     character(len=4) :: typval
     complex(kind=8) :: cbid
-    integer :: nrel, ifiss,  nbno, ino, istan, ndim(1)
+    integer :: nrel, ifiss, nbno, ino, istan, ndim(1)
     real(kind=8) :: betar, coefr(1)
     integer, pointer :: vale(:) => null()
 !
-    data ddlh /'H1'/
-    data ddle /'E1'/
+    data ddlh/'H1'/
+    data ddle/'E1'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
     ndim(1) = 0
     coefr(1) = 1.d0
-    ASSERT(fonree.eq.'REEL' .or. fonree.eq.'FONC')
+    ASSERT(fonree .eq. 'REEL' .or. fonree .eq. 'FONC')
     typval = fonree
     betar = 0.d0
     betaf = '&FOZERO'
@@ -88,7 +88,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
     do ifiss = 1, nfiss
 !
-        stano=fiss(ifiss)//'.STNO'
+        stano = fiss(ifiss)//'.STNO'
         call jeveuo(stano//'.VALE', 'L', vi=vale)
 !
 !       -------------------------------------
@@ -102,32 +102,32 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
 !           MISE A ZERO DDL HEAVISIDE
                 if (istan .eq. 1) then
-                    call afrela(coefr, [cbid], ddlh, nomnoe, ndim,&
-                                [0.d0], 1, betar, cbid, betaf,&
+                    call afrela(coefr, [cbid], ddlh, nomnoe, ndim, &
+                                [0.d0], 1, betar, cbid, betaf, &
                                 'REEL', typval, 0.d0, lisrel)
-                    nrel = nrel + 1
+                    nrel = nrel+1
 !
 !           MISE A ZERO DDL CRACK-TIP
-                else if (istan.eq.2) then
-                    call afrela(coefr, [cbid], ddle, nomnoe, ndim,&
-                                [0.d0], 1, betar, cbid, betaf,&
+                else if (istan .eq. 2) then
+                    call afrela(coefr, [cbid], ddle, nomnoe, ndim, &
+                                [0.d0], 1, betar, cbid, betaf, &
                                 'REEL', typval, 0.d0, lisrel)
-                    nrel = nrel + 1
+                    nrel = nrel+1
 !
 !           MISE A ZERO DDLS HEAVISIDE ET CRACK-TIP
-                else if (istan.eq.3) then
-                    call afrela(coefr, [cbid], ddlh, nomnoe, ndim,&
-                                [0.d0], 1, betar, cbid, betaf,&
+                else if (istan .eq. 3) then
+                    call afrela(coefr, [cbid], ddlh, nomnoe, ndim, &
+                                [0.d0], 1, betar, cbid, betaf, &
                                 'REEL', typval, 0.d0, lisrel)
-                    call afrela(coefr, [cbid], ddle, nomnoe, ndim,&
-                                [0.d0], 1, betar, cbid, betaf,&
+                    call afrela(coefr, [cbid], ddle, nomnoe, ndim, &
+                                [0.d0], 1, betar, cbid, betaf, &
                                 'REEL', typval, 0.d0, lisrel)
-                    nrel = nrel + 2
+                    nrel = nrel+2
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !
-            endif
+            end if
 !
         end do
 !       -------------------------------------
@@ -140,7 +140,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
 ! --- AFFECTATION DES RELATIONS LINEAIRES DANS LE LIGREL DE CHARGE
 !
-    ASSERT(nrel.gt.0)
+    ASSERT(nrel .gt. 0)
     call aflrch(lisrel, char, 'LIN')
 !
     call jedema()

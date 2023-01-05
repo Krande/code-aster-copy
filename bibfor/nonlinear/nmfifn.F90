@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmfifn(nno, nddl, npg, wref, vff,&
+subroutine nmfifn(nno, nddl, npg, wref, vff, &
                   dfde, geom, sigma, fint)
 !
 !
@@ -51,12 +51,12 @@ subroutine nmfifn(nno, nddl, npg, wref, vff,&
 !
     do kpg = 1, npg
 !
-        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg),&
+        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg), &
                     geom, poids, b)
 !
         do ni = 1, nddl
 !
-            fint(ni) = fint(ni) + poids*ddot(3,b(1,ni),1,sigma(1,kpg), 1)
+            fint(ni) = fint(ni)+poids*ddot(3, b(1, ni), 1, sigma(1, kpg), 1)
 !
         end do
 !

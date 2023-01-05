@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lkvacv(nbmat, mater, paravi, varvi)
 !
-    implicit      none
+    implicit none
     integer :: nbmat
     real(kind=8) :: paravi(3), mater(nbmat, 2), varvi(4)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE-------------------------
@@ -39,15 +39,15 @@ subroutine lkvacv(nbmat, mater, paravi, varvi)
 ! ================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------
 ! ================================================================
-    parameter       ( un     =  1.0d0   )
-    parameter       ( deux   =  2.0d0   )
-    parameter       ( trois  =  3.0d0   )
-    parameter       ( six    =  6.0d0   )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
 ! ================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE -----------------------
 ! ================================================================
-    sigc = mater(3,2)
-    gamcjs = mater(5,2)
+    sigc = mater(3, 2)
+    gamcjs = mater(5, 2)
 ! ================================================================
 !---- CALCUL DE Kd(XIP)-------------------------------------------
 ! ================================================================
@@ -55,16 +55,16 @@ subroutine lkvacv(nbmat, mater, paravi, varvi)
 ! ================================================================
 !---- CALCUL DE Ad(XIP)-------------------------------------------
 ! ================================================================
-    h0c = (un - gamcjs)**(un/six)
-    avxiv = -paravi(3) * kvxiv/sqrt(six)/sigc/h0c
+    h0c = (un-gamcjs)**(un/six)
+    avxiv = -paravi(3)*kvxiv/sqrt(six)/sigc/h0c
 ! ================================================================
 !---- CALCUL DE Bd(XIP)-------------------------------------------
 ! ================================================================
-    bvxiv = paravi(3) * kvxiv/trois/sigc
+    bvxiv = paravi(3)*kvxiv/trois/sigc
 ! ================================================================
 !---- CALCUL DE Dd(XIP)-------------------------------------------
 ! ================================================================
-    dvxiv = paravi(2) * kvxiv
+    dvxiv = paravi(2)*kvxiv
 ! ================================================================
 ! --- STOCKAGE ---------------------------------------------------
 ! ================================================================

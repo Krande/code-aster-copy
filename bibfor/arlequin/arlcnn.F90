@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,11 +47,11 @@ subroutine arlcnn(nummai, connex, loncum, nbno, cxno)
 !
 ! ----------------------------------------------------------------------
 !
-    nbno = loncum(nummai+1) - loncum(nummai)
+    nbno = loncum(nummai+1)-loncum(nummai)
 !
     if ((nbno < 1) .or. (nbno > 27)) then
-        ASSERT( .false. )
-    endif
+        ASSERT(.false.)
+    end if
 !
     call arlcns(nummai, connex, loncum, nbno, cxno)
 !

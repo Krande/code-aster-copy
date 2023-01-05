@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
+subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt, &
                   nbropt)
     implicit none
 #include "asterf_types.h"
@@ -69,7 +69,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
 !   NBOPT  I    NOMBRE D'OPTIONS
 ! ----------------------------------------------------------------------
     integer :: ntymax
-    parameter (ntymax = 11)
+    parameter(ntymax=11)
 !
     integer :: i, ityp, n1, jopt, postmp, nbopfa, ioc, ibid
     integer :: nuti, nsup, jord, iordr, iret
@@ -78,16 +78,16 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=12) :: typopt, tygrop(ntymax)
     character(len=16) :: option
     character(len=24) :: chn
-    parameter   (mcfact='CHAM_UTIL')
+    parameter(mcfact='CHAM_UTIL')
 !
     aster_logical :: newcal, vu
     integer, pointer :: nb_op_ty(:) => null()
     character(len=16), pointer :: oputil(:) => null()
 !
-    data tygrop  /'CONTRAINTE  ', 'DEFORMATION ', 'ENERGIE     ', &
-                  'CRITERES    ', 'VARI_INTERNE', 'HYDRAULIQUE ', &
-                  'THERMIQUE   ', 'ACOUSTIQUE  ', 'FORCE       ', &
-                  'PROPRIETES  ', 'SOUS_POINT  '/
+    data tygrop/'CONTRAINTE  ', 'DEFORMATION ', 'ENERGIE     ', &
+        'CRITERES    ', 'VARI_INTERNE', 'HYDRAULIQUE ', &
+        'THERMIQUE   ', 'ACOUSTIQUE  ', 'FORCE       ', &
+        'PROPRIETES  ', 'SOUS_POINT  '/
 !
     call jemarq()
 !
@@ -99,7 +99,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         call getvtx(' ', typopt, nbval=0, nbret=n1)
         nb_op_ty(ityp) = -n1
         nbropt = nbropt-n1
-    enddo
+    end do
 !
     call wkvect(lisopt, 'V V K16', max(1, nbropt), jopt)
 !
@@ -111,8 +111,8 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         if (nbopfa .eq. 0) goto 20
         call getvtx(' ', typopt, nbval=nbopfa, vect=zk16(jopt+postmp), nbret=n1)
         postmp = postmp+nbopfa
- 20     continue
-    enddo
+20      continue
+    end do
 !
 ! --- MOT-CLE FACTEUR CHAM_UTIL
 !     POUR EVITER L'ALARME LIE AU RECALCUL D'UNE OPTION DEJA PRESENTE
@@ -121,7 +121,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     call getfac(mcfact, nuti)
     if (nuti .eq. 0) then
         goto 999
-    endif
+    end if
 !
     newcal = .false.
     call jeexin(resuou//'           .DESC', iret)
@@ -136,43 +136,43 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
 !       OPTION PRESENTE DANS RESUIN A TOUS LES NUME_ORDRE A CALCULER ?
         do i = 1, nbordr
             iordr = zi(jord-1+i)
-            call rsexch(' ', resuin, option, iordr, chn,&
+            call rsexch(' ', resuin, option, iordr, chn, &
                         iret)
             if (iret .ne. 0) then
-                if (.not.newcal) call rsexch(' ', resuou, option, iordr, chn,&
-                                             iret)
+                if (.not. newcal) call rsexch(' ', resuou, option, iordr, chn, &
+                                              iret)
                 if (iret .ne. 0) then
                     vu = .false.
                     goto 32
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
         goto 38
 !
- 32     continue
+32      continue
 !       OPTION DEJA DANS LA LISTE ?
         vu = .false.
         do i = 1, nbropt
             if (zk16(jopt-1+i) .eq. option) then
                 vu = .true.
                 goto 30
-            endif
-        enddo
+            end if
+        end do
         do i = 1, nsup
             if (oputil(i) .eq. option) then
                 vu = .true.
                 goto 30
-            endif
-        enddo
+            end if
+        end do
 !
- 38     continue
+38      continue
 !       ON AJOUTE L'OPTION A LA LISTE
-        if (.not.vu) then
-            nsup = nsup + 1
+        if (.not. vu) then
+            nsup = nsup+1
             oputil(nsup) = option
-        endif
- 30     continue
-    enddo
+        end if
+30      continue
+    end do
 !
 ! --- REFAIRE OU AGRANDIR LISOPT
     if (nsup .gt. 0) then
@@ -181,12 +181,12 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
             call wkvect(lisopt, 'V V K16', nsup, jopt)
         else
             call juveca(lisopt, nbropt+nsup)
-        endif
+        end if
         do i = 1, nsup
             zk16(jopt-1+nbropt+i) = oputil(i)
         end do
-        nbropt = nbropt + nsup
-    endif
+        nbropt = nbropt+nsup
+    end if
 !
 999 continue
     AS_DEALLOCATE(vi=nb_op_ty)

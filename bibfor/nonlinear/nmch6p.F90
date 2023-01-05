@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine nmch6p(measse)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterfort/nmcha0.h"
     character(len=19) :: measse(*)
 !
@@ -39,8 +39,8 @@ subroutine nmch6p(measse)
 !
     character(len=19) :: masse, amort, rigid, sstru
 !
-    data amort ,masse     /'&&NMCH6P.AMORT','&&NMCH6P.MASSE'/
-    data rigid ,sstru     /'&&NMCH6P.RIGID','&&NMCH6P.SSRASS'/
+    data amort, masse/'&&NMCH6P.AMORT', '&&NMCH6P.MASSE'/
+    data rigid, sstru/'&&NMCH6P.RIGID', '&&NMCH6P.SSRASS'/
 !
 ! ----------------------------------------------------------------------
 !

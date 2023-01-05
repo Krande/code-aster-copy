@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine btldth(fami, xi3, nb1, kpg, btild,&
-                  wgt, indic, young, nu, alpha,&
+subroutine btldth(fami, xi3, nb1, kpg, btild, &
+                  wgt, indic, young, nu, alpha, &
                   temper, forthi)
 !
     implicit none
@@ -43,44 +43,44 @@ subroutine btldth(fami, xi3, nb1, kpg, btild,&
 !
     real(kind=8) :: temper, tinf, tmoy, tref, tsup
 !-----------------------------------------------------------------------
-    p1xi3= 1-xi3*xi3
-    p2xi3=-xi3*(1-xi3)/2.d0
-    p3xi3= xi3*(1+xi3)/2.d0
+    p1xi3 = 1-xi3*xi3
+    p2xi3 = -xi3*(1-xi3)/2.d0
+    p3xi3 = xi3*(1+xi3)/2.d0
     call jevech('PNBSP_I', 'L', jcou)
-    imoy=(3*zi(jcou)+1)/2
-    call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
+    imoy = (3*zi(jcou)+1)/2
+    call rcvarc(' ', 'TEMP', 'REF', fami, 1, &
                 1, tref, iret1)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 1, tinf, iret2)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 imoy, tmoy, iret3)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 3*zi(jcou), tsup, iret4)
     if ((iret2+iret3+iret4) .eq. 0) then
-        if ((iret1.eq.1) .or. (indic.eq.0)) then
+        if ((iret1 .eq. 1) .or. (indic .eq. 0)) then
             call utmess('F', 'COMPOR5_43')
         else
-            temper=(tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3)-tref
-        endif
+            temper = (tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3)-tref
+        end if
     else
         temper = r8nnem()
-    endif
+    end if
 !
 !
     if (indic .eq. 1) then
 !
-        vecthr(1)=young*alpha*temper/(1.d0-nu)
-        vecthr(2)=vecthr(1)
+        vecthr(1) = young*alpha*temper/(1.d0-nu)
+        vecthr(2) = vecthr(1)
 !
 !     CONSTRUCTION DES EFFORTS DUS AUX DILATATIONS THERMIQUES
 !
         do i = 1, 5*nb1+2
-            forthi(i)=0.d0
+            forthi(i) = 0.d0
             do k = 1, 2
-                forthi(i)=forthi(i)+btild(k,i)*vecthr(k)*wgt
+                forthi(i) = forthi(i)+btild(k, i)*vecthr(k)*wgt
             end do
         end do
-    endif
+    end if
 !
 !
 end subroutine

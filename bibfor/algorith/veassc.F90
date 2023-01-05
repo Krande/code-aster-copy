@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ subroutine veassc(lischa, vecele)
 !
 ! --- NOMBRE DE CHARGES DE TYPE VECT_ASSE_CHAR
 !
-    nbveac = lisnbg(lischa,'VECT_ASSE_CHAR')
+    nbveac = lisnbg(lischa, 'VECT_ASSE_CHAR')
     if (nbveac .eq. 0) goto 99
 !
 ! --- BOUCLE SUR LES CHARGES
@@ -85,7 +85,7 @@ subroutine veassc(lischa, vecele)
 ! ----- CODE DU GENRE DE LA CHARGE
 !
         call lislco(lischa, ichar, genrec)
-        lveac = lisico('VECT_ASSE_CHAR',genrec)
+        lveac = lisico('VECT_ASSE_CHAR', genrec)
         if (lveac) then
 !
 ! ------- NOM DU CHAM_NO
@@ -96,19 +96,19 @@ subroutine veassc(lischa, vecele)
 ! ------- NOM DU CHAMP
 !
             call exisd('CHAMP_GD', chamno, iexis)
-            ASSERT(iexis.gt.0)
+            ASSERT(iexis .gt. 0)
 !
 ! ------- ON RECOPIE SIMPLEMENT LE CHAMP DANS VECT_ELEM
 !
             call gcnco2(newnom)
             lchout = '&&VEASSE.'//newnom(2:8)
-            call corich('E', lchout, ichin_ = ichar)
+            call corich('E', lchout, ichin_=ichar)
             call copisd('CHAMP_GD', 'V', chamno, lchout)
             call reajre(vecele, lchout, 'V')
-        endif
+        end if
     end do
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

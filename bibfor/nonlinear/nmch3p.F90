@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 !
 subroutine nmch3p(meelem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmcha0.h"
 !
-character(len=19) :: meelem(*)
+    character(len=19) :: meelem(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,11 +42,11 @@ character(len=19) :: meelem(*)
     character(len=19) :: messtr, megeom
     character(len=19) :: meeltc, meeltf
 !
-    data memass,mediri    /'&&NMCH3P.MEMASS','&&NMCH3P.MEDIRI'/
-    data meamor    /'&&NMCH3P.MEAMOR'/
-    data mesuiv,messtr    /'&&NMCH3P.MATGME','&&NMCH3P.SSRELE'/
-    data megeom           /'&&NMCH3P.MEGEOM'/
-    data meeltc,meeltf    /'&&NMCH3P.MEELTC','&&NMCH3P.MEELTF'/
+    data memass, mediri/'&&NMCH3P.MEMASS', '&&NMCH3P.MEDIRI'/
+    data meamor/'&&NMCH3P.MEAMOR'/
+    data mesuiv, messtr/'&&NMCH3P.MATGME', '&&NMCH3P.SSRELE'/
+    data megeom/'&&NMCH3P.MEGEOM'/
+    data meeltc, meeltf/'&&NMCH3P.MEELTC', '&&NMCH3P.MEELTF'/
 !
 ! ----------------------------------------------------------------------
 !

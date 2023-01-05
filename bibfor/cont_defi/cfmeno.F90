@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfmeno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+subroutine cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node, &
                   nb_cont_node)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeecra.h"
 #include "asterfort/jeveuo.h"
@@ -61,15 +61,15 @@ implicit none
 !
 ! - Datastructure for contact definition
 !
-    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
     sdcont_psunoco = sdcont_defi(1:16)//'.PSUNOCO'
-    call jeveuo(sdcont_noeuco , 'E', vi = v_sdcont_noeuco)
-    call jeveuo(sdcont_psunoco, 'E', vi = v_sdcont_psunoco)
+    call jeveuo(sdcont_noeuco, 'E', vi=v_sdcont_noeuco)
+    call jeveuo(sdcont_psunoco, 'E', vi=v_sdcont_psunoco)
 
 ! - PSUNOCO pointer modification
 !
     do i_surf = 1, nb_cont_surf
-        v_sdcont_psunoco(i_surf+1) = v_sdcont_psunoco(i_surf+1) - v_poin_node(i_surf+1)
+        v_sdcont_psunoco(i_surf+1) = v_sdcont_psunoco(i_surf+1)-v_poin_node(i_surf+1)
     end do
 !
 ! - Copy of nodes
@@ -80,7 +80,7 @@ implicit none
 !
 ! - New length of NOEUCO
 !
-    do i_node = nb_cont_node + 1, nb_cont_node0
+    do i_node = nb_cont_node+1, nb_cont_node0
         v_sdcont_noeuco(i_node) = 0
     end do
     call jeecra(sdcont_noeuco, 'LONUTI', ival=nb_cont_node)

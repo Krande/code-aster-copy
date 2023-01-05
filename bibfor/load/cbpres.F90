@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 !
 subroutine cbpres(load, mesh, model, geomDime, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/cafotu.h"
 #include "asterfort/capres.h"
 !
-character(len=8), intent(in)  :: load, mesh, model
-integer, intent(in)           :: geomDime
-character(len=4), intent(in)  :: valeType
+    character(len=8), intent(in)  :: load, mesh, model
+    integer, intent(in)           :: geomDime
+    character(len=4), intent(in)  :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ character(len=4), intent(in)  :: valeType
     if (nbOccPresRep .ne. 0) then
         call capres(load, mesh, model, geomDime, valeType, nbOccPresRep)
         mapAlreadyCreated = ASTER_TRUE
-    endif
+    end if
 !
 ! - FORCE_TUYAU loading
 !
@@ -68,6 +68,6 @@ character(len=4), intent(in)  :: valeType
     call getfac(keywordfact, nbOccForceTuyau)
     if (nbOccForceTuyau .ne. 0) then
         call cafotu(load, model, mapAlreadyCreated, mesh, geomDime, valeType, nbOccForceTuyau)
-    endif
+    end if
 !
 end subroutine

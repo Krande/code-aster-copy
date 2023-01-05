@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrInitProfTrunc(resultNameIn, resultNameOut, paraTrunc)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/romModeParaRead.h"
 !
-character(len=8), intent(in) :: resultNameIn, resultNameOut
-type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
+    character(len=8), intent(in) :: resultNameIn, resultNameOut
+    type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,18 +58,18 @@ type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
 !
 ! - Get symbolic name of mode
 !
-    call romModeParaRead(resultNameIn, numeModeRefe, modeSymbName_ = modeSymbName)
+    call romModeParaRead(resultNameIn, numeModeRefe, modeSymbName_=modeSymbName)
 !
 ! - Get mode (complete)
 !
-    call rsexch(' '     , resultNameIn, modeSymbName, numeModeRefe,&
+    call rsexch(' ', resultNameIn, modeSymbName, numeModeRefe, &
                 modeRefe, iret)
     ASSERT(iret .eq. 0)
 !
 ! - Get parameters from numbering
 !
-    call dismoi('NUM_GD'   , modeRefe, 'CHAM_NO', repi = physNume)
-    call dismoi('PROF_CHNO', modeRefe, 'CHAM_NO', repk = profChnoRefe)
+    call dismoi('NUM_GD', modeRefe, 'CHAM_NO', repi=physNume)
+    call dismoi('PROF_CHNO', modeRefe, 'CHAM_NO', repk=profChnoRefe)
 !
 ! - Create name of new PROF_CHNO
 !
@@ -83,6 +83,6 @@ type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
 ! - Save parameters
 !
     paraTrunc%profChnoRom = profChnoNew
-    paraTrunc%physNume    = physNume
+    paraTrunc%physNume = physNume
 !
 end subroutine

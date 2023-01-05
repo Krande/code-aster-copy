@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function cfmmvd(vect)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -40,68 +40,68 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zmeth = 23, ztole = 3 , ztabf = 34, zcmcf = 16
-    integer, parameter :: ztgde = 6 , zdirn = 6 , zdime = 18, zpoud = 3
-    integer, parameter :: ztypm = 2 , zperc = 4 , ztypn = 2 , zmesx = 5
-    integer, parameter :: zapme = 3 , zmaes = 4 , zresu = 30, zcmdf = 6
-    integer, parameter :: zcmxf = 16, zexcl = 3 , zparr = 7 , zpari = 31
-    integer, parameter :: ztaco = 2 , zeven = 5 , zcoco = 8 , ztacf = 4
+    integer, parameter :: zmeth = 23, ztole = 3, ztabf = 34, zcmcf = 16
+    integer, parameter :: ztgde = 6, zdirn = 6, zdime = 18, zpoud = 3
+    integer, parameter :: ztypm = 2, zperc = 4, ztypn = 2, zmesx = 5
+    integer, parameter :: zapme = 3, zmaes = 4, zresu = 30, zcmdf = 6
+    integer, parameter :: zcmxf = 16, zexcl = 3, zparr = 7, zpari = 31
+    integer, parameter :: ztaco = 2, zeven = 5, zcoco = 8, ztacf = 4
     integer, parameter :: zetat = 3
 !
 ! --------------------------------------------------------------------------------------------------
 !
     if (vect .eq. 'ZMETH') then
         cfmmvd = zmeth
-    else if (vect.eq.'ZTOLE') then
+    else if (vect .eq. 'ZTOLE') then
         cfmmvd = ztole
-    else if (vect.eq.'ZTABF') then
+    else if (vect .eq. 'ZTABF') then
         cfmmvd = ztabf
-    else if (vect.eq.'ZTACF') then
+    else if (vect .eq. 'ZTACF') then
         cfmmvd = ztacf
-    else if (vect.eq.'ZCMCF') then
+    else if (vect .eq. 'ZCMCF') then
         cfmmvd = zcmcf
-    else if (vect.eq.'ZCMXF') then
+    else if (vect .eq. 'ZCMXF') then
         cfmmvd = zcmxf
-    else if (vect.eq.'ZTGDE') then
+    else if (vect .eq. 'ZTGDE') then
         cfmmvd = ztgde
-    else if (vect.eq.'ZDIRN') then
+    else if (vect .eq. 'ZDIRN') then
         cfmmvd = zdirn
-    else if (vect.eq.'ZPOUD') then
+    else if (vect .eq. 'ZPOUD') then
         cfmmvd = zpoud
-    else if (vect.eq.'ZTYPM') then
+    else if (vect .eq. 'ZTYPM') then
         cfmmvd = ztypm
-    else if (vect.eq.'ZTYPN') then
+    else if (vect .eq. 'ZTYPN') then
         cfmmvd = ztypn
-    else if (vect.eq.'ZMESX') then
+    else if (vect .eq. 'ZMESX') then
         cfmmvd = zmesx
-    else if (vect.eq.'ZAPME') then
+    else if (vect .eq. 'ZAPME') then
         cfmmvd = zapme
-    else if (vect.eq.'ZRESU') then
+    else if (vect .eq. 'ZRESU') then
         cfmmvd = zresu
-    else if (vect.eq.'ZCMDF') then
+    else if (vect .eq. 'ZCMDF') then
         cfmmvd = zcmdf
-    else if (vect.eq.'ZPERC') then
+    else if (vect .eq. 'ZPERC') then
         cfmmvd = zperc
-    else if (vect.eq.'ZEXCL') then
+    else if (vect .eq. 'ZEXCL') then
         cfmmvd = zexcl
-    else if (vect.eq.'ZPARR') then
+    else if (vect .eq. 'ZPARR') then
         cfmmvd = zparr
-    else if (vect.eq.'ZPARI') then
+    else if (vect .eq. 'ZPARI') then
         cfmmvd = zpari
-    else if (vect.eq.'ZCOCO') then
+    else if (vect .eq. 'ZCOCO') then
         cfmmvd = zcoco
-    else if (vect.eq.'ZDIME') then
+    else if (vect .eq. 'ZDIME') then
         cfmmvd = zdime
-    else if (vect.eq.'ZMAES') then
+    else if (vect .eq. 'ZMAES') then
         cfmmvd = zmaes
-    else if (vect.eq.'ZETAT') then
+    else if (vect .eq. 'ZETAT') then
         cfmmvd = zetat
-    else if (vect.eq.'ZTACO') then
+    else if (vect .eq. 'ZTACO') then
         cfmmvd = ztaco
-    else if (vect.eq.'ZEVEN') then
+    else if (vect .eq. 'ZEVEN') then
         cfmmvd = zeven
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end function

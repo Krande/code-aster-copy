@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zbiter(rho, f, rhoopt, fopt, mem,&
+subroutine zbiter(rho, f, rhoopt, fopt, mem, &
                   rhonew, echec)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -55,9 +55,9 @@ subroutine zbiter(rho, f, rhoopt, fopt, mem,&
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
-    common /zbpar/ rhoneg,rhopos,&
-     &               parmul,fneg  ,fpos  ,&
-     &               dimcpl,nbcpl ,bpos  ,lopti
+    common/zbpar/rhoneg, rhopos,&
+     &               parmul, fneg, fpos,&
+     &               dimcpl, nbcpl, bpos, lopti
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,8 +81,8 @@ subroutine zbiter(rho, f, rhoopt, fopt, mem,&
         call zbroot(mem, rhonew, echec)
         if (echec) goto 999
     else
-        rhonew = rho * parmul
-    endif
+        rhonew = rho*parmul
+    end if
 !
 ! --- PROJECTION DE LA NOUVELLE SOLUTION SUR LES BORNES
 !

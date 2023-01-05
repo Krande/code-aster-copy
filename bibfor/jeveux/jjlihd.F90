@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine jjlihd(idts, nbval, lonoi, genri, typei,&
-                  ltypi, ic, ido, idc, jmarq,&
+subroutine jjlihd(idts, nbval, lonoi, genri, typei, &
+                  ltypi, ic, ido, idc, jmarq, &
                   iadmi, iadyn)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
@@ -57,20 +57,20 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei,&
 !
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
     real(kind=8) :: svuse, smxuse
-    common /statje/  svuse,smxuse
+    common/statje/svuse, smxuse
     character(len=1) :: typeb
     integer :: iconv, iadyn, kdyn
     integer :: iret, jadr, kitab, nbv, ir, lon, kadm, k, lv, ltypb
     integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1)
     integer :: izk24(1), izk32(1), izk80(1), izi4(1)
-    equivalence    (izr,zr),(izc,zc),(izl,zl),(izk8,zk8),(izk16,zk16),&
-     &               (izk24,zk24),(izk32,zk32),(izk80,zk80),(izi4,zi4)
+    equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16),&
+     &               (izk24, zk24), (izk32, zk32), (izk80, zk80), (izi4, zi4)
 ! DEB ------------------------------------------------------------------
     iret = -1
     iconv = 0
@@ -79,75 +79,75 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei,&
     lv = 0
     nbv = nbval
     if (typei .eq. 'I') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,&
+        call jjalls(lonoi, ic, genri, typei, ltypi, &
                     'INIT', zi, jadr, iadmi, iadyn)
     else if (typei .eq. 'S') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,&
+        call jjalls(lonoi, ic, genri, typei, ltypi, &
                     'INIT', izi4, jadr, iadmi, iadyn)
     else if (typei .eq. 'R') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,&
+        call jjalls(lonoi, ic, genri, typei, ltypi, &
                     'INIT', izr, jadr, iadmi, iadyn)
     else if (typei .eq. 'C') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,&
+        call jjalls(lonoi, ic, genri, typei, ltypi, &
                     'INIT', izc, jadr, iadmi, iadyn)
         nbv = 2*nbval
     else if (typei .eq. 'K') then
         if (ltypi .eq. 8) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,&
+            call jjalls(lonoi, ic, genri, typei, ltypi, &
                         'INIT', izk8, jadr, iadmi, iadyn)
         else if (ltypi .eq. 16) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,&
+            call jjalls(lonoi, ic, genri, typei, ltypi, &
                         'INIT', izk16, jadr, iadmi, iadyn)
         else if (ltypi .eq. 24) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,&
+            call jjalls(lonoi, ic, genri, typei, ltypi, &
                         'INIT', izk24, jadr, iadmi, iadyn)
         else if (ltypi .eq. 32) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,&
+            call jjalls(lonoi, ic, genri, typei, ltypi, &
                         'INIT', izk32, jadr, iadmi, iadyn)
         else if (ltypi .eq. 80) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,&
+            call jjalls(lonoi, ic, genri, typei, ltypi, &
                         'INIT', izk80, jadr, iadmi, iadyn)
-        endif
+        end if
     else if (typei .eq. 'L') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,&
+        call jjalls(lonoi, ic, genri, typei, ltypi, &
                     'INIT', izl, jadr, iadmi, iadyn)
-    endif
-    call jjecrs(iadmi, ic, ido, idc, 'E',&
+    end if
+    call jjecrs(iadmi, ic, ido, idc, 'E', &
                 jmarq)
     if (typei .eq. 'I') then
         iconv = 1
-        iret = hdftsd(idts,typeb,ltypb,lv)
+        iret = hdftsd(idts, typeb, ltypb, lv)
         if (lois .lt. ltypb) then
             lon = nbval*ltypb
-            call jjalls(lon, ic, 'V', typei, lois,&
+            call jjalls(lon, ic, 'V', typei, lois, &
                         'INIT', zi, jadr, kadm, kdyn)
             iszon(jiszon+kadm-1) = istat(2)
             iszon(jiszon+iszon(jiszon+kadm-4)-4) = istat(4)
-            svuse = svuse + (iszon(jiszon+kadm-4) - kadm + 4)
-            smxuse = max(smxuse,svuse)
-            ir = iszon(jiszon + kadm - 3 )
+            svuse = svuse+(iszon(jiszon+kadm-4)-kadm+4)
+            smxuse = max(smxuse, svuse)
+            ir = iszon(jiszon+kadm-3)
             kitab = jk1zon+(kadm-1)*lois+ir+1
-            iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
+            iret = hdfrsv(idts, nbv, k1zon(kitab), iconv)
             do k = 1, nbv
-                iszon(jiszon+iadmi-1+k)=iszon(jiszon+kadm-1+k)
+                iszon(jiszon+iadmi-1+k) = iszon(jiszon+kadm-1+k)
             end do
             call jjlidy(kdyn, kadm)
         else
-            ir = iszon(jiszon + iadmi - 3 )
+            ir = iszon(jiszon+iadmi-3)
             kitab = jk1zon+(iadmi-1)*lois+ir+1
-            iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
-        endif
+            iret = hdfrsv(idts, nbv, k1zon(kitab), iconv)
+        end if
     else if (typei .eq. 'S') then
-        ir = iszon(jiszon + iadmi - 3 )
+        ir = iszon(jiszon+iadmi-3)
         kitab = jk1zon+(iadmi-1)*lois+ir+1
-        iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
+        iret = hdfrsv(idts, nbv, k1zon(kitab), iconv)
     else
-        ir = iszon(jiszon + iadmi - 3 )
+        ir = iszon(jiszon+iadmi-3)
         kitab = jk1zon+(iadmi-1)*lois+ir+1
-        iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
-    endif
+        iret = hdfrsv(idts, nbv, k1zon(kitab), iconv)
+    end if
     if (iret .ne. 0) then
         call utmess('F', 'JEVEUX_51')
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

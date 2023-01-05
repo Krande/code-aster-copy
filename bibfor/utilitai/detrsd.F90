@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine detrsd(typesd, nomsd)
 !
-use elg_data_module
+    use elg_data_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -107,7 +107,7 @@ implicit none
         call jedetc(' ', nomsd, 1)
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CABL_PRECONT') then
+    else if (typ2sd .eq. 'CABL_PRECONT') then
 !     ------------------------------------
         k8 = nomsd
         call detrs2('CARTE', k8//'.CHME.SIGIN')
@@ -115,7 +115,7 @@ implicit none
         call detrs2('L_TABLE', k8)
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CHAM_NO_S') then
+    else if (typ2sd .eq. 'CHAM_NO_S') then
 !     ------------------------------------
         k19 = nomsd
         call jedetr(k19//'.CNSD')
@@ -125,7 +125,7 @@ implicit none
         call jedetr(k19//'.CNSV')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CHAM_ELEM_S') then
+    else if (typ2sd .eq. 'CHAM_ELEM_S') then
 !     --------------------------------------
         k19 = nomsd
         call jedetr(k19//'.CESD')
@@ -135,7 +135,7 @@ implicit none
         call jedetr(k19//'.CESV')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'LISTE_RELA') then
+    else if (typ2sd .eq. 'LISTE_RELA') then
 !     --------------------------------------
         k19 = nomsd
         call jedetr(k19//'.RLBE')
@@ -150,7 +150,7 @@ implicit none
         call jedetr(k19//'.RLDD')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'PARTITION') then
+    else if (typ2sd .eq. 'PARTITION') then
 !     -------------------------------------------
         k19 = nomsd
         call jedetr(k19//'.PRTI')
@@ -161,7 +161,7 @@ implicit none
         call jedetr(k19//'.FREF')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CORRESP_2_MAILLA') then
+    else if (typ2sd .eq. 'CORRESP_2_MAILLA') then
 !     -------------------------------------------
         corres = nomsd
         call jedetr(corres//'.PJXX_K1')
@@ -177,7 +177,7 @@ implicit none
         call jedetr(corres//'.PJNG_I2')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CRITERE') then
+    else if (typ2sd .eq. 'CRITERE') then
 !     -----------------------------------
         k19 = nomsd
         call jedetr(k19//'.CRTI')
@@ -185,7 +185,7 @@ implicit none
         call jedetr(k19//'.CRDE')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'FONCTION') then
+    else if (typ2sd .eq. 'FONCTION') then
 !     -----------------------------------
         fnc = nomsd
         call jedetr(fnc//'.PARA')
@@ -193,7 +193,7 @@ implicit none
         call jedetr(fnc//'.VALE')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'SOLVEUR') then
+    else if (typ2sd .eq. 'SOLVEUR') then
 !     ----------------------------------
         solveu = nomsd
         call jedetr(solveu//'.SLVI')
@@ -202,7 +202,7 @@ implicit none
         call jedetr(solveu//'.SLVO')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'EIGENSOLVER') then
+    else if (typ2sd .eq. 'EIGENSOLVER') then
 !     ----------------------------------
         solveu = nomsd
         call jedetr(solveu//'.ESVK')
@@ -210,14 +210,14 @@ implicit none
         call jedetr(solveu//'.ESVI')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'VOISINAGE') then
+    else if (typ2sd .eq. 'VOISINAGE') then
 !     ----------------------------------
         vge = nomsd
         call jedetr(vge//'.PTVOIS')
         call jedetr(vge//'.ELVOIS')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'LIGREL') then
+    else if (typ2sd .eq. 'LIGREL') then
 !     ----------------------------------
         ligrel = nomsd
         call jedetr(ligrel//'.LGNS')
@@ -232,7 +232,7 @@ implicit none
         call jedetr(ligrel//'.SSSA')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'LIGRET') then
+    else if (typ2sd .eq. 'LIGRET') then
 !     ----------------------------------
         ligret = nomsd
         call jedetr(ligret//'.APMA')
@@ -249,7 +249,7 @@ implicit none
         call jedetr(ligret//'.PONO')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'SQUELETTE') then
+    else if (typ2sd .eq. 'SQUELETTE') then
 !     ----------------------------------
         k8 = nomsd
         call detrs2('MAILLAGE', k8)
@@ -260,7 +260,7 @@ implicit none
         call jedetr(k8//'.TRANS')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'L_TABLE') then
+    else if (typ2sd .eq. 'L_TABLE') then
 !     ----------------------------------
         k19 = nomsd
         call jeexin(k19//'.LTNS', iret)
@@ -274,7 +274,7 @@ implicit none
         call jedetr(k19//'.LTNT')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'MAILLAGE') then
+    else if (typ2sd .eq. 'MAILLAGE') then
 !     ----------------------------------
         k8 = nomsd
         call detrs2('CHAM_NO', k8//'.COORDO')
@@ -293,7 +293,7 @@ implicit none
         call jedetr(k8//'.TYPMAIL')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'MODELE') then
+    else if (typ2sd .eq. 'MODELE') then
 !     ----------------------------------
         k8 = nomsd
         call detrs2('LIGREL', k8//'.MODELE')
@@ -305,7 +305,7 @@ implicit none
 !
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'NUAGE') then
+    else if (typ2sd .eq. 'NUAGE') then
 !     ----------------------------------
         nuage = nomsd
         call jedetr(nuage//'.NUAI')
@@ -314,35 +314,35 @@ implicit none
         call jedetr(nuage//'.NUAL')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'TABLE_CONTAINER') then
+    else if (typ2sd .eq. 'TABLE_CONTAINER') then
 !     -----------------------------------
         table = nomsd
         call jeexin(table//'.TBLP', iret)
         if (iret .ne. 0) then
             call jeveuo(table//'.TBNP', 'L', iad)
-            nblg=zi(iad+1)
-            nbpa=zi(iad)
-            ASSERT(nbpa.ge.3)
+            nblg = zi(iad+1)
+            nbpa = zi(iad)
+            ASSERT(nbpa .ge. 3)
             call jeveuo(table//'.TBLP', 'L', iad)
             call jelira(table//'.TBLP', 'LONMAX', long)
-            nblp=long/nbpa
+            nblp = long/nbpa
             do i = 1, nbpa
-                if (zk24(iad+nblp*(i-1))(1:10) .eq. 'TYPE_OBJET') then
-                    typobj=zk24(iad+nblp*(i-1)+3-1)
-                else if (zk24(iad+nblp*(i-1))(1:6).eq.'NOM_SD') then
-                    knomsd=zk24(iad+nblp*(i-1)+3-1)
-                endif
+                if (zk24(iad+nblp*(i-1)) (1:10) .eq. 'TYPE_OBJET') then
+                    typobj = zk24(iad+nblp*(i-1)+3-1)
+                else if (zk24(iad+nblp*(i-1)) (1:6) .eq. 'NOM_SD') then
+                    knomsd = zk24(iad+nblp*(i-1)+3-1)
+                end if
             end do
             call jeveuo(typobj, 'L', ityobj)
             call jeveuo(knomsd, 'L', inomsd)
             do i = 1, nblg
-                if (zk16(ityobj+i-1)(1:9) .eq. 'MATR_ELEM') then
+                if (zk16(ityobj+i-1) (1:9) .eq. 'MATR_ELEM') then
                     call detrs2('MATR_ELEM', zk24(inomsd+i-1))
-                else if (zk16(ityobj+i-1)(1:9).eq.'VECT_ELEM') then
+                else if (zk16(ityobj+i-1) (1:9) .eq. 'VECT_ELEM') then
                     call detrs2('VECT_ELEM', zk24(inomsd+i-1))
-                else if (zk16(ityobj+i-1)(1:9).eq.'CHAM_ELEM') then
+                else if (zk16(ityobj+i-1) (1:9) .eq. 'CHAM_ELEM') then
                     call detrs2('CHAM_ELEM', zk24(inomsd+i-1))
-                endif
+                end if
             end do
             do i = 1, long
                 call jedetr(zk24(iad-1+i))
@@ -350,12 +350,12 @@ implicit none
             call jedetr(table//'.TBLP')
             call jedetr(table//'.TBNP')
             call jedetr(table//'.TBBA')
-        endif
+        end if
         call jedetr(table//'.TITR')
 !
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'TABLE') then
+    else if (typ2sd .eq. 'TABLE') then
 !     --------------------------------
         table = nomsd
         call jeexin(table//'.TBLP', iret)
@@ -368,11 +368,11 @@ implicit none
             call jedetr(table//'.TBLP')
             call jedetr(table//'.TBNP')
             call jedetr(table//'.TBBA')
-        endif
+        end if
         call jedetr(table//'.TITR')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'MATR_ASSE_GENE' .or. typ2sd.eq.'MATR_ASSE') then
+    else if (typ2sd .eq. 'MATR_ASSE_GENE' .or. typ2sd .eq. 'MATR_ASSE') then
 !     ---------------------------------------
         matas = nomsd
 !
@@ -381,23 +381,23 @@ implicit none
         if (iexi .gt. 0) then
             call jeveuo(matas//'.REFA', 'L', vk24=refa)
             if (refa(19) .ne. ' ') then
-                matas2=refa(19)(1:19)
+                matas2 = refa(19) (1:19)
                 call jeexin(matas2//".REFA", iexi2)
                 if (iexi2 .gt. 0) then
-                    call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solveu2, arret='C',&
-                        ier=iret)
-                    if (iret .eq. 0 ) then
+                    call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solveu2, arret='C', &
+                                ier=iret)
+                    if (iret .eq. 0) then
                         call detlsp(matas2, solveu2)
-                    endif
+                    end if
                     call detrs2('MATR_ASSE', matas2)
                     call elg_gest_data('EFFACE', ' ', matas2, ' ')
-                 endif
+                end if
 !       -- DESTRUCTION DE L'EVENTUELLE MATRICE PRE CONDITIONNEUR XFEM :
 !            if (refa(18) .ne. ' ' .or. refa(16) .ne. ' ') then
 !                call xfem_pc_detr(matas)
 !            endif
-            endif
-        endif
+            end if
+        end if
 !
 !       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :
 !          et des matrices PETSC liées à ELIM_LAGR='OUI'
@@ -405,13 +405,13 @@ implicit none
         if (iexi .gt. 0) then
             call dismoi('METH_RESO', matas, 'MATR_ASSE', repk=metres)
             if (metres .eq. 'MUMPS') then
-                call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid],&
+                call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid], &
                             ' ', 0, ibid, lbid)
-            else if (metres.eq.'PETSC') then
-                call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
+            else if (metres .eq. 'PETSC') then
+                call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ', &
                             0, ibid, iret)
-            endif
-        endif
+            end if
+        end if
 !
         call jedetr(matas//'.CCID')
         call jedetr(matas//'.CCII')
@@ -430,7 +430,7 @@ implicit none
 !
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CHAM_NO') then
+    else if (typ2sd .eq. 'CHAM_NO') then
 !     ----------------------------------
         k19 = nomsd
         call jedetr(k19//'.DESC')
@@ -438,7 +438,7 @@ implicit none
         call jedetr(k19//'.VALE')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CARTE') then
+    else if (typ2sd .eq. 'CARTE') then
 !     ----------------------------------
         k19 = nomsd
         call jedetr(k19//'.DESC')
@@ -451,7 +451,7 @@ implicit none
         call jedetr(k19//'.NCMP')
         call jedetr(k19//'.VALV')
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'PROF_CHNO') then
+    else if (typ2sd .eq. 'PROF_CHNO') then
 !     ------------------------------------
         k19 = nomsd
         call jedetr(k19//'.DEEQ')
@@ -459,7 +459,7 @@ implicit none
         call jedetr(k19//'.NUEQ')
         call jedetr(k19//'.PRNO')
 !
-    else if (typ2sd.eq.'PROF_GENE') then
+    else if (typ2sd .eq. 'PROF_GENE') then
 !     ------------------------------------
         k19 = nomsd
         call jedetr(k19//'.DEEQ')
@@ -472,7 +472,7 @@ implicit none
         call jedetr(k19//'.REFN')
         call jedetr(k19//'.DELG')
 !
-    else if (typ2sd.eq.'NUME_EQUA') then
+    else if (typ2sd .eq. 'NUME_EQUA') then
 !     ------------------------------------
         k19 = nomsd
         call detrs2('PROF_CHNO', k19)
@@ -480,7 +480,7 @@ implicit none
         call jedetr(k19//'.REFN')
         call jedetr(k19//'.DELG')
 
-    else if (typ2sd.eq.'NUML_EQUA') then
+    else if (typ2sd .eq. 'NUML_EQUA') then
 !  --------------------------------------
         k19 = nomsd
         call jedetr(k19//'.PRNO')
@@ -492,18 +492,18 @@ implicit none
         call jedetr(k19//'.NLGP')
         call jedetr(k19//'.PDDL')
         call jeexin(k19//'.JOIN', iexi)
-        if (iexi.gt.0) then
+        if (iexi .gt. 0) then
             call jelira(k19//'.JOIN', 'LONMAX', nbjoin)
             call jedetr(k19//'.JOIN')
-            do num=1,nbjoin
+            do num = 1, nbjoin
                 call codent(num, 'G', chnbjo)
-                nojoin=k19//'.'//chnbjo
+                nojoin = k19//'.'//chnbjo
                 call jedetr(nojoin)
-            enddo
-        endif
+            end do
+        end if
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'CHAM_ELEM') then
+    else if (typ2sd .eq. 'CHAM_ELEM') then
 !     ------------------------------------
         k19 = nomsd
         call jedetr(k19//'.CELD')
@@ -511,7 +511,7 @@ implicit none
         call jedetr(k19//'.CELV')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'RESUELEM') then
+    else if (typ2sd .eq. 'RESUELEM') then
 !     ------------------------------------
         k19 = nomsd
         call jedetr(k19//'.DESC')
@@ -519,7 +519,7 @@ implicit none
         call jedetr(k19//'.RESL')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'MLTF') then
+    else if (typ2sd .eq. 'MLTF') then
 !     -----------------------------------
         mltf = nomsd
         call jedetr(mltf//'.GLOB')
@@ -550,7 +550,7 @@ implicit none
 !
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'STOCKAGE') then
+    else if (typ2sd .eq. 'STOCKAGE') then
 !     -----------------------------------
         stock = nomsd
         call jedetr(stock//'.SCBL')
@@ -567,7 +567,7 @@ implicit none
 !
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'STOC_LCIEL') then
+    else if (typ2sd .eq. 'STOC_LCIEL') then
 !     -----------------------------------
         stock = nomsd
         call jedetr(stock//'.SCBL')
@@ -580,7 +580,7 @@ implicit none
 !
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'STOC_MORSE') then
+    else if (typ2sd .eq. 'STOC_MORSE') then
 !     -----------------------------------
         stock = nomsd
         call jedetr(stock//'.SMDI')
@@ -588,7 +588,7 @@ implicit none
         call jedetr(stock//'.SMHC')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'NUME_DDL') then
+    else if (typ2sd .eq. 'NUME_DDL') then
 !     -----------------------------------
         nu = nomsd
         call detrs2('NUME_EQUA', nu//'.NUME')
@@ -607,7 +607,7 @@ implicit none
         call jedetr(nu//'.NEWN')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'VARI_COM') then
+    else if (typ2sd .eq. 'VARI_COM') then
 !     -------------------------------------
         com = nomsd
         call assde1('CHAMP', com//'.TEMP')
@@ -619,7 +619,7 @@ implicit none
         call assde1('CHAMP', com//'.TOUT')
 !
 !     ------------------------------------------------------------------
-    else if ((typ2sd.eq.'CHAMP') .or. (typ2sd.eq.'CHAMP_GD')) then
+    else if ((typ2sd .eq. 'CHAMP') .or. (typ2sd .eq. 'CHAMP_GD')) then
 !     -------------------------------------------------------------
 !       POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
         champ = nomsd
@@ -639,7 +639,7 @@ implicit none
         call jedetr(champ//'.VALV')
 !
 !     ------------------------------------------------------------------
-    else if ((typ2sd.eq.'MATR_ELEM') .or. (typ2sd.eq.'VECT_ELEM')) then
+    else if ((typ2sd .eq. 'MATR_ELEM') .or. (typ2sd .eq. 'VECT_ELEM')) then
 !     ---------------------------------------
         matel = nomsd
         call jeexin(matel//'.RELR', iret)
@@ -647,16 +647,16 @@ implicit none
         call jelira(matel//'.RELR', 'LONUTI', nbch)
         if (nbch .gt. 0) call jeveuo(matel//'.RELR', 'L', vk24=relr)
         do i = 1, nbch
-            champ=relr(i)(1:19)
+            champ = relr(i) (1:19)
             call assde1('RESUELEM', champ)
         end do
- 61     continue
+61      continue
         call jedetr(matel//'.RELR')
         call jedetr(matel//'.RELC')
         call jedetr(matel//'.RERR')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'RESULTAT') then
+    else if (typ2sd .eq. 'RESULTAT') then
 !     -----------------------------------
         resu = nomsd
         call jedetr(resu//'.DESC')
@@ -676,7 +676,7 @@ implicit none
         call jedetr(resu//'.RS80')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'LISTE_CHARGES') then
+    else if (typ2sd .eq. 'LISTE_CHARGES') then
 !     -----------------------------------
         resu = nomsd
         call jedetr(resu//'.LCHA')
@@ -684,7 +684,7 @@ implicit none
         call jedetr(resu//'.FCHA')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'LISTR8'.or.typ2sd.eq.'LISTIS') then
+    else if (typ2sd .eq. 'LISTR8' .or. typ2sd .eq. 'LISTIS') then
 !     --------------------------------------------------------
         liste = nomsd
         call jedetr(liste//'.LPAS')
@@ -695,8 +695,8 @@ implicit none
 !     ------------------------------------------------------------------
     else
         ASSERT(.false.)
-    endif
+    end if
 !
- 70 continue
+70  continue
     call jedema()
 end subroutine

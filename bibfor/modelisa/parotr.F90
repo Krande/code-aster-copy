@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine parotr(nomma, iageom, ima, nbno, o,&
+subroutine parotr(nomma, iageom, ima, nbno, o, &
                   mrot, t, coor)
     implicit none
 #include "jeveux.h"
@@ -49,20 +49,20 @@ subroutine parotr(nomma, iageom, ima, nbno, o,&
 !-----------------------------------------------------------------------
     if (nbno .eq. 0) then
         nbnot = 1
-        coor(1)=zr(iageom-1+3*(ima-1)+1)
-        coor(2)=zr(iageom-1+3*(ima-1)+2)
-        coor(3)=zr(iageom-1+3*(ima-1)+3)
+        coor(1) = zr(iageom-1+3*(ima-1)+1)
+        coor(2) = zr(iageom-1+3*(ima-1)+2)
+        coor(3) = zr(iageom-1+3*(ima-1)+3)
     else
         nbnot = nbno
         call pacoor(nomma, ima, nbno, coor)
-    endif
+    end if
 !
     do ino = 1, nbnot
         icoor = 3*(ino-1)
         do i = 1, 3
             x(i) = 0.d0
             do j = 1, 3
-                x(i) = x(i) + mrot(j,i)*(coor(icoor+j)-o(j))
+                x(i) = x(i)+mrot(j, i)*(coor(icoor+j)-o(j))
             end do
         end do
         do i = 1, 3

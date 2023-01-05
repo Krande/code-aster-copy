@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpvpdi(nbmat, mater, td, tf, tr,&
+subroutine dpvpdi(nbmat, mater, td, tf, tr, &
                   depst, deps)
 ! --- LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER VISCOPLASTIQUE -
 ! --- VISC_DRUC_PRAG
@@ -38,12 +38,12 @@ subroutine dpvpdi(nbmat, mater, td, tf, tr,&
     integer :: ii, ndt, ndi
     real(kind=8) :: alpha
 ! =====================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! =====================================================================
 ! --- LES PARAMETRES MATERIAUX SONT SUPPOSES CONSTANT -----------------
 ! =====================================================================
 !
-    alpha = mater(3,1)
+    alpha = mater(3, 1)
 ! INITIALISATION DE DEPS A DEPST
 !
     do ii = 1, ndt
@@ -51,16 +51,16 @@ subroutine dpvpdi(nbmat, mater, td, tf, tr,&
     end do
 !
 !
-    if ((.not.isnan(tr)) .and. (.not.isnan(tf)) .and. (.not.isnan(td))) then
+    if ((.not. isnan(tr)) .and. (.not. isnan(tf)) .and. (.not. isnan(td))) then
         do ii = 1, ndi
-            deps(ii) = depst(ii) - ( alpha*(tf-tr) - alpha*(td-tr))
+            deps(ii) = depst(ii)-(alpha*(tf-tr)-alpha*(td-tr))
         end do
         do ii = ndi+1, ndt
             deps(ii) = depst(ii)
         end do
-        elseif (((.not.isnan(tr)).or.(.not.isnan(td)).or. (.not.isnan(tf))) &
-                  .and.(alpha.ne.0.d0)) then
+    elseif (((.not. isnan(tr)) .or. (.not. isnan(td)) .or. (.not. isnan(tf))) &
+            .and. (alpha .ne. 0.d0)) then
         call utmess('F', 'CALCULEL_15')
-    endif
+    end if
 ! =====================================================================
 end subroutine

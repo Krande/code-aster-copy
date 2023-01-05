@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ function cudisi(deficz, questz)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -65,16 +65,16 @@ function cudisi(deficz, questz)
     if (questi .eq. 'NNOCU') then
         call jeveuo(ndimcu, 'L', jdim)
         cudisi = zi(jdim)
-    else if (questi.eq.'NCMPG') then
+    else if (questi .eq. 'NCMPG') then
         call jeveuo(ndimcu, 'L', jdim)
         cudisi = zi(jdim+1)
-    else if (questi.eq.'NB_RESOL') then
+    else if (questi .eq. 'NB_RESOL') then
         cudisi = 10
 !
     else
-        write(6,*) 'QUESTION: ',questi
+        write (6, *) 'QUESTION: ', questi
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

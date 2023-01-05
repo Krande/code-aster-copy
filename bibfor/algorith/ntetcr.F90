@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntetcr(nume_dof  , ds_inout,&
-                  list_load_, compor_ , hydr_, hydr_init_)
+subroutine ntetcr(nume_dof, ds_inout, &
+                  list_load_, compor_, hydr_, hydr_init_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -66,61 +66,61 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor       = ' '
-    hydr         = ' '
-    hydr_init    = ' '
-    if (present(compor_))    then
+    compor = ' '
+    hydr = ' '
+    hydr_init = ' '
+    if (present(compor_)) then
         compor = compor_
-    endif
-    if (present(hydr_))      then
+    end if
+    if (present(hydr_)) then
         hydr = hydr_
-    endif
+    end if
     if (present(hydr_init_)) then
         hydr_init = hydr_init_
-    endif
-    nb_field       = ds_inout%nb_field
+    end if
+    nb_field = ds_inout%nb_field
     list_load_resu = ds_inout%list_load_resu
-    temp_init      = '&&NTETCR.TEMP0'
-    l_temp_nonl    = ds_inout%l_temp_nonl
+    temp_init = '&&NTETCR.TEMP0'
+    l_temp_nonl = ds_inout%l_temp_nonl
 !
 ! - Copy of list of loads for save in results datastructure
 !
     if (present(list_load_)) then
         call copisd('LISTE_CHARGES', 'G', list_load_, list_load_resu)
-    endif
+    end if
 !
 ! - Active functionnalities
 !
     l_hydr = .false.
     if (l_temp_nonl) then
         call nthydr(l_hydr)
-    endif
+    end if
 !
 ! - Select fields depending on active functionnalities
 !
-    call SetIOField(ds_inout, 'TEMP', l_acti_ = .true._1)
+    call SetIOField(ds_inout, 'TEMP', l_acti_=.true._1)
     if (l_temp_nonl) then
-        call SetIOField(ds_inout, 'COMPORTHER', l_acti_ = .true._1)
-    endif
+        call SetIOField(ds_inout, 'COMPORTHER', l_acti_=.true._1)
+    end if
     if (l_hydr) then
-        call SetIOField(ds_inout, 'HYDR_ELNO' , l_acti_ = .true._1)
-    endif
+        call SetIOField(ds_inout, 'HYDR_ELNO', l_acti_=.true._1)
+    end if
 !
 ! - Add fields
 !
     do i_field = 1, nb_field
         field_type = ds_inout%field(i_field)%type
-        call nmetcc(field_type     , algo_name, init_name, &
-                    compor = compor ,&
-                    hydr   = hydr    , temp_init = temp_init, hydr_init = hydr_init)
-        if (algo_name.ne.'XXXXXXXXXXXXXXXX') then
+        call nmetcc(field_type, algo_name, init_name, &
+                    compor=compor, &
+                    hydr=hydr, temp_init=temp_init, hydr_init=hydr_init)
+        if (algo_name .ne. 'XXXXXXXXXXXXXXXX') then
             ds_inout%field(i_field)%algo_name = algo_name
             ds_inout%field(i_field)%init_name = init_name
-        endif
+        end if
     end do
 !
 ! - Create initial state fields
 !
-    call vtcreb(temp_init, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(temp_init, 'V', 'R', nume_ddlz=nume_dof)
 !
 end subroutine

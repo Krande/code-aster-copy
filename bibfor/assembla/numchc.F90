@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,31 +72,31 @@ subroutine numchc(nu, ccid, nbchc, lchci, base)
 
 !
 !     -- IL N'Y A PEUT-ETRE AUCUN DDL A ELIMINER (CHAR_CINE VIDES) :
-    nimp=0
+    nimp = 0
     do ich = 1, nbchc
         nomch = lchci(ich)
         call jeveuo(nomch//'.AFCI', 'L', jafci)
-        nimp = nimp + zi(jafci)
+        nimp = nimp+zi(jafci)
     end do
 !
     if (nimp .eq. 0) goto 40
 !
 !
     call jeveuo(jexnum(num_ddl//'.NUME.PRNO', 1), 'L', idprno)
-    nelim=0
+    nelim = 0
     do ich = 1, nbchc
         nomch = lchci(ich)
         call jeveuo(nomch//'.AFCI', 'L', jafci)
         nimp = zi(jafci)
         do imp = 1, nimp
-            ino = zi(jafci+3* (imp-1)+1)
-            iddl = zi(jafci+3* (imp-1)+2)
-            ieq = zi(idprno-1+ (nec+2)* (ino-1)+1) + iddl - 1
+            ino = zi(jafci+3*(imp-1)+1)
+            iddl = zi(jafci+3*(imp-1)+2)
+            ieq = zi(idprno-1+(nec+2)*(ino-1)+1)+iddl-1
             zi(jccid-1+ieq) = 1
         end do
     end do
 !
 !
- 40 continue
+40  continue
     call jedema()
 end subroutine

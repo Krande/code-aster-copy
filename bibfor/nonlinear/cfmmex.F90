@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,15 +78,15 @@ subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
         call jeveuo(psans, 'L', jpsanc)
         jsans = jsanc
         jpsans = jpsanc
-    else if (typexc.eq.'FROT') then
+    else if (typexc .eq. 'FROT') then
         call jeveuo(frotno, 'L', jsanf)
         call jeveuo(pfrot, 'L', jpsanf)
         jsans = jsanf
         jpsans = jpsanf
     else
         ASSERT(.false.)
-    endif
-    nsans = zi(jpsans+izone) - zi(jpsans+izone-1)
+    end if
+    nsans = zi(jpsans+izone)-zi(jpsans+izone-1)
 !
 ! --- REPERAGE SI LE NOEUD EST UN NOEUD DE LA LISTE
 !
@@ -95,9 +95,9 @@ subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
         if (numnoe .eq. numsan) then
             suppok = 1
             goto 40
-        endif
+        end if
     end do
- 40 continue
+40  continue
 !
     call jedema()
 end subroutine

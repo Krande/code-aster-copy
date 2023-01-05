@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterfort/uttcpr.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_dtm_
-    character(len=*)          , intent(in) :: sd_int_
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_int_
 !
 !   -0.2- Local variables
     aster_logical     :: upmat, checkcpu
@@ -70,13 +70,13 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     real(kind=8)      :: dt0
     character(len=8)  :: sd_dtm, sd_int, calcres, nomres, sd_nl
 !
-    integer         , pointer :: isto(:)    => null()
-    integer         , pointer :: allocs(:)  => null()
-    integer         , pointer :: buffdtm(:) => null()
-    integer         , pointer :: buffint(:) => null()
-    real(kind=8)    , pointer :: archlst(:) => null()
-    real(kind=8)    , pointer :: chosav0(:) => null()
-    integer         , pointer :: buffnl(:)  => null()
+    integer, pointer :: isto(:) => null()
+    integer, pointer :: allocs(:) => null()
+    integer, pointer :: buffdtm(:) => null()
+    integer, pointer :: buffint(:) => null()
+    real(kind=8), pointer :: archlst(:) => null()
+    real(kind=8), pointer :: chosav0(:) => null()
+    integer, pointer :: buffnl(:) => null()
 
 !
 !   0 - Initializations
@@ -96,7 +96,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !
     call dtmget(sd_dtm, _AR_LINST, vr=archlst)
     call dtmget(sd_dtm, _ARCH_PER, iscal=pasarch)
-    call dtmget(sd_dtm, _ADAPT   , iscal=adapt)
+    call dtmget(sd_dtm, _ADAPT, iscal=adapt)
     call dtmget(sd_dtm, _IARCH_SD, iscal=iarch_sd)
 !
     call intget(sd_int, STEP, iocc=1, rscal=dt0)
@@ -104,7 +104,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     lastarch = tinit
 
     call uttcpu('CPU.DTMCALC', 'INIT', ' ')
-    n100 = nbpas/100 + 1
+    n100 = nbpas/100+1
 !
 !   --- From this point on, we loop over the integration steps, extreme care is to be
 !       taken in the following as the number of steps can be very large. Avoid thus
@@ -113,18 +113,18 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !   Before looping find out the following :
 !   -> Is it necessary to update the matrices on each step
     upmat = .false.
-    call dtmget(sd_dtm, _GYRO_FUL,lonvec=exgyro)
-    if (exgyro.gt.0) upmat = .true.
+    call dtmget(sd_dtm, _GYRO_FUL, lonvec=exgyro)
+    if (exgyro .gt. 0) upmat = .true.
 
     call dtmget(sd_dtm, _NL_TREAT, iscal=nltreat)
 !
 !   -> Should we mesure and check the remaining cpu time
     checkcpu = .false.
 
-    call dtmget(sd_dtm, _ARCH_NB  ,iscal=nbsauv)
+    call dtmget(sd_dtm, _ARCH_NB, iscal=nbsauv)
 
-    call dtmget(sd_dtm, _APPND_SD ,iscal=append)
-    call dtmget(sd_dtm, _RESU_SD  ,kscal=nomres)
+    call dtmget(sd_dtm, _APPND_SD, iscal=append)
+    call dtmget(sd_dtm, _RESU_SD, kscal=nomres)
 
 !   Already archived steps :  continue case => total number of existing fields
 !                          no continue case => a single save (ord = 0) corresponding to
@@ -137,67 +137,67 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !   --- Number of forced irregular archiving
     i_nbarf = 0
 
-    perc     = 0
-    i_nbar   = oldarch
+    perc = 0
+    i_nbar = oldarch
     lastarch = tinit
-    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, i_nbar],&
-                                     nr=2, valr=[time, lastarch])
+    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, i_nbar], &
+                nr=2, valr=[time, lastarch])
     last_prperc = perc
 !
     i = 1
 !   --- 5 percent printing period
     freqpr = 5
-    if (niv.eq.2) freqpr = 1
+    if (niv .eq. 2) freqpr = 1
 !
     dt = dt0
 !   --- Loop until the simulated time reaches tfin with a cumulated numerical error
 !       proportional to the number of steps
-    do while ((tfin-time).gt.(i*epsi))
+    do while ((tfin-time) .gt. (i*epsi))
 !
         perc = int(100.d0*(time-tinit)/(tfin-tinit))
-        if (perc.ne.last_prperc)then
-            if (mod(perc,freqpr).eq.0) then
-                call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, i_nbar],&
-                                                 nr=2, valr=[time, lastarch])
+        if (perc .ne. last_prperc) then
+            if (mod(perc, freqpr) .eq. 0) then
+                call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, i_nbar], &
+                            nr=2, valr=[time, lastarch])
                 last_prperc = perc
-            endif
-        endif
+            end if
+        end if
 !
 !
-        if (((i_nbar-oldarch+1).eq.nbsauv).and. (iarch_sd.eq.0)) goto 30
+        if (((i_nbar-oldarch+1) .eq. nbsauv) .and. (iarch_sd .eq. 0)) goto 30
 
         if (checkcpu) then
 !           --- Start recording the integration time required per step
-            if (mod(i,n100) .eq. 0) call uttcpu('CPU.DTMCALC', 'DEBUT', ' ')
-        endif
+            if (mod(i, n100) .eq. 0) call uttcpu('CPU.DTMCALC', 'DEBUT', ' ')
+        end if
 !
 !       -- Matrices update (Gyroscopy)
         if (upmat) call dtmupmat(sd_dtm, sd_int, buffdtm, buffint)
 
-        if (nltreat.eq.1) then
+        if (nltreat .eq. 1) then
             call intbackup(sd_int, '&&INTBAK')
-            call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+            call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl, buffer=buffdtm)
             call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
             call dtmget(sd_dtm, _NL_SAVE0, vr=chosav0, buffer=buffdtm)
-            call nlget (sd_nl , _INTERNAL_VARS, rvect=chosav0, buffer=buffnl)
-        endif
+            call nlget(sd_nl, _INTERNAL_VARS, rvect=chosav0, buffer=buffnl)
+        end if
 !
         nr = 0
 10      continue
-        nr = nr + 1
-        if (nr.gt.100) then
+        nr = nr+1
+        if (nr .gt. 100) then
             ASSERT(.false.)
-        endif
+        end if
 
         call intget(sd_int, STEP, iocc=1, rscal=dt)
-        if ((time+dt-archlst(iarch)).gt.(i*epsi)) then
+        if ((time+dt-archlst(iarch)) .gt. (i*epsi)) then
             newdt = archlst(iarch)-time
             call intsav(sd_int, STEP, 1, iocc=1, rscal=newdt)
             force_arch = 1
-        else if (abs(time+dt-archlst(iarch)).lt.(i*epsi)) then
+        else if (abs(time+dt-archlst(iarch)) .lt. (i*epsi)) then
             newdt = dt
             force_arch = 1
-        endif
+        end if
 
 !       --- Actual integration scheme
         call dtmintg(sd_dtm, sd_int, buffdtm, buffint)
@@ -205,53 +205,53 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !       --- Non-linearity special treatment, is a new reintegration needed
 !           (case of a change in state)
         reinteg = 0
-        if (nltreat.eq.1) call dtmdetect(sd_dtm, sd_int, buffdtm, buffint, reinteg)
-        if (reinteg.eq.1) goto 10
+        if (nltreat .eq. 1) call dtmdetect(sd_dtm, sd_int, buffdtm, buffint, reinteg)
+        if (reinteg .eq. 1) goto 10
 
-        if (i.eq.1) call intget(sd_int, IND_ARCH, iscal=lev)
+        if (i .eq. 1) call intget(sd_int, IND_ARCH, iscal=lev)
         call intget(sd_int, TIME, iocc=lev, rscal=time, buffer=buffint)
 
-        if (force_arch.eq.2) then
+        if (force_arch .eq. 2) then
             force_arch = 0
-            if (adapt.eq.0) then
+            if (adapt .eq. 0) then
                 call intsav(sd_int, STEP, 1, iocc=1, rscal=dt0)
                 force_arch = 0
-            endif
-        endif
+            end if
+        end if
 
-        if (force_arch.eq.1) then
-           if (abs(time-archlst(iarch)).le.(i*epsi)) then
+        if (force_arch .eq. 1) then
+            if (abs(time-archlst(iarch)) .le. (i*epsi)) then
                 call dtmarch(sd_dtm, sd_int, buffdtm, buffint)
-                iarch = iarch + 1
-                i_nbar = i_nbar +1
+                iarch = iarch+1
+                i_nbar = i_nbar+1
                 lastarch = time
                 force_arch = 0
-                if (abs(dt-newdt).gt.(i*epsi)) then
+                if (abs(dt-newdt) .gt. (i*epsi)) then
                     i_nbarf = i_nbarf+1
                     call intsav(sd_int, STEP, 1, iocc=1, rscal=dt-newdt)
                     force_arch = 2
-                else if (adapt.eq.0) then
+                else if (adapt .eq. 0) then
                     call intsav(sd_int, STEP, 1, iocc=1, rscal=dt0)
-                endif
-           endif
+                end if
+            end if
         else
-            if (mod(i-i_nbarf,pasarch).eq.0) then
-                i_nbar = i_nbar +1
+            if (mod(i-i_nbarf, pasarch) .eq. 0) then
+                i_nbar = i_nbar+1
                 call dtmarch(sd_dtm, sd_int, buffdtm, buffint)
                 lastarch = time
-            endif
-        endif
+            end if
+        end if
 
-        i = i + 1
+        i = i+1
 
-        if (nr.gt.1) call intsav(sd_int, STEP, 1, iocc=1, rscal=dt0)
+        if (nr .gt. 1) call intsav(sd_int, STEP, 1, iocc=1, rscal=dt0)
 
 !       --- Interruption by signal usr1 ---
-        if (etausr().eq.1) call sigusr()
+        if (etausr() .eq. 1) call sigusr()
 
         if (checkcpu) then
 !           --- Stop recording the per-step integration time
-            if (mod(i,n100) .eq. 0) then
+            if (mod(i, n100) .eq. 0) then
                 call uttcpu('CPU.DTMCALC', 'FIN', ' ')
                 call uttcpr('CPU.DTMCALC', 4, tps1)
 !               --- 1) tps1(4) is the elapsed time (for 1 step)
@@ -261,72 +261,71 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !               --- The remaining cpu-time should allow to integrate a chunk of 1% of the
 !                   integration steps, if not, resize and finalize the result data structure
 !                   then raise an exception
-                if (max(rint1,n100*tps1(4)) .gt. (rint2*tps1(1))) then
-                    call dtmget(sd_dtm, _CALC_SD ,kscal=calcres, buffer=buffdtm)
-                    call dtmget(sd_dtm, _NB_MODES,iscal=nbmode, buffer=buffdtm)
-                    call dtmget(sd_dtm, _NB_NONLI,iscal=nbnli, buffer=buffdtm)
-                    if (nbnli.gt.0) then
-                        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl)
-                        call nlget (sd_nl , _NB_REL_FX, iscal=nbrede)
-                        call nlget (sd_nl , _NB_REL_FX, iscal=nbrevi)
+                if (max(rint1, n100*tps1(4)) .gt. (rint2*tps1(1))) then
+                    call dtmget(sd_dtm, _CALC_SD, kscal=calcres, buffer=buffdtm)
+                    call dtmget(sd_dtm, _NB_MODES, iscal=nbmode, buffer=buffdtm)
+                    call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli, buffer=buffdtm)
+                    if (nbnli .gt. 0) then
+                        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
+                        call nlget(sd_nl, _NB_REL_FX, iscal=nbrede)
+                        call nlget(sd_nl, _NB_REL_FX, iscal=nbrevi)
                     end if
-                    call dtmget(sd_dtm, _ARCH_STO,vi=isto, buffer=buffdtm)
+                    call dtmget(sd_dtm, _ARCH_STO, vi=isto, buffer=buffdtm)
 !                   --- resize according to the last archived step, isto(1)
                     call mdsize(calcres, isto(1), nbmode, nbnli)
 !                   --- Concatenate results in the case of an adaptative integration scheme
-                    if (adapt.gt.0) then
+                    if (adapt .gt. 0) then
                         call dtmconc(sd_dtm)
-                    endif
+                    end if
 !                   --- Append to an existing result in the case of "reuse"
-                    if (append.gt.0) then
+                    if (append .gt. 0) then
                         call resu74(nomres, calcres)
-                    endif
+                    end if
 
 !                   --- Alert the user, raise exceptions and stop the calculation
-                    call utmess('Z', 'ALGORITH16_77', ni=2, vali=[i, isto(1)], nr=3,&
+                    call utmess('Z', 'ALGORITH16_77', ni=2, vali=[i, isto(1)], nr=3, &
                                 valr=[lastarch, tps1(4), tps1(1)], num_except=ASTER_TIMELIMIT_ERROR)
                     call utmess('F', 'ALGORITH5_24')
-                endif
-            endif
-        endif
-    enddo
+                end if
+            end if
+        end if
+    end do
 
 30  continue
 !
-    if (last_prperc.ne.100) then
+    if (last_prperc .ne. 100) then
         perc = 100
-        call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, i_nbar],&
-                                         nr=2, valr=[tfin, lastarch])
-    endif
-
+        call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, i_nbar], &
+                    nr=2, valr=[tfin, lastarch])
+    end if
 
 !   --- Concatenate the results if needed
-    if (iarch_sd.gt.0) call dtmconc(sd_dtm)
+    if (iarch_sd .gt. 0) call dtmconc(sd_dtm)
 
 !   --- Append to an existing result in the case of "reuse"
-    if (append.gt.0) then
-        call dtmget(sd_dtm, _CALC_SD ,kscal=calcres)
+    if (append .gt. 0) then
+        call dtmget(sd_dtm, _CALC_SD, kscal=calcres)
         call resu74(nomres, calcres)
-    endif
+    end if
 
 !   --- Cleanup extra objects
-    if (nltreat.eq.1) then
-        call detrsd(' ','&&DTMMOD')
-        call detrsd(' ','&&DTMNUG')
-    endif
+    if (nltreat .eq. 1) then
+        call detrsd(' ', '&&DTMMOD')
+        call detrsd(' ', '&&DTMNUG')
+    end if
 
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
-    if (nbnli.gt.0) then
+    if (nbnli .gt. 0) then
         call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
 
-        call nlget(sd_nl, _NB_DIS_VISC     , iscal=nbdvis)
+        call nlget(sd_nl, _NB_DIS_VISC, iscal=nbdvis)
         call nlget(sd_nl, _NB_DIS_ECRO_TRAC, iscal=nbdecr)
         if ((nbdvis+nbdecr) .gt. 0) then
             call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
-            if (nbdvis.gt.0) then
+            if (nbdvis .gt. 0) then
                 call mdidisvisc(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
             end if
-            if (nbdecr.gt.0) then
+            if (nbdecr .gt. 0) then
                 call mdidisisot(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
             end if
         end if

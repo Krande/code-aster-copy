@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
-                  dmax_cable, nnoeca, x3dca, noebe, numail,&
-                  nbcnx, cxma, xyzma, normal, itria,&
+subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
+                  dmax_cable, nnoeca, x3dca, noebe, numail, &
+                  nbcnx, cxma, xyzma, normal, itria, &
                   xbar, iproj, excent)
     implicit none
 !  DESCRIPTION : TENTATIVE DE PROJECTION D'UN NOEUD CABLE SUR LES
@@ -149,14 +149,14 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
     tymama = mailla//'.TYPMAIL'
     call jeveuo(tymama, 'L', jtyma)
     nomama = mailla//'.NOMMAI'
-    carte=caelem//'.CARCOQUE  '
+    carte = caelem//'.CARCOQUE  '
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   TENTATIVE DE PROJECTION DU NOEUD CABLE CONSIDERE SUR LES MAILLES
 !     APPARTENANT A LA STRUCTURE BETON
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    epsg = 1.0d+08 * r8prem()
+    epsg = 1.0d+08*r8prem()
     nbmaok = 0
     nbmaok1 = 0
 !
@@ -173,10 +173,10 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
     call jeecra(linoma, 'LONMAX', 3*nbmabe)
 !
 !   calcul de l'excentrement max
-    xbetp(1) = zr(jcoor+3*(noebe-1) )
+    xbetp(1) = zr(jcoor+3*(noebe-1))
     xbetp(2) = zr(jcoor+3*(noebe-1)+1)
     xbetp(3) = zr(jcoor+3*(noebe-1)+2)
-    exc_max = sqrt((xbetp(1)-x3dca(1))**2 + (xbetp(2)-x3dca(2))**2 +(xbetp(3)-x3dca(3))**2)
+    exc_max = sqrt((xbetp(1)-x3dca(1))**2+(xbetp(2)-x3dca(2))**2+(xbetp(3)-x3dca(3))**2)
 !
 !     1er passage :
 !.... BOUCLE SUR LES MAILLES APPARTENANT A LA STRUCTURE BETON, POUR
@@ -206,7 +206,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
 !
     call jeveuo(jexatr(mailla//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
- 88 continue
+88  continue
 !
     do imail = 1, nbmabe
 !
@@ -217,9 +217,9 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
                 if (numail .eq. zi(jlnuma-1+imabok)) then
                     call jelibe(lnuma)
                     goto 10
-                endif
-            enddo
-        endif
+                end if
+            end do
+        end if
         nbcnx = zi(jconx2+numail)-zi(jconx2-1+numail)
 !
         do icnx = 1, nbcnx
@@ -234,7 +234,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
 !............. ON NOTE LE NUMERO DE LA MAILLE ET L'INDICE DU NOEUD
 !............. NOEBE DANS LA TABLE DE CONNECTIVITE ASSOCIEE
 !
-                    nbmaok = nbmaok + 1
+                    nbmaok = nbmaok+1
                     call jeecra(lnuma, 'LONUTI', nbmaok)
                     call jeveuo(lnuma, 'E', jlnuma)
                     zi(jlnuma+nbmaok-1) = numail
@@ -252,9 +252,9 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
 !
                     if (.not. lrechelarg) then
                         nblinoold = nblinobet2
-                        call jeecra(linobet2, 'LONUTI', nblinobet2 + nbcnx - 1)
+                        call jeecra(linobet2, 'LONUTI', nblinobet2+nbcnx-1)
                         call jeveuo(linobet2, 'E', jlinob2)
-                    endif
+                    end if
 !
 !............. RECUPERATION DES NUMEROS ET DES COORDONNEES DES NOEUDS
 !............. DE LA MAILLE
@@ -262,26 +262,26 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
                     do inoma = 1, nbcnx
                         noe = zi(jconx1-1+zi(jconx2+numail-1)+inoma-1)
                         cxma(inoma) = noe
-                        xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
-                        xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
-                        xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
+                        xyzma(1, inoma) = zr(jcoor+3*(noe-1))
+                        xyzma(2, inoma) = zr(jcoor+3*(noe-1)+1)
+                        xyzma(3, inoma) = zr(jcoor+3*(noe-1)+2)
                         if ((.not. lrechelarg) .and. inoma .ne. icnx) then
                             lnopres = .false.
                             do jno = 1, nblinoold
                                 if (noe .eq. zi(jlinob2-1+jno)) then
                                     lnopres = .true.
                                     exit
-                                endif
-                            enddo
+                                end if
+                            end do
                             if (.not. lnopres) then
                                 zi(jlinob2+nblinobet2) = noe
-                                nblinobet2 = nblinobet2 + 1
-                            endif
-                        endif
-                    enddo
+                                nblinobet2 = nblinobet2+1
+                            end if
+                        end if
+                    end do
                     if (.not. lrechelarg) then
                         call jelibe(linobet2)
-                    endif
+                    end if
 !
 !............. RECUPERATION DE LA NORMALE AU PLAN DE LA MAILLE
 !
@@ -291,8 +291,8 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
 !............. EXCENTRICITE DU NOEUD DU CABLE ET COORDONNEES
 !............. DU POINT PROJETE
 !
-                    excent = normal(1)*(x3dca(1)-xyzma(1,1)) + normal(2)*( x3dca(2)-xyzma(2,1)) +&
-                             & normal(3)*(x3dca(3)-xyzma(3,1))
+                    excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+&
+                             & normal(3)*(x3dca(3)-xyzma(3, 1))
 !               l'excentrement ne peut pas etre plus grand que la distance
 !               au noeud de beton le plus proche
                     if (abs(excent) .gt. exc_max) then
@@ -301,50 +301,50 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
                         call jelibe(liproj)
                         call jelibe(linoma)
                         goto 10
-                    endif
+                    end if
 !               verif de la compatibilité avec épaisseur et excentrement de la maille
 !
                     call recu_cara_ma(mailla, carte, numail, 'EP      ', ep_ma)
                     call recu_cara_ma(mailla, carte, numail, 'EXCENT  ', exc_ma)
 !
-                    if ((excent .gt. exc_ma +ep_ma/2) .or. (excent.lt. exc_ma - ep_ma/2)) then
+                    if ((excent .gt. exc_ma+ep_ma/2) .or. (excent .lt. exc_ma-ep_ma/2)) then
                         zi(jliproj+nbmaok-1) = -2
                         call jelibe(lnuma)
                         call jelibe(liproj)
                         call jelibe(linoma)
                         goto 10
-                    endif
+                    end if
 !
                     dmax = 0.0d0
                     do inoma = 1, nbcnx
-                        dx = x3dca(1) - xyzma(1,inoma)
-                        dy = x3dca(2) - xyzma(2,inoma)
-                        dz = x3dca(3) - xyzma(3,inoma)
-                        d = dble ( sqrt ( dx*dx + dy*dy + dz*dz ) )
+                        dx = x3dca(1)-xyzma(1, inoma)
+                        dy = x3dca(2)-xyzma(2, inoma)
+                        dz = x3dca(3)-xyzma(3, inoma)
+                        d = dble(sqrt(dx*dx+dy*dy+dz*dz))
                         if (d .gt. dmax) dmax = d
-                    enddo
+                    end do
                     if (dmax .eq. 0.0d0) dmax = 1.0d0
                     if (dble(abs(excent))/dmax .lt. epsg) excent = 0.0d0
                     call dcopy(3, x3dca(1), 1, x3dp(1), 1)
                     if (excent .ne. 0.0d0) then
-                        call daxpy(3, -excent, normal(1), 1, x3dp(1),&
+                        call daxpy(3, -excent, normal(1), 1, x3dp(1), &
                                    1)
                         if (excent .lt. 0.0d0) then
                             excent = dble(abs(excent))
                             call dscal(3, -1.0d0, normal(1), 1)
-                        endif
-                    endif
+                        end if
+                    end if
 !
 !............. TEST D'APPARTENANCE DU POINT PROJETE AU DOMAINE
 !............. GEOMETRIQUE DEFINI PAR LA MAILLE
 !
-                    call projtq(nbcnx, xyzma(1, 1), icnx, x3dp(1), excent,&
+                    call projtq(nbcnx, xyzma(1, 1), icnx, x3dp(1), excent, &
                                 itria, inoeu, icote, xbar(1), iproj)
                     if (iproj .ge. 0 .and. iproj .lt. 20) then
                         goto 999
                     else if (iproj .ge. 20) then
                         if (lrechelarg) then
-                            nbmaok = nbmaok + 1
+                            nbmaok = nbmaok+1
                             call jeecra(lnuma, 'LONUTI', nbmaok)
                             call jeveuo(lnuma, 'E', jlnuma)
 !
@@ -353,15 +353,15 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
 !
                             call jeecra(linoma, 'LONUTI', 3*nbmaok)
                             call jeveuo(linoma, 'E', jlinoma)
-                        endif
+                        end if
 !
                         zi(jlnuma+nbmaok-1) = numail
                         zi(jliproj+nbmaok-1) = iproj
                         if (iproj .eq. 20) then
                             zi(jlinoma+3*nbmaok-3) = cxma(icote)
-                            icote = icote +1
+                            icote = icote+1
                             if (icote .gt. nbcnx) icote = 1
-                            zi(jlinoma+3*nbmaok-2)= cxma(icote)
+                            zi(jlinoma+3*nbmaok-2) = cxma(icote)
                             zi(jlinoma+3*nbmaok-1) = 0
                         else
 !                       on stocke le noeud et ses deux voisins
@@ -369,10 +369,10 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
                             inoeu2 = inoeu+1
                             if (inoeu2 .gt. nbcnx) inoeu2 = 1
                             zi(jlinoma+3*nbmaok-2) = cxma(inoeu2)
-                            inoeu2 =inoeu-1
+                            inoeu2 = inoeu-1
                             if (inoeu2 .eq. 0) inoeu2 = nbcnx
                             zi(jlinoma+3*nbmaok-1) = cxma(inoeu2)
-                        endif
+                        end if
 !
                         call jelibe(lnuma)
                         call jelibe(liproj)
@@ -384,12 +384,12 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
                         call jelibe(liproj)
                         call jelibe(linoma)
                         goto 10
-                    endif
+                    end if
 !
-                endif
-            enddo
+                end if
+            end do
         end do
- 10     continue
+10      continue
     end do
 !   recherche elargie si pas déjà fait
 !    if (.false.) then
@@ -403,10 +403,10 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
         call jeveuo(linobet2, 'E', jlinob2)
         do inob = 1, nblinobet2
             zi(jlinob1-1+inob) = zi(jlinob2-1+inob)
-        enddo
+        end do
         nblinobet1 = nblinobet2
         goto 88
-    endif
+    end if
 !
 !   analyse des projections possibles sur segments et noeuds
 !
@@ -416,8 +416,8 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
 !
 !   segments
 !
-    call veri_seg(mailla, dmax_cable, zi(jlnuma), zi(jliproj), zi(jlinoma),&
-                  nbmaok, x3dca, iproj, n1, n2,&
+    call veri_seg(mailla, dmax_cable, zi(jlnuma), zi(jliproj), zi(jlinoma), &
+                  nbmaok, x3dca, iproj, n1, n2, &
                   numail)
     if (iproj .eq. 0) then
 !       on se recolle au cas iproj = 1* pour reci2d
@@ -427,103 +427,103 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
         do inoma = 1, nbcnx
             noe = zi(jconx1-1+zi(jconx2+numail-1)+inoma-1)
             cxma(inoma) = noe
-            xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
-            xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
-            xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
+            xyzma(1, inoma) = zr(jcoor+3*(noe-1))
+            xyzma(2, inoma) = zr(jcoor+3*(noe-1)+1)
+            xyzma(3, inoma) = zr(jcoor+3*(noe-1)+2)
             if (n1 .eq. noe) then
                 jno = inoma
-            endif
-        enddo
-        kno = jno + 1
+            end if
+        end do
+        kno = jno+1
         if (kno .gt. nbcnx) kno = 1
         if (n2 .ne. cxma(kno)) then
             kno = jno
-            jno = kno -1
+            jno = kno-1
             if (jno .eq. 0) jno = nbcnx
-            ASSERT(cxma(jno).eq. n2)
-        endif
-        iproj = 10 + jno
+            ASSERT(cxma(jno) .eq. n2)
+        end if
+        iproj = 10+jno
         if (nbcnx .eq. 3) then
             itria = 1
         else
             if (jno .eq. 1 .or. jno .eq. 2) itria = 1
             if (jno .eq. 3 .or. jno .eq. 4) itria = 2
-        endif
+        end if
 !
-        call projsg(x3dca, xyzma(1, jno), xyzma(1, kno), normal, x3dp,&
+        call projsg(x3dca, xyzma(1, jno), xyzma(1, kno), normal, x3dp, &
                     xbar2, iproj2, excent)
-        if (jno .eq. 1 .or. (jno.eq.3 .and. nbcnx .eq. 4)) then
+        if (jno .eq. 1 .or. (jno .eq. 3 .and. nbcnx .eq. 4)) then
             xbar(1) = xbar2(1)
             xbar(2) = xbar2(2)
             xbar(3) = 0.d0
-        else if (jno.eq.2 .or. (jno.eq.4 .and. nbcnx .eq. 4)) then
+        else if (jno .eq. 2 .or. (jno .eq. 4 .and. nbcnx .eq. 4)) then
             xbar(1) = 0.d0
             xbar(2) = xbar2(1)
             xbar(3) = xbar2(2)
-        else if (jno.eq.3) then
+        else if (jno .eq. 3) then
             xbar(1) = xbar2(2)
             xbar(2) = 0.d0
             xbar(3) = xbar2(1)
-        endif
-    endif
+        end if
+    end if
 !
 !   noeuds
     if (iproj .eq. -1) then
 !       on se recolle au cas iproj = 2 pour reci2d
-        call veri_noe(mailla, dmax_cable, zi(jlnuma), zi(jliproj), nbmaok,&
+        call veri_noe(mailla, dmax_cable, zi(jlnuma), zi(jliproj), nbmaok, &
                       x3dca, iproj, noe, numail)
         if (iproj .eq. 0) then
-            ASSERT(noe.eq.noebe)
+            ASSERT(noe .eq. noebe)
 !
-            xyzma(1,1) = zr(jcoor+3*(noe-1) )
-            xyzma(2,1) = zr(jcoor+3*(noe-1)+1)
-            xyzma(3,1) = zr(jcoor+3*(noe-1)+2)
+            xyzma(1, 1) = zr(jcoor+3*(noe-1))
+            xyzma(2, 1) = zr(jcoor+3*(noe-1)+1)
+            xyzma(3, 1) = zr(jcoor+3*(noe-1)+2)
 !
-            normal(1) = x3dca(1) - xyzma(1,1)
-            normal(2) = x3dca(2) - xyzma(2,1)
-            normal(3) = x3dca(3) - xyzma(3,1)
+            normal(1) = x3dca(1)-xyzma(1, 1)
+            normal(2) = x3dca(2)-xyzma(2, 1)
+            normal(3) = x3dca(3)-xyzma(3, 1)
 !
             call normev(normal, excent)
             if (abs(excent) .lt. epsg) excent = 0.0d0
 !
             iproj = 2
-        endif
-    endif
+        end if
+    end if
 !
 !   erreur sur l'excentrement
     if (iproj .eq. -1) then
         do imail = 1, nbmaok1
             if (zi(jliproj-1+imail) .eq. -3) then
                 ASSERT(.false.)
-            else if (zi(jliproj-1+imail).eq.-2) then
+            else if (zi(jliproj-1+imail) .eq. -2) then
                 numail = zi(jlnuma-1+imail)
                 nbcnx = zi(jconx2+numail)-zi(jconx2-1+numail)
                 do inoma = 1, nbcnx
                     noe = zi(jconx1-1+zi(jconx2+numail-1)+inoma-1)
-                    xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
-                    xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
-                    xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
-                enddo
+                    xyzma(1, inoma) = zr(jcoor+3*(noe-1))
+                    xyzma(2, inoma) = zr(jcoor+3*(noe-1)+1)
+                    xyzma(3, inoma) = zr(jcoor+3*(noe-1)+2)
+                end do
                 ntyma = zi(jtyma+numail-1)
                 call canorm(xyzma, normal, 3, ntyma, 1)
 !
-                excent = normal(1)*(x3dca(1)-xyzma(1,1)) + normal(2)*( x3dca(2)-xyzma(2,1)) + nor&
-                         &mal(3)*(x3dca(3)-xyzma(3,1))
+                excent = normal(1)*(x3dca(1)-xyzma(1, 1))+normal(2)*(x3dca(2)-xyzma(2, 1))+nor&
+                         &mal(3)*(x3dca(3)-xyzma(3, 1))
                 call dcopy(3, x3dca, 1, x3dp, 1)
-                call daxpy(3, -excent, normal, 1, x3dp,&
+                call daxpy(3, -excent, normal, 1, x3dp, &
                            1)
-                call projtq(nbcnx, xyzma(1, 1), icnx, x3dp, abs(excent),&
+                call projtq(nbcnx, xyzma(1, 1), icnx, x3dp, abs(excent), &
                             itria, inoeu, icote, xbar, iproj)
                 if (iproj .ge. 0) then
                     call recu_cara_ma(mailla, carte, numail, 'EP      ', ep_ma)
                     call recu_cara_ma(mailla, carte, numail, 'EXCENT  ', exc_ma)
                     call jenuno(jexnum(nomama, numail), nomma)
-                    call utmess('F', 'MODELISA5_51', nk = 2, valk = [nnoeca, nomma], nr = 3,&
-                                valr = [excent, exc_ma +ep_ma/2, exc_ma - ep_ma/2])
-                endif
-            endif
-        enddo
-    endif
+                    call utmess('F', 'MODELISA5_51', nk=2, valk=[nnoeca, nomma], nr=3, &
+                                valr=[excent, exc_ma+ep_ma/2, exc_ma-ep_ma/2])
+                end if
+            end if
+        end do
+    end if
 !
 999 continue
     call jedetr(linobet2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine poslog(lCorr, lMatr, lSigm, lVari,&
-                  tlogPrev, tlogCurr, fPrev,&
-                  lgpg, vip, ndim, fCurr, kpg,&
-                  dtde, sigm, cplan, fami, mate,&
-                  instp, angmas, gn, lamb, logl,&
+subroutine poslog(lCorr, lMatr, lSigm, lVari, &
+                  tlogPrev, tlogCurr, fPrev, &
+                  lgpg, vip, ndim, fCurr, kpg, &
+                  dtde, sigm, cplan, fami, mate, &
+                  instp, angmas, gn, lamb, logl, &
                   sigmCurr, dsidep, pk2Prev, pk2Curr, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -37,30 +37,30 @@ implicit none
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 !
-aster_logical, intent(in) :: lCorr, lMatr, lSigm, lVari
-aster_logical, intent(in) :: cplan
-real(kind=8), intent(in) :: tlogPrev(6)
-real(kind=8), intent(in) :: tlogCurr(6)
-real(kind=8), intent(in) :: fPrev(3, 3)
-real(kind=8), intent(in) :: fCurr(3, 3)
-integer, intent(in) :: ndim
-integer, intent(in) :: lgpg
-real(kind=8), intent(out) :: vip(lgpg)
-integer, intent(in) :: kpg
-real(kind=8), intent(in) :: dtde(6,6)
-real(kind=8), intent(in) :: sigm(2*ndim)
-character(len=*), intent(in) :: fami
-integer, intent(in) :: mate
-real(kind=8), intent(in) :: instp
-real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(in) :: gn(3, 3)
-real(kind=8), intent(in) :: lamb(3)
-real(kind=8), intent(in) :: logl(3)
-real(kind=8), intent(out) :: sigmCurr(2*ndim)
-real(kind=8), intent(out) :: dsidep(6, 6)
-real(kind=8), intent(out) :: pk2Prev(6)
-real(kind=8), intent(out) :: pk2Curr(6)
-integer, intent(out) :: codret
+    aster_logical, intent(in) :: lCorr, lMatr, lSigm, lVari
+    aster_logical, intent(in) :: cplan
+    real(kind=8), intent(in) :: tlogPrev(6)
+    real(kind=8), intent(in) :: tlogCurr(6)
+    real(kind=8), intent(in) :: fPrev(3, 3)
+    real(kind=8), intent(in) :: fCurr(3, 3)
+    integer, intent(in) :: ndim
+    integer, intent(in) :: lgpg
+    real(kind=8), intent(out) :: vip(lgpg)
+    integer, intent(in) :: kpg
+    real(kind=8), intent(in) :: dtde(6, 6)
+    real(kind=8), intent(in) :: sigm(2*ndim)
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: mate
+    real(kind=8), intent(in) :: instp
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(in) :: gn(3, 3)
+    real(kind=8), intent(in) :: lamb(3)
+    real(kind=8), intent(in) :: logl(3)
+    real(kind=8), intent(out) :: sigmCurr(2*ndim)
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    real(kind=8), intent(out) :: pk2Prev(6)
+    real(kind=8), intent(out) :: pk2Curr(6)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,12 +111,12 @@ integer, intent(out) :: codret
         call dcopy(9, fCurr, 1, fr, 1)
     else
         call dcopy(9, fPrev, 1, fr, 1)
-    endif
+    end if
     call lcdetf(ndim, fr, detf)
     if (detf .le. r8prem()) then
         codret = 1
         goto 999
-    endif
+    end if
 !
 ! CORRECTION POUR LES CONTRAINTES PLANES
 ! NE FONCTIONNE QUE SI DET(F_PLAS)=1  SOIT DEF. PLAS. INCOMPRESSIBLES
@@ -127,21 +127,21 @@ integer, intent(out) :: codret
             call d1macp(fami, mate, instp, '+', kpg, 1, angmas, d1)
             do i = 1, 4
                 do j = 1, 4
-                    epse(i) = epse(i)+d1(i,j)*tlogCurr(j)
+                    epse(i) = epse(i)+d1(i, j)*tlogCurr(j)
                 end do
             end do
-            epse(3) = d1(1,2)*(tlogCurr(1)+tlogCurr(2))
+            epse(3) = d1(1, 2)*(tlogCurr(1)+tlogCurr(2))
         else
             call d1macp(fami, mate, instp, '-', kpg, 1, angmas, d1)
             do i = 1, 4
                 do j = 1, 4
-                    epse(i) = epse(i)+d1(i,j)*tlogPrev(j)
+                    epse(i) = epse(i)+d1(i, j)*tlogPrev(j)
                 end do
             end do
-            epse(3) = d1(1,2)*(tlogPrev(1)+tlogPrev(2))
-        endif
+            epse(3) = d1(1, 2)*(tlogPrev(1)+tlogPrev(2))
+        end if
         detf = exp(epse(1)+epse(2)+epse(3))
-    endif
+    end if
 
 ! - Tensor to change stress(log) to stress(PK2)
     call deflg2(gn, lamb, logl, pes, feta, xi, me)
@@ -157,11 +157,11 @@ integer, intent(out) :: codret
             sig(1:2*ndim) = sigm(1:2*ndim)
             call pk2sig(ndim, fPrev, detf, pk2Prev, sig, -1)
             do kl = 4, 2*ndim
-                pk2Prev(kl)=pk2Prev(kl)*rac2
+                pk2Prev(kl) = pk2Prev(kl)*rac2
             end do
             call dcopy(6, tlogPrev, 1, tp2, 1)
 
-        endif
+        end if
 !
         call deflg3(gn, feta, xi, me, tp2, tl)
         call symt46(tl, tls)
@@ -170,24 +170,24 @@ integer, intent(out) :: codret
 
         call daxpy(36, 1.d0, tls, 1, dsidep, 1)
 !
-    endif
+    end if
 !
 ! - Compute Cauchy stress
     if (lSigm) then
         sigmCurr = 0.d0
         do i = 1, 6
             do j = 1, 6
-                pk2Curr(i) = pk2Curr(i) + tlogCurr(j)*pes(j,i)
+                pk2Curr(i) = pk2Curr(i)+tlogCurr(j)*pes(j, i)
             end do
         end do
         call pk2sig(ndim, fCurr, detf, pk2Curr, sigmCurr, 1)
-    endif
+    end if
 
 ! - On stocke TP comme variable interne
     if (lVari) then
         vip(lgpg-1:lgpg) = 0.d0
         call dcopy(2*ndim, tlogCurr, 1, vip(lgpg-6+1), 1)
-    endif
+    end if
 !
 999 continue
 !

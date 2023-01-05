@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine exmali(basmod, nomint, numint, nommat, base,&
+subroutine exmali(basmod, nomint, numint, nommat, base, &
                   nblig, nbcol, ord, ii)
 !    P. RICHARD     DATE 23/05/91
 !-----------------------------------------------------------------------
@@ -60,7 +60,7 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
     integer :: llcham, iran, iad, i, j, ldmat
 !
 !-----------------------------------------------------------------------
-    data pgc /'EXMALI'/
+    data pgc/'EXMALI'/
 !-----------------------------------------------------------------------
 !
 !---------------------RECUPERATION LISTE_INTERFACE AMONT----------------
@@ -73,20 +73,20 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !
     if (nomint .ne. '             ') then
         call jenonu(jexnom(lintf//'.IDC_NOMS', nomint), numint)
-    endif
+    end if
 !
 !
 !----------------RECUPERATION DU NOMBRE DE DDL GENERALISES--------------
 !
     call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbdef)
-    nbcol=nbdef
+    nbcol = nbdef
 !
 !----RECUPERATION DU NOMBRE DE DDL  ET NOEUDS ASSOCIES A L'INTERFACE----
 !
-    kbid=' '
-    call bmrdda(basmod, kbid, nomint, numint, 0,&
+    kbid = ' '
+    call bmrdda(basmod, kbid, nomint, numint, 0, &
                 [0], nbddl, ord, ii)
-    nblig=nbddl
+    nblig = nbddl
 !
 !----------------ALLOCATION DU VECTEUR DES RANGS DES DDL----------------
 !
@@ -94,8 +94,8 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !
 !-------------DETERMINATION DES RANG DES DDL ASSOCIES A INTERFACE-------
 !
-    kbid=' '
-    call bmrdda(basmod, kbid, nomint, numint, nbddl,&
+    kbid = ' '
+    call bmrdda(basmod, kbid, nomint, numint, nbddl, &
                 zi(ltrang), ibid, ord, ii)
 !
 !-----------------ALLOCATION MATRICE LIAISON RESULTAT-------------------
@@ -111,9 +111,9 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
         call jeveuo(chamva, 'L', llcham)
 !
         do j = 1, nbddl
-            iran=zi(ltrang+j-1)
-            iad=ldmat+((i-1)*nbddl)+j-1
-            zr(iad)=zr(llcham+iran-1)
+            iran = zi(ltrang+j-1)
+            iad = ldmat+((i-1)*nbddl)+j-1
+            zr(iad) = zr(llcham+iran-1)
         end do
 !
 !

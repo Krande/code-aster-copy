@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
+subroutine distno(xlocal, signe, typeob, xjeu, dist1, &
                   dist2, dnorm, cost, sint)
     implicit none
 #include "jeveux.h"
@@ -64,89 +64,89 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
 !
 !     --- OBSTACLE CIRCULAIRE ---
     if (typeob .eq. 'CERCLE  ') then
-        xlg = sqrt( xlocal(2)**2 + xlocal(3)**2 )
-        dnorm = xjeu - xlg
+        xlg = sqrt(xlocal(2)**2+xlocal(3)**2)
+        dnorm = xjeu-xlg
         if (xlg .ne. 0.d0) then
-            sint = -xlocal(3) / xlg
-            cost = -xlocal(2) / xlg
+            sint = -xlocal(3)/xlg
+            cost = -xlocal(2)/xlg
         else
             sint = zero
             cost = -un
-        endif
+        end if
 !
 !     --- OBSTACLES CIRCULAIRES ---
-    else if (typeob.eq.'BI_CERCL') then
-        xlg = sqrt( (xlocal(2)-xlocal(5))**2+(xlocal(3)-xlocal(6))**2 )
-        dnorm = xlg - dist1 - dist2
-        cost = ( xlocal(2) - xlocal(5) ) / xlg
-        sint = ( xlocal(3) - xlocal(6) ) / xlg
+    else if (typeob .eq. 'BI_CERCL') then
+        xlg = sqrt((xlocal(2)-xlocal(5))**2+(xlocal(3)-xlocal(6))**2)
+        dnorm = xlg-dist1-dist2
+        cost = (xlocal(2)-xlocal(5))/xlg
+        sint = (xlocal(3)-xlocal(6))/xlg
 !     --- OBSTACLES CIRCULAIRES CONCENTRIQUES ---
-    else if (typeob.eq.'BI_CERCI') then
-        xlg = sqrt( (xlocal(2)-xlocal(5))**2+(xlocal(3)-xlocal(6))**2 )
-        dnorm = dist2 - dist1 -xlg
+    else if (typeob .eq. 'BI_CERCI') then
+        xlg = sqrt((xlocal(2)-xlocal(5))**2+(xlocal(3)-xlocal(6))**2)
+        dnorm = dist2-dist1-xlg
         if (xlg .gt. 0.d0) then
-            cost = ( xlocal(5) - xlocal(2) ) / xlg
-            sint = ( xlocal(6) - xlocal(3) ) / xlg
+            cost = (xlocal(5)-xlocal(2))/xlg
+            sint = (xlocal(6)-xlocal(3))/xlg
         else
             cost = -un
             sint = zero
-        endif
+        end if
 !
 !     --- OBSTACLE PLAN PARALLELE A YLOCAL ---
     else if (typeob .eq. 'PLAN_Y  ') then
-        dnorm = xjeu - abs(xlocal(2))
+        dnorm = xjeu-abs(xlocal(2))
         sint = zero
-        cost = -sign( un,xlocal(2) )
+        cost = -sign(un, xlocal(2))
 !
 !     --- OBSTACLE PLANS PARALLELES A YLOCAL ---
-    else if (typeob.eq.'BI_PLANY') then
-        dnorm = ( xlocal(5)-xlocal(2) ) * signe(1)- dist1 - dist2
+    else if (typeob .eq. 'BI_PLANY') then
+        dnorm = (xlocal(5)-xlocal(2))*signe(1)-dist1-dist2
         sint = zero
 !        COST  = -SIGN(UN,(XLOCAL(5)-XLOCAL(2)))
-        cos2 = -sign(un,(xlocal(5)-xlocal(2)))
+        cos2 = -sign(un, (xlocal(5)-xlocal(2)))
         cost = -signe(1)
         if (cos2 .ne. cost) then
             call utmess('A', 'ALGORITH3_10')
-        endif
+        end if
 !
 !     --- OBSTACLE PLAN PARALLELE A ZLOCAL ---
     else if (typeob .eq. 'PLAN_Z  ') then
-        dnorm = xjeu - abs(xlocal(3))
+        dnorm = xjeu-abs(xlocal(3))
         cost = zero
-        sint = -sign( un,xlocal(3) )
+        sint = -sign(un, xlocal(3))
 !
 !     --- OBSTACLE PLANS PARALLELES A ZLOCAL ---
     else if (typeob .eq. 'BI_PLANZ') then
-        dnorm = ( xlocal(6) - xlocal(3) ) * signe(2) - dist1 - dist2
+        dnorm = (xlocal(6)-xlocal(3))*signe(2)-dist1-dist2
         cost = zero
 !        SINT  = -SIGN(UN,(XLOCAL(6)-XLOCAL(3)))
-        sin2 = -sign(un,(xlocal(6)-xlocal(3)))
+        sin2 = -sign(un, (xlocal(6)-xlocal(3)))
         sint = -signe(2)
         if (sin2 .ne. sint) then
             call utmess('A', 'ALGORITH3_10')
-        endif
+        end if
 !
 !     --- OBSTACLE DISCRETISE ---
     else
-        call tbliva(typeob, 1, 'LIEU', [ibid], [r8bid],&
-                    [cbid], 'DEFIOBST', kbid, [r8bid], 'FONCTION',&
-                    k8typ, ibid, r8bid, cbid, nomfon,&
+        call tbliva(typeob, 1, 'LIEU', [ibid], [r8bid], &
+                    [cbid], 'DEFIOBST', kbid, [r8bid], 'FONCTION', &
+                    k8typ, ibid, r8bid, cbid, nomfon, &
                     irett)
-        ASSERT(irett.eq.0)
+        ASSERT(irett .eq. 0)
         call jeveuo(nomfon(1:19)//'.VALE', 'L', lval)
         call jelira(nomfon(1:19)//'.VALE', 'LONMAX', nbval)
         nbpair = nbval/2
-        lfon = lval + nbpair
+        lfon = lval+nbpair
         xlg = sqrt(xlocal(2)**2+xlocal(3)**2)
         if (xlg .ne. 0.d0) then
-            sintno = xlocal(3) / xlg
-            costno = xlocal(2) / xlg
+            sintno = xlocal(3)/xlg
+            costno = xlocal(2)/xlg
         else
             sintno = zero
             costno = un
-        endif
-        tetano = atan2(sintno,costno)
-        if (tetano .lt. zero) tetano = tetano + depi
+        end if
+        tetano = atan2(sintno, costno)
+        if (tetano .lt. zero) tetano = tetano+depi
         do i = 1, nbpair-1
             r1 = zr(lfon+i-1)
             r2 = zr(lfon+i)
@@ -161,18 +161,18 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
                 dz = z2-z1
                 xls = sqrt(dy*dy+dz*dz)
                 if (xls .ne. 0.d0) then
-                    cost = -dz / xls
-                    sint = dy / xls
+                    cost = -dz/xls
+                    sint = dy/xls
                 else
                     sint = zero
                     cost = -un
-                endif
+                end if
                 dnorm = (xlocal(2)-y1)*cost+(xlocal(3)-z1)*sint
                 goto 99
-            endif
+            end if
         end do
-    endif
+    end if
 !
- 99 continue
+99  continue
     call jedema()
 end subroutine

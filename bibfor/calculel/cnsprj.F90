@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
     base = basez
     corres = correz
     iret = 0
-    kalarm=0
+    kalarm = 0
 !
 !
 !------------------------------------------------------------------
@@ -128,21 +128,21 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
         iret = 1
         goto 60
 !
-    endif
+    end if
 !     TEST SUR IDENTITE DES 2 MAILLAGES
-    ASSERT(pjxx_k1(1).eq.ma1)
+    ASSERT(pjxx_k1(1) .eq. ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
         call utmess('F', 'CALCULEL_67', sk=nomgd)
-    endif
+    end if
 !
 !
 !------------------------------------------------------------------
 !     4- ALLOCATION DE CNS2 :
 !     ------------------------
     call detrsd('CHAM_NO_S', cns2)
-    call cnscre(ma2, nomgd, ncmp, cns1c, base,&
+    call cnscre(ma2, nomgd, ncmp, cns1c, base, &
                 cns2)
     call jeveuo(cns2//'.CNSK', 'L', jcns2k)
     call jeveuo(cns2//'.CNSD', 'L', vi=cns2d)
@@ -168,40 +168,40 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
             ico1 = 0
             ico2 = 0
             vrmoy = 0.d0
-            vcmoy = dcmplx(0.d0,0.d0)
+            vcmoy = dcmplx(0.d0, 0.d0)
             coetot = 0.d0
             do ino1 = 1, nbno1
                 nuno1 = pjef_nu(1+idecal-1+ino1)
                 coef1 = pjef_cf(1+idecal-1+ino1)
-                if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
-                    ico1 = ico1 + 1
+                if (zl(jcns1l-1+(nuno1-1)*ncmp+icmp)) then
+                    ico1 = ico1+1
                     if (coef1 .gt. 0.d0) then
-                        ico2 = ico2 + 1
-                        coetot = coetot + coef1
-                    endif
+                        ico2 = ico2+1
+                        coetot = coetot+coef1
+                    end if
                     if (tsca .eq. 'R') then
-                        vrmoy = vrmoy + zr(jcns1v-1+ (nuno1-1)*ncmp+ icmp)
+                        vrmoy = vrmoy+zr(jcns1v-1+(nuno1-1)*ncmp+icmp)
 !
                     else
-                        vcmoy = vcmoy + zc(jcns1v-1+ (nuno1-1)*ncmp+ icmp)
-                    endif
-                endif
+                        vcmoy = vcmoy+zc(jcns1v-1+(nuno1-1)*ncmp+icmp)
+                    end if
+                end if
             end do
             if (ico1 .eq. 0) goto 40
-            zl(jcns2l-1+ (ino2-1)*ncmp+icmp) = .true.
+            zl(jcns2l-1+(ino2-1)*ncmp+icmp) = .true.
 !
 !
 !         -- SI COETOT EST FAIBLE, LA PROJECTION N'EST PAS PRECISE :
 !            L'EMISSION DE L'ALARME EST COUTEUSE, ON LA LIMITE :
             if (coetot .lt. 1.d-3 .and. kalarm .le. 6) then
-                kalarm=kalarm+1
+                kalarm = kalarm+1
                 call jenuno(jexnum(ma2//'.NOMNOE', ino2), nomno2)
-                nomcmp=cns1c(icmp)
-                valk(1)=nomgd
-                valk(2)=nomno2
-                valk(3)=nomcmp
+                nomcmp = cns1c(icmp)
+                valk(1) = nomgd
+                valk(2) = nomno2
+                valk(3) = nomcmp
                 call utmess('A', 'CALCULEL4_9', nk=3, valk=valk)
-            endif
+            end if
 !
 !
 !          -- 3 CAS DE FIGURE POUR L'INTERPOLATION :
@@ -211,21 +211,21 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
                 lexact = .true.
                 coetot = 1.d0
 !
-            else if (ico2.gt.0) then
+            else if (ico2 .gt. 0) then
 !            2 : ON PREND LES NOEUDS N1 DE COEF > 0
                 lexact = .false.
 !
             else
 !            3 : ON FAIT UNE MOYENNE ARITHMETIQUE
                 if (tsca .eq. 'R') then
-                    zr(jcns2v-1+ (ino2-1)*ncmp+icmp) = vrmoy/ico1
+                    zr(jcns2v-1+(ino2-1)*ncmp+icmp) = vrmoy/ico1
 !
                 else
-                    zc(jcns2v-1+ (ino2-1)*ncmp+icmp) = vcmoy/ico1
-                endif
+                    zc(jcns2v-1+(ino2-1)*ncmp+icmp) = vcmoy/ico1
+                end if
                 goto 40
 !
-            endif
+            end if
 !
 !
             if (tsca .eq. 'R') then
@@ -233,35 +233,35 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
                 do ino1 = 1, nbno1
                     nuno1 = pjef_nu(1+idecal-1+ino1)
                     coef1 = pjef_cf(1+idecal-1+ino1)
-                    if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
+                    if (zl(jcns1l-1+(nuno1-1)*ncmp+icmp)) then
                         if (lexact .or. coef1 .gt. 0) then
-                            v1 = zr(jcns1v-1+ (nuno1-1)*ncmp+icmp)
-                            v2 = v2 + coef1*v1
-                        endif
-                    endif
+                            v1 = zr(jcns1v-1+(nuno1-1)*ncmp+icmp)
+                            v2 = v2+coef1*v1
+                        end if
+                    end if
                 end do
-                zr(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2/coetot
+                zr(jcns2v-1+(ino2-1)*ncmp+icmp) = v2/coetot
 !
-            else if (tsca.eq.'C') then
-                v2c = dcmplx(0.d0,0.d0)
+            else if (tsca .eq. 'C') then
+                v2c = dcmplx(0.d0, 0.d0)
                 do ino1 = 1, nbno1
                     nuno1 = pjef_nu(1+idecal-1+ino1)
                     coef1 = pjef_cf(1+idecal-1+ino1)
-                    if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
+                    if (zl(jcns1l-1+(nuno1-1)*ncmp+icmp)) then
                         if (lexact .or. coef1 .gt. 0) then
-                            v1c = zc(jcns1v-1+ (nuno1-1)*ncmp+icmp)
-                            v2c = v2c + coef1*v1c
-                        endif
-                    endif
+                            v1c = zc(jcns1v-1+(nuno1-1)*ncmp+icmp)
+                            v2c = v2c+coef1*v1c
+                        end if
+                    end if
                 end do
-                zc(jcns2v-1+ (ino2-1)*ncmp+icmp) = v2c/coetot
-            endif
- 40         continue
+                zc(jcns2v-1+(ino2-1)*ncmp+icmp) = v2c/coetot
+            end if
+40          continue
         end do
-        idecal = idecal + nbno1
- 50     continue
+        idecal = idecal+nbno1
+50      continue
     end do
 !
- 60 continue
+60  continue
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,15 +31,15 @@ function nbsigm()
     call teattr('C', 'NBSIGM', nbsig, iret)
     if (iret .ne. 0) then
         call utmess('F', 'ELEMENTS_90')
-    endif
+    end if
 !
 !
     if (nbsig .eq. '4') then
-        nbsigm=4
-    else if (nbsig.eq.'6') then
-        nbsigm=6
+        nbsigm = 4
+    else if (nbsig .eq. '6') then
+        nbsigm = 6
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end function

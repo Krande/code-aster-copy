@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine comp_meta_info(ds_comporMeta)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 !
-type(META_PrepPara), intent(out) :: ds_comporMeta
+    type(META_PrepPara), intent(out) :: ds_comporMeta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,12 +46,12 @@ type(META_PrepPara), intent(out) :: ds_comporMeta
 ! --------------------------------------------------------------------------------------------------
 !
     nbocc_compor = 0
-    keywordfact  = 'COMPORTEMENT'
+    keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc_compor)
 !
 ! - Initializations
 !
-    ds_comporMeta%v_comp   => null()
+    ds_comporMeta%v_comp => null()
 !
 ! - Number of comportement information
 !
@@ -59,7 +59,7 @@ type(META_PrepPara), intent(out) :: ds_comporMeta
         nb_info_comp = 1
     else
         nb_info_comp = nbocc_compor
-    endif
+    end if
 !
 ! - Save number of comportments
 !
@@ -67,6 +67,6 @@ type(META_PrepPara), intent(out) :: ds_comporMeta
 !
 ! - Allocate comportment informations objects
 !
-    allocate(ds_comporMeta%v_comp(nb_info_comp))
+    allocate (ds_comporMeta%v_comp(nb_info_comp))
 !
 end subroutine

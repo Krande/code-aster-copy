@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xenrch(noma, cnslt, cnsln, cnslj,&
-                  cnsen, cnsenr, ndim, fiss, goinop,&
+subroutine xenrch(noma, cnslt, cnsln, cnslj, &
+                  cnsen, cnsenr, ndim, fiss, goinop, &
                   lismae, lisnoe, operation_opt)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -100,11 +100,11 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     call jemarq()
     call infdbg('XFEM', ifm, niv)
 !   Securite argument facultatif
-    if(present(operation_opt)) then
+    if (present(operation_opt)) then
         operation = operation_opt
     else
         operation = 'RIEN'
-    endif
+    end if
 !
 ! --- ACCES AU MAILLAGE
 !
@@ -129,7 +129,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
         call jeveuo(xcarfo, 'L', jcaraf)
         rayon = zr(jcaraf)
         ncouch = nint(zr(jcaraf+1))
-    endif
+    end if
 !
 !     VOIR ALGORITHME DÉTAILLÉ DANS BOOK II (16/12/03)
 !
@@ -137,46 +137,46 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !    1) ON RESTREINT LA ZONE D'ENRICHISSEMENT AUTOUR DE LA FISSURE
 !-------------------------------------------------------------------
 !
-    if (niv .ge. 3) write(ifm,*)'1) RESTRICTION DE LA ZONE D ENRICHISSEMENT'
+    if (niv .ge. 3) write (ifm, *) '1) RESTRICTION DE LA ZONE D ENRICHISSEMENT'
 !
-    mafis='&&XENRCH.MAFIS'
+    mafis = '&&XENRCH.MAFIS'
     call wkvect(mafis, 'V V I', nxmafi, jmafis)
 !     ATTENTION, MAFIS EST LIMITÉ À NXMAFI MAILLES
-    call xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
+    call xmafis(noma, cnsln, nxmafi, mafis, nmafis, &
                 lismae)
 !
 !     FISSURE OU INTERFACE EN DEHORS DE LA STRUCTURE OU
 !     COINCIDANT AVEC UN BORD DE LA STRUCTURE
     if (nmafis .eq. 0) then
         call utmess('F', 'XFEM_57')
-    endif
+    end if
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_19', si=nmafis)
-    endif
+    end if
     if (niv .ge. 3) then
         call utmess('I', 'XFEM_26')
         do imae = 1, nmafis
-            write(ifm,*)' ',zi(jmafis-1+imae)
+            write (ifm, *) ' ', zi(jmafis-1+imae)
         end do
-    endif
+    end if
 !
 !--------------------------------------------------------------------
 !    2°) ON ATTRIBUE LE STATUT DES NOEUDS DE GROUP_ENRI
 !--------------------------------------------------------------------
 !
-    if (niv .ge. 3) write(ifm,*)'2 ) ATTRIBUTION DU STATUT DES NOEUDS DE GROUPENRI'
+    if (niv .ge. 3) write (ifm, *) '2 ) ATTRIBUTION DU STATUT DES NOEUDS DE GROUPENRI'
 !
 !     CREATION DU VECTEUR STATUT DES NOEUDS
-    stano='&&XENRCH.STANO'
+    stano = '&&XENRCH.STANO'
     call wkvect(stano, 'V V I', nbno, jstano)
 !
 !     ON INITIALISE POUR TOUS LES NOEUDS DU MAILLAGE ENR À 0
     call jerazo(stano, nbno, 1)
 !
 !     CALCUL DU STATUT DES NOEUDS
-    call xstano(noma, lisnoe, nmafis, jmafis, cnslt,&
-                cnsln, cnslj, rayon, cnxinv, stano,&
+    call xstano(noma, lisnoe, nmafis, jmafis, cnslt, &
+                cnsln, cnslj, rayon, cnxinv, stano, &
                 typdis)
 !
 !--------------------------------------------------------------------
@@ -186,7 +186,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !        + MAJ DU STANO SI ENRICHISSEMENT A NB COUCHES
 !--------------------------------------------------------------------
 !
-    if (niv .ge. 3) write(ifm,*)'3) ATTRIBUTION DU STATUT DES MAILLES'
+    if (niv .ge. 3) write (ifm, *) '3) ATTRIBUTION DU STATUT DES MAILLES'
 !
     call wkvect('&&XENRCH.MAFOND', 'V V I', nmafis, jmafon)
     call wkvect('&&XENRCH.MAENR1', 'V V I', nbma, jmaen1)
@@ -194,14 +194,14 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     call wkvect('&&XENRCH.MAENR3', 'V V I', nbma, jmaen3)
 !
 !     CALCUL EFFECTIF DU STATUT DES MAILLES (+MAJ STANO)
-    call xstama(noma, nbma, nmafis, jmafis,&
-                ncouch, lisnoe, zi(jstano), cnslt, cnsln,&
-                jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
+    call xstama(noma, nbma, nmafis, jmafis, &
+                ncouch, lisnoe, zi(jstano), cnslt, cnsln, &
+                jmafon, jmaen1, jmaen2, jmaen3, nmafon, &
                 nmaen1, nmaen2, nmaen3, typdis)
 !
 !
 !     IMPRESSION DES MAILLES ENRICHIES
-    call xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
+    call xstami(noma, nmafon, nmaen1, nmaen2, nmaen3, &
                 jmafon, jmaen1, jmaen2, jmaen3)
 !
 !--------------------------------------------------------------------
@@ -212,54 +212,54 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !     SI ON DEFINIT UN ENRICHISSEMENT GEOM A NB_COUCHES
 !
 !     ENREGISTREMENT DU CHAM_NO SIMPLE : STATUT DES NOEUDS
-    call cnscre(noma, 'NEUT_I', 1, 'X1', 'V',&
+    call cnscre(noma, 'NEUT_I', 1, 'X1', 'V', &
                 cnsen)
     call jeveuo(cnsen//'.CNSV', 'E', jensv)
     call jeveuo(cnsen//'.CNSL', 'E', jensl)
     do ino = 1, nbno
-        zi(jensv-1+(ino-1)+1)=zi(jstano-1+(ino-1)+1)
-        zl(jensl-1+(ino-1)+1)=.true.
+        zi(jensv-1+(ino-1)+1) = zi(jstano-1+(ino-1)+1)
+        zl(jensl-1+(ino-1)+1) = .true.
     end do
 !
 !   ENREGISTREMENT DU CHAM_NO SIMPLE REEL (POUR VISUALISATION)
-    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
+    call cnscre(noma, 'NEUT_R', 1, 'X1', 'V', &
                 cnsenr)
     call jeveuo(cnsenr//'.CNSV', 'E', vr=ensvr)
     call jeveuo(cnsenr//'.CNSL', 'E', jenslr)
     do ino = 1, nbno
-        ensvr((ino-1)+1)=zi(jstano-1+(ino-1)+1)
-        zl(jenslr-1+(ino-1)+1)=.true.
+        ensvr((ino-1)+1) = zi(jstano-1+(ino-1)+1)
+        zl(jenslr-1+(ino-1)+1) = .true.
     end do
 !
 !   POUR UNE INTERFACE, ON PASSE DIRECTEMENT A LA CREATION DE LA SD
-    if (typdis .eq. 'INTERFACE'.or.operation.eq.'PROPA_COHESIF') then
-        ASSERT(nmaen2+nmaen3.eq.0)
+    if (typdis .eq. 'INTERFACE' .or. operation .eq. 'PROPA_COHESIF') then
+        ASSERT(nmaen2+nmaen3 .eq. 0)
         nfon = 0
         nbfond = 0
         goto 800
 !       DE MEME POUR UNE FISSURE DONT LE FOND SE SITUE EN DEHORS DE LA
 !       MATIERE (EX: FISSURE QUI DEBOUCHE EN FIN DE PROPAGATION)
-    else if (nmafon.eq.0.and.typdis.ne.'COHESIF') then
+    else if (nmafon .eq. 0 .and. typdis .ne. 'COHESIF') then
         call utmess('A', 'XFEM_58')
         if (rayon .gt. 0.d0) then
             call utmess('A', 'XFEM_59')
-        endif
-        ASSERT(nmaen2+nmaen3.eq.0)
+        end if
+        ASSERT(nmaen2+nmaen3 .eq. 0)
         nfon = 0
         nbfond = 0
         goto 800
-    endif
+    end if
 !
 !--------------------------------------------------------------------
 !    4°) RECHERCHES DES POINTS DE FONFIS (ALGO BOOK I 18/12/03)
 !        ET REPERAGE DES POINTS DE BORD
 !--------------------------------------------------------------------
 !
-    if (niv .ge. 3) write(ifm,*)'4) RECHERCHE DES POINTS DE FONFIS'
+    if (niv .ge. 3) write (ifm, *) '4) RECHERCHE DES POINTS DE FONFIS'
 !
 !     ON RAJOUTE +1 POUR LES CAS PARTICULIER OU TOUS LES ELTS
 !     CONTIENNENT LE FOND DE FISSURE
-    nxptff = max(nmaen1 + nmaen2 + nmaen3 +1,nmafis)
+    nxptff = max(nmaen1+nmaen2+nmaen3+1, nmafis)
 !
     call wkvect('&&XENRCH.FONFIS', 'V V R', 11*nxptff, jfono)
     call wkvect('&&XENRCH.BASFON', 'V V R', 2*ndim*nxptff, jbaso)
@@ -268,23 +268,23 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !     VECTEUR CONTENANT LES INDICES DES POINTS DU FOND PAR MAILLE
     listpt = '&&XENRCH.LISTPT'
 !
-    call xptfon(noma, ndim, nmafon, cnslt, cnsln,&
-                cnxinv, jmafon, nxptff, jfono, nfon,&
-                jbaso, jtailo, fiss, goinop, listpt,&
-                orient,typdis,nbmai, operation_opt=operation)
-    ASSERT(nfon.gt.0)
+    call xptfon(noma, ndim, nmafon, cnslt, cnsln, &
+                cnxinv, jmafon, nxptff, jfono, nfon, &
+                jbaso, jtailo, fiss, goinop, listpt, &
+                orient, typdis, nbmai, operation_opt=operation)
+    ASSERT(nfon .gt. 0)
 !
-    if (.not.goinop) then
+    if (.not. goinop) then
         call utmess('I', 'XFEM_33', si=nfon)
     else
         call utmess('I', 'XFEM_74', si=nfon)
-    endif
+    end if
 !
-    if (.not.orient) then
+    if (.not. orient) then
         nfon = 0
         nbfond = 0
         goto 800
-    endif
+    end if
 !
 !--------------------------------------------------------------------
 !    5°) ORIENTATION DES POINTS DE FONFIS (ALGO BOOK I 19/12/03)
@@ -304,22 +304,22 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !     SEULEMENT EN 3D
     if (ndim .eq. 3) then
 !
-        if (niv .ge. 3) write(ifm,*)'5) ORIENTATION DU FOND DE FISSURE'
+        if (niv .ge. 3) write (ifm, *) '5) ORIENTATION DU FOND DE FISSURE'
 !
         info = fiss//'.INFO'
 !
-        if(operation.eq.'RIEN'.and.typdis.eq.'COHESIF') then
-            call xoriff(info, nfon, jfono, jbaso, jtailo,&
-                        nbmai, listpt, goinop, jfon, jnofaf, jbas,&
+        if (operation .eq. 'RIEN' .and. typdis .eq. 'COHESIF') then
+            call xoriff(info, nfon, jfono, jbaso, jtailo, &
+                        nbmai, listpt, goinop, jfon, jnofaf, jbas, &
                         jtail, fonmul, nbfond)
             nmafon = nbmai
         else
-            call xoriff(info, nfon, jfono, jbaso, jtailo,&
-                        nmafon, listpt, goinop, jfon, jnofaf, jbas,&
+            call xoriff(info, nfon, jfono, jbaso, jtailo, &
+                        nmafon, listpt, goinop, jfon, jnofaf, jbas, &
                         jtail, fonmul, nbfond)
-        endif
+        end if
 !
-    endif
+    end if
 !   SI LE FOND EST FERME
     if (nfono .eq. (nfon-1)) call utmess('I', 'XFEM_60')
 !
@@ -331,7 +331,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     if (ndim .eq. 2) then
         if (nfon .gt. 2) then
             call utmess('F', 'XFEM_11')
-        endif
+        end if
         nbfond = nfon
         do i = 1, nfon
             do k = 1, 2
@@ -340,63 +340,63 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
                 zr(jbas-1+4*(i-1)+k+2) = zr(jbaso-1+4*(i-1)+k+2)
             end do
             do k = 1, 4
-                zi(jnofaf-1+4*(i-1)+k) = int( zr(jfono-1+11*(i-1)+4+k) )
+                zi(jnofaf-1+4*(i-1)+k) = int(zr(jfono-1+11*(i-1)+4+k))
             end do
             zr(jtail-1+i) = zr(jtailo-1+i)
-            zi(jfonmu-1+2*(i-1)+1)=i
-            zi(jfonmu-1+2*(i-1)+2)=i
+            zi(jfonmu-1+2*(i-1)+1) = i
+            zi(jfonmu-1+2*(i-1)+2) = i
         end do
-    endif
+    end if
 !
 !     IMPRESSION DES POINTS DE FOND DE FISSURE (2D/3D)
-    if (.not.goinop) then
+    if (.not. goinop) then
         call utmess('I', 'XFEM_35')
     else
         call utmess('I', 'XFEM_75')
-    endif
+    end if
 !
-    numfon=1
+    numfon = 1
 !
     do i = 1, nfon
-        q(1)=zr(jfon-1+4*(i-1)+1)
-        q(2)=zr(jfon-1+4*(i-1)+2)
+        q(1) = zr(jfon-1+4*(i-1)+1)
+        q(2) = zr(jfon-1+4*(i-1)+2)
         if (ndim .eq. 3) then
-            q(3)=zr(jfon-1+4*(i-1)+3)
-            q(4)=zr(jfon-1+4*(i-1)+4)
-        endif
+            q(3) = zr(jfon-1+4*(i-1)+3)
+            q(4) = zr(jfon-1+4*(i-1)+4)
+        end if
         if (zi(jfonmu-1+2*(numfon-1)+1) .eq. i) then
             call utmess('I', 'XFEM_36', si=numfon)
-            if (ndim .eq. 3) write(ifm,797)
-            if (ndim .eq. 2) write(ifm,7970)
-        endif
-        if (ndim .eq. 2) write(ifm,798)(q(k),k=1,2)
-        if (ndim .eq. 3) write(ifm,798)(q(k),k=1,4)
-        if (zi(jfonmu-1+2*(numfon-1)+2) .eq. i) numfon=numfon+1
+            if (ndim .eq. 3) write (ifm, 797)
+            if (ndim .eq. 2) write (ifm, 7970)
+        end if
+        if (ndim .eq. 2) write (ifm, 798) (q(k), k=1, 2)
+        if (ndim .eq. 3) write (ifm, 798) (q(k), k=1, 4)
+        if (zi(jfonmu-1+2*(numfon-1)+2) .eq. i) numfon = numfon+1
     end do
 !
-    797 format(7x,'X',13x,'Y',13x,'Z',13x,'S')
+797 format(7x, 'X', 13x, 'Y', 13x, 'Z', 13x, 'S')
 !
-    7970 format(7x,'X',13x,'Y')
+7970 format(7x, 'X', 13x, 'Y')
 !
-    798 format(2x,4(e12.5,2x))
+798 format(2x, 4(e12.5, 2x))
 !
 !
 800 continue
 !
 ! --- CREATION DE LA SD
 !
-    call xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
-                jmaen1, jmaen2, jmaen3, jmafon, nfon,&
-                jfon, jnofaf, nbfond, jbas, jtail, jfonmu,&
+    call xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon, &
+                jmaen1, jmaen2, jmaen3, jmafon, nfon, &
+                jfon, jnofaf, nbfond, jbas, jtail, jfonmu, &
                 ndim, goinop)
 !
-    if (.not.goinop) then
+    if (.not. goinop) then
 !
 !     CONSTRUCTION DES TABLES SUR LES FONDS DE FISSURES
 !
         call xtabff(nbfond, nfon, ndim, fiss, operation)
 !
-    endif
+    end if
 ! --- MENAGE
 !
     call jedetr(cnxinv)
@@ -416,9 +416,9 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
         call jedetr('&&XENRCH.MAFIS')
         call jedetr('&&XENRCH.STANO')
         call jedetr('&&XENRCH.LISTPT')
-    endif
+    end if
 !
-    if (niv .ge. 3) write(ifm,*)'7) FIN DE XENRCH'
+    if (niv .ge. 3) write (ifm, *) '7) FIN DE XENRCH'
 !
     call jedema()
 end subroutine

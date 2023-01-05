@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_matr(idx_load    , idx_matr  , load_name , load_nume, load_type,&
-                          ligrel_model, nb_in_maxi, nb_in_prep, lpain    , lchin    ,&
-                          matr_elem   )
+subroutine load_neum_matr(idx_load, idx_matr, load_name, load_nume, load_type, &
+                          ligrel_model, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                          matr_elem)
 !
     implicit none
 !
@@ -66,7 +66,7 @@ subroutine load_neum_matr(idx_load    , idx_matr  , load_name , load_nume, load_
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum=19)
+    parameter(nb_type_neum=19)
 !
     integer :: i_type_neum, nb_in_add
     character(len=16) :: load_option
@@ -79,54 +79,54 @@ subroutine load_neum_matr(idx_load    , idx_matr  , load_name , load_nume, load_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbout  = 1
+    nbout = 1
     lchout = '&&MECGME.00000000'
 !
     do i_type_neum = 1, nb_type_neum
 !
 ! ----- Get information about load
 !
-        call load_neum_spec(load_name   , load_nume  , load_type  , ligrel_model, i_type_neum,&
-                            nb_type_neum, nb_in_maxi , nb_in_prep , lchin       , lpain      ,&
-                            nb_in_add   , load_ligrel, load_option, matr_type)
+        call load_neum_spec(load_name, load_nume, load_type, ligrel_model, i_type_neum, &
+                            nb_type_neum, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                            nb_in_add, load_ligrel, load_option, matr_type)
 !
         if (load_option .ne. 'No_Load') then
 !
 ! --------- Number of fields
 !
-            nbin  = nb_in_prep+nb_in_add
+            nbin = nb_in_prep+nb_in_add
             nbout = 1
 !
 ! --------- New RESU_ELEM
 !
-            if (idx_matr.ge.0) then
-                lpaout         = matr_type
-                lchout (10:10) = 'G'
-                idx_matr       = idx_matr + 1
+            if (idx_matr .ge. 0) then
+                lpaout = matr_type
+                lchout(10:10) = 'G'
+                idx_matr = idx_matr+1
                 call codent(idx_load, 'D0', lchout(7:8))
                 call codent(idx_matr, 'D0', lchout(12:14))
-            endif
+            end if
 !
 ! --------- Old RESU_ELEM
 !
-            if (idx_matr.lt.0) then
+            if (idx_matr .lt. 0) then
                 lpaout = matr_type
-                call jeveuo(matr_elem//'.RELR', 'L', vk24 = p_matr_elem_relr)
-                lchout = p_matr_elem_relr(abs(idx_matr))(1:19)
-            endif
+                call jeveuo(matr_elem//'.RELR', 'L', vk24=p_matr_elem_relr)
+                lchout = p_matr_elem_relr(abs(idx_matr)) (1:19)
+            end if
 !
 ! --------- Computation
 !
-            call calcul('S'  , load_option, ligrel_model, nbin  , lchin,&
-                        lpain, nbout      , lchout      , lpaout, 'V'  ,&
+            call calcul('S', load_option, ligrel_model, nbin, lchin, &
+                        lpain, nbout, lchout, lpaout, 'V', &
                         'OUI')
 !
 ! --------- Copying output field
 !
-            if (idx_matr.ge.0) then
+            if (idx_matr .ge. 0) then
                 call reajre(matr_elem, lchout, 'V')
-            endif
-        endif
+            end if
+        end if
     end do
 
 end subroutine

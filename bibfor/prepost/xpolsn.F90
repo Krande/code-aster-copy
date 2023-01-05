@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
-                  ima, iad, igeom, nfiss, ndime,&
-                  ndim, jconx1, jconx2, fisco, co,&
+subroutine xpolsn(elrefp, ino, n, jlsn, jlst, &
+                  ima, iad, igeom, nfiss, ndime, &
+                  ndim, jconx1, jconx2, fisco, co, &
                   lsn, lst)
 ! aslint: disable=W1306
     implicit none
@@ -67,10 +67,10 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
 !
 !     CAS D'UN NOEUD
     if (ino .lt. 1000) then
-        i=zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
-        co(1)=zr(iad-1+3*(i-1)+1)
-        co(2)=zr(iad-1+3*(i-1)+2)
-        co(3)=zr(iad-1+3*(i-1)+3)
+        i = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
+        co(1) = zr(iad-1+3*(i-1)+1)
+        co(2) = zr(iad-1+3*(i-1)+2)
+        co(3) = zr(iad-1+3*(i-1)+3)
 !
         do ifiss = 1, nfiss
 !
@@ -83,7 +83,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
             end do
             ifisc = ifiss
             nfisc = 0
- 80         continue
+80          continue
             if (fisco(2*ifisc-1) .gt. 0) then
 !     STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
                 nfisc = nfisc+1
@@ -91,22 +91,22 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                 ifisc = fisco(2*ifisc-1)
                 fisc(2*(nfisc-1)+1) = ifisc
                 goto 80
-            endif
+            end if
             do i = 1, nfisc
                 if (fisco(2*i)*zr(jlsn-1+(ino-1)*nfiss+fisco(2*i-1)) .gt. 0) lsn(ifiss) = &
-                                                                             1.d0
+                    1.d0
             end do
 !
         end do
 !
 !     CAS D'UN POINT D'INTERSECTION OU D'UN POINT MILIEU
-    else if (ino.gt.1000) then
+    else if (ino .gt. 1000) then
         do i = 1, ndim
-            co(i)=zr(iad-1+i)
+            co(i) = zr(iad-1+i)
         end do
 !
 !       FF : FONCTIONS DE FORMES
-        call xpoffo(ndim, ndime, elrefp, n, igeom,&
+        call xpoffo(ndim, ndime, elrefp, n, igeom, &
                     co, ff)
 !
         do ifiss = 1, nfiss
@@ -114,10 +114,10 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
             lsn(ifiss) = 0.d0
             lst(ifiss) = 0.d0
             do i = 1, n
-                lsn(ifiss)=lsn(ifiss)+zr(jlsn-1+nfiss*(i-1)+ifiss)*ff(&
-                i)
-                lst(ifiss)=lst(ifiss)+zr(jlst-1+nfiss*(i-1)+ifiss)*ff(&
-                i)
+                lsn(ifiss) = lsn(ifiss)+zr(jlsn-1+nfiss*(i-1)+ifiss)*ff( &
+                             i)
+                lst(ifiss) = lst(ifiss)+zr(jlst-1+nfiss*(i-1)+ifiss)*ff( &
+                             i)
             end do
 !
 !     TRAITEMENT SPECIAL POUR LES JONCTIONS
@@ -126,7 +126,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
             end do
             ifisc = ifiss
             nfisc = 0
- 90         continue
+90          continue
             if (fisco(2*ifisc-1) .gt. 0) then
 !     STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
                 nfisc = nfisc+1
@@ -134,11 +134,11 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                 ifisc = fisco(2*ifisc-1)
                 fisc(2*(nfisc-1)+1) = ifisc
                 goto 90
-            endif
+            end if
             somlsn(:) = 0.d0
             do i = 1, n
                 do j = 1, nfisc
-                    somlsn(j)=somlsn(j)+ff(i)*zr(jlsn-1+(i-1)*nfiss+fisco(2*j-1))
+                    somlsn(j) = somlsn(j)+ff(i)*zr(jlsn-1+(i-1)*nfiss+fisco(2*j-1))
                 end do
             end do
             do i = 1, nfisc
@@ -147,7 +147,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
 !
         end do
 !
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,36 +36,36 @@ subroutine tnsvec(choix, ndim, mat, vec, r)
 !
 !        TRANSFORMATION MATRICE EN VECTEUR
         do i = 1, 3
-            vec(i)=mat(i,i)
+            vec(i) = mat(i, i)
         end do
-        vec(4)=mat(1,2)*r
+        vec(4) = mat(1, 2)*r
         if (ndim .eq. 3) then
-            vec(5)=mat(1,3)*r
-            vec(6)=mat(2,3)*r
-        endif
+            vec(5) = mat(1, 3)*r
+            vec(6) = mat(2, 3)*r
+        end if
 !
 !
-    else if (choix.eq.6) then
+    else if (choix .eq. 6) then
 !
 !        TRANSFORMATION VECTEUR EN MATRICE
         do i = 1, 3
-            mat(i,i)=vec(i)
+            mat(i, i) = vec(i)
         end do
-        mat(1,2)=vec(4)*r
-        mat(2,1)=vec(4)*r
+        mat(1, 2) = vec(4)*r
+        mat(2, 1) = vec(4)*r
         if (ndim .eq. 2) then
-            mat(1,3)=0.d0
-            mat(2,3)=0.d0
-            mat(3,1)=0.d0
-            mat(3,2)=0.d0
+            mat(1, 3) = 0.d0
+            mat(2, 3) = 0.d0
+            mat(3, 1) = 0.d0
+            mat(3, 2) = 0.d0
         else
-            mat(1,3)=vec(5)*r
-            mat(3,1)=vec(5)*r
-            mat(2,3)=vec(6)*r
-            mat(3,2)=vec(6)*r
-        endif
+            mat(1, 3) = vec(5)*r
+            mat(3, 1) = vec(5)*r
+            mat(2, 3) = vec(6)*r
+            mat(3, 2) = vec(6)*r
+        end if
     else
-        ASSERT(choix.eq.3)
-    endif
+        ASSERT(choix .eq. 3)
+    end if
 !
 end subroutine

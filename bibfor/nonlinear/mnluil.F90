@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnluil(x, omega, alpha, eta, h,&
+subroutine mnluil(x, omega, alpha, eta, h, &
                   hf, nt, sort)
     implicit none
 !
@@ -44,22 +44,22 @@ subroutine mnluil(x, omega, alpha, eta, h,&
 !
     call wkvect('&&mnluil.t', 'V V R', nt, it)
     call wkvect('&&mnluil.f', 'V V R', nt, iif)
-    depi=r8depi()
-    zr(it)=0.d0
+    depi = r8depi()
+    zr(it) = 0.d0
     do k = 2, nt
-        zr(it-1+k)=zr(it-1+k-1)+(depi/omega)/nt
+        zr(it-1+k) = zr(it-1+k-1)+(depi/omega)/nt
     end do
 !
     do k = 1, nt
-        xt=x(1)
+        xt = x(1)
         do j = 1, h
-            xt=xt+x(1+j)*dcos(dble(j)*omega*zr(it-1+k))
-            xt=xt+x(1+h+j)*dsin(dble(j)*omega*zr(it-1+k))
+            xt = xt+x(1+j)*dcos(dble(j)*omega*zr(it-1+k))
+            xt = xt+x(1+h+j)*dsin(dble(j)*omega*zr(it-1+k))
         end do
-        zr(iif-1+k)=((xt-1.d0)+sqrt((xt-1.d0)**2+4.d0*eta/alpha))/(2.d0/alpha)
+        zr(iif-1+k) = ((xt-1.d0)+sqrt((xt-1.d0)**2+4.d0*eta/alpha))/(2.d0/alpha)
     end do
 !
-    call mnlfft(1, sort(1), zr(iif), hf, nt,&
+    call mnlfft(1, sort(1), zr(iif), hf, nt, &
                 1)
 !
     call jedetr('&&mnluil.t')

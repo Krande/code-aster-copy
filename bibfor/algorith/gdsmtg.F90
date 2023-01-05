@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine gdsmtg()
     real(kind=8) :: jp, dj, jm, dfb(3, 3)
     real(kind=8) :: djdf(3, 3), dbtrdf(6, 3, 3)
 !
-    common /gdsmc/&
-     &            bem,betr,dvbetr,eqbetr,trbetr,&
-     &            jp,dj,jm,dfb,&
-     &            djdf,dbtrdf,&
-     &            kr,id,rac2,rc,ind,ind1,ind2
+    common/gdsmc/&
+     &            bem, betr, dvbetr, eqbetr, trbetr,&
+     &            jp, dj, jm, dfb,&
+     &            djdf, dbtrdf,&
+     &            kr, id, rac2, rc, ind, ind1, ind2
 ! ----------------------------------------------------------------------
 !
     integer :: ij, i, j, l, il, jl
@@ -49,9 +49,9 @@ subroutine gdsmtg()
 ! ----------------------------------------------------
 !
     call r8inir(9, 0.d0, djdf, 1)
-    djdf(1,1) = jp
-    djdf(2,2) = jp
-    djdf(3,3) = jp
+    djdf(1, 1) = jp
+    djdf(2, 2) = jp
+    djdf(3, 3) = jp
 !
 !
 !  CALCUL DE LA DERIVEE DE DBTR / DF : DBTRDF(AB,P,Q)
@@ -63,11 +63,11 @@ subroutine gdsmtg()
         i = ind1(ij)
         j = ind2(ij)
         do l = 1, 3
-            il = ind(i,l)
-            jl = ind(j,l)
-            dbtrdf(ij,i,l) = dbtrdf(ij,i,l) + rc(ij)*betr(jl)/rc(jl)
-            dbtrdf(ij,j,l) = dbtrdf(ij,j,l) + rc(ij)*betr(il)/rc(il)
-            dbtrdf(ij,l,l) = dbtrdf(ij,l,l) - 2.d0/3.d0*betr(ij)
+            il = ind(i, l)
+            jl = ind(j, l)
+            dbtrdf(ij, i, l) = dbtrdf(ij, i, l)+rc(ij)*betr(jl)/rc(jl)
+            dbtrdf(ij, j, l) = dbtrdf(ij, j, l)+rc(ij)*betr(il)/rc(il)
+            dbtrdf(ij, l, l) = dbtrdf(ij, l, l)-2.d0/3.d0*betr(ij)
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
+subroutine inicou(nbpas, tinit, tfin, dt, dtsto, &
                   vrotat)
 ! person_in_charge: nicolas.greffet at edf.fr
 !
@@ -189,7 +189,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
     integer :: nbpal
 !
     integer :: palmax
-    parameter (palmax=20)
+    parameter(palmax=20)
     character(len=3) :: finpal(palmax)
 !     VARIABLES INTERNES
 !     ==================
@@ -199,7 +199,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
     integer :: ifm, niv, iapp
     integer(kind=4) :: numpas, info, nlu, parami(2)
     integer(kind=4) :: un, deux, six
-    parameter (un = 1, deux=2, six=6)
+    parameter(un=1, deux=2, six=6)
     real(kind=4) :: tr4
     real(kind=8) :: tr8, paramr(six)
     character(len=6) :: typpal
@@ -208,10 +208,10 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !     ANCIENS INCLUDE (CALCIUM.H)
 !     ===========================
     integer(kind=4) :: lenvar
-    parameter (lenvar = 144)
+    parameter(lenvar=144)
     character(len=lenvar) :: nomvar
     integer(kind=4) :: cpiter
-    parameter (cpiter= 41)
+    parameter(cpiter=41)
 !
     integer :: iadr, iadri, iadrk
     character(len=24) :: cpal, npal, ayacs
@@ -219,7 +219,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !======================================================================
 !
-    tmin=1.d-11
+    tmin = 1.d-11
 !
     call jemarq()
     niv = 0
@@ -228,9 +228,9 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 !     ------------------------------------------------------------
-    cpal='C_PAL'
-    npal='N_PAL'
-    ayacs='&ADR_YACS'
+    cpal = 'C_PAL'
+    npal = 'N_PAL'
+    ayacs = '&ADR_YACS'
 !
 !     APPEL DU SSP DE LECTURE DES DONNEES (SUR LES PALIERS)
 !      => COMMON PALIERS
@@ -243,19 +243,19 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !     RECUPERATION DE L'ADRESSE YACS
 !     ------------------------------
     call jeveuo(ayacs, 'L', iadr)
-    icompo=zi(iadr)
+    icompo = zi(iadr)
 !
 !
 !     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS
 !     -------------------------------------------------
     call jeveuo(npal, 'L', iadri)
-    nbpal=zi(iadri)
+    nbpal = zi(iadri)
 !
 !
 !     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS
     call jeveuo(cpal, 'L', iadrk)
     do iapp = 1, nbpal
-        finpal(iapp) = zk8(iadrk+(iapp-1)+palmax)(1:3)
+        finpal(iapp) = zk8(iadrk+(iapp-1)+palmax) (1:3)
     end do
 !
 !
@@ -267,7 +267,7 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
     tr4 = 0.d0
     tr8 = 0.d0
 !
-    if (niv .ge. 2) write(ifm, *)'ASTEREDYOS: ', nomprg, '  NUM_PAS = ', numpas, ' ==='
+    if (niv .ge. 2) write (ifm, *) 'ASTEREDYOS: ', nomprg, '  NUM_PAS = ', numpas, ' ==='
 !
 !
 !     DEBUT DE LA BOUCLE SUR LES PALIERS
@@ -281,104 +281,104 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !        --------   ENVOI DU NOM DU PALIER A EDYOS -------------
 !
         if (niv .ge. 2) then
-            write(ifm,'(A23,3X,A12)')'ASTEREDYOS: VARIABLE1: ',nomvar
-            write(ifm,'(A23,3X,A12)')'ASTEREDYOS: NOMPALIER: ',nompal
-        endif
+            write (ifm, '(A23,3X,A12)') 'ASTEREDYOS: VARIABLE1: ', nomvar
+            write (ifm, '(A23,3X,A12)') 'ASTEREDYOS: NOMPALIER: ', nompal
+        end if
         info = 0
-        call cpech(icompo, cpiter, tr4, numpas, nomvar,&
+        call cpech(icompo, cpiter, tr4, numpas, nomvar, &
                    un, nompal, info)
-        call errcou(nomprg, numpas, nomvar, info, un,&
+        call errcou(nomprg, numpas, nomvar, info, un, &
                     un)
 !
         if (niv .ge. 2) then
-            write(ifm,*)' '
-            write(ifm,*)' '
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' PALIER SEND : ',&
-            nompal(1:8)
-        endif
+            write (ifm, *) ' '
+            write (ifm, *) ' '
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' PALIER SEND : ', &
+                nompal(1:8)
+        end if
 !
 !
 !        CREATION DU NOM DE VARIABLE YACS POUR LE TYPE DU PALIER
 !
-        nomvar='TYPE_'//nompal
-        typpal='      '
+        nomvar = 'TYPE_'//nompal
+        typpal = '      '
 !
 !
 !        ----------  RECEPTION DU TYPE DU PALIER FROM EDYOS ----------
 !
-        call cplch(icompo, cpiter, tr4, tr4, numpas,&
+        call cplch(icompo, cpiter, tr4, tr4, numpas, &
                    nomvar, un, nlu, typpal, info)
-        call errcou(nomprg, numpas, nomvar, info, un,&
+        call errcou(nomprg, numpas, nomvar, info, un, &
                     nlu)
 !
 !
         if (niv .ge. 2) then
-            write(ifm,*)'ASTEREDYOS: ',nomprg,' TYPE DU PALIER: ',&
-            typpal(1:6)
-        endif
+            write (ifm, *) 'ASTEREDYOS: ', nomprg, ' TYPE DU PALIER: ', &
+                typpal(1:6)
+        end if
 !
 !        -------ENVOI DES PARAMETRES REELS A EDYOS------------
 !
 !
-        paramr ( 1 ) = tinit
-        paramr ( 2 ) = tfin
-        paramr ( 3 ) = dt
-        paramr ( 4 ) = dtsto
-        paramr ( 5 ) = vrotat
-        paramr ( 6 ) = tmin
-        dtsto=dt
-        nomvar='PARAMREEL'//finpal(iapp)
+        paramr(1) = tinit
+        paramr(2) = tfin
+        paramr(3) = dt
+        paramr(4) = dtsto
+        paramr(5) = vrotat
+        paramr(6) = tmin
+        dtsto = dt
+        nomvar = 'PARAMREEL'//finpal(iapp)
 !
-        call cpedb(icompo, cpiter, tr8, numpas, nomvar,&
+        call cpedb(icompo, cpiter, tr8, numpas, nomvar, &
                    six, paramr, info)
-        call errcou(nomprg, numpas, nomvar, info, six,&
+        call errcou(nomprg, numpas, nomvar, info, six, &
                     six)
 !
 !
 !        ECRITURE DES PARAMETRES ENVOYES
         if (niv .ge. 0) then
-            write(ifm,*)'ASTEREDYOS :',nomprg,&
+            write (ifm, *) 'ASTEREDYOS :', nomprg,&
      &       '- ASTER - ENVOI PARAMR A EDYOS'
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - TEMPS INITIAL : ',&
-            paramr(1)
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - TEMPS FINAL : ',&
-            paramr(2)
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - PAS DE TEMPS : ',&
-            paramr(3)
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - PAS STOCKAGE : ',&
-            paramr(4)
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - OMEGA : ',paramr(5)
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - PAS MINIMUM  : ',&
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - TEMPS INITIAL : ', &
+                paramr(1)
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - TEMPS FINAL : ', &
+                paramr(2)
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - PAS DE TEMPS : ', &
+                paramr(3)
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - PAS STOCKAGE : ', &
+                paramr(4)
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - OMEGA : ', paramr(5)
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - PAS MINIMUM  : ',&
      &        paramr(6)
-        endif
+        end if
 !
 !
 !
 !        -----------ENVOI PARAMETRES ENTIERS A EDYOS ----------------
 !
 !
-        nomvar='PARAMENTI'//finpal(iapp)
+        nomvar = 'PARAMENTI'//finpal(iapp)
 !
-        parami(1)=int(nbpas,4)
+        parami(1) = int(nbpas, 4)
 !         CALCUL NORMAL (PAS DE REPRISE) => PARAMI(2) = 0
-        parami(2)=0
+        parami(2) = 0
 !
-        call cpeen(icompo, cpiter, tr4, numpas, nomvar,&
+        call cpeen(icompo, cpiter, tr4, numpas, nomvar, &
                    deux, parami(1), info)
-        call errcou(nomprg, numpas, nomvar, info, deux,&
+        call errcou(nomprg, numpas, nomvar, info, deux, &
                     deux)
 !
 !
 !        ECRITURE DES PARAMETRES ENVOYES
         if (niv .ge. 2) then
-            write(ifm,*)'ASTEREDYOS :',nomprg,&
+            write (ifm, *) 'ASTEREDYOS :', nomprg,&
      &         '- ASTER - ENVOI PARAMI A EDYOS'
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - NBPAS : ',parami(1)
-            write(ifm,*)'ASTEREDYOS : ',nomprg,' - PARAMI(2) (=0) :',&
-            parami(2)
-            write(ifm,*)'** ASTEREDYOS: FIN DE ',nomprg,&
-     &          ' POUR LE PALIER:',iapp
-        endif
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - NBPAS : ', parami(1)
+            write (ifm, *) 'ASTEREDYOS : ', nomprg, ' - PARAMI(2) (=0) :', &
+                parami(2)
+            write (ifm, *) '** ASTEREDYOS: FIN DE ', nomprg,&
+     &          ' POUR LE PALIER:', iapp
+        end if
 !
 !
     end do

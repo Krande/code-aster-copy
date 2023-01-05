@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
+subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp, &
                   numcmp, nbcmp)
     implicit none
 #include "jeveux.h"
@@ -58,21 +58,21 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
 !
 !
     call getvtx(mcfac, 'NOM_CMP', iocc=iocc, nbval=0, nbret=n2)
-    nbcmp=-n2
-    ASSERT(dim.ge.nbcmp)
+    nbcmp = -n2
+    ASSERT(dim .ge. nbcmp)
 !
-    call getvtx(mcfac, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=nomcmp,&
+    call getvtx(mcfac, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=nomcmp, &
                 nbret=n2)
 !
 !
     if (nomgd(1:6) .eq. 'VARI_R') then
 !     -----------------------------------------
         do i = 1, nbcmp
-            nocmp=nomcmp(i)
-            ASSERT(nocmp(1:1).eq.'V')
+            nocmp = nomcmp(i)
+            ASSERT(nocmp(1:1) .eq. 'V')
             call lxliis(nocmp(2:8), nucmp, iret)
-            ASSERT(iret.eq.0)
-            numcmp(i)=nucmp
+            ASSERT(iret .eq. 0)
+            numcmp(i) = nucmp
         end do
 !
 !
@@ -81,12 +81,12 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
     else
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', lgncmp)
-        call knincl(8, nomcmp, nbcmp, zk8(jnocmp), lgncmp,&
+        call knincl(8, nomcmp, nbcmp, zk8(jnocmp), lgncmp, &
                     iret)
         if (iret .ne. 0) then
             call utmess('F', 'CALCULEL5_6', sk=nomgd)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gdstag(stoudy, kp, nno, ajacob, en,&
-                  enprim, x0k, tetak, qim, qikm1,&
-                  qik, x0pg, tetag, tetapg, rotm,&
+subroutine gdstag(stoudy, kp, nno, ajacob, en, &
+                  enprim, x0k, tetak, qim, qikm1, &
+                  qik, x0pg, tetag, tetapg, rotm, &
                   rotkm1, rotk)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE
@@ -66,13 +66,13 @@ subroutine gdstag(stoudy, kp, nno, ajacob, en,&
         tetapg(ic) = zero
         qigk(ic) = zero
     end do
-    unsurj = un / ajacob
+    unsurj = un/ajacob
     do ic = 1, 3
         do ne = 1, nno
-            x0pg(ic) = x0pg(ic) + unsurj*enprim(ne,kp)*x0k(ic,ne)
-            tetag(ic) = tetag(ic) + en(ne,kp)*tetak(ic,ne)
-            tetapg(ic) = tetapg(ic) + unsurj*enprim(ne,kp)*tetak(ic, ne)
-            qigk(ic) = qigk(ic) + en(ne,kp)*qik(ic,ne)
+            x0pg(ic) = x0pg(ic)+unsurj*enprim(ne, kp)*x0k(ic, ne)
+            tetag(ic) = tetag(ic)+en(ne, kp)*tetak(ic, ne)
+            tetapg(ic) = tetapg(ic)+unsurj*enprim(ne, kp)*tetak(ic, ne)
+            qigk(ic) = qigk(ic)+en(ne, kp)*qik(ic, ne)
         end do
     end do
     call marota(qigk, rotk)
@@ -80,13 +80,13 @@ subroutine gdstag(stoudy, kp, nno, ajacob, en,&
     if (stoudy .lt. demi) goto 999
 !
     do ic = 1, 3
-        qigm (ic) = zero
-        qigkm1 (ic) = zero
+        qigm(ic) = zero
+        qigkm1(ic) = zero
     end do
     do ic = 1, 3
         do ne = 1, nno
-            qigm (ic) = qigm (ic) + en(ne,kp)*qim (ic,ne)
-            qigkm1 (ic) = qigkm1 (ic) + en(ne,kp)*qikm1 (ic,ne)
+            qigm(ic) = qigm(ic)+en(ne, kp)*qim(ic, ne)
+            qigkm1(ic) = qigkm1(ic)+en(ne, kp)*qikm1(ic, ne)
         end do
     end do
     call marota(qigm, rotm)

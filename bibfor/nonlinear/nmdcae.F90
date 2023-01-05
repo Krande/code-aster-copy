@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
+subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio, &
                   optdec, retdec)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -28,11 +28,11 @@ implicit none
 #include "asterfort/nmlerr.h"
 #include "asterfort/utmess.h"
 !
-character(len=19) :: sddisc
-integer :: iterat, nbrpas, retdec
-real(kind=8) :: ratio
-character(len=16) :: optdec
-character(len=4) :: typdec
+    character(len=19) :: sddisc
+    integer :: iterat, nbrpas, retdec
+    real(kind=8) :: ratio
+    character(len=16) :: optdec
+    character(len=4) :: typdec
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,45 +95,45 @@ character(len=4) :: typdec
 !
 ! --- CALCUL DU RATIO
 !
-    if (.not.lextra) then
+    if (.not. lextra) then
         call utmess('I', 'EXTRAPOLATION_12')
         nbrpas = 4
         retdec = 1
-        ratio  = 1.d0
+        ratio = 1.d0
         optdec = 'UNIFORME'
         typdec = 'SUBD'
     else
         call utmess('I', 'EXTRAPOLATION_11')
         nbrpas = 4
-        ciblen = (xa0 + xa1*log(cresi) )/xdet
+        ciblen = (xa0+xa1*log(cresi))/xdet
         if (xdet .le. r8prem()) then
-            ratio = 24.0d0/((3.0d0*nbrpas+un)**2 - un)
+            ratio = 24.0d0/((3.0d0*nbrpas+un)**2-un)
         else
             if ((ciblen*1.20d0) .lt. mniter) then
-                ratio = 24.0d0/((3.0d0*nbrpas+un)**2 - un)
+                ratio = 24.0d0/((3.0d0*nbrpas+un)**2-un)
             else
                 if (xa1 .le. r8prem()) then
-                    ratio = 24.0d0/((3.0d0*nbrpas+un)**2 - un)
+                    ratio = 24.0d0/((3.0d0*nbrpas+un)**2-un)
                 else
                     if ((ciblen-mxiter) .le. (-10.0d0*xa1/xdet)) then
-                        ratio = exp( (ciblen-mxiter)*xdet/xa1 )
+                        ratio = exp((ciblen-mxiter)*xdet/xa1)
                     else
-                        ratio = exp( -10.0d0 )
-                    endif
+                        ratio = exp(-10.0d0)
+                    end if
                     ratio = 0.48485d0*ratio
-                    xxbb = ( -un + (un+24.0d0/ratio)**0.5d0 )/3.0d0
+                    xxbb = (-un+(un+24.0d0/ratio)**0.5d0)/3.0d0
                     if (xxbb .lt. 2.0d0) then
                         nbrpas = 2
                         ratio = 0.5d0
                     else
-                        nbrpas = nint( xxbb )
-                    endif
-                endif
-            endif
-        endif
+                        nbrpas = nint(xxbb)
+                    end if
+                end if
+            end if
+        end if
         retdec = 1
         optdec = 'PROGRESSIF'
         typdec = 'SUBD'
-    endif
+    end if
 !
 end subroutine

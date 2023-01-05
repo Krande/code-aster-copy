@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,14 +53,14 @@ subroutine verif_loi_mater(mater)
     character(len=32) :: valk(2)
     character(len=32) :: nomrc
 !
-    real(kind=8), pointer       :: matr(:)      => null()
-    character(len=16), pointer  :: matk(:)      => null()
-    character(len=32), pointer  :: vnomrc(:)    => null()
+    real(kind=8), pointer       :: matr(:) => null()
+    character(len=16), pointer  :: matk(:) => null()
+    character(len=32), pointer  :: vnomrc(:) => null()
 !
     integer :: iecro, ifx, ifyz, tecro
 !
     real(kind=8) :: precis
-    parameter (precis=1.0e-08)
+    parameter(precis=1.0e-08)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Nombre de relations de comportement
@@ -72,30 +72,30 @@ subroutine verif_loi_mater(mater)
 !   Boucle sur les relations de comportement
     do cc = 1, nbcrme
         nomrc = vnomrc(cc)
-        if ( nomrc .eq. 'DIS_ECRO_TRAC' ) then
+        if (nomrc .eq. 'DIS_ECRO_TRAC') then
             call rccome(mater, vnomrc(cc), iret, iarret=1, k11_ind_nomrc=k11)
             noobrc = mater//k11
             ! Nombre de : réel, complexe , chaine de caractères
             call jelira(noobrc//'.VALR', 'LONUTI', nbr)
             call jelira(noobrc//'.VALC', 'LONUTI', nbc)
             call jelira(noobrc//'.VALK', 'LONUTI', nbk2)
-            ASSERT( nbc .eq. 0 )
+            ASSERT(nbc .eq. 0)
             ! Récupération des pointeurs sur les valeurs
-            call jeveuo(noobrc//'.VALR', 'L', vr  =matr)
+            call jeveuo(noobrc//'.VALR', 'L', vr=matr)
             call jeveuo(noobrc//'.VALK', 'L', vk16=matk)
-            nbk=(nbk2-nbr-nbc)/2
-            ifx  = indk16(matk,'FX', 1,nbk2)
-            ifyz = indk16(matk,'FTAN',1,nbk2)
+            nbk = (nbk2-nbr-nbc)/2
+            ifx = indk16(matk, 'FX', 1, nbk2)
+            ifyz = indk16(matk, 'FTAN', 1, nbk2)
             ! Nom de la fonction
-            if      (ifx.ne.0) then
-                nomfon = matk(ifx+nbk)(1:8)
-            else if (ifyz.ne.0) then
-                nomfon = matk(ifyz+nbk)(1:8)
+            if (ifx .ne. 0) then
+                nomfon = matk(ifx+nbk) (1:8)
+            else if (ifyz .ne. 0) then
+                nomfon = matk(ifyz+nbk) (1:8)
             else
-                ASSERT( .false. )
-            endif
-            iecro  = indk16(matk,'ECROUISSAGE', 1,nbk2)
-            ASSERT( iecro .ne. 0 )
+                ASSERT(.false.)
+            end if
+            iecro = indk16(matk, 'ECROUISSAGE', 1, nbk2)
+            ASSERT(iecro .ne. 0)
             tecro = nint(matr(iecro))
 !           Quelques vérifications sur la fonction
 !               interpolation LIN LIN
@@ -115,51 +115,51 @@ subroutine verif_loi_mater(mater)
 !           vérifications sur les valeurs de la fonction
             dx = zr(jvale)
             fx = zr(jvale+nbvale)
-            OkFct = (zk24(jprol)(1:8) .eq. 'FONCTION')
-            OkFct = OkFct .and. (zk24(jprol+1)(1:3) .eq. 'LIN')
-            OkFct = OkFct .and. (zk24(jprol+1)(5:7) .eq. 'LIN')
-            if (ifx.ne.0) then
-                OkFct = OkFct .and. (zk24(jprol+2)(1:2) .eq. 'DX')
-                OkFct = OkFct .and. (nbvale .ge. 3 )
-            else if (ifyz.ne.0) then
-                OkFct = OkFct .and. (zk24(jprol+2)(1:4) .eq. 'DTAN')
-                if (tecro.eq.1) then
-                    OkFct = OkFct .and. (nbvale .ge. 3 )
+            OkFct = (zk24(jprol) (1:8) .eq. 'FONCTION')
+            OkFct = OkFct .and. (zk24(jprol+1) (1:3) .eq. 'LIN')
+            OkFct = OkFct .and. (zk24(jprol+1) (5:7) .eq. 'LIN')
+            if (ifx .ne. 0) then
+                OkFct = OkFct .and. (zk24(jprol+2) (1:2) .eq. 'DX')
+                OkFct = OkFct .and. (nbvale .ge. 3)
+            else if (ifyz .ne. 0) then
+                OkFct = OkFct .and. (zk24(jprol+2) (1:4) .eq. 'DTAN')
+                if (tecro .eq. 1) then
+                    OkFct = OkFct .and. (nbvale .ge. 3)
                 else
-                    OkFct = OkFct .and. (nbvale .eq. 3 )
-                endif
-            endif
-            OkFct = OkFct .and. (zk24(jprol+4)(1:2) .eq. 'EE')
-            OkFct = OkFct .and. (dx .ge. 0.0d0 ) .and. (dx .le. precis)
-            OkFct = OkFct .and. (fx .ge. 0.0d0 ) .and. (fx .le. precis)
-            if ( OkFct ) then
+                    OkFct = OkFct .and. (nbvale .eq. 3)
+                end if
+            end if
+            OkFct = OkFct .and. (zk24(jprol+4) (1:2) .eq. 'EE')
+            OkFct = OkFct .and. (dx .ge. 0.0d0) .and. (dx .le. precis)
+            OkFct = OkFct .and. (fx .ge. 0.0d0) .and. (fx .le. precis)
+            if (OkFct) then
                 cik1: do kk = 1, nbvale-1
-                    if ( ( zr(jvale+kk) .le. dx ) .or. &
-                         ( zr(jvale+nbvale+kk) .le. fx ) ) then
+                    if ((zr(jvale+kk) .le. dx) .or. &
+                        (zr(jvale+nbvale+kk) .le. fx)) then
                         OkFct = .false.
                         exit cik1
-                    endif
-                    if ( kk .eq. 1 ) then
-                        raidex = (zr(jvale+nbvale+kk) - fx)/(zr(jvale+kk) - dx)
+                    end if
+                    if (kk .eq. 1) then
+                        raidex = (zr(jvale+nbvale+kk)-fx)/(zr(jvale+kk)-dx)
                         dfx = raidex
                     else
-                        dfx = (zr(jvale+nbvale+kk) - fx)/(zr(jvale+kk) - dx)
-                        if ( dfx .gt. raidex ) then
+                        dfx = (zr(jvale+nbvale+kk)-fx)/(zr(jvale+kk)-dx)
+                        if (dfx .gt. raidex) then
                             OkFct = .false.
                             exit cik1
-                        endif
-                    endif
-                    dx     = zr(jvale+kk)
-                    fx     = zr(jvale+nbvale+kk)
+                        end if
+                    end if
+                    dx = zr(jvale+kk)
+                    fx = zr(jvale+nbvale+kk)
                     raidex = dfx
-                enddo cik1
-            endif
-            if ( .not. OkFct ) then
+                end do cik1
+            end if
+            if (.not. OkFct) then
                 valk(1) = 'DIS_ECRO_TRAC'
                 valk(2) = 'FX=f(DX) | FTAN=f(DTAN)'
                 call utmess('F', 'DISCRETS_62', nk=2, valk=valk)
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
 
 end subroutine

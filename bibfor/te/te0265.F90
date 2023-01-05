@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0265(nomopt, nomte)
 !                   0 = 2D, 1 = 1D
 !     FERRSYME   FERRAILLAGE SYMETRIQUE?
 !                   0 = NON, 1 = OUI
-!     SLSYME     SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE 
+!     SLSYME     SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE
 !     FERRCOMP   FERRAILLAGE DE COMPRESSION ADMIS?
 !                   0 = NON, 1 = OUI
 !     EPUCISA    IMPACT DE L'EFFORT TRANCHANT ET DE LA TORSION SUR LE
@@ -151,25 +151,25 @@ subroutine te0265(nomopt, nomte)
 
     character(len=16) :: nomopt, nomte
     ! Return value for differents ops
-    integer :: iret 
+    integer :: iret
     ! Max is 7
-    integer :: itabin(3) 
+    integer :: itabin(3)
     integer :: EFGE_ELNO_pointer
     integer :: EFGE_ELNO_length
     integer :: EFGE_ELNO_nbOfPoints
     integer :: EFGE_ELNO_nbOfComponents
     integer :: jcagepo, jfer1, jfer2, jefge
-    
+
 !   INFO ON MAILLE AND ELEMENT
     ! For tecael
-    integer :: iadzi, iazk24 
+    integer :: iadzi, iazk24
     character(len=24) :: meshName, elementName
 !   For tecael
-    integer :: node_nb, node_i_id, node_j_id 
-    
+    integer :: node_nb, node_i_id, node_j_id
+
 !   OUTPUT FOR 1D ELEMENTS
     real(kind=8) :: dnsvol, construc
-    
+
 !   GEOMETRICAL DATA
     real(kind=8) :: HY1, HZ1, TSEC
 !   EFGE_ELNO DATA
@@ -192,10 +192,9 @@ subroutine te0265(nomopt, nomte)
     character(len=24) :: valk(2)
     integer :: vali(2)
 
-    
 !   DEFAULT VALUES
-    do i=1,6
-    dnsits(i) = -1
+    do i = 1, 6
+        dnsits(i) = -1
     end do
     dnsvol = -1
     construc = -1
@@ -207,7 +206,7 @@ subroutine te0265(nomopt, nomte)
     node_nb = zi(iadzi-1+2)
     node_i_id = zi(iadzi-1+3)
     node_j_id = zi(iadzi-1+4)
-     
+
 !       -- RECUPERATION DES DONNEES DE L'UTILISATEUR :
 !       ----------------------------------------------
 !     FER1_R = 'TYPCOMB','CODIF','TYPSTRU','FERRSYME','SLSYME','FERRCOMP',
@@ -241,18 +240,18 @@ subroutine te0265(nomopt, nomte)
     HY1 = zr(jcagepo-1+1)
     HZ1 = zr(jcagepo-1+2)
     TSEC = zr(jcagepo-1+13)
-    if (TSEC.ne.1) then
-    valk(1) = meshName
-    valk(2) = elementName
-    vali(1) = node_i_id
-    vali(2) = node_j_id
-    call utmess('F', 'CALCULEL7_1', nk=2, valk=valk, ni=2, vali=vali)
-    goto 998
-    endif
+    if (TSEC .ne. 1) then
+        valk(1) = meshName
+        valk(2) = elementName
+        vali(1) = node_i_id
+        vali(2) = node_j_id
+        call utmess('F', 'CALCULEL7_1', nk=2, valk=valk, ni=2, vali=vali)
+        goto 998
+    end if
 
 !   Retriving instantied pointer for INPUT PARAMETER
     call jevech('PFERRA1', 'L', jfer1)
-    
+
     ht = HZ1
     bw = HY1
     typcmb = nint(zr(jfer1-1+1))
@@ -312,52 +311,52 @@ subroutine te0265(nomopt, nomte)
     phizi = zr(jfer1-1+55)
     phizs = zr(jfer1-1+56)
 
-   !Only option '1D'
-    if (typstru.eq.0.d0) then
-    call utmess('A', 'CALCULEL_79')
-    goto 998
-    endif
-    
-   !Retriving instantied pointer for OUT PARAMETER
+    !Only option '1D'
+    if (typstru .eq. 0.d0) then
+        call utmess('A', 'CALCULEL_79')
+        goto 998
+    end if
+
+    !Retriving instantied pointer for OUT PARAMETER
     call jevech('PFERRA2', 'E', jfer2)
 
-   !Retriving instantied pointer for EFGE_ELNO
+    !Retriving instantied pointer for EFGE_ELNO
     call jevech('PEFFORR', 'L', jefge)
-   !Retriving instantied pointer for EFGE_ELNO
+    !Retriving instantied pointer for EFGE_ELNO
     call tecach('OOO', 'PEFFORR', 'L', iret, nval=3, itab=itabin)
-   !itabin(1): pointer of local field (in zr, zc,)
-   !itabin(2): total length of local field
-   !itabin(3): nb points (gauss or nodes)
+    !itabin(1): pointer of local field (in zr, zc,)
+    !itabin(2): total length of local field
+    !itabin(3): nb points (gauss or nodes)
     EFGE_ELNO_pointer = itabin(1)
     EFGE_ELNO_length = itabin(2)
     EFGE_ELNO_nbOfPoints = itabin(3)
     EFGE_ELNO_nbOfComponents = EFGE_ELNO_length/EFGE_ELNO_nbOfPoints
 
-    Ni = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents + 1)
-    VYi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents + 2)
-    VZi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents + 3)
-    MTi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents + 4)
-    MFYi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents + 5)
-    MFZi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents + 6)
+    Ni = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents+1)
+    VYi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents+2)
+    VZi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents+3)
+    MTi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents+4)
+    MFYi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents+5)
+    MFZi = zr(EFGE_ELNO_pointer-1+(1-1)*EFGE_ELNO_nbOfComponents+6)
 
     call tecael(iadzi, iazk24, noms=1)
 
-    Nj   = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents + 1)
-    VYj  = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents + 2)
-    VZj  = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents + 3)
-    MTj  = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents + 4)
-    MFYj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents + 5)
-    MFZj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents + 6)
+    Nj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents+1)
+    VYj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents+2)
+    VZj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents+3)
+    MTj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents+4)
+    MFYj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents+5)
+    MFZj = zr(EFGE_ELNO_pointer-1+(2-1)*EFGE_ELNO_nbOfComponents+6)
 
-   !Mean value on nodes
+    !Mean value on nodes
     VX = (Ni+Nj)/2
     MFY = (MFYi+MFYj)/2
     MFZ = (MFZi+MFZj)/2
     VY = (VYi+VYj)/2
     VZ = (VZi+VZj)/2
     MT = (MTi+MTj)/2
-    
-   !Code Aster uses negative N for compression
+
+    !Code Aster uses negative N for compression
     effrts(1) = -VX
     effrts(2) = MFY
     effrts(3) = MFZ
@@ -365,25 +364,24 @@ subroutine te0265(nomopt, nomte)
     effrts(5) = VZ
     effrts(6) = MT
 
-   !Calcul du ferraillage global de la poutre
-   
-    call glbpou(typcmb, typco, cequi, effrts, ht, bw,&
-                  enrobyi, enrobys, enrobzi, enrobzs,&
-                  facier, fbeton, sigelsqp, kt, eys,&
-                  alphacc, clacier, gammas, gammac, typdiag,&
-                  sigcyi, sigcys, sigczi, sigczs, sigs,&
-                  wmaxyi, wmaxys, wmaxzi, wmaxzs,&
-                  phiyi, phiys, phizi, phizs,&
-                  ferrsyme, slsyme, ferrcomp,&
-                  epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                  rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit,&
-                  dnsits, dnsvol, construc, ierr)
-    
-    
+    !Calcul du ferraillage global de la poutre
+
+    call glbpou(typcmb, typco, cequi, effrts, ht, bw, &
+                enrobyi, enrobys, enrobzi, enrobzs, &
+                facier, fbeton, sigelsqp, kt, eys, &
+                alphacc, clacier, gammas, gammac, typdiag, &
+                sigcyi, sigcys, sigczi, sigczs, sigs, &
+                wmaxyi, wmaxys, wmaxzi, wmaxzs, &
+                phiyi, phiys, phizi, phizs, &
+                ferrsyme, slsyme, ferrcomp, &
+                epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
+                rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit, &
+                dnsits, dnsvol, construc, ierr)
+
 !       -- GESTION DES ALARMES EMISES :
 !       -------------------------------
 !
-    if (ierr.eq.1001) then
+    if (ierr .eq. 1001) then
 !       ELU : section trop comprimée
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_12')
@@ -392,9 +390,9 @@ subroutine te0265(nomopt, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
-    
-    if (ierr.eq.10011) then
+    end if
+
+    if (ierr .eq. 10011) then
 !       ELU : ferraillage symétrique non possible
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_28')
@@ -403,9 +401,9 @@ subroutine te0265(nomopt, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
-    
-    if (ierr.eq.10012) then
+    end if
+
+    if (ierr .eq. 10012) then
 !       Resolution iterative Bresler non possible FCD
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_29')
@@ -414,9 +412,9 @@ subroutine te0265(nomopt, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 !
-    if (ierr.eq.1003) then
+    if (ierr .eq. 1003) then
 !       ELS : section trop comprimée
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_13')
@@ -425,9 +423,9 @@ subroutine te0265(nomopt, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
-    
-    if (ierr.eq.1005) then
+    end if
+
+    if (ierr .eq. 1005) then
 !       ELS_QP : section trop comprimée
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_14')
@@ -436,33 +434,33 @@ subroutine te0265(nomopt, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 !
-    if (ierr.eq.1002) then
+    if (ierr .eq. 1002) then
 !       ELU BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL7_15')
         dnsits(5) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 
-    if (ierr.eq.1004) then
+    if (ierr .eq. 1004) then
 !       ELS BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL7_16')
         dnsits(5) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 
-    if (ierr.eq.1007) then
+    if (ierr .eq. 1007) then
 !       ELS_QP BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL7_17')
         dnsits(5) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 
-    if (ierr.eq.1006) then
+    if (ierr .eq. 1006) then
 !       ELS QP SOLLICITATION TROP IMPORTANTE : Résolution itérative impossible à l'els qp !
         call utmess('A', 'CALCULEL_77')
         do k = 1, 6
@@ -470,7 +468,7 @@ subroutine te0265(nomopt, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 
 998 continue
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,12 @@ subroutine foint0()
     character(len=24) :: svinte
     character(len=16) :: svnomp
     character(len=19) :: svnomf
-    common /ifosav/ mxsave, mxpara, svnbpa(4) , svpar(10,4) ,&
-     &                isvnxt , isvind(4), nextsv(4)
-    common /jfosav/ iaprol(4),iavale(4),iapara(4),luvale(4),lupara(4)
-    common /rfosav/ svresu(4)
-    common /kfosav/ svnomp(10,4) , svnomf(4) ,&
-     &                svtypf(4) , svprgd(4) , svinte(4)
+    common/ifosav/mxsave, mxpara, svnbpa(4), svpar(10, 4),&
+     &                isvnxt, isvind(4), nextsv(4)
+    common/jfosav/iaprol(4), iavale(4), iapara(4), luvale(4), lupara(4)
+    common/rfosav/svresu(4)
+    common/kfosav/svnomp(10, 4), svnomf(4),&
+     &                svtypf(4), svprgd(4), svinte(4)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, lupara, mxpara, mxsave
@@ -43,15 +43,15 @@ subroutine foint0()
     mxsave = 4
     isvnxt = mxsave
     do i = 1, mxsave
-        svnomf(i)= '????????'
-        svresu(i)= 0.d0
-        isvind(i)= 1
+        svnomf(i) = '????????'
+        svresu(i) = 0.d0
+        isvind(i) = 1
 !
-        iaprol(i)=0
-        iavale(i)=0
-        luvale(i)=0
-        iapara(i)=0
-        lupara(i)=0
+        iaprol(i) = 0
+        iavale(i) = 0
+        luvale(i) = 0
+        iapara(i) = 0
+        lupara(i) = 0
     end do
     nextsv(1) = 2
     nextsv(2) = 3

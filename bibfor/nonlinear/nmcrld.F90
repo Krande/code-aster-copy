@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmcrld(sddisc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/wkvect.h"
 !
-character(len=19) :: sddisc
+    character(len=19) :: sddisc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,18 +56,18 @@ character(len=19) :: sddisc
 !
 ! - Initializations
 !
-    nb_fail     = 1
+    nb_fail = 1
     i_fail_save = 1
-    call utdidt('E', sddisc, 'LIST', 'NECHEC', vali_ = nb_fail)
+    call utdidt('E', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
 !
 ! - Create datastructure
 !
     sddisc_eevenr = sddisc(1:19)//'.EEVR'
     sddisc_eevenk = sddisc(1:19)//'.EEVK'
     sddisc_esubdr = sddisc(1:19)//'.ESUR'
-    call wkvect(sddisc_eevenr, 'V V R'  , nb_fail*SIZE_LEEVR, vr   = v_sddisc_eevenr)
-    call wkvect(sddisc_eevenk, 'V V K16', nb_fail*SIZE_LEEVK, vk16 = v_sddisc_eevenk)
-    call wkvect(sddisc_esubdr, 'V V R'  , nb_fail*SIZE_LESUR, vr   = v_sddisc_esubdr)
+    call wkvect(sddisc_eevenr, 'V V R', nb_fail*SIZE_LEEVR, vr=v_sddisc_eevenr)
+    call wkvect(sddisc_eevenk, 'V V K16', nb_fail*SIZE_LEEVK, vk16=v_sddisc_eevenk)
+    call wkvect(sddisc_esubdr, 'V V R', nb_fail*SIZE_LESUR, vr=v_sddisc_esubdr)
 !
 ! - Create default action: if ERROR => STOP
 !

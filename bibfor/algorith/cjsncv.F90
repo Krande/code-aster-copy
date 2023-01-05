@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cjsncv(roucjs, nitimp, iter, ndt, nvi,&
-                  umess, erimp, epsd, deps, sigd,&
+subroutine cjsncv(roucjs, nitimp, iter, ndt, nvi, &
+                  umess, erimp, epsd, deps, sigd, &
                   vind)
 !
 !  DUMP EN CAS NON CONVERGENCE ITE INTERNES CJS
@@ -30,23 +30,23 @@ subroutine cjsncv(roucjs, nitimp, iter, ndt, nvi,&
     real(kind=8) :: epsd(ndt), deps(ndt), sigd(ndt), vind(nvi)
 !
     integer :: i
-    write(umess,2001)
-    2001   format(&
-     &       t3,' ITER',t10,' ERR1=DDY',&
-     &       t30,'ERR2=DY',t50,'ERR=DDY/DY')
+    write (umess, 2001)
+2001 format(&
+    &       t3, ' ITER', t10, ' ERR1=DDY',&
+    &       t30, 'ERR2=DY', t50, 'ERR=DDY/DY')
     do i = 1, min(nitimp, iter)
-        write(umess,1000) i,erimp(i,1),erimp(i,2),erimp(i,3)
+        write (umess, 1000) i, erimp(i, 1), erimp(i, 2), erimp(i, 3)
     end do
-    1000   format(&
-     &       t3,i4,t10,e12.5,&
-     &       t30,e12.5,t50,e12.5)
+1000 format(&
+    &       t3, i4, t10, e12.5,&
+    &       t30, e12.5, t50, e12.5)
     call utmess('F', 'ALGORITH2_18')
-    write(6,1002) (i,epsd(i),i = 1 , ndt)
-    write(umess,*) ' DEPS '
-    write(6,1002) (i,deps(i),i = 1 , ndt)
-    write(umess,*) ' SIGD '
-    write(6,1002) (i,sigd(i),i = 1 , ndt)
-    write(umess,*) ' VIND '
-    write(6,1002) (i,vind(i),i = 1 , nvi)
-    1002 format(2x,i5,2x,e12.5)
+    write (6, 1002) (i, epsd(i), i=1, ndt)
+    write (umess, *) ' DEPS '
+    write (6, 1002) (i, deps(i), i=1, ndt)
+    write (umess, *) ' SIGD '
+    write (6, 1002) (i, sigd(i), i=1, ndt)
+    write (umess, *) ' VIND '
+    write (6, 1002) (i, vind(i), i=1, nvi)
+1002 format(2x, i5, 2x, e12.5)
 end subroutine

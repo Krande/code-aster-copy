@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
-                  numnog, nbnog, nummag, numgrp, coor,&
-                  cent, req, xint, yint, zint,&
+subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot, &
+                  numnog, nbnog, nummag, numgrp, coor, &
+                  cent, req, xint, yint, zint, &
                   rint, nbgrp)
     implicit none
 !
@@ -98,19 +98,19 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
     if (iequiv .eq. 0) then
         do i = 1, nbcyl
             numno1 = zi(numnog(i))
-            xint(i) = coor((numno1-1)*3 + irot(1))
-            yint(i) = coor((numno1-1)*3 + irot(2))
-            zint(1,numgrp(i)) = coor((numno1-1)*3 + irot(3))
+            xint(i) = coor((numno1-1)*3+irot(1))
+            yint(i) = coor((numno1-1)*3+irot(2))
+            zint(1, numgrp(i)) = coor((numno1-1)*3+irot(3))
             do j = 2, nbnog(i)
                 numno2 = zi(numnog(i)+j-1)
-                if (abs( coor( (numno1-1)*3 + irot(1)) - coor((numno2-1) *3 + irot(1) ) )&
-                    .gt. epsit .or.&
-                    abs( coor( (numno1-1)*3 + irot(2)) - coor((numno2-1)*3 + irot(2) ) )&
+                if (abs(coor((numno1-1)*3+irot(1))-coor((numno2-1)*3+irot(1))) &
+                    .gt. epsit .or. &
+                    abs(coor((numno1-1)*3+irot(2))-coor((numno2-1)*3+irot(2))) &
                     .gt. epsit) then
-                    write(note(1:3),'(I3.3)') i
+                    write (note(1:3), '(I3.3)') i
                     call utmess('F', 'ALGELINE_73', sk=note)
-                endif
-                zint(j,numgrp(i)) = coor((numno2-1)*3 + irot(3))
+                end if
+                zint(j, numgrp(i)) = coor((numno2-1)*3+irot(3))
             end do
         end do
 !
@@ -118,16 +118,16 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 ! --- COORDONNEES DES CENTRES DES CYLINDRES
 ! --- CAS OU IL Y A DES GROUPES D EQUIVALENCE
 !
-    else if (iequiv.eq.1) then
+    else if (iequiv .eq. 1) then
         do i = 1, nbcyl
             xint(i) = cent(2*(i-1)+1)
             yint(i) = cent(2*(i-1)+2)
             do j = 1, nbnog(numgrp(i))
                 numno2 = zi(numnog(numgrp(i))+j-1)
-                zint(j,numgrp(i)) = coor((numno2-1)*3 + irot(3))
+                zint(j, numgrp(i)) = coor((numno2-1)*3+irot(3))
             end do
         end do
-    endif
+    end if
 !
 !
 ! --- RAYONS DES CYLINDRES
@@ -141,13 +141,13 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 ! --- RAYONS DES CYLINDRES
 ! --- CAS OU IL N Y A PAS DES GROUPES D EQUIVALENCE
 !
-    else if (iequiv.eq.0) then
+    else if (iequiv .eq. 0) then
 !CC ON RECUPERE LA CARTE ET ON LA TRANSFORME EN CHAMELEM_S
-        carte=caelem(1:8)//'.CARGEOPO'
-        carsd='&&MEFCEN.CARGEOPO'
-        call carces(carte, 'ELEM', ' ', 'G', carsd,&
+        carte = caelem(1:8)//'.CARGEOPO'
+        carsd = '&&MEFCEN.CARGEOPO'
+        call carces(carte, 'ELEM', ' ', 'G', carsd, &
                     'A', iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
 !
 ! --- RECUPERATION DE LA GRANDEUR (ICI R1)  ---
 ! --- REFERENCEE PAR LA CARTE CARGEOPO           ---
@@ -162,7 +162,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 !
         call jelira(jexnum('&CATA.GD.NOMCMP', desc(1)), 'LONMAX', npmax)
 !
-        rangr1= indik8(zk8(icmp),'R1      ',1,npmax)
+        rangr1 = indik8(zk8(icmp), 'R1      ', 1, npmax)
 !
 ! ---    DEBUT DE LA BOUCLE SUR LES CYLINDRES
 ! ---    ON RECHERCHE LA MAILLE ASSOCIEE AU PREMIER NOEUDS DE CHAQUE
@@ -170,19 +170,19 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
         do i = 1, nbcyl
             numma = zi(nummag(i))
 !
-            call cesexi('C', icesd, icesl, numma, 1,&
+            call cesexi('C', icesd, icesl, numma, 1, &
                         1, rangr1, iad)
             if (iad .gt. 0) then
 ! ---       RECUPERATION DU RAYON DE LA PREMIERE MAILLE DE CHAQUE
 ! ---       CYLINDRE
 !
-                rint(i)=cesv(abs(iad))
+                rint(i) = cesv(abs(iad))
 !
             else
                 call utmess('F', 'ALGELINE_75')
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! --- MENAGE
     call detrsd('CHAM_ELEM_S', '&&MEFCEN.CARGEOPO')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine reliem(mo, ma, typem, motfaz, iocc,&
+subroutine reliem(mo, ma, typem, motfaz, iocc, &
                   nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz, l_allz)
     implicit none
 #include "asterf_types.h"
@@ -111,27 +111,27 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     motfac = motfaz
     modele = mo
     l_parallel_mesh = isParallelMesh(ma)
-    if(present(l_keep_propz)) then
+    if (present(l_keep_propz)) then
         l_keep_prop = l_keep_propz
     else
         l_keep_prop = ASTER_FALSE
     end if
-    if(present(l_allz)) then
+    if (present(l_allz)) then
         l_all = l_allz
     else
         l_all = ASTER_FALSE
     end if
     call infniv(ifm, niv)
 !
-    call asmpi_info(rank = mrank)
+    call asmpi_info(rank=mrank)
     rank = to_aster_int(mrank)
 !
 !     --- VERIFICATIONS PRELIMINAIRES ---
 !
-    if (typem .ne. 'NO_MAILLE' .and. typem .ne. 'NO_NOEUD' .and. typem .ne. 'NU_MAILLE'&
+    if (typem .ne. 'NO_MAILLE' .and. typem .ne. 'NO_NOEUD' .and. typem .ne. 'NU_MAILLE' &
         .and. typem .ne. 'NU_NOEUD') then
         ASSERT(.false.)
-    endif
+    end if
 !
     type2 = typem(4:)
     l_group_ma = ASTER_FALSE
@@ -141,11 +141,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         if (typmcl .eq. 'NOEUD' .or. typmcl .eq. 'GROUP_NO') then
             if (type2 .eq. 'MAILLE') then
                 ASSERT(.false.)
-            endif
-        else if (typmcl.ne.'MAILLE' .and. typmcl.ne.'GROUP_MA' .and. typmcl.ne.'TOUT') then
+            end if
+        else if (typmcl .ne. 'MAILLE' .and. typmcl .ne. 'GROUP_MA' .and. typmcl .ne. 'TOUT') then
             ASSERT(.false.)
-        endif
-        if(typmcl == 'GROUP_MA') then
+        end if
+        if (typmcl == 'GROUP_MA') then
             l_group_ma = ASTER_TRUE
         end if
     end do
@@ -159,7 +159,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     if (nbma .gt. 0) then
         call wkvect('&&RELIEM.INDIC_MAILLE', 'V V S', max(nbma, 1), itrma)
         if (modele .ne. ' ') call jeveuo(modele//'.MAILLE', 'L', vi=maille)
-    endif
+    end if
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     AS_ALLOCATE(vi4=indic_noeud, size=nbno)
 !
@@ -187,101 +187,101 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                 ntou = 1
             else
                 call getvtx(motfac, motcle, iocc=iocc, scal=oui, nbret=ntou)
-            endif
+            end if
             if (ntou .gt. 0) then
                 if (type2 .eq. 'MAILLE') then
                     do k = 1, nbma
                         if (modele .ne. ' ') then
                             if (maille(k) .ne. 0) then
                                 zi4(itrma-1+k) = 1
-                            endif
+                            end if
                         else
                             zi4(itrma-1+k) = 1
-                        endif
+                        end if
                     end do
-                endif
+                end if
                 if (type2 .eq. 'NOEUD') then
                     do k = 1, nbno
                         indic_noeud(k) = 1
                     end do
-                endif
-            endif
+                end if
+            end if
             goto 90
-        endif
+        end if
 !
 !
-        call getvem(ma, typmcl, motfac, motcle, iocc,&
+        call getvem(ma, typmcl, motfac, motcle, iocc, &
                     0, karg, nem)
         nem = -nem
         if (nem .eq. 0) goto 90
         if (typmcl(1:6) .ne. 'GROUP_') then
             call wkvect('&&RELIEM.NOM_EM', 'V V K8', nem, inoem)
-            call getvem(ma, typmcl, motfac, motcle, iocc,&
+            call getvem(ma, typmcl, motfac, motcle, iocc, &
                         nem, zk8(inoem), nem)
         else
             call wkvect('&&RELIEM.NOM_EM', 'V V K24', nem, inoem)
-            call getvem(ma, typmcl, motfac, motcle, iocc,&
+            call getvem(ma, typmcl, motfac, motcle, iocc, &
                         nem, zk24(inoem), nem)
-        endif
+        end if
 !
         do iem = 1, nem
             if (typmcl(1:6) .ne. 'GROUP_') then
                 karg = zk8(inoem-1+iem)
             else
                 karg = zk24(inoem-1+iem)
-            endif
+            end if
 !
             if (typmcl .eq. 'MAILLE') then
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
-                endif
+                end if
                 call jenonu(jexnom(ma//'.NOMMAI', karg), ima)
                 zi4(itrma-1+ima) = 1
 !
-            else if (typmcl.eq.'GROUP_MA') then
+            else if (typmcl .eq. 'GROUP_MA') then
                 call jelira(jexnom(ma//'.GROUPEMA', karg), 'LONUTI', nma)
                 call jeveuo(jexnom(ma//'.GROUPEMA', karg), 'L', kma)
 !
 !           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
                 call jelira(jexnom(ma//'.GROUPEMA', karg), 'LONMAX', ibid)
                 if (ibid .eq. 1) then
-                    ASSERT(nma.le.1)
+                    ASSERT(nma .le. 1)
                 else
-                    ASSERT(nma.eq.ibid)
-                endif
+                    ASSERT(nma .eq. ibid)
+                end if
 !
                 do jma = 1, nma
                     ima = zi(kma-1+jma)
                     zi4(itrma-1+ima) = 1
                 end do
 !
-            else if (typmcl.eq.'NOEUD') then
+            else if (typmcl .eq. 'NOEUD') then
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
-                endif
+                end if
                 call jenonu(jexnom(ma//'.NOMNOE', karg), ino)
                 indic_noeud(ino) = 1
 !
-            else if (typmcl.eq.'GROUP_NO') then
+            else if (typmcl .eq. 'GROUP_NO') then
                 call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
                 call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
 !
 !           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
                 call jelira(jexnom(ma//'.GROUPENO', karg), 'LONMAX', ibid)
                 if (ibid .eq. 1) then
-                    ASSERT(nno.le.1)
+                    ASSERT(nno .le. 1)
                 else
-                    ASSERT(nno.eq.ibid)
-                endif
+                    ASSERT(nno .eq. ibid)
+                end if
 !
                 do jno = 1, nno
                     ino = zi(kno-1+jno)
                     indic_noeud(ino) = 1
                 end do
-            endif
+            end if
         end do
         call jedetr('&&RELIEM.NOM_EM')
- 90     continue
+90      continue
     end do
 !
 !     --- AJOUT DES NOEUDS DE LA LISTE DES MAILLES A CELLE DES NOEUDS
@@ -295,16 +295,16 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                     numno = zi(iacnex-1+ino)
                     indic_noeud(numno) = 1
                 end do
-            endif
+            end if
         end do
 !
 !   --- Pour un maillage ParallelMesh, il faut aussi savoir si des noeuds fantome
 !       font parti aussi de mailles non-présentes localement
 !
-        if( l_group_ma .and. l_parallel_mesh ) then
+        if (l_group_ma .and. l_parallel_mesh) then
             call addPhantomNodesFromCells(ma, indic_noeud)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --- CREATION DE L'OBJET JEVEUX LITROU ---
@@ -312,21 +312,21 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !        --- COMPTAGE DES MAILLES ---
 !
-        if(l_parallel_mesh) then
+        if (l_parallel_mesh) then
             call jeveuo(ma//'.MAEX', 'L', vi=v_maex)
         end if
 
         nbtrou = 0
         do ima = 1, nbma
             if (zi4(itrma-1+ima) .ne. 0) then
-                if(l_parallel_mesh .and. l_keep_prop) then
-                    if( v_maex(ima) == rank ) then
-                        nbtrou = nbtrou + 1
+                if (l_parallel_mesh .and. l_keep_prop) then
+                    if (v_maex(ima) == rank) then
+                        nbtrou = nbtrou+1
                     else
                         zi4(itrma-1+ima) = 0
                     end if
                 else
-                    nbtrou = nbtrou + 1
+                    nbtrou = nbtrou+1
                 end if
             end if
         end do
@@ -342,9 +342,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             lma = 0
             do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
-                    lma = lma + 1
+                    lma = lma+1
                     zi(itbma-1+lma) = ima
-                endif
+                end if
             end do
 !
         else
@@ -355,11 +355,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             lma = 0
             do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
-                    lma = lma + 1
-                    call jenuno(jexnum(ma//'.NOMMAI', ima), zk8(itbma-1+ lma))
-                endif
+                    lma = lma+1
+                    call jenuno(jexnum(ma//'.NOMMAI', ima), zk8(itbma-1+lma))
+                end if
             end do
-        endif
+        end if
 !
 !
 !
@@ -370,16 +370,16 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
                     if (maille(ima) .eq. 0) then
-                        ier = ier + 1
+                        ier = ier+1
                         call jenuno(jexnum(ma//'.NOMMAI', ima), noent)
-                        write (ifm,*) ' MAILLE : ',noent
-                    endif
-                endif
+                        write (ifm, *) ' MAILLE : ', noent
+                    end if
+                end if
             end do
             if (ier .ne. 0) then
                 call utmess('F', 'MODELISA6_96', sk=motfac, si=ier)
-            endif
-        endif
+            end if
+        end if
 !
 !
 !
@@ -387,21 +387,21 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !        --- COMPTAGE DES NOEUDS ---
 !
-        if(l_parallel_mesh) then
+        if (l_parallel_mesh) then
             call jeveuo(ma//'.NOEX', 'L', vi=v_noex)
         end if
 !
         nbtrou = 0
         do ino = 1, nbno
             if (indic_noeud(ino) .ne. 0) then
-                if(l_parallel_mesh .and. l_keep_prop) then
-                    if( v_noex(ino) == rank ) then
-                        nbtrou = nbtrou + 1
+                if (l_parallel_mesh .and. l_keep_prop) then
+                    if (v_noex(ino) == rank) then
+                        nbtrou = nbtrou+1
                     else
                         indic_noeud(ino) = 0
                     end if
                 else
-                    nbtrou = nbtrou + 1
+                    nbtrou = nbtrou+1
                 end if
             end if
         end do
@@ -417,9 +417,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             lno = 0
             do ino = 1, nbno
                 if (indic_noeud(ino) .ne. 0) then
-                    lno = lno + 1
+                    lno = lno+1
                     zi(itbno-1+lno) = ino
-                endif
+                end if
             end do
 !
         else
@@ -430,11 +430,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             lno = 0
             do ino = 1, nbno
                 if (indic_noeud(ino) .ne. 0) then
-                    lno = lno + 1
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), zk8(itbno-1+ lno))
-                endif
+                    lno = lno+1
+                    call jenuno(jexnum(ma//'.NOMNOE', ino), zk8(itbno-1+lno))
+                end if
             end do
-        endif
+        end if
 !
 !       -- ON VERIFIE QUE LES NOEUDS FONT PARTIE DU MODELE :
 !       ----------------------------------------------------
@@ -452,18 +452,18 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                     end do
 !             LE NOEUD NE PORTE AUCUNE COMPOSANTE DE LA GRANDEUR
 !             ASSOCIEE AU PHENOMENE
-                    ier = ier + 1
+                    ier = ier+1
                     call jenuno(jexnum(ma//'.NOMNOE', ino), noent)
-                    write (ifm,*) ' NOEUD : ',noent
-                endif
+                    write (ifm, *) ' NOEUD : ', noent
+                end if
 191             continue
             end do
             if (ier .ne. 0) then
                 call utmess('F', 'MODELISA6_13', sk=motfac, si=ier)
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
 !
 !     --- DESTRUCTION DES TABLEAUX DE TRAVAIL ---

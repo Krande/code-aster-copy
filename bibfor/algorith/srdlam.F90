@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
-                  ucrip,seuilp,gp,devgii,paraep,varpl,dfdsp,dlam)
+subroutine srdlam(varv, nbmat, mater, deps, depsv, dgamv, im, sm, vinm, nvi, de, &
+                  ucrip, seuilp, gp, devgii, paraep, varpl, dfdsp, dlam)
 
 !
 
@@ -43,7 +43,7 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
 ! OUT : DLAM   : VALEUR DE DELTA LAMBDA ELASTOPLASTIQUE
 ! ===================================================================================
 
-    implicit   none
+    implicit none
 
 #include "asterfort/srdepp.h"
 #include "asterfort/srdfdx.h"
@@ -55,47 +55,47 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
     !!! Variables globales
     !!!
 
-    integer :: varv,nbmat,nvi
-    real(kind=8) :: sm(6),deps(6),depsv(6),mater(nbmat,2),coupl
-    real(kind=8) :: dgamv,gp(6),devgii,paraep(3),varpl(4),dfdsp(6)
-    real(kind=8) :: vinm(nvi),dlam,de(6,6),ucrip,seuilp,im
+    integer :: varv, nbmat, nvi
+    real(kind=8) :: sm(6), deps(6), depsv(6), mater(nbmat, 2), coupl
+    real(kind=8) :: dgamv, gp(6), devgii, paraep(3), varpl(4), dfdsp(6)
+    real(kind=8) :: vinm(nvi), dlam, de(6, 6), ucrip, seuilp, im
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndi,ndt,i
-    real(kind=8) :: degp(6),dfdegp,derpar(3),dfdxip,dfdsig,kron(6),tdfdsp,tft
-    real(kind=8) :: sigint(6),sigv(6),sigt(6),dpdt(3),dfdt,alpha,dtemp,kk
-    common /tdim/ ndt,ndi
+    integer :: ndi, ndt, i
+    real(kind=8) :: degp(6), dfdegp, derpar(3), dfdxip, dfdsig, kron(6), tdfdsp, tft
+    real(kind=8) :: sigint(6), sigv(6), sigt(6), dpdt(3), dfdt, alpha, dtemp, kk
+    common/tdim/ndt, ndi
 
-    data kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 
     !!!
     !!! Cotnrainte intermediaire
     !!!
 
-    sigt(1:ndt) = matmul(de(1:ndt,1:ndt), deps(1:ndt))
-    call r8inir(6,0.d0,sigint,1)
-    sigv(1:ndt) = matmul(de(1:ndt,1:ndt), depsv(1:ndt))
+    sigt(1:ndt) = matmul(de(1:ndt, 1:ndt), deps(1:ndt))
+    call r8inir(6, 0.d0, sigint, 1)
+    sigv(1:ndt) = matmul(de(1:ndt, 1:ndt), depsv(1:ndt))
 
-    do i=1,ndt
-        sigint(i)=sigt(i)-sigv(i)
+    do i = 1, ndt
+        sigint(i) = sigt(i)-sigv(i)
     end do
 
     !!!
     !!! Recuperation de dfp/dxip
     !!!
 
-    call srdepp(vinm,nvi,nbmat,mater,paraep,derpar)
-    call srdfdx(nbmat,mater,ucrip,im,sm,paraep,varpl,derpar,dfdxip)
+    call srdepp(vinm, nvi, nbmat, mater, paraep, derpar)
+    call srdfdx(nbmat, mater, ucrip, im, sm, paraep, varpl, derpar, dfdxip)
 
     !!!
     !!! Produit de:gp
     !!!
 
-    call r8inir(6,0.d0,degp,1)
-    degp(1:ndt) = matmul(de(1:ndt,1:ndt), gp(1:ndt))
+    call r8inir(6, 0.d0, degp, 1)
+    degp(1:ndt) = matmul(de(1:ndt, 1:ndt), gp(1:ndt))
 
     !!!
     !!! Produit (dfp/dsig):(de:gp)
@@ -114,34 +114,33 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
     !!!
 
     !!! df/dT
-    call srdpdt(vinm,nvi,nbmat,mater,paraep,dpdt)
-    call srdfdt(nbmat,mater,ucrip,im,sm,paraep,varpl,dpdt,dfdt)
+    call srdpdt(vinm, nvi, nbmat, mater, paraep, dpdt)
+    call srdfdt(nbmat, mater, ucrip, im, sm, paraep, varpl, dpdt, dfdt)
 
-
-    kk=mater(12,1)
-    alpha=mater(3,1)
-    dtemp=mater(11,1)
+    kk = mater(12, 1)
+    alpha = mater(3, 1)
+    dtemp = mater(11, 1)
 
     !!! Produit de df/dsig par kron
     tdfdsp = dot_product(dfdsp(1:ndt), kron(1:ndt))
 
     !!! Assemblage des termes dependant de T
-    tft=(dfdt+3.d0*kk*alpha*tdfdsp)*dtemp
+    tft = (dfdt+3.d0*kk*alpha*tdfdsp)*dtemp
 
     !!!
     !!! Calcul de dlambda
     !!!
 
-    coupl=mater(28,2)
+    coupl = mater(28, 2)
 
-    if ((varv.eq.1).and.(coupl.ge.1.d0/2.d0)) then
-        dlam=(seuilp+dfdsig+dfdxip*dgamv+tft)/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
+    if ((varv .eq. 1) .and. (coupl .ge. 1.d0/2.d0)) then
+        dlam = (seuilp+dfdsig+dfdxip*dgamv+tft)/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
     else
-        dlam=(seuilp+dfdsig+tft)/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
-    endif
+        dlam = (seuilp+dfdsig+tft)/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
+    end if
 
-    if (dlam.lt.0.d0) then
-        dlam=0.d0
-    endif
+    if (dlam .lt. 0.d0) then
+        dlam = 0.d0
+    end if
 
 end subroutine

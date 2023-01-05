@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cjsci1(crit, mater, deps, sigd, i1f,&
+subroutine cjsci1(crit, mater, deps, sigd, i1f, &
                   tract, iret)
     implicit none
 #include "asterf_types.h"
@@ -41,7 +41,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 ! ----------------------------------------------------------------------
 !
     integer :: ndt, ndi, imax, iret
-    parameter (imax = 60)
+    parameter(imax=60)
     real(kind=8) :: mater(14, 2), crit(*), deps(6), sigd(6), i1d, i1f
     real(kind=8) :: trdeps, coef, pa, n, multi
     real(kind=8) :: x0, x1, x2, oldx2, y0, y1, y2
@@ -49,38 +49,38 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
     aster_logical :: tract
     integer :: i
 !
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !
 !
-    data    zero  /0.d0/
-    data    un    /1.d0/
-    data    deux  /2.d0/
-    data    trois /3.d0/
+    data zero/0.d0/
+    data un/1.d0/
+    data deux/2.d0/
+    data trois/3.d0/
 !
 !-----------------------------------------------------------------------
 !       METHODE DE LA SECANTE
 !-----------------------------------------------------------------------
 !
 !
-    qinit = mater(13,2)
+    qinit = mater(13, 2)
 !--->   DETERMINATION DE TERME COEF = 3 KOE TR(DEPS)
 !
     trdeps = zero
     do i = 1, ndi
-        trdeps = trdeps + deps(i)
+        trdeps = trdeps+deps(i)
     end do
 !
-    coef = mater(1,1)/( un - deux*mater(2,1) )*trdeps
-    pa = mater(12,2)
-    n = mater(3,2)
+    coef = mater(1, 1)/(un-deux*mater(2, 1))*trdeps
+    pa = mater(12, 2)
+    n = mater(3, 2)
 !
     i1d = zero
     do i = 1, ndi
-        i1d = i1d + sigd(i)
+        i1d = i1d+sigd(i)
     end do
-    if ((i1d +qinit) .ge. 0.d0) then
-        i1d = -qinit+1.d-12 * pa
-    endif
+    if ((i1d+qinit) .ge. 0.d0) then
+        i1d = -qinit+1.d-12*pa
+    end if
 !
 !
 !--->  TRAITEMENT EXPLICITE DE L'EQUATION POUR LE NIVEAU CJS 1
@@ -89,19 +89,19 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !
     tract = .false.
     if (n .eq. zero) then
-        i1f = i1d + coef
+        i1f = i1d+coef
         if (i1f .ge. (-qinit)) then
             tract = .true.
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 !--->  TRAITEMENT DE L'EQUATION EN FONCTION DE TRACE DE DEPS
 ! - CAS N.1: TRACE NULLE
 !   ++++++++++++++++++++
     if (trdeps .eq. zero) then
         i1f = i1d
-    endif
+    end if
 !
 ! - CAS N.2: TRACE NEGATIVE (CHARGEMENT)
 !   ++++++++++++++++++++++++++++++++++++
@@ -113,8 +113,8 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !
         x0 = i1d
         y0 = x0-i1d-coef*((x0+qinit)/trois/pa)**n
-        multi=2.d0
-        x1 = x0 + qinit
+        multi = 2.d0
+        x1 = x0+qinit
         do i = 1, imax
             x1 = multi*x1
             y1 = x1-i1d-coef*((x1+qinit)/trois/pa)**n
@@ -122,13 +122,13 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
         end do
         iret = 1
         goto 999
- 25     continue
+25      continue
 !
 !
 !
 !       RECHERCHE DU ZERO DE LA FONCTION ENTRE (X0,Y0) ET (X1,Y1)
 !
-        oldx2=zero
+        oldx2 = zero
 !
         do i = 1, int(abs(crit(1)))
             x2 = (x0*y1-x1*y0)/(y1-y0)
@@ -136,23 +136,23 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !
             if (abs((x2-oldx2)/x2) .lt. crit(3) .or. y2 .eq. zero) goto 40
 !
-            oldx2=x2
+            oldx2 = x2
             if (y2 .gt. zero) then
                 x0 = x2
                 y0 = y2
             else
                 x1 = x2
                 y1 = y2
-            endif
+            end if
 !
         end do
         iret = 1
         goto 999
- 40     continue
+40      continue
 !
-        i1f=x2
+        i1f = x2
 !
-    endif
+    end if
 !
 ! - CAS N.3: TRACE POSITIVE (DECHARGEMENT)
 !   ++++++++++++++++++++++++++++++++++++++
@@ -169,7 +169,7 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !
 !       RECHERCHE DU ZERO DE LA FONCTION ENTRE (X0,Y0) ET (X1,Y1)
 !
-        oldx2=zero
+        oldx2 = zero
 !
         do i = 1, int(abs(crit(1)))
             x2 = (x0*y1-x1*y0)/(y1-y0)
@@ -177,23 +177,23 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f,&
 !
             if (abs((x2-oldx2)/x2) .lt. crit(3) .or. y2 .eq. zero) goto 70
 !
-            oldx2=x2
+            oldx2 = x2
             if (y2 .gt. zero) then
                 x1 = x2
                 y1 = y2
             else
                 x0 = x2
                 y0 = y2
-            endif
+            end if
 !
         end do
         iret = 1
         goto 999
- 70     continue
+70      continue
 !
-        i1f=x2
+        i1f = x2
 !
-    endif
+    end if
 !
 999 continue
 !

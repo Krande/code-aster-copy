@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
+subroutine usuvus(puusur, vusur, nbinst, temps, isupp, &
                   nbpt, fn, vg, iret)
     implicit none
 !     CALCULE LE VOLUME USE
@@ -51,7 +51,7 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
 !
     call getvtx(' ', 'LOI_USURE', scal=loi, nbret=n1)
     iret = 0
-    k8b=' '
+    k8b = ' '
 !
 ! **********************************************************************
 !                 M O D E L E     A R C H A R D
@@ -59,14 +59,14 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
 !
     if (loi(1:7) .eq. 'ARCHARD') then
         if (isupp .eq. 1) then
-            write(ifires,1000)
+            write (ifires, 1000)
             call getvr8('MOBILE', 'COEF_USURE', iocc=1, scal=xk, nbret=n1)
             if (n1 .eq. 0) then
                 call getvtx(' ', 'MATER_USURE', scal=mate, nbret=n2)
                 call usuban(mate, isupp, para, iret)
                 xk = para(1)
-            endif
-            write(ifires,2100)
+            end if
+            write (ifires, 2100)
         else if (isupp .eq. 2) then
             call getvr8('OBSTACLE', 'COEF_USURE', iocc=1, scal=xk, nbret=n1)
             if (n1 .eq. 0) then
@@ -78,13 +78,13 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
                 else
                     isupp = 0
                     goto 999
-                endif
-            endif
-            write(ifires,2200)
-        endif
-        write(ifires,2010) xk
+                end if
+            end if
+            write (ifires, 2200)
+        end if
+        write (ifires, 2010) xk
         do i = 1, nbinst
-            vusur(i) = xk * puusur * temps(i)
+            vusur(i) = xk*puusur*temps(i)
         end do
 !
 ! **********************************************************************
@@ -93,7 +93,7 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
 !
     else if (loi(1:8) .eq. 'KWU_EPRI') then
         if (isupp .eq. 1) then
-            write(ifires,1010)
+            write (ifires, 1010)
             call getvr8('MOBILE', 'COEF_USURE', iocc=1, scal=para(1), nbret=n1)
             call getvr8('MOBILE', 'COEF_FNOR', iocc=1, scal=para(2), nbret=n2)
             call getvr8('MOBILE', 'COEF_VTAN', iocc=1, scal=para(3), nbret=n3)
@@ -104,8 +104,8 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
             call getvtx(' ', 'MATER_USURE', scal=mate, nbret=n6)
             if (n6 .ne. 0) then
                 call usuban(mate, isupp, para, iret)
-            endif
-            write(ifires,2100)
+            end if
+            write (ifires, 2100)
         else if (isupp .eq. 2) then
             call getvr8('OBSTACLE', 'COEF_USURE', iocc=1, scal=para(1), nbret=n1)
             call getvr8('OBSTACLE', 'COEF_FNOR', iocc=1, scal=para(2), nbret=n2)
@@ -122,27 +122,27 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
                 else
                     isupp = 0
                     goto 999
-                endif
-            endif
-            nn = n1 + n2 + n3 + n4 + n5
+                end if
+            end if
+            nn = n1+n2+n3+n4+n5
             if (nn .eq. 0) then
                 isupp = 0
                 goto 999
-            endif
-            write(ifires,2200)
-        endif
-        write(ifires,2010) para(1)
-        write(ifires,2050) para(3)
-        write(ifires,2060) para(2)
-        write(ifires,2070) para(4)
-        write(ifires,2080) para(5)
-        call usukwu(nbpt, fn, vg, para, w,&
+            end if
+            write (ifires, 2200)
+        end if
+        write (ifires, 2010) para(1)
+        write (ifires, 2050) para(3)
+        write (ifires, 2060) para(2)
+        write (ifires, 2070) para(4)
+        write (ifires, 2080) para(5)
+        call usukwu(nbpt, fn, vg, para, w, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'PREPOST4_85')
-        endif
+        end if
         do i = 1, nbinst
-            vusur(i) = para(1) * w * puusur * temps(i)
+            vusur(i) = para(1)*w*puusur*temps(i)
         end do
 !
 ! **********************************************************************
@@ -151,7 +151,7 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
 !
     else if (loi(1:6) .eq. 'EDF_MZ') then
         if (isupp .eq. 1) then
-            write(ifires,1020)
+            write (ifires, 1020)
             call getvr8('MOBILE', 'COEF_S', iocc=1, scal=xs, nbret=n1)
             call getvr8('MOBILE', 'COEF_B', iocc=1, scal=xb, nbret=n2)
             call getvr8('MOBILE', 'COEF_N', iocc=1, scal=xn, nbret=n3)
@@ -167,8 +167,8 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
                 xb = para(2)
                 xn = para(3)
                 xa = para(4)
-            endif
-            write(ifires,2100)
+            end if
+            write (ifires, 2100)
         else if (isupp .eq. 2) then
             call getvr8('OBSTACLE', 'COEF_S', iocc=1, scal=xs, nbret=n1)
             call getvr8('OBSTACLE', 'COEF_B', iocc=1, scal=xb, nbret=n2)
@@ -190,49 +190,49 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
                 else
                     isupp = 0
                     goto 999
-                endif
-            endif
+                end if
+            end if
             call getfac('OBSTACLE', n6)
-            nn = n1 + n2 + n3 + n4 + n5 + n6
+            nn = n1+n2+n3+n4+n5+n6
             if (nn .eq. 0) then
                 isupp = 0
                 goto 999
-            endif
-            write(ifires,2200)
-        endif
-        write(ifires,2010) xa
-        write(ifires,2020) xs
-        write(ifires,2030) xb
-        write(ifires,2040) xn
-        v0 = xa * ( puusur ** xb )
-        xd = xs / v0
+            end if
+            write (ifires, 2200)
+        end if
+        write (ifires, 2010) xa
+        write (ifires, 2020) xs
+        write (ifires, 2030) xb
+        write (ifires, 2040) xn
+        v0 = xa*(puusur**xb)
+        xd = xs/v0
         if (xd .gt. 1.d0) then
             iret = 10
             call utmess('I', 'PREPOST4_86')
             call utmess('I', 'PREPOST4_87')
             goto 999
-        endif
-        x1 = ( 1.d0 - xd ) / xn
+        end if
+        x1 = (1.d0-xd)/xn
         do i = 1, nbinst
             t = temps(i)
-            vusur(i) = v0 * ( xd*t + x1*( 1.d0 - exp(-xn*t) ) )
+            vusur(i) = v0*(xd*t+x1*(1.d0-exp(-xn*t)))
         end do
 !
-    endif
+    end if
 !
-    1000 format (/,'******* MODELE ARCHARD *******')
-    1010 format (/,'******* MODELE KWU_EPRI *******')
-    1020 format (/,'******* MODELE EDF_MZ *******')
-    2100 format (/,'===> COEFFICIENT(S) UTILISE(S) POUR LE MOBILE :')
-    2200 format (/,'===> COEFFICIENT(S) UTILISE(S) POUR L''OBSTACLE :')
-    2010 format (1p,4x,'       COEFFICIENT D''USURE : ',e12.5)
-    2020 format (1p,4x,'                     SEUIL : ',e12.5)
-    2030 format (1p,4x,'                  EXPOSANT : ',e12.5)
-    2040 format (1p,4x,'    TAUX DE RALENTISSEMENT : ',e12.5)
-    2050 format (1p,4x,' COEFFICIENT DE GLISSEMENT : ',e12.5)
-    2060 format (1p,4x,'      COEFFICIENT D''IMPACT : ',e12.5)
-    2070 format (1p,4x,'               CONSTANTE K : ',e12.5)
-    2080 format (1p,4x,'               CONSTANTE C : ',e12.5)
+1000 format(/, '******* MODELE ARCHARD *******')
+1010 format(/, '******* MODELE KWU_EPRI *******')
+1020 format(/, '******* MODELE EDF_MZ *******')
+2100 format(/, '===> COEFFICIENT(S) UTILISE(S) POUR LE MOBILE :')
+2200 format(/, '===> COEFFICIENT(S) UTILISE(S) POUR L''OBSTACLE :')
+2010 format(1p, 4x, '       COEFFICIENT D''USURE : ', e12.5)
+2020 format(1p, 4x, '                     SEUIL : ', e12.5)
+2030 format(1p, 4x, '                  EXPOSANT : ', e12.5)
+2040 format(1p, 4x, '    TAUX DE RALENTISSEMENT : ', e12.5)
+2050 format(1p, 4x, ' COEFFICIENT DE GLISSEMENT : ', e12.5)
+2060 format(1p, 4x, '      COEFFICIENT D''IMPACT : ', e12.5)
+2070 format(1p, 4x, '               CONSTANTE K : ', e12.5)
+2080 format(1p, 4x, '               CONSTANTE C : ', e12.5)
 !
 999 continue
 end subroutine

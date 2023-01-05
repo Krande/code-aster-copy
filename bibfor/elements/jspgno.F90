@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine jspgno(l, a, b)
     b(1) = a(1)
     b(7) = a(7)
     b(8) = a(15)
-    b(14)= a(21)
+    b(14) = a(21)
 !
 ! --- NOTATIONS PLUS PARLANTES :
 !     ------------------------
@@ -61,17 +61,17 @@ subroutine jspgno(l, a, b)
 ! --- L'ABSCISSE DU PREMIER NOEUD SUR L'ELEMENT DE REFERENCE EST -1
 ! --- L'ABSCISSE DU SECOND NOEUD SUR L'ELEMENT DE REFERENCE EST +1 :
 !     ------------------------------------------------------------
-    const1 = -deux*(mtpg1 - mtpg2)/(l*xpg)
-    const2 = -deux*(mfypg1 - mfypg2)/(l*xpg)
-    const3 = -deux*(mfzpg1 - mfzpg2)/(l*xpg)
+    const1 = -deux*(mtpg1-mtpg2)/(l*xpg)
+    const2 = -deux*(mfypg1-mfypg2)/(l*xpg)
+    const3 = -deux*(mfzpg1-mfzpg2)/(l*xpg)
 !
-    b(4) = -const1*undemi*l + mtpg2
-    b(5) = -const2*undemi*l + mfypg2
-    b(6) = -const3*undemi*l + mfzpg2
+    b(4) = -const1*undemi*l+mtpg2
+    b(5) = -const2*undemi*l+mfypg2
+    b(6) = -const3*undemi*l+mfzpg2
 !
-    b(11) = const1*undemi*l + mtpg2
-    b(12) = const2*undemi*l + mfypg2
-    b(13) = const3*undemi*l + mfzpg2
+    b(11) = const1*undemi*l+mtpg2
+    b(12) = const2*undemi*l+mfypg2
+    b(13) = const3*undemi*l+mfzpg2
 !
 ! --- DETERMINATION DES EFFORTS TRANCHANTS PAR LES EQUATIONS D'EQUILIBRE
 ! --- RELIANT LES EFFORTS TRANCHANTS AUX MOMENTS DE FLEXION
@@ -83,6 +83,6 @@ subroutine jspgno(l, a, b)
     b(2) = -deux*(mfzpg2-mfzpg1)/(l*xpg)
     b(3) = deux*(mfypg2-mfypg1)/(l*xpg)
     b(9) = b(2)
-    b(10)=  b(3)
+    b(10) = b(3)
 !
 end subroutine

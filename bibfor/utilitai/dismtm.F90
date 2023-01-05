@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
     call jenonu(jexnom('&CATA.TM.NOMTM', nomob), itm)
     if (itm .eq. 0) then
         call utmess('F', 'UTILITAI_70')
-    endif
+    end if
 !
 !
     if (questi .eq. 'NUM_TYPMAIL') then
@@ -69,38 +69,38 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
         repi = itm
 !
 !
-    else if (questi.eq.'NBNO_TYPMAIL') then
+    else if (questi .eq. 'NBNO_TYPMAIL') then
 !     ----------------------------------
         call jeveuo(jexnum('&CATA.TM.NBNO', itm), 'L', ianbno)
         repi = zi(ianbno)
 !
 !
-    else if (questi.eq.'DIM_TOPO') then
+    else if (questi .eq. 'DIM_TOPO') then
 !     ----------------------------------
         call jeveuo(jexnum('&CATA.TM.TMDIM', itm), 'L', ianbno)
         repi = zi(ianbno)
 !
 !
-    else if (questi.eq.'TYPE_TYPMAIL') then
+    else if (questi .eq. 'TYPE_TYPMAIL') then
 !     ----------------------------------
         call jeveuo(jexnum('&CATA.TM.TMDIM', itm), 'L', ianbno)
         repi = zi(ianbno)
         if (repi .eq. 0) then
             repk = 'POIN'
-        else if (repi.eq.1) then
+        else if (repi .eq. 1) then
             repk = 'LIGN'
-        else if (repi.eq.2) then
+        else if (repi .eq. 2) then
             repk = 'SURF'
-        else if (repi.eq.3) then
+        else if (repi .eq. 3) then
             repk = 'VOLU'
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !
     else
         ierd = 1
-    endif
+    end if
 !
     repkz = repk
     call jedema()

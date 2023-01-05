@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mag152(n9, n10, nomres, nugene, modmec,&
+subroutine mag152(n9, n10, nomres, nugene, modmec, &
                   modgen, nbloc, indice)
     implicit none
 ! AUTEUR : G.ROUSSEAU
@@ -35,7 +35,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: indice
-    integer :: jrefa, i,  iaconl, iadesc
+    integer :: jrefa, i, iaconl, iadesc
     integer :: ialime, iblo
     integer :: somme
     integer :: jsmde, n1bloc, n2bloc
@@ -55,21 +55,21 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     call jemarq()
 !
     call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa)
-    zk24(jrefa-1+11)='MPI_COMPLET'
-    nomsto=nugene//'.SMOS'
+    zk24(jrefa-1+11) = 'MPI_COMPLET'
+    nomsto = nugene//'.SMOS'
 !
-    if ((n9.gt.0)) then
+    if ((n9 .gt. 0)) then
         call jeveuo(nomsto//'.SMDE', 'L', jsmde)
         nueq = zi(jsmde-1+1)
         ntbloc = zi(jsmde-1+2)
         nbloc = zi(jsmde-1+3)
 !       nhmax = zi(jscde-1+4)
         call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
-        nhmax=0
-        do i= 1,nueq
-          hc = smdi(i)
-          if (i .gt. 1) hc = hc - smdi(i-1)
-          nhmax= max(nhmax,hc)
+        nhmax = 0
+        do i = 1, nueq
+            hc = smdi(i)
+            if (i .gt. 1) hc = hc-smdi(i-1)
+            nhmax = max(nhmax, hc)
         end do
 !
 !
@@ -78,11 +78,11 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
         if (nueq .ne. nhmax) then
             call utmess('A', 'ALGORITH5_16')
-        endif
+        end if
 !
-        if ((nueq* (nueq+1)/2) .gt. (nbloc*ntbloc)) then
+        if ((nueq*(nueq+1)/2) .gt. (nbloc*ntbloc)) then
             call utmess('F', 'ALGORITH5_17')
-        endif
+        end if
 !
 ! CALCUL DU NOMBRE DE TERME PAR BLOC ET TOTAL
 !
@@ -102,19 +102,19 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
             do i = n1bloc, n2bloc
                 hc = smdi(i)
-                if (i .gt. 1) hc = hc - smdi(i-1)
-                somme = somme + hc
+                if (i .gt. 1) hc = hc-smdi(i-1)
+                somme = somme+hc
             end do
         end do
 !
-        write (6,*) 'SOMME=',somme
-        if ((nueq* (nueq+1)/2) .ne. somme) then
+        write (6, *) 'SOMME=', somme
+        if ((nueq*(nueq+1)/2) .ne. somme) then
             call utmess('F', 'ALGORITH5_18')
-        endif
+        end if
 !
 !
 !
-        call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                     nbloc)
         call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
 !
@@ -129,15 +129,15 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
         call jeveuo(nomsto//'.SMDE', 'L', jsmde)
         nueq = zi(jsmde-1+1)
         nbloc = 1
-        ntbloc = nueq* (nueq+1)/2
+        ntbloc = nueq*(nueq+1)/2
 !
-        call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT', &
                     nbloc)
         call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
         call wkvect(nomres//'           .LIME', 'G V K24', 1, ialime)
         call wkvect(nomres//'           .CONL', 'G V R', nueq, iaconl)
 !
-    endif
+    end if
 !
 ! ----------- CREATION ET REMPLISSAGE DU .DESC ---------------
     call wkvect(nomres//'           .DESC', 'G V I', 3, iadesc)
@@ -152,7 +152,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     if (n10 .gt. 0) then
         zk24(jrefa-1+1) = ' '
 !
-    else if (indice.eq.1) then
+    else if (indice .eq. 1) then
         call getvid(' ', 'NUME_DDL_GENE', scal=nummod, nbret=nbid)
         num14 = nummod
         call jeveuo(num14//'.NUME.REFN', 'L', vk24=refn)
@@ -160,7 +160,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
     else
         zk24(jrefa-1+1) = modmec
-    endif
+    end if
 !
     zk24(jrefa-1+2) = nugene
     zk24(jrefa-1+9) = 'MS'
@@ -171,7 +171,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
     else
         zk24(ialime) = '  '
-    endif
+    end if
 !
     do i = 1, nueq
         zr(iaconl+i-1) = 1.0d0

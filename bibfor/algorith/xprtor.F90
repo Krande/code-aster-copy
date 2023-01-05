@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprtor(method, noma, cnxinv, fispre,&
-                  fiss, vcn, grlr, cnsln, grln,&
-                  cnslt, grlt, tore, radtor, radimp,&
-                  cnsdis, disfr, cnsbl, nodcal, elecal,&
+subroutine xprtor(method, noma, cnxinv, fispre, &
+                  fiss, vcn, grlr, cnsln, grln, &
+                  cnslt, grlt, tore, radtor, radimp, &
+                  cnsdis, disfr, cnsbl, nodcal, elecal, &
                   liggrd, vcnt, grlrt)
 ! aslint: disable=W1504
     implicit none
@@ -176,7 +176,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !     ELABORATE THE TORUS ONLY IF THE LOCALIZATION HAS BEEN REQUESTED
-    if (.not.tore) then
+    if (.not. tore) then
 !
 !        THE LOCALIZATION HAS NOT BEEN REQUESTED BY THE USER. THEREFORE
 !        ALL THE ELEMENTS OF THE GRID MUST BE USED FOR THE COMPUTATION.
@@ -193,17 +193,17 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
         call jeveuo('&&XPRTOR.LISTNOD', 'E', jlisno)
 !
 !        COUNTER FOR THE NUMBER OF NODES IN THE DOMAIN
-        nnodto=0
+        nnodto = 0
 !
 !        COUNTER FOR THE NUMBER OF ELEMENTS IN THE DOMAIN
-        neleto=0
+        neleto = 0
 !
         do i = 1, nbma
 !
 !           WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
 !           THE MESH
-            itypma=typmail(i)
-            eldim=tmdim(itypma)
+            itypma = typmail(i)
+            eldim = tmdim(itypma)
 !
             if (eldim .eq. ndim) then
 !
@@ -221,40 +221,40 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
                     nocur = connex(zi(jconx2-1+i)+k-1)
 !
 !                 MARK THE NODE AS INSIDE THE DOMAIN
-                    if (.not.zl(jlisno-1+nocur)) then
+                    if (.not. zl(jlisno-1+nocur)) then
                         zl(jlisno-1+nocur) = .true.
                         nnodto = nnodto+1
-                    endif
+                    end if
 !
                 end do
 !
-            endif
+            end if
 !
         end do
 !
 !        BUILD THE LIST OF THE NODES OF THE DOMAIN
         call wkvect(nodcal, 'V V I', nnodto, jnocal)
-        j=1
+        j = 1
         do i = 1, nnodgr
             if (zl(jlisno-1+i)) then
                 zi(jnocal-1+j) = i
-                j=j+1
-            endif
+                j = j+1
+            end if
         end do
 !
 !        BUILD THE LIST OF THE ELEMENTS OF THE DOMAIN
         call wkvect(elecal, 'V V I', neleto, jeleca)
-        j=1
+        j = 1
         do i = 1, nbma
             if (zl(jelcal-1+i)) then
                 zi(jeleca-1+j) = i
-                j=j+1
-            endif
+                j = j+1
+            end if
         end do
 !
 !        CREATE THE LIGREL
-        call x_tmp_ligr(noma, liggrd, list_cells=elecal,&
-                           n_list_cells=neleto)
+        call x_tmp_ligr(noma, liggrd, list_cells=elecal, &
+                        n_list_cells=neleto)
 !
         call wkvect(fiss//'.PRO.NOEUD_TORE', 'G V L', nnodgr, jnocal)
         do i = 1, nnodgr
@@ -281,7 +281,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !
 !        CREATE THE BOOLEAN LIST TO MARK THE ELEMENTS THAT ARE INSIDE
 !        THE TORUS
-        listel='&&XPRTOR.LISTELE'
+        listel = '&&XPRTOR.LISTELE'
         call wkvect(listel, 'V V L', nbma, jelcal)
 !
         do i = 1, nbma
@@ -289,10 +289,10 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
         end do
 !
 !        COUNTER FOR THE NUMBER OF NODES IN THE NEW TORUS
-        nnodto=0
+        nnodto = 0
 !
 !        COUNTER FOR THE NUMBER OF ELEMENTS IN THE NEW TORUS
-        neleto=0
+        neleto = 0
 !
 !        ***********************************************************
 !        SELECT THE NODES INSIDE THE NEW TORUS
@@ -300,7 +300,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !
 !        CREATE A COPY OF THE LOGICAL LIST OF THE NODES INSIDE THE
 !        TORUS OF THE ACTUAL CRACK
-        lisold='&&OP0010.TORE'
+        lisold = '&&OP0010.TORE'
         call jeexin(fispre//'.PRO.NOEUD_TORE', ibid)
         if (ibid .eq. 0) then
 !           THE DOMAIN LOCALISATION WAS NOT USED IN THE PREVIOUS
@@ -317,7 +317,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !           STEP. WE JUST NEED TO COPY IT.
             call jedupo(fispre//'.PRO.NOEUD_TORE', 'V', lisold, .false._1)
             call jeveuo(lisold, 'L', jlisol)
-        endif
+        end if
 !
 !        CREATE THE LOGICAL LIST FOR THE TORUS OF THE PROPAGATED CRACK
         call wkvect(fiss//'.PRO.NOEUD_TORE', 'G V L', nnodgr, jlisno)
@@ -345,12 +345,12 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !              DEFINE THE TORUS
                 do j = 1, nbelno
 !
-                    numelm=zi(jnoel-1+j)
+                    numelm = zi(jnoel-1+j)
 !
 !                 WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
 !                 THE MESH
-                    itypma=typmail(numelm)
-                    eldim=tmdim(itypma)
+                    itypma = typmail(numelm)
+                    eldim = tmdim(itypma)
 !
                     if (eldim .eq. ndim) then
 !
@@ -359,22 +359,22 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !
                         do k = 1, zi(jaux)
 !                       SELECT EACH NODE OF THE ELEMENT
-                            nocur = connex(zi(jconx2-1+numelm)+k- 1)
+                            nocur = connex(zi(jconx2-1+numelm)+k-1)
 !                       UPDATE THE RADIUS OF THE TORUS
-                            if (zr(jdisfr-1+nocur) .gt. rdnew) rdnew=zr( jdisfr-1+nocur)
+                            if (zr(jdisfr-1+nocur) .gt. rdnew) rdnew = zr(jdisfr-1+nocur)
                         end do
 !
-                    endif
+                    end if
 !
                 end do
 !
-            endif
+            end if
 !
         end do
 !
 !        ESTIMATE THE RADIUS OF THE TORUS THAT MUST BE IMPOSED, IF ITS
 !        VALUE HAS NOT BEEN GIVEN AS INPUT
-        if (radimp .lt. 0.d0) radimp = ( sqrt(radtor)+2*(sqrt(rdnew)- sqrt(radtor)) )**2
+        if (radimp .lt. 0.d0) radimp = (sqrt(radtor)+2*(sqrt(rdnew)-sqrt(radtor)))**2
 !
 !        IF THE RADIUS OF THE TORUS THAT MUST BE IMPOSED IS LOWER THAN
 !        THE RADIUS OF THE TORUS THAT MUST BE GUARANTEED, A FATAL ERROR
@@ -385,7 +385,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
             meserr(2) = sqrt(rdnew)
             call utmess('F', 'XFEM2_99', nr=2, valr=meserr)
 !
-        endif
+        end if
 !
 !        UPDATE THE RADIUS OF THE TORUS
         radtor = radimp
@@ -399,7 +399,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !              SET THE FLAG TO MARK THAT THE NODE MUST BE CONSIDERED
 !              IN THE CALCULATIONS
                 zl(jlisno-1+i) = .true.
-            endif
+            end if
 !
         end do
 !
@@ -424,12 +424,12 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !              CHECK EACH ELEMENT CONTAINING THE NODE
                 do j = 1, nbelno
 !
-                    numelm=zi(jnoel-1+j)
+                    numelm = zi(jnoel-1+j)
 !
 !                 WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
 !                 THE MESH
-                    itypma=typmail(numelm)
-                    eldim=tmdim(itypma)
+                    itypma = typmail(numelm)
+                    eldim = tmdim(itypma)
 !
                     if (eldim .eq. ndim) then
 !
@@ -438,12 +438,12 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !
 !                    RESET THE COUNTER FOR THE NUMBER OF NODES OF THE
 !                    ELEMENT WHICH ARE INSIDE THE TORE
-                        nodins=0
+                        nodins = 0
 !
                         do k = 1, zi(jaux)
 !
-                            nocur = connex(zi(jconx2-1+numelm)+k- 1)
-                            if (zl(jlisno-1+nocur)) nodins=nodins+1
+                            nocur = connex(zi(jconx2-1+numelm)+k-1)
+                            if (zl(jlisno-1+nocur)) nodins = nodins+1
 !
                         end do
 !
@@ -451,17 +451,17 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !                    THE TORUS
                         if (nodins .eq. zi(jaux)) then
                             zl(jndsup-1+i) = .true.
-                            if (.not.zl(jelcal-1+numelm)) then
+                            if (.not. zl(jelcal-1+numelm)) then
                                 zl(jelcal-1+numelm) = .true.
                                 neleto = neleto+1
-                            endif
-                        endif
+                            end if
+                        end if
 !
-                    endif
+                    end if
 !
                 end do
 !
-            endif
+            end if
 !
         end do
 !
@@ -469,9 +469,9 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !        BELONG TO THE DOMAIN MUST BE REMOVED FROM THE LIST (UNDEFINED
 !        GRADIENT!)
         do i = 1, nnodgr
-            if (.not.zl(jndsup-1+i) .and. zl(jlisno-1+i)) then
-                zl(jlisno-1+i)=.false.
-            endif
+            if (.not. zl(jndsup-1+i) .and. zl(jlisno-1+i)) then
+                zl(jlisno-1+i) = .false.
+            end if
         end do
 !
         call jedetr('&&XPRTOR.NODSUPP')
@@ -488,7 +488,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !
 !           ELABORATE EACH NODE OF THE GRID
             do i = 1, nnodgr
-                if (zl(jlisno-1+i)) nnodto=nnodto+1
+                if (zl(jlisno-1+i)) nnodto = nnodto+1
             end do
 !
         else
@@ -499,7 +499,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
                 if (zl(jlisno-1+i)) then
 !
 !                CHECK IF THE LEVEL SET MUST BE CALCULATED FOR THIS NODE
-                    if (.not.zl(jlisol-1+i)) then
+                    if (.not. zl(jlisol-1+i)) then
 !
 !                    YES, THE LEVEL SET VALUE MUST BE UPDATED
                         lsn(i) = 0.d0
@@ -510,24 +510,24 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !                    THE AXIS OF THE LOCAL BASE IN THE NODE
                         do j = 1, ndim
 !
-                            lsn(i)=lsn(i)+disv(ndim*&
-                            (i-1)+j)* bl(2*ndim*(i-1)+j)
+                            lsn(i) = lsn(i)+disv(ndim* &
+                                                 (i-1)+j)*bl(2*ndim*(i-1)+j)
 !
-                            lst(i)=lst(i)+disv(ndim*&
-                            (i-1)+j)* bl(2*ndim*(i-1)+j+ndim)
+                            lst(i) = lst(i)+disv(ndim* &
+                                                 (i-1)+j)*bl(2*ndim*(i-1)+j+ndim)
 !
                         end do
 !
-                    endif
+                    end if
 !
 !                 INCREMENT THE COUNTER FOR THE NODES IN THE TORUS
                     nnodto = nnodto+1
 !
-                endif
+                end if
 !
             end do
 !
-        endif
+        end if
 !
 !        ***********************************************************
 !        - CREATE THE LIST OF THE NUMBER OF THE NODES IN THE TORUS
@@ -560,47 +560,47 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
             do i = 1, 10
                 zr(jgrlrt-1+i) = zr(jgrlr-1+i)
             end do
-        endif
+        end if
 !
 !        TEMPORARY POINTER
-        j=1
+        j = 1
 !
         do i = 1, nnodgr
 !
             if (zl(jlisno-1+i)) then
 !
-                ASSERT(j.le.nnodto)
+                ASSERT(j .le. nnodto)
 !
 !              STORE THE NUMBER OF THE NODE
                 zi(jnocal-1+j) = i
 !
-                if (method  .eq. 'UPWIND') then
+                if (method .eq. 'UPWIND') then
 !                 STORE THE CONNECTION TABLE FOR THE NODE
                     do k = 1, 6
                         zi(jvcnt-1+6*(j-1)+k) = zi(jvcn-1+6*(i-1)+k)
                         zr(jvcndt-1+6*(j-1)+k) = zr(jvcnd-1+6*(i-1)+k)
                     end do
-                endif
+                end if
 !
 !              INCREMENT THE POINTER FOR THE ACTUAL NODE IN THE TORUS
                 j = j+1
 !
-            endif
+            end if
 !
         end do
 !
 !        TEMPORARY POINTER
-        j=1
+        j = 1
 !
         do i = 1, nbma
 !
             if (zl(jelcal-1+i)) then
 !
-                ASSERT(j.le.neleto)
+                ASSERT(j .le. neleto)
                 zi(jeleca-1+j) = i
-                j=j+1
+                j = j+1
 !
-            endif
+            end if
 !
         end do
 !
@@ -623,15 +623,15 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
                     if (k .gt. 0) then
 !                   IF NOT, IT MUST BE REMOVED FROM THE CONNECTION TABLE
 !                   OF THE TORUS
-                        if (.not.zl(jlisno-1+k)) zi(jvcnt-1+6*(i-1)+j) =0
+                        if (.not. zl(jlisno-1+k)) zi(jvcnt-1+6*(i-1)+j) = 0
 !
-                    endif
+                    end if
 !
                 end do
 !
             end do
 !
-        endif
+        end if
 !
 !        ***********************************************************
 !        CREATE THE NEW LIGREL FOR THE TORUS IN ORDER TO SPEED UP
@@ -639,8 +639,8 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !        ***********************************************************
 !
 !        CREATE THE LIGREL
-        call x_tmp_ligr(noma, liggrd, list_cells=elecal,&
-                           n_list_cells=neleto)
+        call x_tmp_ligr(noma, liggrd, list_cells=elecal, &
+                        n_list_cells=neleto)
 !
 !        ***********************************************************
 !        CALCULATE THE GRADIENTS OF THE LEVEL SETS
@@ -653,39 +653,39 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
         chams = '&&XPRTOR.CHAMS'
 !
 !        EVALUATION OF THE GRADIENT OF THE NORMAL LEVEL SET
-        call cnscno(cnsln, ' ', 'NON', 'V', cnoln,&
+        call cnscno(cnsln, ' ', 'NON', 'V', cnoln, &
                     'F', ibid)
-        lpain(1)='PGEOMER'
-        lchin(1)=noma//'.COORDO'
-        lpain(2)='PNEUTER'
-        lchin(2)=cnoln
-        lpaout(1)='PGNEUTR'
-        lchout(1)=celgls
+        lpain(1) = 'PGEOMER'
+        lchin(1) = noma//'.COORDO'
+        lpain(2) = 'PNEUTER'
+        lchin(2) = cnoln
+        lpaout(1) = 'PGNEUTR'
+        lchout(1) = celgls
 !
-        call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
 !
         call celces(celgls, 'V', chams)
-        call cescns(chams, ' ', 'V', grln, ' ',&
+        call cescns(chams, ' ', 'V', grln, ' ', &
                     ibid)
 !
 !        EVALUATION OF THE GRADIENT OF THE TANGENTIAL LEVEL SET
-        call cnscno(cnslt, ' ', 'NON', 'V', cnolt,&
+        call cnscno(cnslt, ' ', 'NON', 'V', cnolt, &
                     'F', ibid)
-        lpain(1)='PGEOMER'
-        lchin(1)=noma//'.COORDO'
-        lpain(2)='PNEUTER'
-        lchin(2)=cnolt
-        lpaout(1)='PGNEUTR'
-        lchout(1)=celgls
+        lpain(1) = 'PGEOMER'
+        lchin(1) = noma//'.COORDO'
+        lpain(2) = 'PNEUTER'
+        lchin(2) = cnolt
+        lpaout(1) = 'PGNEUTR'
+        lchout(1) = celgls
 !
-        call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
 !
         call celces(celgls, 'V', chams)
-        call cescns(chams, ' ', 'V', grlt, ' ',&
+        call cescns(chams, ' ', 'V', grlt, ' ', &
                     ibid)
 !
 !        DESTROY THE TEMPORARY JEVEUX OBJECTS
@@ -696,7 +696,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
         call jedetr(lisold)
         call jedetr(listel)
 !
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     FIN

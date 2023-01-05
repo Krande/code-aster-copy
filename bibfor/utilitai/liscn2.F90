@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine liscn2(lisold, nbchar, ichar, typapp)
 !
-    implicit     none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -67,22 +67,22 @@ subroutine liscn2(lisold, nbchar, ichar, typapp)
     typapp = 'FIXE_CSTE'
 !
     iinf1 = zi(jinfch+ichar)
-    if ((iinf1.eq.5) .or. (iinf1.eq.6)) then
+    if ((iinf1 .eq. 5) .or. (iinf1 .eq. 6)) then
         typapp = 'FIXE_PILO'
-    endif
+    end if
 !
     iinf2 = zi(jinfch+3*nbchar+2+ichar)
-    if ((iinf2.eq.1)) then
+    if ((iinf2 .eq. 1)) then
         typapp = 'DIDI'
-    endif
+    end if
 !
     iinf3 = zi(jinfch+nbchar+ichar)
-    if ((iinf3.eq.5)) then
+    if ((iinf3 .eq. 5)) then
         typapp = 'FIXE_PILO'
-    endif
-    if ((iinf3.eq.4)) then
+    end if
+    if ((iinf3 .eq. 4)) then
         typapp = 'SUIV'
-    endif
+    end if
 !
     call jedema()
 end subroutine

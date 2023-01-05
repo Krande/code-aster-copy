@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ subroutine diago3(tens, vecp, valp)
     real(kind=8) :: tr(6), tu(6), jacaux(3)
     integer :: nperm, nitjac, ttrij, otrij, nbind
 !
-    data        nperm , nbind   / 12 , 3 /
-    data        tol ,   toldyn  / 1.0d-10 , 1.0d-02/
+    data nperm, nbind/12, 3/
+    data tol, toldyn/1.0d-10, 1.0d-02/
 !     PAS DE TRI
-    data        ttrij , otrij   / 2 , 2 /
+    data ttrij, otrij/2, 2/
 !
 ! --- ------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@ subroutine diago3(tens, vecp, valp)
     tu(5) = 0.d0
     tu(6) = 1.d0
 !
-    call jacobi(nbind, nperm, tol, toldyn, tr,&
-                tu, vecp, valp, jacaux, nitjac,&
+    call jacobi(nbind, nperm, tol, toldyn, tr, &
+                tu, vecp, valp, jacaux, nitjac, &
                 ttrij, otrij)
 end subroutine

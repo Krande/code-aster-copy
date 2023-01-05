@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,14 +35,14 @@ subroutine pmfdge(b, g, depl, alpha, dege)
 ! -----------------------------------------------------------
     real(kind=8) :: b(4), g, depl(12), alpha, dege(6)
     real(kind=8) :: zero
-    parameter (zero=0.0d+0)
+    parameter(zero=0.0d+0)
 !
 ! --- DEF. GENERALISEES DE L'ELEMENT POUTRE EULER A LA POSITION DE B
-    dege(1)=(depl(7)-depl(1))*b(1)+g*alpha
-    dege(2)=zero
-    dege(3)=zero
-    dege(4)=(depl(10)-depl(4))*b(1)
-    dege(5)=b(4)*depl(11)+b(3)*depl(5)+b(2)*(depl(9)-depl(3))
-    dege(6)=b(4)*depl(12)+b(3)*depl(6)+b(2)*(depl(2)-depl(8))
+    dege(1) = (depl(7)-depl(1))*b(1)+g*alpha
+    dege(2) = zero
+    dege(3) = zero
+    dege(4) = (depl(10)-depl(4))*b(1)
+    dege(5) = b(4)*depl(11)+b(3)*depl(5)+b(2)*(depl(9)-depl(3))
+    dege(6) = b(4)*depl(12)+b(3)*depl(6)+b(2)*(depl(2)-depl(8))
 !
 end subroutine

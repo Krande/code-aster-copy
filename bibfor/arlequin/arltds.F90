@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine arltds(nns, npgs, ipoids, icoors, ivfs,&
-                  idfdes, poijcs, fctfs, dfdxs, dfdys,&
+subroutine arltds(nns, npgs, ipoids, icoors, ivfs, &
+                  idfdes, poijcs, fctfs, dfdxs, dfdys, &
                   dfdzs)
 !
 !
@@ -72,7 +72,7 @@ subroutine arltds(nns, npgs, ipoids, icoors, ivfs,&
     do kpgs = 1, npgs
         mtl = nns*(kpgs-1)+1
         call dcopy(nns, zr(ivfs-1+mtl), 1, fctfs(mtl), 1)
-        call dfdm3d(nns, kpgs, ipoids, idfdes, zr(icoors),&
+        call dfdm3d(nns, kpgs, ipoids, idfdes, zr(icoors), &
                     poijcs(kpgs), dfdxs(mtl), dfdys(mtl), dfdzs(mtl))
     end do
 !

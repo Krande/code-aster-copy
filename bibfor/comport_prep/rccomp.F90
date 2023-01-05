@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rccomp(chmat, mesh)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -58,8 +58,8 @@ implicit none
     if (nocc .ne. 0) then
 
 ! ----- Create comportment informations objects
-        AS_ALLOCATE(vk16 = infoValk, size = 16*nocc)
-        AS_ALLOCATE(vi   = infoVali, size = 4*nocc)
+        AS_ALLOCATE(vk16=infoValk, size=16*nocc)
+        AS_ALLOCATE(vi=infoVali, size=4*nocc)
 
 ! ----- Create COMPOR <CARTE>
         call comp_init(mesh, compor, 'G')
@@ -71,8 +71,8 @@ implicit none
         call comp_comp_save(mesh, compor, infoValk, infoVali)
 
 ! ----- Clean
-        AS_DEALLOCATE(vk16 = infoValk)
-        AS_DEALLOCATE(vi   = infoVali)
-    endif
+        AS_DEALLOCATE(vk16=infoValk)
+        AS_DEALLOCATE(vi=infoVali)
+    end if
 !
 end subroutine

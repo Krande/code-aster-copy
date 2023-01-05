@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
-                  rhomax, rhoexm, rhoexp, rhom, rho,&
-                  rhoopt, ldcopt, ldccvg, opt, act,&
+subroutine nmrech(fm, f, fopt, fcvg, rhomin, &
+                  rhomax, rhoexm, rhoexp, rhom, rho, &
+                  rhoopt, ldcopt, ldccvg, opt, act, &
                   stite)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -78,12 +78,12 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
         ldcopt = ldccvg
         fopt = abs(f)
         opt = act
-        act = 3 - act
+        act = 3-act
         if (abs(f) .lt. fcvg) then
             stite = .true.
             goto 100
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CALCUL DE RHO(N+1) PAR METHODE DE SECANTE AVEC BORNES
 !
@@ -95,7 +95,7 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
         rho = rhomax
     else
         rho = rhomin
-    endif
+    end if
     rhom = rhotmp
     fm = f
 !

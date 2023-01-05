@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,32 +27,32 @@ subroutine fcepai(zr)
     integer :: i, i1, j, l, ll
     real(kind=8) :: xi3
 !-----------------------------------------------------------------------
-    j=1500
+    j = 1500
 !
-    zr(j+1)= -1.d0
-    zr(j+2)=  0.d0
-    zr(j+3)=  1.d0
+    zr(j+1) = -1.d0
+    zr(j+2) = 0.d0
+    zr(j+3) = 1.d0
 !
 !     DEFINITION DES 3 POIDS DE NEWTON-COTES CORRESPONDANTS
 !
-    zr(j+4)=  0.333333333333333d0
-    zr(j+5)=  1.333333333333333d0
-    zr(j+6)=  0.333333333333333d0
+    zr(j+4) = 0.333333333333333d0
+    zr(j+5) = 1.333333333333333d0
+    zr(j+6) = 0.333333333333333d0
 !
 !     VALEURS DES 3 PARABOLES (POUR LA DISTRIBUTION DE LA TEMPERATURE)
 !     AUX 3 PTS DE D'INTEGRATION PRECEDANTS
 !
     do i = 1, 3
-        xi3=zr(j+i)
+        xi3 = zr(j+i)
 !
-        vf(1)= 1-xi3*xi3
-        vf(2)=-xi3*(1-xi3)/2.d0
-        vf(3)= xi3*(1+xi3)/2.d0
+        vf(1) = 1-xi3*xi3
+        vf(2) = -xi3*(1-xi3)/2.d0
+        vf(3) = xi3*(1+xi3)/2.d0
 !
-        ll=3*(i-1)
+        ll = 3*(i-1)
         do l = 1, 3
-            i1=6+ll+l
-            zr(j+i1)=vf(l)
+            i1 = 6+ll+l
+            zr(j+i1) = vf(l)
         end do
     end do
 !

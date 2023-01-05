@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 
 subroutine mginfo(modmecz, numeDof, nbmode, nbEqua)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/jelira.h"
 !
-character(len=*), intent(in) :: modmecz
-integer, intent(out) :: nbmode, nbEqua
-character(len=14), intent(out) :: numeDof
+    character(len=*), intent(in) :: modmecz
+    integer, intent(out) :: nbmode, nbEqua
+    character(len=14), intent(out) :: numeDof
 !
 !
 ! ----------------------------------------------------------------------
@@ -46,9 +46,9 @@ character(len=14), intent(out) :: numeDof
 !
 ! ----------------------------------------------------------------------
 !
-    modmec  = modmecz
-    nbEqua  = 0
-    nbMode  = 0
+    modmec = modmecz
+    nbEqua = 0
+    nbMode = 0
     numeDof = ' '
     call dismoi('NUME_DDL', modmec, 'RESU_DYNA', repk=numeDof)
     if (numeDof(1:1) .ne. ' ') then
@@ -57,7 +57,7 @@ character(len=14), intent(out) :: numeDof
         call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matrix)
         call dismoi('NOM_NUME_DDL', matrix, 'MATR_ASSE', repk=numeDof)
         call dismoi('NB_EQUA', matrix, 'MATR_ASSE', repi=nbEqua)
-    endif
+    end if
     call jelira(modmec//'           .ORDR', 'LONMAX', nbmode)
 !
 end subroutine

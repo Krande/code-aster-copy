@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nttain(model , mateco  , cara_elem, list_load, nume_dof,&
-                  solver, time  , epsr     , lonch    , matass  ,&
-                  maprec, cnchci, cnresi   , vtemp    , vtempm  ,&
-                  vtempp, vec2nd, chlapm   , chlapp   , ci1     ,&
-                  ci2   , testi)
+subroutine nttain(model, mateco, cara_elem, list_load, nume_dof, &
+                  solver, time, epsr, lonch, matass, &
+                  maprec, cnchci, cnresi, vtemp, vtempm, &
+                  vtempp, vec2nd, chlapm, chlapp, ci1, &
+                  ci2, testi)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/asasve.h"
@@ -65,7 +65,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8) :: cbid
-    integer :: k,  j2nd,  jtempp
+    integer :: k, j2nd, jtempp
     real(kind=8) :: r8bid, testn
     character(len=1) :: typres
     character(len=19) :: chsol
@@ -83,8 +83,8 @@ implicit none
     varesi = '&&VARESI'
     criter = '&&RESGRA_GCPC'
     typres = 'R'
-    chsol  = '&&NTTAIN.SOLUTION'
-    bidon  = '&&FOMULT.BIDON'
+    chsol = '&&NTTAIN.SOLUTION'
+    bidon = '&&FOMULT.BIDON'
     veresi = '&&VERESI           .RELR'
 !
     ci1 = ' '
@@ -100,14 +100,14 @@ implicit none
 !
 ! --- VECTEURS ELEMENTAIRES DU SEGOND MEMBRE
 !
-    call vetrth(model, lload_name, lload_info, cara_elem, mateco,&
-                time, vtemp, vtempm, chlapm, chlapp,&
+    call vetrth(model, lload_name, lload_info, cara_elem, mateco, &
+                time, vtemp, vtempm, chlapm, chlapp, &
                 veresi)
 !
 ! --- ASSEMBLAGE DU SEGOND MEMBRE
 !
     call asasve(veresi, nume_dof, typres, varesi)
-    call ascova('D', varesi, bidon, 'INST', r8bid,&
+    call ascova('D', varesi, bidon, 'INST', r8bid, &
                 typres, cnresi)
     call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)
 !
@@ -115,11 +115,11 @@ implicit none
 !
     call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
     do k = 1, lonch
-        zr(jtempp+k-1) = zr(j2nd+k-1) + vare(k)
+        zr(jtempp+k-1) = zr(j2nd+k-1)+vare(k)
     end do
 !
-    call resoud(matass, maprec, solver, cnchci, 0,&
-                vtempp, chsol, 'V', [0.d0], [cbid],&
+    call resoud(matass, maprec, solver, cnchci, 0, &
+                vtempp, chsol, 'V', [0.d0], [cbid], &
                 criter, .true._1, 0, iret)
 !
 ! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL
@@ -134,8 +134,8 @@ implicit none
     testi = 0.d0
     testn = 0.d0
     do k = 1, lonch
-        testi = testi + (zr(jtempp+k-1)-tempm(k))**2
-        testn = testn + (zr(jtempp+k-1))**2
+        testi = testi+(zr(jtempp+k-1)-tempm(k))**2
+        testn = testn+(zr(jtempp+k-1))**2
         temp(k) = tempm(k)
         tempm(k) = zr(jtempp+k-1)
     end do
@@ -148,13 +148,13 @@ implicit none
         ci1 = '*'
     else
         ci1 = ' '
-    endif
+    end if
 !-----------------------------------------------------------------------
     call jeexin(criter(1:19)//'.CRTI', iret)
     if (iret .ne. 0) then
         call jedetr(criter(1:19)//'.CRTI')
         call jedetr(criter(1:19)//'.CRTR')
         call jedetr(criter(1:19)//'.CRDE')
-    endif
+    end if
     call jedema()
 end subroutine

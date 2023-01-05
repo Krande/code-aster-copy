@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,23 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine regini(ivf, ivf2, idfde,&
-                  idfde2, jgano, ndim, ipoids, ipoid2,&
-                  npi, dimdef, nddls, nddlm, dimcon,&
-                  dimuel, nno, nnom, nnos,&
+subroutine regini(ivf, ivf2, idfde, &
+                  idfde2, jgano, ndim, ipoids, ipoid2, &
+                  npi, dimdef, nddls, nddlm, dimcon, &
+                  dimuel, nno, nnom, nnos, &
                   regula, axi)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
 !
-aster_logical :: axi
-integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
-integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
-integer :: regula(6)
+    aster_logical :: axi
+    integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
+    integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
+    integer :: regula(6)
 !
 ! ======================================================================
 ! --- BUT : INITIALISATION DES GRANDEURS NECESSAIRES POUR LA GESTION ---
@@ -71,24 +71,24 @@ integer :: regula(6)
     if (elrefe .eq. 'TR7') then
         elrf1 = 'TR6'
         elrf2 = 'TR3'
-    else if (elrefe.eq.'QU9') then
+    else if (elrefe .eq. 'QU9') then
         elrf1 = 'QU8'
         elrf2 = 'QU4'
-    else if (elrefe.eq.'H27') then
+    else if (elrefe .eq. 'H27') then
         elrf1 = 'H20'
         elrf2 = 'HE8'
     else
         call utmess('F', 'DVP_4', sk=elrefe)
-    endif
+    end if
 ! ======================================================================
 ! --- FONCTIONS DE FORME P2 --------------------------------------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrf1, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrf1, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! ======================================================================
 ! --- FONCTIONS DE FORME P1 --------------------------------------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrf2, fami='RIGI',&
+    call elrefe_info(elrefe=elrf2, fami='RIGI', &
                      jpoids=ipoid2, jvf=ivf2, jdfde=idfde2)
 ! ======================================================================
 ! --- NNOC DESIGNE LE NOMBRE DE NOEUD AU CENTRE DES ELEMENTS -----------
@@ -107,7 +107,7 @@ integer :: regula(6)
 ! ======================================================================
 ! --- DIMENSION DES COMPOSANTES NODALES --------------------------------
 ! ======================================================================
-    nddls = ndim + ndim*ndim
+    nddls = ndim+ndim*ndim
     nddlm = ndim
 ! ======================================================================
     adder1 = 1
@@ -116,8 +116,8 @@ integer :: regula(6)
     adcor1 = 1
     adcor2 = adcor1+cont1
     adcor3 = adcor2+cont2
-    nnom = nno - nnos
-    dimuel = nnos*nddls + nnom*nddlm + nnoc*ndim*ndim
+    nnom = nno-nnos
+    dimuel = nnos*nddls+nnom*nddlm+nnoc*ndim*ndim
 ! ======================================================================
 ! --- POSITIONS DU POINTEUR REGULA : -----------------------------------
 ! --- (1) : ADRESSE DES DEFORMATIONS DEPV** ----------------------------
@@ -127,11 +127,11 @@ integer :: regula(6)
 ! --- (5) : ADRESSE DES CONTRAINTES GENERALISEES SIG*** ----------------
 ! --- (6) : ADRESSE DES CONTRAINTES GENERALISEES DEPV** ----------------
 ! ======================================================================
-    regula(1)=adder1
-    regula(2)=adder2
-    regula(3)=adder3
-    regula(4)=adcor1
-    regula(5)=adcor2
-    regula(6)=adcor3
+    regula(1) = adder1
+    regula(2) = adder2
+    regula(3) = adder3
+    regula(4) = adcor1
+    regula(5) = adcor2
+    regula(6) = adcor3
 ! ======================================================================
 end subroutine

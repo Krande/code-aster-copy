@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine simtep(fami, nno, ndim, nbsig, npg,&
-                  ipoids, ivf, idfde, xyz, depl,&
+subroutine simtep(fami, nno, ndim, nbsig, npg, &
+                  ipoids, ivf, idfde, xyz, depl, &
                   instan, repere, mater, nharm, sigma)
     implicit none
 !
@@ -80,20 +80,20 @@ subroutine simtep(fami, nno, ndim, nbsig, npg,&
 !
 ! --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
-    call sigmmc(fami, nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, xyz, depl,&
+    call sigmmc(fami, nno, ndim, nbsig, npg, &
+                ipoids, ivf, idfde, xyz, depl, &
                 instan, repere, mater, nharm, sigma)
 !
 ! --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
-    call sigtmc(fami, nno, ndim, nbsig, npg,&
-                zr(ivf), xyz, instan, mater, repere,&
+    call sigtmc(fami, nno, ndim, nbsig, npg, &
+                zr(ivf), xyz, instan, mater, repere, &
                 k16bid, sigth)
 !
 ! --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 !      ---------------------------------------------------------
     do i = 1, nbsig*npg
-        sigma(i) = 0.5d0*sigma(i) - sigth(i)
+        sigma(i) = 0.5d0*sigma(i)-sigth(i)
     end do
 !
 !.============================ FIN DE LA ROUTINE ======================

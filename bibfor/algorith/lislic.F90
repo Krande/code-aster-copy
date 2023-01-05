@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine lislic(nomo, prefob, indxch, ligcal)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -59,11 +59,11 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
     ligrmo = nomo(1:8)//'.MODELE'
     if (typlig .eq. 'LIGRMO') then
         ligcal = ligrmo
-    else if (typlig.eq.'LIGRCH') then
+    else if (typlig .eq. 'LIGRCH') then
         ligcal = prefob//'.LIGRE'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     call jedema()

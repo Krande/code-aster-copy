@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine jgetlmx(nomlu, ival)
     integer, intent(out) :: ival
 !     ------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
     integer :: ib, ibacol, ic, id, ipgcex
     integer :: ixdeso, ixiadd
@@ -39,23 +39,23 @@ subroutine jgetlmx(nomlu, ival)
     integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
     integer :: ltypi, n
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !     ------------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
-    common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
+    common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !     ------------------------------------------------------------------
     integer :: iddeso, idiadd, idnom, idlong, idlono, idluti
     integer :: idnum
-    parameter    ( iddeso = 1 ,idiadd = 2 , &
-     &                          idnom  = 5 ,             idlong = 7 ,&
-     &             idlono = 8 , idluti = 9 ,idnum  = 10 )
+    parameter(iddeso=1, idiadd=2, &
+     &                          idnom=5, idlong=7,&
+     &             idlono=8, idluti=9, idnum=10)
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
     character(len=1) :: genri
@@ -80,7 +80,7 @@ subroutine jgetlmx(nomlu, ival)
         lconst = .true.
         if (noml32(25:32) .ne. '        ') then
             call utmess('F', 'JEVEUX1_09', sk=noml32(1:24))
-        endif
+        end if
     else
         lcol = .true.
         ipgc = -2
@@ -91,30 +91,30 @@ subroutine jgetlmx(nomlu, ival)
             call jjcroc(noml32(25:32), icre)
             if (idatoc .eq. 0) then
                 call utmess('F', 'JEVEUX_30', sk=noml32(1:24))
-            endif
-        endif
-        ixdeso = iszon ( jiszon + ibacol + iddeso )
+            end if
+        end if
+        ixdeso = iszon(jiszon+ibacol+iddeso)
         id = ixdeso
-        ixiadd = iszon ( jiszon + ibacol + idiadd )
-        ixlong = iszon ( jiszon + ibacol + idlong )
-        ixlono = iszon ( jiszon + ibacol + idlono )
-        ixluti = iszon ( jiszon + ibacol + idluti )
-        ixnom = iszon ( jiszon + ibacol + idnom )
-        ixnum = iszon ( jiszon + ibacol + idnum )
-        lconst = (ixlong .eq. 0 )
-    endif
-    genri = genr ( jgenr(ic) + id )
-    ltypi = ltyp ( jltyp(ic) + id )
+        ixiadd = iszon(jiszon+ibacol+idiadd)
+        ixlong = iszon(jiszon+ibacol+idlong)
+        ixlono = iszon(jiszon+ibacol+idlono)
+        ixluti = iszon(jiszon+ibacol+idluti)
+        ixnom = iszon(jiszon+ibacol+idnom)
+        ixnum = iszon(jiszon+ibacol+idnum)
+        lconst = (ixlong .eq. 0)
+    end if
+    genri = genr(jgenr(ic)+id)
+    ltypi = ltyp(jltyp(ic)+id)
     if (lconst) then
-        ival = long ( jlong(ic) + id )
+        ival = long(jlong(ic)+id)
     else if (iret .eq. 3) then
-        ib = jiszon + iadm ( jiadm(ic) + 2*ixlong-1 ) - 1 + idatoc
-        ival = iszon (ib)
-    endif
+        ib = jiszon+iadm(jiadm(ic)+2*ixlong-1)-1+idatoc
+        ival = iszon(ib)
+    end if
 !
     if (lcol) then
         call jjlide('JELIBE', noml32(1:24), 2)
-    endif
+    end if
     ipgc = ipgcex
 !
 end subroutine

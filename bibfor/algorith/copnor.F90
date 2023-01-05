@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine copnor(noma, ds_contact, posmai, ksi1,&
+subroutine copnor(noma, ds_contact, posmai, ksi1, &
                   ksi2, tau1, tau2)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -69,7 +69,7 @@ implicit none
 !
 !
 !
-    real(kind=8), parameter :: zero =  0.d0
+    real(kind=8), parameter :: zero = 0.d0
     character(len=24) :: nomaco
     integer :: jnoma
     character(len=19) :: sdappa
@@ -124,7 +124,7 @@ implicit none
 !
 ! --- NORMALE EN CE POINT PAR INTERPOLATION A PARTIR DES VALEURS NODALES
 !
-    call mmcoor(alias, nno, ndim, vecnor, ksi1,&
+    call mmcoor(alias, nno, ndim, vecnor, ksi1, &
                 ksi2, norm)
 !
 ! --- NORMALISATION DE LA NORMALE
@@ -132,7 +132,7 @@ implicit none
     call normev(norm, noor)
     if (noor .le. r8prem()) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- RECONSTRUCTION DES TANGENTES
 !
@@ -143,6 +143,6 @@ implicit none
     call mmtann(ndim, tau1, tau2, iret)
     if (iret .ne. 0) then
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

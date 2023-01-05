@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,52 +44,50 @@ subroutine matr_asse_syme(matas)
 !             On ne pourra plus revenir en arriere.
 !-----------------------------------------------------------------------
 
-
     character(len=19) :: matas1
     character(len=1) :: bas1
     character(len=3) :: tysca
-    integer :: n1,n2,k1,k2,jvalm1,jvalm2
+    integer :: n1, n2, k1, k2, jvalm1, jvalm2
     character(len=24), pointer :: refa(:) => null()
 !-------------------------------------------------------------------
     call jemarq()
-    matas1=matas
+    matas1 = matas
     call jelira(matas1//'.VALM', 'NUTIOC', n1)
-    ASSERT(n1.eq.1 .or. n1.eq.2)
+    ASSERT(n1 .eq. 1 .or. n1 .eq. 2)
 
 !   -- si la matrice est deja symetrique, il n'y a rien a faire :
-    if (n1.eq.1) goto 999
+    if (n1 .eq. 1) goto 999
 
     call jeveuo(matas1//'.REFA', 'E', vk24=refa)
-    ASSERT(refa(9).eq.'MR')
+    ASSERT(refa(9) .eq. 'MR')
     call jelira(matas1//'.VALM', 'CLAS', cval=bas1)
     call jelira(matas1//'.VALM', 'TYPE', cval=tysca)
 
     call jedupo(matas1//'.VALM', 'V', '&&matr_asse_syme.VALM', .false._1)
-    call jelira(jexnum(matas1//'.VALM',1),'LONMAX',n2)
+    call jelira(jexnum(matas1//'.VALM', 1), 'LONMAX', n2)
     call jedetr(matas1//'.VALM')
-    call jecrec(matas1//'.VALM', bas1//' V '//tysca, 'NU', 'DISPERSE',&
+    call jecrec(matas1//'.VALM', bas1//' V '//tysca, 'NU', 'DISPERSE', &
                 'CONSTANT', 1)
     call jeecra(matas1//'.VALM', 'LONMAX', n2)
     call jecroc(jexnum(matas1//'.VALM', 1))
-    call jeveuo(jexnum(matas1//'.VALM', 1),'E',jvalm1)
-    do k1=1,2
-        call jeveuo(jexnum('&&matr_asse_syme.VALM', k1),'L',jvalm2)
-        if (tysca.eq.'R') then
-            do k2=1,n2
-                zr(jvalm1-1+k2)=zr(jvalm1-1+k2)+0.5d0*zr(jvalm2-1+k2)
-            enddo
-        elseif (tysca.eq.'C') then
-            do k2=1,n2
-                zc(jvalm1-1+k2)=zc(jvalm1-1+k2)+0.5d0*zc(jvalm2-1+k2)
-            enddo
+    call jeveuo(jexnum(matas1//'.VALM', 1), 'E', jvalm1)
+    do k1 = 1, 2
+        call jeveuo(jexnum('&&matr_asse_syme.VALM', k1), 'L', jvalm2)
+        if (tysca .eq. 'R') then
+            do k2 = 1, n2
+                zr(jvalm1-1+k2) = zr(jvalm1-1+k2)+0.5d0*zr(jvalm2-1+k2)
+            end do
+        elseif (tysca .eq. 'C') then
+            do k2 = 1, n2
+                zc(jvalm1-1+k2) = zc(jvalm1-1+k2)+0.5d0*zc(jvalm2-1+k2)
+            end do
         else
             ASSERT(.false.)
-        endif
+        end if
         call jelibe(jexnum('&&matr_asse_syme.VALM', k1))
-    enddo
+    end do
     call jedetr('&&matr_asse_syme.VALM')
-    refa(9)='MS'
-
+    refa(9) = 'MS'
 
 999 continue
     call jedema()

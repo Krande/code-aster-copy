@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine get_equa_info(nume_ddlz     , i_equa    , type_equa , nume_nodez  , nume_cmpz,&
-                         nume_cmp_lagrz, nume_subsz, nume_linkz, nb_node_lagr, list_node_lagr,&
+subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
+                         nume_cmp_lagrz, nume_subsz, nume_linkz, nb_node_lagr, list_node_lagr, &
                          ligrelz)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -84,10 +84,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nume_ddl  = nume_ddlz
+    nume_ddl = nume_ddlz
     type_equa = '?'
     nume_node = 0
-    nume_cmp  = 0
+    nume_cmp = 0
     nume_subs = 0
     nume_link = 0
     nume_cmp_lagr = 0
@@ -99,7 +99,7 @@ implicit none
 ! - PROF_CHNO or PROF_GENE ?
 !
     call jeexin(prof_chno//'.DESC', iexi)
-    l_gene = (iexi.gt.0)
+    l_gene = (iexi .gt. 0)
 !
 ! - Objects in PROF_CHNO/PROF_GENE
 !
@@ -109,32 +109,32 @@ implicit none
     orig = prof_chno(1:19)//'.ORIG'
     nueq = prof_chno(1:19)//'.NUEQ'
 !
-    call jeveuo(deeq, 'L', vi = p_deeq)
-    call jeveuo(nueq, 'L', vi = p_nueq)
+    call jeveuo(deeq, 'L', vi=p_deeq)
+    call jeveuo(nueq, 'L', vi=p_nueq)
 !
     if (l_gene) then
-        call jeveuo(desc, 'L', vi = p_desc)
-        ASSERT(p_desc(1).eq.2)
-        isst      = p_deeq(2*(i_equa-1)+2)
+        call jeveuo(desc, 'L', vi=p_desc)
+        ASSERT(p_desc(1) .eq. 2)
+        isst = p_deeq(2*(i_equa-1)+2)
         if (isst .gt. 0) then
             type_equa = 'D'
             call jeexin(jexnum(orig, 1), iexi)
             if (iexi .gt. 0) then
-                call jeveuo(jexnum(orig, 1), 'L', vi = p_orig)
+                call jeveuo(jexnum(orig, 1), 'L', vi=p_orig)
                 nume_subs = p_orig(isst)
             else
                 nume_subs = 0
-            endif
+            end if
         else
             type_equa = 'E'
             isst = -isst
-            call jeveuo(jexnum(orig, 2), 'L', vi = p_orig)
+            call jeveuo(jexnum(orig, 2), 'L', vi=p_orig)
             nume_link = p_orig(isst)
-        endif
+        end if
     else
         call dismoi('NUM_GD_SI', nume_ddl, 'NUME_DDL', repi=idx_gd)
 !
-        ino  = p_deeq(2*(i_equa-1)+1)
+        ino = p_deeq(2*(i_equa-1)+1)
         icmp = p_deeq(2*(i_equa-1)+2)
 !
 ! ----- Physical node
@@ -142,51 +142,51 @@ implicit none
         if (ino .gt. 0 .and. icmp .gt. 0) then
             type_equa = 'A'
             nume_node = ino
-            nume_cmp  = icmp
+            nume_cmp = icmp
             goto 70
-        endif
+        end if
 !
 ! ----- Non-Physical node (Lagrange)
 !
         if (ino .gt. 0 .and. icmp .lt. 0) then
             type_equa = 'B'
-            call get_lagr_info(prof_chno, i_equa, idx_gd, nb_node_lagr, list_node_lagr,&
+            call get_lagr_info(prof_chno, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
                                nume_cmp)
-            ASSERT(nb_node_lagr.eq.1)
-            nume_node     = list_node_lagr(1)
+            ASSERT(nb_node_lagr .eq. 1)
+            nume_node = list_node_lagr(1)
             nume_cmp_lagr = nume_cmp
             goto 70
-        endif
+        end if
 !
 ! ----- Non-Physical node (Lagrange) - LIAISON_DDL
 !
         if (ino .eq. 0 .and. icmp .eq. 0) then
             type_equa = 'C'
-            call get_lagr_info(prof_chno, i_equa, idx_gd, nb_node_lagr, list_node_lagr,&
-                               ligrelz = ligrel)
+            call get_lagr_info(prof_chno, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
+                               ligrelz=ligrel)
             goto 70
-        endif
-    endif
+        end if
+    end if
 !
- 70 continue
+70  continue
 !
     if (present(nume_nodez)) then
         nume_nodez = nume_node
-    endif
+    end if
     if (present(nume_cmpz)) then
-        nume_cmpz  = nume_cmp
-    endif
+        nume_cmpz = nume_cmp
+    end if
     if (present(nume_cmp_lagrz)) then
         nume_cmp_lagrz = nume_cmp_lagr
-    endif
+    end if
     if (present(nume_subsz)) then
         nume_subsz = nume_subs
-    endif
+    end if
     if (present(nume_linkz)) then
         nume_linkz = nume_link
-    endif
+    end if
     if (present(ligrelz)) then
-        ligrelz    = ligrel
-    endif
+        ligrelz = ligrel
+    end if
 !
 end subroutine

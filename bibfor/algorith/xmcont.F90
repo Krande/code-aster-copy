@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
-                  jcohes, jcoheo, ncompv, ddlm, ddls,&
-                  ffc, ffp, idepd, idepm, ifa,&
-                  ifiss, jmate, indco, ipgf, jac,&
-                  jheavn, ncompn, jheafa, mmat, lact,&
-                  ncomph, nd, nddl, ndim, nfh,&
-                  nfiss, nno, nnol, nnos, nvit,&
-                  pla, rela, singu, fk, tau1,&
+subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo, &
+                  jcohes, jcoheo, ncompv, ddlm, ddls, &
+                  ffc, ffp, idepd, idepm, ifa, &
+                  ifiss, jmate, indco, ipgf, jac, &
+                  jheavn, ncompn, jheafa, mmat, lact, &
+                  ncomph, nd, nddl, ndim, nfh, &
+                  nfiss, nno, nnol, nnos, nvit, &
+                  pla, rela, singu, fk, tau1, &
                   tau2)
 ! aslint: disable=W1504
     implicit none
@@ -93,149 +93,149 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
     if (algocr .eq. 1) then
         if (indco .eq. 0) then
             if (nvit .ne. 0) then
-                call xmmaa4(nnol, pla, ffc, jac, coefcr,&
+                call xmmaa4(nnol, pla, ffc, jac, coefcr, &
                             mmat)
-            endif
-        else if (indco.eq.1) then
-            call xmmaa3(ndim, nno, nnos, nnol, pla,&
-                        ffc, ffp, jac, nfh, nd,&
-                        coefcr, singu, fk, ddls, ddlm,&
-                        jheavn, ncompn, nfiss, ifiss, jheafa,&
+            end if
+        else if (indco .eq. 1) then
+            call xmmaa3(ndim, nno, nnos, nnol, pla, &
+                        ffc, ffp, jac, nfh, nd, &
+                        coefcr, singu, fk, ddls, ddlm, &
+                        jheavn, ncompn, nfiss, ifiss, jheafa, &
                         ncomph, ifa, mmat)
-        endif
+        end if
 !
 ! CAS FORMULATION PENALISEE
 !
-    else if (algocr.eq.2) then
+    else if (algocr .eq. 2) then
         if (indco .eq. 0) then
             if (nvit .ne. 0) then
-                call xmmaa4(nnol, pla, ffc, jac, coefcp,&
+                call xmmaa4(nnol, pla, ffc, jac, coefcp, &
                             mmat)
-            endif
-        else if (indco.eq.1) then
-            call xmmpa3(ndim, nno, nnos, nnol, pla,&
-                        ffc, ffp, jac, nfh, nd,&
-                        coefcp, singu, fk, ddls, ddlm,&
-                        jheavn, ncompn, nfiss, ifiss, jheafa,&
+            end if
+        else if (indco .eq. 1) then
+            call xmmpa3(ndim, nno, nnos, nnol, pla, &
+                        ffc, ffp, jac, nfh, nd, &
+                        coefcp, singu, fk, ddls, ddlm, &
+                        jheavn, ncompn, nfiss, ifiss, jheafa, &
                         ncomph, ifa, mmat)
-        endif
+        end if
 !
 ! CAS LOI COHESIVE
 !
-    else if (algocr.eq.3) then
+    else if (algocr .eq. 3) then
 !
 !       CAS DES LOIS COHESIVES REGULARISEES
 !
         if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
-            nvec=2
+            nvec = 2
             un = 1.d0
             if (nvit .ne. 0) then
-                call xmmaa4(nnol, pla, ffc, jac, un,&
+                call xmmaa4(nnol, pla, ffc, jac, un, &
                             mmat)
-            endif
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepd), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn,&
-                        ncompn, nfiss, ifiss, jheafa, ncomph,&
+            end if
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepd), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, &
+                        ncompn, nfiss, ifiss, jheafa, ncomph, &
                         ifa, saut)
-            job='MATRICE'
-            call xmmsa2(ndim, ipgf, zi(jmate), saut, nd,&
-                        tau1, tau2, cohes, job, rela,&
-                        alpha, dsidep, sigma, pp, dnor,&
+            job = 'MATRICE'
+            call xmmsa2(ndim, ipgf, zi(jmate), saut, nd, &
+                        tau1, tau2, cohes, job, rela, &
+                        alpha, dsidep, sigma, pp, dnor, &
                         dtang, p, am)
-            call xmmco1(ndim, nno, dsidep, pp, p,&
-                        nd, nfh, ddls, jac, ffp,&
+            call xmmco1(ndim, nno, dsidep, pp, p, &
+                        nd, nfh, ddls, jac, ffp, &
                         singu, fk, tau1, tau2, mmat)
 !
 !           ACTUALISATION INDICATEUR PREDICTION / CORRECTION
-            coheo(1)=cohes(1)
-            coheo(2)=cohes(2)
-            coheo(3)=2.d0
+            coheo(1) = cohes(1)
+            coheo(2) = cohes(2)
+            coheo(3) = 2.d0
 !
 !       CAS DES LOIS MIXTES TYPE "MORTAR"
 !
-        else if (rela.eq.5.d0) then
+        else if (rela .eq. 5.d0) then
 !
 ! --- CALCUL DES MATRICES "MORTAR" QUI NE DEPENDENT
 ! --- PAS DE LA LOI DE COMPORTEMENT
 !
-            call xmmco4(ndim, nno, pla, nd, tau1,&
-                        tau2, ffc, ddls, jac, ffp,&
+            call xmmco4(ndim, nno, pla, nd, tau1, &
+                        tau2, ffc, ddls, jac, ffp, &
                         nnol, ddlm, nnos, mmat)
             do ino = 1, nnol
                 nvec = 2
                 champ = 'LAMBDA'
-                call xxlan5(ino, idepd, idepm, ibid, lact,&
+                call xxlan5(ino, idepd, idepm, ibid, lact, &
                             ndim, pla, lamb, nvec, champ)
 !
                 nvec = 2
                 champ = 'W'
-                call xxlan5(ino, idepd, idepm, ibid, lact,&
+                call xxlan5(ino, idepd, idepm, ibid, lact, &
                             ndim, pla, wsaut, nvec, champ)
 !
                 do i = 1, ncompv
                     cohes(i) = zr(jcohes+ncompv*(ino-1)-1+i)
                 end do
-                job='MATRICE'
-                call xmmsa6(ndim, ipgf, zi(jmate), lamb, wsaut,&
-                            nd, tau1, tau2, cohes, job,&
-                            rela, alpha, dsidep, sigma, p,&
+                job = 'MATRICE'
+                call xmmsa6(ndim, ipgf, zi(jmate), lamb, wsaut, &
+                            nd, tau1, tau2, cohes, job, &
+                            rela, alpha, dsidep, sigma, p, &
                             am, raug)
-                call xmmco3(ino, ndim, dsidep, pla, p,&
+                call xmmco3(ino, ndim, dsidep, pla, p, &
                             ffc, jac, nnol, raug, mmat)
 !
 ! --- ACTUALISATION INDICATEUR PREDICTION / CORRECTION
 !
-                coheo(1)=cohes(1)
-                coheo(2)=cohes(2)
-                coheo(3)=2.d0
+                coheo(1) = cohes(1)
+                coheo(2) = cohes(2)
+                coheo(3) = 2.d0
 !
                 do i = 1, ncompv
                     zr(jcoheo+ncompv*(ino-1)-1+i) = coheo(i)
                 end do
             end do
 !
-        else if (rela.eq.3.d0.or.rela.eq.4.d0) then
+        else if (rela .eq. 3.d0 .or. rela .eq. 4.d0) then
 !
 ! CAS DES LOIS MIXTES CZM_TAC_MIX ET CZM_OUV_MIX
 !
 ! --- ON COMMENCE EGALEMENT PAR CALCULER LE SAUT
 !
             nvec = 2
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepd), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn,&
-                        ncompn, nfiss, ifiss, jheafa, ncomph,&
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepd), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, &
+                        ncompn, nfiss, ifiss, jheafa, ncomph, &
                         ifa, saut)
 !
 ! --- ON CALCULE ENSUITE LA VALEUR DE LA FORCE COHESIVE
 !
             nvec = 2
-            call xxlag2(ffc, idepd, idepm, lact, ndim,&
+            call xxlag2(ffc, idepd, idepm, lact, ndim, &
                         nnol, pla, lamb, nvec)
 !
 ! --- ON VA ENSUITE ALLER CHERCHER LA MATRICE TGTE LOCALE
 ! --- ET LA MATRICE DE CHANGEMENT DE BASE
 !
             job = 'MATRICE'
-            call xmmsa5(ndim, ipgf, zi(jmate), saut, lamb,&
-                        nd, tau1, tau2, cohes, job,&
-                        rela, alpha, dsidep, delta, p,&
+            call xmmsa5(ndim, ipgf, zi(jmate), saut, lamb, &
+                        nd, tau1, tau2, cohes, job, &
+                        rela, alpha, dsidep, delta, p, &
                         am, r)
 !
 ! --- CALCUL DE LA MATRICE TANGENTE
 !
-            call xmmco2(ndim, nno, nnos, nnol, ddls,&
-                        ddlm, dsidep, p, r, nfh,&
-                        jac, ffp, ffc, pla, singu,&
-                        nfiss, jheafa, jheavn, ncompn, ifa,&
+            call xmmco2(ndim, nno, nnos, nnol, ddls, &
+                        ddlm, dsidep, p, r, nfh, &
+                        jac, ffp, ffc, pla, singu, &
+                        nfiss, jheafa, jheavn, ncompn, ifa, &
                         ncomph, ifiss, fk, mmat)
 !
 ! --- ACTUALISATION INDICATEUR PREDICTION / CORRECTION
 !
-            coheo(1)=cohes(1)
-            coheo(2)=cohes(2)
-            coheo(3)=2.d0
-        endif
-    endif
+            coheo(1) = cohes(1)
+            coheo(2) = cohes(2)
+            coheo(3) = 2.d0
+        end if
+    end if
 end subroutine

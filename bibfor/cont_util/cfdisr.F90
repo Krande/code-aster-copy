@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 function cfdisr(sdcont_defi_, question_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfr.h"
 !
-real(kind=8) :: cfdisr
-character(len=*), intent(in) :: sdcont_defi_
-character(len=*), intent(in) :: question_
+    real(kind=8) :: cfdisr
+    character(len=*), intent(in) :: sdcont_defi_
+    character(len=*), intent(in) :: question_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,38 +50,38 @@ character(len=*), intent(in) :: question_
 ! --------------------------------------------------------------------------------------------------
 !
     sdcont_defi = sdcont_defi_
-    question    = question_
-    cfdisr      = 0.d0
+    question = question_
+    cfdisr = 0.d0
 !
 ! - Access to contact datastructure
 !
     sdcont_paracr = sdcont_defi(1:8)//'.PARACR'
-    call jeveuo(sdcont_paracr, 'L', vr = v_sdcont_paracr)
+    call jeveuo(sdcont_paracr, 'L', vr=v_sdcont_paracr)
 !
 ! - Get parameter
 !
     if (question .eq. 'RESI_GEOM') then
         cfdisr = v_sdcont_paracr(1)
-    else if (question.eq.'RESI_FROT') then
+    else if (question .eq. 'RESI_FROT') then
         cfdisr = v_sdcont_paracr(2)
-    else if (question.eq.'RESI_CONT') then
+    else if (question .eq. 'RESI_CONT') then
         cfdisr = v_sdcont_paracr(7)
-    else if (question.eq.'RESI_ABSO') then
+    else if (question .eq. 'RESI_ABSO') then
         cfdisr = v_sdcont_paracr(4)
-    else if (question.eq.'COEF_RESI') then
+    else if (question .eq. 'COEF_RESI') then
         cfdisr = v_sdcont_paracr(5)
-    else if (question.eq.'ALARME_JEU') then
+    else if (question .eq. 'ALARME_JEU') then
         cfdisr = mminfr(sdcont_defi, 'ALARME_JEU')
-    else if (question.eq.'PROJ_NEWT_RESI') then
+    else if (question .eq. 'PROJ_NEWT_RESI') then
         cfdisr = 1d-4
-    else if (question.eq.'PENE_MAXI') then
+    else if (question .eq. 'PENE_MAXI') then
         cfdisr = v_sdcont_paracr(6)
         if (cfdisr .le. 0.d0) then
             cfdisr = 1.d-2
-        endif
+        end if
     else
-        write(6,*) 'QUESTION: ',question
+        write (6, *) 'QUESTION: ', question
         ASSERT(.false.)
-    endif
+    end if
 !
 end function

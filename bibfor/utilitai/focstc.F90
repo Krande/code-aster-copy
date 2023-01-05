@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine focstc(nomfon, nomres, rval, ival, base)
     call jeexin(chpro, iret)
     if (iret .eq. 0) then
 !
-        ASSERT(lxlgut(nomf).le.24)
+        ASSERT(lxlgut(nomf) .le. 24)
         call wkvect(chpro, base//' V K24', 6, jpro)
         zk24(jpro) = 'FONCT_C '
         zk24(jpro+1) = 'LIN LIN '
@@ -76,7 +76,7 @@ subroutine focstc(nomfon, nomres, rval, ival, base)
         call jeveuo(chval, 'E', lval)
         zr(lval+1) = rval
         zr(lval+2) = ival
-    endif
+    end if
 !
 !     --- LIBERATIONS ---
     call jedema()

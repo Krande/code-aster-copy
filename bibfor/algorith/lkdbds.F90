@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
+subroutine lkdbds(nmat, mater, i1, devsig, nvi, &
                   vint, para, val, dbetds, dbetdi)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -51,14 +51,14 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
     real(kind=8) :: six, dsinds(6), dsmids(6), dsmads(6), h0c, h0e, dhds(6)
     real(kind=8) :: dsmidi, dsmadi, dsindi, xi1, dbdsin, coefh
 !     ------------------------------------------------------------------
-    parameter       ( lgleps =  1.0d-8 )
-    parameter       ( zero   =  0.0d0 )
-    parameter       ( un     =  1.0d0 )
-    parameter       ( deux   =  2.0d0 )
-    parameter       ( trois  =  3.0d0 )
-    parameter       ( six    =  6.0d0 )
+    parameter(lgleps=1.0d-8)
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
 !     ------------------------------------------------------------------
-    common /tdim/   ndt,ndi
+    common/tdim/ndt, ndi
 !     ------------------------------------------------------------------
 !
 ! =================================================================
@@ -69,27 +69,27 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 ! --- RECUPERATION DE PARAMETRES DU MODELE ----------------------------
 ! =====================================================================
     pi = r8pi()
-    pref = mater(1,2)
-    sigc = mater(3,2)
-    h0ext = mater(4,2)
-    s0 = mater(11,2)
-    mult = mater(15,2)
-    xie = mater(17,2)
-    mvmax = mater(19,2)
+    pref = mater(1, 2)
+    sigc = mater(3, 2)
+    h0ext = mater(4, 2)
+    s0 = mater(11, 2)
+    mult = mater(15, 2)
+    xie = mater(17, 2)
+    mvmax = mater(19, 2)
 !
-    mu0v = mater(24,2)
-    xi0v = mater(25,2)
-    mu1 = mater(26,2)
-    xi1 = mater(27,2)
+    mu0v = mater(24, 2)
+    xi0v = mater(25, 2)
+    mu1 = mater(26, 2)
+    xi1 = mater(27, 2)
 ! =================================================================
 ! --- CALCUL DE ALPHA RES -----------------------------------------
 ! =================================================================
-    alres = un + mult
+    alres = un+mult
 ! =================================================================
 ! --- CALCUL DE H(THETA), H0E ET H0C -----------------------------
 ! =================================================================
-    rcos3t = cos3t (devsig, pref, lgleps)
-    call lkhtet(nmat, mater, rcos3t, h0e, h0c,&
+    rcos3t = cos3t(devsig, pref, lgleps)
+    call lkhtet(nmat, mater, rcos3t, h0e, h0c, &
                 htheta)
     coefh = (h0c-h0ext)/(h0c-h0e)
 ! =================================================================
@@ -99,14 +99,14 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
         fact1 = zero
         c = zero
     else
-        fact1 = un + para(1)*para(3)*para(2)**(para(1)-un)
+        fact1 = un+para(1)*para(3)*para(2)**(para(1)-un)
         c = sigc*(para(2))**para(1)/deux/sqrt(fact1)
-    endif
+    end if
 ! =================================================================
 ! --- CALCUL DE PHI TILDE -----------------------------------------
 ! =================================================================
     fact1 = sqrt(fact1)
-    phi = deux*atan2(fact1,un)-pi/deux
+    phi = deux*atan2(fact1, un)-pi/deux
 ! =================================================================
 ! --- CALCUL DE SIGMA TILDE ---------------------------------------
 ! =================================================================
@@ -118,13 +118,13 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 ! =================================================================
     troisd = trois/deux
     tiers = un/trois
-    fact2 = (deux*htheta -(h0c + h0ext))/deux/(h0c-h0ext)
-    sigmin = tiers * (i1 - (troisd-fact2)*sqrt(troisd)*sii)
-    sigmax = tiers * (i1 + (troisd+fact2)*sqrt(troisd)*sii)
+    fact2 = (deux*htheta-(h0c+h0ext))/deux/(h0c-h0ext)
+    sigmin = tiers*(i1-(troisd-fact2)*sqrt(troisd)*sii)
+    sigmax = tiers*(i1+(troisd+fact2)*sqrt(troisd)*sii)
 ! =================================================================
 ! --- CALCUL DE SIGLIM  -------------------------------------------
 ! =================================================================
-    siglim = sigmin + sigc * (mvmax*sigmin/sigc + s0)
+    siglim = sigmin+sigc*(mvmax*sigmin/sigc+s0)
 ! =================================================================
 ! --- CALCUL DE ALPHA  --------------------------------------------
 ! =================================================================
@@ -133,10 +133,10 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 ! --- CALCUL DE SIN(PSI) ------------------------------------------
 ! =================================================================
     if (val .eq. 0) then
-        sinpsi = mu0v*((sigmax - siglim)/(xi0v*sigmax + siglim))
+        sinpsi = mu0v*((sigmax-siglim)/(xi0v*sigmax+siglim))
     else
-        sinpsi = mu1*((alpha - alres)/(xi1*alpha + alres))
-    endif
+        sinpsi = mu1*((alpha-alres)/(xi1*alpha+alres))
+    end if
 ! =================================================================
 ! --- CALCUL DE D(BP)/D(SIN(PSI)) ---------------------------------
 ! =================================================================
@@ -145,37 +145,37 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 ! --- CALCUL DE D(SINPSI)/D(DEVSIG) -------------------------------
 ! --- DISTINCTION DES FORMULES ET VALEURS SI PRE OU POST-PIC ------
 ! =================================================================
-    call lkdhds(nmat, mater, i1, devsig, dhds,&
+    call lkdhds(nmat, mater, i1, devsig, dhds, &
                 iret)
 ! --- CALCUL DE D(SIGMAX)/D(DEVSIG) ET D(SIGMIN)/D(DEVSIG)
     do i = 1, ndt
-        dsmids(i) = tiers*(&
-                    sqrt(troisd)*sii/(h0c-h0ext)*dhds(i) *coefh-(troisd-(deux*htheta-h0c-h0ext)/(&
-                    &deux *(h0c-h0ext)))* sqrt(troisd)*devsig(i)/sii&
+        dsmids(i) = tiers*( &
+                    sqrt(troisd)*sii/(h0c-h0ext)*dhds(i)*coefh-(troisd-(deux*htheta-h0c-h0ext)/(&
+                    &deux*(h0c-h0ext)))*sqrt(troisd)*devsig(i)/sii &
                     )
 !
-        dsmads(i) = tiers*(&
-                    sqrt(troisd)*sii/(h0c-h0ext)*dhds(i) *coefh+(troisd+(deux*htheta-h0c-h0ext)/ &
-                    &(deux*(h0c-h0ext)))* sqrt(troisd)*devsig(i)/sii&
+        dsmads(i) = tiers*( &
+                    sqrt(troisd)*sii/(h0c-h0ext)*dhds(i)*coefh+(troisd+(deux*htheta-h0c-h0ext)/ &
+                    &(deux*(h0c-h0ext)))*sqrt(troisd)*devsig(i)/sii &
                     )
     end do
 !
     if (val .eq. 0) then
         do i = 1, ndt
-            dsinds(i) = mu0v*(&
-                        (&
-                        siglim*(un+xi0v))/(xi0v*sigmax+ siglim)**2*dsmads(i)-dsmids(i)*(un+mvmax)&
-                        & *(un+xi0v)* sigmax/ (xi0v*sigmax+siglim&
-                        )**2&
+            dsinds(i) = mu0v*( &
+                        ( &
+                        siglim*(un+xi0v))/(xi0v*sigmax+siglim)**2*dsmads(i)-dsmids(i)*(un+mvmax)&
+                       & *(un+xi0v)*sigmax/(xi0v*sigmax+siglim &
+                                            )**2 &
                         )
         end do
 !
-    else if (val.eq.1) then
+    else if (val .eq. 1) then
         do i = 1, ndt
-            dsinds(i) = mu1*(un+xi1)/(xi1*alpha+alres)**2* ((-alres*( sigmax+sigtil)/(sigmin+sigt&
-                        &il)**2) *dsmids(i)+(alres/( sigmin+sigtil))*dsmads(i))
+            dsinds(i) = mu1*(un+xi1)/(xi1*alpha+alres)**2*((-alres*(sigmax+sigtil)/(sigmin+sigt&
+                        &il)**2)*dsmids(i)+(alres/(sigmin+sigtil))*dsmads(i))
         end do
-    endif
+    end if
 !
 ! =================================================================
 ! --- CALCUL DE D(SINPSI)/D(I1) -----------------------------------
@@ -187,22 +187,22 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
     dsmadi = tiers
 !
     if (val .eq. 0) then
-        dsindi = mu0v*(&
-                 (&
-                 siglim*(un+xi0v))/(xi0v*sigmax+ siglim)**2* dsmadi-dsmidi*(un+mvmax) *(un+xi0v)*&
-                 &sigmax/ (xi0v*sigmax+ siglim&
-                 )**2&
+        dsindi = mu0v*( &
+                 ( &
+                 siglim*(un+xi0v))/(xi0v*sigmax+siglim)**2*dsmadi-dsmidi*(un+mvmax)*(un+xi0v)*&
+                 &sigmax/(xi0v*sigmax+siglim &
+                 )**2 &
                  )
 !
-    else if (val.eq.1) then
-        dsindi = mu1*(un+xi1)*(sigmin-sigmax)*tiers/ (xi1*alpha+alres) **2*alres/(sigmin+sigtil)*&
-                 &*2
-    endif
+    else if (val .eq. 1) then
+        dsindi = mu1*(un+xi1)*(sigmin-sigmax)*tiers/(xi1*alpha+alres)**2*alres/(sigmin+sigtil)*&
+                &*2
+    end if
 !
 ! =================================================================
 ! --- CALCUL DE D(BP)/D(DEVSIG) -----------------------------------
 ! =================================================================
-    dbetds(1:ndt) = dbdsin * dsinds(1:ndt)
+    dbetds(1:ndt) = dbdsin*dsinds(1:ndt)
 ! =================================================================
 ! --- CALCUL DE D(BP)/DI1 -----------------------------------------
 ! =================================================================

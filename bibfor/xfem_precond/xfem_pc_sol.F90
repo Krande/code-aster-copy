@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,37 +55,37 @@ subroutine xfem_pc_sol(matas1, nsolu, solu)
     call jemarq()
 !
     call dismoi('XFEM_PC', matas1, 'MATR_ASSE', repk=pc)
-    ASSERT( pc .ne. ' ' )
+    ASSERT(pc .ne. ' ')
 !
     call dismoi('NOM_NUME_DDL', pc, 'MATR_ASSE', repk=nu_pc)
-    ASSERT( nu_pc .ne. ' ' )
+    ASSERT(nu_pc .ne. ' ')
     call jelira(nu_pc//'.SMOS.SMDI', 'LONMAX', neq)
 !
     call jeveuo(pc//'.&INT', 'E', lmat_pc)
 !
-    chtrav2='&&XFEM_PC_SOL.TRAV'
+    chtrav2 = '&&XFEM_PC_SOL.TRAV'
 !
-    if ( nsolu .eq. 0 ) then
-       call wkvect(chtrav2, 'V V R', neq, jtrav2)
-       call mrmult('ZERO', lmat_pc, solu, zr(jtrav2), 1, .false._1)
-       do ieq=1,neq
+    if (nsolu .eq. 0) then
+        call wkvect(chtrav2, 'V V R', neq, jtrav2)
+        call mrmult('ZERO', lmat_pc, solu, zr(jtrav2), 1, .false._1)
+        do ieq = 1, neq
 !          write(40,*) ieq,solu(ieq)
 !          write(41,*) ieq,zr(jtrav2-1+ieq)
-          solu(ieq)=zr(jtrav2-1+ieq)
-       enddo
+            solu(ieq) = zr(jtrav2-1+ieq)
+        end do
 !
-    elseif ( nsolu .gt. 0 ) then
-       call wkvect(chtrav2, 'V V R', neq*nsolu, jtrav2)
-       call mrmult('ZERO', lmat_pc, solu, zr(jtrav2), nsolu, .false._1)
-       do kvect=1,nsolu
-          do ieq=1,neq
-              solu(neq*(kvect-1)+ieq)=zr(jtrav2-1+neq*(kvect-1)+ieq)
-          enddo
-       enddo
+    elseif (nsolu .gt. 0) then
+        call wkvect(chtrav2, 'V V R', neq*nsolu, jtrav2)
+        call mrmult('ZERO', lmat_pc, solu, zr(jtrav2), nsolu, .false._1)
+        do kvect = 1, nsolu
+            do ieq = 1, neq
+                solu(neq*(kvect-1)+ieq) = zr(jtrav2-1+neq*(kvect-1)+ieq)
+            end do
+        end do
 !
-     else
-       ASSERT( .false. )
-    endif
+    else
+        ASSERT(.false.)
+    end if
 !
     call jedetr(chtrav2)
     call jedema()

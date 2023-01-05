@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine abscvl(ndim, tabar, xg, s)
 !      RECHERCHE DE LA MONOTONIE SUR CHAQUE AXE
 !
 !   recherche d'un axe sur lequel projete le SE3
-    xgg=0.d0
+    xgg = 0.d0
 !
     do k = 1, ndim
         a = tabar(k)+tabar(ndim+k)-2*tabar(2*ndim+k)
@@ -63,52 +63,52 @@ subroutine abscvl(ndim, tabar, xg, s)
         if (abs(a) .le. 1.d-6) then
             if (abs(b) .gt. 1.d-6) then
 !         JE BALANCE SUR K
-                tabelt(1)=tabar(k)
-                tabelt(2)=tabar(ndim+k)
-                tabelt(3)=tabar(2*ndim+k)
-                xgg =xg(k)
+                tabelt(1) = tabar(k)
+                tabelt(2) = tabar(ndim+k)
+                tabelt(3) = tabar(2*ndim+k)
+                xgg = xg(k)
 !         on a trouve un axe sur lequel projete le SE3
                 exit
-            else if (abs(b).le.1.d-6) then
+            else if (abs(b) .le. 1.d-6) then
                 if (k .lt. ndim) then
 !           on teste l'axe suivant
                     goto 10
-                else if (k.eq.ndim) then
+                else if (k .eq. ndim) then
 !           LES 3 POINTS SONT CONFONDUS!
                     call utmess('F', 'XFEM_66')
-                endif
-            endif
-        else if (abs(a).gt.1.d-6) then
+                end if
+            end if
+        else if (abs(a) .gt. 1.d-6) then
             ksider = -b/a
             if (ksider .gt. -1.d0 .and. ksider .lt. 1.d0) then
                 if (k .lt. ndim) then
 !           on teste l'axe suivant
                     cycle
-                else if (k.eq.ndim) then
+                else if (k .eq. ndim) then
 !           L'ARETE EST TROP ARRONDIE :
 !           IL Y A 2 SOLUTIONS SUIVANT CHAQUE AXE
                     call utmess('F', 'XFEM_66')
-                endif
-            else if (ksider.gt.1.d0 .or. ksider.lt.-1.d0) then
-                tabelt(1)=tabar(k)
-                tabelt(2)=tabar(ndim+k)
-                tabelt(3)=tabar(2*ndim+k)
-                xgg =xg(k)
+                end if
+            else if (ksider .gt. 1.d0 .or. ksider .lt. -1.d0) then
+                tabelt(1) = tabar(k)
+                tabelt(2) = tabar(ndim+k)
+                tabelt(3) = tabar(2*ndim+k)
+                xgg = xg(k)
 !         on a trouve un axe sur lequel projete le SE3
                 exit
-            endif
-        endif
+            end if
+        end if
 !
- 10     continue
+10      continue
     end do
 !
 !   ALIAS DE L'ARETE (QUADRATIQUE)
-    elp='SE3'
+    elp = 'SE3'
 !
 !     CALCUL COORDONNEES DE REF (ETA) DE XGG SUR L'ARETE
-    call reereg('S', elp, 3, tabelt, [xgg],&
+    call reereg('S', elp, 3, tabelt, [xgg], &
                 1, xe, iret)
-    ASSERT(xe(1).ge.-1 .and. xe(1).le.1)
+    ASSERT(xe(1) .ge. -1 .and. xe(1) .le. 1)
 !
 !     CALCUL ABSCISSE CURVILIGNE (S) DE XGG
 !     ---L'ORIGINE EST LE 1ER PT DE COORSG---

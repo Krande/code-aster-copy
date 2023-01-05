@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine divgra(e1, e2, dfde, dfdk, vibarn,&
+subroutine divgra(e1, e2, dfde, dfdk, vibarn, &
                   divsig)
     implicit none
 !...............................................................
@@ -39,36 +39,36 @@ subroutine divgra(e1, e2, dfde, dfdk, vibarn,&
     integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfdx, idfdy, jgano
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
 !
     call jevech('PTEMPER', 'L', itemp)
 !
 ! --- CALCUL DE VITESSE PERMANENTE FLUIDE AUX NOEUDS
 !
     do i = 1, nno
-        vibarn(1,i)=0.0d0
-        vibarn(2,i)=0.0d0
+        vibarn(1, i) = 0.0d0
+        vibarn(2, i) = 0.0d0
         do j = 1, nno
-            vibarn(1,i)=vibarn(1,i)+(zr(itemp+j-1)*dfde(j,i))
-            vibarn(2,i)=vibarn(2,i)+(zr(itemp+j-1)*dfdk(j,i))
+            vibarn(1, i) = vibarn(1, i)+(zr(itemp+j-1)*dfde(j, i))
+            vibarn(2, i) = vibarn(2, i)+(zr(itemp+j-1)*dfdk(j, i))
         end do
     end do
 !
 ! --- CALCUL DE LA DERIVEE DE LA COMPOSANTE DE VITESSE COVARIANTE
 !     AU POINT DE GAUSS
     do ipg = 1, npg1
-        kdec=(ipg-1)*nno*ndim
-        dvibar(1,ipg)=0.0d0
-        dvibar(2,ipg)=0.0d0
+        kdec = (ipg-1)*nno*ndim
+        dvibar(1, ipg) = 0.0d0
+        dvibar(2, ipg) = 0.0d0
         do i = 1, nno
-            idec=(i-1)*ndim
+            idec = (i-1)*ndim
 !
-            dvibar(1,ipg)=dvibar(1,ipg)+vibarn(1,i)*zr(idfdx+kdec+&
-            idec)
-            dvibar(2,ipg)=dvibar(2,ipg)+vibarn(2,i)*zr(idfdy+kdec+&
-            idec)
+            dvibar(1, ipg) = dvibar(1, ipg)+vibarn(1, i)*zr(idfdx+kdec+ &
+                                                            idec)
+            dvibar(2, ipg) = dvibar(2, ipg)+vibarn(2, i)*zr(idfdy+kdec+ &
+                                                            idec)
 !
         end do
     end do
@@ -77,10 +77,10 @@ subroutine divgra(e1, e2, dfde, dfdk, vibarn,&
 !     DU GRADIENT DU POTENTIEL PERMANENT EVALUE AU NOEUD
 !
     do ipg = 1, npg1
-        divsig(ipg)=0.d0
+        divsig(ipg) = 0.d0
         do i = 1, 3
-            cova(i,1)=e1(i,ipg)
-            cova(i,2)=e2(i,ipg)
+            cova(i, 1) = e1(i, ipg)
+            cova(i, 2) = e2(i, ipg)
         end do
 !
 !        KDEC=(IPG-1)*NNO*NDIM
@@ -95,7 +95,7 @@ subroutine divgra(e1, e2, dfde, dfdk, vibarn,&
 !
         do idir = 1, 2
             do jdir = 1, 2
-                divsig(ipg)= divsig(ipg)+a(idir,jdir)*dvibar(idir,ipg)
+                divsig(ipg) = divsig(ipg)+a(idir, jdir)*dvibar(idir, ipg)
             end do
         end do
     end do

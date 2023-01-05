@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,35 +114,35 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
     call jeveuo(vitkm1(1:19)//'.VALE', 'E', vr=vitkm)
     call jeveuo(acckm1(1:19)//'.VALE', 'E', vr=acckm)
     call jeveuo(romkm1(1:19)//'.VALE', 'E', vr=romkm)
-    call jeveuo(romk(1:19) //'.VALE', 'L', vr=vromk)
+    call jeveuo(romk(1:19)//'.VALE', 'L', vr=vromk)
 !
 ! --- MISE A JOUR DEPL/VITE/ACCE
 !
     icomp = 0
     do i = 1, neq
         if (ndro(i) .eq. 0) then
-            depde(i) = depde(i) + ddepl(i)
-            depp(i) = depp(i) + ddepl(i)
-            vitp(i) = vitp(i) + dvite(i)
-            accp(i) = accp(i) + dacce(i)
-        else if (ndro(i).eq.1) then
+            depde(i) = depde(i)+ddepl(i)
+            depp(i) = depp(i)+ddepl(i)
+            vitp(i) = vitp(i)+dvite(i)
+            accp(i) = accp(i)+dacce(i)
+        else if (ndro(i) .eq. 1) then
             depkm(i) = depp(i)
             vitkm(i) = vitp(i)
             acckm(i) = accp(i)
             romkm(i) = vromk(i)
-            icomp = icomp + 1
+            icomp = icomp+1
             iran(icomp) = i
             deldet(icomp) = ddepl(i)
             theta1(icomp) = depp(i)
             theta2(icomp) = vromk(i)
             if (icomp .eq. 3) then
                 icomp = 0
-                call ndgrot(sddyna, valinc, solalg, deldet, theta1,&
+                call ndgrot(sddyna, valinc, solalg, deldet, theta1, &
                             theta2, iran)
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
     call jedema()

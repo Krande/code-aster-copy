@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine varaff(noma, gran, base, ceselz)
     character(len=24) :: mesmai
     integer :: nvarmx, jcesd, jcesl, jlvavx
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
-    parameter  (nvarmx=10000)
+    parameter(nvarmx=10000)
     aster_logical :: ltou
     character(len=8), pointer :: lnova(:) => null()
     character(len=8), pointer :: lnovx(:) => null()
@@ -63,10 +63,10 @@ subroutine varaff(noma, gran, base, ceselz)
 !
     if (noma .eq. ' ') then
         call utmess('F', 'UTILITAI_10')
-    endif
+    end if
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
 !
-    ASSERT(gran.eq.'VARI_R')
+    ASSERT(gran .eq. 'VARI_R')
     AS_ALLOCATE(vk8=lnovx, size=nvarmx)
     call wkvect('&&VARAFF.LVAVX', 'V V R', nvarmx, jlvavx)
 !
@@ -82,18 +82,18 @@ subroutine varaff(noma, gran, base, ceselz)
 !
 !     0- CALCUL DU PLUS GRAND NUMERO DE VARI UTILISE (NUVAMX):
 !     --------------------------------------------------------
-    nuvamx=0
+    nuvamx = 0
     do iocc = 1, nocc
-        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=lnovx,&
+        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=lnovx, &
                     nbret=n1)
-        ASSERT(n1.gt.0)
+        ASSERT(n1 .gt. 0)
         do k = 1, n1
-            ASSERT(lnovx(k)(1:1).eq.'V')
-            read (lnovx(k)(2:8),'(I7)') nuva
-            nuvamx=max(nuvamx,nuva)
+            ASSERT(lnovx(k) (1:1) .eq. 'V')
+            read (lnovx(k) (2:8), '(I7)') nuva
+            nuvamx = max(nuvamx, nuva)
         end do
     end do
-    ASSERT(nuvamx.gt.0)
+    ASSERT(nuvamx .gt. 0)
 !
 !
 !     1- ALLOCATION DE CESELM
@@ -101,11 +101,11 @@ subroutine varaff(noma, gran, base, ceselz)
     AS_ALLOCATE(vk8=lnova, size=nuvamx)
     do k = 1, nuvamx
         call codent(k, 'G', knuva)
-        lnova(k)='V'//knuva
+        lnova(k) = 'V'//knuva
     end do
     ceselm = ceselz
 !     -- REMARQUE : LES CMPS SERONT DANS L'ORDRE V1,V2,...
-    call cescre(base, ceselm, 'ELEM', noma, 'VARI_R',&
+    call cescre(base, ceselm, 'ELEM', noma, 'VARI_R', &
                 nuvamx, lnova, [0], [-1], [-nuvamx])
 !
     call jeveuo(ceselm//'.CESD', 'L', jcesd)
@@ -120,48 +120,48 @@ subroutine varaff(noma, gran, base, ceselz)
         call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call utmess('F', 'UTILITAI_12')
-        endif
+        end if
         call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call utmess('F', 'UTILITAI_13')
-        endif
+        end if
 !
-        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=lnovx,&
+        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=lnovx, &
                     nbret=n1)
-        call getvr8(motclf, 'VALE', iocc=iocc, nbval=nvarmx, vect=zr(jlvavx),&
+        call getvr8(motclf, 'VALE', iocc=iocc, nbval=nvarmx, vect=zr(jlvavx), &
                     nbret=n2)
-        ASSERT(n1.eq.n2)
+        ASSERT(n1 .eq. n2)
 !
 !
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=kbid, nbret=nbtou)
         if (nbtou .eq. 1) then
-            ltou=.true.
-            nbmail=nbmato
+            ltou = .true.
+            nbmail = nbmato
         else
-            ltou=.false.
-            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
+            ltou = .false.
+            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc, &
                         2, motcls, typmcl, mesmai, nbmail)
-            ASSERT(nbmail.gt.0)
+            ASSERT(nbmail .gt. 0)
             call jeveuo(mesmai, 'L', jmesma)
-        endif
+        end if
 !
         do kvari = 1, n1
-            read (lnovx(kvari)(2:8),'(I7)') nuva
-            ASSERT(nuva.gt.0.and.nuva.le.nuvamx)
+            read (lnovx(kvari) (2:8), '(I7)') nuva
+            ASSERT(nuva .gt. 0 .and. nuva .le. nuvamx)
             do k = 1, nbmail
                 if (ltou) then
-                    numa=k
+                    numa = k
                 else
-                    numa=zi(jmesma-1+k)
-                endif
-                ASSERT(numa.gt.0.and.numa.le.nbmato)
+                    numa = zi(jmesma-1+k)
+                end if
+                ASSERT(numa .gt. 0 .and. numa .le. nbmato)
 !
-                call cesexi('C', jcesd, jcesl, numa, 1,&
+                call cesexi('C', jcesd, jcesl, numa, 1, &
                             1, nuva, iad)
-                ASSERT(iad.ne.0)
+                ASSERT(iad .ne. 0)
 !               -- On peut vouloir surcharger :
-                iad=abs(iad)
+                iad = abs(iad)
 !
 !               -- RECOPIE DE LA VALEUR:
                 zl(jcesl-1+iad) = .true.

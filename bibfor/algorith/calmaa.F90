@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
+subroutine calmaa(moint, mate, dir, ligrmo, lchin, &
                   lpain, lpaout, num, maa)
     implicit none
 !
@@ -64,13 +64,13 @@ subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
     option = 'FLUX_FLUI_'//dir
     matel = '&&CA.MA'//dir
     maa2 = matel//'.RELR'
-    call memare('V', matel, moint(1:8), mate, ' ',&
+    call memare('V', matel, moint(1:8), mate, ' ', &
                 'FLUX_FLUI_ '//dir)
     call wkvect(maa2, 'V V K24', 1, jlva)
     lchout(1) = matel(1:8)//'.ME000'
     call codent(1, 'D0', lchout(1) (12:14))
-    call calcul('S', option, ligrmo, 1, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, 1, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
     zk24(jlva) = lchout(1)
     call jeecra(maa2, 'LONUTI', 1)
@@ -86,7 +86,7 @@ subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
 !
     maa = '&&CA.AA'//dir
 !
-    call assmam('V', maa, 1, matel, [1.d0],&
+    call assmam('V', maa, 1, matel, [1.d0], &
                 num, 'ZERO', 1)
 !
     call jedema()

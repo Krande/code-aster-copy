@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine flust1(melflu, typflu, base, nuor, amor,&
-                  amoc, freq, masg, fact, vite,&
+subroutine flust1(melflu, typflu, base, nuor, amor, &
+                  amoc, freq, masg, fact, vite, &
                   nbm, calcul, npv, nivpar, nivdef)
     implicit none
 ! DESCRIPTION :  CALCUL DES PARAMETRES DE COUPLAGE FLUIDE-STRUCTURE
@@ -107,7 +107,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
     integer :: lnoe, lprofv, lrho, lvale, neq, nt
     real(kind=8) :: pi, rval1
 !-----------------------------------------------------------------------
-    data  vale  /'                   .VALE'/
+    data vale/'                   .VALE'/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -164,11 +164,11 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
     call wkvect('&&FLUST1.TEMP.ZONE', 'V V I', 2*lnoe, lzone)
     if (icoupl .eq. 1) then
         call wkvect('&&FLUST1.TEMP.DEFM', 'V V R', nbm*lnoe, ldefm)
-    endif
+    end if
 !
 ! ---
-    call mdconf(typflu, base, k8b, nbm, lnoe,&
-                nuor, 0, indic, zi(lires), zr(lprofv),&
+    call mdconf(typflu, base, k8b, nbm, lnoe, &
+                nuor, 0, indic, zi(lires), zr(lprofv), &
                 zr(lrho), zr(ldefm), carac, zr(labsc))
 !
 !
@@ -179,32 +179,32 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
     call wkvect('&&FLUST1.TEMP.LAUX2', 'V V R', neq, laux2)
     call wkvect('&&FLUST1.TEMP.MASG', 'V V R', nbm, kmasg)
     call wkvect('&&FLUST1.POSITION.DDL', 'V V I', neq, lddl)
-    call pteddl('NUME_DDL', numddl, 1, depl, neq,&
-                list_equa = zi(lddl))
+    call pteddl('NUME_DDL', numddl, 1, depl, neq, &
+                list_equa=zi(lddl))
     do ieq = 0, neq-1
         zr(laux1+ieq) = zi(lddl+ieq)
     end do
-    call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
+    call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1, &
                 .true._1)
     do im = 1, nbm
         ior = nuor(im)
-        call rsexch('F', base, 'DEPL', ior, vale(1:19),&
+        call rsexch('F', base, 'DEPL', ior, vale(1:19), &
                     iret)
         call jeveuo(vale, 'L', lvale)
         rval1 = 0.0d0
         do ieq = 0, neq-1
-            rval1 = rval1 + zr(lvale+ieq)*zr(laux2+ieq)*zr(lvale+ieq)
+            rval1 = rval1+zr(lvale+ieq)*zr(laux2+ieq)*zr(lvale+ieq)
         end do
         zr(kmasg+im-1) = rval1
 !
-        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
+        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior, &
                     0, sjv=lfact, styp=k8b)
-        call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
+        call rsadpa(base, 'L', 1, 'MASS_GENE', ior, &
                     0, sjv=lmasg, styp=k8b)
         masg(im) = zr(lmasg)
-        fact(3*(im-1)+1) = zr(lfact ) * masg(im)
-        fact(3*(im-1)+2) = zr(lfact+1) * masg(im)
-        fact(3*(im-1)+3) = zr(lfact+2) * masg(im)
+        fact(3*(im-1)+1) = zr(lfact)*masg(im)
+        fact(3*(im-1)+2) = zr(lfact+1)*masg(im)
+        fact(3*(im-1)+3) = zr(lfact+2)*masg(im)
     end do
 !
 !
@@ -223,19 +223,19 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
             call wkvect('&&FLUST1.TEMP.AMFR', 'V V R', 2*nbm, iamfr)
             do im = 1, nbm
                 imod = nuor(im)
-                zr(iamfr+im-1) = 4.d0*pi*zr(ifreqi+imod-1)*amor(im)* zr(kmasg+im-1)
+                zr(iamfr+im-1) = 4.d0*pi*zr(ifreqi+imod-1)*amor(im)*zr(kmasg+im-1)
                 zr(iamfr+nbm+im-1) = zr(ifreqi+imod-1)
             end do
 !
             nt = 2
-            lvale = 2*nt*nt + 10*nt + 2
+            lvale = 2*nt*nt+10*nt+2
             call wkvect('&&FLUST1.TEMP.VALE', 'V V R', lvale, ivale)
 !
 !-------LANCEMENT DU CALCUL
 !
-            call pacouc(typflu, zr(lprofv), zr(lrho), vite, zr(ldefm),&
-                        zr(kmasg), freq, zr(iamfr), nbm, lnoe,&
-                        npv, zr(ivale), zi(lires), carac, zr(labsc),&
+            call pacouc(typflu, zr(lprofv), zr(lrho), vite, zr(ldefm), &
+                        zr(kmasg), freq, zr(iamfr), nbm, lnoe, &
+                        npv, zr(ivale), zi(lires), carac, zr(labsc), &
                         ier)
 !
         else
@@ -251,13 +251,13 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
                 end do
             end do
 !
-        endif
-    endif
+        end if
+    end if
     if (calcul(2)) then
-        call connor(melflu, typflu, zr(ifreqi), base, nuor,&
+        call connor(melflu, typflu, zr(ifreqi), base, nuor, &
                     amoc, carac, lnoe, nbm, zr(lprofv), &
                     zr(lrho), zr(labsc), mailla)
-    endif
+    end if
 !
 !
 !
@@ -265,10 +265,10 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 ! --- 5.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES ---
 !
     if (nivpar .eq. 1 .or. nivdef .eq. 1) then
-        call fluimp(1, nivpar, nivdef, melflu, typflu,&
-                    nuor, freq, zr( ifreqi), nbm, vite,&
+        call fluimp(1, nivpar, nivdef, melflu, typflu, &
+                    nuor, freq, zr(ifreqi), nbm, vite, &
                     npv, carac, calcul, amoc)
-    endif
+    end if
 !
 !     NETTOYAGE SUR LA VOLATILE
     call jedetr('&&FLUST1.TEMP.PROFV')

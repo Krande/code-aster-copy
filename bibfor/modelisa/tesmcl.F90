@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,9 +45,9 @@ subroutine tesmcl(icl, iv, cv, mtcl, irteti)
         if (mcl .eq. mtcl) then
             irteti = 0
             goto 9999
-        endif
-    endif
+        end if
+    end if
 !
     irteti = 1
-9999  continue
+9999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
-                  sdedx, sdedy, sdkdx, sdkdy, sdfdx,&
+subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk, &
+                  sdedx, sdedy, sdkdx, sdkdy, sdfdx, &
                   sdfdy, geom, jac)
 !
 !
@@ -47,23 +47,23 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
     sdydk = 0.d0
 !
     do i = 1, nno
-        sdxde = sdxde + geom(1,i)*sdfrde(kpg,i)
-        sdxdk = sdxdk + geom(1,i)*sdfrdk(kpg,i)
-        sdyde = sdyde + geom(2,i)*sdfrde(kpg,i)
-        sdydk = sdydk + geom(2,i)*sdfrdk(kpg,i)
+        sdxde = sdxde+geom(1, i)*sdfrde(kpg, i)
+        sdxdk = sdxdk+geom(1, i)*sdfrdk(kpg, i)
+        sdyde = sdyde+geom(2, i)*sdfrde(kpg, i)
+        sdydk = sdydk+geom(2, i)*sdfrdk(kpg, i)
     end do
 !
-    jac = sdxde*sdydk - sdxdk*sdyde
+    jac = sdxde*sdydk-sdxdk*sdyde
 !
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
-    endif
+    end if
 !
     do i = 1, nno
-        sdfdx(kpg,i) = (sdydk*sdfrde(kpg,i)-sdyde*sdfrdk(kpg,i))/jac
-        sdfdy(kpg,i) = (sdxde*sdfrdk(kpg,i)-sdxdk*sdfrde(kpg,i))/jac
+        sdfdx(kpg, i) = (sdydk*sdfrde(kpg, i)-sdyde*sdfrdk(kpg, i))/jac
+        sdfdy(kpg, i) = (sdxde*sdfrdk(kpg, i)-sdxdk*sdfrde(kpg, i))/jac
     end do
 !
     sdedx(kpg) = sdydk/jac

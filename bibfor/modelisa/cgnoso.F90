@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! ----------------------------------------------------------------------
 !
-    integer :: iret,  jnoeu, numori, numext, n1, iera
+    integer :: iret, jnoeu, numori, numext, n1, iera
     real(kind=8) :: tole
     character(len=8) :: noma, crit, nom1
     character(len=16) :: motfac, motcle(2), typmcl(2)
@@ -79,11 +79,11 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
     motcle(2) = 'NOEUD'
     typmcl(1) = 'GROUP_NO'
     typmcl(2) = 'NOEUD'
-    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc,&
+    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc, &
                 2, motcle, typmcl, lisnoe, nbno)
     if (nbno .le. 0) then
         call utmess('F', 'MODELISA3_99')
-    endif
+    end if
     call jeveuo(lisnoe, 'E', jnoeu)
 !
 ! --- RECUPERATION DES NOEUDS EXTREMITES :
@@ -101,9 +101,9 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- ON ORDONNE :
 !     ----------
-    call oreino(noma, zi(jnoeu), nbno, numori, numext,&
+    call oreino(noma, zi(jnoeu), nbno, numori, numext, &
                 vale, crit, tole, iera, iret)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
     call jedema()
 !

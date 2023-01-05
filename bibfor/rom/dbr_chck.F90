@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbr_chck(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR), intent(in) :: cmdPara
+    type(ROM_DS_ParaDBR), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ type(ROM_DS_ParaDBR), intent(in) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM19_3')
-    endif
+    end if
 !
     if (cmdPara%operation(1:3) .eq. 'POD') then
         call dbrChckPod(cmdPara%operation, cmdPara%paraPod, cmdPara%lReuse, cmdPara%base)
@@ -65,6 +65,6 @@ type(ROM_DS_ParaDBR), intent(in) :: cmdPara
         call dbrChckOrtho(cmdPara%paraOrtho, cmdPara%lReuse)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

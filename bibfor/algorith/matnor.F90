@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matnor(fami, kpg, ksp, imat, nmat,&
-                  poum, coefel, coefpl, ndt, nvi,&
+subroutine matnor(fami, kpg, ksp, imat, nmat, &
+                  poum, coefel, coefpl, ndt, nvi, &
                   nr)
     implicit none
 !     NORTON   : RECUPERATION DU MATERIAU A T ET T+DT
@@ -56,21 +56,21 @@ subroutine matnor(fami, kpg, ksp, imat, nmat,&
 !
 ! -   RECUPERATION MATERIAU A (T)
 !
-    call rcvalb(fami, kpg, ksp, poum, imat,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imat, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 3, nomc(1), coefel, cerr(1), 0)
 !
     if (cerr(3) .ne. 0) coefel(3) = 0.d0
 !
-    call rcvalb(fami, kpg, ksp, poum, imat,&
-                ' ', 'LEMAITRE', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imat, &
+                ' ', 'LEMAITRE', 0, ' ', [0.d0], &
                 2, nomc(4), coefpl, cerr(4), 1)
 !
 !     NOMBRE DE COEF MATERIAU
-    coefpl(nmat)=2
-    nvi=7
+    coefpl(nmat) = 2
+    nvi = 7
 !
 !     LA LOI 'NORTON' NE STOCKE PAS L'INDICATEUR DE PLASTICITE
-    nr = ndt + nvi
+    nr = ndt+nvi
 !
 end subroutine

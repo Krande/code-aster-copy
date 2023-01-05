@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0359(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,16 +60,16 @@ character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    axi = lteatt('AXIS','OUI')
+    axi = lteatt('AXIS', 'OUI')
 !
 ! - Get element parameters
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
-    ndim = ndim + 1
+    ndim = ndim+1
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
     call eiinit(nomte, iu, im, it)
@@ -80,7 +80,7 @@ character(len=16) :: option, nomte
     call jevech('PCAMASS', 'L', icamas)
     if (zr(icamas) .eq. -1.d0) then
         call utmess('F', 'JOINT1_47')
-    endif
+    end if
 !
 !     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
 !
@@ -101,15 +101,15 @@ character(len=16) :: option, nomte
 !
 !    NOMBRE DE VARIABLES INTERNES
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 !
 ! - PILOTAGE PRED_ELAS
 !
-    call pipeei(ndim, axi, nno1, nno2, npg,&
-                zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom),&
-                ang, zi(imate), zk16(icompo), lgpg, zr(iddlm),&
-                zr(iddld), zr(iddl0), zr(iddl1), zr(ictau), zr(ivarim),&
+    call pipeei(ndim, axi, nno1, nno2, npg, &
+                zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom), &
+                ang, zi(imate), zk16(icompo), lgpg, zr(iddlm), &
+                zr(iddld), zr(iddl0), zr(iddl1), zr(ictau), zr(ivarim), &
                 iu, im, zr(icopil))
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
+subroutine cesexi(stop, jcesd, jcesl, ima, ipt, &
                   ispt, icmp, iad)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -54,25 +54,25 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
 !
 !
     nbma = zi(jcesd-1+1)
-    if ((ima.le.0) .or. (ima.gt.nbma)) goto 10
+    if ((ima .le. 0) .or. (ima .gt. nbma)) goto 10
 !
-    npt = zi(jcesd-1+5+4* (ima-1)+1)
-    nspt = zi(jcesd-1+5+4* (ima-1)+2)
-    ncmp = zi(jcesd-1+5+4* (ima-1)+3)
-    decal = zi(jcesd-1+5+4* (ima-1)+4)
+    npt = zi(jcesd-1+5+4*(ima-1)+1)
+    nspt = zi(jcesd-1+5+4*(ima-1)+2)
+    ncmp = zi(jcesd-1+5+4*(ima-1)+3)
+    decal = zi(jcesd-1+5+4*(ima-1)+4)
 !
-    if ((ipt.le.0) .or. (ipt.gt.npt)) goto 10
-    if ((ispt.le.0) .or. (ispt.gt.nspt)) goto 10
-    if ((icmp.le.0) .or. (icmp.gt.ncmp)) goto 10
+    if ((ipt .le. 0) .or. (ipt .gt. npt)) goto 10
+    if ((ispt .le. 0) .or. (ispt .gt. nspt)) goto 10
+    if ((icmp .le. 0) .or. (icmp .gt. ncmp)) goto 10
 !
 !
-    iad1 = decal + (ipt-1)*nspt*ncmp + (ispt-1)*ncmp + icmp
+    iad1 = decal+(ipt-1)*nspt*ncmp+(ispt-1)*ncmp+icmp
 !
     if (zl(jcesl-1+iad1)) then
         iad = iad1
     else
         iad = -iad1
-    endif
+    end if
     goto 60
 !
 10  continue
@@ -80,17 +80,17 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
     if (stop .eq. 'C') then
         iad = 0
 !
-    else if (stop.eq.'S') then
+    else if (stop .eq. 'S') then
 !
         call codent(ima, 'D', k8mail)
         call codent(ipt, 'D', k8pt)
         call codent(ispt, 'D', k8spt)
         call codent(icmp, 'D', k8cmp)
 !
-        if ((ima.le.0) .or. (ima.gt.nbma)) goto 20
-        if ((ipt.le.0) .or. (ipt.gt.npt)) goto 30
-        if ((ispt.le.0) .or. (ispt.gt.nspt)) goto 40
-        if ((icmp.le.0) .or. (icmp.gt.ncmp)) goto 50
+        if ((ima .le. 0) .or. (ima .gt. nbma)) goto 20
+        if ((ipt .le. 0) .or. (ipt .gt. npt)) goto 30
+        if ((ispt .le. 0) .or. (ispt .gt. nspt)) goto 40
+        if ((icmp .le. 0) .or. (icmp .gt. ncmp)) goto 50
 !
 !
 20      continue
@@ -117,7 +117,7 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 60  continue
 end subroutine

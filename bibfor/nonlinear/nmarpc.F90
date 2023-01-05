@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine nmarpc(ds_energy, nume_reuse, time_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/tbajli.h"
 !
-type(NL_DS_Energy), intent(in) :: ds_energy
-integer, intent(in) :: nume_reuse
-real(kind=8), intent(in) :: time_curr
+    type(NL_DS_Energy), intent(in) :: ds_energy
+    integer, intent(in) :: nume_reuse
+    real(kind=8), intent(in) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ real(kind=8), intent(in) :: time_curr
     integer :: nb_cols, i_col, i_para_real
     integer :: vali(1)
     character(len=8) :: k8bid
-    complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
+    complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(7), vale_r
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
@@ -60,7 +60,7 @@ real(kind=8), intent(in) :: time_curr
 !
 ! - Get table parameters
 !
-    nb_cols  = table%nb_cols
+    nb_cols = table%nb_cols
 !
 ! - Set values
 !
@@ -70,21 +70,21 @@ real(kind=8), intent(in) :: time_curr
         l_acti = table%l_cols_acti(i_col)
         if (l_acti) then
             if (column%name .eq. 'NUME_REUSE') then
-                vali(1)           = nume_reuse
+                vali(1) = nume_reuse
             elseif (column%name .eq. 'INST') then
-                i_para_real       = i_para_real + 1
+                i_para_real = i_para_real+1
                 valr(i_para_real) = time_curr
             else
-                vale_r            = table%cols(i_col)%vale_real
-                i_para_real       = i_para_real + 1
+                vale_r = table%cols(i_col)%vale_real
+                i_para_real = i_para_real+1
                 valr(i_para_real) = vale_r
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - Add line in table
 !
-    call tbajli(table%table_io%tablName, table%table_io%nbPara, table%table_io%paraName,&
+    call tbajli(table%table_io%tablName, table%table_io%nbPara, table%table_io%paraName, &
                 vali, valr, [c16bid], k8bid, 0)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 subroutine te0477(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
-call utmess('F', 'FERMETUR_8')
+    call utmess('F', 'FERMETUR_8')
 !
 end subroutine

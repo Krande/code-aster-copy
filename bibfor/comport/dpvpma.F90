@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
-                  materf, matcst, ndt, ndi, nvi,&
+subroutine dpvpma(mod, imat, nbmat, tempd, materd, &
+                  materf, matcst, ndt, ndi, nvi, &
                   indal)
     implicit none
 #include "asterfort/rcvala.h"
@@ -49,9 +49,9 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
     integer :: cerr(17)
     character(len=16) :: nomc(17)
 ! =================================================================
-    parameter ( trois  =  3.0d0 )
-    parameter ( deux   =  2.0d0 )
-    parameter ( un     =  1.0d0 )
+    parameter(trois=3.0d0)
+    parameter(deux=2.0d0)
+    parameter(un=1.0d0)
 ! =================================================================
 ! --- DEFINITION PARAMETRES MATERIAU ELAS -------------------------
 ! =================================================================
@@ -75,40 +75,40 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
 !
     do i = 1, nbmat
         do j = 1, 2
-            materd(i,j) = 0.d0
+            materd(i, j) = 0.d0
         end do
     end do
 !
 ! =================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
-    call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                [tempd], 3, nomc(1), materd(1, 1), cerr(1),&
+    call rcvala(imat, ' ', 'ELAS', 1, 'TEMP', &
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1), &
                 0)
-    indal=1
-    if (cerr(3) .ne. 0) indal=0
+    indal = 1
+    if (cerr(3) .ne. 0) indal = 0
 !
-    call rcvala(imat, ' ', 'VISC_DRUC_PRAG', 1, 'TEMP',&
-                [tempd], 14, nomc(4), materd(1, 2), cerr(4),&
+    call rcvala(imat, ' ', 'VISC_DRUC_PRAG', 1, 'TEMP', &
+                [tempd], 14, nomc(4), materd(1, 2), cerr(4), &
                 0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
-    e = materd(1,1)
-    nu = materd(2,1)
-    mu = e / (deux*(un+nu))
-    k = e / (trois*(un-deux*nu))
+    e = materd(1, 1)
+    nu = materd(2, 1)
+    mu = e/(deux*(un+nu))
+    k = e/(trois*(un-deux*nu))
 ! =================================================================
 ! --- STOCKAGE DES MODULES CALCULES COMME PARAMETRES MATERIAU -----
 ! =================================================================
-    materd(4,1) = mu
-    materd(5,1) = k
+    materd(4, 1) = mu
+    materd(5, 1) = k
 ! =================================================================
 ! --- DEFINITION D'UN MATERIAU FINAL ------------------------------
 ! =================================================================
     do ii = 1, nbmat
-        materf(ii,1) = materd(ii,1)
-        materf(ii,2) = materd(ii,2)
+        materf(ii, 1) = materd(ii, 1)
+        materf(ii, 2) = materd(ii, 2)
     end do
     matcst = 'OUI'
 ! =================================================================
@@ -117,10 +117,10 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
     if (mod(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-    else if ((mod(1:6).eq.'D_PLAN') .or. (mod(1:4).eq.'AXIS')) then
+    else if ((mod(1:6) .eq. 'D_PLAN') .or. (mod(1:4) .eq. 'AXIS')) then
         ndt = 4
         ndi = 3
-    endif
+    end if
 ! =================================================================
 ! --- NOMBRE DE VARIABLES INTERNES --------------------------------
 ! =================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff,&
+subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
                    typm)
     implicit none
 #include "jeveux.h"
@@ -93,9 +93,9 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff,&
 !     ------------------------------------------------------------------
     motcle(1) = 'GROUP_MA'
     typmcl(1) = 'GROUP_MA'
-    mafour='&&FONMAI.MALIGNE'
-    call cgnoor(mafour, nomail, motfac, iocc, 1,&
-                motcle, typmcl, typfon, nbma, ndorig,&
+    mafour = '&&FONMAI.MALIGNE'
+    call cgnoor(mafour, nomail, motfac, iocc, 1, &
+                motcle, typmcl, typfon, nbma, ndorig, &
                 ndextr, typm, vecori)
     call jeveuo(mafour, 'L', jcour2)
 !
@@ -111,28 +111,28 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff,&
         call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, scal=nogrp, nbret=n1)
-            call utnono(' ', nomail, 'MAILLE', nogrp, nomma,&
+            call utnono(' ', nomail, 'MAILLE', nogrp, nomma, &
                         iret)
             if (iret .eq. 10) then
                 call utmess('F', 'RUPTURE0_41', sk=nogrp)
             else if (iret .eq. 1) then
                 call utmess('F', 'RUPTURE0_45', sk=ndorig)
-            endif
+            end if
             call jenonu(jexnom(nommai, nomma), numma)
-        endif
+        end if
 !
         if (numma .eq. 0) then
             call utmess('F', 'RUPTURE0_42')
         else
             call jenonu(jexnom(nomnoe, ndorig), numno)
-            call i2extf(numma, 1, conec(1:15), typp(1:16), nig,&
+            call i2extf(numma, 1, conec(1:15), typp(1:16), nig, &
                         nid)
-            if ((numno.ne.nig) .and. (numno.ne.nid)) then
+            if ((numno .ne. nig) .and. (numno .ne. nid)) then
                 call utmess('F', 'RUPTURE0_43')
-            endif
+            end if
             trouv = 0
             do im = 1, nbma
-                if (numma .eq. zi(jcour2-1 + im)) trouv = im
+                if (numma .eq. zi(jcour2-1+im)) trouv = im
             end do
             if (trouv .eq. 0) then
                 call utmess('F', 'RUPTURE0_44', sk=nomma)
@@ -142,24 +142,24 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff,&
 !
                 AS_ALLOCATE(vi=maillestriees, size=3*nbma)
                 do im = trouv, nbma
-                    maillestriees(im+1-trouv) = zi(jcour2-1 + im)
+                    maillestriees(im+1-trouv) = zi(jcour2-1+im)
                 end do
                 do im = 1, trouv-1
-                    maillestriees(im+1+nbma-trouv) = zi(jcour2-1 + im)
+                    maillestriees(im+1+nbma-trouv) = zi(jcour2-1+im)
                 end do
                 do im = 1, nbma
-                    zi(jcour2-1 + im)=maillestriees(im)
+                    zi(jcour2-1+im) = maillestriees(im)
                 end do
                 AS_DEALLOCATE(vi=maillestriees)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !     ------------------------------------------------------------------
 !     --- ORDONNANCEMENT DES NOEUDS EN FOND DE FISSURE
 !     ------------------------------------------------------------------
     mesnoe = '&&FONMAI.NOEUD'
-    call ornofd(mafour, nomail, nbma, mesnoe, ndorig,&
+    call ornofd(mafour, nomail, nbma, mesnoe, ndorig, &
                 ndextr, 'V', vecori)
     noeord = resu//'.FOND.NOEU'
     call jelira(mesnoe, 'LONMAX', nbnoff)
@@ -167,8 +167,8 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff,&
 !
     call wkvect(noeord, 'G V K8', nbnoff, idlino)
     do i = 1, nbnoff
-        call jenuno(jexnum(nomail//'.NOMNOE', zi(idnono-1 + i)), noeud)
-        zk8(idlino-1 + i) = noeud
+        call jenuno(jexnum(nomail//'.NOMNOE', zi(idnono-1+i)), noeud)
+        zk8(idlino-1+i) = noeud
     end do
 !
 !     ------------------------------------------------------------------

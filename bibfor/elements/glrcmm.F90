@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine glrcmm(zimat, matr, ep, surfgp, p,&
-                  epst, deps, dsig, ecr, delas,&
+subroutine glrcmm(zimat, matr, ep, surfgp, p, &
+                  epst, deps, dsig, ecr, delas, &
                   dsidep, crit, codret)
     implicit none
 !
@@ -83,34 +83,34 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
 !
     if (ecr(12) .lt. 5.d0) then
         do i = 1, 3
-            vglob(i) = ecr(10 + i)
+            vglob(i) = ecr(10+i)
         end do
         vloc = matmul(p, vglob)
 !
-        alphor = atan2(vloc(2),vloc(1))
+        alphor = atan2(vloc(2), vloc(1))
 !
         ecr(11) = alphor
         ecr(12) = 10.d0
         ecr(13) = 10.d0
     else
         alphor = ecr(11)
-    endif
+    end if
 !
 !     MATRICE DE PASSATE ORTHO -> LOCAL
-    q(1,1) = cos(alphor)
-    q(2,1) = sin(alphor)
-    q(1,2) = -q(2,1)
-    q(2,2) = q(1,1)
+    q(1, 1) = cos(alphor)
+    q(2, 1) = sin(alphor)
+    q(1, 2) = -q(2, 1)
+    q(2, 2) = q(1, 1)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    nomres(1)='MPCST'
+    nomres(1) = 'MPCST'
 !
-    call rcvalb(fami, kpg, spt, poum, zimat,&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, zimat, &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, nomres, valres, codres, 1)
 !
     if (valres(1) .eq. 0.d0) then
@@ -118,8 +118,8 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
         nomres(2) = 'MINMP1'
         nomres(3) = 'MAXMP2'
         nomres(4) = 'MINMP2'
-        call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 0, ' ', [r8bid],&
+        call rcvalb(fami, kpg, spt, poum, zimat, &
+                    ' ', phenom, 0, ' ', [r8bid], &
                     4, nomres, valres, codres, 1)
         maxmp(1) = valres(1)
         maxmp(2) = valres(3)
@@ -136,38 +136,38 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
         nomres(8) = 'MINMP2'
 !
         do i = 1, 2
-            call rcvalb(fami, kpg, spt, poum, zimat,&
-                        ' ', phenom, 1, 'X ', [0.d0],&
+            call rcvalb(fami, kpg, spt, poum, zimat, &
+                        ' ', phenom, 1, 'X ', [0.d0], &
                         2, nomres(2*(i-1)+1), valres, codres, 1)
             mp1n0 = valres(1)
             mp2n0 = valres(2)
 !
-            call rcvalb(fami, kpg, spt, poum, zimat,&
-                        ' ', phenom, 0, ' ', [r8bid],&
+            call rcvalb(fami, kpg, spt, poum, zimat, &
+                        ' ', phenom, 0, ' ', [r8bid], &
                         2, nomres(2*(i-1)+5), valres, codres, 1)
             maxmp(i) = valres(1)
             minmp(i) = valres(2)
 !
-            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or.&
-                (maxmp(i)- minmp(i) .le. 0.d0)) then
+            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or. &
+                (maxmp(i)-minmp(i) .le. 0.d0)) then
                 call utmess('F', 'ELEMENTS_87')
-            endif
+            end if
         end do
-    endif
+    end if
 !
     nomres(1) = 'NORMM'
     nomres(2) = 'NORMN'
-    call rcvalb(fami, kpg, spt, poum, zimat,&
-                ' ', phenom, 0, ' ', [r8bid],&
+    call rcvalb(fami, kpg, spt, poum, zimat, &
+                ' ', phenom, 0, ' ', [r8bid], &
                 2, nomres, valres, codres, 0)
     normm = valres(1)
     normn = valres(2)
 !
 !     ROUTINE DE POST ET PRE TRAITEMENT
 !     POUR L INTEGRATION DE LA LOI DE COMPORTEMENT GLRC_DAMAGE
-    call glrcdd(zimat, maxmp, minmp, matr, ep,&
-                surfgp, q, epst, deps, dsig,&
-                ecr, delas, dsidep, normm, normn,&
+    call glrcdd(zimat, maxmp, minmp, matr, ep, &
+                surfgp, q, epst, deps, dsig, &
+                ecr, delas, dsidep, normm, normn, &
                 crit, codret)
 !
 !

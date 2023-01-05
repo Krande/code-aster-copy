@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,20 +18,20 @@
 ! aslint: disable=W1306,W1504
 !
 subroutine aseihm(ds_thm, option, &
-                  lSigm, lVari, lMatr, lVect,&
-                  l_axi, ndim, nno1, nno2,&
-                  npi, npg, dimuel, dimdef, dimcon,&
-                  nbvari, j_mater, iu, ip, ipf,&
-                  iq, mecani, press1, press2, tempe,&
-                  vff1, vff2, dffr2, time_prev, time_curr,&
-                  deplm, deplp, sigm, sigp, varim,&
-                  varip, nomail, wref, geom, ang,&
-                  compor, l_steady, vectu, matuu,&
+                  lSigm, lVari, lMatr, lVect, &
+                  l_axi, ndim, nno1, nno2, &
+                  npi, npg, dimuel, dimdef, dimcon, &
+                  nbvari, j_mater, iu, ip, ipf, &
+                  iq, mecani, press1, press2, tempe, &
+                  vff1, vff2, dffr2, time_prev, time_curr, &
+                  deplm, deplp, sigm, sigp, varim, &
+                  varip, nomail, wref, geom, ang, &
+                  compor, l_steady, vectu, matuu, &
                   retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/coeihm.h"
@@ -41,7 +41,7 @@ implicit none
 #include "asterfort/thmGetBehaviourVari.h"
 #include "asterfort/thmGetBehaviourChck.h"
 !
-aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
+    aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
 !......................................................................
 !
 !     BUT:  CALCUL DU VECTEUR FORCES INTERNES ELEMENTAIRE, DES
@@ -143,7 +143,7 @@ aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
 !
 ! - Get initial parameters (THM_INIT)
 !
-    call thmGetParaInit(j_mater, ds_thm, l_check_ = ASTER_TRUE)
+    call thmGetParaInit(j_mater, ds_thm, l_check_=ASTER_TRUE)
 !
 ! =====================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU ET OPTION ---
@@ -165,12 +165,12 @@ aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
 ! --- INITIALISATION DE VECTU, MATUU A 0 SUIVANT OPTION ----------------
 ! ======================================================================
     if (lVect) then
-        vectu(:)=0.d0
-    endif
+        vectu(:) = 0.d0
+    end if
 !
     if (lMatr) then
-        matuu(:)=0.d0
-    endif
+        matuu(:) = 0.d0
+    end if
 !
 ! =====================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------
@@ -182,21 +182,21 @@ aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
 ! --- CALCUL DE LA MATRICE DE PASSAGE DDL -> DEFORMATIONS GENERALISEES
 ! =====================================================================
 !
-        call matthm(ds_thm, ndim, l_axi, nno1, nno2, dimuel,&
-                    dimdef, iu, ip, ipf, iq,&
-                    addep1,&
-                    addlh1, vff1(1, kpi), vff2(1, kpi), dffr2(1, 1, kpi), wref(kpi),&
+        call matthm(ds_thm, ndim, l_axi, nno1, nno2, dimuel, &
+                    dimdef, iu, ip, ipf, iq, &
+                    addep1, &
+                    addlh1, vff1(1, kpi), vff2(1, kpi), dffr2(1, 1, kpi), wref(kpi), &
                     geom, ang, wi, q)
 !
 ! =====================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=QU -----------------------
 ! =====================================================================
         do i = 1, dimdef
-            defgem(i)=0.d0
-            defgep(i)=0.d0
+            defgem(i) = 0.d0
+            defgep(i) = 0.d0
             do j = 1, dimuel
-                defgem(i)=defgem(i)+q(i,j)*deplm(j)
-                defgep(i)=defgep(i)+q(i,j)*deplp(j)
+                defgem(i) = defgem(i)+q(i, j)*deplm(j)
+                defgep(i) = defgep(i)+q(i, j)*deplp(j)
             end do
         end do
 !
@@ -205,16 +205,16 @@ aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
 ! --- INTEGRATION DES LOIS DE COMPORTEMENT ----------------------------
 ! =====================================================================
 !
-        call coeihm(ds_thm, option, l_steady,&
-                    lSigm, lVari, lMatr, lVect,&
-                    j_mater,&
-                    time_prev, time_curr, nomail,&
-                    ndim, dimdef, dimcon, nbvari,&
-                    addeme, adcome,&
-                    addep1, adcp11, adcp12, addlh1, adcop1,&
-                    addep2, adcp21, adcp22, addete, adcote,&
-                    defgem, defgep, kpi, npg, npi,&
-                    sigm(1, kpi), sigp(1, kpi), varim(1, kpi), varip(1, kpi), res,&
+        call coeihm(ds_thm, option, l_steady, &
+                    lSigm, lVari, lMatr, lVect, &
+                    j_mater, &
+                    time_prev, time_curr, nomail, &
+                    ndim, dimdef, dimcon, nbvari, &
+                    addeme, adcome, &
+                    addep1, adcp11, adcp12, addlh1, adcop1, &
+                    addep2, adcp21, adcp22, addete, adcote, &
+                    defgem, defgep, kpi, npg, npi, &
+                    sigm(1, kpi), sigp(1, kpi), varim(1, kpi), varip(1, kpi), res, &
                     drde, retcom)
 !
 ! =====================================================================
@@ -224,26 +224,26 @@ aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
         if (lVect) then
             do k = 1, dimuel
                 do i = 1, dimdef
-                    vectu(k)=vectu(k)+wi*q(i,k)*res(i)
+                    vectu(k) = vectu(k)+wi*q(i, k)*res(i)
                 end do
             end do
-        endif
+        end if
 !
         if (lMatr) then
             km = 1
             do k = 1, dimuel
                 do m = 1, dimuel
-                    matri=0.d0
+                    matri = 0.d0
                     do i = 1, dimdef
                         do j = 1, dimdef
-                            matri = matri + wi*q(i,k)*drde(i,j)*q(j,m)
+                            matri = matri+wi*q(i, k)*drde(i, j)*q(j, m)
                         end do
                     end do
-                    matuu(km) = matuu(km) + matri
-                    km = km + 1
+                    matuu(km) = matuu(km)+matri
+                    km = km+1
                 end do
             end do
-        endif
+        end if
 !
     end do
 !

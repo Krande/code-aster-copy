@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utjac(l2d, geom, ipg, idfde, niv,&
+subroutine utjac(l2d, geom, ipg, idfde, niv, &
                  ifm, nno, jacob)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -54,19 +54,19 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 !
 ! INIT
     if (l2d) then
-        idfdk = idfde + 1
+        idfdk = idfde+1
     else
-        idfdn = idfde + 1
-        idfdk = idfdn + 1
-    endif
+        idfdn = idfde+1
+        idfdk = idfdn+1
+    end if
 !
     if (l2d) then
 ! CAS 2D
         kp = 2*(ipg-1)*nno
-        dxde=0.d0
-        dxdk=0.d0
-        dyde=0.d0
-        dydk=0.d0
+        dxde = 0.d0
+        dxdk = 0.d0
+        dyde = 0.d0
+        dydk = 0.d0
         do i = 1, nno
             i1 = 2*(i-1)+1
             xp = geom(i1)
@@ -78,13 +78,13 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
             dyde = dyde+yp*dfrde
             dydk = dydk+yp*dfrdk
         end do
-        jacob=dxde*dydk-dxdk*dyde
+        jacob = dxde*dydk-dxdk*dyde
 !
     else
 ! CAS 3D
 !
         kp = 3*(ipg-1)*nno
-        g(:,:) = 0.d0
+        g(:, :) = 0.d0
         do i = 1, nno
             i1 = 3*(i-1)
             dfrde = zr(idfde+kp+i1)
@@ -92,20 +92,20 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
             dfrdn = zr(idfdn+kp+i1)
             do j = 1, 3
                 xp = geom(i1+j)
-                g(1,j) = g(1,j) + xp * dfrde
-                g(2,j) = g(2,j) + xp * dfrdn
-                g(3,j) = g(3,j) + xp * dfrdk
+                g(1, j) = g(1, j)+xp*dfrde
+                g(2, j) = g(2, j)+xp*dfrdn
+                g(3, j) = g(3, j)+xp*dfrdk
             end do
         end do
-        j11 = g(2,2) * g(3,3) - g(2,3) * g(3,2)
-        j21 = g(3,1) * g(2,3) - g(2,1) * g(3,3)
-        j31 = g(2,1) * g(3,2) - g(3,1) * g(2,2)
-        jacob = g(1,1)*j11 + g(1,2)*j21 + g(1,3)*j31
+        j11 = g(2, 2)*g(3, 3)-g(2, 3)*g(3, 2)
+        j21 = g(3, 1)*g(2, 3)-g(2, 1)*g(3, 3)
+        j31 = g(2, 1)*g(3, 2)-g(3, 1)*g(2, 2)
+        jacob = g(1, 1)*j11+g(1, 2)*j21+g(1, 3)*j31
 !
-    endif
+    end if
 !
 ! CALCUL DU SIGNE DU JACOBIEN + AFFICHAGE SI NECESSAIRE
-    jacob = sign(1.d0,jacob)
-    if (niv .eq. 2) write(ifm,*)'ORIENTATION MAILLE ',jacob
+    jacob = sign(1.d0, jacob)
+    if (niv .eq. 2) write (ifm, *) 'ORIENTATION MAILLE ', jacob
 !
 end subroutine

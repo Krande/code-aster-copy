@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcjpla(fami, kpg, ksp, loi, mod,&
-                  nr, imat, nmat, mater, nvi,&
-                  deps, sigf, vin, dsde, sigd,&
-                  vind, vp, vecp, theta, dt,&
+subroutine lcjpla(fami, kpg, ksp, loi, mod, &
+                  nr, imat, nmat, mater, nvi, &
+                  deps, sigf, vin, dsde, sigd, &
+                  vind, vp, vecp, theta, dt, &
                   devg, devgii, codret)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 !       MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT ELASTO-PLASTIQUE
 !       VISCO-PLASTIQUE EN VITESSE A T+DT OU T
 !       IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
@@ -66,22 +66,22 @@ subroutine lcjpla(fami, kpg, ksp, loi, mod,&
     codret = 0
 !
     if (loi(1:8) .eq. 'ROUSS_PR' .or. loi(1:10) .eq. 'ROUSS_VISC') then
-        call rsljpl(fami, kpg, ksp, loi, imat,&
-                    nmat, mater, sigf, vin, vind,&
+        call rsljpl(fami, kpg, ksp, loi, imat, &
+                    nmat, mater, sigf, vin, vind, &
                     deps, theta, dt, dsde)
 !
     else if (loi(1:6) .eq. 'LAIGLE') then
-        call lgljpl(mod, nmat, mater, sigf, devg,&
+        call lgljpl(mod, nmat, mater, sigf, devg, &
                     devgii, vin, dsde, codret)
 !
-        elseif ( (loi(1:10) .eq. 'HOEK_BROWN').or. (loi(1:14) .eq.&
-    'HOEK_BROWN_EFF') )then
-        call hbrjpl(mod, nmat, mater, sigf, vin,&
+    elseif ((loi(1:10) .eq. 'HOEK_BROWN') .or. (loi(1:14) .eq. &
+                                                'HOEK_BROWN_EFF')) then
+        call hbrjpl(mod, nmat, mater, sigf, vin, &
                     vind, vp, vecp, dsde)
 !
     else if (loi(1:7) .eq. 'IRRAD3M') then
-        call irrjpl(mod, nmat, mater, sigf, vind,&
+        call irrjpl(mod, nmat, mater, sigf, vind, &
                     vin, dsde)
-    endif
+    end if
 !
 end subroutine

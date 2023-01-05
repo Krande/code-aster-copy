@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
-                  vins, nr, yd, dy, r,&
-                  indi, iter, itmax, intg, toler,&
+subroutine hujcvg(nmat, mater, nvi, vind, vinf, &
+                  vins, nr, yd, dy, r, &
+                  indi, iter, itmax, intg, toler, &
                   bnews, mtrac, ye, lreli, iret)
 ! person_in_charge: alexandre.foucault at edf.fr
 ! aslint: disable=W1306
@@ -70,17 +70,17 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     aster_logical :: tracti, noconv, negtra, prox(4), proxc(4), modif
     aster_logical :: neglam(3), cycl, euler, ltry, impose, probt
 !
-    parameter (ndi  = 3   )
-    parameter (ndt  = 6   )
-    parameter (zero = 0.d0)
-    parameter (un   = 1.d0)
-    parameter (deux = 2.d0)
-    parameter (cinq = 5.d0)
+    parameter(ndi=3)
+    parameter(ndt=6)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(deux=2.d0)
+    parameter(cinq=5.d0)
 !     ----------------------------------------------------------------
 ! --- PARAMETRES MATERIAU
-    e0 = mater(1,1)
-    pref = mater(8,2)
-    ptrac = mater(21,2)
+    e0 = mater(1, 1)
+    pref = mater(8, 2)
+    ptrac = mater(21, 2)
     rtrac = abs(pref*1.d-6)
 !
     tracti = .false.
@@ -93,14 +93,14 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     nbmect = 0
     do k = 1, 7
         if (indi(k) .gt. 0) then
-            nbmect = nbmect + 1
-            if (indi(k) .le. 8) nbmeca = nbmeca + 1
-        endif
+            nbmect = nbmect+1
+            if (indi(k) .le. 8) nbmeca = nbmeca+1
+        end if
     end do
 !
 ! --- MISE A L'ECHELLE DES CONTRAINTES ET VARIABLES CONTENUES DANS YF
 ! --- SIGMA * E0, R * E0/PREF
-    yf(1:nr) = yd(1:nr) + dy(1:nr)
+    yf(1:nr) = yd(1:nr)+dy(1:nr)
 !
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
     ydt(1:nr) = yd(1:nr)
@@ -121,7 +121,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     err = norm2(r)
 !
 ! --- INCREMENT DU NOMBRE D'INTEGRATION COURANTE TENTEE
-    if(iter.eq.1)intg = intg + 1
+    if (iter .eq. 1) intg = intg+1
 !
 ! --- INCREMENT DU NOMBRE D'ITERATIONS LOCALES
     vinf(35) = vinf(35)+1
@@ -136,7 +136,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         if (intg .gt. 5) then
             iret = 3
             goto 999
-        endif
+        end if
 ! -------------------------
 ! ----   CONVERVENCE   ----
 ! -------------------------
@@ -147,30 +147,30 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! --- NON CONVERGENCE : ITERATION SUIVANTE ---
 ! --------------------------------------------
             iret = 1
-            if ((nbmeca.ne.nbmect) .and. (nbmeca.eq.0)) then
+            if ((nbmeca .ne. nbmect) .and. (nbmeca .eq. 0)) then
                 if (err .gt. 1d5) then
                     iret = 3
                     goto 999
-                endif
+                end if
             else
                 do i = 1, 3
                     call hujprj(i, yft, dev, pf, qf)
                     if (((pf+rtrac-ptrac)/abs(pref)) .ge. -r8prem()) then
                         do j = 1, nbmeca
-                            if ((indi(j).eq.i) .or. (indi(j).eq.(i+4))) then
+                            if ((indi(j) .eq. i) .or. (indi(j) .eq. (i+4))) then
                                 tracti = .true.
                                 goto 999
-                            endif
+                            end if
                         end do
-                    endif
+                    end if
                     if (abs(pf) .gt. e0*1.d1) then
                         iret = 3
                         goto 999
-                    endif
+                    end if
                 end do
-            endif
+            end if
             goto 1000
-        endif
+        end if
     else
 ! --- SI NEWTON_RELI ACTIF - ON LE RETIRE
         if (lreli) then
@@ -181,10 +181,10 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! --- ITERATIONS MAXI ATTEINT
             iret = 3
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
- 60 continue
+60  continue
 ! ---------------------------------------
 ! --- CONTROLE DE LA SOLUTION OBTENUE ---
 ! ---------------------------------------
@@ -209,8 +209,8 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! ----------------------------------------------
                 bnews(indi(k)-8) = .true.
                 negtra = .true.
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! -------------------------------------------------------
@@ -221,11 +221,11 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         if (intg .gt. 5) then
             iret = 3
             goto 1000
-        else if (nbmeca.ne.0) then
+        else if (nbmeca .ne. 0) then
             vinf(1:nvi) = vind(1:nvi)
-        endif
+        end if
         iret = 2
-    endif
+    end if
 !
 ! -------------------------------------------------------
 ! --- ON CONTROLE QUE LES PRESSIONS ISOTROPES PAR PLAN
@@ -235,18 +235,18 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     do i = 1, ndi
         call hujprj(i, yft, dev, pf, qf)
         if (((pf+rtrac-ptrac)/abs(pref)) .gt. zero) then
-            noconv=.true.
+            noconv = .true.
             bnews(i) = .false.
             iret = 2
-        endif
+        end if
     end do
 !
 ! -------------------------------------------------------
 ! --- SI TRACTION DETECTEE ET NON CONVERGENCE, ON IMPOSE
 ! --- ETAT DE CONTRAINTES ISOTROPE
 ! -------------------------------------------------------
-    if ((noconv) .and. (nbmect.ne.nbmeca)) then
-        noconv=.false.
+    if ((noconv) .and. (nbmect .ne. nbmeca)) then
+        noconv = .false.
         do i = 1, 3
             vind(23+i) = zero
             vind(27+i) = zero
@@ -264,7 +264,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         end do
         vinf(1:nvi) = vind(1:nvi)
         iret = 0
-    endif
+    end if
 !
     goto 1000
 !
@@ -280,11 +280,11 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         do i = 1, ndi
             call hujprj(i, ydt, dev, pf, qf)
             if (((pf+deux*rtrac-ptrac)/abs(pref)) .gt. -r8prem()) then
-                noconv=.false.
+                noconv = .false.
                 iret = 0
-            endif
+            end if
         end do
-        if (.not.noconv) then
+        if (.not. noconv) then
 ! --- EN POSANT NOCONV = .TRUE., ON CONDUIT L'ALGORITHME PRESENT
 ! --- A IMPOSER UN ETAT DE CONTRAINTES ISOTROPE COMMUN
 ! --- AUX 3 SEUILS PLASTIQUES DE TRACTION
@@ -305,7 +305,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 call hujprj(i, yft, dev, pf, qf)
                 if ((abs(pf-ptrac)/abs(pref)) .lt. cinq*rtrac/abs(pref)) then
                     impose = .true.
-                endif
+                end if
             end do
             if (impose) then
                 noconv = .false.
@@ -326,11 +326,11 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 end do
                 vinf(1:nvi) = vind(1:nvi)
                 iret = 0
-            endif
-        endif
+            end if
+        end if
 !
         goto 1000
-    endif
+    end if
 !
 ! -------------------------------------------
 ! --- GESTION DES NON-CONVERGENCE LOCALES ---
@@ -343,10 +343,10 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     msup(4) = 0
     jj = 0
     do i = 5, 8
-        if ((vind(23+i).ne.vins(23+i)) .and. (vind(23+i).eq.zero)) then
+        if ((vind(23+i) .ne. vins(23+i)) .and. (vind(23+i) .eq. zero)) then
             jj = jj+1
             msup(jj) = i
-        endif
+        end if
     end do
 !
 ! --- EXISTE-T-IL UN PB DE TANGENCE ENTRE MECANISMES
@@ -356,16 +356,16 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     end do
 !
     do i = 1, 22
-        matert(i,1) = mater(i,1)
-        matert(i,2) = mater(i,2)
+        matert(i, 1) = mater(i, 1)
+        matert(i, 2) = mater(i, 2)
     end do
 !
     do k = 1, nbmeca
-        if ((indi(k).gt.4) .and. (indi(k).lt.8)) then
+        if ((indi(k) .gt. 4) .and. (indi(k) .lt. 8)) then
             kk = indi(k)-4
-            call hujpxd(indi(k), matert, yft, vind, prox(kk),&
+            call hujpxd(indi(k), matert, yft, vind, prox(kk), &
                         proxc(kk))
-        endif
+        end if
     end do
 !
     probt = .false.
@@ -377,14 +377,14 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         else if (proxc(i)) then
             prob(i) = deux
             probt = .true.
-        endif
+        end if
     end do
 !
     if (probt) then
         vind(1:nvi) = vins(1:nvi)
         do i = 1, 3
             if (prob(i) .eq. un) then
-                vind(i+4) = mater(18,2)
+                vind(i+4) = mater(18, 2)
                 vind(23+i) = un
                 vind(27+i) = zero
                 vind(4*i+5) = zero
@@ -395,10 +395,10 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 vind(5*i+32) = zero
                 vind(5*i+33) = zero
                 vind(5*i+34) = zero
-                vind(5*i+35) = mater(18,2)
-            else if (prob(i).eq.deux) then
+                vind(5*i+35) = mater(18, 2)
+            else if (prob(i) .eq. deux) then
                 vind(27+i) = zero
-            endif
+            end if
         end do
         iret = 0
         probt = .false.
@@ -409,12 +409,12 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             do i = 1, jj
                 vind(23+msup(i)) = zero
             end do
-        endif
+        end if
 !
         vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
-    endif
+    end if
 !
     if (tracti) then
         vind(1:nvi) = vins(1:nvi)
@@ -424,48 +424,48 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 modif = .true.
                 if (indi(i) .le. 8) then
                     if (indi(i) .lt. 5) then
-                        if ((abs(vind(4*indi(i)+5)).gt.r8prem()) .or.&
-                            (abs(vind(4*indi(i)+6)).gt.r8prem())) then
+                        if ((abs(vind(4*indi(i)+5)) .gt. r8prem()) .or. &
+                            (abs(vind(4*indi(i)+6)) .gt. r8prem())) then
                             vind(23+indi(i)) = -un
                         else
                             vind(23+indi(i)) = zero
-                        endif
+                        end if
                     else
                         vind(23+indi(i)) = zero
-                    endif
+                    end if
                 else
                     bnews(indi(i)-8) = .true.
                     neglam(indi(i)-8) = .true.
-                endif
-            endif
+                end if
+            end if
         end do
 !
         do i = 1, nbmect
             if (indi(i) .eq. 8) then
                 vind(23+indi(i)) = zero
                 modif = .true.
-            endif
+            end if
         end do
 !
         mtrac = .false.
         do i = 1, 3
 ! --- ON NE DOIT PAS REACTIVE UN MECANISME DE TRACTION QUI DONNE
 !     COMME PREDICTEUR UN MULTIPLICATEUR PLASTIQUE NEGATIF
-            if (.not.neglam(i)) then
+            if (.not. neglam(i)) then
                 call hujprj(i, yft, dev, pf, qf)
 ! ----------------------------------------------------
 ! ---> ACTIVATION MECANISMES DE TRACTION NECESSAIRES
 ! ----------------------------------------------------
                 if (((pf+deux*rtrac-ptrac)/abs(pref)) .gt. -r8prem()) then
                     bnews(i) = .false.
-                    if(.not.modif)mtrac = .true.
-                endif
-            endif
+                    if (.not. modif) mtrac = .true.
+                end if
+            end if
         end do
         vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
-    endif
+    end if
 !
 !-----------------------------------------------------------
 ! --- ESSAIS HEURISTIQUES POUR RELANCER LA RESOLUTION LOCALE
@@ -476,22 +476,22 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         if (abs(r(i)) .gt. maxi) then
             maxi = abs(r(i))
             resi = i
-        endif
+        end if
     end do
     cycl = .false.
     do i = 1, nbmeca
-        if ((indi(i).gt.4) .and. (indi(i).lt.8) .and. (vind(indi(i)) .eq.mater(18,2))) then
+        if ((indi(i) .gt. 4) .and. (indi(i) .lt. 8) .and. (vind(indi(i)) .eq. mater(18, 2))) then
             cycl = .true.
-        endif
+        end if
     end do
 !
 ! ---------------------------------------------------------------
 ! --- SI RESIDU LOCAL MAXI PORTE PAR RDEV_CYC => MECANISME RETIRE
 ! ---------------------------------------------------------------
 !
-    if ((resi.gt.7) .and. (resi.le.7+nbmeca)) then
-        resi = resi - 7
-        if ((indi(resi).gt.4) .and. (indi(resi).lt.8)) then
+    if ((resi .gt. 7) .and. (resi .le. 7+nbmeca)) then
+        resi = resi-7
+        if ((indi(resi) .gt. 4) .and. (indi(resi) .lt. 8)) then
 !
             vind(1:nvi) = vins(1:nvi)
             vind(23+indi(resi)) = zero
@@ -499,15 +499,15 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 do i = 1, jj
                     vind(23+msup(i)) = zero
                 end do
-            endif
+            end if
 !
 ! --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT
 !     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ?
             do i = 1, nbmeca
-                if ((indi(i).gt.4) .and. (indi(i).lt.8) .and.&
-                    (((maxi- abs(r(7+i)))/toler).lt.toler) .and. (i.ne.resi)) then
+                if ((indi(i) .gt. 4) .and. (indi(i) .lt. 8) .and. &
+                    (((maxi-abs(r(7+i)))/toler) .lt. toler) .and. (i .ne. resi)) then
                     vind(23+indi(i)) = zero
-                endif
+                end if
             end do
 !
             iret = 2
@@ -515,8 +515,8 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             goto 1000
         else
             iret = 3
-        endif
-    endif
+        end if
+    end if
 !
 ! ---------------------------------------------------------------
 ! --- SI MECA CYCLIQUE ALORS ILS SONT RETIRES
@@ -525,14 +525,14 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     if (cycl) then
         vind(1:nvi) = vins(1:nvi)
         do i = 1, nbmeca
-            if ((indi(i).gt.4) .and. (indi(i).lt.8) .and. (vind(indi( i)).eq.mater(18,2))) then
+           if ((indi(i) .gt. 4) .and. (indi(i) .lt. 8) .and. (vind(indi(i)) .eq. mater(18, 2))) then
                 vind(23+indi(i)) = zero
-            endif
+            end if
         end do
         iret = 2
         vinf(1:nvi) = vind(1:nvi)
         goto 1000
-    endif
+    end if
 !
 ! ---------------------------------------------------------------
 ! --- SI MECANISME TRACTION ACTIF => RETIRE DE MPOT
@@ -544,11 +544,11 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         do i = nbmeca+1, nbmect
             if (yet(ndt+1+nbmeca+i) .eq. zero) then
                 bnews(indi(i)-8) = .true.
-            endif
+            end if
         end do
         vinf(1:nvi) = vind(1:nvi)
         goto 1000
-    endif
+    end if
 !
 ! ---------------------------------------------------------------
 ! --- CONTROLE DU PREDICTEUR ELASTIQUE: YE(LAMBDA)
@@ -560,46 +560,46 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     imin = 0
     do i = 1, nbmeca
         if (yet(ndt+1+nbmeca+i) .eq. zero) then
-            if ((indi(i).gt.4) .and. (indi(i).lt.9)) then
+            if ((indi(i) .gt. 4) .and. (indi(i) .lt. 9)) then
                 vind(indi(i)+23) = 0
                 euler = .false.
-            else if (indi(i).lt.5) then
-                if ((abs(vind(4*indi(i)+5)).gt.r8prem()) .or.&
-                    (abs( vind(4*indi(i)+6)).gt.r8prem())) then
+            else if (indi(i) .lt. 5) then
+                if ((abs(vind(4*indi(i)+5)) .gt. r8prem()) .or. &
+                    (abs(vind(4*indi(i)+6)) .gt. r8prem())) then
                     vind(23+indi(i)) = -un
                 else
                     vind(23+indi(i)) = zero
-                endif
+                end if
                 euler = .false.
-            endif
-        else if (yet(ndt+1+nbmeca+i).lt.lamin) then
+            end if
+        else if (yet(ndt+1+nbmeca+i) .lt. lamin) then
             lamin = yet(ndt+1+nbmeca+i)
             imin = i
-        endif
+        end if
     end do
 !
-    if (.not.euler) then
+    if (.not. euler) then
 ! --- MECANISME CYCLIQUE A DESACTIVE
 ! --- ET DEJA DESACTIVE ANTERIEUREMENT
         if (jj .ne. 0) then
             do i = 1, jj
                 vind(23+msup(i)) = zero
             end do
-        endif
+        end if
 !
         vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
-    else if (imin.gt.0) then
+    else if (imin .gt. 0) then
         if (indi(imin) .lt. 5) then
             vind(23+indi(imin)) = -un
         else
             vind(23+indi(imin)) = zero
-        endif
+        end if
         vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
-    endif
+    end if
 !
 ! ---------------------------------------------------------------
 ! --- DERNIER ESSAI: VALEUR DES CONTRAINTES PRE, DURANT ET POST
@@ -610,17 +610,17 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         if (((pf+deux*rtrac-ptrac)/abs(pref)) .gt. -r8prem()) then
             bnews(i) = .false.
             ltry = .true.
-        endif
+        end if
         call hujprj(i, yet, dev, pf, qf)
         if (((pf+deux*rtrac-ptrac)/abs(pref)) .gt. -r8prem()) then
             bnews(i) = .false.
             ltry = .true.
-        endif
+        end if
         call hujprj(i, yft, dev, pf, qf)
         if (((pf+deux*rtrac-ptrac)/abs(pref)) .gt. -r8prem()) then
             bnews(i) = .false.
             ltry = .true.
-        endif
+        end if
     end do
 !
     if (ltry) then
@@ -629,7 +629,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         goto 1000
     else
         iret = 3
-    endif
+    end if
 !
 1000 continue
 end subroutine

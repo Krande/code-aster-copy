@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,9 +117,9 @@ subroutine renuno(nu, renum)
     call jemarq()
 !
 !   -- calcul de .exi1 :
-    call reexi1(nu, mo, ma, nlili, nm,&
+    call reexi1(nu, mo, ma, nlili, nm, &
                 nl, nbntt)
-    nbnom = nm + nl
+    nbnom = nm+nl
 !
 !     -- ALLOCATION DES OBJETS .NEWN ET .OLDN :
 !     -----------------------------------------
@@ -135,21 +135,21 @@ subroutine renuno(nu, renum)
 !
     if (renum(1:4) .eq. 'RCMK') then
 !     -- 'REVERSE-CUTHIL-MAC-KEE':
-        call rercmk(nu, mo, ma, nlili, nm,&
+        call rercmk(nu, mo, ma, nlili, nm, &
                     nl, nbntt)
-    else if (renum(1:4).eq.'SANS') then
+    else if (renum(1:4) .eq. 'SANS') then
 !     -- 'SANS RENUMEROTATION CUTHIL-MAC-KEE':
         ico = 0
         do i = 1, nm
             if (exi1(1+i) .gt. 0) then
-                ico = ico + 1
+                ico = ico+1
                 zi(ianewn-1+i) = ico
                 zi(iaoldn-1+ico) = i
-            endif
+            end if
         end do
     else
         call utmess('F', 'ASSEMBLA_37', sk=renum(1:4))
-    endif
+    end if
 !
 !
 !     2EME ETAPE:
@@ -157,7 +157,7 @@ subroutine renuno(nu, renum)
 !     (A LA FIN DE CETTE ETAPE, NEWN ET OLDN CONCERNENT TOUS LES
 !     NOEUDS DU MAILLAGE (1->NM+NL))
 !     --------------------------------------------------------------
-    call relagm(mo, ma, nm, nl, zi(ianewn),&
+    call relagm(mo, ma, nm, nl, zi(ianewn), &
                 zi(iaoldn))
 !
 !
@@ -168,10 +168,10 @@ subroutine renuno(nu, renum)
         if (zi(iaoldn-1+i) .eq. 0) then
             call jeecra(nu//'.OLDN', 'LONUTI', i-1)
             goto 30
-        endif
+        end if
     end do
 !
 !
- 30 continue
+30  continue
     call jedema()
 end subroutine

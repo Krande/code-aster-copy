@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function entcod(admodl, lcmodl, nec, mode, k,&
+function entcod(admodl, lcmodl, nec, mode, k, &
                 l)
     implicit none
     integer :: entcod
@@ -41,12 +41,12 @@ function entcod(admodl, lcmodl, nec, mode, k,&
     integer :: iad, iadm, iadm1, k, l, n1, n2
     integer :: nec
 !-----------------------------------------------------------------------
-    iadm = admodl + zi(lcmodl+mode-1) - 1
+    iadm = admodl+zi(lcmodl+mode-1)-1
     code = zi(iadm)
     if (code .gt. 3) then
         if (code .eq. 4) then
             m1 = zi(iadm+3)
-        else if (code.eq.5) then
+        else if (code .eq. 5) then
             m1 = zi(iadm+3)
             m2 = zi(iadm+4)
             if (m1 .ne. m2) then
@@ -55,9 +55,9 @@ function entcod(admodl, lcmodl, nec, mode, k,&
                 valk(1) = k8b1
                 valk(2) = k8b2
                 call utmess('F', 'CALCULEL2_46', nk=2, valk=valk)
-            endif
-        endif
-        iadm1 = admodl + zi(lcmodl+m1-1) - 1
+            end if
+        end if
+        iadm1 = admodl+zi(lcmodl+m1-1)-1
         code1 = zi(iadm1)
         if (code1 .gt. 3) then
             call codent(mode, 'D', k8b1)
@@ -69,15 +69,15 @@ function entcod(admodl, lcmodl, nec, mode, k,&
             valk(3) = k8b3
             valk(4) = k8b4
             call utmess('F', 'CALCULEL2_47', nk=4, valk=valk)
-        endif
+        end if
     else
         iadm1 = iadm
         m1 = mode
-    endif
+    end if
     n1 = zi(iadm1+3)
 !
     if (n1 .gt. 10000) then
-        n2 = n1 - 10000
+        n2 = n1-10000
         if (k .gt. n2) then
             call codent(m1, 'D', k8b1)
             call codent(n2, 'D', k8b2)
@@ -86,11 +86,11 @@ function entcod(admodl, lcmodl, nec, mode, k,&
             valk(2) = k8b2
             valk(3) = k8b3
             call utmess('F', 'CALCULEL2_48', nk=3, valk=valk)
-        endif
-        iad = 4 + nec* (k-1) + l
+        end if
+        iad = 4+nec*(k-1)+l
     else
-        iad = 4 + l
-    endif
+        iad = 4+l
+    end if
     entcod = zi(iadm1+iad-1)
 !
 end function

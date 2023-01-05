@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,10 +56,10 @@ subroutine vecgcy(nomres, numeg)
     nomnum = numeg//'      .NUME'
     nomsto = numeg//'      .SMOS'
     call jeveuo(nomnum//'.REFN', 'L', vk24=refn)
-    modgen=refn(1)(1:8)
+    modgen = refn(1) (1:8)
 !
     call jeveuo(nomsto//'.SMDE', 'L', vi=smde)
-    neq=smde(1)
+    neq = smde(1)
 !
     call wkvect(nomres//'           .VALE', 'G V R', neq, iavale)
     call wkvect(nomres//'           .REFE', 'G V K24', 2, iarefe)

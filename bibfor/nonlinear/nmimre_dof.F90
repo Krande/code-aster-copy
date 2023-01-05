@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmimre_dof(nume_dof , ds_conv  , vale_rela, vale_maxi     , vale_refe     ,&
-                      vale_comp, vale_frot, vale_geom, ieq_rela      , ieq_maxi      ,&
-                      ieq_refe , noddlm   , ieq_comp , name_node_frot, name_node_geom, vpene)
+subroutine nmimre_dof(nume_dof, ds_conv, vale_rela, vale_maxi, vale_refe, &
+                      vale_comp, vale_frot, vale_geom, ieq_rela, ieq_maxi, &
+                      ieq_refe, noddlm, ieq_comp, name_node_frot, name_node_geom, vpene)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -90,39 +90,39 @@ implicit none
     call impcmp(ieq_rela, nume_dof, name_dof_rela)
     call impcmp(ieq_maxi, nume_dof, name_dof_maxi)
     call impcmp(ieq_refe, nume_dof, name_dof_refe)
-    call impcom(ieq_comp, noddlm  , name_dof_comp)
+    call impcom(ieq_comp, noddlm, name_dof_comp)
 !
 ! - Save into convergence datastructure
 !
     do i_resi = 1, nb_resi
-        resi_type  = ds_conv%list_resi(i_resi)%type
+        resi_type = ds_conv%list_resi(i_resi)%type
         locus_calc = ' '
-        vale_calc  = r8vide()
+        vale_calc = r8vide()
         if (resi_type .eq. 'RESI_GLOB_RELA') then
-            vale_calc  = vale_rela
+            vale_calc = vale_rela
             locus_calc = name_dof_rela
-        else if (resi_type.eq.'RESI_GLOB_MAXI') then
-            vale_calc  = vale_maxi
+        else if (resi_type .eq. 'RESI_GLOB_MAXI') then
+            vale_calc = vale_maxi
             locus_calc = name_dof_maxi
-        else if (resi_type.eq.'RESI_REFE_RELA') then
-            vale_calc  = vale_refe
+        else if (resi_type .eq. 'RESI_REFE_RELA') then
+            vale_calc = vale_refe
             locus_calc = name_dof_refe
-        else if (resi_type.eq.'RESI_COMP_RELA') then
-            vale_calc  = vale_comp
+        else if (resi_type .eq. 'RESI_COMP_RELA') then
+            vale_calc = vale_comp
             locus_calc = name_dof_comp
-        else if (resi_type.eq.'RESI_FROT') then
-            vale_calc  = vale_frot
+        else if (resi_type .eq. 'RESI_FROT') then
+            vale_calc = vale_frot
             locus_calc = name_node_frot
-        else if (resi_type.eq.'RESI_GEOM') then
-            vale_calc  = vale_geom
+        else if (resi_type .eq. 'RESI_GEOM') then
+            vale_calc = vale_geom
             locus_calc = name_node_geom
-        else if (resi_type.eq.'RESI_PENE') then
-            vale_calc  = vpene
+        else if (resi_type .eq. 'RESI_PENE') then
+            vale_calc = vpene
             locus_calc = ' '
         else
             ASSERT(.false.)
-        endif
-        ds_conv%list_resi(i_resi)%vale_calc  = vale_calc
+        end if
+        ds_conv%list_resi(i_resi)%vale_calc = vale_calc
         ds_conv%list_resi(i_resi)%locus_calc = locus_calc
     end do
 !

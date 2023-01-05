@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     call jemarq()
 !
     call asmpi_comm('GET', mpicou)
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     ASSERT(nbproc <= MT_DOMMAX)
@@ -75,7 +75,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 !
 ! --- Lecture des joints
     call jeexin(mesh//'.DOMJOINTS', iret)
-    if(iret > 0) then
+    if (iret > 0) then
         comm_name = '&&ADDNODES.COMM'
         tag_name = '&&ADDNODES.TAG'
         call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
@@ -129,7 +129,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
         call jedetr(comm_name)
         call jedetr(tag_name)
 !
-    endif
+    end if
 !
     call jedema()
 !

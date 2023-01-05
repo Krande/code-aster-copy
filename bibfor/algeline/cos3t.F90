@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,12 +35,12 @@ function cos3t(s, pref, epssig)
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
-    parameter       ( un     =  1.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(un=1.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
-    sii=ddot(ndt,s,1,s,1)
+    sii = ddot(ndt, s, 1, s, 1)
     sii = sqrt(sii)
     siirel = sii/pref
     if (siirel .gt. epssig) then
@@ -48,7 +48,7 @@ function cos3t(s, pref, epssig)
         cos3t = sqrt(54.d0)*dets/(sii*sii*sii)
     else
         cos3t = un
-    endif
+    end if
 ! ======================================================================
 ! --- PROJECTION DU COSINUS POUR COHERENCE -----------------------------
 ! ======================================================================

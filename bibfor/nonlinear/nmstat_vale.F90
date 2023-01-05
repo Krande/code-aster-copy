@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmstat_vale(ds_measure, time_curr, sderro)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -69,27 +69,27 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    table     = ds_measure%table
-    nb_cols   = table%nb_cols
+    table = ds_measure%table
+    nb_cols = table%nb_cols
     nb_device = ds_measure%nb_device
 !
 ! - State of step
 !
-    state  = 'CONV'
+    state = 'CONV'
     errinf = sderro(1:19)//'.INFO'
     erreno = sderro(1:19)//'.ENOM'
     erraac = sderro(1:19)//'.EACT'
-    call jeveuo(errinf, 'L', vi = v_errinf)
-    zeven  = v_errinf(1)
-    call jeveuo(erreno, 'L', vk16 = v_erreno)
-    call jeveuo(erraac, 'L', vi = v_erraac)
+    call jeveuo(errinf, 'L', vi=v_errinf)
+    zeven = v_errinf(1)
+    call jeveuo(erreno, 'L', vk16=v_erreno)
+    call jeveuo(erraac, 'L', vi=v_erraac)
     do i_event = 1, zeven
         event_name = v_erreno(i_event)
-        icode      = v_erraac(i_event)
+        icode = v_erraac(i_event)
         if (icode .eq. 1) then
             state = event_name
             exit
-        endif
+        end if
     end do
 !
 ! - Get memory
@@ -99,34 +99,34 @@ implicit none
 ! - Set list of values in columns
 !
     do i_col = 1, nb_cols
-        column   = table%cols(i_col)
+        column = table%cols(i_col)
         i_device = table%indx_vale(i_col)
         col_name = column%name
         if (i_device .eq. 0) then
             if (col_name .eq. 'INST') then
-                call SetTableColumn(table, 'INST',  flag_affe_ = .true._1, valer_ = time_curr)
+                call SetTableColumn(table, 'INST', flag_affe_=.true._1, valer_=time_curr)
             elseif (col_name .eq. 'State') then
-                call SetTableColumn(table, 'State',  flag_affe_ = .true._1, valek_ = state)
+                call SetTableColumn(table, 'State', flag_affe_=.true._1, valek_=state)
             elseif (col_name .eq. 'Memory') then
-                call SetTableColumn(table, 'Memory',  flag_affe_ = .true._1,&
-                                    valei_ = nint(vmpeak(1)))
-            endif
+                call SetTableColumn(table, 'Memory', flag_affe_=.true._1, &
+                                    valei_=nint(vmpeak(1)))
+            end if
         else
-            device      = ds_measure%device(i_device)
+            device = ds_measure%device(i_device)
             device_type = device%type
             l_vale_inte = column%l_vale_inte
             l_vale_real = column%l_vale_real
             if (l_vale_real) then
                 call nmtimr(ds_measure, device_type, 'P', time)
                 ASSERT(col_name(1:5) .eq. 'Time_')
-                call SetTableColumn(table, col_name,  flag_affe_ = .true._1, valer_ = time)
-            endif
+                call SetTableColumn(table, col_name, flag_affe_=.true._1, valer_=time)
+            end if
             if (l_vale_inte) then
-                call nmrvai(ds_measure, device_type, 'P', output_count = count)
+                call nmrvai(ds_measure, device_type, 'P', output_count=count)
                 ASSERT(col_name(1:6) .eq. 'Count_')
-                call SetTableColumn(table, col_name,  flag_affe_ = .true._1, valei_ = count)
-            endif
-        endif
+                call SetTableColumn(table, col_name, flag_affe_=.true._1, valei_=count)
+            end if
+        end if
     end do
 !
     ds_measure%table = table

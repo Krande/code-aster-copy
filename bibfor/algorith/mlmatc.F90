@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mlmatc(ni, nk, nj, a, b,&
+subroutine mlmatc(ni, nk, nj, a, b, &
                   c)
     implicit none
     integer :: ni, nk, nj
@@ -34,11 +34,11 @@ subroutine mlmatc(ni, nk, nj, a, b,&
 !
     do i = 1, ni
         do j = 1, nj
-            xcres = dcmplx(0.d0,0.d0)
+            xcres = dcmplx(0.d0, 0.d0)
             do k = 1, nk
-                xcres = xcres + a(i,k) * b(k,j)
+                xcres = xcres+a(i, k)*b(k, j)
             end do
-            c(i,j) = xcres
+            c(i, j) = xcres
         end do
     end do
 !

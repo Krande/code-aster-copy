@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
+subroutine vpddl(raide, masse, neq, nblagr, nbcine, &
                  neqact, dlagr, dbloq, ier)
 !
     implicit none
@@ -72,13 +72,13 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
 !
 !       --- RECUPERATION DES POSITIONS DES DDL LAGRANGE : DLAGR
-    call pteddl('NUME_DDL', nume, 1, 'LAGR    ', neq,&
-                list_equa = dlagr)
+    call pteddl('NUME_DDL', nume, 1, 'LAGR    ', neq, &
+                list_equa=dlagr)
 !
 !       --- CALCUL DU NOMBRE DE 'LAGRANGE': NBLAGR
     nblagr = 0
     do ieq = 1, neq
-        nblagr = nblagr + dlagr(ieq)
+        nblagr = nblagr+dlagr(ieq)
     end do
 !
 !       --- INVERSION : DLAGR = 0 SI LAGRANGE ET 1 SINON
@@ -89,7 +89,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !     --- DETECTION DES DDL BLOQUES PAR AFFE_CHAR_CINE ---
 !     ----------------------------------------------------
 !
-    call typddl('ACLA', nume, neq, dbloq, nba,&
+    call typddl('ACLA', nume, neq, dbloq, nba, &
                 nbb, nbl, nbliai)
 !
 !       --- MISE A JOUR DE DBLOQ QUI VAUT 0 POUR TOUS LES DDL BLOQUES
@@ -103,9 +103,9 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !       --- CALCUL DU NOMBRE DE DDL BLOQUE PAR CETTE METHODE : NCINE ---
         do ieq = 1, neq
-            nbcine = nbcine + ccid(ieq)
+            nbcine = nbcine+ccid(ieq)
         end do
-    endif
+    end if
 !
 !     --- SI NUMEROTATION GENERALISEE : PAS DE DDLS BLOQUES ---
 !     ---------------------------------------------------------
@@ -114,13 +114,13 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
         do ieq = 1, neq
             dbloq(ieq) = 1
         end do
-    endif
+    end if
 !
 !     ----------------- CALCUL DU NOMBRE DE DDL ACTIFS -----------------
-    neqact = neq - 3* (nblagr/2) - nbcine
+    neqact = neq-3*(nblagr/2)-nbcine
     if (neqact .le. 0) then
         call utmess('F', 'ALGELINE3_63')
-    endif
+    end if
 !
 !    -----IMPRESSION DES DDL -----
 !
@@ -134,8 +134,8 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
             vali(3) = nbcine
             vali(4) = neqact
             call utmess('I', 'ALGELINE7_18', ni=4, vali=vali)
-        endif
-    endif
+        end if
+    end if
 !     -----------------------------------------------------------------
 !     -----------------------------------------------------------------
 !

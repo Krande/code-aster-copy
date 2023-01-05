@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_msmcre(fid, nom, dim, desc, typrep,&
+subroutine as_msmcre(fid, nom, dim, desc, typrep, &
                      nocomp, unit, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -41,11 +41,11 @@ subroutine as_msmcre(fid, nom, dim, desc, typrep,&
     fidm = to_med_idt(fid)
     dim4 = to_med_int(dim)
     typre4 = to_med_int(typrep)
-    call msmcre(fidm, nom, dim4, dim4, desc,&
+    call msmcre(fidm, nom, dim4, dim4, desc, &
                 typre4, nocomp, unit, cret4)
     cret = cret4
 #else
-    call msmcre(fid, nom, dim, dim, desc,&
+    call msmcre(fid, nom, dim, dim, desc, &
                 typrep, nocomp, unit, cret)
 #endif
 !

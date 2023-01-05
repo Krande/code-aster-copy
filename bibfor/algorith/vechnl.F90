@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vechnl(model    , lload_name, lload_info, time,&
-                  temp_iter, vect_elem , base)
+subroutine vechnl(model, lload_name, lload_info, time, &
+                  temp_iter, vect_elem, base)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -33,13 +33,13 @@ implicit none
 #include "asterfort/memare.h"
 #include "asterfort/detrsd.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: lload_name
-character(len=24), intent(in) :: lload_info
-character(len=24), intent(in) :: time
-character(len=24), intent(in) :: temp_iter
-character(len=24), intent(in) :: vect_elem
-character(len=1), intent(in) :: base
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: lload_name
+    character(len=24), intent(in) :: lload_info
+    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: temp_iter
+    character(len=24), intent(in) :: vect_elem
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,8 +59,8 @@ character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer , parameter :: nbin  = 4
-    integer , parameter :: nbout = 1
+    integer, parameter :: nbin = 4
+    integer, parameter :: nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
     character(len=1) :: c1
@@ -77,8 +77,8 @@ character(len=1), intent(in) :: base
 ! --------------------------------------------------------------------------------------------------
 !
     resu_elem = '&&VECHTN.0000000'
-    newnom    = '.0000000'
-    ligrmo    = model(1:8)//'.MODELE'
+    newnom = '.0000000'
+    ligrmo = model(1:8)//'.MODELE'
 !
 ! - Init fields
 !
@@ -86,7 +86,7 @@ character(len=1), intent(in) :: base
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
                         lload_name, lload_info)
 !
 ! - Prepare fields
@@ -116,7 +116,7 @@ character(len=1), intent(in) :: base
 !
     if (nb_load .gt. 0) then
         do i_load = 1, nb_load
-            load_name = v_load_name(i_load)(1:8)
+            load_name = v_load_name(i_load) (1:8)
             load_nume = v_load_info(nb_load+i_load+1)
 ! --------- For FLUX_NL
             lpain(4) = 'PFLUXNL'
@@ -127,15 +127,15 @@ character(len=1), intent(in) :: base
 ! ------------- Generate new RESU_ELEM name
                 call gcnco2(newnom)
                 resu_elem(10:16) = newnom(2:8)
-                call corich('E', resu_elem, ichin_ = -1)
-                lchout(1)        = resu_elem
+                call corich('E', resu_elem, ichin_=-1)
+                lchout(1) = resu_elem
 ! ------------- Compute
-                call calcul('S'  , option, ligrmo, nbin  , lchin,&
-                            lpain, nbout , lchout, lpaout, base ,&
+                call calcul('S', option, ligrmo, nbin, lchin, &
+                            lpain, nbout, lchout, lpaout, base, &
                             'OUI')
 ! ------------- Save RESU_ELEM
                 call reajre(vect_elem, resu_elem, base)
-            endif
+            end if
 ! --------- For RAYONNEMENT
             lchin(4) = load_name(1:8)//'.CHTH.RAYO '
             call jeexin(lchin(4)//'.DESC', iret)
@@ -143,21 +143,21 @@ character(len=1), intent(in) :: base
                 c1 = 'R'
                 if (load_nume .gt. 1) then
                     c1 = 'F'
-                endif
-                option   = 'CHAR_THER_RAYO_'//c1
+                end if
+                option = 'CHAR_THER_RAYO_'//c1
                 lpain(4) = 'PRAYON'//c1
 ! ------------- Generate new RESU_ELEM name
                 call gcnco2(newnom)
                 resu_elem(10:16) = newnom(2:8)
-                call corich('E', resu_elem, ichin_ = -1)
+                call corich('E', resu_elem, ichin_=-1)
                 lchout(1) = resu_elem
 ! ------------- Compute
-                call calcul('S', option, ligrmo, nbin, lchin,&
-                            lpain, nbout, lchout, lpaout, base,&
+                call calcul('S', option, ligrmo, nbin, lchin, &
+                            lpain, nbout, lchout, lpaout, base, &
                             'OUI')
 ! ------------- Save RESU_ELEM
                 call reajre(vect_elem, resu_elem, base)
-            endif
+            end if
 ! --------- For SOURCE_NL
             lpain(4) = 'PSOURNL'
             lchin(4) = load_name(1:8)//'.CHTH.SOUNL'
@@ -167,16 +167,16 @@ character(len=1), intent(in) :: base
 ! ------------- Generate new RESU_ELEM name
                 call gcnco2(newnom)
                 resu_elem(10:16) = newnom(2:8)
-                call corich('E', resu_elem, ichin_ = -1)
-                lchout(1)        = resu_elem
+                call corich('E', resu_elem, ichin_=-1)
+                lchout(1) = resu_elem
 ! ------------- Compute
-                call calcul('S'  , option, ligrmo, nbin  , lchin,&
-                            lpain, nbout , lchout, lpaout, base ,&
+                call calcul('S', option, ligrmo, nbin, lchin, &
+                            lpain, nbout, lchout, lpaout, base, &
                             'OUI')
 ! ------------- Save RESU_ELEM
                 call reajre(vect_elem, resu_elem, base)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

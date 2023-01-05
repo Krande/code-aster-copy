@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ subroutine op0114()
 !     COUPLAGE =>
     integer(kind=4) :: lenvar, cpiter, numpa4, taille, eyacs(1), ibid4
     integer :: icompo, ibid, numpas, iadr
-    parameter (lenvar = 144)
-    parameter (cpiter= 41)
+    parameter(lenvar=144)
+    parameter(cpiter=41)
     real(kind=4) :: ti4, tf4
     real(kind=8) :: dt, ryacs(1), ti, tf
     character(len=16) :: option, valk(3)
@@ -60,12 +60,12 @@ subroutine op0114()
 !
 !     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 !     ------------------------------------------------------------
-    ayacs='&ADR_YACS'
+    ayacs = '&ADR_YACS'
 !
 !     RECUPERATION DE L'ADRESSE YACS
 !     ------------------------------
     call jeveuo(ayacs, 'L', iadr)
-    icompo=zi(iadr)
+    icompo = zi(iadr)
 !
     call getres(resu, concep, nomcmd)
 !
@@ -75,13 +75,13 @@ subroutine op0114()
         valk(2) = 'DONNEES'
         valk(3) = option
         call utmess('I+', 'COUPLAGEIFS_11', nk=3, valk=valk)
-    endif
+    end if
 !
     nbvale = 7
-    if (( option(1:3) .eq. 'FIN' ) .or. ( option(1:4) .eq. 'CONV' ) .or.&
-        ( option(1:3) .eq. 'PAS' )) nbvale = 1
+    if ((option(1:3) .eq. 'FIN') .or. (option(1:4) .eq. 'CONV') .or. &
+        (option(1:3) .eq. 'PAS')) nbvale = 1
 !
-    ndim = max(1,nbvale-1)
+    ndim = max(1, nbvale-1)
     call wkvect(resu//'.LPAS', 'G V R', ndim, jpas)
     call wkvect(resu//'.NBPA', 'G V I', ndim, jnbp)
     call wkvect(resu//'.BINT', 'G V R', nbvale, jbor)
@@ -105,40 +105,40 @@ subroutine op0114()
         zi(jnbp) = 1
 !  RECEPTION NOMBRE DE PAS DE TEMPS
         nomvar = 'NBPDTM'
-        call cplen(icompo, cpiter, ti4, tf4, numpa4,&
+        call cplen(icompo, cpiter, ti4, tf4, numpa4, &
                    nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor) = eyacs(1)
         zr(jval) = eyacs(1)
 !  RECEPTION NOMBRE DE SOUS-ITERATIONS
         nomvar = 'NBSSIT'
-        call cplen(icompo, cpiter, ti4, tf4, numpa4,&
+        call cplen(icompo, cpiter, ti4, tf4, numpa4, &
                    nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor+1) = eyacs(1)
         zr(jval+1) = eyacs(1)
 !  RECEPTION EPSILON
         nomvar = 'EPSILO'
-        call cpldb(icompo, cpiter, ti, tf, numpa4,&
+        call cpldb(icompo, cpiter, ti, tf, numpa4, &
                    nomvar, int(1, 4), taille, ryacs, ibid4)
         zr(jbor+2) = ryacs(1)
         zr(jval+2) = ryacs(1)
         nomvar = 'ISYNCP'
-        call cplen(icompo, cpiter, ti4, tf4, numpa4,&
+        call cplen(icompo, cpiter, ti4, tf4, numpa4, &
                    nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor+3) = eyacs(1)
         zr(jval+3) = eyacs(1)
         nomvar = 'NTCHRO'
-        call cplen(icompo, cpiter, ti4, tf4, numpa4,&
+        call cplen(icompo, cpiter, ti4, tf4, numpa4, &
                    nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor+4) = eyacs(1)
         zr(jval+4) = eyacs(1)
         nomvar = 'TTINIT'
-        call cpldb(icompo, cpiter, ti, tf, numpa4,&
+        call cpldb(icompo, cpiter, ti, tf, numpa4, &
                    nomvar, int(1, 4), taille, ryacs, ibid4)
         zr(jbor+5) = ryacs(1)
         zr(jval+5) = ryacs(1)
 !  RECEPTION PAS DE TEMPS DE REFERENCE
         nomvar = 'PDTREF'
-        call cpldb(icompo, cpiter, ti, tf, numpa4,&
+        call cpldb(icompo, cpiter, ti, tf, numpa4, &
                    nomvar, int(1, 4), taille, ryacs, ibid4)
         zr(jbor+6) = ryacs(1)
         zr(jval+6) = ryacs(1)
@@ -154,24 +154,24 @@ subroutine op0114()
         else
             if (option(1:4) .eq. 'CONV') then
                 nomvar = 'ICVAST'
-                call cplen(icompo, cpiter, ti4, tf4, numpa4,&
+                call cplen(icompo, cpiter, ti4, tf4, numpa4, &
                            nomvar, int(1, 4), taille, eyacs, ibid4)
                 ryacs(1) = eyacs(1)
             else
                 nomvar = 'DTAST'
-                call cpedb(icompo, cpiter, ti, numpa4, nomvar,&
+                call cpedb(icompo, cpiter, ti, numpa4, nomvar, &
                            int(1, 4), [dt], ibid4)
                 nomvar = 'DTCALC'
-                call cpldb(icompo, cpiter, ti, tf, numpa4,&
+                call cpldb(icompo, cpiter, ti, tf, numpa4, &
                            nomvar, int(1, 4), taille, ryacs, ibid4)
-            endif
-        endif
+            end if
+        end if
         zr(jbor) = ryacs(1)
         zr(jval) = ryacs(1)
         zr(jpas) = 0.1d0
         zi(jnbp) = 1
 !
-    endif
+    end if
 !     --- TITRE ---
     call titre()
 !     --- IMPRESSION ---

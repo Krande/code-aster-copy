@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0505(option, nomte)
     aster_logical :: aniso
 ! DEB ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -70,11 +70,11 @@ subroutine te0505(option, nomte)
     jvalf = zi(ifon(1)+2)
     xr = 0.d0
     do i = 1, nbvf
-        xaux = zr(jvalf + i - 1)
+        xaux = zr(jvalf+i-1)
         call rcfodi(ifon(1), xaux, rbid, xrr)
         if (xrr .gt. xr) then
             xr = xrr
-        endif
+        end if
     end do
     rr = 0.6d0/xr
 !
@@ -82,15 +82,15 @@ subroutine te0505(option, nomte)
     do i = 1, nno
         do idim = 1, 2
             k = k+1
-            uloc(idim,i) = zr(ivite+k-1)
+            uloc(idim, i) = zr(ivite+k-1)
         end do
     end do
 !
     do kp = 1, npg
-        ul(1,kp) = 0.d0
-        ul(2,kp) = 0.d0
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        ul(1, kp) = 0.d0
+        ul(2, kp) = 0.d0
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         r = 0.d0
         tpg = 0.d0
@@ -99,32 +99,32 @@ subroutine te0505(option, nomte)
         dtpgdy(kp) = 0.d0
 !
         do i = 1, nno
-            r = r + zr(igeom+2*(i-1)) *zr(ivf+k+i-1)
-            tpg = tpg + zr(itempi+i-1) *zr(ivf+k+i-1)
-            tpg0 = tpg0 + zr(itemp +i-1) *zr(ivf+k+i-1)
-            ul(1,kp) = ul(1,kp) + uloc(1,i) *zr(ivf+k+i-1)
-            ul(2,kp) = ul(2,kp) + uloc(2,i) *zr(ivf+k+i-1)
-            dtpgdx(kp)= dtpgdx(kp)+zr(itempi+i-1)*dfdx(i)
-            dtpgdy(kp)= dtpgdy(kp)+zr(itempi+i-1)*dfdy(i)
+            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+            tpg = tpg+zr(itempi+i-1)*zr(ivf+k+i-1)
+            tpg0 = tpg0+zr(itemp+i-1)*zr(ivf+k+i-1)
+            ul(1, kp) = ul(1, kp)+uloc(1, i)*zr(ivf+k+i-1)
+            ul(2, kp) = ul(2, kp)+uloc(2, i)*zr(ivf+k+i-1)
+            dtpgdx(kp) = dtpgdx(kp)+zr(itempi+i-1)*dfdx(i)
+            dtpgdy(kp) = dtpgdy(kp)+zr(itempi+i-1)*dfdy(i)
         end do
 !
-        if (lteatt('AXIS','OUI')) poids = poids*r
+        if (lteatt('AXIS', 'OUI')) poids = poids*r
         call rcfode(ifon(2), tpg, xk1, xkpt)
         call rcfode(ifon(2), tpg0, xk0, xkpt)
-        pn = zr(ilagrm + kp - 1)
+        pn = zr(ilagrm+kp-1)
         call rcfodi(ifon(1), pn, betaa, dbeta)
-        pnp1 = pn + ((tpg - betaa)*rr)
-        zr(ilagrp + kp - 1) = pnp1
+        pnp1 = pn+((tpg-betaa)*rr)
+        zr(ilagrp+kp-1) = pnp1
         vect(kp) = pnp1
         jacob(kp) = poids
-        xkptt(kp) = xk1 - xk0
+        xkptt(kp) = xk1-xk0
 !
     end do
     call projet(2, npg, nno, vect, res)
 !
     do kp = 1, npg
-        k = (kp -1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         dbpgdx(kp) = 0.d0
         dbpgdy(kp) = 0.d0
@@ -132,25 +132,25 @@ subroutine te0505(option, nomte)
         dupgdy(kp) = 0.d0
 !
         do i = 1, nno
-            dupgdx(kp) = dupgdx(kp) + res(i)*dfdx(i)
-            dupgdy(kp) = dupgdy(kp) + res(i)*dfdy(i)
+            dupgdx(kp) = dupgdx(kp)+res(i)*dfdx(i)
+            dupgdy(kp) = dupgdy(kp)+res(i)*dfdy(i)
             tpn = res(i)
             call rcfodi(ifon(1), tpn, betai, rbid)
-            dbpgdx(kp) = dbpgdx(kp) + betai*dfdx(i)
-            dbpgdy(kp) = dbpgdy(kp) + betai*dfdy(i)
+            dbpgdx(kp) = dbpgdx(kp)+betai*dfdx(i)
+            dbpgdy(kp) = dbpgdy(kp)+betai*dfdy(i)
         end do
 !
     end do
 !
     do kp = 1, npg
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
 !
         do i = 1, nno
-            zr(iveres+i-1) = zr(iveres+i-1) + jacob(kp)*zr(ivf+k+i-1)*(&
-                             &rr*(ul(1,kp)*dbpgdx(kp)+ul(2,kp)*dbpgdy(kp))-&
-                             &   (ul(1,kp)*dupgdx(kp)+ul(2,kp)*dupgdy(kp)) )+&
+            zr(iveres+i-1) = zr(iveres+i-1)+jacob(kp)*zr(ivf+k+i-1)*(&
+                             &rr*(ul(1, kp)*dbpgdx(kp)+ul(2, kp)*dbpgdy(kp))-&
+                             &   (ul(1, kp)*dupgdx(kp)+ul(2, kp)*dupgdy(kp)))+&
                              &jacob(kp)*xkptt(kp)*(dfdx(i)*dtpgdx(kp)+dfdy(i)*dtpgdy(kp))
 !
         end do

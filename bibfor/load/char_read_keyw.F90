@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl,&
-                          n_max_keyword, n_keyword, keywordlist, val_nb, val_r,&
+subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl, &
+                          n_max_keyword, n_keyword, keywordlist, val_nb, val_r, &
                           val_f, val_c)
 !
 !
@@ -79,18 +79,18 @@ subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl,&
 !
     call jemarq()
 !
-    ASSERT(n_max_keyword.eq.300)
+    ASSERT(n_max_keyword .eq. 300)
 !
 ! - Initial number of keywords
 !
-    call getmjm(keywordfact, iocc, 0, keywordread, k16_dummy,&
+    call getmjm(keywordfact, iocc, 0, keywordread, k16_dummy, &
                 n)
     n_keyword = -n
     ASSERT(n_keyword .le. n_max_keyword)
 !
 ! - Read all keywords
 !
-    call getmjm(keywordfact, iocc, n_keyword, keywordread, k16_dummy,&
+    call getmjm(keywordfact, iocc, n_keyword, keywordread, k16_dummy, &
                 n)
 !
 ! - Excluding some keywords
@@ -104,21 +104,21 @@ subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl,&
         do i_keyexcl = 1, n_keyexcl
             if (keyword .eq. zk24(j_kexcl-1+i_keyexcl)) then
                 l_excl = .true.
-            endif
-        enddo
-        if (.not.l_excl) then
-            n_keyword = n_keyword + 1
+            end if
+        end do
+        if (.not. l_excl) then
+            n_keyword = n_keyword+1
             keywordlist(n_keyword) = keyword
-        endif
+        end if
     end do
 !
 ! - Values for final keywords
 !
     do i_keyword = 1, n_keyword
         keyword = keywordlist(i_keyword)
-        call char_read_val(keywordfact, iocc, keyword, val_type, val_nb(i_keyword),&
+        call char_read_val(keywordfact, iocc, keyword, val_type, val_nb(i_keyword), &
                            val_r(i_keyword), val_f(i_keyword), val_c(i_keyword), val_t_dummy)
-        ASSERT(val_nb(i_keyword).eq.1)
+        ASSERT(val_nb(i_keyword) .eq. 1)
     end do
 !
     call jedema()

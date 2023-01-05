@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,18 +16,18 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
+subroutine dyarc1(instc, nbpas, insta, nbinst, arch, &
                   epsi, crit)
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-integer :: nbpas, nbinst, arch(*)
-real(kind=8) :: epsi, instc(*), insta(*)
-character(len=8) :: crit
+    integer :: nbpas, nbinst, arch(*)
+    real(kind=8) :: epsi, instc(*), insta(*)
+    character(len=8) :: crit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,15 +63,15 @@ character(len=8) :: crit
 !     (L'INSTANT INITIAL EST ARCHIVÉ AUTOMATIQUEMENT DANS UNE
 !     AUTRE ROUTINE)
 !
-    inda=1
+    inda = 1
     if (abs(instc(1)-insta(1)) .le. abs(epsi)) then
-        inda=2
-    endif
+        inda = 2
+    end if
 !
 ! --->TESTS DE PRÉSENCE DES INSTANTS DE LA LISTE D'ARCHIVAGE
 !     DANS LA LISTE DES INSTANTS DE CALCUL
 !
-    indc=2
+    indc = 2
     do i = inda, nbinst
         nbtrou = 0
         rval = insta(i)
@@ -81,21 +81,21 @@ character(len=8) :: crit
                     trouve = .true.
                 else
                     trouve = .false.
-                endif
+                end if
             else if (crit(1:4) .eq. 'ABSO') then
                 if (abs(instc(j)-rval) .le. abs(epsi)) then
                     trouve = .true.
                 else
                     trouve = .false.
-                endif
+                end if
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             if (trouve) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 arch(j-1) = 1
-                indc=j+1
-            endif
+                indc = j+1
+            end if
         end do
         if (nbtrou .eq. 0) then
             valr = rval
@@ -103,7 +103,7 @@ character(len=8) :: crit
         else if (nbtrou .ne. 1) then
             valr = rval
             call utmess('F', 'ARCHIVAGE_98', sr=valr)
-        endif
+        end if
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 
 subroutine extrai(nin, lchin, lpain, init)
 
-use calcul_module, only : ca_calvoi_, ca_igr_, ca_nbelgr_, ca_nbgr_,&
-    ca_ligrel_, ca_nute_
+    use calcul_module, only: ca_calvoi_, ca_igr_, ca_nbelgr_, ca_nbgr_, &
+                             ca_ligrel_, ca_nute_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -37,25 +37,24 @@ implicit none
 !     but: preparer les champs locaux "in"
 !-----------------------------------------------------------------------
 
-    ASSERT(init.eq.' '.or.init.eq.'INIT')
+    ASSERT(init .eq. ' ' .or. init .eq. 'INIT')
 
     if (ca_calvoi_ .eq. 0) then
         if (init .ne. 'INIT') then
-            ca_nute_=typele(ca_ligrel_,ca_igr_)
+            ca_nute_ = typele(ca_ligrel_, ca_igr_)
             call extra1(nin, lchin, lpain)
-        endif
+        end if
     else
 !       -- on prepare tout la 1ere fois :
         if (init .eq. 'INIT') then
-            do ca_igr_=1,ca_nbgr_
-                ca_nbelgr_=nbelem(ca_ligrel_,ca_igr_)
-                if (ca_nbelgr_.gt.0) then
-                    ca_nute_=typele(ca_ligrel_,ca_igr_)
+            do ca_igr_ = 1, ca_nbgr_
+                ca_nbelgr_ = nbelem(ca_ligrel_, ca_igr_)
+                if (ca_nbelgr_ .gt. 0) then
+                    ca_nute_ = typele(ca_ligrel_, ca_igr_)
                     call extra1(nin, lchin, lpain)
-                endif
-            enddo
-        endif
-    endif
-
+                end if
+            end do
+        end if
+    end if
 
 end subroutine

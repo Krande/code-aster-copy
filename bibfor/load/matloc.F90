@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
+subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
                   node_name, nb_repe_elem, list_repe_elem, matr_glob_loca)
 !
     implicit none
@@ -66,7 +66,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc, i, j, jadrm,  jadrvlc
+    integer :: nocc, i, j, jadrm, jadrvlc
     integer :: nb_conn_elem, elem_nume
     integer :: node_nume_1, node_nume_2
     real(kind=8) :: vx(3), vy(3), vz(3), vecty(3), vxn, vyn, vyp, dgrd, angl_naut(3)
@@ -101,19 +101,19 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
     else
         if (nb_repe_elem .eq. 0) then
             call utmess('F', 'CHARGES2_37', sk=node_name)
-        endif
+        end if
         if (nb_repe_elem .ne. 1) then
             call utmess('F', 'CHARGES2_38', sk=node_name)
-        endif
+        end if
         do i = 1, nb_repe_elem
             elem_nume = list_repe_elem(i)
             do j = 1, nb_conn_elem
                 if (zi(jadrm+j-1) .eq. elem_nume) goto 24
-            enddo
-        enddo
+            end do
+        end do
         call utmess('F', 'CHARGES2_39', sk=node_name)
 24      continue
-    endif
+    end if
 !
 ! - Check element type
 !
@@ -123,7 +123,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
     valk(1) = elem_name
     if (type_elem(1:3) .ne. 'SEG') then
         call utmess('F', 'CHARGES2_40', nk=2, valk=valk)
-    endif
+    end if
 !
 ! - Get nodes of element connected
 !
@@ -134,26 +134,26 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
     else
         node_nume_1 = zi(jadrvlc)
         node_nume_2 = zi(jadrvlc+1)
-    endif
+    end if
 !
 ! - Construct colinear vector to element
 !
-    vx(1) = vale(1+3*(node_nume_2-1) ) - vale(1+3*(node_nume_1-1) )
-    vx(2) = vale(1+3*(node_nume_2-1)+1) - vale(1+3*(node_nume_1-1)+1)
-    vx(3) = vale(1+3*(node_nume_2-1)+2) - vale(1+3*(node_nume_1-1)+2)
-    vxn = sqrt( vx(1)**2 + vx(2)**2 + vx(3)**2 )
+    vx(1) = vale(1+3*(node_nume_2-1))-vale(1+3*(node_nume_1-1))
+    vx(2) = vale(1+3*(node_nume_2-1)+1)-vale(1+3*(node_nume_1-1)+1)
+    vx(3) = vale(1+3*(node_nume_2-1)+2)-vale(1+3*(node_nume_1-1)+2)
+    vxn = sqrt(vx(1)**2+vx(2)**2+vx(3)**2)
     valk(2) = node_name
     valk(1) = elem_name
     if (vxn .le. r8prem()) then
         call utmess('F', 'CHARGES2_41', nk=2, valk=valk)
-    endif
-    vx(1) = vx(1) / vxn
-    vx(2) = vx(2) / vxn
-    vx(3) = vx(3) / vxn
+    end if
+    vx(1) = vx(1)/vxn
+    vx(2) = vx(2)/vxn
+    vx(3) = vx(3)/vxn
 !
 ! - Is VECT_Y ?
 !
-    call getvr8(keywordfact, 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+    call getvr8(keywordfact, 'VECT_Y', iocc=iocc, nbval=3, vect=vecty, &
                 nbret=nocc)
     if (nocc .ne. 0) then
 !
@@ -165,30 +165,30 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! ----- Projection
 !
-        vyp = vx(1)*vy(1) + vx(2)*vy(2) + vx(3)*vy(3)
-        vy(1) = vy(1) - vyp*vx(1)
-        vy(2) = vy(2) - vyp*vx(2)
-        vy(3) = vy(3) - vyp*vx(3)
+        vyp = vx(1)*vy(1)+vx(2)*vy(2)+vx(3)*vy(3)
+        vy(1) = vy(1)-vyp*vx(1)
+        vy(2) = vy(2)-vyp*vx(2)
+        vy(3) = vy(3)-vyp*vx(3)
         vyn = sqrt(vy(1)**2+vy(2)**2+vy(3)**2)
-        vy(1) = vy(1) / vyn
-        vy(2) = vy(2) / vyn
-        vy(3) = vy(3) / vyn
+        vy(1) = vy(1)/vyn
+        vy(2) = vy(2)/vyn
+        vy(3) = vy(3)/vyn
 !
 ! ----- Tangent vector
 !
-        vz(1) = vx(2)*vy(3) - vy(2)*vx(3)
-        vz(2) = vx(3)*vy(1) - vy(3)*vx(1)
-        vz(3) = vx(1)*vy(2) - vy(1)*vx(2)
+        vz(1) = vx(2)*vy(3)-vy(2)*vx(3)
+        vz(2) = vx(3)*vy(1)-vy(3)*vx(1)
+        vz(3) = vx(1)*vy(2)-vy(1)*vx(2)
 !
 ! ----- Transformation matrix
 !
         do i = 1, 3
-            matr_glob_loca(1,i) = vx(i)
-            matr_glob_loca(2,i) = vy(i)
-            matr_glob_loca(3,i) = vz(i)
-        enddo
+            matr_glob_loca(1, i) = vx(i)
+            matr_glob_loca(2, i) = vy(i)
+            matr_glob_loca(3, i) = vz(i)
+        end do
         goto 999
-    endif
+    end if
 !
 ! --- SI ANGL_VRIL
 !
@@ -200,15 +200,15 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
         call angvx(vx, alpha, beta)
         angl_naut(1) = alpha
         angl_naut(2) = beta
-        angl_naut(3) = gamma * dgrd
+        angl_naut(3) = gamma*dgrd
 !
 ! ----- Transformation matrix
 !
         call matrot(angl_naut, matr_glob_loca)
         goto 999
-    endif
+    end if
 !
-999  continue
+999 continue
 !
     call jedema()
 !

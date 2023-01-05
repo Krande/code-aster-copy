@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,10 +47,10 @@ subroutine proqua(quat1, quat2, quat3)
 ! ------------------------------------------------------------------
 !
     call provec(quat1, quat2, quat3)
-    prosca = ddot(3,quat1,1,quat2,1)
-    quat3(4) = quat1(4) * quat2(4) - prosca
+    prosca = ddot(3, quat1, 1, quat2, 1)
+    quat3(4) = quat1(4)*quat2(4)-prosca
     do i = 1, 3
-        quat3(i) = quat3(i) + quat1(4)*quat2(i) + quat2(4)*quat1(i)
+        quat3(i) = quat3(i)+quat1(4)*quat2(i)+quat2(4)*quat1(i)
     end do
 !
 end subroutine

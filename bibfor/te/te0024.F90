@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0024(option, nomte)
     call elref1(elp)
 !
 !     ON CALCULE LES GRADIENTS SUR TOUS LES NOEUDS DE L'ELEMENT DE REF
-    call elrefe_info(elrefe=elp, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elp, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgan)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -60,12 +60,12 @@ subroutine te0024(option, nomte)
 !     BOUCLE SUR LES NOEUDS
     do ino = 1, nno
         if (ndim .eq. 3) then
-            call dfdm3d(nno, ino, ipoids, idfde, zr(igeom),&
+            call dfdm3d(nno, ino, ipoids, idfde, zr(igeom), &
                         jac, dfdx, dfdy, dfdz)
         else if (ndim .eq. 2) then
-            call dfdm2d(nno, ino, ipoids, idfde, zr(igeom),&
+            call dfdm2d(nno, ino, ipoids, idfde, zr(igeom), &
                         jac, dfdx, dfdy)
-        endif
+        end if
 !
         gradx = 0.0d0
         grady = 0.0d0
@@ -73,14 +73,14 @@ subroutine te0024(option, nomte)
 !
         do i = 1, nno
 !
-            gradx = gradx + dfdx(i)*zr(ineut+i-1)
-            grady = grady + dfdy(i)*zr(ineut+i-1)
-            if (ndim .eq. 3) gradz = gradz + dfdz(i)*zr(ineut+i-1)
+            gradx = gradx+dfdx(i)*zr(ineut+i-1)
+            grady = grady+dfdy(i)*zr(ineut+i-1)
+            if (ndim .eq. 3) gradz = gradz+dfdz(i)*zr(ineut+i-1)
 !
         end do
-        zr(igr-1+(ino-1)*ndim+1)= gradx
-        zr(igr-1+(ino-1)*ndim+2)= grady
-        if (ndim .eq. 3) zr(igr-1+(ino-1)*ndim+3)= gradz
+        zr(igr-1+(ino-1)*ndim+1) = gradx
+        zr(igr-1+(ino-1)*ndim+2) = grady
+        if (ndim .eq. 3) zr(igr-1+(ino-1)*ndim+3) = gradz
 !
     end do
 !

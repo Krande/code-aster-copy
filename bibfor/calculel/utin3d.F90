@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utin3d(igeom, nsomm, ino, ityp, inst,&
-                  insold, k8cart, ltheta, niv, ifm,&
+subroutine utin3d(igeom, nsomm, ino, ityp, inst, &
+                  insold, k8cart, ltheta, niv, ifm, &
                   option, valfp, valfm, noe)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -73,37 +73,37 @@ subroutine utin3d(igeom, nsomm, ino, ityp, inst,&
     do in = 1, nsomm
 !
 ! NUMEROTATION LOCALE DU NOEUD A INTERPOLER
-        iino = noe(in,ino,ityp)
-        iaux = igeom + 3*(iino-1)
-        jaux = iaux + 1
-        kaux = jaux + 1
+        iino = noe(in, ino, ityp)
+        iaux = igeom+3*(iino-1)
+        jaux = iaux+1
+        kaux = jaux+1
 !
 ! INTERPOLATION CHAMP K8CART A L'INSTANT +
         valpar(1) = zr(iaux)
         valpar(2) = zr(jaux)
         valpar(3) = zr(kaux)
         valpar(4) = inst
-        call fointe('FM', k8cart, 4, nompar, valpar,&
+        call fointe('FM', k8cart, 4, nompar, valpar, &
                     valfp(in), icode)
         if (ltheta) then
 ! INTERPOLATION CHAMP K8CART A L'INSTANT -
             valpar(4) = insold
-            call fointe('FM', k8cart, 4, nompar, valpar,&
+            call fointe('FM', k8cart, 4, nompar, valpar, &
                         valfm(in), icode)
-        endif
+        end if
 !
 ! AFFICHAGES
         if (niv .eq. 2) then
-            write(ifm,*)' X/Y/Z ',valpar(1),valpar(2),valpar(3)
+            write (ifm, *) ' X/Y/Z ', valpar(1), valpar(2), valpar(3)
             if (option .eq. 1) then
-                write(ifm,*)' VALFP ',valfp(in)
-            else if (option.eq.2) then
-                write(ifm,*)' VALHP ',valfp(in)
+                write (ifm, *) ' VALFP ', valfp(in)
+            else if (option .eq. 2) then
+                write (ifm, *) ' VALHP ', valfp(in)
             else
-                write(ifm,*)' VALTP ',valfp(in)
-            endif
-            if (ltheta) write(ifm,*)'     M ',valfm(in)
-        endif
+                write (ifm, *) ' VALTP ', valfp(in)
+            end if
+            if (ltheta) write (ifm, *) '     M ', valfm(in)
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
-                  maxfem, nivgrm, cns1, cns2, ces1,&
-                  ces2, cesvi1, cesvi2, resuco, comps1,&
+subroutine xpomac(malini, mailc, listno, nbnoc, nbmac, &
+                  maxfem, nivgrm, cns1, cns2, ces1, &
+                  ces2, cesvi1, cesvi2, resuco, comps1, &
                   comps2, pre1)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -102,7 +102,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !        NUMERO DE LA MAILLE DANS LE MAILLAGE INITIAL
         ima = zi(jmac-1+i)
 !        NUMERO DE LA MAILLE DANS LE MAILLAGE X-FEM
-        zi(jdirma-1+ima)=i
+        zi(jdirma-1+ima) = i
     end do
 !
 !     CREATION DU TABLEAU DE CORRESPONDANCE DES NUMEROS DE NOEUDS
@@ -113,14 +113,14 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
     call dismoi('NB_NO_MAILLA', malini, 'MAILLAGE', repi=nbno)
     call wkvect(dirnoe, 'V V I', nbno, jdirno)
     call jeexin(listno, ier)
-    ASSERT(ier.ne.0)
+    ASSERT(ier .ne. 0)
     call jeveuo(listno, 'L', jno)
 !
     do i = 1, nbnoc
 !        NUMERO DU NOEUD DANS LE MAILLAGE INITIAL
         ino = zi(jno-1+i)
 !        NUMERO DU NOEUD DANS LE MAILLAGE X-FEM
-        zi(jdirno-1+ino)=i
+        zi(jdirno-1+ino) = i
     end do
 !
     call jedetr(listno)
@@ -132,18 +132,18 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
         if (iret .ne. 0) call jeveuo(nivgrm, 'E', jnivgr)
 !
 !       COPIE MAILLES DE MAILC ET NOEUDS SOUS-JACENTS DANS MAXFEM
-        call xpoco1(zi(jdirma), nbma, zi(jdirno), nbno, malini,&
+        call xpoco1(zi(jdirma), nbma, zi(jdirno), nbno, malini, &
                     maxfem, jnivgr)
 !
-    else if (nomcmd.eq.'POST_CHAM_XFEM') then
+    else if (nomcmd .eq. 'POST_CHAM_XFEM') then
 !
 !       COPIE DEPLACEMENT DES NOEUDS SOUS-JACENTS DANS MAXFEM
 !       ET TRAITEMENT DES GROUPES, COMPORTEMENT....
-        call xpoco2(malini, zi(jdirno), nbno, zi(jdirma), nbma,&
-                    cns1, cns2, ces1, ces2, cesvi1,&
+        call xpoco2(malini, zi(jdirno), nbno, zi(jdirma), nbma, &
+                    cns1, cns2, ces1, ces2, cesvi1, &
                     cesvi2, resuco, comps1, comps2, pre1)
 !
-    endif
+    end if
 !
     call jedetr(dirmai)
     call jedetr(dirnoe)

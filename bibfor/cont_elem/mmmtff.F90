@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,29 +17,29 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmtff(phase , l_pena_fric,&
-                  ndim  , nbcps      , nnl   ,&
-                  wpg   , ffl        , jacobi,&
-                  tau1  , tau2       ,&
-                  rese  , nrese      , lambda,&
-                  coefaf, coefff,&
+subroutine mmmtff(phase, l_pena_fric, &
+                  ndim, nbcps, nnl, &
+                  wpg, ffl, jacobi, &
+                  tau1, tau2, &
+                  rese, nrese, lambda, &
+                  coefaf, coefff, &
                   matrff)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmmmpb.h"
 #include "asterfort/pmavec.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_fric
-integer, intent(in) :: ndim, nnl, nbcps
-real(kind=8), intent(in) :: wpg, ffl(9), jacobi
-real(kind=8), intent(in) :: tau1(3), tau2(3)
-real(kind=8), intent(in) :: rese(3), nrese, lambda
-real(kind=8), intent(in) :: coefaf, coefff
-real(kind=8), intent(out) :: matrff(18, 18)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_fric
+    integer, intent(in) :: ndim, nnl, nbcps
+    real(kind=8), intent(in) :: wpg, ffl(9), jacobi
+    real(kind=8), intent(in) :: tau1(3), tau2(3)
+    real(kind=8), intent(in) :: rese(3), nrese, lambda
+    real(kind=8), intent(in) :: coefaf, coefff
+    real(kind=8), intent(out) :: matrff(18, 18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,26 +78,26 @@ real(kind=8), intent(out) :: matrff(18, 18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tt(:,:) = 0.d0
-    r(:,:)  = 0.d0
-    h1(:)   = 0.d0
-    h2(:)   = 0.d0
-    nbcpf = nbcps - 1
+    tt(:, :) = 0.d0
+    r(:, :) = 0.d0
+    h1(:) = 0.d0
+    h2(:) = 0.d0
+    nbcpf = nbcps-1
 !
 ! - MATRICE DE CHANGEMENT DE REPERE [TT] = [T]t*[T]
 !
     do k = 1, ndim
-        tt(1,1) = tau1(k)*tau1(k) + tt(1,1)
-        tt(1,2) = tau1(k)*tau2(k) + tt(1,2)
-        tt(2,1) = tau2(k)*tau1(k) + tt(2,1)
-        tt(2,2) = tau2(k)*tau2(k) + tt(2,2)
+        tt(1, 1) = tau1(k)*tau1(k)+tt(1, 1)
+        tt(1, 2) = tau1(k)*tau2(k)+tt(1, 2)
+        tt(2, 1) = tau2(k)*tau1(k)+tt(2, 1)
+        tt(2, 2) = tau2(k)*tau2(k)+tt(2, 2)
     end do
 !
 ! - MATRICE DE PROJECTION SUR LA BOULE UNITE
 !
-    if (phase  .eq. 'GLIS') then
+    if (phase .eq. 'GLIS') then
         call mmmmpb(rese, nrese, ndim, matprb)
-    endif
+    end if
 !
 ! - CALCUL DES TERMES
 !
@@ -108,8 +108,8 @@ real(kind=8), intent(out) :: matrff(18, 18)
                     do k = 1, nbcpf
                         ii = (ndim-1)*(i-1)+l
                         jj = (ndim-1)*(j-1)+k
-                        matrff(ii,jj) = matrff(ii,jj)+&
-                                        wpg*ffl(i)*ffl(j)*jacobi*tt(l,k)
+                        matrff(ii, jj) = matrff(ii, jj)+ &
+                                         wpg*ffl(i)*ffl(j)*jacobi*tt(l, k)
                     end do
                 end do
             end do
@@ -119,10 +119,10 @@ real(kind=8), intent(out) :: matrff(18, 18)
         call pmavec('ZERO', 3, matprb, tau2, h2)
 ! ----- MATRICE [R] = [T]t*[T]-[T]t*[H]
         do idim = 1, ndim
-            r(1,1) = (tau1(idim)-h1(idim))*tau1(idim) + r(1,1)
-            r(1,2) = (tau2(idim)-h2(idim))*tau1(idim) + r(1,2)
-            r(2,1) = (tau1(idim)-h1(idim))*tau2(idim) + r(2,1)
-            r(2,2) = (tau2(idim)-h2(idim))*tau2(idim) + r(2,2)
+            r(1, 1) = (tau1(idim)-h1(idim))*tau1(idim)+r(1, 1)
+            r(1, 2) = (tau2(idim)-h2(idim))*tau1(idim)+r(1, 2)
+            r(2, 1) = (tau1(idim)-h1(idim))*tau2(idim)+r(2, 1)
+            r(2, 2) = (tau2(idim)-h2(idim))*tau2(idim)+r(2, 2)
         end do
         if (l_pena_fric) then
             do i = 1, nnl
@@ -131,8 +131,8 @@ real(kind=8), intent(out) :: matrff(18, 18)
                         do k = 1, nbcpf
                             ii = (ndim-1)*(i-1)+l
                             jj = (ndim-1)*(j-1)+k
-                            matrff(ii,jj) = matrff(ii,jj)+&
-                                            wpg*ffl(i)*ffl(j)*jacobi*tt(l,k)*coefff*lambda/coefaf
+                            matrff(ii, jj) = matrff(ii, jj)+ &
+                                             wpg*ffl(i)*ffl(j)*jacobi*tt(l, k)*coefff*lambda/coefaf
                         end do
                     end do
                 end do
@@ -144,13 +144,13 @@ real(kind=8), intent(out) :: matrff(18, 18)
                         do k = 1, nbcpf
                             ii = (ndim-1)*(i-1)+l
                             jj = (ndim-1)*(j-1)+k
-                            matrff(ii,jj) = matrff(ii,jj)+&
-                                            wpg*ffl(i)*ffl(j)*jacobi*coefff*lambda*r(l,k)/coefaf
+                            matrff(ii, jj) = matrff(ii, jj)+ &
+                                             wpg*ffl(i)*ffl(j)*jacobi*coefff*lambda*r(l, k)/coefaf
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     else if (phase .eq. 'ADHE') then
         if (l_pena_fric) then
             do i = 1, nnl
@@ -159,15 +159,15 @@ real(kind=8), intent(out) :: matrff(18, 18)
                         do k = 1, nbcpf
                             ii = (ndim-1)*(i-1)+l
                             jj = (ndim-1)*(j-1)+k
-                            matrff(ii,jj) = matrff(ii,jj)+&
-                                            wpg*ffl(i)*ffl(j)*jacobi*tt(l,k)*coefff*lambda/coefaf
+                            matrff(ii, jj) = matrff(ii, jj)+ &
+                                             wpg*ffl(i)*ffl(j)*jacobi*tt(l, k)*coefff*lambda/coefaf
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

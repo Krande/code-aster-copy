@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
 !
-subroutine nifnlg(ndim, nno1, nno2, nno3, npg,&
-                  iw, vff1, vff2, vff3, idff1,&
-                  idff2, vu, vg, vp, typmod,&
+subroutine nifnlg(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff1, vff2, vff3, idff1, &
+                  idff2, vu, vg, vp, typmod, &
                   mate, geomi, sig, ddl, vect)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,13 +36,13 @@ implicit none
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
-integer :: idff2, mate
-integer :: vu(3, 27), vg(27), vp(27)
-real(kind=8) :: geomi(ndim, nno1)
-real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
-real(kind=8) :: sig(2*ndim+1, npg), ddl(*), vect(*)
-character(len=8) :: typmod(*)
+    integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
+    integer :: idff2, mate
+    integer :: vu(3, 27), vg(27), vp(27)
+    real(kind=8) :: geomi(ndim, nno1)
+    real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
+    real(kind=8) :: sig(2*ndim+1, npg), ddl(*), vect(*)
+    character(len=8) :: typmod(*)
 !-----------------------------------------------------------------------
 !          CALCUL DES FORCES NODALES POUR LES ELEMENTS
 !          INCOMPRESSIBLES POUR LES GRANDES DEFORMATIONS
@@ -86,19 +86,19 @@ character(len=8) :: typmod(*)
     real(kind=8) :: kr(6), id(3, 3)
     real(kind=8) :: am, ap, bm, boa, aa, bb, daa, dbb, dboa, d2boa
 !
-    parameter    (grand = .true._1)
-    data         vij  / 1, 4, 5,&
+    parameter(grand=.true._1)
+    data vij/1, 4, 5,&
      &                  4, 2, 6,&
-     &                  5, 6, 3 /
-    data         kr   / 1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
-    data         id   / 1.d0, 0.d0, 0.d0,&
+     &                  5, 6, 3/
+    data kr/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
+    data id/1.d0, 0.d0, 0.d0,&
      &                  0.d0, 1.d0, 0.d0,&
      &                  0.d0, 0.d0, 1.d0/
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
-    axi = typmod(1).eq.'AXIS'
-    nddl = nno1*ndim + nno2 + nno3
+    axi = typmod(1) .eq. 'AXIS'
+    nddl = nno1*ndim+nno2+nno3
     ndu = ndim
     if (axi) ndu = 3
 !
@@ -108,8 +108,8 @@ character(len=8) :: typmod(*)
 ! - REACTUALISATION DE LA GEOMETRIE ET EXTRACTION DES CHAMPS
     do na = 1, nno1
         do ia = 1, ndim
-            geomm(ia+ndim*(na-1)) = geomi(ia,na) + ddl(vu(ia,na))
-            deplm(ia+ndim*(na-1)) = ddl(vu(ia,na))
+            geomm(ia+ndim*(na-1)) = geomi(ia, na)+ddl(vu(ia, na))
+            deplm(ia+ndim*(na-1)) = ddl(vu(ia, na))
         end do
     end do
 !
@@ -126,58 +126,58 @@ character(len=8) :: typmod(*)
     do g = 1, npg
 !
 ! - LONGUEUR CARACTERISTIQUE -> PARAMETRE C
-        c(1)=0.d0
-        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ',&
-                    [0.d0], 1, 'C_GONF', c(1), k2ret(1),&
+        c(1) = 0.d0
+        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', &
+                    [0.d0], 1, 'C_GONF', c(1), k2ret(1), &
                     0)
-        nonloc = k2ret(1).eq.0 .and. c(1).ne.0.d0
+        nonloc = k2ret(1) .eq. 0 .and. c(1) .ne. 0.d0
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dff1, deplm, fm)
-        call dfdmip(ndim, nno1, axi, geomm, g,&
-                    iw, vff1(1, g), idff1, r, wm,&
+        call dfdmip(ndim, nno1, axi, geomm, g, &
+                    iw, vff1(1, g), idff1, r, wm, &
                     dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, &
                     lij)
 !
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2)&
-             &) + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+  jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))-fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2)&
+                   &)+fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT
-        gm = ddot(nno2,vff2(1,g),1,gonfm,1)
-        pm = ddot(nno3,vff3(1,g),1,presm,1)
+        gm = ddot(nno2, vff2(1, g), 1, gonfm, 1)
+        pm = ddot(nno3, vff3(1, g), 1, presm, 1)
 !
 ! - CALCUL DU GRADIENT DU GONFLEMENT POUR LA REGULARISATION
         if (nonloc) then
-            call dfdmip(ndim, nno2, axi, geomi, g,&
-                        iw, vff2(1, g), idff2, r, w,&
+            call dfdmip(ndim, nno2, axi, geomi, g, &
+                        iw, vff2(1, g), idff2, r, w, &
                         dff2)
             do ia = 1, ndim
-                gradgm(ia) = ddot(nno2,dff2(1,ia),1,gonfm,1)
+                gradgm(ia) = ddot(nno2, dff2(1, ia), 1, gonfm, 1)
             end do
-        endif
+        end if
 !
 ! - CONTRAINTE DE KIRCHHOFF
         do ia = 1, 3
-            sig_ldc(ia) = sig(ia,g) + sig(2*ndim+1,g)
+            sig_ldc(ia) = sig(ia, g)+sig(2*ndim+1, g)
         end do
         do ia = 4, 2*ndim
-            sig_ldc(ia) = sig(ia,g)
+            sig_ldc(ia) = sig(ia, g)
         end do
         call dcopy(2*ndim, sig_ldc, 1, tau, 1)
         call dscal(2*ndim, jm, tau, 1)
         tauhy = (tau(1)+tau(2)+tau(3))/3.d0
         do kl = 1, 6
-            taudv(kl) = tau(kl) - tauhy*kr(kl)
+            taudv(kl) = tau(kl)-tauhy*kr(kl)
         end do
 !
 ! - CALCUL DES FONCTIONS A,B,... QUI LIENT G ET J
-        call nirela(2, jm, gm, gm, am,&
-                    ap, bm, boa, aa, bb,&
+        call nirela(2, jm, gm, gm, am, &
+                    ap, bm, boa, aa, bb, &
                     daa, dbb, dboa, d2boa, iret)
 !
         ASSERT(iret == 0)
@@ -185,38 +185,38 @@ character(len=8) :: typmod(*)
 ! - VECTEUR FINT:U
         do na = 1, nno1
             do ia = 1, ndu
-                kk = vu(ia,na)
+                kk = vu(ia, na)
                 t1 = 0.d0
                 do ja = 1, ndu
-                    t2 = taudv(vij(ia,ja)) + pm*bb*id(ia,ja)
-                    t1 = t1 + t2*dff1(na,lij(ia,ja))
+                    t2 = taudv(vij(ia, ja))+pm*bb*id(ia, ja)
+                    t1 = t1+t2*dff1(na, lij(ia, ja))
                 end do
-                vect(kk) = vect(kk) + w*t1
+                vect(kk) = vect(kk)+w*t1
             end do
         end do
 !
 ! - VECTEUR FINT:G
-        t2 = tauhy*aa - pm*dboa
+        t2 = tauhy*aa-pm*dboa
         do ra = 1, nno2
             kk = vg(ra)
-            t1 = vff2(ra,g)*t2
-            vect(kk) = vect(kk) + w*t1
+            t1 = vff2(ra, g)*t2
+            vect(kk) = vect(kk)+w*t1
         end do
 !
         if (nonloc) then
             do ra = 1, nno2
                 kk = vg(ra)
-                t1 = c(1)*ddot(ndim,gradgm,1,dff2(ra,1),nno2)
-                vect(kk) = vect(kk) + w*t1
+                t1 = c(1)*ddot(ndim, gradgm, 1, dff2(ra, 1), nno2)
+                vect(kk) = vect(kk)+w*t1
             end do
-        endif
+        end if
 !
 ! - VECTEUR FINT:P
-        t2 = bm - boa
+        t2 = bm-boa
         do sa = 1, nno3
             kk = vp(sa)
-            t1 = vff3(sa,g)*t2
-            vect(kk) = vect(kk) + w*t1
+            t1 = vff3(sa, g)*t2
+            vect(kk) = vect(kk)+w*t1
         end do
     end do
 end subroutine

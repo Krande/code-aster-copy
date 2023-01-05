@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chrep3d(M,A,P)
+subroutine chrep3d(M, A, P)
 !   changement de repère d'une matrice 3*3
 !   M = P'AP  où P'=transposée(P)
 !   M, P, A sont des matrices 3*3
@@ -24,23 +24,22 @@ subroutine chrep3d(M,A,P)
 ! ======================================================================
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
- implicit none
+    implicit none
 #include "asterfort/matmat3d.h"
 
-
-      real(kind=8), intent(in) :: A(3,3),P(3,3)
-      real(kind=8), intent(out) :: M(3,3)
+    real(kind=8), intent(in) :: A(3, 3), P(3, 3)
+    real(kind=8), intent(out) :: M(3, 3)
 !
-      real(kind=8) :: TP(3,3),R(3,3)
-      integer i,j
+    real(kind=8) :: TP(3, 3), R(3, 3)
+    integer i, j
 
 !   on calcule la transposée de P => TP
-      do i=1,3
-        do j=1,3
-          TP(i,j)=P(j,i)
-          M(i,j)=0.d0
-        enddo
-      enddo
-      call matmat3d(A,P,3,3,3,R)
-      call matmat3d(TP,R,3,3,3,M)
+    do i = 1, 3
+        do j = 1, 3
+            TP(i, j) = P(j, i)
+            M(i, j) = 0.d0
+        end do
+    end do
+    call matmat3d(A, P, 3, 3, 3, R)
+    call matmat3d(TP, R, 3, 3, 3, M)
 end subroutine

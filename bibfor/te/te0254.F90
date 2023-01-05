@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine te0254(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: a(2, 2, 9, 9), mmat(9,9)
+    real(kind=8) :: a(2, 2, 9, 9), mmat(9, 9)
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, rho, celer
     integer :: jv_geom, jv_mate, jv_matr
@@ -61,7 +61,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    a    = 0.d0
+    a = 0.d0
     mmat = 0.d0
 !
 ! - Input fields
@@ -72,9 +72,9 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    l_axis = (lteatt('AXIS','OUI'))
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg,&
+    l_axis = (lteatt('AXIS', 'OUI'))
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .le. 9)
 !
@@ -87,57 +87,57 @@ character(len=16), intent(in) :: option, nomte
 !
     do ipg = 1, npg
         ldec = (ipg-1)*nno
-        call dfdm2d(nno, ipg, ipoids, idfde, zr(jv_geom),&
+        call dfdm2d(nno, ipg, ipoids, idfde, zr(jv_geom), &
                     poids, dfdx, dfdy)
         if (l_axis) then
             r = 0.d0
             do ino1 = 1, nno
-                r = r + zr(jv_geom+2*(ino1-1))*zr(ivf+ldec+ino1-1)
+                r = r+zr(jv_geom+2*(ino1-1))*zr(ivf+ldec+ino1-1)
             end do
             poids = poids*r
-        endif
+        end if
         if (fsi_form .eq. 'FSI_UPPHI') then
             do ino1 = 1, nno
                 do ino2 = 1, ino1
 ! ----------------- Compute -RHO*(GRAD(PHI)**2)
-                    a(2,2,ino1,ino2) = a(2,2,ino1,ino2) -&
-                                       poids*rho*&
-                                      (dfdx(ino1)*dfdx(ino2)+&
-                                       dfdy(ino1)*dfdy(ino2))
+                    a(2, 2, ino1, ino2) = a(2, 2, ino1, ino2)- &
+                                          poids*rho* &
+                                          (dfdx(ino1)*dfdx(ino2)+ &
+                                           dfdy(ino1)*dfdy(ino2))
 ! ----------------- Compute (P*PHI)/(CEL**2)
                     if (celer .eq. 0.d0) then
-                        a(1,2,ino1,ino2) = 0.d0
+                        a(1, 2, ino1, ino2) = 0.d0
                     else
-                        a(1,2,ino1,ino2) = a(1,2,ino1,ino2) +&
+                        a(1, 2, ino1, ino2) = a(1, 2, ino1, ino2)+ &
                                            poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
-                    endif
+                    end if
                 end do
             end do
         elseif (fsi_form .eq. 'FSI_UP') then
             do ino2 = 1, nno
                 do ino1 = 1, ino2
                     if (celer .eq. 0.d0) then
-                        mmat(ino1,ino2) = 0.d0
+                        mmat(ino1, ino2) = 0.d0
                     else
-                        mmat(ino1,ino2) = mmat(ino1,ino2)+&
-                                          poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
-                    endif
+                        mmat(ino1, ino2) = mmat(ino1, ino2)+ &
+                                           poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
+                    end if
                 end do
             end do
         elseif (fsi_form .eq. 'FSI_UPSI') then
             do ino2 = 1, nno
                 do ino1 = 1, ino2
                     if (celer .eq. 0.d0) then
-                        mmat(ino1,ino2) = 0.d0
+                        mmat(ino1, ino2) = 0.d0
                     else
-                        mmat(ino1,ino2) = mmat(ino1,ino2)-rho*&
-                                          poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
-                    endif
+                        mmat(ino1, ino2) = mmat(ino1, ino2)-rho* &
+                                           poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
+                    end if
                 end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
     end do
 !
 ! - Output field
@@ -146,7 +146,7 @@ character(len=16), intent(in) :: option, nomte
     if (fsi_form .eq. 'FSI_UPPHI') then
         do ino1 = 1, nno
             do ino2 = 1, ino1
-                a(2,1,ino1,ino2) = a(1,2,ino1,ino2)
+                a(2, 1, ino1, ino2) = a(1, 2, ino1, ino2)
             end do
         end do
         do k = 1, 2
@@ -154,8 +154,8 @@ character(len=16), intent(in) :: option, nomte
                 do ino1 = 1, nno
                     ik = ((2*ino1+k-3)*(2*ino1+k-2))/2
                     do ino2 = 1, ino1
-                        ijkl = ik + 2*(ino2-1) + l
-                        zr(jv_matr+ijkl-1) = a(k,l,ino1,ino2)
+                        ijkl = ik+2*(ino2-1)+l
+                        zr(jv_matr+ijkl-1) = a(k, l, ino1, ino2)
                     end do
                 end do
             end do
@@ -163,12 +163,12 @@ character(len=16), intent(in) :: option, nomte
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         do ino2 = 1, nno
             do ino1 = 1, ino2
-                ij = (ino2-1)*ino2/2 + ino1
-                zr(jv_matr+ij-1) = mmat(ino1,ino2)
+                ij = (ino2-1)*ino2/2+ino1
+                zr(jv_matr+ij-1) = mmat(ino1, ino2)
             end do
         end do
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 end subroutine

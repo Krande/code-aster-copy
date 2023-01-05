@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmvalp_scal(nb_dim   , elem_type, elem_nbno, ksi1, ksi2,&
+subroutine mmvalp_scal(nb_dim, elem_type, elem_nbno, ksi1, ksi2, &
                        vale_node, vale_poin)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/mmnonf.h"
@@ -58,17 +58,17 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     vale_poin = 0.d0
-    ASSERT(elem_nbno.le.9)
+    ASSERT(elem_nbno .le. 9)
 !
 ! - Shape functions
 !
-    call mmnonf(nb_dim    , elem_nbno, elem_type, ksi1, ksi2,&
+    call mmnonf(nb_dim, elem_nbno, elem_type, ksi1, ksi2, &
                 shape_func)
 !
 ! - Compute
 !
     do i_node = 1, elem_nbno
-        vale_poin = shape_func(i_node)*vale_node(i_node) + vale_poin
+        vale_poin = shape_func(i_node)*vale_node(i_node)+vale_poin
     end do
 !
 end subroutine

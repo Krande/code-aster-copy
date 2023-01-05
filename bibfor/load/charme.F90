@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine charme(load, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
@@ -73,8 +73,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/verif_affe.h"
 !
-character(len=8), intent(in) :: load
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,7 +107,7 @@ character(len=4), intent(in) :: valeType
     call cagene(load, command, model, mesh, geomDime)
     if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
-    endif
+    end if
 
 ! - Get Ligrel for load
     call lisnnl(phenom, load, loadDescBase)
@@ -162,7 +162,7 @@ character(len=4), intent(in) :: valeType
     else
         ASSERT(ASTER_FALSE)
 
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -236,7 +236,7 @@ character(len=4), intent(in) :: valeType
     else
         ASSERT(ASTER_FALSE)
 
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -331,27 +331,27 @@ character(len=4), intent(in) :: valeType
     else
         ASSERT(ASTER_FALSE)
 
-    endif
+    end if
 
 ! - Update loads <LIGREL>
     call jeexin(loadLigrel//'.LGRF', iret)
     if (iret .ne. 0) then
         call adalig(loadLigrel)
         call cormgi('G', loadLigrel)
-        call jeecra(loadLigrel//'.LGRF', 'DOCU', cval = phenomS)
+        call jeecra(loadLigrel//'.LGRF', 'DOCU', cval=phenomS)
         call initel(loadLigrel)
-        call jeveuo(loadLigrel//'.LGRF', 'E', vk8 = loadLigrelLgrf)
+        call jeveuo(loadLigrel//'.LGRF', 'E', vk8=loadLigrelLgrf)
         loadLigrelLgrf(2) = model
-        call getvtx(' ', 'DOUBLE_LAGRANGE', scal = answer)
-        if( answer .eq. 'NON' ) then
+        call getvtx(' ', 'DOUBLE_LAGRANGE', scal=answer)
+        if (answer .eq. 'NON') then
             loadLigrelLgrf(3) = 'LAG1'
-        endif
-    endif
+        end if
+    end if
 
 ! - Check mesh orientation (normals)
     if (valeType .ne. 'COMP') then
         call chveno(valeType, mesh, model)
-    endif
+    end if
 
 ! - Audit assignments
     call verif_affe(modele=model, sd=load)

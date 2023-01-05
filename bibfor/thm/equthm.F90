@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,49 +18,49 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine equthm(ds_thm   , option   , j_mater   ,&
-                  lMatr    , lSigm    ,&
-                  lVari    , lMatrPred,&
-                  typmod   , angl_naut, parm_theta,&
-                  ndim     , nbvari   ,&
-                  kpi      , npg      ,&
-                  dimdef   , dimcon   ,&
-                  mecani   , press1   , press2    , tempe, &
-                  carcri   ,&
-                  defgem   , defgep   ,&
-                  congem   , congep   ,&
-                  vintm    , vintp    ,&
-                  time_prev, time_curr, time_incr ,&
-                  r        , drds     , dsde      , retcom)
+subroutine equthm(ds_thm, option, j_mater, &
+                  lMatr, lSigm, &
+                  lVari, lMatrPred, &
+                  typmod, angl_naut, parm_theta, &
+                  ndim, nbvari, &
+                  kpi, npg, &
+                  dimdef, dimcon, &
+                  mecani, press1, press2, tempe, &
+                  carcri, &
+                  defgem, defgep, &
+                  congem, congep, &
+                  vintm, vintp, &
+                  time_prev, time_curr, time_incr, &
+                  r, drds, dsde, retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/comthm.h"
 #include "asterfort/thmComputeResidual.h"
 #include "asterfort/thmComputeMatrix.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-character(len=16), intent(in) :: option
-aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
-integer, intent(in) :: j_mater
-character(len=8), intent(in) :: typmod(2)
-real(kind=8), intent(in)  :: angl_naut(3), parm_theta
-integer, intent(in) :: ndim, nbvari
-integer, intent(in) :: npg, kpi
-integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: defgem(dimdef), defgep(dimdef)
-real(kind=8), intent(inout) :: congem(dimcon), congep(dimcon)
-real(kind=8), intent(in) :: vintm(nbvari)
-real(kind=8), intent(inout) :: vintp(nbvari)
-real(kind=8), intent(in) :: time_prev, time_curr, time_incr
-real(kind=8), intent(out) :: r(dimdef+1)
-real(kind=8), intent(out) :: drds(dimdef+1, dimcon), dsde(dimcon, dimdef)
-integer, intent(out) :: retcom
+    type(THM_DS), intent(inout) :: ds_thm
+    character(len=16), intent(in) :: option
+    aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
+    integer, intent(in) :: j_mater
+    character(len=8), intent(in) :: typmod(2)
+    real(kind=8), intent(in)  :: angl_naut(3), parm_theta
+    integer, intent(in) :: ndim, nbvari
+    integer, intent(in) :: npg, kpi
+    integer, intent(in) :: dimdef, dimcon
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: defgem(dimdef), defgep(dimdef)
+    real(kind=8), intent(inout) :: congem(dimcon), congep(dimcon)
+    real(kind=8), intent(in) :: vintm(nbvari)
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    real(kind=8), intent(in) :: time_prev, time_curr, time_incr
+    real(kind=8), intent(out) :: r(dimdef+1)
+    real(kind=8), intent(out) :: drds(dimdef+1, dimcon), dsde(dimcon, dimdef)
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,12 +112,12 @@ integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    drds(1:dimdef+1,1:dimcon) = 0.d0
-    dsde(1:dimcon,1:dimdef)   = 0.d0
-    r(1:dimdef+1)             = 0.d0
-    gravity(:)                = 0.d0
-    retcom                    = 0
-    l_steady                  = ASTER_FALSE
+    drds(1:dimdef+1, 1:dimcon) = 0.d0
+    dsde(1:dimcon, 1:dimdef) = 0.d0
+    r(1:dimdef+1) = 0.d0
+    gravity(:) = 0.d0
+    retcom = 0
+    l_steady = ASTER_FALSE
 !
 ! - Address in generalized strains vector
 !
@@ -139,10 +139,10 @@ integer, intent(out) :: retcom
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         do i = 4, 6
-            congem(adcome+i-1)   = congem(adcome+i-1)*rac2
+            congem(adcome+i-1) = congem(adcome+i-1)*rac2
             congem(adcome+6+i-1) = congem(adcome+6+i-1)*rac2
         end do
-    endif
+    end if
 !
 ! - Initialization of stresses
 !
@@ -150,65 +150,64 @@ integer, intent(out) :: retcom
         do i = 1, dimcon
             congep(i) = congem(i)
         end do
-    endif
+    end if
 !
 ! - Compute generalized stresses and derivatives at current Gauss point
 !
 
-    call comthm(ds_thm   , l_steady ,&
-                lMatr    , lSigm    ,&
-                lVari    , lMatrPred,&
-                option   , j_mater  ,&
-                typmod   , angl_naut,&
-                ndim     , nbvari   ,&
-                dimdef   , dimcon   ,&
-                adcome   , adcote   , adcp11  , adcp12, adcp21, adcp22,&
-                addeme   , addete   , addep1  , addep2,&
-                kpi      , npg      ,&
-                carcri   ,&
-                defgem   , defgep   ,&
-                congem   , congep   ,&
-                vintm    , vintp    ,&
-                time_prev, time_curr,&
-                dsde     , gravity  , retcom)
-
+    call comthm(ds_thm, l_steady, &
+                lMatr, lSigm, &
+                lVari, lMatrPred, &
+                option, j_mater, &
+                typmod, angl_naut, &
+                ndim, nbvari, &
+                dimdef, dimcon, &
+                adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                addeme, addete, addep1, addep2, &
+                kpi, npg, &
+                carcri, &
+                defgem, defgep, &
+                congem, congep, &
+                vintm, vintp, &
+                time_prev, time_curr, &
+                dsde, gravity, retcom)
 
     if (retcom .ne. 0) then
         goto 99
-    endif
+    end if
 !
 ! - Compute non-linear residual
 !
     if (lSigm) then
-        call thmComputeResidual(ds_thm    , parm_theta, gravity,&
-                                ndim      ,&
-                                dimdef    , dimcon ,&
-                                mecani    , press1 , press2, tempe, &
-                                congem    , congep ,&
-                                time_incr ,&
-                                r         )
-    endif
+        call thmComputeResidual(ds_thm, parm_theta, gravity, &
+                                ndim, &
+                                dimdef, dimcon, &
+                                mecani, press1, press2, tempe, &
+                                congem, congep, &
+                                time_incr, &
+                                r)
+    end if
 !
 ! - Compute derivative
 !
     if (lMatr) then
-        call thmComputeMatrix(ds_thm    , parm_theta, gravity,&
-                              ndim      ,&
-                              dimdef    , dimcon ,&
-                              mecani    , press1 , press2, tempe,&
-                              congem    , congep ,&
-                              time_incr ,&
-                              drds      )
-    endif
+        call thmComputeMatrix(ds_thm, parm_theta, gravity, &
+                              ndim, &
+                              dimdef, dimcon, &
+                              mecani, press1, press2, tempe, &
+                              congem, congep, &
+                              time_incr, &
+                              drds)
+    end if
 !
 ! - Add sqrt(2) for stresses
 !
     if (ds_thm%ds_elem%l_dof_meca .and. lSigm) then
         do i = 4, 6
-            congep(adcome+i-1)   = congep(adcome+i-1)/rac2
+            congep(adcome+i-1) = congep(adcome+i-1)/rac2
             congep(adcome+6+i-1) = congep(adcome+6+i-1)/rac2
         end do
-    endif
+    end if
 !
 99  continue
 !

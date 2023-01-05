@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine lagmodtonommod(Cmod, PK2, F, Amod)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-    real(kind=8), dimension(3,3,3,3), intent(in) :: Cmod
+    real(kind=8), dimension(3, 3, 3, 3), intent(in) :: Cmod
     real(kind=8), dimension(6), intent(in) :: PK2
-    real(kind=8), dimension(3,3), intent(in) :: F
-    real(kind=8), dimension(3,3,3,3), intent(out) :: Amod
+    real(kind=8), dimension(3, 3), intent(in) :: F
+    real(kind=8), dimension(3, 3, 3, 3), intent(out) :: Amod
 !
 ! --------------------------------------------------------------------------------------------------
 ! conversion of Lagrangian modulus (for PK2) to the Nominal modulus (for PK1)
@@ -37,24 +37,24 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8), dimension(3,3) :: PK2mat
+    real(kind=8), dimension(3, 3) :: PK2mat
     integer :: i, J, k, L, M, N
-    real(kind = 8) :: sum, sum1
+    real(kind=8) :: sum, sum1
 !
 ! - Il faut convertir C au bon format
 ! - Convert PK2 to matrix form
-    PK2mat(1,1) = PK2(1)
-    PK2mat(2,2) = PK2(2)
-    PK2mat(3,3) = PK2(3)
+    PK2mat(1, 1) = PK2(1)
+    PK2mat(2, 2) = PK2(2)
+    PK2mat(3, 3) = PK2(3)
 !
-    PK2mat(1,2) = PK2(4) / rac2
-    PK2mat(2,1) = PK2mat(1,2)
+    PK2mat(1, 2) = PK2(4)/rac2
+    PK2mat(2, 1) = PK2mat(1, 2)
 !
-    PK2mat(1,3) = PK2(5) / rac2
-    PK2mat(3,1) = PK2mat(1,3)
+    PK2mat(1, 3) = PK2(5)/rac2
+    PK2mat(3, 1) = PK2mat(1, 3)
 !
-    PK2mat(2,3) = PK2(6) / rac2
-    PK2mat(3,2) = PK2mat(2,3)
+    PK2mat(2, 3) = PK2(6)/rac2
+    PK2mat(3, 2) = PK2mat(2, 3)
 !
 ! - Amod(i,J,k,L) = Cmod(M,J,N,L) * F(k,N) * F(i,M) + PK2(J,L) * delta(i,k)
 !
@@ -69,18 +69,18 @@ implicit none
                     do M = 1, 3
                         sum1 = 0.d0
                         do N = 1, 3
-                            sum1 = sum1 + Cmod(M,J,N,L) * F(k,N)
+                            sum1 = sum1+Cmod(M, J, N, L)*F(k, N)
                         end do
-                        sum = sum + sum1 * F(i,M)
+                        sum = sum+sum1*F(i, M)
                     end do
 !
-                    if(i == k) then
-                        sum = sum + PK2mat(J,L)
+                    if (i == k) then
+                        sum = sum+PK2mat(J, L)
                     end if
 !
 ! Like A has major symmetry Aijkl = Aklij, we could save CPU time
-                    Amod(i,J,k,L) = sum
-                    Amod(k,L,i,J) = sum
+                    Amod(i, J, k, L) = sum
+                    Amod(k, L, i, J) = sum
                 end do
             end do
         end do

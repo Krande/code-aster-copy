@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romBaseGetInfo(resultName, base)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/romFieldGetInfo.h"
 !
-character(len=8), intent(in)     :: resultName
-type(ROM_DS_Empi), intent(inout) :: base
+    character(len=8), intent(in)     :: resultName
+    type(ROM_DS_Empi), intent(inout) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,12 +55,12 @@ type(ROM_DS_Empi), intent(inout) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbMode       = 0
-    model        = ' '
-    lineicAxis   = ' '
-    baseType     = ' '
-    lineicSect   = ' '
-    fieldRefe    = ' '
+    nbMode = 0
+    model = ' '
+    lineicAxis = ' '
+    baseType = ' '
+    lineicSect = ' '
+    fieldRefe = ' '
     modeSymbName = ' '
 !
 ! - Number of modes
@@ -69,16 +69,16 @@ type(ROM_DS_Empi), intent(inout) :: base
 !
 ! - Get main parameters in empiric result
 !
-    call romModeParaRead(resultName, numeModeRefe,&
-                         model_        = model,&
-                         modeSymbName_ = modeSymbName,&
-                         numeSlice_    = numeSlice,&
-                         nbSnap_       = nbSnap)
+    call romModeParaRead(resultName, numeModeRefe, &
+                         model_=model, &
+                         modeSymbName_=modeSymbName, &
+                         numeSlice_=numeSlice, &
+                         nbSnap_=nbSnap)
     if (numeSlice .eq. 0) then
         baseType = '3D'
     else
         baseType = 'LINEIQUE'
-    endif
+    end if
 !
 ! - Get _representative_ field in empiric result
 !
@@ -93,11 +93,11 @@ type(ROM_DS_Empi), intent(inout) :: base
 ! - Save informations about empiric modes
 !
     base%resultName = resultName
-    base%baseType   = baseType
+    base%baseType = baseType
     base%lineicAxis = lineicAxis
     base%lineicSect = lineicSect
-    base%nbMode     = nbMode
-    base%nbSnap     = nbSnap
-    base%mode       = mode
+    base%nbMode = nbMode
+    base%nbSnap = nbSnap
+    base%mode = mode
 !
 end subroutine

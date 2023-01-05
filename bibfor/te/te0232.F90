@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,13 @@ subroutine te0232(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(option.eq.'CHAR_MECA_ROTA_R')
+    ASSERT(option .eq. 'CHAR_MECA_ROTA_R')
 !
 ! - Finite element parameters
 !
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 ! - IN fields
 !
@@ -85,47 +85,46 @@ subroutine te0232(option, nomte)
 ! - Checking
 !
 
-
 ! AXE=Oy et CENTRE=ORIGINE
     if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
         call utmess('F', 'CHARGES2_65')
-    endif
+    end if
     if (abs(rota_axis(2)) .le. r8miem()) then
         call utmess('F', 'CHARGES2_65')
-    endif
-    if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or.&
+    end if
+    if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or. &
         abs(rota_cent(3)) .gt. r8miem()) then
         call utmess('F', 'CHARGES2_66')
-    endif
+    end if
 
 !
 ! - Material
 !
     zero = 0.d0
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(j_mate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(j_mate), &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
 ! - Computation
 !
     do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(j_geom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(j_geom), dfdx, &
                     cour, poids, nx, ny)
         poids = poids*rho(1)*rota_speed**2*zr(j_caco)
         rx = zero
         ry = zero
         do i = 1, nno
-            rx = rx + zr(j_geom+2*i-2)*zr(ivf+k+i-1)
-            ry = ry + zr(j_geom+2*i-1)*zr(ivf+k+i-1)
+            rx = rx+zr(j_geom+2*i-2)*zr(ivf+k+i-1)
+            ry = ry+zr(j_geom+2*i-1)*zr(ivf+k+i-1)
         end do
         poids = poids*rx
         do i = 1, nno
-            zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids*rota_axis(2)**2*rx*zr(ivf+k+i-1)
+            zr(j_vect+3*i-3) = zr(j_vect+3*i-3)+poids*rota_axis(2)**2*rx*zr(ivf+k+i-1)
         end do
     end do
 end subroutine

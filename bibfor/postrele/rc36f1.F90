@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
-                  nk, nl, n0, nbp12, nbp23,&
+subroutine rc36f1(nbsigr, nocc, saltij, isk, isl, &
+                  nk, nl, n0, nbp12, nbp23, &
                   nbp13, sigr, yapass, typass, nsitup)
     implicit none
 #include "asterf_types.h"
@@ -65,67 +65,67 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
 !
     if (numg1 .eq. numg2) then
 ! ------ MEME GROUPE
-        n0 = min ( nk , nl )
+        n0 = min(nk, nl)
         goto 999
     else if (numg1 .eq. ig2) then
 ! ------ MEME GROUPE
-        n0 = min ( nk , nl )
+        n0 = min(nk, nl)
         goto 999
     else if (numg2 .eq. ig1) then
 ! ------ MEME GROUPE
-        n0 = min ( nk , nl )
+        n0 = min(nk, nl)
         goto 999
     else if (ig1 .eq. ig2) then
 ! ------ MEME GROUPE
-        n0 = min ( nk , nl )
+        n0 = min(nk, nl)
         goto 999
-    endif
+    end if
 !
-    if (( numg1.eq.1 .and. numg2.eq.2 ) .or. ( numg1.eq.2 .and. numg2.eq.1 )) then
+    if ((numg1 .eq. 1 .and. numg2 .eq. 2) .or. (numg1 .eq. 2 .and. numg2 .eq. 1)) then
         if (nbp12 .eq. 0) then
-            if (( ig1.eq.1 .and. ig2.eq.3 ) .or. ( ig1.eq.3 .and. ig2.eq.1 )) then
+            if ((ig1 .eq. 1 .and. ig2 .eq. 3) .or. (ig1 .eq. 3 .and. ig2 .eq. 1)) then
                 typass = '1_3'
                 yapass = .true.
-                elseif ( ( ig1.eq.2 .and. ig2.eq.3 ) .or. ( ig1.eq.3&
-            .and. ig2.eq.2 ) ) then
+            elseif ((ig1 .eq. 2 .and. ig2 .eq. 3) .or. (ig1 .eq. 3 &
+                                                        .and. ig2 .eq. 2)) then
                 typass = '2_3'
                 yapass = .true.
-            endif
+            end if
         else
             typass = '1_2'
             yapass = .true.
-        endif
-        elseif ( ( numg1.eq.2 .and. numg2.eq.3 ) .or. ( numg1.eq.3 .and.&
-    numg2.eq.2 ) ) then
+        end if
+    elseif ((numg1 .eq. 2 .and. numg2 .eq. 3) .or. (numg1 .eq. 3 .and. &
+                                                    numg2 .eq. 2)) then
         if (nbp23 .eq. 0) then
-            if (( ig1.eq.1 .and. ig2.eq.2 ) .or. ( ig1.eq.2 .and. ig2.eq.1 )) then
+            if ((ig1 .eq. 1 .and. ig2 .eq. 2) .or. (ig1 .eq. 2 .and. ig2 .eq. 1)) then
                 typass = '1_2'
                 yapass = .true.
-                elseif ( ( ig1.eq.1 .and. ig2.eq.3 ) .or. ( ig1.eq.3&
-            .and. ig2.eq.1 ) ) then
+            elseif ((ig1 .eq. 1 .and. ig2 .eq. 3) .or. (ig1 .eq. 3 &
+                                                        .and. ig2 .eq. 1)) then
                 typass = '1_3'
                 yapass = .true.
-            endif
+            end if
         else
             typass = '2_3'
             yapass = .true.
-        endif
-        elseif ( ( numg1.eq.1 .and. numg2.eq.3 ) .or. ( numg1.eq.3 .and.&
-    numg2.eq.1 ) ) then
+        end if
+    elseif ((numg1 .eq. 1 .and. numg2 .eq. 3) .or. (numg1 .eq. 3 .and. &
+                                                    numg2 .eq. 1)) then
         if (nbp13 .eq. 0) then
-            if (( ig1.eq.1 .and. ig2.eq.2 ) .or. ( ig1.eq.2 .and. ig2.eq.1 )) then
+            if ((ig1 .eq. 1 .and. ig2 .eq. 2) .or. (ig1 .eq. 2 .and. ig2 .eq. 1)) then
                 typass = '1_2'
                 yapass = .true.
-                elseif ( ( ig1.eq.2 .and. ig2.eq.3 ) .or. ( ig1.eq.3&
-            .and. ig2.eq.2 ) ) then
+            elseif ((ig1 .eq. 2 .and. ig2 .eq. 3) .or. (ig1 .eq. 3 &
+                                                        .and. ig2 .eq. 2)) then
                 typass = '2_3'
                 yapass = .true.
-            endif
+            end if
         else
             typass = '1_3'
             yapass = .true.
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECHERCHE DU CHEMIN DE PASSAGE
 !
@@ -140,11 +140,11 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
             if (sigr(k) .eq. sipass) then
                 ioc1 = k
                 goto 14
-            endif
+            end if
         end do
         call utmess('F', 'POSTRCCM_36')
- 14     continue
-        npass = max(nocc(2*(ioc1-1)+1),nocc(2*(ioc1-1)+2))
+14      continue
+        npass = max(nocc(2*(ioc1-1)+1), nocc(2*(ioc1-1)+2))
         if (npass .eq. 0) goto 10
         chemin = .true.
 ! --------- ON RECHERCHE LE MIN DES SALT MAX
@@ -158,42 +158,42 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
             if (salt1 .gt. saltam) then
                 saltam = salt1
                 nsitu = ioc1
-            endif
+            end if
             if (salt3 .gt. saltam) then
                 saltam = salt3
                 nsitu = ioc1
-            endif
+            end if
 !            COLONNE _B
             salt2 = saltij(i1+4*(ioc1-1)+2)
             salt4 = saltij(i1+4*(ioc1-1)+4)
             if (salt2 .gt. saltbm) then
                 saltbm = salt2
                 nsitu = ioc1
-            endif
+            end if
             if (salt4 .gt. saltbm) then
                 saltbm = salt4
                 nsitu = ioc1
-            endif
+            end if
         end do
 !
         if (saltam .lt. salmia) then
             salmia = saltam
             nsitup = nsitu
-        endif
+        end if
         if (saltbm .lt. salmib) then
             salmib = saltbm
             nsitup = nsitu
-        endif
+        end if
 !
- 10     continue
+10      continue
     end do
     if (chemin) then
-        npass = max(nocc(2*(nsitup-1)+1),nocc(2*(nsitup-1)+2))
-        n0 = min ( nk , nl, npass )
+        npass = max(nocc(2*(nsitup-1)+1), nocc(2*(nsitup-1)+2))
+        n0 = min(nk, nl, npass)
     else
         yapass = .false.
-        n0 = min ( nk , nl )
-    endif
+        n0 = min(nk, nl)
+    end if
 !
 999 continue
 !

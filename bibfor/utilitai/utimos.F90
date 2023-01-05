@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,15 +53,15 @@ subroutine utimos(unit, obin, lattr, lcont)
     if (iret .le. 0) then
         call utmess('A', 'UTILITAI_99', sk=ob1)
         goto 9999
-    endif
+    end if
 !
     if (lattr) then
         call jeimpa(unit, ob1, ' ')
-    endif
+    end if
 !
     if (lcont) then
         call jeimpo(unit, ob1, ' ')
-    endif
+    end if
 !
 9999 continue
 end subroutine

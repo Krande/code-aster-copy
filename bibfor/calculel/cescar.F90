@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,9 +65,9 @@ subroutine cescar(cesz, cartz, basz)
     call jemarq()
 !      CALL IMPRSD('CHAMP',CESZ,6,'AJOCOT CESCAR IN')
 !
-    ces1=cesz
-    cart=cartz
-    base=basz
+    ces1 = cesz
+    cart = cartz
+    base = basz
 !
 !
 !
@@ -79,9 +79,9 @@ subroutine cescar(cesz, cartz, basz)
     call jeveuo(ces1//'.CESV', 'L', jce1v)
     call jeveuo(ces1//'.CESL', 'L', jce1l)
 !
-    ma=cesk(1)
-    nomgd=cesk(2)
-    nbmam=zi(jce1d-1+1)
+    ma = cesk(1)
+    nomgd = cesk(2)
+    nbmam = zi(jce1d-1+1)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
@@ -99,66 +99,66 @@ subroutine cescar(cesz, cartz, basz)
 !        LES MAILLES SUCCESSIVES QUI PORTENT LES MEMES VALEURS :
 !
 !     -- IDPREC : .TRUE. -> LA MAILLE EST IDENTIQUE A LA PRECEDENTE
-    idprec=.false.
+    idprec = .false.
 !     -- NBPAQU : NOMBRE DE MAILLES DU "PAQUET" DE MAILLES IDENTIQUES
-    nbpaqu=0
+    nbpaqu = 0
 !     -- NBCMPS : NOMBRE DE CMPS DU PAQUET
-    nbcmps=0
+    nbcmps = 0
 !
     do ima = 1, nbmam
-        nbpt=zi(jce1d-1+5+4*(ima-1)+1)
-        nbsp=zi(jce1d-1+5+4*(ima-1)+2)
-        ncmp=zi(jce1d-1+5+4*(ima-1)+3)
-        if ((nbpt.gt.1) .or. (nbsp.gt.1)) then
-            valk(1)=cesz
-            valk(2)=cartz
-            vali(1)=nbpt
-            vali(2)=nbsp
-            vali(3)=ima
-            call utmess('F', 'MODELISA9_8', nk=2, valk=valk, ni=3,&
+        nbpt = zi(jce1d-1+5+4*(ima-1)+1)
+        nbsp = zi(jce1d-1+5+4*(ima-1)+2)
+        ncmp = zi(jce1d-1+5+4*(ima-1)+3)
+        if ((nbpt .gt. 1) .or. (nbsp .gt. 1)) then
+            valk(1) = cesz
+            valk(2) = cartz
+            vali(1) = nbpt
+            vali(2) = nbsp
+            vali(3) = ima
+            call utmess('F', 'MODELISA9_8', nk=2, valk=valk, ni=3, &
                         vali=vali)
-        endif
+        end if
         if (nbpt*nbsp .eq. 0) goto 80
 !
 !       -- NCMPMA : NBRE DE CMPS SUR LA MAILLE :
-        ncmpma=0
+        ncmpma = 0
         do kcmp = 1, ncmp
-            call cesexi('C', jce1d, jce1l, ima, 1,&
+            call cesexi('C', jce1d, jce1l, ima, 1, &
                         1, kcmp, iad1)
-            ASSERT(iad1.ne.0)
+            ASSERT(iad1 .ne. 0)
             if (iad1 .gt. 0) then
-                ncmpma=ncmpma+1
-                vncmp(ncmpma)=cesc(kcmp)
+                ncmpma = ncmpma+1
+                vncmp(ncmpma) = cesc(kcmp)
 !
                 if (tsca .eq. 'R') then
-                    zr(jvalv-1+ncmpma)=zr(jce1v-1+iad1)
-                else if (tsca.eq.'C') then
-                    zc(jvalv-1+ncmpma)=zc(jce1v-1+iad1)
-                else if (tsca.eq.'I') then
-                    zi(jvalv-1+ncmpma)=zi(jce1v-1+iad1)
-                else if (tsca.eq.'K8') then
-                    zk8(jvalv-1+ncmpma)=zk8(jce1v-1+iad1)
-                else if (tsca.eq.'K16') then
-                    zk16(jvalv-1+ncmpma)=zk16(jce1v-1+iad1)
-                else if (tsca.eq.'K24') then
-                    zk24(jvalv-1+ncmpma)=zk24(jce1v-1+iad1)
-                else if (tsca.eq.'K32') then
-                    zk32(jvalv-1+ncmpma)=zk32(jce1v-1+iad1)
-                else if (tsca.eq.'K80') then
-                    zk80(jvalv-1+ncmpma)=zk80(jce1v-1+iad1)
+                    zr(jvalv-1+ncmpma) = zr(jce1v-1+iad1)
+                else if (tsca .eq. 'C') then
+                    zc(jvalv-1+ncmpma) = zc(jce1v-1+iad1)
+                else if (tsca .eq. 'I') then
+                    zi(jvalv-1+ncmpma) = zi(jce1v-1+iad1)
+                else if (tsca .eq. 'K8') then
+                    zk8(jvalv-1+ncmpma) = zk8(jce1v-1+iad1)
+                else if (tsca .eq. 'K16') then
+                    zk16(jvalv-1+ncmpma) = zk16(jce1v-1+iad1)
+                else if (tsca .eq. 'K24') then
+                    zk24(jvalv-1+ncmpma) = zk24(jce1v-1+iad1)
+                else if (tsca .eq. 'K32') then
+                    zk32(jvalv-1+ncmpma) = zk32(jce1v-1+iad1)
+                else if (tsca .eq. 'K80') then
+                    zk80(jvalv-1+ncmpma) = zk80(jce1v-1+iad1)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
         end do
         if (ncmpma .eq. 0) goto 80
 !
 !
         if (nbcmps .eq. 0) then
 !         -- C'EST LE 1ER PAQUET QUI COMMENCE
-            ASSERT(.not.idprec)
-            nbcmps=ncmpma
-            premie=.true.
+            ASSERT(.not. idprec)
+            nbcmps = ncmpma
+            premie = .true.
 !
         else
 !         -- LA MAILLE EST-ELLE COMME LA MAILLE SAUVEGARDEE ?
@@ -167,150 +167,150 @@ subroutine cescar(cesz, cartz, basz)
                 if (noms(k) .ne. vncmp(k)) goto 30
                 if (tsca .eq. 'R') then
                     if (zr(jvals-1+k) .ne. zr(jvalv-1+k)) goto 30
-                else if (tsca.eq.'C') then
+                else if (tsca .eq. 'C') then
                     if (zc(jvals-1+k) .ne. zc(jvalv-1+k)) goto 30
-                else if (tsca.eq.'I') then
+                else if (tsca .eq. 'I') then
                     if (zi(jvals-1+k) .ne. zi(jvalv-1+k)) goto 30
-                else if (tsca.eq.'K8') then
+                else if (tsca .eq. 'K8') then
                     if (zk8(jvals-1+k) .ne. zk8(jvalv-1+k)) goto 30
-                else if (tsca.eq.'K16') then
+                else if (tsca .eq. 'K16') then
                     if (zk16(jvals-1+k) .ne. zk16(jvalv-1+k)) goto 30
-                else if (tsca.eq.'K24') then
+                else if (tsca .eq. 'K24') then
                     if (zk24(jvals-1+k) .ne. zk24(jvalv-1+k)) goto 30
-                else if (tsca.eq.'K32') then
+                else if (tsca .eq. 'K32') then
                     if (zk32(jvals-1+k) .ne. zk32(jvalv-1+k)) goto 30
-                else if (tsca.eq.'K80') then
+                else if (tsca .eq. 'K80') then
                     if (zk80(jvals-1+k) .ne. zk80(jvalv-1+k)) goto 30
-                endif
+                end if
             end do
-            idprec=.true.
+            idprec = .true.
             goto 40
 !
- 30         continue
-            idprec=.false.
- 40         continue
-        endif
+30          continue
+            idprec = .false.
+40          continue
+        end if
 !
 !
-        if (.not.idprec) then
+        if (.not. idprec) then
 !          -- SI LA MAILLE EST DIFFERENTE :
 !            - IL FAUT STOCKER LE PAQUET PRECEDENT
 !            - PUIS IL FAUT SAUVEGARDER LA NOUVELLE MAILLE
 !          -----------------------------------------------------
-            if (.not.premie) then
+            if (.not. premie) then
                 do k = 1, nbcmps
-                    vncmp(k)=noms(k)
+                    vncmp(k) = noms(k)
                     if (tsca .eq. 'R') then
-                        zr(jvalv-1+k)=zr(jvals-1+k)
-                    else if (tsca.eq.'C') then
-                        zc(jvalv-1+k)=zc(jvals-1+k)
-                    else if (tsca.eq.'I') then
-                        zi(jvalv-1+k)=zi(jvals-1+k)
-                    else if (tsca.eq.'K8') then
-                        zk8(jvalv-1+k)=zk8(jvals-1+k)
-                    else if (tsca.eq.'K16') then
-                        zk16(jvalv-1+k)=zk16(jvals-1+k)
-                    else if (tsca.eq.'K24') then
-                        zk24(jvalv-1+k)=zk24(jvals-1+k)
-                    else if (tsca.eq.'K32') then
-                        zk32(jvalv-1+k)=zk32(jvals-1+k)
-                    else if (tsca.eq.'K80') then
-                        zk80(jvalv-1+k)=zk80(jvals-1+k)
-                    endif
+                        zr(jvalv-1+k) = zr(jvals-1+k)
+                    else if (tsca .eq. 'C') then
+                        zc(jvalv-1+k) = zc(jvals-1+k)
+                    else if (tsca .eq. 'I') then
+                        zi(jvalv-1+k) = zi(jvals-1+k)
+                    else if (tsca .eq. 'K8') then
+                        zk8(jvalv-1+k) = zk8(jvals-1+k)
+                    else if (tsca .eq. 'K16') then
+                        zk16(jvalv-1+k) = zk16(jvals-1+k)
+                    else if (tsca .eq. 'K24') then
+                        zk24(jvalv-1+k) = zk24(jvals-1+k)
+                    else if (tsca .eq. 'K32') then
+                        zk32(jvalv-1+k) = zk32(jvals-1+k)
+                    else if (tsca .eq. 'K80') then
+                        zk80(jvalv-1+k) = zk80(jvals-1+k)
+                    end if
                 end do
-                call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
+                call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu, &
                             limanu=lima)
 !
 !           -- POUR FAIRE LE NOCART, ON A DU ECRASER JVALV.
 !           -- IL FAUT LE RETABLIR :
-                ncmpma=0
+                ncmpma = 0
                 do kcmp = 1, ncmp
-                    call cesexi('C', jce1d, jce1l, ima, 1,&
+                    call cesexi('C', jce1d, jce1l, ima, 1, &
                                 1, kcmp, iad1)
-                    ASSERT(iad1.ne.0)
+                    ASSERT(iad1 .ne. 0)
                     if (iad1 .gt. 0) then
-                        ncmpma=ncmpma+1
-                        vncmp(ncmpma)=cesc(kcmp)
+                        ncmpma = ncmpma+1
+                        vncmp(ncmpma) = cesc(kcmp)
 !
                         if (tsca .eq. 'R') then
-                            zr(jvalv-1+ncmpma)=zr(jce1v-1+iad1)
-                        else if (tsca.eq.'C') then
-                            zc(jvalv-1+ncmpma)=zc(jce1v-1+iad1)
-                        else if (tsca.eq.'I') then
-                            zi(jvalv-1+ncmpma)=zi(jce1v-1+iad1)
-                        else if (tsca.eq.'K8') then
-                            zk8(jvalv-1+ncmpma)=zk8(jce1v-1+iad1)
-                        else if (tsca.eq.'K16') then
-                            zk16(jvalv-1+ncmpma)=zk16(jce1v-1+iad1)
-                        else if (tsca.eq.'K24') then
-                            zk24(jvalv-1+ncmpma)=zk24(jce1v-1+iad1)
-                        else if (tsca.eq.'K32') then
-                            zk32(jvalv-1+ncmpma)=zk32(jce1v-1+iad1)
-                        else if (tsca.eq.'K80') then
-                            zk80(jvalv-1+ncmpma)=zk80(jce1v-1+iad1)
-                        endif
-                    endif
+                            zr(jvalv-1+ncmpma) = zr(jce1v-1+iad1)
+                        else if (tsca .eq. 'C') then
+                            zc(jvalv-1+ncmpma) = zc(jce1v-1+iad1)
+                        else if (tsca .eq. 'I') then
+                            zi(jvalv-1+ncmpma) = zi(jce1v-1+iad1)
+                        else if (tsca .eq. 'K8') then
+                            zk8(jvalv-1+ncmpma) = zk8(jce1v-1+iad1)
+                        else if (tsca .eq. 'K16') then
+                            zk16(jvalv-1+ncmpma) = zk16(jce1v-1+iad1)
+                        else if (tsca .eq. 'K24') then
+                            zk24(jvalv-1+ncmpma) = zk24(jce1v-1+iad1)
+                        else if (tsca .eq. 'K32') then
+                            zk32(jvalv-1+ncmpma) = zk32(jce1v-1+iad1)
+                        else if (tsca .eq. 'K80') then
+                            zk80(jvalv-1+ncmpma) = zk80(jce1v-1+iad1)
+                        end if
+                    end if
                 end do
-            endif
+            end if
 !
-            premie=.false.
-            nbcmps=ncmpma
+            premie = .false.
+            nbcmps = ncmpma
             do k = 1, nbcmps
-                noms(k)=vncmp(k)
+                noms(k) = vncmp(k)
                 if (tsca .eq. 'R') then
-                    zr(jvals-1+k)=zr(jvalv-1+k)
-                else if (tsca.eq.'C') then
-                    zc(jvals-1+k)=zc(jvalv-1+k)
-                else if (tsca.eq.'I') then
-                    zi(jvals-1+k)=zi(jvalv-1+k)
-                else if (tsca.eq.'K8') then
-                    zk8(jvals-1+k)=zk8(jvalv-1+k)
-                else if (tsca.eq.'K16') then
-                    zk16(jvals-1+k)=zk16(jvalv-1+k)
-                else if (tsca.eq.'K24') then
-                    zk24(jvals-1+k)=zk24(jvalv-1+k)
-                else if (tsca.eq.'K32') then
-                    zk32(jvals-1+k)=zk32(jvalv-1+k)
-                else if (tsca.eq.'K80') then
-                    zk80(jvals-1+k)=zk80(jvalv-1+k)
-                endif
+                    zr(jvals-1+k) = zr(jvalv-1+k)
+                else if (tsca .eq. 'C') then
+                    zc(jvals-1+k) = zc(jvalv-1+k)
+                else if (tsca .eq. 'I') then
+                    zi(jvals-1+k) = zi(jvalv-1+k)
+                else if (tsca .eq. 'K8') then
+                    zk8(jvals-1+k) = zk8(jvalv-1+k)
+                else if (tsca .eq. 'K16') then
+                    zk16(jvals-1+k) = zk16(jvalv-1+k)
+                else if (tsca .eq. 'K24') then
+                    zk24(jvals-1+k) = zk24(jvalv-1+k)
+                else if (tsca .eq. 'K32') then
+                    zk32(jvals-1+k) = zk32(jvalv-1+k)
+                else if (tsca .eq. 'K80') then
+                    zk80(jvals-1+k) = zk80(jvalv-1+k)
+                end if
             end do
-            nbpaqu=1
-            lima(nbpaqu)=ima
+            nbpaqu = 1
+            lima(nbpaqu) = ima
 !
 !
         else
 !         -- SI LA MAILLE EST IDENTIQUE :
 !         --------------------------------
-            nbpaqu=nbpaqu+1
-            lima(nbpaqu)=ima
-        endif
+            nbpaqu = nbpaqu+1
+            lima(nbpaqu) = ima
+        end if
 !
- 80     continue
+80      continue
     end do
 !
 !     -- IL NE FAUT PAS OUBLIER LE DERNIER PAQUET :
     do k = 1, nbcmps
-        vncmp(k)=noms(k)
+        vncmp(k) = noms(k)
         if (tsca .eq. 'R') then
-            zr(jvalv-1+k)=zr(jvals-1+k)
-        else if (tsca.eq.'C') then
-            zc(jvalv-1+k)=zc(jvals-1+k)
-        else if (tsca.eq.'I') then
-            zi(jvalv-1+k)=zi(jvals-1+k)
-        else if (tsca.eq.'K8') then
-            zk8(jvalv-1+k)=zk8(jvals-1+k)
-        else if (tsca.eq.'K16') then
-            zk16(jvalv-1+k)=zk16(jvals-1+k)
-        else if (tsca.eq.'K24') then
-            zk24(jvalv-1+k)=zk24(jvals-1+k)
-        else if (tsca.eq.'K32') then
-            zk32(jvalv-1+k)=zk32(jvals-1+k)
-        else if (tsca.eq.'K80') then
-            zk80(jvalv-1+k)=zk80(jvals-1+k)
-        endif
+            zr(jvalv-1+k) = zr(jvals-1+k)
+        else if (tsca .eq. 'C') then
+            zc(jvalv-1+k) = zc(jvals-1+k)
+        else if (tsca .eq. 'I') then
+            zi(jvalv-1+k) = zi(jvals-1+k)
+        else if (tsca .eq. 'K8') then
+            zk8(jvalv-1+k) = zk8(jvals-1+k)
+        else if (tsca .eq. 'K16') then
+            zk16(jvalv-1+k) = zk16(jvals-1+k)
+        else if (tsca .eq. 'K24') then
+            zk24(jvalv-1+k) = zk24(jvals-1+k)
+        else if (tsca .eq. 'K32') then
+            zk32(jvalv-1+k) = zk32(jvals-1+k)
+        else if (tsca .eq. 'K80') then
+            zk80(jvalv-1+k) = zk80(jvals-1+k)
+        end if
     end do
-    call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
+    call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu, &
                 limanu=lima)
 !
 !

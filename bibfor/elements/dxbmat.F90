@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dxbmat(nomte, cara, xyzl, pgl, igau,&
+subroutine dxbmat(nomte, cara, xyzl, pgl, igau, &
                   jacgau, bmat)
     implicit none
 #include "asterfort/dkqb.h"
@@ -49,25 +49,25 @@ subroutine dxbmat(nomte, cara, xyzl, pgl, igau,&
     if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDKTG3 ') then
         call dktb(cara, igau, jacgau, bmat)
 !
-    else if (nomte .eq.'MEDSTR3 ') then
+    else if (nomte .eq. 'MEDSTR3 ') then
         call dstb(cara, pgl, igau, jacgau, bmat)
 !
-    else if (nomte .eq.'MEDKQU4 ' .or. nomte .eq.'MEDKQG4 ') then
+    else if (nomte .eq. 'MEDKQU4 ' .or. nomte .eq. 'MEDKQG4 ') then
         call dkqb(cara, xyzl, igau, jacgau, bmat)
 !
-    else if (nomte .eq.'MEDSQU4 ') then
-        call dsqb(cara, xyzl, pgl, igau, jacgau,&
+    else if (nomte .eq. 'MEDSQU4 ') then
+        call dsqb(cara, xyzl, pgl, igau, jacgau, &
                   bmat)
 !
-    else if (nomte .eq.'MEQ4QU4 '.or.nomte .eq.'MEQ4GG4 ') then
+    else if (nomte .eq. 'MEQ4QU4 ' .or. nomte .eq. 'MEQ4GG4 ') then
         call q4gb(cara, xyzl, igau, jacgau, bmat)
 !
-    else if (nomte .eq.'MET3GG3 '.or.nomte .eq.'MET3TR3 ') then
+    else if (nomte .eq. 'MET3GG3 ' .or. nomte .eq. 'MET3TR3 ') then
         call t3gb(cara, xyzl, bmat)
         jacgau = cara(8)
 !
     else
         call utmess('F', 'ELEMENTS_14', sk=nomte)
-    endif
+    end if
 !
 end subroutine

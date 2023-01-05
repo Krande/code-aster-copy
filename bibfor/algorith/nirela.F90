@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ subroutine nirela(irela, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2
 ! OUT IRET   O (OK) / -1 (ERROR)
 !
     iret = 0
-    if(jp .le. 0.d0) then
+    if (jp .le. 0.d0) then
         iret = -1
         go to 999
     elseif (irela == 2 .or. irela == 3) then
-        if(gm.ge. 200 .or. gp.ge.200) then
+        if (gm .ge. 200 .or. gp .ge. 200) then
             iret = -1
             go to 999
         end if
@@ -135,15 +135,15 @@ subroutine nirela(irela, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2
         d2boa = -1.d0/(ap)**2
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 999 continue
 !
-    if(iret == -1) then
+    if (iret == -1) then
         am = 0.d0
         ap = 0.d0
         bp = 0.d0
-        boa= 0.d0
+        boa = 0.d0
         aa = 0.d0
         bb = 0.d0
         daa = 0.d0

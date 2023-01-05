@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine charac(load)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/adalig.h"
 #include "asterfort/caddli.h"
@@ -36,7 +36,7 @@ implicit none
 #include "asterfort/utmess.h"
 
 !
-character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ character(len=8), intent(in) :: load
     call cagene(load, command, model, mesh, geomDime)
     if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
-    endif
+    end if
 
 ! - Get Ligrel for load
     call lisnnl(phenom, load, loadDescBase)
@@ -91,10 +91,10 @@ character(len=8), intent(in) :: load
     if (iret .ne. 0) then
         call adalig(loadLigrel)
         call cormgi('G', loadLigrel)
-        call jeecra(loadLigrel//'.LGRF', 'DOCU', cval = phenomS)
+        call jeecra(loadLigrel//'.LGRF', 'DOCU', cval=phenomS)
         call initel(loadLigrel)
-        call jeveuo(loadLigrel//'.LGRF', 'E', vk8 = loadLigrelLgrf)
+        call jeveuo(loadLigrel//'.LGRF', 'E', vk8=loadLigrelLgrf)
         loadLigrelLgrf(2) = model
-    endif
+    end if
 !
 end subroutine

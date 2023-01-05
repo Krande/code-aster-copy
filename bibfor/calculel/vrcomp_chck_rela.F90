@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 
 subroutine vrcomp_chck_rela(mesh, nbCell, &
                             comporCurr, comporPrev, &
-                            ligrelCurr, ligrelPrev,&
-                            comp_comb_1, comp_comb_2, verbose,&
-                            newBehaviourOnCell, inconsistentBehaviour,&
+                            ligrelCurr, ligrelPrev, &
+                            comp_comb_1, comp_comb_2, verbose, &
+                            newBehaviourOnCell, inconsistentBehaviour, &
                             l_modif_vari)
 !
-use mesh_module, only : getGroupsFromCell
+    use mesh_module, only: getGroupsFromCell
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,13 +36,13 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-integer, intent(in) :: nbCell
-character(len=19), intent(in) :: comporCurr, comporPrev
-character(len=19), intent(in) :: ligrelCurr, ligrelPrev
-character(len=48), intent(in) :: comp_comb_1, comp_comb_2
-aster_logical, intent(in) :: verbose
-aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif_vari
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nbCell
+    character(len=19), intent(in) :: comporCurr, comporPrev
+    character(len=19), intent(in) :: ligrelCurr, ligrelPrev
+    character(len=48), intent(in) :: comp_comb_1, comp_comb_2
+    aster_logical, intent(in) :: verbose
+    aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif_vari
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -105,8 +105,8 @@ aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif
 
 ! - Check on mesh
     do iCell = 1, nbCell
-        lCellPrev = repePrev(2*(iCell-1)+1).gt.0
-        lCellCurr = repeCurr(2*(iCell-1)+1).gt.0
+        lCellPrev = repePrev(2*(iCell-1)+1) .gt. 0
+        lCellCurr = repeCurr(2*(iCell-1)+1) .gt. 0
         call cesexi('C', jvCesdPrev, jvCeslPrev, iCell, 1, 1, 1, iadm)
         call cesexi('C', jvCesdCurr, jvCeslCurr, iCell, 1, 1, 1, iadp)
         if (iadp .gt. 0) then
@@ -119,7 +119,7 @@ aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif
                     call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
                     valk(1:nbGroupCell) = groupCell(1:nbGroupCell)
                     call utmess('I', 'COMPOR6_10', nk=6, valk=valk)
-                endif
+                end if
                 newBehaviourOnCell = ASTER_TRUE
             else
                 relaCompPrev = cesvPrev(iadm)
@@ -134,7 +134,7 @@ aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif
                     idxCurr = index(comp_comb_1, relaCompCurr)
                     if ((idxPrev .gt. 0) .and. (idxCurr .gt. 0)) then
                         goto 10
-                    endif
+                    end if
 
 ! ----------------- Comportements can been always mixed
                     idxPrev = index(comp_comb_2, relaCompPrev)
@@ -142,7 +142,7 @@ aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif
                     if ((idxPrev .gt. 0) .or. (idxCurr .gt. 0)) then
                         l_modif_vari = ASTER_TRUE
                         goto 10
-                    endif
+                    end if
 
 ! ----------------- Comportements cannot been mixed
                     if (lCellCurr .and. lCellPrev) then
@@ -156,13 +156,13 @@ aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif
                             valk = ' '
                             call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
                             call utmess('I', 'COMPOR6_11', nk=2, valk=[relaCompPrev, relaCompCurr])
-                        endif
+                        end if
                         inconsistentBehaviour = ASTER_TRUE
-                    endif
-                endif
-            endif
- 10         continue
-        endif
+                    end if
+                end if
+            end if
+10          continue
+        end if
     end do
 !
 end subroutine

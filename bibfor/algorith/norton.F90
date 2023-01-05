@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine norton(nvi, vini, coeft, nmat, sigi,&
+subroutine norton(nvi, vini, coeft, nmat, sigi, &
                   dvin, iret)
     implicit none
 !      MODELE VISCOPLASTIQUE DE NORTON
@@ -41,10 +41,10 @@ subroutine norton(nvi, vini, coeft, nmat, sigi,&
     real(kind=8) :: coeft(nmat), vini(nvi), dvin(nvi), smx(6), sigi(6)
     real(kind=8) :: dp, n, unsurk, grj2v, epsi
 !     ----------------------------------------------------------------
-    common /tdim/   ndt,    ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
 !
-    iret=0
+    iret = 0
 !     INITIALISATION DES DERIVEES DES VARIABLES INTERNES A ZERO
     call r8inir(7, 0.d0, dvin, 1)
 !
@@ -53,7 +53,7 @@ subroutine norton(nvi, vini, coeft, nmat, sigi,&
     unsurk = coeft(2)
 !
 !     ZERO NUMERIQUE ABSOLU
-    epsi=r8miem()
+    epsi = r8miem()
 !
 !------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
 !
@@ -61,23 +61,23 @@ subroutine norton(nvi, vini, coeft, nmat, sigi,&
 !
 !------------CALCUL DU DEUXIEME INVARIANT DE CONTRAINTE  -------
 !
-    grj2v = lcnrts(smx )
+    grj2v = lcnrts(smx)
 !
 !------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 !
     if (grj2v .gt. epsi) then
 !
-        dp=(grj2v*unsurk)**n
+        dp = (grj2v*unsurk)**n
 !
 !        INUTILE DE CALCULER DES DEFORMATIONS PLASTIQUES MINUSCULES
         if (dp .gt. 1.d-10) then
 !
             do itens = 1, ndt
-                dvin(itens)=1.5d0*dp*smx(itens)/grj2v
+                dvin(itens) = 1.5d0*dp*smx(itens)/grj2v
             end do
-            dvin(7)=dp
+            dvin(7) = dp
 !
-        endif
+        end if
 !
-    endif
+    end if
 end subroutine

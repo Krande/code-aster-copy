@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmcrsu(sddisc, lisins     , ds_conv, ds_algopara, l_implex,&
+subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
                   solveu, ds_contact_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -44,11 +44,11 @@ implicit none
 #include "asterfort/getAdapEvent.h"
 #include "asterfort/getAdapAction.h"
 !
-character(len=19) :: sddisc, lisins, solveu
-type(NL_DS_Conv), intent(in) :: ds_conv
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-aster_logical :: l_implex
-type(NL_DS_Contact), optional, intent(in) :: ds_contact_
+    character(len=19) :: sddisc, lisins, solveu
+    type(NL_DS_Conv), intent(in) :: ds_conv
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    aster_logical :: l_implex
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,13 +89,13 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','MECANONLINE13_16')
-    endif
+        call utmess('I', 'MECANONLINE13_16')
+    end if
 !
 ! - Get parameters for convergence
 !
-    call GetResi(ds_conv, type = 'RESI_GLOB_RELA' , user_para_ = resi_glob_rela)
-    call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , user_para_ = resi_glob_maxi)
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela)
+    call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=resi_glob_maxi)
     iter_glob_maxi = ds_conv%iter_glob_maxi
     iter_glob_elas = ds_conv%iter_glob_elas
 !
@@ -103,8 +103,8 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
     inikry = 0.9d0
     pas_mini_elas = 0.d0
-    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_ = nb_adap)
-    call utdidt('L', sddisc, 'LIST', 'METHODE', valk_ = metlis)
+    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_=nb_adap)
+    call utdidt('L', sddisc, 'LIST', 'METHODE', valk_=metlis)
 !
 ! --- NOM SDS DE LA LISINS
 !
@@ -133,7 +133,7 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 ! ----- CREATION EVENEMENTS ERREURS: ARRET
 !
         call nmcrld(sddisc)
-    else if (typeco.eq.'LIST_INST') then
+    else if (typeco .eq. 'LIST_INST') then
 !
 ! ----- COPIE LOCALE DES OBJETS DE LA LISINS
 !
@@ -144,29 +144,29 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
             call jedup1(lisavr, 'V', tpsavr)
             call jedup1(listpr, 'V', tpstpr)
             call jedup1(listpk, 'V', tpstpk)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- DECOUPAGE ACTIVE
 !
-    call utdidt('L', sddisc, 'LIST', 'EXIS_DECOUPE', valk_ = decoup)
-    ldeco = decoup.eq.'OUI'
+    call utdidt('L', sddisc, 'LIST', 'EXIS_DECOUPE', valk_=decoup)
+    ldeco = decoup .eq. 'OUI'
 !
 ! - SI NEWTON/PREDICTION ='DEPL_CALCULE', ALORS ON INTERDIT LA SUBDIVISION
 !
     if (ds_algopara%matrix_pred .eq. 'DEPL_CALCULE') then
         if (ldeco) then
             call utmess('F', 'SUBDIVISE_99')
-        endif
-    endif
+        end if
+    end if
 !
 ! - SI ON DOIT DECOUPER - CAPTURE MATRICE SINGULIERE DANS SOLVEUR ET ECHEC DU SOLVEUR ITERATIF
 !
     if (ldeco) then
         if (solveu(1:8) .ne. '&&OP0033') then
             call crsvsi(solveu)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- EN GESTION AUTO, AVEC UN CRITERE D'ADAPTATION EN SEUIL SUR
 !     NB_ITER_NEWT, ON MET VALE = ITER_GLOB_MAXI/2 SI VALE N'A PAS
@@ -179,21 +179,21 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
         do i_adap = 1, nb_adap
             call getAdapEvent(sddisc, i_adap, event_type)
             if (event_type .eq. ADAP_EVT_TRIGGER) then
-                call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_ = i_adap,&
-                            valk_ = nopara)
+                call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_=i_adap, &
+                            valk_=nopara)
                 if (nopara .eq. 'NB_ITER_NEWT') then
-                    call utdidt('L', sddisc, 'ADAP', 'VALE', index_ = i_adap,&
-                                vali_ = vali)
+                    call utdidt('L', sddisc, 'ADAP', 'VALE', index_=i_adap, &
+                                vali_=vali)
                     if (vali .eq. 0) then
-                        vali = itmx / 2
+                        vali = itmx/2
                         valr = vali
-                        call utdidt('E', sddisc, 'ADAP', 'VALE', index_ = i_adap,&
-                                    valr_ = valr)
-                    endif
-                endif
-            endif
+                        call utdidt('E', sddisc, 'ADAP', 'VALE', index_=i_adap, &
+                                    valr_=valr)
+                    end if
+                end if
+            end if
         end do
-    endif
+    end if
 !
 ! --- VERIF COHERENCE AVEC IMPLEX
 !
@@ -201,22 +201,22 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
         do i_adap = 1, nb_adap
             call getAdapAction(sddisc, i_adap, action_type)
             if (action_type .eq. ADAP_ACT_IMPLEX) then
-                if (.not.l_implex) then
+                if (.not. l_implex) then
                     call utmess('F', 'MECANONLINE6_4')
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 ! --- CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL
 !
     if (present(ds_contact_)) then
-        call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+        call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi, &
                     resi_glob_rela, inikry, ds_contact_)
     else
-        call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
+        call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi, &
                     resi_glob_rela, inikry)
-    endif
+    end if
 !
 ! --- OBJET POUR PROLONGEMENT DECOUPE
 !

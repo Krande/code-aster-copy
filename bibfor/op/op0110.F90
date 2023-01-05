@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine op0110()
 #include "asterfort/rec110.h"
 #include "asterfort/titre.h"
 !
-    integer :: ioc1, ioc2, ioc3, ioc11,   nbsect, ioc12, ibid
+    integer :: ioc1, ioc2, ioc3, ioc11, nbsect, ioc12, ibid
     character(len=8) :: modelg, rescyc, nomres, noma, nomsqu
     character(len=16) :: nomope, nomcmd
     integer, pointer :: cycl_nbsc(:) => null()
@@ -70,7 +70,7 @@ subroutine op0110()
         else
             call getvid('CYCLIQUE', 'MAILLAGE', iocc=1, scal=noma, nbret=ioc12)
             call getvis('CYCLIQUE', 'NB_SECTEUR', iocc=1, scal=nbsect, nbret=ibid)
-        endif
+        end if
         call cyc110(nomres, noma, nbsect)
 !
 !--------------------------CAS CLASSIQUE--------------------------------
@@ -83,8 +83,8 @@ subroutine op0110()
             call rec110(nomres, nomsqu, modelg)
 !           -- L'OBJET .INV.SKELETON EST FAUX : ON LE DETRUIT
             call jedetr(nomres//'.INV.SKELETON')
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! --- CARACTERISTIQUES GEOMETRIQUES :

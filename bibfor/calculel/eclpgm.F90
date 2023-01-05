@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
+subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
                   lonmin, nch, lisch)
     implicit none
 !   - TRAITEMENT DU MOT CLE CREA_MAILLAGE/ECLA_PG
@@ -81,13 +81,13 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
 !
     integer :: k, te, tabno(27), iret1, jobj, numa, nch
-    integer :: igr, iel,   ilmaco,  illiel
-    integer :: dimgeo,  ibid, ino, ino1, ino2
+    integer :: igr, iel, ilmaco, illiel
+    integer :: dimgeo, ibid, ino, ino1, ino2
     integer :: nbmail, nbnoeu, nbcoor, iadime, kse
     integer :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
-    integer :: npg1, nbpi,  iagese, nno2, nuse, nse1
+    integer :: npg1, nbpi, iagese, nno2, nuse, nse1
     integer :: ima, nbelgr, nupoin, npoini, iterm, ipoini
-    integer :: iret, ich,  nch2
+    integer :: iret, ich, nch2
     character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, nompar
     character(len=8) :: tych
     character(len=16) :: nomte, lisch(nch)
@@ -101,15 +101,15 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !     ON COMPREND LE SENS DE CES VARIABLES EN REGARDANT ECLATY
     integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
 !     MXNBN2 : MAX DU NOMBRE DE NOEUDS D'UN SOUS-ELEMENT (HEXA8)
-    parameter (mxnbn2=8)
+    parameter(mxnbn2=8)
 !     MXNBPI : MAX DU NOMBRE DE POINT_I (HEXA A 27 POINTS DE GAUSS)
 !     MXNBPI = 4X4X4
-    parameter (mxnbpi=64)
+    parameter(mxnbpi=64)
 !     MXNBTE : MAX DU NOMBRE DE TERMES DE LA C.L. DEFINISSANT 1 POINT_I
 !              AU PLUS LES 8 SOMMETS D'UN HEXA8
-    parameter (mxnbte=8)
+    parameter(mxnbte=8)
 !     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
-    parameter (mxnbse=27)
+    parameter(mxnbse=27)
 !
     integer :: nbse, corsel(mxnbse)
     integer :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
@@ -149,16 +149,16 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     if (cham1 .ne. ' ') then
 !       -- CAS "PROJ_CHAMP" :
         call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
-        ASSERT(tych.eq.'ELGA')
-        ASSERT(nch.eq.0)
-        ASSERT(ligrel.ne.' ')
+        ASSERT(tych .eq. 'ELGA')
+        ASSERT(nch .eq. 0)
+        ASSERT(ligrel .ne. ' ')
         call dismoi('NOM_LIGREL', cham1, 'CHAM_ELEM', repk=ligre1)
-        ASSERT(ligre1.eq.ligrel)
-        cas=1
+        ASSERT(ligre1 .eq. ligrel)
+        cas = 1
     else
 !       -- CAS "CREA_MAILLAGE/ECLA_PG" :
-        cas=2
-    endif
+        cas = 2
+    end if
 !
 !
 !
@@ -168,20 +168,20 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     nomobj = '&&ECLPGM.NOMOBJ'
 !
     if (cas .eq. 1) then
-        nch2=1
+        nch2 = 1
         call celfpg(cham1, nomobj, iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
         call jeveuo(nomobj, 'L', jobj)
 !
-    else if (cas.eq.2) then
+    else if (cas .eq. 2) then
         cel = '&&ECLPGM.CHAM_ELEM'
-        ico=0
-        nch2=nch
+        ico = 0
+        nch2 = nch
         call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
         do ich = 1, nch2
-            if (lisch(ich)(6:9) .ne. 'ELGA') then
+            if (lisch(ich) (6:9) .ne. 'ELGA') then
                 call utmess('F', 'CALCULEL2_41')
-            endif
+            end if
             call jenonu(jexnom('&CATA.OP.NOMOPT', lisch(ich)), opt)
             if (opt .eq. 0) goto 30
 !
@@ -190,34 +190,34 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
             nbin = zi(iadesc-1+2)
             nompar = zk8(iaoppa-1+nbin+1)
 !
-            call alchml(ligrmo, lisch(ich), nompar, 'V', cel,&
+            call alchml(ligrmo, lisch(ich), nompar, 'V', cel, &
                         iret1, ' ')
             if (iret1 .ne. 0) goto 30
 !
-            ico=ico+1
+            ico = ico+1
             call celfpg(cel, nomobj, iret)
             call detrsd('CHAMP', cel)
             if (iret .eq. 1) then
                 valk(1) = mo
                 valk(2) = lisch(ich)
                 call utmess('F', 'CALCULEL2_33', nk=2, valk=valk)
-            endif
+            end if
             call jeveuo(nomobj, 'L', jobj)
- 30         continue
+30          continue
         end do
 !        -- ON N'A PAS TROUVE DE CHAMP ELGA CORRECT :
         if (ico .eq. 0) then
-           valk(1) = lisch(1)
-           call utmess('F','CALCULEL2_24',nk=1, valk=valk)
-        endif
-    endif
+            valk(1) = lisch(1)
+            call utmess('F', 'CALCULEL2_24', nk=1, valk=valk)
+        end if
+    end if
 !
 !
 !
 !     0.2 : ON SE RESTREINT AUX MAILLES EVENTUELLEMENT SPECIFIEES PAR
 !           L'UTILISATEUR :
 !     ----------------------------------------------------------------
-    if (ligrel .eq. ' ') ligrel=ligrmo
+    if (ligrel .eq. ' ') ligrel = ligrmo
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
 !
@@ -230,27 +230,27 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     nbpi = 0
     nbno2t = 0
     do igr = 1, nbgrel(ligrel)
-        te = typele(ligrel,igr)
-        nbelgr = nbelem(ligrel,igr)
+        te = typele(ligrel, igr)
+        nbelgr = nbelem(ligrel, igr)
         if (nbelgr .eq. 0) goto 1
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !
-        ASSERT(nch2.gt.0)
-        numa = numail(igr,1)
-        elrefa = zk16(jobj-1+numa)(1:8)
-        fapg = zk16(jobj-1+numa)(9:16)
+        ASSERT(nch2 .gt. 0)
+        numa = numail(igr, 1)
+        elrefa = zk16(jobj-1+numa) (1:8)
+        fapg = zk16(jobj-1+numa) (9:16)
         if (fapg .eq. ' ') goto 1
 !
-        call eclaty(nomte, elrefa, fapg, npg1, npoini,&
-                    nterm1, nsomm1, csomm1, tyma, nbno2,&
-                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+        call eclaty(nomte, elrefa, fapg, npg1, npoini, &
+                    nterm1, nsomm1, csomm1, tyma, nbno2, &
+                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
                     nse1, corsel, iret)
         nbse = nbse+nbelgr*nse1
         nbpi = nbpi+nbelgr*npoini
         do kse = 1, nse1
             nbno2t = nbno2t+nbelgr*nbno2(kse)
         end do
-  1     continue
+1       continue
     end do
 !
 !
@@ -263,7 +263,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !     ---------------------------------------------------------------
     if (nbpi .eq. 0) then
         call utmess('F', 'CALCULEL2_35')
-    endif
+    end if
     AS_ALLOCATE(vr=geopoini, size=nbpi*dimgeo)
     AS_ALLOCATE(vi=connexse, size=nbno2t)
     call wkvect('&&ECLPGM.GEOSE', 'V V R', nbno2t*dimgeo, iagese)
@@ -271,7 +271,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
     if (nbse .eq. 0) then
         call utmess('F', 'CALCULEL2_36')
-    endif
+    end if
     call wkvect(ma2//'.TYPMAIL', 'G V I', nbse, iatypm)
 !
 !
@@ -284,84 +284,84 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     nupoin = 0
     nuno2 = 0
     do igr = 1, nbgrel(ligrel)
-        te = typele(ligrel,igr)
-        nbelgr = nbelem(ligrel,igr)
+        te = typele(ligrel, igr)
+        nbelgr = nbelem(ligrel, igr)
         if (nbelgr .eq. 0) goto 2
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !
-        ASSERT(nch2.gt.0)
-        numa = numail(igr,1)
-        elrefa = zk16(jobj-1+numa)(1:8)
-        fapg = zk16(jobj-1+numa)(9:16)
+        ASSERT(nch2 .gt. 0)
+        numa = numail(igr, 1)
+        elrefa = zk16(jobj-1+numa) (1:8)
+        fapg = zk16(jobj-1+numa) (9:16)
         if (fapg .eq. ' ') goto 2
 !
-        call eclaty(nomte, elrefa, fapg, npg1, npoini,&
-                    nterm1, nsomm1, csomm1, tyma, nbno2,&
-                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+        call eclaty(nomte, elrefa, fapg, npg1, npoini, &
+                    nterm1, nsomm1, csomm1, tyma, nbno2, &
+                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
                     nse1, corsel, iret)
         if (nse1 .eq. 0) goto 2
 !
         do iel = 1, nbelgr
 !          ON RECUPERE LE NUMERO DE LA MAILLE ET LE NUMERO
 !          DE SES SOMMETS :
-            ima = numail(igr,iel)
+            ima = numail(igr, iel)
             do ino1 = 1, nbnoma(ima)
-                tabno(ino1)=numglm(ima,ino1)
+                tabno(ino1) = numglm(ima, ino1)
             end do
 !
 !          -- CALCUL DES COORDONNEES DES POINT_I :
             do ipoini = 1, npoini
-                nupoin=nupoin+1
+                nupoin = nupoin+1
                 do k = 1, dimgeo
-                    x=0.d0
+                    x = 0.d0
                     do iterm = 1, nterm1(ipoini)
-                        x=x+csomm1(ipoini,iterm)* vale(3*(&
-                        tabno(nsomm1(ipoini,iterm))-1)+k)
+                        x = x+csomm1(ipoini, iterm)*vale(3*( &
+                                                         tabno(nsomm1(ipoini, iterm))-1)+k)
                     end do
-                    geopoini((nupoin-1)*dimgeo+k)=x
+                    geopoini((nupoin-1)*dimgeo+k) = x
                 end do
             end do
 !
 !          -- STOCKAGE DES NUMEROS DES POINT_I DES SOUS-ELEMENTS
 !             ET DE LEURS COORDONNEES :
             do kse = 1, nse1
-                nuse=nuse+1
-                zi(iatypm-1+nuse)=tyma(kse)
-                zi(ianno2-1+nuse)=nbno2(kse)
-                nno2=nbno2(kse)
+                nuse = nuse+1
+                zi(iatypm-1+nuse) = tyma(kse)
+                zi(ianno2-1+nuse) = nbno2(kse)
+                nno2 = nbno2(kse)
                 do ino2 = 1, nno2
-                    nuno2=nuno2+1
-                    connexse(nuno2)=connx(ino2,kse)+ nupoin-npoini
-                    nupoi2=connexse(nuno2)
+                    nuno2 = nuno2+1
+                    connexse(nuno2) = connx(ino2, kse)+nupoin-npoini
+                    nupoi2 = connexse(nuno2)
                     do k = 1, dimgeo
-                        zr(iagese-1+(nuno2-1)*dimgeo+k)= geopoini((&
-                        nupoi2-1)*dimgeo+k)
+                        zr(iagese-1+(nuno2-1)*dimgeo+k) = geopoini(( &
+                                                                   nupoi2-1)*dimgeo+k)
                     end do
                 end do
 !           DANS LE CAS DU QUADRILATERE ON CONTROLE L'APPLATISSEMENT
                 if (nno2 .eq. 4) then
-                    call eclapp(dimgeo, nno2, lonmin, zr(iagese+(nuno2- 4)*dimgeo))
-                endif
+                    call eclapp(dimgeo, nno2, lonmin, zr(iagese+(nuno2-4)*dimgeo))
+                end if
             end do
 !
         end do
-  2     continue
+2       continue
     end do
 !
     call jedetr(nomobj)
 !
 !     3. CONSTRUCTION DES OBJETS DU MAILLAGE RESULTAT :
 !     -------------------------------------------------
-    nbmail=nbse
-    nbnoeu=nbno2t
-    nbcoor=dimgeo
+    nbmail = nbse
+    nbnoeu = nbno2t
+    nbcoor = dimgeo
 !
 !     3.1 CREATION DE L'OBJET .DIME  :
 !     ------------------------------------
     call wkvect(ma2//'.DIME', 'G V I', 6, iadime)
-    zi(iadime-1+1)= nbnoeu
-    zi(iadime-1+3)= nbmail
-    zi(iadime-1+6)= nbcoor
+    zi(iadime-1+1) = nbnoeu
+    zi(iadime-1+3) = nbmail
+    zi(iadime-1+6) = nbcoor
 !
 !
 !     3.2 CREATION DES OBJETS .NOMNOE ET .NOMMAI :
@@ -372,52 +372,52 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     call jeecra(ma2//'.NOMMAI', 'NOMMAX', nbmail)
 !
 
-    nom='N'
+    nom = 'N'
     if (nbnoeu .ge. 10000000) then
 !       -- PLUS DE 10 MILLIONS DE NOEUDS, ON PASSE EN BASE 36
-        do k = 1 , nbnoeu
+        do k = 1, nbnoeu
             call codlet(k, 'G', nom(2:8))
             call jecroc(jexnom(ma2//'.NOMNOE', nom))
-        enddo
+        end do
     else
 !       -- MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
-        do k = 1 , nbnoeu
+        do k = 1, nbnoeu
             call codent(k, 'G', nom(2:8))
             call jecroc(jexnom(ma2//'.NOMNOE', nom))
-        enddo
-    endif
+        end do
+    end if
 
-    nom='M'
+    nom = 'M'
     if (nbmail .ge. 10000000) then
 !       -- PLUS DE 10 MILLIONS DE MAILLES, ON PASSE EN BASE 36
-        do k = 1 , nbmail
+        do k = 1, nbmail
             call codlet(k, 'G', nom(2:8))
             call jecroc(jexnom(ma2//'.NOMMAI', nom))
-        enddo
+        end do
     else
 !       -- MOINS DE 10 MILLIONS DE MAILLES, ON RESTE EN BASE 10
-        do k = 1 , nbmail
+        do k = 1, nbmail
             call codent(k, 'G', nom(2:8))
             call jecroc(jexnom(ma2//'.NOMMAI', nom))
-        enddo
-    endif
+        end do
+    end if
 !
 !
 !     3.3 CREATION DES OBJETS  .CONNEX ET .TYPMAIL
 !     ---------------------------------------------
-    call jecrec(ma2//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(ma2//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmail)
     call jeecra(ma2//'.CONNEX', 'LONT', nbnoeu, ' ')
     call jeveuo(ma2//'.CONNEX', 'E', ibid)
 !
-    nuno2=0
+    nuno2 = 0
     do ima = 1, nbmail
-        nno2=zi(ianno2-1+ima)
+        nno2 = zi(ianno2-1+ima)
         call jecroc(jexnum(ma2//'.CONNEX', ima))
         call jeecra(jexnum(ma2//'.CONNEX', ima), 'LONMAX', nno2)
         do ino2 = 1, nno2
-            nuno2=nuno2+1
-            zi(ibid-1+nuno2)=nuno2
+            nuno2 = nuno2+1
+            zi(ibid-1+nuno2) = nuno2
         end do
     end do
 !
@@ -429,25 +429,25 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     call jedetr(ma2//'.COORDO    .VALE')
     call wkvect(ma2//'.COORDO    .VALE', 'G V R', 3*nbnoeu, ibid)
     call jeveuo(ma2//'.COORDO    .REFE', 'E', vk24=refe)
-    refe(1)=ma2
+    refe(1) = ma2
 !
     do k = 1, dimgeo
-        nuno2=0
+        nuno2 = 0
         do ima = 1, nbmail
-            nno2=zi(ianno2-1+ima)
+            nno2 = zi(ianno2-1+ima)
 !         -- ON FAIT UN PETIT "SHRINK" SUR LES MAILLES :
-            xc=0.d0
+            xc = 0.d0
             do ino = 1, nno2
-                nuno2=nuno2+1
-                xc= xc+zr(iagese-1+(nuno2-1)*dimgeo+k)/dble(nno2)
+                nuno2 = nuno2+1
+                xc = xc+zr(iagese-1+(nuno2-1)*dimgeo+k)/dble(nno2)
             end do
-            nuno2=nuno2-nno2
+            nuno2 = nuno2-nno2
 !
             do ino = 1, nno2
-                nuno2=nuno2+1
-                xm= zr(iagese-1+(nuno2-1)*dimgeo+k)
-                xm=xc+shrink*(xm-xc)
-                zr(ibid-1+(nuno2-1)*3+k)=xm
+                nuno2 = nuno2+1
+                xm = zr(iagese-1+(nuno2-1)*dimgeo+k)
+                xm = xc+shrink*(xm-xc)
+                zr(ibid-1+(nuno2-1)*3+k) = xm
             end do
         end do
     end do

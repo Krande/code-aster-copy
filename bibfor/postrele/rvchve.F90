@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine rvchve(iocc, xpi, ypi, zpi)
 #include "asterfort/getvtx.h"
 !
     integer, intent(in) :: iocc
-    real(kind=8), intent(inout) :: xpi,ypi,zpi
+    real(kind=8), intent(inout) :: xpi, ypi, zpi
 ! ----------------------------------------------------------------------
 !
 !     but : Faire subir au vecteur (xpi, ypi, zpi) la rotation correspondant
@@ -47,15 +47,15 @@ subroutine rvchve(iocc, xpi, ypi, zpi)
 ! ---------------------------------------------------------------------
 
     call getvtx('ACTION', 'REPERE', iocc=iocc, scal=repere, nbret=n1)
-    ASSERT(n1.eq.1)
-    if (repere.ne.'UTILISATEUR'.and.repere.ne.'GLOBAL') then
-        call utmess('F','POSTRELE_68')
-    endif
+    ASSERT(n1 .eq. 1)
+    if (repere .ne. 'UTILISATEUR' .and. repere .ne. 'GLOBAL') then
+        call utmess('F', 'POSTRELE_68')
+    end if
 
-    if (repere.eq.'GLOBAL') goto 999
+    if (repere .eq. 'GLOBAL') goto 999
 
     call getvr8('ACTION', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angnot, nbret=n1)
-    ASSERT(n1.eq.3)
+    ASSERT(n1 .eq. 3)
 
     angnot(1) = angnot(1)*r8dgrd()
     angnot(2) = angnot(2)*r8dgrd()
@@ -63,15 +63,15 @@ subroutine rvchve(iocc, xpi, ypi, zpi)
 
     call matrot(angnot, pgl)
 
-    pm(1)=xpi
-    pm(2)=ypi
-    pm(3)=zpi
+    pm(1) = xpi
+    pm(2) = ypi
+    pm(3) = zpi
 
     call utpvgl(1, 3, pgl, pm, pm2)
 
-    xpi=pm2(1)
-    ypi=pm2(2)
-    zpi=pm2(3)
+    xpi = pm2(1)
+    ypi = pm2(2)
+    zpi = pm2(3)
 
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine cpmcpt15_1(conloc, jmacsu, indno, indma, conneo)
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 ! -------------------------------------------------------------------------------------------------
-    if (conneo(1) .ne. 0 .and. conneo(2) .ne. 0 .and. conneo(3).ne. 0 ) then
+    if (conneo(1) .ne. 0 .and. conneo(2) .ne. 0 .and. conneo(3) .ne. 0) then
 ! -------------------------------------------------------------------------------------------------
         lino(1) = 1
         lino(2) = 2
@@ -71,7 +71,7 @@ subroutine cpmcpt15_1(conloc, jmacsu, indno, indma, conneo)
         lino(15) = 15
         !write(*,*) '1'
 ! -------------------------------------------------------------------------------------------------
-    elseif (conneo(4) .ne. 0 .and. conneo(5) .ne. 0 .and. conneo(6) .ne. 0 ) then
+    elseif (conneo(4) .ne. 0 .and. conneo(5) .ne. 0 .and. conneo(6) .ne. 0) then
 !--------------------------------------------------------------------------------------------------
         lino(1) = 6
         lino(2) = 5
@@ -93,11 +93,11 @@ subroutine cpmcpt15_1(conloc, jmacsu, indno, indma, conneo)
 
     else
         ASSERT(.false.)
-    endif
+    end if
 ! -------------------------------------------------------------------------------------------------
-    call jeecra(jexnum(conloc,indma), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(1)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(4)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(5)-1)
@@ -107,71 +107,70 @@ subroutine cpmcpt15_1(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(13)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(11)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(7)-1)
-    zi(jconloc+10-1) = indno -1 + conneo(lino(1))
-    zi(jconloc+11-1) = indno -1 + 4 +conneo(lino(1))
-    zi(jconloc+12-1) = indno -1 + 4 +conneo(lino(2))
-    zi(jconloc+13-1) = indno -1 + conneo(lino(2))
+    zi(jconloc+10-1) = indno-1+conneo(lino(1))
+    zi(jconloc+11-1) = indno-1+4+conneo(lino(1))
+    zi(jconloc+12-1) = indno-1+4+conneo(lino(2))
+    zi(jconloc+13-1) = indno-1+conneo(lino(2))
     !write(*,*) "ELEMENT",1
     !do ind=1, 13
     !    write(*,*)zi(jconloc+ind-1)
     !enddo
 
-
-    call jeecra(jexnum(conloc,indma+1), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma+1), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma+1), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma+1), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma+1), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma+1), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(1)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(3)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(6)-1)
     zi(jconloc+4-1) = zi(jmacsu+lino(4)-1)
-    zi(jconloc+5-1) = indno +3
+    zi(jconloc+5-1) = indno+3
     zi(jconloc+6-1) = zi(jmacsu+lino(9)-1)
     zi(jconloc+7-1) = zi(jmacsu+lino(12)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(15)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(10)-1)
-    zi(jconloc+10-1) = indno - 1 + conneo(lino(1))
-    zi(jconloc+11-1) = indno - 1 +conneo(lino(3))
-    zi(jconloc+12-1) = indno - 1 + 4 +conneo(lino(3))
-    zi(jconloc+13-1) = indno - 1 + 4 + conneo(lino(1))
+    zi(jconloc+10-1) = indno-1+conneo(lino(1))
+    zi(jconloc+11-1) = indno-1+conneo(lino(3))
+    zi(jconloc+12-1) = indno-1+4+conneo(lino(3))
+    zi(jconloc+13-1) = indno-1+4+conneo(lino(1))
     !write(*,*) "ELEMENT",2
     !do ind=1, 13
     !    write(*,*)zi(jconloc+ind-1)
     !enddo
 
-    call jeecra(jexnum(conloc,indma+2), 'LONMAX', ival=13)
-    call jeecra(jexnum(conloc,indma+2), 'LONUTI', ival=13)
-    call jeveuo(jexnum(conloc,indma+2), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma+2), 'LONMAX', ival=13)
+    call jeecra(jexnum(conloc, indma+2), 'LONUTI', ival=13)
+    call jeveuo(jexnum(conloc, indma+2), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(3)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(2)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(5)-1)
     zi(jconloc+4-1) = zi(jmacsu+lino(6)-1)
-    zi(jconloc+5-1) = indno +3
+    zi(jconloc+5-1) = indno+3
     zi(jconloc+6-1) = zi(jmacsu+lino(8)-1)
     zi(jconloc+7-1) = zi(jmacsu+lino(11)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(14)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(12)-1)
-    zi(jconloc+10-1) = indno - 1 + conneo(lino(3))
-    zi(jconloc+11-1) = indno - 1 + conneo(lino(2))
-    zi(jconloc+12-1) = indno - 1 + 4 +conneo(lino(2))
-    zi(jconloc+13-1) = indno - 1 + 4 +conneo(lino(3))
+    zi(jconloc+10-1) = indno-1+conneo(lino(3))
+    zi(jconloc+11-1) = indno-1+conneo(lino(2))
+    zi(jconloc+12-1) = indno-1+4+conneo(lino(2))
+    zi(jconloc+13-1) = indno-1+4+conneo(lino(3))
     !write(*,*) "ELEMENT",3
     !do ind=1, 13
     !    write(*,*)zi(jconloc+ind-1)
     !enddo
 
-    call jeecra(jexnum(conloc,indma+3), 'LONMAX', ival=10)
-    call jeecra(jexnum(conloc,indma+3), 'LONUTI', ival=10)
-    call jeveuo(jexnum(conloc,indma+3), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma+3), 'LONMAX', ival=10)
+    call jeecra(jexnum(conloc, indma+3), 'LONUTI', ival=10)
+    call jeveuo(jexnum(conloc, indma+3), 'E', jconloc)
     zi(jconloc+1-1) = zi(jmacsu+lino(6)-1)
     zi(jconloc+2-1) = zi(jmacsu+lino(5)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(4)-1)
-    zi(jconloc+4-1) = indno +3
+    zi(jconloc+4-1) = indno+3
     zi(jconloc+5-1) = zi(jmacsu+lino(14)-1)
     zi(jconloc+6-1) = zi(jmacsu+lino(13)-1)
     zi(jconloc+7-1) = zi(jmacsu+lino(15)-1)
-    zi(jconloc+8-1) = indno - 1 + 4 +conneo(lino(3))
-    zi(jconloc+9-1) = indno - 1 + 4 +conneo(lino(2))
-    zi(jconloc+10-1) = indno - 1 + 4 +conneo(lino(1))
+    zi(jconloc+8-1) = indno-1+4+conneo(lino(3))
+    zi(jconloc+9-1) = indno-1+4+conneo(lino(2))
+    zi(jconloc+10-1) = indno-1+4+conneo(lino(1))
     !write(*,*) "ELEMENT",4
     !do ind=1, 10
     !    write(*,*)zi(jconloc+ind-1)

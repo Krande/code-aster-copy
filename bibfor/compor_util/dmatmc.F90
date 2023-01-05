@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dmatmc(fami, mater, time, poum, ipg,&
-                  ispg, repere, xyzgau, nbsig, dr_,&
+subroutine dmatmc(fami, mater, time, poum, ipg, &
+                  ispg, repere, xyzgau, nbsig, dr_, &
                   l_modi_cp, di_)
     implicit none
 !
@@ -68,67 +68,67 @@ subroutine dmatmc(fami, mater, time, poum, ipg,&
     real(kind=8) :: di(nbsig, nbsig)
     real(kind=8) :: dr(nbsig, nbsig)
 !
-    if (lteatt('DIM_TOPO_MAILLE','3')) then
-        ASSERT(nbsig.eq.6)
+    if (lteatt('DIM_TOPO_MAILLE', '3')) then
+        ASSERT(nbsig .eq. 6)
         if (present(di_)) then
-            call dmat3d(fami, mater, time, poum, ipg,&
+            call dmat3d(fami, mater, time, poum, ipg, &
                         ispg, repere, xyzgau, di_=di)
-        endif
+        end if
         if (present(dr_)) then
-            call dmat3d(fami, mater, time, poum, ipg,&
+            call dmat3d(fami, mater, time, poum, ipg, &
                         ispg, repere, xyzgau, dr_=dr)
-        endif
-    else if (lteatt('FOURIER','OUI')) then
-        ASSERT(nbsig.eq.6)
+        end if
+    else if (lteatt('FOURIER', 'OUI')) then
+        ASSERT(nbsig .eq. 6)
         if (present(di_)) then
-            call dmat3d(fami, mater, time, poum, ipg,&
+            call dmat3d(fami, mater, time, poum, ipg, &
                         ispg, repere, xyzgau, di_=di)
-        endif
+        end if
         if (present(dr_)) then
-            call dmat3d(fami, mater, time, poum, ipg,&
+            call dmat3d(fami, mater, time, poum, ipg, &
                         ispg, repere, xyzgau, dr_=dr)
-        endif
-    else if (lteatt('C_PLAN','OUI')) then
-        ASSERT(nbsig.eq.4)
+        end if
+    else if (lteatt('C_PLAN', 'OUI')) then
+        ASSERT(nbsig .eq. 4)
         if (present(l_modi_cp)) then
             ASSERT(l_modi_cp)
             if (present(di_)) then
-                call dmatdp(fami, mater, time, poum, ipg,&
+                call dmatdp(fami, mater, time, poum, ipg, &
                             ispg, repere, di_=di)
-            endif
+            end if
             if (present(dr_)) then
-                call dmatdp(fami, mater, time, poum, ipg,&
+                call dmatdp(fami, mater, time, poum, ipg, &
                             ispg, repere, dr_=dr)
-            endif
+            end if
         else
             if (present(di_)) then
-                call dmatcp(fami, mater, time, poum, ipg,&
+                call dmatcp(fami, mater, time, poum, ipg, &
                             ispg, repere, di_=di)
-            endif
+            end if
             if (present(dr_)) then
-                call dmatcp(fami, mater, time, poum, ipg,&
+                call dmatcp(fami, mater, time, poum, ipg, &
                             ispg, repere, dr_=dr)
-            endif
-        endif
-    else if (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')) then
-        ASSERT(nbsig.eq.4)
+            end if
+        end if
+    else if (lteatt('D_PLAN', 'OUI') .or. lteatt('AXIS', 'OUI')) then
+        ASSERT(nbsig .eq. 4)
         if (present(di_)) then
-            call dmatdp(fami, mater, time, poum, ipg,&
+            call dmatdp(fami, mater, time, poum, ipg, &
                         ispg, repere, di_=di)
-        endif
+        end if
         if (present(dr_)) then
-            call dmatdp(fami, mater, time, poum, ipg,&
+            call dmatdp(fami, mater, time, poum, ipg, &
                         ispg, repere, dr_=dr)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (present(di_)) then
         di_ = di
-    endif
+    end if
     if (present(dr_)) then
         dr_ = dr
-    endif
+    end if
 !
 end subroutine

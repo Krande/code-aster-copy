@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine focoli(ipt, coli, interp, x, y,&
+subroutine focoli(ipt, coli, interp, x, y, &
                   rvar, resu, ier)
     implicit none
 #include "asterc/r8prem.h"
@@ -44,57 +44,57 @@ subroutine focoli(ipt, coli, interp, x, y,&
 !
 !     --- INTERPOLATION ---
 !
-    else if (coli.eq.'I') then
+    else if (coli .eq. 'I') then
         if (interp .eq. 'LIN LIN ') then
-            resu = linlin(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+            resu = linlin(rvar, x(ipt), y(ipt), x(ipt+1), y(ipt+1))
 !
-        else if (interp.eq.'LIN LOG ') then
-            if (y(ipt).lt.r8prem() .or. y(ipt+1).lt.r8prem())then
+        else if (interp .eq. 'LIN LOG ') then
+            if (y(ipt) .lt. r8prem() .or. y(ipt+1) .lt. r8prem()) then
                 ier = 250
-                valr (1) = rvar
-                valr (2) = x(ipt)
-                valr (3) = x(ipt+1)
+                valr(1) = rvar
+                valr(2) = x(ipt)
+                valr(3) = x(ipt+1)
                 call utmess('A', 'UTILITAI6_15', nr=3, valr=valr)
             else
-                resu = linlog(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
-            endif
+                resu = linlog(rvar, x(ipt), y(ipt), x(ipt+1), y(ipt+1))
+            end if
 !
-        else if (interp.eq.'LOG LOG ') then
-            if (x(ipt).lt.r8prem() .or. x(ipt+1).lt.r8prem() .or.&
-                y(ipt).lt.r8prem() .or. y(ipt+1).lt.r8prem())then
+        else if (interp .eq. 'LOG LOG ') then
+            if (x(ipt) .lt. r8prem() .or. x(ipt+1) .lt. r8prem() .or. &
+                y(ipt) .lt. r8prem() .or. y(ipt+1) .lt. r8prem()) then
                 ier = 250
-                valr (1) = rvar
-                valr (2) = x(ipt)
-                valr (3) = x(ipt+1)
+                valr(1) = rvar
+                valr(2) = x(ipt)
+                valr(3) = x(ipt+1)
                 call utmess('A', 'UTILITAI6_15', nr=3, valr=valr)
             else
-                resu = loglog(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
-            endif
+                resu = loglog(rvar, x(ipt), y(ipt), x(ipt+1), y(ipt+1))
+            end if
 !
-        else if (interp.eq.'LOG LIN ') then
-            if (x(ipt).lt.r8prem() .or. x(ipt+1).lt.r8prem())then
+        else if (interp .eq. 'LOG LIN ') then
+            if (x(ipt) .lt. r8prem() .or. x(ipt+1) .lt. r8prem()) then
                 ier = 250
-                valr (1) = rvar
-                valr (2) = x(ipt)
-                valr (3) = x(ipt+1)
+                valr(1) = rvar
+                valr(2) = x(ipt)
+                valr(3) = x(ipt+1)
                 call utmess('A', 'UTILITAI6_15', nr=3, valr=valr)
             else
-                resu = loglin(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
-            endif
+                resu = loglin(rvar, x(ipt), y(ipt), x(ipt+1), y(ipt+1))
+            end if
 !
         else
             ier = 230
             call utmess('A', 'UTILITAI_84', sk=interp)
-        endif
+        end if
 !
 !     --- EXTRAPOLATION ---
 !
-    else if (coli.eq.'E') then
-        resu = linlin(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+    else if (coli .eq. 'E') then
+        resu = linlin(rvar, x(ipt), y(ipt), x(ipt+1), y(ipt+1))
 !
     else
         ier = 240
         call utmess('A', 'UTILITAI_85', sk=coli)
-    endif
+    end if
 !
 end subroutine

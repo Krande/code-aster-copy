@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
-                  btvr, btnb, btlc, btco, p1,&
+subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi, &
+                  btvr, btnb, btlc, btco, p1, &
                   q1, p2, q2)
     implicit none
 #include "asterfort/assert.h"
@@ -57,10 +57,10 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 !
 !      1. ON CHERCHE UNE BOITE NON VIDE AUTOUR DE INO2
 !     -------------------------------------------------------
-    p0 = int((geom2(3* (ino2-1)+1)-xmin)/dx) + 1
-    q0 = int((geom2(3* (ino2-1)+2)-ymin)/dy) + 1
+    p0 = int((geom2(3*(ino2-1)+1)-xmin)/dx)+1
+    q0 = int((geom2(3*(ino2-1)+2)-ymin)/dy)+1
 !
-    do k = 0, max(nx, ny) - 1
+    do k = 0, max(nx, ny)-1
         do p = max(p0-k, 1), min(p0+k, nx)
             do q = max(q0-k, 1), min(q0+k, ny)
                 ntrbt = btnb((q-1)*nx+p)
@@ -69,37 +69,37 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 !             -- ON CHOISIT LE 1ER NOEUD DU 1ER TRIA3 DE LA BOITE:INO1
                     iposi = btlc((q-1)*nx+p)
                     itr = btco(iposi+1)
-                    ino1 = tria3(1+4* (itr-1)+1)
+                    ino1 = tria3(1+4*(itr-1)+1)
                     goto 40
-                endif
+                end if
             end do
         end do
     end do
     ASSERT(.false.)
 !
 !
- 40 continue
+40  continue
 !     2. ON CALCULE LA DISTANCE ENTRE INO2 ET INO1
 !     -------------------------------------------------------
-    x1 = geom1(3* (ino1-1)+1)
-    y1 = geom1(3* (ino1-1)+2)
-    x2 = geom2(3* (ino2-1)+1)
-    y2 = geom2(3* (ino2-1)+2)
-    d = sqrt((x2-x1)**2+ (y2-y1)**2)
+    x1 = geom1(3*(ino1-1)+1)
+    y1 = geom1(3*(ino1-1)+2)
+    x2 = geom2(3*(ino2-1)+1)
+    y2 = geom2(3*(ino2-1)+2)
+    d = sqrt((x2-x1)**2+(y2-y1)**2)
 !
 !
 !     3. ON DETERMINE LA GROSSE BOITE CONTENANT :
 !        INO2 - D*VECTEUR_I - D*VECTEUR_J
 !     ET INO2 + D*VECTEUR_I + D*VECTEUR_J
 !     -------------------------------------------------------
-    p1 = int((x2-d-xmin)/dx) + 1
-    q1 = int((y2-d-ymin)/dy) + 1
-    p1 = max(1,p1)
-    q1 = max(1,q1)
+    p1 = int((x2-d-xmin)/dx)+1
+    q1 = int((y2-d-ymin)/dy)+1
+    p1 = max(1, p1)
+    q1 = max(1, q1)
 !
-    p2 = int((x2+d-xmin)/dx) + 1
-    q2 = int((y2+d-ymin)/dy) + 1
-    p2 = min(nx,p2)
-    q2 = min(ny,q2)
+    p2 = int((x2+d-xmin)/dx)+1
+    q2 = int((y2+d-ymin)/dy)+1
+    p2 = min(nx, p2)
+    q2 = min(ny, q2)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
+subroutine matide(matz, nbcmp, licmp, modlag, tdiag, &
                   vdiag)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -75,10 +75,10 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    mat19=matz
+    mat19 = matz
 !
     call jeveuo(mat19//'.REFA', 'L', vk24=refa)
-    nonu=refa(2)
+    nonu = refa(2)
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
@@ -86,33 +86,33 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
     call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
-    ASSERT(n1.eq.nsmdi)
+    ASSERT(n1 .eq. nsmdi)
 !     --- CALCUL DE N
-    n=nsmdi
+    n = nsmdi
 !     --- CALCUL DE NZ
-    nz=smdi(n)
+    nz = smdi(n)
 !
-    ASSERT(nz.le.nsmhc)
+    ASSERT(nz .le. nsmhc)
     call jelira(mat19//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
-        lsym=.true.
-    else if (nvale.eq.2) then
-        lsym=.false.
+        lsym = .true.
+    else if (nvale .eq. 2) then
+        lsym = .false.
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvale)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
-    ASSERT(nlong.eq.nz)
-    if (.not.lsym) then
+    ASSERT(nlong .eq. nz)
+    if (.not. lsym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jval2)
         call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong)
-        ASSERT(nlong.eq.nz)
-    endif
+        ASSERT(nlong .eq. nz)
+    end if
 !
     call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=ktyp)
-    ltypr=(ktyp.eq.'R')
+    ltypr = (ktyp .eq. 'R')
 !
 !     -- CALCUL DE LA LISTE DES DDLS A ELIMINER :
 !     -------------------------------------------
@@ -122,21 +122,21 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
     call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
     call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1)
-    nomgd=refn(2)
+    nomgd = refn(2)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-    ASSERT(n1.eq.2*n)
+    ASSERT(n1 .eq. 2*n)
     do k = 1, n
-        nucmp=deeq(2*(k-1)+2)
+        nucmp = deeq(2*(k-1)+2)
         if (nucmp .gt. 0) then
-            nocmp=zk8(jcmp-1+nucmp)
+            nocmp = zk8(jcmp-1+nucmp)
             do kcmp = 1, nbcmp
                 if (nocmp .eq. licmp(kcmp)) then
-                    lddlelim(k)=1
-                endif
+                    lddlelim(k) = 1
+                end if
             end do
         else if (modlag(1:13) .eq. 'MODI_LAGR_OUI') then
-            llag(k)=1
-        endif
+            llag(k) = 1
+        end if
     end do
 !
 !
@@ -144,83 +144,83 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !     ------------------------------------------------
 !     PARCOURS DES TERMES DE LA MATRICE
 !     ------------------------------------------------
-    jcol=1
+    jcol = 1
     kmax = 0.d0
-    ckmax = dcmplx(0.d0,0.d0)
+    ckmax = dcmplx(0.d0, 0.d0)
     if (tdiag(1:7) .eq. 'MAX_ABS') then
         if (ltypr) then
             do kterm = 1, nz
-                kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
+                kmax = max(abs(zr(jvale-1+kterm)), abs(kmax))
             end do
             kmax = kmax*vdiag
         else
             do kterm = 1, nz
-                ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
+                ckmax = max(abs(zc(jvale-1+kterm)), abs(ckmax))
             end do
             ckmax = ckmax*vdiag
-        endif
+        end if
     else if (tdiag(1:7) .eq. 'MIN_ABS') then
         if (ltypr) then
             kmax = abs(zr(jvale))
             do kterm = 1, nz
-                kmax = max(abs(zr(jvale-1+kterm)),abs(kmax))
+                kmax = max(abs(zr(jvale-1+kterm)), abs(kmax))
             end do
             kmax = kmax*vdiag
         else
             ckmax = abs(zc(jvale))
             do kterm = 1, nz
-                ckmax = max(abs(zc(jvale-1+kterm)),abs(ckmax))
+                ckmax = max(abs(zc(jvale-1+kterm)), abs(ckmax))
             end do
             ckmax = ckmax*vdiag
-        endif
+        end if
     else if (tdiag(1:6) .eq. 'IMPOSE') then
         kmax = vdiag
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     do kterm = 1, nz
-        if (smdi(jcol) .lt. kterm) jcol=jcol+1
-        ilig=zi4(jsmhc-1+kterm)
-        elimc=.false.
-        eliml=.false.
-        if ((lddlelim(jcol).eq.1) .and. (llag(jcol).eq.0) .and. (llag(ilig).eq.0)) elimc=.true.
-        if ((lddlelim(ilig).eq.1) .and. (llag(ilig).eq.0) .and. (llag(jcol).eq.0)) eliml=.true.
+        if (smdi(jcol) .lt. kterm) jcol = jcol+1
+        ilig = zi4(jsmhc-1+kterm)
+        elimc = .false.
+        eliml = .false.
+     if ((lddlelim(jcol) .eq. 1) .and. (llag(jcol) .eq. 0) .and. (llag(ilig) .eq. 0)) elimc = .true.
+     if ((lddlelim(ilig) .eq. 1) .and. (llag(ilig) .eq. 0) .and. (llag(jcol) .eq. 0)) eliml = .true.
 !
         if (elimc .or. eliml) then
 !
 !         -- PARTIE TRIANGULAIRE SUPERIEURE :
             if (jcol .eq. ilig) then
                 if (ltypr) then
-                    zr(jvale-1+kterm)=kmax
+                    zr(jvale-1+kterm) = kmax
                 else
-                    zc(jvale-1+kterm)=ckmax
-                endif
+                    zc(jvale-1+kterm) = ckmax
+                end if
             else
                 if (ltypr) then
-                    zr(jvale-1+kterm)=0.d0
+                    zr(jvale-1+kterm) = 0.d0
                 else
-                    zc(jvale-1+kterm)=dcmplx(0.d0,0.d0)
-                endif
-            endif
+                    zc(jvale-1+kterm) = dcmplx(0.d0, 0.d0)
+                end if
+            end if
 !
 !         -- PARTIE TRIANGULAIRE INFERIEURE (SI NON-SYMETRIQUE):
-            if (.not.lsym) then
+            if (.not. lsym) then
                 if (jcol .eq. ilig) then
                     if (ltypr) then
-                        zr(jval2-1+kterm)=kmax
+                        zr(jval2-1+kterm) = kmax
                     else
-                        zc(jvale-1+kterm)=ckmax
-                    endif
+                        zc(jvale-1+kterm) = ckmax
+                    end if
                 else
                     if (ltypr) then
-                        zr(jval2-1+kterm)=0.d0
+                        zr(jval2-1+kterm) = 0.d0
                     else
-                        zc(jval2-1+kterm)=dcmplx(0.d0,0.d0)
-                    endif
-                endif
-            endif
-        endif
+                        zc(jval2-1+kterm) = dcmplx(0.d0, 0.d0)
+                    end if
+                end if
+            end if
+        end if
 !
     end do
 !

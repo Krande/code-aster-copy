@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
-                  motcle, typmcl, typlig, nbma, ndorig,&
+subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
+                  motcle, typmcl, typlig, nbma, ndorig, &
                   ndextr, typm, vecori)
     implicit none
 #include "asterf_types.h"
@@ -113,11 +113,11 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     ------------------------------------------------------------------
 !     INITIALISATION DE VARIABLES
 !     ------------------------------------------------------------------
-    mesmai='&&CGNOOR.MES_MAILLES'
-    conec=nomail//'.CONNEX         '
-    typp=nomail//'.TYPMAIL        '
-    nommai=nomail//'.NOMMAI         '
-    nomnoe=nomail//'.NOMNOE         '
+    mesmai = '&&CGNOOR.MES_MAILLES'
+    conec = nomail//'.CONNEX         '
+    typp = nomail//'.TYPMAIL        '
+    nommai = nomail//'.NOMMAI         '
+    nomnoe = nomail//'.NOMNOE         '
     call dismoi('NB_NO_MAILLA', nomail, 'MAILLAGE', repi=nbnot)
     call jeveuo(typp, 'L', iatyma)
 !
@@ -127,17 +127,17 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !       => MESMAI : NOMS DES MAILLES
 !       => MAFOUR : NUMEROS DES MAILLES
 !     ------------------------------------------------------------------
-    call reliem(' ', nomail, 'NO_MAILLE', motfac, iocc,&
+    call reliem(' ', nomail, 'NO_MAILLE', motfac, iocc, &
                 nbmc, motcle, typmcl, mesmai, nbma)
 !
     if (nbma .eq. 0) then
         call utmess('F', 'ELEMENTS_66')
-    endif
+    end if
     call jeveuo(mesmai, 'L', jmail)
     call wkvect(mafour, 'V V I', nbma, jcour2)
     do im = 1, nbma
         call jenonu(jexnom(nommai, zk8(jmail-1+im)), ima)
-        zi(jcour2-1+im)=ima
+        zi(jcour2-1+im) = ima
     end do
 !
 !
@@ -145,37 +145,37 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     --- VERIFICATION DE L'EXISTENCE DES MAILLES
 !     --- VERIFICATION QUE LES MAILLES SONT TOUTES SEG2, SEG3, SEG4 :
 !     ------------------------------------------------------------------
-    typmp=' '
-    ier=0
+    typmp = ' '
+    ier = 0
     do im = 1, nbma
-        nomma=zk8(jmail-1+im)
+        nomma = zk8(jmail-1+im)
         call jeexin(jexnom(nommai, nomma), existe)
         if (existe .eq. 0) then
-            ier=ier+1
+            ier = ier+1
             call utmess('E', 'ELEMENTS5_19', sk=nomma, si=iocc)
         else
             call jenonu(jexnom(nommai, nomma), ibid)
-            jtypm=iatyma-1+ibid
+            jtypm = iatyma-1+ibid
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
             if (typm(1:3) .ne. 'SEG') then
                 if (nomcmd .ne. 'DEFI_GROUP') then
                     call utmess('F', 'RUPTURE0_63')
-                endif
-                ier=ier+1
+                end if
+                ier = ier+1
                 call utmess('E', 'ELEMENTS5_20', sk=nomma, si=iocc)
-            endif
+            end if
             if (im .gt. 1) then
                 if (typm .ne. typmp) then
-                    ier=ier+1
+                    ier = ier+1
                     call utmess('E', 'ELEMENTS5_21', sk=nomma, si=iocc)
-                endif
-            endif
-            typmp=typm
-        endif
+                end if
+            end if
+            typmp = typm
+        end if
     end do
     if (ier .gt. 0) then
         call utmess('F', 'ELEMENTS5_15', si=iocc)
-    endif
+    end if
 !
 !
 ! --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
@@ -183,20 +183,20 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     call getvtx(motfac, 'GROUP_NO_ORIG', iocc=iocc, nbval=0, nbret=n2)
     if (n1 .ne. 0) then
         call getvtx(motfac, 'NOEUD_ORIG', iocc=iocc, scal=ndorig, nbret=n1)
-    else if (n2.ne.0) then
+    else if (n2 .ne. 0) then
         call getvtx(motfac, 'GROUP_NO_ORIG', iocc=iocc, scal=nogrp, nbret=n2)
-        call utnono(' ', nomail, 'NOEUD', nogrp, ndorig,&
+        call utnono(' ', nomail, 'NOEUD', nogrp, ndorig, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogrp)
-        else if (iret.eq.1) then
-            valk(1)='GROUP_NO_ORIG'
-            valk(2)=ndorig
+        else if (iret .eq. 1) then
+            valk(1) = 'GROUP_NO_ORIG'
+            valk(2) = ndorig
             call utmess('A', 'ELEMENTS5_17', nk=2, valk=valk)
-        endif
+        end if
     else
-        ndorig=' '
-    endif
+        ndorig = ' '
+    end if
 !
 !
 ! --- LECTURE DU NOM DU NOEUD EXTREMITE (S'IL EST FOURNI)
@@ -204,20 +204,20 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     call getvtx(motfac, 'GROUP_NO_EXTR', iocc=iocc, nbval=0, nbret=n2)
     if (n1 .ne. 0) then
         call getvtx(motfac, 'NOEUD_EXTR', iocc=iocc, scal=ndextr, nbret=n1)
-    else if (n2.ne.0) then
+    else if (n2 .ne. 0) then
         call getvtx(motfac, 'GROUP_NO_EXTR', iocc=iocc, scal=nogrp, nbret=n2)
-        call utnono(' ', nomail, 'NOEUD', nogrp, ndextr,&
+        call utnono(' ', nomail, 'NOEUD', nogrp, ndextr, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogrp)
-        else if (iret.eq.1) then
-            valk(1)='GROUP_NO_EXTR'
-            valk(2)=ndextr
+        else if (iret .eq. 1) then
+            valk(1) = 'GROUP_NO_EXTR'
+            valk(2) = ndextr
             call utmess('A', 'ELEMENTS5_17', nk=2, valk=valk)
-        endif
+        end if
     else
-        ndextr=' '
-    endif
+        ndextr = ' '
+    end if
 !
 !
 !     ------------------------------------------------------------------
@@ -233,49 +233,49 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     AS_ALLOCATE(vi=noeuds_extrem, size=2*nbma)
     AS_ALLOCATE(vi=type_noeud, size=nbnot)
     do im = 1, nbma
-        call i2extf(zi(jcour2-1+im), 1, conec(1:15), typp(1:16), nig,&
+        call i2extf(zi(jcour2-1+im), 1, conec(1:15), typp(1:16), nig, &
                     nid)
-        noeuds_extrem(im)=nig
-        noeuds_extrem(nbma+im)=nid
-        type_noeud(nig)=type_noeud(nig)+1
-        type_noeud(nid)=type_noeud(nid)+1
+        noeuds_extrem(im) = nig
+        noeuds_extrem(nbma+im) = nid
+        type_noeud(nig) = type_noeud(nig)+1
+        type_noeud(nid) = type_noeud(nid)+1
     end do
 !
 !
 ! --- VERIFICATION QUE LA LIGNE EST CONTINUE ET UNIQUE
-    n1=0
-    n2=0
-    bug=.false.
+    n1 = 0
+    n2 = 0
+    bug = .false.
     do im = 1, nbnot
 !        COMPTAGE DES EXTREMITES
-        if (type_noeud(im) .eq. 1) n1=n1+1
+        if (type_noeud(im) .eq. 1) n1 = n1+1
 !        COMPTAGE NOEUDS APPARTENANT A PLUS DE DEUX MAILLES
-        if (type_noeud(im) .gt. 2) n2=n2+1
+        if (type_noeud(im) .gt. 2) n2 = n2+1
     end do
 !     IL NE PEUT Y AVOIR QUE 2 NOEUDS EXTREMITES
-    if (n1 .gt. 2) bug=.true.
+    if (n1 .gt. 2) bug = .true.
 !     IL NE DOIT PAS Y AVOIR DE NOEUDS APPARTENANT A PLUS DE DEUX
 !     MAILLES
-    if (n2 .ne. 0) bug=.true.
+    if (n2 .ne. 0) bug = .true.
     if (bug) then
         call utmess('F', 'ELEMENTS5_16')
-    endif
+    end if
 !
 !
 !     -- CALCUL DE VECORI:
 !     --------------------
-    vecori(1)=0.d0
-    vecori(2)=0.d0
-    vecori(3)=0.d0
+    vecori(1) = 0.d0
+    vecori(2) = 0.d0
+    vecori(3) = 0.d0
     if (nomcmd .eq. 'DEFI_GROUP' .and. motfac .eq. 'CREA_GROUP_NO') then
-        call getvr8(motfac, 'VECT_ORIE', iocc=iocc, nbval=3, vect=vecori,&
+        call getvr8(motfac, 'VECT_ORIE', iocc=iocc, nbval=3, vect=vecori, &
                     nbret=n1)
-        if ((ndorig.eq.ndextr) .and. (ndorig.ne.' ')) then
+        if ((ndorig .eq. ndextr) .and. (ndorig .ne. ' ')) then
             if (n1 .le. 0) then
                 call utmess('A', 'ELEMENTS_70')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 !
@@ -286,27 +286,27 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         call jenonu(jexnom(nomnoe, ndextr), nunori)
 !
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
-        trouv=0
+        trouv = 0
         do im = 1, nbma
-            if (noeuds_extrem(im) .eq. nunori) trouv=trouv+1
-            if (noeuds_extrem(nbma+im) .eq. nunori) trouv=trouv+1
+            if (noeuds_extrem(im) .eq. nunori) trouv = trouv+1
+            if (noeuds_extrem(nbma+im) .eq. nunori) trouv = trouv+1
         end do
 !
         if (trouv .eq. 0) then
             call utmess('F', 'ELEMENTS_68', sk=ndorig)
-        endif
+        end if
         if (typlig .eq. 'FERME') then
             if (trouv .ne. 2) then
                 call utmess('F', 'ELEMENTS_69', sk=ndextr)
-            endif
+            end if
         else
-            if (.not.(typlig.eq.' '.and.ndorig.eq.ndextr)) then
+            if (.not. (typlig .eq. ' ' .and. ndorig .eq. ndextr)) then
                 if (trouv .ne. 1) then
                     call utmess('F', 'ELEMENTS_69', sk=ndextr)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 !
 !
@@ -317,26 +317,26 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         call jenonu(jexnom(nomnoe, ndorig), nunori)
 !
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
-        trouv=0
+        trouv = 0
         do im = 1, nbma
-            if (noeuds_extrem(im) .eq. nunori) trouv=trouv+1
-            if (noeuds_extrem(nbma+im) .eq. nunori) trouv=trouv+1
+            if (noeuds_extrem(im) .eq. nunori) trouv = trouv+1
+            if (noeuds_extrem(nbma+im) .eq. nunori) trouv = trouv+1
         end do
 !
         if (trouv .eq. 0) then
             call utmess('F', 'ELEMENTS_68', sk=ndorig)
-        endif
+        end if
         if (typlig .eq. 'FERME') then
             if (trouv .ne. 2) then
                 call utmess('F', 'ELEMENTS_69', sk=ndorig)
-            endif
+            end if
         else
-            if (.not.(typlig.eq.' '.and.ndorig.eq.ndextr)) then
+            if (.not. (typlig .eq. ' ' .and. ndorig .eq. ndextr)) then
                 if (trouv .ne. 1) then
                     call utmess('F', 'ELEMENTS_69', sk=ndorig)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
     else
 !
@@ -344,49 +344,49 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !       --- Si l'origine n'est pas donnee, on en cherche une :
 !       ------------------------------------------------------------------
         AS_ALLOCATE(vi=noeud_apparies, size=2*nbma)
-        noeud_apparies(:)=0
+        noeud_apparies(:) = 0
 
 !       -- parcours de l'ensemble des noeuds
         do in = 1, nbma*2
             if (noeud_apparies(in) .ne. 0) goto 80
-            nunori=noeuds_extrem(in)
+            nunori = noeuds_extrem(in)
 
             do nd = in+1, nbma*2
                 if (noeuds_extrem(nd) .eq. nunori) then
-                    noeud_apparies(nd)=1
+                    noeud_apparies(nd) = 1
                     goto 80
-                endif
+                end if
             end do
 
 !           -- nunori n'apparait qu'une fois : c'est l'origine
             goto 100
 !
- 80         continue
+80          continue
         end do
 
 !       La ligne est peut etre fermee. On peut s'en sortir si ORIGINE='SANS' :
-        erreur=.true.
-        if (getexm(motfac,'ORIGINE') .eq. 1) then
+        erreur = .true.
+        if (getexm(motfac, 'ORIGINE') .eq. 1) then
             call getvtx(motfac, 'ORIGINE', iocc=iocc, scal=orig, nbret=n3)
-            if (n3.eq.1) then
-                ASSERT(orig.eq.'SANS')
-                erreur=.false.
-                nunori=noeuds_extrem(1)
+            if (n3 .eq. 1) then
+                ASSERT(orig .eq. 'SANS')
+                erreur = .false.
+                nunori = noeuds_extrem(1)
 !               -- On va verifier (grossierement) que la ligne est fermee.
 !                  (on verifie seulement que chaque noeud est utilise 2 fois) :
                 AS_ALLOCATE(vi=compteur, size=nbnot)
-                compteur(:)=0
+                compteur(:) = 0
                 do im = 1, nbma
-                    compteur(noeuds_extrem(im))=compteur(noeuds_extrem(im))+1
-                    compteur(noeuds_extrem(nbma+im))=compteur(noeuds_extrem(nbma+im))+1
-                enddo
+                    compteur(noeuds_extrem(im)) = compteur(noeuds_extrem(im))+1
+                    compteur(noeuds_extrem(nbma+im)) = compteur(noeuds_extrem(nbma+im))+1
+                end do
                 do in = 1, nbnot
-                    if (compteur(in).eq.0 .or. compteur(in).eq.2) cycle
-                    erreur=.true.
-                enddo
+                    if (compteur(in) .eq. 0 .or. compteur(in) .eq. 2) cycle
+                    erreur = .true.
+                end do
                 AS_DEALLOCATE(vi=compteur)
-            endif
-        endif
+            end if
+        end if
         if (erreur) call utmess('F', 'ELEMENTS_71')
 
 100     continue
@@ -395,7 +395,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         call utmess('I', 'ELEMENTS_72', sk=ndorig)
 !
         AS_DEALLOCATE(vi=noeud_apparies)
-    endif
+    end if
 
     AS_DEALLOCATE(vi=noeuds_extrem)
     AS_DEALLOCATE(vi=type_noeud)

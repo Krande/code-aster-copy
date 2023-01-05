@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zzloca(modele, ligrel, matecoz, sigma, signo,&
+subroutine zzloca(modele, ligrel, matecoz, sigma, signo, &
                   chvarc, resu)
     implicit none
 #include "asterfort/calcul.h"
@@ -57,7 +57,7 @@ subroutine zzloca(modele, ligrel, matecoz, sigma, signo,&
 !
     if (mateco .eq. ' ') then
         call utmess('F', 'CALCULEL4_66')
-    endif
+    end if
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
@@ -73,8 +73,8 @@ subroutine zzloca(modele, ligrel, matecoz, sigma, signo,&
     lpaout(1) = 'PERREUR'
     lchout(1) = resu
     option = 'CALC_ESTI_ERRE'
-    call calcul('S', option, ligrel, 5, lchin,&
-                lpain, 1, lchout, lpaout, 'G',&
+    call calcul('S', option, ligrel, 5, lchin, &
+                lpain, 1, lchout, lpaout, 'G', &
                 'OUI')
 !
 end subroutine

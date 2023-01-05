@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,34 +45,34 @@ subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
     call nlget(sd_nl, _NUMDDL_1, iocc=iliai, kscal=nume1)
     call nlget(sd_nl, _NO1_NAME, iocc=iliai, kscal=noeu1)
 !
-    call posddl('NUME_DDL', nume1, noeu1, 'DX', nunoe,&
+    call posddl('NUME_DDL', nume1, noeu1, 'DX', nunoe, &
                 nuddl)
     if (nunoe .eq. 0) then
-        ier = ier + 1
+        ier = ier+1
         valk(1) = noeu1
         call nlget(sd_nl, _MESH_1, iocc=iliai, kscal=valk(2))
         call utmess('E', 'ALGORITH5_27', nk=2, valk=valk)
-    endif
+    end if
     if (nuddl .eq. 0) then
-        ier = ier + 1
+        ier = ier+1
         call utmess('E', 'ALGORITH5_28', sk=noeu1)
-    endif
+    end if
     ddlcho(1) = nuddl
 !
-    call posddl('NUME_DDL', nume1, noeu1, 'DY', nunoe,&
+    call posddl('NUME_DDL', nume1, noeu1, 'DY', nunoe, &
                 nuddl)
     if (nuddl .eq. 0) then
-        ier = ier + 1
+        ier = ier+1
         call utmess('E', 'ALGORITH5_29', sk=noeu1)
-    endif
+    end if
     ddlcho(2) = nuddl
 !
-    call posddl('NUME_DDL', nume1, noeu1, 'DZ', nunoe,&
+    call posddl('NUME_DDL', nume1, noeu1, 'DZ', nunoe, &
                 nuddl)
     if (nuddl .eq. 0) then
-        ier = ier + 1
+        ier = ier+1
         call utmess('E', 'ALGORITH5_30', sk=noeu1)
-    endif
+    end if
     ddlcho(3) = nuddl
 !
     if (lnoue2) then
@@ -80,39 +80,39 @@ subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
         call nlget(sd_nl, _NUMDDL_2, iocc=iliai, kscal=nume2)
         call nlget(sd_nl, _NO2_NAME, iocc=iliai, kscal=noeu2)
 
-        call posddl('NUME_DDL', nume2, noeu2, 'DX', nunoe,&
+        call posddl('NUME_DDL', nume2, noeu2, 'DX', nunoe, &
                     nuddl)
         if (nunoe .eq. 0) then
-            ier = ier + 1
+            ier = ier+1
             valk(1) = noeu2
             call nlget(sd_nl, _MESH_2, iocc=iliai, kscal=valk(2))
             call utmess('E', 'ALGORITH5_27', nk=2, valk=valk)
-        endif
+        end if
         if (nuddl .eq. 0) then
-            ier = ier + 1
+            ier = ier+1
             call utmess('E', 'ALGORITH5_28', sk=noeu2)
-        endif
+        end if
         ddlcho(4) = nuddl
 !
-        call posddl('NUME_DDL', nume2, noeu2, 'DY', nunoe,&
+        call posddl('NUME_DDL', nume2, noeu2, 'DY', nunoe, &
                     nuddl)
         if (nuddl .eq. 0) then
-            ier = ier + 1
+            ier = ier+1
             call utmess('E', 'ALGORITH5_29', sk=noeu2)
-        endif
+        end if
         ddlcho(5) = nuddl
 !
-        call posddl('NUME_DDL', nume2, noeu2, 'DZ', nunoe,&
+        call posddl('NUME_DDL', nume2, noeu2, 'DZ', nunoe, &
                     nuddl)
         if (nuddl .eq. 0) then
-            ier = ier + 1
+            ier = ier+1
             call utmess('E', 'ALGORITH5_30', sk=noeu2)
-        endif
+        end if
         ddlcho(6) = nuddl
     else
         ddlcho(4) = ddlcho(1)
         ddlcho(5) = ddlcho(2)
         ddlcho(6) = ddlcho(3)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
-                  nomnoe, nbcmp, nbpoin, docu, nomtab,&
+subroutine rvtec2(releve, absc, itcopt, itsppt, coor, &
+                  nomnoe, nbcmp, nbpoin, docu, nomtab, &
                   iocc, xnovar, ncheff, i1)
     implicit none
 #include "asterf_types.h"
@@ -87,10 +87,10 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
         nbcmp2 = itsppt(1)
     else
         nbcmp2 = nbvari
-    endif
+    end if
     if (nbcmp2 .gt. 3000) then
         call utmess('F', 'POSTRELE_13')
-    endif
+    end if
 !
     call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
 !
@@ -102,9 +102,9 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     nnores = ncheff//'.NOMRESU'
     call jeveuo(nomacc, 'L', jacc)
 !
-    lcr = nbcmp2 + 10
+    lcr = nbcmp2+10
     AS_ALLOCATE(vr=vale_r, size=lcr)
-    lck = nbcmp2 + 23
+    lck = nbcmp2+23
     AS_ALLOCATE(vk24=para, size=lck)
     AS_ALLOCATE(vk8=nom_para, size=nbcmp2)
     AS_ALLOCATE(vk8=typ_para, size=nbcmp2)
@@ -119,113 +119,113 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 !
     if (zk8(jacc) .eq. 'DIRECT  ') then
         call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'L', jacc)
-        nbpar = nbpar + 1
+        nbpar = nbpar+1
         para(nbpar) = 'CHAM_GD'
-        ik = ik + 1
-        valek(ik) = zk24(jacc)(1:8)
+        ik = ik+1
+        valek(ik) = zk24(jacc) (1:8)
     else
         call jeveuo(nnores, 'L', jacc)
-        nomres = zk16(jacc)(1:8)
-        nbpar = nbpar + 1
+        nomres = zk16(jacc) (1:8)
+        nbpar = nbpar+1
         para(nbpar) = 'RESU'
-        ik = ik + 1
+        ik = ik+1
         valek(ik) = nomres
-        nbpar = nbpar + 1
+        nbpar = nbpar+1
         para(nbpar) = 'NOM_CHAM'
-        ik = ik + 1
+        ik = ik+1
         valek(ik) = zk16(jacc+1)
         call jeveuo(nomacc, 'L', adracc)
         call jeveuo(nomval, 'L', adrval)
         acces = zk8(adracc)
         if (acces(1:1) .eq. 'O') then
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'NUME_ORDRE'
-            ii = ii + 1
-            valei(ii) = zi(adrval + i1-1)
+            ii = ii+1
+            valei(ii) = zi(adrval+i1-1)
             nomjv = '&&RVTEC2.NOMS_ACCES'
             call rsnopa(nomres, 0, nomjv, nbacc, nbpr)
             if (nbacc .ne. 0) then
                 call jeveuo(nomjv, 'L', jaces)
                 do iac = 1, nbacc
-                    call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
+                    call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1), &
                                 1, sjv=iadr, styp=ctype)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
                     if (.not. exist) then
                         call tbajpa(nomtab, 1, zk16(jaces-1+iac), ctype)
-                    endif
-                    nbpar = nbpar + 1
+                    end if
+                    nbpar = nbpar+1
                     para(nbpar) = zk16(jaces-1+iac)
                     if (ctype(1:1) .eq. 'I') then
-                        ii = ii + 1
+                        ii = ii+1
                         valei(ii) = zi(iadr)
                     else if (ctype(1:1) .eq. 'R') then
-                        ir = ir + 1
+                        ir = ir+1
                         vale_r(ir) = zr(iadr)
                     else if (ctype(1:3) .eq. 'K80') then
-                        ik = ik + 1
+                        ik = ik+1
                         valek(ik) = zk80(iadr)
                     else if (ctype(1:3) .eq. 'K32') then
-                        ik = ik + 1
+                        ik = ik+1
                         valek(ik) = zk32(iadr)
                     else if (ctype(1:3) .eq. 'K24') then
-                        ik = ik + 1
+                        ik = ik+1
                         valek(ik) = zk24(iadr)
                     else if (ctype(1:3) .eq. 'K16') then
-                        ik = ik + 1
+                        ik = ik+1
                         valek(ik) = zk16(iadr)
                     else if (ctype(1:2) .eq. 'K8') then
-                        ik = ik + 1
+                        ik = ik+1
                         valek(ik) = zk8(iadr)
-                    endif
+                    end if
                 end do
                 call jedetr(nomjv)
-            endif
+            end if
         else if (acces(1:1) .eq. 'M') then
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'NUME_ORDRE'
-            call rsorac(nomres, 'NUME_MODE', zi(adrval+i1-1), 0.d0, k8b,&
-                        c16b, prec, crit, iord, 1,&
+            call rsorac(nomres, 'NUME_MODE', zi(adrval+i1-1), 0.d0, k8b, &
+                        c16b, prec, crit, iord, 1, &
                         n1)
-            ii = ii + 1
+            ii = ii+1
             valei(ii) = iord(1)
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'NUME_MODE'
-            ii = ii + 1
-            valei(ii) = zi(adrval + i1-1)
+            ii = ii+1
+            valei(ii) = zi(adrval+i1-1)
         else if (acces(1:1) .eq. 'I') then
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'NUME_ORDRE'
-            call rsorac(nomres, 'INST', 0, zr(adrval + i1-1), k8b,&
-                        c16b, prec, crit, iord, 1,&
+            call rsorac(nomres, 'INST', 0, zr(adrval+i1-1), k8b, &
+                        c16b, prec, crit, iord, 1, &
                         n1)
-            ii = ii + 1
+            ii = ii+1
             valei(ii) = iord(1)
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'INST'
-            ir = ir + 1
-            vale_r(ir) = zr(adrval + i1-1)
+            ir = ir+1
+            vale_r(ir) = zr(adrval+i1-1)
         else if (acces(1:1) .eq. 'F') then
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'FREQ'
-            ir = ir + 1
-            vale_r(ir) = zr(adrval + i1-1)
-        endif
-    endif
+            ir = ir+1
+            vale_r(ir) = zr(adrval+i1-1)
+        end if
+    end if
     if (docu .eq. 'LSTN') then
         call tbexip(nomtab, 'NOEUD', exist, typpar)
         if (.not. exist) then
             call tbajpa(nomtab, 1, 'NOEUD', 'K8')
-        endif
-        nbpar = nbpar + 1
+        end if
+        nbpar = nbpar+1
         para(nbpar) = 'NOEUD'
-    endif
-    nbpar = nbpar + 1
+    end if
+    nbpar = nbpar+1
     para(nbpar) = 'ABSC_CURV'
-    nbpar = nbpar + 1
+    nbpar = nbpar+1
     para(nbpar) = 'COOR_X'
-    nbpar = nbpar + 1
+    nbpar = nbpar+1
     para(nbpar) = 'COOR_Y'
-    nbpar = nbpar + 1
+    nbpar = nbpar+1
     para(nbpar) = 'COOR_Z'
     ic = 0
     do ipt = 1, nbpoin, 1
@@ -234,17 +234,17 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
             call tbexip(nomtab, 'NUME_COUCHE', exist, typpar)
             if (.not. exist) then
                 call tbajpa(nomtab, 1, 'NUME_COUCHE', 'I')
-            endif
+            end if
             ic = 1
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'NUME_COUCHE'
-        endif
+        end if
     end do
     if (nbvari .eq. 1 .and. zi(jvari) .eq. -1) then
         do i = 1, nbcmp2, 1
             ivari(i) = i
             call codent(i, 'G', kii)
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'V'//kii
             nom_para(i) = 'V'//kii
             typ_para(i) = 'R'
@@ -253,12 +253,12 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
         do i = 1, nbcmp2, 1
             ivari(i) = zi(jvari+i-1)
             call codent(zi(jvari+i-1), 'G', kii)
-            nbpar = nbpar + 1
+            nbpar = nbpar+1
             para(nbpar) = 'V'//kii
             nom_para(i) = 'V'//kii
             typ_para(i) = 'R'
         end do
-    endif
+    end if
     call tbajpa(nomtab, nbcmp2, nom_para, typ_para)
 !
     lc = ir+4+nbcmp2
@@ -269,7 +269,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 !
     ilign = 0
 !
-    ik = ik + 1
+    ik = ik+1
     do ipt = 1, nbpoin, 1
 !
         nbsp = itsppt(ipt)
@@ -279,7 +279,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 !
         if (docu .eq. 'LSTN') then
             valek(ik) = nomnoe(ipt)
-        endif
+        end if
 !
         vale_r(ir+1) = absc(ipt)
         vale_r(1+ir+1) = coor(1+(ipt-1)*3)
@@ -291,11 +291,11 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
             valei(ii+1) = ic
 !
             do i2 = 1, nbcmp2, 1
-                ind = (ipt-1)*ln + lc*(ic-1) + ivari(i2)
+                ind = (ipt-1)*ln+lc*(ic-1)+ivari(i2)
                 vale_r(1+ir+3+i2) = releve(ind)
             end do
 !
-            call tbajli(nomtab, nbpar, para, valei, vale_r,&
+            call tbajli(nomtab, nbpar, para, valei, vale_r, &
                         [c16b], valek, ilign)
 !
         end do

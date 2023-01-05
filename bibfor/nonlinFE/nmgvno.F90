@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
-                  iw, vff1, vff2, idfde1, idfde2,&
-                  geom, typmod, option, mat, compor,&
-                  lgpg, crit, instam, instap, ddlm,&
-                  ddld, angmas, sigm, vim, sigp,&
+subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
+                  iw, vff1, vff2, idfde1, idfde2, &
+                  geom, typmod, option, mat, compor, &
+                  lgpg, crit, instam, instap, ddlm, &
+                  ddld, angmas, sigm, vim, sigp, &
                   vip, matr, vect, codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -99,7 +99,7 @@ implicit none
     real(kind=8) :: deplm(3*27), depld(3*27), dfdi1(27, 3)
     real(kind=8) :: avm, avd, avp, agm(3), agd(3), agp(3), bp
     real(kind=8) :: r, wg, epsm(2*ndim+1), epsd(2*ndim+1), f(3, 3), b(6, 3, 27)
-    real(kind=8) :: sigmam(2*ndim+1), sigma(2*ndim+1), dsidep(2*ndim+1,2*ndim+1), t1, t2
+    real(kind=8) :: sigmam(2*ndim+1), sigma(2*ndim+1), dsidep(2*ndim+1, 2*ndim+1), t1, t2
     real(kind=8) :: di, char
     real(kind=8) :: dfdi2(8*3)
     real(kind=8) :: critd(20)
@@ -115,24 +115,24 @@ implicit none
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, compor,&
-                         lMatr , lVect ,&
-                         lVari , lSigm)
-    lElas = option.eq.'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS'
-    lMatrPred = option.eq.'RIGI_MECA_TANG'
+    call behaviourOption(option, compor, &
+                         lMatr, lVect, &
+                         lVari, lSigm)
+    lElas = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS'
+    lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
     rac2 = sqrt(2.d0)
     grand = .false.
     axi = typmod(1) .eq. 'AXIS'
-    nddl = nno1*ndim + nno2
+    nddl = nno1*ndim+nno2
     ndimsi = 2*ndim
 
-    famil='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(famil, kpg, spt, poum, mat,&
-                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
+    famil = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(famil, kpg, spt, poum, mat, &
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, nom, val, k2, 2)
     call coefdg(compor(1), mat, di)
 !
@@ -142,10 +142,10 @@ implicit none
 !
     if (lMatr) then
         call r8inir((nddl*(nddl+1))/2, 0.d0, matr, 1)
-    endif
+    end if
     if (lVect) then
         call r8inir(nddl, 0.d0, vect, 1)
-    endif
+    end if
 !
     call nmgvdn(ndim, nno1, nno2, iu, ia)
 !
@@ -158,7 +158,7 @@ implicit none
                 depld(i+(n-1)*ndim) = 0.d0
             else
                 depld(i+(n-1)*ndim) = ddld(iu(nno1*(i-1)+n))
-            endif
+            end if
         end do
     end do
 !
@@ -167,7 +167,7 @@ implicit none
     do n = 1, nno2
         critd(n) = 0.d0
         do i = 1, ndim
-            critd(n) = critd(n) + abs(ddld(iu(nno1*(i-1)+n)))
+            critd(n) = critd(n)+abs(ddld(iu(nno1*(i-1)+n)))
         end do
     end do
 !
@@ -177,19 +177,19 @@ implicit none
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A
 !
-        call dfdmip(ndim, nno2, axi, geom, g,&
-                    iw, vff2(1, g), idfde2, r, wg,&
+        call dfdmip(ndim, nno2, axi, geom, g, &
+                    iw, vff2(1, g), idfde2, r, wg, &
                     dfdi2)
         avm = 0
         avd = 0
         do n = 1, nno2
-            avm = avm + vff2(n,g)*ddlm(ia(n))
-            avd = avd + vff2(n,g)*ddld(ia(n))
+            avm = avm+vff2(n, g)*ddlm(ia(n))
+            avd = avd+vff2(n, g)*ddld(ia(n))
             if (lMatrPred) then
                 avd = 0.d0
-            endif
+            end if
         end do
-        avp = avm + avd
+        avp = avm+avd
 !
 
 !
@@ -197,49 +197,49 @@ implicit none
             agm(i) = 0
             agd(i) = 0
             do n = 1, nno2
-                agm(i) = agm(i) + dfdi2(nno2*(i-1)+n)*ddlm(ia(n))
-                agd(i) = agd(i) + dfdi2(nno2*(i-1)+n)*ddld(ia(n))
+                agm(i) = agm(i)+dfdi2(nno2*(i-1)+n)*ddlm(ia(n))
+                agd(i) = agd(i)+dfdi2(nno2*(i-1)+n)*ddld(ia(n))
                 if (lMatrPred) then
                     agd(i) = 0.d0
-                endif
+                end if
             end do
-            agp(i) = agm(i) + agd(i)
+            agp(i) = agm(i)+agd(i)
         end do
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 !
-        call dfdmip(ndim, nno1, axi, geom, g,&
-                    iw, vff1(1, g), idfde1, r, wg,&
+        call dfdmip(ndim, nno1, axi, geom, g, &
+                    iw, vff1(1, g), idfde1, r, wg, &
                     dfdi1)
 
 !
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dfdi1, deplm, f, epsm(1:ndimsi))
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dfdi1, depld, f, epsd(1:ndimsi))
-        call nmmabu(ndim, nno1, .false._1, grand, dfdi1,&
+        call nmmabu(ndim, nno1, .false._1, grand, dfdi1, &
                     b)
         if (axi) then
             do n = 1, nno1
-                b(3,1,n) = vff1(n,g)/r
+                b(3, 1, n) = vff1(n, g)/r
             end do
-        endif
+        end if
 !
         do kl = 1, 3
-            sigmam(kl) = sigm(kl,g)
+            sigmam(kl) = sigm(kl, g)
         end do
         do kl = 4, ndimsi
-            sigmam(kl) = sigm(kl,g)*rac2
+            sigmam(kl) = sigm(kl, g)*rac2
         end do
-        sigmam(ndimsi+1) = sigm(ndimsi+1,g)
+        sigmam(ndimsi+1) = sigm(ndimsi+1, g)
 !
         epsm(2*ndim+1) = avm
         epsd(2*ndim+1) = avd
-        
-        call nmcomp(BEHinteg,&
-                    fami, g, 1, ndim, typmod,&
-                    mat, compor, crit, instam, instap,&
-                    ndimsi+1, epsm, epsd, ndimsi+1, sigmam,&
+
+        call nmcomp(BEHinteg, &
+                    fami, g, 1, ndim, typmod, &
+                    mat, compor, crit, instam, instap, &
+                    ndimsi+1, epsm, epsd, ndimsi+1, sigmam, &
                     vim(1, g), option, angmas, &
                     sigma, vip(1, g), (ndimsi+1)*(ndimsi+1), dsidep, cod(g))
 !
@@ -252,17 +252,16 @@ implicit none
 !        CONTRAINTES
 !
             do kl = 1, 3
-                sigp(kl,g) = sigma(kl)
+                sigp(kl, g) = sigma(kl)
             end do
             do kl = 4, ndimsi
-                sigp(kl,g) = sigma(kl)/rac2
+                sigp(kl, g) = sigma(kl)/rac2
             end do
-            sigp(ndimsi+1,g) = sigma(ndimsi+1)
-        endif
-        
-        
+            sigp(ndimsi+1, g) = sigma(ndimsi+1)
+        end if
+
         if (lVect) then
-            bp = sigp(ndimsi+1,g)
+            bp = sigp(ndimsi+1, g)
 !
 !        VECTEUR FINT:U
 !
@@ -271,24 +270,24 @@ implicit none
                     kk = iu(nno1*(i-1)+n)
                     t1 = 0
                     do kl = 1, ndimsi
-                        t1 = t1 + sigma(kl)*b(kl,i,n)
+                        t1 = t1+sigma(kl)*b(kl, i, n)
                     end do
-                    vect(kk) = vect(kk) + wg*t1
+                    vect(kk) = vect(kk)+wg*t1
                 end do
             end do
 !
 !        VECTEUR FINT:A
 !
             do n = 1, nno2
-                t1 = vff2(n,g)*bp
+                t1 = vff2(n, g)*bp
                 t2 = 0
                 do i = 1, ndim
-                    t2 = t2 + c*dfdi2(nno2*(i-1)+n)*agp(i)
+                    t2 = t2+c*dfdi2(nno2*(i-1)+n)*agp(i)
                 end do
                 kk = ia(n)
-                vect(kk) = vect(kk) + wg*(t2+t1)
+                vect(kk) = vect(kk)+wg*(t2+t1)
             end do
-        endif
+        end if
 !
 !   CALCUL DE LA MATRICE DE RIGIDITE
 !   STOCKAGE TRIANGLE INFERIEUR LIGNE DE DFI/DUJ
@@ -307,10 +306,10 @@ implicit none
                             t1 = 0
                             do kl = 1, ndimsi
                                 do pq = 1, ndimsi
-                                    t1 = t1+dsidep(kl,pq)*b(pq,j,m)* b(kl,i,n)
+                                    t1 = t1+dsidep(kl, pq)*b(pq, j, m)*b(kl, i, n)
                                 end do
                             end do
-                            matr(kk) = matr(kk) + wg*t1
+                            matr(kk) = matr(kk)+wg*t1
                         end do
                     end do
 821                 continue
@@ -322,19 +321,19 @@ implicit none
             do n = 1, nno2
                 osa = ((ia(n)-1)*ia(n))/2
                 do m = 1, nno2
-                    t1 = vff2(n,g)*vff2(m,g)*dsidep(ndimsi+1,ndimsi+1)
+                    t1 = vff2(n, g)*vff2(m, g)*dsidep(ndimsi+1, ndimsi+1)
                     t2 = 0
                     do i = 1, ndim
-                        t2 = t2 + dfdi2(nno2*(i-1)+n)*dfdi2(nno2*(i-1) +m)
+                        t2 = t2+dfdi2(nno2*(i-1)+n)*dfdi2(nno2*(i-1)+m)
                     end do
                     t2 = c*t2
                     if (ia(m) .le. ia(n)) then
                         kk = osa+ia(m)
-                        matr(kk) = matr(kk) + wg*(t2+t1)
-                    endif
+                        matr(kk) = matr(kk)+wg*(t2+t1)
+                    end if
                 end do
             end do
-        endif
+        end if
 !
         if (lMatr .and. .not. lElas) then
 !
@@ -345,20 +344,20 @@ implicit none
                     do j = 1, ndim
                         t1 = 0
                         do kl = 1, ndimsi
-                            t1 = t1 + dsidep(kl,ndimsi+1)*b(kl,j,m)
+                            t1 = t1+dsidep(kl, ndimsi+1)*b(kl, j, m)
                         end do
-                        t1 = vff2(n,g)*t1
+                        t1 = vff2(n, g)*t1
                         if (ia(n) .ge. iu(nno1*(j-1)+m)) then
-                            kk = ((ia(n)-1)*ia(n))/2 + iu(nno1*(j-1)+ m)
+                            kk = ((ia(n)-1)*ia(n))/2+iu(nno1*(j-1)+m)
                         else
-                            kk = ( (iu(nno1*(j-1)+m)-1)*iu(nno1*(j-1)+ m) )/2 +ia(n )
-                        endif
-                        matr(kk) = matr(kk) + wg*t1
+                            kk = ((iu(nno1*(j-1)+m)-1)*iu(nno1*(j-1)+m))/2+ia(n)
+                        end if
+                        matr(kk) = matr(kk)+wg*t1
                     end do
                 end do
             end do
 !
-        endif
+        end if
 !
         if (lMatr) then
 !
@@ -366,7 +365,7 @@ implicit none
                 osa = ((ia(n)-1)*ia(n))/2
                 do m = 1, nno2
                     if (ia(m) .le. ia(n)) then
-                        kk=osa+ia(m)
+                        kk = osa+ia(m)
 !
                         char = ddld(ia(m))
 !
@@ -375,8 +374,8 @@ implicit none
                                 matr(kk) = di
                             else
                                 matr(kk) = 0.d0
-                            endif
-                        endif
+                            end if
+                        end if
 !
                         char = ddld(ia(n))
 !
@@ -385,19 +384,19 @@ implicit none
                                 matr(kk) = di
                             else
                                 matr(kk) = 0.d0
-                            endif
-                        endif
+                            end if
+                        end if
 !
                         if (ia(m) .eq. ia(n)) then
                             if (critd(n) .eq. 0.d0 .and. avp .eq. 0.d0) then
                                 matr(kk) = di
-                            endif
-                        endif
-                    endif
+                            end if
+                        end if
+                    end if
                 end do
             end do
 !
-        endif
+        end if
 !
         if (lMatr .and. .not. lElas) then
 !
@@ -409,18 +408,18 @@ implicit none
                     do m = 1, nno1
                         do j = 1, ndim
                             if (ia(n) .ge. iu(nno1*(j-1)+m)) then
-                                kk=((ia(n)-1)*ia(n))/2 + iu(nno1*(j-1)&
-                                +m)
+                                kk = ((ia(n)-1)*ia(n))/2+iu(nno1*(j-1) &
+                                                            +m)
                             else
-                                kk=((iu(nno1*(j-1)+m)-1)*iu(nno1*(j-1)&
-                                +m))/2+ia(n)
-                            endif
+                                kk = ((iu(nno1*(j-1)+m)-1)*iu(nno1*(j-1) &
+                                                              +m))/2+ia(n)
+                            end if
                             matr(kk) = 0.d0
                         end do
                     end do
-                endif
+                end if
             end do
-        endif
+        end if
     end do
 !
 900 continue

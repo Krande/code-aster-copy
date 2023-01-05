@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,10 +58,10 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !
 !
     call jemarq()
-    stomor=stomoz
-    stolci=stolcz
-    ASSERT(stomor(1:14).eq.stolci(1:14))
-    base=basz
+    stomor = stomoz
+    stolci = stolcz
+    ASSERT(stomor(1:14) .eq. stolci(1:14))
+    base = basz
 !
 !   -- on detruit stolci s'il existe deja :
     call detrsd('STOC_LCIEL', stolci)
@@ -71,23 +71,21 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !   ------------------------------------------------
     call wkvect(stolci//'.SCDE', base//' V I', 6, vi=scde)
     call jeveuo(stomor//'.SMDE', 'L', vi=smde)
-    neq=smde(1)
-    nnz=smde(2)
-    scde(1)=neq
+    neq = smde(1)
+    nnz = smde(2)
+    scde(1) = neq
 
 !   -- calcul de itbloc :
     itbloc = nint(rtbloc*1024)
-
 
 !   -- calcul des vecteurs d'indirection :
 !       .M2LC : ieqm  -> ieqlc
 !       .LC2M : ieqlc -> ieqm
 !   -----------------------------------------------
     call ldlt_renum(stomor(1:14))
-    call jeveuo(stolci//'.M2LC','L',vi=m2lc)
-    call jeveuo(stolci//'.LC2M','L',vi=lc2m)
-    ASSERT(m2lc(1).ge.1 .and. m2lc(1).le.neq)
-
+    call jeveuo(stolci//'.M2LC', 'L', vi=m2lc)
+    call jeveuo(stolci//'.LC2M', 'L', vi=lc2m)
+    ASSERT(m2lc(1) .ge. 1 .and. m2lc(1) .le. neq)
 
 !   -- allocation de  .SCHC .SCDI et .SCIB :
 !   ------------------------------------------
@@ -104,75 +102,75 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !
 !   -- 1.1  Calcul des hauteurs de colonnes  .SCHC :
 !   -------------------------------------------------
-    jcolm=1
+    jcolm = 1
     do kterm = 1, nnz
-        if (smdi(jcolm) .lt. kterm) jcolm=jcolm+1
-        ASSERT(jcolm.ge.0 .and. jcolm.le.neq)
-        iligm=smhc(kterm)
-        ASSERT(iligm.ge.0 .and. iligm.le.neq)
-        iliglc=m2lc(iligm)
-        jcollc=m2lc(jcolm)
-        if (iliglc.gt.jcollc) then
-            temp=iliglc
-            iliglc=jcollc
-            jcollc=temp
-        endif
-        hc=jcollc+1-iliglc
-        schc(jcollc)=max(schc(jcollc),hc)
-    enddo
-    ASSERT(schc(1).eq.1)
+        if (smdi(jcolm) .lt. kterm) jcolm = jcolm+1
+        ASSERT(jcolm .ge. 0 .and. jcolm .le. neq)
+        iligm = smhc(kterm)
+        ASSERT(iligm .ge. 0 .and. iligm .le. neq)
+        iliglc = m2lc(iligm)
+        jcollc = m2lc(jcolm)
+        if (iliglc .gt. jcollc) then
+            temp = iliglc
+            iliglc = jcollc
+            jcollc = temp
+        end if
+        hc = jcollc+1-iliglc
+        schc(jcollc) = max(schc(jcollc), hc)
+    end do
+    ASSERT(schc(1) .eq. 1)
 
 !
 !   -- 1.2  Calcul de .SCIB, .SCDI, hcmax et hcc :
 !   ---------------------------------------------------
 
-    hcmax=0
-    tcumu=0
-    hcc=0
-    nbloc=1
-    do ieqlc=1,neq
-        hc=schc(ieqlc)
+    hcmax = 0
+    tcumu = 0
+    hcc = 0
+    nbloc = 1
+    do ieqlc = 1, neq
+        hc = schc(ieqlc)
 !
 !       -- peut-on encore stocker cette colonne dans le bloc courant ?
-        ASSERT(hc.le.itbloc)
+        ASSERT(hc .le. itbloc)
         if (tcumu+hc .gt. itbloc) then
-            nbloc=nbloc+1
-            tcumu=0
-        endif
+            nbloc = nbloc+1
+            tcumu = 0
+        end if
 !
-        scib(ieqlc)=nbloc
-        scdi(ieqlc)=tcumu +hc
-        hcmax=max(hcmax,hc)
-        tcumu=tcumu+hc
-        hcc=hcc+hc
+        scib(ieqlc) = nbloc
+        scdi(ieqlc) = tcumu+hc
+        hcmax = max(hcmax, hc)
+        tcumu = tcumu+hc
+        hcc = hcc+hc
     end do
-    scde(3)=nbloc
-    scde(4)=hcmax
+    scde(3) = nbloc
+    scde(4) = hcmax
 !
 !
 !   2. allocation et remplissage de .SCBL :
 !   ----------------------------------------
     call wkvect(stolci//'.SCBL', base//' V I', nbloc+1, vi=scbl)
-    scbl(1)=0
-    ibloc=1
-    do ieqlc=1,neq
+    scbl(1) = 0
+    ibloc = 1
+    do ieqlc = 1, neq
         if (scib(ieqlc) .gt. ibloc) then
-            ibloc=ibloc+1
-            scbl(ibloc)=ieqlc-1
-        endif
+            ibloc = ibloc+1
+            scbl(ibloc) = ieqlc-1
+        end if
     end do
-    ASSERT(ibloc.eq.nbloc)
-    scbl(nbloc+1)=neq
+    ASSERT(ibloc .eq. nbloc)
+    scbl(nbloc+1) = neq
 !
 !
 !   3. si toute la matrice tient dans un seul bloc, on
 !      adapte la taille de ce bloc
 !   ------------------------------------------------------
     if (itbloc .gt. hcc) then
-        ASSERT(nbloc.eq.1)
-        itbloc=hcc
-    endif
-    scde(2)=itbloc
+        ASSERT(nbloc .eq. 1)
+        itbloc = hcc
+    end if
+    scde(2) = itbloc
 !
 !
     call jedema()

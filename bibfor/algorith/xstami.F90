@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
+subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3, &
                   jmafon, jmaen1, jmaen2, jmaen3)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -67,43 +67,43 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_29', si=nmafon)
-    endif
+    end if
     if (niv .ge. 3) then
         do ima = 1, nmafon
             call jenuno(jexnum(nommai, zi(jmafon-1+ima)), nomail)
-            write(ifm,*)'MAILLE ',nomail
+            write (ifm, *) 'MAILLE ', nomail
         end do
-    endif
+    end if
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_30', si=nmaen1)
-    endif
+    end if
     if (niv .ge. 3) then
         do ima = 1, nmaen1
             call jenuno(jexnum(nommai, zi(jmaen1-1+ima)), nomail)
-            write(ifm,*)'MAILLE ',nomail
+            write (ifm, *) 'MAILLE ', nomail
         end do
-    endif
+    end if
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_31', si=nmaen2)
-    endif
+    end if
     if (niv .ge. 3) then
         do ima = 1, nmaen2
             call jenuno(jexnum(nommai, zi(jmaen2-1+ima)), nomail)
-            write(ifm,*)'MAILLE ',nomail
+            write (ifm, *) 'MAILLE ', nomail
         end do
-    endif
+    end if
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_32', si=nmaen3)
-    endif
+    end if
     if (niv .ge. 3) then
         do ima = 1, nmaen3
             call jenuno(jexnum(nommai, zi(jmaen3-1+ima)), nomail)
-            write(ifm,*)'MAILLE ',nomail
+            write (ifm, *) 'MAILLE ', nomail
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

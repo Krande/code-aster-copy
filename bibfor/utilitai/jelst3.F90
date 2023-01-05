@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,13 +42,13 @@ subroutine jelst3(base, dest, nmax, ntotal)
 !
 !     1. RECUPERATION DE LA LISTE DES OBJETS :
 !     --------------------------------------------------------------
-    call jelstc(base, ' ', 0, nmax, dest,&
+    call jelstc(base, ' ', 0, nmax, dest, &
                 nbval)
     if (nbval .lt. 0) then
         ntotal = -nbval
     else
         ntotal = nbval
-    endif
+    end if
     call jedema()
 !
 end subroutine

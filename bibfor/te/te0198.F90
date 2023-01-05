@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine te0198(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
@@ -110,15 +110,15 @@ subroutine te0198(option, nomte)
 ! ---- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 ! ---- DE L'ELEMENT :
 !      ------------
-    call sigtmc(fami, nno, dimmod, nbsig, npg1,&
-                zr(ivf), zr(igeom), instan, zi(imate), repere,&
+    call sigtmc(fami, nno, dimmod, nbsig, npg1, &
+                zr(ivf), zr(igeom), instan, zi(imate), repere, &
                 option, sigth)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE
 ! ---- OU DE SECHAGE (BT*SIGTH)
 !      ----------------------------------------------------------
-    call bsigmc(nno, dimmod, nbsig, npg1, ipoids,&
-                ivf, idfde, zr(igeom), nharm, sigth,&
+    call bsigmc(nno, dimmod, nbsig, npg1, ipoids, &
+                ivf, idfde, zr(igeom), nharm, sigth, &
                 bsigma)
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE

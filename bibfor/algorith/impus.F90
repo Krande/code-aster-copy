@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,20 +29,20 @@ subroutine impus(isor, ibl, pusee)
     integer :: ibl
 !-----------------------------------------------------------------------
     if (ibl .eq. 1) then
-        write(isor,*)' '
-        write(isor,*)'--------------------------------------'
-        write(isor,*)'-         PUISSANCE  D USURE         -'
-        write(isor,*)'-          (LOI  D ARCHARD)   FN.VT  -'
-        write(isor,*)'--------------------------------------'
-    else if (ibl.eq.0) then
-        write(isor,*)' '
-        write(isor,*)'--------------------------------------'
-        write(isor,*)'-     PUISSANCE  D USURE GLOBALE     -'
-        write(isor,*)'-          (LOI  D ARCHARD)   FN.VT  -'
-        write(isor,*)'--------------------------------------'
-    endif
+        write (isor, *) ' '
+        write (isor, *) '--------------------------------------'
+        write (isor, *) '-         PUISSANCE  D USURE         -'
+        write (isor, *) '-          (LOI  D ARCHARD)   FN.VT  -'
+        write (isor, *) '--------------------------------------'
+    else if (ibl .eq. 0) then
+        write (isor, *) ' '
+        write (isor, *) '--------------------------------------'
+        write (isor, *) '-     PUISSANCE  D USURE GLOBALE     -'
+        write (isor, *) '-          (LOI  D ARCHARD)   FN.VT  -'
+        write (isor, *) '--------------------------------------'
+    end if
 !
-    write(isor,10) ibl,pusee
-    10 format(' !',i2,' !',1pd12.5,' W  !')
+    write (isor, 10) ibl, pusee
+10  format(' !', i2, ' !', 1pd12.5, ' W  !')
 !
 end subroutine

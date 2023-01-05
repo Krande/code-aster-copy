@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
 !     : UCRIV          : TERME SOUS L'EXPOSANT
 ! ===================================================================================
 
-    implicit    none
+    implicit none
 
 #include "asterfort/cos3t.h"
 #include "asterfort/srhtet.h"
@@ -49,7 +49,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     !!!
 
     integer :: nbmat
-    real(kind=8) :: invar, vintr, s(6), mater(nbmat,2), ucriv, seuil, tmp
+    real(kind=8) :: invar, vintr, s(6), mater(nbmat, 2), ucriv, seuil, tmp
 
     !!!
     !!! Variableslocales
@@ -60,14 +60,14 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     real(kind=8) :: rcos3t
     real(kind=8) :: paravi(3), varvi(4)
     integer :: ndi, ndt
-    common /tdim/ ndt, ndi
+    common/tdim/ndt, ndi
 
     !!!
     !!! Parametres materiaux du modele
     !!!
 
-    sigc=mater(3,2)
-    pref=mater(1,2)
+    sigc = mater(3, 2)
+    pref = mater(1, 2)
 
     !!!
     !!! Calcul du deviateur des contraintes
@@ -79,7 +79,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     !!! Recuperation de h0c et h(theta) (r0c et r(theta))
     !!!
 
-    rcos3t=cos3t(s, pref, 1.d-8)
+    rcos3t = cos3t(s, pref, 1.d-8)
     call srhtet(nbmat, mater, rcos3t, r0c, rtheta)
 
     !!!
@@ -93,8 +93,8 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     !!! Calcul du critere
     !!!
 
-    ucriv=varvi(1)*sii*rtheta+varvi(2)*invar+varvi(3)
-    if (ucriv.lt.0.0d0) ucriv=0.0d0
-    seuil=sii*rtheta-sigc*r0c*(ucriv**paravi(1))
+    ucriv = varvi(1)*sii*rtheta+varvi(2)*invar+varvi(3)
+    if (ucriv .lt. 0.0d0) ucriv = 0.0d0
+    seuil = sii*rtheta-sigc*r0c*(ucriv**paravi(1))
 
 end subroutine

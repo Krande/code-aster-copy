@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine jedup1(o1z, base, o2z)
     character(len=24) :: o1, o2
 !
 ! DEB ------------------------------------------------------------------
-    o1=o1z
-    o2=o2z
+    o1 = o1z
+    o2 = o2z
     call jeexin(o1, iret)
     if (iret .gt. 0) call jedupo(o1, base, o2, .false._1)
 end subroutine

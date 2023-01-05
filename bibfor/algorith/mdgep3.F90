@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
+subroutine mdgep3(neq, nbexci, psidel, temps, nomfon, &
                   tab)
 !    MULTI-APPUIS :
 !    CONVERSION LES DDL GENERALISES EN BASE PHYSIQUE : CONTRIBUTION
@@ -51,13 +51,13 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
     do iex = 1, nbexci
         if (nomfon(iex) .eq. k8bid) goto 10
 !
-        cntr = cntr + 1
-        call fointe('F ', nomfon(iex), 1, [nompar], [temps],&
+        cntr = cntr+1
+        call fointe('F ', nomfon(iex), 1, [nompar], [temps], &
                     coef, ier)
         do ieq = 1, neq
-            tab(ieq) = tab(ieq) + psidel(ieq,iex)*coef
+            tab(ieq) = tab(ieq)+psidel(ieq, iex)*coef
         end do
- 10     continue
+10      continue
     end do
 !
     if (cntr .eq. 0) then

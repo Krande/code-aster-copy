@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmext0(field_disc, nb_elem  , nb_node  , nb_poin  , nb_spoi       ,&
-                  nb_cmp    , work_node, work_poin, work_elem, type_extr_elem,&
-                  type_extr )
+subroutine nmext0(field_disc, nb_elem, nb_node, nb_poin, nb_spoi, &
+                  nb_cmp, work_node, work_poin, work_elem, type_extr_elem, &
+                  type_extr)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -71,62 +71,62 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (field_disc .eq. 'NOEU') then
-        if(nb_node == 0) then
+        if (nb_node == 0) then
             go to 999
         end if
-        call wkvect(work_node, 'V V R', nb_node*nb_cmp                , vr = v_work_node)
-    else if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
-        if(nb_poin == 0) then
+        call wkvect(work_node, 'V V R', nb_node*nb_cmp, vr=v_work_node)
+    else if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
+        if (nb_poin == 0) then
             go to 999
         end if
-        call wkvect(work_poin, 'V V R', nb_poin*nb_spoi*nb_cmp        , vr = v_work_poin)
-        if(nb_elem == 0) then
+        call wkvect(work_poin, 'V V R', nb_poin*nb_spoi*nb_cmp, vr=v_work_poin)
+        if (nb_elem == 0) then
             go to 999
         end if
-        call wkvect(work_elem, 'V V R', nb_elem*nb_poin*nb_spoi*nb_cmp, vr = v_work_elem)
+        call wkvect(work_elem, 'V V R', nb_elem*nb_poin*nb_spoi*nb_cmp, vr=v_work_elem)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Values for initializations
 !
     if (type_extr .eq. 'MAX') then
         node_init_vale = -r8maem()
-    else if (type_extr.eq.'MIN') then
+    else if (type_extr .eq. 'MIN') then
         node_init_vale = +r8maem()
-    else if (type_extr.eq.'MAXI_ABS') then
+    else if (type_extr .eq. 'MAXI_ABS') then
         node_init_vale = 0.d0
-    else if (type_extr.eq.'MINI_ABS') then
+    else if (type_extr .eq. 'MINI_ABS') then
         node_init_vale = +r8maem()
-    else if (type_extr.eq.'VALE') then
+    else if (type_extr .eq. 'VALE') then
         node_init_vale = 0.d0
-    else if (type_extr.eq.'MOY') then
+    else if (type_extr .eq. 'MOY') then
         node_init_vale = 0.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (field_disc .eq. 'ELGA') then
         if (type_extr_elem .eq. 'MAX') then
             elem_init_vale = -r8maem()
-        else if (type_extr_elem.eq.'MIN') then
+        else if (type_extr_elem .eq. 'MIN') then
             elem_init_vale = +r8maem()
-        else if (type_extr_elem.eq.'VALE') then
+        else if (type_extr_elem .eq. 'VALE') then
             elem_init_vale = 0.d0
-        else if (type_extr_elem.eq.'MOY') then
+        else if (type_extr_elem .eq. 'MOY') then
             elem_init_vale = 0.d0
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
     if (field_disc .eq. 'ELEM') then
-        if (type_extr_elem.eq.'VALE') then
+        if (type_extr_elem .eq. 'VALE') then
             elem_init_vale = 0.d0
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Set for working vector (nodes)
 !
@@ -136,7 +136,7 @@ implicit none
                 v_work_node(nb_cmp*(ino-1)+i_cmp) = node_init_vale
             end do
         end do
-    endif
+    end if
 !
 ! - Set for working vector (elements and points)
 !
@@ -145,18 +145,18 @@ implicit none
             do i_poin = 1, nb_poin
                 do i_spoi = 1, nb_spoi
                     do i_cmp = 1, nb_cmp
-                        v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem-1)+&
-                                    nb_poin*nb_spoi*(i_cmp-1)+&
-                                    nb_spoi*(i_poin-1)+&
+                        v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem-1)+ &
+                                    nb_poin*nb_spoi*(i_cmp-1)+ &
+                                    nb_spoi*(i_poin-1)+ &
                                     (i_spoi-1)) = node_init_vale
-                        v_work_poin(1+nb_poin*nb_spoi*(i_cmp-1)+&
-                                    nb_spoi*(i_poin-1)+&
+                        v_work_poin(1+nb_poin*nb_spoi*(i_cmp-1)+ &
+                                    nb_spoi*(i_poin-1)+ &
                                     (i_spoi-1)) = elem_init_vale
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 999 continue
 !

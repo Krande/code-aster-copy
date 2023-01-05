@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,53 +54,53 @@ subroutine chgref(geomi, x, y, bidim)
     call matfpe(-1)
 !
     call jemarq()
-    coorjv=geomi(1:19)//'.VALE'
+    coorjv = geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
     call jelira(coorjv, 'LONMAX', n1)
-    prec=1.d-14
-    n1=n1/3
-    iadcoo=iadcoo-1
+    prec = 1.d-14
+    n1 = n1/3
+    iadcoo = iadcoo-1
 !     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
     if (bidim) then
-        r1=dnrm2(2,x,1)
+        r1 = dnrm2(2, x, 1)
         if (r1 .gt. prec) then
-            x(1)=x(1)/r1
-            x(2)=x(2)/r1
-            x(3)=x(3)/r1
-            y(1)=(-1.d0)*x(2)
-            y(2)=x(1)
+            x(1) = x(1)/r1
+            x(2) = x(2)/r1
+            x(3) = x(3)/r1
+            y(1) = (-1.d0)*x(2)
+            y(2) = x(1)
             do i = 1, n1
-                p(1)=zr(iadcoo+3*(i-1)+1)
-                p(2)=zr(iadcoo+3*(i-1)+2)
-                zr(iadcoo+3*(i-1)+1)=ddot(2,x,1,p,1)
-                zr(iadcoo+3*(i-1)+2)=ddot(2,y,1,p,1)
+                p(1) = zr(iadcoo+3*(i-1)+1)
+                p(2) = zr(iadcoo+3*(i-1)+2)
+                zr(iadcoo+3*(i-1)+1) = ddot(2, x, 1, p, 1)
+                zr(iadcoo+3*(i-1)+2) = ddot(2, y, 1, p, 1)
             end do
         else
             call utmess('F', 'ALGORITH_96')
-        endif
+        end if
     else
-        r1=dnrm2(3,x,1)
-        r2=dnrm2(3,y,1)
-        if (( ddot(3,x,1,y,1) .lt. prec ) .and. ( (r1*r2) .gt. 0.d0 )) then
-            x(1)=x(1)/r1
-            x(2)=x(2)/r1
-            x(3)=x(3)/r1
-            y(1)=y(1)/r2
-            y(2)=y(2)/r2
-            y(3)=y(3)/r2
+        r1 = dnrm2(3, x, 1)
+        r2 = dnrm2(3, y, 1)
+        if ((ddot(3, x, 1, y, 1) .lt. prec) .and. ((r1*r2) .gt. 0.d0)) then
+            x(1) = x(1)/r1
+            x(2) = x(2)/r1
+            x(3) = x(3)/r1
+            y(1) = y(1)/r2
+            y(2) = y(2)/r2
+            y(3) = y(3)/r2
             call provec(x, y, z)
             do i = 1, n1
-                p(1)=zr(iadcoo+3*(i-1)+1)
-                p(2)=zr(iadcoo+3*(i-1)+2)
-                p(3)=zr(iadcoo+3*(i-1)+3)
-                zr(iadcoo+3*(i-1)+1)=ddot(3,x,1,p,1)
-                zr(iadcoo+3*(i-1)+2)=ddot(3,y,1,p,1)
-                zr(iadcoo+3*(i-1)+3)=ddot(3,z,1,p,1)
+                p(1) = zr(iadcoo+3*(i-1)+1)
+                p(2) = zr(iadcoo+3*(i-1)+2)
+                p(3) = zr(iadcoo+3*(i-1)+3)
+                zr(iadcoo+3*(i-1)+1) = ddot(3, x, 1, p, 1)
+                zr(iadcoo+3*(i-1)+2) = ddot(3, y, 1, p, 1)
+                zr(iadcoo+3*(i-1)+3) = ddot(3, z, 1, p, 1)
             end do
         else
             call utmess('F', 'ALGORITH_97')
-        endif
-    endif
+        end if
+    end if
     call jedema()
     call matfpe(1)
 !

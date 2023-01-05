@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine xmiszl(vecinc, ds_contact, mesh)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -89,7 +89,7 @@ implicit none
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
-    maescx = ds_contact%sdcont_defi(1:16)// '.MAESCX'
+    maescx = ds_contact%sdcont_defi(1:16)//'.MAESCX'
     call jeveuo(maescx, 'L', jmaesx)
     zmesx = cfmmvd('ZMESX')
 !
@@ -97,7 +97,7 @@ implicit none
 !
     call jeveuo(mesh//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    ntmae = cfdisi(ds_contact%sdcont_defi,'NTMAE')
+    ntmae = cfdisi(ds_contact%sdcont_defi, 'NTMAE')
     nbno = 0
 !
 ! --- TABLEAU TEMPORAIRE POUR STOCKER NUMERO NOEUDS ESCLAVES
@@ -116,7 +116,7 @@ implicit none
             end do
             nbno = nbno+1
             vnno(nbno) = numno
- 20         continue
+20          continue
         end do
     end do
 !
@@ -132,11 +132,11 @@ implicit none
 !
 ! --- REDUCTION CHAM_NO_S SUR LAGS_C/LAG_F1/LAG_F2
 !
-    call cnsred(cns1, nbno, vnno, 1, ['LAGS_C'],&
+    call cnsred(cns1, nbno, vnno, 1, ['LAGS_C'], &
                 'V', cns1b)
-    call cnsred(cns1, nbno, vnno, 1, ['LAGS_F1'],&
+    call cnsred(cns1, nbno, vnno, 1, ['LAGS_F1'], &
                 'V', cns1d)
-    call cnsred(cns1, nbno, vnno, 1, ['LAGS_F2'],&
+    call cnsred(cns1, nbno, vnno, 1, ['LAGS_F2'], &
                 'V', cns1e)
     call jeveuo(cns1b//'.CNSV', 'E', vr=vcns1b)
     call jeveuo(cns1d//'.CNSV', 'E', vr=vcns1d)
@@ -165,12 +165,12 @@ implicit none
     lcumul(3) = .false.
     lcumul(4) = .false.
     c16bid = dcmplx(0.d0, 0.d0)
-    call cnsfus(4, lichs, lcumul, lcoefr, [c16bid],&
+    call cnsfus(4, lichs, lcumul, lcoefr, [c16bid], &
                 .false._1, 'V', cns1c)
 !
 ! --- CONSTRUCTION DU CHAM_NO
 !
-    call cnscno(cns1c, prno, 'NON', 'V', vecinc,&
+    call cnscno(cns1c, prno, 'NON', 'V', vecinc, &
                 'F', ibid)
 !
 ! --- MENAGE

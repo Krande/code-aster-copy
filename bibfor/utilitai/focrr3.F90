@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 !
 !     --- RECUPERATION DES NUME_ORDRE FOURNIS PAR L'UTILISATEUR ---
 !
-    call rsutn1(resu, nopara, ' ', 1, knume,&
+    call rsutn1(resu, nopara, ' ', 1, knume, &
                 nbordr)
     call jeveuo(knume, 'L', kordr)
 !
@@ -74,15 +74,15 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
         nomacc = acces(1)
     else
         call utmess('F', 'UTILITAI2_4')
-    endif
+    end if
     call jedetr('&&FOCRR3.VAR.ACCES')
 !
 !     --- CREATION DE LA FONCTION SORTIE ---
 !
 !     --- REMPLISSAGE DU .PROL ---
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
-    zk24(lpro ) = 'FONCTION'
+    zk24(lpro) = 'FONCTION'
     zk24(lpro+1) = 'LIN LIN '
     zk24(lpro+2) = nomacc(1:8)
     zk24(lpro+3) = nopara(1:8)
@@ -91,38 +91,38 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 !
 !
 !   -- calcul du nombre de points de la fonction :
-    nbpt=0
+    nbpt = 0
     do iordr = 1, nbordr
-        call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1),&
+        call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1), &
                     1, sjv=iad2, styp=type, istop=0)
         if (type(1:1) .ne. 'R') call utmess('F', 'UTILITAI2_6')
 !
         if (zr(iad2) .eq. rundf) cycle
-        nbpt=nbpt+1
+        nbpt = nbpt+1
     end do
 !
 !
 !     --- REMPLISSAGE DU .VALE ---
     call wkvect(nomfon//'.VALE', base//' V R', 2*nbpt, lvar)
-    lfon = lvar + nbpt
+    lfon = lvar+nbpt
 !
-    nbpt=0
+    nbpt = 0
     do iordr = 1, nbordr
-        call rsadpa(resu, 'L', 1, nomacc, zi(kordr+iordr-1),&
+        call rsadpa(resu, 'L', 1, nomacc, zi(kordr+iordr-1), &
                     1, sjv=iad1, styp=type)
         if (type(1:1) .ne. 'R') then
             call utmess('F', 'UTILITAI2_5')
-        endif
+        end if
 !
-        call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1),&
+        call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1), &
                     1, sjv=iad2, styp=type, istop=0)
         if (type(1:1) .ne. 'R') then
             call utmess('F', 'UTILITAI2_6')
-        endif
+        end if
 !
         if (zr(iad2) .eq. rundf) cycle
 !
-        nbpt=nbpt+1
+        nbpt = nbpt+1
         zr(lvar+nbpt-1) = zr(iad1)
         zr(lfon+nbpt-1) = zr(iad2)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
-                  modele, lFromResult, chpost, nbcmp, nomcmp,&
+subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
+                  modele, lFromResult, chpost, nbcmp, nomcmp, &
                   nomcp2, nuord, inst, iocc, ligrel, cespoi)
 !
     implicit none
@@ -103,10 +103,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
     integer, pointer :: v_type_cell(:) => null()
 ! -------------------------------------------------------------------------
     call jemarq()
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
     call infniv(ifm, niv)
 !
-    k8b='        '
+    k8b = '        '
 !
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
@@ -120,28 +120,27 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
     if (lFromResult) then
         call wkvect('&&PEECAL.INTE_R', 'V V R', 2*nbcmp+2, jintr)
         call wkvect('&&PEECAL.INTE_K', 'V V K16', 2*nbcmp+5, jintk)
-        zk16(jintk) ='NOM_CHAM'
-        zk16(jintk+1)='NUME_ORDRE'
-        zk16(jintk+2)='INST'
-        zk16(jintk+3)='VOL'
-        zk16(jintk+4)=lieu
-        zr(jintr)=inst
-        valk(1)=nomcha
-        valk(2)=nomlie
+        zk16(jintk) = 'NOM_CHAM'
+        zk16(jintk+1) = 'NUME_ORDRE'
+        zk16(jintk+2) = 'INST'
+        zk16(jintk+3) = 'VOL'
+        zk16(jintk+4) = lieu
+        zr(jintr) = inst
+        valk(1) = nomcha
+        valk(2) = nomlie
         ind1 = 5
         ind2 = 1
     else
         call wkvect('&&PEECAL.INTE_R', 'V V R', 2*nbcmp, jintr)
         call wkvect('&&PEECAL.INTE_K', 'V V K16', 2*nbcmp+3, jintk)
-        zk16(jintk) ='CHAM_GD'
-        zk16(jintk+1)='VOL'
-        zk16(jintk+2)=lieu
-        valk(1)=nomcha
-        valk(2)=nomlie
+        zk16(jintk) = 'CHAM_GD'
+        zk16(jintk+1) = 'VOL'
+        zk16(jintk+2) = lieu
+        valk(1) = nomcha
+        valk(2) = nomlie
         ind1 = 3
         ind2 = 0
-    endif
-
+    end if
 
 !
 ! --- POUR LES CHAM_ELEM / ELEM : MOT CLE DEJA_INTEGRE:
@@ -149,16 +148,16 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
         call getvtx('INTEGRALE', 'DEJA_INTEGRE', iocc=iocc, scal=dejain, nbret=iret)
         if (iret .eq. 0) then
             call utmess('F', 'UTILITAI7_13', sk=valk(1))
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! --- CALCULS DES CHAMPS SIMPLES:
 !      CESOUT: CHAMP ELXX CORRESPONDANT AU CHAMP CHPOST (SIMPLE) PONDERE
 !              PAR LE POIDS*JACOBIEN.
 !      CESPOI: CHAMP ELXX CORRESPONDANT AU POIDS*JACOBIEN
-    cesout='&&PEECAL.CESOUT'
-    call chpond(tych, dejain, chpost, cesout, cespoi, ligrel,k8b)
+    cesout = '&&PEECAL.CESOUT'
+    call chpond(tych, dejain, chpost, cesout, cespoi, ligrel, k8b)
     call jeveuo(cesout//'.CESV', 'L', vr=cesv)
     call jeveuo(cesout//'.CESL', 'L', jcesl)
     call jeveuo(cesout//'.CESD', 'L', jcesd)
@@ -182,28 +181,28 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
         end do
-    endif
+    end if
 !
 !     - INFOS
     if (niv .gt. 1) then
-        write(6,*) '<PEECAL> NOMBRE DE MAILLES A TRAITER : ',nbma
-        write(6,*) '<PEECAL> NOMBRE DE COMPOSANTES : ',ncmpm
-    endif
+        write (6, *) '<PEECAL> NOMBRE DE MAILLES A TRAITER : ', nbma
+        write (6, *) '<PEECAL> NOMBRE DE COMPOSANTES : ', ncmpm
+    end if
 !
 !
-    call jeveuo(modele//'.MAILLE', 'L', vi = v_model_elem)
-    call jeveuo(noma//'.TYPMAIL', 'L', vi = v_type_cell)
+    call jeveuo(modele//'.MAILLE', 'L', vi=v_model_elem)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=v_type_cell)
 ! --- CALCUL DE L'INTEGRALE ET DE LA MOYENNE(=INTEGRALE/VOLUME):
     do icmp = 1, nbcmp
-        nucmp=indik8(zk8(jcmpgd),nomcmp(icmp),1,ncmpm)
-        val=0.d0
-        vol=0.d0
-        ico=0
+        nucmp = indik8(zk8(jcmpgd), nomcmp(icmp), 1, ncmpm)
+        val = 0.d0
+        vol = 0.d0
+        ico = 0
         do ima = 1, nbma
             nume_ma = list_ma(ima)
-            if (repe(2*(nume_ma-1)+1).eq.0) cycle
-            nbpt=zi(jcesd-1+5+4*(nume_ma-1)+1)
-            nbsp=zi(jcesd-1+5+4*(nume_ma-1)+2)
+            if (repe(2*(nume_ma-1)+1) .eq. 0) cycle
+            nbpt = zi(jcesd-1+5+4*(nume_ma-1)+1)
+            nbsp = zi(jcesd-1+5+4*(nume_ma-1)+2)
             l_red = ASTER_FALSE
             if (v_model_elem(nume_ma) .ne. 0) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', v_model_elem(nume_ma)), nomte)
@@ -214,77 +213,77 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
                         type_cell = v_type_cell(nume_ma)
                         call panbno(type_cell, nbnott)
                         ! nbpt = nbpt - nbnott(1)
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
             if (nbsp .gt. 1) then
                 call utmess('F', 'UTILITAI8_60')
-            endif
+            end if
             do ipt = 1, nbpt
-                call cesexi('C', jcesd, jcesl, nume_ma, ipt,&
+                call cesexi('C', jcesd, jcesl, nume_ma, ipt, &
                             1, nucmp, iad)
-                ASSERT(iad.ge.0)
+                ASSERT(iad .ge. 0)
                 if (iad .eq. 0) cycle
 !
-                val=val+cesv(iad)
+                val = val+cesv(iad)
 !
                 if (tych .eq. 'ELGA') then
-                    call cesexi('C', jpoid, jpoil, nume_ma, ipt,&
+                    call cesexi('C', jpoid, jpoil, nume_ma, ipt, &
                                 1, 1, iad)
-                    ASSERT(iad.gt.0)
-                    volpt=poiv(iad)
-                else if (tych.eq.'ELEM') then
-                    ASSERT(nbpt.eq.1)
-                    volpt=pdsm(nume_ma)
-                else if (tych.eq.'ELNO') then
-                    ASSERT(nbpt.ge.1)
-                    volpt=pdsm(nume_ma)/nbpt
-                endif
+                    ASSERT(iad .gt. 0)
+                    volpt = poiv(iad)
+                else if (tych .eq. 'ELEM') then
+                    ASSERT(nbpt .eq. 1)
+                    volpt = pdsm(nume_ma)
+                else if (tych .eq. 'ELNO') then
+                    ASSERT(nbpt .ge. 1)
+                    volpt = pdsm(nume_ma)/nbpt
+                end if
 
                 if (.NOT. l_red) then
-                    vol=vol+volpt
-                else if ((l_red) .AND. (ipt< nbpt - nbnott(1) + 1) ) then
-                    vol=vol+volpt
-                endif
+                    vol = vol+volpt
+                else if ((l_red) .AND. (ipt < nbpt-nbnott(1)+1)) then
+                    vol = vol+volpt
+                end if
 
-                ico=ico+1
+                ico = ico+1
             end do
 
         end do
         if (ico .eq. 0) then
-            valk(3)=nomcmp(icmp)
+            valk(3) = nomcmp(icmp)
             call utmess('F', 'UTILITAI7_12', nk=3, valk=valk)
-        endif
+        end if
 !
 ! --- Sum Value in HPC
-        if(l_pmesh) then
+        if (l_pmesh) then
             call asmpi_comm_vect("MPI_SUM", 'R', scr=vol)
             call asmpi_comm_vect("MPI_SUM", 'R', scr=val)
         end if
 !
-        if (icmp .eq. 1) zr(jintr+icmp+ind2-1)=vol
-        zr(jintr+icmp+ind2)=val
-        zk16(jintk+ind1+icmp-1)='INTE_'//nomcp2(icmp)
-        zr(jintr+nbcmp+icmp+ind2)=val/vol
-        zk16(jintk+ind1+nbcmp+icmp-1)='MOYE_'//nomcp2(icmp)
+        if (icmp .eq. 1) zr(jintr+icmp+ind2-1) = vol
+        zr(jintr+icmp+ind2) = val
+        zk16(jintk+ind1+icmp-1) = 'INTE_'//nomcp2(icmp)
+        zr(jintr+nbcmp+icmp+ind2) = val/vol
+        zk16(jintk+ind1+nbcmp+icmp-1) = 'MOYE_'//nomcp2(icmp)
     end do
 !
 !
 ! --- ON AJOUTE LES PARAMETRES MANQUANTS DANS LA TABLE:
     call tbexip(resu, lieu, exist, k8b)
-    if (.not.exist) then
+    if (.not. exist) then
         call tbajpa(resu, 1, zk16(jintk+ind1-1), 'K16')
-    endif
+    end if
     do icmp = 1, nbcmp*2
         call tbexip(resu, zk16(jintk+ind1+icmp-1), exist, k8b)
-        if (.not.exist) then
+        if (.not. exist) then
             call tbajpa(resu, 1, zk16(jintk+ind1+icmp-1), 'R')
-        endif
+        end if
     end do
 !
 ! --- ON REMPLIT LA TABLE
-    nbpara=ind1+nbcmp*2
-    call tbajli(resu, nbpara, zk16(jintk), [nuord], zr(jintr),&
+    nbpara = ind1+nbcmp*2
+    call tbajli(resu, nbpara, zk16(jintk), [nuord], zr(jintr), &
                 [cbid], valk, 0)
     call detrsd('CHAM_ELEM_S', '&&PEECAL.CESOUT')
     call jedetr('&&PEECAL.INTE_R')

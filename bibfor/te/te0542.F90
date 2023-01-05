@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,12 +59,12 @@ subroutine te0542(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call elref1(elref)
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, singu, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 contac)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -86,9 +86,9 @@ subroutine te0542(option, nomte)
     call jevech('PLST', 'L', jlst)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
-    if ((ibid.eq.0) .and. ltequa(elref,enr))&
-    call jevech('PPMILTO', 'L', jpmilt)
+    if (enr(1:2) .eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
+    if ((ibid .eq. 0) .and. ltequa(elref, enr)) &
+        call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
     if (option .eq. 'FORC_NODA') then
@@ -96,52 +96,52 @@ subroutine te0542(option, nomte)
 ! VECTEUR SECOND MEMBRE DONNE EN ENTREE
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PSTANO', 'L', jstno)
-        if (nfe.gt.0) then
-           call jevech('PMATERC', 'L', imate)
-        endif
+        if (nfe .gt. 0) then
+            call jevech('PMATERC', 'L', imate)
+        end if
 !       CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
-        call xbsig(ndim, nno, nfh, nfe, ddlc,&
-                   ddlm, igeom, zk16( icompo), jpintt, zi(jcnset),&
-                   zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm), nbsig,&
-                   ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt,&
+        call xbsig(ndim, nno, nfh, nfe, ddlc, &
+                   ddlm, igeom, zk16(icompo), jpintt, zi(jcnset), &
+                   zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm), nbsig, &
+                   ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt, &
                    nfiss, jheavn, jstno, imate)
 !
-        call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false._1, lbid,&
-                    option, nomte, ddlm, nfiss, jfisno,&
+        call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                    nno, nnos, zi(jstno), .false._1, lbid, &
+                    option, nomte, ddlm, nfiss, jfisno, &
                     vect=zr(ivectu))
 !
-    else if (option.eq.'REFE_FORC_NODA') then
+    else if (option .eq. 'REFE_FORC_NODA') then
 !
 ! --- ON RECUPERE CONTRAINTE ET SAUT DE DEPLACEMENT DE REFERENCE
 !
         call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref(1))
         call terefe('DEPL_REFE', 'MECA_INTERFACE', depref)
-        if (nfe.gt.0) then
-           call jevech('PSTANO', 'L', jstno)
-        endif
+        if (nfe .gt. 0) then
+            call jevech('PSTANO', 'L', jstno)
+        end if
 !
 ! --- ON COMMENCE PAR CALCULER LES CONTRIBUTIONS VOLUMIQUES
 !
-        call xbsir(ndim, nno, nfh, nfe, ddlc,&
-                   ddlm, igeom, zk16(icompo), jpintt, zi(jcnset),&
-                   zi(jheavt), zi(jlonch), zr(jbaslo), sigref, nbsig,&
-                   ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt,&
+        call xbsir(ndim, nno, nfh, nfe, ddlc, &
+                   ddlm, igeom, zk16(icompo), jpintt, zi(jcnset), &
+                   zi(jheavt), zi(jlonch), zr(jbaslo), sigref, nbsig, &
+                   ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt, &
                    nfiss, jheavn, jstno)
 !
 ! --- SI ELEMENT DE CONTACT, ON Y AJOUTE LES CONTRIBUTIONS SURFACIQUES
 ! --- NOTAMMENT CELLE POUR LES EQUATIONS DUALES
 !
         if (enr .eq. 'XHC' .or. enr .eq. 'XHTC') then
-            call xbsir2(elref, contac, ddlc, ddlm, ddls,&
-                        igeom, jheavn, jlst, ivectu, singu,&
-                        nddl, ndim, nfh, nfiss,&
-                        nno, nnom, nnos, depref, sigref(1),&
+            call xbsir2(elref, contac, ddlc, ddlm, ddls, &
+                        igeom, jheavn, jlst, ivectu, singu, &
+                        nddl, ndim, nfh, nfiss, &
+                        nno, nnom, nnos, depref, sigref(1), &
                         jbaslo, jstno, jlsn)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 !
 end subroutine

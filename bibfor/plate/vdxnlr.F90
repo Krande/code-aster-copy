@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdxnlr(option, nomte, xi, rig, nb1,&
+subroutine vdxnlr(option, nomte, xi, rig, nb1, &
                   codret)
 !
-use Behaviour_type
-use Behaviour_module, only : behaviourOption, behaviourInit
+    use Behaviour_type
+    use Behaviour_module, only: behaviourOption, behaviourInit
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -74,15 +74,15 @@ implicit none
     real(kind=8) :: ktild(42, 42), rig(51, 51)
     real(kind=8) :: ctor, epais, kappa
     integer, parameter :: nbv = 2
-    character(len=16), parameter :: nomres (nbv) = (/'E ','NU'/)
-    integer :: valret (nbv)
-    real(kind=8) :: valres (nbv)
+    character(len=16), parameter :: nomres(nbv) = (/'E ', 'NU'/)
+    integer :: valret(nbv)
+    real(kind=8) :: valres(nbv)
     real(kind=8) :: rotfcm(9), rotfcp(9)
     real(kind=8) :: deplm(42), deplp(42)
     real(kind=8) :: epsi(5), depsi(5), eps2d(4), deps2d(4)
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3)
-    real(kind=8) :: matc(5,5),valpar
+    real(kind=8) :: matc(5, 5), valpar
     type(Behaviour_Integ) :: BEHinteg
     integer :: i, ib, icarcr, icompo, icontm, icontp, icou
     integer :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn
@@ -91,7 +91,7 @@ implicit none
     integer :: lzi, lzr, nbcou, nbvari, nddlet, ndimv
     real(kind=8) :: cisail, coef, crf, gxz, gyz, hic, rac2
     real(kind=8) :: x(1), zic, zmin
-    parameter (npge=3)
+    parameter(npge=3)
     real(kind=8) :: ksi3s2
     aster_logical :: lVect, lMatr, lVari, lSigm
 !
@@ -112,7 +112,7 @@ implicit none
     npgsr = zi(lzi-1+3)
     npgsn = zi(lzi-1+4)
 !
-    nddle = 5*nb1 + 2
+    nddle = 5*nb1+2
     ktild = 0.d0
     effint = 0.d0
 !
@@ -137,22 +137,22 @@ implicit none
         lgpg = itab(7)
     else
         lgpg = itab(6)*itab(7)
-    endif
-    nbcou=zi(jnbspi-1+1)
+    end if
+    nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
         call utmess('F', 'PLATE1_10')
-    endif
+    end if
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
 !
-    read (zk16(icompo-1+NVAR),'(I16)') nbvari
+    read (zk16(icompo-1+NVAR), '(I16)') nbvari
 
     epais = zr(jcara)
     kappa = zr(jcara+3)
@@ -167,36 +167,36 @@ implicit none
         crf = zr(jcrf)
     else
         call jevech('PCACO3D', 'E', jcrf)
-    endif
+    end if
     ivarip = ivarim
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
 !
-    ndimv=lgpg*npgsn
+    ndimv = lgpg*npgsn
     call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
 !
-    call vectan(nb1, nb2, xi, zr(lzr), vecta,&
+    call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
 !
     call rccoma(zi(imate), 'ELAS', 1, elasKeyword, valret(1))
-    if (elasKeyword .ne. 'ELAS' .and. elasKeyword.ne.'ELAS_ORTH') then
+    if (elasKeyword .ne. 'ELAS' .and. elasKeyword .ne. 'ELAS_ORTH') then
         call utmess('F', 'PLATE1_12', sk=elasKeyword)
-    endif
+    end if
 !
 !===============================================================
 !     CALCULS DES 2 DDL INTERNES
 !
-    call trndgl(nb2, vectn, vectpt, zr(ideplm), deplm,&
+    call trndgl(nb2, vectn, vectpt, zr(ideplm), deplm, &
                 rotfcm)
 !
-    call trndgl(nb2, vectn, vectpt, zr(ideplp), deplp,&
+    call trndgl(nb2, vectn, vectpt, zr(ideplp), deplp, &
                 rotfcp)
 !
     kwgt = 0
@@ -204,29 +204,29 @@ implicit none
     do icou = 1, nbcou
         do inte = 1, npge
             if (inte .eq. 1) then
-                zic = zmin + (icou-1)*hic
+                zic = zmin+(icou-1)*hic
                 coef = 1.d0/3.d0
-            else if (inte.eq.2) then
-                zic = zmin + hic/2.d0 + (icou-1)*hic
+            else if (inte .eq. 2) then
+                zic = zmin+hic/2.d0+(icou-1)*hic
                 coef = 4.d0/3.d0
             else
-                zic = zmin + hic + (icou-1)*hic
+                zic = zmin+hic+(icou-1)*hic
                 coef = 1.d0/3.d0
-            endif
+            end if
             ksi3s2 = zic/hic
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
             do intsr = 1, npgsr
-                call mahsms(0, nb1, xi, ksi3s2, intsr,&
-                            zr(lzr), hic, vectn, vectg, vectt,&
+                call mahsms(0, nb1, xi, ksi3s2, intsr, &
+                            zr(lzr), hic, vectn, vectg, vectt, &
                             hsfm, hss)
 !
-                call hsj1ms(hic, vectg, vectt, hsfm, hss,&
+                call hsj1ms(hic, vectg, vectt, hsfm, hss, &
                             hsj1m, hsj1s)
 !
-                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
-                            hic, vectpt, hsj1m, hsj1s, btdm,&
+                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
+                            hic, vectpt, hsj1m, hsj1s, btdm, &
                             btds)
             end do
 !
@@ -236,49 +236,49 @@ implicit none
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
 !                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
 !
-                call mahsf(1, nb1, xi, ksi3s2, intsn,&
-                           zr(lzr), hic, vectn, vectg, vectt,&
+                call mahsf(1, nb1, xi, ksi3s2, intsn, &
+                           zr(lzr), hic, vectn, vectg, vectt, &
                            hsf)
 !
-                call hsj1f(intsn, zr(lzr), hic, vectg, vectt,&
+                call hsj1f(intsn, zr(lzr), hic, vectg, vectt, &
                            hsf, kwgt, hsj1fx, wgt)
 !
 !     PRODUIT DU POIDS DES PTS DE GAUSS DANS L'EPAISSEUR ET DE WGT
 !
                 wgt = coef*wgt
 !
-                call btdfn(1, nb1, nb2, ksi3s2, intsn,&
+                call btdfn(1, nb1, nb2, ksi3s2, intsn, &
                            zr(lzr), hic, vectpt, hsj1fx, btdf)
 !
 !     CALCUL DE BTDMN, BTDSN
 !     ET
 !     FORMATION DE BTILD
 !
-                call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
+                call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
                             btdm, btdf, btds, btild)
 !
 !     CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
 !     EPSXX, EPSYY, EPSXY, EPSXZ, EPSYZ (CE SONT LES COMPOSANTES TILDE)
-                kpgs = kpgs + 1
-                call epseff('DEFORM', nb1, deplm, btild, x,&
+                kpgs = kpgs+1
+                call epseff('DEFORM', nb1, deplm, btild, x, &
                             epsi, wgt, x)
                 eps2d(1) = epsi(1)
                 eps2d(2) = epsi(2)
                 eps2d(3) = 0.d0
                 eps2d(4) = epsi(3)/rac2
 !
-                call epseff('DEFORM', nb1, deplp, btild, x,&
+                call epseff('DEFORM', nb1, deplp, btild, x, &
                             depsi, wgt, x)
                 deps2d(1) = depsi(1)
                 deps2d(2) = depsi(2)
                 deps2d(3) = 0.d0
                 deps2d(4) = depsi(3)/rac2
 !
-                gxz = epsi(4) + depsi(4)
-                gyz = epsi(5) + depsi(5)
+                gxz = epsi(4)+depsi(4)
+                gyz = epsi(5)+depsi(5)
 !
-                k1=6*((intsn-1)*npge*nbcou + (icou-1)*npge +inte - 1)
-                k2 = lgpg* (intsn-1) + (npge* (icou-1)+inte-1)*nbvari
+                k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
+                k2 = lgpg*(intsn-1)+(npge*(icou-1)+inte-1)*nbvari
                 do i = 1, 3
                     sign(i) = zr(icontm-1+k1+i)
                 end do
@@ -291,151 +291,151 @@ implicit none
 !
 ! -    APPEL A LA LOI DE COMPORTEMENT
 !
-                ksp= (icou-1)*npge + inte
-                cisail=0.d0
+                ksp = (icou-1)*npge+inte
+                cisail = 0.d0
 
-                if (elasKeyword.eq.'ELAS') then
+                if (elasKeyword .eq. 'ELAS') then
                     sigma = 0.d0
-                    call nmcomp(BEHinteg,&
-                                'MASS', intsn, ksp, 2, typmod,&
-                                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp),&
-                                4, eps2d, deps2d, 4, sign,&
+                    call nmcomp(BEHinteg, &
+                                'MASS', intsn, ksp, 2, typmod, &
+                                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                                4, eps2d, deps2d, 4, sign, &
                                 zr(ivarim+k2), option, angmas, &
                                 sigma, zr(ivarip+k2), 36, dsidep, cod)
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
                     if (cod .ne. 0) then
                         if (codret .ne. 1) then
-                            codret=cod
-                        endif
+                            codret = cod
+                        end if
                         if (cod .eq. 1) goto 999
-                    endif
+                    end if
 !
-                    call rcvalb('MASS', intsn, ksp, '+', zi(imate),&
-                                ' ', elasKeyword, 0, ' ', [0.d0],&
+                    call rcvalb('MASS', intsn, ksp, '+', zi(imate), &
+                                ' ', elasKeyword, 0, ' ', [0.d0], &
                                 nbv, nomres, valres, valret, 1)
 !
-                    cisail = valres(1)/ (1.d0+valres(2))
+                    cisail = valres(1)/(1.d0+valres(2))
 !
-                else if (elasKeyword.eq.'ELAS_ORTH') then
-                    call moytpg('RIGI', intsn, 3, '+', valpar,&
+                else if (elasKeyword .eq. 'ELAS_ORTH') then
+                    call moytpg('RIGI', intsn, 3, '+', valpar, &
                                 iret)
                     call matrc2(1, 'TEMP    ', [valpar], kappa, matc, vectt)
-                endif
+                end if
 !
 !    CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
                 if (lMatr) then
                     if (elasKeyword .eq. 'ELAS') then
-                        dtild(1,1) = dsidep(1,1)
-                        dtild(1,2) = dsidep(1,2)
-                        dtild(1,3) = dsidep(1,4)/rac2
-                        dtild(1,4) = 0.d0
-                        dtild(1,5) = 0.d0
-                        dtild(2,1) = dsidep(2,1)
-                        dtild(2,2) = dsidep(2,2)
-                        dtild(2,3) = dsidep(2,4)/rac2
-                        dtild(2,4) = 0.d0
-                        dtild(2,5) = 0.d0
-                        dtild(3,1) = dsidep(4,1)/rac2
-                        dtild(3,2) = dsidep(4,2)/rac2
-                        dtild(3,3) = dsidep(4,4)/2.d0
-                        dtild(3,4) = 0.d0
-                        dtild(3,5) = 0.d0
-                        dtild(4,1) = 0.d0
-                        dtild(4,2) = 0.d0
-                        dtild(4,3) = 0.d0
-                        dtild(4,4) = cisail*kappa/2.d0
-                        dtild(4,5) = 0.d0
-                        dtild(5,1) = 0.d0
-                        dtild(5,2) = 0.d0
-                        dtild(5,3) = 0.d0
-                        dtild(5,4) = 0.d0
-                        dtild(5,5) = cisail*kappa/2.d0
-                    else if (elasKeyword.eq.'ELAS_ORTH') then
-                        dtild(1,1) = matc(1,1)
-                        dtild(1,2) = matc(1,2)
-                        dtild(1,3) = matc(1,3)
-                        dtild(1,4) = 0.d0
-                        dtild(1,5) = 0.d0
-                        dtild(2,1) = matc(2,1)
-                        dtild(2,2) = matc(2,2)
-                        dtild(2,3) = matc(2,3)
-                        dtild(2,4) = 0.d0
-                        dtild(2,5) = 0.d0
-                        dtild(3,1) = matc(3,1)
-                        dtild(3,2) = matc(3,2)
-                        dtild(3,3) = matc(3,3)
-                        dtild(3,4) = 0.d0
-                        dtild(3,5) = 0.d0
-                        dtild(4,1) = 0.d0
-                        dtild(4,2) = 0.d0
-                        dtild(4,3) = 0.d0
-                        dtild(4,4) = matc(4,4)
-                        dtild(4,5) = matc(4,5)
-                        dtild(5,1) = 0.d0
-                        dtild(5,2) = 0.d0
-                        dtild(5,3) = 0.d0
-                        dtild(5,4) = matc(5,4)
-                        dtild(5,5) = matc(5,5)
+                        dtild(1, 1) = dsidep(1, 1)
+                        dtild(1, 2) = dsidep(1, 2)
+                        dtild(1, 3) = dsidep(1, 4)/rac2
+                        dtild(1, 4) = 0.d0
+                        dtild(1, 5) = 0.d0
+                        dtild(2, 1) = dsidep(2, 1)
+                        dtild(2, 2) = dsidep(2, 2)
+                        dtild(2, 3) = dsidep(2, 4)/rac2
+                        dtild(2, 4) = 0.d0
+                        dtild(2, 5) = 0.d0
+                        dtild(3, 1) = dsidep(4, 1)/rac2
+                        dtild(3, 2) = dsidep(4, 2)/rac2
+                        dtild(3, 3) = dsidep(4, 4)/2.d0
+                        dtild(3, 4) = 0.d0
+                        dtild(3, 5) = 0.d0
+                        dtild(4, 1) = 0.d0
+                        dtild(4, 2) = 0.d0
+                        dtild(4, 3) = 0.d0
+                        dtild(4, 4) = cisail*kappa/2.d0
+                        dtild(4, 5) = 0.d0
+                        dtild(5, 1) = 0.d0
+                        dtild(5, 2) = 0.d0
+                        dtild(5, 3) = 0.d0
+                        dtild(5, 4) = 0.d0
+                        dtild(5, 5) = cisail*kappa/2.d0
+                    else if (elasKeyword .eq. 'ELAS_ORTH') then
+                        dtild(1, 1) = matc(1, 1)
+                        dtild(1, 2) = matc(1, 2)
+                        dtild(1, 3) = matc(1, 3)
+                        dtild(1, 4) = 0.d0
+                        dtild(1, 5) = 0.d0
+                        dtild(2, 1) = matc(2, 1)
+                        dtild(2, 2) = matc(2, 2)
+                        dtild(2, 3) = matc(2, 3)
+                        dtild(2, 4) = 0.d0
+                        dtild(2, 5) = 0.d0
+                        dtild(3, 1) = matc(3, 1)
+                        dtild(3, 2) = matc(3, 2)
+                        dtild(3, 3) = matc(3, 3)
+                        dtild(3, 4) = 0.d0
+                        dtild(3, 5) = 0.d0
+                        dtild(4, 1) = 0.d0
+                        dtild(4, 2) = 0.d0
+                        dtild(4, 3) = 0.d0
+                        dtild(4, 4) = matc(4, 4)
+                        dtild(4, 5) = matc(4, 5)
+                        dtild(5, 1) = 0.d0
+                        dtild(5, 2) = 0.d0
+                        dtild(5, 3) = 0.d0
+                        dtild(5, 4) = matc(5, 4)
+                        dtild(5, 5) = matc(5, 5)
                     else
                         ASSERT(ASTER_FALSE)
-                    endif
+                    end if
 
                     call dscal(25, wgt, dtild, 1)
 !
-                    call btkb(5, 42, nddle, dtild, btild,&
+                    call btkb(5, 42, nddle, dtild, btild, &
                               wmatcb, ktildi)
 !
                     do i = 1, nddle
                         do j = 1, nddle
-                            ktild(i,j) = ktild(i,j) + ktildi(i,j)
+                            ktild(i, j) = ktild(i, j)+ktildi(i, j)
                         end do
                     end do
-                endif
+                end if
 !
                 if (lSigm) then
                     ASSERT(lVect)
                     if (elasKeyword .eq. 'ELAS') then
-                       do i = 1, 3
-                          zr(icontp-1+k1+i) = sigma(i)
-                       end do
-                       zr(icontp-1+k1+4) = sigma(4)/rac2
-                       zr(icontp-1+k1+5) = cisail*kappa*gxz/2.d0
-                       zr(icontp-1+k1+6) = cisail*kappa*gyz/2.d0
+                        do i = 1, 3
+                            zr(icontp-1+k1+i) = sigma(i)
+                        end do
+                        zr(icontp-1+k1+4) = sigma(4)/rac2
+                        zr(icontp-1+k1+5) = cisail*kappa*gxz/2.d0
+                        zr(icontp-1+k1+6) = cisail*kappa*gyz/2.d0
 !
 !    CALCULS DES EFFORTS INTERIEURS
-                       sgmtd(1) = zr(icontp-1+k1+1)
-                       sgmtd(2) = zr(icontp-1+k1+2)
-                       sgmtd(3) = zr(icontp-1+k1+4)
-                       sgmtd(4) = cisail*kappa*gxz/2.d0
-                       sgmtd(5) = cisail*kappa*gyz/2.d0
+                        sgmtd(1) = zr(icontp-1+k1+1)
+                        sgmtd(2) = zr(icontp-1+k1+2)
+                        sgmtd(3) = zr(icontp-1+k1+4)
+                        sgmtd(4) = cisail*kappa*gxz/2.d0
+                        sgmtd(5) = cisail*kappa*gyz/2.d0
 !
-                    else if (elasKeyword.eq.'ELAS_ORTH') then
-                       zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1,1) + &
-                                           (epsi(2)+depsi(2))*matc(1,2) + &
-                                           (epsi(3)+depsi(3))*matc(1,3)
-                       zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matc(2,1) + &
-                                           (epsi(2)+depsi(2))*matc(2,2) + &
-                                           (epsi(3)+depsi(3))*matc(2,3)
-                       zr(icontp-1+k1+3) = 0.d0
-                       zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matc(3,1) + &
-                                           (epsi(2)+depsi(2))*matc(3,2) + &
-                                           (epsi(3)+depsi(3))*matc(3,3)
-                       zr(icontp-1+k1+5) = matc(4,4)*gxz+matc(4,5)*gyz
-                       zr(icontp-1+k1+6) = matc(5,4)*gxz+matc(5,5)*gyz
+                    else if (elasKeyword .eq. 'ELAS_ORTH') then
+                        zr(icontp-1+k1+1) = (epsi(1)+depsi(1))*matc(1, 1)+ &
+                                            (epsi(2)+depsi(2))*matc(1, 2)+ &
+                                            (epsi(3)+depsi(3))*matc(1, 3)
+                        zr(icontp-1+k1+2) = (epsi(1)+depsi(1))*matc(2, 1)+ &
+                                            (epsi(2)+depsi(2))*matc(2, 2)+ &
+                                            (epsi(3)+depsi(3))*matc(2, 3)
+                        zr(icontp-1+k1+3) = 0.d0
+                        zr(icontp-1+k1+4) = (epsi(1)+depsi(1))*matc(3, 1)+ &
+                                            (epsi(2)+depsi(2))*matc(3, 2)+ &
+                                            (epsi(3)+depsi(3))*matc(3, 3)
+                        zr(icontp-1+k1+5) = matc(4, 4)*gxz+matc(4, 5)*gyz
+                        zr(icontp-1+k1+6) = matc(5, 4)*gxz+matc(5, 5)*gyz
 !
 !    CALCULS DES EFFORTS INTERIEURS
-                       sgmtd(1) = zr(icontp-1+k1+1)
-                       sgmtd(2) = zr(icontp-1+k1+2)
-                       sgmtd(3) = zr(icontp-1+k1+4)
-                       sgmtd(4) = dtild(4,4)*gxz
-                       sgmtd(5) = dtild(5,5)*gyz
-                    endif
+                        sgmtd(1) = zr(icontp-1+k1+1)
+                        sgmtd(2) = zr(icontp-1+k1+2)
+                        sgmtd(3) = zr(icontp-1+k1+4)
+                        sgmtd(4) = dtild(4, 4)*gxz
+                        sgmtd(5) = dtild(5, 5)*gyz
+                    end if
 
-                    call epseff('EFFORI', nb1, x, btild, sgmtd,&
+                    call epseff('EFFORI', nb1, x, btild, sgmtd, &
                                 x, wgt, effint)
 !
-                endif
+                end if
 !
             end do
         end do
@@ -445,8 +445,8 @@ implicit none
 !
 !     EXPANSION DE LA MATRICE : AJOUTER DE LA ROTATION FICTIVE
 !
-        nddlet = 6*nb1 + 3
-        call matrkb(nb1, 42, 51, nddlet, ktild,&
+        nddlet = 6*nb1+3
+        call matrkb(nb1, 42, 51, nddlet, ktild, &
                     ctor, rig, crf)
         zr(jcrf) = crf
 !
@@ -454,7 +454,7 @@ implicit none
 !     LES 3 TERMES DE RAIDEUR (FICTIVE) ASSOCIEES ONT POUR VALEUR CELLE
 !     DES ROTATION FICTIVE
 !
-    endif
+    end if
 !
     if (lVect) then
 !
@@ -470,24 +470,24 @@ implicit none
 !     CONTRIBUTION DES DDL DE LA ROTATION FICTIVE DANS EFFINT
 !
         do i = 1, nb1
-            vecll(6*i) = crf* (rotfcm(i)+rotfcp(i))
+            vecll(6*i) = crf*(rotfcm(i)+rotfcp(i))
         end do
         i = nb2
-        vecll(6*nb1+3) = crf* (rotfcm(nb2)+rotfcp(nb2))
+        vecll(6*nb1+3) = crf*(rotfcm(nb2)+rotfcp(nb2))
 !     TRANFORMATION DANS REPERE GLOBAL PUIS STOCKAGE
         do ib = 1, nb2
             do i = 1, 2
                 do j = 1, 3
-                    vecpt(ib,i,j) = vectpt(ib,i,j)
+                    vecpt(ib, i, j) = vectpt(ib, i, j)
                 end do
             end do
-            vecpt(ib,3,1) = vectn(ib,1)
-            vecpt(ib,3,2) = vectn(ib,2)
-            vecpt(ib,3,3) = vectn(ib,3)
+            vecpt(ib, 3, 1) = vectn(ib, 1)
+            vecpt(ib, 3, 2) = vectn(ib, 2)
+            vecpt(ib, 3, 3) = vectn(ib, 3)
         end do
 !
         call trnflg(nb2, vecpt, vecll, zr(ivectu))
-    endif
+    end if
 !
 999 continue
 end subroutine

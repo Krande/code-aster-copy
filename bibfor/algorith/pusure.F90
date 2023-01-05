@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pusure(nbpt, fn, vt1, vt2, iadh,&
+subroutine pusure(nbpt, fn, vt1, vt2, iadh, &
                   t, pusee)
 !
 !       CALCUL DE LA PUISSANCE D USURE (LOI D ARCHARD)
@@ -30,16 +30,16 @@ subroutine pusure(nbpt, fn, vt1, vt2, iadh,&
 !-----------------------------------------------------------------------
     integer :: i, nbpt
 !-----------------------------------------------------------------------
-    pusee=0.00d00
+    pusee = 0.00d00
 !
     do i = 1, nbpt-1
         if (iadh(i) .eq. 0) then
-            pusee=pusee+ (abs(fn(i+1)*sqrt(vt1(i+1)**2+vt2(i+1)**2))+&
-            abs(fn(i)*sqrt(vt1(i)**2+vt2(i)**2)))*(t(i+1)-t(i))
-        endif
+            pusee = pusee+(abs(fn(i+1)*sqrt(vt1(i+1)**2+vt2(i+1)**2))+ &
+                           abs(fn(i)*sqrt(vt1(i)**2+vt2(i)**2)))*(t(i+1)-t(i))
+        end if
     end do
 !
-    pusee = pusee / 2.d0
-    pusee=pusee/(t(nbpt)-t(1))
+    pusee = pusee/2.d0
+    pusee = pusee/(t(nbpt)-t(1))
 !
 end subroutine

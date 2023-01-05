@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,11 +91,11 @@ subroutine ar_dlartg(f, g, cs, sn, r)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: zero
-    parameter          ( zero = 0.0d0 )
+    parameter(zero=0.0d0)
     real(kind=8) :: one
-    parameter          ( one = 1.0d0 )
+    parameter(one=1.0d0)
     real(kind=8) :: two
-    parameter          ( two = 2.0d0 )
+    parameter(two=2.0d0)
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: first
@@ -105,10 +105,10 @@ subroutine ar_dlartg(f, g, cs, sn, r)
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
 !     .. SAVE STATEMENT ..
-    save               first, safmx2, safmin, safmn2
+    save first, safmx2, safmin, safmn2
 !     ..
 !     .. DATA STATEMENTS ..
-    data               first / .true. /
+    data first/.true./
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
@@ -117,60 +117,60 @@ subroutine ar_dlartg(f, g, cs, sn, r)
         safmin = r8miem()
         eps = r8prem()*0.5d0
         base = dble(isbaem())
-        safmn2 = base**int( log( safmin / eps ) / log( base ) / two )
-        safmx2 = one / safmn2
-    endif
+        safmn2 = base**int(log(safmin/eps)/log(base)/two)
+        safmx2 = one/safmn2
+    end if
     if (g .eq. zero) then
         cs = one
         sn = zero
         r = f
-    else if (f.eq.zero) then
+    else if (f .eq. zero) then
         cs = zero
         sn = one
         r = g
     else
         f1 = f
         g1 = g
-        scale = max( abs( f1 ), abs( g1 ) )
+        scale = max(abs(f1), abs(g1))
         if (scale .ge. safmx2) then
             count = 0
- 10         continue
-            count = count + 1
+10          continue
+            count = count+1
             f1 = f1*safmn2
             g1 = g1*safmn2
-            scale = max( abs( f1 ), abs( g1 ) )
+            scale = max(abs(f1), abs(g1))
             if (scale .ge. safmx2) goto 10
-            r = sqrt( f1**2+g1**2 )
-            cs = f1 / r
-            sn = g1 / r
+            r = sqrt(f1**2+g1**2)
+            cs = f1/r
+            sn = g1/r
             do i = 1, count
                 r = r*safmx2
             end do
-        else if (scale.le.safmn2) then
+        else if (scale .le. safmn2) then
             count = 0
- 30         continue
-            count = count + 1
+30          continue
+            count = count+1
             f1 = f1*safmx2
             g1 = g1*safmx2
-            scale = max( abs( f1 ), abs( g1 ) )
+            scale = max(abs(f1), abs(g1))
             if (scale .le. safmn2) goto 30
-            r = sqrt( f1**2+g1**2 )
-            cs = f1 / r
-            sn = g1 / r
+            r = sqrt(f1**2+g1**2)
+            cs = f1/r
+            sn = g1/r
             do i = 1, count
                 r = r*safmn2
             end do
         else
-            r = sqrt( f1**2+g1**2 )
-            cs = f1 / r
-            sn = g1 / r
-        endif
-        if (abs( f ) .gt. abs( g ) .and. cs .lt. zero) then
+            r = sqrt(f1**2+g1**2)
+            cs = f1/r
+            sn = g1/r
+        end if
+        if (abs(f) .gt. abs(g) .and. cs .lt. zero) then
             cs = -cs
             sn = -sn
             r = -r
-        endif
-    endif
+        end if
+    end if
 !
 !     END OF DLARTG
 !

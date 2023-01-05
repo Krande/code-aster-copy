@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine calcCalcTher(nb_option    , list_option   ,&
-                        list_load    , model         , mate        , mateco, cara_elem,&
-                        time_curr    , time,&
-                        temp_prev    , incr_temp     , compor_ther , temp_curr,&
-                        ve_charther  , me_mtanther   , ve_dirichlet,&
-                        ve_evolther_l, ve_evolther_nl, ve_resither ,&
-                        nb_obje_maxi , obje_name     , obje_sdname , nb_obje)
+subroutine calcCalcTher(nb_option, list_option, &
+                        list_load, model, mate, mateco, cara_elem, &
+                        time_curr, time, &
+                        temp_prev, incr_temp, compor_ther, temp_curr, &
+                        ve_charther, me_mtanther, ve_dirichlet, &
+                        ve_evolther_l, ve_evolther_nl, ve_resither, &
+                        nb_obje_maxi, obje_name, obje_sdname, nb_obje)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/knindi.h"
@@ -39,23 +39,23 @@ implicit none
 #include "asterfort/vethbt.h"
 #include "asterfort/nmvcle.h"
 !
-integer, intent(in) :: nb_option
-character(len=16), intent(in) :: list_option(:)
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: model, mate, mateco, cara_elem
-real(kind=8), intent(in) :: time_curr
-character(len=24), intent(in) :: time
-character(len=*), intent(in) :: temp_prev, incr_temp, temp_curr
-character(len=24), intent(in) :: compor_ther
-character(len=24), intent(in) :: ve_charther
-character(len=24), intent(inout) :: me_mtanther
-character(len=24), intent(in) :: ve_evolther_l, ve_evolther_nl
-character(len=*), intent(in) :: ve_dirichlet
-character(len=24), intent(inout) :: ve_resither
-integer, intent(in) :: nb_obje_maxi
-character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
-character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
-integer, intent(out) ::  nb_obje
+    integer, intent(in) :: nb_option
+    character(len=16), intent(in) :: list_option(:)
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: model, mate, mateco, cara_elem
+    real(kind=8), intent(in) :: time_curr
+    character(len=24), intent(in) :: time
+    character(len=*), intent(in) :: temp_prev, incr_temp, temp_curr
+    character(len=24), intent(in) :: compor_ther
+    character(len=24), intent(in) :: ve_charther
+    character(len=24), intent(inout) :: me_mtanther
+    character(len=24), intent(in) :: ve_evolther_l, ve_evolther_nl
+    character(len=*), intent(in) :: ve_dirichlet
+    character(len=24), intent(inout) :: ve_resither
+    integer, intent(in) :: nb_obje_maxi
+    character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
+    character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
+    integer, intent(out) ::  nb_obje
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,13 +90,13 @@ integer, intent(out) ::  nb_obje
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_char_ther , l_mtan_ther, l_char_evol, l_resi_ther, l_lagr
+    aster_logical :: l_char_ther, l_mtan_ther, l_char_evol, l_resi_ther, l_lagr
     character(len=24) :: lload_name, lload_info, varc_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lload_name  = list_load(1:19)//'.LCHA'
-    lload_info  = list_load(1:19)//'.INFC'
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
 !
 ! - Prepare command variables
 !
@@ -105,87 +105,87 @@ integer, intent(out) ::  nb_obje
 !
 ! - What we are computing
 !
-    l_char_ther = (knindi(16, 'CHAR_THER_ELEM' ,list_option, nb_option) .gt. 0)
-    l_mtan_ther = (knindi(16, 'MATR_TANG_ELEM', list_option ,nb_option) .gt. 0)
+    l_char_ther = (knindi(16, 'CHAR_THER_ELEM', list_option, nb_option) .gt. 0)
+    l_mtan_ther = (knindi(16, 'MATR_TANG_ELEM', list_option, nb_option) .gt. 0)
     l_char_evol = (knindi(16, 'CHAR_EVOL_ELEM', list_option, nb_option) .gt. 0)
     l_resi_ther = (knindi(16, 'RESI_THER_ELEM', list_option, nb_option) .gt. 0)
-    l_lagr      = l_mtan_ther
+    l_lagr = l_mtan_ther
 !
 ! - Loads
 !
     if (l_char_ther) then
-        call vechnl(model    , lload_name , lload_info, time,&
+        call vechnl(model, lload_name, lload_info, time, &
                     temp_prev, ve_charther, 'G')
-    endif
+    end if
 !
 ! - Physical dof computation
 !
     if (l_mtan_ther) then
-        call merxth(model      , lload_name, lload_info , cara_elem  , mate     , mateco, &
-                    time_curr  , time      , temp_curr  , compor_ther, varc_curr,&
+        call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
+                    time_curr, time, temp_curr, compor_ther, varc_curr, &
                     me_mtanther, 'G')
-    endif
+    end if
 !
 ! - Lagrange dof computation
 !
     if (l_lagr) then
         call medith('G', 'CUMU', model, list_load, me_mtanther)
-        call vethbt(model    , lload_name, lload_info, cara_elem, mate,&
+        call vethbt(model, lload_name, lload_info, cara_elem, mate, &
                     temp_curr, ve_dirichlet, 'G')
-    endif
+    end if
 !
 ! - Loads
 !
     if (l_char_evol) then
-        call vetnth_nonl(model        , cara_elem     , mate, mateco, time  , compor_ther,&
-                         temp_prev    , varc_curr     , &
+        call vetnth_nonl(model, cara_elem, mate, mateco, time, compor_ther, &
+                         temp_prev, varc_curr, &
                          ve_evolther_l, ve_evolther_nl, 'G')
-    endif
+    end if
 !
 ! - Residuals
 !
     if (l_resi_ther) then
-        call verstp(model    , lload_name,  lload_info, cara_elem, mateco   ,&
-                    time_curr, time      , compor_ther, temp_prev, incr_temp,&
+        call verstp(model, lload_name, lload_info, cara_elem, mateco, &
+                    time_curr, time, compor_ther, temp_prev, incr_temp, &
                     varc_curr, ve_resither, 'G')
-    endif
+    end if
 !
 ! - New objects in table
 !
     nb_obje = 0
     if (l_lagr) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'FORC_DIRI_ELEM'
         obje_sdname(nb_obje) = ve_dirichlet
-    endif
+    end if
     if (l_char_ther) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'CHAR_THER_ELEM'
         obje_sdname(nb_obje) = ve_charther
-    endif
+    end if
     if (l_mtan_ther) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'MATR_TANG_ELEM'
         obje_sdname(nb_obje) = me_mtanther
-    endif
+    end if
     if (l_char_evol) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'CHAR_EVOL_ELEM'
         obje_sdname(nb_obje) = ve_evolther_l
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'CHAR_EVNL_ELEM'
         obje_sdname(nb_obje) = ve_evolther_nl
-    endif
+    end if
     if (l_resi_ther) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'RESI_THER_ELEM'
         obje_sdname(nb_obje) = ve_resither
-    endif
+    end if
 !
 end subroutine

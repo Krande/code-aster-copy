@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dflldc(keywf       , i_fail       , dtmin     , event_typek,&
-                  subd_methode, subd_pas_mini,&
-                  subd_niveau , subd_pas     ,&
-                  subd_auto   , subd_inst    , subd_duree)
+subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
+                  subd_methode, subd_pas_mini, &
+                  subd_niveau, subd_pas, &
+                  subd_auto, subd_inst, subd_duree)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -31,17 +31,17 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: keywf
-integer, intent(in) :: i_fail
-real(kind=8), intent(in) :: dtmin
-character(len=16), intent(in) :: event_typek
-character(len=16), intent(out) :: subd_methode
-real(kind=8), intent(out) :: subd_pas_mini
-integer, intent(out) :: subd_niveau
-integer, intent(out) :: subd_pas
-character(len=16), intent(out) :: subd_auto
-real(kind=8), intent(out) :: subd_inst
-real(kind=8), intent(out) :: subd_duree
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_fail
+    real(kind=8), intent(in) :: dtmin
+    character(len=16), intent(in) :: event_typek
+    character(len=16), intent(out) :: subd_methode
+    real(kind=8), intent(out) :: subd_pas_mini
+    integer, intent(out) :: subd_niveau
+    integer, intent(out) :: subd_pas
+    character(len=16), intent(out) :: subd_auto
+    real(kind=8), intent(out) :: subd_inst
+    real(kind=8), intent(out) :: subd_duree
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,13 +69,13 @@ real(kind=8), intent(out) :: subd_duree
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    subd_methode  = ' '
-    subd_auto     = ' '
-    subd_niveau   = 0
-    subd_pas      = 0
+    subd_methode = ' '
+    subd_auto = ' '
+    subd_niveau = 0
+    subd_pas = 0
     subd_pas_mini = 0.d0
-    subd_inst     = 0.d0
-    subd_duree    = 0.d0
+    subd_inst = 0.d0
+    subd_duree = 0.d0
 !
 ! - Type of step cut
 !
@@ -83,11 +83,11 @@ real(kind=8), intent(out) :: subd_duree
 !
 ! - Get parameters
 !
-    call getvr8(keywf, 'SUBD_PAS_MINI', iocc=i_fail, scal=subd_pas_mini, nbret = nbret)
+    call getvr8(keywf, 'SUBD_PAS_MINI', iocc=i_fail, scal=subd_pas_mini, nbret=nbret)
     ASSERT(nbret .le. 1)
     if (subd_pas_mini .gt. dtmin) then
-        call utmess('F', 'DISCRETISATION_6', sr = dtmin)
-    endif
+        call utmess('F', 'DISCRETISATION_6', sr=dtmin)
+    end if
     if (subd_methode .eq. 'MANUEL') then
         call getvis(keywf, 'SUBD_NIVEAU', iocc=i_fail, scal=subd_niveau)
         call getvis(keywf, 'SUBD_PAS', iocc=i_fail, scal=subd_pas)
@@ -99,9 +99,9 @@ real(kind=8), intent(out) :: subd_duree
             subd_auto = 'COLLISION'
         else
             subd_auto = 'EXTRAPOLE'
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

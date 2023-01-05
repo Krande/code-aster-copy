@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ccbcop(resultIn    , resultOut,&
-                  listStoreJv , nbStore,&
+subroutine ccbcop(resultIn, resultOut, &
+                  listStoreJv, nbStore, &
                   listOptionJv, nbOption)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -46,9 +46,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/deprecated_option.h"
 !
-integer, intent(in) :: nbStore, nbOption
-character(len=8), intent(in) :: resultOut, resultIn
-character(len=19), intent(in) :: listStoreJv, listOptionJv
+    integer, intent(in) :: nbStore, nbOption
+    character(len=8), intent(in) :: resultOut, resultIn
+    character(len=19), intent(in) :: listStoreJv, listOptionJv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,73 +91,73 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
     call jeexin(resultOut//'           .DESC', iret)
     newResult = iret .eq. 0
 !
-    if ((resultIn.ne.resultOut) .and. (.not.newResult)) then
+    if ((resultIn .ne. resultOut) .and. (.not. newResult)) then
         call utmess('F', 'CALCULEL_18')
-    endif
+    end if
 !
-    call jeveuo(listStoreJv, 'L', vi = listStore)
+    call jeveuo(listStoreJv, 'L', vi=listStore)
 
 ! - Get parameters at initial state
     numeStore0 = listStore(1)
-    call rslesd(resultIn, numeStore0, model_ = model, cara_elem_ = caraElem)
+    call rslesd(resultIn, numeStore0, model_=model, cara_elem_=caraElem)
     if (model .eq. ' ') then
         call utmess('F', 'CALCULEL2_44')
-    endif
+    end if
 
 ! - New output result
     if (newResult) then
         call rscrsd('G', resultOut, resultType, nbStore)
         call titre()
-    endif
+    end if
 !
 !     ON VERIFIE QUE CARA_ELEM EST RENSEIGNES POUR LES COQUES
-    exipla=.false.
+    exipla = .false.
     call dismoi('EXI_COQ3D', model, 'MODELE', repk=answer)
-    if (answer(1:3) .eq. 'OUI') exipla=.true.
+    if (answer(1:3) .eq. 'OUI') exipla = .true.
     call dismoi('EXI_PLAQUE', model, 'MODELE', repk=answer)
-    if (answer(1:3) .eq. 'OUI') exipla=.true.
+    if (answer(1:3) .eq. 'OUI') exipla = .true.
     if (exipla .and. caraElem .eq. ' ') then
         call utmess('A', 'CALCULEL2_94')
         goto 30
-    endif
+    end if
 !
 !     RECOPIE DES PARAMETRES DANS LA NOUVELLE SD RESULTAT
     if (newResult) then
-        nompar='&&CCBCOP.NOMS_PARA '
+        nompar = '&&CCBCOP.NOMS_PARA '
         call rsnopa(resultIn, 2, nompar, nbac, nbpa)
-        nbpara=nbac+nbpa
+        nbpara = nbac+nbpa
         call jeveuo(nompar, 'L', jvPara)
         do iStore = 1, nbStore
             numeStore = listStore(iStore)
             do iPara = 1, nbpara
-                call rsadpa(resultIn, 'L', 1, zk16(jvPara+iPara-1), numeStore,&
+                call rsadpa(resultIn, 'L', 1, zk16(jvPara+iPara-1), numeStore, &
                             1, sjv=iadin, styp=paraType, istop=0)
-                call rsadpa(resultOut, 'E', 1, zk16(jvPara+iPara-1), numeStore,&
+                call rsadpa(resultOut, 'E', 1, zk16(jvPara+iPara-1), numeStore, &
                             1, sjv=iadou, styp=paraType)
                 if (paraType(1:1) .eq. 'I') then
-                    zi(iadou)=zi(iadin)
-                else if (paraType(1:1).eq.'R') then
-                    zr(iadou)=zr(iadin)
-                else if (paraType(1:1).eq.'C') then
-                    zc(iadou)=zc(iadin)
-                else if (paraType(1:3).eq.'K80') then
-                    zk80(iadou)=zk80(iadin)
-                else if (paraType(1:3).eq.'K32') then
-                    zk32(iadou)=zk32(iadin)
-                else if (paraType(1:3).eq.'K24') then
-                    zk24(iadou)=zk24(iadin)
-                else if (paraType(1:3).eq.'K16') then
-                    zk16(iadou)=zk16(iadin)
-                else if (paraType(1:2).eq.'K8') then
-                    zk8(iadou)=zk8(iadin)
-                endif
+                    zi(iadou) = zi(iadin)
+                else if (paraType(1:1) .eq. 'R') then
+                    zr(iadou) = zr(iadin)
+                else if (paraType(1:1) .eq. 'C') then
+                    zc(iadou) = zc(iadin)
+                else if (paraType(1:3) .eq. 'K80') then
+                    zk80(iadou) = zk80(iadin)
+                else if (paraType(1:3) .eq. 'K32') then
+                    zk32(iadou) = zk32(iadin)
+                else if (paraType(1:3) .eq. 'K24') then
+                    zk24(iadou) = zk24(iadin)
+                else if (paraType(1:3) .eq. 'K16') then
+                    zk16(iadou) = zk16(iadin)
+                else if (paraType(1:2) .eq. 'K8') then
+                    zk8(iadou) = zk8(iadin)
+                end if
             end do
         end do
         call jedetr(nompar)
-    endif
+    end if
 !
     call jeexin(listOptionJv, iret)
-    if(iret .ne. 0) then
+    if (iret .ne. 0) then
         call jeveuo(listOptionJv, 'L', jopt)
     end if
 !
@@ -165,7 +165,7 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
 !     DE COMMANDE OU DES CHARGES DANS LA SD RESULTAT
     posopt = indk16(zk16(jopt), 'FORC_NODA', 1, nbOption)
     lforc_noda = .true.
-    if (posopt.eq.0) lforc_noda = .false.
+    if (posopt .eq. 0) lforc_noda = .false.
     call ccvrch(resultIn, numeStore0, lforc_noda)
 !
 !     BOUCLE SUR LES OPTIONS DEMANDEES PAR L'UTILISATEUR
@@ -176,19 +176,19 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
 
         if (option .eq. ' ') cycle
 !
-        if ((option.eq.'FORC_NODA') .or. (option.eq.'REAC_NODA')) then
-            call ccfnrn(option, resultIn, resultOut, listStoreJv, nbStore,&
+        if ((option .eq. 'FORC_NODA') .or. (option .eq. 'REAC_NODA')) then
+            call ccfnrn(option, resultIn, resultOut, listStoreJv, nbStore, &
                         resultType)
         else
-            call calcop(option, listOptionJv, resultIn, resultOut, listStoreJv,&
+            call calcop(option, listOptionJv, resultIn, resultOut, listStoreJv, &
                         nbStore, resultType, iret, tldist=.True._1)
             ASSERT(iret .eq. 0)
 
-        endif
+        end if
 
     end do
 !
- 30 continue
+30  continue
 !
     call jedema()
 !

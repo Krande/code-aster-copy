@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
+subroutine hbrcvx(sig, vid, nmat, materf, seuil, &
                   vp, vecp)
     implicit none
 #include "asterfort/codree.h"
@@ -48,29 +48,29 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
     character(len=24) :: valk(3)
     integer :: ndt, ndi, nperm, ttrij, otrij, nitjac
 ! ======================================================================
-    parameter       ( deux   =  2.0d0  )
+    parameter(deux=2.0d0)
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
-    data   nperm ,tol,toldyn    /12,1.d-10,1.d-2/
-    data   ttrij,otrij  /0,0/
+    data nperm, tol, toldyn/12, 1.d-10, 1.d-2/
+    data ttrij, otrij/0, 0/
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES MATERIAU --------------------------------
 ! ======================================================================
-    sigbd = materf(14,2)
+    sigbd = materf(14, 2)
 ! ======================================================================
 ! --- CALCUL DES PARAMETRES D ECROUISSAGE ------------------------------
 ! ======================================================================
     gamma = vid(1)
     if (gamma .lt. 0.0d0) then
         call utmess('F', 'ALGORITH3_88')
-    endif
+    end if
     call hbvaec(gamma, nmat, materf, parame)
 ! ======================================================================
 ! --- CALCUL DES VALEURS PROPRES DU DEVIATEUR ELASTIQUE ----------------
 ! ======================================================================
     call lcdevi(sig, se)
-    i1e = trace(ndi,sig)
+    i1e = trace(ndi, sig)
     seb(1) = se(1)
     seb(2) = se(4)/sqrt(deux)
     seb(4) = se(2)
@@ -79,9 +79,9 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
         seb(3) = 0.0d0
         seb(5) = 0.0d0
     else
-        seb(3) = se(5) / sqrt(deux)
-        seb(5) = se(6) / sqrt(deux)
-    endif
+        seb(3) = se(5)/sqrt(deux)
+        seb(5) = se(6)/sqrt(deux)
+    end if
 ! -- MATRICE UNITE POUR JACOBI ----------------------------------------
     tu(1) = 1.d0
     tu(2) = 0.d0
@@ -89,10 +89,10 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
     tu(4) = 1.d0
     tu(5) = 0.d0
     tu(6) = 1.d0
-    call jacobi(3, nperm, tol, toldyn, seb,&
-                tu, vecp, vp, jacaux, nitjac,&
+    call jacobi(3, nperm, tol, toldyn, seb, &
+                tu, vecp, vp, jacaux, nitjac, &
                 ttrij, otrij)
-    if ((vp(2).lt.vp(1)) .or. (vp(3).lt.vp(2))) then
+    if ((vp(2) .lt. vp(1)) .or. (vp(3) .lt. vp(2))) then
         call codree(vp(1), 'E', cvp1)
         call codree(vp(2), 'E', cvp2)
         call codree(vp(3), 'E', cvp3)
@@ -100,7 +100,7 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
         valk(2) = cvp2
         valk(3) = cvp3
         call utmess('F', 'ALGORITH3_89', nk=3, valk=valk)
-    endif
+    end if
     difsig = vp(3)-vp(1)
     sig3 = vp(3)+i1e/3.0d0
 ! ======================================================================
@@ -111,7 +111,7 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
     if (aux1 .lt. 0.0d0) then
         seuil = 2.0d0
     else
-        seuil = difsig - aux2 - sqrt(aux1)
-    endif
+        seuil = difsig-aux2-sqrt(aux1)
+    end if
 ! ======================================================================
 end subroutine

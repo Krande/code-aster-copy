@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
-                  deps, sigm, vim, option, angmas,&
+subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, crit, instam, instap, &
+                  deps, sigm, vim, option, angmas, &
                   nvi, sigp, vip, dsidep, iret)
 ! aslint: disable=
     implicit none
@@ -80,16 +80,16 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !               L'ORDRE :  XX YY ZZ XY XZ YZ
 !
 !     COMMON POUR LES PARAMETRES DES LOIS VISCOPLASTIQUES
-    common / nmpavp / dpc,sieleq,deuxmu,deltat,tschem,prec,theta,niter
+    common/nmpavp/dpc, sieleq, deuxmu, deltat, tschem, prec, theta, niter
     real(kind=8) :: dpc, sieleq, deuxmu, deltat, tschem, prec, theta, niter
 !     COMMON POUR LES PARAMETRES DES LOIS DE FLUAGE SOUS IRRADIATION
 !     VISC_IRRA_LOG: FLUPHI A      B      CTPS    ENER
 ! -------------------------------------------------------------
-    common / nmpair / a,b,ctps,ener
+    common/nmpair/a, b, ctps, ener
     real(kind=8) :: tm, tp
     real(kind=8) :: a, b, ctps, ener
 !     COMMON POUR LES PARAMETRES DE LA LOI DE LEMAITRE (NON IRRADIEE)
-    common / nmpale / unsurk,unsurm,valden
+    common/nmpale/unsurk, unsurm, valden
     real(kind=8) :: unsurk, unsurm, valden
 ! PARAMETRES MATERIAUX
 ! ELASTIQUES
@@ -97,7 +97,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: em, num, troikm, deumum
 ! AUTRES
     integer :: nbclem, nbcvil, nbcint
-    parameter (nbclem=7, nbcvil=4, nbcint=2)
+    parameter(nbclem=7, nbcvil=4, nbcint=2)
     real(kind=8) :: coelem(nbclem), coevil(nbcvil)
     real(kind=8) :: coeint(nbcint)
     character(len=16) :: nomlem(nbclem), nomvil(nbcvil)
@@ -106,13 +106,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
 !
     real(kind=8) :: t1, t2, defam(6), defap(6), fluphi
-    integer :: iulmes,  iret2, iret3, ibid
+    integer :: iulmes, iret2, iret3, ibid
     real(kind=8) :: rac2, tabs
     integer :: k, l
     integer :: ndimsi
     real(kind=8) :: alpha, beta, caa, saa, cba, sba
     integer :: ndt, ndi
-    common /tdim/     ndt , ndi
+    common/tdim/ndt, ndi
     real(kind=8) :: depsgr, dp1, dev(6)
     real(kind=8) :: degran(6)
     real(kind=8) :: depsth(6), epsthe
@@ -124,38 +124,38 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: coef1, deltev, coef2
     real(kind=8) :: kron(6)
     character(len=6) :: epsa(6)
-    data              kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data nomlem / 'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K',&
-     &              'BETA','PHI_ZERO','L'/
-    data nomvil / 'A', 'B', 'CSTE_TPS', 'ENER_ACT'/
-    data nomint / 'A',         'S'/
-    data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
+    data nomlem/'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K',&
+     &              'BETA', 'PHI_ZERO', 'L'/
+    data nomvil/'A', 'B', 'CSTE_TPS', 'ENER_ACT'/
+    data nomint/'A', 'S'/
+    data epsa/'EPSAXX', 'EPSAYY', 'EPSAZZ', 'EPSAXY', 'EPSAXZ',&
      &              'EPSAYZ'/
 ! DEB ------------------------------------------------------------------
 !
-    call verift(fami, kpg, ksp, 'T', imate,&
-                iret_ = iret3, epsth_=epsthe, temp_prev_ = tm, temp_curr_ = tp)
+    call verift(fami, kpg, ksp, 'T', imate, &
+                iret_=iret3, epsth_=epsthe, temp_prev_=tm, temp_curr_=tp)
     theta = crit(4)
 ! TEMPERATURE AU MILIEU DU PAS DE TEMPS
     if (iret3 .eq. 0) then
         tschem = tm*(1.d0-theta)+tp*theta
     else
         tschem = 0.d0
-    endif
+    end if
 !
     t1 = abs(theta-0.5d0)
     t2 = abs(theta-1.d0)
     prec = 0.01d0
-    if ((t1.gt.prec) .and. (t2.gt.prec)) then
+    if ((t1 .gt. prec) .and. (t2 .gt. prec)) then
         call utmess('F', 'ALGORITH6_55')
-    endif
-    if (compor(1)(5:10) .eq. '_IRRA_') theta=1.d0
+    end if
+    if (compor(1) (5:10) .eq. '_IRRA_') theta = 1.d0
 !
     if (typmod(1) .eq. 'C_PLAN') then
         iulmes = iunifi('MESSAGE')
         call utmess('F', 'ALGORITH6_92')
         goto 299
-    endif
+    end if
     tabs = r8t0()
     rac2 = sqrt(2.d0)
 !
@@ -164,42 +164,42 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 ! DEFORMATION PLASTIQUE CUMULEE
     dpc = vim(1)
 ! INCREMENT DE TEMPS
-    deltat = instap - instam
+    deltat = instap-instam
     if (deltat .eq. 0.d0) then
         call utmess('F', 'ALGORITH8_87')
-    endif
+    end if
 !
-    dsidep(:,:) = 0.d0
+    dsidep(:, :) = 0.d0
 !
     if (ndim .eq. 2) then
-        ndimsi=4
+        ndimsi = 4
     else
-        ndimsi=6
-    endif
+        ndimsi = 6
+    end if
     if (ndim .eq. 3) then
         ndt = 6
         ndi = 3
     else
         ndt = 4
         ndi = 3
-    endif
+    end if
 !
 ! VARIABLE DE COMMANDE D IRRADIATION ET ANELASTIQUE
-    call rcvarc(' ', 'IRRA', '-', fami, kpg,&
+    call rcvarc(' ', 'IRRA', '-', fami, kpg, &
                 ksp, irram, iret2)
-    if (iret2 .gt. 0) irram=0.d0
-    call rcvarc(' ', 'IRRA', '+', fami, kpg,&
+    if (iret2 .gt. 0) irram = 0.d0
+    call rcvarc(' ', 'IRRA', '+', fami, kpg, &
                 ksp, irrap, iret2)
-    if (iret2 .gt. 0) irrap=0.d0
+    if (iret2 .gt. 0) irrap = 0.d0
 !
     do k = 1, ndimsi
-        call rcvarc(' ', epsa(k), '-', fami, kpg,&
+        call rcvarc(' ', epsa(k), '-', fami, kpg, &
                     ksp, defam(k), iret2)
-        if (iret2 .eq. 1) defam(k)=0.d0
+        if (iret2 .eq. 1) defam(k) = 0.d0
 !
-        call rcvarc(' ', epsa(k), '+', fami, kpg,&
+        call rcvarc(' ', epsa(k), '+', fami, kpg, &
                     ksp, defap(k), iret2)
-        if (iret2 .eq. 1) defap(k)=0.d0
+        if (iret2 .eq. 1) defap(k) = 0.d0
     end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
@@ -211,13 +211,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !
 ! CARACTERISTIQUES ELASTIQUES VARIABLES
 !
-    call nmasse(fami, kpg, ksp, '-', imate,&
-                ' ', instam, em, num, deumum,&
+    call nmasse(fami, kpg, ksp, '-', imate, &
+                ' ', instam, em, num, deumum, &
                 troikm)
 !
 !
-    call nmasse(fami, kpg, ksp, '+', imate,&
-                ' ', instap, ep, nup, deumup,&
+    call nmasse(fami, kpg, ksp, '+', imate, &
+                ' ', instap, ep, nup, deumup, &
                 troikp)
 !
     deuxmu = deumup
@@ -229,15 +229,15 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !        - VISC_IRRA_LOG AVEC GRANDISSEMENT
 ! ----------------------------------------------------------------------
 !
-    if (compor(1)(1:13) .eq. 'LEMAITRE_IRRA') then
+    if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA') then
 !       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 !
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'LEMAITRE_IRRA', 0, ' ', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'LEMAITRE_IRRA', 0, ' ', [0.d0], &
                     7, nomlem, coelem, codlem, 1)
 !
 !        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
-        irrap = irrap - irram + vim(2)
+        irrap = irrap-irram+vim(2)
         irram = vim(2)
 !
 !          FLUX NEUTRONIQUE
@@ -246,89 +246,89 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !       TRAITEMENT DES PARAMETRES DE LA LOI DE FLUAGE
         if (coelem(2) .eq. 0.d0) then
             fluphi = 1.d0
-        endif
+        end if
 !         PARAMETRES DE LA LOI DE FLUAGE
         valden = coelem(1)
         if (coelem(6) .le. 0.d0) then
             call utmess('F', 'ALGORITH7_80')
-        endif
+        end if
         if (fluphi .lt. 0.d0) then
             call utmess('F', 'ALGORITH6_57')
-        endif
+        end if
         xnumer = exp(-1.d0*coelem(4)/(valden*(tschem+tabs)))
-        unsurk = coelem(2)*fluphi/coelem(6) + coelem(7)
+        unsurk = coelem(2)*fluphi/coelem(6)+coelem(7)
         if (unsurk .lt. 0.d0) then
             call utmess('F', 'ALGORITH7_81')
-        endif
+        end if
         if (unsurk .eq. 0.d0) then
-            if (coelem(5) .eq. 0.d0) unsurk=1.d0
+            if (coelem(5) .eq. 0.d0) unsurk = 1.d0
             if (coelem(5) .lt. 0.d0) then
                 call utmess('F', 'ALGORITH7_82')
-            endif
-        endif
+            end if
+        end if
         if (unsurk .gt. 0.d0) then
             unsurk = unsurk**(coelem(5)/valden)
-        endif
-        unsurk = unsurk * xnumer
+        end if
+        unsurk = unsurk*xnumer
         unsurm = coelem(3)
 !
-    else if (compor(1)(1:10).eq.'VISC_IRRA_') then
+    else if (compor(1) (1:10) .eq. 'VISC_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'VISC_IRRA_LOG', 1, 'TEMP', [tschem],&
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'VISC_IRRA_LOG', 1, 'TEMP', [tschem], &
                     nbcvil, nomvil(1), coevil(1), codvil, 1)
         a = coevil(1)
         b = coevil(2)
         ctps = coevil(3)
         ener = coevil(4)
-        irrap = irrap - irram + vim(2)
+        irrap = irrap-irram+vim(2)
         irram = vim(2)
         if (irrap .lt. irram) then
             call utmess('F', 'ALGORITH8_88')
-        endif
+        end if
 !
-    else if (compor(1)(1:10).eq.'GRAN_IRRA_') then
+    else if (compor(1) (1:10) .eq. 'GRAN_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'GRAN_IRRA_LOG', 1, ' ', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'GRAN_IRRA_LOG', 1, ' ', [0.d0], &
                     nbcvil, nomvil(1), coevil(1), codvil, 1)
-        irrap = irrap - irram + vim(2)
+        irrap = irrap-irram+vim(2)
         irram = vim(2)
         if (irrap .lt. irram) then
             call utmess('F', 'ALGORITH8_88')
-        endif
+        end if
         a = coevil(1)
         b = coevil(2)
         ctps = coevil(3)
         ener = coevil(4)
 !
-    else if (compor(1)(1:10).eq.'LEMA_SEUIL') then
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'LEMA_SEUIL', 1, 'TEMP', [tschem],&
+    else if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'LEMA_SEUIL', 1, 'TEMP', [tschem], &
                     2, nomint(1), coeint(1), codint, 1)
-        unsurm=0.d0
-        valden=1.d0
-        fluphi=(irrap-irram)/deltat
+        unsurm = 0.d0
+        valden = 1.d0
+        fluphi = (irrap-irram)/deltat
         unsurk = (coeint(1)*fluphi*2.d0)/sqrt(3.d0)
         if (unsurk .lt. 0.d0) then
             call utmess('F', 'ALGORITH8_89')
-        endif
+        end if
 !
-    endif
+    end if
 !
 !       TRAITEMENT DES PARAMETRES DE LA LOI DE GRANDISSEMENT
 !
-    call granac(fami, kpg, ksp, imate, '        ',&
-                compor(1), irrap, irram, tm, tp,&
+    call granac(fami, kpg, ksp, imate, '        ', &
+                compor(1), irrap, irram, tm, tp, &
                 depsgr)
 ! --- RECUPERATION DU REPERE POUR LE GRANDISSEMENT
 !
-    if (compor(1)(1:13) .eq. 'LEMAITRE_IRRA' .or. compor(1)(1:13) .eq. 'GRAN_IRRA_LOG') then
+    if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA' .or. compor(1) (1:13) .eq. 'GRAN_IRRA_LOG') then
         if (ndim .eq. 2) then
             if (angmas(2) .ne. 0.d0) then
                 call utmess('F', 'ALGORITH11_82', nr=2, valr=angmas(2))
-            endif
-        endif
+            end if
+        end if
         alpha = angmas(1)
         beta = angmas(2)
         caa = cos(alpha)
@@ -343,66 +343,66 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         degran(4) = depsgr*saa*caa*cba*cba*rac2
         degran(5) = -depsgr*caa*sba*cba*rac2
         degran(6) = -depsgr*saa*sba*cba*rac2
-    endif
+    end if
 !
     epsmo = 0.d0
 !
     do k = 1, 3
-        depsth(k) = deps(k) -epsthe -(defap(k)-defam(k))
-        depsth(k) = depsth(k) - degran(k)
-        depsth(k) = depsth(k) * theta
+        depsth(k) = deps(k)-epsthe-(defap(k)-defam(k))
+        depsth(k) = depsth(k)-degran(k)
+        depsth(k) = depsth(k)*theta
 !
-        if ((k.eq.1) .or. (ndimsi.eq.6)) then
+        if ((k .eq. 1) .or. (ndimsi .eq. 6)) then
             depsth(k+3) = deps(k+3)-(defap(k+3)-defam(k+3))
-            depsth(k+3) = depsth(k+3) - degran(k+3)
-            depsth(k+3) = depsth(k+3) * theta
-        endif
+            depsth(k+3) = depsth(k+3)-degran(k+3)
+            depsth(k+3) = depsth(k+3)*theta
+        end if
 !
-        epsmo = epsmo + depsth(k)
+        epsmo = epsmo+depsth(k)
     end do
 !
     epsmo = epsmo/3.d0
     do k = 1, ndimsi
-        depsdv(k) = depsth(k) - epsmo * kron(k)
+        depsdv(k) = depsth(k)-epsmo*kron(k)
     end do
     sigmo = 0.d0
     do k = 1, 3
-        sigmo = sigmo + sigm(k)
+        sigmo = sigmo+sigm(k)
     end do
-    sigmo = sigmo /3.d0
+    sigmo = sigmo/3.d0
 !
-    sieqm=0.d0
+    sieqm = 0.d0
     do k = 1, ndimsi
-        sigdv(k) = sigm(k) - sigmo * kron(k)
-        sieqm = sieqm + sigdv(k)**2
-        sigmp(k)=(theta*deuxmu+(1.d0-theta)*deumum) /deumum*(sigm(k)-&
-        sigmo*kron(k))+ (theta*troikp+(1.d0-theta)*troikm)/troikm*&
-        sigmo*kron(k)
+        sigdv(k) = sigm(k)-sigmo*kron(k)
+        sieqm = sieqm+sigdv(k)**2
+        sigmp(k) = (theta*deuxmu+(1.d0-theta)*deumum)/deumum*(sigm(k)- &
+                                         sigmo*kron(k))+(theta*troikp+(1.d0-theta)*troikm)/troikm* &
+                   sigmo*kron(k)
     end do
-    sieqm=sqrt(1.5d0*sieqm)
-    sieqm=sieqm*(theta*deuxmu+(1.d0-theta)*deumum)/deumum
+    sieqm = sqrt(1.5d0*sieqm)
+    sieqm = sieqm*(theta*deuxmu+(1.d0-theta)*deumum)/deumum
     sigmo = 0.d0
     do k = 1, 3
-        sigmo = sigmo + sigmp(k)
+        sigmo = sigmo+sigmp(k)
     end do
-    sigmo = sigmo /3.d0
+    sigmo = sigmo/3.d0
 !
 !
-    if (compor(1)(1:10) .eq. 'LEMA_SEUIL') then
-        sieqp=0.d0
+    if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
+        sieqp = 0.d0
         do k = 1, ndimsi
-            sigdv(k) = sigmp(k) - sigmo * kron(k)
-            sigel(k) = sigdv(k) + deumup * depsdv(k)/theta
-            sieqp = sieqp + sigel(k)**2
+            sigdv(k) = sigmp(k)-sigmo*kron(k)
+            sigel(k) = sigdv(k)+deumup*depsdv(k)/theta
+            sieqp = sieqp+sigel(k)**2
         end do
-        sieqp=sqrt(1.5d0*sieqp)
-    endif
+        sieqp = sqrt(1.5d0*sieqp)
+    end if
 !
     sieleq = 0.d0
     do k = 1, ndimsi
-        sigdv(k) = sigmp(k) - sigmo * kron(k)
-        sigel(k) = sigdv(k) + deumup * depsdv(k)
-        sieleq = sieleq + sigel(k)**2
+        sigdv(k) = sigmp(k)-sigmo*kron(k)
+        sigel(k) = sigdv(k)+deumup*depsdv(k)
+        sieleq = sieleq+sigel(k)**2
 !
     end do
     sieleq = sqrt(1.5d0*sieleq)
@@ -412,120 +412,120 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     prec = crit(3)
     niter = crit(1)
 !
-    a0 = - sieleq
+    a0 = -sieleq
 !
 !
-    if (compor(1)(1:13) .eq. 'LEMAITRE_IRRA') then
+    if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA') then
         xap = sieleq
-        xap = xap - sieleq*1.d-12
+        xap = xap-sieleq*1.d-12
         if (abs(a0) .le. prec) then
             x = 0.d0
         else
-            call zerofr(0, 'DEKKER2', vpalem, 0.d0, xap,&
+            call zerofr(0, 'DEKKER2', vpalem, 0.d0, xap, &
                         prec, int(niter), x, iret, ibid)
             if (iret .ne. 0) goto 999
-        endif
-        call ggplem(x, dpc+(sieleq-x)/(1.5d0*deumup), valden, unsurk, unsurm,&
+        end if
+        call ggplem(x, dpc+(sieleq-x)/(1.5d0*deumup), valden, unsurk, unsurm, &
                     theta, deumup, fg, fdgdst, fdgdev)
-    else if (compor(1)(1:10).eq.'LEMA_SEUIL') then
-        d=vim(2)+(deltat*(sieqm+sieqp)/(2*coeint(2)))
+    else if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
+        d = vim(2)+(deltat*(sieqm+sieqp)/(2*coeint(2)))
         xap = sieleq
-        xap = xap - sieleq*1.d-12
+        xap = xap-sieleq*1.d-12
         if (abs(a0) .le. prec) then
             x = 0.d0
 ! -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
-        else if (d.le.1.d0) then
-            x=sieleq
+        else if (d .le. 1.d0) then
+            x = sieleq
         else
-            call zerofr(0, 'DEKKER2', vpalem, 0.d0, xap,&
+            call zerofr(0, 'DEKKER2', vpalem, 0.d0, xap, &
                         prec, int(niter), x, iret, ibid)
             if (iret .ne. 0) goto 999
-        endif
+        end if
 ! -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
         if (d .le. 1.d0) then
-            fg=0.d0
-            fdgdst=0.d0
-            fdgdev=0.d0
+            fg = 0.d0
+            fdgdst = 0.d0
+            fdgdev = 0.d0
         else
-            call ggplem(x, 1.d0, valden, unsurk, unsurm,&
+            call ggplem(x, 1.d0, valden, unsurk, unsurm, &
                         theta, deumup, fg, fdgdst, fdgdev)
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
-    if (compor(1)(5:10) .eq. '_IRRA_') then
-        dp1=exp(-ener/(tp+273.15d0))
-        dp1=dp1*(a*ctps/(1.d0+ctps*irrap)+b)*(irrap-irram)
-        coef1=1.d0/(1.d0+1.5d0*deuxmu*dp1)
-        x=0.d0
+    if (compor(1) (5:10) .eq. '_IRRA_') then
+        dp1 = exp(-ener/(tp+273.15d0))
+        dp1 = dp1*(a*ctps/(1.d0+ctps*irrap)+b)*(irrap-irram)
+        coef1 = 1.d0/(1.d0+1.5d0*deuxmu*dp1)
+        x = 0.d0
     else
         if (x .ne. 0.d0) then
             coef1 = 1.d0/(1.d0+1.5d0*deuxmu*deltat*fg/x)
         else
             coef1 = 1.d0/(1.d0+1.5d0*deuxmu*deltat*fdgdst)
-        endif
-    endif
+        end if
+    end if
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         deltp2 = 0.d0
         do k = 1, ndimsi
-            sigdv(k) = sigel(k) * coef1
-            sigp(k) = sigdv(k) + (sigmo + troikp*epsmo)*kron(k)
-            sigp(k) = (sigp(k) - sigm(k))/theta + sigm(k)
+            sigdv(k) = sigel(k)*coef1
+            sigp(k) = sigdv(k)+(sigmo+troikp*epsmo)*kron(k)
+            sigp(k) = (sigp(k)-sigm(k))/theta+sigm(k)
             deltev = (sigel(k)-sigdv(k))/(deumup*theta)
-            deltp2 = deltp2 + deltev**2
+            deltp2 = deltp2+deltev**2
         end do
 !
-        if (compor(1)(5:10) .eq. '_IRRA_') then
+        if (compor(1) (5:10) .eq. '_IRRA_') then
             call lcdevi(sigp, dev)
-            vip(1)= vim(1) + dp1*lcnrts( dev )
-            if (compor(1)(1:10) .eq. 'GRAN_IRRA_') then
+            vip(1) = vim(1)+dp1*lcnrts(dev)
+            if (compor(1) (1:10) .eq. 'GRAN_IRRA_') then
                 vip(2) = irrap
-                vip(3) = vim(3) + depsgr
-            elseif (compor(1)(1:10) .eq. 'VISC_IRRA_') then
+                vip(3) = vim(3)+depsgr
+            elseif (compor(1) (1:10) .eq. 'VISC_IRRA_') then
                 vip(2) = irrap
-            endif
+            end if
         else
-            vip(1) = vim(1) + sqrt(2.d0*deltp2/3.d0)
-        endif
+            vip(1) = vim(1)+sqrt(2.d0*deltp2/3.d0)
+        end if
 !
-        if (compor(1)(1:10) .eq. 'LEMA_SEUIL') then
+        if (compor(1) (1:10) .eq. 'LEMA_SEUIL') then
             if (d .le. 1.d0) then
-                vip(2) = vim(2)+ ((sieqp+sieqm)*deltat)/(2*coeint(2))
+                vip(2) = vim(2)+((sieqp+sieqm)*deltat)/(2*coeint(2))
             else
-                vip(2) = vim(2)+ ((x/theta+sieqm)*deltat)/(2*coeint(2) )
-            endif
+                vip(2) = vim(2)+((x/theta+sieqm)*deltat)/(2*coeint(2))
+            end if
 !
-        endif
+        end if
 !
 !        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
-        if (compor(1)(1:13) .eq. 'LEMAITRE_IRRA') then
+        if (compor(1) (1:13) .eq. 'LEMAITRE_IRRA') then
             vip(2) = irrap
-            vip(3) = vim(3) + depsgr
-        endif
+            vip(3) = vim(3)+depsgr
+        end if
 !
-    endif
+    end if
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:14) .eq. 'RIGI_MECA_TANG') then
         if (x .ne. 0.d0) then
-            coef2=sieleq*(1.d0 - deltat*fdgdev)
-            coef2=coef2/(1.d0+1.5d0*deuxmu*deltat*fdgdst)
-            coef2=coef2 - x
-            coef2=coef2*1.5d0/(sieleq**3)
+            coef2 = sieleq*(1.d0-deltat*fdgdev)
+            coef2 = coef2/(1.d0+1.5d0*deuxmu*deltat*fdgdst)
+            coef2 = coef2-x
+            coef2 = coef2*1.5d0/(sieleq**3)
         else
             coef2 = 0.d0
-        endif
+        end if
         do k = 1, ndimsi
             do l = 1, ndimsi
                 deltkl = 0.d0
                 if (k .eq. l) deltkl = 1.d0
-                dsidep(k,l) = coef1*(deltkl-kron(k)*kron(l)/3.d0)
-                dsidep(k,l) = deumup*(dsidep(k,l)+ coef2*sigel(k)* sigel(l))
-                dsidep(k,l) = dsidep(k,l) + troikp*kron(k)*kron(l)/ 3.d0
+                dsidep(k, l) = coef1*(deltkl-kron(k)*kron(l)/3.d0)
+                dsidep(k, l) = deumup*(dsidep(k, l)+coef2*sigel(k)*sigel(l))
+                dsidep(k, l) = dsidep(k, l)+troikp*kron(k)*kron(l)/3.d0
             end do
         end do
-    endif
+    end if
 !
 299 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine cgfint(ndim, nno1, nno2, npg, wref,&
-                  vff1, vff2, dffr1, geom, tang,&
-                  typmod, option, mat, comporKit, lgpg,&
-                  carcri, instam, instap, ddlm, ddld,&
-                  iu, iuc, im, a, sigm,&
-                  vim, sigp, vip, matr, vect,&
+subroutine cgfint(ndim, nno1, nno2, npg, wref, &
+                  vff1, vff2, dffr1, geom, tang, &
+                  typmod, option, mat, comporKit, lgpg, &
+                  carcri, instam, instap, ddlm, ddld, &
+                  iu, iuc, im, a, sigm, &
+                  vim, sigp, vip, matr, vect, &
                   codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
@@ -48,8 +48,8 @@ implicit none
     integer :: codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno1), wref(npg)
     real(kind=8) :: carcri(CARCRI_SIZE), instam, instap, sigm(3, npg)
-    real(kind=8) :: ddlm(nno1*(ndim+1) + nno2), ddld(nno1*(ndim+1) + nno2)
-    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), vect(nno1*(ndim+1) + nno2)
+    real(kind=8) :: ddlm(nno1*(ndim+1)+nno2), ddld(nno1*(ndim+1)+nno2)
+    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), vect(nno1*(ndim+1)+nno2)
     real(kind=8) :: dffr1(nno1, npg), tang(*), sigp(3, npg), matr(*)
     real(kind=8) :: a
 ! ----------------------------------------------------------------------
@@ -90,7 +90,7 @@ implicit none
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter:: nepsSheath=2, nsigSheath=1, ndsdeSheath=2
+    integer, parameter:: nepsSheath = 2, nsigSheath = 1, ndsdeSheath = 2
 ! --------------------------------------------------------------------------------------------------
     aster_logical     :: lMatr, lSigm, lVari
     character(len=16) :: relaSheath, relaCable
@@ -99,9 +99,9 @@ implicit none
     integer :: nddl, g, cod(27), n, i, m, j, kk, codm(1)
     integer :: nume
     real(kind=8) :: r, mu, epsm, deps, wg, l(3), de, ddedt, t1
-    real(kind=8) :: epsmSheath(nepsSheath),depsSheath(nepsSheath)
-    real(kind=8) :: sigmSheath(nsigSheath),sigpSheath(nsigSheath)
-    real(kind=8) :: dsdeSheath(nsigSheath,nepsSheath)
+    real(kind=8) :: epsmSheath(nepsSheath), depsSheath(nepsSheath)
+    real(kind=8) :: sigmSheath(nsigSheath), sigpSheath(nsigSheath)
+    real(kind=8) :: dsdeSheath(nsigSheath, nepsSheath)
     real(kind=8) :: b(4, 3), gliss
     real(kind=8) :: sigcab, dsidep, dde(nepsSheath), ddedn, courb
     real(kind=8) :: val(1)
@@ -109,34 +109,33 @@ implicit none
     character(len=1) :: poum
     type(Behaviour_Integ) :: BEHinteg
 !
-    data nom /'PENA_LAGR'/
+    data nom/'PENA_LAGR'/
 ! ----------------------------------------------------------------------
 !
 !
 ! - INITIALISATION
 !
-    resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
-    rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
-    nddl = nno1*(ndim+1) + nno2
+    resi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH'
+    rigi = option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RIGI'
+    nddl = nno1*(ndim+1)+nno2
     cod = 0
 !
 ! - Initialisation of behaviour datastructure
 !
     call behaviourInit(BEHinteg)
-    
 
 ! - Prepare compor maps
     ASSERT(comporKit(RELA_NAME) .eq. 'KIT_CG')
     relaSheath = comporKit(SHEATH_NAME)
     relaCable = comporKit(CABLE_NAME)
-    read (comporKit(NUME),'(I16)') nume
-    read (comporKit(SHEATH_NUME),'(I16)') numeSheath
-    read (comporKit(SHEATH_NVAR),'(I16)') nbviSheath
-    read (comporKit(CABLE_NVAR),'(I16)') nbviCable
+    read (comporKit(NUME), '(I16)') nume
+    read (comporKit(SHEATH_NUME), '(I16)') numeSheath
+    read (comporKit(SHEATH_NVAR), '(I16)') nbviSheath
+    read (comporKit(CABLE_NVAR), '(I16)') nbviCable
     comporSheath = comporKit
     comporSheath(RELA_NAME) = relaSheath
-    write (comporSheath(NUME),'(I16)') numeSheath
-    write (comporSheath(NVAR),'(I16)') nbviSheath
+    write (comporSheath(NUME), '(I16)') numeSheath
+    write (comporSheath(NVAR), '(I16)') nbviSheath
 !
     if (rigi) call r8inir(nddl*nddl, 0.d0, matr, 1)
     if (resi) call r8inir(nddl, 0.d0, vect, 1)
@@ -152,8 +151,8 @@ implicit none
 !
 !      CALCUL DES ELEMENTS GEOM DE L'EF AU POINT DE GAUSS CONSIDERE
 !
-        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g),&
-                    geom, tang, wg, l, b,&
+        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g), &
+                    geom, tang, wg, l, b, &
                     courb)
 !
 !      CALCUL DU DEPLACEMENT TANGENTIEL DE LA GAINE (UPROJ)
@@ -165,20 +164,20 @@ implicit none
         gliss = 0.d0
         epsm = 0.d0
         deps = 0.d0
-        mu=0.d0
+        mu = 0.d0
         do n = 1, nno1
             do j = 1, ndim
-                epsm = epsm + b(j,n)*ddlm(iu(j,n))
-                deps = deps + b(j,n)*ddld(iu(j,n))
+                epsm = epsm+b(j, n)*ddlm(iu(j, n))
+                deps = deps+b(j, n)*ddld(iu(j, n))
             end do
-            gliss = gliss + l(n)*(ddlm(iuc(n))+ddld(iuc(n)))
-            epsm = epsm + b(ndim+1,n)*ddlm(iuc(n))
-            deps = deps + b(ndim+1,n)*ddld(iuc(n))
+            gliss = gliss+l(n)*(ddlm(iuc(n))+ddld(iuc(n)))
+            epsm = epsm+b(ndim+1, n)*ddlm(iuc(n))
+            deps = deps+b(ndim+1, n)*ddld(iuc(n))
         end do
 !
         mu = 0.d0
         do n = 1, nno2
-            mu = mu + vff2(n,g)*(ddlm(im(n))+ddld(im(n)))
+            mu = mu+vff2(n, g)*(ddlm(im(n))+ddld(im(n)))
         end do
 !
 !
@@ -187,17 +186,17 @@ implicit none
 !                DES VARIABLES INTERNES DU CABLE (VIP)
 !                DE LA TANGENTE D(SIGCAB)/D(EPSCAB)
 !
-        if (relaCable .eq. 'ELAS'  .or. relaCable .eq. 'VMIS_ISOT_TRAC' .or.&
-            relaCable .eq. 'VMIS_ISOT_LINE' .or.&
-            relaCable .eq. 'CORR_ACIER' .or. relaCable .eq. 'VMIS_CINE_LINE' .or.&
-            relaCable .eq. 'PINTO_MENEGOTTO' .or. relaCable .eq. 'VMIS_ASYM_LINE' .or.&
+        if (relaCable .eq. 'ELAS' .or. relaCable .eq. 'VMIS_ISOT_TRAC' .or. &
+            relaCable .eq. 'VMIS_ISOT_LINE' .or. &
+            relaCable .eq. 'CORR_ACIER' .or. relaCable .eq. 'VMIS_CINE_LINE' .or. &
+            relaCable .eq. 'PINTO_MENEGOTTO' .or. relaCable .eq. 'VMIS_ASYM_LINE' .or. &
             relaCable .eq. 'SANS') then
-            call nmiclg('RIGI', g, 1, option, relaCable,&
-                        mat, epsm, deps, sigm(1, g)/a, vim(1, g),&
+            call nmiclg('RIGI', g, 1, option, relaCable, &
+                        mat, epsm, deps, sigm(1, g)/a, vim(1, g), &
                         sigcab, vip(1, g), dsidep, carcri, codret)
         else
             call utmess('F', 'CABLE0_26')
-        endif
+        end if
 !
 !      LOI DE COMPORTEMENT: GLISSEMENT GAINE CABLE
 !         ADHERENCE PARFAITE OU GLISSEMENT PARFAIT
@@ -216,30 +215,30 @@ implicit none
             poum = '-'
         else
             poum = '+'
-        endif
+        end if
 !
-        call rcvalb('RIGI', g, 1, poum, mat,&
-                    ' ', 'CABLE_GAINE_FROT', 0, ' ', [0.d0],&
+        call rcvalb('RIGI', g, 1, poum, mat, &
+                    ' ', 'CABLE_GAINE_FROT', 0, ' ', [0.d0], &
                     1, nom, val, codm, 2)
-        r=val(1)
+        r = val(1)
 !
         BEHinteg%elga%tenscab = a*sigcab
         BEHinteg%elga%curvcab = courb
 !
         de = 0.d0
-        epsmSheath = [mu,gliss]
-        depsSheath = [0.d0,0.d0]
+        epsmSheath = [mu, gliss]
+        depsSheath = [0.d0, 0.d0]
         sigmSheath = [0.d0]
-        call nmcomp(BEHinteg,&
-                    'RIGI', g, 1, ndim, typmod,&
-                    mat, comporSheath, carcri, instam, instap,&
-                    nepsSheath, epsmSheath, depsSheath, nsigSheath, sigmSheath,&
-                    vim(nbviCable+1, g), option, [0.d0,0.d0,0.d0], &
+        call nmcomp(BEHinteg, &
+                    'RIGI', g, 1, ndim, typmod, &
+                    mat, comporSheath, carcri, instam, instap, &
+                    nepsSheath, epsmSheath, depsSheath, nsigSheath, sigmSheath, &
+                    vim(nbviCable+1, g), option, [0.d0, 0.d0, 0.d0], &
                     sigpSheath, vip(nbviCable+1, g), ndsdeSheath, dsdeSheath, cod(g))
-                    
+
         if (cod(g) .ne. 0) goto 999
         if (lSigm) de = sigpSheath(1)
-        if (lMatr) dde = dsdeSheath(1,:)
+        if (lMatr) dde = dsdeSheath(1, :)
 !
 !      FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
 !
@@ -247,31 +246,31 @@ implicit none
 !
 !        STOCKAGE DES CONTRAINTES
 !        CONVENTION DE RANGEMENT SIGP(1,2,3) EXPLICITE CI-DESSOUS
-            sigp( 1,g) = sigcab*a
-            sigp( 2,g) = mu + r*(gliss-de)
-            sigp( 3,g) = gliss-de
+            sigp(1, g) = sigcab*a
+            sigp(2, g) = mu+r*(gliss-de)
+            sigp(3, g) = gliss-de
 !
 !        VECTEUR FINT:U ET UC
             do n = 1, nno1
                 do i = 1, ndim
-                    kk = iu(i,n)
-                    t1 = b(i,n)*sigp(1,g)
-                    vect(kk) = vect(kk) + wg*t1
+                    kk = iu(i, n)
+                    t1 = b(i, n)*sigp(1, g)
+                    vect(kk) = vect(kk)+wg*t1
                 end do
-                kk=iuc(n)
-                t1=b(4,n)*sigp(1,g)+l(n)*sigp(2,g)
-                vect(kk)=vect(kk)+wg*t1
+                kk = iuc(n)
+                t1 = b(4, n)*sigp(1, g)+l(n)*sigp(2, g)
+                vect(kk) = vect(kk)+wg*t1
             end do
 !
 !        VECTEUR FINT:M
             do n = 1, nno2
                 kk = im(n)
-                t1 = vff2(n,g)*sigp(3,g)
-                vect(kk) = vect(kk) + wg*t1
+                t1 = vff2(n, g)*sigp(3, g)
+                vect(kk) = vect(kk)+wg*t1
             end do
 !
 !
-        endif
+        end if
 !
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE
@@ -279,15 +278,15 @@ implicit none
 !
         if (rigi) then
 !        MATRICE K:U(I,N),U(J,M)
-            ddedt=dde(1)
-            ddedn=a*dde(2)
+            ddedt = dde(1)
+            ddedn = a*dde(2)
             do n = 1, nno1
                 do i = 1, ndim
                     do m = 1, nno1
                         do j = 1, ndim
-                            kk=(iu(i,n)-1)*nddl+iu(j,m)
-                            t1 = b(i,n)*b(j,m)*dsidep*a
-                            matr(kk) = matr(kk) + wg*t1
+                            kk = (iu(i, n)-1)*nddl+iu(j, m)
+                            t1 = b(i, n)*b(j, m)*dsidep*a
+                            matr(kk) = matr(kk)+wg*t1
                         end do
                     end do
                 end do
@@ -297,12 +296,12 @@ implicit none
             do n = 1, nno1
                 do i = 1, ndim
                     do m = 1, nno1
-                        t1= b(i,n)*b(4,m)*dsidep*a
-                        kk=(iu(i,n)-1)*nddl+iuc(m)
-                        matr(kk)=matr(kk)+wg*t1
-                        t1=t1-r*l(m)*ddedn*dsidep*b(i,n)
-                        kk=(iuc(m)-1)*nddl+iu(i,n)
-                        matr(kk)=matr(kk)+wg*t1
+                        t1 = b(i, n)*b(4, m)*dsidep*a
+                        kk = (iu(i, n)-1)*nddl+iuc(m)
+                        matr(kk) = matr(kk)+wg*t1
+                        t1 = t1-r*l(m)*ddedn*dsidep*b(i, n)
+                        kk = (iuc(m)-1)*nddl+iu(i, n)
+                        matr(kk) = matr(kk)+wg*t1
                     end do
                 end do
             end do
@@ -311,31 +310,31 @@ implicit none
 !        MATRICES K:UC(N),UC(M)
             do n = 1, nno1
                 do m = 1, nno1
-                    t1=b(4,n)*b(4,m)*dsidep*a+r*l(n)*l(m)*(1.d0-r*&
-                    ddedt) -r*l(n)*ddedn*dsidep*b(4,m)
-                    kk=(iuc(n)-1)*nddl+iuc(m)
-                    matr(kk) = matr(kk) + wg*t1
+                    t1 = b(4, n)*b(4, m)*dsidep*a+r*l(n)*l(m)*(1.d0-r* &
+                                                               ddedt)-r*l(n)*ddedn*dsidep*b(4, m)
+                    kk = (iuc(n)-1)*nddl+iuc(m)
+                    matr(kk) = matr(kk)+wg*t1
                 end do
             end do
 !
 !        MATRICE K:UC(N),MU(M)
             do n = 1, nno1
                 do m = 1, nno2
-                    t1=l(n)*vff2(m,g)*(1.d0-r*ddedt)
-                    kk=(iuc(n)-1)*nddl+im(m)
-                    matr(kk)=matr(kk)+wg*t1
-                    t1=t1-vff2(m,g)*ddedn*dsidep*b(4,n)
-                    kk=(im(m)-1)*nddl+iuc(n)
-                    matr(kk)=matr(kk)+wg*t1
+                    t1 = l(n)*vff2(m, g)*(1.d0-r*ddedt)
+                    kk = (iuc(n)-1)*nddl+im(m)
+                    matr(kk) = matr(kk)+wg*t1
+                    t1 = t1-vff2(m, g)*ddedn*dsidep*b(4, n)
+                    kk = (im(m)-1)*nddl+iuc(n)
+                    matr(kk) = matr(kk)+wg*t1
                 end do
             end do
 !
 !        MATRICES K:MU(N),MU(M)
             do n = 1, nno2
                 do m = 1, nno2
-                    t1 = - vff2(n,g)*ddedt*vff2(m,g)
-                    kk=(im(n)-1)*nddl+im(m)
-                    matr(kk) = matr(kk) + wg*t1
+                    t1 = -vff2(n, g)*ddedt*vff2(m, g)
+                    kk = (im(n)-1)*nddl+im(m)
+                    matr(kk) = matr(kk)+wg*t1
                 end do
             end do
 !
@@ -343,14 +342,14 @@ implicit none
             do n = 1, nno1
                 do i = 1, ndim
                     do m = 1, nno2
-                        t1=-vff2(m,g)*ddedn*dsidep*b(i,n)
-                        kk=(im(m)-1)*nddl+iu(i,n)
-                        matr(kk)=matr(kk)+wg*t1
-                    enddo
-                enddo
-            enddo
+                        t1 = -vff2(m, g)*ddedn*dsidep*b(i, n)
+                        kk = (im(m)-1)*nddl+iu(i, n)
+                        matr(kk) = matr(kk)+wg*t1
+                    end do
+                end do
+            end do
 !
-        endif
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,12 +70,12 @@ subroutine nmjalo(sddisc, inst, prec, jalon)
 ! --- RECHERCHE PROCHAIN JALON
 !
     do ipo = 1, nipo
-        if (compr8(zr(jipo-1+ipo),'GT',inst,prec,1)) then
+        if (compr8(zr(jipo-1+ipo), 'GT', inst, prec, 1)) then
             jalon = zr(jipo-1+ipo)
             goto 20
-        endif
+        end if
     end do
- 20 continue
+20  continue
 !
     call jedema()
 end subroutine

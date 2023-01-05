@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsliso(fami, kpg, ksp, poum, imat,&
+subroutine rsliso(fami, kpg, ksp, poum, imat, &
                   p, rp, drdp)
     implicit none
 !       LOI ECROUISSAGE ISOTROPE R(P,T) ENTREE POINT PAR POINT
@@ -40,11 +40,11 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
 ! --  TEMPERATURE
     call rcvarc(' ', 'TEMP', poum, fami, kpg, ksp, temp, iret)
     call rctype(imat, 1, 'TEMP', [temp], para_vale, para_type)
-    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'COMPOR5_5', sk = para_type)
-    endif
-    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
+    if ((para_type .eq. 'TEMP') .and. (iret .eq. 1)) then
+        call utmess('F', 'COMPOR5_5', sk=para_type)
+    end if
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol, &
                 jvale, nbvale, e)
-    call rcfonc('V', 1, jprol, jvale, nbvale,&
-                p = p, rp = rp, rprim = drdp, airerp = airerp)
+    call rcfonc('V', 1, jprol, jvale, nbvale, &
+                p=p, rp=rp, rprim=drdp, airerp=airerp)
 end subroutine

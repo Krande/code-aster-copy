@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine newacc(neq, c1, c2, c3, d0,&
+subroutine newacc(neq, c1, c2, c3, d0, &
                   v0, a0, d1, a1)
     implicit none
 !
@@ -51,11 +51,11 @@ subroutine newacc(neq, c1, c2, c3, d0,&
 !-----------------------------------------------------------------------
     scal = -1.d0
     call dcopy(neq, d1, 1, a1, 1)
-    call daxpy(neq, scal, d0, 1, a1,&
+    call daxpy(neq, scal, d0, 1, a1, &
                1)
     call dscal(neq, c1, a1, 1)
-    call daxpy(neq, c2, v0, 1, a1,&
+    call daxpy(neq, c2, v0, 1, a1, &
                1)
-    call daxpy(neq, c3, a0, 1, a1,&
+    call daxpy(neq, c3, a0, 1, a1, &
                1)
 end subroutine

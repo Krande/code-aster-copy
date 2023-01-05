@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
+subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
                   xg)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/elrfvf.h"
 !
-integer :: ndim, nnop
-real(kind=8) :: xe(ndim), xg(ndim), tabar(*)
-character(len=8) :: elrefp
+    integer :: ndim, nnop
+    real(kind=8) :: xe(ndim), xg(ndim), tabar(*)
+    character(len=8) :: elrefp
 !
 !
 !                      TROUVER LES COORDONNEES REELLES D'UN POINT
@@ -55,13 +55,13 @@ character(len=8) :: elrefp
         call elrfvf(elrefp, xe(1), ff)
     else
         call elrfvf(elrefp, xe, ff)
-    endif
+    end if
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
 !
     do j = 1, ndim
         do i = 1, nnop
-            xg(j) = xg(j) + tabar(ndim*(i-1)+j)*ff(i)
+            xg(j) = xg(j)+tabar(ndim*(i-1)+j)*ff(i)
         end do
     end do
 !

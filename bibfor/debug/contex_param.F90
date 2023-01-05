@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,14 +57,14 @@ subroutine contex_param(nomop, nompar)
 !
 !
     call tecael(iadzi, iazk24)
-    nomail=zk24(iazk24-1+3)(1:8)
+    nomail = zk24(iazk24-1+3) (1:8)
 !
     call utmess('I', 'ELEMENT_15', sk=nomail)
 !
     call jeveuo('&CATA.CL.COMLIBR', 'L', vk80=comlibr)
 !
-    nompa2=nompar
-    igd=0
+    nompa2 = nompar
+    igd = 0
 !
 !
 !   1) CONTEXTE DE l'OPTION :
@@ -73,76 +73,76 @@ subroutine contex_param(nomop, nompar)
     if (nomop .ne. ' ') then
         call jenonu(jexnom('&CATA.OP.NOMOPT', nomop), iopt)
     else
-        iopt=0
-    endif
-    lopt=(iopt.ne.0)
+        iopt = 0
+    end if
+    lopt = (iopt .ne. 0)
 !
     if (lopt) then
         call utmess('I', 'ELEMENT_16', sk=nomop)
         call jeveuo(jexnum('&CATA.OP.DESCOPT', iopt), 'L', jdesop)
         call jeveuo(jexnum('&CATA.OP.OPTPARA', iopt), 'L', iapara)
 !
-        nbin=zi(jdesop-1+2)
-        nbou=zi(jdesop-1+3)
-        nblig=zi(jdesop-1+4+nbin+nbou+1)
-        indic=zi(jdesop-1+4+nbin+nbou+2)
+        nbin = zi(jdesop-1+2)
+        nbou = zi(jdesop-1+3)
+        nblig = zi(jdesop-1+4+nbin+nbou+1)
+        indic = zi(jdesop-1+4+nbin+nbou+2)
         if (nblig .gt. 0) then
             do k = indic, indic-1+nblig
                 call utmess('I', 'ELEMENT_17', sk=comlibr(k))
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
 !   2) CONTEXTE DU PARAMETRE :
 !   --------------------------
 !     CALCUL DE LPARA :
-    lpara=lopt .and. (nompa2.ne.' ')
+    lpara = lopt .and. (nompa2 .ne. ' ')
 !
     if (lpara) then
-        itrou=indik8(zk8(iapara-1+1),nompa2,1,nbin)
+        itrou = indik8(zk8(iapara-1+1), nompa2, 1, nbin)
         if (itrou .gt. 0) then
             call utmess('I', 'ELEMENT_18', sk=nompa2)
-            nblig=zi(jdesop-1+6+nbin+nbou+2*(itrou-1)+1)
-            indic=zi(jdesop-1+6+nbin+nbou+2*(itrou-1)+2)
-            igd=zi(jdesop-1+4+itrou)
+            nblig = zi(jdesop-1+6+nbin+nbou+2*(itrou-1)+1)
+            indic = zi(jdesop-1+6+nbin+nbou+2*(itrou-1)+2)
+            igd = zi(jdesop-1+4+itrou)
         else
-            itrou=indik8(zk8(iapara-1+nbin+1),nompa2,1,nbou)
-            ASSERT(itrou.gt.0)
+            itrou = indik8(zk8(iapara-1+nbin+1), nompa2, 1, nbou)
+            ASSERT(itrou .gt. 0)
             call utmess('I', 'ELEMENT_19', sk=nompa2)
-            nblig=zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+1)
-            indic=zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+2)
-            igd=zi(jdesop-1+4+nbin+itrou)
-        endif
+            nblig = zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+1)
+            indic = zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+2)
+            igd = zi(jdesop-1+4+nbin+itrou)
+        end if
         if (nblig .gt. 0) then
             do k = indic, indic-1+nblig
                 call utmess('I', 'ELEMENT_17', sk=comlibr(k))
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
 !   3) CONTEXTE DE LA GRANDEUR :
 !   ----------------------------
-    lgd=(igd.ne.0)
+    lgd = (igd .ne. 0)
     if (lgd) then
         call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
 !       -- ON N'IMPRIME RIEN POUR ADRSJEVE !
         if (nomgd .ne. 'ADRSJEVE') then
             call utmess('I', 'ELEMENT_22', sk=nomgd)
             call jeveuo(jexnum('&CATA.GD.DESCRIGD', igd), 'L', jdsgd)
-            nblig=zi(jdsgd-1+6)
-            indic=zi(jdsgd-1+7)
+            nblig = zi(jdsgd-1+6)
+            indic = zi(jdsgd-1+7)
             if (nblig .gt. 0) then
                 do k = indic, indic-1+nblig
                     call utmess('I', 'ELEMENT_17', sk=comlibr(k))
                 end do
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
     ASSERT(.false.)
 !

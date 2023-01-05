@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ancrca(icabl, nbno, s, alpha, f0,&
-                  delta, ea, frco, frli, sa,&
+subroutine ancrca(icabl, nbno, s, alpha, f0, &
+                  delta, ea, frco, frli, sa, &
                   d, f)
     implicit none
 !  DESCRIPTION : CALCUL DE LA TENSION LE LONG D'UN CABLE EN PRENANT EN
@@ -80,40 +80,40 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
     if (delta .eq. 0.0d0) then
         d = 0.0d0
         goto 999
-    endif
+    end if
 !
     epsw = 1.0d-04
-    wdef = ea * sa * delta
-    wcr = wdefca(nbno,s,alpha,f0,frco,frli)
+    wdef = ea*sa*delta
+    wcr = wdefca(nbno, s, alpha, f0, frco, frli)
 !
     if (wcr .lt. wdef) then
 !
-        write(k3b,'(I3)') icabl
+        write (k3b, '(I3)') icabl
         call utmess('A', 'MODELISA2_3', sk=k3b)
 !
         d = s(nbno)
         if (wcr/wdef .lt. epsw) then
-            df = wdef / d
+            df = wdef/d
             do ino = 1, nbno
-                f(ino) = f(ino) - df
+                f(ino) = f(ino)-df
             end do
         else
-            df = ( wdef - wcr ) / d
+            df = (wdef-wcr)/d
             f2 = f(nbno)
-            f2 = f2 * f2
+            f2 = f2*f2
             do ino = 1, nbno
-                f(ino) = f2/f(ino) - df
+                f(ino) = f2/f(ino)-df
             end do
-        endif
+        end if
 !
-    else if (wcr.eq.wdef) then
+    else if (wcr .eq. wdef) then
 !
-        write(k3b,'(I3)') icabl
+        write (k3b, '(I3)') icabl
         call utmess('A', 'MODELISA2_4', sk=k3b)
 !
         d = s(nbno)
         f2 = f(nbno)
-        f2 = f2 * f2
+        f2 = f2*f2
         do ino = 1, nbno
             f(ino) = f2/f(ino)
         end do
@@ -122,33 +122,33 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
 !
         iinf = 1
         isup = nbno
- 40     continue
+40      continue
         ino = (iinf+isup)/2
-        if (wdefca(ino,s,alpha,f0,frco,frli) .gt. wdef) then
+        if (wdefca(ino, s, alpha, f0, frco, frli) .gt. wdef) then
             isup = ino
         else
             iinf = ino
-        endif
+        end if
         if (isup-iinf .gt. 1) goto 40
 !
-        winf = wdefca(iinf,s,alpha,f0,frco,frli)
-        wsup = wdefca(isup,s,alpha,f0,frco,frli)
-        ds = s(isup) - s(iinf)
-        pente = ( wsup - winf ) / ds
-        d = s(iinf) + ( wdef - winf ) / pente
+        winf = wdefca(iinf, s, alpha, f0, frco, frli)
+        wsup = wdefca(isup, s, alpha, f0, frco, frli)
+        ds = s(isup)-s(iinf)
+        pente = (wsup-winf)/ds
+        d = s(iinf)+(wdef-winf)/pente
 !
         alphai = alpha(iinf)
         alphas = alpha(isup)
-        pente = ( alphas - alphai ) / ds
-        alphad = alphai + pente * ( d - s(iinf) )
+        pente = (alphas-alphai)/ds
+        alphad = alphai+pente*(d-s(iinf))
 !
-        f2 = f0 * dble ( exp ( - frco * alphad - frli * d ) )
-        f2 = f2 * f2
+        f2 = f0*dble(exp(-frco*alphad-frli*d))
+        f2 = f2*f2
         do ino = 1, iinf
             f(ino) = f2/f(ino)
         end do
 !
-    endif
+    end if
 !
 999 continue
 !

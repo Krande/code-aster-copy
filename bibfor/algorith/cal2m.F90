@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cal2m(chamno, phibar, modele, mate, mateco, nu,&
+subroutine cal2m(chamno, phibar, modele, mate, mateco, nu, &
                  vecas2, nd, nr, nv)
     implicit none
 #include "asterfort/assvec.h"
@@ -44,8 +44,8 @@ subroutine cal2m(chamno, phibar, modele, mate, mateco, nu,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    ve2 ='VE2'
-    call phi2el(modele, ' ', mate, mateco, chamno, phibar,&
+    ve2 = 'VE2'
+    call phi2el(modele, ' ', mate, mateco, chamno, phibar, &
                 r8bid, ve2)
 !
 !     --- ASSEMBLAGE DU VECTEUR ELEMENTAIRE DE FLUX SUR LA

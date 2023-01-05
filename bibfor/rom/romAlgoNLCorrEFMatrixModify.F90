@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romAlgoNLCorrEFMatrixModify(nume_dof, matr_asse, ds_algorom)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/mtdsc2.h"
 !
-    character(len=24)    , intent(in) :: nume_dof
-    character(len=19)    , intent(in) :: matr_asse
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: matr_asse
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ implicit none
 ! - Get parameters
 !
     call dismoi('MATR_DISTR', matr_asse, 'MATR_ASSE', repk=kmatd)
-    call dismoi('NB_EQUA'   , nume_dof , 'NUME_DDL' , repi=nb_equa_init)
+    call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=nb_equa_init)
     vale_pena = ds_algorom%vale_pena
 !
 ! - Get diagonal
@@ -71,23 +71,23 @@ implicit none
 ! - Total number of equation
 !
     if (kmatd .eq. 'OUI') then
-        call jeveuo(matr_asse//'.&INT', 'L', vi = v_int)
+        call jeveuo(matr_asse//'.&INT', 'L', vi=v_int)
         nb_equa = v_int(6)
     else
         nb_equa = nb_equa_init
-    endif
+    end if
 !
 ! - Access to values
 !
-    call jeveuo(jexnum(matr_asse//'.VALM', 1), 'E', vr = v_valm)
+    call jeveuo(jexnum(matr_asse//'.VALM', 1), 'E', vr=v_valm)
     do i_equa = 1, nb_equa
         if (ds_algorom%v_equa_sub(i_equa) .eq. 1) then
             if (ds_algorom%v_equa_int(i_equa) .eq. 1) then
                 v_valm(zi(jv_sxdi-1+i_equa)) = vale_pena*v_valm(zi(jv_sxdi-1+i_equa))
             else
                 v_valm(zi(jv_sxdi-1+i_equa)) = sqrt(vale_pena)*v_valm(zi(jv_sxdi-1+i_equa))
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine cgvein(compor)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-character(len=19), intent(in) :: compor
+    character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,9 +63,9 @@ character(len=19), intent(in) :: compor
     chtmp = '&&CGVEIN_CHTMP'
     chcalc = '&&CGVEIN_CHCALC'
 !
-    call carces(compor, 'ELEM', ' ', 'V', chtmp,&
+    call carces(compor, 'ELEM', ' ', 'V', chtmp, &
                 'A', iret)
-    call cesred(chtmp, 0, [0], 1, 'RELCOM',&
+    call cesred(chtmp, 0, [0], 1, 'RELCOM', &
                 'V', chcalc)
     call detrsd('CHAM_ELEM_S', chtmp)
     call jeveuo(chcalc//'.CESD', 'L', jcald)
@@ -78,16 +78,16 @@ character(len=19), intent(in) :: compor
 !
     do ima = 1, nbma
 !
-        call cesexi('C', jcald, jcall, ima, 1,&
+        call cesexi('C', jcald, jcall, ima, 1, &
                     1, 1, iadc)
         ASSERT(iadc .gt. 0)
         k16ldc = cesv(iadc)
 !
 !       seules relations de type COMP_INCR autorisees
         lldcok = k16ldc .eq. 'ELAS            '
-        if (.not.lldcok) call utmess('F', 'RUPTURE1_69', sk=k16ldc)
+        if (.not. lldcok) call utmess('F', 'RUPTURE1_69', sk=k16ldc)
 !
-    enddo
+    end do
 !
     call jedema()
 !

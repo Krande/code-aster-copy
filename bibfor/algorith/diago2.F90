@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,16 +38,16 @@ subroutine diago2(tens, vecp, valp)
     call r8inir(4, 0.d0, vecp, 1)
 !
 ! -- PASSAGE AU DEVIATEUR
-    trace=(tens(1)+tens(2))/2.d0
+    trace = (tens(1)+tens(2))/2.d0
 !
-    dev(1)=tens(1)-trace
-    dev(2)=tens(2)-trace
-    dev(3)=tens(3)
+    dev(1) = tens(1)-trace
+    dev(2) = tens(2)-trace
+    dev(3) = tens(3)
 !
 ! -- CALCUL DES COEFFICIENTS DU POLYNOME P2
 !
-    det(1)=dev(1)+dev(2)
-    det(2)=dev(1)*dev(2)-dev(3)**2
+    det(1) = dev(1)+dev(2)
+    det(2) = dev(1)*dev(2)-dev(3)**2
 !
     call zerop2(-det(1), det(2), valp, nrac)
 !
@@ -56,36 +56,36 @@ subroutine diago2(tens, vecp, valp)
 !      ON PRENDRA CELUI DONT LA NORME EST LA PLUS GRANDE
     do ind = 1, 2
         if (ind .eq. 1) then
-            vecp(1,ind)= dev(1)-valp(2)
-            vecp(2,ind)= dev(3)
-        else if (ind.eq.2) then
-            vecp(1,ind)= dev(3)
-            vecp(2,ind)= dev(2)-valp(2)
-        endif
-        y(ind)=vecp(1,ind)**2+vecp(2,ind)**2
+            vecp(1, ind) = dev(1)-valp(2)
+            vecp(2, ind) = dev(3)
+        else if (ind .eq. 2) then
+            vecp(1, ind) = dev(3)
+            vecp(2, ind) = dev(2)-valp(2)
+        end if
+        y(ind) = vecp(1, ind)**2+vecp(2, ind)**2
     end do
-    ind=1
+    ind = 1
     if (y(2) .gt. y(1)) then
-        ind=2
-    endif
-    a=sqrt(y(ind))
+        ind = 2
+    end if
+    a = sqrt(y(ind))
 ! -- CAS DE 2 VALEURS PROPRES EGALES
     if (a .lt. r8miem()) then
         call r8inir(4, 0.d0, vecp, 1)
-        vecp(1,1)=1.d0
-        vecp(2,2)=1.d0
+        vecp(1, 1) = 1.d0
+        vecp(2, 2) = 1.d0
     else
         do i = 1, 2
-            vecp(i,1)=vecp(i,ind)/a
+            vecp(i, 1) = vecp(i, ind)/a
         end do
 !
-        vecp(1,2)=-vecp(2,1)
-        vecp(2,2)=vecp(1,1)
+        vecp(1, 2) = -vecp(2, 1)
+        vecp(2, 2) = vecp(1, 1)
 !
-    endif
+    end if
 !
     do i = 1, 2
-        valp(i)=valp(i)+trace
+        valp(i) = valp(i)+trace
     end do
 !
 end subroutine

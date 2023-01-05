@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine peecin(resu, modele, mate, mateco, cara, nh, nbocc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -68,7 +68,7 @@ implicit none
     integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
     integer :: ie, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, lfreq, nbparr, nbpard
     integer :: nbpaep, iocc, jma, nf, inume, ier
-    parameter (nbpaep=2,nbparr=6,nbpard=4)
+    parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, xfreq, varpep(nbpaep), valer(3), inst
     real(kind=8) :: rundf
     character(len=1) :: base
@@ -83,17 +83,17 @@ implicit none
     aster_logical :: exitim, l_modal
     complex(kind=8) :: c16b
 !
-    data noparr/'NUME_ORDRE','FREQ','LIEU','ENTITE','TOTALE',&
+    data noparr/'NUME_ORDRE', 'FREQ', 'LIEU', 'ENTITE', 'TOTALE',&
      &     'POUR_CENT'/
-    data typarr/'I','R','K24','K8','R','R'/
-    data nopard/'LIEU','ENTITE','TOTALE','POUR_CENT'/
-    data typard/'K8','K8','R','R'/
-    data tabtyp/'NOEU#DEPL_R','NOEU#TEMP_R','ELEM#ENER_R'/
-    data chvarc,chvref /'&&PEECIN.VARC','&&PEECIN.VARC_REF'/
+    data typarr/'I', 'R', 'K24', 'K8', 'R', 'R'/
+    data nopard/'LIEU', 'ENTITE', 'TOTALE', 'POUR_CENT'/
+    data typard/'K8', 'K8', 'R', 'R'/
+    data tabtyp/'NOEU#DEPL_R', 'NOEU#TEMP_R', 'ELEM#ENER_R'/
+    data chvarc, chvref/'&&PEECIN.VARC', '&&PEECIN.VARC_REF'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    c16b=(0.d0,0.d0)
+    c16b = (0.d0, 0.d0)
 !
     base = 'V'
     rundf = r8vide()
@@ -109,7 +109,7 @@ implicit none
         call chpve2(field_node, 3, tabtyp, ier)
         call dismoi('TYPE_SUPERVIS', field_node, 'CHAMP', repk=typcha)
         call dismoi('NOM_GD', field_node, 'CHAMP', repk=nomgd)
-    endif
+    end if
     call getvr8(' ', 'FREQ', scal=xfreq, nbret=nf)
     call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
     call getvr8(' ', 'INST', scal=inst, nbret=ni)
@@ -119,16 +119,16 @@ implicit none
         call gettco(resul, typres)
         if (typres(1:9) .eq. 'MODE_MECA') then
             noparr(2) = 'FREQ'
-        else if (typres(1:9).eq.'EVOL_THER' .or. typres(1:9) .eq.'EVOL_ELAS' .or.&
-                 typres(1:9).eq.'EVOL_NOLI' .or. typres(1: 10).eq.'DYNA_TRANS') then
+        else if (typres(1:9) .eq. 'EVOL_THER' .or. typres(1:9) .eq. 'EVOL_ELAS' .or. &
+                 typres(1:9) .eq. 'EVOL_NOLI' .or. typres(1:10) .eq. 'DYNA_TRANS') then
             noparr(2) = 'INST'
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
     option = 'ENER_CIN'
-    call mecham(option, modele, cara, nh, chgeom,&
+    call mecham(option, modele, cara, nh, chgeom, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 90
     noma = chgeom(1:8)
@@ -148,7 +148,7 @@ implicit none
         else
             call utmess('I', 'UTILITAI3_70')
             xfreq = (r8depi()*xfreq)**2
-        endif
+        end if
         nbordr = 1
         call wkvect(knum, 'V V I', nbordr, jord)
         zi(jord) = 1
@@ -172,9 +172,9 @@ implicit none
                     call utmess('A', 'UTILITAI3_71')
                 else
                     if (opt(1:14) .eq. 'MASS_MECA_DIAG') inume = 0
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !        --- ON VERIFIE SI L'UTILISATEUR A DEMANDE L'UTILISATION ---
 !        --- D'UNE MATRICE DE MASSE DIAGONALE                    ---
 !        --- DANS LA COMMANDE POST_ELEM                          ---
@@ -182,7 +182,7 @@ implicit none
         if (optmas(1:14) .eq. 'MASS_MECA_DIAG') then
             inume = 0
             call utmess('I', 'UTILITAI3_72')
-        endif
+        end if
 !
         call wkvect(kins, 'V V R', nbordr, jins)
 !            CAS D'UN CALCUL MODAL
@@ -191,11 +191,11 @@ implicit none
         if (iret .ne. 0) then
             do iord = 1, nbordr
                 numord = zi(jord+iord-1)
-                call rsadpa(resul, 'L', 1, 'FREQ', numord,&
+                call rsadpa(resul, 'L', 1, 'FREQ', numord, &
                             0, sjv=iainst, styp=k8b, istop=0)
                 zr(jins+iord-1) = zr(iainst)
             end do
-        endif
+        end if
 !            CAS CALCUL TRANSITOIRE
 !            RECUPERATION DES INSTANTS
         call jenonu(jexnom(resul//'           .NOVA', 'INST'), iret)
@@ -203,17 +203,17 @@ implicit none
             exitim = .true.
             do iord = 1, nbordr
                 numord = zi(jord+iord-1)
-                call rsadpa(resul, 'L', 1, 'INST', numord,&
+                call rsadpa(resul, 'L', 1, 'INST', numord, &
                             0, sjv=iainst, styp=k8b, istop=0)
                 zr(jins+iord-1) = zr(iainst)
             end do
-        endif
+        end if
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbparr, noparr, typarr)
-    endif
+    end if
 !
     chmasd = '&&PEECIN.MASD'
-    call mecact('V', chmasd, 'MAILLA', noma, 'POSI',&
+    call mecact('V', chmasd, 'MAILLA', noma, 'POSI', &
                 ncmp=1, nomcmp='POS', si=inume)
 !
     do iord = 1, nbordr
@@ -222,13 +222,13 @@ implicit none
         l_modal = ASTER_FALSE
         numord = zi(jord+iord-1)
         inst = zr(jins+iord-1)
-        ASSERT(inst.ne.rundf)
+        ASSERT(inst .ne. rundf)
         valer(1) = inst
         if (typres .eq. 'FOURIER_ELAS') then
-            call rsadpa(resul, 'L', 1, 'NUME_MODE', numord,&
+            call rsadpa(resul, 'L', 1, 'NUME_MODE', numord, &
                         0, sjv=jnmo, styp=k8b)
             call meharm(modele, zi(jnmo), chharm)
-        endif
+        end if
         chtime = ' '
         if (exitim) call mechti(noma, inst, rundf, rundf, chtime)
 !
@@ -246,40 +246,40 @@ implicit none
                     if (iret .gt. 0) goto 72
                     call dismoi('NOM_GD', field_node, 'CHAMP', repk=nomgd)
                     call dismoi('TYPE_SUPERVIS', field_node, 'CHAMP', repk=typcha)
-                endif
+                end if
             else
                 call dismoi('NOM_GD', field_elem, 'CHAMP', repk=nomgd)
                 call dismoi('TYPE_SUPERVIS', field_elem, 'CHAMP', repk=typcha)
-            endif
+            end if
             if (exitim) then
                 xfreq = 1.d0
             else
                 call rsadpa(resul, 'L', 1, 'OMEGA2', numord, 0, sjv=lfreq)
                 xfreq = zr(lfreq)
-            endif
-        endif
+            end if
+        end if
 !
         chfreq = '&&PEECIN.OMEGA2'
-        call mecact('V', chfreq, 'MAILLA', noma, 'OME2_R',&
+        call mecact('V', chfreq, 'MAILLA', noma, 'OME2_R', &
                     ncmp=1, nomcmp='OMEG2', sr=xfreq)
 !
         if (typcha(1:7) .eq. 'CHAM_NO') then
             if (nomgd(1:4) .eq. 'DEPL') then
                 call vrcins(modele, mate, cara, inst, chvarc, codret)
-                call vrcref(modele(1:8), mate(1:8), cara(1:8), chvref(1: 19))
+                call vrcref(modele(1:8), mate(1:8), cara(1:8), chvref(1:19))
             else
                 call utmess('F', 'UTILITAI3_73')
-            endif
-        else if (typcha(1:9).eq.'CHAM_ELEM') then
+            end if
+        else if (typcha(1:9) .eq. 'CHAM_ELEM') then
             if (nomgd(1:4) .eq. 'ENER') then
                 chelem = field_elem
                 goto 30
             else
                 call utmess('F', 'UTILITAI3_73')
-            endif
+            end if
         else
             call utmess('F', 'UTILITAI3_73')
-        endif
+        end if
         chelem = '&&PEECIN.CHAM_ELEM'
         ibid = 0
         if (l_modal) then
@@ -288,22 +288,22 @@ implicit none
         else
             chvite = field_node
             chdisp = ' '
-        endif
+        end if
 
-        call compEnergyKinetic(modele, ligrel, l_modal,&
-                               chdisp, chvite, chfreq , chgeom , mateco,&
-                               chcara, chmasd, chvarc , &
-                               base  , chelem, iret)
- 30     continue
+        call compEnergyKinetic(modele, ligrel, l_modal, &
+                               chdisp, chvite, chfreq, chgeom, mateco, &
+                               chcara, chmasd, chvarc, &
+                               base, chelem, iret)
+30      continue
 !
 !        --- ON CALCULE L'ENERGIE TOTALE ---
         call peenca(chelem, nbpaep, varpep, 0, [ibid])
 !
         do iocc = 1, nbocc
             call getvtx(option(1:9), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
-            call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
+            call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc, &
                         0, k8b, nm)
-            call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&
+            call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc, &
                         0, k8b, ng)
             if (nt .ne. 0) then
                 call peenca(chelem, nbpaep, varpep, 0, [ibid])
@@ -312,17 +312,17 @@ implicit none
                 if (nr .ne. 0) then
                     valer(2) = varpep(1)
                     valer(3) = varpep(2)
-                    call tbajli(resu, nbparr, noparr, [numord], valer,&
+                    call tbajli(resu, nbparr, noparr, [numord], valer, &
                                 [c16b], valk, 0)
                 else
-                    call tbajli(resu, nbpard, nopard, [numord], varpep,&
+                    call tbajli(resu, nbpard, nopard, [numord], varpep, &
                                 [c16b], valk, 0)
-                endif
-            endif
+                end if
+            end if
             if (ng .ne. 0) then
                 nbgrma = -ng
                 call wkvect('&&PEECIN_GROUPM', 'V V K24', nbgrma, jgr)
-                call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&
+                call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc, &
                             nbgrma, zk24(jgr), ng)
                 valk2(2) = 'GROUP_MA'
                 do ig = 1, nbgrma
@@ -331,32 +331,32 @@ implicit none
                     if (iret .eq. 0) then
                         call utmess('A', 'UTILITAI3_46', sk=nomgrm)
                         goto 40
-                    endif
+                    end if
                     call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
                         call utmess('A', 'UTILITAI3_47', sk=nomgrm)
                         goto 40
-                    endif
+                    end if
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
                     call peenca(chelem, nbpaep, varpep, nbma, zi(jad))
                     valk2(1) = nomgrm
                     if (nr .ne. 0) then
                         valer(2) = varpep(1)
                         valer(3) = varpep(2)
-                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                        call tbajli(resu, nbparr, noparr, [numord], valer, &
                                     [c16b], valk2, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, [numord], varpep,&
+                        call tbajli(resu, nbpard, nopard, [numord], varpep, &
                                     [c16b], valk2, 0)
-                    endif
- 40                 continue
+                    end if
+40                  continue
                 end do
                 call jedetr('&&PEECIN_GROUPM')
-            endif
+            end if
             if (nm .ne. 0) then
                 nbma = -nm
                 call wkvect('&&PEECIN_MAILLE', 'V V K8', nbma, jma)
-                call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
+                call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc, &
                             nbma, zk8(jma), nm)
                 valk(2) = 'MAILLE'
                 do im = 1, nbma
@@ -365,33 +365,33 @@ implicit none
                     if (iret .eq. 0) then
                         call utmess('A', 'UTILITAI3_49', sk=nommai)
                         goto 50
-                    endif
+                    end if
                     call jenonu(jexnom(mlgnma, nommai), nume)
                     call peenca(chelem, nbpaep, varpep, 1, [nume])
                     valk(1) = nommai
                     if (nr .ne. 0) then
                         valer(2) = varpep(1)
                         valer(3) = varpep(2)
-                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                        call tbajli(resu, nbparr, noparr, [numord], valer, &
                                     [c16b], valk, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, [numord], varpep,&
+                        call tbajli(resu, nbpard, nopard, [numord], varpep, &
                                     [c16b], valk, 0)
-                    endif
- 50                 continue
+                    end if
+50                  continue
                 end do
                 call jedetr('&&PEECIN_MAILLE')
-            endif
+            end if
         end do
         call jedetr('&&PEECIN.PAR')
- 72     continue
+72      continue
         call jedema()
     end do
 !
- 80 continue
+80  continue
     call jedetr(knum)
     call jedetr(kins)
 !
- 90 continue
+90  continue
     call jedema()
 end subroutine

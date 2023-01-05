@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romFieldBuildGappy(resultRom, fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -36,8 +36,8 @@ implicit none
 #include "blas/dgemm.h"
 #include "blas/dgesv.h"
 !
-type(ROM_DS_Result), intent(in) :: resultRom
-type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
+    type(ROM_DS_Result), intent(in) :: resultRom
+    type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,56 +72,56 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM17_8')
-    endif
+    end if
 !
 ! - Get parameters about reduced results
 !
     resultRomName = resultRom%resultName
-    nbStore       = resultRom%nbStore
+    nbStore = resultRom%nbStore
 !
 ! - Get parameters about base
 !
-    base          = fieldBuild%base
-    mode          = base%mode
-    nbMode        = base%nbMode
+    base = fieldBuild%base
+    mode = base%mode
+    nbMode = base%nbMode
 !
 ! - Get parameters about mode
 !
-    fieldName     = mode%fieldName
+    fieldName = mode%fieldName
 !
 ! - Get parameters
 !
-    nbEquaRID     = fieldBuild%nbEquaRID
+    nbEquaRID = fieldBuild%nbEquaRID
 !
 ! - Allocate objects
 !
-    AS_ALLOCATE(vr = fieldBuild%reduMatr, size = nbMode * (nbStore - 1))
-    AS_ALLOCATE(vr = systMatr, size = nbMode*nbMode)
-    AS_ALLOCATE(vr = systVect, size = nbMode)
-    AS_ALLOCATE(vi4 = systPerm, size = nbMode)
+    AS_ALLOCATE(vr=fieldBuild%reduMatr, size=nbMode*(nbStore-1))
+    AS_ALLOCATE(vr=systMatr, size=nbMode*nbMode)
+    AS_ALLOCATE(vr=systVect, size=nbMode)
+    AS_ALLOCATE(vi4=systPerm, size=nbMode)
     if (fieldBuild%lRIDTrunc) then
-        AS_ALLOCATE(vr = valeField, size = nbEquaRID)
-    endif
+        AS_ALLOCATE(vr=valeField, size=nbEquaRID)
+    end if
 !
 ! - Compute Gappy POD
 !
-    do iStore = 1, nbStore - 1
+    do iStore = 1, nbStore-1
         numeStore = iStore
 
 ! ----- Get current field from reduced model
-        call rsexch(' '      , resultRomName, fieldName,&
-                    numeStore, fieldRom     , iret)
+        call rsexch(' ', resultRomName, fieldName, &
+                    numeStore, fieldRom, iret)
         ASSERT(iret .eq. 0)
-        call dismoi('TYPE_CHAMP', fieldRom, 'CHAMP', repk = fieldSupp)
+        call dismoi('TYPE_CHAMP', fieldRom, 'CHAMP', repk=fieldSupp)
         if (fieldSupp == 'NOEU') then
-            call jeveuo(fieldRom(1:19)//'.VALE', 'L', vr = valeRom)
+            call jeveuo(fieldRom(1:19)//'.VALE', 'L', vr=valeRom)
             call jelira(fieldRom(1:19)//'.VALE', 'LONMAX', nbEquaRom)
         else if (fieldSupp == 'ELGA') then
-            call jeveuo(fieldRom(1:19)//'.CELV', 'L', vr = valeRom)
+            call jeveuo(fieldRom(1:19)//'.CELV', 'L', vr=valeRom)
             call jelira(fieldRom(1:19)//'.CELV', 'LONMAX', nbEquaRom)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
 ! ----- Truncate input field if required
         if (fieldBuild%lRIDTrunc) then
@@ -130,49 +130,49 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
                 numeEqua = fieldBuild%equaRIDTrunc(iEqua)
                 if (numeEqua .ne. 0) then
                     valeField(numeEqua) = valeRom(iEqua)
-                    nbEqua              = nbEqua + 1
-                endif
-            enddo
+                    nbEqua = nbEqua+1
+                end if
+            end do
             ASSERT(nbEqua .eq. nbEquaRID)
         else
             ASSERT(nbEquaRom .eq. nbEquaRID)
             if (fieldSupp == 'NOEU') then
-                call jeveuo(fieldRom(1:19)//'.VALE', 'L', vr = valeField)
+                call jeveuo(fieldRom(1:19)//'.VALE', 'L', vr=valeField)
             else if (fieldSupp == 'ELGA') then
-                call jeveuo(fieldRom(1:19)//'.CELV', 'L', vr = valeField)
+                call jeveuo(fieldRom(1:19)//'.CELV', 'L', vr=valeField)
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
+            end if
+        end if
 
 ! ----- Compute matrix and vector
-        call dgemm('T', 'N',&
-                   nbMode, 1, nbEquaRID, 1.d0,&
-                   fieldBuild%matrPhiRID, nbEquaRID, valeField, nbEquaRID, 0.d0,&
+        call dgemm('T', 'N', &
+                   nbMode, 1, nbEquaRID, 1.d0, &
+                   fieldBuild%matrPhiRID, nbEquaRID, valeField, nbEquaRID, 0.d0, &
                    systVect, nbMode)
-        call dgemm('T', 'N', nbMode, nbMode, nbEquaRID, 1.d0,&
-                   fieldBuild%matrPhiRID, nbEquaRID, fieldBuild%matrPhiRID, nbEquaRID, 0.d0,&
+        call dgemm('T', 'N', nbMode, nbMode, nbEquaRID, 1.d0, &
+                   fieldBuild%matrPhiRID, nbEquaRID, fieldBuild%matrPhiRID, nbEquaRID, 0.d0, &
                    systMatr, nbMode)
 
 ! ----- Solve system
         call dgesv(nbMode, 1, systMatr, nbMode, systPerm, systVect, nbMode, systInfo)
         if (systInfo .ne. 0) then
             call utmess('F', 'ROM17_9')
-        endif
+        end if
 
 ! ----- Copy result
         do iMode = 1, nbMode
             fieldBuild%reduMatr(iMode+nbMode*(numeStore-1)) = systVect(iMode)
-        enddo
-    enddo
+        end do
+    end do
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = systMatr)
-    AS_DEALLOCATE(vr = systVect)
-    AS_DEALLOCATE(vi4 = systPerm)
+    AS_DEALLOCATE(vr=systMatr)
+    AS_DEALLOCATE(vr=systVect)
+    AS_DEALLOCATE(vi4=systPerm)
     if (fieldBuild%lRIDTrunc) then
-        AS_DEALLOCATE(vr = valeField)
-    endif
+        AS_DEALLOCATE(vr=valeField)
+    end if
 !
 end subroutine

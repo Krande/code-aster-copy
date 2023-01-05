@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine xvelfm(nb_cracks, cracks, model_xfem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dismoi.h"
@@ -58,7 +58,7 @@ implicit none
     call exixfe(model_xfem, iret)
     if (iret .eq. 0) then
         call utmess('F', 'XFEM_72', sk=model_xfem)
-    endif
+    end if
 !
 ! - Loop on cracks
 !
@@ -66,19 +66,19 @@ implicit none
 !
 ! ----- Crack in model ?
 !
-        ltrouv = xvfimo(model_xfem,cracks(i_crack))
-        if (.not.ltrouv) then
-            valk(1)=cracks(i_crack)
-            valk(2)=model_xfem
+        ltrouv = xvfimo(model_xfem, cracks(i_crack))
+        if (.not. ltrouv) then
+            valk(1) = cracks(i_crack)
+            valk(2) = model_xfem
             call utmess('F', 'XFEM_73', nk=2, valk=valk)
-        endif
+        end if
 !
 ! ----- No PRES_REP on lips if CZM
 !
         call dismoi('TYPE_DISCONTINUITE', cracks(i_crack), 'FISS_XFEM', repk=typdis)
         if (typdis .eq. 'COHESIF') then
             call utmess('F', 'XFEM2_7', sk=cracks(i_crack))
-        endif
+        end if
     end do
 !
 end subroutine

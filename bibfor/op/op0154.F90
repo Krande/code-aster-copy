@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine op0154()
 !
-use mesh_module, only : checkInclude
+    use mesh_module, only: checkInclude
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -83,7 +83,7 @@ implicit none
     call getres(meshReuse, kbi1, kbi2)
     if (mesh .ne. meshReuse) then
         call utmess('F', 'MESH1_15')
-    endif
+    end if
 !
 ! - Flag when mesh topology has been changed (new nodes, new elements)
 !
@@ -95,7 +95,7 @@ implicit none
     if (nbocc .ne. 0) then
         lModiTopo = ASTER_TRUE
         call conori(mesh)
-    endif
+    end if
 !
 ! - For "MODI_MAILLE"
 !
@@ -105,8 +105,8 @@ implicit none
         call getvtx('MODI_MAILLE', 'OPTION', iocc=1, scal=option)
         if (option .eq. 'NOEUD_QUART') then
             call momaba(mesh)
-        endif
-    endif
+        end if
+    end if
 !
 ! - For "DEFORME"
 !
@@ -114,7 +114,7 @@ implicit none
     if (nbocc .ne. 0) then
         lModiTopo = ASTER_FALSE
         call getvr8('DEFORME', 'ALEA', iocc=1, scal=alea, nbret=n1)
-        if (n1.eq.1) then
+        if (n1 .eq. 1) then
             call modi_alea(mesh, alea)
         else
             call getvid('DEFORME', 'DEPL', iocc=1, scal=disp, nbret=n1)
@@ -122,48 +122,48 @@ implicit none
             call dismoi('NOM_MAILLA', disp, 'CHAM_NO', repk=dispMesh)
             if (dispMesh .ne. mesh) then
                 call utmess('F', 'MESH1_1')
-            endif
+            end if
             call chpver('F', disp, 'NOEU', 'DEPL_R', ier)
             geomInit = mesh//'.COORDO'
             geomModi = mesh//'.COORD2'
-            call vtgpld('CUMU', 1.d0, geomInit,  disp, 'V', geomModi)
+            call vtgpld('CUMU', 1.d0, geomInit, disp, 'V', geomModi)
             call detrsd('CHAMP_GD', geomInit)
             call copisd('CHAMP_GD', 'G', geomModi, geomInit)
             call detrsd('CHAMP_GD', geomModi)
-        endif
-    endif
+        end if
+    end if
 !
 ! - For "TRANSLATION"
 !
     call getvr8(' ', 'TRANSLATION', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         lModiTopo = ASTER_FALSE
-        geomInit  = mesh//'.COORDO'
-        bidim     = ASTER_FALSE
+        geomInit = mesh//'.COORDO'
+        bidim = ASTER_FALSE
         call getvr8(' ', 'TRANSLATION', nbval=0, nbret=nbDime)
-        nbDime = - nbDime
+        nbDime = -nbDime
         if (nbDime .eq. 2) then
             call getvr8(' ', 'TRANSLATION', nbval=2, vect=dir, nbret=n1)
             dir(3) = 0.d0
             bidim = ASTER_TRUE
         elseif (nbDime .eq. 3) then
             call getvr8(' ', 'TRANSLATION', nbval=3, vect=dir, nbret=n1)
-            bidim   = ASTER_FALSE
+            bidim = ASTER_FALSE
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         call tranma(geomInit, dir, bidim)
-    endif
+    end if
 !
 ! - For "MODI_BASE"
 !
     call getfac('MODI_BASE', nbocc)
     if (nbocc .ne. 0) then
         lModiTopo = ASTER_TRUE
-        geomInit  = mesh//'.COORDO'
-        bidim     = ASTER_FALSE
+        geomInit = mesh//'.COORDO'
+        bidim = ASTER_FALSE
         call getvr8('MODI_BASE', 'VECT_X', iocc=1, nbval=0, nbret=nbDime)
-        nbDime = - nbDime
+        nbDime = -nbDime
         if (nbDime .eq. 2) then
             call getvr8('MODI_BASE', 'VECT_X', iocc=1, nbval=2, vect=pt, nbret=n1)
             pt(3) = 0.d0
@@ -174,22 +174,22 @@ implicit none
             call getvr8('MODI_BASE', 'VECT_Y', iocc=1, nbval=3, vect=pt2, nbret=n1)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         call chgref(geomInit, pt, pt2, bidim)
-    endif
+    end if
 !
 ! - For "ROTATION"
 !
     call getfac('ROTATION', nbocc)
     if (nbocc .ne. 0) then
         lModiTopo = ASTER_TRUE
-        geomInit  = mesh//'.COORDO'
-        bidim     = ASTER_FALSE
+        geomInit = mesh//'.COORDO'
+        bidim = ASTER_FALSE
         do iOcc = 1, nbocc
             call getvr8('ROTATION', 'POIN_1', iocc=iOcc, nbval=0, nbret=nbDime)
-            call getvr8('ROTATION', 'ANGLE' , iocc=iOcc, scal=angl, nbret=n1)
+            call getvr8('ROTATION', 'ANGLE', iocc=iOcc, scal=angl, nbret=n1)
             call getvr8('ROTATION', 'POIN_2', iocc=iOcc, nbval=0, nbret=n2)
-            nbDime = - nbDime
+            nbDime = -nbDime
             if (nbDime .eq. 2) then
                 call getvr8('ROTATION', 'POIN_1', iocc=iOcc, nbval=2, vect=pt, nbret=n1)
                 pt(3) = 0.d0
@@ -200,23 +200,23 @@ implicit none
                 call getvr8('ROTATION', 'POIN_1', iocc=iOcc, nbval=3, vect=pt, nbret=n1)
                 if (n2 .ne. 0) then
                     call getvr8('ROTATION', 'POIN_2', iocc=iOcc, nbval=3, vect=pt2, nbret=n1)
-                    dir = pt2 - pt
+                    dir = pt2-pt
                 else
                     call getvr8('ROTATION', 'DIR', iocc=iOcc, nbval=3, vect=dir, nbret=n1)
-                endif
+                end if
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             call rotama(geomInit, pt, dir, angl, bidim)
         end do
-    endif
+    end if
 !
 ! - For "SYMETRIE"
 !
     call getfac('SYMETRIE', nbocc)
     if (nbocc .ne. 0) then
         lModiTopo = ASTER_TRUE
-        geomInit  = mesh//'.COORDO'
+        geomInit = mesh//'.COORDO'
         do iOcc = 1, nbocc
             call getvr8('SYMETRIE', 'POINT', iocc=iOcc, nbval=0, nbret=nbDime)
             call getvr8('SYMETRIE', 'AXE_1', iocc=iOcc, nbval=0, nbret=n1)
@@ -228,10 +228,10 @@ implicit none
             if (nbDime .eq. -2) then
                 if (n1 .ne. nbDime) then
                     call utmess('F', 'MESH1_62')
-                endif
+                end if
                 if (n2 .ne. 0) then
                     call utmess('A', 'MESH1_63')
-                endif
+                end if
                 call getvr8('SYMETRIE', 'POINT', iocc=iOcc, nbval=2, vect=pt, nbret=nbDime)
                 call getvr8('SYMETRIE', 'AXE_1', iocc=iOcc, nbval=2, vect=axe1, nbret=n1)
 !              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A Z ET AXE1
@@ -241,31 +241,31 @@ implicit none
             else
                 if (n1 .ne. nbDime) then
                     call utmess('F', 'MESH1_62')
-                endif
+                end if
                 if (n2 .ne. nbDime) then
                     call utmess('F', 'MESH1_64')
-                endif
+                end if
                 call getvr8('SYMETRIE', 'POINT', iocc=iOcc, nbval=3, vect=pt, nbret=nbDime)
                 call getvr8('SYMETRIE', 'AXE_1', iocc=iOcc, nbval=3, vect=axe1, nbret=n1)
                 call getvr8('SYMETRIE', 'AXE_2', iocc=iOcc, nbval=3, vect=axe2, nbret=n2)
 !              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A AXE1 ET AXE2
-                perp(1) = axe1(2)*axe2(3) - axe1(3)*axe2(2)
-                perp(2) = axe1(3)*axe2(1) - axe1(1)*axe2(3)
-                perp(3) = axe1(1)*axe2(2) - axe1(2)*axe2(1)
-            endif
+                perp(1) = axe1(2)*axe2(3)-axe1(3)*axe2(2)
+                perp(2) = axe1(3)*axe2(1)-axe1(1)*axe2(3)
+                perp(3) = axe1(1)*axe2(2)-axe1(2)*axe2(1)
+            end if
             call symema(geomInit, perp, pt)
         end do
-    endif
+    end if
 !
 ! - For "ECHELLE"
 !
     call getvr8(' ', 'ECHELLE', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         lModiTopo = ASTER_TRUE
-        geomInit  = mesh//'.COORDO'
+        geomInit = mesh//'.COORDO'
         call getvr8(' ', 'ECHELLE', scal=ltchar, nbret=n2)
         call echell(geomInit, ltchar)
-    endif
+    end if
 !
 ! - For "ORIE_PEAU" , "ORIE_LIGNE" and "ORIE_NORM_COQUE"
 !
@@ -277,7 +277,7 @@ implicit none
     if (nbocc .eq. 1) then
         lModiTopo = ASTER_TRUE
         call abscur(mesh)
-    endif
+    end if
 !
 ! - On interdit MODI_MAILLAGE après DECOUPE_LAC (excepte DEFORME et TRANSLATION)
 !

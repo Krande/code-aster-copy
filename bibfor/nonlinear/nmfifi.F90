@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 !
 !
 !    INITIALISATION
-    axi = typmod(1).eq.'AXIS'
+    axi = typmod(1) .eq. 'AXIS'
     call r8inir(8, 0.d0, fint, 1)
 !
 !
@@ -58,7 +58,7 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 !      CALCUL DES FINT = ( B_T SIGMA ) :
         do i = 1, 8
             do j = 1, 2
-                fint(i) = fint(i) + poids*b(j,i)*sigma(j,kpg)
+                fint(i) = fint(i)+poids*b(j, i)*sigma(j, kpg)
             end do
         end do
 !

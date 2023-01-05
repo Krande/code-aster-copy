@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dxeffi(option, nomte, pgl, cont, ind,&
+subroutine dxeffi(option, nomte, pgl, cont, ind, &
                   effint)
     implicit none
 #include "asterf_types.h"
@@ -53,8 +53,8 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
     aster_logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     zero = 0.0d0
@@ -62,26 +62,26 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
 !
 !     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 !     --------------------------------------------------------
-    if (nomte .ne. 'MEDKTR3 ' .and. nomte .ne. 'MEDSTR3 ' .and. nomte .ne. 'MEDKQU4 ' .and.&
+    if (nomte .ne. 'MEDKTR3 ' .and. nomte .ne. 'MEDSTR3 ' .and. nomte .ne. 'MEDKQU4 ' .and. &
         nomte .ne. 'MEDSQU4 ' .and. nomte .ne. 'MEQ4QU4 ' .and. nomte .ne. 'MET3TR3 ') then
         call utmess('F', 'ELEMENTS_34', sk=nomte)
-    endif
+    end if
 !
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcon = 6
     nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_46')
-    endif
+    end if
 !
 !
     multic = 0
     if (option .eq. 'FORC_NODA') then
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
-        call dxmate('RIGI', df, dm, dmf, dc,&
-                    dci, dmc, dfc, nno, pgl,&
+        call dxmate('RIGI', df, dm, dmf, dc, &
+                    dci, dmc, dfc, nno, pgl, &
                     multic, coupmf, t2iu, t2ui, t1ve)
-    endif
+    end if
 !
 !     -- GRANDEURS GEOMETRIQUES :
 !     ---------------------------
@@ -91,8 +91,8 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
         h = zr(icacoq)
         hic = h/nbcou
         distn = zr(icacoq+4)
-        zmin = -h/deux + distn
-    endif
+        zmin = -h/deux+distn
+    end if
 !
     call r8inir(32, zero, effint, 1)
 !
@@ -106,35 +106,35 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
 !
         do icou = 1, nbcou
             do igauh = 1, npgh
-                icpg = nbcon*npgh*nbcou*(ipg-1) + nbcon*npgh*(icou-1) + nbcon*(igauh-1)
+                icpg = nbcon*npgh*nbcou*(ipg-1)+nbcon*npgh*(icou-1)+nbcon*(igauh-1)
 !
                 if (igauh .eq. 1) then
-                    zic = zmin + (icou-1)*hic
+                    zic = zmin+(icou-1)*hic
                     coef = 1.d0/3.d0
-                else if (igauh.eq.2) then
-                    zic = zmin + hic/2.d0 + (icou-1)*hic
+                else if (igauh .eq. 2) then
+                    zic = zmin+hic/2.d0+(icou-1)*hic
                     coef = 4.d0/3.d0
                 else
-                    zic = zmin + hic + (icou-1)*hic
+                    zic = zmin+hic+(icou-1)*hic
                     coef = 1.d0/3.d0
-                endif
+                end if
                 if (multic .gt. 0) then
-                    iniv = igauh - 2
-                    call dxdmul(.false._1, icou, iniv, t1ve, t2ui,&
+                    iniv = igauh-2
+                    call dxdmul(.false._1, icou, iniv, t1ve, t2ui, &
                                 hm, d1i, d2i, zic, hic)
-                endif
+                end if
 !
 !         -- CALCUL DES EFFORTS GENERALISES DANS L'EPAISSEUR (N, M ET T)
 !         --------------------------------------------------------------
                 coehsd = coef*hic/2.d0
-                n(1) = n(1) + coehsd*cont(icpg+1)
-                n(2) = n(2) + coehsd*cont(icpg+2)
-                n(3) = n(3) + coehsd*cont(icpg+4)
-                m(1) = m(1) + coehsd*zic*cont(icpg+1)
-                m(2) = m(2) + coehsd*zic*cont(icpg+2)
-                m(3) = m(3) + coehsd*zic*cont(icpg+4)
-                t(1) = t(1) + coehsd*cont(icpg+5)
-                t(2) = t(2) + coehsd*cont(icpg+6)
+                n(1) = n(1)+coehsd*cont(icpg+1)
+                n(2) = n(2)+coehsd*cont(icpg+2)
+                n(3) = n(3)+coehsd*cont(icpg+4)
+                m(1) = m(1)+coehsd*zic*cont(icpg+1)
+                m(2) = m(2)+coehsd*zic*cont(icpg+2)
+                m(3) = m(3)+coehsd*zic*cont(icpg+4)
+                t(1) = t(1)+coehsd*cont(icpg+5)
+                t(2) = t(2)+coehsd*cont(icpg+6)
 !
             end do
         end do
@@ -146,7 +146,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
         if (ind .gt. 6) then
             effint((ipg-1)*ind+7) = t(1)
             effint((ipg-1)*ind+8) = t(2)
-        endif
+        end if
 !
     end do
 !

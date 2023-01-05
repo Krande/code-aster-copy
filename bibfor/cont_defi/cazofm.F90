@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -33,10 +33,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: sdcont
-integer, intent(in) :: cont_form
-integer, intent(in) :: cont_nbzone
-character(len=16), intent(in) :: keywf
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: cont_form
+    integer, intent(in) :: cont_nbzone
+    character(len=16), intent(in) :: keywf
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,23 +66,23 @@ character(len=16), intent(in) :: keywf
 !
 ! - Initializations
 !
-    algo_cont   = 0
-    algo_frot   = 0
-    l_frot      = ASTER_FALSE
-    s_formul    = ' '
-    s_frott     = ' '
+    algo_cont = 0
+    algo_frot = 0
+    l_frot = ASTER_FALSE
+    s_formul = ' '
+    s_frott = ' '
     s_algo_cont = ' '
-    if (cont_form.eq.1) then
+    if (cont_form .eq. 1) then
         s_formul = 'DISCRETE'
-    else if (cont_form.eq.2) then
+    else if (cont_form .eq. 2) then
         s_formul = 'CONTINUE'
-    else if (cont_form.eq.3) then
+    else if (cont_form .eq. 3) then
         s_formul = 'XFEM'
-    else if (cont_form.eq.5) then
+    else if (cont_form .eq. 5) then
         s_formul = 'LAC'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Datastructure for contact definition
 !
@@ -96,20 +96,20 @@ character(len=16), intent(in) :: keywf
 ! - Friction ?
 !
     call getvtx(' ', 'FROTTEMENT', scal=s_frott)
-    l_frot = s_frott.eq.'COULOMB'
+    l_frot = s_frott .eq. 'COULOMB'
 !
 ! - Get methods
 !
     call getvtx(keywf, 'ALGO_CONT', iocc=1, scal=s_algo_cont)
     if (cont_form .eq. 1) then
-        call cazouu(keywf, cont_nbzone, 'ALGO_CONT','T')
+        call cazouu(keywf, cont_nbzone, 'ALGO_CONT', 'T')
         if (l_frot) then
             algo_frot = 1
             if (s_algo_cont .eq. 'PENALISATION') then
                 algo_cont = 4
             else
                 call utmess('F', 'CONTACT3_3')
-            endif
+            end if
         else
             algo_frot = 0
             if (s_algo_cont .eq. 'GCP') then
@@ -120,38 +120,38 @@ character(len=16), intent(in) :: keywf
                 algo_cont = 4
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
+            end if
+        end if
     else if (cont_form .eq. 2) then
         algo_cont = 6
         if (l_frot) then
             lmunul = ASTER_FALSE
             do izone = 1, cont_nbzone
                 call getvr8(keywf, 'COULOMB', iocc=izone, scal=coefff)
-                lmunul = lmunul.or.(coefff.ne.0.d0)
+                lmunul = lmunul .or. (coefff .ne. 0.d0)
             end do
-            if (.not.lmunul) then
+            if (.not. lmunul) then
                 call utmess('A', 'CONTACT3_1')
                 l_frot = ASTER_FALSE
-            endif
-        endif
+            end if
+        end if
         if (l_frot) then
             algo_frot = 6
         else
             algo_frot = 0
-        endif
+        end if
     else if (cont_form .eq. 3) then
         algo_cont = 7
         if (l_frot) then
             algo_frot = 7
         else
             algo_frot = 0
-        endif
+        end if
     else if (cont_form .eq. 5) then
         algo_cont = 8
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Save methods
 !

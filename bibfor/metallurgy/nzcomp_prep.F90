@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine nzcomp_prep(jv_mater, phase_type, metaPara)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,9 +28,9 @@ implicit none
 #include "asterfort/metaSteelGetParameters.h"
 #include "asterfort/metaSteelTRCGetParameters.h"
 !
-integer, intent(in) :: jv_mater
-character(len=16), intent(in) :: phase_type
-type(META_MaterialParameters), intent(out) :: metaPara
+    integer, intent(in) :: jv_mater
+    character(len=16), intent(in) :: phase_type
+    type(META_MaterialParameters), intent(out) :: metaPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ type(META_MaterialParameters), intent(out) :: metaPara
 ! ----- Depending on temperature: too early here !
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     metaPara%steel = metaSteelPara
 !

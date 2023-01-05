@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,39 +52,39 @@ subroutine ddmpfn(zimat, nmnbn, nmddpl)
     ddmres(4) = 'DDFMEY2'
 !
     do i = 1, 2
-        call cdnfon(zimat, ddmres(2*(i-1)+1), nmnbn(i), 0, nmddpl(1, i),&
+        call cdnfon(zimat, ddmres(2*(i-1)+1), nmnbn(i), 0, nmddpl(1, i), &
                     ier0)
 !
         if (ier0 .gt. 0) then
-            call cdnfon(zimat, domres(2*(i-1)+1), nmnbn(i), 1, nmddpl(1, i),&
+            call cdnfon(zimat, domres(2*(i-1)+1), nmnbn(i), 1, nmddpl(1, i), &
                         ier1)
 !
             if (ier1 .gt. 0) then
-                call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 2, nmddpl(1, i),&
+                call cdnfon(zimat, nomres(2*(i-1)+1), nmnbn(i), 2, nmddpl(1, i), &
                             ier2)
 !
                 if (ier2 .eq. 3) then
                     call utmess('F', 'ELEMENTS_24')
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
-        call cdnfon(zimat, ddmres(2*i), nmnbn(i), 0, nmddpl(2, i),&
+        call cdnfon(zimat, ddmres(2*i), nmnbn(i), 0, nmddpl(2, i), &
                     ier0)
 !
         if (ier0 .gt. 0) then
-            call cdnfon(zimat, domres(2*i), nmnbn(i), 1, nmddpl(2, i),&
+            call cdnfon(zimat, domres(2*i), nmnbn(i), 1, nmddpl(2, i), &
                         ier1)
 !
             if (ier1 .gt. 0) then
-                call cdnfon(zimat, nomres(2*i), nmnbn(i), 2, nmddpl(2, i),&
+                call cdnfon(zimat, nomres(2*i), nmnbn(i), 2, nmddpl(2, i), &
                             ier2)
 !
                 if (ier2 .eq. 3) then
                     call utmess('F', 'ELEMENTS_24')
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
 end subroutine

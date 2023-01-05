@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
+subroutine dxktan(delas, mp1, mp2, nbackn, ncrit, &
                   dcc1, dcc2, dsidep)
     implicit none
 !     REALISE LE CALCUL DE LA MATRICE TANGENTE DANS LE CAS DE LA LOI
@@ -49,17 +49,17 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
     real(kind=8) :: dcc1(3, 3), dcc2(3, 3), dc1(6, 6), dc2(6, 6)
     real(kind=8) :: vect(6)
     real(kind=8) :: scal, scala, scalb
-    common /tdim/ n,nd
+    common/tdim/n, nd
 !
 !     INITIALISATION
-    n=6
+    n = 6
 !
     do i = 1, 6
         dfpla1(i) = 0.d0
         dfpla2(i) = 0.d0
         do j = 1, 6
-            dc1(i,j) = 0.d0
-            dc2(i,j) = 0.d0
+            dc1(i, j) = 0.d0
+            dc2(i, j) = 0.d0
         end do
     end do
 !
@@ -68,8 +68,8 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 !
     do i = 1, 3
         do j = 1, 3
-            dc1(i+3,j+3) = dcc1(i,j)
-            dc2(i+3,j+3) = dcc2(i,j)
+            dc1(i+3, j+3) = dcc1(i, j)
+            dc2(i+3, j+3) = dcc2(i, j)
         end do
     end do
 !
@@ -80,28 +80,28 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
     else if (ncrit .eq. 1) then
         call dfplas(nbackn(4), mp1, dfpla1(4))
         call lcprte(dfpla1, dfpla1, mata)
-        matb = matmul(delas,mata)
-        matc = matmul(matb,delas)
+        matb = matmul(delas, mata)
+        matc = matmul(matb, delas)
         call pmavec('ZERO', 6, dc1, dfpla1, vect)
         scal = dot_product(dfpla1(1:n), vect(1:n))
 !
         do i = 1, 6
             do j = 1, 6
-                dsidep(i,j)=delas(i,j)-matc(i,j)/scal
+                dsidep(i, j) = delas(i, j)-matc(i, j)/scal
             end do
         end do
 !
     else if (ncrit .eq. 2) then
         call dfplas(nbackn(4), mp2, dfpla2(4))
         call lcprte(dfpla2, dfpla2, mata)
-        matb = matmul(delas,mata)
-        matc = matmul(matb,delas)
+        matb = matmul(delas, mata)
+        matc = matmul(matb, delas)
         call pmavec('ZERO', 6, dc2, dfpla2, vect)
         scal = dot_product(dfpla2(1:n), vect(1:n))
 !
         do i = 1, 6
             do j = 1, 6
-                dsidep(i,j)=delas(i,j)-matc(i,j)/scal
+                dsidep(i, j) = delas(i, j)-matc(i, j)/scal
             end do
         end do
     else if (ncrit .eq. 12) then
@@ -109,37 +109,37 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 !     NUMERATEUR
         call dfplas(nbackn(4), mp1, dfpla1(4))
         call dfplas(nbackn(4), mp2, dfpla2(4))
-        call dxprd1(dfpla1, dfpla2, dc2, dfpla2, dfpla1,&
+        call dxprd1(dfpla1, dfpla2, dc2, dfpla2, dfpla1, &
                     mata)
-        call dxprd1(dfpla1, dfpla1, dc2, dfpla2, dfpla2,&
+        call dxprd1(dfpla1, dfpla1, dc2, dfpla2, dfpla2, &
                     matb)
-        call dxprd1(dfpla2, dfpla1, dc1, dfpla1, dfpla2,&
+        call dxprd1(dfpla2, dfpla1, dc1, dfpla1, dfpla2, &
                     matc)
-        call dxprd1(dfpla2, dfpla2, dc1, dfpla1, dfpla1,&
+        call dxprd1(dfpla2, dfpla2, dc1, dfpla1, dfpla1, &
                     matd)
 !     DENOMINATEUR
-        call dxprd2(dfpla1, dc1, dfpla1, dfpla2, dc2,&
+        call dxprd2(dfpla1, dc1, dfpla1, dfpla2, dc2, &
                     dfpla2, scala)
-        call dxprd2(dfpla2, dc1, dfpla1, dfpla1, dc2,&
+        call dxprd2(dfpla2, dc1, dfpla1, dfpla1, dc2, &
                     dfpla2, scalb)
 !
         scal = scala*scalb
 !
         do i = 1, 6
             do j = 1, 6
-                mat(i,j)=(mata(i,j)-matb(i,j)+matc(i,j)-matd(i,j))/&
-                scal
+                mat(i, j) = (mata(i, j)-matb(i, j)+matc(i, j)-matd(i, j))/ &
+                            scal
             end do
         end do
 !
-        mata = matmul(delas,mat)
-        matb = matmul(mata,delas)
+        mata = matmul(delas, mat)
+        matb = matmul(mata, delas)
 !
         do i = 1, 6
             do j = 1, 6
-                dsidep(i,j)=delas(i,j)-matb(i,j)
+                dsidep(i, j) = delas(i, j)-matb(i, j)
             end do
         end do
 !
-    endif
+    end if
 end subroutine

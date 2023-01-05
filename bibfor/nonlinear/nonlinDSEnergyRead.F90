@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nonlinDSEnergyRead(ds_energy)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterc/getfac.h"
 !
-type(NL_DS_Energy), intent(inout) :: ds_energy
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,12 +48,12 @@ type(NL_DS_Energy), intent(inout) :: ds_energy
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_11')
-    endif
+    end if
 !
 ! - Activation ?
 !
     call getfac('ENERGIE', nocc)
-    ds_energy%l_comp  = nocc.gt.0
+    ds_energy%l_comp = nocc .gt. 0
 !
 ! - Command
 !

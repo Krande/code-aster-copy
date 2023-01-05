@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romGreedyResiNormCalc(i_coef, nb_equa, ds_algoGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,8 +29,8 @@ implicit none
 #include "blas/ddot.h"
 #include "asterfort/jeveuo.h"
 !
-integer, intent(in) :: i_coef, nb_equa
-type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
+    integer, intent(in) :: i_coef, nb_equa
+    type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,19 +61,19 @@ type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
 ! - Compute norm of residual / norm of second member
 !
     if (resi_type .eq. 'R') then
-        call jeveuo(ds_algoGreedy%solveDOM%syst_2mbr(1:19)//'.VALE', 'L', vr = vr_vect_2mbr)
-        call jeveuo(ds_algoGreedy%resi_vect(1:19)//'.VALE', 'L', vr = vr_resi_vect)
+        call jeveuo(ds_algoGreedy%solveDOM%syst_2mbr(1:19)//'.VALE', 'L', vr=vr_vect_2mbr)
+        call jeveuo(ds_algoGreedy%resi_vect(1:19)//'.VALE', 'L', vr=vr_resi_vect)
         normr_2mbr = ddot(nb_equa, vr_vect_2mbr, 1, vr_vect_2mbr, 1)
         normr_resi = ddot(nb_equa, vr_resi_vect, 1, vr_resi_vect, 1)
         ds_algoGreedy%resi_norm(i_coef) = sqrt(normr_resi/normr_2mbr)
     else if (resi_type .eq. 'C') then
-        call jeveuo(ds_algoGreedy%solveDOM%syst_2mbr(1:19)//'.VALE', 'L', vc = vc_vect_2mbr)
-        call jeveuo(ds_algoGreedy%resi_vect(1:19)//'.VALE', 'L', vc = vc_resi_vect)
+        call jeveuo(ds_algoGreedy%solveDOM%syst_2mbr(1:19)//'.VALE', 'L', vc=vc_vect_2mbr)
+        call jeveuo(ds_algoGreedy%resi_vect(1:19)//'.VALE', 'L', vc=vc_resi_vect)
         normc_2mbr = zdotc(nb_equa, vc_vect_2mbr, 1, vc_vect_2mbr, 1)
         normc_resi = zdotc(nb_equa, vc_resi_vect, 1, vc_resi_vect, 1)
         ds_algoGreedy%resi_norm(i_coef) = real(sqrt(real(normc_resi/normc_2mbr)))
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

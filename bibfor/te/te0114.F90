@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine te0114(option, nomte)
     integer :: nno, kp, iharmo, i, idefo, idepl, idpg, igau, isig
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -54,43 +54,43 @@ subroutine te0114(option, nomte)
     call jevech('PDEFOPG', 'E', idefo)
 !
     do i = 1, 6*npg
-        depg (i) = 0.0d0
+        depg(i) = 0.0d0
     end do
 !
     do i = 1, nno
-        u(1,i) = zr(idepl + 3 * i - 3)
-        u(2,i) = zr(idepl + 3 * i - 2)
-        u(3,i) = zr(idepl + 3 * i - 1)
+        u(1, i) = zr(idepl+3*i-3)
+        u(2, i) = zr(idepl+3*i-2)
+        u(3, i) = zr(idepl+3*i-1)
     end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
     do kp = 1, npg
 !
-        idpg = (kp-1) * 6
-        kdec = (kp-1) * nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        idpg = (kp-1)*6
+        kdec = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdr, dfdz)
         r = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*(i-1))*zr(ivf+kdec+i-1)
+            r = r+zr(igeom+2*(i-1))*zr(ivf+kdec+i-1)
         end do
 !
         do i = 1, nno
             wi = zr(ivf+kdec+i-1)/r
 !
-            depg(idpg+1) = depg(idpg+1) + u(1,i) * dfdr(i)
+            depg(idpg+1) = depg(idpg+1)+u(1, i)*dfdr(i)
 !
-            depg(idpg+2) = depg(idpg+2) + u(2,i) * dfdz(i)
+            depg(idpg+2) = depg(idpg+2)+u(2, i)*dfdz(i)
 !
-            depg(idpg+3) = depg(idpg+3) + (u(1,i) + xh * u(3,i)) * wi
+            depg(idpg+3) = depg(idpg+3)+(u(1, i)+xh*u(3, i))*wi
 !
-            depg(idpg+4) = depg(idpg+4) + (u(2,i)*dfdr(i) + u(1,i)* dfdz(i)) * 0.5d0
+            depg(idpg+4) = depg(idpg+4)+(u(2, i)*dfdr(i)+u(1, i)*dfdz(i))*0.5d0
 !
-            depg(idpg+5) = depg(idpg+5) - u(1,i) * 0.5d0 * xh * wi + u(3,i) * 0.5d0 * (dfdr(i) - &
+            depg(idpg+5) = depg(idpg+5)-u(1, i)*0.5d0*xh*wi+u(3, i)*0.5d0*(dfdr(i)- &
                            &wi)
 !
-            depg(idpg+6) = depg(idpg+6) - u(2,i) * 0.5d0 * xh * wi + u(3,i) * 0.5d0 * dfdz(i)
+            depg(idpg+6) = depg(idpg+6)-u(2, i)*0.5d0*xh*wi+u(3, i)*0.5d0*dfdz(i)
 !
         end do
 !

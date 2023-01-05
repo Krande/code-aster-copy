@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
+subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
                   cnsz, undf0_)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-  implicit none
+    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -65,9 +65,9 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
     ma = maz
 
     undf0 = ASTER_FALSE
-    if ( present(undf0_)) then
+    if (present(undf0_)) then
         undf0 = undf0_
-     endif
+    end if
 !
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -79,9 +79,9 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
 !------------------------------------------------------------------
 !     1- QUELQUES VERIFS :
 !     ------------------------
-    ASSERT(ncmp.ne.0)
+    ASSERT(ncmp .ne. 0)
     call verigd(nomgd, licmp, ncmp, iret)
-    ASSERT(iret.le.0)
+    ASSERT(iret .le. 0)
 !
 !------------------------------------------------------------------
 !     2- CREATION DE CNS.CNSK:

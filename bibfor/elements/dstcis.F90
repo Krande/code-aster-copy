@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,90 +45,90 @@ subroutine dstcis(dci, carat3, hft2, bca, an)
 !
     do k = 1, 6
         do j = 1, 3
-            ta(k,j) = 0.d0
+            ta(k, j) = 0.d0
         end do
     end do
-    ta(1,1) = - 8.d0 * c(1)
-    ta(2,3) = - 8.d0 * c(3)
-    ta(3,1) = - 4.d0 * c(1)
-    ta(3,2) = 4.d0 * c(2)
-    ta(3,3) = - 4.d0 * c(3)
-    ta(4,1) = - 8.d0 * s(1)
-    ta(5,3) = - 8.d0 * s(3)
-    ta(6,1) = - 4.d0 * s(1)
-    ta(6,2) = 4.d0 * s(2)
-    ta(6,3) = - 4.d0 * s(3)
+    ta(1, 1) = -8.d0*c(1)
+    ta(2, 3) = -8.d0*c(3)
+    ta(3, 1) = -4.d0*c(1)
+    ta(3, 2) = 4.d0*c(2)
+    ta(3, 3) = -4.d0*c(3)
+    ta(4, 1) = -8.d0*s(1)
+    ta(5, 3) = -8.d0*s(3)
+    ta(6, 1) = -4.d0*s(1)
+    ta(6, 2) = 4.d0*s(2)
+    ta(6, 3) = -4.d0*s(3)
 !     -------------- PRODUIT HFT2.TA -----------------------------------
     do i = 1, 2
         do j = 1, 3
-            bca(i,j) = 0.d0
+            bca(i, j) = 0.d0
         end do
     end do
     do j = 1, 3
         do k = 1, 6
-            bca(1,j) = bca(1,j) + hft2(1,k) * ta(k,j)
-            bca(2,j) = bca(2,j) + hft2(2,k) * ta(k,j)
+            bca(1, j) = bca(1, j)+hft2(1, k)*ta(k, j)
+            bca(2, j) = bca(2, j)+hft2(2, k)*ta(k, j)
         end do
     end do
 !     -------------- PRODUIT DCI.BCA -----------------------------------
     do j = 1, 3
-        db(1,j) = dci(1,1) * bca(1,j) + dci(1,2) * bca(2,j)
-        db(2,j) = dci(2,1) * bca(1,j) + dci(2,2) * bca(2,j)
+        db(1, j) = dci(1, 1)*bca(1, j)+dci(1, 2)*bca(2, j)
+        db(2, j) = dci(2, 1)*bca(1, j)+dci(2, 2)*bca(2, j)
     end do
 !     -------------- CALCUL DE AA --------------------------------------
     do i = 1, 3
         do j = 1, 3
-            aa(i,j) = - (x(i) * db(1,j) + y(i) * db(2,j))
+            aa(i, j) = -(x(i)*db(1, j)+y(i)*db(2, j))
         end do
-        aa(i,i) = aa(i,i) + 2.d0/3.d0 * l(i)
+        aa(i, i) = aa(i, i)+2.d0/3.d0*l(i)
     end do
 !     -------------- INVERSION DE AA -----------------------------------
     do i = 1, 3
         do j = 1, 3
-            aai(i,j) = 0.d0
+            aai(i, j) = 0.d0
         end do
     end do
     do i = 1, 3
-        aai(i,i) = 1.d0
+        aai(i, i) = 1.d0
     end do
-    call mgauss('NFVP', aa, aai, 3, 3,&
+    call mgauss('NFVP', aa, aai, 3, 3, &
                 3, det, iret)
 !
 !     -------------- CALCUL DE AW --------------------------------------
     do i = 1, 3
         do j = 1, 9
-            aw(i,j) = 0.d0
+            aw(i, j) = 0.d0
         end do
     end do
-    aw(1,1) = 1.d0
-    aw(1,2) = - x(1)/2.d0
-    aw(1,3) = - y(1)/2.d0
-    aw(1,4) = - 1.d0
-    aw(1,5) = - x(1)/2.d0
-    aw(1,6) = - y(1)/2.d0
-    aw(2,4) = 1.d0
-    aw(2,5) = - x(2)/2.d0
-    aw(2,6) = - y(2)/2.d0
-    aw(2,7) = - 1.d0
-    aw(2,8) = - x(2)/2.d0
-    aw(2,9) = - y(2)/2.d0
-    aw(3,1) = - 1.d0
-    aw(3,2) = - x(3)/2.d0
-    aw(3,3) = - y(3)/2.d0
-    aw(3,7) = 1.d0
-    aw(3,8) = - x(3)/2.d0
-    aw(3,9) = - y(3)/2.d0
+    aw(1, 1) = 1.d0
+    aw(1, 2) = -x(1)/2.d0
+    aw(1, 3) = -y(1)/2.d0
+    aw(1, 4) = -1.d0
+    aw(1, 5) = -x(1)/2.d0
+    aw(1, 6) = -y(1)/2.d0
+    aw(2, 4) = 1.d0
+    aw(2, 5) = -x(2)/2.d0
+    aw(2, 6) = -y(2)/2.d0
+    aw(2, 7) = -1.d0
+    aw(2, 8) = -x(2)/2.d0
+    aw(2, 9) = -y(2)/2.d0
+    aw(3, 1) = -1.d0
+    aw(3, 2) = -x(3)/2.d0
+    aw(3, 3) = -y(3)/2.d0
+    aw(3, 7) = 1.d0
+    aw(3, 8) = -x(3)/2.d0
+    aw(3, 9) = -y(3)/2.d0
 !
 !     -------------- PRODUIT AAI.AW ------------------------------------
     do i = 1, 3
         do j = 1, 9
-            an(i,j) = 0.d0
+            an(i, j) = 0.d0
         end do
     end do
     do i = 1, 3
         do k = 1, 3
             do j = 1, 9
-                an(i,j) = an(i,j) + aai(i,k) * aw(k,j)
+                an(i, j) = an(i, j)+aai(i, k)*aw(k, j)
             end do
         end do
     end do

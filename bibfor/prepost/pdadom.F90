@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     call rccome(nommat, pheno, icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'FATIGUE1_24')
-    endif
+    end if
     cara = 'WOHLER'
     call rcpare(nommat, pheno, cara, icodwo)
     cara = 'A_BASQUIN'
@@ -78,64 +78,64 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     call rcpare(nommat, pheno, cara, icodhs)
     if (icodwo .eq. 0) then
         ifonc = 1
-    else if (icodba.eq.0) then
+    else if (icodba .eq. 0) then
         ibask = 1
-    else if (icodhs.eq.0) then
+    else if (icodhs .eq. 0) then
         ihosin = 1
     else
         call utmess('F', 'FATIGUE1_34')
-    endif
+    end if
 !
 !----  DEFINITION DES BORNES INTEGRATION
 !
     call getvtx(' ', 'COMPTAGE', scal=mecomp, nbret=nbval)
     if (mecomp .eq. 'PIC     ' .and. xm4 .eq. rundf) then
         call utmess('F', 'FATIGUE1_35')
-    endif
+    end if
     if (ihosin .ne. 0) then
         nomres(6) = 'SL'
         nbpar = 0
         nompar = ' '
-        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
+        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid], &
                     1, nomres(6), val(6), icodre(6), 2)
         valmin = val(6)
         valmax = 10*sqrt(xm0)
     else
         valmin = 0.d0
         valmax = 10*sqrt(xm0)
-    endif
+    end if
     pas = (valmax-valmin)/300.d0
     if (pas .eq. 0.0d0) then
         call utmess('F', 'FATIGUE1_36')
-    endif
+    end if
     xnpoin = (valmax-valmin)/pas
-    nbpoin = int(xnpoin) + 1
+    nbpoin = int(xnpoin)+1
 !
 !------- CALCUL DES POINTS INTEGRATION
 !
     if (xm2 .eq. 0.d0) then
         call utmess('F', 'FATIGUE1_37')
-    endif
+    end if
     if (mecomp .eq. 'PIC' .and. xm4 .eq. 0.d0) then
         call utmess('F', 'FATIGUE1_38')
-    endif
+    end if
     AS_ALLOCATE(vr=dispics, size=2*nbpoin)
-    if (mecomp .eq. 'PIC     ') xireg = sqrt( xm2*xm2/xm0/xm4)
+    if (mecomp .eq. 'PIC     ') xireg = sqrt(xm2*xm2/xm0/xm4)
     do ipoint = 1, nbpoin
-        x1 = valmin + (ipoint-1)*pas
+        x1 = valmin+(ipoint-1)*pas
         if (mecomp .eq. 'PIC     ') then
             alpha = xireg*x1/((sqrt(1.d0-xireg*xireg))*(sqrt(xm0)))
             alpha = (-1.d0/sqrt(2.d0))*alpha
-            y1=sqrt(1-xireg*xireg) *exp(-x1*x1/(2.d0*xm0*(1.d0-xireg*&
-            xireg)))
-            xp=sqrt(pi/2.d0)*erfcam(alpha)
-            y1=y1+((xireg*x1/sqrt(xm0))*exp(-x1*x1/(2.d0*xm0)))*(xp)
-            y1=(sqrt(xm4)/(sqrt(xm2)*sqrt(xm0)))*y1
-            y1=(1.d0/(2.d0*pi))*(1.d0/sqrt(2.d0*pi))*y1
-        else if (mecomp.eq.'NIVEAU  ') then
+            y1 = sqrt(1-xireg*xireg)*exp(-x1*x1/(2.d0*xm0*(1.d0-xireg* &
+                                                           xireg)))
+            xp = sqrt(pi/2.d0)*erfcam(alpha)
+            y1 = y1+((xireg*x1/sqrt(xm0))*exp(-x1*x1/(2.d0*xm0)))*(xp)
+            y1 = (sqrt(xm4)/(sqrt(xm2)*sqrt(xm0)))*y1
+            y1 = (1.d0/(2.d0*pi))*(1.d0/sqrt(2.d0*pi))*y1
+        else if (mecomp .eq. 'NIVEAU  ') then
             y1 = (1.d0/(2.d0*pi))*sqrt(xm2/(xm0*xm0*xm0))
-            y1 = y1 *x1*exp(-x1*x1/(2.d0*xm0))
-        endif
+            y1 = y1*x1*exp(-x1*x1/(2.d0*xm0))
+        end if
         dispics(ipoint) = x1
         dispics(nbpoin+ipoint) = y1
     end do
@@ -152,23 +152,23 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nomres(3) = 'SM'
             nbpar = 0
             nompar = ' '
-            call rcvale(nommat, 'RCCM', nbpar, nompar, [rbid],&
+            call rcvale(nommat, 'RCCM', nbpar, nompar, [rbid], &
                         3, nomres(1), val(1), icodre(1), 2)
             do ipoint = 1, nbpoin
                 delta = dispics(ipoint)
                 if (delta .le. 3.d0*val(3)) then
                     rvke = 1.d0
-                    elseif(delta.gt.3.d0*val(3).and.delta.lt. 3.d0*val(2)*&
-                val(3)) then
-                    rvke = 1.d0 + (( 1-val(1))/(val(1)*(val(2)-1)))* ((delta/(3.d0*val(3)) )-1.d0&
-                           )
-                else if (delta.ge.3*val(2)*val(3)) then
+                elseif (delta .gt. 3.d0*val(3) .and. delta .lt. 3.d0*val(2)* &
+                        val(3)) then
+                    rvke = 1.d0+((1-val(1))/(val(1)*(val(2)-1)))*((delta/(3.d0*val(3)))-1.d0 &
+                                                                  )
+                else if (delta .ge. 3*val(2)*val(3)) then
                     rvke = 1.d0/val(1)
-                endif
-                dispics(ipoint) = rvke * dispics(ipoint)
+                end if
+                dispics(ipoint) = rvke*dispics(ipoint)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! ----- INTERPOLATION
 !
@@ -188,22 +188,22 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                 if (endur) then
                     wohler2(ipoint) = 0.d0
                 else
-                    call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+                    call rcvale(nommat, pheno, nbpar, nompar, [delta], &
                                 1, nomres(1), nrupt(1), icodre(1), 2)
-                    wohler2(ipoint) = 1.d0 / nrupt(1)
-                endif
+                    wohler2(ipoint) = 1.d0/nrupt(1)
+                end if
             end do
-        else if (ibask.ne.0) then
+        else if (ibask .ne. 0) then
             nompar = ' '
             nbpar = 0
             nomres(1) = 'A_BASQUIN'
             nomres(2) = 'BETA_BASQUIN'
-            call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
+            call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid], &
                         2, nomres, val, icodre, 2)
             do ipoint = 1, nbpoin
-                wohler2(ipoint) = val(1)*dispics(ipoint)**val( 2)
+                wohler2(ipoint) = val(1)*dispics(ipoint)**val(2)
             end do
-        else if (ihosin.ne.0) then
+        else if (ihosin .ne. 0) then
             nomres(1) = 'E_REFE'
             nomres(2) = 'A0'
             nomres(3) = 'A1'
@@ -212,23 +212,23 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nomres(6) = 'SL'
             nbpar = 0
             nompar = ' '
-            call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
+            call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid], &
                         6, nomres, val, icodre, 2)
             nomres(1) = 'E'
-            call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid],&
+            call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid], &
                         1, nomres, re(1), icodre, 2)
             do ipoint = 1, nbpoin
                 salt = (val(1)/re(1))*dispics(ipoint)
                 if (salt .ge. val(6)) then
-                    x = log10 (salt)
-                    y = val(2) + val(3)*x + val(4)*(x**2) + val(5)*( x**3)
-                    wohler2(ipoint) = 1.d0 / (10.d0**y)
+                    x = log10(salt)
+                    y = val(2)+val(3)*x+val(4)*(x**2)+val(5)*(x**3)
+                    wohler2(ipoint) = 1.d0/(10.d0**y)
                 else
                     wohler2(ipoint) = 0.d0
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! -- CALCUL INTEGRALE
 !
@@ -240,7 +240,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
         yd1 = wohler2(ipoint-1)
         ypic2 = dispics(nbpoin+ipoint)
         ypic1 = dispics(nbpoin+ipoint-1)
-        dom = dom + (yd2*ypic2+yd1*ypic1)* (x2-x1)/2.d0
+        dom = dom+(yd2*ypic2+yd1*ypic1)*(x2-x1)/2.d0
     end do
 !
     AS_DEALLOCATE(vr=dispics)

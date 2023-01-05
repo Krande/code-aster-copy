@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ subroutine te0110(option, nomte)
     real(kind=8) :: deltat, pk, pm, poi1, poi2, theta, un
     real(kind=8) :: xgau, ygau, zero, zgau
 !-----------------------------------------------------------------------
-    parameter (nbres=30)
-    parameter (nbpar=4)
-    parameter (ndimax=27)
+    parameter(nbres=30)
+    parameter(nbpar=4)
+    parameter(ndimax=27)
     integer :: icodre(nbres)
     character(len=2) :: num
     integer :: codmat
@@ -103,7 +103,7 @@ subroutine te0110(option, nomte)
 !     ---------------
     zero = 0.0d0
     un = 1.0d0
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     nompar(1) = 'INST'
@@ -114,10 +114,10 @@ subroutine te0110(option, nomte)
     valpar(2) = zero
     valpar(3) = zero
     valpar(4) = zero
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     hplus = zero
     hmoin = zero
     hbord = zero
@@ -131,8 +131,8 @@ subroutine te0110(option, nomte)
 !
     do i = 1, ndimax
         do j = 1, ndimax
-            rigith(i,j) = zero
-            masse(i,j) = zero
+            rigith(i, j) = zero
+            masse(i, j) = zero
         end do
     end do
 !
@@ -176,32 +176,32 @@ subroutine te0110(option, nomte)
         if (icoehr .ne. 0) then
             hmoin = zr(icoehr)
             hplus = zr(icoehr+1)
-        endif
+        end if
 ! ---   CAS OU LES COEFFICIENTS D'ECHANGE SONT DES FONCTIONS :
         if (icoehf .ne. 0) then
             hfmoin = zk8(icoehf)
             hfplus = zk8(icoehf+1)
-        endif
-        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
-    then
+        end if
+    else if (nomte .eq. 'THCOSE3' .or. nomte .eq. 'THCOSE2') &
+        then
 ! ---   CAS OU LES COEFFICIENTS D'ECHANGE SONT DES REELS :
         if (icoehr .gt. 0) then
             h = zr(icoehr)
-        endif
+        end if
 ! ---   CAS OU LES COEFFICIENTS D'ECHANGE SONT DES FONCTIONS :
         if (icoehf .gt. 0) then
             hfbord = zk8(icoehf)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- NOMBRE DE NOEUDS SOMMETS :
 !     ------------------------
     call teattr('S', 'ALIAS8', alias8, ibid)
     if (alias8(6:7) .eq. 'TR') then
         nbnoso = 3
-    else if (alias8(6:7).eq.'QU') then
+    else if (alias8(6:7) .eq. 'QU') then
         nbnoso = 4
-    endif
+    end if
 !
 !..................................................................
 !.    CAS DES COQUES SURFACIQUES                                  .
@@ -224,7 +224,7 @@ subroutine te0110(option, nomte)
 ! ---   DETERMINATION DE LA ROTATION FAISANT PASSER DU REPERE
 ! ---   DE REFERENCE AU REPERE DE L'ELEMENT
 !       -----------------------------------
-            call mudirx(nbnoso, zr(igeom), 3, zr(icacoq+1), zr(icacoq+2),&
+            call mudirx(nbnoso, zr(igeom), 3, zr(icacoq+1), zr(icacoq+2), &
                         axe, ang)
 !
 ! ---   NOM DES COMPOSANTES DU TENSEUR DE CONDUCTIVITE HOMOGENEISE :
@@ -238,14 +238,14 @@ subroutine te0110(option, nomte)
 ! ---   EN FONCTION DU TEMPS :
 !       --------------------
             nbvar = 1
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'THER_COQMU', nbvar, nompar, valpar,&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', 'THER_COQMU', nbvar, nompar, valpar, &
                         nbres, nomres, valres, icodre, 1)
 !
 ! ---   CONSTRUCTION DE LA MATRICE DE PASSAGE DU REPERE UTILISATEUR
 ! ---   AU REPERE ELEMENT :
 !       -----------------
-            call mudirx(nbnoso, zr(igeom), 3, zr(icacoq+1), zr(icacoq+2),&
+            call mudirx(nbnoso, zr(igeom), 3, zr(icacoq+1), zr(icacoq+2), &
                         axe, ang)
 !
 ! ---   VALEURS DES CARACTERISIQUES DU MATERIAU DANS LE REPERE
@@ -253,53 +253,53 @@ subroutine te0110(option, nomte)
 ! ---   FLUX THERMIQUE EST LE PLUS SIMPLE A ECRIRE) :
 !       -------------------------------------------
             do i = 1, 6
-                call reflth(ang, valres(3* (i-1)+1), hom(3* (i-1)+1))
+                call reflth(ang, valres(3*(i-1)+1), hom(3*(i-1)+1))
             end do
 !
 ! ---   TENSEUR DE CONDUCTIVITE MEMBRANAIRE :
 !       -----------------------------------
-            a(1,1,1,1) = hom(1)
-            a(1,1,2,2) = hom(2)
-            a(1,1,1,2) = hom(3)
-            a(2,1,1,1) = hom(4)
-            a(2,1,2,2) = hom(5)
-            a(2,1,1,2) = hom(6)
-            a(3,1,1,1) = hom(7)
-            a(3,1,2,2) = hom(8)
-            a(3,1,1,2) = hom(9)
-            a(2,2,1,1) = hom(10)
-            a(2,2,2,2) = hom(11)
-            a(2,2,1,2) = hom(12)
-            a(3,2,1,1) = hom(13)
-            a(3,2,2,2) = hom(14)
-            a(3,2,1,2) = hom(15)
-            a(3,3,1,1) = hom(16)
-            a(3,3,2,2) = hom(17)
-            a(3,3,1,2) = hom(18)
+            a(1, 1, 1, 1) = hom(1)
+            a(1, 1, 2, 2) = hom(2)
+            a(1, 1, 1, 2) = hom(3)
+            a(2, 1, 1, 1) = hom(4)
+            a(2, 1, 2, 2) = hom(5)
+            a(2, 1, 1, 2) = hom(6)
+            a(3, 1, 1, 1) = hom(7)
+            a(3, 1, 2, 2) = hom(8)
+            a(3, 1, 1, 2) = hom(9)
+            a(2, 2, 1, 1) = hom(10)
+            a(2, 2, 2, 2) = hom(11)
+            a(2, 2, 1, 2) = hom(12)
+            a(3, 2, 1, 1) = hom(13)
+            a(3, 2, 2, 2) = hom(14)
+            a(3, 2, 1, 2) = hom(15)
+            a(3, 3, 1, 1) = hom(16)
+            a(3, 3, 2, 2) = hom(17)
+            a(3, 3, 1, 2) = hom(18)
 !
 ! ---   LES TERMES DE CONDUCTIVITE TRANSVERSE NE SE TRANSFORMENT PAS
 ! ---   PAR CHANGEMENT DE REPERE :
 !       ------------------------
-            b(1,1) = valres(19)
-            b(2,1) = valres(20)
-            b(3,1) = valres(21)
-            b(2,2) = valres(22)
-            b(3,2) = valres(23)
-            b(3,3) = valres(24)
+            b(1, 1) = valres(19)
+            b(2, 1) = valres(20)
+            b(3, 1) = valres(21)
+            b(2, 2) = valres(22)
+            b(3, 2) = valres(23)
+            b(3, 3) = valres(24)
 !
 ! ---   LES TERMES RELATIFS A LA CAPACITE CALORIFIQUE NE SE
 ! ---   TRANSFORMENT PAS PAR CHANGEMENT DE REPERE :
 !       -----------------------------------------
-            m(1,1) = valres(25)
-            m(2,1) = valres(26)
-            m(3,1) = valres(27)
-            m(2,2) = valres(28)
-            m(3,2) = valres(29)
-            m(3,3) = valres(30)
+            m(1, 1) = valres(25)
+            m(2, 1) = valres(26)
+            m(3, 1) = valres(27)
+            m(2, 2) = valres(28)
+            m(3, 2) = valres(29)
+            m(3, 3) = valres(30)
 !
 ! ---   CAS DES COQUES THERMIQUES ISOTROPES
 !       ===================================
-        else if (phenom.eq.'THER') then
+        else if (phenom .eq. 'THER') then
 !
 ! ---   INTERPOLATION DE LA CONDUCTIVITE EN FONCTION DU TEMPS
 ! ---   ET DE LA TEMPERATURE
@@ -310,8 +310,8 @@ subroutine te0110(option, nomte)
             nomres(1) = 'RHO_CP'
             nomres(2) = 'LAMBDA'
             nbvar = 1
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'THER', nbvar, nompar, valpar,&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', 'THER', nbvar, nompar, valpar, &
                         nbv, nomres, valres, icodre, 1)
 !
 ! ---   INITIALISATION DES TENSEURS DE CONDUCTIVITE MEMBRANAIRE,
@@ -321,9 +321,9 @@ subroutine te0110(option, nomte)
                 do k = 1, l
                     do i = 1, 3
                         do j = 1, i
-                            a(i,j,k,l) = zero
-                            b(i,j) = zero
-                            m(i,j) = zero
+                            a(i, j, k, l) = zero
+                            b(i, j) = zero
+                            m(i, j) = zero
                         end do
                     end do
                 end do
@@ -343,46 +343,46 @@ subroutine te0110(option, nomte)
 !
 ! ---   TENSEUR DE CONDUCTIVITE MEMBRANAIRE :
 !       -----------------------------------
-            a(1,1,1,1) = 16.d0*lam*h/15.d0
-            a(1,1,2,2) = a(1,1,1,1)
-            a(2,2,1,1) = 4.d0*lam*h/15.d0
-            a(2,2,2,2) = a(2,2,1,1)
-            a(3,3,1,1) = 4.d0*lam*h/15.d0
-            a(3,3,2,2) = a(2,2,1,1)
-            a(2,1,1,1) = 2.d0*lam*h/15.d0
-            a(2,1,2,2) = a(2,1,1,1)
-            a(3,1,1,1) = 2.d0*lam*h/15.d0
-            a(3,1,2,2) = a(3,1,1,1)
-            a(3,2,1,1) = -lam*h/15.d0
-            a(3,2,2,2) = a(3,2,1,1)
+            a(1, 1, 1, 1) = 16.d0*lam*h/15.d0
+            a(1, 1, 2, 2) = a(1, 1, 1, 1)
+            a(2, 2, 1, 1) = 4.d0*lam*h/15.d0
+            a(2, 2, 2, 2) = a(2, 2, 1, 1)
+            a(3, 3, 1, 1) = 4.d0*lam*h/15.d0
+            a(3, 3, 2, 2) = a(2, 2, 1, 1)
+            a(2, 1, 1, 1) = 2.d0*lam*h/15.d0
+            a(2, 1, 2, 2) = a(2, 1, 1, 1)
+            a(3, 1, 1, 1) = 2.d0*lam*h/15.d0
+            a(3, 1, 2, 2) = a(3, 1, 1, 1)
+            a(3, 2, 1, 1) = -lam*h/15.d0
+            a(3, 2, 2, 2) = a(3, 2, 1, 1)
 !
 ! ---   MATRICE DE CONDUCTIVITE TRANSVERSE :
 !       ----------------------------------
-            b(1,1) = 16.d0*lam/ (6.d0*h)
-            b(2,1) = -8.d0*lam/ (6.d0*h)
-            b(3,1) = b(2,1)
-            b(2,2) = 7.d0*lam/ (6.d0*h)
-            b(3,2) = lam/ (6.d0*h)
-            b(3,3) = b(2,2)
-            b(1,2) = b(2,1)
-            b(1,3) = b(3,1)
-            b(2,3) = b(3,2)
+            b(1, 1) = 16.d0*lam/(6.d0*h)
+            b(2, 1) = -8.d0*lam/(6.d0*h)
+            b(3, 1) = b(2, 1)
+            b(2, 2) = 7.d0*lam/(6.d0*h)
+            b(3, 2) = lam/(6.d0*h)
+            b(3, 3) = b(2, 2)
+            b(1, 2) = b(2, 1)
+            b(1, 3) = b(3, 1)
+            b(2, 3) = b(3, 2)
 !
 ! ---   TENSEUR DE CAPACITE THERMIQUE ISOTROPE :
 !       --------------------------------------
-            m(1,1) = 16.d0*roc*h/15.d0
-            m(2,1) = 2.d0*roc*h/15.d0
-            m(3,1) = 2.d0*roc*h/15.d0
-            m(2,2) = 4.d0*roc*h/15.d0
-            m(3,2) = -roc*h/15.d0
-            m(3,3) = 4.d0*roc*h/15.d0
-            m(1,2) = m(2,1)
-            m(1,3) = m(3,1)
-            m(2,3) = m(3,2)
+            m(1, 1) = 16.d0*roc*h/15.d0
+            m(2, 1) = 2.d0*roc*h/15.d0
+            m(3, 1) = 2.d0*roc*h/15.d0
+            m(2, 2) = 4.d0*roc*h/15.d0
+            m(3, 2) = -roc*h/15.d0
+            m(3, 3) = 4.d0*roc*h/15.d0
+            m(1, 2) = m(2, 1)
+            m(1, 3) = m(3, 1)
+            m(2, 3) = m(3, 2)
 !
 ! ---   CAS DES COQUES THERMIQUES HETEROGENES HOMOGENEISEES
 !       ===================================================
-        else if (phenom.eq.'THER_COQUE') then
+        else if (phenom .eq. 'THER_COQUE') then
 !
 ! ---   LES DIRECTIONS 1 ET 2 DESIGNENT CELLES DU PLAN DE LA PLAQUE
 ! ---   LA DIRECTION 3 EST PERPENDICULAIRE
@@ -454,14 +454,14 @@ subroutine te0110(option, nomte)
 !       ---------------------------------------
             nbv = 16
             nbvar = 1
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, nbvar, nompar, valpar,&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, nbvar, nompar, valpar, &
                         nbv, nomres, valres, icodre, 1)
 !
 ! ---   DETERMINATION DE LA ROTATION FAISANT PASSER DU REPERE
 ! ---   DE REFERENCE AU REPERE DE L'ELEMENT :
 !       -----------------------------------
-            call mudirx(nbnoso, zr(igeom), 3, zr(icacoq+1), zr(icacoq+2),&
+            call mudirx(nbnoso, zr(igeom), 3, zr(icacoq+1), zr(icacoq+2), &
                         axe, ang)
 !
 ! ---   PASSAGE DU REPERE DE REFERENCE AU REPERE DE L'ELEMENT :
@@ -478,10 +478,10 @@ subroutine te0110(option, nomte)
             matref(3) = zero
             call reflth(ang, matref, matele)
 !
-            a(1,1,1,1) = matele(1)
-            a(1,1,2,2) = matele(2)
-            a(1,1,1,2) = matele(3)
-            a(1,1,2,1) = matele(3)
+            a(1, 1, 1, 1) = matele(1)
+            a(1, 1, 2, 2) = matele(2)
+            a(1, 1, 1, 2) = matele(3)
+            a(1, 1, 2, 1) = matele(3)
 !  ------------------------------------------------------------------
 ! ---   PASSAGE DANS LE REPERE DE L'ELEMENT DE :
 ! ---      ( SOMME_EP(LAMBDA_1*P1*P2.DX3)     0.                     )
@@ -492,25 +492,25 @@ subroutine te0110(option, nomte)
             matref(3) = zero
             call reflth(ang, matref, matele)
 !
-            a(1,2,1,1) = matele(1)
-            a(1,2,2,2) = matele(2)
-            a(1,2,1,2) = matele(3)
-            a(1,2,2,1) = matele(3)
+            a(1, 2, 1, 1) = matele(1)
+            a(1, 2, 2, 2) = matele(2)
+            a(1, 2, 1, 2) = matele(3)
+            a(1, 2, 2, 1) = matele(3)
 !
-            a(2,1,1,1) = a(1,2,1,1)
-            a(2,1,2,2) = a(1,2,2,2)
-            a(2,1,1,2) = a(1,2,1,2)
-            a(2,1,2,1) = a(1,2,2,1)
+            a(2, 1, 1, 1) = a(1, 2, 1, 1)
+            a(2, 1, 2, 2) = a(1, 2, 2, 2)
+            a(2, 1, 1, 2) = a(1, 2, 1, 2)
+            a(2, 1, 2, 1) = a(1, 2, 2, 1)
 !
-            a(1,3,1,1) = matele(1)
-            a(1,3,2,2) = matele(2)
-            a(1,3,1,2) = matele(3)
-            a(1,3,2,1) = matele(3)
+            a(1, 3, 1, 1) = matele(1)
+            a(1, 3, 2, 2) = matele(2)
+            a(1, 3, 1, 2) = matele(3)
+            a(1, 3, 2, 1) = matele(3)
 !
-            a(3,1,1,1) = a(1,3,1,1)
-            a(3,1,2,2) = a(1,3,2,2)
-            a(3,1,1,2) = a(1,3,1,2)
-            a(3,1,2,1) = a(1,3,2,1)
+            a(3, 1, 1, 1) = a(1, 3, 1, 1)
+            a(3, 1, 2, 2) = a(1, 3, 2, 2)
+            a(3, 1, 1, 2) = a(1, 3, 1, 2)
+            a(3, 1, 2, 1) = a(1, 3, 2, 1)
 !  ------------------------------------------------------------------
 ! ---   PASSAGE DANS LE REPERE DE L'ELEMENT DE :
 ! ---      ( SOMME_EP(LAMBDA_1*P2*P2.DX3)     0.                     )
@@ -521,15 +521,15 @@ subroutine te0110(option, nomte)
             matref(3) = zero
             call reflth(ang, matref, matele)
 !
-            a(2,2,1,1) = matele(1)
-            a(2,2,2,2) = matele(2)
-            a(2,2,1,2) = matele(3)
-            a(2,2,2,1) = matele(3)
+            a(2, 2, 1, 1) = matele(1)
+            a(2, 2, 2, 2) = matele(2)
+            a(2, 2, 1, 2) = matele(3)
+            a(2, 2, 2, 1) = matele(3)
 !
-            a(3,3,1,1) = matele(1)
-            a(3,3,2,2) = matele(2)
-            a(3,3,1,2) = matele(3)
-            a(3,3,2,1) = matele(3)
+            a(3, 3, 1, 1) = matele(1)
+            a(3, 3, 2, 2) = matele(2)
+            a(3, 3, 1, 2) = matele(3)
+            a(3, 3, 2, 1) = matele(3)
 !  ------------------------------------------------------------------
 ! ---   PASSAGE DANS LE REPERE DE L'ELEMENT DE :
 ! ---      ( SOMME_EP(LAMBDA_1*P2*P3.DX3)     0.                     )
@@ -540,55 +540,55 @@ subroutine te0110(option, nomte)
             matref(3) = zero
             call reflth(ang, matref, matele)
 !
-            a(2,3,1,1) = matele(1)
-            a(2,3,2,2) = matele(2)
-            a(2,3,1,2) = matele(3)
-            a(2,3,2,1) = matele(3)
+            a(2, 3, 1, 1) = matele(1)
+            a(2, 3, 2, 2) = matele(2)
+            a(2, 3, 1, 2) = matele(3)
+            a(2, 3, 2, 1) = matele(3)
 !
-            a(3,2,1,1) = a(2,3,1,1)
-            a(3,2,2,2) = a(2,3,2,2)
-            a(3,2,1,2) = a(2,3,1,2)
-            a(3,2,2,1) = a(2,3,2,1)
+            a(3, 2, 1, 1) = a(2, 3, 1, 1)
+            a(3, 2, 2, 2) = a(2, 3, 2, 2)
+            a(3, 2, 1, 2) = a(2, 3, 1, 2)
+            a(3, 2, 2, 1) = a(2, 3, 2, 1)
 !  ------------------------------------------------------------------
 !
 ! ---   TERMES DE CONDUCTIVITE TRANSVERSE :
 !       ---------------------------------
-            b(1,1) = valres(9)
-            b(1,2) = valres(10)
-            b(1,3) = valres(10)
-            b(2,2) = valres(11)
-            b(2,3) = valres(12)
-            b(3,3) = valres(11)
-            b(2,1) = b(1,2)
-            b(3,1) = b(1,3)
-            b(3,2) = b(2,3)
+            b(1, 1) = valres(9)
+            b(1, 2) = valres(10)
+            b(1, 3) = valres(10)
+            b(2, 2) = valres(11)
+            b(2, 3) = valres(12)
+            b(3, 3) = valres(11)
+            b(2, 1) = b(1, 2)
+            b(3, 1) = b(1, 3)
+            b(3, 2) = b(2, 3)
 !
 ! ---   TERMES DE MASSE :
 !       ---------------
-            m(1,1) = valres(13)
-            m(1,2) = valres(14)
-            m(1,3) = valres(14)
-            m(2,2) = valres(15)
-            m(2,3) = valres(16)
-            m(3,3) = valres(15)
-            m(2,1) = m(1,2)
-            m(3,1) = m(1,3)
-            m(3,2) = m(2,3)
+            m(1, 1) = valres(13)
+            m(1, 2) = valres(14)
+            m(1, 3) = valres(14)
+            m(2, 2) = valres(15)
+            m(2, 3) = valres(16)
+            m(3, 3) = valres(15)
+            m(2, 1) = m(1, 2)
+            m(3, 1) = m(1, 3)
+            m(3, 2) = m(2, 3)
 !
         else
             call utmess('F', 'ELEMENTS3_17', sk=phenom)
-        endif
+        end if
 !
 ! --- PRISE EN COMPTE DANS LE TENSEUR DE CONDUCTIVITE TRANSVERSE DES
 ! --- ECHANGES DES PEAUX INFERIEURE ET SUPERIEURE AVEC L'EXTERIEUR :
 !     ------------------------------------------------------------
 ! --- CAS OU LES COEFFICIENTS D'ECHANGES SONT DES FONCTIONS :
         if (icoehf .gt. 0) then
-            call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+            call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                              jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
             do kp = 1, npg2
                 k = (kp-1)*nno
-                call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+                call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                             poids, dfdx, dfdy)
 !
 ! ---   COORDONNEES DU POINT D'INTEGRATION COURANT :
@@ -597,21 +597,21 @@ subroutine te0110(option, nomte)
                 ygau = zero
                 zgau = zero
                 do i = 1, nno
-                    xgau = xgau + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
-                    ygau = ygau + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
-                    zgau = zgau + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
+                    xgau = xgau+zr(igeom+3*(i-1))*zr(ivf+k+i-1)
+                    ygau = ygau+zr(igeom+3*(i-1)+1)*zr(ivf+k+i-1)
+                    zgau = zgau+zr(igeom+3*(i-1)+2)*zr(ivf+k+i-1)
                 end do
 !
                 valpar(2) = xgau
                 valpar(3) = ygau
                 valpar(4) = zgau
                 nbvar = 4
-                call fointe('FM', hfmoin, nbvar, nompar, valpar,&
+                call fointe('FM', hfmoin, nbvar, nompar, valpar, &
                             hmoin, ier)
-                call fointe('FM', hfplus, nbvar, nompar, valpar,&
+                call fointe('FM', hfplus, nbvar, nompar, valpar, &
                             hplus, ier)
             end do
-        endif
+        end if
 !
 ! ---  CONTRIBUTION AU TENSEUR DE CONDUCTIVITE TRANSVERSE B DES
 ! ---  ECHANGES AVEC L'EXTERIEUR
@@ -619,14 +619,14 @@ subroutine te0110(option, nomte)
 ! ---    B_ECH =  (0 H- 0 )
 ! ---             (0 0  H+)
 !      --------------------
-        b(2,2) = b(2,2) + hmoin
-        b(3,3) = b(3,3) + hplus
+        b(2, 2) = b(2, 2)+hmoin
+        b(3, 3) = b(3, 3)+hplus
 !
 ! --- CALCUL DES COORDONNEES DES CONNECTIVITES DANS LE REPERE
 ! --- DE L'ELEMENT :
 !     ------------
         call cq3d2d(nno, zr(igeom), un, zero, coor2d)
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- CALCUL DE LA RIGIDITE THERMIQUE DUE A LA PARTIE MEMBRANAIRE
@@ -641,7 +641,7 @@ subroutine te0110(option, nomte)
 ! ---   DERIVEES DES FONCTIONS DE FORME ET PRODUIT JACOBIEN*POIDS
 ! ---   (DANS POIDS)  SUR L'ELEMENT :
 !       ---------------------------
-            call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+            call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                         poids, dfdx, dfdy)
             do pi = 1, 3
                 tpg(pi) = zero
@@ -653,28 +653,28 @@ subroutine te0110(option, nomte)
 !       -------------------------------------------------------------
             do gi = 1, nno
                 do pi = 1, 3
-                    i = 3* (gi-1) + pi - 1 + itemp
-                    tpg(pi) = tpg(pi) + zr(i)*zr(ivf+k+gi-1)
-                    dtpgdx(pi) = dtpgdx(pi) + zr(i)*dfdx(gi)
-                    dtpgdy(pi) = dtpgdy(pi) + zr(i)*dfdy(gi)
+                    i = 3*(gi-1)+pi-1+itemp
+                    tpg(pi) = tpg(pi)+zr(i)*zr(ivf+k+gi-1)
+                    dtpgdx(pi) = dtpgdx(pi)+zr(i)*dfdx(gi)
+                    dtpgdy(pi) = dtpgdy(pi)+zr(i)*dfdy(gi)
                 end do
             end do
             do gi = 1, nno
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                            pk = a(pi,pj,1,1)*dfdx(gi)*dfdx(gj) + a(pi,pj,2,2)*dfdy(gi)*dfdy(gj) &
-                                 &+ a(pi,pj, 1,2)*dfdx(gi)*dfdy(gj) + a(pi,pj,1,2)* dfdy(gi)*dfdx&
-                                 &(gj)
+                          pk = a(pi, pj, 1, 1)*dfdx(gi)*dfdx(gj)+a(pi, pj, 2, 2)*dfdy(gi)*dfdy(gj) &
+                                  &+a(pi, pj, 1, 2)*dfdx(gi)*dfdy(gj)+a(pi, pj, 1, 2)*dfdy(gi)*dfdx&
+                                   &(gj)
 !
-                            if ((pi.ne.pj) .and. (gi.ne.gj)) then
-                                i = 3* (gi-1) + pj
-                                j = 3* (gj-1) + pi
-                                rigith(i,j) = rigith(i,j) + poids*pk
-                            endif
-                            i = 3* (gi-1) + pi
-                            j = 3* (gj-1) + pj
-                            rigith(i,j) = rigith(i,j) + poids*pk
+                            if ((pi .ne. pj) .and. (gi .ne. gj)) then
+                                i = 3*(gi-1)+pj
+                                j = 3*(gj-1)+pi
+                                rigith(i, j) = rigith(i, j)+poids*pk
+                            end if
+                            i = 3*(gi-1)+pi
+                            j = 3*(gj-1)+pj
+                            rigith(i, j) = rigith(i, j)+poids*pk
                         end do
                     end do
                 end do
@@ -688,51 +688,51 @@ subroutine te0110(option, nomte)
 ! --- ON PREND LA SECONDE FAMILLE DE POINTS D'INTEGRATION QUI
 ! --- EST D'UN ORDRE PLUS ELEVE :
 !     -------------------------
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
         do kp = 1, npg2
             k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+            call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                         poids, dfdx, dfdy)
 !
             do gi = 1, nno
-                ivf1 = ivf + k + gi - 1
+                ivf1 = ivf+k+gi-1
                 do gj = 1, gi
-                    ivf2 = ivf + k + gj - 1
+                    ivf2 = ivf+k+gj-1
                     do pi = 1, 3
                         do pj = 1, pi
-                            pk = b(pi,pj)*zr(ivf1)*zr(ivf2)
-                            pm = m(pi,pj)*zr(ivf1)*zr(ivf2)
+                            pk = b(pi, pj)*zr(ivf1)*zr(ivf2)
+                            pm = m(pi, pj)*zr(ivf1)*zr(ivf2)
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
 !         -----------------------------
-                            if ((pi.ne.pj) .and. (gi.ne.gj)) then
-                                i = 3* (gi-1) + pj
-                                j = 3* (gj-1) + pi
-                                rigith(i,j) = rigith(i,j) + poids*pk
-                                masse(i,j) = masse(i,j) + poids*pm
-                            endif
+                            if ((pi .ne. pj) .and. (gi .ne. gj)) then
+                                i = 3*(gi-1)+pj
+                                j = 3*(gj-1)+pi
+                                rigith(i, j) = rigith(i, j)+poids*pk
+                                masse(i, j) = masse(i, j)+poids*pm
+                            end if
 !
 ! ---     AFFECTATION DES TERMES DE LA TRIANGULAIRE SUPERIEURE
 ! ---     DE LA SOUS-MATRICE :
 !         ------------------
-                            i = 3* (gi-1) + pi
-                            j = 3* (gj-1) + pj
-                            rigith(i,j) = rigith(i,j) + poids*pk
-                            masse(i,j) = masse(i,j) + poids*pm
+                            i = 3*(gi-1)+pi
+                            j = 3*(gj-1)+pj
+                            rigith(i, j) = rigith(i, j)+poids*pk
+                            masse(i, j) = masse(i, j)+poids*pm
                         end do
                     end do
                 end do
             end do
         end do
         do i = 1, 3*nno
-            do j = 1, i - 1
-                rigith(j,i) = rigith(i,j)
-                masse(j,i) = masse(i,j)
+            do j = 1, i-1
+                rigith(j, i) = rigith(i, j)
+                masse(j, i) = masse(i, j)
             end do
         end do
 !
@@ -741,14 +741,14 @@ subroutine te0110(option, nomte)
 !.    CAS DES BORDS DES COQUES SURFACIQUES                        .
 !.    ILS INTERVIENNENT PAR LEUR CONTRIBUTION A L'ECHANGE LATERAL .
 !..................................................................
-        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
-    then
+    else if (nomte .eq. 'THCOSE3' .or. nomte .eq. 'THCOSE2') &
+        then
         call jevete('&INEL.'//nomte(1:8)//'.DEMR', ' ', mzr)
 !
 !
-        long = (&
-               zr(igeom+3)-zr(igeom))**2 + (zr(igeom+3+1)-zr(igeom+1) )**2 + (zr(igeom+3+2)-zr(ig&
-               &eom+2)&
+        long = ( &
+               zr(igeom+3)-zr(igeom))**2+(zr(igeom+3+1)-zr(igeom+1))**2+(zr(igeom+3+2)-zr(ig&
+               &eom+2) &
                )**2
 !
         long = sqrt(long)/2.d0
@@ -785,15 +785,15 @@ subroutine te0110(option, nomte)
 !
             poi1 = zr(mzr-1+12+kp)
 !
-            matp(1,1) = matp(1,1) + poi1*zr(mzr-1+kq+1)**2
-            matp(1,2) = matp(1,2) + poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+2)
-            matp(1,3) = matp(1,3) + poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+3)
-            matp(2,1) = matp(1,2)
-            matp(2,2) = matp(2,2) + poi1*zr(mzr-1+kq+2)**2
-            matp(2,3) = matp(2,3) + poi1*zr(mzr-1+kq+2)*zr(mzr-1+kq+3)
-            matp(3,1) = matp(1,3)
-            matp(3,2) = matp(2,3)
-            matp(3,3) = matp(3,3) + poi1*zr(mzr-1+kq+3)**2
+            matp(1, 1) = matp(1, 1)+poi1*zr(mzr-1+kq+1)**2
+            matp(1, 2) = matp(1, 2)+poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+2)
+            matp(1, 3) = matp(1, 3)+poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+3)
+            matp(2, 1) = matp(1, 2)
+            matp(2, 2) = matp(2, 2)+poi1*zr(mzr-1+kq+2)**2
+            matp(2, 3) = matp(2, 3)+poi1*zr(mzr-1+kq+2)*zr(mzr-1+kq+3)
+            matp(3, 1) = matp(1, 3)
+            matp(3, 2) = matp(2, 3)
+            matp(3, 3) = matp(3, 3)+poi1*zr(mzr-1+kq+3)**2
         end do
 !
 ! ---   DETERMINATION DE LA MATRICE MATN DONT LE TERME GENERIQUE
@@ -812,9 +812,9 @@ subroutine te0110(option, nomte)
                 ygau = zero
                 zgau = zero
                 do i = 1, nno
-                    xgau = xgau + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
-                    ygau = ygau + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
-                    zgau = zgau + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
+                    xgau = xgau+zr(igeom+3*(i-1))*zr(ivf+k+i-1)
+                    ygau = ygau+zr(igeom+3*(i-1)+1)*zr(ivf+k+i-1)
+                    zgau = zgau+zr(igeom+3*(i-1)+2)*zr(ivf+k+i-1)
                 end do
 !
                 valpar(2) = xgau
@@ -822,9 +822,9 @@ subroutine te0110(option, nomte)
                 valpar(4) = zgau
                 nbvar = 4
 !
-                call fointe('FM', hfbord, nbvar, nompar, valpar,&
+                call fointe('FM', hfbord, nbvar, nompar, valpar, &
                             hbord, ier)
-            endif
+            end if
 !
 !
 !      IMPORTANT: LAMB = CONV * EPAISSEUR
@@ -832,122 +832,122 @@ subroutine te0110(option, nomte)
 !          LAMB=LAMB*LONG*THETA*EP
             hbord = hbord*long*theta/2.d0
 !
-            matn(1,1) = poi2*hbord*zr(ivf-1+k+1)**2
-            matn(1,2) = poi2*hbord*zr(ivf-1+k+1)*zr(ivf-1+k+2)
-            matn(2,1) = matn(1,2)
-            matn(2,2) = poi2*hbord*zr(ivf-1+k+2)**2
+            matn(1, 1) = poi2*hbord*zr(ivf-1+k+1)**2
+            matn(1, 2) = poi2*hbord*zr(ivf-1+k+1)*zr(ivf-1+k+2)
+            matn(2, 1) = matn(1, 2)
+            matn(2, 2) = poi2*hbord*zr(ivf-1+k+2)**2
 !
             if (nomte .eq. 'THCOSE3') then
-                matn(1,3) = poi2*hbord*zr(ivf-1+k+1)*zr(ivf-1+k+3)
-                matn(2,3) = poi2*hbord*zr(ivf-1+k+2)*zr(ivf-1+k+3)
-                matn(3,1) = matn(1,3)
-                matn(3,2) = matn(2,3)
-                matn(3,3) = poi2*hbord*zr(ivf-1+k+3)**2
-            endif
+                matn(1, 3) = poi2*hbord*zr(ivf-1+k+1)*zr(ivf-1+k+3)
+                matn(2, 3) = poi2*hbord*zr(ivf-1+k+2)*zr(ivf-1+k+3)
+                matn(3, 1) = matn(1, 3)
+                matn(3, 2) = matn(2, 3)
+                matn(3, 3) = poi2*hbord*zr(ivf-1+k+3)**2
+            end if
 !
-            rigith(1,1) = rigith(1,1) + matn(1,1)*matp(1,1)
-            rigith(1,2) = rigith(1,2) + matn(1,1)*matp(1,2)
-            rigith(1,3) = rigith(1,3) + matn(1,1)*matp(1,3)
-            rigith(1,4) = rigith(1,4) + matn(1,2)*matp(1,1)
-            rigith(1,5) = rigith(1,5) + matn(1,2)*matp(1,2)
-            rigith(1,6) = rigith(1,6) + matn(1,2)*matp(1,3)
+            rigith(1, 1) = rigith(1, 1)+matn(1, 1)*matp(1, 1)
+            rigith(1, 2) = rigith(1, 2)+matn(1, 1)*matp(1, 2)
+            rigith(1, 3) = rigith(1, 3)+matn(1, 1)*matp(1, 3)
+            rigith(1, 4) = rigith(1, 4)+matn(1, 2)*matp(1, 1)
+            rigith(1, 5) = rigith(1, 5)+matn(1, 2)*matp(1, 2)
+            rigith(1, 6) = rigith(1, 6)+matn(1, 2)*matp(1, 3)
 !
-            rigith(2,1) = rigith(1,2)
-            rigith(2,2) = rigith(2,2) + matn(1,1)*matp(2,2)
-            rigith(2,3) = rigith(2,3) + matn(1,1)*matp(2,3)
-            rigith(2,4) = rigith(2,4) + matn(1,2)*matp(2,1)
-            rigith(2,5) = rigith(2,5) + matn(1,2)*matp(2,2)
-            rigith(2,6) = rigith(2,6) + matn(1,2)*matp(2,3)
+            rigith(2, 1) = rigith(1, 2)
+            rigith(2, 2) = rigith(2, 2)+matn(1, 1)*matp(2, 2)
+            rigith(2, 3) = rigith(2, 3)+matn(1, 1)*matp(2, 3)
+            rigith(2, 4) = rigith(2, 4)+matn(1, 2)*matp(2, 1)
+            rigith(2, 5) = rigith(2, 5)+matn(1, 2)*matp(2, 2)
+            rigith(2, 6) = rigith(2, 6)+matn(1, 2)*matp(2, 3)
 !
-            rigith(3,1) = rigith(1,3)
-            rigith(3,2) = rigith(2,3)
-            rigith(3,3) = rigith(3,3) + matn(1,1)*matp(3,3)
-            rigith(3,4) = rigith(3,4) + matn(1,2)*matp(3,1)
-            rigith(3,5) = rigith(3,5) + matn(1,2)*matp(3,2)
-            rigith(3,6) = rigith(3,6) + matn(1,2)*matp(3,3)
+            rigith(3, 1) = rigith(1, 3)
+            rigith(3, 2) = rigith(2, 3)
+            rigith(3, 3) = rigith(3, 3)+matn(1, 1)*matp(3, 3)
+            rigith(3, 4) = rigith(3, 4)+matn(1, 2)*matp(3, 1)
+            rigith(3, 5) = rigith(3, 5)+matn(1, 2)*matp(3, 2)
+            rigith(3, 6) = rigith(3, 6)+matn(1, 2)*matp(3, 3)
 !
-            rigith(4,1) = rigith(1,4)
-            rigith(4,2) = rigith(2,4)
-            rigith(4,3) = rigith(3,4)
-            rigith(4,4) = rigith(4,4) + matn(2,2)*matp(1,1)
-            rigith(4,5) = rigith(4,5) + matn(2,2)*matp(1,2)
-            rigith(4,6) = rigith(4,6) + matn(2,2)*matp(1,3)
+            rigith(4, 1) = rigith(1, 4)
+            rigith(4, 2) = rigith(2, 4)
+            rigith(4, 3) = rigith(3, 4)
+            rigith(4, 4) = rigith(4, 4)+matn(2, 2)*matp(1, 1)
+            rigith(4, 5) = rigith(4, 5)+matn(2, 2)*matp(1, 2)
+            rigith(4, 6) = rigith(4, 6)+matn(2, 2)*matp(1, 3)
 !
-            rigith(5,1) = rigith(1,5)
-            rigith(5,2) = rigith(2,5)
-            rigith(5,3) = rigith(3,5)
-            rigith(5,4) = rigith(4,5)
-            rigith(5,5) = rigith(5,5) + matn(2,2)*matp(2,2)
-            rigith(5,6) = rigith(5,6) + matn(2,2)*matp(2,3)
+            rigith(5, 1) = rigith(1, 5)
+            rigith(5, 2) = rigith(2, 5)
+            rigith(5, 3) = rigith(3, 5)
+            rigith(5, 4) = rigith(4, 5)
+            rigith(5, 5) = rigith(5, 5)+matn(2, 2)*matp(2, 2)
+            rigith(5, 6) = rigith(5, 6)+matn(2, 2)*matp(2, 3)
 !
-            rigith(6,1) = rigith(1,6)
-            rigith(6,2) = rigith(2,6)
-            rigith(6,3) = rigith(3,6)
-            rigith(6,4) = rigith(4,6)
-            rigith(6,5) = rigith(5,6)
-            rigith(6,6) = rigith(6,6) + matn(2,2)*matp(3,3)
+            rigith(6, 1) = rigith(1, 6)
+            rigith(6, 2) = rigith(2, 6)
+            rigith(6, 3) = rigith(3, 6)
+            rigith(6, 4) = rigith(4, 6)
+            rigith(6, 5) = rigith(5, 6)
+            rigith(6, 6) = rigith(6, 6)+matn(2, 2)*matp(3, 3)
 !
             if (nomte .eq. 'THCOSE3') then
 !
-                rigith(1,7) = rigith(1,7) + matn(1,3)*matp(1,1)
-                rigith(1,8) = rigith(1,8) + matn(1,3)*matp(1,2)
-                rigith(1,9) = rigith(1,9) + matn(1,3)*matp(1,3)
+                rigith(1, 7) = rigith(1, 7)+matn(1, 3)*matp(1, 1)
+                rigith(1, 8) = rigith(1, 8)+matn(1, 3)*matp(1, 2)
+                rigith(1, 9) = rigith(1, 9)+matn(1, 3)*matp(1, 3)
 !
-                rigith(2,7) = rigith(2,7) + matn(1,3)*matp(2,1)
-                rigith(2,8) = rigith(2,8) + matn(1,3)*matp(2,2)
-                rigith(2,9) = rigith(2,9) + matn(1,3)*matp(2,3)
+                rigith(2, 7) = rigith(2, 7)+matn(1, 3)*matp(2, 1)
+                rigith(2, 8) = rigith(2, 8)+matn(1, 3)*matp(2, 2)
+                rigith(2, 9) = rigith(2, 9)+matn(1, 3)*matp(2, 3)
 !
-                rigith(3,7) = rigith(3,7) + matn(1,3)*matp(3,1)
-                rigith(3,8) = rigith(3,8) + matn(1,3)*matp(3,2)
-                rigith(3,9) = rigith(3,9) + matn(1,3)*matp(3,3)
+                rigith(3, 7) = rigith(3, 7)+matn(1, 3)*matp(3, 1)
+                rigith(3, 8) = rigith(3, 8)+matn(1, 3)*matp(3, 2)
+                rigith(3, 9) = rigith(3, 9)+matn(1, 3)*matp(3, 3)
 !
-                rigith(4,7) = rigith(4,7) + matn(2,3)*matp(1,1)
-                rigith(4,8) = rigith(4,8) + matn(2,3)*matp(1,2)
-                rigith(4,9) = rigith(4,9) + matn(2,3)*matp(1,3)
+                rigith(4, 7) = rigith(4, 7)+matn(2, 3)*matp(1, 1)
+                rigith(4, 8) = rigith(4, 8)+matn(2, 3)*matp(1, 2)
+                rigith(4, 9) = rigith(4, 9)+matn(2, 3)*matp(1, 3)
 !
-                rigith(5,7) = rigith(5,7) + matn(2,3)*matp(2,1)
-                rigith(5,8) = rigith(5,8) + matn(2,3)*matp(2,2)
-                rigith(5,9) = rigith(5,9) + matn(2,3)*matp(2,3)
+                rigith(5, 7) = rigith(5, 7)+matn(2, 3)*matp(2, 1)
+                rigith(5, 8) = rigith(5, 8)+matn(2, 3)*matp(2, 2)
+                rigith(5, 9) = rigith(5, 9)+matn(2, 3)*matp(2, 3)
 !
-                rigith(6,7) = rigith(6,7) + matn(2,3)*matp(3,1)
-                rigith(6,8) = rigith(6,8) + matn(2,3)*matp(3,2)
-                rigith(6,9) = rigith(6,9) + matn(2,3)*matp(3,3)
+                rigith(6, 7) = rigith(6, 7)+matn(2, 3)*matp(3, 1)
+                rigith(6, 8) = rigith(6, 8)+matn(2, 3)*matp(3, 2)
+                rigith(6, 9) = rigith(6, 9)+matn(2, 3)*matp(3, 3)
 !
-                rigith(7,1) = rigith(1,7)
-                rigith(7,2) = rigith(2,7)
-                rigith(7,3) = rigith(3,7)
-                rigith(7,4) = rigith(4,7)
-                rigith(7,5) = rigith(5,7)
-                rigith(7,6) = rigith(6,7)
-                rigith(7,7) = rigith(7,7) + matn(3,3)*matp(1,1)
-                rigith(7,8) = rigith(7,8) + matn(3,3)*matp(1,2)
-                rigith(7,9) = rigith(7,9) + matn(3,3)*matp(1,3)
+                rigith(7, 1) = rigith(1, 7)
+                rigith(7, 2) = rigith(2, 7)
+                rigith(7, 3) = rigith(3, 7)
+                rigith(7, 4) = rigith(4, 7)
+                rigith(7, 5) = rigith(5, 7)
+                rigith(7, 6) = rigith(6, 7)
+                rigith(7, 7) = rigith(7, 7)+matn(3, 3)*matp(1, 1)
+                rigith(7, 8) = rigith(7, 8)+matn(3, 3)*matp(1, 2)
+                rigith(7, 9) = rigith(7, 9)+matn(3, 3)*matp(1, 3)
 !
-                rigith(8,1) = rigith(1,8)
-                rigith(8,2) = rigith(2,8)
-                rigith(8,3) = rigith(3,8)
-                rigith(8,4) = rigith(4,8)
-                rigith(8,5) = rigith(5,8)
-                rigith(8,6) = rigith(6,8)
-                rigith(8,7) = rigith(7,8)
-                rigith(8,8) = rigith(8,8) + matn(3,3)*matp(2,2)
-                rigith(8,9) = rigith(8,9) + matn(3,3)*matp(2,3)
+                rigith(8, 1) = rigith(1, 8)
+                rigith(8, 2) = rigith(2, 8)
+                rigith(8, 3) = rigith(3, 8)
+                rigith(8, 4) = rigith(4, 8)
+                rigith(8, 5) = rigith(5, 8)
+                rigith(8, 6) = rigith(6, 8)
+                rigith(8, 7) = rigith(7, 8)
+                rigith(8, 8) = rigith(8, 8)+matn(3, 3)*matp(2, 2)
+                rigith(8, 9) = rigith(8, 9)+matn(3, 3)*matp(2, 3)
 !
-                rigith(9,1) = rigith(1,9)
-                rigith(9,2) = rigith(2,9)
-                rigith(9,3) = rigith(3,9)
-                rigith(9,4) = rigith(4,9)
-                rigith(9,5) = rigith(5,9)
-                rigith(9,6) = rigith(6,9)
-                rigith(9,7) = rigith(7,9)
-                rigith(9,8) = rigith(8,9)
-                rigith(9,9) = rigith(9,9) + matn(3,3)*matp(3,3)
-            endif
+                rigith(9, 1) = rigith(1, 9)
+                rigith(9, 2) = rigith(2, 9)
+                rigith(9, 3) = rigith(3, 9)
+                rigith(9, 4) = rigith(4, 9)
+                rigith(9, 5) = rigith(5, 9)
+                rigith(9, 6) = rigith(6, 9)
+                rigith(9, 7) = rigith(7, 9)
+                rigith(9, 8) = rigith(8, 9)
+                rigith(9, 9) = rigith(9, 9)+matn(3, 3)*matp(3, 3)
+            end if
 !
         end do
 !
 !..................................................................
-    endif
+    end if
 !..................................................................
 !
 ! --- RECUPERATION DU VECTEUR SECOND MEMBRE EN SORTIE DE CHAR_THER_EVOL:
@@ -960,7 +960,7 @@ subroutine te0110(option, nomte)
     nbddl = 3*nno
     do i = 1, nbddl
         do j = 1, nbddl
-            zr(ivectt+i-1) = zr(ivectt+i-1) + (masse(j,i)/deltat- (un- theta)*rigith(j,i))* zr(it&
+            zr(ivectt+i-1) = zr(ivectt+i-1)+(masse(j, i)/deltat-(un-theta)*rigith(j, i))*zr(it&
                              &emp+j-1)
         end do
     end do

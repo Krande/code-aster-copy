@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,19 +66,19 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
         if (iocc .eq. 1) then
             call tbexip(table, 'INTITULE', exist, typ)
             if (exist) then
-                ASSERT(typ(1:3).eq.'K16')
-                call tbexv1(table, 'INTITULE', intitu, 'V', nbinti,&
+                ASSERT(typ(1:3) .eq. 'K16')
+                call tbexv1(table, 'INTITULE', intitu, 'V', nbinti, &
                             typ)
             else
                 call wkvect(intitu, 'V V K16', 1, jinti)
                 zk16(jinti) = ' '
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !
-    if (lsn .and. .not.lfatig .and. nbtran .gt. 1) then
-        nbint0 = nbtran * nbinti
+    if (lsn .and. .not. lfatig .and. nbtran .gt. 1) then
+        nbint0 = nbtran*nbinti
         intit0 = '&&RCEVO0.INTITULE'
         call jeveuo(intitu, 'L', jinti)
         call wkvect(intit0, 'V V K16', 1, jint0)
@@ -95,7 +95,7 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
         call jedetr(intit0)
     else
         nbtran = 1
-    endif
+    end if
 !
 999 continue
     call jedema()

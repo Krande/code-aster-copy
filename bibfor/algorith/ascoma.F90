@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine ascoma(meelem, numedd, lischa, matass)
         call jelira(licoef, 'LONUTI', nbchme)
         call jeveuo(mesuiv(1:19)//'.RELR', 'L', vk24=relr)
         call jeveuo(licoef, 'L', jlicoe)
-    endif
+    end if
 !
 ! --- AJOUT DES MESUIV
 !
@@ -89,7 +89,7 @@ subroutine ascoma(meelem, numedd, lischa, matass)
         call jedetr('&&ASCOMA           .RELR')
         call reajre('&&ASCOMA', relr(k), 'V')
         zr(jcoef) = zr(jlicoe+k-1)
-        call asmatr(1, '&&ASCOMA           ', '&&ASCOMA.LISTE_COEF', numedd, lischa,&
+        call asmatr(1, '&&ASCOMA           ', '&&ASCOMA.LISTE_COEF', numedd, lischa, &
                     'CUMU', 'V', 1, matass)
     end do
 !

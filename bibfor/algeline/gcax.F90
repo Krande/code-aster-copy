@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gcax(m, in, ip, ac, x,&
+subroutine gcax(m, in, ip, ac, x, &
                 y)
     implicit none
     integer(kind=4) :: ip(*)
@@ -44,12 +44,12 @@ subroutine gcax(m, in, ip, ac, x,&
         klong = in(i)
         dtemp = 0.0d0
         do j = kdeb, klong
-            dtemp = dtemp + x(ip(j))*ac(j)
+            dtemp = dtemp+x(ip(j))*ac(j)
         end do
         y(i) = dtemp
         dtemp = x(i)
         do ki = kdeb, kfin
-            y(ip(ki)) = y(ip(ki)) + ac(ki)*dtemp
+            y(ip(ki)) = y(ip(ki))+ac(ki)*dtemp
         end do
     end do
 !

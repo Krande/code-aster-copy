@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine fozero(nomfon)
     call jeexin(chpro, iret)
     if (iret .ne. 0) goto 9999
 !
-    ASSERT(lxlgut(nomf).le.24)
+    ASSERT(lxlgut(nomf) .le. 24)
     call wkvect(chpro, 'G V K24', 6, jpro)
     zk24(jpro) = 'CONSTANT'
     zk24(jpro+1) = 'LIN LIN '
@@ -65,6 +65,6 @@ subroutine fozero(nomfon)
     zr(lval+1) = 0.d0
 !
 !     --- LIBERATIONS ---
-9999  continue
+9999 continue
     call jedema()
 end subroutine

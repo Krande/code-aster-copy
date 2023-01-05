@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine medomp(result, modele, mater, mateco, carele, nh)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -96,33 +96,33 @@ implicit none
         call getvid(' ', 'MODELE', scal=modele, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'POSTELEM_20')
-        endif
+        end if
         call dismoi('PHENOMENE', modele, 'MODELE', repk=phen)
         if (phen .eq. 'THERM') then
             l_ther = ASTER_TRUE
-        endif
+        end if
         call dismoi('EXI_RDM', modele, 'MODELE', repk=repons)
-        lrdm = repons.eq.'OUI'
+        lrdm = repons .eq. 'OUI'
         call dismoi('BESOIN_MATER', modele, 'MODELE', repk=repons)
-        lmater = repons.eq.'OUI'
+        lmater = repons .eq. 'OUI'
 !
 ! ----- RECUPERATION DU CARA_ELEM DANS LA COMMANDE
 !
         if (present(carele)) then
             call getvid(' ', 'CARA_ELEM', scal=carel, nbret=n2)
-            if ((n2.eq.0) .and. lrdm) then
+            if ((n2 .eq. 0) .and. lrdm) then
                 call utmess('A', 'CALCULEL3_39')
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- RECUPERATION DU CHAM_MATER DANS LA COMMANDE
 !
         if (present(mateco)) then
             call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
-            if ((n3.eq.0) .and. lmater) then
+            if ((n3 .eq. 0) .and. lmater) then
                 call utmess('A', 'CALCULEL3_40')
-            endif
-        endif
+            end if
+        end if
 !
     else
 !
@@ -135,37 +135,37 @@ implicit none
         if (inuord .eq. 0) then
             call getvr8(' ', 'PRECISION', scal=prec, nbret=n1)
             call getvtx(' ', 'CRITERE', scal=crit, nbret=n2)
-            call rsutnu(result, ' ', 0, knum, nbordr,&
+            call rsutnu(result, ' ', 0, knum, nbordr, &
                         prec, crit, iret)
-            call jeveuo(knum, 'L', vi = v_list_store)
+            call jeveuo(knum, 'L', vi=v_list_store)
             numlu = v_list_store(1)
-        endif
+        end if
 !
 ! ----- VERIFICATION DE L'UNICITE DU MODELE DANS LE RESULTAT
 !
         if (inuord .eq. 0) then
-            call medome_once(result, v_list_store, nbordr,&
-                             model_ = modele)
+            call medome_once(result, v_list_store, nbordr, &
+                             model_=modele)
             call jedetr(knum)
         else
-            call medome_once(result, v_list_store, nbordr, numlu ,&
-                             model_ = modele)
-        endif
+            call medome_once(result, v_list_store, nbordr, numlu, &
+                             model_=modele)
+        end if
 !
 ! ----- RECUPERATION MODELE, MATERIAU ET CARA_ELEM DANS LA SD RESULTAT
 !
         call rslesd(result, numlu, modele, materi, carel)
 !
-    endif
+    end if
 !
 ! --- CODAGE DU MATERIAU
 !
     if (present(mateco)) then
         mateco = ' '
-        if (materi .ne. ' ') call rcmfmc(materi, mateco, l_ther_ = l_ther)
-    endif
+        if (materi .ne. ' ') call rcmfmc(materi, mateco, l_ther_=l_ther)
+    end if
 !
-    if(present(mater)) then
+    if (present(mater)) then
         mater = materi
     end if
 !
@@ -173,17 +173,17 @@ implicit none
 !
     if (present(carele)) then
         carele = carel
-    endif
+    end if
 !
 ! --- MODE FOURIER SI NECESSAIRE
 !
     if (present(nh)) then
         nh = 0
-        lfour = getexm(' ','MODE_FOURIER')
+        lfour = getexm(' ', 'MODE_FOURIER')
         if (lfour .eq. 1) then
             call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n1)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

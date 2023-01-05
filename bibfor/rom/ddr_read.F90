@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine ddr_read(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -38,7 +38,7 @@ implicit none
 #include "asterfort/romBasePrintInfo.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDDR), intent(inout) :: cmdPara
+    type(ROM_DS_ParaDDR), intent(inout) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,13 +53,13 @@ type(ROM_DS_ParaDDR), intent(inout) :: cmdPara
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nb_layer_rid , nb_layer_sub , nocc
-    integer :: nb_node , nb_mail
+    integer :: nb_layer_rid, nb_layer_sub, nocc
+    integer :: nb_node, nb_mail
     aster_logical :: l_corr_ef
     type(ROM_DS_Empi) :: empi_prim, empi_dual
     character(len=8)  :: base_prim, base_dual, mesh, mesh_reuse
     character(len=16) :: k16bid, answer, keywf
-    character(len=24) :: grelem_rid , grnode_int , grnode_sub
+    character(len=24) :: grelem_rid, grnode_int, grnode_sub
     character(len=24) :: list_node, list_mail
 !
 ! --------------------------------------------------------------------------------------------------
@@ -67,47 +67,47 @@ type(ROM_DS_ParaDDR), intent(inout) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM19_2')
-    endif
+    end if
 !
 ! - Initializations
 !
-    base_prim    = ' '
-    base_dual    = ' '
-    mesh         = ' '
-    mesh_reuse   = ' '
-    k16bid       = ' '
-    grelem_rid   = ' '
-    grnode_int   = ' '
-    grnode_sub   = ' '
-    list_mail    = ' '
+    base_prim = ' '
+    base_dual = ' '
+    mesh = ' '
+    mesh_reuse = ' '
+    k16bid = ' '
+    grelem_rid = ' '
+    grnode_int = ' '
+    grnode_sub = ' '
+    list_mail = ' '
     nb_layer_rid = 0
     nb_layer_sub = 0
-    nb_node      = 0
-    nb_mail      = 0
-    l_corr_ef    = ASTER_FALSE
+    nb_node = 0
+    nb_mail = 0
+    l_corr_ef = ASTER_FALSE
 !
 ! - Output datastructure
 !
     call getres(mesh, k16bid, k16bid)
-    call getvid(' ', 'MAILLAGE', scal = mesh_reuse)
+    call getvid(' ', 'MAILLAGE', scal=mesh_reuse)
     if (mesh .ne. mesh_reuse) then
         call utmess('F', 'SUPERVIS2_79', sk='MAILLAGE')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    call getvtx(' ', 'NOM_DOMAINE'    , scal = grelem_rid)
-    call getvis(' ', 'NB_COUCHE_SUPPL', scal = nb_layer_rid)
-    call getvtx(' ', 'GROUP_NO_INTERF', scal = grnode_int)
-    call getvtx(' ', 'CORR_COMPLET'   , scal = answer)
+    call getvtx(' ', 'NOM_DOMAINE', scal=grelem_rid)
+    call getvis(' ', 'NB_COUCHE_SUPPL', scal=nb_layer_rid)
+    call getvtx(' ', 'GROUP_NO_INTERF', scal=grnode_int)
+    call getvtx(' ', 'CORR_COMPLET', scal=answer)
     l_corr_ef = answer .eq. 'OUI'
     if (l_corr_ef) then
-        call getvtx(' ', 'GROUP_NO_ENCASTRE'  , scal = grnode_sub)
-        call getvis(' ', 'NB_COUCHE_ENCASTRE' , scal = nb_layer_sub, nbret = nocc)
+        call getvtx(' ', 'GROUP_NO_ENCASTRE', scal=grnode_sub)
+        call getvis(' ', 'NB_COUCHE_ENCASTRE', scal=nb_layer_sub, nbret=nocc)
         if (nb_layer_sub .gt. nb_layer_rid) then
             call utmess('A', 'ROM4_15')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Minimum RID
 !
@@ -116,10 +116,10 @@ type(ROM_DS_ParaDDR), intent(inout) :: cmdPara
     ASSERT(nocc .le. 1)
     if (nocc .eq. 1) then
         list_node = '&&OP0050.LIST_NODE'
-        call getnode(mesh   , keywf, 1, ' ', list_node, nb_node)
-        call jeveuo(list_node, 'L', vi = cmdPara%v_rid_mini)
+        call getnode(mesh, keywf, 1, ' ', list_node, nb_node)
+        call jeveuo(list_node, 'L', vi=cmdPara%v_rid_mini)
         cmdPara%nb_rid_mini = nb_node
-    endif
+    end if
 !
 ! - Maximum RID
 !
@@ -130,30 +130,30 @@ type(ROM_DS_ParaDDR), intent(inout) :: cmdPara
         cmdPara%l_rid_maxi = .true._1
         list_mail = '&&OP0050.LIST_MAIL'
         call getelem(mesh, keywf, 1, ' ', list_mail, nb_mail)
-        call jeveuo(list_mail, 'L', vi = cmdPara%v_rid_maxi)
+        call jeveuo(list_mail, 'L', vi=cmdPara%v_rid_maxi)
         cmdPara%nb_rid_maxi = nb_mail
-    endif
+    end if
 !
 ! - Get informations about bases - Primal
 !
-    call getvid(' ', 'BASE_PRIMAL', scal = base_prim)
+    call getvid(' ', 'BASE_PRIMAL', scal=base_prim)
     call romBaseGetInfo(base_prim, empi_prim)
     call romBasePrintInfo(empi_prim)
 !
 ! - Get informations about bases - Dual
 !
-    call getvid(' ', 'BASE_DUAL', scal = base_dual)
+    call getvid(' ', 'BASE_DUAL', scal=base_dual)
     call romBaseGetInfo(base_dual, empi_dual)
     call romBasePrintInfo(empi_dual)
 !
 ! - Save parameters in datastructure
 !
-    cmdPara%mesh         = mesh
-    cmdPara%grelem_rid   = grelem_rid
+    cmdPara%mesh = mesh
+    cmdPara%grelem_rid = grelem_rid
     cmdPara%nb_layer_rid = nb_layer_rid
-    cmdPara%grnode_int   = grnode_int
-    cmdPara%l_corr_ef    = l_corr_ef
-    cmdPara%grnode_sub   = grnode_sub
+    cmdPara%grnode_int = grnode_int
+    cmdPara%l_corr_ef = l_corr_ef
+    cmdPara%grnode_sub = grnode_sub
     cmdPara%nb_layer_sub = nb_layer_sub
     cmdPara%ds_empi_prim = empi_prim
     cmdPara%ds_empi_dual = empi_dual

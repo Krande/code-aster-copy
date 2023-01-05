@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndxmat(fonact, lischa, numedd, sddyna, numins,&
+subroutine ndxmat(fonact, lischa, numedd, sddyna, numins, &
                   meelem, measse, matass)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ascoma.h"
@@ -33,13 +33,13 @@ implicit none
 #include "asterfort/ndynre.h"
 #include "asterfort/nmchex.h"
 !
-character(len=19) :: matass
-character(len=19) :: sddyna
-integer :: fonact(*)
-integer :: numins
-character(len=19) :: meelem(*), measse(*)
-character(len=24) :: numedd
-character(len=19) :: lischa
+    character(len=19) :: matass
+    character(len=19) :: sddyna
+    integer :: fonact(*)
+    integer :: numins
+    character(len=19) :: meelem(*), measse(*)
+    character(len=24) :: numedd
+    character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,12 +77,12 @@ character(len=19) :: lischa
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><CALC> CALCUL MATRICE GLOBALE'
-    endif
+        write (ifm, *) '<MECANONLINE><CALC> CALCUL MATRICE GLOBALE'
+    end if
 !
 ! --- PREMIER PAS DE TEMPS ?
 !
-    lprem = numins.le.1
+    lprem = numins .le. 1
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -92,8 +92,8 @@ character(len=19) :: lischa
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
-    lshima        = ndynlo(sddyna,'COEF_MASS_SHIFT')
+    l_neum_undead = isfonc(fonact, 'NEUM_UNDEAD')
+    lshima = ndynlo(sddyna, 'COEF_MASS_SHIFT')
 !
 ! --- SUPPRESSION ANCIENNE MATRICE ASSEMBLEE
 !
@@ -101,8 +101,8 @@ character(len=19) :: lischa
 !
 ! --- COEFFICIENTS POUR MATRICES
 !
-    coemas = ndynre(sddyna,'COEF_MATR_MASS')
-    coeshi = ndynre(sddyna,'COEF_MASS_SHIFT')
+    coemas = ndynre(sddyna, 'COEF_MATR_MASS')
+    coeshi = ndynre(sddyna, 'COEF_MASS_SHIFT')
 !
 ! --- DECALAGE DE LA MATRICE MASSE (COEF_MASS_SHIFT)
 !
@@ -114,9 +114,9 @@ character(len=19) :: lischa
         limam(1) = masse
         limam(2) = rigid
         nbmat = 2
-        call mtcmbl(nbmat, typcsm, [coemam], limam, masse,&
+        call mtcmbl(nbmat, typcsm, [coemam], limam, masse, &
                     nomddl, ' ', 'ELIM=')
-    endif
+    end if
 !
 ! --- MATRICES ET COEFFICIENTS
 !
@@ -131,13 +131,13 @@ character(len=19) :: lischa
 !
 ! --- ASSEMBLAGE
 !
-    call mtcmbl(nbmat, typcst, [coemat], limat, matass,&
+    call mtcmbl(nbmat, typcst, [coemat], limat, matass, &
                 nomddl, ' ', 'ELIM=')
 !
 ! --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
 !
     if (l_neum_undead) then
         call ascoma(meelem, numedd, lischa, matass)
-    endif
+    end if
 !
 end subroutine

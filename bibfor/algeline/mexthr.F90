@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,38 +34,38 @@ subroutine mexthr(n, a, lda)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     if (n .lt. 1) then
-        write(6,*)  'THE ARGUMENT N = %(I1).  IT MUST BE AT '//&
+        write (6, *) 'THE ARGUMENT N = %(I1).  IT MUST BE AT '//&
      &               'LEAST 1.'
         goto 9000
-    endif
+    end if
     if (lda .lt. n) then
-        write(6,*)  'THE ARGUMENT LDA = %(I1).  IT MUST BE AT '//&
+        write (6, *) 'THE ARGUMENT LDA = %(I1).  IT MUST BE AT '//&
      &               'LEAST AS LARGE AS N = %(I2).'
         goto 9000
-    endif
+    end if
     eps = 10.0d0*r8prem()
     do i = 1, n
-        if (abs(dimag(a(i,i))) .ne. 0.0d0) then
-            if (abs(dimag(a(i,i))) .gt. eps*abs(dble(a(i,i)))) then
-                write(6,*) a(i,i)
-                write(6,*)  'THE MATRIX ELEMENT A(%(I1),%(I1)) '//&
+        if (abs(dimag(a(i, i))) .ne. 0.0d0) then
+            if (abs(dimag(a(i, i))) .gt. eps*abs(dble(a(i, i)))) then
+                write (6, *) a(i, i)
+                write (6, *) 'THE MATRIX ELEMENT A(%(I1),%(I1)) '//&
      &                     '= %(Z1).  THE DIAGONAL OF A HERMITIAN '//&
      &                     'MATRIX MUST BE REAL.'
                 goto 9000
             else
-                write(6,*) a(i,i)
-                write(6,*)  'THE MATRIX ELEMENT A(%(I1),%(I1)) '//&
+                write (6, *) a(i, i)
+                write (6, *) 'THE MATRIX ELEMENT A(%(I1),%(I1)) '//&
      &                     '= %(Z1).  THE DIAGONAL OF A HERMITIAN '//&
      &                     'MATRIX MUST BE REAL: ITS IMAGINARY PART '//&
      &                     'IS SET TO ZERO.'
-                a(i,i) = dble(a(i,i))
-            endif
-        endif
+                a(i, i) = dble(a(i, i))
+            end if
+        end if
     end do
 !
-    do j = 1, n - 1
-        do i = j + 1, n
-            a(i,j) = dconjg(a(j,i))
+    do j = 1, n-1
+        do i = j+1, n
+            a(i, j) = dconjg(a(j, i))
         end do
     end do
 !

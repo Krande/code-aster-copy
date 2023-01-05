@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine inistb(maxnod, nbtyma, nomail, indic, permut,&
+subroutine inistb(maxnod, nbtyma, nomail, indic, permut, &
                   limail, indicf, permuf, maxfa)
     implicit none
 !     ====================================================
@@ -184,167 +184,167 @@ subroutine inistb(maxnod, nbtyma, nomail, indic, permut,&
 ! --> DONNES POUR LA RENUMEROTATION LOCALE DES ELEMENTS
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data nbnoma/6,9,4,8,12,6,12,18,8,16,24,4,10,6,15,24,8,20,0,0,0,0,&
-     &            0,0,0,0,0,0,0,0,0,0,3/
-    data (permu2(i,3),i=1,6)/1,4,2,5,3,6/
-    data (permu2(i,4),i=1,9)/1,4,5,2,6,7,3,8,9/
-    data (permu2(i,6),i=1,8)/1,5,2,6,3,7,4,8/
-    data (permu2(i,7),i=1,12)/1,5,6,2,7,8,3,9,10,4,11,12/
-    data (permu2(i,9),i=1,12)/1,7,2,8,3,9,4,10,5,11,6,12/
-    data (permu2(i,12),i=1,16)/1,9,2,10,3,11,4,12,5,13,6,14,7,15,8,16/
-    data (permu2(i,15),i=1,10)/1,5,2,6,3,7,8,9,10,4/
-    data (permu2(i,17),i=1,15)/1,7,2,8,3,9,10,11,12,4,13,5,14,6,15/
-    data (permu2(i,20),i=1,20)/1,9,2,10,3,11,4,12,13,14,15,16,5,17,&
-     &     6,18,7,19,8,20/
-    data (permu2(i,35),i=1,3)/1,3,2/
+    data nbnoma/6, 9, 4, 8, 12, 6, 12, 18, 8, 16, 24, 4, 10, 6, 15, 24, 8, 20, 0, 0, 0, 0,&
+     &            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3/
+    data(permu2(i, 3), i=1, 6)/1, 4, 2, 5, 3, 6/
+    data(permu2(i, 4), i=1, 9)/1, 4, 5, 2, 6, 7, 3, 8, 9/
+    data(permu2(i, 6), i=1, 8)/1, 5, 2, 6, 3, 7, 4, 8/
+    data(permu2(i, 7), i=1, 12)/1, 5, 6, 2, 7, 8, 3, 9, 10, 4, 11, 12/
+    data(permu2(i, 9), i=1, 12)/1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 6, 12/
+    data(permu2(i, 12), i=1, 16)/1, 9, 2, 10, 3, 11, 4, 12, 5, 13, 6, 14, 7, 15, 8, 16/
+    data(permu2(i, 15), i=1, 10)/1, 5, 2, 6, 3, 7, 8, 9, 10, 4/
+    data(permu2(i, 17), i=1, 15)/1, 7, 2, 8, 3, 9, 10, 11, 12, 4, 13, 5, 14, 6, 15/
+    data(permu2(i, 20), i=1, 20)/1, 9, 2, 10, 3, 11, 4, 12, 13, 14, 15, 16, 5, 17,&
+     &     6, 18, 7, 19, 8, 20/
+    data(permu2(i, 35), i=1, 3)/1, 3, 2/
 !
 ! --> DONNEES POUR LA RENUMEROTATION LOCALE DES FACES
-    data nbnomf/4,4,5,5,5,6,6,6/
-    data (permu3(i,14),i=1,4)/1,2,3,4/
-    data (permu3(i,15),i=1,4)/3,1,4,2/
-    data (permu3(i,16),i=1,5)/1,2,3,4,5/
-    data (permu3(i,17),i=1,5)/1,4,2,5,3/
-    data (permu3(i,18),i=1,5)/1,4,2,5,3/
-    data (permu3(i,19),i=1,6)/1,2,3,4,5,6/
-    data (permu3(i,20),i=1,6)/3,6,1,5,4,2/
-    data (permu3(i,21),i=1,6)/3,6,1,5,4,2/
+    data nbnomf/4, 4, 5, 5, 5, 6, 6, 6/
+    data(permu3(i, 14), i=1, 4)/1, 2, 3, 4/
+    data(permu3(i, 15), i=1, 4)/3, 1, 4, 2/
+    data(permu3(i, 16), i=1, 5)/1, 2, 3, 4, 5/
+    data(permu3(i, 17), i=1, 5)/1, 4, 2, 5, 3/
+    data(permu3(i, 18), i=1, 5)/1, 4, 2, 5, 3/
+    data(permu3(i, 19), i=1, 6)/1, 2, 3, 4, 5, 6/
+    data(permu3(i, 20), i=1, 6)/3, 6, 1, 5, 4, 2/
+    data(permu3(i, 21), i=1, 6)/3, 6, 1, 5, 4, 2/
 !
 ! --> FIN DES DONNEES POUR LA RENUMEROTATION
 !
     do j = 1, maxnod
-        limail(j)=0
+        limail(j) = 0
     end do
 !
     do i = 1, maxnod
-        indic(i)=-1
+        indic(i) = -1
     end do
 !
     do i = 1, 8
-        indic(i)=0
+        indic(i) = 0
     end do
 !
 ! JMP 2/5/90
 !
-    indic(3)=1
-    indic(4)=1
-    indic(6)=1
-    indic(7)=1
+    indic(3) = 1
+    indic(4) = 1
+    indic(6) = 1
+    indic(7) = 1
 !
-    indic(9)=1
-    indic(12)=1
-    indic(15)=1
-    indic(17)=1
-    indic(20)=1
-    indic(35)=1
+    indic(9) = 1
+    indic(12) = 1
+    indic(15) = 1
+    indic(17) = 1
+    indic(20) = 1
+    indic(35) = 1
 !
-    indic(11)=0
-    indic(14)=0
-    indic(16)=0
-    indic(19)=0
+    indic(11) = 0
+    indic(14) = 0
+    indic(16) = 0
+    indic(19) = 0
 !
     do i = 29, 34
-        indic(i)=0
+        indic(i) = 0
     end do
 !
-    nbtyma=35
+    nbtyma = 35
 !
     do i = 3, nbtyma
         if (indic(i) .eq. 1) then
 !
             do j = 1, nbnoma(i)
-                permut(j,i)=permu2(j,i)
+                permut(j, i) = permu2(j, i)
             end do
 !
-        endif
+        end if
     end do
 !
     do i = 1, maxnod
-        indicf(i)=-1
+        indicf(i) = -1
     end do
 !
     do i = 1, 13
-        indicf(i)=0
+        indicf(i) = 0
     end do
 !
     do i = 14, 21
-        indicf(i)=1
+        indicf(i) = 1
     end do
 !
     do i = 29, nbtyma
-        indicf(i)=0
+        indicf(i) = 0
     end do
 !
     do i = 14, nbtyma
         if (indicf(i) .eq. 1) then
             do j = 1, nbnomf(i)
-                permuf(j,i)=permu3(j,i)
+                permuf(j, i) = permu3(j, i)
             end do
-        endif
+        end if
     end do
 !
-    nomail( 1)='SEG2'
-    nomail( 2)='TRIA3'
-    nomail( 3)='TRIA6'
-    nomail( 4)='TRIA9'
-    nomail( 5)='QUAD4'
-    nomail( 6)='QUAD8'
-    nomail( 7)='QUAD12'
-    nomail( 8)='PENTAC6'
-    nomail( 9)='PENTAC12'
-    nomail(10)='PENTAC18'
-    nomail(11)='HEXACE8'
-    nomail(12)='HEXACE16'
-    nomail(13)='HEXACE24'
-    nomail(14)='TETRA4'
-    nomail(15)='TETRA10'
-    nomail(16)='PENTA6'
-    nomail(17)='PENTA15'
-    nomail(18)='PENTA24'
-    nomail(19)='HEXA8'
-    nomail(20)='HEXA20'
-    nomail(21)='HEXA32'
-    nomail(22)=' '
-    nomail(23)=' '
-    nomail(24)=' '
-    nomail(25)=' '
-    nomail(26)=' '
-    nomail(27)=' '
-    nomail(28)=' '
-    nomail(29)='SEG2'
-    nomail(30)='POI1'
-    nomail(31)='SEG2'
-    nomail(32)='POI1'
-    nomail(33)='POI1'
-    nomail(34)='SEG2'
-    nomail(35)='SEG3'
+    nomail(1) = 'SEG2'
+    nomail(2) = 'TRIA3'
+    nomail(3) = 'TRIA6'
+    nomail(4) = 'TRIA9'
+    nomail(5) = 'QUAD4'
+    nomail(6) = 'QUAD8'
+    nomail(7) = 'QUAD12'
+    nomail(8) = 'PENTAC6'
+    nomail(9) = 'PENTAC12'
+    nomail(10) = 'PENTAC18'
+    nomail(11) = 'HEXACE8'
+    nomail(12) = 'HEXACE16'
+    nomail(13) = 'HEXACE24'
+    nomail(14) = 'TETRA4'
+    nomail(15) = 'TETRA10'
+    nomail(16) = 'PENTA6'
+    nomail(17) = 'PENTA15'
+    nomail(18) = 'PENTA24'
+    nomail(19) = 'HEXA8'
+    nomail(20) = 'HEXA20'
+    nomail(21) = 'HEXA32'
+    nomail(22) = ' '
+    nomail(23) = ' '
+    nomail(24) = ' '
+    nomail(25) = ' '
+    nomail(26) = ' '
+    nomail(27) = ' '
+    nomail(28) = ' '
+    nomail(29) = 'SEG2'
+    nomail(30) = 'POI1'
+    nomail(31) = 'SEG2'
+    nomail(32) = 'POI1'
+    nomail(33) = 'POI1'
+    nomail(34) = 'SEG2'
+    nomail(35) = 'SEG3'
 !
 !  --> TABLEAU POUR LES NOMBRES DE LIGNE DECRIVANT CHAQUE MAILLE
-    limail(1)=1
-    limail(2)=1
-    limail(3)=1
-    limail(4)=2
-    limail(5)=1
-    limail(6)=1
-    limail(7)=2
-    limail(8)=1
-    limail(9)=2
-    limail(10)=3
-    limail(11)=1
-    limail(12)=2
-    limail(13)=3
-    limail(14)=1
-    limail(15)=2
-    limail(16)=1
-    limail(17)=2
-    limail(18)=3
-    limail(19)=1
-    limail(20)=3
-    limail(21)=4
-    limail(29)=1
-    limail(30)=1
-    limail(31)=1
-    limail(32)=1
-    limail(33)=1
-    limail(34)=1
-    limail(35)=1
+    limail(1) = 1
+    limail(2) = 1
+    limail(3) = 1
+    limail(4) = 2
+    limail(5) = 1
+    limail(6) = 1
+    limail(7) = 2
+    limail(8) = 1
+    limail(9) = 2
+    limail(10) = 3
+    limail(11) = 1
+    limail(12) = 2
+    limail(13) = 3
+    limail(14) = 1
+    limail(15) = 2
+    limail(16) = 1
+    limail(17) = 2
+    limail(18) = 3
+    limail(19) = 1
+    limail(20) = 3
+    limail(21) = 4
+    limail(29) = 1
+    limail(30) = 1
+    limail(31) = 1
+    limail(32) = 1
+    limail(33) = 1
+    limail(34) = 1
+    limail(35) = 1
 end subroutine

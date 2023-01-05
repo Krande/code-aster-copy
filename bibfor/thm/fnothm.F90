@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,44 +18,44 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine fnothm(ds_thm   , jv_mater , ndim     , l_axi    , l_steady , fnoevo ,&
-                  mecani   , press1   , press2   , tempe    ,&
-                  nno      , nnos     , npi      , npg      ,&
-                  elem_coor, deltat   , dimdef   , dimcon   , dimuel ,&
-                  jv_poids , jv_poids2,&
-                  jv_func  , jv_func2 , jv_dfunc , jv_dfunc2,&
-                  nddls    , nddlm    , nddl_meca, nddl_p1  , nddl_p2,&
-                  congem   , b        , r        , vectu )
+subroutine fnothm(ds_thm, jv_mater, ndim, l_axi, l_steady, fnoevo, &
+                  mecani, press1, press2, tempe, &
+                  nno, nnos, npi, npg, &
+                  elem_coor, deltat, dimdef, dimcon, dimuel, &
+                  jv_poids, jv_poids2, &
+                  jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                  nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                  congem, b, r, vectu)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/fonoda.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-integer, intent(in) :: jv_mater
-integer, intent(in) :: ndim
-aster_logical, intent(in) :: l_axi
-aster_logical, intent(in) :: l_steady
-aster_logical, intent(in) :: fnoevo
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-integer, intent(in) :: nno, nnos
-integer, intent(in) :: npi, npg
-real(kind=8) :: elem_coor(ndim, nno)
-real(kind=8), intent(in) :: deltat
-integer, intent(in) :: dimuel, dimdef, dimcon
-integer, intent(in) :: jv_poids, jv_poids2
-integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
-integer, intent(in) :: nddls, nddlm
-integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
-real(kind=8), intent(inout) :: congem(1:npi*dimcon)
-real(kind=8), intent(inout) :: b(dimdef, dimuel)
-real(kind=8), intent(inout) :: r(1:dimdef+1)
-real(kind=8), intent(out) :: vectu(dimuel)
+    type(THM_DS), intent(inout) :: ds_thm
+    integer, intent(in) :: jv_mater
+    integer, intent(in) :: ndim
+    aster_logical, intent(in) :: l_axi
+    aster_logical, intent(in) :: l_steady
+    aster_logical, intent(in) :: fnoevo
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(in) :: nno, nnos
+    integer, intent(in) :: npi, npg
+    real(kind=8) :: elem_coor(ndim, nno)
+    real(kind=8), intent(in) :: deltat
+    integer, intent(in) :: dimuel, dimdef, dimcon
+    integer, intent(in) :: jv_poids, jv_poids2
+    integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
+    integer, intent(in) :: nddls, nddlm
+    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2
+    real(kind=8), intent(inout) :: congem(1:npi*dimcon)
+    real(kind=8), intent(inout) :: b(dimdef, dimuel)
+    real(kind=8), intent(inout) :: r(1:dimdef+1)
+    real(kind=8), intent(out) :: vectu(dimuel)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,9 +110,9 @@ real(kind=8), intent(out) :: vectu(dimuel)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nno  .le. 20)
+    ASSERT(nno .le. 20)
     ASSERT(ndim .le. 3)
-    ASSERT(npi  .le. 27)
+    ASSERT(npi .le. 27)
     vectu(1:dimuel) = 0.d0
 !
 ! - Get adresses in generalized vectors
@@ -128,35 +128,35 @@ real(kind=8), intent(out) :: vectu(dimuel)
         dt = 1.d0
     else
         dt = deltat
-    endif
+    end if
 !
 ! - Loop on Gauss points
 !
     do kpi = 1, npg
         r(1:dimdef+1) = 0.d0
 ! ----- Compute [B] matrix for generalized strains
-        call cabthm(ds_thm   , l_axi    , ndim     ,&
-                    nddls    , nddlm    ,&
-                    nddl_meca, nddl_p1  , nddl_p2,&
-                    nno      , nnos     , &
-                    dimuel   , dimdef   , kpi    ,&
-                    addeme   , addete   , addep1 , addep2,&
-                    elem_coor,&
-                    jv_poids , jv_poids2,&
-                    jv_func  , jv_func2 ,&
-                    jv_dfunc , jv_dfunc2,&
-                    dfdi     , dfdi2    ,&
-                    poids    , poids2   ,&
-                    b        )
+        call cabthm(ds_thm, l_axi, ndim, &
+                    nddls, nddlm, &
+                    nddl_meca, nddl_p1, nddl_p2, &
+                    nno, nnos, &
+                    dimuel, dimdef, kpi, &
+                    addeme, addete, addep1, addep2, &
+                    elem_coor, &
+                    jv_poids, jv_poids2, &
+                    jv_func, jv_func2, &
+                    jv_dfunc, jv_dfunc2, &
+                    dfdi, dfdi2, &
+                    poids, poids2, &
+                    b)
 ! ----- Compute stress vector {R}
-        call fonoda(ds_thm, jv_mater, ndim  , l_steady, fnoevo,&
-                    mecani, press1  , press2, tempe,&
-                    dimdef, dimcon  , dt    , congem((kpi-1)*dimcon+1),&
+        call fonoda(ds_thm, jv_mater, ndim, l_steady, fnoevo, &
+                    mecani, press1, press2, tempe, &
+                    dimdef, dimcon, dt, congem((kpi-1)*dimcon+1), &
                     r)
 ! ----- Compute residual = [B]^T.{R}
         do i = 1, dimuel
             do n = 1, dimdef
-                vectu(i)=vectu(i)+b(n,i)*r(n)*poids
+                vectu(i) = vectu(i)+b(n, i)*r(n)*poids
             end do
         end do
     end do

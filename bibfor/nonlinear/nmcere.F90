@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmcere(model          , nume_dof  , ds_material, cara_elem     , &
-                  ds_constitutive, ds_contact, list_load  , list_func_acti, ds_measure ,&
-                  iter_newt      , sdnume    , valinc     , solalg        , hval_veelem,&
-                  hval_veasse    , offset    , rho        , eta           , residu     ,&
-                  ldccvg         , ds_system , matr_asse)
+subroutine nmcere(model, nume_dof, ds_material, cara_elem, &
+                  ds_constitutive, ds_contact, list_load, list_func_acti, ds_measure, &
+                  iter_newt, sdnume, valinc, solalg, hval_veelem, &
+                  hval_veasse, offset, rho, eta, residu, &
+                  ldccvg, ds_system, matr_asse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
@@ -50,18 +50,18 @@ implicit none
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
 !
-integer :: list_func_acti(*)
-integer :: iter_newt, ldccvg
-real(kind=8) :: eta, rho, offset, residu
-character(len=19) :: list_load, sdnume, matr_asse
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=24) :: model, nume_dof, cara_elem
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: hval_veelem(*), hval_veasse(*)
-character(len=19) :: solalg(*), valinc(*)
-type(NL_DS_System), intent(in) :: ds_system
+    integer :: list_func_acti(*)
+    integer :: iter_newt, ldccvg
+    real(kind=8) :: eta, rho, offset, residu
+    character(len=19) :: list_load, sdnume, matr_asse
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24) :: model, nume_dof, cara_elem
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: hval_veelem(*), hval_veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    type(NL_DS_System), intent(in) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,22 +125,22 @@ type(NL_DS_System), intent(in) :: ds_system
 !
     call infdbg('PILOTAGE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<PILOTAGE> ...... CALCUL DU RESIDU'
-    endif
+        write (ifm, *) '<PILOTAGE> ...... CALCUL DU RESIDU'
+    end if
 !
 ! - Initializations
 !
-    lgrot = isfonc(list_func_acti,'GD_ROTA')
-    lendo = isfonc(list_func_acti,'ENDO_NO')
+    lgrot = isfonc(list_func_acti, 'GD_ROTA')
+    lendo = isfonc(list_func_acti, 'ENDO_NO')
     ddep = '&&CNCETA.CHP0'
     depdet = '&&CNCETA.CHP1'
     depplt = '&&CNCETA.CHP2'
     ldccvg = -1
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=neq)
     call nmchai('VALINC', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zvalin)
+    ASSERT(nmax .eq. zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zsolal)
+    ASSERT(nmax .eq. zsolal)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -154,7 +154,7 @@ type(NL_DS_System), intent(in) :: ds_system
 !
     call jeveuo(deppr1(1:19)//'.VALE', 'L', vr=du0)
     call jeveuo(deppr2(1:19)//'.VALE', 'L', vr=du1)
-    call jeveuo(ddep(1:19) //'.VALE', 'E', vr=ddepl)
+    call jeveuo(ddep(1:19)//'.VALE', 'E', vr=ddepl)
     call r8inir(neq, 0.d0, ddepl, 1)
     call daxpy(neq, rho, du0, 1, ddepl, 1)
     call daxpy(neq, eta-offset, du1, 1, ddepl, 1)
@@ -164,14 +164,14 @@ type(NL_DS_System), intent(in) :: ds_system
 !
     call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depdl)
     call jeveuo(depdet(1:19)//'.VALE', 'E', vr=depdt)
-    call majour(neq, lgrot, lendo, sdnume, depdl,&
+    call majour(neq, lgrot, lendo, sdnume, depdl, &
                 ddepl, 1.d0, depdt, 0)
 !
 ! --- MISE A JOUR DU DEPLACEMENT DEPPLT = DEPPLU+DDEP
 !
     call jeveuo(depplu(1:19)//'.VALE', 'L', vr=deppl)
     call jeveuo(depplt(1:19)//'.VALE', 'E', vr=deppt)
-    call majour(neq, lgrot, lendo, sdnume, deppl,&
+    call majour(neq, lgrot, lendo, sdnume, deppl, &
                 ddepl, 1.d0, deppt, 1)
 !
 ! --- RECONSTRUCTION DES VARIABLES CHAPEAUX
@@ -186,30 +186,30 @@ type(NL_DS_System), intent(in) :: ds_system
 !
 ! - Compute internal forces
 !
-    call nonlinIntForce(CORR_NEWTON   ,&
-                        model         , cara_elem      ,&
-                        list_func_acti, iter_newt      , sdnume,&
-                        ds_material   , ds_constitutive,&
-                        ds_system     , ds_measure     ,&
-                        valint        , solalt         ,&
+    call nonlinIntForce(CORR_NEWTON, &
+                        model, cara_elem, &
+                        list_func_acti, iter_newt, sdnume, &
+                        ds_material, ds_constitutive, &
+                        ds_system, ds_measure, &
+                        valint, solalt, &
                         ldccvg)
     ASSERT(ldccvg .ge. 0)
 !
 ! - Update Dirichlet boundary conditions - B.U
 !
-    call nonlinLoadDirichletCompute(list_load  , model      , nume_dof,&
-                                    ds_measure , matr_asse  , depplt  ,&
+    call nonlinLoadDirichletCompute(list_load, model, nume_dof, &
+                                    ds_measure, matr_asse, depplt, &
                                     hval_veelem, hval_veasse)
 !
 ! - Update force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
 !
-    call nonlinRForceCompute(model      , ds_material, cara_elem, list_load,&
-                             nume_dof   , ds_measure , depl     ,&
+    call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
+                             nume_dof, ds_measure, depl, &
                              hval_veelem, hval_veasse)
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! - Update exterior forces
@@ -224,8 +224,8 @@ type(NL_DS_System), intent(in) :: ds_system
 ! - Compute maximum of out-of-balance force
 !
     if (ldccvg .eq. 0) then
-        call nmpilr(list_func_acti, nume_dof, matr_asse, hval_veasse, ds_contact, ds_system%cnfint,&
-                    eta   , residu)
-    endif
+       call nmpilr(list_func_acti, nume_dof, matr_asse, hval_veasse, ds_contact, ds_system%cnfint, &
+                    eta, residu)
+    end if
 !
 end subroutine

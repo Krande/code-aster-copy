@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine dbrInitBaseGreedy(resultName, paraGreedy, base)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/romBaseCreate.h"
 !
-character(len=8), intent(in) :: resultName
-type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
-type(ROM_DS_Empi), intent(inout) :: base
+    character(len=8), intent(in) :: resultName
+    type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
+    type(ROM_DS_Empi), intent(inout) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,29 +57,29 @@ type(ROM_DS_Empi), intent(inout) :: base
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_15')
-    endif
+    end if
 !
 ! - Initializations
 !
-    model      = ' '
-    mesh       = ' '
-    matrName   = ' '
-    fieldName  = ' '
-    nbEqua     = 0
+    model = ' '
+    mesh = ' '
+    matrName = ' '
+    fieldName = ' '
+    nbEqua = 0
     nbModeMaxi = 0
 !
 ! - Get "representative" matrix
 !
-    matrName   = paraGreedy%multiPara%matr_name(1)
+    matrName = paraGreedy%multiPara%matr_name(1)
 !
 ! - Get information about model
 !
-    call dismoi('NOM_MODELE', matrName, 'MATR_ASSE', repk = model)
+    call dismoi('NOM_MODELE', matrName, 'MATR_ASSE', repk=model)
 !
 ! - Get informations about fields
 !
-    call dismoi('NB_EQUA'   , matrName, 'MATR_ASSE', repi = nbEqua)
-    call dismoi('NOM_MAILLA', model   , 'MODELE'   , repk = mesh)
+    call dismoi('NB_EQUA', matrName, 'MATR_ASSE', repi=nbEqua)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 ! - For greedy algorithm: only displacements
 !
@@ -99,18 +99,18 @@ type(ROM_DS_Empi), intent(inout) :: base
 !
 ! - Save in base
 !
-    base%resultName     = resultName
-    base%baseType       = ' '
-    base%lineicAxis     = ' '
-    base%lineicSect     = ' '
-    base%nbMode         = 0
-    base%nbModeMaxi     = nbModeMaxi
+    base%resultName = resultName
+    base%baseType = ' '
+    base%lineicAxis = ' '
+    base%lineicSect = ' '
+    base%nbMode = 0
+    base%nbModeMaxi = nbModeMaxi
     base%mode%fieldName = fieldName
     base%mode%fieldRefe = fieldRefe
     base%mode%fieldSupp = fieldSupp
-    base%mode%mesh      = mesh
-    base%mode%model     = model
-    base%mode%nbEqua    = nbEqua
+    base%mode%mesh = mesh
+    base%mode%model = model
+    base%mode%nbEqua = nbEqua
 !
 ! - Create output datastructure
 !

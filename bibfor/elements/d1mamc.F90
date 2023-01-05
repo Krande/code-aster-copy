@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine d1mamc(fami, mater, instan, poum, kpg,&
+subroutine d1mamc(fami, mater, instan, poum, kpg, &
                   ksp, repere, xyzgau, nbsig, d1)
 !.======================================================================
     implicit none
@@ -56,30 +56,30 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 !       ------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    if (lteatt('DIM_TOPO_MAILLE','3') .or. lteatt('FOURIER','OUI')) then
+    if (lteatt('DIM_TOPO_MAILLE', '3') .or. lteatt('FOURIER', 'OUI')) then
 !
-        call d1ma3d(fami, mater, instan, poum, kpg,&
+        call d1ma3d(fami, mater, instan, poum, kpg, &
                     ksp, repere, xyzgau, d1)
 !
 !       ----------------------------------------
 ! ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
 !       ----------------------------------------
-        elseif(lteatt('D_PLAN','OUI').or. lteatt('AXIS', 'OUI'))&
-    then
+    elseif (lteatt('D_PLAN', 'OUI') .or. lteatt('AXIS', 'OUI')) &
+        then
 !
-        call d1madp(fami, mater, instan, poum, kpg,&
+        call d1madp(fami, mater, instan, poum, kpg, &
                     ksp, repere, d1)
 !
 !       ----------------------
 ! ----  CAS CONTRAINTES PLANES
 !       ----------------------
-    else if (lteatt('C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN', 'OUI')) then
 !
-        call d1macp(fami, mater, instan, poum, kpg,&
+        call d1macp(fami, mater, instan, poum, kpg, &
                     ksp, repere, d1)
 !
     else
         call utmess('F', 'ELEMENTS_11')
-    endif
+    end if
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

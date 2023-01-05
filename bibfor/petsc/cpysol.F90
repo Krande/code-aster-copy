@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
 !
     step = -1
     ldebug = ASTER_FALSE .and. step == nstep
-    nstep = nstep + 1
+    nstep = nstep+1
 !
     call asmpi_comm('GET', mpicou)
 !
@@ -119,9 +119,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
     nloc = zi(jnequ)
 !
     do iaux = 0, nloc
-        if (zi(jprddl + iaux) .eq. rang) then
-            numglo = zi(jnulg + iaux)
-            rsolu(iaux + 1) = vecpet(numglo - debglo + 1)
+        if (zi(jprddl+iaux) .eq. rang) then
+            numglo = zi(jnulg+iaux)
+            rsolu(iaux+1) = vecpet(numglo-debglo+1)
         end if
     end do
 !
@@ -134,24 +134,24 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
         call jeexin(nojoinr, iret2)
         lgrecep = 0
         lgenvo = 0
-        if ((iret1 + iret2) .ne. 0) then
-            if(iret1 .ne. 0) then
+        if ((iret1+iret2) .ne. 0) then
+            if (iret1 .ne. 0) then
                 call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
             end if
-            if(iret2 .ne. 0) then
+            if (iret2 .ne. 0) then
                 call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
             end if
-            ASSERT((lgenvo + lgrecep) .gt. 0)
+            ASSERT((lgenvo+lgrecep) .gt. 0)
 !
-            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1,lgenvo), jvaleue)
-            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1,lgrecep), jvaleur)
+            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1, lgenvo), jvaleue)
+            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1, lgrecep), jvaleur)
 
-            if(lgenvo > 0) then
+            if (lgenvo > 0) then
                 call jeveuo(nojoine, 'L', jjointe)
-                do jaux = 0, lgenvo - 1
-                    numloc = zi(jjointe + jaux)
-                    ASSERT(zi(jprddl + numloc - 1) .eq. rang)
-                    zr(jvaleue + jaux) = rsolu(numloc)
+                do jaux = 0, lgenvo-1
+                    numloc = zi(jjointe+jaux)
+                    ASSERT(zi(jprddl+numloc-1) .eq. rang)
+                    zr(jvaleue+jaux) = rsolu(numloc)
                 end do
             end if
 !
@@ -162,12 +162,12 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
             call asmpi_sendrecv_r(zr(jvaleue), n4e, numpr4, tag4, &
                                   zr(jvaleur), n4r, numpr4, tag4, mpicou)
 
-            if(lgrecep > 0) then
+            if (lgrecep > 0) then
                 call jeveuo(nojoinr, 'L', jjointr)
-                do jaux = 0, lgrecep - 1
-                    numloc = zi(jjointr + jaux)
-                    ASSERT(zi(jprddl + numloc - 1) .eq. numpro)
-                    rsolu(numloc) = zr(jvaleur + jaux)
+                do jaux = 0, lgrecep-1
+                    numloc = zi(jjointr+jaux)
+                    ASSERT(zi(jprddl+numloc-1) .eq. numpro)
+                    rsolu(numloc) = zr(jvaleur+jaux)
                 end do
             end if
             call jedetr('&&CPYSOL.TMP1E')
@@ -184,7 +184,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-    noma = zk24(jrefn)(1:8)
+    noma = zk24(jrefn) (1:8)
 
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
     call dismoi('NUM_GD_SI', numddl, 'NUME_DDL', repi=gd)
@@ -209,9 +209,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
                 call jelira(nojoine, 'LONMAX', nbnoee, k8bid)
                 call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V R', nbnoee, jnujoi1)
                 do jaux = 1, nbnoee
-                    numnoe = -zi(jjoine + jaux - 1)
+                    numnoe = -zi(jjoine+jaux-1)
                     nddll = zzprno(ili, numnoe, 1)
-                    zr(jnujoi1 + jaux - 1) = rsolu(nddll)
+                    zr(jnujoi1+jaux-1) = rsolu(nddll)
                 end do
                 n4e = to_mpi_int(nbnoee)
             end if
@@ -242,9 +242,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
 
             if (iret2 .ne. 0) then
                 do jaux = 1, nbnoer
-                    numnoe = -zi(jjoinr + jaux - 1)
+                    numnoe = -zi(jjoinr+jaux-1)
                     nddll = zzprno(ili, numnoe, 1)
-                    rsolu(nddll) = zr(jnujoi2 + jaux - 1)
+                    rsolu(nddll) = zr(jnujoi2+jaux-1)
                 end do
             end if
             call jedetr('&&CRNUGL.NUM_DDL_GLOB_E')
@@ -261,22 +261,22 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
 !
 ! -- debug
     if (ldebug) then
-        print*, "DEBUG IN CPYSOL"
+        print *, "DEBUG IN CPYSOL"
         call jeexin(numddl//'.NUME.NULS', iret)
-        if(iret == 0) then
+        if (iret == 0) then
             call crnustd(numddl)
         end if
         call jeveuo(numddl//'.NUME.NULS', 'L', vi=v_nuls)
         call jeveuo(numddl//'.NUME.DEEG', 'L', vi=v_deeg)
         do iaux = 1, nloc
-            if (zi(jprddl + iaux - 1) .eq. rang) then
-                nuno1  = v_deeg(2*(iaux-1) + 1)
-                nucmp1 = v_deeg(2*(iaux-1) + 2)
-                write (30 + rang, *) nuno1, nucmp1, v_nuls(iaux), rsolu(iaux)
+            if (zi(jprddl+iaux-1) .eq. rang) then
+                nuno1 = v_deeg(2*(iaux-1)+1)
+                nucmp1 = v_deeg(2*(iaux-1)+2)
+                write (30+rang, *) nuno1, nucmp1, v_nuls(iaux), rsolu(iaux)
                 !,zi(jnulg - 1 + iaux)
             end if
         end do
-        flush (30 + rang)
+        flush (30+rang)
     end if
 
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
-                  parame, derive, nbmat, materf, sig3,&
+subroutine hbdsdp(se, dg, etap, sigeqe, vp, &
+                  parame, derive, nbmat, materf, sig3, &
                   detadg, dgdl, dsdsip)
     implicit none
 #include "asterfort/cadldp.h"
@@ -44,23 +44,23 @@ subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
     integer :: ndt, ndi, ii
     real(kind=8) :: deux, trois, seb(6), mu, k, param1, dldsip
 ! ======================================================================
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
 ! --- CALCUL DU VECTEUR UNITE -----------------------------------------
 ! =====================================================================
     do ii = 1, 6
         dsdsip(ii) = 0.0d0
     end do
-    mu = materf(4,1)
-    k = materf(5,1)
+    mu = materf(4, 1)
+    k = materf(5, 1)
     do ii = 1, ndi
         seb(ii) = se(ii)
     end do
     do ii = ndi+1, ndt
-        seb(ii) = se(ii) / sqrt(deux)
+        seb(ii) = se(ii)/sqrt(deux)
     end do
     do ii = ndt+1, 6
         seb(ii) = 0.0d0
@@ -68,12 +68,12 @@ subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
 ! ======================================================================
 ! --- CALCUL DE DDLAMBDA/DSIP ------------------------------------------
 ! ======================================================================
-    call cadldp(vp, sigeqe, nbmat, materf, parame,&
-                derive, sig3, etap, dg, detadg,&
+    call cadldp(vp, sigeqe, nbmat, materf, parame, &
+                derive, sig3, etap, dg, detadg, &
                 dgdl, dldsip)
 ! ======================================================================
     param1 = -trois*mu*dldsip/sigeqe
-    dsdsip(1:ndt) = param1 * seb(1:ndt)
+    dsdsip(1:ndt) = param1*seb(1:ndt)
 ! ======================================================================
     param1 = 1.0d0-trois*k*dldsip*(detadg*dgdl*dg/(etap+1.0d0)+etap)
     do ii = 1, ndi

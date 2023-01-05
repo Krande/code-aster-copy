@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,10 +62,10 @@ subroutine op0199()
     character(len=24) :: blanc, time, nocham, mateco
 !
 ! -----------------------------------------------------------------
-    data nomcmp / 'INST    ', 'DELTAT  ', 'THETA   ',&
-     &               'KHI     ', 'R       ', 'RHO     ' /
-    data tps    / 0.0d0, 2*1.0d0, 3*0.0d0 /
-    data solveu / '&&OP0199.SOLVEUR' /
+    data nomcmp/'INST    ', 'DELTAT  ', 'THETA   ',&
+     &               'KHI     ', 'R       ', 'RHO     '/
+    data tps/0.0d0, 2*1.0d0, 3*0.0d0/
+    data solveu/'&&OP0199.SOLVEUR'/
 !
 !-----------------------------------------------------------------
 !
@@ -100,22 +100,22 @@ subroutine op0199()
 !
     call cresol(solveu)
 !
-    if (n4 .ne. 0) call rcmfmc(materi, mateco, l_ther_ = ASTER_FALSE)
+    if (n4 .ne. 0) call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
 !
     if (n6 .ne. 0) nugene = numgen
 !
     if (n5 .ne. 0) then
-        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
-                    cbid, rbid, 'ABSOLU', nbmode, 1,&
+        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid, &
+                    cbid, rbid, 'ABSOLU', nbmode, 1, &
                     ibid)
         nbmo = nbmode(1)
-        call rsexch(' ', modmec, 'DEPL', 1, nocham,&
+        call rsexch(' ', modmec, 'DEPL', 1, nocham, &
                     iret)
-    endif
+    end if
 !
     if (n7 .ne. 0) then
         if (nd .eq. 'OUI') ndble = 1
-    endif
+    end if
 !
     model = '  '
 !
@@ -123,8 +123,8 @@ subroutine op0199()
 ! --- CALCUL DE LA MATRICE ASSEMBLEE DE RIGIDITE DU FLUIDE
 !--------------------------------------------------------------
 !
-    call rigflu(moflui, time, nomcmp, tps, n2,&
-                char, materi, mateco, solveu, ma,&
+    call rigflu(moflui, time, nomcmp, tps, n2, &
+                char, materi, mateco, solveu, ma, &
                 nu)
 !
 !--------------------------------------------------------------
@@ -133,7 +133,7 @@ subroutine op0199()
 ! CALCUL DES MATRICES MODALES BI POUR L OPTION AMOR_AJOU
 !--------------------------------------------------------------
 !
-    call mat152('MASS_AJOU', model, moint, nocham, ivalk,&
+    call mat152('MASS_AJOU', model, moint, nocham, ivalk, &
                 nbmo, max, may, maz, num)
 !
     call jeexin('&&MAT152.MADE', iret)
@@ -146,7 +146,7 @@ subroutine op0199()
 ! SUR LA STRUCTURE
 !================================================================
 !
-    call phi199(model, materi, mateco, ma, nu,&
+    call phi199(model, materi, mateco, ma, nu, &
                 num, nbmo, solveu, indice, tabad)
 !
 !--------------------------------------------------------------
@@ -168,18 +168,18 @@ subroutine op0199()
 !=====================================================================
 !
     if (n7 .gt. 0) then
-        call calmdg(model, modgen, nugene, num, nu,&
-                    ma, materi, mateco, moint, ndble,&
-                    itxsto, itysto, itzsto, iprsto, nbmo,&
+        call calmdg(model, modgen, nugene, num, nu, &
+                    ma, materi, mateco, moint, ndble, &
+                    itxsto, itysto, itzsto, iprsto, nbmo, &
                     iadirg)
-    endif
+    end if
 !
 !=============================================================
 !--------REMPLISSAGE DU  .VALE : CALCUL DU VECTEUR AJOUTE
 !=============================================================
 !
 !---------------------------------------------------------------
-    if ((n7.gt.0) .or. (indice.eq.1)) then
+    if ((n7 .gt. 0) .or. (indice .eq. 1)) then
 !
 ! CALCUL DU VECTEUR AJOUTE - PRODUITS SCALAIRES SUR MODELE
 ! GENERALISE - CAS DE LA SOUS-STRUCTURATION DYNAMIQUE
@@ -191,8 +191,8 @@ subroutine op0199()
             itzsto = tabad(3)
             iprsto = tabad(4)
             iadirg = tabad(5)
-            nbmo=nbmode(1)
-        endif
+            nbmo = nbmode(1)
+        end if
     else
 !
 ! --- CREATION DE L OBJET VECT_GENE RESULTAT
@@ -212,15 +212,15 @@ subroutine op0199()
         do i = 1, nbmo
 !
             blanc = ' '
-            call cal152('MASS_AJOU', max, may, maz, model,&
-                        blanc, iphi1, iphi2, imade, modmec,&
-                        chamno, num, vrai, i, 1,&
+            call cal152('MASS_AJOU', max, may, maz, model, &
+                        blanc, iphi1, iphi2, imade, modmec, &
+                        chamno, num, vrai, i, 1, &
                         mij, cij, kij)
 !
             zr(ivale+i-1) = mij
 !
         end do
-    endif
+    end if
 !
 !
     call jedetc('G', '&&RIGFLU', 1)

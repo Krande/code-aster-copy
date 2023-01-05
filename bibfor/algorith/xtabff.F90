@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,17 +67,17 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
     complex(kind=8) :: c16b
     integer, pointer :: fondmult(:) => null()
     real(kind=8), pointer :: fondfiss(:) => null()
-    data nopar2 /'NUME_FOND','COOR_X','COOR_Y'/
-    data typar2 /'I'        ,'R'     ,'R'/
-    data nopar3 /'NUME_FOND','NUM_PT','ABSC_CURV',&
-     &                                       'COOR_X','COOR_Y','COOR_Z'/
-    data typar3 /'I'        ,'I'    ,'R'     ,'R',       'R'     ,'R'/
+    data nopar2/'NUME_FOND', 'COOR_X', 'COOR_Y'/
+    data typar2/'I', 'R', 'R'/
+    data nopar3/'NUME_FOND', 'NUM_PT', 'ABSC_CURV',&
+     &                                       'COOR_X', 'COOR_Y', 'COOR_Z'/
+    data typar3/'I', 'I', 'R', 'R', 'R', 'R'/
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    c16b=(0.d0,0.d0)
-    r8bid=0.d0
+    c16b = (0.d0, 0.d0)
+    r8bid = 0.d0
 !
     call infdbg('XFEM', ifm, niv)
 !
@@ -92,7 +92,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
         nbfond = nbfond/2
         call jelira(fiss//'.FONDFISS', 'LONUTI', nfon, k8bid)
         nfon = nfon/6
-    endif
+    end if
     call ltcrsd(fiss, 'G')
 !
 !     ------------------------------------------------------------------
@@ -106,36 +106,36 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
         npara = 3
         call tbajpa(tabcoo, npara, nopar2, typar2)
         do i = 1, nbfond
-            vali(1)=i
-            vale(1)=fondfiss(4*(i-1)+1)
-            vale(2)=fondfiss(4*(i-1)+2)
-            call tbajli(tabcoo, npara, nopar2, vali, vale,&
+            vali(1) = i
+            vale(1) = fondfiss(4*(i-1)+1)
+            vale(2) = fondfiss(4*(i-1)+2)
+            call tbajli(tabcoo, npara, nopar2, vali, vale, &
                         [c16b], k8bid, 0)
         end do
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         npara = 6
         call tbajpa(tabcoo, npara, nopar3, typar3)
         nfonl = 1
         nfondl = 0
         do i = 1, nfon
             if (fondmult(2*nfondl+1) .eq. i) then
-                nfondl = nfondl + 1
+                nfondl = nfondl+1
                 nfonl = 1
             else
-                nfonl = nfonl + 1
-            endif
-            vali(1)=nfondl
-            vali(2)=nfonl
-            vale(1)=fondfiss(4*(i-1)+4)
-            vale(2)=fondfiss(4*(i-1)+1)
-            vale(3)=fondfiss(4*(i-1)+2)
-            vale(4)=fondfiss(4*(i-1)+3)
-            call tbajli(tabcoo, npara, nopar3, vali, vale,&
+                nfonl = nfonl+1
+            end if
+            vali(1) = nfondl
+            vali(2) = nfonl
+            vale(1) = fondfiss(4*(i-1)+4)
+            vale(2) = fondfiss(4*(i-1)+1)
+            vale(3) = fondfiss(4*(i-1)+2)
+            vale(4) = fondfiss(4*(i-1)+3)
+            call tbajli(tabcoo, npara, nopar3, vali, vale, &
                         [c16b], k8bid, 0)
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     CONSTRUCTION DE LA TABLE DU NOMBRE DE FONDS DE FISSURE
@@ -144,7 +144,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
     call ltnotb(fiss, 'NB_FOND_FISS', tabnb)
     call tbcrsd(tabnb, 'G')
     call tbajpa(tabnb, 1, 'NOMBRE', 'I')
-    call tbajli(tabnb, 1, 'NOMBRE', [nbfond], [r8bid],&
+    call tbajli(tabnb, 1, 'NOMBRE', [nbfond], [r8bid], &
                 [c16b], k8bid, 0)
 !
 999 continue

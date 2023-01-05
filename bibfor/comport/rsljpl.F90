@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsljpl(fami, kpg, ksp, loi, imat,&
-                  nmat, mater, sig, vin, vind,&
+subroutine rsljpl(fami, kpg, ksp, loi, imat, &
+                  nmat, mater, sig, vin, vind, &
                   deps, theta, dt, dsde)
     implicit none
 !       ROUSSELIER :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
@@ -57,20 +57,20 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
     character(len=*) :: fami
 !
     integer :: ndt, ndi
-    common /tdim/ ndt, ndi
+    common/tdim/ndt, ndi
 !
-    parameter       ( zero  = 0.d0   )
-    parameter       ( un    = 1.d0   )
-    parameter       ( deux  = 2.d0   )
-    parameter       ( trois = 3.d0   )
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
 !
-    data  i4        /un     , zero  , zero  , zero  ,zero  ,zero,&
-     &                   zero   , un    , zero  , zero  ,zero  ,zero,&
-     &                   zero   , zero  , un    , zero  ,zero  ,zero,&
-     &                   zero   , zero  , zero  , un    ,zero  ,zero,&
-     &                   zero   , zero  , zero  , zero  ,un    ,zero,&
-     &                   zero   , zero  , zero  , zero  ,zero  ,un/
-    data i2         /un     , un    , un    , zero  ,zero  ,zero/
+    data i4/un, zero, zero, zero, zero, zero,&
+     &                   zero, un, zero, zero, zero, zero,&
+     &                   zero, zero, un, zero, zero, zero,&
+     &                   zero, zero, zero, un, zero, zero,&
+     &                   zero, zero, zero, zero, un, zero,&
+     &                   zero, zero, zero, zero, zero, un/
+    data i2/un, un, un, zero, zero, zero/
 !       ----------------------------------------------------------------
 !
 ! -- INITIALISATION----------------------------------------------
@@ -79,51 +79,51 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
     f = vin(2)
     pd = vind(1)
     fd = vind(2)
-    e = mater(1,1)
-    nu = mater(2,1)
-    d = mater(1,2)
-    s1 = mater(2,2)
-    f0 = mater(3,2)
+    e = mater(1, 1)
+    nu = mater(2, 1)
+    d = mater(1, 2)
+    s1 = mater(2, 2)
+    f0 = mater(3, 2)
     if (loi(1:10) .eq. 'ROUSS_VISC') then
         ann = 0.d0
-        sig0 = mater(9,2)
-        eps0 = mater(10,2)
-        mexpo = mater(11,2)
-    else if (loi(1:10).eq.'ROUSS_PR') then
-        ann = mater(8,2)
+        sig0 = mater(9, 2)
+        eps0 = mater(10, 2)
+        mexpo = mater(11, 2)
+    else if (loi(1:10) .eq. 'ROUSS_PR') then
+        ann = mater(8, 2)
         sig0 = 0.d0
         eps0 = 0.d0
         mexpo = 0.d0
-    endif
-    ftot = f + ann*p
-    fdtot = fd + ann*pd
+    end if
+    ftot = f+ann*p
+    fdtot = fd+ann*pd
 !
 !
 ! -- CAS DU MATERIAU CASSE---------------------------------------
-    if (fdtot .ge. mater(6,2)) then
+    if (fdtot .ge. mater(6, 2)) then
         ndeps = lcnrte(deps)
-        nsig = lcnrts(sig )
+        nsig = lcnrts(sig)
         if ((ndeps*nsig) .eq. zero) then
-            dsde(:,:) = zero
+            dsde(:, :) = zero
         else
-            a1 = -deux*mater(7,2)*e/(ndeps*nsig*trois)
+            a1 = -deux*mater(7, 2)*e/(ndeps*nsig*trois)
             call lcprte(sig, deps, dsde)
-            dsde(1:ndt,1:ndt) = a1 * dsde(1:ndt,1:ndt)
-        endif
+            dsde(1:ndt, 1:ndt) = a1*dsde(1:ndt, 1:ndt)
+        end if
 !
 ! -- CAS DU MATERIAU NON CASSE-----------------------------------
     else
 !
-        call rsliso(fami, kpg, ksp, '-', imat,&
+        call rsliso(fami, kpg, ksp, '-', imat, &
                     p, rp, drdp)
 !
-        unf= un-f
+        unf = un-f
         rho = (unf-ann*p)/(un-f0)
-        rig(1:ndt) = (un/rho) * sig(1:ndt)
+        rig(1:ndt) = (un/rho)*sig(1:ndt)
         call lchydr(rig, rigmo)
         call lcsomh(rig, -rigmo, rigdv)
         rigeq = lcnrts(rigdv)
-        rigeq2= rigeq*rigeq
+        rigeq2 = rigeq*rigeq
 !
         deuxmu = e/(un+nu)
         mu = deuxmu/deux
@@ -132,12 +132,12 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
         k = troisk/trois
 !
 ! -- SI LA POROSITE EST ACCELERE----
-        if (fdtot .ge. mater(4,2)) then
-            acc = mater(5,2)
+        if (fdtot .ge. mater(4, 2)) then
+            acc = mater(5, 2)
 ! -- SINON-----------------------
         else
             acc = un
-        endif
+        end if
 ! -- ----------------------------
 !
         dp = p-vind(1)
@@ -148,25 +148,25 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 !
             if (loi(1:10) .eq. 'ROUSS_VISC') then
                 puiss = (dp/(dt*eps0))**(un/mexpo)
-                dpuiss = ((dp/(dt*eps0))**(un/mexpo-un))/(mexpo*(dt* eps0))
-                drdp = drdp + sig0*dpuiss/sqrt(un+puiss**2)/theta
-            endif
+                dpuiss = ((dp/(dt*eps0))**(un/mexpo-un))/(mexpo*(dt*eps0))
+                drdp = drdp+sig0*dpuiss/sqrt(un+puiss**2)/theta
+            end if
 !
             z1 = un+trois*dpm*acc
-            z2 = troimu + drdp
-            z3 = k*ftot*z1 - s1*unf*acc
-            z4 = dp*theta*drdp - rigeq
-            z5 = troimu*theta*dp + rigeq
+            z2 = troimu+drdp
+            z3 = k*ftot*z1-s1*unf*acc
+            z4 = dp*theta*drdp-rigeq
+            z5 = troimu*theta*dp+rigeq
 !
 !
-            x1 = expe*expo*z3 + expo*z2*z3*theta*dp + z1*z2*s1 - ann*z1*expo*s1*s1
-            x2 = -(expe*expo*z3*dp + expo*z3*z4*theta*dp + z1*s1*z4 ) + ann*z1*expo*s1*s1*dp
+            x1 = expe*expo*z3+expo*z2*z3*theta*dp+z1*z2*s1-ann*z1*expo*s1*s1
+            x2 = -(expe*expo*z3*dp+expo*z3*z4*theta*dp+z1*s1*z4)+ann*z1*expo*s1*s1*dp
 !
             y1 = -troisk*expo*z1*ftot/(x1*rigeq)
             y2 = -troimu/(x1*z5*rigeq2)
             y3 = -troisk*expo*z1*ann*theta*dp/(x1*rigeq)
 !
-            a1 = troisk + y1*k*rigeq*(expe+dp*theta*z2)
+            a1 = troisk+y1*k*rigeq*(expe+dp*theta*z2)
             a2 = mu*(y1+y3)*s1
             a3 = deuxmu*(un+y2*x1*dp*theta*rigeq2)
             a4 = y2*troimu*x2
@@ -174,43 +174,43 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 !
             z6 = expo
             z7 = z6*s1*ftot
-            z8 = unf / (unf - ann*p)
-            z9 = ann / ( unf - ann*p)
-            a6 = troimu*k*theta*dp - a2*rigeq*s1
-            y4 = acc*z8/z1 + z9*s1/(z7+z2*theta*dp)
-            y5 = acc*a2*z8/z1 - z9*a6 / ( rigeq*(z7+z2*theta*dp) )
+            z8 = unf/(unf-ann*p)
+            z9 = ann/(unf-ann*p)
+            a6 = troimu*k*theta*dp-a2*rigeq*s1
+            y4 = acc*z8/z1+z9*s1/(z7+z2*theta*dp)
+            y5 = acc*a2*z8/z1-z9*a6/(rigeq*(z7+z2*theta*dp))
 !
-            m1(1:ndt,1:ndt) = a3 * i4(1:ndt,1:ndt)
-            v1(1:ndt) = ((a1-a3)/trois) * i2(1:ndt)
-            v2(1:ndt) = a2 * rigdv(1:ndt)
-            v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
+            m1(1:ndt, 1:ndt) = a3*i4(1:ndt, 1:ndt)
+            v1(1:ndt) = ((a1-a3)/trois)*i2(1:ndt)
+            v2(1:ndt) = a2*rigdv(1:ndt)
+            v1(1:ndt) = v1(1:ndt)+v2(1:ndt)
             call lcprte(i2, v1, m2)
-            v1(1:ndt) = a4 * rigdv(1:ndt)
-            v2(1:ndt) = (a5/trois) * i2(1:ndt)
-            v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
+            v1(1:ndt) = a4*rigdv(1:ndt)
+            v2(1:ndt) = (a5/trois)*i2(1:ndt)
+            v1(1:ndt) = v1(1:ndt)+v2(1:ndt)
             call lcprte(rigdv, v1, m3)
-            dsde(1:ndt,1:ndt) = m1(1:ndt,1:ndt) + m2(1:ndt,1:ndt) + m3(1:ndt,1:ndt)
+            dsde(1:ndt, 1:ndt) = m1(1:ndt, 1:ndt)+m2(1:ndt, 1:ndt)+m3(1:ndt, 1:ndt)
 !
 ! A CE STADE DSDE EST LE TENSEUR TANGENT COHERENT
 ! ENTRE D(SIG/RHO) ET DEPS
 !
-            v1(1:ndt) = (a1-troisk) * i2(1:ndt)
-            v2(1:ndt) = (trois*y5/y4) * rigdv(1:ndt)
-            v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
+            v1(1:ndt) = (a1-troisk)*i2(1:ndt)
+            v2(1:ndt) = (trois*y5/y4)*rigdv(1:ndt)
+            v1(1:ndt) = v1(1:ndt)+v2(1:ndt)
             call lcprte(rig, v1, m1)
-            m1(1:ndt,1:ndt) = (y4/troisk) * m1(1:ndt,1:ndt)
-            dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) + m1(1:ndt,1:ndt)
-            dsde(1:ndt,1:ndt) = rho * dsde(1:ndt,1:ndt)
+            m1(1:ndt, 1:ndt) = (y4/troisk)*m1(1:ndt, 1:ndt)
+            dsde(1:ndt, 1:ndt) = dsde(1:ndt, 1:ndt)+m1(1:ndt, 1:ndt)
+            dsde(1:ndt, 1:ndt) = rho*dsde(1:ndt, 1:ndt)
 ! -- CAS DP=0
         else
             call lcprte(i2, i2, m1)
-            m1(1:ndt,1:ndt) = (un/trois) * m1(1:ndt,1:ndt)
-            m2(1:ndt,1:ndt) = (rho*troisk) * m1(1:ndt,1:ndt)
-            m1(1:ndt,1:ndt) = (-un) * m1(1:ndt,1:ndt)
-            m1(1:ndt,1:ndt) = i4(1:ndt,1:ndt) + m1(1:ndt,1:ndt)
-            m1(1:ndt,1:ndt) = (rho*deuxmu) * m1(1:ndt,1:ndt)
-            dsde(1:ndt,1:ndt) = m1(1:ndt,1:ndt) + m2(1:ndt,1:ndt)
-        endif
-    endif
+            m1(1:ndt, 1:ndt) = (un/trois)*m1(1:ndt, 1:ndt)
+            m2(1:ndt, 1:ndt) = (rho*troisk)*m1(1:ndt, 1:ndt)
+            m1(1:ndt, 1:ndt) = (-un)*m1(1:ndt, 1:ndt)
+            m1(1:ndt, 1:ndt) = i4(1:ndt, 1:ndt)+m1(1:ndt, 1:ndt)
+            m1(1:ndt, 1:ndt) = (rho*deuxmu)*m1(1:ndt, 1:ndt)
+            dsde(1:ndt, 1:ndt) = m1(1:ndt, 1:ndt)+m2(1:ndt, 1:ndt)
+        end if
+    end if
 ! ------------------------------------------------------------------
 end subroutine

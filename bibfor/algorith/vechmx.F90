@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
+subroutine vechmx(nomo, lischa, ichar, nbch, nomlis, &
                   nbin_maxi, lpain, lchin, lastin, vecele)
 !
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -69,7 +69,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbout
-    parameter    (nbout=1)
+    parameter(nbout=1)
     character(len=8) :: lpaout(nbout)
     character(len=19) :: lchout(nbout)
 !
@@ -104,7 +104,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
     call codent(ichar, 'D0', newnom(2:8))
 
     lchout(1) = '&&VECHMX.'//newnom(2:8)
-    call corich('E', lchout(1), ichin_ = ichar)
+    call corich('E', lchout(1), ichin_=ichar)
 !
 ! --- LISTE DES INDEX DES CHARGES
 !
@@ -114,14 +114,14 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 !
     do ich = 1, nbch
         indxch = zi(jlisci-1+ich)
-        call lisopt(prefob, nomo, typech, indxch, option,&
+        call lisopt(prefob, nomo, typech, indxch, option, &
                     parain, paraou, carte, ligcal)
         call jeexin(carte(1:19)//'.DESC', iret)
         if (iret .ne. 0) then
 !
 ! ------- CARTE D'ENTREE
 !
-            nbin = lastin + 1
+            nbin = lastin+1
             lchin(nbin) = carte
             lpain(nbin) = parain
 !
@@ -131,17 +131,17 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 !
 ! ------- CALCUL
 !
-            ASSERT(nbin.le.nbin_maxi)
-            call calcul('S', option, ligcal, nbin, lchin,&
-                        lpain, nbout, lchout, lpaout, 'V',&
+            ASSERT(nbin .le. nbin_maxi)
+            call calcul('S', option, ligcal, nbin, lchin, &
+                        lpain, nbout, lchout, lpaout, 'V', &
                         'OUI')
 !
 ! ------- RESU_ELEM DANS LE VECT_ELEM
 !
             call exisd('CHAMP_GD', lchout(1), iret)
-            ASSERT(iret.gt.0)
+            ASSERT(iret .gt. 0)
             call reajre(vecele, lchout(1), 'V')
-        endif
+        end if
     end do
 !
     call jedema()

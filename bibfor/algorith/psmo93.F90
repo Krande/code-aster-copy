@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine psmo93(solveu, masse, raide, raidfa, nume,&
+subroutine psmo93(solveu, masse, raide, raidfa, nume, &
                   nbpsmo, nbmoda, nbmoad)
     implicit none
 !     ------------------------------------------------------------------
@@ -57,9 +57,9 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     nbmoad = 0
     nbmoda = 0
     accuni = .false.
-    moauni='&&OP0093.MODE_STAT_ACCU'
-    moaimp='&&OP0093.MODE_ACCE_IMPO'
-    ddlac='&&OP0093.DDL_ACCE_IMPO'
+    moauni = '&&OP0093.MODE_STAT_ACCU'
+    moaimp = '&&OP0093.MODE_ACCE_IMPO'
+    ddlac = '&&OP0093.DDL_ACCE_IMPO'
     matpre = '&&MOIN93.MATPRE'
 !
     call dismoi('NB_EQUA', raide, 'MATR_ASSE', repi=neq)
@@ -67,14 +67,14 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !
     do i = 1, nbpsmo
         call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
-        if (na .ne. 0) nbmoda = nbmoda - na
+        if (na .ne. 0) nbmoda = nbmoda-na
         call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=0, nbret=nd)
-        if (nd .ne. 0) nbmoda = nbmoda + 1
+        if (nd .ne. 0) nbmoda = nbmoda+1
     end do
 !
     if (nbmoda .ne. 0) then
         call wkvect('&&OP0093.COEFFICIENT', 'V V R', 3*nbmoda, jcoef)
-    endif
+    end if
 !
 !----------------------------------C
 !--                              --C
@@ -89,60 +89,60 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !-- PSEUDO MODE AUTOUR D'UN AXE
         call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
         if (na .ne. 0) then
-            nbacc = nbacc + 1
+            nbacc = nbacc+1
             nnaxe = -na
             accuni = .true.
             call wkvect('&&OP0093.AXE', 'V V K8', nnaxe, jaxe)
-            call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=nnaxe, vect=zk8(jaxe),&
+            call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=nnaxe, vect=zk8(jaxe), &
                         nbret=na)
             do ia = 1, nnaxe
                 monaxe = zk8(jaxe+ia-1)
                 if (monaxe(1:1) .eq. 'X') then
-                    imod = imod + 1
-                    ind = 3 * ( imod - 1 )
+                    imod = imod+1
+                    ind = 3*(imod-1)
                     zr(jcoef+ind+1-1) = 1.d0
                     zr(jcoef+ind+2-1) = 0.d0
                     zr(jcoef+ind+3-1) = 0.d0
-                else if (monaxe(1:1).eq.'Y') then
-                    imod = imod + 1
-                    ind = 3 * ( imod - 1 )
+                else if (monaxe(1:1) .eq. 'Y') then
+                    imod = imod+1
+                    ind = 3*(imod-1)
                     zr(jcoef+ind+1-1) = 0.d0
                     zr(jcoef+ind+2-1) = 1.d0
                     zr(jcoef+ind+3-1) = 0.d0
-                else if (monaxe(1:1).eq.'Z') then
-                    imod = imod + 1
-                    ind = 3 * ( imod - 1 )
+                else if (monaxe(1:1) .eq. 'Z') then
+                    imod = imod+1
+                    ind = 3*(imod-1)
                     zr(jcoef+ind+1-1) = 0.d0
                     zr(jcoef+ind+2-1) = 0.d0
                     zr(jcoef+ind+3-1) = 1.d0
-                endif
+                end if
             end do
             call jedetr('&&OP0093.AXE')
-        endif
+        end if
 !
 !-- PSEUDO MODE DANS UNE DIRECTION
-        call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=3, vect=coef,&
+        call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=3, vect=coef, &
                     nbret=nd)
         if (nd .ne. 0) then
-            nbacc = nbacc + 1
+            nbacc = nbacc+1
             accuni = .true.
             xnorm = 0.d0
             do id = 1, 3
-                xnorm = xnorm + coef(id)*coef(id)
+                xnorm = xnorm+coef(id)*coef(id)
             end do
             if (xnorm .le. 0.d0) then
                 call utmess('F', 'ALGELINE2_78')
-            endif
-            xnorm = 1.d0 / sqrt(xnorm)
+            end if
+            xnorm = 1.d0/sqrt(xnorm)
             do id = 1, 3
-                coef(id) = coef(id) * xnorm
+                coef(id) = coef(id)*xnorm
             end do
-            imod = imod + 1
-            ind = 3 * ( imod - 1 )
+            imod = imod+1
+            ind = 3*(imod-1)
             zr(jcoef+ind+1-1) = coef(1)
             zr(jcoef+ind+2-1) = coef(2)
             zr(jcoef+ind+3-1) = coef(3)
-        endif
+        end if
     end do
 !
 !--------------------------C
@@ -153,22 +153,22 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !
     if (accuni) then
         call wkvect(moauni, 'V V R', neq*nbmoda, lmoda)
-        call modsta('ACCE', raidfa, matpre, solveu, lmatm,&
-                    nume, [0], zr(jcoef), neq, nbmoda,&
+        call modsta('ACCE', raidfa, matpre, solveu, lmatm, &
+                    nume, [0], zr(jcoef), neq, nbmoda, &
                     zr(lmoda))
-    endif
+    end if
 !
     if (nbacc .ne. nbpsmo) then
         call wkvect(ddlac, 'V V I', neq, lddad)
         call mstget(masse, 'PSEUDO_MODE', nbpsmo, zi(lddad))
         do ii = 0, neq-1
-            nbmoad = nbmoad + zi(lddad+ii)
+            nbmoad = nbmoad+zi(lddad+ii)
         end do
         call wkvect(moaimp, 'V V R', neq*nbmoad, lmoad)
-        call modsta('ACCD', raidfa, matpre, solveu, lmatm,&
-                    nume, zi(lddad), [0.d0], neq, nbmoad,&
+        call modsta('ACCD', raidfa, matpre, solveu, lmatm, &
+                    nume, zi(lddad), [0.d0], neq, nbmoad, &
                     zr(lmoad))
-    endif
+    end if
 !
     call jedema()
 !

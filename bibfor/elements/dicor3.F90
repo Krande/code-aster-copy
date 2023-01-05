@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dicor3(k0, dur, dryr, si1, si2,&
+subroutine dicor3(k0, dur, dryr, si1, si2, &
                   dnsdu, dmsdt, dnsdt)
 ! ----------------------------------------------------------------------
     implicit none
@@ -39,16 +39,16 @@ subroutine dicor3(k0, dur, dryr, si1, si2,&
 !
 ! ----------------------------------------------------------------------
     if (dur .ne. 0.d0) then
-        dnsdu = (si2(7)-si1(7)) / dur
+        dnsdu = (si2(7)-si1(7))/dur
     else
         dnsdu = k0(1)
-    endif
+    end if
 !
     if (dryr .ne. 0.d0) then
-        dmsdt = (si2(11)-si1(11)) / dryr
+        dmsdt = (si2(11)-si1(11))/dryr
     else
         dmsdt = k0(15)
-    endif
+    end if
     dnsdt = 0.d0
 ! ----------------------------------------------------------------------
 !

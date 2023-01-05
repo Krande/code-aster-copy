@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 function typele(ligrez, igrel, icalc)
-use calcul_module, only : ca_ialiel_, ca_illiel_
-implicit none
+    use calcul_module, only: ca_ialiel_, ca_illiel_
+    implicit none
     integer :: typele
 
 ! person_in_charge: jacques.pellet at edf.fr
@@ -51,14 +51,14 @@ implicit none
 
 !   -- si on est "sous" calcul, on peut aller plus vite :
     if (present(icalc)) then
-        ASSERT(icalc.eq.1)
-        n1=zi(ca_illiel_-1+igrel+1)-zi(ca_illiel_-1+igrel)
-        typele=zi(ca_ialiel_-1+zi(ca_illiel_-1+igrel)-1+n1)
+        ASSERT(icalc .eq. 1)
+        n1 = zi(ca_illiel_-1+igrel+1)-zi(ca_illiel_-1+igrel)
+        typele = zi(ca_ialiel_-1+zi(ca_illiel_-1+igrel)-1+n1)
     else
         call jemarq()
         call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', liel)
         call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
         typele = zi(liel-1+n1)
         call jedema()
-    endif
+    end if
 end function

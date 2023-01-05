@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine cazocp(sdcont, model)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "Contact_type.h"
 !
-character(len=8), intent(in) :: sdcont
-character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,33 +67,33 @@ character(len=8), intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_defi    = sdcont(1:8)//'.CONTACT'
-    elim_edge      = 'DUAL'
-    reac_geom      = 'AUTOMATIQUE'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    elim_edge = 'DUAL'
+    reac_geom = 'AUTOMATIQUE'
     algo_reso_cont = ' '
     algo_reso_frot = ' '
     algo_reso_geom = ' '
-    geom_nbiter    = 2
-    nb_resol       = 10
-    geom_resi      = 1.d-2
-    frot_resi      = 1.d-2
-    cont_resi      = 1.d-2
+    geom_nbiter = 2
+    nb_resol = 10
+    geom_resi = 1.d-2
+    frot_resi = 1.d-2
+    cont_resi = 1.d-2
 !
 ! - Access to datastructure
 !
     sdcont_paracr = sdcont(1:8)//'.PARACR'
     sdcont_paraci = sdcont(1:8)//'.PARACI'
-    call jeveuo(sdcont_paracr, 'E', vr = v_sdcont_paracr)
-    call jeveuo(sdcont_paraci, 'E', vi = v_sdcont_paraci)
+    call jeveuo(sdcont_paracr, 'E', vr=v_sdcont_paracr)
+    call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
 !
 ! - Active functionnalites
 !
-    l_cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
-    l_cont_cont = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_xfem = cfdisl(sdcont_defi,'FORMUL_XFEM')
-    l_cont_lac  = cfdisl(sdcont_defi,'FORMUL_LAC')
-    l_cont_gcp  = cfdisl(sdcont_defi,'CONT_GCP' )
-    l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
+    l_cont_disc = cfdisl(sdcont_defi, 'FORMUL_DISCRETE')
+    l_cont_cont = cfdisl(sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_xfem = cfdisl(sdcont_defi, 'FORMUL_XFEM')
+    l_cont_lac = cfdisl(sdcont_defi, 'FORMUL_LAC')
+    l_cont_gcp = cfdisl(sdcont_defi, 'CONT_GCP')
+    l_frot = cfdisl(sdcont_defi, 'FROTTEMENT')
 !
 ! - Geometric algorithm
 !
@@ -107,7 +107,7 @@ character(len=8), intent(in) :: model
         call getvtx(' ', 'ALGO_RESO_GEOM', scal=algo_reso_geom)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     if (algo_reso_geom .eq. 'POINT_FIXE') then
         v_sdcont_paraci(9) = ALGO_FIXE
@@ -115,7 +115,7 @@ character(len=8), intent(in) :: model
         v_sdcont_paraci(9) = ALGO_NEWT
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Geometric parameters
 !
@@ -136,17 +136,17 @@ character(len=8), intent(in) :: model
             v_sdcont_paracr(1) = geom_resi
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         if (l_cont_lac) then
             call utmess('F', 'CONTACT4_1')
-        endif
+        end if
     else if (algo_reso_geom .eq. 'NEWTON') then
         call getvr8(' ', 'RESI_GEOM', scal=geom_resi)
         v_sdcont_paraci(1) = 0
         v_sdcont_paracr(1) = geom_resi
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Friction algorithm
 !
@@ -158,26 +158,26 @@ character(len=8), intent(in) :: model
                 algo_reso_frot = 'POINT_FIXE'
             else
                 algo_reso_frot = 'NEWTON'
-            endif
+            end if
         else if (l_cont_disc) then
             algo_reso_frot = 'POINT_FIXE'
         else if (l_cont_lac) then
-             call utmess('F', 'CONTACT4_4')
+            call utmess('F', 'CONTACT4_4')
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
     if (l_frot) then
         if (algo_reso_frot .eq. 'POINT_FIXE') then
             v_sdcont_paraci(28) = ALGO_FIXE
-        else if (algo_reso_frot.eq.'NEWTON') then
+        else if (algo_reso_frot .eq. 'NEWTON') then
             v_sdcont_paraci(28) = ALGO_NEWT
         else
             ASSERT(ASTER_FALSE)
-        endif
-        ASSERT(.not.l_cont_lac)
-    endif
+        end if
+        ASSERT(.not. l_cont_lac)
+    end if
 !
 ! - Friction parameters
 !
@@ -191,15 +191,15 @@ character(len=8), intent(in) :: model
             else
                 call getvr8(' ', 'RESI_FROT', scal=frot_resi)
                 v_sdcont_paracr(2) = frot_resi
-            endif
+            end if
         else if (l_cont_xfem) then
             call getvis(' ', 'ITER_FROT_MAXI', scal=frot_maxi)
             v_sdcont_paraci(7) = frot_maxi
             call getvr8(' ', 'RESI_FROT', scal=frot_resi)
             v_sdcont_paracr(2) = frot_resi
-        endif
-        ASSERT(.not.l_cont_lac)
-    endif
+        end if
+        ASSERT(.not. l_cont_lac)
+    end if
 !
 ! - Contact algorithm
 !
@@ -213,28 +213,28 @@ character(len=8), intent(in) :: model
         call getvtx(' ', 'ALGO_RESO_CONT', scal=algo_reso_cont)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     if (algo_reso_cont .eq. 'POINT_FIXE') then
         v_sdcont_paraci(27) = ALGO_FIXE
-    else if (algo_reso_cont.eq.'NEWTON') then
+    else if (algo_reso_cont .eq. 'NEWTON') then
         v_sdcont_paraci(27) = ALGO_NEWT
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Contact status stabilisation with MATRICE="ELASTQUE"
 !
     if (l_cont_cont .or. l_cont_lac) then
         call getvis(' ', 'CONT_STAT_ELAS', scal=cont_stat_elas)
-        v_sdcont_paraci(31)  = cont_stat_elas
-    endif
+        v_sdcont_paraci(31) = cont_stat_elas
+    end if
 !
 ! - Check
 !
     if (algo_reso_geom .eq. 'NEWTON' .and. algo_reso_cont .ne. 'NEWTON') then
         call utmess('F', 'CONTACT_20')
-    endif
+    end if
 !
 ! - Contact parameters
 !
@@ -244,34 +244,34 @@ character(len=8), intent(in) :: model
             if (cont_type .eq. 'MULT') then
                 cont_mult = 4
                 call getvis(' ', 'ITER_CONT_MULT', scal=cont_mult)
-                v_sdcont_paraci(5)  = cont_mult
+                v_sdcont_paraci(5) = cont_mult
                 v_sdcont_paraci(10) = -1
-            else if (cont_type.eq.'MAXI') then
+            else if (cont_type .eq. 'MAXI') then
                 cont_mult = 30
                 call getvis(' ', 'ITER_CONT_MAXI', scal=cont_mult)
                 v_sdcont_paraci(10) = cont_mult
-                v_sdcont_paraci(5)  = -1
+                v_sdcont_paraci(5) = -1
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             if (l_cont_cont) v_sdcont_paracr(7) = -1
         else if (l_cont_disc) then
             call getvis(' ', 'ITER_CONT_MULT', scal=cont_mult)
-            v_sdcont_paraci(5)  = cont_mult
+            v_sdcont_paraci(5) = cont_mult
             v_sdcont_paraci(10) = -1
         else if (l_cont_lac) then
             call utmess('F', 'CONTACT4_1')
         else
             ASSERT(ASTER_FALSE)
-        endif
-    else if (algo_reso_cont.eq.'NEWTON') then
-        if (l_cont_cont ) then
+        end if
+    else if (algo_reso_cont .eq. 'NEWTON') then
+        if (l_cont_cont) then
             call getvr8(' ', 'RESI_CONT', scal=cont_resi)
             v_sdcont_paracr(7) = cont_resi
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Discrete formulation
 !
@@ -283,7 +283,7 @@ character(len=8), intent(in) :: model
             v_sdcont_paraci(2) = 1
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
         call getvis(' ', 'NB_RESOL', scal=nb_resol)
         v_sdcont_paraci(3) = nb_resol
@@ -292,7 +292,7 @@ character(len=8), intent(in) :: model
             call getvr8(' ', 'RESI_ABSO', scal=resi_abso, nbret=noc)
             if (noc .eq. 0) then
                 call utmess('F', 'CONTACT_4')
-            endif
+            end if
             v_sdcont_paracr(4) = resi_abso
 !
             call getvis(' ', 'ITER_GCP_MAXI', scal=gcp_maxi)
@@ -301,26 +301,26 @@ character(len=8), intent(in) :: model
             call getvtx(' ', 'PRE_COND', scal=gcp_precond)
             if (gcp_precond .eq. 'SANS') then
                 v_sdcont_paraci(13) = 0
-            else if (gcp_precond.eq.'DIRICHLET') then
+            else if (gcp_precond .eq. 'DIRICHLET') then
                 v_sdcont_paraci(13) = 1
                 call getvr8(' ', 'COEF_RESI', scal=gcp_coef_resi)
-                v_sdcont_paracr(5)  = gcp_coef_resi
+                v_sdcont_paracr(5) = gcp_coef_resi
                 call getvis(' ', 'ITER_PRE_MAXI', scal=gcp_pre_maxi)
                 v_sdcont_paraci(14) = gcp_pre_maxi
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
 !
             call getvtx(' ', 'RECH_LINEAIRE', scal=gcp_rech_line)
             if (gcp_rech_line .eq. 'ADMISSIBLE') then
                 v_sdcont_paraci(15) = 0
-            else if (gcp_rech_line.eq.'NON_ADMISSIBLE') then
+            else if (gcp_rech_line .eq. 'NON_ADMISSIBLE') then
                 v_sdcont_paraci(15) = 1
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Smoothing
 !
@@ -332,38 +332,38 @@ character(len=8), intent(in) :: model
             v_sdcont_paraci(19) = 1
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - XFEM formulation
 !
     if (l_cont_xfem) then
-        call jeveuo(model//'.XFEM_CONT', 'L', vi = v_xfem_cont)
-        l_xfem_mortar = v_xfem_cont(1).eq.2
+        call jeveuo(model//'.XFEM_CONT', 'L', vi=v_xfem_cont)
+        l_xfem_mortar = v_xfem_cont(1) .eq. 2
         call getvtx(' ', 'ELIM_ARETE', scal=elim_edge)
         if (elim_edge .eq. 'DUAL') then
             v_sdcont_paraci(29) = 0
         else if (elim_edge .eq. 'ELIM') then
             if (l_xfem_mortar) then
                 call utmess('F', 'XFEM_62')
-            endif
+            end if
             v_sdcont_paraci(29) = 1
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Verification method
 !
-    if (l_cont_disc.or.l_cont_cont) then
+    if (l_cont_disc .or. l_cont_cont) then
         call getvtx(' ', 'STOP_INTERP', scal=stop_singular)
         if (stop_singular .eq. 'OUI') then
             v_sdcont_paraci(25) = 1
-        else if (stop_singular.eq.'NON') then
+        else if (stop_singular .eq. 'NON') then
             v_sdcont_paraci(25) = 0
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

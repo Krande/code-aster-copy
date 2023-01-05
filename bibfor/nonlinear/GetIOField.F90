@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine GetIOField(ds_inout, field_type,&
-                      l_read_ , l_acti_)
+subroutine GetIOField(ds_inout, field_type, &
+                      l_read_, l_acti_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -53,25 +53,25 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     i_field_type = 0
-    nb_field     = ds_inout%nb_field
+    nb_field = ds_inout%nb_field
 !
 ! - Find field
 !
     do i_field = 1, nb_field
         if (ds_inout%field(i_field)%type .eq. field_type) then
-            ASSERT(i_field_type.eq.0)
+            ASSERT(i_field_type .eq. 0)
             i_field_type = i_field
-        endif
+        end if
     end do
-    ASSERT(i_field_type.ne.0)
+    ASSERT(i_field_type .ne. 0)
 !
 ! - Get parameters
 !
     if (present(l_read_)) then
         l_read_ = ds_inout%l_field_read(i_field_type)
-    endif
+    end if
     if (present(l_acti_)) then
         l_acti_ = ds_inout%l_field_acti(i_field_type)
-    endif
+    end if
 !
 end subroutine

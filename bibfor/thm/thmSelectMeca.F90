@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine thmSelectMeca(ds_thm,&
-                         p1    , dp1    , p2    , dp2   , satur    , tbiot, nl,&
-                         option, j_mater, ndim  , typmod, angl_naut,&
-                         carcri, instam , instap, dtemp ,&
-                         addeme, addete , adcome, addep1, addep2,&
-                         dimdef, dimcon ,&
-                         defgem, deps   ,&
-                         congem, vintm  ,&
-                         congep, vintp  ,&
-                         dsde  , retcom)
+subroutine thmSelectMeca(ds_thm, &
+                         p1, dp1, p2, dp2, satur, tbiot, nl, &
+                         option, j_mater, ndim, typmod, angl_naut, &
+                         carcri, instam, instap, dtemp, &
+                         addeme, addete, adcome, addep1, addep2, &
+                         dimdef, dimcon, &
+                         defgem, deps, &
+                         congem, vintm, &
+                         congep, vintp, &
+                         dsde, retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,22 +42,22 @@ implicit none
 #include "asterfort/thmMecaSpecial.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: j_mater
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
-character(len=8), intent(in) :: typmod(2)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam, instap, dtemp
-integer, intent(in) :: ndim, dimdef, dimcon
-integer, intent(in) :: addeme, addete, adcome, addep1, addep2
-real(kind=8), intent(in) :: vintm(*)
-real(kind=8), intent(in) :: angl_naut(3)
-real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
-real(kind=8), intent(inout) :: congep(dimcon)
-real(kind=8), intent(inout) :: vintp(*)
-real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-integer, intent(out) :: retcom
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: j_mater
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
+    character(len=8), intent(in) :: typmod(2)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam, instap, dtemp
+    integer, intent(in) :: ndim, dimdef, dimcon
+    integer, intent(in) :: addeme, addete, adcome, addep1, addep2
+    real(kind=8), intent(in) :: vintm(*)
+    real(kind=8), intent(in) :: angl_naut(3)
+    real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
+    real(kind=8), intent(inout) :: congep(dimcon)
+    real(kind=8), intent(inout) :: vintp(*)
+    real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,29 +110,29 @@ integer, intent(out) :: retcom
     integer :: i, j
     real(kind=8) :: dsdeme(6, 6), alpha0, ther_meca(6)
     integer :: ndt, ndi
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
     character(len=16) :: meca, defo
     integer :: nb_vari_meca, nume_meca, nume_thmc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ndt         = 2*ndim
-    ndi         = ndim
-    dsdeme      = 0.d0
-    ther_meca   = 0.d0
-    alpha0      = ds_thm%ds_material%ther%alpha
+    ndt = 2*ndim
+    ndi = ndim
+    dsdeme = 0.d0
+    ther_meca = 0.d0
+    alpha0 = ds_thm%ds_material%ther%alpha
     compor_meca = ' '
-    retcom      = 0
-    lMatr       = L_MATR(option)
-    lSigm       = L_SIGM(option)
+    retcom = 0
+    lMatr = L_MATR(option)
+    lSigm = L_SIGM(option)
 !
 ! - Get storage parameters for behaviours
 !
-    defo         = ds_thm%ds_behaviour%defo
-    meca         = ds_thm%ds_behaviour%rela_meca
+    defo = ds_thm%ds_behaviour%defo
+    meca = ds_thm%ds_behaviour%rela_meca
     nb_vari_meca = ds_thm%ds_behaviour%nb_vari_meca
-    nume_meca    = ds_thm%ds_behaviour%nume_meca
-    nume_thmc    = ds_thm%ds_behaviour%nume_thmc
+    nume_meca = ds_thm%ds_behaviour%nume_meca
+    nume_thmc = ds_thm%ds_behaviour%nume_thmc
 !
 ! - Check porosity
 !
@@ -142,73 +142,72 @@ integer, intent(out) :: retcom
 !
     if (nume_meca .eq. 0) then
 ! ----- Special behaviours
-        call thmMecaSpecial(ds_thm , option   , lMatr , meca     ,&
-                            p1     , dp1      , p2    , dp2   , satur, tbiot, nl,&
-                            j_mater, ndim     , typmod, carcri, &
-                            addeme , adcome   , addep1, addep2,&
-                            dimdef , dimcon   ,&
-                            defgem , deps     ,&
-                            congem , vintm    ,&
-                            congep , vintp    ,&
-                            instam, instap,&
-                            dsde   , ther_meca, retcom)
+        call thmMecaSpecial(ds_thm, option, lMatr, meca, &
+                            p1, dp1, p2, dp2, satur, tbiot, nl, &
+                            j_mater, ndim, typmod, carcri, &
+                            addeme, adcome, addep1, addep2, &
+                            dimdef, dimcon, &
+                            defgem, deps, &
+                            congem, vintm, &
+                            congep, vintp, &
+                            instam, instap, &
+                            dsde, ther_meca, retcom)
 
     elseif (nume_meca .eq. 1) then
 ! ----- Elasticity
         ASSERT(meca .eq. 'ELAS')
-        call thmMecaElas(ds_thm, lMatr, lSigm, angl_naut, dtemp    ,&
-                         adcome, dimcon,&
-                         deps  , congep, dsdeme   , ther_meca)
-
+        call thmMecaElas(ds_thm, lMatr, lSigm, angl_naut, dtemp, &
+                         adcome, dimcon, &
+                         deps, congep, dsdeme, ther_meca)
 
     elseif (nume_meca .ge. 100) then
 ! ----- Forbidden behaviours
-        call utmess('F', 'THM1_1', sk = meca)
+        call utmess('F', 'THM1_1', sk=meca)
 
     else
 ! ----- Standard behaviours
         compor_meca(RELA_NAME) = meca
-        write (compor_meca(NVAR),'(I16)') nb_vari_meca
+        write (compor_meca(NVAR), '(I16)') nb_vari_meca
         compor_meca(DEFO) = defo
-        write (compor_meca(NUME),'(I16)') nume_meca
-        call calcme(option     , j_mater, ndim  , typmod, angl_naut,&
-                    compor_meca, carcri , instam, instap,&
-                    addeme     , adcome , dimdef, dimcon,&
-                    defgem     , deps   ,&
-                    congem     , vintm  ,&
-                    congep     , vintp  ,&
-                    dsdeme     , retcom )
+        write (compor_meca(NUME), '(I16)') nume_meca
+        call calcme(option, j_mater, ndim, typmod, angl_naut, &
+                    compor_meca, carcri, instam, instap, &
+                    addeme, adcome, dimdef, dimcon, &
+                    defgem, deps, &
+                    congem, vintm, &
+                    congep, vintp, &
+                    dsdeme, retcom)
 ! ----- Compute thermic dilatation
         if (ds_thm%ds_elem%l_dof_ther) then
             do i = 1, 3
-                ther_meca(i) = -alpha0*(&
-                                dsde(adcome-1+i,addeme+ndim-1+1)+&
-                                dsde(adcome-1+i,addeme+ndim-1+2)+&
-                                dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
+                ther_meca(i) = -alpha0*( &
+                               dsde(adcome-1+i, addeme+ndim-1+1)+ &
+                               dsde(adcome-1+i, addeme+ndim-1+2)+ &
+                               dsde(adcome-1+i, addeme+ndim-1+3))/3.d0
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Add mechanical matrix
 !
     if (lMatr) then
         do i = 1, ndt
             do j = 1, ndt
-                dsde(adcome+i-1,addeme+ndim+j-1) = dsde(adcome+i-1,addeme+ndim+j-1) +&
-                                                   dsdeme(i,j)
+                dsde(adcome+i-1, addeme+ndim+j-1) = dsde(adcome+i-1, addeme+ndim+j-1)+ &
+                                                    dsdeme(i, j)
             end do
         end do
-    endif
+    end if
 !
 ! - Add thermic (dilatation) matrix
 !
     if (lMatr) then
         if (ds_thm%ds_elem%l_dof_ther) then
             do i = 1, 6
-                dsde(adcome-1+i,addete) = dsde(adcome-1+i,addete) -&
-                                          ther_meca(i)
+                dsde(adcome-1+i, addete) = dsde(adcome-1+i, addete)- &
+                                           ther_meca(i)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

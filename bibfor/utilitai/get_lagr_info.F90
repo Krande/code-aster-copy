@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine get_lagr_info(prof_chnoz, i_equa , idx_gd, nb_node_lagr, list_node_lagr,&
-                         nume_cmpz , ligrelz)
+subroutine get_lagr_info(prof_chnoz, i_equa, idx_gd, nb_node_lagr, list_node_lagr, &
+                         nume_cmpz, ligrelz)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -70,14 +70,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nume_cmp     = 0
+    nume_cmp = 0
     nb_node_lagr = 0
     prof_chno = prof_chnoz
     lili = prof_chno(1:19)//'.LILI'
     prno = prof_chno(1:19)//'.PRNO'
     nueq = prof_chno(1:19)//'.NUEQ'
     call jelira(prno, 'NMAXOC', nb_ligr)
-    call jeveuo(nueq, 'L', vi = p_nueq)
+    call jeveuo(nueq, 'L', vi=p_nueq)
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', nb_cmp_max)
     nb_ec = nbec(idx_gd)
 !
@@ -87,7 +87,7 @@ implicit none
     do i_ligr = 2, nb_ligr
         call jelira(jexnum(prno, i_ligr), 'LONMAX', length)
         if (length .gt. 0) then
-            call jeveuo(jexnum(prno, i_ligr), 'L', vi = p_prno)
+            call jeveuo(jexnum(prno, i_ligr), 'L', vi=p_prno)
             nb_node = length/(nb_ec+2)
             do i_node = 1, nb_node
                 ideb = p_prno((i_node-1)*(nb_ec+2)+1)
@@ -97,35 +97,35 @@ implicit none
                     if (i_equa .eq. i_nueq) then
                         l_find = .true.
                         nume_node_lagr = i_node
-                        nume_ligr      = i_ligr
-                        nume_cmp_loca  = i_cmp
+                        nume_ligr = i_ligr
+                        nume_cmp_loca = i_cmp
                         goto 40
-                    endif
+                    end if
                 end do
             end do
-        endif
+        end if
     end do
 40  continue
     ASSERT(l_find)
-    ASSERT(nume_node_lagr.ne.0)
-    ASSERT(nume_ligr.gt.1)
+    ASSERT(nume_node_lagr .ne. 0)
+    ASSERT(nume_ligr .gt. 1)
 !
 ! - From local to global component index
 !
-    if (nume_node_lagr.gt.0) then
-        ico=0
+    if (nume_node_lagr .gt. 0) then
+        ico = 0
         call jeveuo(jexnum(prno, nume_ligr), 'L', jprno)
         do i_cmp_max = 1, nb_cmp_max
-            if (exisdg(zi(jprno-1+(nume_node_lagr-1)*(nb_ec+2)+3),i_cmp_max)) then
-                ico=ico+1
+            if (exisdg(zi(jprno-1+(nume_node_lagr-1)*(nb_ec+2)+3), i_cmp_max)) then
+                ico = ico+1
                 if (ico .eq. nume_cmp_loca) then
                     nume_cmp = i_cmp_max
                     goto 60
-                endif
-            endif
+                end if
+            end if
         end do
- 60     continue
-    endif
+60      continue
+    end if
 !
 ! - Get element linked to Lagrange dof
 !
@@ -136,58 +136,58 @@ implicit none
 !
     do i_elem = 1, nb_elem
         call jelira(jexnum(ligrel//'.NEMA', i_elem), 'LONMAX', length)
-        nb_node_elem = length - 1
+        nb_node_elem = length-1
         if (length .ne. 0) then
-            call jeveuo(jexnum(ligrel//'.NEMA', i_elem), 'L', vi = p_nema)
+            call jeveuo(jexnum(ligrel//'.NEMA', i_elem), 'L', vi=p_nema)
             l_find = .false.
             do i_node = 1, nb_node_elem
                 if (p_nema(i_node) .eq. -nume_node_lagr) then
                     l_find = .true.
-                endif
+                end if
             end do
             if (l_find) then
                 do i_node = 1, nb_node_elem
-                    if (p_nema(i_node).gt.0) then
-                        nb_node_lagr = nb_node_lagr + 1
-                    endif
+                    if (p_nema(i_node) .gt. 0) then
+                        nb_node_lagr = nb_node_lagr+1
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
-    AS_ALLOCATE(vi=list_node_lagr, size = nb_node_lagr)
+    AS_ALLOCATE(vi=list_node_lagr, size=nb_node_lagr)
 !
 ! - List of nodes
 !
     idx_node = 0
     do i_elem = 1, nb_elem
         call jelira(jexnum(ligrel//'.NEMA', i_elem), 'LONMAX', length)
-        nb_node_elem = length - 1
+        nb_node_elem = length-1
         if (length .ne. 0) then
-            call jeveuo(jexnum(ligrel//'.NEMA', i_elem), 'L', vi = p_nema)
+            call jeveuo(jexnum(ligrel//'.NEMA', i_elem), 'L', vi=p_nema)
             l_find = .false.
             do i_node = 1, nb_node_elem
                 if (p_nema(i_node) .eq. -nume_node_lagr) then
                     l_find = .true.
-                endif
+                end if
             end do
             if (l_find) then
                 do i_node = 1, nb_node_elem
-                    if (p_nema(i_node).gt.0) then
+                    if (p_nema(i_node) .gt. 0) then
                         idx_node = idx_node+1
                         list_node_lagr(idx_node) = p_nema(i_node)
-                    endif
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
-    ASSERT(idx_node.eq.nb_node_lagr)
+    ASSERT(idx_node .eq. nb_node_lagr)
 !
     if (present(nume_cmpz)) then
-        nume_cmpz  = nume_cmp
-    endif
+        nume_cmpz = nume_cmp
+    end if
     if (present(ligrelz)) then
-        ligrelz    = ligrel
-    endif
+        ligrelz = ligrel
+    end if
 !
 end subroutine

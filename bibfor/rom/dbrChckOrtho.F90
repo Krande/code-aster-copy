@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrChckOrtho(paraOrtho, lReuse)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/romModeChck.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Ortho), intent(in) :: paraOrtho
-aster_logical, intent(in) :: lReuse
+    type(ROM_DS_ParaDBR_Ortho), intent(in) :: paraOrtho
+    aster_logical, intent(in) :: lReuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ aster_logical, intent(in) :: lReuse
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_35')
-    endif
+    end if
 !
 ! - Initialisations
 !
@@ -64,7 +64,7 @@ aster_logical, intent(in) :: lReuse
 !
     if (.not. lReuse) then
         call romModeChck(mode)
-    endif
+    end if
 !
 ! - No reuse:
 !
@@ -72,13 +72,13 @@ aster_logical, intent(in) :: lReuse
     if (lReuse) then
         if (baseInitName .ne. ' ') then
             call utmess('F', 'ROM18_21')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Only on nodal fields
 !
     if (mode%fieldSupp .ne. 'NOEU') then
-        call utmess('F','ROM18_36')
-    endif
+        call utmess('F', 'ROM18_36')
+    end if
 !
 end subroutine

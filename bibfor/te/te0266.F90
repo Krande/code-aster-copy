@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0266(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -58,32 +58,32 @@ subroutine te0266(option, nomte)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PFLUXPG', 'E', iflux)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    nbcmp=3
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 1, 'INST', [zr(itemp)],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    nbcmp = 3
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THER', 1, 'INST', [zr(itemp)], &
                 1, 'LAMBDA', valres, icodre, 1)
 !
     do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdr, dfdz)
 !
         r = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*i-2) * zr(ivf+k+i-1)
+            r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
         end do
 !
         fluxr = 0.0d0
         fluxz = 0.0d0
         fluxt = 0.0d0
         do j = 1, nno
-            fluxr = fluxr + zr(itempe+j-1)*dfdr(j)
-            fluxz = fluxz + zr(itempe+j-1)*dfdz(j)
-            fluxt = fluxt - zr(itempe+j-1)*zr(ivf+k+j-1)*xh/r
+            fluxr = fluxr+zr(itempe+j-1)*dfdr(j)
+            fluxz = fluxz+zr(itempe+j-1)*dfdz(j)
+            fluxt = fluxt-zr(itempe+j-1)*zr(ivf+k+j-1)*xh/r
         end do
 !
         zr(iflux+(kp-1)*nbcmp-1+1) = -valres(1)*fluxr

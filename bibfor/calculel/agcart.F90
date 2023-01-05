@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,35 +66,35 @@ subroutine agcart(ngdmxn, chinz)
 !
 ! --- AGRANDISSEMENT DE .DESC:
 ! ------------------------------
-    descav='&&AGCART.DESCAV'
+    descav = '&&AGCART.DESCAV'
     call jedupo(chin//'.DESC', 'V', descav, .false._1)
     call jeveuo(descav, 'E', jdesca)
     igd = zi(jdesca-1+1)
     nec = nbec(igd)
     ngdmxa = zi(jdesca-1+2)
     nedit = zi(jdesca-1+3)
-    ASSERT(ngdmxn.gt.ngdmxa)
+    ASSERT(ngdmxn .gt. ngdmxa)
 !
     call jedetr(chin//'.DESC')
     call wkvect(chin//'.DESC', base//' V I', 3+ngdmxn*(2+nec), jdesc)
     call jeecra(chin//'.DESC', 'DOCU', cval='CART')
 !
-    zi(jdesc-1+1)=igd
-    zi(jdesc-1+2)=ngdmxn
-    zi(jdesc-1+3)=nedit
+    zi(jdesc-1+1) = igd
+    zi(jdesc-1+2) = ngdmxn
+    zi(jdesc-1+3) = nedit
 !
-    do ied=1,nedit
-        zi(jdesc-1+3+(ied-1)*2+1)=zi(jdesca-1+3+(ied-1)*2+1)
-        zi(jdesc-1+3+(ied-1)*2+2)=zi(jdesca-1+3+(ied-1)*2+2)
-    enddo
+    do ied = 1, nedit
+        zi(jdesc-1+3+(ied-1)*2+1) = zi(jdesca-1+3+(ied-1)*2+1)
+        zi(jdesc-1+3+(ied-1)*2+2) = zi(jdesca-1+3+(ied-1)*2+2)
+    end do
 !
-    do ied=1,nedit
-        ideca=3+2*ngdmxa + nec*(ied-1)
-        idec =3+2*ngdmxn + nec*(ied-1)
-        do iec=1,nec
-            zi(jdesc-1+idec+iec)=zi(jdesca-1+ideca+iec)
-        enddo
-    enddo
+    do ied = 1, nedit
+        ideca = 3+2*ngdmxa+nec*(ied-1)
+        idec = 3+2*ngdmxn+nec*(ied-1)
+        do iec = 1, nec
+            zi(jdesc-1+idec+iec) = zi(jdesca-1+ideca+iec)
+        end do
+    end do
     call jedetr(descav)
 !
 !

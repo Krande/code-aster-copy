@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,13 +53,13 @@ subroutine refe80(nomres)
 !-----------------------------------------------------------------------
     integer :: ioc1, iret, ldref
 !-----------------------------------------------------------------------
-    data typbas/'CLASSIQUE','CYCLIQUE','RITZ'/
+    data typbas/'CLASSIQUE', 'CYCLIQUE', 'RITZ'/
 !
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    blanc='   '
-    basmod=blanc
+    blanc = '   '
+    basmod = blanc
 !
 !------------RECUPERATION DU NOMBRE D'OCCURENCES DES MOT-CLE------------
 !
@@ -67,15 +67,15 @@ subroutine refe80(nomres)
 !
 !------------------CONTROLE SUR TYPE DE BASE MODALE---------------------
 !
-    call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=idesc, arret='C',&
+    call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=idesc, arret='C', &
                 ier=iret)
 !
     if (idesc(1:9) .ne. 'CLASSIQUE') then
-        valk (1) = basmod
-        valk (2) = idesc
-        valk (3) = typbas(1)
+        valk(1) = basmod
+        valk(2) = idesc
+        valk(3) = typbas(1)
         call utmess('F', 'ALGORITH14_13', nk=3, valk=valk)
-    endif
+    end if
 !
 !--------------------RECUPERATION DES CONCEPTS AMONTS-------------------
 !
@@ -86,9 +86,9 @@ subroutine refe80(nomres)
 !
     call wkvect(nomres//'.CYCL_REFE', 'G V K24', 3, ldref)
 !
-    zk24(ldref)=mailla
-    zk24(ldref+1)=intf
-    zk24(ldref+2)=basmod
+    zk24(ldref) = mailla
+    zk24(ldref+1) = intf
+    zk24(ldref+2) = basmod
 !
 !
     call jedema()

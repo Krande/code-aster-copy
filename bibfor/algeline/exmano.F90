@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,10 +67,10 @@ subroutine exmano(noma, numnoe, numano, nbmano)
             no1 = zi(jdno)
             no2 = zi(jdno+1)
             if (no1 .eq. numnoe .or. no2 .eq. numnoe) then
-                nbmano = nbmano + 1
+                nbmano = nbmano+1
                 numano(nbmano) = numail
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

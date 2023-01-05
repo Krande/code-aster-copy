@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine numddl(nume_ddlz, base, nb_matr, list_matr)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_deallocate.h"
 #include "asterfort/crnulg.h"
@@ -62,7 +62,7 @@ implicit none
     character(len=8) :: nommai, nommod
     character(len=14) :: nume_ddl
     character(len=16) :: typsd
-    character(len=16) :: typres,nomcom
+    character(len=16) :: typres, nomcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,22 +78,22 @@ implicit none
 !
 
     call getres(nomres, typres, nomcom)
-    if (nomcom.eq.'MACR_ELEM_STAT') then
-        renum='RCMK'
+    if (nomcom .eq. 'MACR_ELEM_STAT') then
+        renum = 'RCMK'
     else
-        renum='SANS'
-    endif
+        renum = 'SANS'
+    end if
 
     call nueffe(nb_ligr, list_ligr, base, nume_ddlz, renum)
 !
     call dismoi('NOM_MODELE', list_matr_elem(1), 'MATR_ELEM', repk=nommod)
     call dismoi('NOM_MAILLA', nommod, 'MODELE', repk=nommai)
     call gettco(nommai, typsd)
-    if( typsd.eq.'MAILLAGE_P' ) then
+    if (typsd .eq. 'MAILLAGE_P') then
         nume_ddl = nume_ddlz
         call crnulg(nume_ddl)
-    endif
+    end if
 !
-    AS_DEALLOCATE(vk24 = list_ligr)
+    AS_DEALLOCATE(vk24=list_ligr)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pacou1(x, fvec, df, work, eps,&
-                  vecr1, vecr2, typflu, vecr3, amor,&
-                  masg, vecr4, vecr5, veci1, vg,&
+subroutine pacou1(x, fvec, df, work, eps, &
+                  vecr1, vecr2, typflu, vecr3, amor, &
+                  masg, vecr4, vecr5, veci1, vg, &
                   indic, nbm, nmode, n)
     implicit none
 ! ARGUMENTS
@@ -38,14 +38,14 @@ subroutine pacou1(x, fvec, df, work, eps,&
         temp = x(j)
         h = eps*abs(temp)
         if (abs(h) .le. 1.0d-30) h = eps
-        x(j) = temp + h
-        h = x(j) - temp
-        call pacouf(x, work, vecr1, vecr2, typflu,&
-                    vecr3, amor, masg, vecr4, vecr5,&
+        x(j) = temp+h
+        h = x(j)-temp
+        call pacouf(x, work, vecr1, vecr2, typflu, &
+                    vecr3, amor, masg, vecr4, vecr5, &
                     veci1, vg, indic, nbm, nmode)
         x(j) = temp
         do i = 1, n
-            df(i,j) = (work(i)-fvec(i))/h
+            df(i, j) = (work(i)-fvec(i))/h
         end do
     end do
 !

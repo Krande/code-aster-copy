@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
+subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine, &
                   type)
     implicit none
 #include "jeveux.h"
@@ -69,7 +69,7 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: neq, nimpo,   eccll
+    integer :: neq, nimpo, eccll
     integer, pointer :: ccll(:) => null()
     integer, pointer :: ccii(:) => null()
 !-----------------------------------------------------------------------
@@ -82,35 +82,35 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
 !
     if (zi(lmat+3) .eq. 1) then
         call csmbmd(zk24(zi(lmat+1)), neq, vsmb)
-    else if (zi(lmat+3).eq.2) then
+    else if (zi(lmat+3) .eq. 2) then
         call csmbmc(zk24(zi(lmat+1)), neq, cvsmb)
-    endif
+    end if
 !
     nimpo = zi(lmat+7)
     if (nimpo .eq. 0) goto 10
 !
-    call jeexin(zk24(zi(lmat+1))(1:19)//'.CCLL', eccll)
+    call jeexin(zk24(zi(lmat+1)) (1:19)//'.CCLL', eccll)
     if (eccll .eq. 0) goto 10
 !
-    call jeveuo(zk24(zi(lmat+1))(1:19)//'.CCLL', 'L', vi=ccll)
-    call jeveuo(zk24(zi(lmat+1))(1:19)//'.CCII', 'L', vi=ccii)
+    call jeveuo(zk24(zi(lmat+1)) (1:19)//'.CCLL', 'L', vi=ccll)
+    call jeveuo(zk24(zi(lmat+1)) (1:19)//'.CCII', 'L', vi=ccii)
 !
 !     ------------------------------------------------------------------
 !
     if (zi(lmat+3) .eq. 1) then
 !
 !        --- SYSTEME REEL:
-        ASSERT(type.eq.'R')
-        call csmbr8(zk24(zi(lmat+1)), ccll, ccii, neq, vcine,&
+        ASSERT(type .eq. 'R')
+        call csmbr8(zk24(zi(lmat+1)), ccll, ccii, neq, vcine, &
                     vsmb)
 !
-    else if (zi(lmat+3).eq.2) then
+    else if (zi(lmat+3) .eq. 2) then
 !
 !        --- SYSTEME COMPLEXE:
-        ASSERT(type.eq.'C')
-        call csmbc8(zk24(zi(lmat+1)), ccll, ccii, neq, cvcine,&
+        ASSERT(type .eq. 'C')
+        call csmbc8(zk24(zi(lmat+1)), ccll, ccii, neq, cvcine, &
                     cvsmb)
-    endif
+    end if
 !
 10  continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine delete_matrix(matas, typsol)
 !
-use elg_data_module
+    use elg_data_module
 !
 #include "asterf_types.h"
 !
@@ -61,28 +61,28 @@ use elg_data_module
 !       -- DESTRUCTION DE L'EVENTUELLE MATRICE RéDUITE (ELIM_LAGR) :
         call jeveuo(matas//'.REFA', 'L', vk24=refa)
         if (refa(19) .ne. ' ') then
-            matas2=refa(19)(1:19)
+            matas2 = refa(19) (1:19)
             call jeexin(matas2//".REFA", iexi2)
             if (iexi2 .gt. 0) then
-                call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solveu2, arret='C',&
-                        ier=iret)
-                if (iret .eq. 0 ) then
+                call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solveu2, arret='C', &
+                            ier=iret)
+                if (iret .eq. 0) then
                     call detlsp(matas2, solveu2)
-                endif
+                end if
                 call detrsd('MATR_ASSE', matas2)
                 call elg_gest_data('EFFACE', ' ', matas2, ' ')
-            endif
-        endif
+            end if
+        end if
 ! --- Destruction du solveur
         if (typsol .eq. 'MUMPS') then
-            call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid],&
+            call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid], &
                         ' ', 0, ibid, lbid)
-        else if (typsol.eq.'PETSC') then
-            call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
+        else if (typsol .eq. 'PETSC') then
+            call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ', &
                         0, ibid, iret)
-        endif
+        end if
 
-    endif
+    end if
     call jedema()
 
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine porea4(nno, nc, geom, gamma, pgl,&
+subroutine porea4(nno, nc, geom, gamma, pgl, &
                   xl)
     implicit none
 #include "jeveux.h"
@@ -49,31 +49,31 @@ subroutine porea4(nno, nc, geom, gamma, pgl,&
     integer :: i, ideplm, ideplp, iret
     real(kind=8) :: utg(14), xug(6), xd(3), alfa1, beta1, ang1(3)
 !
-    ASSERT(nno.eq.2)
+    ASSERT(nno .eq. 2)
 !
     call tecach('ONO', 'PDEPLMR', 'L', iret, iad=ideplm)
     if (iret .ne. 0) then
-       do i = 1, 2*nc
-          utg(i) = 0.d0
-       enddo
+        do i = 1, 2*nc
+            utg(i) = 0.d0
+        end do
     else
-       do  i = 1, 2*nc
-          utg(i) = zr(ideplm-1+i)
-       enddo
-    endif
+        do i = 1, 2*nc
+            utg(i) = zr(ideplm-1+i)
+        end do
+    end if
 !
     call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
     if (iret .eq. 0) then
         do i = 1, 2*nc
-            utg(i) = utg(i) + zr(ideplp-1+i)
+            utg(i) = utg(i)+zr(ideplp-1+i)
         end do
-    endif
+    end if
 !
     do i = 1, 3
-       xug(i)   = utg(i) + geom(i,1)
-       xug(i+3) = utg(i+nc) + geom(i,2)
-       xd(i)    = xug(i+3) - xug(i)
-    enddo
+        xug(i) = utg(i)+geom(i, 1)
+        xug(i+3) = utg(i+nc)+geom(i, 2)
+        xd(i) = xug(i+3)-xug(i)
+    end do
 !
     call angvx(xd, alfa1, beta1)
     call normev(xd, xl)
@@ -85,4 +85,4 @@ subroutine porea4(nno, nc, geom, gamma, pgl,&
 !
     call matrot(ang1, pgl)
 
-  end subroutine porea4
+end subroutine porea4

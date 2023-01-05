@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine te0393(option, nomte)
     integer :: ivectu, idepm, igeom, idepde, isigma, lorien, jefint
     integer :: ifint
 !
-    parameter (zero=0.0d0,un=1.0d0)
+    parameter(zero=0.0d0, un=1.0d0)
 ! ----------------------------------------------------------------------
 !
 !
@@ -64,26 +64,26 @@ subroutine te0393(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
         do ino = 1, nno
             do i = 1, 3
-                zr(ivectu+(ino-1)*nc+i-1)=forref
+                zr(ivectu+(ino-1)*nc+i-1) = forref
             end do
             do i = 4, nc
-                zr(ivectu+(ino-1)*nc+i-1)=momref
+                zr(ivectu+(ino-1)*nc+i-1) = momref
             end do
         end do
 !
-    else if (option.eq.'FORC_NODA') then
+    else if (option .eq. 'FORC_NODA') then
         call elref1(elrefe)
 !
 !        PARAMETRES EN ENTREE
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
         ico = 0
         do kp = 1, npg
             do ne = 1, nno
-                ico = ico + 1
-                en(ne,kp) = zr(ivf-1+ico)
-                enprim(ne,kp) = zr(idfdk-1+ico)
+                ico = ico+1
+                en(ne, kp) = zr(ivf-1+ico)
+                enprim(ne, kp) = zr(idfdk-1+ico)
             end do
         end do
 !
@@ -103,7 +103,7 @@ subroutine te0393(option, nomte)
         call jevech('PVECTUR', 'E', jefint)
         do ne = 1, nno
             do kc = 1, 6
-                fint(kc,ne) = zero
+                fint(kc, ne) = zero
             end do
         end do
 !
@@ -111,28 +111,28 @@ subroutine te0393(option, nomte)
 !         TEMPN(NE) = ZR(ITEMPR-1+NE)
 !21      CONTINUE
 !
-        k0 = igeom - 1
-        k1 = idepm - 1
-        k2 = idepde - 1
+        k0 = igeom-1
+        k1 = idepm-1
+        k2 = idepde-1
 !
         do ne = 1, nno
             do kc = 1, 3
-                k0 = k0 + 1
-                k1 = k1 + 1
-                k2 = k2 + 1
-                x00(kc,ne) = zr(k0)
-                x0k(kc,ne) = zr(k0) + zr(k1) + zr(k2)
+                k0 = k0+1
+                k1 = k1+1
+                k2 = k2+1
+                x00(kc, ne) = zr(k0)
+                x0k(kc, ne) = zr(k0)+zr(k1)+zr(k2)
             end do
             do kc = 1, 3
-                k1 = k1 + 1
-                k2 = k2 + 1
-                qik(kc,ne) = zr(k1) + zr(k2)
+                k1 = k1+1
+                k2 = k2+1
+                qik(kc, ne) = zr(k1)+zr(k2)
             end do
         end do
 !
 !        BOUCLE SUR LES POINTS DE GAUSS
         do kp = 1, npg
-            call gdjrg0(kp, nno, enprim, x00, y0,&
+            call gdjrg0(kp, nno, enprim, x00, y0, &
                         ajacob, rot0)
             pjacob = zr(ipoids-1+kp)*ajacob
 !
@@ -144,8 +144,8 @@ subroutine te0393(option, nomte)
             unsurj = un/ajacob
             do ic = 1, 3
                 do ne = 1, nno
-                    x0pg(ic) = x0pg(ic) + unsurj*enprim(ne,kp)*x0k(ic, ne)
-                    qig(ic) = qig(ic) + en(ne,kp)*qik(ic,ne)
+                    x0pg(ic) = x0pg(ic)+unsurj*enprim(ne, kp)*x0k(ic, ne)
+                    qig(ic) = qig(ic)+en(ne, kp)*qik(ic, ne)
                 end do
             end do
 !         DO 45 NE=1,NNO
@@ -153,29 +153,29 @@ subroutine te0393(option, nomte)
 !45       CONTINUE
 !
             call marota(qig, rot)
-            call promat(rot, 3, 3, 3, rot0,&
+            call promat(rot, 3, 3, 3, rot0, &
                         3, 3, 3, rotabs)
             do ic = 1, 3
-                gn(ic) = zr(isigma-1+6* (kp-1)+ic)
-                gm(ic) = zr(isigma+2+6* (kp-1)+ic)
+                gn(ic) = zr(isigma-1+6*(kp-1)+ic)
+                gm(ic) = zr(isigma+2+6*(kp-1)+ic)
             end do
-            call promat(rotabs, 3, 3, 3, gn,&
+            call promat(rotabs, 3, 3, 3, gn, &
                         3, 3, 1, pn)
-            call promat(rotabs, 3, 3, 3, gm,&
+            call promat(rotabs, 3, 3, 3, gm, &
                         3, 3, 1, pm)
 !
-            call gdfint(kp, nno, ajacob, pjacob, en,&
+            call gdfint(kp, nno, ajacob, pjacob, en, &
                         enprim, x0pg, pn, pm, fint)
 !
         end do
 !        FIN DE BOUCLE SUR LES POINTS DE GAUSS
-        ifint = jefint - 1
+        ifint = jefint-1
         do ne = 1, nno
             do kc = 1, 6
-                ifint = ifint + 1
-                zr(ifint) = fint(kc,ne)
+                ifint = ifint+1
+                zr(ifint) = fint(kc, ne)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

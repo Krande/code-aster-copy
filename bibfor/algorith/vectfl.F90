@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vectfl(opt, modele, carele, mate, mateco, templu,&
+subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
                   instap, ve)
     implicit none
 !
@@ -58,13 +58,13 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu,&
 !
     ve2 = vecel//'.RELR'
     call detrsd('VECT_ELEM', vecel)
-    call memare('V', vecel, modele(1:8), mate, carele,&
+    call memare('V', vecel, modele(1:8), mate, carele, &
                 'CHAR_THER')
     call wkvect(ve2, 'V V K24', 1, jlve)
     if (templu(9:14) .eq. '.BIDON') then
         call jeecra(ve2, 'LONUTI', 0)
         goto 10
-    endif
+    end if
 !
     ligrmo = modele(1:8)//'.MODELE'
 !
@@ -75,9 +75,9 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu,&
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     chtime = '&&VECHME.CH_INST_R'
-    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
+    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
                 ncmp=1, nomcmp='INST   ', sr=instap)
-    call mecact('V', '&VECTFL.VEC', 'MODELE', ligrmo, 'TEMP_R  ',&
+    call mecact('V', '&VECTFL.VEC', 'MODELE', ligrmo, 'TEMP_R  ', &
                 ncmp=1, nomcmp='TEMP   ', sr=0.d0)
     lpain(2) = 'PTEMPSR'
     lchin(2) = chtime
@@ -99,17 +99,17 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu,&
                 if (opt .eq. 'Z') then
                     option = 'CHAR_THER_ACCE_Z'
                     lpain(3) = 'PTEMPER'
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
     lpaout(1) = 'PVECTTR'
 !
     lchout(1) = '&&VECTFL.A'
-    call corich('E', lchout(1), ichin_ = -1)
-    call calcul('S', option, ligrmo, 4, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call corich('E', lchout(1), ichin_=-1)
+    call calcul('S', option, ligrmo, 4, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
     zk24(jlve) = lchout(1)
     call jeecra(ve2, 'LONUTI', 1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romSolveDOMSystSolve(solver, ds_solve)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/resoud.h"
 !
-character(len=19), intent(in) :: solver
-type(ROM_DS_Solve), intent(in) :: ds_solve
+    character(len=19), intent(in) :: solver
+    type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
+    complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     integer :: icode, ibid, ifm, niv
     character(len=19) :: maprec, crgc, vect_zero
     character(len=19) :: syst_matr, syst_2mbr, syst_solu
@@ -56,12 +56,12 @@ type(ROM_DS_Solve), intent(in) :: ds_solve
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_65')
-    endif
+    end if
 !
 ! - Initializations
 !
-    maprec    = '&&OP0053.MAPREC'
-    crgc      = '&&OP0053.GCPC'
+    maprec = '&&OP0053.MAPREC'
+    crgc = '&&OP0053.GCPC'
 !
 ! - Get parameters
 !
@@ -72,16 +72,16 @@ type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! - Factor matrix
 !
-    call preres(solver, 'V', icode, maprec, syst_matr,&
+    call preres(solver, 'V', icode, maprec, syst_matr, &
                 ibid, -9999)
     if ((icode .eq. 1) .or. (icode .eq. 2)) then
         call utmess('I', 'ROM2_18')
-    endif
+    end if
 !
 ! - Solve system
 !
-    call resoud(syst_matr, maprec    , solver, vect_zero, 0       ,&
-                syst_2mbr, syst_solu , 'V'   , [0.d0]   , [c16bid],&
-                crgc     , .true._1  , 0     , icode)
+    call resoud(syst_matr, maprec, solver, vect_zero, 0, &
+                syst_2mbr, syst_solu, 'V', [0.d0], [c16bid], &
+                crgc, .true._1, 0, icode)
 !
 end subroutine

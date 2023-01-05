@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
+subroutine simul2(resu, nomcmd, masse, modsta, nbdir, &
                   dir, nomnoe, nbno)
     implicit none
 #include "jeveux.h"
@@ -68,7 +68,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     real(kind=8), pointer :: vecteur(:) => null()
     real(kind=8), pointer :: mst(:) => null()
 !-----------------------------------------------------------------------
-    data cmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
+    data cmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
 !     ------------------------------------------------------------------
     call jemarq()
     resu2 = resu
@@ -76,7 +76,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     ier = 0
 !
     call mtdscr(masse)
-    mass2=masse
+    mass2 = masse
     call jeveuo(mass2//'.&INT', 'E', lmat)
     call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
@@ -93,37 +93,37 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
         xd = dir(id)
         if (abs(xd) .gt. epsi) then
             do in = 1, nbno
-                acces(1:8 ) = nomnoe(in)
+                acces(1:8) = nomnoe(in)
                 acces(9:16) = cmp(id)
 !
 !              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
-                call rsorac(modsta, 'NOEUD_CMP', ibid, r8b, acces,&
-                            c16b, epsi, crit, iordr, 1,&
+                call rsorac(modsta, 'NOEUD_CMP', ibid, r8b, acces, &
+                            c16b, epsi, crit, iordr, 1, &
                             nbtrou)
                 if (nbtrou .ne. 1) then
-                    ier = ier + 1
-                    valk (1) = acces(1:8)
-                    valk (2) = acces(9:16)
+                    ier = ier+1
+                    valk(1) = acces(1:8)
+                    valk(2) = acces(9:16)
                     call utmess('E', 'ALGELINE5_41', nk=2, valk=valk)
                     goto 20
-                endif
-                call rsvpar(modsta, iordr(1), 'TYPE_DEFO', ibid, r8b,&
+                end if
+                call rsvpar(modsta, iordr(1), 'TYPE_DEFO', ibid, r8b, &
                             'DEPL_IMPO', iret)
                 if (iret .ne. 100) then
-                    ier = ier + 1
-                    valk (1) = 'MODE_MECA'
-                    valk (2) = acces(1:8)
-                    valk (3) = acces(9:16)
+                    ier = ier+1
+                    valk(1) = 'MODE_MECA'
+                    valk(2) = acces(1:8)
+                    valk(3) = acces(9:16)
                     call utmess('E', 'ALGELINE5_42', nk=3, valk=valk)
                     goto 20
-                endif
-                call rsexch(' ', modsta, 'DEPL', iordr(1), chamno,&
+                end if
+                call rsexch(' ', modsta, 'DEPL', iordr(1), chamno, &
                             iret)
                 if (iret .ne. 0) then
-                    ier = ier + 1
-                    valk (1) = chamno
-                    valk (2) = acces(1:8)
-                    valk (3) = acces(9:16)
+                    ier = ier+1
+                    valk(1) = chamno
+                    valk(2) = acces(1:8)
+                    valk(3) = acces(9:16)
                     call utmess('E', 'ALGELINE5_43', nk=3, valk=valk)
                     goto 20
                 else
@@ -131,26 +131,26 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
 !                 --- ON EFFECTUE LE PRODUIT  MASSE * CHAM_NO ---
                     do i = 0, neq-1
-                        vecteur(1+i) = -xd * mst(1+i)
+                        vecteur(1+i) = -xd*mst(1+i)
                     end do
                     call jelibe(chamno//'.VALE')
-                    call mrmult('CUMU', lmat, vecteur, zr(idchm), 1,&
+                    call mrmult('CUMU', lmat, vecteur, zr(idchm), 1, &
                                 .true._1)
-                endif
- 20             continue
+                end if
+20              continue
             end do
-        endif
+        end if
     end do
     if (ier .ne. 0) then
         call utmess('F', 'ALGELINE5_40')
-    endif
+    end if
 !
     call wkvect('&&SIMUL2.DDL.BLOQUE', 'V V I', neq, iddl)
-    call typddl('BLOQ', nume, neq, zi(iddl), nba,&
+    call typddl('BLOQ', nume, neq, zi(iddl), nba, &
                 nbb, nbl, nbliai)
 !
     do in = 0, neq-1
-        zr(idchm+in) = ( 1 - zi(iddl+in) ) * zr(idchm+in)
+        zr(idchm+in) = (1-zi(iddl+in))*zr(idchm+in)
     end do
 !
 ! --- MENAGE

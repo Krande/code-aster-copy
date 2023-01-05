@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,13 @@ subroutine lkcaln(s, b, vecn, retcom)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRE ---------------------------------
 ! =================================================================
-    parameter       ( un      =   1.0d0  )
-    parameter       ( trois   =   3.0d0  )
-    parameter       ( zero    =   0.0d0  )
+    parameter(un=1.0d0)
+    parameter(trois=3.0d0)
+    parameter(zero=0.0d0)
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =================================================================
-    data    kron    /un     ,un     ,un     ,zero   ,zero  ,zero/
+    data kron/un, un, un, zero, zero, zero/
 ! --- INITIALISATION ----------------------------------------------
 ! =================================================================
     retcom = 0
@@ -53,11 +53,11 @@ subroutine lkcaln(s, b, vecn, retcom)
         call utmess('A', 'COMPOR1_31')
         retcom = 1
         goto 1000
-    endif
+    end if
 ! =================================================================
 ! --- CALCUL DE N -------------------------------------------------
 ! =================================================================
-    racine = sqrt(b*b + trois)
+    racine = sqrt(b*b+trois)
     do i = 1, ndt
         vecn(i) = (b*s(i)/sii-kron(i))/racine
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
     nocmp(3) = 'D'
     nocmp(4) = 'EP'
 !
-    call rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
+    call rc36zz(noma, nomgd, nbcmp, nocmp, nbma, &
                 listma, chcara)
 !
     call jeveuo(chcara(1:19)//'.CESD', 'E', jcesd)
@@ -73,7 +73,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
 !
     k19b = carael//'.CARGENPO'
     ces1 = '&&RC36CA.CARGENPO'
-    call carces(k19b, 'ELNO', ' ', 'V', ces1,&
+    call carces(k19b, 'ELNO', ' ', 'V', ces1, &
                 'A', iret)
 !
     nbcmp = 4
@@ -81,7 +81,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
     nocmp(2) = 'IZ1'
     nocmp(3) = 'IY2'
     nocmp(4) = 'IZ2'
-    call cesred(ces1, nbma, listma, nbcmp, nocmp,&
+    call cesred(ces1, nbma, listma, nbcmp, nocmp, &
                 'V', ces1)
 !
     call jeveuo(ces1//'.CESD', 'L', jcesd1)
@@ -90,7 +90,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
 !
     k19b = carael//'.CARGEOPO'
     ces2 = '&&RC36CA.CARGEOPO'
-    call carces(k19b, 'ELNO', ' ', 'V', ces2,&
+    call carces(k19b, 'ELNO', ' ', 'V', ces2, &
                 'A', iret)
 !
     nbcmp = 4
@@ -98,7 +98,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
     nocmp(2) = 'EP1'
     nocmp(3) = 'R2'
     nocmp(4) = 'EP2'
-    call cesred(ces2, nbma, listma, nbcmp, nocmp,&
+    call cesred(ces2, nbma, listma, nbcmp, nocmp, &
                 'V', ces2)
 !
     call jeveuo(ces2//'.CESD', 'L', jcesd2)
@@ -109,7 +109,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
         ima = listma(im)
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
         ncmp = zi(jcesd-1+5+4*(ima-1)+3)
-        ASSERT(ncmp.eq.4 .and. nbpt.eq.2)
+        ASSERT(ncmp .eq. 4 .and. nbpt .eq. 2)
         do ipt = 1, nbpt
             do icmp = 1, ncmp
 !            POINT 1 : CMPS 1 ET 2 - POINT 2 : CMPS 3 ET 4
@@ -118,14 +118,14 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
                         decal = 0
                     else
                         decal = 2
-                    endif
+                    end if
                 else
                     if (ipt .eq. 1) then
                         decal = -2
                     else
                         decal = 0
-                    endif
-                endif
+                    end if
+                end if
 !            CMPS IY/IZ DANS CHAMP 1 - CMPS D/EP DANS CHAMP 2
                 if (icmp .le. 2) then
                     jcesdc = jcesd1
@@ -135,20 +135,20 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
                     jcesdc = jcesd2
                     jcesvc = jcesv2
                     jceslc = jcesl2
-                endif
-                call cesexi('S', jcesdc, jceslc, ima, ipt,&
+                end if
+                call cesexi('S', jcesdc, jceslc, ima, ipt, &
                             1, icmp+decal, iadc)
-                ASSERT(iadc.gt.0)
+                ASSERT(iadc .gt. 0)
                 vc = zr(jcesvc-1+iadc)
 !            PASSAGE R A D : X2 (CMP 3)
                 if (icmp .eq. 3) then
-                    vc = 2.d0 * vc
-                endif
-                call cesexi('S', jcesd, jcesl, ima, ipt,&
+                    vc = 2.d0*vc
+                end if
+                call cesexi('S', jcesd, jcesl, ima, ipt, &
                             1, icmp, iad)
                 if (iad .lt. 0) then
                     iad = -iad
-                endif
+                end if
                 cesv(iad) = vc
                 zl(jcesl-1+iad) = .true.
             end do

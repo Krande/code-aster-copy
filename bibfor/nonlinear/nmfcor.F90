@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmfcor(model          , nume_dof   , ds_material   , cara_elem  , ds_system,&
-                  ds_constitutive, list_load  , list_func_acti, ds_algopara, nume_inst,&
-                  iter_newt      , ds_measure , sddisc        , sddyna     , sdnume   ,&
-                  sderro         , ds_contact , hval_incr     , hval_algo  , hhoField ,&
-                  hval_veelem, hval_veasse   , hval_measse, matass   ,&
+subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
+                  ds_constitutive, list_load, list_func_acti, ds_algopara, nume_inst, &
+                  iter_newt, ds_measure, sddisc, sddyna, sdnume, &
+                  sderro, ds_contact, hval_incr, hval_algo, hhoField, &
+                  hval_veelem, hval_veasse, hval_measse, matass, &
                   lerrit)
 !
-use NonLin_Datastructure_type
-use HHO_type
-use NonLinear_module, only : getOption, getMatrType, isMatrUpdate,&
-                             isInteVectCompute
+    use NonLin_Datastructure_type
+    use HHO_type
+    use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
+                                isInteVectCompute
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
@@ -52,23 +52,23 @@ implicit none
 #include "asterfort/nmrigi.h"
 #include "asterfort/utmess.h"
 !
-integer :: list_func_acti(*)
-integer :: iter_newt, nume_inst
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: sddisc, sddyna, sdnume
-character(len=19) :: list_load, matass
-character(len=24) :: model, nume_dof, cara_elem
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=24) :: sderro
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: hval_veelem(*)
-character(len=19) :: hval_measse(*), hval_veasse(*)
-character(len=19) :: hval_algo(*), hval_incr(*)
-type(HHO_Field), intent(in) :: hhoField
-type(NL_DS_Contact), intent(in) :: ds_contact
-aster_logical :: lerrit
+    integer :: list_func_acti(*)
+    integer :: iter_newt, nume_inst
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: sddisc, sddyna, sdnume
+    character(len=19) :: list_load, matass
+    character(len=24) :: model, nume_dof, cara_elem
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: sderro
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: hval_veelem(*)
+    character(len=19) :: hval_measse(*), hval_veasse(*)
+    character(len=19) :: hval_algo(*), hval_incr(*)
+    type(HHO_Field), intent(in) :: hhoField
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,21 +122,21 @@ aster_logical :: lerrit
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_63')
-    endif
+    end if
 !
 ! - Initializations
 !
-    mate      = ds_material%mater
-    mateco    = ds_material%mateco
+    mate = ds_material%mater
+    mateco = ds_material%mateco
     varc_refe = ds_material%varc_refe
-    ldccvg    = -1
-    condcvg   = -1
+    ldccvg = -1
+    condcvg = -1
 !
 ! - Active functionnalites
 !
-    l_unil      = isfonc(list_func_acti,'LIAISON_UNILATER')
-    l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
-    l_comp_cont = isfonc(list_func_acti,'ELT_CONTACT')
+    l_unil = isfonc(list_func_acti, 'LIAISON_UNILATER')
+    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
+    l_comp_cont = isfonc(list_func_acti, 'ELT_CONTACT')
 !
 ! - Get hat-variables
 !
@@ -146,34 +146,34 @@ aster_logical :: lerrit
 !
 ! - Compute forces for second member at correction
 !
-    call nmforc_corr(list_func_acti,&
-                     model         , cara_elem      , nume_dof,&
-                     list_load     , sddyna         ,&
-                     ds_material   , ds_constitutive,&
-                     ds_measure    , &
-                     sddisc        , nume_inst      ,&
-                     hval_incr     , hval_algo      ,&
-                     hval_veelem   , hval_veasse    ,&
+    call nmforc_corr(list_func_acti, &
+                     model, cara_elem, nume_dof, &
+                     list_load, sddyna, &
+                     ds_material, ds_constitutive, &
+                     ds_measure, &
+                     sddisc, nume_inst, &
+                     hval_incr, hval_algo, &
+                     hval_veelem, hval_veasse, &
                      hval_measse)
 !
 ! - Compute vectors for CONTINUE contact
 !
     if (l_comp_cont) then
-        call nmfocc('CONVERGENC', model     , ds_material, nume_dof , list_func_acti,&
-                    ds_contact  , ds_measure, hval_algo  , hval_incr, ds_constitutive)
-    endif
+        call nmfocc('CONVERGENC', model, ds_material, nume_dof, list_func_acti, &
+                    ds_contact, ds_measure, hval_algo, hval_incr, ds_constitutive)
+    end if
 !
 ! - Get type of matrix
 !
-    call getMatrType(CORR_NEWTON, list_func_acti, sddisc, nume_inst, ds_algopara,&
-                     corrMatrType, reac_iter_ = reac_iter)
+    call getMatrType(CORR_NEWTON, list_func_acti, sddisc, nume_inst, ds_algopara, &
+                     corrMatrType, reac_iter_=reac_iter)
 !
 ! - Update global matrix ?
 !
-    call isMatrUpdate(CORR_NEWTON  , corrMatrType, list_func_acti,&
-                      sddyna       , ds_system   ,&
-                      l_update_matr,&
-                      iter_newt_ = iter_newt, reac_iter_ = reac_iter)
+    call isMatrUpdate(CORR_NEWTON, corrMatrType, list_func_acti, &
+                      sddyna, ds_system, &
+                      l_update_matr, &
+                      iter_newt_=iter_newt, reac_iter_=reac_iter)
 !
 ! - Select option for compute matrices
 !
@@ -185,47 +185,47 @@ aster_logical :: lerrit
 !
 ! - Do the internal forces vectors have to be calculated ?
 !
-    call isInteVectCompute(INTE_FORCE   , list_func_acti,&
-                           option_nonlin, iter_newt     ,&
-                           l_comp_rigi  , l_comp_fint)
+    call isInteVectCompute(INTE_FORCE, list_func_acti, &
+                           option_nonlin, iter_newt, &
+                           l_comp_rigi, l_comp_fint)
 !
 ! - Compute internal forces / matrix rigidity
 !
     if (l_comp_fint) then
         if (l_comp_rigi) then
-            call nmrigi(model          , cara_elem,&
-                        ds_material    , ds_constitutive,&
-                        list_func_acti , iter_newt      , sddyna, ds_measure, ds_system,&
-                        hval_incr      , hval_algo      , hhoField, &
-                        option_nonlin  , ldccvg)
+            call nmrigi(model, cara_elem, &
+                        ds_material, ds_constitutive, &
+                        list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
+                        hval_incr, hval_algo, hhoField, &
+                        option_nonlin, ldccvg)
             if (ldccvg .ne. 1) then
-                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume,&
+                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume, &
                                         ds_material, ds_constitutive, ds_system)
-            endif
+            end if
         else
-            call nonlinIntForce(CORR_NEWTON   ,&
-                                model         , cara_elem      ,&
-                                list_func_acti, iter_newt      , sdnume,&
-                                ds_material   , ds_constitutive,&
-                                ds_system     , ds_measure     ,&
-                                hval_incr     , hval_algo      ,&
-                                ldccvg        ,&
-                                hhoField_  = hhoField,&
-                                sddyna_    = sddyna)
-        endif
-    endif
+            call nonlinIntForce(CORR_NEWTON, &
+                                model, cara_elem, &
+                                list_func_acti, iter_newt, sdnume, &
+                                ds_material, ds_constitutive, &
+                                ds_system, ds_measure, &
+                                hval_incr, hval_algo, &
+                                ldccvg, &
+                                hhoField_=hhoField, &
+                                sddyna_=sddyna)
+        end if
+    end if
 !
 ! - Get type of unknowns
 !
     l_disp = ASTER_TRUE
     l_vite = ASTER_FALSE
     l_acce = ASTER_FALSE
-    l_dyna = ndynlo(sddyna,'DYNAMIQUE')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
     if (l_dyna) then
-        l_disp = ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 1
-        l_vite = ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 2
-        l_acce = ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 3
-    endif
+        l_disp = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1
+        l_vite = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 2
+        l_acce = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3
+    end if
 !
 ! - Which unknowns for Lagrange multipliers ?
 !
@@ -237,7 +237,7 @@ aster_logical :: lerrit
         vect_lagr = acce_curr
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - No error => continue
 !
@@ -245,18 +245,18 @@ aster_logical :: lerrit
 ! ----- Compute vectors for DISCRETE contact
         if (l_cont_disc .or. l_unil) then
             call nmctcd(list_func_acti, ds_contact, nume_dof)
-        endif
+        end if
 ! ----- Compute force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
         if (l_comp_fint) then
-            call nonlinRForceCompute(model      , ds_material, cara_elem, list_load,&
-                                     nume_dof   , ds_measure , vect_lagr,&
+            call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
+                                     nume_dof, ds_measure, vect_lagr, &
                                      hval_veelem, hval_veasse)
-        endif
+        end if
 ! ----- Compute Dirichlet boundary conditions - B.U
-        call nonlinLoadDirichletCompute(list_load  , model      , nume_dof ,&
-                                        ds_measure , matass     , disp_curr,&
+        call nonlinLoadDirichletCompute(list_load, model, nume_dof, &
+                                        ds_measure, matass, disp_curr, &
                                         hval_veelem, hval_veasse)
-    endif
+    end if
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !

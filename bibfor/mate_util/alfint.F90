@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine alfint(chmatz   , imate, mate_namz, tdef  , para_namz,&
-                  mate_nume, prec , func_name, l_ther)
+subroutine alfint(chmatz, imate, mate_namz, tdef, para_namz, &
+                  mate_nume, prec, func_name, l_ther)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -37,15 +37,15 @@ implicit none
 #include "asterfort/rccome.h"
 #include "asterfort/get_tref.h"
 !
-character(len=*), intent(in) :: chmatz
-integer, intent(in) :: imate
-character(len=*), intent(in) :: mate_namz
-real(kind=8), intent(in) :: tdef
-character(len=*), intent(in) :: para_namz
-integer, intent(in) :: mate_nume
-real(kind=8), intent(in) :: prec
-character(len=19), intent(inout) :: func_name
-aster_logical, intent(in) :: l_ther
+    character(len=*), intent(in) :: chmatz
+    integer, intent(in) :: imate
+    character(len=*), intent(in) :: mate_namz
+    real(kind=8), intent(in) :: tdef
+    character(len=*), intent(in) :: para_namz
+    integer, intent(in) :: mate_nume
+    real(kind=8), intent(in) :: prec
+    character(len=19), intent(inout) :: func_name
+    aster_logical, intent(in) :: l_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +67,7 @@ aster_logical, intent(in) :: l_ther
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_thm, l_tref_is_nan, l_empty
-    integer :: icodre(1),codret
+    integer :: icodre(1), codret
     character(len=8) :: chmate, mate_name, valk(2)
     character(len=32) :: phenom
     character(len=16) :: typres, para_name
@@ -81,16 +81,16 @@ aster_logical, intent(in) :: l_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    chmate    = chmatz
+    chmate = chmatz
     mate_name = mate_namz
     para_name = para_namz
-    undemi    = 0.5d0
+    undemi = 0.5d0
 !
 ! - Not for thermic
 !
     if (l_ther) then
         goto 100
-    endif
+    end if
     !call getres(k8dummy, k8dummy, nomcmd)
     !if (nomcmd(1:5) .eq. 'THER_') then
     !    goto 100
@@ -99,7 +99,7 @@ aster_logical, intent(in) :: l_ther
 ! - Get phenomen for material
 !
     call jeveuo(mate_name//'.MATERIAU.NOMRC', 'L', jv_nomrc)
-    phenom = zk32(jv_nomrc+mate_nume-1)(1:10)
+    phenom = zk32(jv_nomrc+mate_nume-1) (1:10)
 !
 ! - Is THM ?
 !
@@ -123,7 +123,7 @@ aster_logical, intent(in) :: l_ther
     call gettco(func_name, typres)
     if (typres .ne. 'FONCTION_SDASTER' .and. typres .ne. ' ') then
         call utmess('F', 'MATERIAL1_1')
-    endif
+    end if
 !
 ! - Copy function
 !
@@ -143,37 +143,37 @@ aster_logical, intent(in) :: l_ther
         else
             if (l_thm) then
                 call utmess('F', 'MATERIAL1_4')
-            endif
+            end if
             call get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
             if (l_tref_is_nan) then
                 goto 999
-            endif
+            end if
             if (abs(tref-tdef) .lt. 1.d0) then
                 goto 100
             else
                 call utmess('F', 'MATERIAL1_42', sk=func_name(1:8))
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Get TREF
 !
     if (l_thm) then
         call utmess('F', 'MATERIAL1_4')
-    endif
+    end if
     call get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
     if (l_tref_is_nan) then
         goto 999
-    endif
+    end if
     if (l_empty) then
         if (abs(tref-tdef) .gt. 1.d-6) then
             call utmess('F', 'MATERIAL1_43')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get ALPHA at reference temperature tref
 !
-    call rcvale(mate_name, phenom, 1, 'TEMP    ', [tref],&
+    call rcvale(mate_name, phenom, 1, 'TEMP    ', [tref], &
                 1, para_name, alfref(1), icodre(1), 2)
 !
 ! - Acces to function values
@@ -193,7 +193,7 @@ aster_logical, intent(in) :: l_ther
 ! ---                 /(TI-TREF)   :
         if (abs(ti-tref) .ge. prec) then
 !
-            v_work_vale(1+i+nbpts-1) = ( alphai*(ti-tdef)- alfref(1)*(tref- tdef)) /(ti-tref )
+            v_work_vale(1+i+nbpts-1) = (alphai*(ti-tdef)-alfref(1)*(tref-tdef))/(ti-tref)
 ! --- DANS LE CAS OU ABS(TI-TREF) < PREC :
 ! --- IL FAUT D'ABORD CALCULER LA DERIVEE DE ALPHA PAR RAPPORT
 ! --- A LA TEMPERATURE EN TREF : D(ALPHA)/DT( TREF) :
@@ -209,43 +209,43 @@ aster_logical, intent(in) :: l_ther
                 alfip1 = v_func_vale(1+i+nbpts+1-1)
                 if (tip1 .eq. tref) then
                     call utmess('F', 'MATERIAL1_3')
-                endif
+                end if
                 if (tim1 .eq. tref) then
                     call utmess('F', 'MATERIAL1_3')
-                endif
+                end if
 !
-                dalref = undemi*((alfip1-alfref(1))/(tip1-tref) +(alfref(1)- alfim1)/(tref-tim1))
+                dalref = undemi*((alfip1-alfref(1))/(tip1-tref)+(alfref(1)-alfim1)/(tref-tim1))
 !
 ! ---   DANS LE CAS OU I = NBPTS :
 ! ---   D(ALPHA)/DT( TREF) = (ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1) :
-            else if (i.eq.nbpts) then
+            else if (i .eq. nbpts) then
 !
                 tim1 = v_func_vale(1+i-1-1)
                 alfim1 = v_func_vale(1+i+nbpts-1-1)
                 if (tim1 .eq. tref) then
                     call utmess('F', 'MATERIAL1_3')
-                endif
+                end if
 !
                 dalref = (alfref(1)-alfim1)/(tref-tim1)
 !
 ! ---   DANS LE CAS OU I = 1 :
 ! ---   D(ALPHA)/DT( TREF) = (ALPHA(TI+1)-ALPHA(TREF))/(TI+1-TREF) :
-            else if (i.eq.1) then
+            else if (i .eq. 1) then
 !
                 tip1 = v_func_vale(1+i+1-1)
                 alfip1 = v_func_vale(1+i+nbpts+1-1)
                 if (tip1 .eq. tref) then
                     call utmess('F', 'MATERIAL1_3')
-                endif
+                end if
 !
                 dalref = (alfip1-alfref(1))/(tip1-tref)
 !
-            endif
+            end if
 ! ---   DANS CE CAS OU ABS(TI-TREF) < PREC , ON A :
 ! ---   ALPHA_NEW(TI) = ALPHA_NEW(TREF)
 ! ---   ET ALPHA_NEW(TREF) = D(ALPHA)/DT (TREF)*(TREF-TDEF)+ALPHA(TREF):
-            v_work_vale(1+i+nbpts-1) = dalref*(tref-tdef) + alfref(1)
-        endif
+            v_work_vale(1+i+nbpts-1) = dalref*(tref-tdef)+alfref(1)
+        end if
     end do
 !
 ! - New function to save
@@ -256,8 +256,8 @@ aster_logical, intent(in) :: l_ther
 !
 999 continue
 !
-    valk(1)=chmate
-    valk(2)=mate_name
+    valk(1) = chmate
+    valk(2) = mate_name
     call utmess('F', 'MATERIAL1_2', nk=2, valk=valk)
 !
 100 continue

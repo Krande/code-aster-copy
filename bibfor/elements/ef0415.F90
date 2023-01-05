@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine ef0415(nomte)
     character(len=16) :: nomte
 !
 !-----------------------------------------------------------------------
-    integer ::  ichg,  icompo
+    integer ::  ichg, icompo
     integer ::  iret
     integer ::  jcara, jeffg, jgeom
     integer :: lzi, lzr, nbcou
@@ -45,46 +45,43 @@ subroutine ef0415(nomte)
     integer ::  jmat, jnbspi
     integer :: nb1, nb2, npgsr, npgsn
 
-
-
-
 !
 
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1=zi(lzi-1+1)
-    nb2=zi(lzi-1+2)
-    npgsr=zi(lzi-1+3)
-    npgsn=zi(lzi-1+4)
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    npgsr = zi(lzi-1+3)
+    npgsn = zi(lzi-1+4)
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
     if (nomte .eq. 'MEC3QU9H') then
-        nso=4
-    else if (nomte.eq.'MEC3TR7H') then
-        nso=3
-    endif
+        nso = 4
+    else if (nomte .eq. 'MEC3TR7H') then
+        nso = 3
+    end if
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcara)
 !
 !
-    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
+    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', &
                 ichg, 'S')
 !
     call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
 !
     call jevech('PNBSP_I', 'L', jnbspi)
-    nbcou=zi(jnbspi-1+1)
+    nbcou = zi(jnbspi-1+1)
 !
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
-    endif
+    end if
 
     call jevete('&INEL.'//nomte//'.B', ' ', jmat)
 
     call jevech('PEFFORR', 'E', jeffg)
 
-   call efcoq3d(nomte, nb1, nb2, zr(jcara), zr(jgeom), zr(lzr),&
-                zr(ichg),zr(jmat),zr(jeffg),                   &
-                nbcou,npgsn,npgsr,npge,nso,npgt)
+    call efcoq3d(nomte, nb1, nb2, zr(jcara), zr(jgeom), zr(lzr), &
+                 zr(ichg), zr(jmat), zr(jeffg), &
+                 nbcou, npgsn, npgsr, npge, nso, npgt)
 
 !
 end subroutine

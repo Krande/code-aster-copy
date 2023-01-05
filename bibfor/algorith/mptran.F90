@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
+subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr, &
                   vnoeud, vrange, vcham)
 !
 !
@@ -109,19 +109,19 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         nbcham = -nbcham
     else
         call utmess('A', 'ALGORITH10_93')
-    endif
+    end if
 !
     call wkvect('&&LISTE_CH', 'V V K16', nbcham, lch)
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch),&
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch), &
                 nbret=ibid)
 !
     call getvtx('RESOLUTION', 'REGUL', iocc=1, scal=kreg, nbret=n1)
 !
 ! RECUPERATION DU NOMBRE D ABSCISSES : NBABS
-    call rsorac(nommes, 'LONUTI', 0, r8bid, k8bid,&
-                cbid, r8bid, 'ABSOLU', tmod, 1,&
+    call rsorac(nommes, 'LONUTI', 0, r8bid, k8bid, &
+                cbid, r8bid, 'ABSOLU', tmod, 1, &
                 ibid)
-    nbabs=tmod(1)
+    nbabs = tmod(1)
 !
     vabs = '&&ABSCISSES'
     call wkvect(vabs, 'V V R', nbabs, labs)
@@ -140,17 +140,17 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
 ! BOUCLE SUR LES CHAMPS
     do ich = 1, nbcham
-        nomcha = zk16(lch-1 +ich)
+        nomcha = zk16(lch-1+ich)
 !
 ! BOUCLE SUR LES NUMEROS ORDRE
 !
         do numord = 1, nbabs
 !        -> EXISTENCE DES CHAMPS DANS LA STRUCTURE DE DONNEES MESURE
-            call rsexch(' ', nommes, nomcha, zi(lord-1+numord), chamno,&
+            call rsexch(' ', nommes, nomcha, zi(lord-1+numord), chamno, &
                         iret)
             if ((numord .le. 1) .and. (ich .eq. 1)) then
                 call jeveuo(chamno//'.DESC', 'L', idesc)
-                gd = zi(idesc-1 +1)
+                gd = zi(idesc-1+1)
                 scal = scalai(gd)
                 typval = scal(1:1)
                 if (typval .eq. 'C') then
@@ -159,18 +159,18 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
                 else
                     zcmplx = .false.
                     call wkvect(vmes, 'V V R', nbmesu*nbabs, lmesu)
-                endif
-            endif
+                end if
+            end if
 !
 ! RECUPERATION DE L ABSCISSE
-            if ((typres(1:9).eq.'MODE_GENE') .or. (typres(1:9) .eq.'HARM_GENE')) then
-                call rsadpa(nommes, 'L', 1, 'FREQ', numord,&
+            if ((typres(1:9) .eq. 'MODE_GENE') .or. (typres(1:9) .eq. 'HARM_GENE')) then
+                call rsadpa(nommes, 'L', 1, 'FREQ', numord, &
                             0, sjv=jabs, styp=k8bid)
-            else if (typres(1:9).eq.'TRAN_GENE') then
-                call rsadpa(nommes, 'L', 1, 'INST', numord,&
+            else if (typres(1:9) .eq. 'TRAN_GENE') then
+                call rsadpa(nommes, 'L', 1, 'INST', numord, &
                             0, sjv=jabs, styp=k8bid)
-            endif
-            zr(labs-1 + numord) = zr(jabs)
+            end if
+            zr(labs-1+numord) = zr(jabs)
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
             call detrsd('CHAM_NO_S', chs)
@@ -181,23 +181,23 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             call jeveuo(chs//'.CNSV', 'L', jcnsv)
             call jeveuo(chs//'.CNSL', 'L', jcnsl)
 !
-            nbcmp = zi(jcnsd-1 + 2)
+            nbcmp = zi(jcnsd-1+2)
 !
             do imes = 1, nbmesu
-                ino = zi(lnoeud-1 +imes)
-                kcmp = zk8(lrange-1 +imes)
-                kcham = zk16(lcham-1 +imes)
+                ino = zi(lnoeud-1+imes)
+                kcmp = zk8(lrange-1+imes)
+                kcham = zk16(lcham-1+imes)
                 do icmp = 1, nbcmp
                     indice = (ino-1)*nbcmp+icmp
-                    if ((zk8(jcnsc-1 +icmp) .eq. kcmp) .and. (nomcha .eq. kcham)) then
+                    if ((zk8(jcnsc-1+icmp) .eq. kcmp) .and. (nomcha .eq. kcham)) then
                         if (zcmplx) then
-                            zc(lmesu-1 +(numord-1)*nbmesu+imes) =&
-                            zc(jcnsv-1 +indice)
+                            zc(lmesu-1+(numord-1)*nbmesu+imes) = &
+                                zc(jcnsv-1+indice)
                         else
-                            zr(lmesu-1 +(numord-1)*nbmesu+imes) =&
-                            zr(jcnsv-1 +indice)
-                        endif
-                    endif
+                            zr(lmesu-1+(numord-1)*nbmesu+imes) = &
+                                zr(jcnsv-1+indice)
+                        end if
+                    end if
                 end do
             end do
 !
@@ -210,7 +210,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! GESTION PARAMETRES DE REGULARISATION
     call getvr8('RESOLUTION', 'COEF_PONDER', iocc=1, nbval=0, nbret=ncoef)
     call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=0, nbret=nfonc)
-    iocc = abs(ncoef) + abs(nfonc)
+    iocc = abs(ncoef)+abs(nfonc)
     if ((ncoef .eq. 0) .and. (nfonc .eq. 0)) iocc = 0
 !
     if ((iocc .eq. 0) .or. (kreg .eq. 'NON')) then
@@ -218,7 +218,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         lfonct = .false.
         call wkvect(nomcmd//'.PONDER', 'V V R', nbmode, lcoef)
         do i = 1, nbmode
-            zr(lcoef-1 + i) = 0.d0
+            zr(lcoef-1+i) = 0.d0
         end do
     else
         call getvr8('RESOLUTION', 'COEF_PONDER', iocc=1, nbval=0, nbret=ncoef)
@@ -227,69 +227,69 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             lfonct = .false.
             if (-ncoef .gt. nbmode) then
                 call utmess('F', 'ALGORITH6_27')
-            endif
+            end if
             if (-ncoef .gt. 0) then
                 call wkvect(nomcmd//'.PONDER', 'V V R', nbmode, lcoef)
-                call getvr8('RESOLUTION', 'COEF_PONDER', iocc=1, nbval=- ncoef, vect=zr(lcoef),&
+                call getvr8('RESOLUTION', 'COEF_PONDER', iocc=1, nbval=-ncoef, vect=zr(lcoef), &
                             nbret=ncoef)
-            endif
+            end if
             if (ncoef .lt. nbmode) then
                 call utmess('I', 'ALGORITH6_28')
-                do i = ncoef + 1, nbmode
-                    zr(lcoef-1 + i) = zr(lcoef-1 + ncoef)
+                do i = ncoef+1, nbmode
+                    zr(lcoef-1+i) = zr(lcoef-1+ncoef)
                 end do
-            endif
+            end if
         else
 ! CAS DE REGULARISATION SOUS FORME DE LISTE DE FONCTIONS
             lfonct = .true.
             call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=0, nbret=nfonc)
             if (-nfonc .gt. nbmode) then
                 call utmess('F', 'ALGORITH6_29')
-            endif
+            end if
             if (-nfonc .gt. 0) then
                 call wkvect(nomcmd//'.FONC', 'V V K8', nbmode, lfonc)
-                call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=- nfonc,&
+                call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=-nfonc, &
                             vect=zk8(lfonc), nbret=nfonc)
-            endif
+            end if
             if (nfonc .gt. 0 .and. nfonc .lt. nbmode) then
                 call utmess('I', 'ALGORITH6_30')
-                do i = nfonc + 1, nbmode
-                    zk8(lfonc-1 + i) = zk8(lfonc-1 + nfonc)
+                do i = nfonc+1, nbmode
+                    zk8(lfonc-1+i) = zk8(lfonc-1+nfonc)
                 end do
-            endif
+            end if
             call wkvect(nomcmd//'.PONDER', 'V V R', nbmode*nbabs, lcoef)
             do i = 1, nbmode
-                call jelira(zk8(lfonc-1 + i)//'           .VALE', 'LONMAX', lonmax)
+                call jelira(zk8(lfonc-1+i)//'           .VALE', 'LONMAX', lonmax)
                 if (lonmax .ne. 2*nbabs) then
                     call utmess('F', 'ALGORITH6_31')
-                endif
+                end if
 !
-                call jeveuo(zk8(lfonc-1 + i)//'           .VALE', 'L', lvale)
+                call jeveuo(zk8(lfonc-1+i)//'           .VALE', 'L', lvale)
                 do j = 1, nbabs
-                    diff = zr(lvale-1 + j) - zr(labs-1 + j)
+                    diff = zr(lvale-1+j)-zr(labs-1+j)
                     if (j .eq. 1) then
-                        pas = zr(labs + 1) - zr(labs)
+                        pas = zr(labs+1)-zr(labs)
                     else
-                        pas = zr(labs-1 + j) - zr(labs-1 + j - 1)
-                    endif
+                        pas = zr(labs-1+j)-zr(labs-1+j-1)
+                    end if
                     if (abs(diff) .gt. pas*1.d-4) then
                         call utmess('F', 'ALGORITH6_32')
-                    endif
+                    end if
 !
-                    zr(lcoef-1 + (j - 1)*nbmode + i) = zr( lvale-1 + (lonmax/2) + j )
+                    zr(lcoef-1+(j-1)*nbmode+i) = zr(lvale-1+(lonmax/2)+j)
                 end do
             end do
-        endif
+        end if
 ! FIN TEST SUR TYPE DE PONDERATION : REELS / LISTE DE FONCTIONS
-    endif
+    end if
 ! FIN GESTION PARAMETRES DE REGULARISATION
 !
 !
 ! INITIALISATION POUR ALLOCATION DU TRAN_GENE
 !
     if (typres(1:9) .eq. 'TRAN_GENE') then
-        dt = (zr(labs-1 +nbabs) - zr(labs))/nbabs
-    endif
+        dt = (zr(labs-1+nbabs)-zr(labs))/nbabs
+    end if
 !
 ! RECUPERATION DE LA MATRICE MODALE PROJETEE
 !
@@ -301,26 +301,26 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! SECOND MEMBRE REEL
         if (typres(1:9) .eq. 'HARM_GENE') then
             call utmess('F', 'ALGORITH6_33')
-        endif
+        end if
         if (typres(1:9) .eq. 'TRAN_GENE') then
 ! ALLOCATION
-            call mdallo(nomres, 'TRAN', nbabs, sauve='GLOB', base=nombas,&
-                        nbmodes=nbmode, jordr=jordr, jdisc=jabs, jdepl=jdep, jvite=jvit,&
+            call mdallo(nomres, 'TRAN', nbabs, sauve='GLOB', base=nombas, &
+                        nbmodes=nbmode, jordr=jordr, jdisc=jabs, jdepl=jdep, jvite=jvit, &
                         jacce=jacc, dt=dt, jptem=jpass)
 ! RESOLUTION
-            call mpinv2(nbmesu, nbmode, nbabs, zr(lred), zr(lmesu),&
-                        zr(lcoef), zr(labs), lfonct, zr(jdep), zr(jvit),&
+            call mpinv2(nbmesu, nbmode, nbabs, zr(lred), zr(lmesu), &
+                        zr(lcoef), zr(labs), lfonct, zr(jdep), zr(jvit), &
                         zr(jacc))
 !
-        else if (typres(1:9).eq.'MODE_GENE') then
+        else if (typres(1:9) .eq. 'MODE_GENE') then
             call wkvect(nomcmd//'.RETA', 'V V R', nbmode*nbabs, jdep)
-            call mpinvr(nbmesu, nbmode, nbabs, zr(lred), zr(lmesu),&
+            call mpinvr(nbmesu, nbmode, nbabs, zr(lred), zr(lmesu), &
                         zr(lcoef), zr(labs), lfonct, zr(jdep))
 !
             call rscrsd('G', nomres, 'MODE_GENE', nbabs)
-            call mdallr(nommes, nomres, nombas, nbmode, nbabs,&
+            call mdallr(nommes, nomres, nombas, nbmode, nbabs, &
                         zr(jdep), [cbid], zcmplx)
-        endif
+        end if
 !
     else
 ! SECOND MEMBRE COMPLEXE
@@ -329,45 +329,45 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! ALLOCATION
 !         -- DANS PROJ_MESU_MODAL ON REMPLIT TOUJOURS LES TROIS
 !            CHAMPS, PEU IMPORTE LE TYPE DE MESURE FOURNI
-            call mdallo(nomres, 'HARM', nbabs, sauve='GLOB', base=nombas,&
-                        nbmodes=nbmode, jordr=jordr, jdisc=jabs, jdepl=jdep, jvite=jvit,&
+            call mdallo(nomres, 'HARM', nbabs, sauve='GLOB', base=nombas, &
+                        nbmodes=nbmode, jordr=jordr, jdisc=jabs, jdepl=jdep, jvite=jvit, &
                         jacce=jacc)
 ! RESOLUTION
-            call mpinvc(nbmesu, nbmode, nbabs, zr(lred), zc(lmesu),&
-                        zr(lcoef), zr(labs), lfonct, zc(jdep), zc(jvit),&
+            call mpinvc(nbmesu, nbmode, nbabs, zr(lred), zc(lmesu), &
+                        zr(lcoef), zr(labs), lfonct, zc(jdep), zc(jvit), &
                         zc(jacc))
 !
 !
-        else if (typres(1:9).eq.'MODE_GENE') then
+        else if (typres(1:9) .eq. 'MODE_GENE') then
 ! ALLOCATION
             call wkvect(nomcmd//'.RETA', 'V V C', nbmode*nbabs, jdep)
             call wkvect(nomcmd//'.RET1', 'V V C', nbmode*nbabs, jvit)
             call wkvect(nomcmd//'.RET2', 'V V C', nbmode*nbabs, jacc)
 ! RESOLUTION
-            call mpinvc(nbmesu, nbmode, nbabs, zr(lred), zc(lmesu),&
-                        zr(lcoef), zr(labs), lfonct, zc(jdep), zc(jvit),&
+            call mpinvc(nbmesu, nbmode, nbabs, zr(lred), zc(lmesu), &
+                        zr(lcoef), zr(labs), lfonct, zc(jdep), zc(jvit), &
                         zc(jacc))
 !
             call rscrsd('G', nomres, 'MODE_GENE', nbabs)
-            call mdallr(nommes, nomres, nombas, nbmode, nbabs,&
+            call mdallr(nommes, nomres, nombas, nbmode, nbabs, &
                         [0.d0], zc(jdep), zcmplx)
         else
             call utmess('F', 'ALGORITH6_33')
-        endif
+        end if
 !
-    endif
+    end if
 !
 !     -- REMPLISSAGE DE L'OBJET .ORDR :
 !
     call jeveuo(nomres//'           .ORDR', 'E', jordr)
     do i = 1, nbabs
         if (typres(1:9) .eq. 'MODE_GENE') then
-            zi(jordr-1 + i) = i
-        else if (typres(1:9).eq.'HARM_GENE') then
-            zi(jordr-1 + i) = i
+            zi(jordr-1+i) = i
+        else if (typres(1:9) .eq. 'HARM_GENE') then
+            zi(jordr-1+i) = i
         else
-            zi(jordr-1 + i) = i - 1
-        endif
+            zi(jordr-1+i) = i-1
+        end if
     end do
 !     -- REMPLISSAGE DE L'OBJET .PTEM :
     if (typres(1:9) .eq. 'TRAN_GENE') then
@@ -375,20 +375,20 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         if (iexi .gt. 0) then
             call jeveuo(nommes//'           .PTEM', 'E', jpames)
             do i = 1, nbabs
-                zr(jpass-1+i)=zr(jpames-1+i)
+                zr(jpass-1+i) = zr(jpames-1+i)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     -- REMPLISSAGE DE L'OBJET .NUMO :
     if (typres(1:9) .eq. 'MODE_GENE') then
         do i = 1, nbabs
-            call rsadpa(nomres, 'E', 1, 'NUME_MODE', zi(jordr-1+i),&
+            call rsadpa(nomres, 'E', 1, 'NUME_MODE', zi(jordr-1+i), &
                         0, sjv=jpara, styp=k8b)
             zi(jpara) = i
         end do
-    endif
+    end if
 !     -- REMPLISSAGE DE "FREQ/DISC" :
     if (typres(1:9) .eq. 'TRAN_GENE' .or. typres(1:9) .eq. 'HARM_GENE') then
         call jeveuo(nomres//'           .DISC', 'E', jabs)
@@ -396,8 +396,8 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         call jeexin(nomres//'           .FREQ', iexi)
         if (iexi .gt. 0) then
             call jeveuo(nomres//'           .FREQ', 'E', jabs)
-        endif
-    endif
+        end if
+    end if
     do i = 1, nbabs
         if (typres(1:9) .eq. 'TRAN_GENE' .or. typres(1:9) .eq. 'HARM_GENE') then
             zr(jabs-1+i) = zr(labs-1+i)
@@ -405,11 +405,11 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             if (iexi .gt. 0) then
                 zr(jabs-1+i) = zr(labs-1+i)
             else
-                call rsadpa(nomres, 'E', 1, 'FREQ', zi(jordr-1+i),&
+                call rsadpa(nomres, 'E', 1, 'FREQ', zi(jordr-1+i), &
                             0, sjv=jpara, styp=k8b)
-                zr(jpara) = zr(labs-1 + i)
-            endif
-        endif
+                zr(jpara) = zr(labs-1+i)
+            end if
+        end if
     end do
 !
 !
@@ -417,52 +417,52 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     if (typres(1:9) .eq. 'MODE_GENE') then
         call jeveuo(nomres//'           .ORDR', 'L', jord)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
-        call dismoi('TYPE_BASE', nombas, 'RESU_DYNA', repk=typba, arret='C',&
+        call dismoi('TYPE_BASE', nombas, 'RESU_DYNA', repk=typba, arret='C', &
                     ier=iret)
         call dismoi('REF_RIGI_PREM', nombas, 'RESU_DYNA', repk=raide, arret='C')
         if (typba(1:1) .ne. ' ') then
             if (raide(1:8) .eq. '        ') then
                 call jeveuo(jexnum(nombas//'           .TACH', 1), 'L', jbasm)
-                sd2=zk24(jbasm)(1:8)
-                call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
+                sd2 = zk24(jbasm) (1:8)
+                call rsadpa(sd2, 'L', 1, 'MODELE', 1, &
                             0, sjv=jpara, styp=k8b)
-                modele=zk8(jpara)
-                call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
+                modele = zk8(jpara)
+                call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, &
                             0, sjv=jpara, styp=k8b)
-                chmat=zk8(jpara)
-                call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
+                chmat = zk8(jpara)
+                call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, &
                             0, sjv=jpara, styp=k8b)
-                carael=zk8(jpara)
+                carael = zk8(jpara)
                 goto 44
-            endif
-        endif
+            end if
+        end if
 !
 !       -- POUR LES BASES TYPE MODE_MECA SANS REFERENCE
         if (raide(1:8) .eq. '        ') then
-            modele='        '
-            chmat ='        '
-            carael='        '
+            modele = '        '
+            chmat = '        '
+            carael = '        '
             goto 44
-        endif
+        end if
 !
         call dismoi('NOM_MODELE', raide(1:8), 'MATR_ASSE', repk=modele)
         call dismoi('CHAM_MATER', raide(1:8), 'MATR_ASSE', repk=chmat)
         call dismoi('CARA_ELEM', raide(1:8), 'MATR_ASSE', repk=carael)
- 44     continue
+44      continue
 !
 !
         do i = 1, nbord
-            call rsadpa(nomres, 'E', 1, 'MODELE', zi(jordr-1+i),&
+            call rsadpa(nomres, 'E', 1, 'MODELE', zi(jordr-1+i), &
                         0, sjv=jpara, styp=k8b)
-            zk8(jpara)=modele
-            call rsadpa(nomres, 'E', 1, 'CHAMPMAT', zi(jordr-1+i),&
+            zk8(jpara) = modele
+            call rsadpa(nomres, 'E', 1, 'CHAMPMAT', zi(jordr-1+i), &
                         0, sjv=jpara, styp=k8b)
-            zk8(jpara)=chmat
-            call rsadpa(nomres, 'E', 1, 'CARAELEM', zi(jordr-1+i),&
+            zk8(jpara) = chmat
+            call rsadpa(nomres, 'E', 1, 'CARAELEM', zi(jordr-1+i), &
                         0, sjv=jpara, styp=k8b)
-            zk8(jpara)=carael
+            zk8(jpara) = carael
         end do
-    endif
+    end if
 !
     call jedetr(vabs)
     call jedetr(vmes)

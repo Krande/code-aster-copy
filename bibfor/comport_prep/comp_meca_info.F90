@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine comp_meca_info(behaviourPrepPara)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/comp_meca_init.h"
 !
-type(Behaviour_PrepPara), intent(out) :: behaviourPrepPara
+    type(Behaviour_PrepPara), intent(out) :: behaviourPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,12 +55,12 @@ type(Behaviour_PrepPara), intent(out) :: behaviourPrepPara
         nb_info_comp = 1
     else
         nb_info_comp = nbFactorKeyword
-    endif
+    end if
     behaviourPrepPara%nb_comp = nbFactorKeyword
 
 ! - Allocate objects
-    allocate(behaviourPrepPara%v_para(nb_info_comp))
-    allocate(behaviourPrepPara%v_paraExte(nb_info_comp))
+    allocate (behaviourPrepPara%v_para(nb_info_comp))
+    allocate (behaviourPrepPara%v_paraExte(nb_info_comp))
 
 ! - If nothing in COMPORTEMENT: all is elastic
     call comp_meca_init(behaviourPara)
@@ -70,6 +70,6 @@ type(Behaviour_PrepPara), intent(out) :: behaviourPrepPara
         behaviourPrepPara%v_para(1)%defo_comp = 'PETIT'
         behaviourPrepPara%v_para(1)%type_comp = 'COMP_ELAS'
         behaviourPrepPara%v_para(1)%type_cpla = 'ANALYTIQUE'
-    endif
+    end if
 !
 end subroutine

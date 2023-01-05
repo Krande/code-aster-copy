@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine romBaseCreate(base, nbMode_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-integer, intent(in), optional :: nbMode_
+    type(ROM_DS_Empi), intent(in) :: base
+    integer, intent(in), optional :: nbMode_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +52,13 @@ integer, intent(in), optional :: nbMode_
     nbMode = 0
     if (present(nbMode_)) then
         nbMode = nbMode_
-    endif
+    end if
     if (nbMode .eq. 0) then
         nbMode = 10
-    endif
+    end if
     call rscrsd('G', base%resultName, 'MODE_EMPI', nbMode)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM12_3', si = nbMode)
-    endif
+        call utmess('I', 'ROM12_3', si=nbMode)
+    end if
 !
 end subroutine

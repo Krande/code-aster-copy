@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcgrad(resi, rigi, sig, apg, lag, grad, aldc,&
-                  r, c, deps_sig,dphi_sig,deps_a,dphi_a, sief, dsde)
+subroutine lcgrad(resi, rigi, sig, apg, lag, grad, aldc, &
+                  r, c, deps_sig, dphi_sig, deps_a, dphi_a, sief, dsde)
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
     aster_logical :: resi, rigi
-    real(kind=8),intent(in) :: sig(:), apg, lag, grad(:), aldc, r, c
-    real(kind=8),intent(in) :: deps_sig(:,:),dphi_sig(:),deps_a(:),dphi_a
-    real(kind=8)            :: sief(*), dsde(:,:)
+    real(kind=8), intent(in) :: sig(:), apg, lag, grad(:), aldc, r, c
+    real(kind=8), intent(in) :: deps_sig(:, :), dphi_sig(:), deps_a(:), dphi_a
+    real(kind=8)            :: sief(*), dsde(:, :)
 ! ----------------------------------------------------------------------
 !  GRAD_VARI : CALCUL DES TERMES COMMUNS AU LAGRANGIEN AUGMENTE
 ! ----------------------------------------------------------------------
@@ -45,56 +45,54 @@ subroutine lcgrad(resi, rigi, sig, apg, lag, grad, aldc,&
 ! OUT SIEF     CONTRAINTES GENERALISEES
 ! OUT DSDE     MATRICE TANGENTE GENERALISEE
 ! ----------------------------------------------------------------------
-    integer :: i,neps,ndim,ndimsi
+    integer :: i, neps, ndim, ndimsi
 ! ----------------------------------------------------------------------
 
 ! Initialisation
-    ndim   = size(grad)
+    ndim = size(grad)
     ndimsi = 2*ndim
-    neps   = 3*ndim + 2
-    ASSERT(size(sig).eq.ndimsi)
-    ASSERT(size(dsde,1).eq.neps)
-    ASSERT(size(dsde,2).eq.neps)
-
+    neps = 3*ndim+2
+    ASSERT(size(sig) .eq. ndimsi)
+    ASSERT(size(dsde, 1) .eq. neps)
+    ASSERT(size(dsde, 2) .eq. neps)
 
 ! -- CALCUL DES CONTRAINTES GENERALISEES
     if (resi) then
         sief(1:ndimsi) = sig
-        sief(ndimsi+1) = lag + r*(apg-aldc)
+        sief(ndimsi+1) = lag+r*(apg-aldc)
         sief(ndimsi+2) = apg-aldc
         sief(ndimsi+3:ndimsi+2+ndim) = c*grad
-    endif
-
+    end if
 
 ! -- CALCUL DE LA MATRICE TANGENTE GENERALISEE
     if (rigi) then
         dsde = 0.d0
 
         ! SIG - EPS
-        dsde(1:ndimsi,1:ndimsi) = deps_sig
+        dsde(1:ndimsi, 1:ndimsi) = deps_sig
 
         ! SIG - A ET SIG - MU
-        dsde(1:ndimsi,ndimsi+1) = dphi_sig*r
-        dsde(1:ndimsi,ndimsi+2) = dphi_sig
+        dsde(1:ndimsi, ndimsi+1) = dphi_sig*r
+        dsde(1:ndimsi, ndimsi+2) = dphi_sig
 
         ! SIGA - EPS ET SIGMU - EPS
-        dsde(ndimsi+1,1:ndimsi) = -deps_a*r
-        dsde(ndimsi+2,1:ndimsi) = -deps_a
+        dsde(ndimsi+1, 1:ndimsi) = -deps_a*r
+        dsde(ndimsi+2, 1:ndimsi) = -deps_a
 
         ! SIGA - A
-        dsde(ndimsi+1,ndimsi+1) = (1-r*dphi_a)*r
+        dsde(ndimsi+1, ndimsi+1) = (1-r*dphi_a)*r
 
         ! SIGA - MU ET SIGMU - A
-        dsde(ndimsi+1,ndimsi+2) = 1-r*dphi_a
-        dsde(ndimsi+2,ndimsi+1) = 1-r*dphi_a
+        dsde(ndimsi+1, ndimsi+2) = 1-r*dphi_a
+        dsde(ndimsi+2, ndimsi+1) = 1-r*dphi_a
 
         ! SIGMU - MU
-        dsde(ndimsi+2,ndimsi+2) = -dphi_a
+        dsde(ndimsi+2, ndimsi+2) = -dphi_a
 
         ! SIGG - GRAD
         do i = 1, ndim
-            dsde(ndimsi+2+i,ndimsi+2+i) = c
+            dsde(ndimsi+2+i, ndimsi+2+i) = c
         end do
-    endif
+    end if
 
 end subroutine

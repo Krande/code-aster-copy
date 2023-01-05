@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fnodil(dimuel, dimdef, nno, nnos, nnom,&
-                  ndim, npi, dimcon, geom, ipoids,&
-                  ipoid2, ivf, ivf2, interp, idfde,&
-                  idfde2, nddls, nddlm, axi, regula,&
+subroutine fnodil(dimuel, dimdef, nno, nnos, nnom, &
+                  ndim, npi, dimcon, geom, ipoids, &
+                  ipoid2, ivf, ivf2, interp, idfde, &
+                  idfde2, nddls, nddlm, axi, regula, &
                   deplm, contm, imate, vectu)
 ! ======================================================================
 ! person_in_charge: romeo.fernandes at edf.fr
@@ -51,7 +51,7 @@ subroutine fnodil(dimuel, dimdef, nno, nnos, nnom,&
     rpena = 0.0d0
 ! ======================================================================
     do i = 1, dimuel
-        vectu(i)=0.0d0
+        vectu(i) = 0.0d0
     end do
 ! ======================================================================
 ! --- RECUPERATION DU COEFFICIENT DE PENALISATION ----------------------
@@ -71,40 +71,40 @@ subroutine fnodil(dimuel, dimdef, nno, nnos, nnom,&
 ! --- DEFINITION DE L'OPERATEUR B (DEFINI PAR E=B.U) -------------------
 ! ======================================================================
         if (interp .eq. 'P0') then
-            call cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
-                        idfde, idfde2, geom, dimdef, dimuel,&
-                        ndim, nddls, nddlm, nno, nnos,&
-                        nnom, axi, regula, b, poids,&
+            call cabrp0(kpi, ipoids, ipoid2, ivf, ivf2, &
+                        idfde, idfde2, geom, dimdef, dimuel, &
+                        ndim, nddls, nddlm, nno, nnos, &
+                        nnom, axi, regula, b, poids, &
                         poids2)
-        else if (interp.eq.'SL') then
-            call cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
-                        idfde, idfde2, geom, dimdef, dimuel,&
-                        ndim, nddls, nddlm, nno, nnos,&
-                        nnom, axi, regula, b, poids,&
+        else if (interp .eq. 'SL') then
+            call cabrsl(kpi, ipoids, ipoid2, ivf, ivf2, &
+                        idfde, idfde2, geom, dimdef, dimuel, &
+                        ndim, nddls, nddlm, nno, nnos, &
+                        nnom, axi, regula, b, poids, &
                         poids2)
-        else if (interp.eq.'P1') then
-            call cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
-                        idfde, idfde2, geom, dimdef, dimuel,&
-                        ndim, nddls, nddlm, nno, nnos,&
-                        nnom, axi, regula, b, poids,&
+        else if (interp .eq. 'P1') then
+            call cabrp1(kpi, ipoids, ipoid2, ivf, ivf2, &
+                        idfde, idfde2, geom, dimdef, dimuel, &
+                        ndim, nddls, nddlm, nno, nnos, &
+                        nnom, axi, regula, b, poids, &
                         poids2)
-        endif
+        end if
 ! ======================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
 ! ======================================================================
         do i = 1, dimdef
-            defgem(i)=0.0d0
+            defgem(i) = 0.0d0
             do n = 1, dimuel
-                defgem(i)=defgem(i)+b(i,n)*deplm(n)
+                defgem(i) = defgem(i)+b(i, n)*deplm(n)
             end do
         end do
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES GENERALISEES FINALES ----------------------
 ! ======================================================================
-        call dilcge(interp, dimdef, dimcon, regula, ndim,&
-                    defgem, contm(( kpi-1)*dimcon+1), rpena, r)
+        call dilcge(interp, dimdef, dimcon, regula, ndim, &
+                    defgem, contm((kpi-1)*dimcon+1), rpena, r)
 ! ======================================================================
-        call dilsga(dimdef, dimuel, poids, poids2, b,&
+        call dilsga(dimdef, dimuel, poids, poids2, b, &
                     r, vectu)
 ! ======================================================================
     end do

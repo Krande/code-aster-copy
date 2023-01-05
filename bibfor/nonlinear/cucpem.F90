@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine cucpem(deficu, resocu, nbliai)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/compute_ineq_conditions_matrix.h"
@@ -72,9 +72,9 @@ subroutine cucpem(deficu, resocu, nbliai)
 !
 ! --- CALCUL DE LA MATRICE DE CONTACT PENALISEE
 !
-    call compute_ineq_conditions_matrix(enat  , nbliai, japptr      ,&
-                                             japcoe, jjeux , jcoef_pena-1,&
-                                             1     , 1     )
+    call compute_ineq_conditions_matrix(enat, nbliai, japptr, &
+                                        japcoe, jjeux, jcoef_pena-1, &
+                                        1, 1)
 !
     call jedema()
 !

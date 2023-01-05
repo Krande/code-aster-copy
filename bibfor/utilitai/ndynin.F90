@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,19 +70,19 @@ function ndynin(sddyna, chaine)
     call jeveuo(ncha, 'L', jncha)
     if (chaine .eq. 'FORMUL_DYNAMIQUE') then
         ndynin = zi(jtfor+1-1)
-    else if (chaine.eq.'NBRE_EXCIT') then
+    else if (chaine .eq. 'NBRE_EXCIT') then
         ndynin = zi(jncha+1-1)
-    else if (chaine.eq.'NBRE_ONDE_PLANE') then
+    else if (chaine .eq. 'NBRE_ONDE_PLANE') then
         ndynin = zi(jncha+2-1)
-    else if (chaine.eq.'NBRE_EXCIT_GENE') then
+    else if (chaine .eq. 'NBRE_EXCIT_GENE') then
         ndynin = zi(jncha+3-1)
-    else if (chaine.eq.'NBRE_MODE_AMOR') then
+    else if (chaine .eq. 'NBRE_MODE_AMOR') then
         ndynin = zi(jncha+4-1)
-    else if (chaine.eq.'NBRE_MODE_PROJ') then
+    else if (chaine .eq. 'NBRE_MODE_PROJ') then
         ndynin = zi(jncha+5-1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end function

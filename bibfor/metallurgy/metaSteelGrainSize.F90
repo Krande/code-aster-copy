@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,24 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaSteelGrainSize(metaSteelPara, nb_trc    , ckm       ,&
-                              temp         , time_incr1, time_incr2,&
-                              zaustenite   , coef_phase,&
-                              d_prev       , d_curr)
+subroutine metaSteelGrainSize(metaSteelPara, nb_trc, ckm, &
+                              temp, time_incr1, time_incr2, &
+                              zaustenite, coef_phase, &
+                              d_prev, d_curr)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-type(META_SteelParameters), intent(in) :: metaSteelPara
-integer, intent(in) :: nb_trc
-real(kind=8), intent(in) :: ckm(6*nb_trc)
-real(kind=8), intent(in) :: d_prev, temp, time_incr1, time_incr2
-real(kind=8), intent(in) :: zaustenite, coef_phase
-real(kind=8), intent(out) :: d_curr
+    type(META_SteelParameters), intent(in) :: metaSteelPara
+    integer, intent(in) :: nb_trc
+    real(kind=8), intent(in) :: ckm(6*nb_trc)
+    real(kind=8), intent(in) :: d_prev, temp, time_incr1, time_incr2
+    real(kind=8), intent(in) :: zaustenite, coef_phase
+    real(kind=8), intent(out) :: d_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,19 +65,19 @@ real(kind=8), intent(out) :: d_curr
         if (zaustenite .lt. 1.d-3) then
             d_curr = 0.d0
         else
-            lambda = metaSteelPara%austenite%lambda0*&
+            lambda = metaSteelPara%austenite%lambda0* &
                      exp(metaSteelPara%austenite%qsr_k/(temp+273.d0))
             unsurl = 1.d0/lambda
-            d_limi = metaSteelPara%austenite%d10*&
+            d_limi = metaSteelPara%austenite%d10* &
                      exp(-metaSteelPara%austenite%wsr_k/(temp+273.d0))
-            a      = 1.d0
-            b      = d_prev*coef_phase-(time_incr1*unsurl/d_limi)
-            c      = time_incr2*unsurl
-            delta  = (b**2)+(4.d0*a*c)
+            a = 1.d0
+            b = d_prev*coef_phase-(time_incr1*unsurl/d_limi)
+            c = time_incr2*unsurl
+            delta = (b**2)+(4.d0*a*c)
             d_curr = (b+delta**0.5d0)/(2.d0*a)
-        endif
+        end if
     else
         d_curr = ckm(5)
-    endif
+    end if
 !
 end subroutine

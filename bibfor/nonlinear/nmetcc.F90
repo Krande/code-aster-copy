@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmetcc(field_type, algo_name, init_name ,&
-                  compor    , sddyna   , ds_contact,&
-                  hydr      , temp_init, hydr_init)
+subroutine nmetcc(field_type, algo_name, init_name, &
+                  compor, sddyna, ds_contact, &
+                  hydr, temp_init, hydr_init)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/ndynkk.h"
 !
-character(len=24), intent(in) :: field_type
-character(len=24), intent(out) :: algo_name
-character(len=24), intent(out) :: init_name
-type(NL_DS_Contact), optional, intent(in) :: ds_contact
-character(len=19), optional, intent(in) :: compor
-character(len=19), optional, intent(in) :: sddyna
-character(len=24), optional, intent(in) :: hydr
-character(len=24), optional, intent(in) :: hydr_init
-character(len=24), optional, intent(in) :: temp_init
+    character(len=24), intent(in) :: field_type
+    character(len=24), intent(out) :: algo_name
+    character(len=24), intent(out) :: init_name
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact
+    character(len=19), optional, intent(in) :: compor
+    character(len=19), optional, intent(in) :: sddyna
+    character(len=24), optional, intent(in) :: hydr
+    character(len=24), optional, intent(in) :: hydr_init
+    character(len=24), optional, intent(in) :: temp_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ character(len=24), optional, intent(in) :: temp_init
     sdcont_solv = ' '
     if (present(ds_contact)) then
         sdcont_solv = ds_contact%sdcont_solv
-    endif
+    end if
 !
 ! - Special fields
 !
@@ -80,54 +80,54 @@ character(len=24), optional, intent(in) :: temp_init
         xindco = sdcont_solv(1:14)//'.XFIN'
         xcohes = sdcont_solv(1:14)//'.XCOP'
         xseuco = sdcont_solv(1:14)//'.XFSE'
-    endif
+    end if
     if (present(sddyna)) then
         call ndynkk(sddyna, 'DEPABS', depabs)
         call ndynkk(sddyna, 'VITABS', vitabs)
         call ndynkk(sddyna, 'ACCABS', accabs)
-    endif
+    end if
 !
 ! - Standard fields
 !
-    if (field_type.eq.'COMPORTEMENT') then
+    if (field_type .eq. 'COMPORTEMENT') then
         algo_name = compor
         init_name = ' '
-    else if (field_type.eq.'CONT_NOEU') then
+    else if (field_type .eq. 'CONT_NOEU') then
         algo_name = ds_contact%field_cont_node
         init_name = ' '
-    else if (field_type.eq.'CONT_ELEM') then
+    else if (field_type .eq. 'CONT_ELEM') then
         algo_name = ds_contact%field_cont_elem
         init_name = ' '
-    else if (field_type.eq.'INDC_ELEM') then
+    else if (field_type .eq. 'INDC_ELEM') then
         algo_name = xindco
         init_name = sdcont_solv(1:14)//'.XFI0'
-    else if (field_type.eq.'SECO_ELEM') then
+    else if (field_type .eq. 'SECO_ELEM') then
         algo_name = xseuco
         init_name = sdcont_solv(1:14)//'.XFS0'
-    else if (field_type.eq.'COHE_ELEM') then
+    else if (field_type .eq. 'COHE_ELEM') then
         algo_name = xcohes
         init_name = sdcont_solv(1:14)//'.XCO0'
-    else if (field_type.eq.'DEPL_ABSOLU') then
+    else if (field_type .eq. 'DEPL_ABSOLU') then
         algo_name = depabs
         init_name = '&&CNPART.ZERO'
-    else if (field_type.eq.'VITE_ABSOLU') then
+    else if (field_type .eq. 'VITE_ABSOLU') then
         algo_name = vitabs
         init_name = '&&CNPART.ZERO'
-    else if (field_type.eq.'ACCE_ABSOLU') then
+    else if (field_type .eq. 'ACCE_ABSOLU') then
         algo_name = accabs
         init_name = '&&CNPART.ZERO'
-    else if (field_type.eq.'TEMP') then
+    else if (field_type .eq. 'TEMP') then
         algo_name = 'XXXXXXXXXXXXXXXX'
         init_name = temp_init
-    else if (field_type.eq.'HYDR_ELNO') then
+    else if (field_type .eq. 'HYDR_ELNO') then
         algo_name = hydr
         init_name = hydr_init
-    else if (field_type.eq.'COMPORTHER') then
+    else if (field_type .eq. 'COMPORTHER') then
         algo_name = compor
         init_name = ' '
     else
         algo_name = 'XXXXXXXXXXXXXXXX'
         init_name = 'XXXXXXXXXXXXXXXX'
-    endif
+    end if
 !
 end subroutine

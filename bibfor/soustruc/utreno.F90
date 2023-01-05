@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,19 +55,19 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
     else if (mcs(1:4) .eq. 'REFE') then
         mcnoeu = 'NOEUD_REFE'
         mcgrno = 'GROUP_NO_REFE'
-    endif
+    end if
 !
     call getvtx(mcf, mcnoeu, iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvem(ma, 'NOEUD', mcf, mcnoeu, iocc,&
+        call getvem(ma, 'NOEUD', mcf, mcnoeu, iocc, &
                     1, noeud, n1)
         ok_noeud2 = .true.
-    endif
+    end if
 !
     call getvtx(mcf, mcgrno, iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         call getvtx(mcf, mcgrno, iocc=iocc, scal=nogno, nbret=n1)
-        call utnono(' ', ma, 'NOEUD', nogno, noeud,&
+        call utnono(' ', ma, 'NOEUD', nogno, noeud, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogno)
@@ -75,10 +75,10 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
             valk(1) = nogno
             valk(2) = noeud
             call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-        endif
+        end if
         ok_noeud2 = .true.
-    endif
+    end if
 
-    if (present(ok_noeud)) ok_noeud=ok_noeud2
+    if (present(ok_noeud)) ok_noeud = ok_noeud2
 !
 end subroutine

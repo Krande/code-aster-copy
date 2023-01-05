@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine possvd(nm, m, n, w, matu,&
-                  u, matv, v, eps, rg,&
+subroutine possvd(nm, m, n, w, matu, &
+                  u, matv, v, eps, rg, &
                   rv1)
     implicit none
 !
@@ -95,16 +95,16 @@ subroutine possvd(nm, m, n, w, matu,&
                 if (w(i) .gt. wmax) then
                     jmax = i
                     wmax = w(i)
-                endif
+                end if
             end do
             if (jmax .ne. j) then
                 w(jmax) = w(j)
                 w(j) = wmax
                 if (matu) call dswap(m, u(1, j), 1, u(1, jmax), 1)
                 if (matv) call dswap(n, v(1, j), 1, v(1, jmax), 1)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   DETERMINATION DU RANG DE LA MATRICE A
@@ -113,19 +113,19 @@ subroutine possvd(nm, m, n, w, matu,&
     if (w(1) .eq. 0.0d0) then
         rg = 0
     else
-        rgmax = min(m,n)
+        rgmax = min(m, n)
         if (rgmax .gt. 1) then
             call dcopy(rgmax, w(1), 1, rv1(1), 1)
             call dscal(rgmax, 1.0d0/rv1(1), rv1(1), 1)
             do j = 2, rgmax
                 if (rv1(j) .lt. eps) goto 40
             end do
- 40         continue
-            rg = j - 1
+40          continue
+            rg = j-1
         else
             rg = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! --- FIN DE POSSVD.
 end subroutine

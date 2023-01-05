@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine as_mfivop(fid, nom, acces, major, minor, rel, cret)
     med_int :: acces4, cret4, major4, minor4, rel4
 #endif
     cret = 0
-    if (cret.eq.0) then
+    if (cret .eq. 0) then
 #if !ASTER_MED_SAME_INT_IDT
         acces4 = acces
         major4 = major
@@ -53,7 +53,7 @@ subroutine as_mfivop(fid, nom, acces, major, minor, rel, cret)
 #else
         call mfivop(fid, nom, acces, major, minor, rel, cret)
 #endif
-    endif
+    end if
 !
 #endif
 end subroutine

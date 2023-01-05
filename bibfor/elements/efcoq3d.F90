@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine efcoq3d(nomte, nb1, nb2, cara, geom,&
-                   lzr, chg, matr, effg, nbcou,&
+subroutine efcoq3d(nomte, nb1, nb2, cara, geom, &
+                   lzr, chg, matr, effg, nbcou, &
                    npgsn, npgsr, npge, nso, npgt)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
@@ -52,50 +52,50 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom,&
     real(kind=8) :: sigm(6, 270), sigma(6, 120), effgc(8, 9), effgt(8, 9)
 !
 !
-    zero=0.0d0
+    zero = 0.0d0
 !
-    epais=cara(1)
-    zmin=-epais/2.d0
-    hic=epais/nbcou
+    epais = cara(1)
+    zmin = -epais/2.d0
+    hic = epais/nbcou
 !
-    call vectan(nb1, nb2, geom, lzr, vecta,&
+    call vectan(nb1, nb2, geom, lzr, vecta, &
                 vectn, vectpt)
 !
-    kpgs=0
+    kpgs = 0
     do icou = 1, nbcou
         do inte = 1, npge
             if (inte .eq. 1) then
-                zic=zmin+(icou-1)*hic
-            else if (inte.eq.2) then
-                zic=zmin+hic/2.d0+(icou-1)*hic
+                zic = zmin+(icou-1)*hic
+            else if (inte .eq. 2) then
+                zic = zmin+hic/2.d0+(icou-1)*hic
             else
-                zic=zmin+hic+(icou-1)*hic
-            endif
+                zic = zmin+hic+(icou-1)*hic
+            end if
 !
             do intsn = 1, npgsn
-                kpgs=kpgs+1
-                k1=6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
+                kpgs = kpgs+1
+                k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
                 do i = 1, 6
-                    sigm(i,kpgs)=chg(k1+i)
+                    sigm(i, kpgs) = chg(k1+i)
                 end do
             end do
         end do
     end do
-    ncmp=6
+    ncmp = 6
 !
 !
 ! --- DETERMINATION DES REPERES  LOCAUX DE L'ELEMENT AUX POINTS
 ! --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR
 !     --------------------------------------------------------------
-    k=0
+    k = 0
     do intsr = 1, npgsr
-        call vectgt(0, nb1, geom, zero, intsr,&
+        call vectgt(0, nb1, geom, zero, intsr, &
                     lzr, epais, vectn, vectg, vectt)
 !
         do j = 1, 3
             do i = 1, 3
-                k=k+1
-                lzr(2000+k)=vectt(i,j)
+                k = k+1
+                lzr(2000+k) = vectt(i, j)
             end do
         end do
     end do
@@ -107,14 +107,14 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom,&
     do icou = 1, nbcou
         do ic = 1, ncmp
             do i = 1, npge*nso
-                l=npge*npgsn*(i-1)
-                s=0.d0
+                l = npge*npgsn*(i-1)
+                s = 0.d0
                 do j = 1, npge*npgsn
-                    jj=(icou-1)*npge*npgsn+j
-                    s=s+matr(l+j)*sigm(ic,jj)
+                    jj = (icou-1)*npge*npgsn+j
+                    s = s+matr(l+j)*sigm(ic, jj)
                 end do
-                ii=(icou-1)*npge*nso+i
-                sigma(ic,ii)=s
+                ii = (icou-1)*npge*nso+i
+                sigma(ic, ii) = s
             end do
         end do
     end do
@@ -127,17 +127,17 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom,&
 ! !
     do i = 1, nb2
         do j = 1, 8
-            effgt(j,i)=0.d0
+            effgt(j, i) = 0.d0
         end do
     end do
     do ic = 1, nbcou
-        j=(ic-1)*npge*nso+1
-        zic=zmin+(ic-1)*hic
-        call vdefgn(nomte, nb2, hic, zic, sigma(1, j),&
+        j = (ic-1)*npge*nso+1
+        zic = zmin+(ic-1)*hic
+        call vdefgn(nomte, nb2, hic, zic, sigma(1, j), &
                     effgc)
         do isom = 1, nb2
             do icomp = 1, 8
-                effgt(icomp,isom)=effgt(icomp,isom)+effgc(icomp,isom)
+                effgt(icomp, isom) = effgt(icomp, isom)+effgc(icomp, isom)
             end do
         end do
     end do

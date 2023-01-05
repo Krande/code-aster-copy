@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comatr(option, typev, nbproc, rang, vnconv,&
-                  dim1i, dim2i, vecti, dim1r, dim2r,&
+subroutine comatr(option, typev, nbproc, rang, vnconv, &
+                  dim1i, dim2i, vecti, dim1r, dim2r, &
                   vectr, dim1c, dim2c, vectc)
 !     COMMUNICATION VIA LE COMMUNICATEUR MPI COURANT D'UNE MATRICE SOIT
 !     REELLE, SOIT ENTIERE, SOIT DE CHAR*, SOIT COMPLEXE.
@@ -76,31 +76,31 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! --- INIT.
     call jemarq()
     call infniv(ifm, niv)
-    izero=0
-    rzero=0.d0
-    czero=dcmplx(0.d0,0.d0)
-    ldebug=.false.
+    izero = 0
+    rzero = 0.d0
+    czero = dcmplx(0.d0, 0.d0)
+    ldebug = .false.
 !      LDEBUG=.TRUE.
 !
 ! ----------------------------------------------------------------------
 ! --- VERIF PARAMETRES INPUT
 !-----------------------------------------------------------------------
-    ASSERT((option.eq.'S') .or. (option.eq.'T'))
-    ASSERT((typev.eq.'R') .or. (typev.eq.'I') .or. (typev.eq.'C'))
-    ASSERT((nbproc.ge.1) .and. (rang.ge.0) .and. (rang+1.le.nbproc))
+    ASSERT((option .eq. 'S') .or. (option .eq. 'T'))
+    ASSERT((typev .eq. 'R') .or. (typev .eq. 'I') .or. (typev .eq. 'C'))
+    ASSERT((nbproc .ge. 1) .and. (rang .ge. 0) .and. (rang+1 .le. nbproc))
 !
     if (typev .eq. 'I') then
-        idim1=dim1i
-        idim2=dim2i
-    else if (typev.eq.'R') then
-        idim1=dim1r
-        idim2=dim2r
-    else if (typev.eq.'C') then
-        idim1=dim1c
-        idim2=dim2c
+        idim1 = dim1i
+        idim2 = dim2i
+    else if (typev .eq. 'R') then
+        idim1 = dim1r
+        idim2 = dim2r
+    else if (typev .eq. 'C') then
+        idim1 = dim1c
+        idim2 = dim2c
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- CALCULS PRELIMINAIRES
@@ -108,38 +108,38 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! --- NCONV:  NBRE DE PREMIERES COLONNES A DECALER
 ! --- NCONVG: SOMME DE DECALAGES
 ! --- IDECAL: DECALAGE POUR LE PROC COURANT
-    nconv=vnconv(rang+1)
-    nconvg=0
-    idecal=0
+    nconv = vnconv(rang+1)
+    nconvg = 0
+    idecal = 0
     do i = 1, nbproc
         ASSERT(vnconv(i) .ge. 0)
-        if ((i-1) .lt. rang) idecal=idecal+vnconv(i)
-        nconvg=nconvg+vnconv(i)
+        if ((i-1) .lt. rang) idecal = idecal+vnconv(i)
+        nconvg = nconvg+vnconv(i)
     end do
     if (option .eq. 'S') then
         ASSERT(idim2 .eq. nconvg)
-    else if (option.eq.'T') then
+    else if (option .eq. 'T') then
         if (idim1 .ne. nconvg) then
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- VERIF INIT.
     if (ldebug) then
-        write(ifm,*)'INITIALISATION***************************'
-        if ((typev.eq.'R') .and. (option.eq.'S')) then
+        write (ifm, *) 'INITIALISATION***************************'
+        if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
+                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
             end do
-        else if ((typev.eq.'R').and.(option.eq.'T')) then
+        else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
 ! --- ON NE FAIT QU'IMPRIMER LES TERMES CAR CERTAINS SONT EN 1.E+308
             do i = 1, idim1
-                write(ifm,*)i,(vectr(i,j),j=1,idim2)
+                write (ifm, *) i, (vectr(i, j), j=1, idim2)
             end do
         else
-            write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
-        endif
-    endif
+            write (ifm, *) '! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
+        end if
+    end if
 !
 ! ----------------------------------------------------------------------
 ! --- COMMUNICATIONS PROPREMENTS DITES
@@ -149,193 +149,193 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! --- A ZERO: COMME SEULS LES NCONV PREMIERES COLONNES (RESP. LIGNES)
 ! --- SONT SIGNIFIANTES.
     if (option .eq. 'S') then
-        iaux1=idim1*(idim2-nconv)
+        iaux1 = idim1*(idim2-nconv)
     else
-        iaux1=idim1-nconv
-    endif
-    if ((option.eq.'S') .and. (iaux1.gt.0)) then
+        iaux1 = idim1-nconv
+    end if
+    if ((option .eq. 'S') .and. (iaux1 .gt. 0)) then
 !
         if (typev .eq. 'R') then
             call vecini(iaux1, rzero, vectr(1, nconv+1))
-        else if (typev.eq.'I') then
+        else if (typev .eq. 'I') then
             call vecint(iaux1, izero, vecti(1, nconv+1))
-        else if (typev.eq.'C') then
+        else if (typev .eq. 'C') then
             call vecinc(iaux1, czero, vectc(1, nconv+1))
-        endif
+        end if
 !
-    else if ((option.eq.'T').and.(iaux1.gt.0)) then
+    else if ((option .eq. 'T') .and. (iaux1 .gt. 0)) then
 !
         if (typev .eq. 'R') then
             do j = 1, idim2
                 call vecini(iaux1, rzero, vectr(nconv+1, j))
             end do
-        else if (typev.eq.'I') then
+        else if (typev .eq. 'I') then
             do j = 1, idim2
                 call vecint(iaux1, izero, vecti(nconv+1, j))
             end do
-        else if (typev.eq.'C') then
+        else if (typev .eq. 'C') then
             do j = 1, idim2
                 call vecinc(iaux1, czero, vectc(nconv+1, j))
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- VERIF STEP 1.
     if (ldebug) then
-        write(ifm,*)'STEP 1***************************'
-        if ((typev.eq.'R') .and. (option.eq.'S')) then
+        write (ifm, *) 'STEP 1***************************'
+        if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
+                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
             end do
-        else if ((typev.eq.'R').and.(option.eq.'T')) then
+        else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
-                write(ifm,*)i,(vectr(i,j),j=1,idim2)
+                write (ifm, *) i, (vectr(i, j), j=1, idim2)
             end do
         else
-            write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
-        endif
-    endif
+            write (ifm, *) '! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
+        end if
+    end if
 !
 ! --- STEP 2:
 ! --- ON DECALE LES NCONV PREMIERES LIGNES OU COLONNES POUR LES METTRE
 ! --- BIEN EN PLACE DS LE BUFFER DE COMMUNICATION. ON DECALE EN COMMEN
 ! --- CANT PAR LES COLONNES OU LES LIGNES LES PLUS ELOIGNEES DE MANIERE
 ! --- A NE PAS ECRASER DE DONNEES.
-    if ((option.eq.'S') .and. (idecal.gt.0)) then
+    if ((option .eq. 'S') .and. (idecal .gt. 0)) then
 !
         if (typev .eq. 'R') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vectr(i,j+idecal)=vectr(i,j)
+                    vectr(i, j+idecal) = vectr(i, j)
                 end do
             end do
-        else if (typev.eq.'I') then
+        else if (typev .eq. 'I') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vecti(i,j+idecal)=vecti(i,j)
+                    vecti(i, j+idecal) = vecti(i, j)
                 end do
             end do
-        else if (typev.eq.'C') then
+        else if (typev .eq. 'C') then
             do j = nconv, 1, -1
                 do i = 1, idim1
-                    vectc(i,j+idecal)=vectc(i,j)
+                    vectc(i, j+idecal) = vectc(i, j)
                 end do
             end do
-        endif
+        end if
 !
-    else if ((option.eq.'T').and.(idecal.gt.0)) then
+    else if ((option .eq. 'T') .and. (idecal .gt. 0)) then
 !
         if (typev .eq. 'R') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vectr(i+idecal,j)=vectr(i,j)
+                    vectr(i+idecal, j) = vectr(i, j)
                 end do
             end do
-        else if (typev.eq.'I') then
+        else if (typev .eq. 'I') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vecti(i+idecal,j)=vecti(i,j)
+                    vecti(i+idecal, j) = vecti(i, j)
                 end do
             end do
-        else if (typev.eq.'C') then
+        else if (typev .eq. 'C') then
             do j = 1, idim2
                 do i = nconv, 1, -1
-                    vectc(i+idecal,j)=vectc(i,j)
+                    vectc(i+idecal, j) = vectc(i, j)
                 end do
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- VERIF STEP2.
     if (ldebug) then
-        write(ifm,*)'STEP 2***************************'
-        if ((typev.eq.'R') .and. (option.eq.'S')) then
+        write (ifm, *) 'STEP 2***************************'
+        if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
+                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
             end do
-        else if ((typev.eq.'R').and.(option.eq.'T')) then
+        else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
-                write(ifm,*)i,(vectr(i,j),j=1,idim2)
+                write (ifm, *) i, (vectr(i, j), j=1, idim2)
             end do
         else
-            write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
-        endif
-    endif
+            write (ifm, *) '! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
+        end if
+    end if
 !
 ! --- STEP 3:
 ! --- ON ANNULE LES IDECAL PREMIERES COLONNES OU LIGNES
-    if ((option.eq.'S') .and. (idecal.gt.0)) then
+    if ((option .eq. 'S') .and. (idecal .gt. 0)) then
 !
-        iaux1=idim1*idecal
+        iaux1 = idim1*idecal
         if (typev .eq. 'R') then
             call vecini(iaux1, rzero, vectr(1, 1))
-        else if (typev.eq.'I') then
+        else if (typev .eq. 'I') then
             call vecint(iaux1, izero, vecti(1, 1))
-        else if (typev.eq.'C') then
+        else if (typev .eq. 'C') then
             call vecinc(iaux1, czero, vectc(1, 1))
-        endif
+        end if
 !
-    else if ((option.eq.'T').and.(idecal.gt.0)) then
+    else if ((option .eq. 'T') .and. (idecal .gt. 0)) then
 !
         if (typev .eq. 'R') then
             do j = 1, idim2
                 call vecini(idecal, rzero, vectr(1, j))
             end do
-        else if (typev.eq.'I') then
+        else if (typev .eq. 'I') then
             do j = 1, idim2
                 call vecint(idecal, izero, vecti(1, j))
             end do
-        else if (typev.eq.'C') then
+        else if (typev .eq. 'C') then
             do j = 1, idim2
                 call vecinc(idecal, czero, vectc(1, j))
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- VERIF STEP3.
     if (ldebug) then
-        write(ifm,*)'STEP 3***************************'
-        if ((typev.eq.'R') .and. (option.eq.'S')) then
+        write (ifm, *) 'STEP 3***************************'
+        if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
+                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
             end do
-        else if ((typev.eq.'R').and.(option.eq.'T')) then
+        else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
-                write(ifm,*)i,(vectr(i,j),j=1,idim2)
+                write (ifm, *) i, (vectr(i, j), j=1, idim2)
             end do
         else
-            write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
-        endif
-    endif
+            write (ifm, *) '! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
+        end if
+    end if
 !
 ! --- STEP 4 FINAL:
 ! --- ON COMMUNIQUE TOUTE LA MATRICE
-    iaux1=idim1*idim2
+    iaux1 = idim1*idim2
     if (typev .eq. 'R') then
         call asmpi_comm_vect('MPI_SUM', 'R', nbval=iaux1, vr=vectr(1, 1))
-    else if (typev.eq.'I') then
+    else if (typev .eq. 'I') then
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=iaux1, vi=vecti(1, 1))
-    else if (typev.eq.'C') then
+    else if (typev .eq. 'C') then
         call asmpi_comm_vect('MPI_SUM', 'C', nbval=iaux1, vc=vectc(1, 1))
-    endif
+    end if
 !
 ! --- VERIF FINALIZATION.
     if (ldebug) then
-        write(ifm,*)'FINALISATION***************************'
-        if ((typev.eq.'R') .and. (option.eq.'S')) then
+        write (ifm, *) 'FINALISATION***************************'
+        if ((typev .eq. 'R') .and. (option .eq. 'S')) then
             do j = 1, idim2
-                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
+                write (ifm, *) j, dnrm2(idim1, vectr(1, j), 1)
             end do
-        else if ((typev.eq.'R').and.(option.eq.'T')) then
+        else if ((typev .eq. 'R') .and. (option .eq. 'T')) then
             do i = 1, idim1
-                write(ifm,*)i,(vectr(i,j),j=1,idim2)
+                write (ifm, *) i, (vectr(i, j), j=1, idim2)
             end do
         else
-            write(ifm,*)'! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
-        endif
-    endif
+            write (ifm, *) '! ATTENTION: DEBUG OPTION NON PRISE EN COMPTE !'
+        end if
+    end if
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
-                  caelem, nbnobe, nunobe, icabl, nbnoca,&
+subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
+                  caelem, nbnobe, nunobe, icabl, nbnoca, &
                   xnoca, ynoca, znoca)
     implicit none
 !  DESCRIPTION : PROJECTION DES NOEUDS D'UN CABLE SUR LE MAILLAGE BETON
@@ -104,16 +104,16 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     real(kind=8), pointer :: xyz_noemai(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()
-    data          param /'MAILLE_BETON_VOISINE    ',&
+    data param/'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&
      &                     'INDICE_PROJECTION       ',&
      &                     'EXCENTRICITE            '/
-    data          parcr /'NOEUD_CABLE             '/
+    data parcr/'NOEUD_CABLE             '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   ACCES AUX DONNEES
@@ -137,16 +137,16 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
     nbpara = tbnp(1)
     nblign = tbnp(2)
-    ideca = nblign - nbno
+    ideca = nblign-nbno
     call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
     do ipara = 1, nbpara
         if (tblp(1+4*(ipara-1)) .eq. parcr) then
             nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 11
-        endif
+        end if
     end do
- 11 continue
+11  continue
 !
 !.... COORDONNEES DES NOEUDS
 !
@@ -183,15 +183,15 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     x3dca(2) = zr(jyca+ideca+inoca-1)
     x3dca(3) = zr(jzca+ideca+inoca-1)
     inoca = nbno
-    dx = x3dca(1) - zr(jxca+ideca+inoca-1)
-    dy = x3dca(2) - zr(jyca+ideca+inoca-1)
-    dz = x3dca(3) - zr(jzca+ideca+inoca-1)
-    dmax_cable = sqrt(dx * dx + dy * dy + dz * dz)
+    dx = x3dca(1)-zr(jxca+ideca+inoca-1)
+    dy = x3dca(2)-zr(jyca+ideca+inoca-1)
+    dz = x3dca(3)-zr(jzca+ideca+inoca-1)
+    dmax_cable = sqrt(dx*dx+dy*dy+dz*dz)
     inoca = nbno/2
-    dx = x3dca(1) - zr(jxca+ideca+inoca-1)
-    dy = x3dca(2) - zr(jyca+ideca+inoca-1)
-    dz = x3dca(3) - zr(jzca+ideca+inoca-1)
-    d2 = sqrt(dx * dx + dy * dy + dz * dz)
+    dx = x3dca(1)-zr(jxca+ideca+inoca-1)
+    dy = x3dca(2)-zr(jyca+ideca+inoca-1)
+    dz = x3dca(3)-zr(jzca+ideca+inoca-1)
+    d2 = sqrt(dx*dx+dy*dy+dz*dz)
     if (d2 .gt. dmax_cable) dmax_cable = d2
 !
 ! 2.2 BOUCLE SUR LE NOMBRE DE NOEUDS DU CABLE
@@ -208,44 +208,44 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 ! .....  DU NOEUD CABLE COURANT
 !
         noebe = zi(jnunob)
-        dx = x3dca(1) - zr(jcoor+3*(noebe-1) )
-        dy = x3dca(2) - zr(jcoor+3*(noebe-1)+1)
-        dz = x3dca(3) - zr(jcoor+3*(noebe-1)+2)
-        d2min = dx * dx + dy * dy + dz * dz
+        dx = x3dca(1)-zr(jcoor+3*(noebe-1))
+        dy = x3dca(2)-zr(jcoor+3*(noebe-1)+1)
+        dz = x3dca(3)-zr(jcoor+3*(noebe-1)+2)
+        d2min = dx*dx+dy*dy+dz*dz
         do inobe = 2, nbnobe
             noe = zi(jnunob+inobe-1)
-            dx = x3dca(1) - zr(jcoor+3*(noe-1) )
-            dy = x3dca(2) - zr(jcoor+3*(noe-1)+1)
-            dz = x3dca(3) - zr(jcoor+3*(noe-1)+2)
-            d2 = dx * dx + dy * dy + dz * dz
+            dx = x3dca(1)-zr(jcoor+3*(noe-1))
+            dy = x3dca(2)-zr(jcoor+3*(noe-1)+1)
+            dz = x3dca(3)-zr(jcoor+3*(noe-1)+2)
+            d2 = dx*dx+dy*dy+dz*dz
             if (d2 .lt. d2min) then
                 d2min = d2
                 noebe = noe
-            endif
-        enddo
+            end if
+        end do
 !
 ! 2.2.2  TENTATIVE DE PROJECTION DU NOEUD CABLE
 !
         call projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
-                    nnoeca, x3dca(1), noebe, numail, nbcnx,&
-                    cnx_maille, xyz_noemai, normal(1), itria, xbar(1),&
+                    nnoeca, x3dca(1), noebe, numail, nbcnx, &
+                    cnx_maille, xyz_noemai, normal(1), itria, xbar(1), &
                     iproj, excent)
         if (iproj .eq. -1) then
-            call utmess('F', 'MODELISA5_82', si = icabl ,sk=nnoeca)
-        endif
+            call utmess('F', 'MODELISA5_82', si=icabl, sk=nnoeca)
+        end if
 !
 ! 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES
 ! .....
-        call reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
-                    cnx_maille, normal(1), itria, xbar(1), iproj,&
+        call reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
+                    cnx_maille, normal(1), itria, xbar(1), iproj, &
                     excent)
 !
 ! 2.2.6  MISE A JOUR DE LA SD TABLE
 ! .....
         call jenuno(jexnum(nomama, numail), voisin(1))
         call jenuno(jexnum(nonoma, noebe), voisin(2))
-        call tbajli(tablca, 4, param, [iproj], [excent],&
-                    [cbid], voisin(1), ideca+ inoca)
+        call tbajli(tablca, 4, param, [iproj], [excent], &
+                    [cbid], voisin(1), ideca+inoca)
 !
     end do
 !

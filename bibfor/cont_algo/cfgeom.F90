@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfgeom(iter_newt, mesh     , ds_measure, ds_contact,&
+subroutine cfgeom(iter_newt, mesh, ds_measure, ds_contact, &
                   disp_curr, time_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfappa.h"
@@ -68,29 +68,29 @@ implicit none
 !
 ! - Is pairing ?
 !
-    l_pair      = ds_contact%l_pair
+    l_pair = ds_contact%l_pair
 !
 ! - Save before pairing
 !
     if (l_pair) then
         call cfsvmu(ds_contact, .false._1)
-    endif
+    end if
 !
 ! - Print
 !
     if (niv .ge. 2) then
         if (l_pair) then
-            write (ifm,*) '<CONTACT> ... REACTUALISATION DE L''APPARIEMENT'
+            write (ifm, *) '<CONTACT> ... REACTUALISATION DE L''APPARIEMENT'
         else
-            write (ifm,*) '<CONTACT> ... PAS DE REACTUALISATION DE L''APPARIEMENT'
-        endif
-    endif
+            write (ifm, *) '<CONTACT> ... PAS DE REACTUALISATION DE L''APPARIEMENT'
+        end if
+    end if
 !
 ! - Pairing or not pairing ?
 !
     if (l_pair) then
 !
-        call nmtime(ds_measure, 'Init'  , 'Cont_Geom')
+        call nmtime(ds_measure, 'Init', 'Cont_Geom')
         call nmtime(ds_measure, 'Launch', 'Cont_Geom')
 !
 ! ----- Update geometry
@@ -109,21 +109,21 @@ implicit none
 !
         if (iter_newt .eq. 0) then
             call reajeu(ds_contact)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Debug print
 !
     if (niv .ge. 2) then
         call cfimp4(ds_contact, mesh, ifm)
-    endif
+    end if
 !
 ! - Print
 !
     if (niv .ge. 2) then
         if (l_pair) then
-            write (ifm,*) '<CONTACT> ... FIN DE REACTUALISATION DE L''APPARIEMENT'
-        endif
-    endif
+            write (ifm, *) '<CONTACT> ... FIN DE REACTUALISATION DE L''APPARIEMENT'
+        end if
+    end if
 !
 end subroutine

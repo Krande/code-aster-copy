@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine affono(valr, valk, desc, prnm, nbcomp,&
-                  fonree, nomn, ino, nsurch, forimp,&
+subroutine affono(valr, valk, desc, prnm, nbcomp, &
+                  fonree, nomn, ino, nsurch, forimp, &
                   valfor, valfof, motcle, verif, nbec)
     implicit none
 !
@@ -72,38 +72,38 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
         if (prnm(iec) .ne. 0) then
             indigd = 1
             goto 20
-        endif
+        end if
     end do
     if (indigd .eq. 0) goto 999
- 20 continue
+20  continue
     nsurc0 = nsurch
     do j = 1, nbcomp
         if (forimp(j) .ne. 0) then
-            if (iand(desc,2**(j-1)) .eq. 0) then
+            if (iand(desc, 2**(j-1)) .eq. 0) then
 !  VERIFICATION SUR LES 6 PREMIERS DDL : FX FY FZ MX MY MZ
-                if (.not.exisdg(prnm,j) .and. j .le. 6) then
-                    if (.not.verif) then
-                        if (nsurc0 .eq. nsurch) nsurch = nsurch + 1
+                if (.not. exisdg(prnm, j) .and. j .le. 6) then
+                    if (.not. verif) then
+                        if (nsurc0 .eq. nsurch) nsurch = nsurch+1
                     else
-                        valkk (1) = motcle(j)
-                        valkk (2) = nomn
+                        valkk(1) = motcle(j)
+                        valkk(2) = nomn
                         call utmess('F', 'MODELISA8_27', nk=2, valk=valkk)
-                    endif
+                    end if
                 else
-                    desc = ior(desc,2**(j-1))
-                endif
+                    desc = ior(desc, 2**(j-1))
+                end if
             else
-                if (nsurc0 .eq. nsurch) nsurch = nsurch + 1
-                valkk (1) = motcle(j)
-                valkk (2) = nomn
+                if (nsurc0 .eq. nsurch) nsurch = nsurch+1
+                valkk(1) = motcle(j)
+                valkk(2) = nomn
                 call utmess('I', 'MODELISA8_28', nk=2, valk=valkk)
-            endif
+            end if
             if (fonree .eq. 'REEL') then
                 valr(nbcomp*(ino-1)+j) = valfor(j)
-            else if (fonree.eq.'FONC') then
+            else if (fonree .eq. 'FONC') then
                 valk(nbcomp*(ino-1)+j) = valfof(j)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine comp_meta_read(ds_comporMeta)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcinfo.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterc/lccree.h"
 #include "asterfort/getvtx.h"
 !
-type(META_PrepPara), intent(inout) :: ds_comporMeta
+    type(META_PrepPara), intent(inout) :: ds_comporMeta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +52,13 @@ type(META_PrepPara), intent(inout) :: ds_comporMeta
 ! --------------------------------------------------------------------------------------------------
 !
     keywordfact = 'COMPORTEMENT'
-    nb_comp     = ds_comporMeta%nb_comp
+    nb_comp = ds_comporMeta%nb_comp
 !
 ! - Read informations in CALC_META
 !
     do i_comp = 1, nb_comp
-        call getvtx(keywordfact, 'RELATION', iocc = i_comp, scal = phase_type, nbret=iret)
-        call getvtx(keywordfact, 'LOI_META', iocc = i_comp, scal = loi_meta, nbret=iret)
+        call getvtx(keywordfact, 'RELATION', iocc=i_comp, scal=phase_type, nbret=iret)
+        call getvtx(keywordfact, 'LOI_META', iocc=i_comp, scal=loi_meta, nbret=iret)
 ! ----- Create composite comportments
         nb_comp_elem = 2
         comp_elem(1) = phase_type
@@ -68,16 +68,16 @@ type(META_PrepPara), intent(inout) :: ds_comporMeta
         comp_elem(1) = phase_type
         call lccree(nb_comp_elem, comp_elem, meta_code_py)
 ! ----- Get number of variables and index of behaviour
-        call lcinfo(comp_code_py, nume_comp, nb_vari , idummy)
-        call lcinfo(meta_code_py, idummy   , nb_phase, idummy2)
+        call lcinfo(comp_code_py, nume_comp, nb_vari, idummy)
+        call lcinfo(meta_code_py, idummy, nb_phase, idummy2)
 ! ----- Glute provisoire: nombre de phases different entre CALC_META et STAT_NON_LINE
         call lcdiscard(comp_code_py)
 ! ----- Save values
-        ds_comporMeta%v_comp(i_comp)%phase_type   = phase_type
-        ds_comporMeta%v_comp(i_comp)%loi_meta     = loi_meta
-        ds_comporMeta%v_comp(i_comp)%nb_vari      = nb_vari
-        ds_comporMeta%v_comp(i_comp)%nb_phase     = nb_phase
-        ds_comporMeta%v_comp(i_comp)%nume_comp    = nume_comp
+        ds_comporMeta%v_comp(i_comp)%phase_type = phase_type
+        ds_comporMeta%v_comp(i_comp)%loi_meta = loi_meta
+        ds_comporMeta%v_comp(i_comp)%nb_vari = nb_vari
+        ds_comporMeta%v_comp(i_comp)%nb_phase = nb_phase
+        ds_comporMeta%v_comp(i_comp)%nume_comp = nume_comp
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine mearcc(option, mo, chin, chout)
 !
 !
     integer :: nbcmp, nbnomx
-    parameter   (nbcmp=6,nbnomx=9)
+    parameter(nbcmp=6, nbnomx=9)
 !
     integer :: nbma, ibid, jma2d, jma3d, ndim
     integer :: jcesd3, jcesk3, jcesl3, jcesd2, ima
@@ -70,14 +70,14 @@ subroutine mearcc(option, mo, chin, chout)
     real(kind=8), pointer :: cesv3(:) => null()
     character(len=8), pointer :: cesc3(:) => null()
 !
-    data comp/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
+    data comp/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
 !--------------------------------------------------------------------------
 !
     call jemarq()
 !
-    mail2d='&&MEARCC.MAILLE_FACE'
-    mail3d='&&MEARCC.MAILLE_3D_SUPP'
-    mailto='&&MEARCC.MAILLE_2D_3D'
+    mail2d = '&&MEARCC.MAILLE_FACE'
+    mail3d = '&&MEARCC.MAILLE_3D_SUPP'
+    mailto = '&&MEARCC.MAILLE_2D_3D'
 !
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
@@ -96,7 +96,7 @@ subroutine mearcc(option, mo, chin, chout)
 !     =============================================================
 !
 !     TRANSFORMATION DU CHAMP 3D (IN) EN CHAMP SIMPLE
-    chins='&&MEARCC.CHIN_S'
+    chins = '&&MEARCC.CHIN_S'
     call celces(chin, 'V', chins)
     call jeveuo(chins//'.CESV', 'L', vr=cesv3)
     call jeveuo(chins//'.CESD', 'L', jcesd3)
@@ -105,8 +105,8 @@ subroutine mearcc(option, mo, chin, chout)
     call jeveuo(chins//'.CESC', 'L', vk8=cesc3)
 !
 !     CREATION DU CHAMP 2D (OUT) SIMPLE
-    chous='&&MEARCC.CHOUT_S'
-    call cescre('V', chous, 'ELNO', ma, 'SIEF_R',&
+    chous = '&&MEARCC.CHOUT_S'
+    call cescre('V', chous, 'ELNO', ma, 'SIEF_R', &
                 nbcmp2, comp, [-1], [-1], [-nbcmp2])
 !
     call jeveuo(chous//'.CESV', 'E', vr=cesv2)
@@ -126,24 +126,24 @@ subroutine mearcc(option, mo, chin, chout)
     do ima = 1, nbma
         if (zi(jma3d+ima-1) .eq. 0) goto 2
 !
-        jco3=jcnx+zi(jlcnx-1+zi(jma3d+ima-1))-1
-        jco2=jcnx+zi(jlcnx-1+zi(jma2d+ima-1))-1
-        npt3=zi(jcesd3-1+5+4*(zi(jma3d+ima-1)-1)+1)
-        npt2=zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
-        k=0
+        jco3 = jcnx+zi(jlcnx-1+zi(jma3d+ima-1))-1
+        jco2 = jcnx+zi(jlcnx-1+zi(jma2d+ima-1))-1
+        npt3 = zi(jcesd3-1+5+4*(zi(jma3d+ima-1)-1)+1)
+        npt2 = zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
+        k = 0
         do ipt2 = 1, npt2
-            ino2=zi(jco2+ipt2-1)
+            ino2 = zi(jco2+ipt2-1)
             do ipt3 = 1, npt3
-                ino3=zi(jco3+ipt3-1)
+                ino3 = zi(jco3+ipt3-1)
                 if (ino3 .eq. ino2) then
-                    k=k+1
-                    pt3d(1+nbnomx*(ima-1)+k-1)=ipt3
+                    k = k+1
+                    pt3d(1+nbnomx*(ima-1)+k-1) = ipt3
                     goto 110
-                endif
+                end if
             end do
 110         continue
         end do
-  2     continue
+2       continue
     end do
 !
 !
@@ -152,40 +152,40 @@ subroutine mearcc(option, mo, chin, chout)
     do ima = 1, nbma
         if (zi(jma3d+ima-1) .eq. 0) goto 1
 !
-        npt=zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
+        npt = zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma2d+ima-1)), k8b)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma3d+ima-1)), k8b)
         do ipt = 1, npt
             do icp = 1, nbcmp2
-                nucmp=indik8( cesc3, comp(icp), 1, zi(jcesd3+1)&
-                )
+                nucmp = indik8(cesc3, comp(icp), 1, zi(jcesd3+1) &
+                               )
 !
-                call cesexi('C', jcesd3, jcesl3, zi(jma3d+ima-1), pt3d(1+nbnomx*(ima-1)+ipt-1),&
+                call cesexi('C', jcesd3, jcesl3, zi(jma3d+ima-1), pt3d(1+nbnomx*(ima-1)+ipt-1), &
                             1, nucmp, iad3)
                 if (iad3 .eq. 0) then
-                    numasu=zi(jma2d+ima-1)
-                    numavo=zi(jma3d+ima-1)
+                    numasu = zi(jma2d+ima-1)
+                    numavo = zi(jma3d+ima-1)
                     call jenuno(jexnum(ma//'.NOMMAI', numasu), nomasu)
                     call jenuno(jexnum(ma//'.NOMMAI', numavo), nomavo)
-                    valk(1)=nomavo
-                    valk(2)=nomasu
+                    valk(1) = nomavo
+                    valk(2) = nomasu
                     call utmess('F', 'CALCULEL5_52', nk=2, valk=valk)
-                endif
-                call cesexi('S', jcesd2, jcesl2, zi(jma2d+ima-1), ipt,&
+                end if
+                call cesexi('S', jcesd2, jcesl2, zi(jma2d+ima-1), ipt, &
                             1, nucmp, iad2)
-                cesv2(1-iad2-1)=cesv3(iad3)
-                zl(jcesl2-iad2-1)=.true.
+                cesv2(1-iad2-1) = cesv3(iad3)
+                zl(jcesl2-iad2-1) = .true.
             end do
         end do
-  1     continue
+1       continue
     end do
 !
-    call cesred(chous, nbma, zi(jma2d), 0, [k8b],&
+    call cesred(chous, nbma, zi(jma2d), 0, [k8b], &
                 'V', chous)
 !
     call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
 !
-    call cescel(chous, ligrmo, option, 'PSIG3D', 'OUI',&
+    call cescel(chous, ligrmo, option, 'PSIG3D', 'OUI', &
                 ibid, 'V', chout, 'F', ibid)
 !
     AS_DEALLOCATE(vi=pt3d)

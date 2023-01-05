@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/alchml.h"
@@ -33,11 +33,11 @@ implicit none
 #include "asterfort/mmchml_l.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19), intent(in) :: sddisc
-character(len=19), intent(in) :: sddyna
-integer, intent(in) :: nume_inst
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ integer, intent(in) :: nume_inst
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'CONTACT5_26')
-    endif
+    end if
 !
 ! - <LIGREL> for contact elements
 !
@@ -78,23 +78,23 @@ integer, intent(in) :: nume_inst
 !
 ! - Get parameters
 !
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Get time parameters
 !
-    time_prev = diinst(sddisc,nume_inst-1)
-    time_curr = diinst(sddisc,nume_inst)
+    time_prev = diinst(sddisc, nume_inst-1)
+    time_curr = diinst(sddisc, nume_inst)
     time_incr = time_curr-time_prev
 !
 ! - Create input field
 !
     l_new_pair = ds_contact%l_renumber
-    if (l_new_pair .and. ds_contact%nb_cont_pair.ne.0) then
+    if (l_new_pair .and. ds_contact%nb_cont_pair .ne. 0) then
         call detrsd('CHAM_ELEM', chmlcf)
         call alchml(ligrcf, 'RIGI_CONT', 'PCONFR', 'V', chmlcf, iret, ' ')
-        ASSERT(iret.eq.0)
-    endif
+        ASSERT(iret .eq. 0)
+    end if
 !
 ! - Fill input field
 !
@@ -102,6 +102,6 @@ integer, intent(in) :: nume_inst
         call mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
     else if (l_cont_lac) then
         call mmchml_l(mesh, ds_contact, ligrcf, chmlcf)
-    endif
+    end if
 !
 end subroutine

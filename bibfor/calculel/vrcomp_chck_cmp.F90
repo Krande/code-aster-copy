@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vrcomp_chck_cmp(mesh, nbCell,&
-                           comporCurrZ,&
-                           comporCurr, comporPrev,&
-                           variRedu, comp_comb_2,&
-                           ligrelCurr, ligrelPrev,&
-                           verbose,&
+subroutine vrcomp_chck_cmp(mesh, nbCell, &
+                           comporCurrZ, &
+                           comporCurr, comporPrev, &
+                           variRedu, comp_comb_2, &
+                           ligrelCurr, ligrelPrev, &
+                           verbose, &
                            nbSpgDifferent, nbVariDifferent, l_modif_vari)
 !
-use mesh_module, only : getGroupsFromCell
+    use mesh_module, only: getGroupsFromCell
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,15 +37,15 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-integer, intent(in) :: nbCell
-character(len=*), intent(in) :: comporCurrZ
-character(len=19), intent(in) :: comporCurr, comporPrev
-character(len=19), intent(in) :: variRedu
-character(len=48), intent(in) :: comp_comb_2
-character(len=19), intent(in) :: ligrelCurr, ligrelPrev
-aster_logical, intent(in) :: verbose
-aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nbCell
+    character(len=*), intent(in) :: comporCurrZ
+    character(len=19), intent(in) :: comporCurr, comporPrev
+    character(len=19), intent(in) :: variRedu
+    character(len=48), intent(in) :: comp_comb_2
+    character(len=19), intent(in) :: ligrelCurr, ligrelPrev
+    aster_logical, intent(in) :: verbose
+    aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -124,12 +124,12 @@ aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
         call jeveuo(comporPrev//'.CESD', 'L', jvCompPrevCesd)
         call jeveuo(comporPrev//'.CESV', 'L', vk16=compPrevCesv)
         call jeveuo(comporPrev//'.CESL', 'L', jvCompPrevCesl)
-    endif
+    end if
 
 ! - Check on mesh
     do iCell = 1, nbCell
-        lCellPrev = repePrev(2*(iCell-1)+1).gt.0
-        lCellCurr = repeCurr(2*(iCell-1)+1).gt.0
+        lCellPrev = repePrev(2*(iCell-1)+1) .gt. 0
+        lCellCurr = repeCurr(2*(iCell-1)+1) .gt. 0
 
 ! ----- Access to number of "sub-points"
         call cesexi('C', jvDcelCesd, jvDcelCesl, iCell, 1, 1, 1, iad1)
@@ -141,10 +141,10 @@ aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
 ! ----- No behaviour on this element -> next element
         if (iad1 .le. 0) then
             cycle
-        endif
+        end if
 
 ! ----- Number of Gauss points/components
-        ASSERT(iad2.gt.0)
+        ASSERT(iad2 .gt. 0)
         nbSpgCurr = dcelCesv(iad1)
         nbVariCurr = dcelCesv(iad2)
         nbPgPrev = zi(jvVariCesd-1+5+4*(iCell-1)+1)
@@ -164,56 +164,56 @@ aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
                     vali(1) = nbSpgPrev
                     vali(2) = nbSpgCurr
                     call utmess('I', 'COMPOR6_12', sk=cellName, ni=2, vali=vali)
-                endif
+                end if
                 nbSpgDifferent = ASTER_TRUE
-            endif
-        endif
+            end if
+        end if
 
 ! ----- Check number of internal state variables
         if (nbVariCurr .ne. nbVariPrev) then
 
 ! --------- This element appears or disappears -> no problem
-            if ((nbVariPrev.eq.0) .or. (nbVariCurr.eq.0)) then
+            if ((nbVariPrev .eq. 0) .or. (nbVariCurr .eq. 0)) then
                 l_modif_vari = ASTER_TRUE
                 cycle
-            endif
+            end if
 
 ! --------- Current comportement can been mixed -> no problem
-            ASSERT(iadp.gt.0)
+            ASSERT(iadp .gt. 0)
             relaCompCurr = compCurrCesv(iadp)
             idxCurr = index(comp_comb_2, relaCompCurr)
             if (idxCurr .gt. 0) then
                 l_modif_vari = ASTER_TRUE
                 cycle
-            endif
+            end if
 
 ! --------- Previous comportement can been mixed -> no problem
             if (comporPrev .ne. ' ') then
                 call cesexi('C', jvCompPrevCesd, jvCompPrevCesl, iCell, 1, 1, 1, iadm)
-                ASSERT(iadm.gt.0)
+                ASSERT(iadm .gt. 0)
                 relaCompPrev = compPrevCesv(iadm)
                 idxPrev = index(comp_comb_2, relaCompPrev)
                 if (idxPrev .gt. 0) then
                     l_modif_vari = ASTER_TRUE
                     cycle
-                endif
+                end if
             else
                 if (nbVariPrev .eq. 1) then
                     call cesexi('C', jvVariCesd, jvVariCesl, iCell, 1, 1, 1, iad2)
-                    ASSERT(iad2.gt.0)
+                    ASSERT(iad2 .gt. 0)
                     all_is_zero = ASTER_TRUE
                     do k = 1, nbPgPrev*nbSpgCurr
                         if (variCesv(iad2+k-1) .ne. 0.d0) then
                             all_is_zero = ASTER_FALSE
-                        endif
+                        end if
                     end do
                     if (all_is_zero) then
                         l_modif_vari = ASTER_TRUE
                         cycle
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
 
 ! ----- Not the same number of internal state variables
         if (nbVariCurr .ne. nbVariPrev) then
@@ -229,8 +229,8 @@ aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
                 vali(1) = nbVariPrev
                 vali(2) = nbVariCurr
                 call utmess('I', 'COMPOR6_13', sk=cellName, ni=2, vali=vali)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 end subroutine

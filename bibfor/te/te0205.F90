@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0205(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxnpg=27
+    integer, parameter :: mxnpg = 27
     aster_logical :: l_func, l_time
     integer :: jv_geom, jv_pres, jv_time, jv_vect
     real(kind=8) :: time
@@ -68,23 +68,23 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PPRESSF', 'L', jv_pres)
     else
         call jevecd('PPRESSR', jv_pres, 0.d0)
-    endif
+    end if
 !
 ! - Get time if present
 !
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jv_time)
     l_time = ASTER_FALSE
-    time   = 0.d0
+    time = 0.d0
     if (jv_time .ne. 0) then
         l_time = ASTER_TRUE
-        time   = zr(jv_time)
-    endif
+        time = zr(jv_time)
+    end if
 !
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim = ndim,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(mxnpg .le. 27)
 !
@@ -96,8 +96,8 @@ character(len=16), intent(in) :: option, nomte
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndofbynode = 4
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 ! - Output field
 !
@@ -109,21 +109,21 @@ character(len=16), intent(in) :: option, nomte
     do ipg = 1, npg
         ldec = (ipg-1)*nno
 ! ----- Get value of pressure
-        call evalPressure(l_func, l_time , time   ,&
-                          nno   , ndim   , ipg    ,&
-                          ivf   , jv_geom, jv_pres,&
-                          pres  )
+        call evalPressure(l_func, l_time, time, &
+                          nno, ndim, ipg, &
+                          ivf, jv_geom, jv_pres, &
+                          pres)
 ! ----- Wrong direction of normal !
         pres = -pres
         do i = 1, nno
-            pres_pg(ipg) = pres_pg(ipg) + pres * zr(ivf+ldec+i-1)
+            pres_pg(ipg) = pres_pg(ipg)+pres*zr(ivf+ldec+i-1)
         end do
     end do
 !
 ! - Second member
 !
-    call nmpr3d_vect(nno, npg, ndofbynode,&
-                     zr(ipoids) , zr(ivf), zr(idfde)  , &
+    call nmpr3d_vect(nno, npg, ndofbynode, &
+                     zr(ipoids), zr(ivf), zr(idfde), &
                      zr(jv_geom), pres_pg, zr(jv_vect))
 !
 end subroutine

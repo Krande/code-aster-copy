@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,25 +33,25 @@ subroutine utpagl(nn, nc, p, sg, sl)
 !     ------------------------------------------------------------------
     real(kind=8) :: r(9), zero
     integer :: in(3), i, j, m, n, nb, k, l
-    data     zero / 0.d0 /
+    data zero/0.d0/
 !
-    if (mod(nc,3) .eq. 0) then
-        nb = nn * nc / 3
+    if (mod(nc, 3) .eq. 0) then
+        nb = nn*nc/3
         do i = 1, nb
-            k = 3 * ( i - 1 )
+            k = 3*(i-1)
             do j = 1, i
-                in(1) = k * (k+1) / 2 + 3*(j-1)
-                in(2) = (k+1) * (k+2) / 2 + 3*(j-1)
-                in(3) = (k+2) * (k+3) / 2 + 3*(j-1)
+                in(1) = k*(k+1)/2+3*(j-1)
+                in(2) = (k+1)*(k+2)/2+3*(j-1)
+                in(3) = (k+2)*(k+3)/2+3*(j-1)
                 if (i .eq. j) then
 !            --------- BLOC DIAGONAL
 ! MATRICE SL ANTISYMETRIQUE
                     r(1) = sg(in(1)+1)
-                    r(2) = - sg(in(2)+1)
-                    r(3) = - sg(in(3)+1)
+                    r(2) = -sg(in(2)+1)
+                    r(3) = -sg(in(3)+1)
                     r(4) = sg(in(2)+1)
                     r(5) = sg(in(2)+2)
-                    r(6) = - sg(in(3)+2)
+                    r(6) = -sg(in(3)+2)
                     r(7) = sg(in(3)+1)
                     r(8) = sg(in(3)+2)
                     r(9) = sg(in(3)+3)
@@ -59,14 +59,14 @@ subroutine utpagl(nn, nc, p, sg, sl)
                         do n = 1, m
                             sl(in(m)+n) = zero
                             do l = 1, 3
-                                sl(in(m)+n) = sl(&
-                                              in(m)+n) + p(l,&
-                                              m) * (&
-                                              r(&
-                                              3*(l-1)+1)*p(1, n) + r(3*(l-1)+2)*p( 2,&
-                                              n) + r(3*(l-1)+3&
-                                              )*p(3, n&
-                                              )&
+                                sl(in(m)+n) = sl( &
+                                              in(m)+n)+p(l, &
+                                                         m)*( &
+                                              r( &
+                                              3*(l-1)+1)*p(1, n)+r(3*(l-1)+2)*p(2, &
+                                                                                n)+r(3*(l-1)+3 &
+                                                                                     )*p(3, n &
+                                                                                         ) &
                                               )
                             end do
                         end do
@@ -77,21 +77,21 @@ subroutine utpagl(nn, nc, p, sg, sl)
                         do n = 1, 3
                             sl(in(m)+n) = zero
                             do l = 1, 3
-                                sl(in(m)+n) = sl(&
-                                              in(m)+n) + p(l,&
-                                              m) * (&
-                                              sg(&
-                                              in(l)+1)*p(1, n) + sg(in(l)+2)*p(2, n) + sg(in(l)+3&
-                                              )*p(3, n&
-                                              )&
+                                sl(in(m)+n) = sl( &
+                                              in(m)+n)+p(l, &
+                                                         m)*( &
+                                              sg( &
+                                              in(l)+1)*p(1, n)+sg(in(l)+2)*p(2, n)+sg(in(l)+3 &
+                                                                                      )*p(3, n &
+                                                                                          ) &
                                               )
                             end do
                         end do
                     end do
-                endif
+                end if
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
-                  nelcom, numeli, xy, erreur, energi,&
+subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc, &
+                  nelcom, numeli, xy, erreur, energi, &
                   aire, alpha, nalpha)
 !
 !*******************************************************************
@@ -93,7 +93,7 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
     integer :: tbnozo(1000), nbnozo(3), tbelzo(1000), nbelzo(3)
     integer :: nbnoe
     real(kind=8) :: factpm, factp
-    parameter (factpm = 2.0d+0,factp=3.0d+0)
+    parameter(factpm=2.0d+0, factp=3.0d+0)
     real(kind=8) :: precmo, precre, prec1, prec2, prec3, airtot
     real(kind=8) :: dtyp, alphan(nnoem), alpref, pe
 !
@@ -103,12 +103,12 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
         dtyp = 1.d+0
     else
         dtyp = 2.d+0
-    endif
+    end if
 !
 ! 2 - INITIALISATION DES ALPHA = DEGRE D INTERPOLATION
 !
     do inno = 1, nnoem
-        alphan(inno)= dtyp
+        alphan(inno) = dtyp
     end do
     do inel = 1, nelem
         alpha(inel) = dtyp
@@ -119,18 +119,18 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
     precmo = 0.d+0
     airtot = 0.d+0
     do inel = 1, nelem
-        precmo = precmo + erreur(inel)**2
-        airtot = airtot + aire(inel)
+        precmo = precmo+erreur(inel)**2
+        airtot = airtot+aire(inel)
     end do
-    precmo = sqrt( precmo / airtot )
-    precre = precmo * factpm
+    precmo = sqrt(precmo/airtot)
+    precre = precmo*factpm
 !
 ! 4 - BOUCLE SUR LES NOEUDS SOMMETS POUR DETECTER
 !     SI LE NOEUD CONSIDERE EST SINGULIER OU PAS
 !     RQ : ICNC(2,INNO)=0 NOEUD MILIEU
 !
     do inno = 1, nnoem
-        if (numeli(2,inno) .eq. 0) goto 40
+        if (numeli(2, inno) .eq. 0) goto 40
 !
 ! 4.1 - ERREUR LOCALE SUR LA COUCHE 1 (=EF CONNECTES A INNO)
 !
@@ -138,15 +138,15 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
         airtot = 0.d+0
 !
         do inel = 1, numeli(1, inno)
-            nuef = numeli(2+inel,inno)
-            prec1 = prec1 + erreur(nuef)**2
-            airtot = airtot + aire(nuef)
+            nuef = numeli(2+inel, inno)
+            prec1 = prec1+erreur(nuef)**2
+            airtot = airtot+aire(nuef)
         end do
         if (prec1 .ne. 0.d+0 .and. airtot .ne. 0.d+0) then
             prec1 = sqrt(prec1/airtot)
         else
             prec1 = 0.d+0
-        endif
+        end if
 !
 ! 4.2 - TEST1 : SI PREC1 > PRECREF ON PASSE AU TEST2
 !
@@ -154,7 +154,7 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 !
 ! 4.2.1 - RECHERCHE DES NOEUDS ET EFS COMPOSANTS LES COUCHES 1,2 ET 3
 !
-            call dzonfg(nsommx, icnc, nelcom, numeli, inno,&
+            call dzonfg(nsommx, icnc, nelcom, numeli, inno, &
                         tbelzo, nbelzo, tbnozo, nbnozo)
 !
 ! 4.2.2 - ERREUR LOCALE SUR LA COUCHE 2
@@ -163,14 +163,14 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
             airtot = 0.d+0
             do inel = nbelzo(1)+1, nbelzo(2)
                 nuef = tbelzo(inel)
-                prec2 = prec2 + erreur(nuef)**2
-                airtot = airtot + aire(nuef)
+                prec2 = prec2+erreur(nuef)**2
+                airtot = airtot+aire(nuef)
             end do
             if (prec2 .ne. 0.d+0 .and. airtot .ne. 0.d+0) then
                 prec2 = sqrt(prec2/airtot)
             else
                 prec2 = prec1
-            endif
+            end if
 !
 ! 4.2.3 - TEST2 : SI PREC2<PREC1 ON PASSE AU TEST3
 !
@@ -182,15 +182,15 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
                 airtot = 0.d+0
                 do inel = nbelzo(2)+1, nbelzo(3)
                     nuef = tbelzo(inel)
-                    prec3 = prec3 + erreur(nuef)**2
-                    airtot = airtot + aire(nuef)
+                    prec3 = prec3+erreur(nuef)**2
+                    airtot = airtot+aire(nuef)
                 end do
                 if (prec3 .ne. 0.d+0 .and. airtot .ne. 0.d+0) then
                     prec3 = sqrt(prec3/airtot)
                 else
                     prec3 = prec2
-                endif
-                prec3 = min(prec3,prec2)
+                end if
+                prec3 = min(prec3, prec2)
 !
 ! 4.2.3.2 - TEST3 : SI PREC1>6*PREC3 LE NOEUD INNO EST SINGULIER
 !
@@ -198,40 +198,40 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 !
 ! 4.2.3.2.1 - CALCUL DE PE
 !
-                    nbnoe=nbnozo(1)+nbnozo(2)+nbnozo(3)
-                    call dfort2(nsommx, icnc, inno, tbelzo, nbelzo(3),&
-                                tbnozo, nbnozo, nbnoe, xy, aire,&
+                    nbnoe = nbnozo(1)+nbnozo(2)+nbnozo(3)
+                    call dfort2(nsommx, icnc, inno, tbelzo, nbelzo(3), &
+                                tbnozo, nbnozo, nbnoe, xy, aire, &
                                 energi, pe)
 !
-                    alpref=0.95d+0
+                    alpref = 0.95d+0
                     if (pe .lt. alpref) then
                         alphan(inno) = 0.5d+0
-                        if (pe .ge. 0.5d0) alphan(inno)=pe
+                        if (pe .ge. 0.5d0) alphan(inno) = pe
                     else
                         alphan(inno) = alphan(inno)*0.9999d+0
-                    endif
+                    end if
 !
 ! 4.2.3.2 - FIN DU TEST3 PREC1>6*PREC3
-                endif
+                end if
 ! 4.2.3 - FIN DU TEST2 PREC2<PREC1
-            endif
+            end if
 ! 4.2 - FIN DU TEST1 PREC1>PRECREF
-        endif
+        end if
 ! 4 - FIN DE LA BOUCLE SUR LES NOEUDS
- 40     continue
+40      continue
     end do
 !
 ! 5 - ON REMPLIT LE TABLEAU ALPHA = DEGRE DE LA SINGULARITE PAR EF
 !
-    nalpha=1
+    nalpha = 1
     do inel = 1, nelem
-        if (icnc(2,inel) .lt. 1) goto 100
+        if (icnc(2, inel) .lt. 1) goto 100
         do inno = 1, icnc(1, inel)
-            alpha(inel) = min(alpha(inel),alphan(icnc(inno+2,inel)))
+            alpha(inel) = min(alpha(inel), alphan(icnc(inno+2, inel)))
         end do
         if (alpha(inel) .lt. dtyp) then
-            nalpha = nalpha + 1
-        endif
+            nalpha = nalpha+1
+        end if
 100     continue
     end do
 !

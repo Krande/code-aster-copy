@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,22 +26,22 @@ subroutine cjst(s, t)
 !       ----------------------------------------------------------------
     integer :: n, nd
     real(kind=8) :: s(6), t(6), invrc2
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !
-    invrc2 = 1.d0 / sqrt(2.d0)
+    invrc2 = 1.d0/sqrt(2.d0)
     if (n .eq. 6) then
-        t(1) = ( s(2)*s(3)-0.5d0*s(6)*s(6) )
-        t(2) = ( s(1)*s(3)-0.5d0*s(5)*s(5) )
-        t(3) = ( s(1)*s(2)-0.5d0*s(4)*s(4) )
-        t(4) = ( invrc2*s(5)*s(6)-s(4)*s(3) )
-        t(5) = ( invrc2*s(4)*s(6)-s(5)*s(2) )
-        t(6) = ( invrc2*s(4)*s(5)-s(6)*s(1) )
-    endif
+        t(1) = (s(2)*s(3)-0.5d0*s(6)*s(6))
+        t(2) = (s(1)*s(3)-0.5d0*s(5)*s(5))
+        t(3) = (s(1)*s(2)-0.5d0*s(4)*s(4))
+        t(4) = (invrc2*s(5)*s(6)-s(4)*s(3))
+        t(5) = (invrc2*s(4)*s(6)-s(5)*s(2))
+        t(6) = (invrc2*s(4)*s(5)-s(6)*s(1))
+    end if
 !
     if (n .eq. 4) then
         t(1) = s(2)*s(3)
         t(2) = s(1)*s(3)
-        t(3) = ( s(1)*s(2)-0.5d0*s(4)*s(4) )
+        t(3) = (s(1)*s(2)-0.5d0*s(4)*s(4))
         t(4) = -s(4)*s(3)
-    endif
+    end if
 end subroutine

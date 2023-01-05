@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine op0124()
     call infmaj()
 !
     call ve0124(typres)
-    valk(1)=typres
+    valk(1) = typres
 !
 ! ----------------------------------------------------------------------
 !                   TRAITEMENT DU MOT CLE "PERM_CHAM"
@@ -53,13 +53,13 @@ subroutine op0124()
 !
     call getfac('PERM_CHAM', nbfac)
     if (nbfac .gt. 0) then
-        if ( typres .ne. 'EVOL_NOLI' ) then
-           valk(2)='PERM_CHAM' 
-           call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk )
-        endif   
+        if (typres .ne. 'EVOL_NOLI') then
+            valk(2) = 'PERM_CHAM'
+            call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
+        end if
         call crperm()
         goto 9999
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !               TRAITEMENT DU MOT CLE "PROL_RTZ"
@@ -67,13 +67,13 @@ subroutine op0124()
 !
     call getfac('PROL_RTZ', nbfac)
     if (nbfac .gt. 0) then
-        if ( typres .ne. 'EVOL_THER' ) then
-           valk(2)='EVOL_THER' 
-           call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk )
-        endif
+        if (typres .ne. 'EVOL_THER') then
+            valk(2) = 'EVOL_THER'
+            call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
+        end if
         call crprol()
         goto 9999
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !               TRAITEMENT DU MOT CLE "AFFE"
@@ -83,7 +83,7 @@ subroutine op0124()
     if (nbfac .gt. 0) then
         call crtype()
         goto 9999
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !               TRAITEMENT DU MOT CLE "ASSE"
@@ -91,13 +91,13 @@ subroutine op0124()
 !
     call getfac('ASSE', nbfac)
     if (nbfac .gt. 0) then
-        if ( typres .ne. 'EVOL_THER' ) then
-           valk(2)='ASSE' 
-           call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
-        endif
+        if (typres .ne. 'EVOL_THER') then
+            valk(2) = 'ASSE'
+            call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
+        end if
         call crasse()
         goto 9999
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !               TRAITEMENT DU MOT CLE "PREP_VRC1"
@@ -105,13 +105,13 @@ subroutine op0124()
 !
     call getfac('PREP_VRC1', nbfac)
     if (nbfac .gt. 0) then
-        if ( typres .ne. 'EVOL_THER' ) then
-           valk(2)='PREP_VRC1' 
-           call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
-        endif
+        if (typres .ne. 'EVOL_THER') then
+            valk(2) = 'PREP_VRC1'
+            call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
+        end if
         call crvrc1()
         goto 9999
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !               TRAITEMENT DU MOT CLE "PREP_VRC2"
@@ -119,13 +119,13 @@ subroutine op0124()
 !
     call getfac('PREP_VRC2', nbfac)
     if (nbfac .gt. 0) then
-        if ( typres .ne. 'EVOL_THER' ) then
-             valk(2)='PREP_VRC2' 
-             call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
-        endif
+        if (typres .ne. 'EVOL_THER') then
+            valk(2) = 'PREP_VRC2'
+            call utmess('F', 'ALGORITH17_41', nk=2, valk=valk)
+        end if
         call crvrc2()
         goto 9999
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !               TRAITEMENT DU MOT CLE "KUCV"
@@ -135,7 +135,7 @@ subroutine op0124()
     if (nbfac .gt. 0) then
         call crkucv()
         goto 9999
-    endif
+    end if
 !
 ! ----------------------------------------------------------------------
 !               TRAITEMENT DU MOT CLE "CONV_CHAR"
@@ -145,7 +145,7 @@ subroutine op0124()
     if (nbfac .gt. 0) then
         call crcoch()
         goto 9999
-    endif
+    end if
 !
 !
 ! ----------------------------------------------------------------------
@@ -156,8 +156,8 @@ subroutine op0124()
     if (nbfac .gt. 0) then
         call crcore()
         goto 9999
-    endif
+    end if
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

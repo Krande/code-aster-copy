@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,26 +79,26 @@ subroutine slecol(imod, nbmail)
         call codnop(chmail, prfmai, 1, 1)
         call codent(inum, 'G', chmail(2:8))
         icol = maille((i-1)*4+4)
-        ipos = icol + 1
+        ipos = icol+1
         if (ipos .gt. icmax) then
             call utmess('A', 'STBTRIAS_2')
             goto 100
-        endif
-        if (.not.logiq(ipos)) then
-            logiq(ipos)= .true.
+        end if
+        if (.not. logiq(ipos)) then
+            logiq(ipos) = .true.
             call codent(icol, 'G', kbid)
-            call wkvect('&&PRESUP.COUL'//kbid, 'V V K8', nbmax+1, jpo( ipos))
-        endif
+            call wkvect('&&PRESUP.COUL'//kbid, 'V V K8', nbmax+1, jpo(ipos))
+        end if
         nbma = jnomb(ipos)
-        nbtot= jmax(ipos)
+        nbtot = jmax(ipos)
         if (nbma .ge. nbtot) then
             call codent(icol, 'G', kbid)
-            nbtot = nbtot + nbmax
+            nbtot = nbtot+nbmax
             jmax(ipos) = nbtot
             call juveca('&&PRESUP.COUL'//kbid, nbtot+1)
             call jeveuo('&&PRESUP.COUL'//kbid, 'E', jpo(ipos))
-        endif
-        jnomb(ipos) = nbma + 1
+        end if
+        jnomb(ipos) = nbma+1
         zk8(jpo(ipos)-1+nbma+1) = chmail
 100     continue
     end do
@@ -109,13 +109,13 @@ subroutine slecol(imod, nbmail)
         if (logiq(ic)) then
             call codent((ic-1), 'G', kbid)
             chgrou = 'COUL_'//kbid
-            write(imod,'(A,4X,2A)')'GROUP_MA','NOM=',chgrou
+            write (imod, '(A,4X,2A)') 'GROUP_MA', 'NOM=', chgrou
             nbma = jnomb(ic)
-            write (imod,'(8(2X,A))') (zk8(jpo(ic)-1+j),j=1,nbma)
-            write (imod,'(A)') 'FINSF'
-            write (imod,'(A)') '%'
+            write (imod, '(8(2X,A))') (zk8(jpo(ic)-1+j), j=1, nbma)
+            write (imod, '(A)') 'FINSF'
+            write (imod, '(A)') '%'
             call jedetr('&&PRESUP.COUL'//kbid)
-        endif
+        end if
     end do
 !
     call jedema()

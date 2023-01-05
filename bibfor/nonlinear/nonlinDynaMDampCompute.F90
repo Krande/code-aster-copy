@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_lload_name: mickael.abbas at edf.fr
 !
-subroutine nonlinDynaMDampCompute(phase    , sddyna     ,&
-                                  nume_dof , ds_measure ,&
+subroutine nonlinDynaMDampCompute(phase, sddyna, &
+                                  nume_dof, ds_measure, &
                                   hval_incr, hval_veasse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -38,12 +38,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
 !
-character(len=10), intent(in) :: phase
-character(len=19), intent(in) :: sddyna
-character(len=24), intent(in) :: nume_dof
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: hval_incr(*)
-character(len=19), intent(in) :: hval_veasse(*)
+    character(len=10), intent(in) :: phase
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_veasse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,16 +81,16 @@ character(len=19), intent(in) :: hval_veasse(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_10')
-    endif
+    end if
 !
 ! - Get hat variables
 !
     call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
     call nmchex(hval_incr, 'VALINC', 'VITKM1', vite_iter)
     call nmchex(hval_veasse, 'VEASSE', 'CNAMOD', vect_asse)
-    call jeveuo(vite_iter(1:19)//'.VALE', 'E', vr = v_vite_iter)
-    call jeveuo(vite_curr(1:19)//'.VALE', 'E', vr = v_vite_curr)
-    call jeveuo(vect_asse(1:19)//'.VALE', 'E', vr = v_vect_asse)
+    call jeveuo(vite_iter(1:19)//'.VALE', 'E', vr=v_vite_iter)
+    call jeveuo(vite_curr(1:19)//'.VALE', 'E', vr=v_vite_curr)
+    call jeveuo(vect_asse(1:19)//'.VALE', 'E', vr=v_vect_asse)
 !
 ! - Initializations
 !
@@ -98,11 +98,11 @@ character(len=19), intent(in) :: hval_veasse(*)
     call ndynkk(sddyna, 'SDAMMO', sdammo)
     valmod = sdammo(1:19)//'.VALM'
     basmod = sdammo(1:19)//'.BASM'
-    nreavi = ndynlo(sddyna,'NREAVI')
+    nreavi = ndynlo(sddyna, 'NREAVI')
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! - Compute
@@ -113,10 +113,10 @@ character(len=19), intent(in) :: hval_veasse(*)
         call fmodam(nb_equa, v_vite_curr, valmod, basmod, v_vect_asse)
         if (nreavi) then
             call fmodam(nb_equa, v_vite_curr, valmod, basmod, v_vect_asse)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Stop timer
 !
@@ -126,6 +126,6 @@ character(len=19), intent(in) :: hval_veasse(*)
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', vect_asse, 6)
-    endif
+    end if
 !
 end subroutine

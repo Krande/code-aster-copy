@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
-                  dfdx, dfdy, poids, poiaxi, dsx,&
+subroutine ermev2(nno, igeom, ff, sig, nbcmp, &
+                  dfdx, dfdy, poids, poiaxi, dsx, &
                   dsy, norme)
     implicit none
 #include "jeveux.h"
@@ -80,51 +80,51 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
 !
 ! ----------------------------------------------------------------------
 !
-    dsig11=0.d0
-    dsig12=0.d0
-    dsig22=0.d0
-    dsig21=0.d0
+    dsig11 = 0.d0
+    dsig12 = 0.d0
+    dsig22 = 0.d0
+    dsig21 = 0.d0
 !
-    spg11=0.d0
-    spg22=0.d0
-    spg33=0.d0
-    spg12=0.d0
+    spg11 = 0.d0
+    spg22 = 0.d0
+    spg33 = 0.d0
+    spg12 = 0.d0
 !
 !====
 ! 1. MODELISATION AXI
 !====
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
 !
-        r=0.d0
+        r = 0.d0
         do i = 1, nno
-            r=r+zr(igeom-1+2*(i-1)+1)*ff(i)
+            r = r+zr(igeom-1+2*(i-1)+1)*ff(i)
 !
-            sig11=sig(nbcmp*(i-1)+1)
-            sig22=sig(nbcmp*(i-1)+2)
-            sig33=sig(nbcmp*(i-1)+3)
-            sig12=sig(nbcmp*(i-1)+4)
+            sig11 = sig(nbcmp*(i-1)+1)
+            sig22 = sig(nbcmp*(i-1)+2)
+            sig33 = sig(nbcmp*(i-1)+3)
+            sig12 = sig(nbcmp*(i-1)+4)
 !
-            dsig11=dsig11+sig11*dfdx(i)
-            dsig12=dsig12+sig12*dfdy(i)
-            dsig22=dsig22+sig22*dfdy(i)
-            dsig21=dsig21+sig12*dfdx(i)
+            dsig11 = dsig11+sig11*dfdx(i)
+            dsig12 = dsig12+sig12*dfdy(i)
+            dsig22 = dsig22+sig22*dfdy(i)
+            dsig21 = dsig21+sig12*dfdx(i)
 !
-            spg11=spg11+sig11*ff(i)
-            spg22=spg22+sig22*ff(i)
-            spg33=spg33+sig33*ff(i)
-            spg12=spg12+sig12*ff(i)
+            spg11 = spg11+sig11*ff(i)
+            spg22 = spg22+sig22*ff(i)
+            spg33 = spg33+sig33*ff(i)
+            spg12 = spg12+sig12*ff(i)
 !
         end do
 !
 !
-        ASSERT(abs(r).gt.r8prem())
+        ASSERT(abs(r) .gt. r8prem())
 !
-        dsx=dsig11+dsig12+(1.d0/r)*(spg11-spg33)
-        dsy=dsig21+dsig22+(1.d0/r)*spg12
+        dsx = dsig11+dsig12+(1.d0/r)*(spg11-spg33)
+        dsy = dsig21+dsig22+(1.d0/r)*spg12
         if (poiaxi .eq. 1) then
             poids = poids*r
-        endif
+        end if
 !
 !====
 ! 2. AUTRE MODELISATION
@@ -133,32 +133,32 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
     else
 !
         do i = 1, nno
-            sig11=sig(nbcmp*(i-1)+1)
-            sig22=sig(nbcmp*(i-1)+2)
-            sig33=sig(nbcmp*(i-1)+3)
-            sig12=sig(nbcmp*(i-1)+4)
+            sig11 = sig(nbcmp*(i-1)+1)
+            sig22 = sig(nbcmp*(i-1)+2)
+            sig33 = sig(nbcmp*(i-1)+3)
+            sig12 = sig(nbcmp*(i-1)+4)
 !
-            dsig11=dsig11+sig11*dfdx(i)
-            dsig12=dsig12+sig12*dfdy(i)
-            dsig22=dsig22+sig22*dfdy(i)
-            dsig21=dsig21+sig12*dfdx(i)
+            dsig11 = dsig11+sig11*dfdx(i)
+            dsig12 = dsig12+sig12*dfdy(i)
+            dsig22 = dsig22+sig22*dfdy(i)
+            dsig21 = dsig21+sig12*dfdx(i)
 !
-            spg11=spg11+sig11*ff(i)
-            spg22=spg22+sig22*ff(i)
-            spg33=spg33+sig33*ff(i)
-            spg12=spg12+sig12*ff(i)
+            spg11 = spg11+sig11*ff(i)
+            spg22 = spg22+sig22*ff(i)
+            spg33 = spg33+sig33*ff(i)
+            spg12 = spg12+sig12*ff(i)
 !
         end do
 !
-        dsx=dsig11+dsig12
-        dsy=dsig21+dsig22
+        dsx = dsig11+dsig12
+        dsy = dsig21+dsig22
 !
-    endif
+    end if
 !
 !====
 ! 3.
 !====
 !
-    norme=spg11**2+spg22**2+spg33**2+spg12**2
+    norme = spg11**2+spg22**2+spg33**2+spg12**2
 !
 end subroutine

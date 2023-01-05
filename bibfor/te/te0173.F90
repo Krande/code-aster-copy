@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0173(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,31 +69,31 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PVITEFF', 'L', jvLoad)
     else
         call jevech('PVITEFR', 'L', jvLoad)
-    endif
+    end if
 
 ! - Get time if present
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jvTime)
     lTime = ASTER_FALSE
-    time  = 0.d0
+    time = 0.d0
     if (jvTime .ne. 0) then
         lTime = ASTER_TRUE
-        time  = zr(jvTime)
-    endif
+        time = zr(jvTime)
+    end if
 
 ! - Get element parameters
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     nno=nbNode, npg=npg, ndim=cellDime,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nbNode, npg=npg, ndim=cellDime, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShapeX)
     ASSERT(nbNode .le. 9)
-    jvDShapeY = jvDShapeX + 1
+    jvDShapeY = jvDShapeX+1
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndofbynode = 2
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndofbynode = 1
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 
 ! - Get material properties for fluid
     j_mater = zi(jvMate)
@@ -107,12 +107,12 @@ character(len=16), intent(in) :: option, nomte
 
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
     do ino = 1, nbNode
-        i = jvGeom + 3*(ino-1) -1
+        i = jvGeom+3*(ino-1)-1
         do jno = 1, nbNode
-            j = jvGeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = jvGeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 
@@ -129,35 +129,35 @@ character(len=16), intent(in) :: option, nomte
             idec = (i-1)*cellDime
             do j = 1, nbNode
                 jdec = (j-1)*cellDime
-                nx = nx + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sx(i,j)
-                ny = ny + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sy(i,j)
-                nz = nz + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sz(i,j)
+                nx = nx+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sx(i, j)
+                ny = ny+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sy(i, j)
+                nz = nz+zr(jvDShapeX+kdec+idec)*zr(jvDShapeY+kdec+jdec)*sz(i, j)
             end do
         end do
 
 ! ----- Compute jacobian
-        jac = sqrt (nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
 
 ! ----- Get value of speed
-        call evalFaceSpeedVale(lFunc    , lTime   , time  ,&
-                               nbNode   , cellDime, ipg   ,&
-                               jvShape  , jvGeom  , jvLoad,&
+        call evalFaceSpeedVale(lFunc, lTime, time, &
+                               nbNode, cellDime, ipg, &
+                               jvShape, jvGeom, jvLoad, &
                                speedVale, x, y, z)
 
 ! ----- Get direction of speed
-        call evalFaceSpeedDire(fsi_form, cellDime , jvLoad, speedDire, &
-                               ipg      , nx    , ny      ,&
-                               lFunc_ = lFunc, lReal_ = lReal,&
-                               lTime_ = lTime, time_ = time ,&
-                               x_ = x, y_ = y,&
-                               z_ = z, nz_ = nz)
+        call evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
+                               ipg, nx, ny, &
+                               lFunc_=lFunc, lReal_=lReal, &
+                               lTime_=lTime, time_=time, &
+                               x_=x, y_=y, &
+                               z_=z, nz_=nz)
 
 ! ----- Compute vector
         do i = 1, nbNode
             ii = ndofbynode*i
-            zr(jvVect+ii-1) = zr(jvVect+ii-1) - speedDire *&
-                               jac*zr(jvWeight+ipg-1) *&
-                               zr(jvShape+ldec+i-1) * speedVale * rho
+            zr(jvVect+ii-1) = zr(jvVect+ii-1)-speedDire* &
+                              jac*zr(jvWeight+ipg-1)* &
+                              zr(jvShape+ldec+i-1)*speedVale*rho
         end do
 
     end do

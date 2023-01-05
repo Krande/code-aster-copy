@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
-                  ds_contact, geom, statue, mmait, amait,&
+subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim, &
+                  ds_contact, geom, statue, mmait, amait, &
                   nmait)
 !
     use NonLin_Datastructure_type
@@ -78,8 +78,8 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
     integer :: zxain
 !
 !   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
-    real(kind=8), parameter :: atol=1.e-12
-    real(kind=8), parameter :: rtol=1.e-12
+    real(kind=8), parameter :: atol = 1.e-12
+    real(kind=8), parameter :: rtol = 1.e-12
     aster_logical :: near
 !
 ! --------------------------------------------------------------------
@@ -93,8 +93,8 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 ! --- INITIALISATIONS
 !
     dmin = r8gaem()
-    coord(1:3)=0.d0
-    ntmae = cfdisi(ds_contact%sdcont_defi,'NTMAE')
+    coord(1:3) = 0.d0
+    ntmae = cfdisi(ds_contact%sdcont_defi, 'NTMAE')
 !
 ! --- RECUPERATION DE QUELQUES DONNEES
 !
@@ -119,9 +119,9 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
         ifiss = zi(jmaesx+zmesx*(ima-1)+5-1)
 !
 ! ---  RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION DE LA MAILLE
-        call cesexi('C', jcesd(1), jcesl(1), nummai, 1,&
+        call cesexi('C', jcesd(1), jcesl(1), nummai, 1, &
                     ifiss, 3, iad)
-        ASSERT(iad.gt.0)
+        ASSERT(iad .gt. 0)
         nbpt = zi(jcesv(1)-1+iad)
 ! ----- BOUCLE SUR LES POINTS D'INTERSECTION
 !
@@ -129,42 +129,42 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 ! ------- COORDONNEES GEOMETRIQUES DU POINT D'INTERSECTION
 !
             do j = 1, ndim
-                call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
-                            ifiss, ndim*( ini-1)+j, iad)
-                ASSERT(iad.gt.0)
-                coord(j)=zr(jcesv(6)-1+iad)
+                call cesexi('S', jcesd(6), jcesl(6), nummai, 1, &
+                            ifiss, ndim*(ini-1)+j, iad)
+                ASSERT(iad .gt. 0)
+                coord(j) = zr(jcesv(6)-1+iad)
             end do
 !
 ! ------- CALCUL DE LA DISTANCE
-            dist = sqrt( ( coord(1)-geom(1))**2+ (coord(2)-geom(2))**2+ (coord(3)-geom(3) )**2 )
-            call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
-                        ifiss, zxain*( ini-1)+2, iad)
+            dist = sqrt((coord(1)-geom(1))**2+(coord(2)-geom(2))**2+(coord(3)-geom(3))**2)
+            call cesexi('S', jcesd(2), jcesl(2), nummai, 1, &
+                        ifiss, zxain*(ini-1)+2, iad)
             if (nint(zr(jcesv(2)-1+iad)) .eq. 0 .and. ini .eq. 3 .and. ndim .eq. 2) cycle
 !
 !           dist est-elle egale a dmin ?
-            near = abs(dist-dmin) .le. (atol + dmin*rtol)
+            near = abs(dist-dmin) .le. (atol+dmin*rtol)
 !
             if (dist .lt. dmin .and. .not. near) then
-                call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
+                call cesexi('S', jcesd(2), jcesl(2), nummai, 1, &
                             ifiss, zxain*(ini-1)+1, iad)
-                ASSERT(iad.gt.0)
+                ASSERT(iad .gt. 0)
                 if (nint(zr(jcesv(2)-1+iad)) .gt. 0) then
                     amait = nint(zr(jcesv(2)-1+iad))
                     nmait = 0
                     dmin = dist
                     mmait = nummai
                 else
-                    call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
+                    call cesexi('S', jcesd(2), jcesl(2), nummai, 1, &
                                 ifiss, zxain*(ini-1)+2, iad)
-                    ASSERT(iad.gt.0)
+                    ASSERT(iad .gt. 0)
                     if (nint(zr(jcesv(2)-1+iad)) .gt. 0) then
                         amait = 0
                         nmait = nint(zr(jcesv(2)-1+iad))
                         dmin = dist
                         mmait = nummai
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
 100     continue
     end do

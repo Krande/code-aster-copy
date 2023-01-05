@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmsui3(ds_print     , field_disc, nb_elem  , nb_node      , nb_poin       ,&
-                  nb_spoi      , nb_cmp    , type_extr, type_extr_cmp, type_extr_elem,&
-                  list_elem    , work_node , work_elem, field        , field_s       ,&
+subroutine nmsui3(ds_print, field_disc, nb_elem, nb_node, nb_poin, &
+                  nb_spoi, nb_cmp, type_extr, type_extr_cmp, type_extr_elem, &
+                  list_elem, work_node, work_elem, field, field_s, &
                   i_dof_monitor)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -82,7 +82,7 @@ implicit none
     integer :: nb_poin_elem, nb_spoi_elem, elem_nume, iret
     real(kind=8) :: vale_r
     integer :: nb_cmp_r, nb_poin_r, nb_spoi_r, nb_node_r, nb_elem_r
-    integer :: nb_poin_e , nb_spoi_e
+    integer :: nb_poin_e, nb_spoi_e
     integer, pointer :: cesd(:) => null()
     integer, pointer :: v_list_elem(:) => null()
     real(kind=8), pointer :: v_work_node(:) => null()
@@ -98,41 +98,41 @@ implicit none
         if (iret .eq. 0) then
             call sdmpic('CHAM_ELEM', field)
             call celces(field, 'V', field_s)
-        endif
+        end if
         call jeveuo(field_s(1:19)//'.CESD', 'L', vi=cesd)
-    endif
+    end if
 !
 ! - Number of nodes for loop
 !
     if (field_disc .eq. 'NOEU') then
         if (type_extr .eq. 'VALE') then
             nb_node_r = nb_node
-        elseif ((type_extr.eq.'MIN').or.&
-                (type_extr.eq.'MAX').or.&
-                (type_extr.eq.'MAXI_ABS').or.&
-                (type_extr.eq.'MINI_ABS').or.&
-                (type_extr.eq.'MOY')) then
+        elseif ((type_extr .eq. 'MIN') .or. &
+                (type_extr .eq. 'MAX') .or. &
+                (type_extr .eq. 'MAXI_ABS') .or. &
+                (type_extr .eq. 'MINI_ABS') .or. &
+                (type_extr .eq. 'MOY')) then
             nb_node_r = 1
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Number of elements for loop
 !
     if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         if (type_extr .eq. 'VALE') then
             nb_elem_r = nb_elem
-        elseif ((type_extr.eq.'MIN').or.&
-                (type_extr.eq.'MAX').or.&
-                (type_extr.eq.'MAXI_ABS').or.&
-                (type_extr.eq.'MINI_ABS').or.&
-                (type_extr.eq.'MOY')) then
+        elseif ((type_extr .eq. 'MIN') .or. &
+                (type_extr .eq. 'MAX') .or. &
+                (type_extr .eq. 'MAXI_ABS') .or. &
+                (type_extr .eq. 'MINI_ABS') .or. &
+                (type_extr .eq. 'MOY')) then
             nb_elem_r = 1
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Number for components for loop
 !
@@ -140,25 +140,25 @@ implicit none
         nb_cmp_r = nb_cmp
     else
         nb_cmp_r = 1
-    endif
+    end if
 !
 ! - For node discretization
 !
     if (field_disc .eq. 'NOEU') then
-        call jeveuo(work_node, 'L', vr = v_work_node)
+        call jeveuo(work_node, 'L', vr=v_work_node)
         do i_node = 1, nb_node_r
             do i_cmp = 1, nb_cmp_r
-                vale_r   = v_work_node(i_cmp+nb_cmp*(i_node-1))
+                vale_r = v_work_node(i_cmp+nb_cmp*(i_node-1))
                 call nmsuiy(ds_print, vale_r, i_dof_monitor)
             end do
         end do
-    endif
+    end if
 !
 ! - For element discretization
 !
     if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
-        call jeveuo(work_elem, 'L', vr = v_work_elem)
-        call jeveuo(list_elem, 'L', vi = v_list_elem)
+        call jeveuo(work_elem, 'L', vr=v_work_elem)
+        call jeveuo(list_elem, 'L', vi=v_list_elem)
 !
         do i_elem = 1, nb_elem_r
 !
@@ -186,20 +186,20 @@ implicit none
             else
                 nb_poin_r = 1
                 nb_spoi_r = 1
-            endif
+            end if
 !
             do i_poin = 1, nb_poin_r
                 do i_spoi = 1, nb_spoi_r
                     do i_cmp = 1, nb_cmp_r
-                        vale_r   = v_work_elem(nb_cmp*nb_poin*nb_spoi*(i_elem-1)+&
-                                               nb_poin*nb_spoi*(i_cmp-1)+&
-                                               nb_spoi*(i_poin-1)+&
-                                               (i_spoi-1)+1)
+                        vale_r = v_work_elem(nb_cmp*nb_poin*nb_spoi*(i_elem-1)+ &
+                                             nb_poin*nb_spoi*(i_cmp-1)+ &
+                                             nb_spoi*(i_poin-1)+ &
+                                             (i_spoi-1)+1)
                         call nmsuiy(ds_print, vale_r, i_dof_monitor)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,10 +51,10 @@ subroutine te0182(option, nomte)
     integer :: i, iimp, ij, ino, j, jno, mater
 !
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !**
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
     ndi = nno*(nno+1)/2
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -65,36 +65,36 @@ subroutine te0182(option, nomte)
 !**
     call jevech('PMATERC', 'L', imate)
     mater = zi(imate)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, mater, &
+                ' ', 'FLUIDE', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
     do i = 1, ndi
 !*
-        zc(imattt+i-1) =(0.0d0,0.0d0)
+        zc(imattt+i-1) = (0.0d0, 0.0d0)
     end do
 !**
-    rhosz= (0.0d0,0.0d0)
-    if (zc(iimp) .ne. (0.d0,0.d0)) then
-        rhosz= rho(1)/zc(iimp)
+    rhosz = (0.0d0, 0.0d0)
+    if (zc(iimp) .ne. (0.d0, 0.d0)) then
+        rhosz = rho(1)/zc(iimp)
     else
         goto 120
-    endif
+    end if
 !**
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -115,23 +115,23 @@ subroutine te0182(option, nomte)
             do j = 1, nno
                 jdec = (j-1)*ndim
 !
-                nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
 !
             end do
         end do
 !
 !   CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
-        jac = sqrt(nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
 !
         do i = 1, nno
             do j = 1, i
-                ij = (i-1)*i/2 + j
+                ij = (i-1)*i/2+j
 !**
-                zc(imattt+ij-1) = zc(imattt+ij-1) + jac *rhosz* zr(ipoids+ipg-1) * zr(ivf+ldec+i-&
-                                  &1) * zr(ivf+ldec+j-1)
+                zc(imattt+ij-1) = zc(imattt+ij-1)+jac*rhosz*zr(ipoids+ipg-1)*zr(ivf+ldec+i-&
+                                  &1)*zr(ivf+ldec+j-1)
 !
 !**
             end do

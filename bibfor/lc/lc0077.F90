@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,C1509
 
-subroutine lc0077(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
+subroutine lc0077(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, ndsde,&
+                  sigp, vip, typmod, icomp, ndsde, &
                   dsidep, codret)
-                  
+
     use Behaviour_type
     use kichenin_nl_module, only: CONSTITUTIVE_LAW, Init, Integrate
     implicit none
@@ -33,48 +33,48 @@ subroutine lc0077(BEHinteg,&
 #include "asterfort/Behaviour_type.h"
 ! --------------------------------------------------------------------------------------------------
     type(Behaviour_Integ)        :: BEHinteg
-    character(len=*) ,intent(in) :: fami
-    integer          ,intent(in) :: kpg
-    integer          ,intent(in) :: ksp
-    integer          ,intent(in) :: ndim
-    integer          ,intent(in) :: imate
-    character(len=16),intent(in) :: compor(*)
-    real(kind=8)     ,intent(in) :: carcri(*)
-    real(kind=8)     ,intent(in) :: instam
-    real(kind=8)     ,intent(in) :: instap
-    integer          ,intent(in) :: neps
-    real(kind=8)     ,intent(in) :: epsm(neps)
-    real(kind=8)     ,intent(in) :: deps(neps)
-    integer          ,intent(in) :: nsig
-    real(kind=8)     ,intent(in) :: sigm(nsig)
-    integer          ,intent(in) :: nvi
-    real(kind=8)     ,intent(in) :: vim(nvi)
-    character(len=16),intent(in) :: option
-    real(kind=8)     ,intent(in) :: angmas(*)
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps)
+    real(kind=8), intent(in) :: deps(neps)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(nsig)
+    integer, intent(in) :: nvi
+    real(kind=8), intent(in) :: vim(nvi)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
-    character(len=8) ,intent(in) :: typmod(*)
-    integer          ,intent(in) :: icomp
-    integer          ,intent(in) :: ndsde
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: ndsde
     real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
-    integer          ,intent(out):: codret
+    integer, intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATION KICHENIN_NL
 ! --------------------------------------------------------------------------------------------------
     aster_logical         :: lMatr, lSigm, lVari
     integer               :: ndimsi
-    real(kind=8)          :: sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi), eps(2*ndim)
+    real(kind=8)          :: sig(2*ndim), dsde(2*ndim, 2*ndim), vi(nvi), eps(2*ndim)
     type(CONSTITUTIVE_LAW):: cl
 ! --------------------------------------------------------------------------------------------------
 
-    ASSERT (nsig .ge. 2*ndim)
-    ASSERT (neps .ge. 2*ndim)
+    ASSERT(nsig .ge. 2*ndim)
+    ASSERT(neps .ge. 2*ndim)
 
     ndimsi = 2*ndim
-    sig    = 0
-    vi     = 0
-    dsde   = 0
-    eps    = epsm(1:ndimsi) + deps(1:ndimsi)
+    sig = 0
+    vi = 0
+    dsde = 0
+    eps = epsm(1:ndimsi)+deps(1:ndimsi)
 
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
@@ -82,7 +82,7 @@ subroutine lc0077(BEHinteg,&
 
     if (lVari) vip = 0
 
-    cl = Init(ndimsi, option, fami, kpg, ksp, imate,&
+    cl = Init(ndimsi, option, fami, kpg, ksp, imate, &
               nint(carcri(ITER_INTE_MAXI)), carcri(RESI_INTE_RELA), &
               instap-instam)
 
@@ -90,9 +90,9 @@ subroutine lc0077(BEHinteg,&
 
     codret = cl%exception
 
-    if (codret.eq.0) then
+    if (codret .eq. 0) then
         if (lSigm) sigp(1:ndimsi) = sig
         if (lVari) vip(1:nvi) = vi
-        if (lMatr) dsidep(1:ndimsi,1:ndimsi) = dsde
-    endif
+        if (lMatr) dsidep(1:ndimsi, 1:ndimsi) = dsde
+    end if
 end subroutine

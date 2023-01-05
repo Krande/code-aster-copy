@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
+subroutine lkdndx(nmat, mater, i1, devsig, bprime, &
                   val, para, xi, dpardx, dndxi)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -49,14 +49,14 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
     real(kind=8) :: dctdxi, dtpdxi, dphidx, hx, dhxdxi, dgxdxi, dftdxi
     real(kind=8) :: daxdxi, dmxdxi, dsxdxi, dstdxi, lgleps
     real(kind=8) :: sigtil
-    parameter       (zero   = 0.d0)
-    parameter       (un     = 1.d0)
-    parameter       (deux   = 2.d0)
-    parameter       (trois  = 3.d0)
-    parameter       (six    = 6.d0)
-    parameter       (lgleps = 1.0d-8)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
+    parameter(six=6.d0)
+    parameter(lgleps=1.0d-8)
 !     --------------------------------------------------------------
-    common /tdim/   ndt,ndi
+    common/tdim/ndt, ndi
 !     --------------------------------------------------------------
 !
 ! --------------------------------------
@@ -80,27 +80,27 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
 ! --- RECUPERATION DE PARAMETRES DU MODELE ----------------------------
 ! =====================================================================
     pi = r8pi()
-    pref = mater(1,2)
-    sigc = mater(3,2)
-    h0ext = mater(4,2)
-    s0 = mater(11,2)
-    mult = mater(15,2)
-    xie = mater(17,2)
-    mvmax = mater(19,2)
+    pref = mater(1, 2)
+    sigc = mater(3, 2)
+    h0ext = mater(4, 2)
+    s0 = mater(11, 2)
+    mult = mater(15, 2)
+    xie = mater(17, 2)
+    mvmax = mater(19, 2)
 !
-    mu0v = mater(24,2)
-    xi0v = mater(25,2)
-    mu1 = mater(26,2)
-    xi1 = mater(27,2)
+    mu0v = mater(24, 2)
+    xi0v = mater(25, 2)
+    mu1 = mater(26, 2)
+    xi1 = mater(27, 2)
 ! =================================================================
 ! --- CALCUL DE ALPHA RES -----------------------------------------
 ! =================================================================
-    alres = un + mult
+    alres = un+mult
 ! =================================================================
 ! --- CALCUL DE H(THETA), H0E ET H0C -----------------------------
 ! =================================================================
-    rcos3t = cos3t (devsig, pref, lgleps)
-    call lkhtet(nmat, mater, rcos3t, h0e, h0c,&
+    rcos3t = cos3t(devsig, pref, lgleps)
+    call lkhtet(nmat, mater, rcos3t, h0e, h0c, &
                 htheta)
 ! =================================================================
 ! --- CALCUL DE C TILDE -------------------------------------------
@@ -109,14 +109,14 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
         fact1 = zero
         c = zero
     else
-        fact1 = un + para(1)*para(3)*para(2)**(para(1)-un)
+        fact1 = un+para(1)*para(3)*para(2)**(para(1)-un)
         c = sigc*(para(2))**para(1)/deux/sqrt(fact1)
-    endif
+    end if
 ! =================================================================
 ! --- CALCUL DE PHI TILDE -----------------------------------------
 ! =================================================================
     fact1 = sqrt(fact1)
-    phi = deux*atan2(fact1,un)-pi/deux
+    phi = deux*atan2(fact1, un)-pi/deux
 ! =================================================================
 ! --- CALCUL DE SIGMA TILDE ---------------------------------------
 ! =================================================================
@@ -127,13 +127,13 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
 ! =================================================================
     troisd = trois/deux
     tiers = un/trois
-    fact2 = (deux*htheta -(h0c + h0ext))/deux/(h0c-h0ext)
-    sigmin = tiers * (i1 - (troisd-fact2)*sqrt(troisd)*sii)
-    sigmax = tiers * (i1 + (troisd+fact2)*sqrt(troisd)*sii)
+    fact2 = (deux*htheta-(h0c+h0ext))/deux/(h0c-h0ext)
+    sigmin = tiers*(i1-(troisd-fact2)*sqrt(troisd)*sii)
+    sigmax = tiers*(i1+(troisd+fact2)*sqrt(troisd)*sii)
 ! =================================================================
 ! --- CALCUL DE SIGLIM  -------------------------------------------
 ! =================================================================
-    siglim = sigmin + sigc * (mvmax*sigmin/sigc + s0)
+    siglim = sigmin+sigc*(mvmax*sigmin/sigc+s0)
 ! =================================================================
 ! --- CALCUL DE ALPHA  --------------------------------------------
 ! =================================================================
@@ -142,15 +142,15 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
 ! --- CALCUL DE DSINDXI -------------------------------------------
 ! =================================================================
     if (val .eq. 1) then
-        sinpsi = mu1*(alpha - alres)/(xi1*alpha + alres)
+        sinpsi = mu1*(alpha-alres)/(xi1*alpha+alres)
         if (para(2) .gt. zero) then
-            dftdxi = sigc*para(2)**(para(1))*(daxdxi*log(para(2))+ para(1)/para(2)*dsxdxi)
+            dftdxi = sigc*para(2)**(para(1))*(daxdxi*log(para(2))+para(1)/para(2)*dsxdxi)
             hx = sqrt(un+para(1)*para(3)*para(2)**(para(1)-un))
-            dgxdxi = daxdxi*para(3)*para(2)**(para(1)-un)+ para(1)* dmxdxi*para(2)**(para(1)-un)+&
-                     & para(1)*para(3)*(daxdxi*log( para(2))+ (para(1)-un)/para(2)*dsxdxi)*para(2&
-                     &)** (para(1)- un)
+            dgxdxi = daxdxi*para(3)*para(2)**(para(1)-un)+para(1)*dmxdxi*para(2)**(para(1)-un)+&
+                     & para(1)*para(3)*(daxdxi*log(para(2))+(para(1)-un)/para(2)*dsxdxi)*para(2&
+                     &)**(para(1)-un)
             dhxdxi = dgxdxi/(deux*hx)
-            dctdxi = (dftdxi*hx-dhxdxi*sigc*para(2) **para(1))/(deux* hx**2)
+            dctdxi = (dftdxi*hx-dhxdxi*sigc*para(2)**para(1))/(deux*hx**2)
             dphidx = deux/(un+hx**2)*dhxdxi
             dtpdxi = (un+(tan(phi))**2)*dphidx
             dstdxi = dctdxi/tan(phi)-c*dtpdxi/(tan(phi))**2
@@ -158,11 +158,11 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
             dsindx = mu1*alres*(un+xi1)/(xi1*alpha+alres)**2*daldxi
         else
             dsindx = zero
-        endif
+        end if
     else
-        sinpsi = mu0v*((sigmax - siglim)/(xi0v*sigmax + siglim))
+        sinpsi = mu0v*((sigmax-siglim)/(xi0v*sigmax+siglim))
         dsindx = zero
-    endif
+    end if
 !
 ! --------------------------
 ! --- CONSTRUCTION DE DBPDXI
@@ -172,9 +172,9 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
 ! --- ASSEMBLAGE DE DNDXI
 ! -----------------------
     do i = 1, ndt
-        dndxi(i) = (&
-                   devsig(i)/sii*(bprime**2+trois)-deux*bprime**2 *devsig(i)/sii+deux*bprime*vide&
-                   &nt(i))/ (bprime**2+trois)**( trois/deux&
+        dndxi(i) = ( &
+                   devsig(i)/sii*(bprime**2+trois)-deux*bprime**2*devsig(i)/sii+deux*bprime*vide&
+                   &nt(i))/(bprime**2+trois)**(trois/deux &
                    )*dbpdxi
     end do
 !

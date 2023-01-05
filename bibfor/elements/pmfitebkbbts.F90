@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
 
     real(kind=8) :: vf(ncarf, nf), ve(nf), vs(6), b(4), wi, gxjx, gg, vv(*)
     real(kind=8) :: ksg(3), sk(*), skt(78), vvt(12), g
-    real(kind=8) :: yj(*), zj(*), gxjxpou(*), skp(78,*)
+    real(kind=8) :: yj(*), zj(*), gxjxpou(*), skp(78, *)
     real(kind=8) :: vvp(12, *)
     real(kind=8) :: vev(*), vfv(7, *)
 !
@@ -94,7 +94,7 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
     vs(:) = 0.0d0
 
 !
-    if ( typfib.eq. 1 ) then
+    if (typfib .eq. 1) then
 !       3 caractéristiques utiles par fibre : y z aire
         call pmfite(typfib, nf, ncarf, vf, ve, vs)
         call pmfbkb(vs, b, wi, gxjx, sk)
@@ -104,7 +104,7 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
         ksg(3) = vs(3)*gg
         call pmfbts(b, wi, ksg, vv)
 
-    else if ( typfib.eq. 2 ) then
+    else if (typfib .eq. 2) then
 
         call r8inir(nbassepou*78, 0.d0, skp, 1)
         call r8inir(nbassepou*12, 0.d0, skp, 1)
@@ -112,46 +112,46 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
         call r8inir(78, 0.d0, sk, 1)
 !       6 caractéristiques utiles par fibre : y z aire yp zp numgr
 !       Boucle sur les poutres
-        pos=1
-        posfib=0
+        pos = 1
+        posfib = 0
         do i = 1, nbassepou
-          !Position de la poutre
-          yj(i)=vf(4,pos)
-          zj(i)=vf(5,pos)
-          call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
-          call r8inir(maxfipoutre, 0.d0, vev, 1)
-          !Boucle sur les fibres de la poutre
-          do ii = 1, nbfipoutre(i)
-            !Construction des vecteurs corrigés sur une poutre
-            posfib=pos+ii-1
-            vfv(1,ii)=vf(1,posfib)-vf(4,posfib)
-            vfv(2,ii)=vf(2,posfib)-vf(5,posfib)
-            vfv(3,ii)=vf(3,posfib)
-            vev(ii) = ve(posfib)
-          enddo
+            !Position de la poutre
+            yj(i) = vf(4, pos)
+            zj(i) = vf(5, pos)
+            call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
+            call r8inir(maxfipoutre, 0.d0, vev, 1)
+            !Boucle sur les fibres de la poutre
+            do ii = 1, nbfipoutre(i)
+                !Construction des vecteurs corrigés sur une poutre
+                posfib = pos+ii-1
+                vfv(1, ii) = vf(1, posfib)-vf(4, posfib)
+                vfv(2, ii) = vf(2, posfib)-vf(5, posfib)
+                vfv(3, ii) = vf(3, posfib)
+                vev(ii) = ve(posfib)
+            end do
 !         Propriétes de section sur la poutre
-          call pmfite(typfib, maxfipoutre, ncarf, vfv, vev, vs)
+            call pmfite(typfib, maxfipoutre, ncarf, vfv, vev, vs)
 !         Matrice de rigidite de la poutre
-          call pmfbkb(vs, b, wi, gxjxpou(i), skt)
-          do  ii = 1, 78
-              skp(ii,i) = skt(ii)
-          enddo
+            call pmfbkb(vs, b, wi, gxjxpou(i), skt)
+            do ii = 1, 78
+                skp(ii, i) = skt(ii)
+            end do
 !         bt,ks,g. g de la poutre
-          ksg(1) = vs(1)*gg
-          ksg(2) = vs(2)*gg
-          ksg(3) = vs(3)*gg
-          vvt(:)=0.d0
-          call pmfbts(b, wi, ksg, vvt)
-          do ii = 1, 12
-             vvp(ii,i)=vvt(ii)
-          enddo
-          pos=pos+nbfipoutre(i)
-        enddo
+            ksg(1) = vs(1)*gg
+            ksg(2) = vs(2)*gg
+            ksg(3) = vs(3)*gg
+            vvt(:) = 0.d0
+            call pmfbts(b, wi, ksg, vvt)
+            do ii = 1, 12
+                vvp(ii, i) = vvt(ii)
+            end do
+            pos = pos+nbfipoutre(i)
+        end do
 !       Matrice de rigidite de l element
         call pmpbkb(skp, nbassepou, yj, zj, sk)
         call pmpitp(typfib, vvp, nbassepou, yj, zj, vv)
 
-    else if ( typfib.eq. 3 ) then
+    else if (typfib .eq. 3) then
 
         call r8inir(nbassepou*78, 0.d0, skp, 1)
         call r8inir(nbassepou*12, 0.d0, skp, 1)
@@ -159,45 +159,45 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
         call r8inir(171, 0.d0, sk, 1)
 !       6 caractéristiques utiles par fibre : y z aire yp zp numgr
 !       Boucle sur les poutres
-        pos=1
-        posfib=0
+        pos = 1
+        posfib = 0
         do i = 1, nbassepou
-          !Position de la poutre
-          yj(i)=vf(4,pos)
-          zj(i)=vf(5,pos)
-          call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
-          call r8inir(maxfipoutre, 0.d0, vev, 1)
-          !Boucle sur les fibres de la poutre
-          do ii = 1, nbfipoutre(i)
-            !Construction des vecteurs corrigés sur une poutre
-            posfib=pos+ii-1
-            vfv(1,ii)=vf(1,posfib)-vf(4,posfib)
-            vfv(2,ii)=vf(2,posfib)-vf(5,posfib)
-            vfv(3,ii)=vf(3,posfib)
-            vev(ii) = ve(posfib)
-          enddo
+            !Position de la poutre
+            yj(i) = vf(4, pos)
+            zj(i) = vf(5, pos)
+            call r8inir(maxfipoutre*7, 0.d0, vfv, 1)
+            call r8inir(maxfipoutre, 0.d0, vev, 1)
+            !Boucle sur les fibres de la poutre
+            do ii = 1, nbfipoutre(i)
+                !Construction des vecteurs corrigés sur une poutre
+                posfib = pos+ii-1
+                vfv(1, ii) = vf(1, posfib)-vf(4, posfib)
+                vfv(2, ii) = vf(2, posfib)-vf(5, posfib)
+                vfv(3, ii) = vf(3, posfib)
+                vev(ii) = ve(posfib)
+            end do
 !         Propriétes de section sur la poutre
-          call pmfite(2, maxfipoutre, ncarf, vfv, vev, vs)
+            call pmfite(2, maxfipoutre, ncarf, vfv, vev, vs)
 !
 !         Matrice de rigidite de la poutre
 !
-          skt(:)=0.d0
-          call pmfbkb(vs, b, wi, gxjxpou(i), skt)
-          do  ii = 1, 78
-              skp(ii,i) = skt(ii)
-          enddo
+            skt(:) = 0.d0
+            call pmfbkb(vs, b, wi, gxjxpou(i), skt)
+            do ii = 1, 78
+                skp(ii, i) = skt(ii)
+            end do
 
 !         bt,ks,g. g de la poutre
-          ksg(1) = vs(1)*gg
-          ksg(2) = vs(2)*gg
-          ksg(3) = vs(3)*gg
-          vvt(:)=0.d0
-          call pmfbts(b, wi, ksg, vvt)
-          do ii = 1, 12
-             vvp(ii,i)=vvt(ii)
-          enddo
-          pos=pos+nbfipoutre(i)
-        enddo
+            ksg(1) = vs(1)*gg
+            ksg(2) = vs(2)*gg
+            ksg(3) = vs(3)*gg
+            vvt(:) = 0.d0
+            call pmfbts(b, wi, ksg, vvt)
+            do ii = 1, 12
+                vvp(ii, i) = vvt(ii)
+            end do
+            pos = pos+nbfipoutre(i)
+        end do
 
 !       Matrice de rigidite de l element
 
@@ -206,6 +206,6 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
 
     else
         call utmess('F', 'ELEMENTS2_40', si=typfib)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,14 +51,14 @@ subroutine numcima(infcha, nu, ccid, base)
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     character(len=19) :: infch2
-    integer :: iret, iret1, iret2, iret3, ich, ncharg,   jlchci
+    integer :: iret, iret1, iret2, iret3, ich, ncharg, jlchci
     integer :: nchci
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    infch2=infcha
+    infch2 = infcha
     if (infch2 .eq. ' ') goto 999
 !
     call jeexin(infch2//'.LCHA', iret1)
@@ -86,7 +86,7 @@ subroutine numcima(infcha, nu, ccid, base)
             if (infc(ich+1) .lt. 0) then
                 nchci = nchci+1
                 zk24(jlchci-1+nchci) = lcha(ich)
-            endif
+            end if
         end do
         if (nchci .eq. 0) goto 999
         call numchc(nu, ccid, nchci, zk24(jlchci), base)
@@ -99,10 +99,10 @@ subroutine numcima(infcha, nu, ccid, base)
         call jelira(infcha, 'LONMAX', nchci)
         call numchc(nu, ccid, nchci, zk24(jlchci), base)
         go to 100
-    endif
+    end if
 !
 !
-999  continue
+999 continue
     call numchc(nu, ccid, 0, ["XXX"], base)
 100 continue
 !

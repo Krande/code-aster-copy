@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine op0021()
 #include "asterfort/utmess.h"
 #include "asterfort/w039ca.h"
 
-
     integer :: ifc, ifi
     integer :: n11
     integer :: nforma
@@ -62,19 +61,18 @@ subroutine op0021()
     fich = 'F_'//form
     call getvis(' ', 'UNITE', scal=ifi, nbret=n11)
     ifc = ifi
-    if (.not. ulexis( ifi )) then
-        if (form .eq.'MED')then
+    if (.not. ulexis(ifi)) then
+        if (form .eq. 'MED') then
             call ulaffe(ifi, ' ', fich, 'NEW', 'O')
         else
             call ulopen(ifi, ' ', fich, 'NEW', 'O')
-        endif
-    elseif (form .eq.'MED') then
+        end if
+    elseif (form .eq. 'MED') then
         call ultype(ifi, typf)
         if (typf .ne. 'B' .and. typf .ne. 'L') then
-        call utmess('A','PREPOST3_7')
-        endif
-    endif
-
+            call utmess('A', 'PREPOST3_7')
+        end if
+    end if
 
 !     -- IMPRESSION DES CARTES DE DONNEES DE CHAM_MATER,  ... :
     call w039ca(ifi, form)

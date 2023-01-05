@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romMultiParaModeSave(multPara, base    ,&
+subroutine romMultiParaModeSave(multPara, base, &
                                 numeMode, modeName)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "blas/zdotc.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/romModeSave.h"
 !
-type(ROM_DS_MultiPara), intent(in) :: multPara
-type(ROM_DS_Empi), intent(inout) :: base
-integer, intent(in) :: numeMode
-character(len=19), intent(in) :: modeName
+    type(ROM_DS_MultiPara), intent(in) :: multPara
+    type(ROM_DS_Empi), intent(inout) :: base
+    integer, intent(in) :: numeMode
+    character(len=19), intent(in) :: modeName
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,33 +62,33 @@ character(len=19), intent(in) :: modeName
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    syst_type  = multPara%syst_type
-    fieldName  = 'DEPL'
+    syst_type = multPara%syst_type
+    fieldName = 'DEPL'
     resultName = base%resultName
-    mode       = base%mode
-    nbEqua     = mode%nbEqua
+    mode = base%mode
+    nbEqua = mode%nbEqua
     ASSERT(mode%fieldSupp .eq. 'NOEU')
 !
 ! - Save mode
 !
     if (syst_type .eq. 'C') then
-        call jeveuo(modeName(1:19)//'.VALE', 'E', vc = modeValeC)
+        call jeveuo(modeName(1:19)//'.VALE', 'E', vc=modeValeC)
         normc = zdotc(nbEqua, modeValeC, 1, modeValeC, 1)
         modeValeC(:) = modeValeC(:)/sqrt(normc)
-        call romModeSave(resultName, numeMode ,&
-                         fieldName , mode     ,&
-                         modeValeC_ = modeValeC)
+        call romModeSave(resultName, numeMode, &
+                         fieldName, mode, &
+                         modeValeC_=modeValeC)
     elseif (syst_type .eq. 'R') then
-        call jeveuo(modeName(1:19)//'.VALE', 'E', vr = modeValeR)
+        call jeveuo(modeName(1:19)//'.VALE', 'E', vr=modeValeR)
         normr = ddot(nbEqua, modeValeR, 1, modeValeR, 1)
         modeValeR(:) = modeValeR(:)/sqrt(normr)
-        call romModeSave(resultName, numeMode ,&
-                         fieldName , mode     ,&
-                         modeValeR_ = modeValeR)
+        call romModeSave(resultName, numeMode, &
+                         fieldName, mode, &
+                         modeValeR_=modeValeR)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
-    base%nbMode = base%nbMode + 1
+    base%nbMode = base%nbMode+1
 !
 end subroutine

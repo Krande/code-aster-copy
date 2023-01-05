@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine op0160()
 !
 !     1. RECUPERATION DU NOMBRE DES MODES -----
     call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
-    basemo = mael_refe(1)(1:8)
+    basemo = mael_refe(1) (1:8)
     call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt, k8b)
 !
 !     2. RECUPERATION DU NOMBRE DE VECTEURS DE BASE -----
@@ -63,7 +63,7 @@ subroutine op0160()
         vali(1) = nbvect
         vali(2) = nbmodt
         call utmess('F', 'UTILITAI8_66', ni=2, vali=vali)
-    endif
+    end if
 !     ------------------------------------------------------------------
 !
     call getvtx(' ', 'FORMAT', scal=format, nbret=n1)
@@ -73,9 +73,9 @@ subroutine op0160()
         call getvis(' ', 'VERSION', scal=versio, nbret=n1)
 !
         call getvis(' ', 'UNITE', scal=ific, nbret=n1)
-        if (.not. ulexis( ific )) then
+        if (.not. ulexis(ific)) then
             call ulopen(ific, ' ', fichie, 'NEW', 'O')
-        endif
+        end if
 !
         call iredsu(macrel, ific, versio)
 !
@@ -86,6 +86,6 @@ subroutine op0160()
 !     ------------------------------------------------------------------
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 function nucalc(opt, te, memoir)
-use calcul_module, only : ca_iaopmo_, ca_iaoptt_, ca_ilopmo_, ca_lgco_
-implicit none
+    use calcul_module, only: ca_iaopmo_, ca_iaoptt_, ca_ilopmo_, ca_lgco_
+    implicit none
     integer :: nucalc
 
 ! person_in_charge: jacques.pellet at edf.fr
@@ -44,21 +44,21 @@ implicit none
     integer :: optmod, jj
     integer, pointer :: nbligcol(:) => null()
 !-------------------------------------------------------------------
-    ASSERT(memoir.eq.0 .or. memoir.eq.1)
+    ASSERT(memoir .eq. 0 .or. memoir .eq. 1)
     if (memoir .eq. 1) then
         call jeveuo('&CATA.TE.OPTTE', 'L', ca_iaoptt_)
         call jeveuo('&CATA.TE.OPTMOD', 'L', ca_iaopmo_)
         call jeveuo(jexatr('&CATA.TE.OPTMOD', 'LONCUM'), 'L', ca_ilopmo_)
         call jeveuo('&CATA.TE.NBLIGCOL', 'L', vi=nbligcol)
         ca_lgco_ = nbligcol(1)
-    endif
+    end if
 
-    jj = zi(ca_iaoptt_-1+ (te-1)*ca_lgco_+opt)
+    jj = zi(ca_iaoptt_-1+(te-1)*ca_lgco_+opt)
     if (jj .eq. 0) then
 !        -- le type_element te n'est pas concerne par l'option opt:
         nucalc = 0
     else
-        optmod = ca_iaopmo_ + zi(ca_ilopmo_-1+jj) - 1
+        optmod = ca_iaopmo_+zi(ca_ilopmo_-1+jj)-1
         nucalc = zi(optmod-1+1)
-    endif
+    end if
 end function

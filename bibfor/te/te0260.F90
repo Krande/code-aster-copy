@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0260(option, nomte)
     integer :: iharm, ij, nh
     real(kind=8) :: r2, wij, xh, xh2
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -54,41 +54,41 @@ subroutine te0260(option, nomte)
     nh = zi(iharm)
     if (nh .eq. -1) then
         call utmess('F', 'ELEMENTS3_63')
-    endif
+    end if
     xh = dble(nh)
     xh2 = xh*xh
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATTTR', 'E', imattt)
     call jevech('PTEMPSR', 'L', itemps)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 1, 'INST', [zr(itemps)],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THER', 1, 'INST', [zr(itemps)], &
                 1, 'LAMBDA', valres, icodre, 1)
 !
     do kp = 1, npg1
         k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdr, dfdz)
 !
         r = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
         end do
         r2 = r*r
         poids = poids*r
 !
-        ij = imattt - 1
+        ij = imattt-1
         do i = 1, nno
 !
             do j = 1, i
-                wij = zr(ivf+k+i-1) * zr(ivf+k+j-1)
-                ij = ij + 1
-                zr(ij) = zr(ij) + poids * valres(1) * ( dfdr(i)*dfdr(j) + dfdz(i)*dfdz(j)&
-                         & + xh2*wij/r2)
+                wij = zr(ivf+k+i-1)*zr(ivf+k+j-1)
+                ij = ij+1
+                zr(ij) = zr(ij)+poids*valres(1)*(dfdr(i)*dfdr(j)+dfdz(i)*dfdz(j)&
+                         & +xh2*wij/r2)
             end do
         end do
     end do

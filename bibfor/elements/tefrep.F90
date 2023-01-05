@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine tefrep(option, fieldTypeName, jvForc)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -26,9 +26,9 @@ implicit none
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: option
-character(len=*), intent(in) :: fieldTypeName
-integer, intent(out) :: jvForc
+    character(len=16), intent(in) :: option
+    character(len=*), intent(in) :: fieldTypeName
+    integer, intent(out) :: jvForc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,38 +58,38 @@ integer, intent(out) :: jvForc
         jvForc = itab(1)
 !
     else if (iret .eq. 3) then
-        jvForc  = itab(1)
+        jvForc = itab(1)
         nbValue = itab(2)
-        nbNode  = itab(3)
-        jad     = itab(8)
-        nbCmp   = nbValue/nbNode
+        nbNode = itab(3)
+        jad = itab(8)
+        nbCmp = nbValue/nbNode
         ASSERT(jvForc .ne. 0)
         ASSERT(nbValue .eq. nbNode*nbCmp)
 !
         do iNode = 1, nbNode
             ico = 0
-            do iCmp=1,nbCmp
+            do iCmp = 1, nbCmp
                 if (zl(jad-1+(iNode-1)*nbCmp+iCmp)) then
-                    ico = ico + 1
-                endif
+                    ico = ico+1
+                end if
             end do
             if (ico .ne. 0 .and. ico .ne. nbCmp) goto 12
 
             if (ico .eq. 0) then
                 do iCmp = 1, nbCmp
-                    zr(jvForc-1+(iNode-1)*nbCmp+iCmp)=0.d0
+                    zr(jvForc-1+(iNode-1)*nbCmp+iCmp) = 0.d0
                 end do
-            endif
+            end if
         end do
         goto 999
 12      continue
         call tecael(iadzi, iazk24)
-        cellName = zk24(iazk24-1+3)(1:8)
+        cellName = zk24(iazk24-1+3) (1:8)
         valk(1) = fieldTypeName
         valk(2) = option
         valk(3) = cellName
         call utmess('F', 'CALCUL_18', nk=3, valk=valk)
-    endif
+    end if
 !
 999 continue
 end subroutine

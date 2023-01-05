@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     integer :: l1, nbzmax, k
     integer, pointer :: desc(:) => null()
     character(len=8), pointer :: vale(:) => null()
-    parameter (ncmpmx=30)
+    parameter(ncmpmx=30)
 !
 ! ====================== DEBUT DU PROGRAMME ============================
 !
@@ -63,35 +63,35 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     call jeveuo(chmat//'.CHAMP_MAT .VALE', 'L', vk8=vale)
     call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', l1)
     call jeveuo(chmat//'.CHAMP_MAT .DESC', 'L', vi=desc)
-    nbzmax=desc(2)
-    nbzone=desc(3)
+    nbzmax = desc(2)
+    nbzone = desc(3)
 !     ON VERIFIE QUE LA TAILLE DE LA CARTE EST BIEN TOUJOURS DE 30
 !     PAR ZONE
-    ASSERT(l1.eq.(nbzmax*ncmpmx))
+    ASSERT(l1 .eq. (nbzmax*ncmpmx))
 !
 !
     nbmtrc = 0
     do izone = 1, nbzone
         do i = 1, ncmpmx
-            imat=(izone-1)*ncmpmx+i
+            imat = (izone-1)*ncmpmx+i
             kmat = vale(imat)
             if (kmat .eq. ' ') goto 50
             if (kmat .eq. 'TREF=>') goto 50
             krc = kmat//'.MATERIAU.NOMRC'
             call jeveuo(krc, 'L', arc)
             call jelira(krc, 'LONMAX', nbrc)
-            ipos=0
+            ipos = 0
             do k = 1, nbrc
                 if (zk32(arc+k-1) .eq. nomrc) then
-                    ipos=k
-                endif
+                    ipos = k
+                end if
             end do
             if (ipos .gt. 0) then
-                nbmtrc = nbmtrc + 1
+                nbmtrc = nbmtrc+1
                 nommat(nbmtrc) = kmat
-            endif
+            end if
         end do
- 50     continue
+50      continue
     end do
 !
 !

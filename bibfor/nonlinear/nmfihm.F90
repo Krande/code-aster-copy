@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
-                  lgpg, ipg, wref, vff1, vff2,&
-                  idf2, dffr2, mate, option, geom,&
-                  ddlm, ddld, iu, ip, sigm,&
-                  sigp, vect, matr, vim, vip,&
-                  tm, tp, carcri, compor, typmod,&
+subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
+                  lgpg, ipg, wref, vff1, vff2, &
+                  idf2, dffr2, mate, option, geom, &
+                  ddlm, ddld, iu, ip, sigm, &
+                  sigp, vect, matr, vim, vip, &
+                  tm, tp, carcri, compor, typmod, &
                   lVect, lMatr, lSigm, codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,19 +37,19 @@ implicit none
 #include "asterfort/nmcomp.h"
 #include "asterfort/codere.h"
 !
-integer :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
-integer :: ip(8)
-real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), dffr2(ndim-1, nno2, npg)
-real(kind=8) :: wref(npg), geom(ndim, nno2), ddlm(nddl), ddld(nddl), tm, tp
-real(kind=8) :: sigm(2*ndim-1, npg), sigp(2*ndim-1, npg)
-real(kind=8) :: vect(nddl), matr(nddl*nddl)
-real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: carcri(*)
-character(len=16), intent(in) :: compor(*)
-character(len=8), intent(in) :: typmod(*)
-aster_logical, intent(in) :: lSigm, lVect, lMatr
-integer, intent(out) :: codret
+    integer :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
+    integer :: ip(8)
+    real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), dffr2(ndim-1, nno2, npg)
+    real(kind=8) :: wref(npg), geom(ndim, nno2), ddlm(nddl), ddld(nddl), tm, tp
+    real(kind=8) :: sigm(2*ndim-1, npg), sigp(2*ndim-1, npg)
+    real(kind=8) :: vect(nddl), matr(nddl*nddl)
+    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: carcri(*)
+    character(len=16), intent(in) :: compor(*)
+    character(len=8), intent(in) :: typmod(*)
+    aster_logical, intent(in) :: lSigm, lVect, lMatr
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,8 +104,8 @@ integer, intent(out) :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    cod    = 0
-    axi    = .false.
+    cod = 0
+    axi = .false.
 !
 ! IFHYME = TRUE  : CALCUL COUPLE HYDRO-MECA
 ! IFHYME = FALSE : CALCUL MECA SANS HYDRO ET ELIMINATION DES DDL DE PRES
@@ -117,7 +117,7 @@ integer, intent(out) :: codret
         ifhyme = ASTER_FALSE
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -132,8 +132,8 @@ integer, intent(out) :: codret
     do kpg = 1, npg
 !
 !       CALCUL DE LA MATRICE CINEMATIQUE
-        call ejcine(ndim, axi, nno1, nno2, vff1(1, kpg),&
-                    vff2(1, kpg), wref(kpg), dffr2(1, 1, kpg), geom, wg,&
+        call ejcine(ndim, axi, nno1, nno2, vff1(1, kpg), &
+                    vff2(1, kpg), wref(kpg), dffr2(1, 1, kpg), geom, wg, &
                     kpg, ipg, idf2, rot, b)
 !
 !       CALCUL DES DEFORMATIONS (SAUTS ET GRADIENTS DE PRESSION)
@@ -143,16 +143,16 @@ integer, intent(out) :: codret
         do i = 1, ndim
             do j = 1, ndim
                 do n = 1, 2*nno1
-                    epsm(i) = epsm(i) + b(i,j,n)*ddlm(iu(j,n))
-                    deps(i) = deps(i) + b(i,j,n)*ddld(iu(j,n))
-                enddo
+                    epsm(i) = epsm(i)+b(i, j, n)*ddlm(iu(j, n))
+                    deps(i) = deps(i)+b(i, j, n)*ddld(iu(j, n))
+                end do
             end do
         end do
 !
         do i = ndim+1, 2*ndim-1
             do n = 1, nno2
-                epsm(i) = epsm(i) + b(i,ndim+1,2*nno1+n)*ddlm(ip(n))
-                deps(i) = deps(i) + b(i,ndim+1,2*nno1+n)*ddld(ip(n))
+                epsm(i) = epsm(i)+b(i, ndim+1, 2*nno1+n)*ddlm(ip(n))
+                deps(i) = deps(i)+b(i, ndim+1, 2*nno1+n)*ddld(ip(n))
             end do
         end do
 !
@@ -160,9 +160,9 @@ integer, intent(out) :: codret
         presgm = 0.d0
         presgd = 0.d0
         do n = 1, nno2
-            presgm = presgm + ddlm(ip(n))*vff2(n,kpg)
-            presgd = presgd + ddld(ip(n))*vff2(n,kpg)
-        enddo
+            presgm = presgm+ddlm(ip(n))*vff2(n, kpg)
+            presgd = presgd+ddld(ip(n))*vff2(n, kpg)
+        end do
 !
 !       STOCKAGE DE LA PRESSION DE FLUIDE AU PG
 !       POUR LA VI DE POST-TRAITEMENT DANS LA LDC
@@ -172,45 +172,45 @@ integer, intent(out) :: codret
 !       COOROT : COORDONNEES DU PG + MATRICE DE ROTATION
 !       (MATRICE UTILE POUR LES VI DE POST-TRAITEMENT DANS LA LDC)
         do j = 1, ndim
-            BEHinteg%elem%coor_elga(kpg,j) = coopg(j,kpg)
-        enddo
+            BEHinteg%elem%coor_elga(kpg, j) = coopg(j, kpg)
+        end do
         do j = 1, ndim*ndim
-            BEHinteg%elga%rotpg(j)=rot(j)
-        enddo
+            BEHinteg%elga%rotpg(j) = rot(j)
+        end do
 !
 !       CONTRAINTES -
         sigmo = 0.d0
         do n = 1, 2*ndim-1
-            sigmo(n) = sigm(n,kpg)
-        enddo
+            sigmo(n) = sigm(n, kpg)
+        end do
 ! ----- Integration of behaviour
         sigma = 0.d0
-        call nmcomp(BEHinteg,&
-                    'RIGI', kpg, 1, ndim, typmod,&
-                    mate, compor, carcri, tm, tp,&
-                    6, epsm, deps, 6, sigmo,&
+        call nmcomp(BEHinteg, &
+                    'RIGI', kpg, 1, ndim, typmod, &
+                    mate, compor, carcri, tm, tp, &
+                    6, epsm, deps, 6, sigmo, &
                     vim(1, kpg), option, rbid, &
                     sigma, vip(1, kpg), 36, dsidep, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
-        endif
+        end if
 ! ----- Stresses
         if (lSigm) then
             do n = 1, 2*ndim-1
-                sigp(n,kpg) = sigma(n)
-            enddo
-        endif
+                sigp(n, kpg) = sigma(n)
+            end do
+        end if
 ! ----- Vector
         if (lVect) then
 ! --------- Vector (DOF: U)
             do n = 1, 2*nno1
                 do i = 1, ndim
-                    kk = iu(i,n)
+                    kk = iu(i, n)
                     temp = 0.d0
                     do j = 1, ndim
-                        temp = temp + b(j,i,n)*sigp(j,kpg)
-                    enddo
-                    vect(kk) = vect(kk) + wg*temp
+                        temp = temp+b(j, i, n)*sigp(j, kpg)
+                    end do
+                    vect(kk) = vect(kk)+wg*temp
                 end do
             end do
 ! --------- Vector (DOF: P)
@@ -218,31 +218,31 @@ integer, intent(out) :: codret
                 kk = ip(n)
                 temp = 0.d0
                 do i = ndim+1, 2*ndim-1
-                    temp = temp + b(i,ndim+1,2*nno1+n)*sigp(i,kpg)
-                enddo
+                    temp = temp+b(i, ndim+1, 2*nno1+n)*sigp(i, kpg)
+                end do
                 if (ifhyme) then
-                    vect(kk) = vect(kk) + wg*temp
+                    vect(kk) = vect(kk)+wg*temp
                 else
                     vect(kk) = 0.d0
-                endif
+                end if
             end do
-        endif
+        end if
 ! ----- Matrix
         if (lMatr) then
 ! --------- Matrix [U(I,N),U(J,M)]
             do n = 1, 2*nno1
                 do i = 1, ndim
-                    os = (iu(i,n)-1)*nddl
+                    os = (iu(i, n)-1)*nddl
                     do m = 1, 2*nno1
                         do j = 1, ndim
-                            kk = os + iu(j,m)
+                            kk = os+iu(j, m)
                             temp = 0.d0
                             do p = 1, ndim
                                 do q = 1, ndim
-                                    temp = temp + b(p,i,n)*dsidep(p,q) *b(q,j,m)
+                                    temp = temp+b(p, i, n)*dsidep(p, q)*b(q, j, m)
                                 end do
                             end do
-                            matr(kk) = matr(kk) + wg*temp
+                            matr(kk) = matr(kk)+wg*temp
                         end do
                     end do
                 end do
@@ -251,22 +251,22 @@ integer, intent(out) :: codret
             do n = 1, nno2
                 os = (ip(n)-1)*nddl
                 do m = 1, nno2
-                    kk = os + ip(m)
+                    kk = os+ip(m)
                     temp = 0.d0
                     do p = ndim+1, 2*ndim-1
                         do q = ndim+1, 2*ndim-1
-                            temp = temp + b(p,ndim+1,2*nno1+n)*dsidep( p,q) *b(q,ndim+1,2*nno1+m)
+                            temp = temp+b(p, ndim+1, 2*nno1+n)*dsidep(p, q)*b(q, ndim+1, 2*nno1+m)
                         end do
                     end do
                     if (ifhyme) then
-                        matr(kk) = matr(kk) + wg*temp
+                        matr(kk) = matr(kk)+wg*temp
                     else
                         if (n .eq. m) then
                             matr(kk) = 1.d0
                         else
                             matr(kk) = 0.d0
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
             end do
 ! --------- Matrix [P(N),U(J,M)]
@@ -274,38 +274,38 @@ integer, intent(out) :: codret
                 os = (ip(n)-1)*nddl
                 do m = 1, 2*nno1
                     do j = 1, ndim
-                        kk = os + iu(j,m)
+                        kk = os+iu(j, m)
                         temp = 0.d0
                         do p = ndim+1, 2*ndim-1
                             do q = 1, ndim
 !                               A ANNULE AFIN DE PASSER VERS LA MINIMISATION ALTERNEE
-                                temp = temp + b(p,ndim+1,2*nno1+n) *dsidep(p,q)*b(q,j,m)
+                                temp = temp+b(p, ndim+1, 2*nno1+n)*dsidep(p, q)*b(q, j, m)
                             end do
                         end do
                         if (ifhyme) then
-                            matr(kk) = matr(kk) + wg*temp
+                            matr(kk) = matr(kk)+wg*temp
                         else
                             matr(kk) = 0.d0
-                        endif
+                        end if
                     end do
                 end do
             end do
 ! --------- Matrix [U(I,N),P(M)]
             do n = 1, 2*nno1
                 do i = 1, ndim
-                    os = (iu(i,n)-1)*nddl
+                    os = (iu(i, n)-1)*nddl
                     do m = 1, nno2
-                        kk = os + ip(m)
-                        temp = -b(1,i,n)*vff2(m,kpg)
+                        kk = os+ip(m)
+                        temp = -b(1, i, n)*vff2(m, kpg)
                         if (ifhyme) then
-                            matr(kk) = matr(kk) + wg*temp
+                            matr(kk) = matr(kk)+wg*temp
                         else
                             matr(kk) = 0.d0
-                        endif
-                    enddo
+                        end if
+                    end do
                 end do
             end do
-        endif
+        end if
     end do
 !
 ! - Final flag
@@ -313,6 +313,6 @@ integer, intent(out) :: codret
 999 continue
     if (lSigm) then
         call codere(cod, npg, codret)
-    endif
+    end if
 !
 end subroutine

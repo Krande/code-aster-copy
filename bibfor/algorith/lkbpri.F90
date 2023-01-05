@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function lkbpri(val, vin, nbmat, mater, para,&
+function lkbpri(val, vin, nbmat, mater, para, &
                 invar, s)
 !
 ! aslint: disable=
-    implicit  none
+    implicit none
 #include "asterc/r8pi.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
@@ -55,34 +55,34 @@ function lkbpri(val, vin, nbmat, mater, para,&
 ! =====================================================================
 ! --- INITIALISATION DE PARAMETRES ------------------------------------
 ! =====================================================================
-    parameter  ( zero   =  0.0d0   )
-    parameter  ( un     =  1.0d0   )
-    parameter  ( deux   =  2.0d0   )
-    parameter  ( trois  =  3.0d0   )
-    parameter  ( six    =  6.0d0   )
-    parameter  ( lgleps =  1.0d-8 )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
+    parameter(lgleps=1.0d-8)
 ! =====================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =====================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ----------------------------
 ! =====================================================================
     pi = r8pi()
-    pref = mater(1,2)
-    sigc = mater(3,2)
-    h0ext = mater(4,2)
-    s0 = mater(11,2)
-    mult = mater(15,2)
-    xie = mater(17,2)
-    mvmax = mater(19,2)
+    pref = mater(1, 2)
+    sigc = mater(3, 2)
+    h0ext = mater(4, 2)
+    s0 = mater(11, 2)
+    mult = mater(15, 2)
+    xie = mater(17, 2)
+    mvmax = mater(19, 2)
 !
-    mu0v = mater(24,2)
-    xi0v = mater(25,2)
-    mu1 = mater(26,2)
-    xi1 = mater(27,2)
+    mu0v = mater(24, 2)
+    xi0v = mater(25, 2)
+    mu1 = mater(26, 2)
+    xi1 = mater(27, 2)
 ! =================================================================
 ! --- CALCUL DE ALPHA RES -----------------------------------------
 ! =================================================================
-    alres = un + mult
+    alres = un+mult
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
@@ -90,8 +90,8 @@ function lkbpri(val, vin, nbmat, mater, para,&
 ! =================================================================
 ! --- CALCUL DE h(THETA), H0E ET H0C -----------------------------
 ! =================================================================
-    rcos3t = cos3t (s, pref, lgleps)
-    call lkhtet(nbmat, mater, rcos3t, h0e, h0c,&
+    rcos3t = cos3t(s, pref, lgleps)
+    call lkhtet(nbmat, mater, rcos3t, h0e, h0c, &
                 htheta)
 ! =================================================================
 ! --- CALCUL DE C tilde -------------------------------------------
@@ -99,8 +99,8 @@ function lkbpri(val, vin, nbmat, mater, para,&
     if (para(2) .eq. zero) then
         fact1 = un
     else
-        fact1 = un + para(1)*para(3)*para(2)**(para(1)-un)
-    endif
+        fact1 = un+para(1)*para(3)*para(2)**(para(1)-un)
+    end if
     c = sigc*(para(2))**para(1)/deux/sqrt(fact1)
 ! =================================================================
 ! --- CALCUL DE PHI tilde -----------------------------------------
@@ -121,16 +121,16 @@ function lkbpri(val, vin, nbmat, mater, para,&
     troisd = trois/deux
     tiers = un/trois
 !
-    fact2 = (deux*htheta -(h0c + h0ext))/deux/(h0c-h0ext)
+    fact2 = (deux*htheta-(h0c+h0ext))/deux/(h0c-h0ext)
 !
-    sigmin = tiers * (invar - (troisd-fact2)*sqrt(troisd)*sii)
-    sigmax = tiers * (invar + (troisd+fact2)*sqrt(troisd)*sii)
+    sigmin = tiers*(invar-(troisd-fact2)*sqrt(troisd)*sii)
+    sigmax = tiers*(invar+(troisd+fact2)*sqrt(troisd)*sii)
 !
 ! =================================================================
 ! --- CALCUL DE SIGLIM  -------------------------------------------
 ! =================================================================
 !
-    siglim = sigmin + sigc * (mvmax*sigmin/sigc + s0)
+    siglim = sigmin+sigc*(mvmax*sigmin/sigc+s0)
 !
 ! =================================================================
 ! --- CALCUL DE ALPHA  --------------------------------------------
@@ -144,12 +144,12 @@ function lkbpri(val, vin, nbmat, mater, para,&
 !
     if (val .eq. 0) then
 !
-        sinpsi = mu0v*((sigmax - siglim)/(xi0v*sigmax + siglim))
+        sinpsi = mu0v*((sigmax-siglim)/(xi0v*sigmax+siglim))
     else
-        sinpsi = mu1*((alpha - alres)/(xi1*alpha + alres))
+        sinpsi = mu1*((alpha-alres)/(xi1*alpha+alres))
 !
 !
-    endif
+    end if
 ! =================================================================
 ! --- CALCUL DE LKBPRI=BPRIME -------------------------------------
 ! =================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,10 +65,10 @@ subroutine op0184()
     integer :: nbv, nbmapl, ibid, ntout, nnume, np, iul
     integer :: vali(2)
     integer :: nbordr, jnume, n1, nlinst, jlist, nbinst, nis, nc, nfor
-    integer :: iret,  nbtitr, ifsig, l, ipas, k, numpas, ino
+    integer :: iret, nbtitr, ifsig, l, ipas, k, numpas, ino
     integer :: ivar(6), iord, jpres, ima, nbnoas, jnoma, i, nnu
     integer :: iadrno, imp, jdme, ntseg, imamin, jdco, jdno, no1, no2, nutyel
-    integer :: jcelv,  idec, nbelgr, liel, iel, iadno, nno
+    integer :: jcelv, idec, nbelgr, liel, iel, iadno, nno
     integer :: jinst, nbtrou, lordr, ntpoi, itest, iad, imapl
     integer :: nbordt, te, nbgr, igr, tord(1)
     real(kind=8) :: rbid, pres, epsi, temps, tref, cm(3), a(3), b(3), la, lb, d2
@@ -124,33 +124,33 @@ subroutine op0184()
             if (nutyel .eq. ntpoi) then
                 itest = -1
                 goto 40
-            else if (nutyel.eq.ntseg) then
+            else if (nutyel .eq. ntseg) then
                 goto 20
             else
                 call utmess('F', 'UTILITAI3_9')
-            endif
- 20         continue
+            end if
+20          continue
             call jeveuo(jexnum(mlgcnx, imp), 'L', jdno)
             no1 = zi(jdno)
             no2 = zi(jdno+1)
             do i = 1, 3
-                a(i) = zr(jdco+ (no1-1)*3+i-1)
-                b(i) = zr(jdco+ (no2-1)*3+i-1)
+                a(i) = zr(jdco+(no1-1)*3+i-1)
+                b(i) = zr(jdco+(no2-1)*3+i-1)
             end do
-            call pj3da4(cm, a, b, la, lb,&
+            call pj3da4(cm, a, b, la, lb, &
                         d2)
             if (d2 .lt. d2min) then
                 imamin = imp
                 d2min = d2
-            endif
- 40         continue
+            end if
+40          continue
         end do
         zi(jnoma-1+ino) = imamin
     end do
 ! TEST SUR LA PRESENCE DE MAILLE PONCTUELLE
     if (itest .ne. 0) then
         call utmess('I', 'UTILITAI3_10')
-    endif
+    end if
 !
 !     --- QUELS SONT LES INSTANTS A RELIRE ---
 !
@@ -178,11 +178,11 @@ subroutine op0184()
                         nbinst = -nis
                         call wkvect('&&OP0184.INST', 'V V R', nbordr, jlist)
                         call getvr8(' ', 'INST', nbval=nbordr, vect=zr(jlist), nbret=n1)
-                    endif
-                endif
-            endif
-        endif
-    endif
+                    end if
+                end if
+            end if
+        end if
+    end if
 !
 !     --- LECTURE DE LA PRECISION ET DU CRITERE ---
 !
@@ -195,7 +195,7 @@ subroutine op0184()
 !
     if (form .ne. 'IDEAS') then
         call utmess('F', 'UTILITAI3_11')
-    endif
+    end if
     call jeexin(nomapl//'           .TITR', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI3_12')
@@ -205,15 +205,15 @@ subroutine op0184()
         if (nbtitr .ge. 1) then
             if (titr(1) (10:31) .ne. 'AUTEUR=INTERFACE_IDEAS') then
                 call utmess('F', 'UTILITAI3_12')
-            endif
+            end if
         else
             call utmess('A', 'UTILITAI3_13')
-        endif
-    endif
+        end if
+    end if
 !
 !     CREATION DE LA SD RESULTAT
 !
-    nbordt = max(1,nbordr)
+    nbordt = max(1, nbordr)
     call rscrsd('G', resu, 'EVOL_CHAR', nbordt)
 !
 !     CREATION DU CHAMP DE PRESSION
@@ -227,8 +227,8 @@ subroutine op0184()
     lchout(1) = chpres
     ligrmo = nomo//'.MODELE'
     option = 'TOU_INI_ELNO'
-    call calcul('S', option, ligrmo, 1, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, 1, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
     call jeveuo(chpres//'.CELD', 'L', vi=celd)
     call jeveuo(chpres//'.CELV', 'E', jcelv)
@@ -241,45 +241,45 @@ subroutine op0184()
 !
     call getvis(' ', 'UNITE', scal=ifsig, nbret=l)
     k16nom = ' '
-    if (ulisop ( ifsig, k16nom ) .eq. 0) then
+    if (ulisop(ifsig, k16nom) .eq. 0) then
         call ulopen(ifsig, ' ', ' ', 'NEW', 'O')
-    endif
+    end if
     ipas = 0
 !
 !     LECTURE DES DATASET DU FICHIER IDEAS
 !     ON NE LIT QUE DES CHAMPS CONSTANTS PAR ELEMENTS
 !
- 60 continue
+60  continue
 !
-    read (ifsig,'(A6)',end=160,err=180) kar
+    read (ifsig, '(A6)', end=160, err=180) kar
     if (kar .eq. '    56') then
-        read (ifsig,'(40A2)',end=180) k80b
-        read (ifsig,'(40A2)',end=180) k80b
-        read (ifsig,'(40A2)',end=180) k80b
-        read (ifsig,'(A80)',end=180) k80b
+        read (ifsig, '(40A2)', end=180) k80b
+        read (ifsig, '(40A2)', end=180) k80b
+        read (ifsig, '(40A2)', end=180) k80b
+        read (ifsig, '(A80)', end=180) k80b
 ! LECTURE DE LA VARIABLE PRESSION EN FONCTION DU TYPE
 ! DE MATERIAU PLEXUS UTILISE
 !
 !
-        if (.not. (&
-            k80b(49:52) .eq. 'MULT' .or. k80b(49: 52) .eq. 'EAU ' .or. k80b(49:52) .eq. 'FLUI')) &
-        goto 60
-        read (ifsig,'(40A2)',end=180) k80bid
+        if (.not. ( &
+            k80b(49:52) .eq. 'MULT' .or. k80b(49:52) .eq. 'EAU ' .or. k80b(49:52) .eq. 'FLUI')) &
+            goto 60
+        read (ifsig, '(40A2)', end=180) k80bid
         k8b = k80bid(1:8)
-    else if (kar.eq.'  2414') then
-        read (ifsig,'(1I10)',end=180) ibid
-        read (ifsig,'(40A2)',end=180) k80b
-        read (ifsig,'(1I10)',end=180) ibid
+    else if (kar .eq. '  2414') then
+        read (ifsig, '(1I10)', end=180) ibid
+        read (ifsig, '(40A2)', end=180) k80b
+        read (ifsig, '(1I10)', end=180) ibid
         if (ibid .ne. 2) goto 60
-        read (ifsig,'(40A2)',end=180) k80b
-        read (ifsig,'(40A2)',end=180) k80b
-        read (ifsig,'(40A2)',end=180) k80b
-        read (ifsig,'(A80)',end=180) k80bm
-        read (ifsig,'(40A2)',end=180) k80b
+        read (ifsig, '(40A2)', end=180) k80b
+        read (ifsig, '(40A2)', end=180) k80b
+        read (ifsig, '(40A2)', end=180) k80b
+        read (ifsig, '(A80)', end=180) k80bm
+        read (ifsig, '(40A2)', end=180) k80b
     else
         goto 60
-    endif
-    read (ifsig,'(6I10)',end=180) (ivar(k),k=1,6)
+    end if
+    read (ifsig, '(6I10)', end=180) (ivar(k), k=1, 6)
 !
 !        IVAR(3) : TYPE DE DONNEE =0 POUR UNKNOWN
 !        IVAR(5) : TYPE DE DONNEE =2 POUR REELLE
@@ -290,11 +290,11 @@ subroutine op0184()
         if (ivar(3) .ne. 0) goto 60
         if (ivar(5) .ne. 2) goto 60
         if (ivar(6) .ne. 20) goto 60
-    else if (k80b(49:52).eq.'FLUI') then
+    else if (k80b(49:52) .eq. 'FLUI') then
         if (ivar(3) .ne. 0) goto 60
         if (ivar(5) .ne. 2) goto 60
         if (ivar(6) .ne. 2) goto 60
-    else if (k80bm(49:52).eq.'FLUI') then
+    else if (k80bm(49:52) .eq. 'FLUI') then
         if (ivar(3) .ne. 0) goto 60
         if (ivar(5) .ne. 2) goto 60
         if (ivar(6) .ne. 2) goto 60
@@ -302,20 +302,20 @@ subroutine op0184()
         if (ivar(3) .ne. 0) goto 60
         if (ivar(5) .ne. 2) goto 60
         if (ivar(6) .ne. 10) goto 60
-    endif
+    end if
 !
 !
 !        VERIFICATION QUE LE DATASET EST AU BON INSTANT
 !
     if (kar .eq. '    56') then
-        read (ifsig,'(4I10)',end=180) ibid,ibid,ibid,numpas
-        read (ifsig,'(E13.5)',end=180) temps
+        read (ifsig, '(4I10)', end=180) ibid, ibid, ibid, numpas
+        read (ifsig, '(E13.5)', end=180) temps
     else
-        read (ifsig,'(8I10)',end=180) ibid
-        read (ifsig,'(8I10)',end=180) ibid
-        read (ifsig,'(6E13.5)',end=180) temps
-        read (ifsig,'(6E13.5)',end=180) rbid
-    endif
+        read (ifsig, '(8I10)', end=180) ibid
+        read (ifsig, '(8I10)', end=180) ibid
+        read (ifsig, '(6E13.5)', end=180) temps
+        read (ifsig, '(6E13.5)', end=180) rbid
+    end if
 !
     if (ntout .ne. 0) then
         goto 90
@@ -323,58 +323,58 @@ subroutine op0184()
         if (nbordr .ne. 0) then
             if (kar .eq. '  2414') then
                 call utmess('F', 'UTILITAI3_14')
-            endif
+            end if
             do iord = 1, nbordr
                 if (zi(jnume+iord-1) .eq. numpas) goto 90
             end do
-        else if (nbinst.ne.0) then
+        else if (nbinst .ne. 0) then
             do iord = 1, nbinst
                 tref = zr(jlist+iord-1)
                 if (crit(1:4) .eq. 'RELA') then
                     if (abs(tref-temps) .le. abs(epsi*temps)) goto 90
-                else if (crit(1:4).eq.'ABSO') then
+                else if (crit(1:4) .eq. 'ABSO') then
                     if (abs(tref-temps) .le. abs(epsi)) goto 90
-                endif
+                end if
             end do
-        endif
+        end if
         goto 60
-    endif
- 90 continue
-    ipas = ipas + 1
+    end if
+90  continue
+    ipas = ipas+1
 !
 !        LECTURE DES PRESSIONS
 !
 100 continue
-    read (ifsig,'(I10)',end=180) ima
+    read (ifsig, '(I10)', end=180) ima
     if (ima .eq. -1) goto 110
-    read (ifsig,'(E13.5)',end=180) pres
+    read (ifsig, '(E13.5)', end=180) pres
     zr(jpres-1+ima) = pres
     if (k80bm(49:52) .eq. 'FLUI') then
         goto 100
-    else if (k80b(49:52).eq.'MULT') then
-        read (ifsig,'(E13.5)',end=180) rbid
-        read (ifsig,'(E13.5)',end=180) rbid
-        read (ifsig,'(E13.5)',end=180) rbid
+    else if (k80b(49:52) .eq. 'MULT') then
+        read (ifsig, '(E13.5)', end=180) rbid
+        read (ifsig, '(E13.5)', end=180) rbid
+        read (ifsig, '(E13.5)', end=180) rbid
     else
-        read (ifsig,'(E13.5)',end=180) rbid
-    endif
+        read (ifsig, '(E13.5)', end=180) rbid
+    end if
 !
     goto 100
 110 continue
 !
     do igr = 1, nbgr
         idec = celd(celd(4+igr)+8)
-        te = typele(ligrmo,igr)
+        te = typele(ligrmo, igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-        if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKQU4' .or. nomte .eq. 'MET3SEG3' .or.&
+        if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKQU4' .or. nomte .eq. 'MET3SEG3' .or. &
             nomte .eq. 'MEC3TR7H' .or. nomte .eq. 'MEC3QU9H') then
-            nbelgr = nbelem(ligrmo,igr)
+            nbelgr = nbelem(ligrmo, igr)
             call jeveuo(jexnum(noliel, igr), 'L', liel)
             do iel = 1, nbelgr
                 ima = zi(liel-1+iel)
                 call jeveuo(jexnum(connex, ima), 'L', iadno)
                 call jelira(jexnum(connex, ima), 'LONMAX', nno)
-                iad = jcelv - 1 + idec - 1 + nno* (iel-1)
+                iad = jcelv-1+idec-1+nno*(iel-1)
                 do i = 1, nno
                     ino = zi(iadno-1+i)
                     imapl = zi(jnoma+ino-1)
@@ -385,25 +385,25 @@ subroutine op0184()
                     zr(iad+i) = pres
                 end do
             end do
-        endif
+        end if
     end do
 !
     nsymb = 'PRES'
-    call rsexch(' ', resu, nsymb, ipas, nomch,&
+    call rsexch(' ', resu, nsymb, ipas, nomch, &
                 iret)
     if (iret .eq. 100) then
-    else if (iret.eq.110) then
+    else if (iret .eq. 110) then
         call rsagsd(resu, 0)
-        call rsexch(' ', resu, nsymb, ipas, nomch,&
+        call rsexch(' ', resu, nsymb, ipas, nomch, &
                     iret)
     else
-        vali (1) = ipas
-        vali (2) = iret
+        vali(1) = ipas
+        vali(2) = iret
         call utmess('F', 'UTILITAI8_7', ni=2, vali=vali)
-    endif
+    end if
     call copisd('CHAMP_GD', 'G', chpres, nomch)
     call rsnoch(resu, nsymb, ipas)
-    call rsadpa(resu, 'E', 1, 'INST', ipas,&
+    call rsadpa(resu, 'E', 1, 'INST', ipas, &
                 0, sjv=jinst, styp=k8b)
     zr(jinst) = temps
     do i = 1, nbmapl
@@ -415,21 +415,21 @@ subroutine op0184()
 160 continue
 !
     call utmess('I', 'UTILITAI8_8')
-    call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
-                cbid, epsi, crit, tord, 1,&
+    call rsorac(resu, 'LONUTI', ibid, rbid, k8b, &
+                cbid, epsi, crit, tord, 1, &
                 nbtrou)
-    nbordr=tord(1)
+    nbordr = tord(1)
     if (nbordr .le. 0) then
         call utmess('F', 'UTILITAI2_97')
-    endif
+    end if
     call wkvect('&&OP0184.NUME_ORDR', 'V V I', nbordr, lordr)
-    call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8b,&
-                cbid, epsi, crit, zi(lordr), nbordr,&
+    call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8b, &
+                cbid, epsi, crit, zi(lordr), nbordr, &
                 nbtrou)
     do iord = 1, nbordr
-        call rsadpa(resu, 'L', 1, 'INST', zi(lordr+iord-1),&
+        call rsadpa(resu, 'L', 1, 'INST', zi(lordr+iord-1), &
                     0, sjv=jinst, styp=k8b)
-        vali (1) = zi(lordr+iord-1)
+        vali(1) = zi(lordr+iord-1)
         valr = zr(jinst)
         call utmess('I', 'UTILITAI8_9', si=vali(1), sr=valr)
     end do
@@ -437,7 +437,7 @@ subroutine op0184()
 !
     call titre()
 !
-    iul = iunifi( 'RESULTAT' )
+    iul = iunifi('RESULTAT')
     call rsinfo(resu, iul)
 !
     goto 190

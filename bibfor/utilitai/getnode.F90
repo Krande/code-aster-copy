@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
+subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
                    nb_node, model, suffix, elem_excl)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,15 +31,15 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=16), intent(in) :: keywordfact
-integer, intent(in) :: iocc
-character(len=1), intent(in) :: stop_void
-integer, intent(out) :: nb_node
-character(len=24), intent(in) :: list_node
-character(len=8), intent(in), optional :: model
-character(len=*), intent(in), optional :: suffix
-aster_logical, intent(in), optional :: elem_excl
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    character(len=1), intent(in) :: stop_void
+    integer, intent(out) :: nb_node
+    character(len=24), intent(in) :: list_node
+    character(len=8), intent(in), optional :: model
+    character(len=*), intent(in), optional :: suffix
+    aster_logical, intent(in), optional :: elem_excl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,112 +107,112 @@ aster_logical, intent(in), optional :: elem_excl
     l_read_elem = .true.
     if (present(model)) then
         model_name = model
-    endif
+    end if
     if (present(suffix)) then
         suffix_name = suffix
-    endif
+    end if
     if (present(elem_excl)) then
-        l_read_elem = .not.elem_excl
-    endif
+        l_read_elem = .not. elem_excl
+    end if
 
 ! - Read nodes
     nb_mocl = 0
     if (l_read_elem) then
         keyword = 'GROUP_MA'//suffix_name
-        nb_mocl = nb_mocl + 1
+        nb_mocl = nb_mocl+1
         moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
         keyword = 'MAILLE'//suffix_name
-        nb_mocl = nb_mocl + 1
+        nb_mocl = nb_mocl+1
         moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'MAILLE'
-    endif
-    nb_mocl = nb_mocl + 1
+    end if
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = 'TOUT'
     typmcl(nb_mocl) = 'TOUT'
     keyword = 'GROUP_NO'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'GROUP_NO'
     keyword = 'NOEUD'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'NOEUD'
     if (nb_mocl .ne. 0) then
-        call reliem(model_name, mesh, 'NU_NOEUD', keywordfact, iocc,&
+        call reliem(model_name, mesh, 'NU_NOEUD', keywordfact, iocc, &
                     nb_mocl, moclm, typmcl, list_lect, nb_lect)
-    endif
+    end if
 !
 ! - Read nodes excludes
 !
     nb_mocl = 0
     if (l_read_elem) then
         keyword = 'SANS_GROUP_MA'//suffix_name
-        nb_mocl = nb_mocl + 1
+        nb_mocl = nb_mocl+1
         moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
         keyword = 'SANS_MAILLE'//suffix_name
-        nb_mocl = nb_mocl + 1
+        nb_mocl = nb_mocl+1
         moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'MAILLE'
-    endif
+    end if
     keyword = 'SANS_GROUP_NO'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'GROUP_NO'
     keyword = 'SANS_NOEUD'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'NOEUD'
     if (nb_mocl .ne. 0) then
-        call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc,&
+        call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc, &
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)
-    endif
+    end if
 !
 ! - Access to list of nodes
 !
     if (nb_lect .ne. 0) then
-        call jeveuo(list_lect, 'E', vi = p_list_lect)
-    endif
+        call jeveuo(list_lect, 'E', vi=p_list_lect)
+    end if
 !
 ! - Exclusion of nodes in initial list
 !
     nb_elim = 0
     if (nb_excl .ne. 0) then
-        call jeveuo(list_excl, 'L', vi = p_list_excl)
+        call jeveuo(list_excl, 'L', vi=p_list_excl)
         do i_excl = 1, nb_excl
             nume_excl = p_list_excl(i_excl)
             do i_lect = 1, nb_lect
                 nume_lect = p_list_lect(i_lect)
                 if (nume_excl .eq. nume_lect) then
-                    nb_elim = nb_elim + 1
+                    nb_elim = nb_elim+1
                     p_list_lect(i_lect) = 0
-                endif
+                end if
             end do
         end do
-    endif
-    nb_node = nb_lect - nb_elim
+    end if
+    nb_node = nb_lect-nb_elim
 !
 ! - Final list of nodes
 !
     i_node = 0
-    if ((nb_node.ne.0) .and. (nb_lect.ne.0)) then
-        call wkvect(list_node, 'V V I', nb_node, vi = p_list_node)
+    if ((nb_node .ne. 0) .and. (nb_lect .ne. 0)) then
+        call wkvect(list_node, 'V V I', nb_node, vi=p_list_node)
         do i_lect = 1, nb_lect
             nume_lect = p_list_lect(i_lect)
             if (nume_lect .ne. 0) then
-                i_node = i_node + 1
+                i_node = i_node+1
                 p_list_node(i_node) = nume_lect
-            endif
+            end if
         end do
-        ASSERT(i_node.eq.nb_node)
-    endif
+        ASSERT(i_node .eq. nb_node)
+    end if
 !
 ! - If no nodes
 !
     if (stop_void .ne. ' ' .and. nb_node .eq. 0) then
         call utmess(stop_void, 'UTILITY_4', sk=keywordfact)
-    endif
+    end if
 !
     call jedetr(list_lect)
     call jedetr(list_excl)

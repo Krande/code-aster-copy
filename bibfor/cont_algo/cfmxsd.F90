@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine cfmxsd(mesh_     , model_, nume_dof, list_func_acti, sddyna,&
+subroutine cfmxsd(mesh_, model_, nume_dof, list_func_acti, sddyna, &
                   ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfcrsd.h"
@@ -38,12 +38,12 @@ implicit none
 #include "asterfort/xxmxme.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: mesh_
-character(len=*), intent(in) :: model_
-character(len=24), intent(in) :: nume_dof
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: sddyna
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=*), intent(in) :: mesh_
+    character(len=*), intent(in) :: model_
+    character(len=24), intent(in) :: nume_dof
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,73 +72,73 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_27')
-    endif
+    end if
 !
 ! - Initializations
 !
-    nb_cont_zone  = cfdisi(ds_contact%sdcont_defi,'NZOCO')
-    model         = model_
-    mesh          = mesh_
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    model = model_
+    mesh = mesh_
 !
 ! - Contact method
 !
-    l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
-    l_cont_lac  = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
 ! - Create CONT_NOEU datastructure
 !
     if (l_cont_cont .or. l_cont_disc .or. l_cont_xfem) then
         call cfmxr0(mesh, ds_contact)
-    endif
+    end if
 !
 ! - Create pairing datastructure
 !
     if (l_cont_cont .or. l_cont_disc .or. l_cont_lac) then
         call cfmmap(mesh, ds_contact)
-    endif
+    end if
 !
 ! - Create datastructures for solving
 !
-    if (.not.l_cont_allv) then
+    if (.not. l_cont_allv) then
 !
 ! ----- Create datastructures for DISCRETE/CONTINUE methods
 !
         if (l_cont_cont .or. l_cont_disc) then
             call cfmmma(ds_contact)
-        endif
+        end if
 !
 ! ----- Create datastructures for DISCRETE method
 !
         if (l_cont_disc) then
             call cfcrsd(mesh, nume_dof, ds_contact)
-        endif
+        end if
 !
 ! ----- Create datastructures for CONTINUE method
 !
         if (l_cont_cont) then
             call cfmxme(nume_dof, sddyna, ds_contact)
-        endif
+        end if
 !
 ! ----- Create datastructures for LAC method
 !
         if (l_cont_lac) then
             call lac_crsd(nume_dof, ds_contact)
-        endif
+        end if
 !
 ! ----- Create datastructures for XFEM method
 !
         if (l_cont_xfem) then
             call xxmxme(mesh, model, nume_dof, list_func_acti, ds_contact)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Create CONT_ELEM datastructure
 !
     if (l_cont_lac) then
         call cfmxr0_lac(mesh, ds_contact)
-    endif
+    end if
 !
 end subroutine

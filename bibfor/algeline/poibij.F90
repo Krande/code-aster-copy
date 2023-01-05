@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine poibij(npv, vabs, geom, fsvr, nbm,&
-                  vicoq, torco, tcoef, freq, imasse,&
+subroutine poibij(npv, vabs, geom, fsvr, nbm, &
+                  vicoq, torco, tcoef, freq, imasse, &
                   maj, vecpr)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -90,41 +90,41 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
     ifm = iunifi('MESSAGE')
 !
-    500 format('********************************************************')
-    501 format('*                                                      *')
-    502 format('* MATRICE DE TRANSFERT DES FORCES FLUIDELASTIQUES B(S) *')
-    503 format('*         DIMINUEE DES TERMES DE MASSE AJOUTEE         *')
-    504 format('*  CALCUL DU POIDS RELATIF DES TERMES EXTRADIAGONAUX   *')
-    505 format('*           PAR RAPPORT AUX TERMES DIAGONAUX           *')
-    510 format('VITESSE D ECOULEMENT NO ',i3)
-    511 format('===========================')
-    512 format('VITESSE D ECOULEMENT NULLE : LA MATRICE DE TRANSFERT ',&
+500 format('********************************************************')
+501 format('*                                                      *')
+502 format('* MATRICE DE TRANSFERT DES FORCES FLUIDELASTIQUES B(S) *')
+503 format('*         DIMINUEE DES TERMES DE MASSE AJOUTEE         *')
+504 format('*  CALCUL DU POIDS RELATIF DES TERMES EXTRADIAGONAUX   *')
+505 format('*           PAR RAPPORT AUX TERMES DIAGONAUX           *')
+510 format('VITESSE D ECOULEMENT NO ', i3)
+511 format('===========================')
+512 format('VITESSE D ECOULEMENT NULLE : LA MATRICE DE TRANSFERT ',&
      &       'DES FORCES FLUIDELASTIQUES')
-    513 format('EST EGALE A LA MATRICE DE MASSE AJOUTEE. TOUS LES ',&
+513 format('EST EGALE A LA MATRICE DE MASSE AJOUTEE. TOUS LES ',&
      &       'TERMES RESIDUELS SONT NULS')
-    514 format('N.B. TOUS LES TERMES DE LA MATRICE DE MASSE AJOUTEE ',&
+514 format('N.B. TOUS LES TERMES DE LA MATRICE DE MASSE AJOUTEE ',&
      &       'ONT ETE PRIS EN COMPTE POUR')
-    515 format('LE CALCUL DES MODES DE LA STRUCTURE EN EAU AU REPOS')
-    520 format('FREQUENCE NO ',i3,' NON DETERMINEE')
-    521 format('FREQUENCE SOLUTION NO ',i3,3x,'POIDS RELATIF DES BIJ : ',&
-     &        g13.6,' %')
-    530 format(30x,'---/---')
+515 format('LE CALCUL DES MODES DE LA STRUCTURE EN EAU AU REPOS')
+520 format('FREQUENCE NO ', i3, ' NON DETERMINEE')
+521 format('FREQUENCE SOLUTION NO ', i3, 3x, 'POIDS RELATIF DES BIJ : ',&
+     &        g13.6, ' %')
+530 format(30x, '---/---')
 !
 !
 !-----2.CALCUL DU CRITERE
 !
     call wkvect('&&POIBIJ.TEMP.MATB', 'V V C', nbm*nbm, imatb)
 !
-    write(ifm,500)
-    write(ifm,501)
-    write(ifm,502)
-    write(ifm,503)
-    write(ifm,501)
-    write(ifm,504)
-    write(ifm,505)
-    write(ifm,501)
-    write(ifm,500)
-    write(ifm,*)
+    write (ifm, 500)
+    write (ifm, 501)
+    write (ifm, 502)
+    write (ifm, 503)
+    write (ifm, 501)
+    write (ifm, 504)
+    write (ifm, 505)
+    write (ifm, 501)
+    write (ifm, 500)
+    write (ifm, *)
 !
 !-----2.1.SI ON TRAVAILLE DIRECTEMENT DANS LA BASE MODALE EN EAU AU
 !         REPOS DU SYSTEME : LES TERMES RESIDUELS SONT DONNES PAR
@@ -135,26 +135,26 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
         do iv = 1, npv
 !
-            write(ifm,510) iv
-            write(ifm,511)
-            write(ifm,*)
+            write (ifm, 510) iv
+            write (ifm, 511)
+            write (ifm, *)
             umoy = vabs(iv)
 !
 !---------2.1.1.CAS VITESSE NULLE : B(S) = -MAJ => TERMES RESIDUELS NULS
 !
             if (umoy .lt. 1.d-5) then
 !
-                write(ifm,512)
-                write(ifm,513)
-                write(ifm,*)
-                write(ifm,514)
-                write(ifm,515)
+                write (ifm, 512)
+                write (ifm, 513)
+                write (ifm, *)
+                write (ifm, 514)
+                write (ifm, 515)
 !
 !---------2.1.2.CAS VITESSE NON NULLE
 !
             else
 !
-                call cfrott(visc, rug, hmoy, umoy, cf0,&
+                call cfrott(visc, rug, hmoy, umoy, cf0, &
                             mcf0)
 !
                 do imod = 1, nbm
@@ -164,39 +164,39 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
                     if (fi .lt. 0.d0 .or. ksi .gt. 1.d0) then
 !
-                        write(ifm,520) imod
+                        write (ifm, 520) imod
 !
                     else
 !
                         omegai = 2.d0*pi*fi
                         s1 = -1.d0*omegai*ksi
                         s2 = omegai*dble(sqrt(1.d0-ksi*ksi))
-                        s = dcmplx(s1,s2)
+                        s = dcmplx(s1, s2)
 !
-                        call bmocca(umoy, geom, cf0, mcf0, fsvr,&
-                                    nbm, vicoq, torco, tcoef, s1,&
+                        call bmocca(umoy, geom, cf0, mcf0, fsvr, &
+                                    nbm, vicoq, torco, tcoef, s1, &
                                     s2, zc(imatb))
 !                                     2
 !---------------B(S) -> B(S) + MAJ * S
 !
                         do j = 1, nbm
-                            zc(imatb+nbm*(j-1)+j-1) = zc(&
-                                                      imatb+nbm*(j- 1)+j-1) + dcmplx(maj(j), 0.d0&
-                                                      )*s*s
+                            zc(imatb+nbm*(j-1)+j-1) = zc( &
+                                                      imatb+nbm*(j-1)+j-1)+dcmplx(maj(j), 0.d0 &
+                                                                                  )*s*s
                         end do
 !
                         call cripoi(nbm, zc(imatb), crit)
-                        write(ifm,521) imod,crit
+                        write (ifm, 521) imod, crit
 !
-                    endif
+                    end if
 !
                 end do
 !
-            endif
+            end if
 !
-            write(ifm,*)
-            write(ifm,530)
-            write(ifm,*)
+            write (ifm, *)
+            write (ifm, 530)
+            write (ifm, *)
 !
         end do
 !
@@ -211,9 +211,9 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
         do iv = 1, npv
 !
-            write(ifm,510) iv
-            write(ifm,511)
-            write(ifm,*)
+            write (ifm, 510) iv
+            write (ifm, 511)
+            write (ifm, *)
             umoy = vabs(iv)
 !                                                       T
 !---------2.2.1.CAS VITESSE NULLE : B(S) = - PHI * MAJ * PHI
@@ -221,17 +221,17 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
             if (umoy .lt. 1.d-5) then
 !
-                write(ifm,512)
-                write(ifm,513)
-                write(ifm,*)
-                write(ifm,514)
-                write(ifm,515)
+                write (ifm, 512)
+                write (ifm, 513)
+                write (ifm, *)
+                write (ifm, 514)
+                write (ifm, 515)
 !
 !---------2.2.2.CAS VITESSE NON NULLE
 !
             else
 !
-                call cfrott(visc, rug, hmoy, umoy, cf0,&
+                call cfrott(visc, rug, hmoy, umoy, cf0, &
                             mcf0)
 !
                 do imod = 1, nbm
@@ -241,17 +241,17 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !
                     if (fi .lt. 0.d0 .or. ksi .gt. 1.d0) then
 !
-                        write(ifm,520) imod
+                        write (ifm, 520) imod
 !
                     else
 !
                         omegai = 2.d0*pi*fi
                         s1 = -1.d0*omegai*ksi
                         s2 = omegai*dble(sqrt(1.d0-ksi*ksi))
-                        s = dcmplx(s1,s2)
+                        s = dcmplx(s1, s2)
 !
-                        call bmocca(umoy, geom, cf0, mcf0, fsvr,&
-                                    nbm, vicoq, torco, tcoef, s1,&
+                        call bmocca(umoy, geom, cf0, mcf0, fsvr, &
+                                    nbm, vicoq, torco, tcoef, s1, &
                                     s2, zc(imatb))
 !                *
 !---------------B (S) = B(S) * PHI
@@ -260,11 +260,11 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
                             do i = 1, nbm
                                 zc(imat2+nbm*(j-1)+i-1) = dcmplx(0.d0, 0.d0)
                                 do k = 1, nbm
-                                    zc(imat2+nbm*(j-1)+i-1) = zc(&
-                                                              imat2+nbm*(j-1)+i-1) + zc(imatb+ nb&
-                                                              &m*(k-1)+i-1) * dcmplx(vecpr(nbm* (&
-                                                              &j-1)+k),&
-                                                              0.d0&
+                                    zc(imat2+nbm*(j-1)+i-1) = zc( &
+                                                              imat2+nbm*(j-1)+i-1)+zc(imatb+nb&
+                                                              &m*(k-1)+i-1)*dcmplx(vecpr(nbm*(&
+                                                              &j-1)+k), &
+                                                              0.d0 &
                                                               )
                                 end do
                             end do
@@ -276,10 +276,10 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
                             do i = 1, nbm
                                 zc(imatb+nbm*(j-1)+i-1) = dcmplx(0.d0, 0.d0)
                                 do k = 1, nbm
-                                    zc(imatb+nbm*(j-1)+i-1) = zc(&
-                                                              imatb+nbm*(j-1)+i-1) + dcmplx( vecp&
-                                                              &r(nbm*(i-1)+k),&
-                                                              0.d0) * zc(imat2+nbm*(j-1)+k-1&
+                                    zc(imatb+nbm*(j-1)+i-1) = zc( &
+                                                              imatb+nbm*(j-1)+i-1)+dcmplx(vecp&
+                                                              &r(nbm*(i-1)+k), &
+                                                              0.d0)*zc(imat2+nbm*(j-1)+k-1 &
                                                               )
                                 end do
                             end do
@@ -288,27 +288,27 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !---------------B(S) -> B(S) + MAJ * S
 !
                         do j = 1, nbm
-                            zc(imatb+nbm*(j-1)+j-1) = zc(&
-                                                      imatb+nbm*(j- 1)+j-1) + dcmplx(maj(j), 0.d0&
-                                                      )*s*s
+                            zc(imatb+nbm*(j-1)+j-1) = zc( &
+                                                      imatb+nbm*(j-1)+j-1)+dcmplx(maj(j), 0.d0 &
+                                                                                  )*s*s
                         end do
 !
                         call cripoi(nbm, zc(imatb), crit)
-                        write(ifm,521) imod,crit
+                        write (ifm, 521) imod, crit
 !
-                    endif
+                    end if
 !
                 end do
 !
-            endif
+            end if
 !
-            write(ifm,*)
-            write(ifm,530)
-            write(ifm,*)
+            write (ifm, *)
+            write (ifm, 530)
+            write (ifm, *)
 !
         end do
 !
-    endif
+    end if
 !
 ! --- MENAGE
     call jedetr('&&POIBIJ.TEMP.MATB')

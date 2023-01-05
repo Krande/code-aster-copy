@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
-                  tl, ldtl, tr, ldtr, b,&
-                  ldb, scale, x, ldx, xnorm,&
-                  info)
+subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
+                     tl, ldtl, tr, ldtr, b, &
+                     ldb, scale, x, ldx, xnorm, &
+                     info)
 !
 !     SUBROUTINE LAPACK RESOLVANT L'EQUATION MATRICIELLE CI-DESSOUS.
 !-----------------------------------------------------------------------
@@ -132,13 +132,13 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
     real(kind=8) :: scale, xnorm
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: b( ldb, * ), tl( ldtl, * ), tr( ldtr, * ), x( ldx, * )
+    real(kind=8) :: b(ldb, *), tl(ldtl, *), tr(ldtr, *), x(ldx, *)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d+0, one = 1.0d+0 )
+    parameter(zero=0.0d+0, one=1.0d+0)
     real(kind=8) :: two, half, eight
-    parameter          ( two = 2.0d+0, half = 0.5d+0, eight = 8.0d+0 )
+    parameter(two=2.0d+0, half=0.5d+0, eight=8.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: bswap, xswap
@@ -147,17 +147,17 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
     real(kind=8) :: u22, xmax
 !     ..
 !     .. LOCAL ARRAYS ..
-    aster_logical :: bswpiv( 4 ), xswpiv( 4 )
-    integer :: jpiv( 4 ), locl21( 4 ), locu12( 4 ), locu22( 4 )
-    real(kind=8) :: btmp( 4 ), t16( 4, 4 ), tmp( 4 ), x2( 2 )
+    aster_logical :: bswpiv(4), xswpiv(4)
+    integer :: jpiv(4), locl21(4), locu12(4), locu22(4)
+    real(kind=8) :: btmp(4), t16(4, 4), tmp(4), x2(2)
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
 !     .. DATA STATEMENTS ..
-    data               locu12 / 3, 4, 1, 2 / , locl21 / 2, 1, 4, 3 / ,&
-     &                   locu22 / 4, 3, 2, 1 /
-    data               xswpiv / .false._1, .false._1, .true._1, .true._1 /
-    data               bswpiv / .false._1, .true._1, .false._1, .true._1 /
+    data locu12/3, 4, 1, 2/, locl21/2, 1, 4, 3/,&
+     &                   locu22/4, 3, 2, 1/
+    data xswpiv/.false._1, .false._1, .true._1, .true._1/
+    data bswpiv/.false._1, .true._1, .false._1, .true._1/
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
@@ -171,78 +171,78 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
 !
 !     SET CONSTANTS TO CONTROL OVERFLOW
 !
-    eps = r8prem() * 0.5d0 * isbaem()
-    smlnum = r8miem() / eps
+    eps = r8prem()*0.5d0*isbaem()
+    smlnum = r8miem()/eps
     sgn = isgn
 !
-    k = n1 + n1 + n2 - 2
+    k = n1+n1+n2-2
 !
     select case (k)
     case (1)
 !       1 BY 1: TL11*X + SGN*X*TR11 = B11
 !
-        tau1 = tl( 1, 1 ) + sgn*tr( 1, 1 )
-        bet = abs( tau1 )
+        tau1 = tl(1, 1)+sgn*tr(1, 1)
+        bet = abs(tau1)
         if (bet .le. smlnum) then
             tau1 = smlnum
             bet = smlnum
             info = 1
-        endif
+        end if
 !
         scale = one
-        gam = abs( b( 1, 1 ) )
-        if (smlnum*gam .gt. bet) scale = one / gam
+        gam = abs(b(1, 1))
+        if (smlnum*gam .gt. bet) scale = one/gam
 !
-        x( 1, 1 ) = ( b( 1, 1 )*scale ) / tau1
-        xnorm = abs( x( 1, 1 ) )
+        x(1, 1) = (b(1, 1)*scale)/tau1
+        xnorm = abs(x(1, 1))
 !
     case (2)
 !       1 BY 2:
 !       TL11*(X11 X12) + ISGN*(X11 X12)*OP(TR11 TR12)  = (B11 B12)
 !                                         (TR21 TR22)
 !
-        smin = max(&
-               eps*max(&
-               abs( tl( 1, 1 ) ), abs( tr( 1, 1 ) ), abs( tr( 1, 2 ) ), abs( tr( 2, 1 ) ),&
-               abs( tr( 2, 2 ) )&
-               ),&
-               smlnum&
+        smin = max( &
+               eps*max( &
+               abs(tl(1, 1)), abs(tr(1, 1)), abs(tr(1, 2)), abs(tr(2, 1)), &
+               abs(tr(2, 2)) &
+               ), &
+               smlnum &
                )
-        tmp( 1 ) = tl( 1, 1 ) + sgn*tr( 1, 1 )
-        tmp( 4 ) = tl( 1, 1 ) + sgn*tr( 2, 2 )
+        tmp(1) = tl(1, 1)+sgn*tr(1, 1)
+        tmp(4) = tl(1, 1)+sgn*tr(2, 2)
         if (ltranr) then
-            tmp( 2 ) = sgn*tr( 2, 1 )
-            tmp( 3 ) = sgn*tr( 1, 2 )
+            tmp(2) = sgn*tr(2, 1)
+            tmp(3) = sgn*tr(1, 2)
         else
-            tmp( 2 ) = sgn*tr( 1, 2 )
-            tmp( 3 ) = sgn*tr( 2, 1 )
-        endif
-        btmp( 1 ) = b( 1, 1 )
-        btmp( 2 ) = b( 1, 2 )
+            tmp(2) = sgn*tr(1, 2)
+            tmp(3) = sgn*tr(2, 1)
+        end if
+        btmp(1) = b(1, 1)
+        btmp(2) = b(1, 2)
 !       + common code
 !
     case (3)
 !       2 BY 1:
 !          OP(TL11 TL12)*(X11) + ISGN* (X11)*TR11  = (B11)
 !            (TL21 TL22) (X21)         (X21)         (B21)
-        smin = max(&
-               eps*max(&
-               abs( tr( 1, 1 ) ), abs( tl( 1, 1 ) ), abs( tl( 1, 2 ) ), abs( tl( 2, 1 ) ),&
-               abs( tl( 2, 2 ) )&
-               ),&
-               smlnum&
+        smin = max( &
+               eps*max( &
+               abs(tr(1, 1)), abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), &
+               abs(tl(2, 2)) &
+               ), &
+               smlnum &
                )
-        tmp( 1 ) = tl( 1, 1 ) + sgn*tr( 1, 1 )
-        tmp( 4 ) = tl( 2, 2 ) + sgn*tr( 1, 1 )
+        tmp(1) = tl(1, 1)+sgn*tr(1, 1)
+        tmp(4) = tl(2, 2)+sgn*tr(1, 1)
         if (ltranl) then
-            tmp( 2 ) = tl( 1, 2 )
-            tmp( 3 ) = tl( 2, 1 )
+            tmp(2) = tl(1, 2)
+            tmp(3) = tl(2, 1)
         else
-            tmp( 2 ) = tl( 2, 1 )
-            tmp( 3 ) = tl( 1, 2 )
-        endif
-        btmp( 1 ) = b( 1, 1 )
-        btmp( 2 ) = b( 2, 1 )
+            tmp(2) = tl(2, 1)
+            tmp(3) = tl(1, 2)
+        end if
+        btmp(1) = b(1, 1)
+        btmp(2) = b(2, 1)
 !       + common code
 !
     case (4)
@@ -253,42 +253,42 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
 !       SOLVE EQUIVALENT 4 BY 4 SYSTEM USING COMPLETE PIVOTING.
 !       SET PIVOTS LESS THAN SMIN TO SMIN.
 !
-        smin = max( abs( tr( 1, 1 ) ), abs( tr( 1, 2 ) ), abs( tr( 2, 1 ) ), abs( tr( 2, 2 ) ) )
-        smin = max(&
-               smin, abs( tl( 1, 1 ) ), abs( tl( 1, 2 ) ), abs( tl( 2, 1 ) ), abs( tl( 2, 2 ) ))
-        smin = max( eps*smin, smlnum )
-        btmp( 1 ) = zero
+        smin = max(abs(tr(1, 1)), abs(tr(1, 2)), abs(tr(2, 1)), abs(tr(2, 2)))
+        smin = max( &
+               smin, abs(tl(1, 1)), abs(tl(1, 2)), abs(tl(2, 1)), abs(tl(2, 2)))
+        smin = max(eps*smin, smlnum)
+        btmp(1) = zero
         call dcopy(16, btmp, 0, t16, 1)
-        t16( 1, 1 ) = tl( 1, 1 ) + sgn*tr( 1, 1 )
-        t16( 2, 2 ) = tl( 2, 2 ) + sgn*tr( 1, 1 )
-        t16( 3, 3 ) = tl( 1, 1 ) + sgn*tr( 2, 2 )
-        t16( 4, 4 ) = tl( 2, 2 ) + sgn*tr( 2, 2 )
+        t16(1, 1) = tl(1, 1)+sgn*tr(1, 1)
+        t16(2, 2) = tl(2, 2)+sgn*tr(1, 1)
+        t16(3, 3) = tl(1, 1)+sgn*tr(2, 2)
+        t16(4, 4) = tl(2, 2)+sgn*tr(2, 2)
         if (ltranl) then
-            t16( 1, 2 ) = tl( 2, 1 )
-            t16( 2, 1 ) = tl( 1, 2 )
-            t16( 3, 4 ) = tl( 2, 1 )
-            t16( 4, 3 ) = tl( 1, 2 )
+            t16(1, 2) = tl(2, 1)
+            t16(2, 1) = tl(1, 2)
+            t16(3, 4) = tl(2, 1)
+            t16(4, 3) = tl(1, 2)
         else
-            t16( 1, 2 ) = tl( 1, 2 )
-            t16( 2, 1 ) = tl( 2, 1 )
-            t16( 3, 4 ) = tl( 1, 2 )
-            t16( 4, 3 ) = tl( 2, 1 )
-        endif
+            t16(1, 2) = tl(1, 2)
+            t16(2, 1) = tl(2, 1)
+            t16(3, 4) = tl(1, 2)
+            t16(4, 3) = tl(2, 1)
+        end if
         if (ltranr) then
-            t16( 1, 3 ) = sgn*tr( 1, 2 )
-            t16( 2, 4 ) = sgn*tr( 1, 2 )
-            t16( 3, 1 ) = sgn*tr( 2, 1 )
-            t16( 4, 2 ) = sgn*tr( 2, 1 )
+            t16(1, 3) = sgn*tr(1, 2)
+            t16(2, 4) = sgn*tr(1, 2)
+            t16(3, 1) = sgn*tr(2, 1)
+            t16(4, 2) = sgn*tr(2, 1)
         else
-            t16( 1, 3 ) = sgn*tr( 2, 1 )
-            t16( 2, 4 ) = sgn*tr( 2, 1 )
-            t16( 3, 1 ) = sgn*tr( 1, 2 )
-            t16( 4, 2 ) = sgn*tr( 1, 2 )
-        endif
-        btmp( 1 ) = b( 1, 1 )
-        btmp( 2 ) = b( 2, 1 )
-        btmp( 3 ) = b( 1, 2 )
-        btmp( 4 ) = b( 2, 2 )
+            t16(1, 3) = sgn*tr(2, 1)
+            t16(2, 4) = sgn*tr(2, 1)
+            t16(3, 1) = sgn*tr(1, 2)
+            t16(4, 2) = sgn*tr(1, 2)
+        end if
+        btmp(1) = b(1, 1)
+        btmp(2) = b(2, 1)
+        btmp(3) = b(1, 2)
+        btmp(4) = b(2, 2)
 !
 !         PERFORM ELIMINATION
 !
@@ -296,65 +296,65 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
             xmax = zero
             do ip = i, 4
                 do jp = i, 4
-                    if (abs( t16( ip, jp ) ) .ge. xmax) then
-                        xmax = abs( t16( ip, jp ) )
+                    if (abs(t16(ip, jp)) .ge. xmax) then
+                        xmax = abs(t16(ip, jp))
                         ipsv = ip
                         jpsv = jp
-                    endif
+                    end if
                 end do
             end do
             if (ipsv .ne. i) then
-                call dswap(4, t16( ipsv, 1 ), 4, t16( i, 1 ), 4)
-                temp = btmp( i )
-                btmp( i ) = btmp( ipsv )
-                btmp( ipsv ) = temp
-            endif
-            if (jpsv .ne. i) call dswap(4, t16( 1, jpsv ), 1, t16( 1, i ), 1)
-            jpiv( i ) = jpsv
-            if (abs( t16( i, i ) ) .lt. smin) then
+                call dswap(4, t16(ipsv, 1), 4, t16(i, 1), 4)
+                temp = btmp(i)
+                btmp(i) = btmp(ipsv)
+                btmp(ipsv) = temp
+            end if
+            if (jpsv .ne. i) call dswap(4, t16(1, jpsv), 1, t16(1, i), 1)
+            jpiv(i) = jpsv
+            if (abs(t16(i, i)) .lt. smin) then
                 info = 1
-                t16( i, i ) = smin
-            endif
-            do j = i + 1, 4
-                t16( j, i ) = t16( j, i ) / t16( i, i )
-                btmp( j ) = btmp( j ) - t16( j, i )*btmp( i )
-                do k = i + 1, 4
-                    t16( j, k ) = t16( j, k ) - t16( j, i )*t16( i, k )
+                t16(i, i) = smin
+            end if
+            do j = i+1, 4
+                t16(j, i) = t16(j, i)/t16(i, i)
+                btmp(j) = btmp(j)-t16(j, i)*btmp(i)
+                do k = i+1, 4
+                    t16(j, k) = t16(j, k)-t16(j, i)*t16(i, k)
                 end do
             end do
         end do
-        if (abs( t16( 4, 4 ) ) .lt. smin) t16( 4, 4 ) = smin
+        if (abs(t16(4, 4)) .lt. smin) t16(4, 4) = smin
         scale = one
-        if (( eight*smlnum )*abs( btmp( 1 ) ) .gt. abs( t16( 1, 1 ) ) .or.&
-            ( eight*smlnum )*abs( btmp( 2 ) ) .gt. abs( t16( 2, 2 ) ) .or.&
-            ( eight*smlnum )*abs( btmp( 3 ) ) .gt. abs( t16( 3, 3 ) ) .or.&
-            ( eight*smlnum )*abs( btmp( 4 ) ) .gt. abs( t16( 4, 4 ) )) then
-            scale = (one/eight) / max(abs(btmp(1)), abs(btmp(2)), abs(btmp(3)), abs(btmp(4)))
-            btmp( 1 ) = btmp( 1 )*scale
-            btmp( 2 ) = btmp( 2 )*scale
-            btmp( 3 ) = btmp( 3 )*scale
-            btmp( 4 ) = btmp( 4 )*scale
-        endif
+        if ((eight*smlnum)*abs(btmp(1)) .gt. abs(t16(1, 1)) .or. &
+            (eight*smlnum)*abs(btmp(2)) .gt. abs(t16(2, 2)) .or. &
+            (eight*smlnum)*abs(btmp(3)) .gt. abs(t16(3, 3)) .or. &
+            (eight*smlnum)*abs(btmp(4)) .gt. abs(t16(4, 4))) then
+            scale = (one/eight)/max(abs(btmp(1)), abs(btmp(2)), abs(btmp(3)), abs(btmp(4)))
+            btmp(1) = btmp(1)*scale
+            btmp(2) = btmp(2)*scale
+            btmp(3) = btmp(3)*scale
+            btmp(4) = btmp(4)*scale
+        end if
         do i = 1, 4
-            k = 5 - i
-            temp = one / t16( k, k )
-            tmp( k ) = btmp( k )*temp
-            do j = k + 1, 4
-                tmp( k ) = tmp( k ) - ( temp*t16( k, j ) )*tmp( j )
+            k = 5-i
+            temp = one/t16(k, k)
+            tmp(k) = btmp(k)*temp
+            do j = k+1, 4
+                tmp(k) = tmp(k)-(temp*t16(k, j))*tmp(j)
             end do
         end do
         do i = 1, 3
-            if (jpiv( 4-i ) .ne. 4-i) then
-                temp = tmp( 4-i )
-                tmp( 4-i ) = tmp( jpiv( 4-i ) )
-                tmp( jpiv( 4-i ) ) = temp
-            endif
+            if (jpiv(4-i) .ne. 4-i) then
+                temp = tmp(4-i)
+                tmp(4-i) = tmp(jpiv(4-i))
+                tmp(jpiv(4-i)) = temp
+            end if
         end do
-        x( 1, 1 ) = tmp( 1 )
-        x( 2, 1 ) = tmp( 2 )
-        x( 1, 2 ) = tmp( 3 )
-        x( 2, 2 ) = tmp( 4 )
-        xnorm = max( abs( tmp( 1 ) )+abs( tmp( 3 ) ), abs( tmp( 2 ) )+abs( tmp( 4 ) ))
+        x(1, 1) = tmp(1)
+        x(2, 1) = tmp(2)
+        x(1, 2) = tmp(3)
+        x(2, 2) = tmp(4)
+        xnorm = max(abs(tmp(1))+abs(tmp(3)), abs(tmp(2))+abs(tmp(4)))
 !
     end select
 !
@@ -363,51 +363,51 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2,&
 !       SOLVE 2 BY 2 SYSTEM USING COMPLETE PIVOTING.
 !       SET PIVOTS LESS THAN SMIN TO SMIN.
 !
-        ipiv = idamax( 4, tmp, 1 )
-        u11 = tmp( ipiv )
-        if (abs( u11 ) .le. smin) then
+        ipiv = idamax(4, tmp, 1)
+        u11 = tmp(ipiv)
+        if (abs(u11) .le. smin) then
             info = 1
             u11 = smin
-        endif
-        u12 = tmp( locu12( ipiv ) )
-        l21 = tmp( locl21( ipiv ) ) / u11
-        u22 = tmp( locu22( ipiv ) ) - u12*l21
-        xswap = xswpiv( ipiv )
-        bswap = bswpiv( ipiv )
-        if (abs( u22 ) .le. smin) then
+        end if
+        u12 = tmp(locu12(ipiv))
+        l21 = tmp(locl21(ipiv))/u11
+        u22 = tmp(locu22(ipiv))-u12*l21
+        xswap = xswpiv(ipiv)
+        bswap = bswpiv(ipiv)
+        if (abs(u22) .le. smin) then
             info = 1
             u22 = smin
-        endif
+        end if
         if (bswap) then
-            temp = btmp( 2 )
-            btmp( 2 ) = btmp( 1 ) - l21*temp
-            btmp( 1 ) = temp
+            temp = btmp(2)
+            btmp(2) = btmp(1)-l21*temp
+            btmp(1) = temp
         else
-            btmp( 2 ) = btmp( 2 ) - l21*btmp( 1 )
-        endif
+            btmp(2) = btmp(2)-l21*btmp(1)
+        end if
         scale = one
-        if (( two*smlnum )*abs( btmp( 2 ) ) .gt. abs( u22 ) .or.&
-            ( two*smlnum )*abs( btmp( 1 ) ) .gt. abs( u11 )) then
-            scale = half / max( abs( btmp( 1 ) ), abs( btmp( 2 ) ) )
-            btmp( 1 ) = btmp( 1 )*scale
-            btmp( 2 ) = btmp( 2 )*scale
-        endif
-        x2( 2 ) = btmp( 2 ) / u22
-        x2( 1 ) = btmp( 1 ) / u11 - ( u12 / u11 )*x2( 2 )
+        if ((two*smlnum)*abs(btmp(2)) .gt. abs(u22) .or. &
+            (two*smlnum)*abs(btmp(1)) .gt. abs(u11)) then
+            scale = half/max(abs(btmp(1)), abs(btmp(2)))
+            btmp(1) = btmp(1)*scale
+            btmp(2) = btmp(2)*scale
+        end if
+        x2(2) = btmp(2)/u22
+        x2(1) = btmp(1)/u11-(u12/u11)*x2(2)
         if (xswap) then
-            temp = x2( 2 )
-            x2( 2 ) = x2( 1 )
-            x2( 1 ) = temp
-        endif
-        x( 1, 1 ) = x2( 1 )
+            temp = x2(2)
+            x2(2) = x2(1)
+            x2(1) = temp
+        end if
+        x(1, 1) = x2(1)
         if (n1 .eq. 1) then
-            x( 1, 2 ) = x2( 2 )
-            xnorm = abs( x( 1, 1 ) ) + abs( x( 1, 2 ) )
+            x(1, 2) = x2(2)
+            xnorm = abs(x(1, 1))+abs(x(1, 2))
         else
-            x( 2, 1 ) = x2( 2 )
-            xnorm = max( abs( x( 1, 1 ) ), abs( x( 2, 1 ) ) )
-        endif
-    endif
+            x(2, 1) = x2(2)
+            xnorm = max(abs(x(1, 1)), abs(x(2, 1)))
+        end if
+    end if
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
-subroutine lcjacb(fami, kpg, ksp, rela_comp, mod,&
-                  nmat, materf, timed, timef,&
-                  yf, deps, itmax, toler, nbcomm,&
-                  cpmono, pgl, nfs, nsg, toutms,&
-                  hsr, nr, nvi, vind,&
-                  vinf, epsd, yd, dy, ye,&
-                  crit, indi, vind1, bnews, mtrac,&
+subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
+                  nmat, materf, timed, timef, &
+                  yf, deps, itmax, toler, nbcomm, &
+                  cpmono, pgl, nfs, nsg, toutms, &
+                  hsr, nr, nvi, vind, &
+                  vinf, epsd, yd, dy, ye, &
+                  crit, indi, vind1, bnews, mtrac, &
                   drdy, iret)
 
     implicit none
@@ -93,45 +93,45 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod,&
     aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
-    iret=0
+    iret = 0
     if (rela_comp .eq. 'VISCOCHAB') then
-        call cvmjac(mod, nmat, materf, timed, timef,&
-                    yf, dy, nr, epsd, deps,&
+        call cvmjac(mod, nmat, materf, timed, timef, &
+                    yf, dy, nr, epsd, deps, &
                     drdy)
 !
     else if (rela_comp .eq. 'MONOCRISTAL') then
-        call lcmmja(mod, nmat, materf, timed,&
-                    timef, itmax, toler, nbcomm, cpmono,&
-                    pgl, nfs, nsg, toutms, hsr,&
-                    nr, nvi, vind, deps, yf,&
+        call lcmmja(mod, nmat, materf, timed, &
+                    timef, itmax, toler, nbcomm, cpmono, &
+                    pgl, nfs, nsg, toutms, hsr, &
+                    nr, nvi, vind, deps, yf, &
                     yd, dy, drdy, iret)
 !
     else if (rela_comp .eq. 'IRRAD3M') then
-        call irrjac(fami, kpg, ksp, mod, nmat,&
+        call irrjac(fami, kpg, ksp, mod, nmat, &
                     materf, yf, dy, nr, drdy)
 !
     else if (rela_comp .eq. 'LETK') then
-        call lkijac(mod, nmat, materf, timed, timef,&
-                    yf, deps, nr, nvi, vind,&
+        call lkijac(mod, nmat, materf, timed, timef, &
+                    yf, deps, nr, nvi, vind, &
                     vinf, yd, dy, drdy, iret)
 !
     else if (rela_comp .eq. 'LKR') then
-        call srijac(nmat,materf,timed,timef,&
-                    yf,deps,nr,nvi,vind,&
-                    vinf,yd,drdy)
+        call srijac(nmat, materf, timed, timef, &
+                    yf, deps, nr, nvi, vind, &
+                    vinf, yd, drdy)
 !
     else if (rela_comp .eq. 'HAYHURST') then
-        call hayjac(mod, nmat, materf(1, 1), materf(1, 2), timed,&
-                    timef, yf, deps, nr, nvi,&
-                    vind, vinf, yd, dy, crit,&
+        call hayjac(mod, nmat, materf(1, 1), materf(1, 2), timed, &
+                    timef, yf, deps, nr, nvi, &
+                    vind, vinf, yd, dy, crit, &
                     drdy, iret)
 !
     else if (rela_comp .eq. 'HUJEUX') then
-        call hujjac(mod, nmat, materf, indi, deps,&
-                    nr, yd, yf, ye, nvi,&
-                    vind, vind1, vinf, drdy, bnews,&
+        call hujjac(mod, nmat, materf, indi, deps, &
+                    nr, yd, yf, ye, nvi, &
+                    vind, vind1, vinf, drdy, bnews, &
                     mtrac, iret)
 !
-    endif
+    end if
 !
 end subroutine

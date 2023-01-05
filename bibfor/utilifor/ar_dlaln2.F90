@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
-                  a, lda, d1, d2, b,&
-                  ldb, wr, wi, x, ldx,&
-                  scale, xnorm, info)
+subroutine ar_dlaln2(ltrans, na, nw, smin, ca, &
+                     a, lda, d1, d2, b, &
+                     ldb, wr, wi, x, ldx, &
+                     scale, xnorm, info)
 !
 !     SUBROUTINE LAPACK RESOLVANT UN SYSTEME LINEAIRE PERTURBE
 !     PARTICULIER (DU TYPE MENTIONNE CI DESSOUS).
@@ -176,13 +176,13 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
     real(kind=8) :: ca, d1, d2, scale, smin, wi, wr, xnorm
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: a( lda, * ), b( ldb, * ), x( ldx, * )
+    real(kind=8) :: a(lda, *), b(ldb, *), x(ldx, *)
 !
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d0, one = 1.0d0 )
+    parameter(zero=0.0d0, one=1.0d0)
     real(kind=8) :: two
-    parameter          ( two = 2.0d0 )
+    parameter(two=2.0d0)
 !     ..
 !     .. LOCAL SCALARS ..
     integer :: icmax, j
@@ -192,9 +192,9 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
     real(kind=8) :: ur12s, ur22, xi1, xi2, xr1, xr2
 !     ..
 !     .. LOCAL ARRAYS ..
-    aster_logical :: rswap( 4 ), zswap( 4 )
-    integer :: ipivot( 4, 4 )
-    real(kind=8) :: ci( 2, 2 ), civ( 4 ), cr( 2, 2 ), crv( 4 )
+    aster_logical :: rswap(4), zswap(4)
+    integer :: ipivot(4, 4)
+    real(kind=8) :: ci(2, 2), civ(4), cr(2, 2), crv(4)
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !
@@ -204,10 +204,10 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
 !     &                   ( CR( 1, 1 ), CRV( 1 ) )
 !     ..
 !     .. DATA STATEMENTS ..
-    data               zswap / .false._1, .false._1, .true._1, .true._1 /
-    data               rswap / .false._1, .true._1, .false._1, .true._1 /
-    data               ipivot / 1, 2, 3, 4, 2, 1, 4, 3, 3, 4, 1, 2, 4,&
-     &                   3, 2, 1 /
+    data zswap/.false._1, .false._1, .true._1, .true._1/
+    data rswap/.false._1, .true._1, .false._1, .true._1/
+    data ipivot/1, 2, 3, 4, 2, 1, 4, 3, 3, 4, 1, 2, 4,&
+     &                   3, 2, 1/
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
@@ -216,8 +216,8 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
 !     COMPUTE BIGNUM
 !
     smlnum = two*r8miem()
-    bignum = one / smlnum
-    smini = max( smin, smlnum )
+    bignum = one/smlnum
+    smini = max(smin, smlnum)
 !
 !     DON'T CHECK FOR INPUT ERRORS
 !
@@ -237,8 +237,8 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
 !
 !           C = CA A - W D
 !
-            csr = ca*a( 1, 1 ) - wr*d1
-            cnorm = abs( csr )
+            csr = ca*a(1, 1)-wr*d1
+            cnorm = abs(csr)
 !
 !           IF | C | < SMINI, USE C = SMINI
 !
@@ -246,28 +246,28 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
                 csr = smini
                 cnorm = smini
                 info = 1
-            endif
+            end if
 !
 !           CHECK SCALING FOR  X = B / C
 !
-            bnorm = abs( b( 1, 1 ) )
+            bnorm = abs(b(1, 1))
             if (cnorm .lt. one .and. bnorm .gt. one) then
-                if (bnorm .gt. bignum*cnorm) scale = one / bnorm
-            endif
+                if (bnorm .gt. bignum*cnorm) scale = one/bnorm
+            end if
 !
 !           COMPUTE X
 !
-            x( 1, 1 ) = ( b( 1, 1 )*scale ) / csr
-            xnorm = abs( x( 1, 1 ) )
+            x(1, 1) = (b(1, 1)*scale)/csr
+            xnorm = abs(x(1, 1))
         else
 !
 !           COMPLEX 1X1 SYSTEM (W IS COMPLEX)
 !
 !           C = CA A - W D
 !
-            csr = ca*a( 1, 1 ) - wr*d1
+            csr = ca*a(1, 1)-wr*d1
             csi = -wi*d1
-            cnorm = abs( csr ) + abs( csi )
+            cnorm = abs(csr)+abs(csi)
 !
 !           IF | C | < SMINI, USE C = SMINI
 !
@@ -276,21 +276,21 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
                 csi = zero
                 cnorm = smini
                 info = 1
-            endif
+            end if
 !
 !           CHECK SCALING FOR  X = B / C
 !
-            bnorm = abs( b( 1, 1 ) ) + abs( b( 1, 2 ) )
+            bnorm = abs(b(1, 1))+abs(b(1, 2))
             if (cnorm .lt. one .and. bnorm .gt. one) then
-                if (bnorm .gt. bignum*cnorm) scale = one / bnorm
-            endif
+                if (bnorm .gt. bignum*cnorm) scale = one/bnorm
+            end if
 !
 !           COMPUTE X
 !
-            call dladiv(scale*b( 1, 1 ), scale*b( 1, 2 ), csr, csi, x( 1, 1 ),&
-                        x( 1, 2 ))
-            xnorm = abs( x( 1, 1 ) ) + abs( x( 1, 2 ) )
-        endif
+            call dladiv(scale*b(1, 1), scale*b(1, 2), csr, csi, x(1, 1), &
+                        x(1, 2))
+            xnorm = abs(x(1, 1))+abs(x(1, 2))
+        end if
 !
     else
 !
@@ -298,21 +298,21 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
 !
 !        COMPUTE THE REAL PART OF  C = CA A - W D  (OR  CA A' - W D )
 !
-        cr( 1, 1 ) = ca*a( 1, 1 ) - wr*d1
-        cr( 2, 2 ) = ca*a( 2, 2 ) - wr*d2
+        cr(1, 1) = ca*a(1, 1)-wr*d1
+        cr(2, 2) = ca*a(2, 2)-wr*d2
         if (ltrans) then
-            cr( 1, 2 ) = ca*a( 2, 1 )
-            cr( 2, 1 ) = ca*a( 1, 2 )
+            cr(1, 2) = ca*a(2, 1)
+            cr(2, 1) = ca*a(1, 2)
         else
-            cr( 2, 1 ) = ca*a( 2, 1 )
-            cr( 1, 2 ) = ca*a( 1, 2 )
-        endif
+            cr(2, 1) = ca*a(2, 1)
+            cr(1, 2) = ca*a(1, 2)
+        end if
 !
 ! DUE TO CRP_18
-        crv(1) = cr(1,1)
-        crv(2) = cr(2,1)
-        crv(3) = cr(1,2)
-        crv(4) = cr(2,2)
+        crv(1) = cr(1, 1)
+        crv(2) = cr(2, 1)
+        crv(3) = cr(1, 2)
+        crv(4) = cr(2, 2)
 !
         if (nw .eq. 1) then
 !
@@ -324,163 +324,163 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
             icmax = 0
 !
             do j = 1, 4
-                if (abs( crv( j ) ) .gt. cmax) then
-                    cmax = abs( crv( j ) )
+                if (abs(crv(j)) .gt. cmax) then
+                    cmax = abs(crv(j))
                     icmax = j
-                endif
+                end if
             end do
 !
 !           IF NORM(C) < SMINI, USE SMINI*IDENTITY.
 !
             if (cmax .lt. smini) then
-                bnorm = max( abs( b( 1, 1 ) ), abs( b( 2, 1 ) ) )
+                bnorm = max(abs(b(1, 1)), abs(b(2, 1)))
                 if (smini .lt. one .and. bnorm .gt. one) then
-                    if (bnorm .gt. bignum*smini) scale = one / bnorm
-                endif
-                temp = scale / smini
-                x( 1, 1 ) = temp*b( 1, 1 )
-                x( 2, 1 ) = temp*b( 2, 1 )
+                    if (bnorm .gt. bignum*smini) scale = one/bnorm
+                end if
+                temp = scale/smini
+                x(1, 1) = temp*b(1, 1)
+                x(2, 1) = temp*b(2, 1)
                 xnorm = temp*bnorm
                 info = 1
                 goto 1000
-            endif
+            end if
 !
 !           GAUSSIAN ELIMINATION WITH COMPLETE PIVOTING.
 !
-            ur11 = crv( icmax )
-            cr21 = crv( ipivot( 2, icmax ) )
-            ur12 = crv( ipivot( 3, icmax ) )
-            cr22 = crv( ipivot( 4, icmax ) )
-            ur11r = one / ur11
+            ur11 = crv(icmax)
+            cr21 = crv(ipivot(2, icmax))
+            ur12 = crv(ipivot(3, icmax))
+            cr22 = crv(ipivot(4, icmax))
+            ur11r = one/ur11
             lr21 = ur11r*cr21
-            ur22 = cr22 - ur12*lr21
+            ur22 = cr22-ur12*lr21
 !
 !           IF SMALLER PIVOT < SMINI, USE SMINI
 !
-            if (abs( ur22 ) .lt. smini) then
+            if (abs(ur22) .lt. smini) then
                 ur22 = smini
                 info = 1
-            endif
-            if (rswap( icmax )) then
-                br1 = b( 2, 1 )
-                br2 = b( 1, 1 )
+            end if
+            if (rswap(icmax)) then
+                br1 = b(2, 1)
+                br2 = b(1, 1)
             else
-                br1 = b( 1, 1 )
-                br2 = b( 2, 1 )
-            endif
-            br2 = br2 - lr21*br1
-            bbnd = max( abs( br1*( ur22*ur11r ) ), abs( br2 ) )
-            if (bbnd .gt. one .and. abs( ur22 ) .lt. one) then
-                if (bbnd .ge. bignum*abs( ur22 )) scale = one / bbnd
-            endif
+                br1 = b(1, 1)
+                br2 = b(2, 1)
+            end if
+            br2 = br2-lr21*br1
+            bbnd = max(abs(br1*(ur22*ur11r)), abs(br2))
+            if (bbnd .gt. one .and. abs(ur22) .lt. one) then
+                if (bbnd .ge. bignum*abs(ur22)) scale = one/bbnd
+            end if
 !
-            xr2 = ( br2*scale ) / ur22
-            xr1 = ( scale*br1 )*ur11r - xr2*( ur11r*ur12 )
-            if (zswap( icmax )) then
-                x( 1, 1 ) = xr2
-                x( 2, 1 ) = xr1
+            xr2 = (br2*scale)/ur22
+            xr1 = (scale*br1)*ur11r-xr2*(ur11r*ur12)
+            if (zswap(icmax)) then
+                x(1, 1) = xr2
+                x(2, 1) = xr1
             else
-                x( 1, 1 ) = xr1
-                x( 2, 1 ) = xr2
-            endif
-            xnorm = max( abs( xr1 ), abs( xr2 ) )
+                x(1, 1) = xr1
+                x(2, 1) = xr2
+            end if
+            xnorm = max(abs(xr1), abs(xr2))
 !
 !           FURTHER SCALING IF  NORM(A) NORM(X) > OVERFLOW
 !
             if (xnorm .gt. one .and. cmax .gt. one) then
-                if (xnorm .gt. bignum / cmax) then
-                    temp = cmax / bignum
-                    x( 1, 1 ) = temp*x( 1, 1 )
-                    x( 2, 1 ) = temp*x( 2, 1 )
+                if (xnorm .gt. bignum/cmax) then
+                    temp = cmax/bignum
+                    x(1, 1) = temp*x(1, 1)
+                    x(2, 1) = temp*x(2, 1)
                     xnorm = temp*xnorm
                     scale = temp*scale
-                endif
-            endif
+                end if
+            end if
         else
 !
 !           COMPLEX 2X2 SYSTEM  (W IS COMPLEX)
 !
 !           FIND THE LARGEST ELEMENT IN C
 !
-            ci( 1, 1 ) = -wi*d1
-            ci( 2, 1 ) = zero
-            ci( 1, 2 ) = zero
-            ci( 2, 2 ) = -wi*d2
+            ci(1, 1) = -wi*d1
+            ci(2, 1) = zero
+            ci(1, 2) = zero
+            ci(2, 2) = -wi*d2
             cmax = zero
             icmax = 0
 ! DUE TO CRP_18
-            civ(1) = ci(1,1)
-            civ(2) = ci(2,1)
-            civ(3) = ci(1,2)
-            civ(4) = ci(2,2)
+            civ(1) = ci(1, 1)
+            civ(2) = ci(2, 1)
+            civ(3) = ci(1, 2)
+            civ(4) = ci(2, 2)
 !
             do j = 1, 4
-                if (abs( crv( j ) )+abs( civ( j ) ) .gt. cmax) then
-                    cmax = abs( crv( j ) ) + abs( civ( j ) )
+                if (abs(crv(j))+abs(civ(j)) .gt. cmax) then
+                    cmax = abs(crv(j))+abs(civ(j))
                     icmax = j
-                endif
+                end if
             end do
 !
 !           IF NORM(C) < SMINI, USE SMINI*IDENTITY.
 !
             if (cmax .lt. smini) then
-                bnorm = max(abs( b( 1, 1 ) )+abs( b( 1, 2 ) ), abs( b( 2, 1 ) )+abs( b( 2, 2 ) ))
+                bnorm = max(abs(b(1, 1))+abs(b(1, 2)), abs(b(2, 1))+abs(b(2, 2)))
                 if (smini .lt. one .and. bnorm .gt. one) then
-                    if (bnorm .gt. bignum*smini) scale = one / bnorm
-                endif
-                temp = scale / smini
-                x( 1, 1 ) = temp*b( 1, 1 )
-                x( 2, 1 ) = temp*b( 2, 1 )
-                x( 1, 2 ) = temp*b( 1, 2 )
-                x( 2, 2 ) = temp*b( 2, 2 )
+                    if (bnorm .gt. bignum*smini) scale = one/bnorm
+                end if
+                temp = scale/smini
+                x(1, 1) = temp*b(1, 1)
+                x(2, 1) = temp*b(2, 1)
+                x(1, 2) = temp*b(1, 2)
+                x(2, 2) = temp*b(2, 2)
                 xnorm = temp*bnorm
                 info = 1
                 goto 1000
-            endif
+            end if
 !
 !           GAUSSIAN ELIMINATION WITH COMPLETE PIVOTING.
 !
-            ur11 = crv( icmax )
-            ui11 = civ( icmax )
-            cr21 = crv( ipivot( 2, icmax ) )
-            ci21 = civ( ipivot( 2, icmax ) )
-            ur12 = crv( ipivot( 3, icmax ) )
-            ui12 = civ( ipivot( 3, icmax ) )
-            cr22 = crv( ipivot( 4, icmax ) )
-            ci22 = civ( ipivot( 4, icmax ) )
+            ur11 = crv(icmax)
+            ui11 = civ(icmax)
+            cr21 = crv(ipivot(2, icmax))
+            ci21 = civ(ipivot(2, icmax))
+            ur12 = crv(ipivot(3, icmax))
+            ui12 = civ(ipivot(3, icmax))
+            cr22 = crv(ipivot(4, icmax))
+            ci22 = civ(ipivot(4, icmax))
             if (icmax .eq. 1 .or. icmax .eq. 4) then
 !
 !              CODE WHEN OFF-DIAGONALS OF PIVOTED C ARE REAL
 !
-                if (abs( ur11 ) .gt. abs( ui11 )) then
-                    temp = ui11 / ur11
-                    ur11r = one / ( ur11*( one+temp**2 ) )
+                if (abs(ur11) .gt. abs(ui11)) then
+                    temp = ui11/ur11
+                    ur11r = one/(ur11*(one+temp**2))
                     ui11r = -temp*ur11r
                 else
-                    temp = ur11 / ui11
-                    ui11r = -one / ( ui11*( one+temp**2 ) )
+                    temp = ur11/ui11
+                    ui11r = -one/(ui11*(one+temp**2))
                     ur11r = -temp*ui11r
-                endif
+                end if
                 lr21 = cr21*ur11r
                 li21 = cr21*ui11r
                 ur12s = ur12*ur11r
                 ui12s = ur12*ui11r
-                ur22 = cr22 - ur12*lr21
-                ui22 = ci22 - ur12*li21
+                ur22 = cr22-ur12*lr21
+                ui22 = ci22-ur12*li21
             else
 !
 !              CODE WHEN DIAGONALS OF PIVOTED C ARE REAL
 !
-                ur11r = one / ur11
+                ur11r = one/ur11
                 ui11r = zero
                 lr21 = cr21*ur11r
                 li21 = ci21*ur11r
                 ur12s = ur12*ur11r
                 ui12s = ui12*ur11r
-                ur22 = cr22 - ur12*lr21 + ui12*li21
-                ui22 = -ur12*li21 - ui12*lr21
-            endif
-            u22abs = abs( ur22 ) + abs( ui22 )
+                ur22 = cr22-ur12*lr21+ui12*li21
+                ui22 = -ur12*li21-ui12*lr21
+            end if
+            u22abs = abs(ur22)+abs(ui22)
 !
 !           IF SMALLER PIVOT < SMINI, USE SMINI
 !
@@ -488,66 +488,66 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca,&
                 ur22 = smini
                 ui22 = zero
                 info = 1
-            endif
-            if (rswap( icmax )) then
-                br2 = b( 1, 1 )
-                br1 = b( 2, 1 )
-                bi2 = b( 1, 2 )
-                bi1 = b( 2, 2 )
+            end if
+            if (rswap(icmax)) then
+                br2 = b(1, 1)
+                br1 = b(2, 1)
+                bi2 = b(1, 2)
+                bi1 = b(2, 2)
             else
-                br1 = b( 1, 1 )
-                br2 = b( 2, 1 )
-                bi1 = b( 1, 2 )
-                bi2 = b( 2, 2 )
-            endif
-            br2 = br2 - lr21*br1 + li21*bi1
-            bi2 = bi2 - li21*br1 - lr21*bi1
-            bbnd = max(&
-                   ( abs( br1 )+abs( bi1 ) )* ( u22abs*( abs( ur11r )+abs( ui11r ) ) ),&
-                   abs( br2 )+abs( bi2 )&
+                br1 = b(1, 1)
+                br2 = b(2, 1)
+                bi1 = b(1, 2)
+                bi2 = b(2, 2)
+            end if
+            br2 = br2-lr21*br1+li21*bi1
+            bi2 = bi2-li21*br1-lr21*bi1
+            bbnd = max( &
+                   (abs(br1)+abs(bi1))*(u22abs*(abs(ur11r)+abs(ui11r))), &
+                   abs(br2)+abs(bi2) &
                    )
             if (bbnd .gt. one .and. u22abs .lt. one) then
                 if (bbnd .ge. bignum*u22abs) then
-                    scale = one / bbnd
+                    scale = one/bbnd
                     br1 = scale*br1
                     bi1 = scale*bi1
                     br2 = scale*br2
                     bi2 = scale*bi2
-                endif
-            endif
+                end if
+            end if
 !
-            call dladiv(br2, bi2, ur22, ui22, xr2,&
+            call dladiv(br2, bi2, ur22, ui22, xr2, &
                         xi2)
-            xr1 = ur11r*br1 - ui11r*bi1 - ur12s*xr2 + ui12s*xi2
-            xi1 = ui11r*br1 + ur11r*bi1 - ui12s*xr2 - ur12s*xi2
-            if (zswap( icmax )) then
-                x( 1, 1 ) = xr2
-                x( 2, 1 ) = xr1
-                x( 1, 2 ) = xi2
-                x( 2, 2 ) = xi1
+            xr1 = ur11r*br1-ui11r*bi1-ur12s*xr2+ui12s*xi2
+            xi1 = ui11r*br1+ur11r*bi1-ui12s*xr2-ur12s*xi2
+            if (zswap(icmax)) then
+                x(1, 1) = xr2
+                x(2, 1) = xr1
+                x(1, 2) = xi2
+                x(2, 2) = xi1
             else
-                x( 1, 1 ) = xr1
-                x( 2, 1 ) = xr2
-                x( 1, 2 ) = xi1
-                x( 2, 2 ) = xi2
-            endif
-            xnorm = max( abs( xr1 )+abs( xi1 ), abs( xr2 )+abs( xi2 ) )
+                x(1, 1) = xr1
+                x(2, 1) = xr2
+                x(1, 2) = xi1
+                x(2, 2) = xi2
+            end if
+            xnorm = max(abs(xr1)+abs(xi1), abs(xr2)+abs(xi2))
 !
 !           FURTHER SCALING IF  NORM(A) NORM(X) > OVERFLOW
 !
             if (xnorm .gt. one .and. cmax .gt. one) then
-                if (xnorm .gt. bignum / cmax) then
-                    temp = cmax / bignum
-                    x( 1, 1 ) = temp*x( 1, 1 )
-                    x( 2, 1 ) = temp*x( 2, 1 )
-                    x( 1, 2 ) = temp*x( 1, 2 )
-                    x( 2, 2 ) = temp*x( 2, 2 )
+                if (xnorm .gt. bignum/cmax) then
+                    temp = cmax/bignum
+                    x(1, 1) = temp*x(1, 1)
+                    x(2, 1) = temp*x(2, 1)
+                    x(1, 2) = temp*x(1, 2)
+                    x(2, 2) = temp*x(2, 2)
                     xnorm = temp*xnorm
                     scale = temp*scale
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 1000 continue
 !

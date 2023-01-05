@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,22 +16,22 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaElas(poum, fami    , kpg , ksp, j_mater,&
-                           e_  , deuxmu_ , mu_ , troisk_ ,&
-                           em_ , deuxmum_, mum_, troiskm_)
+subroutine metaGetParaElas(poum, fami, kpg, ksp, j_mater, &
+                           e_, deuxmu_, mu_, troisk_, &
+                           em_, deuxmum_, mum_, troiskm_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/Metallurgy_type.h"
 !
-character(len=1), intent(in) :: poum
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg, ksp
-integer, intent(in) :: j_mater
-real(kind=8), optional, intent(out) :: e_, deuxmu_, mu_, troisk_
-real(kind=8), optional, intent(out) :: em_, deuxmum_, mum_, troiskm_
+    character(len=1), intent(in) :: poum
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg, ksp
+    integer, intent(in) :: j_mater
+    real(kind=8), optional, intent(out) :: e_, deuxmu_, mu_, troisk_
+    real(kind=8), optional, intent(out) :: em_, deuxmum_, mum_, troiskm_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,51 +67,51 @@ real(kind=8), optional, intent(out) :: em_, deuxmum_, mum_, troiskm_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_resu      = 2
+    nb_resu = 2
     resu_name(1) = 'E'
     resu_name(2) = 'NU'
 !
-    call rcvalb(fami, kpg, ksp, '-', j_mater,&
-                ' ', 'ELAS_META', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', j_mater, &
+                ' ', 'ELAS_META', 0, ' ', [0.d0], &
                 nb_resu, resu_name, resu_vale, codret, 2)
-    em      = resu_vale(1)
-    num     = resu_vale(2)
+    em = resu_vale(1)
+    num = resu_vale(2)
     deuxmum = em/(1.d0+num)
-    mum     = deuxmum/2.d0
+    mum = deuxmum/2.d0
     troiskm = em/(1.d0-2.d0*num)
-    call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                ' ', 'ELAS_META', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, j_mater, &
+                ' ', 'ELAS_META', 0, ' ', [0.d0], &
                 nb_resu, resu_name, resu_vale, codret, 2)
-    e       = resu_vale(1)
-    nu      = resu_vale(2)
-    deuxmu  = e/(1.d0+nu)
-    mu      = deuxmu/2.d0
-    troisk  = e/(1.d0-2.d0*nu)
+    e = resu_vale(1)
+    nu = resu_vale(2)
+    deuxmu = e/(1.d0+nu)
+    mu = deuxmu/2.d0
+    troisk = e/(1.d0-2.d0*nu)
 !
     if (present(e_)) then
         e_ = e
-    endif
+    end if
     if (present(deuxmu_)) then
         deuxmu_ = deuxmu
-    endif
+    end if
     if (present(mu_)) then
         mu_ = mu
-    endif
+    end if
     if (present(troisk_)) then
         troisk_ = troisk
-    endif
+    end if
 !
     if (present(em_)) then
         em_ = em
-    endif
+    end if
     if (present(deuxmum_)) then
         deuxmum_ = deuxmum
-    endif
+    end if
     if (present(mum_)) then
         mum_ = mum
-    endif
+    end if
     if (present(troiskm_)) then
         troiskm_ = troiskm
-    endif
+    end if
 !
 end subroutine

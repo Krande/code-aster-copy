@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
+subroutine mbvfie(nno, kpg, dff, sigpk2, ipoids, h, covadef, vecfie)
 !
     implicit none
 #include "asterfort/r8inir.h"
@@ -26,7 +26,7 @@ subroutine mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
     integer :: ipoids
     real(kind=8) :: h
     real(kind=8) :: sigpk2(2, 2)
-    real(kind=8) :: dff(2, nno), covadef(3,3)
+    real(kind=8) :: dff(2, nno), covadef(3, 3)
     real(kind=8) :: vecfie(3*nno)
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DU VECTEUR FORCE INTERNE ELEMENTAIRE
@@ -49,12 +49,12 @@ subroutine mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
 
     do a = 1, nno
         do p = 1, 3
-            i = 3*(a-1) + p
+            i = 3*(a-1)+p
 
             do alpha = 1, 2
                 do gamma = 1, 2
-                    vecfie(i) = vecfie(i) + dff(alpha,a)*covadef(p,gamma)*&
-                                sigpk2(gamma,alpha)*h*zr(ipoids+kpg-1)
+                    vecfie(i) = vecfie(i)+dff(alpha, a)*covadef(p, gamma)* &
+                                sigpk2(gamma, alpha)*h*zr(ipoids+kpg-1)
                 end do
             end do
         end do

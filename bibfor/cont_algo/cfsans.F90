@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfsans(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_enti, v_ncomp_zone)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -65,20 +65,20 @@ implicit none
 !
 ! - Alarm or error ?
 !
-    l_stop = cfdisl(ds_contact%sdcont_defi,'STOP_INTERP')
+    l_stop = cfdisl(ds_contact%sdcont_defi, 'STOP_INTERP')
 !
     do i_ncomp_poin = 1, nt_ncomp_poin
 !
 ! ----- Information about contact point
 !
-        gap       = v_ncomp_jeux(i_ncomp_poin)
-        i_zone    = v_ncomp_zone(i_ncomp_poin)
+        gap = v_ncomp_jeux(i_ncomp_poin)
+        i_zone = v_ncomp_zone(i_ncomp_poin)
         poin_name = v_ncomp_enti(2*(i_ncomp_poin-1)+1)
         enti_name = v_ncomp_enti(2*(i_ncomp_poin-1)+2)
 !
 ! ----- Parameters
 !
-        tole_interp = mminfr(ds_contact%sdcont_defi,'TOLE_INTERP',i_zone)
+        tole_interp = mminfr(ds_contact%sdcont_defi, 'TOLE_INTERP', i_zone)
 !
 ! ----- Test
 !
@@ -86,19 +86,19 @@ implicit none
             if (gap .le. r8prem()) then
                 if (abs(gap) .gt. tole_interp) then
                     interp = interp+1
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
 ! - Print
 !
     if (interp .ge. 1) then
         if (l_stop) then
-            call utmess('F', 'CONTACT_93', si = interp)
+            call utmess('F', 'CONTACT_93', si=interp)
         else
-            call utmess('A', 'CONTACT_93', si = interp)
-        endif
-    endif
+            call utmess('A', 'CONTACT_93', si=interp)
+        end if
+    end if
 !
 end subroutine

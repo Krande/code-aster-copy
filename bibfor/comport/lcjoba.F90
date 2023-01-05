@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcjoba(ndim, typmod, imate, crit, sum,&
-                  dsu, vim, option, sig, vip,&
+subroutine lcjoba(ndim, typmod, imate, crit, sum, &
+                  dsu, vim, option, sig, vip, &
                   dsidep, iret)
     implicit none
 #include "asterf_types.h"
@@ -98,8 +98,8 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 ! ======================================================================
 !
 ! -- OPTION ET MODELISATION
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
+    rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
     itemax = nint(crit(1))
     adher = .true.
     epsco = 1.0d0
@@ -112,8 +112,8 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !
 !    LECTURE DES CARACTERISTIQUES ELASTIQUES
     nomres(1) = 'E'
-    call rcvala(imate, ' ', 'ELAS', 1, ' ',&
-                [0.d0], 1, nomres, valres, icodre,&
+    call rcvala(imate, ' ', 'ELAS', 1, ' ', &
+                [0.d0], 1, nomres, valres, icodre, &
                 1)
     e = valres(1)
 !
@@ -133,8 +133,8 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
     nomres(13) = 'ADN'
     nomres(14) = 'BDN'
 !
-    call rcvala(imate, ' ', 'JOINT_BA', 1, ' ',&
-                [0.d0], 14, nomres, valres, icodre,&
+    call rcvala(imate, ' ', 'JOINT_BA', 1, ' ', &
+                [0.d0], 14, nomres, valres, icodre, &
                 1)
     hpen = valres(1)
     gtt = valres(2)
@@ -171,7 +171,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 ! CALCUL DU SAUT EN T+
 !
     call dcopy(2, sum, 1, su, 1)
-    if (resi) call daxpy(2, 1.d0, dsu, 1, su,&
+    if (resi) call daxpy(2, 1.d0, dsu, 1, su, &
                          1)
 !
 !  - TRANSFORMATION DES SAUTS EN DEFORMATIONS
@@ -188,7 +188,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
         if (eps(1) .gt. epstr0) adher = .false.
     else
         trac = .false.
-    endif
+    end if
 !
 ! ======================================================================
 !       CALCUL DES CONTRAINTES ET VARIABLES INTERNES
@@ -198,14 +198,14 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !
 !    MATRICE DE COMPORTEMENT
         call r8inir(36, 0.d0, dsidep, 1)
-        dsidep(1,1)=e
-        dsidep(2,2)=gtt
+        dsidep(1, 1) = e
+        dsidep(2, 2) = gtt
 !
 !    CALCUL DU CONFINEMENT
-        signo = dsidep(1,1)*eps(1)
+        signo = dsidep(1, 1)*eps(1)
         i1 = signo/3
         confi = fc*i1
-        if (confi .gt. 0.d0) confi=0.d0
+        if (confi .gt. 0.d0) confi = 0.d0
 !
 !   2 -     CALCUL DE L'ENDOMMAGEMENT DANS LA DIRECTION
 !           NORMALE
@@ -213,20 +213,20 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !
 !    SEUIL D'ADHERENCE NORMALE PARFAITE
         if (trac) then
-            y0n = 0.5d0*dsidep(1,1)*(epstr0**2)
+            y0n = 0.5d0*dsidep(1, 1)*(epstr0**2)
         else
-            y0n = 0.5d0*dsidep(1,1)*(epsco**2)
-        endif
+            y0n = 0.5d0*dsidep(1, 1)*(epsco**2)
+        end if
 !
-        yin = 0.5d0*dsidep(1,1)*(eps(1)**2)
+        yin = 0.5d0*dsidep(1, 1)*(eps(1)**2)
 !
 !    ENDOMMAGEMENT DANS LA DIRECTION NORMALE
 !
-        if (.not.adher) then
+        if (.not. adher) then
 !
-            dfn = 1.d0 - 1.d0/(1.d0+adn*((yin-y0n)**bdn))
+            dfn = 1.d0-1.d0/(1.d0+adn*((yin-y0n)**bdn))
 !
-            dft = max(d0t,dfn)
+            dft = max(d0t, dfn)
 !
             goto 100
 !...........................................................
@@ -235,7 +235,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !                TANGENTIELLE
 !...........................................................
 !
-        endif
+        end if
 !
 !   3 -     CALCUL DE L'ENDOMMAGEMENT DANS LA DIRECTION
 !           TANGENTIELLE
@@ -244,34 +244,34 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !      SEUILS D'ENDOMMAGEMENT DE LA LIAISON DANS LA
 !      DIRECTION TANGENTIELLE
 !
-        y0t = 0.5d0*dsidep(2,2)*(gamd0**2)
-        yit = 0.5d0*dsidep(2,2)*(eps(2)**2)
-        y2t = 0.5d0*dsidep(2,2)*(gamd2**2)
+        y0t = 0.5d0*dsidep(2, 2)*(gamd0**2)
+        yit = 0.5d0*dsidep(2, 2)*(eps(2)**2)
+        y2t = 0.5d0*dsidep(2, 2)*(gamd2**2)
 !
 !      CRITERES D'ENDOMMAGEMENT
 !
-        fd1 = yit - (y0t + z0)
-        fd2 = yit - (y2t + z2)
+        fd1 = yit-(y0t+z0)
+        fd2 = yit-(y2t+z2)
 !
         if (fd1 .gt. 0.d0) then
 !
 !         ENDOMMAGEMENT EN REGION 1
 !
-            df0t= (sqrt(y0t/yit))* exp(ad1*((sqrt(2.d0/dsidep(2,2))*&
-            (sqrt(yit)-sqrt(y0t)))**bd1))
-            zf0 = yit - y0t
+            df0t = (sqrt(y0t/yit))*exp(ad1*((sqrt(2.d0/dsidep(2, 2))* &
+                                             (sqrt(yit)-sqrt(y0t)))**bd1))
+            zf0 = yit-y0t
 !
             if (fd2 .gt. 0.d0) then
 !
 !         ENDOMMAGEMENT EN REGION 2
 !
                 df2t = abs(1.d0/(1.d0+ad2*((yit-y2t)**bd2)))
-                zf2 = yit - y2t
+                zf2 = yit-y2t
             else
                 df2t = 1.d0
                 zf2 = z2
-            endif
-            dft = 1.d0 - df0t*df2t
+            end if
+            dft = 1.d0-df0t*df2t
 !          write(6,*)eps(2),yit,df0t,df2t,dft
             dfn = d0n
         else
@@ -282,7 +282,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
             zf0 = z0
             zf2 = z2
             dfn = d0n
-        endif
+        end if
 !
 !
 !   4 -     CALCUL DE LA CONTRAINTE PAR FROTTEMENT DES FISSURES
@@ -293,20 +293,20 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !         CALCUL DE LA CONTRAINTE PAR FROTTEMENT DES FISSURES
 !
 !
-            taofro = dsidep(2,2)*dft*(eps(2)-gamfro)
-            fini = abs(taofro-x0) + confi
+            taofro = dsidep(2, 2)*dft*(eps(2)-gamfro)
+            fini = abs(taofro-x0)+confi
 !
             if (fini .gt. 0.d0) then
                 conv = .false.
                 do k = 1, itemax
-                    taofro = dsidep(2,2)*dft*(eps(2)-gamfro)
+                    taofro = dsidep(2, 2)*dft*(eps(2)-gamfro)
                     if ((taofro-x0) .ge. 0.d0) then
                         xmul = +1.d0
                     else
                         xmul = -1.d0
-                    endif
+                    end if
 !
-                    fx = abs(taofro-x0) + confi
+                    fx = abs(taofro-x0)+confi
                     dfds = xmul
                     dfdx = -1.d0*xmul
                     dphids = xmul
@@ -314,22 +314,22 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !
 ! --------EVALUATION DU MULTIPLICATEUR PLASTIQUE
 !
-                    lamdap = fx/( dfds*dsidep(2,2)*dft*dphids+ dfdx* vifrot*dphidx)
-                    gamfro = gamfro + lamdap*dphids
-                    x0 = x0 - vifrot*lamdap*dphidx
-                    taofro = taofro - lamdap*dsidep(2,2)*dft*dphids
-                    fx = abs(taofro-x0) + confi
+                    lamdap = fx/(dfds*dsidep(2, 2)*dft*dphids+dfdx*vifrot*dphidx)
+                    gamfro = gamfro+lamdap*dphids
+                    x0 = x0-vifrot*lamdap*dphidx
+                    taofro = taofro-lamdap*dsidep(2, 2)*dft*dphids
+                    fx = abs(taofro-x0)+confi
 !
 ! --------EVALUATION DE LA CONVERGENCE
-                    conv = ((abs(fx/fini) .le. 0.d0) .or. (lamdap .le. crit(3)) )
+                    conv = ((abs(fx/fini) .le. 0.d0) .or. (lamdap .le. crit(3)))
                     if (conv) goto 100
                 end do
 !
                 if (.not. conv) then
                     iret = 1
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 100     continue
 !
@@ -338,11 +338,11 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !
         call r8inir(6, 0.d0, sig, 1)
 !
-        sig(1)=dsidep(1,1)*(1.d0-dfn)*eps(1)
-        sig(2)=dsidep(2,2)*(1.d0-dft)*eps(2)
-        taofro=dsidep(2,2)*dft*(eps(2)-gamfro)
-        if (trac .and. (.not.adher)) taofro=0.d0
-        sig(2)=sig(2)+taofro
+        sig(1) = dsidep(1, 1)*(1.d0-dfn)*eps(1)
+        sig(2) = dsidep(2, 2)*(1.d0-dft)*eps(2)
+        taofro = dsidep(2, 2)*dft*(eps(2)-gamfro)
+        if (trac .and. (.not. adher)) taofro = 0.d0
+        sig(2) = sig(2)+taofro
 !
 !
 !    6 -   MISE A JOUR DES VARIABLES INTERNES
@@ -355,7 +355,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
         vip(5) = gamfro
         vip(6) = x0
 !
-    endif
+    end if
 !
 ! ======================================================================
 !     CALCUL  DE LA MATRICE TANGENTE DSIDEP
@@ -369,18 +369,18 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !
         call r8inir(36, 0.d0, dsidep, 1)
 !
-        dsidep(1,1)=e*(1.d0-dfn)
-        dsidep(2,2)=gtt*(1.d0-dft)
+        dsidep(1, 1) = e*(1.d0-dfn)
+        dsidep(2, 2) = gtt*(1.d0-dft)
 !
-    endif
+    end if
 !
 !   2 -  TRANSFORMATION DES DIMENSIONS POUR UTILISER DANS
 !        L ELEMENT JOINT
 ! ------------------------------------------------------------
 !
     if (rigi) then
-        dsidep(1,1)= dsidep(1,1)/hpen
-        dsidep(2,2)= dsidep(2,2)/hpen
-    endif
+        dsidep(1, 1) = dsidep(1, 1)/hpen
+        dsidep(2, 2) = dsidep(2, 2)/hpen
+    end if
 !
 end subroutine

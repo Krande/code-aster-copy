@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,10 +51,10 @@ subroutine liimpr(noml, impr, fichie)
     iul = iunifi(file)
     if (iul .le. 0) then
         call getres(k8bid, k8bid, nomcmd)
-        lg = max(1,lxlgut(file))
+        lg = max(1, lxlgut(file))
         call utmess('A', 'UTILITAI2_47', sk=file(1:lg))
         goto 999
-    endif
+    end if
 !
 !     --- NOM DE LA FONCTION A EDITER ---
     nomlis = noml
@@ -68,15 +68,15 @@ subroutine liimpr(noml, impr, fichie)
     if (ctyp(1:1) .eq. 'I') lisree = .false.
 !
 !     --- IMPRESSION DU TITRE ---
-    write(iul,'(/,1X,79(''-''))')
+    write (iul, '(/,1X,79(''-''))')
     call jeexin(titr, iret)
     if (iret .ne. 0) then
         call jeveuo(titr, 'L', ltitr)
         call jelira(titr, 'LONMAX', nbtitr)
         do i = 1, nbtitr
-            write(iul,*) zk80(ltitr+i-1)
+            write (iul, *) zk80(ltitr+i-1)
         end do
-    endif
+    end if
 !
     call jelira(vale, 'LONMAX', nbval)
     call jelira(nbpa, 'LONMAX', nbint)
@@ -84,66 +84,66 @@ subroutine liimpr(noml, impr, fichie)
     call jeveuo(nbpa, 'L', jnbp)
     call jeveuo(vale, 'L', jval)
     call jeveuo(bint, 'L', jbor)
-    nl = nbval / 5
-    nd = nbval - ( nl * 5 )
+    nl = nbval/5
+    nd = nbval-(nl*5)
 !
 !
-    write(iul,'(3X,A,12X,A,10X,A,10X,A,5X,A)')&
-     &          'INTERVALLE','DEBUT','JUSQU_A','PAR_PAS','NOMBRE'
+    write (iul, '(3X,A,12X,A,10X,A,10X,A,5X,A)')&
+     &          'INTERVALLE', 'DEBUT', 'JUSQU_A', 'PAR_PAS', 'NOMBRE'
     if (lisree) then
         if (nbval .eq. 1) then
-            write(iul,'(3X,7X,I3,5X,1PE12.5,5X,1PE12.5,5X,1PE12.5,5X,I6)')&
-     &              1,zr(jbor),zr(jbor),zr(jpas),zi(jnbp)
+            write (iul, '(3X,7X,I3,5X,1PE12.5,5X,1PE12.5,5X,1PE12.5,5X,I6)')&
+     &              1, zr(jbor), zr(jbor), zr(jpas), zi(jnbp)
             if (impr .gt. 1) then
-                write(iul,'(3X,A)')'IMPRESSION DE LA LISTE DE REELS'
-                write(iul, 1000)1,zr(jval)
-            endif
+                write (iul, '(3X,A)') 'IMPRESSION DE LA LISTE DE REELS'
+                write (iul, 1000) 1, zr(jval)
+            end if
         else
             do i = 1, nbint
-                write(iul,'(3X,7X,I3,5X,1PE12.5,5X,1PE12.5,5X,1PE12.5,5X,I6)')&
-     &              i,zr(jbor+i-1),zr(jbor+i),zr(jpas+i-1),zi(jnbp+i-1)
+                write (iul, '(3X,7X,I3,5X,1PE12.5,5X,1PE12.5,5X,1PE12.5,5X,I6)')&
+     &              i, zr(jbor+i-1), zr(jbor+i), zr(jpas+i-1), zi(jnbp+i-1)
             end do
             if (impr .gt. 1) then
-                write(iul,'(3X,A)')'IMPRESSION DE LA LISTE DE REELS'
+                write (iul, '(3X,A)') 'IMPRESSION DE LA LISTE DE REELS'
                 do l = 1, nl
-                    write(iul,1000) 5*(l-1)+1,(zr( jval + 5*(l-1)+k-1)&
-                    ,k=1,5)
+                    write (iul, 1000) 5*(l-1)+1, (zr(jval+5*(l-1)+k-1) &
+                                                  , k=1, 5)
                 end do
                 if (nd .ne. 0) then
-                    write(iul,1000) 5*nl+1,(zr( jval +5*nl+k-1),k=1,&
-                    nd)
-                endif
-            endif
-        endif
+                    write (iul, 1000) 5*nl+1, (zr(jval+5*nl+k-1), k=1, &
+                                               nd)
+                end if
+            end if
+        end if
     else
         if (nbval .eq. 1) then
-            write(iul,'(3X,7X,I3,5X,I12,5X,I12,5X,I12,5X,I6)')&
-            1,zi(jbor),zi(jbor),zi(jpas),zi(jnbp)
+            write (iul, '(3X,7X,I3,5X,I12,5X,I12,5X,I12,5X,I6)') &
+                1, zi(jbor), zi(jbor), zi(jpas), zi(jnbp)
             if (impr .gt. 1) then
-                write(iul,'(3X,A)')'IMPRESSION DE LA LISTE D ENTIERS'
-                write(iul,'((I7,'' - '',I12))')1,zi(jval)
-            endif
+                write (iul, '(3X,A)') 'IMPRESSION DE LA LISTE D ENTIERS'
+                write (iul, '((I7,'' - '',I12))') 1, zi(jval)
+            end if
         else
             do i = 1, nbint
-                write(iul,'(3X,7X,I3,5X,I12,5X,I12,5X,I12,5X,I6)')&
-                i,zi(jbor+i-1),zi(jbor+i),zi(jpas+i-1),zi(jnbp+i-1)
+                write (iul, '(3X,7X,I3,5X,I12,5X,I12,5X,I12,5X,I6)') &
+                    i, zi(jbor+i-1), zi(jbor+i), zi(jpas+i-1), zi(jnbp+i-1)
             end do
             if (impr .gt. 1) then
-                write(iul,'(3X,A)')'IMPRESSION DE LA LISTE D ENTIERS'
+                write (iul, '(3X,A)') 'IMPRESSION DE LA LISTE D ENTIERS'
                 do l = 1, nl
-                    write(iul,'((I7,'' - '',5(I12,1X)))') 5*(l-1)+1,(&
-                    zi( jval + 5*(l-1)+k-1),k=1,5)
+                    write (iul, '((I7,'' - '',5(I12,1X)))') 5*(l-1)+1, ( &
+                        zi(jval+5*(l-1)+k-1), k=1, 5)
                 end do
                 if (nd .ne. 0) then
-                    write(iul,'(I7,'' - '',5(I12,1X))') 5*nl+1,(zi(&
-                    jval +5*nl+k-1),k=1,nd)
-                endif
-            endif
-        endif
-    endif
+                    write (iul, '(I7,'' - '',5(I12,1X))') 5*nl+1, (zi( &
+                                                                   jval+5*nl+k-1), k=1, nd)
+                end if
+            end if
+        end if
+    end if
 !
 999 continue
     call jedema()
 !
-    1000 format(i7,' - ',5(1pe16.9,1x))
+1000 format(i7, ' - ', 5(1pe16.9, 1x))
 end subroutine

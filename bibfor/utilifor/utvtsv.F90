@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ subroutine utvtsv(raz, n, s, v, vtsv)
 #define k1(i,j) (j)*(j-1)/2+i
 #define k2(i,j) (i)*(i-1)/2+j
 !-----------------------------------------------------------------------
-    raz2=raz
+    raz2 = raz
     if (raz2 .eq. 'ZERO') vtsv = 0.d0
 !
     do k = 1, n
         do l = 1, n
-            ik = k1(k,l)
-            if (k .gt. l) ik = k2(k,l)
-            vtsv = vtsv + s(ik) * v(k) * v(l)
+            ik = k1(k, l)
+            if (k .gt. l) ik = k2(k, l)
+            vtsv = vtsv+s(ik)*v(k)*v(l)
         end do
     end do
 end subroutine

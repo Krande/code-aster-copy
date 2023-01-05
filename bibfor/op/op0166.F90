@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine op0166()
     call infmaj()
     call titre()
     lelga = .false.
-    lxfem=.false._1
+    lxfem = .false._1
 !
 ! --------------------------------------------------------------------------------------------------
 !   calcul de typcal :
@@ -79,18 +79,18 @@ subroutine op0166()
 !       / '2'    : on utilise la SD_CORRESP_2_MAILLA déjà calculée
     call getvtx(' ', 'PROJECTION', scal=projon, nbret=n1)
     call getvid(' ', 'MATR_PROJECTION', scal=corru, nbret=n2)
-    if (n2 .eq. 0) corru=' '
+    if (n2 .eq. 0) corru = ' '
     if (projon .eq. 'NON') then
-        typcal='1'
-        ASSERT(n2.eq.0)
+        typcal = '1'
+        ASSERT(n2 .eq. 0)
     else
-        ASSERT(projon.eq.'OUI')
+        ASSERT(projon .eq. 'OUI')
         if (corru .ne. ' ') then
-            typcal='2'
+            typcal = '2'
         else
-            typcal='1ET2'
-        endif
-    endif
+            typcal = '1ET2'
+        end if
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   calcul de resuou, typres, method, isole, cham1, resuin :
 !       resuou : nom du concept résultat
@@ -102,35 +102,35 @@ subroutine op0166()
 !       resuin : nom de la SD_RESULTAT à projeter (si .not.isole)
     call getres(resuou, typres, nomcmd)
     call getvtx(' ', 'METHODE', scal=method, nbret=n1)
-    if (n1 .eq. 0) method=' '
-    lxfem=lxfem.and.method.eq.'COLLOCATION'
+    if (n1 .eq. 0) method = ' '
+    lxfem = lxfem .and. method .eq. 'COLLOCATION'
     if (projon .eq. 'OUI') then
         call getvid(' ', 'RESULTAT', scal=resuin, nbret=n2)
         if (n2 .eq. 1) then
-            isole=.false.
-            cham1=' '
+            isole = .false.
+            cham1 = ' '
             call dismoi('NOM_MAILLA', resuin, 'RESULTAT', repk=nomare)
             norein = resuin
         else
-            isole=.true.
+            isole = .true.
             call getvid(' ', 'CHAM_GD', scal=cham1, nbret=n3)
-            ASSERT(n3.eq.1)
+            ASSERT(n3 .eq. 1)
             norein = cham1(1:8)
             call dismoi('NOM_MAILLA', cham1, 'CHAMP', repk=nomare)
-            resuin=' '
-        endif
+            resuin = ' '
+        end if
     else
-        cham1=' '
-        resuin=' '
-        nomare=' '
-    endif
-    lxfem=lxfem.and.n2.eq.1
+        cham1 = ' '
+        resuin = ' '
+        nomare = ' '
+    end if
+    lxfem = lxfem .and. n2 .eq. 1
 ! --------------------------------------------------------------------------------------------------
 !   limitation de la méthode ECLA_PG :
 !       il n'est pas possible de projeter une SD_RESULTAT
-    if ((method.eq.'ECLA_PG') .and. (.not.isole)) then
+    if ((method .eq. 'ECLA_PG') .and. (.not. isole)) then
         call utmess('F', 'CALCULEL5_9')
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   calcul de noma1, noma2, moa1, moa2, cnref, noca :
@@ -145,50 +145,50 @@ subroutine op0166()
         call getvid(' ', 'MODELE_1', scal=nomo1, nbret=n1)
         if (n1 .eq. 1) then
             call dismoi('NOM_MAILLA', nomo1, 'MODELE', repk=noma1)
-            moa1=nomo1
-            lxfem=exi_fiss(nomo1)
+            moa1 = nomo1
+            lxfem = exi_fiss(nomo1)
         else
-            nomo1=' '
+            nomo1 = ' '
             call getvid(' ', 'MAILLAGE_1', scal=noma1, nbret=n2)
-            ASSERT(n2.eq.1)
-            moa1=noma1
-        endif
+            ASSERT(n2 .eq. 1)
+            moa1 = noma1
+        end if
 !
         call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 1) then
             call dismoi('NOM_MAILLA', nomo2, 'MODELE', repk=noma2)
-            moa2=nomo2
+            moa2 = nomo2
         else
-            nomo2=' '
+            nomo2 = ' '
             call getvid(' ', 'MAILLAGE_2', scal=noma2, nbret=n2)
-            ASSERT(n2.eq.1)
-            moa2=noma2
-        endif
+            ASSERT(n2 .eq. 1)
+            moa2 = noma2
+        end if
 !
 !       vérification de la cohérence entre les maillages associes :
 !           1. au résultat (ou cham) à projeter
 !           2. au modèle (ou maillage) fourni en entrée
-        if ((noma1.ne.nomare) .and. (projon.eq.'OUI')) then
+        if ((noma1 .ne. nomare) .and. (projon .eq. 'OUI')) then
             valk(1) = moa1
             valk(2) = norein
             valk(3) = noma1
             valk(4) = nomare
             call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
-        endif
+        end if
 !
         call getvid(' ', 'CHAM_NO_REFE', scal=cnref, nbret=n1)
         if (n1 .eq. 1) then
             call dismoi('NOM_MAILLA', cnref, 'CHAMP', repk=noma3)
             if (noma3 .ne. noma2) then
-                valk(1)=cnref
-                valk(2)=noma3
-                valk(3)=noma2
+                valk(1) = cnref
+                valk(2) = noma3
+                valk(3) = noma2
                 call utmess('F', 'CALCULEL2_6', nk=3, valk=valk)
-            endif
+            end if
         else
-            cnref=' '
-        endif
-    endif
+            cnref = ' '
+        end if
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   méthode SOUS_POINT :
@@ -200,50 +200,50 @@ subroutine op0166()
 !       récupération du CARA_ELEM
         call getvid(' ', 'CARA_ELEM', scal=noca, nbret=n1)
         if (n1 .eq. 0) then
-            valk='CARA_ELEM'
-            call utmess('F', 'CALCULEL5_40',nk=1,valk=valk)
-        endif
+            valk = 'CARA_ELEM'
+            call utmess('F', 'CALCULEL5_40', nk=1, valk=valk)
+        end if
 !       le mot-clef 'MODELE_2' est obligatoire
         call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 0) then
-            valk(1)='MODELE_2'
-            call utmess('F', 'CALCULEL5_40',nk=1,valk=valk)
-        endif
+            valk(1) = 'MODELE_2'
+            call utmess('F', 'CALCULEL5_40', nk=1, valk=valk)
+        end if
 !       VIS_A_VIS est interdit avec SOUS_POINT
         call getfac('VIS_A_VIS', nbocc)
         if (nbocc .ne. 0) then
-            valk(1)='VIS_A_VIS'
-            call utmess('F', 'CALCULEL5_31',nk=1,valk=valk)
-        endif
+            valk(1) = 'VIS_A_VIS'
+            call utmess('F', 'CALCULEL5_31', nk=1, valk=valk)
+        end if
         if (.not. isole) then
             call dismoi('TYPE_RESU', resuin, 'RESULTAT', repk=rtyp)
             if (rtyp .ne. 'EVOL_THER') then
                 call utmess('F', 'CALCULEL5_30')
-            endif
-        endif
+            end if
+        end if
 !       Si c'est un champ isolé on va chercher sa grandeur
-        if ( isole ) then
+        if (isole) then
             call dismoi('NOM_GD', cham1, 'CHAMP', repk=nomgd)
 !           En fonction de NOM_GD :
 !               Projection sur famille MATER, option INI_SP_MATER : TEMP_R  HYDR_R  NEUT_R
 !               Projection sur famille RIGI,  option INI_SP_RIGI  : SIEF_R
-            if ( (nomgd.ne.'SIEF_R').and.(nomgd.ne.'TEMP_R').and. &
-                 (nomgd.ne.'HYDR_R').and.(nomgd.ne.'NEUT_R') ) then
-                valk(1)=nomgd
-                call utmess('F', 'CALCULEL5_29',nk=1,valk=valk)
-            endif
-            if ( nomgd.eq.'SIEF_R' ) then
+            if ((nomgd .ne. 'SIEF_R') .and. (nomgd .ne. 'TEMP_R') .and. &
+                (nomgd .ne. 'HYDR_R') .and. (nomgd .ne. 'NEUT_R')) then
+                valk(1) = nomgd
+                call utmess('F', 'CALCULEL5_29', nk=1, valk=valk)
+            end if
+            if (nomgd .eq. 'SIEF_R') then
                 method = 'SOUS_POINT_RIGI'
             else
                 method = 'SOUS_POINT_MATER'
-            endif
+            end if
         else
 !           Si c'est un résultat, seules les EVOL_VARC sont prises en compte.
             method = 'SOUS_POINT_MATER'
-        endif
+        end if
     else
         noca = ' '
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   calcul de la SD_LCORRESP_2_MAILLA. Elle est constituée d'une liste de deux sd :
@@ -251,31 +251,31 @@ subroutine op0166()
 !       - la 2de est une SD_CORRESP_2_MAILLA particulière utilisée pour la projection de
 !         CHAM_ELEM (elga) et comporte PJEF_EL (tableau auxiliaire)
     if (typcal .eq. '1' .or. typcal .eq. '1ET2') then
-        lcorre(1)='&&OP0166.CORRES'
-        lcorre(2)='&&OP0166.CORRE2'
-        call pjxxco(typcal, method, lcorre, isole, resuin,&
-                    cham1, moa1, moa2, noma1, noma2,&
+        lcorre(1) = '&&OP0166.CORRES'
+        lcorre(2) = '&&OP0166.CORRE2'
+        call pjxxco(typcal, method, lcorre, isole, resuin, &
+                    cham1, moa1, moa2, noma1, noma2, &
                     cnref, noca)
-    endif
+    end if
 !   si typcal='1', il faut s'arrêter la
     if (typcal .eq. '1') goto 999
 ! --------------------------------------------------------------------------------------------------
 !   projection des champs :
 !       si typcal='2', il faut surcharger lcorr(1) et éventuellement récupérer MODELE_2
     if (typcal .eq. '2') then
-        lcorre(1)=corru
-        lcorre(2)=' '
+        lcorre(1) = corru
+        lcorre(2) = ' '
         call jeveuo(corru//'.PJXX_K1', 'L', vk24=pjxx_k1)
 !       les moa1 et moa2 stockés sont les maillages
-        moa1=pjxx_k1(1)(1:8)
-        moa2=pjxx_k1(2)(1:8)
+        moa1 = pjxx_k1(1) (1:8)
+        moa2 = pjxx_k1(2) (1:8)
         if (moa1 .ne. nomare) then
             valk(1) = moa1
             valk(2) = norein
             valk(3) = moa1
             valk(4) = nomare
             call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
-        endif
+        end if
 !       pour pouvoir projeter les CHAM_ELEM, il faut MODELE_2
         call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 1) then
@@ -284,10 +284,10 @@ subroutine op0166()
                 valk(1) = moa2
                 valk(2) = noma2
                 call utmess('F', 'CALCULEL4_72', nk=2, valk=valk)
-            endif
-            moa2=nomo2
-        endif
-    endif
+            end if
+            moa2 = nomo2
+        end if
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   cas champ isolé
@@ -296,9 +296,9 @@ subroutine op0166()
         if (method(1:10) .eq. 'NUAGE_DEG_') then
 !           méthode 'NUAGE_DEG' : on ne peut projeter que des CHAM_NO
             tychv = ' '
-            call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
+            call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
                         'NON', ' ', 'G', iret)
-            ASSERT(iret.eq.0)
+            ASSERT(iret .eq. 0)
         else
 !           autre méthode :
 !               on peut projeter des CHAM_NO ou des CHAM_ELEM
@@ -307,13 +307,13 @@ subroutine op0166()
             if (n1 .ne. 0) then
                 call getvtx(' ', 'TYPE_CHAM', scal=tychv, nbret=n1)
             else
-                tychv=' '
-            endif
+                tychv = ' '
+            end if
             if (tychv .eq. 'NOEU') then
                 call utmess('F', 'CALCULEL5_36')
-            endif
+            end if
 !           on détermine le type de champ à projeter
-            call pjtyco(isole, k8b, cham1, lnoeu, lelno,&
+            call pjtyco(isole, k8b, cham1, lnoeu, lelno, &
                         lelem, lelga)
 !
             if (lnoeu) then
@@ -321,20 +321,20 @@ subroutine op0166()
                 if (method .eq. 'ECLA_PG') then
                     valk(1) = method
                     call utmess('F', 'CALCULEL5_32', sk=valk(1))
-                endif
+                end if
                 if (method(1:10) .eq. 'SOUS_POINT') then
                     ligre2 = nomo2//'.MODELE'
-                    prol0='NON'
-                    call pjspma(lcorre(1), cham1, resuou, prol0, ligre2,&
+                    prol0 = 'NON'
+                    call pjspma(lcorre(1), cham1, resuou, prol0, ligre2, &
                                 noca, 'G', iret)
                 else
                     prol0 = 'NON'
                     call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                     tychv = ' '
-                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
+                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
                                 prol0, ' ', 'G', iret)
-                    ASSERT(iret.eq.0)
-                endif
+                    ASSERT(iret .eq. 0)
+                end if
 !
             else if (lelno) then
 !               cas ou il y a un CHAM_ELEM (ELNO)
@@ -342,93 +342,93 @@ subroutine op0166()
                     valk(1) = method
                     valk(2) = 'ELNO'
                     call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
-                endif
+                end if
 !               le mot-clef 'MODELE_2' est obligatoire
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
-                endif
+                end if
 !
                 ligre2 = nomo2//'.MODELE'
                 if (method(1:10) .eq. 'SOUS_POINT') then
-                    prol0='NON'
-                    call pjspma(lcorre(1), cham1, resuou, prol0, ligre2,&
+                    prol0 = 'NON'
+                    call pjspma(lcorre(1), cham1, resuou, prol0, ligre2, &
                                 noca, 'G', iret)
                 else
                     tychv = ' '
-                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
+                    call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
                                 prol0, ligre2, 'G', iret)
-                    ASSERT(iret.eq.0)
-                endif
+                    ASSERT(iret .eq. 0)
+                end if
 !
             else if (lelem) then
 !               cas ou il y a un CHAM_ELEM (ELEM)
-                if ((method.eq.'ECLA_PG') .or. (method(1:10).eq.'SOUS_POINT')) then
+                if ((method .eq. 'ECLA_PG') .or. (method(1:10) .eq. 'SOUS_POINT')) then
                     valk(1) = method
                     valk(2) = 'ELEM'
                     call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
-                endif
+                end if
 !               le mot-clef 'MODELE_2' est obligatoire
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
-                endif
+                end if
                 ligre2 = nomo2//'.MODELE'
                 tychv = ' '
-                call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
+                call pjxxch(lcorre(1), cham1, resuou, tychv, ' ', &
                             prol0, ligre2, 'G', iret)
-                ASSERT(iret.eq.0)
+                ASSERT(iret .eq. 0)
 !
             else if (lelga) then
 !               cas ou il y a un CHAM_ELEM (ELGA)
-                if ((method.eq.'COLLOCATION') .or. ( method(1:10).eq.'SOUS_POINT')) then
+                if ((method .eq. 'COLLOCATION') .or. (method(1:10) .eq. 'SOUS_POINT')) then
                     valk(1) = method
                     valk(2) = 'ELGA'
                     call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
-                endif
+                end if
 !               les mots-clefs 'MODELE_1' et 'MODELE_2' sont obligatoires
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_1', scal=nomo1, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_35')
-                endif
+                end if
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
-                endif
+                end if
                 ligre1 = nomo1//'.MODELE'
                 ligre2 = nomo2//'.MODELE'
 !
-                call pjelga(nomo2, cham1, ligre1, prol0, lcorre(2),&
+                call pjelga(nomo2, cham1, ligre1, prol0, lcorre(2), &
                             resuou, ligre2, iret)
-                ASSERT(iret.eq.0)
+                ASSERT(iret .eq. 0)
 !
-            endif
-        endif
+            end if
+        end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   cas SD_RESULTAT :
     else
-        call pjxxpr(resuin, resuou(1:8), moa1, moa2, lcorre(1),&
+        call pjxxpr(resuin, resuou(1:8), moa1, moa2, lcorre(1), &
                     'G', noca, method, xfem=lxfem)
-    endif
+    end if
 !
 999 continue
 !
     if (typcal .ne. '2') then
         call detrsd('CORRESP_2_MAILLA', lcorre(1))
-    endif
+    end if
 !
     if (lelga) then
         call detrsd('CORRESP_2_MAILLA', lcorre(2))
         call detrsd('MAILLAGE', '&&PJELC2')
-    endif
+    end if
 !
     if (method .eq. 'SOUS_POINT') then
         call detrsd('MAILLAGE', '&&PJSPCO')
-    endif
+    end if
 !
     call jedema()
 end subroutine

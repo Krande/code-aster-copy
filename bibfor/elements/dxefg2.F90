@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ subroutine dxefg2(pgl, sigt)
     real(kind=8) :: coe1, coe2, epais, tref, rbid
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids, &
+                     jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, jgano=jgano)
 !
     call r8inir(32, 0.d0, sigt, 1)
 !
@@ -88,21 +88,20 @@ subroutine dxefg2(pgl, sigt)
             call rcvarc(' ', 'TEMP_INF', '+', fami, igau, 1, tinfpg, ireti)
             call rcvarc(' ', 'TEMP_SUP', '+', fami, igau, 1, tsuppg, irets)
             call rcvarc(' ', 'TEMP_MIL', '+', fami, igau, 1, tmoypg, iretm)
-            ASSERT(ireti.eq.irets)
+            ASSERT(ireti .eq. irets)
 
 !           -- si il n'existe ni TEMP_INF, ni TEMP_SUP :
-            if (ireti.ne.0) then
+            if (ireti .ne. 0) then
 !               -- si on trouve 'TEMP' : c'est probablement une erreur d'utilisation :
                 call rcvarc(' ', 'TEMP', '+', fami, igau, 1, rbid, iret)
-                if (iret.eq.0) call utmess('F','CALCULEL3_18')
+                if (iret .eq. 0) call utmess('F', 'CALCULEL3_18')
 !               -- sinon, il n'y a rien a calculer
-                ASSERT(igau.eq.1)
+                ASSERT(igau .eq. 1)
                 goto 999
-            endif
-
+            end if
 
 !           -- si on ne trouve pas TEMP_MIL, on prend la moyenne de TEM_INF te TEMP_SUP :
-            if (iretm .ne. 0) tmoypg=(tinfpg+tsuppg)/2.d0
+            if (iretm .ne. 0) tmoypg = (tinfpg+tsuppg)/2.d0
 !
             if (iret1 .eq. 1) then
                 call utmess('F', 'COMPOR5_43')
@@ -114,16 +113,16 @@ subroutine dxefg2(pgl, sigt)
 !  --          CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
 !  --          SONT LES RESULTATS DE LA ROUTINE DXMATH.
 !              ----------------------------------------
-               coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0 - tref
-               coe2 = (tsuppg-tinfpg)/epais
+                coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0-tref
+                coe2 = (tsuppg-tinfpg)/epais
 !
-               sigt(1+8* (igau-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
-               sigt(2+8* (igau-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
-               sigt(3+8* (igau-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
-               sigt(4+8* (igau-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
-               sigt(5+8* (igau-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
-               sigt(6+8* (igau-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
-           endif
+                sigt(1+8*(igau-1)) = coe1*(dm(1, 1)+dm(1, 2))+coe2*(dmf(1, 1)+dmf(1, 2))
+                sigt(2+8*(igau-1)) = coe1*(dm(2, 1)+dm(2, 2))+coe2*(dmf(2, 1)+dmf(2, 2))
+                sigt(3+8*(igau-1)) = coe1*(dm(3, 1)+dm(3, 2))+coe2*(dmf(3, 1)+dmf(3, 2))
+                sigt(4+8*(igau-1)) = coe2*(df(1, 1)+df(1, 2))+coe1*(dmf(1, 1)+dmf(1, 2))
+                sigt(5+8*(igau-1)) = coe2*(df(2, 1)+df(2, 2))+coe1*(dmf(2, 1)+dmf(2, 2))
+                sigt(6+8*(igau-1)) = coe2*(df(3, 1)+df(3, 2))+coe1*(dmf(3, 1)+dmf(3, 2))
+            end if
         end do
     end if
 

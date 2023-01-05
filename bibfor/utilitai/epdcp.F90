@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine epdcp(tc, td, sigi, epsi)
 !-----------------------------------------------------------------------
     integer :: i, k, nitjac
 !-----------------------------------------------------------------------
-    data nperm,tol,toldyn/20,1.d-10,1.d-2/
+    data nperm, tol, toldyn/20, 1.d-10, 1.d-2/
 ! ----------------------------------------------------------------------
 !
 !
@@ -65,39 +65,39 @@ subroutine epdcp(tc, td, sigi, epsi)
 !
 !       MATRICE DES DEFORMATIONS PLASTIQUES
 !
-    t(1,1)=td(1)
-    t(2,2)=td(2)
-    t(3,3)=td(3)
-    t(1,2)=td(4)
-    t(2,1)=td(4)
-    t(3,1)=td(5)
-    t(1,3)=td(5)
-    t(3,2)=td(6)
-    t(2,3)=td(6)
+    t(1, 1) = td(1)
+    t(2, 2) = td(2)
+    t(3, 3) = td(3)
+    t(1, 2) = td(4)
+    t(2, 1) = td(4)
+    t(3, 1) = td(5)
+    t(1, 3) = td(5)
+    t(3, 2) = td(6)
+    t(2, 3) = td(6)
 !
     nbvec = 3
     type = 0
     iordre = 1
-    call jacobi(nbvec, nperm, tol, toldyn, tr,&
-                tu, vecp, equi(1), jacaux, nitjac,&
+    call jacobi(nbvec, nperm, tol, toldyn, tr, &
+                tu, vecp, equi(1), jacaux, nitjac, &
                 type, iordre)
     if (equi(1) .gt. (0.d0)) then
         vecint(1) = 0.d0
         vecint(2) = 0.d0
         vecint(3) = 0.d0
         do k = 1, 3
-            vecint(1)=vecint(1)+t(1,k)*vecp(k,1)
-            vecint(2)=vecint(2)+t(2,k)*vecp(k,1)
-            vecint(3)=vecint(3)+t(3,k)*vecp(k,1)
+            vecint(1) = vecint(1)+t(1, k)*vecp(k, 1)
+            vecint(2) = vecint(2)+t(2, k)*vecp(k, 1)
+            vecint(3) = vecint(3)+t(3, k)*vecp(k, 1)
         end do
         epsi = 0.d0
         do i = 1, 3
-            epsi=epsi+vecint(i)*vecp(i,1)
+            epsi = epsi+vecint(i)*vecp(i, 1)
         end do
-        sigi=equi(1)
+        sigi = equi(1)
     else
         epsi = 0.d0
-        sigi=0.d0
-    endif
+        sigi = 0.d0
+    end if
 !
 end subroutine

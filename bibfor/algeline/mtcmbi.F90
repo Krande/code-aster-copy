@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,16 +70,16 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     if (typmat(1:1) .ne. 'R' .and. typmat(1:1) .ne. 'C') then
         ch1 = typmat(1:1)
         call utmess('F', 'ALGELINE2_6', sk=ch1)
-    endif
+    end if
 !
 !     --- AFFE_CHAR_CINE ? ---
 !
     if (zi(lmat+7) .ne. 0) then
         call utmess('F', 'ALGELINE2_7')
-    endif
+    end if
 !
     zero = 0.d0
-    czero = dcmplx(zero,zero)
+    czero = dcmplx(zero, zero)
     matsym = .true.
 !
     if (zi(lmat+4) .ne. 1) matsym = .false.
@@ -91,9 +91,9 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     lgbloc = zi(lres+14)
     matres = zk24(zi(lres+1)) (1:19)
     call jeveuo(matres//'.REFA', 'L', vk24=refa)
-    call jeveuo(refa(2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
-    call jeveuo(refa(2)(1:14)//'.SMOS.SMDI', 'L', ibid)
-    ASSERT(ibid.eq.jsmdi)
+    call jeveuo(refa(2) (1:14)//'.SMOS.SMHC', 'L', jsmhc)
+    call jeveuo(refa(2) (1:14)//'.SMOS.SMDI', 'L', ibid)
+    ASSERT(ibid .eq. jsmdi)
 !
     valmr = matres//'.VALM'
 !
@@ -104,38 +104,38 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 !     --- TOUTES COMPOSANTES A ZERO SAUF LES LAGRANGES ---
     nomddl = 'LAGR    '
     call wkvect('&&MTCMBI', 'V V I', neq, lddl)
-    call pteddl('NUME_DDL', nume, 1, nomddl, neq,&
-                list_equa = zi(lddl))
-    do i = 0, neq - 1
-        zi(lddl+i) = 1 - zi(lddl+i)
+    call pteddl('NUME_DDL', nume, 1, nomddl, neq, &
+                list_equa=zi(lddl))
+    do i = 0, neq-1
+        zi(lddl+i) = 1-zi(lddl+i)
     end do
 !
 !
 !
     call jeveuo(jexnum(valmr, 1), 'E', iatres)
-    if (.not.matsym) then
+    if (.not. matsym) then
         call jeveuo(jexnum(valmr, 2), 'E', iatrei)
-    endif
+    end if
 !
     if (typmat(1:1) .eq. 'R') then
-        do ival = iatres, iatres + lgbloc - 1
+        do ival = iatres, iatres+lgbloc-1
             zr(ival) = zero
         end do
-        if (.not.matsym) then
-            do ival = iatrei, iatrei + lgbloc - 1
+        if (.not. matsym) then
+            do ival = iatrei, iatrei+lgbloc-1
                 zr(ival) = zero
             end do
-        endif
+        end if
     else
-        do ival = iatres, iatres + lgbloc - 1
+        do ival = iatres, iatres+lgbloc-1
             zc(ival) = czero
         end do
-    endif
+    end if
 !
     call jeveuo(jexnum(valm, 1), 'L', iatmat)
-    if (.not.matsym) then
+    if (.not. matsym) then
         call jeveuo(jexnum(valm, 2), 'E', iatmai)
-    endif
+    end if
 !
 !
     if (typmat(1:1) .eq. 'R') then
@@ -144,39 +144,39 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
         do iequa = 1, neq
             ifinli = zi(jsmdi+iequa-1)
             do ind = idebli, ifinli
-                kin = kin + 1
-                ilig=zi4(jsmhc-1+kin)
-                icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)),1)
-                zr(iatres+kin-1) = zr(iatres+kin-1) + zr(iatmat+kin-1) *icoef*coef
+                kin = kin+1
+                ilig = zi4(jsmhc-1+kin)
+                icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)), 1)
+                zr(iatres+kin-1) = zr(iatres+kin-1)+zr(iatmat+kin-1)*icoef*coef
             end do
-            idebli = zi(jsmdi+iequa-1) + 1
+            idebli = zi(jsmdi+iequa-1)+1
         end do
 !
 !
-    else if (typmat(1:1).eq.'C') then
+    else if (typmat(1:1) .eq. 'C') then
         kin = 0
         idebli = 1
         do iequa = 1, neq
             ifinli = zi(jsmdi+iequa-1)
             do ind = idebli, ifinli
-                kin = kin + 1
-                ilig=zi4(jsmhc-1+kin)
-                icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)),1)
-                zc(iatres+kin-1) = zc(iatres+kin-1) + zc(iatmat+kin-1) *icoef*ccoef
+                kin = kin+1
+                ilig = zi4(jsmhc-1+kin)
+                icoef = min((2-zi(lddl+ilig-1)-zi(lddl+iequa-1)), 1)
+                zc(iatres+kin-1) = zc(iatres+kin-1)+zc(iatmat+kin-1)*icoef*ccoef
             end do
-            idebli = zi(jsmdi+iequa-1) + 1
+            idebli = zi(jsmdi+iequa-1)+1
         end do
-    endif
+    end if
 !
 !
     call jelibe(jexnum(valm, 1))
-    if (.not.matsym) then
+    if (.not. matsym) then
         call jelibe(jexnum(valm, 2))
-    endif
+    end if
     call jelibe(jexnum(valmr, 1))
-    if (.not.matsym) then
+    if (.not. matsym) then
         call jelibe(jexnum(valmr, 2))
-    endif
+    end if
 !
 !
 !     --- ACTUALISATION DU .CONL ----
@@ -187,8 +187,8 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
         typcst = 'C'
         const(1) = 1.d0
         const(2) = 1.d0
-    endif
-    call mtconl(1, typcst, const, [lmat], typmat,&
+    end if
+    call mtconl(1, typcst, const, [lmat], typmat, &
                 lres)
 !
     call jedetr('&&MTCMBI')

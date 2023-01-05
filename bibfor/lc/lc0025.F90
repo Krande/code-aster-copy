@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0025(fami, kpg, ksp, ndim, imate,&
+subroutine lc0025(fami, kpg, ksp, ndim, imate, &
                   compor, crit, instam, instap, cp, &
                   epsm, deps, sigm, vim, option, &
-                  sigp, vip, typmod, icomp,&
+                  sigp, vip, typmod, icomp, &
                   nvi, numlc, dsidep, codret)
 !
-implicit none
+    implicit none
 !
 ! ======================================================================
 !
@@ -67,9 +67,9 @@ implicit none
     aster_logical     :: cp, epflag
 !
 ! Declaration of constant variables
-    data r0   / 0.0d0 /
+    data r0/0.0d0/
 !
-    common / debug / epflag
+    common/debug/epflag
 !
 ! Remarque: Utilise RESI_INTE_RELA = instant_post > 0.
 ! --------  pour activation affichage detaille
@@ -129,14 +129,14 @@ implicit none
 !
 !       APPEL DE RCVARC POUR LA RECUPERATION DE LA TEMPERATURE
 !       RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tm, iret)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tp, iret)
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                 ksp, tref, iret)
 !
-    dsidep(:,:) = r0
+    dsidep(:, :) = r0
 !
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
 
@@ -144,8 +144,8 @@ implicit none
 !       write(6,'(A)')'> LC0101 :: entering MCTGEL'
 !       write(6,'(A,6(1X,E15.8))')'! * DEPS =',(deps(i),i=1,6)
 !
-        nomres(1)= 'E       '
-        nomres(2)= 'NU      '
+        nomres(1) = 'E       '
+        nomres(2) = 'NU      '
         call rcvala(imate, ' ', 'ELAS', 0, '   ', &
                     [tp], 2, nomres, rprops(2), icode, 2)
 !
@@ -156,9 +156,9 @@ implicit none
 !       write(6,'(A)')
 !       write(6,'(A)')'> LC0101 :: entering LCRANK'
 !       write(6,'(A,6(1X,E15.8))')'! * DEPS =',(deps(i),i=1,6)
-        call lcrank(ndim, typmod, imate, option, tm, tp,&
+        call lcrank(ndim, typmod, imate, option, tm, tp, &
                     deps, sigm, sigp, vim, vip, dsidep, codret)
 !
-    endif
+    end if
 !
 end subroutine

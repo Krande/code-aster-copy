@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
-                  isig, typema, nbcmp, inst, nx,&
-                  ny, tx, ty, sig11, sig22,&
+subroutine ermeb2(ino, iref1, iref2, ivois, igeom, &
+                  isig, typema, nbcmp, inst, nx, &
+                  ny, tx, ty, sig11, sig22, &
                   sig12, chx, chy)
 !  ERREUR EN MECANIQUE - TERME DE BORD - DIMENSION 2
 !  **        **                   *                *
@@ -110,216 +110,216 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
 !
 ! ------- RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES SEGMENTS ----
 !
-    iagd=zi(iref1+4)
+    iagd = zi(iref1+4)
 !
-    iade1=zi(iref1+6)
-    iava1=zi(iref1+7)
-    iaptm1=zi(iref1+8)
+    iade1 = zi(iref1+6)
+    iava1 = zi(iref1+7)
+    iaptm1 = zi(iref1+8)
     if (iade1 .ne. 0) then
-        igd1=zi(iade1)
-        iacmp=zi(iref1+5)
-        ncmpm1=zi(iacmp-1+igd1)
-    endif
+        igd1 = zi(iade1)
+        iacmp = zi(iref1+5)
+        ncmpm1 = zi(iacmp-1+igd1)
+    end if
 !
-    iade2=zi(iref2+4)
-    iava2=zi(iref2+5)
-    iaptm2=zi(iref2+6)
+    iade2 = zi(iref2+4)
+    iava2 = zi(iref2+5)
+    iaptm2 = zi(iref2+6)
     if (iade2 .ne. 0) then
         igd2 = zi(iade2)
         iacmp = zi(iref1+5)
         ncmpm2 = zi(iacmp-1+igd2)
-    endif
+    end if
 !
 ! ----- TESTS SUR LA MAILLE COURANTE -----------------------------------
 !
-    form=typema(1:2)
-    noeu=typema(3:3)
+    form = typema(1:2)
+    noeu = typema(3:3)
 !
     if (form .eq. 'TR') then
-        nbs=3
+        nbs = 3
     else
-        nbs=4
-    endif
+        nbs = 4
+    end if
     if (noeu .eq. '3' .or. noeu .eq. '4') then
-        nbna=2
+        nbna = 2
     else
-        nbna=3
-    endif
+        nbna = 3
+    end if
 !
     if (ino .eq. nbs) then
-        jno=1
+        jno = 1
     else
-        jno=ino+1
-    endif
+        jno = ino+1
+    end if
 !
 ! --------------------
 !
-    nomgd1=' '
-    nomgd2=' '
+    nomgd1 = ' '
+    nomgd2 = ' '
     if (iade1 .ne. 0) then
-        imav=zi(ivois+ino)
+        imav = zi(ivois+ino)
         if (iaptm1 .eq. 0) then
 !         CARTE CONSTANTE
-            ient1=1
+            ient1 = 1
         else
 !         LA CARTE A ETE ETENDUE
-            ient1=zi(iaptm1-1+imav)
-        endif
-        numgd1=zi(iref1+9)
-        nomgd1=zk8(iagd-1+numgd1)
-    endif
+            ient1 = zi(iaptm1-1+imav)
+        end if
+        numgd1 = zi(iref1+9)
+        nomgd1 = zk8(iagd-1+numgd1)
+    end if
 !
     if (iade2 .ne. 0) then
-        imav=zi(ivois+ino)
+        imav = zi(ivois+ino)
         if (iaptm2 .eq. 0) then
 !         CARTE CONSTANTE
-            ient2=1
+            ient2 = 1
         else
 !       LA CARTE A ETE ETENDUE
-            ient2=zi(iaptm2-1+imav)
-        endif
-        numgd2=zi(iref2+7)
-        nomgd2=zk8(iagd-1+numgd2)
-    endif
+            ient2 = zi(iaptm2-1+imav)
+        end if
+        numgd2 = zi(iref2+7)
+        nomgd2 = zk8(iagd-1+numgd2)
+    end if
 !
 ! ----- CALCUL DES CHARGES APPLIQUEES SUR LE BORD ----------------------
 ! ------- RECUPERATION DES PRESSIONS -----------------------------------
 !
-    flag=.true.
+    flag = .true.
     call r8inir(3, 0.d0, chx, 1)
     call r8inir(3, 0.d0, chy, 1)
 !
     if (nomgd2(1:6) .eq. 'PRES_R') then
-        pr=zr(iava2-1+(ient2-1)*ncmpm2+1)
-        ci=zr(iava2-1+(ient2-1)*ncmpm2+2)
+        pr = zr(iava2-1+(ient2-1)*ncmpm2+1)
+        ci = zr(iava2-1+(ient2-1)*ncmpm2+2)
 !
         if (abs(pr) .gt. 1.d-15 .or. abs(ci) .gt. 1.d-15) then
 !
-            flag=.false.
+            flag = .false.
 !
-            chx(1)=-pr*nx(1)+ci*tx(1)
-            chy(1)=-pr*ny(1)+ci*ty(1)
-            chx(2)=-pr*nx(2)+ci*tx(2)
-            chy(2)=-pr*ny(2)+ci*ty(2)
+            chx(1) = -pr*nx(1)+ci*tx(1)
+            chy(1) = -pr*ny(1)+ci*ty(1)
+            chx(2) = -pr*nx(2)+ci*tx(2)
+            chy(2) = -pr*ny(2)+ci*ty(2)
 !
             if (nbna .eq. 3) then
-                chx(3)=-pr*nx(3)+ci*tx(3)
-                chy(3)=-pr*ny(3)+ci*ty(3)
-            endif
-        endif
+                chx(3) = -pr*nx(3)+ci*tx(3)
+                chy(3) = -pr*ny(3)+ci*ty(3)
+            end if
+        end if
 !
-    else if (nomgd2(1:6).eq.'PRES_F') then
-        prf=zk8(iava2-1+(ient2-1)*ncmpm2+1)
-        cif=zk8(iava2-1+(ient2-1)*ncmpm2+2)
+    else if (nomgd2(1:6) .eq. 'PRES_F') then
+        prf = zk8(iava2-1+(ient2-1)*ncmpm2+1)
+        cif = zk8(iava2-1+(ient2-1)*ncmpm2+2)
 !
         if (prf .ne. '&FOZERO' .or. cif .ne. '&FOZERO') then
 !
-            flag=.false.
+            flag = .false.
 !
-            nompar(1)='X'
-            nompar(2)='Y'
-            nompar(3)='INST'
-            valpar(1)=zr(igeom-1+2*(ino-1)+1)
-            valpar(2)=zr(igeom-1+2*(ino-1)+2)
-            valpar(3)=inst
-            call fointe('FM', prf, 3, nompar, valpar,&
+            nompar(1) = 'X'
+            nompar(2) = 'Y'
+            nompar(3) = 'INST'
+            valpar(1) = zr(igeom-1+2*(ino-1)+1)
+            valpar(2) = zr(igeom-1+2*(ino-1)+2)
+            valpar(3) = inst
+            call fointe('FM', prf, 3, nompar, valpar, &
                         prc(1), ier1)
-            call fointe('FM', cif, 3, nompar, valpar,&
+            call fointe('FM', cif, 3, nompar, valpar, &
                         cic(1), ier2)
 !
-            valpar(1)=zr(igeom-1+2*(jno-1)+1)
-            valpar(2)=zr(igeom-1+2*(jno-1)+2)
-            valpar(3)=inst
-            call fointe('FM', prf, 3, nompar, valpar,&
+            valpar(1) = zr(igeom-1+2*(jno-1)+1)
+            valpar(2) = zr(igeom-1+2*(jno-1)+2)
+            valpar(3) = inst
+            call fointe('FM', prf, 3, nompar, valpar, &
                         prc(2), ier3)
-            call fointe('FM', cif, 3, nompar, valpar,&
+            call fointe('FM', cif, 3, nompar, valpar, &
                         cic(2), ier4)
 !
-            chx(1)=-prc(1)*nx(1)+cic(1)*tx(1)
-            chy(1)=-prc(1)*ny(1)+cic(1)*ty(1)
-            chx(2)=-prc(2)*nx(2)+cic(2)*tx(2)
-            chy(2)=-prc(2)*ny(2)+cic(2)*ty(2)
+            chx(1) = -prc(1)*nx(1)+cic(1)*tx(1)
+            chy(1) = -prc(1)*ny(1)+cic(1)*ty(1)
+            chx(2) = -prc(2)*nx(2)+cic(2)*tx(2)
+            chy(2) = -prc(2)*ny(2)+cic(2)*ty(2)
 !
             if (nbna .eq. 3) then
-                mno=nbs+ino
-                valpar(1)=zr(igeom-1+2*(mno-1)+1)
-                valpar(2)=zr(igeom-1+2*(mno-1)+2)
-                valpar(3)=inst
-                call fointe('FM', prf, 3, nompar, valpar,&
+                mno = nbs+ino
+                valpar(1) = zr(igeom-1+2*(mno-1)+1)
+                valpar(2) = zr(igeom-1+2*(mno-1)+2)
+                valpar(3) = inst
+                call fointe('FM', prf, 3, nompar, valpar, &
                             prc(3), ier5)
-                call fointe('FM', cif, 3, nompar, valpar,&
+                call fointe('FM', cif, 3, nompar, valpar, &
                             cic(3), ier6)
 !
-                chx(3)=-prc(3)*nx(3)+cic(3)*tx(3)
-                chy(3)=-prc(3)*ny(3)+cic(3)*ty(3)
+                chx(3) = -prc(3)*nx(3)+cic(3)*tx(3)
+                chy(3) = -prc(3)*ny(3)+cic(3)*ty(3)
 !
-            endif
-        endif
+            end if
+        end if
 !
 ! ------- RECUPERATION DES FORCES --------------------------------------
 !
-    else if (nomgd1(1:6).eq.'FORC_R') then
-        fx=zr(iava1-1+(ient1-1)*ncmpm1+1)
-        fy=zr(iava1-1+(ient1-1)*ncmpm1+2)
+    else if (nomgd1(1:6) .eq. 'FORC_R') then
+        fx = zr(iava1-1+(ient1-1)*ncmpm1+1)
+        fy = zr(iava1-1+(ient1-1)*ncmpm1+2)
 !
         if (abs(fx) .gt. 1.d-15 .or. abs(fy) .gt. 1.d-15) then
 !
-            flag=.false.
+            flag = .false.
 !
             call r8inir(2, fx, chx, 1)
             call r8inir(2, fy, chy, 1)
 !
             if (nbna .eq. 3) then
-                chx(3)=fx
-                chy(3)=fy
-            endif
+                chx(3) = fx
+                chy(3) = fy
+            end if
 !
-        endif
+        end if
 !
-    else if (nomgd1(1:6).eq.'FORC_F') then
-        fxf=zk8(iava1-1+(ient1-1)*ncmpm1+1)
-        fyf=zk8(iava1-1+(ient1-1)*ncmpm1+2)
+    else if (nomgd1(1:6) .eq. 'FORC_F') then
+        fxf = zk8(iava1-1+(ient1-1)*ncmpm1+1)
+        fyf = zk8(iava1-1+(ient1-1)*ncmpm1+2)
 !
         if (fxf .ne. '&FOZERO' .or. fyf .ne. '&FOZERO') then
 !
-            flag=.false.
+            flag = .false.
 !
-            nompar(1)='X'
-            nompar(2)='Y'
-            nompar(3)='INST'
-            valpar(1)=zr(igeom-1+2*(ino-1)+1)
-            valpar(2)=zr(igeom-1+2*(ino-1)+2)
-            valpar(3)=inst
-            call fointe('FM', fxf, 3, nompar, valpar,&
+            nompar(1) = 'X'
+            nompar(2) = 'Y'
+            nompar(3) = 'INST'
+            valpar(1) = zr(igeom-1+2*(ino-1)+1)
+            valpar(2) = zr(igeom-1+2*(ino-1)+2)
+            valpar(3) = inst
+            call fointe('FM', fxf, 3, nompar, valpar, &
                         fxc(1), ier1)
-            call fointe('FM', fyf, 3, nompar, valpar,&
+            call fointe('FM', fyf, 3, nompar, valpar, &
                         fyc(1), ier2)
 !
-            valpar(1)=zr(igeom-1+2*(jno-1)+1)
-            valpar(2)=zr(igeom-1+2*(jno-1)+2)
-            valpar(3)=inst
-            call fointe('FM', fxf, 3, nompar, valpar,&
+            valpar(1) = zr(igeom-1+2*(jno-1)+1)
+            valpar(2) = zr(igeom-1+2*(jno-1)+2)
+            valpar(3) = inst
+            call fointe('FM', fxf, 3, nompar, valpar, &
                         fxc(2), ier3)
-            call fointe('FM', fyf, 3, nompar, valpar,&
+            call fointe('FM', fyf, 3, nompar, valpar, &
                         fyc(2), ier4)
 !
             call r8inir(2, fxc(1), chx, 1)
             call r8inir(2, fyc(1), chy, 1)
 !
             if (nbna .eq. 3) then
-                mno=nbs+ino
-                valpar(1)=zr(igeom-1+2*(mno-1)+1)
-                valpar(2)=zr(igeom-1+2*(mno-1)+2)
-                valpar(3)=inst
-                call fointe('FM', fxf, 3, nompar, valpar,&
+                mno = nbs+ino
+                valpar(1) = zr(igeom-1+2*(mno-1)+1)
+                valpar(2) = zr(igeom-1+2*(mno-1)+2)
+                valpar(3) = inst
+                call fointe('FM', fxf, 3, nompar, valpar, &
                             fxc(3), ier5)
-                call fointe('FM', fyf, 3, nompar, valpar,&
+                call fointe('FM', fyf, 3, nompar, valpar, &
                             fyc(3), ier6)
-                chx(3)=fxc(3)
-                chy(3)=fyc(3)
-            endif
-        endif
-    endif
+                chx(3) = fxc(3)
+                chy(3) = fyc(3)
+            end if
+        end if
+    end if
 !
 ! ------- RECUPERATION DE SIGMA SUR LA MAILLE COURANTE -----------------
 !
@@ -331,22 +331,22 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
 !
     else
 !
-        sig11(1)=zr(isig-1+nbcmp*(ino-1)+1)
-        sig22(1)=zr(isig-1+nbcmp*(ino-1)+2)
-        sig12(1)=zr(isig-1+nbcmp*(ino-1)+4)
+        sig11(1) = zr(isig-1+nbcmp*(ino-1)+1)
+        sig22(1) = zr(isig-1+nbcmp*(ino-1)+2)
+        sig12(1) = zr(isig-1+nbcmp*(ino-1)+4)
 !
-        sig11(2)=zr(isig-1+nbcmp*(jno-1)+1)
-        sig22(2)=zr(isig-1+nbcmp*(jno-1)+2)
-        sig12(2)=zr(isig-1+nbcmp*(jno-1)+4)
+        sig11(2) = zr(isig-1+nbcmp*(jno-1)+1)
+        sig22(2) = zr(isig-1+nbcmp*(jno-1)+2)
+        sig12(2) = zr(isig-1+nbcmp*(jno-1)+4)
 !
         if (nbna .eq. 3) then
-            mno=nbs+ino
+            mno = nbs+ino
 !
-            sig11(3)=zr(isig-1+nbcmp*(mno-1)+1)
-            sig22(3)=zr(isig-1+nbcmp*(mno-1)+2)
-            sig12(3)=zr(isig-1+nbcmp*(mno-1)+4)
+            sig11(3) = zr(isig-1+nbcmp*(mno-1)+1)
+            sig22(3) = zr(isig-1+nbcmp*(mno-1)+2)
+            sig12(3) = zr(isig-1+nbcmp*(mno-1)+4)
 !
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

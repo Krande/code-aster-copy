@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xintar(lsna, lsnb, lsnm, a, b,&
+subroutine xintar(lsna, lsnb, lsnm, a, b, &
                   m, ndim, intar)
     implicit none
 !
@@ -46,33 +46,33 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
     real(kind=8) :: lsnl(3), col(ndim*3)
     real(kind=8) :: epsmax, rbid, xe(ndim)
     integer :: nno, itemax, i, ibid, n(3)
-    parameter       (elp='SE3')
+    parameter(elp='SE3')
 !
 !---------------------------------------------------------------------
 !     DEBUT
 !---------------------------------------------------------------------
 !
-    itemax=500
-    epsmax=1.d-9
-    name='XINTAR'
-    nno=3
+    itemax = 500
+    epsmax = 1.d-9
+    name = 'XINTAR'
+    nno = 3
 !
-    lsnl(1)=lsna
-    lsnl(2)=lsnb
-    lsnl(3)=lsnm
+    lsnl(1) = lsna
+    lsnl(2) = lsnb
+    lsnl(3) = lsnm
 !
     do i = 1, ndim
-        col(i)=a(i)
-        col(ndim+i)=b(i)
-        col(ndim*2+i)=m(i)
+        col(i) = a(i)
+        col(ndim+i) = b(i)
+        col(ndim*2+i) = m(i)
     end do
 !
     rbid = 0.d0
     xe(:) = 0.d0
-    call xnewto(elp, name, n, ndim, [rbid],&
-                ndim, [rbid], lsnl, ibid, ibid,&
+    call xnewto(elp, name, n, ndim, [rbid], &
+                ndim, [rbid], lsnl, ibid, ibid, &
                 itemax, epsmax, xe)
-    call reerel(elp, nno, ndim, col, xe,&
+    call reerel(elp, nno, ndim, col, xe, &
                 intar)
 !
 !---------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
-                  typmod, mate, compor, geomi, sig,&
+subroutine nufnpd(ndim, nno1, nno2, npg, iw, &
+                  vff1, vff2, idff1, vu, vp, &
+                  typmod, mate, compor, geomi, sig, &
                   ddl, mini, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -85,12 +85,12 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
     real(kind=8) :: kce(nno2, nno2), rce(nno2)
     character(len=16) :: option
 !
-    parameter    (grand = .false._1)
+    parameter(grand=.false._1)
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
-    axi = typmod(1).eq.'AXIS'
-    nddl = nno1*ndim + nno2
+    axi = typmod(1) .eq. 'AXIS'
+    nddl = nno1*ndim+nno2
     rac2 = sqrt(2.d0)
     option = 'FORC_NODA       '
 !
@@ -99,7 +99,7 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 ! - EXTRACTION DES CHAMPS
     do na = 1, nno1
         do ia = 1, ndim
-            deplm(ia+ndim*(na-1)) = ddl(vu(ia,na))
+            deplm(ia+ndim*(na-1)) = ddl(vu(ia, na))
         end do
     end do
 !
@@ -113,77 +113,77 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call r8inir(6, 0.d0, epsm, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, geomi, g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), &
                     r, dff1, deplm, fm, epsm)
 !
-        divum = epsm(1) + epsm(2) + epsm(3)
+        divum = epsm(1)+epsm(2)+epsm(3)
 !
 ! - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
 ! - DEF (XX,YY,ZZ,2/RAC(2)XY,2/RAC(2)XZ,2/RAC(2)YZ)
         if (ndim .eq. 2) then
             do na = 1, nno1
                 do ia = 1, ndim
-                    def(1,na,ia)= fm(ia,1)*dff1(na,1)
-                    def(2,na,ia)= fm(ia,2)*dff1(na,2)
-                    def(3,na,ia)= 0.d0
-                    def(4,na,ia)=(fm(ia,1)*dff1(na,2)+fm(ia,2)*dff1(na,1))/rac2
+                    def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = fm(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = 0.d0
+                    def(4, na, ia) = (fm(ia, 1)*dff1(na, 2)+fm(ia, 2)*dff1(na, 1))/rac2
                 end do
             end do
 !
 ! - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
             if (axi) then
                 do na = 1, nno1
-                    def(3,na,1) = fm(3,3)*vff1(na,g)/r
+                    def(3, na, 1) = fm(3, 3)*vff1(na, g)/r
                 end do
-            endif
+            end if
         else
             do na = 1, nno1
                 do ia = 1, ndim
-                    def(1,na,ia)= fm(ia,1)*dff1(na,1)
-                    def(2,na,ia)= fm(ia,2)*dff1(na,2)
-                    def(3,na,ia)= fm(ia,3)*dff1(na,3)
-                    def(4,na,ia)=(fm(ia,1)*dff1(na,2)+fm(ia,2)*dff1(na,1))/rac2
-                    def(5,na,ia)=(fm(ia,1)*dff1(na,3)+fm(ia,3)*dff1(na,1))/rac2
-                    def(6,na,ia)=(fm(ia,2)*dff1(na,3)+fm(ia,3)*dff1(na,2))/rac2
+                    def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = fm(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = fm(ia, 3)*dff1(na, 3)
+                    def(4, na, ia) = (fm(ia, 1)*dff1(na, 2)+fm(ia, 2)*dff1(na, 1))/rac2
+                    def(5, na, ia) = (fm(ia, 1)*dff1(na, 3)+fm(ia, 3)*dff1(na, 1))/rac2
+                    def(6, na, ia) = (fm(ia, 2)*dff1(na, 3)+fm(ia, 3)*dff1(na, 2))/rac2
                 end do
             end do
-        endif
+        end if
 !
 ! - CALCUL DE LA PRESSION
-        pm = ddot(nno2,vff2(1,g),1,presm,1)
+        pm = ddot(nno2, vff2(1, g), 1, presm, 1)
 !
 ! - CALCUL DES CONTRAINTES MECANIQUES A L'EQUILIBRE
         do ia = 1, 3
-            sigma(ia) = sig(ia,g)
+            sigma(ia) = sig(ia, g)
         end do
         do ia = 4, 2*ndim
-            sigma(ia) = sig(ia,g)*rac2
+            sigma(ia) = sig(ia, g)*rac2
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor(1),&
+        call tanbul(option, ndim, g, mate, compor(1), &
                     .false._1, mini, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep,&
+            call calkbb(nno1, ndim, w, def, dsbdep, &
                         kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm,&
+            call calkce(nno1, ndim, kbp, kbb, presm, &
                         presd, kce, rce)
         else
             call r8inir(nno2, 0.d0, rce, 1)
-        endif
+        end if
 !
 ! - VECTEUR FINT:U
         do na = 1, nno1
             do ia = 1, ndim
-                kk = vu(ia,na)
-                t1 = ddot(2*ndim, sigma,1, def(1,na,ia),1)
-                vect(kk) = vect(kk) + w*t1
+                kk = vu(ia, na)
+                t1 = ddot(2*ndim, sigma, 1, def(1, na, ia), 1)
+                vect(kk) = vect(kk)+w*t1
             end do
         end do
 !
@@ -191,8 +191,8 @@ subroutine nufnpd(ndim, nno1, nno2, npg, iw,&
         t2 = (divum-pm*alpha)
         do sa = 1, nno2
             kk = vp(sa)
-            t1 = vff2(sa,g)*t2
-            vect(kk) = vect(kk) + w*t1 - rce(sa)
+            t1 = vff2(sa, g)*t2
+            vect(kk) = vect(kk)+w*t1-rce(sa)
         end do
     end do
 !

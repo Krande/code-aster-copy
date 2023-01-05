@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xtyele(model, trav, nfiss, fiss, contac,&
+subroutine xtyele(model, trav, nfiss, fiss, contac, &
                   ndim, linter)
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=W1306
@@ -96,26 +96,24 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 ! ----------------------------------------------------------------------
 !
 
-
-
     call jemarq()
 !
 ! --- INITIALISATION
 !
     linter = .false.
     do i = 1, 3
-        indptf(i)=0
+        indptf(i) = 0
     end do
     call r8inir(ndim, 0.d0, cmin, 1)
     clsn = '&&XTYELE.LSN'
     clst = '&&XTYELE.LST'
     do ifiss = 1, nfiss
         call codent(ifiss, 'G', ch2)
-        cstn(ifiss)='&&XTYELE.STN'//ch2
-        maicon(ifiss)='&&XTYELE.CONT'//ch2
-        elfis_heav(ifiss)='&&XTYELE.ELEMFISS.HEAV'//ch2
-        elfis_ctip(ifiss)='&&XTYELE.ELEMFISS.CTIP'//ch2
-        elfis_hect(ifiss)='&&XTYELE.ELEMFISS.HECT'//ch2
+        cstn(ifiss) = '&&XTYELE.STN'//ch2
+        maicon(ifiss) = '&&XTYELE.CONT'//ch2
+        elfis_heav(ifiss) = '&&XTYELE.ELEMFISS.HEAV'//ch2
+        elfis_ctip(ifiss) = '&&XTYELE.ELEMFISS.CTIP'//ch2
+        elfis_hect(ifiss) = '&&XTYELE.ELEMFISS.HECT'//ch2
     end do
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma)
     call jeveuo(noma(1:8)//'.COORDO    .VALE', 'L', vr=vale)
@@ -146,8 +144,8 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
         call cnocns(fiss(ifiss)//'.STNO', 'V', cstn(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSL', 'L', jstnl(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSV', 'L', jstnv(ifiss))
-        call xelfis_lists(fiss(ifiss), model, elfis_heav(ifiss),&
-                              elfis_ctip(ifiss), elfis_hect(ifiss))
+        call xelfis_lists(fiss(ifiss), model, elfis_heav(ifiss), &
+                          elfis_ctip(ifiss), elfis_hect(ifiss))
         grp(4*(ifiss-1)+1) = elfis_heav(ifiss)
         grp(4*(ifiss-1)+2) = elfis_ctip(ifiss)
         grp(4*(ifiss-1)+3) = elfis_hect(ifiss)
@@ -156,18 +154,18 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
             call jeexin(grp(4*(ifiss-1)+l), iret)
             if (iret .ne. 0) then
                 call jelira(grp(4*(ifiss-1)+l), 'LONMAX', nmaenr, k8bid)
-                ncont = ncont + nmaenr
+                ncont = ncont+nmaenr
                 call jeveuo(grp(4*(ifiss-1)+l), 'L', jgrp(4*(ifiss-1)+l))
-            endif
+            end if
         end do
-        icont(ifiss)=0
+        icont(ifiss) = 0
     end do
 !
-    if(ncont.gt.0) then
+    if (ncont .gt. 0) then
         do ifiss = 1, nfiss
             call wkvect(maicon(ifiss), 'V V I', ncont, jcont(ifiss))
         end do
-    endif
+    end if
 !
     do ifiss = 1, nfiss
         call cnocns(fiss(ifiss)//'.LNNO', 'V', clsn)
@@ -188,17 +186,17 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                     ima = zi(jgrp(4*(ifiss-1)+kk)-1+i)
 !
                     zi(jnbpt-1+ima) = zi(jnbpt-1+ima)+1
-                    itypma=typmail(ima)
+                    itypma = typmail(ima)
 !
                     if (zi(jtab-1+5*(ima-1)+4) .eq. 0) then
 ! --- BLINDAGE DANS LE CAS DU MULTI-HEAVISIDE
                         call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                         call dismoi('EXI_THM', model, 'MODELE', repk=exithm)
-                        if (.not.ismali(typma) .and. exithm .eq. 'NON') then
+                        if (.not. ismali(typma) .and. exithm .eq. 'NON') then
                             call utmess('F', 'XFEM_41', sk=nomail)
-                        endif
-                    endif
+                        end if
+                    end if
 !
 ! --- ON RECUPERE LE NB DE NOEUDS SOMMETS DE LA MAILLE
                     call panbno(itypma, nnot)
@@ -211,33 +209,33 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 !
                     if (contac .ge. 1) then
 ! --- PAS DE CONTACT POUR LES MAILLE DE BORD
-                        ndime= tmdim(itypma)
+                        ndime = tmdim(itypma)
                         if (ndime .ne. ndim) goto 110
 !
-                        maxlsn=-1*r8maem()
-                        minlsn=r8maem()
+                        maxlsn = -1*r8maem()
+                        minlsn = r8maem()
 ! --- BOUCLE SUR LES ARETES DE LA MAILLE
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                         call conare(typma, ar, nbar)
                         do ia = 1, nbar
-                            nunoa=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,&
-                            1)-1)
-                            nunob=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,&
-                            2)-1)
-                            lsna=vlsn(nunoa)
-                            lsnb=vlsn(nunob)
-                            stna=zi(jstnv(ifiss)-1+nunoa)
-                            stnb=zi(jstnv(ifiss)-1+nunob)
-                            if (lsna .lt. minlsn) minlsn=lsna
-                            if (lsnb .lt. minlsn) minlsn=lsnb
-                            if (lsna .gt. maxlsn) maxlsn=lsna
-                            if (lsnb .gt. maxlsn) maxlsn=lsnb
+                            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
+                                                                    1)-1)
+                            nunob = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
+                                                                    2)-1)
+                            lsna = vlsn(nunoa)
+                            lsnb = vlsn(nunob)
+                            stna = zi(jstnv(ifiss)-1+nunoa)
+                            stnb = zi(jstnv(ifiss)-1+nunob)
+                            if (lsna .lt. minlsn) minlsn = lsna
+                            if (lsnb .lt. minlsn) minlsn = lsnb
+                            if (lsna .gt. maxlsn) maxlsn = lsna
+                            if (lsnb .gt. maxlsn) maxlsn = lsnb
 ! --- ARETE OU NOEUD COUPÉ AVEC STATUT NUL -> MAILLE MULTI-H NON COUPÉE
-                            if (lsna*lsnb .le. 0.and.nfiss.gt.1) then
-                                if (lsna*lsnb .lt. 0 .and. ( stna.eq.0.or.stnb.eq.0) .or. lsna&
+                            if (lsna*lsnb .le. 0 .and. nfiss .gt. 1) then
+                               if (lsna*lsnb .lt. 0 .and. (stna .eq. 0 .or. stnb .eq. 0) .or. lsna &
                                     .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb .eq. 0) &
-                                goto 110
-                            endif
+                                    goto 110
+                            end if
                         end do
 ! --- BOUCLE SUR LES NOEUDS DE LA MAILLE
 !                DO 100 INO=1,NNO
@@ -249,108 +247,108 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 ! --- TRAITEMENT DES DIFFERENTS CAS
                         if (minlsn*maxlsn .lt. 0) then
 !--- LA MAILLE EST COUPÉE, ON ACTIVE LE CONTACT
-                            lcont=.true.
-                        else if (maxlsn.eq.0) then
+                            lcont = .true.
+                        else if (maxlsn .eq. 0) then
 ! --- SI LA MAILLE EST ENTIEREMENT DU COTÉ ESCLAVE, MAIS TOUCHE LA LSN
 ! --- LE CONTACT EST ACTIVÉ SI TOUT LES NOEUDS D'UNE FACE SONT COUPÉS
                             nbcoup = 0
                             do ino = 1, nno
-                                nngl=zi(jconx1-1+zi(jconx2+ima-1)+ino-&
-                                1)
+                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino- &
+                                          1)
                                 lsn = vlsn(nngl)
                                 if (lsn .eq. 0) then
 ! --- LE NOEUD EST COUPÉ SI LE MAX DE LSN DE SA CONNECTIVITÉ
 ! --- EST STRICTEMENT POSITIF
-                                    maxlsn=-1*r8maem()
+                                    maxlsn = -1*r8maem()
                                     call jelira(jexnum(cnxinv, nngl), 'LONMAX', nmasup)
                                     call jeveuo(jexnum(cnxinv, nngl), 'L', jmasup)
                                     do j = 1, nmasup
                                         ima2 = zi(jmasup-1+j)
-                                        call jelira(jexnum( noma// '.CONNEX', ima2), 'LONMAX',&
+                                        call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', &
                                                     nno2, k8bid)
                                         do ino2 = 1, nno2
-                                            nngl=zi(jconx1-1+zi(jconx2+&
-                                        ima2-1)+ino2-1)
+                                            nngl = zi(jconx1-1+zi(jconx2+ &
+                                                                  ima2-1)+ino2-1)
                                             lsn = vlsn(nngl)
-                                            if (lsn .gt. maxlsn) maxlsn=lsn
+                                            if (lsn .gt. maxlsn) maxlsn = lsn
                                         end do
                                     end do
 !
-                                    if (maxlsn .gt. 0) nbcoup=nbcoup+1
-                                endif
+                                    if (maxlsn .gt. 0) nbcoup = nbcoup+1
+                                end if
                             end do
 ! --- ON REGARDE SI LE NOMBRE DE NOEUDS COUPÉES NBCOUP DEFINIT UNE FACE
                             if (ndim .eq. 2) then
-                                if (nbcoup .eq. 2) lcont=.true.
-                                if (nbcoup .eq. 3 .and. .not.ismali(typma)) lcont=.true.
+                                if (nbcoup .eq. 2) lcont = .true.
+                                if (nbcoup .eq. 3 .and. .not. ismali(typma)) lcont = .true.
                             else
                                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                                 if (typma(1:5) .eq. 'TETRA') then
-                                    if (nbcoup .eq. 3) lcont=.true.
-                                else if (typma(1:4).eq.'PYRA') then
-                                    nngl=zi(jconx1-1+zi(jconx2+ima-1)+&
-                                    5-1)
+                                    if (nbcoup .eq. 3) lcont = .true.
+                                else if (typma(1:4) .eq. 'PYRA') then
+                                    nngl = zi(jconx1-1+zi(jconx2+ima-1)+ &
+                                              5-1)
                                     lsn = vlsn(nngl)
                                     if (lsn .eq. 0 .and. nbcoup .eq. 3 .or. nbcoup .eq. 4) &
-                                    lcont=.true.
-                                else if (typma(1:5).eq.'PENTA') then
-                                    nbcou2=0
+                                        lcont = .true.
+                                else if (typma(1:5) .eq. 'PENTA') then
+                                    nbcou2 = 0
                                     do ino = 1, 3
-                                        nngl=zi(jconx1-1+zi(jconx2+&
-                                        ima-1)+ino-1)
+                                        nngl = zi(jconx1-1+zi(jconx2+ &
+                                                              ima-1)+ino-1)
                                         lsn = vlsn(nngl)
                                         if (lsn .eq. 0) then
                                             nbcou2 = nbcou2+1
-                                        endif
+                                        end if
                                     end do
-                                    if ((nbcou2.eq.3.or.nbcou2.eq.0) .and. nbcoup .eq. 3 .or.&
-                                        nbcoup .eq. 4) lcont=.true.
-                                else if (typma(1:4).eq.'HEXA') then
-                                    if (nbcoup .eq. 4) lcont=.true.
-                                endif
-                            endif
-                        endif
-                    endif
+                                   if ((nbcou2 .eq. 3 .or. nbcou2 .eq. 0) .and. nbcoup .eq. 3 .or. &
+                                        nbcoup .eq. 4) lcont = .true.
+                                else if (typma(1:4) .eq. 'HEXA') then
+                                    if (nbcoup .eq. 4) lcont = .true.
+                                end if
+                            end if
+                        end if
+                    end if
 !
 ! --- CRITERE SUPLEMENTAIRE POUR LE GRP CTIP, ON DESACTIVE LE CONTACT
 ! --- SI LE MIN DE LST AUX PTS D'INTERSECTIONS DE L'ÉLÉMENT EST POSITIF
 !
                     if (kk .eq. 2 .and. lcont) then
-                        minlst=r8maem()
+                        minlst = r8maem()
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                         call conare(typma, ar, nbar)
                         do ia = 1, nbar
-                            nunoa=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,&
-                            1)-1)
-                            nunob=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,&
-                            2)-1)
-                            lsna=vlsn(nunoa)
-                            lsnb=vlsn(nunob)
-                            lsta=lst(nunoa)
-                            lstb=lst(nunob)
+                            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
+                                                                    1)-1)
+                            nunob = zi(jconx1-1+zi(jconx2+ima-1)+ar(ia, &
+                                                                    2)-1)
+                            lsna = vlsn(nunoa)
+                            lsnb = vlsn(nunob)
+                            lsta = lst(nunoa)
+                            lstb = lst(nunob)
                             if (lsna .eq. 0.d0 .or. lsnb .eq. 0.d0) then
-                                if (lsna .eq. 0.d0 .and. lsta .lt. minlst) minlst=lsta
-                                if (lsnb .eq. 0.d0 .and. lstb .lt. minlst) minlst=lstb
-                            else if ((lsna*lsnb).lt.0.d0) then
+                                if (lsna .eq. 0.d0 .and. lsta .lt. minlst) minlst = lsta
+                                if (lsnb .eq. 0.d0 .and. lstb .lt. minlst) minlst = lstb
+                            else if ((lsna*lsnb) .lt. 0.d0) then
                                 do k = 1, ndim
-                                    a(k)=vale(3*(nunoa-1)+k)
-                                    b(k)=vale(3*(nunob-1)+k)
-                                    ab(k)=b(k)-a(k)
-                                    c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
-                                    ac(k)=c(k)-a(k)
+                                    a(k) = vale(3*(nunoa-1)+k)
+                                    b(k) = vale(3*(nunob-1)+k)
+                                    ab(k) = b(k)-a(k)
+                                    c(k) = a(k)-lsna/(lsnb-lsna)*ab(k)
+                                    ac(k) = c(k)-a(k)
                                 end do
                                 ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. r8prem())
-                                lstc = lsta + (lstb-lsta) * ddot(ndim, ab,1,ac,1) / ddot(ndim,ab,&
-                                       &1,ab,1)
+                                lstc = lsta+(lstb-lsta)*ddot(ndim, ab, 1, ac, 1)/ddot(ndim, ab,&
+                                       &1, ab, 1)
                                 if (lstc .lt. minlst) then
-                                    minlst=lstc
+                                    minlst = lstc
                                     do k = 1, ndim
-                                        cmin(k)=c(k)
+                                        cmin(k) = c(k)
                                     end do
-                                endif
-                            endif
+                                end if
+                            end if
                         end do
-                        if (minlst .ge. 0) lcont =.false.
+                        if (minlst .ge. 0) lcont = .false.
                         if (lcont) then
 ! --- ON VERIFIE LA TOLERANCE AVEC LES PT DE FOND DE FISSURE
                             call confac(typma, ibid3, ibid, fa, nbf)
@@ -359,41 +357,41 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 !                 AFIN DE POUVOIR APPELER INTFAC
                             call wkvect('&&XTYELE.LSN', 'V V R', nno, ilsn)
                             call wkvect('&&XTYELE.LST', 'V V R', nno, ilst)
-                            call wkvect('&&XTYELE.IGEOM', 'V V R', nno* ndim, igeom)
+                            call wkvect('&&XTYELE.IGEOM', 'V V R', nno*ndim, igeom)
                             do ino = 1, nno
-                                nngl=zi(jconx1-1+zi(jconx2+ima-1)+ino-&
-                                1)
+                                nngl = zi(jconx1-1+zi(jconx2+ima-1)+ino- &
+                                          1)
                                 zr(ilsn-1+ino) = vlsn(nngl)
                                 zr(ilst-1+ino) = lst(nngl)
                                 do j = 1, ndim
-                                    zr(igeom-1+ndim*(ino-1)+j) =&
-                                    vale(3*(nngl-1)+j)
+                                    zr(igeom-1+ndim*(ino-1)+j) = &
+                                        vale(3*(nngl-1)+j)
                                 end do
                             end do
 ! --- BOUCLE SUR LES FACES
                             do ifq = 1, nbf
-                                call intfac(noma, ima, ifq, fa, nno,&
-                                            zr( ilst), zr(ilsn), ndim, 'NON', ibid,&
-                                            ibid, igeom, m, indptf, rbid,&
+                                call intfac(noma, ima, ifq, fa, nno, &
+                                            zr(ilst), zr(ilsn), ndim, 'NON', ibid, &
+                                            ibid, igeom, m, indptf, rbid, &
                                             rbid, codret)
 !
                                 if (codret .eq. 1) then
 !     LONGUEUR CARACTERISTIQUE
                                     do j = 1, ndim
-                                        a(j) = zr(igeom-1+ndim*(fa( ifq,1)-1)+j )
-                                        b(j) = zr(igeom-1+ndim*(fa( ifq,2)-1)+j )
-                                        c(j) = zr(igeom-1+ndim*(fa( ifq,3)-1)+j )
+                                        a(j) = zr(igeom-1+ndim*(fa(ifq, 1)-1)+j)
+                                        b(j) = zr(igeom-1+ndim*(fa(ifq, 2)-1)+j)
+                                        c(j) = zr(igeom-1+ndim*(fa(ifq, 3)-1)+j)
                                     end do
-                                    longar=(padist(ndim,a,b)+padist(&
-                                    ndim,a,c))/2.d0
-                                    if (padist(ndim,m,cmin) .lt. ( longar*1.d-6)) lcont =.false.
-                                endif
+                                    longar = (padist(ndim, a, b)+padist( &
+                                              ndim, a, c))/2.d0
+                                    if (padist(ndim, m, cmin) .lt. (longar*1.d-6)) lcont = .false.
+                                end if
                             end do
                             call jedetr('&&XTYELE.LSN')
                             call jedetr('&&XTYELE.LST')
                             call jedetr('&&XTYELE.IGEOM')
-                        endif
-                    endif
+                        end if
+                    end if
 110                 continue
 !
 ! --- POUR CHAQUE MAILLE DE CE GRP, REMPLIT LA COLONNE KK
@@ -407,18 +405,18 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                     if (lcont) then
                         icont(ifiss) = icont(ifiss)+1
                         zi(jcont(ifiss)-1+icont(ifiss)) = ima
-                    endif
+                    end if
 !
 ! SI MAILLE POUR LA PREMIERE FOIS EN CONTACT
 ! MAIS DEJA VUE AILLEURS
 ! ON ENRICHIT LES GROUPES DES FISSURES POUR LESQUELS
 ! C EST UNE HEAVISIDE
 !
-                    if (lcont .and. zi(jtab-1+5*(ima-1)+kk) .le. 0 .and.&
+                    if (lcont .and. zi(jtab-1+5*(ima-1)+kk) .le. 0 .and. &
                         zi(jtab-1+5*(ima-1)+4) .eq. 0) then
                         if (kk .ne. 1) then
                             call utmess('F', 'XFEM_44', sk=nomail)
-                        endif
+                        end if
                         do ifis = 1, ifiss-1
                             call jeexin(grp(4*(ifis-1)+1), iret)
                             if (iret .ne. 0) then
@@ -427,74 +425,74 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                                     imae = zi(jgrp(4*(ifis-1)+1)-1+j)
                                     if (imae .eq. ima) then
                                         icont(ifis) = icont(ifis)+1
-                                        zi(jcont(ifis)-1+icont(ifis))&
-                                        = ima
+                                        zi(jcont(ifis)-1+icont(ifis)) &
+                                            = ima
                                         goto 188
-                                    endif
+                                    end if
                                 end do
-                            endif
+                            end if
 188                         continue
                         end do
-                    endif
+                    end if
 !
 ! SI MAILLE DEJA EN CONTACT POUR UNE AUTRE FISS
-                    if (.not.lcont .and. zi(jtab-1+5*(ima-1)+kk) .gt. 0) then
+                    if (.not. lcont .and. zi(jtab-1+5*(ima-1)+kk) .gt. 0) then
                         if (kk .ne. 1) then
                             call utmess('F', 'XFEM_44', sk=nomail)
-                        endif
-                        ASSERT(zi(jtab-1+5*(ima-1)+4).eq.0)
+                        end if
+                        ASSERT(zi(jtab-1+5*(ima-1)+4) .eq. 0)
                         icont(ifiss) = icont(ifiss)+1
                         zi(jcont(ifiss)-1+icont(ifiss)) = ima
-                    endif
+                    end if
                     if (zi(jtab-1+5*(ima-1)+4) .eq. 1) then
                         if (lcont) then
-                            if(contac.eq.2) then
+                            if (contac .eq. 2) then
                                 zi(jtab-1+5*(ima-1)+kk) = 2
                             else
                                 zi(jtab-1+5*(ima-1)+kk) = 1
-                            endif
+                            end if
                         else
                             zi(jtab-1+5*(ima-1)+kk) = -1
-                        endif
+                        end if
                         zi(jtab-1+5*(ima-1)+4) = 0
-                    else if (zi(jtab-1+5*(ima-1)+4).eq.0) then
+                    else if (zi(jtab-1+5*(ima-1)+4) .eq. 0) then
 ! --- SI LA MAILLE EST VUE UNE DEUXIEME FOIS (MULTIFISSURATION)
 !
                         call dismoi('EXI_THM', model, 'MODELE', repk=exithm)
-                        if (contac .gt. 1 .and. exithm.eq.'NON') then
+                        if (contac .gt. 1 .and. exithm .eq. 'NON') then
 ! --- SI CONTACT AUTRE QUE P1P1 POUR UN MODELE NON HM-XFEM
                             call utmess('F', 'XFEM_43', sk=nomail)
-                        endif
-                        if (kk .gt. 1 .or. abs(zi(jtab-1+5*(ima-1)+2)) .eq. 1 .or.&
+                        end if
+                        if (kk .gt. 1 .or. abs(zi(jtab-1+5*(ima-1)+2)) .eq. 1 .or. &
                             abs(zi(jtab-1+5*(ima-1)+3)) .eq. 1) then
 ! --- SI UNE DES MAILLES CONTIENT DU CRACK-TIP
                             call utmess('F', 'XFEM_44', sk=nomail)
-                        endif
+                        end if
 !
 ! --- CALCUL DU NOMBRE DE FONCTIONS HEAVISIDE
-                        call xtyhea(nfiss, ifiss, ima, nno, jconx1,&
+                        call xtyhea(nfiss, ifiss, ima, nno, jconx1, &
                                     jconx2, jstnl, jstnv, nbheav)
                         if (nbheav .gt. 4) then
                             call utmess('F', 'XFEM_40', sk=nomail)
-                        endif
+                        end if
                         zi(jnbpt2-1+ima) = nbheav
                         if (zi(jtab-1+5*(ima-1)+1) .gt. 0 .or. lcont) then
 ! --- SI AU MOINS UNE DES 2 FISSURES A DU CONTACT
 ! --- ALORS CONTACT POUR TOUTES LES FISSURES VUES PAR L ELEMENT
-                            if (contac.eq.2) then
-                               zi(jtab-1+5*(ima-1)+kk) = nbheav+4
+                            if (contac .eq. 2) then
+                                zi(jtab-1+5*(ima-1)+kk) = nbheav+4
                             else
-                               zi(jtab-1+5*(ima-1)+kk) = nbheav
-                            endif
+                                zi(jtab-1+5*(ima-1)+kk) = nbheav
+                            end if
                         else
                             zi(jtab-1+5*(ima-1)+kk) = -1*nbheav
-                        endif
+                        end if
                         linter = .true.
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
         call jedetr(clsn)
         call jedetr(clst)
@@ -505,15 +503,15 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
         if (icont(ifiss) .gt. 0) then
             call wkvect(grp(4*(ifiss-1)+4), 'G V I', icont(ifiss), jco2)
             do l = 1, icont(ifiss)
-                zi(jco2-1+l)=zi(jcont(ifiss)-1+l)
+                zi(jco2-1+l) = zi(jcont(ifiss)-1+l)
             end do
-        endif
-        if(ncont.gt.0) call jedetr(maicon(ifiss))
+        end if
+        if (ncont .gt. 0) call jedetr(maicon(ifiss))
         call jedetr(cstn(ifiss))
         do kk = 1, 3
             call jeexin(grp(4*(ifiss-1)+kk), iret)
             if (iret .ne. 0) call jedetr(grp(4*(ifiss-1)+kk))
-        enddo
+        end do
     end do
 !
     call jedetr(cnxinv)

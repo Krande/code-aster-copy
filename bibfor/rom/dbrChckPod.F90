@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrChckPod(operation, paraPod, lReuse, base)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/rs_paraonce.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: operation
-type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
-aster_logical, intent(in) :: lReuse
-type(ROM_DS_Empi), intent(in) :: base
+    character(len=16), intent(in) :: operation
+    type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
+    aster_logical, intent(in) :: lReuse
+    type(ROM_DS_Empi), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,9 +52,9 @@ type(ROM_DS_Empi), intent(in) :: base
 !
     integer :: ifm, niv
     integer, parameter :: nbPara = 4
-    character(len=16), parameter :: paraName(nbPara) = (/&
-        'MODELE  ', 'CHAMPMAT',&
-        'CARAELEM', 'EXCIT   '/)
+    character(len=16), parameter :: paraName(nbPara) = (/ &
+                                    'MODELE  ', 'CHAMPMAT', &
+                                    'CARAELEM', 'EXCIT   '/)
     aster_logical :: lTablFromResu, lTablRequired
     integer :: nbMode, nbSnap
 !
@@ -62,14 +62,14 @@ type(ROM_DS_Empi), intent(in) :: base
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','ROM18_37')
-    endif
+        call utmess('I', 'ROM18_37')
+    end if
 !
 ! - General check
 !
     if (lReuse .and. operation .eq. 'POD') then
-        call utmess('F', 'ROM18_38', sk = operation)
-    endif
+        call utmess('F', 'ROM18_38', sk=operation)
+    end if
 !
 ! - Check if parameters are the same on all storing index
 !
@@ -83,14 +83,14 @@ type(ROM_DS_Empi), intent(in) :: base
         nbMode = base%nbMode
         nbSnap = paraPod%snap%nbSnap
         call romTableChck(paraPod%tablReduCoor, lTablFromResu, nbMode, nbSnap)
-    endif
+    end if
 !
 ! - Check components
 !
     if (paraPod%nbVariToFilter .ne. 0) then
         if (paraPod%fieldName .ne. 'VARI_ELGA') then
             call utmess('F', 'ROM18_38')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

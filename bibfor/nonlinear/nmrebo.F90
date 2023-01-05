@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmrebo(f, mem, sens, rho, rhoopt,&
-                  ldcopt, ldccvg, fopt, fcvg, opt,&
-                  act, rhomin, rhomax, rhoexm, rhoexp,&
+subroutine nmrebo(f, mem, sens, rho, rhoopt, &
+                  ldcopt, ldccvg, fopt, fcvg, opt, &
+                  act, rhomin, rhomax, rhoexm, rhoexp, &
                   stite, echec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -58,9 +58,9 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt,&
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
-    common /zbpar/ rhoneg,rhopos,&
-     &               parmul,fneg  ,fpos  ,&
-     &               dimcpl,nbcpl ,bpos  ,lopti
+    common/zbpar/rhoneg, rhopos,&
+     &               parmul, fneg, fpos,&
+     &               dimcpl, nbcpl, bpos, lopti
 !
     real(kind=8) :: rhonew
 !
@@ -68,7 +68,7 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt,&
 !
     stite = .false.
     echec = .false.
-    call zbiter(sens*rho, sens*f, rhoopt, fopt, mem,&
+    call zbiter(sens*rho, sens*f, rhoopt, fopt, mem, &
                 rhonew, echec)
 !
 ! --- GESTION DES BORNES
@@ -81,12 +81,12 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt,&
     if (lopti) then
         ldcopt = ldccvg
         opt = act
-        act = 3 - act
+        act = 3-act
         if (abs(fopt) .lt. fcvg) then
             stite = .true.
-        endif
-    endif
+        end if
+    end if
 !
-    rho = rhonew * sens
+    rho = rhonew*sens
 !
 end subroutine

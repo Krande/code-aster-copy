@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ subroutine utptme(nomarg, valarg, iret)
 !               !=0 la valeur est invalide
 !
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
     real(kind=8) :: vmumps, vpetsc, rlqmem, vminit, vmjdc
-    common /msolve/ vmumps,vpetsc,rlqmem,vminit,vmjdc
+    common/msolve/vmumps, vpetsc, rlqmem, vminit, vmjdc
 ! ----------------------------------------------------------------------
     iret = 0
     if (nomarg .eq. 'MEM_TOTA') then
@@ -69,6 +69,6 @@ subroutine utptme(nomarg, valarg, iret)
 !
     else
         iret = 1
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
                 xmin = diax(jno)
                 nomnoe = zk8(innoe+jno-1)
                 imin = jno
-            endif
+            end if
         end do
         diax(imin) = diax(ino)
         zk8(innoe+imin-1) = zk8(innoe+ino-1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine rsadpa_zk8_wrap(nomsd, nuordr, modele, typesd)
 !
     integer :: jpara
 ! ----------------------------------------------------------------------
-    call rsadpa(nomsd, 'E', 1, typesd, nuordr,&
+    call rsadpa(nomsd, 'E', 1, typesd, nuordr, &
                 0, sjv=jpara)
-    zk8(jpara)=modele
+    zk8(jpara) = modele
 end subroutine

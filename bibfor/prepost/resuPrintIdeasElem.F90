@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuPrintIdeasElem(fileUnit   , dsName       ,&
-                              title      , storeIndx    ,&
-                              fieldType_ , fieldName_   ,&
-                              cmpUserNb_ , cmpUserName_ ,&
+subroutine resuPrintIdeasElem(fileUnit, dsName, &
+                              title, storeIndx, &
+                              fieldType_, fieldName_, &
+                              cmpUserNb_, cmpUserName_, &
                               cellUserNb_, cellUserNume_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -49,14 +49,14 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/utcmp3.h"
 !
-integer, intent(in) :: fileUnit
-character(len=*), intent(in) :: title, dsName
-integer, intent(in) :: storeIndx
-character(len=*), optional, intent(in) :: fieldName_, fieldType_
-integer, optional, intent(in) :: cmpUserNb_
-character(len=8), optional, pointer :: cmpUserName_(:)
-integer, optional, intent(in) :: cellUserNb_
-integer, optional, pointer :: cellUserNume_(:)
+    integer, intent(in) :: fileUnit
+    character(len=*), intent(in) :: title, dsName
+    integer, intent(in) :: storeIndx
+    character(len=*), optional, intent(in) :: fieldName_, fieldType_
+    integer, optional, intent(in) :: cmpUserNb_
+    character(len=8), optional, pointer :: cmpUserName_(:)
+    integer, optional, intent(in) :: cellUserNb_
+    integer, optional, pointer :: cellUserNume_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,21 +119,21 @@ integer, optional, pointer :: cellUserNume_(:)
     fieldName = ' '
     if (present(fieldName_)) then
         fieldName = fieldName_
-    endif
+    end if
     fieldType = ' '
     if (present(fieldType_)) then
         fieldType = fieldType_
-    endif
+    end if
     cmpUserNb = 0
     if (present(cmpUserNb_)) then
         cmpUserNb = cmpUserNb_
         cmpUserName => cmpUserName_
-    endif
+    end if
     cellUserNb = 0
     if (present(cellUserNb_)) then
         cellUserNb = cellUserNb_
         cellUserNume => cellUserNume_
-    endif
+    end if
 !
 ! - For sub-points => suppress them
 !
@@ -142,21 +142,21 @@ integer, optional, pointer :: cellUserNume_(:)
         call utmess('I', 'RESULT3_97', sk=fieldType)
         call celcel('PAS_DE_SP', fieldType, 'V', '&&IRCHML.CHAMEL2')
         fieldName = '&&IRCHML.CHAMEL2'
-    endif
+    end if
 !
 ! - Access to field
 !
     fieldSupport = ' '
     if (fieldName .ne. ' ') then
         call dismoi('TYPE_CHAMP', fieldName, 'CHAMP', repk=fieldSupport)
-    endif
-    call jeveuo(fieldName//'.CELK', 'L', vk24 = celk)
-    call jeveuo(fieldName//'.CELD', 'L', vi = celd)
+    end if
+    call jeveuo(fieldName//'.CELK', 'L', vk24=celk)
+    call jeveuo(fieldName//'.CELD', 'L', vi=celd)
     call jeveuo(fieldName//'.CELV', 'L', jvVale)
 !
 ! - Physical quantity on field
 !
-    call jelira(fieldName//'.CELV', 'TYPE', cval = type)
+    call jelira(fieldName//'.CELV', 'TYPE', cval=type)
     if (type(1:1) .eq. 'R') then
         fieldScalar = 1
     else if (type(1:1) .eq. 'C') then
@@ -167,28 +167,28 @@ integer, optional, pointer :: cellUserNume_(:)
         fieldScalar = 4
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     quantityIndx = celd(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', quantityIndx), quantityName)
 !
 ! - Access to mesh
 !
-    liliName = celk(1)(1:19)
-    call jeveuo(liliName//'.LGRF', 'L', vk8 = lgrf)
+    liliName = celk(1) (1:19)
+    call jeveuo(liliName//'.LGRF', 'L', vk8=lgrf)
     meshName = lgrf(1)
-    call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi = meshNodeNb)
-    call dismoi('NB_MA_MAILLA', meshName, 'MAILLAGE', repi = meshCellNb)
-    call jeveuo(meshName//'.TYPMAIL', 'L', vi = cellType)
+    call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
+    call dismoi('NB_MA_MAILLA', meshName, 'MAILLAGE', repi=meshCellNb)
+    call jeveuo(meshName//'.TYPMAIL', 'L', vi=cellType)
 !
 ! - Select list of components
 !
-    call resuSelectCmp(quantityIndx,&
-                       cmpUserNb   , cmpUserName,&
-                       cmpCataNb   , cmpCataName,&
-                       cmpListNb   , cmpListIndx)
+    call resuSelectCmp(quantityIndx, &
+                       cmpUserNb, cmpUserName, &
+                       cmpCataNb, cmpCataName, &
+                       cmpListNb, cmpListIndx)
     if (cmpListNb .eq. 0) then
         goto 997
-    endif
+    end if
 !
 ! - Select list of components (fo VARI_R)
 !
@@ -197,25 +197,25 @@ integer, optional, pointer :: cellUserNume_(:)
         if ((quantityName .eq. 'VARI_R') .and. (fieldSupport(1:2) .eq. 'EL')) then
             cmpVariNb = cmpListNb
             call utcmp3(cmpListNb, cmpUserName, cmpVariIndx)
-        endif
-    endif
+        end if
+    end if
     if (cmpListNb .eq. 0 .and. cmpUserNb .ne. 0 .and. cmpVariNb .eq. 0) then
         goto 997
-    endif
+    end if
 !
 ! - Is an IDEAS mesh ?
 !
     lMeshIdeas = ASTER_FALSE
     call jeexin(meshName//'           .TITR', iret)
     if (iret .ne. 0) then
-        call jeveuo(meshName//'           .TITR', 'L', vk80 = meshTitle)
+        call jeveuo(meshName//'           .TITR', 'L', vk80=meshTitle)
         call jelira(meshName//'           .TITR', 'LONMAX', titleLength)
         if (titleLength .ge. 1) then
-            if (meshTitle(1)(10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then
+            if (meshTitle(1) (10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then
                 lMeshIdeas = ASTER_TRUE
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - SuperTab (permutation)
 !
@@ -226,8 +226,8 @@ integer, optional, pointer :: cellUserNume_(:)
 !
 ! - Get parameters of all elements in mesh
 !
-    AS_ALLOCATE(vk8 = cellName, size = meshCellNb)
-    AS_ALLOCATE(vi = cellNbNode, size = meshCellNb)
+    AS_ALLOCATE(vk8=cellName, size=meshCellNb)
+    AS_ALLOCATE(vi=cellNbNode, size=meshCellNb)
     do iCell = 1, meshCellNb
         call jenuno(jexnum(meshName//'.NOMMAI', iCell), cellName(iCell))
         call jelira(jexnum(meshName//'.CONNEX', iCell), 'LONMAX', cellNbNode(iCell))
@@ -235,43 +235,43 @@ integer, optional, pointer :: cellUserNume_(:)
 !
 ! - Access to LIGREL
 !
-    call jeveuo(liliName//'.LIEL', 'L', vi = liel)
+    call jeveuo(liliName//'.LIEL', 'L', vi=liel)
     call jelira(liliName//'.LIEL', 'NUTIOC', grelNb)
-    call jeveuo(jexatr(liliName//'.LIEL', 'LONCUM'), 'L', vi = lielLen)
+    call jeveuo(jexatr(liliName//'.LIEL', 'LONCUM'), 'L', vi=lielLen)
     ASSERT(grelNb .eq. celd(2))
 !
 ! - Print elementary field
 !
     if (fieldScalar .eq. 1) then
-        call ircers(fileUnit    ,liel         , grelNb     , lielLen    , cmpCataNb ,&
-                    zr(jvVale)  , quantityName, cmpCataName, title      , cellName  ,&
-                    fieldSupport, celd        , cellNbNode , permuta    , maxnod    ,&
-                    cellType    , dsName      , fieldType  , storeIndx  , cellUserNb,&
-                    cellUserNume, lMeshIdeas  , cmpVariNb  , cmpVariIndx, cmpListNb ,&
-                    cmpListIndx , cmpUserName)
+        call ircers(fileUnit, liel, grelNb, lielLen, cmpCataNb, &
+                    zr(jvVale), quantityName, cmpCataName, title, cellName, &
+                    fieldSupport, celd, cellNbNode, permuta, maxnod, &
+                    cellType, dsName, fieldType, storeIndx, cellUserNb, &
+                    cellUserNume, lMeshIdeas, cmpVariNb, cmpVariIndx, cmpListNb, &
+                    cmpListIndx, cmpUserName)
     else if (fieldScalar .eq. 2) then
-        call ircecs(fileUnit  , liel       , grelNb     , lielLen   , cmpCataNb   ,&
-                    zc(jvVale), cmpCataName, title      , cellName  , fieldSupport,&
-                    celd      , cellNbNode , permuta    , maxnod    , cellType    ,&
-                    dsName    , fieldType  , storeIndx  , cellUserNb, cellUserNume,&
-                    lMeshIdeas, cmpVariNb  , cmpVariIndx)
+        call ircecs(fileUnit, liel, grelNb, lielLen, cmpCataNb, &
+                    zc(jvVale), cmpCataName, title, cellName, fieldSupport, &
+                    celd, cellNbNode, permuta, maxnod, cellType, &
+                    dsName, fieldType, storeIndx, cellUserNb, cellUserNume, &
+                    lMeshIdeas, cmpVariNb, cmpVariIndx)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     goto 999
 !
 997 continue
 !
-    call utmess('A', 'RESULT3_40', sk = fieldType)
+    call utmess('A', 'RESULT3_40', sk=fieldType)
 !
 999 continue
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vk8 = cellName)
-    AS_DEALLOCATE(vi = cellNbNode)
-    AS_DEALLOCATE(vi  = cmpListIndx)
+    AS_DEALLOCATE(vk8=cellName)
+    AS_DEALLOCATE(vi=cellNbNode)
+    AS_DEALLOCATE(vi=cmpListIndx)
     call jedetr('&&IRADHS.CODEGRA')
     call jedetr('&&IRADHS.CODEPHY')
     call jedetr('&&IRADHS.CODEPHD')

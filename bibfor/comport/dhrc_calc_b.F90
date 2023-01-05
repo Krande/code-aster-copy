@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,24 +58,24 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     integer :: i, k
 !
 !
-    bp1(:,:) = 0.0d0
-    bp2(:,:) = 0.0d0
-    bs1(:,:) = 0.0d0
-    bs2(:,:) = 0.0d0
+    bp1(:, :) = 0.0d0
+    bp2(:, :) = 0.0d0
+    bs1(:, :) = 0.0d0
+    bs2(:, :) = 0.0d0
 !
 ! Termes Bm
 !
     do i = 1, 3
         do k = 1, 2
 !
-            b(i,k,1)=gb(i,k,1)*vint(1)/(ab(i,k,1)+vint(1))
-            b(i,k,2)=gb(i,k,2)*vint(2)/(ab(i,k,2)+vint(2))
+            b(i, k, 1) = gb(i, k, 1)*vint(1)/(ab(i, k, 1)+vint(1))
+            b(i, k, 2) = gb(i, k, 2)*vint(2)/(ab(i, k, 2)+vint(2))
 !
-            bp1(i,k)=ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**2
-            bp2(i,k)=ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**2
+            bp1(i, k) = ab(i, k, 1)*gb(i, k, 1)/(ab(i, k, 1)+vint(1))**2
+            bp2(i, k) = ab(i, k, 2)*gb(i, k, 2)/(ab(i, k, 2)+vint(2))**2
 !
-            bs1(i,k)=-2.d0*ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**3
-            bs2(i,k)=-2.d0*ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**3
+            bs1(i, k) = -2.d0*ab(i, k, 1)*gb(i, k, 1)/(ab(i, k, 1)+vint(1))**3
+            bs2(i, k) = -2.d0*ab(i, k, 2)*gb(i, k, 2)/(ab(i, k, 2)+vint(2))**3
 !
         end do
     end do
@@ -85,14 +85,14 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     do i = 4, 6
         do k = 1, 2
 !
-            b(i,k,1)=gb(i,k,1)*vint(1)/(ab(i,k,1)+vint(1))
-            b(i,k,2)=gb(i,k,2)*vint(2)/(ab(i,k,2)+vint(2))
+            b(i, k, 1) = gb(i, k, 1)*vint(1)/(ab(i, k, 1)+vint(1))
+            b(i, k, 2) = gb(i, k, 2)*vint(2)/(ab(i, k, 2)+vint(2))
 !
-            bp1(i,k)=ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**2
-            bp2(i,k)=ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**2
+            bp1(i, k) = ab(i, k, 1)*gb(i, k, 1)/(ab(i, k, 1)+vint(1))**2
+            bp2(i, k) = ab(i, k, 2)*gb(i, k, 2)/(ab(i, k, 2)+vint(2))**2
 !
-            bs1(i,k)=-2.d0*ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**3
-            bs2(i,k)=-2.d0*ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**3
+            bs1(i, k) = -2.d0*ab(i, k, 1)*gb(i, k, 1)/(ab(i, k, 1)+vint(1))**3
+            bs2(i, k) = -2.d0*ab(i, k, 2)*gb(i, k, 2)/(ab(i, k, 2)+vint(2))**3
 !
         end do
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine angcou(coor, zk1, izk, icoude, zk2,&
-                  rayon, theta, angl1, angl2, angl3,&
-                  pgl1, pgl2, pgl3, omega, dn1n2,&
+subroutine angcou(coor, zk1, izk, icoude, zk2, &
+                  rayon, theta, angl1, angl2, angl3, &
+                  pgl1, pgl2, pgl3, omega, dn1n2, &
                   epsi, crit, zk3)
     implicit none
 #include "asterc/r8pi.h"
@@ -66,13 +66,13 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 !
 !     NOEUD 3 = NOEUD MILIEU
     do i = 1, 3
-        angl1(i)=0.d0
-        angl2(i)=0.d0
-        angl3(i)=0.d0
-        coo1(i)=coor(i)
-        coo2(i)=coor(3+i)
-        coo3(i)=coor(6+i)
-        zkini(i)=zk1(i)
+        angl1(i) = 0.d0
+        angl2(i) = 0.d0
+        angl3(i) = 0.d0
+        coo1(i) = coor(i)
+        coo2(i) = coor(3+i)
+        coo3(i) = coor(6+i)
+        zkini(i) = zk1(i)
     end do
 !
 !     POUR VERIFICATIONS (PAS TRES EXIGEANTES) SUR LA GEOMETRIE
@@ -82,20 +82,20 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
     epsi2 = 1.d-4
     themax = r8pi()/8.d0*(1.d0+epsi2)
 !
-    dn1n2 = sqrt( (coo1(1)-coo2(1) )**2 + ( coo1(2)-coo2(2) )**2 + ( coo1(3)-coo2(3) )**2 )
+    dn1n2 = sqrt((coo1(1)-coo2(1))**2+(coo1(2)-coo2(2))**2+(coo1(3)-coo2(3))**2)
 !
-    t1 = coo3 - coo1
-    t2 = coo2 - coo3
+    t1 = coo3-coo1
+    t2 = coo2-coo3
     call normev(t1, norme1)
     call normev(t2, norme2)
     call provec(t2, t1, zcoud)
     call normev(zcoud, normez)
 !
 !     VERIF QUE LE NOEUD MILIEU EST BIEN LE TROISIEME
-    psca=ddot(3,t2,1,t1,1)
+    psca = ddot(3, t2, 1, t1, 1)
     if (psca .le. 0.d0) then
         call utmess('F', 'ELEMENTS_5')
-    endif
+    end if
 !
 !     EPSI EST CELUI DONNE PAR LE MOT CLE PRECISION
 !
@@ -103,18 +103,18 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 !     CONTRAIREMENT AUX APPARENCES C'EST UN CRITERE RELATIF
 !     PUISQUE T1 ET T2 SONT NORMES
         test = epsi
-    else if (crit.eq.'ABSOLU') then
+    else if (crit .eq. 'ABSOLU') then
         test = epsi/norme1/norme2
-    endif
+    end if
 !
 !     TUYAU DROIT OU COURBE ?
 !
     if (normez .le. test) then
-        icoude=0
+        icoude = 0
         rayon = 0.d0
         theta = 0.d0
         omega = 0.d0
-        x1 = coo2 - coo1
+        x1 = coo2-coo1
 !
 !        ON VEUT UN ZK1 PERPENDICULAIRE A X1
 !        ON PROJETTE ZK1 SUR LE PLAN NORMAL A X1
@@ -129,19 +129,19 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 !
         if (norme1 .le. test) then
             call utmess('F', 'ELEMENTS_6')
-        endif
+        end if
 !
         call provec(a, x1, zk1)
         call normev(zk1, norme2)
         do i = 1, 3
-            zk2(i)=zk1(i)
-            zk3(i)=zk1(i)
+            zk2(i) = zk1(i)
+            zk3(i) = zk1(i)
         end do
         call provec(x1, zk1, y1)
         call angvxy(x1, y1, angl1)
         do i = 1, 3
-            angl2(i)=angl1(i)
-            angl3(i)=angl1(i)
+            angl2(i) = angl1(i)
+            angl3(i) = angl1(i)
         end do
 !
         call matrot(angl1, pgl1)
@@ -149,23 +149,23 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
         call matrot(angl3, pgl3)
 !
     else
-        icoude=1
-        costet=ddot(3,t1,1,t2,1)
-        theta=2.d0*atan2(normez,costet)
+        icoude = 1
+        costet = ddot(3, t1, 1, t2, 1)
+        theta = 2.d0*atan2(normez, costet)
         if (theta .gt. themax) then
             valr(1) = theta
             valr(2) = themax
             call utmess('A', 'ELEMENTS_7', nr=2, valr=valr)
-        endif
+        end if
         rayon = dn1n2/2.d0/normez
 !        CALCUL DES REPERES LOCAUX EN CHAQUE NOEUD
-        x3 = coo2 - coo1
+        x3 = coo2-coo1
         call provec(x3, zcoud, y3)
-        ct2=cos(theta/2.d0)
-        st2=sin(theta/2.d0)
+        ct2 = cos(theta/2.d0)
+        st2 = sin(theta/2.d0)
         do i = 1, 3
-            x1(i)=x3(i)*ct2-y3(i)*st2
-            x2(i)=x3(i)*ct2+y3(i)*st2
+            x1(i) = x3(i)*ct2-y3(i)*st2
+            x2(i) = x3(i)*ct2+y3(i)*st2
         end do
         call provec(x1, zcoud, y1)
         call provec(x2, zcoud, y2)
@@ -183,13 +183,13 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 !
         if (izk .lt. 0) then
             do i = 1, 3
-                axe(i)= zcoud(i)
+                axe(i) = zcoud(i)
             end do
         else
             do i = 1, 3
-                axe(i)= - zcoud(i)
+                axe(i) = -zcoud(i)
             end do
-        endif
+        end if
 !
 !        ON VEUT UN ZK1 PERPENDICULAIRE A X1
 !        ON PROJETTE ZK1 SUR LE PLAN NORMAL A X1
@@ -204,25 +204,25 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
             call normev(a, norme1)
             call provec(a, x2, zk1)
             call normev(zk1, norme2)
-        endif
+        end if
 !
 !        TEST DE NON COLINEARITE
 !
         test = epsi2*dn1n2*norme2
         if (norme1 .le. test) then
             call utmess('F', 'ELEMENTS_6')
-        endif
+        end if
 !
         call provec(axe, zk1, zzk1)
         call provec(axe, zzk1, zzzk1)
-        ct=cos(theta)
-        st=sin(theta)
+        ct = cos(theta)
+        st = sin(theta)
 !
         do i = 1, 3
-            zk2(i)=zk1(i)+st*zzk1(i)+(1.d0-ct)*zzzk1(i)
+            zk2(i) = zk1(i)+st*zzk1(i)+(1.d0-ct)*zzzk1(i)
         end do
         do i = 1, 3
-            zk3(i)=zk1(i)+st2*zzk1(i)+(1.d0-ct2)*zzzk1(i)
+            zk3(i) = zk1(i)+st2*zzk1(i)+(1.d0-ct2)*zzzk1(i)
         end do
         call normev(zk1, norme1)
         call normev(zk2, norme2)
@@ -230,27 +230,27 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 !
 !        OMEGA ANGLE ENTRE Z ET ZK1 ET AUSSI ENTRE Z ET ZK2
 !
-        cosome=ddot(3,zcoud,1,zk1,1)
+        cosome = ddot(3, zcoud, 1, zk1, 1)
         call provec(zk1, zcoud, a)
         if (izk .lt. 0) then
             call normev(x2, nx2)
-            sinome=ddot(3,x2,1,a,1)
+            sinome = ddot(3, x2, 1, a, 1)
         else
             call normev(x1, nx1)
-            sinome=ddot(3,x1,1,a,1)
-        endif
-        omega2=atan2(sinome,cosome)
+            sinome = ddot(3, x1, 1, a, 1)
+        end if
+        omega2 = atan2(sinome, cosome)
 !
-        cosome=ddot(3,zcoud,1,zk2,1)
+        cosome = ddot(3, zcoud, 1, zk2, 1)
         call provec(zk2, zcoud, a)
         if (izk .gt. 0) then
             call normev(x2, nx2)
-            sinome=ddot(3,x2,1,a,1)
+            sinome = ddot(3, x2, 1, a, 1)
         else
             call normev(x1, nx1)
-            sinome=ddot(3,x1,1,a,1)
-        endif
-        omega=atan2(sinome,cosome)
+            sinome = ddot(3, x1, 1, a, 1)
+        end if
+        omega = atan2(sinome, cosome)
 !
         test = 0.d0
         if (crit .eq. 'RELATIF') then
@@ -258,15 +258,15 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
                 test = r8prem()
             else
                 test = epsi2*abs(omega)
-            endif
-        else if (crit.eq.'ABSOLU') then
+            end if
+        else if (crit .eq. 'ABSOLU') then
             test = epsi2
-        endif
+        end if
 !
         if (abs(omega2-omega) .gt. test) then
-            valr(1)=omega
-            valr(2)=omega2
+            valr(1) = omega
+            valr(2) = omega2
             call utmess('F', 'ELEMENTS_1', nr=2, valr=valr)
-        endif
-    endif
+        end if
+    end if
 end subroutine

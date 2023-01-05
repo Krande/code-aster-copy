@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine lccsst(ds_contact, vect_asse_cont)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
@@ -69,9 +69,9 @@ implicit none
     sdcont_stat = ds_contact%sdcont_solv(1:14)//'.STAT'
     sdcont_ddlc = ds_contact%sdcont_solv(1:14)//'.DDLC'
     sdcont_lagc = ds_contact%sdcont_solv(1:14)//'.LAGC'
-    call jeveuo(sdcont_stat, 'L', vi = v_sdcont_stat)
-    call jeveuo(sdcont_ddlc, 'L', vi = v_sdcont_ddlc)
-    call jeveuo(sdcont_lagc, 'E', vr = v_sdcont_lagc)
+    call jeveuo(sdcont_stat, 'L', vi=v_sdcont_stat)
+    call jeveuo(sdcont_ddlc, 'L', vi=v_sdcont_ddlc)
+    call jeveuo(sdcont_lagc, 'E', vr=v_sdcont_lagc)
 !
 ! - Acces to vector
 !
@@ -82,7 +82,7 @@ implicit none
     do i_patch = 1, nt_patch
         indi_cont = v_sdcont_stat(i_patch)
         nume_equa = v_sdcont_ddlc(i_patch)
-        lagc      = v_sdcont_lagc(i_patch)
+        lagc = v_sdcont_lagc(i_patch)
         if (indi_cont .eq. -1) then
             zr(jv_vect_vale-1+nume_equa) = lagc
         end if

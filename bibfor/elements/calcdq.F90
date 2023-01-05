@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcdq(proj, nub, nu, d, pqx,&
+subroutine calcdq(proj, nub, nu, d, pqx, &
                   pqy, pqz, dq)
     implicit none
     integer :: proj, i, ii
@@ -42,37 +42,37 @@ subroutine calcdq(proj, nub, nu, d, pqx,&
     if (proj .eq. 0) then
         do i = 1, 6
             ii = 12*(i-1)
-            dq(ii+1) = d(i,1)*pqx(1)+ d(i,4)*pqy(1) + d(i,5)*pqz(1)
-            dq(ii+2) = d(i,4)*pqx(1)+ d(i,2)*pqy(1) + d(i,6)*pqz(1)
-            dq(ii+3) = d(i,5)*pqx(1)+ d(i,6)*pqy(1) + d(i,3)*pqz(1)
-            dq(ii+4) = d(i,1)*pqx(2)+ d(i,4)*pqy(2) + d(i,5)*pqz(2)
-            dq(ii+5) = d(i,4)*pqx(2)+ d(i,2)*pqy(2) + d(i,6)*pqz(2)
-            dq(ii+6) = d(i,5)*pqx(2)+ d(i,6)*pqy(2) + d(i,3)*pqz(2)
-            dq(ii+7) = d(i,1)*pqx(3)+ d(i,4)*pqy(3) + d(i,5)*pqz(3)
-            dq(ii+8) = d(i,4)*pqx(3)+ d(i,2)*pqy(3) + d(i,6)*pqz(3)
-            dq(ii+9) = d(i,5)*pqx(3)+ d(i,6)*pqy(3) + d(i,3)*pqz(3)
-            dq(ii+10) = d(i,1)*pqx(4)+ d(i,4)*pqy(4) + d(i,5)*pqz(4)
-            dq(ii+11) = d(i,4)*pqx(4)+ d(i,2)*pqy(4) + d(i,6)*pqz(4)
-            dq(ii+12) = d(i,5)*pqx(4)+ d(i,6)*pqy(4) + d(i,3)*pqz(4)
+            dq(ii+1) = d(i, 1)*pqx(1)+d(i, 4)*pqy(1)+d(i, 5)*pqz(1)
+            dq(ii+2) = d(i, 4)*pqx(1)+d(i, 2)*pqy(1)+d(i, 6)*pqz(1)
+            dq(ii+3) = d(i, 5)*pqx(1)+d(i, 6)*pqy(1)+d(i, 3)*pqz(1)
+            dq(ii+4) = d(i, 1)*pqx(2)+d(i, 4)*pqy(2)+d(i, 5)*pqz(2)
+            dq(ii+5) = d(i, 4)*pqx(2)+d(i, 2)*pqy(2)+d(i, 6)*pqz(2)
+            dq(ii+6) = d(i, 5)*pqx(2)+d(i, 6)*pqy(2)+d(i, 3)*pqz(2)
+            dq(ii+7) = d(i, 1)*pqx(3)+d(i, 4)*pqy(3)+d(i, 5)*pqz(3)
+            dq(ii+8) = d(i, 4)*pqx(3)+d(i, 2)*pqy(3)+d(i, 6)*pqz(3)
+            dq(ii+9) = d(i, 5)*pqx(3)+d(i, 6)*pqy(3)+d(i, 3)*pqz(3)
+            dq(ii+10) = d(i, 1)*pqx(4)+d(i, 4)*pqy(4)+d(i, 5)*pqz(4)
+            dq(ii+11) = d(i, 4)*pqx(4)+d(i, 2)*pqy(4)+d(i, 6)*pqz(4)
+            dq(ii+12) = d(i, 5)*pqx(4)+d(i, 6)*pqy(4)+d(i, 3)*pqz(4)
         end do
 !
 !         ADS
 !         ---
-    else if (proj.eq.1) then
+    else if (proj .eq. 1) then
         do i = 1, 6
             ii = 12*(i-1)
-            dx(i) = (2.0d0*d(i,1) -d(i,2) -d(i,3))/3.0d0
-            dy(i) = ( -d(i,1) +2.0d0*d(i,2) -d(i,3))/3.0d0
-            dz(i) = ( -d(i,1) -d(i,2) +2.0d0*d(i,3))/3.0d0
-            dq(ii+1) = dx(i)*pqx(1) + d(i,4)*pqy(1) + d(i,5)*pqz(1)
-            dq(ii+2) = d(i,4)*pqx(1) + dy(i)*pqy(1)
-            dq(ii+3) = d(i,5)*pqx(1) + dz(i)*pqz(1)
-            dq(ii+4) = dx(i)*pqx(2) + d(i,4)*pqy(2)
-            dq(ii+5) = d(i,4)*pqx(2) + dy(i)*pqy(2) + d(i,6)*pqz(2)
-            dq(ii+6) = d(i,6)*pqy(2) + dz(i)*pqz(2)
-            dq(ii+7) = dx(i)*pqx(3) + d(i,5)*pqz(3)
-            dq(ii+8) = dy(i)*pqy(3) + d(i,6)*pqz(3)
-            dq(ii+9) = d(i,5)*pqx(3)+ d(i,6)*pqy(3) + dz(i)*pqz(3)
+            dx(i) = (2.0d0*d(i, 1)-d(i, 2)-d(i, 3))/3.0d0
+            dy(i) = (-d(i, 1)+2.0d0*d(i, 2)-d(i, 3))/3.0d0
+            dz(i) = (-d(i, 1)-d(i, 2)+2.0d0*d(i, 3))/3.0d0
+            dq(ii+1) = dx(i)*pqx(1)+d(i, 4)*pqy(1)+d(i, 5)*pqz(1)
+            dq(ii+2) = d(i, 4)*pqx(1)+dy(i)*pqy(1)
+            dq(ii+3) = d(i, 5)*pqx(1)+dz(i)*pqz(1)
+            dq(ii+4) = dx(i)*pqx(2)+d(i, 4)*pqy(2)
+            dq(ii+5) = d(i, 4)*pqx(2)+dy(i)*pqy(2)+d(i, 6)*pqz(2)
+            dq(ii+6) = d(i, 6)*pqy(2)+dz(i)*pqz(2)
+            dq(ii+7) = dx(i)*pqx(3)+d(i, 5)*pqz(3)
+            dq(ii+8) = dy(i)*pqy(3)+d(i, 6)*pqz(3)
+            dq(ii+9) = d(i, 5)*pqx(3)+d(i, 6)*pqy(3)+dz(i)*pqz(3)
             dq(ii+10) = dx(i)*pqx(4)
             dq(ii+11) = dy(i)*pqy(4)
             dq(ii+12) = dz(i)*pqz(4)
@@ -80,25 +80,25 @@ subroutine calcdq(proj, nub, nu, d, pqx,&
 !
 !         ASBQI
 !         -----
-    else if (proj.eq.2) then
+    else if (proj .eq. 2) then
         do i = 1, 6
             ii = 12*(i-1)
-            dx(i) = d(i,1) -nu*d(i,2) -nu*d(i,3)
-            dy(i) = -nu*d(i,1) +d(i,2) -nu*d(i,3)
-            dz(i) = -nu*d(i,1) -nu*d(i,2) +d(i,3)
-            dq(ii+1) = dx(i)*pqx(1) + d(i,4)*pqy(1) + d(i,5)*pqz(1)
-            dq(ii+2) = d(i,4)*pqx(1) + (d(i,2)-d(i,3)*nub)*pqy(1)
-            dq(ii+3) = d(i,5)*pqx(1) + (d(i,3)-d(i,2)*nub)*pqz(1)
-            dq(ii+4) = (d(i,1)-d(i,3)*nub)*pqx(2) + d(i,4)*pqy(2)
-            dq(ii+5) = d(i,4)*pqx(2) + dy(i)*pqy(2) + d(i,6)*pqz(2)
-            dq(ii+6) = d(i,6)*pqy(2) + (d(i,3)-d(i,1)*nub)*pqz(2)
-            dq(ii+7) = (d(i,1)-d(i,2)*nub)*pqx(3) + d(i,5)*pqz(3)
-            dq(ii+8) = (d(i,2)-d(i,1)*nub)*pqy(3) + d(i,6)*pqz(3)
-            dq(ii+9) = d(i,5)*pqx(3)+ d(i,6)*pqy(3) + dz(i)*pqz(3)
+            dx(i) = d(i, 1)-nu*d(i, 2)-nu*d(i, 3)
+            dy(i) = -nu*d(i, 1)+d(i, 2)-nu*d(i, 3)
+            dz(i) = -nu*d(i, 1)-nu*d(i, 2)+d(i, 3)
+            dq(ii+1) = dx(i)*pqx(1)+d(i, 4)*pqy(1)+d(i, 5)*pqz(1)
+            dq(ii+2) = d(i, 4)*pqx(1)+(d(i, 2)-d(i, 3)*nub)*pqy(1)
+            dq(ii+3) = d(i, 5)*pqx(1)+(d(i, 3)-d(i, 2)*nub)*pqz(1)
+            dq(ii+4) = (d(i, 1)-d(i, 3)*nub)*pqx(2)+d(i, 4)*pqy(2)
+            dq(ii+5) = d(i, 4)*pqx(2)+dy(i)*pqy(2)+d(i, 6)*pqz(2)
+            dq(ii+6) = d(i, 6)*pqy(2)+(d(i, 3)-d(i, 1)*nub)*pqz(2)
+            dq(ii+7) = (d(i, 1)-d(i, 2)*nub)*pqx(3)+d(i, 5)*pqz(3)
+            dq(ii+8) = (d(i, 2)-d(i, 1)*nub)*pqy(3)+d(i, 6)*pqz(3)
+            dq(ii+9) = d(i, 5)*pqx(3)+d(i, 6)*pqy(3)+dz(i)*pqz(3)
             dq(ii+10) = dx(i)*pqx(4)
             dq(ii+11) = dy(i)*pqy(4)
             dq(ii+12) = dz(i)*pqz(4)
         end do
 !
-    endif
+    end if
 end subroutine

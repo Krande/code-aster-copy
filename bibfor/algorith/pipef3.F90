@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
-                  wref, vff, dfde, mate, geom,&
-                  vim, ddepl, deplm, ddepl0, ddepl1,&
+subroutine pipef3(ndim, nno, nddl, npg, lgpg, &
+                  wref, vff, dfde, mate, geom, &
+                  vim, ddepl, deplm, ddepl0, ddepl1, &
                   dtau, typmod, compor, copilo)
 !
 !
@@ -57,9 +57,9 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
 ! DEPLACEMENT U(ETA) = UP + ETA * UD
 !
     call dcopy(nddl, deplm, 1, up, 1)
-    call daxpy(nddl, 1.d0, ddepl, 1, up,&
+    call daxpy(nddl, 1.d0, ddepl, 1, up, &
                1)
-    call daxpy(nddl, 1.d0, ddepl0, 1, up,&
+    call daxpy(nddl, 1.d0, ddepl0, 1, up, &
                1)
     call dcopy(nddl, ddepl1, 1, ud, 1)
 !
@@ -68,32 +68,32 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
     do kpg = 1, npg
 !
 !      SAUT AU POINT DE GAUSS : SU(ETA) = SUP + ETA * SUD
-        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg),&
+        call nmfici(nno, nddl, wref(kpg), vff(1, kpg), dfde(1, 1, kpg), &
                     geom, poids, b)
 !
         do i = 1, 3
             sup(i) = 0.d0
             sud(i) = 0.d0
             do j = 1, nddl
-                sup(i) = sup(i) + b(i,j)*up(j)
-                sud(i) = sud(i) + b(i,j)*ud(j)
+                sup(i) = sup(i)+b(i, j)*up(j)
+                sud(i) = sud(i)+b(i, j)*ud(j)
             end do
         end do
 !
 !      INITIALISATION DES COEFFICIENTS DE PILOTAGE
         call r8inir(4, 0.d0, copilo(1, kpg), 1)
-        copilo(5,kpg) = r8vide()
+        copilo(5, kpg) = r8vide()
 !
 !      APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE A LA LOI DE COMPORTEMENT
         if ((compor .eq. 'CZM_LIN_REG') .or. (compor .eq. 'CZM_EXP_REG')) then
-            call pipeba(3, mate, sup, sud, vim(1, kpg),&
+            call pipeba(3, mate, sup, sud, vim(1, kpg), &
                         dtau, copilo(1, kpg))
         else if (compor .eq. 'CZM_TURON') then
-            call pipetu(3, mate, sup, sud, vim(1, kpg),&
+            call pipetu(3, mate, sup, sud, vim(1, kpg), &
                         dtau, copilo(1, kpg))
         else
             call utmess('F', 'MECANONLINE_59')
-        endif
+        end if
 !
     end do
 !

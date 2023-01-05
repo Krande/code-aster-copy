@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine capesa(load, mesh, valeType, nbOcc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,9 +31,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nocart.h"
 !
-character(len=8), intent(in) :: load, mesh
-character(len=4), intent(in) :: valeType
-integer, intent(in) :: nbOcc
+    character(len=8), intent(in) :: load, mesh
+    character(len=4), intent(in) :: valeType
+    integer, intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,8 +69,8 @@ integer, intent(in) :: nbOcc
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load , mesh     , valeType,&
-                        nbMap      , map        , nbCmp)
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
+                        nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', vr=valv)
 !
@@ -81,14 +81,14 @@ integer, intent(in) :: nbOcc
 ! ----- Get values of load
         call getvr8('PESANTEUR', 'GRAVITE', iocc=iocc, scal=pesa(1), nbret=npesa)
         call getvr8('PESANTEUR', 'DIRECTION', iocc=iocc, nbval=3, vect=pes, nbret=npesa)
-        norme=sqrt( pes(1)*pes(1)+pes(2)*pes(2)+pes(3)*pes(3) )
+        norme = sqrt(pes(1)*pes(1)+pes(2)*pes(2)+pes(3)*pes(3))
         if (norme .gt. r8miem()) then
-            pesa(2)=pes(1)/norme
-            pesa(3)=pes(2)/norme
-            pesa(4)=pes(3)/norme
+            pesa(2) = pes(1)/norme
+            pesa(3) = pes(2)/norme
+            pesa(4) = pes(3)/norme
         else
             call utmess('F', 'CHARGES2_53')
-        endif
+        end if
         valv(1:4) = pesa(1:4)
 
 ! ----- Read mesh and affect
@@ -97,9 +97,9 @@ integer, intent(in) :: nbOcc
             call nocart(map(1), 1, nbCmp(1))
         else
             call jeveuo(listCell, 'L', jvCell)
-            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell,&
+            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell, &
                         limanu=zi(jvCell))
-        endif
+        end if
 
     end do
 end subroutine

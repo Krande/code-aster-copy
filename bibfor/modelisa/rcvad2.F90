@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
-                  phenom, nbres, nomres, valres, devres,&
+subroutine rcvad2(fami, kpg, ksp, poum, jmat, &
+                  phenom, nbres, nomres, valres, devres, &
                   icodre)
     implicit none
 !
@@ -58,14 +58,14 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    parameter  ( lmat = 9 , lfct = 10 )
+    parameter(lmat=9, lfct=10)
 ! DEB ------------------------------------------------------------------
 !
 !
     phen = phenom
-    nbmat=zi(jmat)
+    nbmat = zi(jmat)
 !     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
-    ASSERT(nbmat.eq.1)
+    ASSERT(nbmat .eq. 1)
     imat = jmat+zi(jmat+nbmat+1)
 !
     do ires = 1, nbres
@@ -73,10 +73,10 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
     end do
 !
     do icomp = 1, zi(imat+1)
-        if (phen .eq. zk32(zi(imat)+icomp-1)(1:10)) then
+        if (phen .eq. zk32(zi(imat)+icomp-1) (1:10)) then
             ipi = zi(imat+2+icomp-1)
             goto 888
-        endif
+        end if
     end do
     call utmess('F', 'ELEMENTS2_63')
     goto 999
@@ -92,24 +92,24 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
                 valres(ires) = zr(ivalr-1+ir)
                 devres(ires) = 0.d0
                 icodre(ires) = 0
-                nbobj = nbobj + 1
-            endif
+                nbobj = nbobj+1
+            end if
         end do
     end do
 !
     if (nbobj .ne. nbres) then
         idf = zi(ipi)+zi(ipi+1)
         nbf = zi(ipi+2)
-        call rcvarc(' ', 'TEMP', poum, fami, kpg,&
+        call rcvarc(' ', 'TEMP', poum, fami, kpg, &
                     ksp, temp, iret)
         if (iret .eq. 0) then
             do ires = 1, nbres
                 do ik = 1, nbf
                     if (nomres(ires) .eq. zk16(ivalk+idf+ik-1)) then
                         ifon = ipi+lmat-1+lfct*(ik-1)
-                        call rcfode(ifon, temp, valres(ires), devres( ires))
+                        call rcfode(ifon, temp, valres(ires), devres(ires))
                         icodre(ires) = 0
-                    endif
+                    end if
                 end do
             end do
         else
@@ -117,13 +117,13 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
                 do ik = 1, nbf
                     if (nomres(ires) .eq. zk16(ivalk+idf+ik-1)) then
                         ifon = ipi+lmat-1+lfct*(ik-1)
-                        call rcfode(ifon, 0.d0, valres(ires), devres( ires))
+                        call rcfode(ifon, 0.d0, valres(ires), devres(ires))
                         icodre(ires) = 0
-                    endif
+                    end if
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 ! FIN ------------------------------------------------------------------

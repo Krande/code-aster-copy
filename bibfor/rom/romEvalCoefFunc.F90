@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romEvalCoefFunc(ds_evalcoef, ds_multicoef, i_coef_list)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -54,36 +54,36 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cste      = ds_multicoef%l_cste
-    l_func      = ds_multicoef%l_func
-    func_name   = ds_multicoef%func_name
-    l_cplx      = ds_multicoef%l_cplx
-    l_real      = ds_multicoef%l_real
+    l_cste = ds_multicoef%l_cste
+    l_func = ds_multicoef%l_func
+    func_name = ds_multicoef%func_name
+    l_cplx = ds_multicoef%l_cplx
+    l_real = ds_multicoef%l_real
 !
 ! - Evaluate function
 !
     if (l_func) then
         if (l_real) then
-            call fointe('F', func_name,&
-                        ds_evalcoef%nb_para,&
-                        ds_evalcoef%para_name,&
-                        ds_evalcoef%para_vale,&
+            call fointe('F', func_name, &
+                        ds_evalcoef%nb_para, &
+                        ds_evalcoef%para_name, &
+                        ds_evalcoef%para_vale, &
                         real_real, iret)
             ds_multicoef%coef_real(i_coef_list) = real_real
         elseif (l_cplx) then
-            call fointc('F', func_name,&
-                        ds_evalcoef%nb_para,&
-                        ds_evalcoef%para_name,&
-                        ds_evalcoef%para_vale,&
+            call fointc('F', func_name, &
+                        ds_evalcoef%nb_para, &
+                        ds_evalcoef%para_name, &
+                        ds_evalcoef%para_vale, &
                         cplx_real, cplx_imag, iret)
             ds_multicoef%coef_cplx(i_coef_list) = dcmplx(cplx_real, cplx_imag)
         else
             ASSERT(.false.)
-        endif
+        end if
     elseif (l_cste) then
 ! - Already done at initialization
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

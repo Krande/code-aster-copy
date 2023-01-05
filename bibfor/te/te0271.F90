@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine te0271(option, nomte)
 !-----------------------------------------------------------------------
     integer :: jgano, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -50,17 +50,17 @@ subroutine te0271(option, nomte)
 !
     do kp = 1, npg
         k = (kp-1)*nno
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
 !
         r = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
         end do
         poids = poids*r
         do i = 1, nno
-            li = ivf + k + i - 1
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(li)*zr(iflu)
+            li = ivf+k+i-1
+            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*zr(iflu)
         end do
     end do
 end subroutine

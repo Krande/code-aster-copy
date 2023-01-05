@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gdmrig(kp, nno, ajacob, pjacob, en,&
-                  enprim, x0pg, rot0, rotk, granc,&
+subroutine gdmrig(kp, nno, ajacob, pjacob, en, &
+                  enprim, x0pg, rot0, rotk, granc, &
                   pn, pm, rigi)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE LA
@@ -67,55 +67,55 @@ subroutine gdmrig(kp, nno, ajacob, pjacob, en,&
 !
     do j = 1, 6
         do i = 1, 6
-            pi(i,j) = zero
-            cpit(i,j) = zero
+            pi(i, j) = zero
+            cpit(i, j) = zero
         end do
     end do
 !
-    call promat(rotk, 3, 3, 3, rot0,&
+    call promat(rotk, 3, 3, 3, rot0, &
                 3, 3, 3, rotabs)
 !
     do j = 1, 3
         do i = 1, 3
-            pi(i,j) = rotabs(i,j)
-            pi(3+i,3+j) = pi(i,j)
-            cpit(i,j) = granc(i) * rotabs(j,i)
-            cpit(3+i,3+j) = granc(3+i) * rotabs(j,i)
+            pi(i, j) = rotabs(i, j)
+            pi(3+i, 3+j) = pi(i, j)
+            cpit(i, j) = granc(i)*rotabs(j, i)
+            cpit(3+i, 3+j) = granc(3+i)*rotabs(j, i)
         end do
     end do
 !
-    call promat(pi, 6, 6, 6, cpit,&
+    call promat(pi, 6, 6, 6, cpit, &
                 6, 6, 6, picpit)
 !
     call gdmd(x0pg, pn, pm, d)
 !
     do ne = 1, nno
-        call gdmb(ne, kp, ajacob, en, enprim,&
+        call gdmb(ne, kp, ajacob, en, enprim, &
                   x0pg, bi)
         call stokma(bi, 6, 6, ne, stokaj)
-        call gdmups(ne, kp, ajacob, en, enprim,&
+        call gdmups(ne, kp, ajacob, en, enprim, &
                     upsi)
         call stokma(upsi, 9, 6, nno+ne, stokaj)
     end do
     do j = 1, nno
         call extrma(stokaj, 6, 6, j, bj)
-        call promat(picpit, 6, 6, 6, bj,&
+        call promat(picpit, 6, 6, 6, bj, &
                     6, 6, 6, picpbj)
         call extrma(stokaj, 9, 6, nno+j, upsj)
-        call promat(d, 9, 9, 9, upsj,&
+        call promat(d, 9, 9, 9, upsj, &
                     9, 9, 6, dupsj)
         do i = 1, nno
             call extrma(stokaj, 6, 6, i, bi)
-            call transp(bi, 6, 6, 6, bit,&
+            call transp(bi, 6, 6, 6, bit, &
                         6)
-            call promat(bit, 6, 6, 6, picpbj,&
+            call promat(bit, 6, 6, 6, picpbj, &
                         6, 6, 6, bibj)
             call cumuma(i, j, bibj, pjacob, rigi)
 !
             call extrma(stokaj, 9, 6, nno+i, upsi)
-            call transp(upsi, 9, 9, 6, upsit,&
+            call transp(upsi, 9, 9, 6, upsit, &
                         6)
-            call promat(upsit, 6, 6, 9, dupsj,&
+            call promat(upsit, 6, 6, 9, dupsj, &
                         9, 9, 6, upiupj)
             call cumuma(i, j, upiupj, pjacob, rigi)
 !*** FIN DE I

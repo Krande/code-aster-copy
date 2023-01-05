@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine bussetta_algorithm(dist_cont_curr, dist_cont_prev,dist_max, coef_bussetta)
+subroutine bussetta_algorithm(dist_cont_curr, dist_cont_prev, dist_max, coef_bussetta)
 
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -46,35 +46,33 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 
-
     if (dist_cont_prev*dist_cont_curr .lt. 0.0) then
-       if (dist_cont_prev .gt. dist_max) then
-           if (abs(dist_cont_curr) .gt. 0.0d0 .and. &
-               abs(dist_cont_curr-dist_cont_prev) .gt. 0) &
-               coef_bussetta = abs((coef_bussetta*dist_cont_prev)/dist_cont_curr*&
-                                   (abs(dist_cont_curr)+dist_max)/(dist_cont_curr-dist_cont_prev))
-       else
+        if (dist_cont_prev .gt. dist_max) then
+            if (abs(dist_cont_curr) .gt. 0.0d0 .and. &
+                abs(dist_cont_curr-dist_cont_prev) .gt. 0) &
+                coef_bussetta = abs((coef_bussetta*dist_cont_prev)/dist_cont_curr* &
+                                    (abs(dist_cont_curr)+dist_max)/(dist_cont_curr-dist_cont_prev))
+        else
             if (abs(dist_cont_curr) .gt. 0) &
                 coef_bussetta = abs((coef_bussetta*dist_cont_prev)/(10*dist_cont_curr))
-       endif
+        end if
 
     elseif (dist_cont_curr .gt. dist_max) then
         if (abs(dist_cont_curr-dist_cont_prev) .gt. &
-            max(dist_cont_curr/10,dist_cont_prev/10,5*dist_max)) then
+            max(dist_cont_curr/10, dist_cont_prev/10, 5*dist_max)) then
             coef_bussetta = 2*coef_bussetta
-        elseif  (abs(dist_cont_curr) .lt. 10*dist_max) then
-            coef_bussetta = coef_bussetta*(sqrt(abs(dist_cont_curr)/dist_max -1.0)+1)**2
+        elseif (abs(dist_cont_curr) .lt. 10*dist_max) then
+            coef_bussetta = coef_bussetta*(sqrt(abs(dist_cont_curr)/dist_max-1.0)+1)**2
         elseif (abs(dist_cont_curr) .gt. (abs(dist_cont_prev)+0.01*abs(dist_cont_curr))) then
             coef_bussetta = 2.0*coef_bussetta*(dist_cont_prev/dist_cont_curr)
         else
-            coef_bussetta = coef_bussetta*(sqrt(abs(dist_cont_curr)/dist_max -1.0)+1)
-        endif
+            coef_bussetta = coef_bussetta*(sqrt(abs(dist_cont_curr)/dist_max-1.0)+1)
+        end if
 
-    endif
+    end if
 
-    if ( coef_bussetta .gt. 1.d16*dist_max ) then
+    if (coef_bussetta .gt. 1.d16*dist_max) then
         coef_bussetta = 1.d16*dist_max
-    endif
-
+    end if
 
 end subroutine

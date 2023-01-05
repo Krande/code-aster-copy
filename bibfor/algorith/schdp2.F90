@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function schdp2(seq, i1e, phi, alpha, c,&
+function schdp2(seq, i1e, phi, alpha, c, &
                 pult, pmoins)
 !
-    implicit      none
+    implicit none
     real(kind=8) :: seq, i1e, phi, alpha, c, pult, pmoins, schdp2
 ! --- BUT : CALCUL DU CRITERE PLASTIQUE --------------------------------
 ! ======================================================================
@@ -27,19 +27,19 @@ function schdp2(seq, i1e, phi, alpha, c,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
-    parameter       ( six    =  6.0d0  )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
 ! ======================================================================
-    gamarp = sqrt ( trois / deux ) * pult
-    gamapm = sqrt ( trois / deux ) * pmoins
+    gamarp = sqrt(trois/deux)*pult
+    gamapm = sqrt(trois/deux)*pmoins
     if (pmoins .lt. pult) then
-        schdp2 = seq + deux*sin(phi)*i1e/(trois-sin(phi)) - six*c*cos( phi)/(trois-sin(phi)) * (u&
-                 &n-(un-alpha)*gamapm/gamarp) * (un-(un-alpha)*gamapm/gamarp)
+        schdp2 = seq+deux*sin(phi)*i1e/(trois-sin(phi))-six*c*cos(phi)/(trois-sin(phi))*(u&
+                 &n-(un-alpha)*gamapm/gamarp)*(un-(un-alpha)*gamapm/gamarp)
     else
-        schdp2 = seq + deux*sin(phi)*i1e/(trois-sin(phi)) - six*c*cos( phi)/(trois-sin(phi)) * al&
-                 &pha * alpha
-    endif
+        schdp2 = seq+deux*sin(phi)*i1e/(trois-sin(phi))-six*c*cos(phi)/(trois-sin(phi))*al&
+                 &pha*alpha
+    end if
 ! ======================================================================
 end function

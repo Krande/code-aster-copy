@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine rcevsn(csigm, cinst, csno, csne, lsymm)
 !
     integer :: ncmp, jsigm, jinst, nbinst, nbordr, jsno, jsne, ind, i1, i2, icmp
     integer :: l1, l2, l3
-    parameter  ( ncmp = 6 )
+    parameter(ncmp=6)
     real(kind=8) :: sn1o(ncmp), sn1e(ncmp), sn2o(ncmp), sn2e(ncmp), sn12o(ncmp)
     real(kind=8) :: sn12e(ncmp), tresca
 ! DEB ------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine rcevsn(csigm, cinst, csno, csne, lsymm)
     call jeveuo(cinst, 'L', jinst)
     call jelira(cinst, 'LONMAX', nbinst)
 !
-    nbordr = (nbinst*(nbinst+1)) / 2
+    nbordr = (nbinst*(nbinst+1))/2
     call wkvect(csno, 'V V R', nbordr, jsno)
     call wkvect(csne, 'V V R', nbordr, jsne)
     ind = 0
@@ -53,19 +53,19 @@ subroutine rcevsn(csigm, cinst, csno, csne, lsymm)
 !
         do icmp = 1, ncmp
             if (lsymm) then
-                l1 = ncmp*(i1-1) + icmp
-                l2 = ncmp*nbinst + ncmp*(i1-1) + icmp
-                l3 = 2*ncmp*nbinst + ncmp*(i1-1) + icmp
+                l1 = ncmp*(i1-1)+icmp
+                l2 = ncmp*nbinst+ncmp*(i1-1)+icmp
+                l3 = 2*ncmp*nbinst+ncmp*(i1-1)+icmp
                 sn1o(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)
                 sn1e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l3)
             else
-                l1 = ncmp*(i1-1) + icmp
-                l2 = ncmp*nbinst + ncmp*(i1-1) + icmp
-                sn1o(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2)
-                sn1e(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2)
-            endif
+                l1 = ncmp*(i1-1)+icmp
+                l2 = ncmp*nbinst+ncmp*(i1-1)+icmp
+                sn1o(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l2)
+                sn1e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)
+            end if
         end do
-        ind = ind + 1
+        ind = ind+1
         zr(jsno+ind-1) = 0.d0
         zr(jsne+ind-1) = 0.d0
 !
@@ -73,25 +73,25 @@ subroutine rcevsn(csigm, cinst, csno, csne, lsymm)
 !
             do icmp = 1, ncmp
                 if (lsymm) then
-                    l1 = ncmp*(i2-1) + icmp
-                    l2 = ncmp*nbinst + ncmp*(i2-1) + icmp
-                    l3 = 2*ncmp*nbinst + ncmp*(i2-1) + icmp
+                    l1 = ncmp*(i2-1)+icmp
+                    l2 = ncmp*nbinst+ncmp*(i2-1)+icmp
+                    l3 = 2*ncmp*nbinst+ncmp*(i2-1)+icmp
                     sn2o(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)
                     sn2e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l3)
                 else
-                    l1 = ncmp*(i2-1) + icmp
-                    l2 = ncmp*nbinst + ncmp*(i2-1) + icmp
-                    sn2o(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2)
-                    sn2e(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2)
-                endif
+                    l1 = ncmp*(i2-1)+icmp
+                    l2 = ncmp*nbinst+ncmp*(i2-1)+icmp
+                    sn2o(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l2)
+                    sn2e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)
+                end if
             end do
-            ind = ind + 1
+            ind = ind+1
 ! ======================================================================
 ! ---       COMBINAISON DES CONTRAINTES AUX 2 INSTANTS TEMP1 ET TEMP2 :
 ! ======================================================================
             do icmp = 1, ncmp
-                sn12o(icmp) = sn1o(icmp) - sn2o(icmp)
-                sn12e(icmp) = sn1e(icmp) - sn2e(icmp)
+                sn12o(icmp) = sn1o(icmp)-sn2o(icmp)
+                sn12e(icmp) = sn1e(icmp)-sn2e(icmp)
             end do
 ! ======================================================================
 ! ---       CALCUL DES VALEURS PROPRES DE LA DIFFERENCE DES TENSEURS

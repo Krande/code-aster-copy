@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=6)
+    parameter(nbout=1, nbin=6)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -91,7 +91,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 ! --- INITIALISATIONS
 !
     call ndynkk(sddyna, 'CHONDP', chondp)
-    nchond = ndynin(sddyna,'NBRE_ONDE_PLANE')
+    nchond = ndynin(sddyna, 'NBRE_ONDE_PLANE')
     vecele = vecelz
     ligrmo = modele(1:8)//'.MODELE'
     call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
@@ -102,18 +102,18 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
     call jeveuo(chondp, 'L', iondp)
 !
 ! --- CREATION D'UNE CARTE D'INSTANTS
 !
-    call mecact('V', chinst, 'MODELE', ligrmo, 'INST_R',&
+    call mecact('V', chinst, 'MODELE', ligrmo, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=temps)
 !
 ! --- CREATION CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT
 !
     chvarc = '&&CHME.ONDPL.CHVARC'
-    call vrcins(modele, mate, ' ', temps, chvarc,&
+    call vrcins(modele, mate, ' ', temps, chvarc, &
                 codret)
 !
 ! --- CHAMPS D'ENTREE
@@ -135,7 +135,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     lchout(1) = vecele(1:8)//'.???????'
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare('V', vecele, modele(1:8), ' ', ' ',&
+    call memare('V', vecele, modele(1:8), ' ', ' ', &
                 'CHAR_MECA')
 !
 ! -- CALCUL
@@ -150,18 +150,18 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
             call gcncon('.', newnom)
             lchout(1) (10:16) = newnom(2:8)
 !
-            call calcul('S', option, ligrmo, nbin, lchin,&
-                        lpain, nbout, lchout, lpaout, 'V',&
+            call calcul('S', option, ligrmo, nbin, lchin, &
+                        lpain, nbout, lchout, lpaout, 'V', &
                         'OUI')
-            call corich('E', lchout(1), ichin_ = -1)
+            call corich('E', lchout(1), ichin_=-1)
 !
             if (debug) then
-                call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+                call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                             nbout, lpaout, lchout)
-            endif
+            end if
 !
             call reajre(vecele, lchout(1), 'V')
-        endif
+        end if
     end do
 !
     call detrsd('CHAMP_GD', chvarc)

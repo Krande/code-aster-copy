@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romMatrixProdMode(nb_matr  , l_matr_name, l_matr_type, matr_mode_curr,&
+subroutine romMatrixProdMode(nb_matr, l_matr_name, l_matr_type, matr_mode_curr, &
                              prod_matr_mode, i_mode, mode_type, vc_mode, vr_mode)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -28,14 +28,14 @@ implicit none
 #include "asterfort/mrmult.h"
 #include "asterfort/jeveuo.h"
 !
-integer, intent(in) :: nb_matr, i_mode
-character(len=8), intent(in) :: l_matr_name(:)
-character(len=8), intent(in) :: l_matr_type(:)
-character(len=24), intent(in) :: matr_mode_curr(:)
-character(len=24), intent(in) :: prod_matr_mode(:)
-character(len=1), intent(in) :: mode_type
-complex(kind=8), pointer, optional :: vc_mode(:)
-real(kind=8), pointer, optional :: vr_mode(:)
+    integer, intent(in) :: nb_matr, i_mode
+    character(len=8), intent(in) :: l_matr_name(:)
+    character(len=8), intent(in) :: l_matr_type(:)
+    character(len=24), intent(in) :: matr_mode_curr(:)
+    character(len=24), intent(in) :: prod_matr_mode(:)
+    character(len=1), intent(in) :: mode_type
+    complex(kind=8), pointer, optional :: vc_mode(:)
+    real(kind=8), pointer, optional :: vr_mode(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,45 +65,45 @@ real(kind=8), pointer, optional :: vr_mode(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call dismoi('NB_EQUA' , l_matr_name(1), 'MATR_ASSE', repi = nb_equa)
+    call dismoi('NB_EQUA', l_matr_name(1), 'MATR_ASSE', repi=nb_equa)
 
     do i_matr = 1, nb_matr
-        matr      = l_matr_name(i_matr)
-        matr_type = l_matr_type(i_matr)(1:1)
+        matr = l_matr_name(i_matr)
+        matr_type = l_matr_type(i_matr) (1:1)
         call jeveuo(matr(1:8)//'           .&INT', 'L', jv_desc_matr)
         if (matr_type .eq. 'C') then
             if (mode_type .eq. 'C') then
-                call jeveuo(matr_mode_curr(i_matr)(1:19)//'.VALE', 'L', &
-                            vc = vc_matr_mode_c)
+                call jeveuo(matr_mode_curr(i_matr) (1:19)//'.VALE', 'L', &
+                            vc=vc_matr_mode_c)
                 call mcmult('ZERO', jv_desc_matr, vc_mode, vc_matr_mode_c, 1, .true._1)
-                call jeveuo(prod_matr_mode(i_matr), 'E', vc = vc_matr_mode)
+                call jeveuo(prod_matr_mode(i_matr), 'E', vc=vc_matr_mode)
                 do i_equa = 1, nb_equa
-                   vc_matr_mode((i_mode-1)*nb_equa+i_equa) = vc_matr_mode_c(i_equa)
+                    vc_matr_mode((i_mode-1)*nb_equa+i_equa) = vc_matr_mode_c(i_equa)
                 end do
             else
                 ASSERT(.false.)
-            endif
+            end if
         elseif (matr_type .eq. 'R') then
             if (mode_type .eq. 'C') then
-                call jeveuo(matr_mode_curr(i_matr)(1:19)//'.VALE', 'L',&
-                            vc = vc_matr_mode_c)
+                call jeveuo(matr_mode_curr(i_matr) (1:19)//'.VALE', 'L', &
+                            vc=vc_matr_mode_c)
                 call mcmult('ZERO', jv_desc_matr, vc_mode, vc_matr_mode_c, 1, .true._1)
-                call jeveuo(prod_matr_mode(i_matr), 'E', vc = vc_matr_mode)
+                call jeveuo(prod_matr_mode(i_matr), 'E', vc=vc_matr_mode)
                 do i_equa = 1, nb_equa
-                   vc_matr_mode((i_mode-1)*nb_equa+i_equa) = vc_matr_mode_c(i_equa)
+                    vc_matr_mode((i_mode-1)*nb_equa+i_equa) = vc_matr_mode_c(i_equa)
                 end do
             elseif (mode_type .eq. 'R') then
-                call jeveuo(matr_mode_curr(i_matr)(1:19)//'.VALE', 'L',&
-                            vr = vr_matr_mode_c)
+                call jeveuo(matr_mode_curr(i_matr) (1:19)//'.VALE', 'L', &
+                            vr=vr_matr_mode_c)
                 call mrmult('ZERO', jv_desc_matr, vr_mode, vr_matr_mode_c, 1, .true._1)
-                call jeveuo(prod_matr_mode(i_matr), 'E', vr = vr_matr_mode)
+                call jeveuo(prod_matr_mode(i_matr), 'E', vr=vr_matr_mode)
                 do i_equa = 1, nb_equa
-                   vr_matr_mode((i_mode-1)*nb_equa+i_equa) = vr_matr_mode_c(i_equa)
+                    vr_matr_mode((i_mode-1)*nb_equa+i_equa) = vr_matr_mode_c(i_equa)
                 end do
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 end subroutine

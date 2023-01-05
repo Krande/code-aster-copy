@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxacmv(model      , mate     , mateco   , cara_elem, list_load, nume_dof   ,&
-                  solver     , l_stat   , time     , tpsthe   , temp_iter  ,&
-                  vhydr      , varc_curr, dry_prev , dry_curr , cn2mbr_stat,&
-                  cn2mbr_tran, matass   , maprec   , cndiri   , cncine     ,&
-                  mediri     , compor   , ds_algorom_)
+subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
+                  solver, l_stat, time, tpsthe, temp_iter, &
+                  vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
+                  cn2mbr_tran, matass, maprec, cndiri, cncine, &
+                  mediri, compor, ds_algorom_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -52,29 +52,29 @@ implicit none
 #include "asterfort/vetnth_nonl.h"
 #include "asterfort/vrcins.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: mate, mateco
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: solver
-character(len=24), intent(in) :: time
-character(len=19), intent(in) :: varc_curr
-aster_logical, intent(in) :: l_stat
-real(kind=8), intent(in) :: tpsthe(6)
-character(len=24), intent(in) :: temp_iter
-character(len=24), intent(in) :: vhydr
-character(len=24), intent(in) :: dry_prev
-character(len=24), intent(in) :: dry_curr
-character(len=24), intent(in) :: cn2mbr_stat
-character(len=24), intent(in) :: cn2mbr_tran
-character(len=24), intent(in) :: matass
-character(len=19), intent(in) :: maprec
-character(len=24), intent(in) :: cndiri
-character(len=24), intent(out) :: cncine
-character(len=24), intent(in) :: mediri
-character(len=24), intent(in) :: compor
-type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate, mateco
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: solver
+    character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr
+    aster_logical, intent(in) :: l_stat
+    real(kind=8), intent(in) :: tpsthe(6)
+    character(len=24), intent(in) :: temp_iter
+    character(len=24), intent(in) :: vhydr
+    character(len=24), intent(in) :: dry_prev
+    character(len=24), intent(in) :: dry_curr
+    character(len=24), intent(in) :: cn2mbr_stat
+    character(len=24), intent(in) :: cn2mbr_tran
+    character(len=24), intent(in) :: matass
+    character(len=19), intent(in) :: maprec
+    character(len=24), intent(in) :: cndiri
+    character(len=24), intent(out) :: cncine
+    character(len=24), intent(in) :: mediri
+    character(len=24), intent(in) :: compor
+    type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,9 +95,9 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     integer :: jtn, i_vect
     character(len=2) :: codret
     real(kind=8) :: time_curr
-    character(len=8), parameter :: nomcmp(6) = (/'INST    ','DELTAT  ',&
-                                                 'THETA   ','KHI     ',&
-                                                 'R       ','RHO     '/)
+    character(len=8), parameter :: nomcmp(6) = (/'INST    ', 'DELTAT  ', &
+                                                 'THETA   ', 'KHI     ', &
+                                                 'R       ', 'RHO     '/)
     character(len=24) :: ligrmo
     character(len=24) :: vadiri, vachtp, vatntp, vatnti, vachtn
     character(len=24), parameter  :: merigi = '&&METRIG           .RELR'
@@ -128,90 +128,90 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     vect_coef(:) = 0.d0
     vect_name(:) = ' '
     matr_name(:) = ' '
-    cntntp       = ' '
-    cnchtp       = ' '
-    cnchnl       = ' '
-    cntnti       = ' '
-    ligrmo       = model(1:8)//'.MODELE'
-    vediri       = '&&VEDIRI           .RELR'
-    vechtp       = '&&VECHTP           .RELR'
-    vadiri       = '&&NTACMV.VADIRI'
-    vachtp       = '&&NTACMV.VACHTP'
-    vatntp       = '&&NTACMV.VATNTP'
-    vatnti       = '&&NTACMV.VATNTI'
-    vachtn       = '&&NTACMV.VACHTN'
-    time_curr    = tpsthe(1)
-    lload_name   = list_load(1:19)//'.LCHA'
-    lload_info   = list_load(1:19)//'.INFC'
-    lload_func   = list_load(1:19)//'.FCHA'
+    cntntp = ' '
+    cnchtp = ' '
+    cnchnl = ' '
+    cntnti = ' '
+    ligrmo = model(1:8)//'.MODELE'
+    vediri = '&&VEDIRI           .RELR'
+    vechtp = '&&VECHTP           .RELR'
+    vadiri = '&&NTACMV.VADIRI'
+    vachtp = '&&NTACMV.VACHTP'
+    vatntp = '&&NTACMV.VATNTP'
+    vatnti = '&&NTACMV.VATNTI'
+    vachtn = '&&NTACMV.VACHTN'
+    time_curr = tpsthe(1)
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
+    lload_func = list_load(1:19)//'.FCHA'
 !
 ! - Construct command variables fields
 !
-    call vrcins(model , mate, cara_elem, tpsthe(1), varc_curr,&
+    call vrcins(model, mate, cara_elem, tpsthe(1), varc_curr, &
                 codret)
 !
 ! - Update <CARTE> for time
 !
-    call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
+    call mecact('V', time, 'MODELE', ligrmo, 'INST_R', &
                 ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_THER)
 !
     call vedith(model, lload_name, lload_info, time, vediri)
     call asasve(vediri, nume_dof, 'R', vadiri)
-    call ascova('D', vadiri, lload_func, 'INST', tpsthe(1),&
+    call ascova('D', vadiri, lload_func, 'INST', tpsthe(1), &
                 'R', cndiri)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_CINE)
 !
     cncine = ' '
-    call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsthe(1),&
+    call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsthe(1), &
                 cncine)
 !
 ! - Compute CHAR_THER_EVOLNI
 !
-    if (.not.l_stat) then
-        call vetnth_nonl(model    , cara_elem, mate, mateco, time , compor,&
-                         temp_iter, varc_curr,&
-                         vetntp   , vetnti   , 'V',&
-                         dry_prev , dry_curr , vhydr)
+    if (.not. l_stat) then
+        call vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
+                         temp_iter, varc_curr, &
+                         vetntp, vetnti, 'V', &
+                         dry_prev, dry_curr, vhydr)
         call asasve(vetnti, nume_dof, 'R', vatnti)
         call jeveuo(vatnti, 'L', jtn)
         cntnti = zk24(jtn)
         call asasve(vetntp, nume_dof, 'R', vatntp)
         call jeveuo(vatntp, 'L', jtn)
         cntntp = zk24(jtn)
-    endif
+    end if
 !
 ! - Compute Neumann loads (second member) - Linear part
 !
-    call vechth('STAT', model    , lload_name, lload_info, cara_elem,&
-                mate, mateco     , time_curr, time      , temp_iter , vechtp   ,&
-                varc_curr_ = varc_curr)
+    call vechth('STAT', model, lload_name, lload_info, cara_elem, &
+                mate, mateco, time_curr, time, temp_iter, vechtp, &
+                varc_curr_=varc_curr)
     call asasve(vechtp, nume_dof, 'R', vachtp)
-    call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
+    call ascova('D', vachtp, lload_func, 'INST', tpsthe(1), &
                 'R', cnchtp)
     if (l_stat) then
         call jedetr(vechtp)
-    endif
+    end if
 !
 ! - Compute Neumann loads (second member) - Nonlinear part
 !
-    call vechnl(model    , lload_name, lload_info, time,&
-                temp_iter, vechtn    , 'V')
+    call vechnl(model, lload_name, lload_info, time, &
+                temp_iter, vechtn, 'V')
     call asasve(vechtn, nume_dof, 'R', vachtn)
-    call ascova('D', vachtn, ' ', 'INST', tpsthe(1),&
+    call ascova('D', vachtn, ' ', 'INST', tpsthe(1), &
                 'R', cnchnl)
     if (l_stat) then
         call jedetr(vechtn)
-    endif
+    end if
 !
 ! - Compute second members
 !
     call vtzero(cn2mbr_stat)
     call vtzero(cn2mbr_tran)
     if (l_stat) then
-        nb_vect      = 2
+        nb_vect = 2
         vect_coef(1) = 1.d0
         vect_coef(2) = 1.d0
         vect_name(1) = cnchtp(1:19)
@@ -220,7 +220,7 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
             call vtaxpy(vect_coef(i_vect), vect_name(i_vect), cn2mbr_stat)
         end do
     else
-        nb_vect      = 3
+        nb_vect = 3
         vect_coef(1) = 1.d0
         vect_coef(2) = 1.d0
         vect_coef(3) = 1.d0
@@ -236,39 +236,39 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
         do i_vect = 1, nb_vect
             call vtaxpy(vect_coef(i_vect), vect_name(i_vect), cn2mbr_tran)
         end do
-    endif
+    end if
 !
 ! - Tangent matrix (non-linear) - Volumic and surfacic terms
 !
-    call merxth(model    , lload_name, lload_info, cara_elem, mate     , mateco, &
-                time_curr, time      , temp_iter , compor   , varc_curr,&
-                merigi   , 'V',&
-                dry_prev , dry_curr)
+    call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
+                time_curr, time, temp_iter, compor, varc_curr, &
+                merigi, 'V', &
+                dry_prev, dry_curr)
     nb_matr = 0
     call jeexin(merigi(1:8)//'           .RELR', iret)
     if (iret .gt. 0) then
-        call jeveuo(merigi(1:8)//'           .RELR', 'L', vk24 = v_resu_elem)
+        call jeveuo(merigi(1:8)//'           .RELR', 'L', vk24=v_resu_elem)
         if (v_resu_elem(1) .ne. ' ') then
-            nb_matr = nb_matr + 1
+            nb_matr = nb_matr+1
             matr_name(nb_matr) = merigi(1:19)
-        endif
-    endif
+        end if
+    end if
     call jeexin(mediri(1:8)//'           .RELR', iret)
     if (iret .gt. 0) then
-        call jeveuo(mediri(1:8)//'           .RELR', 'L', vk24 = v_resu_elem)
+        call jeveuo(mediri(1:8)//'           .RELR', 'L', vk24=v_resu_elem)
         if (v_resu_elem(1) .ne. ' ') then
-            nb_matr = nb_matr + 1
+            nb_matr = nb_matr+1
             matr_name(nb_matr) = mediri(1:19)
-        endif
-    endif
+        end if
+    end if
     call jeexin(memass(1:8)//'           .RELR', iret)
     if (iret .gt. 0) then
-        call jeveuo(memass(1:8)//'           .RELR', 'L', vk24 = v_resu_elem)
+        call jeveuo(memass(1:8)//'           .RELR', 'L', vk24=v_resu_elem)
         if (v_resu_elem(1) .ne. ' ') then
-            nb_matr = nb_matr + 1
+            nb_matr = nb_matr+1
             matr_name(nb_matr) = memass(1:19)
-        endif
-    endif
+        end if
+    end if
     call asmatr(nb_matr, matr_name, ' ', nume_dof, &
                 lload_info, 'ZERO', 'V', 1, matass)
 !
@@ -278,13 +278,13 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
         if (ds_algorom_%l_rom) then
             call mtdscr(matass)
         else
-            call preres(solver, 'V', ierr, maprec, matass,&
-                    ibid, -9999)
-        endif
+            call preres(solver, 'V', ierr, maprec, matass, &
+                        ibid, -9999)
+        end if
     else
-        call preres(solver, 'V', ierr, maprec, matass,&
+        call preres(solver, 'V', ierr, maprec, matass, &
                     ibid, -9999)
-    endif
+    end if
 !
     call jedema()
 end subroutine

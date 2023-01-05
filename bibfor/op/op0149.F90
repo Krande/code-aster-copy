@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,13 +65,13 @@ subroutine op0149()
     nbnuo1 = abs(nbnuo1)
     if (nbnuo1 .ne. 0) then
         call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=na1)
-        nbamo1 = abs( na1 )
+        nbamo1 = abs(na1)
         if (nbamo1 .ne. 0) then
             if (nbamo1 .ne. nbnuo1) then
                 call utmess('F', 'ALGORITH9_57')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 !     ---RECUPERATION DU NIVEAU D'IMPRESSION---
@@ -97,25 +97,25 @@ subroutine op0149()
         lnuor = .true.
         call wkvect('&&OP0149.TEMP.NUO1', 'V V I', nbnuo1, inuo1)
         call getvis(' ', 'NUME_ORDRE', nbval=nbnuo1, vect=zi(inuo1), nbret=ibid)
-    endif
+    end if
 !
     lamor = .false.
     lamoru = .false.
     call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=na1)
-    nbamo1 = abs( na1 )
+    nbamo1 = abs(na1)
     if (nbamo1 .ne. 0) then
         lamor = .true.
         call wkvect('&&OP0149.TEMP.AMO1', 'V V R', nbamo1, iamo1)
         if (na1 .ne. 0) then
             call getvr8(' ', 'AMOR_REDUIT', nbval=nbamo1, vect=zr(iamo1), nbret=ibid)
-        endif
+        end if
     else
         call getvr8(' ', 'AMOR_UNIF', nbval=0, nbret=nbamun)
         if (nbamun .ne. 0) then
             lamoru = .true.
             call getvr8(' ', 'AMOR_UNIF', scal=amorun, nbret=ibid)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !-----2.VERIFICATIONS A L'EXECUTION
@@ -128,13 +128,13 @@ subroutine op0149()
     modefl = zk8(ireffl+1)
     if (basemo .ne. modefl) then
         call utmess('F', 'ALGORITH9_58')
-    endif
+    end if
 !
 !-----2.2.ERREUR FATALE SI NUME_VITE_FLUI INVALIDE
 !
     vite = basefl//'.VITE'
     call jelira(vite, 'LONUTI', nbvite)
-    ASSERT(numvit.gt.0 .and. numvit.le.nbvite)
+    ASSERT(numvit .gt. 0 .and. numvit .le. nbvite)
 !
 !-----2.3.ERREUR FATALE SI TOUS LES MODES NON COUPLES SONT RETENUS
 !         (MOT-CLE <NUME_ORDRE> NON UTILISE) ET NOMBRE D'ARGUMENTS
@@ -149,10 +149,10 @@ subroutine op0149()
     call jelira(numo, 'LONUTI', nbmfl)
     call jeveuo(numo, 'L', inumo)
 !
-    nbmod2 = nbmode - nbmfl
-    if (.not.lnuor .and. lamor .and. nbamo1 .ne. nbmod2) then
+    nbmod2 = nbmode-nbmfl
+    if (.not. lnuor .and. lamor .and. nbamo1 .ne. nbmod2) then
         call utmess('F', 'ALGORITH9_60')
-    endif
+    end if
 !
 !
 !-----3.CONSTITUTION DE LA LISTE DES NUMEROS D'ORDRE DES MODES RETENUS
@@ -188,23 +188,23 @@ subroutine op0149()
                     if (zi(inumo+j-1) .eq. numode) then
                         nocopl = .false.
                         goto 12
-                    endif
+                    end if
                 end do
- 12             continue
+12              continue
                 do k = 1, nbmode
-                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
+                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k), &
                                 0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.
                         goto 14
-                    endif
+                    end if
                 end do
- 14             continue
+14              continue
                 if (nocopl .and. numok) then
-                    nbnuo2 = nbnuo2 + 1
+                    nbnuo2 = nbnuo2+1
                     zi(inuo2+nbnuo2-1) = numode
                     if (lamor) zr(iamo2+nbnuo2-1) = zr(iamo1+i-1)
-                endif
+                end if
             end do
 !
 !---------CONSTITUTION DES LISTES
@@ -212,7 +212,7 @@ subroutine op0149()
             if (nbnuo2 .eq. 0) then
                 call utmess('F', 'ALGORITH9_61')
             else
-                nbnuor = nbnuo2 + nbmfl
+                nbnuor = nbnuo2+nbmfl
                 call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
                 do i = 1, nbnuo2
@@ -221,7 +221,7 @@ subroutine op0149()
                         zr(iamor+i-1) = zr(iamo2+i-1)
                     else if (lamoru) then
                         zr(iamor+i-1) = amorun
-                    endif
+                    end if
                 end do
                 do i = nbnuo2+1, nbnuor
                     zi(inuor+i-1) = zi(inumo+i-nbnuo2-1)
@@ -233,7 +233,7 @@ subroutine op0149()
                         if (zi(inuor+j-1) .lt. nuomin) then
                             nuomin = zi(inuor+j-1)
                             imin = j
-                        endif
+                        end if
                     end do
                     zi(inuor+imin-1) = zi(inuor+i-1)
                     zi(inuor+i-1) = nuomin
@@ -241,9 +241,9 @@ subroutine op0149()
                         rtamp = zr(iamor+imin-1)
                         zr(iamor+imin-1) = zr(iamor+i-1)
                         zr(iamor+i-1) = rtamp
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
 !-------3.1.2.SINON
 !
@@ -256,7 +256,7 @@ subroutine op0149()
                 call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
                 do i = 1, nbnuor
-                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
+                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i), &
                                 0, sjv=jpara, styp=kbid)
                     zi(inuor+i-1) = zi(jpara)
                 end do
@@ -268,17 +268,17 @@ subroutine op0149()
                         if (zi(inumo+j-1) .eq. numode) then
                             nocopl = .false.
                             goto 33
-                        endif
+                        end if
                     end do
- 33                 continue
+33                  continue
                     if (nocopl) then
                         if (lamor) then
-                            idec = idec + 1
+                            idec = idec+1
                             zr(iamor+i-1) = zr(iamo1+idec-1)
                         else if (lamoru) then
                             zr(iamor+i-1) = amorun
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
 !
 !---------SINON, SEULS LES MODES COUPLES SONT RETENUS
@@ -290,9 +290,9 @@ subroutine op0149()
                 do i = 1, nbmfl
                     zi(inuor+i-1) = zi(inumo+i-1)
                 end do
-            endif
+            end if
 !
-        endif
+        end if
 !
 !-----3.2.SINON (ON MODIFIE LE CONCEPT D'ENTREE DE TYPE MODE_MECA)
 !         => TOUS LES MODES SONT RETENUS
@@ -303,11 +303,11 @@ subroutine op0149()
         call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
         call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
         do i = 1, nbnuor
-            call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
+            call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i), &
                         0, sjv=jpara, styp=kbid)
             zi(inuor+i-1) = zi(jpara)
         end do
-        if ((lnuor.and.lamor) .or. (lnuor.and.lamoru)) then
+        if ((lnuor .and. lamor) .or. (lnuor .and. lamoru)) then
             do i = 1, nbnuo1
                 nocopl = .true.
                 numok = .false.
@@ -316,22 +316,22 @@ subroutine op0149()
                     if (zi(inumo+j-1) .eq. numode) then
                         nocopl = .false.
                         goto 53
-                    endif
+                    end if
                 end do
- 53             continue
+53              continue
                 do k = 1, nbmode
-                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
+                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k), &
                                 0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.
                         goto 55
-                    endif
+                    end if
                 end do
- 55             continue
+55              continue
                 if (nocopl .and. numok) then
                     if (lamor) zr(iamor+numode-1) = zr(iamo1+i-1)
                     if (lamoru) zr(iamor+numode-1) = amorun
-                endif
+                end if
             end do
         else if (lamor .or. lamoru) then
             idec = 0
@@ -342,21 +342,21 @@ subroutine op0149()
                     if (zi(inumo+j-1) .eq. numode) then
                         nocopl = .false.
                         goto 58
-                    endif
+                    end if
                 end do
- 58             continue
+58              continue
                 if (nocopl) then
                     if (lamor) then
-                        idec = idec + 1
+                        idec = idec+1
                         zr(iamor+i-1) = zr(iamo1+idec-1)
                     else if (lamoru) then
                         zr(iamor+i-1) = amorun
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 !-----4.RECUPERATION DU TYPE DE LA CONFIGURATION ETUDIEE
@@ -370,14 +370,14 @@ subroutine op0149()
         fsvi = typflu//'           .FSVI'
         call jeveuo(fsvi, 'L', ifsvi)
         imasse = zi(ifsvi)
-    endif
+    end if
 !
 !
 !-----5.RECONSTRUCTION OU MODIFICATION DE LA BASE MODALE EN FONCTION
 !       DU TYPE DE LA CONFIGURATION ETUDIEE
 !
-    call modiba(nomres, basemo, basefl, numvit, newres,&
-                itypfl, imasse, zi(inuor), nbnuor, zi(inumo),&
+    call modiba(nomres, basemo, basefl, numvit, newres, &
+                itypfl, imasse, zi(inuor), nbnuor, zi(inumo), &
                 nbmfl)
 !
     call jedema()

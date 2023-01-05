@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
+subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
                   cxma, itetra, xbar, immer)
     implicit none
 !  DESCRIPTION : DETERMINATION DES RELATIONS CINEMATIQUES ENTRE LES DDLS
@@ -119,34 +119,34 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     nnomax = 27
-    nbtmax = 1 + nnomax
+    nbtmax = 1+nnomax
     AS_ALLOCATE(vr=coemur, size=nbtmax)
     AS_ALLOCATE(vk8=nomddl, size=nbtmax)
     AS_ALLOCATE(vk8=nomnoe, size=nbtmax)
     AS_ALLOCATE(vi=dimens, size=nbtmax)
     AS_ALLOCATE(vr=direct, size=3*nbtmax)
 !
-    notlin = (nbcnx.gt.8)
+    notlin = (nbcnx .gt. 8)
     if (notlin) then
         if (nbcnx .eq. 10) then
             nbsom = 4
-        else if (nbcnx.eq.13) then
+        else if (nbcnx .eq. 13) then
             nbsom = 5
-        else if (nbcnx.eq.15) then
+        else if (nbcnx .eq. 15) then
             nbsom = 6
         else
             nbsom = 8
-        endif
+        end if
     else
         nbsom = nbcnx
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   DETERMINATION DE L'ANTECEDENT DU NOEUD DU CABLE DANS L'ELEMENT DE
 !     REFERENCE ASSOCIE A L'ELEMENT REEL
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    if (immer .ne. 2) call ante3d(nbsom, itetra, xbar(1), ksi1, ksi2,&
+    if (immer .ne. 2) call ante3d(nbsom, itetra, xbar(1), ksi1, ksi2, &
                                   ksi3)
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,7 +182,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 ! ---
     else
 !
-        nbterm = 1 + nbcnx
+        nbterm = 1+nbcnx
         do icnx = 1, nbcnx
             call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(icnx+1))
             nomddl(icnx+1) = 'DEPL'
@@ -191,29 +191,29 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
             x(3) = ksi3
             if (nbcnx .eq. 4) then
                 call elrfvf('TE4', x, ff)
-            else if (nbcnx.eq.10) then
+            else if (nbcnx .eq. 10) then
                 call elrfvf('T10', x, ff)
-            else if (nbcnx.eq.5) then
+            else if (nbcnx .eq. 5) then
                 call elrfvf('PY5', x, ff)
-            else if (nbcnx.eq.13) then
+            else if (nbcnx .eq. 13) then
                 call elrfvf('P13', x, ff)
-            else if (nbcnx.eq.6) then
+            else if (nbcnx .eq. 6) then
                 call elrfvf('PE6', x, ff)
-            else if (nbcnx.eq.15) then
+            else if (nbcnx .eq. 15) then
                 call elrfvf('P15', x, ff)
-            else if (nbcnx.eq.8) then
+            else if (nbcnx .eq. 8) then
                 call elrfvf('HE8', x, ff)
-            else if (nbcnx.eq.20) then
+            else if (nbcnx .eq. 20) then
                 call elrfvf('H20', x, ff)
-            else if (nbcnx.eq.27) then
+            else if (nbcnx .eq. 27) then
                 call elrfvf('H27', x, ff)
-            endif
+            end if
             ffel3d = ff(icnx)
             coemur(icnx+1) = -ffel3d
 !            ZR(JCMUR+ICNX) = -FFEL3D(NBCNX,ICNX,KSI1,KSI2,KSI3)
         end do
 !
-    endif
+    end if
 !
 ! 3.4 UNE RELATION PAR DDL DE TRANSLATION DU NOEUD DU CABLE
 ! ---
@@ -229,42 +229,42 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !.... PUIS AFFECTATION
 !
     do iterm = 1, nbterm
-        direct(1+3* (iterm-1)) = 1.0d0
-        direct(1+3* (iterm-1)+1) = 0.0d0
-        direct(1+3* (iterm-1)+2) = 0.0d0
+        direct(1+3*(iterm-1)) = 1.0d0
+        direct(1+3*(iterm-1)+1) = 0.0d0
+        direct(1+3*(iterm-1)+2) = 0.0d0
     end do
 !
-    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                direct, nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens, &
+                direct, nbterm, zero, cbid, k8b, &
                 'REEL', 'REEL', 0.d0, lirela)
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
 !.... PUIS AFFECTATION
 !
     do iterm = 1, nbterm
-        direct(1+3* (iterm-1)) = 0.0d0
-        direct(1+3* (iterm-1)+1) = 1.0d0
-        direct(1+3* (iterm-1)+2) = 0.0d0
+        direct(1+3*(iterm-1)) = 0.0d0
+        direct(1+3*(iterm-1)+1) = 1.0d0
+        direct(1+3*(iterm-1)+2) = 0.0d0
     end do
 !
-    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                direct, nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens, &
+                direct, nbterm, zero, cbid, k8b, &
                 'REEL', 'REEL', 0.d0, lirela)
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
 !.... PUIS AFFECTATION
 !
     do iterm = 1, nbterm
-        direct(1+3* (iterm-1)) = 0.0d0
-        direct(1+3* (iterm-1)+1) = 0.0d0
-        direct(1+3* (iterm-1)+2) = 1.0d0
+        direct(1+3*(iterm-1)) = 0.0d0
+        direct(1+3*(iterm-1)+1) = 0.0d0
+        direct(1+3*(iterm-1)+2) = 1.0d0
     end do
 !
-    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                direct, nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens, &
+                direct, nbterm, zero, cbid, k8b, &
                 'REEL', 'REEL', 0.d0, lirela)
 !
- 60 continue
+60  continue
 !
 ! --- MENAGE
     AS_DEALLOCATE(vr=coemur)

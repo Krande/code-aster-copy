@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,13 +64,13 @@ subroutine ddlphy(depplu, neq, vect, desc)
     call jemarq()
 !
     do iaux = 1, 200
-        exclus(iaux)=' '
+        exclus(iaux) = ' '
     end do
     call wkvect('VECTMP', 'V V R', neq, ivect2)
     do iaux = 1, neq
-        zr(ivect2-1+iaux)=vect(iaux)
-        vect(iaux)=0.d0
-        desc(iaux)=' '
+        zr(ivect2-1+iaux) = vect(iaux)
+        vect(iaux) = 0.d0
+        desc(iaux) = ' '
     end do
     call dismoi('NOM_GD', depplu, 'CHAM_NO', repk=nomgd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
@@ -81,31 +81,31 @@ subroutine ddlphy(depplu, neq, vect, desc)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('NOM_MAILLA', depplu, 'CHAM_NO', repk=noma)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
-    nbexcl=0
+    nbexcl = 0
 !
     do iaux = 1, nbnot
 !       DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD
-        jdg = jprno - 1 + (iaux-1)*(2+nec) + 1 + 2
+        jdg = jprno-1+(iaux-1)*(2+nec)+1+2
 !       INDIRECTION VERS LE .NUEQ
-        inueq = zi(jprno - 1 + (iaux-1)*(2+nec) + 1)
+        inueq = zi(jprno-1+(iaux-1)*(2+nec)+1)
 !       POSITIONS DES DDL PHYSIQUES DANS LE DG
         do jaux = 1, ncmpmx
-            pos = iposdg(zi(jdg),jaux)
+            pos = iposdg(zi(jdg), jaux)
             if (pos .ne. 0) then
 !           A EXCLURE OU CONSERVER
-                garder=.true.
+                garder = .true.
                 do kaux = 1, nbexcl
                     if (exclus(kaux) .eq. zk8(jnocmp-1+jaux)) then
-                        garder=.false.
-                    endif
+                        garder = .false.
+                    end if
                 end do
 !           ADRESSE DU DDL DANS LE .VALE
-                ival = nueq(inueq - 1 + pos)
+                ival = nueq(inueq-1+pos)
                 desc(ival) = zk8(jnocmp-1+jaux)
                 if (garder) then
                     vect(ival) = zr(ivect2-1+ival)
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !

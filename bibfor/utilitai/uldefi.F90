@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
+subroutine uldefi(unit, ficnom, ddnom, typf, acces, &
                   autor)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -60,13 +60,13 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
 !     ------------------------------------------------------------------
 !
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     character(len=255) :: namell
     character(len=16) :: name16
@@ -92,13 +92,13 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
 !       --- INSERTION DEMANDEE ---
         if (k1typ .ne. 'A' .and. k1typ .ne. 'B' .and. k1typ .ne. 'L') then
             call utmess('F', 'UTILITAI5_4', sk=k1typ)
-        endif
+        end if
         if (k1acc .ne. 'O' .and. k1acc .ne. 'N' .and. k1acc .ne. 'A') then
             call utmess('F', 'UTILITAI5_5', sk=k1acc)
-        endif
+        end if
         if (k1aut .ne. 'O' .and. k1aut .ne. 'N') then
             call utmess('F', 'UTILITAI5_6', sk=k1aut)
-        endif
+        end if
         if (k1typ .eq. 'A') then
 !
 ! --- SI LE FICHIER EST DE TYPE ASCII, ON FAIT UN ULOPEN
@@ -112,35 +112,35 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
 !     LE TYPE "LIBRE"
                     if (k1typ .eq. 'L') then
                         unitfi(ifile) = unit
-                        ilibre=ifile
-                        else if ( unitfi(ifile) .ne. unit .and. unitfi(&
-                    ifile).gt.0 ) then
-                        write(k8b,'(I4)') unit
+                        ilibre = ifile
+                    else if (unitfi(ifile) .ne. unit .and. unitfi( &
+                             ifile) .gt. 0) then
+                        write (k8b, '(I4)') unit
                         call utmess('F', 'UTILITAI5_7', sk=k8b)
-                    endif
+                    end if
                     goto 21
-                    else if (ddname(ifile) .eq. ' ' .and. namefi(ifile)&
-                .eq. ' ' ) then
+                else if (ddname(ifile) .eq. ' ' .and. namefi(ifile) &
+                         .eq. ' ') then
 !           --- RECHERCHE DE LA DERNIERE PLACE LIBRE ---
                     ilibre = ifile
-                endif
+                end if
             end do
             if (ilibre .eq. 0) then
-                nbfile = nbfile + 1
+                nbfile = nbfile+1
                 if (nbfile .gt. mxf) then
-                    write(k8b,'(I4)') mxf
+                    write (k8b, '(I4)') mxf
                     call utmess('F', 'UTILITAI5_8', sk=k8b)
-                endif
+                end if
                 ilibre = nbfile
-            endif
+            end if
 !
- 21         continue
+21          continue
             if (ficnom(1:1) .eq. ' ') then
                 call codent(unit, 'G', k8b)
                 namell = 'fort.'//k8b
             else
                 namell = ficnom
-            endif
+            end if
 !
             namefi(ilibre) = namell
             ddname(ilibre) = name16
@@ -149,9 +149,9 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
             accefi(ilibre) = k1acc
             etatfi(ilibre) = 'O'
             modifi(ilibre) = k1aut
-        endif
+        end if
 !
 ! ----
-    endif
+    end if
 !
 end subroutine

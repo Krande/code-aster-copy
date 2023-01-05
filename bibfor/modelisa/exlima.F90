@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
     modele = modelz
     if (modele .eq. ' ') then
         call utmess('F', 'UTILITAI8_10')
-    endif
+    end if
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
@@ -69,16 +69,16 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 !     --  SI ON DOIT TOUT PRENDRE , LIGREL = LIGRMO
 !     ------------------------------------------------------
     if (motfac .ne. ' ') then
-        if (getexm(motfac,'TOUT') .eq. 1) then
+        if (getexm(motfac, 'TOUT') .eq. 1) then
             call getvtx(motfac, 'TOUT', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) goto 9998
-        endif
+        end if
     else
-        if (getexm(' ','TOUT') .eq. 1) then
+        if (getexm(' ', 'TOUT') .eq. 1) then
             call getvtx(' ', 'TOUT', nbval=0, nbret=n1)
             if (n1 .ne. 0) goto 9998
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
@@ -90,7 +90,7 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 ! --- CREATION ET AFFECTATION DU VECTEUR DE K8 DE NOM LISMAI
 !     CONTENANT LES NOMS DES MAILLES FORMANT LE LIGREL A CREER
 !     --------------------------------------------------------
-    call reliem(modele, noma, 'NU_MAILLE', motfac, iocc,&
+    call reliem(modele, noma, 'NU_MAILLE', motfac, iocc, &
                 2, motcle(1), typmcl(1), lismai, nbma)
 !
 !     -- SI LES MOTS CLES GROUP_MA ET MAILLE N'ONT PAS ETE UTILISES:
@@ -102,17 +102,17 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 !     ---------------------------------
     call getres(k16b, k16b, oper)
     if (oper .ne. 'IMPR_RESU') then
-        noojb='12345678.LIGR000000.LIEL'
+        noojb = '12345678.LIGR000000.LIEL'
         call gnomsd(' ', noojb, 14, 19)
     else
 !     -- DANS LE CAS IMPR_RESU, GNOMSD NE PEUT PAS SERVIR CAR
 !        LA COMMANDE NE CREE PAS DE CONCEPT
-        ASSERT(base.eq.'V')
-        noojb='&&EXLIMA.LIGR000000.LIEL'
+        ASSERT(base .eq. 'V')
+        noojb = '&&EXLIMA.LIGR000000.LIEL'
         call gnoms2(noojb, 14, 19)
-    endif
-    ligrel=noojb(1:19)
-    ASSERT(ligrel(1:8).ne.' ')
+    end if
+    ligrel = noojb(1:19)
+    ASSERT(ligrel(1:8) .ne. ' ')
     call jeveuo(lismai, 'L', jma)
     call exlim1(zi(jma), nbma, modele, base, ligrel)
     call jedetr(lismai)

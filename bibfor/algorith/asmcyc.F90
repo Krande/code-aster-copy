@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
-                  nj, na, axok, liax, nbliax,&
+subroutine asmcyc(cmass, ndim, soumat, beta, ni, &
+                  nj, na, axok, liax, nbliax, &
                   libid)
     implicit none
 !
@@ -69,14 +69,14 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
     integer :: libid(*), liax(nbliax)
     aster_logical :: axok, vrai, faux
 !-----------------------------------------------------------------------
-    data vrai,faux /.true._1,.false./
+    data vrai, faux/.true._1, .false./
 !-----------------------------------------------------------------------
 !
 !
 !-----------------MISE A ZERO DES MATRICES COMPLEXES--------------------
 !
     do i = 1, ndim*(ndim+1)/2
-        cmass(i)=dcmplx(0.d0,0.d0)
+        cmass(i) = dcmplx(0.d0, 0.d0)
     end do
 !
 !
@@ -85,34 +85,34 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
 !
 ! DEBUT DES DDL GENERALISES DE DROITE
 !
-    id=ni+1
+    id = ni+1
 !
 ! DEBUT DES DDL GENERALISES DE AXE
 !
-    ia=ni+nj+1
+    ia = ni+nj+1
 !
 !--------------ASSEMBLAGE DES TERMES STANDARDS--------------------------
 !
 !  POUR TOUTES LES METHODES
 !
-    call acyelt(soumat, 'M0II', ni, cmass, ndim,&
+    call acyelt(soumat, 'M0II', ni, cmass, ndim, &
                 1, 1, 1.d0)
 !
 !  POUR CRAIG-BAMPTON ET CRAIG-BAMPTON HARMONIQUE
 !
-    call acyelt(soumat, 'M0JJ', nj, cmass, ndim,&
+    call acyelt(soumat, 'M0JJ', nj, cmass, ndim, &
                 id, id, 1.d0)
 !
-    call acyel2(soumat, 'M0IJ', ni, nj, faux,&
-                libid, ni, libid, nj, cmass,&
+    call acyel2(soumat, 'M0IJ', ni, nj, faux, &
+                libid, ni, libid, nj, cmass, &
                 ndim, 1, id, 1.d0)
 !
-    call acyel4(soumat, 'MPLUSJJ', nj, nj, faux,&
-                libid, nj, libid, nj, cmass,&
+    call acyel4(soumat, 'MPLUSJJ', nj, nj, faux, &
+                libid, nj, libid, nj, cmass, &
                 ndim, id, id, beta)
 !
-    call acyel4(soumat, 'MPLUSIJ', ni, nj, faux,&
-                libid, ni, libid, nj, cmass,&
+    call acyel4(soumat, 'MPLUSIJ', ni, nj, faux, &
+                libid, ni, libid, nj, cmass, &
                 ndim, 1, id, beta)
 !
 !  POUR MAC-NEAL
@@ -130,33 +130,33 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
 !
 !  POUR CRAIG-BAMPTON ET CRAIG-BAMPTON HARMONIQUE
 !
-        call acyel2(soumat, 'M0IA', ni, na, vrai,&
-                    libid, ni, liax, nbliax, cmass,&
+        call acyel2(soumat, 'M0IA', ni, na, vrai, &
+                    libid, ni, liax, nbliax, cmass, &
                     ndim, 1, ia, 1.d0)
-        call acyel2(soumat, 'M0AJ', na, nj, vrai,&
-                    liax, nbliax, libid, nj, cmass,&
+        call acyel2(soumat, 'M0AJ', na, nj, vrai, &
+                    liax, nbliax, libid, nj, cmass, &
                     ndim, ia, id, 1.d0)
-        call acyel1(soumat, 'M0AA', na, na, vrai,&
-                    liax, nbliax, liax, nbliax, cmass,&
+        call acyel1(soumat, 'M0AA', na, na, vrai, &
+                    liax, nbliax, liax, nbliax, cmass, &
                     ndim, ia, ia, 1.d0)
-        call acyel4(soumat, 'MPLUSIA', ni, na, vrai,&
-                    libid, ni, liax, nbliax, cmass,&
+        call acyel4(soumat, 'MPLUSIA', ni, na, vrai, &
+                    libid, ni, liax, nbliax, cmass, &
                     ndim, 1, ia, beta)
-        call acyel4(soumat, 'MPLUSAJ', na, nj, vrai,&
-                    liax, nbliax, libid, nj, cmass,&
+        call acyel4(soumat, 'MPLUSAJ', na, nj, vrai, &
+                    liax, nbliax, libid, nj, cmass, &
                     ndim, ia, id, beta)
-        call acyel4(soumat, 'MPLUSJA', nj, na, vrai,&
-                    libid, nj, liax, nbliax, cmass,&
+        call acyel4(soumat, 'MPLUSJA', nj, na, vrai, &
+                    libid, nj, liax, nbliax, cmass, &
                     ndim, id, ia, beta)
-        call acyel4(soumat, 'MPLUSAA', na, na, vrai,&
-                    liax, nbliax, liax, nbliax, cmass,&
+        call acyel4(soumat, 'MPLUSAA', na, na, vrai, &
+                    liax, nbliax, liax, nbliax, cmass, &
                     ndim, ia, ia, beta)
 !
 !  POUR MAC-NEAL
 !
 !    RIEN
 !
-    endif
+    end if
 !
 !
 end subroutine

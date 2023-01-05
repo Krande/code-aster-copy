@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujori(sens, nmat, reorie, angl, vec,&
+subroutine hujori(sens, nmat, reorie, angl, vec, &
                   mat)
     implicit none
 !
@@ -52,22 +52,22 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
     character(len=5) :: sens
     aster_logical :: reorie
 !
-    data   zero  / 0.d0 /
-    data   deux  / 2.d0 /
-    data   dsqr  / 1.41421356237d0 /
-    data   isqr  / .707106781187d0 /
+    data zero/0.d0/
+    data deux/2.d0/
+    data dsqr/1.41421356237d0/
+    data isqr/.707106781187d0/
 !
-    if (.not.reorie) goto 9999
+    if (.not. reorie) goto 9999
 !
     do i = 1, 3
         do j = 1, 3
-            p(i,j) = zero
-        enddo
-    enddo
+            p(i, j) = zero
+        end do
+    end do
 !
     do i = 1, 6
         vec1(i) = zero
-    enddo
+    end do
 !
 !
 ! ----   CONSTRUCTION DE LA MATRICE DE PASSAGE (POUR DES VECTEURS)
@@ -81,217 +81,217 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
 !
         if (sens .eq. 'LOCAL') then
 !
-            passal(1,1) = p(1,1)*p(1,1)
-            passal(1,2) = p(1,2)*p(1,2)
-            passal(1,3) = p(1,3)*p(1,3)
-            passal(1,4) = deux*isqr*p(1,1)*p(1,2)
-            passal(1,5) = deux*isqr*p(1,1)*p(1,3)
-            passal(1,6) = deux*isqr*p(1,2)*p(1,3)
+            passal(1, 1) = p(1, 1)*p(1, 1)
+            passal(1, 2) = p(1, 2)*p(1, 2)
+            passal(1, 3) = p(1, 3)*p(1, 3)
+            passal(1, 4) = deux*isqr*p(1, 1)*p(1, 2)
+            passal(1, 5) = deux*isqr*p(1, 1)*p(1, 3)
+            passal(1, 6) = deux*isqr*p(1, 2)*p(1, 3)
 !
-            passal(2,1) = p(2,1)*p(2,1)
-            passal(2,2) = p(2,2)*p(2,2)
-            passal(2,3) = p(2,3)*p(2,3)
-            passal(2,4) = deux*isqr*p(2,1)*p(2,2)
-            passal(2,5) = deux*isqr*p(2,1)*p(2,3)
-            passal(2,6) = deux*isqr*p(2,2)*p(2,3)
+            passal(2, 1) = p(2, 1)*p(2, 1)
+            passal(2, 2) = p(2, 2)*p(2, 2)
+            passal(2, 3) = p(2, 3)*p(2, 3)
+            passal(2, 4) = deux*isqr*p(2, 1)*p(2, 2)
+            passal(2, 5) = deux*isqr*p(2, 1)*p(2, 3)
+            passal(2, 6) = deux*isqr*p(2, 2)*p(2, 3)
 !
-            passal(3,1) = p(3,1)*p(3,1)
-            passal(3,2) = p(3,2)*p(3,2)
-            passal(3,3) = p(3,3)*p(3,3)
-            passal(3,4) = deux*isqr*p(3,1)*p(3,2)
-            passal(3,5) = deux*isqr*p(3,1)*p(3,3)
-            passal(3,6) = deux*isqr*p(3,2)*p(3,3)
+            passal(3, 1) = p(3, 1)*p(3, 1)
+            passal(3, 2) = p(3, 2)*p(3, 2)
+            passal(3, 3) = p(3, 3)*p(3, 3)
+            passal(3, 4) = deux*isqr*p(3, 1)*p(3, 2)
+            passal(3, 5) = deux*isqr*p(3, 1)*p(3, 3)
+            passal(3, 6) = deux*isqr*p(3, 2)*p(3, 3)
 !
-            passal(4,1) = dsqr*p(1,1)*p(2,1)
-            passal(4,2) = dsqr*p(1,2)*p(2,2)
-            passal(4,3) = dsqr*p(1,3)*p(2,3)
-            passal(4,4) = p(1,1)*p(2,2) + p(1,2)*p(2,1)
-            passal(4,5) = p(1,1)*p(2,3) + p(1,3)*p(2,1)
-            passal(4,6) = p(1,2)*p(2,3) + p(1,3)*p(2,2)
+            passal(4, 1) = dsqr*p(1, 1)*p(2, 1)
+            passal(4, 2) = dsqr*p(1, 2)*p(2, 2)
+            passal(4, 3) = dsqr*p(1, 3)*p(2, 3)
+            passal(4, 4) = p(1, 1)*p(2, 2)+p(1, 2)*p(2, 1)
+            passal(4, 5) = p(1, 1)*p(2, 3)+p(1, 3)*p(2, 1)
+            passal(4, 6) = p(1, 2)*p(2, 3)+p(1, 3)*p(2, 2)
 !
-            passal(5,1) = dsqr*p(1,1)*p(3,1)
-            passal(5,2) = dsqr*p(1,2)*p(3,2)
-            passal(5,3) = dsqr*p(1,3)*p(3,3)
-            passal(5,4) = p(1,1)*p(3,2) + p(1,2)*p(3,1)
-            passal(5,5) = p(1,1)*p(3,3) + p(1,3)*p(3,1)
-            passal(5,6) = p(1,2)*p(3,3) + p(1,3)*p(3,2)
+            passal(5, 1) = dsqr*p(1, 1)*p(3, 1)
+            passal(5, 2) = dsqr*p(1, 2)*p(3, 2)
+            passal(5, 3) = dsqr*p(1, 3)*p(3, 3)
+            passal(5, 4) = p(1, 1)*p(3, 2)+p(1, 2)*p(3, 1)
+            passal(5, 5) = p(1, 1)*p(3, 3)+p(1, 3)*p(3, 1)
+            passal(5, 6) = p(1, 2)*p(3, 3)+p(1, 3)*p(3, 2)
 !
-            passal(6,1) = dsqr*p(2,1)*p(3,1)
-            passal(6,2) = dsqr*p(2,2)*p(3,2)
-            passal(6,3) = dsqr*p(2,3)*p(3,3)
-            passal(6,4) = p(2,1)*p(3,2) + p(2,2)*p(3,1)
-            passal(6,5) = p(2,1)*p(3,3) + p(2,3)*p(3,1)
-            passal(6,6) = p(2,2)*p(3,3) + p(2,3)*p(3,2)
-!
-            do i = 1, 6
-                do j = 1, 6
-                    vec1(i) = vec1(i) + passal(i,j)*vec(j)
-                enddo
-            enddo
-!
-        else if (sens.eq.'GLOBA') then
-!
-            passag(1,1) = p(1,1)*p(1,1)
-            passag(1,2) = p(2,1)*p(2,1)
-            passag(1,3) = p(3,1)*p(3,1)
-            passag(1,4) = deux*isqr*p(1,1)*p(2,1)
-            passag(1,5) = deux*isqr*p(1,1)*p(3,1)
-            passag(1,6) = deux*isqr*p(2,1)*p(3,1)
-!
-            passag(2,1) = p(1,2)*p(1,2)
-            passag(2,2) = p(2,2)*p(2,2)
-            passag(2,3) = p(3,2)*p(3,2)
-            passag(2,4) = deux*isqr*p(1,2)*p(2,2)
-            passag(2,5) = deux*isqr*p(1,2)*p(3,2)
-            passag(2,6) = deux*isqr*p(2,2)*p(3,2)
-!
-            passag(3,1) = p(1,3)*p(1,3)
-            passag(3,2) = p(2,3)*p(2,3)
-            passag(3,3) = p(3,3)*p(3,3)
-            passag(3,4) = deux*isqr*p(1,3)*p(2,3)
-            passag(3,5) = deux*isqr*p(1,3)*p(3,3)
-            passag(3,6) = deux*isqr*p(2,3)*p(3,3)
-!
-            passag(4,1) = dsqr*p(1,1)*p(1,2)
-            passag(4,2) = dsqr*p(2,1)*p(2,2)
-            passag(4,3) = dsqr*p(3,1)*p(3,2)
-            passag(4,4) = p(1,1)*p(2,2) + p(2,1)*p(1,2)
-            passag(4,5) = p(1,1)*p(3,2) + p(3,1)*p(1,2)
-            passag(4,6) = p(2,1)*p(3,2) + p(3,1)*p(2,2)
-!
-            passag(5,1) = dsqr*p(1,1)*p(1,3)
-            passag(5,2) = dsqr*p(2,1)*p(2,3)
-            passag(5,3) = dsqr*p(3,1)*p(3,3)
-            passag(5,4) = p(1,1)*p(2,3) + p(2,1)*p(1,3)
-            passag(5,5) = p(1,1)*p(3,3) + p(3,1)*p(1,3)
-            passag(5,6) = p(2,1)*p(3,3) + p(3,1)*p(2,3)
-!
-            passag(6,1) = dsqr*p(1,2)*p(1,3)
-            passag(6,2) = dsqr*p(2,2)*p(2,3)
-            passag(6,3) = dsqr*p(3,2)*p(3,3)
-            passag(6,4) = p(1,2)*p(2,3) + p(2,2)*p(1,3)
-            passag(6,5) = p(1,2)*p(3,3) + p(3,2)*p(1,3)
-            passag(6,6) = p(2,2)*p(3,3) + p(3,2)*p(2,3)
+            passal(6, 1) = dsqr*p(2, 1)*p(3, 1)
+            passal(6, 2) = dsqr*p(2, 2)*p(3, 2)
+            passal(6, 3) = dsqr*p(2, 3)*p(3, 3)
+            passal(6, 4) = p(2, 1)*p(3, 2)+p(2, 2)*p(3, 1)
+            passal(6, 5) = p(2, 1)*p(3, 3)+p(2, 3)*p(3, 1)
+            passal(6, 6) = p(2, 2)*p(3, 3)+p(2, 3)*p(3, 2)
 !
             do i = 1, 6
                 do j = 1, 6
-                    vec1(i) = vec1(i) + passag(i,j)*vec(j)
-                enddo
-            enddo
+                    vec1(i) = vec1(i)+passal(i, j)*vec(j)
+                end do
+            end do
 !
-        endif
+        else if (sens .eq. 'GLOBA') then
+!
+            passag(1, 1) = p(1, 1)*p(1, 1)
+            passag(1, 2) = p(2, 1)*p(2, 1)
+            passag(1, 3) = p(3, 1)*p(3, 1)
+            passag(1, 4) = deux*isqr*p(1, 1)*p(2, 1)
+            passag(1, 5) = deux*isqr*p(1, 1)*p(3, 1)
+            passag(1, 6) = deux*isqr*p(2, 1)*p(3, 1)
+!
+            passag(2, 1) = p(1, 2)*p(1, 2)
+            passag(2, 2) = p(2, 2)*p(2, 2)
+            passag(2, 3) = p(3, 2)*p(3, 2)
+            passag(2, 4) = deux*isqr*p(1, 2)*p(2, 2)
+            passag(2, 5) = deux*isqr*p(1, 2)*p(3, 2)
+            passag(2, 6) = deux*isqr*p(2, 2)*p(3, 2)
+!
+            passag(3, 1) = p(1, 3)*p(1, 3)
+            passag(3, 2) = p(2, 3)*p(2, 3)
+            passag(3, 3) = p(3, 3)*p(3, 3)
+            passag(3, 4) = deux*isqr*p(1, 3)*p(2, 3)
+            passag(3, 5) = deux*isqr*p(1, 3)*p(3, 3)
+            passag(3, 6) = deux*isqr*p(2, 3)*p(3, 3)
+!
+            passag(4, 1) = dsqr*p(1, 1)*p(1, 2)
+            passag(4, 2) = dsqr*p(2, 1)*p(2, 2)
+            passag(4, 3) = dsqr*p(3, 1)*p(3, 2)
+            passag(4, 4) = p(1, 1)*p(2, 2)+p(2, 1)*p(1, 2)
+            passag(4, 5) = p(1, 1)*p(3, 2)+p(3, 1)*p(1, 2)
+            passag(4, 6) = p(2, 1)*p(3, 2)+p(3, 1)*p(2, 2)
+!
+            passag(5, 1) = dsqr*p(1, 1)*p(1, 3)
+            passag(5, 2) = dsqr*p(2, 1)*p(2, 3)
+            passag(5, 3) = dsqr*p(3, 1)*p(3, 3)
+            passag(5, 4) = p(1, 1)*p(2, 3)+p(2, 1)*p(1, 3)
+            passag(5, 5) = p(1, 1)*p(3, 3)+p(3, 1)*p(1, 3)
+            passag(5, 6) = p(2, 1)*p(3, 3)+p(3, 1)*p(2, 3)
+!
+            passag(6, 1) = dsqr*p(1, 2)*p(1, 3)
+            passag(6, 2) = dsqr*p(2, 2)*p(2, 3)
+            passag(6, 3) = dsqr*p(3, 2)*p(3, 3)
+            passag(6, 4) = p(1, 2)*p(2, 3)+p(2, 2)*p(1, 3)
+            passag(6, 5) = p(1, 2)*p(3, 3)+p(3, 2)*p(1, 3)
+            passag(6, 6) = p(2, 2)*p(3, 3)+p(3, 2)*p(2, 3)
+!
+            do i = 1, 6
+                do j = 1, 6
+                    vec1(i) = vec1(i)+passag(i, j)*vec(j)
+                end do
+            end do
+!
+        end if
 !
         do i = 1, 6
             vec(i) = vec1(i)
-        enddo
+        end do
 !
 !
 ! calcul de PASSAG * DSDE *PASSAL et PASSAG * DEPS *PASSAL
-    else if (nmat.eq.2) then
+    else if (nmat .eq. 2) then
 !
-        passal(1,1) = p(1,1)*p(1,1)
-        passal(1,2) = p(1,2)*p(1,2)
-        passal(1,3) = p(1,3)*p(1,3)
-        passal(1,4) = deux*isqr*p(1,1)*p(1,2)
-        passal(1,5) = deux*isqr*p(1,1)*p(1,3)
-        passal(1,6) = deux*isqr*p(1,2)*p(1,3)
+        passal(1, 1) = p(1, 1)*p(1, 1)
+        passal(1, 2) = p(1, 2)*p(1, 2)
+        passal(1, 3) = p(1, 3)*p(1, 3)
+        passal(1, 4) = deux*isqr*p(1, 1)*p(1, 2)
+        passal(1, 5) = deux*isqr*p(1, 1)*p(1, 3)
+        passal(1, 6) = deux*isqr*p(1, 2)*p(1, 3)
 !
-        passal(2,1) = p(2,1)*p(2,1)
-        passal(2,2) = p(2,2)*p(2,2)
-        passal(2,3) = p(2,3)*p(2,3)
-        passal(2,4) = deux*isqr*p(2,1)*p(2,2)
-        passal(2,5) = deux*isqr*p(2,1)*p(2,3)
-        passal(2,6) = deux*isqr*p(2,2)*p(2,3)
+        passal(2, 1) = p(2, 1)*p(2, 1)
+        passal(2, 2) = p(2, 2)*p(2, 2)
+        passal(2, 3) = p(2, 3)*p(2, 3)
+        passal(2, 4) = deux*isqr*p(2, 1)*p(2, 2)
+        passal(2, 5) = deux*isqr*p(2, 1)*p(2, 3)
+        passal(2, 6) = deux*isqr*p(2, 2)*p(2, 3)
 !
-        passal(3,1) = p(3,1)*p(3,1)
-        passal(3,2) = p(3,2)*p(3,2)
-        passal(3,3) = p(3,3)*p(3,3)
-        passal(3,4) = deux*isqr*p(3,1)*p(3,2)
-        passal(3,5) = deux*isqr*p(3,1)*p(3,3)
-        passal(3,6) = deux*isqr*p(3,2)*p(3,3)
+        passal(3, 1) = p(3, 1)*p(3, 1)
+        passal(3, 2) = p(3, 2)*p(3, 2)
+        passal(3, 3) = p(3, 3)*p(3, 3)
+        passal(3, 4) = deux*isqr*p(3, 1)*p(3, 2)
+        passal(3, 5) = deux*isqr*p(3, 1)*p(3, 3)
+        passal(3, 6) = deux*isqr*p(3, 2)*p(3, 3)
 !
-        passal(4,1) = dsqr*p(1,1)*p(2,1)
-        passal(4,2) = dsqr*p(1,2)*p(2,2)
-        passal(4,3) = dsqr*p(1,3)*p(2,3)
-        passal(4,4) = p(1,1)*p(2,2) + p(1,2)*p(2,1)
-        passal(4,5) = p(1,1)*p(2,3) + p(1,3)*p(2,1)
-        passal(4,6) = p(1,2)*p(2,3) + p(1,3)*p(2,2)
+        passal(4, 1) = dsqr*p(1, 1)*p(2, 1)
+        passal(4, 2) = dsqr*p(1, 2)*p(2, 2)
+        passal(4, 3) = dsqr*p(1, 3)*p(2, 3)
+        passal(4, 4) = p(1, 1)*p(2, 2)+p(1, 2)*p(2, 1)
+        passal(4, 5) = p(1, 1)*p(2, 3)+p(1, 3)*p(2, 1)
+        passal(4, 6) = p(1, 2)*p(2, 3)+p(1, 3)*p(2, 2)
 !
-        passal(5,1) = dsqr*p(1,1)*p(3,1)
-        passal(5,2) = dsqr*p(1,2)*p(3,2)
-        passal(5,3) = dsqr*p(1,3)*p(3,3)
-        passal(5,4) = p(1,1)*p(3,2) + p(1,2)*p(3,1)
-        passal(5,5) = p(1,1)*p(3,3) + p(1,3)*p(3,1)
-        passal(5,6) = p(1,2)*p(3,3) + p(1,3)*p(3,2)
+        passal(5, 1) = dsqr*p(1, 1)*p(3, 1)
+        passal(5, 2) = dsqr*p(1, 2)*p(3, 2)
+        passal(5, 3) = dsqr*p(1, 3)*p(3, 3)
+        passal(5, 4) = p(1, 1)*p(3, 2)+p(1, 2)*p(3, 1)
+        passal(5, 5) = p(1, 1)*p(3, 3)+p(1, 3)*p(3, 1)
+        passal(5, 6) = p(1, 2)*p(3, 3)+p(1, 3)*p(3, 2)
 !
-        passal(6,1) = dsqr*p(2,1)*p(3,1)
-        passal(6,2) = dsqr*p(2,2)*p(3,2)
-        passal(6,3) = dsqr*p(2,3)*p(3,3)
-        passal(6,4) = p(2,1)*p(3,2) + p(2,2)*p(3,1)
-        passal(6,5) = p(2,1)*p(3,3) + p(2,3)*p(3,1)
-        passal(6,6) = p(2,2)*p(3,3) + p(2,3)*p(3,2)
+        passal(6, 1) = dsqr*p(2, 1)*p(3, 1)
+        passal(6, 2) = dsqr*p(2, 2)*p(3, 2)
+        passal(6, 3) = dsqr*p(2, 3)*p(3, 3)
+        passal(6, 4) = p(2, 1)*p(3, 2)+p(2, 2)*p(3, 1)
+        passal(6, 5) = p(2, 1)*p(3, 3)+p(2, 3)*p(3, 1)
+        passal(6, 6) = p(2, 2)*p(3, 3)+p(2, 3)*p(3, 2)
 !
-        passag(1,1) = p(1,1)*p(1,1)
-        passag(1,2) = p(2,1)*p(2,1)
-        passag(1,3) = p(3,1)*p(3,1)
-        passag(1,4) = deux*isqr*p(1,1)*p(2,1)
-        passag(1,5) = deux*isqr*p(1,1)*p(3,1)
-        passag(1,6) = deux*isqr*p(2,1)*p(3,1)
+        passag(1, 1) = p(1, 1)*p(1, 1)
+        passag(1, 2) = p(2, 1)*p(2, 1)
+        passag(1, 3) = p(3, 1)*p(3, 1)
+        passag(1, 4) = deux*isqr*p(1, 1)*p(2, 1)
+        passag(1, 5) = deux*isqr*p(1, 1)*p(3, 1)
+        passag(1, 6) = deux*isqr*p(2, 1)*p(3, 1)
 !
-        passag(2,1) = p(1,2)*p(1,2)
-        passag(2,2) = p(2,2)*p(2,2)
-        passag(2,3) = p(3,2)*p(3,2)
-        passag(2,4) = deux*isqr*p(1,2)*p(2,2)
-        passag(2,5) = deux*isqr*p(1,2)*p(3,2)
-        passag(2,6) = deux*isqr*p(2,2)*p(3,2)
+        passag(2, 1) = p(1, 2)*p(1, 2)
+        passag(2, 2) = p(2, 2)*p(2, 2)
+        passag(2, 3) = p(3, 2)*p(3, 2)
+        passag(2, 4) = deux*isqr*p(1, 2)*p(2, 2)
+        passag(2, 5) = deux*isqr*p(1, 2)*p(3, 2)
+        passag(2, 6) = deux*isqr*p(2, 2)*p(3, 2)
 !
-        passag(3,1) = p(1,3)*p(1,3)
-        passag(3,2) = p(2,3)*p(2,3)
-        passag(3,3) = p(3,3)*p(3,3)
-        passag(3,4) = deux*isqr*p(1,3)*p(2,3)
-        passag(3,5) = deux*isqr*p(1,3)*p(3,3)
-        passag(3,6) = deux*isqr*p(2,3)*p(3,3)
+        passag(3, 1) = p(1, 3)*p(1, 3)
+        passag(3, 2) = p(2, 3)*p(2, 3)
+        passag(3, 3) = p(3, 3)*p(3, 3)
+        passag(3, 4) = deux*isqr*p(1, 3)*p(2, 3)
+        passag(3, 5) = deux*isqr*p(1, 3)*p(3, 3)
+        passag(3, 6) = deux*isqr*p(2, 3)*p(3, 3)
 !
-        passag(4,1) = dsqr*p(1,1)*p(1,2)
-        passag(4,2) = dsqr*p(2,1)*p(2,2)
-        passag(4,3) = dsqr*p(3,1)*p(3,2)
-        passag(4,4) = p(1,1)*p(2,2) + p(2,1)*p(1,2)
-        passag(4,5) = p(1,1)*p(3,2) + p(3,1)*p(1,2)
-        passag(4,6) = p(2,1)*p(3,2) + p(3,1)*p(2,2)
+        passag(4, 1) = dsqr*p(1, 1)*p(1, 2)
+        passag(4, 2) = dsqr*p(2, 1)*p(2, 2)
+        passag(4, 3) = dsqr*p(3, 1)*p(3, 2)
+        passag(4, 4) = p(1, 1)*p(2, 2)+p(2, 1)*p(1, 2)
+        passag(4, 5) = p(1, 1)*p(3, 2)+p(3, 1)*p(1, 2)
+        passag(4, 6) = p(2, 1)*p(3, 2)+p(3, 1)*p(2, 2)
 !
-        passag(5,1) = dsqr*p(1,1)*p(1,3)
-        passag(5,2) = dsqr*p(2,1)*p(2,3)
-        passag(5,3) = dsqr*p(3,1)*p(3,3)
-        passag(5,4) = p(1,1)*p(2,3) + p(2,1)*p(1,3)
-        passag(5,5) = p(1,1)*p(3,3) + p(3,1)*p(1,3)
-        passag(5,6) = p(2,1)*p(3,3) + p(3,1)*p(2,3)
+        passag(5, 1) = dsqr*p(1, 1)*p(1, 3)
+        passag(5, 2) = dsqr*p(2, 1)*p(2, 3)
+        passag(5, 3) = dsqr*p(3, 1)*p(3, 3)
+        passag(5, 4) = p(1, 1)*p(2, 3)+p(2, 1)*p(1, 3)
+        passag(5, 5) = p(1, 1)*p(3, 3)+p(3, 1)*p(1, 3)
+        passag(5, 6) = p(2, 1)*p(3, 3)+p(3, 1)*p(2, 3)
 !
-        passag(6,1) = dsqr*p(1,2)*p(1,3)
-        passag(6,2) = dsqr*p(2,2)*p(2,3)
-        passag(6,3) = dsqr*p(3,2)*p(3,3)
-        passag(6,4) = p(1,2)*p(2,3) + p(2,2)*p(1,3)
-        passag(6,5) = p(1,2)*p(3,3) + p(3,2)*p(1,3)
-        passag(6,6) = p(2,2)*p(3,3) + p(3,2)*p(2,3)
+        passag(6, 1) = dsqr*p(1, 2)*p(1, 3)
+        passag(6, 2) = dsqr*p(2, 2)*p(2, 3)
+        passag(6, 3) = dsqr*p(3, 2)*p(3, 3)
+        passag(6, 4) = p(1, 2)*p(2, 3)+p(2, 2)*p(1, 3)
+        passag(6, 5) = p(1, 2)*p(3, 3)+p(3, 2)*p(1, 3)
+        passag(6, 6) = p(2, 2)*p(3, 3)+p(3, 2)*p(2, 3)
 !
         if (sens .eq. 'LOCAL') then
 !
-            work = matmul(mat,passag)
-            mat1 = matmul(passal,work)
+            work = matmul(mat, passag)
+            mat1 = matmul(passal, work)
 !
-        else if (sens.eq.'GLOBA') then
+        else if (sens .eq. 'GLOBA') then
 !
-            work = matmul(mat,passal)
-            mat1 = matmul(passag,work)
+            work = matmul(mat, passal)
+            mat1 = matmul(passag, work)
 !
-        endif
+        end if
 !
         do j = 1, 6
             do i = 1, 6
-                mat(i,j) = mat1(i,j)
-            enddo
-        enddo
+                mat(i, j) = mat1(i, j)
+            end do
+        end do
 !
-    endif
+    end if
 !
 9999 continue
 end subroutine

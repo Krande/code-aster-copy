@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine elimcq(sdcont, mesh, nb_cont_zone, nb_cont_surf, nb_cont_node)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -56,20 +56,20 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Create list of middle nodes
 !
     nb_cont_node0 = nb_cont_node
-    call cfleq8(mesh         , sdcont_defi, nb_cont_zone, nb_cont_surf, nb_cont_node,&
-                nb_cont_node0, v_list_node, v_poin_node )
+    call cfleq8(mesh, sdcont_defi, nb_cont_zone, nb_cont_surf, nb_cont_node, &
+                nb_cont_node0, v_list_node, v_poin_node)
 !
 ! - List of nodes update
 !
     if (nb_cont_node0 .ne. nb_cont_node) then
-        call cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+        call cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node, &
                     nb_cont_node)
-    endif
+    end if
 !
     AS_DEALLOCATE(vi=v_poin_node)
     AS_DEALLOCATE(vi=v_list_node)

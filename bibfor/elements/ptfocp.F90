@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,70 +67,70 @@ subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
         call jevech('PGEOMER', 'L', lx)
         lx = lx-1
         do i = 1, 3
-            w(i)   = zr(lx+i)
+            w(i) = zr(lx+i)
             w(i+3) = zr(lx+i+3)
-            w2(i)  = w(i+3) - w(i)
-        enddo
+            w2(i) = w(i+3)-w(i)
+        end do
 !
 !       force poutre à valeurs complexes
         call jevech('PFC1D1D', 'L', lforc)
-        xxx = abs( dble( zc(lforc+6) ) )
+        xxx = abs(dble(zc(lforc+6)))
         global = xxx .lt. 1.d-3
         normal = xxx .gt. 1.001d0
         do i = 1, 3
-            qr(i)   = dble( zc(lforc-1+i) )
+            qr(i) = dble(zc(lforc-1+i))
             qr(i+6) = qr(i)
-            qi(i)   = dimag( zc(lforc-1+i) )
+            qi(i) = dimag(zc(lforc-1+i))
             qi(i+6) = qi(i)
-            xxx = abs( dble( zc(lforc-1+3+i) ) )
+            xxx = abs(dble(zc(lforc-1+3+i)))
             if (xxx .gt. 1.d-20) then
                 call utmess('F', 'ELEMENTS2_46')
-            endif
-        enddo
+            end if
+        end do
 !
         if (normal) then
-            s=ddot(3,w2,1,w2,1)
-            s2=1.d0/s
+            s = ddot(3, w2, 1, w2, 1)
+            s2 = 1.d0/s
             call provec(w2, qr(1), u)
-            s=ddot(3,u,1,u,1)
+            s = ddot(3, u, 1, u, 1)
             s3 = sqrt(s)
-            s=ddot(3,qr(1),1,qr(1),1)
+            s = ddot(3, qr(1), 1, qr(1), 1)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
             call pscvec(3, s2, v, u)
             call pscvec(3, s5, u, qr(1))
             call provec(w2, qr(7), u)
-            s=ddot(3,u,1,u,1)
+            s = ddot(3, u, 1, u, 1)
             s3 = sqrt(s)
-            s=ddot(3,qr(7),1,qr(7),1)
+            s = ddot(3, qr(7), 1, qr(7), 1)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
             call pscvec(3, s2, v, u)
             call pscvec(3, s5, u, qr(7))
 !
-            s=ddot(3,w2,1,w2,1)
-            s2=1.d0/s
+            s = ddot(3, w2, 1, w2, 1)
+            s2 = 1.d0/s
             call provec(w2, qi(1), u)
-            s=ddot(3,u,1,u,1)
+            s = ddot(3, u, 1, u, 1)
             s3 = sqrt(s)
-            s=ddot(3,qi(1),1,qi(1),1)
+            s = ddot(3, qi(1), 1, qi(1), 1)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
             call pscvec(3, s2, v, u)
             call pscvec(3, s5, u, qi(1))
             call provec(w2, qi(7), u)
-            s=ddot(3,u,1,u,1)
+            s = ddot(3, u, 1, u, 1)
             s3 = sqrt(s)
-            s=ddot(3,qi(7),1,qi(7),1)
+            s = ddot(3, qi(7), 1, qi(7), 1)
             s4 = sqrt(s)
             s5 = s3*sqrt(s2)/s4
             call provec(u, w2, v)
             call pscvec(3, s2, v, u)
             call pscvec(3, s5, u, qi(7))
-        endif
+        end if
 !       passage repere local du vecteur force (si necessaire)
         if (global .or. normal) then
             call utpvgl(nno, nc, pgl, qr(1), qqr(1))
@@ -139,8 +139,8 @@ subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
             do i = 1, 12
                 qqr(i) = qr(i)
                 qqi(i) = qi(i)
-            enddo
-        endif
+            end do
+        end if
 !       a cause des chargements variables
         coef1 = 1.0d0
         coef2 = 1.0d0
@@ -148,7 +148,7 @@ subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
+    end if
 !
 ! ------------------------------------------------------------------------------
 !   recuperation du coef_mult
@@ -157,15 +157,15 @@ subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
 !
     if (icoer .ne. 0) then
         do i = 1, 12
-            qqr(i) = qqr(i) * zr(icoer)
-            qqi(i) = qqi(i) * zr(icoer)
-        enddo
+            qqr(i) = qqr(i)*zr(icoer)
+            qqi(i) = qqi(i)*zr(icoer)
+        end do
     else if (icoec .ne. 0) then
         do i = 1, 12
-            qqr(i) = qqr(i) * dble( zc(icoec) )
-            qqi(i) = qqi(i) * dimag( zc(icoec) )
-        enddo
-    endif
+            qqr(i) = qqr(i)*dble(zc(icoec))
+            qqi(i) = qqi(i)*dimag(zc(icoec))
+        end do
+    end if
 !
     call ptfop1(itype, nc, coef1, coef2, xl, qqr, fer)
     call ptfop1(itype, nc, coef1, coef2, xl, qqi, fei)

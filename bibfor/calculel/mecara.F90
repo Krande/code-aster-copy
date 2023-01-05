@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 subroutine mecara(caraElem, chcara)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-character(len=*), intent(in) :: caraElem
-character(len=*), intent(inout) :: chcara(18)
+    character(len=*), intent(in) :: caraElem
+    character(len=*), intent(inout) :: chcara(18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,14 +47,14 @@ character(len=*), intent(inout) :: chcara(18)
         chcara(6) = caraElem(1:8)//'.CARGENPO'
         chcara(7) = caraElem(1:8)//'.CARCOQUE'
         chcara(9) = caraElem(1:8)//'.CARARCPO'
-        chcara(10)= caraElem(1:8)//'.CARCABLE'
-        chcara(11)= caraElem(1:8)//'.CARGENBA'
-        chcara(12)= caraElem(1:8)//'.CARMASSI'
-        chcara(13)= caraElem(1:8)//'.CARPOUFL'
-        chcara(14)= caraElem(1:8)//'.CVENTCXF'
-        chcara(15)= caraElem(1:8)//'.CARDINFO'
-        chcara(16)= caraElem(1:8)//'.CANBSP'
-        chcara(17)= caraElem(1:8)//'.CAFIBR'
-    endif
+        chcara(10) = caraElem(1:8)//'.CARCABLE'
+        chcara(11) = caraElem(1:8)//'.CARGENBA'
+        chcara(12) = caraElem(1:8)//'.CARMASSI'
+        chcara(13) = caraElem(1:8)//'.CARPOUFL'
+        chcara(14) = caraElem(1:8)//'.CVENTCXF'
+        chcara(15) = caraElem(1:8)//'.CARDINFO'
+        chcara(16) = caraElem(1:8)//'.CANBSP'
+        chcara(17) = caraElem(1:8)//'.CAFIBR'
+    end if
 !
 end subroutine

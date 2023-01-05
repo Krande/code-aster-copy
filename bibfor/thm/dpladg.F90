@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,27 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpladg(ds_thm,&
-                  ndim  , dimcon,&
-                  rgaz  , kh    ,&
-                  congem, adcp11,&
-                  temp  , pad   ,&
-                  dp11p1, dp11p2,&
-                  dp21p1, dp21p2,&
-                  dp11t , dp21t)
+subroutine dpladg(ds_thm, &
+                  ndim, dimcon, &
+                  rgaz, kh, &
+                  congem, adcp11, &
+                  temp, pad, &
+                  dp11p1, dp11p2, &
+                  dp21p1, dp21p2, &
+                  dp11t, dp21t)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: ndim, dimcon
-real(kind=8), intent(in) :: rgaz, kh
-integer, intent(in) :: adcp11
-real(kind=8), intent(in) :: congem(dimcon), temp, pad
-real(kind=8), intent(out) :: dp11p1, dp11p2
-real(kind=8), intent(out) :: dp21p1, dp21p2
-real(kind=8), intent(out) :: dp11t, dp21t
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: ndim, dimcon
+    real(kind=8), intent(in) :: rgaz, kh
+    integer, intent(in) :: adcp11
+    real(kind=8), intent(in) :: congem(dimcon), temp, pad
+    real(kind=8), intent(out) :: dp11p1, dp11p2
+    real(kind=8), intent(out) :: dp21p1, dp21p2
+    real(kind=8), intent(out) :: dp11t, dp21t
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,13 +67,13 @@ real(kind=8), intent(out) :: dp11t, dp21t
 ! --------------------------------------------------------------------------------------------------
 !
     dp11p1 = -1.d0
-    dp11p2 = -(rgaz*temp/kh - 1.d0)
+    dp11p2 = -(rgaz*temp/kh-1.d0)
     dp21p1 = 0.d0
     dp21p2 = 1.d0
     if (ds_thm%ds_elem%l_dof_ther) then
         l = -congem(adcp11+ndim+1)
         dp11t = -(pad/temp)
         dp21t = 0.d0
-    endif
+    end if
 !
 end subroutine

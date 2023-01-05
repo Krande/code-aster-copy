@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
+subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg, &
                   licmp, cesmz)
     implicit none
 #include "jeveux.h"
@@ -86,20 +86,20 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
 !
 ! --- VECTEUR DES COMPOSANTES
     call wkvect(cmps, 'V V K8', ncmpg, jcmps)
-    if (nomgd .eq. 'NEUT_R' .and. licmp(1)(1:1) .eq. ' ') then
+    if (nomgd .eq. 'NEUT_R' .and. licmp(1) (1:1) .eq. ' ') then
         do i = 1, ncmpg
             call codent(i, 'G', cnum)
             zk8(jcmps-1+i) = 'X'//cnum
         end do
     else
         do i = 1, ncmpg
-            ASSERT(licmp(i).ne.' ')
+            ASSERT(licmp(i) .ne. ' ')
             zk8(jcmps-1+i) = licmp(i)
         end do
-    endif
+    end if
 !
 ! --- APPEL A CESCRE
-    call cescre(base, ces, typces, cesk(1), nomgd,&
+    call cescre(base, ces, typces, cesk(1), nomgd, &
                 ncmpg, zk8(jcmps), zi(j1), zi(j2), [-ncmpg])
 !
 ! --- MENAGE

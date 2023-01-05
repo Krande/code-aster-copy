@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,9 +63,9 @@ subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
             if (iret .ne. 0) then
                 call jelira(jexnom(mlggma, grpma), 'LONUTI', nbma)
                 if (nbma .ne. 0) then
-                    nbmatot = nbmatot + nbma
-                endif
-            endif
+                    nbmatot = nbmatot+nbma
+                end if
+            end if
         end do
 !
 ! --- Get list of cells
@@ -82,9 +82,9 @@ subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
                     do ima = 1, nbma
                         v_allma(nbmatot+ima) = v_lma(ima)
                     end do
-                    nbmatot = nbmatot + nbma
-                endif
-            endif
+                    nbmatot = nbmatot+nbma
+                end if
+            end if
         end do
 !
 ! --- Remove duplicate cell
@@ -92,15 +92,15 @@ subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
         nb_ma = 0
         do ima = 1, nbmatot
             l_keep = ASTER_TRUE
-            do jma = 1, ima - 1
-                if(v_allma(ima) == v_allma(jma)) then
+            do jma = 1, ima-1
+                if (v_allma(ima) == v_allma(jma)) then
                     l_keep = ASTER_FALSE
                     exit
                 end if
             end do
 !
-            if(l_keep) then
-                nb_ma = nb_ma + 1
+            if (l_keep) then
+                nb_ma = nb_ma+1
                 v_allma(nb_ma) = v_allma(ima)
             end if
         end do
@@ -110,6 +110,6 @@ subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
 !
         AS_DEALLOCATE(vi=v_allma)
 !
-    endif
+    end if
 !
 end subroutine

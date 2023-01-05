@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lgldom(nbmat, mater, yf, fiter)
 !
-    implicit    none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/domrev.h"
@@ -50,9 +50,9 @@ subroutine lgldom(nbmat, mater, yf, fiter)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( lgleps  = 1.0d-8 )
+    parameter(lgleps=1.0d-8)
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =================================================================
     call jemarq()
 ! =================================================================
@@ -63,20 +63,20 @@ subroutine lgldom(nbmat, mater, yf, fiter)
 ! =================================================================
 ! --- RECUPERATION DE DONNEES -------------------------------------
 ! =================================================================
-    sigc = mater( 9,2)
-    gamcjs = mater(12,2)
-    pref = mater(15,2)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
+    pref = mater(15, 2)
     sn(1:ndt) = yf(1:ndt)
-    i1n  =yf(ndt+1)
-    gampn=yf(ndt+2)
+    i1n = yf(ndt+1)
+    gampn = yf(ndt+2)
 ! =================================================================
 ! --- CALCUL DE G(S) ----------------------------------------------
 ! =================================================================
-    snii=ddot(ndt,sn,1,sn,1)
-    snii = sqrt (snii)
-    rcos3t = cos3t (sn, pref, lgleps)
-    rhlode = hlode (gamcjs, rcos3t)
-    rgdev = gdev (snii , rhlode)
+    snii = ddot(ndt, sn, 1, sn, 1)
+    snii = sqrt(snii)
+    rcos3t = cos3t(sn, pref, lgleps)
+    rhlode = hlode(gamcjs, rcos3t)
+    rgdev = gdev(snii, rhlode)
 ! =================================================================
 ! --- CALCUL DE U(SIG, GAMP) --------------------------------------
 ! =================================================================

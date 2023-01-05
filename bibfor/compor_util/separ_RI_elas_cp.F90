@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine separ_RI_elas_cp(elas_id ,nu , g, nui ,gi, &
-                             e1     , e2  ,&
-                             nu12   , &
-                             e1i     , e2i  ,&
-                             nu12i   , &
-                             hr, hi)
+subroutine separ_RI_elas_cp(elas_id, nu, g, nui, gi, &
+                            e1, e2, &
+                            nu12, &
+                            e1i, e2i, &
+                            nu12i, &
+                            hr, hi)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: elas_id
-real(kind=8), intent(in) :: nu, g, e1, e2
-real(kind=8), intent(in) :: nu12
-real(kind=8), intent(in) :: nui, gi, e1i, e2i
-real(kind=8), intent(in) :: nu12i
-real(kind=8), intent(out) :: hr(3), hi(3)
+    integer, intent(in) :: elas_id
+    real(kind=8), intent(in) :: nu, g, e1, e2
+    real(kind=8), intent(in) :: nu12
+    real(kind=8), intent(in) :: nui, gi, e1i, e2i
+    real(kind=8), intent(in) :: nu12i
+    real(kind=8), intent(out) :: hr(3), hi(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ real(kind=8), intent(out) :: hr(3), hi(3)
 !
     if (elas_id .eq. 1) then
 !
-        hr(1) = 2.d0*g/(1.d0 - nu)
+        hr(1) = 2.d0*g/(1.d0-nu)
         hr(2) = nu*hr(1)
 
 !
@@ -80,11 +80,11 @@ real(kind=8), intent(out) :: hr(3), hi(3)
         nuc = dcmplx(nu, nui)
         Gc = dcmplx(g, gi)
 !
-        hr(1) = real(2.d0*Gc/(1.d0 - nuc))
-        hr(2) = real(2.d0*Gc*nuc/(1.d0 - nuc))
+        hr(1) = real(2.d0*Gc/(1.d0-nuc))
+        hr(2) = real(2.d0*Gc*nuc/(1.d0-nuc))
 !
-        hi(1) = aimag(2.d0*Gc/(1.d0 - nuc))
-        hi(2) = aimag(2.d0*Gc*nuc/(1.d0 - nuc))
+        hi(1) = aimag(2.d0*Gc/(1.d0-nuc))
+        hi(2) = aimag(2.d0*Gc*nuc/(1.d0-nuc))
 !
     elseif (elas_id .eq. 2) then
 !
@@ -111,8 +111,8 @@ real(kind=8), intent(out) :: hr(3), hi(3)
 !
     elseif (elas_id .eq. 3) then
 !
-        c1 = e1/ (un+nu12)
-        delta = un - nu12*nu12
+        c1 = e1/(un+nu12)
+        delta = un-nu12*nu12
         hr(1) = e1/delta
         hr(2) = nu12*hr(1)
         hr(3) = undemi*c1
@@ -122,8 +122,8 @@ real(kind=8), intent(out) :: hr(3), hi(3)
         e1c = dcmplx(e1, e1i)
         nu12c = dcmplx(nu12, nu12i)
 !
-        c1c = e1c/ (un+nu12c)
-        deltac = un - nu12c*nu12c
+        c1c = e1c/(un+nu12c)
+        deltac = un-nu12c*nu12c
         hr(1) = real(e1c/deltac)
         hr(2) = real(nu12*e1c/deltac)
         hr(3) = real(undemi*c1c)
@@ -131,6 +131,6 @@ real(kind=8), intent(out) :: hr(3), hi(3)
         hi(2) = aimag(nu12*e1c/deltac)
         hi(3) = aimag(undemi*c1c)
 !
-    endif
+    end if
 !
 end subroutine

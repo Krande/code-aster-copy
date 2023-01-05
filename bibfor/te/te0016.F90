@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0016(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
@@ -26,7 +26,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,8 +55,8 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShape)
 
 ! - Get input fields
@@ -68,7 +68,6 @@ character(len=16), intent(in) :: option, nomte
     do iDof = 1, ndim*nno
         zr(jvVect+iDof-1) = 0.d0
     end do
-
 
 ! - Loop on Gauss points
     do kpg = 1, npg
@@ -83,15 +82,15 @@ character(len=16), intent(in) :: option, nomte
         fz = 0.d0
         do iNode = 1, nno
             kdec = ndim*(iNode-1)
-            fx = fx + zr(jvShape-1+ldec+iNode) * zr(jvForc+kdec)
-            fy = fy + zr(jvShape-1+ldec+iNode) * zr(jvForc+kdec+1)
-            fz = fz + zr(jvShape-1+ldec+iNode) * zr(jvForc+kdec+2)
+            fx = fx+zr(jvShape-1+ldec+iNode)*zr(jvForc+kdec)
+            fy = fy+zr(jvShape-1+ldec+iNode)*zr(jvForc+kdec+1)
+            fz = fz+zr(jvShape-1+ldec+iNode)*zr(jvForc+kdec+2)
         end do
         do iNode = 1, nno
             kdec = ndim*(iNode-1)
-            zr(jvVect+kdec )  = zr(jvVect+kdec )  + jacWeight * fx * zr(jvShape+ldec+iNode-1)
-            zr(jvVect+kdec+1) = zr(jvVect+kdec+1) + jacWeight * fy * zr(jvShape+ldec+iNode-1)
-            zr(jvVect+kdec+2) = zr(jvVect+kdec+2) + jacWeight * fz * zr(jvShape+ldec+iNode-1)
+            zr(jvVect+kdec) = zr(jvVect+kdec)+jacWeight*fx*zr(jvShape+ldec+iNode-1)
+            zr(jvVect+kdec+1) = zr(jvVect+kdec+1)+jacWeight*fy*zr(jvShape+ldec+iNode-1)
+            zr(jvVect+kdec+2) = zr(jvVect+kdec+2)+jacWeight*fz*zr(jvShape+ldec+iNode-1)
         end do
     end do
 !

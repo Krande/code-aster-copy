@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine cafthm(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -37,8 +37,8 @@ implicit none
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ character(len=4), intent(in) :: valeType
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FLUX_THM_REP'
-    integer :: n1, n2, n3, n4, nflux, jvalv,  iocc
+    integer :: n1, n2, n3, n4, nflux, jvalv, iocc
     integer :: nbtou, nbma, jma, ncmp
     integer :: iret, nfiss, jnfis
     character(len=8) :: k8b, typmcl(2)
@@ -77,12 +77,12 @@ character(len=4), intent(in) :: valeType
     call exixfe(model, iret)
 !
     if (valeType .eq. 'REEL') then
-       call alcart('G', carte, mesh, 'FTHM_R')
-    else if (valeType.eq.'FONC') then
-       call alcart('G', carte, mesh, 'FTHM_F')
+        call alcart('G', carte, mesh, 'FTHM_R')
+    else if (valeType .eq. 'FONC') then
+        call alcart('G', carte, mesh, 'FTHM_F')
     else
-       ASSERT(ASTER_FALSE)
-    endif
+        ASSERT(ASTER_FALSE)
+    end if
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
@@ -95,9 +95,9 @@ character(len=4), intent(in) :: valeType
     vncmp(3) = 'PTHER'
 !
     if (valeType .eq. 'FONC') then
-       ncmp = 4
-       vncmp(4) = 'PFLUF'
-    endif
+        ncmp = 4
+        vncmp(4) = 'PFLUF'
+    end if
 !
     if (valeType .eq. 'REEL') then
         zr(jvalv) = 0.d0
@@ -108,7 +108,7 @@ character(len=4), intent(in) :: valeType
         zk8(jvalv+1) = '&FOZERO'
         zk8(jvalv+2) = '&FOZERO'
         zk8(jvalv+3) = '&FOZERO'
-    endif
+    end if
     call nocart(carte, 1, ncmp)
 !
     mesmai = '&&CAFTHM.MAILLES_INTE'
@@ -130,7 +130,7 @@ character(len=4), intent(in) :: valeType
             call getvid(keywordFact, 'FLUN_HYDR2', iocc=iocc, scal=zk8(jvalv+1), nbret=n2)
             call getvid(keywordFact, 'FLUN', iocc=iocc, scal=zk8(jvalv+2), nbret=n3)
             call getvid(keywordFact, 'FLUN_FRAC', iocc=iocc, scal=zk8(jvalv+3), nbret=n4)
-        endif
+        end if
 !
 ! --- TEST SUR LES CAL
 !
@@ -138,34 +138,34 @@ character(len=4), intent(in) :: valeType
         call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !
         nfiss = 0
-        if (iret.ne.0) then
+        if (iret .ne. 0) then
             call jeveuo(model//'.NFIS', 'L', jnfis)
             nfiss = zi(jnfis)
-        endif
+        end if
 !
         if (nbtou .ne. 0) then
 !
             call nocart(carte, 1, ncmp)
         else
-            if (nfiss.ne.0) then
+            if (nfiss .ne. 0) then
 !           LES FLUX POUR LA DEUXIEME PRESSION PRE2 ET POUR LA THERMIQUE
 !           NE SONT PAS AUTORISES EN HM-XFEM
-               if ((n2.ne.0).and.(n3.ne.0)) call utmess('F', 'XFEM_48')
-            endif
+                if ((n2 .ne. 0) .and. (n3 .ne. 0)) call utmess('F', 'XFEM_48')
+            end if
 !           LES FLUX DE FLUIDE DANS LES FRACTURES NE SONT AUTORISES QU'EN HM_XFEM
-            if ((valeType.eq.'FONC') .and. (nfiss.eq.0) .and. (n4.ne.0)) call utmess('F', 'XFEM_28')
-            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc,&
+      if ((valeType .eq. 'FONC') .and. (nfiss .eq. 0) .and. (n4 .ne. 0)) call utmess('F', 'XFEM_28')
+            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc, &
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jma)
-                call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
+                call nocart(carte, 3, ncmp, mode='NUM', nma=nbma, &
                             limanu=zi(jma))
                 call jedetr(mesmai)
-            endif
-        endif
+            end if
+        end if
 !
     end do
- 99 continue
+99  continue
 !
 !
     call jedema()

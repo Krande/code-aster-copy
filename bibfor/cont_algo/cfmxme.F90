@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine cfmxme(nume_dof, sddyna, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
@@ -36,9 +36,9 @@ implicit none
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: sddyna
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,22 +71,22 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_5')
-    endif
+        call utmess('I', 'CONTACT5_5')
+    end if
 !
 ! - Get parameters
 !
-    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC')
-    l_pena_cont  = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
-    l_fric       = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
-    l_cont_node  = ds_contact%l_cont_node
-    l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    l_pena_cont = cfdisl(ds_contact%sdcont_defi, 'EXIS_PENA')
+    l_fric = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
+    l_cont_node = ds_contact%l_cont_node
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
 ! - Create datastructure for general informations about contact
 !
     sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     ztabf = cfmmvd('ZTABF')
-    call wkvect(sdcont_tabfin, 'V V R', ztabf*nt_cont_poin+1, vr = v_sdcont_tabfin)
+    call wkvect(sdcont_tabfin, 'V V R', ztabf*nt_cont_poin+1, vr=v_sdcont_tabfin)
     v_sdcont_tabfin(1) = nt_cont_poin
 !
 ! - Create fields for dynamic management
@@ -94,15 +94,15 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     if (l_dyna) then
         sdcont_vitini = ds_contact%sdcont_solv(1:14)//'.VITI'
         sdcont_accini = ds_contact%sdcont_solv(1:14)//'.ACCI'
-        call vtcreb(sdcont_vitini, 'V', 'R', nume_ddlz = nume_dof)
-        call vtcreb(sdcont_accini, 'V', 'R', nume_ddlz = nume_dof)
-    endif
+        call vtcreb(sdcont_vitini, 'V', 'R', nume_ddlz=nume_dof)
+        call vtcreb(sdcont_accini, 'V', 'R', nume_ddlz=nume_dof)
+    end if
 !
 ! - Create datastructure to save contact states (step cutting management)
 !
-    zetat         = cfmmvd('ZETAT')
+    zetat = cfmmvd('ZETAT')
     sdcont_etatct = ds_contact%sdcont_solv(1:14)//'.ETATCT'
-    call wkvect(sdcont_etatct, 'V V R', zetat*nt_cont_poin, vr = v_sdcont_etatct)
+    call wkvect(sdcont_etatct, 'V V R', zetat*nt_cont_poin, vr=v_sdcont_etatct)
 !
 ! - Create datastructure for cycling detection and treatment
 !
@@ -113,26 +113,26 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     if (l_pena_cont) then
         call mm_pene_crsd(ds_contact)
-    endif
+    end if
 !
 ! - Create datastructure to save gaps
 !
     sdcont_apjeu = ds_contact%sdcont_solv(1:14)//'.APJEU'
-    call wkvect(sdcont_apjeu, 'V V R', nt_cont_poin, vr = v_sdcont_apjeu)
+    call wkvect(sdcont_apjeu, 'V V R', nt_cont_poin, vr=v_sdcont_apjeu)
 !
 ! - Warning if not node integration (=> no CONT_NOEU)
 !
-    if (.not.l_cont_node) then
+    if (.not. l_cont_node) then
         call utmess('A', 'CONTACT3_16')
-    endif
+    end if
 !
 ! - Forces to solve
 !
-    call vtcreb(ds_contact%cneltc, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(ds_contact%cneltc, 'V', 'R', nume_ddlz=nume_dof)
     ds_contact%l_cneltc = ASTER_TRUE
     if (l_fric) then
-        call vtcreb(ds_contact%cneltf, 'V', 'R', nume_ddlz = nume_dof)
+        call vtcreb(ds_contact%cneltf, 'V', 'R', nume_ddlz=nume_dof)
         ds_contact%l_cneltf = ASTER_TRUE
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmvecd(imate, mate, nmat, matcst, loi,&
-                  hook, dt, tp, p, np,&
-                  beta, nb, ep, rm, dm,&
-                  dsgde, dsgdb, dsgdp, drbde, drpde,&
-                  rb, rp, drbdb, drbdp, drpdb,&
+subroutine nmvecd(imate, mate, nmat, matcst, loi, &
+                  hook, dt, tp, p, np, &
+                  beta, nb, ep, rm, dm, &
+                  dsgde, dsgdb, dsgdp, drbde, drpde, &
+                  rb, rp, drbdb, drbdp, drpdb, &
                   drpdp, etatf, ier)
 ! aslint: disable=W1504
     implicit none
@@ -86,7 +86,7 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
 !-----------------------------------------------------------------------
     integer :: k, j, i
     real(kind=8) :: dammax, epsi
-    parameter  (dammax = 0.99d0)
+    parameter(dammax=0.99d0)
 !
     real(kind=8) :: dkron(6, 6), sc, dscdr, unssc, arg
     real(kind=8) :: ca1, ca0, drpdsc, drpdse, unssem, ec, unmd, ea
@@ -95,7 +95,7 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
     real(kind=8) :: dhede(6, 6), dhedb(6, 6), dhedp(6, 2), xhi, p2, epsvp(6)
     real(kind=8) :: p2dxhi, p2dp2, he(6), dxhidb(6), kxhi, dkxidx
 !
-    data dkron /1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0,&
+    data dkron/1.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0,&
      &            0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 0.d0,&
      &            0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0,&
      &            0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0,&
@@ -106,15 +106,15 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
 !   ===================
 !JMP      EPSI   = SQRT( R8PREM() )
 !     EPSI   = 1.D-15
-    epsi=r8miem()
+    epsi = r8miem()
     ier = 0
-    sy = mate(4,2)
-    gn = mate(1,2)
+    sy = mate(4, 2)
+    gn = mate(1, 2)
     if (gn .le. 0.d0) goto 05001
-    unsm = mate(2,2)
-    gk = 1.d0/mate(3,2)
-    gr = mate(7,2)
-    ga = mate(8,2)
+    unsm = mate(2, 2)
+    gk = 1.d0/mate(3, 2)
+    gr = mate(7, 2)
+    ga = mate(8, 2)
     se = 0.d0
     call r8inir(nb, 0.d0, dsedb, 1)
     call r8inir(nb*nb, 0.d0, dsedb2, 1)
@@ -131,7 +131,7 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
 !
 !-- 1.1. CRITERE DE VM, DERIVEE PREMIERE ET SECONDE
 !   ----------------------------------------------
-    call lcdvmi(beta, 0.d0, crit, dsedb, dsedb2,&
+    call lcdvmi(beta, 0.d0, crit, dsedb, dsedb2, &
                 se)
 !
 !-- 1.2. ETAT COURANT DU SYSTEME
@@ -140,56 +140,56 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
     if (d .ge. dammax) then
         p(2) = 0.d0
         d = dammax
-        etatf(3)='DAMMAXO'
-    endif
+        etatf(3) = 'DAMMAXO'
+    end if
     if (d .lt. 0.d0) then
         ier = 10
         goto 999
-    endif
+    end if
     unmd = 1.d0-d
     r = rm+dt*p(1)
     do i = 1, nb
-        epsvp(i)=epsvpm(i)+dt*p(1)/unmd*dsedb(i)
+        epsvp(i) = epsvpm(i)+dt*p(1)/unmd*dsedb(i)
     end do
 !
 !-- 1.3. CONTRAINTES ET DERIVEES
 !   ----------------------------
     do i = 1, nb
-        he(i)=0.d0
+        he(i) = 0.d0
         do k = 1, nb
-            he(i)=he(i)+unmd*hook(i,k)*(epst(k)-epsth(k)-epsvp(k))
+            he(i) = he(i)+unmd*hook(i, k)*(epst(k)-epsth(k)-epsvp(k))
         end do
     end do
 !
     do i = 1, nb
         do j = 1, nb
-            dhede(i,j)=0.d0
-            dhede(i,j)=dhede(i,j)+unmd*hook(i,j)
+            dhede(i, j) = 0.d0
+            dhede(i, j) = dhede(i, j)+unmd*hook(i, j)
         end do
 !
         do j = 1, nb
-            dhedb(i,j)=0.d0
+            dhedb(i, j) = 0.d0
             do k = 1, nb
-                dhedb(i,j)=dhedb(i,j)-hook(i,k)*dt*p(1)*dsedb2(k,j)
+                dhedb(i, j) = dhedb(i, j)-hook(i, k)*dt*p(1)*dsedb2(k, j)
             end do
         end do
 !
-        dhedp(i,1)=0.d0
+        dhedp(i, 1) = 0.d0
         do k = 1, nb
-            dhedp(i,1)=dhedp(i,1)-hook(i,k)*dt*dsedb(k)
+            dhedp(i, 1) = dhedp(i, 1)-hook(i, k)*dt*dsedb(k)
         end do
 !
-        dhedp(i,2)=0.d0
+        dhedp(i, 2) = 0.d0
         do k = 1, nb
-            dhedp(i,2)=dhedp(i,2)-dt*hook(i,k)*(epst(k)-epsth(k)-&
-            epsvp(k))
+            dhedp(i, 2) = dhedp(i, 2)-dt*hook(i, k)*(epst(k)-epsth(k)- &
+                                                     epsvp(k))
         end do
 !
-        dsgdp(i,1)= 0.d0
-        dsgdp(i,2)= 0.d0
+        dsgdp(i, 1) = 0.d0
+        dsgdp(i, 2) = 0.d0
         do j = 1, nb
-            dsgde(i,j)= 0.d0
-            dsgdb(i,j)= dkron(i,j)
+            dsgde(i, j) = 0.d0
+            dsgdb(i, j) = dkron(i, j)
         end do
 !
     end do
@@ -197,13 +197,13 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
 !-- 2. EQUATIONS EN BETA ET DERIVEES
 !   ================================
     do i = 1, nb
-        rb(i)=beta(i)-he(i)
+        rb(i) = beta(i)-he(i)
         do j = 1, nb
-            drbde(i,j)=-dhede(i,j)
-            drbdb(i,j)=-dhedb(i,j)+dkron(i,j)
+            drbde(i, j) = -dhede(i, j)
+            drbdb(i, j) = -dhedb(i, j)+dkron(i, j)
         end do
-        drbdp(i,1)=-dhedp(i,1)
-        drbdp(i,2)=-dhedp(i,2)
+        drbdp(i, 1) = -dhedp(i, 1)
+        drbdp(i, 2) = -dhedp(i, 2)
     end do
 !
 !-- 3. EQUATIONS EN P(1) ET DERIVEES
@@ -211,13 +211,13 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
 !--  3.1. SI ELASTIQUE
 !    -----------------
     if (etatf(1) .eq. 'ELASTIC' .and. se .le. (sy*unmd)) then
-        rp(1)=p(1)-0.d0
+        rp(1) = p(1)-0.d0
         do j = 1, 6
-            drpde(1,j)=0.d0
-            drpdb(1,j)=0.d0
+            drpde(1, j) = 0.d0
+            drpdb(1, j) = 0.d0
         end do
-        drpdp(1,1)=1.d0
-        drpdp(1,2)=0.d0
+        drpdp(1, 1) = 1.d0
+        drpdp(1, 2) = 0.d0
 !
 !--  3.2. SI PLASTIQUE
 !    -----------------
@@ -229,67 +229,67 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
         else
             sc = gk*exp(log(r)*unsm)
             dscdr = sc/r*unsm*dt
-        endif
+        end if
         if (r .le. 1.d-5 .and. p(1) .le. 0.d0) then
             gn = gn/(1.d0+gn*unsm)
             sc = gk*dt**unsm
-        endif
+        end if
         if (sc .le. epsi) then
             unssc = 1.d0/epsi
         else
             unssc = 1.d0/sc
-        endif
+        end if
         if (semsy .le. epsi) then
             unssem = 1.d0/epsi
         else
             unssem = 1.d0/semsy
-        endif
+        end if
         arg = gn*(log(semsy)-log(sc))
         if (arg .gt. log(0.1d0/dt)) then
             ca1 = -gn*(0.1d0/dt)**((gn-1.d0)/gn)
             ca0 = (gn-1.d0)*(0.1d0/dt)
-            rp(1)= p(1)+ ca1*semsy*unssc + ca0
+            rp(1) = p(1)+ca1*semsy*unssc+ca0
             drpdsc = -ca1*semsy*unssc*unssc
             drpdse = ca1*unssc
-            etatf(2)='TANGENT'
+            etatf(2) = 'TANGENT'
         else
-            rp(1)= p(1) - exp(arg)
+            rp(1) = p(1)-exp(arg)
             drpdsc = exp(arg)*gn*unssc
-            drpdse = - gn*unssem*exp(arg)
-            etatf(2)='EXPONEN'
-        endif
+            drpdse = -gn*unssem*exp(arg)
+            etatf(2) = 'EXPONEN'
+        end if
         do j = 1, nb
-            drpde(1,j)= 0.d0
-            drpdb(1,j)= drpdse/unmd*dsedb(j)
+            drpde(1, j) = 0.d0
+            drpdb(1, j) = drpdse/unmd*dsedb(j)
         end do
-        drpdp(1,1)= 1.d0 + drpdsc*dscdr
-        drpdp(1,2)= drpdse*se*dt/unmd/unmd
-        if (etatf(1) .eq. 'ELASTIC') etatf(1)='PLASTIC'
-    endif
+        drpdp(1, 1) = 1.d0+drpdsc*dscdr
+        drpdp(1, 2) = drpdse*se*dt/unmd/unmd
+        if (etatf(1) .eq. 'ELASTIC') etatf(1) = 'PLASTIC'
+    end if
 !
 !-- 4. EQUATIONS EN P(2) ET DERIVEES
 !   ================================
     if (loi .eq. 'VENDOCHAB') then
-        call nmvexi(beta, se, dsedb, nb, mate,&
+        call nmvexi(beta, se, dsedb, nb, mate, &
                     nmat, xhi, dxhidb)
-        kxhi = mate(9,2)
-    else if (loi.eq.'VISC_ENDO_LEMA') then
+        kxhi = mate(9, 2)
+    else if (loi .eq. 'VISC_ENDO_LEMA') then
         kxhi = 0.d0
         xhi = 0.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     dkxidx = 0.d0
     if (xhi .le. epsi .or. d .eq. dammax) then
-        p2 =0.d0
-        p2dp2 =0.d0
-        p2dxhi=0.d0
+        p2 = 0.d0
+        p2dp2 = 0.d0
+        p2dxhi = 0.d0
     else
         if (matcst .eq. 'NAP') then
             call nmvekx(imate, tp, xhi, kxhi, dkxidx)
-            mate(9,2) = kxhi
-        endif
+            mate(9, 2) = kxhi
+        end if
 !
         ea = -kxhi*log(unmd)
         ec = gr*log(xhi/ga)
@@ -297,14 +297,14 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
         rp(2) = p(2)-p2
         p2dp2 = p2*kxhi*dt/(1.d0-d)
         p2dxhi = p2*(gr/xhi-log(1.d0-d)*dkxidx)
-    endif
+    end if
 !
     do j = 1, nb
-        drpde(2,j)=0.d0
-        drpdb(2,j)=-p2dxhi*dxhidb(j)
+        drpde(2, j) = 0.d0
+        drpdb(2, j) = -p2dxhi*dxhidb(j)
     end do
-    drpdp(2,1)=0.d0
-    drpdp(2,2)=1.d0-p2dp2
+    drpdp(2, 1) = 0.d0
+    drpdp(2, 2) = 1.d0-p2dp2
 !
     goto 999
 !

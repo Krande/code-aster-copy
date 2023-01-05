@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,29 +17,29 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmtee(phase , l_pena_cont, l_pena_fric,&
-                  ndim  , nne        ,&
-                  mprojn, mprojt     ,&
-                  wpg   , ffe        , jacobi     ,&
-                  coefac, coefaf     , coefff     , lambda,&
-                  rese  , nrese      ,&
+subroutine mmmtee(phase, l_pena_cont, l_pena_fric, &
+                  ndim, nne, &
+                  mprojn, mprojt, &
+                  wpg, ffe, jacobi, &
+                  coefac, coefaf, coefff, lambda, &
+                  rese, nrese, &
                   matree)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmmmpb.h"
 #include "asterfort/pmavec.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont, l_pena_fric
-integer, intent(in) :: ndim, nne
-real(kind=8), intent(in) :: mprojn(3, 3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, ffe(9), jacobi
-real(kind=8), intent(in) :: rese(3), nrese
-real(kind=8), intent(in) :: coefac, coefaf
-real(kind=8), intent(in) :: lambda, coefff
-real(kind=8), intent(out) :: matree(27, 27)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont, l_pena_fric
+    integer, intent(in) :: ndim, nne
+    real(kind=8), intent(in) :: mprojn(3, 3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, ffe(9), jacobi
+    real(kind=8), intent(in) :: rese(3), nrese
+    real(kind=8), intent(in) :: coefac, coefaf
+    real(kind=8), intent(in) :: lambda, coefff
+    real(kind=8), intent(out) :: matree(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,28 +78,28 @@ real(kind=8), intent(out) :: matree(27, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    e(:,:) = 0.d0
-    d(:,:) = 0.d0
-    g(:,:) = 0.d0
-    d1(:)  = 0.d0
-    d2(:)  = 0.d0
-    d3(:)  = 0.d0
-    c1(:)  = 0.d0
-    c2(:)  = 0.d0
-    c3(:)  = 0.d0
-    c1(:)  = mprojt(:,1)
-    c2(:)  = mprojt(:,2)
-    c3(:)  = mprojt(:,3)
+    e(:, :) = 0.d0
+    d(:, :) = 0.d0
+    g(:, :) = 0.d0
+    d1(:) = 0.d0
+    d2(:) = 0.d0
+    d3(:) = 0.d0
+    c1(:) = 0.d0
+    c2(:) = 0.d0
+    c3(:) = 0.d0
+    c1(:) = mprojt(:, 1)
+    c2(:) = mprojt(:, 2)
+    c3(:) = mprojt(:, 3)
 !
 ! - PRODUIT [E] = [Pt]x[Pt]
 !
-    e = matmul(mprojt,mprojt)
+    e = matmul(mprojt, mprojt)
 !
 ! - MATRICE DE PROJECTION SUR LA BOULE UNITE
 !
     if (phase .eq. 'GLIS') then
         call mmmmpb(rese, nrese, ndim, matprb)
-    endif
+    end if
 !
 ! --- VECTEUR PROJ. BOULE SUR PLAN TGT
 !
@@ -108,18 +108,18 @@ real(kind=8), intent(out) :: matree(27, 27)
         call pmavec('ZERO', 3, matprb, c2, d2)
         call pmavec('ZERO', 3, matprb, c3, d3)
 ! ----- MATRICE [G] = [{D1}{D2}{D3}]
-        g(:,1) = d1(:)
-        g(:,2) = d2(:)
-        g(:,3) = d3(:)
+        g(:, 1) = d1(:)
+        g(:, 2) = d2(:)
+        g(:, 3) = d3(:)
 ! ----- MATRICE [D] = [Pt]*[G]t
         do i = 1, ndim
             do j = 1, ndim
                 do k = 1, ndim
-                    d(i,j) = g(k,i)*mprojt(k,j) + d(i,j)
+                    d(i, j) = g(k, i)*mprojt(k, j)+d(i, j)
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - CALCUL DES TERMES
 !
@@ -131,8 +131,8 @@ real(kind=8), intent(out) :: matree(27, 27)
                         do l = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) +&
-                                            coefac*wpg*jacobi*ffe(i)*mprojn(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)+ &
+                                             coefac*wpg*jacobi*ffe(i)*mprojn(l, k)*ffe(j)
                         end do
                     end do
                 end do
@@ -144,14 +144,14 @@ real(kind=8), intent(out) :: matree(27, 27)
                         do l = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) +&
-                                            coefac*wpg*jacobi*ffe(i)*mprojn(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)+ &
+                                             coefac*wpg*jacobi*ffe(i)*mprojn(l, k)*ffe(j)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 
     if (phase .eq. 'ADHE') then
         if (l_pena_fric) then
@@ -161,8 +161,8 @@ real(kind=8), intent(out) :: matree(27, 27)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l, k)*ffe(j)
                         end do
                     end do
                 end do
@@ -174,16 +174,16 @@ real(kind=8), intent(out) :: matree(27, 27)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l, k)*ffe(j)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 
-    if (phase .eq.'GLIS') then
+    if (phase .eq. 'GLIS') then
         if (l_pena_fric) then
             do i = 1, nne
                 do j = 1, nne
@@ -191,8 +191,8 @@ real(kind=8), intent(out) :: matree(27, 27)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l, k)*ffe(j)
                         end do
                     end do
                 end do
@@ -204,13 +204,13 @@ real(kind=8), intent(out) :: matree(27, 27)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l, k)*ffe(j)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

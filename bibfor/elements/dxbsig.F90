@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
+subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma, &
                   option)
     implicit none
 #include "jeveux.h"
@@ -50,8 +50,8 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
 !
     real(kind=8) :: bsivar, zero
 !-----------------------------------------------------------------------
-    parameter     (nbsig   = 8)
-    parameter     (lgligb  = 24)
+    parameter(nbsig=8)
+    parameter(lgligb=24)
 !
     real(kind=8) :: bmat(nbsig, lgligb)
     real(kind=8) :: bsiloc(lgligb), jacgau, cara(25)
@@ -59,7 +59,7 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
 !
     zero = 0.0d0
 !
-    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or. nomte .eq. 'MEDKTG3 ' .or.&
+    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or. nomte .eq. 'MEDKTG3 ' .or. &
         nomte .eq. 'MET3GG3 ' .or. nomte .eq. 'MET3TR3 ') then
         npg = 3
         nno = 3
@@ -69,9 +69,9 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
 !      -------------------------------------------------
         call gtria3(xyzl, cara)
 !
-        elseif (nomte .eq.'MEDKQU4 '.or.nomte .eq.'MEDSQU4 ' .or.nomte&
-    .eq.'MEQ4QU4 '.or.nomte .eq.'MEDKQG4 ' .or.nomte .eq.'MEQ4GG4 ')&
-    then
+    elseif (nomte .eq. 'MEDKQU4 ' .or. nomte .eq. 'MEDSQU4 ' .or. nomte &
+            .eq. 'MEQ4QU4 ' .or. nomte .eq. 'MEDKQG4 ' .or. nomte .eq. 'MEQ4GG4 ') &
+        then
         npg = 4
         nno = 4
 !
@@ -81,15 +81,15 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
 !
     else
         call utmess('F', 'ELEMENTS_14', sk=nomte)
-    endif
+    end if
 !
 ! --- INITIALISATIONS :
 !     -----------------
-    do  i = 1, lgligb
+    do i = 1, lgligb
         bsiloc(i) = zero
         bsigma(i) = zero
         do j = 1, nbsig
-            bmat(j,i) = zero
+            bmat(j, i) = zero
         end do
     end do
 !
@@ -103,21 +103,21 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
 !  --      COURANT : (EPS_1) = (B)*(UN)
 !          ----------------------------
 !
-        call dxbmat(nomte, cara, xyzl, pgl, igau,&
+        call dxbmat(nomte, cara, xyzl, pgl, igau, &
                     jacgau, bmat)
 !
 !  --        CALCUL DU PRODUIT (BT)*(SIGMA)*JACOBIEN*POIDS
 !          ---------------------------------------------
 !
         if (option .eq. 'FORC_NODA') then
-            call btsig(lgligb, nbsig, jacgau, bmat, sigma(1+8*(igau-1)),&
+            call btsig(lgligb, nbsig, jacgau, bmat, sigma(1+8*(igau-1)), &
                        bsiloc)
         elseif (option .eq. 'REFE_FORC_NODA') then
-            call btsir(lgligb, nbsig, jacgau, bmat, sigma(1+8*(igau-1)),&
+            call btsir(lgligb, nbsig, jacgau, bmat, sigma(1+8*(igau-1)), &
                        bsiloc)
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 ! --- PERMUTATION DES COMPOSANTES EN BETA_X ET  BETA_Y

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine tanbul(option, ndim, g, mate, compor,&
+subroutine tanbul(option, ndim, g, mate, compor, &
                   resi, mini, alpha, dsbdep, trepst)
 !
-implicit none
+    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
@@ -31,10 +31,10 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-aster_logical :: resi, mini
-integer :: ndim, g, mate
-real(kind=8) :: alpha, dsbdep(2*ndim, 2*ndim), trepst
-character(len=16) :: option, compor
+    aster_logical :: resi, mini
+    integer :: ndim, g, mate
+    real(kind=8) :: alpha, dsbdep(2*ndim, 2*ndim), trepst
+    character(len=16) :: option, compor
 !-----------------------------------------------------------------------
 !          CALCUL DE LA MATRICE TANGENTE BULLE
 !-----------------------------------------------------------------------
@@ -73,9 +73,9 @@ character(len=16) :: option, compor
 ! - LA FORMULATION INCO A 2 CHAMPS UP NE FONCTIONNE QU AVEC ELAS OU VMIS
 ! - POUR L INSTANT.
 ! - POUR L ANISOTROPIE IL FAUDRAIT CALCULER XYZGAU ET REPERE
-    if (.not.( compor(1:4) .eq. 'ELAS'.or. compor(1:9) .eq. 'VMIS_ISOT' )) then
+    if (.not. (compor(1:4) .eq. 'ELAS' .or. compor(1:9) .eq. 'VMIS_ISOT')) then
         call utmess('F', 'ELEMENTSINCO_1')
-    endif
+    end if
 !
 ! - RECUPERATION DE L INSTANT
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
@@ -85,19 +85,19 @@ character(len=16) :: option, compor
     else
         valpar = r8vide()
         nbpar = 0
-    endif
+    end if
 !
 ! - RECUPERATION DE E ET NU DANS LE FICHIER PYTHON
-    nomres(1)='E'
-    nomres(2)='NU'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
 !
-    call rcvalb('RIGI', g, 1, '+', mate,&
-                ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb('RIGI', g, 1, '+', mate, &
+                ' ', 'ELAS', nbpar, nompar, [valpar], &
                 2, nomres, valres, icodre, 1)
 !
     e = valres(1)
     nu = valres(2)
-    alpha=(3.d0*(1.d0-2.d0*nu))/e
+    alpha = (3.d0*(1.d0-2.d0*nu))/e
 !
     if (mini) then
         coef = 1.d0/((1.d0+nu)*(1.d0-2.d0*nu))
@@ -105,42 +105,42 @@ character(len=16) :: option, compor
         coef2 = e*nu*coef
         coef3 = 2.d0*e/(1.d0+nu)
 !
-        dsbdep(1,1) = coef1
-        dsbdep(1,2) = coef2
-        dsbdep(1,3) = coef2
+        dsbdep(1, 1) = coef1
+        dsbdep(1, 2) = coef2
+        dsbdep(1, 3) = coef2
 !
-        dsbdep(2,1) = coef2
-        dsbdep(2,2) = coef1
-        dsbdep(2,3) = coef2
+        dsbdep(2, 1) = coef2
+        dsbdep(2, 2) = coef1
+        dsbdep(2, 3) = coef2
 !
-        dsbdep(3,1) = coef2
-        dsbdep(3,2) = coef2
-        dsbdep(3,3) = coef1
+        dsbdep(3, 1) = coef2
+        dsbdep(3, 2) = coef2
+        dsbdep(3, 3) = coef1
 !
-        dsbdep(4,4) = coef3
+        dsbdep(4, 4) = coef3
         if (ndim .eq. 3) then
-            dsbdep(5,5) = coef3
-            dsbdep(6,6) = coef3
-        endif
-    endif
+            dsbdep(5, 5) = coef3
+            dsbdep(6, 6) = coef3
+        end if
+    end if
 !
     if (resi) then
-        call epstmc(fami, ndim, valpar, '+', g,&
-                    1, xyzgau, repere, mate, option,&
+        call epstmc(fami, ndim, valpar, '+', g, &
+                    1, xyzgau, repere, mate, option, &
                     epsth)
 !
 ! - TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
         iepsv = 0
         trepst = 0.d0
         do k = 1, 6
-            if (abs(epsth(k)) .gt. r8miem()) iepsv=1
+            if (abs(epsth(k)) .gt. r8miem()) iepsv = 1
         end do
 ! - TOUTES DES COMPOSANTES SONT NULLES. ON EVITE DE CALCULER TREPST
         if (iepsv .ne. 0) then
             do k = 1, 3
-                trepst = trepst + epsth(k)
+                trepst = trepst+epsth(k)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,33 +51,33 @@ subroutine symema(geomi, perp, pt)
 !
     call jemarq()
 !     RECUPERATION DE L'ADRESSE DES COORDONNEES ET DU NOMBRE DE POINTS
-    coorjv=geomi(1:19)//'.VALE'
+    coorjv = geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
     call jelira(coorjv, 'LONMAX', n1)
-    iadcoo = iadcoo - 1
-    n1=n1/3
+    iadcoo = iadcoo-1
+    n1 = n1/3
 !
 !     NORMALISATION DE PERP
-    prec=1.d-14
-    norm = dnrm2(3,perp,1)
+    prec = 1.d-14
+    norm = dnrm2(3, perp, 1)
     if (norm .lt. prec) then
         call utmess('F', 'ALGORITH10_87')
-    endif
+    end if
     perp(1) = perp(1)/norm
     perp(2) = perp(2)/norm
     perp(3) = perp(3)/norm
 !     LE PLAN PASSE PAR "PT"
-    xd = -ddot(3,perp,1,pt,1)
+    xd = -ddot(3, perp, 1, pt, 1)
 !
 !     BOUCLE SUR TOUS LES POINTS
     do i = 1, n1
         pti(1) = zr(iadcoo+3*(i-1)+1)
         pti(2) = zr(iadcoo+3*(i-1)+2)
         pti(3) = zr(iadcoo+3*(i-1)+3)
-        dist = ddot(3,perp,1,pti,1) + xd
-        zr(iadcoo+3*(i-1)+1) = -2.0d0*dist*perp(1) + pti(1)
-        zr(iadcoo+3*(i-1)+2) = -2.0d0*dist*perp(2) + pti(2)
-        zr(iadcoo+3*(i-1)+3) = -2.0d0*dist*perp(3) + pti(3)
+        dist = ddot(3, perp, 1, pti, 1)+xd
+        zr(iadcoo+3*(i-1)+1) = -2.0d0*dist*perp(1)+pti(1)
+        zr(iadcoo+3*(i-1)+2) = -2.0d0*dist*perp(2)+pti(2)
+        zr(iadcoo+3*(i-1)+3) = -2.0d0*dist*perp(3)+pti(3)
     end do
 !
     call jedema()

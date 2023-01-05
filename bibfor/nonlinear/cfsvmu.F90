@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfsvmu(ds_contact, lconv)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -65,7 +65,7 @@ implicit none
 !
 ! --- LE LAGRANGE DE CONTACT N'EST SAUVEGARDE QU'EN GCP
 !
-    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
+    lgcp = cfdisl(ds_contact%sdcont_defi, 'CONT_GCP')
 !
     if (lgcp) then
 !
@@ -75,7 +75,7 @@ implicit none
             svmu = ds_contact%sdcont_solv(1:14)//'.SVM0'
         else
             svmu = ds_contact%sdcont_solv(1:14)//'.SVMU'
-        endif
+        end if
         call jeveuo(svmu, 'E', jsvmu)
         mu = ds_contact%sdcont_solv(1:14)//'.MU'
         call jeveuo(mu, 'L', jmu)
@@ -84,22 +84,22 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-        nnoco = cfdisi(ds_contact%sdcont_defi,'NNOCO')
+        nnoco = cfdisi(ds_contact%sdcont_defi, 'NNOCO')
         call jerazo(svmu, nnoco, 1)
 !
 ! --- INFORMATIONS
 !
-        nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
+        nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
 !
 ! --- SAUVEGARDE DU STATUT DE FROTTEMENT
 !
         do iliai = 1, nbliai
             posnoe = zi(jnumli-1+4*(iliai-1)+2)
-            ASSERT(posnoe.le.nnoco)
-            ASSERT(zr(jsvmu-1+posnoe).eq.0.d0)
+            ASSERT(posnoe .le. nnoco)
+            ASSERT(zr(jsvmu-1+posnoe) .eq. 0.d0)
             zr(jsvmu-1+posnoe) = zr(jmu-1+iliai)
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

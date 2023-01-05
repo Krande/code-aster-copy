@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cgfono(ndim, nno1, nno2, npg, wref,&
-                  vff1, vff2, dffr1, geom, tang,&
+subroutine cgfono(ndim, nno1, nno2, npg, wref, &
+                  vff1, vff2, dffr1, geom, tang, &
                   iu, iuc, im, sigp, vect)
 !
     implicit none
@@ -56,8 +56,8 @@ subroutine cgfono(ndim, nno1, nno2, npg, wref,&
 !
     do g = 1, npg
 !
-        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g),&
-                    geom, tang, wg, l, b,&
+        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g), &
+                    geom, tang, wg, l, b, &
                     courb)
 !
 !        CONVENTION DE RANGEMENT SIGP(1,2,3) EXPLICITE CI-DESSOUS
@@ -67,20 +67,20 @@ subroutine cgfono(ndim, nno1, nno2, npg, wref,&
 !        VECTEUR FINT:U
         do n = 1, nno1
             do i = 1, ndim
-                kk = iu(i,n)
-                t1 = b(i,n)*sigp(1,g)
-                vect(kk) = vect(kk) + wg*t1
+                kk = iu(i, n)
+                t1 = b(i, n)*sigp(1, g)
+                vect(kk) = vect(kk)+wg*t1
             end do
-            kk=iuc(n)
-            t1=b(4,n)*sigp(1,g)+l(n)*sigp(2,g)
-            vect(kk)=vect(kk)+wg*t1
+            kk = iuc(n)
+            t1 = b(4, n)*sigp(1, g)+l(n)*sigp(2, g)
+            vect(kk) = vect(kk)+wg*t1
         end do
 !
 !        VECTEUR FINT:M
         do n = 1, nno2
             kk = im(n)
-            t1 = vff2(n,g)*sigp(3,g)
-            vect(kk) = vect(kk) + wg*t1
+            t1 = vff2(n, g)*sigp(3, g)
+            vect(kk) = vect(kk)+wg*t1
         end do
 !
 !

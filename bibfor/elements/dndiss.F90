@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
-                  nmprox, deps, newnbn, newpla, newdpl,&
-                  newddp, newzfg, despit, ddisit, dc1,&
+subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl, &
+                  nmprox, deps, newnbn, newpla, newdpl, &
+                  newddp, newzfg, despit, ddisit, dc1, &
                   dc2, dtg, normm, normn)
 !
     implicit none
@@ -86,13 +86,13 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
     do j = 1, 6
         cdeps(j) = deps(j)
         do i = 1, 6
-            cdtg(i,j) = dtg(i,j)
+            cdtg(i, j) = dtg(i, j)
         end do
     end do
 !
     if (ncrit .eq. -1) then
 !     PREDICTEUR ELASTIQUE HORS CHAMP
-        ier=3
+        ier = 3
 !
     else if (ncrit .eq. 0) then
 !     ELASTICITE = AUCUN CRITERE ACTIVE
@@ -100,24 +100,24 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
         nmp = matmul(dtg, cdeps)
 !
         do j = 1, 6
-            newnbn(j) = nmnbn(j) + nmp(j)
+            newnbn(j) = nmnbn(j)+nmp(j)
         end do
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
 !     ET DES ZEROS DES CRITERES
-        call mppffn(zimat, newnbn, newpla, newzef, newzeg,&
+        call mppffn(zimat, newnbn, newpla, newzef, newzeg, &
                     newief, normm)
 !
         if (newief .gt. 0) then
-            ier=2
+            ier = 2
         else
-            ier=0
-        endif
+            ier = 0
+        end if
     else if (ncrit .eq. 1) then
 !     CRITERE 1 ACTIVE
 !
 !     EST-ON PROCHE DU SOMMET DU CONE
-        nmprox(1) = restzo(zimat,nmnbn,1,normm,normn)
+        nmprox(1) = restzo(zimat, nmnbn, 1, normm, normn)
 !
         if (nmprox(1) .gt. 0) then
             rpara(1) = czef
@@ -126,9 +126,9 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-            call d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
-                        nmprox, cnbn, cplas, rpara, cief,&
-                        cdeps, cdtg, cier, cdepsp, dc1,&
+            call d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
+                        nmprox, cnbn, cplas, rpara, cief, &
+                        cdeps, cdtg, cier, cdepsp, dc1, &
                         1)
 !
             czef = rpara(1)
@@ -142,13 +142,13 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-                call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
-                            cnbn, cplas, rpara, cief, cdeps,&
+                call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
+                            cnbn, cplas, rpara, cief, cdeps, &
                             cdtg, cier, cdepsp, dc1, 1)
                 czef = rpara(1)
                 czeg = rpara(2)
                 normm = rpara(3)
-            endif
+            end if
         else
             rpara(1) = czef
             rpara(2) = czeg
@@ -156,14 +156,14 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-            call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
-                        cnbn, cplas, rpara, cief, cdeps,&
+            call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
+                        cnbn, cplas, rpara, cief, cdeps, &
                         cdtg, cier, cdepsp, dc1, 1)
 !
             czef = rpara(1)
             czeg = rpara(2)
             normm = rpara(3)
-        endif
+        end if
 !
         do j = 1, 6
             newnbn(j) = cnbn(j)
@@ -171,7 +171,7 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
         do j = 1, 3
             do i = 1, 2
-                newpla(i,j) = cplas(i,j)
+                newpla(i, j) = cplas(i, j)
             end do
         end do
 !
@@ -187,7 +187,7 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
     else if (ncrit .eq. 2) then
 !     CRITERE 2 ACTIVE
-        nmprox(2) = restzo(zimat,nmnbn,2,normm,normn)
+        nmprox(2) = restzo(zimat, nmnbn, 2, normm, normn)
 !
         if (nmprox(2) .gt. 0) then
             rpara(1) = czef
@@ -196,9 +196,9 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-            call d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
-                        nmprox, cnbn, cplas, rpara, cief,&
-                        cdeps, cdtg, cier, cdepsp, dc2,&
+            call d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
+                        nmprox, cnbn, cplas, rpara, cief, &
+                        cdeps, cdtg, cier, cdepsp, dc2, &
                         2)
             czef = rpara(1)
             czeg = rpara(2)
@@ -211,13 +211,13 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-                call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
-                            cnbn, cplas, rpara, cief, cdeps,&
+                call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
+                            cnbn, cplas, rpara, cief, cdeps, &
                             cdtg, cier, cdepsp, dc2, 2)
                 czef = rpara(1)
                 czeg = rpara(2)
                 normm = rpara(3)
-            endif
+            end if
         else
 !
             rpara(1) = czef
@@ -226,14 +226,14 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-            call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
-                        cnbn, cplas, rpara, cief, cdeps,&
+            call d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
+                        cnbn, cplas, rpara, cief, cdeps, &
                         cdtg, cier, cdepsp, dc2, 2)
 !
             czef = rpara(1)
             czeg = rpara(2)
             normm = rpara(3)
-        endif
+        end if
 !
         do j = 1, 6
             newnbn(j) = cnbn(j)
@@ -241,7 +241,7 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
         do j = 1, 3
             do i = 1, 2
-                newpla(i,j) = cplas(i,j)
+                newpla(i, j) = cplas(i, j)
             end do
         end do
 !
@@ -257,8 +257,8 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
     else if (ncrit .eq. 12) then
 !     CRITERES 1 ET 2 ACTIVES
-        nmprox(1) = restzo(zimat,nmnbn,1,normm,normn)
-        nmprox(2) = restzo(zimat,nmnbn,2,normm,normn)
+        nmprox(1) = restzo(zimat, nmnbn, 1, normm, normn)
+        nmprox(2) = restzo(zimat, nmnbn, 2, normm, normn)
 !
         if ((nmprox(1) .gt. 0) .and. (nmprox(2) .gt. 0)) then
             rpara(1) = czef
@@ -267,9 +267,9 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-            call d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
-                        nmprox, cnbn, cplas, rpara, cief,&
-                        cdeps, cdtg, cier, cdepsp, dc1,&
+            call d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
+                        nmprox, cnbn, cplas, rpara, cief, &
+                        cdeps, cdtg, cier, cdepsp, dc1, &
                         dc2)
 !
             czef = rpara(1)
@@ -283,14 +283,14 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DES MULTIPLICATEURS PLASTIQUES
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-                call d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
-                            cnbn, cplas, rpara, cief, cdeps,&
+                call d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
+                            cnbn, cplas, rpara, cief, cdeps, &
                             cdtg, cier, cdepsp, dc1, dc2)
 !
                 czef = rpara(1)
                 czeg = rpara(2)
                 normm = rpara(3)
-            endif
+            end if
         else
 !
             rpara(1) = czef
@@ -299,8 +299,8 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DES MULTIPLICATEURS PLASTIQUES
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-            call d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
-                        cnbn, cplas, rpara, cief, cdeps,&
+            call d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
+                        cnbn, cplas, rpara, cief, cdeps, &
                         cdtg, cier, cdepsp, dc1, dc2)
 !
             czef = rpara(1)
@@ -316,17 +316,17 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DES MULTIPLICATEURS PLASTIQUES
 !     ET DE L INCREMENT DE COURBURE PLASTIQUE
-                    call d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
-                                nmprox, cnbn, cplas, rpara, cief,&
-                                cdeps, cdtg, cier, cdepsp, dc1,&
+                    call d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
+                                nmprox, cnbn, cplas, rpara, cief, &
+                                cdeps, cdtg, cier, cdepsp, dc1, &
                                 dc2)
 !
                     czef = rpara(1)
                     czeg = rpara(2)
                     normm = rpara(3)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         do j = 1, 6
             newnbn(j) = cnbn(j)
@@ -334,7 +334,7 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 !
         do j = 1, 3
             do i = 1, 2
-                newpla(i,j) = cplas(i,j)
+                newpla(i, j) = cplas(i, j)
             end do
         end do
 !
@@ -351,22 +351,22 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
     else
         ASSERT(.false.)
 !
-    endif
+    end if
 !
     if (ier .eq. 0) then
 !     CALCUL DES DERIVEES DES MOMENTS LIMITES DE PLASTICITE
 !     CALCUL DES DERIVEES SECONDES DES MOMENTS LIMITES DE PLASTICITE
         call d0mpfn(zimat, newnbn, newdpl)
         call ddmpfn(zimat, newnbn, newddp)
-    endif
+    end if
 !
 !     CALCUL DE LA DISSIPATION
     do j = 1, 6
-        tdespi(1,j) = despit(j)
+        tdespi(1, j) = despit(j)
     end do
 !
     do j = 1, 6
-        nmp(j) = 0.5d0*(nmnbn(j) + newnbn(j))
+        nmp(j) = 0.5d0*(nmnbn(j)+newnbn(j))
     end do
 !
     aux = matmul(tdespi, nmp)

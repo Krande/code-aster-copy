@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,17 +34,17 @@ subroutine cdatrc(vr, xsi, coefcd, cd)
 !-----------------------------------------------------------------------
     ior = 2
     pi = r8pi()
-    cd0 = coefcd(1,1)
-    dcldy = coefcd(1,2)
-    a0(1) = coefcd(1,3)
-    dr(1) = coefcd(1,4)
-    a0(2) = coefcd(1,5)
-    dr(2) = coefcd(1,6)
+    cd0 = coefcd(1, 1)
+    dcldy = coefcd(1, 2)
+    a0(1) = coefcd(1, 3)
+    dr(1) = coefcd(1, 4)
+    a0(2) = coefcd(1, 5)
+    dr(2) = coefcd(1, 6)
 !
     xcor = dble(sqrt(1.0d0-xsi*xsi))
     omr = 2.0d0*pi/vr
-    pr = dcmplx(-xsi,xcor)*omr
-    call routhc(hr, hi, pr, a0, dr,&
+    pr = dcmplx(-xsi, xcor)*omr
+    call routhc(hr, hi, pr, a0, dr, &
                 ior)
     cd = (dcldy*hi/(omr*xcor)-cd0)
 !

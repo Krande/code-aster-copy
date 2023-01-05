@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vrcomp_prep(variZ, variRedu,&
-                       comporCurrZ, comporCurrRedu,&
+subroutine vrcomp_prep(variZ, variRedu, &
+                       comporCurrZ, comporCurrRedu, &
                        comporPrevZ_, comporPrevRedu_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/carces.h"
 #include "asterfort/cesred.h"
@@ -29,12 +29,12 @@ implicit none
 #include "asterfort/detrsd.h"
 !
 !
-character(len=*), intent(in) :: variZ
-character(len=19), intent(out) :: variRedu
-character(len=*), intent(in)  :: comporCurrZ
-character(len=19), intent(out) :: comporCurrRedu
-character(len=*), optional, intent(in)  :: comporPrevZ_
-character(len=19), optional, intent(out) :: comporPrevRedu_
+    character(len=*), intent(in) :: variZ
+    character(len=19), intent(out) :: variRedu
+    character(len=*), intent(in)  :: comporCurrZ
+    character(len=19), intent(out) :: comporCurrRedu
+    character(len=*), optional, intent(in)  :: comporPrevZ_
+    character(len=19), optional, intent(out) :: comporPrevRedu_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,6 @@ character(len=19), optional, intent(out) :: comporPrevRedu_
 ! --------------------------------------------------------------------------------------------------
 !
 
-
 ! - Create reduced CARTE on current comportement
     comporCurrRedu = '&&VRCOMP.COPP'
     call carces(comporCurrZ, 'ELEM', ' ', 'V', coto, 'A', iret)
@@ -76,7 +75,7 @@ character(len=19), optional, intent(out) :: comporPrevRedu_
         comporPrevRedu_ = '&&VRCOMP.COPM'
         call carces(comporPrevZ_, 'ELEM', ' ', 'V', coto, 'A', iret)
         call cesred(coto, 0, [0], 1, 'RELCOM', 'V', comporPrevRedu_)
-    endif
+    end if
 
     call detrsd('CHAM_ELEM_S', coto)
 !

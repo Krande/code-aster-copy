@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine nmcjs(typmod, imat, crit, &
-                 epsd,&
-                 deps, sigd, vind, opt, sigf,&
+                 epsd, &
+                 deps, sigd, vind, opt, sigf, &
                  vinf, dsde, iret)
     implicit none
 !
@@ -140,14 +140,14 @@ subroutine nmcjs(typmod, imat, crit, &
     integer :: umess
 !
 !       ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !
 !
 !
 ! - Get temperatures
 !
-    call get_varc('RIGI', 1, 1, 'T',&
+    call get_varc('RIGI', 1, 1, 'T', &
                   tempm, tempf, tref)
 !
     umess = iunifi('MESSAGE')
@@ -158,15 +158,15 @@ subroutine nmcjs(typmod, imat, crit, &
 !                    NB DE CMP DIRECTES/CISAILLEMENT
 !                    NB VARIABLES INTERNES
 !                    NIVEAU DE LA LOI CJS: CJS1, CJS2 OU CJS3
-    call cjsmat(mod, imat, tempf, materf, ndt,&
+    call cjsmat(mod, imat, tempf, materf, ndt, &
                 ndi, nvi, nivcjs)
-    pa = materf(12,2)
-    qinit = materf(13,2)
+    pa = materf(12, 2)
+    qinit = materf(13, 2)
 !
 !  COEF DE DILATATION LE MEME A TPLUS ET TMOINS
 !
-    alphaf = materf(3,1)
-    alpham = materf(3,1)
+    alphaf = materf(3, 1)
+    alpham = materf(3, 1)
 !
     niter = 0
     ndec = 0
@@ -174,24 +174,24 @@ subroutine nmcjs(typmod, imat, crit, &
 !
     i1d = 0.d0
     do i = 1, ndi
-        i1d = i1d + sigd(i)
+        i1d = i1d+sigd(i)
     end do
 !
 !     --  CALCUL DE DEPSTH ET EPSDTH
 !     --------------------------------
 !
-    if (((isnan(tempm)).or.(isnan(tref))) .and. (materf(3,1).ne.0.d0)) then
+    if (((isnan(tempm)) .or. (isnan(tref))) .and. (materf(3, 1) .ne. 0.d0)) then
         call utmess('F', 'CALCULEL_15')
-    else if (materf(3,1).eq.0.d0) then
+    else if (materf(3, 1) .eq. 0.d0) then
         epsthe = 0.d0
         epsthm = 0.d0
     else
-        epsthe = alphaf*(tempf-tref) - alpham*(tempm-tref)
+        epsthe = alphaf*(tempf-tref)-alpham*(tempm-tref)
         epsthm = alpham*(tempm-tref)
-    endif
+    end if
     do i = 1, ndi
-        depsth(i) = deps(i) - epsthe
-        epsdth(i) = epsd(i) - epsthm
+        depsth(i) = deps(i)-epsthe
+        epsdth(i) = epsd(i)-epsthm
     end do
     do i = ndi+1, ndt
         depsth(i) = deps(i)
@@ -202,15 +202,15 @@ subroutine nmcjs(typmod, imat, crit, &
             depsth(i) = 0.d0
             epsdth(i) = 0.d0
         end do
-    endif
+    end if
 !
 !  TESTER QUE VIND DE NVI EST 1 2 OU 3
 !
-    if ((vind(nvi).ne.0.d0) .and. (vind(nvi).ne.1.d0) .and. (vind(nvi).ne.2.d0) .and.&
-        (vind(nvi).ne.3.d0)) then
-        write(umess,*) ' INDICATEUR DE PLASTICITE ERRONE : ',vind(nvi)
+    if ((vind(nvi) .ne. 0.d0) .and. (vind(nvi) .ne. 1.d0) .and. (vind(nvi) .ne. 2.d0) .and. &
+        (vind(nvi) .ne. 3.d0)) then
+        write (umess, *) ' INDICATEUR DE PLASTICITE ERRONE : ', vind(nvi)
         call utmess('F', 'ALGORITH6_80')
-    endif
+    end if
 !
 !
 ! --    BLOCAGE DES VARIABLES INTERNES EN FONCTION DU NIVEAU DE LA LOI
@@ -218,13 +218,13 @@ subroutine nmcjs(typmod, imat, crit, &
 !       MAIS NON NULLES
 !
     if (nivcjs .eq. 'CJS1') then
-        vind(1) = 1.d25 * materf(12,2)
-        vind(2) = materf(2,2)
-    endif
+        vind(1) = 1.d25*materf(12, 2)
+        vind(2) = materf(2, 2)
+    end if
 !
     if (nivcjs .eq. 'CJS3') then
-        vind(2) = materf(2,2)
-    endif
+        vind(2) = materf(2, 2)
+    end if
 !
 !  SI SEUIL ISOTROPE = 0 SEUIL ISOTROPE = PRESSION HYDRO
 !
@@ -232,52 +232,52 @@ subroutine nmcjs(typmod, imat, crit, &
 !
     if (vind(1) .eq. 0.d0) then
         if (i1d .lt. 0.d0) then
-            q0= (1.d-3*pa+i1d+qinit)/3.d0
+            q0 = (1.d-3*pa+i1d+qinit)/3.d0
         else
-            q0= (1.d-3*pa+qinit)/3.d0
-        endif
+            q0 = (1.d-3*pa+qinit)/3.d0
+        end if
 !
-        vind(1)= q0
+        vind(1) = q0
         if (opt(1:14) .ne. 'RIGI_MECA_TANG') then
             vinf(1) = q0
-        endif
-    endif
+        end if
+    end if
 !
 ! INITIALISATION SEUIL DEVIATOIRE SI NUL
 !
     if (vind(2) .eq. 0.d0) then
-        if (materf(14,2) .eq. 0.d0) then
-            rinit=1.d-3
+        if (materf(14, 2) .eq. 0.d0) then
+            rinit = 1.d-3
         else
-            rinit = materf(14,2)
-        endif
-        vind(2)= rinit
+            rinit = materf(14, 2)
+        end if
+        vind(2) = rinit
         if (opt(1:14) .ne. 'RIGI_MECA_TANG') then
             vinf(2) = rinit
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! --    ETAT ELASTIC OU PLASTIC A T
 !
     if (vind(nvi) .eq. 0.d0) then
         etatd = 'ELASTIC'
-    endif
+    end if
 !
     if (vind(nvi) .eq. 1.d0) then
         etatd = 'PLASTIC'
         mecand = 'ISOTRO'
-    endif
+    end if
 !
     if (vind(nvi) .eq. 2.d0) then
         etatd = 'PLASTIC'
         mecand = 'DEVIAT'
-    endif
+    end if
 !
     if (vind(nvi) .eq. 3.d0) then
         etatd = 'PLASTIC'
         mecand = 'ISODEV'
-    endif
+    end if
 !
 !
 !       ----------------------------------------------------------------
@@ -293,7 +293,7 @@ subroutine nmcjs(typmod, imat, crit, &
 !
 !
 !
-        call cjsela(mod, crit, materf, depsth, sigd,&
+        call cjsela(mod, crit, materf, depsth, sigd, &
                     sigf, nvi, vind, vinf, iret)
         if (iret .eq. 1) goto 999
 !
@@ -317,23 +317,23 @@ subroutine nmcjs(typmod, imat, crit, &
 !
             etatf = 'PLASTIC'
 !
-            call cjspla(mod, crit, materf, seuili, seuild,&
-                        nvi, epsdth, depsth, sigd, vind,&
-                        sigf, vinf, mecanf, nivcjs, niter,&
+            call cjspla(mod, crit, materf, seuili, seuild, &
+                        nvi, epsdth, depsth, sigd, vind, &
+                        sigf, vinf, mecanf, nivcjs, niter, &
                         ndec, epscon, iret, trac)
             if (iret .eq. 1) goto 999
             if ((trac)) then
                 etatf = 'ELASTIC'
-            endif
+            end if
 !
         else
 !
 ! --      PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
 !
             etatf = 'ELASTIC'
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 !       ----------------------------------------------------------------
@@ -344,7 +344,7 @@ subroutine nmcjs(typmod, imat, crit, &
 !       ----------------------------------------------------------------
 !
     if (opt .eq. 'RIGI_MECA_TANG') then
-        dsde(:,:) = 0.d0
+        dsde(:, :) = 0.d0
 !
 !
 !
@@ -356,7 +356,7 @@ subroutine nmcjs(typmod, imat, crit, &
 ! --      CALCUL MATRICE DE RIGIDITE ELASTIQUE
         if (etatd .eq. 'ELASTIC') then
             call cjstel(mod, materf, sigd, dsde)
-        endif
+        end if
 !
 ! --      CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
         if (etatd .eq. 'PLASTIC') then
@@ -364,36 +364,36 @@ subroutine nmcjs(typmod, imat, crit, &
 !          MECANISME ISOTROPE SEUL
             if (mecand .eq. 'ISOTRO') then
                 call cjstis(mod, materf, sigd, vind, dsde)
-            endif
+            end if
 !
 !          MECANISME DEVIATOIRE SEUL
             if ((mecand .eq. 'DEVIAT')) then
-                call cjstde(mod, materf, nvi, epsdth, sigd,&
+                call cjstde(mod, materf, nvi, epsdth, sigd, &
                             vind, dsde)
-            endif
+            end if
 !
 !          MECANISMES ISOTROPE ET DEVIATOIRE
             if (mecand .eq. 'ISODEV') then
-                call cjstid(mod, materf, nvi, epsdth, sigd,&
+                call cjstid(mod, materf, nvi, epsdth, sigd, &
                             vind, dsde)
-            endif
+            end if
 !
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
     if (opt .eq. 'FULL_MECA') then
 !
-        dsde(:,:) = 0.d0
+        dsde(:, :) = 0.d0
 !
 !
 !
 ! --      CALCUL MATRICE DE RIGIDITE ELASTIQUE
         if (etatf .eq. 'ELASTIC') then
             call cjstel(mod, materf, sigf, dsde)
-        endif
+        end if
 !
 !
 ! --      CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
@@ -402,33 +402,33 @@ subroutine nmcjs(typmod, imat, crit, &
 !          MECANISME ISOTROPE SEUL
             if (mecanf .eq. 'ISOTRO') then
                 call cjstis(mod, materf, sigf, vinf, dsde)
-            endif
+            end if
 !
 !          MECANISME DEVIATOIRE SEUL
             if ((mecanf .eq. 'DEVIAT')) then
-                epsf(1:ndt) = epsdth(1:ndt) + depsth(1:ndt)
-                call cjstde(mod, materf, nvi, epsf, sigf,&
+                epsf(1:ndt) = epsdth(1:ndt)+depsth(1:ndt)
+                call cjstde(mod, materf, nvi, epsf, sigf, &
                             vinf, dsde)
-            endif
+            end if
 !
 !          MECANISMES ISOTROPE ET DEVIATOIRE
             if (mecanf .eq. 'ISODEV') then
-                epsf(1:ndt) = epsdth(1:ndt) + depsth(1:ndt)
-                call cjstid(mod, materf, nvi, epsf, sigf,&
+                epsf(1:ndt) = epsdth(1:ndt)+depsth(1:ndt)
+                call cjstid(mod, materf, nvi, epsf, sigf, &
                             vinf, dsde)
-            endif
+            end if
 !
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !  VARIABLES INTERNES POUR SORTIES
 !
     if ((opt .eq. 'FULL_MECA') .or. (opt .eq. 'RAPH_MECA')) then
-        call cjsinp(materf, epsdth, depsth, sigf, vinf,&
+        call cjsinp(materf, epsdth, depsth, sigf, vinf, &
                     niter, nvi, nivcjs, ndec, epscon)
-    endif
+    end if
 !
 999 continue
 end subroutine

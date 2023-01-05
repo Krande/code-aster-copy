@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine op0126()
     if (ival .ne. 0) then
         call getvtx('VERIF', 'STOP_ERREUR', iocc=1, scal=rep, nbret=ibid)
         if (rep .eq. 'NON') goto 20
-    endif
+    end if
 !
     call getfac('LIAISON', nblia)
 !
@@ -78,27 +78,27 @@ subroutine op0126()
         call getvtx('LIAISON', 'SOUS_STRUC_2', iocc=i, scal=sst2, nbret=ibid)
         call getvtx('LIAISON', 'INTERFACE_1', iocc=i, scal=intf1, nbret=ibid)
         call getvtx('LIAISON', 'INTERFACE_2', iocc=i, scal=intf2, nbret=ibid)
-        iinc=0
+        iinc = 0
 !     ON TESTE SI LA LIAISON EST INCOMPATIBLE
         call getvtx('LIAISON', 'GROUP_MA_MAIT_1', iocc=i, scal=k8bid, nbret=irep11)
         call getvtx('LIAISON', 'MAILLE_MAIT_1', iocc=i, scal=k8bid, nbret=irep12)
         call getvtx('LIAISON', 'GROUP_MA_MAIT_2', iocc=i, scal=k8bid, nbret=irep21)
         call getvtx('LIAISON', 'MAILLE_MAIT_2', iocc=i, scal=k8bid, nbret=irep22)
-        if ((irep11.ne.0) .or. (irep12.ne.0)) then
-            iinc=1
-        else if ((irep21.ne.0).or.(irep22.ne.0)) then
-            iinc=2
-        endif
+        if ((irep11 .ne. 0) .or. (irep12 .ne. 0)) then
+            iinc = 1
+        else if ((irep21 .ne. 0) .or. (irep22 .ne. 0)) then
+            iinc = 2
+        end if
 !
 !       SI ELLE EST COMPATIBLE ON VERIFIE LA COINCIDENCE DES NOEUDS
 !       D'INTERFACE, SINON ON FAIT RIEN
-        if ((iinc.eq.0) .and. (option.eq.'CLASSIQU')) then
-            iret=i
-            call vecomo(nomres, sst1, sst2, intf1, intf2,&
+        if ((iinc .eq. 0) .and. (option .eq. 'CLASSIQU')) then
+            iret = i
+            call vecomo(nomres, sst1, sst2, intf1, intf2, &
                         iret, option)
-        endif
+        end if
     end do
- 20 continue
+20  continue
 !
 !
 !-----ORIENTATION DES MATRICES DE LIAISON

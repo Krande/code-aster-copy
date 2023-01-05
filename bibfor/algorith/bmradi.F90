@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
+subroutine bmradi(basmod, intf, nomint, numint, nbddl, &
                   ivddl, nbdif)
     implicit none
 !
@@ -62,11 +62,11 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, iran(1), j,  lldes
+    integer :: i, inoe, iran(1), j, lldes
     integer :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec
     integer :: nbnoe, nbnot, neq, numint, nunoe
 !-----------------------------------------------------------------------
-    parameter (nbcpmx=300)
+    parameter(nbcpmx=300)
     character(len=8) :: basmod, nomint, intf
     character(len=19) :: numddl
     character(len=24) :: noeint
@@ -79,7 +79,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !
     call jemarq()
-    nbdif=nbddl
+    nbdif = nbddl
 !
 !---------------RECUPERATION INTERF_DYNA ET NUME_DDL-----------------
 !                 SI DONNEE BASE MODALE OU INTERF_DYNA
@@ -88,19 +88,19 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
         call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf, arret='C')
         if (intf .eq. ' ') then
-            valk (1) = basmod
+            valk(1) = basmod
             call utmess('F', 'ALGORITH12_30', sk=valk(1))
-        endif
+        end if
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
     else
         if (intf(1:1) .ne. ' ') then
             call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
         else
-            valk (1) = basmod
-            valk (2) = intf
+            valk(1) = basmod
+            valk(2) = intf
             call utmess('F', 'ALGORITH12_31', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
@@ -113,13 +113,13 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
     if (numint .lt. 1) then
         if (nomint .eq. '          ') then
-            valk (1) = nomint
+            valk(1) = nomint
             vali = numint
             call utmess('F', 'ALGORITH12_29', sk=valk(1), si=vali)
         else
             call jenonu(jexnom(intf//'.IDC_NOMS', nomint), numint)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !-----------RECUPERATION DU NOMBRE DE DDL PHYSIQUES ASSEMBLES-----------
@@ -130,7 +130,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !------------RECUPERATION DU NOMBRE DE NOEUD DE L'INTERFACES------------
 !
-    noeint=intf//'.IDC_LINO'
+    noeint = intf//'.IDC_LINO'
 !
     call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe)
     call jeveuo(jexnum(noeint, numint), 'L', llnoe)
@@ -145,7 +145,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !----------------RECUPERATION ADRESSE DEEQ------------------------------
 !
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
-    numddl(15:19)='.NUME'
+    numddl(15:19) = '.NUME'
     call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !
 !------RECUPERATION DES NUMERO ORDRE DEFORMEES (COLONNES)---------------
@@ -154,22 +154,22 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 ! RECUPERATION RANG DDL
 !
     do i = 1, nbnoe
-        inoe=zi(llnoe+i-1)
-        nunoe=zi(lldes+inoe-1)
+        inoe = zi(llnoe+i-1)
+        nunoe = zi(lldes+inoe-1)
         call isdeco(zi(lldes+2*nbnot+(inoe-1)*nbec+1-1), idec, nbcmp)
         do j = 1, nbcmp
             if (idec(j) .gt. 0) then
-                nbdif=nbdif-1
+                nbdif = nbdif-1
                 if (nbdif .ge. 0) then
-                    call cheddl(deeq, neq, nunoe, j, iran,&
+                    call cheddl(deeq, neq, nunoe, j, iran, &
                                 1)
-                    ivddl(nbddl-nbdif)=iran(1)
-                endif
-            endif
+                    ivddl(nbddl-nbdif) = iran(1)
+                end if
+            end if
         end do
     end do
 !
-    nbdif=-nbdif
+    nbdif = -nbdif
 !
     call jedema()
 end subroutine

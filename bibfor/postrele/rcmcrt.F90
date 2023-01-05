@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,19 +38,19 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
 #define linlin(x,x1,y1,x2,y2) y1+(x-x1)*(y2-y1)/(x2-x1)
 ! DEB ------------------------------------------------------------------
 !
-    x = sigm / symax
+    x = sigm/symax
 !
 ! --- VARIATION DE TEMPERATURE LINEAIRE DANS LA PAROI
 !
     if (abs(x) .le. 1.0d-10) then
         yprim = 0.0d0
-    else if (abs(x-1.0d0).le.1.0d-10) then
+    else if (abs(x-1.0d0) .le. 1.0d-10) then
         yprim = 0.0d0
-    else if (x.gt.0.0d0 .and. x.le.0.50d0) then
-        yprim = 1.0d0 / x
+    else if (x .gt. 0.0d0 .and. x .le. 0.50d0) then
+        yprim = 1.0d0/x
 !
-    else if (x.gt.0.50d0 .and. x.le.1.0d0) then
-        yprim = 4.0d0 * ( 1.0d0 - x )
+    else if (x .gt. 0.50d0 .and. x .le. 1.0d0) then
+        yprim = 4.0d0*(1.0d0-x)
 !
     else
         stlin = r8vide()
@@ -59,31 +59,31 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
         valer(3) = symax
         call utmess('I', 'POSTRCCM_5', nr=3, valr=valer)
         goto 888
-    endif
-    stlin = yprim * symax
+    end if
+    stlin = yprim*symax
 !
-888  continue
+888 continue
 !
 ! --- VARIATION DE TEMPERATURE PARABOLIQUE DANS LA PAROI
 !
     if (abs(x) .le. 1.0d-10) then
         yprim = 0.0d0
-    else if (abs(x-1.0d0).le.1.0d-10) then
+    else if (abs(x-1.0d0) .le. 1.0d-10) then
         yprim = 0.0d0
-    else if (x.ge.0.615d0 .and. x.lt.1.0d0) then
-        yprim = 5.2d0 * ( 1.0d0 - x )
+    else if (x .ge. 0.615d0 .and. x .lt. 1.0d0) then
+        yprim = 5.2d0*(1.0d0-x)
 !
-    else if (x.ge.0.5d0 .and. x.lt.0.615d0) then
-        yprim = linlin( x, 0.5d0,2.7d0, 0.615d0,2.002d0 )
+    else if (x .ge. 0.5d0 .and. x .lt. 0.615d0) then
+        yprim = linlin(x, 0.5d0, 2.7d0, 0.615d0, 2.002d0)
 !
-    else if (x.ge.0.4d0 .and. x.lt.0.5d0) then
-        yprim = linlin( x, 0.4d0,3.55d0, 0.5d0,2.7d0 )
+    else if (x .ge. 0.4d0 .and. x .lt. 0.5d0) then
+        yprim = linlin(x, 0.4d0, 3.55d0, 0.5d0, 2.7d0)
 !
-    else if (x.ge.0.3d0 .and. x.lt.0.4d0) then
-        yprim = linlin( x, 0.3d0,4.65d0, 0.4d0,3.55d0 )
+    else if (x .ge. 0.3d0 .and. x .lt. 0.4d0) then
+        yprim = linlin(x, 0.3d0, 4.65d0, 0.4d0, 3.55d0)
 !
-    else if (x.ge.0.0d0 .and. x.lt.0.3d0) then
-        yprim = linlin( x, 0.0d0,7.95d0, 0.3d0,4.65d0 )
+    else if (x .ge. 0.0d0 .and. x .lt. 0.3d0) then
+        yprim = linlin(x, 0.0d0, 7.95d0, 0.3d0, 4.65d0)
 !
     else
         stpar = r8vide()
@@ -92,9 +92,9 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
         valer(3) = symax
         call utmess('I', 'POSTRCCM_6', nr=3, valr=valer)
         goto 999
-    endif
-    stpar = yprim * symax
+    end if
+    stpar = yprim*symax
 !
-999  continue
+999 continue
 !
 end subroutine

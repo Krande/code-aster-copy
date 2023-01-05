@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
-                  hsr, nsfv, nsfa, ifa, nbsys,&
-                  is, dt, nvi, vind, yd,&
-                  dy, itmax, toler, materf, expbp,&
-                  taus, dalpha, dgamma, dp, crit,&
+subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
+                  hsr, nsfv, nsfa, ifa, nbsys, &
+                  is, dt, nvi, vind, yd, &
+                  dy, itmax, toler, materf, expbp, &
+                  taus, dalpha, dgamma, dp, crit, &
                   sgns, rp, iret)
 ! aslint: disable=W1504
     implicit none
@@ -69,75 +69,75 @@ subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
     character(len=24) :: cpmono(5*nmat+1)
     character(len=16) :: necoul, necris, necrci
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
 !
-    ifl=nbcomm(ifa,1)
-    nuecou=nint(materf(nmat+ifl))
-    necoul=cpmono(5*(ifa-1)+3)
-    necris=cpmono(5*(ifa-1)+4)
-    necrci=cpmono(5*(ifa-1)+5)
+    ifl = nbcomm(ifa, 1)
+    nuecou = nint(materf(nmat+ifl))
+    necoul = cpmono(5*(ifa-1)+3)
+    necris = cpmono(5*(ifa-1)+4)
+    necrci = cpmono(5*(ifa-1)+5)
 !
 !     SI IRK=1, ON EST EN EXPLICITE RUNGE_KUTTA
 !
-    irk=0
+    irk = 0
     if (dt .lt. 0.d0) then
-        irk=1
-        dt=1.d0
-    endif
+        irk = 1
+        dt = 1.d0
+    end if
 !
-    nuvi=nsfv+3*(is-1)
+    nuvi = nsfv+3*(is-1)
 !
     if (irk .eq. 0) then
 !     ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA-SAUF MODELES DD
         if (nuecou .lt. 4) then
 !
-            dgamm1=dy(nsfa+is)
-            alpham=vind(nuvi+1)
-            call lcmmfc(materf(nmat+1), ifa, nmat, nbcomm, necrci,&
-                        itmax, toler, alpham, dgamm1, dalpha,&
+            dgamm1 = dy(nsfa+is)
+            alpham = vind(nuvi+1)
+            call lcmmfc(materf(nmat+1), ifa, nmat, nbcomm, necrci, &
+                        itmax, toler, alpham, dgamm1, dalpha, &
                         iret)
 !
-            alphap=alpham+dalpha
-            gammap=yd(nsfa+is)+dgamm1
+            alphap = alpham+dalpha
+            gammap = yd(nsfa+is)+dgamm1
         else
 !           POUR DD_*,  ALPHA est la variable principale
-            alphap=yd(nsfa+is)+dy(nsfa+is)
-        endif
+            alphap = yd(nsfa+is)+dy(nsfa+is)
+        end if
     else
-        alphap=vind(nuvi+1)
-        gammap=vind(nuvi+2)
-    endif
+        alphap = vind(nuvi+1)
+        gammap = vind(nuvi+2)
+    end if
 !
     if (nuecou .ne. 4) then
 !        ECROUISSAGE ISOTROPE : CALCUL DE R(P)
-        iexp=0
-        if (is .eq. 1) iexp=1
-        call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, necris,&
-                    is, nbsys, vind, nsfv, dy(nsfa+1),&
-                    nfs, nsg, hsr, iexp, expbp,&
+        iexp = 0
+        if (is .eq. 1) iexp = 1
+        call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, necris, &
+                    is, nbsys, vind, nsfv, dy(nsfa+1), &
+                    nfs, nsg, hsr, iexp, expbp, &
                     rp)
-    endif
+    end if
 !
 !     ECOULEMENT VISCOPLASTIQUE
 !     ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)
 !     ET L'EXPLICITE (NMVPRK-GERPAS-RK21CO-RDIF01)
 !     CAS IMPLICITE : IL FAUT PRENDRE EN COMPTE DT
 !     CAS EXPLICITE : IL NE LE FAUT PAS (C'EST FAIT PAR RDIF01)
-    decal=nsfv
-    call lcmmfe(taus, materf(nmat+1), materf(1), ifa, nmat,&
-                nbcomm, necoul, is, nbsys, vind,&
-                dy(nsfa+1), rp, alphap, gammap, dt,&
-                dalpha, dgamma, dp, crit, sgns,&
+    decal = nsfv
+    call lcmmfe(taus, materf(nmat+1), materf(1), ifa, nmat, &
+                nbcomm, necoul, is, nbsys, vind, &
+                dy(nsfa+1), rp, alphap, gammap, dt, &
+                dalpha, dgamma, dp, crit, sgns, &
                 nfs, nsg, hsr, iret)
 !
     if (irk .eq. 1) then
         if (nuecou .lt. 4) then
 !         ECROUISSAGE CINEMATIQUE EN RUNGE-KUTTA
-            call lcmmec(materf(nmat+1), ifa, nmat, nbcomm, necrci,&
-                        itmax, toler, alphap, dgamma, dalpha,&
+            call lcmmec(materf(nmat+1), ifa, nmat, nbcomm, necrci, &
+                        itmax, toler, alphap, dgamma, dalpha, &
                         iret)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

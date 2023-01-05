@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 !
 module contact_nitsche_module
 !
-use contact_type
-use contact_algebra_module
-use contact_module
+    use contact_type
+    use contact_algebra_module
+    use contact_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,16 +42,16 @@ private
 ! --------------------------------------------------------------------------------------------------
 !
 !
-type ContactNitsche
-    ! Young modulus
-    real(kind=8)                        :: E = 0.d0
-    ! Poisson ratio
-    real(kind=8)                        :: nu = 0.d0
+    type ContactNitsche
+        ! Young modulus
+        real(kind=8)                        :: E = 0.d0
+        ! Poisson ratio
+        real(kind=8)                        :: nu = 0.d0
 
-    ! stress at nodes
-    real(kind=8), dimension(3,3,9) :: stress_nodes = 0.d0
+        ! stress at nodes
+        real(kind=8), dimension(3, 3, 9) :: stress_nodes = 0.d0
 
-end type
+    end type
 !
     public :: ContactNitsche
     public :: dofsMapping, remappingVect, remappingMatr, nbDofsNitsche
@@ -64,9 +64,9 @@ contains
 !
 !===================================================================================================
 !
-  function dofsMapping(geom)
+    function dofsMapping(geom)
 !
-    implicit none
+        implicit none
 !
         integer :: dofsMapping(54)
         type(ContactGeom), intent(in) :: geom
@@ -88,12 +88,12 @@ contains
             end do
         end do
 !
-        nb_dofs_slav = geom%nb_node_slav * geom%elem_dime
-        nb_dofs_volu = geom%nb_node_volu * geom%elem_dime
+        nb_dofs_slav = geom%nb_node_slav*geom%elem_dime
+        nb_dofs_volu = geom%nb_node_volu*geom%elem_dime
         do i_node = 1, geom%nb_node_mast
             do i_elem = 1, geom%elem_dime
                 dofsMapping(nb_dofs_slav+(i_node-1)*geom%elem_dime+i_elem) = &
-                    nb_dofs_volu + (i_node-1)*geom%elem_dime+i_elem
+                    nb_dofs_volu+(i_node-1)*geom%elem_dime+i_elem
             end do
         end do
 !
@@ -105,7 +105,7 @@ contains
 !
     subroutine remappingVect(geom, dofsmap, vect, new_vect, coeff)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         integer, intent(in) :: dofsMap(54)
@@ -120,10 +120,10 @@ contains
 !
         integer :: i_dof, nb_dofs
 !
-        nb_dofs = (geom%nb_node_slav + geom%nb_node_mast) * geom%elem_dime
+        nb_dofs = (geom%nb_node_slav+geom%nb_node_mast)*geom%elem_dime
 !
         do i_dof = 1, nb_dofs
-            new_vect(dofsMap(i_dof)) = new_vect(dofsMap(i_dof)) + coeff * vect(i_dof)
+            new_vect(dofsMap(i_dof)) = new_vect(dofsMap(i_dof))+coeff*vect(i_dof)
         end do
 !
     end subroutine
@@ -134,7 +134,7 @@ contains
 !
     subroutine remappingMatr(geom, dofsmap, matr, new_matr, coeff)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         integer, intent(in) :: dofsMap(54)
@@ -149,13 +149,13 @@ contains
 !
         integer :: i_dof, nb_dofs, j_dof, i_glo, j_glo
 !
-        nb_dofs = (geom%nb_node_slav + geom%nb_node_mast) * geom%elem_dime
+        nb_dofs = (geom%nb_node_slav+geom%nb_node_mast)*geom%elem_dime
 !
         do j_dof = 1, nb_dofs
             j_glo = dofsMap(j_dof)
             do i_dof = 1, nb_dofs
                 i_glo = dofsMap(i_dof)
-                new_matr(i_glo, j_glo) = new_matr(i_glo, j_glo) + coeff * matr(i_dof, j_dof)
+                new_matr(i_glo, j_glo) = new_matr(i_glo, j_glo)+coeff*matr(i_dof, j_dof)
             end do
         end do
 !
@@ -167,11 +167,11 @@ contains
 !
     subroutine gradDisp(geom, dshape_func_vo, grad, eps)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: dshape_func_vo(3,27)
-        real(kind=8), intent(out) :: grad(3,3), eps(3,3)
+        real(kind=8), intent(in) :: dshape_func_vo(3, 27)
+        real(kind=8), intent(out) :: grad(3, 3), eps(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -191,12 +191,12 @@ contains
         do n = 1, geom%nb_node_volu
             do i = 1, geom%elem_dime
                 do j = 1, geom%elem_dime
-                    grad(i,j) = grad(i,j) + dfunc_dx(j,n)*geom%depl_volu_curr(i,n)
+                    grad(i, j) = grad(i, j)+dfunc_dx(j, n)*geom%depl_volu_curr(i, n)
                 end do
             end do
         end do
 !
-        eps = (grad + transpose(grad)) / 2.d0
+        eps = (grad+transpose(grad))/2.d0
 !
     end subroutine
 !
@@ -206,7 +206,7 @@ contains
 !
     subroutine lameCoeff(E, nu, mu, lambda)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in) :: E, nu
         real(kind=8), intent(out) :: mu, lambda
@@ -217,8 +217,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        lambda = E * nu / (1.d0 + nu) / (1.d0 - 2.d0 * nu)
-        mu = 0.5d0 * E / (1.d0 + nu)
+        lambda = E*nu/(1.d0+nu)/(1.d0-2.d0*nu)
+        mu = 0.5d0*E/(1.d0+nu)
 !
     end subroutine
 !
@@ -228,7 +228,7 @@ contains
 !
     subroutine evalStressNodes(geom, nits)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         type(ContactNitsche), intent(inout) :: nits
@@ -240,7 +240,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: coor_qp_vo(3), mu, lambda
-        real(kind=8) :: dshape_func_vo(3,27), grad(3,3), eps(3,3)
+        real(kind=8) :: dshape_func_vo(3, 27), grad(3, 3), eps(3, 3)
         integer :: i_node, iret
 !
         call lameCoeff(nits%E, nits%nu, mu, lambda)
@@ -251,16 +251,16 @@ contains
 !
             coor_qp_vo = 0.d0
             call reereg('S', geom%elem_volu_code, geom%nb_node_volu, geom%coor_volu_curr, &
-            geom%coor_slav_curr(1:3, i_node), geom%elem_dime, coor_qp_vo, iret, ndim_coor_=3)
+                   geom%coor_slav_curr(1:3, i_node), geom%elem_dime, coor_qp_vo, iret, ndim_coor_=3)
 !
 ! ----- Eval shape function and gradient
 !
-            call shapeFuncDispVolu(geom%elem_volu_code, coor_qp_vo, dshape_= dshape_func_vo)
+            call shapeFuncDispVolu(geom%elem_volu_code, coor_qp_vo, dshape_=dshape_func_vo)
             call gradDisp(geom, dshape_func_vo, grad, eps)
 !
 ! ----- Eval stress
 !
-            nits%stress_nodes(1:3,1:3, i_node) = 2.d0*mu*eps + lambda * trace_mat(3, eps) * Iden3()
+            nits%stress_nodes(1:3, 1:3, i_node) = 2.d0*mu*eps+lambda*trace_mat(3, eps)*Iden3()
         end do
 !
     end subroutine
@@ -271,12 +271,12 @@ contains
 !
     function evalStress(nits, nb_node_slav, shape_func_sl)
 !
-    implicit none
+        implicit none
 !
         type(ContactNitsche), intent(in) :: nits
         integer, intent(in) :: nb_node_slav
         real(kind=8), intent(in) :: shape_func_sl(9)
-        real(kind=8) :: evalStress(3,3)
+        real(kind=8) :: evalStress(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -290,7 +290,7 @@ contains
 !
         do j = 1, 3
             do i = 1, 3
-                evalStress(i,j) = evalPoly(nb_node_slav, shape_func_sl, nits%stress_nodes(i,j,:))
+                evalStress(i, j) = evalPoly(nb_node_slav, shape_func_sl, nits%stress_nodes(i, j, :))
             end do
         end do
 !
@@ -302,7 +302,7 @@ contains
 !
     subroutine getMaterialProperties(nits)
 !
-    implicit none
+        implicit none
 !
         type(ContactNitsche), intent(inout) :: nits
 !
@@ -327,7 +327,7 @@ contains
 !
     subroutine nbDofsNitsche(geom, total_dofs, face_dofs, slav_dofs)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         integer, intent(out) :: total_dofs, face_dofs, slav_dofs
@@ -339,8 +339,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         total_dofs = geom%nb_dofs
-        face_dofs = (geom%nb_node_slav + geom%nb_node_mast) * geom%elem_dime
-        slav_dofs =  geom%nb_node_volu * geom%elem_dime
+        face_dofs = (geom%nb_node_slav+geom%nb_node_mast)*geom%elem_dime
+        slav_dofs = geom%nb_node_volu*geom%elem_dime
 !
     end subroutine
 !
@@ -350,12 +350,12 @@ contains
 !
     function dStress_n_du(geom, nits, norm_slav_init)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         type(ContactNitsche), intent(in) :: nits
         real(kind=8), intent(in) :: norm_slav_init(3)
-        real(kind=8) :: dStress_n_du(MAX_NITS_DOFS,3)
+        real(kind=8) :: dStress_n_du(MAX_NITS_DOFS, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -374,11 +374,11 @@ contains
 !
     function dStress_nn_du(geom, stress_n, dStress_n, norm_slav, dNs)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: norm_slav(3), stress_n(3)
-        real(kind=8), intent(in) :: dStress_n(MAX_NITS_DOFS,3), dNs(MAX_LAGA_DOFS,3)
+        real(kind=8), intent(in) :: dStress_n(MAX_NITS_DOFS, 3), dNs(MAX_LAGA_DOFS, 3)
         real(kind=8) :: dStress_nn_du(MAX_NITS_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -395,7 +395,7 @@ contains
         dStress_nn_du = 0.d0
 !
         call nbDofsNitsche(geom, total_dofs, face_dofs, slav_dofs)
-        slav_face_dofs = geom%nb_node_slav * geom%elem_dime
+        slav_face_dofs = geom%nb_node_slav*geom%elem_dime
 !
 ! --- Term Aep(u^s) : grad(v^s)  * N^s . n^s
 !
@@ -407,7 +407,7 @@ contains
 !
         dNs_sn = 0.d0
         call dgemv('N', slav_face_dofs, geom%elem_dime, 1.d0, dNs, MAX_LAGA_DOFS, &
-                    stress_n, 1, 1.d0, dNs_sn, 1)
+                   stress_n, 1, 1.d0, dNs_sn, 1)
 !
 ! --- Remapping
 !

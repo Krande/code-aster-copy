@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine select_dof_2(listEqua_     , tablEqua_       ,&
-                        numeDofZ_     , fieldNodeZ_     ,&
+subroutine select_dof_2(listEqua_, tablEqua_, &
+                        numeDofZ_, fieldNodeZ_, &
                         nbCmpToSelect_, listCmpToSelect_)
 !
-implicit none
+    implicit none
 !
 #include "asterc/indik8.h"
 #include "asterfort/as_allocate.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/nbec.h"
 #include "asterfort/select_dof_gene.h"
 !
-integer, pointer, optional :: listEqua_(:), tablEqua_(:, :)
-character(len=*), optional, intent(in) :: numeDofZ_, fieldNodeZ_
-integer, optional, intent(in) :: nbCmpToSelect_
-character(len=8), pointer, optional :: listCmpToSelect_(:)
+    integer, pointer, optional :: listEqua_(:), tablEqua_(:, :)
+    character(len=*), optional, intent(in) :: numeDofZ_, fieldNodeZ_
+    integer, optional, intent(in) :: nbCmpToSelect_
+    character(len=8), pointer, optional :: listCmpToSelect_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    numeDof   = ' '
+    numeDof = ' '
     fieldNode = ' '
     lMatrDist = ASTER_FALSE
 !
@@ -101,41 +101,41 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
 !
 ! - Get PROF_CHNO
 !
-    profChno  = ' '
+    profChno = ' '
     if (present(numeDofZ_)) then
         numeDof = numeDofZ_
-        ASSERT(.not.present(fieldNodeZ_))
-        call dismoi('PROF_CHNO', numeDof, 'NUME_DDL', repk = profChno)
+        ASSERT(.not. present(fieldNodeZ_))
+        call dismoi('PROF_CHNO', numeDof, 'NUME_DDL', repk=profChno)
     elseif (present(fieldNodeZ_)) then
         fieldNode = fieldNodeZ_
-        ASSERT(.not.present(numeDofZ_))
-        call dismoi('PROF_CHNO', fieldNode, 'CHAM_NO', repk = profChno)
+        ASSERT(.not. present(numeDofZ_))
+        call dismoi('PROF_CHNO', fieldNode, 'CHAM_NO', repk=profChno)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Check if nume_ddl is correct (Distributed matrix)
 !
     if (present(numeDofZ_)) then
         numeEqul = numeDof//'.NUML'
         call jeexin(numeEqul(1:19)//'.NUGL', iexi)
-        lMatrDist = iexi.ne.0
+        lMatrDist = iexi .ne. 0
         if (lMatrDist) then
-            call jeveuo(numeEqul(1:19)//'.NUGL', 'L', vi = nugl)
-        endif
-    endif
+            call jeveuo(numeEqul(1:19)//'.NUGL', 'L', vi=nugl)
+        end if
+    end if
 !
 ! - Get informations about physical quantity
 !
     physNume = 0
-    nb_ec    = 0
+    nb_ec = 0
     if (present(numeDofZ_)) then
-        call dismoi('NUM_GD_SI', numeDof  , 'NUME_DDL', repi = physNume)
+        call dismoi('NUM_GD_SI', numeDof, 'NUME_DDL', repi=physNume)
     elseif (present(fieldNodeZ_)) then
-        call dismoi('NUM_GD'   , fieldNode, 'CHAM_NO' , repi = physNume)
+        call dismoi('NUM_GD', fieldNode, 'CHAM_NO', repi=physNume)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     ASSERT(physNume .ne. 0)
     nb_ec = nbec(physNume)
     ASSERT(nb_ec .le. nbEcMax)
@@ -143,7 +143,7 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
 ! - Access to catalog
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', physNume), 'LONMAX', physNbCmp)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', physNume), 'L', vk8 = physCataName)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', physNume), 'L', vk8=physCataName)
 !
 ! - Select number of components
 !
@@ -152,21 +152,21 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
         nbCmpToSelect = nbCmpToSelect_
     else
         nbCmpToSelect = physNbCmp
-    endif
+    end if
 !
 ! - Select components
 !
-    AS_ALLOCATE(vi = cmpSelect, size = physNbCmp)
+    AS_ALLOCATE(vi=cmpSelect, size=physNbCmp)
     do iCmp = 1, nbCmpToSelect
         if (present(listCmpToSelect_)) then
             cmpName = listCmpToSelect_(iCmp)
         else
             cmpName = physCataName(iCmp)
-        endif
+        end if
         numeCmp = indik8(physCataName, cmpName, 1, physNbCmp)
         if (numeCmp .ne. 0) then
             cmpSelect(numeCmp) = iCmp
-        endif
+        end if
     end do
 !
 ! - PROF_CHNO or PROF_GENE ?
@@ -175,25 +175,25 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
     lProfGene = (iexi .gt. 0)
     if (lProfGene) then
         profGene = profChno
-        call select_dof_gene(profGene        , nbCmpToSelect, physCataName,&
-                             listCmpToSelect_, listEqua_    , tablEqua_)
+        call select_dof_gene(profGene, nbCmpToSelect, physCataName, &
+                             listCmpToSelect_, listEqua_, tablEqua_)
         goto 99
-    endif
+    end if
 !
 ! - Get mesh
 !
     mesh = ' '
     if (present(numeDofZ_)) then
-        call dismoi('NOM_MAILLA', numeDof, 'NUME_DDL', repk = mesh)
+        call dismoi('NOM_MAILLA', numeDof, 'NUME_DDL', repk=mesh)
     elseif (present(fieldNodeZ_)) then
-        call dismoi('NOM_MAILLA', fieldNode, 'CHAM_NO' , repk = mesh)
+        call dismoi('NOM_MAILLA', fieldNode, 'CHAM_NO', repk=mesh)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Get objects
 !
-    call jeveuo(profChno(1:19)//'.NUEQ', 'L', vi = nueq)
+    call jeveuo(profChno(1:19)//'.NUEQ', 'L', vi=nueq)
 !
 ! - Loop on LIGRELs
 !
@@ -205,27 +205,27 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
         nbNode = prnoLength/(nb_ec+2)
 
 ! ----- Loop on nodes
-        if (nbNode.ne.0) then
-            call jeveuo(jexnum(profChno(1:19)//'.PRNO', iLigr), 'L', vi = prno)
+        if (nbNode .ne. 0) then
+            call jeveuo(jexnum(profChno(1:19)//'.PRNO', iLigr), 'L', vi=prno)
             do iNode = 1, nbNode
-                nodeNume  = iNode
+                nodeNume = iNode
 
 ! ------------- Parameters of current node
-                dofNume   = prno((nb_ec+2)*(nodeNume-1)+1) - 1
+                dofNume = prno((nb_ec+2)*(nodeNume-1)+1)-1
                 nbCmpNode = prno((nb_ec+2)*(nodeNume-1)+2)
 
 ! ------------- Vector containing active components on current node
-                physDesc  = 0
+                physDesc = 0
                 if (nbCmpNode .ne. 0) then
                     do iEc = 1, nb_ec
                         physDesc(iEc) = prno((nb_ec+2)*(nodeNume-1)+2+iEc)
                     end do
-                endif
+                end if
 
 ! ------------- Loop on components to seek
                 do iCmp = 1, physNbCmp
                     if (exisdg(physDesc, iCmp)) then
-                        dofNume = dofNume + 1
+                        dofNume = dofNume+1
                         numeCmp = cmpSelect(iCmp)
                         if (numeCmp .ne. 0) then
                             numeEqua = nueq(dofNume)
@@ -233,23 +233,23 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
                                 numeEquaL = nugl(numeEqua)
                             else
                                 numeEquaL = numeEqua
-                            endif
+                            end if
                             if (present(listEqua_)) then
                                 listEqua_(numeEquaL) = 1
                             elseif (present(tablEqua_)) then
                                 tablEqua_(numeEquaL, numeCmp) = 1
-                            endif
-                        endif
-                    endif
+                            end if
+                        end if
+                    end if
                 end do
             end do
-        endif
+        end if
     end do
 !
 99  continue
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi = cmpSelect)
+    AS_DEALLOCATE(vi=cmpSelect)
 !
 end subroutine

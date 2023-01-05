@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,21 +36,21 @@ subroutine di2epx(a, d)
 !     DELTA / 4 = (A(1)-A(2))**2 / 4 + A(3)**2
 !
     aux = (a(1)-a(2))*(a(1)-a(2))
-    aux = 0.25d0 * aux
-    delta = aux + a(3)*a(3)
+    aux = 0.25d0*aux
+    delta = aux+a(3)*a(3)
 !
-    norme=abs(a(1))+abs(a(2))+abs(a(3))
+    norme = abs(a(1))+abs(a(2))+abs(a(3))
 !
 !     CALCUL DE RACINE(DELTA/4)
-    if (delta .ge. zero * norme**2) then
+    if (delta .ge. zero*norme**2) then
         rdelta = sqrt(delta)
     else
-        rdelta=0.d0
-    endif
+        rdelta = 0.d0
+    end if
 !
 !     CALCUL DES TERMES DE LA MATRICE DIAGONALISEE
-    b = 0.5d0 * (a(1)+a(2))
-    d(1) = b + rdelta
-    d(2) = b - rdelta
+    b = 0.5d0*(a(1)+a(2))
+    d(1) = b+rdelta
+    d(2) = b-rdelta
 !
 end subroutine

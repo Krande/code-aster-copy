@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,19 +28,19 @@ subroutine cjssmi(mater, sig, vin, seuili)
     integer :: ndt, ndi, i
     real(kind=8) :: mater(14, 2), qiso, i1, sig(6), vin(*), seuili, trois
 !
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !
-    data       trois  /3.d0/
+    data trois/3.d0/
 !
 !       ----------------------------------------------------------------
 !
 !
     qiso = vin(1)
-    i1=0.d0
+    i1 = 0.d0
     do i = 1, ndi
-        i1 = i1 + sig(i)
+        i1 = i1+sig(i)
     end do
 !
-    seuili = - (i1+mater(13,2))/trois + qiso
+    seuili = -(i1+mater(13, 2))/trois+qiso
 !
 end subroutine

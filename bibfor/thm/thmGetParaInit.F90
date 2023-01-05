@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine thmGetParaInit(j_mater, ds_thm, l_check_)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"
 !
-integer, intent(in) :: j_mater
-type(THM_DS), intent(inout) :: ds_thm
-aster_logical, optional, intent(in) :: l_check_
+    integer, intent(in) :: j_mater
+    type(THM_DS), intent(inout) :: ds_thm
+    aster_logical, optional, intent(in) :: l_check_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,12 +49,12 @@ aster_logical, optional, intent(in) :: l_check_
 !
     aster_logical :: l_temp_init, l_pre2_init
     integer :: nume_thmc, nume_init
-    integer, parameter :: nb_para   =  5
+    integer, parameter :: nb_para = 5
     integer :: icodre(nb_para)
     real(kind=8) :: para_vale(nb_para)
-    character(len=16), parameter :: para_name(nb_para) = (/ 'TEMP     ', 'PRE1     ',&
-                                                            'PRE2     ', 'PORO     ',&
-                                                            'PRES_VAPE'/)
+    character(len=16), parameter :: para_name(nb_para) = (/'TEMP     ', 'PRE1     ', &
+                                                           'PRE2     ', 'PORO     ', &
+                                                           'PRES_VAPE'/)
     real(kind=8) :: para_vale2(1)
     integer :: icodre2(1)
 !
@@ -64,17 +64,17 @@ aster_logical, optional, intent(in) :: l_check_
 !
 ! - Read parameters
 !
-    call rcvala(j_mater, ' '      , 'THM_INIT',&
-                0      , ' '      , [0.d0]    ,&
-                nb_para, para_name, para_vale ,&
-                icodre , 0        , nan='OUI')
+    call rcvala(j_mater, ' ', 'THM_INIT', &
+                0, ' ', [0.d0], &
+                nb_para, para_name, para_vale, &
+                icodre, 0, nan='OUI')
     ds_thm%ds_parainit%temp_init = para_vale(1)
     ds_thm%ds_parainit%pre1_init = para_vale(2)
     ds_thm%ds_parainit%pre2_init = para_vale(3)
     ds_thm%ds_parainit%poro_init = para_vale(4)
     ds_thm%ds_parainit%prev_init = para_vale(5)
-    l_temp_init                  = icodre(1) .eq. 0
-    l_pre2_init                  = icodre(3) .eq. 0
+    l_temp_init = icodre(1) .eq. 0
+    l_pre2_init = icodre(3) .eq. 0
 !
 
 !
@@ -82,14 +82,14 @@ aster_logical, optional, intent(in) :: l_check_
 !
     if (present(l_check_)) then
         nume_thmc = ds_thm%ds_behaviour%nume_thmc
-        call rcvala(j_mater, ' '       , 'THM_INIT',&
-                    0      , ' '       , [0.d0]    ,&
-                    1      , 'COMP_THM', para_vale2,&
+        call rcvala(j_mater, ' ', 'THM_INIT', &
+                    0, ' ', [0.d0], &
+                    1, 'COMP_THM', para_vale2, &
                     icodre2, 1)
         nume_init = nint(para_vale2(1))
         if (nume_init .ne. nume_thmc) then
             call utmess('F', 'THM1_34')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

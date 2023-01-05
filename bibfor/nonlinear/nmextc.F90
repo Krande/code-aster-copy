@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -61,7 +61,7 @@ implicit none
 !
     call getvtx(keyw_fact, 'NOM_CHAM', iocc=i_keyw_fact, nbval=0, nbret=n1)
     nchp = -n1
-    ASSERT(nchp.eq.1)
+    ASSERT(nchp .eq. 1)
 !
 ! - Get name of field (type)
 !
@@ -73,6 +73,6 @@ implicit none
 !
 ! - Can been monitored ?
 !
-    l_extr = i_field.gt.0
+    l_extr = i_field .gt. 0
 !
 end subroutine

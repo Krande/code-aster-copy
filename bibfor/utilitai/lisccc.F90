@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 ! ----------------------------------------------------------------------
 !
     integer :: zbgdlh, zbgccg
-    parameter    (zbgdlh = 17,zbgccg = 9)
+    parameter(zbgdlh=17, zbgccg=9)
     character(len=16) :: autdlh(zbgdlh), autccg(zbgccg)
 !
     integer :: tabcox(60), tabaut(60)
@@ -63,20 +63,20 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !
 ! --- DYNA_VIBRA//HARM/GENE
 !
-    data autdlh /&
-     &     'DIRI_DUAL'       ,'FORCE_NODALE'    ,'EPSI_INIT'       ,&
-     &     'PRES_REP'        ,'FLUX_THM_REP'    ,'PESANTEUR'       ,&
-     &     'ROTATION'        ,'FORCE_CONTOUR'   ,'FORCE_INTERNE#3D',&
-     &     'FORCE_INTERNE#2D','FORCE_ARETE'     ,'FORCE_FACE'      ,&
-     &     'FORCE_POUTRE'    ,'FORCE_COQUE#3D'  ,'FORCE_COQUE#2D'  ,&
-     &     'VECT_ASSE'       ,'VECT_ASSE_GENE'  /
+    data autdlh/&
+     &     'DIRI_DUAL', 'FORCE_NODALE', 'EPSI_INIT',&
+     &     'PRES_REP', 'FLUX_THM_REP', 'PESANTEUR',&
+     &     'ROTATION', 'FORCE_CONTOUR', 'FORCE_INTERNE#3D',&
+     &     'FORCE_INTERNE#2D', 'FORCE_ARETE', 'FORCE_FACE',&
+     &     'FORCE_POUTRE', 'FORCE_COQUE#3D', 'FORCE_COQUE#2D',&
+     &     'VECT_ASSE', 'VECT_ASSE_GENE'/
 !
 ! --- CALC_G
 !
-    data autccg /&
-     &     'DIRI_DUAL'       ,'EPSI_INIT'       ,'PRES_REP'        ,&
-     &     'PESANTEUR'       ,'ROTATION'        ,'FORCE_CONTOUR'   ,&
-     &     'FORCE_INTERNE#3D','FORCE_INTERNE#2D','FORCE_FACE'      /
+    data autccg/&
+     &     'DIRI_DUAL', 'EPSI_INIT', 'PRES_REP',&
+     &     'PESANTEUR', 'ROTATION', 'FORCE_CONTOUR',&
+     &     'FORCE_INTERNE#3D', 'FORCE_INTERNE#2D', 'FORCE_FACE'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,11 +99,11 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !
     if (nomcmd .eq. 'DYNA_VIBRA') then
         nbgcmd = zbgdlh
-    else if (nomcmd.eq.'CALC_G') then
+    else if (nomcmd .eq. 'CALC_G') then
         nbgcmd = zbgccg
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- BOUCLE SUR LES MOTS-CLEFS ACTIFS DANS LA CHARGE
 !
@@ -118,22 +118,22 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
                 if (nomcmd .eq. 'DYNA_VIBRA') then
                     motclf = autdlh(iauth)
                     call lisdef('POSM', motclf, ibid, k8bid, iposit)
-                else if (nomcmd.eq.'CALC_G') then
+                else if (nomcmd .eq. 'CALC_G') then
                     motclf = autccg(iauth)
                     call lisdef('POSM', motclf, ibid, k8bid, iposit)
                 else
                     ASSERT(.false.)
-                endif
-                ASSERT(iposit(1).ne.0)
+                end if
+                ASSERT(iposit(1) .ne. 0)
                 if (iposit(1) .eq. ipose) lfind = .true.
             end do
             if (lfind) then
-                nbauth = nbauth + 1
+                nbauth = nbauth+1
                 tabaut(ipose) = 1
-            endif
+            end if
         else
             tabaut(ipose) = 0
-        endif
+        end if
     end do
 !
 ! --- CODAGE MOT-CLEFS AUTORISES

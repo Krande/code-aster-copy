@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ subroutine xcesrd(ces, chsnpg)
     aster_logical :: lreal, lfonc
     integer, pointer :: cesvnpg(:) => null()
 !
-    lreal=.false.
-    lfonc=.false.
+    lreal = .false.
+    lfonc = .false.
 !
 !   recuperation du nom de grandeur et du type de scalaire associe
     call dismoi('NOM_GD', ces, 'CHAMP', repk=nomgd)
@@ -59,14 +59,14 @@ subroutine xcesrd(ces, chsnpg)
 !   recherche du type de valeur a matrre a 0 :
 !      - valeur reelle
 !      - objet fonction
-    if (nomgd.eq.'NEUT_F') then
-       ASSERT(tsca.eq.'K8')
-       lfonc=.true.
-    else if (tsca.eq.'R') then
-       lreal=.true.
+    if (nomgd .eq. 'NEUT_F') then
+        ASSERT(tsca .eq. 'K8')
+        lfonc = .true.
+    else if (tsca .eq. 'R') then
+        lreal = .true.
     else
-       ASSERT(.false.)
-    endif
+        ASSERT(.false.)
+    end if
 !
 !   ouverture du champ simple contenant le nombre de points de Gauss
 !   reellement utilise pour chaque element (0 si la famille XFEM
@@ -80,28 +80,28 @@ subroutine xcesrd(ces, chsnpg)
     call jeveuo(ces//'.CESV', 'E', jcesv)
 
     nbma = zi(jcesdnpg-1+1)
-    do ima=1, nbma
+    do ima = 1, nbma
         call cesexi('C', jcesdnpg, jceslnpg, ima, 1, 1, 1, iadnpg)
-        ASSERT(abs(iadnpg).gt.0)
-        if (iadnpg.le.0) cycle
+        ASSERT(abs(iadnpg) .gt. 0)
+        if (iadnpg .le. 0) cycle
 !
 !       recuperation du nombre de point de Gauss de l'element
-        npg=cesvnpg(iadnpg)
+        npg = cesvnpg(iadnpg)
 !
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
         nbsp = zi(jcesd-1+5+4*(ima-1)+2)
         nbcmp = zi(jcesd-1+5+4*(ima-1)+3)
 !
 !       on met a 0 les points dont on n'a pas besoin
-        do ipt=npg+1, nbpt
-            do isp=1, nbsp
-                do icmp=1, nbcmp
+        do ipt = npg+1, nbpt
+            do isp = 1, nbsp
+                do icmp = 1, nbcmp
                     call cesexi('C', jcesd, jcesl, ima, ipt, isp, icmp, iad)
-                    if (iad.le.0) cycle
-                    if (lreal) zr(jcesv-1+iad)  = 0.d0
+                    if (iad .le. 0) cycle
+                    if (lreal) zr(jcesv-1+iad) = 0.d0
                     if (lfonc) zk8(jcesv-1+iad) = '&FOZERO'
-                enddo
-            enddo
-        enddo
-    enddo
+                end do
+            end do
+        end do
+    end do
 end subroutine

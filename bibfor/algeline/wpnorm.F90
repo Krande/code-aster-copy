@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
+subroutine wpnorm(norm, para, lmatr, neq, nbmode, &
                   ddlexc, vecpro, resufr, coef)
     implicit none
 #include "jeveux.h"
@@ -72,12 +72,12 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
     character(len=24) :: valk
     complex(kind=8), pointer :: xxxx_gene_2(:) => null()
 !     ------------------------------------------------------------------
-    data        typcst/'C','C'/
+    data typcst/'C', 'C'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    zero=0.d0
-    czero=dcmplx(zero,zero)
+    zero = 0.d0
+    czero = dcmplx(zero, zero)
 !
     if (norm .eq. 'AVEC_CMP' .or. norm .eq. 'EUCL') then
 !
@@ -86,80 +86,80 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
             rnorm = 0.0d0
             if (norm .eq. 'EUCL') then
                 do ieq = 1, neq
-                    xx1 = vecpro(ieq,im) * ddlexc(ieq)
-                    rnorm = rnorm + dble(xx1*dconjg(xx1))
+                    xx1 = vecpro(ieq, im)*ddlexc(ieq)
+                    rnorm = rnorm+dble(xx1*dconjg(xx1))
                 end do
-                rnorm = sqrt( rnorm )
+                rnorm = sqrt(rnorm)
             else
                 do ieq = 1, neq
-                    rx1 = abs( vecpro(ieq,im)*ddlexc(ieq) )
-                    rnorm = max( rx1 , rnorm )
+                    rx1 = abs(vecpro(ieq, im)*ddlexc(ieq))
+                    rnorm = max(rx1, rnorm)
                 end do
-            endif
-            rx1 = 1.0d0 / rnorm
+            end if
+            rx1 = 1.0d0/rnorm
             coef(im) = rx1
             do ieq = 1, neq
-                vecpro(ieq,im) = vecpro(ieq,im) * rx1
+                vecpro(ieq, im) = vecpro(ieq, im)*rx1
             end do
             if (para .eq. 'OUI') then
-                rx2 = rx1 * rx1
-                resufr(im,4) = resufr(im,4) * rx2
-                resufr(im,5) = resufr(im,5) * rx2
-                resufr(im,6) = resufr(im,6) * rx2
-            endif
+                rx2 = rx1*rx1
+                resufr(im, 4) = resufr(im, 4)*rx2
+                resufr(im, 5) = resufr(im, 5)*rx2
+                resufr(im, 6) = resufr(im, 6)*rx2
+            end if
         end do
 !
-    else if (norm.eq.'MASS_GENE' .or. norm.eq.'RIGI_GENE') then
+    else if (norm .eq. 'MASS_GENE' .or. norm .eq. 'RIGI_GENE') then
 !
 !        --- ON NORMALISE LA MASSE OU LA RAIDEUR GENERALISEE A 1 ---
 !        --- DU PROBLEME GENERALISE ASSOCIE AU PROBLEME QUADRATIQUE ---
         matmod = zk24(zi(lmatr(1)+1))
-        nmatr(1)=zk24(zi(lmatr(1)+1))
-        nmatr(2)=zk24(zi(lmatr(2)+1))
+        nmatr(1) = zk24(zi(lmatr(1)+1))
+        nmatr(2) = zk24(zi(lmatr(2)+1))
         AS_ALLOCATE(vc=xxxx_gene_2, size=neq)
         call mtdefs('&&WPNORM.MATR.DYNAMIC', matmod, 'V', 'C')
         call mtdscr('&&WPNORM.MATR.DYNAM')
-        ndynam='&&WPNORM.MATR.DYNAM'//'.&INT'
+        ndynam = '&&WPNORM.MATR.DYNAM'//'.&INT'
         call jeveuo(ndynam, 'E', ldynam)
         if (norm .eq. 'MASS_GENE') then
             constr(3) = 1.d0
             constr(4) = 0.d0
-        else if (norm.eq.'RIGI_GENE') then
+        else if (norm .eq. 'RIGI_GENE') then
             constr(1) = -1.d0
             constr(2) = 0.d0
-        endif
+        end if
         do im = 1, nbmode
-            fr = sqrt( resufr(im,2) )
-            am = resufr(im,3)
-            am = -abs( am*fr ) / sqrt( 1.0d0 - am*am )
+            fr = sqrt(resufr(im, 2))
+            am = resufr(im, 3)
+            am = -abs(am*fr)/sqrt(1.0d0-am*am)
             if (norm .eq. 'MASS_GENE') then
                 constr(1) = 2.d0*am
                 constr(2) = 2.d0*fr
-            else if (norm.eq.'RIGI_GENE') then
-                cmpl = dcmplx(am,fr)
-                cmpl = cmpl * cmpl
+            else if (norm .eq. 'RIGI_GENE') then
+                cmpl = dcmplx(am, fr)
+                cmpl = cmpl*cmpl
                 constr(3) = dble(cmpl)
                 constr(4) = dimag(cmpl)
-            endif
-            call mtcmbl(2, typcst, constr, nmatr, ndynam,&
+            end if
+            call mtcmbl(2, typcst, constr, nmatr, ndynam, &
                         ' ', ' ', 'ELIM=')
-            call mcmult('ZERO', ldynam, vecpro(1, im), xxxx_gene_2, 1,&
+            call mcmult('ZERO', ldynam, vecpro(1, im), xxxx_gene_2, 1, &
                         .true._1)
             xnorm = czero
             do ieq = 1, neq
-                xnorm = xnorm + vecpro(ieq,im) * xxxx_gene_2(ieq)
+                xnorm = xnorm+vecpro(ieq, im)*xxxx_gene_2(ieq)
             end do
-            xnorm = 1.d0 / sqrt(xnorm)
+            xnorm = 1.d0/sqrt(xnorm)
             coef(im) = dble(xnorm)
             do ieq = 1, neq
-                vecpro(ieq,im) = vecpro(ieq,im) * xnorm
+                vecpro(ieq, im) = vecpro(ieq, im)*xnorm
             end do
             if (para .eq. 'OUI') then
-                xnorm = xnorm * xnorm
-                resufr(im,4) = resufr(im,4) * dble(xnorm)
-                resufr(im,5) = resufr(im,5) * dble(xnorm)
-                resufr(im,6) = resufr(im,6) * dble(xnorm)
-            endif
+                xnorm = xnorm*xnorm
+                resufr(im, 4) = resufr(im, 4)*dble(xnorm)
+                resufr(im, 5) = resufr(im, 5)*dble(xnorm)
+                resufr(im, 6) = resufr(im, 6)*dble(xnorm)
+            end if
         end do
 ! --- MENAGE
         AS_DEALLOCATE(vc=xxxx_gene_2)
@@ -172,7 +172,7 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
         valk = norm
         call utmess('F', 'ALGELINE4_77', sk=valk)
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

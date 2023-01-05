@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine oreino(noma, lnoeud, nbno, nori, next,&
+subroutine oreino(noma, lnoeud, nbno, nori, next, &
                   coor, crit, prec, iera, ier)
     implicit none
 #include "jeveux.h"
@@ -72,12 +72,12 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     xab = xb-xa
     yab = yb-ya
     zab = zb-za
-    ab2 = xab**2 + yab**2 + zab**2
+    ab2 = xab**2+yab**2+zab**2
     if (ab2 .eq. 0.0d0) then
         call utmess('A', 'SOUSTRUC_20')
-        ier = ier + 1
+        ier = ier+1
         goto 999
-    endif
+    end if
 !
     AS_ALLOCATE(vr=bary, size=nbno)
 !
@@ -91,47 +91,47 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
         xam = xm-xa
         yam = ym-ya
         zam = zm-za
-        c = (xam*xab+yam*yab+zam*zab) / ab2
-        c2 = xam**2 + yam**2 + zam**2
-        xv = xam - c*xab
-        yv = yam - c*yab
-        zv = zam - c*zab
-        v2 = xv**2 + yv**2 + zv**2
+        c = (xam*xab+yam*yab+zam*zab)/ab2
+        c2 = xam**2+yam**2+zam**2
+        xv = xam-c*xab
+        yv = yam-c*yab
+        zv = zam-c*zab
+        v2 = xv**2+yv**2+zv**2
 !        --- VERIFICATION QUE LA DISTANCE A L'AXE
 !                         NE DEPASSE PAS LA TOLERANCE ---
         if (crit(1:4) .eq. 'ABSO') then
             r8b = v2
         else if (crit(1:4) .eq. 'RELA') then
-            r8b = v2 / ab2
+            r8b = v2/ab2
         else
             call utmess('A', 'SOUSTRUC_21')
-            ier = ier + 1
+            ier = ier+1
             goto 999
-        endif
-        r8b = sqrt( r8b )
+        end if
+        r8b = sqrt(r8b)
         if (r8b .gt. prec) then
-            v2 = sqrt( v2 )
+            v2 = sqrt(v2)
             call jenuno(jexnum(nomnoe, inod), nomn)
             if (iera .eq. 3) then
                 call utmess('A', 'SOUSTRUC_17', sk=nomn, sr=v2)
             else
                 call utmess('A', 'SOUSTRUC_22', sk=nomn, sr=v2)
-            endif
-            ier = ier + 1
-        endif
+            end if
+            ier = ier+1
+        end if
 !        --- VERIFICATION QUE LA PROJECTION EST BIEN
 !                         SITUEE ENTRE LES POINTS A ET B ---
         ecart = (c2-ab2)/ab2
         if (c .lt. 0.0d0 .or. c2 .gt. ab2) then
             if (ecart .gt. r8prem()) then
                 call jenuno(jexnum(nomnoe, inod), nomn)
-                valk (1) = nomn
-                valk (2) = nomn
+                valk(1) = nomn
+                valk(2) = nomn
                 valr = c
                 call utmess('A', 'SOUSTRUC_86', nk=2, valk=valk, sr=valr)
-                ier = ier + 1
-            endif
-        endif
+                ier = ier+1
+            end if
+        end if
         bary(inoe) = c
     end do
 !
@@ -141,13 +141,13 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
         do i = nbno-1, k, -1
             j = i+1
             if (bary(i) .gt. bary(j)) then
-                c=bary(j)
-                bary(j)=bary(i)
-                bary(i)=c
-                n=lnoeud(j)
-                lnoeud(j)=lnoeud(i)
-                lnoeud(i)=n
-            endif
+                c = bary(j)
+                bary(j) = bary(i)
+                bary(i) = c
+                n = lnoeud(j)
+                lnoeud(j) = lnoeud(i)
+                lnoeud(i) = n
+            end if
         end do
     end do
 !
@@ -156,8 +156,8 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     do inoe = 1, nbno-1
         if (bary(inoe) .eq. bary(inoe+1)) then
             call utmess('A', 'SOUSTRUC_23')
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
     end do
 !
 999 continue

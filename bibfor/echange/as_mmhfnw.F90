@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhfnw(fid, maa, fam, n, typent,&
+subroutine as_mmhfnw(fid, maa, fam, n, typent, &
                      typgeo, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -42,21 +42,21 @@ subroutine as_mmhfnw(fid, maa, fam, n, typent,&
     mdnont = -1
     mdnoit = -1
     fidm = to_med_idt(fid)
-    allocate ( fam4(n) )
+    allocate (fam4(n))
     call conv_int('ast->med', n, vi_ast=fam, vi_med=fam4)
     n4 = n
     typen4 = typent
     typge4 = typgeo
     mdnon4 = mdnont
     mdnoi4 = mdnoit
-    call mmhfnw(fidm, maa, mdnon4, mdnoi4, typen4,&
+    call mmhfnw(fidm, maa, mdnon4, mdnoi4, typen4, &
                 typge4, n4, fam4, cret4)
     cret = cret4
     deallocate (fam4)
 #else
     mdnont = -1
     mdnoit = -1
-    call mmhfnw(fid, maa, mdnont, mdnoit, typent,&
+    call mmhfnw(fid, maa, mdnont, mdnoit, typent, &
                 typgeo, n, fam, cret)
 #endif
 !

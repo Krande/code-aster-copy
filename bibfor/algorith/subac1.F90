@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine subac1(laxi, nno, vff, dff, geom,&
+subroutine subac1(laxi, nno, vff, dff, geom, &
                   cova)
 !
     implicit none
@@ -40,34 +40,34 @@ subroutine subac1(laxi, nno, vff, dff, geom,&
     real(kind=8) :: norme
 !
     do i = 1, 3
-        cova(i,1) = 0.d0
-        cova(i,2) = 0.d0
+        cova(i, 1) = 0.d0
+        cova(i, 2) = 0.d0
     end do
 !
 !    CALCUL DU PREMIER VECTEUR TANGENT
     do n = 1, nno
         do i = 1, 2
-            cova(i,1)=cova(i,1)+dff(n)*geom(i,n)
+            cova(i, 1) = cova(i, 1)+dff(n)*geom(i, n)
         end do
     end do
 !
 !    CALCUL DU SECOND VECTEUR TANGENT
     if (laxi) then
         do n = 1, nno
-            cova(3,2) = cova(3,2) + vff(n)*geom(1,n)
+            cova(3, 2) = cova(3, 2)+vff(n)*geom(1, n)
         end do
     else
-        cova(3,2) = 1.d0
-    endif
+        cova(3, 2) = 1.d0
+    end if
 !
 !    CALCUL DE LA NORMALE (PRODUIT VECTORIEL DES VECTEURS TANGENTS)
-    cova(1,3) = cova(2,1)*cova(3,2) - cova(3,1)*cova(2,2)
-    cova(2,3) = cova(3,1)*cova(1,2) - cova(1,1)*cova(3,2)
-    cova(3,3) = cova(1,1)*cova(2,2) - cova(2,1)*cova(1,2)
+    cova(1, 3) = cova(2, 1)*cova(3, 2)-cova(3, 1)*cova(2, 2)
+    cova(2, 3) = cova(3, 1)*cova(1, 2)-cova(1, 1)*cova(3, 2)
+    cova(3, 3) = cova(1, 1)*cova(2, 2)-cova(2, 1)*cova(1, 2)
 !
-    norme = sqrt(cova(1,3)**2 + cova(2,3)**2 + cova(3,3)**2)
-    cova(1,3) = cova(1,3) / norme
-    cova(2,3) = cova(2,3) / norme
-    cova(3,3) = cova(3,3) / norme
+    norme = sqrt(cova(1, 3)**2+cova(2, 3)**2+cova(3, 3)**2)
+    cova(1, 3) = cova(1, 3)/norme
+    cova(2, 3) = cova(2, 3)/norme
+    cova(3, 3) = cova(3, 3)/norme
 !
 end subroutine

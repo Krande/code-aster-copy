@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,14 +48,14 @@ subroutine vrcin_elno(nomch, cesmod, chs)
 !
 !   seuls les cham_no sont autorises
     call dismoi('TYPE_CHAMP', nomch, 'CHAMP', repk=tych)
-    if(tych .ne. 'NOEU')then
-        valk(1)=nomch
-        valk(2)=tych
+    if (tych .ne. 'NOEU') then
+        valk(1) = nomch
+        valk(2) = tych
         call utmess('F', 'RUPTURE0_20', nk=2, valk=valk)
-    endif
+    end if
 
 !   passage cham_no -> cham_elem_s / ELNO
-    cns1='&&VRCINE.CNS1'
+    cns1 = '&&VRCINE.CNS1'
     call cnocns(nomch, 'V', cns1)
     call cnsces(cns1, 'ELNO', cesmod, ' ', 'V', chs)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine nudlg2(nu)
 !
 !
     call jemarq()
-    nu14=nu
+    nu14 = nu
 !
     call jeexin(nu14//'.NUME.DLG2', iexi)
     if (iexi .gt. 0) goto 999
@@ -100,24 +100,24 @@ subroutine nudlg2(nu)
         if (n4 .eq. 0) goto 31
         call jeveuo(jexnum(nu14//'.NUME.PRNO', ili), 'L', jprno)
         do ima = 1, nbma
-            nn=zznsup(ili,ima)
+            nn = zznsup(ili, ima)
             if (nn .eq. 3) then
-                n1=zznema(ili,ima,1)
-                n2=zznema(ili,ima,2)
-                n3=zznema(ili,ima,3)
-                if (((n1.gt.0).and.(n2.lt.0)) .and. (n3.lt.0)) then
+                n1 = zznema(ili, ima, 1)
+                n2 = zznema(ili, ima, 2)
+                n3 = zznema(ili, ima, 3)
+                if (((n1 .gt. 0) .and. (n2 .lt. 0)) .and. (n3 .lt. 0)) then
 !             L'ELEMENT IMA EST UN SEG3 DE DUALISATION (PHYS,LAG1,LAG2)
 !             N2 ET N3 SONT 2 LAGRANGES APPARIES
-                    ieq2=zi(jprno-1+(-n2-1)*(nec+2)+1)
-                    ieq3=zi(jprno-1+(-n3-1)*(nec+2)+1)
+                    ieq2 = zi(jprno-1+(-n2-1)*(nec+2)+1)
+                    ieq3 = zi(jprno-1+(-n3-1)*(nec+2)+1)
                     nueq2 = nueq(ieq2)
                     nueq3 = nueq(ieq3)
-                    zi(jdlg2-1+nueq2)=nueq3
-                    zi(jdlg2-1+nueq3)=nueq2
-                endif
-            endif
+                    zi(jdlg2-1+nueq2) = nueq3
+                    zi(jdlg2-1+nueq3) = nueq2
+                end if
+            end if
         end do
- 31     continue
+31      continue
     end do
 !
 !

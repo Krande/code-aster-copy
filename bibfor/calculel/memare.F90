@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine memare(base  , matr_vect_elemz, modelz, mater, cara_elem,&
+subroutine memare(base, matr_vect_elemz, modelz, mater, cara_elem, &
                   suropt)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
@@ -57,12 +57,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     matr_vect_elem = matr_vect_elemz
-    model          = modelz
-    ASSERT(model.ne.' ')
-    ASSERT(mater(1:8).ne.'&&MATECO')
+    model = modelz
+    ASSERT(model .ne. ' ')
+    ASSERT(mater(1:8) .ne. '&&MATECO')
 !
     call jedetr(matr_vect_elem//'.RERR')
-    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 5, vk24 = p_rerr)
+    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 5, vk24=p_rerr)
     p_rerr(1) = model
     p_rerr(2) = suropt
     p_rerr(3) = 'NON_SOUS_STRUC'

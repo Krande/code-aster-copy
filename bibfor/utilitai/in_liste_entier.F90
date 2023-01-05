@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function in_liste_entier(val,liste,indx)
+function in_liste_entier(val, liste, indx)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -30,25 +30,25 @@ function in_liste_entier(val,liste,indx)
 !
     implicit none
     integer :: val, liste(:)
-    integer,intent(out),optional :: indx
+    integer, intent(out), optional :: indx
     logical :: in_liste_entier
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii,indx0
+    integer :: ii, indx0
 ! --------------------------------------------------------------------------------------------------
     in_liste_entier = .false.
     indx0 = 0
 !
-    if ( present(indx) ) then
-        indx=indx0
-    endif
-    do ii = lbound(liste,1), ubound(liste,1)
-        indx0 = indx0 + 1
-        if ( val.eq.liste(ii) ) then
+    if (present(indx)) then
+        indx = indx0
+    end if
+    do ii = lbound(liste, 1), ubound(liste, 1)
+        indx0 = indx0+1
+        if (val .eq. liste(ii)) then
             in_liste_entier = .true.
-            if ( present(indx) ) then
-                indx=indx0
-            endif
+            if (present(indx)) then
+                indx = indx0
+            end if
             exit
-        endif
-    enddo
+        end if
+    end do
 end

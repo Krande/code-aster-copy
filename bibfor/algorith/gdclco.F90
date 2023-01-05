@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ subroutine gdclco(e, tau)
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -53,17 +53,17 @@ subroutine gdclco(e, tau)
 !
 !
 !    CALCUL DE E.E
-    e2(1) = e(1)*e(1) + e(4)*e(4)/2.d0 + e(5)*e(5)/2.d0
-    e2(2) = e(4)*e(4)/2.d0 + e(2)*e(2) + e(6)*e(6)/2.d0
-    e2(3) = e(5)*e(5)/2.d0 + e(6)*e(6)/2.d0 + e(3)*e(3)
-    e2(4) = e(1)*e(4) + e(4)*e(2) + e(5)*e(6)/rac2
-    e2(5) = e(1)*e(5) + e(4)*e(6)/rac2 + e(5)*e(3)
-    e2(6) = e(4)*e(5)/rac2 + e(2)*e(6) + e(6)*e(3)
+    e2(1) = e(1)*e(1)+e(4)*e(4)/2.d0+e(5)*e(5)/2.d0
+    e2(2) = e(4)*e(4)/2.d0+e(2)*e(2)+e(6)*e(6)/2.d0
+    e2(3) = e(5)*e(5)/2.d0+e(6)*e(6)/2.d0+e(3)*e(3)
+    e2(4) = e(1)*e(4)+e(4)*e(2)+e(5)*e(6)/rac2
+    e2(5) = e(1)*e(5)+e(4)*e(6)/rac2+e(5)*e(3)
+    e2(6) = e(4)*e(5)/rac2+e(2)*e(6)+e(6)*e(3)
 !
 !    CALCUL DE TAU
     tre = e(1)+e(2)+e(3)
     do ij = 1, 6
-        tau(ij) = (lambda*tre+cother)*(2*e(ij) - kr(ij)) + deuxmu *(2*e2(ij) - e(ij))
+        tau(ij) = (lambda*tre+cother)*(2*e(ij)-kr(ij))+deuxmu*(2*e2(ij)-e(ij))
     end do
 !
 end subroutine

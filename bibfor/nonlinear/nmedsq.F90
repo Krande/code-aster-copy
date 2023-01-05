@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmedsq(sg, qg, dsdug, d, npg,&
-                  typmod, imate, bum, bdu, sign,&
-                  vim, option, geom, nno, lgpg,&
+subroutine nmedsq(sg, qg, dsdug, d, npg, &
+                  typmod, imate, bum, bdu, sign, &
+                  vim, option, geom, nno, lgpg, &
                   kpg, def)
 !
 !
@@ -65,21 +65,21 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
     call r8inir(36, 0.d0, dsidep, 1)
 !
 !
-    alpham(1) = vim(1,kpg)
-    alpham(2) = vim(2,kpg)
+    alpham(1) = vim(1, kpg)
+    alpham(2) = vim(2, kpg)
 !
 ! SOIT A ET B LES MILIEUX DES COTES [14] ET [23]
 ! t TANGENT AU COTE [AB]
 !
-    xa = ( geom(1,1) + geom(1,4) ) / 2
-    ya = ( geom(2,1) + geom(2,4) ) / 2
+    xa = (geom(1, 1)+geom(1, 4))/2
+    ya = (geom(2, 1)+geom(2, 4))/2
 !
-    xb = ( geom(1,2) + geom(1,3) ) / 2
-    yb = ( geom(2,2) + geom(2,3) ) / 2
+    xb = (geom(1, 2)+geom(1, 3))/2
+    yb = (geom(2, 2)+geom(2, 3))/2
 !
 !     LONGUEUR DE L'ELEMENT : NORME DU COTE [AB]
-    long = sqrt( (xa-xb)*(xa-xb) + (ya-yb)*(ya-yb) )
-    if (axi) long = long * (xa + xb)/2.d0
+    long = sqrt((xa-xb)*(xa-xb)+(ya-yb)*(ya-yb))
+    if (axi) long = long*(xa+xb)/2.d0
 !
 !
 ! CALCUL DE SG :
@@ -91,20 +91,20 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
         da = 0.d0
         dda = 0.d0
         do j = 1, 2
-            da = da + d(i,j)*alpham(j)
-            dda = dda + d(i,j)*(alphap(j)-alpham(j))
+            da = da+d(i, j)*alpham(j)
+            dda = dda+d(i, j)*(alphap(j)-alpham(j))
         end do
-        epsm(i) = bum(i) + da
-        deps(i) = bdu(i) + dda
+        epsm(i) = bum(i)+da
+        deps(i) = bdu(i)+dda
     end do
 !
     call r8inir(6, 0.d0, sig, 1)
-    call nmedel(2, typmod, imate, deps, sign,&
+    call nmedel(2, typmod, imate, deps, sign, &
                 option, sig, dsidep)
 !
     do i = 1, 2
         do kl = 1, 4
-            sg(i) = sg(i) - d(kl,i)*sig(kl)/long
+            sg(i) = sg(i)-d(kl, i)*sig(kl)/long
         end do
     end do
 !
@@ -120,9 +120,9 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
         do n = 1, nno
             do i = 1, 2
 !
-                kl=2*(n-1)+i
+                kl = 2*(n-1)+i
                 do j = 1, 4
-                    mtemp(k,kl) = mtemp(k,kl) + dsidep(k,j)*def(j,n,i)
+                    mtemp(k, kl) = mtemp(k, kl)+dsidep(k, j)*def(j, n, i)
                 end do
 !
             end do
@@ -134,7 +134,7 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
     do i = 1, 2
         do j = 1, 8
             do kl = 1, 4
-                dsdug(i,j) = dsdug(i,j) - d(kl,i)*mtemp(kl,j)/long
+                dsdug(i, j) = dsdug(i, j)-d(kl, i)*mtemp(kl, j)/long
             end do
         end do
     end do
@@ -151,22 +151,22 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
         da = 0.d0
         dda = 0.d0
         do j = 1, 2
-            da = da + d(i,j)*alpham(j)
-            dda = dda + d(i,j)*(alphap(j)-alpham(j))
+            da = da+d(i, j)*alpham(j)
+            dda = dda+d(i, j)*(alphap(j)-alpham(j))
         end do
-        epsm(i) = bum(i) + da
-        deps(i) = bdu(i) + dda
+        epsm(i) = bum(i)+da
+        deps(i) = bdu(i)+dda
     end do
 !
     call r8inir(6, 0.d0, sig, 1)
-    call nmedel(2, typmod, imate, deps, sign,&
+    call nmedel(2, typmod, imate, deps, sign, &
                 option, sig, dsidep)
 !
     do i = 1, 2
         do kl = 1, 4
-            qg(i,1) = qg(i,1) - d(kl,i)*sig(kl)/long
+            qg(i, 1) = qg(i, 1)-d(kl, i)*sig(kl)/long
         end do
-        qg(i,1) = qg(i,1) - sg(i)
+        qg(i, 1) = qg(i, 1)-sg(i)
     end do
 !
 !
@@ -178,22 +178,22 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
         da = 0.d0
         dda = 0.d0
         do j = 1, 2
-            da = da + d(i,j)*alpham(j)
-            dda = dda + d(i,j)*(alphap(j)-alpham(j))
+            da = da+d(i, j)*alpham(j)
+            dda = dda+d(i, j)*(alphap(j)-alpham(j))
         end do
-        epsm(i) = bum(i) + da
-        deps(i) = bdu(i) + dda
+        epsm(i) = bum(i)+da
+        deps(i) = bdu(i)+dda
     end do
 !
     call r8inir(6, 0.d0, sig, 1)
-    call nmedel(2, typmod, imate, deps, sign,&
+    call nmedel(2, typmod, imate, deps, sign, &
                 option, sig, dsidep)
 !
     do i = 1, 2
         do kl = 1, 4
-            qg(i,2) = qg(i,2) - d(kl,i)*sig(kl)/long
+            qg(i, 2) = qg(i, 2)-d(kl, i)*sig(kl)/long
         end do
-        qg(i,2) = qg(i,2) - sg(i)
+        qg(i, 2) = qg(i, 2)-sg(i)
     end do
 !
 !
@@ -202,6 +202,6 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         call r8inir(2, 0.d0, sg, 1)
-    endif
+    end if
 !
 end subroutine

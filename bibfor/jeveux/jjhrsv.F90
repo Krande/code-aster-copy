@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine jjhrsv(idts, nbval, iadmi)
 ! IN  IADMI  : ADRESSE DANS JISZON DU TABLEAU DE VALEURS LUES
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
 ! ----------------------------------------------------------------------
     real(kind=8) :: svuse, smxuse
-    common /statje/  svuse,smxuse
+    common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
     integer :: iret, jadr, kadm, nbv, k, lonoi, ltypi
     integer :: ir, kitab, iconv, iadyn
@@ -54,40 +54,40 @@ subroutine jjhrsv(idts, nbval, iadmi)
     iconv = 0
     ltypi = 0
     nbv = 0
-    iret = hdftsd(idts,typei,ltypi,nbv)
+    iret = hdftsd(idts, typei, ltypi, nbv)
     if (iret .ne. 0) then
         call utmess('F', 'JEVEUX_52')
-    endif
+    end if
     if (typei .eq. 'I') then
         iconv = 1
         if (lois .lt. ltypi) then
             lonoi = nbval*ltypi
-            call jjalls(lonoi, 0, 'V', typei, lois,&
+            call jjalls(lonoi, 0, 'V', typei, lois, &
                         'INIT', zi, jadr, kadm, iadyn)
             iszon(jiszon+kadm-1) = istat(2)
             iszon(jiszon+iszon(jiszon+kadm-4)-4) = istat(4)
-            svuse = svuse + (iszon(jiszon+kadm-4) - kadm + 4)
-            smxuse = max(smxuse,svuse)
-            ir = iszon(jiszon + kadm - 3 )
+            svuse = svuse+(iszon(jiszon+kadm-4)-kadm+4)
+            smxuse = max(smxuse, svuse)
+            ir = iszon(jiszon+kadm-3)
             kitab = jk1zon+(kadm-1)*lois+ir+1
-            iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
+            iret = hdfrsv(idts, nbv, k1zon(kitab), iconv)
             do k = 1, nbv
-                iszon(jiszon+iadmi-1+k)=iszon(jiszon+kadm-1+k)
+                iszon(jiszon+iadmi-1+k) = iszon(jiszon+kadm-1+k)
             end do
             call jjlidy(iadyn, kadm)
         else
-            ir = iszon(jiszon + iadmi - 3 )
+            ir = iszon(jiszon+iadmi-3)
             kitab = jk1zon+(iadmi-1)*lois+ir+1
-            iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
-        endif
+            iret = hdfrsv(idts, nbv, k1zon(kitab), iconv)
+        end if
     else
         ir = iszon(jiszon+iadmi-3)
         kitab = jk1zon+(iadmi-1)*lois+ir+1
-        iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
-    endif
+        iret = hdfrsv(idts, nbv, k1zon(kitab), iconv)
+    end if
     if (iret .ne. 0) then
         call utmess('F', 'JEVEUX_53')
-    endif
+    end if
     iret = hdfcld(idts)
 ! FIN ------------------------------------------------------------------
 end subroutine

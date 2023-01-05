@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine equa_print(mesh         , i_equa   , type_equa, name_node   , name_cmp,&
-                      name_cmp_lagr, name_subs, nume_link, nb_node_lagr, list_node_lagr,&
+subroutine equa_print(mesh, i_equa, type_equa, name_node, name_cmp, &
+                      name_cmp_lagr, name_subs, nume_link, nb_node_lagr, list_node_lagr, &
                       ligrel)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
@@ -73,43 +73,43 @@ implicit none
 !
 ! - Physical dof
 !
-    if (type_equa.eq.'A') then
+    if (type_equa .eq. 'A') then
         valk(1) = name_node
         valk(2) = name_cmp
-        call utmess('I','FACTOR2_1', nk = 2, valk = valk)
-    endif
+        call utmess('I', 'FACTOR2_1', nk=2, valk=valk)
+    end if
 !
 ! - Non-Physical dof (Lagrange)
 !
-    if (type_equa.eq.'B') then
+    if (type_equa .eq. 'B') then
         valk(1) = name_node
         valk(2) = name_cmp_lagr
-        call utmess('I','FACTOR2_2', nk = 2, valk = valk)
-    endif
+        call utmess('I', 'FACTOR2_2', nk=2, valk=valk)
+    end if
 !
 ! - Non-Physical dof (Lagrange) - LIAISON_DDL
 !
-    if (type_equa.eq.'C') then
-        call utmess('I','FACTOR2_3', sk = ligrel)
+    if (type_equa .eq. 'C') then
+        call utmess('I', 'FACTOR2_3', sk=ligrel)
         do i_node = 1, nb_node_lagr
             nume_node = abs(list_node_lagr(i_node))
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node_lagr)
-            call utmess('I','FACTOR2_4', sk = name_node_lagr)
+            call utmess('I', 'FACTOR2_4', sk=name_node_lagr)
         end do
-    endif
+    end if
 !
 ! - Generalized dof - Substructuring
 !
-    if (type_equa.eq.'D') then
-        call utmess('I','FACTOR2_5', sk = name_subs, si = i_equa)
-    endif
+    if (type_equa .eq. 'D') then
+        call utmess('I', 'FACTOR2_5', sk=name_subs, si=i_equa)
+    end if
 !
 ! - Generalized dof - Kinematic link
 !
-    if (type_equa.eq.'E') then
+    if (type_equa .eq. 'E') then
         vali(1) = nume_link
         vali(2) = i_equa
-        call utmess('I','FACTOR2_6', ni = 2, vali = vali)
-    endif
+        call utmess('I', 'FACTOR2_6', ni=2, vali=vali)
+    end if
 !
 end subroutine

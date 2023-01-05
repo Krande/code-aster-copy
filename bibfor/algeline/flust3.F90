@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine flust3(melflu, typflu, base, nuor, amor,&
-                  freq, masg, fact, vite, nbm,&
+subroutine flust3(melflu, typflu, base, nuor, amor, &
+                  freq, masg, fact, vite, nbm, &
                   npv, nivpar, nivdef)
     implicit none
 #include "asterf_types.h"
@@ -103,7 +103,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
-    data iddl    /1,2,3,4,5,6/
+    data iddl/1, 2, 3, 4, 5, 6/
 !
 !-----------------------------------------------------------------------
 !
@@ -129,12 +129,12 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 ! ---       CYLINDRES REELS PAR GROUPE D EQUIVALENCE
 !
     nbgrp = nbgrma
-    nbgtot= 0
+    nbgtot = 0
     if (iequiv .eq. 1) then
         nbcyl = zi(ifsvi+5)
         if (ntypg .ne. 0) then
             nbgtot = zi(ifsvi+6+nbgrma)
-        endif
+        end if
         call wkvect('&&FLUST3.TMP.NBCC', 'V V I', nbgrp, inbneq)
         do i = 1, nbgrp
             zi(inbneq+i-1) = zi(ifsvi+i+5)
@@ -143,8 +143,8 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         nbcyl = nbgrma
         if (ntypg .ne. 0) then
             nbgtot = zi(ifsvi+5)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- 1.3.CONCEPTS DE TYPE FONCTION DEFINISSANT LE PROFIL DE MASSE
 ! ---     VOLUMIQUE ET LE PROFIL DE VISCOSITE CINEMATIQUE DU FLUIDE
@@ -183,18 +183,18 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
 ! ---    CALCUL DES COORDONNEES DES QUATRES SOMMETS DE L'ENCEINTE
 !
-        ang = don(5) * pi / 180.d0
-        som(1) = don(1) + (don(3)*cos(ang) - don(4)*sin(ang))/2
-        som(2) = don(2) + (don(3)*sin(ang) + don(4)*cos(ang))/2
-        som(3) = don(1) - (don(3)*cos(ang) + don(4)*sin(ang))/2
-        som(4) = don(2) - (don(3)*sin(ang) - don(4)*cos(ang))/2
-        som(5) = don(1) - (don(3)*cos(ang) - don(4)*sin(ang))/2
-        som(6) = don(2) - (don(3)*sin(ang) + don(4)*cos(ang))/2
-        som(7) = don(1) + (don(3)*cos(ang) + don(4)*sin(ang))/2
-        som(8) = don(2) + (don(3)*sin(ang) - don(4)*cos(ang))/2
+        ang = don(5)*pi/180.d0
+        som(1) = don(1)+(don(3)*cos(ang)-don(4)*sin(ang))/2
+        som(2) = don(2)+(don(3)*sin(ang)+don(4)*cos(ang))/2
+        som(3) = don(1)-(don(3)*cos(ang)+don(4)*sin(ang))/2
+        som(4) = don(2)-(don(3)*sin(ang)-don(4)*cos(ang))/2
+        som(5) = don(1)-(don(3)*cos(ang)-don(4)*sin(ang))/2
+        som(6) = don(2)-(don(3)*sin(ang)+don(4)*cos(ang))/2
+        som(7) = don(1)+(don(3)*cos(ang)+don(4)*sin(ang))/2
+        som(8) = don(2)+(don(3)*sin(ang)-don(4)*cos(ang))/2
     else
         call utmess('F', 'ALGELINE_44')
-    endif
+    end if
 !
 ! --- 1.7.RAYONS DES TUBES DU FAISCEAU REEL ASSOCIES AUX TUBES
 ! ---     EQUIVALENTS
@@ -205,8 +205,8 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
             zr(ireq+i-1) = zr(ifsvr+ikn+i-1)
         end do
     else
-        ireq=1
-    endif
+        ireq = 1
+    end if
 !
 ! --- 1.8.NOM DES GROUPES DE MAILLES ASSOCIES AUX TUBES EQUIVALENTS,
 ! ---     OU NOM DE LA RACINE COMMUNE DES GROUPES DE NOEUDS,
@@ -220,17 +220,17 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         do i = 1, nbgrp
             zk24(inomeq+i-1) = zk24(ifsgm+i-1)
         end do
-    else if (iequiv.eq.0 .and. nbgrma.eq.0) then
+    else if (iequiv .eq. 0 .and. nbgrma .eq. 0) then
 ! --     NOM DE LA RACINE COMMUNE
         nomrac = zk24(ifsgm)
-    else if (iequiv.eq.0 .and. nbgrma.ne.0) then
+    else if (iequiv .eq. 0 .and. nbgrma .ne. 0) then
 ! --     NOM POUR CHAQUE CYLINDRE DE LA CLASSE D EQUIVALENCE A
 ! --     LAQUELLE IL APPARTIENT
         call wkvect('&&FLUST3.TMP.NOCY', 'V V K24', nbcyl, inomcy)
         do i = 1, nbcyl
             zk24(inomcy+i-1) = zk24(ifsgm+i-1)
         end do
-    endif
+    end if
 !
 ! --- 1.9.COORDONNEES DES CENTRES DES TUBES DU FAISCEAU REEL
 !
@@ -243,7 +243,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         end do
     else
         icency = 1
-    endif
+    end if
 !
 !--- 1.10. CARACTERISTIQUES DES GRILLES
 !
@@ -261,11 +261,11 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
             do i = 1, nbgtot
                 zi(jtypg+i-1) = zi(ifsvi+i+6+nbgrma)
             end do
-        else if (iequiv.eq.0) then
+        else if (iequiv .eq. 0) then
             do i = 1, nbgtot
                 zi(jtypg+i-1) = zi(ifsvi+i+5)
             end do
-        endif
+        end if
 !
         fsgr = typflu//'           .FSGR'
         call jeveuo(fsgr, 'L', ifsgr)
@@ -273,15 +273,15 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         do i = 1, nbgtot+6*ntypg
             zr(izg+i-1) = zr(ifsgr+i-1)
         end do
-        ilongg = izg + nbgtot
-        ilargg = ilongg + ntypg
-        iepaig = ilargg + ntypg
-        icdg = iepaig + ntypg
-        icpg = icdg + ntypg
-        irugg = icpg + ntypg
+        ilongg = izg+nbgtot
+        ilargg = ilongg+ntypg
+        iepaig = ilargg+ntypg
+        icdg = iepaig+ntypg
+        icpg = icdg+ntypg
+        irugg = icpg+ntypg
     else
-        jtypg=1
-    endif
+        jtypg = 1
+    end if
 !
 !
 !-----RECUPERATION D'INFORMATIONS POUR CREATION DES OBJETS DE TRAVAIL
@@ -303,7 +303,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         call wkvect('&&FLUST3.TMP.NGX', 'V V K24', nbgrmx, inomcy)
         call mefrac(mailla, nbgrmx, nomrac, nbgrma, zk24(inomcy))
         nbcyl = nbgrma
-    endif
+    end if
 !
 !
 ! --- 3.CONSTITUTION DES GROUPES D EQUIVALENCE
@@ -319,19 +319,19 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         nt = 0
         nn = 0
         do i = 1, nbgrp
-            nt = nt + zi(inbneq+i-1)
+            nt = nt+zi(inbneq+i-1)
             if (nt .gt. nbcyl) then
                 call utmess('F', 'ALGELINE_45')
-            endif
+            end if
             do j = 1, zi(inbneq+i-1)
-                nn = nn + 1
+                nn = nn+1
                 zi(igreq+nn-1) = i
             end do
         end do
         if (nt .ne. nbcyl) then
             call utmess('F', 'ALGELINE_45')
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! --- 4.CREATION DE GROUPES DE NOEUDS A PARTIR DES GROUPES DE MAILLES
@@ -341,7 +341,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         call mefgmn(mailla, nbgrp, zk24(inomeq))
     else
         call mefgmn(mailla, nbcyl, zk24(inomcy))
-    endif
+    end if
 !
 !
 ! --- 5.DETERMINATION DU NOMBRE MAXIMUM DE NOEUDS PAR CYLINDRE
@@ -350,16 +350,16 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 ! --- CREATION DE TABLEAUX POUR LES ADRESSES DES NUMEROS DES NOEUDS
 ! --- DES CYLINDRES, ET POUR LE NOMBRE DE NOEUDS DE CHAQUE CYLINDRE
     call wkvect('&&FLUST3.TMP.ADR', 'V V I', nbgrp*4, iadnog)
-    inbnog = iadnog + nbgrp
-    iadmag = inbnog + nbgrp
-    inbmag = iadmag + nbgrp
+    inbnog = iadnog+nbgrp
+    iadmag = inbnog+nbgrp
+    inbmag = iadmag+nbgrp
     do i = 1, nbgrp
         call codent(i, 'D0', numgno)
-        grpno='&&MEFGMN.'//numgno//'       '
+        grpno = '&&MEFGMN.'//numgno//'       '
         call jeveuo(grpno, 'L', zi(iadnog+i-1))
         call jelira(grpno, 'LONMAX', zi(inbnog+i-1), k1bid)
         call jeveuo(jexnom(mailla//'.GROUPEMA', zk24(inomeq+i-1)), 'L', zi(iadmag+i-1))
-        call jelira(jexnom(mailla//'.GROUPEMA', zk24(inomeq+i-1)), 'LONMAX', zi(inbmag+i-1),&
+        call jelira(jexnom(mailla//'.GROUPEMA', zk24(inomeq+i-1)), 'LONMAX', zi(inbmag+i-1), &
                     k1bid)
         if (zi(inbnog+i-1) .gt. nbz) nbz = zi(inbnog+i-1)
     end do
@@ -370,12 +370,12 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 ! ---   PERMETTANT DE PASSER DU REPERE INITIAL AU REPERE AXIAL, DONT
 ! ---   L AXE Z A LA DIRECTION DE L AXE DIRECTEUR DU FAISCEAU.
 !
-    numno1 = zi(zi(iadnog) )
+    numno1 = zi(zi(iadnog))
     numno2 = zi(zi(iadnog)+1)
-    x1 = vale(1+(numno1-1)*3 )
+    x1 = vale(1+(numno1-1)*3)
     y1 = vale(1+(numno1-1)*3+1)
     z1 = vale(1+(numno1-1)*3+2)
-    x2 = vale(1+(numno2-1)*3 )
+    x2 = vale(1+(numno2-1)*3)
     y2 = vale(1+(numno2-1)*3+1)
     z2 = vale(1+(numno2-1)*3+2)
     if (abs(x1-x2) .lt. epsit .and. abs(y1-y2) .lt. epsit) then
@@ -383,29 +383,29 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         irot(1) = 1
         irot(2) = 2
         irot(3) = 3
-    else if (abs(y1-y2).lt.epsit.and.abs(z1-z2).lt.epsit) then
+    else if (abs(y1-y2) .lt. epsit .and. abs(z1-z2) .lt. epsit) then
         ndir = 1
         irot(1) = 2
         irot(2) = 3
         irot(3) = 1
-    else if (abs(z1-z2).lt.epsit.and.abs(x1-x2).lt.epsit) then
+    else if (abs(z1-z2) .lt. epsit .and. abs(x1-x2) .lt. epsit) then
         ndir = 2
         irot(1) = 3
         irot(2) = 1
         irot(3) = 2
     else
         call utmess('F', 'ALGELINE_46')
-    endif
+    end if
     if (ndir .ne. iaxe) then
         call utmess('F', 'ALGELINE_47')
-    endif
+    end if
 !
 !
 ! --- 7.COEFFICIENT DE PROPORTIONALITE DE LA PESENTEUR PAR
 ! ---   RAPPORT A LA VALEUR STANDARD (9.81) PROJETE SUR L AXE Z DU
 ! ---   REPERE AXIAL
 !
-    alpha = g * coorpe( irot(3)) / 9.81d0 / sqrt(coorpe(1)**2 + coorpe(2)**2 + coorpe(3)**2 )
+    alpha = g*coorpe(irot(3))/9.81d0/sqrt(coorpe(1)**2+coorpe(2)**2+coorpe(3)**2)
 !
 !
 ! --- 8.RECHERCHE DES COORDONNEES DES CENTRES ET DES RAYONS DE CHAQUE
@@ -421,18 +421,18 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     else
         nima = 0
         nima2 = 0
-    endif
+    end if
     nbtot = nbcyl*(2*nima+1)*(2*nima+1)
-    nbfin = nbtot + 4*(nima2)*(nima2+2*nima+1)
-    ncoor = nbfin * (3+nbz)
+    nbfin = nbtot+4*(nima2)*(nima2+2*nima+1)
+    ncoor = nbfin*(3+nbz)
     call wkvect('&&FLUST3.TMP.XYZR', 'V V R', ncoor, ixint)
-    iyint = ixint + nbfin
-    izint = iyint + nbfin
-    irint = izint + nbz*nbfin
+    iyint = ixint+nbfin
+    izint = iyint+nbfin
+    irint = izint+nbz*nbfin
 !
-    call mefcen(caelem, iequiv, nbcyl, nbz, irot,&
-                zi(iadnog), zi(inbnog), zi(iadmag), zi(igreq), vale,&
-                zr(icency), zr(ireq), zr(ixint), zr(iyint), zr(izint),&
+    call mefcen(caelem, iequiv, nbcyl, nbz, irot, &
+                zi(iadnog), zi(inbnog), zi(iadmag), zi(igreq), vale, &
+                zr(icency), zr(ireq), zr(ixint), zr(iyint), zr(izint), &
                 zr(irint), nbgrp)
 !
 !
@@ -444,24 +444,24 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     call wkvect('&&FLUST3.TMP.IFAC', 'V V R', 3*nbm, ifpart)
     call wkvect('&&FLUST3.TMP.IMAT', 'V V R', 3*nbm, imatma)
     call wkvect('&&FLUST3.TMP.DMOD', 'V V R', 6*nbm*nbnoe, idefm)
-    imatra = imatma + nbm
-    imataa = imatra + nbm
+    imatra = imatma+nbm
+    imataa = imatra+nbm
     do im = 1, nbm
         ior = nuor(im)
-        call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
+        call rsadpa(base, 'L', 1, 'MASS_GENE', ior, &
                     0, sjv=lmasg, styp=k8b)
-        call rsadpa(base, 'L', 1, 'RIGI_GENE', ior,&
+        call rsadpa(base, 'L', 1, 'RIGI_GENE', ior, &
                     0, sjv=lrigg, styp=k8b)
-        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
+        call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior, &
                     0, sjv=lfacx, styp=k8b)
         zr(imatma+im-1) = zr(lmasg)
         zr(imatra+im-1) = zr(lrigg)
         zr(ifpart+im-1) = zr(lfacx)
         zr(ifpart+nbm+im-1) = zr(lfacx+1)
         zr(ifpart+2*nbm+im-1) = zr(lfacx+2)
-        zr(imataa+im-1) = 4.d0 * pi * zr(imatma+im-1) * amor(im) * zr(ifreqi+ior-1)
+        zr(imataa+im-1) = 4.d0*pi*zr(imatma+im-1)*amor(im)*zr(ifreqi+ior-1)
     end do
-    call extmod(base, numddl, nuor, nbm, zr(idefm),&
+    call extmod(base, numddl, nuor, nbm, zr(idefm), &
                 neq, nbnoe, iddl, 6)
 !
 !
@@ -472,11 +472,11 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     call wkvect('&&FLUST3.TMP.PHI', 'V V R', 2*n, iphix)
     call wkvect('&&FLUST3.TMP.IZ', 'V V R', nbz, iz)
     call wkvect('&&FLUST3.TMP.NUM', 'V V I', nbz, inum)
-    iphiy = iphix + n
+    iphiy = iphix+n
     nbddl = 6
 !
-    call mefint(nbz, nbgrp, nbm, nbnoe, nbddl,&
-                irot, zi(iadnog), zi(inbnog), zr(izint), zr(idefm),&
+    call mefint(nbz, nbgrp, nbm, nbnoe, nbddl, &
+                irot, zi(iadnog), zi(inbnog), zr(izint), zr(idefm), &
                 zr(iphix), zr(iphiy), zr(iz), zi(inum))
 !
 !
@@ -485,9 +485,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     if (ntypg .ne. 0) then
         zmin = zr(iz)
         zmax = zr(iz+nbz-1)
-        call mefgri(ntypg, nbgtot, zr(izg), zr(ilongg), zi(jtypg),&
+        call mefgri(ntypg, nbgtot, zr(izg), zr(ilongg), zi(jtypg), &
                     zmin, zmax)
-    endif
+    end if
 !
 !
 ! --- 12.TABLEAU DES DIMENSIONS
@@ -511,12 +511,12 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
 !
 ! --- 13.APPEL DE LA PROCEDURE DE RESOLUTION
-    call mefist(melflu, ndim, som, alpha, ru,&
-                promas, provis, zr(imatma), zi(igreq), nuor,&
-                freq, masg, fact, zr(ifpart), vite,&
-                zr(ixint), zr(iyint), zr(irint), zr(iz), zr(iphix),&
-                zr(iphiy), zr(idefm), zi(jtypg), zr(izg), zr(ilongg),&
-                zr(ilargg), zr(iepaig), zr(icdg), zr(icpg), zr(irugg),&
+    call mefist(melflu, ndim, som, alpha, ru, &
+                promas, provis, zr(imatma), zi(igreq), nuor, &
+                freq, masg, fact, zr(ifpart), vite, &
+                zr(ixint), zr(iyint), zr(irint), zr(iz), zr(iphix), &
+                zr(iphiy), zr(idefm), zi(jtypg), zr(izg), zr(ilongg), &
+                zr(ilargg), zr(iepaig), zr(icdg), zr(icpg), zr(irugg), &
                 base)
 !
 !
@@ -524,20 +524,20 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
     if (nivpar .eq. 1 .or. nivdef .eq. 1) then
         carac(1) = som(9)
-        carac(2)=0.d0
-        calcul(1)=.true.
-        calcul(2)=.false.
-        call fluimp(3, nivpar, nivdef, melflu, typflu,&
-                    nuor, freq, zr(ifreqi), nbm, vite,&
+        carac(2) = 0.d0
+        calcul(1) = .true.
+        calcul(2) = .false.
+        call fluimp(3, nivpar, nivdef, melflu, typflu, &
+                    nuor, freq, zr(ifreqi), nbm, vite, &
                     npv, carac, calcul, [0.d0])
-    endif
+    end if
 !
 !
 ! --- MENAGE
 !
     do i = 1, nbgrp
         call codent(i, 'D0', numgno)
-        grpno='&&MEFGMN.'//numgno
+        grpno = '&&MEFGMN.'//numgno
         call jedetr(grpno)
     end do
     call jedetr('&&FLUST3.TMP.NBCC')

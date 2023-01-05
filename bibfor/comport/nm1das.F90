@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nm1das(fami, kpg, ksp, e, syc,&
-                  syt, etc, ett, cr, tmoins,&
-                  tplus, icodma, sigm, deps, vim,&
+subroutine nm1das(fami, kpg, ksp, e, syc, &
+                  syt, etc, ett, cr, tmoins, &
+                  tplus, icodma, sigm, deps, vim, &
                   sig, vip, dsdem, dsdep)
 !
     implicit none
@@ -73,7 +73,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
 !     DELTA DEFORMATION MECANIQUE
 !     ------------------------------------------------------------------
 !
-    call verift(fami, kpg, ksp, 'T', icodma,&
+    call verift(fami, kpg, ksp, 'T', icodma, &
                 epsth_=epsthe)
 !
     depmec = deps-epsthe
@@ -90,7 +90,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
 !     ------------------------------------------------------------------
 !     ESTIMATION ELASTIQUE
 !     ------------------------------------------------------------------
-    sigd=sigm+e*depmec
+    sigd = sigm+e*depmec
 !     ------------------------------------------------------------------
 !     CALCUL EPSP, P , SIG
 !     ------------------------------------------------------------------
@@ -99,7 +99,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
 !
 !        CAS DE LA "TRACTION"
 !
-        sige = sigd - xmt
+        sige = sigd-xmt
 !
         if (sige .lt. rmt) then
 !
@@ -111,30 +111,30 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
             sig = sigd
 !CC         XPC = CR * SIG
 !JMP        XPC = XMC + CR * (SIG-XMC)
-            xpc = sig + (xmc-sig)*exp(-cr*(tplus-tmoins))
+            xpc = sig+(xmc-sig)*exp(-cr*(tplus-tmoins))
             dsdep = e
         else
 !
 !           ON PLASTIFIE EN TRACTION
 !
-            dpt = (sige - rmt)/(e+ht)
-            ppt = pmt + dpt
+            dpt = (sige-rmt)/(e+ht)
+            ppt = pmt+dpt
             ppc = pmc
-            rpt = syt + ht*ppt
+            rpt = syt+ht*ppt
             sig = sige/(1.d0+e*dpt/rpt)+xmt
 !CC         XPC = CR * SIG
 !JMP        XPC = XMC + CR * (SIG-XMC)
-            xpc = sig + (xmc-sig)*exp(-cr*(tplus-tmoins))
+            xpc = sig+(xmc-sig)*exp(-cr*(tplus-tmoins))
             xpt = xmt
             dsdep = ett
 !
-        endif
+        end if
 !
-    else if (depmec.lt.0.d0) then
+    else if (depmec .lt. 0.d0) then
 !
 !        CAS DE LA "COMPRESSION"
 !
-        sige = sigd - xmc
+        sige = sigd-xmc
 !
         if (sige .gt. (-rmc)) then
 !
@@ -146,24 +146,24 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
             sig = sigd
 !CC         XPT = CR * SIG
 !JMP        XPT = XMT + CR * (SIG-XMT)
-            xpt = sig + (xmt-sig)*exp(-cr*(tplus-tmoins))
+            xpt = sig+(xmt-sig)*exp(-cr*(tplus-tmoins))
             dsdep = e
         else
 !
 !           ON PLASTIFIE EN COMPRESSION
 !
-            dpc = (abs(sige) - rmc)/(e+hc)
+            dpc = (abs(sige)-rmc)/(e+hc)
             ppt = pmt
-            ppc = pmc + dpc
-            rpc = syc + hc*ppc
+            ppc = pmc+dpc
+            rpc = syc+hc*ppc
             sig = sige/(1.d0+e*dpc/rpc)+xmc
 !CC         XPT = CR * SIG
 !JMP        XPT = XMT + CR * (SIG-XMT)
-            xpt = sig + (xmt-sig)*exp(-cr*(tplus-tmoins))
+            xpt = sig+(xmt-sig)*exp(-cr*(tplus-tmoins))
             xpc = xmc
             dsdep = etc
 !
-        endif
+        end if
 !
     else
 !
@@ -176,7 +176,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
         sig = sigm
         dsdep = e
 !
-    endif
+    end if
     vip(1) = ppt
     vip(2) = xpt
     vip(3) = ppc

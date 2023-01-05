@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSTableIOCreate(tableio)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/tbcrsd.h"
 #include "asterfort/tbajpa.h"
 !
-type(NL_DS_TableIO), intent(in) :: tableio
+    type(NL_DS_TableIO), intent(in) :: tableio
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ type(NL_DS_TableIO), intent(in) :: tableio
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tablName   = tableio%tablName
+    tablName = tableio%tablName
     resultName = tableio%resultName
 !
 ! - Access to list of tables
@@ -64,6 +64,6 @@ type(NL_DS_TableIO), intent(in) :: tableio
     if (iret .eq. 0) then
         call tbcrsd(tablName, 'G')
         call tbajpa(tablName, tableio%nbPara, tableio%paraName, tableio%paraType)
-    endif
+    end if
 !
 end subroutine

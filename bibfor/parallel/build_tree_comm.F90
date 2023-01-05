@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine build_tree_comm(domdist, nbdom, comm, tag)
 !
-use sort_module
+    use sort_module
 !
     implicit none
 !
@@ -60,7 +60,7 @@ use sort_module
     call jemarq()
 !
     call asmpi_comm('GET', mpicou)
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rank = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
@@ -73,8 +73,8 @@ use sort_module
     domtmp = -1
     do i_dom = 1, nbdom
         ASSERT(domdist(i_dom) >= 0)
-        if( domdist(i_dom) > rank) then
-            nbdom_inf = nbdom_inf + 1
+        if (domdist(i_dom) > rank) then
+            nbdom_inf = nbdom_inf+1
             domtmp(nbdom_inf) = domdist(i_dom)
         end if
     end do
@@ -89,10 +89,10 @@ use sort_module
 !
     v_deca = 0
     do i_proc = 1, nbproc-1
-        v_deca(i_proc+1) = v_deca(i_proc) + v_nbdist(i_proc)
+        v_deca(i_proc+1) = v_deca(i_proc)+v_nbdist(i_proc)
     end do
-    nbdist_tot = v_deca(nbproc) + v_nbdist(nbproc)
-    if( nbdist_tot == 0 .or. max_nbdom == 0) go to 999
+    nbdist_tot = v_deca(nbproc)+v_nbdist(nbproc)
+    if (nbdist_tot == 0 .or. max_nbdom == 0) go to 999
 !
 ! --- On récupère la liste des sous-domaines
     AS_ALLOCATE(vi=v_send, size=max_nbdom)
@@ -101,7 +101,7 @@ use sort_module
     v_send(1:nbdom_inf) = domtmp(1:nbdom_inf)
     count_send = to_mpi_int(max_nbdom)
     count_recv = count_send
-    call asmpi_allgather_i(v_send, count_send, v_recv, count_recv , mpicou)
+    call asmpi_allgather_i(v_send, count_send, v_recv, count_recv, mpicou)
     AS_ALLOCATE(vi=v_dist, size=nbdist_tot)
 !
     do i_proc = 1, nbproc
@@ -115,27 +115,27 @@ use sort_module
     v_rest = v_nbdist
     nb_comm = 0
     nb_comm_loc = 0
-    do while( nb_comm < nbdist_tot)
+    do while (nb_comm < nbdist_tot)
         v_proc = ASTER_TRUE
         do i_proc = 1, nbproc
             find = ASTER_FALSE
-            if(v_proc(i_proc) .and. v_rest(i_proc) > 0) then
-                dom1 = i_proc - 1
+            if (v_proc(i_proc) .and. v_rest(i_proc) > 0) then
+                dom1 = i_proc-1
                 do i_dom = 1, v_nbdist(i_proc)
                     ind = v_deca(i_proc)+i_dom
                     dom2 = v_dist(ind)
-                    if(dom2 .ne. -1 .and. v_proc(dom2)) then
-                        nb_comm = nb_comm + 1
+                    if (dom2 .ne. -1 .and. v_proc(dom2)) then
+                        nb_comm = nb_comm+1
                         v_proc(dom1+1) = ASTER_FALSE
                         v_proc(dom2+1) = ASTER_FALSE
-                        v_rest(i_proc) = v_rest(i_proc) - 1
+                        v_rest(i_proc) = v_rest(i_proc)-1
                         v_dist(ind) = -1
-                        if(dom1 == rank) then
-                            nb_comm_loc = nb_comm_loc + 1
+                        if (dom1 == rank) then
+                            nb_comm_loc = nb_comm_loc+1
                             tag(nb_comm_loc) = nb_comm
                             comm(nb_comm_loc) = dom2
-                        elseif(dom2 == rank) then
-                            nb_comm_loc = nb_comm_loc + 1
+                        elseif (dom2 == rank) then
+                            nb_comm_loc = nb_comm_loc+1
                             tag(nb_comm_loc) = nb_comm
                             comm(nb_comm_loc) = dom1
                         end if
@@ -159,7 +159,7 @@ use sort_module
     AS_DEALLOCATE(vi=v_nbdist)
     call jedema()
 #else
-    if(nbdom > 0) then
+    if (nbdom > 0) then
         comm(1) = domdist(1)
         comm(1:nbdom) = -1
         tag(1:nbdom) = -1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 !
 subroutine mmCombLineMatr(alpha_cont, matr_prev, matr)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: alpha_cont
-real(kind=8), intent(in) :: matr_prev(81,81)
-real(kind=8), intent(inout) :: matr(81,81)
+    real(kind=8), intent(in) :: alpha_cont
+    real(kind=8), intent(in) :: matr_prev(81, 81)
+    real(kind=8), intent(inout) :: matr(81, 81)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,19 +44,19 @@ real(kind=8), intent(inout) :: matr(81,81)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    matr_tmp    = alpha_cont*matr+(1-alpha_cont)*matr_prev
+    matr_tmp = alpha_cont*matr+(1-alpha_cont)*matr_prev
     count_consi = 0
-    51 continue
+51  continue
     count_consi = count_consi+1
-    coef        = 0.5*(alpha_cont+1.0)
-    matr_tmp    = coef*matr+(1.0-coef)*matr_prev
+    coef = 0.5*(alpha_cont+1.0)
+    matr_tmp = coef*matr+(1.0-coef)*matr_prev
     if (norm2(matr_tmp-matr) &
         .gt. 1.d-6*norm2(matr) .and. count_consi .le. 15) then
-       goto 51
-    elseif ( norm2(matr_tmp-matr) .lt. 1.d-6*norm2(matr)) then
-       matr = matr_tmp
+        goto 51
+    elseif (norm2(matr_tmp-matr) .lt. 1.d-6*norm2(matr)) then
+        matr = matr_tmp
     else
-       matr = 0.9999d0*matr + 0.0001d0*matr_tmp
-    endif
+        matr = 0.9999d0*matr+0.0001d0*matr_tmp
+    end if
 !
 end subroutine

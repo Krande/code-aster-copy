@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zgetv0(ido, bmat, initv, n, j,&
-                  v, ldv, resid, rnorm, ipntr,&
+subroutine zgetv0(ido, bmat, initv, n, j, &
+                  v, ldv, resid, rnorm, ipntr, &
                   workd, ierr, alpha)
 !
 !     SUBROUTINE ARPACK GENERANT UN VECTEUR INITIAL DANS IM(OP).
@@ -151,11 +151,11 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 #include "blas/zlarnv.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     integer :: nopx, nbx, nrorth, nitref, nrstrt
-    common /infor/&
+    common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
 !     %------------------%
@@ -180,8 +180,8 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !
     complex(kind=8) :: one, zero
     real(kind=8) :: rzero
-    parameter  (one = (1.0d+0, 0.0d+0), zero = (0.0d+0, 0.0d+0),&
-     &            rzero = 0.0d+0)
+    parameter(one=(1.0d+0, 0.0d+0), zero=(0.0d+0, 0.0d+0),&
+     &            rzero=0.0d+0)
 !
 !     %------------------------%
 !     | LOCAL SCALARS & ARRAYS |
@@ -192,7 +192,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
     integer :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0
     complex(kind=8) :: cnorm
-    save       first, iseed, inits, iter, msglvl, orth, rnorm0
+    save first, iseed, inits, iter, msglvl, orth, rnorm0
 !
 !     %--------------------%
 !     | EXTERNAL FUNCTIONS |
@@ -203,7 +203,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !     | DATA STATEMENTS |
 !     %-----------------%
 !
-    data       inits /.true./
+    data inits/.true./
 !
 !     %-----------------------%
 !     | EXECUTABLE STATEMENTS |
@@ -222,7 +222,7 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
         iseed(3) = 5
         iseed(4) = 7
         inits = .false.
-    endif
+    end if
 !
     if (ido .eq. 0) then
 !
@@ -246,18 +246,18 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !        |    IDIST = 3: NORMAL  (0,1)  DISTRIBUTION;          |
 !        %-----------------------------------------------------%
 !
-        if (.not.initv) then
+        if (.not. initv) then
             idist = 2
-            iseed4(1)=iseed(1)
-            iseed4(2)=iseed(2)
-            iseed4(3)=iseed(3)
-            iseed4(4)=iseed(4)
+            iseed4(1) = iseed(1)
+            iseed4(2) = iseed(2)
+            iseed4(3) = iseed(3)
+            iseed4(4) = iseed(4)
             call zlarnv(idist, iseed4, n, resid)
-            iseed(1)=iseed4(1)
-            iseed(2)=iseed4(2)
-            iseed(3)=iseed4(3)
-            iseed(4)=iseed4(4)
-        endif
+            iseed(1) = iseed4(1)
+            iseed(2) = iseed4(2)
+            iseed(3) = iseed4(3)
+            iseed(4) = iseed4(4)
+        end if
 !
 !        %----------------------------------------------------------%
 !        | FORCE THE STARTING VECTOR INTO THE RANGE OF OP TO HANDLE |
@@ -265,14 +265,14 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !        %----------------------------------------------------------%
 !
         if (bmat .eq. 'G') then
-            nopx = nopx + 1
+            nopx = nopx+1
             ipntr(1) = 1
-            ipntr(2) = n + 1
+            ipntr(2) = n+1
             call zcopy(n, resid, 1, workd, 1)
             ido = -1
             goto 9000
-        endif
-    endif
+        end if
+    end if
 !
 !     %----------------------------------------%
 !     | BACK FROM COMPUTING B*(INITIAL-VECTOR) |
@@ -293,25 +293,25 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !
     first = .true.
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call zcopy(n, workd(n+1), 1, resid, 1)
-        ipntr(1) = n + 1
+        ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd, 1)
-    endif
+    end if
 !
- 20 continue
+20  continue
 !
     first = .false.
     if (bmat .eq. 'G') then
-        cnorm = zdotc (n, resid, 1, workd, 1)
-        rnorm0 = sqrt(dlapy2(dble(cnorm),dimag(cnorm)))
+        cnorm = zdotc(n, resid, 1, workd, 1)
+        rnorm0 = sqrt(dlapy2(dble(cnorm), dimag(cnorm)))
     else if (bmat .eq. 'I') then
         rnorm0 = dznrm2(n, resid, 1)
-    endif
+    end if
     rnorm = rnorm0
 !
 !     %---------------------------------------------%
@@ -333,13 +333,13 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !    %---------------------------------------------------------------%
 !
     orth = .true.
- 30 continue
+30  continue
 !
-    call zgemv('C', n, j-1, one, v,&
-               ldv, workd, 1, zero, workd(n+1),&
+    call zgemv('C', n, j-1, one, v, &
+               ldv, workd, 1, zero, workd(n+1), &
                1)
-    call zgemv('N', n, j-1, -one, v,&
-               ldv, workd(n+1), 1, one, resid,&
+    call zgemv('N', n, j-1, -one, v, &
+               ldv, workd(n+1), 1, one, resid, &
                1)
 !
 !     %----------------------------------------------------------%
@@ -347,24 +347,24 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !     %----------------------------------------------------------%
 !
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call zcopy(n, resid, 1, workd(n+1), 1)
-        ipntr(1) = n + 1
+        ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
         call zcopy(n, resid, 1, workd, 1)
-    endif
+    end if
 !
- 40 continue
+40  continue
 !
     if (bmat .eq. 'G') then
-        cnorm = zdotc (n, resid, 1, workd, 1)
-        rnorm = sqrt(dlapy2(dble(cnorm),dimag(cnorm)))
+        cnorm = zdotc(n, resid, 1, workd, 1)
+        rnorm = sqrt(dlapy2(dble(cnorm), dimag(cnorm)))
     else if (bmat .eq. 'I') then
         rnorm = dznrm2(n, resid, 1)
-    endif
+    end if
 !
 !     %--------------------------------------%
 !     | CHECK FOR FURTHER ORTHOGONALIZATION. |
@@ -373,11 +373,11 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
     if (msglvl .gt. 2) then
         call dvout(logfil, 1, [rnorm0], ndigit, '_GETV0: RE-ORTHONALIZATION ; RNORM0 IS')
         call dvout(logfil, 1, [rnorm], ndigit, '_GETV0: RE-ORTHONALIZATION ; RNORM IS')
-    endif
+    end if
 !
     if (rnorm .gt. alpha*rnorm0) goto 50
 !
-    iter = iter + 1
+    iter = iter+1
     if (iter .le. 1) then
 !
 !        %-----------------------------------%
@@ -397,17 +397,17 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
         end do
         rnorm = rzero
         ierr = -1
-    endif
+    end if
 !
- 50 continue
+50  continue
 !
     if (msglvl .gt. 0) then
-        call dvout(logfil, 1, [rnorm], ndigit,&
+        call dvout(logfil, 1, [rnorm], ndigit, &
                    '_GETV0: B-NORM OF INITIAL / RESTARTED STARTING VECTOR')
-    endif
+    end if
     if (msglvl .gt. 2) then
         call zvout(logfil, n, resid, ndigit, '_GETV0: INITIAL / RESTARTED STARTING VECTOR')
-    endif
+    end if
     ido = 99
 !
 9000 continue

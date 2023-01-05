@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ subroutine lcmmjs(nomfam, nbsys, tbsys)
 !
 ! -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
 !
-    read (nomfam(5:5),'(I1)') numfam
-    nbsys=nint(tbsysg(2*numfam+1))
-    decal=nint(tbsysg(2*numfam+2))
+    read (nomfam(5:5), '(I1)') numfam
+    nbsys = nint(tbsysg(2*numfam+1))
+    decal = nint(tbsysg(2*numfam+2))
     do i = 1, nbsys
         do j = 1, 6
-            tbsys(i,j)=tbsysg(decal-1+6*(i-1)+j)
+            tbsys(i, j) = tbsysg(decal-1+6*(i-1)+j)
         end do
     end do
 !

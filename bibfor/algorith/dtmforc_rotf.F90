@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
+subroutine dtmforc_rotf(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
                         time, depl, fext)
     implicit none
 !
@@ -44,14 +44,14 @@ subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
 !
 !   -0.1- Input/output arguments
-    integer               , intent(in)  :: nl_ind
-    character(len=*)      , intent(in)  :: sd_dtm_
-    character(len=*)      , intent(in)  :: sd_nl_
-    integer     , pointer  :: buffdtm  (:)
-    integer     , pointer  :: buffnl   (:)
-    real(kind=8)          , intent(in)  :: time
-    real(kind=8), pointer  :: depl     (:)
-    real(kind=8), pointer :: fext     (:)
+    integer, intent(in)  :: nl_ind
+    character(len=*), intent(in)  :: sd_dtm_
+    character(len=*), intent(in)  :: sd_nl_
+    integer, pointer  :: buffdtm(:)
+    integer, pointer  :: buffnl(:)
+    real(kind=8), intent(in)  :: time
+    real(kind=8), pointer  :: depl(:)
+    real(kind=8), pointer :: fext(:)
 !
 !   -0.2- Local variables
     integer           :: i, ier, nbno, nbmode, start
@@ -64,20 +64,20 @@ subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
     character(len=3)  :: vitvar
     character(len=8)  :: sd_dtm, sd_nl, fk, dfk, foncp
 !
-    integer         , pointer :: vindx(:) => null()
-    real(kind=8)    , pointer :: sincos_angle_a(:) => null()
-    real(kind=8)    , pointer :: sincos_angle_b(:) => null()
-    real(kind=8)    , pointer :: dplmod1(:)   => null()
-    real(kind=8)    , pointer :: dplmod2(:)   => null()
-    real(kind=8)    , pointer :: vint(:) => null()
+    integer, pointer :: vindx(:) => null()
+    real(kind=8), pointer :: sincos_angle_a(:) => null()
+    real(kind=8), pointer :: sincos_angle_b(:) => null()
+    real(kind=8), pointer :: dplmod1(:) => null()
+    real(kind=8), pointer :: dplmod2(:) => null()
+    real(kind=8), pointer :: vint(:) => null()
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
-    sd_nl  = sd_nl_
+    sd_nl = sd_nl_
 !
-    call nlget(sd_nl, _INTERNAL_VARS      , vr=vint, buffer=buffnl)
+    call nlget(sd_nl, _INTERNAL_VARS, vr=vint, buffer=buffnl)
     call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
-    start  = vindx(nl_ind)
+    start = vindx(nl_ind)
 !
     eps = r8prem()
 !
@@ -86,16 +86,16 @@ subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
     call dtmget(sd_dtm, _VITE_VAR, kscal=vitvar, buffer=buffdtm)
     if (vitvar .eq. 'OUI') then
         call nlget(sd_nl, _ANG_ROTA, iocc=nl_ind, kscal=foncp, buffer=buffnl)
-        call fointe('F ', foncp, 1, ['INST'], [time],&
+        call fointe('F ', foncp, 1, ['INST'], [time], &
                     angrot, ier)
     else
         call nlget(sd_nl, _ANG_INIT, iocc=nl_ind, rscal=angini, buffer=buffnl)
         call dtmget(sd_dtm, _V_ROT, rscal=vrotat, buffer=buffdtm)
-        angrot = angini + vrotat * time
-    endif
+        angrot = angini+vrotat*time
+    end if
 !
-    sing=sin(angrot)
-    cosg=cos(angrot)
+    sing = sin(angrot)
+    cosg = cos(angrot)
 !
 !
     call nlget(sd_nl, _SINCOS_ANGLE_A, iocc=nl_ind, vr=sincos_angle_a, buffer=buffnl)
@@ -111,38 +111,38 @@ subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
     nbno = 2
 
-    origob(1)=0.d0
-    origob(2)=0.d0
-    origob(3)=0.d0
+    origob(1) = 0.d0
+    origob(2) = 0.d0
+    origob(3) = 0.d0
 
     call tophys(dplmod1, depl, depglo1)
     call tophys(dplmod2, depl, depglo2)
 
     do i = 1, 3
-        drg(i) = depglo2(i) - depglo1(i)
+        drg(i) = depglo2(i)-depglo1(i)
     end do
 
-    call gloloc(drg, origob, sina, cosa, sinb,&
+    call gloloc(drg, origob, sina, cosa, sinb, &
                 cosb, sing, cosg, drl)
 
-    phi=atan2(drl(2),drl(3))
-    if (phi .lt. 0.d0) phi = r8depi() + phi
+    phi = atan2(drl(2), drl(3))
+    if (phi .lt. 0.d0) phi = r8depi()+phi
 
 !
     call nlget(sd_nl, _ROTR_FK, iocc=nl_ind, kscal=fk, buffer=buffnl)
     call nlget(sd_nl, _ROTR_DFK, iocc=nl_ind, kscal=dfk, buffer=buffnl)
 
-    call fointe('F', fk, 1, ['ABSC'], [phi],&
+    call fointe('F', fk, 1, ['ABSC'], [phi], &
                 fkphi, ier)
-    call fointe('F', dfk, 1, ['ABSC'], [phi],&
+    call fointe('F', dfk, 1, ['ABSC'], [phi], &
                 dfkphi, ier)
 !
     ml(1) = 0.d0
-    ml(2) = fkphi * drl(2) + 0.5d0 * dfkphi * drl(3)
-    ml(3) = fkphi * drl(3) - 0.5d0 * dfkphi * drl(2)
+    ml(2) = fkphi*drl(2)+0.5d0*dfkphi*drl(3)
+    ml(3) = fkphi*drl(3)-0.5d0*dfkphi*drl(2)
 !
 !
-    call locglo(ml, sina, cosa, sinb, cosb,&
+    call locglo(ml, sina, cosa, sinb, cosb, &
                 sing, cosg, mg)
 !
 !       --- Generalized force on the first node
@@ -154,10 +154,10 @@ subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !   --- Internal variables, storage
 !
     finish = vindx(nl_ind+1)
-    ASSERT((finish-start).eq.NBVARINT_ROTF)
+    ASSERT((finish-start) .eq. NBVARINT_ROTF)
 
 !   --- Angle, in degrees
-    vint(start  ) = phi*180.d0/(r8depi())
+    vint(start) = phi*180.d0/(r8depi())
 
 !   --- Force (local)
     vint(start+1) = ml(2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine dtmprep_noli(sd_dtm_)
 #include "asterfort/wkvect.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
     integer          :: nbchoc, nbnli, iret, i, nbmode
@@ -80,13 +80,13 @@ subroutine dtmprep_noli(sd_dtm_)
     character(len=16):: nltreat_k, nltypes(_NL_NB_TYPES), nltype_k
     character(len=19):: nomres
 !
-    real(kind=8)     , pointer :: basev0(:)   => null()
-    real(kind=8)    , pointer :: fext_tmp(:)    => null()
+    real(kind=8), pointer :: basev0(:) => null()
+    real(kind=8), pointer :: fext_tmp(:) => null()
 !
-    data  nltypes /'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ',&
-                   'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ',&
-                   'PALIER_EDYOS    ', 'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ',&
-                   'YACS            '/
+    data nltypes/'DIS_CHOC        ', 'FLAMBAGE        ', 'ANTI_SISM       ', &
+        'DIS_VISC        ', 'DIS_ECRO_TRAC   ', 'ROTOR_FISS      ', &
+        'PALIER_EDYOS    ', 'RELA_EFFO_DEPL  ', 'RELA_EFFO_VITE  ', &
+        'YACS            '/
 !
 #define base0(row,col) basev0((col-1)*nbmode+row)
 !
@@ -96,70 +96,70 @@ subroutine dtmprep_noli(sd_dtm_)
     sd_dtm = sd_dtm_
 !
     call getfac('COMPORTEMENT', nbcomp)
-    if (nbcomp.eq.0) then
+    if (nbcomp .eq. 0) then
         call dtmsav(sd_dtm, _NB_NONLI, 1, iscal=0)
         call dtmsav(sd_dtm, _NL_TREAT, 1, iscal=0)
         goto 999
     end if
 !
     sd_nl = '&&OP29NL'
-    call dtmsav(sd_dtm, _SD_NONL        , 1, kscal=sd_nl)
-    call nlsav (sd_nl, _MAX_LEVEL       , 1, iscal=0)
-    call nlsav (sd_nl, _NB_CHOC         , 1, iscal=0)
-    call nlsav (sd_nl, _NB_FLAMB        , 1, iscal=0)
-    call nlsav (sd_nl, _NB_ANTSI        , 1, iscal=0)
-    call nlsav (sd_nl, _NB_DIS_VISC     , 1, iscal=0)
-    call nlsav (sd_nl, _NB_DIS_ECRO_TRAC, 1, iscal=0)
-    call nlsav (sd_nl, _NB_R_FIS        , 1, iscal=0)
-    call nlsav (sd_nl, _NB_PALIE        , 1, iscal=0)
-    call nlsav (sd_nl, _NB_REL_FX       , 1, iscal=0)
-    call nlsav (sd_nl, _NB_REL_FV       , 1, iscal=0)
+    call dtmsav(sd_dtm, _SD_NONL, 1, kscal=sd_nl)
+    call nlsav(sd_nl, _MAX_LEVEL, 1, iscal=0)
+    call nlsav(sd_nl, _NB_CHOC, 1, iscal=0)
+    call nlsav(sd_nl, _NB_FLAMB, 1, iscal=0)
+    call nlsav(sd_nl, _NB_ANTSI, 1, iscal=0)
+    call nlsav(sd_nl, _NB_DIS_VISC, 1, iscal=0)
+    call nlsav(sd_nl, _NB_DIS_ECRO_TRAC, 1, iscal=0)
+    call nlsav(sd_nl, _NB_R_FIS, 1, iscal=0)
+    call nlsav(sd_nl, _NB_PALIE, 1, iscal=0)
+    call nlsav(sd_nl, _NB_REL_FX, 1, iscal=0)
+    call nlsav(sd_nl, _NB_REL_FV, 1, iscal=0)
 !
     do icomp = 1, nbcomp
 
         call getvtx('COMPORTEMENT', 'RELATION', iocc=icomp, scal=nltype_k)
         do nltype_i = 1, _NL_NB_TYPES
-            if (nltype_k.eq.nltypes(nltype_i)) goto 5
-        enddo
+            if (nltype_k .eq. nltypes(nltype_i)) goto 5
+        end do
 5       continue
-        if (nltype_i.gt._NL_NB_TYPES) then
+        if (nltype_i .gt. _NL_NB_TYPES) then
             ASSERT(.false.)
-        endif
+        end if
 !
         select case (nltype_i)
 !
-            case(NL_CHOC)
-                call dtmprep_noli_choc(sd_dtm, sd_nl, icomp)
+        case (NL_CHOC)
+            call dtmprep_noli_choc(sd_dtm, sd_nl, icomp)
 !
-            case(NL_BUCKLING)
-                call dtmprep_noli_flam(sd_dtm, sd_nl, icomp)
+        case (NL_BUCKLING)
+            call dtmprep_noli_flam(sd_dtm, sd_nl, icomp)
 !
-            case(NL_ANTI_SISMIC)
-                call dtmprep_noli_ants(sd_dtm, sd_nl, icomp)
+        case (NL_ANTI_SISMIC)
+            call dtmprep_noli_ants(sd_dtm, sd_nl, icomp)
 !
-            case(NL_DIS_VISC)
-                call dtmprep_noli_dvis(sd_dtm, sd_nl, icomp)
+        case (NL_DIS_VISC)
+            call dtmprep_noli_dvis(sd_dtm, sd_nl, icomp)
 !
-            case(NL_DIS_ECRO_TRAC)
-                call dtmprep_noli_decr(sd_dtm, sd_nl, icomp)
+        case (NL_DIS_ECRO_TRAC)
+            call dtmprep_noli_decr(sd_dtm, sd_nl, icomp)
 !
-            case(NL_CRACKED_ROTOR)
-                call dtmprep_noli_rotf(sd_dtm, sd_nl, icomp)
+        case (NL_CRACKED_ROTOR)
+            call dtmprep_noli_rotf(sd_dtm, sd_nl, icomp)
 !
-            case(NL_LUBRICATION)
-                 call dtmprep_noli_lub(sd_dtm, sd_nl, icomp)
+        case (NL_LUBRICATION)
+            call dtmprep_noli_lub(sd_dtm, sd_nl, icomp)
 !
-            case(NL_YACS)
-                 call dtmprep_noli_yacs(sd_dtm, sd_nl, icomp)
+        case (NL_YACS)
+            call dtmprep_noli_yacs(sd_dtm, sd_nl, icomp)
 !
-             case(NL_FX_RELATIONSHIP)
-                 call dtmprep_noli_rede(sd_dtm, sd_nl, icomp)
+        case (NL_FX_RELATIONSHIP)
+            call dtmprep_noli_rede(sd_dtm, sd_nl, icomp)
 !
-             case(NL_FV_RELATIONSHIP)
-                 call dtmprep_noli_revi(sd_dtm, sd_nl, icomp)
+        case (NL_FV_RELATIONSHIP)
+            call dtmprep_noli_revi(sd_dtm, sd_nl, icomp)
 !
-            case default
-                ASSERT(.false.)
+        case default
+            ASSERT(.false.)
 !
         end select
     end do
@@ -177,11 +177,11 @@ subroutine dtmprep_noli(sd_dtm_)
         call nlget(sd_nl, _NB_CHOC, iscal=nbchoc)
 
 !       --- Explicit or implicit treatment of choc non-linearities
-        if (nbchoc.gt.0) then
+        if (nbchoc .gt. 0) then
             call getvtx(' ', 'TRAITEMENT_NONL', iocc=1, scal=nltreat_k)
-            if (nltreat_k(1:9).eq.'IMPLICITE') then
+            if (nltreat_k(1:9) .eq. 'IMPLICITE') then
 
-                if (nbchoc.gt.41) call utmess('F', 'DYNAMIQUE_28', si=41)
+                if (nbchoc .gt. 41) call utmess('F', 'DYNAMIQUE_28', si=41)
 
                 call dtmsav(sd_dtm, _NL_TREAT, 1, iscal=1)
                 call dtminivec(sd_dtm, _F_NL_ADD, nbmode)
@@ -191,12 +191,12 @@ subroutine dtmprep_noli(sd_dtm_)
                 call dtminivec(sd_dtm, _IMP_FEXT, nbmode)
 
                 nlcase = 0
-                call dtmcase_coder (nlcase, casek7)
-                call wkvect(sd_dtm // '.PRJ_BAS.'//casek7, 'V V R', nbmode*nbmode, vr=basev0)
+                call dtmcase_coder(nlcase, casek7)
+                call wkvect(sd_dtm//'.PRJ_BAS.'//casek7, 'V V R', nbmode*nbmode, vr=basev0)
                 do i = 1, nbmode
-                    base0(i,i) = 1.d0
+                    base0(i, i) = 1.d0
                     do j = i+1, nbmode
-                        base0(i,j) = 0.d0
+                        base0(i, j) = 0.d0
                     end do
                 end do
 
@@ -207,23 +207,22 @@ subroutine dtmprep_noli(sd_dtm_)
 
 !
         call dtmget(sd_dtm, _MULTI_AP, kscal=monmot)
-        if (monmot(1:3).eq.'OUI') then
-            call dtmget(sd_dtm, _CALC_SD , kscal=nomres)
+        if (monmot(1:3) .eq. 'OUI') then
+            call dtmget(sd_dtm, _CALC_SD, kscal=nomres)
             call jeexin(nomres//'.IPSD', iret)
             if (iret .eq. 0) then
                 ASSERT(.false.)
             end if
         end if
 
-
         call getfac('VERI_CHOC', ivchoc)
         if (ivchoc .ne. 0) then
             call dtmprep_verichoc(sd_dtm, sd_nl)
         end if
 
-    endif
+    end if
 
-    call nlinivec(sd_nl,  _FEXT_MPI , nbmode, vr=fext_tmp)
+    call nlinivec(sd_nl, _FEXT_MPI, nbmode, vr=fext_tmp)
 
 999 continue
     call jedema()

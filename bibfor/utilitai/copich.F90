@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,15 +63,15 @@ subroutine copich(base, ch1z, ch2z)
     ch1 = ch1z
     ch2 = ch2z
 !
-    call jeexin(ch1 // '.DESC', iret1)
-    call jeexin(ch1 // '.CELD', iret2)
-    if (max(iret1,iret2) .eq. 0) goto 999
+    call jeexin(ch1//'.DESC', iret1)
+    call jeexin(ch1//'.CELD', iret2)
+    if (max(iret1, iret2) .eq. 0) goto 999
 !
     if (iret1 .gt. 0) then
         call jelira(ch1//'.DESC', 'DOCU', cval=docu)
     else
         call jelira(ch1//'.CELD', 'DOCU', cval=docu)
-    endif
+    end if
 !
 !     -- CAS DES CHAM_NO :
 !     ----------------------
@@ -88,27 +88,27 @@ subroutine copich(base, ch1z, ch2z)
         if (base .eq. 'G') then
             call getres(nomu, concep, cmd)
             ! nomu peut être vide si appel depuis le c++
-            if(nomu == ' ') then
+            if (nomu == ' ') then
                 nomu = ch2(1:8)
             end if
             call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=prno)
 !         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE PROF_CHNO (' '):
             if (prno .ne. ' ') then
                 if (prno(1:8) .ne. nomu) then
-                    noojb='12345678.PRCHN00000.PRNO'
+                    noojb = '12345678.PRCHN00000.PRNO'
                     call gnomsd(nomu, noojb, 15, 19)
-                    prno2=noojb(1:19)
+                    prno2 = noojb(1:19)
                     call jeveuo(ch2//'.REFE', 'E', vk24=refe)
                     call copisd('PROF_CHNO', base, prno, prno2)
-                    refe(2)=prno2
-                endif
-            endif
-        endif
+                    refe(2) = prno2
+                end if
+            end if
+        end if
 !
 !
 !     -- CAS DES CARTES :
 !     ----------------------
-    else if (docu.eq.'CART') then
+    else if (docu .eq. 'CART') then
         call jedup1(ch1//'.DESC', base, ch2//'.DESC')
         call jedup1(ch1//'.LIMA', base, ch2//'.LIMA')
         call jedup1(ch1//'.NOLI', base, ch2//'.NOLI')
@@ -118,7 +118,7 @@ subroutine copich(base, ch1z, ch2z)
 !
 !     -- CAS DES CHAM_ELEM :
 !     ----------------------
-    else if (docu.eq.'CHML') then
+    else if (docu .eq. 'CHML') then
         call jedup1(ch1//'.CELD', base, ch2//'.CELD')
         call jedup1(ch1//'.CELK', base, ch2//'.CELK')
         call jedup1(ch1//'.CELV', base, ch2//'.CELV')
@@ -133,12 +133,12 @@ subroutine copich(base, ch1z, ch2z)
                 call copisd('LIGREL', base, ligr, ligr2)
                 call jeveuo(ch2//'.CELK', 'E', vk24=refe)
                 refe(1) = ligr2
-            endif
-        endif
+            end if
+        end if
 !
 !     -- CAS DES RESUELEM :
 !     ----------------------
-    else if (docu.eq.'RESL') then
+    else if (docu .eq. 'RESL') then
         call jedup1(ch1//'.DESC', base, ch2//'.DESC')
         call jedup1(ch1//'.NOLI', base, ch2//'.NOLI')
         call jedup1(ch1//'.RESL', base, ch2//'.RESL')
@@ -146,7 +146,7 @@ subroutine copich(base, ch1z, ch2z)
 !
     else
         call utmess('F', 'CALCULEL_17')
-    endif
+    end if
 !
 999 continue
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,11 +80,11 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
             bidon = .false.
             call jeveuo(charge, 'L', jchar)
             call jeveuo(infcha, 'L', jinf)
-        endif
-    endif
+        end if
+    end if
 !
     call detrsd('VECT_ELEM', lvedip)
-    call memare('V', lvedip, modele(1:8), ' ', ' ',&
+    call memare('V', lvedip, modele(1:8), ' ', ' ', &
                 'CHAR_MECA')
     call jedetr(lvedip//'.RELR')
     call reajre(lvedip, ' ', 'V')
@@ -99,7 +99,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
     lpain(3) = 'PTEMPSR'
 !
     chtime = '&&VEDPME.CH_INST_R'
-    call mecact('V', chtime, 'MODELE', modele(1:8)//'.MODELE', 'INST_R  ',&
+    call mecact('V', chtime, 'MODELE', modele(1:8)//'.MODELE', 'INST_R  ', &
                 ncmp=1, nomcmp='INST', sr=instap)
     lchin(3) = chtime
 !
@@ -111,25 +111,25 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
         if (numdi .eq. 5) then
             option = 'MECA_DDLI_R'
             lpain(1) = 'PDDLIMR'
-        else if (numdi.eq.6) then
+        else if (numdi .eq. 6) then
             option = 'MECA_DDLI_F'
             lpain(1) = 'PDDLIMF'
         else
             cycle
-        endif
+        end if
 !
         lchout(1) = '&&VEDPME.???????'
         call gcnco2(newnom)
         lchout(1) (10:16) = newnom(2:8)
-        call corich('E', lchout(1), ichin_ = icha)
-        call calcul('S', option, ligrch, 3, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call corich('E', lchout(1), ichin_=icha)
+        call calcul('S', option, ligrch, 3, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(lvedip, lchout(1), 'V')
 !
     end do
 !
- 20 continue
+20  continue
 !
     lvediz = lvedip//'.RELR'
     call jedema()

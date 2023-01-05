@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function ucritp(nbmat, mater, parame, rgdev, invar1)
 !
-    implicit      none
+    implicit none
 #include "asterfort/hlode.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), rgdev, invar1, ucritp
@@ -39,14 +39,14 @@ function ucritp(nbmat, mater, parame, rgdev, invar1)
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
-    parameter       ( trois  =  3.0d0  )
-    parameter       ( six    =  6.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
 ! ======================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU -----------------------------
 ! ======================================================================
-    sigc = mater( 9,2)
-    gamcjs = mater(12,2)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
 ! ======================================================================
 ! --- RECUPERATION DES VARIABLES D'ECROUISSAGE -------------------------
 ! ======================================================================
@@ -63,6 +63,6 @@ function ucritp(nbmat, mater, parame, rgdev, invar1)
     fact1 = mun*mgamp*kgamp*rgdev/(sqrt(six)*sigc*h0)
     fact2 = mun*mgamp*kgamp*invar1/(trois*sigc)
     fact3 = sgamp*kgamp
-    ucritp = fact1 + fact2 + fact3
+    ucritp = fact1+fact2+fact3
 ! ======================================================================
 end function

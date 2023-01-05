@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
 !     OUT : LONG : LONGUEUR DU CONTOUR
 !
 !
-    integer :: jma, ifm, niv,     ima, numa
+    integer :: jma, ifm, niv, ima, numa
     integer :: nutyma, nbel, jdno, nbext1, nbext2, iext1
     integer :: iext2, ni1, ni2, nj1, nj2, nbe, nj3, nj0, jdco, i
     real(kind=8) :: orig(3), zero, vgn1(3), vn1n2(3), aire1, aire2, vgn3(3)
@@ -98,107 +98,107 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
             valk(1) = nomail
             valk(2) = typel
             call utmess('F', 'UTILITY_1', nk=2, valk=valk)
-        endif
-        nbel = nbel + 1
+        end if
+        nbel = nbel+1
         call jeveuo(jexnum(mlgcnx, numa), 'L', jdno)
         noeud1(3*nbel-2) = zi(jdno)
         noeud1(3*nbel-1) = zi(jdno+1)
         if (typel(1:4) .eq. 'SEG3') then
             noeud1(3*nbel) = zi(jdno+2)
-            x1 = vale(1+3*(zi(jdno )-1)+1-1)
-            y1 = vale(1+3*(zi(jdno )-1)+2-1)
-            z1 = vale(1+3*(zi(jdno )-1)+3-1)
+            x1 = vale(1+3*(zi(jdno)-1)+1-1)
+            y1 = vale(1+3*(zi(jdno)-1)+2-1)
+            z1 = vale(1+3*(zi(jdno)-1)+3-1)
             x2 = vale(1+3*(zi(jdno+2)-1)+1-1)
             y2 = vale(1+3*(zi(jdno+2)-1)+2-1)
             z2 = vale(1+3*(zi(jdno+2)-1)+3-1)
-            xxl = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2)
-            long = long + sqrt( xxl )
+            xxl = (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2)
+            long = long+sqrt(xxl)
             x1 = vale(1+3*(zi(jdno+1)-1)+1-1)
             y1 = vale(1+3*(zi(jdno+1)-1)+2-1)
             z1 = vale(1+3*(zi(jdno+1)-1)+3-1)
-            xxl = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2)
-            long = long + sqrt( xxl )
+            xxl = (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2)
+            long = long+sqrt(xxl)
         else
-            x1 = vale(1+3*(zi(jdno )-1)+1-1)
-            y1 = vale(1+3*(zi(jdno )-1)+2-1)
-            z1 = vale(1+3*(zi(jdno )-1)+3-1)
+            x1 = vale(1+3*(zi(jdno)-1)+1-1)
+            y1 = vale(1+3*(zi(jdno)-1)+2-1)
+            z1 = vale(1+3*(zi(jdno)-1)+3-1)
             x2 = vale(1+3*(zi(jdno+1)-1)+1-1)
             y2 = vale(1+3*(zi(jdno+1)-1)+2-1)
             z2 = vale(1+3*(zi(jdno+1)-1)+3-1)
-            xxl = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2)
-            long = long + sqrt( xxl )
-        endif
+            xxl = (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2)
+            long = long+sqrt(xxl)
+        end if
     end do
-    ASSERT(nbma.eq.nbel)
+    ASSERT(nbma .eq. nbel)
 !
 !     VERIFICATION QUE LE CONTOUR EST FERME
 !
-    nbext1=0
-    nbext2=0
+    nbext1 = 0
+    nbext2 = 0
     do ima = 1, nbel
-        iext1=0
-        iext2=0
+        iext1 = 0
+        iext2 = 0
         ni1 = noeud1(3*ima-2)
         ni2 = noeud1(3*ima-1)
-        mailles(ima)=ima
+        mailles(ima) = ima
         do jma = 1, nbel
             if (jma .ne. ima) then
                 nj1 = noeud1(3*jma-2)
                 nj2 = noeud1(3*jma-1)
-                if ((ni1.eq.nj2) .or. (ni1.eq.nj1)) iext1=1
-                if ((ni2.eq.nj1) .or. (ni2.eq.nj2)) iext2=1
-            endif
-        enddo
-        if (iext1 .eq. 0) nbext1=nbext1+1
-        if (iext2 .eq. 0) nbext2=nbext2+1
+                if ((ni1 .eq. nj2) .or. (ni1 .eq. nj1)) iext1 = 1
+                if ((ni2 .eq. nj1) .or. (ni2 .eq. nj2)) iext2 = 1
+            end if
+        end do
+        if (iext1 .eq. 0) nbext1 = nbext1+1
+        if (iext2 .eq. 0) nbext2 = nbext2+1
     end do
-    if ((nbext1.ne.0) .and. (nbext2.ne.0)) then
+    if ((nbext1 .ne. 0) .and. (nbext2 .ne. 0)) then
         call utmess('F', 'UTILITY_2')
-    endif
+    end if
 !
 !     VERIFICATION QUE LE CONTOUR EST CONTINU ET REORIENTATION
 !
-    nbe=1
-    mailles(1)=0
-    noeud2(1)=noeud1(1)
-    noeud2(1+1)=noeud1(1+1)
-    noeud2(1+2)=noeud1(1+2)
+    nbe = 1
+    mailles(1) = 0
+    noeud2(1) = noeud1(1)
+    noeud2(1+1) = noeud1(1+1)
+    noeud2(1+2) = noeud1(1+2)
 41  continue
     ni1 = noeud2(3*nbe-2)
     ni2 = noeud2(3*nbe-1)
     do jma = 1, nbel
-        if ((mailles(jma).ne.0)) then
+        if ((mailles(jma) .ne. 0)) then
             nj1 = noeud1(3*jma-2)
             nj2 = noeud1(3*jma-1)
             nj3 = noeud1(3*jma)
             if (ni2 .eq. nj1) then
                 nbe = nbe+1
-                noeud2(3*nbe-2)=nj1
-                noeud2(3*nbe-1)=nj2
-                if (nj3 .ne. 0) noeud2(3*nbe)=nj3
+                noeud2(3*nbe-2) = nj1
+                noeud2(3*nbe-1) = nj2
+                if (nj3 .ne. 0) noeud2(3*nbe) = nj3
                 goto 43
-            else if (ni2.eq.nj2) then
+            else if (ni2 .eq. nj2) then
                 nbe = nbe+1
-                noeud2(3*nbe-2)=nj2
-                noeud2(3*nbe-1)=nj1
-                if (nj3 .ne. 0) noeud2(3*nbe)=nj3
+                noeud2(3*nbe-2) = nj2
+                noeud2(3*nbe-1) = nj1
+                if (nj3 .ne. 0) noeud2(3*nbe) = nj3
                 goto 43
-            endif
-        endif
+            end if
+        end if
     end do
     call utmess('F', 'UTILITY_2')
 43  continue
-    mailles(jma)=0
+    mailles(jma) = 0
     if (nbe .ge. nbma) then
         goto 11
     else
         goto 41
-    endif
+    end if
 11  continue
-    ASSERT(nbma.eq.nbe)
-    nj2=noeud2(3*nbe-1)
-    nj0=noeud2(1)
-    ASSERT(nj2.eq.nj0)
+    ASSERT(nbma .eq. nbe)
+    nj2 = noeud2(3*nbe-1)
+    nj0 = noeud2(1)
+    ASSERT(nj2 .eq. nj0)
 !
 !     CALCUL DU CDG APPROXIMATIF
 !
@@ -210,9 +210,9 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
         orig(2) = orig(2)+zr(jdco-1+3*nj1-1)
         orig(3) = orig(3)+zr(jdco-1+3*nj1)
     end do
-    orig(1)=orig(1)/nbma
-    orig(2)=orig(2)/nbma
-    orig(3)=orig(3)/nbma
+    orig(1) = orig(1)/nbma
+    orig(2) = orig(2)/nbma
+    orig(3) = orig(3)/nbma
 !
 !     CALCUL DE L'AIRE GM.VECT.DL
 !
@@ -228,12 +228,12 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
     xx2(2) = zr(jdco-1+3*nj2-1)
     xx2(3) = zr(jdco-1+3*nj2)
     do i = 1, 3
-        vgn1(i) = xx1(i) - orig(i)
-        vgn2(i) = xx2(i) - orig(i)
+        vgn1(i) = xx1(i)-orig(i)
+        vgn2(i) = xx2(i)-orig(i)
     end do
     call provec(vgn1, vgn2, xn)
     call normev(xn, xnorm)
-    aire=0.d0
+    aire = 0.d0
     do ima = 1, nbma
         nj1 = noeud2(3*ima-2)
         nj2 = noeud2(3*ima-1)
@@ -246,12 +246,12 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
             xx2(2) = zr(jdco-1+3*nj2-1)
             xx2(3) = zr(jdco-1+3*nj2)
             do i = 1, 3
-                vgn1(i) = xx1(i) - orig(i)
-                vn1n2(i) = xx2(i) - xx1(i)
+                vgn1(i) = xx1(i)-orig(i)
+                vn1n2(i) = xx2(i)-xx1(i)
             end do
             call provec(vgn1, vn1n2, pv)
-            aire1=ddot(3,pv,1,xn,1)
-            aire=aire+aire1/2.d0
+            aire1 = ddot(3, pv, 1, xn, 1)
+            aire = aire+aire1/2.d0
         else
             xx1(1) = zr(jdco-1+3*nj1-2)
             xx1(2) = zr(jdco-1+3*nj1-1)
@@ -263,20 +263,20 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
             xx3(2) = zr(jdco-1+3*nj3-1)
             xx3(3) = zr(jdco-1+3*nj3)
             do i = 1, 3
-                vgn1(i) = xx1(i) - orig(i)
-                vn1n3(i) = xx3(i) - xx1(i)
+                vgn1(i) = xx1(i)-orig(i)
+                vn1n3(i) = xx3(i)-xx1(i)
             end do
             call provec(vgn1, vn1n3, pv)
-            aire1=ddot(3,pv,1,xn,1)
-            aire=aire+aire1/2.d0
+            aire1 = ddot(3, pv, 1, xn, 1)
+            aire = aire+aire1/2.d0
             do i = 1, 3
-                vgn3(i) = xx3(i) - orig(i)
-                vn3n2(i) = xx2(i) - xx3(i)
+                vgn3(i) = xx3(i)-orig(i)
+                vn3n2(i) = xx2(i)-xx3(i)
             end do
             call provec(vgn3, vn3n2, pv)
-            aire2=ddot(3,pv,1,xn,1)
-            aire=aire+aire2/2.d0
-        endif
+            aire2 = ddot(3, pv, 1, xn, 1)
+            aire = aire+aire2/2.d0
+        end if
     end do
     AS_DEALLOCATE(vi=noeud1)
     AS_DEALLOCATE(vi=noeud2)

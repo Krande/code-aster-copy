@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,16 +44,16 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
         acces4 = to_med_int(acces)
         comm4 = to_med_int(comm)
         info4 = 0
-        call mpfope(fidm, nom, acces4, comm4, info4,&
+        call mpfope(fidm, nom, acces4, comm4, info4, &
                     cret4)
         fid = to_med_idt(fidm)
         cret = to_aster_int(cret4)
 #else
-        call mpfope(fid, nom, acces, comm, 0,&
+        call mpfope(fid, nom, acces, comm, 0, &
                     cret)
 #endif
 #endif
-    endif
+    end if
 !
 #endif
 end subroutine

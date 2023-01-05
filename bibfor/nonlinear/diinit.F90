@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine diinit(mesh_         , model_     , ds_inout, mate       , mateco   , cara_elem,&
-                  list_func_acti, sddyna     , ds_conv , ds_algopara, solver   ,&
-                  ds_contact    , sddisc)
+subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
+                  list_func_acti, sddyna, ds_conv, ds_algopara, solver, &
+                  ds_contact, sddisc)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -35,18 +35,18 @@ implicit none
 #include "asterfort/nmcrsu.h"
 #include "asterfort/ndxcfl.h"
 !
-character(len=*), intent(in) :: mesh_
-character(len=*), intent(in) :: model_
-character(len=19), intent(in) :: sddisc
-character(len=19), intent(in) :: sddyna
-character(len=24), intent(in) :: cara_elem
-character(len=24), intent(in) :: mate, mateco
-type(NL_DS_Conv), intent(in) :: ds_conv
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-type(NL_DS_InOut), intent(in) :: ds_inout
-character(len=19), intent(in) :: solver
-type(NL_DS_Contact), intent(in) :: ds_contact
-integer, intent(in) :: list_func_acti(*)
+    character(len=*), intent(in) :: mesh_
+    character(len=*), intent(in) :: model_
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: mate, mateco
+    type(NL_DS_Conv), intent(in) :: ds_conv
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=19), intent(in) :: solver
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,17 +80,17 @@ integer, intent(in) :: list_func_acti(*)
 !
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=list_inst)
     model = model_
-    mesh  = mesh_
+    mesh = mesh_
 !
 ! - Get parameters
 !
-    init_time   = ds_inout%init_time
-    result      = ds_inout%result
+    init_time = ds_inout%init_time
+    result = ds_inout%result
 !
 ! - Active functionnalities
 !
-    l_expl       = ndynlo(sddyna,'EXPLICITE')
-    l_implex     = isfonc(list_func_acti,'IMPLEX')
+    l_expl = ndynlo(sddyna, 'EXPLICITE')
+    l_implex = isfonc(list_func_acti, 'IMPLEX')
 !
 ! - Create time discretization datastructure
 !
@@ -100,7 +100,7 @@ integer, intent(in) :: list_func_acti(*)
 !
     if (l_expl) then
         call ndxcfl(mate, mateco, cara_elem, sddyna, sddisc)
-    endif
+    end if
 !
 ! - Create storing datastructure
 !
@@ -108,7 +108,7 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! - Automatic management of time stepping
 !
-    call nmcrsu(sddisc, list_inst , ds_conv, ds_algopara, l_implex,&
+    call nmcrsu(sddisc, list_inst, ds_conv, ds_algopara, l_implex, &
                 solver, ds_contact)
 !
 end subroutine

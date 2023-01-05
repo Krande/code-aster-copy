@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 
 subroutine te0449(nomopt, nomte)
 !
-use HHO_type
-use HHO_utils_module
-use HHO_size_module
-use HHO_quadrature_module
-use HHO_ther_module
-use HHO_basis_module
-use HHO_init_module, only : hhoInfoInitCell
+    use HHO_type
+    use HHO_utils_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_ther_module
+    use HHO_basis_module
+    use HHO_init_module, only: hhoInfoInitCell
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
@@ -83,9 +83,9 @@ implicit none
 !
     call hhoQuadCellMass%initCell(hhoCell, npg)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call hhoLocalMassTher(hhoCell, hhoData, hhoQuadCellMass, fami, lhs=lhs)
 !

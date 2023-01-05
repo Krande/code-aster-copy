@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
+subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
                   nbtv, codret)
 !_____________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -78,17 +78,17 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'MDCHII' )
+    parameter(nompro='MDCHII')
 !
     integer :: ednopt
     integer :: vali(2)
-    parameter (ednopt=-1)
+    parameter(ednopt=-1)
     integer :: ednono
-    parameter (ednono=-1)
+    parameter(ednono=-1)
     integer :: mfloat
-    parameter (mfloat=6)
+    parameter(mfloat=6)
     integer :: iterma
-    parameter (iterma=1)
+    parameter(iterma=1)
 !
     integer :: ifm, nivinf, nbtv2, ncmp
     integer :: iaux, nbcham, lnochm, nbcmfi
@@ -114,9 +114,9 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !
     call as_mfdnfd(idfimd, nbcham, codret)
     if (codret .ne. 0) then
-        saux08='mfdnfd'
+        saux08 = 'mfdnfd'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 ! 1.2. ==> RECHERCHE DU CHAMP VOULU
 !
@@ -132,9 +132,9 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !
         call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
         if (codret .ne. 0) then
-            saux08='mfdnfc'
+            saux08 = 'mfdnfc'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
 ! 1.2.2. ==> POUR LE CHAMP NUMERO IAUX, ON RECUPERE :
 !            SAUX64 : NOM DU CHAMP
@@ -145,20 +145,20 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
         call wkvect('&&'//nompro//'N'//saux08, 'V V K16', nbcmfi, adncmp)
         call wkvect('&&'//nompro//'U'//saux08, 'V V K16', nbcmfi, aducmp)
         saux64 = ' '
-        call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
+        call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp), &
                        zk16(aducmp), nseqca, codret)
         if (codret .ne. 0 .or. jaux .ne. mfloat) then
             if (codret .ne. 0) then
-                saux08='mfdfdi'
+                saux08 = 'mfdfdi'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
+            end if
 !         TYPE INCORRECT
             if (saux64 .eq. nochmd .and. jaux .ne. mfloat) then
-                vali (1) = jaux
+                vali(1) = jaux
                 call utmess('A+', 'MED_84', si=vali(1))
                 call utmess('F', 'MED_75')
-            endif
-        endif
+            end if
+        end if
 !
 ! 1.2.3. ==> COMPARAISON DU NOM DU CHAMP
 !
@@ -168,13 +168,13 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
             if (saux64(1:jaux) .eq. nochmd(1:lnochm)) then
                 numsau = iaux
                 existc = 1
-            endif
-        endif
+            end if
+        end if
 !
     end do
     if (numsau .eq. 0) then
         call utmess('F', 'MED_43', sk=nochmd(1:lnochm))
-    endif
+    end if
 !
     if (existc .ne. 1) then
         call as_mfdnfd(idfimd, nchmed, codret)
@@ -183,14 +183,14 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
             call as_mfdnfc(idfimd, iaux, nbcmp, codret)
             call wkvect('&&MDCHII.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&MDCHII.UNITCMP', 'V V K16', nbcmp, junit)
-            call as_mfdfdi(idfimd, iaux, nomcha, typech, zk16(jcmp),&
+            call as_mfdfdi(idfimd, iaux, nomcha, typech, zk16(jcmp), &
                            zk16(junit), nseqca, codret)
             call utmess('F+', 'MED2_2', sk=nomcha)
             call jedetr('&&MDCHII.NOMCMP_K16')
             call jedetr('&&MDCHII.UNITCMP')
         end do
         call utmess('F', 'VIDE_1')
-    endif
+    end if
 !
 !====
 ! 2. NOMBRE DE TABLEAUX DE VALEURS ASSOCIES AU CHAMP
@@ -200,21 +200,21 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     call wkvect('&&MDCHII.CNAME', 'V V K16', ncmp, jcmp)
     call wkvect('&&MDCHII.CUNIT', 'V V K16', ncmp, junit)
 !
-    call as_mfdfin(idfimd, nochmd, nomam2, nbtv, zk16(junit),&
+    call as_mfdfin(idfimd, nochmd, nomam2, nbtv, zk16(junit), &
                    zk16(jcmp), codret)
 !
     if (codret .ne. 0) then
-        saux08='mfdfin'
+        saux08 = 'mfdfin'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     call jedetr('&&MDCHII.CNAME')
     call jedetr('&&MDCHII.CUNIT')
     if (nivinf .gt. 1) then
-        write (ifm,20001) nochmd, nbtv
-    endif
-    20001 format&
-     & ('LE CHAMP MED ',a,' CONTIENT ',i6,' TABLEAUX SUR LES NOEUDS :')
+        write (ifm, 20001) nochmd, nbtv
+    end if
+20001 format&
+   & ('LE CHAMP MED ', a, ' CONTIENT ', i6, ' TABLEAUX SUR LES NOEUDS :')
 !
 !====
 ! 3. ALLOCATION DES TABLEAUX
@@ -225,7 +225,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
         call wkvect(prefix//'.NUME', 'V V I', 2*nbtv, adnume)
         call wkvect(prefix//'.INST', 'V V R', nbtv, adinst)
 !
-    endif
+    end if
 !
 !====
 ! 4. POUR CHAQUE TABLEAU :
@@ -242,13 +242,13 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !    . NUMERO, UNITE ET VALEUR DU PAS DE TEMPS : FINUPT, FIINST
 !    . NUMERO D'ORDRE : FINUNO
 !
-            call as_mfdcsi(idfimd, nochmd, iaux, finupt, finuno,&
+            call as_mfdcsi(idfimd, nochmd, iaux, finupt, finuno, &
                            fiinst, codret)
 !
             if (codret .ne. 0) then
-                saux08='mfdcsi'
+                saux08 = 'mfdcsi'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
+            end if
             zi(jnptno+iaux*2-2) = finupt
             zi(jnptno+iaux*2-1) = finuno
             zr(jpasdt+iaux-1) = fiinst
@@ -256,77 +256,77 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     else
         call jeveuo('&&MDCHI2.'//saux08, 'L', jnptno)
         call jeveuo('&&MDCHI3.'//saux08, 'L', jpasdt)
-    endif
+    end if
 !
     nbtv2 = nbtv
-    do 40 , iaux = 1 , nbtv
+    do 40, iaux = 1, nbtv
 !
-    finupt = zi(jnptno+iaux*2-2)
-    finuno = zi(jnptno+iaux*2-1)
-    fiinst = zr(jpasdt+iaux-1)
+        finupt = zi(jnptno+iaux*2-2)
+        finuno = zi(jnptno+iaux*2-1)
+        fiinst = zr(jpasdt+iaux-1)
 !
-    if (.not. ilocal) then
-        call utmess('F', 'MED_60')
-    endif
+        if (.not. ilocal) then
+            call utmess('F', 'MED_60')
+        end if
 !
 !       ON REGARDE DANS LE FICHIER MED SI DES VALEURS SONT REFERENCEES
 !       POUR TYPENT ET TYPGEO, SI CE N'EST PAS LE CAS, ON RETIRE
 !       CET INSTANT DE LA LISTE
-    call as_mfdonp(idfimd, nochmd, finupt, finuno, typent,&
-                   typgeo, iterma, nomamd, nomprf, nomloc,&
-                   npro, codret)
+        call as_mfdonp(idfimd, nochmd, finupt, finuno, typent, &
+                       typgeo, iterma, nomamd, nomprf, nomloc, &
+                       npro, codret)
 !
-    if (npro .eq. 0) then
-        nbtv2 = nbtv2 - 1
-        goto 40
-    endif
+        if (npro .eq. 0) then
+            nbtv2 = nbtv2-1
+            goto 40
+        end if
 !
-    if (nivinf .gt. 1) then
-        if (finupt .eq. ednopt) then
-            write (ifm,40012)
-        else
-            write (ifm,40022) finupt, fiinst
-        endif
-        if (finuno .eq. ednono) then
-            write (ifm,40013)
-        else
-            write (ifm,40023) finuno
-        endif
-    endif
+        if (nivinf .gt. 1) then
+            if (finupt .eq. ednopt) then
+                write (ifm, 40012)
+            else
+                write (ifm, 40022) finupt, fiinst
+            end if
+            if (finuno .eq. ednono) then
+                write (ifm, 40013)
+            else
+                write (ifm, 40023) finuno
+            end if
+        end if
 !
 ! 4.2. ==> ARCHIVAGE DANS LES TABLEAUX EXPLOITES PAR LE PROGRAMME
 !          APPELANT
 !
-    zi(adnume+2*iaux-2) = finupt
-    zi(adnume+2*iaux-1) = finuno
-    if (finupt .ne. ednopt) then
-        zr(adinst+iaux-1) = fiinst
-    endif
+        zi(adnume+2*iaux-2) = finupt
+        zi(adnume+2*iaux-1) = finuno
+        if (finupt .ne. ednopt) then
+            zr(adinst+iaux-1) = fiinst
+        end if
 !
-    40 end do
+40  end do
 !
 !     SOIT ON A TROUVE POUR TOUS LES INSTANTS DES VALEURS DANS
 !     LE FICHIER MED, SOIT ON EN A TROUVE AUCUNE
 !     LE CAS INTERMEDIAIRE EST PROBLEMATIQUE ET NON TRAITE
-    ASSERT((nbtv.eq.nbtv2).or.(nbtv2.eq.0))
+    ASSERT((nbtv .eq. nbtv2) .or. (nbtv2 .eq. 0))
     if (nbtv2 .eq. 0) then
         call jedetr(prefix//'.NUME')
         call jedetr(prefix//'.INST')
         nbtv = 0
-    endif
+    end if
 !
-    40012 format(  2x,'. AUCUNE INDICATION DE PAS DE TEMPS')
-    40022 format(  2x,'. PAS DE TEMPS NUMERO ',i5,&
-     &       /,2x,'. INSTANT : ',g13.5)
-    40013 format(  2x,'. AUCUNE INDICATION DE NUMERO D''ORDRE',/)
-    40023 format(  2x,'. NUMERO D''ORDRE : ',i5,/)
+40012 format(2x, '. AUCUNE INDICATION DE PAS DE TEMPS')
+40022 format(2x, '. PAS DE TEMPS NUMERO ', i5,&
+   &       /, 2x, '. INSTANT : ', g13.5)
+40013 format(2x, '. AUCUNE INDICATION DE NUMERO D''ORDRE',/)
+40023 format(2x, '. NUMERO D''ORDRE : ', i5,/)
 !
 ! --- MENAGE
-    do 70 , iaux = 1 , nbcham
-    call codent(iaux, 'G', saux08)
-    call jedetr('&&'//nompro//'N'//saux08)
-    call jedetr('&&'//nompro//'U'//saux08)
-    70 end do
+    do 70, iaux = 1, nbcham
+        call codent(iaux, 'G', saux08)
+        call jedetr('&&'//nompro//'N'//saux08)
+        call jedetr('&&'//nompro//'U'//saux08)
+70  end do
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
-                  nelcom, numeli, xy, erreur, energi,&
+subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc, &
+                  nelcom, numeli, xy, erreur, energi, &
                   volume, alpha, nalpha)
 !
 !*******************************************************************
@@ -105,12 +105,12 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
         dtyp = 1.d+0
     else
         dtyp = 2.d+0
-    endif
+    end if
 !
 ! 2 - INITIALISATION DES ALPHA = DEGRE D INTERPOLATION
 !
     do inno = 1, nnoem
-        alphan(inno)= dtyp
+        alphan(inno) = dtyp
     end do
     do inel = 1, nelem
         alpha(inel) = dtyp
@@ -121,23 +121,23 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
     precmo = 0.d+0
     vol = 0.d+0
     do inel = 1, nelem
-        precmo = precmo + erreur(inel)**2
-        vol = vol + volume(inel)
+        precmo = precmo+erreur(inel)**2
+        vol = vol+volume(inel)
     end do
-    precmo = sqrt( precmo / vol )
+    precmo = sqrt(precmo/vol)
 !
     if (dtyp .eq. 1.0d0) then
-        precre = 3.d0 * precmo
-    else if (dtyp.eq.2.0d0) then
-        precre = 2.d0 * precmo
-    endif
+        precre = 3.d0*precmo
+    else if (dtyp .eq. 2.0d0) then
+        precre = 2.d0*precmo
+    end if
 !
 ! 4 - BOUCLE SUR LES NOEUDS SOMMET BORD POUR DETECTER
 !     SI LE NOEUD CONSIDERE EST SINGULIER OU PAS
 !
     do inno = 1, nnoem
 !
-        if (numeli(2,inno) .ne. 2) goto 40
+        if (numeli(2, inno) .ne. 2) goto 40
 !
 ! 4.1 - ERREUR LOCALE SUR COUCHE 1 (=EF CONNECTES A INNO)
 !
@@ -145,15 +145,15 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
         vol = 0.0d0
 !
         do inel = 1, numeli(1, inno)
-            nuef=numeli(2+inel,inno)
-            prec = prec + erreur(nuef)**2
-            vol = vol + volume(nuef)
+            nuef = numeli(2+inel, inno)
+            prec = prec+erreur(nuef)**2
+            vol = vol+volume(nuef)
         end do
         if (prec .ne. 0.d+0 .and. vol .ne. 0.d+0) then
             prec = sqrt(prec/vol)
         else
             prec = 0.d+0
-        endif
+        end if
 !
 ! 4.2 - TEST1 : SI PREC > PRECREF ON VA CHERCHER LES NOEUDS NOEU2
 !       CONNECTES A INNO
@@ -162,9 +162,9 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
 !
 ! 4.2.1 - RECHERCHE DES NOEUDS ET EFS COMPOSANTS LES COUCHES 1,2 ET 3
 !
-            call dzonfg(nsommx, icnc, nelcom, numeli, inno,&
+            call dzonfg(nsommx, icnc, nelcom, numeli, inno, &
                         tbelzo, nbelzo, tbnozo, nbnozo)
-            noeu1=inno
+            noeu1 = inno
 !
 ! 4.2.2 - TEST2 : POUR CHAQUE NOEU2 CONNECTE A NOEU1
 !         ON DETECTE SI NOEU2 EST SINGULIER
@@ -173,51 +173,51 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
 !
             do i = 1, nbnozo(1)
                 noeu2 = tbnozo(i)
-                if (numeli(2,noeu2) .ne. 2) goto 60
+                if (numeli(2, noeu2) .ne. 2) goto 60
                 if (noeu2 .gt. noeu1) then
                     vol = 0.0d0
                     prec = 0.0d0
                     do inel = 1, numeli(1, noeu2)
-                        nuef=numeli(2+inel,noeu2)
-                        prec = prec + erreur(nuef)**2
-                        vol = vol + volume(nuef)
+                        nuef = numeli(2+inel, noeu2)
+                        prec = prec+erreur(nuef)**2
+                        vol = vol+volume(nuef)
                     end do
                     if (prec .ne. 0.d+0 .and. vol .ne. 0.d+0) then
                         prec = sqrt(prec/vol)
                     else
                         prec = 0.d+0
-                    endif
+                    end if
 !
                     if (prec .ge. precre) then
 !
 ! 4.2.2.1 - CALCUL DE PE
 !
-                        nbnoe=nbnozo(1)+nbnozo(2)+nbnozo(3)
-                        call dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
-                                    nbelzo(3), tbnozo, nbnoe, xy, volume,&
+                        nbnoe = nbnozo(1)+nbnozo(2)+nbnozo(3)
+                        call dfort3(nsommx, icnc, noeu1, noeu2, tbelzo, &
+                                    nbelzo(3), tbnozo, nbnoe, xy, volume, &
                                     energi, pe)
 !
-                        if (alphan(noeu1) .gt. pe) alphan(noeu1)=pe
-                        if (alphan(noeu2) .gt. pe) alphan(noeu2)=pe
-                    endif
-                endif
- 60             continue
+                        if (alphan(noeu1) .gt. pe) alphan(noeu1) = pe
+                        if (alphan(noeu2) .gt. pe) alphan(noeu2) = pe
+                    end if
+                end if
+60              continue
             end do
-        endif
- 40     continue
+        end if
+40      continue
     end do
 !
 ! 5 - ON REMPLIT LE TABLEAU ALPHA = DEGRE DE LA SINGULARITE PAR EF
 !
     nalpha = 1
     do inel = 1, nelem
-        if (icnc(2,inel) .lt. 1) goto 110
+        if (icnc(2, inel) .lt. 1) goto 110
         do inno = 1, icnc(1, inel)
-            alpha(inel) = min(alpha(inel),alphan(icnc(inno+2,inel)))
+            alpha(inel) = min(alpha(inel), alphan(icnc(inno+2, inel)))
         end do
         if (alpha(inel) .lt. dtyp) then
-            nalpha = nalpha + 1
-        endif
+            nalpha = nalpha+1
+        end if
 110     continue
     end do
 !

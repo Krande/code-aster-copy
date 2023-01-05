@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,23 +40,23 @@ function exi_fiss(model)
 !---------------------------------------------------------------------
 !
 !
-    exi_fiss=.false._1
-    nfiss=0
+    exi_fiss = .false._1
+    nfiss = 0
     call jeexin(model//'.FISS', iret)
-    if (iret.le.0) goto 99
-    call jeveuo(model//'.FISS','L',jmofis)
-    call jeveuo(model//'.NFIS','L',jnfiss)
+    if (iret .le. 0) goto 99
+    call jeveuo(model//'.FISS', 'L', jmofis)
+    call jeveuo(model//'.NFIS', 'L', jnfiss)
     nfiss = zi(jnfiss)
 !
 
-    do ifiss = 1,nfiss
+    do ifiss = 1, nfiss
         nomfis = zk8(jmofis-1+ifiss)
         call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
-        if(typdis.eq.'FISSURE') then
-            exi_fiss=.true.
+        if (typdis .eq. 'FISSURE') then
+            exi_fiss = .true.
             exit
-        endif
-    enddo
+        end if
+    end do
 !
 99  continue
 !

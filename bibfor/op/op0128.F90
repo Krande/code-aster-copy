@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine op0128()
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jeexin.h"
-    integer :: iret,jdesc,n1,n2
+    integer :: iret, jdesc, n1, n2
     character(len=8) :: nomres, numeg
     character(len=9) :: method
     character(len=11) :: option
@@ -57,7 +57,7 @@ subroutine op0128()
 !-------------------RECUPERATION CONCEPTS AMONT-------------------------
 !
     call getvid(' ', 'NUME_DDL_GENE', scal=numeg, nbret=ibid)
-    nugene=numeg
+    nugene = numeg
 !
 !-------------------------RECUPERATION DE L'OPTION----------------------
 !
@@ -75,31 +75,29 @@ subroutine op0128()
             call asgeel(nomres, option, nugene)
         else
             call assgen(nomres, option, nugene)
-        endif
+        end if
     else
         if (iret .gt. 0) then
             call asgeel(nomres, option, nugene)
         else
             call assgcy(nomres, nugene)
-        endif
-    endif
-
+        end if
+    end if
 
 !   -- on corrige l'objet .DESC :
 !   ------------------------------------------------------------------------------
-    nomr19=nomres
-    call jelira(nomr19//'.CONL','LONMAX',n1)
-    call jelira(jexnum(nomr19//'.VALM',1),'LONMAX',n2)
-    call jeveuo(nomr19//'.DESC','E',jdesc)
-    zi(jdesc)=2
-    zi(jdesc+1)=n1
-    if (n2.eq.n1) then
-        zi(jdesc+2)=1
-    elseif (n2.eq.n1*(n1+1)/2) then
-        zi(jdesc+2)=2
+    nomr19 = nomres
+    call jelira(nomr19//'.CONL', 'LONMAX', n1)
+    call jelira(jexnum(nomr19//'.VALM', 1), 'LONMAX', n2)
+    call jeveuo(nomr19//'.DESC', 'E', jdesc)
+    zi(jdesc) = 2
+    zi(jdesc+1) = n1
+    if (n2 .eq. n1) then
+        zi(jdesc+2) = 1
+    elseif (n2 .eq. n1*(n1+1)/2) then
+        zi(jdesc+2) = 2
     else
-        zi(jdesc+2)=3
-    endif
-
+        zi(jdesc+2) = 3
+    end if
 
 end subroutine

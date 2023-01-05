@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine frqapp(dt, neq, dep1, dep2, acc1,&
+subroutine frqapp(dt, neq, dep1, dep2, acc1, &
                   acc2, vmin, freq)
 !
     implicit none
@@ -53,10 +53,10 @@ subroutine frqapp(dt, neq, dep1, dep2, acc1,&
             b = dmin
         else
             b = dd
-        endif
+        end if
 !       B = MAX(VMIN(I)*DT,ABS(DEP2(I)-DEP1(I)))
 !       B DEVRAIT ETRE TOUJOURS NON NUL
-        if (b .le. epsmi) b=eps
+        if (b .le. epsmi) b = eps
         tt = abs(a/b)
         if (temp .le. tt) temp = tt
 !       TEMP = MAX(TEMP,ABS(A/B))

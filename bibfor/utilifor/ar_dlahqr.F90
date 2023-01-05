@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
-                     h, ldh, wr, wi, iloz,&
+subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
+                     h, ldh, wr, wi, iloz, &
                      ihiz, z, ldz, info)
 !
 !     SUBROUTINE LAPACK DE MISE A JOUR DES VALEURS PROPRES ET DE LA
@@ -142,13 +142,13 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
     integer :: ihi, ihiz, ilo, iloz, info, ldh, ldz, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: h( ldh, * ), wi( * ), wr( * ), z( ldz, * )
+    real(kind=8) :: h(ldh, *), wi(*), wr(*), z(ldz, *)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: zero
-    parameter          ( zero = 0.0d+0)
+    parameter(zero=0.0d+0)
     real(kind=8) :: dat1, dat2
-    parameter          ( dat1 = 0.75d+0, dat2 = -0.4375d+0 )
+    parameter(dat1=0.75d+0, dat2=-0.4375d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     integer :: i, i1, i2, itn, its, j, k, l, m, nh, nr, nz
@@ -158,7 +158,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 ! DUE TO CRS512       REAL*8 OVFL
 !     ..
 !     .. LOCAL ARRAYS ..
-    real(kind=8) :: v( 3 ), work( 1 )
+    real(kind=8) :: v(3), work(1)
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
@@ -174,21 +174,21 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !
     if (n .eq. 0) goto 1000
     if (ilo .eq. ihi) then
-        wr( ilo ) = h( ilo, ilo )
-        wi( ilo ) = zero
+        wr(ilo) = h(ilo, ilo)
+        wi(ilo) = zero
         goto 1000
-    endif
+    end if
 !
-    nh = ihi - ilo + 1
-    nz = ihiz - iloz + 1
+    nh = ihi-ilo+1
+    nz = ihiz-iloz+1
 !
 !     SET MACHINE-DEPENDENT CONSTANTS FOR THE STOPPING CRITERION.
 !     IF NORM(H) <= SQRT(OVFL), OVERFLOW SHOULD NOT OCCUR.
 !
     unfl = r8miem()
 ! DUE TO CRS512      OVFL = ONE / UNFL
-    ulp = r8prem() * 0.5d0 * isbaem()
-    smlnum = unfl*( nh / ulp )
+    ulp = r8prem()*0.5d0*isbaem()
+    smlnum = unfl*(nh/ulp)
 !
 !     I1 AND I2 ARE THE INDICES OF THE FIRST ROW AND LAST COLUMN OF H
 !     TO WHICH TRANSFORMATIONS MUST BE APPLIED. IF EIGENVALUES ONLY ARE
@@ -197,7 +197,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
     if (wantt) then
         i1 = 1
         i2 = n
-    endif
+    end if
 !
 !     ITN IS THE TOTAL NUMBER OF QR ITERATIONS ALLOWED.
 !
@@ -210,7 +210,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !     H(L,L-1) IS NEGLIGIBLE SO THAT THE MATRIX SPLITS.
 !
     i = ihi
- 10 continue
+10  continue
     l = ilo
     if (i .lt. ilo) goto 150
 !
@@ -222,19 +222,19 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !
 !        LOOK FOR A SINGLE SMALL SUBDIAGONAL ELEMENT.
 !
-        do k = i, l + 1, -1
-            tst1 = abs( h( k-1, k-1 ) ) + abs( h( k, k ) )
-            if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h( l, l ), ldh, work)
-            if (abs( h( k, k-1 ) ) .le. max( ulp*tst1, smlnum )) goto 30
+        do k = i, l+1, -1
+            tst1 = abs(h(k-1, k-1))+abs(h(k, k))
+            if (tst1 .eq. zero) tst1 = dlanhs('1', i-l+1, h(l, l), ldh, work)
+            if (abs(h(k, k-1)) .le. max(ulp*tst1, smlnum)) goto 30
         end do
- 30     continue
+30      continue
         l = k
         if (l .gt. ilo) then
 !
 !           H(L,L-1) IS NEGLIGIBLE
 !
-            h( l, l-1 ) = zero
-        endif
+            h(l, l-1) = zero
+        end if
 !
 !        EXIT FROM LOOP IF A SUBMATRIX OF ORDER 1 OR 2 HAS SPLIT OFF.
 !
@@ -244,16 +244,16 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !        EIGENVALUES ONLY ARE BEING COMPUTED, ONLY THE ACTIVE SUBMATRIX
 !        NEED BE TRANSFORMED.
 !
-        if (.not.wantt) then
+        if (.not. wantt) then
             i1 = l
             i2 = i
-        endif
+        end if
 !
         if (its .eq. 10 .or. its .eq. 20) then
 !
 !           EXCEPTIONAL SHIFT.
 !
-            s = abs( h( i, i-1 ) ) + abs( h( i-1, i-2 ) )
+            s = abs(h(i, i-1))+abs(h(i-1, i-2))
             h44 = dat1*s
             h33 = h44
             h43h34 = dat2*s*s
@@ -261,46 +261,46 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !
 !           PREPARE TO USE WILKINSON'S DOUBLE SHIFT
 !
-            h44 = h( i, i )
-            h33 = h( i-1, i-1 )
-            h43h34 = h( i, i-1 )*h( i-1, i )
-        endif
+            h44 = h(i, i)
+            h33 = h(i-1, i-1)
+            h43h34 = h(i, i-1)*h(i-1, i)
+        end if
 !
 !        LOOK FOR TWO CONSECUTIVE SMALL SUBDIAGONAL ELEMENTS.
 !
-        do m = i - 2, l, -1
+        do m = i-2, l, -1
 !
 !           DETERMINE THE EFFECT OF STARTING THE DOUBLE-SHIFT QR
 !           ITERATION AT ROW M, AND SEE IF THIS WOULD MAKE H(M,M-1)
 !           NEGLIGIBLE.
 !
-            h11 = h( m, m )
-            h22 = h( m+1, m+1 )
-            h21 = h( m+1, m )
-            h12 = h( m, m+1 )
-            h44s = h44 - h11
-            h33s = h33 - h11
-            v1 = ( h33s*h44s-h43h34 ) / h21 + h12
-            v2 = h22 - h11 - h33s - h44s
-            v3 = h( m+2, m+1 )
-            s = abs( v1 ) + abs( v2 ) + abs( v3 )
-            v1 = v1 / s
-            v2 = v2 / s
-            v3 = v3 / s
-            v( 1 ) = v1
-            v( 2 ) = v2
-            v( 3 ) = v3
+            h11 = h(m, m)
+            h22 = h(m+1, m+1)
+            h21 = h(m+1, m)
+            h12 = h(m, m+1)
+            h44s = h44-h11
+            h33s = h33-h11
+            v1 = (h33s*h44s-h43h34)/h21+h12
+            v2 = h22-h11-h33s-h44s
+            v3 = h(m+2, m+1)
+            s = abs(v1)+abs(v2)+abs(v3)
+            v1 = v1/s
+            v2 = v2/s
+            v3 = v3/s
+            v(1) = v1
+            v(2) = v2
+            v(3) = v3
             if (m .eq. l) goto 50
-            h00 = h( m-1, m-1 )
-            h10 = h( m, m-1 )
-            tst1 = abs( v1 )*( abs( h00 )+abs( h11 )+abs( h22 ) )
-            if (abs( h10 )*( abs( v2 )+abs( v3 ) ) .le. ulp*tst1) goto 50
+            h00 = h(m-1, m-1)
+            h10 = h(m, m-1)
+            tst1 = abs(v1)*(abs(h00)+abs(h11)+abs(h22))
+            if (abs(h10)*(abs(v2)+abs(v3)) .le. ulp*tst1) goto 50
         end do
- 50     continue
+50      continue
 !
 !        DOUBLE-SHIFT QR STEP
 !
-        do k = m, i - 1
+        do k = m, i-1
 !
 !           THE FIRST ITERATION OF THIS LOOP DETERMINES A REFLECTION G
 !           FROM THE VECTOR V AND APPLIES IT FROM LEFT AND RIGHT TO H,
@@ -311,40 +311,40 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !           CHASES THE BULGE ONE STEP TOWARD THE BOTTOM OF THE ACTIVE
 !           SUBMATRIX. NR IS THE ORDER OF G.
 !
-            nr = min( 3, i-k+1 )
-            if (k .gt. m) call dcopy(nr, h( k, k-1 ), 1, v, 1)
-            call ar_dlarfg(nr, v( 1 ), v( 2 ), 1, t1)
+            nr = min(3, i-k+1)
+            if (k .gt. m) call dcopy(nr, h(k, k-1), 1, v, 1)
+            call ar_dlarfg(nr, v(1), v(2), 1, t1)
             if (k .gt. m) then
-                h( k, k-1 ) = v( 1 )
-                h( k+1, k-1 ) = zero
-                if (k .lt. i-1) h( k+2, k-1 ) = zero
-            else if (m.gt.l) then
-                h( k, k-1 ) = -h( k, k-1 )
-            endif
-            v2 = v( 2 )
+                h(k, k-1) = v(1)
+                h(k+1, k-1) = zero
+                if (k .lt. i-1) h(k+2, k-1) = zero
+            else if (m .gt. l) then
+                h(k, k-1) = -h(k, k-1)
+            end if
+            v2 = v(2)
             t2 = t1*v2
             if (nr .eq. 3) then
-                v3 = v( 3 )
+                v3 = v(3)
                 t3 = t1*v3
 !
 !              APPLY G FROM THE LEFT TO TRANSFORM THE ROWS OF THE MATRIX
 !              IN COLUMNS K TO I2.
 !
                 do j = k, i2
-                    sum = h( k, j ) + v2*h( k+1, j ) + v3*h( k+2, j )
-                    h( k, j ) = h( k, j ) - sum*t1
-                    h( k+1, j ) = h( k+1, j ) - sum*t2
-                    h( k+2, j ) = h( k+2, j ) - sum*t3
+                    sum = h(k, j)+v2*h(k+1, j)+v3*h(k+2, j)
+                    h(k, j) = h(k, j)-sum*t1
+                    h(k+1, j) = h(k+1, j)-sum*t2
+                    h(k+2, j) = h(k+2, j)-sum*t3
                 end do
 !
 !              APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF THE
 !              MATRIX IN ROWS I1 TO MIN(K+3,I).
 !
-                do j = i1, min( k+3, i )
-                    sum = h( j, k ) + v2*h( j, k+1 ) + v3*h( j, k+2 )
-                    h( j, k ) = h( j, k ) - sum*t1
-                    h( j, k+1 ) = h( j, k+1 ) - sum*t2
-                    h( j, k+2 ) = h( j, k+2 ) - sum*t3
+                do j = i1, min(k+3, i)
+                    sum = h(j, k)+v2*h(j, k+1)+v3*h(j, k+2)
+                    h(j, k) = h(j, k)-sum*t1
+                    h(j, k+1) = h(j, k+1)-sum*t2
+                    h(j, k+2) = h(j, k+2)-sum*t3
                 end do
 !
                 if (wantz) then
@@ -352,30 +352,30 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !                 ACCUMULATE TRANSFORMATIONS IN THE MATRIX Z
 !
                     do j = iloz, ihiz
-                        sum = z( j, k ) + v2*z( j, k+1 ) + v3*z( j, k+ 2 )
-                        z( j, k ) = z( j, k ) - sum*t1
-                        z( j, k+1 ) = z( j, k+1 ) - sum*t2
-                        z( j, k+2 ) = z( j, k+2 ) - sum*t3
+                        sum = z(j, k)+v2*z(j, k+1)+v3*z(j, k+2)
+                        z(j, k) = z(j, k)-sum*t1
+                        z(j, k+1) = z(j, k+1)-sum*t2
+                        z(j, k+2) = z(j, k+2)-sum*t3
                     end do
-                endif
-            else if (nr.eq.2) then
+                end if
+            else if (nr .eq. 2) then
 !
 !              APPLY G FROM THE LEFT TO TRANSFORM THE ROWS OF THE MATRIX
 !              IN COLUMNS K TO I2.
 !
                 do j = k, i2
-                    sum = h( k, j ) + v2*h( k+1, j )
-                    h( k, j ) = h( k, j ) - sum*t1
-                    h( k+1, j ) = h( k+1, j ) - sum*t2
+                    sum = h(k, j)+v2*h(k+1, j)
+                    h(k, j) = h(k, j)-sum*t1
+                    h(k+1, j) = h(k+1, j)-sum*t2
                 end do
 !
 !              APPLY G FROM THE RIGHT TO TRANSFORM THE COLUMNS OF THE
 !              MATRIX IN ROWS I1 TO MIN(K+3,I).
 !
                 do j = i1, i
-                    sum = h( j, k ) + v2*h( j, k+1 )
-                    h( j, k ) = h( j, k ) - sum*t1
-                    h( j, k+1 ) = h( j, k+1 ) - sum*t2
+                    sum = h(j, k)+v2*h(j, k+1)
+                    h(j, k) = h(j, k)-sum*t1
+                    h(j, k+1) = h(j, k+1)-sum*t2
                 end do
 !
                 if (wantz) then
@@ -383,12 +383,12 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !                 ACCUMULATE TRANSFORMATIONS IN THE MATRIX Z
 !
                     do j = iloz, ihiz
-                        sum = z( j, k ) + v2*z( j, k+1 )
-                        z( j, k ) = z( j, k ) - sum*t1
-                        z( j, k+1 ) = z( j, k+1 ) - sum*t2
+                        sum = z(j, k)+v2*z(j, k+1)
+                        z(j, k) = z(j, k)-sum*t1
+                        z(j, k+1) = z(j, k+1)-sum*t2
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
 !
     end do
@@ -404,41 +404,41 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
 !
 !        H(I,I-1) IS NEGLIGIBLE: ONE EIGENVALUE HAS CONVERGED.
 !
-        wr( i ) = h( i, i )
-        wi( i ) = zero
-    else if (l.eq.i-1) then
+        wr(i) = h(i, i)
+        wi(i) = zero
+    else if (l .eq. i-1) then
 !
 !        H(I-1,I-2) IS NEGLIGIBLE: A PAIR OF EIGENVALUES HAVE CONVERGED.
 !
 !        TRANSFORM THE 2-BY-2 SUBMATRIX TO STANDARD SCHUR FORM,
 !        AND COMPUTE AND STORE THE EIGENVALUES.
 !
-        call ar_dlanv2(h( i-1, i-1 ), h( i-1, i ), h( i, i-1 ), h( i, i ), wr( i-1 ),&
-                       wi( i-1 ), wr( i ), wi( i ), cs, sn)
+        call ar_dlanv2(h(i-1, i-1), h(i-1, i), h(i, i-1), h(i, i), wr(i-1), &
+                       wi(i-1), wr(i), wi(i), cs, sn)
 !
         if (wantt) then
 !
 !           APPLY THE TRANSFORMATION TO THE REST OF H.
 !
-            if (i2 .gt. i) call drot(i2-i, h( i-1, i+1 ), ldh, h( i, i+1 ), ldh,&
+            if (i2 .gt. i) call drot(i2-i, h(i-1, i+1), ldh, h(i, i+1), ldh, &
                                      cs, sn)
-            call drot(i-i1-1, h( i1, i-1 ), 1, h( i1, i ), 1,&
+            call drot(i-i1-1, h(i1, i-1), 1, h(i1, i), 1, &
                       cs, sn)
-        endif
+        end if
         if (wantz) then
 !
 !           APPLY THE TRANSFORMATION TO Z.
 !
-            call drot(nz, z( iloz, i-1 ), 1, z( iloz, i ), 1,&
+            call drot(nz, z(iloz, i-1), 1, z(iloz, i), 1, &
                       cs, sn)
-        endif
-    endif
+        end if
+    end if
 !
 !     DECREMENT NUMBER OF REMAINING ITERATIONS, AND RETURN TO START OF
 !     THE MAIN LOOP WITH NEW VALUE OF I.
 !
-    itn = itn - its
-    i = l - 1
+    itn = itn-its
+    i = l-1
     goto 10
 !
 150 continue

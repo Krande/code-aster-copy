@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine dxsith(nomte, mater, sigma)
 !
 !
     integer :: nbepsg
-    parameter (nbepsg=8)
+    parameter(nbepsg=8)
 !
     integer :: ndim, nnoel, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: i, j, icou, icpg, igauh, ipg, ipgh, iret, ibid, nbcmp, nbcou
@@ -57,8 +57,8 @@ subroutine dxsith(nomte, mater, sigma)
 ! ----------------------------------------------------------------------
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nnoel, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nnoel, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     zero = 0.0d0
@@ -68,20 +68,20 @@ subroutine dxsith(nomte, mater, sigma)
 !
     nbcmp = 6
 !
-    if ((nomte.eq.'MEDKTG3') .or. (nomte.eq.'MEDKQG4')) then
+    if ((nomte .eq. 'MEDKTG3') .or. (nomte .eq. 'MEDKQG4')) then
         dkg = .true.
-    endif
+    end if
 !
 ! --- RECUPERATION DE L'INSTANT
 !     -------------------------
-    call tecach('ONO', 'PTEMPSR', 'L', iret, nval=8,&
+    call tecach('ONO', 'PTEMPSR', 'L', iret, nval=8, &
                 itab=itab)
     ibid = itab(1)
     if (iret .eq. 0) then
         inst = zr(ibid)
     else
         inst = r8vide()
-    endif
+    end if
 !
 ! --- RECUPERATION DU NOMBRE DE COUCHE ET DE SOUS-POINT
 !     -------------------------------------------------
@@ -94,21 +94,21 @@ subroutine dxsith(nomte, mater, sigma)
         nbcou = zi(jnbspi-1+1)
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_46')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !     ---------------------------------------------
     do ipg = 1, npg
         do icou = 1, nbcou
             do igauh = 1, npgh
-                icpg=nbcmp*npgh*nbcou*(ipg-1)+ nbcmp*npgh*(icou-1)+&
-                nbcmp*(igauh-1)
+                icpg = nbcmp*npgh*nbcou*(ipg-1)+nbcmp*npgh*(icou-1)+ &
+                       nbcmp*(igauh-1)
 !
 !         -- INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
 !         ----------------------------------------------------
-                ipgh=npgh*(icou-1)+igauh
-                call verift('RIGI', ipg, ipgh, '+', mater,&
+                ipgh = npgh*(icou-1)+igauh
+                call verift('RIGI', ipg, ipgh, '+', mater, &
                             epsth_=epsth(1))
 !
                 epsth(2) = epsth(1)
@@ -119,7 +119,7 @@ subroutine dxsith(nomte, mater, sigma)
 !
 !           -- CALCUL DE LA MATRICE DE HOOKE
 !           --------------------------------
-                call dmatcp('RIGI', mater, inst, '+', ipg,&
+                call dmatcp('RIGI', mater, inst, '+', ipg, &
                             igauh, repere, d)
 !
 !           -- CALCUL DES CONTRAINTES VRAIES (==SIGMA_MECA - SIGMA_THER)
@@ -127,7 +127,7 @@ subroutine dxsith(nomte, mater, sigma)
 !           ------------------------------------------------------------
                 do i = 1, 4
                     do j = 1, 4
-                        sigma(icpg+i)=sigma(icpg+i)-epsth(j)*d(i,j)
+                        sigma(icpg+i) = sigma(icpg+i)-epsth(j)*d(i, j)
                     end do
                 end do
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine angvxy(gx, gn, angl)
     if (abs(gy(3)) .le. tst .and. abs(gy(2)) .le. tst) then
         angl(3) = 0.d0
     else
-        angl(3) = atan2(gy(3),gy(2))
-    endif
+        angl(3) = atan2(gy(3), gy(2))
+    end if
 !
 end subroutine

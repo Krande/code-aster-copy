@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine rsGetOneBehaviourFromResult(resultZ, nbStore, listStore, compor)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/carcomp.h"
 #include "asterfort/rsexch.h"
 !
-character(len=*), intent(in) :: resultZ
-integer, intent(in) :: nbStore, listStore(nbStore)
-character(len=*), intent(out) :: compor
+    character(len=*), intent(in) :: resultZ
+    integer, intent(in) :: nbStore, listStore(nbStore)
+    character(len=*), intent(out) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,31 +48,31 @@ character(len=*), intent(out) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor      = ' '
-    numeStore   = listStore(1)
+    compor = ' '
+    numeStore = listStore(1)
     indxCmpExcl = INCRELAS
 
     call rsexch(' ', resultZ, 'COMPORTEMENT', numeStore, comporRefe, icode)
     if (icode .ne. 0) then
         compor = '#SANS'
         goto 99
-    endif
+    end if
     do iStore = 2, nbStore
         numeStore = listStore(iStore)
         call rsexch(' ', resultZ, 'COMPORTEMENT', numeStore, comporRead, icode)
         if (icode .ne. 0) then
             compor = '#SANS'
             goto 99
-        endif
-        call carcomp(comporRead, comporRefe, iret, indxCmpExcl_ = indxCmpExcl)
+        end if
+        call carcomp(comporRead, comporRefe, iret, indxCmpExcl_=indxCmpExcl)
         if (iret .eq. 1) then
             compor = '#PLUSIEURS'
             goto 99
-        endif
+        end if
     end do
 !
     compor = comporRefe
 !
- 99 continue
+99  continue
 !
 end subroutine

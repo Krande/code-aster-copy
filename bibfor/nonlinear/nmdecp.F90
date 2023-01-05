@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdecp(sddisc, iterat, i_event_acti, typdec, nbrpas,&
-                  deltac, ratio , optdec      , ldcext, durdec,&
+subroutine nmdecp(sddisc, iterat, i_event_acti, typdec, nbrpas, &
+                  deltac, ratio, optdec, ldcext, durdec, &
                   retdec)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -86,19 +86,19 @@ subroutine nmdecp(sddisc, iterat, i_event_acti, typdec, nbrpas,&
 !
 ! --- TYPE DE DECOUPAGE AUTO
 !
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_METHODE_AUTO', index_ = i_event_acti, &
-                valk_ = subaut)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_METHODE_AUTO', index_=i_event_acti, &
+                valk_=subaut)
 !
 ! --- PARAMETRES SUIVANT DECOUPE
 !
     if (subaut .eq. 'EXTRAPOLE') then
-        call nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
+        call nmdcae(sddisc, iterat, typdec, nbrpas, ratio, &
                     optdec, retdec)
-    else if (subaut.eq.'COLLISION') then
-        call nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac,&
+    else if (subaut .eq. 'COLLISION') then
+        call nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac, &
                     ratio, optdec, retdec, ldcext, durdec)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

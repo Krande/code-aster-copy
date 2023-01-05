@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,24 +48,24 @@ subroutine ibcata(ier)
     integer :: icata, ieltdf, ier1, iocc, iplace, iun, mxcata
     integer :: mxdfca, nbcata, nbnom, nbocc, nbunit
 !-----------------------------------------------------------------------
-    parameter          ( ieltdf = 4 )
+    parameter(ieltdf=4)
 !     ------------------------------------------------------------------
-    parameter          ( mxdfca = 4 ,       mxcata = 10 )
-    character(len=32) :: dfnom(mxdfca), nom (mxcata)
+    parameter(mxdfca=4, mxcata=10)
+    character(len=32) :: dfnom(mxdfca), nom(mxcata)
     character(len=24) :: valk
     integer :: dfunit(mxdfca), unite(mxcata)
     integer :: i
 !     ------------------------------------------------------------------
 !     OPTIONS PAR DEFAUT :
 !
-    data ( dfnom(i), dfunit(i), i=1,mxdfca) /&
-     &    'COMMANDE_PRIVEE  ',03,&
-     &    'COMMANDE         ',02,&
-     &    'CATAELEM         ',04,&
-     &    'ELEMBASE         ',04/
+    data(dfnom(i), dfunit(i), i=1, mxdfca)/&
+     &    'COMMANDE_PRIVEE  ', 03,&
+     &    'COMMANDE         ', 02,&
+     &    'CATAELEM         ', 04,&
+     &    'ELEMBASE         ', 04/
 !     ------------------------------------------------------------------
 !
-    call uldefi(6, ' ', 'MESSAGE', 'A', 'N',&
+    call uldefi(6, ' ', 'MESSAGE', 'A', 'N', &
                 'N')
 !     --- LA ROUTINE NE S'INTERRESSE QU'AU MOT CLE FACTEUR "CATALOGUE" -
 !     --- DANS LA COMMANDE DEBUT
@@ -79,22 +79,22 @@ subroutine ibcata(ier)
     call getfac(motfac, nbocc)
 !
     if (nbocc .gt. mxcata) then
-        ier = ier + 1
+        ier = ier+1
         call utmess('F', 'SUPERVIS_18')
         nbocc = mxcata
-    endif
+    end if
 !
     iun = 1
     do iocc = 1, nbocc
-        call getvtx(motfac, 'FICHIER', iocc=iocc, nbval=iun, vect=nom(iocc),&
+        call getvtx(motfac, 'FICHIER', iocc=iocc, nbval=iun, vect=nom(iocc), &
                     nbret=nbnom)
         call lxcadr(nom(iocc))
-        call getvis(motfac, 'UNITE', iocc=iocc, nbval=iun, vect=unite(iocc),&
+        call getvis(motfac, 'UNITE', iocc=iocc, nbval=iun, vect=unite(iocc), &
                     nbret=nbunit)
         if (nbunit .eq. 0) then
             call utremt(nom(iocc), dfnom, mxdfca, iplace)
             if (iplace .gt. 0) unite(iocc) = dfunit(iplace)
-        endif
+        end if
     end do
 !
 !     --- CATALOGUE DES ELEMENTS ---
@@ -105,16 +105,16 @@ subroutine ibcata(ier)
         if (nom(icata) .eq. dfnom(3) .or. nom(icata) .eq. dfnom(4)) then
             if (unite(icata) .gt. 0) then
                 call ibcatc(nom(icata), unite(icata), ier1)
-                ier = ier + ier1
-            endif
+                ier = ier+ier1
+            end if
             nom(icata) = '  '
-            nbcata = nbcata + 1
-        endif
+            nbcata = nbcata+1
+        end if
     end do
     if (nbcata .eq. 0 .and. nomcmd .eq. 'DEBUT') then
         call ibcatc(dfnom(ieltdf), dfunit(ieltdf), ier1)
-        ier = ier + ier1
-    endif
+        ier = ier+ier1
+    end if
     call uttcpu('CPU.IBCATA', 'FIN', ' ')
     call uttcpr('CPU.IBCATA', 7, temps)
     valr = temps(7)
@@ -125,12 +125,12 @@ subroutine ibcata(ier)
     do icata = 1, nbocc
         if (nom(icata) .ne. ' ') then
             call utmess('F', 'SUPERVIS_20', sk=nom(icata))
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
     end do
 !
     if (ier .gt. 0) then
         call utmess('F', 'SUPERVIS_21')
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine sdchgd(fieldz, type_scalz)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
@@ -53,17 +53,17 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    field     = fieldz
+    field = fieldz
     type_scal = type_scalz
 !
 ! - Field type
 !
     call jeexin(field//'.DESC', i_exi)
     if (i_exi .gt. 0) then
-        call jeveuo(field//'.DESC', 'E', vi = p_desc)
+        call jeveuo(field//'.DESC', 'E', vi=p_desc)
     else
-        call jeveuo(field//'.CELD', 'E', vi = p_desc)
-    endif
+        call jeveuo(field//'.CELD', 'E', vi=p_desc)
+    end if
 !
 ! - Old GRANDEUR
 !
@@ -74,7 +74,7 @@ implicit none
 !
     gd_name_new = gd_name_old(1:5)//type_scal
     call jenonu(jexnom('&CATA.GD.NOMGD', gd_name_new), i_gd_new)
-    ASSERT(i_gd_new.ne.0)
+    ASSERT(i_gd_new .ne. 0)
     p_desc(1) = i_gd_new
 
 end subroutine

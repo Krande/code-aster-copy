@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine setTimeListProgressBar(sddisc, nume_inst, final_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/diinst.h"
@@ -30,9 +30,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeexin.h"
 !
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-aster_logical, optional, intent(in) :: final_
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    aster_logical, optional, intent(in) :: final_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,12 +57,11 @@ aster_logical, optional, intent(in) :: final_
 ! --------------------------------------------------------------------------------------------------
 !
     time_curr = diinst(sddisc, nume_inst)
-    sdarch      = sddisc(1:14)//'.ARCH'
+    sdarch = sddisc(1:14)//'.ARCH'
     sdarch_ainf = sdarch(1:19)//'.AINF'
-    sdlist      = sdarch(1:19)//'.LIST'
-    call jeveuo(sdarch_ainf, 'L', vi = v_sdarch_ainf)
+    sdlist = sdarch(1:19)//'.LIST'
+    call jeveuo(sdarch_ainf, 'L', vi=v_sdarch_ainf)
     call jeexin(sdlist, iret)
-
 
     call getTimeListBounds(sddisc, t_ini, t_end)
     if (present(final_)) then
@@ -74,13 +73,13 @@ aster_logical, optional, intent(in) :: final_
         if (iret .gt. 0) then
             ! s'il existe une liste d'archivage
             call jeveuo(sdlist, 'L', jlist)
-            t_arch = zr(jlist + v_sdarch_ainf(1)-1)
+            t_arch = zr(jlist+v_sdarch_ainf(1)-1)
         else
             t_arch = time_curr
-        endif
-    endif
+        end if
+    end if
 
-    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, nume_inst],&
-                                   nr=2, valr=[time_curr, t_arch])
+    call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, nume_inst], &
+                nr=2, valr=[time_curr, t_arch])
 !
 end subroutine

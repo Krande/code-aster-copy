@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
-                  ndim, nddl, jnne, jnnm, nnc,&
-                  jddle, jddlm, nconta, ndeple, nsinge,&
+subroutine xmelet(nomte, typmai, elrees, elrema, elreco, &
+                  ndim, nddl, jnne, jnnm, nnc, &
+                  jddle, jddlm, nconta, ndeple, nsinge, &
                   nsingm, nfhe, nfhm)
 !
 !
@@ -106,13 +106,13 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
     call teattr('S', 'XFEM_M', enrm, ier, typel=nomte)
 !
     do i = 1, 3
-        jnne(i)=0
-        jnnm(i)=0
+        jnne(i) = 0
+        jnnm(i) = 0
     end do
 !
     do i = 1, 2
-        jddle(i)=0
-        jddlm(i)=0
+        jddle(i) = 0
+        jddlm(i) = 0
     end do
 !
 !
@@ -124,15 +124,15 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
         if (enre(2:2) .eq. '2') nfhe = 2
         if (enre(2:2) .eq. '3') nfhe = 3
         if (enre(2:2) .eq. '4') nfhe = 4
-    else if (enre.eq.'C') then
+    else if (enre .eq. 'C') then
         nsinge = 1
         nfhe = 1
-    else if (enre.eq.'T') then
+    else if (enre .eq. 'T') then
         nsinge = 1
         nfhe = 0
     else
         call utmess('F', 'DVP_4', sk=nomte)
-    endif
+    end if
 !
     if (enrm(1:1) .eq. 'H') then
         nsingm = 0
@@ -140,15 +140,15 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
         if (enrm(2:2) .eq. '2') nfhm = 2
         if (enrm(2:2) .eq. '3') nfhm = 3
         if (enrm(2:2) .eq. '4') nfhm = 4
-    else if (enrm.eq.'C') then
+    else if (enrm .eq. 'C') then
         nsingm = 1
         nfhm = 1
-    else if (enrm.eq.'T') then
+    else if (enrm .eq. 'T') then
         nsingm = 0
         nfhm = 0
     else
         call utmess('F', 'DVP_4', sk=nomte)
-    endif
+    end if
 !
     call elref2(nomte, 10, lielrf, ntrou)
 !
@@ -156,75 +156,75 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
         call elrefe_info(elrefe=lielrf(ilie), fami='NOEU', ndim=ndimd, nno=nnod, nnos=nnosd)
         if (ilie .eq. 1) then
             ndim = ndimd
-            jnne(1)= nnod
-            jnne(2)= nnosd
-            jnne(3)= nnod - nnosd
+            jnne(1) = nnod
+            jnne(2) = nnosd
+            jnne(3) = nnod-nnosd
             elrees = lielrf(ilie)
-        endif
+        end if
 !
         if (ilie .eq. 2 .and. ntrou .eq. 3) then
             jnnm(1) = nnod
             jnnm(2) = nnosd
-            jnnm(3) = nnod - nnosd
+            jnnm(3) = nnod-nnosd
             elrema = lielrf(ilie)
-        endif
+        end if
 !
         if (ilie .eq. 2 .and. ntrou .eq. 2) then
             jnnm(1) = jnne(1)
             elrema = elrees
             nnc = nnod
             elreco = lielrf(ilie)
-            jnnm(1)= jnne(1)
-            jnnm(2)= jnne(2)
-            jnnm(3)= jnne(3)
-        endif
+            jnnm(1) = jnne(1)
+            jnnm(2) = jnne(2)
+            jnnm(3) = jnne(3)
+        end if
 !
         if (ilie .eq. 3 .and. ntrou .eq. 3) then
             nnc = nnod
             elreco = lielrf(ilie)
-        endif
+        end if
     end do
 !
     call tecael(iadzi, iazk24, noms=0)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    typma = zk24(iazk24-1+3+zi(iadzi-1+2)+3) (1:8)
     if (typma(1:2) .eq. typma(4:5)) then
         elrees = elrema
-    endif
+    end if
 !
     if (enre .eq. 'T') then
         jnnm(1) = 0
         jnnm(2) = 0
         elrema = '  '
-    endif
+    end if
 !
 ! --- RECUPERATION DU TYPE DE CONTACT
 !
-    nconta=0
+    nconta = 0
     if (ismali(typmai)) then
-        nconta=1
+        nconta = 1
     else
         if (iselli(elrema)) then
-            nconta=2
+            nconta = 2
         else
-            nconta=3
-        endif
-    endif
+            nconta = 3
+        end if
+    end if
 !
 ! --- NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 !
     if (enre .eq. 'T') then
         jddle(1) = 2*ndim
     else
-        jddle(1) = ndim *(1+2*nfhe+nsinge)
-    endif
+        jddle(1) = ndim*(1+2*nfhe+nsinge)
+    end if
 !
 ! --- NOMBRE DE DDLS D'UN NOEUD MILIEU ESCLAVE
 !
     if (nconta .eq. 2) then
         jddle(2) = ndim
-    else if (nconta.eq.3) then
+    else if (nconta .eq. 3) then
         jddle(2) = ndim*2
-    endif
+    end if
 !
 ! --- NOMBRE DE DDLS D'UN NOEUD MAITRE
 !
@@ -232,9 +232,9 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
         jddlm(1) = 0
         jddlm(2) = 0
     else
-        jddlm(1) = ndim *(1+nfhm+nsingm)
-        if (.not.iselli(elrema)) jddlm(2) = jddlm(1)
-    endif
+        jddlm(1) = ndim*(1+nfhm+nsingm)
+        if (.not. iselli(elrema)) jddlm(2) = jddlm(1)
+    end if
 !
 ! --- CALCUL DU NOMBRE TOTAL DE DDL
 !
@@ -246,18 +246,18 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 !        ELSE
 !          NDDL = NDIM * (NNE + 4*NNM)
 !        ENDIF
-        nddl=0
+        nddl = 0
         do i = 1, 2
-            nddl = nddl + jnne(i+1)*jddle(i) + jnnm(i+1)*jddlm(i)
+            nddl = nddl+jnne(i+1)*jddle(i)+jnnm(i+1)*jddlm(i)
         end do
-    endif
+    end if
 !
     if (nconta .eq. 1 .or. nconta .eq. 3) then
         ndeple = jnne(1)
-    else if (nconta.eq.2) then
+    else if (nconta .eq. 2) then
         ndeple = jnne(2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

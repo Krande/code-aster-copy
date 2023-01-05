@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -29,7 +29,7 @@ implicit none
     character(len=*), intent(in)              :: name
     integer, intent(in)                       :: nrows, ncols
     aster_logical, intent(in)                 :: l_sym
-    real(kind=8), dimension(:,:), intent(in)  :: mat
+    real(kind=8), dimension(:, :), intent(in)  :: mat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,17 +52,17 @@ implicit none
 !
     call jevech(name, 'E', jv_matr_out)
 !
-    if(l_sym) then
+    if (l_sym) then
         ASSERT(ncols == nrows)
         do j = 1, ncols
-             ij = (j - 1) * j / 2
-            call dcopy(j, mat(:,j), 1, zr(jv_matr_out + ij), 1)
+            ij = (j-1)*j/2
+            call dcopy(j, mat(:, j), 1, zr(jv_matr_out+ij), 1)
         end do
     else
         do j = 1, ncols
             do i = 1, nrows
-                ij = j + (i - 1) * ncols
-                zr(jv_matr_out + ij -1) = mat(i,j)
+                ij = j+(i-1)*ncols
+                zr(jv_matr_out+ij-1) = mat(i, j)
             end do
         end do
     end if

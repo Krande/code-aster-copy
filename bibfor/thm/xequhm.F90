@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 ! aslint: disable=W1504
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xequhm(ds_thm,&
-                  imate, option, ta, ta1, ndim,&
-                  kpi, npg, dimenr,&
-                  enrmec, dimdef, dimcon, nbvari, defgem,&
-                  congem, vintm, defgep, congep, vintp,&
-                  mecani, press1, press2, tempe,&
-                  rinstp, dt, r, drds,&
+subroutine xequhm(ds_thm, &
+                  imate, option, ta, ta1, ndim, &
+                  kpi, npg, dimenr, &
+                  enrmec, dimdef, dimcon, nbvari, defgem, &
+                  congem, vintm, defgep, congep, vintp, &
+                  mecani, press1, press2, tempe, &
+                  rinstp, dt, r, drds, &
                   dsde, retcom, angmas, enrhyd, nfh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/xcomhm.h"
 !
@@ -62,7 +62,7 @@ implicit none
 ! OUT DRDE    : TABLEAU DE LA MATRICE TANGENTE AU POINT DE GAUSS
 ! OUT         : RETCOM RETOUR DES LOIS DE COMPORTEMENT
 ! ======================================================================
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
     integer :: imate, ndim, nbvari, kpi, npg, dimdef, dimcon, retcom
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: addeme, adcome, addete, i, j
@@ -73,7 +73,7 @@ type(THM_DS), intent(inout) :: ds_thm
     real(kind=8) :: pesa(3), dt, rinstp
     real(kind=8) :: deux, rac2, ta, ta1
     real(kind=8) :: angmas(3)
-    parameter    (deux = 2.d0)
+    parameter(deux=2.d0)
     character(len=16) :: option
 !
 ! DECLARATIONS POUR XFEM
@@ -109,52 +109,52 @@ type(THM_DS), intent(inout) :: ds_thm
 ! ============================================================
     if (ds_thm%ds_elem%l_dof_meca) then
         do i = 4, 6
-            congem(adcome+i-1)= congem(adcome+i-1)*rac2
-            congem(adcome+6+i-1)= congem(adcome+6+i-1)*rac2
+            congem(adcome+i-1) = congem(adcome+i-1)*rac2
+            congem(adcome+6+i-1) = congem(adcome+6+i-1)*rac2
         end do
-    endif
+    end if
 ! ============================================================
 ! --- INITIALISATION DES TABLEAUX A ZERO ---------------------
 ! --- ET DU TABLEAU CONGEP A CONGEM --------------------------
 ! ============================================================
-    if ((option .eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
+    if ((option .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
         do i = 1, dimcon
-            congep(i)=congem(i)
+            congep(i) = congem(i)
         end do
-    endif
+    end if
 !
     do i = 1, dimenr
         do j = 1, dimcon
-            drds(i,j)=0.d0
-            dsde(j,i)=0.d0
+            drds(i, j) = 0.d0
+            dsde(j, i) = 0.d0
         end do
-        r(i)=0.d0
+        r(i) = 0.d0
     end do
 !
     retcom = 0
 !
     call xcomhm(ds_thm, option, imate, rinstp, &
                 ndim, dimdef, dimcon, nbvari, &
-                addeme, adcome, addep1, adcp11,&
+                addeme, adcome, addep1, adcp11, &
                 addep2, addete, defgem, &
-                defgep, congem, congep, vintm,&
-                vintp, dsde, pesa, retcom, kpi,&
-                npg, dimenr,&
+                defgep, congem, congep, vintm, &
+                vintp, dsde, pesa, retcom, kpi, &
+                npg, dimenr, &
                 angmas, yaenrh, adenhy, nfh)
 !
     if (retcom .ne. 0) then
         goto 99
-    endif
+    end if
 ! ======================================================================
 ! --- CALCUL DE LA CONTRAINTE VIRTUELLE R ------------------------------
 ! ======================================================================
-    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
+    if ((option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA')) then
 ! ======================================================================
 ! --- SI PRESENCE DE MECANIQUE -----------------------------------------
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_meca) then
             do i = 1, 6
-                r(addeme+ndim+i-1) = r(addeme+ndim+i-1) +congep(adcome-1+i)
+                r(addeme+ndim+i-1) = r(addeme+ndim+i-1)+congep(adcome-1+i)
             end do
 !
             do i = 1, 6
@@ -163,21 +163,21 @@ type(THM_DS), intent(inout) :: ds_thm
 !
             if (ds_thm%ds_elem%l_dof_pre1) then
                 do i = 1, ndim
-                    r(addeme+i-1) = r(addeme+i-1) - pesa(i)*congep(adcp11)
+                    r(addeme+i-1) = r(addeme+i-1)-pesa(i)*congep(adcp11)
                 end do
-            endif
-        endif
+            end if
+        end if
 ! ======================================================================
 ! --- SI PRESENCE DE PRESS1 --------------------------------------------
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_pre1) then
 !
-            r(addep1)=r(addep1)-congep(adcp11)+congem(adcp11)
+            r(addep1) = r(addep1)-congep(adcp11)+congem(adcp11)
 !
             do i = 1, ndim
-                r(addep1+i)=r(addep1+i) +dt*(ta*congep(adcp11+i)+ta1* congem(adcp11+i))
+                r(addep1+i) = r(addep1+i)+dt*(ta*congep(adcp11+i)+ta1*congem(adcp11+i))
             end do
-        endif
+        end if
 ! ======================================================================
 ! --- SI PRESENCE DE MECANIQUE AVEC XFEM -------------------------------
 ! ======================================================================
@@ -186,25 +186,25 @@ type(THM_DS), intent(inout) :: ds_thm
                 if (ds_thm%ds_elem%l_dof_pre1) then
                     do ifh = 1, nfh
                         do i = 1, ndim
-                            r(adenme+i-1+(ifh-1)*(ndim+1))=&
+                            r(adenme+i-1+(ifh-1)*(ndim+1)) = &
                                 r(adenme+i-1+(ifh-1)*(ndim+1))-pesa(i)*congep(adcp11)
                         end do
                     end do
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 ! ======================================================================
 ! --- SI PRESENCE DE PRESS1 AVEC XFEM ----------------------------------
 ! ======================================================================
-         if(yaenrh.eq.1) then
-            if(ds_thm%ds_elem%l_dof_pre1) then
-               do ifh = 1, nfh
-                  r(adenhy+(ifh-1)*(ndim+1))=&
+        if (yaenrh .eq. 1) then
+            if (ds_thm%ds_elem%l_dof_pre1) then
+                do ifh = 1, nfh
+                    r(adenhy+(ifh-1)*(ndim+1)) = &
                         r(adenhy+(ifh-1)*(ndim+1))-congep(adcp11)+congem(adcp11)
-               end do
-            endif
-         endif
-    endif
+                end do
+            end if
+        end if
+    end if
 ! ======================================================================
 ! --- CALCUL DES MATRICES DERIVEES CONSTITUTIVES DE DF -----------------
 ! ======================================================================
@@ -214,45 +214,45 @@ type(THM_DS), intent(inout) :: ds_thm
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_meca) then
             do i = 1, 6
-                drds(addeme+ndim-1+i,adcome+i-1)= drds(addeme+ndim-1+i,adcome+i-1)+1.d0
+                drds(addeme+ndim-1+i, adcome+i-1) = drds(addeme+ndim-1+i, adcome+i-1)+1.d0
             end do
 !
             do i = 1, 6
-                drds(addeme+ndim-1+i,adcome+6+i-1)= drds(addeme+ndim-1+i,adcome+6+i-1)+1.d0
+                drds(addeme+ndim-1+i, adcome+6+i-1) = drds(addeme+ndim-1+i, adcome+6+i-1)+1.d0
             end do
-        endif
+        end if
 ! ======================================================================
 ! --- SI PRESENCE DE PRESS1 --------------------------------------------
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_pre1) then
             if (ds_thm%ds_elem%l_dof_meca) then
                 do i = 1, ndim
-                    drds(addeme+i-1,adcp11)= drds(addeme+i-1,adcp11)-pesa(i)
+                    drds(addeme+i-1, adcp11) = drds(addeme+i-1, adcp11)-pesa(i)
                 end do
-            endif
+            end if
 !
-            drds(addep1,adcp11)=drds(addep1,adcp11)-1.d0
+            drds(addep1, adcp11) = drds(addep1, adcp11)-1.d0
 !
             do i = 1, ndim
-                drds(addep1+i,adcp11+i)=drds(addep1+i,adcp11+i)+ta*dt
+                drds(addep1+i, adcp11+i) = drds(addep1+i, adcp11+i)+ta*dt
             end do
-        endif
+        end if
 ! ======================================================================
 ! --- SI PRESENCE DE PRESS1 AVEC XFEM ----------------------------------
 ! ======================================================================
-        if ((ds_thm%ds_elem%l_dof_pre1).and.(yaenrh.eq.1)) then
+        if ((ds_thm%ds_elem%l_dof_pre1) .and. (yaenrh .eq. 1)) then
             do ifh = 1, nfh
-                if ((ds_thm%ds_elem%l_dof_meca).and.(yaenrm.eq.1)) then
+                if ((ds_thm%ds_elem%l_dof_meca) .and. (yaenrm .eq. 1)) then
                     do i = 1, ndim
-                        drds(adenme+i-1+(ifh-1)*(ndim+1),adcp11)=&
-                            drds(adenme +i-1+(ifh-1)*(ndim+1),adcp11)-pesa(i)
+                        drds(adenme+i-1+(ifh-1)*(ndim+1), adcp11) = &
+                            drds(adenme+i-1+(ifh-1)*(ndim+1), adcp11)-pesa(i)
                     end do
-                endif
-                drds(adenhy+(ifh-1)*(ndim+1),adcp11)=&
-                        drds(adenhy+(ifh-1)*(ndim+1),adcp11)-1.d0
+                end if
+                drds(adenhy+(ifh-1)*(ndim+1), adcp11) = &
+                    drds(adenhy+(ifh-1)*(ndim+1), adcp11)-1.d0
             end do
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! --- FIN DU CALCUL DE DF ----------------------------------------------
 ! ======================================================================
@@ -260,15 +260,15 @@ type(THM_DS), intent(inout) :: ds_thm
 ! --- ET COMME  ON A TRAVAILLE AVEC SQRT(2)*SXY ------------------------
 ! --- ON MODIFIE LES CONGEP EN CONSEQUENCE -----------------------------
 ! ======================================================================
-    if ((ds_thm%ds_elem%l_dof_meca) .and.&
-        ((option .eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA'))) then
+    if ((ds_thm%ds_elem%l_dof_meca) .and. &
+        ((option .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA'))) then
         do i = 4, 6
-            congep(adcome+i-1)= congep(adcome+i-1)/rac2
-            congep(adcome+6+i-1)= congep(adcome+6+i-1)/rac2
-            congem(adcome+i-1)= congem(adcome+i-1)/rac2
-            congem(adcome+6+i-1)= congem(adcome+6+i-1)/rac2
+            congep(adcome+i-1) = congep(adcome+i-1)/rac2
+            congep(adcome+6+i-1) = congep(adcome+6+i-1)/rac2
+            congem(adcome+i-1) = congem(adcome+i-1)/rac2
+            congem(adcome+6+i-1) = congem(adcome+6+i-1)/rac2
         end do
-    endif
+    end if
 ! ======================================================================
 99  continue
 ! ======================================================================

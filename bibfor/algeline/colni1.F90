@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine colni1(col, n, d1, t, eps,&
+subroutine colni1(col, n, d1, t, eps, &
                   ier)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -33,5 +33,5 @@ subroutine colni1(col, n, d1, t, eps,&
             t(i) = col(i)
             col(i) = col(i)/d1
         end do
-    endif
+    end if
 end subroutine

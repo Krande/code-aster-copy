@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-character(len=*), intent(in)        :: elrefz
-integer, optional, intent(out)      :: nno, ndim, nnos
-real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
+    character(len=*), intent(in)        :: elrefz
+    integer, optional, intent(out)      :: nno, ndim, nnos
+    real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,14 +46,14 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nnos_, ndim_, nno_
-    real(kind=8), parameter :: untiers = 1.d0 / 3.d0
+    real(kind=8), parameter :: untiers = 1.d0/3.d0
     real(kind=8) :: cellVolu_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nnos_     = 0
-    ndim_     = 0
-    nno_      = 0
+    nnos_ = 0
+    ndim_ = 0
+    nno_ = 0
     cellVolu_ = 0.d0
 !
     if (present(nodeCoor)) then
@@ -61,320 +61,320 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
     end if
 !
     select case (elrefz)
-        case('HE8')
-            nno_  = 8
-            nnos_ = 8
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:8) = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
-                nodeCoor(2,1:8) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
-                nodeCoor(3,1:8) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
-            end if
-            cellVolu_  = 8.d0
+    case ('HE8')
+        nno_ = 8
+        nnos_ = 8
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:8) = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
+            nodeCoor(2, 1:8) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
+            nodeCoor(3, 1:8) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
+        end if
+        cellVolu_ = 8.d0
 
-        case('HE9')
-            nno_  = 9
-            nnos_ = 8
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:9) = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, 0.d0]
-                nodeCoor(2,1:9) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, 0.d0]
-                nodeCoor(3,1:9) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0, 0.d0]
-            end if
-            cellVolu_  = 8.d0
+    case ('HE9')
+        nno_ = 9
+        nnos_ = 8
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:9) = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, 0.d0]
+            nodeCoor(2, 1:9) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, 0.d0]
+            nodeCoor(3, 1:9) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0, 0.d0]
+        end if
+        cellVolu_ = 8.d0
 
-        case('H20')
-            nno_  = 20
-            nnos_ = 8
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:8)  = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
-                nodeCoor(2,1:8)  = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
-                nodeCoor(3,1:8)  = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(1,9:20) = [ 0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, &
-                                     0.d0, +1.d0,  0.d0, -1.d0]
-                nodeCoor(2,9:20) = [-1.d0,  0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, &
-                                    -1.d0,  0.d0, +1.d0,  0.d0]
-                nodeCoor(3,9:20) = [-1.d0, -1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0,  0.d0, &
-                                    +1.d0, +1.d0, +1.d0, +1.d0]
-            end if
-            cellVolu_  = 8.d0
+    case ('H20')
+        nno_ = 20
+        nnos_ = 8
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:8) = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
+            nodeCoor(2, 1:8) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
+            nodeCoor(3, 1:8) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(1, 9:20) = [0.d0, +1.d0, 0.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, &
+                                 0.d0, +1.d0, 0.d0, -1.d0]
+            nodeCoor(2, 9:20) = [-1.d0, 0.d0, +1.d0, 0.d0, -1.d0, -1.d0, +1.d0, +1.d0, &
+                                 -1.d0, 0.d0, +1.d0, 0.d0]
+            nodeCoor(3, 9:20) = [-1.d0, -1.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0, 0.d0, &
+                                 +1.d0, +1.d0, +1.d0, +1.d0]
+        end if
+        cellVolu_ = 8.d0
 
-        case('H27')
-            nno_  = 27
-            nnos_ = 8
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:8)   = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
-                nodeCoor(2,1:8)   = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
-                nodeCoor(3,1:8)   = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(1,9:20)  = [ 0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, &
-                                      0.d0, +1.d0,  0.d0, -1.d0]
-                nodeCoor(2,9:20)  = [-1.d0,  0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, &
-                                     -1.d0,  0.d0, +1.d0,  0.d0]
-                nodeCoor(3,9:20)  = [-1.d0, -1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0,  0.d0, &
-                                     +1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(1,21:27) = [ 0.d0,  0.d0, +1.d0,  0.d0, -1.d0,  0.d0, 0.d0]
-                nodeCoor(2,21:27) = [ 0.d0, -1.d0,  0.d0, +1.d0,  0.d0,  0.d0, 0.d0]
-                nodeCoor(3,21:27) = [-1.d0,  0.d0,  0.d0,  0.d0,  0.d0, +1.d0, 0.d0]
-            end if
-            cellVolu_  = 8.d0
+    case ('H27')
+        nno_ = 27
+        nnos_ = 8
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:8) = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
+            nodeCoor(2, 1:8) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
+            nodeCoor(3, 1:8) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(1, 9:20) = [0.d0, +1.d0, 0.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, &
+                                 0.d0, +1.d0, 0.d0, -1.d0]
+            nodeCoor(2, 9:20) = [-1.d0, 0.d0, +1.d0, 0.d0, -1.d0, -1.d0, +1.d0, +1.d0, &
+                                 -1.d0, 0.d0, +1.d0, 0.d0]
+            nodeCoor(3, 9:20) = [-1.d0, -1.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0, 0.d0, &
+                                 +1.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(1, 21:27) = [0.d0, 0.d0, +1.d0, 0.d0, -1.d0, 0.d0, 0.d0]
+            nodeCoor(2, 21:27) = [0.d0, -1.d0, 0.d0, +1.d0, 0.d0, 0.d0, 0.d0]
+            nodeCoor(3, 21:27) = [-1.d0, 0.d0, 0.d0, 0.d0, 0.d0, +1.d0, 0.d0]
+        end if
+        cellVolu_ = 8.d0
 
-        case('TE4')
-            nno_  = 4
-            nnos_ = 4
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:4) = [ 0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(2,1:4) = [+1.d0,  0.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:4) = [ 0.d0, +1.d0,  0.d0,  0.d0]
-            end if
-            cellVolu_  = 1.d0/6.d0
+    case ('TE4')
+        nno_ = 4
+        nnos_ = 4
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:4) = [0.d0, 0.d0, 0.d0, +1.d0]
+            nodeCoor(2, 1:4) = [+1.d0, 0.d0, 0.d0, 0.d0]
+            nodeCoor(3, 1:4) = [0.d0, +1.d0, 0.d0, 0.d0]
+        end if
+        cellVolu_ = 1.d0/6.d0
 
-        case('T10')
-            nno_  = 10
-            nnos_ = 4
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:4)  = [ 0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(2,1:4)  = [+1.d0,  0.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:4)  = [ 0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(1,5:10) = [ 0.d0,   0.d0,  0.d0,  0.5d0, 0.5d0, 0.5d0]
-                nodeCoor(2,5:10) = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
-                nodeCoor(3,5:10) = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
-            end if
-            cellVolu_  = 1.d0/6.d0
+    case ('T10')
+        nno_ = 10
+        nnos_ = 4
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:4) = [0.d0, 0.d0, 0.d0, +1.d0]
+            nodeCoor(2, 1:4) = [+1.d0, 0.d0, 0.d0, 0.d0]
+            nodeCoor(3, 1:4) = [0.d0, +1.d0, 0.d0, 0.d0]
+            nodeCoor(1, 5:10) = [0.d0, 0.d0, 0.d0, 0.5d0, 0.5d0, 0.5d0]
+            nodeCoor(2, 5:10) = [0.5d0, 0.d0, 0.5d0, 0.5d0, 0.d0, 0.d0]
+            nodeCoor(3, 5:10) = [0.5d0, 0.5d0, 0.d0, 0.d0, 0.5d0, 0.d0]
+        end if
+        cellVolu_ = 1.d0/6.d0
 
-        case('T15')
-            nno_  = 15
-            nnos_ = 4
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:4)   = [ 0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(2,1:4)   = [+1.d0,  0.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:4)   = [ 0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(1,5:10)  = [ 0.d0,   0.d0,  0.d0,  0.5d0, 0.5d0, 0.5d0]
-                nodeCoor(2,5:10)  = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
-                nodeCoor(3,5:10)  = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
-                nodeCoor(1,11:14) = [    0.d0,  untiers,  untiers,  untiers]
-                nodeCoor(2,11:14) = [ untiers,  untiers,  untiers,     0.d0]
-                nodeCoor(3,11:14) = [ untiers,  untiers,     0.d0,  untiers]
-                nodeCoor(1:3,15)  = [ 0.25d0,  0.25d0,  0.25d0]
-            end if
-            cellVolu_  = 1.d0/6.d0
+    case ('T15')
+        nno_ = 15
+        nnos_ = 4
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:4) = [0.d0, 0.d0, 0.d0, +1.d0]
+            nodeCoor(2, 1:4) = [+1.d0, 0.d0, 0.d0, 0.d0]
+            nodeCoor(3, 1:4) = [0.d0, +1.d0, 0.d0, 0.d0]
+            nodeCoor(1, 5:10) = [0.d0, 0.d0, 0.d0, 0.5d0, 0.5d0, 0.5d0]
+            nodeCoor(2, 5:10) = [0.5d0, 0.d0, 0.5d0, 0.5d0, 0.d0, 0.d0]
+            nodeCoor(3, 5:10) = [0.5d0, 0.5d0, 0.d0, 0.d0, 0.5d0, 0.d0]
+            nodeCoor(1, 11:14) = [0.d0, untiers, untiers, untiers]
+            nodeCoor(2, 11:14) = [untiers, untiers, untiers, 0.d0]
+            nodeCoor(3, 11:14) = [untiers, untiers, 0.d0, untiers]
+            nodeCoor(1:3, 15) = [0.25d0, 0.25d0, 0.25d0]
+        end if
+        cellVolu_ = 1.d0/6.d0
 
-        case('PE6')
-            nno_  = 6
-            nnos_ = 6
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,1:6) = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
-            end if
-            cellVolu_  = 1.d0
+    case ('PE6')
+        nno_ = 6
+        nnos_ = 6
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(2, 1:6) = [+1.d0, 0.d0, 0.d0, +1.d0, 0.d0, 0.d0]
+            nodeCoor(3, 1:6) = [0.d0, +1.d0, 0.d0, 0.d0, +1.d0, 0.d0]
+        end if
+        cellVolu_ = 1.d0
 
-        case('PE7')
-            nno_  = 7
-            nnos_ = 6
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:7) = [ 0.d0,  1.d0, 0.d0,  0.d0,  1.d0,  0.d0, untiers]
-                nodeCoor(2,1:7) = [ 0.d0,  0.d0, 1.d0,  0.d0,  0.d0,  1.d0, untiers]
-                nodeCoor(3,1:7) = [-1.d0, -1.d0,-1.d0, +1.d0, +1.d0, +1.d0, 0.d0   ]
-            end if
-            cellVolu_  = 1.d0
+    case ('PE7')
+        nno_ = 7
+        nnos_ = 6
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:7) = [0.d0, 1.d0, 0.d0, 0.d0, 1.d0, 0.d0, untiers]
+            nodeCoor(2, 1:7) = [0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 1.d0, untiers]
+            nodeCoor(3, 1:7) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, 0.d0]
+        end if
+        cellVolu_ = 1.d0
 
-        case('P15')
-            nno_  = 15
-            nnos_ = 6
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,1:6) = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
-                nodeCoor(1,7:15) = [-1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,7:15) = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
-                nodeCoor(3,7:15) = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
-            end if
-            cellVolu_  = 1.d0
+    case ('P15')
+        nno_ = 15
+        nnos_ = 6
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(2, 1:6) = [+1.d0, 0.d0, 0.d0, +1.d0, 0.d0, 0.d0]
+            nodeCoor(3, 1:6) = [0.d0, +1.d0, 0.d0, 0.d0, +1.d0, 0.d0]
+            nodeCoor(1, 7:15) = [-1.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(2, 7:15) = [0.5d0, 0.d0, 0.5d0, +1.d0, 0.d0, 0.d0, 0.5d0, 0.d0, 0.5d0]
+            nodeCoor(3, 7:15) = [0.5d0, 0.5d0, 0.d0, 0.d0, +1.d0, 0.d0, 0.5d0, 0.5d0, 0.d0]
+        end if
+        cellVolu_ = 1.d0
 
-        case('P18')
-            nno_  = 18
-            nnos_ = 6
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,1:6) = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
-                nodeCoor(1,7:15) = [-1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,7:15) = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
-                nodeCoor(3,7:15) = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
-                nodeCoor(1,16:18) = [ 0.d0,   0.d0,   0.d0]
-                nodeCoor(2,16:18) = [ 0.5d0,  0.d0,   0.5d0]
-                nodeCoor(3,16:18) = [ 0.5d0,  0.5d0,  0.d0]
-            end if
-            cellVolu_  = 1.d0
+    case ('P18')
+        nno_ = 18
+        nnos_ = 6
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(2, 1:6) = [+1.d0, 0.d0, 0.d0, +1.d0, 0.d0, 0.d0]
+            nodeCoor(3, 1:6) = [0.d0, +1.d0, 0.d0, 0.d0, +1.d0, 0.d0]
+            nodeCoor(1, 7:15) = [-1.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(2, 7:15) = [0.5d0, 0.d0, 0.5d0, +1.d0, 0.d0, 0.d0, 0.5d0, 0.d0, 0.5d0]
+            nodeCoor(3, 7:15) = [0.5d0, 0.5d0, 0.d0, 0.d0, +1.d0, 0.d0, 0.5d0, 0.5d0, 0.d0]
+            nodeCoor(1, 16:18) = [0.d0, 0.d0, 0.d0]
+            nodeCoor(2, 16:18) = [0.5d0, 0.d0, 0.5d0]
+            nodeCoor(3, 16:18) = [0.5d0, 0.5d0, 0.d0]
+        end if
+        cellVolu_ = 1.d0
 
-        case('P21')
-            nno_  = 21
-            nnos_ = 6
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:6)   = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,1:6)   = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:6)   = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
-                nodeCoor(1,7:15)  = [-1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,7:15)  = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
-                nodeCoor(3,7:15)  = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
-                nodeCoor(1,16:20) = [ 0.d0,   0.d0,   0.d0, -1.d0, 1.d0]
-                nodeCoor(2,16:20) = [ 0.5d0,  0.d0,   0.5d0, untiers, untiers]
-                nodeCoor(3,16:20) = [ 0.5d0,  0.5d0,  0.d0, untiers, untiers]
-                nodeCoor(1:3,21)  = [ 0.d0,  untiers, untiers]
-            end if
-            cellVolu_  = 1.d0
+    case ('P21')
+        nno_ = 21
+        nnos_ = 6
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(2, 1:6) = [+1.d0, 0.d0, 0.d0, +1.d0, 0.d0, 0.d0]
+            nodeCoor(3, 1:6) = [0.d0, +1.d0, 0.d0, 0.d0, +1.d0, 0.d0]
+            nodeCoor(1, 7:15) = [-1.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0, +1.d0, +1.d0, +1.d0]
+            nodeCoor(2, 7:15) = [0.5d0, 0.d0, 0.5d0, +1.d0, 0.d0, 0.d0, 0.5d0, 0.d0, 0.5d0]
+            nodeCoor(3, 7:15) = [0.5d0, 0.5d0, 0.d0, 0.d0, +1.d0, 0.d0, 0.5d0, 0.5d0, 0.d0]
+            nodeCoor(1, 16:20) = [0.d0, 0.d0, 0.d0, -1.d0, 1.d0]
+            nodeCoor(2, 16:20) = [0.5d0, 0.d0, 0.5d0, untiers, untiers]
+            nodeCoor(3, 16:20) = [0.5d0, 0.5d0, 0.d0, untiers, untiers]
+            nodeCoor(1:3, 21) = [0.d0, untiers, untiers]
+        end if
+        cellVolu_ = 1.d0
 
-        case('PY5')
-            nno_  = 5
-            nnos_ = 5
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:5) = [+1.d0,  0.d0, -1.d0,  0.d0,  0.d0]
-                nodeCoor(2,1:5) = [ 0.d0, +1.d0,  0.d0, -1.d0,  0.d0]
-                nodeCoor(3,1:5) = [ 0.d0,  0.d0,  0.d0,  0.d0, +1.d0]
-            end if
-            cellVolu_  = 2.d0/3.d0
+    case ('PY5')
+        nno_ = 5
+        nnos_ = 5
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:5) = [+1.d0, 0.d0, -1.d0, 0.d0, 0.d0]
+            nodeCoor(2, 1:5) = [0.d0, +1.d0, 0.d0, -1.d0, 0.d0]
+            nodeCoor(3, 1:5) = [0.d0, 0.d0, 0.d0, 0.d0, +1.d0]
+        end if
+        cellVolu_ = 2.d0/3.d0
 
-        case('P13')
-            nno_  = 13
-            nnos_ = 5
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:5)  = [+1.d0,  0.d0, -1.d0,  0.d0,  0.d0]
-                nodeCoor(2,1:5)  = [ 0.d0, +1.d0,  0.d0, -1.d0,  0.d0]
-                nodeCoor(3,1:5)  = [ 0.d0,  0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(1,6:13) = [ 0.5d0, -0.5d0, -0.5d0,  0.5d0,  0.5d0,  0.d0,  -0.5d0,  0.d0]
-                nodeCoor(2,6:13) = [ 0.5d0,  0.5d0, -0.5d0, -0.5d0,  0.d0,   0.5d0,  0.d0,  -0.5d0]
-                nodeCoor(3,6:13) = [ 0.d0,   0.d0,   0.d0,   0.d0,   0.5d0,  0.5d0,  0.5d0,  0.5d0]
-            end if
-            cellVolu_  = 2.d0/3.d0
+    case ('P13')
+        nno_ = 13
+        nnos_ = 5
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:5) = [+1.d0, 0.d0, -1.d0, 0.d0, 0.d0]
+            nodeCoor(2, 1:5) = [0.d0, +1.d0, 0.d0, -1.d0, 0.d0]
+            nodeCoor(3, 1:5) = [0.d0, 0.d0, 0.d0, 0.d0, +1.d0]
+            nodeCoor(1, 6:13) = [0.5d0, -0.5d0, -0.5d0, 0.5d0, 0.5d0, 0.d0, -0.5d0, 0.d0]
+            nodeCoor(2, 6:13) = [0.5d0, 0.5d0, -0.5d0, -0.5d0, 0.d0, 0.5d0, 0.d0, -0.5d0]
+            nodeCoor(3, 6:13) = [0.d0, 0.d0, 0.d0, 0.d0, 0.5d0, 0.5d0, 0.5d0, 0.5d0]
+        end if
+        cellVolu_ = 2.d0/3.d0
 
-        case('P19')
-            nno_  = 19
-            nnos_ = 6
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:5)   = [+1.d0,  0.d0, -1.d0,  0.d0,  0.d0]
-                nodeCoor(2,1:5)   = [ 0.d0, +1.d0,  0.d0, -1.d0,  0.d0]
-                nodeCoor(3,1:5)   = [ 0.d0,  0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(1,6:13)  = [ 0.5d0, -0.5d0, -0.5d0,  0.5d0,  0.5d0,  0.d0,  -0.5d0,  0.d0]
-                nodeCoor(2,6:13)  = [ 0.5d0,  0.5d0, -0.5d0, -0.5d0,  0.d0,   0.5d0,  0.d0,  -0.5d0]
-                nodeCoor(3,6:13)  = [ 0.d0,   0.d0,   0.d0,   0.d0,   0.5d0,  0.5d0,  0.5d0,  0.5d0]
-                nodeCoor(1,14:18) = [0.d0, untiers, -untiers, -untiers,  untiers]
-                nodeCoor(2,14:18) = [0.d0, untiers,  untiers, -untiers, -untiers]
-                nodeCoor(3,14:18) = [0.d0, untiers,  untiers,  untiers,  untiers]
-                nodeCoor(1:3,19)  = [0.d0, 0.d0, 0.2d0]
-            end if
-            cellVolu_  = 2.d0/3.d0
+    case ('P19')
+        nno_ = 19
+        nnos_ = 6
+        ndim_ = 3
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:5) = [+1.d0, 0.d0, -1.d0, 0.d0, 0.d0]
+            nodeCoor(2, 1:5) = [0.d0, +1.d0, 0.d0, -1.d0, 0.d0]
+            nodeCoor(3, 1:5) = [0.d0, 0.d0, 0.d0, 0.d0, +1.d0]
+            nodeCoor(1, 6:13) = [0.5d0, -0.5d0, -0.5d0, 0.5d0, 0.5d0, 0.d0, -0.5d0, 0.d0]
+            nodeCoor(2, 6:13) = [0.5d0, 0.5d0, -0.5d0, -0.5d0, 0.d0, 0.5d0, 0.d0, -0.5d0]
+            nodeCoor(3, 6:13) = [0.d0, 0.d0, 0.d0, 0.d0, 0.5d0, 0.5d0, 0.5d0, 0.5d0]
+            nodeCoor(1, 14:18) = [0.d0, untiers, -untiers, -untiers, untiers]
+            nodeCoor(2, 14:18) = [0.d0, untiers, untiers, -untiers, -untiers]
+            nodeCoor(3, 14:18) = [0.d0, untiers, untiers, untiers, untiers]
+            nodeCoor(1:3, 19) = [0.d0, 0.d0, 0.2d0]
+        end if
+        cellVolu_ = 2.d0/3.d0
 
-        case('TR3')
-            nno_  = 3
-            nnos_ = 3
-            ndim_ = 2
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [0.d0, +1.d0,  0.d0]
-                nodeCoor(2,1:nno_) = [0.d0,  0.d0, +1.d0]
-            end if
-            cellVolu_  = 1.d0/2.d0
+    case ('TR3')
+        nno_ = 3
+        nnos_ = 3
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [0.d0, +1.d0, 0.d0]
+            nodeCoor(2, 1:nno_) = [0.d0, 0.d0, +1.d0]
+        end if
+        cellVolu_ = 1.d0/2.d0
 
-        case('TR6')
-            nno_  = 6
-            nnos_ = 3
-            ndim_ = 2
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [0.d0, +1.d0,  0.d0, 0.5d0, 0.5d0, 0.d0]
-                nodeCoor(2,1:nno_) = [0.d0,  0.d0, +1.d0, 0.d0 , 0.5d0, 0.5d0]
-            end if
-            cellVolu_  = 1.d0/2.d0
+    case ('TR6')
+        nno_ = 6
+        nnos_ = 3
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [0.d0, +1.d0, 0.d0, 0.5d0, 0.5d0, 0.d0]
+            nodeCoor(2, 1:nno_) = [0.d0, 0.d0, +1.d0, 0.d0, 0.5d0, 0.5d0]
+        end if
+        cellVolu_ = 1.d0/2.d0
 
-        case('TR7')
-            nno_  = 7
-            nnos_ = 3
-            ndim_ = 2
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [0.d0, +1.d0,  0.d0, 0.5d0, 0.5d0, 0.d0,  untiers]
-                nodeCoor(2,1:nno_) = [0.d0,  0.d0, +1.d0, 0.d0 , 0.5d0, 0.5d0, untiers]
-            end if
-            cellVolu_  = 1.d0/2.d0
+    case ('TR7')
+        nno_ = 7
+        nnos_ = 3
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [0.d0, +1.d0, 0.d0, 0.5d0, 0.5d0, 0.d0, untiers]
+            nodeCoor(2, 1:nno_) = [0.d0, 0.d0, +1.d0, 0.d0, 0.5d0, 0.5d0, untiers]
+        end if
+        cellVolu_ = 1.d0/2.d0
 
-        case('QU4')
-            nno_  = 4
-            nnos_ = 4
-            ndim_ = 2
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0]
-                nodeCoor(2,1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0]
-            end if
-            cellVolu_  = 4.d0
+    case ('QU4')
+        nno_ = 4
+        nnos_ = 4
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0]
+            nodeCoor(2, 1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0]
+        end if
+        cellVolu_ = 4.d0
 
-        case('QU8')
-            nno_  = 8
-            nnos_ = 4
-            ndim_ = 2
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,  0.d0 , -1.d0]
-                nodeCoor(2,1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,   0.d0]
-            end if
-            cellVolu_  = 4.d0
+    case ('QU8')
+        nno_ = 8
+        nnos_ = 4
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0, 0.d0, +1.d0, 0.d0, -1.d0]
+            nodeCoor(2, 1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, 0.d0, +1.d0, 0.d0]
+        end if
+        cellVolu_ = 4.d0
 
-        case('QU9')
-            nno_  = 9
-            nnos_ = 4
-            ndim_ = 2
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,  0.d0 , -1.d0, 0.d0]
-                nodeCoor(2,1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,   0.d0, 0.d0]
-            end if
-            cellVolu_  = 4.d0
+    case ('QU9')
+        nno_ = 9
+        nnos_ = 4
+        ndim_ = 2
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0, 0.d0, +1.d0, 0.d0, -1.d0, 0.d0]
+            nodeCoor(2, 1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, 0.d0, +1.d0, 0.d0, 0.d0]
+        end if
+        cellVolu_ = 4.d0
 
-        case('SE2')
-            nno_  = 2
-            nnos_ = 2
-            ndim_ = 1
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [-1.d0, +1.d0]
-            end if
-            cellVolu_  = 2.d0
+    case ('SE2')
+        nno_ = 2
+        nnos_ = 2
+        ndim_ = 1
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [-1.d0, +1.d0]
+        end if
+        cellVolu_ = 2.d0
 
-        case('SE3')
-            nno_  = 3
-            nnos_ = 2
-            ndim_ = 1
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [ -1.d0, +1.d0, 0.d0]
-            end if
-            cellVolu_  = 2.d0
+    case ('SE3')
+        nno_ = 3
+        nnos_ = 2
+        ndim_ = 1
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [-1.d0, +1.d0, 0.d0]
+        end if
+        cellVolu_ = 2.d0
 
-        case('SE4')
-            nno_  = 4
-            nnos_ = 2
-            ndim_ = 1
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:nno_) = [-1.d0, +1.d0, -1.d0/3.d0, 1.d0/3.d0]
-            end if
-            cellVolu_  = 2.d0
+    case ('SE4')
+        nno_ = 4
+        nnos_ = 2
+        ndim_ = 1
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1:nno_) = [-1.d0, +1.d0, -1.d0/3.d0, 1.d0/3.d0]
+        end if
+        cellVolu_ = 2.d0
 
-        case('PO1')
-            nno_  = 1
-            nnos_ = 1
-            ndim_ = 0
-            if (present(nodeCoor)) then
-                nodeCoor(1,1) = 0.d0
-            end if
-            cellVolu_  = 1.d0
+    case ('PO1')
+        nno_ = 1
+        nnos_ = 1
+        ndim_ = 0
+        if (present(nodeCoor)) then
+            nodeCoor(1, 1) = 0.d0
+        end if
+        cellVolu_ = 1.d0
 
-        case default
-            ASSERT(ASTER_FALSE)
+    case default
+        ASSERT(ASTER_FALSE)
 
     end select
 !

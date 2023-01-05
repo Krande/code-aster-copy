@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec,  ityp, jass, i, iret, icha
+    integer :: nbvec, ityp, jass, i, iret, icha
     integer :: n1, jvacha
     aster_logical :: bidon
     character(len=4) :: tych
@@ -90,7 +90,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     vecele = vechar
     vacha8 = vecele(1:3)//'A'//vecele(5:8)
     chamno = vacha8//'.???????'
-    newnom='.0000000'
+    newnom = '.0000000'
 !
 !
 !     1. SI LE VECT_ELEM N'EXISTE PAS : ERREUR FATALE
@@ -98,7 +98,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     call jeexin(vecele//'.RELR', iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGORITH_13', sk=vecele)
-    endif
+    end if
     call jelira(vecele//'.RELR', 'LONUTI', nbvec)
     call jeveuo(vecele//'.RELR', 'E', vk24=relr)
 !
@@ -113,7 +113,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
             call detrsd('CHAMP_GD', zk24(jvacha-1+i) (1:19))
         end do
         call jedetr(vacha8)
-    endif
+    end if
     call wkvect(vacha8, 'V V K24', max(nbvec, 1), jass)
 !
 !
@@ -125,18 +125,18 @@ subroutine asasve(vechar, numedd, typres, vachar)
     if (bidon) then
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, ichin_ = -2)
-        call vtcreb(chamno, 'V', typres,&
-                    nume_ddlz = numedd)
+        call corich('E', chamno, ichin_=-2)
+        call vtcreb(chamno, 'V', typres, &
+                    nume_ddlz=numedd)
         zk24(jass-1+1) = chamno
         goto 30
-    endif
+    end if
 !
 !
 !     3. SI IL FAUT FAIRE QUELQUE CHOSE :
 !     --------------------------------------------------------
     call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-    call memare('V', '&&ASASVE', modele, ' ', ' ',&
+    call memare('V', '&&ASASVE', modele, ' ', ' ', &
                 'CHAR_MECA')
     call reajre('&&ASASVE', ' ', 'V')
 !
@@ -144,13 +144,13 @@ subroutine asasve(vechar, numedd, typres, vachar)
     if (typres .eq. 'C') ityp = 2
 !
     do i = 1, nbvec
-        resuel = relr(i)(1:19)
-        call corich('L', resuel, ichout_ = icha)
-        ASSERT((icha.ne.0).and.(icha.ge.-2))
+        resuel = relr(i) (1:19)
+        call corich('L', resuel, ichout_=icha)
+        ASSERT((icha .ne. 0) .and. (icha .ge. -2))
 !
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, ichin_ = icha)
+        call corich('E', chamno, ichin_=icha)
         zk24(jass+i-1) = chamno
 !
 !       -- SI LE RESUELEM EST UN RESUELEM !
@@ -158,26 +158,26 @@ subroutine asasve(vechar, numedd, typres, vachar)
         if (tych .eq. 'RESL') then
             call jedetr('&&ASASVE           .RELR')
             call reajre('&&ASASVE', resuel, 'V')
-            call assvec('V', chamno, 1, '&&ASASVE           .RELR', [1.d0],&
-                        numedd, vectScalType_ = ityp)
+            call assvec('V', chamno, 1, '&&ASASVE           .RELR', [1.d0], &
+                        numedd, vectScalType_=ityp)
 !
 !
 !       -- SI LE RESUELEM N'EST PAS UN RESUELEM !(CHAM_NO)
-        else if (tych.eq.'NOEU') then
-            call vtcreb(chamno, 'V', typres,&
-                        nume_ddlz = numedd)
+        else if (tych .eq. 'NOEU') then
+            call vtcreb(chamno, 'V', typres, &
+                        nume_ddlz=numedd)
             call vtcopy(resuel, chamno, ' ', iret)
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     end do
     call jedetr('&&ASASVE           .RELR')
     call jedetr('&&ASASVE           .RERR')
 !
 !
- 30 continue
+30  continue
 !
 !
 !
@@ -190,7 +190,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     call jedetr(vecele//'.RELR')
     call jedetr(vecele//'.RERR')
 !
-    vachar=vacha8
+    vachar = vacha8
 !
 !
     call jedema()

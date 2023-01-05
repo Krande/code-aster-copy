@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine uimpba(clas, iunmes)
     character(len=19) :: key
     character(len=24) :: kbid, obj
     real(kind=8) :: rlong, mega, taitot
-    integer :: i, nbobj, nbval, idx, nbcon,   nbsv
+    integer :: i, nbobj, nbval, idx, nbcon, nbsv
     integer ::     nstot
     character(len=24), pointer :: liste_obj(:) => null()
     character(len=24), pointer :: types(:) => null()
@@ -61,34 +61,34 @@ subroutine uimpba(clas, iunmes)
     real(kind=8), pointer :: taille(:) => null()
 !
 !
-    mega=1024*1024
+    mega = 1024*1024
 !
 !
 !     -- 1 : NBOBJ + .LISTE_OBJ :LISTE DES OBJETS :
 !     ----------------------------------------------
-    nbobj=0
-    call jelstc(clas, ' ', 0, nbobj, kbid,&
+    nbobj = 0
+    call jelstc(clas, ' ', 0, nbobj, kbid, &
                 nbval)
-    ASSERT(nbval.le.0)
+    ASSERT(nbval .le. 0)
     if (nbval .eq. 0) goto 999
-    nbobj=-nbval
+    nbobj = -nbval
     AS_ALLOCATE(vk24=liste_obj, size=nbobj+1)
-    call jelstc(clas, ' ', 0, nbobj, liste_obj,&
+    call jelstc(clas, ' ', 0, nbobj, liste_obj, &
                 nbval)
 !     NBVAL = NBOBJ (+1 EVENTUELLEMENT A CAUSE DE '&&UIMPBA.LISTE_OBJ')
-    ASSERT(nbval.eq.nbobj+1 .or. nbval.eq.nbobj)
-    nbobj=nbval
+    ASSERT(nbval .eq. nbobj+1 .or. nbval .eq. nbobj)
+    nbobj = nbval
 !
 !     -- 2 : .TAILLE = TAILLE DES OBJETS :
 !     --------------------------------------
     AS_ALLOCATE(vr=taille, size=nbobj)
     AS_ALLOCATE(vi=nbsvo, size=nbobj)
-    do i=1,nbobj
-        obj=liste_obj(i)
+    do i = 1, nbobj
+        obj = liste_obj(i)
         call jelgdq(obj, rlong, nbsv)
-        ASSERT(rlong.gt.0.d0)
-        taille(i)=rlong
-        nbsvo(i)=nbsv
+        ASSERT(rlong .gt. 0.d0)
+        taille(i) = rlong
+        nbsvo(i) = nbsv
     end do
 !
 !
@@ -96,13 +96,13 @@ subroutine uimpba(clas, iunmes)
 !     -----------------------------------------------------------
     call jecreo('&&UIMPBA.LSTCON', 'V N K24')
     call jeecra('&&UIMPBA.LSTCON', 'NOMMAX', nbobj)
-    do i=1,nbobj
+    do i = 1, nbobj
         obj = liste_obj(i)
         call split_string(obj, ".", root)
         call jenonu(jexnom('&&UIMPBA.LSTCON', root), idx)
         if (idx .eq. 0) then
             call jecroc(jexnom('&&UIMPBA.LSTCON', root))
-        endif
+        end if
     end do
     !
     !
@@ -114,63 +114,63 @@ subroutine uimpba(clas, iunmes)
     AS_ALLOCATE(vi=vnbobj, size=nbcon)
     AS_ALLOCATE(vk24=types, size=nbcon)
     types = " "
-    taitot=0.d0
-    nstot=0
-    do i=1,nbobj
+    taitot = 0.d0
+    nstot = 0
+    do i = 1, nbobj
         obj = liste_obj(i)
         call split_string(obj, ".", root)
         call jenonu(jexnom('&&UIMPBA.LSTCON', root), idx)
-        ASSERT(idx.gt.0)
-        ASSERT(idx.le.nbcon)
+        ASSERT(idx .gt. 0)
+        ASSERT(idx .le. nbcon)
         if (types(idx) .eq. " ") then
             call gettco(root, types(idx), errstop=ASTER_FALSE)
             if (types(idx) .eq. " ") then
                 call gettco(obj(1:19), typcon, errstop=ASTER_FALSE)
                 if (typcon .ne. " ") then
                     types(idx) = "*"//typcon
-                endif
-            endif
-        endif
-        tailcon(idx) = tailcon(idx) + taille(i)
-        taitot = taitot + taille(i)
-        nbsvc(idx) = nbsvc(idx) + nbsvo(i)
-        vnbobj(idx) = vnbobj(idx) + 1
-        nstot = nstot + nbsvo(i)
+                end if
+            end if
+        end if
+        tailcon(idx) = tailcon(idx)+taille(i)
+        taitot = taitot+taille(i)
+        nbsvc(idx) = nbsvc(idx)+nbsvo(i)
+        vnbobj(idx) = vnbobj(idx)+1
+        nstot = nstot+nbsvo(i)
     end do
 !
 !
 !     -- 5 : IMPRESSION DU RESULTAT :
 !     -----------------------------------------------------------
-    write(iunmes,*) '-----------------------------------------------',&
+    write (iunmes, *) '-----------------------------------------------',&
      &                '----------------------------'
-    write(iunmes,*) 'Concepts de la base: ',clas
-    write(iunmes,*) '   Nom        Type                Taille (Mo)',&
+    write (iunmes, *) 'Concepts de la base: ', clas
+    write (iunmes, *) '   Nom        Type                Taille (Mo)',&
      &                '         Nombre      Nombre de'
-    write(iunmes,*) '                                            ',&
+    write (iunmes, *) '                                            ',&
      &                '        d''objets       segments'
 !
-    write(iunmes,100) 'TOTAL   ',' ',taitot/mega,nbobj,nstot
-    write(iunmes,*) ' '
+    write (iunmes, 100) 'TOTAL   ', ' ', taitot/mega, nbobj, nstot
+    write (iunmes, *) ' '
 !
 !     -- ON IMPRIME D'ABORD LES CONCEPTS UTILISATEUR :
     do i = 1, nbcon
         if (types(i) .eq. ' ') cycle
         call jenuno(jexnum('&&UIMPBA.LSTCON', i), key)
-        write(iunmes,100) key, types(i), tailcon(i) / mega, vnbobj(i), nbsvc(i)
+        write (iunmes, 100) key, types(i), tailcon(i)/mega, vnbobj(i), nbsvc(i)
     end do
 
 !     -- ON IMPRIME ENSUITE LES CONCEPTS CACHES  :
     do i = 1, nbcon
         if (types(i) .ne. ' ') cycle
         call jenuno(jexnum('&&UIMPBA.LSTCON', i), key)
-        write(iunmes,100) key, types(i), tailcon(i) / mega, vnbobj(i), nbsvc(i)
+        write (iunmes, 100) key, types(i), tailcon(i)/mega, vnbobj(i), nbsvc(i)
     end do
-    write(iunmes,*) '(*) sous-objets non accessible directement'
-    write(iunmes,*) '-----------------------------------------------',&
+    write (iunmes, *) '(*) sous-objets non accessible directement'
+    write (iunmes, *) '-----------------------------------------------',&
      &                '----------------------------'
 !
 !
-999  continue
+999 continue
     AS_DEALLOCATE(vk24=liste_obj)
     AS_DEALLOCATE(vr=taille)
     call jedetr('&&UIMPBA.LSTCON')
@@ -178,5 +178,5 @@ subroutine uimpba(clas, iunmes)
     AS_DEALLOCATE(vi=nbsvo)
     AS_DEALLOCATE(vi=nbsvc)
     AS_DEALLOCATE(vi=vnbobj)
-    100 format (4x,a8,3x,a16,3x,f12.2,3x,i12,3x,i12)
+100 format(4x, a8, 3x, a16, 3x, f12.2, 3x, i12, 3x, i12)
 end subroutine

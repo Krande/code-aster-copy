@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw,&
-                  enrobyi, enrobys, enrobzi, enrobzs,&
-                  facier, fbeton, sigelsqp, kt, eys,&
-                  alphacc, clacier, gammas, gammac, typdiag,&
-                  sigcyi, sigcys, sigczi, sigczs, sigs,&
-                  wmaxyi, wmaxys, wmaxzi, wmaxzs,&
-                  phiyi, phiys, phizi, phizs,&
-                  ferrsyme, slsyme, ferrcomp,&
+subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw, &
+                  enrobyi, enrobys, enrobzi, enrobzs, &
+                  facier, fbeton, sigelsqp, kt, eys, &
+                  alphacc, clacier, gammas, gammac, typdiag, &
+                  sigcyi, sigcys, sigczi, sigczs, sigs, &
+                  wmaxyi, wmaxys, wmaxzi, wmaxzs, &
+                  phiyi, phiys, phizi, phizs, &
+                  ferrsyme, slsyme, ferrcomp, &
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                  rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit,&
+                  rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit, &
                   dnsits, dnsvol, construc, ierr)
 !______________________________________________________________________
 !
@@ -64,13 +64,13 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw,&
 !                     TYPDIAG = 1 ("B1" ==> PALIER INCLINÉ)
 !                     TYPDIAG = 2 ("B2" ==> PALIER HORIZONTAL)
 !      I SGICYI    CONTRAINTE ULTIME DU BÉTON COMPRIME
-!                     EN FIBRE INFERIEURE SUIVANT L'AXE Y À L'ELS 
+!                     EN FIBRE INFERIEURE SUIVANT L'AXE Y À L'ELS
 !      I SGICYS    CONTRAINTE ULTIME DU BÉTON COMPRIME
-!                     EN FIBRE SUPERIEURE SUIVANT L'AXE Y À L'ELS 
+!                     EN FIBRE SUPERIEURE SUIVANT L'AXE Y À L'ELS
 !      I SGICZI    CONTRAINTE ULTIME DU BÉTON COMPRIME
-!                     EN FIBRE INFERIEURE SUIVANT L'AXE Z À L'ELS 
+!                     EN FIBRE INFERIEURE SUIVANT L'AXE Z À L'ELS
 !      I SGICZS    CONTRAINTE ULTIME DU BÉTON COMPRIME
-!                     EN FIBRE SUPERIEURE SUIVANT L'AXE Z À L'ELS 
+!                     EN FIBRE SUPERIEURE SUIVANT L'AXE Z À L'ELS
 !      I SGIS      CONTRAINTE ULTIME DE L'ACIER À L'ELS
 !      I WMAXYI    OUVERTURE MAXIMALE DES FISSURES
 !                     EN FACE INFÉRIEURE SUIVANT L'AXE Y (1D)
@@ -120,7 +120,7 @@ subroutine glbpou(typcmb, typco, cequi, effrts, ht, bw,&
 !
 !______________________________________________________________________
 !
-implicit none
+    implicit none
 #include "asterfort/glbelu.h"
 #include "asterfort/glbels.h"
 #include "asterfort/glbelsqp.h"
@@ -134,7 +134,7 @@ implicit none
     real(kind=8) :: enrobyi
     real(kind=8) :: enrobys
     real(kind=8) :: enrobzi
-    real(kind=8) :: enrobzs    
+    real(kind=8) :: enrobzs
     real(kind=8) :: facier
     real(kind=8) :: fbeton
     real(kind=8) :: sigelsqp
@@ -179,67 +179,67 @@ implicit none
     real(kind=8) :: dnsvol
     real(kind=8) :: construc
     integer :: ierr
-    
+
 !! AUTRES VARIABLES
     real(kind=8) :: shear, reinf, stirrups, Calc
-  
-  if (typcmb.eq.0) then
 
-        call glbelu(typco, alphacc, effrts, ht, bw,&
-                  enrobyi, enrobys, enrobzi, enrobzs,&
-                  facier, fbeton, gammas, gammac,&
-                  clacier, eys, typdiag, ferrsyme, slsyme, ferrcomp,&
-                  epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                  dnsits, ierr)
-            
-  elseif (typcmb.eq.1) then
-  
-        call glbels(typco, cequi, effrts, ht, bw,&
-                  enrobyi, enrobys, enrobzi, enrobzs,&
-                  facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs,&
-                  ferrsyme, slsyme, ferrcomp,&
-                  epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
-                  dnsits, ierr)
-            
-  elseif (typcmb.eq.2) then
-    
-        call glbelsqp(typco, cequi, effrts, ht, bw,&
-                    enrobyi, enrobys, enrobzi, enrobzs,&
-                    facier, fbeton, sigelsqp, kt, eys,&
-                    wmaxyi, wmaxys, wmaxzi, wmaxzs,&
-                    phiyi, phiys, phizi, phizs,&
-                    ferrsyme, slsyme, ferrcomp,&
+    if (typcmb .eq. 0) then
+
+        call glbelu(typco, alphacc, effrts, ht, bw, &
+                    enrobyi, enrobys, enrobzi, enrobzs, &
+                    facier, fbeton, gammas, gammac, &
+                    clacier, eys, typdiag, ferrsyme, slsyme, ferrcomp, &
                     epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                     dnsits, ierr)
-  endif
+
+    elseif (typcmb .eq. 1) then
+
+        call glbels(typco, cequi, effrts, ht, bw, &
+                    enrobyi, enrobys, enrobzi, enrobzs, &
+                    facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs, &
+                    ferrsyme, slsyme, ferrcomp, &
+                    epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
+                    dnsits, ierr)
+
+    elseif (typcmb .eq. 2) then
+
+        call glbelsqp(typco, cequi, effrts, ht, bw, &
+                      enrobyi, enrobys, enrobzi, enrobzs, &
+                      facier, fbeton, sigelsqp, kt, eys, &
+                      wmaxyi, wmaxys, wmaxzi, wmaxzs, &
+                      phiyi, phiys, phizi, phizs, &
+                      ferrsyme, slsyme, ferrcomp, &
+                      epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
+                      dnsits, ierr)
+    end if
 
 !   -- CALCUL DE LA DENSITE VOLUMIQUE D'ARMATURE :
 !   ----------------------------------------------
 !
-    if (rhoacier.gt.0) then
-        dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)+dnsits(5)*max(ht,bw))/(ht*bw)
+    if (rhoacier .gt. 0) then
+        dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)+dnsits(5)*max(ht, bw))/(ht*bw)
         Calc = dnsits(5)+1.d0
-        if (abs(Calc).lt.epsilon(Calc)) then
+        if (abs(Calc) .lt. epsilon(Calc)) then
 !           Vrai uniquement pour le calcul du ferraillage transversal au BAEL
 !           (pour lequel les aciers d'effort tranchant ne sont pas calculés)
             dnsvol = rhoacier*((dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)))/(ht*bw)
-        endif
+        end if
     else
         dnsvol = -1.d0
-    endif
+    end if
 !
 !   -- CALCUL DE L'INDICATEUR DE CONSTRUCTIBILITE :
 !   -----------------------------------------------
 !
-    if (rhoacier.gt.0) then
+    if (rhoacier .gt. 0) then
         reinf = areinf*DNSVOL/rhocrit
         shear = ashear*dnsits(5)/datcrit
-        if (shear.lt.0.d0) shear = 0.d0
+        if (shear .lt. 0.d0) shear = 0.d0
         stirrups = astirr*dnsits(5)*(ht-enrobys-enrobyi)*(bw-enrobzs-enrobzi)/(datcrit*lcrit)
-        if (stirrups.lt.0.d0) stirrups = 0.d0
+        if (stirrups .lt. 0.d0) stirrups = 0.d0
         construc = (reinf+shear+stirrups)/(areinf+ashear+astirr)
     else
         construc = -1.d0
-    endif
-    
+    end if
+
 end subroutine

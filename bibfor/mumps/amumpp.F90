@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumpp(option, nbsol, kxmps, ldist, type,&
-                  impr, ifmump, eli2lg, rsolu, csolu,&
+subroutine amumpp(option, nbsol, kxmps, ldist, type, &
+                  impr, ifmump, eli2lg, rsolu, csolu, &
                   vcine, prepos, lpreco, lmhpc)
 !
 !
@@ -117,89 +117,89 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !
 !-----------------------------------------------------------------------
     call jemarq()
-    call infdbg('SOLVEUR',ifm, niv)
+    call infdbg('SOLVEUR', ifm, niv)
 ! pour verifier la norme de la solution produite
-    lverif=.true.
-    lverif=.false.
+    lverif = .true.
+    lverif = .false.
 !
 !     ------------------------------------------------
 !     INITS
 !     ------------------------------------------------
-    rr4max=r4maem()
+    rr4max = r4maem()
     if (type .eq. 'S') then
-        smpsk=>smps(kxmps)
-        rang=smpsk%myid
-        n=smpsk%n
-        smpsk%nrhs=to_mumps_int(nbsol)
-        smpsk%lrhs=to_mumps_int(n)
-        ltypr=.true.
-        rmax=r4maem()*0.5
-        rmin=r4miem()*2.0
-    else if (type.eq.'C') then
-        cmpsk=>cmps(kxmps)
-        rang=cmpsk%myid
-        n=cmpsk%n
-        cmpsk%nrhs=to_mumps_int(nbsol)
-        cmpsk%lrhs=to_mumps_int(n)
-        ltypr=.false.
-        rmax=r4maem()*0.5
-        rmin=r4miem()*2.0
-    else if (type.eq.'D') then
-        dmpsk=>dmps(kxmps)
-        rang=dmpsk%myid
-        n=dmpsk%n
-        dmpsk%nrhs=to_mumps_int(nbsol)
-        dmpsk%lrhs=to_mumps_int(n)
-        ltypr=.true.
-        rmax=r8maem()*0.5
-        rmin=r8miem()*2.0
-    else if (type.eq.'Z') then
-        zmpsk=>zmps(kxmps)
-        rang=zmpsk%myid
-        n=zmpsk%n
-        zmpsk%nrhs=to_mumps_int(nbsol)
-        zmpsk%lrhs=to_mumps_int(n)
-        ltypr=.false.
-        rmax=r8maem()*0.5
-        rmin=r8miem()*2.0
+        smpsk => smps(kxmps)
+        rang = smpsk%myid
+        n = smpsk%n
+        smpsk%nrhs = to_mumps_int(nbsol)
+        smpsk%lrhs = to_mumps_int(n)
+        ltypr = .true.
+        rmax = r4maem()*0.5
+        rmin = r4miem()*2.0
+    else if (type .eq. 'C') then
+        cmpsk => cmps(kxmps)
+        rang = cmpsk%myid
+        n = cmpsk%n
+        cmpsk%nrhs = to_mumps_int(nbsol)
+        cmpsk%lrhs = to_mumps_int(n)
+        ltypr = .false.
+        rmax = r4maem()*0.5
+        rmin = r4miem()*2.0
+    else if (type .eq. 'D') then
+        dmpsk => dmps(kxmps)
+        rang = dmpsk%myid
+        n = dmpsk%n
+        dmpsk%nrhs = to_mumps_int(nbsol)
+        dmpsk%lrhs = to_mumps_int(n)
+        ltypr = .true.
+        rmax = r8maem()*0.5
+        rmin = r8miem()*2.0
+    else if (type .eq. 'Z') then
+        zmpsk => zmps(kxmps)
+        rang = zmpsk%myid
+        n = zmpsk%n
+        zmpsk%nrhs = to_mumps_int(nbsol)
+        zmpsk%lrhs = to_mumps_int(n)
+        ltypr = .false.
+        rmax = r8maem()*0.5
+        rmin = r8miem()*2.0
     else
         ASSERT(.false.)
-    endif
-    nnbsol=n*nbsol
-    nomat=nomats(kxmps)
-    nosolv=nosols(kxmps)
-    nonu=nonus(kxmps)
-    etam=etams(kxmps)
+    end if
+    nnbsol = n*nbsol
+    nomat = nomats(kxmps)
+    nosolv = nosols(kxmps)
+    nonu = nonus(kxmps)
+    etam = etams(kxmps)
 !
-    vcival=vcine//'.VALE'
+    vcival = vcine//'.VALE'
     call mtdscr(nomat)
     call jeveuo(nomat//'.&INT', 'E', lmat)
 !
     if (lmhpc) then
-        ASSERT(nbsol.eq.1)
+        ASSERT(nbsol .eq. 1)
         call jeveuo(nonu//'.NUME.PDDL', 'L', vi=pddl)
         call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
         call jeveuo(nonu//'.NUME.NEQU', 'L', vi=nequ)
-        nbeql=nequ(1)
+        nbeql = nequ(1)
     else
-        nbeql=n
-    endif
+        nbeql = n
+    end if
 !   Adresses needed to get the solution wrt nodes and dof numbers (see below)
     if (l_debug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
         call wkvect(nonu//'.NUME.DEE2', 'V V I', 2*nnbsol, jdee2)
-        mesh = zk24(jrefn)(1:8)
+        mesh = zk24(jrefn) (1:8)
         if (lmhpc) then
             nonulg = mesh//'.NULOGL'
             call jeveuo(nonulg, 'L', jmlogl)
-        endif
+        end if
 
         call jeveuo(mesh//'.DIME', 'L', dime)
         call jelira(jexnum(nonu//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
         call jeveuo(nonu//'.NUME.PRNO', 'L', idprn1)
         call jeveuo(jexatr(nonu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-        nec = ntot/zi(dime) - 2
+        nec = ntot/zi(dime)-2
         call jelira(nonu//'.NUME.PRNO', 'NMAXOC', nlili)
         do ili = 1, nlili
             call jelira(jexnum(nonu//'.NUME.PRNO', ili), 'LONMAX', lonmax)
@@ -208,24 +208,24 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 ieq = zzprno(ili, ino, 1)
                 nbcmp = zzprno(ili, ino, 2)
                 do j = 1, nbcmp
-                    if( zi(jdeeq+2*(ieq-1)).eq.0 ) then
-                        if( ili.eq.1 ) then
+                    if (zi(jdeeq+2*(ieq-1)) .eq. 0) then
+                        if (ili .eq. 1) then
                             zi(jdee2+2*(ieq-1)) = ino
                             zi(jdee2+2*(ieq-1)+1) = -j
                         else
                             zi(jdee2+2*(ieq-1)) = -ino
                             zi(jdee2+2*(ieq-1)+1) = j
-                        endif
+                        end if
                     else
                         zi(jdee2+2*(ieq-1)) = zi(jdeeq+2*(ieq-1))
                         zi(jdee2+2*(ieq-1)+1) = zi(jdeeq+2*(ieq-1)+1)
-                    endif
-                    ieq = ieq + 1
-                enddo
-            enddo
-        enddo
+                    end if
+                    ieq = ieq+1
+                end do
+            end do
+        end do
         jdeeq = jdee2
-    endif
+    end if
 !
 !
 !
@@ -233,36 +233,36 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !
         if (rang .eq. 0) then
             if (type .eq. 'S') then
-                allocate(smpsk%rhs(nnbsol))
-            else if (type.eq.'C') then
-                allocate(cmpsk%rhs(nnbsol))
-            else if (type.eq.'D') then
-                allocate(dmpsk%rhs(nnbsol))
-            else if (type.eq.'Z') then
-                allocate(zmpsk%rhs(nnbsol))
+                allocate (smpsk%rhs(nnbsol))
+            else if (type .eq. 'C') then
+                allocate (cmpsk%rhs(nnbsol))
+            else if (type .eq. 'D') then
+                allocate (dmpsk%rhs(nnbsol))
+            else if (type .eq. 'Z') then
+                allocate (zmpsk%rhs(nnbsol))
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
 !
 !       ------------------------------------------------
 !        PRETRAITEMENTS ASTER DU/DES SECONDS MEMBRES :
 !       ------------------------------------------------
 !
 !        --- PAS DE PRETRAITEMENT SI NON DEMANDE
-        if (.not.lpreco .and. prepos) then
+        if (.not. lpreco .and. prepos) then
 !
             if (rang .eq. 0 .or. lmhpc) then
 !           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
 !           --- RANG 0 UNIQUEMENT
                 if (ltypr) then
-                    call mrconl('MULT', lmat, nbeql, 'R', rsolu,&
+                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, &
                                 nbsol)
                 else
-                    call mcconl('MULT', lmat, nbeql, 'C', csolu,&
+                    call mcconl('MULT', lmat, nbeql, 'C', csolu, &
                                 nbsol)
-                endif
-            endif
+                end if
+            end if
 !
 !           --- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
             call jeexin(vcival, ierd)
@@ -272,27 +272,27 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 if (ldist .and. rang .ne. 0) then
                     do i = 1, nnbsol
                         if (ltypr) then
-                            rsolu(i)=0.d0
+                            rsolu(i) = 0.d0
                         else
-                            csolu(i)=dcmplx(0.d0,0.d0)
-                        endif
-                    enddo
-                endif
+                            csolu(i) = dcmplx(0.d0, 0.d0)
+                        end if
+                    end do
+                end if
                 call jeveuo(vcival, 'L', idvalc)
                 call jelira(vcival, 'TYPE', cval=rouc)
                 if (ltypr) then
-                    ASSERT(rouc.eq.'R')
+                    ASSERT(rouc .eq. 'R')
                     do i = 1, nbsol
-                        call csmbgg(lmat, rsolu(nbeql*(i-1)+1), zr(idvalc), [cbid], [cbid],&
+                        call csmbgg(lmat, rsolu(nbeql*(i-1)+1), zr(idvalc), [cbid], [cbid], &
                                     'R')
-                    enddo
+                    end do
                 else
-                    ASSERT(rouc.eq.'C')
+                    ASSERT(rouc .eq. 'C')
                     do i = 1, nbsol
-                        call csmbgg(lmat, [0.d0], [0.d0], csolu(nbeql*(i-1)+1), zc(idvalc),&
+                        call csmbgg(lmat, [0.d0], [0.d0], csolu(nbeql*(i-1)+1), zc(idvalc), &
                                     'C')
-                    enddo
-                endif
+                    end do
+                end if
 !
 !         --- REDUCTION DU SECOND MEMBRE AU PROC MAITRE EN DISTRIBUE
 !         --- POUR ETRE COHERENT AVEC LA MATRICE QUI CONTIENT DES N
@@ -302,47 +302,47 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                         call asmpi_comm_vect('REDUCE', 'R', nbval=nnbsol, vr=rsolu)
                     else
                         call asmpi_comm_vect('REDUCE', 'C', nbval=nnbsol, vc=csolu)
-                    endif
-                endif
+                    end if
+                end if
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
         if (lmhpc) then
-            ASSERT(nbsol.eq.1)
+            ASSERT(nbsol .eq. 1)
             if (ltypr) then
                 call wkvect('&&AMUMPP.RHS', 'V V R', nnbsol, jrhs)
             else
                 call wkvect('&&AMUMPP.RHS', 'V V C', nnbsol, jrhs)
-            endif
-            if (.not.lpreco) then
+            end if
+            if (.not. lpreco) then
                 do j = 1, nbeql
-                    if ( pddl(j).eq.rang ) then
+                    if (pddl(j) .eq. rang) then
                         nuglo = nulg(j)
-                        if(ltypr) then
-                            if(l_debug) then
-                                nuno  = zi(jdeeq+2*(j-1))
-                                if( nuno.gt.0 ) nuno = zi(jmlogl + nuno - 1) + 1
-                                nucmp = zi(jdeeq+2*(j-1) + 1)
+                        if (ltypr) then
+                            if (l_debug) then
+                                nuno = zi(jdeeq+2*(j-1))
+                                if (nuno .gt. 0) nuno = zi(jmlogl+nuno-1)+1
+                                nucmp = zi(jdeeq+2*(j-1)+1)
 !                    numéro noeud global, num comp du noeud, rhs
-                                write(101+rang,*) nuno, nucmp, nuglo, rsolu(j)
+                                write (101+rang, *) nuno, nucmp, nuglo, rsolu(j)
                             end if
                             zr(jrhs+nuglo) = rsolu(j)
                         else
                             zc(jrhs+nuglo) = csolu(j)
-                        endif
-                    endif
-                    if(l_debug) then
-                        nuno  = zi(jdeeq+2*(j-1))
-                        if( nuno.gt.0 ) nuno = zi(jmlogl + nuno - 1) + 1
-                        nucmp = zi(jdeeq+2*(j-1) + 1)
-!                    numéro noeud global, num comp du noeud, rhs
-                        write(201+rang,*) nuno, nucmp, rsolu(j), pddl(j), j ,nulg(j)
+                        end if
                     end if
-                enddo
-                if(l_debug) flush(101+rang)
-                if(l_debug) flush(201+rang)
+                    if (l_debug) then
+                        nuno = zi(jdeeq+2*(j-1))
+                        if (nuno .gt. 0) nuno = zi(jmlogl+nuno-1)+1
+                        nucmp = zi(jdeeq+2*(j-1)+1)
+!                    numéro noeud global, num comp du noeud, rhs
+                        write (201+rang, *) nuno, nucmp, rsolu(j), pddl(j), j, nulg(j)
+                    end if
+                end do
+                if (l_debug) flush (101+rang)
+                if (l_debug) flush (201+rang)
                 if (ltypr) then
                     call asmpi_comm_vect('REDUCE', 'R', nbval=nnbsol, vr=zr(jrhs))
                     call jgetptc(jrhs, pteur_c, vr=zr(1))
@@ -351,99 +351,99 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     call asmpi_comm_vect('REDUCE', 'C', nbval=nnbsol, vc=zc(jrhs))
                     call jgetptc(jrhs, pteur_c, vc=zc(1))
                     call c_f_pointer(pteur_c, csolu2, [nnbsol])
-                endif
+                end if
             else
 !               if mumps is used as a preconditionner in HPC mode (asterxx),
 !               each process knows the RHS and the numberings are the same
                 do j = 1, nnbsol
-                    if(ltypr) then
+                    if (ltypr) then
                         zr(jrhs+j-1) = rsolu(j)
                     else
                         zc(jrhs+j-1) = csolu(j)
-                    endif
-                enddo
+                    end if
+                end do
                 if (ltypr) then
                     call jgetptc(jrhs, pteur_c, vr=zr(1))
                     call c_f_pointer(pteur_c, rsolu2, [nnbsol])
                 else
                     call jgetptc(jrhs, pteur_c, vc=zc(1))
                     call c_f_pointer(pteur_c, csolu2, [nnbsol])
-                endif
-            endif
+                end if
+            end if
         else
             if (ltypr) then
-                if(l_debug) then
+                if (l_debug) then
                     do j = 1, nnbsol
-                        nuno  = zi(jdeeq+2*(j-1))
-                        nucmp = zi(jdeeq+2*(j-1) + 1)
-        !                numéro noeud, num comp du noeud, solution
-                        write(49,*) nuno, nucmp, j, rsolu(j)
+                        nuno = zi(jdeeq+2*(j-1))
+                        nucmp = zi(jdeeq+2*(j-1)+1)
+                        !                numéro noeud, num comp du noeud, solution
+                        write (49, *) nuno, nucmp, j, rsolu(j)
                     end do
-                    flush(49)
+                    flush (49)
                 end if
                 call jgetptc(1, pteur_c, vr=rsolu(1))
                 call c_f_pointer(pteur_c, rsolu2, [nnbsol])
             else
                 call jgetptc(1, pteur_c, vc=csolu(1))
                 call c_f_pointer(pteur_c, csolu2, [nnbsol])
-            endif
-        endif
+            end if
+        end if
 !
 !        --- COPIE DE RSOLU DANS %RHS:
         if (rang .eq. 0) then
             if (type .eq. 'S') then
                 do i = 1, nnbsol
-                    raux=rsolu2(i)
-                    rtest=abs(raux)
+                    raux = rsolu2(i)
+                    rtest = abs(raux)
                     if (rtest .lt. rmin) then
-                        raux=0.d0
-                    else if (rtest.gt.rmax) then
-                        raux=rmax*sign(1.d0,raux)
-                    endif
-                    smpsk%rhs(i)=real(raux, kind=4)
-                enddo
-            else if (type.eq.'C') then
+                        raux = 0.d0
+                    else if (rtest .gt. rmax) then
+                        raux = rmax*sign(1.d0, raux)
+                    end if
+                    smpsk%rhs(i) = real(raux, kind=4)
+                end do
+            else if (type .eq. 'C') then
                 do i = 1, nnbsol
-                    caux=csolu2(i)
-                    rtest=abs(caux)
+                    caux = csolu2(i)
+                    rtest = abs(caux)
                     if (rtest .lt. rmin) then
-                        caux=dcmplx(0.d0,0.d0)
-                    else if (rtest.gt.rmax) then
-                        caux=dcmplx(rmax*sign(1.d0,dble(caux)),0.d0)
-                        caux=rmax*dcmplx(1.d0*sign(1.d0,dble(caux)), 1.d0*sign(1.d0,imag(caux)))
-                    endif
-                    cmpsk%rhs(i)=cmplx(caux, kind=4)
-                enddo
-            else if (type.eq.'D') then
+                        caux = dcmplx(0.d0, 0.d0)
+                    else if (rtest .gt. rmax) then
+                        caux = dcmplx(rmax*sign(1.d0, dble(caux)), 0.d0)
+                        caux = rmax*dcmplx(1.d0*sign(1.d0, dble(caux)), 1.d0*sign(1.d0, imag(caux)))
+                    end if
+                    cmpsk%rhs(i) = cmplx(caux, kind=4)
+                end do
+            else if (type .eq. 'D') then
                 do i = 1, nnbsol
-                    raux=rsolu2(i)
-                    rtest=abs(raux)
+                    raux = rsolu2(i)
+                    rtest = abs(raux)
                     if (rtest .lt. rmin) then
-                        raux=0.d0
-                    else if (rtest.gt.rmax) then
-                        valr(1)=rtest
-                        valr(2)=rmax
+                        raux = 0.d0
+                    else if (rtest .gt. rmax) then
+                        valr(1) = rtest
+                        valr(2) = rmax
                         call utmess('F', 'FACTOR_79', si=i, nr=2, valr=valr)
-                    endif
-                    dmpsk%rhs(i)=raux
-                enddo
-            else if (type.eq.'Z') then
+                    end if
+                    dmpsk%rhs(i) = raux
+                end do
+            else if (type .eq. 'Z') then
                 do i = 1, nnbsol
-                    caux=csolu2(i)
-                    rtest=abs(caux)
+                    caux = csolu2(i)
+                    rtest = abs(caux)
                     if (rtest .lt. rmin) then
-                        caux=dcmplx(0.d0,0.d0)
-                    else if (rtest.gt.rmax) then
-                        valr(1)=rtest
-                        valr(2)=rmax
+                        caux = dcmplx(0.d0, 0.d0)
+                    else if (rtest .gt. rmax) then
+                        valr(1) = rtest
+                        valr(2) = rmax
                         call utmess('F', 'FACTOR_79', si=i, nr=2, valr=valr)
-                    endif
-                    zmpsk%rhs(i)=caux
-                enddo
+                    end if
+                    zmpsk%rhs(i) = caux
+                end do
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
         if (lmhpc) call jedetr('&&AMUMPP.RHS')
 !
 !         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
@@ -451,32 +451,32 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
             if (rang .eq. 0) then
                 if (type .eq. 'S') then
                     do k = 1, nnbsol
-                        write(ifmump,*) k,smpsk%rhs(k)
-                    enddo
-                else if (type.eq.'C') then
+                        write (ifmump, *) k, smpsk%rhs(k)
+                    end do
+                else if (type .eq. 'C') then
                     do k = 1, nnbsol
-                        write(ifmump,*) k,cmpsk%rhs(k)
-                    enddo
-                else if (type.eq.'D') then
+                        write (ifmump, *) k, cmpsk%rhs(k)
+                    end do
+                else if (type .eq. 'D') then
                     do k = 1, nnbsol
-                        write(ifmump,*) k,dmpsk%rhs(k)
-                    enddo
-                else if (type.eq.'Z') then
+                        write (ifmump, *) k, dmpsk%rhs(k)
+                    end do
+                else if (type .eq. 'Z') then
                     do k = 1, nnbsol
-                        write(ifmump,*) k,zmpsk%rhs(k)
-                    enddo
+                        write (ifmump, *) k, zmpsk%rhs(k)
+                    end do
                 else
                     ASSERT(.false.)
-                endif
-                write(ifmump,*) 'MUMPS FIN RHS'
-            endif
+                end if
+                write (ifmump, *) 'MUMPS FIN RHS'
+            end if
             if (impr(1:11) .eq. 'OUI_NOSOLVE') then
                 call utmess('F', 'FACTOR_71', si=ifmump)
-            endif
-        endif
+            end if
+        end if
 !
 !
-    else if (option.eq.2) then
+    else if (option .eq. 2) then
 !
         if (lmhpc) then
             if (ltypr) then
@@ -487,7 +487,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 call wkvect('&&AMUMPP.RHS', 'V V C', nnbsol, jrhs)
                 call jgetptc(jrhs, pteur_c, vc=zc(1))
                 call c_f_pointer(pteur_c, csolu2, [nnbsol])
-            endif
+            end if
         else
             if (ltypr) then
                 call jgetptc(1, pteur_c, vr=rsolu(1))
@@ -495,8 +495,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
             else
                 call jgetptc(1, pteur_c, vc=csolu(1))
                 call c_f_pointer(pteur_c, csolu2, [nnbsol])
-            endif
-        endif
+            end if
+        end if
 !
 !       ------------------------------------------------
 !        POST-TRAITEMENTS ASTER DE LA SOLUTION :
@@ -505,65 +505,65 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
             if (rang .eq. 0) then
                 if (type .eq. 'S') then
                     do i = 1, nnbsol
-                        rsolu2(i)=smpsk%rhs(i)
-                    enddo
-                    deallocate(smpsk%rhs)
-                else if (type.eq.'C') then
+                        rsolu2(i) = smpsk%rhs(i)
+                    end do
+                    deallocate (smpsk%rhs)
+                else if (type .eq. 'C') then
                     do i = 1, nnbsol
-                        csolu2(i)=cmpsk%rhs(i)
-                    enddo
-                    deallocate(cmpsk%rhs)
-                else if (type.eq.'D') then
+                        csolu2(i) = cmpsk%rhs(i)
+                    end do
+                    deallocate (cmpsk%rhs)
+                else if (type .eq. 'D') then
                     call dcopy(nnbsol, dmpsk%rhs, 1, rsolu2, 1)
-                    deallocate(dmpsk%rhs)
-                else if (type.eq.'Z') then
+                    deallocate (dmpsk%rhs)
+                else if (type .eq. 'Z') then
                     call zcopy(nnbsol, zmpsk%rhs, 1, csolu2, 1)
-                    deallocate(zmpsk%rhs)
+                    deallocate (zmpsk%rhs)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
             if (lmhpc) then
                 if (ltypr) then
                     call asmpi_comm_vect('BCAST', 'R', nbval=nnbsol, bcrank=0, vr=rsolu2)
-                    if(l_debug) then
+                    if (l_debug) then
                         do j = 1, nbeql
-                            nuno  = zi(jdeeq+2*(j-1))
-                            if( nuno.gt.0 ) nuno = zi(jmlogl + nuno - 1) + 1
-                            nucmp = zi(jdeeq+2*(j-1) + 1)
+                            nuno = zi(jdeeq+2*(j-1))
+                            if (nuno .gt. 0) nuno = zi(jmlogl+nuno-1)+1
+                            nucmp = zi(jdeeq+2*(j-1)+1)
 !                    numero ddl local, numéro noeud local, numéro noeud global, num comp du noeud,
 !                                num ddl global, num proc proprio, solution
                             ! write(51+rang,*) j, zi(jdeeq+2*(j-1)), nuno, nucmp,  &
                             !                      nulg(j), pddl(j), rsolu(j)
-                            write(51+rang,*) nuno, nucmp, rsolu2(j)
+                            write (51+rang, *) nuno, nucmp, rsolu2(j)
                         end do
-                        flush(51+rang)
+                        flush (51+rang)
                     end if
-                    if (.not.lpreco) then
+                    if (.not. lpreco) then
                         do j = 1, nbeql
                             rsolu(j) = rsolu2(nulg(j)+1)
-                        enddo
+                        end do
                     else
 !               if mumps is used as a preconditionner in HPC mode (asterxx),
 !               each process knows the SOL and the numberings are the same
                         do j = 1, nnbsol
                             rsolu(j) = rsolu2(j)
-                        enddo
-                    endif
+                        end do
+                    end if
                 else
                     call asmpi_comm_vect('BCAST', 'C', nbval=nnbsol, bcrank=0, vc=csolu2)
-                    if (.not.lpreco) then
+                    if (.not. lpreco) then
                         do j = 1, nbeql
                             csolu(j) = csolu2(nulg(j)+1)
-                        enddo
+                        end do
                     else
                         do j = 1, nnbsol
                             csolu(j) = csolu2(j)
-                        enddo
-                    endif
-                endif
-            endif
+                        end do
+                    end if
+                end if
+            end if
 !
             if (eli2lg) then
 !           -- PRISE EN COMPTE DES LAGRANGES "2" :
@@ -579,12 +579,12 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     do i = 1, nbsol
                         do k = 1, nbeql
                             if (delg(k) .eq. -1) then
-                                rsolu((i-1)*nbeql+k)= 0.5d0 * rsolu((i-1)*nbeql+k)
+                                rsolu((i-1)*nbeql+k) = 0.5d0*rsolu((i-1)*nbeql+k)
                                 jj = dlg2(k)
                                 rsolu((i-1)*nbeql+jj) = rsolu((i-1)*nbeql+k)
-                            endif
-                        enddo
-                    enddo
+                            end if
+                        end do
+                    end do
                 else
                     do i = 1, nbsol
                         do k = 1, nbeql
@@ -592,71 +592,71 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                                 csolu((i-1)*nbeql+k) = 0.5d0*csolu((i-1)*nbeql+k)
                                 jj = dlg2(k)
                                 csolu((i-1)*nbeql+jj) = csolu((i-1)*nbeql+k)
-                            endif
-                        enddo
-                    enddo
-                endif
-            endif
+                            end if
+                        end do
+                    end do
+                end if
+            end if
 !
 !         --- MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION :
 !         ON NE LE FAIT PAS SI NON DEMANDE
-            if (.not.lpreco .and. prepos) then
+            if (.not. lpreco .and. prepos) then
                 if (ltypr) then
-                    call mrconl('MULT', lmat, nbeql, 'R', rsolu,&
+                    call mrconl('MULT', lmat, nbeql, 'R', rsolu, &
                                 nbsol)
                 else
-                    call mcconl('MULT', lmat, nbeql, 'C', csolu,&
+                    call mcconl('MULT', lmat, nbeql, 'C', csolu, &
                                 nbsol)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 !       -- BROADCAST DE SOLU A TOUS LES PROC
-        if (.not.lmhpc) then
+        if (.not. lmhpc) then
             if (ltypr) then
                 call asmpi_comm_vect('BCAST', 'R', nbval=nnbsol, bcrank=0, vr=rsolu)
             else
                 call asmpi_comm_vect('BCAST', 'C', nbval=nnbsol, bcrank=0, vc=csolu)
-            endif
-        endif
+            end if
+        end if
 !
 !       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
-        if ((lverif).and.(rang .eq. 0)) then
-          raux=0.d0
-          if (ltypr) then
-            do k = 1, nnbsol
-              raux=raux+abs(rsolu2(k))
-            enddo
-          else
-            do k = 1, nnbsol
-              raux=raux+abs(csolu2(k))
-            enddo
-          endif
-          write(ifm,*) 'NORME L1 MUMPS SOLUTION=',raux
-        endif
+        if ((lverif) .and. (rang .eq. 0)) then
+            raux = 0.d0
+            if (ltypr) then
+                do k = 1, nnbsol
+                    raux = raux+abs(rsolu2(k))
+                end do
+            else
+                do k = 1, nnbsol
+                    raux = raux+abs(csolu2(k))
+                end do
+            end if
+            write (ifm, *) 'NORME L1 MUMPS SOLUTION=', raux
+        end if
         if (impr(1:9) .eq. 'OUI_SOLVE') then
             if (rang .eq. 0) then
                 if (ltypr) then
                     do k = 1, nnbsol
-                        write(ifmump,*) k,rsolu2(k)
-                    enddo
+                        write (ifmump, *) k, rsolu2(k)
+                    end do
                 else
                     do k = 1, nnbsol
-                        write(ifmump,*) k,csolu2(k)
-                    enddo
-                endif
-                write(ifmump,*) 'MUMPS FIN SOLUTION'
-            endif
-        endif
+                        write (ifmump, *) k, csolu2(k)
+                    end do
+                end if
+                write (ifmump, *) 'MUMPS FIN SOLUTION'
+            end if
+        end if
 
-        if(l_debug .and. .not. lmhpc) then
+        if (l_debug .and. .not. lmhpc) then
             do j = 1, nnbsol
-                nuno  = zi(jdeeq+2*(j-1))
-                nucmp = zi(jdeeq+2*(j-1) + 1)
+                nuno = zi(jdeeq+2*(j-1))
+                nucmp = zi(jdeeq+2*(j-1)+1)
 !                numéro noeud, num comp du noeud, solution
-                write(50,*) nuno, nucmp, rsolu(j)
+                write (50, *) nuno, nucmp, rsolu(j)
             end do
-            flush(50)
+            flush (50)
         end if
         if (lmhpc) call jedetr('&&AMUMPP.RHS')
     else
@@ -664,7 +664,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !        MAUVAISE OPTION
 !       ------------------------------------------------
         ASSERT(.false.)
-    endif
+    end if
     call jedetr(nonu//'.NUME.DEE2')
     call jedema()
 #endif

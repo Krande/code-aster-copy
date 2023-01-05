@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,10 +48,10 @@ subroutine w039ca(ifi, form)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    lexi=.false.
-    ligrel='&&W039CA.LIGREL'
+    lexi = .false.
+    ligrel = '&&W039CA.LIGREL'
 !
-    if (.not.(form.eq.'MED'.or.form.eq.'RESULTAT')) goto 20
+    if (.not. (form .eq. 'MED' .or. form .eq. 'RESULTAT')) goto 20
 !
 !
 !
@@ -62,143 +62,143 @@ subroutine w039ca(ifi, form)
 !       ----------------
         call getvid('CONCEPT', 'CHAM_MATER', iocc=iocc, scal=chmat, nbret=n1)
         if (n1 .eq. 1) then
-            if (.not.lexi) then
+            if (.not. lexi) then
                 call dismoi('NOM_MAILLA', chmat, 'CHAM_MATER', repk=mailla)
                 call lgphmo(mailla, ligrel, 'PRESENTATION', 'TOUT')
-                lexi=.true.
-            endif
+                lexi = .true.
+            end if
 !
 !
-            titre='Champ de MATERIAUX'
+            titre = 'Champ de MATERIAUX'
             call w039c1(chmat//'.CHAMP_MAT', ifi, form, ligrel, titre)
-        endif
+        end if
 !
 !       -- CARA_ELEM :
 !       ----------------
         call getvid('CONCEPT', 'CARA_ELEM', iocc=iocc, scal=carele, nbret=n1)
         if (n1 .eq. 1) then
-            if (.not.lexi) then
+            if (.not. lexi) then
                 call dismoi('NOM_MAILLA', carele, 'CARA_ELEM', repk=mailla)
                 call lgphmo(mailla, ligrel, 'PRESENTATION', 'TOUT')
-                lexi=.true.
-            endif
+                lexi = .true.
+            end if
 !
             call getvtx('CONCEPT', 'REPERE_LOCAL', iocc=iocc, scal=rplo, nbret=ibid)
-            ASSERT(ibid.eq.1)
+            ASSERT(ibid .eq. 1)
 !
             if (rplo .eq. 'ELNO') then
                 call getvid('CONCEPT', 'MODELE', iocc=iocc, scal=modele, nbret=ibid)
-                ASSERT(ibid.eq.1)
+                ASSERT(ibid .eq. 1)
 !
                 titre = 'vecteur des reperes locaux, pour la visualisation des efforts aux noeuds'
                 call w039c3(carele, modele, ifi, form, titre, .true.)
             else
-                titre='Caracteristiques generales des barres'
+                titre = 'Caracteristiques generales des barres'
                 call w039c1(carele//'.CARGENBA', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques generales des poutres'
+                titre = 'Caracteristiques generales des poutres'
                 call w039c1(carele//'.CARGENPO', ifi, form, ligrel, titre)
-                titre='Caracteristiques geom. des poutres'
+                titre = 'Caracteristiques geom. des poutres'
                 call w039c1(carele//'.CARGEOPO', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques des cables'
+                titre = 'Caracteristiques des cables'
                 call w039c1(carele//'.CARCABLE', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques des poutres courbes'
+                titre = 'Caracteristiques des poutres courbes'
                 call w039c1(carele//'.CARARCPO', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques des poutres "fluides"'
+                titre = 'Caracteristiques des poutres "fluides"'
                 call w039c1(carele//'.CARPOUFL', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques des elements discrets K_*'
+                titre = 'Caracteristiques des elements discrets K_*'
                 call w039c1(carele//'.CARDISCK', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques des elements discrets M_*'
+                titre = 'Caracteristiques des elements discrets M_*'
                 call w039c1(carele//'.CARDISCM', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques des elements discrets A_*'
+                titre = 'Caracteristiques des elements discrets A_*'
                 call w039c1(carele//'.CARDISCA', ifi, form, ligrel, titre)
 !
-                titre='Caracteristiques geom. des coques'
+                titre = 'Caracteristiques geom. des coques'
                 call w039c1(carele//'.CARCOQUE', ifi, form, ligrel, titre)
 !
-                titre='Orientation des elements 2D et 3D'
+                titre = 'Orientation des elements 2D et 3D'
                 call w039c1(carele//'.CARMASSI', ifi, form, ligrel, titre)
 !
-                titre='Orientation des coques, poutres, barres, cables'
+                titre = 'Orientation des coques, poutres, barres, cables'
                 call w039c1(carele//'.CARORIEN', ifi, form, ligrel, titre)
 !
                 if (rplo(1:4) .eq. 'ELEM') then
                     call getvid('CONCEPT', 'MODELE', iocc=iocc, scal=modele, nbret=ibid)
-                    ASSERT(ibid.eq.1)
+                    ASSERT(ibid .eq. 1)
 !
                     titre = 'vecteur des reperes locaux'
                     call w039c3(carele, modele, ifi, form, titre, .false.)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 !       -- CHARGE :
 !       ----------------
         call getvid('CONCEPT', 'CHARGE', iocc=iocc, scal=charge, nbret=n1)
         if (n1 .eq. 1) then
-            if (.not.lexi) then
+            if (.not. lexi) then
                 call dismoi('NOM_MAILLA', charge, 'CHARGE', repk=mailla)
                 call lgphmo(mailla, ligrel, 'PRESENTATION', 'TOUT')
-                lexi=.true.
-            endif
+                lexi = .true.
+            end if
 !
 !
-            titre='Chargement de PESANTEUR'
+            titre = 'Chargement de PESANTEUR'
             call w039c1(charge//'.CHME.PESAN', ifi, form, ligrel, titre)
 !
-            titre='Chargement de ROTATION'
+            titre = 'Chargement de ROTATION'
             call w039c1(charge//'.CHME.ROTAT', ifi, form, ligrel, titre)
 !
-            titre='Chargement de PRES_REP'
+            titre = 'Chargement de PRES_REP'
             call w039c1(charge//'.CHME.PRESS', ifi, form, ligrel, titre)
 !
-            titre='Chargement de forces volumiques en 3D'
+            titre = 'Chargement de forces volumiques en 3D'
             call w039c1(charge//'.CHME.F3D3D', ifi, form, ligrel, titre)
 !
-            titre='Chargement de forces surfaciques en 3D'
+            titre = 'Chargement de forces surfaciques en 3D'
             call w039c1(charge//'.CHME.F2D3D', ifi, form, ligrel, titre)
 !
-            titre='Chargement de forces lineiques en 3D'
+            titre = 'Chargement de forces lineiques en 3D'
             call w039c1(charge//'.CHME.F1D3D', ifi, form, ligrel, titre)
 !
-            titre='Chargement de forces surfaciques en 2D'
+            titre = 'Chargement de forces surfaciques en 2D'
             call w039c1(charge//'.CHME.F2D2D', ifi, form, ligrel, titre)
 !
-            titre='Chargement de forces lineiques en 2D'
+            titre = 'Chargement de forces lineiques en 2D'
             call w039c1(charge//'.CHME.F1D2D', ifi, form, ligrel, titre)
 !
-            titre='Chargement de forces reparties pour les coques'
+            titre = 'Chargement de forces reparties pour les coques'
             call w039c1(charge//'.CHME.FCO3D', ifi, form, ligrel, titre)
             call w039c1(charge//'.CHME.FCO2D', ifi, form, ligrel, titre)
 !
-            titre='Chargement de EPSI_INIT'
+            titre = 'Chargement de EPSI_INIT'
             call w039c1(charge//'.CHME.EPSIN', ifi, form, ligrel, titre)
 !
-            titre='Chargement de SIGM_INTERNE'
+            titre = 'Chargement de SIGM_INTERNE'
             call w039c1(charge//'.CHME.SIINT', ifi, form, ligrel, titre)
 !
-            titre='Chargement de FORCE_ELEC'
+            titre = 'Chargement de FORCE_ELEC'
             call w039c1(charge//'.CHME.FELEC', ifi, form, ligrel, titre)
 !
-            titre='Chargement de FLUX_THM_REP'
+            titre = 'Chargement de FLUX_THM_REP'
             call w039c1(charge//'.CHME.FLUX', ifi, form, ligrel, titre)
 !
-            titre='Chargement d''IMPE_FACE'
+            titre = 'Chargement d''IMPE_FACE'
             call w039c1(charge//'.CHME.IMPED', ifi, form, ligrel, titre)
 !
-            titre='Chargement d''ONDE_FLUI'
+            titre = 'Chargement d''ONDE_FLUI'
             call w039c1(charge//'.CHME.ONDE', ifi, form, ligrel, titre)
 !
-        endif
-    enddo
+        end if
+    end do
 !
- 20 continue
+20  continue
     call detrsd('LIGREL', ligrel)
     call jedema()
 end subroutine

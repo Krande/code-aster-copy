@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine folocx(vale, n, x, prolgd, i,&
+subroutine folocx(vale, n, x, prolgd, i, &
                   epsi, coli, ier)
     implicit none
 #include "asterfort/assert.h"
@@ -59,37 +59,37 @@ subroutine folocx(vale, n, x, prolgd, i,&
         ier = 10
         call utmess('E', 'FONCT0_18')
         goto 999
-    else if (n.eq.1) then
+    else if (n .eq. 1) then
 !             ON A X = VALE(1) + EPSILON
 !             ON A : X < VALE(1) ET PROL GAUCHE AUTORISE
 !             ON A : X > VALE(1) ET PROL DROITE AUTORISE
-        if ((x.eq.0.d0 .and. abs(vale(n)).le.epsi ) .or.&
-            ( x.lt.vale( n) .and. prolgd(1:1).ne.'E' ) .or.&
-            ( x.gt.vale(n) .and. prolgd(2:2).ne.'E' )) then
+        if ((x .eq. 0.d0 .and. abs(vale(n)) .le. epsi) .or. &
+            (x .lt. vale(n) .and. prolgd(1:1) .ne. 'E') .or. &
+            (x .gt. vale(n) .and. prolgd(2:2) .ne. 'E')) then
             i = n
             coli = 'C'
-        else if (abs((vale(n)-x)/x).le.epsi) then
+        else if (abs((vale(n)-x)/x) .le. epsi) then
             i = n
             coli = 'C'
         else
             ier = 30
             call utmess('E', 'FONCT0_23')
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 !     --- PROLONGEMENT A GAUCHE ---
     if (x .le. vale(1)) then
         i = 1
         if (prolgd(1:1) .eq. 'E') then
-            tole = epsi * abs( vale(1) - vale(2) )
+            tole = epsi*abs(vale(1)-vale(2))
             if (abs(vale(1)-x) .le. tole) then
                 coli = 'C'
                 goto 999
-            endif
+            end if
             ier = 30
-            valr (1) = x
-            valr (2) = vale(1)
+            valr(1) = x
+            valr(2) = vale(1)
             call utmess('E', 'FONCT0_19', nr=2, valr=valr)
             goto 999
         else if (prolgd(1:1) .eq. 'L') then
@@ -102,20 +102,20 @@ subroutine folocx(vale, n, x, prolgd, i,&
             ier = 20
             call utmess('E', 'FONCT0_21', sk=prolgd(1:1))
             goto 999
-        endif
+        end if
 !
 !     --- PROLONGEMENT A DROITE ---
-    else if (x.ge.vale(n)) then
+    else if (x .ge. vale(n)) then
         i = n
         if (prolgd(2:2) .eq. 'E') then
-            tole = epsi * abs( vale(n) - vale(n-1) )
+            tole = epsi*abs(vale(n)-vale(n-1))
             if (abs(vale(n)-x) .le. tole) then
                 coli = 'C'
                 goto 999
-            endif
+            end if
             ier = 40
-            valr (1) = x
-            valr (2) = vale(n)
+            valr(1) = x
+            valr(2) = vale(n)
             call utmess('E', 'FONCT0_20', nr=2, valr=valr)
             goto 999
         else if (prolgd(2:2) .eq. 'C') then
@@ -123,24 +123,24 @@ subroutine folocx(vale, n, x, prolgd, i,&
         else if (prolgd(2:2) .eq. 'I') then
             coli = 'T'
         else if (prolgd(2:2) .eq. 'L') then
-            i = n - 1
+            i = n-1
             coli = 'E'
         else
             ier = 20
             call utmess('E', 'FONCT0_21', sk=prolgd(2:2))
             goto 999
-        endif
+        end if
 !
 !     --- RECHERCHE DE LA VALEUR PAR DICHOTOMIE ---
     else
-        if (i .lt. 1 .or. i .gt. n) i = n / 2
+        if (i .lt. 1 .or. i .gt. n) i = n/2
         if (vale(i) .le. x) then
             id = i
             ie = n
         else
             id = 1
             ie = i
-        endif
+        end if
         do j = 1, n
             if (ie .eq. (id+1)) goto 3
             ind = id+(ie-id)/2
@@ -148,13 +148,13 @@ subroutine folocx(vale, n, x, prolgd, i,&
                 id = ind
             else
                 ie = ind
-            endif
+            end if
         end do
-  3     continue
+3       continue
         i = id
         coli = 'I'
-    endif
-    ASSERT(i.ge.1 .and. i.le.n)
+    end if
+    ASSERT(i .ge. 1 .and. i .le. n)
 !
 999 continue
 !

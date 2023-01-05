@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ceobfd(dm, epsm, lambda, mu, ecrod,&
+subroutine ceobfd(dm, epsm, lambda, mu, ecrod, &
                   fd)
 ! person_in_charge: ludovic.idoux at edf.fr
     implicit none
@@ -44,34 +44,34 @@ subroutine ceobfd(dm, epsm, lambda, mu, ecrod,&
     real(kind=8) :: un, deux, treps, trem, dcoefd, ene
     real(kind=8) :: vecc(3, 3), valcc(3)
 !
-    un=1.d0
-    deux=2.d0
+    un = 1.d0
+    deux = 2.d0
 !
-    d=dm
+    d = dm
     do i = 1, 6
-        eps(i)=epsm(i)
+        eps(i) = epsm(i)
     end do
 !
-    treps=eps(1)+eps(2)+eps(3)
+    treps = eps(1)+eps(2)+eps(3)
     call diago3(eps, vecc, valcc)
     do i = 1, 3
         if (valcc(i) .gt. 0.d0) then
-            valcc(i)=0.d0
-        endif
+            valcc(i) = 0.d0
+        end if
     end do
 !
-    trem=valcc(1)**2+valcc(2)**2+valcc(3)**2
+    trem = valcc(1)**2+valcc(2)**2+valcc(3)**2
     if (treps .gt. 0.d0) then
-        treps=0.d0
-    endif
-    dcoefd=deux*(un-d)
-    ene=lambda/deux*treps**2+mu*trem
-    fd=dcoefd*ene-deux*d*ecrod
+        treps = 0.d0
+    end if
+    dcoefd = deux*(un-d)
+    ene = lambda/deux*treps**2+mu*trem
+    fd = dcoefd*ene-deux*d*ecrod
 !
 ! CALCUL DE LA PARTIE POSITIVE DE FD
 ! ON COMPARE A R8PREM() * ECROD (FICHE 16142)
     if (fd .lt. r8prem()*ecrod) then
-        fd=0.d0
-    endif
+        fd = 0.d0
+    end if
 !
 end subroutine

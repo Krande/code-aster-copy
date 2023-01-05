@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine assmam(jvBase, matrAsseZ,&
-                  nbMatrElem, listMatrElem, coefMatrElem,&
+subroutine assmam(jvBase, matrAsseZ, &
+                  nbMatrElem, listMatrElem, coefMatrElem, &
                   numeDofZ, motcle, matrScalType)
 !
 !----------------------------------------------------------------------
 !  attention : cette routine ne doit pas etre appellee directement :
 !              il faut appeler son "chapeau" : asmatr
 !----------------------------------------------------------------------
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -71,12 +71,12 @@ implicit none
 #include "asterfort/nbddlMaxMa.h"
 #include "asterfort/getDistributionParameters.h"
 !
-character(len=1), intent(in) :: jvBase
-integer, intent(in) :: nbMatrElem
-character(len=*), intent(in) :: matrAsseZ, listMatrElem(nbMatrElem), numeDofZ
-integer, intent(in) :: matrScalType
-real(kind=8), intent(in) :: coefMatrElem(*)
-character(len=4), intent(in) :: motcle
+    character(len=1), intent(in) :: jvBase
+    integer, intent(in) :: nbMatrElem
+    character(len=*), intent(in) :: matrAsseZ, listMatrElem(nbMatrElem), numeDofZ
+    integer, intent(in) :: matrScalType
+    real(kind=8), intent(in) :: coefMatrElem(*)
+    character(len=4), intent(in) :: motcle
 !-----------------------------------------------------------------------
 ! Assemblage Morse avec preconditionnement des matr_elem de mailles
 ! "Lagrange".
@@ -110,7 +110,7 @@ character(len=4), intent(in) :: motcle
     character(len=3) :: matd, answer
     real(kind=8) :: c1, temps(7)
     aster_logical :: acreer, cumul, ldistme, lmatd, lmhpc
-    aster_logical :: lmasym, lmesym, ldgrel,lparallel_mesh
+    aster_logical :: lmasym, lmesym, ldgrel, lparallel_mesh
     integer :: admodl, i, nbi1mx
     integer :: jdesc
     integer :: jadli, jadne, jnueq, jnulo1
@@ -196,7 +196,7 @@ character(len=4), intent(in) :: motcle
     call jedbg2(idbgav, 0)
     call infniv(ifm, niv)
 
-    matrAsse=matrAsseZ
+    matrAsse = matrAsseZ
 
 ! - Get numbering
     numeDof = numeDofZ
@@ -208,26 +208,24 @@ character(len=4), intent(in) :: motcle
 ! - Get mesh
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call dismoi('NOM_MAILLA', numeDof, 'NUME_DDL', repk=mesh2)
-    ASSERT(mesh.eq.mesh2)
+    ASSERT(mesh .eq. mesh2)
     call dismoi('PARALLEL_MESH', mesh, 'MAILLAGE', repk=answer)
-    lparallel_mesh=(answer.eq.'OUI')
-    if (.not.lparallel_mesh) then
+    lparallel_mesh = (answer .eq. 'OUI')
+    if (.not. lparallel_mesh) then
         call asmpi_barrier()
-    endif
-
+    end if
 
     call uttcpu('CPU.CALC.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.2', 'DEBUT', ' ')
 
-
     call dismoi('NB_NO_SS_MAX', mesh, 'MAILLAGE', repi=nbnoss)
     call dismoi('NOM_GD', numeDof, 'NUME_DDL', repk=nogdco)
     call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
     call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
-    ncmp=nmxcmp
+    ncmp = nmxcmp
     call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
-    nec=nbec(nugd)
+    nec = nbec(nugd)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
     call jeveuo(jexnum('&CATA.TE.MODELOC', 1), 'L', admodl)
     call jeexin(mesh//'.CONNEX', iret)
@@ -235,24 +233,22 @@ character(len=4), intent(in) :: motcle
         call jeveuo(mesh//'.CONNEX', 'L', iconx1)
         call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', iconx2)
     else
-        iconx1=0
-        iconx2=0
-    endif
+        iconx1 = 0
+        iconx2 = 0
+    end if
 !   ellagr : 0 : il n'existe pas d'element de lagrange
 !            1 : il existe des elements de lagrange
-    ellagr=0
-
+    ellagr = 0
 
 !   -- calcul de lmatd et jnueq :
 !   -----------------------------
     call dismoi('MATR_DISTRIBUEE', numeDof, 'NUME_DDL', repk=matd)
-    lmatd = (matd.eq.'OUI')
+    lmatd = (matd .eq. 'OUI')
     if (lmatd) then
         call jeveuo(numeDof//'.NUML.NUEQ', 'L', jnueq)
     else
         call jeveuo(numeDof//'.NUME.NUEQ', 'L', jnueq)
-    endif
-
+    end if
 
 !   -- calcul de :
 !   --------------
@@ -266,35 +262,35 @@ character(len=4), intent(in) :: motcle
 !     tt  : tt(1) : type (r/c) de ce que l'on assemble
 !           tt(2) : type (r/c) de la sd_matr_asse
 !------------------------------------------------------------
-    matsym=typmat(nbMatrElem,listMatrElem)
-    ASSERT(matsym.eq.'S' .or. matsym.eq.'N')
-    lmasym=(matsym.eq.'S')
+    matsym = typmat(nbMatrElem, listMatrElem)
+    ASSERT(matsym .eq. 'S' .or. matsym .eq. 'N')
+    lmasym = (matsym .eq. 'S')
     if (motcle(1:4) .eq. 'ZERO') then
-        cumul=.false.
-        acreer=.true.
-    else if (motcle(1:4).eq.'CUMU') then
-        cumul=.true.
-        acreer=.false.
+        cumul = .false.
+        acreer = .true.
+    else if (motcle(1:4) .eq. 'CUMU') then
+        cumul = .true.
+        acreer = .false.
         call jelira(matrAsse//'.VALM', 'NMAXOC', nblc)
-        ASSERT(nblc.eq.1 .or. nblc.eq.2)
-        if (nblc .eq. 2) lmasym=.false.
+        ASSERT(nblc .eq. 1 .or. nblc .eq. 2)
+        if (nblc .eq. 2) lmasym = .false.
     else
         ASSERT(.false.)
-    endif
-    ASSERT((matrScalType.eq.1) .or. (matrScalType.eq.2))
+    end if
+    ASSERT((matrScalType .eq. 1) .or. (matrScalType .eq. 2))
     if (matrScalType .eq. 1) then
-        tt='?R'
-    else if (matrScalType.eq.2) then
-        tt='?C'
-    endif
+        tt = '?R'
+    else if (matrScalType .eq. 2) then
+        tt = '?C'
+    end if
 
     call jelira(numeDof//'.NUME.REFN', 'LONMAX', n1)
-    ASSERT(n1.eq.4)
+    ASSERT(n1 .eq. 4)
 
 ! - Get parameters for distribution of elementary matrices
-    call getDistributionParameters(nbMatrElem, listMatrElem,&
-                                   ldistme, ldgrel,&
-                                   rang, nbproc,&
+    call getDistributionParameters(nbMatrElem, listMatrElem, &
+                                   ldistme, ldgrel, &
+                                   rang, nbproc, &
                                    numsd)
 
 !   -- calcul de ldistme, partit, ldgrel, jnumsd :
@@ -322,73 +318,67 @@ character(len=4), intent(in) :: motcle
     !     endif
     ! endif
 
-
     if (lmatd) then
         ASSERT(ldistme)
-    endif
-
-
+    end if
 
 !   -- allocation des objets .NUMLOX et .POSDDX:
 !   ----------------------------------------------
 !   50 est suppose etre le + gd nombre de noeuds d'une maille
 !      standard (jusqu'a present : 27 (hexa27))
-    nbnomx=max(nbnoss,50)
+    nbnomx = max(nbnoss, 50)
     call wkvect('&&ASSMAM.NUMLO1', 'V V I', 2*nbnomx, jnulo1)
     call wkvect('&&ASSMAM.POSDD1', 'V V I', nbnomx*nmxcmp, jposd1)
 !
 !   -- allocation d'un objet de travail utilise dans asretm :
 !      ce vecteur est agrandi si necessaire dans asretm
-    lgtmp2=400
+    lgtmp2 = 400
     call wkvect('&&ASSMAM.TMP2', 'V V I', lgtmp2, jtmp2)
 
     if (acreer) then
         call detrsd('MATR_ASSE', matrAsse)
     else
-        mat19=matrAsse
-        nu14=numeDof
+        mat19 = matrAsse
+        nu14 = numeDof
         call jeveuo(mat19//'.REFA', 'L', jrefa)
-        ASSERT(zk24(jrefa-1+2)(1:14).eq.nu14)
+        ASSERT(zk24(jrefa-1+2) (1:14) .eq. nu14)
         call jedetr(mat19//'.LIME')
         call jedetr(mat19//'.REFA')
-    endif
-
+    end if
 
 !   -- recopie de la liste des matr_elem dans 1 objet jeveux
     call wkvect(matrAsse//'.LIME', jvBase//' V K24 ', nbMatrElem, ilimat)
     do i = 1, nbMatrElem
-        zk24(ilimat+i-1)=listMatrElem(i)
+        zk24(ilimat+i-1) = listMatrElem(i)
         if (dbg .and. listMatrElem(i) .ne. ' ') call cheksd(listMatrElem(i), 'SD_MATR_ELEM', iret)
     end do
 
-
 !  -- calcul d un repertoire,temporaire, matrAsse.lili a partir
 !     de la liste de matrices elementaires matrAsse.lime
-    call crelil('F', nbMatrElem, ilimat, matrAsse//'.LILI', 'V',&
-                '&MAILLA', matrAsse, ibid, mesh, ibid,&
+    call crelil('F', nbMatrElem, ilimat, matrAsse//'.LILI', 'V', &
+                '&MAILLA', matrAsse, ibid, mesh, ibid, &
                 ibid, ilimo, nlili, nbelm, nume_=numeDof)
     call jeveuo(matrAsse//'.ADLI', 'E', jadli)
     call jeveuo(matrAsse//'.ADNE', 'E', jadne)
 
-
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSMAM', 'INIT ', ' ')
         call uttcpu('CPU.ASSMAM', 'DEBUT', ' ')
-    endif
+    end if
 !
 ! --- On alloue ici les tableaux de travail pour assma3
 !     l'augmentation du temps d'assemblage est négligeable
 !
     maxDDLMa = nbddlMaxMa(numeDof, matrAsse, nbMatrElem)
 ! Le x2 est par sécurité - certains processeur peuvent ne pas avoir de ddls à assembler
-    nbi1mx = max(1, 2 * maxDDLMa * maxDDLMa)
+    nbi1mx = max(1, 2*maxDDLMa*maxDDLMa)
     call wkvect('&&ASSMAM.TAB1', 'V V I', nbi1mx, vi=assma3_tab1)
     call wkvect('&&ASSMAM.TAB2', 'V V I', nbi1mx, vi=assma3_tab2)
 !
 !   -- calcul de mat19, nu14, jsmhc, jsmdi, ... :
 !   ----------------------------------------------
-    mat19=matrAsse
-    nu14=numeDof
+    mat19 = matrAsse
+    nu14 = numeDof
 
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
@@ -398,87 +388,81 @@ character(len=4), intent(in) :: motcle
     else
         call jeveuo(nu14//'.NUME.PRNO', 'L', jprn1)
         call jeveuo(jexatr(nu14//'.NUME.PRNO', 'LONCUM'), 'L', jprn2)
-    endif
-
+    end if
 
 !   -- creation et remplissage de .REFA
 !   -------------------------------------
     call wkvect(mat19//'.REFA', jvBase//' V K24', 20, jrefa)
-    zk24(jrefa-1+1)=mesh
-    zk24(jrefa-1+2)=nu14
-    zk24(jrefa-1+8)='ASSE'
+    zk24(jrefa-1+1) = mesh
+    zk24(jrefa-1+2) = nu14
+    zk24(jrefa-1+8) = 'ASSE'
     if (lmasym) then
-        zk24(jrefa-1+9)='MS'
+        zk24(jrefa-1+9) = 'MS'
     else
-        zk24(jrefa-1+9)='MR'
-    endif
-    zk24(jrefa-1+10)='NOEU'
+        zk24(jrefa-1+9) = 'MR'
+    end if
+    zk24(jrefa-1+10) = 'NOEU'
 
     call jeveuo(nu14//'.SMOS.SMDE', 'L', vi=smde)
-    nequ=smde(1)
-    itbloc=smde(2)
-    ASSERT(smde(3).eq.1)
+    nequ = smde(1)
+    itbloc = smde(2)
+    ASSERT(smde(3) .eq. 1)
     if (lmasym) then
-        nblc=1
+        nblc = 1
     else
-        nblc=2
-    endif
-
+        nblc = 2
+    end if
 
 !   -- allocation (ou non) de .VALM :
 !   ---------------------------------
     if (acreer) then
-        call jecrec(mat19//'.VALM', jvBase//' V '//tt(2:2), 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(mat19//'.VALM', jvBase//' V '//tt(2:2), 'NU', 'DISPERSE', 'CONSTANT', &
                     nblc)
         call jeecra(mat19//'.VALM', 'LONMAX', itbloc)
         do i = 1, nblc
             call jecroc(jexnum(mat19//'.VALM', i))
         end do
     else
-        if (.not.cumul) then
+        if (.not. cumul) then
             do i = 1, nblc
                 call jerazo(jexnum(mat19//'.VALM', i), itbloc, 1)
             end do
-        endif
-    endif
-
+        end if
+    end if
 
 !   -- mise en memoire des 1 (ou 2) blocs de .VALM :
 !   ------------------------------------------------
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvalm(1))
     call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=typsca)
-    ASSERT(tt(2:2).eq.typsca)
-    if (.not.lmasym) then
+    ASSERT(tt(2:2) .eq. typsca)
+    if (.not. lmasym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jvalm(2))
     else
-        jvalm(2)=0
-    endif
-
+        jvalm(2) = 0
+    end if
 
 !   3. boucle sur les matr_elem
 !   =============================
     do imat = 1, nbMatrElem
-        c1=coefMatrElem(imat)
-        matel=zk24(ilimat+imat-1)(1:19)
+        c1 = coefMatrElem(imat)
+        matel = zk24(ilimat+imat-1) (1:19)
         call dismoi('NOM_MODELE', matel, 'MATR_ELEM', repk=mo2)
         call dismoi('SUR_OPTION', matel, 'MATR_ELEM', repk=optio)
 
         if (imat .eq. 1) then
-            optio2=optio
+            optio2 = optio
         else
-            if (optio2 .ne. optio) optio2='&&MELANGE'
-        endif
+            if (optio2 .ne. optio) optio2 = '&&MELANGE'
+        end if
 
         if (mo2 .ne. model) then
             call utmess('F', 'ASSEMBLA_5')
-        endif
-
+        end if
 
 !       3.1 traitement des macro-elements :
 !       ----------------------------------
-        call assma2(ldistme, lmasym, tt, nu14, ncmp, matel,&
+        call assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
                     c1, jvalm, jtmp2, lgtmp2)
-
 
 !       3.2 traitement des elements finis classiques
 !       -------------------------------------------
@@ -491,125 +475,121 @@ character(len=4), intent(in) :: motcle
 !       -- boucle sur les resu_elem
 !       ============================
         do iresu = 1, nbresu
-            resu=relr(iresu)(1:19)
+            resu = relr(iresu) (1:19)
             call jeexin(resu//'.DESC', ier)
             if (ier .eq. 0) goto 70
 
             call dismoi('MPI_COMPLET', resu, 'RESUELEM', repk=kempic)
             if (kempic .eq. 'NON') then
-                 ASSERT(ldistme)
-            endif
+                ASSERT(ldistme)
+            end if
 
 !           -- parfois, certains resuelem sont == 0.
             if (zerobj(resu//'.RESL')) goto 70
 
 !           -- nom du ligrel
             call jeveuo(resu//'.NOLI', 'L', vk24=noli)
-            ligre1=noli(1)(1:19)
+            ligre1 = noli(1) (1:19)
 
             call jenonu(jexnom(matrAsse//'.LILI', ligre1), ilima)
             call jenonu(jexnom(nu14//'.NUME.LILI', ligre1), ilinu)
 
             call dismoi('TYPE_SCA', resu, 'RESUELEM', repk=typsca)
-            ASSERT(typsca.eq.'R' .or. typsca.eq.'C')
-            tt(1:1)=typsca
+            ASSERT(typsca .eq. 'R' .or. typsca .eq. 'C')
+            tt(1:1) = typsca
             call dismoi('TYPE_MATRICE', resu, 'RESUELEM', repk=symel)
-            ASSERT(symel(1:1).eq.'S' .or. symel(1:1) .eq.'N')
-            lmesym=(symel(1:1).eq.'S')
+            ASSERT(symel(1:1) .eq. 'S' .or. symel(1:1) .eq. 'N')
+            lmesym = (symel(1:1) .eq. 'S')
             if (lmasym) then
                 ASSERT(lmesym)
-            endif
+            end if
 !
             call jeveuo(resu//'.DESC', 'L', jdesc)
 !
 !           -- boucle sur les grels du ligrel
 !           ==================================
             do igr = 1, zzngel(ilima)
-                if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 60
+                if (ldgrel .and. mod(igr, nbproc) .ne. rang) goto 60
 
 !               -- il se peut que le grel igr soit vide :
                 call jaexin(jexnum(resu//'.RESL', igr), iexi)
                 if (iexi .eq. 0) goto 60
 
-                mode=zi(jdesc+igr+1)
+                mode = zi(jdesc+igr+1)
                 if (mode .gt. 0) then
-                    nnoe=nbno(mode)
-                    ASSERT(nnoe.le.nbnomx)
-                    nbvel=digdel(mode)
+                    nnoe = nbno(mode)
+                    ASSERT(nnoe .le. nbnomx)
+                    nbvel = digdel(mode)
 !                           -- nombre d'elements du grel igr du ligrel ligre1/ilima
-                    nel=zznelg(ilima,igr)
+                    nel = zznelg(ilima, igr)
                     call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
 
 !                   boucle sur les elements du grel
 !                   -------------------------------
                     do iel = 1, nel
-                        call assma3(lmasym, lmesym, tt, igr, iel,&
-                                    c1, rang, jnueq, numsd, jresl,&
-                                    nbvel, nnoe, ldistme, ldgrel,&
-                                    ilima, jadli, jadne, jprn1, jprn2,&
-                                    jnulo1, jposd1, admodl,&
-                                    lcmodl, mode, nec, nmxcmp, ncmp,&
-                                    jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
+                        call assma3(lmasym, lmesym, tt, igr, iel, &
+                                    c1, rang, jnueq, numsd, jresl, &
+                                    nbvel, nnoe, ldistme, ldgrel, &
+                                    ilima, jadli, jadne, jprn1, jprn2, &
+                                    jnulo1, jposd1, admodl, &
+                                    lcmodl, mode, nec, nmxcmp, ncmp, &
+                                    jsmhc, jsmdi, iconx1, iconx2, jtmp2, &
                                     lgtmp2, jvalm, ilinu, ellagr, &
                                     nbi1mx, assma3_tab1, assma3_tab2)
                     end do
                     call jelibe(jexnum(resu//'.RESL', igr))
-                endif
- 60             continue
+                end if
+60              continue
             end do
- 70         continue
+70          continue
         end do
- 80     continue
+80      continue
     end do
-
 
 !   -- mise a jour de REFA(4)
     call jeveuo(mat19//'.REFA', 'E', jrefa)
     if (acreer) then
-        zk24(jrefa-1+4)=optio2
+        zk24(jrefa-1+4) = optio2
     else
-        if (zk24(jrefa-1+4) .ne. optio2) zk24(jrefa-1+4)='&&MELANGE'
-    endif
+        if (zk24(jrefa-1+4) .ne. optio2) zk24(jrefa-1+4) = '&&MELANGE'
+    end if
 
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSMAM', 'FIN', ' ')
         call uttcpr('CPU.ASSMAM', 7, temps)
         write (ifm, '(A44,D11.4,D11.4,D11.4)') &
-            'TEMPS CPU/SYS/ELAPSED ASSEMBLAGE M        : ',&
+            'TEMPS CPU/SYS/ELAPSED ASSEMBLAGE M        : ', &
             temps(5), temps(6), temps(7)
-    endif
+    end if
 
-
-    if (.not.lmasym) then
+    if (.not. lmasym) then
 !       -- par prudence, on affecte aux termes diagonaux du bloc inferieur
 !          les valeurs des termes diagonaux du bloc superieur
         do ieq = 1, nequ
-            idia=zi(jsmdi+ieq-1)
-            zr(jvalm(2)+idia-1)=zr(jvalm(1)+idia-1)
+            idia = zi(jsmdi+ieq-1)
+            zr(jvalm(2)+idia-1) = zr(jvalm(1)+idia-1)
         end do
-    endif
+    end if
 
     call dismoi('MATR_HPC', mat19, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc.eq.'OUI'
+    lmhpc = mathpc .eq. 'OUI'
 !   -- il faut communiquer ellagr entre les procs :
-    if (ldistme.or.lmhpc) then
+    if (ldistme .or. lmhpc) then
         call asmpi_comm_vect('MPI_MAX', 'I', sci=ellagr)
-    endif
-
+    end if
 
 !   -- mise a l'echelle des coef. de lagrange si necessaire :
     if (ellagr .gt. 0) call assma1(mat19, ldistme, lmhpc)
 
-
-    if (.not.ldistme) then
-        zk24(jrefa-1+11)='MPI_COMPLET'
+    if (.not. ldistme) then
+        zk24(jrefa-1+11) = 'MPI_COMPLET'
     else
         if (lmatd) then
-            zk24(jrefa-1+11)='MATR_DISTR'
+            zk24(jrefa-1+11) = 'MATR_DISTR'
         else
-            zk24(jrefa-1+11)='MPI_INCOMPLET'
-        endif
-    endif
+            zk24(jrefa-1+11) = 'MPI_INCOMPLET'
+        end if
+    end if
 !
     call jedetr('&&ASSMAM.TAB1')
     call jedetr('&&ASSMAM.TAB2')
@@ -621,9 +601,9 @@ character(len=4), intent(in) :: motcle
     call jedbg2(ibid, idbgav)
     if (dbg) call cheksd(matrAsse, 'SD_MATR_ASSE', iret)
 
-    if (.not.lparallel_mesh) then
+    if (.not. lparallel_mesh) then
         call asmpi_barrier()
-    endif
+    end if
     call uttcpu('CPU.CALC.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.2', 'FIN', ' ')

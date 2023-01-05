@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
-                  parcho, adime, xvect, vecplu, ninc,&
+subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
+                  parcho, adime, xvect, vecplu, ninc, &
                   nd, nchoc, h, hf)
     implicit none
 !
@@ -103,50 +103,50 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! --- HEURISTIQUE POUR OBTENIR LA TAILLE APPROXIMATIVE DES VALEURES
 ! ---                                NON NULLES DE LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
-        matk=zk24(zi(imat(1)+1))(1:19)
+        matk = zk24(zi(imat(1)+1)) (1:19)
         call jelira(matk//'.VALM', 'NMAXOC', nzmk, kbid)
         call jelira(matk//'.VALM', 'LONMAX', nzmk, kbid)
         call jeexin(matdrv//'.VALM', iret)
         if (iret .eq. 0) then
-            ndrva=(2*h+1)*nzmk+nchoc*(2*hf+1)+3*((nchoc*(2*hf+1))**2)/&
-            4+ 2*nd*(2*h+1)+nchoc*(2*hf+1)*nchoc*(2*h+1)
+            ndrva = (2*h+1)*nzmk+nchoc*(2*hf+1)+3*((nchoc*(2*hf+1))**2)/ &
+                    4+2*nd*(2*h+1)+nchoc*(2*hf+1)*nchoc*(2*h+1)
         else
             call jelira(jexnum(matdrv//'.VALM', 1), 'LONMAX', ndrva, kbid)
-            ndrva=101*ndrva/100
-        endif
+            ndrva = 101*ndrva/100
+        end if
 ! ----------------------------------------------------------------------
 ! --- CREATION DE VECTEURS TEMPORAIRES
 ! ----------------------------------------------------------------------
 ! --- POUR LE STOCKAGE MORSE
-        xsmct='&&MNLDRV.SMHC'
+        xsmct = '&&MNLDRV.SMHC'
         call wkvect(xsmct, 'V V I', ndrva, ismct)
-        xvat1='&&MNLDRV.VAL1'
+        xvat1 = '&&MNLDRV.VAL1'
         call wkvect(xvat1, 'V V R', ndrva, ivat1)
-        xvat2='&&MNLDRV.VAL2'
+        xvat2 = '&&MNLDRV.VAL2'
         call wkvect(xvat2, 'V V R', ndrva, ivat2)
-        xvinf='&&MNLDRV.VINF'
+        xvinf = '&&MNLDRV.VINF'
         call wkvect(xvinf, 'V V R', ndrva, ivinf)
-        xiinf='&&MNLDRV.IINF'
+        xiinf = '&&MNLDRV.IINF'
         call wkvect(xiinf, 'V V R', ndrva, iiinf)
-        xninf='&&MNLDRV.NINF'
+        xninf = '&&MNLDRV.NINF'
         call wkvect(xninf, 'V V I', ninc, ininf)
 ! --- POUR LE CALCUL DE LA MATRICE JACOBIENNE
-        xei='&&MNLDRV.EI'
+        xei = '&&MNLDRV.EI'
         call wkvect(xei, 'V V R', ninc, ivei)
-        xtemp='&&MNLDRV.TEMP'
+        xtemp = '&&MNLDRV.TEMP'
         call wkvect(xtemp, 'V V R', ninc-1, itemp)
-        xtemp2='&&MNLDRV.TEMP2'
+        xtemp2 = '&&MNLDRV.TEMP2'
         call wkvect(xtemp2, 'V V R', ninc-1, itep2)
-        xdrvj='&&MNLDRV.DRVJ'
+        xdrvj = '&&MNLDRV.DRVJ'
         call wkvect(xdrvj, 'V V R', ninc, idrvj)
 !
 ! ----------------------------------------------------------------------
 ! --- PARAMETRES
 ! ----------------------------------------------------------------------
-        eps=0.d0
-        ninf=0
-        ndrdv=0
-        res=0
+        eps = 0.d0
+        ninf = 0
+        ndrdv = 0
+        res = 0
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
@@ -160,36 +160,36 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
             call dscal(ninc-1, 0.d0, zr(itep2), 1)
             call dscal(ninc, 0.d0, zr(ivei), 1)
 ! ---     CREATION DU VECTEUR DE BASE CANONIQUE (E_J)
-            zr(ivei-1+j)=1.d0
+            zr(ivei-1+j) = 1.d0
 ! ---     CALCUL DE L(E_J)
-            call mnlldr(j, imat, neq, ninc, nd,&
-                        nchoc, h, hf, parcho, xcdl,&
+            call mnlldr(j, imat, neq, ninc, nd, &
+                        nchoc, h, hf, parcho, xcdl, &
                         adime, xtemp)
-            call daxpy(ninc-1, 1.d0, zr(itemp), 1, zr(idrvj),&
+            call daxpy(ninc-1, 1.d0, zr(itemp), 1, zr(idrvj), &
                        1)
 ! ---     CALCUL DE Q(V,E_J)
-            call mnlqd2(j, imat, neq, ninc, nd,&
-                        nchoc, h, hf, parcho, xcdl,&
+            call mnlqd2(j, imat, neq, ninc, nd, &
+                        nchoc, h, hf, parcho, xcdl, &
                         adime, xvect, xtemp)
-            call daxpy(ninc-1, 1.d0, zr(itemp), 1, zr(idrvj),&
+            call daxpy(ninc-1, 1.d0, zr(itemp), 1, zr(idrvj), &
                        1)
 ! ---     CALCUL DE Q(E_J,V)
-            call mnlqd1(j, imat, neq, ninc, nd,&
-                        nchoc, h, hf, parcho, xcdl,&
+            call mnlqd1(j, imat, neq, ninc, nd, &
+                        nchoc, h, hf, parcho, xcdl, &
                         adime, xvect, xtemp)
-            call daxpy(ninc-1, 1.d0, zr(itemp), 1, zr(idrvj),&
+            call daxpy(ninc-1, 1.d0, zr(itemp), 1, zr(idrvj), &
                        1)
-            zr(idrvj-1+ninc)=1.d0
+            zr(idrvj-1+ninc) = 1.d0
 ! ---     STOCKAGE MORSE
 ! ---     ON STOCKE LES VALEURS NON NULLES DE LA PARTIE TRIANGULAIRE
 ! ---     INFERIEURE DE LA MATRICE
             do i = j+1, ninc
                 if (abs(zr(idrvj-1+i)) .gt. eps) then
-                    ninf=ninf+1
+                    ninf = ninf+1
 ! ---         ON VERIFIE QUE LA TAILLE APPROXIMATIVE DES VECTEURS
 ! ---         TEMPORAIRES EST SUFFISANTE
                     if (ninf .gt. ndrva) then
-                        ndrva=110*ndrva/100
+                        ndrva = 110*ndrva/100
                         call juveca(xsmct, ndrva)
                         call jeveuo(xsmct, 'E', ismct)
                         call juveca(xvat1, ndrva)
@@ -200,27 +200,27 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                         call jeveuo(xvinf, 'E', ivinf)
                         call juveca(xiinf, ndrva)
                         call jeveuo(xiinf, 'E', iiinf)
-                    endif
+                    end if
 ! ---         1/ ON CREE UNE CLE UNIQUE A L'AIDE DES INDICES DE LIGNE ET
 ! ---         DE COLONNES DE LA MATRICE
-                    zr(iiinf-1+ninf)=ninc*i+j
+                    zr(iiinf-1+ninf) = ninc*i+j
 ! ---         2/ ON RECUPERE LA VALEUR ASSOCIE A CETTE CLE
-                    zr(ivinf-1+ninf)=zr(idrvj-1+i)
-                endif
+                    zr(ivinf-1+ninf) = zr(idrvj-1+i)
+                end if
             end do
 ! ---     3/ ON INDIQUE LE NOMBRE DE TERMES NON NULS POUR CETTE COLONNE
-            zi(ininf-1+j)=ninf
+            zi(ininf-1+j) = ninf
 ! ---     ON STOCKE LES VALEURS (NON NULLES) DE LA MATRICE DANS LES
 ! ---     VECTEURS TEMPORAIRES
             do i = 1, j
 ! ---       LA DIAGONALE EST TOUJOURS SOTCKEE (POUR LA PARTIE
 ! ---       SUPERIEURE ET INFERIEURE)
                 if (i .eq. j) then
-                    ndrdv=ndrdv+1
+                    ndrdv = ndrdv+1
 ! ---         ON VERIFIE QUE LA TAILLE APPROXIMATIVE DES VECTEURS
 ! ---         TEMPORAIRES EST SUFFISANTE
                     if (ndrdv .gt. ndrva) then
-                        ndrva=110*ndrva/100
+                        ndrva = 110*ndrva/100
                         call juveca(xsmct, ndrva)
                         call jeveuo(xsmct, 'E', ismct)
                         call juveca(xvat1, ndrva)
@@ -231,17 +231,17 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                         call jeveuo(xvinf, 'E', ivinf)
                         call juveca(xiinf, ndrva)
                         call jeveuo(xiinf, 'E', iiinf)
-                    endif
-                    zi(ismct-1+ndrdv)=i
-                    zr(ivat1-1+ndrdv)=zr(idrvj-1+i)
-                    zr(ivat2-1+ndrdv)=zr(idrvj-1+i)
+                    end if
+                    zi(ismct-1+ndrdv) = i
+                    zr(ivat1-1+ndrdv) = zr(idrvj-1+i)
+                    zr(ivat2-1+ndrdv) = zr(idrvj-1+i)
 ! ---       ON TRAITE LE CAS OU UNE VALEUR DANS LA PARTIE SUP. EST !=0
-                else if (abs(zr(idrvj-1+i)).gt.eps) then
-                    ndrdv=ndrdv+1
+                else if (abs(zr(idrvj-1+i)) .gt. eps) then
+                    ndrdv = ndrdv+1
 ! ---         ON VERIFIE QUE LA TAILLE APPROXIMATIVE DES VECTEURS
 ! ---         TEMPORAIRES EST SUFFISANTE
                     if (ndrdv .gt. ndrva) then
-                        ndrva=110*ndrva/100
+                        ndrva = 110*ndrva/100
                         call juveca(xsmct, ndrva)
                         call jeveuo(xsmct, 'E', ismct)
                         call juveca(xvat1, ndrva)
@@ -252,43 +252,43 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                         call jeveuo(xvinf, 'E', ivinf)
                         call juveca(xiinf, ndrva)
                         call jeveuo(xiinf, 'E', iiinf)
-                    endif
+                    end if
 ! ---         ON STOCKE DANS LES VECTEURS TEMPORAIRES
-                    zi(ismct-1+ndrdv)=i
-                    zr(ivat1-1+ndrdv)=zr(idrvj-1+i)
+                    zi(ismct-1+ndrdv) = i
+                    zr(ivat1-1+ndrdv) = zr(idrvj-1+i)
 ! ---         ON S'OCCUPE DE LA PARTIE INF.
-                    cle=ninc*j+i
+                    cle = ninc*j+i
                     if (i .eq. 1) then
-                        nind=zi(ininf-1+i)
+                        nind = zi(ininf-1+i)
                         call mnlind(nind, 0, cle, zr(iiinf), ind)
                     else
-                        nind=zi(ininf-1+i)-zi(ininf-1+i-1)
-                        call mnlind(nind, zi(ininf-1+i-1), cle, zr( iiinf-1+zi(ininf-1+i-1)+1),&
+                        nind = zi(ininf-1+i)-zi(ininf-1+i-1)
+                        call mnlind(nind, zi(ininf-1+i-1), cle, zr(iiinf-1+zi(ininf-1+i-1)+1), &
                                     ind)
-                    endif
+                    end if
                     if (ind .lt. 0) then
-                        zr(ivat2-1+ndrdv)=0.d0
+                        zr(ivat2-1+ndrdv) = 0.d0
                     else
-                        zr(ivat2-1+ndrdv)=zr(ivinf-1+ind)
-                    endif
+                        zr(ivat2-1+ndrdv) = zr(ivinf-1+ind)
+                    end if
 ! ---       ON TRAITE LE CAS OU UNE VALEUR DANS LA PARTIE SUP. EST =0
                 else
 ! ---         ON VERIFIE SI LA VALEUR DANS LA PARTIE INF. EST =0 AUSSI
-                    cle=ninc*j+i
+                    cle = ninc*j+i
                     if (i .eq. 1) then
-                        nind=zi(ininf-1+i)
+                        nind = zi(ininf-1+i)
                         call mnlind(nind, 0, cle, zr(iiinf), ind)
                     else
-                        nind=zi(ininf-1+i)-zi(ininf-1+i-1)
-                        call mnlind(nind, zi(ininf-1+i-1), cle, zr( iiinf-1+zi(ininf-1+i-1)+1),&
+                        nind = zi(ininf-1+i)-zi(ininf-1+i-1)
+                        call mnlind(nind, zi(ininf-1+i-1), cle, zr(iiinf-1+zi(ininf-1+i-1)+1), &
                                     ind)
-                    endif
+                    end if
                     if (ind .gt. 0) then
-                        ndrdv=ndrdv+1
+                        ndrdv = ndrdv+1
 ! ---         ON VERIFIE QUE LA TAILLE APPROXIMATIVE DES VECTEURS
 ! ---         TEMPORAIRES EST SUFFISANTE
                         if (ndrdv .gt. ndrva) then
-                            ndrva=110*ndrva/100
+                            ndrva = 110*ndrva/100
                             call juveca(xsmct, ndrva)
                             call jeveuo(xsmct, 'E', ismct)
                             call juveca(xvat1, ndrva)
@@ -299,25 +299,25 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                             call jeveuo(xvinf, 'E', ivinf)
                             call juveca(xiinf, ndrva)
                             call jeveuo(xiinf, 'E', iiinf)
-                        endif
-                        zi(ismct-1+ndrdv)=i
-                        zr(ivat1-1+ndrdv)=zr(idrvj-1+i)
-                        zr(ivat2-1+ndrdv)=zr(ivinf-1+ind)
-                    endif
-                endif
+                        end if
+                        zi(ismct-1+ndrdv) = i
+                        zr(ivat1-1+ndrdv) = zr(idrvj-1+i)
+                        zr(ivat2-1+ndrdv) = zr(ivinf-1+ind)
+                    end if
+                end if
             end do
-            zi(ismdi-1+j)=ndrdv
+            zi(ismdi-1+j) = ndrdv
         end do
         call jeveuo(numdrv//'.SMOS.SMDE', 'E', vi=smde)
-        smde(2)=ndrdv
+        smde(2) = ndrdv
 ! ---   DESTRUCTION DES CHAMPS A REMPLIR
         call jedetr(matdrv//'.VALM')
         call jedetr(numdrv//'.SMOS.SMHC')
 ! ---   AU CAS OU LA MATRICE A ETE FACTORISEE
         call jeveuo(matdrv//'.REFA', 'E', irefa)
-        zk24(irefa-1+8)=' '
+        zk24(irefa-1+8) = ' '
 ! ---   REMPLISSAGE CHAMP SMDI, SMHC ET VALE
-        call jecrec(matdrv//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec(matdrv//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                     2)
         call jeecra(jexnum(matdrv//'.VALM', 1), 'LONMAX', ndrdv, ' ')
         call jeecra(jexnum(matdrv//'.VALM', 2), 'LONMAX', ndrdv, ' ')
@@ -327,7 +327,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
         call dcopy(ndrdv, zr(ivat1), 1, zr(ival1), 1)
         call dcopy(ndrdv, zr(ivat2), 1, zr(ival2), 1)
         do i = 1, ndrdv
-            zi4(ismhc-1+i)=zi(ismct-1+i)
+            zi4(ismhc-1+i) = zi(ismct-1+i)
         end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES
@@ -347,18 +347,18 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
     else
         call jeveuo(matdrv//'.REFA', 'E', irefa)
-        zk24(irefa-1+8)=' '
+        zk24(irefa-1+8) = ' '
         call jeveuo(numdrv//'.SMOS.SMDI', 'L', ismdi)
         call jeveuo(jexnum(matdrv//'.VALM', 1), 'E', ival1)
         call jeveuo(jexnum(matdrv//'.VALM', 2), 'E', ival2)
-    endif
-    zr(ival1-1+zi(ismdi-1+ninc))=vecplu(ninc)
+    end if
+    zr(ival1-1+zi(ismdi-1+ninc)) = vecplu(ninc)
     call dcopy(ninc, vecplu, 1, zr(ival2-1+zi(ismdi-1+ninc-1)+1), 1)
 ! ----------------------------------------------------------------------
 ! --- FACTORISATION DE LA MATRICE
 ! ----------------------------------------------------------------------
     solveu = '&&OP0061.SOLVEUR'
-    call preres(solveu, 'V', iret, ' ', matdrv,&
+    call preres(solveu, 'V', iret, ' ', matdrv, &
                 ibid, -9999)
 !
     call jedema()

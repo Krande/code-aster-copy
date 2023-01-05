@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,94 +63,94 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
     icar = 0
     if (nomrac(1:1) .eq. '*') then
         ipre = 1
-    endif
+    end if
     do i = 2, 8
         if (nomrac(i:i) .eq. '*') then
             isuf = 1
-            icar = i - 1 - ipre
+            icar = i-1-ipre
             goto 20
-        else if (nomrac(i:i).eq.' ') then
-            icar = i - 1 - ipre
+        else if (nomrac(i:i) .eq. ' ') then
+            icar = i-1-ipre
             goto 20
-        endif
+        end if
     end do
- 20 continue
+20  continue
 !
     if (isuf .eq. 0 .and. ipre .eq. 0) then
         call utmess('F', 'ALGELINE_86', sk=nomrac)
-    endif
+    end if
 !
     if (ipre .eq. 0) then
         do i = 1, nbgrmx
             call jenuno(jexnum(mailla//'.GROUPEMA', i), nomgri)
             if (nomrac(1:icar) .eq. nomgri(1:icar)) then
-                nbgrma = nbgrma + 1
+                nbgrma = nbgrma+1
                 nomcyl(nbgrma) = nomgri
-            endif
+            end if
         end do
-    else if (ipre.eq.1.and.isuf.eq.0) then
+    else if (ipre .eq. 1 .and. isuf .eq. 0) then
         do i = 1, nbgrmx
             call jenuno(jexnum(mailla//'.GROUPEMA', i), nomgri)
             do j = 2, 8-icar
                 if (nomrac(2:2) .eq. nomgri(j:j)) then
-                    if (nomrac(2:icar+1) .eq. nomgri(j:(j+icar-1)) .and.&
+                    if (nomrac(2:icar+1) .eq. nomgri(j:(j+icar-1)) .and. &
                         nomgri((j+icar):(j+icar)) .eq. ' ') then
-                        nbgrma = nbgrma + 1
+                        nbgrma = nbgrma+1
                         nomcyl(nbgrma) = nomgri
                         goto 60
-                    endif
-                endif
+                    end if
+                end if
             end do
             j = 8-icar+1
             if (nomrac(2:2) .eq. nomgri(j:j)) then
                 if (nomrac(2:icar+1) .eq. nomgri(j:(j+icar-1))) then
-                    nbgrma = nbgrma + 1
+                    nbgrma = nbgrma+1
                     nomcyl(nbgrma) = nomgri
-                endif
-            endif
- 60         continue
+                end if
+            end if
+60          continue
         end do
-    else if (ipre.eq.1.and.isuf.ne.0) then
+    else if (ipre .eq. 1 .and. isuf .ne. 0) then
         do i = 1, nbgrmx
             call jenuno(jexnum(mailla//'.GROUPEMA', i), nomgri)
             do j = 1, 8-icar
                 if (nomrac(2:2) .eq. nomgri(j:j)) then
                     if (nomrac(2:icar+1) .eq. nomgri(j:(j+icar-1))) then
-                        nbgrma = nbgrma + 1
+                        nbgrma = nbgrma+1
                         nomcyl(nbgrma) = nomgri
                         goto 90
-                    endif
-                endif
+                    end if
+                end if
             end do
- 90         continue
+90          continue
         end do
-    endif
+    end if
     if (nbgrma .eq. 0) then
         call utmess('F', 'ALGELINE_87')
-    endif
+    end if
 !
     ifm = iunifi('MESSAGE')
-    write (ifm,*) '==============================================='&
-     &   ,'================================='
-    write (ifm,*) '           GROUPES DE MAILLES SELECTIONNES '&
-     &   ,'POUR LA RACINE COMMUNE'
-    write (ifm,*) '==============================================='&
-     &   ,'================================='
+    write (ifm, *) '==============================================='&
+     &   , '================================='
+    write (ifm, *) '           GROUPES DE MAILLES SELECTIONNES '&
+     &   , 'POUR LA RACINE COMMUNE'
+    write (ifm, *) '==============================================='&
+     &   , '================================='
     nt = int(nbgrma/8)
     do i = 1, nt
         ndeb = nt*(i-1)+1
         nfin = nt*(i-1)+8
-        write (ifm,6001) (nomcyl(j), j=ndeb,nfin)
+        write (ifm, 6001) (nomcyl(j), j=ndeb, nfin)
     end do
     if ((nt*8) .lt. nbgrma) then
         ndeb = nt*8+1
         nfin = nbgrma
-        write (ifm,6001) (nomcyl(j), j=ndeb,nfin)
-    endif
-    write (ifm,*) '==============================================='&
-     &   ,'================================='
+        write (ifm, 6001) (nomcyl(j), j=ndeb, nfin)
+    end if
+    write (ifm, *) '==============================================='&
+     &   , '================================='
 !
-    6001 format (1x,6(2x,a24))
+6001 format(1x, 6(2x, a24))
 !
 !
     call jedema()

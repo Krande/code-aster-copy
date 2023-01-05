@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xposep(mo, malini, mailc, mailx, nsetot,&
+subroutine xposep(mo, malini, mailc, mailx, nsetot, &
                   nnntot, ncotot, logrma, listgr)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -73,7 +73,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
     integer :: nbma, isepma, jcesd, jcesl, iad, ima
     integer :: nbman, nbmac, nbmax, ngr, igr, j1, n1, nbelt, iel, nsetot
     integer :: imac, imax, jmac, jmax, nnntot, ncotot, nse, n, nbgma
-    integer ::  ndime,  iret1, jlogma
+    integer ::  ndime, iret1, jlogma
     character(len=8) :: massmo, typma
     character(len=19) :: ces, ligrel
     character(len=24) :: sepmai, liel
@@ -81,7 +81,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
     integer, pointer :: tma(:) => null()
     integer, pointer :: typm(:) => null()
     integer, pointer :: cesv(:) => null()
-    parameter     (massmo = 'NON')
+    parameter(massmo='NON')
 !
 !
     call jemarq()
@@ -101,18 +101,18 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !     LES MAILLES SANS MODELE RESTENT A 0
 !     DE PLUS, LES MAILLES POI1 SONT CONSIDEREES COMME SANS MODELE
 !     ET NE SERONT PAS POST TRAITEES
-    ligrel=mo//'.MODELE'
-    liel=ligrel//'.LIEL'
+    ligrel = mo//'.MODELE'
+    liel = ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', ngr)
     do igr = 1, ngr
         call jeveuo(jexnum(liel, igr), 'L', j1)
         call jelira(jexnum(liel, igr), 'LONMAX', n1)
-        nbelt=n1-1
+        nbelt = n1-1
         do iel = 1, nbelt
-            ima=zi(j1-1+iel)
+            ima = zi(j1-1+iel)
             call jenuno(jexnum('&CATA.TM.NOMTM', tma(ima)), typma)
             if (typma .eq. 'POI1') goto 100
-            zi(isepma-1+ima)=-1
+            zi(isepma-1+ima) = -1
         end do
 100     continue
     end do
@@ -149,55 +149,55 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
         if (massmo .eq. 'NON' .and. zi(isepma-1+ima) .eq. 0) goto 200
 !
 !       RECUPERATION DE NSE
-        call cesexi('C', jcesd, jcesl, ima, 1,&
+        call cesexi('C', jcesd, jcesl, ima, 1, &
                     1, 1, iad)
         if (iad .ne. 0) then
-            nse=cesv(iad)
+            nse = cesv(iad)
         else
-            nse=0
-        endif
+            nse = 0
+        end if
 !
 !       SI NSE DIFFERENT DE 0 ALORS MAILLE SOUS DECOUPEE
 !       SINON, MAILLE CLASSIQUE
         if (nse .ne. 0) then
-            zi(isepma-1+ima)= 2
-            nbmax = nbmax + 1
+            zi(isepma-1+ima) = 2
+            nbmax = nbmax+1
 !         DIMENSION TOPOLOGIQUE DE LA MAILLE
-            ndime= tmdim(typm(ima))
+            ndime = tmdim(typm(ima))
 !
 !         AUGMENTATION DE NSETOT AVEC LE NOMBRE DE NSE SUR LA MAILLE
-            nsetot = nsetot + nse
+            nsetot = nsetot+nse
 !         AUGMENTATION DU NOMBRE DE NOUVEAUX NOEUDS (NNNTOT)
-            nnntot = nnntot + cesv(iad+2)
+            nnntot = nnntot+cesv(iad+2)
 !         AUGMENTATION DU NOMBRE DE NOEUDS DANS LA CONNECTIVITE TOT
             if (ismali(typma)) then
-                ncotot = ncotot + nse * (ndime + 1)
+                ncotot = ncotot+nse*(ndime+1)
             else
-                if(ndime.eq.1) ncotot = ncotot + nse * 3
-                if(ndime.eq.2) ncotot = ncotot + nse * 6
-                if(ndime.eq.3) ncotot = ncotot + nse * 10
-            endif
+                if (ndime .eq. 1) ncotot = ncotot+nse*3
+                if (ndime .eq. 2) ncotot = ncotot+nse*6
+                if (ndime .eq. 3) ncotot = ncotot+nse*10
+            end if
 !
 !         AUGMENTATION DE LA TAILLE DES GROUP_MA
             call xpogma(nbgma, nse, listgr, ima, jlogma)
 !
         else
-            zi(isepma-1+ima)= 1
-            nbmac = nbmac + 1
+            zi(isepma-1+ima) = 1
+            nbmac = nbmac+1
 !         N : NOMBRE DE NOEUDS DE LA MAILLE
             call jelira(jexnum(malini//'.CONNEX', ima), 'LONMAX', n)
-            ncotot = ncotot + n
+            ncotot = ncotot+n
 !
 !         AUGMENTATION DE LA TAILLE DES GROUP_MA
             call xpogma(nbgma, 1, listgr, ima, jlogma)
 !
-        endif
+        end if
 !
 200     continue
     end do
 !
 !     NOMBRE DE MAILLES NON TRAITEES
-    nbman = nbma - nbmac - nbmax
+    nbman = nbma-nbmac-nbmax
 !
     call utmess('I', 'XFEM_7', sk='NON TRAITEES', si=nbman)
     call utmess('I', 'XFEM_7', sk='CLASSIQUES', si=nbmac)
@@ -211,12 +211,12 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
     if (nbmax .ne. 0) call wkvect(mailx, 'V V I', nbmax, jmax)
     do ima = 1, nbma
         if (zi(isepma-1+ima) .eq. 1) then
-            imac = imac + 1
+            imac = imac+1
             zi(jmac-1+imac) = ima
-        else if (zi(isepma-1+ima).eq.2) then
-            imax = imax + 1
+        else if (zi(isepma-1+ima) .eq. 2) then
+            imax = imax+1
             zi(jmax-1+imax) = ima
-        endif
+        end if
     end do
 !
     call jedetr(sepmai)

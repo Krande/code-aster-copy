@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idfde1, idfde2, geom,&
+subroutine nmfogn(ndim, nno1, nno2, npg, iw, &
+                  vff1, vff2, idfde1, idfde2, geom, &
                   typmod, mat, ddl, sigm, vect)
 !
 !
@@ -77,19 +77,19 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
     rac2 = sqrt(2.d0)
     grand = .false.
     axi = typmod(1) .eq. 'AXIS'
-    nddl = nno1*ndim + nno2
+    nddl = nno1*ndim+nno2
     ndimsi = 2*ndim
 !
     call r8inir(nddl, 0.d0, vect, 1)
 !
     nom(1) = 'C_GRAD_VARI'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, mat,&
-                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mat, &
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, nom, val, k2, 2)
     c = val(1)
 !
@@ -102,43 +102,43 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 !
-        call dfdmip(ndim, nno1, axi, geom, g,&
-                    iw, vff1(1, g), idfde1, r, wg,&
+        call dfdmip(ndim, nno1, axi, geom, g, &
+                    iw, vff1(1, g), idfde1, r, wg, &
                     dfdi1)
-        nax=.false.
-        call nmmabu(ndim, nno1, nax, grand, dfdi1,&
+        nax = .false.
+        call nmmabu(ndim, nno1, nax, grand, dfdi1, &
                     b)
         if (axi) then
             do n = 1, nno1
-                b(3,1,n) = vff1(n,g)/r
+                b(3, 1, n) = vff1(n, g)/r
             end do
-        endif
+        end if
 !
 !      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A
 !
-        call dfdmip(ndim, nno2, axi, geom, g,&
-                    iw, vff2(1, g), idfde2, r, wg,&
+        call dfdmip(ndim, nno2, axi, geom, g, &
+                    iw, vff2(1, g), idfde2, r, wg, &
                     dfdi2)
 !
         av = 0
         do n = 1, nno2
-            av = av + vff2(n,g)*ddl(ia(n))
+            av = av+vff2(n, g)*ddl(ia(n))
         end do
 !
         do i = 1, ndim
             ag(i) = 0
             do n = 1, nno2
-                ag(i) = ag(i) + dfdi2(nno2*(i-1)+n)*ddl(ia(n))
+                ag(i) = ag(i)+dfdi2(nno2*(i-1)+n)*ddl(ia(n))
             end do
         end do
 !
         do kl = 1, 3
-            sigma(kl) = sigm(kl,g)
+            sigma(kl) = sigm(kl, g)
         end do
         do kl = 4, ndimsi
-            sigma(kl) = sigm(kl,g)*rac2
+            sigma(kl) = sigm(kl, g)*rac2
         end do
-        bp = sigm(ndimsi+1,g)
+        bp = sigm(ndimsi+1, g)
 !
 !      VECTEUR FINT:U
 !
@@ -147,22 +147,22 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
                 kk = iu(nno1*(i-1)+n)
                 t1 = 0
                 do kl = 1, ndimsi
-                    t1 = t1 + sigma(kl)*b(kl,i,n)
+                    t1 = t1+sigma(kl)*b(kl, i, n)
                 end do
-                vect(kk) = vect(kk) + wg*t1
+                vect(kk) = vect(kk)+wg*t1
             end do
         end do
 !
 !      VECTEUR FINT:A
 !
         do n = 1, nno2
-            t1 = vff2(n,g)*bp
+            t1 = vff2(n, g)*bp
             t2 = 0
             do i = 1, ndim
-                t2 = t2 + c*dfdi2(nno2*(i-1)+n)*ag(i)
+                t2 = t2+c*dfdi2(nno2*(i-1)+n)*ag(i)
             end do
             kk = ia(n)
-            vect(kk) = vect(kk) + wg*(t2+t1)
+            vect(kk) = vect(kk)+wg*(t2+t1)
         end do
 !
     end do

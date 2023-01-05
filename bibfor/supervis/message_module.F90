@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,12 +49,12 @@ contains
         real(kind=8), intent(in), optional, target :: valr(*)
         real(kind=8), intent(in), optional :: sr
 !
-        ASSERT(ENSEMBLE2(nk,valk))
-        ASSERT(ENSEMBLE2(ni,vali))
-        ASSERT(ENSEMBLE2(nr,valr))
-        ASSERT(EXCLUS2(valk,sk))
-        ASSERT(EXCLUS2(vali,si))
-        ASSERT(EXCLUS2(valr,sr))
+        ASSERT(ENSEMBLE2(nk, valk))
+        ASSERT(ENSEMBLE2(ni, vali))
+        ASSERT(ENSEMBLE2(nr, valr))
+        ASSERT(EXCLUS2(valk, sk))
+        ASSERT(EXCLUS2(vali, si))
+        ASSERT(EXCLUS2(valr, sr))
         ! ASSERT(absent(num_except) .or. typ == 'Z')
 !
         msg%typ = typ
@@ -62,64 +62,64 @@ contains
         msg%except = 0
         if (present(num_except)) then
             msg%except = num_except
-        endif
+        end if
 !
         msg%nk = 0
-        if (AU_MOINS_UN2(sk,valk)) then
+        if (AU_MOINS_UN2(sk, valk)) then
             if (present(sk)) then
                 msg%nk = 1
-                allocate(msg%valk(1))
+                allocate (msg%valk(1))
                 msg%valk(1) = sk
             else
-                if ( nk .eq. 0 ) then
-                    allocate(msg%valk(1))
+                if (nk .eq. 0) then
+                    allocate (msg%valk(1))
                     msg%valk(1) = " "
                 else
-                    ASSERT(nk.ge.1)
+                    ASSERT(nk .ge. 1)
                     msg%nk = nk
-                    allocate(msg%valk(msg%nk))
+                    allocate (msg%valk(msg%nk))
                     msg%valk(1:nk) = valk(1:nk)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         msg%ni = 0
-        if (AU_MOINS_UN2(si,vali)) then
+        if (AU_MOINS_UN2(si, vali)) then
             if (present(si)) then
                 msg%ni = 1
-                allocate(msg%vali(1))
+                allocate (msg%vali(1))
                 msg%vali(1) = si
             else
-                if ( ni .eq. 0 ) then
-                    allocate(msg%vali(1))
+                if (ni .eq. 0) then
+                    allocate (msg%vali(1))
                     msg%vali(1) = 0
                 else
-                    ASSERT(ni.ge.1)
+                    ASSERT(ni .ge. 1)
                     msg%ni = ni
-                    allocate(msg%vali(msg%ni))
+                    allocate (msg%vali(msg%ni))
                     msg%vali(1:ni) = vali(1:ni)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         msg%nr = 0
-        if (AU_MOINS_UN2(sr,valr)) then
+        if (AU_MOINS_UN2(sr, valr)) then
             if (present(sr)) then
                 msg%nr = 1
-                allocate(msg%valr(1))
+                allocate (msg%valr(1))
                 msg%valr(1) = sr
             else
-                if ( nr .eq. 0 ) then
-                    allocate(msg%valr(1))
+                if (nr .eq. 0) then
+                    allocate (msg%valr(1))
                     msg%valr(1) = 0.d0
                 else
-                    ASSERT(nr.ge.1)
+                    ASSERT(nr .ge. 1)
                     msg%nr = nr
-                    allocate(msg%valr(msg%nr))
+                    allocate (msg%valr(msg%nr))
                     msg%valr(1:nr) = valr(1:nr)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end subroutine
 
 !   Free the content of a Message object
@@ -134,15 +134,15 @@ contains
         msg%nk = 0
         msg%ni = 0
         msg%nr = 0
-        if( allocated(msg%valk) ) then
-            deallocate(msg%valk)
-        endif
-        if( allocated(msg%vali) ) then
-            deallocate(msg%vali)
-        endif
-        if( allocated(msg%valr) ) then
-            deallocate(msg%valr)
-        endif
+        if (allocated(msg%valk)) then
+            deallocate (msg%valk)
+        end if
+        if (allocated(msg%vali)) then
+            deallocate (msg%vali)
+        end if
+        if (allocated(msg%valr)) then
+            deallocate (msg%valr)
+        end if
 !
     end subroutine
 

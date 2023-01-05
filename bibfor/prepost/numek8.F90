@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine numek8(tglok8, tlock8, nbgk8, nblk8, tind)
 !
     do i = 1, nblk8, 1
 !
-        tind (i) = 0
+        tind(i) = 0
 !
     end do
 !
@@ -61,23 +61,23 @@ subroutine numek8(tglok8, tlock8, nbgk8, nblk8, tind)
 110     continue
         if ((.not. trouve) .and. (j .lt. nbgk8)) then
 !
-            j = j + 1
+            j = j+1
 !
             if (nlk8 .eq. tglok8(j)) then
 !
                 trouve = .true.
 !
-            endif
+            end if
 !
             goto 110
 !
-        endif
+        end if
 !
         if (trouve) then
 !
             tind(i) = j
 !
-        endif
+        end if
 !
     end do
 !

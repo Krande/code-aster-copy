@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz,&
+subroutine nueffe_lag1(nb_ligr, list_ligr, base, nume_ddlz, renumz, &
                        modelocz, sd_iden_relaz)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -106,7 +106,7 @@ implicit none
     character(len=24) :: nequ, refn, sd_iden_rela
     character(len=19) :: prof_chno
     character(len=24) :: lili, prno, nueq, deeq, delg
-    integer :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg,  nb_equa
+    integer :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg, nb_equa
     integer :: nb_iden_rela, nb_iden_dof, nb_iden_term
     integer :: i, iad, ianueq, icddlb
     integer :: iconx1, iconx2, iddlag, iderli
@@ -211,7 +211,7 @@ implicit none
 !    call jemarq() FORBIDDEN !
 
 !
-    call infniv(ifm,niv)
+    call infniv(ifm, niv)
 !
     nume_ddl = nume_ddlz
 !
@@ -220,23 +220,23 @@ implicit none
     moloc = ' '
     if (present(modelocz)) then
         moloc = modelocz
-    endif
+    end if
 !
 ! - Identity relations between dof
 !
     nb_iden_rela = 0
-    nb_iden_dof  = 0
+    nb_iden_dof = 0
     nb_iden_term = 0
     sd_iden_rela = ' '
     if (present(sd_iden_relaz)) then
         sd_iden_rela = sd_iden_relaz
-        if (sd_iden_rela.ne.' ') then
-            call jeveuo(sd_iden_rela(1:19)//'.INFO', 'L', vi = v_sdiden_info)
+        if (sd_iden_rela .ne. ' ') then
+            call jeveuo(sd_iden_rela(1:19)//'.INFO', 'L', vi=v_sdiden_info)
             nb_iden_rela = v_sdiden_info(1)
             nb_iden_term = v_sdiden_info(2)
-            nb_iden_dof  = v_sdiden_info(3)
-        endif
-    endif
+            nb_iden_dof = v_sdiden_info(3)
+        end if
+    end if
 
 ! --- SI LE CONCEPT : NU EXISTE DEJA, ON LE DETRUIT COMPLETEMENT :
 !     ----------------------------------------------------------
@@ -245,31 +245,31 @@ implicit none
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX :
 !     ---------------------------------
     prof_chno = nume_ddl//'.NUME'
-    lili      = prof_chno(1:19)//'.LILI'
-    prno      = prof_chno(1:19)//'.PRNO'
-    nueq      = prof_chno(1:19)//'.NUEQ'
-    deeq      = prof_chno(1:19)//'.DEEQ'
+    lili = prof_chno(1:19)//'.LILI'
+    prno = prof_chno(1:19)//'.PRNO'
+    nueq = prof_chno(1:19)//'.NUEQ'
+    deeq = prof_chno(1:19)//'.DEEQ'
 !
     nume_equa = nume_ddl//'.NUME'
-    delg      = nume_equa(1:19)//'.DELG'
-    nequ      = nume_equa(1:19)//'.NEQU'
-    refn      = nume_equa(1:19)//'.REFN'
+    delg = nume_equa(1:19)//'.DELG'
+    nequ = nume_equa(1:19)//'.NEQU'
+    refn = nume_equa(1:19)//'.REFN'
 !
 ! --- Objets temporaires
-    nnli      = nume_ddl//'.NNLI'
-    nuno      = nume_ddl//'.NUNO'
-    exi1      = nume_ddl//'.EXI1'
-    newn      = nume_ddl//'.NEWN'
-    oldn      = nume_ddl//'.OLDN'
-    derli     = nume_ddl//'.DERLI'
-    num21     = nume_ddl//'.NUM21'
-    num2      = nume_ddl//'.NUM2'
-    dsclag    = nume_ddl//'.DESCLAG'
+    nnli = nume_ddl//'.NNLI'
+    nuno = nume_ddl//'.NUNO'
+    exi1 = nume_ddl//'.EXI1'
+    newn = nume_ddl//'.NEWN'
+    oldn = nume_ddl//'.OLDN'
+    derli = nume_ddl//'.DERLI'
+    num21 = nume_ddl//'.NUM21'
+    num2 = nume_ddl//'.NUM2'
+    dsclag = nume_ddl//'.DESCLAG'
 !
 ! - Create LILI objects
 !
-    call nulili(nb_ligr, list_ligr, lili, base(2:2), gran_name,&
-                igds   , mesh     , nec , nlili    , modelocz = moloc)
+    call nulili(nb_ligr, list_ligr, lili, base(2:2), gran_name, &
+                igds, mesh, nec, nlili, modelocz=moloc)
     call jeveuo(nume_ddl//'     .ADLI', 'E', vi=adli)
     call jeveuo(nume_ddl//'     .ADNE', 'E', vi=adne)
 !
@@ -279,12 +279,12 @@ implicit none
     if (iret .gt. 0) then
         call jeveuo(mesh(1:8)//'.CONNEX', 'L', iconx1)
         call jeveuo(jexatr(mesh(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    endif
+    end if
     call dismoi('PARALLEL_MESH', mesh, 'MAILLAGE', repk=kret)
-    lparallel_mesh=(kret.eq.'OUI')
+    lparallel_mesh = (kret .eq. 'OUI')
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
     call dismoi('NB_NL_MAILLA', mesh, 'MAILLAGE', repi=nb_node_subs)
-    nb_node = nb_node_mesh + nb_node_subs
+    nb_node = nb_node_mesh+nb_node_subs
 !
 ! --- LILI(1)='&MAILLA'
 !     -----------------
@@ -293,17 +293,15 @@ implicit none
 ! --- ALLOCATION DE L'OBJET NU.NNLI NOMBRE DE NOEUDS DECLARES DANS
 ! --- LE LIGREL ILI DE LILI :
 !     ---------------------
-    call wkvect(nnli, 'V V I', nlili, vi = v_nnli)
+    call wkvect(nnli, 'V V I', nlili, vi=v_nnli)
     v_nnli(1) = nb_node
-    call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE', &
                 nlili)
-
 
 ! --- ALLOCATION DE PRNO :
 !     -------------------------------------------------
-    call jecrec(prno, base(2:2)//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(prno, base(2:2)//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nlili)
-
 
 ! --- CALCUL DE N, CALCUL DES NNLI ET DU POINTEUR DE LONGUEUR DE
 ! --- PRNO :
@@ -329,7 +327,7 @@ implicit none
             nbn = zi(iad)
         else
             nbn = 0
-        endif
+        end if
 
 ! ---    AFFECTATION DU CHAMP .NNLI DE NU :
 !        --------------------------------
@@ -337,9 +335,9 @@ implicit none
 !
         call jeecra(jexnum(nuno, ili), 'LONMAX', nbn)
 !
-        call jeecra(jexnum(prno, ili), 'LONMAX', nbn* (nec+2))
-        n = n + nbn
-        nblag = nblag + nbn
+        call jeecra(jexnum(prno, ili), 'LONMAX', nbn*(nec+2))
+        n = n+nbn
+        nblag = nblag+nbn
     end do
 
     call wkvect(derli, 'V V I', n+1, iderli)
@@ -352,8 +350,8 @@ implicit none
 ! --- SONT SUPPRIMES DE LA S.D. NUME_EQUA) :
 !     ------------------------------------
     call jeveuo(jexatr(nuno, 'LONCUM'), 'L', inuno2)
-    nlag = zi(inuno2+nlili) - zi(inuno2+1)
-    ASSERT(nlag==nblag)
+    nlag = zi(inuno2+nlili)-zi(inuno2+1)
+    ASSERT(nlag == nblag)
     ASSERT(n == (nb_node+nlag))
 !
 ! --- RENUMEROTATION , CREATION DES OBJETS NU.EXI1, NU.NEWN ET NU.OLDN :
@@ -364,22 +362,22 @@ implicit none
     call jeveuo(newn, 'L', inewn)
     call jeveuo(oldn, 'L', ioldn)
 
-    if(nlag > 0) then
+    if (nlag > 0) then
         call wkvect(dsclag, ' V V I', 2*nlag, iddlag)
 !
         do ili = 2, nlili
 !
             call jeexin(nomli(1:19)//'.MULT', iret)
-            if( lparallel_mesh.and.iret.ne.0 ) then
+            if (lparallel_mesh .and. iret .ne. 0) then
                 call jeveuo(nomli(1:19)//'.MULT', 'L', vi=lagr_mult)
-            endif
+            end if
 !
             do iel = 1, zznels(ili)
-                nn = zznsup(ili,iel)
+                nn = zznsup(ili, iel)
                 if (nn .eq. 2) then
-                    n1 = zznema(ili,iel,1)
-                    n2 = zznema(ili,iel,2)
-                    if ((n1.gt.0).and. (n2.lt.0)) then
+                    n1 = zznema(ili, iel, 1)
+                    n2 = zznema(ili, iel, 2)
+                    if ((n1 .gt. 0) .and. (n2 .lt. 0)) then
 
 ! ---    TRANSFORMATION DE N2 , NUMERO DU PREMIER LAGRANGE DANS LA
 ! ---    NUMEROTATION LOCALE AU LIGREL EN SON NUMERO DANS LA
@@ -387,8 +385,8 @@ implicit none
 !        --------------------
                         n22 = -n2
                         n2 = -n2
-                        n2 = zi(inuno2+ili-1) + n2 - 1
-                        ilag = n2 - nb_node
+                        n2 = zi(inuno2+ili-1)+n2-1
+                        ilag = n2-nb_node
 
 ! ---    RECUPERATION DU NOEUD PHYSIQUE DE NUMERO LE PLUS GRAND
 ! ---    LIE AU LAGRANGE PAR LE TABLEAU DERLI, CETTE
@@ -398,20 +396,20 @@ implicit none
                         n0 = zi(iderli+n2)
 !
                         if (n0 .gt. 0) then
-                            zi(iddlag+2* (ilag-1)) = 0
-                            zi(iddlag+2* (ilag-1)+1) = 0
+                            zi(iddlag+2*(ilag-1)) = 0
+                            zi(iddlag+2*(ilag-1)+1) = 0
                         else
-                            zi(iddlag+2* (ilag-1)) = n1
-                            zi(iddlag+2* (ilag-1)+1) = -1
+                            zi(iddlag+2*(ilag-1)) = n1
+                            zi(iddlag+2*(ilag-1)+1) = -1
                             zi(iderli+n2) = n1
-                        endif
+                        end if
 !
-                        if ((lparallel_mesh) .and. (lagr_mult(n22).gt.1)) then
-                            zi(iddlag+2* (ilag-1)) = 0
-                            zi(iddlag+2* (ilag-1)+1) = 0
-                        endif
-                    endif
-                endif
+                        if ((lparallel_mesh) .and. (lagr_mult(n22) .gt. 1)) then
+                            zi(iddlag+2*(ilag-1)) = 0
+                            zi(iddlag+2*(ilag-1)+1) = 0
+                        end if
+                    end if
+                end if
             end do
         end do
     end if
@@ -436,7 +434,7 @@ implicit none
 ! ---  BOUCLE SUR LES NOEUDS PHYSIQUES :
 !      -------------------------------
     do ire = 1, nbnore
-        nbnonu = nbnonu + 1
+        nbnonu = nbnonu+1
         zi(inum21+nbnonu) = zi(ioldn-1+ire)
     end do
 !
@@ -447,14 +445,14 @@ implicit none
 ! ---  BOUCLE SUR LES NOEUDS DE LAGRANGE :
 !      ---------------------------------
     do ire = 1, nlag
-        nbnonu = nbnonu + 1
-        nume_late_node = nume_late_node + 1
+        nbnonu = nbnonu+1
+        nume_late_node = nume_late_node+1
         zi(inum21+nbnonu) = nume_late_node
     end do
 !
     if (nbnonu .ne. (nbnore+nlag)) then
         call utmess('F', 'ASSEMBLA_28')
-    endif
+    end if
 !
 ! --- CALCUL DES DESCRIPTEURS DES PRNO
 !     ================================
@@ -463,7 +461,7 @@ implicit none
 !     -------------------------------------------------------
     do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
-        call creprn(nomli, moloc, 'V', nomli(1:19)//'.QRNM', nomli(1:19) //'.QRNS')
+        call creprn(nomli, moloc, 'V', nomli(1:19)//'.QRNM', nomli(1:19)//'.QRNS')
     end do
 
 ! --- 1ERE ETAPE : NOEUDS DU MAILLAGE (PHYSIQUES ET LAGRANGES)
@@ -479,8 +477,8 @@ implicit none
         do i = 1, nbnore
             nunoel = zi(ioldn-1+i)
             do l = 1, nec
-                iec = zi(iprnm-1+nec* (nunoel-1)+l)
-                zi(izzprn(1,nunoel,l+2)) = ior(zzprno(1,nunoel,l+2), iec)
+                iec = zi(iprnm-1+nec*(nunoel-1)+l)
+                zi(izzprn(1, nunoel, l+2)) = ior(zzprno(1, nunoel, l+2), iec)
             end do
         end do
 150     continue
@@ -497,27 +495,27 @@ implicit none
         if (bid(1) .gt. 0) call jeveuo(nomli(1:19)//'.QRNS', 'L', vi=qrns)
 
         do igr = 1, zzngel(ili)
-            nel = zznelg(ili,igr)
+            nel = zznelg(ili, igr)
 
             if (nel .ge. 0) then
-                itypel = zzliel(ili,igr,nel+1)
+                itypel = zzliel(ili, igr, nel+1)
                 call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
                 icddlb = 0
                 nddlb = 0
-            endif
+            end if
 
             do j = 1, nel
-                numa = zzliel(ili,igr,j)
+                numa = zzliel(ili, igr, j)
                 if (numa .lt. 0) then
                     numa = -numa
                     do k = 1, zznsup(ili, numa)
-                        nunoel = zznema(ili,numa,k)
+                        nunoel = zznema(ili, numa, k)
 
                         if (nunoel .gt. 0) then
                             do l = 1, nec
-                                iec = zi(iprnm+nec* (nunoel-1)+l-1)
-                                zi(izzprn(ilim,nunoel,l+2)) = ior(&
-                                                              zzprno( ilim, nunoel, l+2 ), iec)
+                                iec = zi(iprnm+nec*(nunoel-1)+l-1)
+                                zi(izzprn(ilim, nunoel, l+2)) = ior( &
+                                                                zzprno(ilim, nunoel, l+2), iec)
                             end do
                             nunoel_save = nunoel
                         else
@@ -525,37 +523,37 @@ implicit none
 
 !                 -- CALCUL DU NUMERO DE LA CMP ASSO
                             if (icddlb .eq. 0) then
-                                ASSERT(gran_name.eq.nomte(3:8))
+                                ASSERT(gran_name .eq. nomte(3:8))
                                 nomcmp = nomte(10:16)
 
 !                   "GLUTE" POUR TEMP_MIL, TEMP_INF, TEMP_SUP :
                                 if (nomcmp .eq. 'TEMP_MI') then
                                     nomcmp = 'TEMP_MIL'
-                                else if (nomcmp.eq.'TEMP_IN') then
+                                else if (nomcmp .eq. 'TEMP_IN') then
                                     nomcmp = 'TEMP_INF'
-                                else if (nomcmp.eq.'TEMP_SU') then
+                                else if (nomcmp .eq. 'TEMP_SU') then
                                     nomcmp = 'TEMP_SUP'
-                                endif
+                                end if
 
                                 call jeveuo(jexnom('&CATA.GD.NOMCMP', gran_name), 'L', idnocm)
-                                call jelira(jexnom('&CATA.GD.NOMCMP', gran_name), 'LONMAX', nbcmp,&
+                                call jelira(jexnom('&CATA.GD.NOMCMP', gran_name), 'LONMAX', nbcmp, &
                                             kbid)
-                                nddlb = indik8(zk8(idnocm),nomcmp,1, nbcmp)
-                                ASSERT(nddlb.ne.0)
+                                nddlb = indik8(zk8(idnocm), nomcmp, 1, nbcmp)
+                                ASSERT(nddlb .ne. 0)
                                 icddlb = 1
-                            endif
+                            end if
 
                             do l = 1, nec
-                                iec = qrns(1+nec* (nunoel-1)+l-1)
-                                zi(izzprn(ili,nunoel,l+2)) = ior(zzprno( ili, nunoel, l+2), iec)
+                                iec = qrns(1+nec*(nunoel-1)+l-1)
+                                zi(izzprn(ili, nunoel, l+2)) = ior(zzprno(ili, nunoel, l+2), iec)
                             end do
 
-                            ilag = zi(inuno2+ili-1) + nunoel - 1
-                            ilag = ilag - nb_node
-                            zi(iddlag+2* (ilag-1)+1) = -zi(iddlag+2* ( ilag-1)+1 )*nddlb
-                        endif
+                            ilag = zi(inuno2+ili-1)+nunoel-1
+                            ilag = ilag-nb_node
+                            zi(iddlag+2*(ilag-1)+1) = -zi(iddlag+2*(ilag-1)+1)*nddlb
+                        end if
                     end do
-                endif
+                end if
             end do
         end do
     end do
@@ -566,25 +564,25 @@ implicit none
     do i = 1, n
         call nuno1(i, ili, nunoel, n, inum21, inuno2, nlili)
         if (ili .gt. 0) then
-            nddl1 = zzprno(ili,nunoel,2)
+            nddl1 = zzprno(ili, nunoel, 2)
 
             if (nddl1 .eq. 0) then
-                nddl1 = nddl(ili,nunoel,nec,idprn1,idprn2)
+                nddl1 = nddl(ili, nunoel, nec, idprn1, idprn2)
 !
-                zi(izzprn(ili,nunoel,2)) = nddl1
-            endif
-            zi(izzprn(ili,nunoel,1)) = iad
-            iad = iad + nddl1
-        endif
+                zi(izzprn(ili, nunoel, 2)) = nddl1
+            end if
+            zi(izzprn(ili, nunoel, 1)) = iad
+            iad = iad+nddl1
+        end if
     end do
 !
 ! - Total number of dof (physical and NOT physical)
 !
-    nb_dof = iad - 1
+    nb_dof = iad-1
 !
 ! - Number of dof in identity relations
 !
-    nb_iden_dof = nb_iden_term - nb_iden_rela
+    nb_iden_dof = nb_iden_term-nb_iden_rela
 !
 ! - Create NEQU object
 !
@@ -593,29 +591,29 @@ implicit none
 !
 ! - Number of dof for computation (number of equations in system)
 !
-    nb_equa   = nb_dof-nb_iden_dof
+    nb_equa = nb_dof-nb_iden_dof
     p_nequ(1) = nb_equa
 !
 ! - Total number of dof (with identity relations)
 !
     p_nequ(2) = nb_dof
 !
-    if (niv .ge. 1 .and. .not.lparallel_mesh .and.moloc.eq.' ') then
+    if (niv .ge. 1 .and. .not. lparallel_mesh .and. moloc .eq. ' ') then
 
 ! ---   CALCUL DE NNO : NOMBRE DE NOEUDS DU MAILLAGE PORTEURS DE DDLS :
 !       ----------------------------------------------------------------
         nno = 0
         call jeveuo(jexnum(prno, 1), 'L', jprno)
         do ino = 1, nb_node
-            if (zi(jprno-1+ (ino-1)* (2+nec)+2) .gt. 0) nno = nno + 1
+            if (zi(jprno-1+(ino-1)*(2+nec)+2) .gt. 0) nno = nno+1
         end do
         vali(1) = nb_dof
-        vali(2) = nb_dof - nlag
+        vali(2) = nb_dof-nlag
         vali(3) = nno
         vali(4) = nlag
         vali(5) = nlag
         call utmess('I', 'FACTOR_1', ni=5, vali=vali)
-    endif
+    end if
 
     call wkvect(refn, base(1:1)//' V K24', 4, idref)
     zk24(idref) = mesh

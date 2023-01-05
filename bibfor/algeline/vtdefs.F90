@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ subroutine vtdefs(chpout, chpin, base, typc)
 !
     call dismoi('TYPE_CHAMP', ch19, 'CHAMP', repk=tych)
 !
-    arg1=chpout
-    arg2=chpin
+    arg1 = chpout
+    arg2 = chpin
     call vtdef1(arg1, arg2, base, typc)
     call jedema()
 !

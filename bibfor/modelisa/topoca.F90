@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
+subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
                   numaca, quad, sens, evalz)
     implicit none
 !  DESCRIPTION : CARACTERISATION DE LA TOPOLOGIE D'UN CABLE
@@ -101,7 +101,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     character(len=8), pointer :: nomnoe_def(:) => null()
     integer, pointer :: numail_ch1(:) => null()
     integer, pointer :: numail_ch2(:) => null()
-    data          param /'NUME_CABLE              ',&
+    data param/'NUME_CABLE              ',&
      &                     'NOEUD_CABLE             ',&
      &                     'NOM_CABLE               ',&
      &                     'NOM_ANCRAGE1            ',&
@@ -112,14 +112,14 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
-    cbid=(0.d0,0.d0)
-    rbid=0.d0
+    cbid = (0.d0, 0.d0)
+    rbid = 0.d0
 !   Par défaut, la routine calcule tout et remplit tous ses arguments de
 !   sortie. Si eval = .true., on ne remplit que nbnoca et quad.
-    eval=.false.
+    eval = .false.
     if (present(evalz)) then
-        eval=evalz
-    endif
+        eval = evalz
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   SAISIE DES ENTITES TOPOLOGIQUES ASSOCIEES AU CABLE
@@ -134,7 +134,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
 ! 1.1 SAISIE DES MAILLES ASSOCIEES
 ! ---
-    call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl,&
+    call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl, &
                 0, k8b, nbmail)
 !
 !.... SAISIE DIRECTE
@@ -144,22 +144,22 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         nbmail = abs(nbmail)
         AS_ALLOCATE(vk8=nomail_def, size=nbmail)
         call wkvect('&&TOPOCA.NUMAIL_DEF', 'V V I', nbmail, jnumad)
-        call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl,&
+        call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl, &
                     nbmail, nomail_def, ibid)
         do imail = 1, nbmail
-            call jenonu(jexnom(nomama, nomail_def(imail)), zi(jnumad+ imail-1))
+            call jenonu(jexnom(nomama, nomail_def(imail)), zi(jnumad+imail-1))
         end do
 !
 !.... SAISIE INDIRECTE PAR UN GROUPE DE MAILLES
 !
     else
 !
-        call getvem(mailla, 'GROUP_MA', 'DEFI_CABLE', 'GROUP_MA', icabl,&
+        call getvem(mailla, 'GROUP_MA', 'DEFI_CABLE', 'GROUP_MA', icabl, &
                     1, nogrma, ibid)
         call jelira(jexnom(grmama, nogrma), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmama, nogrma), 'L', jnumad)
 !
-    endif
+    end if
 !
 ! 1.2 VERIFICATION DU TYPE DES MAILLES ET DETERMINATION SIMULTANEE
 ! --- DE LEURS NOEUDS EXTREMITES
@@ -169,93 +169,93 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
     AS_ALLOCATE(vk8=nomnoe_def, size=2*nbmail)
 !
-    nbse2=0
-    nbse3=0
+    nbse2 = 0
+    nbse3 = 0
     do imail = 1, nbmail
         numail = zi(jnumad+imail-1)
-        if ((zi(jtyma+numail-1).ne.ntseg) .and. (zi(jtyma+numail-1) .ne.ntseg2)) then
-            write(k3b,'(I3)') icabl
+        if ((zi(jtyma+numail-1) .ne. ntseg) .and. (zi(jtyma+numail-1) .ne. ntseg2)) then
+            write (k3b, '(I3)') icabl
             call utmess('F', 'MODELISA7_54', sk=k3b)
-        endif
-        if (zi(jtyma+numail-1) .eq. ntseg) nbse2=nbse2+1
-        if (zi(jtyma+numail-1) .eq. ntseg2) nbse3=nbse3+1
+        end if
+        if (zi(jtyma+numail-1) .eq. ntseg) nbse2 = nbse2+1
+        if (zi(jtyma+numail-1) .eq. ntseg2) nbse3 = nbse3+1
         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
         no1 = zi(jcxma)
         no2 = zi(jcxma+1)
         call jenuno(jexnum(nonoma, no1), nomnoe_def(1+2*(imail-1)))
         call jenuno(jexnum(nonoma, no2), nomnoe_def(1+2*(imail-1)+1))
     end do
-    ASSERT((nbse2.eq.0).or.(nbse3.eq.0))
-    quad=.false.
-    if (nbse3 .gt. 0) quad=.true.
+    ASSERT((nbse2 .eq. 0) .or. (nbse3 .eq. 0))
+    quad = .false.
+    if (nbse3 .gt. 0) quad = .true.
 !
 ! 1.3 SAISIE DU GROUP_NO D'ANCRAGE DU CABLE EVENTUELLEMENT
 ! ---
     nogrno(1) = '        '
     nogrno(2) = '        '
-    call getvtx('DEFI_CABLE', 'GROUP_NO_FUT', iocc=icabl, nbval=2, vect=nogrno,&
+    call getvtx('DEFI_CABLE', 'GROUP_NO_FUT', iocc=icabl, nbval=2, vect=nogrno, &
                 nbret=n1)
     if (n1 .eq. 1) then
-        call getvtx('CONE', 'PRESENT', iocc=1, nbval=2, vect=presen,&
+        call getvtx('CONE', 'PRESENT', iocc=1, nbval=2, vect=presen, &
                     nbret=n1)
-        if (presen(2)(1:3) .eq. 'OUI') then
+        if (presen(2) (1:3) .eq. 'OUI') then
             nogrno(2) = nogrno(1)
             nogrno(1) = '        '
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! 1.4 SAISIE DES NOEUDS D'ANCRAGE DU CABLE
 ! ---
-    call getvem(mailla, 'NOEUD', 'DEFI_CABLE', 'NOEUD_ANCRAGE', icabl,&
+    call getvem(mailla, 'NOEUD', 'DEFI_CABLE', 'NOEUD_ANCRAGE', icabl, &
                 0, k8b, ibid)
 !
     if (ibid .eq. 0) then
 !
-        call getvem(mailla, 'GROUP_NO', 'DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl,&
+        call getvem(mailla, 'GROUP_NO', 'DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl, &
                     2, nogrna(1), ibid)
 !
-        call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b,&
+        call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogrna(1))
-        else if (iret.eq.1) then
+        else if (iret .eq. 1) then
             valk(1) = nogrna(1)
             valk(2) = k8b
             call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-        endif
+        end if
         noancr(1) = k8b
 !
-        call utnono(' ', mailla, 'NOEUD', nogrna(2), k8b,&
+        call utnono(' ', mailla, 'NOEUD', nogrna(2), k8b, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogrna(2))
-        else if (iret.eq.1) then
+        else if (iret .eq. 1) then
             valk(1) = nogrna(2)
             valk(2) = k8b
             call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-        endif
+        end if
         noancr(2) = k8b
 !
     else
 !
-        call getvem(mailla, 'NOEUD', 'DEFI_CABLE', 'NOEUD_ANCRAGE', icabl,&
+        call getvem(mailla, 'NOEUD', 'DEFI_CABLE', 'NOEUD_ANCRAGE', icabl, &
                     2, noancr(1), ibid)
 !
-    endif
+    end if
 !
     call getvtx(' ', 'TYPE_ANCRAGE', nbval=2, vect=tyancr(1), nbret=ibid)
     nbf0 = 0
-    if (tyancr(1)(1:5) .eq. 'ACTIF') nbf0 = nbf0 + 1
-    if (tyancr(2)(1:5) .eq. 'ACTIF') nbf0 = nbf0 + 1
-    if ((nbf0.eq.1) .and. (tyancr(1)(1:6).eq.'PASSIF')) then
+    if (tyancr(1) (1:5) .eq. 'ACTIF') nbf0 = nbf0+1
+    if (tyancr(2) (1:5) .eq. 'ACTIF') nbf0 = nbf0+1
+    if ((nbf0 .eq. 1) .and. (tyancr(1) (1:6) .eq. 'PASSIF')) then
         k8b = noancr(1)
         noancr(1) = noancr(2)
         noancr(2) = k8b
         k8b = tyancr(1)
         tyancr(1) = tyancr(2)
         tyancr(2) = k8b
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   DETERMINATION D'UN CHEMIN CONTINU DEFINISSANT LE CABLE
@@ -267,37 +267,37 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     nbchem = 0
     do ino = 1, 2*nbmail
         if (nomnoe_def(ino) .eq. noancr(1)) then
-            if (mod(ino,2) .eq. 0) then
-                isuiv = ino - 1
+            if (mod(ino, 2) .eq. 0) then
+                isuiv = ino-1
             else
-                isuiv = ino + 1
-            endif
+                isuiv = ino+1
+            end if
             nosuiv = nomnoe_def(isuiv)
             if (nosuiv .ne. noancr(1)) then
-                nbchem = nbchem + 1
+                nbchem = nbchem+1
                 if (nbchem .gt. 2) then
-                    write(k3b,'(I3)') icabl
+                    write (k3b, '(I3)') icabl
                     valk(1) = k3b
                     valk(2) = noancr(1)
                     call utmess('F', 'MODELISA7_55', nk=2, valk=valk)
-                endif
+                end if
                 isuiv0(nbchem) = isuiv
-            endif
-        endif
+            end if
+        end if
     end do
 !
     if (nbchem .eq. 0) then
-        write(k3b,'(I3)') icabl
+        write (k3b, '(I3)') icabl
         valk(1) = k3b
         valk(2) = noancr(1)
         call utmess('F', 'MODELISA7_56', nk=2, valk=valk)
-    endif
+    end if
 !
     nosui1 = nomnoe_def(1+isuiv0(1)-1)
     if (nbchem .eq. 2) then
         nosui2 = nomnoe_def(1+isuiv0(2)-1)
         if (nosui1 .eq. nosui2) nbchem = 1
-    endif
+    end if
 !
 ! 2.2 TENTATIVE DE PARCOURS DU PREMIER CHEMIN POSSIBLE
 ! ---
@@ -308,55 +308,55 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
     nbno1 = 1
     nomnoe_ch1(1) = noancr(1)
-    if (mod(isuiv0(1),2) .eq. 0) then
+    if (mod(isuiv0(1), 2) .eq. 0) then
         imail = isuiv0(1)/2
     else
         imail = (isuiv0(1)+1)/2
-    endif
+    end if
     numail_ch1(1) = zi(jnumad+imail-1)
     noprec = noancr(1)
     nocour = nosui1
 !
 !.... REPETER (DEBUT)
- 40 continue
+40  continue
     if (nocour .eq. noancr(2)) then
-        nbno1 = nbno1 + 1
+        nbno1 = nbno1+1
         nomnoe_ch1(nbno1) = noancr(2)
         ok1 = .true.
         goto 60
-    endif
+    end if
     nbsuiv = 0
     do ino = 1, 2*nbmail
         if (nomnoe_def(ino) .eq. nocour) then
-            if (mod(ino,2) .eq. 0) then
-                ivois = ino - 1
+            if (mod(ino, 2) .eq. 0) then
+                ivois = ino-1
             else
-                ivois = ino + 1
-            endif
+                ivois = ino+1
+            end if
             novois = nomnoe_def(ivois)
-            if ((novois.ne.nocour) .and. (novois.ne.noprec)) then
-                nbsuiv = nbsuiv + 1
+            if ((novois .ne. nocour) .and. (novois .ne. noprec)) then
+                nbsuiv = nbsuiv+1
                 if (nbsuiv .gt. 1) goto 60
                 nosuiv = novois
                 isuiv = ivois
-            endif
-        endif
+            end if
+        end if
     end do
     if (nbsuiv .eq. 0) goto 60
-    nbno1 = nbno1 + 1
+    nbno1 = nbno1+1
     nomnoe_ch1(nbno1) = nocour
-    if (mod(isuiv,2) .eq. 0) then
+    if (mod(isuiv, 2) .eq. 0) then
         imail = isuiv/2
     else
         imail = (isuiv+1)/2
-    endif
+    end if
     numail_ch1(nbno1) = zi(jnumad+imail-1)
     noprec = nocour
     nocour = nosuiv
     if (nbno1 .lt. nbmail+1) goto 40
 !
 !.... REPETER (FIN)
- 60 continue
+60  continue
 !
 ! 2.3 TENTATIVE DE PARCOURS DU SECOND CHEMIN POSSIBLE LE CAS ECHEANT
 ! ---
@@ -369,57 +369,57 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
         nbno2 = 1
         nomnoe_ch2(1) = noancr(1)
-        if (mod(isuiv0(2),2) .eq. 0) then
+        if (mod(isuiv0(2), 2) .eq. 0) then
             imail = isuiv0(2)/2
         else
             imail = (isuiv0(2)+1)/2
-        endif
+        end if
         numail_ch2(1) = zi(jnumad+imail-1)
         noprec = noancr(1)
         nocour = nosui2
 !
 !....... REPETER (DEBUT)
- 70     continue
+70      continue
         if (nocour .eq. noancr(2)) then
-            nbno2 = nbno2 + 1
+            nbno2 = nbno2+1
             nomnoe_ch2(nbno2) = noancr(2)
             ok2 = .true.
             goto 90
-        endif
+        end if
         nbsuiv = 0
         do ino = 1, 2*nbmail
             if (nomnoe_def(ino) .eq. nocour) then
-                if (mod(ino,2) .eq. 0) then
-                    ivois = ino - 1
+                if (mod(ino, 2) .eq. 0) then
+                    ivois = ino-1
                 else
-                    ivois = ino + 1
-                endif
+                    ivois = ino+1
+                end if
                 novois = nomnoe_def(ivois)
-                if ((novois.ne.nocour) .and. (novois.ne.noprec)) then
-                    nbsuiv = nbsuiv + 1
+                if ((novois .ne. nocour) .and. (novois .ne. noprec)) then
+                    nbsuiv = nbsuiv+1
                     if (nbsuiv .gt. 1) goto 90
                     nosuiv = novois
                     isuiv = ivois
-                endif
-            endif
+                end if
+            end if
         end do
         if (nbsuiv .eq. 0) goto 90
-        nbno2 = nbno2 + 1
+        nbno2 = nbno2+1
         nomnoe_ch2(nbno2) = nocour
-        if (mod(isuiv,2) .eq. 0) then
+        if (mod(isuiv, 2) .eq. 0) then
             imail = isuiv/2
         else
             imail = (isuiv+1)/2
-        endif
+        end if
         numail_ch2(nbno2) = zi(jnumad+imail-1)
         noprec = nocour
         nocour = nosuiv
         if (nbno2 .lt. nbmail+1) goto 70
 !
 !....... REPETER (FIN)
- 90     continue
+90      continue
 !
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 3   MISE A JOUR DES OBJETS DE SORTIE
@@ -428,7 +428,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 ! 3.1 AMBIGUITE SI DEUX CHEMINS CONTINUS POSSIBLES
 ! ---
     if (ok1 .and. ok2) then
-        write(k3b,'(I3)') icabl
+        write (k3b, '(I3)') icabl
         valk(1) = k3b
         valk(2) = noancr(1)
         valk(3) = noancr(2)
@@ -446,70 +446,70 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                 nbnoca(icabl) = 2*nbno1-1
             else
                 nbnoca(icabl) = nbno1
-            endif
+            end if
 !
             if (.not. eval) then
                 if (icabl .eq. 1) then
                     call jeecra(numaca, 'LONUTI', nbno1-1)
                     call jeveuo(numaca, 'E', jnumac)
-                    lonuti=0
+                    lonuti = 0
                 else
                     call jelira(numaca, 'LONUTI', lonuti)
                     call jeecra(numaca, 'LONUTI', lonuti+nbno1-1)
                     call jeveuo(numaca, 'E', jnumac)
-                endif
+                end if
 !
-                sens=0
+                sens = 0
 !
                 do imail = 1, nbno1-1
                     zi(jnumac+lonuti+imail-1) = numail_ch1(imail)
-                    ino=imail
+                    ino = imail
                     vk(1) = nomnoe_ch1(ino)
                     vk(2) = nogrma
                     vk(3) = nogrno(1)
                     vk(4) = nogrno(2)
                     vk(5) = 'NON'
-                    call tbajli(tablca, 6, param, [icabl], [rbid],&
+                    call tbajli(tablca, 6, param, [icabl], [rbid], &
                                 [cbid], vk, 0)
                     if (quad) then
-                        numail=numail_ch1(imail)
+                        numail = numail_ch1(imail)
                         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
-                        no3=zi(jcxma+2)
-                        no1=zi(jcxma)
+                        no3 = zi(jcxma+2)
+                        no1 = zi(jcxma)
                         call jenuno(jexnum(nonoma, no1), vk(1))
                         if (sens .eq. 0) then
                             if (nomnoe_ch1(ino) .eq. vk(1)) then
-                                sens=1
+                                sens = 1
                             else
-                                sens=-1
-                            endif
+                                sens = -1
+                            end if
                         else
 !                   TOUTES LES MAILLES DOIVENT ETRE DANS LE MEME SENS
                             if (nomnoe_ch1(ino) .eq. vk(1)) then
-                                if (sens .ne. 1) call utmess('F', 'MODELISA7_14', nk=1,&
+                                if (sens .ne. 1) call utmess('F', 'MODELISA7_14', nk=1, &
                                                              valk=nogrma)
 !                             ASSERT(sens.eq.1)
                             else
-                                ASSERT(sens.eq.-1)
-                            endif
-                        endif
+                                ASSERT(sens .eq. -1)
+                            end if
+                        end if
                         call jenuno(jexnum(nonoma, no3), vk(1))
                         vk(2) = nogrma
                         vk(3) = nogrno(1)
                         vk(4) = nogrno(2)
                         vk(5) = 'OUI'
-                        call tbajli(tablca, 6, param, [icabl], [rbid],&
+                        call tbajli(tablca, 6, param, [icabl], [rbid], &
                                     [cbid], vk, 0)
-                    endif
+                    end if
                 end do
                 vk(1) = nomnoe_ch1(nbno1)
                 vk(2) = nogrma
                 vk(3) = nogrno(1)
                 vk(4) = nogrno(2)
                 vk(5) = 'NON'
-                call tbajli(tablca, 6, param, [icabl], [rbid],&
+                call tbajli(tablca, 6, param, [icabl], [rbid], &
                             [cbid], vk, 0)
-            endif
+            end if
 !
 !
 ! 3.2.2  CAS OU LE SECOND CHEMIN POSSIBLE EST VALIDE
@@ -520,76 +520,76 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                 nbnoca(icabl) = 2*nbno2-1
             else
                 nbnoca(icabl) = nbno2
-            endif
+            end if
 !
             if (.not. eval) then
                 if (icabl .eq. 1) then
                     call jeecra(numaca, 'LONUTI', nbno2-1)
                     call jeveuo(numaca, 'E', jnumac)
-                    lonuti=0
+                    lonuti = 0
                 else
                     call jelira(numaca, 'LONUTI', lonuti)
                     call jeecra(numaca, 'LONUTI', lonuti+nbno2-1)
                     call jeveuo(numaca, 'E', jnumac)
-                endif
-                sens=0
+                end if
+                sens = 0
                 do imail = 1, nbno2-1
                     zi(jnumac+lonuti+imail-1) = numail_ch2(imail)
-                    ino=imail
+                    ino = imail
                     vk(1) = nomnoe_ch2(ino)
                     vk(2) = nogrma
                     vk(3) = nogrno(1)
                     vk(4) = nogrno(2)
                     vk(5) = 'NON'
-                    call tbajli(tablca, 6, param, [icabl], [rbid],&
+                    call tbajli(tablca, 6, param, [icabl], [rbid], &
                                 [cbid], vk, 0)
                     if (quad) then
-                        numail=numail_ch2(imail)
+                        numail = numail_ch2(imail)
                         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
-                        no3=zi(jcxma+2)
-                        no1=zi(jcxma)
+                        no3 = zi(jcxma+2)
+                        no1 = zi(jcxma)
                         call jenuno(jexnum(nonoma, no1), vk(1))
                         if (sens .eq. 0) then
                             if (nomnoe_ch1(ino) .eq. vk(1)) then
-                                sens=1
+                                sens = 1
                             else
-                                sens=-1
-                            endif
+                                sens = -1
+                            end if
                         else
 !                   TOUTES LES MAILLES DOIVENT ETRE DANS LE MEME SENS
                             if (nomnoe_ch1(ino) .eq. vk(1)) then
-                                ASSERT(sens.eq.1)
+                                ASSERT(sens .eq. 1)
                             else
-                                ASSERT(sens.eq.-1)
-                            endif
-                        endif
+                                ASSERT(sens .eq. -1)
+                            end if
+                        end if
                         call jenuno(jexnum(nonoma, no3), vk(1))
                         vk(2) = nogrma
                         vk(3) = nogrno(1)
                         vk(4) = nogrno(2)
                         vk(5) = 'OUI'
-                        call tbajli(tablca, 6, param, [icabl], [rbid],&
+                        call tbajli(tablca, 6, param, [icabl], [rbid], &
                                     [cbid], vk, 0)
-                    endif
+                    end if
                 end do
                 vk(1) = nomnoe_ch2(nbno2)
                 vk(2) = nogrma
                 vk(3) = nogrno(1)
                 vk(4) = nogrno(2)
                 vk(5) = 'NON'
-                call tbajli(tablca, 6, param, [icabl], [rbid],&
+                call tbajli(tablca, 6, param, [icabl], [rbid], &
                             [cbid], vk, 0)
-            endif
+            end if
 !
 ! 3.2.3  AUCUN CHEMIN CONTINU VALIDE
 ! .....
         else
 !
-            write(k3b,'(I3)') icabl
+            write (k3b, '(I3)') icabl
             call utmess('F', 'MODELISA7_58', sk=k3b)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- MENAGE
     AS_DEALLOCATE(vk8=nomail_def)

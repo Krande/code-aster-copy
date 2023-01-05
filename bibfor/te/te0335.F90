@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine te0335(option, nomte)
 !
 !
     integer :: neeqmx, nceqmx
-    parameter (neeqmx=14,nceqmx=17)
+    parameter(neeqmx=14, nceqmx=17)
 !
     integer :: ndim, ndim1, nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: idefo, icont, iequi
@@ -73,61 +73,61 @@ subroutine te0335(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !
-    if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H')) then
-        call elrefe_info(fami='MASS', ndim=ndim1, nno=nno, nnos=nnos, npg=npg,&
+    if ((nomte .eq. 'MEC3QU9H') .or. (nomte .eq. 'MEC3TR7H')) then
+        call elrefe_info(fami='MASS', ndim=ndim1, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     else
-        call elrefe_info(fami='RIGI', ndim=ndim1, nno=nno, nnos=nnos, npg=npg,&
+        call elrefe_info(fami='RIGI', ndim=ndim1, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    endif
+    end if
 !
-    if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELGA')&
-        .or. (option.eq.'EPMQ_ELNO') .or. (option.eq.'EPGQ_ELGA') .or.&
-        (option.eq.'EPGQ_ELNO')) then
+    if ((option .eq. 'EPEQ_ELGA') .or. (option .eq. 'EPEQ_ELNO') .or. (option .eq. 'EPMQ_ELGA') &
+        .or. (option .eq. 'EPMQ_ELNO') .or. (option .eq. 'EPGQ_ELGA') .or. &
+        (option .eq. 'EPGQ_ELNO')) then
 !
-        call tecach('OOO', 'PDEFORR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PDEFORR', 'L', iret, nval=7, &
                     itab=itabin)
-        idefo=itabin(1)
-        call tecach('OOO', 'PDEFOEQ', 'E', iret, nval=7,&
+        idefo = itabin(1)
+        call tecach('OOO', 'PDEFOEQ', 'E', iret, nval=7, &
                     itab=itabou)
-        ASSERT(itabou(2)/itabou(3).eq.neeqmx)
+        ASSERT(itabou(2)/itabou(3) .eq. neeqmx)
 !
-        elseif ((option.eq.'SIEQ_ELGA') .or. (option.eq.'SIEQ_ELNO'))&
-    then
+    elseif ((option .eq. 'SIEQ_ELGA') .or. (option .eq. 'SIEQ_ELNO')) &
+        then
 !
-        call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PCONTRR', 'L', iret, nval=7, &
                     itab=itabin)
-        icont=itabin(1)
-        call tecach('OOO', 'PCONTEQ', 'E', iret, nval=7,&
+        icont = itabin(1)
+        call tecach('OOO', 'PCONTEQ', 'E', iret, nval=7, &
                     itab=itabou)
-        ASSERT(itabou(2)/itabou(3).eq.nceqmx)
+        ASSERT(itabou(2)/itabou(3) .eq. nceqmx)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     iequi = itabou(1)
 !
     nbsp = itabou(7)
-    ASSERT(nbsp.ge.1)
-    ASSERT(nbsp.eq.itabin(7))
+    ASSERT(nbsp .ge. 1)
+    ASSERT(nbsp .eq. itabin(7))
 !
     nbcmp = itabin(2)/itabin(3)
-    ASSERT((nbcmp.eq.1).or.(nbcmp.eq.4).or.(nbcmp.eq.6))
+    ASSERT((nbcmp .eq. 1) .or. (nbcmp .eq. 4) .or. (nbcmp .eq. 6))
 !
     ncmpeq = itabou(2)/itabou(3)
-    ASSERT((ncmpeq.eq.neeqmx).or.(ncmpeq.eq.nceqmx))
+    ASSERT((ncmpeq .eq. neeqmx) .or. (ncmpeq .eq. nceqmx))
 !
-    ASSERT(itabin(6).le.1)
-    ASSERT(itabou(6).le.1)
+    ASSERT(itabin(6) .le. 1)
+    ASSERT(itabou(6) .le. 1)
 !
     if (nbcmp .eq. 6) then
         ndim = 3
-    else if (nbcmp.eq.4) then
+    else if (nbcmp .eq. 4) then
         ndim = 2
-    else if (nbcmp.eq.1) then
+    else if (nbcmp .eq. 1) then
         ndim = 1
-    endif
+    end if
 !
 ! ----------------------------------------------------------------
 ! --- DEFORMATIONS ET CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
@@ -137,11 +137,11 @@ subroutine te0335(option, nomte)
 !
 ! ------ DEFORMATIONS :
 ! -------------------
-        if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPMQ_ELGA') .or.&
-            (option.eq.'EPGQ_ELGA')) then
+        if ((option .eq. 'EPEQ_ELGA') .or. (option .eq. 'EPMQ_ELGA') .or. &
+            (option .eq. 'EPGQ_ELGA')) then
             do ipg = 1, npg
                 do isp = 1, nbsp
-                    idec = idefo+(ipg-1)*nbcmp *nbsp+(isp-1)*nbcmp
+                    idec = idefo+(ipg-1)*nbcmp*nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ipg-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'EPSI_DIR', ndim, zr(ideceq))
                 end do
@@ -149,29 +149,29 @@ subroutine te0335(option, nomte)
 !
 ! ----- CONTRAINTES :
 ! -----------------
-        else if (option.eq.'SIEQ_ELGA') then
+        else if (option .eq. 'SIEQ_ELGA') then
             do ipg = 1, npg
                 do isp = 1, nbsp
-                    idec = icont+(ipg-1)*nbcmp *nbsp+(isp-1)*nbcmp
+                    idec = icont+(ipg-1)*nbcmp*nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ipg-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'SIGM_DIR', ndim, zr(ideceq))
                 end do
             end do
-        endif
+        end if
 !
 ! -------------------------------------------------------
 ! --- DEFORMATIONS ET CONTRAINTES EQUIVALENTES AUX NOEUDS
 ! -------------------------------------------------------
 !
-    else if (option(6:9).eq.'ELNO') then
+    else if (option(6:9) .eq. 'ELNO') then
 !
 ! ------ DEFORMATIONS :
 ! -------------------
-        if ((option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELNO') .or.&
-            (option.eq.'EPGQ_ELNO')) then
+        if ((option .eq. 'EPEQ_ELNO') .or. (option .eq. 'EPMQ_ELNO') .or. &
+            (option .eq. 'EPGQ_ELNO')) then
             do ino = 1, nno
                 do isp = 1, nbsp
-                    idec = idefo+(ino-1)*nbcmp *nbsp+(isp-1)*nbcmp
+                    idec = idefo+(ino-1)*nbcmp*nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ino-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'EPSI_DIR', ndim, zr(ideceq))
                 end do
@@ -179,17 +179,17 @@ subroutine te0335(option, nomte)
 !
 ! ----- CONTRAINTES :
 ! -----------------
-        else if (option.eq.'SIEQ_ELNO') then
+        else if (option .eq. 'SIEQ_ELNO') then
             do ino = 1, nno
                 do isp = 1, nbsp
-                    idec = icont+(ino-1)*nbcmp *nbsp+(isp-1)*nbcmp
+                    idec = icont+(ino-1)*nbcmp*nbsp+(isp-1)*nbcmp
                     ideceq = iequi+(ino-1)*ncmpeq*nbsp+(isp-1)*ncmpeq
                     call fgequi(zr(idec), 'SIGM_DIR', ndim, zr(ideceq))
                 end do
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 end subroutine

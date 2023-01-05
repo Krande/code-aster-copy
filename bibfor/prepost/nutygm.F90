@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,20 +32,20 @@ function nutygm(nomtyp)
 !
     if (nomtyp .eq. 'SEG2') then
         nutygm = 1
-    else if (nomtyp.eq.'TRIA3') then
+    else if (nomtyp .eq. 'TRIA3') then
         nutygm = 2
-    else if (nomtyp.eq.'QUAD4') then
+    else if (nomtyp .eq. 'QUAD4') then
         nutygm = 3
-    else if (nomtyp.eq.'TETRA4') then
+    else if (nomtyp .eq. 'TETRA4') then
         nutygm = 4
-    else if (nomtyp.eq.'HEXA8') then
+    else if (nomtyp .eq. 'HEXA8') then
         nutygm = 5
-    else if (nomtyp.eq.'PENTA6') then
+    else if (nomtyp .eq. 'PENTA6') then
         nutygm = 6
-    else if (nomtyp.eq.'PYRAM5') then
+    else if (nomtyp .eq. 'PYRAM5') then
         nutygm = 7
-    else if (nomtyp.eq.'POI1') then
+    else if (nomtyp .eq. 'POI1') then
         nutygm = 15
-    endif
+    end if
 !
 end function

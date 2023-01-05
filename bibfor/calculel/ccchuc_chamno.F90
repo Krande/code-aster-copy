@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 
 subroutine ccchuc_chamno(field_in_s, field_out_s, nb_node, list_node, nb_cmp, type_comp, &
-                         crit, nb_form, name_form, name_gd, nb_cmp_resu, work_out_val,&
+                         crit, nb_form, name_form, name_gd, nb_cmp_resu, work_out_val, &
                          nb_node_out, ichk)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -113,21 +113,21 @@ implicit none
 !
 ! - Create working vectors
 !
-    call wkvect(work_val, 'V V R' , nb_cmp, j_val)
+    call wkvect(work_val, 'V V R', nb_cmp, j_val)
     call wkvect(work_cmp, 'V V K8', nb_cmp, j_cmp)
 !
     call jeexin(list_node, i_list_node)
     if (i_list_node .ne. 0) then
         call jeveuo(list_node, 'L', j_nodein)
-    endif
+    end if
 
     do iel = 1, nb_node
 
-        if (i_list_node .ne.0)then
+        if (i_list_node .ne. 0) then
             ino = zi(j_nodein-1+iel)
         else
             ino = iel
-        endif
+        end if
 !
 ! ----- Undefine values
 !
@@ -140,37 +140,37 @@ implicit none
         ichk_node = -1
         do icmp = 1, nb_cmp
             if (zl(jchsl-1+(ino-1)*nb_cmp+icmp)) then
-                nb_val_in = nb_val_in + 1
-                zr(j_val-1+nb_val_in)  = chsv((ino-1)*nb_cmp+icmp)
+                nb_val_in = nb_val_in+1
+                zr(j_val-1+nb_val_in) = chsv((ino-1)*nb_cmp+icmp)
                 zk8(j_cmp-1+nb_val_in) = cnsc(icmp)
-            endif
-        enddo
+            end if
+        end do
 !
 ! ----- Compute result
 !
         if (type_comp .eq. 'CRITERE') then
             ASSERT(nb_cmp_resu .eq. 1)
-            call ccchcr(crit, name_gd, nb_val_in, zr(j_val), zk8(j_cmp),&
+            call ccchcr(crit, name_gd, nb_val_in, zr(j_val), zk8(j_cmp), &
                         nb_cmp_resu, zr(j_resu), ichk_node)
         elseif (type_comp .eq. 'FORMULE') then
             ASSERT(nb_cmp_resu .eq. nb_form)
-            call ccchcf(name_form, nb_val_in, zr(j_val), zk8(j_cmp), nb_cmp_resu,&
+            call ccchcf(name_form, nb_val_in, zr(j_val), zk8(j_cmp), nb_cmp_resu, &
                         zr(j_resu), ichk_node)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Copy to output field
 !
-        if (ichk_node.eq.0) then
+        if (ichk_node .eq. 0) then
             ichk = 0
-            nb_node_out = nb_node_out + 1
+            nb_node_out = nb_node_out+1
             do icmp = 1, nb_cmp_resu
                 zl(jchrl-1+(ino-1)*nb_cmp_resu+icmp) = .true.
                 chrv((ino-1)*nb_cmp_resu+icmp) = zr(j_resu-1+icmp)
-            enddo
-        endif
-    enddo
+            end do
+        end if
+    end do
 !
     call jedetr(work_val)
     call jedetr(work_cmp)

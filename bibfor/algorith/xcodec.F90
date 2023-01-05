@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,17 +76,17 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
     basloc = modelx(1:8)//'.BASLOC'
     grlnno = modelx(1:8)//'.GRLNNO'
     grltno = modelx(1:8)//'.GRLTNO'
-    call xconno(modelx, '.STNO      ', 'G', optrig, 'PSTANO',&
+    call xconno(modelx, '.STNO      ', 'G', optrig, 'PSTANO', &
                 stno)
-    call xconno(modelx, '.LNNO      ', 'G', optrig, 'PLSN',&
+    call xconno(modelx, '.LNNO      ', 'G', optrig, 'PLSN', &
                 lnno)
-    call xconno(modelx, '.LTNO      ', 'G', optrig, 'PLST',&
+    call xconno(modelx, '.LTNO      ', 'G', optrig, 'PLST', &
                 ltno)
-    call xconno(modelx, '.BASLOC    ', 'G', optrig, 'PBASLOR',&
+    call xconno(modelx, '.BASLOC    ', 'G', optrig, 'PBASLOR', &
                 basloc)
-    call xconno(modelx, '.GRLNNO    ', 'V', 'TOPOFA', 'PGRADLN',&
+    call xconno(modelx, '.GRLNNO    ', 'V', 'TOPOFA', 'PGRADLN', &
                 grlnno)
-    call xconno(modelx, '.GRLTNO    ', 'V', 'TOPOFA', 'PGRADLT',&
+    call xconno(modelx, '.GRLTNO    ', 'V', 'TOPOFA', 'PGRADLT', &
                 grltno)
 !
 ! --- UTILE POUR LES INTERSECTIONS
@@ -94,7 +94,7 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
     if (linter) then
         call xfisno(noma, modelx)
         call xfisco(noma, modelx)
-    endif
+    end if
 !
 ! --- CALCUL DES DONNEES UTILES POUR L'INTÉGRATION (SOUS-TETRAS...)
 !
@@ -104,7 +104,7 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 !
     if (linter) then
         call xjonct(noma, modelx)
-    endif
+    end if
 !
 ! --- CALCUL DE LA TOPOLOGIE DES FACETTES DE CONTACT
 !
@@ -118,7 +118,7 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 !
     if (linter) then
         call xaint2(noma, modelx)
-    endif
+    end if
 !
 ! --- ON MODIFIE MODELX(1:8)//'.PRE_COND' POUR L ACTIVATION DU PRE CONDITIONNEUR XFEM
 ! --- ON MODIFIE MODELX(1:8)//'.STNO' POUR LE CONDITIONNEMENT HEAVISIDE
@@ -126,35 +126,35 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 ! --- ON DURCIT LE CRITERE POUR LES FISSURES :
 !        * DANS CE CAS LA PRECISION SUR L INTERFACE EST NEGLIGEABLE
 !            DEVANT L INCERTITUDE EN FOND DE FISSURE
-    lfiss=exi_fiss(modelx)
-    if ( k8condi .eq. 'AUTO' ) then
-       call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
-       call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
-       if (maxfem .ne. 'LINE') then
-         if (lfiss) then
-          crit2(1)=1.d-6
-          crit2(2)=1.d-4
-         else
-          crit2(1)=1.d-6
-          crit2(2)=1.d-5
-         endif
-          zk8(jcond)='OUI'
-       else
-          crit2(1)=1.d-8
-          crit2(2)=1.d-5
-          zk8(jcond)='OUI'
-       endif
-    elseif ( k8condi .eq. 'FORCE' ) then
-       crit2(1)=1.d-8
-       crit2(2)=1.d-5
-       zk8(jcond)='OUI'
-    elseif ( k8condi .eq. 'SANS' ) then
-       crit2(1)=1.d-4
-       crit2(2)=1.d-4
-       zk8(jcond)='NON'
+    lfiss = exi_fiss(modelx)
+    if (k8condi .eq. 'AUTO') then
+        call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
+        call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
+        if (maxfem .ne. 'LINE') then
+            if (lfiss) then
+                crit2(1) = 1.d-6
+                crit2(2) = 1.d-4
+            else
+                crit2(1) = 1.d-6
+                crit2(2) = 1.d-5
+            end if
+            zk8(jcond) = 'OUI'
+        else
+            crit2(1) = 1.d-8
+            crit2(2) = 1.d-5
+            zk8(jcond) = 'OUI'
+        end if
+    elseif (k8condi .eq. 'FORCE') then
+        crit2(1) = 1.d-8
+        crit2(2) = 1.d-5
+        zk8(jcond) = 'OUI'
+    elseif (k8condi .eq. 'SANS') then
+        crit2(1) = 1.d-4
+        crit2(2) = 1.d-4
+        zk8(jcond) = 'NON'
     else
-       ASSERT(.false.)
-    endif
+        ASSERT(.false.)
+    end if
 !
 !   ON MET EN PLACE UN CRITERE A 2 NIVEAUX:
 !   CRIT2(1) => POUR LES NOEUDS SOMMETS

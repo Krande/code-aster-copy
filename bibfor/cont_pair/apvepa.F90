@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine apvepa(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
@@ -31,7 +31,7 @@ implicit none
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-     type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +56,8 @@ implicit none
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<Pairing> . Check pairing'
-    endif
+        write (ifm, *) '<Pairing> . Check pairing'
+    end if
 !
 ! - Pairing datastructure
 !
@@ -65,13 +65,13 @@ implicit none
 !
 ! - Initializations
 !
-    i_poin       = 1
+    i_poin = 1
     nb_poin_none = 1
 !
 ! - Get parameters
 !
-    nt_poin      = cfdisi(ds_contact%sdcont_defi,'NTPT'  )
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
+    nt_poin = cfdisi(ds_contact%sdcont_defi, 'NTPT')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
 !
 ! - Loop on contact zones
 !
@@ -79,16 +79,16 @@ implicit none
 !
 ! ----- Parameters on current zone
 !
-        nb_poin = mminfi(ds_contact%sdcont_defi, 'NBPT' , i_zone)
+        nb_poin = mminfi(ds_contact%sdcont_defi, 'NBPT', i_zone)
 !
 ! ----- Loop on points
 !
         do i_poin_zone = 1, nb_poin
             call apinfi(sdappa, 'APPARI_TYPE', i_poin, pair_type)
             if (pair_type .le. 0) then
-                nb_poin_none = nb_poin_none + 1
-            endif
-            i_poin = i_poin + 1
+                nb_poin_none = nb_poin_none+1
+            end if
+            i_poin = i_poin+1
         end do
     end do
 !
@@ -96,6 +96,6 @@ implicit none
 !
     if (nb_poin_none .eq. i_poin) then
         call utmess('A', 'APPARIEMENT_1')
-    endif
+    end if
 !
 end subroutine

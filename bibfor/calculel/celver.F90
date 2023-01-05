@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine celver(celz, typver, arret, iret)
     call jeexin(cel//'.CELD', kk)
     if (kk .eq. 0) then
         call utmess('F', 'CALCULEL_47', sk=cel)
-    endif
+    end if
 !
     call jeveuo(cel//'.CELD', 'L', vi=celd)
 !
@@ -84,8 +84,8 @@ subroutine celver(celz, typver, arret, iret)
             if (imolo .eq. 0) goto 20
             nel = celd(celd(4+igr)+1)
             do iel = 1, nel
-                ncdyn = celd(celd(4+igr)+4+4* (iel-1)+2)
-                iprem = iprem + 1
+                ncdyn = celd(celd(4+igr)+4+4*(iel-1)+2)
+                iprem = iprem+1
                 if (iprem .eq. 1) then
                     ncdyn1 = ncdyn
                 else
@@ -94,15 +94,15 @@ subroutine celver(celz, typver, arret, iret)
                             call utmess('F', 'CALCULEL_48', sk=cel)
                         else
                             iret = 1
-                        endif
-                    endif
-                endif
+                        end if
+                    end if
+                end if
             end do
- 20         continue
+20          continue
         end do
 !
 !
-    else if (typver.eq.'NBSPT_1') then
+    else if (typver .eq. 'NBSPT_1') then
 !     --------------------------------
         mxspt = celd(3)
         if (mxspt .gt. 1) then
@@ -110,56 +110,56 @@ subroutine celver(celz, typver, arret, iret)
                 call utmess('F', 'CALCULEL_49', sk=cel)
             else
                 iret = 1
-            endif
-        endif
+            end if
+        end if
 !
 !
-    else if (typver.eq.'PAS_NAN') then
+    else if (typver .eq. 'PAS_NAN') then
 !     --------------------------------
         call dismoi('NOM_GD', cel, 'CHAMP', repk=nomgd)
         call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
         call jeveuo(cel//'.CELV', 'L', jcelv)
         call jelira(cel//'.CELV', 'LONMAX', nb1)
-        lnan=.false.
+        lnan = .false.
         inan = isnnem()
         knan = '???'
 !
         if (tsca .eq. 'R') then
             do k = 1, nb1
-                if (isnan(zr(jcelv-1+k))) lnan=.true.
+                if (isnan(zr(jcelv-1+k))) lnan = .true.
             end do
-        else if (tsca.eq.'C') then
+        else if (tsca .eq. 'C') then
             do k = 1, nb1
-                if (isnan(dble(zc(jcelv-1+k)))) lnan=.true.
+                if (isnan(dble(zc(jcelv-1+k)))) lnan = .true.
             end do
-        else if (tsca.eq.'I') then
+        else if (tsca .eq. 'I') then
             do k = 1, nb1
-                if (zi(jcelv-1+k) .eq. inan) lnan=.true.
+                if (zi(jcelv-1+k) .eq. inan) lnan = .true.
             end do
-        else if (tsca.eq.'K8') then
+        else if (tsca .eq. 'K8') then
             do k = 1, nb1
-                if (zk8(jcelv-1+k) .eq. knan) lnan=.true.
+                if (zk8(jcelv-1+k) .eq. knan) lnan = .true.
             end do
-        else if (tsca.eq.'K24') then
+        else if (tsca .eq. 'K24') then
             do k = 1, nb1
-                if (zk24(jcelv-1+k) .eq. knan) lnan=.true.
+                if (zk24(jcelv-1+k) .eq. knan) lnan = .true.
             end do
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         if (lnan) then
             if (arret .ne. 'COOL') then
                 call utmess('F', 'CALCULEL4_1', sk=cel)
             else
                 iret = 1
-            endif
-        endif
+            end if
+        end if
 !
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

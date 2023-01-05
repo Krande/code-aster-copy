@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine betmat(fami, kpg, ksp, mod, imat,&
-                  nmat, tempd, tempf, materd, materf,&
+subroutine betmat(fami, kpg, ksp, mod, imat, &
+                  nmat, tempd, tempf, materd, materf, &
                   matcst, ndt, ndi, nr, nvi)
     implicit none
 !  BETON_DOUBLE_DP : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
@@ -62,7 +62,7 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
 !-----------------------------------------------------------------------
     integer :: i, imat
 !-----------------------------------------------------------------------
-    data epsi       /1.d-15/
+    data epsi/1.d-15/
 !       ----------------------------------------------------------------
 !
 ! -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -83,75 +83,75 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
     nomc(7) = 'F_T     '
     nomc(8) = 'COEF_BIAX'
     nomc(9) = 'ENER_COMP_RUPT'
-    nomc(10)= 'ENER_TRAC_RUPT'
-    nomc(11)= 'COEF_ELAS_COMP'
-    nomc(12)= 'ECRO_COMP_P_PIC'
-    nomc(13)= 'ECRO_TRAC_P_PIC'
-    nomc(14)= 'LONG_CARA'
+    nomc(10) = 'ENER_TRAC_RUPT'
+    nomc(11) = 'COEF_ELAS_COMP'
+    nomc(12) = 'ECRO_COMP_P_PIC'
+    nomc(13) = 'ECRO_TRAC_P_PIC'
+    nomc(14) = 'LONG_CARA'
 !
 ! -     TEMPERATURE MAXIMAL AU COURS DE L'HISTORIQUE DE CHARGEMENT
 ! -     THEMIQUE THETA (T+DT)
 !
     theta = tempf
     if ((isnan(tempd)) .or. (isnan(tempf))) then
-        theta=r8nnem()
+        theta = r8nnem()
     else
         if (tempd .gt. tempf) theta = tempd
-    endif
+    end if
 !
     nompar = 'TEMP'
     valpaf = theta
 !
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imat, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 5, nomc(1), materd(1, 1), cerr(1), 0)
-    if (cerr(3) .ne. 0) materd(3,1) = 0.d0
-    if (cerr(4) .ne. 0) materd(4,1) = 0.d0
-    if (cerr(5) .ne. 0) materd(5,1) = 0.d0
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'BETON_DOUBLE_DP', 0, ' ', [0.d0],&
+    if (cerr(3) .ne. 0) materd(3, 1) = 0.d0
+    if (cerr(4) .ne. 0) materd(4, 1) = 0.d0
+    if (cerr(5) .ne. 0) materd(5, 1) = 0.d0
+    call rcvalb(fami, kpg, ksp, '-', imat, &
+                ' ', 'BETON_DOUBLE_DP', 0, ' ', [0.d0], &
                 8, nomc(6), materd(1, 2), cerr(6), 2)
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'BETON_DOUBLE_DP', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imat, &
+                ' ', 'BETON_DOUBLE_DP', 0, ' ', [0.d0], &
                 1, nomc(14), materd(9, 2), cerr(14), 0)
-    if (cerr(14) .ne. 0) materd(9,2) = -1.d0
+    if (cerr(14) .ne. 0) materd(9, 2) = -1.d0
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 1, nompar, [valpaf],&
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'ELAS', 1, nompar, [valpaf], &
                 5, nomc(1), materf(1, 1), cerr(1), 0)
-    if (cerr(3) .ne. 0) materf(3,1) = 0.d0
-    if (cerr(4) .ne. 0) materf(4,1) = 0.d0
-    if (cerr(5) .ne. 0) materf(5,1) = 0.d0
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'BETON_DOUBLE_DP', 1, nompar, [valpaf],&
+    if (cerr(3) .ne. 0) materf(3, 1) = 0.d0
+    if (cerr(4) .ne. 0) materf(4, 1) = 0.d0
+    if (cerr(5) .ne. 0) materf(5, 1) = 0.d0
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'BETON_DOUBLE_DP', 1, nompar, [valpaf], &
                 8, nomc(6), materf(1, 2), cerr(6), 2)
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'BETON_DOUBLE_DP', 1, nompar, [valpaf],&
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'BETON_DOUBLE_DP', 1, nompar, [valpaf], &
                 1, nomc(14), materf(9, 2), cerr(14), 0)
-    if (cerr(14) .ne. 0) materf(9,2) = -1.d0
+    if (cerr(14) .ne. 0) materf(9, 2) = -1.d0
 !
 !
-    materd(6,2) = materd(6,2) * 0.01d0
-    materf(6,2) = materf(6,2) * 0.01d0
+    materd(6, 2) = materd(6, 2)*0.01d0
+    materf(6, 2) = materf(6, 2)*0.01d0
 !
 ! -     MATERIAU CONSTANT ?
 !
     matcst = 'OUI'
     do i = 1, 5
-        if (abs ( materd(i,1) - materf(i,1) ) .gt. epsi) then
+        if (abs(materd(i, 1)-materf(i, 1)) .gt. epsi) then
             matcst = 'NON'
             goto 999
-        endif
+        end if
     end do
     do i = 1, 9
-        if (abs ( materd(i,2) - materf(i,2) ) .gt. epsi) then
+        if (abs(materd(i, 2)-materf(i, 2)) .gt. epsi) then
             matcst = 'NON'
             goto 999
-        endif
+        end if
     end do
 !
 999 continue

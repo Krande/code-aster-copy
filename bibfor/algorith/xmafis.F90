@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
+subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis, &
                   lisma)
     implicit none
 !
@@ -65,7 +65,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-    mai=noma//'.TYPMAIL'
+    mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
 !
 !     RÉCUPÉRATION DES LEVEL-SETS
@@ -73,33 +73,33 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
 !
     call jeveuo(mafis, 'E', jmafis)
 !
-    i=0
+    i = 0
 !     BOUCLE SUR LES MAILLES DE GROUP_ENRI
     do imae = 1, nbmae
-        nmaabs=zi(jdlima-1+(imae-1)+1)
-        in=1
-        nuno=connex(zi(jconx2+nmaabs-1)+in-1)
-        lsnp=cnsv((nuno-1)+1)
+        nmaabs = zi(jdlima-1+(imae-1)+1)
+        in = 1
+        nuno = connex(zi(jconx2+nmaabs-1)+in-1)
+        lsnp = cnsv((nuno-1)+1)
 !
-        itypma=zi(jma-1+nmaabs)
+        itypma = zi(jma-1+nmaabs)
         call panbno(itypma, nbnott)
-        nnos=nbnott(1)
+        nnos = nbnott(1)
 !
         do in = 2, nnos
-            nuno=connex(zi(jconx2+nmaabs-1)+in-1)
-            lsn=cnsv((nuno-1)+1)
+            nuno = connex(zi(jconx2+nmaabs-1)+in-1)
+            lsn = cnsv((nuno-1)+1)
             if ((lsnp*lsn) .le. 0.d0) then
 !           LSN A CHANGÉ DE SIGNE DONC ON STOCKE LA MAILLE DANS MAFIS
-                i=i+1
-                zi(jmafis-1+i)=nmaabs
+                i = i+1
+                zi(jmafis-1+i) = nmaabs
 !           AUGMENTEZ NXMAFI
-                ASSERT((i-1).lt.nxmafi)
+                ASSERT((i-1) .lt. nxmafi)
                 goto 100
-            endif
+            end if
         end do
 100     continue
     end do
-    nmafis=i
+    nmafis = i
 !
     call jedema()
 end subroutine

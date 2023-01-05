@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,8 @@ subroutine alcart(base, chinz, maz, nomgdz)
 !     LE PARAMETRE NGDMX EST DELIBEREMENT MIS A 1 CAR IL Y A UN PROBLEME
 !     AVEC LES CARTES CONSTANTES DANS CALCUL SI CELLE-CI ONT UNE
 !     DIMENSION SUPERIEURE A 1
-    ngdmx=1
-    nmamx=1
+    ngdmx = 1
+    nmamx = 1
 !
     chin = chinz
     ma = maz
@@ -94,7 +94,7 @@ subroutine alcart(base, chinz, maz, nomgdz)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
         call utmess('F', 'CALCULEL_3', sk=nomgd)
-    endif
+    end if
     nec = nbec(gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     scal = scalai(gd)
@@ -118,14 +118,14 @@ subroutine alcart(base, chinz, maz, nomgdz)
 !
 !     ALLOCATION DE LIMA :
 !     --------------------
-    call jecrec(chin//'.LIMA', bas2//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(chin//'.LIMA', bas2//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 ngdmx)
 ! -- ON SURDIMENSIONNE A CAUSE DE JEVEUX : PAS D'OBJET DE LONGUEUR 0
     call jeecra(chin//'.LIMA', 'LONT', nmamx+ngdmx, ' ')
 ! -- ON FAIT MONTER LA COLLECTION EN MEMOIRE
     call jeveuo(chin//'.LIMA', 'E', jbid)
-    call jeveuo(jexatr(chin//'.LIMA','LONCUM'), 'E',jbid)
-    zi(jbid)=1
+    call jeveuo(jexatr(chin//'.LIMA', 'LONCUM'), 'E', jbid)
+    zi(jbid) = 1
 !
 !     ALLOCATION DES OBJETS DE TRAVAIL NECESSAIRES A NOCART:
     call wkvect(chin//'.NCMP', 'V V K8', ncmpmx, j1)

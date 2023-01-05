@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
-                  vu, vg, vp, igeom, mate,matr)
+subroutine nirmtd(ndim, nno1, nno2, nno3, npg, iw, vff2, vff3, ivf1, idff1, &
+                  vu, vg, vp, igeom, mate, matr)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
@@ -74,14 +74,14 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
     real(kind=8) :: t1, rac2, notime
     real(kind=8) :: idev(6, 6), idev2(4, 4), kr(6), kd(6)
 !
-    data         kr   / 1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
-    data         idev2/ 2.d0,-1.d0,-1.d0, 0.d0,&
-     &                 -1.d0, 2.d0,-1.d0, 0.d0,&
-     &                 -1.d0,-1.d0, 2.d0, 0.d0,&
+    data kr/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
+    data idev2/2.d0, -1.d0, -1.d0, 0.d0,&
+     &                 -1.d0, 2.d0, -1.d0, 0.d0,&
+     &                 -1.d0, -1.d0, 2.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 3.d0/
-    data         idev / 2.d0,-1.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-     &                 -1.d0, 2.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-     &                 -1.d0,-1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
+    data idev/2.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0,&
+     &                 -1.d0, 2.d0, -1.d0, 0.d0, 0.d0, 0.d0,&
+     &                 -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/
@@ -109,7 +109,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
     do g = 1, npg
-        idecpg = nno1* (g-1) - 1
+        idecpg = nno1*(g-1)-1
 !
 ! - COORDONNEES AU POINT D'INTEGRATION COURANT
         xyzgau(1) = 0.d0
@@ -117,12 +117,12 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
         xyzgau(3) = 0.d0
         if (ndim .eq. 3) then
             do ia = 1, nno1
-                idecno = 3* (ia-1) - 1
-                xyzgau(1) = xyzgau(1)+zr(ivf1+ia+idecpg)*zr(igeom+1+ idecno)
-                xyzgau(2) = xyzgau(2)+zr(ivf1+ia+idecpg)*zr(igeom+2+ idecno)
-                xyzgau(3) = xyzgau(3)+zr(ivf1+ia+idecpg)*zr(igeom+3+ idecno)
+                idecno = 3*(ia-1)-1
+                xyzgau(1) = xyzgau(1)+zr(ivf1+ia+idecpg)*zr(igeom+1+idecno)
+                xyzgau(2) = xyzgau(2)+zr(ivf1+ia+idecpg)*zr(igeom+2+idecno)
+                xyzgau(3) = xyzgau(3)+zr(ivf1+ia+idecpg)*zr(igeom+3+idecno)
             end do
-        endif
+        end if
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 ! - CALCUL DE DFDI,F,EPS,R(EN AXI) ET POIDS
@@ -131,7 +131,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
         do ia = 1, 2*ndim
             do ja = 1, nno1
                 do na = 1, ndim
-                    def(ia,ja,na) = b(ia,(ja-1)*ndim+na)*kd(ia)
+                    def(ia, ja, na) = b(ia, (ja-1)*ndim+na)*kd(ia)
                 end do
             end do
         end do
@@ -139,7 +139,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 ! - CALCUL DE TRACE(B)
         do na = 1, nno1
             do ia = 1, ndim
-                deftr(na,ia) = def(1,na,ia) + def(2,na,ia) + def(3,na, ia)
+                deftr(na, ia) = def(1, na, ia)+def(2, na, ia)+def(3, na, ia)
             end do
         end do
 !
@@ -148,38 +148,38 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
         notime = r8vide()
         call dmatmc('RIGI', mate, notime, '+', g, 1, repere, xyzgau, nbsig, dsidep)
 !
-        call dscal(2*ndim-3, rac2, dsidep(4,1), 1)
-        call dscal(2*ndim-3, rac2, dsidep(4,2), 1)
-        call dscal(2*ndim-3, rac2, dsidep(4,3), 1)
-        call dscal(3, rac2, dsidep(1,4), 1)
-        call dscal(2*ndim-3, 2.d0, dsidep(4,4), 1)
+        call dscal(2*ndim-3, rac2, dsidep(4, 1), 1)
+        call dscal(2*ndim-3, rac2, dsidep(4, 2), 1)
+        call dscal(2*ndim-3, rac2, dsidep(4, 3), 1)
+        call dscal(3, rac2, dsidep(1, 4), 1)
+        call dscal(2*ndim-3, 2.d0, dsidep(4, 4), 1)
         if (ndim .eq. 3) then
-            call dscal(3, rac2, dsidep(1,5), 1)
-            call dscal(3, rac2, dsidep(1,6), 1)
-            call dscal(3, 2.d0, dsidep(4,5), 1)
-            call dscal(3, 2.d0, dsidep(4,6), 1)
-        endif
+            call dscal(3, rac2, dsidep(1, 5), 1)
+            call dscal(3, rac2, dsidep(1, 6), 1)
+            call dscal(3, 2.d0, dsidep(4, 5), 1)
+            call dscal(3, 2.d0, dsidep(4, 6), 1)
+        end if
 !
-        devd(:,:) = 0.d0
-        ddev(:,:) = 0.d0
-        dddev(:,:) = 0.d0
+        devd(:, :) = 0.d0
+        ddev(:, :) = 0.d0
+        dddev(:, :) = 0.d0
         if (ndim .eq. 3) then
-            devd(1:6,1:6) = matmul(idev/3.d0,dsidep(1:6,1:6))
-            ddev(1:6,1:6) = matmul(dsidep(1:6,1:6),idev/3.d0)
-            dddev(1:6,1:6) = matmul(devd(1:6,1:6),idev/3.d0)
+            devd(1:6, 1:6) = matmul(idev/3.d0, dsidep(1:6, 1:6))
+            ddev(1:6, 1:6) = matmul(dsidep(1:6, 1:6), idev/3.d0)
+            dddev(1:6, 1:6) = matmul(devd(1:6, 1:6), idev/3.d0)
         else
-            devd(1:4,1:4) = matmul(idev2/3.d0,dsidep(1:4,1:4))
-            ddev(1:4,1:4) = matmul(dsidep(1:4,1:4),idev2/3.d0)
-            dddev(1:4,1:4) = matmul(devd(1:4,1:4),idev2/3.d0)
-        endif
+            devd(1:4, 1:4) = matmul(idev2/3.d0, dsidep(1:4, 1:4))
+            ddev(1:4, 1:4) = matmul(dsidep(1:4, 1:4), idev2/3.d0)
+            dddev(1:4, 1:4) = matmul(devd(1:4, 1:4), idev2/3.d0)
+        end if
 !
 ! - CALCUL DE D^DEV:ID ET ID:D^DEV ET ID:D:ID/9.D0
         iddid = 0.d0
         do ia = 1, 2*ndim
-            devdi(ia) = devd(ia,1)+devd(ia,2)+devd(ia,3)
-            iddev(ia) = ddev(1,ia)+ddev(2,ia)+ddev(3,ia)
+            devdi(ia) = devd(ia, 1)+devd(ia, 2)+devd(ia, 3)
+            iddev(ia) = ddev(1, ia)+ddev(2, ia)+ddev(3, ia)
             do ja = 1, 3
-                iddid = iddid+kr(ia)*dsidep(ia,ja)
+                iddid = iddid+kr(ia)*dsidep(ia, ja)
             end do
         end do
         iddid = iddid/9.d0
@@ -188,46 +188,46 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 ! - TERME K:UX
         do na = 1, nno1
             do ia = 1, ndim
-                vuiana = vu(ia,na)
+                vuiana = vu(ia, na)
                 os = (vuiana-1)*vuiana/2
 !
 ! - TERME K:UU      KUU(NDIM,NNO1,NDIM,NNO1)
                 do nb = 1, nno1
                     do ib = 1, ndim
-                        if (vu(ib,nb) .le. vuiana) then
-                            kk = os+vu(ib,nb)
+                        if (vu(ib, nb) .le. vuiana) then
+                            kk = os+vu(ib, nb)
                             t1 = 0.d0
                             do ja = 1, 2*ndim
                                 do jb = 1, 2*ndim
-                                    t1 = t1 + def(ja,na,ia)*dddev(ja, jb)*def(jb,nb,ib)
+                                    t1 = t1+def(ja, na, ia)*dddev(ja, jb)*def(jb, nb, ib)
                                 end do
                             end do
-                            matr(kk) = matr(kk) + w*t1
-                        endif
-                      end do
-                  end do
+                            matr(kk) = matr(kk)+w*t1
+                        end if
+                    end do
+                end do
 !
 ! - TERME K:UG      KUG(NDIM,NNO1,NNO2)
                 t1 = 0.d0
                 do ja = 1, 2*ndim
-                    t1 = t1 + def(ja,na,ia)*devdi(ja)
+                    t1 = t1+def(ja, na, ia)*devdi(ja)
                 end do
                 t1 = t1/3.d0
 !
                 do rb = 1, nno2
                     if (vg(rb) .lt. vuiana) then
-                        kk = os + vg(rb)
-                        matr(kk) = matr(kk) + w*t1*vff2(rb,g)
-                    endif
+                        kk = os+vg(rb)
+                        matr(kk) = matr(kk)+w*t1*vff2(rb, g)
+                    end if
                 end do
 !
 ! - TERME K:UP      KUP(NDIM,NNO1,NNO3)
                 do sb = 1, nno3
                     if (vp(sb) .lt. vuiana) then
-                        kk = os + vp(sb)
-                        t1 = deftr(na,ia)*vff3(sb,g)
-                        matr(kk) = matr(kk) + w*t1
-                    endif
+                        kk = os+vp(sb)
+                        t1 = deftr(na, ia)*vff3(sb, g)
+                        matr(kk) = matr(kk)+w*t1
+                    end if
                 end do
             end do
         end do
@@ -240,33 +240,33 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 ! - TERME K:GU      KGU(NDIM,NNO2,NNO1)
             do nb = 1, nno1
                 do ib = 1, ndim
-                    if (vu(ib,nb) .lt. vgra) then
-                        kk = os + vu(ib,nb)
+                    if (vu(ib, nb) .lt. vgra) then
+                        kk = os+vu(ib, nb)
                         t1 = 0.d0
                         do jb = 1, 2*ndim
-                            t1 = t1 + iddev(jb)*def(jb,nb,ib)
+                            t1 = t1+iddev(jb)*def(jb, nb, ib)
                         end do
-                        matr(kk) = matr(kk) + w*t1*vff2(ra,g)/3.d0
-                    endif
+                        matr(kk) = matr(kk)+w*t1*vff2(ra, g)/3.d0
+                    end if
                 end do
             end do
 !
 ! - TERME K:GG      KGG(NNO2,NNO2)
             do rb = 1, nno2
                 if (vg(rb) .le. vgra) then
-                    kk = os + vg(rb)
-                    t1 = vff2(ra,g)*iddid*vff2(rb,g)
-                    matr(kk) = matr(kk) + w*t1
-                endif
+                    kk = os+vg(rb)
+                    t1 = vff2(ra, g)*iddid*vff2(rb, g)
+                    matr(kk) = matr(kk)+w*t1
+                end if
             end do
 !
 ! - TERME K:GP      KGP(NNO2,NNO3)
             do sb = 1, nno3
                 if (vp(sb) .lt. vgra) then
-                    kk = os + vp(sb)
-                    t1 = - vff2(ra,g)*vff3(sb,g)
-                    matr(kk) = matr(kk) + w*t1
-                endif
+                    kk = os+vp(sb)
+                    t1 = -vff2(ra, g)*vff3(sb, g)
+                    matr(kk) = matr(kk)+w*t1
+                end if
             end do
         end do
 !
@@ -278,21 +278,21 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 ! - TERME K:PU      KPU(NDIM,NNO3,NNO1)
             do nb = 1, nno1
                 do ib = 1, ndim
-                    if (vu(ib,nb) .lt. vpsa) then
-                        kk = os + vu(ib,nb)
-                        t1 = vff3(sa,g)*deftr(nb,ib)
-                        matr(kk) = matr(kk) + w*t1
-                    endif
+                    if (vu(ib, nb) .lt. vpsa) then
+                        kk = os+vu(ib, nb)
+                        t1 = vff3(sa, g)*deftr(nb, ib)
+                        matr(kk) = matr(kk)+w*t1
+                    end if
                 end do
             end do
 !
 ! - TERME K:PG      KPG(NNO3,NNO2)
             do rb = 1, nno2
                 if (vg(rb) .lt. vpsa) then
-                    kk = os + vg(rb)
-                    t1 = - vff3(sa,g)*vff2(rb,g)
-                    matr(kk) = matr(kk) + w*t1
-                endif
+                    kk = os+vg(rb)
+                    t1 = -vff3(sa, g)*vff2(rb, g)
+                    matr(kk) = matr(kk)+w*t1
+                end if
             end do
 !
 ! - TERME K:PP = 0.D0      KPP(NNO3,NNO3)

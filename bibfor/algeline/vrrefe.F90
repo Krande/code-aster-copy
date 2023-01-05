@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine vrrefe(objet1, objet2, ier)
 !   si objet1 et objet2 sont des cham_no   : on compare leur .REFE
 !   si objet1 et objet2 sont des cham_elem : on compare leur .CELK
 !   si objet1 et objet2 sont des matr_asse : on compare leur .REFA
-    refa=.false.
-    celk=.false.
+    refa = .false.
+    celk = .false.
     refe1 = nom1//'.REFE'
     call jeexin(refe1, iret)
     if (iret .gt. 0) then
@@ -72,23 +72,23 @@ subroutine vrrefe(objet1, objet2, ier)
         call jeexin(refe1, iret)
         if (iret .gt. 0) then
             refe2 = nom2//'.REFA'
-            refa=.true.
+            refa = .true.
         else
             refe1 = nom1//'.CELK'
             call jeexin(refe1, iret)
             if (iret .gt. 0) then
                 refe2 = nom2//'.CELK'
-                celk=.true.
+                celk = .true.
             else
                 call utmess('F', 'ALGELINE3_90')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !   -- recuperation des longueurs des tableaux de reference ---
     call jelira(refe1, 'LONMAX', ival1)
     call jelira(refe2, 'LONMAX', ival2)
-    if (ival1 .ne. ival2) ier = ier + abs(ival1-ival2)
+    if (ival1 .ne. ival2) ier = ier+abs(ival1-ival2)
 !
 !   -- recuperation des tableaux d'informations de reference ---
     call jeveuo(refe1, 'L', irefe1)
@@ -96,41 +96,41 @@ subroutine vrrefe(objet1, objet2, ier)
 !
 !   -- controle des references ---
     if (refa) then
-        lgene=zk24(irefe1-1+10).eq.'GENE'
-        if (.not.lgene) then
+        lgene = zk24(irefe1-1+10) .eq. 'GENE'
+        if (.not. lgene) then
 !         -- CAS DES MATR_ASSE :
-            if (zk24(irefe1-1+1) .ne. zk24(irefe2-1+1)) ier=ier+1
-            if (zk24(irefe1-1+2) .ne. zk24(irefe2-1+2)) ier=ier+1
+            if (zk24(irefe1-1+1) .ne. zk24(irefe2-1+1)) ier = ier+1
+            if (zk24(irefe1-1+2) .ne. zk24(irefe2-1+2)) ier = ier+1
         else
 !         -- CAS DES MATR_ASSE_GENE :
-            if (zk24(irefe1-1+2) .ne. zk24(irefe2-1+2)) ier=ier+1
-        endif
+            if (zk24(irefe1-1+2) .ne. zk24(irefe2-1+2)) ier = ier+1
+        end if
 !
     else if (celk) then
 !       -- cas des cham_elem :
-        if (zk24(irefe1) .ne. zk24(irefe2)) ier=ier+1
-        if (zk24(irefe1+2) .ne. zk24(irefe2+2)) ier=ier+1
-        if (zk24(irefe1+3) .ne. zk24(irefe2+3)) ier=ier+1
-        if (zk24(irefe1+4) .ne. zk24(irefe2+4)) ier=ier+1
-        if (zk24(irefe1+5) .ne. zk24(irefe2+5)) ier=ier+1
-        if (zk24(irefe1+6) .ne. zk24(irefe2+6)) ier=ier+1
+        if (zk24(irefe1) .ne. zk24(irefe2)) ier = ier+1
+        if (zk24(irefe1+2) .ne. zk24(irefe2+2)) ier = ier+1
+        if (zk24(irefe1+3) .ne. zk24(irefe2+3)) ier = ier+1
+        if (zk24(irefe1+4) .ne. zk24(irefe2+4)) ier = ier+1
+        if (zk24(irefe1+5) .ne. zk24(irefe2+5)) ier = ier+1
+        if (zk24(irefe1+6) .ne. zk24(irefe2+6)) ier = ier+1
 !       Quelques options metallurgiques produisent
 !       des champs que l'on souhaite combiner :
         if (zk24(irefe1+1) .ne. zk24(irefe2+1)) then
-            if (zk24(irefe1+1)(1:5) .ne. 'META_') ier=ier+1
-            if (zk24(irefe2+1)(1:5) .ne. 'META_') ier=ier+1
-        endif
+            if (zk24(irefe1+1) (1:5) .ne. 'META_') ier = ier+1
+            if (zk24(irefe2+1) (1:5) .ne. 'META_') ier = ier+1
+        end if
 
         call jeveuo(nom1//'.CELD', 'L', irefe1)
         call jeveuo(nom2//'.CELD', 'L', irefe2)
-        if (zi(irefe1) .ne. zi(irefe2)) ier=ier+1
+        if (zi(irefe1) .ne. zi(irefe2)) ier = ier+1
 !
     else
 !       -- cas des cham_no :
-        if (zk24(irefe1) .ne. zk24(irefe2)) ier=ier+1
-        ok=idensd('PROF_CHNO',zk24(irefe1+1),zk24(irefe2+1))
-        if (.not.ok) ier=ier+1
-    endif
+        if (zk24(irefe1) .ne. zk24(irefe2)) ier = ier+1
+        ok = idensd('PROF_CHNO', zk24(irefe1+1), zk24(irefe2+1))
+        if (.not. ok) ier = ier+1
+    end if
 !
     call jedema()
 end subroutine

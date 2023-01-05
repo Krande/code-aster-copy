@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,48 +72,48 @@ subroutine nmerim(sderro)
 !
     do ieven = 1, zeven
         icode = zi(jeeact-1+ieven)
-        teven = zk16(jeeniv-1+ieven)(1:9)
+        teven = zk16(jeeniv-1+ieven) (1:9)
         meven = zk24(jeemsg-1+ieven)
-        if ((teven(1:3).eq.'ERR') .and. (icode.eq.1)) then
+        if ((teven(1:3) .eq. 'ERR') .and. (icode .eq. 1)) then
             if (meven .eq. ' ') then
                 ASSERT(.false.)
-            endif
+            end if
             if (meven .eq. 'MECANONLINE10_1') then
                 call utmess('I', 'MECANONLINE10_1')
-            else if (meven.eq.'MECANONLINE10_2') then
+            else if (meven .eq. 'MECANONLINE10_2') then
                 call utmess('I', 'MECANONLINE10_2')
-            else if (meven.eq.'MECANONLINE10_3') then
+            else if (meven .eq. 'MECANONLINE10_3') then
                 call utmess('I', 'MECANONLINE10_3')
-            else if (meven.eq.'MECANONLINE10_4') then
+            else if (meven .eq. 'MECANONLINE10_4') then
                 call utmess('I', 'MECANONLINE10_4')
-            else if (meven.eq.'MECANONLINE10_5') then
+            else if (meven .eq. 'MECANONLINE10_5') then
                 call utmess('I', 'MECANONLINE10_5')
-            else if (meven.eq.'MECANONLINE10_6') then
+            else if (meven .eq. 'MECANONLINE10_6') then
                 call utmess('I', 'MECANONLINE10_6')
-            else if (meven.eq.'MECANONLINE10_7') then
+            else if (meven .eq. 'MECANONLINE10_7') then
                 call utmess('I', 'MECANONLINE10_7')
-            else if (meven.eq.'MECANONLINE10_8') then
+            else if (meven .eq. 'MECANONLINE10_8') then
                 call utmess('I', 'MECANONLINE10_8')
-            else if (meven.eq.'MECANONLINE10_9') then
+            else if (meven .eq. 'MECANONLINE10_9') then
                 call utmess('I', 'MECANONLINE10_9')
-            else if (meven.eq.'MECANONLINE10_10') then
+            else if (meven .eq. 'MECANONLINE10_10') then
                 call utmess('I', 'MECANONLINE10_10')
-            else if (meven.eq.'MECANONLINE10_11') then
+            else if (meven .eq. 'MECANONLINE10_11') then
                 call utmess('I', 'MECANONLINE10_11')
-            else if (meven.eq.'MECANONLINE10_12') then
+            else if (meven .eq. 'MECANONLINE10_12') then
                 call utmess('I', 'MECANONLINE10_12')
-            else if (meven.eq.'MECANONLINE10_13') then
+            else if (meven .eq. 'MECANONLINE10_13') then
                 call utmess('I', 'MECANONLINE10_13')
-            else if (meven.eq.'MECANONLINE10_20') then
+            else if (meven .eq. 'MECANONLINE10_20') then
                 call utmess('I', 'MECANONLINE10_20')
-            else if (meven.eq.'MECANONLINE10_24') then
+            else if (meven .eq. 'MECANONLINE10_24') then
                 call utmess('I', 'MECANONLINE10_24')
-            else if (meven.eq.'MECANONLINE10_36') then
+            else if (meven .eq. 'MECANONLINE10_36') then
                 call utmess('I', 'MECANONLINE10_36')
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

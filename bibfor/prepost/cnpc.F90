@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,16 +53,16 @@ subroutine cnpc(main, macou, macsu, conneo)
 !
     call jemarq()
 !
-    call jeveuo(jexnum(main//'.CONNEX',macsu),'L',jmacsu)
-    call jeveuo(jexnum(main//'.CONNEX',macou),'L',jmacou)
-    call jelira(jexnum(main//'.CONNEX',macou),'LONMAX',nbno1)
-    call jelira(jexnum(main//'.CONNEX',macsu),'LONMAX',nbno2)
-    call wkvect(conneo, 'V V I', nbno2, jconneo )
-    do inc1= 1, nbno2
-        zi(jconneo+inc1-1)=0
-        do inc2=1,nbno1
-            call utlisi('INTER',zi(jmacsu+inc1-1),1,zi(jmacou+inc2-1),1,&
-                        varaux,1,ntrou)
+    call jeveuo(jexnum(main//'.CONNEX', macsu), 'L', jmacsu)
+    call jeveuo(jexnum(main//'.CONNEX', macou), 'L', jmacou)
+    call jelira(jexnum(main//'.CONNEX', macou), 'LONMAX', nbno1)
+    call jelira(jexnum(main//'.CONNEX', macsu), 'LONMAX', nbno2)
+    call wkvect(conneo, 'V V I', nbno2, jconneo)
+    do inc1 = 1, nbno2
+        zi(jconneo+inc1-1) = 0
+        do inc2 = 1, nbno1
+            call utlisi('INTER', zi(jmacsu+inc1-1), 1, zi(jmacou+inc2-1), 1, &
+                        varaux, 1, ntrou)
             if (ntrou .eq. 1) then
                 zi(jconneo+inc1-1) = inc2
             end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmctce(model    , mesh, ds_contact, sddyna, sddisc,&
+subroutine nmctce(model, mesh, ds_contact, sddyna, sddisc, &
                   nume_inst)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,12 +31,12 @@ implicit none
 #include "asterfort/mmchml.h"
 #include "asterfort/xmcart.h"
 !
-character(len=8), intent(in) :: model
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19), intent(in)  :: sddyna
-character(len=19), intent(in)  :: sddisc
-integer, intent(in) :: nume_inst
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in)  :: sddyna
+    character(len=19), intent(in)  :: sddisc
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,19 +60,19 @@ integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cont_form      = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
+    cont_form = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
 !
 ! - Create input fields for contact
 !
     if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         call mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
-    elseif  (cont_form .eq. 3) then
+    elseif (cont_form .eq. 3) then
         if (l_cont_xfem_gg) then
             call xmcart(mesh, model, ds_contact)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

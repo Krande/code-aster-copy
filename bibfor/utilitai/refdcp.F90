@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,24 +43,24 @@ subroutine refdcp(resin, resout)
     jvb = 'G'
 !
     if (resin .ne. resout) then
-        call jeexin(resin //refd, ir1)
+        call jeexin(resin//refd, ir1)
         call jeexin(resout//refd, ir2)
 !
         if (ir1 .gt. 0 .and. ir2 .gt. 0) then
             call jedetr(resout//refd)
             call jedetr(resout//indi)
-        endif
+        end if
 !
         if (ir1 .gt. 0) then
             if (resout(1:2) .eq. '&&') jvb = 'V'
             call jedup1(resin//refd, jvb, resout//refd)
             call jedup1(resin//indi, jvb, resout//indi)
-        endif
+        end if
 !
 !       For debugging purposes only...
 !       call utimsd(8, 1, .false._1, .true._1, resout//refd,1, 'G')
 !       call utimsd(8, 1, .false._1, .true._1, resout//indi,1, 'G')
-    endif
+    end if
 !
     call jedema()
 end subroutine

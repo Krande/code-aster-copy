@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
     integer :: ndim, ndim1, ndim2
 !     ----------------------------------------------
 !
-    ASSERT(base.eq.'V')
+    ASSERT(base .eq. 'V')
 !
 !
 !     -- CALCUL DE NDIM :
     call dismoi('DIM_GEOM', moa1, 'MODELE', repi=ndim1)
     call dismoi('DIM_GEOM', moa2, 'MODELE', repi=ndim2)
-    ASSERT(ndim1.eq.ndim2)
-    ndim=ndim1
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
+    ASSERT(ndim1 .eq. ndim2)
+    ndim = ndim1
+    ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
     call utmess('I', 'CALCULEL3_28', si=ndim)
 !
 !
@@ -54,7 +54,7 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
 !     REMPLISSAGE DU .PJEF_MP DANS LA SD CORRES
 !     QUI EST LE NOM DU MAILLAGE 1 PRIME
 !     ----------------------------------------------
-    ma1p='&&PJELC1'
+    ma1p = '&&PJELC1'
     call pjma1p(moa1, ma1p, cham1, corres)
     call cargeo(ma1p)
 !
@@ -64,7 +64,7 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
 !     QUI EST UN TABLEAU REFERENCANT, POUR CHAQUE ELGA,
 !     SON NUMERO ET LE NUMERO DE LA MAILLE A LAQUELLE IL APPARTIENT
 !     ----------------------------------------------
-    ma2p='&&PJELC2'
+    ma2p = '&&PJELC2'
     call pjma2p(ndim, moa2, ma2p, corres)
 !
 !     -- APPEL A LA ROUTINE "USUELLE" PJEFCO

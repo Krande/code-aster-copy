@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,15 +35,15 @@ subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
     real(kind=8) :: pipk(ndime), pimik(ndime), rbid, cosi
     integer :: i
 !
-    crit=0.d0
-    do i = 1,ndime
-       pipk(i)=pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
-       pimik(i)=pmiref(ndime*(m12-1)+i)-pinref(ndime*(pi1-1)+i)
-    enddo
+    crit = 0.d0
+    do i = 1, ndime
+        pipk(i) = pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
+        pimik(i) = pmiref(ndime*(m12-1)+i)-pinref(ndime*(pi1-1)+i)
+    end do
     call xnormv(ndime, pipk, rbid)
     call xnormv(ndime, pimik, rbid)
-    cosi=ddot(ndime,pipk,1,pimik,1)
+    cosi = ddot(ndime, pipk, 1, pimik, 1)
 !    write(6,*)'xcedge: cosi=', cosi
-    if (cosi .lt. 1.d0) crit=dacos(cosi)
+    if (cosi .lt. 1.d0) crit = dacos(cosi)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
 
 !
 !   -0.1- Input/output arguments
-    integer     , intent(in)           :: nbequ
+    integer, intent(in)           :: nbequ
     real(kind=8), intent(in)           :: par(:)
     real(kind=8), pointer  :: mgen(:), kgen(:), agen(:)
     real(kind=8), intent(in)           :: dt
@@ -69,38 +69,38 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
     if (cdiag) then
 !       --- C is diagonal, thus given is the modal damping agen = (M^-1)*C
         do i = 1, nbequ
-            invm_c(i)= agen(i)
-            op_h1(i) = 4.d0 + dt*invm_c(i)
-            op_h2(i) = 6.d0 + dt*invm_c(i)
+            invm_c(i) = agen(i)
+            op_h1(i) = 4.d0+dt*invm_c(i)
+            op_h2(i) = 6.d0+dt*invm_c(i)
         end do
     else
 !       --- C is a full matrix
         if (mdiag) then
             do i = 1, nbequ
                 invm = (1.d0/mgen(i))
-                im_c(i,i)= invm*c(i,i)
-                h1(i,i)  = 4.d0 + dt*im_c(i,i)
-                h2(i,i)  = 6.d0 + dt*im_c(i,i)
+                im_c(i, i) = invm*c(i, i)
+                h1(i, i) = 4.d0+dt*im_c(i, i)
+                h2(i, i) = 6.d0+dt*im_c(i, i)
                 do j = i+1, nbequ
-                    im_c(i,j)= invm*c(i,j)
-                    h1(i,j)  =  dt*im_c(i,j)
-                    h2(i,j)  =  dt*im_c(i,j)
-                    im_c(j,i)= invm*c(j,i)
-                    h1(j,i)  =  dt*im_c(j,i)
-                    h2(j,i)  =  dt*im_c(j,i)
+                    im_c(i, j) = invm*c(i, j)
+                    h1(i, j) = dt*im_c(i, j)
+                    h2(i, j) = dt*im_c(i, j)
+                    im_c(j, i) = invm*c(j, i)
+                    h1(j, i) = dt*im_c(j, i)
+                    h2(j, i) = dt*im_c(j, i)
                 end do
             end do
         else
             call dcopy(nbequ*nbequ, agen, 1, invm_c, 1)
             call rrlds(mgen, nbequ, nbequ, invm_c, nbequ)
             do i = 1, nbequ
-                h1(i,i)  = 4.d0 + dt*im_c(i,i)
-                h2(i,i)  = 6.d0 + dt*im_c(i,i)
+                h1(i, i) = 4.d0+dt*im_c(i, i)
+                h2(i, i) = 6.d0+dt*im_c(i, i)
                 do j = i+1, nbequ
-                    h1(i,j)  =  dt*im_c(i,j)
-                    h2(i,j)  =  dt*im_c(i,j)
-                    h1(j,i)  =  dt*im_c(j,i)
-                    h2(j,i)  =  dt*im_c(j,i)
+                    h1(i, j) = dt*im_c(i, j)
+                    h2(i, j) = dt*im_c(i, j)
+                    h1(j, i) = dt*im_c(j, i)
+                    h2(j, i) = dt*im_c(j, i)
                 end do
             end do
         end if
@@ -118,26 +118,26 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
         else
             do i = 1, nbequ
                 invm = 1.d0/mgen(i)
-                im_k(i,i) = invm*k(i,i)
+                im_k(i, i) = invm*k(i, i)
                 do j = i+1, nbequ
-                    im_k(i,j) = invm*k(i,j)
-                    im_k(j,i) = invm*k(j,i)
+                    im_k(i, j) = invm*k(i, j)
+                    im_k(j, i) = invm*k(j, i)
                 end do
             end do
         end if
     else
         do i = 1, nbequ
             if (kdiag) then
-                im_k(i,i) = kgen(i)
+                im_k(i, i) = kgen(i)
                 do j = i+1, nbequ
-                    im_k(i,j) = 0.d0
-                    im_k(j,i) = 0.d0
+                    im_k(i, j) = 0.d0
+                    im_k(j, i) = 0.d0
                 end do
             else
-                im_k(i,i) = k(i,i)
+                im_k(i, i) = k(i, i)
                 do j = 1, nbequ
-                    im_k(i,j) = k(i,j)
-                    im_k(j,i) = k(j,i)
+                    im_k(i, j) = k(i, j)
+                    im_k(j, i) = k(j, i)
                 end do
             end if
         end do

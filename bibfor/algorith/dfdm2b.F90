@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,19 +54,19 @@ subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
     da(:) = 0.d0
     db(:) = 0.d0
     do i = 1, nno
-       do j = 1, 3
-          da(j) = da(j) + coor(3*(i-1)+j) * dfrdk(2*i-1)
-          db(j) = db(j) + coor(3*(i-1)+j) * dfrdk(2*i)
-       end do
+        do j = 1, 3
+            da(j) = da(j)+coor(3*(i-1)+j)*dfrdk(2*i-1)
+            db(j) = db(j)+coor(3*(i-1)+j)*dfrdk(2*i)
+        end do
     end do
     call provec(da, db, normal)
     call xnormv(3, normal, jac)
 !
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
-        nomail= zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
-    endif
+    end if
 !
-    jacp = jac * poids
+    jacp = jac*poids
 end subroutine

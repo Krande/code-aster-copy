@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,13 +48,13 @@ subroutine op0047()
             lgrcou = .true.
         else
             lgrcou = .false.
-        endif
+        end if
 !
 !
-    else if (cmd(5:8).eq.'GMSH') then
+    else if (cmd(5:8) .eq. 'GMSH') then
         call getvis(' ', 'UNITE_GMSH', scal=nfie, nbret=n)
 !
-    endif
+    end if
 !
     call getvis(' ', 'UNITE_MAILLAGE', scal=nfis, nbret=n)
 !
@@ -62,9 +62,9 @@ subroutine op0047()
     if (cmd(5:9) .eq. 'IDEAS') then
         call stbast(nfie, nfis, lgrcou)
 !
-    else if (cmd(5:8).eq.'GMSH') then
+    else if (cmd(5:8) .eq. 'GMSH') then
         call gmsast(nfie, nfis)
 !
-    endif
+    end if
 !
 end subroutine

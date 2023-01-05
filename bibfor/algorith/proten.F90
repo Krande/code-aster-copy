@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function proten(u,v) result(w)
+function proten(u, v) result(w)
     implicit none
-    real(kind=8),dimension(:),intent(in) :: u,v
-    real(kind=8),dimension(size(u),size(v)) :: w
-    integer :: i,j
-    do i =1, size(u)
-        do j =1, size(v)
-            w(i,j) = u(i)*v(j)
+    real(kind=8), dimension(:), intent(in) :: u, v
+    real(kind=8), dimension(size(u), size(v)) :: w
+    integer :: i, j
+    do i = 1, size(u)
+        do j = 1, size(v)
+            w(i, j) = u(i)*v(j)
         end do
     end do
 
- end function proten
+end function proten

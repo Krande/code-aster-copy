@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine mreacg(mesh, ds_contact, field_update)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infdbg.h"
 #include "asterfort/mmfield_prep.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=*), intent(in) :: field_update
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=*), intent(in) :: field_update
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,8 +53,8 @@ character(len=*), intent(in) :: field_update
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_16')
-    endif
+        call utmess('I', 'CONTACT5_16')
+    end if
 !
 ! - Name of objects
 !
@@ -63,7 +63,7 @@ character(len=*), intent(in) :: field_update
 !
 ! - Update
 !
-    call mmfield_prep(oldgeo, newgeo,&
-                      l_update_ = ASTER_TRUE, field_update_ = field_update, alpha_ = 1.d0)
+    call mmfield_prep(oldgeo, newgeo, &
+                      l_update_=ASTER_TRUE, field_update_=field_update, alpha_=1.d0)
 !
 end subroutine

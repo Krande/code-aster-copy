@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine analybar(x3d1, x3d2, x3d3, x3dp, xbar,&
+subroutine analybar(x3d1, x3d2, x3d3, x3dp, xbar, &
                     excent, iproj, inoeu, icote)
     implicit none
 !  DESCRIPTION :
@@ -59,9 +59,9 @@ subroutine analybar(x3d1, x3d2, x3d3, x3dp, xbar,&
 !
     alpha_max = r8pi()/4.d0
     if (excent .lt. r8prem()) then
-        iproj =-1
+        iproj = -1
         goto 77
-    endif
+    end if
 !
     j = 0
     do ino = 1, 3
@@ -79,21 +79,21 @@ subroutine analybar(x3d1, x3d2, x3d3, x3dp, xbar,&
 !           pas de projection segment ou noeud possible
                 iproj = -1
                 goto 77
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
     if (j .eq. 2) then
 !           projection possible sur le noeud pas dans la liste lno_neg
         iproj = 30
         do ino = 1, 3
             do jno = 1, 2
                 if (ino .eq. lno_neg(jno)) goto 20
-            enddo
+            end do
             exit
- 20         continue
+20          continue
         end do
         inoeu = ino
-    else if (j.eq.1) then
+    else if (j .eq. 1) then
 !           projection possible sur le côté opposé au noeud ou sur un
 !           des deux autres noeuds
         ino = lno_neg(1)
@@ -102,15 +102,15 @@ subroutine analybar(x3d1, x3d2, x3d3, x3dp, xbar,&
         kno = jno+1
         if (kno .gt. 3) kno = 1
         if (jno .eq. 1) then
-            call tstbar(2, x3d1, x3d2, r8bid3, r8bid3,&
+            call tstbar(2, x3d1, x3d2, r8bid3, r8bid3, &
                         x3dp, xbar2, iproj2)
-        else if (jno.eq.2) then
-            call tstbar(2, x3d2, x3d3, r8bid3, r8bid3,&
+        else if (jno .eq. 2) then
+            call tstbar(2, x3d2, x3d3, r8bid3, r8bid3, &
                         x3dp, xbar2, iproj2)
         else
-            call tstbar(2, x3d3, x3d1, r8bid3, r8bid3,&
+            call tstbar(2, x3d3, x3d1, r8bid3, r8bid3, &
                         x3dp, xbar2, iproj2)
-        endif
+        end if
         if (iproj2 .eq. 0) then
 !               projection possible sur un côté
             iproj = 20
@@ -119,13 +119,13 @@ subroutine analybar(x3d1, x3d2, x3d3, x3dp, xbar,&
             iproj = 30
             if (xbar2(1) .le. 0.01d0) then
                 inoeu = kno
-            else if (xbar2(2).le.0.01d0) then
+            else if (xbar2(2) .le. 0.01d0) then
                 inoeu = jno
             else
                 ASSERT(.false.)
-            endif
-        endif
-    endif
- 77 continue
+            end if
+        end if
+    end if
+77  continue
 !
 end subroutine

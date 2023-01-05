@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine comp_meca_elas(compElas, l_etat_init)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -27,8 +27,8 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=19), intent(in) :: compElas
-aster_logical, intent(in) :: l_etat_init
+    character(len=19), intent(in) :: compElas
+    aster_logical, intent(in) :: l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ aster_logical, intent(in) :: l_etat_init
 !
 
 ! - Access to map
-    call jeveuo(compElas(1:19)//'.VALV', 'E', vk16 = compElasValv)
+    call jeveuo(compElas(1:19)//'.VALV', 'E', vk16=compElasValv)
 
 ! - Init <CARTE>
     compElasValv(1:COMPOR_SIZE) = 'VIDE'
@@ -63,13 +63,13 @@ aster_logical, intent(in) :: l_etat_init
         compElasValv(INCRELAS) = 'COMP_INCR'
     else
         compElasValv(INCRELAS) = 'COMP_ELAS'
-    endif
+    end if
     compElasValv(PLANESTRESS) = 'ANALYTIQUE'
-    write (compElasValv(NUME) ,'(I16)') 1
-    write (compElasValv(KIT1_NVAR) ,'(I16)') 1
-    write (compElasValv(KIT2_NVAR) ,'(I16)') 1
-    write (compElasValv(KIT3_NVAR) ,'(I16)') 1
-    write (compElasValv(KIT4_NVAR) ,'(I16)') 1
+    write (compElasValv(NUME), '(I16)') 1
+    write (compElasValv(KIT1_NVAR), '(I16)') 1
+    write (compElasValv(KIT2_NVAR), '(I16)') 1
+    write (compElasValv(KIT3_NVAR), '(I16)') 1
+    write (compElasValv(KIT4_NVAR), '(I16)') 1
 
 ! - Create <CARTE>
     call nocart(compElas, 1, nbCmp)

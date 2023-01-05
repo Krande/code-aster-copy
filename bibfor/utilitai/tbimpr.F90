@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
+subroutine tbimpr(table, formaz, ifr, nparim, lipaim, &
                   nparpg, formar)
 !      IMPRESSION DE LA TABLE "TABLE".
 ! ----------------------------------------------------------------------
@@ -79,7 +79,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
     if (iret .eq. 0) then
         call utmess('A', 'UTILITAI4_64')
         goto 999
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
     nbpara = tbnp(1)
@@ -87,16 +87,16 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
     if (nbpara .eq. 0) then
         call utmess('A', 'UTILITAI4_65')
         goto 999
-    endif
+    end if
     if (nblign .eq. 0) then
         call utmess('A', 'UTILITAI4_76')
         goto 999
-    endif
+    end if
 !SV
-    write(ifr,*) ' '
+    write (ifr, *) ' '
     if (format .eq. 'ASTER') then
-        write(ifr,1000) '#DEBUT_TABLE'
-    endif
+        write (ifr, 1000) '#DEBUT_TABLE'
+    end if
 !
 !     --- IMPRESSION DU TITRE ---
 !
@@ -106,39 +106,39 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
         call jelira(nomtab//'.TITR', 'LONMAX', lonmax)
         do ititr = 1, lonmax
             if (format .eq. 'ASTER') then
-                write(ifr,2000) '#TITRE',titr(ititr)
+                write (ifr, 2000) '#TITRE', titr(ititr)
             else
-                write(ifr,'(1X,A)') titr(ititr)
-            endif
+                write (ifr, '(1X,A)') titr(ititr)
+            end if
         end do
-    endif
+    end if
 !
     if (nparpg .eq. 0) then
 !
 !        --- FORMAT "EXCEL" OU "AGRAF" ---
 !
         if (format .eq. 'EXCEL' .or. format .eq. 'AGRAF' .or. format .eq. 'ASTER') then
-            call tbimex(table, ifr, nparim, lipaim, format,&
+            call tbimex(table, ifr, nparim, lipaim, format, &
                         formar)
 !
 !        --- FORMAT "TABLEAU" ---
 !
         else if (format .eq. 'TABLEAU') then
             call tbimta(table, ifr, nparim, lipaim, formar)
-        endif
+        end if
     else
 !               --- TRAITEMENT DE LA "PAGINATION" ---
         call utmess('F', 'UTILITAI4_85')
 !
-    endif
+    end if
 !
     if (format .eq. 'ASTER') then
-        write(ifr,1000) '#FIN_TABLE'
-    endif
+        write (ifr, 1000) '#FIN_TABLE'
+    end if
 !
 999 continue
-    1000 format(a)
-    2000 format(a,1x,a)
+1000 format(a)
+2000 format(a, 1x, a)
 !
     call jedema()
 !

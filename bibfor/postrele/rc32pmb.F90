@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc32pmb(lieu, iocc, ns, pm, pb,&
+subroutine rc32pmb(lieu, iocc, ns, pm, pb, &
                    pmpb)
     implicit none
 #include "asterf_types.h"
@@ -60,13 +60,13 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb,&
 !
     if (npres .eq. 2 .or. nmeca .eq. 2 .or. nmeca .eq. 3) then
         call utmess('F', 'POSTRCCM_50')
-    endif
+    end if
 !
     if (npres .eq. 1 .or. nmeca .eq. 1) then
         call getfac('RESU_MECA_UNIT', n1)
         if (n1 .eq. 0) call utmess('F', 'POSTRCCM_49')
         call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
-    endif
+    end if
 !
     do j = 1, 6
         sigmoya(j) = 0.d0
@@ -86,7 +86,7 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb,&
             siglina(j) = zr(jinfor+4*(iocc-1))*zr(jsigu-1+78+72+j)
             siglinb(j) = zr(jinfor+4*(iocc-1)+1)*zr(jsigu-1+78+72+j)
         end do
-    endif
+    end if
     if (nmeca .eq. 1) then
 !------ Chargement état A
         numcha = zi(jinfoi+27*(iocc-1)+24)
@@ -110,15 +110,15 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb,&
 !
         do j = 1, 6
             do k = 1, 12
-                sigmoya(j) = sigmoya(j) + ma(k)*zr(jsigu-1+156+6*(k-1)+j)
-                sigmoyb(j) = sigmoyb(j) + mb(k)*zr(jsigu-1+156+6*(k-1)+j)
-                sigflea(j) = sigflea(j) + ma(k)*zr(jsigu-1+234+6*(k-1)+j)
-                sigfleb(j) = sigfleb(j) + mb(k)*zr(jsigu-1+234+6*(k-1)+j)
-                siglina(j) = siglina(j) + ma(k)*zr(jsigu-1+78+6*(k-1)+j)
-                siglinb(j) = siglinb(j) + mb(k)*zr(jsigu-1+78+6*(k-1)+j)
+                sigmoya(j) = sigmoya(j)+ma(k)*zr(jsigu-1+156+6*(k-1)+j)
+                sigmoyb(j) = sigmoyb(j)+mb(k)*zr(jsigu-1+156+6*(k-1)+j)
+                sigflea(j) = sigflea(j)+ma(k)*zr(jsigu-1+234+6*(k-1)+j)
+                sigfleb(j) = sigfleb(j)+mb(k)*zr(jsigu-1+234+6*(k-1)+j)
+                siglina(j) = siglina(j)+ma(k)*zr(jsigu-1+78+6*(k-1)+j)
+                siglinb(j) = siglinb(j)+mb(k)*zr(jsigu-1+78+6*(k-1)+j)
             end do
         end do
-    endif
+    end if
 !
     if (ns .eq. 0) then
         call rctres(sigmoya, pma)
@@ -139,7 +139,7 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb,&
         call rc32s0('SNSN', lieu, seis)
         call rc32s0b(seis, siglina, pmba)
         call rc32s0b(seis, siglinb, pmbb)
-    endif
+    end if
 !
     pm = max(pma, pmb)
     pb = max(pba, pbb)

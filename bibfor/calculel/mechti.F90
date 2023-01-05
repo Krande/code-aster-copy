@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,13 @@ subroutine mechti(noma, inst, deltat, theta, chtime)
 !
 !     --- VARIABLES LOCALES ---
     character(len=6) :: nompro
-    parameter (nompro='MECHTI')
+    parameter(nompro='MECHTI')
 !
     real(kind=8) :: tps(6), rundf
     character(len=8) :: nomcmp(6)
 !
-    data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
-     &     'R       ','RHO     '/
+    data nomcmp/'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ',&
+     &     'R       ', 'RHO     '/
 ! DEB-------------------------------------------------------------------
 !
     chtime = '&&'//nompro//'.CH_INST_R'
@@ -56,7 +56,7 @@ subroutine mechti(noma, inst, deltat, theta, chtime)
     tps(5) = rundf
     tps(6) = rundf
 !
-    call mecact('V', chtime, 'MAILLA', noma, 'INST_R',&
+    call mecact('V', chtime, 'MAILLA', noma, 'INST_R', &
                 ncmp=6, lnomcmp=nomcmp, vr=tps)
 !
 end subroutine

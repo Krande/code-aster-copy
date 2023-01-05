@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function dspprs(k, u, d, rho, f,&
+function dspprs(k, u, d, rho, f, &
                 fcoup)
     implicit none
 !
@@ -34,12 +34,12 @@ function dspprs(k, u, d, rho, f,&
     real(kind=8) :: dsp, fr
 !
 ! CALCUL DE LA FREQUENCE REDUITE
-    fr =f*d/u
+    fr = f*d/u
     if (fr .le. fcoup) then
-        dsp= (k**2)*((rho*(u**2))**2)*(d**3)
+        dsp = (k**2)*((rho*(u**2))**2)*(d**3)
     else
-        dsp =0.d0
-    endif
-    dspprs=dsp
+        dsp = 0.d0
+    end if
+    dspprs = dsp
 !
 end function

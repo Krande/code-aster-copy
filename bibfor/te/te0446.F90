@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,16 +68,16 @@ subroutine te0446(option, nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
         call jevech('PGEOMER', 'L', igeom)
 !
         if (nno .eq. 3) then
             call dxtpgl(zr(igeom), pgl)
-        else if (nno.eq.4) then
+        else if (nno .eq. 4) then
             call dxqpgl(zr(igeom), pgl, 'S', iret)
-        endif
+        end if
 !
         call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
@@ -89,51 +89,51 @@ subroutine te0446(option, nomte)
 !     T2VE : LA MATRICE DE PASSAGE (2X2) : INTRINSEQUE -> UTILISATEUR
 !
         call jevech('PCACOQU', 'L', jcara)
-        alpha = zr(jcara+1) * r8dgrd()
-        beta = zr(jcara+2) * r8dgrd()
-        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+        alpha = zr(jcara+1)*r8dgrd()
+        beta = zr(jcara+2)*r8dgrd()
+        call coqrep(pgl, alpha, beta, t2ev, t2ve, &
                     c, s)
 !
 ! --- VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL
-        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
                     itab=jtab)
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
         do ipg = 1, npg
-            icontm=jtab(1)+8*(ipg-1)
+            icontm = jtab(1)+8*(ipg-1)
             call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
         end do
         call dxefro(npg, t2ve, effort, effgt)
 !
         reactu = .false.
         if (iretc .eq. 0) then
-            if (zk16(icompo+2)(6:10) .eq. '_REAC') call utmess('A', 'ELEMENTS2_72')
-            reactu = ( zk16(icompo+2) .eq. 'PETIT_REAC' .or. zk16(icompo+ 2) .eq. 'GROT_GDEP' )
-        endif
+            if (zk16(icompo+2) (6:10) .eq. '_REAC') call utmess('A', 'ELEMENTS2_72')
+            reactu = (zk16(icompo+2) .eq. 'PETIT_REAC' .or. zk16(icompo+2) .eq. 'GROT_GDEP')
+        end if
 !
         if (reactu) then
             call jevech('PDEPLMR', 'L', ideplm)
             call jevech('PDEPLPR', 'L', ideplp)
             do i = 1, nno
-                i1 = 3* (i-1)
-                i2 = 6* (i-1)
-                zr(igeom+i1) = zr(igeom+i1) + zr(ideplm+i2) + zr( ideplp+i2)
-                zr(igeom+i1+1) = zr(igeom+i1+1) + zr(ideplm+i2+1) + zr(ideplp+i2+1)
-                zr(igeom+i1+2) = zr(igeom+i1+2) + zr(ideplm+i2+2) + zr(ideplp+i2+2)
+                i1 = 3*(i-1)
+                i2 = 6*(i-1)
+                zr(igeom+i1) = zr(igeom+i1)+zr(ideplm+i2)+zr(ideplp+i2)
+                zr(igeom+i1+1) = zr(igeom+i1+1)+zr(ideplm+i2+1)+zr(ideplp+i2+1)
+                zr(igeom+i1+2) = zr(igeom+i1+2)+zr(ideplm+i2+2)+zr(ideplp+i2+2)
             end do
             if (nno .eq. 3) then
                 call dxtpgl(zr(igeom), pgl)
-            else if (nno.eq.4) then
+            else if (nno .eq. 4) then
                 call dxqpgl(zr(igeom), pgl, 'S', iret)
-            endif
+            end if
 !
             call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
-        endif
+        end if
 !
 ! --- CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma,&
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, &
                     option)
 !
 ! --- AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
@@ -142,60 +142,60 @@ subroutine te0446(option, nomte)
         k = 0
         do i = 1, nno
             do j = 1, 6
-                k = k + 1
+                k = k+1
                 zr(ivectu+k-1) = bsigma(k)
             end do
         end do
-    else if (option.eq.'REFE_FORC_NODA') then
+    else if (option .eq. 'REFE_FORC_NODA') then
 !     -------------------------------------
 !
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
         call jevech('PGEOMER', 'L', igeom)
 !
         if (nno .eq. 3) then
             call dxtpgl(zr(igeom), pgl)
-        else if (nno.eq.4) then
+        else if (nno .eq. 4) then
             call dxqpgl(zr(igeom), pgl, 'S', iret)
-        endif
+        end if
 !
         call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
         call terefe('EFFORT_REFE', 'MECA_COQUE', foref)
         call terefe('MOMENT_REFE', 'MECA_COQUE', moref)
 !
-        ind=8
+        ind = 8
         do i = 1, nno
             do j = 1, 3
                 effgt((i-1)*ind+j) = foref
                 effgt((i-1)*ind+3+j) = moref
                 effgt((i-1)*ind+7) = foref
                 effgt((i-1)*ind+8) = foref
-            enddo
-        enddo
+            end do
+        end do
 !
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma,&
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, &
                     option)
 !
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', ivectu)
-        k=0
+        k = 0
         do i = 1, nno
-            effref=(abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
-            momref=(abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
-            ASSERT(abs(effref).gt.r8prem())
-            ASSERT(abs(momref).gt.r8prem())
+            effref = (abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
+            momref = (abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
+            ASSERT(abs(effref) .gt. r8prem())
+            ASSERT(abs(momref) .gt. r8prem())
             do j = 1, 6
-                k=k+1
+                k = k+1
                 if (j .lt. 4) then
                     zr(ivectu+k-1) = effref
                 else
                     zr(ivectu+k-1) = momref
-                endif
-            enddo
-        enddo
+                end if
+            end do
+        end do
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

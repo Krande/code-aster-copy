@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,17 +49,17 @@ subroutine te0168(option, nomte)
 ! ......................................................................
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
     nddl = 3*nno
-    nvec = nddl* (nddl+1)/2
+    nvec = nddl*(nddl+1)/2
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
 !
-    call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)
@@ -67,8 +67,8 @@ subroutine te0168(option, nomte)
     k = 0
     do kp = 1, npg
         do i = 1, nno
-            k = k + 1
-            en(i,kp) = zr(ivf-1+k)
+            k = k+1
+            en(i, kp) = zr(ivf-1+k)
         end do
     end do
 !
@@ -78,15 +78,15 @@ subroutine te0168(option, nomte)
 !
     do kp = 1, npg
         ky = (kp-1)*nddl*nddl
-        jacobi = sqrt(biline(nddl,zr(igeom),zr(iyty+ky),zr(igeom)))
+        jacobi = sqrt(biline(nddl, zr(igeom), zr(iyty+ky), zr(igeom)))
         coef = rho(1)*a*jacobi*zr(ipoids-1+kp)
         k = 0
         do ii = 1, nno
             do ki = 1, 3
-                k = k + ki - 3
+                k = k+ki-3
                 do jj = 1, ii
-                    k = k + 3
-                    matv(k) = matv(k) + coef*en(ii,kp)*en(jj,kp)
+                    k = k+3
+                    matv(k) = matv(k)+coef*en(ii, kp)*en(jj, kp)
                 end do
             end do
         end do
@@ -100,7 +100,7 @@ subroutine te0168(option, nomte)
             zr(imatuu+i-1) = matv(i)
         end do
 !
-    else if (option.eq.'M_GAMMA') then
+    else if (option .eq. 'M_GAMMA') then
 !
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
@@ -111,6 +111,6 @@ subroutine te0168(option, nomte)
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

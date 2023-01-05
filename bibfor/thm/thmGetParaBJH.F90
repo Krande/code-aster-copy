@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmGetParaBJH(ds_thm,j_mater, p1)
+subroutine thmGetParaBJH(ds_thm, j_mater, p1)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,9 +28,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: p1
+    type(THM_DS), intent(inout) :: ds_thm
+    integer, intent(in) :: j_mater
+    real(kind=8), intent(in) :: p1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,35 +48,33 @@ real(kind=8), intent(in) :: p1
     integer, parameter :: nb_para_bjh = 5
     real(kind=8) :: para_vale_bjh(nb_para_bjh)
     integer :: icodre_bjh(nb_para_bjh)
-    character(len=16), parameter :: para_name_bjh(nb_para_bjh) =(/'A0     ',&
-                                                                  'SHUTTLE',&
-                                                                  'EPAI   ',&
-                                                                  'S_BJH  ',&
-                                                                  'W_BJH  '/)
+    character(len=16), parameter :: para_name_bjh(nb_para_bjh) = (/'A0     ', &
+                                                                   'SHUTTLE', &
+                                                                   'EPAI   ', &
+                                                                   'S_BJH  ', &
+                                                                   'W_BJH  '/)
 
-    real(kind=8) :: ep,surf,sbjh,wbjh
+    real(kind=8) :: ep, surf, sbjh, wbjh
 !
 ! --------------------------------------------------------------------------------------------------
     para_vale_bjh(:) = 0.d0
     ep = 0.d0
     surf = 0.d0
 
+    if ((ds_thm%ds_behaviour%rela_hydr) .eq. 'HYDR_TABBAL') then
 
-    if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
-
-        call rcvala(j_mater    , ' '          , 'THM_DIFFU'  ,&
-                    1      , 'PCAP'   , [p1]      ,&
-                    nb_para_bjh, para_name_bjh, para_vale_bjh, icodre_bjh,&
+        call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                    1, 'PCAP', [p1], &
+                    nb_para_bjh, para_name_bjh, para_vale_bjh, icodre_bjh, &
                     1)
 
         surf = para_vale_bjh(1)
-        ds_thm%ds_material%bjh%shuttle  = para_vale_bjh(2)
+        ds_thm%ds_material%bjh%shuttle = para_vale_bjh(2)
 
-        ep   = para_vale_bjh(3)
+        ep = para_vale_bjh(3)
         sbjh = para_vale_bjh(4)
         wbjh = para_vale_bjh(5)
 !~         write (6,*) 'thmgetBJH1',ds_thm%ds_behaviour%rela_hydr
-
 
         if (surf .lt. 0.d0) then
 
@@ -84,7 +82,7 @@ real(kind=8), intent(in) :: p1
 
         else
 
-            ds_thm%ds_material%bjh%A0        = surf
+            ds_thm%ds_material%bjh%A0 = surf
 
         end if
 
@@ -93,7 +91,7 @@ real(kind=8), intent(in) :: p1
             call utmess('F', 'THM1_96')
 
         else
-            ds_thm%ds_material%bjh%epai        = ep
+            ds_thm%ds_material%bjh%epai = ep
 
         end if
 
@@ -103,12 +101,11 @@ real(kind=8), intent(in) :: p1
 
         else
 
-            ds_thm%ds_material%bjh%SBJH      = sbjh
-            ds_thm%ds_material%bjh%wBJH      = wbjh
+            ds_thm%ds_material%bjh%SBJH = sbjh
+            ds_thm%ds_material%bjh%wBJH = wbjh
 
         end if
 
-
-    endif
+    end if
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mecalg(optioz, result, modele, depla, theta,&
-                  mate, mateco, lischa, symech, compor, incr,&
-                  time, iord, nbprup, noprup, chvite,&
+subroutine mecalg(optioz, result, modele, depla, theta, &
+                  mate, mateco, lischa, symech, compor, incr, &
+                  time, iord, nbprup, noprup, chvite, &
                   chacce, kcalc, coor, iadnoe)
 !
 !     - FONCTION REALISEE:   CALCUL DU TAUX DE RESTITUTION D'ENERGIE
@@ -90,10 +90,10 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
     character(len=2) :: codret
     character(len=6) :: nompro
-    parameter (nompro='MECALG')
+    parameter(nompro='MECALG')
 !
     integer :: nbmxpa
-    parameter (nbmxpa = 20)
+    parameter(nbmxpa=20)
 !
     integer :: ibid, iret, nres, numfon, livi(nbmxpa), coor
     integer :: nchin, nsig, ino1, ino2, inga, pbtype
@@ -112,7 +112,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     character(len=24) :: chtime, celmod, sigelno, sigseno
     character(len=24) :: pavolu, pa1d2d, pa2d3d, papres, pepsin
     character(len=24) :: chsig, chepsp, chvari, chsigi, livk(nbmxpa)
-    parameter (resuco = '&&MECALG')
+    parameter(resuco='&&MECALG')
     data chvarc/'&&MECALG.CH_VARC_R'/
     data chvref/'&&MECALG.CHVREF'/
 !
@@ -122,8 +122,8 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 !     INITIALISATIONS
     g = 0.d0
-    nsig=0
-    inga=0
+    nsig = 0
+    inga = 0
     ch1d2d = '&&MECALG.1D2D'
     ch2d3d = '&&MECALG.2D3D'
     chepsi = '&&MECALG.EPSI'
@@ -134,8 +134,8 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     chvolu = '&&MECALG.VOLU'
     chsigi = '&&MECALG.CHSIGI'
     celmod = '&&MECALG.CELMOD'
-    sigelno= '&&MECALG.SIGELNO'
-    sigseno= '&&MECALG.SIGSENO'
+    sigelno = '&&MECALG.SIGELNO'
+    sigseno = '&&MECALG.SIGSENO'
 !
 !   cas FEM ou X-FEM
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
@@ -153,13 +153,13 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
     if (incr) then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
-        call rsexch('F', resu, 'SIEF_ELGA', iord, chsig,&
+        call rsexch('F', resu, 'SIEF_ELGA', iord, chsig, &
                     iret)
-        call rsexch('F', resuco, 'EPSP_ELNO', iord, chepsp,&
+        call rsexch('F', resuco, 'EPSP_ELNO', iord, chepsp, &
                     iret)
-        call rsexch('F', resuco, 'VARI_ELNO', iord, chvari,&
+        call rsexch('F', resuco, 'VARI_ELNO', iord, chvari, &
                     iret)
-    endif
+    end if
 !
 !   Recuperation de l'etat initial
 !   ------------------------------
@@ -177,52 +177,52 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
             call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
 
 !           Verification du type de champ
-            pbtype=0
-            if (.not.lxfem) then
+            pbtype = 0
+            if (.not. lxfem) then
 !             cas FEM : verif que le champ est soit ELNO, soit NOEU, soit ELGA
-              if (ino1.eq.1 .and. ino2.eq.1 .and. inga.eq.1) pbtype=1
+                if (ino1 .eq. 1 .and. ino2 .eq. 1 .and. inga .eq. 1) pbtype = 1
             elseif (lxfem) then
 !             cas X-FEM : verif que le champ est ELGA (seul cas autorise)
-              if (inga.eq.1) pbtype=1
-            endif
-            if (pbtype.eq.1) call utmess('F', 'RUPTURE1_12')
+                if (inga .eq. 1) pbtype = 1
+            end if
+            if (pbtype .eq. 1) call utmess('F', 'RUPTURE1_12')
 
 !           transformation si champ ELGA
-            if (inga.eq.0) then
+            if (inga .eq. 0) then
 
 !               traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
-                call alchml(modelLigrel, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
+                call alchml(modelLigrel, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod, &
                             iret, ' ')
-                call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
+                call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V', &
                             sigelno, modele)
                 call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
 
 !               calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM
-                if (lxfem) call xelgano(modele,chsigi,sigseno)
+                if (lxfem) call xelgano(modele, chsigi, sigseno)
 !                call imprsd('CHAMP',chsigi,6,'chsigi')
 
-            endif
+            end if
 
-        endif
+        end if
 
     else
 
-        nsig=0
+        nsig = 0
 
-    endif
+    end if
 !
 !- RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
     k8b = '        '
-    call vrcins(modele, mate, k8b, time, chvarc,&
+    call vrcins(modele, mate, k8b, time, chvarc, &
                 codret)
     call vrcref(modele, mate(1:8), k8b, chvref)
 !
 !
 ! - TRAITEMENT DES CHARGES
 !
-    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
-                chpres, chepsi, chpesa, chrota, lfonc,&
+    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
+                chpres, chepsi, chpesa, chrota, lfonc, &
                 time, iord)
 !
     if (lfonc) then
@@ -233,17 +233,17 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         pepsin = 'PEPSINF'
         if (option .eq. 'CALC_DG') then
             option = 'CALC_DG_F'
-        else if (option.eq.'CALC_G') then
+        else if (option .eq. 'CALC_G') then
             option = 'CALC_G_XFEM_F'
-        else if (option.eq.'CALC_DG_E') then
+        else if (option .eq. 'CALC_DG_E') then
             option = 'CALC_DG_E_F'
-        else if (option.eq.'CALC_DGG_E') then
+        else if (option .eq. 'CALC_DGG_E') then
             option = 'CALC_DGG_E_F'
-        else if (option.eq.'CALC_DG_FORC') then
+        else if (option .eq. 'CALC_DG_FORC') then
             option = 'CALC_DG_FORC_F'
-        else if (option.eq.'CALC_DGG_FORC') then
+        else if (option .eq. 'CALC_DGG_FORC') then
             option = 'CALC_DGG_FORC_F'
-        endif
+        end if
     else
         pavolu = 'PFRVOLU'
         pa1d2d = 'PFR1D2D'
@@ -251,7 +251,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         papres = 'PPRESSR'
         pepsin = 'PEPSINR'
         option = 'CALC_G_XFEM'
-    endif
+    end if
 !
 !
     if (lxfem) then
@@ -276,7 +276,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !       RECUPERATION DES DONNEES XFEM (TOPONO)
         hea_no = modele//'.TOPONO.HNO'
 !
-    endif
+    end if
 !
     lpaout(1) = 'PGTHETA'
     lchout(1) = '&&'//nompro//'.CH_G'
@@ -346,17 +346,17 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
         nchin = 29
 !
-    endif
+    end if
 !
-    if ((option.eq.'CALC_G_XFEM_F') .or. (option.eq.'CALC_DG_F') .or. (option.eq.'CALC_DG_E_F')&
-        .or. (option.eq.'CALC_DGG_E_F') .or.&
-        (option.eq.'CALC_DGG_FORC_F') .or. (option.eq.'CALC_DG_FORC_F')) then
-        call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R  ',&
+ if ((option .eq. 'CALC_G_XFEM_F') .or. (option .eq. 'CALC_DG_F') .or. (option .eq. 'CALC_DG_E_F') &
+        .or. (option .eq. 'CALC_DGG_E_F') .or. &
+        (option .eq. 'CALC_DGG_FORC_F') .or. (option .eq. 'CALC_DG_FORC_F')) then
+        call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R  ', &
                     ncmp=1, nomcmp='INST   ', sr=time)
         lpain(nchin+1) = 'PTEMPSR'
         lchin(nchin+1) = chtime
-        nchin = nchin + 1
-    endif
+        nchin = nchin+1
+    end if
 !
     if (incr) then
         lpain(nchin+1) = 'PCONTRR'
@@ -365,59 +365,59 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         lchin(nchin+2) = chepsp
         lpain(nchin+3) = 'PVARIPR'
         lchin(nchin+3) = chvari
-        nchin = nchin + 3
+        nchin = nchin+3
 !
 !       CHAMP DE CONTRAINTE INITIALE
         if (nsig .ne. 0) then
-          if (inga .eq. 0) then
+            if (inga .eq. 0) then
 !           champ de contrainte initiale transforme en ELNO
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1) = sigelno
-            nchin = nchin + 1
+                lpain(nchin+1) = 'PSIGINR'
+                lchin(nchin+1) = sigelno
+                nchin = nchin+1
 
 !           si X-FEM : champ de contrainte initiale transforme en SE-ELNO
-            if (lxfem) then
-                lpain(nchin+1) = 'PSIGISE'
-                lchin(nchin+1) = sigseno
-                nchin = nchin + 1
-            endif
+                if (lxfem) then
+                    lpain(nchin+1) = 'PSIGISE'
+                    lchin(nchin+1) = sigseno
+                    nchin = nchin+1
+                end if
 
-          else
+            else
 !           champ de contrainte initiale donne par l'utilisateur (NOEUD ou ELNO)
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1) = chsigi
-            nchin = nchin + 1
-          endif
-        endif
-    endif
+                lpain(nchin+1) = 'PSIGINR'
+                lchin(nchin+1) = chsigi
+                nchin = nchin+1
+            end if
+        end if
+    end if
 !
     if (chvite .ne. ' ') then
         lpain(nchin+1) = 'PVITESS'
         lchin(nchin+1) = chvite
         lpain(nchin+2) = 'PACCELE'
         lchin(nchin+2) = chacce
-        nchin = nchin + 2
-    endif
+        nchin = nchin+2
+    end if
 !
     if (kcalc .eq. 'NON') then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=iret)
-        call rsexch(' ', resu, 'SIEF_ELGA', iord, chsig,&
+        call rsexch(' ', resu, 'SIEF_ELGA', iord, chsig, &
                     iret)
         lpain(nchin+1) = 'PCONTGR'
         lchin(nchin+1) = chsig
-        nchin = nchin + 1
-    endif
+        nchin = nchin+1
+    end if
 !
 !
 !-  SOMMATION DES G ELEMENTAIRES
-    call calcul('S', option, modelLigrel, nchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, modelLigrel, nchin, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     call mesomm(lchout(1), 1, vr=g(1))
     if (symech .ne. 'NON') then
         g(1) = 2.d0*g(1)
-    endif
+    end if
 !
 !- IMPRESSION DE G ET ECRITURE DANS LA TABLE RESULT
 !
@@ -425,9 +425,9 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
 
 ! NOM DES NOEUDS DU FOND
-    if (.not.lxfem) then
+    if (.not. lxfem) then
         call tbajvk(result, nbprup, 'NOEUD', zk8(iadnoe), livk)
-    endif
+    end if
 !
     call tbajvi(result, nbprup, 'NUME_ORDRE', iord, livi)
     call tbajvr(result, nbprup, 'INST', time, livr)
@@ -436,7 +436,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     call tbajvr(result, nbprup, 'COOR_Y', zr(coor+1), livr)
 
     call tbajvr(result, nbprup, 'G', g(1), livr)
-    call tbajli(result, nbprup, noprup, livi, livr,&
+    call tbajli(result, nbprup, noprup, livi, livr, &
                 livc, livk, 0)
 !
     call detrsd('CHAMP_GD', ch1d2d)

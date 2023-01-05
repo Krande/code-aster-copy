@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine me2mth(model_, nb_load, list_name_, cara_elem_,&
-                  time_ , temp_  , vect_elem_)
+subroutine me2mth(model_, nb_load, list_name_, cara_elem_, &
+                  time_, temp_, vect_elem_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterf_types.h"
@@ -81,18 +81,18 @@ implicit none
 !
     call jemarq()
 !
-    model     = model_
+    model = model_
     cara_elem = cara_elem_
     vect_elem = vect_elem_
-    time      = time_
+    time = time_
     call megeom(model, chgeom)
 !
     call jeexin(vect_elem//'.RERR', iret)
     if (iret .gt. 0) then
         call jedetr(vect_elem//'.RERR')
         call jedetr(vect_elem//'.RELR')
-    endif
-    call memare('G', vect_elem, model, ' ', cara_elem,&
+    end if
+    call memare('G', vect_elem, model, ' ', cara_elem, &
                 'CHAR_THER')
 !
     lpaout(1) = 'PVECTTR'
@@ -111,7 +111,7 @@ implicit none
 !
 ! ----- Exclusion of some loads
 !
-        call load_neut_excl('CALC_VECT_ELEM',list_nbload_ = nb_load, list_name_ = list_name_)
+        call load_neut_excl('CALC_VECT_ELEM', list_nbload_=nb_load, list_name_=list_name_)
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
         lpain(2) = 'PTEMPSR'
@@ -122,7 +122,7 @@ implicit none
             load_name = list_name_(1)
             call jeveuo(load_name//'.CHTH      .NOMO', 'L', vk8=v_nomo)
             ligrmo = v_nomo(1)//'.MODELE'
-        endif
+        end if
         do i_load = 1, nb_load
             load_name = list_name_(i_load)
             call dismoi('TYPE_CHARGE', load_name, 'CHARGE', repk=k8bid)
@@ -130,7 +130,7 @@ implicit none
                 lfonc = .true.
             else
                 lfonc = .false.
-            endif
+            end if
 !
             ligrch = load_name//'.CHTH.LIGREL'
 
@@ -147,18 +147,18 @@ implicit none
                     option = 'CHAR_THER_TEXT_R'
                     lpain(3) = 'PT_EXTR'
                     lpain(4) = 'PCOEFHR'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.T_EXT     '
                 lchin(4) = ligrch(1:13)//'.COEFH     '
                 lpain(5) = 'PTEMPER'
                 lchin(5) = temp_
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 5, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrmo, 5, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')
-            endif
+            end if
 !  =====================================================================
 !           --  ( CHAR_THER_FLUN_F , ISO_FACE ) SUR LE MODELE
             call exisd('CHAMP_GD', ligrch(1:13)//'.FLURE', iret)
@@ -169,15 +169,15 @@ implicit none
                 else
                     option = 'CHAR_THER_FLUN_R'
                     lpain(3) = 'PFLUXNR'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.FLURE     '
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrmo, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')
-            endif
+            end if
 !  =====================================================================
 !           --  ( CHAR_THER_FLUX_  , ISO_FACE ) SUR LE MODELE
             call exisd('CHAMP_GD', ligrch(1:13)//'.FLUR2', iret)
@@ -188,15 +188,15 @@ implicit none
                 else
                     option = 'CHAR_THER_FLUX_R'
                     lpain(3) = 'PFLUXVR'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.FLUR2     '
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrmo, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')
-            endif
+            end if
 !  =====================================================================
 !           --   ( CHAR_THER_SOUR_F , ISO    )  SUR LE MODELE
             call exisd('CHAMP_GD', ligrch(1:13)//'.SOURE', iret)
@@ -207,15 +207,15 @@ implicit none
                 else
                     option = 'CHAR_THER_SOUR_R'
                     lpain(3) = 'PSOURCR'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.SOURE     '
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrmo, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')
-            endif
+            end if
 !  =====================================================================
 !           --   ( CHAR_THER_SOUR_R , CALC    )  SUR LE MODELE
             call exisd('CHAMP_GD', ligrch(1:13)//'.SOURC', iret)
@@ -225,15 +225,15 @@ implicit none
                 else
                     option = 'CHAR_THER_SOUR_R'
                     lpain(3) = 'PSOURCR'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.SOURC     '
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrmo, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')
-            endif
+            end if
 !  =====================================================================
 !           --   ( CHAR_THER_GRAI_  ,  ISO_VOLU  ) SUR LE   MODELE
             call exisd('CHAMP_GD', ligrch(1:13)//'.GRAIN', iret)
@@ -244,15 +244,15 @@ implicit none
                 else
                     option = 'CHAR_THER_GRAI_R'
                     lpain(3) = 'PGRAINR'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.GRAIN     '
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrmo, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')
-            endif
+            end if
 !  =====================================================================
 !           --   ( THER_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
             call exisd('CHAMP_GD', ligrch(1:13)//'.CIMPO', iret)
@@ -263,17 +263,17 @@ implicit none
                 else
                     option = 'THER_DDLI_R'
                     lpain(3) = 'PDDLIMR'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.CIMPO     '
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrch, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrch, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

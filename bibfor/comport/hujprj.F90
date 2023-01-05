@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine hujprj(k, tin, toud, p, q)
     real(kind=8) :: dd
     real(kind=8) :: tin(6), tou(3), toud(3), p, q
 !
-    common /tdim/ ndt  , ndi
+    common/tdim/ndt, ndi
 !
     tou(:) = 0.d0
     toud(:) = 0.d0
@@ -47,17 +47,17 @@ subroutine hujprj(k, tin, toud, p, q)
         if (i .ne. k) then
             tou(j) = tin(i)
             j = j+1
-        endif
-    enddo
+        end if
+    end do
 !
     tou(3) = tin(ndt+1-k)
 !
-    dd = ( tou(1)-tou(2) ) /2.d0
+    dd = (tou(1)-tou(2))/2.d0
     toud(1) = dd
     toud(2) = -dd
     toud(3) = tou(3)
 !
-    p = ( tou(1)+tou(2) ) /2.d0
-    q = sqrt(dd**2 + (tou(3)**2)/2.d0)
+    p = (tou(1)+tou(2))/2.d0
+    q = sqrt(dd**2+(tou(3)**2)/2.d0)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ function diincl(sddisc, nomchz, force)
     if (iret .eq. 0) then
         diincl = .true.
         goto 9999
-    endif
+    end if
 !
 ! --- LE CHAMP EST-IL EXCLU ?
 !
@@ -83,10 +83,10 @@ function diincl(sddisc, nomchz, force)
     call jeveuo(arcexc, 'L', jarexc)
     call jelira(arcexc, 'LONMAX', nb)
     do i = 1, nb
-        if (nomcha .eq. zk16(jarexc-1 + i)) then
+        if (nomcha .eq. zk16(jarexc-1+i)) then
             diincl = .false.
             goto 999
-        endif
+        end if
     end do
     diincl = .true.
 !
@@ -96,7 +96,7 @@ function diincl(sddisc, nomchz, force)
 !
     if (force) then
         diincl = .true.
-    endif
+    end if
 !
 9999 continue
 !

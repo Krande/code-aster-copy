@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dstat0(nbpt, d, dmoy, detyp, drms,&
+subroutine dstat0(nbpt, d, dmoy, detyp, drms, &
                   dmax, dmin)
 ! CETTE ROUTINE EST EN FAIT L'ANCIENNE DSTAT RENOMMEE DSTAT0
 !
@@ -60,8 +60,8 @@ subroutine dstat0(nbpt, d, dmoy, detyp, drms,&
 !
     do i = 1, nbpt
 !
-        sd = sd + d(i)
-        sd2 = sd2 + d(i)**2
+        sd = sd+d(i)
+        sd2 = sd2+d(i)**2
 !
 !           RECHERCHE DES EXTREMAS ABSOLUS
 !
@@ -73,7 +73,7 @@ subroutine dstat0(nbpt, d, dmoy, detyp, drms,&
     dmoy = sd/nbpt
 !
     do i = 1, nbpt
-        sdd = sdd + (d(i)-dmoy)**2
+        sdd = sdd+(d(i)-dmoy)**2
     end do
 !
     drms = sqrt(sd2/nbpt)

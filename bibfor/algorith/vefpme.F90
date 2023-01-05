@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vefpme(modelz, cara_elem, mate      , mateco, lload_namez , lload_infoz,&
-                  inst  , varc_curr, vect_elemz, ligrel_calcz,&
-                  disp_prevz  , disp_cumu_instz)
+subroutine vefpme(modelz, cara_elem, mate, mateco, lload_namez, lload_infoz, &
+                  inst, varc_curr, vect_elemz, ligrel_calcz, &
+                  disp_prevz, disp_cumu_instz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/load_list_info.h"
@@ -33,17 +33,17 @@ implicit none
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 !
-character(len=*), intent(in) :: modelz
-character(len=*), intent(in) :: lload_namez
-character(len=*), intent(in) :: lload_infoz
-real(kind=8), intent(in) :: inst(3)
-character(len=*), intent(in) :: cara_elem
-character(len=*), intent(in) :: mate, mateco
-character(len=*), intent(in) :: varc_curr
-character(len=*), intent(in) :: ligrel_calcz
-character(len=*), intent(inout) :: vect_elemz
-character(len=*), intent(in) :: disp_prevz
-character(len=*), intent(in) :: disp_cumu_instz
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: lload_namez
+    character(len=*), intent(in) :: lload_infoz
+    real(kind=8), intent(in) :: inst(3)
+    character(len=*), intent(in) :: cara_elem
+    character(len=*), intent(in) :: mate, mateco
+    character(len=*), intent(in) :: varc_curr
+    character(len=*), intent(in) :: ligrel_calcz
+    character(len=*), intent(inout) :: vect_elemz
+    character(len=*), intent(in) :: disp_prevz
+    character(len=*), intent(in) :: disp_cumu_instz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ character(len=*), intent(in) :: disp_cumu_instz
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_in_maxi, nbout
-    parameter (nb_in_maxi = 42, nbout = 1)
+    parameter(nb_in_maxi=42, nbout=1)
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
@@ -100,25 +100,25 @@ character(len=*), intent(in) :: disp_cumu_instz
 !
 ! - Initializations
 !
-    stop        = 'S'
-    resu_elem   = '&&VEFPME.0000000'
-    model       = modelz
-    lload_name  = lload_namez
-    lload_info  = lload_infoz
+    stop = 'S'
+    resu_elem = '&&VEFPME.0000000'
+    model = modelz
+    lload_name = lload_namez
+    lload_info = lload_infoz
     ligrel_calc = ligrel_calcz
-    disp_prev      = disp_prevz
+    disp_prev = disp_prevz
     disp_cumu_inst = disp_cumu_instz
     if (ligrel_calc .eq. ' ') then
         ligrel_calc = model(1:8)//'.MODELE'
-    endif
-    inst_prev   = inst(1)
-    inst_curr   = inst(1)+inst(2)
-    inst_theta  = inst(3)
-    base        = 'V'
+    end if
+    inst_prev = inst(1)
+    inst_curr = inst(1)+inst(2)
+    inst_theta = inst(3)
+    base = 'V'
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Result name for vect_elem
@@ -126,48 +126,48 @@ character(len=*), intent(in) :: disp_cumu_instz
     vect_elem = vect_elemz
     if (vect_elem .eq. ' ') then
         vect_elem = '&&VEFPME'
-    endif
+    end if
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load  , v_load_name, v_load_info,&
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
                         lload_name, lload_info)
 !
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, mate, cara_elem,&
+    call memare(base, vect_elem, model, mate, cara_elem, &
                 'CHAR_MECA')
     call reajre(vect_elem, ' ', base)
     if (load_empty) then
         goto 99
-    endif
+    end if
 !
 ! - Preparing input fields
 !
-    call load_neum_prep(model    , cara_elem , mate      , mateco, 'Pilo'      , inst_prev,&
-                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
-                        lpain    , disp_prev = disp_prev, disp_cumu_inst = disp_cumu_inst,&
-                        varc_curr = varc_curr)
+    call load_neum_prep(model, cara_elem, mate, mateco, 'Pilo', inst_prev, &
+                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+                        lpain, disp_prev=disp_prev, disp_cumu_inst=disp_cumu_inst, &
+                        varc_curr=varc_curr)
 !
 ! - Computation
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
+        load_name = v_load_name(i_load) (1:8)
         load_nume = v_load_info(nb_load+i_load+1)
-        if ((load_nume .eq. 5).or.(load_nume .eq. 8)) then
-            call load_neum_comp(stop       , i_load    , load_name , load_nume, 'Pilo',&
-                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
-                                base       , resu_elem , vect_elem)
-        endif
-        if ((load_nume .eq. 9).or.(load_nume .eq. 11)) then
-            call load_neum_comp(stop       , i_load    , load_name , load_nume, 'Suiv',&
-                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
-                                base       , resu_elem , vect_elem)
-        endif
+        if ((load_nume .eq. 5) .or. (load_nume .eq. 8)) then
+            call load_neum_comp(stop, i_load, load_name, load_nume, 'Pilo', &
+                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                base, resu_elem, vect_elem)
+        end if
+        if ((load_nume .eq. 9) .or. (load_nume .eq. 11)) then
+            call load_neum_comp(stop, i_load, load_name, load_nume, 'Suiv', &
+                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                base, resu_elem, vect_elem)
+        end if
     end do
 !
- 99 continue
+99  continue
 !
     vect_elemz = vect_elem//'.RELR'
 !

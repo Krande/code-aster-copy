@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,13 +57,13 @@ subroutine argu80(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibaxe, ibid, lddnbs, lddnin,  lddtyp
+    integer :: ibaxe, ibid, lddnbs, lddnin, lddtyp
     integer :: nbsec, ndist, numa, numd, numg, nveri
     real(kind=8) :: dist, prec
     character(len=24), pointer :: cycl_refe(:) => null()
     character(len=8), pointer :: idc_type(:) => null()
 !-----------------------------------------------------------------------
-    data blanc /'  '/
+    data blanc/'  '/
 !-----------------------------------------------------------------------
 !
 !
@@ -77,21 +77,21 @@ subroutine argu80(nomres)
 !--------------------RECUPERATION DES CONCEPTS AMONTS-------------------
 !
     call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
-    intf=cycl_refe(2)(1:8)
+    intf = cycl_refe(2) (1:8)
 !
 !----------RECUPERATION NOM DES INTERFACES DE LIAISON-------------------
 !
     call getvtx('LIAISON', 'DROITE', iocc=1, scal=kar8, nbret=ibid)
-    droite=kar8
+    droite = kar8
     call getvtx('LIAISON', 'GAUCHE', iocc=1, scal=kar8, nbret=ibid)
-    gauche=kar8
+    gauche = kar8
     call getvtx('LIAISON', 'AXE', iocc=1, nbval=0, nbret=ibaxe)
     if (ibaxe .eq. -1) then
         call getvtx('LIAISON', 'AXE', iocc=1, scal=kar8, nbret=ibid)
-        axe=kar8
+        axe = kar8
     else
-        axe=' '
-    endif
+        axe = ' '
+    end if
 !
 !   RECUPERATION DES NUMEROS D'INTERFACE
 !
@@ -101,7 +101,7 @@ subroutine argu80(nomres)
     if (numd .eq. 0) then
         valk = droite
         call utmess('F', 'ALGORITH15_85', sk=valk)
-    endif
+    end if
 !
 !   INTERFACE DE GAUCHE OBLIGATOIRE
 !
@@ -109,7 +109,7 @@ subroutine argu80(nomres)
     if (numg .eq. 0) then
         valk = gauche
         call utmess('F', 'ALGORITH15_86', sk=valk)
-    endif
+    end if
 !
 !   INTERFACE AXE FACULTATIVE
 !
@@ -118,42 +118,42 @@ subroutine argu80(nomres)
         if (numa .eq. 0) then
             valk = axe
             call utmess('F', 'ALGORITH15_87', sk=valk)
-        endif
+        end if
     else
-        numa=0
-    endif
+        numa = 0
+    end if
 !
-    zi(lddnin)=numd
-    zi(lddnin+1)=numg
-    zi(lddnin+2)=numa
+    zi(lddnin) = numd
+    zi(lddnin+1) = numg
+    zi(lddnin+2) = numa
 !
 !   RECUPERATION DES TYPES DES INTERFACES
 !
     call jeveuo(intf//'.IDC_TYPE', 'L', vk8=idc_type)
-    typd=idc_type(numd)
-    typg=idc_type(numg)
+    typd = idc_type(numd)
+    typg = idc_type(numg)
     if (numa .gt. 0) then
-        typa=idc_type(numa)
+        typa = idc_type(numa)
     else
-        typa=typd
-    endif
+        typa = typd
+    end if
 !
 !  VERIFICATIONS SUR LES TYPES INTERFACES
 !
     if (typg .ne. typd .or. typa .ne. typd) then
         call utmess('F', 'ALGORITH15_88')
-    endif
+    end if
 !
     if (typd .ne. 'MNEAL   ' .and. typd .ne. 'CRAIGB  ') then
         if (typd .ne. 'AUCUN   ' .and. typd .ne. 'CB_HARMO') then
             valk = typd
             call utmess('F', 'ALGORITH15_89', sk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 ! STOCKAGE TYPE INTERFACE
 !
-    zk8(lddtyp)= typd
+    zk8(lddtyp) = typd
 !
 !  RECUPERATION DU NOMBRE DE SECTEURS
 !
@@ -161,24 +161,24 @@ subroutine argu80(nomres)
     if (nbsec .lt. 2) then
         vali = nbsec
         call utmess('F', 'ALGORITH15_59', si=vali)
-    endif
+    end if
 !
-    zi(lddnbs)=nbsec
+    zi(lddnbs) = nbsec
 !
 !---------------VERIFICATION DE LA REPETITIVITE SUR MAILLAGE------------
 !
     call getfac('VERI_CYCL', nveri)
     call getvr8('VERI_CYCL', 'PRECISION', iocc=1, scal=prec, nbret=ibid)
     call getvr8('VERI_CYCL', 'DIST_REFE', iocc=1, scal=dist, nbret=ndist)
-    if (nveri .eq. 0) prec=1.d-3
+    if (nveri .eq. 0) prec = 1.d-3
     if (ndist .eq. 0) then
 !     --- AU CAS OU LA DISTANCE DE REFERENCE N'EST PAS DONNEE,ON DEVRAIT
 !         LA LIRE DANS LA SD MAILLAGE (VOIR COMMANDE LIRE_MAILLAGE).
 !         CE TRAVAIL N'ETANT PAS ACCOMPLI, ON MET DIST < 0 AFIN DE
 !         SIGNIFIER A VERECY DE TRAVAILLER COMME AVANT
         dist = -1.d0
-    endif
-    call verecy(intf, numd, numg, nbsec, prec,&
+    end if
+    call verecy(intf, numd, numg, nbsec, prec, &
                 dist)
 !
     call jedema()

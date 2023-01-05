@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getBehaviourAlgo(plane_stress, rela_comp   ,&
-                            rela_code_py, meca_code_py,&
-                            keywf       , i_comp      ,&
-                            algo_inte   , algo_inte_r)
+subroutine getBehaviourAlgo(plane_stress, rela_comp, &
+                            rela_code_py, meca_code_py, &
+                            keywf, i_comp, &
+                            algo_inte, algo_inte_r)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcalgo.h"
@@ -34,14 +34,14 @@ implicit none
 #include "asterfort/utlcal.h"
 #include "asterfort/utmess.h"
 !
-aster_logical, intent(in) :: plane_stress
-character(len=16), intent(in) :: rela_comp
-character(len=16), intent(in) :: rela_code_py
-character(len=16), intent(in) :: meca_code_py
-character(len=16), intent(in) :: keywf
-integer, intent(in) :: i_comp
-character(len=16), intent(out) :: algo_inte
-real(kind=8), intent(out) :: algo_inte_r
+    aster_logical, intent(in) :: plane_stress
+    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: rela_code_py
+    character(len=16), intent(in) :: meca_code_py
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_comp
+    character(len=16), intent(out) :: algo_inte
+    real(kind=8), intent(out) :: algo_inte_r
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,13 +68,13 @@ real(kind=8), intent(out) :: algo_inte_r
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    algo_inte   = ' '
+    algo_inte = ' '
     algo_inte_r = 0.d0
-    texte = (/ ' ',' ',' '/)
+    texte = (/' ', ' ', ' '/)
 !
 ! - Get ALGO_INTE
 !
-    call getvtx(keywf, 'ALGO_INTE', iocc = i_comp, scal = algo_inte, nbret = iret)
+    call getvtx(keywf, 'ALGO_INTE', iocc=i_comp, scal=algo_inte, nbret=iret)
     if (iret .eq. 0) then
         call lcalgo(rela_code_py, algo_inte)
     else
@@ -83,18 +83,18 @@ real(kind=8), intent(out) :: algo_inte_r
             texte(1) = algo_inte
             texte(2) = 'ALGO_INTE'
             texte(3) = rela_comp
-            call utmess('F', 'COMPOR1_45', nk = 3, valk = texte)
-        endif
-    endif
+            call utmess('F', 'COMPOR1_45', nk=3, valk=texte)
+        end if
+    end if
 !
 ! - Get ALGO_INTE - Plane stress
 !
     if (plane_stress) then
-        if (rela_comp .eq. 'VMIS_ECMI_LINE' .or. rela_comp .eq. 'VMIS_ECMI_TRAC' .or.&
+        if (rela_comp .eq. 'VMIS_ECMI_LINE' .or. rela_comp .eq. 'VMIS_ECMI_TRAC' .or. &
             rela_comp .eq. 'VMIS_ISOT_LINE' .or. rela_comp .eq. 'VMIS_ISOT_TRAC') then
             algo_inte = 'SECANTE'
-        endif
-    endif
+        end if
+    end if
 !
 ! - Convert name of algorithm to identifier
 !

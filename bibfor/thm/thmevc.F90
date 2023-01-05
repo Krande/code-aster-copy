@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmevc(option  , l_axi  ,&
-                  nno     , nnos   ,&
-                  npg     , nddls  , nddlm   ,&
+subroutine thmevc(option, l_axi, &
+                  nno, nnos, &
+                  npg, nddls, nddlm, &
                   jv_poids, jv_func, jv_dfunc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -30,12 +30,12 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
 !
-character(len=16), intent(in) :: option
-aster_logical, intent(in) :: l_axi
-integer, intent(in) :: nno, nnos
-integer, intent(in) :: npg
-integer, intent(in) :: nddls, nddlm
-integer, intent(in) :: jv_poids, jv_func, jv_dfunc
+    character(len=16), intent(in) :: option
+    aster_logical, intent(in) :: l_axi
+    integer, intent(in) :: nno, nnos
+    integer, intent(in) :: npg
+    integer, intent(in) :: nddls, nddlm
+    integer, intent(in) :: jv_poids, jv_func, jv_dfunc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,38 +65,38 @@ integer, intent(in) :: jv_poids, jv_func, jv_dfunc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nnom = nno - nnos
+    nnom = nno-nnos
     if (option .eq. 'CHAR_MECA_FR3D3D') then
         call jevech('PGEOMER', 'L', jv_geom)
         call tefrep(option, 'PFR3D3D', jv_forc)
         call jevech('PVECTUR', 'E', jv_vect)
         do kp = 1, npg
             k = (kp-1)*nno
-            call dfdm3d(nno, kp, jv_poids, jv_dfunc, zr(jv_geom),&
+            call dfdm3d(nno, kp, jv_poids, jv_dfunc, zr(jv_geom), &
                         poids)
             fx = 0.d0
             fy = 0.d0
             fz = 0.d0
             do i_node = 1, nno
-                ii = 3 * (i_node-1)
-                fx = fx + zr(jv_func+k+i_node-1) * zr(jv_forc+ii-1+1)
-                fy = fy + zr(jv_func+k+i_node-1) * zr(jv_forc+ii-1+2)
-                fz = fz + zr(jv_func+k+i_node-1) * zr(jv_forc+ii-1+3)
+                ii = 3*(i_node-1)
+                fx = fx+zr(jv_func+k+i_node-1)*zr(jv_forc+ii-1+1)
+                fy = fy+zr(jv_func+k+i_node-1)*zr(jv_forc+ii-1+2)
+                fz = fz+zr(jv_func+k+i_node-1)*zr(jv_forc+ii-1+3)
             end do
             do i_node = 1, nnos
-                ii = nddls * (i_node-1)
-                zr(jv_vect+ii-1+1) = zr(jv_vect+ii-1+1) + poids * fx * zr(jv_func+k+i_node-1)
-                zr(jv_vect+ii-1+2) = zr(jv_vect+ii-1+2) + poids * fy * zr(jv_func+k+i_node-1)
-                zr(jv_vect+ii-1+3) = zr(jv_vect+ii-1+3) + poids * fz * zr(jv_func+k+i_node-1)
+                ii = nddls*(i_node-1)
+                zr(jv_vect+ii-1+1) = zr(jv_vect+ii-1+1)+poids*fx*zr(jv_func+k+i_node-1)
+                zr(jv_vect+ii-1+2) = zr(jv_vect+ii-1+2)+poids*fy*zr(jv_func+k+i_node-1)
+                zr(jv_vect+ii-1+3) = zr(jv_vect+ii-1+3)+poids*fz*zr(jv_func+k+i_node-1)
             end do
             do i_node = 1, nnom
                 ii = nnos*nddls+nddlm*(i_node-1)
-                zr(jv_vect+ii-1+1) = zr(jv_vect+ii-1+1) + poids * fx * zr(jv_func+k+i_node+nnos-1)
-                zr(jv_vect+ii-1+2) = zr(jv_vect+ii-1+2) + poids * fy * zr(jv_func+k+i_node+nnos-1)
-                zr(jv_vect+ii-1+3) = zr(jv_vect+ii-1+3) + poids * fz * zr(jv_func+k+i_node+nnos-1)
+                zr(jv_vect+ii-1+1) = zr(jv_vect+ii-1+1)+poids*fx*zr(jv_func+k+i_node+nnos-1)
+                zr(jv_vect+ii-1+2) = zr(jv_vect+ii-1+2)+poids*fy*zr(jv_func+k+i_node+nnos-1)
+                zr(jv_vect+ii-1+3) = zr(jv_vect+ii-1+3)+poids*fz*zr(jv_func+k+i_node+nnos-1)
             end do
         end do
-    endif
+    end if
 !
     if (option .eq. 'CHAR_MECA_FR2D2D') then
         call jevech('PGEOMER', 'L', jv_geom)
@@ -105,33 +105,33 @@ integer, intent(in) :: jv_poids, jv_func, jv_dfunc
 !
         do kp = 1, npg
             k = (kp-1)*nno
-            call dfdm2d(nno, kp, jv_poids, jv_dfunc, zr(jv_geom),&
+            call dfdm2d(nno, kp, jv_poids, jv_dfunc, zr(jv_geom), &
                         poids)
             fx = 0.d0
             fy = 0.d0
             do i_node = 1, nno
-                ii = 2 * (i_node-1)
-                fx = fx + zr(jv_func+k+i_node-1) * zr(jv_forc+ii-1+1)
-                fy = fy + zr(jv_func+k+i_node-1) * zr(jv_forc+ii-1+2)
+                ii = 2*(i_node-1)
+                fx = fx+zr(jv_func+k+i_node-1)*zr(jv_forc+ii-1+1)
+                fy = fy+zr(jv_func+k+i_node-1)*zr(jv_forc+ii-1+2)
             end do
             if (l_axi) then
                 rx = 0.d0
                 do i_node = 1, nno
-                    rx = rx + zr(jv_geom+2*(i_node-1))*zr(jv_func+k+i_node-1)
+                    rx = rx+zr(jv_geom+2*(i_node-1))*zr(jv_func+k+i_node-1)
                 end do
                 poids = poids*rx
-            endif
+            end if
             do i_node = 1, nnos
-                ii = nddls* (i_node-1)
-                zr(jv_vect+ii-1+1) = zr(jv_vect+ii-1+1) + poids * fx * zr(jv_func+k+ i_node-1)
-                zr(jv_vect+ii-1+2) = zr(jv_vect+ii-1+2) + poids * fy * zr( jv_func+k+i_node-1)
+                ii = nddls*(i_node-1)
+                zr(jv_vect+ii-1+1) = zr(jv_vect+ii-1+1)+poids*fx*zr(jv_func+k+i_node-1)
+                zr(jv_vect+ii-1+2) = zr(jv_vect+ii-1+2)+poids*fy*zr(jv_func+k+i_node-1)
             end do
             do i_node = 1, nnom
                 ii = nnos*nddls+nddlm*(i_node-1)
-                zr(jv_vect+ii-1+1)= zr(jv_vect+ii-1+1) + poids * fx * zr(jv_func+k+i_node+nnos-1)
-                zr(jv_vect+ii-1+2)= zr(jv_vect+ii-1+2) + poids * fy * zr(jv_func+k+i_node+nnos-1)
+                zr(jv_vect+ii-1+1) = zr(jv_vect+ii-1+1)+poids*fx*zr(jv_func+k+i_node+nnos-1)
+                zr(jv_vect+ii-1+2) = zr(jv_vect+ii-1+2)+poids*fy*zr(jv_func+k+i_node+nnos-1)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

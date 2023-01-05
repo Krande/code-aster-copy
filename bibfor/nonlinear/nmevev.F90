@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmevev(sddisc   , nume_inst, valinc, sderro, ds_contact,&
+subroutine nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
                   loop_name)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -69,7 +69,7 @@ implicit none
 !
     call nmerge(sderro, 'SOLV_ITMX', lsvimx)
     call nmerge(sderro, 'DIVE_RESI', ldvres)
-    call nmerge(sderro, 'RESI_MAXI',  lresmx)
+    call nmerge(sderro, 'RESI_MAXI', lresmx)
     call nmerge(sderro, 'CRIT_STAB', linsta)
 !
 ! --- LA BOUCLE COURANTE A-T-ELLE CONVERGE ?
@@ -85,7 +85,7 @@ implicit none
         call nmcrel(sderro, 'ERRE_NPHY', ASTER_TRUE)
     else
         lerrcv = .false.
-    endif
+    end if
 !
 ! --- ERREUR IMMEDIATE AU NIVEAU DE LA BOUCLE COURANTE ?
 !
@@ -93,8 +93,8 @@ implicit none
 !
 ! --- PREMIER EVENT DECLENCHE
 !
-    call nmevel(sddisc, nume_inst , valinc, loop_name, lsvimx,&
-                ldvres, lresmx    , linsta, lerrcv   , lerror,&
+    call nmevel(sddisc, nume_inst, valinc, loop_name, lsvimx, &
+                ldvres, lresmx, linsta, lerrcv, lerror, &
                 conver, ds_contact)
 !
 end subroutine

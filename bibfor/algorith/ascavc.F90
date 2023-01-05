@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ascavc(lchar , infcha   , fomult, numedd, inst, vci, dlci_, &
+subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci, dlci_, &
                   l_hho_, hhoField_, basez)
 !
-use HHO_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,13 +40,13 @@ implicit none
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-character(len=24) :: lchar, infcha, fomult
-character(len=*) :: vci, numedd
-real(kind=8) :: inst
-character(len=*), optional :: dlci_
-aster_logical, intent(in), optional :: l_hho_
-type(HHO_Field), intent(in), optional :: hhoField_
-character(len=1), intent(in), optional :: basez
+    character(len=24) :: lchar, infcha, fomult
+    character(len=*) :: vci, numedd
+    real(kind=8) :: inst
+    character(len=*), optional :: dlci_
+    aster_logical, intent(in), optional :: l_hho_
+    type(HHO_Field), intent(in), optional :: hhoField_
+    character(len=1), intent(in), optional :: basez
 ! ----------------------------------------------------------------------
 ! BUT  :  CALCUL DU CHAM_NO CONTENANT LE VECTEUR LE CINEMATIQUE
 ! ---     ASSOCIE A LA LISTE DE CHAR_CINE_* LCHAR A UN INSTANT INST
@@ -64,7 +64,7 @@ character(len=1), intent(in), optional :: basez
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
-    integer :: ichci, ifm, niv, neq, ieq, jdlci2,  ieqmul
+    integer :: ichci, ifm, niv, neq, ieq, jdlci2, ieqmul
     character(len=1) :: base
     character(len=8) :: newnom
     character(len=19) :: charci, chamno, vci2
@@ -79,32 +79,32 @@ character(len=1), intent(in), optional :: basez
 !
 !
     call jemarq()
-    if (vci .eq. ' ') vci='&&ASCAVC.VCI'
-    vci2=vci
+    if (vci .eq. ' ') vci = '&&ASCAVC.VCI'
+    vci2 = vci
 !
     call infniv(ifm, niv)
 !
 !
-    if(present(basez)) then
+    if (present(basez)) then
         base = basez
     else
         base = 'V'
     end if
 !
-    if(present(dlci_)) then
+    if (present(dlci_)) then
         dlci = dlci_
     else
         dlci = '&&ASCAVC.DLCI'
     end if
 !
-    newnom='.0000000'
+    newnom = '.0000000'
 !
 ! - For HHO
 !
     l_hho = ASTER_FALSE
     if (present(l_hho_)) then
         l_hho = l_hho_
-    endif
+    end if
 !
     call jedetr(vachci)
     call jedetr(vci2//'.DLCI')
@@ -114,13 +114,13 @@ character(len=1), intent(in), optional :: basez
 !
     nchtot = zi(jinfc)
     nchci = 0
-    ieqmul=0
+    ieqmul = 0
 !
     do ichar = 1, nchtot
         icine = zi(jinfc+ichar)
-        if (icine .lt. 0) nchci=nchci+1
+        if (icine .lt. 0) nchci = nchci+1
 !       -- UNE CHARGE NON "CINEMATIQUE" PEUT EN CONTENIR UNE :
-        charge=zk24(idchar-1+ichar)(1:8)
+        charge = zk24(idchar-1+ichar) (1:8)
     end do
 !
 !
@@ -130,10 +130,10 @@ character(len=1), intent(in), optional :: basez
     if (nchci .eq. 0) then
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, ichin_ = -2)
-        call vtcreb(chamno, 'V', 'R',&
-                    nume_ddlz = numedd,&
-                    nb_equa_outz = neq)
+        call corich('E', chamno, ichin_=-2)
+        call vtcreb(chamno, 'V', 'R', &
+                    nume_ddlz=numedd, &
+                    nb_equa_outz=neq)
         zk24(ilchno-1+1) = chamno
 !
 !
@@ -144,40 +144,40 @@ character(len=1), intent(in), optional :: basez
         call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
         call wkvect(dlci, base//' V I', neq, jdlci2)
         do ichar = 1, nchtot
-            charge=zk24(idchar-1+ichar)(1:8)
+            charge = zk24(idchar-1+ichar) (1:8)
             icine = zi(jinfc+ichar)
             if (icine .lt. 0) then
-                ichci = ichci + 1
+                ichci = ichci+1
                 call gcnco2(newnom)
                 chamno(10:16) = newnom(2:8)
-                call corich('E', chamno, ichin_ = ichar)
+                call corich('E', chamno, ichin_=ichar)
                 zk24(ilchno-1+ichci) = chamno
                 if (l_hho) then
                     call calvci(chamno, numedd, 1, charge, inst, &
-                                'V',l_hho, hhoField_)
+                                'V', l_hho, hhoField_)
                 else
                     call calvci(chamno, numedd, 1, charge, inst, &
-                                'V',l_hho)
-                endif
+                                'V', l_hho)
+                end if
                 call jeveuo(chamno//'.DLCI', 'L', vi=v_dlci)
 !           --- COMBINAISON DES DLCI (OBJET CONTENANT DES 0 OU DES 1),
 !           --- LES 1 ETANT POUR LES DDL CONTRAINT
 !           --- LE RESTE DE L OBJECT VCI2 EST CREE PAR ASCOVA
                 do ieq = 1, neq
 !             -- ON REGARDE SI UN DDL N'EST PAS ELIMINE PLUSIEURS FOIS:
-                    if (zi(jdlci2-1+ieq) .gt. 0 .and. v_dlci(ieq) .gt. 0) ieqmul=ieq
+                    if (zi(jdlci2-1+ieq) .gt. 0 .and. v_dlci(ieq) .gt. 0) ieqmul = ieq
 !
-                    zi(jdlci2-1+ieq)=max(zi(jdlci2-1+ieq),v_dlci(&
-                    ieq))
+                    zi(jdlci2-1+ieq) = max(zi(jdlci2-1+ieq), v_dlci( &
+                                           ieq))
                 end do
                 call jedetr(chamno//'.DLCI')
-            endif
+            end if
         end do
-    endif
+    end if
 
 !
 !     -- ON COMBINE LES CHAMPS CALCULES :
-    call ascova('D', vachci, fomult, 'INST', inst,&
+    call ascova('D', vachci, fomult, 'INST', inst, &
                 'R', vci2, base)
 !
 !     --SI ON A PAS DE CHARGE CINEMATIQUE, IL FAUT QUAND MEME
@@ -185,7 +185,7 @@ character(len=1), intent(in), optional :: basez
     if (nchci .eq. 0) call detrsd('CHAMP_GD', chamno(1:19))
     call jedetr(charci)
 !
-    if(.not.present(dlci_)) then
+    if (.not. present(dlci_)) then
         call jedetr(dlci)
     end if
 !

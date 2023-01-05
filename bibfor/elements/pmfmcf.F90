@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmfmcf(ip,     nbgf,   nbfib,  nugf,   sdcomp, &
-                  crit,   option, instam, instap, icdmat, &
-                  nbvalc, defam,  defap,  varim,  varimp, &
-                  contm,  defm,   defp,   epsm,   modf,   &
-                  sigf,   varip,  codret)
+subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp, &
+                  crit, option, instam, instap, icdmat, &
+                  nbvalc, defam, defap, varim, varimp, &
+                  contm, defm, defp, epsm, modf, &
+                  sigf, varip, codret)
 !
 ! aslint: disable=W1504
 ! --------------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ subroutine pmfmcf(ip,     nbgf,   nbfib,  nugf,   sdcomp, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
-implicit none
+    implicit none
 
 #include "MultiFiber_type.h"
 #include "asterfort/pmfcom.h"
@@ -60,27 +60,27 @@ implicit none
     do ig = 1, nbgf
 !       numéro du groupe de fibre
         ngf = nugf(ig)
-        icp = 1 + (ngf-1)*MULTI_FIBER_SIZEK
+        icp = 1+(ngf-1)*MULTI_FIBER_SIZEK
 !       nombre de fibres de ce groupe
-        read(sdcomp(icp-1+MULTI_FIBER_NBFI),'(I24)') nbfig
+        read (sdcomp(icp-1+MULTI_FIBER_NBFI), '(I24)') nbfig
 !       aiguillage suivant comportement :
 !           module et contrainte sur chaque fibre
 !           attention à la position du pointeur contrainte et variables internes
-        iposv = idecv + idcipv
-        iposc = idecc + idcipc
-        call pmfcom(ip,           idecc,       option,       sdcomp(icp),   crit,         &
-                    nbfig,        instam,      instap,       icdmat,        nbvalc,       &
-                    defam,        defap,       varim(iposv), varimp(iposv), contm(iposc), &
-                    defm(idecc),  defp(idecc), epsm,         modf(idecc),   sigf(idecc),  &
+        iposv = idecv+idcipv
+        iposc = idecc+idcipc
+        call pmfcom(ip, idecc, option, sdcomp(icp), crit, &
+                    nbfig, instam, instap, icdmat, nbvalc, &
+                    defam, defap, varim(iposv), varimp(iposv), contm(iposc), &
+                    defm(idecc), defp(idecc), epsm, modf(idecc), sigf(idecc), &
                     varip(iposv), codrep)
         if (codrep .ne. 0) then
             codret = codrep
 !           code 3: on continue et on le renvoie a la fin. Autres codes: sortie immediate
             if (codrep .ne. 3) goto 900
-        endif
-        idecc = idecc + nbfig
-        idecv = idecv + nbvalc*nbfig
-    enddo
+        end if
+        idecc = idecc+nbfig
+        idecv = idecv+nbvalc*nbfig
+    end do
 !
 900 continue
 end subroutine

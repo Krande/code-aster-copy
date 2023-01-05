@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine dimecz(sdcont, mesh, nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -67,26 +67,26 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    nb_elem_slav  = 0
-    nb_node_slav  = 0
-    nb_elem_mast  = 0
-    nb_elem_slav  = 0
-    nb_cont_poin  = 0
+    nb_elem_slav = 0
+    nb_node_slav = 0
+    nb_elem_mast = 0
+    nb_elem_slav = 0
+    nb_cont_poin = 0
     nb_elem_slavc = 0
     nb_node_slavc = 0
     nb_elem_mastc = 0
     nb_elem_slavc = 0
     nb_cont_poinc = 0
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Parameters
 !
-    cont_form     = cfdisi(sdcont_defi, 'FORMULATION')
+    cont_form = cfdisi(sdcont_defi, 'FORMULATION')
 !
 ! - Datastructure for contact
 !
     sdcont_methco = sdcont_defi(1:16)//'.METHCO'
-    call jeveuo(sdcont_methco, 'E', vi = v_sdcont_methco)
+    call jeveuo(sdcont_methco, 'E', vi=v_sdcont_methco)
     zmeth = cfmmvd('ZMETH')
 !
 ! - Total number elements/zones and nodes / zones
@@ -109,9 +109,9 @@ implicit none
             nb_elem_mastc = nb_elem_mast
             nb_node_slavc = nb_node_slav
             nb_node_mastc = nb_node_mast
-        endif
-        v_sdcont_methco(zmeth*(i_zone-1)+8 ) = nb_elem_slav
-        v_sdcont_methco(zmeth*(i_zone-1)+9 ) = nb_node_slav
+        end if
+        v_sdcont_methco(zmeth*(i_zone-1)+8) = nb_elem_slav
+        v_sdcont_methco(zmeth*(i_zone-1)+9) = nb_node_slav
         v_sdcont_methco(zmeth*(i_zone-1)+10) = nb_elem_mast
         v_sdcont_methco(zmeth*(i_zone-1)+11) = nb_node_mast
         v_sdcont_methco(zmeth*(i_zone-1)+12) = nb_elem_slavc
@@ -151,7 +151,7 @@ implicit none
             nb_cont_poinc = 0
         else
             nb_cont_poinc = nb_cont_poin
-        endif
+        end if
         v_sdcont_methco(zmeth*(i_zone-1)+21) = nb_cont_poinc
     end do
 !

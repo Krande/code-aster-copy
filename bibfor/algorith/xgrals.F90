@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,47 +65,47 @@ subroutine xgrals(noma, ln, lt, grlt, grln)
 !     GRADIENT DE LST
 !     ---------------
 !
-    lpain(1)='PGEOMER'
-    lchin(1)=noma//'.COORDO'
-    lpain(2)='PNEUTER'
-    lchin(2)=lt
-    lpaout(1)='PGNEUTR'
-    lchout(1)=chgrlt
-    nchin=2
-    call calcul('S', 'GRAD_NEUT_R', ligrel, nchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    lpain(1) = 'PGEOMER'
+    lchin(1) = noma//'.COORDO'
+    lpain(2) = 'PNEUTER'
+    lchin(2) = lt
+    lpaout(1) = 'PGNEUTR'
+    lchout(1) = chgrlt
+    nchin = 2
+    call calcul('S', 'GRAD_NEUT_R', ligrel, nchin, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 !     PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
     call celces(lchout(1), 'V', chams)
-    call cescns(chams, ' ', 'V', grlt, ' ',&
+    call cescns(chams, ' ', 'V', grlt, ' ', &
                 ier)
 !
     call detrsd('CHAM_ELEM_S', chams)
-    call detrsd('CHAM_ELEM'  , chgrlt)
+    call detrsd('CHAM_ELEM', chgrlt)
 !
 !     GRADIENT DE LSN
 !     ---------------
 !
-    lpain(1)='PGEOMER'
-    lchin(1)=noma//'.COORDO'
-    lpain(2)='PNEUTER'
-    lchin(2)=ln
-    lpaout(1)='PGNEUTR'
-    lchout(1)=chgrln
-    nchin=2
-    call calcul('S', 'GRAD_NEUT_R', ligrel, nchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    lpain(1) = 'PGEOMER'
+    lchin(1) = noma//'.COORDO'
+    lpain(2) = 'PNEUTER'
+    lchin(2) = ln
+    lpaout(1) = 'PGNEUTR'
+    lchout(1) = chgrln
+    nchin = 2
+    call calcul('S', 'GRAD_NEUT_R', ligrel, nchin, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 !     PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
     call celces(lchout(1), 'V', chams)
-    call cescns(chams, ' ', 'V', grln, ' ',&
+    call cescns(chams, ' ', 'V', grln, ' ', &
                 ier)
 !
     call detrsd('CHAM_ELEM_S', chams)
-    call detrsd('CHAM_ELEM'  , chgrln)
-    call detrsd('LIGREL'     , ligrel)
+    call detrsd('CHAM_ELEM', chgrln)
+    call detrsd('LIGREL', ligrel)
 !
     call jedema()
 end subroutine

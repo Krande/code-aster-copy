@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
-                  itemax, epsmax, toleou, dirapp, dir,&
-                  ksi1, ksi2, tau1, tau2, iproj,&
+subroutine mmproj(alias, nno, ndim, coorma, coorpt, &
+                  itemax, epsmax, toleou, dirapp, dir, &
+                  ksi1, ksi2, tau1, tau2, iproj, &
                   niverr)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -81,21 +81,21 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
 ! --- ALGO DE NEWTON POUR LA PROJECTION SUIVANT UNE DIRECTION DONNEE
 !
     if (dirapp) then
-        call mmnewd(alias, nno, ndim, coorma, coorpt,&
-                    itemax, epsmax, dir, ksi1, ksi2,&
+        call mmnewd(alias, nno, ndim, coorma, coorpt, &
+                    itemax, epsmax, dir, ksi1, ksi2, &
                     tau1, tau2, niverr)
     else
-        call mmnewt(alias, nno, ndim, coorma, coorpt,&
-                    itemax, epsmax, ksi1, ksi2, tau1,&
+        call mmnewt(alias, nno, ndim, coorma, coorpt, &
+                    itemax, epsmax, ksi1, ksi2, tau1, &
                     tau2, niverr)
-    endif
+    end if
     if (niverr .gt. 0) then
         goto 999
-    endif
+    end if
 !
 ! --- AJUSTEMENT PROJECTION HORS ZONE
 !
-    call mmtole(alias, nno, ndim, coorma, toleou,&
+    call mmtole(alias, nno, ndim, coorma, toleou, &
                 ksi1, ksi2, tau1, tau2, iproj)
 !
 999 continue

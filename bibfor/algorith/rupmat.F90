@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rupmat(fami, kpg, ksp, imat, vim,&
+subroutine rupmat(fami, kpg, ksp, imat, vim, &
                   lgpg, e, sigd)
     implicit none
 #include "asterfort/rcvalb.h"
@@ -33,18 +33,18 @@ subroutine rupmat(fami, kpg, ksp, imat, vim,&
 !   OUT E    :  MODULE D YOUNG DEGRADE PAR UN COEF DONNE MATERIAU
 !     SIGD   :  CHAMPS DE CONTRAINTES DES ELE. ENDOMMAGES
 ! =================================================================
-    if (vim (lgpg) .lt. 0.5d0) then
+    if (vim(lgpg) .lt. 0.5d0) then
         goto 999
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'CRIT_RUPT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'CRIT_RUPT', 0, ' ', [0.d0], &
                 1, 'COEF', coef, cerr, 1)
 !
-    e = e /coef(1)
+    e = e/coef(1)
 !
     do i = 1, 6
-        sigd(i)=0.d0
+        sigd(i) = 0.d0
     end do
 !
 999 continue

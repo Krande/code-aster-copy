@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine adalig(ligrz,partsdz)
+subroutine adalig(ligrz, partsdz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -76,7 +76,7 @@ subroutine adalig(ligrz,partsdz)
     integer ::  jtliel, igrel, itype, j, jtype
     integer :: nbel, nbelem, nbg, nbgrel, nbtype, nel, nelem, ntot
     integer :: nbelmx, rang, nbproc, np1, nspaq, nbelgr, igre2
-    integer :: ktype,  k, nbelgv, lont
+    integer :: ktype, k, nbelgv, lont
     integer, pointer :: gteut(:) => null()
     integer, pointer :: nteut(:) => null()
     integer, pointer :: teut(:) => null()
@@ -90,26 +90,25 @@ subroutine adalig(ligrz,partsdz)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     ligr = ligrz
-    liel=ligr//'.LIEL'
-    typsd='****'
+    liel = ligr//'.LIEL'
+    typsd = '****'
     call jeexin(liel, iret)
     if (iret .eq. 0) then
         goto 999
-    endif
+    end if
     call jelira(liel, 'NUTIOC', nbgrel)
     if (nbgrel .eq. 0) then
         goto 999
-    endif
+    end if
 
 !   -- le maillage est-il distribué pour être en mode HPC
 !   ----------------------------------------------------
-    lhpc=ASTER_FALSE
+    lhpc = ASTER_FALSE
     call dismoi('NOM_MAILLA', ligr, 'LIGREL', repk=noma)
     call gettco(noma, typsd)
-    if( typsd.eq.'MAILLAGE_P' ) then
-        lhpc=ASTER_TRUE
-    endif
-
+    if (typsd .eq. 'MAILLAGE_P') then
+        lhpc = ASTER_TRUE
+    end if
 
 !   -- recopie de liel dans tliel et destruction de liel
 !   ----------------------------------------------------
@@ -118,7 +117,6 @@ subroutine adalig(ligrz,partsdz)
     call jedupo(liel, 'V', tliel, .true._1)
     call jedetr(liel)
     call jelira(tliel, 'NMAXOC', nbtg)
-
 
 !   -- Calcul de 2 vecteurs de travail (sur-dimensionnes) :
 !     teut  : liste des type_elem utilises dans le ligrel
@@ -139,14 +137,14 @@ subroutine adalig(ligrz,partsdz)
             itype = zi(jtliel-1+iadp-1)
             do j = 1, nbtype
                 if (itype .eq. teut(j)) then
-                    nteut(j) = nteut(j)+ nbelem
+                    nteut(j) = nteut(j)+nbelem
                     goto 1
-                endif
+                end if
             end do
             nbtype = nbtype+1
             teut(nbtype) = itype
             nteut(nbtype) = nbelem
-        endif
+        end if
 1       continue
     end do
 
@@ -154,10 +152,9 @@ subroutine adalig(ligrz,partsdz)
 !   ---------------------------------------------------------------
     if (present(partsdz)) then
         partsd = partsdz
-        call adalig_sd(ligr,partsd,tliel,nbtype,clas,teut,nteut)
+        call adalig_sd(ligr, partsd, tliel, nbtype, clas, teut, nteut)
         goto 998
-    endif
-
+    end if
 
 !   -- Calcul du nombre de grels du nouveau .LIEL
 !      et de la dimension totale de la collection
@@ -171,37 +168,36 @@ subroutine adalig(ligrz,partsdz)
     do ktype = 1, nbtype
         nbel = nteut(ktype)
         if (lhpc) then
-            nspaq=nbel/nbelmx
-            ASSERT((nspaq*nbelmx.le.nbel))
-            if (nspaq*nbelmx .lt. nbel) nspaq=nspaq+1
+            nspaq = nbel/nbelmx
+            ASSERT((nspaq*nbelmx .le. nbel))
+            if (nspaq*nbelmx .lt. nbel) nspaq = nspaq+1
             nbg = nspaq
         else
-            nspaq=(nbel/nbproc)/nbelmx
-            ASSERT((nspaq*nbproc*nbelmx.le.nbel))
-            if (nspaq*nbproc*nbelmx .lt. nbel) nspaq=nspaq+1
+            nspaq = (nbel/nbproc)/nbelmx
+            ASSERT((nspaq*nbproc*nbelmx .le. nbel))
+            if (nspaq*nbproc*nbelmx .lt. nbel) nspaq = nspaq+1
             nbg = nspaq*nbproc
-        endif
+        end if
 !
         gteut(ktype) = nbg
-        nbgrel = nbgrel + nbg
-        lont = lont + nbel + nbg
+        nbgrel = nbgrel+nbg
+        lont = lont+nbel+nbg
     end do
-    if (.not.lhpc) then
-        ASSERT((nbgrel/nbproc)*nbproc.eq.nbgrel)
-    endif
-
+    if (.not. lhpc) then
+        ASSERT((nbgrel/nbproc)*nbproc .eq. nbgrel)
+    end if
 
 !   -- Allocation du nouveau .LIEL
 !   ------------------------------------
-    call jecrec(liel, clas//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(liel, clas//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbgrel)
     call jeecra(liel, 'LONT', lont)
-    igrel=0
+    igrel = 0
     do ktype = 1, nbtype
         itype = teut(ktype)
         ntot = nteut(ktype)
         nbg = gteut(ktype)
-        nbelgr=ntot/nbg
+        nbelgr = ntot/nbg
 !       -- attention : pour les petits GREL, il peut arriver que
 !          nbelgr=0 (si nbproc > ntot)
 !          il y aura alors des GREL vides
@@ -209,20 +205,19 @@ subroutine adalig(ligrz,partsdz)
 !       -- le nombre d'elements par GREL sera nbelgr ou nbelgr+1
 !       -- les np1 1ers GREL de ktype auront nbelgr+1 elements
 !          les autres auront nbelgr elements
-        np1=ntot-nbg*nbelgr
-        ASSERT(np1.lt.nbg)
+        np1 = ntot-nbg*nbelgr
+        ASSERT(np1 .lt. nbg)
         do k = 1, nbg
-            nbelgv=nbelgr
-            if (k .le. np1) nbelgv=nbelgv+1
+            nbelgv = nbelgr
+            if (k .le. np1) nbelgv = nbelgv+1
             call jecroc(jexnum(liel, igrel+k))
             call jeecra(jexnum(liel, igrel+k), 'LONMAX', nbelgv+1)
             call jeveuo(jexnum(liel, igrel+k), 'E', jliel)
             zi(jliel+nbelgv) = itype
         end do
-        igrel=igrel+nbg
+        igrel = igrel+nbg
     end do
-    ASSERT(nbgrel.eq.igrel)
-
+    ASSERT(nbgrel .eq. igrel)
 
 !   -- Remplissage des nouveaux GREL
 !   ----------------------------------
@@ -231,13 +226,13 @@ subroutine adalig(ligrz,partsdz)
         itype = teut(ktype)
         ntot = nteut(ktype)
         nbg = gteut(ktype)
-        nbelgr=ntot/nbg
-        np1=ntot-nbg*nbelgr
-        ASSERT(np1.lt.nbg)
+        nbelgr = ntot/nbg
+        np1 = ntot-nbg*nbelgr
+        ASSERT(np1 .lt. nbg)
 
-        igre2=1
-        nbelgv=nbelgr
-        if (igre2 .le. np1) nbelgv=nbelgv+1
+        igre2 = 1
+        nbelgv = nbelgr
+        if (igre2 .le. np1) nbelgv = nbelgv+1
         call jeveuo(jexnum(liel, igrel+igre2), 'E', jliel)
         nelem = 0
 
@@ -247,28 +242,27 @@ subroutine adalig(ligrz,partsdz)
             iadtp = zi(jtlie2+j)
             jtype = zi(jtliel-2+iadtp)
             if (jtype .eq. itype) then
-                nel = iadtp -iadt -1
+                nel = iadtp-iadt-1
                 do k = 1, nel
 !                   -- Il faut changer de GREL :
                     if (nelem .ge. nbelgv) then
-                        igre2 = igre2 + 1
-                        nbelgv=nbelgr
-                        if (igre2 .le. np1) nbelgv=nbelgv+1
+                        igre2 = igre2+1
+                        nbelgv = nbelgr
+                        if (igre2 .le. np1) nbelgv = nbelgv+1
                         call jeveuo(jexnum(liel, igrel+igre2), 'E', jliel)
                         nelem = 0
-                    endif
-                    nelem = nelem + 1
+                    end if
+                    nelem = nelem+1
                     zi(jliel-1+nelem) = zi(jtliel-1+iadt+k-1)
                 end do
-            endif
+            end if
             iadt = iadtp
         end do
-        ASSERT(igre2.le.nbg)
-        ASSERT(nelem.eq.nbelgv)
-        igrel=igrel+nbg
+        ASSERT(igre2 .le. nbg)
+        ASSERT(nelem .eq. nbelgv)
+        igrel = igrel+nbg
     end do
-    ASSERT(igrel.eq.nbgrel)
-
+    ASSERT(igrel .eq. nbgrel)
 
 !   -- Destruction des objets de travail
     AS_DEALLOCATE(vi=gteut)

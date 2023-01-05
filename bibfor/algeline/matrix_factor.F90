@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matrix_factor(solveu, base, iret, matpre, matass,&
+subroutine matrix_factor(solveu, base, iret, matpre, matass, &
                          npvneg, istop)
     implicit none
 #include "jeveux.h"
@@ -71,16 +71,16 @@ subroutine matrix_factor(solveu, base, iret, matpre, matass,&
 !   -------------------------------------
     call xfem_ksolv(solveu, kxfem)
 !
-    if ( kxfem .eq. 'OUI') then
+    if (kxfem .eq. 'OUI') then
 !
-       call prere3(solveu, base, iret, matpre, matass,&
-                   npvneg, istop)
+        call prere3(solveu, base, iret, matpre, matass, &
+                    npvneg, istop)
 !
     else
 !
-       call prere2(solveu, base, iret, matpre, matass,&
-                   npvneg, istop)
+        call prere2(solveu, base, iret, matpre, matass, &
+                    npvneg, istop)
 !
-    endif
+    end if
 !
 end subroutine

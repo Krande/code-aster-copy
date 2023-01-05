@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0563(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(option.eq.'NORME_L2' .or. option.eq.'NORME_FROB')
+    ASSERT(option .eq. 'NORME_L2' .or. option .eq. 'NORME_FROB')
 !
 ! - Input fields
 !
@@ -61,16 +61,16 @@ subroutine te0563(option, nomte)
 !
 ! - Informations of input fields
 !
-    call tecach('OOO', 'PCHAMPG', 'L', iret, nval=3,&
+    call tecach('OOO', 'PCHAMPG', 'L', iret, nval=3, &
                 itab=jtab1)
-    npg=jtab1(3)
+    npg = jtab1(3)
     ncmp_vale = jtab1(2)/npg
 !
-    call tecach('OOO', 'PCOORPG', 'L', iret, nval=2,&
+    call tecach('OOO', 'PCOORPG', 'L', iret, nval=2, &
                 itab=jtab2)
     ncmp_coor = jtab2(2)/npg
 !
-    call tecach('OOO', 'PCOEFR', 'L', iret, nval=2,&
+    call tecach('OOO', 'PCOEFR', 'L', iret, nval=2, &
                 itab=jtab3)
     ncmp_coef = jtab3(2)
 !
@@ -80,14 +80,14 @@ subroutine te0563(option, nomte)
 !
     resu = 0.d0
     do ipg = 1, npg
-        poids_pg = zr(j_coor_elga + ncmp_coor*(ipg-1)+ncmp_coor-1)
+        poids_pg = zr(j_coor_elga+ncmp_coor*(ipg-1)+ncmp_coor-1)
         vale_pg = 0.d0
         do icmp = 1, ncmp_vale
-            vale_pg = vale_pg + zr(j_coef-1+icmp) * zr(j_vale-1+ncmp_vale*(ipg-1)+icmp) * zr(j_va&
+            vale_pg = vale_pg+zr(j_coef-1+icmp)*zr(j_vale-1+ncmp_vale*(ipg-1)+icmp)*zr(j_va&
                       &le-1+ncmp_vale*(ipg-1)+icmp)
-        enddo
-        resu = resu + vale_pg * poids_pg
-    enddo
+        end do
+        resu = resu+vale_pg*poids_pg
+    end do
 !
     calc_elem = zi(j_calc)
 !
@@ -95,6 +95,6 @@ subroutine te0563(option, nomte)
         zr(j_resu) = resu
     else
         zr(j_resu) = sqrt(resu)
-    endif
+    end if
 !
 end subroutine

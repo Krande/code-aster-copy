@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,20 +31,20 @@ subroutine dstbfb(jacob, bfb)
 !
     do k = 1, 3
         do j = 1, 9
-            bfb(k,j) = 0.d0
+            bfb(k, j) = 0.d0
         end do
     end do
-    bfb(1,2) = - vj11 - vj12
-    bfb(1,5) = vj11
-    bfb(1,8) = vj12
-    bfb(2,3) = - vj21 - vj22
-    bfb(2,6) = vj21
-    bfb(2,9) = vj22
-    bfb(3,2) = - vj21 - vj22
-    bfb(3,3) = - vj11 - vj12
-    bfb(3,5) = vj21
-    bfb(3,6) = vj11
-    bfb(3,8) = vj22
-    bfb(3,9) = vj12
+    bfb(1, 2) = -vj11-vj12
+    bfb(1, 5) = vj11
+    bfb(1, 8) = vj12
+    bfb(2, 3) = -vj21-vj22
+    bfb(2, 6) = vj21
+    bfb(2, 9) = vj22
+    bfb(3, 2) = -vj21-vj22
+    bfb(3, 3) = -vj11-vj12
+    bfb(3, 5) = vj21
+    bfb(3, 6) = vj11
+    bfb(3, 8) = vj22
+    bfb(3, 9) = vj12
 !
 end subroutine

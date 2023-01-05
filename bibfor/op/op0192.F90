@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 subroutine op0192()
 !
-use as_med_module, only: as_med_open
-implicit none
+    use as_med_module, only: as_med_open
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -50,15 +50,15 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'OP0192' )
+    parameter(nompro='OP0192')
     integer :: ednono
-    parameter (ednono=-1)
+    parameter(ednono=-1)
     integer :: ednopt
-    parameter (ednopt=-1)
+    parameter(ednopt=-1)
     character(len=7) :: lcmpva
-    parameter ( lcmpva = 'NOM_CMP' )
+    parameter(lcmpva='NOM_CMP')
     character(len=11) :: lcmpvm
-    parameter ( lcmpvm = 'NOM_CMP_MED' )
+    parameter(lcmpvm='NOM_CMP_MED')
     integer :: iaux, jaux, iret, iinst
     med_idt :: idfimd
     integer :: fileUnit, imaj, imin, irel
@@ -67,13 +67,13 @@ implicit none
     integer :: cmpNb, jcmpva, jcmpvm
     integer :: nbma, jnbpgm, jnbpmm, jnbsmm
     integer :: ednoeu
-    parameter (ednoeu=3)
+    parameter(ednoeu=3)
     integer :: edmail
-    parameter (edmail=0)
+    parameter(edmail=0)
     integer :: ednoma
-    parameter (ednoma=4)
+    parameter(ednoma=4)
     integer :: edlect
-    parameter (edlect=0)
+    parameter(edlect=0)
     real(kind=8) :: inst
     real(kind=8) :: storeEpsi
     character(len=1) :: saux01
@@ -111,10 +111,10 @@ implicit none
         call getvtx(' ', 'NOM_MED', scal=fieldNameMed, nbret=iaux)
         if (iaux .eq. 0) then
             call utmess('F', 'MED_96')
-        endif
+        end if
     else
         call utmess('F', 'UTILITAI3_17', sk=format)
-    endif
+    end if
 !
 ! 2.2. ==> TYPE DE CHAMP A LIRE
 !
@@ -125,13 +125,13 @@ implicit none
     if (fieldType(1:11) .eq. 'ELGA_SIEF_R') then
         option = 'RAPH_MECA'
         param = 'PCONTPR'
-    else if (fieldType(1:11).eq.'ELGA_EPSI_R') then
+    else if (fieldType(1:11) .eq. 'ELGA_EPSI_R') then
         option = 'EPSI_ELGA'
         param = 'PDEFOPG'
-    else if (fieldType(1:11).eq.'ELGA_VARI_R') then
+    else if (fieldType(1:11) .eq. 'ELGA_VARI_R') then
         option = 'RAPH_MECA'
         param = 'PVARIPR'
-    else if (fieldType(1:11).eq.'ELGA_SOUR_R') then
+    else if (fieldType(1:11) .eq. 'ELGA_SOUR_R') then
         option = 'SOUR_ELGA'
         param = 'PSOUR_R'
     else if (fieldSupport .eq. 'ELGA') then
@@ -139,16 +139,16 @@ implicit none
         call utmess('F', 'RESULT2_95', sk=fieldType)
     else
 !        CHAMPS ELNO OU AUTRES :
-        option=' '
-        param=' '
-    endif
+        option = ' '
+        param = ' '
+    end if
 !
 ! - -  VERIFICATIONS - -
 !
     if (fieldType(1:2) .eq. 'EL') then
         call getvid(' ', 'MODELE', scal=nomo, nbret=iaux)
         call lrvemo(nomo)
-    endif
+    end if
 !
 ! 2.3. ==> NOM DES COMPOSANTES VOULUES
 !
@@ -165,7 +165,7 @@ implicit none
             cmpNb = 0
         else
             call utmess('F', 'UTILITAI3_18', sk=rep)
-        endif
+        end if
 !
     else
 !
@@ -174,30 +174,30 @@ implicit none
         call getvtx(' ', lcmpva, nbval=0, nbret=iaux)
         if (iaux .lt. 0) then
             cmpNb = -iaux
-        endif
+        end if
 !
         call getvtx(' ', lcmpvm, nbval=0, nbret=iaux)
         if (-iaux .ne. cmpNb) then
             valk(1) = lcmpva
             valk(2) = lcmpvm
             call utmess('F', 'UTILITAI2_95', nk=2, valk=valk)
-        endif
+        end if
 !
         if (cmpNb .gt. 0) then
             call wkvect(cmpAstName, 'V V K8', cmpNb, jcmpva)
             call getvtx(' ', lcmpva, nbval=cmpNb, vect=zk8(jcmpva), nbret=iaux)
             call wkvect(cmpMedName, 'V V K16', cmpNb, jcmpvm)
             call getvtx(' ', lcmpvm, nbval=cmpNb, vect=zk16(jcmpvm), nbret=iaux)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! 2.4a ==> PROLONGEMENT PAR ZERO OU NOT A NUMBER
 !
     call getvtx(' ', 'PROL_ZERO', scal=prolz, nbret=iaux)
     if (prolz .ne. 'OUI') then
         prolz = 'NAN'
-    endif
+    end if
 !
 ! 2.4b ==> UNITE LOGIQUE LIE AU FICHIER
 !
@@ -212,8 +212,8 @@ implicit none
         call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=meshAst)
         if (codret .ne. 0) then
             call utmess('F', 'UTILITAI3_19')
-        endif
-    endif
+        end if
+    end if
 !
 ! 2.6. ==> NOM DU MAILLAGE MED ASSOCIE
 !
@@ -221,7 +221,7 @@ implicit none
 !
     if (iaux .eq. 0) then
         meshMed = ' '
-    endif
+    end if
 !
 ! 2.7. CARACTERISTIQUES TEMPORELLES
 ! 2.7.1. ==> NUMERO D'ORDRE EVENTUEL
@@ -229,14 +229,14 @@ implicit none
     call getvis(' ', 'NUME_ORDRE', scal=numord, nbret=iaux)
     if (iaux .eq. 0) then
         numord = ednono
-    endif
+    end if
 !
 ! 2.7.2. ==> NUMERO DE PAS DE TEMPS EVENTUEL
 !
     call getvis(' ', 'NUME_PT', scal=numpt, nbret=jaux)
     if (jaux .eq. 0) then
         numpt = ednopt
-    endif
+    end if
 !
 ! 2.7.3. ==> SI NI NUMERO D'ORDRE, NI NUMERO DE PAS DE TEMPS, IL Y A
 !            PEUT-ETRE UNE VALEUR D'INSTANT
@@ -246,10 +246,10 @@ implicit none
         if (iinst .ne. 0) then
             call getvr8(' ', 'PRECISION', scal=storeEpsi, nbret=iaux)
             call getvtx(' ', 'CRITERE', scal=storeCrit, nbret=iaux)
-        endif
+        end if
     else
         iinst = 0
-    endif
+    end if
 !
 !====
 ! 3. APPEL DE LA LECTURE AU FORMAT MED
@@ -261,10 +261,10 @@ implicit none
         call wkvect('&&OP0150_NBPG_MED', 'V V I', nbma, jnbpmm)
         call wkvect('&&OP0150_NBSP_MED', 'V V I', nbma, jnbsmm)
     else
-        jnbpgm=1
-        jnbpmm=1
-        jnbsmm=1
-    endif
+        jnbpgm = 1
+        jnbpmm = 1
+        jnbsmm = 1
+    end if
 !
     if (format .eq. 'MED') then
 !
@@ -283,29 +283,29 @@ implicit none
                 nofimd = 'fort.'//saux08
             else
                 nofimd = kfic(1:200)
-            endif
+            end if
             call as_med_open(idfimd, nofimd, edlect, iret)
             call as_mfinvr(idfimd, imaj, imin, irel, iret)
             call as_mficlo(idfimd, iret)
 !          ON VERIFIE LA VERSION DU FICHIER A LA VERSION 2.3.3
-            entityType=ednoma
-            iver= imaj*100 + imin*10 + irel
+            entityType = ednoma
+            iver = imaj*100+imin*10+irel
             if (iver .lt. 233) then
-                entityType=edmail
+                entityType = edmail
                 call utmess('A', 'MED_53', sk=fieldNameMed)
             else
-                entityType=ednoma
-            endif
+                entityType = ednoma
+            end if
         else
-            entityType=edmail
-        endif
+            entityType = edmail
+        end if
 !
         call lrvema(meshAst, fileUnit, fieldNameMed)
 !
-        call lrchme(fieldNameTemp, fieldNameMed, meshMed, meshAst, fieldSupport,&
-                    fieldQuantity, entityType, cmpNb, cmpAstName, cmpMedName,&
-                    prolz, iinst, numpt, numord, inst,&
-                    storeCrit, storeEpsi, fileUnit, option, param,&
+        call lrchme(fieldNameTemp, fieldNameMed, meshMed, meshAst, fieldSupport, &
+                    fieldQuantity, entityType, cmpNb, cmpAstName, cmpMedName, &
+                    prolz, iinst, numpt, numord, inst, &
+                    storeCrit, storeEpsi, fileUnit, option, param, &
                     zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), codret, 'V')
 !
         call copisd('CHAMP_GD', 'G', fieldNameTemp, fieldNameAst)
@@ -313,9 +313,9 @@ implicit none
             call detrsd('CHAM_NO', fieldNameTemp)
         else
             call detrsd('CHAM_ELEM', fieldNameTemp)
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedema()
 !

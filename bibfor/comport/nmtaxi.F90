@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
-                  epm, dp, sp, xi, g,&
+subroutine nmtaxi(ndimsi, crit, mat, sigel, vim, &
+                  epm, dp, sp, xi, g, &
                   iret)
 !
     implicit none
@@ -53,9 +53,9 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
 !    EXAMEN DE LA SOLUTION XI = 1 (PLASTIQUE)
 !
     xi = 1.d0
-    call nmtacr(1, ndimsi, mat, sigel, vim,&
-                epm, dp, sp, xi, f,&
-                g, fds, gds, fdp, gdp,&
+    call nmtacr(1, ndimsi, mat, sigel, vim, &
+                epm, dp, sp, xi, f, &
+                g, fds, gds, fdp, gdp, &
                 fdx, gdx, dpmax, sig, tang)
     if (f .gt. 0.d0) goto 999
     x(1) = xi
@@ -66,11 +66,11 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
 !    EXAMEN DE LA SOLUTION XI = 0 (ELASTIQUE)
 !
     xi = 0.d0
-    call nmtacr(1, ndimsi, mat, sigel, vim,&
-                epm, dp, sp, xi, f,&
-                g, fds, gds, fdp, gdp,&
+    call nmtacr(1, ndimsi, mat, sigel, vim, &
+                epm, dp, sp, xi, f, &
+                g, fds, gds, fdp, gdp, &
                 fdx, gdx, dpmax, sig, tang)
-    ASSERT(f.gt.0.d0)
+    ASSERT(f .gt. 0.d0)
     x(2) = xi
     y(2) = f
     gg(2) = g
@@ -87,9 +87,9 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
     do niter = 1, int(crit(1))
         if (abs(y(4))/mat(4) .lt. crit(3) .and. x(4) .ne. 0.d0) goto 110
         call zeroco(x, y)
-        call nmtacr(1, ndimsi, mat, sigel, vim,&
-                    epm, dp, sp, x(4), y(4),&
-                    gg(4), fds, gds, fdp, gdp,&
+        call nmtacr(1, ndimsi, mat, sigel, vim, &
+                    epm, dp, sp, x(4), y(4), &
+                    gg(4), fds, gds, fdp, gdp, &
                     fdx, gdx, dpmax, sig, tang)
     end do
     iret = 1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,15 +47,15 @@ subroutine nmpiac(sdpilo, eta)
 !
 ! ----------------------------------------------------------------------
 !
-    call jeveuo(sdpilo(1:19)// '.PLTK', 'L', vk24=pltk)
+    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
     typpil = pltk(1)
     typsel = pltk(6)
     evolpa = pltk(7)
-    call jeveuo(sdpilo(1:19)// '.PLIR', 'E', vr=plir)
-    if (typsel .eq. 'ANGL_INCR_DEPL' .and.&
-        (typpil.eq.'LONG_ARC' .or.typpil.eq.'SAUT_LONG_ARC')) then
-        plir(6)=plir(1)
-    endif
+    call jeveuo(sdpilo(1:19)//'.PLIR', 'E', vr=plir)
+    if (typsel .eq. 'ANGL_INCR_DEPL' .and. &
+        (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC')) then
+        plir(6) = plir(1)
+    end if
 !
 !
     if (evolpa .eq. 'SANS') goto 9999
@@ -63,7 +63,7 @@ subroutine nmpiac(sdpilo, eta)
         plir(5) = eta
     else
         plir(4) = eta
-    endif
+    end if
 !
-9999  continue
+9999 continue
 end subroutine

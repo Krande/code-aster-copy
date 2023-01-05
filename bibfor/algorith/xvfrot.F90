@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
-                  ffc, ffp, idepl, idepm, ifa,&
-                  ifiss, indco, jac, jheavn, ncompn, jheafa,&
-                  lact, mu, ncomph, nd, nddl,&
-                  ndim, nfh, nfiss, nno, nnol,&
-                  nnos, nvit, pla, reac12,&
+subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls, &
+                  ffc, ffp, idepl, idepm, ifa, &
+                  ifiss, indco, jac, jheavn, ncompn, jheafa, &
+                  lact, mu, ncomph, nd, nddl, &
+                  ndim, nfh, nfiss, nno, nnol, &
+                  nnos, nvit, pla, reac12, &
                   seuil, singu, fk, tau1, tau2, vtmp)
 ! aslint: disable=W1504
     implicit none
@@ -70,7 +70,7 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
     integer :: nddl, ndim, nfh, nfiss, nno
     integer :: nnol, nnos, nvec, nvit
     integer :: pla(27), singu
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
     real(kind=8) :: coeffp, coeffr, ffc(8), ffp(27), jac
     real(kind=8) :: mu, nd(3), pb(3), reac12(3), saut(3), seuil
     real(kind=8) :: tau1(3), tau2(3), vtmp(400)
@@ -81,30 +81,30 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
 !
     if (indco .eq. 0) then
         if (nvit .ne. 0) then
-            nvec=2
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn, ncompn,&
-                        nfiss, ifiss, jheafa, ncomph, ifa,&
+            nvec = 2
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, ncompn, &
+                        nfiss, ifiss, jheafa, ncomph, ifa, &
                         saut)
 !
 ! --- CALCUL DU VECTEUR LN3
 !
-            call xmvef4(ndim, nnol, pla, ffc, reac12,&
+            call xmvef4(ndim, nnol, pla, ffc, reac12, &
                         jac, tau1, tau2, lact, vtmp)
 !
 ! --- ACTIVATION DE LA LOI COHESIVE & RECUPERATION DES
 ! --- PARAMETRES MATERIAUX
 !
-        endif
+        end if
 !
-    else if (indco.eq.1) then
+    else if (indco .eq. 1) then
 !
 ! --- CALCUL DU VECTEUR LN1
 !
-        call xmvef2(ndim, nno, nnos, ffp, jac,&
-                    seuil, reac12, singu, fk, nfh,&
-                    coeffp, coeffr, mu, algofr, nd,&
+        call xmvef2(ndim, nno, nnos, ffp, jac, &
+                    seuil, reac12, singu, fk, nfh, &
+                    coeffp, coeffr, mu, algofr, nd, &
                     ddls, ddlm, idepl, pb, vtmp)
 !
 ! --- CAS LAGRANGIEN AUGMENTE
@@ -114,21 +114,21 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
 !
 ! --- CALCUL DU VECTEUR LN3
 !
-            call xmvef3(ndim, nnol, pla, ffc, reac12,&
-                        pb, jac, seuil, tau1, tau2,&
+            call xmvef3(ndim, nnol, pla, ffc, reac12, &
+                        pb, jac, seuil, tau1, tau2, &
                         lact, coeffr, mu, vtmp)
 !
-        else if (algofr.eq.2) then
+        else if (algofr .eq. 2) then
 !
 !
 ! --- CALCUL DU VECTEUR LN3
 !
-            call xmvef3(ndim, nnol, pla, ffc, reac12,&
-                        pb, jac, seuil, tau1, tau2,&
+            call xmvef3(ndim, nnol, pla, ffc, reac12, &
+                        pb, jac, seuil, tau1, tau2, &
                         lact, coeffp, mu, vtmp)
-        endif
+        end if
 !
     else
-        ASSERT(indco.eq.0 .or. indco.eq.1)
-    endif
+        ASSERT(indco .eq. 0 .or. indco .eq. 1)
+    end if
 end subroutine

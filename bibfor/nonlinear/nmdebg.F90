@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmdebg(typobz, nomobz, ifm)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -27,8 +27,8 @@ implicit none
 #include "asterfort/tstobj.h"
 #include "asterfort/utimsd.h"
 !
-character(len=*) :: nomobz, typobz
-integer :: ifm
+    character(len=*) :: nomobz, typobz
+    integer :: ifm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,28 +63,28 @@ integer :: ifm
 ! --- IMPRESSION
 !
     if (typobj .eq. 'VECT') then
-        call tstobj(nomobj(1:19)//'.VALE', 'OUI', resume, sommi, sommr,&
+        call tstobj(nomobj(1:19)//'.VALE', 'OUI', resume, sommi, sommr, &
                     ibid, lonmax, type, iret, ibid)
-        if ((type.eq.'R') .and. (iret.eq.0)) then
-            write (ifm,100) nomobj(1:19),lonmax,sommr
-        endif
-    else if (typobj.eq.'CHEL') then
-        call tstobj(nomobj(1:19)//'.CELV', 'OUI', resume, sommi, sommr,&
+        if ((type .eq. 'R') .and. (iret .eq. 0)) then
+            write (ifm, 100) nomobj(1:19), lonmax, sommr
+        end if
+    else if (typobj .eq. 'CHEL') then
+        call tstobj(nomobj(1:19)//'.CELV', 'OUI', resume, sommi, sommr, &
                     ibid, lonmax, type, iret, ibid)
-        if ((type.eq.'R') .and. (iret.eq.0)) then
-            write (ifm,100) nomobj(1:19),lonmax,sommr
-        endif
-    else if (typobj.eq.'MATA') then
-        call tstobj(nomobj(1:19)//'.VALM', 'OUI', resume, sommi, sommr,&
+        if ((type .eq. 'R') .and. (iret .eq. 0)) then
+            write (ifm, 100) nomobj(1:19), lonmax, sommr
+        end if
+    else if (typobj .eq. 'MATA') then
+        call tstobj(nomobj(1:19)//'.VALM', 'OUI', resume, sommi, sommr, &
                     ibid, lonmax, type, iret, ibid)
-        if ((type.eq.'R') .and. (iret.eq.0)) then
-            write (ifm,100) nomobj(1:19),lonmax,sommr
-        endif
+        if ((type .eq. 'R') .and. (iret .eq. 0)) then
+            write (ifm, 100) nomobj(1:19), lonmax, sommr
+        end if
     else
         call utimsd(ifm, -1, .true._1, .true._1, nomobj(1:24), 1, ' ', perm='OUI')
-    endif
+    end if
 !
-100 format (' <MECANONLINE>        ',a19,' | LONMAX=',i12, ' | SOMMR=',e30.21)
+100 format(' <MECANONLINE>        ', a19, ' | LONMAX=', i12, ' | SOMMR=', e30.21)
 !
     call jedema()
 !

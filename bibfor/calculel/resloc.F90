@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
-                  perman, chtime, mateco, sigmam, sigmap,&
-                  chsigx, chdepm, chdepp, cherrm, lchar,&
+subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca, &
+                  perman, chtime, mateco, sigmam, sigmap, &
+                  chsigx, chdepm, chdepp, cherrm, lchar, &
                   nchar, tabido, chvois, cvoisx, chelem)
 ! ......................................................................
 !
@@ -100,13 +100,13 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 ! DECLARATION VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'RESLOC' )
+    parameter(nompro='RESLOC')
 !
     integer :: nbcmp
-    parameter ( nbcmp = 12 )
+    parameter(nbcmp=12)
 !
     integer :: nbchix
-    parameter ( nbchix = 20 )
+    parameter(nbchix=20)
 !
     integer :: i, j, icmp(nbcmp), iatyma, iagd, iacmp, iconx1, iconx2
     integer :: iret, iret1, iret2, iret4, iret5, iret6, iret7
@@ -128,7 +128,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     character(len=24) :: chfor3
 !
     integer :: ntychx
-    parameter ( ntychx = 9 )
+    parameter(ntychx=9)
     integer :: itycha(ntychx)
     character(len=5) :: ktych(ntychx)
 !
@@ -158,7 +158,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     ktych(8) = 'F3D3D'
     ktych(9) = 'FLUX'
 !
-    do j = 1 , ntychx
+    do j = 1, ntychx
         itycha(j) = 0
     end do
 !
@@ -166,34 +166,34 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     iret1 = 0
     do i = 1, nchar
         iret2 = 0
-        do j = 1 , ntychx
+        do j = 1, ntychx
             call exisd('CHAMP_GD', lchar(i)//'.CHME.'//ktych(j), iret)
             if (iret .ne. 0) then
-                itycha(j) = itycha(j) + 1
-                iret2 = iret2 + 1
-            endif
+                itycha(j) = itycha(j)+1
+                iret2 = iret2+1
+            end if
         end do
         if (iret2 .eq. 0) then
             call utmess('A', 'INDICATEUR_6', sk=lchar(i))
-            iret1 = iret1 + 1
-        endif
+            iret1 = iret1+1
+        end if
     end do
 !
 !     ON VERIFIE QU'UN TYPE DE CHARGE N'EST PAS PRESENT 2 FOIS
 !     REMARQUE : SAUF POUR DU DIRICHLET (CIMPO)
 !
 !GN        WRITE(6,*) 'ITYCHA(',1,') =', ITYCHA(1)
-    do j = 2 , ntychx
+    do j = 2, ntychx
 !GN        WRITE(6,*) 'ITYCHA(',J,') =', ITYCHA(J)
-    if (itycha(j) .gt. 1) then
-        call utmess('A', 'INDICATEUR_7', sk=ktych(j))
-        iret1 = iret1 + 1
-    endif
+        if (itycha(j) .gt. 1) then
+            call utmess('A', 'INDICATEUR_7', sk=ktych(j))
+            iret1 = iret1+1
+        end if
     end do
 !
     if (iret1 .ne. 0) then
         call utmess('F', 'INDICATEUR_8')
-    endif
+    end if
 !
 !====
 ! 2. DECODAGE DES CHARGES
@@ -218,15 +218,15 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             carte1 = lchar(i)//'.CHME.F1D2D'
             call dismoi('NOM_GD', carte1, 'CARTE', repk=nomgd1)
             call etenca(carte1, ligrel, iret)
-            ASSERT(iret.eq.0)
+            ASSERT(iret .eq. 0)
 !GN        WRITE(6,*) 'ON A DU F1D2D'
-        else if (iret2.ne.0) then
+        else if (iret2 .ne. 0) then
             carte1 = lchar(i)//'.CHME.F2D3D'
             call dismoi('NOM_GD', carte1, 'CARTE', repk=nomgd1)
             call etenca(carte1, ligrel, iret)
-            ASSERT(iret.eq.0)
+            ASSERT(iret .eq. 0)
 !GN        WRITE(6,*) 'ON A DU F2D3D'
-        endif
+        end if
 !
 ! 2.2. ==> PRESSIONS MECANIQUES
 !
@@ -235,9 +235,9 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             carte2 = lchar(i)//'.CHME.PRESS'
             call dismoi('NOM_GD', carte2, 'CARTE', repk=nomgd2)
             call etenca(carte2, ligrel, iret)
-            ASSERT(iret.eq.0)
+            ASSERT(iret .eq. 0)
 !GN        WRITE(6,*) 'ON A DU PRESS AVEC CARTE2 : ',CARTE2
-        endif
+        end if
 !
 ! 2.3. ==> EN THM, CONDITIONS DE NEUMANN HYDRAULIQUES
 !
@@ -247,9 +247,9 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
                 carte3 = lchar(i)//'.CHME.FLUX'
                 call dismoi('NOM_GD', carte3, 'CARTE', repk=nomgd3)
                 call etenca(carte3, ligrel, iret)
-                ASSERT(iret.eq.0)
-            endif
-        endif
+                ASSERT(iret .eq. 0)
+            end if
+        end if
 !
     end do
 !
@@ -263,13 +263,13 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 ! RECUPERATION DES ADRESSES DU CHAMP DE CONTRAINTES A L'INSTANT
 ! PRECEDENT (THM UNIQUEMENT)
 !
-    if (yathm .and. ( .not. perman )) then
+    if (yathm .and. (.not. perman)) then
         call jeveuo(sigmam(1:19)//'.CELD', 'L', jceldm)
         call jeveuo(sigmam(1:19)//'.CELV', 'L', jcelvm)
     else
         jceldm = -1
         jcelvm = -1
-    endif
+    end if
 !
 ! RECUPERATION DES ADRESSES DE LA CARTE NUMERO 1
 !
@@ -282,14 +282,14 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         else
 !            LA CARTE A ETE ETENDUE
             call jeveuo(carte1//'.PTMA', 'L', iaptm1)
-        endif
+        end if
         call jenonu(jexnom('&CATA.GD.NOMGD', nomgd1), numgd1)
     else
         iade1 = 0
         iava1 = 0
         iaptm1 = 0
         numgd1 = 0
-    endif
+    end if
 !
 ! RECUPERATION DES ADRESSES DE LA CARTE NUMERO 2
 !
@@ -303,7 +303,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         else
 !            LA CARTE A ETE ETENDUE
             call jeveuo(carte2//'.PTMA', 'L', iaptm2)
-        endif
+        end if
         call jenonu(jexnom('&CATA.GD.NOMGD', nomgd2), numgd2)
 !GN      WRITE(6,154) (ZI(IAPTM2+IBID),IBID=0,11)
 !GN      WRITE(6,155) (ZR(IAVA2+IBID),IBID=0,35,6)
@@ -312,7 +312,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         iava2 = 0
         iaptm2 = 0
         numgd2 = 0
-    endif
+    end if
 !GN  154 FORMAT(6I10)
 !GN  155 FORMAT(G12.5)
 !
@@ -329,7 +329,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         else
 !          LA CARTE A ETE ETENDUE
             call jeveuo(carte3//'.PTMA', 'L', iaptm3)
-        endif
+        end if
 !
         call jenonu(jexnom('&CATA.GD.NOMGD', nomgd3), numgd3)
     else
@@ -337,7 +337,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         iava3 = 0
         iaptm3 = 0
         numgd3 = 0
-    endif
+    end if
 !
 !====
 ! 3. CREATION DE 2 CARTES CONTENANT DES ADRESSES D'OBJETS JEVEUX
@@ -377,7 +377,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     icmp(11) = iconx1
     icmp(12) = iconx2
 !
-    call mecact(base, '&&'//nompro//'.CH_FORCE', 'MODELE', ligrel, 'NEUT_I',&
+    call mecact(base, '&&'//nompro//'.CH_FORCE', 'MODELE', ligrel, 'NEUT_I', &
                 ncmp=nbcmp, lnomcmp=licmp, vi=icmp)
 !
     icmp(2) = jceldm
@@ -395,7 +395,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     icmp(11) = iaptm3
     icmp(12) = numgd3
 !
-    call mecact(base, '&&'//nompro//'.CH_PRESS', 'MODELE', ligrel, 'NEUT_I',&
+    call mecact(base, '&&'//nompro//'.CH_PRESS', 'MODELE', ligrel, 'NEUT_I', &
                 ncmp=nbcmp, lnomcmp=licmp, vi=icmp)
 !
 !====
@@ -419,23 +419,23 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         if (iret4 .ne. 0) then
             chfor1 = lchar(i)//'.CHME.PESAN.DESC'
 !GN          WRITE(6,*) 'ON A DU CHFOR1'
-        endif
+        end if
         if (iret5 .ne. 0) then
             chfor2 = lchar(i)//'.CHME.ROTAT.DESC'
 !GN          WRITE(6,*) 'ON A DU CHFOR2'
-        endif
+        end if
         if (iret6 .ne. 0) then
             chfor3 = lchar(i)//'.CHME.F2D2D.DESC'
             call jeveuo(lchar(i)//'.TYPE', 'L', ibid)
             typc3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F2D2D AVEC '//CHFOR3//' ET '//TYPC3
-        endif
+        end if
         if (iret7 .ne. 0) then
             chfor3 = lchar(i)//'.CHME.F3D3D.DESC'
             call jeveuo(lchar(i)//'.TYPE', 'L', ibid)
             typc3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOR3//' ET '//TYPC3
-        endif
+        end if
     end do
 !
 !====
@@ -453,7 +453,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         loncha = modele//'.TOPOSE.LON'
         pmilto = modele//'.TOPOSE.PMI'
 !
-    endif
+    end if
 !
 ! ==> SI ON EST SUR UNE MODELISATION HM ...
 !
@@ -467,9 +467,9 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         rcmp(1) = tbgrca(1)
         rcmp(2) = tbgrca(2)
 !
-        call mecact(base, '&&'//nompro//'.GRDCA', 'MODELE', ligrel, 'NEUT_R',&
+        call mecact(base, '&&'//nompro//'.GRDCA', 'MODELE', ligrel, 'NEUT_R', &
                     ncmp=2, lnomcmp=licmp, vr=rcmp)
-    endif
+    end if
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
@@ -493,22 +493,22 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 !
     if (yaxfem) then
 !
-        lpain(10)= 'PPINTTO'
-        lchin(10)= pintto
-        lpain(11)= 'PCNSETO'
-        lchin(11)= cnseto
-        lpain(12)= 'PLONCHA'
-        lchin(12)= loncha
+        lpain(10) = 'PPINTTO'
+        lchin(10) = pintto
+        lpain(11) = 'PCNSETO'
+        lchin(11) = cnseto
+        lpain(12) = 'PLONCHA'
+        lchin(12) = loncha
         lpain(13) = 'PCVOISX'
         lchin(13) = cvoisx
         lpain(14) = 'PCONTSER'
         lchin(14) = chsigx
-        lpain(15)= 'PPMILTO'
-        lchin(15)= pmilto
+        lpain(15) = 'PPMILTO'
+        lchin(15) = pmilto
 !
         nbrin = 15
 !
-    endif
+    end if
 !
     if (yathm) then
 !
@@ -526,19 +526,19 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             lpain(14) = 'PERREM'
             lchin(14) = cherrm
             nbrin = 14
-        endif
+        end if
 !
-    endif
+    end if
 !
     if (typc3(1:1) .ne. ' ') then
-        nbrin = nbrin + 1
+        nbrin = nbrin+1
         if (typc3(1:7) .eq. 'MECA_RE') then
             lpain(nbrin) = 'PFRVOLU'
-        else if (typc3(1:7).eq.'MECA_FO') then
+        else if (typc3(1:7) .eq. 'MECA_FO') then
             lpain(nbrin) = 'PFFVOLU'
-        endif
+        end if
         lchin(nbrin) = chfor3
-    endif
+    end if
 !
     lpaout(1) = 'PERREUR'
     lchout(1) = chelem
@@ -552,13 +552,13 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 !GN   33 CONTINUE
 !GN 3000 FORMAT(I2,1X,A8,1X,A24)
 !
-    call calcul('C', option, ligrel, nbrin, lchin,&
-                lpain, 1, lchout, lpaout, 'G',&
+    call calcul('C', option, ligrel, nbrin, lchin, &
+                lpain, 1, lchout, lpaout, 'G', &
                 'OUI')
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         call utmess('F', 'CALCULEL2_88', sk=option)
-    endif
+    end if
 !
 !====
 ! 4. MENAGE FINAL

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmextt(ds_inout, field_type, field_disc)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/nmetob.h"
@@ -61,6 +61,6 @@ implicit none
 !
 ! - Check
 !
-    ASSERT(field_disc.eq.'NOEU'.or.field_disc.eq.'ELGA'.or.field_disc.eq.'ELEM')
+    ASSERT(field_disc .eq. 'NOEU' .or. field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM')
 
 end subroutine

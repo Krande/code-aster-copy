@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine preml0(n1, n2, diag, col, delg,&
-                  prno, deeq, nec, p, q,&
-                  lbd1, lbd2, rl, rl1, rl2,&
+subroutine preml0(n1, n2, diag, col, delg, &
+                  prno, deeq, nec, p, q, &
+                  lbd1, lbd2, rl, rl1, rl2, &
                   nrl, lt, lmat)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -36,7 +36,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
     aster_logical :: nivdbg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    nivdbg=.false.
+    nivdbg = .false.
     nfois = 0
     iconne = 0
     call infniv(ifm, niv)
@@ -57,7 +57,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
     nrl = 0
     do iddl = 1, n1
         if (delg(iddl) .eq. 0) then
-            n2 = n2 + 1
+            n2 = n2+1
             p(iddl) = n2
             q(n2) = iddl
         else
@@ -66,105 +66,105 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !     IDDL EST UN LAGRANGE DE BLOCAGE
                 num = -deeq(2*iddl)
                 if (num .eq. 0) then
-                    vali (1) = iddl
-                    vali (2) = ino
-                    vali (3) = num
+                    vali(1) = iddl
+                    vali(2) = ino
+                    vali(3) = num
                     call utmess('F', 'ALGELINE5_31', ni=3, vali=vali)
-                endif
-                nobl = prno((nec+2)* (ino-1)+1)
+                end if
+                nobl = prno((nec+2)*(ino-1)+1)
 !     RECHERCHE DE NOBL : NUMERO DU DDL BLOQUE
 !     DO WHILE (DEEQ(2*NOBL).NE.NUM)
- 20             continue
+20              continue
                 if (deeq(2*nobl) .ne. num) then
-                    nobl = nobl + 1
-                    ASSERT(nobl.le.n1)
+                    nobl = nobl+1
+                    ASSERT(nobl .le. n1)
                     goto 20
 !     FIN DO WHILE
-                endif
+                end if
                 if (delg(iddl) .eq. -1) then
-                    if (lbd1(nobl) .ne. 0) nfois = nfois + 1
+                    if (lbd1(nobl) .ne. 0) nfois = nfois+1
                     lbd1(nobl) = iddl
-                else if (delg(iddl).eq.-2) then
-                    if (lbd2(nobl) .ne. 0) nfois = nfois + 1
+                else if (delg(iddl) .eq. -2) then
+                    if (lbd2(nobl) .ne. 0) nfois = nfois+1
                     lbd2(nobl) = iddl
                 else
-                    vali (1) = delg(iddl)
+                    vali(1) = delg(iddl)
                     call utmess('F', 'ALGELINE5_32', si=vali(1))
-                endif
+                end if
                 if (nfois .gt. 0) then
-                    vali (1) = nobl
+                    vali(1) = nobl
                     call utmess('F', 'ALGELINE5_33', si=vali(1))
-                endif
+                end if
             else
 !     IDDL EST UN LAGRANGE DE RELATION LINEAIRE
 !     POUR CHQE REL. LIN. I,ON A
 !     RL(2,I) = LAMBDA2 ET RL(1,I) = LAMBDA1
                 if (delg(iddl) .eq. -2) then
-                    nrl = nrl + 1
-                    rl(2,nrl) = iddl
+                    nrl = nrl+1
+                    rl(2, nrl) = iddl
 !     RL(1,NRL) SERA DEFINI DANS PREMLC, COMME LE NO DE COLONNE
 !     DU 1ER TERME DE LA LIGNE RL(2,NRL).
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !     CALCUL DE LA TAILLE DE LA LISTE
     lt = 0
     do i = 1, nrl
-        i2 = rl(2,i)
-        lt = lt + (diag(i2)-diag(i2-1))
+        i2 = rl(2, i)
+        lt = lt+(diag(i2)-diag(i2-1))
     end do
 !     ON MAJORE LT POUR LES PETITS CAS-TESTS
     if (lt .le. 10) then
         lt = lt**2
     else
         lt = lt*10
-    endif
+    end if
 !
 !     VERIFICATION DES CONNEXIONS DES LAGRANGES
     if (nivdbg) then
         do i = 1, n1
             li = lbd1(i)
             if (li .ne. 0) then
-                idiai1 = diag(li-1) + 1
+                idiai1 = diag(li-1)+1
                 idiai = diag(li)
                 if (idiai1 .lt. idiai) then
 !
-                    write(ifm,*)'LE DDL BLOQUE: ',i,' A POUR LAMBDA1: ',lbd1(i)
-                    write(ifm,*)'LE DDL BLOQUE: ',i,' A POUR LAMBDA2: ',lbd2(i)
-                    write(ifm,*)'LE LAMBDA1 ',lbd1(i),&
+                    write (ifm, *) 'LE DDL BLOQUE: ', i, ' A POUR LAMBDA1: ', lbd1(i)
+                    write (ifm, *) 'LE DDL BLOQUE: ', i, ' A POUR LAMBDA2: ', lbd2(i)
+                    write (ifm, *) 'LE LAMBDA1 ', lbd1(i),&
      &               ' A POUR VOISIN INATTENDUS '
-                    do j = idiai1, idiai - 1
-                        write(ifm,*) 'LE DDL ', col(j)
-                        iconne = iconne + 1
+                    do j = idiai1, idiai-1
+                        write (ifm, *) 'LE DDL ', col(j)
+                        iconne = iconne+1
                     end do
-                endif
-                do ii = li + 1, n1
-                    idiai1 = diag(ii-1) + 1
+                end if
+                do ii = li+1, n1
+                    idiai1 = diag(ii-1)+1
                     idiai = diag(ii)
                     do j = idiai1, idiai
                         if (col(j) .eq. li) then
                             if (ii .ne. i .and. ii .ne. lbd2(i)) then
-                                write(ifm,*)'LE DDL BLOQUE: ',i,&
-                                ' A POUR LAMBDA1: ',lbd1(i)
-                                write(ifm,*)'LE DDL BLOQUE: ',i,&
-                                ' A POUR LAMBDA2: ',lbd2(i)
-                                write(ifm,*)'LE LAMBDA1 ',lbd1(i),&
-                                ' A POUR VOISIN INATTENDU',ii
-                                iconne = iconne + 1
-                            endif
-                        endif
+                                write (ifm, *) 'LE DDL BLOQUE: ', i, &
+                                    ' A POUR LAMBDA1: ', lbd1(i)
+                                write (ifm, *) 'LE DDL BLOQUE: ', i, &
+                                    ' A POUR LAMBDA2: ', lbd2(i)
+                                write (ifm, *) 'LE LAMBDA1 ', lbd1(i), &
+                                    ' A POUR VOISIN INATTENDU', ii
+                                iconne = iconne+1
+                            end if
+                        end if
                     end do
 !
                 end do
-            endif
+            end if
         end do
         if (iconne .gt. 0) then
             call utmess('A', 'ALGELINE5_53')
-            write(ifm,*) 2*iconne ,' TERMES SUPPLEMENTAIRES DANS'&
+            write (ifm, *) 2*iconne, ' TERMES SUPPLEMENTAIRES DANS'&
      &'    LA MATRICE INITIALE'
-        endif
-    endif
+        end if
+    end if
 !
     if (niv .eq. 2) then
         ier = 0
@@ -175,16 +175,16 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !            WRITE (IFM,*) 'LE DDL BLOQUE: ',I,' A POUR LAMBDA2: ',
 !     &        LBD2(I)
 !            IF (LBD2(I).EQ.0) IER = 1
-            else if (lbd2(i).ne.0) then
+            else if (lbd2(i) .ne. 0) then
                 ier = 1
-            endif
+            end if
             if (ier .eq. 1) then
-                vali (1) = i
-                vali (2) = lbd1(i)
-                vali (3) = lbd1(i)
+                vali(1) = i
+                vali(2) = lbd1(i)
+                vali(3) = lbd1(i)
                 call utmess('F', 'ALGELINE5_34', ni=3, vali=vali)
-            endif
+            end if
 !
         end do
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resdp1(materf, seq, i1e, pmoins, dp,&
+subroutine resdp1(materf, seq, i1e, pmoins, dp, &
                   plas)
     implicit none
 #include "asterfort/schdp1.h"
@@ -30,22 +30,22 @@ subroutine resdp1(materf, seq, i1e, pmoins, dp,&
     real(kind=8) :: trois, deux, un, fcrit, valpro
     real(kind=8) :: a1, valcoe, b2, a
 ! =====================================================================
-    parameter ( trois  =  3.0d0 )
-    parameter ( deux   =  2.0d0 )
-    parameter ( un     =  1.0d0 )
+    parameter(trois=3.0d0)
+    parameter(deux=2.0d0)
+    parameter(un=1.0d0)
 ! =====================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! =====================================================================
 ! --- AFFECTATION DES VARIABLES ---------------------------------------
 ! =====================================================================
-    young = materf(1,1)
-    nu = materf(2,1)
-    troisk = young / (un-deux*nu)
-    deuxmu = young / (un+nu)
-    sy = materf(1,2)
-    h = materf(2,2)
-    a = materf(3,2)
-    pult = materf(4,2)
+    young = materf(1, 1)
+    nu = materf(2, 1)
+    troisk = young/(un-deux*nu)
+    deuxmu = young/(un+nu)
+    sy = materf(1, 2)
+    h = materf(2, 2)
+    a = materf(3, 2)
+    pult = materf(4, 2)
 ! =====================================================================
 ! --- CALCUL ELASTIQUE ------------------------------------------------
 ! =====================================================================
@@ -56,57 +56,57 @@ subroutine resdp1(materf, seq, i1e, pmoins, dp,&
     if (fcrit .gt. 0.0d0) then
         plas = 1.0d0
         if (pmoins .lt. pult) then
-            a1 = trois * deuxmu / deux + trois * troisk * a * a + h
+            a1 = trois*deuxmu/deux+trois*troisk*a*a+h
             if (a1 .eq. 0.0d0) then
                 call utmess('F', 'ALGORITH10_41')
-            endif
-            dp = fcrit / a1
-            valcoe = pult - pmoins
+            end if
+            dp = fcrit/a1
+            valcoe = pult-pmoins
             if (dp .gt. valcoe) then
                 fcrit = schdp1(seq, i1e, sy, h, a, pult, pult)
-                b2 = trois * deuxmu / deux + trois * troisk * a * a
+                b2 = trois*deuxmu/deux+trois*troisk*a*a
                 if (b2 .eq. 0.0d0) then
                     call utmess('F', 'ALGORITH10_42')
-                endif
-                dp = fcrit / b2
-            endif
+                end if
+                dp = fcrit/b2
+            end if
         else
-            b2 = trois * deuxmu / deux + trois * troisk * a * a
+            b2 = trois*deuxmu/deux+trois*troisk*a*a
             if (b2 .eq. 0.0d0) then
                 call utmess('F', 'ALGORITH10_42')
-            endif
-            dp = fcrit / b2
-        endif
+            end if
+            dp = fcrit/b2
+        end if
     else
         plas = 0.0d0
         dp = 0.0d0
-    endif
+    end if
 !
 ! =====================================================================
 ! --- PROJECTION AU SOMMET --------------------------------------------
 ! =====================================================================
-    pptest = pmoins + dp
-    b2 = trois * troisk * a * a
+    pptest = pmoins+dp
+    b2 = trois*troisk*a*a
     fcrit0 = schdp1(0.0d0, i1e, sy, h, a, pult, pptest)
-    valpro = fcrit0 / b2
+    valpro = fcrit0/b2
 !
-    if ((plas.eq.1) .and. (dp.le.valpro)) then
+    if ((plas .eq. 1) .and. (dp .le. valpro)) then
         plas = 2.0d0
         fcrit = schdp1(0.0d0, i1e, sy, h, a, pult, pmoins)
         if (pmoins .lt. pult) then
-            a1 = trois * troisk * a * a + h
+            a1 = trois*troisk*a*a+h
             if (a1 .eq. 0.0d0) then
                 call utmess('F', 'ALGORITH10_41')
-            endif
-            dp = fcrit / a1
-            valcoe = pult - pmoins
+            end if
+            dp = fcrit/a1
+            valcoe = pult-pmoins
             if (dp .gt. valcoe) then
                 fcrit = schdp1(0.0d0, i1e, sy, h, a, pult, pult)
-                dp = fcrit / b2
-            endif
+                dp = fcrit/b2
+            end if
         else
-            dp = fcrit / b2
-        endif
-    endif
+            dp = fcrit/b2
+        end if
+    end if
 ! =====================================================================
 end subroutine

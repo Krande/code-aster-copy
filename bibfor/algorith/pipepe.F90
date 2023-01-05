@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine pipepe(BEHinteg, pilo, ndim, nno, npg,&
-                  ipoids, ivf, idfde, geom, typmod,&
-                  mate, compor, lgpg, deplm, sigm,&
-                  vim, ddepl, depl0, depl1, copilo,&
+subroutine pipepe(BEHinteg, pilo, ndim, nno, npg, &
+                  ipoids, ivf, idfde, geom, typmod, &
+                  mate, compor, lgpg, deplm, sigm, &
+                  vim, ddepl, depl0, depl1, copilo, &
                   iborne, ictau)
 !
     use Behaviour_type
@@ -109,16 +109,16 @@ subroutine pipepe(BEHinteg, pilo, ndim, nno, npg,&
 !
 ! --- CALCUL DES DEFORMATIONS
 !
-        call pipdef(ndim, nno, kpg, ipoids, ivf,&
-                    idfde, geom, typmod, compor, deplm,&
-                    ddepl, depl0, depl1, dfdi, fm,&
+        call pipdef(ndim, nno, kpg, ipoids, ivf, &
+                    idfde, geom, typmod, compor, deplm, &
+                    ddepl, depl0, depl1, dfdi, fm, &
                     epsm, epsp, epsd)
 !
 ! --- PILOTAGE PAR L'INCREMENT DE DEFORMATION
 !
         if (pilo .eq. 'DEFORMATION') then
 !
-            call pidefo(ndim, npg, kpg, compor, fm,&
+            call pidefo(ndim, npg, kpg, compor, fm, &
                         epsm, epsp, epsd, copilo)
 !
 !
@@ -134,13 +134,13 @@ subroutine pipepe(BEHinteg, pilo, ndim, nno, npg,&
                 sigma(k) = sigma(k)*rac2
             end do
 !
-            call pielas(BEHinteg, ndim, npg, kpg, compor,&
-                        typmod, mate, lgpg, vim, epsm,&
-                        epsp, epsd, sigma, etamin, etamax,&
+            call pielas(BEHinteg, ndim, npg, kpg, compor, &
+                        typmod, mate, lgpg, vim, epsm, &
+                        epsp, epsd, sigma, etamin, etamax, &
                         tau, copilo)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     end do
 !

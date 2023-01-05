@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq,&
-                  nomfpg, nnos, nno, nbpg, ndim,&
+subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
+                  nomfpg, nnos, nno, nbpg, ndim, &
                   refcoo, gscoo, wg, nochmd, codret)
 !
 !-----------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq,&
 !     WG1 WG2 ... ... WGN
 !-----------------------------------------------------------------------
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterf_types.h"
@@ -121,10 +121,10 @@ implicit none
     call infniv(ifm, nivinf)
     if (nivinf .gt. 1) then
         call utmess('I', 'UTILITAI5_39')
-        write (ifm,10) tyelas, nomte
-        10 format('ELEMENT FINI NUMERO',i6,', DE NOM : ',a16)
-    endif
-    ASSERT(typech.eq.'ELGA')
+        write (ifm, 10) tyelas, nomte
+10      format('ELEMENT FINI NUMERO', i6, ', DE NOM : ', a16)
+    end if
+    ASSERT(typech .eq. 'ELGA')
 !
 !     2- DETERMINATION DE ELREFE :
 !     -----------------------------
@@ -132,19 +132,19 @@ implicit none
     if (codret .eq. 0) then
 !
         call elref2(nomte, MT_NBFAMX, lielrf, nbelr)
-        ASSERT(nbelr.gt.0)
+        ASSERT(nbelr .gt. 0)
         elrefe = lielrf(1)
 !
 !
         call dismoi('TYPE_CHAMP', chanom, 'CHAMP', repk=tych)
-        ASSERT(tych.eq.typech)
+        ASSERT(tych .eq. typech)
         call jeveuo(chanom//'.CELK', 'L', vk24=celk)
         call jeveuo(chanom//'.CELD', 'L', vi=celd)
-        ligrel = celk(1)(1:19)
-        ASSERT(celk(3)(1:19).eq.typech)
+        ligrel = celk(1) (1:19)
+        ASSERT(celk(3) (1:19) .eq. typech)
         nbgrel = celd(2)
 !
-    endif
+    end if
 !
 !     3- DETERMINATION DU MODE_LOCAL (IMOLO) ASSOCIE AU CHAMP POUR
 !        LE TYPE D'ELEMENT TYELAS :
@@ -152,7 +152,7 @@ implicit none
 !
     if (codret .eq. 0) then
         imolo = 0
-        do igrel=1,nbgrel
+        do igrel = 1, nbgrel
             call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
             call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nb1)
             itype = zi(jliel-1+nb1)
@@ -161,27 +161,27 @@ implicit none
                 if (imolo .eq. 0) then
                     codret = 1
                     if (nivinf .gt. 1) then
-                        write (ifm,*)&
+                        write (ifm, *)&
          &          '==> LE CHAMP N''EST PAS DEFINI SUR CE TYPE D''ELEMENT'
-                    endif
-                endif
+                    end if
+                end if
                 goto 32
-            endif
+            end if
         end do
 !
-        if( .not.lfichUniq ) then
+        if (.not. lfichUniq) then
             ASSERT(.false.)
-        endif
+        end if
 !
- 32     continue
+32      continue
 
-        if( lfichUniq ) then
+        if (lfichUniq) then
             vimolo(1) = imolo
             call asmpi_comm_vect('MPI_MAX', 'I', 1, vi=vimolo)
             imolo = vimolo(1)
-        endif
+        end if
 !
-    endif
+    end if
 !
 !     4- DETERMINATION DE LA FAMILLE DE POINTS DE GAUSS :
 !     -------------------------------------------------------------
@@ -193,19 +193,19 @@ implicit none
         call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
         kfpg = zi(jmolo-1+4+nec+1)
         call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nomfpg)
-        ASSERT(elrefe.eq.nomfpg(1:8))
+        ASSERT(elrefe .eq. nomfpg(1:8))
         famil = nomfpg(9:16)
 !
-    endif
+    end if
 !
 !     5- APPEL AUX ROUTINES ELRACA ET ELRAGA DE DESCRIPTION DES ELREFE:
 !     ----------------------------------------------------------------
 !
     lpenta = .false.
     if (codret .eq. 0) then
-        call elraca(elrefe,&
-                    nbfpg , fapg, nbpg00,&
-                    ndim  , nno, nnos,&
+        call elraca(elrefe, &
+                    nbfpg, fapg, nbpg00, &
+                    ndim, nno, nnos, &
                     refcoo, vol)
 !
         call dismoi('DIM_TOPO', nomte, 'TYPE_ELEM', repi=dimtopo)
@@ -215,29 +215,29 @@ implicit none
         if (dimtopo .ne. ndim) then
             if (nomtypmail .eq. 'HEXA8') then
                 elrefb = 'HE8'
-            else if (nomtypmail.eq.'QUAD8') then
+            else if (nomtypmail .eq. 'QUAD8') then
                 elrefb = 'QU8'
-            else if (nomtypmail.eq.'PENTA6') then
+            else if (nomtypmail .eq. 'PENTA6') then
                 lpenta = .true.
                 elrefb = 'PE6'
-            else if (nomtypmail.eq.'PENTA15') then
+            else if (nomtypmail .eq. 'PENTA15') then
                 lpenta = .true.
                 elrefb = 'P15'
-            else if (nomtypmail.eq.'HEXA20') then
+            else if (nomtypmail .eq. 'HEXA20') then
                 elrefb = 'H20'
             else
                 call utmess('F', 'MED2_11')
-            endif
-            call elraca(elrefb ,&
-                        nbfpg2 , fapg2, nbpg00,&
-                        dimtopo, nno  , nnos,&
-                        refcoo , vol)
+            end if
+            call elraca(elrefb, &
+                        nbfpg2, fapg2, nbpg00, &
+                        dimtopo, nno, nnos, &
+                        refcoo, vol)
             ljoint = .true.
-        endif
+        end if
 !
-        ASSERT(nbfpg.le.20)
-        ASSERT(nno.le.27)
-        ifam = indik8(fapg,famil,1,nbfpg)
+        ASSERT(nbfpg .le. 20)
+        ASSERT(nno .le. 27)
+        ifam = indik8(fapg, famil, 1, nbfpg)
         if (ifam .le. 0) then
             resu = chanom(1:8)
             call jeexin(resu//'.DESC', ierd)
@@ -245,45 +245,45 @@ implicit none
                 nomsym = nochmd(1:16)
             else
                 nomsym = chanom(1:16)
-            endif
+            end if
             valk(1) = nomsym
             valk(2) = famil
             call utmess('F', 'MED2_5', nk=2, valk=valk)
-        endif
+        end if
 !
         if (ljoint) then
-            call elraga(elrefe, famil, ndim, nbpg, gscoo2,&
+            call elraga(elrefe, famil, ndim, nbpg, gscoo2, &
                         wg)
             if (lpenta) then
                 do ipg = 1, nbpg
                     do idime = 1, dimtopo
                         if (idime .eq. 1) then
-                            gscoo((ipg-1)*dimtopo + idime) = 0
+                            gscoo((ipg-1)*dimtopo+idime) = 0
                         else
-                            gscoo((ipg-1)*dimtopo + idime) = gscoo2((ipg-1)*ndim + idime-1)
-                        endif
-                    enddo
-                enddo
+                            gscoo((ipg-1)*dimtopo+idime) = gscoo2((ipg-1)*ndim+idime-1)
+                        end if
+                    end do
+                end do
             else
                 do ipg = 1, nbpg
                     do idime = 1, dimtopo
                         if (idime .gt. ndim) then
-                            gscoo((ipg-1)*dimtopo + idime) = 0
+                            gscoo((ipg-1)*dimtopo+idime) = 0
                         else
-                            gscoo((ipg-1)*dimtopo + idime) = gscoo2((ipg-1)*ndim + idime)
-                        endif
-                    enddo
-                enddo
-            endif
+                            gscoo((ipg-1)*dimtopo+idime) = gscoo2((ipg-1)*ndim+idime)
+                        end if
+                    end do
+                end do
+            end if
             ndim = dimtopo
         else
-            call elraga(elrefe, famil, ndim, nbpg, gscoo,&
+            call elraga(elrefe, famil, ndim, nbpg, gscoo, &
                         wg)
-        endif
+        end if
 !
-        ASSERT(nbpg.le.27)
+        ASSERT(nbpg .le. 27)
 !
-    endif
+    end if
 !
 !     6- IMPRESSION EVENTUELLE SUR LE FICHIER DE MESSAGES
 !     ----------------------------------------------------------------
@@ -292,103 +292,103 @@ implicit none
 !
         if (nivinf .gt. 1) then
 !
-            write (ifm,801) 'FAMILLE DE POINTS DE GAUSS', nomfpg
-            write (ifm,802) 'NOMBRE DE SOMMETS        ', nnos
-            write (ifm,802) 'NOMBRE DE NOEUDS         ', nno
-            write (ifm,802) 'NOMBRE DE POINTS DE GAUSS', nbpg
+            write (ifm, 801) 'FAMILLE DE POINTS DE GAUSS', nomfpg
+            write (ifm, 802) 'NOMBRE DE SOMMETS        ', nnos
+            write (ifm, 802) 'NOMBRE DE NOEUDS         ', nno
+            write (ifm, 802) 'NOMBRE DE POINTS DE GAUSS', nbpg
 !
 !     6.1. DIMENSION 1
 !
             if (ndim .eq. 1) then
 !                            123456789012345
-                write (ifm,601) 'NOEUDS         '
-                do iaux = 1 , nno
-                    write (ifm,711) iaux,refcoo(iaux)
+                write (ifm, 601) 'NOEUDS         '
+                do iaux = 1, nno
+                    write (ifm, 711) iaux, refcoo(iaux)
                 end do
-                write (ifm,721)
-                write (ifm,601) 'POINTS DE GAUSS'
-                do iaux = 1 , nbpg
-                    write (ifm,711) iaux,gscoo(iaux)
+                write (ifm, 721)
+                write (ifm, 601) 'POINTS DE GAUSS'
+                do iaux = 1, nbpg
+                    write (ifm, 711) iaux, gscoo(iaux)
                 end do
-                write (ifm,721)
+                write (ifm, 721)
 !
 !     6.2. DIMENSION 2
 !
-            else if (ndim.eq.2) then
-                write (ifm,602) 'NOEUDS         '
-                do iaux = 1 , nno
-                    write (ifm,712) iaux, refcoo(ndim*(iaux-1)+1),&
+            else if (ndim .eq. 2) then
+                write (ifm, 602) 'NOEUDS         '
+                do iaux = 1, nno
+                    write (ifm, 712) iaux, refcoo(ndim*(iaux-1)+1), &
                         refcoo(ndim*(iaux-1)+2)
                 end do
-                write (ifm,722)
-                write (ifm,602) 'POINTS DE GAUSS'
-                do iaux = 1 , nbpg
-                    write (ifm,712) iaux, gscoo(ndim*(iaux-1)+1),&
+                write (ifm, 722)
+                write (ifm, 602) 'POINTS DE GAUSS'
+                do iaux = 1, nbpg
+                    write (ifm, 712) iaux, gscoo(ndim*(iaux-1)+1), &
                         gscoo(ndim*(iaux-1)+2)
                 end do
-                write (ifm,722)
+                write (ifm, 722)
 !
 !     6.3. DIMENSION 3
 !
             else
-                write (ifm,603) 'NOEUDS         '
-                do iaux = 1 , nno
-                    write (ifm,713) iaux, refcoo(ndim*(iaux-1)+1),&
+                write (ifm, 603) 'NOEUDS         '
+                do iaux = 1, nno
+                    write (ifm, 713) iaux, refcoo(ndim*(iaux-1)+1), &
                         refcoo(ndim*(iaux-1)+2), refcoo(ndim*(iaux-1)+3)
                 end do
-                write (ifm,723)
-                write (ifm,603) 'POINTS DE GAUSS'
-                do iaux = 1 , nbpg
-                    write (ifm,713) iaux, gscoo(ndim*(iaux-1)+1),&
+                write (ifm, 723)
+                write (ifm, 603) 'POINTS DE GAUSS'
+                do iaux = 1, nbpg
+                    write (ifm, 713) iaux, gscoo(ndim*(iaux-1)+1), &
                         gscoo(ndim*(iaux-1)+2), gscoo(ndim*(iaux-1)+3)
                 end do
-                write (ifm,723)
-            endif
+                write (ifm, 723)
+            end if
 !
-            write (ifm,604)
-            do iaux = 1 , nbpg
-                write (ifm,711) iaux, wg(iaux)
+            write (ifm, 604)
+            do iaux = 1, nbpg
+                write (ifm, 711) iaux, wg(iaux)
             end do
-            write (ifm,721)
+            write (ifm, 721)
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 601 format(&
-     &/,28('*'),&
-     &/,'*      COORDONNEES DES     *',&
-     &/,'*      ',a15        ,'     *',&
-     &/,28('*'),&
-     &/,'*  NUMERO  *       X       *',&
-     &/,28('*'))
+     &/, 28('*'),&
+     &/, '*      COORDONNEES DES     *',&
+     &/, '*      ', a15, '     *',&
+     &/, 28('*'),&
+     &/, '*  NUMERO  *       X       *',&
+     &/, 28('*'))
 602 format(&
-     &/,44('*'),&
-     &/,'*       COORDONNEES DES ',a15        ,'    *',&
-     &/,44('*'),&
-     &/,'*  NUMERO  *       X       *       Y       *',&
-     &/,44('*'))
+     &/, 44('*'),&
+     &/, '*       COORDONNEES DES ', a15, '    *',&
+     &/, 44('*'),&
+     &/, '*  NUMERO  *       X       *       Y       *',&
+     &/, 44('*'))
 603 format(&
-     &/,60('*'),&
-     &/,'*            COORDONNEES DES ',a15         ,&
+     &/, 60('*'),&
+     &/, '*            COORDONNEES DES ', a15,&
      &'               *',&
-     &/,60('*'),&
-     &/,'*  NUMERO  *       X       *       Y       *',&
+     &/, 60('*'),&
+     &/, '*  NUMERO  *       X       *       Y       *',&
      &'       Z       *',&
-     &/,60('*'))
+     &/, 60('*'))
 604 format(&
-     &/,28('*'),&
-     &/,'*      POINTS DE GAUSS     *',&
-     &/,'*  NUMERO  *     POIDS     *',&
-     &/,28('*'))
-711 format('* ',i5,'    *',1pg12.5,'    *')
-712 format('* ',i5,2('    *',1pg12.5),'    *')
-713 format('* ',i5,3('    *',1pg12.5),'    *')
+     &/, 28('*'),&
+     &/, '*      POINTS DE GAUSS     *',&
+     &/, '*  NUMERO  *     POIDS     *',&
+     &/, 28('*'))
+711 format('* ', i5, '    *', 1pg12.5, '    *')
+712 format('* ', i5, 2('    *', 1pg12.5), '    *')
+713 format('* ', i5, 3('    *', 1pg12.5), '    *')
 721 format(28('*'))
 722 format(44('*'))
 723 format(60('*'))
-801 format(a,' : ',a)
-802 format(a,' : ',i4)
+801 format(a, ' : ', a)
+802 format(a, ' : ', i4)
 !
     call jedema()
 end subroutine

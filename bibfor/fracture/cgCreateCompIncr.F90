@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cgCreateCompIncr(compor, l_etat_init)
 !
-use Behaviour_type
+    use Behaviour_type
 !
     implicit none
 !
@@ -52,7 +52,7 @@ use Behaviour_type
     integer, pointer :: v_compor_desc(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
 !
-   call jemarq()
+    call jemarq()
 !
 ! --- Initialization
 !
@@ -61,31 +61,31 @@ use Behaviour_type
 !
 ! - Access to COMPOR
 !
-    call jeveuo(compor_elas//'.DESC', 'L', vi   = v_compor_desc)
-    call jeveuo(compor_elas//'.VALE', 'E', vk16 = v_compor_vale)
+    call jeveuo(compor_elas//'.DESC', 'L', vi=v_compor_desc)
+    call jeveuo(compor_elas//'.VALE', 'E', vk16=v_compor_vale)
     call jelira(compor_elas//'.VALE', 'LONMAX', nb_vale)
-    nb_zone    = v_compor_desc(3)
+    nb_zone = v_compor_desc(3)
     nb_cmp_max = nb_vale/v_compor_desc(2)
 !
     do i_zone = 1, nb_zone
         rela_comp = v_compor_vale(nb_cmp_max*(i_zone-1)+RELA_NAME)
         defo_comp = v_compor_vale(nb_cmp_max*(i_zone-1)+DEFO)
 !
-        if(rela_comp(1:4) .ne. "ELAS") then
-            if(rela_comp(1:10) == "VMIS_ISOT_" .and. .not. (rela_comp(11:12) == "NL")) then
+        if (rela_comp(1:4) .ne. "ELAS") then
+            if (rela_comp(1:10) == "VMIS_ISOT_" .and. .not. (rela_comp(11:12) == "NL")) then
                 rela_new = "ELAS_VMIS_"//rela_comp(11:16)
                 v_compor_vale(nb_cmp_max*(i_zone-1)+RELA_NAME) = rela_new
-                if(l_etat_init) then
+                if (l_etat_init) then
                     ! v_compor_vale(nb_cmp_max*(i_zone-1)+INCRELAS)  = "COMP_INCR"
                     call utmess("F", "RUPTURE3_11")
                 else
-                    v_compor_vale(nb_cmp_max*(i_zone-1)+INCRELAS)  = "COMP_ELAS"
+                    v_compor_vale(nb_cmp_max*(i_zone-1)+INCRELAS) = "COMP_ELAS"
                 end if
             else
                 call utmess("F", "RUPTURE3_8", sk=rela_comp)
             end if
         end if
-        if(defo_comp .ne. "PETIT") then
+        if (defo_comp .ne. "PETIT") then
             call utmess("F", "RUPTURE3_9", sk=defo_comp)
         end if
     end do

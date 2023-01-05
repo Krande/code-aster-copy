@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine bijsom(umoy, rhof, r1, r2, long,&
-                  cf0, icoq, jcoq, jmod, nbm,&
-                  rki, thetai, thetaj, tcoef, ysol,&
+subroutine bijsom(umoy, rhof, r1, r2, long, &
+                  cf0, icoq, jcoq, jmod, nbm, &
+                  rki, thetai, thetaj, tcoef, ysol, &
                   bij)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -72,18 +72,18 @@ subroutine bijsom(umoy, rhof, r1, r2, long,&
 !-----------------------------------------------------------------------
     pi = r8pi()
     dz = long/100.d0
-    som = dcmplx(0.d0,0.d0)
+    som = dcmplx(0.d0, 0.d0)
 !
     rayon = r1
     if (jcoq .eq. 2) rayon = r2
 !
-    call profpr(icoq, rki, r1, r2, coepr1,&
+    call profpr(icoq, rki, r1, r2, coepr1, &
                 coepr2, wpr)
     if (jcoq .eq. 1) then
         coep = coepr1
     else
         coep = -1.d0*coepr2
-    endif
+    end if
 !
 !-----1.SI UMOY NULLE (STRUCTURES EN EAU AU REPOS)
 !
@@ -91,24 +91,24 @@ subroutine bijsom(umoy, rhof, r1, r2, long,&
 !
 !-----1.1.CONTRIBUTION DU PREMIER POINT DANS LE CALCUL DE L INTEGRALE
 !
-        p = ysol(3,1)
-        wj = defaxe(jcoq,jmod,0.d0,long,nbm,tcoef)
-        som = som + 0.5d0*p*coep*wj
+        p = ysol(3, 1)
+        wj = defaxe(jcoq, jmod, 0.d0, long, nbm, tcoef)
+        som = som+0.5d0*p*coep*wj
 !
 !-----1.2.CONTRIBUTIONS DES POINTS INTERMEDIAIRES
 !
         do k = 2, 100
-            p = ysol(3,k)
+            p = ysol(3, k)
             z = dble(k-1)*dz
-            wj = defaxe(jcoq,jmod,z,long,nbm,tcoef)
-            som = som + p*coep*wj
+            wj = defaxe(jcoq, jmod, z, long, nbm, tcoef)
+            som = som+p*coep*wj
         end do
 !
 !-----1.3.CONTRIBUTION DU DERNIER POINT
 !
-        p = ysol(3,101)
-        wj = defaxe(jcoq,jmod,long,long,nbm,tcoef)
-        som = som + 0.5d0*p*coep*wj
+        p = ysol(3, 101)
+        wj = defaxe(jcoq, jmod, long, long, nbm, tcoef)
+        som = som+0.5d0*p*coep*wj
 !
 !-----2.SINON (STRUCTURES SOUS ECOULEMENT)
 !
@@ -116,32 +116,32 @@ subroutine bijsom(umoy, rhof, r1, r2, long,&
 !
 !-----2.1.CONTRIBUTION DU PREMIER POINT
 !
-        p = ysol(3,1)
-        v = ysol(2,1)
-        wj = defaxe(jcoq,jmod,0.d0,long,nbm,tcoef)
-        som = som + 0.5d0*(p*coep+0.5d0*rhof*cf0*umoy*v)*wj
+        p = ysol(3, 1)
+        v = ysol(2, 1)
+        wj = defaxe(jcoq, jmod, 0.d0, long, nbm, tcoef)
+        som = som+0.5d0*(p*coep+0.5d0*rhof*cf0*umoy*v)*wj
 !
 !-----2.2.CONTRIBUTIONS DES POINTS INTERMEDIAIRES
 !
         do k = 2, 100
-            p = ysol(3,k)
-            v = ysol(2,k)
+            p = ysol(3, k)
+            v = ysol(2, k)
             z = dble(k-1)*dz
-            wj = defaxe(jcoq,jmod,z,long,nbm,tcoef)
-            som = som + (p*coep+0.5d0*rhof*cf0*umoy*v)*wj
+            wj = defaxe(jcoq, jmod, z, long, nbm, tcoef)
+            som = som+(p*coep+0.5d0*rhof*cf0*umoy*v)*wj
         end do
 !
 !-----2.3.CONTRIBUTION DU DERNIER POINT
 !
-        p = ysol(3,101)
-        v = ysol(2,101)
-        wj = defaxe(jcoq,jmod,long,long,nbm,tcoef)
-        som = som + 0.5d0*(p*coep+0.5d0*rhof*cf0*umoy*v)*wj
+        p = ysol(3, 101)
+        v = ysol(2, 101)
+        wj = defaxe(jcoq, jmod, long, long, nbm, tcoef)
+        som = som+0.5d0*(p*coep+0.5d0*rhof*cf0*umoy*v)*wj
 !
-    endif
+    end if
 !
 !-----3.DEDUCTION DE B(I,J)
 !
-    bij = -1.d0*pi*rayon*dble(cos(rki*(thetai-thetaj))) *dz*som/(rki*rki)
+    bij = -1.d0*pi*rayon*dble(cos(rki*(thetai-thetaj)))*dz*som/(rki*rki)
 !
 end subroutine

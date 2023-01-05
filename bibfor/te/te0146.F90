@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine te0146(option, nomte)
 ! VERSION DU 24/09/2021
 !_____________________________________________________________________
 !
-! PARAMETRES D'ECHANGE ENTRE CODE_ASTER ET CLCPLQ 
+! PARAMETRES D'ECHANGE ENTRE CODE_ASTER ET CLCPLQ
 ! (POINT D'ENTREE DU CALCUL DE FERRAILLAGE PAR CAPRA ET MAURY)
 !
 !   PARAMETRES D'ENTREE (FOURNIS PAR CODE_ASTER)
@@ -52,7 +52,7 @@ subroutine te0146(option, nomte)
 !                   0 = 2D, 1 = 1D
 !     FERRSYME   FERRAILLAGE SYMETRIQUE?
 !                   0 = NON, 1 = OUI
-!     SLSYME     SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE 
+!     SLSYME     SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE
 !     FERRCOMP   FERRAILLAGE DE COMPRESSION ADMIS?
 !                   0 = NON, 1 = OUI
 !     EPUCISA    IMPACT DE L'EFFORT TRANCHANT ET DE LA TORSION SUR LE
@@ -167,11 +167,11 @@ subroutine te0146(option, nomte)
 !
     call jevech('PEFFORR', 'L', jefge)
     call tecach('OOO', 'PEFFORR', 'L', iret, nval=7, itab=itab)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
     nno = itab(3)
-    ASSERT(nno.gt.0.and.nno.le.9)
-    ASSERT(itab(2).eq.8*nno)
-    
+    ASSERT(nno .gt. 0 .and. nno .le. 9)
+    ASSERT(itab(2) .eq. 8*nno)
+
 !
 !       -- CALCUL DE LA CONTRAINTE MOYENNE :
 !       ------------------------------------
@@ -179,7 +179,7 @@ subroutine te0146(option, nomte)
     do icmp = 1, 8
         effrts(icmp) = 0.d0
         do ino = 1, nno
-            effrts(icmp) = effrts(icmp) + zr(jefge-1+(ino-1)*8+icmp)/nno
+            effrts(icmp) = effrts(icmp)+zr(jefge-1+(ino-1)*8+icmp)/nno
         end do
     end do
 !
@@ -260,21 +260,21 @@ subroutine te0146(option, nomte)
     phiys = zr(jfer1-1+54)
     phizi = zr(jfer1-1+55)
     phizs = zr(jfer1-1+56)
-    
-   !Only option '2D'
-    if (typstru.eq.1.d0) then
-    call utmess('A', 'CALCULEL_78')
-    goto 998
-    endif
+
+    !Only option '2D'
+    if (typstru .eq. 1.d0) then
+        call utmess('A', 'CALCULEL_78')
+        goto 998
+    end if
 
 !
 !   -- CALCUL PROPREMENT DIT :
 !   --------------------------
 !
 !   VERIFICATION DE LA COHERENCE DES PARAMETRES
-    if (ht.le.enrobi .or. ht.le.enrobs) then
+    if (ht .le. enrobi .or. ht .le. enrobs) then
         call utmess('F', 'CALCULEL_72')
-    endif
+    end if
 !
 !       -- INITIALISATION DES VARIABLES DE SORTIES :
 !       --------------------------------------------
@@ -285,49 +285,49 @@ subroutine te0146(option, nomte)
         dnsits(k) = 0.d0
     end do
 !
-    call clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp, epucisa,&
-                  ferrmin, rholmin, rhotmin, compress, cequi,&
-                  enrobi, enrobs, sigs, sigci, sigcs,&
-                  alphacc, gammas, gammac, facier, eys, typdiag,&
-                  fbeton, clacier, uc, um,&
-                  wmaxi, wmaxs, sigelsqp, kt, phixi, phixs, phiyi, phiys,&
-                  ht, effrts, dnsits, ierr)
+    call clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp, epucisa, &
+                ferrmin, rholmin, rhotmin, compress, cequi, &
+                enrobi, enrobs, sigs, sigci, sigcs, &
+                alphacc, gammas, gammac, facier, eys, typdiag, &
+                fbeton, clacier, uc, um, &
+                wmaxi, wmaxs, sigelsqp, kt, phixi, phixs, phiyi, phiys, &
+                ht, effrts, dnsits, ierr)
 
 !
 !       -- CALCUL DE LA DENSITE VOLUMIQUE D'ARMATURE :
 !       ----------------------------------------------
 !
-    if (rhoacier.gt.0) then
+    if (rhoacier .gt. 0) then
         dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)+dnsits(5)*ht+dnsits(6)*ht)/ht
-        if (dnsits(5).eq.-1.d0 .or. dnsits(6).eq.-1.d0) then
+        if (dnsits(5) .eq. -1.d0 .or. dnsits(6) .eq. -1.d0) then
 !           Vrai uniquement pour le calcul du ferraillage transversal au BAEL
 !           (pour lequel les aciers d'effort tranchant ne sont pas calculés)
             dnsvol = rhoacier*((dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)))/ht
-        endif
+        end if
     else
         dnsvol = -1.d0
-    endif
+    end if
 !
 !       -- CALCUL DE L'INDICATEUR DE CONSTRUCTIBILITE :
 !       -----------------------------------------------
 !
-    if (rhoacier.gt.0) then
+    if (rhoacier .gt. 0) then
         reinf = areinf*dnsvol/rhocrit
         shear = ashear*dnsits(5)/datcrit
-        if (shear.lt.0.d0) shear = 0.d0
+        if (shear .lt. 0.d0) shear = 0.d0
         stirrups = astirr*((dnsits(5)*dnsits(5)+dnsits(6)*dnsits(6))**0.5)
         stirrups = stirrups*(ht-enrobs-enrobi)/(datcrit*lcrit)
-        if (stirrups.lt.0.d0) stirrups = 0.d0
+        if (stirrups .lt. 0.d0) stirrups = 0.d0
         construc = (reinf+shear+stirrups)/(areinf+ashear+astirr)
     else
         construc = -1.d0
-    endif
+    end if
 !
 
 !       -- GESTION DES ALARMES EMISES :
 !       -------------------------------
 !
-    if (ierr.eq.1001) then
+    if (ierr .eq. 1001) then
 !       ELU : section trop comprimée
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL_83')
@@ -336,9 +336,9 @@ subroutine te0146(option, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
-    
-    if (ierr.eq.10011) then
+    end if
+
+    if (ierr .eq. 10011) then
 !       ELU : ferraillage symétrique non possible!
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL7_28')
@@ -347,9 +347,9 @@ subroutine te0146(option, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 !
-    if (ierr.eq.1003) then
+    if (ierr .eq. 1003) then
 !       ELS : section trop comprimée
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL_84')
@@ -358,9 +358,9 @@ subroutine te0146(option, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
-    
-    if (ierr.eq.1005) then
+    end if
+
+    if (ierr .eq. 1005) then
 !       ELS_QP : section trop comprimée
 !       on fixe toutes les densités de ferraillage de l'élément à -1
         call utmess('A', 'CALCULEL_85')
@@ -369,36 +369,36 @@ subroutine te0146(option, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 !
-    if (ierr.eq.1002) then
+    if (ierr .eq. 1002) then
 !       ELU BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL_81')
         dnsits(5) = -1.d0
         dnsits(6) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 
-    if (ierr.eq.1004) then
+    if (ierr .eq. 1004) then
 !       ELS BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL_86')
         dnsits(5) = -1.d0
         dnsits(6) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 
-    if (ierr.eq.1007) then
+    if (ierr .eq. 1007) then
 !       ELS_QP BETON TROP CISAILLE : densité transversale fixée à -1 pour l'élément
         call utmess('A', 'CALCULEL_87')
         dnsits(5) = -1.d0
         dnsits(6) = -1.d0
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 
-    if (ierr.eq.1006) then
+    if (ierr .eq. 1006) then
 !       ELS QP SOLLICITATION TROP IMPORTANTE : Résolution itérative impossible à l'els qp !
         call utmess('A', 'CALCULEL_77')
         do k = 1, 6
@@ -406,21 +406,21 @@ subroutine te0146(option, nomte)
         end do
         dnsvol = -1.d0
         construc = -1.d0
-    endif
+    end if
 !
 !       -- STOCKAGE DES RESULTATS DANS FER2 :
 !       -------------------------------------
 !   FER2_R =  DNSXI DNSXS DNSYI DNSYS DNSXT DNSYT DNSVOL CONSTRUC
 !               1     2     3     4     5     6      7       8
 !
-    zr(jfer2-1+1)= dnsits(1)
-    zr(jfer2-1+2)= dnsits(3)
-    zr(jfer2-1+3)= dnsits(2)
-    zr(jfer2-1+4)= dnsits(4)
-    zr(jfer2-1+5)= dnsits(5)
-    zr(jfer2-1+6)= dnsits(6)
-    zr(jfer2-1+7)= dnsvol
-    zr(jfer2-1+8)= construc
+    zr(jfer2-1+1) = dnsits(1)
+    zr(jfer2-1+2) = dnsits(3)
+    zr(jfer2-1+3) = dnsits(2)
+    zr(jfer2-1+4) = dnsits(4)
+    zr(jfer2-1+5) = dnsits(5)
+    zr(jfer2-1+6) = dnsits(6)
+    zr(jfer2-1+7) = dnsvol
+    zr(jfer2-1+8) = construc
 
 998 continue
 

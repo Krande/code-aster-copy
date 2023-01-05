@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0384(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vff2dn.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,22 +73,22 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PVITEFF', 'L', jvLoad)
     else
         call jevech('PVITEFR', 'L', jvLoad)
-    endif
+    end if
 
 ! - Get time if present
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jvTime)
     lTime = ASTER_FALSE
-    time   = 0.d0
+    time = 0.d0
     if (jvTime .ne. 0) then
         lTime = ASTER_TRUE
-        time   = zr(jvTime)
-    endif
+        time = zr(jvTime)
+    end if
 
 ! - Get element parameters
-    l_axis = (lteatt('AXIS','OUI'))
+    l_axis = (lteatt('AXIS', 'OUI'))
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    call elrefe_info(fami='RIGI',&
-                     nno=nbNode, npg=npg, ndim=cellDime,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nbNode, npg=npg, ndim=cellDime, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShape)
     ASSERT(nbNode .le. 3)
     if (fsi_form .eq. 'FSI_UPPHI') then
@@ -96,8 +96,8 @@ character(len=16), intent(in) :: option, nomte
     elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndofbynode = 3
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 
 ! - Get material properties for fluid
     j_mater = zi(jvMate)
@@ -116,35 +116,35 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
-        call vff2dn(cellDime, nbNode, ipg, jvWeight, jvDShape,&
+        call vff2dn(cellDime, nbNode, ipg, jvWeight, jvDShape, &
                     zr(jvGeom), nx, ny, poids)
         if (l_axis) then
             r = 0.d0
             do i = 1, nbNode
-                r = r + zr(jvGeom+2*(i-1))*zr(jvShape+ldec+i-1)
+                r = r+zr(jvGeom+2*(i-1))*zr(jvShape+ldec+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 
 ! ----- Get value of speed
-        call evalFaceSpeedVale(lFunc    , lTime   , time  ,&
-                               nbNode   , cellDime, ipg   ,&
-                               jvShape  , jvGeom  , jvLoad,&
+        call evalFaceSpeedVale(lFunc, lTime, time, &
+                               nbNode, cellDime, ipg, &
+                               jvShape, jvGeom, jvLoad, &
                                speedVale, x, y)
 
 ! ----- Get direction of speed
-        call evalFaceSpeedDire(fsi_form, cellDime , jvLoad, speedDire, &
-                               ipg, nx, ny,&
-                               lFunc_ = lFunc, lReal_ = lReal,&
-                               lTime_ = lTime, time_ = time ,&
-                               x_ = x, y_ = y)
+        call evalFaceSpeedDire(fsi_form, cellDime, jvLoad, speedDire, &
+                               ipg, nx, ny, &
+                               lFunc_=lFunc, lReal_=lReal, &
+                               lTime_=lTime, time_=time, &
+                               x_=x, y_=y)
 
 ! ----- Compute vector
         do i = 1, nbNode
             ii = ndofbynode*i
-            zr(jvVect+ii-1) = zr(jvVect+ii-1) - speedDire*&
-                               poids *&
-                               zr(jvShape+ldec+i-1) * speedVale * rho
+            zr(jvVect+ii-1) = zr(jvVect+ii-1)-speedDire* &
+                              poids* &
+                              zr(jvShape+ldec+i-1)*speedVale*rho
         end do
 
     end do

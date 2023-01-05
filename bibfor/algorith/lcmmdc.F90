@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&
+subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap, &
                   is, ceff, dcdals)
     implicit none
     integer :: ifa, nmat, nbcomm(nmat, 3), is
@@ -36,27 +36,27 @@ subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&
     integer :: iei, i
 !     ----------------------------------------------------------------
 !
-    iei=nbcomm(ifa,3)
-    alpha =coeft(iei+1)
-    beta  =coeft(iei+2)
-    rhoref=coeft(iei+3)
-    ceff=1.d0
-    dcdals=0.d0
+    iei = nbcomm(ifa, 3)
+    alpha = coeft(iei+1)
+    beta = coeft(iei+2)
+    rhoref = coeft(iei+3)
+    ceff = 1.d0
+    dcdals = 0.d0
     if (alpha .gt. 0.d0) then
-        omegat=0.d0
+        omegat = 0.d0
         do i = 1, 12
             if (alphap(i) .gt. 0.d0) then
-                omegat=omegat+alphap(i)
-            endif
+                omegat = omegat+alphap(i)
+            end if
         end do
 !        PARTIE POSITIVE
         if (omegat .gt. 0.d0) then
-            ceff=0.2d0+0.8d0*log(alpha*sqrt(omegat))/ log(alpha*beta*&
-            sqrt(rhoref))
+            ceff = 0.2d0+0.8d0*log(alpha*sqrt(omegat))/log(alpha*beta* &
+                                                           sqrt(rhoref))
             if (alphap(is) .gt. 0.d0) then
-                dcdals=0.8d0/2.d0/log(alpha*beta*sqrt(rhoref))/omegat
-            endif
-        endif
-    endif
+                dcdals = 0.8d0/2.d0/log(alpha*beta*sqrt(rhoref))/omegat
+            end if
+        end if
+    end if
 !
 end subroutine

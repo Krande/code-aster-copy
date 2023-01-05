@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,15 +42,15 @@ subroutine as_mficom(nom, hdfok, medok, cret)
     ! On verifie par un appel à HDF que le fichier est bien de type hdf avant de vérifier
     ! la compatibilite afin d'eviter les "Erreur à l'ouverture du fichier" dans MED
     fid = hdfopf(nom)
-    if (fid.gt.0) then
+    if (fid .gt. 0) then
         cret = hdfclf(fid)
-        ASSERT(cret.eq.0)
+        ASSERT(cret .eq. 0)
     else
         cret = -1
         hdfok = 0
         medok = 0
-    endif
-    if (cret.eq.0) then
+    end if
+    if (cret .eq. 0) then
 #if !ASTER_MED_SAME_INT_IDT
         call mficom(nom, hdfok4, medok4, cret4)
         cret = to_aster_int(cret4)
@@ -59,7 +59,7 @@ subroutine as_mficom(nom, hdfok, medok, cret)
 #else
         call mficom(nom, hdfok, medok, cret)
 #endif
-    endif
+    end if
 !
 #endif
 end subroutine

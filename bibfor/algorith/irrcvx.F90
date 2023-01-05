@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
+subroutine irrcvx(fami, kpg, ksp, nmat, mater, &
                   sig, vin, seuil)
     implicit none
 !
@@ -49,22 +49,22 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
     real(kind=8) :: valrm(2)
 !
 !     RECUPERATION DE L IRRADIATION
-    call rcvarc('F', 'IRRA', '-', fami, kpg,&
+    call rcvarc('F', 'IRRA', '-', fami, kpg, &
                 ksp, irrad, iret)
-    call rcvarc('F', 'IRRA', '+', fami, kpg,&
+    call rcvarc('F', 'IRRA', '+', fami, kpg, &
                 ksp, irraf, iret)
 ! VARIABLES INTERNES
     p = vin(1)
 ! PARAMETRES MATERIAUX
-    k = mater(7,2)
-    n = mater(8,2)
-    p0 = mater(9,2)
-    kappa = mater(10,2)
-    r02 = mater(11,2)
-    penpe = mater(13,2)
-    pk = mater(14,2)
-    pe = mater(15,2)
-    spe = mater(16,2)
+    k = mater(7, 2)
+    n = mater(8, 2)
+    p0 = mater(9, 2)
+    kappa = mater(10, 2)
+    r02 = mater(11, 2)
+    penpe = mater(13, 2)
+    pk = mater(14, 2)
+    pe = mater(15, 2)
+    spe = mater(16, 2)
 !
     if (irraf .gt. irrad) then
         seuil = 1.d0
@@ -76,13 +76,13 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
     else
         call lcdevi(sig, dev)
         if (p .lt. pk) then
-            seuil = lcnrts(dev) - kappa*r02
-        else if (p.lt.pe) then
-            seuil = lcnrts(dev) - ( spe + penpe*(p - pe) )
+            seuil = lcnrts(dev)-kappa*r02
+        else if (p .lt. pe) then
+            seuil = lcnrts(dev)-(spe+penpe*(p-pe))
         else
-            seuil = lcnrts(dev) - k*((p + p0)**n)
-        endif
-    endif
+            seuil = lcnrts(dev)-k*((p+p0)**n)
+        end if
+    end if
 !
-9999  continue
+9999 continue
 end subroutine

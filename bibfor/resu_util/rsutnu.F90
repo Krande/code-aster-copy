@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
+subroutine rsutnu(resu, motcle, iocc, knum, nbordr, &
                   prec, crit, ier)
     implicit none
 #include "asterf_types.h"
@@ -90,17 +90,17 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     if (iret .eq. 0) then
         ier = 10
         goto 100
-    endif
+    end if
 !
 !     --- CAS "NUME_ORDRE" ---
     call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         nbordr = -n1
         call wkvect(knum, 'V V I', nbordr, jordr)
-        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbordr, vect=zi(jordr),&
+        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbordr, vect=zi(jordr), &
                     nbret=n1)
         goto 100
-    endif
+    end if
 !
 !     --- CAS "NUME_MODE","INST","FREQ", ... ---
     n2 = 0
@@ -108,306 +108,306 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     call jeexin(knacc, iret)
     if (iret .gt. 0) call jeveuo(knacc, 'L', jpara)
     if (nbacc .ne. 0) then
-        call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
-                    c16b, r8b, k8b, tord, 1,&
+        call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b, &
+                    c16b, r8b, k8b, tord, 1, &
                     ibid)
-        iord=tord(1)
+        iord = tord(1)
         do iacc = 1, nbacc
             ctyp = '    '
-            call rsadpa(resu, 'L', 1, zk16(jpara-1+iacc), iord,&
+            call rsadpa(resu, 'L', 1, zk16(jpara-1+iacc), iord, &
                         1, sjv=iad, styp=ctyp, istop=0)
             if (ctyp(1:1) .eq. 'I') then
                 call getvis(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
-            else if (ctyp(1:1).eq.'R') then
+            else if (ctyp(1:1) .eq. 'R') then
                 call getvr8(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
-            else if (ctyp(1:1).eq.'K') then
+            else if (ctyp(1:1) .eq. 'K') then
                 call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
-                if (zk16(jpara-1+iacc) (1:9) .eq. 'NOEUD_CMP') n2 = n2/ 2
-            endif
+                if (zk16(jpara-1+iacc) (1:9) .eq. 'NOEUD_CMP') n2 = n2/2
+            end if
 !
             if (n2 .ne. 0) then
-                call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                            c16b, r8b, k8b, tord, 1,&
+                call rsorac(resu, 'LONUTI', 0, r8b, k8b, &
+                            c16b, r8b, k8b, tord, 1, &
                             ibid)
-                nbordt=tord(1)
+                nbordt = tord(1)
                 call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
                 call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
                 nbval = -n2
                 iut = lxlgut(ctyp)
                 call wkvect(kvacc, 'V V '//ctyp(1:iut), nbval, jval)
                 if (ctyp(1:1) .eq. 'I') then
-                    call getvis(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                    call getvis(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval, &
                                 vect=zi(jval), nbret=n2)
-                else if (ctyp(1:1).eq.'R') then
-                    call getvr8(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                else if (ctyp(1:1) .eq. 'R') then
+                    call getvr8(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval, &
                                 vect=zr(jval), nbret=n2)
-                else if (ctyp(1:2).eq.'K8') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                else if (ctyp(1:2) .eq. 'K8') then
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval, &
                                 vect=zk8(jval), nbret=n2)
-                else if (ctyp(1:3).eq.'K16') then
+                else if (ctyp(1:3) .eq. 'K16') then
                     if (zk16(jpara-1+iacc) (1:9) .eq. 'NOEUD_CMP') then
                         nbva2 = 2*nbval
                         call wkvect(knmod, 'V V K8', nbva2, jnch)
-                        call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbva2,&
+                        call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbva2, &
                                     vect=zk8(jnch), nbret=n2)
                         do ii = 1, nbval
-                            zk16(jval+ii-1) = zk8( jnch+ (2*ii-1)-1)// zk8(jnch+ (2*ii)-1 )
+                            zk16(jval+ii-1) = zk8(jnch+(2*ii-1)-1)//zk8(jnch+(2*ii)-1)
                         end do
                         call jedetr(knmod)
                     else
-                        call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                        call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval, &
                                     vect=zk16(jval), nbret=n2)
-                    endif
-                else if (ctyp(1:3).eq.'K24') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                    end if
+                else if (ctyp(1:3) .eq. 'K24') then
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval, &
                                 vect=zk24(jval), nbret=n2)
-                else if (ctyp(1:3).eq.'K32') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                else if (ctyp(1:3) .eq. 'K32') then
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval, &
                                 vect=zk32(jval), nbret=n2)
-                else if (ctyp(1:3).eq.'K80') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                else if (ctyp(1:3) .eq. 'K80') then
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval, &
                                 vect=zk80(jval), nbret=n2)
-                endif
+                end if
                 nbordr = 1
                 do ival = 1, nbval
                     if (ctyp(1:1) .eq. 'I') then
-                        call rsorac(resu, zk16(jpara-1+iacc), zi(jval-1+ ival), r8b, k8b,&
-                                    c16b, prec, crit, zi(jord2), nbordt,&
+                        call rsorac(resu, zk16(jpara-1+iacc), zi(jval-1+ival), r8b, k8b, &
+                                    c16b, prec, crit, zi(jord2), nbordt, &
                                     nbtrou)
-                    else if (ctyp(1:1).eq.'R') then
-                        call rsorac(resu, zk16(jpara-1+iacc), ibid, zr(jval-1+ival), k8b,&
-                                    c16b, prec, crit, zi(jord2), nbordt,&
+                    else if (ctyp(1:1) .eq. 'R') then
+                        call rsorac(resu, zk16(jpara-1+iacc), ibid, zr(jval-1+ival), k8b, &
+                                    c16b, prec, crit, zi(jord2), nbordt, &
                                     nbtrou)
-                    else if (ctyp(1:2).eq.'K8') then
-                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk8(jval-1+ival),&
-                                    c16b, prec, crit, zi(jord2), nbordt,&
+                    else if (ctyp(1:2) .eq. 'K8') then
+                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk8(jval-1+ival), &
+                                    c16b, prec, crit, zi(jord2), nbordt, &
                                     nbtrou)
-                    else if (ctyp(1:3).eq.'K16') then
-                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk16(jval-1+ival),&
-                                    c16b, prec, crit, zi(jord2), nbordt,&
+                    else if (ctyp(1:3) .eq. 'K16') then
+                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk16(jval-1+ival), &
+                                    c16b, prec, crit, zi(jord2), nbordt, &
                                     nbtrou)
-                    else if (ctyp(1:3).eq.'K24') then
-                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk24(jval-1+ival),&
-                                    c16b, prec, crit, zi(jord2), nbordt,&
+                    else if (ctyp(1:3) .eq. 'K24') then
+                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk24(jval-1+ival), &
+                                    c16b, prec, crit, zi(jord2), nbordt, &
                                     nbtrou)
-                    else if (ctyp(1:3).eq.'K32') then
-                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk32(jval-1+ival),&
-                                    c16b, prec, crit, zi(jord2), nbordt,&
+                    else if (ctyp(1:3) .eq. 'K32') then
+                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk32(jval-1+ival), &
+                                    c16b, prec, crit, zi(jord2), nbordt, &
                                     nbtrou)
-                    else if (ctyp(1:3).eq.'K80') then
-                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk80(jval-1+ival),&
-                                    c16b, prec, crit, zi(jord2), nbordt,&
+                    else if (ctyp(1:3) .eq. 'K80') then
+                        call rsorac(resu, zk16(jpara-1+iacc), ibid, r8b, zk80(jval-1+ival), &
+                                    c16b, prec, crit, zi(jord2), nbordt, &
                                     nbtrou)
-                    endif
+                    end if
                     if (nbtrou .eq. 1) then
                         call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
-                    else if (nbtrou.gt.1) then
-                        valk (1) = resu
+                    else if (nbtrou .gt. 1) then
+                        valk(1) = resu
                         call utmess('A+', 'UTILITAI8_38', sk=valk(1))
-                        lg = max(1,lxlgut(zk16(jpara-1+iacc)))
+                        lg = max(1, lxlgut(zk16(jpara-1+iacc)))
                         if (ctyp(1:1) .eq. 'I') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            vali (1) = zi(jval-1+ival)
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            vali(1) = zi(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_39', sk=valk(1), si=vali(1))
-                        else if (ctyp(1:1).eq.'R') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
+                        else if (ctyp(1:1) .eq. 'R') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
                             valr = zr(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_40', sk=valk(1), sr=valr)
-                        else if (ctyp(1:2).eq.'K8') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk8(jval-1+ival)
+                        else if (ctyp(1:2) .eq. 'K8') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk8(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
-                        else if (ctyp(1:3).eq.'K16') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk16(jval-1+ival)
+                        else if (ctyp(1:3) .eq. 'K16') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk16(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
-                        else if (ctyp(1:3).eq.'K24') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk24(jval-1+ival)
+                        else if (ctyp(1:3) .eq. 'K24') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk24(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
-                        else if (ctyp(1:3).eq.'K32') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk32(jval-1+ival)
+                        else if (ctyp(1:3) .eq. 'K32') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk32(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
-                        else if (ctyp(1:3).eq.'K80') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk80(jval-1+ival)
+                        else if (ctyp(1:3) .eq. 'K80') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk80(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
-                        endif
-                        vali (1) = nbtrou
-                        vali (2) = zi(jord2)
-                        vali (3) = zi(jord2+1)
-                        vali (4) = zi(jord2+2)
+                        end if
+                        vali(1) = nbtrou
+                        vali(2) = zi(jord2)
+                        vali(3) = zi(jord2+1)
+                        vali(4) = zi(jord2+2)
                         if (nbtrou .eq. 2) then
                             call utmess('A', 'UTILITAI8_46', ni=3, vali=vali)
                         else
                             call utmess('A', 'UTILITAI8_48', ni=4, vali=vali)
-                        endif
+                        end if
 !
                         call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
-                    else if (nbtrou.eq.0) then
-                        valk (1) = resu
+                    else if (nbtrou .eq. 0) then
+                        valk(1) = resu
                         call utmess('A+', 'UTILITAI8_47', sk=valk(1))
-                        lg = max(1,lxlgut(zk16(jpara-1+iacc)))
+                        lg = max(1, lxlgut(zk16(jpara-1+iacc)))
                         if (ctyp(1:1) .eq. 'I') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            vali (1) = zi(jval-1+ival)
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            vali(1) = zi(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_39', si=vali(1))
-                        else if (ctyp(1:1).eq.'R') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
+                        else if (ctyp(1:1) .eq. 'R') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
                             valr = zr(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_40', sr=valr)
-                        else if (ctyp(1:2).eq.'K8') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk8(jval-1+ival)
+                        else if (ctyp(1:2) .eq. 'K8') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk8(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', sk=valk(1))
-                        else if (ctyp(1:3).eq.'K16') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk16(jval-1+ival)
+                        else if (ctyp(1:3) .eq. 'K16') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk16(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', sk=valk(1))
-                        else if (ctyp(1:3).eq.'K24') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk24(jval-1+ival)
+                        else if (ctyp(1:3) .eq. 'K24') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk24(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', sk=valk(1))
-                        else if (ctyp(1:3).eq.'K32') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk32(jval-1+ival)
+                        else if (ctyp(1:3) .eq. 'K32') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk32(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', sk=valk(1))
-                        else if (ctyp(1:1).eq.'K80') then
-                            valk (1) = zk16(jpara-1+iacc) (1:lg)
-                            valk (2) = zk80(jval-1+ival)
+                        else if (ctyp(1:1) .eq. 'K80') then
+                            valk(1) = zk16(jpara-1+iacc) (1:lg)
+                            valk(2) = zk80(jval-1+ival)
                             call utmess('A+', 'UTILITAI8_41', sk=valk(1))
-                        endif
+                        end if
                         call utmess('A', 'VIDE_1')
-                        ier = ier + 10
-                    else if (nbtrou.lt.0) then
+                        ier = ier+10
+                    else if (nbtrou .lt. 0) then
                         call utmess('F', 'DVP_1')
-                    endif
+                    end if
                 end do
-                nbordr = nbordr - 1
+                nbordr = nbordr-1
                 if (nbordr .ne. 0) then
                     call wkvect(knum, 'V V I', nbordr, jordr)
-                    do iord = 0, nbordr - 1
+                    do iord = 0, nbordr-1
                         zi(jordr+iord) = zi(jord1+iord)
                     end do
-                endif
+                end if
                 call jedetr('&&RSUTNU.N1')
                 call jedetr('&&RSUTNU.N2')
                 goto 100
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call getvid(motcle, 'LIST_INST', iocc=iocc, scal=listr, nbret=n1)
     if (n1 .ne. 0) then
-        call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                    c16b, r8b, k8b, tord, 1,&
+        call rsorac(resu, 'LONUTI', 0, r8b, k8b, &
+                    c16b, r8b, k8b, tord, 1, &
                     ibid)
-        nbordt=tord(1)
+        nbordt = tord(1)
         nomacc = 'INST'
         call jeveuo(listr//'.VALE', 'L', laccr)
         call jelira(listr//'.VALE', 'LONMAX', nbinst)
         call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
         call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
         nbordr = 1
-        do iord = 0, nbinst - 1
-            call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
-                        c16b, prec, crit, zi(jord2), nbordt,&
+        do iord = 0, nbinst-1
+            call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b, &
+                        c16b, prec, crit, zi(jord2), nbordt, &
                         nbtrou)
             if (nbtrou .eq. 0) then
-                ier = ier + 1
-                valk (1)= nomacc
+                ier = ier+1
+                valk(1) = nomacc
                 valr = zr(laccr+iord)
                 call utmess('A', 'UTILITAI8_56', sk=valk(1), sr=valr)
-            else if (nbtrou.lt.0) then
+            else if (nbtrou .lt. 0) then
                 call utmess('F', 'DVP_1')
             else
                 if (nbtrou .gt. 1) then
-                    valk (1) = resu
+                    valk(1) = resu
                     valr = zr(laccr+iord)
-                    vali (1) = nbtrou
+                    vali(1) = nbtrou
                     call utmess('A', 'UTILITAI8_57', sk=valk(1), si=vali(1), sr=valr)
-                endif
+                end if
                 call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
-            endif
+            end if
         end do
-        nbordr = nbordr - 1
+        nbordr = nbordr-1
         if (nbordr .ne. 0) then
             call wkvect(knum, 'V V I', nbordr, jordr)
-            do iord = 0, nbordr - 1
+            do iord = 0, nbordr-1
                 zi(jordr+iord) = zi(jord1+iord)
             end do
-        endif
+        end if
         call jedetr('&&RSUTNU.N1')
         call jedetr('&&RSUTNU.N2')
         goto 100
-    endif
+    end if
 !
     call getvid(motcle, 'LIST_FREQ', iocc=iocc, scal=listr, nbret=n1)
     if (n1 .ne. 0) then
-        call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                    c16b, r8b, k8b, tord, 1,&
+        call rsorac(resu, 'LONUTI', 0, r8b, k8b, &
+                    c16b, r8b, k8b, tord, 1, &
                     ibid)
-        nbordt=tord(1)
+        nbordt = tord(1)
         nomacc = 'FREQ'
         call jeveuo(listr//'.VALE', 'L', laccr)
         call jelira(listr//'.VALE', 'LONMAX', nbfreq)
         call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
         call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
         nbordr = 1
-        do iord = 0, nbfreq - 1
-            call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
-                        c16b, prec, crit, zi(jord2), nbordt,&
+        do iord = 0, nbfreq-1
+            call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b, &
+                        c16b, prec, crit, zi(jord2), nbordt, &
                         nbtrou)
             if (nbtrou .eq. 0) then
-                ier = ier + 1
-                valk (1) = nomacc
+                ier = ier+1
+                valk(1) = nomacc
                 valr = zr(laccr+iord)
                 call utmess('A', 'UTILITAI8_58', sk=valk(1), sr=valr)
-            else if (nbtrou.lt.0) then
+            else if (nbtrou .lt. 0) then
                 call utmess('F', 'DVP_1')
             else
                 if (nbtrou .gt. 1) then
-                    valk (1) = resu
+                    valk(1) = resu
                     valr = zr(laccr+iord)
-                    vali (1) = nbtrou
+                    vali(1) = nbtrou
                     call utmess('A', 'UTILITAI8_59', sk=valk(1), si=vali(1), sr=valr)
-                endif
+                end if
                 call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
-            endif
+            end if
         end do
-        nbordr = nbordr - 1
+        nbordr = nbordr-1
         if (nbordr .ne. 0) then
             call wkvect(knum, 'V V I', nbordr, jordr)
-            do iord = 0, nbordr - 1
+            do iord = 0, nbordr-1
                 zi(jordr+iord) = zi(jord1+iord)
             end do
-        endif
+        end if
         call jedetr('&&RSUTNU.N1')
         call jedetr('&&RSUTNU.N2')
         goto 100
-    endif
+    end if
 !
     call getvid(motcle, 'LIST_ORDRE', iocc=iocc, scal=listr, nbret=n1)
     if (n1 .ne. 0) then
         call jeveuo(listr//'.VALE', 'L', laccr)
         call jelira(listr//'.VALE', 'LONMAX', nbordr)
         call wkvect(knum, 'V V I', nbordr, jordr)
-        do iord = 0, nbordr - 1
+        do iord = 0, nbordr-1
             zi(jordr+iord) = zi(laccr+iord)
         end do
         goto 100
-    endif
+    end if
 !
 !     --- LE DERNIER: 'TOUT_ORDRE' VALEUR PAR DEFAUT ---
 !
-    call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                c16b, r8b, k8b, tord, 1,&
+    call rsorac(resu, 'LONUTI', 0, r8b, k8b, &
+                c16b, r8b, k8b, tord, 1, &
                 ibid)
-    nbordr=tord(1)
+    nbordr = tord(1)
     call wkvect(knum, 'V V I', nbordr, jordr)
-    call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
-                c16b, r8b, k8b, zi(jordr), nbordr,&
+    call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b, &
+                c16b, r8b, k8b, zi(jordr), nbordr, &
                 ibid)
 !
 100 continue
@@ -420,45 +420,45 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
         call jelira(resuin//'.ORDR', 'LONUTI', long1)
         call jeveuo(resuin//'.ORDR', 'L', jordr1)
         call jeveuo(knum, 'L', jordr2)
-        nbtrop=0
+        nbtrop = 0
         do i = 1, nbordr
-            itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
-            if (itrou .eq. 0) nbtrop=nbtrop+1
+            itrou = indiis(zi(jordr1), zi(jordr2-1+i), 1, long1)
+            if (itrou .eq. 0) nbtrop = nbtrop+1
         end do
 !
         if (nbtrop .gt. 0) then
-            knum2='&&RSUTNU.KNUM2'
+            knum2 = '&&RSUTNU.KNUM2'
             if ((nbordr-nbtrop) .eq. 0) then
                 call utmess('A', 'UTILITAI4_53')
                 goto 800
-            endif
+            end if
 !
             call wkvect(knum2, 'V V I', nbordr-nbtrop, jordr3)
-            indi=0
+            indi = 0
             do i = 1, nbordr
-                itrou= indiis(zi(jordr1),zi(jordr2-1+i),1,long1)
+                itrou = indiis(zi(jordr1), zi(jordr2-1+i), 1, long1)
                 if (itrou .gt. 0) then
-                    indi=indi+1
-                    zi(jordr3-1+indi)= zi(jordr2-1+i)
-                endif
+                    indi = indi+1
+                    zi(jordr3-1+indi) = zi(jordr2-1+i)
+                end if
             end do
             call jedetr(knum)
             call jedupo(knum2, 'V', knum, .false._1)
             call jedetr(knum2)
-            nbordr=indi
-        endif
+            nbordr = indi
+        end if
 !
-        verifi=.false.
+        verifi = .false.
         call jeveuo(knum, 'L', jordr2)
         do i = 1, nbordr-1
             if (zi(jordr2-1+i) .gt. zi(jordr2+i)) then
-                verifi=.true.
-            endif
+                verifi = .true.
+            end if
         end do
         if (verifi) then
             call ordis(zi(jordr2), nbordr)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine derpro(a, da, b, db, dab)
 !
-    implicit      none
+    implicit none
     real(kind=8) :: a, da, b, db, dab
 ! --- BUT : CALCUL DE DAB = A*DB+B*DA ----------------------------------
 ! ======================================================================
@@ -28,6 +28,6 @@ subroutine derpro(a, da, b, db, dab)
 ! --- : DB     : VALEUR DE LA DERIVEE DE B -----------------------------
 ! OUT : DAB    : VALEUR DE LA DERIVEE DE A*B ---------------------------
 ! ======================================================================
-    dab = a*db + b*da
+    dab = a*db+b*da
 ! ======================================================================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romLineicIndexList(tole         ,&
-                              nb_node      , coor_node ,&
-                              nb_slice     , coor_slice,&
+subroutine romLineicIndexList(tole, &
+                              nb_node, coor_node, &
+                              nb_slice, coor_slice, &
                               node_to_slice)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: tole
-integer, intent(in) :: nb_node
-real(kind=8), intent(in) :: coor_node(nb_node)
-integer, intent(in) :: nb_slice
-real(kind=8), intent(in) :: coor_slice(nb_slice)
-integer, intent(out) :: node_to_slice(nb_node)
+    real(kind=8), intent(in) :: tole
+    integer, intent(in) :: nb_node
+    real(kind=8), intent(in) :: coor_node(nb_node)
+    integer, intent(in) :: nb_slice
+    real(kind=8), intent(in) :: coor_slice(nb_slice)
+    integer, intent(out) :: node_to_slice(nb_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,8 +57,8 @@ integer, intent(out) :: node_to_slice(nb_node)
             if (abs(coor_slice(i_slice)-coor_node(i_node)) .lt. tole) then
                 node_to_slice(i_node) = i_slice
                 exit
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
 !
 end subroutine

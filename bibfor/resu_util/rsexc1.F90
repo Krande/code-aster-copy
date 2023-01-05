@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine rsexc1(nomsd, nomsy, nume_store, chextr)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/detrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: nomsd, nomsy
-integer, intent(in) :: nume_store
-character(len=*), intent(out) :: chextr
+    character(len=*), intent(in) :: nomsd, nomsy
+    integer, intent(in) :: nume_store
+    character(len=*), intent(out) :: chextr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,5 +59,5 @@ character(len=*), intent(out) :: chextr
         call detrsd('CHAM_ELEM', chextr(1:19))
     else if (icode .gt. 100) then
         call utmess('F', 'CALCULEL3_27', sk=option)
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrParaInfoGreedy(paraGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/romSolveInfo.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
+    type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_53')
-    endif
+    end if
 !
 ! - Get parameters
 !
@@ -63,11 +63,11 @@ type(ROM_DS_ParaDBR_Greedy), intent(in) :: paraGreedy
 ! - Print - General for RB
 !
     if (niv .ge. 2) then
-        call utmess('I', 'ROM18_54', si = nbModeMaxi)
-        call utmess('I', 'ROM18_55', sr = toleGreedy)
+        call utmess('I', 'ROM18_54', si=nbModeMaxi)
+        call utmess('I', 'ROM18_55', sr=toleGreedy)
         call romMultiParaInfo(paraGreedy%multiPara)
         call romSolveInfo(paraGreedy%algoGreedy%solveDOM)
         call romSolveInfo(paraGreedy%algoGreedy%solveROM)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine op0153()
     real(kind=8) :: coinst, haut, puusur, rayoo, rayot
 !
 !-----------------------------------------------------------------------
-    parameter    ( nbpar = 16, nbpar2 = 12, nbpmr = 5 )
+    parameter(nbpar=16, nbpar2=12, nbpmr=5)
     real(kind=8) :: pmoye, insdeb, epsil, dinst, dinst0
     character(len=8) :: k8b
     character(len=8) :: typar(nbpar), typpmr(nbpmr)
@@ -81,23 +81,23 @@ subroutine op0153()
     complex(kind=8) :: c16b
     real(kind=8), pointer :: ins3(:) => null()
     real(kind=8), pointer :: ins5(:) => null()
-    data nopar  / 'PUIS_USUR_GLOBAL' ,&
-     &              'INST' , 'DUREE' , 'ORIG_INST' ,&
-     &              'V_USUR_TUBE' , 'V_USUR_OBST' , 'P_USUR_TUBE' ,&
-     &              'SECTEUR' , 'ANGLE_DEBUT' , 'ANGLE_FIN' ,&
-     &              'V_USUR_TUBE_SECT' , 'V_USUR_OBST_SECT' ,&
-     &              'P_USUR_TUBE_SECT' , 'P_USUR_OBST_SECT' ,&
-     &              'V_USUR_TUBE_CUMU' , 'V_USUR_OBST_CUMU' /
-    data typar  /'R','R','R','R','R','R','R','I','R','R','R','R','R',&
-     &             'R','R','R'/
-    data nopar2 / 'INST' , 'DUREE' , 'ORIG_INST' ,&
-     &              'SECTEUR' , 'ANGLE_DEBUT' , 'ANGLE_FIN' ,&
-     &              'V_USUR_TUBE_SECT' , 'V_USUR_OBST_SECT' ,&
-     &              'P_USUR_TUBE_SECT' , 'P_USUR_OBST_SECT' ,&
-     &              'V_USUR_TUBE_CUMU' , 'V_USUR_OBST_CUMU' /
-    data nompmr /'PUIS_USUR_GLOBAL' ,&
-     &             'INST','V_USUR_TUBE','V_USUR_OBST','P_USUR_TUBE'/
-    data typpmr /'R','R','R','R','R'/
+    data nopar/'PUIS_USUR_GLOBAL',&
+     &              'INST', 'DUREE', 'ORIG_INST',&
+     &              'V_USUR_TUBE', 'V_USUR_OBST', 'P_USUR_TUBE',&
+     &              'SECTEUR', 'ANGLE_DEBUT', 'ANGLE_FIN',&
+     &              'V_USUR_TUBE_SECT', 'V_USUR_OBST_SECT',&
+     &              'P_USUR_TUBE_SECT', 'P_USUR_OBST_SECT',&
+     &              'V_USUR_TUBE_CUMU', 'V_USUR_OBST_CUMU'/
+    data typar/'R', 'R', 'R', 'R', 'R', 'R', 'R', 'I', 'R', 'R', 'R', 'R', 'R',&
+     &             'R', 'R', 'R'/
+    data nopar2/'INST', 'DUREE', 'ORIG_INST',&
+     &              'SECTEUR', 'ANGLE_DEBUT', 'ANGLE_FIN',&
+     &              'V_USUR_TUBE_SECT', 'V_USUR_OBST_SECT',&
+     &              'P_USUR_TUBE_SECT', 'P_USUR_OBST_SECT',&
+     &              'V_USUR_TUBE_CUMU', 'V_USUR_OBST_CUMU'/
+    data nompmr/'PUIS_USUR_GLOBAL',&
+     &             'INST', 'V_USUR_TUBE', 'V_USUR_OBST', 'P_USUR_TUBE'/
+    data typpmr/'R', 'R', 'R', 'R', 'R'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -120,19 +120,19 @@ subroutine op0153()
         call exisd('TABLE', resu, iret)
         if (iret .eq. 0) then
             call utmess('F', 'PREPOST4_7')
-        endif
+        end if
         call getvid(' ', 'TABL_USURE', scal=k8b, nbret=n1)
         if (k8b .ne. resu(1:8)) then
             call utmess('F', 'PREPOST4_7')
-        endif
-        call tbexv1(resu, 'INST', '&&OP0153.INST', 'V', nbv,&
+        end if
+        call tbexv1(resu, 'INST', '&&OP0153.INST', 'V', nbv, &
                     k8b)
         call jeveuo('&&OP0153.INST', 'L', jinst)
         call getvr8(' ', 'INST', scal=dinst, nbret=nis)
         if (nis .eq. 0) then
             dinst = zr(jinst+nbv-1)
-        endif
-        call tbexv1(resu, 'SECTEUR', '&&OP0153.SECT', 'V', nbv,&
+        end if
+        call tbexv1(resu, 'SECTEUR', '&&OP0153.SECT', 'V', nbv, &
                     k8b)
         call jeveuo('&&OP0153.SECT', 'L', jsect)
         nbsect = zi(jsect+nbv-1)
@@ -142,28 +142,28 @@ subroutine op0153()
             dinst0 = zr(jinst+i)
             if (dinst0 .ge. dinst) then
                 call motubn(resu, dinst0, nbsect)
-            endif
+            end if
         end do
         goto 888
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
     call getvis(' ', 'INFO', scal=info, nbret=n0)
     if (info .gt. 1) then
-        write(ifires,100)
-        write(ifires,*)
-        write(ifires,*) resu
-    endif
+        write (ifires, 100)
+        write (ifires, *)
+        write (ifires, *) resu
+    end if
 !
 !     --- CALCUL DE LA PUISSANCE D'USURE ---
     call usupus(puusur, kforn, kvgli, nbpt)
     call jeexin(kforn, iret)
-    jfn=1
-    jvg=1
+    jfn = 1
+    jvg = 1
     if (iret .gt. 0) then
         call jeveuo(kforn, 'E', jfn)
         call jeveuo(kvgli, 'E', jvg)
-    endif
+    end if
 !
 !     --- RECUPERATION DES INSTANTS DE CALCUL ---
     call getvr8(' ', 'INST', nbval=0, nbret=ni1)
@@ -175,7 +175,7 @@ subroutine op0153()
         call getvid(' ', 'LIST_INST', scal=linst, nbret=n1)
         call jelira(linst//'.VALE', 'LONUTI', nbinst)
         call jeveuo(linst//'.VALE', 'L', jinst)
-    endif
+    end if
     call wkvect('&&OP0153.INSTAN2', 'V V R', nbinst, jins2)
     do i = 0, nbinst-1
         zr(jins2+i) = zr(jinst+i)
@@ -183,9 +183,9 @@ subroutine op0153()
     call getvr8(' ', 'COEF_INST', scal=coinst, nbret=n1)
     if (n1 .ne. 0) then
         do i = 0, nbinst-1
-            zr(jins2+i) = zr(jins2+i) * coinst
+            zr(jins2+i) = zr(jins2+i)*coinst
         end do
-    endif
+    end if
 !
     call wkvect('&&OP0153.USURE_TUBE', 'V V R', nbinst, jusut)
     call wkvect('&&OP0153.USURE_OBST', 'V V R', nbinst, jusuo)
@@ -214,25 +214,25 @@ subroutine op0153()
 !
 !              LES ANGLES SONT CROISSANTS ENTRE -180. ET +180. :
 !              -----------------------------------------------
-                if ((zr(idangt).lt.(-180.d0-epsil)) .or. (zr(idangt) .gt.(-180.d0+epsil))) then
+                if ((zr(idangt) .lt. (-180.d0-epsil)) .or. (zr(idangt) .gt. (-180.d0+epsil))) then
                     call utmess('F', 'PREPOST4_8')
-                endif
-            endif
+                end if
+            end if
             call getvr8('SECTEUR', 'ANGL_FIN', iocc=i, scal=zr(idangt+i), nbret=na)
             if (zr(idangt+i) .lt. zr(idangt+i-1)) then
                 call utmess('F', 'PREPOST4_9')
-            endif
+            end if
             if (i .eq. nbsect) then
-                if ((zr(idangt+i).lt.(180.d0-epsil)) .or. (zr(idangt+ i).gt.(180.d0+epsil))) then
+                if ((zr(idangt+i) .lt. (180.d0-epsil)) .or. (zr(idangt+i) .gt. (180.d0+epsil))) then
                     call utmess('F', 'PREPOST4_10')
-                endif
-            endif
+                end if
+            end if
             call getvr8('SECTEUR', 'COEF_USUR_MOBILE', iocc=i, scal=zr(idvctu+i-1), nbret=n5)
-            call getvr8('SECTEUR', 'COEF_USUR_OBST', iocc=i, scal=zr( idvcob+i-1), nbret=n5)
+            call getvr8('SECTEUR', 'COEF_USUR_OBST', iocc=i, scal=zr(idvcob+i-1), nbret=n5)
         end do
     else
         indic = 1
-    endif
+    end if
 !
     if (puusur .le. r8prem()) goto 777
 !
@@ -240,28 +240,28 @@ subroutine op0153()
     itube = 1
 !
     if (indic .eq. 0) then
-        call usuvu2(puusur, zr(jusut), nbinst, zr(jins2), itube,&
-                    nbpt, nbsect, zr(idvctu), zr(idangt), zr(jfn),&
-                    zr(jvg), iret, zr(ivustu), zr(ivusob), zr(ipus),&
-                    pmoye, zr(ipourp), zr( ipoupr))
-    else if (indic.eq.1) then
-        call usuvus(puusur, zr(jusut), nbinst, zr(jins2), itube,&
+        call usuvu2(puusur, zr(jusut), nbinst, zr(jins2), itube, &
+                    nbpt, nbsect, zr(idvctu), zr(idangt), zr(jfn), &
+                    zr(jvg), iret, zr(ivustu), zr(ivusob), zr(ipus), &
+                    pmoye, zr(ipourp), zr(ipoupr))
+    else if (indic .eq. 1) then
+        call usuvus(puusur, zr(jusut), nbinst, zr(jins2), itube, &
                     nbpt, zr(jfn), zr(jvg), iret)
-    endif
+    end if
     if (iret .ne. 0) goto 999
 !
 !     --- CALCUL DU VOLUME D'USURE OBSTABLE ---
     iobst = 2
 !
     if (indic .eq. 0) then
-        call usuvu2(puusur, zr(jusuo), nbinst, zr(jins2), iobst,&
-                    nbpt, nbsect, zr(idvcob), zr(idangt), zr(jfn),&
-                    zr(jvg), iret, zr(ivustu), zr(ivusob), zr(ipus),&
-                    pmoye, zr(ipourp), zr( ipoupr))
-    else if (indic.eq.1) then
-        call usuvus(puusur, zr(jusuo), nbinst, zr(jins2), iobst,&
+        call usuvu2(puusur, zr(jusuo), nbinst, zr(jins2), iobst, &
+                    nbpt, nbsect, zr(idvcob), zr(idangt), zr(jfn), &
+                    zr(jvg), iret, zr(ivustu), zr(ivusob), zr(ipus), &
+                    pmoye, zr(ipourp), zr(ipoupr))
+    else if (indic .eq. 1) then
+        call usuvus(puusur, zr(jusuo), nbinst, zr(jins2), iobst, &
                     nbpt, zr(jfn), zr(jvg), iret)
-    endif
+    end if
     if (iret .ne. 0) goto 999
 !
     if (indic .eq. 0) then
@@ -275,44 +275,44 @@ subroutine op0153()
 !
         call getvr8(' ', 'LARGEUR_OBST', scal=haut, nbret=n1)
         if (n1 .le. 0) then
-            haut=0.011d0
-        endif
-        if (info .gt. 1) write(ifires,200)
+            haut = 0.011d0
+        end if
+        if (info .gt. 1) write (ifires, 200)
         call getvr8(' ', 'RAYON_MOBILE', scal=rayot, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'PREPOST4_11')
-        endif
+        end if
         do i = 1, nbsect
             do k = 1, nbinst
-                if (rayot* rayot-2.d0*zr(&
-                    ivustu+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(idangt+i-1)))&
+                if (rayot*rayot-2.d0*zr( &
+                    ivustu+(k-1)*nbsect+i-1)/(haut*(zr(idangt+i)-zr(idangt+i-1))) &
                     .lt. 0.d0) then
                     call utmess('F', 'PREPOST4_4')
-                endif
+                end if
 !
-                zr(iprfut+(k-1)*nbsect+i-1) = rayot - sqrt(&
-                                              rayot* rayot-2.d0*zr(&
-                                              ivustu+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(i&
-                                              &dangt+i-1))&
-                                              )&
+                zr(iprfut+(k-1)*nbsect+i-1) = rayot-sqrt( &
+                                              rayot*rayot-2.d0*zr( &
+                                              ivustu+(k-1)*nbsect+i-1)/(haut*(zr(idangt+i)-zr(i&
+                                              &dangt+i-1)) &
+                                              ) &
                                               )
             end do
         end do
         call getvr8(' ', 'RAYON_OBST', scal=rayoo, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'PREPOST4_12')
-        endif
+        end if
         do i = 1, nbsect
             do k = 1, nbinst
-                zr(iprfuo+(k-1)*nbsect+i-1) = rayoo - sqrt(&
-                                              rayoo* rayoo-2.d0*zr(&
-                                              ivusob+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(i&
-                                              &dangt+i-1))&
-                                              )&
+                zr(iprfuo+(k-1)*nbsect+i-1) = rayoo-sqrt( &
+                                              rayoo*rayoo-2.d0*zr( &
+                                              ivusob+(k-1)*nbsect+i-1)/(haut*(zr(idangt+i)-zr(i&
+                                              &dangt+i-1)) &
+                                              ) &
                                               )
             end do
         end do
-    endif
+    end if
 !
 !      --- IMPRESSIONS DES RESULTATS ---
 !
@@ -320,29 +320,29 @@ subroutine op0153()
     if (indic .ne. 0) goto 666
     do i = 1, nbsect
         if (info .gt. 1) then
-            write(ifires,*)
-            write(ifires,*)
-            write(ifires,190) 'SECTEUR : ',zr(idangt+i-1),' / ',&
-            zr(idangt+i)
-            write(ifires,*)
-            write(ifires,140) 'COEF USURE TUBE     ',':',&
+            write (ifires, *)
+            write (ifires, *)
+            write (ifires, 190) 'SECTEUR : ', zr(idangt+i-1), ' / ', &
+                zr(idangt+i)
+            write (ifires, *)
+            write (ifires, 140) 'COEF USURE TUBE     ', ':',&
      &    zr(idvctu+i-1)
-            write(ifires,140) 'COEF USURE OBSTACLE ',':', zr(idvcob+&
-            i-1)
-            write(ifires,130) 'PRESENCE DU CRAYON  ',':',&
-     &                       zr(ipoupr+i-1)*100.d0,'%'
-            write(ifires,160) 'PUISSANCE D USURE   ',':',&
-     &    zr(ipus+i-1),'W'
-            write(ifires,130) '% PU DANS CE SECTEUR',':', zr(ipourp+&
-            i-1),'%'
-            write(ifires,*)
-            write(ifires,110) 'ANNEES','V_USUR_TUBE','V_USUR_OBST',&
-            'P_USUR_TUBE','P_USUR_OBST'
-        endif
+            write (ifires, 140) 'COEF USURE OBSTACLE ', ':', zr(idvcob+ &
+                                                                i-1)
+            write (ifires, 130) 'PRESENCE DU CRAYON  ', ':',&
+     &                       zr(ipoupr+i-1)*100.d0, '%'
+            write (ifires, 160) 'PUISSANCE D USURE   ', ':',&
+     &    zr(ipus+i-1), 'W'
+            write (ifires, 130) '% PU DANS CE SECTEUR', ':', zr(ipourp+ &
+                                                                i-1), '%'
+            write (ifires, *)
+            write (ifires, 110) 'ANNEES', 'V_USUR_TUBE', 'V_USUR_OBST', &
+                'P_USUR_TUBE', 'P_USUR_OBST'
+        end if
         do k = 1, nbinst
-            if (info .gt. 1) write(ifires, 180) (zr(jins2+k-1) / coinst),&
-                             zr(ivustu+(k-1)*nbsect+i-1), zr(ivusob+(k-1)*nbsect+i-1),&
-                             zr(iprfut+(k-1)*nbsect+i-1), zr(iprfuo+(k-1)*nbsect+i-1)
+            if (info .gt. 1) write (ifires, 180) (zr(jins2+k-1)/coinst), &
+                zr(ivustu+(k-1)*nbsect+i-1), zr(ivusob+(k-1)*nbsect+i-1), &
+                zr(iprfut+(k-1)*nbsect+i-1), zr(iprfuo+(k-1)*nbsect+i-1)
         end do
     end do
 666 continue
@@ -354,18 +354,18 @@ subroutine op0153()
 !        --- CREATION DE LA TABLE ---
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbpmr, nompmr, typpmr)
-        call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur],&
+        call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur], &
                     [c16b], k8b, 0)
         do k = 1, nbinst
-            valer(1) = zr(jins2+k-1) / coinst
+            valer(1) = zr(jins2+k-1)/coinst
             valer(2) = zr(jusut+k-1)
             valer(3) = zr(jusuo+k-1)
             valer(4) = zr(jprut+k-1)
-            call tbajli(resu, 4, nompmr(2), [ibid], valer,&
+            call tbajli(resu, 4, nompmr(2), [ibid], valer, &
                         [c16b], k8b, 0)
         end do
         goto 888
-    endif
+    end if
 !
 !     REPRISE EVENTUELLE ET STOCKAGE DE LA TABLE POST_USURE :
 !     -----------------------------------------------------
@@ -378,33 +378,33 @@ subroutine op0153()
     else
         if (tabpus .ne. resu) then
             call utmess('F', 'PREPOST4_13')
-        endif
+        end if
 !   ON REPREND UNE TABLE EXISTANTE
         nomta = tabpus
         call tbexp2(nomta, 'INST')
         call tbexp2(nomta, 'SECTEUR')
         call tbexp2(nomta, 'V_USUR_OBST_CUMU')
         call tbexp2(nomta, 'V_USUR_TUBE_CUMU')
-        call tbexve(nomta, 'INST', '&&OP0153.INS3', 'V', nbvpu,&
+        call tbexve(nomta, 'INST', '&&OP0153.INS3', 'V', nbvpu, &
                     type)
         call jeveuo('&&OP0153.INS3', 'L', vr=ins3)
         insdeb = ins3(nbvpu)
-        call tbexve(nomta, 'SECTEUR', '&&OP0153.SECT', 'V', nbvpu,&
+        call tbexve(nomta, 'SECTEUR', '&&OP0153.SECT', 'V', nbvpu, &
                     type)
         call jeveuo('&&OP0153.SECT', 'L', jsect)
         nbsec2 = zi(jsect+nbvpu-1)
         if (nbsec2 .ne. nbsect) then
             call utmess('F', 'PREPOST4_14')
-        endif
+        end if
         call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=dinst, nbret=nis)
         if (nis .eq. 0) then
             dinst = insdeb
-        else if (dinst.gt.insdeb) then
+        else if (dinst .gt. insdeb) then
             dinst = insdeb
         else
             newtab = '&&OP0153.NEWTAB'
-            call tbextb(nomta, 'V', newtab, 1, 'INST',&
-                        'LE', [ibid], [dinst], [c16b], k8b,&
+            call tbextb(nomta, 'V', newtab, 1, 'INST', &
+                        'LE', [ibid], [dinst], [c16b], k8b, &
                         [1.d-03], 'RELA', iret)
             if (iret .eq. 10) then
                 valk(1) = 'INST'
@@ -414,10 +414,10 @@ subroutine op0153()
                 valk(1) = nomta
                 valk(2) = 'INST'
                 call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-            endif
+            end if
             call detrsd('TABLE', nomta)
-            call tbextb(newtab, 'G', nomta, 1, 'INST',&
-                        'LE', [ibid], [dinst], [c16b], k8b,&
+            call tbextb(newtab, 'G', nomta, 1, 'INST', &
+                        'LE', [ibid], [dinst], [c16b], k8b, &
                         [1.d-03], 'RELA', iret)
             if (iret .eq. 10) then
                 valk(1) = 'INST'
@@ -427,12 +427,12 @@ subroutine op0153()
                 valk(1) = newtab
                 valk(2) = 'INST'
                 call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-            endif
-            call tbexve(nomta, 'INST', '&&OP0153.INS5', 'V', nbvpu,&
+            end if
+            call tbexve(nomta, 'INST', '&&OP0153.INS5', 'V', nbvpu, &
                         type)
             call jeveuo('&&OP0153.INS5', 'L', vr=ins5)
             dinst = ins5(nbvpu)
-        endif
+        end if
 !
 !        DETERMINATION PAR SECTEUR DES VOLUS PAR TUBE ET OBST A DINST
 !        ------------------------------------------------------------
@@ -440,28 +440,28 @@ subroutine op0153()
         valek(1) = 'INST'
         valek(2) = 'SECTEUR'
         do i = 1, nbsect
-            call tbliva(nomta, 2, valek, [i], [dinst],&
-                        [c16b], k8b, 'RELA', [1.d-03], 'V_USUR_TUBE_CUMU',&
-                        k8b, ibid, zr(ivust+i-1), c16b, k8b,&
+            call tbliva(nomta, 2, valek, [i], [dinst], &
+                        [c16b], k8b, 'RELA', [1.d-03], 'V_USUR_TUBE_CUMU', &
+                        k8b, ibid, zr(ivust+i-1), c16b, k8b, &
                         ire1)
-            call tbliva(nomta, 2, valek, [i], [dinst],&
-                        [c16b], k8b, 'RELA', [1.d-03], 'V_USUR_OBST_CUMU',&
-                        k8b, ibid, zr(ivuso+i-1), c16b, k8b,&
+            call tbliva(nomta, 2, valek, [i], [dinst], &
+                        [c16b], k8b, 'RELA', [1.d-03], 'V_USUR_OBST_CUMU', &
+                        k8b, ibid, zr(ivuso+i-1), c16b, k8b, &
                         ire2)
             if ((ire1+ire2) .gt. 0) then
                 call utmess('F', 'PREPOST4_15', sk=nomta)
-            endif
+            end if
         end do
-    endif
+    end if
 !
-    call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur],&
+    call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur], &
                 [c16b], k8b, 0)
 !
     do k = 1, nbinst
 !        -INST-
-        valer(1) = zr(jins2+k-1) / coinst + dinst
+        valer(1) = zr(jins2+k-1)/coinst+dinst
 !        -DUREE-
-        valer(2) = zr(jins2+k-1) / coinst
+        valer(2) = zr(jins2+k-1)/coinst
 !        -ORIG_INST-
         valer(3) = dinst
 !        -V_USUR_TUBE-
@@ -470,7 +470,7 @@ subroutine op0153()
         valer(5) = zr(jusuo+k-1)
 !        -P_USUR_TUBE-
         valer(6) = zr(jprut+k-1)
-        call tbajli(resu, 6, nopar(2), [ibid], valer,&
+        call tbajli(resu, 6, nopar(2), [ibid], valer, &
                     [c16b], k8b, 0)
         do i = 1, nbsect
 !           -ANGLE_DEBUT-
@@ -486,32 +486,32 @@ subroutine op0153()
 !           -P_USUR_OBST_SECT-
             valer(9) = zr(iprfuo+(k-1)*nbsect+i-1)
 !           -V_USUR_TUBE_CUMU-
-            valer(10) = zr(ivustu+(k-1)*nbsect+i-1) + zr(ivust+i-1)
+            valer(10) = zr(ivustu+(k-1)*nbsect+i-1)+zr(ivust+i-1)
 !           -V_USUR_OBST_CUMU-
-            valer(11) = zr(ivusob+(k-1)*nbsect+i-1) + zr(ivuso+i-1)
-            call tbajli(resu, nbpar2, nopar2, [i], valer,&
+            valer(11) = zr(ivusob+(k-1)*nbsect+i-1)+zr(ivuso+i-1)
+            call tbajli(resu, nbpar2, nopar2, [i], valer, &
                         [c16b], k8b, 0)
         end do
     end do
     if (nbsect .ne. 0 .and. info .gt. 1) then
-        write(ifires,*)
-        write(ifires,*) 'PUISSANCE D USURE MOYENNE'
-        write(ifires,120) pmoye,'W'
-    endif
+        write (ifires, *)
+        write (ifires, *) 'PUISSANCE D USURE MOYENNE'
+        write (ifires, 120) pmoye, 'W'
+    end if
 !
 888 continue
 !
     call titre()
 !
-    100 format(/,80('-'))
-    110 format(a11,2x,a15,2x,a15,2x,a15,2x,a15)
-    120 format(1pe12.5,1x,a1)
-    130 format(a20,1x,a1,1x,f6.2,1x,a1)
-    140 format(a20,1x,a1,1x,1pe11.4)
-    160 format(a20,1x,a1,1x,1pe12.5,1x,a1)
-    180 format(1pe12.5,2x,1pe16.9,2x,1pe16.9,2x,1pe16.9,2x,1pe16.9)
-    190 format(a10,1x,f7.2,a3,f7.2)
-    200 format(&
+100 format(/, 80('-'))
+110 format(a11, 2x, a15, 2x, a15, 2x, a15, 2x, a15)
+120 format(1pe12.5, 1x, a1)
+130 format(a20, 1x, a1, 1x, f6.2, 1x, a1)
+140 format(a20, 1x, a1, 1x, 1pe11.4)
+160 format(a20, 1x, a1, 1x, 1pe12.5, 1x, a1)
+180 format(1pe12.5, 2x, 1pe16.9, 2x, 1pe16.9, 2x, 1pe16.9, 2x, 1pe16.9)
+190 format(a10, 1x, f7.2, a3, f7.2)
+200 format(&
      &'LES PROFONDEURS USEES PAR SECTEUR SONT DES APPROXIMATIONS')
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,13 +53,13 @@ subroutine lrvemo(modele)
         call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
         if (typres(1:9) .eq. 'EVOL_THER') then
             if (pheno(1:9) .eq. 'MECANIQUE') then
-                valk(1)=pheno
-                valk(2)=typres
+                valk(1) = pheno
+                valk(2) = typres
                 call utmess('F+', 'MED_54')
                 call utmess('F', 'MED_56', nk=2, valk=valk)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jedema()
 !

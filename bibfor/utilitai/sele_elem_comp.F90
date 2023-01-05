@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/nbelem.h"
@@ -74,41 +74,41 @@ implicit none
 !
 ! - Allocate list of elements
 !
-    AS_ALLOCATE(vi=list_elem_comp, size = nb_elem_mesh)
+    AS_ALLOCATE(vi=list_elem_comp, size=nb_elem_mesh)
 !
 ! - Preparation of comportment datas
 !
     grandeur_name = 'COMPOR'
     call dismoi('NB_EC', grandeur_name, 'GRANDEUR', repi=nb_ec)
-    ASSERT(nb_ec.le.1)
+    ASSERT(nb_ec .le. 1)
     call etenca(compor, ligrmo, iret)
-    ASSERT(iret.eq.0)
-    call jeveuo(compor(1:19)//'.DESC', 'L', vi = comp_desc)
+    ASSERT(iret .eq. 0)
+    call jeveuo(compor(1:19)//'.DESC', 'L', vi=comp_desc)
     nb_gd_max = comp_desc(2)
     call jelira(jexnom('&CATA.GD.NOMCMP', grandeur_name), 'LONMAX', nb_cmp_max)
-    call jeveuo(compor(1:19)//'.VALE', 'L', vk16 = comp_vale)
-    call jeveuo(compor(1:19)//'.PTMA', 'L', vi   = comp_ptma)
+    call jeveuo(compor(1:19)//'.VALE', 'L', vk16=comp_vale)
+    call jeveuo(compor(1:19)//'.PTMA', 'L', vi=comp_ptma)
 !
 ! - Select elements in list
 !
-    nb_grel   = nbgrel(ligrmo)
+    nb_grel = nbgrel(ligrmo)
     name_liel = ligrmo//'.LIEL'
     do i_grel = 1, nb_grel
-        nb_elem_grel = nbelem(ligrmo,i_grel)
-        call jeveuo(jexnum(name_liel, i_grel), 'L', vi = list_elem_grel)
+        nb_elem_grel = nbelem(ligrmo, i_grel)
+        call jeveuo(jexnum(name_liel, i_grel), 'L', vi=list_elem_grel)
         do i_elem_grel = 1, nb_elem_grel
             nume_elem = list_elem_grel(i_elem_grel)
-            idx_gd    = comp_ptma(nume_elem)
-            if (idx_gd.ne. 0) then
-                idx_cmp     = comp_desc(3+2*nb_gd_max+idx_gd)
+            idx_gd = comp_ptma(nume_elem)
+            if (idx_gd .ne. 0) then
+                idx_cmp = comp_desc(3+2*nb_gd_max+idx_gd)
                 ASSERT(exisdg([idx_cmp], 1))
                 if (exisdg([idx_cmp], 1)) then
                     defo_comp_f = comp_vale((idx_gd-1)*nb_cmp_max+DEFO)
                     if (defo_comp .eq. defo_comp_f) then
                         list_elem_comp(nume_elem) = 1
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
     end do
 !

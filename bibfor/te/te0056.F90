@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine te0056(option, nomte)
     integer :: ier, l, ndim, nnos
     real(kind=8) :: soun, sounp1
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSOURCF', 'L', isour)
@@ -70,7 +70,7 @@ subroutine te0056(option, nomte)
 !
     do kp = 1, npg1
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
 !
 !    CALCUL DE SOURC
@@ -79,9 +79,9 @@ subroutine te0056(option, nomte)
         yy = 0.d0
         zz = 0.d0
         do i = 1, nno
-            xx = xx + zr(igeom+3*i-3)*zr(ivf+l+i-1)
-            yy = yy + zr(igeom+3*i-2)*zr(ivf+l+i-1)
-            zz = zz + zr(igeom+3*i-1)*zr(ivf+l+i-1)
+            xx = xx+zr(igeom+3*i-3)*zr(ivf+l+i-1)
+            yy = yy+zr(igeom+3*i-2)*zr(ivf+l+i-1)
+            zz = zz+zr(igeom+3*i-1)*zr(ivf+l+i-1)
         end do
         valpar(1) = xx
         valpar(2) = yy
@@ -90,25 +90,25 @@ subroutine te0056(option, nomte)
 
 !       EC : je voulais mettre fami = RIGI et kpg = kp
 !       mais il n'y a que FPG1 dans MATER pour cet élément
-        call fointe_varc('FM', 'FPG1', 1, 1, '+',&
-                         zk8(isour), 4, nompar, valpar,&
+        call fointe_varc('FM', 'FPG1', 1, 1, '+', &
+                         zk8(isour), 4, nompar, valpar, &
                          sounp1, ier)
 !        call fointe('FM', zk8(isour), 4, nompar, valpar,&
 !                    sounp1, ier)
         if (theta .ne. 1.0d0) then
-            valpar(4) = zr(itemps) - zr(itemps+1)
-            call fointe_varc('FM', 'FPG1', 1, 1, '+',&
-                             zk8(isour), 4, nompar, valpar,&
+            valpar(4) = zr(itemps)-zr(itemps+1)
+            call fointe_varc('FM', 'FPG1', 1, 1, '+', &
+                             zk8(isour), 4, nompar, valpar, &
                              soun, ier)
 !            call fointe('FM', zk8(isour), 4, nompar, valpar,&
 !                        soun, ier)
         else
             soun = 0.d0
-        endif
-        sourc = theta*sounp1 + (1.0d0-theta)*soun
+        end if
+        sourc = theta*sounp1+(1.0d0-theta)*soun
 !
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*sourc*zr(ivf+l+i- 1)
+            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*sourc*zr(ivf+l+i-1)
         end do
 !
     end do

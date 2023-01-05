@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrInitBaseOrtho(resultName, paraOrtho, lReuse, base)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/romBaseGetInfo.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: resultName
-type(ROM_DS_ParaDBR_Ortho), intent(inout) :: paraOrtho
-aster_logical, intent(in) :: lReuse
-type(ROM_DS_Empi), intent(inout) :: base
+    character(len=8), intent(in) :: resultName
+    type(ROM_DS_ParaDBR_Ortho), intent(inout) :: paraOrtho
+    aster_logical, intent(in) :: lReuse
+    type(ROM_DS_Empi), intent(inout) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,38 +57,38 @@ type(ROM_DS_Empi), intent(inout) :: base
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_22')
-    endif
+    end if
 !
 ! - Get informations about base to orthogonalize
 !
     if (lReuse) then
         if (niv .ge. 2) then
             call utmess('I', 'ROM18_23')
-        endif
+        end if
         call romBaseGetInfo(resultName, base)
     else
         if (niv .ge. 2) then
             call utmess('I', 'ROM18_24')
-        endif
+        end if
         call romBaseGetInfo(paraOrtho%baseInitName, paraOrtho%baseInit)
-    endif
+    end if
 !
 ! - Create base (if necessary)
 !
     if (.not. lReuse) then
         if (niv .ge. 2) then
             call utmess('I', 'ROM18_25')
-        endif
+        end if
         call romBaseDSCopy(paraOrtho%baseInit, resultName, base)
         call romBaseCreate(base, paraOrtho%baseInit%nbMode)
-    endif
+    end if
 !
 ! - If reuse: check that name is the name between output result end keyword BASE
 !
     if (lReuse) then
         if (paraOrtho%baseInitName .ne. resultName) then
             call utmess('F', 'ROM18_21')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

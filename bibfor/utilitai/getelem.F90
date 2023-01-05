@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
-                   nb_elem, suffix     , model, l_keep_propz, l_allz)
+subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
+                   nb_elem, suffix, model, l_keep_propz, l_allz)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
@@ -32,16 +32,16 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=*), intent(in) :: keywordfact
-integer, intent(in) :: iocc
-character(len=1), intent(in) :: stop_void
-integer, intent(out) :: nb_elem
-character(len=24), intent(in) :: list_elem
-character(len=8), intent(in), optional :: model
-character(len=*), intent(in), optional :: suffix
-aster_logical, optional, intent(in) :: l_keep_propz
-aster_logical, optional, intent(in) :: l_allz
+    character(len=8), intent(in) :: mesh
+    character(len=*), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    character(len=1), intent(in) :: stop_void
+    integer, intent(out) :: nb_elem
+    character(len=24), intent(in) :: list_elem
+    character(len=8), intent(in), optional :: model
+    character(len=*), intent(in), optional :: suffix
+    aster_logical, optional, intent(in) :: l_keep_propz
+    aster_logical, optional, intent(in) :: l_allz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,25 +101,25 @@ aster_logical, optional, intent(in) :: l_allz
     call jemarq()
 
 ! - Initializations
-    list_lect   = '&&LIST_LECT'
-    list_excl   = '&&LIST_EXCL'
-    nb_elem     = 0
-    nb_lect     = 0
-    nb_excl     = 0
-    model_name  = ' '
+    list_lect = '&&LIST_LECT'
+    list_excl = '&&LIST_EXCL'
+    nb_elem = 0
+    nb_lect = 0
+    nb_excl = 0
+    model_name = ' '
     suffix_name = ' '
     if (present(model)) then
         model_name = model
-    endif
+    end if
     if (present(suffix)) then
         suffix_name = suffix
-    endif
-    if(present(l_keep_propz)) then
+    end if
+    if (present(l_keep_propz)) then
         l_keep_prop = l_keep_propz
     else
         l_keep_prop = ASTER_FALSE
     end if
-    if(present(l_allz)) then
+    if (present(l_allz)) then
         l_all = l_allz
     else
         l_all = ASTER_FALSE
@@ -128,87 +128,87 @@ aster_logical, optional, intent(in) :: l_allz
 ! - Read elements
 !
     nb_mocl = 0
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = 'TOUT'
     typmcl(nb_mocl) = 'TOUT'
     keyword = 'GROUP_MA'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'GROUP_MA'
     keyword = 'MAILLE'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'MAILLE'
     if (nb_mocl .ne. 0) then
-        call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc,&
+        call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc, &
                     nb_mocl, moclm, typmcl, list_lect, nb_lect, l_keep_prop, l_all)
-    endif
+    end if
 !
 ! - Read elements excludes
 !
     nb_mocl = 0
     keyword = 'SANS_GROUP_MA'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'GROUP_MA'
     keyword = 'SANS_MAILLE'//suffix_name
-    nb_mocl = nb_mocl + 1
+    nb_mocl = nb_mocl+1
     moclm(nb_mocl) = keyword
     typmcl(nb_mocl) = 'MAILLE'
     if (nb_mocl .ne. 0) then
-        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
+        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)
-    endif
+    end if
 !
 ! - Access to list of elements
 !
     if (nb_lect .ne. 0) then
-        call jeveuo(list_lect, 'E', vi = p_list_lect)
-    endif
+        call jeveuo(list_lect, 'E', vi=p_list_lect)
+    end if
 !
 ! - Exclusion of elements in initial list
 !
     nb_elim = 0
     if (nb_excl .ne. 0) then
-        call jeveuo(list_excl, 'L', vi = p_list_excl)
+        call jeveuo(list_excl, 'L', vi=p_list_excl)
         do i_excl = 1, nb_excl
             nume_excl = p_list_excl(i_excl)
             do i_lect = 1, nb_lect
                 nume_lect = p_list_lect(i_lect)
                 if (nume_excl .eq. nume_lect) then
-                    nb_elim = nb_elim + 1
+                    nb_elim = nb_elim+1
                     p_list_lect(i_lect) = 0
-                endif
+                end if
             end do
         end do
-    endif
-    nb_elem = nb_lect - nb_elim
+    end if
+    nb_elem = nb_lect-nb_elim
 !
 ! - Final list of elements
 !
     i_elem = 0
-    if ((nb_elem.ne.0) .and. (nb_lect.ne.0)) then
-        call wkvect(list_elem, 'V V I', nb_elem, vi = p_list_elem)
+    if ((nb_elem .ne. 0) .and. (nb_lect .ne. 0)) then
+        call wkvect(list_elem, 'V V I', nb_elem, vi=p_list_elem)
         do i_lect = 1, nb_lect
             nume_lect = p_list_lect(i_lect)
             if (nume_lect .ne. 0) then
-                i_elem = i_elem + 1
+                i_elem = i_elem+1
                 p_list_elem(i_elem) = nume_lect
-            endif
+            end if
         end do
-        ASSERT(i_elem.eq.nb_elem)
-    endif
+        ASSERT(i_elem .eq. nb_elem)
+    end if
 !
 ! - If no elements
 !
     nb_elem_gl = nb_elem
-    if( isParallelMesh(mesh) ) then
+    if (isParallelMesh(mesh)) then
         call asmpi_comm_vect('MPI_SUM', 'I', sci=nb_elem_gl)
     end if
 !
     if (stop_void .ne. ' ' .and. nb_elem_gl .eq. 0) then
         call utmess(stop_void, 'UTILITY_3', sk=keywordfact)
-    endif
+    end if
 !
     call jedetr(list_lect)
     call jedetr(list_excl)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irchor(keywf      , keywfIocc    ,&
-                  dsName     , lResu        , lField,&
-                  fieldListNb, fieldListType, fieldMedListType,&
-                  storeListNb, storeListIndx,&
-                  paraListNb , paraListName ,&
-                  cmpListNb  , cmpListName  ,&
+subroutine irchor(keywf, keywfIocc, &
+                  dsName, lResu, lField, &
+                  fieldListNb, fieldListType, fieldMedListType, &
+                  storeListNb, storeListIndx, &
+                  paraListNb, paraListName, &
+                  cmpListNb, cmpListName, &
                   codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -47,20 +47,20 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=16), intent(in) :: keywf
-integer, intent(in) :: keywfIocc
-aster_logical, intent(in) :: lField, lResu
-character(len=8), intent(in) :: dsName
-integer, intent(out) :: fieldListNb
-character(len=16), pointer :: fieldListType(:)
-character(len=80), pointer :: fieldMedListType(:)
-integer, intent(out) :: storeListNb
-integer, pointer :: storeListIndx(:)
-integer, intent(out) :: paraListNb
-character(len=16), pointer :: paraListName(:)
-integer, intent(out) :: cmpListNb
-character(len=8), pointer :: cmpListName(:)
-integer, intent(out) :: codret
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: keywfIocc
+    aster_logical, intent(in) :: lField, lResu
+    character(len=8), intent(in) :: dsName
+    integer, intent(out) :: fieldListNb
+    character(len=16), pointer :: fieldListType(:)
+    character(len=80), pointer :: fieldMedListType(:)
+    integer, intent(out) :: storeListNb
+    integer, pointer :: storeListIndx(:)
+    integer, intent(out) :: paraListNb
+    character(len=16), pointer :: paraListName(:)
+    integer, intent(out) :: cmpListNb
+    character(len=8), pointer :: cmpListName(:)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,37 +116,37 @@ integer, intent(out) :: codret
 !
     fieldListNb = 0
     storeListNb = 0
-    paraListNb  = 0
-    cmpListNb   = 0
-    codret      = 0
+    paraListNb = 0
+    cmpListNb = 0
+    codret = 0
 !
 ! - No parameters to read
 !
-    if (.not.lField .and. .not.lResu) then
+    if (.not. lField .and. .not. lResu) then
         goto 999
-    endif
+    end if
 !
 ! - Read parameters
 !
     if (lField) then
 ! ----- For a field
-        fieldType      = dsName
+        fieldType = dsName
 ! ----- Type of field
-        fieldListNb    = 1
-        AS_ALLOCATE(vk16 = fieldListType, size = fieldListNb)
+        fieldListNb = 1
+        AS_ALLOCATE(vk16=fieldListType, size=fieldListNb)
         fieldListType(1) = fieldType
 ! ----- Type of MED field
         call getvtx(keywf, 'NOM_CHAM_MED', iocc=keywfIocc, nbval=0, nbret=nbFieldMedName)
         if (nbFieldMedName .ne. 0) then
-            nbFieldMedName = - nbFieldMedName
+            nbFieldMedName = -nbFieldMedName
             ASSERT(nbFieldMedName .eq. 1)
-            AS_ALLOCATE(vk80 = fieldMedListType, size = fieldListNb)
-            call getvtx(keywf, 'NOM_CHAM_MED', iocc=keywfIocc, nbval=fieldListNb,&
+            AS_ALLOCATE(vk80=fieldMedListType, size=fieldListNb)
+            call getvtx(keywf, 'NOM_CHAM_MED', iocc=keywfIocc, nbval=fieldListNb, &
                         vect=fieldMedListType, nbret=nbOcc)
-        endif
+        end if
 ! ----- List of parameters: void (only for results)
         nbParaCheck = 0
-        paraListNb  = 0
+        paraListNb = 0
 ! ----- List of storing index
         storeListNb = 1
 ! ----- List of components
@@ -154,9 +154,9 @@ integer, intent(out) :: codret
         if (nbCmp .lt. 0) then
             nbCmp = -nbCmp
             AS_ALLOCATE(vk8=cmpName, size=nbCmp)
-            call getvtx(keywf, 'NOM_CMP', iocc=keywfIocc, nbval=nbCmp,&
+            call getvtx(keywf, 'NOM_CMP', iocc=keywfIocc, nbval=nbCmp, &
                         vect=cmpName, nbret=nbOcc)
-        endif
+        end if
         cmpListNb = nbCmp
     elseif (lResu) then
 ! ----- For a complete result
@@ -168,81 +168,81 @@ integer, intent(out) :: codret
 ! ----- Check consistency
         if ((nbFieldName .eq. 0) .and. (nbFieldMedName .lt. 0)) then
             call utmess('F', 'MED3_1')
-        endif
+        end if
 ! ----- Default: all fields
         if (abs(nbAllField)+abs(nbFieldName) .eq. 0) then
             nbAllField = 1
-        endif
+        end if
         if (nbAllField .gt. 0 .and. fieldAll .eq. 'OUI' .and. nbResuMedName .eq. 0) then
 ! --------- Get all fields
             call jelira(dsName//'           .DESC', 'NOMUTI', fieldListNb)
-            AS_ALLOCATE(vk16 = fieldListType, size = fieldListNb)
+            AS_ALLOCATE(vk16=fieldListType, size=fieldListNb)
             do iField = 1, fieldListNb
                 call jenuno(jexnum(dsName//'           .DESC', iField), fieldListType(iField))
             end do
-        else if (nbAllField .gt. 0 .and. fieldAll.eq.'NON') then
+        else if (nbAllField .gt. 0 .and. fieldAll .eq. 'NON') then
 ! --------- No fields
             fieldListNb = 0
         else if (nbFieldName .lt. 0) then
 ! --------- Get type of fields from user
-            fieldListNb = - nbFieldName
-            AS_ALLOCATE(vk16 = fieldListType, size = fieldListNb)
-            call getvtx(keywf, 'NOM_CHAM', iocc=keywfIocc, nbval=fieldListNb,&
+            fieldListNb = -nbFieldName
+            AS_ALLOCATE(vk16=fieldListType, size=fieldListNb)
+            call getvtx(keywf, 'NOM_CHAM', iocc=keywfIocc, nbval=fieldListNb, &
                         vect=fieldListType, nbret=nbOcc)
 ! --------- Get type of fields for MED from user
             if (nbFieldMedName .ne. 0) then
-                nbFieldMedName = - nbFieldMedName
+                nbFieldMedName = -nbFieldMedName
                 if (nbFieldMedName .ne. fieldListNb) then
                     call utmess('F', 'MED3_1')
-                endif
-                AS_ALLOCATE(vk80 = fieldMedListType, size = fieldListNb)
-                call getvtx(keywf, 'NOM_CHAM_MED', iocc=keywfIocc,nbval=fieldListNb,&
+                end if
+                AS_ALLOCATE(vk80=fieldMedListType, size=fieldListNb)
+                call getvtx(keywf, 'NOM_CHAM_MED', iocc=keywfIocc, nbval=fieldListNb, &
                             vect=fieldMedListType, nbret=nbOcc)
-            endif
+            end if
         else if (nbResuMedName .lt. 0) then
 ! --------- Get type of fields from MED result
             call getvtx(keywf, 'NOM_RESU_MED', iocc=keywfIocc, scal=resultMedName, nbret=nbOcc)
             call jelira(dsName//'           .DESC', 'NOMUTI', fieldListNb)
-            AS_ALLOCATE(vk16 = fieldListType, size = fieldListNb)
-            AS_ALLOCATE(vk80 = fieldMedListType, size = fieldListNb)
+            AS_ALLOCATE(vk16=fieldListType, size=fieldListNb)
+            AS_ALLOCATE(vk80=fieldMedListType, size=fieldListNb)
             do iField = 1, fieldListNb
                 call jenuno(jexnum(dsName//'           .DESC', iField), fieldListType(iField))
                 fieldMedType = '________'
-                lenString        = lxlgut(resultMedName)
+                lenString = lxlgut(resultMedName)
                 fieldMedType(1:lenString) = resultMedName(1:lenString)
-                lenString        = lxlgut(fieldListType(iField))
-                fieldMedType(9:8+lenString) = fieldListType(iField)(1:lenString)
+                lenString = lxlgut(fieldListType(iField))
+                fieldMedType(9:8+lenString) = fieldListType(iField) (1:lenString)
                 fieldMedListType(iField) = fieldMedType
             end do
-        endif
+        end if
 ! ----- Get name of components (to check with catalog)
         call getvtx(keywf, 'NOM_CMP', iocc=keywfIocc, nbval=0, nbret=nbCmp)
         lCheckCmp = ASTER_FALSE
         if (nbCmp .lt. 0) then
             if (nbResuMedName .lt. 0) then
                 call utmess('F', 'MED3_6')
-            endif
+            end if
             nbCmp = -nbCmp
             AS_ALLOCATE(vk8=cmpName, size=nbCmp)
-            call getvtx(keywf, 'NOM_CMP', iocc=keywfIocc, nbval=nbCmp,&
+            call getvtx(keywf, 'NOM_CMP', iocc=keywfIocc, nbval=nbCmp, &
                         vect=cmpName, nbret=nbOcc)
             lCheckCmp = ASTER_TRUE
-        endif
+        end if
         cmpListNb = nbCmp
 ! ----- Get parameters to select real (INST, FREQ, etc.)
         call getvr8(keywf, 'PRECISION', iocc=keywfIocc, scal=storePrec, nbret=nbOcc)
         call getvtx(keywf, 'CRITERE', iocc=keywfIocc, scal=storeCrit, nbret=nbOcc)
 ! ----- Get list of storing index from user
-        call rsutnu(dsName      ,&
-                    keywf       , keywfIocc,&
-                    storeJvName , nbStore  ,&
-                    storePrec   , storeCrit,&
+        call rsutnu(dsName, &
+                    keywf, keywfIocc, &
+                    storeJvName, nbStore, &
+                    storePrec, storeCrit, &
                     iret)
         storeListNb = nbStore
         if (iret .ne. 0 .and. nbStore .eq. 0) then
             codret = 1
             goto 999
-        endif
+        end if
         call jeveuo(storeJvName, 'L', vi=storeList)
 ! ----- Some checks
         if (nbFieldName .lt. 0) then
@@ -254,13 +254,13 @@ integer, intent(out) :: codret
                     call rsexch(' ', dsName, fieldType, storeIndx, fieldName, iret)
                     if (iret .ne. 0) then
                         call utmess('A', 'RESULT3_4', sk=fieldType, si=storeIndx)
-                    endif
+                    end if
                 end do
             end do
 ! --------- Check components (only on the first storing index)
             if (lCheckCmp) then
                 storeIndx = storeList(1)
-                nbCmpOut  = 0
+                nbCmpOut = 0
                 do iCmp = 1, nbCmp
                     do iField = 1, fieldListNb
                         fieldType = fieldListType(iField)
@@ -270,23 +270,23 @@ integer, intent(out) :: codret
                             call jenuno(jexnum('&CATA.GD.NOMGD', quantityIndx), quantityName)
                             if (quantityName .eq. 'VARI_R') then
                                 ! TRAITEMENT PARTICULIER POUR LA GRANDEUR VARI_R
-                                nbCmpOut = nbCmpOut + 1
+                                nbCmpOut = nbCmpOut+1
                                 goto 17
-                            endif
-                            call jelira(jexnum('&CATA.GD.NOMCMP', quantityIndx),&
-                                               'LONMAX', cmpCataNb)
-                            call jeveuo(jexnum('&CATA.GD.NOMCMP', quantityIndx),&
-                                               'L', vk8 = cmpCataName)
+                            end if
+                            call jelira(jexnum('&CATA.GD.NOMCMP', quantityIndx), &
+                                        'LONMAX', cmpCataNb)
+                            call jeveuo(jexnum('&CATA.GD.NOMCMP', quantityIndx), &
+                                        'L', vk8=cmpCataName)
                             call irvcmp(cmpCataNb, cmpCataName, cmpName(iCmp), nbCmpOut)
-                        endif
- 17                     continue
+                        end if
+17                      continue
                     end do
                     if (nbCmpOut .eq. 0) then
                         call utmess('A', 'RESULT3_5', sk=cmpName(iCmp))
-                    endif
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
 ! ----- Get list of parameters to print
         paraAll = 'NON'
         call getvtx(keywf, 'TOUT_PARA', iocc=keywfIocc, scal=paraAll, nbret=nbAllPara)
@@ -294,20 +294,20 @@ integer, intent(out) :: codret
 ! ----- Default: all parameters
         if (nbParaName .eq. 0) then
             nbAllPara = 1
-        endif
+        end if
 ! ----- Get list of parameters (to check)
         if (nbAllPara .ne. 0 .and. paraAll .eq. 'NON') then
             nbParaCheck = 0
         else if (nbAllPara .ne. 0 .and. paraAll .eq. 'OUI') then
             nbParaCheck = -1
-        else if (nbParaName.ne.0) then
+        else if (nbParaName .ne. 0) then
             nbParaCheck = -nbParaName
             AS_ALLOCATE(vk16=paraCheckName, size=nbParaCheck)
             call getvtx(keywf, 'NOM_PARA', iocc=keywfIocc, nbval=nbParaCheck, vect=paraCheckName)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Check parameters
 !
@@ -316,7 +316,7 @@ integer, intent(out) :: codret
 ! - Copy storing index
 !
     if (storeListNb .ne. 0) then
-        AS_ALLOCATE(vi = storeListIndx, size = storeListNb)
+        AS_ALLOCATE(vi=storeListIndx, size=storeListNb)
         if (lField) then
             storeListIndx(1) = 1
         else
@@ -324,29 +324,29 @@ integer, intent(out) :: codret
             do iStore = 1, storeListNb
                 storeListIndx(iStore) = storeList(iStore)
             end do
-        endif
-    endif
+        end if
+    end if
     call jedetr(storeJvName)
 !
 ! - Copy list of parameters
 !
     if (paraListNb .ne. 0) then
-        AS_ALLOCATE(vk16 = paraListName, size = paraListNb)
-        call jeveuo(paraJvName, 'L', vk16 = paraName)
+        AS_ALLOCATE(vk16=paraListName, size=paraListNb)
+        call jeveuo(paraJvName, 'L', vk16=paraName)
         do iPara = 1, paraListNb
             paraListName(iPara) = paraName(iPara)
         end do
-    endif
+    end if
     call jedetr(paraJvName)
 !
 ! - Copy list of components
 !
     if (cmpListNb .ne. 0) then
-        AS_ALLOCATE(vk8 = cmpListName, size = cmpListNb)
+        AS_ALLOCATE(vk8=cmpListName, size=cmpListNb)
         do iCmp = 1, cmpListNb
             cmpListName(iCmp) = cmpName(iCmp)
         end do
-    endif
+    end if
 !
 999 continue
 !

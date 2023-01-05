@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdppa(mod, nvi, option, materf, compor,&
-                  sigm, deps, vim, vip, sig,&
+subroutine lcdppa(mod, nvi, option, materf, compor, &
+                  sigm, deps, vim, vip, sig, &
                   dsidep, iret)
     implicit none
 #include "asterf_types.h"
@@ -66,42 +66,42 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
     real(kind=8) :: epsp(6), epsm2(6), sige(6), se(6), siie, seq, i1e
     real(kind=8) :: calal
 ! =====================================================================
-    parameter  ( deux  = 2.0d0 )
-    parameter  ( trois = 3.0d0 )
-    common /tdim/   ndt, ndi
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    common/tdim/ndt, ndi
 ! =====================================================================
 ! --- INITIALISATION --------------------------------------------------
 ! =====================================================================
     pmoins = vim(1)
     iret = 0
-    resi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RAPH_MECA'
-    rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA'
+    rigi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
     ASSERT(resi .or. rigi)
 !
 ! =====================================================================
 ! --- AFFECTATION DES VARIABLES ---------------------------------------
 ! =====================================================================
-    phi = materf(2,2)
-    psi = materf(5,2)
-    alpha = deux * sin(phi) / (trois - sin(phi))
-    beta = deux * sin(psi) / (trois - sin(psi))
-    pult = materf(4,2)
+    phi = materf(2, 2)
+    psi = materf(5, 2)
+    alpha = deux*sin(phi)/(trois-sin(phi))
+    beta = deux*sin(psi)/(trois-sin(psi))
+    pult = materf(4, 2)
 !
 ! =====================================================================
 ! --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 ! =====================================================================
     call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
     call lcopil('ISOTROPE', mod, materf(1, 1), dkooh)
-    epsm2(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigm(1:ndt))
-    epsp(1:ndt) = epsm2(1:ndt) + deps(1:ndt)
+    epsm2(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigm(1:ndt))
+    epsp(1:ndt) = epsm2(1:ndt)+deps(1:ndt)
 ! =====================================================================
 ! --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 ! =====================================================================
-    sige(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsp(1:ndt))
+    sige(1:ndt) = matmul(hookf(1:ndt, 1:ndt), epsp(1:ndt))
     call lcdevi(sige, se)
-    siie=ddot(ndt,se,1,se,1)
-    seq = sqrt (trois*siie/deux)
-    i1e = trace (ndi,sige)
+    siie = ddot(ndt, se, 1, se, 1)
+    seq = sqrt(trois*siie/deux)
+    i1e = trace(ndi, sige)
 !
 ! =====================================================================
 ! --- CALCUL DES CONTRAINTES ------------------------------------------
@@ -111,7 +111,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 ! --- RESOLUTION DU SYSTEME -------------------------------------------
 ! =====================================================================
         calal = alpha
-        call resdp2(materf, seq, i1e, pmoins, dp,&
+        call resdp2(materf, seq, i1e, pmoins, dp, &
                     plas)
         if (plas .eq. 0.0d0) then
             do ii = 1, ndt
@@ -120,37 +120,37 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 !            VIP(2) = 0.0D0
         else
             calal = alpha
-            call majsig(materf, se, seq, i1e, calal,&
+            call majsig(materf, se, seq, i1e, calal, &
                         dp, plas, sig)
-        endif
+        end if
 ! =====================================================================
 ! --- STOCKAGE DES VARIABLES INTERNES ---------------------------------
 ! =====================================================================
-        vip(1) = vim(1) + dp
-        vip(2) = vim(2) + trois*calal*dp
+        vip(1) = vim(1)+dp
+        vip(2) = vim(2)+trois*calal*dp
         vip(nvi) = plas
 !
 ! =====================================================================
 ! --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
 ! =====================================================================
-        dpdeno = dppatg( materf, vip(1), plas )
+        dpdeno = dppatg(materf, vip(1), plas)
         pplus = vip(1)
     else
         plas = vim(nvi)
         dp = 0.0d0
         pplus = 0.0d0
-        dpdeno = dppatg( materf, pmoins, plas )
-    endif
+        dpdeno = dppatg(materf, pmoins, plas)
+    end if
 ! =====================================================================
 ! --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
 ! =====================================================================
     if (rigi) then
         if (option(10:14) .eq. '_ELAS') then
-            dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
+            dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
         else
-            call dpmata(mod, materf, alpha, dp, dpdeno,&
+            call dpmata(mod, materf, alpha, dp, dpdeno, &
                         pplus, se, seq, plas, dsidep)
-        endif
-    endif
+        end if
+    end if
 ! =====================================================================
 end subroutine

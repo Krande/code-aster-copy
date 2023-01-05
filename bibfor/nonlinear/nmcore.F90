@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcore(sdcrit        , sderro, list_func_acti, nume_inst, iter_newt,&
-                  line_sear_iter, eta   , resi_norm     , load_norm, ds_conv )
+subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
+                  line_sear_iter, eta, resi_norm, load_norm, ds_conv)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeveuo.h"
@@ -79,18 +79,18 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     nb_resi = ds_conv%nb_resi
-    cvresi  = .true._1
+    cvresi = .true._1
 !
 ! - Get previous convergence informations
 !
     sdcrit_crtr = sdcrit(1:19)//'.CRTR'
-    call jeveuo(sdcrit_crtr, 'E', vr = v_sdcrit_crtr)
+    call jeveuo(sdcrit_crtr, 'E', vr=v_sdcrit_crtr)
     last_resi_conv = v_sdcrit_crtr(7)
-    load_mini      = v_sdcrit_crtr(6)
+    load_mini = v_sdcrit_crtr(6)
 !
 ! - Event: no convergence
 !
-    call SetResi(ds_conv, l_conv_ = .false._1)
+    call SetResi(ds_conv, l_conv_=.false._1)
     do i_resi = 1, nb_resi
         event_type = ds_conv%list_resi(i_resi)%event_type
         call nmcrel(sderro, event_type, .false._1)
@@ -98,7 +98,7 @@ implicit none
 !
 ! - Swap convergence criterias if necessary
 !
-    call nmcore_swap(sderro , nume_inst, load_norm, load_mini, last_resi_conv,&
+    call nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, &
                      ds_conv)
 !
 ! - Check residuals stop criterias
@@ -109,24 +109,24 @@ implicit none
         if (ds_conv%l_resi_test(i_resi)) then
             call nmcoru(vale_calc, user_para, l_conv)
             ! Si on a pas la convergence d'une boucle de point fixe,Pas la peine de vérifier vpene.
-            if ((.not. l_conv) .and. (i_resi .eq. 7 )  .and. (.not. ds_conv%l_stop_pene )) &
+            if ((.not. l_conv) .and. (i_resi .eq. 7) .and. (.not. ds_conv%l_stop_pene)) &
                 l_conv = .true._1
 
         else
             l_conv = .true._1
-        endif
+        end if
         ds_conv%list_resi(i_resi)%l_conv = l_conv
     end do
 !
 ! - Save events
 !
     do i_resi = 1, nb_resi
-        event_type  = ds_conv%list_resi(i_resi)%event_type
-        l_conv      = ds_conv%list_resi(i_resi)%l_conv
+        event_type = ds_conv%list_resi(i_resi)%event_type
+        l_conv = ds_conv%list_resi(i_resi)%l_conv
         l_resi_test = ds_conv%l_resi_test(i_resi)
         if (l_resi_test) then
-            call nmcrel(sderro, event_type, .not.l_conv)
-        endif
+            call nmcrel(sderro, event_type,.not. l_conv)
+        end if
     end do
 !
 ! - Event: evaluate convergence of residual
@@ -138,37 +138,37 @@ implicit none
 !
     call nmerge(sderro, 'RESI_MAXR', l_swap_rela_maxi)
     if (l_swap_rela_maxi) then
-        call SetResi(ds_conv, type_ = 'RESI_GLOB_RELA' , l_resi_test_ = .true._1)
-        call SetResi(ds_conv, type_ = 'RESI_GLOB_MAXI' , l_resi_test_ = .false._1)
-    endif
+        call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.true._1)
+        call SetResi(ds_conv, type_='RESI_GLOB_MAXI', l_resi_test_=.false._1)
+    end if
     call nmerge(sderro, 'RESI_MAXN', l_swap_comp_rela)
     if (l_swap_comp_rela) then
-        call SetResi(ds_conv, type_ = 'RESI_GLOB_RELA' , l_resi_test_ = .false._1)
-        call SetResi(ds_conv, type_ = 'RESI_COMP_RELA' , l_resi_test_ = .true._1)
-    endif
+        call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.false._1)
+        call SetResi(ds_conv, type_='RESI_COMP_RELA', l_resi_test_=.true._1)
+    end if
 !
 ! - New minimum exterior load
 !
-    if ((nume_inst.eq.1) .and. (iter_newt.eq.0)) then
+    if ((nume_inst .eq. 1) .and. (iter_newt .eq. 0)) then
         load_mini = load_norm
     else
-        if (cvresi .and. (.not.l_swap_rela_maxi)) then
+        if (cvresi .and. (.not. l_swap_rela_maxi)) then
             load_mini = min(load_norm, load_mini)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Save informations
 !
-    call GetResi(ds_conv, type = 'RESI_GLOB_RELA' , vale_calc_ = v_sdcrit_crtr(3))
-    call GetResi(ds_conv, type = 'RESI_GLOB_MAXI' , vale_calc_ = v_sdcrit_crtr(4))
-    call GetResi(ds_conv, type = 'RESI_REFE_RELA' , vale_calc_ = v_sdcrit_crtr(8))
-    call GetResi(ds_conv, type = 'RESI_COMP_RELA' , vale_calc_ = v_sdcrit_crtr(9))
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', vale_calc_=v_sdcrit_crtr(3))
+    call GetResi(ds_conv, type='RESI_GLOB_MAXI', vale_calc_=v_sdcrit_crtr(4))
+    call GetResi(ds_conv, type='RESI_REFE_RELA', vale_calc_=v_sdcrit_crtr(8))
+    call GetResi(ds_conv, type='RESI_COMP_RELA', vale_calc_=v_sdcrit_crtr(9))
     v_sdcrit_crtr(1) = iter_newt+1
     v_sdcrit_crtr(2) = line_sear_iter
     v_sdcrit_crtr(5) = eta
     v_sdcrit_crtr(6) = load_mini
     if (cvresi) then
         v_sdcrit_crtr(7) = resi_norm
-    endif
+    end if
 !
 end subroutine

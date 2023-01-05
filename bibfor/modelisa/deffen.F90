@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine deffen(base, nuor, imodi, nbmr, nbm,&
-                  iaxe, long, nbnfen, nofe, discfe,&
+subroutine deffen(base, nuor, imodi, nbmr, nbm, &
+                  iaxe, long, nbnfen, nofe, discfe, &
                   nbp1, nbp2, discff, defm)
     implicit none
 !     EXTRACTION DES COMPOSANTES DES DEFORMEES MODALES SUR LA
@@ -95,13 +95,13 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 !
 ! --- 1.INITIALISATIONS
 !
-    imodf = imodi + nbmr - 1
+    imodf = imodi+nbmr-1
     iv = 1
     if (iaxe .eq. 1) then
         idir1 = 2
         idir2 = 3
         nompar = 'X'
-    else if (iaxe.eq.2) then
+    else if (iaxe .eq. 2) then
         idir1 = 3
         idir2 = 1
         nompar = 'Y'
@@ -109,7 +109,7 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
         idir1 = 1
         idir2 = 2
         nompar = 'Z'
-    endif
+    end if
 !
 ! --- 2.CREATION DE VECTEURS DE TRAVAIL POUR FOINTR
 !
@@ -128,7 +128,7 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 !
     call wkvect('&&DEFFEN.TEMP.FEN2', 'V V R', nbnfen, ifen2)
     do j = 1, nbnfen
-        zr(ifen2+j-1) = discfe(j) + long
+        zr(ifen2+j-1) = discfe(j)+long
     end do
 !
 ! --- 3.EXTRACTION DES COMPOSANTES DES DEFORMEES SUR LA DISCRETISATION
@@ -140,8 +140,8 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 !
     do imod = imodi, imodf
 !
-        write(chvale,'(A8,A5,2I3.3,A5)') base(1:8),'.C01.',nuor(imod),&
-        iv,'.VALE'
+        write (chvale, '(A8,A5,2I3.3,A5)') base(1:8), '.C01.', nuor(imod), &
+            iv, '.VALE'
         call jeveuo(chvale, 'L', ivale)
 !
 !-------EXTRACTION
@@ -155,14 +155,14 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 !
 !-------INTERPOLATION
 !
-        imr = imod - imodi + 1
-        call fointr(' ', zk24(iprol), nbnfen, discfe, zr(ivale1),&
+        imr = imod-imodi+1
+        call fointr(' ', zk24(iprol), nbnfen, discfe, zr(ivale1), &
                     nbp1, discff, defm(1, imr), ier1)
-        call fointr(' ', zk24(iprol), nbnfen, zr(ifen2), zr(ivale2),&
+        call fointr(' ', zk24(iprol), nbnfen, zr(ifen2), zr(ivale2), &
                     nbp2, discff(nbp1+1), defm(nbp1+1, imr), ier2)
         if (ier1 .ne. 0 .or. ier2 .ne. 0) then
             call utmess('F', 'MODELISA4_39')
-        endif
+        end if
 !
     end do
 !

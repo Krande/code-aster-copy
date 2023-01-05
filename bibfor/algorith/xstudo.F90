@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
-                  nbpi, ip1, ip2, pm1a,pm1b, pm2)
+subroutine xstudo(ndime, ninter, npts, nptm, ainter, &
+                  nbpi, ip1, ip2, pm1a, pm1b, pm2)
     implicit none
 !
 #    include "jeveux.h"
@@ -54,135 +54,134 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
 !
     integer :: zxain
 
-
-    zxain=xxmmvd('ZXAIN')
+    zxain = xxmmvd('ZXAIN')
 
     if (ninter .eq. 1) then
-        nbpi=0
-    else if (ninter.eq.2 .and. ndime.eq.2) then
-        if (npts.eq.0) then
-        nbpi=1
+        nbpi = 0
+    else if (ninter .eq. 2 .and. ndime .eq. 2) then
+        if (npts .eq. 0) then
+            nbpi = 1
 !       MILIEU DE I1-I2
-        ip1(1)=1
-        ip2(1)=2
-        pm1a(1)=1
-        pm1b(1)=3
-        pm2(1)=5
-        else if (npts.eq.1) then
-        nbpi=1
+            ip1(1) = 1
+            ip2(1) = 2
+            pm1a(1) = 1
+            pm1b(1) = 3
+            pm2(1) = 5
+        else if (npts .eq. 1) then
+            nbpi = 1
 !       MILIEU DE I1-I2
-        ip1(1)=1
-        ip2(1)=2
-        endif
-    else if (ninter.eq.3 .and. ndime.eq.2) then
-        nbpi=1
+            ip1(1) = 1
+            ip2(1) = 2
+        end if
+    else if (ninter .eq. 3 .and. ndime .eq. 2) then
+        nbpi = 1
 !       MILIEU DE I1-I2
-        ip1(1)=2
-        ip2(1)=3
-        pm1a(1)=1
-        pm1b(1)=3
-        pm2(1)=5
-    else if (ninter.eq.3 .and. ndime.eq.3) then
-        if (npts.eq.0) then
-        nbpi=3
+        ip1(1) = 2
+        ip2(1) = 3
+        pm1a(1) = 1
+        pm1b(1) = 3
+        pm2(1) = 5
+    else if (ninter .eq. 3 .and. ndime .eq. 3) then
+        if (npts .eq. 0) then
+            nbpi = 3
 !       MILIEU DE I1-I2
-        ip1(1)=1
-        ip2(1)=2
-        pm1a(1)=1
-        pm1b(1)=3
-        pm2(1)=7
+            ip1(1) = 1
+            ip2(1) = 2
+            pm1a(1) = 1
+            pm1b(1) = 3
+            pm2(1) = 7
 !       MILIEU DE I2-I3
-        ip1(2)=2
-        ip2(2)=3
-        pm1a(2)=3
-        pm1b(2)=5
-        pm2(2)=8
+            ip1(2) = 2
+            ip2(2) = 3
+            pm1a(2) = 3
+            pm1b(2) = 5
+            pm2(2) = 8
 !       MILIEU DE I3-I1
-        ip1(3)=1
-        ip2(3)=3
-        pm1a(3)=1
-        pm1b(3)=5
-        pm2(3)=9
-        else if (npts.eq.1) then
-        nbpi=3
+            ip1(3) = 1
+            ip2(3) = 3
+            pm1a(3) = 1
+            pm1b(3) = 5
+            pm2(3) = 9
+        else if (npts .eq. 1) then
+            nbpi = 3
 !       MILIEU DE I1-I2
-        ip1(1)=1
-        ip2(1)=2
-        pm1a(1)=0
-        pm1b(1)=0
-        pm2(1)=5
+            ip1(1) = 1
+            ip2(1) = 2
+            pm1a(1) = 0
+            pm1b(1) = 0
+            pm2(1) = 5
 !       MILIEU DE I2-I3
-        ip1(2)=2
-        ip2(2)=3
-        pm1a(2)=1
-        pm1b(2)=3
-        pm2(2)=6
+            ip1(2) = 2
+            ip2(2) = 3
+            pm1a(2) = 1
+            pm1b(2) = 3
+            pm2(2) = 6
 !       MILIEU DE I3-I1
-        ip1(3)=3
-        ip2(3)=1
-        pm1a(3)=0
-        pm1b(3)=0
-        pm2(3)=7
-        endif
-    else if (ninter.eq.4 .and. ndime.eq.3) then
+            ip1(3) = 3
+            ip2(3) = 1
+            pm1a(3) = 0
+            pm1b(3) = 0
+            pm2(3) = 7
+        end if
+    else if (ninter .eq. 4 .and. ndime .eq. 3) then
 !       CAS 1 : DECOUPAGE DU TETRA EN DEUX PENTAEDRES
-        if (npts.eq.0) then
-          nbpi=4
-  !       MILIEU DE I1-I2
-          ip1(1)=2
-          ip2(1)=1
-          pm1a(1)=3
-          pm1b(1)=1
-          pm2(1)=9
-  !       MILIEU DE I2-I4
-          ip1(2)=4
-          ip2(2)=2
-          pm1a(2)=8
-          pm1b(2)=4
-          pm2(2)=10
-  !       MILIEU DE I4-I3
-          ip1(3)=4
-          ip2(3)=3
-          pm1a(3)=7
-          pm1b(3)=5
-          pm2(3)=11
-  !       MILIEU DE I3-I1
-          ip1(4)=3
-          ip2(4)=1
-          pm1a(4)=6
-          pm1b(4)=2
-          pm2(4)=12
+        if (npts .eq. 0) then
+            nbpi = 4
+            !       MILIEU DE I1-I2
+            ip1(1) = 2
+            ip2(1) = 1
+            pm1a(1) = 3
+            pm1b(1) = 1
+            pm2(1) = 9
+            !       MILIEU DE I2-I4
+            ip1(2) = 4
+            ip2(2) = 2
+            pm1a(2) = 8
+            pm1b(2) = 4
+            pm2(2) = 10
+            !       MILIEU DE I4-I3
+            ip1(3) = 4
+            ip2(3) = 3
+            pm1a(3) = 7
+            pm1b(3) = 5
+            pm2(3) = 11
+            !       MILIEU DE I3-I1
+            ip1(4) = 3
+            ip2(4) = 1
+            pm1a(4) = 6
+            pm1b(4) = 2
+            pm2(4) = 12
 !       CAS 2 : DECOUPAGE DU TETRA EN DEUX PENTAEDRES
-        else if (npts.eq.2.and.nptm.ge.1) then
+        else if (npts .eq. 2 .and. nptm .ge. 1) then
 !    LE POINT D INTERSECTION NON CONFONDU AVEC UN NOEUD SOMMET EST EN 3EME POSITION
 !    VOIRE XDECQU
-          ASSERT(nint(ainter(zxain*(3-1)+1)).ne.0)
-          nbpi=2
-  !       MILIEU DE I1-P
-          ip1(1)=1
-          ip2(1)=3
-  !       MILIEU DE I2-P
-          ip1(2)=2
-          ip2(2)=3
-        else if (npts.eq.1) then
-          ASSERT(nptm.ge.1)
-          nbpi=3
+            ASSERT(nint(ainter(zxain*(3-1)+1)) .ne. 0)
+            nbpi = 2
+            !       MILIEU DE I1-P
+            ip1(1) = 1
+            ip2(1) = 3
+            !       MILIEU DE I2-P
+            ip1(2) = 2
+            ip2(2) = 3
+        else if (npts .eq. 1) then
+            ASSERT(nptm .ge. 1)
+            nbpi = 3
 !         MILIEU DE I1-I2
-          ip1(1)=2
-          ip2(1)=3
-          pm2(1)=7
+            ip1(1) = 2
+            ip2(1) = 3
+            pm2(1) = 7
 !         MILIEU DE I2-I3
-          ip1(2)=3
-          ip2(2)=4
-          pm2(2)=8
+            ip1(2) = 3
+            ip2(2) = 4
+            pm2(2) = 8
 !         MILIEU DE I3-I1
-          ip1(3)=4
-          ip2(3)=1
+            ip1(3) = 4
+            ip2(3) = 1
         else
-          ASSERT(.false.)
+            ASSERT(.false.)
         end if
     else
         ASSERT(.false.)
 !
-    endif
+    end if
 end subroutine

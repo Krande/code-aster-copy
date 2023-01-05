@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0528(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -53,8 +53,8 @@ implicit none
     integer :: jgano, mxcmel, nbsgm, i, ndim, nno, nbsig, nnos, npg, ipoids, ivf
     integer :: idfde, igau, isig, igeom, idef, icompo, nbvari, ivari, jtab(7)
     integer :: iret, imate, itemps
-    parameter (mxcmel=162)
-    parameter (nbsgm=6)
+    parameter(mxcmel=162)
+    parameter(nbsgm=6)
     real(kind=8) :: epsfl(mxcmel), epstmp(nbsgm)
     real(kind=8) :: valpar, nu(1)
     integer :: icodre(1)
@@ -70,32 +70,32 @@ implicit none
 !     -------------------------------
     call jevech('PCOMPOR', 'L', icompo)
 !
-    compo1=zk16(icompo-1+RELA_NAME)
-    compo2=zk16(icompo-1+CREEP_NAME)
+    compo1 = zk16(icompo-1+RELA_NAME)
+    compo2 = zk16(icompo-1+CREEP_NAME)
 !
 !    VERIFICATION DU COMPORTEMENT FLUAGE
-    lflu=.false.
+    lflu = .false.
     if (option(1:4) .eq. 'EPFD') then
-        if ((compo1(1:10).eq.'BETON_UMLV') .or. (compo1(1:12) .eq.'BETON_BURGER')&
-            .or. ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV' )) then
-            lflu=.true.
-        endif
-    else if (option(1:4).eq.'EPFP') then
-        if ((compo1(1:10).eq.'BETON_UMLV') .or. (compo1(1:12) .eq.'BETON_BURGER') .or.&
-            (compo1(1:13).eq.'BETON_GRANGER') .or.&
-            (compo1(1:7).eq.'KIT_DDI'.and. compo2(1:13) .eq.'BETON_GRANGER') .or.&
-            (compo1(1:7).eq.'KIT_DDI'.and. compo2(1:10).eq.'BETON_UMLV')) lflu= .true.
-    endif
+        if ((compo1(1:10) .eq. 'BETON_UMLV') .or. (compo1(1:12) .eq. 'BETON_BURGER') &
+            .or. (compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV')) then
+            lflu = .true.
+        end if
+    else if (option(1:4) .eq. 'EPFP') then
+        if ((compo1(1:10) .eq. 'BETON_UMLV') .or. (compo1(1:12) .eq. 'BETON_BURGER') .or. &
+            (compo1(1:13) .eq. 'BETON_GRANGER') .or. &
+            (compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:13) .eq. 'BETON_GRANGER') .or. &
+            (compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV')) lflu = .true.
+    end if
 !
-    if (.not.lflu) then
-        valk(1)=option
+    if (.not. lflu) then
+        valk(1) = option
         valk(2) = compo1
         call utmess('A', 'ELEMENTS4_63', nk=2, valk=valk)
         goto 999
-    endif
+    end if
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
@@ -109,9 +109,9 @@ implicit none
 ! --- RECUPERATION DES VARIABLES INTERNES AUX PT D'INTEGRATION COURANT :
 !    ------------------------------------------------------------------
     call jevech('PVARIGR', 'L', ivari)
-    call tecach('OOO', 'PVARIGR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PVARIGR', 'L', iret, nval=7, &
                 itab=jtab)
-    nbvari = max(jtab(6),1)*jtab(7)
+    nbvari = max(jtab(6), 1)*jtab(7)
 !
     call r8inir(mxcmel, 0.d0, epsfl, 1)
 !
@@ -129,24 +129,24 @@ implicit none
 ! POUR BETON_UMLV LE FLUAGE DE DESSICCATION VAUT
 !                    [V9 V10 V11 V18 V19 V20]
 !
-            if ((compo1(1:10).eq.'BETON_UMLV') .or.&
-                ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV' )) then
+            if ((compo1(1:10) .eq. 'BETON_UMLV') .or. &
+                (compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV')) then
                 call lcumvi('FD', zr(ivari+(igau-1)*nbvari), epstmp)
 !
-            else if (compo1(1:12).eq.'BETON_BURGER') then
+            else if (compo1(1:12) .eq. 'BETON_BURGER') then
                 call burftm('FD', ndim, zr(ivari+(igau-1)*nbvari), epstmp)
 !
-            endif
+            end if
 !
             do i = 1, nbsig
-                epsfl(nbsig*(igau-1)+i)=epstmp(i)
+                epsfl(nbsig*(igau-1)+i) = epstmp(i)
             end do
         end do
 !
 !     --------------------------------------------------------
 !      CALCUL DE L'OPTION EPFP
 !     --------------------------------------------------------
-    else if (option(1:4).eq.'EPFP') then
+    else if (option(1:4) .eq. 'EPFP') then
 ! --- RECUPERATION DU MATERIAU :
 !     ------------------------
         call jevech('PMATERC', 'L', imate)
@@ -157,8 +157,8 @@ implicit none
 !
         do igau = 1, npg
 !
-            if ((compo1(1:10).eq.'BETON_UMLV') .or.&
-                ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV' )) then
+            if ((compo1(1:10) .eq. 'BETON_UMLV') .or. &
+                (compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV')) then
 !      POUR BETON_UMLV LE FLUAGE PROPRE VAUT
 !        EPFP11 = (V1+V2) + V3 + V4
 !        EPFP22 = (V1+V2) + V5 + V6
@@ -169,11 +169,11 @@ implicit none
 !
                 call lcumvi('FP', zr(ivari+(igau-1)*nbvari), epstmp)
 !
-                do  i = 1, nbsig
-                    epsfl(nbsig*(igau-1)+i)=epstmp(i)
+                do i = 1, nbsig
+                    epsfl(nbsig*(igau-1)+i) = epstmp(i)
                 end do
 !
-            else if (compo1(1:12).eq.'BETON_BURGER') then
+            else if (compo1(1:12) .eq. 'BETON_BURGER') then
 !      POUR BETON_BURGER LE FLUAGE PROPRE VAUT
 !        EPFP11 = (V1+V2) + V3 + V4
 !        EPFP22 = (V1+V2) + V5 + V6
@@ -185,29 +185,29 @@ implicit none
                 call burftm('FP', ndim, zr(ivari+(igau-1)*nbvari), epstmp)
 !
                 do i = 1, nbsig
-                    epsfl(nbsig*(igau-1)+i)=epstmp(i)
+                    epsfl(nbsig*(igau-1)+i) = epstmp(i)
                 end do
 !
 !-------------------------------------------------------------------*
-            else if ((compo1(1:13).eq.'BETON_GRANGER') .or.&
-                 (compo1(1:7).eq.'KIT_DDI'.and. compo2(1:13).eq.'BETON_GRANGER') )then
-                nomres='NU'
-                nompar='INST'
-                valpar=zr(itemps)
+            else if ((compo1(1:13) .eq. 'BETON_GRANGER') .or. &
+                     (compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:13) .eq. 'BETON_GRANGER')) then
+                nomres = 'NU'
+                nompar = 'INST'
+                valpar = zr(itemps)
 !
-                call rcvalb('RIGI', igau, 1, '+', zi(imate),&
-                            ' ', 'ELAS', 1, nompar, [valpar],&
+                call rcvalb('RIGI', igau, 1, '+', zi(imate), &
+                            ' ', 'ELAS', 1, nompar, [valpar], &
                             1, nomres, nu, icodre, 1)
 !
-                call calcgr(igau, nbsig, nbvari, zr(ivari), nu(1),&
+                call calcgr(igau, nbsig, nbvari, zr(ivari), nu(1), &
                             epstmp)
                 do i = 1, nbsig
-                    epsfl(nbsig*(igau-1)+i)=epstmp(i)
+                    epsfl(nbsig*(igau-1)+i) = epstmp(i)
                 end do
 !
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! --- RECUPERATION DU VECTEUR EN SORTIE:
 !     -------------------------------------------------------------
@@ -220,7 +220,7 @@ implicit none
 !        --------------------
     do igau = 1, npg
         do isig = 1, nbsig
-            zr(idef+nbsig* (igau-1)+isig-1) = epsfl(nbsig* (igau-1)+ isig)
+            zr(idef+nbsig*(igau-1)+isig-1) = epsfl(nbsig*(igau-1)+isig)
         end do
     end do
 !

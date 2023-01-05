@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! aslint: disable=W1306,W1504
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-subroutine xnmel(nnop, nfh, nfe, ddlc,&
-                 ddlm, igeom, typmod, option, imate,&
-                 compor, lgpg, carcri, jpintt, cnset,&
-                 heavt, lonch, basloc, instam, instap, idepl, lsn,&
-                 lst, sig, vi, matuu, ivectu,&
-                 codret, jpmilt, nfiss, jheavn, jstno,&
+subroutine xnmel(nnop, nfh, nfe, ddlc, &
+                 ddlm, igeom, typmod, option, imate, &
+                 compor, lgpg, carcri, jpintt, cnset, &
+                 heavt, lonch, basloc, instam, instap, idepl, lsn, &
+                 lst, sig, vi, matuu, ivectu, &
+                 codret, jpmilt, nfiss, jheavn, jstno, &
                  l_line, l_nonlin, lMatr, lVect, lSigm)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,18 +37,18 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/xxnmel.h"
 !
-integer :: nnop, imate, lgpg, codret, igeom, nfiss, jheavn
-integer :: cnset(4*32), heavt(*), lonch(10), ndim
-integer :: nfh, nfe, ddlc, ddlm
-integer :: ivectu, idepl, jpintt, jpmilt
-integer :: jstno
-character(len=8) :: typmod(*)
-character(len=16) :: option, compor(*)
-real(kind=8) :: instam, instap
-real(kind=8) :: carcri(*), vi(*), crit2(1), vi2(1), sig2(1)
-real(kind=8) :: lsn(nnop)
-real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
-aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
+    integer :: nnop, imate, lgpg, codret, igeom, nfiss, jheavn
+    integer :: cnset(4*32), heavt(*), lonch(10), ndim
+    integer :: nfh, nfe, ddlc, ddlm
+    integer :: ivectu, idepl, jpintt, jpmilt
+    integer :: jstno
+    character(len=8) :: typmod(*)
+    character(len=16) :: option, compor(*)
+    real(kind=8) :: instam, instap
+    real(kind=8) :: carcri(*), vi(*), crit2(1), vi2(1), sig2(1)
+    real(kind=8) :: lsn(nnop)
+    real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
+    aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,8 +99,8 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
     integer :: nbsig, idecpg, jtab(7), ncomp, iret
     integer :: ncompn, heavn(nnop, 5)
     integer :: irese, nno, ig, ifiss
-    character(len=8), parameter :: elrese(6) = (/'SE2','TR3','TE4','SE3','TR6','T10'/)
-    character(len=8), parameter :: fami(6) = (/'BID ','XINT','XINT','BID ','XINT','XINT'/)
+    character(len=8), parameter :: elrese(6) = (/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/)
+    character(len=8), parameter :: fami(6) = (/'BID ', 'XINT', 'XINT', 'BID ', 'XINT', 'XINT'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,69 +110,69 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
     call elref1(elrefp)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2, &
                 itab=jtab)
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
-    call elrefe_info(fami='RIGI',ndim=ndim,nnos=nnops)
+    call elrefe_info(fami='RIGI', ndim=ndim, nnos=nnops)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
+        irese = 0
+    end if
 !
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
-    fami_se=fami(ndim+irese)
-    if (nfe.gt.0) then
-        if (ndim.eq.3 .and. &
-            (count(zi((jstno-1+1):(jstno-1+nnop)).eq.2)+&
-             count(zi((jstno-1+1):(jstno-1+nnop)).eq.0)).eq.nnop) then
-            fami_se='XGEO'
-        endif
-    endif
+    fami_se = fami(ndim+irese)
+    if (nfe .gt. 0) then
+        if (ndim .eq. 3 .and. &
+            (count(zi((jstno-1+1):(jstno-1+nnop)) .eq. 2)+ &
+             count(zi((jstno-1+1):(jstno-1+nnop)) .eq. 0)) .eq. nnop) then
+            fami_se = 'XGEO'
+        end if
+    end if
 !
 ! - Get element parameters
 !
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami_se,nno=nno, npg=npg)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, nno=nno, npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !    RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
-    if (nfh.gt.0) then
+    if (nfh .gt. 0) then
         call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, itab=jtab)
         ncompn = jtab(2)/jtab(3)
-        ASSERT(ncompn.eq.5)
+        ASSERT(ncompn .eq. 5)
         do ino = 1, nnop
-            do ig = 1 , ncompn
-                heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
-            enddo
-        enddo
-    endif
+            do ig = 1, ncompn
+                heavn(ino, ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+            end do
+        end do
+    end if
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
-    nse=lonch(1)
+    nse = lonch(1)
 !
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=cnset(nno*(ise-1)+in)
+            ino = cnset(nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
-                    1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-&
-                    1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
-                    1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000- &
+                                                              1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000- &
+                                                              1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000- &
+                                                              1)+j)
+                end if
             end do
         end do
 !
@@ -182,37 +182,37 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
         end do
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG ET VI CORRESPONDANTE
-        idecpg = npg * (ise-1)
-        idebs = nbsig * idecpg
-        idebv = lgpg * idecpg
+        idecpg = npg*(ise-1)
+        idebs = nbsig*idecpg
+        idebv = lgpg*idecpg
 !
         if (ndim .eq. 3) then
-            ASSERT(nbsig.eq.6)
-        else if (ndim.eq.2) then
-            ASSERT(nbsig.eq.4)
-        endif
+            ASSERT(nbsig .eq. 6)
+        else if (ndim .eq. 2) then
+            ASSERT(nbsig .eq. 4)
+        end if
 !
         if (l_line) then
-            call xxnmel(elrefp, elrese(ndim+irese), ndim, coorse,&
-                        igeom, he, nfh, ddlc, ddlm,&
-                        nnops, nfe, basloc, nnop, npg,&
-                        typmod, option, imate, compor, lgpg,&
-                        crit2, instam, instap, ibid, lsn, lst, idecpg,&
-                        sig2, vi2, matuu, ibid2, codret,&
-                        nfiss, heavn, jstno,&
+            call xxnmel(elrefp, elrese(ndim+irese), ndim, coorse, &
+                        igeom, he, nfh, ddlc, ddlm, &
+                        nnops, nfe, basloc, nnop, npg, &
+                        typmod, option, imate, compor, lgpg, &
+                        crit2, instam, instap, ibid, lsn, lst, idecpg, &
+                        sig2, vi2, matuu, ibid2, codret, &
+                        nfiss, heavn, jstno, &
                         l_line, l_nonlin, lMatr, lVect, lSigm)
         elseif (l_nonlin) then
-            call xxnmel(elrefp, elrese(ndim+irese), ndim, coorse,&
-                        igeom, he, nfh, ddlc, ddlm,&
-                        nnops, nfe, basloc, nnop, npg,&
-                        typmod, option, imate, compor, lgpg,&
-                        carcri, instam, instap, idepl, lsn, lst, idecpg,&
-                        sig(idebs+1), vi(idebv+1), matuu, ivectu, codret,&
-                        nfiss, heavn, jstno,&
+            call xxnmel(elrefp, elrese(ndim+irese), ndim, coorse, &
+                        igeom, he, nfh, ddlc, ddlm, &
+                        nnops, nfe, basloc, nnop, npg, &
+                        typmod, option, imate, compor, lgpg, &
+                        carcri, instam, instap, idepl, lsn, lst, idecpg, &
+                        sig(idebs+1), vi(idebv+1), matuu, ivectu, codret, &
+                        nfiss, heavn, jstno, &
                         l_line, l_nonlin, lMatr, lVect, lSigm)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end do
 !
 end subroutine

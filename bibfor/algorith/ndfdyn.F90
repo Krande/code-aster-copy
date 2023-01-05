@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr,&
+subroutine ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
                   cndyna)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -38,11 +38,11 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
 !
-character(len=19), intent(in) :: sddyna
-character(len=19), intent(in) :: hval_measse(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: vite_curr, acce_curr
-character(len=19), intent(in) :: cndyna
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: hval_measse(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: vite_curr, acce_curr
+    character(len=19), intent(in) :: cndyna
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,22 +72,22 @@ character(len=19), intent(in) :: cndyna
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_9')
-    endif
+    end if
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! --- COEFFICIENTS DEVANTS MATRICES
 !
-    coerma = ndynre(sddyna,'COEF_FDYN_MASSE')
-    coeram = ndynre(sddyna,'COEF_FDYN_AMORT')
+    coerma = ndynre(sddyna, 'COEF_FDYN_MASSE')
+    coeram = ndynre(sddyna, 'COEF_FDYN_AMORT')
 !
 ! - Active functionnalities
 !
-    l_amor = ndynlo(sddyna,'MAT_AMORT')
-    l_impl = ndynlo(sddyna,'IMPLICITE')
+    l_amor = ndynlo(sddyna, 'MAT_AMORT')
+    l_impl = ndynlo(sddyna, 'IMPLICITE')
 !
 ! --- MATRICES ASSEMBLEES
 !
@@ -107,12 +107,12 @@ character(len=19), intent(in) :: cndyna
     if (l_impl) then
         call nminer(masse, acce_curr, cniner)
         call vtaxpy(coerma, cniner, cndyna)
-    endif
+    end if
 !
     if (l_amor) then
         call nmhyst(amort, vite_curr, cnhyst)
         call vtaxpy(coeram, cnhyst, cndyna)
-    endif
+    end if
 !
 ! - Stop timer
 !
@@ -122,6 +122,6 @@ character(len=19), intent(in) :: cndyna
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', cndyna, 6)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
+subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z, &
                   noma2z, liso1z, liso2z, lonlis)
     implicit none
 #include "jeveux.h"
@@ -90,11 +90,11 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
     call jeexin(lisou1, iret)
     if (iret .ne. 0) then
         call jedetr(lisou1)
-    endif
+    end if
     call jeexin(lisou1, iret)
     if (iret .ne. 0) then
         call jedetr(lisou1)
-    endif
+    end if
 !
 ! --- CREATION SUR LA VOLATILE DES LISTES DE K8 LISOU1 ET LISOU2
 ! --- DE LONGUEUR LONLIS
@@ -102,11 +102,11 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
     call jeexin(lisou1, iret)
     if (iret .ne. 0) then
         call jedetr(lisou1)
-    endif
+    end if
     call jeexin(lisou2, iret)
     if (iret .ne. 0) then
         call jedetr(lisou2)
-    endif
+    end if
     call wkvect(lisou1, 'V V K8', lonlis, idlou1)
     call wkvect(lisou2, 'V V K8', lonlis, idlou2)
 !
@@ -117,7 +117,7 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
 !
     call wkvect('&&PACOAP.LISOU3', 'V V K8', lonlis, idlou3)
     call wkvect('&&PACOAP.LISOU4', 'V V K8', lonlis, idlou4)
-    lonmax = max(lonli1,lonli2)
+    lonmax = max(lonli1, lonli2)
     call wkvect('&&PACOAP.LISINV', 'V V K8', lonmax, idlinv)
 !
 ! --- CONSTITUTION DE LA PREMIERE CORRESPONDANCE ENTRE LES LISTES
@@ -135,29 +135,29 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 nomo2 = zk8(idlin2+i2-1)
                 call jenonu(jexnom(noeum2, nomo2), ino2)
                 call pacoor(noma2, ino2, 0, x2)
-                d = padist( 3, x1, x2 )
+                d = padist(3, x1, x2)
                 if (d .lt. dmin) then
                     dmin = d
                     nomno2 = nomo2
                     nuno2 = ino2
                     j2 = i2
-                endif
+                end if
             end do
 !
             if (j2 .eq. 0) then
                 call utmess('F', 'MODELISA6_3', sk=nomno1)
-            endif
+            end if
 !
             if (zk8(idlinv+j2-1) .eq. m8blan) then
                 zk8(idlou1+i1-1) = nomno1
                 zk8(idlou2+i1-1) = nomno2
                 zk8(idlinv+j2-1) = nomno1
             else
-                valk (1) = nomno2
-                valk (2) = nomno1
-                valk (3) = zk8(idlinv+j2-1)
+                valk(1) = nomno2
+                valk(2) = nomno1
+                valk(3) = zk8(idlinv+j2-1)
                 call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
-            endif
+            end if
         end do
     else
         do i2 = 1, lonli2
@@ -171,31 +171,31 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 call jenonu(jexnom(noeum1, nomo1), ino1)
                 call pacoor(noma1, ino1, 0, x1)
 !
-                d = padist( 3, x1, x2 )
+                d = padist(3, x1, x2)
                 if (d .lt. dmin) then
                     dmin = d
                     nomno1 = nomo1
                     nuno1 = ino1
                     j1 = i1
-                endif
+                end if
             end do
 !
             if (j1 .eq. 0) then
                 call utmess('F', 'MODELISA6_3', sk=nomno2)
-            endif
+            end if
 !
             if (zk8(idlinv+j1-1) .eq. m8blan) then
                 zk8(idlou1+i2-1) = nomno1
                 zk8(idlou2+i2-1) = nomno2
                 zk8(idlinv+j1-1) = nomno1
             else
-                valk (1) = nomno2
-                valk (2) = nomno1
-                valk (3) = zk8(idlinv+j1-1)
+                valk(1) = nomno2
+                valk(2) = nomno1
+                valk(3) = zk8(idlinv+j1-1)
                 call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedetr('&&PACOAP.LISOU3')
     call jedetr('&&PACOAP.LISOU4')

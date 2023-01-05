@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,8 +67,8 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
     aster_logical :: coupmf, exce
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     zero = 0.0d0
@@ -79,9 +79,9 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
     exce = .false.
     excent = zero
 !
-    mefl(:,:) = zero
-    flex(:,:) = zero
-    memb(:,:) = zero
+    mefl(:, :) = zero
+    flex(:, :) = zero
+    memb(:, :) = zero
 !
     call r8inir(18, zero, am, 1)
 !
@@ -99,8 +99,8 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !
 !     -------- CALCUL DU PRODUIT HF.T2 ---------------------------------
@@ -109,13 +109,13 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
     if (exce) then
 ! ---   CALCUL DES MATRICES BCA ,AN ET AM DANS LE CAS DE L'EXCENTREMENT:
 !       ---------------------------------------------------------------
-        call dstci2(dci, carat3, hft2, dfc, dmc,&
+        call dstci2(dci, carat3, hft2, dfc, dmc, &
                     bca, an, am)
     else
 ! ---   CALCUL DES MATRICES BCA ET AN DANS LE CAS NON EXCENTRE :
 !       ------------------------------------------------------
         call dstcis(dci, carat3, hft2, bca, an)
-    endif
+    end if
 !
     detj = carat3(7)
 !
@@ -126,24 +126,24 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 ! --- PRISE EN COMPTE DES TERMES DE MEMBRANE CLASSIQUES
 ! --- EN U*U ET V*V :
 !     -------------
-    memb(1,1) = carat3(8)*roe/six
-    memb(1,3) = carat3(8)*roe/douze
-    memb(1,5) = memb(1,3)
-    memb(2,2) = memb(1,1)
-    memb(2,4) = memb(1,3)
-    memb(2,6) = memb(1,3)
-    memb(3,1) = memb(1,3)
-    memb(3,3) = memb(1,1)
-    memb(3,5) = memb(1,3)
-    memb(4,2) = memb(1,3)
-    memb(4,4) = memb(1,1)
-    memb(4,6) = memb(1,3)
-    memb(5,1) = memb(1,3)
-    memb(5,3) = memb(1,3)
-    memb(5,5) = memb(1,1)
-    memb(6,2) = memb(1,3)
-    memb(6,4) = memb(1,3)
-    memb(6,6) = memb(1,1)
+    memb(1, 1) = carat3(8)*roe/six
+    memb(1, 3) = carat3(8)*roe/douze
+    memb(1, 5) = memb(1, 3)
+    memb(2, 2) = memb(1, 1)
+    memb(2, 4) = memb(1, 3)
+    memb(2, 6) = memb(1, 3)
+    memb(3, 1) = memb(1, 3)
+    memb(3, 3) = memb(1, 1)
+    memb(3, 5) = memb(1, 3)
+    memb(4, 2) = memb(1, 3)
+    memb(4, 4) = memb(1, 1)
+    memb(4, 6) = memb(1, 3)
+    memb(5, 1) = memb(1, 3)
+    memb(5, 3) = memb(1, 3)
+    memb(5, 5) = memb(1, 1)
+    memb(6, 2) = memb(1, 3)
+    memb(6, 4) = memb(1, 3)
+    memb(6, 6) = memb(1, 1)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
@@ -154,12 +154,12 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !
 ! ---   CALCUL DES FONCTIONS D'INTERPOLATION DE LA FLECHE :
 !       -------------------------------------------------
-        call dstniw(qsi, eta, carat3, dci, bca,&
+        call dstniw(qsi, eta, carat3, dci, bca, &
                     an, am, wst, wmest)
 !
 ! ---   CALCUL DES FONCTIONS D'INTERPOLATION DES ROTATIONS :
 !       --------------------------------------------------
-        call dstnib(qsi, eta, carat3, an, am,&
+        call dstnib(qsi, eta, carat3, an, am, &
                     nfx, nfy, nmx, nmy)
 !
 ! ---   CALCUL DES FONCTIONS DE FORME DE MEMBRANE :
@@ -180,7 +180,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !       -----------------------------------
         do i = 1, 9
             do j = 1, 9
-                flex(i,j) = flex(i,j) + wst(i)*wst(j)*wgt
+                flex(i, j) = flex(i, j)+wst(i)*wst(j)*wgt
             end do
         end do
 !
@@ -193,7 +193,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !       -------------------------------------------------------
         do i = 1, 9
             do j = 1, 9
-                flex(i,j) = flex(i,j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))* wgtf
+                flex(i, j) = flex(i, j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))*wgtf
             end do
         end do
 !==============================================================
@@ -230,16 +230,16 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
             do k = 1, 3
                 do j = 1, 9
                     i1 = 2*(k-1)+1
-                    i2 = i1 +1
-                    mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
-                    mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
+                    i2 = i1+1
+                    mefl(i1, j) = mefl(i1, j)+nmi(k)*nfx(j)*wgtmf
+                    mefl(i2, j) = mefl(i2, j)+nmi(k)*nfy(j)*wgtmf
                 end do
             end do
 ! ---      2) TERMES DE COUPLAGE MEMBRANE-FLEXION W*W ET BETA*BETA :
 !             ----------------------------------------------------
             do i = 1, 6
                 do j = 1, 9
-                    mefl(i,j) = mefl(i,j) + wmest(i)*wst(j)*wgtm + (nmx(i)*nfx(j) + nmy(i)*nfy(j)&
+                    mefl(i, j) = mefl(i, j)+wmest(i)*wst(j)*wgtm+(nmx(i)*nfx(j)+nmy(i)*nfy(j)&
                                 &)*wgtf
                 end do
             end do
@@ -260,26 +260,26 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !             -------------------------
             do k = 1, 3
                 i1 = 2*(k-1)+1
-                i2 = i1 +1
+                i2 = i1+1
                 do p = 1, 3
                     j1 = 2*(p-1)+1
-                    j2 = j1 +1
-                    memb(i1,j1) = memb(i1,j1)+ (nmi(k)*nmx(j1)+nmi(p)* nmx(i1))*wgtmf
-                    memb(i1,j2) = memb(i1,j2)+ (nmi(k)*nmx(j2)+nmi(p)* nmy(i1))*wgtmf
-                    memb(i2,j1) = memb(i2,j1)+ (nmi(k)*nmy(j1)+nmi(p)* nmx(i2))*wgtmf
-                    memb(i2,j2) = memb(i2,j2)+ (nmi(k)*nmy(j2)+nmi(p)* nmy(i2))*wgtmf
+                    j2 = j1+1
+                    memb(i1, j1) = memb(i1, j1)+(nmi(k)*nmx(j1)+nmi(p)*nmx(i1))*wgtmf
+                    memb(i1, j2) = memb(i1, j2)+(nmi(k)*nmx(j2)+nmi(p)*nmy(i1))*wgtmf
+                    memb(i2, j1) = memb(i2, j1)+(nmi(k)*nmy(j1)+nmi(p)*nmx(i2))*wgtmf
+                    memb(i2, j2) = memb(i2, j2)+(nmi(k)*nmy(j2)+nmi(p)*nmy(i2))*wgtmf
                 end do
             end do
 ! ---      2) TERMES DE MEMBRANE WMEST*WMEST ET BETA*BETA :
 !             -------------------------------------------
             do i = 1, 6
                 do j = 1, 6
-                    memb(i,j) = memb(i,j) + wmest(i)*wmest(j)*wgtm + (nmx(i)*nmx(j) + nmy(i)*nmy(&
+                    memb(i, j) = memb(i, j)+wmest(i)*wmest(j)*wgtm+(nmx(i)*nmx(j)+nmy(i)*nmy(&
                                 &j))*wgtf
                 end do
             end do
 !
-        endif
+        end if
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
     end do
@@ -289,35 +289,35 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 ! --- INSERTION DES DIFFERENTES PARTIES CALCULEES DE LA MATRICE
 ! --- DE MASSE A LA MATRICE ELLE MEME :
 !     ===============================
-    if (( option .eq. 'MASS_MECA' ) .or. (option.eq.'M_GAMMA')) then
+    if ((option .eq. 'MASS_MECA') .or. (option .eq. 'M_GAMMA')) then
         call dxtloc(flex, memb, mefl, ctor, mas)
 !
-        else if (option.eq.'MASS_MECA_DIAG' .or.&
-     &         option.eq.'MASS_MECA_EXPLI' ) then
+    else if (option .eq. 'MASS_MECA_DIAG' .or.&
+ &         option .eq. 'MASS_MECA_EXPLI') then
         call dxtloc(flex, memb, mefl, ctor, masloc)
         wgt = carat3(8)*roe
         call utpslg(3, 6, pgl, masloc, masglo)
-        call dialum(3, 6, 18, wgt, masglo,&
+        call dialum(3, 6, 18, wgt, masglo, &
                     mas)
 !
-    else if (option.eq.'ECIN_ELEM') then
-        stopz='ONO'
+    else if (option .eq. 'ECIN_ELEM') then
+        stopz = 'ONO'
 ! IRET NE PEUT VALOIR QUE 0 (TOUT VA BIEN) OU 2 (CHAMP NON FOURNI)
         call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(3, 6, pgl, zr(jvitg), vite)
-            call dxtloe(flex, memb, mefl, ctor, .false._1,&
+            call dxtloe(flex, memb, mefl, ctor, .false._1, &
                         vite, ener)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(3, 6, pgl, zr(jdepg), depl)
-                call dxtloe(flex, memb, mefl, ctor, .false._1,&
+                call dxtloe(flex, memb, mefl, ctor, .false._1, &
                             depl, ener)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

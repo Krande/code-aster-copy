@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,9 +78,9 @@ subroutine ss2mm2(mo, vecel, nomcas)
     call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
 !
     call jeveuo(vecel//'.RERR', 'E', vk24=rerr)
-    rerr(3)(1:3)='OUI'
+    rerr(3) (1:3) = 'OUI'
 !
-    call jecrec(vecel//'.RELC', 'V V I', 'NO', 'CONTIG', 'CONSTANT',&
+    call jecrec(vecel//'.RELC', 'V V I', 'NO', 'CONTIG', 'CONSTANT', &
                 1)
     call jeecra(vecel//'.RELC', 'LONMAX', nbsma)
     call jecroc(jexnom(vecel//'.RELC', nomcas))
@@ -95,14 +95,14 @@ subroutine ss2mm2(mo, vecel, nomcas)
     do i = 1, nbsma
         if (sssa(i) .eq. 0) goto 3
         call jenuno(jexnum(ma//'.SUPMAIL', i), nosma)
-        nomacr= vnomacr(i)
+        nomacr = vnomacr(i)
         call jeexin(jexnom(nomacr//'.LICA', nomcas), iret)
         if (iret .gt. 0) then
-            zi(ialsch-1+i)=1
+            zi(ialsch-1+i) = 1
         else
-            zi(ialsch-1+i)=0
-        endif
-  3     continue
+            zi(ialsch-1+i) = 0
+        end if
+3       continue
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
-                  materi, em, ep, nup, depsth,&
+subroutine paeldt(kpg, ksp, fami, poum, icdmat, &
+                  materi, em, ep, nup, depsth, &
                   tmoins, tplus, trefer)
     implicit none
 #include "asterfort/rcvalb.h"
@@ -42,42 +42,42 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
-    if ( poum.eq. 'T' ) then
-        call rcvalb(fami, kpg, ksp, '-', icdmat,&
-                    materi, 'ELAS', 0, ' ', [0.d0],&
+    if (poum .eq. 'T') then
+        call rcvalb(fami, kpg, ksp, '-', icdmat, &
+                    materi, 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 1)
-        em  = valres(1)
+        em = valres(1)
         num = valres(2)
 !
-        call rcvalb(fami, kpg, ksp, '+', icdmat,&
-                    materi, 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', icdmat, &
+                    materi, 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 1)
-        ep  = valres(1)
+        ep = valres(1)
         nup = valres(2)
 !
-        call verift(fami, kpg, ksp, 'T', icdmat,&
-                    materi, epsth_= depsth,&
+        call verift(fami, kpg, ksp, 'T', icdmat, &
+                    materi, epsth_=depsth, &
                     temp_prev_=tms, temp_curr_=tpl, temp_refe_=tref)
 !
     else
-        call rcvalb(fami, kpg, ksp, poum, icdmat,&
-                    materi, 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, poum, icdmat, &
+                    materi, 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 1)
-        ep  = valres(1)
+        ep = valres(1)
         nup = valres(2)
-        em  = valres(1)
-        call verift(fami, kpg, ksp, poum, icdmat,&
-                    materi, epsth_=depsth,&
+        em = valres(1)
+        call verift(fami, kpg, ksp, poum, icdmat, &
+                    materi, epsth_=depsth, &
                     temp_prev_=tms, temp_curr_=tpl, temp_refe_=tref)
-    endif
+    end if
 !
     if (present(tmoins)) then
         tmoins = tms
-    endif
+    end if
     if (present(tplus)) then
         tplus = tpl
-    endif
+    end if
     if (present(trefer)) then
         trefer = tref
-    endif
+    end if
 end subroutine

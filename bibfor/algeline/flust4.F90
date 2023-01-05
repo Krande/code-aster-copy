@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine flust4(melflu, typflu, base, noma, nuor,&
-                  amor, freq, masg, fact, vite,&
+subroutine flust4(melflu, typflu, base, noma, nuor, &
+                  amor, freq, masg, fact, vite, &
                   nbm, npv, nivpar, nivdef)
     implicit none
 !  CALCUL DES PARAMETRES DE COUPLAGE FLUIDE-STRUCTURE POUR UNE
@@ -103,9 +103,9 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
     do iv = 1, npv
         if (vite(iv) .lt. 0.d0) then
             vneg = .true.
-        else if (vite(iv).gt.0.d0) then
+        else if (vite(iv) .gt. 0.d0) then
             vpos = .true.
-        endif
+        end if
     end do
     if (vneg .and. vpos) then
         call utmess('F', 'ALGELINE_48')
@@ -113,7 +113,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
         kec = -1
     else
         kec = 1
-    endif
+    end if
 !
     call wkvect('&&FLUST4.TEMP.VABS', 'V V R', npv, ivabs)
     if (vneg) then
@@ -124,7 +124,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
         do iv = 1, npv
             zr(ivabs+iv-1) = vite(iv)
         end do
-    endif
+    end if
 !
 !
 ! --- 2.RECUPERATION DES INFORMATIONS APPORTEES PAR LE CONCEPT  ---
@@ -171,19 +171,19 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
     call wkvect('&&FLUST4.TEMP.COEF', 'V V R', 10*nbm, icoef)
 !
     call rslipa(base, 'FREQ', '&&FLUST4.LIFREQ', ifreqi, n1)
-    call modcoq(base, nuor, nbm, mater1, mater2,&
-                noma, zk24(lfsgm), iaxe, kec, zr(igeom),&
+    call modcoq(base, nuor, nbm, mater1, mater2, &
+                noma, zk24(lfsgm), iaxe, kec, zr(igeom), &
                 zi(iicoq), zr(iorco), zr(icoef), ifreqi)
 !
 !
 ! --- 6.PRISE EN COMPTE DU COUPLAGE FLUIDELASTIQUE
 !
-    write(ifr,*) '<FLUST4> COUPLAGE FLUIDE-STRUCTURE POUR COQUE_COAX'
-    write(ifr,*)
+    write (ifr, *) '<FLUST4> COUPLAGE FLUIDE-STRUCTURE POUR COQUE_COAX'
+    write (ifr, *)
     call wkvect('&&FLUST4.TEMP.MAJ', 'V V R', nbm, imaj)
     call wkvect('&&FLUST4.TEMP.AMFR', 'V V R', 2*nbm, iamfr)
     nt = 2
-    lwork = 2*nt*nt + 10*nt + 2
+    lwork = 2*nt*nt+10*nt+2
     call wkvect('&&FLUST4.TEMP.WORK', 'V V R', lwork, iwork)
 !
 !
@@ -202,36 +202,36 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
         do im = 1, nbm
             ior = nuor(im)
-            call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
+            call rsadpa(base, 'L', 1, 'MASS_GENE', ior, &
                         0, sjv=lmasg, styp=k8b)
-            call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
+            call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior, &
                         0, sjv=lfact, styp=k8b)
             masg(im) = zr(lmasg)
-            fact(3*(im-1)+1) = zr(lfact ) * masg(im)
-            fact(3*(im-1)+2) = zr(lfact+1) * masg(im)
-            fact(3*(im-1)+3) = zr(lfact+2) * masg(im)
+            fact(3*(im-1)+1) = zr(lfact)*masg(im)
+            fact(3*(im-1)+2) = zr(lfact+1)*masg(im)
+            fact(3*(im-1)+3) = zr(lfact+2)*masg(im)
         end do
         call cpdepl(melflu, base, nuor, nbm)
 !
 !-------6.1.2.CALCUL DE LA MATRICE DE MASSE AJOUTEE A RETRANCHER AUX
 !             EXCITATIONS MODALES DUES AUX FORCES FLUIDELASTIQUES
 !
-        write(ifr,*) 'CALCUL DES MASSES MODALES AJOUTEES PAR LE FLUIDE'
-        write(ifr,*)
+        write (ifr, *) 'CALCUL DES MASSES MODALES AJOUTEES PAR LE FLUIDE'
+        write (ifr, *)
         do imod = 1, nbm
 !
             numod = nuor(imod)
-            write(ifr,'(A9,I3)') 'NUMOD = ',numod
+            write (ifr, '(A9,I3)') 'NUMOD = ', numod
             fi = zr(ifreqi+numod-1)
             ksi = amor(imod)
 !
-            call bijmoc(u0, zr(igeom), cf0, mcf0, zr(lfsvr),&
-                        imod, imod, nbm, zi(iicoq), zr(iorco),&
+            call bijmoc(u0, zr(igeom), cf0, mcf0, zr(lfsvr), &
+                        imod, imod, nbm, zi(iicoq), zr(iorco), &
                         zr(icoef), s0, s0, bii)
 !
             zr(imaj+imod-1) = -1.d0*dble(bii)
-            write(ifr,'(A5,G23.16)') 'MI = ',zr(imaj+imod-1)
-            write(ifr,*)
+            write (ifr, '(A5,G23.16)') 'MI = ', zr(imaj+imod-1)
+            write (ifr, *)
 !
             zr(iamfr+imod-1) = 4.d0*pi*fi*ksi*masg(imod)
             zr(iamfr+nbm+imod-1) = fi
@@ -240,16 +240,16 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
 !-------6.1.3.CALCUL DES NOUVEAUX PARAMETRES MODAUX SOUS ECOULEMENT
 !
-        call pacouc(typflu, zr(imaj), zr(iorco), zr(ivabs), zr(icoef),&
-                    masg, freq, zr(iamfr), nbm, imasse,&
-                    npv, zr(iwork), zi(iicoq), zr( igeom), [0.d0],&
+        call pacouc(typflu, zr(imaj), zr(iorco), zr(ivabs), zr(icoef), &
+                    masg, freq, zr(iamfr), nbm, imasse, &
+                    npv, zr(iwork), zi(iicoq), zr(igeom), [0.d0], &
                     ier)
 !
 !-------6.1.4.CALCUL D'UN CRITERE DE POIDS DES TERMES EXTRADIAGONAUX
 !             DE LA MATRICE B(S) PAR RAPPORT AUX TERMES DIAGONAUX
 !
-        if (nbm .gt. 1) call poibij(npv, zr(ivabs), zr(igeom), zr(lfsvr), nbm,&
-                                    zi(iicoq), zr(iorco), zr(icoef), freq, imasse,&
+        if (nbm .gt. 1) call poibij(npv, zr(ivabs), zr(igeom), zr(lfsvr), nbm, &
+                                    zi(iicoq), zr(iorco), zr(icoef), freq, imasse, &
                                     zr(imaj), [0.d0])
 !     =================================================================
 !
@@ -262,63 +262,63 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !
         call wkvect('&&FLUST4.TEMP.VCPR', 'V V R', nbm*nbm, ivcpr)
 !
-        call modeau(melflu, noma, zr(igeom), zr(lfsvr), base,&
-                    zr(ifreqi), nbm, nuor, zi(iicoq), zr(iorco),&
-                    zr(icoef), amor, masg, fact, zr( iamfr),&
+        call modeau(melflu, noma, zr(igeom), zr(lfsvr), base, &
+                    zr(ifreqi), nbm, nuor, zi(iicoq), zr(iorco), &
+                    zr(icoef), amor, masg, fact, zr(iamfr), &
                     zr(ivcpr), zr(imaj))
 !
-        write(ifr,*) 'RESULTATS DU CALCUL DES MODES EN EAU AU REPOS'
-        write(ifr,*)
-        write(ifr,*) 'FREQUENCES PROPRES'
+        write (ifr, *) 'RESULTATS DU CALCUL DES MODES EN EAU AU REPOS'
+        write (ifr, *)
+        write (ifr, *) 'FREQUENCES PROPRES'
         do imod = 1, nbm
-            write(ifr,'(I3,1X,G23.16)') imod,zr(iamfr+nbm+imod-1)
+            write (ifr, '(I3,1X,G23.16)') imod, zr(iamfr+nbm+imod-1)
         end do
-        write(ifr,*)
-        write(ifr,*) 'DECOMPOSITION MODES EN EAU AU REPOS/MODES EN AIR'
+        write (ifr, *)
+        write (ifr, *) 'DECOMPOSITION MODES EN EAU AU REPOS/MODES EN AIR'
         do jmod = 1, nbm
-            write(ifr,'(A24,I3)') 'MODE EN EAU AU REPOS NO ',jmod
-            icomp = ivcpr + nbm*(jmod-1)
+            write (ifr, '(A24,I3)') 'MODE EN EAU AU REPOS NO ', jmod
+            icomp = ivcpr+nbm*(jmod-1)
             do imod = 1, nbm
-                write(ifr,'(G23.16,1X,A23,I3)') zr(icomp+imod-1),&
-                'SUIVANT MODE EN AIR NO ',imod
+                write (ifr, '(G23.16,1X,A23,I3)') zr(icomp+imod-1), &
+                    'SUIVANT MODE EN AIR NO ', imod
             end do
-            write(ifr,*)
+            write (ifr, *)
         end do
-        write(ifr,*)
-        write(ifr,*) 'MASSES MODALES'
+        write (ifr, *)
+        write (ifr, *) 'MASSES MODALES'
         do imod = 1, nbm
-            write(ifr,'(I3,1X,G23.16)') imod,masg(imod)
+            write (ifr, '(I3,1X,G23.16)') imod, masg(imod)
         end do
-        write(ifr,*)
+        write (ifr, *)
 !
 !-------6.2.2.CALCUL DES NOUVEAUX PARAMETRES MODAUX SOUS ECOULEMENT
 !
-        call pacouc(typflu, zr(imaj), zr(iorco), zr(ivabs), zr(icoef),&
-                    masg, freq, zr(iamfr), nbm, imasse,&
-                    npv, zr(iwork), zi(iicoq), zr( igeom), zr(ivcpr),&
+        call pacouc(typflu, zr(imaj), zr(iorco), zr(ivabs), zr(icoef), &
+                    masg, freq, zr(iamfr), nbm, imasse, &
+                    npv, zr(iwork), zi(iicoq), zr(igeom), zr(ivcpr), &
                     ier)
 !
 !-------6.2.3.CALCUL D'UN CRITERE DE POIDS DES TERMES EXTRADIAGONAUX
 !             DE LA MATRICE B(S) PAR RAPPORT AUX TERMES DIAGONAUX
 !
-        if (nbm .gt. 1) call poibij(npv, zr(ivabs), zr(igeom), zr(lfsvr), nbm,&
-                                    zi(iicoq), zr(iorco), zr(icoef), freq, imasse,&
-                                    zr(imaj), zr( ivcpr))
+        if (nbm .gt. 1) call poibij(npv, zr(ivabs), zr(igeom), zr(lfsvr), nbm, &
+                                    zi(iicoq), zr(iorco), zr(icoef), freq, imasse, &
+                                    zr(imaj), zr(ivcpr))
 !
-    endif
+    end if
 !
 !
 ! --- 7.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES ---
 !
     if (nivpar .eq. 1 .or. nivdef .eq. 1) then
-        carac(1)=2.d0*hmoy
-        carac(2)=0.d0
-        calcul(1)=.true.
-        calcul(2)=.false.
-        call fluimp(4, nivpar, nivdef, melflu, typflu,&
-                    nuor, freq, zr( ifreqi), nbm, vite,&
+        carac(1) = 2.d0*hmoy
+        carac(2) = 0.d0
+        calcul(1) = .true.
+        calcul(2) = .false.
+        call fluimp(4, nivpar, nivdef, melflu, typflu, &
+                    nuor, freq, zr(ifreqi), nbm, vite, &
                     npv, carac, calcul, [0.d0])
-    endif
+    end if
 !
 ! --- MENAGE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrChckTrunc(paraTrunc, lReuse)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dismoi.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/romModeChck.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Trunc), intent(in) :: paraTrunc
-aster_logical, intent(in) :: lReuse
+    type(ROM_DS_ParaDBR_Trunc), intent(in) :: paraTrunc
+    aster_logical, intent(in) :: lReuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,25 +54,25 @@ aster_logical, intent(in) :: lReuse
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','ROM18_42')
-    endif
+        call utmess('I', 'ROM18_42')
+    end if
 !
 ! - Get parameters
 !
-    mode      = paraTrunc%baseInit%mode
+    mode = paraTrunc%baseInit%mode
     modeModel = mode%model
-    modeMesh  = mode%mesh
+    modeMesh = mode%mesh
     baseModel = paraTrunc%modelRom
 !
 ! - Check mesh
 !
-    call dismoi('NOM_MAILLA', baseModel, 'MODELE'  , repk = baseMesh)
+    call dismoi('NOM_MAILLA', baseModel, 'MODELE', repk=baseMesh)
     if (modeMesh .ne. baseMesh) then
         call utmess('F', 'ROM18_43')
-    endif
+    end if
     if (modeModel .eq. baseModel) then
         call utmess('F', 'ROM18_44')
-    endif
+    end if
 !
 ! - Check empiric mode
 !
@@ -84,13 +84,13 @@ aster_logical, intent(in) :: lReuse
     if (lReuse) then
         if (baseInitName .ne. ' ') then
             call utmess('F', 'ROM18_21')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Only on nodal fields
 !
     if (mode%fieldSupp .ne. 'NOEU') then
-        call utmess('F','ROM18_45')
-    endif
+        call utmess('F', 'ROM18_45')
+    end if
 !
 end subroutine

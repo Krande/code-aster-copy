@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
-                  ilfin, ndigit, ndeci, isingu, npvneg,&
+subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
+                  ilfin, ndigit, ndeci, isingu, npvneg, &
                   iret, solvop)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -101,7 +101,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     character(len=40) ::  valk(2)
     character(len=3) :: mathpc
     integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
-    integer :: ifm, niv,  nom, neq,  iretp, npvnez, neqg, jnequ
+    integer :: ifm, niv, nom, neq, iretp, npvnez, neqg, jnequ
     integer :: typvar, typsym, nbbloc, ilfin1, iexi
     integer :: ieq3, isingu, ieq, ndeci, jdigs, npivot
     integer :: ndeci1, ndeci2, ieq4, nzero, vali(6), ipiv
@@ -115,75 +115,75 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     integer, pointer :: lc2m(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
-    nom=zi(lmat+1)
-    neq=zi(lmat+2)
-    typvar=zi(lmat+3)
-    cbid=dcmplx(0.d0,0.d0)
-    typsym=zi(lmat+4)
-    noma19=zk24(nom)(1:19)
-    metres=metrez
-    ieq4=0
-    iretz=0
-    npivot=0
+    nom = zi(lmat+1)
+    neq = zi(lmat+2)
+    typvar = zi(lmat+3)
+    cbid = dcmplx(0.d0, 0.d0)
+    typsym = zi(lmat+4)
+    noma19 = zk24(nom) (1:19)
+    metres = metrez
+    ieq4 = 0
+    iretz = 0
+    npivot = 0
 !
 !
 !
     if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
         call utmess('F', 'ALGELINE4_1')
-    endif
+    end if
 !
 !   -- DDLS ELIMINES :
     call jeveuo(noma19//'.REFA', 'L', vk24=refa)
-    ASSERT(refa(3).ne.'ELIMF')
+    ASSERT(refa(3) .ne. 'ELIMF')
     if (refa(3) .eq. 'ELIML') call mtmchc(noma19, 'ELIMF')
-    ASSERT(refa(3).ne.'ELIML')
+    ASSERT(refa(3) .ne. 'ELIML')
 !
     call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
-    ASSERT(nu.ne.' ')
-    ASSERT(refa(2)(1:14).eq.nu)
+    ASSERT(nu .ne. ' ')
+    ASSERT(refa(2) (1:14) .eq. nu)
 !
     call infdbg('FACTOR', ifm, niv)
     if (niv .eq. 2) then
         valk(1) = noma19
         valk(2) = metres
-        call utmess('I', 'FACTOR3_9', nk = 2, valk = valk)
+        call utmess('I', 'FACTOR3_9', nk=2, valk=valk)
         if (typsym .eq. 1) then
             call utmess('I', 'FACTOR3_2')
         else
             call utmess('I', 'FACTOR3_10')
-        endif
+        end if
         if (typvar .eq. 1) then
             call utmess('I', 'FACTOR3_4')
         else
             call utmess('I', 'FACTOR3_11')
-        endif
-    endif
+        end if
+    end if
 !
 !   -- EST-ON EN HPC :
     call dismoi('MATR_HPC', noma19, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc.eq.'OUI'
+    lmhpc = mathpc .eq. 'OUI'
     neqg = -1
     if (lmhpc) then
         call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
         neqg = zi(jnequ+1)
-    endif
+    end if
 !
 !   -- VALEUR DE NDIGIT PAR DEFAUT : 8
     if (ndigit .eq. 0) then
-        ndigi2=8
+        ndigi2 = 8
     else
-        ndigi2=ndigit
-    endif
+        ndigi2 = ndigit
+    end if
 
 !   -- ON NE PERMET PAS LE DEBRANCHEMENT DE LA RECHERCHE DE SINGU
 !        LARITE AVEC LDLT ET MULT_FRONT (POUR L'INSTANT)
-    if (metres .ne. 'MUMPS') ndigi2=abs(ndigi2)
+    if (metres .ne. 'MUMPS') ndigi2 = abs(ndigi2)
 !
     if (ilfin .lt. ildeb .or. ilfin .gt. neq) then
-        ilfin1=neq
+        ilfin1 = neq
     else
-        ilfin1=ilfin
-    endif
+        ilfin1 = ilfin
+    end if
 !
 !   ON ALLOUE (SI NECESSAIRE) UN VECTEUR QUI CONTIENDRA
 !   LA DIAGONALE "AVANT" ET LA DIAGONALE "APRES" :
@@ -194,67 +194,66 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !   ---------------------------------------
 !       -- ALLOCATION DE LA MATRICE FACTORISEE (.UALF)  ET RECOPIE
 !          DE .VALM DANS .UALF
-        if ((noma19.ne.'&&OP0070.RESOC.MATC') .and. (noma19.ne.'&&OP0070.RESUC.MATC')) then
+        if ((noma19 .ne. '&&OP0070.RESOC.MATC') .and. (noma19 .ne. '&&OP0070.RESUC.MATC')) then
             call ualfcr(noma19, ' ')
-        endif
+        end if
         call jelira(noma19//'.UALF', 'NMAXOC', nbbloc)
 !
-        stolci=nu//'.SLCS'
+        stolci = nu//'.SLCS'
         call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
         call jeveuo(stolci//'.SCBL', 'L', vi=scbl)
         call jeveuo(stolci//'.SCHC', 'L', vi=schc)
         if (typvar .eq. 1) then
             if (typsym .eq. 1) then
-                call tldlr8(noma19, schc, scdi, scbl, npivot,&
+                call tldlr8(noma19, schc, scdi, scbl, npivot, &
                             neq, nbbloc, ildeb, ilfin1, eps)
-            else if (typsym.eq.0) then
-                call tldur8(noma19, schc, scdi, scbl, npivot,&
+            else if (typsym .eq. 0) then
+                call tldur8(noma19, schc, scdi, scbl, npivot, &
                             neq, nbbloc/2, ildeb, ilfin1, eps)
-            endif
+            end if
 !
-        else if (typvar.eq.2) then
+        else if (typvar .eq. 2) then
             if (typsym .eq. 1) then
-                call tldlc8(noma19, schc, scdi, scbl, npivot,&
+                call tldlc8(noma19, schc, scdi, scbl, npivot, &
                             neq, nbbloc, ildeb, ilfin1, eps)
-            else if (typsym.eq.0) then
-                call tlduc8(noma19, schc, scdi, scbl, npivot,&
+            else if (typsym .eq. 0) then
+                call tlduc8(noma19, schc, scdi, scbl, npivot, &
                             neq, nbbloc/2, ildeb, ilfin1, eps)
-            endif
-        endif
+            end if
+        end if
 
-
-    else if (metres.eq.'MULT_FRONT') then
+    else if (metres .eq. 'MULT_FRONT') then
 !   ---------------------------------------
         if (typvar .eq. 1) then
-            call mulfr8(noma19, npivot, neq, typsym, eps,&
+            call mulfr8(noma19, npivot, neq, typsym, eps, &
                         renum)
-        else if (typvar.eq.2) then
-            call mlfc16(noma19, npivot, neq, typsym, eps,&
+        else if (typvar .eq. 2) then
+            call mlfc16(noma19, npivot, neq, typsym, eps, &
                         renum)
-        endif
+        end if
 !
 !
-    else if (metres.eq.'MUMPS') then
+    else if (metres .eq. 'MUMPS') then
 !   ---------------------------------------
-        call amumph('DETR_OCC', solvop, noma19, [0.d0], [cbid],&
+        call amumph('DETR_OCC', solvop, noma19, [0.d0], [cbid], &
                     ' ', 0, iretz, .true._1)
-        call amumph('PRERES', solvop, noma19, [0.d0], [cbid],&
+        call amumph('PRERES', solvop, noma19, [0.d0], [cbid], &
                     ' ', 0, iretz, .true._1)
 !
 !       -- mumps ne nous dit pas le nombre de decimales reellement perdues :
-        ndeci=-999
+        ndeci = -999
 !
-        nzero=-999
-        iretp=0
-        kpiv='&&AMUMP.PIVNUL'
+        nzero = -999
+        iretp = 0
+        kpiv = '&&AMUMP.PIVNUL'
         if (iretz .eq. 2) then
 !     -- LA FACTORISATION NE S'EST PAS BIEN PASSEE. PEUT IMPORTE LA VALEUR
 !        NPREC ET L'ACTIVATION OU NON DE LA RECHERCHE DE SINGULARITE.
 !        MATRICE SINGULIERE NUMERIQUEMENT OU EN STRUCTURE (DETECTE EN
 !        AMONT DS AMUMPH. ON NE SAIT PAS PRECISER ISINGU CONTRAIREMENT A
 !        MF/LDLT. ON MET ISINGU=-999 ARBITRAIREMENT)
-            isingu=-999
-            npivot=-999
+            isingu = -999
+            npivot = -999
         else
             if (ndigi2 .gt. 0) then
 !     -- ON RECUPERE LE TABLEAU DONNANT SUR LA LISTE DES PIVOTS NON-NULS
@@ -264,7 +263,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     call jeveuo(kpiv, 'L', ipiv)
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !    -- LE PREMIER ELEMENT DU TABLEAU CORRESPOND A INFOG(28)
 !    -- IL INDIQUE LE NOMBRE DE PIVOTS INFERIEUR A UN CERTAIN SEUIL
 !       DEFINI DANS AMUMPR
@@ -283,188 +282,185 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !               -- LA FACTORISATION S'EST BIEN PASSEE. ON CHERCHE LES SINGULARITES
                 if (zi(ipiv) .eq. 0) then
 !                   -- PAS DE SINGULARITE
-                    iretz=0
-                    isingu=-999
-                    npivot=-zi(ipiv+1)
-                else if (zi(ipiv).gt.0) then
+                    iretz = 0
+                    isingu = -999
+                    npivot = -zi(ipiv+1)
+                else if (zi(ipiv) .gt. 0) then
 !                   -- AU MOINS UNE SINGULARITE
-                    iretz=1
-                    isingu=zi(ipiv+2)
+                    iretz = 1
+                    isingu = zi(ipiv+2)
                     if (lmhpc) then
-                        ASSERT(isingu.gt.0 .and. isingu.le.neqg)
+                        ASSERT(isingu .gt. 0 .and. isingu .le. neqg)
                     else
-                        ASSERT(isingu.gt.0 .and. isingu.le.neq)
-                    endif
-                    npivot=-zi(ipiv+1)
+                        ASSERT(isingu .gt. 0 .and. isingu .le. neq)
+                    end if
+                    npivot = -zi(ipiv+1)
                 else
                     ASSERT(.false.)
-                endif
+                end if
             else
 !               -- LA FACTO S'EST BIEN PASSEE ET ON NE CHERCHE PAS A TESTER LES
 !                  EVENTUELLES SINGULARITES
-                isingu=-999
-                npivot=-999
-            endif
-        endif
+                isingu = -999
+                npivot = -999
+            end if
+        end if
         if (iretp .ne. 0) call jedetr(kpiv)
-    endif
+    end if
 !
 !
 !     -- CALCUL DE NPVNEG :
 !     ---------------------
     if (npivot .lt. 0) then
-        npvnez=npivot
+        npvnez = npivot
     else
-        npvnez=0
-    endif
+        npvnez = 0
+    end if
 !
 !
 !   -- Calcul du code retour: iretz, ndeci et isingu:
 !   ------------------------------------------------
     if (metres(1:5) .ne. 'MUMPS') then
         if (npivot .gt. 0) then
-            iretz=2
-            ndeci=-999
-            isingu=npivot
-            ASSERT(isingu.gt.0 .and. isingu.le.neq)
+            iretz = 2
+            ndeci = -999
+            isingu = npivot
+            ASSERT(isingu .gt. 0 .and. isingu .le. neq)
         else
 !
 !           -- On regarde ce que sont devenus les termes diagonaux :
 !           -------------------------------------------------------
             call jeveuo(noma19//'.DIGS', 'L', jdigs)
-            dmax=0.d0
-            dmin=r8maem()
-            nzero=0
+            dmax = 0.d0
+            dmin = r8maem()
+            nzero = 0
             do ieq = ildeb, ilfin1
                 if (typvar .eq. 1) then
-                    d1=abs(zr(jdigs-1+ieq)/zr(jdigs+neq-1+ieq))
+                    d1 = abs(zr(jdigs-1+ieq)/zr(jdigs+neq-1+ieq))
                 else
-                    d1=abs(zc(jdigs-1+ieq)/zc(jdigs+neq-1+ieq))
-                endif
+                    d1 = abs(zc(jdigs-1+ieq)/zc(jdigs+neq-1+ieq))
+                end if
                 if (d1 .gt. dmax) then
-                    dmax=d1
-                    ieq3=ieq
-                endif
+                    dmax = d1
+                    ieq3 = ieq
+                end if
                 if (d1 .eq. 0.d0) then
-                    nzero=nzero+1
+                    nzero = nzero+1
                 else
                     if (d1 .lt. dmin) then
-                        dmin=d1
-                        ieq4=ieq
-                    endif
-                endif
+                        dmin = d1
+                        ieq4 = ieq
+                    end if
+                end if
             end do
-            ASSERT(dmax.gt.0.d0)
-            ndeci1=int(log10(dmax))
-            ndeci2=int(log10(1.d0/dmin))
-            ndeci=ndeci1
-            isingu=ieq3
-            ASSERT(isingu.gt.0 .and. isingu.le.neq)
+            ASSERT(dmax .gt. 0.d0)
+            ndeci1 = int(log10(dmax))
+            ndeci2 = int(log10(1.d0/dmin))
+            ndeci = ndeci1
+            isingu = ieq3
+            ASSERT(isingu .gt. 0 .and. isingu .le. neq)
             if (ndeci .ge. ndigi2) then
-                iretz=1
+                iretz = 1
             else
-                iretz=0
-            endif
-        endif
-    endif
-
-
+                iretz = 0
+            end if
+        end if
+    end if
 
 !   -- Emission eventuelle d'un message d'erreur :
 !   ----------------------------------------------
-    if ((ndigi2.lt.0) .and. (metres.eq.'MUMPS')) goto 30
+    if ((ndigi2 .lt. 0) .and. (metres .eq. 'MUMPS')) goto 30
 
-    if (iretz.eq.0) then
+    if (iretz .eq. 0) then
         goto 20
     else if (istop .eq. 2) then
-        codmes='I'
-    else if (istop.eq.1) then
+        codmes = 'I'
+    else if (istop .eq. 1) then
         if (iretz .eq. 1) then
-            codmes='A'
-        else if (iretz.eq.2) then
-            codmes='F'
+            codmes = 'A'
+        else if (iretz .eq. 2) then
+            codmes = 'F'
         else
             ASSERT(.false.)
-        endif
-    else if (istop.eq.0) then
-        codmes='F'
-    endif
+        end if
+    else if (istop .eq. 0) then
+        codmes = 'F'
+    end if
 
 !   -- si LDLT et si stolci.LC2M existe et si isingu > 0, il faut en tenir compte :
-    if (metres.eq.'LDLT') then
-        if (isingu.gt.0) then
+    if (metres .eq. 'LDLT') then
+        if (isingu .gt. 0) then
             call jeexin(stolci//'.LC2M', iexi)
-            if (iexi.gt.0) then
-                call jeveuo(stolci//'.LC2M', 'L',vi=lc2m)
-                isingu=lc2m(isingu)
-            endif
-        endif
-    endif
+            if (iexi .gt. 0) then
+                call jeveuo(stolci//'.LC2M', 'L', vi=lc2m)
+                isingu = lc2m(isingu)
+            end if
+        end if
+    end if
 
+    ASSERT(isingu .eq. -999 .or. isingu .gt. 0)
+    vali(1) = isingu
 
-    ASSERT(isingu.eq.-999 .or. isingu.gt.0)
-    vali(1)=isingu
-
-    ASSERT(ndeci.eq.-999 .or. ndeci.ge.0)
+    ASSERT(ndeci .eq. -999 .or. ndeci .ge. 0)
     if (isingu .eq. -999) then
-        ASSERT(ndeci.eq.-999)
-    endif
-    vali(2)=ndeci
+        ASSERT(ndeci .eq. -999)
+    end if
+    vali(2) = ndeci
 !
 ! - Error
 !
-    if (isingu.eq.-999) then
+    if (isingu .eq. -999) then
         call utmess(codmes, 'FACTOR_12')
-    endif
+    end if
     if (isingu .gt. 0) then
-        if (refa(20) =='') then
-          if (lmhpc) then
-            call utmess('I', 'FACTOR2_7')
-          else
-            call rgndas(nu, isingu, l_print = .true.)
-          endif
-        endif
-        if (ndeci.eq.-999) then
+        if (refa(20) == '') then
+            if (lmhpc) then
+                call utmess('I', 'FACTOR2_7')
+            else
+                call rgndas(nu, isingu, l_print=.true.)
+            end if
+        end if
+        if (ndeci .eq. -999) then
             call utmess(codmes, 'FACTOR_11', si=isingu)
         else
             call utmess(codmes, 'FACTOR_10', ni=2, vali=vali)
-        endif
-    endif
- 20 continue
+        end if
+    end if
+20  continue
 
 !   -- impressions info=2 :
 !   ------------------------
     if (niv .eq. 2) then
-        call utmess('I', 'FACTOR3_12', sk = noma19)
+        call utmess('I', 'FACTOR3_12', sk=noma19)
         if (nzero .gt. 0) then
-            call utmess('I', 'FACTOR3_13', si = nzero)
-        endif
+            call utmess('I', 'FACTOR3_13', si=nzero)
+        end if
         vali(1) = ndigi2
         vali(2) = ndeci
         vali(3) = isingu
         vali(4) = -npvnez
         vali(5) = istop
         vali(6) = iretz
-        call utmess('I', 'FACTOR3_14', ni = 6, vali = vali)
+        call utmess('I', 'FACTOR3_14', ni=6, vali=vali)
 !
 !       -- ALARME EVENTUELLE SI LE PIVOT DEVIENT TROP GRAND :
-        if ((metres.ne.'MUMPS') .and. (ndeci2.ge.ndigi2)) then
-            ASSERT(ieq4.gt.0 .and. ieq4.le.neq)
-            if (refa(20) =='') then
-            call rgndas(nu, ieq4, l_print = .true.)
-            endif
+        if ((metres .ne. 'MUMPS') .and. (ndeci2 .ge. ndigi2)) then
+            ASSERT(ieq4 .gt. 0 .and. ieq4 .le. neq)
+            if (refa(20) == '') then
+                call rgndas(nu, ieq4, l_print=.true.)
+            end if
             vali(1) = ieq4
             vali(2) = ndeci2
-            call utmess('I', 'FACTOR3_15', ni = 2, vali = vali)
-        endif
-    endif
+            call utmess('I', 'FACTOR3_15', ni=2, vali=vali)
+        end if
+    end if
 !
 !
- 30 continue
+30  continue
 !
 !
-    iret=iretz
-    npvneg=npvnez
+    iret = iretz
+    npvneg = npvnez
     call jedema()
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine intega(npgf, jac, poidsf, vectx, vecty,&
-                  vectz, mat11, mat22, mat33, mat12,&
-                  mat13, mat23, nx, ny, nz,&
+subroutine intega(npgf, jac, poidsf, vectx, vecty, &
+                  vectz, mat11, mat22, mat33, mat12, &
+                  mat13, mat23, nx, ny, nz, &
                   inte)
     implicit none
     integer :: npgf
@@ -60,16 +60,16 @@ subroutine intega(npgf, jac, poidsf, vectx, vecty,&
     integer :: ipgf
 ! ----------------------------------------------------------------------
 !
-    inte=0.0d0
+    inte = 0.0d0
 !
-    do 10 , ipgf = 1 , npgf
+    do 10, ipgf = 1, npgf
 !
-    inte=inte+((vectx(ipgf)-mat11(ipgf)*nx(ipgf) -mat12(ipgf)*ny(&
-        ipgf)-mat13(ipgf)*nz(ipgf))**2 +(vecty(ipgf)-mat12(ipgf)*nx(&
-        ipgf) -mat22(ipgf)*ny(ipgf)-mat23(ipgf)*nz(ipgf))**2 +(vectz(&
-        ipgf)-mat13(ipgf)*nx(ipgf) -mat23(ipgf)*ny(ipgf)-mat33(ipgf)*&
-        nz(ipgf))**2) *poidsf(ipgf)*jac(ipgf)
+        inte = inte+((vectx(ipgf)-mat11(ipgf)*nx(ipgf)-mat12(ipgf)*ny( &
+                      ipgf)-mat13(ipgf)*nz(ipgf))**2+(vecty(ipgf)-mat12(ipgf)*nx( &
+                                       ipgf)-mat22(ipgf)*ny(ipgf)-mat23(ipgf)*nz(ipgf))**2+(vectz( &
+                                      ipgf)-mat13(ipgf)*nx(ipgf)-mat23(ipgf)*ny(ipgf)-mat33(ipgf)* &
+                                                                nz(ipgf))**2)*poidsf(ipgf)*jac(ipgf)
 !
-    10 end do
+10  end do
 !
 end subroutine

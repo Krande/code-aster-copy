@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine granvi(elem_model, ndt_, ndi_, nvi_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -50,31 +50,31 @@ implicit none
     if (elem_model(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-        nvi = ndt * 9 + 1
-    else if (elem_model(1:6).eq.'D_PLAN'.or.elem_model(1:4).eq.'AXIS') then
+        nvi = ndt*9+1
+    else if (elem_model(1:6) .eq. 'D_PLAN' .or. elem_model(1:4) .eq. 'AXIS') then
         ndt = 4
         ndi = 3
-        nvi = ndt * 9 + 1
-    else if (elem_model(1:6).eq.'C_PLAN') then
+        nvi = ndt*9+1
+    else if (elem_model(1:6) .eq. 'C_PLAN') then
         ndt = 4
         ndi = 3
-        nvi = ndt * 9 + 1
-    else if (elem_model(1:2).eq.'1D') then
+        nvi = ndt*9+1
+    else if (elem_model(1:2) .eq. '1D') then
         ndt = 3
         ndi = 3
-        nvi = ndt * 9 + 1
+        nvi = ndt*9+1
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (present(ndt_)) then
         ndt_ = ndt
-    endif
+    end if
     if (present(ndi_)) then
         ndi_ = ndi
-    endif
+    end if
     if (present(nvi_)) then
         nvi_ = nvi
-    endif
+    end if
 !
 end subroutine

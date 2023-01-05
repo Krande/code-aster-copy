@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,22 +56,21 @@ subroutine chreco(chou)
 
 !   -- verification : chin cham_no et complexe ?
     call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tych)
-    if (tych .ne. 'NOEU')  call utmess('F', 'UTILITAI_37', sk=chin)
+    if (tych .ne. 'NOEU') call utmess('F', 'UTILITAI_37', sk=chin)
     call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-    if (tsca .ne. 'C')  call utmess('F', 'UTILITAI_35', sk=chin)
+    if (tsca .ne. 'C') call utmess('F', 'UTILITAI_35', sk=chin)
 
 !   -- copie chin --> chou
     call copisd('CHAMP', 'G', chin, chou)
-
 
 !    modifications de chou:
 !    ======================
 
 !   -- 1. ".vale"
 !   -------------
-    vale=chou
-    vale(20:24)='.VALE'
+    vale = chou
+    vale(20:24) = '.VALE'
 
     call jelira(vale, 'LONMAX', nbval)
     call jedetr(vale)
@@ -79,31 +78,30 @@ subroutine chreco(chou)
     call jeecra(vale, 'LONMAX', nbval)
     call jeveuo(vale, 'E', jvale)
 
-    valin=vale
-    valin(1:19)=chin
+    valin = vale
+    valin(1:19) = chin
     call jeveuo(valin, 'L', jvalin)
 
     call getvtx(' ', 'PARTIE', scal=partie, nbret=iret)
 
-    c1=180.d0/r8pi()
+    c1 = 180.d0/r8pi()
     do i = 1, nbval
         if (partie .eq. 'REEL') then
-            zr(jvale+i-1)=dble(zc(jvalin+i-1))
-        else if (partie.eq.'IMAG') then
-            zr(jvale+i-1)=dimag(zc(jvalin+i-1))
-        else if (partie.eq.'MODULE') then
-            zr(jvale+i-1)=abs(zc(jvalin+i-1))
-        else if (partie.eq.'PHASE') then
-            x=dble(zc(jvalin+i-1))
-            y=dimag(zc(jvalin+i-1))
-            zr(jvale+i-1)=atan2(y,x)*c1
-        endif
+            zr(jvale+i-1) = dble(zc(jvalin+i-1))
+        else if (partie .eq. 'IMAG') then
+            zr(jvale+i-1) = dimag(zc(jvalin+i-1))
+        else if (partie .eq. 'MODULE') then
+            zr(jvale+i-1) = abs(zc(jvalin+i-1))
+        else if (partie .eq. 'PHASE') then
+            x = dble(zc(jvalin+i-1))
+            y = dimag(zc(jvalin+i-1))
+            zr(jvale+i-1) = atan2(y, x)*c1
+        end if
     end do
 
 !   -- 2. changement de la grandeur
 !   --------------------------------
     call sdchgd(chou, 'R')
-
 
     call jedema()
 

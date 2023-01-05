@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine te0280(option, nomte)
 !.......................................................................
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call jevech('PTHETAR', 'L', ithet)
     tcla = 0.d0
@@ -72,12 +72,12 @@ subroutine te0280(option, nomte)
     compt = 0
     epsi = 1.d-10
     do i = 1, nno
-        thetx = zr(ithet + 3*(i - 1) + 1 - 1)
-        thety = zr(ithet + 3*(i - 1) + 2 - 1)
-        thetz = zr(ithet + 3*(i - 1) + 3 - 1)
-        if ((abs(thetx).lt.epsi) .and. (abs(thety).lt.epsi) .and. (abs( thetz).lt.epsi)) then
-            compt = compt + 1
-        endif
+        thetx = zr(ithet+3*(i-1)+1-1)
+        thety = zr(ithet+3*(i-1)+2-1)
+        thetz = zr(ithet+3*(i-1)+3-1)
+        if ((abs(thetx) .lt. epsi) .and. (abs(thety) .lt. epsi) .and. (abs(thetz) .lt. epsi)) then
+            compt = compt+1
+        end if
     end do
     if (compt .eq. nno) goto 999
 !
@@ -96,10 +96,10 @@ subroutine te0280(option, nomte)
         nompar(4) = 'INST'
         valpar(4) = zr(itemps)
     else
-        fonc =.false.
+        fonc = .false.
         call jevech('PFR2D3D', 'L', iforc)
         call jevech('PPRESSR', 'L', ipres)
-    endif
+    end if
 !
 ! - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
 !
@@ -108,25 +108,25 @@ subroutine te0280(option, nomte)
             do j = 1, 3
                 valpar(j) = zr(igeom+3*(i-1)+j-1)
             end do
-            call fointe('FM', zk8(ipref), 4, nompar, valpar,&
+            call fointe('FM', zk8(ipref), 4, nompar, valpar, &
                         presn(i), icode)
             do j = 1, 3
-                call fointe('FM', zk8(iforf+j-1), 4, nompar, valpar,&
+                call fointe('FM', zk8(iforf+j-1), 4, nompar, valpar, &
                             forcn(3*(i-1)+j), icode)
             end do
         end do
-    endif
+    end if
 !
 ! CALCUL DU REPERE LOCAL ( A1, A2, A3)
 !
     do j = 1, 3
-        a1(j) = zr(igeom+3*(2-1)+j-1)- zr(igeom+3*(1-1)+j-1)
-        a2(j) = zr(igeom+3*(3-1)+j-1)- zr(igeom+3*(1-1)+j-1)
+        a1(j) = zr(igeom+3*(2-1)+j-1)-zr(igeom+3*(1-1)+j-1)
+        a2(j) = zr(igeom+3*(3-1)+j-1)-zr(igeom+3*(1-1)+j-1)
     end do
 !
-    a3(1) = a1(2)*a2(3)- a1(3)*a2(2)
-    a3(2) = a1(3)*a2(1)- a1(1)*a2(3)
-    a3(3) = a1(1)*a2(2)- a1(2)*a2(1)
+    a3(1) = a1(2)*a2(3)-a1(3)*a2(2)
+    a3(2) = a1(3)*a2(1)-a1(1)*a2(3)
+    a3(3) = a1(1)*a2(2)-a1(2)*a2(1)
 !
 ! CALCUL DU REPERE LOCAL ORTHONORME ( I1, I2, A3)
 !
@@ -138,19 +138,19 @@ subroutine te0280(option, nomte)
     i2norm = sqrt(i2(1)*i2(1)+i2(2)*i2(2)+i2(3)*i2(3))
     a3norm = sqrt(a3(1)*a3(1)+a3(2)*a3(2)+a3(3)*a3(3))
     do i = 1, 3
-        i1(i) = a1(i) / a1norm
-        i2(i) = i2(i) / i2norm
-        a3(i) = a3(i) / a3norm
+        i1(i) = a1(i)/a1norm
+        i2(i) = i2(i)/i2norm
+        a3(i) = a3(i)/a3norm
     end do
 !
     do i = 1, nno
         coor(2*i-1) = 0.d0
-        coor(2*i ) = 0.d0
+        coor(2*i) = 0.d0
         do j = 1, 3
-            coor(2*i-1)= coor(2*i-1)+( zr(igeom+3*(i-1)+j-1)- zr(&
-            igeom+j-1))*i1(j)
-            coor(2*i )= coor(2*i )+( zr(igeom+3*(i-1)+j-1)- zr(igeom+&
-            j-1))*i2(j)
+            coor(2*i-1) = coor(2*i-1)+(zr(igeom+3*(i-1)+j-1)-zr( &
+                                       igeom+j-1))*i1(j)
+            coor(2*i) = coor(2*i)+(zr(igeom+3*(i-1)+j-1)-zr(igeom+ &
+                                                            j-1))*i2(j)
         end do
     end do
 !
@@ -173,28 +173,28 @@ subroutine te0280(option, nomte)
 !
         do i = 1, nno
             do j = 1, 3
-                coorg(j) = coorg(j)+zr(ivf+k+i-1)*zr(igeom+3*(i-1)+j- 1)
+                coorg(j) = coorg(j)+zr(ivf+k+i-1)*zr(igeom+3*(i-1)+j-1)
             end do
         end do
 !
-        call dfdm2d(nno, kp, ipoids, idfde, coor,&
+        call dfdm2d(nno, kp, ipoids, idfde, coor, &
                     poids, dfdx, dfdy)
 !
         if (fonc) then
             do j = 1, 3
                 valpar(j) = coorg(j)
             end do
-            call fointe('FM', zk8(ipref), 4, nompar, valpar,&
+            call fointe('FM', zk8(ipref), 4, nompar, valpar, &
                         presg, icode)
             do j = 1, 3
-                call fointe('FM', zk8(iforf+j-1), 4, nompar, valpar,&
+                call fointe('FM', zk8(iforf+j-1), 4, nompar, valpar, &
                             forcg(j), icode)
             end do
 !
             do i = 1, nno
                 do j = 1, 3
-                    dford1(j) = dford1(j) + ( forcn(3*(i-1)+j) - presn(i)*a3(j) ) * dfdx(i)
-                    dford2(j) = dford2(j) + ( forcn(3*(i-1)+j) - presn(i)*a3(j) ) * dfdy(i)
+                    dford1(j) = dford1(j)+(forcn(3*(i-1)+j)-presn(i)*a3(j))*dfdx(i)
+                    dford2(j) = dford2(j)+(forcn(3*(i-1)+j)-presn(i)*a3(j))*dfdy(i)
                 end do
             end do
         else
@@ -203,37 +203,37 @@ subroutine te0280(option, nomte)
             forcg(2) = 0.d0
             forcg(3) = 0.d0
             do i = 1, nno
-                presg = presg + zr(ipres+i-1)*zr(ivf+k+i-1)
+                presg = presg+zr(ipres+i-1)*zr(ivf+k+i-1)
                 do j = 1, 3
-                    forcg(j)=forcg(j)+zr(iforc+3*(i-1)+j-1)*zr(ivf+k+&
-                    i-1)
+                    forcg(j) = forcg(j)+zr(iforc+3*(i-1)+j-1)*zr(ivf+k+ &
+                                                                 i-1)
                 end do
             end do
-        endif
+        end if
 !
         do i = 1, nno
             do j = 1, 3
-                depl(j) = depl(j)+ zr(ivf+k+i-1)*zr(idepl+3*(i-1)+j-1)
-                th1 = th1 + zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i1(j)
-                th2 = th2 + zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i2(j)
-                dth1d1= dth1d1+ zr(ithet+3*(i-1)+j-1)*i1(j)*dfdx(i)
-                dth2d2= dth2d2+ zr(ithet+3*(i-1)+j-1)*i2(j)*dfdy(i)
+                depl(j) = depl(j)+zr(ivf+k+i-1)*zr(idepl+3*(i-1)+j-1)
+                th1 = th1+zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i1(j)
+                th2 = th2+zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i2(j)
+                dth1d1 = dth1d1+zr(ithet+3*(i-1)+j-1)*i1(j)*dfdx(i)
+                dth2d2 = dth2d2+zr(ithet+3*(i-1)+j-1)*i2(j)*dfdy(i)
             end do
         end do
 !
         do j = 1, 3
-            dfor(j) = dfor(j) + dford1(j)*th1+dford2(j)*th2
+            dfor(j) = dfor(j)+dford1(j)*th1+dford2(j)*th2
         end do
 !
         divt = dth1d1+dth2d2
         do j = 1, 3
-            forc = forcg(j) - presg*a3(j)
-            tcla = tcla + poids*(forc*divt+dfor(j))*depl(j)
+            forc = forcg(j)-presg*a3(j)
+            tcla = tcla+poids*(forc*divt+dfor(j))*depl(j)
         end do
     end do
 999 continue
 !
-    tsom = tcla + tsurf + tsurp
+    tsom = tcla+tsurf+tsurp
     zr(igthet) = tsom
 !
 end subroutine

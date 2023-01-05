@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,25 +38,25 @@ subroutine jereou(clas, pcent)
 !-----------------------------------------------------------------------
     integer :: n
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
 !
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
     integer :: nitecr, kmarq
-    common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
-     &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
-     &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
+    common/ificje/nblmax(n), nbluti(n), longbl(n),&
+     &                 kitlec(n), kitecr(n), kiadm(n),&
+     &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
 !
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
     character(len=8) :: nombas
-    common /kbasje/  nombas(n)
+    common/kbasje/nombas(n)
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
 ! DEB ------------------------------------------------------------------
     character(len=1) :: klas
     character(len=8) :: kstin, kstou, nom, nomb
@@ -65,7 +65,7 @@ subroutine jereou(clas, pcent)
 !
     klas = clas
     ASSERT(klas .ne. ' ')
-    ic = index (classe , klas)
+    ic = index(classe, klas)
 !
     nomb = nombas(ic)
     nom = nomb(1:4)//'.?  '
@@ -76,19 +76,19 @@ subroutine jereou(clas, pcent)
     kstou = kstout(ic)
 !
     if (nbluti(ic) .gt. pcent*nblmax(ic)) then
-        valr (1) = 100.d0*nbluti(ic)/nblmax(ic)
-        valr (2) = 100.d0*pcent
-        vali (1) = nbluti(ic)
-        vali (2) = nint(nbluti(ic)*longbl(ic)*lois/1024.d0)
-        vali (3) = nblmax(ic)
-        call utmess('I', 'JEVEUX_63', sk=nombas(ic), ni=3, vali=vali,&
+        valr(1) = 100.d0*nbluti(ic)/nblmax(ic)
+        valr(2) = 100.d0*pcent
+        vali(1) = nbluti(ic)
+        vali(2) = nint(nbluti(ic)*longbl(ic)*lois/1024.d0)
+        vali(3) = nblmax(ic)
+        call utmess('I', 'JEVEUX_63', sk=nombas(ic), ni=3, vali=vali, &
                     nr=2, valr=valr)
         info = 0
         call jelibf('DETRUIT', klas, info)
         call lxmins(nom)
         call rmfile(nom, 0, iret)
-        call jeinif(kstin, kstou, nomb, klas, nrep,&
+        call jeinif(kstin, kstou, nomb, klas, nrep, &
                     nbloc, lbloc)
-    endif
+    end if
 !
 end subroutine

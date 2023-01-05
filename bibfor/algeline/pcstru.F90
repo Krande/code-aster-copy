@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pcstru(n, in, ip, icpl, icpc,&
-                  icpd, icpcx, icplx, niveau, complt,&
+subroutine pcstru(n, in, ip, icpl, icpc, &
+                  icpd, icpcx, icplx, niveau, complt, &
                   lca, imp, ier)
     implicit none
 !
@@ -61,7 +61,7 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 ! IN-IP---> IPL-IPC
 ! =================
     AS_ALLOCATE(vi=ind, size=n)
-    call pcfalu(n, in, ip, icpl, icpc,&
+    call pcfalu(n, in, ip, icpl, icpc, &
                 ind, imp)
 !
 ! INITIALISATION
@@ -74,12 +74,12 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
     do niv = 1, niveau
         nz = icpl(n)
         if (niv .lt. niveau) then
-            call pcfull(n, icpl, icpc, icpd, icplx,&
+            call pcfull(n, icpl, icpc, icpd, icplx, &
                         icpcx, ind, lca, ier)
         else
-            call pcinfe(n, icpl, icpc, icpd, icplx,&
+            call pcinfe(n, icpl, icpc, icpd, icplx, &
                         icpcx, ind, lca, ier)
-        endif
+        end if
 !
         if (ier .gt. 0) goto 50
 !
@@ -88,10 +88,10 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !         WRITE (6,4000) NIV
             complt = .true.
             goto 20
-        endif
+        end if
     end do
 !
- 20 continue
+20  continue
 !
 ! ICPL,ICPC FORMAT LU ---> FORMAT SYMETRIQUE
 ! ================================
@@ -100,21 +100,21 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
     do i = 2, n
 !                  ATTENTION ICPL(0:N)
         icpl(i-2) = kk
-        k1 = icpl(i-1) + 1
+        k1 = icpl(i-1)+1
         k2 = icpd(i)
         do k = k1, k2
-            kk = kk + 1
+            kk = kk+1
             icpc(kk) = icpc(k)
         end do
 !   TERME DIAG
-        kk = kk + 1
+        kk = kk+1
         icpc(kk) = int(i, 4)
     end do
     icpl(n-1) = kk
     goto 60
 !
- 50 continue
- 60 continue
+50  continue
+60  continue
 !
     AS_DEALLOCATE(vi=ind)
 !

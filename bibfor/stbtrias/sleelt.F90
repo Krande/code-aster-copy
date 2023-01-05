@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
+subroutine sleelt(iunv, maxnod, nbtyma, indic, permut, &
                   nbmail, mint, mant, datset, inum)
 ! aslint: disable=
     implicit none
@@ -106,23 +106,23 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
     integer :: jconn, jinfo, ndeca, niter, nndec
 !-----------------------------------------------------------------------
     call jemarq()
-    imes=iunifi('MESSAGE')
+    imes = iunifi('MESSAGE')
 !
     inum = 0
 !
 ! --> LECTURE DES MAILLES DANS LE FICHIER UNIVERSEL
 !     ---------------------------------------------
     ipos = 0
-    it=0
-    icp=0
-    ino=0
-    ico=0
-    ibid2=1
+    it = 0
+    icp = 0
+    ino = 0
+    ico = 0
+    ibid2 = 1
     ndeca = 0
     niter = 1000
 !
-    nsizei=4000
-    nsizec=27000
+    nsizei = 4000
+    nsizec = 27000
 !
     call jeexin('&&PRESUP.INFO.MAILLE', ire1)
     if (ire1 .ne. 0) call jedetr('&&PRESUP.INFO.MAILLE')
@@ -131,18 +131,18 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
     if (ire1 .ne. 0) call jedetr('&&PRESUP.CONN.MAILLE')
     call wkvect('&&PRESUP.CONN.MAILLE', 'V V I', nsizec, jconn)
 !
-  1 continue
-    it=it+1
-    nndec=0
+1   continue
+    it = it+1
+    nndec = 0
 !
     do i = 1, niter
 !
-        read (iunv,fmt='(A)') cbuf
-        read (unit=cbuf,fmt='(I6)') ind
+        read (iunv, fmt='(A)') cbuf
+        read (unit=cbuf, fmt='(I6)') ind
 !
         if (inum .ne. 0) then
-            ico=codgra
-        endif
+            ico = codgra
+        end if
 !
         if (ind .eq. -1) goto 99
 !
@@ -150,76 +150,76 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
 !    (I-DEAS 4.0 OU I-DEAS 5.0)
 !
         if (datset .eq. 71) then
-            read(cbuf,'(7I10)') jnum,codgra,codmec,iprop,imat,icol,&
-            nbnode
-        else if ((datset.eq.82).or.(datset.eq.2431)) then
-            read(cbuf,'(3I10)') icol,nbnode,ibid2
-            jnum=1
-            codgra=1
-            iprop=1
-            imat=1
-            mint(codgra)=0
-            mant(codgra)=0
-            read(iunv,'(A)') cbuf
-        else if (datset.eq.780) then
-            read(cbuf,'(8I10)') jnum,coddes,iphyb,iprop,imatb,imat,&
-            icol, nbnode
-            if (coddes .eq. 11 .or. coddes .eq. 21 .or. coddes .eq. 22 .or. coddes .eq. 23&
+            read (cbuf, '(7I10)') jnum, codgra, codmec, iprop, imat, icol, &
+                nbnode
+        else if ((datset .eq. 82) .or. (datset .eq. 2431)) then
+            read (cbuf, '(3I10)') icol, nbnode, ibid2
+            jnum = 1
+            codgra = 1
+            iprop = 1
+            imat = 1
+            mint(codgra) = 0
+            mant(codgra) = 0
+            read (iunv, '(A)') cbuf
+        else if (datset .eq. 780) then
+            read (cbuf, '(8I10)') jnum, coddes, iphyb, iprop, imatb, imat, &
+                icol, nbnode
+            if (coddes .eq. 11 .or. coddes .eq. 21 .or. coddes .eq. 22 .or. coddes .eq. 23 &
                 .or. coddes .eq. 24) then
-                read(iunv,'(A)') cbuf
-            endif
+                read (iunv, '(A)') cbuf
+            end if
             call cov4v5(coddes, codgra)
-        else if (datset.eq.2412) then
-            read(cbuf,'(6I10)') jnum,coddes,iprop,imat,icol,nbnode
-            if (coddes .eq. 11 .or. coddes .eq. 21 .or. coddes .eq. 22 .or. coddes .eq. 23&
+        else if (datset .eq. 2412) then
+            read (cbuf, '(6I10)') jnum, coddes, iprop, imat, icol, nbnode
+            if (coddes .eq. 11 .or. coddes .eq. 21 .or. coddes .eq. 22 .or. coddes .eq. 23 &
                 .or. coddes .eq. 24) then
-                read(iunv,'(A)') cbuf
-            endif
+                read (iunv, '(A)') cbuf
+            end if
             call cov4v5(coddes, codgra)
-        endif
+        end if
 !
-        if ((datset.eq.82) .or. (datset.eq.2431)) then
+        if ((datset .eq. 82) .or. (datset .eq. 2431)) then
             call lect82(iunv, nod82, nbnode, jnum)
         else
-            call lecelt(iunv, maxnod, nbtyma, indic, permut,&
+            call lecelt(iunv, maxnod, nbtyma, indic, permut, &
                         codgra, node, nbnode)
-        endif
+        end if
 ! --> RECHERCHE DU N MIN ET N MAX POUR UNE CATEGORIE DE MAILLE
 !
-        inum = inum + 1
+        inum = inum+1
         if (ico .gt. 0 .and. ico .eq. codgra) then
-            mint(codgra)=min(jnum,mint(codgra))
-            mant(codgra)=max(jnum,mant(codgra))
+            mint(codgra) = min(jnum, mint(codgra))
+            mant(codgra) = max(jnum, mant(codgra))
         else
-            mint(codgra)=jnum
-            mant(codgra)=jnum
-        endif
-        nbmail(codgra) = nbmail(codgra) + 1
+            mint(codgra) = jnum
+            mant(codgra) = jnum
+        end if
+        nbmail(codgra) = nbmail(codgra)+1
 !
 ! --> ECRITURE DES MAILLES DANS LE FICHIER BUFFER IMA
 !
-        if ((datset.eq.82) .or. (datset.eq.2431)) then
+        if ((datset .eq. 82) .or. (datset .eq. 2431)) then
 !
-            nn=0
+            nn = 0
             do ino = 1, 2*(jnum-1)
                 if (nod82(ino) .ne. 0) then
-                    nn=nn+1
-                endif
+                    nn = nn+1
+                end if
             end do
 !
             if ((2*nn) .gt. nsizec) then
-                nsizec=4*nn
+                nsizec = 4*nn
                 call juveca('&&PRESUP.CONN.MAILLE', nsizec)
                 call jeveuo('&&PRESUP.CONN.MAILLE', 'E', jconn)
-            endif
+            end if
 !
             if ((ndeca+nn*4) .gt. nsizei) then
-                nsizei=2*(ndeca+nn*4)
+                nsizei = 2*(ndeca+nn*4)
                 call juveca('&&PRESUP.INFO.MAILLE', nsizei)
                 call jeveuo('&&PRESUP.INFO.MAILLE', 'E', jinfo)
-            endif
+            end if
 !
-            icp=0
+            icp = 0
             do ino = 1, 2*(jnum-1)
                 if (nod82(ino) .ne. 0) then
                     zi(jconn-1+ino) = nod82(ino)
@@ -228,29 +228,29 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
                     zi(jinfo-1+ndeca+(icp)*4+2) = codgra
                     zi(jinfo-1+ndeca+(icp)*4+3) = 2
                     zi(jinfo-1+ndeca+(icp)*4+4) = icol
-                    icp=icp+1
-                endif
+                    icp = icp+1
+                end if
             end do
-            nbmail(codgra) = jnum + nbmail(codgra)-2
-            ipos= ipos+nbnode
-            mint(codgra)=1
-            mant(codgra)=jnum-1
-            inum= jnum-1
-            nndec=nndec+4*icp
+            nbmail(codgra) = jnum+nbmail(codgra)-2
+            ipos = ipos+nbnode
+            mint(codgra) = 1
+            mant(codgra) = jnum-1
+            inum = jnum-1
+            nndec = nndec+4*icp
 !
         else
             if ((nbnode+ipos) .gt. nsizec) then
-                nsizec=2*(nbnode+ipos)
+                nsizec = 2*(nbnode+ipos)
                 call jeexin('&&PRESUP.CONN.MAILLE', iret)
                 call juveca('&&PRESUP.CONN.MAILLE', nsizec)
                 call jeveuo('&&PRESUP.CONN.MAILLE', 'E', jconn)
-            endif
+            end if
 !
             if ((ndeca+niter*4) .gt. nsizei) then
-                nsizei=2*(ndeca+niter*4)
+                nsizei = 2*(ndeca+niter*4)
                 call juveca('&&PRESUP.INFO.MAILLE', nsizei)
                 call jeveuo('&&PRESUP.INFO.MAILLE', 'E', jinfo)
-            endif
+            end if
 !
             zi(jinfo-1+ndeca+(i-1)*4+1) = jnum
             zi(jinfo-1+ndeca+(i-1)*4+2) = codgra
@@ -259,18 +259,18 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
             do ino = 1, nbnode
                 zi(jconn-1+ipos+ino) = node(ino)
             end do
-            ipos= ipos+nbnode
-            nndec=nndec+4
-        endif
+            ipos = ipos+nbnode
+            nndec = nndec+4
+        end if
 !
 !
 !
     end do
-    ndeca= ndeca+nndec
+    ndeca = ndeca+nndec
 !
     goto 1
- 99 continue
+99  continue
     imes = iunifi('MESSAGE')
-    write (imes,*) 'NOMBRE DE MAILLES :',inum
+    write (imes, *) 'NOMBRE DE MAILLES :', inum
     call jedema()
 end subroutine

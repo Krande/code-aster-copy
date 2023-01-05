@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine apcalc(pair_category, mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infdbg.h"
 #include "asterfort/apstos.h"
@@ -54,8 +54,8 @@ implicit none
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<Pairing> Compute ...'
-    endif
+        write (ifm, *) '<Pairing> Compute ...'
+    end if
 !
 ! - Pairing
 !
@@ -65,12 +65,12 @@ implicit none
         call apstos(mesh, ds_contact)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Debug print
 !
     if (niv .ge. 2) then
         call apimpr(pair_category, ifm, mesh, ds_contact)
-    endif
+    end if
 !
 end subroutine

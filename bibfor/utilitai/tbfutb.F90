@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
+subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
                   typpar, vi, vr, vc, vk)
     implicit none
 #include "jeveux.h"
@@ -73,7 +73,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    ASSERT(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base .eq. 'V' .or. base .eq. 'G')
 !
 !     --- VERIFICATION DES TABLES ---
 !
@@ -85,35 +85,35 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
         call jeexin(nomtab//'.TBBA', iret)
         if (iret .eq. 0) then
             call utmess('F', 'UTILITAI4_64')
-        endif
+        end if
 !
         call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-        nbpara = zi(jtbnp )
+        nbpara = zi(jtbnp)
         nblign = zi(jtbnp+1)
-        nbpart = nbpart + nbpara
-        nbpu = max ( nbpu , nblign )
+        nbpart = nbpart+nbpara
+        nbpu = max(nbpu, nblign)
         if (nbpara .eq. 0) then
             call utmess('F', 'UTILITAI4_65')
-        endif
+        end if
         if (nblign .eq. 0) then
             call utmess('F', 'UTILITAI4_66')
-        endif
+        end if
 !
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
         do j = 1, nbpara
             jnpar = zk24(jtblp+4*(j-1))
             if (inpar .eq. jnpar) then
-                valk (1) = jnpar
-                valk (2) = nomtab
+                valk(1) = jnpar
+                valk(2) = nomtab
                 call utmess('F', 'UTILITAI8_20', nk=2, valk=valk)
-            endif
+            end if
         end do
 !
     end do
 !
 !     --- ON ELIMINE LES PARAMETRES DOUBLONS ---
 !
-    nbpart = nbpart + 1
+    nbpart = nbpart+1
     AS_ALLOCATE(vk8=type_r, size=nbpart)
     AS_ALLOCATE(vk24=para_r, size=nbpart)
     ipar = 1
@@ -123,12 +123,12 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
     else
         para_r(1) = zk24(jtblp)
         type_r(1) = zk24(jtblp+1)
-    endif
+    end if
     do i = 1, ntab
         nomtab = ltabin(i)
         call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
-        nbpara = zi(jtbnp )
+        nbpara = zi(jtbnp)
         do j = 1, nbpara
             jnpar = zk24(jtblp+4*(j-1))
             type = zk24(jtblp+4*(j-1)+1)
@@ -137,18 +137,18 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                 ktype = type_r(k)
                 if (knpar .eq. jnpar) then
                     if (type .ne. ktype) then
-                        valk (1) = jnpar
-                        valk (2) = jnpar
-                        valk (3) = knpar
+                        valk(1) = jnpar
+                        valk(2) = jnpar
+                        valk(3) = knpar
                         call utmess('F', 'UTILITAI8_21', nk=3, valk=valk)
-                    endif
+                    end if
                     goto 22
-                endif
+                end if
             end do
-            ipar = ipar + 1
+            ipar = ipar+1
             para_r(ipar) = jnpar
             type_r(ipar) = type
- 22         continue
+22          continue
         end do
     end do
     nbpart = ipar
@@ -165,7 +165,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
         nomtab = ltabin(i)
         call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
-        nbpara = zi(jtbnp )
+        nbpara = zi(jtbnp)
         nblign = zi(jtbnp+1)
         do k = 1, nblign
             ki = 0
@@ -177,32 +177,32 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                 para_r(1) = para
             else
                 ipar = 0
-            endif
+            end if
             if (typpar(1:1) .eq. 'I') then
-                ki = ki + 1
+                ki = ki+1
                 vale_i(ki) = vi(i)
             else if (typpar(1:1) .eq. 'R') then
-                kr = kr + 1
+                kr = kr+1
                 vale_r(kr) = vr(i)
             else if (typpar(1:1) .eq. 'C') then
-                kc = kc + 1
+                kc = kc+1
                 vale_c(kc) = vc(i)
             else if (typpar(1:3) .eq. 'K80') then
-                kk = kk + 1
+                kk = kk+1
                 vale_k(kk) = vk(i)
             else if (typpar(1:3) .eq. 'K32') then
-                kk = kk + 1
+                kk = kk+1
                 vale_k(kk) = vk(i)
             else if (typpar(1:3) .eq. 'K24') then
-                kk = kk + 1
+                kk = kk+1
                 vale_k(kk) = vk(i)
             else if (typpar(1:3) .eq. 'K16') then
-                kk = kk + 1
+                kk = kk+1
                 vale_k(kk) = vk(i)
             else if (typpar(1:2) .eq. 'K8') then
-                kk = kk + 1
+                kk = kk+1
                 vale_k(kk) = vk(i)
-            endif
+            end if
             do j = 1, nbpara
                 jnpar = zk24(jtblp+4*(j-1))
                 type = zk24(jtblp+4*(j-1)+1)
@@ -211,36 +211,36 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                 call jeveuo(nomjv, 'L', jvale)
                 call jeveuo(nomjvl, 'L', jvall)
                 if (zi(jvall+k-1) .eq. 0) goto 42
-                ipar = ipar + 1
+                ipar = ipar+1
                 para_r(ipar) = jnpar
                 if (type(1:1) .eq. 'I') then
-                    ki = ki + 1
+                    ki = ki+1
                     vale_i(ki) = zi(jvale+k-1)
                 else if (type(1:1) .eq. 'R') then
-                    kr = kr + 1
+                    kr = kr+1
                     vale_r(kr) = zr(jvale+k-1)
                 else if (type(1:1) .eq. 'C') then
-                    kc = kc + 1
+                    kc = kc+1
                     vale_c(kc) = zc(jvale+k-1)
                 else if (type(1:3) .eq. 'K80') then
-                    kk = kk + 1
+                    kk = kk+1
                     vale_k(kk) = zk80(jvale+k-1)
                 else if (type(1:3) .eq. 'K32') then
-                    kk = kk + 1
+                    kk = kk+1
                     vale_k(kk) = zk32(jvale+k-1)
                 else if (type(1:3) .eq. 'K24') then
-                    kk = kk + 1
+                    kk = kk+1
                     vale_k(kk) = zk24(jvale+k-1)
                 else if (type(1:3) .eq. 'K16') then
-                    kk = kk + 1
+                    kk = kk+1
                     vale_k(kk) = zk16(jvale+k-1)
                 else if (type(1:2) .eq. 'K8') then
-                    kk = kk + 1
+                    kk = kk+1
                     vale_k(kk) = zk8(jvale+k-1)
-                endif
- 42             continue
+                end if
+42              continue
             end do
-            call tbajli(tabout, ipar, para_r, vale_i, vale_r,&
+            call tbajli(tabout, ipar, para_r, vale_i, vale_r, &
                         vale_c, vale_k, 0)
         end do
     end do

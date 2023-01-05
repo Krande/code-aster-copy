@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine mtcro1(n, a, nmax, x)
 !-----------------------------------------------------------------------
     integer :: i, j
 !-----------------------------------------------------------------------
-    data zero    /0.d0/
+    data zero/0.d0/
 ! ----------------------------------------------------------------------
 !
 !
@@ -53,13 +53,13 @@ subroutine mtcro1(n, a, nmax, x)
 !
     else
         do j = 1, n
-            if (x( j ) .ne. zero) then
-                x( j ) = x( j )/a( j, j )
-                do i = j + 1, n
-                    x( i ) = x( i ) - x( j )*a( i, j )
+            if (x(j) .ne. zero) then
+                x(j) = x(j)/a(j, j)
+                do i = j+1, n
+                    x(i) = x(i)-x(j)*a(i, j)
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

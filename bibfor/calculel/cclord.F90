@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
+subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem, &
                   minord, maxord, resuin, resuou, lisout)
     implicit none
 !     --- ARGUMENTS ---
@@ -110,48 +110,48 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
 !
             if (zk8(jlidep+iter-1) .eq. 'NP1') then
                 decal = -1
-            else if (zk8(jlidep+iter-1).eq.'NM1') then
+            else if (zk8(jlidep+iter-1) .eq. 'NM1') then
                 decal = +1
             else
                 decal = 0
-            endif
+            end if
 !
 !         LA LISTE DE NUMEROS D'ORDRE PROVIENT DE OP0058
 !         ELLE EST DONC CROISSANTE
-            curmax = min(curmax,zi(jordo2+2)+decal)
-            curmin = max(curmin,zi(jordo2+1)+decal)
+            curmax = min(curmax, zi(jordo2+2)+decal)
+            curmin = max(curmin, zi(jordo2+1)+decal)
         end do
 !
         nopous = 0
         do iordr = 1, nbordr
             numord = zi(jordr-1+iordr)
-            if ((isodep.eq.'-') .and. (numord.eq.minord)) then
+            if ((isodep .eq. '-') .and. (numord .eq. minord)) then
                 goto 30
-            else if ((isodep.eq.'+').and.(numord.eq.maxord)) then
+            else if ((isodep .eq. '+') .and. (numord .eq. maxord)) then
                 goto 30
-            endif
+            end if
             if (numord .ge. curmin) then
                 if (numord .gt. curmax) goto 40
                 nosyou = ' '
                 ierd = 1
-                if (.not.optdem) then
-                    call rsexch(' ', resuin, option, numord, nosyou,&
+                if (.not. optdem) then
+                    call rsexch(' ', resuin, option, numord, nosyou, &
                                 ierd)
-                endif
+                end if
                 if (ierd .ne. 0) then
-                    call rsexch(' ', resuou, option, numord, nosyou,&
+                    call rsexch(' ', resuou, option, numord, nosyou, &
                                 ierd)
-                endif
+                end if
 !
                 if (ierd .ne. 0) then
                     nopous = nopous+1
                     zi(jordop+nopous+2) = numord
-                endif
-            endif
- 30         continue
+                end if
+            end if
+30          continue
         end do
 !
- 40     continue
+40      continue
         zi(jordop+1) = curmin
         zi(jordop+2) = curmax
         zi(jordop) = nopous
@@ -162,32 +162,32 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
         nopous = 0
         do iordr = 1, nbordr
             numord = zi(jordr-1+iordr)
-            if ((isodep.eq.'-') .and. (numord.eq.minord)) then
+            if ((isodep .eq. '-') .and. (numord .eq. minord)) then
                 goto 20
-            else if ((isodep.eq.'+').and.(numord.eq.maxord)) then
+            else if ((isodep .eq. '+') .and. (numord .eq. maxord)) then
                 goto 20
-            endif
+            end if
             nosyou = ' '
             ierd = 1
-            if (.not.optdem) then
-                call rsexch(' ', resuin, option, numord, nosyou,&
+            if (.not. optdem) then
+                call rsexch(' ', resuin, option, numord, nosyou, &
                             ierd)
-            endif
+            end if
             if (ierd .ne. 0) then
-                call rsexch(' ', resuou, option, numord, nosyou,&
+                call rsexch(' ', resuou, option, numord, nosyou, &
                             ierd)
-            endif
+            end if
 !
             if (ierd .ne. 0) then
                 nopous = nopous+1
                 zi(jordop+nopous+2) = numord
-            endif
- 20         continue
+            end if
+20          continue
         end do
         zi(jordop+1) = zi(jordr-1+1)
         zi(jordop+2) = zi(jordr-1+nbordr)
         zi(jordop) = nopous
-    endif
+    end if
 !
     zk24(jlnoin+nuoplo-1) = lisout
 !

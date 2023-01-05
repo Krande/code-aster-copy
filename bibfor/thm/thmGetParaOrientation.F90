@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/rcangm.h"
 #include "asterfort/eulnau.h"
 !
-integer, intent(in) :: ndim, nno
-integer, intent(in) :: jv_geom
-real(kind=8), intent(out) :: angl_naut(3)
+    integer, intent(in) :: ndim, nno
+    integer, intent(in) :: jv_geom
+    real(kind=8), intent(out) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,16 +53,16 @@ real(kind=8), intent(out) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    angmas(:)    = 0.d0
-    coor(:)      = 0.d0
-    angleu(:)    = 0.d0
+    angmas(:) = 0.d0
+    coor(:) = 0.d0
+    angleu(:) = 0.d0
     angl_naut(:) = 0.d0
 !
 ! - Compute barycentric center
 !
     do i_node = 1, nno
         do i_dim = 1, ndim
-            coor(i_dim) = coor(i_dim)+zr(jv_geom+i_dim+ndim*(i_node-1)-1)/ nno
+            coor(i_dim) = coor(i_dim)+zr(jv_geom+i_dim+ndim*(i_node-1)-1)/nno
         end do
     end do
 !
@@ -79,7 +79,7 @@ real(kind=8), intent(out) :: angl_naut(3)
             angleu(3) = angmas(7)
         else
             angleu(1) = angmas(5)
-        endif
+        end if
         call eulnau(angleu/r8dgrd(), angl_naut/r8dgrd())
     else
         if (ndim .eq. 3) then
@@ -88,7 +88,7 @@ real(kind=8), intent(out) :: angl_naut(3)
             angl_naut(3) = angmas(3)
         else
             angl_naut(1) = angmas(1)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

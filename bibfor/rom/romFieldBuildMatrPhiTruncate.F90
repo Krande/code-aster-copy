@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine romFieldBuildMatrPhiTruncate(fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
+    type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,21 +53,21 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! - Get parameters
 !
-    base      = fieldBuild%base
-    nbMode    = base%nbMode
-    nbEqua    = base%mode%nbEqua
+    base = fieldBuild%base
+    nbMode = base%nbMode
+    nbEqua = base%mode%nbEqua
     nbEquaRID = fieldBuild%nbEquaRID
 !
 ! - Debug
 !
     if (niv .ge. 2) then
-        call utmess('I', 'ROM17_3', ni = 4,&
-                                    vali = [nbMode, nbEqua, nbMode, nbEquaRID])
-    endif
+        call utmess('I', 'ROM17_3', ni=4, &
+                    vali=[nbMode, nbEqua, nbMode, nbEquaRID])
+    end if
 !
 ! - Allocate object
 !
-    AS_ALLOCATE(vr = fieldBuild%matrPhiRID, size = nbEquaRID*nbMode)
+    AS_ALLOCATE(vr=fieldBuild%matrPhiRID, size=nbEquaRID*nbMode)
 !
 ! - Construct object
 !
@@ -76,8 +76,8 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
             numeEqua = fieldBuild%equaRIDTotal(iEqua)
             if (numeEqua .ne. 0) then
                 fieldBuild%matrPhiRID(numeEqua+nbEquaRID*(iMode-1)) = &
-                  fieldBuild%matrPhi(iEqua+nbEqua*(iMode-1))
-            endif
+                    fieldBuild%matrPhi(iEqua+nbEqua*(iMode-1))
+            end if
         end do
     end do
 !

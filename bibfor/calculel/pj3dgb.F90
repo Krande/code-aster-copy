@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec,&
-                  btdi, btvr, btnb, btlc, btco,&
-                  p1, q1, r1, p2, q2,&
+subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec, &
+                  btdi, btvr, btnb, btlc, btco, &
+                  p1, q1, r1, p2, q2, &
                   r2)
     implicit none
 #include "asterfort/assert.h"
@@ -66,23 +66,23 @@ subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec,&
 !
 !      1. ON CHERCHE UNE BOITE NON VIDE AUTOUR DE INO2
 !     -------------------------------------------------------
-    p0 = int((geom2(3* (ino2-1)+1)-xmin)/dx) + 1
-    q0 = int((geom2(3* (ino2-1)+2)-ymin)/dy) + 1
-    r0 = int((geom2(3* (ino2-1)+3)-zmin)/dz) + 1
+    p0 = int((geom2(3*(ino2-1)+1)-xmin)/dx)+1
+    q0 = int((geom2(3*(ino2-1)+2)-ymin)/dy)+1
+    r0 = int((geom2(3*(ino2-1)+3)-zmin)/dz)+1
 !
-    do k = 0, max(nx, ny, nz) - 1
+    do k = 0, max(nx, ny, nz)-1
         do p = max(p0-k, 1), min(p0+k, nx)
             do q = max(q0-k, 1), min(q0+k, ny)
                 do r = max(r0-k, 1), min(r0+k, nz)
-                    ntrbt = btnb((r-1)*nx*ny+ (q-1)*nx+p)
+                    ntrbt = btnb((r-1)*nx*ny+(q-1)*nx+p)
 !             -- SI LA BOITE EST NON VIDE :
                     if (ntrbt .gt. 0) then
 !               -- ON CHOISIT LE 1ER NOEUD DU 1ER TETR4 DE LA BOITE:INO1
-                        iposi = btlc((r-1)*nx*ny+ (q-1)*nx+p)
+                        iposi = btlc((r-1)*nx*ny+(q-1)*nx+p)
                         itr = btco(iposi+1)
-                        ino1 = tetr4(1+ndec* (itr-1)+1)
+                        ino1 = tetr4(1+ndec*(itr-1)+1)
                         goto 50
-                    endif
+                    end if
                 end do
             end do
         end do
@@ -90,35 +90,35 @@ subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec,&
     ASSERT(.false.)
 !
 !
- 50 continue
+50  continue
 !     2. ON CALCULE LA DISTANCE ENTRE INO2 ET INO1
 !     -------------------------------------------------------
-    x1 = geom1(3* (ino1-1)+1)
-    y1 = geom1(3* (ino1-1)+2)
-    z1 = geom1(3* (ino1-1)+3)
-    x2 = geom2(3* (ino2-1)+1)
-    y2 = geom2(3* (ino2-1)+2)
-    z2 = geom2(3* (ino2-1)+3)
-    d = sqrt((x2-x1)**2+ (y2-y1)**2+ (z2-z1)**2)
+    x1 = geom1(3*(ino1-1)+1)
+    y1 = geom1(3*(ino1-1)+2)
+    z1 = geom1(3*(ino1-1)+3)
+    x2 = geom2(3*(ino2-1)+1)
+    y2 = geom2(3*(ino2-1)+2)
+    z2 = geom2(3*(ino2-1)+3)
+    d = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
 !
 !
 !     3. ON DETERMINE LA GROSSE BOITE CONTENANT :
 !        INO2 - D*VECTEUR_I - D*VECTEUR_J - D*VECTEUR_K
 !     ET INO2 + D*VECTEUR_I + D*VECTEUR_J + D*VECTEUR_K
 !     -------------------------------------------------------
-    p1 = int((x2-d-xmin)/dx) + 1
-    q1 = int((y2-d-ymin)/dy) + 1
-    r1 = int((z2-d-zmin)/dz) + 1
-    p1 = max(1,p1)
-    q1 = max(1,q1)
-    r1 = max(1,r1)
+    p1 = int((x2-d-xmin)/dx)+1
+    q1 = int((y2-d-ymin)/dy)+1
+    r1 = int((z2-d-zmin)/dz)+1
+    p1 = max(1, p1)
+    q1 = max(1, q1)
+    r1 = max(1, r1)
 !
-    p2 = int((x2+d-xmin)/dx) + 1
-    q2 = int((y2+d-ymin)/dy) + 1
-    r2 = int((z2+d-zmin)/dz) + 1
-    p2 = min(nx,p2)
-    q2 = min(ny,q2)
-    r2 = min(nz,r2)
+    p2 = int((x2+d-xmin)/dx)+1
+    q2 = int((y2+d-ymin)/dy)+1
+    r2 = int((z2+d-zmin)/dz)+1
+    p2 = min(nx, p2)
+    q2 = min(ny, q2)
+    r2 = min(nz, r2)
 !
 !
 end subroutine

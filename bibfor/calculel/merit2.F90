@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine merit2(modele, nchar, lchar, cara, time,&
+subroutine merit2(modele, nchar, lchar, cara, time, &
                   matel, prefch, numero, base)
     implicit none
 !
@@ -83,13 +83,13 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
 !-----------------------------------------------------------------------
     integer :: iret3, k
 !-----------------------------------------------------------------------
-    parameter (nbchmx=2)
+    parameter(nbchmx=2)
     integer :: nligr(nbchmx)
     character(len=6) :: nompar(nbchmx), nomchp(nbchmx), nomopt(nbchmx)
-    data nomchp/'.COEFH','.HECHP'/
-    data nomopt/'_COEH_','_PARO_'/
-    data nompar/'PCOEFH','PHECHP'/
-    data nligr/1,2/
+    data nomchp/'.COEFH', '.HECHP'/
+    data nomopt/'_COEH_', '_PARO_'/
+    data nompar/'PCOEFH', 'PHECHP'/
+    data nligr/1, 2/
 !
 !
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
@@ -97,7 +97,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
     if (modele(1:1) .ne. ' ') then
     else
         call utmess('F', 'CALCULEL3_50')
-    endif
+    end if
 !
     call megeom(modele, chgeom)
     call mecara(cara, chcara)
@@ -106,8 +106,8 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
     if (iret .gt. 0) then
         call jedetr(matel//'.RERR')
         call jedetr(matel//'.RELR')
-    endif
-    call memare('V', matel, modele, ' ', cara,&
+    end if
+    call memare('V', matel, modele, ' ', cara, &
                 'RIGI_THER')
 !
     lpaout(1) = 'PMATTTR'
@@ -130,22 +130,22 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
             else
                 option = 'RIGI_THER_    _R'
                 lpain(3) = '      R'
-            endif
+            end if
             do k = 1, nbchmx
                 lchin(3) = nomcha//'.CHTH'//nomchp(k)//'.DESC'
                 call jeexin(lchin(3), iret3)
                 if (iret3 .gt. 0) then
                     option(10:15) = nomopt(k)
                     lpain(3) (1:6) = nompar(k)
-                    ilires = ilires + 1
+                    ilires = ilires+1
                     call codent(ilires+numero, 'D0', lchout(1) (12:14))
-                    call calcul('S', option, ligrel(nligr(k)), 3, lchin,&
-                                lpain, 1, lchout, lpaout, base,&
+                    call calcul('S', option, ligrel(nligr(k)), 3, lchin, &
+                                lpain, 1, lchout, lpaout, base, &
                                 'OUI')
                     call reajre(matel, lchout(1), base)
-                endif
+                end if
             end do
         end do
-    endif
+    end if
     call jedema()
 end subroutine

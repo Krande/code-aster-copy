@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,13 +68,13 @@ subroutine chvepg(chel1, chel2)
 !
     call celfpg(chel1, '&&CHVEPG.FAPG1', ibid)
     call jeexin('&&CHVEPG.FAPG1', iret1)
-    ASSERT(iret1.gt.0)
+    ASSERT(iret1 .gt. 0)
 !
 ! --- EXTRAIRE DE CHEL2 LE SCHEMA DE POINT DE GAUSS DES MAILLES
 !
     call celfpg(chel2, '&&CHVEPG.FAPG2', ibid)
     call jeexin('&&CHVEPG.FAPG2', iret2)
-    ASSERT(iret2.gt.0)
+    ASSERT(iret2 .gt. 0)
 !
 ! --- VERIFIER LA COHERENCE DES FAMILLES DE POINTS DE GAUSS
 !
@@ -84,13 +84,13 @@ subroutine chvepg(chel1, chel2)
     do ima = 1, nbma
         fpg1 = fapg1(ima)
         fpg2 = fapg2(ima)
-        if ((fpg1.ne.' ') .and. (fpg2.ne.' ') .and. (fpg2.ne.fpg1)) then
+        if ((fpg1 .ne. ' ') .and. (fpg2 .ne. ' ') .and. (fpg2 .ne. fpg1)) then
             call jenuno(jexnum(noma//'.NOMMAI', ima), nommai)
             valk(1) = nommai
             valk(2) = fpg1
             valk(3) = fpg2
             call utmess('F', 'CALCULEL_91', nk=3, valk=valk)
-        endif
+        end if
     end do
 !
     call jedetr('&&CHVEPG.FAPG1')

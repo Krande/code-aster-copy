@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,22 +17,22 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine get_elas_para(fami    , j_mater, poum, ipg, ispg, &
-                         elas_id , elas_keyword,&
-                         time    , temp,&
-                         e_      , nu_  , g_   ,&
-                         e1_     , e2_  , e3_  ,&
-                         nu12_   , nu13_, nu23_,&
-                         g1_     , g2_  , g3_  ,&
-                         BEHinteg, xyzgau_,&
-                         ei_     , nui_  , gi_   ,&
-                         e1i_    , e2i_  , e3i_ ,&
-                         nu12i_  , nu13i_, nu23i_ ,&
-                         g1i_    , g2i_  , g3i_)
+subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
+                         elas_id, elas_keyword, &
+                         time, temp, &
+                         e_, nu_, g_, &
+                         e1_, e2_, e3_, &
+                         nu12_, nu13_, nu23_, &
+                         g1_, g2_, g3_, &
+                         BEHinteg, xyzgau_, &
+                         ei_, nui_, gi_, &
+                         e1i_, e2i_, e3i_, &
+                         nu12i_, nu13i_, nu23i_, &
+                         g1i_, g2i_, g3i_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -40,24 +40,24 @@ implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvalc.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: j_mater
-character(len=*), intent(in) :: poum
-integer, intent(in) :: ipg, ispg
-integer, intent(in) :: elas_id
-character(len=16), intent(in) :: elas_keyword
-real(kind=8), optional, intent(in) :: time
-real(kind=8), optional, intent(in) :: temp
-real(kind=8), optional, intent(in) :: xyzgau_(3)
-real(kind=8), optional, intent(out) :: e_, nu_, g_
-real(kind=8), optional, intent(out) :: ei_, nui_, gi_
-real(kind=8), optional, intent(out) :: e1_,e2_, e3_
-real(kind=8), optional, intent(out) :: e1i_,e2i_, e3i_
-real(kind=8), optional, intent(out) :: nu12_, nu13_, nu23_
-real(kind=8), optional, intent(out) :: nu12i_, nu13i_, nu23i_
-real(kind=8), optional, intent(out) :: g1_, g2_, g3_
-real(kind=8), optional, intent(out) :: g1i_, g2i_, g3i_
-type(Behaviour_Integ), optional, intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: j_mater
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: ipg, ispg
+    integer, intent(in) :: elas_id
+    character(len=16), intent(in) :: elas_keyword
+    real(kind=8), optional, intent(in) :: time
+    real(kind=8), optional, intent(in) :: temp
+    real(kind=8), optional, intent(in) :: xyzgau_(3)
+    real(kind=8), optional, intent(out) :: e_, nu_, g_
+    real(kind=8), optional, intent(out) :: ei_, nui_, gi_
+    real(kind=8), optional, intent(out) :: e1_, e2_, e3_
+    real(kind=8), optional, intent(out) :: e1i_, e2i_, e3i_
+    real(kind=8), optional, intent(out) :: nu12_, nu13_, nu23_
+    real(kind=8), optional, intent(out) :: nu12i_, nu13i_, nu23i_
+    real(kind=8), optional, intent(out) :: g1_, g2_, g3_
+    real(kind=8), optional, intent(out) :: g1i_, g2i_, g3i_
+    type(Behaviour_Integ), optional, intent(in) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,67 +134,67 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_para    = 0
-    para_name  = ' '
-    para_vale  = 0.d0
+    nb_para = 0
+    para_name = ' '
+    para_vale = 0.d0
     if (present(time)) then
-        if (time.ne.r8vide())then
-            nb_para   = nb_para + 1
+        if (time .ne. r8vide()) then
+            nb_para = nb_para+1
             para_name(nb_para) = 'INST'
             para_vale(nb_para) = time
-        endif
-    endif
+        end if
+    end if
     if (present(temp)) then
-        nb_para   = nb_para + 1
+        nb_para = nb_para+1
         para_name(nb_para) = 'TEMP'
         para_vale(nb_para) = temp
-    endif
+    end if
     if (present(xyzgau_)) then
-            nb_para   = nb_para + 1
-            para_name(nb_para) = 'X'
-            para_vale(nb_para) = xyzgau_(1)
-            nb_para   = nb_para + 1
-            para_name(nb_para) = 'Y'
-            para_vale(nb_para) = xyzgau_(2)
-            nb_para   = nb_para + 1
-            para_name(nb_para) = 'Z'
-            para_vale(nb_para) = xyzgau_(3)
-    endif
+        nb_para = nb_para+1
+        para_name(nb_para) = 'X'
+        para_vale(nb_para) = xyzgau_(1)
+        nb_para = nb_para+1
+        para_name(nb_para) = 'Y'
+        para_vale(nb_para) = xyzgau_(2)
+        nb_para = nb_para+1
+        para_name(nb_para) = 'Z'
+        para_vale(nb_para) = xyzgau_(3)
+    end if
     if (present(BEHinteg)) then
-        if (.not.BEHinteg%l_varext_geom .and. (fami.ne."XFEM")) then
+        if (.not. BEHinteg%l_varext_geom .and. (fami .ne. "XFEM")) then
             ASSERT(ipg <= 27)
-            nb_para   = nb_para + 1
+            nb_para = nb_para+1
             para_name(nb_para) = 'X'
-            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg,1)
-            nb_para   = nb_para + 1
+            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg, 1)
+            nb_para = nb_para+1
             para_name(nb_para) = 'Y'
-            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg,2)
-            nb_para   = nb_para + 1
+            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg, 2)
+            nb_para = nb_para+1
             para_name(nb_para) = 'Z'
-            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg,3)
-        endif
-    endif
+            para_vale(nb_para) = BEHinteg%elem%coor_elga(ipg, 3)
+        end if
+    end if
 !
 ! - Get elastic parameters
 !
     if (elas_id .eq. 1) then
-        if (elas_keyword.eq.'ELAS_HYPER') then
-            call hypmat(fami, ipg, ispg, poum, j_mater,&
+        if (elas_keyword .eq. 'ELAS_HYPER') then
+            call hypmat(fami, ipg, ispg, poum, j_mater, &
                         c10, c01, c20, k)
             nur = (3.d0*k-4.0d0*(c10+c01))/(6.d0*k+4.0d0*(c10+c01))
-            er  = 4.d0*(c10+c01)*(un+nur)
-            gr = er/(2.d0*(1.d0 + nur))
+            er = 4.d0*(c10+c01)*(un+nur)
+            gr = er/(2.d0*(1.d0+nur))
         else
             nomres(1) = 'E'
             nomres(2) = 'NU'
-            nbres     = 2
-            call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                        ' ', elas_keyword, nb_para, para_name, [para_vale],&
+            nbres = 2
+            call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                        ' ', elas_keyword, nb_para, para_name, [para_vale], &
                         nbres, nomres, valres, icodre, 1)
-            er  = valres(1)
+            er = valres(1)
             nur = valres(2)
-            gr = er/(2.d0*(1.d0 + nur))
-        endif
+            gr = er/(2.d0*(1.d0+nur))
+        end if
 
     elseif (elas_id .eq. 2) then
         nomres(1) = 'E_L'
@@ -206,9 +206,9 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
         nomres(7) = 'G_LT'
         nomres(8) = 'G_LN'
         nomres(9) = 'G_TN'
-        nbres     = 9
-        call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                    ' ', elas_keyword, nb_para, para_name, [para_vale],&
+        nbres = 9
+        call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                    ' ', elas_keyword, nb_para, para_name, [para_vale], &
                     nbres, nomres, valres, icodre, 1)
         e1r = valres(1)
         e2r = valres(2)
@@ -219,32 +219,32 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
         g1r = valres(7)
         g2r = valres(8)
         g3r = valres(9)
-    elseif (elas_id .eq. 3)  then
+    elseif (elas_id .eq. 3) then
         nomres(1) = 'E_L'
         nomres(2) = 'E_N'
         nomres(3) = 'NU_LT'
         nomres(4) = 'NU_LN'
         nomres(5) = 'G_LN'
-        nbres     = 5
-        call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                    ' ', elas_keyword, nb_para, para_name, [para_vale],&
+        nbres = 5
+        call rcvalb(fami, ipg, ispg, poum, j_mater, &
+                    ' ', elas_keyword, nb_para, para_name, [para_vale], &
                     nbres, nomres, valres, icodre, 1)
-        e1r   = valres(1)
-        e3r   = valres(2)
+        e1r = valres(1)
+        e3r = valres(2)
         nu12r = valres(3)
         nu13r = valres(4)
-        gr   = valres(5)
+        gr = valres(5)
     elseif (elas_id .eq. 4) then
         nomres(1) = 'G'
         nomres(2) = 'NU'
-        nbres     = 2
+        nbres = 2
         call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
         Gc = valresc(1)
         nuc = valresc(2)
         nur = real(nuc)
         nui = aimag(nuc)
-        er = 2.d0*real(Gc*(1.d0 + nuc))
-        ei = 2.d0*aimag(Gc*(1.d0 + nuc))
+        er = 2.d0*real(Gc*(1.d0+nuc))
+        ei = 2.d0*aimag(Gc*(1.d0+nuc))
         gr = real(Gc)
         gi = aimag(Gc)
     elseif (elas_id .eq. 5) then
@@ -257,7 +257,7 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
         nomres(7) = 'G_LT'
         nomres(8) = 'G_LN'
         nomres(9) = 'G_TN'
-        nbres     = 9
+        nbres = 9
         call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
         e1r = real(valresc(1))
         e2r = real(valresc(2))
@@ -283,7 +283,7 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
         nomres(3) = 'NU_LT'
         nomres(4) = 'NU_LN'
         nomres(5) = 'G_LN'
-        nbres     = 5
+        nbres = 5
         call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
         e1r = real(valresc(1))
         e3r = real(valresc(2))
@@ -297,81 +297,81 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
         gi = aimag(valresc(5))
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Output
 !
     if (present(e_)) then
         e_ = er
-    endif
+    end if
     if (present(nu_)) then
         nu_ = nur
-    endif
+    end if
     if (present(g_)) then
         g_ = gr
-    endif
+    end if
     if (present(ei_)) then
         ei_ = ei
-    endif
+    end if
     if (present(nui_)) then
         nui_ = nui
-    endif
+    end if
     if (present(gi_)) then
         gi_ = gi
-    endif
+    end if
     if (present(e1_)) then
         e1_ = e1r
-    endif
+    end if
     if (present(e2_)) then
         e2_ = e2r
-    endif
+    end if
     if (present(e3_)) then
         e3_ = e3r
-    endif
+    end if
     if (present(g1_)) then
         g1_ = g1r
-    endif
+    end if
     if (present(g2_)) then
         g2_ = g2r
-    endif
+    end if
     if (present(g3_)) then
         g3_ = g3r
-    endif
+    end if
     if (present(nu12_)) then
         nu12_ = nu12r
-    endif
+    end if
     if (present(nu13_)) then
         nu13_ = nu13r
-    endif
+    end if
     if (present(nu23_)) then
         nu23_ = nu23r
-    endif
+    end if
     if (present(e1i_)) then
         e1i_ = e1i
-    endif
+    end if
     if (present(e2i_)) then
         e2i_ = e2i
-    endif
+    end if
     if (present(e3i_)) then
         e3i_ = e3i
-    endif
+    end if
     if (present(g1i_)) then
         g1i_ = g1i
-    endif
+    end if
     if (present(g2i_)) then
         g2i_ = g2i
-    endif
+    end if
     if (present(g3i_)) then
         g3i_ = g3i
-    endif
+    end if
     if (present(nu12i_)) then
         nu12i_ = nu12i
-    endif
+    end if
     if (present(nu13i_)) then
         nu13i_ = nu13i
-    endif
+    end if
     if (present(nu23i_)) then
         nu23i_ = nu23i
-    endif
+    end if
 !
 end subroutine

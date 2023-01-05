@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
-                  ul, dul, utl, sim, varim,&
+subroutine dicorn(irmetg, nbt, neq, iterat, icodma, &
+                  ul, dul, utl, sim, varim, &
                   klv, klv2, varip)
 ! ----------------------------------------------------------------------
     implicit none
@@ -69,7 +69,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
     real(kind=8) :: ttot, u2, ui, ur2, utot, uu, valpar
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    parameter    ( nbre1 = 15 )
+    parameter(nbre1=15)
     real(kind=8) :: nu1, mu1, nu2, mu2, ky, kz, krx, krz, rp0
     real(kind=8) :: si(12), k01(78), k02(78), klc(144), valre1(nbre1)
     integer :: codre1(nbre1), kpg, spt
@@ -79,9 +79,9 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
 !****************************** DATA ***********************************
 !
-    data nomre1/'NU_1','MU_1','DXU_1','DRYU_1','C_1',&
-     &            'NU_2','MU_2','DXU_2','DRYU_2','C_2',&
-     &            'KY','KZ','KRX','KRZ','R_P0'/
+    data nomre1/'NU_1', 'MU_1', 'DXU_1', 'DRYU_1', 'C_1',&
+     &            'NU_2', 'MU_2', 'DXU_2', 'DRYU_2', 'C_2',&
+     &            'KY', 'KZ', 'KRX', 'KRZ', 'R_P0'/
 !
 ! ----------------------------------------------------------------------
 ! --- DEFINITION DES PARAMETRES
@@ -95,12 +95,12 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 ! --- CARACTERISTIQUES DU MATERIAU
 !    (LES DEFINITIONS DE DRYU1 ET DRYU2 SYMETRISENT LA MATRICE)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, icodma,&
-                ' ', 'ASSE_CORN', nbpar, nompar, [valpar],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, icodma, &
+                ' ', 'ASSE_CORN', nbpar, nompar, [valpar], &
                 nbre1, nomre1, valre1, codre1, 1)
 !
     nu1 = valre1(1)
@@ -132,9 +132,9 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 ! --- ECRITURE DANS LE REPERE LOCAL DE K01 ET K02 (MATRICES DE
 !     RAIDEUR TANGENTE INITIALES POUR LES DEUX MECANISMES)
 !
-    call dikini(nbt, nu1, mu1, dxu1, dryu1,&
-                nu2, mu2, dxu2, dryu2, ky,&
-                kz, krx, krz, k01, k02,&
+    call dikini(nbt, nu1, mu1, dxu1, dryu1, &
+                nu2, mu2, dxu2, dryu2, ky, &
+                kz, krx, krz, k01, k02, &
                 rp0)
 !
 ! ======================================================================
@@ -185,7 +185,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
                 p1 = varim(1)
                 g1 = dbar1*p1
-                rg1 = 0.5d0*(-g1+sqrt(g1**2 + 4.d0*g1))
+                rg1 = 0.5d0*(-g1+sqrt(g1**2+4.d0*g1))
 !
 ! **** TEST SUR LA POSITION PAR RAPPORT A LA SLU1
 !
@@ -200,15 +200,15 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                     if (dur .eq. 0.d0) dnsdu2 = k01(1)
                     dmsdt2 = rg1*mu1/dryu1/p1
                     if (dryr .eq. 0.d0) dmsdt2 = k01(15)
-                endif
+                end if
 !
                 dnsdt2 = 0.d0
-                si(7) = sim(7) + dnsdu2*dur
-                si(11) = sim(11) + dmsdt2*dryr
+                si(7) = sim(7)+dnsdu2*dur
+                si(11) = sim(11)+dmsdt2*dryr
                 si(1) = -si(7)
                 si(5) = -si(11)
 !
-                feq1 = sqrt( (si(7)/nu1)**2 + (si(11)/mu1)**2 )
+                feq1 = sqrt((si(7)/nu1)**2+(si(11)/mu1)**2)
 !
 ! ** TEST DE CHANGEMENT DE MECANISME
 !
@@ -233,7 +233,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                     varip(2) = varim(2)
                     varip(3) = 1.0d0
 !
-                    call dicor3(k01, dur, dryr, sim, si,&
+                    call dicor3(k01, dur, dryr, sim, si, &
                                 dnsdu, dmsdt, dnsdt)
 !
                     do i = 4, 7
@@ -243,25 +243,25 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
 ! ** ON PASSE EN MECANISME 2
 !
-                    u2 = ui - varim(4)
-                    t2 = ti - varim(5)
-                    call dicor4(k02, sim, si, pi, u2,&
-                                t2, dxu1, dxu2, dryu1, dryu2,&
-                                nu1, nu2, mu1, mu2, feq1,&
-                                c1, dbar2, uu, tt, dur,&
-                                dryr, p2, utot, ttot, dnsdu,&
+                    u2 = ui-varim(4)
+                    t2 = ti-varim(5)
+                    call dicor4(k02, sim, si, pi, u2, &
+                                t2, dxu1, dxu2, dryu1, dryu2, &
+                                nu1, nu2, mu1, mu2, feq1, &
+                                c1, dbar2, uu, tt, dur, &
+                                dryr, p2, utot, ttot, dnsdu, &
                                 dmsdt, dnsdt, dnsdu2, dmsdt2, dnsdt2)
-                    varip(4) = utot - si(7)/k02(1)
-                    varip(5) = ttot - si(11)/k02(15)
+                    varip(4) = utot-si(7)/k02(1)
+                    varip(5) = ttot-si(11)/k02(15)
                     varip(6) = si(7)
                     varip(7) = si(11)
-                    u2 = utot - varim(4)
-                    t2 = ttot - varim(5)
-                    varip(1) = sqrt( (u2/dxu1)**2 + (t2/dryu1)**2 )
+                    u2 = utot-varim(4)
+                    t2 = ttot-varim(5)
+                    varip(1) = sqrt((u2/dxu1)**2+(t2/dryu1)**2)
                     varip(2) = p2
                     varip(3) = 2.d0
 !
-                endif
+                end if
 !
 !             ELSE
 !
@@ -270,13 +270,13 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
 !             ENDIF
 !
-            else if (iterat.ge.2) then
+            else if (iterat .ge. 2) then
 !
 ! ****** CAS DES ITERATIONS 2 ET SUIVANTES
 !
-                u2 = uu - varim(4)
-                t2 = tt - varim(5)
-                varip(1) = sqrt ( (u2/dxu1)**2 + (t2/dryu1)**2 )
+                u2 = uu-varim(4)
+                t2 = tt-varim(5)
+                varip(1) = sqrt((u2/dxu1)**2+(t2/dryu1)**2)
                 p1 = varip(1)
 !
                 if (p1 .le. 1.d0) then
@@ -284,7 +284,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 ! **** ON RESTE EN MECANISME 1
 !
                     g1 = dbar1*p1
-                    rg1 = 0.5d0*(-g1+sqrt(g1**2 + 4.d0*g1))
+                    rg1 = 0.5d0*(-g1+sqrt(g1**2+4.d0*g1))
                     dnsdu2 = rg1*nu1/dxu1/p1
                     if (dur .eq. 0.d0) dnsdu2 = k01(1)
                     dmsdt2 = rg1*mu1/dryu1/p1
@@ -293,12 +293,12 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                     dnsdt2 = 0.d0
 !
 !
-                    call dicor2(k01, varim(2), p1, dur, dryr,&
-                                dxu1, dryu1, rg1, nu1, mu1,&
-                                u2, t2, sim, dnsdu2, dmsdt2,&
+                    call dicor2(k01, varim(2), p1, dur, dryr, &
+                                dxu1, dryu1, rg1, nu1, mu1, &
+                                u2, t2, sim, dnsdu2, dmsdt2, &
                                 dnsdt2, varip(2), varip(3), si)
 !
-                    call dicor3(k01, dur, dryr, sim, si,&
+                    call dicor3(k01, dur, dryr, sim, si, &
                                 dnsdu, dmsdt, dnsdt)
                     do i = 4, 7
                         varip(i) = varim(i)
@@ -309,24 +309,24 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 ! **** ON PASSE EN MECANISME 2
 !
 !
-                    g1 = dbar1 * varim(1)
-                    rg1 = 0.5d0 * (-g1 + sqrt(g1**2 + 4.d0*g1))
-                    u2 = ui - varim(4)
-                    t2 = ti - varim(5)
-                    call dicor5(k02, sim, p1, pi, u2,&
-                                t2, dxu1, dxu2, dryu1, dryu2,&
-                                nu1, nu2, mu1, mu2, c1,&
-                                dbar2, uu, tt, dur, dryr,&
-                                dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2,&
+                    g1 = dbar1*varim(1)
+                    rg1 = 0.5d0*(-g1+sqrt(g1**2+4.d0*g1))
+                    u2 = ui-varim(4)
+                    t2 = ti-varim(5)
+                    call dicor5(k02, sim, p1, pi, u2, &
+                                t2, dxu1, dxu2, dryu1, dryu2, &
+                                nu1, nu2, mu1, mu2, c1, &
+                                dbar2, uu, tt, dur, dryr, &
+                                dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2, &
                                 dnsdt2, si, varip(2), varip(3))
-                    varip(4) = uu - si(7)/k02(1)
-                    varip(5) = tt - si(11)/k02(15)
+                    varip(4) = uu-si(7)/k02(1)
+                    varip(5) = tt-si(11)/k02(15)
                     varip(6) = si(7)
                     varip(7) = si(11)
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
 !
 ! -*-*-*-*-*-*-*-*-*-*-*-* FIN DU MECANISME 1 *-*-*-*-*-*-*-*-*-*-*-*-*
@@ -340,7 +340,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
             p2 = varim(2)
             varip(1) = varim(1)
             g2 = dbar2*p2
-            rg2 = 0.5d0*(-g2+sqrt(g2**2 + 4.d0*g2))
+            rg2 = 0.5d0*(-g2+sqrt(g2**2+4.d0*g2))
 ! ****** TEST SUR LA POSITION PAR RAPPORT A LA SLU2
 !
             if (varim(3) .eq. 2.d0) then
@@ -349,11 +349,11 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
                 dnsdu2 = rg2*nu2/dxu2/p2
                 dmsdt2 = rg2*mu2/dryu2/p2
-                feq2 = sqrt ( ( (sim(7)+dnsdu2*dur)/nu2)**2 + ((sim(11) +dmsdt2*dryr )/mu2 )**2 )
+                feq2 = sqrt(((sim(7)+dnsdu2*dur)/nu2)**2+((sim(11)+dmsdt2*dryr)/mu2)**2)
                 if (feq2 .lt. rg2) then
-                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu,&
+                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu, &
                                 dmsdt, dnsdt)
-                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2,&
+                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2, &
                                 dmsdt2, dnsdt2)
                     do i = 4, 7
                         varip(i) = varim(i)
@@ -362,12 +362,12 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                     if (iterat .eq. 1) then
                         if (feq2 .ge. c2) then
                             call utmess('I', 'ELEMENTS_26')
-                        endif
-                        si(7) = sim(7) + dnsdu2*dur
-                        si(11) = sim(11) + dmsdt2*dryr
+                        end if
+                        si(7) = sim(7)+dnsdu2*dur
+                        si(11) = sim(11)+dmsdt2*dryr
                         varip(2) = feq2**2/(1.d0-feq2)/dbar2
                         ur2 = (varip(2)*si(7)/feq2-p2*sim(7)/rg2)/nu2
-                        tr2 = (varip(2)*si(11)/feq2-p2*sim(11)/rg2)/ mu2
+                        tr2 = (varip(2)*si(11)/feq2-p2*sim(11)/rg2)/mu2
                         u2 = ur2*dxu2
                         t2 = tr2*dryu2
                         utot = u2+ui
@@ -378,8 +378,8 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         if (dryr .ne. 0.d0) dmsdt2 = si(11)/ttot
                         if (dryr .eq. 0.d0) dmsdt2 = k02(15)
                         dnsdt2 = 0.d0
-                        varip(4) = utot - si(7)/k02(1)
-                        varip(5) = ttot - si(11)/k02(15)
+                        varip(4) = utot-si(7)/k02(1)
+                        varip(5) = ttot-si(11)/k02(15)
                         varip(6) = si(7)
                         varip(7) = si(11)
                         si(7) = dnsdu2*uu
@@ -387,14 +387,14 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         call utmess('I', 'ELEMENTS_27')
                         varip(3) = 2.0d0
 !
-                        call dicor3(k02, dur, dryr, sim, si,&
+                        call dicor3(k02, dur, dryr, sim, si, &
                                     dnsdu, dmsdt, dnsdt)
                     else
-                        u2 = dur + p2*sim(7)*dxu2/rg2/nu2
-                        t2 = dryr + p2*sim(11)*dryu2/rg2/mu2
-                        varip(2) = sqrt ( (u2/dxu2)**2 + (t2/dryu2)** 2 )
+                        u2 = dur+p2*sim(7)*dxu2/rg2/nu2
+                        t2 = dryr+p2*sim(11)*dryu2/rg2/mu2
+                        varip(2) = sqrt((u2/dxu2)**2+(t2/dryu2)**2)
                         g2 = dbar2*varip(2)
-                        feq2 = 0.5d0*(-g2+sqrt(g2**2 + 4.d0*g2))
+                        feq2 = 0.5d0*(-g2+sqrt(g2**2+4.d0*g2))
                         dnsdu2 = feq2*nu2/dxu2/varip(2)
                         if (dur .eq. 0.d0) dnsdu2 = k02(1)
                         dmsdt2 = feq2*mu2/dryu2/varip(2)
@@ -403,21 +403,21 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         si(7) = u2*feq2*nu2/dxu2/varip(2)
                         si(11) = t2*feq2*mu2/dryu2/varip(2)
                         call utmess('I', 'ELEMENTS_27')
-                        call dicor3(k02, dur, dryr, sim, si,&
+                        call dicor3(k02, dur, dryr, sim, si, &
                                     dnsdu, dmsdt, dnsdt)
                         varip(3) = 2.d0
-                        varip(4) = uu - si(7)/k02(1)
-                        varip(5) = tt - si(11)/k02(15)
+                        varip(4) = uu-si(7)/k02(1)
+                        varip(5) = tt-si(11)/k02(15)
                         varip(6) = si(7)
                         varip(7) = si(11)
-                    endif
-                endif
+                    end if
+                end if
 !
-            else if (varim(3).eq.0.d0) then
+            else if (varim(3) .eq. 0.d0) then
 !
 ! ****** ON EST SOUS LA SLU2
 !
-                feq2 = sqrt (( (sim(7)+k02(1)*dur)/nu2)**2 + ((sim(11) +k02(15)*dryr )/mu2 )**2)
+                feq2 = sqrt(((sim(7)+k02(1)*dur)/nu2)**2+((sim(11)+k02(15)*dryr)/mu2)**2)
 !
 ! **** TEST POUR SAVOIR SI L'ON RESTE SOUS LA SLU
 !
@@ -425,16 +425,16 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
 ! **** ON RESTE SOUS LA SLU2
 !
-                    si(7) = sim(7) + k02(1)*dur
-                    si(11) = sim(11) + k02(15)*dryr
-                    test = varim(6)*si(7)/nu2**2+varim(7)*si(11)/mu2** 2
+                    si(7) = sim(7)+k02(1)*dur
+                    si(11) = sim(11)+k02(15)*dryr
+                    test = varim(6)*si(7)/nu2**2+varim(7)*si(11)/mu2**2
                     if (test .lt. 0.d0) then
                         if (iterat .eq. 1) then
-                            feq1 = sqrt( (si(7)/nu1)**2 + (si(11)/mu1) **2 )
+                            feq1 = sqrt((si(7)/nu1)**2+(si(11)/mu1)**2)
                             if (feq1 .ge. c1) then
                                 call utmess('I', 'ELEMENTS_28')
                                 goto 19
-                            endif
+                            end if
                             call utmess('I', 'ELEMENTS_29')
 !
 ! ** ON REPASSE EN MECANISME 1
@@ -446,13 +446,13 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                             ttot = t2+varim(5)
                             du2 = utot-ui
                             dry2 = ttot-ti
-                            feq2 = sqrt (&
-                                   (( sim(7)+k02(1)*du2)/nu2)** 2 + ((sim(11)+k02(15)*dry2 )/mu2&
-                                   )**2&
+                            feq2 = sqrt( &
+                                   ((sim(7)+k02(1)*du2)/nu2)**2+((sim(11)+k02(15)*dry2)/mu2 &
+                                                                 )**2 &
                                    )
                             if (feq2 .gt. rg2) then
                                 call utmess('I', 'ELEMENTS_30')
-                            endif
+                            end if
 !
                             if (dur .ne. 0.d0) dnsdu2 = si(7)/utot
                             if (dur .eq. 0.d0) dnsdu2 = k01(1)
@@ -465,28 +465,28 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                             varip(2) = varim(2)
                             varip(3) = 1.0d0
 !
-                            call dicor3(k01, dur, dryr, sim, si,&
+                            call dicor3(k01, dur, dryr, sim, si, &
                                         dnsdu, dmsdt, dnsdt)
 !
                         else
 !
 ! ****** CAS DES ITERATIONS 2 ET SUIVANTES
 !
-                            u2 = uu - varim(4)
-                            t2 = tt - varim(5)
-                            varip(1) = sqrt ( (u2/dxu1)**2 + (t2/ dryu1)**2 )
+                            u2 = uu-varim(4)
+                            t2 = tt-varim(5)
+                            varip(1) = sqrt((u2/dxu1)**2+(t2/dryu1)**2)
                             p1 = varip(1)
                             call utmess('I', 'ELEMENTS_29')
 !
                             if (p1 .gt. 1.d0) then
                                 call utmess('I', 'ELEMENTS_28')
                                 goto 19
-                            endif
+                            end if
 !
 ! **** ON EST EN MECANISME 1
 !
                             g1 = dbar1*p1
-                            rg1 = 0.5d0*(-g1+sqrt(g1**2 + 4.d0*g1))
+                            rg1 = 0.5d0*(-g1+sqrt(g1**2+4.d0*g1))
                             dnsdu2 = rg1*nu1/dxu1/p1
                             if (dur .eq. 0.d0) dnsdu2 = k01(1)
                             dmsdt2 = rg1*mu1/dryu1/p1
@@ -495,23 +495,23 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                             dnsdt2 = 0.d0
 !
 !
-                            call dicor2(k01, varim(2), p1, dur, dryr,&
-                                        dxu1, dryu1, rg1, nu1, mu1,&
-                                        u2, t2, sim, dnsdu2, dmsdt2,&
+                            call dicor2(k01, varim(2), p1, dur, dryr, &
+                                        dxu1, dryu1, rg1, nu1, mu1, &
+                                        u2, t2, sim, dnsdu2, dmsdt2, &
                                         dnsdt2, varip(2), varip(3), si)
 !
-                            call dicor3(k01, dur, dryr, sim, si,&
+                            call dicor3(k01, dur, dryr, sim, si, &
                                         dnsdu, dmsdt, dnsdt)
 !
-                        endif
+                        end if
                         goto 20
-                    endif
- 19                 continue
-                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu,&
+                    end if
+19                  continue
+                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu, &
                                 dmsdt, dnsdt)
-                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2,&
+                    call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2, &
                                 dmsdt2, dnsdt2)
- 20                 continue
+20                  continue
                     do i = 4, 7
                         varip(i) = varim(i)
                     end do
@@ -521,12 +521,12 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 ! **** ON REVIENT SUR LA SLU2
 !
                     if (iterat .eq. 1) then
-                        si(7) = sim(7) + k02(1)*dur
-                        si(11) = sim(11) + k02(15)*dryr
+                        si(7) = sim(7)+k02(1)*dur
+                        si(11) = sim(11)+k02(15)*dryr
                         varip(2) = feq2**2/(1.d0-feq2)/dbar2
 !
-                        ur2 = (varip(2)*si(7)/feq2-p2*varim(6)/rg2)/ nu2
-                        tr2 = (varip(2)*si(11)/feq2-p2*varim(7)/rg2)/ mu2
+                        ur2 = (varip(2)*si(7)/feq2-p2*varim(6)/rg2)/nu2
+                        tr2 = (varip(2)*si(11)/feq2-p2*varim(7)/rg2)/mu2
                         u2 = ur2*dxu2
                         t2 = tr2*dryu2
                         utot = u2+ui+(varim(6)-sim(7))/k02(1)
@@ -537,8 +537,8 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         if (dryr .ne. 0.d0) dmsdt2 = si(11)/ttot
                         if (dryr .eq. 0.d0) dmsdt2 = k02(15)
                         dnsdt2 = 0.d0
-                        varip(4) = utot - si(7)/k02(1)
-                        varip(5) = ttot - si(11)/k02(15)
+                        varip(4) = utot-si(7)/k02(1)
+                        varip(5) = ttot-si(11)/k02(15)
                         varip(6) = si(7)
                         varip(7) = si(11)
                         si(7) = dnsdu2*uu
@@ -546,15 +546,15 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
                         call utmess('I', 'ELEMENTS_27')
                         varip(3) = 2.0d0
-                        call dicor3(k02, dur, dryr, sim, si,&
+                        call dicor3(k02, dur, dryr, sim, si, &
                                     dnsdu, dmsdt, dnsdt)
                     else
 !
-                        u2 = dur + p2*varim(6)*dxu2/rg2/nu2 - (varim( 6)-sim(7))/k02(1)
-                        t2 = dryr + p2*varim(7)*dryu2/rg2/mu2 - ( varim(7)-sim(11))/k02(15)
-                        varip(2) = sqrt ( (u2/dxu2)**2 + (t2/dryu2)** 2 )
+                        u2 = dur+p2*varim(6)*dxu2/rg2/nu2-(varim(6)-sim(7))/k02(1)
+                        t2 = dryr+p2*varim(7)*dryu2/rg2/mu2-(varim(7)-sim(11))/k02(15)
+                        varip(2) = sqrt((u2/dxu2)**2+(t2/dryu2)**2)
                         g2 = dbar2*varip(2)
-                        feq2 = 0.5d0*(-g2+sqrt(g2**2 + 4.d0*g2))
+                        feq2 = 0.5d0*(-g2+sqrt(g2**2+4.d0*g2))
                         dnsdu2 = feq2*nu2/dxu2/varip(2)
                         if (dur .eq. 0.d0) dnsdu2 = k02(1)
                         dmsdt2 = feq2*mu2/dryu2/varip(2)
@@ -563,22 +563,22 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         si(7) = u2*feq2*nu2/dxu2/varip(2)
                         si(11) = t2*feq2*mu2/dryu2/varip(2)
                         call utmess('I', 'ELEMENTS_27')
-                        call dicor3(k02, dur, dryr, sim, si,&
+                        call dicor3(k02, dur, dryr, sim, si, &
                                     dnsdu, dmsdt, dnsdt)
                         varip(3) = 2.d0
-                        varip(4) = uu - si(7)/k02(1)
-                        varip(5) = tt - si(11)/k02(15)
+                        varip(4) = uu-si(7)/k02(1)
+                        varip(5) = tt-si(11)/k02(15)
                         varip(6) = si(7)
                         varip(7) = si(11)
-                    endif
+                    end if
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
 ! -*-*-*-*-*-*-*-*-*-*-*-* FIN DU MECANISME 2 *-*-*-*-*-*-*-*-*-*-*-*-*
 !
-        endif
+        end if
 !
     else
 !
@@ -587,33 +587,33 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 ! ======================================================================
 !
         if (varim(1) .le. 1.d0 .or. varim(3) .eq. 1.d0) then
-            call dicor0(k01, varim(1), varip(1), plouf, dnsdu,&
+            call dicor0(k01, varim(1), varip(1), plouf, dnsdu, &
                         dmsdt, dnsdt)
-            call dicor0(k01, varim(2), varip(2), varip(3), dnsdu2,&
+            call dicor0(k01, varim(2), varip(2), varip(3), dnsdu2, &
                         dmsdt2, dnsdt2)
             varip(3) = varim(3)
             p1 = varim(1)
             g1 = dbar1*p1
-            rg1 = 0.5d0*(-g1+sqrt(g1**2 + 4.d0*g1))
+            rg1 = 0.5d0*(-g1+sqrt(g1**2+4.d0*g1))
             if (p1 .ne. 0.d0) dnsdu2 = rg1*nu1/dxu1/p1
             if (p1 .ne. 0.d0) dmsdt2 = rg1*mu1/dryu1/p1
         else
-            call dicor0(k02, varim(1), varip(1), plouf, dnsdu,&
+            call dicor0(k02, varim(1), varip(1), plouf, dnsdu, &
                         dmsdt, dnsdt)
-            call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2,&
+            call dicor0(k02, varim(2), varip(2), varip(3), dnsdu2, &
                         dmsdt2, dnsdt2)
             varip(3) = varim(3)
             p2 = varim(2)
             g2 = dbar2*p2
-            rg2 = 0.5d0*(-g2+sqrt(g2**2 + 4.d0*g2))
+            rg2 = 0.5d0*(-g2+sqrt(g2**2+4.d0*g2))
             if (varim(3) .eq. 2.d0) dnsdu2 = rg2*nu2/dxu2/p2
             if (varim(3) .eq. 2.d0) dmsdt2 = rg2*mu2/dryu2/p2
-        endif
+        end if
         do i = 4, 7
             varip(i) = varim(i)
         end do
 !
-    endif
+    end if
 !
 ! ======================================================================
 !                         PARAMETRES EN SORTIE
@@ -621,8 +621,8 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 !
 ! --- ECRITURE DE LA MATRICE TANGENTE EN REPERE LOCAL
 !
-    call dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2,&
-                dnsdt2, dmsdt2, ky, kz, krx,&
+    call dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2, &
+                dnsdt2, dmsdt2, ky, kz, krx, &
                 krz, klv, klv2)
 ! ----------------------------------------------------------------------
 !

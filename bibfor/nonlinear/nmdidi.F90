@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdidi(ds_inout, model , list_load, nume_dof, valinc,&
-                  veelem  , veasse)
+subroutine nmdidi(ds_inout, model, list_load, nume_dof, valinc, &
+                  veelem, veasse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/rsexch.h"
 #include "asterfort/vecdid.h"
@@ -70,12 +70,12 @@ implicit none
 ! - Get displacement field
 !
     didi_nume = ds_inout%didi_nume
-    if ((didi_nume.ge.0) .and. (ds_inout%l_stin_evol)) then
+    if ((didi_nume .ge. 0) .and. (ds_inout%l_stin_evol)) then
         call rsexch(' ', ds_inout%stin_evol, 'DEPL', didi_nume, disp_didi, iret)
         if (iret .ne. 0) then
             call utmess('F', 'MECANONLINE5_20', sk=ds_inout%stin_evol)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute elementary vectors
 !

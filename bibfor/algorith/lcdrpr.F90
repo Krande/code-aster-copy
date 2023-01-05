@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcdrpr(fami, typmod, option, imate, compor, sigm,&
-                  depsm, vim,&
+subroutine lcdrpr(fami, typmod, option, imate, compor, sigm, &
+                  depsm, vim, &
                   vip, sig, dsidep, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dpmate.h"
 #include "asterfort/dpvpdi.h"
@@ -58,42 +58,42 @@ implicit none
 ! ======================================================================
     integer :: nbmat, typedp, ndt, ndi, nvi
     real(kind=8) :: td, tf, tr
-    parameter    (nbmat  = 5 )
+    parameter(nbmat=5)
     real(kind=8) :: materf(nbmat, 2), deps(6)
     character(len=8) :: mod
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
 ! - Get temperatures
 !
-    call get_varc(fami , 1  , 1 , 'T',&
+    call get_varc(fami, 1, 1, 'T', &
                   td, tf, tr)
 ! ======================================================================
 ! --- RECUPERATION DU TYPE DE LOI DE COMPORTEMENT DP -------------------
 ! ======================================================================
     mod = typmod(1)
-    call dpmate(mod, imate, materf, ndt, ndi,&
+    call dpmate(mod, imate, materf, ndt, ndi, &
                 nvi, typedp)
 ! ======================================================================
 ! --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ----------
 ! ======================================================================
-    call dpvpdi(nbmat, materf, td, tf, tr,&
+    call dpvpdi(nbmat, materf, td, tf, tr, &
                 depsm, deps)
 ! ======================================================================
     if (typedp .eq. 1) then
 ! ======================================================================
 ! --- CAS LINEAIRE -----------------------------------------------------
 ! ======================================================================
-        call lcdpli(mod, nvi, option, materf, sigm,&
-                    deps, vim, vip, sig, dsidep,&
+        call lcdpli(mod, nvi, option, materf, sigm, &
+                    deps, vim, vip, sig, dsidep, &
                     iret)
-    else if (typedp.eq.2) then
+    else if (typedp .eq. 2) then
 ! ======================================================================
 ! --- CAS PARABOLIQUE --------------------------------------------------
 ! ======================================================================
-        call lcdppa(mod, nvi, option, materf, compor,&
-                    sigm, deps, vim, vip, sig,&
+        call lcdppa(mod, nvi, option, materf, compor, &
+                    sigm, deps, vim, vip, sig, &
                     dsidep, iret)
-    endif
+    end if
 ! ======================================================================
 end subroutine

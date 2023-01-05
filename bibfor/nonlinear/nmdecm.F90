@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat,&
-                  nbrpas, dtmin       , retdec)
+subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat, &
+                  nbrpas, dtmin, retdec)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmdecc.h"
@@ -77,16 +77,16 @@ subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat,&
 ! --- DONNEES
 !
     if (typdec .eq. 'SUBD') then
-        call utdidt('L', sddisc, 'ECHE', 'SUBD_PAS', index_ = i_event_acti, &
-                    vali_ = nbrpas)
+        call utdidt('L', sddisc, 'ECHE', 'SUBD_PAS', index_=i_event_acti, &
+                    vali_=nbrpas)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CONSTRUCTION DE LA LISTE DES INSTANTS
 !
-    call nmdecc(nomlis, .true._1, optdec, deltat, instam,&
-                ratio, typdec, nbrpas, deltac, dtmin,&
+    call nmdecc(nomlis, .true._1, optdec, deltat, instam, &
+                ratio, typdec, nbrpas, deltac, dtmin, &
                 retdec)
 !
 end subroutine

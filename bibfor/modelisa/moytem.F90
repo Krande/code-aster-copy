@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine moytem(fami, npg, nspg, poum, temp,&
+subroutine moytem(fami, npg, nspg, poum, temp, &
                   iret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/rcvarc.h"
 !
@@ -58,13 +58,13 @@ implicit none
     tgtot = 0.d0
     do kpg = 1, npg
         do ksp = 1, nspg
-            call rcvarc(' ', 'TEMP', poum, fami, kpg,&
+            call rcvarc(' ', 'TEMP', poum, fami, kpg, &
                         ksp, tg, iret)
             if (iret .eq. 1) then
                 temp = tg
                 goto 999
-            endif
-            tgtot = tgtot + tg
+            end if
+            tgtot = tgtot+tg
         end do
     end do
     temp = tgtot/(npg*nspg)

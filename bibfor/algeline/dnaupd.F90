@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -413,9 +413,9 @@
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-subroutine dnaupd(ido, bmat, n, which, nev,&
-                  tol, resid, ncv, v, ldv,&
-                  iparam, ipntr, workd, workl, lworkl,&
+subroutine dnaupd(ido, bmat, n, which, nev, &
+                  tol, resid, ncv, v, ldv, &
+                  iparam, ipntr, workd, workl, lworkl, &
                   info, neqact, alpha)
     implicit none
 !
@@ -429,11 +429,11 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
 #include "asterfort/ivout.h"
 #include "asterfort/utmess.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     integer :: nopx, nbx, nrorth, nitref, nrstrt
-    common /infor/&
+    common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
 !     %------------------%
@@ -457,7 +457,7 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
 !     %------------%
 !
     real(kind=8) :: zero
-    parameter (zero = 0.0d+0)
+    parameter(zero=0.0d+0)
 !
 !     %---------------%
 !     | LOCAL SCALARS |
@@ -505,22 +505,22 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
             ierr = -2
         else if (ncv .le. nev+1 .or. ncv .gt. n) then
             if (msglvl .gt. 0) then
-                write(logfil,*)
-                write(logfil,*)'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-                write(logfil,*)'& FLAG ERREUR -3 DEBRANCHE DANS DNAUPD &'
-                write(logfil,*)'& NBVECT < NBFREQ + 2 OU NBVECT > NBEQ &'
-                write(logfil,*)'&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
-                write(logfil,*)
-            endif
+                write (logfil, *)
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *) '& FLAG ERREUR -3 DEBRANCHE DANS DNAUPD &'
+                write (logfil, *) '& NBVECT < NBFREQ + 2 OU NBVECT > NBEQ &'
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *)
+            end if
         else if (mxiter .le. 0) then
             ierr = -4
-            else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which&
-        .ne. 'LR' .and. which .ne. 'SR' .and. which .ne. 'LI' .and.&
-        which .ne. 'SI') then
+        else if (which .ne. 'LM' .and. which .ne. 'SM' .and. which &
+                 .ne. 'LR' .and. which .ne. 'SR' .and. which .ne. 'LI' .and. &
+                 which .ne. 'SI') then
             ierr = -5
         else if (bmat .ne. 'I' .and. bmat .ne. 'G') then
             ierr = -6
-        else if (lworkl .lt. 3*ncv**2 + 6*ncv) then
+        else if (lworkl .lt. 3*ncv**2+6*ncv) then
             ierr = -7
         else if (mode .lt. 1 .or. mode .gt. 4) then
             ierr = -10
@@ -528,7 +528,7 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
             ierr = -11
         else if (ishift .lt. 0 .or. ishift .gt. 1) then
             ierr = -12
-        endif
+        end if
 !
 !        %------------%
 !        | ERROR EXIT |
@@ -538,7 +538,7 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
             info = ierr
             ido = 99
             goto 9000
-        endif
+        end if
 !
 !        %------------------------%
 !        | SET DEFAULT PARAMETERS |
@@ -554,14 +554,14 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
 !        | SIZE OF THE INVARIANT SUBSPACE DESIRED.      |
 !        %----------------------------------------------%
 !
-        np = ncv - nev
+        np = ncv-nev
         nev0 = nev
 !
 !        %-----------------------------%
 !        | ZERO OUT INTERNAL WORKSPACE |
 !        %-----------------------------%
 !
-        do j = 1, 3*ncv**2 + 6*ncv
+        do j = 1, 3*ncv**2+6*ncv
             workl(j) = zero
         end do
 !
@@ -585,28 +585,28 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
         ldh = ncv
         ldq = ncv
         ih = 1
-        ritzr = ih + ldh*ncv
-        ritzi = ritzr + ncv
-        bounds = ritzi + ncv
-        iq = bounds + ncv
-        iw = iq + ldq*ncv
-        next = iw + ncv**2 + 3*ncv
+        ritzr = ih+ldh*ncv
+        ritzi = ritzr+ncv
+        bounds = ritzi+ncv
+        iq = bounds+ncv
+        iw = iq+ldq*ncv
+        next = iw+ncv**2+3*ncv
         ipntr(4) = next
         ipntr(5) = ih
         ipntr(6) = ritzr
         ipntr(7) = ritzi
         ipntr(8) = bounds
         ipntr(14) = iw
-    endif
+    end if
 !
 !     %-------------------------------------------------------%
 !     | CARRY OUT THE IMPLICITLY RESTARTED ARNOLDI ITERATION. |
 !     %-------------------------------------------------------%
 !
-    call dnaup2(ido, bmat, n, which, nev0,&
-                np, tol, resid, ishift, mxiter,&
-                v, ldv, workl(ih), ldh, workl(ritzr),&
-                workl(ritzi), workl(bounds), workl(iq), ldq, workl(iw),&
+    call dnaup2(ido, bmat, n, which, nev0, &
+                np, tol, resid, ishift, mxiter, &
+                v, ldv, workl(ih), ldh, workl(ritzr), &
+                workl(ritzi), workl(bounds), workl(iq), ldq, workl(iw), &
                 ipntr, workd, info, neqact, alpha)
 !
 !     %--------------------------------------------------%
@@ -634,12 +634,12 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
     if (msglvl .gt. 0) then
         call ivout(logfil, 1, [mxiter], ndigit, '_NAUPD: NUMBER OF UPDATE ITERATIONS TAKEN')
         call ivout(logfil, 1, [np], ndigit, '_NAUPD: NUMBER OF WANTED "CONVERGED" RITZ VALUES')
-        call dvout(logfil, np, workl(ritzr), ndigit,&
+        call dvout(logfil, np, workl(ritzr), ndigit, &
                    '_NAUPD: REAL PART OF THE FINAL RITZ VALUES')
-        call dvout(logfil, np, workl(ritzi), ndigit,&
+        call dvout(logfil, np, workl(ritzi), ndigit, &
                    '_NAUPD: IMAGINARY PART OF THE FINAL RITZ VALUES')
         call dvout(logfil, np, workl(bounds), ndigit, '_NAUPD: ASSOCIATED RITZ ESTIMATES')
-    endif
+    end if
 !        %--------------------------------%
 !        | VERSION NUMBER & VERSION DATE  |
 !        %--------------------------------%
@@ -651,12 +651,12 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
     vali(6) = nrstrt
     call utmess('I', 'ALGELINE6_27', ni=6, vali=vali)
 !
-    mxiter=0
-    nopx=0
-    nbx=0
-    nrorth=0
-    nitref=0
-    nrstrt=0
+    mxiter = 0
+    nopx = 0
+    nbx = 0
+    nrorth = 0
+    nitref = 0
+    nrstrt = 0
 !
 9000 continue
 !

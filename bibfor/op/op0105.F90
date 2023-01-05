@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine op0105()
     character(len=8) :: mag, dm(2)
     character(len=16) :: kbi1, kbi2
     character(len=8) :: oper
-    integer :: n1,   ibid
+    integer :: n1, ibid
     integer, pointer :: dim1(:) => null()
     integer, pointer :: dim2(:) => null()
 !     ------------------------------------------------------------------
@@ -57,8 +57,8 @@ subroutine op0105()
 !     --OBJET .TITR:
 !     ---------------
     call wkvect(mag//'           .TITR', 'G V K80', 2, ibid)
-    zk80(ibid)=' MAILLAGE OBTENU PAR CONCATENATION DES MAILLAGES : '
-    zk80(ibid+1)='  '//dm(1)//' ET '//dm(2)
+    zk80(ibid) = ' MAILLAGE OBTENU PAR CONCATENATION DES MAILLAGES : '
+    zk80(ibid+1) = '  '//dm(1)//' ET '//dm(2)
 !
 !
 !     -- TRAITEMENT DU TYPE D OPERATION :
@@ -69,15 +69,15 @@ subroutine op0105()
 !
         call jeveuo(dm(1)//'.DIME', 'L', vi=dim1)
         call jeveuo(dm(2)//'.DIME', 'L', vi=dim2)
-        if ((dim1(4).ne.0) .or. (dim2(4).ne.0)) then
+        if ((dim1(4) .ne. 0) .or. (dim2(4) .ne. 0)) then
             call utmess('F', 'SOUSTRUC_16')
-        endif
+        end if
         if (oper(1:7) .eq. 'COLLAGE') then
             call asmaco(dm(1), dm(2), mag)
-        else if (oper(1:7).eq.'SUPERPO') then
+        else if (oper(1:7) .eq. 'SUPERPO') then
             call asmasu(dm(1), dm(2), mag)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     --ON CALCULE LES CARACTERISTIQUES DU MAILLAGE:

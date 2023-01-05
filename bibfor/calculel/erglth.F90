@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,9 +90,9 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL5_44')
-    endif
+    end if
     call jeveuo(champ2//'.CELK', 'L', vk24=celk)
-    ligrel = celk(1)(1:19)
+    ligrel = celk(1) (1:19)
 !
     call jeveuo(champ2//'.CELD', 'L', vi=celd)
 !
@@ -100,20 +100,20 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     first = .true.
     nbgr = nbgrel(ligrel)
     do j = 1, nbgr
-        mode=celd(celd(4+j) +2)
+        mode = celd(celd(4+j)+2)
         if (mode .eq. 0) goto 1
         long2 = digdel(mode)
-        icoef=max(1,celd(4))
-        long2 = long2 * icoef
+        icoef = max(1, celd(4))
+        long2 = long2*icoef
         if (first) then
             longt = long2
         else
             if (longt .ne. long2) then
                 call utmess('F', 'CALCULEL5_45')
-            endif
-        endif
+            end if
+        end if
         first = .false.
-  1     continue
+1       continue
     end do
 !
 !        -- ON CUMULE :
@@ -135,30 +135,30 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
         terms2 = 0.d0
         termf2 = 0.d0
         terme2 = 0.d0
-    endif
+    end if
 !
     do j = 1, nbgr
-        mode=celd(celd(4+j) +2)
+        mode = celd(celd(4+j)+2)
         if (mode .eq. 0) goto 2
-        nel = nbelem(ligrel,j)
-        idecgr=celd(celd(4+j)+8)
+        nel = nbelem(ligrel, j)
+        idecgr = celd(celd(4+j)+8)
         do k = 1, nel
             iad = iavale-1+idecgr+(k-1)*longt
-            err0 = err0 + zr(iad)**2
-            nors = nors + zr(iad+2)**2
+            err0 = err0+zr(iad)**2
+            nors = nors+zr(iad+2)**2
             if (niveau .eq. 2) then
-                termvo = termvo + zr(iad+3)**2
-                termv1 = termv1 + zr(iad+5)**2
-                termsa = termsa + zr(iad+6)**2
-                terms1 = terms1 + zr(iad+8)**2
-                termfl = termfl + zr(iad+9)**2
-                termf1 = termf1 + zr(iad+11)**2
-                termec = termec + zr(iad+12)**2
-                terme1 = terme1 + zr(iad+14)**2
-            endif
-            nbel = nbel + 1
+                termvo = termvo+zr(iad+3)**2
+                termv1 = termv1+zr(iad+5)**2
+                termsa = termsa+zr(iad+6)**2
+                terms1 = terms1+zr(iad+8)**2
+                termfl = termfl+zr(iad+9)**2
+                termf1 = termf1+zr(iad+11)**2
+                termec = termec+zr(iad+12)**2
+                terme1 = terme1+zr(iad+14)**2
+            end if
+            nbel = nbel+1
         end do
-  2     continue
+2       continue
     end do
     err0 = sqrt(err0)
     nors = sqrt(nors)
@@ -177,39 +177,39 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
         if (terms1 .gt. ovfl) terms2 = 100.d0*(termsa/terms1)
         if (termf1 .gt. ovfl) termf2 = 100.d0*(termfl/termf1)
         if (terme1 .gt. ovfl) terme2 = 100.d0*(termec/terme1)
-    endif
+    end if
     if (nors .gt. ovfl) then
         nu0 = 100.d0*err0/nors
     else
         call utmess('I', 'CALCULEL5_46')
         nu0 = 0.d0
-    endif
-    write(ifi,*) ' '
-    write(ifi,*) '**********************************************'
-    write(ifi,*) ' THERMIQUE: ESTIMATEUR D''ERREUR EN RESIDU '
-    write(ifi,*) '**********************************************'
-    write(ifi,*)
-    write(ifi,*) '   IMPRESSION DES NORMES GLOBALES :'
-    write(ifi,*)
+    end if
+    write (ifi, *) ' '
+    write (ifi, *) '**********************************************'
+    write (ifi, *) ' THERMIQUE: ESTIMATEUR D''ERREUR EN RESIDU '
+    write (ifi, *) '**********************************************'
+    write (ifi, *)
+    write (ifi, *) '   IMPRESSION DES NORMES GLOBALES :'
+    write (ifi, *)
 !
 ! ESTIMATEURS D'ERREURS EN THERMIQUE LINEAIRE
-    write(ifi,111)' SD EVOL_THER    ',resuco
-    write(ifi,110)' NUMERO D''ORDRE  ',iordr
-    write(ifi,109)' INSTANT         ',inst
-    write(ifi,*)'ERREUR             ABSOLUE   /  RELATIVE '//&
+    write (ifi, 111) ' SD EVOL_THER    ', resuco
+    write (ifi, 110) ' NUMERO D''ORDRE  ', iordr
+    write (ifi, 109) ' INSTANT         ', inst
+    write (ifi, *) 'ERREUR             ABSOLUE   /  RELATIVE '//&
      &      '/ NORMALISATION'
-    write(ifi,108)' TOTAL           ',err0,nu0,'%',nors
+    write (ifi, 108) ' TOTAL           ', err0, nu0, '%', nors
     if (niveau .eq. 2) then
-        write(ifi,108)' TERME VOLUMIQUE ',termvo,termv2,'%',termv1
-        write(ifi,108)' TERME SAUT      ',termsa,terms2,'%',terms1
-        write(ifi,108)' TERME FLUX      ',termfl,termf2,'%',termf1
-        write(ifi,108)' TERME ECHANGE   ',termec,terme2,'%',terme1
-    endif
-    108 format(a17,d16.8,1x,d16.8,a2,1x,d16.8)
-    109 format(a17,d16.8)
-    110 format(a17,i5)
-    111 format(a17,a8)
-    write(ifi,*)
-    write(ifi,*) '**********************************************'
+        write (ifi, 108) ' TERME VOLUMIQUE ', termvo, termv2, '%', termv1
+        write (ifi, 108) ' TERME SAUT      ', termsa, terms2, '%', terms1
+        write (ifi, 108) ' TERME FLUX      ', termfl, termf2, '%', termf1
+        write (ifi, 108) ' TERME ECHANGE   ', termec, terme2, '%', terme1
+    end if
+108 format(a17, d16.8, 1x, d16.8, a2, 1x, d16.8)
+109 format(a17, d16.8)
+110 format(a17, i5)
+111 format(a17, a8)
+    write (ifi, *)
+    write (ifi, *) '**********************************************'
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@
 !> @param[in]  neq      number of equations
 !> @param[out] nnv      the output numbering
 !
-subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
-                  invp, parent, supnd, adress, lgind,&
+subroutine amdapt(neq, nbnd, nbsn, pe, nv, &
+                  invp, parent, supnd, adress, lgind, &
                   fctnzs, fctops, llist, nnv)
 ! person_in_charge: olivier.boiteau at edf.fr
 !
@@ -94,13 +94,13 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
     call infniv(ifm, niv)
     nbsn = 0
     do i = 1, nbnd
-        if (nv(i) .ne. 0) nbsn = nbsn + 1
+        if (nv(i) .ne. 0) nbsn = nbsn+1
         j = invp(i)
         if (pe(i) .ne. 0) then
             parent(j) = invp(-pe(i))
         else
-            parent(j)=0
-        endif
+            parent(j) = 0
+        end if
         nnv(j) = nv(i)
     end do
 !     NV CONTIENDRA  LA LARGEUR DES SN (LGSN AILLEURS)
@@ -109,23 +109,23 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
         nv(i) = 1
 111     continue
         if (nnv(j) .eq. 0) then
-            nv(i) = nv(i) + 1
-            j = j + 1
+            nv(i) = nv(i)+1
+            j = j+1
             goto 111
-        endif
-        j = j + 1
+        end if
+        j = j+1
     end do
 !
     supnd(1) = 1
     do i = 1, nbsn
-        supnd(i+1) = supnd(i) + nv(i)
+        supnd(i+1) = supnd(i)+nv(i)
     end do
 !     LLIST SERA  L INVERSE DE SUPND, APPELE INVSUP AILLEURS
     k = 0
     adress(1) = 1
     do snj = 1, nbsn
         do i = 1, nv(snj)
-            k = k + 1
+            k = k+1
             llist(k) = snj
         end do
 !     CALCUL DE ADRESS : ON CHERCHE DANS LE SN SNJ,
@@ -135,28 +135,28 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
 !     C A D ADRESS(SN+1) - ADRESS(SN)
         deb = supnd(snj)
         fin = supnd(snj+1)-1
-        i= fin
+        i = fin
 128     continue
         if (i .lt. deb) then
             call utmess('F', 'ALGELINE5_6', si=snj)
-        endif
+        end if
         if (nnv(i) .ne. 0) goto 129
-        i= i-1
+        i = i-1
         goto 128
 129     continue
-        adress(snj+1) = adress(snj) + nnv(i)
+        adress(snj+1) = adress(snj)+nnv(i)
     end do
 !
-    lgind = adress(nbsn+1) - 1
+    lgind = adress(nbsn+1)-1
     fctnzs = 0
     fctops = 0.d0
     do i = 1, nbsn
-        ncol = supnd(i+1) - supnd(i)
-        nlig = adress(i+1) - adress(i)
-        fctnzs = fctnzs + nlig*ncol - (ncol*(ncol+1))/2
+        ncol = supnd(i+1)-supnd(i)
+        nlig = adress(i+1)-adress(i)
+        fctnzs = fctnzs+nlig*ncol-(ncol*(ncol+1))/2
         do j = 1, ncol
-            nlig = nlig - 1
-            fctops = fctops + nlig*(nlig+3)
+            nlig = nlig-1
+            fctops = fctops+nlig*(nlig+3)
         end do
     end do
 !     ON CALCUL PARENT EN SN A PARTIR DE PARENT/NOEUDS
@@ -171,13 +171,13 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
     do snj = 1, nbsn
         deb = supnd(snj)
         fin = supnd(snj+1)-1
-        ndi= fin
+        ndi = fin
 175     continue
         if (ndi .lt. deb) then
             call utmess('F', 'ALGELINE5_6', si=snj)
-        endif
+        end if
         if (nnv(ndi) .ne. 0) goto 177
-        ndi= ndi-1
+        ndi = ndi-1
         goto 175
 177     continue
 !        LE NOEUD NDI EST LE ND REPRESENTATIF DU SN
@@ -185,17 +185,17 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
         if (nv(ndi) .ne. 0) then
             parent(snj) = llist(nv(ndi))
         else
-            parent(snj) =0
-        endif
+            parent(snj) = 0
+        end if
 !
     end do
     if (niv .eq. 2) then
-        write(ifm,*)'AMDAPT  :  TRAITEMENT DE AMDBAR'
-        write(ifm,*)' NOMBRE DE SUPERNOEUDS: ',nbsn
+        write (ifm, *) 'AMDAPT  :  TRAITEMENT DE AMDBAR'
+        write (ifm, *) ' NOMBRE DE SUPERNOEUDS: ', nbsn
         do i = 1, nbsn
-            write(ifm,*) 'SN ',i,' :NDS DE ',supnd(i),' A ',supnd(i+1)&
-            -1, ',PARENT ',parent(i),',DEGRE :',adress(i+1)-adress(i)
+            write (ifm, *) 'SN ', i, ' :NDS DE ', supnd(i), ' A ', supnd(i+1) &
+                -1, ',PARENT ', parent(i), ',DEGRE :', adress(i+1)-adress(i)
         end do
-    endif
+    end if
 !
 end subroutine

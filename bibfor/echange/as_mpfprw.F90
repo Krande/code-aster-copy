@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine as_mpfprw(fid, pflval, nbval, pro, cret)
     med_int, allocatable :: pflva4(:)
     fidm = to_med_idt(fid)
     nbval4 = nbval
-    allocate ( pflva4(nbval) )
+    allocate (pflva4(nbval))
     call conv_int('ast->med', nbval, vi_ast=pflval, vi_med=pflva4)
     call mpfprw(fidm, pro, nbval4, pflva4, cret4)
     cret = cret4

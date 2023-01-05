@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,8 +75,6 @@ subroutine rc3600_momeq()
     integer :: iexi
     aster_logical :: lnoeu, ldetli, lvide
 
-
-
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -89,30 +87,30 @@ subroutine rc3600_momeq()
 
     mcf = 'RESU_MECA'
     call getvid(mcf, 'RESULTAT', iocc=1, scal=resu, nbret=n0)
-    call getvid(mcf, 'CHAM_GD', iocc=1,  scal=champ, nbret=n1)
+    call getvid(mcf, 'CHAM_GD', iocc=1, scal=champ, nbret=n1)
 
-    lpain(1)='PEFFONR'
-    lpaout(1)='PEFFOENR'
+    lpain(1) = 'PEFFONR'
+    lpaout(1) = 'PEFFOENR'
 
-    if (n0.ge.1) then
-        lvide=.true.
+    if (n0 .ge. 1) then
+        lvide = .true.
         conceptin = resu
-        resu19=resu
+        resu19 = resu
         call dismoi('TYPE_RESU', resu, 'RESULTAT', repk=typesd)
         call getvid(mcf, 'NOM_CHAM', iocc=1, scal=nomsym, nbret=ibid)
-        lnoeu=nomsym.eq.'EFGE_ELNO'
+        lnoeu = nomsym .eq. 'EFGE_ELNO'
         ASSERT(lnoeu)
 !
 !        -- SELECTION DES NUMERO D'ORDRE :
 !        ---------------------------------
-        prec=-1.d0
-        crit=' '
+        prec = -1.d0
+        crit = ' '
         call getvr8(mcf, 'PRECISION', iocc=1, scal=prec, nbret=iret)
         call getvtx(mcf, 'CRITERE', iocc=1, scal=crit, nbret=iret)
-        call rsutnu(resu19, mcf, 1, '&&RC3600.NUME_ORDRE', nbordr,&
+        call rsutnu(resu19, mcf, 1, '&&RC3600.NUME_ORDRE', nbordr, &
                     prec, crit, iret)
-        ASSERT(iret.eq.0)
-        ASSERT(nbordr.gt.0)
+        ASSERT(iret .eq. 0)
+        ASSERT(nbordr .gt. 0)
         call jeveuo('&&RC3600.NUME_ORDRE', 'L', jordr)
 !
 !
@@ -124,39 +122,39 @@ subroutine rc3600_momeq()
 !        -- 2. : BOUCLE SUR LES NUMERO D ORDRE
 !        --------------------------------------------------
 
-        modeav=' '
-        ldetli=.false.
-        do  i = 1, nbordr
-            nuordr=zi(jordr-1+i)
-            call rsexch(' ', resu19, nomsym, nuordr, chin,&
+        modeav = ' '
+        ldetli = .false.
+        do i = 1, nbordr
+            nuordr = zi(jordr-1+i)
+            call rsexch(' ', resu19, nomsym, nuordr, chin, &
                         iret)
 
             if (iret .eq. 0) then
 !
 !         -- 3.1 : MODELE, LIGREL :
-                call rslesd(resu, nuordr, model_ = modele)
+                call rslesd(resu, nuordr, model_=modele)
                 if (modele .ne. modeav) then
                     if (ldetli) call detrsd('LIGREL', ligrel)
                     call exlima('ZONE_ANALYSE', 1, 'V', modele, ligrel)
-                    modeav=modele
+                    modeav = modele
 !             -- SI ON CREE UN LIGREL, IL FAUT VERIFIER QUE L'ON S'EN
 !                SERT VRAIMENT. SINON, IL FAUT LE DETRUIRE:
-                    ldetli=.false.
-                    if (ligrel(1:8) .ne. modele) ldetli=.true.
-                endif
+                    ldetli = .false.
+                    if (ligrel(1:8) .ne. modele) ldetli = .true.
+                end if
 !
-                call rsexch(' ', resuTmp, nomsym, nuordr, chextr,&
+                call rsexch(' ', resuTmp, nomsym, nuordr, chextr, &
                             iret)
-                ASSERT(iret.eq.100)
+                ASSERT(iret .eq. 100)
 !
                 call jelira(chin//'.CELV', 'TYPE', cval=tsca)
                 ASSERT(tsca .eq. 'R')
 !
-                lchin(1)=chin
-                lchout(1)=chextr
+                lchin(1) = chin
+                lchout(1) = chextr
 !
-                call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin,&
-                            lpain, 1, lchout, lpaout, 'V',&
+                call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin, &
+                            lpain, 1, lchout, lpaout, 'V', &
                             'OUI')
 !
                 call jeexin(lchout(1)//'.CELV', iexi)
@@ -164,54 +162,53 @@ subroutine rc3600_momeq()
                     call utmess('A', 'CALCULEL2_18', si=nuordr)
                 else
 !                    if (nuordr.eq.6)call imprsd('CHAMP',chextr, 6, 'test')
-                    ldetli=.false.
+                    ldetli = .false.
                     call rsnoch(resuTmp, nomsym, nuordr)
                     lvide = .false.
-                endif
+                end if
             else
-                call utmess('F','CALCULEL2_26', sk=nomsym, si=nuordr)
-            endif
+                call utmess('F', 'CALCULEL2_26', sk=nomsym, si=nuordr)
+            end if
         end do
-
 
 !
 !       -- 3. RECOPIE DES PARAMETRES DE RESU VERS resuTmp :
 !       --------------------------------------------------
-        nompar='&&RC3600'//'.NOMS_PARA'
+        nompar = '&&RC3600'//'.NOMS_PARA'
         call rsnopa(resu, 2, nompar, nbac, nbpa)
-        nbpara=nbac+nbpa
+        nbpara = nbac+nbpa
         call jeveuo(nompar, 'L', jnompa)
         resuTmp19 = resuTmp
         call jeveuo(resuTmp19//'.ORDR', 'L', jordr)
         call jelira(resuTmp19//'.ORDR', 'LONUTI', nbordr)
 !
         do i = 1, nbordr
-            nuordr=zi(jordr-1+i)
+            nuordr = zi(jordr-1+i)
             do j = 1, nbpara
-                nopara=zk16(jnompa-1+j)
-                call rsadpa(resu, 'L', 1, nopara, nuordr,&
+                nopara = zk16(jnompa-1+j)
+                call rsadpa(resu, 'L', 1, nopara, nuordr, &
                             1, sjv=iadin, styp=type, istop=0)
-                call rsadpa(resuTmp, 'E', 1, nopara, nuordr,&
+                call rsadpa(resuTmp, 'E', 1, nopara, nuordr, &
                             1, sjv=iadou, styp=type)
                 if (type(1:1) .eq. 'I') then
-                    zi(iadou)=zi(iadin)
-                else if (type(1:1).eq.'R') then
-                    zr(iadou)=zr(iadin)
-                else if (type(1:1).eq.'C') then
-                    zc(iadou)=zc(iadin)
-                else if (type(1:3).eq.'K80') then
-                    zk80(iadou)=zk80(iadin)
-                else if (type(1:3).eq.'K32') then
-                    zk32(iadou)=zk32(iadin)
-                else if (type(1:3).eq.'K24') then
-                    zk24(iadou)=zk24(iadin)
-                else if (type(1:3).eq.'K16') then
-                    zk16(iadou)=zk16(iadin)
-                else if (type(1:2).eq.'K8') then
-                    zk8(iadou)=zk8(iadin)
-                endif
-            enddo
-        enddo
+                    zi(iadou) = zi(iadin)
+                else if (type(1:1) .eq. 'R') then
+                    zr(iadou) = zr(iadin)
+                else if (type(1:1) .eq. 'C') then
+                    zc(iadou) = zc(iadin)
+                else if (type(1:3) .eq. 'K80') then
+                    zk80(iadou) = zk80(iadin)
+                else if (type(1:3) .eq. 'K32') then
+                    zk32(iadou) = zk32(iadin)
+                else if (type(1:3) .eq. 'K24') then
+                    zk24(iadou) = zk24(iadin)
+                else if (type(1:3) .eq. 'K16') then
+                    zk16(iadou) = zk16(iadin)
+                else if (type(1:2) .eq. 'K8') then
+                    zk8(iadou) = zk8(iadin)
+                end if
+            end do
+        end do
         call jedetr(nompar)
 !
         call jedetr('&&RC3600.NUME_ORDRE')
@@ -225,25 +222,24 @@ subroutine rc3600_momeq()
         noch19 = '&&RC3600_CHMAXI'
         typresu = 'VALE'
 
-        call chmima(resuTmp, nomsym, tychlu, typmax, noch19,&
-                    typresu=typresu, mcfz = mcf)
+        call chmima(resuTmp, nomsym, tychlu, typmax, noch19, &
+                    typresu=typresu, mcfz=mcf)
 
     else
         nomsym = ' '
         conceptin = champ
         call dismoi('NOM_MODELE', champ, 'CHAMP', repk=modele)
         call dismoi('NOM_OPTION', champ, 'CHAMP', repk=nomopt)
-        if (nomopt(1:9).ne.'EFGE_ELNO') call utmess('F','POSTRELE_23', sk=nomopt)
+        if (nomopt(1:9) .ne. 'EFGE_ELNO') call utmess('F', 'POSTRELE_23', sk=nomopt)
         call exlima('ZONE_ANALYSE', 1, 'V', modele, ligrel)
         noch19 = '&&RC3600_CHMEQ'
-        lchin(1)=champ
-        lchout(1)=noch19
+        lchin(1) = champ
+        lchout(1) = noch19
 !
-        call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
-    endif
-
+    end if
 
 !    creation de la table
 

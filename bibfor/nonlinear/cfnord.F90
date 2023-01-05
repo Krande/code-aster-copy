@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfnord(noma, typent, nument, itype, vector,&
+subroutine cfnord(noma, typent, nument, itype, vector, &
                   tau1, tau2, lnfixe)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -88,11 +88,11 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
 !
     if (typent .eq. 'MAIL') then
         call jenuno(jexnum(noma//'.NOMMAI', nument), noment)
-    else if (typent.eq.'NOEU') then
+    else if (typent .eq. 'NOEU') then
         call jenuno(jexnum(noma//'.NOMNOE', nument), noment)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- NORMALE AUTOMATIQUE: ON SORT
 !
@@ -103,9 +103,9 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
         call normev(vector, noor)
         if (noor .le. r8prem()) then
             ASSERT(.false.)
-        endif
+        end if
         lnfixe = .true.
-    endif
+    end if
 !
 ! --- REDEFINITION SI VECT_ == 'FIXE' (ON GARDE T1 COMME REFERENCE)
 !
@@ -115,13 +115,13 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
         if (noor .le. r8prem()) then
             if (typent .eq. 'MAIL') then
                 call utmess('F', 'CONTACT_14', sk=noment)
-            else if (typent.eq.'NOEU') then
+            else if (typent .eq. 'NOEU') then
                 call utmess('F', 'CONTACT_13', sk=noment)
             else
                 ASSERT(.false.)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- REDEFINITION SI VECT_ == 'VECT_Y'
 !
@@ -137,12 +137,12 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
             if (noor2 .le. r8prem()) then
                 if (typent .eq. 'MAIL') then
                     call utmess('F', 'CONTACT3_27', sk=noment)
-                else if (typent.eq.'NOEU') then
+                else if (typent .eq. 'NOEU') then
                     call utmess('F', 'CONTACT3_26', sk=noment)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
         else
             call dcopy(3, vector, 1, tau2, 1)
             call provec(tau1, tau2, norm)
@@ -150,19 +150,19 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
             if (noor2 .le. r8prem()) then
                 if (typent .eq. 'MAIL') then
                     call utmess('F', 'CONTACT3_27', sk=noment)
-                else if (typent.eq.'NOEU') then
+                else if (typent .eq. 'NOEU') then
                     call utmess('F', 'CONTACT3_26', sk=noment)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
             call provec(tau2, norm, tau1)
-        endif
-    endif
+        end if
+    end if
 !
     if (itype .ge. 3) then
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
 !

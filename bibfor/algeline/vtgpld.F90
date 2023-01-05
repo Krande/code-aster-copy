@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vtgpld(cumul ,  alpha, geomiz,  deplaz, base,&
+subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
                   geomfz)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -100,13 +100,13 @@ implicit none
 ! - Checking
 !
     call dismoi('NOM_GD', geomi, 'CHAM_NO', repk=nomgd)
-    ASSERT(nomgd(1:6).eq.'GEOM_R')
+    ASSERT(nomgd(1:6) .eq. 'GEOM_R')
     call dismoi('NOM_GD', depla, 'CHAM_NO', repk=nomgd)
-    ASSERT(nomgd(1:6).eq.'DEPL_R')
+    ASSERT(nomgd(1:6) .eq. 'DEPL_R')
     call jelira(depla//'.VALE', 'TYPE', cval=ktype)
-    ASSERT(ktype(1:1).eq.'R')
+    ASSERT(ktype(1:1) .eq. 'R')
     call jelira(geomi//'.VALE', 'LONMAX', ldim)
-    ASSERT(ldim/3.eq.nb_node_mesh)
+    ASSERT(ldim/3 .eq. nb_node_mesh)
 !
 ! - For new field: copy
 !
@@ -121,17 +121,17 @@ implicit none
 ! - GRANDEUR
 !
     call dismoi('NUM_GD', depla, 'CHAM_NO', repi=idx_gd)
-    ASSERT(idx_gd.ne.0)
+    ASSERT(idx_gd .ne. 0)
     nb_ec = nbec(idx_gd)
-    ASSERT(nb_ec.le.10)
+    ASSERT(nb_ec .le. 10)
 !
 ! - Access to catalog
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', nb_cmp_gd)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', idx_gd), 'L', vk8 = p_cata_cmp)
-    ASSERT(p_cata_cmp(1).eq.'DX')
-    ASSERT(p_cata_cmp(2).eq.'DY')
-    ASSERT(p_cata_cmp(3).eq.'DZ')
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', idx_gd), 'L', vk8=p_cata_cmp)
+    ASSERT(p_cata_cmp(1) .eq. 'DX')
+    ASSERT(p_cata_cmp(2) .eq. 'DY')
+    ASSERT(p_cata_cmp(3) .eq. 'DZ')
 !
 ! - Get PROF_CHNO
 !
@@ -139,21 +139,21 @@ implicit none
     lili = prof_chno(1:19)//'.LILI'
     prno = prof_chno(1:19)//'.PRNO'
     nueq = prof_chno(1:19)//'.NUEQ'
-    call jeveuo(nueq, 'L', vi = v_nueq)
+    call jeveuo(nueq, 'L', vi=v_nueq)
 !
 ! - Get PRNO object for mesh
 !
     i_ligr_mesh = 1
     call jenuno(jexnum(lili, i_ligr_mesh), lili_name)
     ASSERT(lili_name .eq. '&MAILLA')
-    call jeveuo(jexnum(prno, i_ligr_mesh), 'L', vi = v_prno)
+    call jeveuo(jexnum(prno, i_ligr_mesh), 'L', vi=v_prno)
     call jelira(jexnum(prno, i_ligr_mesh), 'LONMAX', length_prno)
-    ASSERT(length_prno/(nb_ec+2).eq.nb_node_mesh)
+    ASSERT(length_prno/(nb_ec+2) .eq. nb_node_mesh)
 !
 ! - Update
 !
     do i_node = 1, nb_node_mesh
-        i_dof       = v_prno((nb_ec+2)*(i_node-1)+1) - 1
+        i_dof = v_prno((nb_ec+2)*(i_node-1)+1)-1
         nb_cmp_node = v_prno((nb_ec+2)*(i_node-1)+2)
         if (nb_cmp_node .ne. 0) then
             desc_gran(1:10) = 0
@@ -161,22 +161,22 @@ implicit none
                 desc_gran(i_ec) = v_prno((nb_ec+2)*(i_node-1)+2+i_ec)
             end do
             do i_cmp_glob = 1, 3
-                if (exisdg(desc_gran,i_cmp_glob)) then
-                    i_dof  = i_dof + 1
-                    i_equ  = v_nueq(i_dof)
+                if (exisdg(desc_gran, i_cmp_glob)) then
+                    i_dof = i_dof+1
+                    i_equ = v_nueq(i_dof)
                     rdepla = v_depla(i_equ)
                     if (cumul .eq. 'CUMU') then
                         v_geomf(3*(i_node-1)+i_cmp_glob) = &
                             v_geomi(3*(i_node-1)+i_cmp_glob)+alpha*rdepla
-                    else if (cumul.eq.'ZERO') then
+                    else if (cumul .eq. 'ZERO') then
                         v_geomf(3*(i_node-1)+i_cmp_glob) = &
                             alpha*rdepla
                     else
                         ASSERT(.false.)
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
     end do
 !
     call jedema()

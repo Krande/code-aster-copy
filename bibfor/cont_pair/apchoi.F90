@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apchoi(dist        , dist_mini, elem_indx, elem_indx_mini, tau1     ,&
-                  tau1_mini   , tau2     , tau2_mini, ksi1          , ksi1_mini,&
-                  ksi2        , ksi2_mini, proj_stat, proj_stat_mini, vect_pm  ,&
+subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
+                  tau1_mini, tau2, tau2_mini, ksi1, ksi1_mini, &
+                  ksi2, ksi2_mini, proj_stat, proj_stat_mini, vect_pm, &
                   vect_pm_mini)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "blas/dcopy.h"
@@ -85,19 +85,19 @@ implicit none
 !
 ! - Difference old/new distance
 !
-    if ((dist_mini.eq.0.d0) .or. (dist.eq.dist_mini)) then
+    if ((dist_mini .eq. 0.d0) .or. (dist .eq. dist_mini)) then
         ecan = 0.d0
     else
-        ecan = abs((dist - dist_mini)/dist_mini)
-    endif
+        ecan = abs((dist-dist_mini)/dist_mini)
+    end if
 !
     if (proj_stat_mini .eq. -1) then
 ! ----- First projection
-        dist_mini      = dist
+        dist_mini = dist
         elem_indx_mini = elem_indx
         proj_stat_mini = proj_stat
-        ksi1_mini      = ksi1
-        ksi2_mini      = ksi2
+        ksi1_mini = ksi1
+        ksi2_mini = ksi2
         call dcopy(3, tau1, 1, tau1_mini, 1)
         call dcopy(3, tau2, 1, tau2_mini, 1)
         call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
@@ -106,41 +106,41 @@ implicit none
         if (proj_stat_mini .ne. 0) then
 ! --------- Never projected inside element
             if (proj_stat .eq. 0) then
-                dist_mini      = dist
+                dist_mini = dist
                 elem_indx_mini = elem_indx
                 proj_stat_mini = proj_stat
-                ksi1_mini      = ksi1
-                ksi2_mini      = ksi2
+                ksi1_mini = ksi1
+                ksi2_mini = ksi2
                 call dcopy(3, tau1, 1, tau1_mini, 1)
                 call dcopy(3, tau2, 1, tau2_mini, 1)
                 call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
             else
                 if (dist .lt. dist_mini) then
-                    dist_mini      = dist
+                    dist_mini = dist
                     elem_indx_mini = elem_indx
                     proj_stat_mini = proj_stat
-                    ksi1_mini      = ksi1
-                    ksi2_mini      = ksi2
+                    ksi1_mini = ksi1
+                    ksi2_mini = ksi2
                     call dcopy(3, tau1, 1, tau1_mini, 1)
                     call dcopy(3, tau2, 1, tau2_mini, 1)
                     call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
-                endif
-            endif
+                end if
+            end if
         else
 ! --------- Already projected inside element
             if (proj_stat .eq. 0) then
                 if (dist .lt. dist_mini .and. ecan .gt. r8prem()) then
-                    dist_mini      = dist
+                    dist_mini = dist
                     elem_indx_mini = elem_indx
                     proj_stat_mini = proj_stat
-                    ksi1_mini      = ksi1
-                    ksi2_mini      = ksi2
+                    ksi1_mini = ksi1
+                    ksi2_mini = ksi2
                     call dcopy(3, tau1, 1, tau1_mini, 1)
                     call dcopy(3, tau2, 1, tau2_mini, 1)
                     call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 end subroutine

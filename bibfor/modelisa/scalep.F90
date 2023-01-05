@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine scalep(spectr, noma, base, nuor, nbm,&
-                  imodi, nbmr, nbexcp, ltable, iaxe,&
+subroutine scalep(spectr, noma, base, nuor, nbm, &
+                  imodi, nbmr, nbexcp, ltable, iaxe, &
                   scal)
     implicit none
 !     PROJECTION D'UN SPECTRE D'EXCITATION TURBULENTE LOCALISEE SUR UNE
@@ -73,14 +73,14 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 ! --- 1.INITIALISATIONS
 !
     dgrd = r8dgrd()
-    imodf = imodi + nbmr - 1
+    imodf = imodi+nbmr-1
     iv = 1
     if (iaxe .eq. 1) then
         idir1 = 2
         idir2 = 3
         irot1 = 6
         irot2 = 5
-    else if (iaxe.eq.2) then
+    else if (iaxe .eq. 2) then
         idir1 = 3
         idir2 = 1
         irot1 = 4
@@ -90,7 +90,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
         idir2 = 2
         irot1 = 5
         irot2 = 4
-    endif
+    end if
 !
 ! --- 2.RECUPERATIONS SIMULTANEES
 !       - DES NUMEROS DES NOEUDS D'APPLICATION DES EXCITATIONS
@@ -113,11 +113,11 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
         call jeveuo(spvate, 'L', ispte)
 !
         do iex = 1, nbexcp
-            call jenonu(jexnom(nnoema, zk8(ispno+iex-1)), zi(inuno+iex- 1))
-            theta = zr(ispre+iex-1) * dgrd
+            call jenonu(jexnom(nnoema, zk8(ispno+iex-1)), zi(inuno+iex-1))
+            theta = zr(ispre+iex-1)*dgrd
             zr(iteta+2*(iex-1)) = dble(cos(theta))
             zr(iteta+2*(iex-1)+1) = dble(sin(theta))
-            zk8(inatu+iex-1) = zk16(ispte+4+iex-1)(1:8)
+            zk8(inatu+iex-1) = zk16(ispte+4+iex-1) (1:8)
         end do
 !
     else
@@ -127,15 +127,15 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
             zi(inuno+iex-1) = nuno
             zr(iteta+2*(iex-1)) = 1.d0
             zr(iteta+2*(iex-1)+1) = 1.d0
-            inat = iex - int(iex/2) * 2
+            inat = iex-int(iex/2)*2
             if (inat .eq. 0) then
                 zk8(inatu+iex-1) = 'MOMENT'
             else
                 zk8(inatu+iex-1) = 'FORCE'
-            endif
+            end if
         end do
 !
-    endif
+    end if
 !
 ! --- 3.RECUPERATION DES DEFORMEES MODALES OU/ET DES DERIVEES DES
 ! ---   DEFORMEES MODALES AUX NOEUDS D'APPLICATION
@@ -144,20 +144,20 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 !
     do imod = imodi, imodf
 !
-        write(chvale,'(A8,A5,2I3.3,A5)') base(1:8),'.C01.',nuor(imod),&
-        iv,'.VALE'
+        write (chvale, '(A8,A5,2I3.3,A5)') base(1:8), '.C01.', nuor(imod), &
+            iv, '.VALE'
         call jeveuo(chvale, 'L', ivale)
-        imr = imod - imodi + 1
+        imr = imod-imodi+1
 !
         do iex = 1, nbexcp
             idec = 2*nbexcp*(imr-1)+2*(iex-1)
-            if (zk8(inatu+iex-1)(1:1) .eq. 'F') then
-                zr(idefm+idec) = zr(ivale+6*(zi(inuno+iex-1)-1)+idir1- 1)
-                zr(idefm+idec+1) = zr(ivale+6*(zi(inuno+iex-1)-1)+ idir2-1)
+            if (zk8(inatu+iex-1) (1:1) .eq. 'F') then
+                zr(idefm+idec) = zr(ivale+6*(zi(inuno+iex-1)-1)+idir1-1)
+                zr(idefm+idec+1) = zr(ivale+6*(zi(inuno+iex-1)-1)+idir2-1)
             else
-                zr(idefm+idec) = zr(ivale+6*(zi(inuno+iex-1)-1)+irot1- 1)
-                zr(idefm+idec+1) = zr(ivale+6*(zi(inuno+iex-1)-1)+ irot2-1)
-            endif
+                zr(idefm+idec) = zr(ivale+6*(zi(inuno+iex-1)-1)+irot1-1)
+                zr(idefm+idec+1) = zr(ivale+6*(zi(inuno+iex-1)-1)+irot2-1)
+            end if
         end do
 !
         call jelibe(chvale)
@@ -169,7 +169,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
     do imr = 1, nbmr
         do iex = 1, nbexcp
             idec = 2*nbexcp*(imr-1)+2*(iex-1)
-            scal(iex,imr) = zr(idefm+idec)*zr(iteta+2*(iex-1)) + zr(idefm+idec+1)*zr(iteta+2*(iex&
+            scal(iex, imr) = zr(idefm+idec)*zr(iteta+2*(iex-1))+zr(idefm+idec+1)*zr(iteta+2*(iex&
                             &-1)+1)
         end do
     end do

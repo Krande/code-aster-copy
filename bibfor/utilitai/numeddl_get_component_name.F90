@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,15 +55,15 @@ subroutine numeddl_get_component_name(nume19, cmpid, cmpname)
 !
     numeddl = nume19
     call jeveuo(numeddl(1:14)//'.NUME.REFN', 'L', vk24=refn)
-    nomgd=refn(2)(1:8)
+    nomgd = refn(2) (1:8)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nb_cmp_gd)
-    if ((cmpid .gt. nb_cmp_gd).or.(cmpid .le.0)) then
+    if ((cmpid .gt. nb_cmp_gd) .or. (cmpid .le. 0)) then
         vali(1) = cmpid
         vali(2) = nb_cmp_gd
         call utmess('F', 'UTILITAI_30', ni=2, vali=vali)
-    endif
-    cmpname=zk8(jcmp-1+cmpid)
+    end if
+    cmpname = zk8(jcmp-1+cmpid)
 !
     call jedema()
 end subroutine

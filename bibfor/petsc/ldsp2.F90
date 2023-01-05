@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 subroutine ldsp2(pc, x1, y, ierr)
 !
 #include "asterf_petsc.h"
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
 !
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
@@ -45,39 +45,39 @@ use petsc_data_module
 !
 ! --  COPIE DU VECTEUR D'ENTREE, CAR ERREUR S'IL EST TRANSFORME
     call VecCopy(x1, xlocal, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
 ! --  RECUPERATION DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
     call VecScatterBegin(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecScatterEnd(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
     call VecGetArray(xglobal, xx, xidx, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
 ! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
     cbid = dcmplx(0.d0, 0.d0)
     prepos = .true.
-    call amumph('RESOUD', spsomu, spmat, xx(xidx+1), [cbid],&
+    call amumph('RESOUD', spsomu, spmat, xx(xidx+1), [cbid], &
                 ' ', 1, iret, prepos)
 !
 ! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
     call VecRestoreArray(xglobal, xx, xidx, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecScatterBegin(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecScatterEnd(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
-    ierr=to_petsc_int(iret)
+    ierr = to_petsc_int(iret)
 !
 #else
 !
 !     DECLARATION BIDON POUR ASSURER LA COMPILATION
     integer :: pc, x1, y, ierr
     integer :: idummy
-    idummy = pc + x1 + y
+    idummy = pc+x1+y
     ierr = 0
 !
 #endif

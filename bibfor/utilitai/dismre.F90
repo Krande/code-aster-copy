@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dismre(questi, nomobz, repi, repkz, ierd)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -46,7 +46,7 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  iret, gd,  jnoli, l
+    integer ::  iret, gd, jnoli, l
     character(len=8) :: k8bid, nogd
     character(len=19) :: nomob
     character(len=24) :: questl, k24
@@ -65,7 +65,7 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
     if (iret .eq. 0) then
         ierd = 1
         goto 9999
-    endif
+    end if
 !
     call jeveuo(nomob//'.DESC', 'L', vi=desc)
     gd = desc(1)
@@ -86,7 +86,7 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi .eq. 'NOM_OPTION') then
         call jeveuo(nomob//'.NOLI', 'L', jnoli)
-        repk = zk24(jnoli-1+2)(1:16)
+        repk = zk24(jnoli-1+2) (1:16)
 !
     else if (questi .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.NOLI', 'L', jnoli)
@@ -117,25 +117,25 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
     else if (questi .eq. 'MPI_COMPLET') then
         call jeveuo(nomob//'.NOLI', 'L', jnoli)
         k24 = zk24(jnoli-1+3)
-        ASSERT(k24.eq.'MPI_COMPLET'.or.k24.eq.'MPI_INCOMPLET')
+        ASSERT(k24 .eq. 'MPI_COMPLET' .or. k24 .eq. 'MPI_INCOMPLET')
         if (k24 .eq. 'MPI_COMPLET') then
-            repk='OUI'
+            repk = 'OUI'
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
 !
     else if (questi .eq. 'ZERO') then
-        if (zerosd('RESUELEM',nomob)) then
-            repk='OUI'
+        if (zerosd('RESUELEM', nomob)) then
+            repk = 'OUI'
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
 !
     else
         ierd = 1
-    endif
+    end if
 !
-9999  continue
+9999 continue
     repkz = repk
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine compMecaChckStrain(iComp,&
-                              model         , fullElemField   ,&
-                              lAllCellAffe, cellAffe      , nbCellAffe   ,&
-                              lMfront      , exteDefo   ,&
-                              defoComp     , defoCompPY,&
-                              relaComp     , relaCompPY)
+subroutine compMecaChckStrain(iComp, &
+                              model, fullElemField, &
+                              lAllCellAffe, cellAffe, nbCellAffe, &
+                              lMfront, exteDefo, &
+                              defoComp, defoCompPY, &
+                              relaComp, relaCompPY)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,16 +41,16 @@ implicit none
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: iComp
-character(len=8), intent(in) :: model
-character(len=19), intent(in) :: fullElemField
-aster_logical, intent(in) :: lAllCellAffe
-character(len=24), intent(in) :: cellAffe
-integer, intent(in) :: nbCellAffe
-aster_logical, intent(in) :: lMfront
-integer, intent(in) :: exteDefo
-character(len=16), intent(in) :: defoComp, defoCompPY
-character(len=16), intent(in) :: relaComp, relaCompPY
+    integer, intent(in) :: iComp
+    character(len=8), intent(in) :: model
+    character(len=19), intent(in) :: fullElemField
+    aster_logical, intent(in) :: lAllCellAffe
+    character(len=24), intent(in) :: cellAffe
+    integer, intent(in) :: nbCellAffe
+    aster_logical, intent(in) :: lMfront
+    integer, intent(in) :: exteDefo
+    character(len=16), intent(in) :: defoComp, defoCompPY
+    character(len=16), intent(in) :: relaComp, relaCompPY
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ character(len=16), intent(in) :: relaComp, relaCompPY
     call jemarq()
 
 ! - Access to model
-    call jeveuo(model//'.MAILLE', 'L', vi = cellAffectedByModel)
+    call jeveuo(model//'.MAILLE', 'L', vi=cellAffectedByModel)
 
 ! - Access to <CHELEM_S> of FULL_MECA option
     call jeveuo(fullElemField//'.CESD', 'L', jvCesd)
@@ -103,26 +103,26 @@ character(len=16), intent(in) :: relaComp, relaCompPY
     if (lAllCellAffe) then
         nbCell = nbCellMesh
     else
-        call jeveuo(cellAffe, 'L', vi = listCellAffe)
+        call jeveuo(cellAffe, 'L', vi=listCellAffe)
         nbCell = nbCellAffe
-    endif
+    end if
 
 ! - Check consistency with catalog
     call lctest(relaCompPY, 'DEFORMATION', defoComp, lctestIret)
     if (lctestIret .eq. 0) then
-        call utmess('F', 'COMPOR1_44', nk = 2, valk = [defoComp, relaComp])
-    endif
+        call utmess('F', 'COMPOR1_44', nk=2, valk=[defoComp, relaComp])
+    end if
 
 ! - Loop on elements
     lPetitReac = ASTER_FALSE
-    lGrotGdep  = ASTER_FALSE
+    lGrotGdep = ASTER_FALSE
     do iCell = 1, nbCell
 ! ----- Current cell
         if (lAllCellAffe) then
             cellNume = iCell
         else
             cellNume = listCellAffe(iCell)
-        endif
+        end if
 
 ! ----- Get adress in field for FULL_MECA option
         call cesexi('C', jvCesd, jvCesl, cellNume, 1, 1, 1, jvVale)
@@ -134,138 +134,138 @@ character(len=16), intent(in) :: relaComp, relaCompPY
             call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), elemTypeName)
 
 ! --------- Type of modelization
-            call teattr('C', 'TYPMOD' , modelType , modelTypeIret, typel = elemTypeName)
-            call teattr('C', 'TYPMOD2', modelType2, modelTypeIret2, typel = elemTypeName)
-            l_hho   = modelType2(1:3) .eq. 'HHO'
-            l_coq3d = lteatt('MODELI','CQ3', typel = elemTypeName)
-            l_dkt   = lteatt('MODELI','DKT', typel = elemTypeName)
-            l_dktg  = lteatt('MODELI','DTG', typel = elemTypeName)
-            lShell  = lteatt('COQUE' ,'OUI', typel = elemTypeName)
-            lPipe   = lteatt('TUYAU' ,'OUI', typel = elemTypeName)
-            lBeam   = lteatt('POUTRE' ,'OUI', typel = elemTypeName)
-            lDisc   = lteatt('DISCRET' ,'OUI', typel = elemTypeName)
-            lSolidShell = lteatt('MODELI','SSH', typel = elemTypeName)
+            call teattr('C', 'TYPMOD', modelType, modelTypeIret, typel=elemTypeName)
+            call teattr('C', 'TYPMOD2', modelType2, modelTypeIret2, typel=elemTypeName)
+            l_hho = modelType2(1:3) .eq. 'HHO'
+            l_coq3d = lteatt('MODELI', 'CQ3', typel=elemTypeName)
+            l_dkt = lteatt('MODELI', 'DKT', typel=elemTypeName)
+            l_dktg = lteatt('MODELI', 'DTG', typel=elemTypeName)
+            lShell = lteatt('COQUE', 'OUI', typel=elemTypeName)
+            lPipe = lteatt('TUYAU', 'OUI', typel=elemTypeName)
+            lBeam = lteatt('POUTRE', 'OUI', typel=elemTypeName)
+            lDisc = lteatt('DISCRET', 'OUI', typel=elemTypeName)
+            lSolidShell = lteatt('MODELI', 'SSH', typel=elemTypeName)
 
 ! --------- Specific checks: alarm (outside loop on cells)
             if (l_dkt .and. defoComp .eq. 'PETIT_REAC') then
                 lPetitReac = ASTER_TRUE
-            endif
+            end if
 
             if (l_coq3d .and. (defoComp .eq. 'GROT_GDEP')) then
                 lGrotGdep = ASTER_TRUE
-            endif
+            end if
 
 ! --------- Specific checks: fatal error
             if (lPipe .and. defoComp .ne. 'PETIT') then
                 call utmess('F', 'COMPOR1_51')
-            endif
+            end if
 
-            if (l_hho .and.&
+            if (l_hho .and. &
                 (defoComp .eq. 'SIMO_MIEHE' .or. defoComp .eq. 'PETIT_REAC' &
                  .or. defoComp .eq. 'GROT_GDEP')) then
                 call utmess('F', 'COMPOR1_49')
-            endif
+            end if
 
-            if (l_dkt .and. .not. l_dktg ) then
-                if ((defoComp .eq. 'GROT_GDEP') .and. (relaComp(1:4).ne.'ELAS')) then
+            if (l_dkt .and. .not. l_dktg) then
+                if ((defoComp .eq. 'GROT_GDEP') .and. (relaComp(1:4) .ne. 'ELAS')) then
                     call utmess('F', 'COMPOR1_48')
-                endif
-            endif
+                end if
+            end if
 
             if (defoComp .eq. 'GDEF_LOG') then
                 if (lPipe .or. lBeam .or. lShell .or. lDisc) then
                     call utmess('F', 'COMPOR1_99')
-                endif
-            endif
+                end if
+            end if
 
             if (lSolidShell .and. defoComp .ne. 'GDEF_LOG' .and. defoComp .ne. 'PETIT') then
                 call utmess('F', 'COMPOR1_92')
-            endif
+            end if
 
 ! --------- Check model of strains for Mfront
             if (lMfront) then
                 if (exteDefo .eq. MFRONT_STRAIN_SMALL) then
-                    if (defoComp .ne. 'PETIT' .and.&
-                        defoComp .ne. 'PETIT_REAC' .and.&
-                        defoComp .ne. 'GDEF_LOG' .and.&
-                        defoComp .ne. 'GROT_GDEP' ) then
-                        call utmess('F', 'COMPOR4_35', sk = defoComp)
-                    endif
-                endif
+                    if (defoComp .ne. 'PETIT' .and. &
+                        defoComp .ne. 'PETIT_REAC' .and. &
+                        defoComp .ne. 'GDEF_LOG' .and. &
+                        defoComp .ne. 'GROT_GDEP') then
+                        call utmess('F', 'COMPOR4_35', sk=defoComp)
+                    end if
+                end if
                 if (exteDefo .eq. MFRONT_STRAIN_SIMOMIEHE) then
-                    if (defoComp .ne. 'SIMO_MIEHE' ) then
-                        call utmess('F', 'COMPOR4_35', sk = defoComp)
-                    endif
-                endif
+                    if (defoComp .ne. 'SIMO_MIEHE') then
+                        call utmess('F', 'COMPOR4_35', sk=defoComp)
+                    end if
+                end if
                 if (exteDefo .eq. MFRONT_STRAIN_GROTGDEP) then
-                    if (defoComp .ne. 'GROT_GDEP' .and.&
-                        defoComp .ne. 'PETIT' ) then
-                        call utmess('F', 'COMPOR4_35', sk = defoComp)
-                    endif
-                endif
-            endif
+                    if (defoComp .ne. 'GROT_GDEP' .and. &
+                        defoComp .ne. 'PETIT') then
+                        call utmess('F', 'COMPOR4_35', sk=defoComp)
+                    end if
+                end if
+            end if
 
 ! --------- Generic checks
             if (modelTypeIret .eq. 0) then
                 if (modelType .eq. 'C_PLAN') then
-                    if (defoComp .eq. 'GROT_GDEP' .and. relaComp .eq. 'ELAS'&
+                    if (defoComp .eq. 'GROT_GDEP' .and. relaComp .eq. 'ELAS' &
                         .and. .not. lShell) then
                         call utmess('F', 'COMPOR1_15')
                     else
                         call lctest(defoCompPY, 'MODELISATION', 'C_PLAN', lctestIret)
                         if (lctestIret .eq. 0) then
-                            call utmess('F', 'COMPOR5_23', si = iComp,&
-                                                           nk=2, valk=[defoComp, elemTypeName])
-                        endif
-                    endif
+                            call utmess('F', 'COMPOR5_23', si=iComp, &
+                                        nk=2, valk=[defoComp, elemTypeName])
+                        end if
+                    end if
 
                 elseif (modelType .eq. '3D') then
                     call lctest(defoCompPY, 'MODELISATION', '3D', lctestIret)
                     if (lctestIret .eq. 0) then
-                        call utmess('F', 'COMPOR5_23', si = iComp,&
-                                                       nk=2, valk=[defoComp, elemTypeName])
-                    endif
+                        call utmess('F', 'COMPOR5_23', si=iComp, &
+                                    nk=2, valk=[defoComp, elemTypeName])
+                    end if
 
                 else if (modelType .eq. '1D') then
                     if (modelType2 .eq. 'PMF') then
                         call lctest(defoCompPY, 'MODELISATION', 'PMF', lctestIret)
                         if (lctestIret .eq. 0) then
-                            call utmess('F', 'COMPOR5_23', si = iComp,&
-                                                           nk=2, valk=[defoComp, elemTypeName])
-                        endif
+                            call utmess('F', 'COMPOR5_23', si=iComp, &
+                                        nk=2, valk=[defoComp, elemTypeName])
+                        end if
                     else
                         call teattr('C', 'GRILLE', grille, modelTypeIret, typel=elemTypeName)
-                        if (grille(1:3).eq.'OUI') then
+                        if (grille(1:3) .eq. 'OUI') then
                             call lctest(defoCompPY, 'MODELISATION', 'GRILLE', lctestIret)
                         else
                             call lctest(defoCompPY, 'MODELISATION', '1D', lctestIret)
-                        endif
+                        end if
                         if (lctestIret .eq. 0) then
-                            call utmess('F', 'COMPOR5_23', si = iComp,&
-                                                           nk=2, valk=[defoComp, elemTypeName])
-                        endif
-                    endif
+                            call utmess('F', 'COMPOR5_23', si=iComp, &
+                                        nk=2, valk=[defoComp, elemTypeName])
+                        end if
+                    end if
 
                 else
                     call lctest(defoCompPY, 'MODELISATION', modelType, lctestIret)
                     if (modelType .ne. '0D') then
                         if (lctestIret .eq. 0) then
-                            call utmess('F', 'COMPOR5_23', si = iComp,&
-                                                           nk=2, valk=[defoComp, elemTypeName])
-                        endif
-                    endif
+                            call utmess('F', 'COMPOR5_23', si=iComp, &
+                                        nk=2, valk=[defoComp, elemTypeName])
+                        end if
+                    end if
 
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
     if (lPetitReac) then
         call utmess('A', 'COMPOR1_50')
-    endif
+    end if
     if (lGrotGdep) then
         call utmess('A', 'COMPOR1_47')
-    endif
+    end if
 !
     call jedema()
 !

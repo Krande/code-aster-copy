@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! AUTHORS, AND Copyright (C) 1995 BY:
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amdbar(n, pe, iw, len, iwlen,&
-                  pfree, nv, next, last, head,&
+subroutine amdbar(n, pe, iw, len, iwlen, &
+                  pfree, nv, next, last, head, &
                   elen, degree, ncmpa, w, iovflo)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -374,8 +374,8 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !       VARIABLES, AND THE EXTERNAL DEGREE OF ELEMENTS.
 !
 !       FOR ELEMENTS:
-    integer :: n, iwlen, pfree, ncmpa, iovflo, iw (iwlen), pe (n), degree (n)
-    integer :: nv (n), next (n), last (n), head (n), elen (n), w (n), len (n)
+    integer :: n, iwlen, pfree, ncmpa, iovflo, iw(iwlen), pe(n), degree(n)
+    integer :: nv(n), next(n), last(n), head(n), elen(n), w(n), len(n)
 !          IF W (E) = 0, THEN THE ELEMENT E IS ABSORBED
 !          IF W (E) .GE. WFLG, THEN W (E) - WFLG IS THE SIZE OF
 !               THE SET CARD(LE / LME), IN TERMS OF NONZEROS (THE
@@ -485,19 +485,19 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
     mindeg = 1
     ncmpa = 0
     nel = 0
-    hmod = max (1, n-1)
+    hmod = max(1, n-1)
     dmax = 0
-    wbig = iovflo - n
-    mem = pfree - 1
+    wbig = iovflo-n
+    mem = pfree-1
     maxmem = mem
 !
     do i = 1, n
-        last (i) = 0
-        head (i) = 0
-        nv (i) = 1
-        w (i) = 1
-        elen (i) = 0
-        degree (i) = len (i)
+        last(i) = 0
+        head(i) = 0
+        nv(i) = 1
+        w(i) = 1
+        elen(i) = 0
+        degree(i) = len(i)
     end do
 !
 !       ----------------------------------------------------------------
@@ -506,7 +506,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
     do i = 1, n
 !
-        deg = degree (i)
+        deg = degree(i)
 !
         if (deg .gt. 0) then
 !
@@ -514,10 +514,10 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             PLACE I IN THE DEGREE LIST CORRESPONDING TO ITS DEGREE
 !             ----------------------------------------------------------
 !
-            inext = head (deg)
-            if (inext .ne. 0) last (inext) = i
-            next (i) = inext
-            head (deg) = i
+            inext = head(deg)
+            if (inext .ne. 0) last(inext) = i
+            next(i) = inext
+            head(deg) = i
 !
         else
 !
@@ -526,12 +526,12 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             THERE IS NO OFF-DIAGONAL NON-ZERO IN ITS ROW.
 !             ----------------------------------------------------------
 !
-            nel = nel + 1
-            elen (i) = -nel
-            pe (i) = 0
-            w (i) = 0
+            nel = nel+1
+            elen(i) = -nel
+            pe(i) = 0
+            w(i) = 0
 !
-        endif
+        end if
 !
     end do
 !
@@ -539,7 +539,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !  WHILE (SELECTING PIVOTS) DO
 !=======================================================================
 !
- 30 continue
+30  continue
     if (nel .lt. n) then
 !
 !=======================================================================
@@ -551,19 +551,19 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          -------------------------------------------------------------
 !
         do deg = mindeg, n
-            me = head (deg)
+            me = head(deg)
             if (me .gt. 0) goto 50
         end do
- 50     continue
+50      continue
         mindeg = deg
 !
 !          -------------------------------------------------------------
 !          REMOVE CHOSEN VARIABLE FROM LINK LIST
 !          -------------------------------------------------------------
 !
-        inext = next (me)
-        if (inext .ne. 0) last (inext) = 0
-        head (deg) = inext
+        inext = next(me)
+        if (inext .ne. 0) last(inext) = 0
+        head(deg) = inext
 !
 !          -------------------------------------------------------------
 !          ME REPRESENTS THE ELIMINATION OF PIVOTS NEL+1 TO NEL+NV(ME).
@@ -572,10 +572,10 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          COMPUTED.
 !          -------------------------------------------------------------
 !
-        elenme = elen (me)
-        elen (me) = - (nel + 1)
-        nvpiv = nv (me)
-        nel = nel + nvpiv
+        elenme = elen(me)
+        elen(me) = -(nel+1)
+        nvpiv = nv(me)
+        nel = nel+nvpiv
 !
 !=======================================================================
 !  CONSTRUCT NEW ELEMENT
@@ -590,7 +590,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          -------------------------------------------------------------
 !
 !          FLAG THE VARIABLE "ME" AS BEING IN LME BY NEGATING NV (ME)
-        nv (me) = -nvpiv
+        nv(me) = -nvpiv
         degme = 0
 !
         if (elenme .eq. 0) then
@@ -599,12 +599,12 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             CONSTRUCT THE NEW ELEMENT IN PLACE
 !             ----------------------------------------------------------
 !
-            pme1 = pe (me)
-            pme2 = pme1 - 1
+            pme1 = pe(me)
+            pme2 = pme1-1
 !
-            do p = pme1, pme1 + len (me) - 1
-                i = iw (p)
-                nvi = nv (i)
+            do p = pme1, pme1+len(me)-1
+                i = iw(p)
+                nvi = nv(i)
                 if (nvi .gt. 0) then
 !
 !                   ----------------------------------------------------
@@ -612,27 +612,27 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                   STORE I IN NEW LIST
 !                   ----------------------------------------------------
 !
-                    degme = degme + nvi
+                    degme = degme+nvi
 !                   FLAG I AS BEING IN LME BY NEGATING NV (I)
-                    nv (i) = -nvi
-                    pme2 = pme2 + 1
-                    iw (pme2) = i
+                    nv(i) = -nvi
+                    pme2 = pme2+1
+                    iw(pme2) = i
 !
 !                   ----------------------------------------------------
 !                   REMOVE VARIABLE I FROM DEGREE LIST.
 !                   ----------------------------------------------------
 !
-                    ilast = last (i)
-                    inext = next (i)
-                    if (inext .ne. 0) last (inext) = ilast
+                    ilast = last(i)
+                    inext = next(i)
+                    if (inext .ne. 0) last(inext) = ilast
                     if (ilast .ne. 0) then
-                        next (ilast) = inext
+                        next(ilast) = inext
                     else
 !                      I IS AT THE HEAD OF THE DEGREE LIST
-                        head (degree (i)) = inext
-                    endif
+                        head(degree(i)) = inext
+                    end if
 !
-                endif
+                end if
             end do
 !             THIS ELEMENT TAKES NO NEW MEMORY IN IW:
             newmem = 0
@@ -643,11 +643,11 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             CONSTRUCT THE NEW ELEMENT IN EMPTY SPACE, IW (PFREE ...)
 !             ----------------------------------------------------------
 !
-            p = pe (me)
+            p = pe(me)
             pme1 = pfree
-            slenme = len (me) - elenme
+            slenme = len(me)-elenme
 !
-            do knt1 = 1, elenme + 1
+            do knt1 = 1, elenme+1
 !
                 if (knt1 .gt. elenme) then
 !                   SEARCH THE SUPERVARIABLES IN ME.
@@ -656,11 +656,11 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
                     ln = slenme
                 else
 !                   SEARCH THE ELEMENTS IN ME.
-                    e = iw (p)
-                    p = p + 1
-                    pj = pe (e)
-                    ln = len (e)
-                endif
+                    e = iw(p)
+                    p = p+1
+                    pj = pe(e)
+                    ln = len(e)
+                end if
 !
 !                -------------------------------------------------------
 !                SEARCH FOR DIFFERENT SUPERVARIABLES AND ADD THEM TO THE
@@ -670,9 +670,9 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                -------------------------------------------------------
 !
                 do knt2 = 1, ln
-                    i = iw (pj)
-                    pj = pj + 1
-                    nvi = nv (i)
+                    i = iw(pj)
+                    pj = pj+1
+                    nvi = nv(i)
                     if (nvi .gt. 0) then
 !
 !                      -------------------------------------------------
@@ -685,120 +685,120 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                         SEARCHED IN THE INNER AND OUTER LOOPS CONTAIN
 !                         ONLY THE REMAINING ENTRIES.
 !
-                            pe (me) = p
-                            len (me) = len (me) - knt1
-                            if (len (me) .eq. 0) then
+                            pe(me) = p
+                            len(me) = len(me)-knt1
+                            if (len(me) .eq. 0) then
 !                            NOTHING LEFT OF SUPERVARIABLE ME
-                                pe (me) = 0
-                            endif
-                            pe (e) = pj
-                            len (e) = ln - knt2
-                            if (len (e) .eq. 0) then
+                                pe(me) = 0
+                            end if
+                            pe(e) = pj
+                            len(e) = ln-knt2
+                            if (len(e) .eq. 0) then
 !                            NOTHING LEFT OF ELEMENT E
-                                pe (e) = 0
-                            endif
+                                pe(e) = 0
+                            end if
 !
-                            ncmpa = ncmpa + 1
+                            ncmpa = ncmpa+1
 !                         STORE FIRST ITEM IN PE
 !                         SET FIRST ENTRY TO -ITEM
                             do j = 1, n
-                                pn = pe (j)
+                                pn = pe(j)
                                 if (pn .gt. 0) then
-                                    pe (j) = iw (pn)
-                                    iw (pn) = -j
-                                endif
+                                    pe(j) = iw(pn)
+                                    iw(pn) = -j
+                                end if
                             end do
 !
 !                         PSRC/PDST POINT TO SOURCE/DESTINATION
                             pdst = 1
                             psrc = 1
-                            pend = pme1 - 1
+                            pend = pme1-1
 !
 !                         WHILE LOOP:
- 80                         continue
+80                          continue
                             if (psrc .le. pend) then
 !                            SEARCH FOR NEXT NEGATIVE ENTRY
-                                j = -iw (psrc)
-                                psrc = psrc + 1
+                                j = -iw(psrc)
+                                psrc = psrc+1
                                 if (j .gt. 0) then
-                                    iw (pdst) = pe (j)
-                                    pe (j) = pdst
-                                    pdst = pdst + 1
+                                    iw(pdst) = pe(j)
+                                    pe(j) = pdst
+                                    pdst = pdst+1
 !                               COPY FROM SOURCE TO DESTINATION
-                                    lenj = len (j)
-                                    do knt3 = 0, lenj - 2
-                                        iw (pdst + knt3) = iw (psrc +&
-                                        knt3)
+                                    lenj = len(j)
+                                    do knt3 = 0, lenj-2
+                                        iw(pdst+knt3) = iw(psrc+ &
+                                                           knt3)
                                     end do
-                                    pdst = pdst + lenj - 1
-                                    psrc = psrc + lenj - 1
-                                endif
+                                    pdst = pdst+lenj-1
+                                    psrc = psrc+lenj-1
+                                end if
                                 goto 80
-                            endif
+                            end if
 !
 !                         MOVE THE NEW PARTIALLY-CONSTRUCTED ELEMENT
                             p1 = pdst
-                            do psrc = pme1, pfree - 1
-                                iw (pdst) = iw (psrc)
-                                pdst = pdst + 1
+                            do psrc = pme1, pfree-1
+                                iw(pdst) = iw(psrc)
+                                pdst = pdst+1
                             end do
                             pme1 = p1
                             pfree = pdst
-                            pj = pe (e)
-                            p = pe (me)
-                        endif
+                            pj = pe(e)
+                            p = pe(me)
+                        end if
 !
 !                      -------------------------------------------------
 !                      I IS A PRINCIPAL VARIABLE NOT YET PLACED IN LME
 !                      STORE I IN NEW LIST
 !                      -------------------------------------------------
 !
-                        degme = degme + nvi
+                        degme = degme+nvi
 !                      FLAG I AS BEING IN LME BY NEGATING NV (I)
-                        nv (i) = -nvi
-                        iw (pfree) = i
-                        pfree = pfree + 1
+                        nv(i) = -nvi
+                        iw(pfree) = i
+                        pfree = pfree+1
 !
 !                      -------------------------------------------------
 !                      REMOVE VARIABLE I FROM DEGREE LINK LIST
 !                      -------------------------------------------------
 !
-                        ilast = last (i)
-                        inext = next (i)
-                        if (inext .ne. 0) last (inext) = ilast
+                        ilast = last(i)
+                        inext = next(i)
+                        if (inext .ne. 0) last(inext) = ilast
                         if (ilast .ne. 0) then
-                            next (ilast) = inext
+                            next(ilast) = inext
                         else
 !                         I IS AT THE HEAD OF THE DEGREE LIST
-                            head (degree (i)) = inext
-                        endif
+                            head(degree(i)) = inext
+                        end if
 !
-                    endif
+                    end if
                 end do
 !
                 if (e .ne. me) then
 !                   SET TREE POINTER AND FLAG TO INDICATE ELEMENT E IS
 !                   ABSORBED INTO NEW ELEMENT ME (THE PARENT OF E IS ME)
-                    pe (e) = -me
-                    w (e) = 0
-                endif
+                    pe(e) = -me
+                    w(e) = 0
+                end if
             end do
 !
-            pme2 = pfree - 1
+            pme2 = pfree-1
 !             THIS ELEMENT TAKES NEWMEM NEW MEMORY IN IW (POSSIBLY ZERO)
-            newmem = pfree - pme1
-            mem = mem + newmem
-            maxmem = max (maxmem, mem)
-        endif
+            newmem = pfree-pme1
+            mem = mem+newmem
+            maxmem = max(maxmem, mem)
+        end if
 !
 !          -------------------------------------------------------------
 !          ME HAS NOW BEEN CONVERTED INTO AN ELEMENT IN IW (PME1..PME2)
 !          -------------------------------------------------------------
 !
 !          DEGME HOLDS THE EXTERNAL DEGREE OF NEW ELEMENT
-        degree (me) = degme
-        pe (me) = pme1
-        len (me) = pme2 - pme1 + 1
+        degree(me) = degme
+        pe(me) = pme1
+        len(me) = pme2-pme1+1
 !
 !          -------------------------------------------------------------
 !          MAKE SURE THAT WFLG IS NOT TOO LARGE.  WITH THE CURRENT
@@ -807,10 +807,10 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
         if (wflg .ge. wbig) then
             do x = 1, n
-                if (w (x) .ne. 0) w (x) = 1
+                if (w(x) .ne. 0) w(x) = 1
             end do
             wflg = 2
-        endif
+        end if
 !
 !=======================================================================
 !  COMPUTE (W (E) - WFLG) = CARD(LE/LME) FOR ALL ELEMENTS
@@ -830,26 +830,26 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          -------------------------------------------------------------
 !
         do pme = pme1, pme2
-            i = iw (pme)
-            eln = elen (i)
+            i = iw(pme)
+            eln = elen(i)
             if (eln .gt. 0) then
 !                NOTE THAT NV (I) HAS BEEN NEGATED TO DENOTE I IN LME:
-                nvi = -nv (i)
-                wnvi = wflg - nvi
-                do p = pe (i), pe (i) + eln - 1
-                    e = iw (p)
-                    we = w (e)
+                nvi = -nv(i)
+                wnvi = wflg-nvi
+                do p = pe(i), pe(i)+eln-1
+                    e = iw(p)
+                    we = w(e)
                     if (we .ge. wflg) then
 !                      UNABSORBED ELEMENT E HAS BEEN SEEN IN THIS LOOP
-                        we = we - nvi
+                        we = we-nvi
                     else if (we .ne. 0) then
 !                      E IS AN UNABSORBED ELEMENT
 !                      THIS IS THE FIRST WE HAVE SEEN E IN ALL OF SCAN 1
-                        we = degree (e) + wnvi
-                    endif
-                    w (e) = we
+                        we = degree(e)+wnvi
+                    end if
+                    w(e) = we
                 end do
-            endif
+            end if
         end do
 !
 !=======================================================================
@@ -864,9 +864,9 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !          -------------------------------------------------------------
 !
         do pme = pme1, pme2
-            i = iw (pme)
-            p1 = pe (i)
-            p2 = p1 + elen (i) - 1
+            i = iw(pme)
+            p1 = pe(i)
+            p2 = p1+elen(i)-1
             pn = p1
             hash = 0
             deg = 0
@@ -877,43 +877,43 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
 !             UMFPACK/MA38-STYLE APPROXIMATE DEGREE:
             do p = p1, p2
-                e = iw (p)
-                we = w (e)
+                e = iw(p)
+                we = w(e)
                 if (we .ne. 0) then
 !                   E IS AN UNABSORBED ELEMENT
-                    deg = deg + we - wflg
-                    iw (pn) = e
-                    pn = pn + 1
-                    hash = hash + e
-                endif
+                    deg = deg+we-wflg
+                    iw(pn) = e
+                    pn = pn+1
+                    hash = hash+e
+                end if
             end do
 !
 !             COUNT THE NUMBER OF ELEMENTS IN I (INCLUDING ME):
-            elen (i) = pn - p1 + 1
+            elen(i) = pn-p1+1
 !
 !             ----------------------------------------------------------
 !             SCAN THE SUPERVARIABLES IN THE LIST ASSOCIATED WITH I
 !             ----------------------------------------------------------
 !
             p3 = pn
-            do p = p2 + 1, p1 + len (i) - 1
-                j = iw (p)
-                nvj = nv (j)
+            do p = p2+1, p1+len(i)-1
+                j = iw(p)
+                nvj = nv(j)
                 if (nvj .gt. 0) then
 !                   J IS UNABSORBED, AND NOT IN LME.
 !                   ADD TO DEGREE AND ADD TO NEW LIST
-                    deg = deg + nvj
-                    iw (pn) = j
-                    pn = pn + 1
-                    hash = hash + j
-                endif
+                    deg = deg+nvj
+                    iw(pn) = j
+                    pn = pn+1
+                    hash = hash+j
+                end if
             end do
 !
 !             ----------------------------------------------------------
 !             UPDATE THE DEGREE AND CHECK FOR MASS ELIMINATION
 !             ----------------------------------------------------------
 !
-            if (elen (i) .eq. 1 .and. p3 .eq. pn) then
+            if (elen(i) .eq. 1 .and. p3 .eq. pn) then
 !
 !                -------------------------------------------------------
 !                MASS ELIMINATION
@@ -924,13 +924,13 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                AND THERE ARE NO VARIABLES ADJACENT TO NODE I.
 !                ABSORB I INTO THE CURRENT PIVOT ELEMENT, ME.
 !
-                pe (i) = -me
-                nvi = -nv (i)
-                degme = degme - nvi
-                nvpiv = nvpiv + nvi
-                nel = nel + nvi
-                nv (i) = 0
-                elen (i) = 0
+                pe(i) = -me
+                nvi = -nv(i)
+                degme = degme-nvi
+                nvpiv = nvpiv+nvi
+                nel = nel+nvi
+                nv(i) = 0
+                elen(i) = 0
 !
             else
 !
@@ -940,57 +940,57 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
 !                THE FOLLOWING DEGREE DOES NOT YET INCLUDE THE SIZE
 !                OF THE CURRENT ELEMENT, WHICH IS ADDED LATER:
-                degree (i) = min (degree (i), deg)
+                degree(i) = min(degree(i), deg)
 !
 !                -------------------------------------------------------
 !                ADD ME TO THE LIST FOR I
 !                -------------------------------------------------------
 !
 !                MOVE FIRST SUPERVARIABLE TO END OF LIST
-                iw (pn) = iw (p3)
+                iw(pn) = iw(p3)
 !                MOVE FIRST ELEMENT TO END OF ELEMENT PART OF LIST
-                iw (p3) = iw (p1)
+                iw(p3) = iw(p1)
 !                ADD NEW ELEMENT TO FRONT OF LIST.
-                iw (p1) = me
+                iw(p1) = me
 !                STORE THE NEW LENGTH OF THE LIST IN LEN (I)
-                len (i) = pn - p1 + 1
+                len(i) = pn-p1+1
 !
 !                -------------------------------------------------------
 !                PLACE IN HASH BUCKET.  SAVE HASH KEY OF I IN LAST (I).
 !                -------------------------------------------------------
 !
-                hash = mod (hash, hmod) + 1
-                j = head (hash)
+                hash = mod(hash, hmod)+1
+                j = head(hash)
                 if (j .le. 0) then
 !                   THE DEGREE LIST IS EMPTY, HASH HEAD IS -J
-                    next (i) = -j
-                    head (hash) = -i
+                    next(i) = -j
+                    head(hash) = -i
                 else
 !                   DEGREE LIST IS NOT EMPTY
 !                   USE LAST (HEAD (HASH)) AS HASH HEAD
-                    next (i) = last (j)
-                    last (j) = i
-                endif
-                last (i) = hash
-            endif
+                    next(i) = last(j)
+                    last(j) = i
+                end if
+                last(i) = hash
+            end if
         end do
 !
-        degree (me) = degme
+        degree(me) = degme
 !
 !          -------------------------------------------------------------
 !          CLEAR THE COUNTER ARRAY, W (...), BY INCREMENTING WFLG.
 !          -------------------------------------------------------------
 !
-        dmax = max (dmax, degme)
-        wflg = wflg + dmax
+        dmax = max(dmax, degme)
+        wflg = wflg+dmax
 !
 !          MAKE SURE THAT WFLG+N DOES NOT CAUSE INTEGER OVERFLOW
         if (wflg .ge. wbig) then
             do x = 1, n
-                if (w (x) .ne. 0) w (x) = 1
+                if (w(x) .ne. 0) w(x) = 1
             end do
             wflg = 2
-        endif
+        end if
 !          AT THIS POINT, W (1..N) .LT. WFLG HOLDS
 !
 !=======================================================================
@@ -998,8 +998,8 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !=======================================================================
 !
         do pme = pme1, pme2
-            i = iw (pme)
-            if (nv (i) .lt. 0) then
+            i = iw(pme)
+            if (nv(i) .lt. 0) then
 !                I IS A PRINCIPAL VARIABLE IN LME
 !
 !                -------------------------------------------------------
@@ -1008,24 +1008,24 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                VARIABLES IN THE PATTERN LME OF THE CURRENT ELEMENT, ME
 !                -------------------------------------------------------
 !
-                hash = last (i)
+                hash = last(i)
 !                LET I = HEAD OF HASH BUCKET, AND EMPTY THE HASH BUCKET
-                j = head (hash)
+                j = head(hash)
                 if (j .eq. 0) goto 250
                 if (j .lt. 0) then
 !                   DEGREE LIST IS EMPTY
                     i = -j
-                    head (hash) = 0
+                    head(hash) = 0
                 else
 !                   DEGREE LIST IS NOT EMPTY, RESTORE LAST () OF HEAD
-                    i = last (j)
-                    last (j) = 0
-                endif
+                    i = last(j)
+                    last(j) = 0
+                end if
                 if (i .eq. 0) goto 250
 !
 !                WHILE LOOP:
 200             continue
-                if (next (i) .ne. 0) then
+                if (next(i) .ne. 0) then
 !
 !                   ----------------------------------------------------
 !                   THIS BUCKET HAS ONE OR MORE VARIABLES FOLLOWING I.
@@ -1033,11 +1033,11 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                   THAT FOLLOW I IN HASH BUCKET.  SCATTER I INTO W.
 !                   ----------------------------------------------------
 !
-                    ln = len (i)
-                    eln = elen (i)
+                    ln = len(i)
+                    eln = elen(i)
 !                   DO NOT FLAG THE FIRST ELEMENT IN THE LIST (ME)
-                    do p = pe (i) + 1, pe (i) + ln - 1
-                        w (iw (p)) = wflg
+                    do p = pe(i)+1, pe(i)+ln-1
+                        w(iw(p)) = wflg
                     end do
 !
 !                   ----------------------------------------------------
@@ -1045,7 +1045,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                   ----------------------------------------------------
 !
                     jlast = i
-                    j = next (i)
+                    j = next(i)
 !
 !                   WHILE LOOP:
 220                 continue
@@ -1055,36 +1055,36 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                      CHECK IF J AND I HAVE IDENTICAL NONZERO PATTERN
 !                      -------------------------------------------------
 !
-                        if (len (j) .ne. ln) then
+                        if (len(j) .ne. ln) then
 !                         I AND J DO NOT HAVE SAME SIZE DATA STRUCTURE
                             goto 240
-                        endif
-                        if (elen (j) .ne. eln) then
+                        end if
+                        if (elen(j) .ne. eln) then
 !                         I AND J DO NOT HAVE SAME NUMBER OF ADJACENT EL
                             goto 240
-                        endif
+                        end if
 !                      DO NOT FLAG THE FIRST ELEMENT IN THE LIST (ME)
-                        do p = pe (j) + 1, pe (j) + ln - 1
-                            if (w (iw (p)) .ne. wflg) then
+                        do p = pe(j)+1, pe(j)+ln-1
+                            if (w(iw(p)) .ne. wflg) then
 !                            AN ENTRY (IW(P)) IS IN J BUT NOT IN I
                                 goto 240
-                            endif
+                            end if
                         end do
 !
 !                      -------------------------------------------------
 !                      FOUND IT!  J CAN BE ABSORBED INTO I
 !                      -------------------------------------------------
 !
-                        pe (j) = -i
+                        pe(j) = -i
 !                      BOTH NV (I) AND NV (J) ARE NEGATED SINCE THEY
 !                      ARE IN LME, AND THE ABSOLUTE VALUES OF EACH
 !                      ARE THE NUMBER OF VARIABLES IN I AND J:
-                        nv (i) = nv (i) + nv (j)
-                        nv (j) = 0
-                        elen (j) = 0
+                        nv(i) = nv(i)+nv(j)
+                        nv(j) = 0
+                        elen(j) = 0
 !                      DELETE J FROM HASH BUCKET
-                        j = next (j)
-                        next (jlast) = j
+                        j = next(j)
+                        next(jlast) = j
                         goto 220
 !
 !                      -------------------------------------------------
@@ -1093,20 +1093,20 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !                      -------------------------------------------------
 !
                         jlast = j
-                        j = next (j)
+                        j = next(j)
                         goto 220
-                    endif
+                    end if
 !
 !                   ----------------------------------------------------
 !                   NO MORE VARIABLES CAN BE ABSORBED INTO I
 !                   GOTO NEXT I IN BUCKET AND CLEAR FLAG ARRAY
 !                   ----------------------------------------------------
 !
-                    wflg = wflg + 1
-                    i = next (i)
+                    wflg = wflg+1
+                    i = next(i)
                     if (i .ne. 0) goto 200
-                endif
-            endif
+                end if
+            end if
 250         continue
         end do
 !
@@ -1115,72 +1115,72 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !=======================================================================
 !
         p = pme1
-        nleft = n - nel
+        nleft = n-nel
         do pme = pme1, pme2
-            i = iw (pme)
-            nvi = -nv (i)
+            i = iw(pme)
+            nvi = -nv(i)
             if (nvi .gt. 0) then
 !                I IS A PRINCIPAL VARIABLE IN LME
 !                RESTORE NV (I) TO SIGNIFY THAT I IS PRINCIPAL
-                nv (i) = nvi
+                nv(i) = nvi
 !
 !                -------------------------------------------------------
 !                COMPUTE THE EXTERNAL DEGREE (ADD SIZE OF CURRENT ELEM)
 !                -------------------------------------------------------
 !
-                deg = max (1, min (degree (i) + degme-nvi, nleft-nvi))
+                deg = max(1, min(degree(i)+degme-nvi, nleft-nvi))
 !
 !                -------------------------------------------------------
 !                PLACE THE SUPERVARIABLE AT THE HEAD OF THE DEGREE LIST
 !                -------------------------------------------------------
 !
-                inext = head (deg)
-                if (inext .ne. 0) last (inext) = i
-                next (i) = inext
-                last (i) = 0
-                head (deg) = i
+                inext = head(deg)
+                if (inext .ne. 0) last(inext) = i
+                next(i) = inext
+                last(i) = 0
+                head(deg) = i
 !
 !                -------------------------------------------------------
 !                SAVE THE NEW DEGREE, AND FIND THE MINIMUM DEGREE
 !                -------------------------------------------------------
 !
-                mindeg = min (mindeg, deg)
-                degree (i) = deg
+                mindeg = min(mindeg, deg)
+                degree(i) = deg
 !
 !                -------------------------------------------------------
 !                PLACE THE SUPERVARIABLE IN THE ELEMENT PATTERN
 !                -------------------------------------------------------
 !
-                iw (p) = i
-                p = p + 1
-            endif
+                iw(p) = i
+                p = p+1
+            end if
         end do
 !
 !=======================================================================
 !  FINALIZE THE NEW ELEMENT
 !=======================================================================
 !
-        nv (me) = nvpiv + degme
+        nv(me) = nvpiv+degme
 !          NV (ME) IS NOW THE DEGREE OF PIVOT (INCLUDING DIAGONAL PART)
 !          SAVE THE LENGTH OF THE LIST FOR THE NEW ELEMENT ME
-        len (me) = p - pme1
-        if (len (me) .eq. 0) then
+        len(me) = p-pme1
+        if (len(me) .eq. 0) then
 !             THERE IS NOTHING LEFT OF THE CURRENT PIVOT ELEMENT
-            pe (me) = 0
-            w (me) = 0
-        endif
+            pe(me) = 0
+            w(me) = 0
+        end if
         if (newmem .ne. 0) then
 !             ELEMENT WAS NOT CONSTRUCTED IN PLACE: DEALLOCATE PART
 !             OF IT (FINAL SIZE IS LESS THAN OR EQUAL TO NEWMEM,
 !             SINCE NEWLY NONPRINCIPAL VARIABLES HAVE BEEN REMOVED).
             pfree = p
-            mem = mem - newmem + len (me)
-        endif
+            mem = mem-newmem+len(me)
+        end if
 !
 !=======================================================================
 !          END WHILE (SELECTING PIVOTS)
         goto 30
-    endif
+    end if
 !=======================================================================
 !
 !=======================================================================
@@ -1201,7 +1201,7 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !
 !
     do i = 1, n
-        if (elen (i) .eq. 0) then
+        if (elen(i) .eq. 0) then
 !
 !             ----------------------------------------------------------
 !             I IS AN UN-ORDERED ROW.  TRAVERSE THE TREE FROM I UNTIL
@@ -1210,20 +1210,20 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !             FROM I TO WHEN E WAS SELECTED AS PIVOT.
 !             ----------------------------------------------------------
 !
-            j = -pe (i)
+            j = -pe(i)
 !             WHILE (J IS A VARIABLE) DO:
 270         continue
-            if (elen (j) .ge. 0) then
-                j = -pe (j)
+            if (elen(j) .ge. 0) then
+                j = -pe(j)
                 goto 270
-            endif
+            end if
             e = j
 !
 !             ----------------------------------------------------------
 !             GET THE CURRENT PIVOT ORDERING OF E
 !             ----------------------------------------------------------
 !
-            k = -elen (e)
+            k = -elen(e)
 !
 !             ----------------------------------------------------------
 !             TRAVERSE THE PATH AGAIN FROM I TO E, AND COMPRESS THE
@@ -1235,20 +1235,20 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
             j = i
 !             WHILE (J IS A VARIABLE) DO:
 280         continue
-            if (elen (j) .ge. 0) then
-                jnext = -pe (j)
-                pe (j) = -e
-                if (elen (j) .eq. 0) then
+            if (elen(j) .ge. 0) then
+                jnext = -pe(j)
+                pe(j) = -e
+                if (elen(j) .eq. 0) then
 !                   J IS AN UNORDERED ROW
-                    elen (j) = k
-                    k = k + 1
-                endif
+                    elen(j) = k
+                    k = k+1
+                end if
                 j = jnext
                 goto 280
-            endif
+            end if
 !             LEAVE ELEN (E) NEGATIVE, SO WE KNOW IT IS AN ELEMENT
-            elen (e) = -k
-        endif
+            elen(e) = -k
+        end if
     end do
 !
 !       ----------------------------------------------------------------
@@ -1257,9 +1257,9 @@ subroutine amdbar(n, pe, iw, len, iwlen,&
 !       ----------------------------------------------------------------
 !
     do i = 1, n
-        k = abs (elen (i))
-        last (k) = i
-        elen (i) = k
+        k = abs(elen(i))
+        last(k) = i
+        elen(i) = k
     end do
 !
 !=======================================================================

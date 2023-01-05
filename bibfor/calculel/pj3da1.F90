@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3da1(ino2, geom2, i, geom1, tetr4,&
+subroutine pj3da1(ino2, geom2, i, geom1, tetr4, &
                   cobar2, ok)
     implicit none
 #include "asterf_types.h"
@@ -42,58 +42,58 @@ subroutine pj3da1(ino2, geom2, i, geom1, tetr4,&
     real(kind=8) :: p1(3), p2(3), p3(3), p4(3), pp(3), n(3), v12(3), v13(3)
     real(kind=8) :: v14(3)
     real(kind=8) :: vol, volp, v1p(3)
-    data perm/2,3,4,1/
+    data perm/2, 3, 4, 1/
 ! DEB ------------------------------------------------------------------
-    pp(1)=geom2(3*(ino2-1)+1)
-    pp(2)=geom2(3*(ino2-1)+2)
-    pp(3)=geom2(3*(ino2-1)+3)
+    pp(1) = geom2(3*(ino2-1)+1)
+    pp(2) = geom2(3*(ino2-1)+2)
+    pp(3) = geom2(3*(ino2-1)+3)
 !
-    lino(1)=4
-    lino(2)=1
-    lino(3)=2
-    lino(4)=3
+    lino(1) = 4
+    lino(2) = 1
+    lino(3) = 2
+    lino(4) = 3
 !
     do p = 1, 4
 !       -- ON PERMUTE LES 4 NOEUDS DU TETRAEDRE :
         do k = 1, 4
-            lino(k)=perm(lino(k))
+            lino(k) = perm(lino(k))
         end do
 !
         do k = 1, 3
-            p1(k)= geom1(3*(tetr4(1+6*(i-1)+lino(1))-1)+k)
-            p2(k)= geom1(3*(tetr4(1+6*(i-1)+lino(2))-1)+k)
-            p3(k)= geom1(3*(tetr4(1+6*(i-1)+lino(3))-1)+k)
-            p4(k)= geom1(3*(tetr4(1+6*(i-1)+lino(4))-1)+k)
+            p1(k) = geom1(3*(tetr4(1+6*(i-1)+lino(1))-1)+k)
+            p2(k) = geom1(3*(tetr4(1+6*(i-1)+lino(2))-1)+k)
+            p3(k) = geom1(3*(tetr4(1+6*(i-1)+lino(3))-1)+k)
+            p4(k) = geom1(3*(tetr4(1+6*(i-1)+lino(4))-1)+k)
         end do
 !
         do k = 1, 3
-            v12(k)= p2(k)-p1(k)
-            v13(k)= p3(k)-p1(k)
-            v14(k)= p4(k)-p1(k)
-            v1p(k)= pp(k)-p1(k)
+            v12(k) = p2(k)-p1(k)
+            v13(k) = p3(k)-p1(k)
+            v14(k) = p4(k)-p1(k)
+            v1p(k) = pp(k)-p1(k)
         end do
 !
-        n(1)= v12(2)*v13(3)-v12(3)*v13(2)
-        n(2)= v12(3)*v13(1)-v12(1)*v13(3)
-        n(3)= v12(1)*v13(2)-v12(2)*v13(1)
+        n(1) = v12(2)*v13(3)-v12(3)*v13(2)
+        n(2) = v12(3)*v13(1)-v12(1)*v13(3)
+        n(3) = v12(1)*v13(2)-v12(2)*v13(1)
 !
-        vol =n(1)*v14(1)+n(2)*v14(2)+n(3)*v14(3)
+        vol = n(1)*v14(1)+n(2)*v14(2)+n(3)*v14(3)
         if (vol .eq. 0.d0) then
-            ok=.false.
+            ok = .false.
             goto 999
-        endif
-        volp=n(1)*v1p(1)+n(2)*v1p(2)+n(3)*v1p(3)
-        cobar2(lino(4))=volp/vol
+        end if
+        volp = n(1)*v1p(1)+n(2)*v1p(2)+n(3)*v1p(3)
+        cobar2(lino(4)) = volp/vol
     end do
 !
 !
-    ok =.true.
+    ok = .true.
 !
 !     -- TOLERANCE EPSI POUR EVITER DES DIFFERENCES ENTRE
 !        LES VERSIONS DEBUG ET NODEBUG
-    epsi=1.d-10
+    epsi = 1.d-10
     do k = 1, 4
-        if ((cobar2(k).lt.-epsi) .or. (cobar2(k).gt.1.d0+epsi)) ok= .false.
+        if ((cobar2(k) .lt. -epsi) .or. (cobar2(k) .gt. 1.d0+epsi)) ok = .false.
     end do
 !
 999 continue

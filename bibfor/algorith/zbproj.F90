@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,9 @@ subroutine zbproj(rho, echec)
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
-    common /zbpar/ rhoneg,rhopos,&
-     &               parmul,fneg  ,fpos  ,&
-     &               dimcpl,nbcpl ,bpos  ,lopti
+    common/zbpar/rhoneg, rhopos,&
+     &               parmul, fneg, fpos,&
+     &               dimcpl, nbcpl, bpos, lopti
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,15 +57,15 @@ subroutine zbproj(rho, echec)
             rho = (rhoneg+rhopos)/2.d0
         else
             echec = .true.
-        endif
-    endif
+        end if
+    end if
 !
 ! --- BORNE MAX
 !
     if (bpos) then
         if (rho .gt. rhopos) then
             rho = (rhoneg+rhopos)/2.d0
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

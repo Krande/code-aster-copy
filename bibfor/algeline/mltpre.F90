@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,7 @@ subroutine mltpre(mat19, renumz)
     data nomt27/'&&MLTPRE.POINTEUR_TEMP27'/
 !
 !
-    nivdbg=.false.
+    nivdbg = .false.
     call jemarq()
 !     -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
     call uttcpu('CPU.RESO.4', 'FIN', ' ')
@@ -131,11 +131,11 @@ subroutine mltpre(mat19, renumz)
     if (renumz .eq. ' ') then
         call dismoi('SOLVEUR', mat19, 'MATR_ASSE', repk=solv19)
         call jeveuo(solv19//'.SLVK', 'L', vk24=slvk)
-        ASSERT(slvk(1).eq.'MULT_FRONT')
-        renum=slvk(4)(1:8)
+        ASSERT(slvk(1) .eq. 'MULT_FRONT')
+        renum = slvk(4) (1:8)
     else
-        renum=renumz
-    endif
+        renum = renumz
+    end if
 !
 !
 !     -- SI LE STOCKAGE STOC_MLTF EXISTE DEJA ET QU'IL CORRESPOND
@@ -146,24 +146,24 @@ subroutine mltpre(mat19, renumz)
     if (iret .gt. 0) then
         call jeveuo(nu//'.MLTF.RENU', 'L', jrenu)
 !       -- RENUM2: RENUMEROTATION ASSOCIEE A .MLTF
-        renum2=zk8(jrenu)
+        renum2 = zk8(jrenu)
         if (renum .eq. renum2) then
 !         -- IL N'Y A RIEN A FAIRE :
             goto 999
         else
             call detrsd('MLTF', nu//'.MLTF')
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
     call wkvect(nu//'.MLTF.RENU', base//' V K8', 1, jrenu)
     zk8(jrenu) = renum
 !
-    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04,&
-                nomp05, nomp06, nomp07, nomp08, nomp09,&
-                nomp10, nomp11, nomp12, nomp13, nomp14,&
-                nomp15, nomp16, nomp17, nomp18, nomp19,&
+    call mlnmin(nu, nomp01, nomp02, nomp03, nomp04, &
+                nomp05, nomp06, nomp07, nomp08, nomp09, &
+                nomp10, nomp11, nomp12, nomp13, nomp14, &
+                nomp15, nomp16, nomp17, nomp18, nomp19, &
                 nomp20)
     nomglo(1:14) = nu
     nomloc(1:14) = nu
@@ -190,24 +190,24 @@ subroutine mltpre(mat19, renumz)
 !
 ! - Check NUEQ
 !
-    call nueq_chck(nu//'.NUME',l_error=.true.,l_subs=.true.)
+    call nueq_chck(nu//'.NUME', l_error=.true., l_subs=.true.)
 !
     call jelibe(nu//'.NUME.NUEQ')
     lmat = smdi(neq)
 !     LA STRUCTURE NOMADI A LA LONGUEUR EXACTE: LMAT
 !     ET N' EST PAS SURDIMENSIONNEE COMME SMOS.SMHC
     call wkvect(nomadi, base//' V I ', lmat, ismhc)
-    do i = 0, lmat - 1
+    do i = 0, lmat-1
         zi(ismhc+i) = zi4(icol+i)
     end do
     call jelibe(nu//'.SMOS.SMHC')
     call jeveuo(mat19//'.REFA', 'L', vk24=refa)
     if (refa(10) .ne. 'NOEU') then
-        ASSERT(refa(10).eq.'GENE')
-        matgen=.true.
+        ASSERT(refa(10) .eq. 'GENE')
+        matgen = .true.
     else
-        matgen=.false.
-    endif
+        matgen = .false.
+    end if
 !
 !
 !     CALCUL DE MRL, NBRE MAXIMUM DE RELATIONS LINEAIRES
@@ -215,9 +215,9 @@ subroutine mltpre(mat19, renumz)
     mrl = 1
     do iddl = 1, neq
         if (delg(iddl) .ne. 0) then
-            ino = deeq(1+2* (iddl-1))
-            if (ino .eq. 0) mrl = mrl + 1
-        endif
+            ino = deeq(1+2*(iddl-1))
+            if (ino .eq. 0) mrl = mrl+1
+        end if
 !
     end do
 !
@@ -263,23 +263,23 @@ subroutine mltpre(mat19, renumz)
 !     SUPPLEMENTAIRES INDUITS PAR LES RELA. LINEAIRES
 !------------------------------------------------------------
 !
-    call preml0(neq, n2, zi(diag), zi(ismhc), delg,&
-                zi(iprno), deeq, nec, zi(p), zi(q),&
-                zi(lbd1), zi(lbd2), zi(rl), zi(rl1), zi(rl2),&
+    call preml0(neq, n2, zi(diag), zi(ismhc), delg, &
+                zi(iprno), deeq, nec, zi(p), zi(q), &
+                zi(lbd1), zi(lbd2), zi(rl), zi(rl1), zi(rl2), &
                 nrl, lt, lmat)
 !
     lglist = 1
     ier = 0
     if (nrl .ne. 0) lglist = lt
     call wkvect(nomdeb, ' V V I ', neq, deb)
- 50 continue
+50  continue
     call wkvect(nomvoi, ' V V I ', lglist, vois1)
     call wkvect(nomsui, ' V V I ', lglist, suit1)
 !
 !     PREMLA FABRIQUE LA LISTE CHAINE :( DEB, VOIS, SUIT)
 !     VOISINAGE DE TOUS LES DDL RELIES PAR UNE RELATION LINEAIRE
 !
-    call premla(neq, zi(diag), zi(ismhc), lglist, nrl,&
+    call premla(neq, zi(diag), zi(ismhc), lglist, nrl, &
                 zi(rl), zi(deb), zi(vois1), zi(suit1), ier)
 !
     if (ier .gt. 0) then
@@ -287,7 +287,7 @@ subroutine mltpre(mat19, renumz)
         call jedetr(nomsui)
         lglist = 2*lglist
         goto 50
-    endif
+    end if
     lglist = -ier
 !
 !------------------------------------------------------------------
@@ -313,9 +313,9 @@ subroutine mltpre(mat19, renumz)
 !     TRAV1,TRAV2,TRAV3,TRAV4
 !
     call wkvect(nomp03, base//' V I ', neq+1, adress)
-    lgadjn = 2* (lmat-neq)
- 60 continue
-    if (nrl .ne. 0) lgadjn = lgadjn + 2*lglist
+    lgadjn = 2*(lmat-neq)
+60  continue
+    if (nrl .ne. 0) lgadjn = lgadjn+2*lglist
 !     NRL EST LE NOMBRE DE RELATIONS LINEAIRES ENTRE DDL
 !     ON REND ARTIFICIELLEMENT UN LIEN ENTRE TOUS CES DL
 !     IL SONT RANGES DANS UNE LISTE CHAINE ( DEB, VOIS,SUIT)
@@ -327,21 +327,21 @@ subroutine mltpre(mat19, renumz)
 !     OPTNUM =2 APPEL A METIS : MULTI LEVEL BISSECTION
     if (renum .eq. 'MDA') then
         optnum = 1
-    else if (renum.eq.'MD') then
+    else if (renum .eq. 'MD') then
         optnum = 0
-    else if (renum.eq.'METIS') then
+    else if (renum .eq. 'METIS') then
         optnum = 2
     else
         call utmess('F', 'ALGELINE_91', sk=renum)
-    endif
+    end if
     if (optnum .eq. 1) then
 !     POUR AMDBAR ON AUGMENTE LA LONGUEUR DE ADJNC2
-        lgadjn = lgadjn + 2*neq
-    endif
-    if (lgadjn .le. 0) lgadjn=1
+        lgadjn = lgadjn+2*neq
+    end if
+    if (lgadjn .le. 0) lgadjn = 1
     call wkvect(nomad2, ' V V I ', lgadjn, adjnc2)
 !
-    do i = 0, lgadjn - 1
+    do i = 0, lgadjn-1
         zi(i+adjnc2) = 0
     end do
     call wkvect(nomp20, base//' V I ', neq, seq)
@@ -362,13 +362,13 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomt25, ' V V I ', neq, spndnd)
     call wkvect(nomt27, ' V V I ', neq+1, xadjd)
 !
-    call preml1(neq, n2, zi(diag), delg, zi(ismhc),&
-                zi(xadj2), zi(adjnc2), zi(seq), zi(adress), zi(supnd2),&
-                zi(trav1), zi(trav2), zi(trav3), zi(trav4), zi(p),&
-                zi(q), zi(invp), zi(perm), lgind, ddlmoy,&
-                nbsn, optnum, lgadjn, nrl, zi(deb),&
-                zi(vois1), zi(suit1), ier, nec, zi(iprno),&
-                deeq, zi(noeud), zi(ddl), zi(invpnd), zi(permnd),&
+    call preml1(neq, n2, zi(diag), delg, zi(ismhc), &
+                zi(xadj2), zi(adjnc2), zi(seq), zi(adress), zi(supnd2), &
+                zi(trav1), zi(trav2), zi(trav3), zi(trav4), zi(p), &
+                zi(q), zi(invp), zi(perm), lgind, ddlmoy, &
+                nbsn, optnum, lgadjn, nrl, zi(deb), &
+                zi(vois1), zi(suit1), ier, nec, zi(iprno), &
+                deeq, zi(noeud), zi(ddl), zi(invpnd), zi(permnd), &
                 zi(spndnd), zi(xadjd), matgen)
     call jedetr(nomt25)
     call jedetr(nomt22)
@@ -382,7 +382,7 @@ subroutine mltpre(mat19, renumz)
     if (ier .gt. 0) then
         lgadjn = ier
         goto 60
-    endif
+    end if
     call jedetr(nomt02)
     call jelibe(nomdeb)
     call jelibe(nomvoi)
@@ -409,10 +409,10 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomp05, base//' V I ', neq, parend)
     call wkvect(nomp14, base//' V I ', neq, anc)
     call wkvect(nomp19, base//' V I ', neq, nouv)
-    call premlc(neq, zi(diag), zi(ismhc), zi(seq), zi(parend),&
-                zi(anc), zi(nouv), zi(supnd), zi(supnd2), zi(trav1),&
-                zi(trav4), zi(p), zi(q), zi(lbd1), zi(lbd2),&
-                zi(rl), zi(rl1), zi(rl2), nrl, zi(invp),&
+    call premlc(neq, zi(diag), zi(ismhc), zi(seq), zi(parend), &
+                zi(anc), zi(nouv), zi(supnd), zi(supnd2), zi(trav1), &
+                zi(trav4), zi(p), zi(q), zi(lbd1), zi(lbd2), &
+                zi(rl), zi(rl1), zi(rl2), nrl, zi(invp), &
                 zi(perm), lgind, ddlmoy, nbsn)
     call jedetr(nomt15)
     call jedetr(nomt17)
@@ -424,7 +424,7 @@ subroutine mltpre(mat19, renumz)
 !     COEFFICIENT DE SECURITE POUR LGIND QUI SERA TESTE DANS FACSMB
 !     AU FUR ET A MESURE DE LA FABRICATION DE GLOBAL ET LOCAL
 !      LGIND = (LGIND*15)/10
-    lgind = max(lgind,10000)
+    lgind = max(lgind, 10000)
 !
 !
     call wkvect(nomt01, ' V V I ', (neq+1), xadj1)
@@ -432,7 +432,7 @@ subroutine mltpre(mat19, renumz)
     call jeveuo(nomdeb, 'L', deb)
     call jeveuo(nomvoi, 'L', vois2)
     call jeveuo(nomsui, 'L', suit2)
-    do i = 0, lgadjn - 1
+    do i = 0, lgadjn-1
         zi(i+adjnc1) = 0
     end do
 !---------------------------------------------------------------
@@ -447,8 +447,8 @@ subroutine mltpre(mat19, renumz)
 !     TRAV1,TRAV2 VOIS SUIV : SERVENT DE LISTE CHAINEE POUR AJOUTER
 !     LES CONNEXIONS ENTRE DDL RELA. LINEAIRE
 !-----------------------------------------------------------------
-    call premld(neq, zi(diag), zi(ismhc), zi(xadj1), zi(adjnc1),&
-                zi(trav1), zi(deb), zi(vois2), zi(suit2), lgadjn,&
+    call premld(neq, zi(diag), zi(ismhc), zi(xadj1), zi(adjnc1), &
+                zi(trav1), zi(deb), zi(vois2), zi(suit2), lgadjn, &
                 nrl)
 !
     call jelibe(nomdeb)
@@ -475,16 +475,16 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomp16, base//' V I ', nbsn, lgbloc)
     call wkvect(nomp17, base//' V I ', nbsn, ncbloc)
     call wkvect(nomp18, base//' V I ', nbsn, decal)
- 90 continue
+90  continue
     call wkvect(nopglo, ' V V S ', lgind, global)
     call wkvect(noploc, ' V V S ', lgind, local)
-    call preml2(neq, zi(diag), zi(ismhc), delg, zi(xadj1),&
-                zi(adjnc1), lgpile, zi(adress), zi(parend), zi(fils),&
-                zi(frere), zi(anc), zi(nouv), zi(supnd), zi(trav1),&
-                zi(trav2), zi(trav3), zi(trav4), zi(invsup), zi4(local),&
-                zi4(global), zi(lfront), zi(nblign), zi(decal), zi(lgsn),&
-                zi(supnd2), zi(debfsn), zi(seq), lmat, zi(adpile),&
-                zi(p), zi(q), zi(invp), zi(nbass), zi(ncbloc),&
+    call preml2(neq, zi(diag), zi(ismhc), delg, zi(xadj1), &
+                zi(adjnc1), lgpile, zi(adress), zi(parend), zi(fils), &
+                zi(frere), zi(anc), zi(nouv), zi(supnd), zi(trav1), &
+                zi(trav2), zi(trav3), zi(trav4), zi(invsup), zi4(local), &
+                zi4(global), zi(lfront), zi(nblign), zi(decal), zi(lgsn), &
+                zi(supnd2), zi(debfsn), zi(seq), lmat, zi(adpile), &
+                zi(p), zi(q), zi(invp), zi(nbass), zi(ncbloc), &
                 zi(lgbloc), nbloc, lgind, nbsn, ier)
 !
 !      CALL JELIBE(NU//'.NUME.DELG')
@@ -494,7 +494,7 @@ subroutine mltpre(mat19, renumz)
         call jedetr(noploc)
         lgind = ier
         goto 90
-    endif
+    end if
     call jelibe(nomadi)
     if (nivdbg) then
 !     ON APPELLE PRNCHK POUR VERIFIER LA COHERENCE
@@ -502,9 +502,9 @@ subroutine mltpre(mat19, renumz)
 !     EN PARTICULIER A ACTIVER LORS D'UN PROBLEME AVEC METIS
 !     COMME ON A DEJA VU AVEC DES ELEMENTS 3D FILAIRES OU DES
 !     POUTRES (FICHES 10312 ET 10468)
-        call prnchk(nbsn, zi(adress), zi4(global), zi(fils), zi(frere),&
+        call prnchk(nbsn, zi(adress), zi4(global), zi(fils), zi(frere), &
                     zi(lgsn), zi(lfront), zi(invsup), zi(seq))
-    endif
+    end if
     zi(desc) = neq
     zi(desc+1) = nbsn
     zi(desc+2) = nbloc
@@ -533,10 +533,10 @@ subroutine mltpre(mat19, renumz)
 !     LGIND DEVIENT LA LONGUEUR REELLE DE GLOBAL ET LOCALS
 !     ON RECOPIE GLOBAL ET LOCAL DANS NOMGLO ET NOMLOC
 !     SUIVANT LEUR LONGUEUR EXACTE
-    lgind = zi(adress+nbsn) - 1
+    lgind = zi(adress+nbsn)-1
     call wkvect(nomglo, base//' V S ', lgind, globa)
     call wkvect(nomloc, base//' V S ', lgind, loca)
-    do i = 0, lgind - 1
+    do i = 0, lgind-1
         zi4(globa+i) = zi4(global+i)
         zi4(loca+i) = zi4(local+i)
     end do

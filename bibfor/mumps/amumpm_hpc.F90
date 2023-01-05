@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
+subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
                       klag2, type, epsmat, ktypr, &
                       lpreco, lbloc)
 !
@@ -97,7 +97,7 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
     character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu
     real(kind=8) :: raux, rfiltr, epsmac, rmax, rmin, rtest, raux2
     complex(kind=8) :: caux, caux2
-    aster_logical :: lmnsy, ltypr, lnn, lfiltr,  eli2lg, lsimpl, lcmde
+    aster_logical :: lmnsy, ltypr, lnn, lfiltr, eli2lg, lsimpl, lcmde
     aster_logical :: lgive, lnn2, lspd
     aster_logical, parameter :: ldebug = ASTER_FALSE
     integer, pointer :: smdi(:) => null()
@@ -122,7 +122,7 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
 !        INITS
 !       ------------------------------------------------
 !
-    ASSERT(.not.lbloc)
+    ASSERT(.not. lbloc)
     epsmac = r8prem()
     nomat = nomats(kxmps)
     nonu = nonus(kxmps)
@@ -233,12 +233,12 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
 ! ---     cpu x memoire x qualite --> on ne programme pas de
 ! --- bascule, on laisse 'LAGR2' par defaut (pour l'instant)
     select case (klag2(1:5))
-        case ('LAGR2')
-            eli2lg = ASTER_TRUE
-        case ('OUI', 'NON', 'XXXX')
-            eli2lg = ASTER_FALSE
-        case default
-            ASSERT(ASTER_FALSE)
+    case ('LAGR2')
+        eli2lg = ASTER_TRUE
+    case ('OUI', 'NON', 'XXXX')
+        eli2lg = ASTER_FALSE
+    case default
+        ASSERT(ASTER_FALSE)
     end select
 !
 ! --- CALCUL DE NZ2
@@ -269,11 +269,11 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
         call wkvect(kfiltr, 'V V R', neql, vr=filter)
         if (ltypr) then
             do k = 1, neql
-                filter(k) = epsmat*abs(zr(jvale - 1 + smdi(k)))
+                filter(k) = epsmat*abs(zr(jvale-1+smdi(k)))
             end do
         else
             do k = 1, neql
-                filter(k) = epsmat*abs(zc(jvale - 1 + smdi(k)))
+                filter(k) = epsmat*abs(zc(jvale-1+smdi(k)))
             end do
         end if
 ! --- SEUILLAGE DES TERMES DE FILTRAGE POUR EVITER LES VALEURS ABBERANTE
@@ -303,26 +303,26 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
     jcoll = 1
     rfiltr = -1.d0
     do jcoll = 1, nloc
-        if(jcoll == 1) then
+        if (jcoll == 1) then
             nzdeb = 1
         else
-            nzdeb = smdi(jcoll - 1) + 1
+            nzdeb = smdi(jcoll-1)+1
         end if
         nzfin = smdi(jcoll)
         procol = pddl(jcoll)
         jcolg = nulg(jcoll)
         nuno2 = 0
-        if( deeq((jcoll - 1) * 2+1)>0 ) then
+        if (deeq((jcoll-1)*2+1) > 0) then
             nuno2 = 1
-        endif
+        end if
         do k = nzdeb, nzfin
             iligl = smhc(k)
             prolig = pddl(iligl)
             iligg = nulg(iligl)
             nuno1 = 0
-            if( deeq((iligl - 1) * 2+1)>0 ) then
+            if (deeq((iligl-1)*2+1) > 0) then
                 nuno1 = 1
-            endif
+            end if
 !
 ! --- Dans le cas symétrique, on ne garde que la triangulaire supérieur
 !     de la matrice globale. Attention, ces termes ne viennent pas
@@ -333,49 +333,49 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
 ! --- Filtrage
 !
             if (lfiltr) then
-                rfiltr = filter(iligl) + filter(jcoll)
+                rfiltr = filter(iligl)+filter(jcoll)
             end if
 !
-            if( nuno1/=0.and.nuno2/=0 ) then
-                if( prolig == rang ) then
-                    if(sym == 0 .or. jcolg >= iligg) then
+            if (nuno1 /= 0 .and. nuno2 /= 0) then
+                if (prolig == rang) then
+                    if (sym == 0 .or. jcolg >= iligg) then
                         call filtering(ltypr, k, ASTER_FALSE, jvale, jvale2, rfiltr, rmin, rmax, &
-                                           nfilt1, nfilt2, nfilt3, nzloc, iok)
+                                       nfilt1, nfilt2, nfilt3, nzloc, iok)
                     end if
-                    if( procol == rang .and. iligg /= jcolg) then
-                        if( sym == 0 .or. jcolg < iligg) then
+                    if (procol == rang .and. iligg /= jcolg) then
+                        if (sym == 0 .or. jcolg < iligg) then
                             call filtering(ltypr, k, lmnsy, jvale, jvale2, rfiltr, rmin, rmax, &
                                            nfilt1, nfilt2, nfilt3, nzloc, iok2)
-                        endif
-                    endif
-                else if( procol == rang) then
-                    if( sym == 0 .or. jcolg < iligg) then
+                        end if
+                    end if
+                else if (procol == rang) then
+                    if (sym == 0 .or. jcolg < iligg) then
                         call filtering(ltypr, k, lmnsy, jvale, jvale2, rfiltr, rmin, rmax, &
                                        nfilt1, nfilt2, nfilt3, nzloc, iok2)
                     end if
-                endif
+                end if
             else
 !               Si on est sur un ddl de Lagrange et qu'on possede le ddl d'en face
 !               ou que les deux ddl sont de Lagrange, on doit donner le terme
-                lgive = (nuno1==0.and.procol==rang).or.&
-                        (nuno2==0.and.prolig==rang).or.&
-                        (nuno1==0.and.nuno2==0)
-                if( lgive ) then
-                    if(sym == 0 .or. jcolg >= iligg) then
+                lgive = (nuno1 == 0 .and. procol == rang) .or. &
+                        (nuno2 == 0 .and. prolig == rang) .or. &
+                        (nuno1 == 0 .and. nuno2 == 0)
+                if (lgive) then
+                    if (sym == 0 .or. jcolg >= iligg) then
                         call filtering(ltypr, k, ASTER_FALSE, jvale, jvale2, rfiltr, rmin, rmax, &
-                                    nfilt1, nfilt2, nfilt3, nzloc, iok)
+                                       nfilt1, nfilt2, nfilt3, nzloc, iok)
                     end if
-                    if( iligg /= jcolg) then
-                        if( sym == 0 .or. jcolg < iligg) then
+                    if (iligg /= jcolg) then
+                        if (sym == 0 .or. jcolg < iligg) then
                             call filtering(ltypr, k, lmnsy, jvale, jvale2, rfiltr, rmin, rmax, &
-                                       nfilt1, nfilt2, nfilt3, nzloc, iok2)
+                                           nfilt1, nfilt2, nfilt3, nzloc, iok2)
                         end if
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
     end do
-    nz2 = to_mumps_int(nzloc + 1000)
+    nz2 = to_mumps_int(nzloc+1000)
     if (niv >= 2 .or. ldebug) then
         write (ifm, *) '<AMUMPM>     NZLOC: ', nzloc
         write (ifm, *) '       TERMES NULS: ', nfilt1
@@ -398,7 +398,7 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
         call jeveuo(ksizemu, 'E', isizemu)
     end if
     do k = 1, nbproc
-        zi(isizemu + k - 1) = 0
+        zi(isizemu+k-1) = 0
     end do
     nsizemu = 0
     if (type == 'S') then
@@ -428,10 +428,10 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
     else
         ASSERT(ASTER_FALSE)
     end if
-    nsizemu = nz2*(4 + 4 + esizemu) + esizemu*neql
-    zi(isizemu + rang) = 1 + (nsizemu/(1024*1024))
+    nsizemu = nz2*(4+4+esizemu)+esizemu*neql
+    zi(isizemu+rang) = 1+(nsizemu/(1024*1024))
 !
-    if(ldebug) allocate(owner(nz2))
+    if (ldebug) allocate (owner(nz2))
 !
 !       ------------------------------------------------
 !       INTERPRETATION DES PBS RENCONTRES LORS DU FILTRAGE
@@ -465,35 +465,35 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
     caux2 = cmplx(0.d0, 0.d0)
     iterm = 0
     do jcoll = 1, nloc
-        if(jcoll == 1) then
+        if (jcoll == 1) then
             nzdeb = 1
         else
-            nzdeb = smdi(jcoll - 1) + 1
+            nzdeb = smdi(jcoll-1)+1
         end if
         nzfin = smdi(jcoll)
         procol = pddl(jcoll)
         jcolg = nulg(jcoll)
-        jcolg4 = to_mumps_int(jcolg + 1)
+        jcolg4 = to_mumps_int(jcolg+1)
         nuno2 = 0
-        if( deeq((jcoll - 1) * 2+1)>0 ) then
+        if (deeq((jcoll-1)*2+1) > 0) then
             nuno2 = 1
-        endif
+        end if
         do k = nzdeb, nzfin
             iligl = smhc(k)
             prolig = pddl(iligl)
             iligg = nulg(iligl)
-            iligg4 = to_mumps_int(iligg + 1)
+            iligg4 = to_mumps_int(iligg+1)
             nuno1 = 0
-            if( deeq((iligl - 1) * 2+1)>0 ) then
+            if (deeq((iligl-1)*2+1) > 0) then
                 nuno1 = 1
-            endif
+            end if
 !
 ! --- Filtrage
 !
             lnn = ASTER_FALSE
             lnn2 = ASTER_FALSE
             if (ltypr) then
-                raux = zr(jvale - 1 + k)
+                raux = zr(jvale-1+k)
                 if (iok(k) == 1) then
                     lnn = ASTER_TRUE
                 else if (iok(k) == -1) then
@@ -502,8 +502,8 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                 end if
                 iok(k) = 0
 !
-                raux2 = zr(jvale - 1 + k)
-                if(lmnsy) raux2 = zr(jvale2 - 1 + k)
+                raux2 = zr(jvale-1+k)
+                if (lmnsy) raux2 = zr(jvale2-1+k)
                 if (iok2(k) == 1) then
                     lnn2 = ASTER_TRUE
                 else if (iok2(k) == -1) then
@@ -512,7 +512,7 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                 end if
                 iok2(k) = 0
             else
-                caux = zc(jvale - 1 + k)
+                caux = zc(jvale-1+k)
                 if (iok(k) == 1) then
                     lnn = ASTER_TRUE
                 else if (iok(k) == -1) then
@@ -522,14 +522,14 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                 end if
                 iok(k) = 0
 !
-                caux2 = zc(jvale - 1 + k)
-                if(lmnsy) caux2 = zc(jvale2 - 1 + k)
+                caux2 = zc(jvale-1+k)
+                if (lmnsy) caux2 = zc(jvale2-1+k)
                 if (iok2(k) == 1) then
                     lnn2 = ASTER_TRUE
                 else if (iok2(k) == -1) then
                     lnn2 = ASTER_TRUE
                     caux2 = rmax*dcmplx(1.d0*sign(1.d0, dble(caux2)), &
-                                            1.d0*sign(1.d0, imag(caux2)))
+                                        1.d0*sign(1.d0, imag(caux2)))
                 end if
                 iok2(k) = 0
             end if
@@ -558,10 +558,10 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                 end if
             end if
 !
-            if( nuno1/=0.and.nuno2/=0 ) then
-                if( prolig == rang ) then
-                    if(lnn) then
-                        iterm = iterm + 1
+            if (nuno1 /= 0 .and. nuno2 /= 0) then
+                if (prolig == rang) then
+                    if (lnn) then
+                        iterm = iterm+1
                         if (type == 'S') then
                             smpsk%irn_loc(iterm) = iligg4
                             smpsk%jcn_loc(iterm) = jcolg4
@@ -582,20 +582,20 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                             ASSERT(ASTER_FALSE)
                         end if
 !                   Writings to get the stiffness matrix wrt nodes and dof numbers
-                        if (ldebug.and.raux/=0.d0) then
+                        if (ldebug .and. raux /= 0.d0) then
                             owner(iterm) = rang
-                            numno1 = deeg(2*(iligl-1) + 1)
-                            nucmp1 = deeg(2*(iligl-1) + 2)
-                            numno2 = deeg(2*(jcoll-1) + 1)
-                            nucmp2 = deeg(2*(jcoll-1) + 2)
-                            write(11+rang,*) numno1, nucmp1, numno2, nucmp2, raux, &
+                            numno1 = deeg(2*(iligl-1)+1)
+                            nucmp1 = deeg(2*(iligl-1)+2)
+                            numno2 = deeg(2*(jcoll-1)+1)
+                            nucmp2 = deeg(2*(jcoll-1)+2)
+                            write (11+rang, *) numno1, nucmp1, numno2, nucmp2, raux, &
                                 iligg4, jcolg4, iligl, jcoll, prolig, procol, rang
-                        endif
+                        end if
                     end if
-                    if( procol == rang ) then
-                        if( iligg /= jcolg ) then
-                            if(lnn2) then
-                                iterm = iterm + 1
+                    if (procol == rang) then
+                        if (iligg /= jcolg) then
+                            if (lnn2) then
+                                iterm = iterm+1
                                 if (type == 'S') then
                                     smpsk%irn_loc(iterm) = jcolg4
                                     smpsk%jcn_loc(iterm) = iligg4
@@ -615,22 +615,22 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                                 else
                                     ASSERT(ASTER_FALSE)
                                 end if
-    !                           Writings to get the stiffness matrix wrt nodes and dof numbers
-                                if (ldebug.and.raux2/=0.d0) then
+                                !                           Writings to get the stiffness matrix wrt nodes and dof numbers
+                                if (ldebug .and. raux2 /= 0.d0) then
                                     owner(iterm) = rang
-                                    numno1 = deeg(2*(iligl-1) + 1)
-                                    nucmp1 = deeg(2*(iligl-1) + 2)
-                                    numno2 = deeg(2*(jcoll-1) + 1)
-                                    nucmp2 = deeg(2*(jcoll-1) + 2)
-                                    write(11+rang,*) numno2, nucmp2, numno1, nucmp1, raux2, &
-                                        jcolg4, iligg4,  jcoll, iligl, prolig, procol, rang
-                                endif
+                                    numno1 = deeg(2*(iligl-1)+1)
+                                    nucmp1 = deeg(2*(iligl-1)+2)
+                                    numno2 = deeg(2*(jcoll-1)+1)
+                                    nucmp2 = deeg(2*(jcoll-1)+2)
+                                    write (11+rang, *) numno2, nucmp2, numno1, nucmp1, raux2, &
+                                        jcolg4, iligg4, jcoll, iligl, prolig, procol, rang
+                                end if
                             end if
-                        endif
-                    endif
-                else if( procol == rang ) then
-                    if(lnn2) then
-                        iterm = iterm + 1
+                        end if
+                    end if
+                else if (procol == rang) then
+                    if (lnn2) then
+                        iterm = iterm+1
                         if (type == 'S') then
                             smpsk%irn_loc(iterm) = jcolg4
                             smpsk%jcn_loc(iterm) = iligg4
@@ -650,27 +650,27 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                         else
                             ASSERT(ASTER_FALSE)
                         end if
-    !                   Writings to get the stiffness matrix wrt nodes and dof numbers
-                        if (ldebug.and.raux2/=0.d0) then
+                        !                   Writings to get the stiffness matrix wrt nodes and dof numbers
+                        if (ldebug .and. raux2 /= 0.d0) then
                             owner(iterm) = rang
-                            numno1 = deeg(2*(iligl-1) + 1)
-                            nucmp1 = deeg(2*(iligl-1) + 2)
-                            numno2 = deeg(2*(jcoll-1) + 1)
-                            nucmp2 = deeg(2*(jcoll-1) + 2)
-                            write(11+rang,*) numno2, nucmp2, numno1, nucmp1, raux2, &
-                                jcolg4, iligg4,  jcoll, iligl, prolig, procol, rang
-                        endif
+                            numno1 = deeg(2*(iligl-1)+1)
+                            nucmp1 = deeg(2*(iligl-1)+2)
+                            numno2 = deeg(2*(jcoll-1)+1)
+                            nucmp2 = deeg(2*(jcoll-1)+2)
+                            write (11+rang, *) numno2, nucmp2, numno1, nucmp1, raux2, &
+                                jcolg4, iligg4, jcoll, iligl, prolig, procol, rang
+                        end if
                     end if
-                endif
+                end if
             else
 !               Si on est sur un ddl de Lagrange et qu'on possede le ddl d'en face
 !               ou que les deux ddl sont de Lagrange, on doit donner le terme
-                lgive = (nuno1==0.and.procol==rang).or.&
-                        (nuno2==0.and.prolig==rang).or.&
-                        (nuno1==0.and.nuno2==0)
-                if( lgive ) then
-                    if(lnn) then
-                        iterm = iterm + 1
+                lgive = (nuno1 == 0 .and. procol == rang) .or. &
+                        (nuno2 == 0 .and. prolig == rang) .or. &
+                        (nuno1 == 0 .and. nuno2 == 0)
+                if (lgive) then
+                    if (lnn) then
+                        iterm = iterm+1
                         if (type == 'S') then
                             smpsk%irn_loc(iterm) = iligg4
                             smpsk%jcn_loc(iterm) = jcolg4
@@ -691,20 +691,20 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                             ASSERT(ASTER_FALSE)
                         end if
 
-    !                   Writings to get the stiffness matrix wrt nodes and dof numbers
-                        if (ldebug.and.raux/=0.d0) then
+                        !                   Writings to get the stiffness matrix wrt nodes and dof numbers
+                        if (ldebug .and. raux /= 0.d0) then
                             owner(iterm) = rang
-                            numno1 = deeg(2*(iligl-1) + 1)
-                            nucmp1 = deeg(2*(iligl-1) + 2)
-                            numno2 = deeg(2*(jcoll-1) + 1)
-                            nucmp2 = deeg(2*(jcoll-1) + 2)
-                            write(11+rang,*) numno1, nucmp1, numno2, nucmp2, raux, &
+                            numno1 = deeg(2*(iligl-1)+1)
+                            nucmp1 = deeg(2*(iligl-1)+2)
+                            numno2 = deeg(2*(jcoll-1)+1)
+                            nucmp2 = deeg(2*(jcoll-1)+2)
+                            write (11+rang, *) numno1, nucmp1, numno2, nucmp2, raux, &
                                 iligg4, jcolg4, iligl, jcoll
-                        endif
+                        end if
                     end if
-                    if( iligg /= jcolg ) then
-                        if(lnn2) then
-                            iterm = iterm + 1
+                    if (iligg /= jcolg) then
+                        if (lnn2) then
+                            iterm = iterm+1
                             if (type == 'S') then
                                 smpsk%irn_loc(iterm) = jcolg4
                                 smpsk%jcn_loc(iterm) = iligg4
@@ -725,19 +725,19 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
                                 ASSERT(ASTER_FALSE)
                             end if
 !                        Writings to get the stiffness matrix wrt nodes and dof numbers
-                            if (ldebug.and.raux2/=0.d0) then
+                            if (ldebug .and. raux2 /= 0.d0) then
                                 owner(iterm) = rang
-                                numno1 = deeg(2*(iligl-1) + 1)
-                                nucmp1 = deeg(2*(iligl-1) + 2)
-                                numno2 = deeg(2*(jcoll-1) + 1)
-                                nucmp2 = deeg(2*(jcoll-1) + 2)
-                                write(11+rang,*) numno2, nucmp2, numno1, nucmp1, raux2, &
-                                    jcolg4, iligg4,  jcoll, iligl
-                            endif
+                                numno1 = deeg(2*(iligl-1)+1)
+                                nucmp1 = deeg(2*(iligl-1)+2)
+                                numno2 = deeg(2*(jcoll-1)+1)
+                                nucmp2 = deeg(2*(jcoll-1)+2)
+                                write (11+rang, *) numno2, nucmp2, numno1, nucmp1, raux2, &
+                                    jcolg4, iligg4, jcoll, iligl
+                            end if
                         end if
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
     end do
 !
@@ -777,7 +777,7 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
             if (iret /= 0) then
 ! --- CAS CMDE STD AVEC MUMPS SOLVEUR DIRECT
                 call jeveuo(kmonit(1), 'E', ibid)
-                zi(ibid + rang) = nz2
+                zi(ibid+rang) = nz2
             else
 ! --- L'OBJET KMONIT(1) DEVRAIT EXISTER
                 ASSERT(ASTER_FALSE)
@@ -790,9 +790,9 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
 !       IMPRESSION DE LA MATRICE (SI DEMANDEE) :
 !       ------------------------------------------------
     if (impr(1:3) == 'OUI') then
-        write (ifmump + rang, *) sym, '   : SYM', rang, '   : RANG'
-        write (ifmump + rang, *) neql, '   : N'
-        write (ifmump + rang, *) nz2, '   : NZ_loc'
+        write (ifmump+rang, *) sym, '   : SYM', rang, '   : RANG'
+        write (ifmump+rang, *) neql, '   : N'
+        write (ifmump+rang, *) nz2, '   : NZ_loc'
         if (type == 'S') then
             do k = 1, nz2
                 write (ifmump, *) smpsk%irn_loc(k), smpsk%jcn_loc(k), smpsk%a_loc(k)
@@ -803,7 +803,7 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
             end do
         else if (type == 'D') then
             do k = 1, nz2
-                write (ifmump + rang, *) dmpsk%irn_loc(k), dmpsk%jcn_loc(k), dmpsk%a_loc(k)
+                write (ifmump+rang, *) dmpsk%irn_loc(k), dmpsk%jcn_loc(k), dmpsk%a_loc(k)
             end do
         else if (type == 'Z') then
             do k = 1, nz2
@@ -812,22 +812,22 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
         else
             ASSERT(ASTER_FALSE)
         end if
-        write (ifmump + rang, *) 'MUMPS FIN A_loc'
+        write (ifmump+rang, *) 'MUMPS FIN A_loc'
 
 !  -------   VIDANGE DES BUFFERS D'IMPRESSION
-        flush (ifmump + rang)
+        flush (ifmump+rang)
 
     end if
 !
-    if(ldebug) then
+    if (ldebug) then
         do k = 1, iterm
-            write(41+rang,*) dmpsk%irn_loc(k), dmpsk%jcn_loc(k), dmpsk%a_loc(k), owner(k)
+            write (41+rang, *) dmpsk%irn_loc(k), dmpsk%jcn_loc(k), dmpsk%a_loc(k), owner(k)
         end do
-        flush(41+rang)
+        flush (41+rang)
     end if
 !
 ! --- VIDANGE DES BUFFERS D'IMPRESSION
-    if (ldebug) flush (11 + rang)
+    if (ldebug) flush (11+rang)
 !
 ! --- COMMUNICATION DU VECTEUR KSIZEMU A TOUS LES PROCS
     call asmpi_comm_jev('MPI_SUM', ksizemu)
@@ -836,7 +836,7 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
     call jedetr(kfiltr)
     call jedetr(kpiv)
     call jedetr(kpiv2)
-    if(ldebug) deallocate(owner)
+    if (ldebug) deallocate (owner)
 !
 ! --- DECHARGEMENT CIBLE D'OBJETS JEVEUX
     call jelibd(nonu//'.SMOS.SMDI', ltot)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dismes(questi, nomobz, repi, repkz, ierd)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -64,7 +64,7 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
     if (iret .eq. 0) then
         ierd = 1
         goto 9999
-    endif
+    end if
 !
     call jeveuo(nomob//'.CESD', 'L', vi=cesd)
     call jeveuo(nomob//'.CESK', 'L', vk8=cesk)
@@ -74,16 +74,16 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
     if (questi .eq. 'TYPE_CHAMP') then
         if (cesk(3) .eq. 'ELEM') then
             repk = 'CESE'
-        else if (cesk(3).eq.'ELGA') then
+        else if (cesk(3) .eq. 'ELGA') then
             repk = 'CESG'
-        else if (cesk(3).eq.'ELNO') then
+        else if (cesk(3) .eq. 'ELNO') then
             repk = 'CESN'
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     else if (questi .eq. 'NOM_MAILLA') then
-        repk=cesk(1)
+        repk = cesk(1)
 !
     else if (questl(1:6) .eq. 'NUM_GD') then
         repi = gd
@@ -92,16 +92,16 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
         repk = nogd
 !
     else if (questi .eq. 'MXNBSP') then
-        repi=cesd(4)
+        repi = cesd(4)
 !
     else if (questi .eq. 'TYPE_SCA') then
         call dismgd(questi, nogd, repi, repk, ierd)
 !
     else
         ierd = 1
-    endif
+    end if
 !
-9999  continue
+9999 continue
     repkz = repk
 !
     call jedema()

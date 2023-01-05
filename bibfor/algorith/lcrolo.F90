@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcrolo(fami, kpg, ksp, mate, option,&
-                  carcri, fm, df, vim, vip,&
+subroutine lcrolo(fami, kpg, ksp, mate, option, &
+                  carcri, fm, df, vim, vip, &
                   taup, dtaudf, iret)
 !
 !
@@ -77,8 +77,8 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
-    common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
+    common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
+     &               pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
@@ -90,11 +90,11 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -118,9 +118,9 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
     petit = r8prem()
     itemax = nint(carcri(1))
     prec = carcri(3)
-    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-    elas = option(11:14).eq.'ELAS'
+    resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
+    rigi = option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL'
+    elas = option(11:14) .eq. 'ELAS'
     call gdclin()
 !
 !    LECTURE DES VARIABLES INTERNES
@@ -136,7 +136,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
         dp = 0.d0
         indice = nint(vim(3))
         call dcopy(6, em, 1, ep, 1)
-    endif
+    end if
 !
 !    CARACTERISTIQUES MATERIAU
     call lcroma(fami, kpg, ksp, poum, mate)
@@ -145,7 +145,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
     if (typoro .eq. 1) typorot = 'IMPLICITE'
     if (typoro .eq. 2) typorot = 'EXPLICITE'
 !
-    call gdclel(fami, kpg, ksp, poum, mate,&
+    call gdclel(fami, kpg, ksp, poum, mate, &
                 young, nu)
 !
 !
@@ -161,7 +161,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
 !
 !      POROSITE EXPLICITE
-        porom = max(f0,porom)
+        porom = max(f0, porom)
         poro = porom
         fcd = rousd*poro
         dfcddj = 0.d0
@@ -169,27 +169,27 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
     else if (typorot .eq. 'IMPLICITE') then
 !
 !    POROSITE FONCTION DE J
-        poro = 1 - (1-f0)/jp
+        poro = 1-(1-f0)/jp
         if (poro .gt. f0) then
             dfcddj = rousd*(1-f0)/jp**2
         else
             poro = f0
             dfcddj = 0
-        endif
+        end if
         fcd = rousd*poro
 !
-    endif
+    end if
 !
     if ((unk*abs(tretr)/sig1) .ge. 500.d0) then
         iret = 1
         goto 999
-    endif
-    fonc=fcd*exp(-unk*tretr/sig1)*exp(-cother/sig1)
+    end if
+    fonc = fcd*exp(-unk*tretr/sig1)*exp(-cother/sig1)
 !
-    if ((fonc.ge.infini) .or. (fonc.le.petit)) then
+    if ((fonc .ge. infini) .or. (fonc .le. petit)) then
         iret = 1
         goto 999
-    endif
+    end if
 !
 ! 4 - INTEGRATION DE LA LOI DE COMPORTEMENT
 !     PAR METHODE DE NEWTON AVEC BORNES CONTROLEES ET DICHOTOMIE
@@ -215,9 +215,9 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
         y = 0
         call lcrofg(y, dp, s, seuil, dseuil)
         if (seuil .le. 0.d0) then
-            indice=0
+            indice = 0
             goto 600
-        endif
+        end if
 !
 ! 4.2 - RESOLUTION SEUIL(Y)=0 QUAND S(0)>0
 !       CALCUL DE Y PUIS DU DP CORRESPONDANT
@@ -227,7 +227,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
             call lcrofg(y, dp, s, seuil, dseuil)
             indice = 1
             goto 600
-        endif
+        end if
 !
 ! 4.3 - EXAMEN DE LA SOLUTION SINGULIERE ( S(0)<0 )
 ! 4.3.1 - RESOLUTION S(Y)=0
@@ -239,9 +239,9 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 ! 4.3.2 - CONDITION POUR SOLUTION SINGULIERE
 !
         if (2*eqetr/3.d0-dp .le. 0) then
-            indice=2
+            indice = 2
             goto 600
-        endif
+        end if
         ym = y
 !
 ! 4.4 - RESOLUTION SEUIL(Y)=0 QUAND S(0)<0 : ON A S(YM)=0
@@ -249,7 +249,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
         y = lcroy2(ym)
         call lcrofg(y, dp, s, seuil, dseuil)
-        indice=1
+        indice = 1
 !
 600     continue
         x = sig1*y/unk
@@ -264,16 +264,16 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
             end do
             if (indice .eq. 1 .and. eqetr .gt. petit) then
                 do ij = 1, 6
-                    ep(ij) = ep(ij) + dvetr(ij)*(1.d0-3.d0*dp/(2.d0* eqetr))
+                    ep(ij) = ep(ij)+dvetr(ij)*(1.d0-3.d0*dp/(2.d0*eqetr))
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 ! 4.6 - VALIDITE DE L'INTEGRATION
 !
         if (dp .gt. dpmaxi) then
             iret = 2
-        endif
+        end if
 !
 ! FIN DE LA RESOLUTION
 !
@@ -284,8 +284,8 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
             poro = 1.d0-(1.d0-porom)*exp(-x)
             if (poro .ge. fcr) then
                 poro = 1.d0-(1.d0-porom)*exp(-acce*x)
-            endif
-        endif
+            end if
+        end if
 !
 ! 6 - CALCUL DES CONTRAINTES
 !
@@ -302,9 +302,9 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
         if (indice .ge. 1) then
             call lcrohy(x, dp, em, vip(4))
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! 9 - CALCUL DE LA MATRICE TANGENTE
 !
@@ -319,7 +319,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !      DERIVATIONS SPECIFIQUES A LA LOI DE ROUSSELIER
         call lcrotg(indice, dp, ep, dtaudf)
 !
-    endif
+    end if
 !
 999 continue
 end subroutine

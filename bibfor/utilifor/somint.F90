@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ function somint(n, x)
     integer :: n, i, s
     integer :: x(n)
 !
-    s=0
+    s = 0
     do i = 1, n
-        s=s+x(i)
+        s = s+x(i)
     end do
-    somint=s
+    somint = s
 end function

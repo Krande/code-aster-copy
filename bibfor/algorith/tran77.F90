@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,8 +97,8 @@ subroutine tran77(nomres, typres, nomin, basemo)
     mode = basemo
     trange = nomin
     call gettco(nomin, concep)
-    nomcha=' '
-    numddl=' '
+    nomcha = ' '
+    numddl = ' '
 !
 !     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
 !     ---                PORTE LA RESTITUTION                 ---
@@ -130,7 +130,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                 call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nomgd)
                 call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
                 if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
-            endif
+            end if
         else
 !  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
             call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=matric)
@@ -139,13 +139,13 @@ subroutine tran77(nomres, typres, nomin, basemo)
                 call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
             else
                 numddl = matric(1:8)
-            endif
+            end if
             call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
             matric = refn(1)
             mailla = matric(1:8)
             call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
             if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
-        endif
+        end if
 !
         basem2 = basemo
 !
@@ -153,12 +153,12 @@ subroutine tran77(nomres, typres, nomin, basemo)
     else
 !         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 !
-        call rsexch('F', basemo, 'DEPL', 1, nomcha,&
+        call rsexch('F', basemo, 'DEPL', 1, nomcha, &
                     iret)
         nomcha = nomcha(1:19)//'.REFE'
         call dismoi('NOM_GD', nomcha, 'CHAM_NO', repk=nomgd)
         call jeveuo(nomcha, 'L', llcha)
-        k24bid=zk24(llcha)
+        k24bid = zk24(llcha)
         mailla = k24bid(1:8)
 !
 !------ON VERIFIE QUE L'UTILISATEUR A RENSEIGNE LE MEME SUPPORT DE
@@ -166,29 +166,29 @@ subroutine tran77(nomres, typres, nomin, basemo)
         call getvid(' ', 'SQUELETTE', scal=nomma, nbret=isk)
         if (isk .ne. 0) then
             if (nomma .ne. mailla) then
-                valk (1) = nomma
-                valk (2) = mailla
+                valk(1) = nomma
+                valk(2) = mailla
                 call utmess('F', 'SOUSTRUC2_9', nk=2, valk=valk)
-            endif
-        endif
+            end if
+        end if
 !
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
         if (tousno) then
             call dismoi('NB_EQUA', nomcha, 'CHAM_NO', repi=neq)
-        endif
+        end if
         basem2 = ' '
         call jeveuo(nomcha, 'L', iadrif)
-        matric=zk24(iadrif+1)
-        numddl=matric(1:14)
-    endif
+        matric = zk24(iadrif+1)
+        numddl = matric(1:14)
+    end if
 !
     multap = .false.
 !
 !     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 !     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
     nfonct = 0
-    call rbph01(trange, nbcham, type, itresu, nfonct,&
+    call rbph01(trange, nbcham, type, itresu, nfonct, &
                 basem2, typref, typbas, tousno, multap)
 !
 !     --- RECUPERATION DES NUMEROS DES NOEUDS ET DES DDLS ASSOCIES ---
@@ -199,14 +199,14 @@ subroutine tran77(nomres, typres, nomin, basemo)
         objve2 = '&&TRAN77.NOM_CMP     '
         objve3 = '&&TRAN77.NB_NEQ      '
         objve4 = '&&TRAN77.NUME_DDL    '
-        call rbph02(mailla, numddl, nomcha, nomgd, neq,&
-                    nbnoeu, objve1, ncmp, objve2, objve3,&
+        call rbph02(mailla, numddl, nomcha, nomgd, neq, &
+                    nbnoeu, objve1, ncmp, objve2, objve3, &
                     objve4)
         call jeveuo(objve1, 'L', inumno)
         call jeveuo(objve2, 'L', inocmp)
         call jeveuo(objve3, 'L', inoecp)
         call jeveuo(objve4, 'L', inuddl)
-    endif
+    end if
 !
 !     --- RECUPERATION DES INSTANTS ---
 !
@@ -216,16 +216,16 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
     knume = '&&TRAN77.NUM_RANG'
     kinst = '&&TRAN77.INSTANT'
-    call rstran(interp, trange, ' ', 1, kinst,&
+    call rstran(interp, trange, ' ', 1, kinst, &
                 knume, nbinst, iretou)
     if (iretou .ne. 0) then
         call utmess('F', 'UTILITAI4_24')
-    endif
+    end if
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
         call jeveuo(kinst, 'L', jinst)
         call jeveuo(knume, 'L', jnume)
-    endif
+    end if
 !
 !     --- CREATION DE LA SD RESULTAT ---
     call rscrsd('G', nomres, typres, nbinst)
@@ -246,68 +246,68 @@ subroutine tran77(nomres, typres, nomin, basemo)
     call getvr8(' ', 'INST', scal=r8b, nbret=fomi)
     call getvr8(' ', 'FREQ', scal=r8b, nbret=fomf)
     call getvid(' ', 'MODE_MECA', scal=k8b, nbret=fomo)
-    if ((interp(1:3).ne.'NON') .and.&
-        (&
-        foci .eq. 0 .and. focf .eq. 0 .and. fomi .eq. 0 .and. fomf .eq. 0 .and. fomo .eq. 0&
+    if ((interp(1:3) .ne. 'NON') .and. &
+        ( &
+        foci .eq. 0 .and. focf .eq. 0 .and. fomi .eq. 0 .and. fomf .eq. 0 .and. fomo .eq. 0 &
         )) then
         call utmess('F', 'ALGORITH10_95')
-    endif
+    end if
 !
     call jeveuo(trange//'.DISC', 'L', vr=disc)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     AS_ALLOCATE(vr=vectgene, size=nbmode)
     do ich = 1, nbcham
-        leffor=.true.
-        if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or.&
-            type(ich) .eq. 'ACCE_ABSOLU') leffor=.false.
+        leffor = .true.
+        if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or. &
+            type(ich) .eq. 'ACCE_ABSOLU') leffor = .false.
 !
 !            --- RECUPERATION DES DEFORMEES MODALES ---
 !
         typcha = typbas(ich)
-        call rsexch('F', basemo, typcha, 1, nomcha,&
+        call rsexch('F', basemo, typcha, 1, nomcha, &
                     iret)
         nomcha = nomcha(1:19)//'.VALE'
         call jeexin(nomcha, ibid)
         if (ibid .gt. 0) then
-            nomcha(20:24)='.VALE'
+            nomcha(20:24) = '.VALE'
         else
-            nomcha(20:24)='.CELV'
-        endif
+            nomcha(20:24) = '.CELV'
+        end if
         if (leffor) call jelira(nomcha, 'LONMAX', neq)
         AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
             call copmod(basemo, champ=typcha, numer=numddl, bmodr=base, nequa=neq)
         else
             do j = 1, nbmode
-                call rsexch('F', basemo, typcha, j, nomcha,&
+                call rsexch('F', basemo, typcha, j, nomcha, &
                             iret)
                 call jeexin(nomcha(1:19)//'.VALE', ibid)
                 if (ibid .gt. 0) then
-                    nomcha(20:24)='.VALE'
+                    nomcha(20:24) = '.VALE'
                 else
-                    nomcha(20:24)='.CELV'
-                endif
+                    nomcha(20:24) = '.CELV'
+                end if
                 call jeveuo(nomcha, 'L', idefm)
                 idec = 0
                 do i = 1, nbnoeu
                     do jc = 1, ncmp
                         if (zi(inoecp-1+(i-1)*ncmp+jc) .eq. 1) then
-                            idec = idec + 1
-                            base(1+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
-                        endif
+                            idec = idec+1
+                            base(1+(j-1)*neq+idec-1) = zr(idefm+zi(inuddl+idec-1)-1)
+                        end if
                     end do
                 end do
             end do
-        endif
+        end if
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
             call jeexin(trange//'.ORDR', iret)
             if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
-        endif
+        end if
         idresu = itresu(ich)
         do i = 0, nbinst-1
-            iarchi = iarchi + 1
-            call rsexch(' ', nomres, type(ich), iarchi, chamno,&
+            iarchi = iarchi+1
+            call rsexch(' ', nomres, type(ich), iarchi, chamno, &
                         iret)
             if (iret .eq. 0) then
                 call utmess('A', 'ALGORITH2_64', sk=chamno)
@@ -317,47 +317,47 @@ subroutine tran77(nomres, typres, nomin, basemo)
                         if (leffor) then
                             call vtdefs(chamno, typref(ich), 'G', 'R')
                         else
-                            call vtcreb(chamno, 'G', 'R',&
-                                        nume_ddlz = numddl,&
-                                        nb_equa_outz = neq)
-                        endif
+                            call vtcreb(chamno, 'G', 'R', &
+                                        nume_ddlz=numddl, &
+                                        nb_equa_outz=neq)
+                        end if
                     else
                         call vtcrec(chamno, nomcha, 'G', 'R', neq)
-                    endif
+                    end if
                 else
                     if (prems) then
-                        prems=.false.
-                        call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp,&
+                        prems = .false.
+                        call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
                         call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof)
                     else
-                        call cnocre(mailla, nomgd, nbnoeu, zi( inumno), ncmp,&
+                        call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp, &
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)
-                    endif
-                endif
+                    end if
+                end if
             else
                 ASSERT(.false.)
-            endif
+            end if
             chamno(20:24) = '.VALE'
             call jeexin(chamno, ibid)
             if (ibid .gt. 0) then
                 chamno(20:24) = '.VALE'
             else
                 chamno(20:24) = '.CELV'
-            endif
+            end if
             call jeveuo(chamno, 'E', lvale)
 !
-            if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
+            if (leffor .or. .not. tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
-                call extrac(interp, epsi, crit, nbinsg, disc,&
+                call extrac(interp, epsi, crit, nbinsg, disc, &
                             zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
                 call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             else
-                call mdgeph(neq, nbmode, base, zr(idresu+(zi( jnume+i)-1)*nbmode), zr(lvale))
-            endif
+                call mdgeph(neq, nbmode, base, zr(idresu+(zi(jnume+i)-1)*nbmode), zr(lvale))
+            end if
 !
             call rsnoch(nomres, type(ich), iarchi)
-            call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
+            call rsadpa(nomres, 'E', 1, 'INST', iarchi, &
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
         end do
@@ -368,7 +368,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
     if (mode .eq. blanc) then
         call refdcp(basemo, nomres)
-    endif
+    end if
 !
     call jedetr('&&TRAN77.NUME_NOEUD  ')
     call jedetr('&&TRAN77.NOM_CMP     ')

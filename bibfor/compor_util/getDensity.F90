@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine getDensity(jvMater, rho, elasKeywordZ_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -28,9 +28,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/get_elas_id.h"
 !
-integer, intent(in) :: jvMater
-real(kind=8), intent(out) :: rho
-character(len=*), optional, intent(in) :: elasKeywordZ_
+    integer, intent(in) :: jvMater
+    real(kind=8), intent(out) :: rho
+    character(len=*), optional, intent(in) :: elasKeywordZ_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,16 +60,16 @@ character(len=*), optional, intent(in) :: elasKeywordZ_
         elasKeyword = elasKeywordZ_
     else
         call get_elas_id(jvMater, elasType, elasKeyword)
-    endif
+    end if
 
     if (elasKeyword.eq.'ELAS' .or. elasKeyword.eq.'ELAS_ISTR' .or. elasKeyword.eq.'ELAS_ORTH') then
-        call rcvalb(inteFami, kpg, kspg,&
-                     poum, jvMater ,' ', elasKeyword,&
-                     0, ' ', [r8Dummy],&
-                     1, 'RHO', valeResu, valeIret, 1)
+        call rcvalb(inteFami, kpg, kspg, &
+                    poum, jvMater, ' ', elasKeyword, &
+                    0, ' ', [r8Dummy], &
+                    1, 'RHO', valeResu, valeIret, 1)
     else
-        call utmess('F', 'ELEMENTS_50', sk = elasKeyword)
-    endif
+        call utmess('F', 'ELEMENTS_50', sk=elasKeyword)
+    end if
     rho = valeResu(1)
 !
 end subroutine

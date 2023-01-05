@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ function ulnomf(nomfic, kacc, typef)
 !     RENVOIE LE TYPE DE FICHIER ASSOCIE DANS L'ARGUMENT TYPEF
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     integer :: ival, k
 !
@@ -47,9 +47,9 @@ function ulnomf(nomfic, kacc, typef)
                 typef = typefi(k)
                 kacc = accefi(k)
                 goto 2
-            endif
-        endif
+            end if
+        end if
     end do
-  2 continue
+2   continue
     ulnomf = ival
 end function

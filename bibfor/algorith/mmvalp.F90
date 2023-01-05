@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmvalp(nb_dim, elem_type, elem_nbno, nb_cmp, ksi1,&
-                  ksi2  , vale_node, vale_poin)
+subroutine mmvalp(nb_dim, elem_type, elem_nbno, nb_cmp, ksi1, &
+                  ksi2, vale_node, vale_poin)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/mmnonf.h"
@@ -62,18 +62,18 @@ implicit none
     do i_cmp = 1, nb_cmp
         vale_poin(i_cmp) = 0.d0
     end do
-    ASSERT(elem_nbno.le.9)
+    ASSERT(elem_nbno .le. 9)
 !
 ! - Shape functions
 !
-    call mmnonf(nb_dim    , elem_nbno, elem_type, ksi1, ksi2,&
+    call mmnonf(nb_dim, elem_nbno, elem_type, ksi1, ksi2, &
                 shape_func)
 !
 ! - Compute
 !
     do i_cmp = 1, nb_cmp
         do i_node = 1, elem_nbno
-            vale_poin(i_cmp) = shape_func(i_node)*vale_node((i_node-1)*nb_cmp+i_cmp) +&
+            vale_poin(i_cmp) = shape_func(i_node)*vale_node((i_node-1)*nb_cmp+i_cmp)+ &
                                vale_poin(i_cmp)
         end do
     end do

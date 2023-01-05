@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
+subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp, &
                   nbvalf, valef, noparf)
     implicit none
 #include "jeveux.h"
@@ -52,7 +52,7 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
     nopara(1) = noparf
     nopara(2) = noparp
 !
-    call jecrec(nomfon//'.VALE', ' G V R', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(nomfon//'.VALE', ' G V R', 'NU', 'CONTIG', 'VARIABLE', &
                 nbvalp)
     call jeecra(nomfon//'.VALE', 'LONT', lont)
     do i = 1, nbvalp
@@ -60,19 +60,19 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
         call jeecra(jexnum(nomfon//'.VALE', i), 'LONMAX', 2*nbvalf)
         call jeecra(jexnum(nomfon//'.VALE', i), 'LONUTI', 2*nbvalf)
         call jeveuo(jexnum(nomfon//'.VALE', i), 'E', lval)
-        lfon = lval + nbvalf
+        lfon = lval+nbvalf
         vale(2) = valep(i)
         do ival = 0, nbvalf-1
             zr(lval+ival) = valef(ival+1)
             vale(1) = zr(lval+ival)
-            call fointe('F', nomfin, 2, nopara, vale,&
+            call fointe('F', nomfin, 2, nopara, vale, &
                         zr(lfon+ival), ier)
         end do
     end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 7+2*nbvalp, lprol)
 !
     zk24(lprol) = 'NAPPE           '
@@ -84,7 +84,7 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
     zk24(lprol+6) = noparf
     do ival = 1, nbvalp
         zk24(lprol+6+(2*ival-1)) = 'LIN LIN         '
-        zk24(lprol+6+(2*ival )) = 'EE              '
+        zk24(lprol+6+(2*ival)) = 'EE              '
     end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---

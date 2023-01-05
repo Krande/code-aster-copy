@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
+subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, &
                   lnoff, conf)
     implicit none
 !
@@ -69,7 +69,7 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
 !     LISTE DES NOEUDS DU FOND DE FISSURE EN FEM
     if (typfis .eq. 'FONDFISS') then
         call jeveuo(fiss//'.FOND.NOEU', 'L', vk8=fonoeud)
-    endif
+    end if
 !
 !     LISTE DES POINTS DES FONDS DE FISSURES
     call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
@@ -77,7 +77,7 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
 !     LISTE DES FONDS MULTIPLES EN XFEM
     if (typfis .eq. 'FISSURE') then
         call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
-    endif
+    end if
 !
 !     BASE LOCALE EN FOND DE FISSURE
     if (typfis .eq. 'FONDFISS') then
@@ -85,10 +85,10 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
         call dismoi('CONFIG_INIT', fiss, 'FOND_FISS', repk=conf)
         if (conf .eq. 'COLLEE') then
             call jeveuo(fiss//'.BASEFOND', 'L', vr=basefond)
-        endif
+        end if
     else
         call jeveuo(fiss//'.BASEFOND', 'L', vr=basefond)
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     TRAITEMENT DU MOT-CLE NUME_FOND :
@@ -99,47 +99,47 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
     if (typfis .eq. 'FISSURE') then
         call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
     else
-        numfon=1
-    endif
+        numfon = 1
+    end if
 !
 !     DETERMINATION DU NOMBRE DE NOEUDS EN FOND DE FISSURE
     if (typfis .eq. 'FISSURE') then
-        idepfi=fondmult(2*(numfon-1)+1)
-        iarrfi=fondmult(2*(numfon-1)+2)
-        lnoff=iarrfi-idepfi+1
+        idepfi = fondmult(2*(numfon-1)+1)
+        iarrfi = fondmult(2*(numfon-1)+2)
+        lnoff = iarrfi-idepfi+1
     else
-        idepfi=1
+        idepfi = 1
         call jelira(fiss//'.FOND.NOEU', 'LONMAX', lnoff)
-    endif
+    end if
 !
 !     CREATION DE NOEUDS TEMPORAIRES
     noeutmp = '&&XREFF.FONNOEU_TEMP'
     if (typfis .eq. 'FONDFISS') then
         call wkvect(noeutmp, 'V V K8', lnoff, inoeu)
         do i = 1, lnoff
-            zk8(inoeu-1+i)=fonoeud(i)
+            zk8(inoeu-1+i) = fonoeud(i)
         end do
-    endif
+    end if
 !
 !     CREATION D'UN FOND TEMPORAIRE RESTREINT AU NUMFON
     fontmp = '&&XREFF.FONFIS_TEMP'
     call wkvect(fontmp, 'V V R', lnoff*4, ifon)
     do i = 1, lnoff
         do j = 1, 4
-            zr(ifon-1+4*(i-1)+j)=fondfiss(4*(i+(idepfi-1)-1)+j)
+            zr(ifon-1+4*(i-1)+j) = fondfiss(4*(i+(idepfi-1)-1)+j)
         end do
     end do
 !
 !     CREATION D'UNE BASE TEMPORAIRE RESTREINTE AU NUMFON
     bastmp = '&&XREFF.BASFON_TEMP'
-    if ((typfis.eq.'FISSURE') .or. (conf .eq. 'COLLEE')) then
+    if ((typfis .eq. 'FISSURE') .or. (conf .eq. 'COLLEE')) then
         call wkvect(bastmp, 'V V R', lnoff*6, ibas)
         do i = 1, lnoff
             do j = 1, 6
-                zr(ibas-1+6*(i-1)+j)=basefond(6*(i+(idepfi-1)-1)+j)
+                zr(ibas-1+6*(i-1)+j) = basefond(6*(i+(idepfi-1)-1)+j)
             end do
         end do
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     TRAITEMENT DU MOT-CLE NB_POINT_FOND :
@@ -155,38 +155,38 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
 !       SI OUI : MODIFICATION DE LA LISTE DES POINTS DU FOND
 !                ET DE LA BASE
 !
-        ASSERT(nfonu.ge.2)
+        ASSERT(nfonu .ge. 2)
 !
 !       CREATION DU FOND MODIFIE
         call wkvect(chfond, 'V V R', 4*nfonu, jfonu)
 !
 !       CREATION DE LA BASE MODIFIEE
-        if ((typfis.eq.'FISSURE') .or. (conf .eq. 'COLLEE')) then
+        if ((typfis .eq. 'FISSURE') .or. (conf .eq. 'COLLEE')) then
             call wkvect(basfon, 'V V R', 6*nfonu, jbasu)
-        endif
+        end if
 !
 !       CREATION DES NOEUDS MODIFIES
         if (typfis .eq. 'FONDFISS') then
             call wkvect(fonoeu, 'V V K8', nfonu, jnoeu)
-        endif
+        end if
 !
 !       1ER ET DERNIER POINTS
         do j = 1, 4
-            zr(jfonu-1+4*(1-1)+j)=zr(ifon-1+4*(1-1)+j)
-            zr(jfonu-1+4*(nfonu-1)+j)=zr(ifon-1+4*(lnoff-1)+j)
+            zr(jfonu-1+4*(1-1)+j) = zr(ifon-1+4*(1-1)+j)
+            zr(jfonu-1+4*(nfonu-1)+j) = zr(ifon-1+4*(lnoff-1)+j)
         end do
 !
-        if ((typfis.eq.'FISSURE') .or. (conf .eq. 'COLLEE')) then
+        if ((typfis .eq. 'FISSURE') .or. (conf .eq. 'COLLEE')) then
             do j = 1, 6
-                zr(jbasu-1+6*(1-1)+j)=zr(ibas-1+6*(1-1)+j)
-                zr(jbasu-1+6*(nfonu-1)+j)=zr(ibas-1+6*(lnoff-1)+j)
+                zr(jbasu-1+6*(1-1)+j) = zr(ibas-1+6*(1-1)+j)
+                zr(jbasu-1+6*(nfonu-1)+j) = zr(ibas-1+6*(lnoff-1)+j)
             end do
-        endif
+        end if
 !
         if (typfis .eq. 'FONDFISS') then
-            zk8(jnoeu)='XXXX'
-            zk8(jnoeu+(nfonu-1))='XXXX'
-        endif
+            zk8(jnoeu) = 'XXXX'
+            zk8(jnoeu+(nfonu-1)) = 'XXXX'
+        end if
 !
 !       NOUVEAUX POINTS
         smax = zr(ifon-1+4*(lnoff-1)+4)
@@ -198,32 +198,32 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
 110         continue
 !         ON INTERPOLE LES COORD ENTRE CELLES DU SEGMENT [K-1,K]
             s1 = zr(ifon-1+4*(k-1-1)+4)
-            s2 = zr(ifon-1+4*( k-1)+4)
+            s2 = zr(ifon-1+4*(k-1)+4)
             do j = 1, 3
                 xyz1 = zr(ifon-1+4*(k-1-1)+j)
-                xyz2 = zr(ifon-1+4*( k-1)+j)
-                zr(jfonu-1+4*(i-1)+j) = xyz1 + (xyz2-xyz1)*(s-s1)/(s2- s1)
+                xyz2 = zr(ifon-1+4*(k-1)+j)
+                zr(jfonu-1+4*(i-1)+j) = xyz1+(xyz2-xyz1)*(s-s1)/(s2-s1)
             end do
-            if ((typfis.eq.'FISSURE') .or. (conf .eq. 'COLLEE')) then
+            if ((typfis .eq. 'FISSURE') .or. (conf .eq. 'COLLEE')) then
                 do j = 1, 6
                     xyz1 = zr(ibas-1+6*(k-1-1)+j)
-                    xyz2 = zr(ibas-1+6*( k-1)+j)
-                    zr(jbasu-1+6*(i-1)+j) = xyz1 + (xyz2-xyz1)*(s-s1)/(s2- s1)
+                    xyz2 = zr(ibas-1+6*(k-1)+j)
+                    zr(jbasu-1+6*(i-1)+j) = xyz1+(xyz2-xyz1)*(s-s1)/(s2-s1)
                 end do
-            endif
+            end if
 !
             zr(jfonu-1+4*(i-1)+4) = s
         end do
 !
 !       CREATION DES NOEUDS MODIFIES
         if (typfis .eq. 'FONDFISS') then
-            valk='XXXX'
+            valk = 'XXXX'
 !
 !           FONOEU : VALEURS MISES A XXXX
             do i = 1, nfonu
                 zk8(jnoeu-1+i) = valk
             end do
-        endif
+        end if
 !
 !       ON ECRASE LNOFF
         lnoff = nfonu
@@ -239,8 +239,8 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu,&
 !       ET ON RECOPIE TELS QUELS LES NOEUDS
         if (typfis .eq. 'FONDFISS') then
             call jedupo(noeutmp, 'V', fonoeu, .false._1)
-        endif
-    endif
+        end if
+    end if
 !
 !     MENAGE
     call jedetr(fontmp)

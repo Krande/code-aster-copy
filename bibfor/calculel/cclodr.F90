@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
+subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord, &
                   maxord, resuin, resuou, lacalc)
     implicit none
 !     --- ARGUMENTS ---
@@ -101,54 +101,54 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
 !
             if (zk8(jlidep+iter-1) .eq. 'NP1') then
                 decal = -1
-            else if (zk8(jlidep+iter-1).eq.'NM1') then
+            else if (zk8(jlidep+iter-1) .eq. 'NM1') then
                 decal = +1
             else
                 decal = 0
-            endif
+            end if
 !
 !         LA LISTE DE NUMEROS D'ORDRE PROVIENT DE OP0058
 !         ELLE EST DONC CROISSANTE
-            curmax = min(curmax,zi(jordo2+2)+decal)
-            curmin = max(curmin,zi(jordo2+1)+decal)
+            curmax = min(curmax, zi(jordo2+2)+decal)
+            curmin = max(curmin, zi(jordo2+1)+decal)
         end do
 !
         exitor = .true.
         if (zi(jacalc+nuoplo-1) .eq. 1) then
             do iordr = 1, nbordr
                 numord = zi(jordr-1+iordr)
-                if ((isodep.eq.'-') .and. (numord.eq.minord)) then
+                if ((isodep .eq. '-') .and. (numord .eq. minord)) then
                     goto 30
-                    elseif ( (isodep.eq.'+').and.(numord.eq.maxord) )&
-                then
+                elseif ((isodep .eq. '+') .and. (numord .eq. maxord)) &
+                    then
                     goto 30
-                endif
+                end if
                 if (numord .ge. curmin) then
                     if (numord .gt. curmax) goto 40
                     nosyou = ' '
-                    call rsexch(' ', resuin, option, numord, nosyou,&
+                    call rsexch(' ', resuin, option, numord, nosyou, &
                                 ierd)
                     if (ierd .ne. 0) then
-                        call rsexch(' ', resuou, option, numord, nosyou,&
+                        call rsexch(' ', resuou, option, numord, nosyou, &
                                     ierd)
-                    endif
+                    end if
 !
                     if (ierd .ne. 0) then
                         exitor = .false.
-                    endif
-                endif
- 30             continue
+                    end if
+                end if
+30              continue
             end do
-        endif
+        end if
 !
- 40     continue
+40      continue
 !
         if (exitor) then
             do iter = inddeb, indfin
                 zi(jacalc+iter-1) = 0
             end do
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romTableChck(tablReduCoor, lTablFromResu, nbModeIn, nbSnapIn_, nbStoreIn_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/tbGetListPara.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
-aster_logical, intent(in) :: lTablFromResu
-integer, intent(in) :: nbModeIn
-integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
+    type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
+    aster_logical, intent(in) :: lTablFromResu
+    integer, intent(in) :: nbModeIn
+    integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,14 +60,14 @@ integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
     character(len=24), pointer :: paraName(:) => null()
     character(len=24), pointer :: paraType(:) => null()
     integer, parameter :: nbParaRequired = 5
-    character(len=24), parameter :: paraNameRequired(nbParaRequired) = (/&
-                                                     'COOR_REDUIT','INST       ',&
-                                                     'NUME_MODE  ','NUME_ORDRE ',&
-                                                     'NUME_SNAP  '/)
-    character(len=8), parameter :: paraTypeRequired(nbParaRequired) = (/&
-                                                     'R','R',&
-                                                     'I','I',&
-                                                     'I'/)
+    character(len=24), parameter :: paraNameRequired(nbParaRequired) = (/ &
+                                    'COOR_REDUIT', 'INST       ', &
+                                    'NUME_MODE  ', 'NUME_ORDRE ', &
+                                    'NUME_SNAP  '/)
+    character(len=8), parameter :: paraTypeRequired(nbParaRequired) = (/ &
+                                   'R', 'R', &
+                                   'I', 'I', &
+                                   'I'/)
     integer, pointer :: snapNume(:) => null()
     integer, pointer :: storeNume(:) => null()
     integer :: nbVale
@@ -77,8 +77,8 @@ integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','ROM15_1')
-    endif
+        call utmess('I', 'ROM15_1')
+    end if
 !
 ! - Get parameters
 !
@@ -87,7 +87,7 @@ integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
         tablName = tablReduCoor%tablUserName
     else
         tablName = tablReduCoor%tablResu%tablName
-    endif
+    end if
 !
 ! - Is table exists ?
 !
@@ -95,10 +95,10 @@ integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
     if (lTablExist) then
         if (lTablFromUser .and. lTablFromResu) then
             call utmess('F', 'ROM15_24')
-        endif
+        end if
     else
         call utmess('F', 'ROM15_23')
-    endif
+    end if
 !
 ! - Get parameters in existing table
 !
@@ -108,65 +108,65 @@ integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
 !
     if (nbPara .ne. nbParaRequired) then
         call utmess('F', 'ROM15_27')
-    endif
+    end if
 !
 ! - Check name/type of parameters
 !
     do iPara = 1, nbPara
         if (paraName(iPara) .ne. paraNameRequired(iPara)) then
             call utmess('F', 'ROM15_27')
-        endif
+        end if
         if (paraType(iPara) .ne. paraTypeRequired(iPara)) then
             call utmess('F', 'ROM15_27')
-        endif
+        end if
     end do
-    AS_DEALLOCATE(vk24 = paraType)
-    AS_DEALLOCATE(vk24 = paraName)
+    AS_DEALLOCATE(vk24=paraType)
+    AS_DEALLOCATE(vk24=paraName)
 !
 ! - Number of lines
 !
     if (tablNbLine .eq. 0) then
         call utmess('F', 'ROM15_28')
-    endif
+    end if
 !
 ! - Check number of snapshots
 !
     if (present(nbSnapIn_)) then
         call tbexve(tablName, 'NUME_SNAP', '&&NUMESNAP', 'V', nbVale)
-        call jeveuo('&&NUMESNAP', 'E', vi = snapNume)
+        call jeveuo('&&NUMESNAP', 'E', vi=snapNume)
         nbSnap = 0
         do iLine = 1, tablNbLine
             if (snapNume(iLine) .gt. nbSnap) then
                 nbSnap = snapNume(iLine)
-            endif
+            end if
         end do
         if (nbSnap .ne. nbSnapIn_) then
             call utmess('F', 'ROM15_29')
-        endif
-        nbMode = tablNbLine / nbSnap
-    endif
+        end if
+        nbMode = tablNbLine/nbSnap
+    end if
 !
 ! - Check number of storing index
 !
     if (present(nbStoreIn_)) then
         call tbexve(tablName, 'NUME_ORDRE', '&&NUMESTOREP', 'V', nbVale)
-        call jeveuo('&&NUMESTOREP', 'E', vi = storeNume)
+        call jeveuo('&&NUMESTOREP', 'E', vi=storeNume)
         nbStore = 0
         do iLine = 1, tablNbLine
             if (storeNume(iLine) .gt. nbStore) then
                 nbStore = storeNume(iLine)
-            endif
+            end if
         end do
         if (nbStore .ne. nbStoreIn_) then
             call utmess('F', 'ROM15_30')
-        endif
-        nbMode = tablNbLine / nbStore
-    endif
+        end if
+        nbMode = tablNbLine/nbStore
+    end if
 !
 ! - Check number of modes
 !
     if (nbMode .ne. nbModeIn) then
         call utmess('F', 'ROM15_31')
-    endif
+    end if
 !
 end subroutine

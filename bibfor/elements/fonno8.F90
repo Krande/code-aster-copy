@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,10 +93,10 @@ subroutine fonno8(resu, noma, tablev, vect)
 !
             do inn = 1, nn
                 do inn2 = 1, nn2
-                    if (zi(jconx-1+inn2) .eq. zi(iamase-1 + inn)) then
-                        comp=comp+1
+                    if (zi(jconx-1+inn2) .eq. zi(iamase-1+inn)) then
+                        comp = comp+1
                         if (comp .eq. nn) goto 300
-                    endif
+                    end if
                 end do
             end do
         end do
@@ -107,13 +107,13 @@ subroutine fonno8(resu, noma, tablev, vect)
 !     CALCUL DES COORDONNEES DU CENTRE DE GRAVITE
     call panbno(zi(itypma), nbnott)
 !
-    xg=0
-    yg=0
-    zg=0
+    xg = 0
+    yg = 0
+    zg = 0
     do inn2 = 1, nbnott(1)
-        xg=xg+vale((zi(jconx-1+inn2)-1)*3 + 1)
-        yg=yg+vale((zi(jconx-1+inn2)-1)*3 + 2)
-        zg=zg+vale((zi(jconx-1+inn2)-1)*3 + 3)
+        xg = xg+vale((zi(jconx-1+inn2)-1)*3+1)
+        yg = yg+vale((zi(jconx-1+inn2)-1)*3+2)
+        zg = zg+vale((zi(jconx-1+inn2)-1)*3+3)
     end do
 !
     call jeexin(resu//'.FOND.NOEU', ifon)
@@ -121,12 +121,12 @@ subroutine fonno8(resu, noma, tablev, vect)
         call jeveuo(resu//'.FOND.NOEU', 'L', jfon)
     else
         ASSERT(.FALSE.)
-    endif
+    end if
     call jenonu(jexnom(noma//'.NOMNOE', zk8(jfon)), iret)
 !
-    vect(1) = xg/nbnott(1) - vale((iret-1)*3 + 1)
-    vect(2) = yg/nbnott(1) - vale((iret-1)*3 + 2)
-    vect(3) = zg/nbnott(1) - vale((iret-1)*3 + 3)
+    vect(1) = xg/nbnott(1)-vale((iret-1)*3+1)
+    vect(2) = yg/nbnott(1)-vale((iret-1)*3+2)
+    vect(3) = zg/nbnott(1)-vale((iret-1)*3+3)
 !
     call jedema()
 end subroutine

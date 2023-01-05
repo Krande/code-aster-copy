@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmveei(BEHinteg,&
-                  fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, carcri, instam, instap,&
-                  epsm, deps, sigm, vim, option,&
+subroutine nmveei(BEHinteg, &
+                  fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, carcri, instam, instap, &
+                  epsm, deps, sigm, vim, option, &
                   sigp, vip, dsidep, iret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -40,14 +40,14 @@ implicit none
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-integer :: ndim, imate, iret, kpg, ksp
-character(len=16) :: compor(*), option
-character(len=8) :: typmod(*)
-character(len=*) :: fami
-real(kind=8) :: carcri(*), instam, instap, tm, tp, tref
-real(kind=8) :: epsm(6), deps(6)
-real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    integer :: ndim, imate, iret, kpg, ksp
+    character(len=16) :: compor(*), option
+    character(len=8) :: typmod(*)
+    character(len=*) :: fami
+    real(kind=8) :: carcri(*), instam, instap, tm, tp, tref
+    real(kind=8) :: epsm(6), deps(6)
+    real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 ! ----------------------------------------------------------------------
 !     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
 !     CHABOCHE AVEC ENDOMAGEMENT
@@ -118,12 +118,12 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 ! ----------------------------------------------------------------------
     integer :: nb, np, ni, nr, nmat, un, nt, iret1
     real(kind=8) :: zero, dammax, det, epsthp, epsthm
-    parameter  (nb = 6, np = 2, ni = 9, nr = 8, nt=3*nb)
+    parameter(nb=6, np=2, ni=9, nr=8, nt=3*nb)
 !     NOMBRE DE COEF MATERIAU MAXIMUM
-    parameter  (nmat = 90)
-    parameter  ( un   = 1   )
-    parameter  ( zero = 0.d0   )
-    parameter  (dammax = 0.99d0)
+    parameter(nmat=90)
+    parameter(un=1)
+    parameter(zero=0.d0)
+    parameter(dammax=0.99d0)
 !
     aster_logical :: cplan
 !
@@ -152,16 +152,16 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
     real(kind=8) :: toutms(1), hsr(1)
     character(len=24) :: cpmono(1)
 !
-    common /tdim/   ndt  , ndi
-    common /meti/   meting
+    common/tdim/ndt, ndi
+    common/meti/meting
 ! ----------------------------------------------------------------------
 !
 !
 !-- 1. INITIALISATIONS :
 !----------------------
     itmax = int(carcri(1))
-    ier=0
-    iret=0
+    ier = 0
+    iret = 0
 !
     if (itmax .le. 0) itmax = -itmax
     toler = carcri(3)
@@ -169,7 +169,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
     mod = typmod(1)
     cplan = typmod(1) .eq. 'C_PLAN'
     meting = 'NEWTON'
-    dt = instap - instam
+    dt = instap-instam
     etatf(1) = 'ELASTIC'
     etatf(2) = 'EXPONEN'
     etatf(3) = 'DAMMAXN'
@@ -183,55 +183,55 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 !        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 !-----------------------------------------------------------------------
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tm, iret2)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tp, iret3)
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                 ksp, tref, iret4)
-    if (((iret2+iret3).eq.0) .and. (iret4.eq.1)) then
+    if (((iret2+iret3) .eq. 0) .and. (iret4 .eq. 1)) then
         call utmess('F', 'COMPOR5_43')
-    endif
+    end if
 !
-    call lcmate(BEHinteg,&
-                fami, kpg, ksp, compor, mod,&
-                imate, nmat, tm, tp, tref, 0,&
-                typma, hsr, matm, mate, matcst,&
-                nbcomm, cpmono, angmas, pgl, itmax,&
-                toler, ndt, ndi, nrv, carcri,&
-                nvi, vind, nfs, nsg, toutms,&
+    call lcmate(BEHinteg, &
+                fami, kpg, ksp, compor, mod, &
+                imate, nmat, tm, tp, tref, 0, &
+                typma, hsr, matm, mate, matcst, &
+                nbcomm, cpmono, angmas, pgl, itmax, &
+                toler, ndt, ndi, nrv, carcri, &
+                nvi, vind, nfs, nsg, toutms, &
                 1, numhsr, sigm)
-    ASSERT(ndt.eq.nb.or.nvi.eq.ni.or.nrv.eq.nr)
+    ASSERT(ndt .eq. nb .or. nvi .eq. ni .or. nrv .eq. nr)
     if ((iret2+iret3) .eq. 0) then
-        epsthp = mate(3,1)*(tp-tref)
-        epsthm = matm(3,1)*(tm-tref)
+        epsthp = mate(3, 1)*(tp-tref)
+        epsthm = matm(3, 1)*(tm-tref)
     else
         epsthp = 0.d0
         epsthm = 0.d0
-    endif
+    end if
 !
 !-- 1.3. OPERATEUR DE HOOKE
 !-------------------------
     call lcopli('ISOTROPE', mod, mate, hook)
 !
-    if (.not.(loi(1:4) .eq. 'ELAS' .or. loi .eq. 'VENDOCHAB' .or. loi .eq. 'VISC_ENDO_LEMA'&
-        )) then
+    if (.not. (loi(1:4) .eq. 'ELAS' .or. loi .eq. 'VENDOCHAB' .or. loi .eq. 'VISC_ENDO_LEMA' &
+               )) then
         call utmess('F', 'ALGORITH4_50', sk=loi)
-    endif
+    end if
 !
 !-- 1.4. DEFORMATIONS TOTALES, THERMIQUES ET VISCOPLASTIQUES
 !-----------------------------------------------------------
 !-- VARIABLES D'ETAT DU MODELE A T-
-    rm = vim (nb+2)
-    dm = vim (nb+3)
-    if (dm .eq. un) dm=dammax
+    rm = vim(nb+2)
+    dm = vim(nb+3)
+    if (dm .eq. un) dm = dammax
     do i = 1, 3
-        ep(i)=0.d0
-        epthm(i)=0.d0
-        ep(i)=ep(i)+epsthp
-        epthm(i)=epthm(i)+epsthm
-        ep(3+i)=0.d0
-        epthm(3+i)=0.d0
+        ep(i) = 0.d0
+        epthm(i) = 0.d0
+        ep(i) = ep(i)+epsthp
+        epthm(i) = epthm(i)+epsthm
+        ep(3+i) = 0.d0
+        epthm(3+i) = 0.d0
     end do
 !
     if (compor(3) .eq. 'PETIT_REAC') then
@@ -239,25 +239,25 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
         call r8inir(nb*nb, 0.d0, a, 1)
         call r8inir(nb, 0.d0, b, 1)
         if (ndim .eq. 2) then
-            sigm(5)=0.d0
-            sigm(6)=0.d0
-        endif
+            sigm(5) = 0.d0
+            sigm(6) = 0.d0
+        end if
         b(1:nb) = sigm(1:nb)
         do i = 1, nb
             do k = 1, nb
-                a(i,k) = a(i,k)+ (un-dm)*hookm(i,k)
+                a(i, k) = a(i, k)+(un-dm)*hookm(i, k)
             end do
         end do
-        call mgauss('NFVP', a, b, nb, nb,&
+        call mgauss('NFVP', a, b, nb, nb, &
                     1, det, iret1)
 !
         do i = 1, nb
-            ep(6+i)=0.d0
-            ep(6+i) = ep(6+i)+ epsm(i)- b(i)- epthm(i)
+            ep(6+i) = 0.d0
+            ep(6+i) = ep(6+i)+epsm(i)-b(i)-epthm(i)
         end do
     else
         ep(7:7-1+nb) = vim(1:nb)
-    endif
+    end if
     do i = 1, nb
         ep(12+i) = epsm(i)+deps(i)
     end do
@@ -265,7 +265,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 ! CALCUL DIRECT DE LA SOLUTION DANS LE CAS OU LES EQUATIONS SE
 ! REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
 !
-    isimp=0
+    isimp = 0
 !
 !-- 2. CALCULS:
 !---------------
@@ -276,52 +276,52 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !-----------------------------------------------------------------------
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         if (loi .eq. 'VISC_ENDO_LEMA') then
-            if (.not.cplan) then
-                call nmvend(fami, kpg, ksp, matm, mate,&
-                            nmat, dt, deps, sigm,&
-                            vim, ndim, carcri, dammax, etatf,&
-                            p, np, beta, nb, iter,&
+            if (.not. cplan) then
+                call nmvend(fami, kpg, ksp, matm, mate, &
+                            nmat, dt, deps, sigm, &
+                            vim, ndim, carcri, dammax, etatf, &
+                            p, np, beta, nb, iter, &
                             ier)
-                isimp=1
+                isimp = 1
                 if (ier .gt. 0) then
                     goto 801
                 else
-                    call nmvecd(imate, mate, nmat, matcst, loi,&
-                                hook, dt, tp, p, np,&
-                                beta, nb, ep, rm, dm,&
-                                dsgde, dsgdb, dsgdp, drbde, drpde,&
-                                rb, rp, drbdb, drbdp, drpdb,&
+                    call nmvecd(imate, mate, nmat, matcst, loi, &
+                                hook, dt, tp, p, np, &
+                                beta, nb, ep, rm, dm, &
+                                dsgde, dsgdb, dsgdp, drbde, drpde, &
+                                rb, rp, drbdb, drbdp, drpdb, &
                                 drpdp, etatf, ier)
                     goto 230
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
         do iter = 1, itmax
 !
-            call nmvecd(imate, mate, nmat, matcst, loi,&
-                        hook, dt, tp, p, np,&
-                        beta, nb, ep, rm, dm,&
-                        dsgde, dsgdb, dsgdp, drbde, drpde,&
-                        rb, rp, drbdb, drbdp, drpdb,&
+            call nmvecd(imate, mate, nmat, matcst, loi, &
+                        hook, dt, tp, p, np, &
+                        beta, nb, ep, rm, dm, &
+                        dsgde, dsgdb, dsgdp, drbde, drpde, &
+                        rb, rp, drbdb, drbdp, drpdb, &
                         drpdp, etatf, ier)
 !
             if (ier .ne. 0) then
                 goto 801
-            endif
+            end if
 !
 !-- 2.1. RESOLUTION DU SYSTEME
 !               DRBDB(NB,NB) DRBDP(NB,NP)   DB(NB)    -RB(NB)
 !                                         *        =
 !               DRPDB(NP,NB) DRPDP(NP,NP)   DP(NP)    -RP(NP)
 !
-            call nmveso(rb, nb, rp, np, drbdb,&
-                        drbdp, drpdb, drpdp, dp, dbeta,&
+            call nmveso(rb, nb, rp, np, drbdb, &
+                        drbdp, drpdb, drpdp, dp, dbeta, &
                         nr, cplan)
 !
             if (cplan) then
                 deps(3) = zero
                 dbeta(3) = zero
-            endif
+            end if
 !
 !-- 2.3. TEST DE CONVERGENCE
 !-------------------------
@@ -330,30 +330,30 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
             sumb = zero
             do i = 1, nb
                 if (isimp .eq. 0) then
-                    beta(i)=beta(i)+dbeta(i)
+                    beta(i) = beta(i)+dbeta(i)
                 else
-                    isimp=0
-                endif
-                deltb=deltb+abs(dbeta(i))
-                sumb=sumb+abs(beta(i))
+                    isimp = 0
+                end if
+                deltb = deltb+abs(dbeta(i))
+                sumb = sumb+abs(beta(i))
             end do
-            if (sumb .gt. toler) deltb=deltb/sumb
+            if (sumb .gt. toler) deltb = deltb/sumb
 !
             deltx = zero
             sumx = zero
             do i = 1, np
                 if (isimp .eq. 0) then
-                    p(i)=p(i)+dp(i)
+                    p(i) = p(i)+dp(i)
                 else
-                    isimp=0
-                endif
-                deltx=deltx+abs(dp(i))
-                sumx=sumx+abs(p(i))
+                    isimp = 0
+                end if
+                deltx = deltx+abs(dp(i))
+                sumx = sumx+abs(p(i))
             end do
 !
-            if (sumx .gt. toler) deltx=deltx/sumx
+            if (sumx .gt. toler) deltx = deltx/sumx
 !
-            deltx=max(deltx,deltb)
+            deltx = max(deltx, deltb)
 !
             if (deltx .lt. toler) goto 00230
 !
@@ -365,33 +365,33 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 230     continue
         if (etatf(2) .eq. 'TANGENT') then
             call utmess('A', 'ALGORITH8_66')
-        endif
+        end if
 !-- STOCKAGE DANS L'INDICATEUR DU NOMBRE D'ITERATIONS
-        vip(nb+4) = max(vip(nb+4),dble(iter))
+        vip(nb+4) = max(vip(nb+4), dble(iter))
 !
 !-- 2.4 ACTUALISATION DES CONTRAINTES ET DES VARIABLES INTERNES
 !--------------------------------------------------------------
         sigp(1:nb) = beta(1:nb)
-        vip(nb+2) = vim(nb+2) + dt * p(1)
-        call lcdvmi(beta, 0.d0, se2, dsedb, dsedb2,&
+        vip(nb+2) = vim(nb+2)+dt*p(1)
+        call lcdvmi(beta, 0.d0, se2, dsedb, dsedb2, &
                     se)
 !
         if (etatf(3) .eq. 'DAMMAXO') then
             call utmess('A', 'ALGORITH8_67')
             vip(nb+3) = dammax
-            vip(nb+1) = vim(nb+1) + dt * p(1)/(un-dammax)
+            vip(nb+1) = vim(nb+1)+dt*p(1)/(un-dammax)
             do i = 1, nb
-                vip(i) = vim(i) + dt * p(1)/(un-dammax) * dsedb(i)
+                vip(i) = vim(i)+dt*p(1)/(un-dammax)*dsedb(i)
             end do
         else
-            vip(nb+3) = vim(nb+3) + dt * p(2)
-            vip(nb+1) = vim(nb+1) + dt * p(1)/(un-vip(nb+3))
+            vip(nb+3) = vim(nb+3)+dt*p(2)
+            vip(nb+1) = vim(nb+1)+dt*p(1)/(un-vip(nb+3))
             do i = 1, nb
-                vip(i) = vim(i) + dt * p(1)/(un-vip(nb+3)) * dsedb(i)
+                vip(i) = vim(i)+dt*p(1)/(un-vip(nb+3))*dsedb(i)
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !-- 3. MISE A JOUR DE L'OPERATEUR TANGENT
 !----------------------------------------
 !
@@ -401,36 +401,36 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
             dsidep = hook
         else
             if (typma .eq. 'COHERENT') then
-                call nmveot(drbdb, drbdp, drpdb, drpdp, drbde,&
-                            drpde, dsgde, dsgdb, dsgdp, np,&
+                call nmveot(drbdb, drbdp, drpdb, drpdp, drbde, &
+                            drpde, dsgde, dsgdb, dsgdp, np, &
                             nb, nr, dsidep)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
 !         ENDIF
 !
 !-- RIGIDITE TANGENTE (RIGI_MECA_TANG) -> MATRICE ELASTIQUE
-    else if (option.eq.'RIGI_MECA_TANG') then
+    else if (option .eq. 'RIGI_MECA_TANG') then
         if (typma .eq. 'COHERENT') then
             dsidep = hook
         else
             ASSERT(.false.)
-        endif
+        end if
 !        ENDIF
 !
 !-- RIGIDITE TANGENTE (RIGI_MECA_ELAS,FULL_MECA_ELAS)->MATRICE ELASTIQUE
-    else if (option(10:14).eq.'_ELAS') then
+    else if (option(10:14) .eq. '_ELAS') then
 !             MATRICE SECANTE=MATRICE ELASTIQUE
 !
         if (option .eq. 'FULL_MECA_ELAS') then
-            unmd=1.d0 - vip(nb+3)
+            unmd = 1.d0-vip(nb+3)
         else
-            unmd=1.d0 - vim(nb+3)
-        endif
+            unmd = 1.d0-vim(nb+3)
+        end if
 !             MATRICE SECANTE=MATRICE ELASTIQUE*(1-D)
-        dsidep(1:ndt,1:ndt) = unmd * hook(1:ndt,1:ndt)
-    endif
+        dsidep(1:ndt, 1:ndt) = unmd*hook(1:ndt, 1:ndt)
+    end if
 !
 !-- MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE
 !   SIG3=0 ET DE LA CONSERVATION DE L'ENERGIE
@@ -439,12 +439,12 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
             if (k .ne. 3) then
                 do l = 1, nb
                     if (l .ne. 3) then
-                        dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
-                    endif
+                        dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)*dsidep(k, 3)*dsidep(3, l)
+                    end if
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
     goto 999
 !

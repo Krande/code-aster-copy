@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
-                  ptknp, nfh, seuil, mu, singu,&
+subroutine xmmab4(ndim, nno, nnos, ffp, jac, &
+                  ptknp, nfh, seuil, mu, singu, &
                   fk, coefbu, ddls, ddlm, mmat)
 !
     implicit none
@@ -30,7 +30,7 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
     real(kind=8) :: mmat(216, 216), ptknp(3, 3)
     real(kind=8) :: ffp(27), jac
     real(kind=8) :: seuil, mu, coefbu
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
 !
 !
 !
@@ -64,8 +64,8 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
 !
 ! ----------------------------------------------------------------------
 !
-    coefi=xcalc_saut(1,0,1)
-    coefj=xcalc_saut(1,0,1)
+    coefi = xcalc_saut(1, 0, 1)
+    coefj = xcalc_saut(1, 0, 1)
 !
     do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
@@ -73,32 +73,32 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
             call indent(j, ddls, ddlm, nnos, jn)
             do k = 1, nfh*ndim
                 do l = 1, nfh*ndim
-                    mmat(in+ndim+k,jn+ndim+l) = mmat(in+ndim+k,jn+ ndim+l) -&
-                        coefi*coefj*mu*seuil*coefbu*ffp(i)*ffp(j)*ptknp(k,l)*jac
+                    mmat(in+ndim+k, jn+ndim+l) = mmat(in+ndim+k, jn+ndim+l)- &
+                                           coefi*coefj*mu*seuil*coefbu*ffp(i)*ffp(j)*ptknp(k, l)*jac
                 end do
                 do l = 1, singu*ndim
                     do alpj = 1, ndim
-                        mmat(in+ndim+k,jn+ndim*(1+nfh)+alpj) =&
-                            mmat(in+ndim+ k,jn+ndim*(1+nfh)+alpj) -&
-                            coefi*2.d0*mu*seuil*coefbu*ffp(i)*fk(j,alpj,l)*ptknp(k,l)*jac
+                        mmat(in+ndim+k, jn+ndim*(1+nfh)+alpj) = &
+                            mmat(in+ndim+k, jn+ndim*(1+nfh)+alpj)- &
+                            coefi*2.d0*mu*seuil*coefbu*ffp(i)*fk(j, alpj, l)*ptknp(k, l)*jac
                     end do
                 end do
             end do
             do k = 1, singu*ndim
                 do alpi = 1, ndim
                     do l = 1, nfh*ndim
-                        mmat(in+ndim*(1+nfh)+alpi,jn+ndim+l) =&
-                            mmat(in+ndim*(1+nfh)+alpi,jn+ndim+l) -&
-                            coefj*2.d0*mu*seuil*coefbu*fk(i,alpi,k)*ffp(j)*ptknp(k,l)*jac
+                        mmat(in+ndim*(1+nfh)+alpi, jn+ndim+l) = &
+                            mmat(in+ndim*(1+nfh)+alpi, jn+ndim+l)- &
+                            coefj*2.d0*mu*seuil*coefbu*fk(i, alpi, k)*ffp(j)*ptknp(k, l)*jac
                     end do
                     do l = 1, singu*ndim
                         do alpj = 1, ndim
-                            mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) =&
-                                mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) -&
-                                4.d0*mu*seuil*coefbu*fk(i,alpi,k)*fk(j,alpj,l)*ptknp(k,l)*jac
-                        enddo
+                            mmat(in+ndim*(1+nfh)+alpi, jn+ndim*(1+nfh)+alpj) = &
+                                mmat(in+ndim*(1+nfh)+alpi, jn+ndim*(1+nfh)+alpj)- &
+                                4.d0*mu*seuil*coefbu*fk(i, alpi, k)*fk(j, alpj, l)*ptknp(k, l)*jac
+                        end do
                     end do
-                enddo
+                end do
             end do
         end do
     end do

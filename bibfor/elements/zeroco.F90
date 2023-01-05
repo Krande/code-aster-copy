@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine zeroco(x, y)
 !    TEST DES PRE-CONDITIONS
     if (y(1) .gt. 0 .or. y(2) .lt. 0) then
         call utmess('F', 'ELEMENTS4_61')
-    endif
+    end if
 !
 !
 !    TRAITEMENT DES SITUATIONS AVEC BORNES INFINIES -> DICHOTOMIE
@@ -47,46 +47,46 @@ subroutine zeroco(x, y)
     if (abs(y(3)) .eq. infini .or. abs(y(4)) .eq. infini) then
         call zerodi(x, y)
         goto 9999
-    endif
+    end if
 !
 !    REACTUALISATION DE L'INTERVALLE DE RECHERCHE
     if (y(4) .lt. 0.d0) then
         x(1) = x(4)
         y(1) = y(4)
-    endif
+    end if
 !
     if (y(4) .gt. 0.d0) then
         x(2) = x(4)
         y(2) = y(4)
-    endif
+    end if
 !
 !    CONSTRUCTION D'UN NOUVEL ESTIME
     if (x(3) .eq. x(4)) then
         call utmess('A', 'ALGORITH9_84')
         goto 9999
-    endif
-    p = (y(4)-y(3)) / (x(4)-x(3))
+    end if
+    p = (y(4)-y(3))/(x(4)-x(3))
     if (p .ne. 0.d0) then
-        xp = x(3) - y(3)/p
-        s = (xp-x(1)) / (x(2)-x(1))
+        xp = x(3)-y(3)/p
+        s = (xp-x(1))/(x(2)-x(1))
     else
         s = -2.d0
-    endif
+    end if
 !
 !    CORRECTION DU NOUVEL ESTIME SI NECESSAIRE (EN DEHORS DES BORNES)
     if (s .le. 0.d0 .or. s .ge. 1.d0) then
         if (abs(y(1)) .eq. infini .or. abs(y(2)) .eq. infini) then
-            xp = (x(1)+x(2)) / 2
+            xp = (x(1)+x(2))/2
         else
-            p = (y(2)-y(1)) / (x(2)-x(1))
-            xp = x(1) - y(1)/p
-        endif
-    endif
+            p = (y(2)-y(1))/(x(2)-x(1))
+            xp = x(1)-y(1)/p
+        end if
+    end if
 !
 !    DECALAGE DES ITERES
     x(3) = x(4)
     x(4) = xp
     y(3) = y(4)
 !
-9999  continue
+9999 continue
 end subroutine

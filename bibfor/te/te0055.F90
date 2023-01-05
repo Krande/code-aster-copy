@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ subroutine te0055(option, nomte)
 !-----------------------------------------------------------------------
     integer :: l, ndim, nnos
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSOURCR', 'L', isour)
@@ -61,10 +61,10 @@ subroutine te0055(option, nomte)
     do kp = 1, npg1
 !
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(isour-1+kp)*zr( ivf+l+i-1)
+            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(isour-1+kp)*zr(ivf+l+i-1)
         end do
 !
     end do

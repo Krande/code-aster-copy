@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,13 @@ subroutine disexc(nindex, ilfex1, illex, npdsc3, iadsc3)
 !
 !-----------------------------------------------------------------------
     call jemarq()
-    itail1=(nindex*(nindex+1))/2
+    itail1 = (nindex*(nindex+1))/2
     call wkvect('&&OP0131.LIADRFOE.FRQRE', 'V V I', itail1, ilfex2)
     do i1 = 1, nindex
         do i2 = i1, nindex
-            write(k24bd1,'(A8,A3,2I4.4,A5)')'&&OP0131','.FO',i1,i2,&
-            '.VALE'
-            ij1=(i2*(i2-1))/2+i1
+            write (k24bd1, '(A8,A3,2I4.4,A5)') '&&OP0131', '.FO', i1, i2, &
+                '.VALE'
+            ij1 = (i2*(i2-1))/2+i1
             call jecreo(k24bd1, 'V V R8')
             call jeecra(k24bd1, 'LONMAX', npdsc3*3)
             call jeecra(k24bd1, 'LONUTI', npdsc3*3)
@@ -71,31 +71,31 @@ subroutine disexc(nindex, ilfex1, illex, npdsc3, iadsc3)
     end do
     call wkvect('&&OP0131.REIM.ARRIVE', 'V V R8', 2*npdsc3, ireim2)
     do i1 = 1, itail1
-        ilong1=zi(illex)
+        ilong1 = zi(illex)
         call wkvect('&&OP0131.REIM.DEPART', 'V V R8', 2*ilong1, ireim1)
         do i2 = 1, ilong1
             if (ilong1 .eq. zi(illex+i1)) then
-                zr(ireim1-1+i2)=zr(zi(ilfex1+i1-1)-1+i2)
-                zr(ireim1+ilong1-1+i2)=0.d0
+                zr(ireim1-1+i2) = zr(zi(ilfex1+i1-1)-1+i2)
+                zr(ireim1+ilong1-1+i2) = 0.d0
             else
-                zr(ireim1-1+i2)=zr(zi(ilfex1+i1-1)-1+2*(i2-1)+1)
-                zr(ireim1+ilong1-1+i2)=zr(zi(ilfex1+i1-1)-1+ 2*(i2-1)+&
-                2)
-            endif
+                zr(ireim1-1+i2) = zr(zi(ilfex1+i1-1)-1+2*(i2-1)+1)
+                zr(ireim1+ilong1-1+i2) = zr(zi(ilfex1+i1-1)-1+2*(i2-1)+ &
+                                            2)
+            end if
         end do
-        chlist(1)='FONCTION'
-        chlist(2)='LIN LIN '
-        chlist(3)='TOTO'
-        chlist(4)='TOTO'
-        chlist(5)='CC      '
-        call fointr(' ', chlist(1), ilong1, zr(zi(illex+itail1+1)), zr(ireim1),&
+        chlist(1) = 'FONCTION'
+        chlist(2) = 'LIN LIN '
+        chlist(3) = 'TOTO'
+        chlist(4) = 'TOTO'
+        chlist(5) = 'CC      '
+        call fointr(' ', chlist(1), ilong1, zr(zi(illex+itail1+1)), zr(ireim1), &
                     npdsc3, zr(iadsc3), zr(ireim2), ibid2)
-        call fointr(' ', chlist(1), ilong1, zr(zi(illex+itail1+1)), zr(ireim1+ilong1),&
+        call fointr(' ', chlist(1), ilong1, zr(zi(illex+itail1+1)), zr(ireim1+ilong1), &
                     npdsc3, zr(iadsc3), zr(ireim2+npdsc3), ibid2)
         do i2 = 1, npdsc3
-            zr(zi(ilfex2+i1-1)+npdsc3-1+2*(i2-1)+1)=zr(ireim2-1+i2)
-            zr(zi(ilfex2+i1-1)+npdsc3-1+2*(i2-1)+2)= zr(ireim2+npdsc3-&
-            1+i2)
+            zr(zi(ilfex2+i1-1)+npdsc3-1+2*(i2-1)+1) = zr(ireim2-1+i2)
+            zr(zi(ilfex2+i1-1)+npdsc3-1+2*(i2-1)+2) = zr(ireim2+npdsc3- &
+                                                         1+i2)
         end do
         call jedetr('&&OP0131.REIM.DEPART')
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine xmodfc(lact, nlact, nno, dfdic, dffc, ndim)
 
     integer :: i, j, k
     integer :: lact(16), nlact(2), nno, ndim
-    real(kind=8) :: dfdic(nno,3), dffc(16,3)
+    real(kind=8) :: dfdic(nno, 3), dffc(16, 3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,30 +50,30 @@ subroutine xmodfc(lact, nlact, nno, dfdic, dffc, ndim)
     call jemarq()
 !
     do i = 1, nno
-       do k = 1, ndim
-          dffc(i,k)=dfdic(i,k)
-       end do
+        do k = 1, ndim
+            dffc(i, k) = dfdic(i, k)
+        end do
     end do
     if (nlact(1) .lt. nno) then
-       do i = 1, nno
-          if (lact(i) .eq. 0) then
-             do j = 1, nno
-                if (i .ne. j .and. lact(j) .ne. 0) then
-                   do k = 1, ndim
-                      dffc(j,k)=dffc(j,k)+dffc(i,k)/nlact(1)
-                   end do
-                endif
-             end do
-             do k = 1, ndim
-                dffc(i,k)= 0.d0
-             end do
-          endif
-       end do
-    endif
+        do i = 1, nno
+            if (lact(i) .eq. 0) then
+                do j = 1, nno
+                    if (i .ne. j .and. lact(j) .ne. 0) then
+                        do k = 1, ndim
+                            dffc(j, k) = dffc(j, k)+dffc(i, k)/nlact(1)
+                        end do
+                    end if
+                end do
+                do k = 1, ndim
+                    dffc(i, k) = 0.d0
+                end do
+            end if
+        end do
+    end if
 !
     if (nno .gt. 8) then
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

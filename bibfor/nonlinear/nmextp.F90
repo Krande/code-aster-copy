@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field  ,&
-                  field_s  , list_poin  , list_spoi , nb_poin   , nb_spoi,&
+subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field, &
+                  field_s, list_poin, list_spoi, nb_poin, nb_spoi, &
                   type_extr_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -38,7 +38,7 @@ implicit none
     integer, intent(in) :: i_keyw_fact
     character(len=19), intent(in) :: field
     character(len=24), intent(in) :: field_type
-    character(len=4) , intent(in) :: field_disc
+    character(len=4), intent(in) :: field_disc
     character(len=24), intent(in) :: field_s
     character(len=24), intent(in) :: list_poin
     character(len=24), intent(in) :: list_spoi
@@ -87,12 +87,12 @@ implicit none
 ! - Conversion to reduced field (CHAM_ELEM_S)
 !
     call exisd('CHAM_ELEM', field, iret)
-    if (iret.ne.1) call utmess('F','EXTRACTION_1', sk=field_type)
+    if (iret .ne. 1) call utmess('F', 'EXTRACTION_1', sk=field_type)
     call exisd('CHAM_ELEM_S', field_s, iret)
     if (iret .eq. 0) then
         call sdmpic('CHAM_ELEM', field)
         call celces(field, 'V', field_s)
-    endif
+    end if
 
     call jeveuo(field_s(1:19)//'.CESD', 'L', vi=cesd)
 !
@@ -103,10 +103,10 @@ implicit none
         if (n1 .eq. 0) then
             type_extr_elem = 'VALE'
             call utmess('A', 'EXTRACTION_6', sk=field_type)
-        endif
+        end if
     else
         type_extr_elem = 'VALE'
-    endif
+    end if
 !
 ! - Max number of points/subpoint for this field
 !
@@ -120,22 +120,22 @@ implicit none
             call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=0, nbret=n2)
             call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=0, nbret=n3)
             if (n2 .eq. 0) then
-                call utmess('F', 'EXTRACTION_7', sk = field_type)
-            endif
+                call utmess('F', 'EXTRACTION_7', sk=field_type)
+            end if
             nb_poin = -n2
-            if ((n2.ne.0) .and. (n3.eq.0)) then
+            if ((n2 .ne. 0) .and. (n3 .eq. 0)) then
                 nb_spoi = nb_spoi_maxi
             else
                 nb_spoi = -n3
-            endif
+            end if
         else
             nb_poin = nb_poin_maxi
             nb_spoi = nb_spoi_maxi
-        endif
+        end if
     else
         nb_poin = 1
         nb_spoi = 1
-    endif
+    end if
 !
 ! - Protection
 !
@@ -144,24 +144,24 @@ implicit none
 !
 ! - Create lists
 !
-    call wkvect(list_poin, 'V V I', nb_poin, vi = v_list_poin)
+    call wkvect(list_poin, 'V V I', nb_poin, vi=v_list_poin)
     if (nb_spoi .ne. 0) then
-        call wkvect(list_spoi, 'V V I', nb_spoi, vi = v_list_spoi)
-    endif
+        call wkvect(list_spoi, 'V V I', nb_spoi, vi=v_list_spoi)
+    end if
 !
 ! - Set lists
 !
-    if (type_extr_elem .eq. 'VALE' .and. field_disc .eq. 'ELGA' ) then
-        call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=nb_poin, vect= v_list_poin)
+    if (type_extr_elem .eq. 'VALE' .and. field_disc .eq. 'ELGA') then
+        call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=nb_poin, vect=v_list_poin)
         if (nb_spoi .ne. 0) then
-            call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=nb_spoi,&
-                        vect = v_list_spoi, nbret=n3)
+            call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=nb_spoi, &
+                        vect=v_list_spoi, nbret=n3)
             if (n3 .eq. 0) then
                 do i_spoi = 1, nb_spoi
                     v_list_spoi(i_spoi) = i_spoi
                 end do
-            endif
-        endif
+            end if
+        end if
     else
         do i_poin = 1, nb_poin
             v_list_poin(i_poin) = i_poin
@@ -169,6 +169,6 @@ implicit none
         do i_spoi = 1, nb_spoi
             v_list_spoi(i_spoi) = i_spoi
         end do
-    endif
+    end if
 !
 end subroutine

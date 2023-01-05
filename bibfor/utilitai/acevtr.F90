@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acevtr(noma, nomo, ityp, noms, itab,&
+subroutine acevtr(noma, nomo, ityp, noms, itab, &
                   nn, idim)
 !.======================================================================
     implicit none
@@ -59,50 +59,50 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
 !     ---------------
     repi = 0
     if (idim .eq. 2) then
-        chaine='2D_DIS_TR'
+        chaine = '2D_DIS_TR'
     else
-        chaine='DIS_TR'
-    endif
+        chaine = 'DIS_TR'
+    end if
 !
     nolig = nomo//'.MODELE'
     call jeexin(nolig//'.LIEL', iret)
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
 ! le nombre de grels du LIGREL du modele est nul.
-        ASSERT(nbgrel.gt.0)
-        nomodl=' '
-        ierr=0
+        ASSERT(nbgrel .gt. 0)
+        nomodl = ' '
+        ierr = 0
         do igrel = 1, nbgrel
             call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
             call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
-            itypel= zi(ialiel -1 +nel)
+            itypel = zi(ialiel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             call dismoi('MODELISATION', nomte, 'TYPE_ELEM', repk=repk)
-            nomodl=repk(1:16)
+            nomodl = repk(1:16)
             if (nomodl .ne. chaine) then
                 if (ityp .eq. 0) then
-                    ierr=1
-                    kmai=zi(ialiel)
+                    ierr = 1
+                    kmai = zi(ialiel)
                     goto 20
                 else
                     do kma = 1, nn
                         if (ityp .eq. 1) then
-                            call jenonu(jexnom(noma//'.NOMMAI', noms( kma)), ima)
+                            call jenonu(jexnom(noma//'.NOMMAI', noms(kma)), ima)
                         else
-                            ima=itab(kma)
-                        endif
+                            ima = itab(kma)
+                        end if
                         call testli(ima, zi(ialiel), nel-1, kmai, ierr)
                         if (ierr .eq. 1) goto 20
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
- 20 continue
+    end if
+20  continue
 !     IF (IERR.EQ.1)  WRITE(*,*) 'KMAI',KMAI,'IGREL',IGREL,
 !    .       'NOMODL',NOMODL,'CHAINE',CHAINE
     if (ierr .eq. 1) then
         call utmess('F', 'DISCRETS_9')
-    endif
+    end if
     call jedema()
 end subroutine

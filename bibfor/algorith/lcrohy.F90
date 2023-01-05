@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine lcrohy(x, dp, em, ep)
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
-    common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
+    common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
+     &               pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
@@ -50,11 +50,11 @@ subroutine lcrohy(x, dp, em, ep)
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -64,13 +64,13 @@ subroutine lcrohy(x, dp, em, ep)
 !
 !    CALCUL DE BE EN T-
     do ij = 1, 6
-        bem(ij) = kr(ij) - 2*em(ij)
+        bem(ij) = kr(ij)-2*em(ij)
     end do
 !
     call lcdete(bem, detbem)
     jelasm = sqrt(detbem)
     jplasm = jm/jelasm
-    jplasp = jplasm * exp(x)
+    jplasp = jplasm*exp(x)
     jelasp = jp/jplasp
     call gdclhy(jelasp, ep)
 !

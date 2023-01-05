@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine spephy(ioptch, intphy, intmod, nomu, table,&
-                  freq, cham, specmr, specmi, disc,&
-                  nnoe, nomcmp, nuor, nbmr, nbn,&
+subroutine spephy(ioptch, intphy, intmod, nomu, table, &
+                  freq, cham, specmr, specmi, disc, &
+                  nnoe, nomcmp, nuor, nbmr, nbn, &
                   imod1, nbpf, nbm, ivitef)
     implicit none
 !  RESTITUTION SUR BASE PHYSIQUE D'UNE TABL_INTSP DE REPONSE MODALE
@@ -130,7 +130,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
     exiind = .false.
     do i1 = 1, mxval
         if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+i1) .eq. ival(3))) exiind = &
-                                                                               .true.
+            .true.
     end do
 !
     if (.not. exiind) goto 20
@@ -151,33 +151,33 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 !
             exiind = .false.
             do i1 = 1, mxval
-                if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+ i1) .eq. ival(3))) then
+                if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+i1) .eq. ival(3))) then
                     exiind = .true.
                     call jeveuo(jexnum(chvale, i1), 'L', ifon)
-                endif
+                end if
             end do
 !
-            if (.not.exiind) then
-                valk(1)(1:10) = 'INTE_SPEC'
-                valk(2)(1:8) = table
+            if (.not. exiind) then
+                valk(1) (1:10) = 'INTE_SPEC'
+                valk(2) (1:8) = table
                 call utmess('F', 'MODELISA2_91', nk=2, valk=valk)
-            endif
+            end if
 !
-            isj = (imj* (imj-1))/2 + imi
+            isj = (imj*(imj-1))/2+imi
             if (isj .eq. 1) then
                 do if1 = 1, nbpf
-                    disc(if1) = zr(lfreq+ (if1-1))
+                    disc(if1) = zr(lfreq+(if1-1))
                 end do
-            endif
+            end if
 !
             do if1 = 1, nbpf
                 if (ival(2) .eq. ival(3)) then
-                    specmr(if1,isj) = zr(ifon+(if1-1))
-                    specmi(if1,isj) = 0.d0
+                    specmr(if1, isj) = zr(ifon+(if1-1))
+                    specmi(if1, isj) = 0.d0
                 else
-                    specmr(if1,isj) = zr(ifon+ (if1-1)*2)
-                    specmi(if1,isj) = zr(ifon+ (if1-1)*2+1)
-                endif
+                    specmr(if1, isj) = zr(ifon+(if1-1)*2)
+                    specmi(if1, isj) = zr(ifon+(if1-1)*2+1)
+                end if
             end do
         end do
 !
@@ -199,13 +199,13 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
         mxvals = nbn*(nbn+1)/2
     else
         mxvals = nbn
-    endif
+    end if
 !
     call wkvect(chnoei, 'G V K8', mxvals, lnoei)
     call wkvect(chnoej, 'G V K8', mxvals, lnoej)
     call wkvect(chcmpi, 'G V K8', mxvals, lcmpi)
     call wkvect(chcmpj, 'G V K8', mxvals, lcmpj)
-    call jecrec(chvals, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(chvals, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 mxvals)
 !
     ij = 0
@@ -232,7 +232,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                 nbabs = nbpf
             else
                 nbabs = 2*nbpf
-            endif
+            end if
 !
             call jecroc(jexnum(chvals, ij))
             call jeecra(jexnum(chvals, ij), 'LONMAX', nbabs)
@@ -250,80 +250,80 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
                     if (intmod) idebm = 1
 !
                     do im1 = idebm, im2
-                        i1 = imod1 + im1 - 1
-                        i2 = imod1 + im2 - 1
-                        ism = (im2* (im2-1))/2 + im1
+                        i1 = imod1+im1-1
+                        i2 = imod1+im2-1
+                        ism = (im2*(im2-1))/2+im1
 !
                         if (im1 .eq. im2) then
 !                 --------------------
 !
                             if (ioptch .eq. 1 .or. ioptch .eq. 4) then
-                                specr = specr + cham(ini,im1)*cham( inj,im2)* specmr(il,ism)
+                                specr = specr+cham(ini, im1)*cham(inj, im2)*specmr(il, ism)
 !
-                            else if (ioptch.eq.2) then
-                                specr = specr + cham(ini,im1)*cham( inj,im2)* freq(1,i1,iv)*freq(&
-                                        &1,i2,iv)* specmr(il,ism)
+                            else if (ioptch .eq. 2) then
+                                specr = specr+cham(ini, im1)*cham(inj, im2)*freq(1, i1, iv)*freq(&
+                                        &1, i2, iv)*specmr(il, ism)
 !
-                            else if (ioptch.eq.3) then
-                                specr = specr + cham(ini,im1)*cham( inj,im2)* freq(1,i1,iv)*freq(&
-                                        &1,i2,iv)* freq(1,i1,iv)* freq(1,i2,iv)*specmr( il,ism)
+                            else if (ioptch .eq. 3) then
+                                specr = specr+cham(ini, im1)*cham(inj, im2)*freq(1, i1, iv)*freq(&
+                                        &1, i2, iv)*freq(1, i1, iv)*freq(1, i2, iv)*specmr(il, ism)
 !
-                            endif
+                            end if
 !
                         else
 !                 ----
 !
                             if (ioptch .eq. 1 .or. ioptch .eq. 4) then
-                                specr = specr + cham(ini,im1)*cham( inj,im2)* specmr(il,ism) + ch&
-                                        &am(ini, im2)* cham(inj,im1)*specmr(il,ism)
-                                speci = speci + cham(ini,im1)*cham( inj,im2)* specmi(il,ism) - ch&
-                                        &am(ini, im2)* cham(inj,im1)*specmi(il,ism)
+                                specr = specr+cham(ini, im1)*cham(inj, im2)*specmr(il, ism)+ch&
+                                        &am(ini, im2)*cham(inj, im1)*specmr(il, ism)
+                                speci = speci+cham(ini, im1)*cham(inj, im2)*specmi(il, ism)-ch&
+                                        &am(ini, im2)*cham(inj, im1)*specmi(il, ism)
 !
-                            else if (ioptch.eq.2) then
-                                specr = specr + cham(ini,im1)*cham( inj,im2)* specmr(il,ism)*freq&
-                                        &(1,i1,iv) *freq(1,i2,iv) + cham(ini,im2)*cham( inj,im1)*&
-                                        &freq(1,i1,iv)* freq(1,i2,iv)* specmr(il,ism)
-                                speci = speci + cham(ini,im1)*cham( inj,im2)* specmi(il,ism)*freq&
-                                        &(1,i1,iv) *freq(1,i2,iv) - cham(ini,im2)*cham( inj,im1)*&
-                                        &freq(1,i1,iv)* freq(1,i2,iv)* specmi(il,ism)
+                            else if (ioptch .eq. 2) then
+                                specr = specr+cham(ini, im1)*cham(inj, im2)*specmr(il, ism)*freq&
+                                        &(1, i1, iv)*freq(1, i2, iv)+cham(ini, im2)*cham(inj, im1)*&
+                                        &freq(1, i1, iv)*freq(1, i2, iv)*specmr(il, ism)
+                                speci = speci+cham(ini, im1)*cham(inj, im2)*specmi(il, ism)*freq&
+                                        &(1, i1, iv)*freq(1, i2, iv)-cham(ini, im2)*cham(inj, im1)*&
+                                        &freq(1, i1, iv)*freq(1, i2, iv)*specmi(il, ism)
 !
-                            else if (ioptch.eq.3) then
-                                specr = specr + cham(ini,im1)*cham( inj,im2)* specmr(il,ism)*freq&
-                                        &(1,i1,iv) *freq(1,i2,iv)* freq(1,i1,iv)*freq(1, i2,iv) +&
-                                        & cham(ini,im2)*cham(inj,im1)* freq(1,i1,iv)* freq(1,i2,i&
-                                        &v)*specmr( il,ism)*freq(1,i1,iv)* freq(1,i2,iv)
-                                speci = speci + cham(ini,im1)*cham( inj,im2)* specmi(il,ism)*freq&
-                                        &(1,i1,iv) *freq(1,i2,iv)* freq(1,i1,iv)*freq(1, i2,iv) -&
-                                        & cham(ini,im2)*cham(inj,im1)* freq(1,i1,iv)* freq(1,i2,i&
-                                        &v)*specmi( il,ism)*freq(1,i1,iv)* freq(1,i2,iv)
+                            else if (ioptch .eq. 3) then
+                                specr = specr+cham(ini, im1)*cham(inj, im2)*specmr(il, ism)*freq&
+                                      &(1, i1, iv)*freq(1, i2, iv)*freq(1, i1, iv)*freq(1, i2, iv)+&
+                                      & cham(ini, im2)*cham(inj, im1)*freq(1, i1, iv)*freq(1, i2, i&
+                                        &v)*specmr(il, ism)*freq(1, i1, iv)*freq(1, i2, iv)
+                                speci = speci+cham(ini, im1)*cham(inj, im2)*specmi(il, ism)*freq&
+                                      &(1, i1, iv)*freq(1, i2, iv)*freq(1, i1, iv)*freq(1, i2, iv)-&
+                                      & cham(ini, im2)*cham(inj, im1)*freq(1, i1, iv)*freq(1, i2, i&
+                                        &v)*specmi(il, ism)*freq(1, i1, iv)*freq(1, i2, iv)
 !
-                            endif
+                            end if
 !
-                        endif
+                        end if
 !                 -----
 !
                     end do
                 end do
 !
                 if (ioptch .eq. 2) then
-                    specr = specr * 4.d0 * pi * pi
-                    speci = speci * 4.d0 * pi * pi
-                else if (ioptch.eq.3) then
-                    specr = specr * 16.d0 * pi * pi * pi * pi
-                    speci = speci * 16.d0 * pi * pi * pi * pi
-                endif
-                if ((kval(1) .eq. kval(3)) .and. (kval(2) .eq. kval(4) )) then
+                    specr = specr*4.d0*pi*pi
+                    speci = speci*4.d0*pi*pi
+                else if (ioptch .eq. 3) then
+                    specr = specr*16.d0*pi*pi*pi*pi
+                    speci = speci*16.d0*pi*pi*pi*pi
+                end if
+                if ((kval(1) .eq. kval(3)) .and. (kval(2) .eq. kval(4))) then
                     zr(ispec-1+il) = specr
                 else
-                    zr(ispec+2*(il-1) ) = specr
+                    zr(ispec+2*(il-1)) = specr
                     zr(ispec+2*(il-1)+1) = speci
-                endif
+                end if
             end do
 !
         end do
 !
     end do
- 20 continue
+20  continue
 !
     call jedema()
 end subroutine

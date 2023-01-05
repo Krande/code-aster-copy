@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ajchca(para, cham, lpara, lcham, nbent,&
+subroutine ajchca(para, cham, lpara, lcham, nbent, &
                   maxent, surch)
     implicit none
 !
@@ -49,25 +49,25 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
 !
 !
 !     1. RECHERCHE SI LE PARAMETRE EXISTE DEJA
-    indice=0
+    indice = 0
     do i = 1, nbent
         if (lpara(i) .eq. para) then
-            indice=i
+            indice = i
             goto 20
-        endif
+        end if
     end do
- 20 continue
+20  continue
 !
 !
 !     2. IL S'AGIT D'UN NOUVEAU PARAMETRE ON L'AJOUTE :
 !     -------------------------------------------------
     if (indice .eq. 0) then
-        ASSERT(nbent.lt.maxent)
-        nbent=nbent+1
-        lpara(nbent)=para
-        lcham(nbent)=cham
+        ASSERT(nbent .lt. maxent)
+        nbent = nbent+1
+        lpara(nbent) = para
+        lcham(nbent) = cham
         goto 999
-    endif
+    end if
 !
 !
 !     3. LE NOM DU PARAMETRE EST DEJA DANS LPARA :
@@ -81,31 +81,31 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
 !
 !     3.1 L'ANCIEN CHAMP ETAIT "BLANC" : ON STOCKE LE NOUVEAU:
     if (lcham(indice) .eq. ' ') then
-        lcham(indice)=cham
+        lcham(indice) = cham
         goto 999
-    endif
+    end if
 !
 !
 !     3.2 LE NOUVEAU CHAMP EST "BLANC" : ON NE LE STOCKE PAS
     if (cham .eq. ' ') then
         goto 999
-    endif
+    end if
 !
 !
 !     3.3 LE NOUVEAU NOM EST LE MEME QUE L'ANCIEN :
     if (lcham(indice) .eq. cham) then
         goto 999
-    endif
+    end if
 !
 !
 !     3.4 L'ANCIEN NOM DU CHAMP N'ETAIT PAS "BLANC"
 !         LE NOUVEAU NOM DU CHAMP NON PLUS ET IL EST DIFFERENT :
     if (surch .eq. 'O') then
-        lcham(indice)=cham
-    else if (surch.eq.'N') then
+        lcham(indice) = cham
+    else if (surch .eq. 'N') then
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 999 continue

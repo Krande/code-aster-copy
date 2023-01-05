@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine mtdorc(model, compor)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/comp_init.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/comp_meta_prnt.h"
 #include "asterfort/dismoi.h"
 !
-character(len=8), intent(in) :: model
-character(len=19), intent(in) :: compor
+    character(len=8), intent(in) :: model
+    character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,6 +75,6 @@ character(len=19), intent(in) :: compor
     call comp_meta_prnt(comporInfo)
 
 ! - Clean
-    deallocate(behaviourPrepMeta%v_comp)
+    deallocate (behaviourPrepMeta%v_comp)
 !
 end subroutine

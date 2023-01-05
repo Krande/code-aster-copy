@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vtcreb(field_nodez , base      , type_scalz,&
-                  nume_ddlz   ,&
-                  meshz       , prof_chnoz, idx_gdz, nb_equa_inz,&
+subroutine vtcreb(field_nodez, base, type_scalz, &
+                  nume_ddlz, &
+                  meshz, prof_chnoz, idx_gdz, nb_equa_inz, &
                   nb_equa_outz, nbz, vchamz)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -84,33 +84,33 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     field_node = field_nodez
-    type_scal  = type_scalz
-    if (present(nbz).and.present(vchamz)) then
-      ideb=1
-      ifin=nbz
-      ASSERT(nbz.gt.1)
-    else if (present(nbz).and..not.present(vchamz)) then
-      ASSERT(.False.)
-    else if (.not.present(nbz).and.present(vchamz)) then
-      ASSERT(.False.)
+    type_scal = type_scalz
+    if (present(nbz) .and. present(vchamz)) then
+        ideb = 1
+        ifin = nbz
+        ASSERT(nbz .gt. 1)
+    else if (present(nbz) .and. .not. present(vchamz)) then
+        ASSERT(.False.)
+    else if (.not. present(nbz) .and. present(vchamz)) then
+        ASSERT(.False.)
     else
-      ideb=1
-      ifin=1
-    endif
+        ideb = 1
+        ifin = 1
+    end if
 !
 ! - Get parameters from NUME_DDL
 !
     if (present(nume_ddlz)) then
-        call dismoi('NUM_GD_SI' , nume_ddlz, 'NUME_DDL', repi=idx_gd)
-        call dismoi('NB_EQUA'   , nume_ddlz, 'NUME_DDL', repi=nb_equa)
+        call dismoi('NUM_GD_SI', nume_ddlz, 'NUME_DDL', repi=idx_gd)
+        call dismoi('NB_EQUA', nume_ddlz, 'NUME_DDL', repi=nb_equa)
         call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
-        call dismoi('PROF_CHNO' , nume_ddlz, 'NUME_DDL', repk=prof_chno)
+        call dismoi('PROF_CHNO', nume_ddlz, 'NUME_DDL', repk=prof_chno)
     else
-        idx_gd    = idx_gdz
-        nb_equa   = nb_equa_inz
+        idx_gd = idx_gdz
+        nb_equa = nb_equa_inz
         prof_chno = prof_chnoz
-        mesh      = meshz
-    endif
+        mesh = meshz
+    end if
 !
     l_pmesh = isParallelMesh(mesh)
     nb_equa_gl = nb_equa
@@ -119,74 +119,74 @@ implicit none
     !   call asmpi_comm_vect("MPI_SUM", "I", sci=nb_equa_gl)
     ! end if
 
-    if(.not.l_pmesh .and. nb_equa_gl == 0) then
-      ASSERT(ASTER_FALSE)
+    if (.not. l_pmesh .and. nb_equa_gl == 0) then
+        ASSERT(ASTER_FALSE)
     end if
 
-    if (ideb.eq.ifin) then
-      obj_refe = field_node(1:19)//'.REFE'
-      obj_vale = field_node(1:19)//'.VALE'
-      obj_desc = field_node(1:19)//'.DESC'
+    if (ideb .eq. ifin) then
+        obj_refe = field_node(1:19)//'.REFE'
+        obj_vale = field_node(1:19)//'.VALE'
+        obj_desc = field_node(1:19)//'.DESC'
 !
 ! Create only one node FIELD
 ! - Object .REFE
-      call wkvect(obj_refe, base//' V K24', 4, vk24 = p_refe)
-      p_refe(1) = mesh
-      p_refe(2) = prof_chno
-! - Object .DESC
-      call wkvect(obj_desc, base//' V I', 2, vi = p_desc)
-      call jeecra(obj_desc, 'DOCU', cval='CHNO')
-      p_desc(1) = idx_gd
-      p_desc(2) = 1
-! - Object .VALE
-      call wkvect(obj_vale, base//' V '//type_scal, max(1, nb_equa), j_vale)
-      call jeecra(obj_vale, "LONUTI", nb_equa)
-      if (present(nb_equa_outz)) then
-        nb_equa_outz = nb_equa
-      endif
-! - Change GRANDEUR
-      if (type_scal.eq.'R'.or.type_scal.eq.'C'.or.type_scal.eq.'F') then
-        call sdchgd(field_node, type_scal)
-      endif
-!
-    else
-!
-! ! Create at the same time the (ifin-ideb+1) node FIELDs of name chamno(i)
-      lchange=(type_scal.eq.'R'.or.type_scal.eq.'C'.or.type_scal.eq.'F')
-      call jeveuo(vchamz,'L',jvcham)
-      do i=ideb,ifin
-        chamno=zk24(jvcham+i-1)(1:19)
-        obj_refe = chamno(1:19)//'.REFE'
-        obj_vale = chamno(1:19)//'.VALE'
-        obj_desc = chamno(1:19)//'.DESC'
-! - Object .REFE
-        call wkvect(obj_refe, base//' V K24', 4, vk24 = p_refe)
+        call wkvect(obj_refe, base//' V K24', 4, vk24=p_refe)
         p_refe(1) = mesh
         p_refe(2) = prof_chno
 ! - Object .DESC
-        call wkvect(obj_desc, base//' V I', 2, vi = p_desc)
+        call wkvect(obj_desc, base//' V I', 2, vi=p_desc)
         call jeecra(obj_desc, 'DOCU', cval='CHNO')
         p_desc(1) = idx_gd
         p_desc(2) = 1
 ! - Object .VALE
         call wkvect(obj_vale, base//' V '//type_scal, max(1, nb_equa), j_vale)
         call jeecra(obj_vale, "LONUTI", nb_equa)
+        if (present(nb_equa_outz)) then
+            nb_equa_outz = nb_equa
+        end if
 ! - Change GRANDEUR
-        if (lchange) then
-          if (i.eq.ideb) then
+        if (type_scal .eq. 'R' .or. type_scal .eq. 'C' .or. type_scal .eq. 'F') then
+            call sdchgd(field_node, type_scal)
+        end if
+!
+    else
+!
+! ! Create at the same time the (ifin-ideb+1) node FIELDs of name chamno(i)
+        lchange = (type_scal .eq. 'R' .or. type_scal .eq. 'C' .or. type_scal .eq. 'F')
+        call jeveuo(vchamz, 'L', jvcham)
+        do i = ideb, ifin
+            chamno = zk24(jvcham+i-1) (1:19)
+            obj_refe = chamno(1:19)//'.REFE'
+            obj_vale = chamno(1:19)//'.VALE'
+            obj_desc = chamno(1:19)//'.DESC'
+! - Object .REFE
+            call wkvect(obj_refe, base//' V K24', 4, vk24=p_refe)
+            p_refe(1) = mesh
+            p_refe(2) = prof_chno
+! - Object .DESC
+            call wkvect(obj_desc, base//' V I', 2, vi=p_desc)
+            call jeecra(obj_desc, 'DOCU', cval='CHNO')
+            p_desc(1) = idx_gd
+            p_desc(2) = 1
+! - Object .VALE
+            call wkvect(obj_vale, base//' V '//type_scal, max(1, nb_equa), j_vale)
+            call jeecra(obj_vale, "LONUTI", nb_equa)
+! - Change GRANDEUR
+            if (lchange) then
+                if (i .eq. ideb) then
 ! CETTE ROUTINE CHANGE EVENTUELLEMENT LA VALEUR DE PDESC(1). ON LA SAUVEGARDE POUR LA TRANSFERER
 ! AUX AUTRES CHAMNO SANS SE POSER LES MEMES QUESTIONS QUI CONDUIRONT A LA MEME REPONSE: PDESC_SAVE
-            call sdchgd(chamno, type_scal)
-            pdesc_save=p_desc(1)
-          else
-            p_desc(1)=pdesc_save
-          endif
-        endif
-      enddo
+                    call sdchgd(chamno, type_scal)
+                    pdesc_save = p_desc(1)
+                else
+                    p_desc(1) = pdesc_save
+                end if
+            end if
+        end do
 ! DIVERS MUTUALISE
-      if (present(nb_equa_outz)) then
-        nb_equa_outz = nb_equa
-      endif
-    endif
+        if (present(nb_equa_outz)) then
+            nb_equa_outz = nb_equa
+        end if
+    end if
 !
 end subroutine

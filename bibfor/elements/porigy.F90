@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,12 +59,12 @@ subroutine porigy(nomte, rho, xnu, icdmat, klv, nl)
     integer, parameter :: nb_cara = 17
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1',&
-                    'A2','IY2','IZ2','AY2','AZ2','EY2','EZ2','JX2','TVAR'/
+    data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', 'JX1', &
+        'A2', 'IY2', 'IZ2', 'AY2', 'AZ2', 'EY2', 'EZ2', 'JX2', 'TVAR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    euler=lteatt('EULER','OUI')
+    euler = lteatt('EULER', 'OUI')
 !
 !   recuperation des caracteristiques generales des sections
     xl = lonele()
@@ -82,19 +82,19 @@ subroutine porigy(nomte, rho, xnu, icdmat, klv, nl)
     alfay2 = vale_cara(12)
     alfaz2 = vale_cara(13)
     xjx2 = vale_cara(16)
-    ey = (vale_cara(6) +vale_cara(14))/2.d0
-    ez = (vale_cara(7) +vale_cara(15))/2.d0
+    ey = (vale_cara(6)+vale_cara(14))/2.d0
+    ez = (vale_cara(7)+vale_cara(15))/2.d0
     itype = nint(vale_cara(17))
 !
     if (nomte .eq. 'MECA_POU_D_E') then
 !       poutre droite d'euler a 6 ddl
         istruc = 1
         alfinv = 0.0d0
-    else if (nomte.eq.'MECA_POU_D_T') then
+    else if (nomte .eq. 'MECA_POU_D_T') then
 !       poutre droite de timoskenko a 6 ddl
         istruc = 1
         alfinv = 2.0d0/(alfay+alfaz)
-    else if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM') then
+    else if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
 !       poutre droite multifibre
         itype = 0
         istruc = 1
@@ -109,23 +109,23 @@ subroutine porigy(nomte, rho, xnu, icdmat, klv, nl)
     else
         ch16 = nomte
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
-    endif
+    end if
 !
 !
     if (itype .eq. 1 .or. itype .eq. 2) then
 !       moyennage
-        a=(a+a2)/2.0d0
-        xiy=(xiy+xiy2)/2.0d0
-        xiz=(xiz+xiz2)/2.0d0
-        alfay=(alfay+alfay2)/2.0d0
-        alfaz=(alfaz+alfaz2)/2.0d0
-        xjx=(xjx+xjx2)/2.0d0
+        a = (a+a2)/2.0d0
+        xiy = (xiy+xiy2)/2.0d0
+        xiz = (xiz+xiz2)/2.0d0
+        alfay = (alfay+alfay2)/2.0d0
+        alfaz = (alfaz+alfaz2)/2.0d0
+        xjx = (xjx+xjx2)/2.0d0
         if (euler) then
             alfinv = 0.0d0
         else
             alfinv = 2.0d0/(alfay+alfaz)
-        endif
-    endif
+        end if
+    end if
     call ptgy02(klv, nl, xnu, rho, a, xl, xiy, xiz, xjx, alfinv, ey, ez, istruc)
 !
 end subroutine

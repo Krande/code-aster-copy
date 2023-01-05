@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tresu_print(refer, legend, llab, nbref, rela,&
-                       tole, ssigne, refr, valr, refi,&
+subroutine tresu_print(refer, legend, llab, nbref, rela, &
+                       tole, ssigne, refr, valr, refi, &
                        vali, refc, valc, ignore, compare)
     implicit none
 !
@@ -63,7 +63,7 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
     valabs = .false.
     if (present(ssigne)) then
         valabs = ssigne .eq. 'OUI'
-    endif
+    end if
 !
     typ = 0
     ASSERT(UN_PARMI3(refr, refi, refc))
@@ -81,25 +81,25 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
         if (valabs) then
             avalr = abs(avalr)
             arefr = abs(arefr)
-        endif
-        minvr = abs(avalr - arefr)
+        end if
+        minvr = abs(avalr-arefr)
         imin = 1
-        do i = 1, nbref - 1
+        do i = 1, nbref-1
             arefr = refr(i+1)
             if (valabs) then
                 arefr = abs(arefr)
-            endif
-            tmpr = abs(avalr - arefr)
+            end if
+            tmpr = abs(avalr-arefr)
             if (tmpr .lt. minvr) then
                 tmpr = minvr
-                imin = i + 1
-            endif
+                imin = i+1
+            end if
         end do
         arefr = refr(imin)
         if (valabs) then
             arefr = abs(arefr)
-        endif
-    endif
+        end if
+    end if
 !
     arefi = 0
     avali = 0
@@ -110,25 +110,25 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
         if (valabs) then
             avali = abs(avali)
             arefi = abs(arefi)
-        endif
-        minvi = abs(avali - arefi)
+        end if
+        minvi = abs(avali-arefi)
         imin = 1
-        do i = 1, nbref - 1
+        do i = 1, nbref-1
             arefi = refi(i+1)
             if (valabs) then
                 arefi = abs(arefi)
-            endif
-            tmpi = abs(avali - arefi)
+            end if
+            tmpi = abs(avali-arefi)
             if (tmpi .lt. minvi) then
                 tmpi = minvi
-                imin = i + 1
-            endif
+                imin = i+1
+            end if
         end do
         arefi = refi(imin)
         if (valabs) then
             arefi = abs(arefi)
-        endif
-    endif
+        end if
+    end if
 !
     arefc = dcmplx(0.d0, 0.d0)
     avalc = dcmplx(0.d0, 0.d0)
@@ -139,42 +139,42 @@ subroutine tresu_print(refer, legend, llab, nbref, rela,&
         if (valabs) then
             avalc = abs(avalc)
             arefc = abs(arefc)
-        endif
-        minvc = abs(avalc - arefc)
+        end if
+        minvc = abs(avalc-arefc)
         imin = 1
-        do i = 1, nbref - 1
+        do i = 1, nbref-1
             arefc = refc(i+1)
             if (valabs) then
                 arefc = abs(arefc)
-            endif
-            tmpc = abs(avalc - arefc)
+            end if
+            tmpc = abs(avalc-arefc)
             if (tmpc .lt. minvc) then
                 tmpc = minvc
-                imin = i + 1
-            endif
+                imin = i+1
+            end if
         end do
         arefc = refc(imin)
         if (valabs) then
             arefc = abs(arefc)
-        endif
-    endif
+        end if
+    end if
 !
-    ASSERT(typ.ge.1 .and. typ.le.3)
+    ASSERT(typ .ge. 1 .and. typ .le. 3)
 !
     isrela = rela(1:4) .eq. 'RELA'
     skip = .false.
     if (present(ignore)) then
         skip = ignore
-    endif
+    end if
 !
     arg_cmp = 1.d0
     if (present(compare)) then
         arg_cmp = compare
-    endif
+    end if
 !
     call testresu_print(refer, legend, bool_to_int(llab), bool_to_int(skip), &
                         bool_to_int(isrela), &
-                        tole, typ, arefr, avalr, arefi,&
+                        tole, typ, arefr, avalr, arefi, &
                         avali, arefc, avalc, arg_cmp)
 !
 end subroutine tresu_print

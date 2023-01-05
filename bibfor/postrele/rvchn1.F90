@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
-implicit none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-integer :: nbno, numnd(*)
-character(len=*) :: deplaz, nomjv
-real(kind=8) :: pgl(3, 3)
+    integer :: nbno, numnd(*)
+    character(len=*) :: deplaz, nomjv
+    real(kind=8) :: pgl(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,12 +57,12 @@ real(kind=8) :: pgl(3, 3)
     call dismoi('NOM_GD', deplaz, 'CHAM_NO', repk=gran_name)
     if (gran_name .ne. 'DEPL_R') then
         call utmess('F', 'POSTRELE_17')
-    endif
+    end if
 !
 ! - Create list of components
 !
     nbCmp = 6
-    AS_ALLOCATE(vk8=listCmp, size = nbCmp)
+    AS_ALLOCATE(vk8=listCmp, size=nbCmp)
     listCmp(1) = 'DX'
     listCmp(2) = 'DY'
     listCmp(3) = 'DZ'
@@ -72,12 +72,12 @@ real(kind=8) :: pgl(3, 3)
 !
 ! - Create list of equations
 !
-    AS_ALLOCATE(vi=tablCmp, size = nbCmp)
+    AS_ALLOCATE(vi=tablCmp, size=nbCmp)
 !
 ! - Create list of equations
 !
     nbNode = 1
-    AS_ALLOCATE(vi=listNode, size = nbNode)
+    AS_ALLOCATE(vi=listNode, size=nbNode)
 !
     call jedupo(depla//'.VALE', 'V', nomjv, .false._1)
     call jeveuo(nomjv, 'E', iavald)
@@ -85,14 +85,14 @@ real(kind=8) :: pgl(3, 3)
     do ino = 1, nbno
         listNode(1) = numnd(ino)
         tablCmp(1:nbCmp) = 0
-        call select_dof(tablCmp_ = tablCmp,&
-                        fieldNodeZ_  = depla,&
-                        nbNodeToSelect_ = nbNode, listNodeToSelect_ = listNode,&
-                        nbCmpToSelect_  = nbCmp , listCmpToSelect_  = listCmp)
+        call select_dof(tablCmp_=tablCmp, &
+                        fieldNodeZ_=depla, &
+                        nbNodeToSelect_=nbNode, listNodeToSelect_=listNode, &
+                        nbCmpToSelect_=nbCmp, listCmpToSelect_=listCmp)
 
-        numdx  = tablCmp(1)
-        numdy  = tablCmp(2)
-        numdz  = tablCmp(3)
+        numdx = tablCmp(1)
+        numdy = tablCmp(2)
+        numdz = tablCmp(3)
         numdrx = tablCmp(4)
         numdry = tablCmp(5)
         numdrz = tablCmp(6)
@@ -102,36 +102,36 @@ real(kind=8) :: pgl(3, 3)
         valer(1) = 0.0d0
         valer(2) = 0.0d0
         valer(3) = 0.0d0
-        if (numdx.ne.0) then
+        if (numdx .ne. 0) then
             valed(1) = zr(iavald-1+numdx)
-        endif
-        if (numdy.ne.0) then
+        end if
+        if (numdy .ne. 0) then
             valed(2) = zr(iavald-1+numdy)
-        endif
-        if (numdz.ne.0) then
+        end if
+        if (numdz .ne. 0) then
             valed(3) = zr(iavald-1+numdz)
-        endif
-        if (numdrx.ne.0) then
+        end if
+        if (numdrx .ne. 0) then
             valer(1) = zr(iavald-1+numdrx)
-        endif
-        if (numdry.ne.0) then
+        end if
+        if (numdry .ne. 0) then
             valer(2) = zr(iavald-1+numdry)
-        endif
-        if (numdrz.ne.0) then
+        end if
+        if (numdrz .ne. 0) then
             valer(3) = zr(iavald-1+numdrz)
-        endif
+        end if
         if ((numdx+numdy+numdz) .ne. 0) then
             call utpvgl(1, 3, pgl, valed, vald)
             if (numdx .ne. 0) zr(iavald-1+numdx) = vald(1)
             if (numdy .ne. 0) zr(iavald-1+numdy) = vald(2)
             if (numdz .ne. 0) zr(iavald-1+numdz) = vald(3)
-        endif
+        end if
         if ((numdrx+numdry+numdrz) .ne. 0) then
             call utpvgl(1, 3, pgl, valer, valr)
             if (numdrx .ne. 0) zr(iavald-1+numdrx) = valr(1)
             if (numdry .ne. 0) zr(iavald-1+numdry) = valr(2)
             if (numdrz .ne. 0) zr(iavald-1+numdrz) = valr(3)
-        endif
+        end if
     end do
 !
     AS_DEALLOCATE(vi=tablCmp)

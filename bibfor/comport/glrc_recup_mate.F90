@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,9 +68,9 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
     real(kind=8) :: epsi_c, epsi_els, epsi_lim
     character(len=16) :: nomres(16)
 !
-    if ((.not.( compor(1:7) .eq. 'GLRC_DM'))) then
+    if ((.not. (compor(1:7) .eq. 'GLRC_DM'))) then
         call utmess('F', 'ELEMENTS4_65', sk=compor)
-    endif
+    end if
 !
     call r8inir(6*6, 0.0d0, delas, 1)
     call r8inir(10, 0.0d0, valres, 1)
@@ -79,35 +79,35 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
     nomres(1) = 'E_M'
     nomres(2) = 'NU_M'
 !
-    call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ',&
-                    [0.d0], 2, nomres, valres, icodre,1)
+    call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ', &
+                [0.d0], 2, nomres, valres, icodre, 1)
 !
     e = valres(1)
     nu = valres(2)
-    lambda_int = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)*ep
+    lambda_int = e*nu/(1.d0+nu)/(1.d0-2.d0*nu)*ep
     deuxmu_int = e/(1.d0+nu)*ep
 !
     nomres(1) = 'E_F'
     nomres(2) = 'NU_F'
 !
-    call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ',&
-                [0.d0], 2, nomres, valres, icodre,&
+    call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ', &
+                [0.d0], 2, nomres, valres, icodre, &
                 0)
 !
     if (icodre(1) .eq. 0) then
         ef = valres(1)
     else
         ef = e
-    endif
+    end if
 !
     if (icodre(2) .eq. 0) then
         nuf = valres(2)
     else
         nuf = nu
-    endif
+    end if
 !
-    lamf_int = ef*nuf/(1.d0-nuf*nuf) *ep**3/12.0d0
-    deumuf_int = ef/(1.d0+nuf) *ep**3/12.0d0
+    lamf_int = ef*nuf/(1.d0-nuf*nuf)*ep**3/12.0d0
+    deumuf_int = ef/(1.d0+nuf)*ep**3/12.0d0
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
     nomres(1) = 'GAMMA_T'
@@ -126,8 +126,8 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
     nomres(14) = 'SY'
     nomres(15) = 'FTJ'
     nomres(16) = 'FCJ'
-    call rcvala(imate, ' ', 'GLRC_DM', 0, ' ',&
-                [0.d0], 16, nomres, valres, icodre,&
+    call rcvala(imate, ' ', 'GLRC_DM', 0, ' ', &
+                [0.d0], 16, nomres, valres, icodre, &
                 0)
 !
     gt_int = valres(1)
@@ -143,7 +143,7 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
 !
     if (gc_int .eq. 1.d0 .and. gt_int .eq. 1.d0) then
         call utmess('F', 'ALGORITH6_1')
-    endif
+    end if
 !
 !    if (icodre(7) .eq. 0 .and. gc_int .ne. 1.d0) then
 !        alfmc_int = valres(7)
@@ -160,7 +160,7 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
 
     if (gc_int .eq. 1.d0) then
         alfmc_int = 1.d0
-    endif
+    end if
 !
 !    CALCUL DU SEUIL (k0 DANS R7.01.32) ET DE ALPHA
     if (lrgm) then
@@ -168,69 +168,69 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
         alfmc_int = 1.d0
         seuil_int = 0.d0
     else
-        seuil_int = lambda_int*(1.0d0 - gt_int)*(1.0d0-2.0d0*nu)**2 &
-                  + deuxmu_int*( 1.0d0 - gt_int + (1.0d0 - gc_int)*nu**2/alfmc_int)
+        seuil_int = lambda_int*(1.0d0-gt_int)*(1.0d0-2.0d0*nu)**2 &
+                    +deuxmu_int*(1.0d0-gt_int+(1.0d0-gc_int)*nu**2/alfmc_int)
 !
-        seuil_int = seuil_int/(2.0d0*(lambda_int*(1.0d0-2.0d0*nu) + deuxmu_int))**2
+        seuil_int = seuil_int/(2.0d0*(lambda_int*(1.0d0-2.0d0*nu)+deuxmu_int))**2
         seuil_int = seuil_int*nyt**2
 !
         if (seuil_int .ne. 0.d0) then
-            alpha_int = lamf_int*(1.0d0-nuf)**2 + deumuf_int
-            alpha_int = alpha_int/(2.0d0*(lamf_int*(1.0d0-nuf) + deumuf_int)**2)
-            alpha_int = alpha_int*(1.0d0 - gf_int)*myf**2/seuil_int
+            alpha_int = lamf_int*(1.0d0-nuf)**2+deumuf_int
+            alpha_int = alpha_int/(2.0d0*(lamf_int*(1.0d0-nuf)+deumuf_int)**2)
+            alpha_int = alpha_int*(1.0d0-gf_int)*myf**2/seuil_int
         else
             call utmess('F', 'ALGORITH6_3')
-        endif
-    endif
+        end if
+    end if
 !
     if (present(lambda)) then
         lambda = lambda_int
-    endif
+    end if
     if (present(deuxmu)) then
         deuxmu = deuxmu_int
-    endif
+    end if
     if (present(deumuf)) then
         deumuf = deumuf_int
-    endif
+    end if
     if (present(lamf)) then
         lamf = lamf_int
-    endif
+    end if
     if (present(gt)) then
         gt = gt_int
-    endif
+    end if
     if (present(gc)) then
         gc = gc_int
-    endif
+    end if
     if (present(gf)) then
         gf = gf_int
-    endif
+    end if
     if (present(seuil)) then
         seuil = seuil_int
-    endif
+    end if
     if (present(alpha)) then
         alpha = alpha_int
-    endif
+    end if
     if (present(alfmc)) then
         alfmc = alfmc_int
-    endif
+    end if
     if (present(epsic)) then
         epsic = epsi_c
-    endif
+    end if
     if (present(epsiels)) then
         epsiels = epsi_els
-    endif
+    end if
     if (present(epsilim)) then
         epsilim = epsi_lim
-    endif
+    end if
     if (present(is_param_opt_)) then
         ASSERT(present(val_param_opt_))
         is_param_opt_(1:2) = .false.
 !       RX
-        if (icodre(11).eq. 0)then
+        if (icodre(11) .eq. 0) then
             is_param_opt_(1) = .true.
             val_param_opt_(1) = valres(11)
 !           OMX, EA, SY, FTJ, FCJ, KAPPA_FLEX + EM, EF, NYC, MYF
-            if (icodre(12).eq. 0)then
+            if (icodre(12) .eq. 0) then
                 is_param_opt_(2) = .true.
                 val_param_opt_(2) = valres(12)
                 val_param_opt_(3) = valres(13)
@@ -241,8 +241,8 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
                 val_param_opt_(8) = ef
                 val_param_opt_(9) = nyc
                 val_param_opt_(10) = myf
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

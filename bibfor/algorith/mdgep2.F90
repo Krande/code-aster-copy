@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mdgep2(neq, nbmode, bmodal, xgene, iddl,&
+subroutine mdgep2(neq, nbmode, bmodal, xgene, iddl, &
                   u)
     implicit none
     integer :: iddl, j, nbmode, neq
@@ -25,7 +25,7 @@ subroutine mdgep2(neq, nbmode, bmodal, xgene, iddl,&
 !-----------------------------------------------------------------------
     u = 0.d0
     do j = 1, nbmode
-        u = u + bmodal(iddl,j)*xgene(j)
+        u = u+bmodal(iddl, j)*xgene(j)
     end do
 !
 end subroutine

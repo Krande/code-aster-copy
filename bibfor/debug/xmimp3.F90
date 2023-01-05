@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine xmimp3(ifm, noma, itpc, jvalv, jtabf)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/cfmmvd.h"
@@ -76,28 +76,28 @@ subroutine xmimp3(ifm, noma, itpc, jvalv, jtabf)
     call jenuno(jexnum(noma//'.NOMMAI', nummae), nomesc)
     nummam = nint(zr(jtabf+ztabf*(itpc-1)+2))
     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommai)
-    write(ifm,1000) itpc,nomesc,nommai
+    write (ifm, 1000) itpc, nomesc, nommai
 !
 ! --- POINT DE CONTACT EN COURS
 !
-    write(ifm,1001)
-    write(ifm,1002) lambda,coefcr
+    write (ifm, 1001)
+    write (ifm, 1002) lambda, coefcr
     if (ifrott .eq. 3) then
-        write(ifm,1006) coefff,coeffr
-    endif
+        write (ifm, 1006) coefff, coeffr
+    end if
 !
 ! --- FORMATS AFFICHAGE
 !
-    1000 format (' <CONTACT>     * LA MAILLE DE CONTACT ',i5,&
-     &        '(',a8,'/',a8,')')
-    1001 format (' <CONTACT>        A POUR PROPRIETES')
+1000 format(' <CONTACT>     * LA MAILLE DE CONTACT ', i5,&
+    &        '(', a8, '/', a8, ')')
+1001 format(' <CONTACT>        A POUR PROPRIETES')
 !
-    1002 format (' <CONTACT>          - LAMBDA         : ',e10.3,&
-     &        ' - COEF_REGU_CONT :  ',e10.3)
+1002 format(' <CONTACT>          - LAMBDA         : ', e10.3,&
+    &        ' - COEF_REGU_CONT :  ', e10.3)
 !
-    1006 format (' <CONTACT>          AVEC FROTTEMENT DE COULOMB',&
-     &        ' - COEFFICIENT    :  ',e10.3,&
-     &        ' - COEF_REGU_FROT :  ',e10.3)
+1006 format(' <CONTACT>          AVEC FROTTEMENT DE COULOMB',&
+    &        ' - COEFFICIENT    :  ', e10.3,&
+    &        ' - COEF_REGU_FROT :  ', e10.3)
 !
     call jedema()
 !

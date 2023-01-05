@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine isacti(sddisc, action_type_in, i_action)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/getFailAction.h"
 !
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: action_type_in
-integer, intent(out) :: i_action
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: action_type_in
+    integer, intent(out) :: i_action
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,13 +51,13 @@ integer, intent(out) :: i_action
 ! ----------------------------------------------------------------------
 !
     i_action = 0
-    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_ = nb_fail)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
 !
     do i_fail = 1, nb_fail
         call getFailAction(sddisc, i_fail, action_type)
         if (action_type .eq. action_type_in) then
             i_action = i_fail
-        endif
+        end if
     end do
 !
 end subroutine

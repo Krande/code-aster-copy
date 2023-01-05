@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,13 +46,13 @@ subroutine ef0409(nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     call jevech('PEFFORR', 'E', ichn)
 !
     call jevech('PGEOMER', 'L', igeom)
     call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
-    call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PCONTRR', 'L', iret, nval=7, &
                 itab=jtab)
     call r8inir(32, 0.d0, effint, 1)
 !

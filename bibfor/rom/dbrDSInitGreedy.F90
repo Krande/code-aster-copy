@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,16 +20,16 @@
 !
 subroutine dbrDSInitGreedy(multiPara, algoGreedy, paraGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 !
-type(ROM_DS_MultiPara), intent(in)   :: multiPara
-type(ROM_DS_AlgoGreedy), intent(in)  :: algoGreedy
-type(ROM_DS_ParaDBR_Greedy), intent(out) :: paraGreedy
+    type(ROM_DS_MultiPara), intent(in)   :: multiPara
+    type(ROM_DS_AlgoGreedy), intent(in)  :: algoGreedy
+    type(ROM_DS_ParaDBR_Greedy), intent(out) :: paraGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,8 +45,8 @@ type(ROM_DS_ParaDBR_Greedy), intent(out) :: paraGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    paraGreedy%solver     = '&&OP0053.SOLVER'
-    paraGreedy%multipara  = multiPara
+    paraGreedy%solver = '&&OP0053.SOLVER'
+    paraGreedy%multipara = multiPara
     paraGreedy%algoGreedy = algoGreedy
 !
 end subroutine

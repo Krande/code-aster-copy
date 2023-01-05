@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
+subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim, &
                   xer)
     implicit none
 !
@@ -54,24 +54,24 @@ subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
     integer :: i
     real(kind=8) :: pima, prea, xer
 !-----------------------------------------------------------------------
-    eps = r8miem()**(2.0d+0 / 3.0d+0)
+    eps = r8miem()**(2.0d+0/3.0d+0)
 !   PRODUIT SCALAIRE
 !
 !   Produit scalaire inv(M)*X1*X0
-    cprod=dcmplx(0.d0,0.d0)
+    cprod = dcmplx(0.d0, 0.d0)
     do i = 1, ndim
         call zconju(cvec1(i), prea, pima)
-        cconj=dcmplx(prea,-pima)
-        cprod=cprod+(cconj*cvec00(i))
+        cconj = dcmplx(prea, -pima)
+        cprod = cprod+(cconj*cvec00(i))
     end do
 !
 !
 !   Produit scalaire inv(M)*X0*X0
-    cnorm=dcmplx(0.d0,0.d0)
+    cnorm = dcmplx(0.d0, 0.d0)
     do i = 1, ndim
         call zconju(cvec01(i), prea, pima)
-        cconj=dcmplx(prea,-pima)
-        cnorm=cnorm+(cconj*cvec00(i))
+        cconj = dcmplx(prea, -pima)
+        cnorm = cnorm+(cconj*cvec00(i))
     end do
 !
 !    Ancien calcul d'erreur
@@ -98,16 +98,16 @@ subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
 !      XER=(XER/(DBLE(CNORM2)))**0.5D0
 !
     if (abs(cnorm) .lt. eps) then
-        xer=100.d0
+        xer = 100.d0
     else
-        xer=abs(1.d0-abs(cprod)/abs(cnorm))
-    endif
+        xer = abs(1.d0-abs(cprod)/abs(cnorm))
+    end if
 !
 !
 !  RECOPIE DU VECTEUR COURANT DANS LE PRECEDENT
 !
     do i = 1, ndim
-        cvec0(i)=cvec1(i)
+        cvec0(i) = cvec1(i)
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,20 +56,20 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
     manoma = noma//'.CONNEX'
     do ioc = 1, nbocc
 !        --- ON RECUPERE UNE LISTE DE GROUP_MA ---
-        call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc, &
                     0, k8b, nbgr)
         nbgr = -nbgr
-        nbgrmx = max(nbgrmx,nbgr)
+        nbgrmx = max(nbgrmx, nbgr)
     end do
     AS_ALLOCATE(vk24=group_ma, size=nbgrmx)
     noemax = 0
     noemaf = 0
     do ioc = 1, nbocc
         noema2 = 0
-        call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc, &
                     0, k8b, nbgr)
         nbgr = -nbgr
-        call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc, &
                     nbgr, group_ma, nbv)
 !
 !        --- ON ECLATE LES GROUP_MA ---
@@ -81,11 +81,11 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
                 do nn = 1, nm
                     inoe = zi(ldnm+nn-1)
-                    noema2 = max(noema2,inoe)
+                    noema2 = max(noema2, inoe)
                 end do
             end do
         end do
-        noemaf = max(noemaf,noema2)
+        noemaf = max(noemaf, noema2)
         AS_ALLOCATE(vi=parno2, size=noema2)
         do i = 1, nbgr
             call jelira(jexnom(magrma, group_ma(i)), 'LONUTI', nb)
@@ -95,18 +95,18 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
                 do nn = 1, nm
                     inoe = zi(ldnm+nn-1)
-                    parno2(inoe) = parno2(inoe) + 1
+                    parno2(inoe) = parno2(inoe)+1
                 end do
             end do
         end do
         ii = 0
         do ij = 1, noema2
             if (parno2(ij) .eq. 0) goto 51
-            ii = ii + 1
- 51         continue
+            ii = ii+1
+51          continue
         end do
         noema2 = ii
-        noemax = noemax + noema2
+        noemax = noemax+noema2
         AS_DEALLOCATE(vi=parno2)
     end do
     AS_DEALLOCATE(vk24=group_ma)

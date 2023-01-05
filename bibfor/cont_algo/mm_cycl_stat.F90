@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_cycl_stat(ds_measure, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -59,12 +59,12 @@ implicit none
 !
 ! - Get contact parameters
 !
-    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
 !
 ! - Acces to cycling objects
 !
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
-    call jeveuo(sdcont_cyceta, 'L', vi = p_sdcont_cyceta)
+    call jeveuo(sdcont_cyceta, 'L', vi=p_sdcont_cyceta)
 !
 ! - Counting cycles
 !
@@ -72,19 +72,19 @@ implicit none
         do cycl_index = 1, 4
             cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index)
             if (cycl_stat .ne. 0) then
-                cycl_nb(cycl_index) = cycl_nb(cycl_index) + 1
-            endif
+                cycl_nb(cycl_index) = cycl_nb(cycl_index)+1
+            end if
             if (cycl_stat .lt. 0) then
                 call mm_cycl_erase(ds_contact, cycl_index, i_cont_poin)
-            endif
+            end if
         end do
     end do
 !
 ! - Saving for statistics
 !
-    call nmrvai(ds_measure, 'Cont_Cycl1', input_count = cycl_nb(1))
-    call nmrvai(ds_measure, 'Cont_Cycl2', input_count = cycl_nb(2))
-    call nmrvai(ds_measure, 'Cont_Cycl3', input_count = cycl_nb(3))
-    call nmrvai(ds_measure, 'Cont_Cycl4', input_count = cycl_nb(4))
+    call nmrvai(ds_measure, 'Cont_Cycl1', input_count=cycl_nb(1))
+    call nmrvai(ds_measure, 'Cont_Cycl2', input_count=cycl_nb(2))
+    call nmrvai(ds_measure, 'Cont_Cycl3', input_count=cycl_nb(3))
+    call nmrvai(ds_measure, 'Cont_Cycl4', input_count=cycl_nb(4))
 !
 end subroutine

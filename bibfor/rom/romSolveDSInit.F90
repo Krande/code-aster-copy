@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 !
 subroutine romSolveDSInit(type_syst, ds_solve)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 !
-character(len=3), intent(in) :: type_syst
-type(ROM_DS_Solve), intent(out) :: ds_solve
+    character(len=3), intent(in) :: type_syst
+    type(ROM_DS_Solve), intent(out) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,13 +40,13 @@ type(ROM_DS_Solve), intent(out) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ds_solve%syst_matr       = '&&'//type_syst//'.MATR'
-    ds_solve%syst_2mbr       = '&&'//type_syst//'.SECMBR'
-    ds_solve%syst_solu       = '&&'//type_syst//'.SOLUTI'
-    ds_solve%vect_zero       = '&&'//type_syst//'.VEZERO'
-    ds_solve%syst_size       = 0
-    ds_solve%syst_matr_type  = ' '
-    ds_solve%syst_2mbr_type  = ' '
-    ds_solve%syst_type       = ' '
+    ds_solve%syst_matr = '&&'//type_syst//'.MATR'
+    ds_solve%syst_2mbr = '&&'//type_syst//'.SECMBR'
+    ds_solve%syst_solu = '&&'//type_syst//'.SOLUTI'
+    ds_solve%vect_zero = '&&'//type_syst//'.VEZERO'
+    ds_solve%syst_size = 0
+    ds_solve%syst_matr_type = ' '
+    ds_solve%syst_2mbr_type = ' '
+    ds_solve%syst_type = ' '
 !
 end subroutine

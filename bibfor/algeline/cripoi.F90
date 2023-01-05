@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ subroutine cripoi(nbm, b, crit)
     sommii = 0.d0
 !
     do i = 1, nbm
-        bii = dcabs2(b(i,i))
-        sommii = sommii + bii*bii
+        bii = dcabs2(b(i, i))
+        sommii = sommii+bii*bii
     end do
 !
     if (sommii .lt. tole) then
@@ -68,21 +68,21 @@ subroutine cripoi(nbm, b, crit)
         sommij = 0.d0
 !
         do i = 2, nbm
-            bij = dcabs2(b(i,1))
-            sommij = sommij + bij*bij
+            bij = dcabs2(b(i, 1))
+            sommij = sommij+bij*bij
         end do
 !
         do j = 2, nbm
             do i = 1, j-1
-                bij = dcabs2(b(i,j))
-                sommij = sommij + bij*bij
+                bij = dcabs2(b(i, j))
+                sommij = sommij+bij*bij
             end do
             if (j .lt. nbm) then
                 do i = j+1, nbm
-                    bij = dcabs2(b(i,j))
-                    sommij = sommij + bij*bij
+                    bij = dcabs2(b(i, j))
+                    sommij = sommij+bij*bij
                 end do
-            endif
+            end if
         end do
 !
 !-------3.CALCUL DU CRITERE
@@ -99,8 +99,8 @@ subroutine cripoi(nbm, b, crit)
             y = x/sommii
             crit = dble(sqrt(y))*100.d0
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

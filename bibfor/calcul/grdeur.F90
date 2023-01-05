@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 function grdeur(nompar)
 
-use calcul_module, only : ca_iaopds_, ca_iaoppa_
+    use calcul_module, only: ca_iaopds_, ca_iaoppa_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -39,10 +39,10 @@ implicit none
     integer :: jpar, nbpar
 !-------------------------------------------------------------------
 
-    nbpar = zi(ca_iaopds_-1+2) + zi(ca_iaopds_-1+3) + zi(ca_iaopds_-1+4)
-    jpar = indik8(zk8(ca_iaoppa_),nompar,1,nbpar)
+    nbpar = zi(ca_iaopds_-1+2)+zi(ca_iaopds_-1+3)+zi(ca_iaopds_-1+4)
+    jpar = indik8(zk8(ca_iaoppa_), nompar, 1, nbpar)
     if (jpar .eq. 0) then
         call utmess('F', 'CALCUL_14', sk=nompar)
-    endif
+    end if
     grdeur = zi(ca_iaopds_-1+4+jpar)
 end function

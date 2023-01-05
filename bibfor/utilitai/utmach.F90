@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
+subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
                   nbtrou)
     implicit none
 #include "jeveux.h"
@@ -92,24 +92,24 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         do icmp = 1, ncmpmx
             if (nocmp(icp) .eq. zk8(iad+icmp-1)) goto 2
         end do
-        ier = ier + 1
+        ier = ier+1
         call utmess('E', 'UTILITAI5_48', sk=nocmp(icp))
-  2     continue
+2       continue
     end do
     if (ier .ne. 0) then
         call utmess('F', 'PREPOST_60')
-    endif
+    end if
 !
 !
     if (docu .eq. 'ELGA' .or. docu .eq. 'ELNO' .or. docu .eq. 'ELEM' .or. docu .eq. 'CART') then
 !          ----------------
         if (docu .eq. 'CART') then
-            call carces(champ, 'ELEM', k8b, 'V', chtra1,&
+            call carces(champ, 'ELEM', k8b, 'V', chtra1, &
                         'A', ierd)
         else
             call celces(champ, 'V', chtra1)
-        endif
-        call cesred(chtra1, 0, [0], ncmp, nocmp,&
+        end if
+        call cesred(chtra1, 0, [0], ncmp, nocmp, &
                     'V', chtra2)
         call jeveuo(chtra2//'.CESD', 'L', jcesd)
         call jeveuo(chtra2//'.CESK', 'L', jcesk)
@@ -118,22 +118,22 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         nbent = zi(jcesd-1+1)
         call wkvect('&&UTMACH.LIST_ENT', 'V V I', nbent, jent)
         do i = 1, nbent
-            nbpt = zi(jcesd-1+5+4* (i-1)+1)
-            nbsp = zi(jcesd-1+5+4* (i-1)+2)
+            nbpt = zi(jcesd-1+5+4*(i-1)+1)
+            nbsp = zi(jcesd-1+5+4*(i-1)+2)
             do ipt = 1, nbpt
                 do isp = 1, nbsp
                     do icp = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, i, ipt,&
+                        call cesexi('C', jcesd, jcesl, i, ipt, &
                                     isp, icp, iad)
                         if (iad .gt. 0) then
                             zi(jent+i-1) = 1
                             goto 10
                         else
-                        endif
+                        end if
                     end do
                 end do
             end do
- 10         continue
+10          continue
         end do
         call detrsd('CHAM_ELEM_S', chtra1)
         call detrsd('CHAM_ELEM_S', chtra2)
@@ -142,7 +142,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
     else if (docu .eq. 'NOEU') then
 !              ----------------
         call cnocns(champ, 'V', chtra1)
-        call cnsred(chtra1, 0, [0], ncmp, nocmp,&
+        call cnsred(chtra1, 0, [0], ncmp, nocmp, &
                     'V', chtra2)
         call jeveuo(chtra2//'.CNSD', 'L', jcesd)
         call jeveuo(chtra2//'.CNSK', 'L', jcesk)
@@ -155,9 +155,9 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                 if (zl(jcesl-1+(i-1)*ncmp+icp)) then
                     zi(jent+i-1) = 1
                     goto 20
-                endif
+                end if
             end do
- 20         continue
+20          continue
         end do
         call detrsd('CHAM_NO_S', chtra1)
         call detrsd('CHAM_NO_S', chtra2)
@@ -166,24 +166,24 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 !
         call utmess('F', 'UTILITAI5_49', sk=docu)
 !
-    endif
+    end if
 !
     if (nbent .eq. 0) then
-        valk (1) = champ
-        valk (2) = nocmp(1)
-        valk (3) = nocmp(2)
-        valk (4) = nocmp(3)
-        valk (5) = nocmp(4)
+        valk(1) = champ
+        valk(2) = nocmp(1)
+        valk(3) = nocmp(2)
+        valk(4) = nocmp(3)
+        valk(5) = nocmp(4)
         if (docu .eq. 'NOEU') then
             call utmess('F', 'UTILITAI8_61', nk=5, valk=valk)
         else
             call utmess('F', 'UTILITAI8_62', nk=5, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     nbtrou = 0
     do i = 1, nbent
-        if (zi(jent+i-1) .eq. 1) nbtrou = nbtrou + 1
+        if (zi(jent+i-1) .eq. 1) nbtrou = nbtrou+1
     end do
 !
     if (typem .eq. 'NU') then
@@ -192,9 +192,9 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         nbtrou = 0
         do i = 1, nbent
             if (zi(jent+i-1) .eq. 1) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 zi(idlist+nbtrou-1) = i
-            endif
+            end if
         end do
 !
     else if (typem .eq. 'NO') then
@@ -203,14 +203,14 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         nbtrou = 0
         do i = 1, nbent
             if (zi(jent+i-1) .eq. 1) then
-                nbtrou = nbtrou + 1
-                call jenuno(jexnum(nomobj, zi(jent+i-1)), zk8(idlist+ nbtrou-1))
-            endif
+                nbtrou = nbtrou+1
+                call jenuno(jexnum(nomobj, zi(jent+i-1)), zk8(idlist+nbtrou-1))
+            end if
         end do
 !
     else
         call utmess('F', 'PREPOST3_6', sk=typem)
-    endif
+    end if
 !
     call jedetr('&&UTMACH.LIST_ENT')
 !

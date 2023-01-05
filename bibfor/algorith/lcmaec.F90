@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
+subroutine lcmaec(fami, kpg, ksp, poum, nmater, &
                   imat, necoul, nbval, valres, nmat)
     implicit none
 !     MONOCRISTAL : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
@@ -41,30 +41,30 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
 !     ----------------------------------------------------------------
 !
     if (necoul .eq. 'MONO_CINE1') then
-        nbval=1
-        nomres(1)='D'
-        call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', [0.d0],&
+        nbval = 1
+        nomres(1) = 'D'
+        call rcvalb(fami, kpg, ksp, poum, imat, &
+                    nmater, necoul, 0, ' ', [0.d0], &
                     nbval, nomres, vallue, icodre, 1)
         valres(2:2-1+nbval) = vallue(1:nbval)
-        nbval=nbval+1
+        nbval = nbval+1
 !         PAR CONVENTION ECRO_CINE1 A LE NUMERO 1
-        valres(1)=1
+        valres(1) = 1
 !
-    endif
+    end if
     if (necoul .eq. 'MONO_CINE2') then
-        nbval=4
-        nomres(1)='D'
-        nomres(2)='GM'
-        nomres(3)='PM'
-        nomres(4)='C'
-        call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', [0.d0],&
+        nbval = 4
+        nomres(1) = 'D'
+        nomres(2) = 'GM'
+        nomres(3) = 'PM'
+        nomres(4) = 'C'
+        call rcvalb(fami, kpg, ksp, poum, imat, &
+                    nmater, necoul, 0, ' ', [0.d0], &
                     nbval, nomres, vallue, icodre, 1)
         valres(2:2-1+nbval) = vallue(1:nbval)
-        nbval=nbval+1
+        nbval = nbval+1
 !         PAR CONVENTION ECRO_CINE2 A LE NUMERO 2
-        valres(1)=2
+        valres(1) = 2
 !
-    endif
+    end if
 end subroutine

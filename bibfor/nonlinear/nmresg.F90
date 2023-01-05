@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,10 +38,10 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "blas/ddot.h"
 !
-real(kind=8) :: instap
-character(len=19) :: cndonn, sddyna
-character(len=24) :: numedd
-character(len=19) :: accsol
+    real(kind=8) :: instap
+    character(len=19) :: cndonn, sddyna
+    character(len=24) :: numedd
+    character(len=19) :: accsol
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,8 +81,8 @@ character(len=19) :: accsol
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><RESO> RESOLUTION SUR BASE MODALE'
-    endif
+        write (ifm, *) '<MECANONLINE><RESO> RESOLUTION SUR BASE MODALE'
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -91,11 +91,11 @@ character(len=19) :: accsol
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lexge = ndynlo(sddyna,'EXPL_GENE')
-    lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
-    if (.not.lacce) then
+    lexge = ndynlo(sddyna, 'EXPL_GENE')
+    lacce = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3
+    if (.not. lacce) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- OBJETS PROJECTION MODALE
 !
@@ -117,15 +117,15 @@ character(len=19) :: accsol
 !
 ! --- NOMBRE DE MODES
 !
-    nbmodp = ndynin(sddyna,'NBRE_MODE_PROJ')
+    nbmodp = ndynin(sddyna, 'NBRE_MODE_PROJ')
 !
 ! --- VECTEUR SECOND MEMBRE
 !
     call jeveuo(cndonn(1:19)//'.VALE', 'E', j2memb)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><RESO> -> SECOND MEMBRE DONNE'
+        write (ifm, *) '<MECANONLINE><RESO> -> SECOND MEMBRE DONNE'
         call nmdebg('VECT', cndonn, 6)
-    endif
+    end if
 !
 ! --- RECUPERATION VECTEUR DES FORCES GENERALISEES
 !
@@ -138,7 +138,7 @@ character(len=19) :: accsol
 !
 ! --- FORCES GENERALISEES ?
 !
-        nbgene = ndynin(sddyna,'NBRE_EXCIT_GENE')
+        nbgene = ndynin(sddyna, 'NBRE_EXCIT_GENE')
 !
 ! --- EVALUATION DES FONCTIONS MULTIPLICATRICES
 !
@@ -147,22 +147,22 @@ character(len=19) :: accsol
             call jeveuo(forgen, 'L', jforge)
             call jeveuo(valfon, 'E', jvalfo)
             do ifonc = 1, nbgene
-                call fointe('F ', zk24(jfonge+ifonc-1)(1:8), 1, ['INST'], [instap],&
+                call fointe('F ', zk24(jfonge+ifonc-1) (1:8), 1, ['INST'], [instap], &
                             zr(jvalfo+ifonc-1), ier)
             end do
-        endif
+        end if
 !
 ! --- CALCUL DES FORCES MODALES
 !
         do imode = 1, nbmodp
-            zr(jfmoda+imode-1) = ddot( neq,zr(jbasmo+(imode-1)*neq),1, zr(j2memb),1)
+            zr(jfmoda+imode-1) = ddot(neq, zr(jbasmo+(imode-1)*neq), 1, zr(j2memb), 1)
             do imode2 = 1, nbmodp
-                zr(jfmoda+imode-1) = zr(jfmoda+imode-1) - zr(jrigge+( imode2-1)*nbmodp+imode-1)*z&
-                                     &r(jdepgp+imode2-1) - zr( jamoge+(imode2-1)*nbmodp+imode-1)*&
+                zr(jfmoda+imode-1) = zr(jfmoda+imode-1)-zr(jrigge+(imode2-1)*nbmodp+imode-1)*z&
+                                     &r(jdepgp+imode2-1)-zr(jamoge+(imode2-1)*nbmodp+imode-1)*&
                                      &zr(jvitgp+imode2-1)
             end do
             do ifonc = 1, nbgene
-                zr(jfmoda+imode-1) = zr(jfmoda+imode-1) + zr(jforge+( ifonc-1)*nbmodp+imode-1)*zr&
+                zr(jfmoda+imode-1) = zr(jfmoda+imode-1)+zr(jforge+(ifonc-1)*nbmodp+imode-1)*zr&
                                      &(jvalfo+ifonc-1)
             end do
         end do
@@ -176,16 +176,16 @@ character(len=19) :: accsol
         jaccg = jaccgp
 !
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE><RESO> -> SOLUTION (MODALE):'
+            write (ifm, *) '<MECANONLINE><RESO> -> SOLUTION (MODALE):'
             call nmdebg(' ', accgep, 6)
-        endif
+        end if
     else
         call jeveuo(accgcn, 'E', jacccn)
 !
 ! --- CALCUL DES FORCES GENERALISEES
 !
         do imode = 1, nbmodp
-            zr(jfmoda+imode-1) = ddot( neq,zr(jbasmo+(imode-1)*neq),1, zr(j2memb),1)
+            zr(jfmoda+imode-1) = ddot(neq, zr(jbasmo+(imode-1)*neq), 1, zr(j2memb), 1)
         end do
 !
 ! --- CALCUL DES ACCELERATIONS GENERALISEES
@@ -197,10 +197,10 @@ character(len=19) :: accsol
         jaccg = jacccn
 !
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE><RESO> -> SOLUTION (MODALE):'
+            write (ifm, *) '<MECANONLINE><RESO> -> SOLUTION (MODALE):'
             call nmdebg(' ', accgcn, 6)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CALCUL DES ACCELERATIONS PHYSIQUES
 !
@@ -210,9 +210,9 @@ character(len=19) :: accsol
 ! --- AFFICHAGE DES SOLUTIONS
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><RESO> -> SOLUTION (PHYSIQUE):'
+        write (ifm, *) '<MECANONLINE><RESO> -> SOLUTION (PHYSIQUE):'
         call nmdebg('VECT', accsol, 6)
-    endif
+    end if
 !
     call jedema()
 end subroutine

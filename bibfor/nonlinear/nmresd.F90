@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmresd(fonact     , sddyna        , ds_measure, solveu,&
-                  numedd     , instan        , maprec    , matass, cndonn,&
-                  cnpilo     , cncine        , solalg    , rescvg,&
+subroutine nmresd(fonact, sddyna, ds_measure, solveu, &
+                  numedd, instan, maprec, matass, cndonn, &
+                  cnpilo, cncine, solalg, rescvg, &
                   ds_algorom_)
 !
-use NonLin_Datastructure_type
-use ROM_Datastructure_type
-use ldlt_xp_data_module
+    use NonLin_Datastructure_type
+    use ROM_Datastructure_type
+    use ldlt_xp_data_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -43,16 +43,16 @@ implicit none
 #include "asterfort/romAlgoNLCorrEFMatrixModify.h"
 #include "asterfort/romAlgoNLCorrEFResiduModify.h"
 !
-integer :: fonact(*)
-character(len=19) :: solalg(*)
-character(len=19) :: maprec, matass
-type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: solveu, sddyna
-character(len=19) :: cncine, cndonn, cnpilo
-character(len=24) :: numedd
-real(kind=8) :: instan
-integer :: rescvg
+    integer :: fonact(*)
+    character(len=19) :: solalg(*)
+    character(len=19) :: maprec, matass
+    type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: solveu, sddyna
+    character(len=19) :: cncine, cndonn, cnpilo
+    character(len=24) :: numedd
+    real(kind=8) :: instan
+    integer :: rescvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,7 +94,7 @@ integer :: rescvg
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_77')
-    endif
+    end if
 !
 ! --- EXTRACTION VARIABLES CHAPEAUX
 !
@@ -124,15 +124,15 @@ integer :: rescvg
             vect24 = cndonn
             call romAlgoNLCorrEFMatrixModify(numedd, matass, ds_algorom_)
             call romAlgoNLCorrEFResiduModify(vect24, ds_algorom_)
-            call nmreso(fonact, vect24, cnpilo, cncine, solveu,&
+            call nmreso(fonact, vect24, cnpilo, cncine, solveu, &
                         maprec, matass, depso1, depso2, rescvg)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
-        call nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
+        call nmreso(fonact, cndonn, cnpilo, cncine, solveu, &
                     maprec, matass, depso1, depso2, rescvg)
-    endif
+    end if
 !
     call nmtime(ds_measure, 'Stop', 'Solve')
     call nmrinc(ds_measure, 'Solve')
@@ -140,7 +140,7 @@ integer :: rescvg
     if (ap2foi_called) then
         call nmrinc(ds_measure, 'Factor')
         ap2foi_called = ASTER_FALSE
-    endif
+    end if
 
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0092(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,9 +53,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    l_axis = (lteatt('AXIS','OUI'))
+    l_axis = (lteatt('AXIS', 'OUI'))
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCONTRR', 'L', icontr)
@@ -64,35 +64,35 @@ character(len=16), intent(in) :: option, nomte
 ! - Loop on gauss points
 !
     do kp = 1, npg
-        k=(kp-1)*nno
-        kc=icontr+4*(kp-1)
-        sxx=zr(kc )
-        syy=zr(kc+1)
-        sxy=zr(kc+3)
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        kc = icontr+4*(kp-1)
+        sxx = zr(kc)
+        syy = zr(kc+1)
+        sxy = zr(kc+3)
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         if (l_axis) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
             end do
             do i = 1, nno
-                dfdx(i)=dfdx(i)+zr(ivf+k+i-1)/r
+                dfdx(i) = dfdx(i)+zr(ivf+k+i-1)/r
             end do
-            poids=poids*r
-        endif
+            poids = poids*r
+        end if
 !
-        kd1=2
-        kd2=1
+        kd1 = 2
+        kd2 = 1
         do i = 1, 2*nno, 2
-            kd1=kd1+2*i-3
-            kd2=kd2+2*i-1
+            kd1 = kd1+2*i-3
+            kd2 = kd2+2*i-1
             ii = (i+1)/2
             do j = 1, i, 2
                 jj = (j+1)/2
-                ij1=imatuu+kd1+j-2
-                ij2=imatuu+kd2+j-1
-                zr(ij2) = zr(ij2) +poids*( dfdx(ii)*(dfdx(jj)*sxx+ dfdy(jj)*sxy)+ dfdy(ii)*(dfdx(&
+                ij1 = imatuu+kd1+j-2
+                ij2 = imatuu+kd2+j-1
+                zr(ij2) = zr(ij2)+poids*(dfdx(ii)*(dfdx(jj)*sxx+dfdy(jj)*sxy)+dfdy(ii)*(dfdx(&
                           &jj)*sxy+dfdy(jj)*syy))
                 zr(ij1) = zr(ij2)
             end do

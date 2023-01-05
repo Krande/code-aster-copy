@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmcaln(ndim, tau1  , tau2  ,&
+subroutine mmcaln(ndim, tau1, tau2, &
                   norm, mprojn, mprojt)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmnorm.h"
 !
-integer, intent(in) :: ndim
-real(kind=8), intent(in) :: tau1(3), tau2(3)
-real(kind=8), intent(out) :: norm(3), mprojn(3, 3), mprojt(3, 3)
+    integer, intent(in) :: ndim
+    real(kind=8), intent(in) :: tau1(3), tau2(3)
+    real(kind=8), intent(out) :: norm(3), mprojn(3, 3), mprojt(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,22 +52,22 @@ real(kind=8), intent(out) :: norm(3), mprojn(3, 3), mprojt(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mprojt(:,:) = 0.d0
-    mprojn(:,:) = 0.d0
-    norm(:)    = 0.d0
+    mprojt(:, :) = 0.d0
+    mprojn(:, :) = 0.d0
+    norm(:) = 0.d0
 !
 ! - Compute normal
 !
     call mmnorm(ndim, tau1, tau2, norm, noor)
     if (noor .le. r8prem()) then
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Matrix of normal projection
 !
     do i = 1, ndim
         do j = 1, ndim
-            mprojn(i,j) = norm(i)*norm(j)
+            mprojn(i, j) = norm(i)*norm(j)
         end do
     end do
 !
@@ -75,11 +75,11 @@ real(kind=8), intent(out) :: norm(3), mprojn(3, 3), mprojt(3, 3)
 !
     do i = 1, ndim
         do j = 1, ndim
-            mprojt(i,j) = -1.d0*norm(i)*norm(j)
+            mprojt(i, j) = -1.d0*norm(i)*norm(j)
         end do
     end do
     do i = 1, ndim
-        mprojt(i,i) = 1.d0 + mprojt(i,i)
+        mprojt(i, i) = 1.d0+mprojt(i, i)
     end do
 !
 end subroutine

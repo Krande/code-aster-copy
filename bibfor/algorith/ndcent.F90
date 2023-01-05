@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,101 +40,101 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 !       NNC      : NOMBRE DE NOEUDS MILIEUX CENTRAUX
 !
     integer :: nbnomx
-    parameter     (nbnomx = 20)
+    parameter(nbnomx=20)
     integer :: i, j, nnop, ifiss
     real(kind=8) :: ff(nbnomx), xlsn, xe(3)
     character(len=8) :: elp
 !
 !
     call elref1(elp)
-    call elrefe_info(elrefe=elp,fami='RIGI',nno=nnop)
-    tx    = 0.d0
+    call elrefe_info(elrefe=elp, fami='RIGI', nno=nnop)
+    tx = 0.d0
     txlsn = 0.d0
 !
 !     INITIALIASATION PAR DEFAUT DU NOMBRE DE NOEUDS CENTRAUX A ZERO
 !     (E.G. TRIANGLES ET TETRAHEDRES)
-    nnc=0
+    nnc = 0
 !
 !     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 'H20'
     if (nnop .eq. 20) then
-        nnc=7
-        tx(1,1)=0.d0
-        tx(2,1)=0.d0
-        tx(3,1)=-1.0
-        tx(1,2)=0.d0
-        tx(2,2)=-1.0
-        tx(3,2)=0.d0
-        tx(1,3)=1.0
-        tx(2,3)=0.d0
-        tx(3,3)=0.d0
-        tx(1,4)=0.d0
-        tx(2,4)=1.0
-        tx(3,4)=0.d0
-        tx(1,5)=-1.0
-        tx(2,5)=0.d0
-        tx(3,5)=0.d0
-        tx(1,6)=0.d0
-        tx(2,6)=0.d0
-        tx(3,6)=1.0
-        tx(1,7)=0.d0
-        tx(2,7)=0.d0
-        tx(3,7)=0.d0
+        nnc = 7
+        tx(1, 1) = 0.d0
+        tx(2, 1) = 0.d0
+        tx(3, 1) = -1.0
+        tx(1, 2) = 0.d0
+        tx(2, 2) = -1.0
+        tx(3, 2) = 0.d0
+        tx(1, 3) = 1.0
+        tx(2, 3) = 0.d0
+        tx(3, 3) = 0.d0
+        tx(1, 4) = 0.d0
+        tx(2, 4) = 1.0
+        tx(3, 4) = 0.d0
+        tx(1, 5) = -1.0
+        tx(2, 5) = 0.d0
+        tx(3, 5) = 0.d0
+        tx(1, 6) = 0.d0
+        tx(2, 6) = 0.d0
+        tx(3, 6) = 1.0
+        tx(1, 7) = 0.d0
+        tx(2, 7) = 0.d0
+        tx(3, 7) = 0.d0
 !
 !     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 'P15'
-    else if (nnop.eq.15) then
-        nnc=3
-        tx(1,1)=0.d0
-        tx(2,1)=0.5
-        tx(3,1)=0.5
-        tx(1,2)=0.d0
-        tx(2,2)=0.d0
-        tx(3,2)=0.5
-        tx(1,3)=0.d0
-        tx(2,3)=0.5
-        tx(3,3)=0.d0
+    else if (nnop .eq. 15) then
+        nnc = 3
+        tx(1, 1) = 0.d0
+        tx(2, 1) = 0.5
+        tx(3, 1) = 0.5
+        tx(1, 2) = 0.d0
+        tx(2, 2) = 0.d0
+        tx(3, 2) = 0.5
+        tx(1, 3) = 0.d0
+        tx(2, 3) = 0.5
+        tx(3, 3) = 0.d0
 !
 !     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 'P13'
-    else if (nnop.eq.13) then
-        nnc=1
-        tx(1,1)=0.d0
-        tx(2,1)=0.d0
-        tx(3,1)=0.d0
+    else if (nnop .eq. 13) then
+        nnc = 1
+        tx(1, 1) = 0.d0
+        tx(2, 1) = 0.d0
+        tx(3, 1) = 0.d0
 !     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 2D 'QU8'
-    else if ((nnop.eq.8).and.(ndim.eq.2)) then
-        nnc=1
-        tx(1,1)=0.d0
-        tx(2,1)=0.d0
+    else if ((nnop .eq. 8) .and. (ndim .eq. 2)) then
+        nnc = 1
+        tx(1, 1) = 0.d0
+        tx(2, 1) = 0.d0
 !     CALCUL DES COORDONNEES DU MILIEU DE [AB] DANS LE CAS 3D 'QU8'
-    else if ((nnop.eq.8).and.(ndim.eq.3)) then
-        nnc=1
-        tx(1,1)=0.d0
-        tx(2,1)=0.d0
-        tx(3,1)=0.d0
-    endif
+    else if ((nnop .eq. 8) .and. (ndim .eq. 3)) then
+        nnc = 1
+        tx(1, 1) = 0.d0
+        tx(2, 1) = 0.d0
+        tx(3, 1) = 0.d0
+    end if
 !
 !.....................................................................
 !     CALCUL DE LA LSN DU MILIEU
 !
     do j = 1, nnc
         do i = 1, ndim
-            xe(i)=tx(i,j)
+            xe(i) = tx(i, j)
         end do
         call elrfvf(elp, xe, ff)
         do ifiss = 1, nfiss
-           xlsn = 0.d0
+            xlsn = 0.d0
             do i = 1, nnop
-               xlsn = xlsn + ff(i)*lsn((i-1)*nfiss+ifiss)
+                xlsn = xlsn+ff(i)*lsn((i-1)*nfiss+ifiss)
             end do
-           txlsn((j-1)*nfiss+ifiss)=xlsn
+            txlsn((j-1)*nfiss+ifiss) = xlsn
         end do
     end do
 !
 !.....................................................................
 !      CALCUL DES COORDONNES DANS L ELEMENT REEL
     do j = 1, nnc
-        call reerel(elp, nnop, ndim, zr(igeom), tx(1:ndim,j), xe)
+        call reerel(elp, nnop, ndim, zr(igeom), tx(1:ndim, j), xe)
         do i = 1, ndim
-            tx(i,j)=xe(i)
+            tx(i, j) = xe(i)
         end do
     end do
 !

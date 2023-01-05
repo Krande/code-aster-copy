@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,12 +82,12 @@ subroutine gver2d(nocc, noeud, rinf, rsup)
 !
         if (nbm .ne. 0 .and. rsup .le. rinf) then
             call utmess('F', 'RUPTURE1_6')
-        endif
+        end if
 !
         call getvr8('THETA', 'R_INF_FO', iocc=iocc, scal=rbid, nbret=ibid)
         if (ibid .ne. 0) then
             call utmess('F', 'RUPTURE1_18')
-        endif
+        end if
 !
         call getvid('THETA', 'FOND_FISS', iocc=1, scal=fond, nbret=n1)
         if (n1 .ne. 0) then
@@ -98,28 +98,28 @@ subroutine gver2d(nocc, noeud, rinf, rsup)
                 call utmess('F', 'RUPTURE1_10')
             else
                 call jeveuo(chfond, 'L', n1)
-                noeud=zk8(n1)
-            endif
+                noeud = zk8(n1)
+            end if
             numfon = 1
             if (nbm .eq. 0) then
                 call dismoi('CONFIG_INIT', fond, 'FOND_FISS', repk=config)
                 if (config .eq. 'DECOLLEE') then
                     call utmess('F', 'RUPTURE1_7')
-                endif
-            endif
+                end if
+            end if
         else
 !           CAS X-FEM
             call getvid('THETA', 'FISSURE', iocc=1, scal=fond, nbret=n2)
             if (n2 .eq. 0) then
                 call utmess('F', 'RUPTURE1_11')
-            endif
+            end if
 !           RECUPERATION DU NUMERO DU FOND DE FISSURE DEMANDE
             call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !           ON ECRIT 'NUM'+_i OU i=NUMFON
 !           A LA PLACE DU NOM DU NOEUD EN FOND DE FISSURE
             call codent(numfon, 'G', kfon)
-            noeud(1:8)='NUM_'//kfon
-        endif
+            noeud(1:8) = 'NUM_'//kfon
+        end if
 !
 !         RECUPERATION DE RINF ET DE RSUP DANS LA SD
         if (nbm .eq. 0) then
@@ -130,7 +130,7 @@ subroutine gver2d(nocc, noeud, rinf, rsup)
             valr(1) = rinf
             valr(2) = rsup
             call utmess('I', 'RUPTURE1_5', nr=2, valr=valr)
-        endif
+        end if
     end do
 !
     call jedema()

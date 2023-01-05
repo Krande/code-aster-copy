@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dilcge(interp, dimdef, dimcon, regula, ndim,&
+subroutine dilcge(interp, dimdef, dimcon, regula, ndim, &
                   defgep, sigp, rpena, r)
 ! ======================================================================
 ! person_in_charge: romeo.fernandes at edf.fr
@@ -40,9 +40,9 @@ subroutine dilcge(interp, dimdef, dimcon, regula, ndim,&
     adcor1 = regula(4)
     adcor2 = regula(5)
     adcor3 = regula(6)
-    dimde1 = adder2 - adder1
-    dimde2 = adder3 - adder2
-    dimde3 = dimdef - adder3 + 1
+    dimde1 = adder2-adder1
+    dimde2 = adder3-adder2
+    dimde3 = dimdef-adder3+1
     do i = 1, dimde1
         r(adcor1-1+i) = rpena*defgep(adder1-1+i)
     end do
@@ -51,11 +51,11 @@ subroutine dilcge(interp, dimdef, dimcon, regula, ndim,&
     end do
     if (interp .ne. 'SL') then
         do i = 1, dimde1
-            r(adcor1-1+i) = r(adcor1-1+i) + defgep(adder3-1+i)
+            r(adcor1-1+i) = r(adcor1-1+i)+defgep(adder3-1+i)
         end do
         do i = 1, dimde3
-            r(adcor3-1+i) = - defgep(adder1-1+i)
+            r(adcor3-1+i) = -defgep(adder1-1+i)
         end do
-    endif
+    end if
 ! ======================================================================
 end subroutine

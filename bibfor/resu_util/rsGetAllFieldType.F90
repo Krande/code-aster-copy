@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine rsGetAllFieldType(resultNameZ, nbField, listField, listStoreRefe)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/rs_get_liststore.h"
 !
-character(len=*), intent(in) :: resultNameZ
-integer, intent(out) :: nbField
-character(len=16), pointer :: listField(:)
-integer, pointer :: listStoreRefe(:)
+    character(len=*), intent(in) :: resultNameZ
+    integer, intent(out) :: nbField
+    character(len=16), pointer :: listField(:)
+    integer, pointer :: listStoreRefe(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,8 +69,8 @@ integer, pointer :: listStoreRefe(:)
 !
 ! - Allocate
 !
-    AS_ALLOCATE(vk16 = listField, size = nbFieldMaxi)
-    AS_ALLOCATE(vi = listStoreRefe, size = nbFieldMaxi)
+    AS_ALLOCATE(vk16=listField, size=nbFieldMaxi)
+    AS_ALLOCATE(vi=listStoreRefe, size=nbFieldMaxi)
     listStoreRefe = -1
 !
 ! - Get list of storing index in results datastructure
@@ -78,8 +78,8 @@ integer, pointer :: listStoreRefe(:)
     call rs_get_liststore(resultName, nbStore)
     if (nbStore .eq. 0) then
         goto 999
-    endif
-    AS_ALLOCATE(vi = numeStore, size = nbStore)
+    end if
+    AS_ALLOCATE(vi=numeStore, size=nbStore)
     call rs_get_liststore(resultName, nbStore, numeStore)
 !
 ! - Looking for fields
@@ -88,20 +88,20 @@ integer, pointer :: listStoreRefe(:)
     do iField = 1, nbFieldMaxi
         call jenuno(jexnum(resultName//'.DESC', iField), fieldName)
         call jenonu(jexnom(resultName//'.DESC', fieldName), fieldNume)
-        call jeveuo(jexnum(resultName//'.TACH', fieldNume), 'L', vk24 = tach)
+        call jeveuo(jexnum(resultName//'.TACH', fieldNume), 'L', vk24=tach)
         do iStore = 1, nbStore
-            if (tach(iStore)(1:1) .ne. ' ') then
-                nbField = nbField + 1
-                listField(nbField)     = fieldName
+            if (tach(iStore) (1:1) .ne. ' ') then
+                nbField = nbField+1
+                listField(nbField) = fieldName
                 listStoreRefe(nbField) = numeStore(iStore)
                 goto 10
-            endif
+            end if
         end do
 10      continue
     end do
 !
 999 continue
 !
-    AS_DEALLOCATE(vi = numeStore)
+    AS_DEALLOCATE(vi=numeStore)
 !
 end subroutine

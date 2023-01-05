@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0597(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -59,32 +59,32 @@ implicit none
         mini = .true.
     else
         mini = .false.
-    endif
+    end if
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
-    ASSERT(ntrou.ge.2)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    ASSERT(ntrou .ge. 2)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
 !
 ! - TYPE DE MODELISATION
-    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS  '
-    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
         call utmess('F', 'ELEMENTS_34', sk=nomte)
-    endif
+    end if
     typmod(2) = '        '
 !
 ! - Get index of dof
 !
-    call niinit(typmod, ndim, nno1, 0,&
-                nno2, 0, vu, vg, vp,&
+    call niinit(typmod, ndim, nno1, 0, &
+                nno2, 0, vu, vg, vp, &
                 vpi)
 !
 ! - PARAMETRES EN ENTREE
@@ -92,9 +92,9 @@ implicit none
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATUUR', 'E', imatuu)
 !
-    call nurmtd(ndim, nno1, nno2, npg, iw,&
-                zr(ivf1), zr(ivf2), ivf1, idf1, vu,&
-                vp, typmod, igeom, zi(imate), mini,&
+    call nurmtd(ndim, nno1, nno2, npg, iw, &
+                zr(ivf1), zr(ivf2), ivf1, idf1, vu, &
+                vp, typmod, igeom, zi(imate), mini, &
                 zr(imatuu))
 !
 end subroutine

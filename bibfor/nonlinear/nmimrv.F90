@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_sear_coef, line_sear_iter,&
-                  eta     , eref_rom )
+subroutine nmimrv(ds_print, list_func_acti, iter_newt, line_sear_coef, line_sear_iter, &
+                  eta, eref_rom)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/isfonc.h"
@@ -61,36 +61,36 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_deborst     = isfonc(list_func_acti,'DEBORST')
-    l_pilo        = isfonc(list_func_acti,'PILOTAGE')
-    l_line_search = isfonc(list_func_acti,'RECH_LINE')
-    l_rom            = isfonc(list_func_acti,'ROM')
-    l_hrom           = isfonc(list_func_acti,'HROM')
+    l_deborst = isfonc(list_func_acti, 'DEBORST')
+    l_pilo = isfonc(list_func_acti, 'PILOTAGE')
+    l_line_search = isfonc(list_func_acti, 'RECH_LINE')
+    l_rom = isfonc(list_func_acti, 'ROM')
+    l_hrom = isfonc(list_func_acti, 'HROM')
 !
 ! - Set values for line search
 !
-    if (l_line_search .and. (iter_newt.ne.0)) then
+    if (l_line_search .and. (iter_newt .ne. 0)) then
         call nmimci(ds_print, 'RELI_NBIT', line_sear_iter, .true._1)
         call nmimcr(ds_print, 'RELI_COEF', line_sear_coef, .true._1)
-    endif
+    end if
 !
 ! - Set value for pilotage
 !
     if (l_pilo) then
         call nmimcr(ds_print, 'PILO_COEF', eta, .true._1)
-    endif
+    end if
 !
 ! - Set value for De Borst method (plane stress)
 !
     if (l_deborst) then
         call nmimck(ds_print, 'DEBORST  ', 'DE BORST...', .true._1)
-    endif
+    end if
 !
 ! - Set value for ROM error indicator
 !
     if (l_rom .and. .not. l_hrom) then
         call nmimcr(ds_print, 'EREF_ROM ', eref_rom, .true._1)
-    endif
+    end if
 
 !
 end subroutine

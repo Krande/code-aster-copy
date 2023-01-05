@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,28 +43,28 @@ subroutine chmalg(mate, pgl, ni, nj)
 ! .....................................................................
     if (nj .gt. 7) then
         goto 999
-    endif
+    end if
     do i = 1, 7
         do j = 1, 7
-            mt(j,i) = 0.d0
+            mt(j, i) = 0.d0
         end do
     end do
 ! --- MATRICE DE TRANSFERT
     do i = 1, 3
         do j = 1, 3
-            mt(i ,j ) = pgl(i,j)
-            mt(i+3,j+3) = pgl(i,j)
+            mt(i, j) = pgl(i, j)
+            mt(i+3, j+3) = pgl(i, j)
         end do
     end do
 !
-    mt(7,7) = 1.d0
+    mt(7, 7) = 1.d0
 ! --- ON EFFECTUE : MATG() = MATE() * MT()
     do k = 1, nj
         do i = 1, ni
-            ii = nj * (i-1)
-            matg(i,k) = 0.d0
+            ii = nj*(i-1)
+            matg(i, k) = 0.d0
             do j = 1, nj
-                matg(i,k) = matg(i,k) + mate(ii+j) * mt(j,k)
+                matg(i, k) = matg(i, k)+mate(ii+j)*mt(j, k)
             end do
         end do
     end do
@@ -72,22 +72,22 @@ subroutine chmalg(mate, pgl, ni, nj)
 !           "MATE" EST RECTANGULAIRE DE DIMENSIONS 7X7
     if (ni .ne. 1) then
         do i = 1, ni
-            ii = nj * (i-1)
+            ii = nj*(i-1)
             do k = 1, nj
                 mate(ii+k) = 0.d0
                 do j = 1, nj
-                    mate(ii+k) = mate(ii+k) + mt(j,i)*matg(j,k)
+                    mate(ii+k) = mate(ii+k)+mt(j, i)*matg(j, k)
                 end do
             end do
         end do
     else
         do i = 1, ni
-            ii = nj * (i-1)
+            ii = nj*(i-1)
             do j = 1, nj
-                mate(ii+j) = matg(i,j)
+                mate(ii+j) = matg(i, j)
             end do
         end do
-    endif
+    end if
 ! .....................................................................
 999 continue
 end subroutine

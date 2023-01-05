@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine te0590(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,7 +42,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +88,7 @@ character(len=16), intent(in) :: option, nomte
     imatuu = 1
     ivectu = 1
     ivarix = 1
-    idbg   = 0
+    idbg = 0
     codret = 0
     matsym = ASTER_TRUE
     typmod = ' '
@@ -101,33 +101,33 @@ character(len=16), intent(in) :: option, nomte
 ! - Get shape functions
 !
 ! - PRES
-    call elrefe_info(elrefe=list_elrefe(3), fami='RIGI', nno=nno3,&
+    call elrefe_info(elrefe=list_elrefe(3), fami='RIGI', nno=nno3, &
                      jvf=ivf3)
 ! - GONF
-    call elrefe_info(elrefe=list_elrefe(2), fami='RIGI', nno=nno2,&
+    call elrefe_info(elrefe=list_elrefe(2), fami='RIGI', nno=nno2, &
                      jvf=ivf2, jdfde=idf2)
 ! - DX, DY, DZ
-    call elrefe_info(elrefe=list_elrefe(1), fami='RIGI', ndim=ndim, nno=nno1,&
+    call elrefe_info(elrefe=list_elrefe(1), fami='RIGI', ndim=ndim, nno=nno1, &
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1)
 !
-    nddl = nno1*ndim + nno2 + nno3
+    nddl = nno1*ndim+nno2+nno3
 !
 ! - Modelling
 !
-    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
-    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Get index of dof
 !
-    call niinit(typmod,&
-                ndim, nno1, nno2, nno3, 0,&
+    call niinit(typmod, &
+                ndim, nno1, nno2, nno3, 0, &
                 vu, vg, vp, vpi)
 !
 ! - Get input fields
@@ -143,7 +143,7 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Compute barycentric center
 !
@@ -160,9 +160,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
     lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
@@ -176,65 +176,65 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call nmtstm(zr(icarcr), imatuu, matsym)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', icoret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
 !
 100 continue
 ! - PETITES DEFORMATIONS
     if (defo_comp(1:6) .eq. 'PETIT ') then
-        call nifipd(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    vu, vg, vp, zr(igeom), typmod,&
-                    option, zi(imate), zk16(icompo), lgpg, zr(icarcr),&
-                    zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut,&
-                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip),&
+        call nifipd(ndim, nno1, nno2, nno3, npg, &
+                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
+                    vu, vg, vp, zr(igeom), typmod, &
+                    option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
+                    zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
+                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
                     lMatr, lVect, &
                     zr(ivectu), zr(imatuu), codret)
     else if (defo_comp .eq. 'GDEF_LOG') then
 !
 ! - PARAMETRES EN SORTIE
-        call nifilg(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    vu, vg, vp, zr(igeom), typmod,&
-                    option, zi(imate), zk16(icompo), lgpg, zr(icarcr),&
-                    zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut,&
+        call nifilg(ndim, nno1, nno2, nno3, npg, &
+                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
+                    vu, vg, vp, zr(igeom), typmod, &
+                    option, zi(imate), zk16(icompo), lgpg, zr(icarcr), &
+                    zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut, &
                     zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, lSigm, lVari,&
+                    lMatr, lVect, lSigm, lVari, &
                     zr(ivectu), zr(imatuu), matsym, codret)
     else if (defo_comp .eq. 'SIMO_MIEHE') then
 !
 ! - PARAMETRES EN SORTIE
         typmod(2) = 'INCO'
-        call nifism(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    idf2, vu, vg, vp, zr(igeom),&
-                    typmod, option, zi(imate), zk16(icompo), lgpg,&
-                    zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
-                    angl_naut, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip),&
+        call nifism(ndim, nno1, nno2, nno3, npg, &
+                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, &
+                    idf2, vu, vg, vp, zr(igeom), &
+                    typmod, option, zi(imate), zk16(icompo), lgpg, &
+                    zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), &
+                    angl_naut, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
                     lMatr, lVect, lMatrPred, &
                     zr(ivectu), zr(imatuu), codret)
     else
         call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
-    endif
+    end if
 !
     if (codret .ne. 0) goto 200
 !       Calcul eventuel de la matrice TGTE par PERTURBATION
-    call tgverm(option, zr(icarcr), zk16(icompo), nno1, nno2,&
-                nno3, zr(igeom), ndim, nddl, zr(iddld),&
-                sdepl, vu, vg, vp, zr(ivectu),&
-                svect, ndim*2*npg, zr(icontp), scont, npg*lgpg,&
-                zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym,&
+    call tgverm(option, zr(icarcr), zk16(icompo), nno1, nno2, &
+                nno3, zr(igeom), ndim, nddl, zr(iddld), &
+                sdepl, vu, vg, vp, zr(ivectu), &
+                svect, ndim*2*npg, zr(icontp), scont, npg*lgpg, &
+                zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym, &
                 epsilo, epsilp, epsilg, varia, iret)
     if (iret .ne. 0) goto 100
 !
@@ -245,162 +245,162 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lSigm) then
         zi(icoret) = codret
-    endif
+    end if
 !
     if (idbg .eq. 1) then
         if (lMatr) then
-            write(6,*) 'MATRICE TANGENTE'
+            write (6, *) 'MATRICE TANGENTE'
             if (matsym) then
                 do ia = 1, nddl
-                    write(6,'(108(1X,E11.4))') (zr(imatuu+(ia*(ia-1)/2)+ja-1),ja=1,ia)
-                enddo
+                    write (6, '(108(1X,E11.4))') (zr(imatuu+(ia*(ia-1)/2)+ja-1), ja=1, ia)
+                end do
             else
 !
 ! - TERME K:UU      KUU(NDIM,NNO1,NDIM,NNO1)
 !
-                write(6,*) 'KUU'
+                write (6, *) 'KUU'
                 ja = 1
                 do na = 1, nno1
                     do ia = 1, ndim
-                        os = (vu(ia,na)-1)*nddl
+                        os = (vu(ia, na)-1)*nddl
                         do nb = 1, nno1
                             do ib = 1, ndim
-                                kk = os+vu(ib,nb)
-                                tab_out(ja)=zr(imatuu+kk-1)
-                                ja=ja+1
-                            enddo
-                        enddo
-                    enddo
-                enddo
+                                kk = os+vu(ib, nb)
+                                tab_out(ja) = zr(imatuu+kk-1)
+                                ja = ja+1
+                            end do
+                        end do
+                    end do
+                end do
                 do ia = 1, nno1*ndim
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja),ja=1,nno1*ndim)
-                enddo
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja), ja=1, nno1*ndim)
+                end do
 !
 ! - TERME K:GG      KGG(NNO2,NNO2)
 !
-                write(6,*) 'KGG'
+                write (6, *) 'KGG'
                 ja = 1
                 do na = 1, nno2
                     os = (vg(na)-1)*nddl
                     do ia = 1, nno2
-                        kk = os + vg(ia)
-                        tab_out(ja)=zr(imatuu+kk-1)
-                        ja=ja+1
+                        kk = os+vg(ia)
+                        tab_out(ja) = zr(imatuu+kk-1)
+                        ja = ja+1
                     end do
                 end do
                 do ia = 1, nno2
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja),ja=1,nno2)
-                enddo
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja), ja=1, nno2)
+                end do
 !
 ! - TERME K:UP      KUP(NDIM,NNO1,NNO3)
 !
-                write(6,*) 'KUP'
+                write (6, *) 'KUP'
                 ja = 1
                 do na = 1, nno1
                     do ia = 1, ndim
-                        os = (vu(ia,na)-1)*nddl
+                        os = (vu(ia, na)-1)*nddl
                         do nb = 1, nno3
-                            kk = os + vp(nb)
-                            tab_out(ja)=zr(imatuu+kk-1)
-                            ja=ja+1
+                            kk = os+vp(nb)
+                            tab_out(ja) = zr(imatuu+kk-1)
+                            ja = ja+1
                         end do
-                    enddo
-                enddo
+                    end do
+                end do
                 do ia = 1, nno1*ndim
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno3+ja),ja=1,nno3)
-                enddo
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno3+ja), ja=1, nno3)
+                end do
 !
 ! - TERME K:PU      KPU(NDIM,NNO3,NNO1)
 !
-                write(6,*) 'KPU'
+                write (6, *) 'KPU'
                 ja = 1
                 do ia = 1, nno3
                     os = (vp(ia)-1)*nddl
                     do nb = 1, nno1
                         do ib = 1, ndim
-                            kk = os + vu(ib,nb)
-                            tab_out(ja)=zr(imatuu+kk-1)
-                            ja=ja+1
+                            kk = os+vu(ib, nb)
+                            tab_out(ja) = zr(imatuu+kk-1)
+                            ja = ja+1
                         end do
                     end do
                 end do
                 do ia = 1, nno3
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja),ja=1,nno1*ndim)
-                enddo
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja), ja=1, nno1*ndim)
+                end do
 !
 ! - TERME K:UG      KUG(NDIM,NNO1,NNO2)
 !
-                write(6,*) 'KUG'
+                write (6, *) 'KUG'
                 ja = 1
                 do na = 1, nno1
                     do ia = 1, ndim
-                        os = (vu(ia,na)-1)*nddl
+                        os = (vu(ia, na)-1)*nddl
                         do nb = 1, nno2
-                            kk = os + vg(nb)
-                            tab_out(ja)=zr(imatuu+kk-1)
-                            ja=ja+1
+                            kk = os+vg(nb)
+                            tab_out(ja) = zr(imatuu+kk-1)
+                            ja = ja+1
                         end do
-                    enddo
-                enddo
+                    end do
+                end do
                 do ia = 1, nno1*ndim
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja),ja=1,nno2)
-                enddo
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja), ja=1, nno2)
+                end do
 !
 ! - TERME K:GU      KGU(NDIM,NNO2,NNO1)
 !
-                write(6,*) 'KGU'
+                write (6, *) 'KGU'
                 ja = 1
                 do ia = 1, nno2
                     os = (vg(ia)-1)*nddl
                     do nb = 1, nno1
                         do ib = 1, ndim
-                            kk = os + vu(ib,nb)
-                            tab_out(ja)=zr(imatuu+kk-1)
-                            ja=ja+1
+                            kk = os+vu(ib, nb)
+                            tab_out(ja) = zr(imatuu+kk-1)
+                            ja = ja+1
                         end do
-                    enddo
-                enddo
+                    end do
+                end do
                 do ia = 1, nno2
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja),ja=1,nno1*ndim)
-                enddo
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja), ja=1, nno1*ndim)
+                end do
 !
 ! - TERME K:PG      KPG(NNO3,NNO2)
 !
-                write(6,*) 'KPG'
+                write (6, *) 'KPG'
                 ja = 1
                 do ia = 1, nno3
                     os = (vp(ia)-1)*nddl
                     do ib = 1, nno2
-                        kk = os + vg(ib)
-                        tab_out(ja)=zr(imatuu+kk-1)
-                        ja=ja+1
-                    enddo
-                enddo
+                        kk = os+vg(ib)
+                        tab_out(ja) = zr(imatuu+kk-1)
+                        ja = ja+1
+                    end do
+                end do
                 do ia = 1, nno3
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja),ja=1,nno2)
-                enddo
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja), ja=1, nno2)
+                end do
 !
 ! - TERME K:GP      KPG(NNO2,NNO3)
 !
-                write(6,*) 'KGP'
+                write (6, *) 'KGP'
                 ja = 1
                 do ia = 1, nno2
                     os = (vg(ia)-1)*nddl
                     do ib = 1, nno3
-                        kk = os + vp(ib)
-                        tab_out(ja)=zr(imatuu+kk-1)
-                        ja=ja+1
-                    enddo
-                enddo
+                        kk = os+vp(ib)
+                        tab_out(ja) = zr(imatuu+kk-1)
+                        ja = ja+1
+                    end do
+                end do
                 do ia = 1, nno2
-                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno3+ja),ja=1,nno3)
-                enddo
-            endif
-        endif
+                    write (6, '(108(1X,E11.4))') (tab_out((ia-1)*nno3+ja), ja=1, nno3)
+                end do
+            end if
+        end if
         if (lVect) then
-            write(6,*) 'FORCE INTERNE'
-            write(6,'(108(1X,E11.4))') (zr(ivectu+ja-1),ja=1,nddl)
-        endif
-    endif
+            write (6, *) 'FORCE INTERNE'
+            write (6, '(108(1X,E11.4))') (zr(ivectu+ja-1), ja=1, nddl)
+        end if
+    end if
 !
 end subroutine

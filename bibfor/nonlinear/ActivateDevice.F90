@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine ActivateDevice(ds_measure, device_type_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -57,7 +57,7 @@ implicit none
 ! - Activation
 !
     ds_measure%l_device_acti(device_indx) = .true._1
-    ds_measure%nb_device_acti             = ds_measure%nb_device_acti + 1
+    ds_measure%nb_device_acti = ds_measure%nb_device_acti+1
 !
 ! - Save device
 !

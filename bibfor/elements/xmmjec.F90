@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
-                  nsingm, ffe, ffm, norm, jgeom,&
-                  jdepde, fk_escl, fk_mait, jddle, jddlm,&
-                  nfhe, nfhm, lmulti, heavn, heavfa,&
+subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge, &
+                  nsingm, ffe, ffm, norm, jgeom, &
+                  jdepde, fk_escl, fk_mait, jddle, jddlm, &
+                  nfhe, nfhm, lmulti, heavn, heavfa, &
                   jeuca)
 !
 !
@@ -82,25 +82,25 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
     iescl(2) = -1
     imait(1) = 1
     imait(2) = 1
-    nne=jnne(1)
-    nnes=jnne(2)
-    nnem=jnne(3)
-    nnm=jnnm(1)
-    nnms=jnnm(2)
-    ddles=jddle(1)
-    ddlem=jddle(2)
-    ddlms=jddlm(1)
-    ddlmm=jddlm(2)
+    nne = jnne(1)
+    nnes = jnne(2)
+    nnem = jnne(3)
+    nnm = jnnm(1)
+    nnms = jnnm(2)
+    ddles = jddle(1)
+    ddlem = jddle(2)
+    ddlms = jddlm(1)
+    ddlmm = jddlm(2)
     nddle = ddles*nnes+ddlem*nnem
 !
     jeuca = 0.d0
     pose(:) = 0.d0
     posm(:) = 0.d0
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
-    if (.not.lmulti) then
-        hea_fa(1)=xcalc_code(1,he_inte=[-1])
-        hea_fa(2)=xcalc_code(1,he_inte=[+1])
-    endif
+    if (.not. lmulti) then
+        hea_fa(1) = xcalc_code(1, he_inte=[-1])
+        hea_fa(2) = xcalc_code(1, he_inte=[+1])
+    end if
 !
 ! --- CALCUL DE LA POSITION COURANTE DU POINT ESCLAVE
 !
@@ -110,32 +110,32 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
             if (nnm .ne. 0) then
                 if (lmulti) then
                     do ifh = 1, nfhe
-                        iescl(1+ifh)=xcalc_heav(heavn(nfhe*(inoes-1)+ifh),&
-                                                heavfa(1),&
-                                                heavn(nfhe*nne+nfhm*nnm+inoes))
+                        iescl(1+ifh) = xcalc_heav(heavn(nfhe*(inoes-1)+ifh), &
+                                                  heavfa(1), &
+                                                  heavn(nfhe*nne+nfhm*nnm+inoes))
                     end do
                 else
-                    iescl(2)=xcalc_heav(heavn(inoes),&
-                                            hea_fa(1),&
-                                            heavn(nfhe*nne+nfhm*nnm+inoes))
-                endif
+                    iescl(2) = xcalc_heav(heavn(inoes), &
+                                          hea_fa(1), &
+                                          heavn(nfhe*nne+nfhm*nnm+inoes))
+                end if
                 pos = zr(jgeom-1+ndim*(inoes-1)+idim)
                 do iddl = 1, 1+nfhe
-                    pl = in + (iddl-1)*ndim + idim
-                    pos = pos + iescl(iddl)*zr(jdepde-1+pl)
+                    pl = in+(iddl-1)*ndim+idim
+                    pos = pos+iescl(iddl)*zr(jdepde-1+pl)
                 end do
-                pose(idim) = pose(idim) + pos*ffe(inoes)
+                pose(idim) = pose(idim)+pos*ffe(inoes)
                 do alp = 1, ndim*nsinge
-                    pl = in + (1+nfhe+nsinge-1)*ndim + alp
-                    pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)* zr(jdepde-1+pl)
+                    pl = in+(1+nfhe+nsinge-1)*ndim+alp
+                    pose(idim) = pose(idim)-fk_escl(inoes, alp, idim)*zr(jdepde-1+pl)
                 end do
 !
             else
                 do alp = 1, ndim*nsinge
-                    pl = in + alp
-                    pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)* zr( jdepde-1+pl)
-                enddo
-            endif
+                    pl = in+alp
+                    pose(idim) = pose(idim)-fk_escl(inoes, alp, idim)*zr(jdepde-1+pl)
+                end do
+            end if
         end do
     end do
 !
@@ -144,35 +144,35 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
     do idim = 1, ndim
         do inom = 1, nnm
             call indent(inom, ddlms, ddlmm, nnms, in)
-            in = in + nddle
+            in = in+nddle
             if (lmulti) then
                 do ifh = 1, nfhm
-                    imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(inom-1)+ifh),&
-                                            heavfa(2),&
-                                            heavn((1+nfhe)*nne+nfhm*nnm+inom))
+                    imait(1+ifh) = xcalc_heav(heavn(nfhe*nne+nfhm*(inom-1)+ifh), &
+                                              heavfa(2), &
+                                              heavn((1+nfhe)*nne+nfhm*nnm+inom))
                 end do
             else
-                imait(2)=xcalc_heav(heavn(nne+inom),&
-                                        hea_fa(2),&
-                                        heavn((1+nfhe)*nne+nfhm*nnm+inom))
-            endif
+                imait(2) = xcalc_heav(heavn(nne+inom), &
+                                      hea_fa(2), &
+                                      heavn((1+nfhe)*nne+nfhm*nnm+inom))
+            end if
             pos = zr(jgeom-1+nne*ndim+(inom-1)*ndim+idim)
             do iddl = 1, 1+nfhm
-                pl = in + (iddl-1)*ndim + idim
-                pos = pos + imait(iddl)*zr(jdepde-1+pl)
+                pl = in+(iddl-1)*ndim+idim
+                pos = pos+imait(iddl)*zr(jdepde-1+pl)
             end do
-            posm(idim) = posm(idim) + pos*ffm(inom)
+            posm(idim) = posm(idim)+pos*ffm(inom)
             do alp = 1, ndim*nsingm
-                pl = in + (1+nfhm+nsingm-1)*ndim + alp
-                posm(idim) = posm(idim) + fk_mait(inom,alp,idim)* zr( jdepde-1+pl)
-            enddo
+                pl = in+(1+nfhm+nsingm-1)*ndim+alp
+                posm(idim) = posm(idim)+fk_mait(inom, alp, idim)*zr(jdepde-1+pl)
+            end do
         end do
     end do
 !
 ! --- CALCUL DU JEU
 !
     do idim = 1, ndim
-        jeuca = jeuca + norm(idim)*(pose(idim)-posm(idim))
+        jeuca = jeuca+norm(idim)*(pose(idim)-posm(idim))
     end do
 !
 end subroutine

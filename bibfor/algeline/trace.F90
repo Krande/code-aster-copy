@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ function trace(ndi, s)
 ! ======================================================================
     trace = 0.0d0
     do ii = 1, ndi
-        trace = trace + s(ii)
+        trace = trace+s(ii)
     end do
 ! ======================================================================
 end function

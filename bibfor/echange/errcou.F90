@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! *   LOGICIEL CODE_ASTER - COUPLAGE ASTER/EDYOS - Copyright EDF 2009  *
 ! This file is part of code_aster.
 !
@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
+subroutine errcou(nomprg, numpas, nomvar, info, nprog, &
                   nlu)
 !
 ! person_in_charge: nicolas.greffet at edf.fr
@@ -119,7 +119,7 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
 #include "asterfort/utmess.h"
     character(len=8) :: nomprg
     integer(kind=4) :: numpas, info, nprog, nlu
-    integer, parameter :: lenvar=144
+    integer, parameter :: lenvar = 144
     character(len=lenvar) :: nomvar
 !
 !
@@ -137,182 +137,182 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
 !     ====================
     if (info .eq. 0 .and. nprog .eq. nlu) goto 9999
     if (info .eq. 0 .and. nprog .ne. nlu) then
-        valk(1)=nomprg
-        valk(2)=nomvar
+        valk(1) = nomprg
+        valk(2) = nomvar
         call utmess('A', 'EDYOS_41', nk=2, valk=valk)
         goto 9999
-    endif
+    end if
 !
 !     PROBLEMES LORS DE L'APPEL YACS
 !     ==============================
-    valk(1)=nomprg
-    valk(2)=nomvar
-    vali(1)=numpas
+    valk(1) = nomprg
+    valk(2) = nomvar
+    vali(1) = numpas
     call utmess('F', 'EDYOS_42', nk=2, valk=valk, si=vali(1))
     if (info .eq. 1) then
         call utmess('F', 'EDYOS_1')
-    endif
+    end if
 !
     if (info .eq. 2) then
         call utmess('F', 'EDYOS_2')
-    endif
+    end if
 !
     if (info .eq. 3) then
         call utmess('F', 'EDYOS_3')
-    endif
+    end if
 !
     if (info .eq. 4) then
         call utmess('F', 'EDYOS_4')
-    endif
+    end if
 !
     if (info .eq. 5) then
         call utmess('F', 'EDYOS_5')
-    endif
+    end if
 !
     if (info .eq. 6) then
         call utmess('F', 'EDYOS_6')
-    endif
+    end if
 !
     if (info .eq. 7) then
         call utmess('F', 'EDYOS_7')
-    endif
+    end if
 !
     if (info .eq. 8) then
         call utmess('F', 'EDYOS_8')
-    endif
+    end if
 !
     if (info .eq. 9) then
         call utmess('F', 'EDYOS_9')
-    endif
+    end if
 !
     if (info .eq. 10) then
         call utmess('F', 'EDYOS_10')
-    endif
+    end if
 !
     if (info .eq. 11) then
         call utmess('F', 'EDYOS_11')
-    endif
+    end if
 !
     if (info .eq. 12) then
         call utmess('F', 'EDYOS_12')
-    endif
+    end if
 !
     if (info .eq. 13) then
         call utmess('F', 'EDYOS_13')
-    endif
+    end if
 !
     if (info .eq. 14) then
         call utmess('F', 'EDYOS_14')
-    endif
+    end if
 !
     if (info .eq. 15) then
         call utmess('F', 'EDYOS_15')
-    endif
+    end if
 !
     if (info .eq. 16) then
         call utmess('F', 'EDYOS_16')
-    endif
+    end if
 !
     if (info .eq. 17) then
         call utmess('F', 'EDYOS_17')
-    endif
+    end if
 !
     if (info .eq. 18) then
         call utmess('F', 'EDYOS_18')
-    endif
+    end if
 !
     if (info .eq. 19) then
         call utmess('F', 'EDYOS_19')
-    endif
+    end if
 !
     if (info .eq. 20) then
         call utmess('F', 'EDYOS_20')
-    endif
+    end if
 !
     if (info .eq. 21) then
         call utmess('F', 'EDYOS_21')
-    endif
+    end if
 !
     if (info .eq. 22) then
         call utmess('F', 'EDYOS_22')
-    endif
+    end if
 !
     if (info .eq. 23) then
         call utmess('F', 'EDYOS_23')
-    endif
+    end if
 !
     if (info .eq. 24) then
         call utmess('F', 'EDYOS_24')
-    endif
+    end if
 !
     if (info .eq. 25) then
         call utmess('F', 'EDYOS_25')
-    endif
+    end if
 !
     if (info .eq. 26) then
         call utmess('F', 'EDYOS_26')
-    endif
+    end if
 !
     if (info .eq. 27) then
         call utmess('F', 'EDYOS_27')
-    endif
+    end if
 !
     if (info .eq. 28) then
         call utmess('F', 'EDYOS_28')
-    endif
+    end if
 !
     if (info .eq. 29) then
         call utmess('F', 'EDYOS_29')
-    endif
+    end if
 !
     if (info .eq. 30) then
         call utmess('F', 'EDYOS_30')
-    endif
+    end if
 !
     if (info .eq. 31) then
         call utmess('F', 'EDYOS_31')
-    endif
+    end if
 !
     if (info .eq. 32) then
         call utmess('F', 'EDYOS_32')
-    endif
+    end if
 !
     if (info .eq. 33) then
         call utmess('F', 'EDYOS_33')
-    endif
+    end if
 !
     if (info .eq. 34) then
         call utmess('F', 'EDYOS_34')
-    endif
+    end if
 !
     if (info .eq. 35) then
         call utmess('F', 'EDYOS_35')
-    endif
+    end if
 !
     if (info .eq. 36) then
         call utmess('F', 'EDYOS_36')
-    endif
+    end if
 !
     if (info .eq. 37) then
         call utmess('F', 'EDYOS_37')
-    endif
+    end if
 !
     if (info .eq. 38) then
         call utmess('F', 'EDYOS_38')
-    endif
+    end if
 !
     if (info .eq. 39) then
         call utmess('F', 'EDYOS_39')
-    endif
+    end if
 !
     if (info .eq. 40) then
         call utmess('F', 'EDYOS_40')
-    endif
+    end if
 !
 !     SORTIE DE L'EXECUTION
 !     =====================
 !
-9999  continue
+9999 continue
     call jedema()
 !
 end subroutine

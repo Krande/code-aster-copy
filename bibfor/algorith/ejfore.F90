@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
-                  npg, ipg, wref, vff1, vff2,&
-                  idf2, dffr2, geom, iu, ip,&
+subroutine ejfore(ndim, nddl, axi, nno1, nno2, &
+                  npg, ipg, wref, vff1, vff2, &
+                  idf2, dffr2, geom, iu, ip, &
                   sigref, fhyref, vect)
 !
 ! person_in_charge: jerome.laverne at edf.fr
@@ -61,19 +61,19 @@ subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
 !
     do kpg = 1, npg
 !
-        call ejcine(ndim, axi, nno1, nno2, vff1(1, kpg),&
-                    vff2(1, kpg), wref(kpg), dffr2(1, 1, kpg), geom, wg,&
+        call ejcine(ndim, axi, nno1, nno2, vff1(1, kpg), &
+                    vff2(1, kpg), wref(kpg), dffr2(1, 1, kpg), geom, wg, &
                     kpg, ipg, idf2, rot, b)
 !
 !      VECTEUR FINT:U
         do n = 1, 2*nno1
             do i = 1, ndim
-                kk = iu(i,n)
+                kk = iu(i, n)
                 temp = 0.d0
                 do j = 1, ndim
-                    temp = temp + abs(b(j,i,n))*sigref/ndim
-                enddo
-                vect(kk) = vect(kk) + wg*temp
+                    temp = temp+abs(b(j, i, n))*sigref/ndim
+                end do
+                vect(kk) = vect(kk)+wg*temp
             end do
         end do
 !
@@ -82,9 +82,9 @@ subroutine ejfore(ndim, nddl, axi, nno1, nno2,&
             kk = ip(n)
             temp = 0.d0
             do i = ndim+1, 2*ndim-1
-                temp = temp + abs(b(i,ndim+1,2*nno1+n))*fhyref/(ndim- 1)
-            enddo
-            vect(kk) = vect(kk) + wg*temp
+                temp = temp+abs(b(i, ndim+1, 2*nno1+n))*fhyref/(ndim-1)
+            end do
+            vect(kk) = vect(kk)+wg*temp
         end do
 !
     end do

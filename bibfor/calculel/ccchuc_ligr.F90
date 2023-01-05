@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, ligrel_old,&
+subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, ligrel_old, &
                        ligrel_new)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,13 +31,13 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: model
-character(len=24), intent(in) :: list_elem_stor
-integer, intent(in) :: nb_elem_old
-character(len=24), intent(in) :: list_elem_new
-integer, intent(in) :: nb_elem_new
-character(len=19), intent(in) :: ligrel_old
-character(len=19), intent(out) :: ligrel_new
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: list_elem_stor
+    integer, intent(in) :: nb_elem_old
+    character(len=24), intent(in) :: list_elem_new
+    integer, intent(in) :: nb_elem_new
+    character(len=19), intent(in) :: ligrel_old
+    character(len=19), intent(out) :: ligrel_new
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,13 +68,13 @@ character(len=19), intent(out) :: ligrel_new
     call jeveuo(list_elem_new, 'L', jelem)
     noojb = '12345678.LIGR000000.NBNO'
 
-    if (nb_elem_old < 0)then
+    if (nb_elem_old < 0) then
         nb_elem = -nb_elem_old
         force_new_ligrel = .true.
     else
         nb_elem = nb_elem_old
         force_new_ligrel = .false.
-    endif
+    end if
 !
 ! - Do we need a new <LIGREL> ?
 !
@@ -83,25 +83,25 @@ character(len=19), intent(out) :: ligrel_new
         if (nb_elem_new .ne. nb_elem_old .or. force_new_ligrel) then
             call wkvect(list_elem_stor, 'V V I', nb_elem_new+1, jlist)
             same = .false.
-        endif
+        end if
     else
         call jeveuo(list_elem_stor, 'E', jlist)
         if (zi(jlist-1+1) .ne. nb_elem_new) then
             same = .false.
-            if (zi(jlist-1+1) .lt. nb_elem_new)then
+            if (zi(jlist-1+1) .lt. nb_elem_new) then
                 call jedetr(list_elem_stor)
                 call wkvect(list_elem_stor, 'V V I', nb_elem_new+1, jlist)
-            endif
+            end if
             goto 51
-        endif
+        end if
         do ima = 1, nb_elem_new
             if (zi(jlist-1+ima+1) .ne. zi(jelem-1+ima)) then
                 same = .false.
                 goto 51
-            endif
-        enddo
- 51     continue
-    endif
+            end if
+        end do
+51      continue
+    end if
 !
 ! - Create new <LIGREL> ?
 !
@@ -111,10 +111,10 @@ character(len=19), intent(out) :: ligrel_new
         zi(jlist-1+1) = nb_elem_new
         do ima = 1, nb_elem_new
             zi(jlist-1+ima+1) = zi(jelem-1+ima)
-        enddo
+        end do
         call gnomsd(' ', noojb, 14, 19)
         ligrel_new = noojb(1:19)
         call exlim1(zi(jelem), nb_elem_new, model, 'G', ligrel_new)
-    endif
+    end if
 !
 end subroutine

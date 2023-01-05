@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine recire(typopt, iderre, frexci, fremin, fremax,&
+subroutine recire(typopt, iderre, frexci, fremin, fremax, &
                   pas, nbptmd)
     implicit none
 #include "asterc/getfac.h"
@@ -80,6 +80,6 @@ subroutine recire(typopt, iderre, frexci, fremin, fremax,&
 !
         call getvis('REPONSE', 'NB_POIN_MODE', iocc=1, scal=nbptmd, nbret=ibid)
 !
-    endif
+    end if
 !
 end subroutine

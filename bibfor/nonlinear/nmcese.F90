@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmcese(modele         , numedd    , ds_material, carele, &
-                  ds_constitutive, ds_contact, lischa     , fonact, ds_measure,&
-                  iterat         , sdnume    , sdpilo     , valinc, solalg    ,&
-                  veelem         , veasse    , offset     , typsel, sddisc    ,&
-                  licite         , rho       , eta        , etaf  , criter    ,&
-                  ldccvg         , pilcvg    , matass     , ds_system)
+subroutine nmcese(modele, numedd, ds_material, carele, &
+                  ds_constitutive, ds_contact, lischa, fonact, ds_measure, &
+                  iterat, sdnume, sdpilo, valinc, solalg, &
+                  veelem, veasse, offset, typsel, sddisc, &
+                  licite, rho, eta, etaf, criter, &
+                  ldccvg, pilcvg, matass, ds_system)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -41,22 +41,22 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 !
-integer :: fonact(*)
-integer :: iterat
-real(kind=8) :: rho, offset, eta(2)
-character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
-character(len=24) :: modele, numedd, carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: veelem(*), veasse(*)
-character(len=19) :: solalg(*), valinc(*)
-character(len=24) :: typsel
-integer :: licite(2)
-integer :: ldccvg, pilcvg
-real(kind=8) :: etaf, criter
-type(NL_DS_System), intent(in) :: ds_system
+    integer :: fonact(*)
+    integer :: iterat
+    real(kind=8) :: rho, offset, eta(2)
+    character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
+    character(len=24) :: modele, numedd, carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: veelem(*), veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    character(len=24) :: typsel
+    integer :: licite(2)
+    integer :: ldccvg, pilcvg
+    real(kind=8) :: etaf, criter
+    type(NL_DS_System), intent(in) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,29 +130,29 @@ type(NL_DS_System), intent(in) :: ds_system
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    ASSERT(pilcvg.ge.0)
+    ASSERT(pilcvg .ge. 0)
 !
 ! --- INITIALISATIONS
 !
     call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
-    typpil   = pltk(1)
-    f(:)     = 0.d0
+    typpil = pltk(1)
+    f(:) = 0.d0
     ldccv(:) = -1
-    ldccvg   = -1
+    ldccvg = -1
 !
 ! --- STRATEGIE MIXTE BASEE SUR LE CONTRASTE DES CRITERES DE CHOIX
 !
-    mixte  = typsel.eq.'MIXTE'
+    mixte = typsel .eq. 'MIXTE'
     switch = .false.
 !
 ! --- VERIFICATION DE LA COMPATIBILITE
 !
     if (mixte) then
-        call utdidt('L', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', valk_ = choix)
+        call utdidt('L', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', valk_=choix)
         if (choix .eq. 'AUTRE') then
             call utmess('F', 'MECANONLINE_62')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- STRATEGIE BASEE SUR LES TECHNIQUES EVENT-DRIVEN 'AUTRE_PILOTAGE'
 !
@@ -161,7 +161,7 @@ type(NL_DS_System), intent(in) :: ds_system
 ! --- ETONNANT QUE X-FEM SE GLISSE A CE NIVEAU DU CODE (ET PLUS AVANT)
 !
     call exixfe(modele, ierm)
-    isxfe = (ierm.eq.1)
+    isxfe = (ierm .eq. 1)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -176,35 +176,35 @@ type(NL_DS_System), intent(in) :: ds_system
 !
         if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
             call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
-            swloun = plir(1)*plir(6).lt.0.d0
-        endif
-        call nmceai(numedd, depdel, deppr1, deppr2, depold,&
-                    sdpilo, rho, eta(1), isxfe, f(1),&
+            swloun = plir(1)*plir(6) .lt. 0.d0
+        end if
+        call nmceai(numedd, depdel, deppr1, deppr2, depold, &
+                    sdpilo, rho, eta(1), isxfe, f(1), &
                     indic)
-        call nmceai(numedd, depdel, deppr1, deppr2, depold,&
-                    sdpilo, rho, eta(2), isxfe, f(2),&
+        call nmceai(numedd, depdel, deppr1, deppr2, depold, &
+                    sdpilo, rho, eta(2), isxfe, f(2), &
                     indic)
         if (indic .eq. 0) then
-            call nmceni(numedd, depdel, deppr1, deppr2, rho,&
+            call nmceni(numedd, depdel, deppr1, deppr2, rho, &
                         sdpilo, eta(1), isxfe, f(1))
-            call nmceni(numedd, depdel, deppr1, deppr2, rho,&
+            call nmceni(numedd, depdel, deppr1, deppr2, rho, &
                         sdpilo, eta(2), isxfe, f(2))
-        endif
+        end if
         goto 500
-    endif
+    end if
 !
 ! --- SELECTION SELON LA METHODE CHOISIE: NORM_INCR_DEPL OU MIXTE
 !
     if (typsel .eq. 'NORM_INCR_DEPL' .or. mixte) then
-        call nmceni(numedd, depdel, deppr1, deppr2, rho,&
+        call nmceni(numedd, depdel, deppr1, deppr2, rho, &
                     sdpilo, eta(1), isxfe, f(1))
-        call nmceni(numedd, depdel, deppr1, deppr2, rho,&
+        call nmceni(numedd, depdel, deppr1, deppr2, rho, &
                     sdpilo, eta(2), isxfe, f(2))
 !
 ! ----- SI STRATEGIE MIXTE : EXAMEN DU CONTRASTE
 !
         if (mixte) then
-            miincr = min(f(1),f(2))/max(f(1),f(2))
+            miincr = min(f(1), f(2))/max(f(1), f(2))
             if (miincr .le. contra) goto 600
 !
 ! ------- ECHEC DU CONTRASTE: ON ENCHAINE PAR LA SELECTION RESIDU
@@ -213,23 +213,23 @@ type(NL_DS_System), intent(in) :: ds_system
             fnid(2) = f(2)
         else
             goto 500
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute residual
 !
     if (typsel .eq. 'RESIDU' .or. mixte) then
-        call nmcere(modele         , numedd    , ds_material, carele, &
-                    ds_constitutive, ds_contact, lischa     , fonact, ds_measure,&
-                    iterat         , sdnume    , valinc     , solalg, veelem    ,&
-                    veasse         , offset    , rho        , eta(1), f(1)      ,&
-                    ldccv(1)       , ds_system , matass)
-        call nmcere(modele         , numedd    , ds_material, carele, &
-                    ds_constitutive, ds_contact, lischa     , fonact, ds_measure,&
-                    iterat         , sdnume    , valinc     , solalg, veelem    ,&
-                    veasse         , offset    , rho        , eta(2), f(2)      ,&
-                    ldccv(2)       , ds_system , matass)
-    endif
+        call nmcere(modele, numedd, ds_material, carele, &
+                    ds_constitutive, ds_contact, lischa, fonact, ds_measure, &
+                    iterat, sdnume, valinc, solalg, veelem, &
+                    veasse, offset, rho, eta(1), f(1), &
+                    ldccv(1), ds_system, matass)
+        call nmcere(modele, numedd, ds_material, carele, &
+                    ds_constitutive, ds_contact, lischa, fonact, ds_measure, &
+                    iterat, sdnume, valinc, solalg, veelem, &
+                    veasse, offset, rho, eta(2), f(2), &
+                    ldccv(2), ds_system, matass)
+    end if
 !
 ! - Have a look on "contrast"
 !
@@ -237,13 +237,13 @@ type(NL_DS_System), intent(in) :: ds_system
         if (mixte) then
 ! --------- Probleme: dans nmcere, on a touhjours ldccv(1:2) .gt. 0 !
             if (ldccv(1) .eq. 0 .and. ldccv(2) .eq. 0) then
-                miresi = min(f(1),f(2))/max(f(1),f(2))
+                miresi = min(f(1), f(2))/max(f(1), f(2))
                 if (miresi .le. contra) goto 600
-            endif
+            end if
         else
             goto 500
-        endif
-    endif
+        end if
+    end if
 !
 ! --- STRATEGIE MIXTE: LES DEUX CONTRASTES SONT INSUFFISANTS
 ! --- ON REVIENT SUR NORM_INCR_DEPL ET ON TESTE LES CYCLES
@@ -253,34 +253,34 @@ type(NL_DS_System), intent(in) :: ds_system
         f(2) = fnid(2)
         ldccv(1) = 0
         ldccv(2) = 0
-        switch = nmrcyc(sddisc,iterat,precyc)
+        switch = nmrcyc(sddisc, iterat, precyc)
         goto 600
-    endif
+    end if
 !
 500 continue
 !
 ! --- PERMUTATION PAR EVENT DRIVEN (HORS STRATEGIE 'MIXTE')
 !
-    call utdidt('L', sddisc, 'ECHE', 'CHOIX_SOLU_PILO',&
-                valk_ = choix)
-    ASSERT(choix.eq.'NATUREL'.or.choix.eq.'AUTRE')
+    call utdidt('L', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', &
+                valk_=choix)
+    ASSERT(choix .eq. 'NATUREL' .or. choix .eq. 'AUTRE')
     if (choix .eq. 'AUTRE' .or. swloun) then
         switch = .true.
         txt = 'NATUREL'
         if (choix .eq. 'AUTRE') then
-            call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', valk_ = txt)
-        endif
-    endif
+            call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', valk_=txt)
+        end if
+    end if
 !
 600 continue
 !
 ! --- RETOUR DE LA SELECTION AVEC EVENTUELLEMENT INTERVERSION
 !
     sel = 2
-    if ((f(1).le.f(2) .and. .not.switch) .or. (f(1).gt.f(2) .and. switch)) then
-        sel=1
-    endif
-    etaf   = eta(sel)
+    if ((f(1) .le. f(2) .and. .not. switch) .or. (f(1) .gt. f(2) .and. switch)) then
+        sel = 1
+    end if
+    etaf = eta(sel)
     pilcvg = licite(sel)
     ldccvg = ldccv(sel)
     criter = f(sel)

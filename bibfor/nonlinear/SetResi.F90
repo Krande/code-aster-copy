@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine SetResi(ds_conv   , type_ ,&
-                   col_name_ , col_name_locus_, vale_calc_  , locus_calc_, user_para_,&
-                   l_conv_   , event_type_    , l_resi_test_)
+subroutine SetResi(ds_conv, type_, &
+                   col_name_, col_name_locus_, vale_calc_, locus_calc_, user_para_, &
+                   l_conv_, event_type_, l_resi_test_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -66,71 +66,71 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_type  = 0
+    i_type = 0
     nb_resi = ds_conv%nb_resi
 !
 ! - On all residuals
 !
-    if (.not.present(type_)) then
+    if (.not. present(type_)) then
         do i_resi = 1, nb_resi
             if (present(vale_calc_)) then
-                ds_conv%list_resi(i_resi)%vale_calc      = vale_calc_
-            endif
+                ds_conv%list_resi(i_resi)%vale_calc = vale_calc_
+            end if
             if (present(locus_calc_)) then
-                ds_conv%list_resi(i_resi)%locus_calc     = locus_calc_
-            endif
+                ds_conv%list_resi(i_resi)%locus_calc = locus_calc_
+            end if
             if (present(user_para_)) then
-                ds_conv%list_resi(i_resi)%user_para      = user_para_
-            endif
+                ds_conv%list_resi(i_resi)%user_para = user_para_
+            end if
             if (present(l_conv_)) then
-                ds_conv%list_resi(i_resi)%l_conv         = l_conv_
-            endif
+                ds_conv%list_resi(i_resi)%l_conv = l_conv_
+            end if
             if (present(col_name_)) then
-                ds_conv%list_resi(i_resi)%col_name       = col_name_
-            endif
+                ds_conv%list_resi(i_resi)%col_name = col_name_
+            end if
             if (present(col_name_locus_)) then
                 ds_conv%list_resi(i_resi)%col_name_locus = col_name_locus_
-            endif
+            end if
             if (present(event_type_)) then
-                ds_conv%list_resi(i_resi)%event_type     = event_type_
-            endif
+                ds_conv%list_resi(i_resi)%event_type = event_type_
+            end if
             if (present(l_resi_test_)) then
-                ds_conv%l_resi_test(i_resi)              = l_resi_test_
-            endif
+                ds_conv%l_resi_test(i_resi) = l_resi_test_
+            end if
         end do
-    endif
+    end if
 !
 ! - On one residual
 !
     if (present(type_)) then
         do i_resi = 1, nb_resi
             if (ds_conv%list_resi(i_resi)%type .eq. type_) then
-                ASSERT(i_type.eq.0)
+                ASSERT(i_type .eq. 0)
                 i_type = i_resi
-            endif
+            end if
         end do
-        ASSERT(i_type.ne.0)
+        ASSERT(i_type .ne. 0)
         if (present(vale_calc_)) then
-            ds_conv%list_resi(i_type)%vale_calc  = vale_calc_
-        endif
+            ds_conv%list_resi(i_type)%vale_calc = vale_calc_
+        end if
         if (present(locus_calc_)) then
             ds_conv%list_resi(i_type)%locus_calc = locus_calc_
-        endif
+        end if
         if (present(user_para_)) then
-            ds_conv%list_resi(i_type)%user_para  = user_para_
-        endif
+            ds_conv%list_resi(i_type)%user_para = user_para_
+        end if
         if (present(l_conv_)) then
-            ds_conv%list_resi(i_type)%l_conv     = l_conv_
-        endif
+            ds_conv%list_resi(i_type)%l_conv = l_conv_
+        end if
         if (present(col_name_)) then
-            ds_conv%list_resi(i_type)%col_name   = col_name_
-        endif
+            ds_conv%list_resi(i_type)%col_name = col_name_
+        end if
         if (present(event_type_)) then
             ds_conv%list_resi(i_type)%event_type = event_type_
-        endif
+        end if
         if (present(l_resi_test_)) then
             ds_conv%l_resi_test(i_type) = l_resi_test_
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

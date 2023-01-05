@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
+subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
                   nbmod, nbint, solveu)
 !
 !
@@ -64,8 +64,8 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     character(len=19) :: imped, lismat(2), nume91, solveu
     character(len=24) :: indin1
     integer :: i1, ibid, iret, j1, k1, l1, nbeq1, nbmod, isst1, llint1, nbddl1
-    integer :: tach1,  lmod1,  lbid,   leff1
-    integer :: lintf, nbint,  lcopy1, lsecme, limped, unit, numsst
+    integer :: tach1, lmod1, lbid, leff1
+    integer :: lintf, nbint, lcopy1, lsecme, limped, unit, numsst
     real(kind=8) :: travm, travk, traint, comlin(2), shift
     character(len=24) :: lisint
     real(kind=8), pointer :: mode_sst1_eff2(:) => null()
@@ -76,7 +76,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     integer, pointer :: matrice_raid(:) => null()
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
-    i1=numsst
+    i1 = numsst
 !
 !-- RECHERCHE DU MACRO ELEMENT ASSOCIE A LA SST
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
@@ -90,38 +90,38 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !------------------------------------------------------------C
 !
     call codent(numsst, 'D0', k4bid)
-    imped='&&OP0091.IMPED'//k4bid
+    imped = '&&OP0091.IMPED'//k4bid
 !
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
 !
     call jeveuo(zk8(ibid)//'.MAEL_MASS_REFE', 'L', lbid)
-    mmass=zk24(lbid+1)(1:8)
+    mmass = zk24(lbid+1) (1:8)
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
-    mraid=zk24(lbid+1)(1:8)
+    mraid = zk24(lbid+1) (1:8)
     call mtdefs(imped, mmass, 'V', ' ')
-    lismat(1)=mraid
-    lismat(2)=mmass
+    lismat(1) = mraid
+    lismat(2) = mmass
 !
     call dismoi('NOM_NUME_DDL', mraid, 'MATR_ASSE', repk=nume91)
 !
     call getvr8(' ', 'SHIFT', scal=shift, nbret=ibid)
-    comlin(1)=1.d0
-    comlin(2)=-((shift*2.d0*3.1415927d0)**2)
-    listyp(1)='R'
-    listyp(2)='R'
-    call mtcmbl(2, listyp, comlin, lismat, imped,&
+    comlin(1) = 1.d0
+    comlin(2) = -((shift*2.d0*3.1415927d0)**2)
+    listyp(1) = 'R'
+    listyp(2) = 'R'
+    call mtcmbl(2, listyp, comlin, lismat, imped, &
                 ' ', nume91, 'ELIM1')
     call mtdscr(imped)
     call jeveuo(imped(1:19)//'.&INT', 'E', limped)
 !
 !
-    call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
+    call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped, &
                 ibid, -9999)
     if (iret .eq. 2) then
         call utmess('F', 'ALGELINE4_37', sk=imped)
-    endif
+    end if
 !
-    rest1='&&91'//k4bid
+    rest1 = '&&91'//k4bid
     call jeveuo(jexnum(rest1//'           .TACH', 1), 'L', tach1)
     call jeveuo('&&OP0091.MODE_SST1', 'E', lmod1)
     call jeveuo('&&OP0091.MODE_SST1_EFF1', 'E', leff1)
@@ -137,7 +137,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !
 !-- BOUCLE SUR LES MODES
     do j1 = 1, nbmod
-        call jeveuo(zk24(tach1+j1-1)(1:19)//'.VALE', 'L', ibid)
+        call jeveuo(zk24(tach1+j1-1) (1:19)//'.VALE', 'L', ibid)
 !
 !-- RECOPIE DANS UN VECTEUR DE TRAVAIL
         call lceqvn(nbeq1, zr(ibid), zr(lcopy1))
@@ -150,51 +150,51 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !
 !-- ANNULATION DES COMPOSANTES ASSOCIEES AUX INTERFACES
         do k1 = 1, nbint
-            indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
+            indin1 = '&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
             call jeveuo(indin1, 'L', llint1)
             call jelira(indin1, 'LONMAX', nbddl1)
             do l1 = 1, nbddl1
                 if (zi(llint1+l1-1) .gt. 0) then
-                    zr(lmod1+zi(llint1+l1-1)-1)=0
-                endif
+                    zr(lmod1+zi(llint1+l1-1)-1) = 0
+                end if
             end do
         end do
 !
 !-- CALCUL DES TRAVAUX
-        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1, &
                     .true._1)
 !
-        travm=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
-        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), mode_sst1_eff2, 1,&
+        travm = ddot(nbeq1, zr(lmod1), 1, zr(leff1), 1)
+        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), mode_sst1_eff2, 1, &
                     .true._1)
-        travk=ddot(nbeq1,zr(lmod1),1,mode_sst1_eff2,1)
-        traint=travk-(pulsa_propres(j1)**2)*travm
-        if (pulsa_propres(j1) .gt. 1) traint=traint/pulsa_propres(j1)
-        write(unit,*)'MODE ',j1,' -  TRAVAIL SST =',traint
-        trav_sst(1+nbmod*(i1-1)+j1-1)=traint
+        travk = ddot(nbeq1, zr(lmod1), 1, mode_sst1_eff2, 1)
+        traint = travk-(pulsa_propres(j1)**2)*travm
+        if (pulsa_propres(j1) .gt. 1) traint = traint/pulsa_propres(j1)
+        write (unit, *) 'MODE ', j1, ' -  TRAVAIL SST =', traint
+        trav_sst(1+nbmod*(i1-1)+j1-1) = traint
 !
 !--
 !-- CALCUL DU SECOND MEMBRE ET DES ENRICHISSEMENTS
 !--
-        call daxpy(nbeq1, -(pulsa_propres(j1)**2), zr(leff1), 1, mode_sst1_eff2,&
+        call daxpy(nbeq1, -(pulsa_propres(j1)**2), zr(leff1), 1, mode_sst1_eff2, &
                    1)
         call zerlag(nbeq1, deeq, vectr=zr(leff1))
-        lbid=lsecme
+        lbid = lsecme
         call lceqvn(nbeq1, zr(leff1), zr(lsecme+nbeq1*(j1-1)))
 !
 !-- DIFFERENTIATION DES SECONDS MEMBRES : INTERFACE / INTERIEUR
 !
         do k1 = 1, nbint
-            indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
+            indin1 = '&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
             call jeveuo(indin1, 'L', llint1)
             call jelira(indin1, 'LONMAX', nbddl1)
             do l1 = 1, nbddl1
-                ibid=zi(llint1+l1-1)
+                ibid = zi(llint1+l1-1)
                 if (ibid .gt. 0) then
-                    zr(lsecme+nbeq1*(j1-1)+ibid-1)=0
-                    zr(lsecme+nbeq1*(nbmod+j1-1)+ibid-1)=zr(leff1+&
-                    ibid-1)
-                endif
+                    zr(lsecme+nbeq1*(j1-1)+ibid-1) = 0
+                    zr(lsecme+nbeq1*(nbmod+j1-1)+ibid-1) = zr(leff1+ &
+                                                              ibid-1)
+                end if
             end do
         end do
 !

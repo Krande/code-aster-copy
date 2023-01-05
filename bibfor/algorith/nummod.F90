@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,16 +52,16 @@ subroutine nummod(nugene, modmec)
 !
 !-----RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA OU MODE_GENE
 !
-    call rsorac(modmec, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, k8b, tmod, 1,&
+    call rsorac(modmec, 'LONUTI', ibid, rbid, k8b, &
+                cbid, rbid, k8b, tmod, 1, &
                 n1)
-    nbmode=tmod(1)
+    nbmode = tmod(1)
 !
 !-----TEST NBVECT A UTILISER / NBMODE
 !
     if (n2 .eq. 0) then
         nbvect = nbmode
-    endif
+    end if
     if (nbvect .lt. nbmode) then
         nbmode = nbvect
         call utmess('A', 'ALGORITH9_8')
@@ -69,10 +69,10 @@ subroutine nummod(nugene, modmec)
         call utmess('A', 'ALGORITH9_10')
     else
         nbmode = nbvect
-    endif
+    end if
     if (nbmode .eq. 0) then
         call utmess('F', 'ALGORITH12_81')
-    endif
+    end if
 !
     call nummo1(nugene, modmec, nbmode, typrof)
 !

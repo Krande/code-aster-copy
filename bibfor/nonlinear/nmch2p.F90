@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine nmch2p(solalg)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterfort/nmcha0.h"
     character(len=19) :: solalg(*)
 !
@@ -42,16 +42,16 @@ subroutine nmch2p(solalg)
     character(len=19) :: accold, daccla, accdel, accpr1, accpr2
     character(len=19) :: depso1, depso2
 !
-    data depdel,ddepla    /'&&NMCH2P.DEPDEL','&&NMCH2P.DDEPLA'/
-    data depold           /'&&NMCH2P.DEPOLD'/
-    data deppr1,deppr2    /'&&NMCH2P.DEPPR1','&&NMCH2P.DEPPR2'/
-    data vitdel,dvitla    /'&&NMCH2P.VITDEL','&&NMCH2P.DVITLA'/
-    data vitold           /'&&NMCH2P.VITOLD'/
-    data vitpr1,vitpr2    /'&&NMCH2P.VITPR1','&&NMCH2P.VITPR2'/
-    data accdel,daccla    /'&&NMCH2P.ACCDEL','&&NMCH2P.DACCLA'/
-    data accold           /'&&NMCH2P.ACCOLD'/
-    data accpr1,accpr2    /'&&NMCH2P.ACCPR1','&&NMCH2P.ACCPR2'/
-    data depso1,depso2    /'&&NMCH2P.DEPSO1','&&NMCH2P.DEPSO2'/
+    data depdel, ddepla/'&&NMCH2P.DEPDEL', '&&NMCH2P.DDEPLA'/
+    data depold/'&&NMCH2P.DEPOLD'/
+    data deppr1, deppr2/'&&NMCH2P.DEPPR1', '&&NMCH2P.DEPPR2'/
+    data vitdel, dvitla/'&&NMCH2P.VITDEL', '&&NMCH2P.DVITLA'/
+    data vitold/'&&NMCH2P.VITOLD'/
+    data vitpr1, vitpr2/'&&NMCH2P.VITPR1', '&&NMCH2P.VITPR2'/
+    data accdel, daccla/'&&NMCH2P.ACCDEL', '&&NMCH2P.DACCLA'/
+    data accold/'&&NMCH2P.ACCOLD'/
+    data accpr1, accpr2/'&&NMCH2P.ACCPR1', '&&NMCH2P.ACCPR2'/
+    data depso1, depso2/'&&NMCH2P.DEPSO1', '&&NMCH2P.DEPSO2'/
 !
 ! ----------------------------------------------------------------------
 !

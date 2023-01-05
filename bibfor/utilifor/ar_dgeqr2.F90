@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dgeqr2(m, n, a, lda, tau,&
+subroutine ar_dgeqr2(m, n, a, lda, tau, &
                      work, info)
 !
 !     SUBROUTINE LAPACK CALCULANT UNE FACTORISATION QR.
@@ -105,11 +105,11 @@ subroutine ar_dgeqr2(m, n, a, lda, tau,&
     integer :: info, lda, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: a( lda, * ), tau( * ), work( * )
+    real(kind=8) :: a(lda, *), tau(*), work(*)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: one
-    parameter          ( one = 1.0d+0 )
+    parameter(one=1.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     integer :: i, k
@@ -124,33 +124,33 @@ subroutine ar_dgeqr2(m, n, a, lda, tau,&
     info = 0
     if (m .lt. 0) then
         info = -1
-    else if (n.lt.0) then
+    else if (n .lt. 0) then
         info = -2
-    else if (lda.lt.max( 1, m )) then
+    else if (lda .lt. max(1, m)) then
         info = -4
-    endif
+    end if
     if (info .ne. 0) then
         call xerbla('DGEQR2', -info)
         goto 1000
-    endif
+    end if
 !
-    k = min( m, n )
+    k = min(m, n)
 !
     do i = 1, k
 !
 !        GENERATE ELEMENTARY REFLECTOR H(I) TO ANNIHILATE A(I+1:M,I)
 !
-        call ar_dlarfg(m-i+1, a( i, i ), a( min( i+1, m ), i ), 1, tau( i ))
+        call ar_dlarfg(m-i+1, a(i, i), a(min(i+1, m), i), 1, tau(i))
         if (i .lt. n) then
 !
 !           APPLY H(I) TO A(I:M,I+1:N) FROM THE LEFT
 !
-            aii = a( i, i )
-            a( i, i ) = one
-            call dlarf('L', m-i+1, n-i, a( i, i ), 1,&
-                       tau( i ), a( i, i+1 ), lda, work)
-            a( i, i ) = aii
-        endif
+            aii = a(i, i)
+            a(i, i) = one
+            call dlarf('L', m-i+1, n-i, a(i, i), 1, &
+                       tau(i), a(i, i+1), lda, work)
+            a(i, i) = aii
+        end if
     end do
 1000 continue
 !

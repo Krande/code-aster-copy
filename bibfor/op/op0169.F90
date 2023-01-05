@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,11 @@ subroutine op0169()
     call jeveuo(fsic, 'L', lfsic)
     if (zi(lfsic) .ne. 1) then
         call utmess('F', 'UTILITAI3_2')
-    endif
+    end if
 !
 ! --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL
     prol = nomfon//'.PROL'
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(prol, 'G V K24', 6, lprol)
     zk24(lprol) = 'CONSTANT'
     zk24(lprol+1) = 'LIN LIN '

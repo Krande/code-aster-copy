@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lkcriv(vintr, invar, s, vin, nbmat,&
+subroutine lkcriv(vintr, invar, s, vin, nbmat, &
                   mater, ucriv, seuil)
 !
-    implicit    none
+    implicit none
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
 #include "asterfort/lkvacv.h"
@@ -46,18 +46,18 @@ subroutine lkcriv(vintr, invar, s, vin, nbmat,&
     real(kind=8) :: rcos3t, ucriv
     real(kind=8) :: paravi(3), varvi(4), vintr
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =================================================================
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( lgleps  = 1.0d-8 )
+    parameter(lgleps=1.0d-8)
 ! =================================================================
 ! =================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 ! =================================================================
-    sigc = mater(3,2)
-    pref = mater(1,2)
+    sigc = mater(3, 2)
+    pref = mater(1, 2)
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
@@ -66,8 +66,8 @@ subroutine lkcriv(vintr, invar, s, vin, nbmat,&
 ! --- APPEL A HOC ET  H(THETA) ------------------------------------
 ! =================================================================
 !
-    rcos3t = cos3t (s, pref, lgleps)
-    call lkhtet(nbmat, mater, rcos3t, h0e, h0c,&
+    rcos3t = cos3t(s, pref, lgleps)
+    call lkhtet(nbmat, mater, rcos3t, h0e, h0c, &
                 htheta)
 ! =================================================================
 ! --- APPEL AUX FONCTIONS D ECROUISSAGE DU CRITERE VISQUEUX -------
@@ -78,11 +78,11 @@ subroutine lkcriv(vintr, invar, s, vin, nbmat,&
 ! =================================================================
 ! ---  CRITERE ELASTOPLASTIQUE ------------------------------------
 ! =================================================================
-    ucriv = varvi(1)*sii*htheta + varvi(2)*invar+varvi(3)
+    ucriv = varvi(1)*sii*htheta+varvi(2)*invar+varvi(3)
 !
-    if (ucriv .lt. 0.0d0) ucriv=0.0d0
+    if (ucriv .lt. 0.0d0) ucriv = 0.0d0
 !
-    seuil = sii*htheta - sigc*h0c*(ucriv)**paravi(1)
+    seuil = sii*htheta-sigc*h0c*(ucriv)**paravi(1)
 !      SEUIL =-1.0D0
 ! =================================================================
 end subroutine

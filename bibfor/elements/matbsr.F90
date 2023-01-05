@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
+subroutine matbsr(nb1, vectt, dudxrc, intsr, jdn1rc, &
                   jdn2rc, b1src, b2src)
 !
     implicit none
@@ -30,21 +30,21 @@ subroutine matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
 !
     integer :: intsr
 !
-    real(kind=8) :: vectt ( 3 , 3 )
+    real(kind=8) :: vectt(3, 3)
 !
-    real(kind=8) :: dudxrc ( 9 )
+    real(kind=8) :: dudxrc(9)
 !
-    real(kind=8) :: jdn1rc ( 9 , 51 )
-    real(kind=8) :: jdn2rc ( 9 , 51 )
+    real(kind=8) :: jdn1rc(9, 51)
+    real(kind=8) :: jdn2rc(9, 51)
 !
-    real(kind=8) :: b1src ( 2 , 51 , 4 )
-    real(kind=8) :: b2src ( 2 , 51 , 4 )
+    real(kind=8) :: b1src(2, 51, 4)
+    real(kind=8) :: b2src(2, 51, 4)
 !
-    real(kind=8) :: tmp ( 2 , 51 )
+    real(kind=8) :: tmp(2, 51)
 !
-    real(kind=8) :: hss1 ( 2 , 9 )
+    real(kind=8) :: hss1(2, 9)
 !
-    real(kind=8) :: hss2 ( 2 , 9 )
+    real(kind=8) :: hss2(2, 9)
 !
 !DEB
 !
@@ -55,16 +55,16 @@ subroutine matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
 !
 !---- INITIALISATION
 !
-    call r8inir(2 * 51, 0.d0, tmp, 1)
+    call r8inir(2*51, 0.d0, tmp, 1)
 !
-    call promat(hss1, 2, 2, 9, jdn1rc,&
-                9, 9, 6 * nb1 + 3, tmp)
+    call promat(hss1, 2, 2, 9, jdn1rc, &
+                9, 9, 6*nb1+3, tmp)
 !
 !
-    do j = 1, 6 * nb1 + 3
+    do j = 1, 6*nb1+3
         do i = 1, 2
 !
-            b1src ( i , j , intsr ) = tmp ( i , j )
+            b1src(i, j, intsr) = tmp(i, j)
 !
         end do
     end do
@@ -74,19 +74,19 @@ subroutine matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
 !
 !---- INITIALISATION
 !
-    call r8inir(2 * 51, 0.d0, tmp, 1)
+    call r8inir(2*51, 0.d0, tmp, 1)
 !
 !
 !
 !
-    call promat(hss2, 2, 2, 9, jdn2rc,&
-                9, 9, 6 * nb1 + 3, tmp)
+    call promat(hss2, 2, 2, 9, jdn2rc, &
+                9, 9, 6*nb1+3, tmp)
 !
 !
-    do j = 1, 6 * nb1 + 3
+    do j = 1, 6*nb1+3
         do i = 1, 2
 !
-            b2src ( i , j , intsr ) = tmp ( i , j )
+            b2src(i, j, intsr) = tmp(i, j)
 !
         end do
     end do

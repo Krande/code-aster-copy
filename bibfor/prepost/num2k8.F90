@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,42 +32,42 @@ subroutine num2k8(nomgd, tglok8, tlock8, nblk8, tind)
 !-----------------------------------------------------------------------
     if (nomgd(1:6) .eq. 'SIEF_R') then
         do i = 1, nblk8, 1
-            tind (i) = 0
+            tind(i) = 0
 !  COMPOSANTES TRAITEES: SIXX SIYY SIZZ SIXY SIXZ SIYZ
             do j = 1, 6, 1
                 if (tlock8(i) .eq. tglok8(j)) then
                     tind(i) = j
                     goto 10
-                endif
+                end if
             end do
 !  COMPOSANTES TRAITEES: NXX NYY NXY MXX MYY MXY
             do j = 14, 19, 1
                 if (tlock8(i) .eq. tglok8(j)) then
                     tind(i) = j
                     goto 10
-                endif
+                end if
             end do
- 10         continue
+10          continue
         end do
 !
-    else if (nomgd(1:6).eq.'EPSI_R') then
+    else if (nomgd(1:6) .eq. 'EPSI_R') then
 !  COMPOSANTES TRAITEES: EPXX EPYY EPZZ EPXY EPXZ EPYZ
 !                        EXX EYY EXY KXX KYY KXY
         do i = 1, nblk8, 1
-            tind (i) = 0
+            tind(i) = 0
             do j = 1, 12, 1
                 if (tlock8(i) .eq. tglok8(j)) then
                     tind(i) = j
                     goto 30
-                endif
+                end if
             end do
- 30         continue
+30          continue
         end do
 !
     else
         do i = 1, nblk8, 1
-            tind (i) = 0
+            tind(i) = 0
         end do
-    endif
+    end if
 !
 end subroutine

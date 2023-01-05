@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dilsga(dimdef, dimuel, poids, poids2, b,&
+subroutine dilsga(dimdef, dimuel, poids, poids2, b, &
                   r, vectu)
 ! ======================================================================
     implicit none
@@ -29,8 +29,8 @@ subroutine dilsga(dimdef, dimuel, poids, poids2, b,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    call dgemv('T', dimdef, dimuel, poids, b,&
-               dimdef, r, 1, 1.0d0, vectu,&
+    call dgemv('T', dimdef, dimuel, poids, b, &
+               dimdef, r, 1, 1.0d0, vectu, &
                1)
 ! ======================================================================
 end subroutine

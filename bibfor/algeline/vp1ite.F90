@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
-                  valp, neq, mxiter, tol, iter,&
-                  x0, mx, err, iexcl, place,&
+subroutine vp1ite(lmasse, lraide, ldynam, x, imode, &
+                  valp, neq, mxiter, tol, iter, &
+                  x0, mx, err, iexcl, place, &
                   iquoti, solveu)
     implicit none
 !
@@ -70,31 +70,31 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
     integer :: iret
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
-    matass=zk24(zi(ldynam+1))
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(ldynam+1))
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
 !
 !     --- VECTEUR INITIAL ALEATOIRE ---
     dseed = 526815.0d0
     call ggubs(dseed, neq, x0)
     call vpmort(neq, x0, x, mx, imode)
-    call mrmult('ZERO', lmasse, x0, mx(1, imode), 1,&
+    call mrmult('ZERO', lmasse, x0, mx(1, imode), 1, &
                 .false._1)
     do ieq = 1, neq
-        mx(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
+        mx(ieq, imode) = mx(ieq, imode)*iexcl(ieq)
     end do
 !
     x0mx = 0.d0
     do ieq = 1, neq
-        x0mx = x0mx + x0(ieq)*mx(ieq,imode)
+        x0mx = x0mx+x0(ieq)*mx(ieq, imode)
     end do
 !
     coef = 1.d0/sqrt(abs(x0mx))
-    coeft = sign(1.d0,x0mx)*coef
+    coeft = sign(1.d0, x0mx)*coef
     do ieq = 1, neq
         x0(ieq) = coef*x0(ieq)
-        mx(ieq,imode) = coeft*mx(ieq,imode)
+        mx(ieq, imode) = coeft*mx(ieq, imode)
     end do
 !
     do jter = 1, mxiter
@@ -102,42 +102,42 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 !
 !        --- ELIMINATION DES DDL EXTERNES ---
         do ieq = 1, neq
-            x(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
+            x(ieq, imode) = mx(ieq, imode)*iexcl(ieq)
         end do
 !
 !        --- RESOLUTION DE (K-W.M) X = (M).X ---
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, x(1, imode), [cbid],&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, x(1, imode), [cbid], &
                     criter, .false._1, 0, iret)
 !
 !        --- ORTHOGONALISATION EN CAS DE MODES MULTIPLES  ---
         call vpmort(neq, x(1, imode), x, mx, imode)
 !
 !        --- CALCUL DE M.XN ---
-        call mrmult('ZERO', lmasse, x(1, imode), mx(1, imode), 1,&
+        call mrmult('ZERO', lmasse, x(1, imode), mx(1, imode), 1, &
                     .false._1)
         do ieq = 1, neq
-            mx(ieq,imode) = mx(ieq,imode)*iexcl(ieq)
+            mx(ieq, imode) = mx(ieq, imode)*iexcl(ieq)
         end do
 !
 !        --- CALCUL DE XN.M.XN ---
         xmx = 0.d0
         do ieq = 1, neq
-            xmx = xmx + x(ieq,imode)*mx(ieq,imode)
+            xmx = xmx+x(ieq, imode)*mx(ieq, imode)
         end do
 !
 !        --- NORMALISATION DE XN ---
         coef = 1.d0/sqrt(abs(xmx))
-        coeft = sign(1.d0,xmx)*coef
+        coeft = sign(1.d0, xmx)*coef
         do ieq = 1, neq
             x0(ieq) = coef*x0(ieq)
-            mx(ieq,imode) = coeft*mx(ieq,imode)
+            mx(ieq, imode) = coeft*mx(ieq, imode)
         end do
 !
 !        --- CALCUL DE LA NORME DE XN-1.M.XN ---
         xxx = 0.d0
         do ieq = 1, neq
-            xxx = xxx + x0(ieq)*mx(ieq,imode)
+            xxx = xxx+x0(ieq)*mx(ieq, imode)
         end do
 !
 !        --- CALCUL DE L'ERREUR ---
@@ -147,22 +147,22 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 !
 !        --- SAUVEGARDE DE XN DANS XN-1 ---
         do ieq = 1, neq
-            x0(ieq) = x(ieq,imode)
+            x0(ieq) = x(ieq, imode)
         end do
 !
 !        --- SHIFT ---
         if (iquoti .gt. 0) then
-            pvalp = valp + coef
+            pvalp = valp+coef
 !
             if (pvalp .gt. valp*0.9d0 .and. pvalp .lt. valp*1.1d0) then
 ! --- POUR OPTIMISER ON NE CALCULE PAS LE DET
                 valp = pvalp
-                call vpstur(lraide, valp, lmasse, ldynam, det0,&
-                            idet0, place, ier, solveu, .false._1,&
+                call vpstur(lraide, valp, lmasse, ldynam, det0, &
+                            idet0, place, ier, solveu, .false._1, &
                             .true._1)
-            endif
+            end if
 !
-        endif
+        end if
 !
     end do
 !
@@ -171,15 +171,15 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
 900 continue
 !
 !     --- FREQUENCE CORRIGEE ---
-    valp = valp + coef
+    valp = valp+coef
 !
 !     --- NORMALISATION DU VECTEUR ---
     rmg = 0.d0
     do ieq = 1, neq
-        rmg = max(abs(x(ieq,imode)),rmg)
+        rmg = max(abs(x(ieq, imode)), rmg)
     end do
     do ieq = 1, neq
-        x(ieq,imode) = x(ieq,imode)/rmg
+        x(ieq, imode) = x(ieq, imode)/rmg
     end do
 !
 end subroutine

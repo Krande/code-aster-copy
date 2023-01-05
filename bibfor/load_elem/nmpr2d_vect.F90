@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,25 +17,25 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmpr2d_vect(l_axis,&
-                       nno   , npg , ndof ,&
-                       ipoids, ivf , idfde,&
-                       geom  , pres, cisa ,&
+subroutine nmpr2d_vect(l_axis, &
+                       nno, npg, ndof, &
+                       ipoids, ivf, idfde, &
+                       geom, pres, cisa, &
                        vect)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/vff2dn.h"
 !
-aster_logical, intent(in) :: l_axis
-integer, intent(in) :: nno, npg, ndof
-integer, intent(in) :: ipoids, ivf, idfde
-real(kind=8), intent(in) :: geom(2, nno)
-real(kind=8), intent(in) :: pres(npg), cisa(npg)
-real(kind=8), intent(out) :: vect(ndof, nno)
+    aster_logical, intent(in) :: l_axis
+    integer, intent(in) :: nno, npg, ndof
+    integer, intent(in) :: ipoids, ivf, idfde
+    real(kind=8), intent(in) :: geom(2, nno)
+    real(kind=8), intent(in) :: pres(npg), cisa(npg)
+    real(kind=8), intent(out) :: vect(ndof, nno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,23 +69,23 @@ real(kind=8), intent(out) :: vect(ndof, nno)
     do kpg = 1, npg
         kdec = (kpg-1)*nno
 ! ----- Compute geometric quantities
-        call vff2dn(ndim  , nno, kpg,&
-                    ipoids, idfde,&
-                    geom  , nx, ny, poids)
+        call vff2dn(ndim, nno, kpg, &
+                    ipoids, idfde, &
+                    geom, nx, ny, poids)
         if (l_axis) then
             r = 0.d0
             do ino = 1, nno
-                r = r + geom(1,ino)*zr(ivf+kdec+ino-1)
+                r = r+geom(1, ino)*zr(ivf+kdec+ino-1)
             end do
             poids = poids*r
-        endif
+        end if
 ! ----- Compute vector
-        tx = -nx*pres(kpg) - ny*cisa(kpg)
-        ty = -ny*pres(kpg) + nx*cisa(kpg)
+        tx = -nx*pres(kpg)-ny*cisa(kpg)
+        ty = -ny*pres(kpg)+nx*cisa(kpg)
         do ino = 1, nno
-            vect(1,ino) = vect(1,ino) + tx*zr(ivf+kdec+ino-1)*poids
-            vect(2,ino) = vect(2,ino) + ty*zr(ivf+kdec+ino-1)*poids
+            vect(1, ino) = vect(1, ino)+tx*zr(ivf+kdec+ino-1)*poids
+            vect(2, ino) = vect(2, ino)+ty*zr(ivf+kdec+ino-1)*poids
         end do
-    enddo
+    end do
 !
 end subroutine

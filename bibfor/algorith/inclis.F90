@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
-                  fmlia, fplian, fplibn, fpliao, fplibo,&
+subroutine inclis(nomres, ssta, sstb, intfa, intfb, &
+                  fmlia, fplian, fplibn, fpliao, fplibo, &
                   iada, iadb, numlis, matprj)
     implicit none
 !***********************************************************************
@@ -72,38 +72,38 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
     integer :: iada(3), iadb(3), numlis, zit(3), nbec, nbnoea, nbnoeb
     integer :: nbcmpm, k, m1, n1, m2, n2, llplia, llplib, icompa, icompb, ldmat
     integer :: ldmat2, iadoa, iadob
-    parameter      (nbcmpm=10)
+    parameter(nbcmpm=10)
     integer :: idecoa(nbcmpm), idecob(nbcmpm), itemcm
     real(kind=8) :: rbid, un, moins1
 !
 !-----------------------------------------------------------------------
-    data un,moins1 /1.0d+00,-1.0d+00/
+    data un, moins1/1.0d+00, -1.0d+00/
 !-----------------------------------------------------------------------
 !
     call jemarq()
 !
-    toto='TATA'
+    toto = 'TATA'
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
     call jeveuo(matprj, 'L', itemcm)
 !
 ! Calcul de la matrice orientee de la structure esclave
     if (iadb(3) .lt. iada(3)) then
-        call rotlis(nomres, fmlia, iadb, fplibn, fplibo,&
+        call rotlis(nomres, fmlia, iadb, fplibn, fplibo, &
                     numlis, sstb, intfb, un)
-    endif
+    end if
 ! Calcul de la matrice orientee de la structure maitre
-    zit(1)=iada(1)
-    zit(2)=iada(2)
-    zit(3)=1
-    call jecrec(toto, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    zit(1) = iada(1)
+    zit(2) = iada(2)
+    zit(3) = 1
+    call jecrec(toto, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 1)
 !
-    call rotlis(nomres, toto, zit, fplian, fpliao,&
+    call rotlis(nomres, toto, zit, fplian, fpliao, &
                 numlis, ssta, intfa, moins1)
     call jecroc(jexnum(fmlia, iada(3)))
     call jeecra(jexnum(fmlia, iada(3)), 'LONMAX', iadb(1)*iada(2))
@@ -113,52 +113,52 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 ! Recuperation des donnees composantes
     call jeveuo(jexnum(fpliao, numlis), 'L', llplia)
     call jelira(jexnum(fpliao, numlis), 'LONMAX', nbnoea)
-    nbnoea=nbnoea/(1+nbec)
+    nbnoea = nbnoea/(1+nbec)
     call jeveuo(jexnum(fplibo, numlis), 'L', llplib)
     call jelira(jexnum(fplibo, numlis), 'LONMAX', nbnoeb)
-    nbnoeb=nbnoeb/(1+nbec)
+    nbnoeb = nbnoeb/(1+nbec)
 !
 !
 ! boucle sur nombre de mode de la structure maitre
     do k = 1, iada(2)
 ! boucle sur nombre de noeuds d'interface de la structure esclave
         do m1 = 1, nbnoeb
-            iadob=zi(llplib+(m1-1)*(1+nbec))
+            iadob = zi(llplib+(m1-1)*(1+nbec))
             call isdeco(zi(llplib+(m1-1)*(1+nbec)+1), idecob, nbcmpm)
-            icompb=iadob-1
+            icompb = iadob-1
 ! boucle sur nombre de composante de la structure esclave
             do n1 = 1, nbcmpm
                 if (idecob(n1) .gt. 0) then
 ! boucle sur nombre de noeuds d'interface de la structure maitre
-                    icompb=icompb+1
-                    rbid=0.d0
+                    icompb = icompb+1
+                    rbid = 0.d0
                     do m2 = 1, nbnoea
-                        iadoa=zi(llplia+(m2-1)*(1+nbec))
+                        iadoa = zi(llplia+(m2-1)*(1+nbec))
                         call isdeco(zi(llplia+(m2-1)*(1+nbec)+1), idecoa, nbcmpm)
 ! boucle sur nombre de composante de la structure maitre
-                        icompa=iadoa-1
+                        icompa = iadoa-1
                         do n2 = 1, nbcmpm
-                            if ((idecoa(n2).gt.0) .and. (n1.eq.n2)) then
-                                icompa=icompa+n2
-                                rbid=rbid+ zr(itemcm+(icompb-1)*iada(&
-                                1)+icompa-1)* zr(ldmat2+(k-1)*iada(1)+&
-                                icompa-1)
-                            endif
+                            if ((idecoa(n2) .gt. 0) .and. (n1 .eq. n2)) then
+                                icompa = icompa+n2
+                                rbid = rbid+zr(itemcm+(icompb-1)*iada( &
+                                               1)+icompa-1)*zr(ldmat2+(k-1)*iada(1)+ &
+                                                               icompa-1)
+                            end if
                         end do
                     end do
-                    zr(ldmat+(k-1)*iadb(1)+icompb-1)=rbid
-                endif
+                    zr(ldmat+(k-1)*iadb(1)+icompb-1) = rbid
+                end if
             end do
         end do
     end do
 ! On corrige in fine la taille de la nouvelle matrice de liaison
-    iada(1)=iadb(1)
+    iada(1) = iadb(1)
     call jedetr(toto)
 !
     if (iadb(3) .gt. iada(3)) then
-        call rotlis(nomres, fmlia, iadb, fplibn, fplibo,&
+        call rotlis(nomres, fmlia, iadb, fplibn, fplibo, &
                     numlis, sstb, intfb, un)
-    endif
+    end if
 !
 !
     call jedema()

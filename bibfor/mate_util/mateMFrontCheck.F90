@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mateMFrontCheck(l_mfront_func, l_mfront_anis ,&
-                           noobrc_elas  , l_elas        , l_elas_func, l_elas_istr, l_elas_orth,&
-                           mfront_nbvale, mfront_prop   , mfront_valr, mfront_valk)
+subroutine mateMFrontCheck(l_mfront_func, l_mfront_anis, &
+                           noobrc_elas, l_elas, l_elas_func, l_elas_istr, l_elas_orth, &
+                           mfront_nbvale, mfront_prop, mfront_valr, mfront_valk)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -30,13 +30,13 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/mateMFrontToAsterProperties.h"
 !
-aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
-character(len=19), intent(in) :: noobrc_elas
-aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
-integer, intent(in) :: mfront_nbvale
-character(len=16), intent(in) :: mfront_prop(16)
-real(kind=8), intent(in) :: mfront_valr(16)
-character(len=16), intent(in) :: mfront_valk(16)
+    aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
+    character(len=19), intent(in) :: noobrc_elas
+    aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
+    integer, intent(in) :: mfront_nbvale
+    character(len=16), intent(in) :: mfront_prop(16)
+    real(kind=8), intent(in) :: mfront_valr(16)
+    character(len=16), intent(in) :: mfront_valk(16)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,12 +80,12 @@ character(len=16), intent(in) :: mfront_valk(16)
     if (l_mfront_anis) then
         if (l_elas) then
             call utmess('F', 'MATERIAL2_5')
-        endif
+        end if
     else
         if (l_elas_orth .or. l_elas_istr) then
             call utmess('F', 'MATERIAL2_6')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Inconsistency (function/scalar)
 !
@@ -93,35 +93,35 @@ character(len=16), intent(in) :: mfront_valk(16)
         if (.not. l_elas_func) then
             call utmess('A', 'MATERIAL2_7')
             goto 999
-        endif
+        end if
     else
         if (l_elas_func) then
             call utmess('A', 'MATERIAL2_8')
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 ! - Inconsistency (values)
 !
-    call jeveuo(noobrc_elas//'.VALR', 'L', vr = v_valr)
-    call jeveuo(noobrc_elas//'.VALK', 'L', vk16 = v_valk)
+    call jeveuo(noobrc_elas//'.VALR', 'L', vr=v_valr)
+    call jeveuo(noobrc_elas//'.VALK', 'L', vk16=v_valk)
     call jelira(noobrc_elas//'.VALR', 'LONUTI', nb_prop_r)
     call jelira(noobrc_elas//'.VALC', 'LONUTI', nb_prop_c)
     call jelira(noobrc_elas//'.VALK', 'LONUTI', nb_prop_k2)
     nb_prop_k = (nb_prop_k2-nb_prop_r-nb_prop_c)/2
-    nb_prop   = nb_prop_k2 / 2
+    nb_prop = nb_prop_k2/2
     ASSERT(nb_prop_c .eq. 0)
 !
 ! - Check properties (real)
 !
     do i_prop_r = 1, nb_prop_r
 ! ----- Name of property (aster)
-        prop_name    = v_valk(i_prop_r)
+        prop_name = v_valk(i_prop_r)
 ! ----- Value of property (aster)
         as_prop_valr = v_valr(i_prop_r)
 ! ----- Name of property (MFront)
         prop_name_mf = ' '
-        call mateMFrontToAsterProperties(prop_name_mf, prop_name, index_ = indexE)
+        call mateMFrontToAsterProperties(prop_name_mf, prop_name, index_=indexE)
         if (indexE .gt. 0) then
 ! --------- Value of property (MFront)
             l_prop_find = .false.
@@ -131,37 +131,37 @@ character(len=16), intent(in) :: mfront_valk(16)
                 if (mf_prop_name .eq. prop_name_mf) then
                     l_prop_find = .true.
                     exit
-                endif
+                end if
             end do
 ! --------- Test
             if (l_prop_find) then
                 valk(1) = prop_name_mf
                 valk(2) = prop_name
                 if (mf_prop_valr .le. r8prem()) then
-                    test = abs(as_prop_valr - mf_prop_valr)
+                    test = abs(as_prop_valr-mf_prop_valr)
                 else
-                    test = abs(as_prop_valr - mf_prop_valr)/abs(mf_prop_valr)
-                endif
+                    test = abs(as_prop_valr-mf_prop_valr)/abs(mf_prop_valr)
+                end if
                 if (test .gt. r8prem()) then
                     valr(1) = mf_prop_valr
                     valr(2) = as_prop_valr
-                    call utmess('F', 'MATERIAL2_14', nk = 2, valk=valk,&
-                                                     nr = 2, valr=valr)
-                endif
-            endif
-        endif
+                    call utmess('F', 'MATERIAL2_14', nk=2, valk=valk, &
+                                nr=2, valr=valr)
+                end if
+            end if
+        end if
     end do
 !
 ! - Check properties (function)
 !
     do i_prop_k = 1, nb_prop_k
 ! ----- Name of property (aster)
-        prop_name    = v_valk(i_prop_k)
+        prop_name = v_valk(i_prop_k)
 ! ----- Value of property (aster)
         as_prop_valk = v_valk(nb_prop+i_prop_k)
 ! ----- Name of property (MFront)
         prop_name_mf = ' '
-        call mateMFrontToAsterProperties(prop_name_mf, prop_name, index_ = indexE)
+        call mateMFrontToAsterProperties(prop_name_mf, prop_name, index_=indexE)
         if (indexE .gt. 0) then
 ! --------- Value of property (MFront)
             l_prop_find = .false.
@@ -171,7 +171,7 @@ character(len=16), intent(in) :: mfront_valk(16)
                 if (mf_prop_name .eq. prop_name_mf) then
                     l_prop_find = .true.
                     exit
-                endif
+                end if
             end do
 ! --------- Test
             if (l_prop_find) then
@@ -180,10 +180,10 @@ character(len=16), intent(in) :: mfront_valk(16)
                 valk(3) = mf_prop_valk
                 valk(4) = as_prop_valk
                 if (as_prop_valk .ne. mf_prop_valk) then
-                    call utmess('F', 'MATERIAL2_12', nk = 4, valk=valk)
-                endif
-            endif
-        endif
+                    call utmess('F', 'MATERIAL2_12', nk=4, valk=valk)
+                end if
+            end if
+        end if
     end do
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,11 +77,11 @@ subroutine ordlrl(charge, lisrel, nomgd)
     character(len=19) :: ligrmo
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     real(kind=8) :: copror, difrel, eps1, eps2, epsrel, rapcoe, coemax
-    integer :: i, icmp, icomp,  iddl, iddl1, iddl2, ideca1, ideca2
+    integer :: i, icmp, icomp, iddl, iddl1, iddl2, ideca1, ideca2
     integer :: idecal, in, indmax, ino
-    integer ::  inom,  ipntr1, ipntr2, ipntrl, irela, irela1
+    integer ::  inom, ipntr1, ipntr2, ipntrl, irela, irela1
     integer :: irela2
-    integer ::  jprnm, jrlco, jrlco1, jrlco2,  jrlcof
+    integer ::  jprnm, jrlco, jrlco1, jrlco2, jrlcof
     integer :: jrldd
     integer :: jrlno, idnoe1, idnoe2, idnoeu
     integer :: nbcmp, nbec, nbrela, nbtema, nbter1, nbter2, nbterm
@@ -100,26 +100,26 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
     call jemarq()
 !
-    eps1=1.d4*r8prem()
-    eps2=1.d0/r8gaem()
+    eps1 = 1.d4*r8prem()
+    eps2 = 1.d0/r8gaem()
 !
 ! - Mesh and model
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
-    ligrmo=mod(1:8)//'.MODELE'
+    ligrmo = mod(1:8)//'.MODELE'
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma=lgrf(1)
+    noma = lgrf(1)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
-    nddla=nbcmp-1
-    ASSERT(nddla.le.nmocl)
+    nddla = nbcmp-1
+    ASSERT(nddla .le. nmocl)
 !
     do i = 1, nbcmp
-        nomcmp(i)=zk8(inom-1+i)
+        nomcmp(i) = zk8(inom-1+i)
     end do
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! --- ACCES AUX COMPOSANTES DE LA LISTE_RELA
@@ -134,18 +134,18 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 ! --- TYPE DE VALEUR DES COEFFICIENTS DES RELATIONS ---
 !
-    typcoe=rltc(1)(1:4)
+    typcoe = rltc(1) (1:4)
 !
 ! --- NOMBRE DE RELATIONS DE LA LISTE_RELA
 !
     call jeveuo(lisrel//'.RLNR', 'L', vi=rlnr)
-    nbrela=rlnr(1)
+    nbrela = rlnr(1)
 !
 ! --- NOMBRE DE TERMES  MAX IMPLIQUES DANS UNE RELATION
 !
-    nbtema=0
+    nbtema = 0
     do irela = 1, nbrela
-        if (nbtema .lt. rlnt(irela)) nbtema=rlnt(irela)
+        if (nbtema .lt. rlnt(irela)) nbtema = rlnt(irela)
     end do
 !
 ! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
@@ -181,75 +181,75 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !        LES COMPARER PLUS FACILEMENT ET DETECTER LES DOUBLONS
 !     ----------------------------------------------------------
     do irela = 1, nbrela
-        ipntrl=rlpo(irela)
-        nbterm=rlnt(irela)
-        idecal=ipntrl-nbterm
-        jrlcof=jrlco+idecal
-        idnoeu=jrlno+idecal
-        iddl=jrldd+idecal
+        ipntrl = rlpo(irela)
+        nbterm = rlnt(irela)
+        idecal = ipntrl-nbterm
+        jrlcof = jrlco+idecal
+        idnoeu = jrlno+idecal
+        iddl = jrldd+idecal
 !
         if (typcoe .eq. 'COMP') then
             do ino = 1, nbterm
-                coef_c(ino)=zc(jrlcof+ino-1)
-            enddo
+                coef_c(ino) = zc(jrlcof+ino-1)
+            end do
         else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
-                coef_r(ino)=zr(jrlcof+ino-1)
-            enddo
+                coef_r(ino) = zr(jrlcof+ino-1)
+            end do
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         do ino = 1, nbterm
-            nomnoe=zk8(idnoeu+ino-1)
+            nomnoe = zk8(idnoeu+ino-1)
             call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
-            noeud_rela(ino)=in
-            cmp=zk8(iddl+ino-1)
-            icmp=indik8(nomcmp,cmp,1,nbcmp)
-            if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
-                valk(1)=cmp
-                valk(2)=nomnoe
+            noeud_rela(ino) = in
+            cmp = zk8(iddl+ino-1)
+            icmp = indik8(nomcmp, cmp, 1, nbcmp)
+            if (.not. exisdg(zi(jprnm-1+(in-1)*nbec+1), icmp)) then
+                valk(1) = cmp
+                valk(2) = nomnoe
                 call utmess('F', 'CHARGES2_31', nk=2, valk=valk)
-            endif
-        enddo
+            end if
+        end do
 !
 ! ----- Rearrangement of linear relation tables in ascending order of nodes and dof for given node
 !
-        call ordrel(noeud_rela, zk8(idnoeu), zk8(iddl), coef_r, coef_c,&
+        call ordrel(noeud_rela, zk8(idnoeu), zk8(iddl), coef_r, coef_c, &
                     noeud_occ, nbterm, zk8(inom), nddla)
 !
 !       -- REAFFECTATION DU TABLEAU DES COEFFICIENTS
         if (typcoe .eq. 'COMP') then
             do ino = 1, nbterm
-                zc(jrlcof+ino-1)=coef_c(ino)
-            enddo
+                zc(jrlcof+ino-1) = coef_c(ino)
+            end do
         else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
-                zr(jrlcof+ino-1)=coef_r(ino)
-            enddo
+                zr(jrlcof+ino-1) = coef_r(ino)
+            end do
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-        coemax=0.0d0
+        coemax = 0.0d0
         if (typcoe .eq. 'COMP') then
             do ino = 1, nbterm
                 if (abs(coef_c(ino)) .gt. coemax) then
-                    coemax=abs(coef_c(ino))
-                    indmax=ino
-                endif
-            enddo
+                    coemax = abs(coef_c(ino))
+                    indmax = ino
+                end if
+            end do
         else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
                 if (abs(coef_r(ino)) .gt. coemax) then
-                    coemax=abs(coef_r(ino))
-                    indmax=ino
-                endif
-            enddo
+                    coemax = abs(coef_r(ino))
+                    indmax = ino
+                end if
+            end do
         else
             ASSERT(.false.)
-        endif
-        coefmax(irela)=indmax
+        end if
+        coefmax(irela) = indmax
     end do
 !
 !
@@ -259,20 +259,20 @@ subroutine ordlrl(charge, lisrel, nomgd)
     call jecreo('&&ORDLRL.KIDREL', 'V N K16')
     call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela)
     do irela1 = nbrela, 1, -1
-        nbter1=rlnt(irela1)
+        nbter1 = rlnt(irela1)
         if (nbter1 .le. 1) then
-            ipntr1=rlpo(irela1)
-            ideca1=ipntr1-nbter1
-            idnoe1=jrlno+ideca1
-            iddl1=jrldd+ideca1
-            kidrel=zk8(idnoe1)//zk8(iddl1)
+            ipntr1 = rlpo(irela1)
+            ideca1 = ipntr1-nbter1
+            idnoe1 = jrlno+ideca1
+            iddl1 = jrldd+ideca1
+            kidrel = zk8(idnoe1)//zk8(iddl1)
             call jenonu(jexnom('&&ORDLRL.KIDREL', kidrel), nidrel)
             if (nidrel .eq. 0) then
                 call jecroc(jexnom('&&ORDLRL.KIDREL', kidrel))
             else
-                rlsu(irela1)=1
-            endif
-        endif
+                rlsu(irela1) = 1
+            end if
+        end if
     end do
     call jedetr('&&ORDLRL.KIDREL')
 !
@@ -280,136 +280,136 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !   2. SETTING TO ZERO TERMS BELOW NUMERICAL PRECISION
 !   --------------------------------------------------
-    do irela1 = 1,nbrela
-        nbter1=rlnt(irela1)
+    do irela1 = 1, nbrela
+        nbter1 = rlnt(irela1)
         if (nbter1 .eq. 1) cycle
-        ipntr1=rlpo(irela1)
-        ideca1=ipntr1-nbter1
-        jrlco1=jrlco+ideca1
+        ipntr1 = rlpo(irela1)
+        ideca1 = ipntr1-nbter1
+        jrlco1 = jrlco+ideca1
 !
-        indmax=coefmax(irela1)
+        indmax = coefmax(irela1)
 !
 !       set to 0 terms below numerical precision
         do ino = 1, nbter1
             if (typcoe .eq. 'COMP') then
                 if (abs(zc(jrlco1+ino-1)) < eps1*abs(zc(jrlco1+indmax-1))) then
                     zc(jrlco1+ino-1) = dcmplx(0.d0, 0.d0)
-                endif
+                end if
             else if (typcoe .eq. 'REEL') then
                 if (abs(zr(jrlco1+ino-1)) < eps1*abs(zr(jrlco1+indmax-1))) then
                     zr(jrlco1+ino-1) = 0.d0
-                endif
+                end if
             else
                 ASSERT(.false.)
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
 
 !   3. IDENTIFICATION DES RELATIONS REDONDANTES A PLUSIEURS TERMES
 !   ----------------------------------------------------------------
     do irela1 = nbrela, 2, -1
-        nbter1=rlnt(irela1)
+        nbter1 = rlnt(irela1)
         if (nbter1 .eq. 1) goto 170
-        ipntr1=rlpo(irela1)
-        ideca1=ipntr1-nbter1
-        jrlco1=jrlco+ideca1
-        idnoe1=jrlno+ideca1
-        iddl1=jrldd+ideca1
+        ipntr1 = rlpo(irela1)
+        ideca1 = ipntr1-nbter1
+        jrlco1 = jrlco+ideca1
+        idnoe1 = jrlno+ideca1
+        iddl1 = jrldd+ideca1
 !
-        indmax=coefmax(irela1)
+        indmax = coefmax(irela1)
 !
         if (typcoe .eq. 'COMP') then
             if (abs(zc(jrlco1+indmax-1)) .lt. eps2) then
                 call utmess('F', 'CHARGES2_32')
-            endif
+            end if
         else if (typcoe .eq. 'REEL') then
             if (abs(zr(jrlco1+indmax-1)) .lt. eps2) then
                 call utmess('F', 'CHARGES2_32')
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !
 !       --  CAS DES COEF. COMPLEXES
 !       -----------------------------------
         if (typcoe .eq. 'COMP') then
             do irela2 = 1, irela1-1
-                nbter2=rlnt(irela2)
-                ipntr2=rlpo(irela2)
-                ideca2=ipntr2-nbter2
-                jrlco2=jrlco+ideca2
-                idnoe2=jrlno+ideca2
-                iddl2=jrldd+ideca2
-                coproc=zc(jrlco2+indmax-1)/zc(jrlco1+indmax-1)
+                nbter2 = rlnt(irela2)
+                ipntr2 = rlpo(irela2)
+                ideca2 = ipntr2-nbter2
+                jrlco2 = jrlco+ideca2
+                idnoe2 = jrlno+ideca2
+                iddl2 = jrldd+ideca2
+                coproc = zc(jrlco2+indmax-1)/zc(jrlco1+indmax-1)
 !
                 if (nbter1 .eq. nbter2) then
-                    icomp=0
+                    icomp = 0
                     do ino = 1, nbter1
                         if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
                             if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
-                                rapcoc=coproc*zc(jrlco1+ino-1)
-                                epsrel=eps1*abs(zc(jrlco1+indmax-1))
-                                difrel=abs(zc(jrlco2+ino-1)-rapcoc)
+                                rapcoc = coproc*zc(jrlco1+ino-1)
+                                epsrel = eps1*abs(zc(jrlco1+indmax-1))
+                                difrel = abs(zc(jrlco2+ino-1)-rapcoc)
                                 if (difrel .le. epsrel) goto 110
-                                icomp=1
+                                icomp = 1
                                 goto 120
                             else
-                                icomp=1
+                                icomp = 1
                                 goto 120
-                            endif
+                            end if
                         else
-                            icomp=1
+                            icomp = 1
                             goto 120
-                        endif
+                        end if
 110                     continue
-                    enddo
+                    end do
 120                 continue
-                    if (icomp .eq. 0) rlsu(irela2)=1
-                endif
-            enddo
+                    if (icomp .eq. 0) rlsu(irela2) = 1
+                end if
+            end do
 !
 !
 !       --  CAS DES COEF. REEL
 !       -----------------------------------
         else if (typcoe .eq. 'REEL') then
             do irela2 = 1, irela1-1
-                nbter2=rlnt(irela2)
-                ipntr2=rlpo(irela2)
-                ideca2=ipntr2-nbter2
-                jrlco2=jrlco+ideca2
-                idnoe2=jrlno+ideca2
-                iddl2=jrldd+ideca2
-                copror=zr(jrlco2+indmax-1)/zr(jrlco1+indmax-1)
+                nbter2 = rlnt(irela2)
+                ipntr2 = rlpo(irela2)
+                ideca2 = ipntr2-nbter2
+                jrlco2 = jrlco+ideca2
+                idnoe2 = jrlno+ideca2
+                iddl2 = jrldd+ideca2
+                copror = zr(jrlco2+indmax-1)/zr(jrlco1+indmax-1)
 !
                 if (nbter1 .eq. nbter2) then
-                    icomp=0
+                    icomp = 0
                     do ino = 1, nbter1
                         if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
                             if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
-                                rapcoe=copror*zr(jrlco1+ino-1)
-                                epsrel=eps1*abs(zr(jrlco1+indmax-1))
-                                difrel=abs(zr(jrlco2+ino-1)-rapcoe)
+                                rapcoe = copror*zr(jrlco1+ino-1)
+                                epsrel = eps1*abs(zr(jrlco1+indmax-1))
+                                difrel = abs(zr(jrlco2+ino-1)-rapcoe)
                                 if (difrel .le. epsrel) goto 140
-                                icomp=1
+                                icomp = 1
                                 goto 150
                             else
-                                icomp=1
+                                icomp = 1
                                 goto 150
-                            endif
+                            end if
                         else
-                            icomp=1
+                            icomp = 1
                             goto 150
-                        endif
+                        end if
 140                     continue
-                    enddo
+                    end do
 150                 continue
-                    if (icomp .eq. 0) rlsu(irela2)=1
-                endif
-            enddo
+                    if (icomp .eq. 0) rlsu(irela2) = 1
+                end if
+            end do
         else
             ASSERT(.false.)
-        endif
+        end if
 170     continue
     end do
 !

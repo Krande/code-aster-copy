@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,8 +69,8 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
     character(len=24), pointer :: v_grpp(:) => null()
 !-----------------------------------------------------------------------
 !
-    grnoma         = mesh//'.GROUPENO'
-    grnomap        = mesh//'.PAR_GRPNOE'
+    grnoma = mesh//'.GROUPENO'
+    grnomap = mesh//'.PAR_GRPNOE'
 !
     call jemarq()
 !
@@ -80,15 +80,15 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !
 ! --- The group already exists - do nothing
 !
-    if(l_exi_in_grp) then
+    if (l_exi_in_grp) then
         l_added = ASTER_FALSE
         call utmess('A', 'SOUSTRUC_37', sk=group_no)
-    elseif(nbNodes <= 0) then
+    elseif (nbNodes <= 0) then
         l_added = ASTER_FALSE
         call utmess('A', 'SOUSTRUC_38', sk=group_no)
     else
         l_added = ASTER_TRUE
-        ASSERT(.not.l_exi_in_grp)
+        ASSERT(.not. l_exi_in_grp)
 !
 ! --- Add group_no
 !
@@ -103,21 +103,21 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !
 ! --- For a ParallelMesh, add new group_no to global group_no
 !
-        if(l_parallel_mesh) then
-            if(.not.l_exi_in_grp_p) then
+        if (l_parallel_mesh) then
+            if (.not. l_exi_in_grp_p) then
                 call jeexin(grnomap, iret)
-                if( iret .ne. 0) then
+                if (iret .ne. 0) then
                     call jelira(grnomap, 'NOMMAX', nbGrp)
                     nbGrp = abs(nbGrp)
                 else
                     nbGrp = 0
                 end if
                 call wkvect('&&TMP', 'V V K24', nbGrp+1, vk24=v_grpp)
-                if(iret .ne. 0) then
+                if (iret .ne. 0) then
                     do iaux = 1, nbGrp
                         call jenuno(jexnum(grnomap, iaux), nomgrp)
                         v_grpp(iaux) = nomgrp
-                    enddo
+                    end do
                 end if
                 v_grpp(nbGrp+1) = group_no
                 call jedetr(grnomap)
@@ -125,7 +125,7 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
                 call jeecra(grnomap, 'NOMMAX', nbGrp+1)
                 do iaux = 1, nbGrp+1
                     call jecroc(jexnom(grnomap, v_grpp(iaux)))
-                enddo
+                end do
                 call jedetr('&&TMP')
 !
 ! --- Becarefull, there are not yet shared by all meshes
@@ -134,7 +134,7 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
         end if
     end if
 !
-    if(present(l_added_grpno)) then
+    if (present(l_added_grpno)) then
         l_added_grpno = l_added
     end if
 !

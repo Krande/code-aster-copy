@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfleqa(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -52,7 +52,7 @@ implicit none
 !
     integer :: jdecma, elem_nume, type_nume
     integer :: i_surf_curr, i_zone, i_elem, i_surf
-    integer :: nb_surf, nb_elem,nb_node_middle
+    integer :: nb_surf, nb_elem, nb_node_middle
     character(len=8) :: type_name
     aster_logical :: l_veri
     integer, pointer :: v_mesh_typmail(:) => null()
@@ -69,13 +69,13 @@ implicit none
 ! - Datastructure for contact definition
 !
     sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
-    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
-    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
-    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_pzoneco, 'L', vi=v_sdcont_pzoneco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi=v_mesh_typmail)
 !
 ! - Number of middle nodes for each contact surface
 !
@@ -86,12 +86,12 @@ implicit none
         l_veri = mminfl(sdcont_defi, 'VERIF', i_zone)
         if (l_veri) then
             goto 21
-        endif
+        end if
 !
 ! ----- Number of contact surfaces
 !
-        nb_surf = v_sdcont_pzoneco(i_zone+1) - v_sdcont_pzoneco(i_zone)
-        ASSERT(nb_surf.eq.2)
+        nb_surf = v_sdcont_pzoneco(i_zone+1)-v_sdcont_pzoneco(i_zone)
+        ASSERT(nb_surf .eq. 2)
 !
 ! ----- Loop on surfaces
 !
@@ -119,22 +119,22 @@ implicit none
 !
                 if (type_name(1:5) .eq. 'QUAD9') then
                     nb_node_middle = 0
-                else if (type_name(1:5).eq.'TRIA7') then
+                else if (type_name(1:5) .eq. 'TRIA7') then
                     nb_node_middle = 0
-                else if (type_name(1:5).eq.'QUAD8') then
+                else if (type_name(1:5) .eq. 'QUAD8') then
                     nb_node_middle = 4
-                else if (type_name(1:5).eq.'TRIA6') then
+                else if (type_name(1:5) .eq. 'TRIA6') then
                     nb_node_middle = 0
                 else
                     nb_node_middle = 0
-                endif
+                end if
 !
 ! ------------- Total number of middle nodes
 !
-                nt_node_middle = nt_node_middle + nb_node_middle
+                nt_node_middle = nt_node_middle+nb_node_middle
             end do
         end do
- 21     continue
+21      continue
     end do
 !
 end subroutine

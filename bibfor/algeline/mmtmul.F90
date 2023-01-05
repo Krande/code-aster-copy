@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmtmul(cumul, lmat, vect, xsol, nbvect,&
+subroutine mmtmul(cumul, lmat, vect, xsol, nbvect, &
                   prepos)
     implicit none
 #include "asterf_types.h"
@@ -65,17 +65,17 @@ subroutine mmtmul(cumul, lmat, vect, xsol, nbvect,&
     character(len=24), pointer :: refa(:) => null()
 !     ---------------------------------------------------------------
 !
-    prepo2=prepos
+    prepo2 = prepos
     call jemarq()
-    ASSERT(cumul.eq.'ZERO' .or. cumul.eq.'CUMU')
-    matas=zk24(zi(lmat+1))(1:19)
-    ASSERT(zi(lmat+3).eq.1)
+    ASSERT(cumul .eq. 'ZERO' .or. cumul .eq. 'CUMU')
+    matas = zk24(zi(lmat+1)) (1:19)
+    ASSERT(zi(lmat+3) .eq. 1)
     call jeveuo(matas//'.REFA', 'L', vk24=refa)
     if (refa(3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
-    neq=zi(lmat+2)
+    neq = zi(lmat+2)
     AS_ALLOCATE(vr=vectmp, size=neq)
 !
-    call jeveuo(refa(2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
+    call jeveuo(refa(2) (1:14)//'.SMOS.SMHC', 'L', jsmhc)
     call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
 !
@@ -86,38 +86,38 @@ subroutine mmtmul(cumul, lmat, vect, xsol, nbvect,&
         if (cumul .eq. 'CUMU') then
             AS_ALLOCATE(vr=xtemp, size=nbvect*neq)
             call dcopy(nbvect*neq, xsol, 1, xtemp, 1)
-        endif
+        end if
 !
         call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
         if (kmatd .eq. 'OUI') then
-            lmatd=.true.
-            neql=zi(lmat+5)
+            lmatd = .true.
+            neql = zi(lmat+5)
         else
-            lmatd=.false.
-            neql=0
-        endif
-        call mrmtmv('ZERO', lmat, zi(jsmdi), zi4(jsmhc), lmatd,&
-                    neq, neql, vect, xsol, nbvect,&
+            lmatd = .false.
+            neql = 0
+        end if
+        call mrmtmv('ZERO', lmat, zi(jsmdi), zi4(jsmhc), lmatd, &
+                    neq, neql, vect, xsol, nbvect, &
                     vectmp, prepo2)
 !       ON DOIT COMMUNIQUER POUR OBTENIR LE PRODUIT MAT-VEC 'COMPLET'
         call asmpi_comm_vect('MPI_SUM', 'R', nbval=nbvect*neq, vr=xsol)
 !
         if (cumul .eq. 'CUMU') then
-            call daxpy(nbvect*neq, 1.d0, xtemp, 1, xsol,&
+            call daxpy(nbvect*neq, 1.d0, xtemp, 1, xsol, &
                        1)
             AS_DEALLOCATE(vr=xtemp)
-        endif
+        end if
 !
 !
 !     2.  MATRICE MPI_COMPLET :
 !     ----------------------------
     else
-        lmatd=.false.
-        neql=0
-        call mrmtmv(cumul, lmat, zi(jsmdi), zi4(jsmhc), lmatd,&
-                    neq, neql, vect, xsol, nbvect,&
+        lmatd = .false.
+        neql = 0
+        call mrmtmv(cumul, lmat, zi(jsmdi), zi4(jsmhc), lmatd, &
+                    neq, neql, vect, xsol, nbvect, &
                     vectmp, prepo2)
-    endif
+    end if
 !
 !
     AS_DEALLOCATE(vr=vectmp)

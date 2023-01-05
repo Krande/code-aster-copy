@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine te0187(option, nomte)
     integer :: ipoids, ivf, mater, ndim, nnos, npg
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -63,50 +63,50 @@ subroutine te0187(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PINTER', 'E', iinte)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    mater=zi(imate)
-    call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    mater = zi(imate)
+    call rcvalb(fami, kpg, spt, poum, mater, &
+                ' ', 'FLUIDE', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
-    pi=r8pi()
+    pi = r8pi()
     call jevech('PFREQR', 'L', ifreq)
-    omega=2.d0*pi*zr(ifreq)
-    omerho=omega*rho(1)
+    omega = 2.d0*pi*zr(ifreq)
+    omerho = omega*rho(1)
 !
 !
 !    BOUCLE SUR LES NOEUDS
     do ino = 1, nno
 !
-        idino=iinte+(ino-1)*6-1
-        ipino=ipres+ino-1
-        call dfdm3d(nno, ino, ipoids, idfde, zr(igeom),&
+        idino = iinte+(ino-1)*6-1
+        ipino = ipres+ino-1
+        call dfdm3d(nno, ino, ipoids, idfde, zr(igeom), &
                     jac, dfdx, dfdy, dfdz)
 !
-        vitx(ino)=(0.0d0,0.0d0)
-        vity(ino)=(0.0d0,0.0d0)
-        vitz(ino)=(0.0d0,0.0d0)
+        vitx(ino) = (0.0d0, 0.0d0)
+        vity(ino) = (0.0d0, 0.0d0)
+        vitz(ino) = (0.0d0, 0.0d0)
 !
         do i = 1, nno
 !
-            vitx(ino)=vitx(ino)+dfdx(i)*zc(ipres+i-1)
-            vity(ino)=vity(ino)+dfdy(i)*zc(ipres+i-1)
-            vitz(ino)=vitz(ino)+dfdz(i)*zc(ipres+i-1)
+            vitx(ino) = vitx(ino)+dfdx(i)*zc(ipres+i-1)
+            vity(ino) = vity(ino)+dfdy(i)*zc(ipres+i-1)
+            vitz(ino) = vitz(ino)+dfdz(i)*zc(ipres+i-1)
         end do
 !
-        vitx(ino)=vitx(ino)*(0.d0,1.d0)/omerho
-        vity(ino)=vity(ino)*(0.d0,1.d0)/omerho
-        vitz(ino)=vitz(ino)*(0.d0,1.d0)/omerho
+        vitx(ino) = vitx(ino)*(0.d0, 1.d0)/omerho
+        vity(ino) = vity(ino)*(0.d0, 1.d0)/omerho
+        vitz(ino) = vitz(ino)*(0.d0, 1.d0)/omerho
 !
-        zr(idino+1)=0.5d0*dble(zc(ipino)*dconjg(vitx(ino)))
-        zr(idino+2)=0.5d0*dble(zc(ipino)*dconjg(vity(ino)))
-        zr(idino+3)=0.5d0*dble(zc(ipino)*dconjg(vitz(ino)))
-        zr(idino+4)=0.5d0*dimag(zc(ipino)*dconjg(vitx(ino)))
-        zr(idino+5)=0.5d0*dimag(zc(ipino)*dconjg(vity(ino)))
-        zr(idino+6)=0.5d0*dimag(zc(ipino)*dconjg(vitz(ino)))
+        zr(idino+1) = 0.5d0*dble(zc(ipino)*dconjg(vitx(ino)))
+        zr(idino+2) = 0.5d0*dble(zc(ipino)*dconjg(vity(ino)))
+        zr(idino+3) = 0.5d0*dble(zc(ipino)*dconjg(vitz(ino)))
+        zr(idino+4) = 0.5d0*dimag(zc(ipino)*dconjg(vitx(ino)))
+        zr(idino+5) = 0.5d0*dimag(zc(ipino)*dconjg(vity(ino)))
+        zr(idino+6) = 0.5d0*dimag(zc(ipino)*dconjg(vitz(ino)))
     end do
 !
 end subroutine

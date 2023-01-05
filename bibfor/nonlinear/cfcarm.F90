@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
-                  nummai, alias, nommai, ndim, nnomam,&
+subroutine cfcarm(noma, defico, newgeo, posmai, typmai, &
+                  nummai, alias, nommai, ndim, nnomam, &
                   coorma)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -69,7 +69,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 !
 !
     integer :: nbnmax
-    parameter   (nbnmax = 9)
+    parameter(nbnmax=9)
 !
     integer :: no(nbnmax)
     integer :: ino, jdec
@@ -100,7 +100,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
     call cfnben(defico, posmai, 'CONNEX', nnomam)
     if (nnomam .gt. nbnmax) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- TYPE DE LA MAILLE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
+subroutine ascomb(lischa, vecelz, typres, nompar, valpar, &
                   cnchar)
 !
 !
@@ -87,11 +87,11 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
     vecele = vecelz
     vachar = vecele(1:19)//'.CHNO'
     call jeexin(vachar, iret)
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
     call jelira(vachar, 'LONMAX', nbvec)
-    ASSERT(nbvec.ne.0)
+    ASSERT(nbvec .ne. 0)
     call jeveuo(vachar, 'L', jvacha)
-    ASSERT(typres.eq.'R'.or.typres.eq.'C')
+    ASSERT(typres .eq. 'R' .or. typres .eq. 'C')
     call lisnnb(lischa, nbchar)
     dgrd = r8dgrd()
 !
@@ -108,38 +108,38 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
 !
 ! ------- NUMERO DE LA CHARGE
 !
-            call corich('L', chamno, ichout_ = ichar)
-            ASSERT((ichar.ne.0).and.(ichar.ge.-2))
+            call corich('L', chamno, ichout_=ichar)
+            ASSERT((ichar .ne. 0) .and. (ichar .ge. -2))
 !
 ! ------- FONCTION MULTIPLICATRICE
 !
             if (ichar .gt. 0) then
                 call lislnf(lischa, ichar, nomfct)
                 call lisltf(lischa, ichar, typfct)
-            endif
+            end if
 !
 ! ------- VALEUR DU COEFFICIENT
 !
             if (ichar .eq. -1) then
                 valres = 1.d0
-            else if (ichar.eq.-2) then
+            else if (ichar .eq. -2) then
                 valres = 0.d0
-            else if (ichar.gt.0) then
+            else if (ichar .gt. 0) then
                 valres = 1.d0
                 if (nomfct .ne. ' ') then
-                    ASSERT(typfct(7:10).eq.'REEL')
+                    ASSERT(typfct(7:10) .eq. 'REEL')
                     tval(1) = valpar
-                    call fointe('F', nomfct, 1, nompar, tval,&
+                    call fointe('F', nomfct, 1, nompar, tval, &
                                 valres, iret)
-                endif
+                end if
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
             zr(jcoef+ivec-1) = valres
             zk8(jtype+ivec-1) = 'R'
         end do
-    endif
+    end if
 !
 ! --- CALCUL DES COEFFICIENTS - CAS COMPLEXE
 !
@@ -156,21 +156,21 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
 !
 ! ------- NUMERO DE LA CHARGE
 !
-            call corich('L', chamno, ichout_ = ichar)
-            ASSERT((ichar.ne.0).and.(ichar.ge.-2))
+            call corich('L', chamno, ichout_=ichar)
+            ASSERT((ichar .ne. 0) .and. (ichar .ge. -2))
 !
 ! ------- FONCTION MULTIPLICATRICE
 !
             if (ichar .gt. 0) then
                 call lislnf(lischa, ichar, nomfct)
                 call lisltf(lischa, ichar, typfct)
-            endif
+            end if
 !
 ! ------- MULTIPLICATEUR COMPLEXE
 !
             if (ichar .gt. 0) then
                 call liscpp(lischa, ichar, phase, npuis)
-            endif
+            end if
 !
 ! ------- VALEUR DU COEFFICIENT
 !
@@ -178,44 +178,44 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
                 valre = 1.d0
                 valim = 0.d0
                 calpha = 1.d0
-            else if (ichar.eq.-2) then
+            else if (ichar .eq. -2) then
                 valre = 0.d0
                 valim = 0.d0
                 calpha = 1.d0
-            else if (ichar.gt.0) then
+            else if (ichar .gt. 0) then
                 valre = 1.d0
                 valim = 0.d0
-                calpha = exp(dcmplx(0.d0,phase*dgrd))
+                calpha = exp(dcmplx(0.d0, phase*dgrd))
                 if (npuis .ne. 0) calpha = calpha*omega**npuis
                 if (nomfct .ne. ' ') then
-                    tval(1)=valpar
+                    tval(1) = valpar
                     if (typfct(7:10) .eq. 'REEL') then
-                        call fointe('F', nomfct, 1, nompar, tval,&
+                        call fointe('F', nomfct, 1, nompar, tval, &
                                     valre, iret)
                         valim = 0.d0
-                    else if (typfct(7:10).eq.'COMP') then
-                        call fointc('F', nomfct, 1, nompar, tval,&
+                    else if (typfct(7:10) .eq. 'COMP') then
+                        call fointc('F', nomfct, 1, nompar, tval, &
                                     valre, valim, iret)
                     else
                         ASSERT(.false.)
-                    endif
-                endif
+                    end if
+                end if
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
             zk8(jtype+ivec-1) = 'C'
-            ivecc = ivecc + 1
+            ivecc = ivecc+1
             zr(jcoef+ivecc-1) = valre*dble(calpha)-valim*dimag(calpha)
-            ivecc = ivecc + 1
+            ivecc = ivecc+1
             zr(jcoef+ivecc-1) = valim*dble(calpha)+valre*dimag(calpha)
 !
         end do
-    endif
+    end if
 !
 ! --- COMBINAISON LINEAIRE DES CHAM_NO
 !
-    call vtcmbl(nbvec, zk8(jtype), zr(jcoef), zk8(jtype), zk24(jvacha),&
+    call vtcmbl(nbvec, zk8(jtype), zr(jcoef), zk8(jtype), zk24(jvacha), &
                 zk8(jtype), cnchar)
 !
     call jedetr('&&ASCOMB.COEF')

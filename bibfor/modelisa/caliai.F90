@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine caliai(fonree, charge, phenom)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -75,7 +75,7 @@ implicit none
 !-----------------------------------------------------------------------
     integer :: i, ier, igr, in, indnoe, ino
     integer :: iocc, iret, j
-    integer :: jddl,   jgr0
+    integer :: jddl, jgr0
     integer :: k, n, n1, n2, n3, nb, nbgt
     integer :: nbno, ndim1, ndim2, nent, ng, ngr, nliai
     integer :: nno
@@ -90,20 +90,20 @@ implicit none
     character(len=24), pointer :: v_trav(:) => null()
     real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
-    data nompar /'X','Y','Z'/
+    data nompar/'X', 'Y', 'Z'/
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     motfac = 'LIAISON_DDL     '
     motcle = 'NOEUD'
     mogrou = 'GROUP_NO'
-    typco2='REEL'
+    typco2 = 'REEL'
 !
     lisrel = '&&CALIAI.RLLISTE'
     call getfac(motfac, nliai)
     if (nliai .eq. 0) goto 90
 !
-    betac = (1.0d0,0.0d0)
+    betac = (1.0d0, 0.0d0)
 !
     call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
@@ -120,12 +120,12 @@ implicit none
     ndim1 = 0
     do i = 1, nliai
         call getvtx(motfac, mogrou, iocc=i, nbval=0, nbret=nent)
-        ndim1 = max(ndim1,-nent)
+        ndim1 = max(ndim1, -nent)
         call getvtx(motfac, motcle, iocc=i, nbval=0, nbret=nent)
-        ndim1 = max(ndim1,-nent)
+        ndim1 = max(ndim1, -nent)
     end do
 !
-    AS_ALLOCATE(vk24 = v_trav, size = ndim1)
+    AS_ALLOCATE(vk24=v_trav, size=ndim1)
 !
 !
 !     -- CALCUL DE NDIM2 ET VERIFICATION DES NOEUDS ET GROUP_NO
@@ -134,7 +134,7 @@ implicit none
 !        -------------------------------------------------------
     ndim2 = ndim1
     do iocc = 1, nliai
-        call getvtx(motfac, mogrou, iocc=iocc, nbval=ndim1, vect=v_trav,&
+        call getvtx(motfac, mogrou, iocc=iocc, nbval=ndim1, vect=v_trav, &
                     nbret=ngr)
         nbgt = 0
         do igr = 1, ngr
@@ -145,11 +145,11 @@ implicit none
                 call utmess('F', 'MODELISA2_95', nk=2, valk=valk)
             else
                 call jelira(jexnom(grouno, v_trav(igr)), 'LONUTI', n1)
-                nbgt = nbgt + n1
-            endif
+                nbgt = nbgt+n1
+            end if
         end do
-        ndim2 = max(ndim2,nbgt)
-        call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=v_trav,&
+        ndim2 = max(ndim2, nbgt)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=v_trav, &
                     nbret=nno)
         do ino = 1, nno
             call jenonu(jexnom(noeuma, v_trav(ino)), iret)
@@ -158,7 +158,7 @@ implicit none
                 valk(2) = v_trav(ino)
                 valk(3) = noma
                 call utmess('F', 'MODELISA2_96', nk=3, valk=valk)
-            endif
+            end if
         end do
     end do
 !
@@ -177,16 +177,16 @@ implicit none
 !     -----------------------------------
     call getres(char, concep, oper)
     do i = 1, nliai
-        call getvr8(motfac, 'COEF_MULT', iocc=i, nbval=ndim2, vect=coemur,&
+        call getvr8(motfac, 'COEF_MULT', iocc=i, nbval=ndim2, vect=coemur, &
                     nbret=n2)
         if (oper .eq. 'AFFE_CHAR_MECA_F') then
-            call getvid(motfac, 'COEF_MULT_FONC', iocc=i, nbval=ndim2, vect=coemuf,&
+            call getvid(motfac, 'COEF_MULT_FONC', iocc=i, nbval=ndim2, vect=coemuf, &
                         nbret=n3)
         else
-            n3=0
-        endif
-        if (n3 .ne. 0) typco2='FONC'
-        call getvtx(motfac, 'DDL', iocc=i, nbval=ndim2, vect=zk8(jddl),&
+            n3 = 0
+        end if
+        if (n3 .ne. 0) typco2 = 'FONC'
+        call getvtx(motfac, 'DDL', iocc=i, nbval=ndim2, vect=zk8(jddl), &
                     nbret=n1)
         typcoe = 'REEL'
 !
@@ -199,13 +199,13 @@ implicit none
             do k = 1, n1
                 zk8(jddl-1+k) = 'TEMP'
             end do
-        endif
+        end if
 !
         if (n1 .ne. (n2+n3)) then
-            vali (1) = abs(n1)
-            vali (2) = abs(n2+n3)
+            vali(1) = abs(n1)
+            vali(2) = abs(n2+n3)
             call utmess('F', 'MODELISA8_46', ni=2, vali=vali)
-        endif
+        end if
 !
 !
 !       -- RECUPERATION DU 2ND MEMBRE :
@@ -213,25 +213,25 @@ implicit none
         if (fonree .eq. 'REEL') then
             call getvr8(motfac, 'COEF_IMPO', iocc=i, scal=beta, nbret=nb)
             typval = 'REEL'
-        else if (fonree.eq.'FONC') then
+        else if (fonree .eq. 'FONC') then
             call getvid(motfac, 'COEF_IMPO', iocc=i, scal=betaf, nbret=nb)
             typval = 'FONC'
-        else if (fonree.eq.'COMP') then
+        else if (fonree .eq. 'COMP') then
             call getvc8(motfac, 'COEF_IMPO', iocc=i, scal=betac, nbret=nb)
             typval = 'COMP'
         else
             call utmess('F', 'DVP_1')
-        endif
+        end if
 !
 !
-        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
+        call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i, &
                     0, liste1, ng)
         if (ng .ne. 0) then
 !
 !           -- CAS DE GROUP_NO :
 !           --------------------
             ng = -ng
-            call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
+            call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i, &
                         ng, liste1, n)
             indnoe = 0
             do j = 1, ng
@@ -239,17 +239,17 @@ implicit none
                 call jelira(jexnom(grouno, liste1(j)), 'LONUTI', n)
                 do k = 1, n
                     in = zi(jgr0-1+k)
-                    indnoe = indnoe + 1
+                    indnoe = indnoe+1
                     call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
                     liste2(indnoe) = nomnoe
                     if (typco2 .eq. 'FONC') then
                         valpar(1) = vvale(3*(in-1)+1)
                         valpar(2) = vvale(3*(in-1)+2)
                         valpar(3) = vvale(3*(in-1)+3)
-                        call fointe('F', coemuf(indnoe), 3, nompar, valpar,&
+                        call fointe('F', coemuf(indnoe), 3, nompar, valpar, &
                                     vale, ier)
-                        coemur(indnoe)=vale
-                    endif
+                        coemur(indnoe) = vale
+                    end if
                 end do
             end do
 !
@@ -257,26 +257,26 @@ implicit none
 !              EST EGAL AU NOMBRE DE DDLS DE LA RELATION :
 !              -----------------------------------------
             if (n1 .ne. indnoe) then
-                vali (1) = abs(n1)
-                vali (2) = indnoe
+                vali(1) = abs(n1)
+                vali(2) = indnoe
                 call utmess('F', 'MODELISA8_47', ni=2, vali=vali)
-            endif
+            end if
 !
 !           AFFECTATION A LA LISTE DE RELATIONS
 !
-            call afrela(coemur, coemuc, zk8(jddl), liste2, dimension,&
-                        direct, indnoe, beta, betac, betaf,&
+            call afrela(coemur, coemuc, zk8(jddl), liste2, dimension, &
+                        direct, indnoe, beta, betac, betaf, &
                         typcoe, typval, 0.d0, lisrel)
 !
         else
 !
 !           CAS DE NOEUD :
 !           -------------
-            call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
+            call getvem(noma, 'NOEUD', motfac, 'NOEUD', i, &
                         0, liste2, nbno)
             if (nbno .ne. 0) then
                 nbno = -nbno
-                call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
+                call getvem(noma, 'NOEUD', motfac, 'NOEUD', i, &
                             nbno, liste2, n)
                 if (typco2 .eq. 'FONC') then
                     do k = 1, n
@@ -284,32 +284,32 @@ implicit none
                         valpar(1) = vvale(3*(in-1)+1)
                         valpar(2) = vvale(3*(in-1)+2)
                         valpar(3) = vvale(3*(in-1)+3)
-                        call fointe('F', coemuf(k), 3, nompar, valpar,&
+                        call fointe('F', coemuf(k), 3, nompar, valpar, &
                                     vale, ier)
-                        coemur(k)=vale
+                        coemur(k) = vale
                     end do
-                endif
-            endif
+                end if
+            end if
 !
 !           -- ON VERIFIE QUE LE NOMBRE DE NOEUDS DE LA LISTE DE
 !              NOEUDS EST EGAL AU NOMBRE DE DDLS DE LA RELATION :
 !              ------------------------------------------------
             if (n1 .ne. nbno) then
-                vali (1) = abs(n1)
-                vali (2) = nbno
+                vali(1) = abs(n1)
+                vali(2) = nbno
                 call utmess('F', 'MODELISA8_47', ni=2, vali=vali)
-            endif
-            call afrela(coemur, coemuc, zk8(jddl), liste2, dimension,&
-                        direct, nbno, beta, betac, betaf,&
+            end if
+            call afrela(coemur, coemuc, zk8(jddl), liste2, dimension, &
+                        direct, nbno, beta, betac, betaf, &
                         typcoe, typval, 0.d0, lisrel)
-        endif
+        end if
 !
     end do
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ---------------------------------------------
-    if (phenom.eq.'MECA') then
-    endif
+    if (phenom .eq. 'MECA') then
+    end if
     call aflrch(lisrel, charge, 'LIN')
 !
 !     -- MENAGE :
@@ -324,6 +324,6 @@ implicit none
     AS_DEALLOCATE(vr=direct)
     AS_DEALLOCATE(vi=dimension)
 !
- 90 continue
+90  continue
     call jedema()
 end subroutine

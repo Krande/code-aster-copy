@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,41 +27,41 @@ subroutine jedema()
 #include "asterfort/jjlide.h"
 #include "asterfort/utmess.h"
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
     integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd
     integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
     integer :: jrnom, jtype, n
 !-----------------------------------------------------------------------
-    parameter      ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
-    common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
+    common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
-    common /nomcje/  nomuti , nomos , nomco , nomoc , bl32
+    common/nomcje/nomuti, nomos, nomco, nomoc, bl32
     integer :: lundef, idebug
-    common /undfje/  lundef,idebug
+    common/undfje/lundef, idebug
     real(kind=8) :: svuse, smxuse
-    common /statje/  svuse,smxuse
+    common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
     integer :: k, iadmi, ideb, ifin, idos, idco, ic, is
     character(len=8) :: ksuf
     character(len=24) :: d24
-    data             d24 /'$$$$$$$$$$$$$$$$$$$$$$$$'/
+    data d24/'$$$$$$$$$$$$$$$$$$$$$$$$'/
 ! DEB ------------------------------------------------------------------
     if (ipgc .eq. 0) then
         call utmess('F', 'JEVEUX_06')
     else
         ideb = iszon(jiszon+kposma(1)+ipgc-1)
-    endif
+    end if
     ifin = lgduti-1
 !
 ! --- ON TRAITE D'ABORD LES COLLECTIONS
@@ -83,10 +83,10 @@ subroutine jedema()
                     iclaco = ic
                     idatco = idos
                     nomco = d24
-                    call jjlide('JELIBE', rnom(jrnom(ic)+idos)(1:24), 2)
-                endif
-            endif
-        endif
+                    call jjlide('JELIBE', rnom(jrnom(ic)+idos) (1:24), 2)
+                end if
+            end if
+        end if
     end do
 !
 ! --- ON TRAITE MAINTENANT LES OBJETS SIMPLES
@@ -101,29 +101,29 @@ subroutine jedema()
             ic = iszon(jiszon+is-2)
             if (idco .gt. 0) goto 200
             if (idos .gt. 0) then
-                ksuf = rnom(jrnom(ic)+idos)(25:32)
-                if ((ksuf(1:2).eq.'$$' .and. ksuf(3:6) .ne. 'DESO') .or. ksuf(1:2) .eq. '&&'&
+                ksuf = rnom(jrnom(ic)+idos) (25:32)
+                if ((ksuf(1:2) .eq. '$$' .and. ksuf(3:6) .ne. 'DESO') .or. ksuf(1:2) .eq. '&&' &
                     .or. genr(jgenr(ic)+idos) .eq. 'X') goto 200
                 if (idebug .eq. 1) then
                     iclaos = ic
                     idatos = idos
                     nomos = d24
-                    call jjlide('JELIBE', rnom(jrnom(ic)+idos)(1:24), 1)
+                    call jjlide('JELIBE', rnom(jrnom(ic)+idos) (1:24), 1)
                 else
-                    imarq ( jmarq(ic)+2*idos-1 ) = 0
-                    imarq ( jmarq(ic)+2*idos ) = 0
-                    iszon(jiszon+iadmi-1 ) = istat(1)
+                    imarq(jmarq(ic)+2*idos-1) = 0
+                    imarq(jmarq(ic)+2*idos) = 0
+                    iszon(jiszon+iadmi-1) = istat(1)
                     iszon(jiszon+kdesma(1)+k) = 0
-                    svuse = svuse - (iszon(jiszon+iadmi-4) - iadmi+4)
-                    smxuse = max(smxuse,svuse)
-                endif
-            endif
-        endif
+                    svuse = svuse-(iszon(jiszon+iadmi-4)-iadmi+4)
+                    smxuse = max(smxuse, svuse)
+                end if
+            end if
+        end if
 200     continue
     end do
-    lgputi = lgputi - 1
+    lgputi = lgputi-1
     lgduti = ideb
     iszon(jiszon+kposma(1)+ipgc-1) = 0
-    ipgc = ipgc - 1
+    ipgc = ipgc-1
 ! FIN ------------------------------------------------------------------
 end subroutine

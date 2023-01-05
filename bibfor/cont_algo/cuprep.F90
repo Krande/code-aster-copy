@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cuprep(mesh, nb_equa, ds_contact, disp_curr, disp_iter, time_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/caladu.h"
@@ -79,8 +79,8 @@ implicit none
 ! --- LECTURE DES SD
 !
     apcoef = ds_contact%sdunil_solv(1:14)//'.APCOEF'
-    apjeu  = ds_contact%sdunil_solv(1:14)//'.APJEU'
-    apddl  = ds_contact%sdunil_solv(1:14)//'.APDDL'
+    apjeu = ds_contact%sdunil_solv(1:14)//'.APJEU'
+    apddl = ds_contact%sdunil_solv(1:14)//'.APDDL'
     noeucu = ds_contact%sdunil_defi(1:16)//'.LISNOE'
     call jeveuo(apjeu, 'E', japjeu)
     call jeveuo(apcoef, 'E', japcoe)
@@ -90,8 +90,8 @@ implicit none
 !
 ! --- NOMBRE TOTAL DE DDLS ET NOMBRE TOTAL DE NOEUDS
 !
-    nnocu = cudisi(ds_contact%sdunil_defi,'NNOCU')
-    ncmpg = cudisi(ds_contact%sdunil_defi,'NCMPG')
+    nnocu = cudisi(ds_contact%sdunil_defi, 'NNOCU')
+    ncmpg = cudisi(ds_contact%sdunil_defi, 'NCMPG')
 !
 ! --- EVALUATION DU MEMBRE DE DROITE (PSEUDO-JEU)
 !
@@ -108,7 +108,7 @@ implicit none
         valpar(2) = coor(1+3*(numnoe-1))
         valpar(3) = coor(1+3*(numnoe-1)+1)
         valpar(4) = coor(1+3*(numnoe-1)+2)
-        call fointe('F', zk8(jcoefd-1+inoe), 4, lispar, valpar,&
+        call fointe('F', zk8(jcoefd-1+inoe), 4, lispar, valpar, &
                     coef, iret)
         zr(japjeu+inoe-1) = coef
     end do
@@ -122,7 +122,7 @@ implicit none
 !
     do icmp = 1, ncmpg
         call cusign(jcmpg, icmp, sign)
-        call fointe('F', zk8(jcoefg-1+icmp), 1, ['INST'], [time_curr],&
+        call fointe('F', zk8(jcoefg-1+icmp), 1, ['INST'], [time_curr], &
                     coef, iret)
         zr(japcoe+icmp) = sign*coef
     end do
@@ -135,25 +135,25 @@ implicit none
 !
     do inoe = 1, nnocu
         jdecal = zi(jpoi+inoe-1)
-        nbddl = zi(jpoi+inoe) - zi(jpoi+inoe-1)
-        call caladu(nb_equa, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), depp,&
+        nbddl = zi(jpoi+inoe)-zi(jpoi+inoe-1)
+        call caladu(nb_equa, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), depp, &
                     val)
-        zr(japjeu+inoe-1) = zr(japjeu+inoe-1) - val
+        zr(japjeu+inoe-1) = zr(japjeu+inoe-1)-val
     end do
 !
 ! --- PENALISATION : RESTE A MULTIPLIER PAR L INCREMENT
 ! ---    SANS PRISE EN COMPTE DU CONTACT
 !
     if (l_unil_pena) then
-       call jeveuo(disp_iter(1:19)//'.VALE', 'L', vr=vale)
-       do inoe = 1, nnocu
-          jdecal = zi(jpoi+inoe-1)
-          nbddl  = zi(jpoi+inoe) - zi(jpoi+inoe-1)
-          call caladu(nb_equa, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
-                   val)
-          zr(japjeu+inoe-1) = zr(japjeu+inoe-1) - val
-       end do
-    endif
+        call jeveuo(disp_iter(1:19)//'.VALE', 'L', vr=vale)
+        do inoe = 1, nnocu
+            jdecal = zi(jpoi+inoe-1)
+            nbddl = zi(jpoi+inoe)-zi(jpoi+inoe-1)
+            call caladu(nb_equa, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale, &
+                        val)
+            zr(japjeu+inoe-1) = zr(japjeu+inoe-1)-val
+        end do
+    end if
 !
 ! ----------------------------------------------------------------------
     call jedema()

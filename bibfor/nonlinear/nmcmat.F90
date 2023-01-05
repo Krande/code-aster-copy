@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcmat(matr_type_ , calc_opti_    , asse_opti_    , l_calc        , l_asse     ,&
-                  nb_matr    , list_matr_type, list_calc_opti, list_asse_opti, list_l_calc,&
+subroutine nmcmat(matr_type_, calc_opti_, asse_opti_, l_calc, l_asse, &
+                  nb_matr, list_matr_type, list_calc_opti, list_asse_opti, list_l_calc, &
                   list_l_asse)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -75,12 +75,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_matr = nb_matr + 1
-    ASSERT(nb_matr.le.20)
+    nb_matr = nb_matr+1
+    ASSERT(nb_matr .le. 20)
     list_matr_type(nb_matr) = matr_type_
     list_calc_opti(nb_matr) = calc_opti_
     list_asse_opti(nb_matr) = asse_opti_
-    list_l_asse(nb_matr)    = l_asse
-    list_l_calc(nb_matr)    = l_calc
+    list_l_asse(nb_matr) = l_asse
+    list_l_calc(nb_matr) = l_calc
 !
 end subroutine

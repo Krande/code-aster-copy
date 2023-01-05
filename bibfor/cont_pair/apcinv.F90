@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apcinv(mesh, sdappa, i_zone)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -58,7 +58,7 @@ implicit none
     integer :: nb_elem_mast, nb_elem_slav, nb_node_mast
     character(len=24) :: sdappa_mast, sdappa_slav
     character(len=24) :: sdappa_slne, sdappa_mane, sdappa_civm, sdappa_lnma
-    integer :: mast_indx_maxi , slav_indx_maxi, mast_indx_mini, slav_indx_mini
+    integer :: mast_indx_maxi, slav_indx_maxi, mast_indx_mini, slav_indx_mini
     integer, pointer :: v_sdappa_mast(:) => null()
     integer, pointer :: v_sdappa_slav(:) => null()
     mpi_int :: i_proc, nb_proc, mpicou
@@ -86,14 +86,14 @@ implicit none
 !
     call jelira(sdappa_mast, 'LONMAX', nb_elem_mast)
     call jelira(sdappa_slav, 'LONMAX', nb_elem_slav)
-    call jeveuo(sdappa_mast, 'L', vi = v_sdappa_mast)
-    call jeveuo(sdappa_slav, 'L', vi = v_sdappa_slav)
+    call jeveuo(sdappa_mast, 'L', vi=v_sdappa_mast)
+    call jeveuo(sdappa_slav, 'L', vi=v_sdappa_slav)
 !
 ! - Create list of node of master elements
 !
-    call gt_linoma(mesh,v_sdappa_mast,nb_elem_mast,list_node_mast,nb_node_mast)
-    call wkvect(sdappa_lnma,'V V I',nb_node_mast ,vi=v_lnma)
-    v_lnma(:)=list_node_mast(:)
+    call gt_linoma(mesh, v_sdappa_mast, nb_elem_mast, list_node_mast, nb_node_mast)
+    call wkvect(sdappa_lnma, 'V V I', nb_node_mast, vi=v_lnma)
+    v_lnma(:) = list_node_mast(:)
     AS_DEALLOCATE(vi=list_node_mast)
 !
 ! - Get parameters
@@ -108,14 +108,14 @@ implicit none
 ! - MPI initialisation
 !
     call asmpi_comm('GET', mpicou)
-    call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
-    nb_elem_mpi  = int(nb_elem_slav/nb_proc)
+    call asmpi_info(mpicou, rank=i_proc, size=nb_proc)
+    nb_elem_mpi = int(nb_elem_slav/nb_proc)
     nbr_elem_mpi = nb_elem_slav-nb_elem_mpi*nb_proc
-    idx_start    = 1+(i_proc)*nb_elem_mpi
-    idx_end      = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
-    nb_el_slav_mpi = idx_end - idx_start + 1
+    idx_start = 1+(i_proc)*nb_elem_mpi
+    idx_end = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
+    nb_el_slav_mpi = idx_end-idx_start+1
     AS_ALLOCATE(vi=v_appa_slav_mpi, size=nb_el_slav_mpi)
-    v_appa_slav_mpi(:)=v_sdappa_slav(idx_start:idx_end)
+    v_appa_slav_mpi(:) = v_sdappa_slav(idx_start:idx_end)
     slav_indx_maxi = maxval(v_appa_slav_mpi)
     slav_indx_mini = minval(v_appa_slav_mpi)
     !write(*,*)"I_PROC = ", i_proc
@@ -128,10 +128,10 @@ implicit none
 !
     call jedetr(sdappa_slne)
     call jedetr(sdappa_mane)
-    call cnvois(mesh, v_appa_slav_mpi, cnives, nb_el_slav_mpi, slav_indx_mini, slav_indx_maxi,&
+    call cnvois(mesh, v_appa_slav_mpi, cnives, nb_el_slav_mpi, slav_indx_mini, slav_indx_maxi, &
                 sdappa_slne)
-    call cnvois(mesh , v_sdappa_mast, sdappa_civm, nb_elem_mast, mast_indx_mini, mast_indx_maxi,&
-                 sdappa_mane)
+    call cnvois(mesh, v_sdappa_mast, sdappa_civm, nb_elem_mast, mast_indx_mini, mast_indx_maxi, &
+                sdappa_mane)
     AS_DEALLOCATE(vi=v_appa_slav_mpi)
 !
 ! - Cleaning

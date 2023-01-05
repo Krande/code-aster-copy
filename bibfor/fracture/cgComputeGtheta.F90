@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !
-use calcG_type
+    use calcG_type
 !
     implicit none
 !
@@ -97,38 +97,38 @@ use calcG_type
     call jemarq()
 !
 !   Initialisation des champs et des paramètres
-    chgtheta= '&&cgtheta.CH_G'
-    chvarc  = '&&cgtheta.VARC'
-    chvref  = '&&cgtheta.VARC.REF'
-    chsigi  = '&&cgtheta.CHSIGI'
-    celmod  = '&&cgtheta.CELMOD'
+    chgtheta = '&&cgtheta.CH_G'
+    chvarc = '&&cgtheta.VARC'
+    chvref = '&&cgtheta.VARC.REF'
+    chsigi = '&&cgtheta.CHSIGI'
+    celmod = '&&cgtheta.CELMOD'
     sigelno = '&&cgtheta.SIGELNO'
-    chvolu  = '&&cgtheta.VOLU'
-    cf1d2d  = '&&cgtheta.1D2D'
-    cf2d3d  = '&&cgtheta.2D3D'
-    chpres  = '&&cgtheta.PRES'
-    chepsi  = '&&cgtheta.EPSI'
-    chpesa  = '&&cgtheta.PESA'
-    chrota  = '&&cgtheta.ROTA'
-    chtime  = '&&cgtheta.CH_INST_R'
-    chpuls  = '&&cgtheta.PULS'
-    chsdeg  = '&&cgtheta.CHSDEG'
-    chslag  = '&&cgtheta.CHSLAG'
+    chvolu = '&&cgtheta.VOLU'
+    cf1d2d = '&&cgtheta.1D2D'
+    cf2d3d = '&&cgtheta.2D3D'
+    chpres = '&&cgtheta.PRES'
+    chepsi = '&&cgtheta.EPSI'
+    chpesa = '&&cgtheta.PESA'
+    chrota = '&&cgtheta.ROTA'
+    chtime = '&&cgtheta.CH_INST_R'
+    chpuls = '&&cgtheta.PULS'
+    chsdeg = '&&cgtheta.CHSDEG'
+    chslag = '&&cgtheta.CHSLAG'
 !
-    gthi(:)=0.0
-    k1th(:)=0.0
-    k2th(:)=0.0
-    k3th(:)=0.0
-    g1th(:)=0.0
-    g2th(:)=0.0
-    g3th(:)=0.0
-    gs(:)  =0.0
-    k1s(:)=0.0
-    k2s(:)=0.0
-    k3s(:)=0.0
-    g1s(:)=0.0
-    g2s(:)=0.0
-    g3s(:)=0.0
+    gthi(:) = 0.0
+    k1th(:) = 0.0
+    k2th(:) = 0.0
+    k3th(:) = 0.0
+    g1th(:) = 0.0
+    g2th(:) = 0.0
+    g3th(:) = 0.0
+    gs(:) = 0.0
+    k1s(:) = 0.0
+    k2s(:) = 0.0
+    k3s(:) = 0.0
+    g1s(:) = 0.0
+    g2s(:) = 0.0
+    g3s(:) = 0.0
     cgStudy%gth = 0.d0
 !
     k8b = '        '
@@ -137,17 +137,17 @@ use calcG_type
 !
 !   Recuperation du LIGREL
     model = cgStudy%model(1:8)
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 !
 !   Recuperation du comportement
     if (cgField%l_incr) then
 !
         if (cgField%result_in_type .ne. 'EVOL_NOLI') then
             call utmess('F', 'RUPTURE1_15')
-        endif
+        end if
 !
         call rsexch('F', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
-    endif
+    end if
 !
 !   Recuperation de l'etat initial
     if (cgField%l_incr) then
@@ -163,30 +163,30 @@ use calcG_type
             call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
 
 !           Verification du type de champ
-            if (ino1.eq.1 .and. ino2.eq.1 .and. inga.eq.1) then
+            if (ino1 .eq. 1 .and. ino2 .eq. 1 .and. inga .eq. 1) then
                 call utmess('F', 'RUPTURE1_12')
-            endif
+            end if
 
 !           Transformation si champ ELGA
-            if (inga.eq.0) then
+            if (inga .eq. 0) then
 
 !               Traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
                 call alchml(modelLigrel, 'CALC_G', 'PSIGINR', 'V', celmod, iret, ' ')
                 call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V', sigelno, model)
                 call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
-            endif
-        endif
+            end if
+        end if
     else
         nsig = 0
-    endif
+    end if
 !
 !   Recuperation des champs de temperature (T,TREF)
     call vrcins(cgStudy%model, cgStudy%material, k8b, cgStudy%time, chvarc, codret)
     call vrcref(cgStudy%model, cgStudy%material(1:8), k8b, chvref(1:19))
 !
 !   Traitement des charges
-    call gcharg(cgStudy%model, cgStudy%loading, chvolu, cf1d2d, cf2d3d, chpres,&
+    call gcharg(cgStudy%model, cgStudy%loading, chvolu, cf1d2d, cf2d3d, chpres, &
                 chepsi, chpesa, chrota, lfonc, cgStudy%time, cgStudy%nume_ordre)
 !
 !   Select name of option
@@ -201,17 +201,17 @@ use calcG_type
             pa2d3d = 'PFF2D3D'
             papres = 'PPRESSF'
             pepsin = 'PEPSINF'
-        endif
+        end if
 !
         if (cgStudy%option .eq. 'K') then
-            opti   = 'CALC_K_G_F'
-        else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
-            opti   = 'CALC_G_F'
-        else if (cgStudy%option .eq. 'KJ'.or.cgStudy%option .eq. 'KJ_EPSI') then
-            opti   = 'CALC_G_F'
+            opti = 'CALC_K_G_F'
+        else if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI') then
+            opti = 'CALC_G_F'
+        else if (cgStudy%option .eq. 'KJ' .or. cgStudy%option .eq. 'KJ_EPSI') then
+            opti = 'CALC_G_F'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         if (cgField%ndim .eq. 2) then
             pavolu = 'PFRVOLU'
@@ -223,18 +223,18 @@ use calcG_type
             pa2d3d = 'PFR2D3D'
             papres = 'PPRESSR'
             pepsin = 'PEPSINR'
-        endif
+        end if
 !
         if (cgStudy%option .eq. 'K') then
-            opti   = 'CALC_K_G'
-        else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
-            opti   = 'CALC_G'
-        else if (cgStudy%option .eq. 'KJ'.or.cgStudy%option .eq. 'KJ_EPSI') then
-            opti   = 'CALC_G'
+            opti = 'CALC_K_G'
+        else if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI') then
+            opti = 'CALC_G'
+        else if (cgStudy%option .eq. 'KJ' .or. cgStudy%option .eq. 'KJ_EPSI') then
+            opti = 'CALC_G'
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 !   Création d'un champ constant par élément : LEGENDRE, LAGRANGE
 !   Récupération du nombre de groupes d'éléments du ligrel
@@ -244,28 +244,28 @@ use calcG_type
 !
 !       Champ scalaire constant par élement :
 !            --  degré du polynome
-        call cescre('V', chsdeg, 'ELEM', cgStudy%mesh, 'NEUT_I',&
+        call cescre('V', chsdeg, 'ELEM', cgStudy%mesh, 'NEUT_I', &
                     0, ' ', [-1], [-1], [-1])
 !
         call jeveuo(chsdeg//'.CESD', 'L', jcesd)
         call jeveuo(chsdeg//'.CESL', 'E', jcesl)
         call jeveuo(chsdeg//'.CESV', 'E', vi=v_cesv)
 !
-    elseif (cgtheta%discretization .eq.'LINEAIRE') then
+    elseif (cgtheta%discretization .eq. 'LINEAIRE') then
 !
         call cgTheta%getAbsfon(v_basf)
 !
 !       Champ scalaire constant par élement :
 !            -- abscisse curviligne s(i-1), s(i), s(i+1)
 !               pour la fonction de forme courante
-        call cescre('V', chslag, 'ELEM', cgStudy%mesh, 'NEUT_R',&
+        call cescre('V', chslag, 'ELEM', cgStudy%mesh, 'NEUT_R', &
                     0, '', [-1], [-1], [-3])
 !
         call jeveuo(chslag//'.CESD', 'L', jcesd)
         call jeveuo(chslag//'.CESL', 'E', jcesl)
         call jeveuo(chslag//'.CESV', 'E', vr=v_absc)
 !
-    endif
+    end if
 !
 !************************************************
 !   Boucle sur le nombre de champ theta
@@ -297,7 +297,7 @@ use calcG_type
         else
             lpain(8) = pa2d3d(1:8)
             lchin(8) = cf2d3d
-        endif
+        end if
         lpain(9) = papres(1:8)
         lchin(9) = chpres
         lpain(10) = 'PPESANR'
@@ -314,7 +314,7 @@ use calcG_type
         nchin = 14
 !
         call cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, &
-                        v_absc, v_basf, v_cesv, jcesd, jcesl, i_theta, lpain, lchin, nchin)
+                          v_absc, v_basf, v_cesv, jcesd, jcesl, i_theta, lpain, lchin, nchin)
 
         if (cgStudy%option .eq. 'K') then
             lpain(nchin+1) = 'PCOURB'
@@ -323,32 +323,32 @@ use calcG_type
             lchin(nchin+2) = cgTheta%crack//'.LNNO'
             lpain(nchin+3) = 'PLST'
             lchin(nchin+3) = cgTheta%crack//'.LTNO'
-            nchin = nchin + 3
-        endif
+            nchin = nchin+3
+        end if
 !
         if (opti .eq. 'CALC_G_F' .or. opti .eq. 'CALC_K_G_F') then
-            call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R',&
+            call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R', &
                         ncmp=1, nomcmp='INST', sr=cgStudy%time)
             lpain(nchin+1) = 'PTEMPSR'
             lchin(nchin+1) = chtime
-            nchin = nchin + 1
-        endif
+            nchin = nchin+1
+        end if
 !
         if (cgStudy%l_modal) then
-            call mecact('V', chpuls, 'MODELE', modelLigrel, 'FREQ_R  ',&
+            call mecact('V', chpuls, 'MODELE', modelLigrel, 'FREQ_R  ', &
                         ncmp=1, nomcmp='FREQ   ', sr=cgStudy%pulse)
-            nchin = nchin + 1
+            nchin = nchin+1
             lpain(nchin) = 'PPULPRO'
             lchin(nchin) = chpuls
-        endif
+        end if
 !
-        if (cgField%l_incr ) then
+        if (cgField%l_incr) then
             if (opti .eq. 'CALC_G_F' .or. opti .eq. 'CALC_G') then
                 lpain(nchin+1) = 'PCONTRR'
                 lchin(nchin+1) = chsig
-                nchin = nchin + 1
-            endif
-        endif
+                nchin = nchin+1
+            end if
+        end if
 !
 !       Champ de contrainte initiale
         if (nsig .ne. 0) then
@@ -359,19 +359,19 @@ use calcG_type
             else
 !           Champ de contrainte initiale donne par l'utilisateur (NOEUD ou ELNO)
                 lchin(nchin+1) = chsigi
-            endif
-            nchin = nchin + 1
-        endif
+            end if
+            nchin = nchin+1
+        end if
 !
-        if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
+        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI') then
             if (cgStudy%vitesse .ne. ' ') then
                 lpain(nchin+1) = 'PVITESS'
                 lchin(nchin+1) = cgStudy%vitesse
                 lpain(nchin+2) = 'PACCELE'
                 lchin(nchin+2) = cgStudy%acce
-                nchin = nchin + 2
-            endif
-        endif
+                nchin = nchin+2
+            end if
+        end if
 !
 !       Recuperation des contraintes du resultat pour option G
         if (cgStudy%option .eq. 'G') then
@@ -380,12 +380,12 @@ use calcG_type
             if (iret .ne. 0) then
 !               Probleme pour recuperer SIEF_ELGA avec ce numero d'ordre
                 call utmess('F', 'RUPTURE0_94', si=cgStudy%nume_ordre)
-            endif
+            end if
 !
             lpain(nchin+1) = 'PCONTGR'
             lchin(nchin+1) = chsig
-            nchin = nchin + 1
-        endif
+            nchin = nchin+1
+        end if
 !~         do i=1, nchin
 !~             print*,'IMPRSD N°', i, lpain(i)
 !~             call imprsd('CHAMP', lchin(i),6, lpain(i))
@@ -394,134 +394,134 @@ use calcG_type
 !
 !       Sommation des G élémentaires
         call cpu_time(start0)
-        call calcul('S', opti, modelLigrel, nchin, lchin,&
+        call calcul('S', opti, modelLigrel, nchin, lchin, &
                     lpain, 1, lchout, lpaout, 'V', 'OUI')
         call cpu_time(finish0)
-        cgStat%cgCmpGtheta_te = cgStat%cgCmpGtheta_te + finish0 - start0
-        cgStat%nb_cgCmpGtheta_te = cgStat%nb_cgCmpGtheta_te + 1
+        cgStat%cgCmpGtheta_te = cgStat%cgCmpGtheta_te+finish0-start0
+        cgStat%nb_cgCmpGtheta_te = cgStat%nb_cgCmpGtheta_te+1
 !
 !       Somme des G, K1, K2, K3, FIC1, FIC2, FIC3 pour le champ theta actuel
         call cpu_time(start0)
         call mesomm(lchout(1), 7, vr=gth)
         call cpu_time(finish0)
-        cgStat%cgCmpGtheta_mes = cgStat%cgCmpGtheta_mes + finish0 - start0
-        cgStat%nb_cgCmpGtheta_mes = cgStat%nb_cgCmpGtheta_mes + 1
+        cgStat%cgCmpGtheta_mes = cgStat%cgCmpGtheta_mes+finish0-start0
+        cgStat%nb_cgCmpGtheta_mes = cgStat%nb_cgCmpGtheta_mes+1
 !       En 2D, gth contient directement les valeurs à imprimer
 !       En 3D, il faut déterminer gth pour chaque noeud du front de fissure
 !       (inversion du système linéaire A.G(s)=G(theta) par gsyste plus loin)
 
-        if (cgField%ndim.eq.3) then
+        if (cgField%ndim .eq. 3) then
 !       En 3D, on stocke pour chacun des theta,  G, K1, K2, K3, FIC1, FIC2, FIC3
 !       dans des vecteurs temporaires dédiés
-            gthi(i_theta)=gth(1)
-            k1th(i_theta)=gth(2)
-            k2th(i_theta)=gth(3)
-            k3th(i_theta)=gth(4)
-            g1th(i_theta)=gth(5)
-            g2th(i_theta)=gth(6)
-            g3th(i_theta)=gth(7)
-        endif
+            gthi(i_theta) = gth(1)
+            k1th(i_theta) = gth(2)
+            k2th(i_theta) = gth(3)
+            k3th(i_theta) = gth(4)
+            g1th(i_theta) = gth(5)
+            g2th(i_theta) = gth(6)
+            g3th(i_theta) = gth(7)
+        end if
 !
     end do
 !
 !    Cas axis, on normalise par 1/R
-     if (cgStudy%l_axis) then
+    if (cgStudy%l_axis) then
         call cgTheta%getBaseLoc(v_base)
-        gth(1:7) = gth(1:7) / v_base(1)
-     endif
+        gth(1:7) = gth(1:7)/v_base(1)
+    end if
 !
 !    Cas 3D, on détermine G(s) et les K(s)
-    if (cgField%ndim.eq.3) then
-        if(cgTheta%discretization.eq.'LINEAIRE') then
+    if (cgField%ndim .eq. 3) then
+        if (cgTheta%discretization .eq. 'LINEAIRE') then
 
 !           Correction dans le cas des fonds fermés (LAGRANDE/LINEAIRE) : G(1)=G(N)
             if (cgTheta%l_closed) then
-                gthi(cgTheta%nb_theta_field)=gthi(1)
-                k1th(cgTheta%nb_theta_field)=k1th(1)
-                k2th(cgTheta%nb_theta_field)=k2th(1)
-                k3th(cgTheta%nb_theta_field)=k3th(1)
-                g1th(cgTheta%nb_theta_field)=g1th(1)
-                g2th(cgTheta%nb_theta_field)=g2th(1)
-                g3th(cgTheta%nb_theta_field)=g3th(1)
-            endif
+                gthi(cgTheta%nb_theta_field) = gthi(1)
+                k1th(cgTheta%nb_theta_field) = k1th(1)
+                k2th(cgTheta%nb_theta_field) = k2th(1)
+                k3th(cgTheta%nb_theta_field) = k3th(1)
+                g1th(cgTheta%nb_theta_field) = g1th(1)
+                g2th(cgTheta%nb_theta_field) = g2th(1)
+                g3th(cgTheta%nb_theta_field) = g3th(1)
+            end if
 !
 !           CORRECTION VALEURS EXTREMITES
-            if (.not.cgTheta%l_closed) then
+            if (.not. cgTheta%l_closed) then
                 if (cgTheta%nb_theta_field .ne. 2) then
 
-                     s1 =  v_basf(1)
-                     s2 =  v_basf(2)
-                     s3 =  v_basf(3)
-                     sn2 = v_basf(cgTheta%nb_theta_field-3)
-                     sn1 = v_basf(cgTheta%nb_theta_field-2)
-                     sn =  v_basf(cgTheta%nb_theta_field-1)
+                    s1 = v_basf(1)
+                    s2 = v_basf(2)
+                    s3 = v_basf(3)
+                    sn2 = v_basf(cgTheta%nb_theta_field-3)
+                    sn1 = v_basf(cgTheta%nb_theta_field-2)
+                    sn = v_basf(cgTheta%nb_theta_field-1)
 
 !                    CORRECTION DANS LE CAS LINEAIRE
-                     if (.not.cgTheta%milieu) then
-                         gthi(1) = gthi(2)*(s2-s1)/(s3-s1)
-                         k1th(1) = k1th(2)*(s2-s1)/(s3-s1)
-                         k2th(1) = k2th(2)*(s2-s1)/(s3-s1)
-                         k3th(1) = k3th(2)*(s2-s1)/(s3-s1)
-                         g1th(1) = g1th(2)*(s2-s1)/(s3-s1)
-                         g2th(1) = g2th(2)*(s2-s1)/(s3-s1)
-                         g3th(1) = g3th(2)*(s2-s1)/(s3-s1)
-                         gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         k3th(cgTheta%nb_theta_field) = k3th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
-                         g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1)&
-                                                        *(sn-sn1)/(sn-sn2)
+                    if (.not. cgTheta%milieu) then
+                        gthi(1) = gthi(2)*(s2-s1)/(s3-s1)
+                        k1th(1) = k1th(2)*(s2-s1)/(s3-s1)
+                        k2th(1) = k2th(2)*(s2-s1)/(s3-s1)
+                        k3th(1) = k3th(2)*(s2-s1)/(s3-s1)
+                        g1th(1) = g1th(2)*(s2-s1)/(s3-s1)
+                        g2th(1) = g2th(2)*(s2-s1)/(s3-s1)
+                        g3th(1) = g3th(2)*(s2-s1)/(s3-s1)
+                        gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1) &
+                                                       *(sn-sn1)/(sn-sn2)
+                        k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1) &
+                                                       *(sn-sn1)/(sn-sn2)
+                        k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1) &
+                                                       *(sn-sn1)/(sn-sn2)
+                        k3th(cgTheta%nb_theta_field) = k3th(cgTheta%nb_theta_field-1) &
+                                                       *(sn-sn1)/(sn-sn2)
+                        g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1) &
+                                                       *(sn-sn1)/(sn-sn2)
+                        g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1) &
+                                                       *(sn-sn1)/(sn-sn2)
+                        g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1) &
+                                                       *(sn-sn1)/(sn-sn2)
 
 !                    CORRECTION DANS LE CAS QUADRATIQUE
-                     else if (cgTheta%milieu) then
-                         gthi(1) = gthi(2)/4.d0
-                         k1th(1) = k1th(2)/4.d0
-                         k2th(1) = k2th(2)/4.d0
-                         k3th(1) = k3th(2)/4.d0
-                         g1th(1) = g1th(2)/4.d0
-                         g2th(1) = g2th(2)/4.d0
-                         g3th(1) = g3th(2)/4.d0
-                         gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1)/4.d0
-                         k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)/4.d0
-                         k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1)/4.d0
-                         k3th(cgTheta%nb_theta_field) = k3th(cgTheta%nb_theta_field-1)/4.d0
-                         g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1)/4.d0
-                         g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1)/4.d0
-                         g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1)/4.d0
-                     endif
+                    else if (cgTheta%milieu) then
+                        gthi(1) = gthi(2)/4.d0
+                        k1th(1) = k1th(2)/4.d0
+                        k2th(1) = k2th(2)/4.d0
+                        k3th(1) = k3th(2)/4.d0
+                        g1th(1) = g1th(2)/4.d0
+                        g2th(1) = g2th(2)/4.d0
+                        g3th(1) = g3th(2)/4.d0
+                        gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1)/4.d0
+                        k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)/4.d0
+                        k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1)/4.d0
+                        k3th(cgTheta%nb_theta_field) = k3th(cgTheta%nb_theta_field-1)/4.d0
+                        g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1)/4.d0
+                        g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1)/4.d0
+                        g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1)/4.d0
+                    end if
 
-                 endif
-            endif
+                end if
+            end if
 !
-    !       On inverse les systèmes linéaires A.G(s)=G(theta)
+            !       On inverse les systèmes linéaires A.G(s)=G(theta)
             call cpu_time(start0)
 
-    !       SYSTEME LINEAIRE:  MATR*GS = GTHI
+            !       SYSTEME LINEAIRE:  MATR*GS = GTHI
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, gthi, gs)
 
-    !       SYSTEME LINEAIRE:  MATR*K1S = K1TH
+            !       SYSTEME LINEAIRE:  MATR*K1S = K1TH
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, k1th, k1s)
 
-    !       SYSTEME LINEAIRE:  MATR*K2S = K2TH
+            !       SYSTEME LINEAIRE:  MATR*K2S = K2TH
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, k2th, k2s)
 
-    !       SYSTEME LINEAIRE:  MATR*K3S = K3TH
+            !       SYSTEME LINEAIRE:  MATR*K3S = K3TH
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, k3th, k3s)
 
-    !       SYSTEMES LINEAIRES POUR GIRWIN
+            !       SYSTEMES LINEAIRES POUR GIRWIN
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g1th, g1s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g2th, g2s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g3th, g3s)
 !
-            if (cgTheta%milieu .and. cgTheta%nb_point_fond.eq.0 .and. cgTheta%nnof/2-1.gt.0) then
+           if (cgTheta%milieu .and. cgTheta%nb_point_fond .eq. 0 .and. cgTheta%nnof/2-1 .gt. 0) then
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, gs)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k1s)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k2s)
@@ -529,13 +529,13 @@ use calcG_type
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, g1s)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, g2s)
                 call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, g3s)
-            endif
+            end if
 !
             call cpu_time(finish0)
-            cgStat%cgCmpGtheta_sys = cgStat%cgCmpGtheta_sys + finish0 - start0
-            cgStat%nb_cgCmpGtheta_sys = cgStat%nb_cgCmpGtheta_sys + 7
+            cgStat%cgCmpGtheta_sys = cgStat%cgCmpGtheta_sys+finish0-start0
+            cgStat%nb_cgCmpGtheta_sys = cgStat%nb_cgCmpGtheta_sys+7
 !
-        else if(cgTheta%discretization.eq.'LEGENDRE') then
+        else if (cgTheta%discretization .eq. 'LEGENDRE') then
 !       On évalue G(s) grâce aux polynômes de Legendre
 !       Récupération des valeurs des poluynomes de Legendre pour les  noeuds
 !       du fond de fissure
@@ -549,13 +549,13 @@ use calcG_type
                 som(:) = 0.d0
 !
                 do j = 1, cgTheta%nb_theta_field
-                    som(1) = som(1) + gthi(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
-                    som(2) = som(2) + k1th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
-                    som(3) = som(3) + k2th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
-                    som(4) = som(4) + k3th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
-                    som(5) = som(5) + g1th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
-                    som(6) = som(6) + g2th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
-                    som(7) = som(7) + g3th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(1) = som(1)+gthi(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(2) = som(2)+k1th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(3) = som(3)+k2th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(4) = som(4)+k3th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(5) = som(5)+g1th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(6) = som(6)+g2th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(7) = som(7)+g3th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
                 end do
 !
                 gs(i) = som(1)
@@ -565,30 +565,30 @@ use calcG_type
                 g1s(i) = som(5)
                 g2s(i) = som(6)
                 g3s(i) = som(7)
-                gis(i) = g1s(i)*g1s(i) +g2s(i)*g2s(i)+g3s(i)*g3s(i)
+                gis(i) = g1s(i)*g1s(i)+g2s(i)*g2s(i)+g3s(i)*g3s(i)
             end do
             call jedetr('&&OP0027.LEGENDRE')
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 !   Ajout des valeurs dans la table de G
 !    call cgTempNodes(cgStudy, cgTable)
 
     do i = 1, cgTheta%nnof
-        if(cgField%ndim.eq.3) then
+        if (cgField%ndim .eq. 3) then
 !       En 2D,  gth est déjà rempli. En 3D, on le remplit pour le noeud courant
-            gth(1:7)=[gs(i), k1s(i), k2s(i), k3s(i), g1s(i), g2s(i), g3s(i)]
-        endif
+            gth(1:7) = [gs(i), k1s(i), k2s(i), k3s(i), g1s(i), g2s(i), g3s(i)]
+        end if
 
 !       On recopie gth dans cgStudy%gth avec prise en compte de la symétrie
         if (cgTheta%symech .eq. 'OUI') then
-            cgStudy%gth(1:7) = [ 2.d0*gth(1), 2.d0*gth(2), 0.d0, 0.d0,&
-                                              2.d0*gth(5), 0.d0, 0.d0]
+            cgStudy%gth(1:7) = [2.d0*gth(1), 2.d0*gth(2), 0.d0, 0.d0, &
+                                2.d0*gth(5), 0.d0, 0.d0]
         else
             cgStudy%gth(1:7) = gth(1:7)
-        endif
+        end if
         call cgTable%addValues(cgField, cgStudy, i)
     end do
 
@@ -616,6 +616,6 @@ use calcG_type
     call jedema()
 !
     call cpu_time(finish)
-    cgStat%cgCmpGtheta = cgStat%cgCmpGtheta + finish - start
-    cgStat%nb_cgCmpGtheta = cgStat%nb_cgCmpGtheta + 1
+    cgStat%cgCmpGtheta = cgStat%cgCmpGtheta+finish-start
+    cgStat%nb_cgCmpGtheta = cgStat%nb_cgCmpGtheta+1
 end subroutine

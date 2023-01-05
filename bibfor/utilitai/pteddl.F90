@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pteddl(typesd   , resuz    , nb_cmp, list_cmp, nb_equa,&
+subroutine pteddl(typesd, resuz, nb_cmp, list_cmp, nb_equa, &
                   tabl_equa, list_equa)
 !
-implicit none
+    implicit none
 !
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -54,7 +54,7 @@ implicit none
 !
     character(len=19) :: resu
     character(len=8), pointer :: list_cmp_p(:) => null()
-    integer, pointer :: tabl_equa_p(:,:) => null()
+    integer, pointer :: tabl_equa_p(:, :) => null()
     integer, pointer :: list_equa_p(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,17 +64,17 @@ implicit none
 ! - Table of equations
 !
     if (present(tabl_equa)) then
-        tabl_equa(1:nb_equa,1:nb_cmp) = 0
+        tabl_equa(1:nb_equa, 1:nb_cmp) = 0
         tabl_equa_p => tabl_equa
-    endif
+    end if
 !
 ! - List of equations
 !
     if (present(list_equa)) then
         list_equa(1:nb_equa) = 0
         list_equa_p => list_equa
-        ASSERT(nb_cmp.eq.1)
-    endif
+        ASSERT(nb_cmp .eq. 1)
+    end if
 !
 ! - Get list of components
 !
@@ -84,26 +84,26 @@ implicit none
 !
     if (typesd .eq. 'NUME_DDL') then
         if (present(tabl_equa)) then
-            call select_dof_2(tablEqua_ = tabl_equa_p, &
-                              numeDofZ_ = resu, &
-                              nbCmpToSelect_ = nb_cmp, listCmpToSelect_  = list_cmp_p)
+            call select_dof_2(tablEqua_=tabl_equa_p, &
+                              numeDofZ_=resu, &
+                              nbCmpToSelect_=nb_cmp, listCmpToSelect_=list_cmp_p)
         else
-            call select_dof_2(listEqua_ = list_equa_p, &
-                              numeDofZ_ = resu, &
-                              nbCmpToSelect_ = nb_cmp, listCmpToSelect_ = list_cmp_p)
-        endif
+            call select_dof_2(listEqua_=list_equa_p, &
+                              numeDofZ_=resu, &
+                              nbCmpToSelect_=nb_cmp, listCmpToSelect_=list_cmp_p)
+        end if
     else if (typesd .eq. 'CHAM_NO') then
         if (present(tabl_equa)) then
-            call select_dof_2(tablEqua_  = tabl_equa_p, &
-                              fieldNodeZ_ = resu,&
-                              nbCmpToSelect_ = nb_cmp, listCmpToSelect_ = list_cmp_p)
+            call select_dof_2(tablEqua_=tabl_equa_p, &
+                              fieldNodeZ_=resu, &
+                              nbCmpToSelect_=nb_cmp, listCmpToSelect_=list_cmp_p)
         else
-            call select_dof_2(listEqua_   = list_equa_p, &
-                              fieldNodeZ_ = resu,&
-                              nbCmpToSelect_ = nb_cmp, listCmpToSelect_ = list_cmp_p)
-        endif
+            call select_dof_2(listEqua_=list_equa_p, &
+                              fieldNodeZ_=resu, &
+                              nbCmpToSelect_=nb_cmp, listCmpToSelect_=list_cmp_p)
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

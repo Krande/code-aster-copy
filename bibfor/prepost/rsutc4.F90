@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
+subroutine rsutc4(resu, motfac, iocc, dimlis, lisch, &
                   nbch, acceno)
     implicit none
 #include "asterf_types.h"
@@ -74,13 +74,13 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
     n2 = -n2
     if (n2 .gt. 0) then
         AS_ALLOCATE(vk16=lich, size=n2)
-        call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=n2, vect=lich,&
+        call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=n2, vect=lich, &
                     nbret=ibid)
         do k = 1, n2
-            kk = indk16(litou,lich(k),1,nbnosy)
+            kk = indk16(litou, lich(k), 1, nbnosy)
             if (kk .eq. 0) then
                 call utmess('F', 'PREPOST4_77', sk=lich(k))
-            endif
+            end if
         end do
         nbch = n2
         do k = 1, min(nbch, dimlis)
@@ -93,7 +93,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
         do k = 1, min(nbch, dimlis)
             lisch(k) = litou(k)
         end do
-    endif
+    end if
 !
     if (nbch .gt. dimlis) nbch = -nbch
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cacoco(sdcont, keywf, mesh)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -87,7 +87,7 @@ implicit none
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
     sdcont_jeucoq = sdcont_defi(1:16)//'.JEUCOQ'
-    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Parameters
 !
@@ -96,7 +96,7 @@ implicit none
 !
 ! - Create shell gap datastructure
 !
-    call wkvect(sdcont_jeucoq, 'G V R', nb_cont_elem, vr = v_sdcont_jeucoq)
+    call wkvect(sdcont_jeucoq, 'G V R', nb_cont_elem, vr=v_sdcont_jeucoq)
 !
 ! - Get elementary characteristics datastructure
 !
@@ -106,17 +106,17 @@ implicit none
         if (l_dist_shell) then
             l_dist_exist = .true.
             call getvid(keywf, 'CARA_ELEM', iocc=i_zone, scal=cara_elem, nbret=noc)
-            ASSERT(noc.ne.0)
-        endif
+            ASSERT(noc .ne. 0)
+        end if
     end do
 !
     if (.not. l_dist_exist) then
         goto 999
-    endif
+    end if
 !
 ! - Access to elementary characteristics
 !
-    call carces(cara_elem//'.CARCOQUE', 'ELEM', ' ', 'V', cara_elem_s,&
+    call carces(cara_elem//'.CARCOQUE', 'ELEM', ' ', 'V', cara_elem_s, &
                 'A', iret)
     call jeveuo(cara_elem_s//'.CESC', 'L', vk8=v_caraelem_cesc)
     call jeveuo(cara_elem_s//'.CESD', 'L', j_caraelem_cesd)
@@ -125,17 +125,17 @@ implicit none
 !
 ! - Get index for storing shell parameters
 !
-    nb_para_maxi   = zi(j_caraelem_cesd-1+2)
-    shell_ep_indx  = indik8(v_caraelem_cesc,'EP      ',1,nb_para_maxi)
-    shell_exc_indx = indik8(v_caraelem_cesc,'EXCENT  ',1,nb_para_maxi)
+    nb_para_maxi = zi(j_caraelem_cesd-1+2)
+    shell_ep_indx = indik8(v_caraelem_cesc, 'EP      ', 1, nb_para_maxi)
+    shell_exc_indx = indik8(v_caraelem_cesc, 'EXCENT  ', 1, nb_para_maxi)
 !
 ! - Loop on contact zones
 !
     do i_zone = 1, nb_cont_zone
         l_dist_shell = mminfl(sdcont_defi, 'DIST_COQUE', i_zone)
         if (l_dist_shell) then
-            nb_slav_elem = mminfi(sdcont_defi, 'NBMAE' , i_zone)
-            jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+            nb_slav_elem = mminfi(sdcont_defi, 'NBMAE', i_zone)
+            jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
             do i_slav_elem = 1, nb_slav_elem
 !
 ! ------------- Current element
@@ -146,32 +146,32 @@ implicit none
 !
 ! ------------- Get thickness
 !
-                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1, &
                             1, shell_ep_indx, iad1)
                 if (iad1 .gt. 0) then
                     shell_ep = v_caraelem_cesv(iad1)
                 else
                     call utmess('F', 'CONTACT3_39', sk=elem_slav_name)
-                endif
+                end if
 !
 ! ------------- Get excentricity
 !
-                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1, &
                             1, shell_exc_indx, iad1)
                 if (iad1 .gt. 0) then
                     shell_excent = v_caraelem_cesv(iad1)
                     if (shell_excent .ge. r8prem()) then
                         call utmess('F', 'CONTACT3_40', sk=elem_slav_name)
-                    endif
+                    end if
                 else
                     call utmess('F', 'CONTACT3_41', sk=elem_slav_name)
-                endif
+                end if
 !
 ! ------------- Save
 !
-                v_sdcont_jeucoq(elem_slav_indx) = 0.5d0 * shell_ep
+                v_sdcont_jeucoq(elem_slav_indx) = 0.5d0*shell_ep
             end do
-        endif
+        end if
     end do
 !
 999 continue

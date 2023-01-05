@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
-                  deltat, nbrpas, dtmin, ldcext, durdec,&
+subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam, &
+                  deltat, nbrpas, dtmin, ldcext, durdec, &
                   retdec)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -87,8 +87,8 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
 !
 ! --- PARAMETRES DE LA DECOUPE AUTOMATIQUE
 !
-    call nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
-                deltac, ratio, optdec, ldcext, durdec,&
+    call nmdecp(sddisc, iterat, ievdac, typdec, nbrpas, &
+                deltac, ratio, optdec, ldcext, durdec, &
                 retdec)
 !
 ! --- PAS DE DECOUPE: ON SORT
@@ -97,14 +97,14 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
 !
 ! --- CONSTRUCTION DE LA LISTE DES INSTANTS
 !
-    call nmdecc(nomlis, .true._1, optdec, deltat, instam,&
-                ratio, typdec, nbrpas, deltac, dtmin,&
+    call nmdecc(nomlis, .true._1, optdec, deltat, instam, &
+                ratio, typdec, nbrpas, deltac, dtmin, &
                 retdec)
 !
     if (retdec .eq. 1) then
-        ASSERT(nbrpas.gt.0)
-        ASSERT(ratio.gt.0.d0)
-    endif
+        ASSERT(nbrpas .gt. 0)
+        ASSERT(ratio .gt. 0.d0)
+    end if
 !
 ! --- PAS DE DECOUPE
 !

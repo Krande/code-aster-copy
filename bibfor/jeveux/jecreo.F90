@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,27 +37,27 @@ subroutine jecreo(nomlu, listat)
     integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
     integer :: jrnom, jtype, n
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
 !
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 !     ------------------------------------------------------------------
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !     ------------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
     character(len=1) :: typei, genri
     integer :: nv, icre, iret
-    parameter      ( nv = 3 )
+    parameter(nv=3)
     integer :: lval(nv)
     character(len=8) :: cval(nv)
     character(len=32) :: noml32
@@ -65,14 +65,14 @@ subroutine jecreo(nomlu, listat)
 !     ------------------------------------------------------------------
     if (len(nomlu) .gt. 24) then
         call utmess('F', 'JEVEUX_84', sk=nomlu)
-    endif
-    noml32 = nomlu(1:min(24,len(nomlu)))
+    end if
+    noml32 = nomlu(1:min(24, len(nomlu)))
 !
     call jjanal(listat, nv, nv, lval, cval)
-    iclas = index ( classe , cval(1)(1:1) )
+    iclas = index(classe, cval(1) (1:1))
     if (iclas .eq. 0) then
         call utmess('F', 'JEVEUX_68', sk=cval(1))
-    endif
+    end if
 !
     icre = 1
     call jjvern(noml32, icre, iret)
@@ -80,30 +80,30 @@ subroutine jecreo(nomlu, listat)
     if (iret .eq. 2) then
         call utmess('F', 'JEVEUX_85', sk=noml32)
     else
-        genr(jgenr(iclaos)+idatos) = cval(2)(1:1)
-        type(jtype(iclaos)+idatos) = cval(3)(1:1)
-        if (cval(3)(1:1) .eq. 'K' .and. lval(3) .eq. 1) then
+        genr(jgenr(iclaos)+idatos) = cval(2) (1:1)
+        type(jtype(iclaos)+idatos) = cval(3) (1:1)
+        if (cval(3) (1:1) .eq. 'K' .and. lval(3) .eq. 1) then
             call utmess('F', 'JEVEUX_86', sk=noml32)
         else
-            genri = genr ( jgenr(iclaos) + idatos )
-            typei = type ( jtype(iclaos) + idatos )
+            genri = genr(jgenr(iclaos)+idatos)
+            typei = type(jtype(iclaos)+idatos)
             if (genri .eq. 'N' .and. typei .ne. 'K') then
                 call utmess('F', 'JEVEUX_87', sk=noml32)
-            endif
+            end if
             if (typei .eq. 'K') then
-                write(ifmt,'(''(I'',I1,'')'')') lval(3) - 1
-                read ( cval(3)(2:lval(3)) , ifmt ) iv
+                write (ifmt, '(''(I'',I1,'')'')') lval(3)-1
+                read (cval(3) (2:lval(3)), ifmt) iv
                 if (iv .le. 0 .or. iv .gt. 512) then
                     call utmess('F', 'JEVEUX_88', sk=cval(3))
-                endif
+                end if
                 if (genri .eq. 'N') then
-                    if (mod ( iv , lois ) .ne. 0) then
+                    if (mod(iv, lois) .ne. 0) then
                         call utmess('F', 'JEVEUX_89', sk=noml32)
-                    endif
+                    end if
                     if (iv .gt. 24) then
                         call utmess('F', 'JEVEUX_90', sk=noml32)
-                    endif
-                endif
+                    end if
+                end if
             else if (typei .eq. 'I') then
                 iv = lois
             else if (typei .eq. 'R') then
@@ -116,13 +116,13 @@ subroutine jecreo(nomlu, listat)
                 iv = lor8/2
             else
                 call utmess('F', 'JEVEUX_91', sk=cval(3))
-            endif
-            ltyp ( jltyp(iclaos) + idatos ) = iv
-        endif
-        if (cval(2)(1:1) .eq. 'E') then
+            end if
+            ltyp(jltyp(iclaos)+idatos) = iv
+        end if
+        if (cval(2) (1:1) .eq. 'E') then
             long(jlong(iclaos)+idatos) = 1
             lono(jlono(iclaos)+idatos) = 1
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

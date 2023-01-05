@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine assvec(jvBase, vectAsseZ,&
-                  nbVectElem, listVectElem, coefVectElem,&
-                  numeDofZ_, vectAsseForNumeZ_,&
+subroutine assvec(jvBase, vectAsseZ, &
+                  nbVectElem, listVectElem, coefVectElem, &
+                  numeDofZ_, vectAsseForNumeZ_, &
                   vectScalType_, maskElem_, maskInve_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -61,15 +61,15 @@ implicit none
 #include "asterfort/asseVectField.h"
 #include "asterfort/getDistributionParameters.h"
 !
-character(len=1), intent(in) :: jvBase
-character(len=*), intent(in) :: vectAsseZ
-integer, intent(in) :: nbVectElem
-character(len=*), intent(in) :: listVectElem(nbVectElem)
-real(kind=8), intent(in) :: coefVectElem(nbVectElem)
-character(len=*), optional, intent(in) :: vectAsseForNumeZ_, numeDofZ_
-integer, optional, intent(in) :: vectScalType_
-character(len=24), optional, intent(in) :: maskElem_
-aster_logical, optional, intent(in) :: maskInve_
+    character(len=1), intent(in) :: jvBase
+    character(len=*), intent(in) :: vectAsseZ
+    integer, intent(in) :: nbVectElem
+    character(len=*), intent(in) :: listVectElem(nbVectElem)
+    real(kind=8), intent(in) :: coefVectElem(nbVectElem)
+    character(len=*), optional, intent(in) :: vectAsseForNumeZ_, numeDofZ_
+    integer, optional, intent(in) :: vectScalType_
+    character(len=24), optional, intent(in) :: maskElem_
+    aster_logical, optional, intent(in) :: maskInve_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ aster_logical, optional, intent(in) :: maskInve_
     character(len=24), parameter :: ligrelMesh = '&MAILLA'
     aster_logical, parameter :: dbg = ASTER_FALSE
     integer :: physQuan, nec, nlili
-    integer, parameter :: nbecmx =10
+    integer, parameter :: nbecmx = 10
     character(len=8) :: mesh, model, vectElemModel, nogdsi, nogdco
     character(len=14) :: numeDof, answer
     character(len=24) :: vectRefeJv, vectDescJv, vectValeJv
@@ -101,7 +101,7 @@ aster_logical, optional, intent(in) :: maskInve_
     character(len=19) :: vectElem, resuElem, numeEqua
     character(len=24) :: numePrnoJv, numeNueqJv, numeNequJv
     character(len=24) :: numeLiliJv, vectAsseLili, ligrelName
-    aster_logical :: ldist, ldgrel, compSuperElement,lparallel_mesh
+    aster_logical :: ldist, ldgrel, compSuperElement, lparallel_mesh
     integer :: iDofMode, iVectElem
     integer :: iancmp, ianueq, iapsdl, iad1
     integer :: icmp, iconx2
@@ -132,9 +132,9 @@ aster_logical, optional, intent(in) :: maskInve_
 ! --------------------------------------------------------------------------------------------------
 #define zzngel(ligrelNume) adli(1+3*(ligrelNume-1))
 #define zznelg(ligrelNume,iGrel) zi(adli(1+3*(ligrelNume-1)+2)+iGrel)-\
-                                 zi(adli(1+3*(ligrelNume-1)+2)+iGrel-1)-1
+    zi(adli(1+3*(ligrelNume-1)+2)+iGrel-1)-1
 #define zzliel(ligrelNume,iGrel,iElem) zi(adli(1+3*(ligrelNume-1)+1)-1+\
-                                       zi(adli(1+3*(ligrelNume-1)+2)+iGrel-1)+iElem-1)
+    zi(adli(1+3*(ligrelNume-1)+2)+iGrel-1)+iElem-1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -144,28 +144,28 @@ aster_logical, optional, intent(in) :: maskInve_
     numeDof = ' '
     if (present(numeDofZ_)) then
         numeDof = numeDofZ_
-    endif
-    vectAsseForNume =  ' '
+    end if
+    vectAsseForNume = ' '
     if (present(vectAsseForNumeZ_)) then
         vectAsseForNume = vectAsseForNumeZ_
-    endif
+    end if
     vectScalType = 1
     if (present(vectScalType_)) then
         vectScalType = vectScalType_
-    endif
+    end if
     maskInve = ASTER_FALSE
     if (present(maskInve_)) then
         maskInve = maskInve_
-    endif
+    end if
 
 ! - Prepare parameters for coefficeints at each element
     coefLigrelName = ' '
     if (present(maskElem_)) then
-        call jeveuo(maskElem_(1:19)//'.CELK', 'L', vk24 = celk)
-        call jeveuo(maskElem_(1:19)//'.CELD', 'L', vi = celd)
-        call jeveuo(maskElem_(1:19)//'.CELV', 'L', vi = celv)
+        call jeveuo(maskElem_(1:19)//'.CELK', 'L', vk24=celk)
+        call jeveuo(maskElem_(1:19)//'.CELD', 'L', vi=celd)
+        call jeveuo(maskElem_(1:19)//'.CELV', 'L', vi=celv)
         coefLigrelName = celk(1)
-    endif
+    end if
 
 ! - Acces to description of local mode
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
@@ -181,8 +181,8 @@ aster_logical, optional, intent(in) :: maskInve_
 ! - Get numbering
     if (numeDof(1:1) .eq. ' ') then
         call jeveuo(vectAsseForNume//'.REFE', 'L', vk24=refe)
-        numeDof = refe(2)(1:14)
-    endif
+        numeDof = refe(2) (1:14)
+    end if
     numeEqua = numeDof(1:14)//'.NUME'
 
 ! - Get model
@@ -191,15 +191,15 @@ aster_logical, optional, intent(in) :: maskInve_
 ! - Get mesh
     call dismoi('NOM_MAILLA', numeDof, 'NUME_DDL', repk=mesh)
     call dismoi('PARALLEL_MESH', mesh, 'MAILLAGE', repk=answer)
-    lparallel_mesh=(answer.eq.'OUI')
-    if (.not.lparallel_mesh) then
+    lparallel_mesh = (answer .eq. 'OUI')
+    if (.not. lparallel_mesh) then
         call asmpi_barrier()
-    endif
+    end if
     call jeexin(mesh(1:8)//'.CONNEX', iret)
     if (iret .gt. 0) then
         call jeveuo(mesh(1:8)//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(mesh(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    endif
+    end if
 
 ! - Start timers for calcul.F90 monitoring
     call uttcpu('CPU.CALC.1', 'DEBUT', ' ')
@@ -208,25 +208,25 @@ aster_logical, optional, intent(in) :: maskInve_
 
 ! - Create list of ligrel (LILI) and objects ADNE and ADLI
     vectAsseLili = vectAsse//'.LILI'
-    call crelil('C', nbVectElem, jvVectElem, vectAsseLili, 'V',&
-                ligrelMesh, vectAsse, physQuan, mesh, nec,&
+    call crelil('C', nbVectElem, jvVectElem, vectAsseLili, 'V', &
+                ligrelMesh, vectAsse, physQuan, mesh, nec, &
                 nbCmp, ilim, nlili, meshNbCell, nume_=numeDof)
 
 ! - No elementary terms to assemble, but maybe a nodal field
     if (nlili .eq. 1) then
-        call vtcreb(vectAsse, jvBase, 'R',&
-                    nume_ddlz = numeDof,&
-                    nb_equa_outz = nbEqua)
-        nbDof  = nbEqua
+        call vtcreb(vectAsse, jvBase, 'R', &
+                    nume_ddlz=numeDof, &
+                    nb_equa_outz=nbEqua)
+        nbDof = nbEqua
         goto 270
-    endif
+    end if
     call jeveuo(vectAsse(1:19)//'.ADLI', 'E', vi=adli)
     call jeveuo(vectAsse(1:19)//'.ADNE', 'E', vi=adne)
 
 ! - Get parameters for distribution of elementary vectors
-    call getDistributionParameters(nbVectElem, listVectElem,&
-                                   ldist, ldgrel,&
-                                   rang, nbproc,&
+    call getDistributionParameters(nbVectElem, listVectElem, &
+                                   ldist, ldgrel, &
+                                   rang, nbproc, &
                                    numsd)
 
 ! - Get parameters about physical quantity
@@ -248,19 +248,19 @@ aster_logical, optional, intent(in) :: maskInve_
         call jeveuo(mesh//'.NOMACR', 'L', vk8=nomacr)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
-        icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
-        ASSERT(icmp.ne.0)
-        ASSERT(icmp.le.30)
+        icmp = indik8(zk8(iancmp), 'LAGR', 1, lgncmp)
+        ASSERT(icmp .ne. 0)
+        ASSERT(icmp .le. 30)
 !       -- ICODLA EST L'ENTIER CODE CORRESPONDANT A LA CMP "LAGR"
-        jec=(icmp-1)/30+1
-        icodla(jec)=lshift(1,icmp)
-    endif
+        jec = (icmp-1)/30+1
+        icodla(jec) = lshift(1, icmp)
+    end if
 
 ! - Start local timers if required
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSVEC', 'INIT ', ' ')
         call uttcpu('CPU.ASSVEC', 'DEBUT', ' ')
-    endif
+    end if
 
 ! - Acces to numbering objects
     numePrnoJv = numeEqua(1:19)//'.PRNO'
@@ -273,17 +273,17 @@ aster_logical, optional, intent(in) :: maskInve_
 
 ! - Get number of equations
     call jeexin(numeNequJv, iexi)
-    if (iexi.eq.0) then
+    if (iexi .eq. 0) then
         call jelira(numeNueqJv, 'LONMAX', nbEqua)
-        nbDof  = nbEqua
+        nbDof = nbEqua
     else
-        call jeveuo(numeNequJv, 'L', vi = nequ)
+        call jeveuo(numeNequJv, 'L', vi=nequ)
         nbEqua = nequ(1)
-        nbDof  = nequ(2)
-    endif
+        nbDof = nequ(2)
+    end if
     if (nbDof .eq. 0) then
         nbDof = nbEqua
-    endif
+    end if
 
 ! - Access to vector
     vectRefeJv = vectAsse//'.REFE'
@@ -294,23 +294,23 @@ aster_logical, optional, intent(in) :: maskInve_
     call jecreo(vectRefeJv, jvBase//' V K24')
     call jeecra(vectRefeJv, 'LONMAX', 4)
     call jeecra(vectRefeJv, 'LONUTI', 4)
-    call jeveuo(vectRefeJv, 'E', vk24 = vectRefe)
+    call jeveuo(vectRefeJv, 'E', vk24=vectRefe)
     call jecreo(vectDescJv, jvBase//' V I')
     call jeecra(vectDescJv, 'LONMAX', 2)
     call jeecra(vectDescJv, 'LONUTI', 2)
     call jeecra(vectDescJv, 'DOCU', cval='CHNO')
-    call jeveuo(vectDescJv, 'E', vi = vectDesc)
+    call jeveuo(vectDescJv, 'E', vi=vectDesc)
     vectRefe(1) = mesh
     vectRefe(2) = numePrnoJv(1:14)//'.NUME'
     vectDesc(1) = physQuan
     vectDesc(2) = 1
     if (vectScalType .eq. 1) then
         call jecreo(vectValeJv, jvBase//' V R8')
-    else if (vectScalType.eq.2) then
+    else if (vectScalType .eq. 2) then
         call jecreo(vectValeJv, jvBase//' V C16')
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     call jeecra(vectValeJv, 'LONMAX', nbEqua)
     call jeecra(vectValeJv, 'LONUTI', nbEqua)
     call jeveuo(vectValeJv, 'E', jvale)
@@ -318,30 +318,30 @@ aster_logical, optional, intent(in) :: maskInve_
 ! - Loop on elementary vectors
     do iVectElem = 1, nbVectElem
         vectElemCoef = coefVectElem(iVectElem)
-        vectElem = zk24(jvVectElem+iVectElem-1)(1:19)
+        vectElem = zk24(jvVectElem+iVectElem-1) (1:19)
         call dismoi('NOM_MODELE', vectElem, 'VECT_ELEM', repk=vectElemModel)
         if (vectElemModel .ne. model .and. vectElemModel .ne. ' ') then
             call utmess('F', 'ASSEMBLA_7', nk=2, valk=[model, vectElemModel])
-        endif
+        end if
 
 ! ----- Add super elements
         call dismoi('NB_SS_ACTI', vectElem, 'VECT_ELEM', repi=nbSuperElement)
-        if (nbSuperElement.gt.0) then
+        if (nbSuperElement .gt. 0) then
             compSuperElement = ASTER_TRUE
             if (ldist .and. rang .ne. 0) compSuperElement = ASTER_FALSE
         else
             compSuperElement = ASTER_FALSE
-        endif
+        end if
         if (compSuperElement) then
             call dismoi('NB_NO_MAILLA', model, 'MODELE', repi=meshNbNode)
-            call asseVectSuper(model, mesh, vectElem,&
-                               vectScalType, vectElemCoef,&
-                               nomacr, meshNbNode,&
-                               nec, nbecmx, nbCmp,&
-                               icodla, icodge,&
-                               idprn1, idprn2,&
+            call asseVectSuper(model, mesh, vectElem, &
+                               vectScalType, vectElemCoef, &
+                               nomacr, meshNbNode, &
+                               nec, nbecmx, nbCmp, &
+                               icodla, icodge, &
+                               idprn1, idprn2, &
                                iapsdl, ianueq, jvale, jresl)
-        endif
+        end if
 
 ! ----- Add standard finite elemnts
         call jeexin(vectElem//'.RELR', iret)
@@ -351,17 +351,17 @@ aster_logical, optional, intent(in) :: maskInve_
 
 ! --------- Loop on elementary terms
             do iResuElem = 1, nbResuElem
-                resuElem = relr(iResuElem)(1:19)
+                resuElem = relr(iResuElem) (1:19)
                 call jeexin(resuElem//'.NOLI', iexi)
                 if (iexi .eq. 0) cycle
-                call jeveuo(resuElem//'.NOLI', 'L', vk24 = noli)
+                call jeveuo(resuElem//'.NOLI', 'L', vk24=noli)
                 ligrelName = noli(1)
                 call jenonu(jexnom(vectAsseLili, ligrelName), ligrelNume)
                 call jenonu(jexnom(numeLiliJv, ligrelName), liliNume)
 
 ! ------------- Loop on GREL
                 do iGrel = 1, zzngel(ligrelNume)
-                    if (ldgrel .and. mod(iGrel,nbproc) .ne. rang) cycle
+                    if (ldgrel .and. mod(iGrel, nbproc) .ne. rang) cycle
                     call jaexin(jexnum(resuElem//'.RESL', iGrel), iexi)
                     if (iexi .eq. 0) cycle
                     call jeveuo(resuElem//'.DESC', 'L', vi=desc)
@@ -369,40 +369,40 @@ aster_logical, optional, intent(in) :: maskInve_
 !
                     if (mode .gt. 0) then
                         nbNodeMode = nbno(mode)
-                        nbElem = zznelg(ligrelNume,iGrel)
+                        nbElem = zznelg(ligrelNume, iGrel)
                         call jeveuo(jexnum(resuElem//'.RESL', iGrel), 'L', jresl)
                         nbCmpMode = digdel(mode)
 
 ! --------------------- Loop on elements
                         do iElem = 1, nbElem
-                            elemNume = zzliel(ligrelNume,iGrel,iElem)
+                            elemNume = zzliel(ligrelNume, iGrel, iElem)
                             if (coefLigrelName .eq. ligrelName) then
                                 coefPond = celv(celd(celd(4+iGrel)+4+4*(iElem-1)+4))
                                 if (maskInve) then
-                                    elemCoef = vectElemCoef * (1-coefPond)
+                                    elemCoef = vectElemCoef*(1-coefPond)
                                 else
-                                    elemCoef = vectElemCoef * coefPond
-                                endif
+                                    elemCoef = vectElemCoef*coefPond
+                                end if
                             else
                                 elemCoef = vectElemCoef
-                            endif
+                            end if
 
                             if (ldist .and. .not. ldgrel) then
                                 if (elemNume .gt. 0) then
                                     if (numsd(elemNume) .ne. rang) cycle
                                 else
                                     if (rang .ne. 0) cycle
-                                endif
-                            endif
+                                end if
+                            end if
                             if (elemNume .gt. 0) then
 ! ----------------------------- Physical element
                                 iDof = 0
                                 do iNodeMode = 1, nbNodeMode
                                     nbNode = connex(zi(iconx2+elemNume-1)+iNodeMode-1)
-                                    iad1 = zi(idprn1-1+zi(idprn2+ ligrelMeshIndx-1)+&
+                                    iad1 = zi(idprn1-1+zi(idprn2+ligrelMeshIndx-1)+ &
                                               (nbNode-1)*(nec+2)+1-1)
-                                    call corddl(admodl, lcmodl, idprn1, idprn2, ligrelMeshIndx,&
-                                                mode, nec, nbCmp, nbNode, iNodeMode,&
+                                    call corddl(admodl, lcmodl, idprn1, idprn2, ligrelMeshIndx, &
+                                                mode, nec, nbCmp, nbNode, iNodeMode, &
                                                 nbDofMode, zi(iapsdl))
                                     if (nbDofMode .eq. 0) cycle
                                     ASSERT(iad1 .ne. 0)
@@ -411,97 +411,97 @@ aster_logical, optional, intent(in) :: maskInve_
                                     if (vectScalType .eq. 1) then
                                         do iDofMode = 1, nbDofMode
                                             iDof = iDof+1
-                                            zr(jvale-1+&
+                                            zr(jvale-1+ &
                                                zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
-                                            zr(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+&
-                                            zr(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
+                                            zr(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zr(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
 !
                                     elseif (vectScalType .eq. 2) then
                                         do iDofMode = 1, nbDofMode
                                             iDof = iDof+1
-                                            zc(jvale-1+&
-                                                zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
-                                            zc(jvale-1+ zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+&
-                                            zc(jresl+(iElem-1)*nbCmpMode+ iDof-1)*elemCoef
+                                            zc(jvale-1+ &
+                                               zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
+                                            zc(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zc(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
                                     else
                                         ASSERT(ASTER_FALSE)
-                                    endif
+                                    end if
                                 end do
                             else
 ! ----------------------------- Lagrange element
                                 elemNume = -elemNume
-                                nbNode = zi(adne(1+3*(ligrelNume-1)+2)+elemNume)-&
+                                nbNode = zi(adne(1+3*(ligrelNume-1)+2)+elemNume)- &
                                          zi(adne(1+3*(ligrelNume-1)+2)+elemNume-1)-1
                                 ASSERT(nbNodeMode .eq. nbNode)
-                                iDof=0
+                                iDof = 0
                                 do iNodeMode = 1, nbNodeMode
-                                    nbNode = zi(adne(1+3*(ligrelNume-1)+1)-1+&
-                                                zi(adne(1+3*(ligrelNume-1)+2)+elemNume-1)+&
+                                    nbNode = zi(adne(1+3*(ligrelNume-1)+1)-1+ &
+                                                zi(adne(1+3*(ligrelNume-1)+2)+elemNume-1)+ &
                                                 iNodeMode-1)
                                     if (nbNode .lt. 0) then
                                         nbNode = -nbNode
                                         if (liliNume .eq. 0) then
                                             call utmess('F', 'ASSEMBLA_45')
-                                        endif
+                                        end if
                                         ASSERT(liliNume .ne. 0)
-                                        iad1 = zi(idprn1-1+&
-                                                  zi(idprn2+liliNume-1)+&
+                                        iad1 = zi(idprn1-1+ &
+                                                  zi(idprn2+liliNume-1)+ &
                                                   (nbNode-1)*(nec+2)+1-1)
-                                        call corddl(admodl, lcmodl, idprn1, idprn2, liliNume,&
-                                                    mode, nec, nbCmp, nbNode, iNodeMode,&
+                                        call corddl(admodl, lcmodl, idprn1, idprn2, liliNume, &
+                                                    mode, nec, nbCmp, nbNode, iNodeMode, &
                                                     nbDofMode, zi(iapsdl))
                                         ASSERT(nbDofMode .le. 100)
                                     else
-                                        iad1 = zi(idprn1-1+&
-                                                  zi(idprn2+ligrelMeshIndx-1)+&
-                                                 (nbNode-1)*(nec+2)+1-1)
-                                        call corddl(admodl, lcmodl, idprn1, idprn2,&
-                                                    ligrelMeshIndx,&
-                                                    mode, nec, nbCmp, nbNode, iNodeMode,&
-                                                    nbDofMode, zi( iapsdl))
+                                        iad1 = zi(idprn1-1+ &
+                                                  zi(idprn2+ligrelMeshIndx-1)+ &
+                                                  (nbNode-1)*(nec+2)+1-1)
+                                        call corddl(admodl, lcmodl, idprn1, idprn2, &
+                                                    ligrelMeshIndx, &
+                                                    mode, nec, nbCmp, nbNode, iNodeMode, &
+                                                    nbDofMode, zi(iapsdl))
                                         ASSERT(nbDofMode .le. 100)
-                                    endif
+                                    end if
 
                                     ASSERT(iad1 .ne. 0)
-                                    if(nbDofMode > 0) then
+                                    if (nbDofMode > 0) then
                                         ASSERT(iad1 .le. nbDof)
                                     end if
                                     if (vectScalType .eq. 1) then
                                         do iDofMode = 1, nbDofMode
-                                            iDof = iDof + 1
-                                            zr(jvale-1+&
-                                               zi(ianueq-1+iad1+zi(iapsdl-1+ iDofMode)-1)) =&
-                                            zr(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+&
-                                            zr(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
+                                            iDof = iDof+1
+                                            zr(jvale-1+ &
+                                               zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
+                                            zr(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zr(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
                                     else
                                         do iDofMode = 1, nbDofMode
-                                            iDof = iDof + 1
-                                            zc(jvale-1+&
-                                               zi(ianueq-1+iad1+zi(iapsdl-1+ iDofMode)-1)) =&
-                                            zc(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+&
-                                            zc(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
+                                            iDof = iDof+1
+                                            zc(jvale-1+ &
+                                               zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1)) = &
+                                            zc(jvale-1+zi(ianueq-1+iad1+zi(iapsdl-1+iDofMode)-1))+ &
+                                                zc(jresl+(iElem-1)*nbCmpMode+iDof-1)*elemCoef
                                         end do
-                                    endif
+                                    end if
                                 end do
-                            endif
+                            end if
                         end do
                         call jelibe(jexnum(resuElem//'.RESL', iGrel))
-                    endif
+                    end if
                 end do
             end do
-        endif
+        end if
     end do
 !
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSVEC', 'FIN', ' ')
         call uttcpr('CPU.ASSVEC', 7, temps)
         write (ifm, '(A44,D11.4,D11.4,D11.4)') &
-            'TEMPS CPU/SYS/ELAPSED ASSEMBLAGE V        : ',&
+            'TEMPS CPU/SYS/ELAPSED ASSEMBLAGE V        : ', &
             temps(5), temps(6), temps(7)
-    endif
+    end if
 
 !
     if (ldist) call asmpi_comm_jev('MPI_SUM', vectValeJv)
@@ -509,13 +509,13 @@ aster_logical, optional, intent(in) :: maskInve_
 270 continue
 
 ! - Elementary vector is a nodal field
-    call asseVectField(vectAsse, numeDof, vectScalType,&
+    call asseVectField(vectAsse, numeDof, vectScalType, &
                        nbVectElem, listVectElem)
 
 !
     if (dbg) then
         call dbgobj(vectValeJv, 'OUI', 6, '&&ASSVEC')
-    endif
+    end if
 !
     call jedetr(vectAsse//'.LILI')
     call jedetr(vectAsse//'.LIVE')
@@ -523,9 +523,9 @@ aster_logical, optional, intent(in) :: maskInve_
     call jedetr(vectAsse//'.ADLI')
     call jedetr('&&ASSVEC.POSDDL')
 !
-    if (.not.lparallel_mesh) then
+    if (.not. lparallel_mesh) then
         call asmpi_barrier()
-    endif
+    end if
     call uttcpu('CPU.CALC.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.3', 'FIN', ' ')

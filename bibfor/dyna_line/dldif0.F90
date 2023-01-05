@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dldif0(result, force1, neq, istoc, iarchi,&
-                  lamort, imat, masse, rigid, amort,&
-                  dep0, vit0, acc0, depl1, vite1,&
-                  acce1, vite2, fexte, famor, fliai,&
-                  nchar, nveca, liad, lifo, modele,&
-                  ener, mate, mateco, carele, charge,&
-                  infoch, fomult, numedd, dt, temps,&
-                  tabwk0, tabwk1, archiv, nbtyar, typear,&
+subroutine dldif0(result, force1, neq, istoc, iarchi, &
+                  lamort, imat, masse, rigid, amort, &
+                  dep0, vit0, acc0, depl1, vite1, &
+                  acce1, vite2, fexte, famor, fliai, &
+                  nchar, nveca, liad, lifo, modele, &
+                  ener, mate, mateco, carele, charge, &
+                  infoch, fomult, numedd, dt, temps, &
+                  tabwk0, tabwk1, archiv, nbtyar, typear, &
                   numrep, ds_energy)
 !
 !     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
@@ -107,8 +107,8 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 ! --- CALCUL DES DEPLACEMENTS ET VITESSES
 !
     do ieq = 1, neq
-        vite1(ieq) = vit0(ieq) + dt*acc0(ieq)
-        depl1(ieq) = dep0(ieq) + dt*vite1(ieq)
+        vite1(ieq) = vit0(ieq)+dt*acc0(ieq)
+        depl1(ieq) = dep0(ieq)+dt*vite1(ieq)
     end do
 !
 !====
@@ -117,18 +117,18 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 !
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
 !
-    call dlfext(nveca, nchar, temps, neq, liad,&
-                lifo, charge, infoch, fomult, modele,&
+    call dlfext(nveca, nchar, temps, neq, liad, &
+                lifo, charge, infoch, fomult, modele, &
                 mate, mateco, carele, numedd, zr(iforc1))
 !
     if (ener) then
         do ieq = 1, neq
-            fexte(ieq)=fexte(ieq+neq)
-            fexte(ieq+neq)=zr(iforc1+ieq-1)
+            fexte(ieq) = fexte(ieq+neq)
+            fexte(ieq+neq) = zr(iforc1+ieq-1)
         end do
-    endif
+    end if
 !
-    call dlfdyn(imat(1), imat(3), lamort, neq, depl1,&
+    call dlfdyn(imat(1), imat(3), lamort, neq, depl1, &
                 vite1, zr(iforc1), tabwk0)
 !
 !====
@@ -143,7 +143,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
         acce1(ieq) = tabwk1(ieq)*zr(iforc1+ieq-1)
 !
 !        --- VITESSE AUX INSTANTS 'TEMPS + DT' ---
-        vite2(ieq) = vite1(ieq) + r8bid*acce1(ieq)
+        vite2(ieq) = vite1(ieq)+r8bid*acce1(ieq)
 !
     end do
 !
@@ -154,24 +154,24 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
 !====
 !
     if (ds_energy%l_comp) then
-        masse1=masse//'           '
-        amort1=amort//'           '
-        rigid1=rigid//'           '
+        masse1 = masse//'           '
+        amort1 = amort//'           '
+        rigid1 = rigid//'           '
         call wkvect('FNODABID', 'V V R', 2*neq, ifnobi)
         call wkvect('FCINEBID', 'V V R', 2*neq, ifcibi)
 ! ON CALCULE LA VITESSE A T N-1
         call wkvect('VIT0_TR', 'V V R', neq, ivit0r)
         do ieq = 1, neq
-            zr(ivit0r-1+ieq)=vit0(ieq)+r8bid*acc0(ieq)
+            zr(ivit0r-1+ieq) = vit0(ieq)+r8bid*acc0(ieq)
         end do
-        call enerca(k19bid, dep0, zr(ivit0r), depl1, vite2,&
-                    masse1, amort1, rigid1, fexte, famor,&
-                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
+        call enerca(k19bid, dep0, zr(ivit0r), depl1, vite2, &
+                    masse1, amort1, rigid1, fexte, famor, &
+                    fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1, &
                     .false._1, ds_energy, '&&DLDIFF')
         call jedetr('FNODABID')
         call jedetr('FCINEBID')
         call jedetr('VIT0_TR')
-    endif
+    end if
 !====
 ! 5. TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
 !====
@@ -189,12 +189,12 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
         istoc = 0
         alarm = 1
 !
-        call dlarch(result, neq, istoc, iarchi, ' ',&
-                    alarm, temps, nbtyar, typear, masse,&
-                    depl1, vite2, acce1, fexte(neq+ 1), famor(neq+1),&
+        call dlarch(result, neq, istoc, iarchi, ' ', &
+                    alarm, temps, nbtyar, typear, masse, &
+                    depl1, vite2, acce1, fexte(neq+1), famor(neq+1), &
                     fliai(neq+1))
 !
-    endif
+    end if
 !===
 ! 8. ARCHIVAGE DES PARAMETRES
 !===

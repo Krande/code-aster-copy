@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
+subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo, &
                   ngroup, group)
 !
     implicit none
@@ -68,29 +68,29 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 !
     call jemarq()
-    ltopo=(itopo.eq.1)
-    celz=noche8
-    cesz=nochs8
-    litrou='&&PRCOCH.NUM_MAILLE'
+    ltopo = (itopo .eq. 1)
+    celz = noche8
+    cesz = nochs8
+    litrou = '&&PRCOCH.NUM_MAILLE'
 !
     numcmp = 0
     if (nocmp(1:2) .eq. ' ') then
         numcmp = -1
-    endif
+    end if
 !
     if (noche8 .eq. '__DETR__') then
 !     --  SI NOCHE8='__DETR__' : ON DETRUIT LES VECTEURS
-        call jedetr(cesz // '.V')
+        call jedetr(cesz//'.V')
         if (ltopo) then
-            call jedetr(cesz // '.M')
-            call jedetr(cesz // '.P')
-            call jedetr(cesz // '.SP')
-            call jedetr(cesz // '.N')
-            call jedetr(cesz // '.C')
+            call jedetr(cesz//'.M')
+            call jedetr(cesz//'.P')
+            call jedetr(cesz//'.SP')
+            call jedetr(cesz//'.N')
+            call jedetr(cesz//'.C')
 !          ENDIF
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 !
     call dismoi('NOM_MAILLA', celz, 'CHAMP', repk=nomma)
@@ -98,7 +98,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=tsca)
     call dismoi('NB_MA_MAILLA', nomma, 'MAILLAGE', repi=nbma)
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbma)
-    ASSERT(tsca.eq.'R'.or.tsca.eq.'C'.or.tsca.eq.'I')
+    ASSERT(tsca .eq. 'R' .or. tsca .eq. 'C' .or. tsca .eq. 'I')
 !
 !
 !
@@ -117,7 +117,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !  --- TRAITEMENT DES LISTES DE GROUPES DE MAILLES---
         if (ngroup .ne. 0) then
             call jeveuo(cesz//'.CESK', 'L', jcesk)
-            nomma=zk8(jcesk-1+1)
+            nomma = zk8(jcesk-1+1)
             call jeexin(litrou, iret)
             if (iret .ne. 0) call jedetr(litrou)
 !     --- RECUPERATION DU NUMERO DE MAILLE----
@@ -136,16 +136,16 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                         ima = zi(iad-1+in)
                         indic_maille(ima) = 1
                     end do
-                endif
+                end if
             end do
 !
             nbtrou = 0
             do ima = 1, nbma
-                if (indic_maille(ima) .ne. 0) nbtrou = nbtrou + 1
+                if (indic_maille(ima) .ne. 0) nbtrou = nbtrou+1
             end do
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_4')
-            endif
+            end if
 !
 !
             call wkvect(litrou, 'V V I', nbtrou, itbma)
@@ -153,14 +153,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             lma = 0
             do ima = 1, nbma
                 if (indic_maille(ima) .ne. 0) then
-                    lma = lma + 1
+                    lma = lma+1
                     zi(itbma-1+lma) = ima
-                endif
+                end if
             end do
-            call cesred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
+            call cesred(cesz, nbtrou, zi(itbma), 0, [k8bid], &
                         'V', cesz)
             AS_DEALLOCATE(vi=indic_maille)
-        endif
+        end if
 !
 ! -- 2EME ETAPE : RECUPERATION DU NUMCMP QUI NOUS INTERESSE
 !
@@ -173,31 +173,31 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
         do icmp = 1, ncmpmx
             if (cesc(icmp) .eq. nocmp) then
-                numcmp=icmp
+                numcmp = icmp
                 goto 6
-            endif
+            end if
         end do
 !
-  6     continue
+6       continue
 !
 ! -- 3EME ETAPE : RECUPERATION DE LA LONGUEUR DU VECTEUR DE VALEURS
 !                   UTILES - ON GARDE QUE LES VALEURS DE LA CMP REMPLIES
 !                   ET CREATION DES VECTEURS
 !
-        nbval=0
+        nbval = 0
         nbma = zi(jcesd-1+1)
 !
         do ima = 1, nbma
 !
 !
-            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-            nbsp=zi(jcesd-1+5+4*(ima-1)+2)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = zi(jcesd-1+5+4*(ima-1)+2)
 !
             do ipt = 1, nbpt
                 do isp = 1, nbsp
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, numcmp, iad)
-                    if (iad .gt. 0) nbval=nbval+1
+                    if (iad .gt. 0) nbval = nbval+1
                 end do
             end do
         end do
@@ -205,48 +205,48 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
         if (nbval .eq. 0) then
             call utmess('F', 'CHAMPS_1')
-        endif
+        end if
         if (tsca .eq. 'R') then
-            call wkvect(cesz // '.V', 'G V R', nbval, jval)
-        else if (tsca.eq.'I') then
-            call wkvect(cesz // '.V', 'G V I', nbval, jval)
-        else if (tsca.eq.'C') then
-            call wkvect(cesz // '.V', 'G V C', nbval, jval)
-        endif
+            call wkvect(cesz//'.V', 'G V R', nbval, jval)
+        else if (tsca .eq. 'I') then
+            call wkvect(cesz//'.V', 'G V I', nbval, jval)
+        else if (tsca .eq. 'C') then
+            call wkvect(cesz//'.V', 'G V C', nbval, jval)
+        end if
         if (ltopo) then
-            call wkvect(cesz // '.M', 'G V I', nbval, jma)
-            call wkvect(cesz // '.P', 'G V I', nbval, jpo)
-            call wkvect(cesz // '.SP', 'G V I', nbval, jsp)
-        endif
+            call wkvect(cesz//'.M', 'G V I', nbval, jma)
+            call wkvect(cesz//'.P', 'G V I', nbval, jpo)
+            call wkvect(cesz//'.SP', 'G V I', nbval, jsp)
+        end if
 !
 !
 ! -- 4EME ETAPE : REMPLISSAGE DES VECTEURS
-        ival=0
+        ival = 0
         do ima = 1, nbma
 !
 !
-            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-            nbsp=zi(jcesd-1+5+4*(ima-1)+2)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = zi(jcesd-1+5+4*(ima-1)+2)
 !
             do ipt = 1, nbpt
                 do isp = 1, nbsp
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, numcmp, iad)
                     if (iad .gt. 0) then
-                        ival=ival+1
+                        ival = ival+1
                         if (tsca .eq. 'R') then
-                            zr(jval-1+ival)=zr(jcesv-1+iad)
-                        else if (tsca.eq.'I') then
-                            zi(jval-1+ival)=zi(jcesv-1+iad)
-                        else if (tsca.eq.'C') then
-                            zc(jval-1+ival)=zc(jcesv-1+iad)
-                        endif
+                            zr(jval-1+ival) = zr(jcesv-1+iad)
+                        else if (tsca .eq. 'I') then
+                            zi(jval-1+ival) = zi(jcesv-1+iad)
+                        else if (tsca .eq. 'C') then
+                            zc(jval-1+ival) = zc(jcesv-1+iad)
+                        end if
                         if (ltopo) then
-                            zi(jma-1+ival)=ima
-                            zi(jpo-1+ival)=ipt
-                            zi(jsp-1+ival)=isp
-                        endif
-                    endif
+                            zi(jma-1+ival) = ima
+                            zi(jpo-1+ival) = ipt
+                            zi(jsp-1+ival) = isp
+                        end if
+                    end if
                 end do
             end do
         end do
@@ -256,7 +256,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 ! -------------------------------------------
 ! CHAM_NO
 ! -------------------------------------------
-    else if (ktype(1:2).eq.'NO') then
+    else if (ktype(1:2) .eq. 'NO') then
 !
 ! -- 1ERE ETAPE : CREATION CHAM_NO_S BEAUCOUP PLUS FACILE A MANIPULER
 !                 DANS LA FOULEE ON LE REDUIT SUR LA LISTE DE GROUP_NO
@@ -266,7 +266,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !  --- TRAITEMENT DES LISTES DE GROUPES DE MAILLES---
         if (ngroup .ne. 0) then
             call jeveuo(cesz//'.CNSK', 'L', jcesk)
-            nomma=zk8(jcesk-1+1)
+            nomma = zk8(jcesk-1+1)
             call jeexin(litrou, iret)
             if (iret .ne. 0) call jedetr(litrou)
 !     --- RECUPERATION DU NUMERO DE NOEUDS----
@@ -285,16 +285,16 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                         ino = zi(iad-1+in)
                         indic_noeud(ino) = 1
                     end do
-                endif
+                end if
             end do
 !
             nbtrou = 0
             do ino = 1, nbno
-                if (indic_noeud(ino) .ne. 0) nbtrou = nbtrou + 1
+                if (indic_noeud(ino) .ne. 0) nbtrou = nbtrou+1
             end do
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_5')
-            endif
+            end if
 !
 !
             call wkvect(litrou, 'V V I', nbtrou, itbma)
@@ -302,14 +302,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             lma = 0
             do ino = 1, nbno
                 if (indic_noeud(ino) .ne. 0) then
-                    lma = lma + 1
+                    lma = lma+1
                     zi(itbma-1+lma) = ino
-                endif
+                end if
             end do
-            call cnsred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
+            call cnsred(cesz, nbtrou, zi(itbma), 0, [k8bid], &
                         'V', cesz)
             AS_DEALLOCATE(vi=indic_noeud)
-        endif
+        end if
 !
 !
 ! -- 2EME ETAPE : RECUPERATION DU NUMCMP QUI NOUS INTERESSE
@@ -323,93 +323,93 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
         if (numcmp .lt. 0) then
             goto 60
-        endif
+        end if
         do icmp = 1, ncmpmx
             if (cnsc(icmp) .eq. nocmp) then
-                numcmp=icmp
+                numcmp = icmp
                 goto 60
-            endif
+            end if
         end do
 !
 !       SI LA COMPOSANTE DEMANDEE N EXISTE PAS, ERREUR FATALE
         call utmess('F', 'CHAMPS_3', sk=nocmp)
 !
- 60     continue
+60      continue
 !
 !
 ! -- 3EME ETAPE : RECUPERATION DE LA LONGUEUR DU VECTEUR DE VALEURS
 !                   UTILES - ON GARDE QUE LES VALEURS DE LA CMP REMPLIES
 !                   ET CREATION DES VECTEURS
 !
-        nbval=0
+        nbval = 0
         nbno = cnsd(1)
 !
         if (numcmp .lt. 0) then
             do icmp = 1, ncmpmx
                 do ino = 1, nbno
-                    if (zl(jcnsl-1+(ino-1)*ncmpmx+icmp)) nbval=nbval+ 1
+                    if (zl(jcnsl-1+(ino-1)*ncmpmx+icmp)) nbval = nbval+1
                 end do
             end do
         else
             do ino = 1, nbno
-                if (zl(jcnsl-1+(ino-1)*ncmpmx+numcmp)) nbval=nbval+1
+                if (zl(jcnsl-1+(ino-1)*ncmpmx+numcmp)) nbval = nbval+1
             end do
-        endif
+        end if
 !
 !
 !
         if (nbval .eq. 0) then
             call utmess('F', 'CHAMPS_1')
-        endif
+        end if
 !
         if (tsca .eq. 'R') then
-            call wkvect(cesz // '.V', 'G V R', nbval, jval)
-        else if (tsca.eq.'I') then
-            call wkvect(cesz // '.V', 'G V I', nbval, jval)
-        else if (tsca.eq.'C') then
-            call wkvect(cesz // '.V', 'G V C', nbval, jval)
-        endif
+            call wkvect(cesz//'.V', 'G V R', nbval, jval)
+        else if (tsca .eq. 'I') then
+            call wkvect(cesz//'.V', 'G V I', nbval, jval)
+        else if (tsca .eq. 'C') then
+            call wkvect(cesz//'.V', 'G V C', nbval, jval)
+        end if
         if (ltopo) then
-            call wkvect(cesz // '.N', 'G V I', nbval, jno)
+            call wkvect(cesz//'.N', 'G V I', nbval, jno)
             if (numcmp .lt. 0) then
-                call wkvect(cesz // '.C', 'G V K8', nbval, jcmp)
-            endif
-        endif
+                call wkvect(cesz//'.C', 'G V K8', nbval, jcmp)
+            end if
+        end if
 !
 ! -- 4EME ETAPE : REMPLISSAGE DES VECTEURS
-        ival=0
+        ival = 0
         do ino = 1, nbno
             if (numcmp .gt. 0) then
-                cmpmin=numcmp
-                cmpmax=numcmp
+                cmpmin = numcmp
+                cmpmax = numcmp
             else
-                cmpmin=1
-                cmpmax=ncmpmx
-            endif
+                cmpmin = 1
+                cmpmax = ncmpmx
+            end if
             do icmp = cmpmin, cmpmax
                 if (zl(jcnsl-1+(ino-1)*ncmpmx+icmp)) then
-                    ival=ival+1
+                    ival = ival+1
                     if (tsca .eq. 'R') then
-                        zr(jval-1+ival)=zr(jcnsv-1+(ino-1)*ncmpmx+&
-                        icmp)
-                    else if (tsca.eq.'I') then
-                        zi(jval-1+ival)=zi(jcnsv-1+(ino-1)*ncmpmx+&
-                        icmp)
-                    else if (tsca.eq.'C') then
-                        zc(jval-1+ival)=zc(jcnsv-1+(ino-1)*ncmpmx+&
-                        icmp)
-                    endif
+                        zr(jval-1+ival) = zr(jcnsv-1+(ino-1)*ncmpmx+ &
+                                             icmp)
+                    else if (tsca .eq. 'I') then
+                        zi(jval-1+ival) = zi(jcnsv-1+(ino-1)*ncmpmx+ &
+                                             icmp)
+                    else if (tsca .eq. 'C') then
+                        zc(jval-1+ival) = zc(jcnsv-1+(ino-1)*ncmpmx+ &
+                                             icmp)
+                    end if
                     if (ltopo) then
-                        zi(jno-1+ival)=ino
-                        if (numcmp .lt. 0) zk8(jcmp-1+ival)=cnsc(icmp)
-                    endif
-                endif
+                        zi(jno-1+ival) = ino
+                        if (numcmp .lt. 0) zk8(jcmp-1+ival) = cnsc(icmp)
+                    end if
+                end if
             end do
         end do
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
+subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai, &
                   spavan, deficu, resocu)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -105,13 +105,13 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
 ! ======================================================================
 ! --- INITIALISATION DES VARIABLES
 ! ======================================================================
-    nnocu = cudisi(deficu,'NNOCU')
+    nnocu = cudisi(deficu, 'NNOCU')
     nbliai = nnocu
     typesp = 'S'
-    copmax = xjvmax * 1.0d-08
+    copmax = xjvmax*1.0d-08
     pivot = 0
-    nbbloc=scde(3)
-    ouvert='&&ELPIV2.TRAV'
+    nbbloc = scde(3)
+    ouvert = '&&ELPIV2.TRAV'
     call wkvect(ouvert, 'V V L', nbbloc, jouv)
 !
     do kk1 = spavan+1, nbliac
@@ -122,45 +122,45 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
             else
                 kk1f = kk1
                 kk2f = kk2
-            endif
+            end if
             ii = scib(kk1f)
             dercol = scbl(ii)
             bloc = dercol*(dercol+1)/2
-            if (.not.zl(jouv-1+ii)) then
-                if ((ii.gt.1) .and. (kk1f.ne.(spavan+1))) then
+            if (.not. zl(jouv-1+ii)) then
+                if ((ii .gt. 1) .and. (kk1f .ne. (spavan+1))) then
                     call jelibe(jexnum(matr//'.UALF', (ii-1)))
-                    zl(jouv-2+ii)=.false.
-                endif
+                    zl(jouv-2+ii) = .false.
+                end if
                 call jeveuo(jexnum(matr//'.UALF', ii), 'E', jvale)
-                zl(jouv-1+ii)=.true.
-            endif
+                zl(jouv-1+ii) = .true.
+            end if
 !
-            jva=jvale-1+(kk1f-1)*(kk1f)/2-bloc+kk2f
+            jva = jvale-1+(kk1f-1)*(kk1f)/2-bloc+kk2f
 !
             if (abs(zr(jva)) .lt. copmax) then
                 pivot = 1
             else
                 pivot = 0
                 goto 10
-            endif
+            end if
         end do
         if (pivot .eq. 1) then
 !
             lliac = zi(jliac-1+kk1)
 !
-            zi(jliot+4*nbliai) = zi(jliot+4*nbliai) + 1
+            zi(jliot+4*nbliai) = zi(jliot+4*nbliai)+1
             nbote = zi(jliot+4*nbliai)
             zi(jliot-1+nbote) = zi(jliac-1+kk1)
 !
-            call cutabl(indic, nbliac, ajliai, spliai, resocu,&
+            call cutabl(indic, nbliac, ajliai, spliai, resocu, &
                         typesp, kk1, lliac)
             call cuimp2(ifm, lliac, typesp, 'PIV', resocu)
             goto 40
-        endif
- 10     continue
+        end if
+10      continue
     end do
 !
- 40 continue
+40  continue
     call jedetr(ouvert)
     call jedema()
 !

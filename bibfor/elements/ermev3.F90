@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ermev3(nno, ipg, ivf, isig, nbcmp,&
-                  dfdx, dfdy, dfdz, dsx, dsy,&
+subroutine ermev3(nno, ipg, ivf, isig, nbcmp, &
+                  dfdx, dfdy, dfdz, dsx, dsy, &
                   dsz, norme)
 !  ERREUR EN MECANIQUE - TERME VOLUMIQUE - DIMENSION 3
 !  **        **                *                     *
@@ -69,56 +69,56 @@ subroutine ermev3(nno, ipg, ivf, isig, nbcmp,&
 !
 ! ----------------------------------------------------------------------
 !
-    dsig11=0.d0
-    dsig12=0.d0
-    dsig13=0.d0
-    dsig21=0.d0
-    dsig22=0.d0
-    dsig23=0.d0
-    dsig31=0.d0
-    dsig32=0.d0
-    dsig33=0.d0
+    dsig11 = 0.d0
+    dsig12 = 0.d0
+    dsig13 = 0.d0
+    dsig21 = 0.d0
+    dsig22 = 0.d0
+    dsig23 = 0.d0
+    dsig31 = 0.d0
+    dsig32 = 0.d0
+    dsig33 = 0.d0
 !
-    spg11=0.d0
-    spg22=0.d0
-    spg33=0.d0
-    spg12=0.d0
-    spg13=0.d0
-    spg23=0.d0
+    spg11 = 0.d0
+    spg22 = 0.d0
+    spg33 = 0.d0
+    spg12 = 0.d0
+    spg13 = 0.d0
+    spg23 = 0.d0
 !
     do i = 1, nno
-        k=(ipg-1)*nno
-        sig11=zr(isig-1+nbcmp*(i-1)+1)
-        sig22=zr(isig-1+nbcmp*(i-1)+2)
-        sig33=zr(isig-1+nbcmp*(i-1)+3)
-        sig12=zr(isig-1+nbcmp*(i-1)+4)
-        sig13=zr(isig-1+nbcmp*(i-1)+5)
-        sig23=zr(isig-1+nbcmp*(i-1)+6)
+        k = (ipg-1)*nno
+        sig11 = zr(isig-1+nbcmp*(i-1)+1)
+        sig22 = zr(isig-1+nbcmp*(i-1)+2)
+        sig33 = zr(isig-1+nbcmp*(i-1)+3)
+        sig12 = zr(isig-1+nbcmp*(i-1)+4)
+        sig13 = zr(isig-1+nbcmp*(i-1)+5)
+        sig23 = zr(isig-1+nbcmp*(i-1)+6)
 !
-        dsig11=dsig11+sig11*dfdx(i)
-        dsig12=dsig12+sig12*dfdy(i)
-        dsig13=dsig13+sig13*dfdz(i)
-        dsig21=dsig21+sig12*dfdx(i)
-        dsig22=dsig22+sig22*dfdy(i)
-        dsig23=dsig23+sig23*dfdz(i)
-        dsig31=dsig31+sig13*dfdx(i)
-        dsig32=dsig32+sig23*dfdy(i)
-        dsig33=dsig33+sig33*dfdz(i)
+        dsig11 = dsig11+sig11*dfdx(i)
+        dsig12 = dsig12+sig12*dfdy(i)
+        dsig13 = dsig13+sig13*dfdz(i)
+        dsig21 = dsig21+sig12*dfdx(i)
+        dsig22 = dsig22+sig22*dfdy(i)
+        dsig23 = dsig23+sig23*dfdz(i)
+        dsig31 = dsig31+sig13*dfdx(i)
+        dsig32 = dsig32+sig23*dfdy(i)
+        dsig33 = dsig33+sig33*dfdz(i)
 !
-        spg11=spg11+sig11*zr(ivf+k+i-1)
-        spg22=spg22+sig22*zr(ivf+k+i-1)
-        spg33=spg33+sig33*zr(ivf+k+i-1)
-        spg12=spg12+sig12*zr(ivf+k+i-1)
-        spg13=spg13+sig13*zr(ivf+k+i-1)
-        spg23=spg23+sig23*zr(ivf+k+i-1)
+        spg11 = spg11+sig11*zr(ivf+k+i-1)
+        spg22 = spg22+sig22*zr(ivf+k+i-1)
+        spg33 = spg33+sig33*zr(ivf+k+i-1)
+        spg12 = spg12+sig12*zr(ivf+k+i-1)
+        spg13 = spg13+sig13*zr(ivf+k+i-1)
+        spg23 = spg23+sig23*zr(ivf+k+i-1)
 !
     end do
 !
-    dsx=dsig11+dsig12+dsig13
-    dsy=dsig21+dsig22+dsig23
-    dsz=dsig31+dsig32+dsig33
+    dsx = dsig11+dsig12+dsig13
+    dsy = dsig21+dsig22+dsig23
+    dsz = dsig31+dsig32+dsig33
 !
-    norme=spg11**2+spg22**2+spg33**2+&
+    norme = spg11**2+spg22**2+spg33**2+&
      &      2.d0*(spg12**2+spg13**2+spg23**2)
 !
 end subroutine

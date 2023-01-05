@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,21 +23,21 @@ subroutine lccata(iunit)
 #include "asterfort/lctel3.h"
 #include "asterfort/lecojb.h"
     integer :: iunit, mxobj, iret, i
-    parameter        ( mxobj = 50 )
+    parameter(mxobj=50)
 !
     character(len=24) :: nomobj
 !
 !
 !     LECTURE DU FICHIER CONTENANT LES OBJETS JEVEUX AU FORMAT OJB :
 !     --------------------------------------------------------------
-    rewind(iunit)
+    rewind (iunit)
     do i = 1, mxobj
         call lecojb(nomobj, iunit, 'G', iret)
         if (iret .gt. 0) goto 2
-        write(6,*) ' OBJET LU :',nomobj
+        write (6, *) ' OBJET LU :', nomobj
     end do
-  2 continue
-    write(6,*) ' NB_OBJETS LUS :',i
+2   continue
+    write (6, *) ' NB_OBJETS LUS :', i
 !
 !
 !     CREATION D'OBJETS SUPPLEMENTAIRES

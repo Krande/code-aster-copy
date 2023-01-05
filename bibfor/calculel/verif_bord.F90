@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verif_bord(modele,ligrel)
+subroutine verif_bord(modele, ligrel)
     implicit none
 !
 ! person_in_charge: jacques.pellet at edf.fr
@@ -59,8 +59,8 @@ subroutine verif_bord(modele,ligrel)
     character(len=8) :: modele_, noma
     character(len=19) :: ligrel_, ligrmo
     character(len=24) :: valk(4)
-    integer :: nbmamo,nbmalg,numa,kma,nbmat
-    integer :: iconx1,iconx2,nno,nuno,kno,nbnot
+    integer :: nbmamo, nbmalg, numa, kma, nbmat
+    integer :: iconx1, iconx2, nno, nuno, kno, nbnot
 
     character(len=24), parameter :: linumamo = '&&VERIF_BORD.NUMAMO'
     character(len=24), parameter :: linutemo = '&&VERIF_BORD.NUTEMO'
@@ -75,13 +75,12 @@ subroutine verif_bord(modele,ligrel)
 #define nbno(imail) zi(iconx2+imail) - zi(iconx2+imail-1)
 #define connex(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
 
-
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    modele_=modele
-    ligrmo=modele_//'.MODELE'
-    ligrel_=ligrel
+    modele_ = modele
+    ligrmo = modele_//'.MODELE'
+    ligrel_ = ligrel
 
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
@@ -91,45 +90,43 @@ subroutine verif_bord(modele,ligrel)
 
     call liglma(ligrmo, nbmamo, linumamo, linutemo)
     call liglma(ligrel_, nbmalg, linumalg, linutelg)
-    call jeveuo(linumamo,'L',vi=numamo)
-    call jeveuo(linumalg,'L',vi=numalg)
-
+    call jeveuo(linumamo, 'L', vi=numamo)
+    call jeveuo(linumalg, 'L', vi=numalg)
 
 !   -- 1. Calcul de eximalg et exinolg :
 !      eximalg(numa) = 1 : la maille numa existe dans ligrel
 !      exinolg(nuno) = 1 : le noeud numo existe dans ligrel
 !   ----------------------------------------------------------
-    AS_ALLOCATE(vi=eximalg,size=nbmat)
-    AS_ALLOCATE(vi=exinolg,size=nbnot)
-    eximalg=0
-    exinolg=0
-    do kma=1,nbmalg
-        numa=numalg(kma)
-        eximalg(numa)=1
-        nno=nbno(numa)
-        do kno=1,nno
-           nuno=connex(numa,kno)
-           ASSERT(nuno.gt.0 .and. nuno.le.nbnot)
-           exinolg(nuno)=1
-        enddo
-    enddo
+    AS_ALLOCATE(vi=eximalg, size=nbmat)
+    AS_ALLOCATE(vi=exinolg, size=nbnot)
+    eximalg = 0
+    exinolg = 0
+    do kma = 1, nbmalg
+        numa = numalg(kma)
+        eximalg(numa) = 1
+        nno = nbno(numa)
+        do kno = 1, nno
+            nuno = connex(numa, kno)
+            ASSERT(nuno .gt. 0 .and. nuno .le. nbnot)
+            exinolg(nuno) = 1
+        end do
+    end do
 
 !   -- 2. boucle sur les mailles de modele :
 !   ----------------------------------------
-B1: do kma=1,nbmamo
-        numa=numamo(kma)
-        if (eximalg(numa).eq.1) cycle B1
+    B1: do kma = 1, nbmamo
+        numa = numamo(kma)
+        if (eximalg(numa) .eq. 1) cycle B1
 
-        nno=nbno(numa)
-        do kno=1,nno
-           nuno=connex(numa,kno)
-           if (exinolg(nuno).eq.0) cycle B1
-        enddo
-        valk(1)=modele
+        nno = nbno(numa)
+        do kno = 1, nno
+            nuno = connex(numa, kno)
+            if (exinolg(nuno) .eq. 0) cycle B1
+        end do
+        valk(1) = modele
         call jenuno(jexnum(noma//'.NOMMAI', numa), valk(2))
-        call utmess('A','CALCULEL4_74',nk=2,valk=valk)
-    enddo  B1
-
+        call utmess('A', 'CALCULEL4_74', nk=2, valk=valk)
+    end do B1
 
 !   -- menage :
 !   -----------

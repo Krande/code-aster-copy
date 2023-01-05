@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, option,&
-                  materi, sigp, vip, dsde)
+subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, option, &
+                             materi, sigp, vip, dsde)
 !
     implicit none
 !
@@ -73,16 +73,16 @@ subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, optio
     character(len=8)   :: ldcpac(1)
     real(kind=8)       :: temps0, temps1, dtemps
 !   Équations du système
-    integer, parameter :: nbequa=4
+    integer, parameter :: nbequa = 4
     real(kind=8)       :: y0(nbequa), dy0(nbequa), resu(nbequa*2)
 !
     integer      :: nbdecp
     real(kind=8) :: errmax
 !
     real(kind=8) :: precis
-    parameter (precis=1.0e-08)
+    parameter(precis=1.0e-08)
 !
-    integer, parameter :: nbcar=2
+    integer, parameter :: nbcar = 2
     real(kind=8)       :: valcar(nbcar)
     integer            :: codcar(nbcar)
 !
@@ -93,24 +93,24 @@ subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, optio
     call jevech('PINSTMR', 'L', jtm)
     temps0 = zr(jtm)
     temps1 = zr(jtp)
-    dtemps = temps1 - temps0
+    dtemps = temps1-temps0
 !   contrôle de rk5 : découpage successif, erreur maximale
     call jevech('PCARCRI', 'L', icarcr)
 !   nombre d'itérations maxi (ITER_INTE_MAXI=-20 par défaut)
-    nbdecp = abs( nint(zr(icarcr)) )
+    nbdecp = abs(nint(zr(icarcr)))
 !   tolérance de convergence (RESI_INTE_RELA)
     errmax = zr(icarcr+2)
 !   Température à t-
     call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, temper0, iret0)
-    if ( iret0 .ne. 0 ) then
+    if (iret0 .ne. 0) then
         temper0 = 0.0
-    endif
+    end if
 !   Température à t+
     call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, temper1, iret1)
-    if ( iret1 .ne. 0 ) then
+    if (iret1 .ne. 0) then
         temper1 = 0.0
-    endif
-    ASSERT(iret0.eq.iret1)
+    end if
+    ASSERT(iret0 .eq. iret1)
 !
 !   Paramètres de la loi : imate nomat frpg
     ldcpai(1) = imate
@@ -118,42 +118,42 @@ subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, optio
     ldcpar(1) = 0.0
 !
 !   On recherche F_PRG
-    call rcvala(imate,' ','RELAX_ACIER', &
-                0, '  ', [0.0D+00], 1, 'F_PRG', valcar , codcar, 0)
+    call rcvala(imate, ' ', 'RELAX_ACIER', &
+                0, '  ', [0.0D+00], 1, 'F_PRG', valcar, codcar, 0)
 !   Si on n'a pas trouvé F_PRG, on cherche ailleurs. Si on ne le trouve pas <F>. C'est un réel.
-    if ( codcar(1).ne.0 ) then
+    if (codcar(1) .ne. 0) then
         valcar(:) = 0.0
-        call rcvala(imate,' ','BPEL_ACIER', &
-                    0, ' ', [0.0D+00], 1, 'F_PRG', valcar , codcar, 0)
-        if ( codcar(1).eq.0 ) then
+        call rcvala(imate, ' ', 'BPEL_ACIER', &
+                    0, ' ', [0.0D+00], 1, 'F_PRG', valcar, codcar, 0)
+        if (codcar(1) .eq. 0) then
             ldcpar(1) = valcar(1)
         else
-            call rcvala(imate,' ','ETCC_ACIER', &
-                        0, ' ', [0.0D+00], 1, 'F_PRG', valcar , codcar, 0)
-            if ( codcar(1).eq.0 ) then
+            call rcvala(imate, ' ', 'ETCC_ACIER', &
+                        0, ' ', [0.0D+00], 1, 'F_PRG', valcar, codcar, 0)
+            if (codcar(1) .eq. 0) then
                 ldcpar(1) = valcar(1)
             else
                 call utmess('F', 'MODELISA2_46')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !   Si on trouve RELAX_1000 <A MODELISA2_45>
-    call rcvala(imate,' ','BPEL_ACIER', &
-                0, ' ', [0.0D+00], 1, 'RELAX_1000', valcar , codcar, 0)
-    if ( codcar(1).eq.0 ) then
-        if ( valcar(1) .gt. 0.0 ) then
-            call utmess('A', 'MODELISA2_45', sk='BPEL_ACIER',sr=valcar(1))
-        endif
+    call rcvala(imate, ' ', 'BPEL_ACIER', &
+                0, ' ', [0.0D+00], 1, 'RELAX_1000', valcar, codcar, 0)
+    if (codcar(1) .eq. 0) then
+        if (valcar(1) .gt. 0.0) then
+            call utmess('A', 'MODELISA2_45', sk='BPEL_ACIER', sr=valcar(1))
+        end if
     else
-        call rcvala(imate,' ','ETCC_ACIER', &
-                    0, ' ', [0.0D+00], 1, 'RELAX_1000', valcar , codcar, 0)
-        if ( codcar(1).eq.0 ) then
-            if ( valcar(1) .gt. 0.0 ) then
-                call utmess('A', 'MODELISA2_45', sk='ETCC_ACIER',sr=valcar(1))
-            endif
-        endif
-    endif
+        call rcvala(imate, ' ', 'ETCC_ACIER', &
+                    0, ' ', [0.0D+00], 1, 'RELAX_1000', valcar, codcar, 0)
+        if (codcar(1) .eq. 0) then
+            if (valcar(1) .gt. 0.0) then
+                call utmess('A', 'MODELISA2_45', sk='ETCC_ACIER', sr=valcar(1))
+            end if
+        end if
+    end if
 !
 !   Équations du système :
 !              1      2     3      4
@@ -167,22 +167,22 @@ subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, optio
     y0(4) = temper0
 !   Incréments
     dy0(2) = deps/dtemps
-    dy0(4) = (temper1 - temper0)/dtemps
+    dy0(4) = (temper1-temper0)/dtemps
 !
-    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, dtemps, nbdecp,&
+    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, dtemps, nbdecp, &
                 errmax, y0, dy0, relax_cable, resu, iret1)
-    sigp   = resu(1)
+    sigp = resu(1)
     vip(1) = resu(3)
     if (abs(resu(nbequa+2)) .gt. precis) then
-        dsde = resu(nbequa + 1)/resu(nbequa + 2)
+        dsde = resu(nbequa+1)/resu(nbequa+2)
     else
         dsde = vim(2)
-    endif
-    if ( abs(dsde) .lt. precis ) then
+    end if
+    if (abs(dsde) .lt. precis) then
 !       Caractéristiques élastiques a t+
-        call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS', &
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', &
                     0, ' ', [0.d0], 1, 'E', valcar, codcar, 1)
-        dsde   = valcar(1)
-    endif
+        dsde = valcar(1)
+    end if
     vip(2) = dsde
 end subroutine

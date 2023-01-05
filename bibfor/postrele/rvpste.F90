@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,19 +84,19 @@ subroutine rvpste(lieu, ssch19, nomsd, typaff)
     call wkvect('&&RVPSTE.NB.ND.FACE.TYPE', 'V V I', 18, anbndf)
     call wkvect('&&RVPSTE.CNC.LOC.FA.TYPE', 'V V I', 72, aclocf)
     do i = 1, 3, 1
-        ibid = zi(adescm + i-1)
+        ibid = zi(adescm+i-1)
         do l = 1, 6, 1
-            zi(anbndf + 6*(i-1) + l-1) = zi(ibid + l+1)
+            zi(anbndf+6*(i-1)+l-1) = zi(ibid+l+1)
         end do
         do l = 1, 24, 1
-            zi(aclocf + 24*(i-1) + l-1) = zi(ibid + l+7)
+            zi(aclocf+24*(i-1)+l-1) = zi(ibid+l+7)
         end do
     end do
     do l = 1, nbl, 1
-        sdlieu = zk24(alieu + l-1)(1:19)
+        sdlieu = zk24(alieu+l-1) (1:19)
         sdeval = sdlieu
         sdeval(1:8) = '&&RVPSTE'
-        zk24(anomsd + l-1) = sdeval//'     '
+        zk24(anomsd+l-1) = sdeval//'     '
         nrefe = sdlieu//'.REFE'
         call jelira(nrefe, 'DOCU', cval=docu)
         if (docu .eq. 'LSTN') then
@@ -104,10 +104,10 @@ subroutine rvpste(lieu, ssch19, nomsd, typaff)
                 call rvechn(ssch19, sdlieu, sdeval)
             else
                 call rveche(ssch19, sdlieu, sdeval)
-            endif
+            end if
         else
 !           AUTRE LIEU DE POST-TRAITEMENT
-        endif
+        end if
     end do
     call jedetr('&&RVPSTE.NB.ND.FACE.TYPE')
     call jedetr('&&RVPSTE.CNC.LOC.FA.TYPE')

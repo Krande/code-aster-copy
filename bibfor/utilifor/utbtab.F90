@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utbtab(raz, na, mb, a, b,&
+subroutine utbtab(raz, na, mb, a, b, &
                   xab, btab)
     implicit none
 #include "asterfort/r8inir.h"
@@ -41,13 +41,13 @@ subroutine utbtab(raz, na, mb, a, b,&
 !-----------------------------------------------------------------------
     integer :: i, j, k
 !-----------------------------------------------------------------------
-    raz2=raz
+    raz2 = raz
 !
     call r8inir(na*mb, 0.0d0, xab, 1)
     do j = 1, mb
         do k = 1, na
             do i = 1, na
-                xab(i,j) = xab(i,j) + a(i,k) * b(k,j)
+                xab(i, j) = xab(i, j)+a(i, k)*b(k, j)
             end do
         end do
     end do
@@ -57,7 +57,7 @@ subroutine utbtab(raz, na, mb, a, b,&
     do j = 1, mb
         do i = 1, mb
             do k = 1, na
-                btab(i,j) = btab(i,j) + b(k,i) * xab(k,j)
+                btab(i, j) = btab(i, j)+b(k, i)*xab(k, j)
             end do
         end do
     end do

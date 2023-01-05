@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,43 +105,43 @@ subroutine expcar(carte)
 !     SI CODE(IEDIT)=-3:  LES MAILLES SUPPL. D'1 LISTE TARDIVE.
 !
     call jeexin(carte//'.NOLI', iret)
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
     call jeveuo(carte//'.NOLI', 'L', vk24=vnoli)
     call jecreo(carte//'.NUMT', 'V V I')
     call jeecra(carte//'.NUMT', 'LONMAX', 3*nbedit)
     call jeveuo(carte//'.NUMT', 'E', vi=numt)
     nbmato = 0
     do iedit = 1, nbedit
-        icode = zi(iadesc-1+3+2* (iedit-1)+1)
+        icode = zi(iadesc-1+3+2*(iedit-1)+1)
         noli = vnoli(iedit)
         dejavu = .false.
-        do j = iedit - 1, 1, -1
+        do j = iedit-1, 1, -1
             if (noli .eq. vnoli(j)) then
                 dejavu = .true.
                 goto 3
-            endif
+            end if
         end do
-  3     continue
+3       continue
         if (dejavu) then
-            numt(3* (iedit-1)+1) = numt(3* (j-1)+1)
-            numt(3* (iedit-1)+2) = numt(3* (j-1)+2)
-            numt(3* (iedit-1)+3) = 0
+            numt(3*(iedit-1)+1) = numt(3*(j-1)+1)
+            numt(3*(iedit-1)+2) = numt(3*(j-1)+2)
+            numt(3*(iedit-1)+3) = 0
         else
-            numt(3* (iedit-1)+1) = nbmato + 1
+            numt(3*(iedit-1)+1) = nbmato+1
             if (noli(1:8) .eq. '        ') then
 !              MAILLES DU MAILLAGE:
                 call jelira(noma//'.NOMMAI', 'NOMMAX', nbma)
-                nbmato = nbmato + nbma
+                nbmato = nbmato+nbma
             else
 !              MAILLES SUPPLEMENTAIRES D'1 LIGREL:
 !              TEST : ON DOIT AVOIR ICODE=3 POUR DES MAILLES TARDIVES
-                ASSERT(icode.eq.-3)
+                ASSERT(icode .eq. -3)
                 call dismoi('NB_MA_SUP', noli, 'LIGREL', repi=nbma)
-                nbmato = nbmato + nbma
-            endif
-            numt(3* (iedit-1)+2) = nbmato
-            numt(3* (iedit-1)+3) = 1
-        endif
+                nbmato = nbmato+nbma
+            end if
+            numt(3*(iedit-1)+2) = nbmato
+            numt(3*(iedit-1)+3) = 1
+        end if
     end do
 !
 !     -- ALOCATION DES OBJETS DE TRAVAIL : .VALP ET .DGP
@@ -158,31 +158,31 @@ subroutine expcar(carte)
 !
     nbgdmx = zi(iadesc-1+2)
     do iedit = 1, nbedit
-        i1 = iavale + (iedit-1)*ncmpmx
-        i3 = iadesc - 1 + 3 + 2*nbgdmx + (iedit-1)*nec + 1
+        i1 = iavale+(iedit-1)*ncmpmx
+        i3 = iadesc-1+3+2*nbgdmx+(iedit-1)*nec+1
         num1 = numt((iedit-1)*3+1)
         num2 = numt((iedit-1)*3+2)
-        icode = zi(iadesc-1+3+2* (iedit-1)+1)
-        ient = zi(iadesc-1+3+2* (iedit-1)+2)
+        icode = zi(iadesc-1+3+2*(iedit-1)+1)
+        ient = zi(iadesc-1+3+2*(iedit-1)+2)
         noli = vnoli(iedit)
         if (abs(icode) .eq. 1) then
 !            -- GROUPE 'TOUT':
-            nbma = num2 - num1 + 1
+            nbma = num2-num1+1
         else
-            call melima(carte, noma, icode, ient, i5,&
+            call melima(carte, noma, icode, ient, i5, &
                         nbma)
 !           --I5 : ADRESSE DANS ZI DE LA LISTE DES MAILLES A TRAITER.
 !           --NBMA: NOMBRE DE MAILLES A TRAITER.
-        endif
+        end if
         do ima = 1, nbma
             if (abs(icode) .eq. 1) then
                 numat = ima
             else
-                numat = num1 - 1 + abs(zi(i5-1+ima))
-            endif
-            i2 = iavalp + (numat-1)*ncmpmx
-            i4 = iadgp - 1 + (numat-1)*nec + 1
-            call mecumu(scal, ncmpmx, i1, i2, nec,&
+                numat = num1-1+abs(zi(i5-1+ima))
+            end if
+            i2 = iavalp+(numat-1)*ncmpmx
+            i4 = iadgp-1+(numat-1)*nec+1
+            call mecumu(scal, ncmpmx, i1, i2, nec, &
                         zi(i3), zi(i4))
         end do
     end do

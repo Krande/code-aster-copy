@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine reexi1(nu, mo, ma, nlili, nm,&
+subroutine reexi1(nu, mo, ma, nlili, nm, &
                   nl, nbntt)
     implicit none
 !
@@ -117,18 +117,18 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     do i = 1, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', i), mo2)
         if (mo2(9:15) .eq. '.MODELE') then
-            mo= mo2(1:8)
+            mo = mo2(1:8)
             goto 42
-        endif
+        end if
     end do
 !    call utmess('F', 'ASSEMBLA_35', sk=nu)
 !
- 42 continue
+42  continue
     if (mo .ne. ' ') then
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     else
         call jenuno(jexnum(nu//'.NUME.LILI', nlili), nomli2)
-        nomlig=nomli2(1:19)
+        nomlig = nomli2(1:19)
         call dismoi('NOM_MAILLA', nomlig, 'LIGREL', repk=ma)
     end if
 !
@@ -140,18 +140,18 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     if (mo .ne. ' ') then
         call dismoi('NB_NL_MAILLA', mo, 'MODELE', repi=nl)
     end if
-    nbnom=nm+nl
+    nbnom = nm+nl
 !
 !     -- CALCUL DE NBNOT ET NBNTT :
 !     -----------------------------
-    nbnot=0
-    do 1 , ili=2,nlili
-    call jenuno(jexnum(nu//'.NUME.LILI', ili), nomli2)
-    nomlig=nomli2(1:19)
-    call jeveuo(nomlig//'.NBNO', 'L', ianbno)
-    nbnot= nbnot+zi(ianbno)
-    1 end do
-    nbntt= nbnom+nbnot
+    nbnot = 0
+    do 1, ili = 2, nlili
+        call jenuno(jexnum(nu//'.NUME.LILI', ili), nomli2)
+        nomlig = nomli2(1:19)
+        call jeveuo(nomlig//'.NBNO', 'L', ianbno)
+        nbnot = nbnot+zi(ianbno)
+1   end do
+    nbntt = nbnom+nbnot
 !
 !
 !     -- ALLOCATION DE .EXI1
@@ -163,7 +163,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     if (nma .gt. 0) then
         call jeveuo(ma//'.CONNEX', 'L', iaconx)
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilconx)
-    endif
+    end if
 !
 !
 !     -- 1ERE ETAPE : (SUPER)MAILLES DU MAILLAGE:
@@ -178,84 +178,84 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
         call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
     else
         goto 22
-    endif
+    end if
 !
     do ima = 1, nbsma
         if (sssa(ima) .eq. 1) then
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
             call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
             do i = 1, nbnm
-                ino=zi(iamail-1+i)
+                ino = zi(iamail-1+i)
                 if (ino .eq. 0) then
                     call utmess('F', 'ASSEMBLA_36')
-                endif
+                end if
                 do j = i+1, nbnm
-                    jno=zi(iamail-1+j)
-                    zi(iaexi1+ino)=zi(iaexi1+ino) +1
-                    zi(iaexi1+jno)=zi(iaexi1+jno) +1
+                    jno = zi(iamail-1+j)
+                    zi(iaexi1+ino) = zi(iaexi1+ino)+1
+                    zi(iaexi1+jno) = zi(iaexi1+jno)+1
                 end do
             end do
-        endif
+        end if
     end do
 !
- 22 continue
+22  continue
 !
 !     -- 2EME ETAPE : MAILLES TARDIVES (OU NON) DES LIGRELS:
 !                     (MODELE + LISTE DE CHARGES)
 !     ------------------------------------------------------
-    nbnot=0
-    do 31 , ili=2,nlili
-    call jenuno(jexnum(nu//'.NUME.LILI', ili), nomli2)
-    nomlig=nomli2(1:19)
-    call dismoi('EXI_ELEM', nomlig, 'LIGREL', repk=exiele)
-    if (exiele(1:3) .eq. 'NON') goto 31
+    nbnot = 0
+    do 31, ili = 2, nlili
+        call jenuno(jexnum(nu//'.NUME.LILI', ili), nomli2)
+        nomlig = nomli2(1:19)
+        call dismoi('EXI_ELEM', nomlig, 'LIGREL', repk=exiele)
+        if (exiele(1:3) .eq. 'NON') goto 31
 !
-    call jeveuo(nomlig//'.LIEL', 'L', ialiel)
-    call jeveuo(jexatr(nomlig//'.LIEL', 'LONCUM'), 'L', illiel)
-    call jelira(nomlig//'.LIEL', 'NMAXOC', nbgrel)
+        call jeveuo(nomlig//'.LIEL', 'L', ialiel)
+        call jeveuo(jexatr(nomlig//'.LIEL', 'LONCUM'), 'L', illiel)
+        call jelira(nomlig//'.LIEL', 'NMAXOC', nbgrel)
 !
 !
-    call jeexin(nomlig//'.NEMA', iret)
-    if (iret .gt. 0) then
-        call jeveuo(nomlig//'.NEMA', 'L', ianema)
-        call jeveuo(jexatr(nomlig//'.NEMA', 'LONCUM'), 'L', ilnema)
-    endif
+        call jeexin(nomlig//'.NEMA', iret)
+        if (iret .gt. 0) then
+            call jeveuo(nomlig//'.NEMA', 'L', ianema)
+            call jeveuo(jexatr(nomlig//'.NEMA', 'LONCUM'), 'L', ilnema)
+        end if
 !
-    do igrel = 1, nbgrel
-        nbel= zi(illiel-1+igrel+1)-zi(illiel-1+igrel) -1
-        iagrel= ialiel + zi(illiel-1+igrel) -1
+        do igrel = 1, nbgrel
+            nbel = zi(illiel-1+igrel+1)-zi(illiel-1+igrel)-1
+            iagrel = ialiel+zi(illiel-1+igrel)-1
 !
-        do iel = 1, nbel
-            ima= zi(iagrel -1 +iel)
-            if (ima .gt. 0) then
-                nbnm= zi(ilconx-1+ima+1)-zi(ilconx-1+ima)
-                iamail= iaconx + zi(ilconx-1+ima) -1
-            else
-                nbnm= zi(ilnema-1-ima+1)-zi(ilnema-1-ima) -1
-                iamail = ianema + zi(ilnema-1-ima) -1
-            endif
+            do iel = 1, nbel
+                ima = zi(iagrel-1+iel)
+                if (ima .gt. 0) then
+                    nbnm = zi(ilconx-1+ima+1)-zi(ilconx-1+ima)
+                    iamail = iaconx+zi(ilconx-1+ima)-1
+                else
+                    nbnm = zi(ilnema-1-ima+1)-zi(ilnema-1-ima)-1
+                    iamail = ianema+zi(ilnema-1-ima)-1
+                end if
 !
-            do i = 1, nbnm
-                ino=zi(iamail-1+i)
-                if (ino .eq. 0) then
-                    call utmess('F', 'ASSEMBLA_36')
-                endif
-                iino=ino
-                if (ino .lt. 0) iino=nbnom+nbnot-ino
-                if (nbnm .eq. 1) zi(iaexi1+iino)=zi(iaexi1+iino) +1
-                do j = i+1, nbnm
-                    jno=zi(iamail-1+j)
-                    jjno=jno
-                    if (jno .lt. 0) jjno=nbnom+nbnot-jno
-                    zi(iaexi1+iino)=zi(iaexi1+iino) +1
-                    zi(iaexi1+jjno)=zi(iaexi1+jjno) +1
+                do i = 1, nbnm
+                    ino = zi(iamail-1+i)
+                    if (ino .eq. 0) then
+                        call utmess('F', 'ASSEMBLA_36')
+                    end if
+                    iino = ino
+                    if (ino .lt. 0) iino = nbnom+nbnot-ino
+                    if (nbnm .eq. 1) zi(iaexi1+iino) = zi(iaexi1+iino)+1
+                    do j = i+1, nbnm
+                        jno = zi(iamail-1+j)
+                        jjno = jno
+                        if (jno .lt. 0) jjno = nbnom+nbnot-jno
+                        zi(iaexi1+iino) = zi(iaexi1+iino)+1
+                        zi(iaexi1+jjno) = zi(iaexi1+jjno)+1
+                    end do
                 end do
             end do
         end do
-    end do
-    call jeveuo(nomlig//'.NBNO', 'L', ianbno)
-    nbnot= nbnot+zi(ianbno)
-    31 end do
+        call jeveuo(nomlig//'.NBNO', 'L', ianbno)
+        nbnot = nbnot+zi(ianbno)
+31  end do
 !
 !
 !

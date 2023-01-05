@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ecresu(resin, vectot, nbva, grand, resou,&
+subroutine ecresu(resin, vectot, nbva, grand, resou, &
                   ier)
     implicit none
 #include "jeveux.h"
@@ -61,7 +61,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !
 !     ------------------------------------------------------------------
-    integer :: nbordr,  jordr, ibid, i, nbsym
+    integer :: nbordr, jordr, ibid, i, nbsym
     integer :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
     integer :: nbsauv, iarchi, isto1, isto2, isto3, isto4
     integer :: jdeps, jvits, jaccs, jpass, jinst
@@ -88,27 +88,27 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !   Recuperation type RESU
     call gettco(resin, typres)
     if (typres(1:10) .eq. 'DYNA_HARMO') then
-        typout='DYNA_TRANS'
-        nbva2=nbva
-    else if (typres(1:9).eq.'HARM_GENE') then
-        typout='TRAN_GENE'
-        nbva2=nbva
-    else if (typres(1:10).eq.'DYNA_TRANS') then
-        typout='DYNA_HARMO'
-        nbva2=2*nbva
-    else if (typres(1:9).eq.'TRAN_GENE') then
-        typout='HARM_GENE'
-        nbva2=2*nbva
+        typout = 'DYNA_TRANS'
+        nbva2 = nbva
+    else if (typres(1:9) .eq. 'HARM_GENE') then
+        typout = 'TRAN_GENE'
+        nbva2 = nbva
+    else if (typres(1:10) .eq. 'DYNA_TRANS') then
+        typout = 'DYNA_HARMO'
+        nbva2 = 2*nbva
+    else if (typres(1:9) .eq. 'TRAN_GENE') then
+        typout = 'HARM_GENE'
+        nbva2 = 2*nbva
         call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=riggen)
         call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=masgen)
         call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen, arret='C')
-    endif
+    end if
 !
 !  Creation objet de stockage en LTPS pour les valeurs d'instants
 !
 !  Champs
     if (typres(6:9) .ne. 'GENE') then
-        call rsexch('F', resin, grande, 1, chdep,&
+        call rsexch('F', resin, grande, 1, chdep, &
                     iret)
         call jeveuo(chdep//'.VALE', 'L', lval)
 !  Nombre d'equations : NEQ
@@ -119,8 +119,8 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
         call jeveuo(resin(1:19)//'.'//grande, 'L', lval)
         chdep2 = resin(1:19)//'.'//grande
         call jelira(chdep2, 'LONMAX', neq)
-        neq = neq / nbordr
-    endif
+        neq = neq/nbordr
+    end if
     nbordr = nbva
     AS_ALLOCATE(vr=paramacc, size=nbva)
 !
@@ -128,7 +128,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !      NBORDR = NBVA
     call jeexin(resou(1:8)//'           .DESC', ires)
-    if ((ires.eq.0) .and. (typout(6:9).ne.'GENE')) call rscrsd('G', resou, typout, nbordr)
+    if ((ires .eq. 0) .and. (typout(6:9) .ne. 'GENE')) call rscrsd('G', resou, typout, nbordr)
 !
     call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=raide)
 !
@@ -142,10 +142,10 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !        --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
         do i = 0, nbordr-1
-            call rsadpa(resou, 'E', 1, 'FREQ', i+1,&
+            call rsadpa(resou, 'E', 1, 'FREQ', i+1, &
                         0, sjv=ltps2, styp=k8b)
             zr(ltps2) = paramacc(1+i)
-            call rsexch(' ', resou, grande, i+1, chdeps,&
+            call rsexch(' ', resou, grande, i+1, chdeps, &
                         iret)
 !
             if (raide(1:1) .ne. ' ') then
@@ -157,9 +157,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !                  SUR BASE MODALE (.REFD[3])
 !
                 call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numedd)
-                call vtcreb(chdeps, 'G', 'C', nume_ddlz = numedd, nb_equa_outz = n1)
-                ASSERT(n1.eq.neq)
-            endif
+                call vtcreb(chdeps, 'G', 'C', nume_ddlz=numedd, nb_equa_outz=n1)
+                ASSERT(n1 .eq. neq)
+            end if
 !           -------------------------------------------------------
 !
 !           --- REMPLIR LE .VALE PAR LES RESULTATS DANS LA TABLE FFT
@@ -169,37 +169,37 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             end do
             call rsnoch(resou, grande, i+1)
         end do
-    else if (typout(1:10).eq.'DYNA_TRANS') then
+    else if (typout(1:10) .eq. 'DYNA_TRANS') then
         do i = 1, nbva
             paramacc(i) = zr(npara+(neq*nbva2)+i-1)
         end do
         do i = 1, nbordr
 !  Temps
-            call rsadpa(resou, 'E', 1, 'INST', (i-1),&
+            call rsadpa(resou, 'E', 1, 'INST', (i-1), &
                         0, sjv=ltps2, styp=k8b)
             zr(ltps2) = paramacc(i)
-            call rsexch(' ', resou, grande, (i-1), chdeps,&
+            call rsexch(' ', resou, grande, (i-1), chdeps, &
                         iret)
             if (raide(1:1) .ne. ' ') then
                 call vtcrem(chdeps, raide, 'G', 'R')
             else
                 call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numedd)
-                call vtcreb(chdeps, 'G', 'R', nume_ddlz = numedd, nb_equa_outz = n1)
-                ASSERT(n1.eq.neq)
-            endif
+                call vtcreb(chdeps, 'G', 'R', nume_ddlz=numedd, nb_equa_outz=n1)
+                ASSERT(n1 .eq. neq)
+            end if
 !
             call jeveuo(chdeps//'.VALE', 'E', lvals)
             call jelira(chdeps//'.VALE', 'LONMAX', n1)
-            ASSERT(n1.eq.neq)
+            ASSERT(n1 .eq. neq)
             call jelira(chdeps//'.VALE', 'TYPE', cval=ktyp)
-            ASSERT(ktyp.eq.'R')
+            ASSERT(ktyp .eq. 'R')
             do ieq = 1, neq
                 r1 = zr(npara+nbva*(ieq-1)+i-1)
                 zr(lvals+ieq-1) = r1
             end do
             call rsnoch(resou, grande, (i-1))
         end do
-    else if (typout(1:9).eq.'TRAN_GENE') then
+    else if (typout(1:9) .eq. 'TRAN_GENE') then
 !        --- SI NOUVEAU RESULTAT TRAN_GENE
         if (ires .eq. 0) then
 !           --- BOUCLE SUR LES INSTANTS A ARCHIVER
@@ -224,18 +224,18 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             nbsauv = nbordr
 !           --- RECUPERATION DU PAS DE TEMPS, NOMBRE DE MODES ET
 !               ENFIN LA BASE MODALE
-            dt = paramacc(1+1) - paramacc(1)
+            dt = paramacc(1+1)-paramacc(1)
             call jeveuo(masgen(1:8)//'           .DESC', 'L', jdesc)
             nbmode = zi(jdesc+1)
             call jeveuo(masgen(1:8)//'           .REFA', 'L', jrefam)
-            basemo = zk24(jrefam)(1:8)
+            basemo = zk24(jrefam) (1:8)
 !
             k8b = '        '
 !
 !           --- ALLOCATION DE LA SD DYNA_GENE RESULTAT
-            call mdallo(resou(1:8), 'TRAN', nbsauv, sauve='GLOB', base=basemo,&
-                        nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, jordr=jordr,&
-                        jdisc=jinst, jdepl=jdeps, jvite=jvits, jacce=jaccs, dt=dt,&
+            call mdallo(resou(1:8), 'TRAN', nbsauv, sauve='GLOB', base=basemo, &
+                        nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, jordr=jordr, &
+                        jdisc=jinst, jdepl=jdeps, jvite=jvits, jacce=jaccs, dt=dt, &
                         jptem=jpass)
 !
 !           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
@@ -249,10 +249,10 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             if (grande .eq. 'VITE') then
                 lv1 = lvalv
                 lv2 = lvals
-            else if (grande.eq.'ACCE') then
+            else if (grande .eq. 'ACCE') then
                 lv1 = lvala
                 lv3 = lvals
-            endif
+            end if
 !           --- BOUCLE SUR LES INSTANTS D'ARCHIVAGE (NUM ORDRE)
             do j = 0, nbordr-1
                 iarchi = j
@@ -268,9 +268,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 end do
 !
 !              --- ARCHIVER LES RESULTATS POUR L'INSTANT EN COURS
-                call mdarch('TRAN', isto1, iarchi, paramacc(1+j), neq,&
-                            zi(jordr),zr(jinst), dt=dt, depger=zr(lvals), vitger=zr(lvalv),&
-                            accger=zr(lvala), depstr=zr(jdeps), vitstr= zr(jvits),&
+                call mdarch('TRAN', isto1, iarchi, paramacc(1+j), neq, &
+                            zi(jordr), zr(jinst), dt=dt, depger=zr(lvals), vitger=zr(lvalv), &
+                            accger=zr(lvala), depstr=zr(jdeps), vitstr=zr(jvits), &
                             accstr=zr(jaccs), passto=zr(jpass))
             end do
         else
@@ -287,8 +287,8 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                     zr(lvals+(neq*isto1)+ieq) = r1
                 end do
             end do
-        endif
-    else if (typout(1:9).eq.'HARM_GENE') then
+        end if
+    else if (typout(1:9) .eq. 'HARM_GENE') then
 !
 !        --- CAS OU LE RESULTAT EST HARMO SUR BASE GENERALISEE
 !        --- RECUPERER LA LISTE DES FREQUENCES DE LA TABLE FFT
@@ -313,7 +313,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             call jeveuo(masgen(1:8)//'           .DESC', 'L', jdesc)
             nbmode = zi(jdesc+1)
             call jeveuo(masgen(1:8)//'           .REFA', 'L', jrefam)
-            basemo = zk24(jrefam)(1:8)
+            basemo = zk24(jrefam) (1:8)
 !
             k8b = '        '
 !           --- ALLOCATION DE LA SD DYNA_GENE RESULTAT
@@ -324,11 +324,11 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 nomsym(1) = 'DEPL'
                 nomsym(2) = 'VITE'
                 nomsym(3) = 'ACCE'
-            endif
+            end if
 !
-            call mdallo(resou(1:8), 'HARM', nbsauv, sauve='GLOB', base=basemo,&
-                        nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, jordr=jordr,&
-                        jdisc=jfreq, jdepl=jdeps, jvite=jvits, jacce=jaccs, nbsym=nbsym,&
+            call mdallo(resou(1:8), 'HARM', nbsauv, sauve='GLOB', base=basemo, &
+                        nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, jordr=jordr, &
+                        jdisc=jfreq, jdepl=jdeps, jvite=jvits, jacce=jaccs, nbsym=nbsym, &
                         nomsym=nomsym)
 
 !
@@ -343,10 +343,10 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             if (grande .eq. 'VITE') then
                 lv1 = lvalv
                 lv2 = lvals
-            else if (grande.eq.'ACCE') then
+            else if (grande .eq. 'ACCE') then
                 lv1 = lvala
                 lv3 = lvals
-            endif
+            end if
 !
 !           --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
             do j = 0, nbordr-1
@@ -363,9 +363,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 end do
 !
 !              --- ARCHIVER LES RESULTATS POUR LA FREQUENCE EN COURS
-                call mdarch('HARM', isto1, iarchi, paramacc(1+j), neq, zi(jordr), zr(jfreq),&
-                            depgec=zc(lvals), vitgec=zc(lvalv),accgec=zc(lvala),&
-                            depstc=zc(jdeps), vitstc=zc(jvits),accstc=zc(jaccs))
+                call mdarch('HARM', isto1, iarchi, paramacc(1+j), neq, zi(jordr), zr(jfreq), &
+                            depgec=zc(lvals), vitgec=zc(lvalv), accgec=zc(lvala), &
+                            depstc=zc(jdeps), vitstc=zc(jvits), accstc=zc(jaccs))
             end do
         else
 !           --- SI LE RESULTAT HARM_GENE N'EST PAS UN NOUVEAU CONCEPT,
@@ -381,13 +381,13 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                     zc(lvals+(neq*isto1)+ieq) = r1c
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !     --- FINALISER LE .REFD POUR LES CAS AVEC RESU SUR BASE PHYSIQUE
-    if ((ires.eq.0) .and. (typout(6:9).ne.'GENE')) then
+    if ((ires .eq. 0) .and. (typout(6:9) .ne. 'GENE')) then
         call refdcp(resin, resou)
-    endif
+    end if
 !
     AS_DEALLOCATE(vr=paramacc)
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine corich(actionZ, fieldZ, ichin_, ichout_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -39,9 +39,9 @@ implicit none
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: actionZ, fieldZ
-integer, optional, intent(in) :: ichin_
-integer, optional, intent(out) :: ichout_
+    character(len=*), intent(in) :: actionZ, fieldZ
+    integer, optional, intent(in) :: ichin_
+    integer, optional, intent(out) :: ichout_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,8 +106,8 @@ integer, optional, intent(out) :: ichout_
         call jecreo(reptJv, 'V N K24')
         call jeecra(reptJv, 'NOMMAX', nbFieldInit)
         call jedetr(nuchJv)
-        call wkvect(nuchJv, 'V V I', nbFieldInit, vi = nuch)
-    endif
+        call wkvect(nuchJv, 'V V I', nbFieldInit, vi=nuch)
+    end if
 
 ! - Upgrade objects
     call jelira(reptJv, 'NOMMAX', nbFieldMaxi)
@@ -123,7 +123,7 @@ integer, optional, intent(out) :: ichout_
             call jecroc(jexnom(reptJv, fieldCopy))
         end do
         call jedetr(reptmp)
-    endif
+    end if
 
 ! - Create link (E)
     if (actionZ .eq. 'E') then
@@ -133,9 +133,9 @@ integer, optional, intent(out) :: ichout_
         call jenonu(jexnom(reptJv, field), fieldIndx)
         if (fieldIndx .eq. 0) then
             call jecroc(jexnom(reptJv, field))
-        endif
+        end if
         call jenonu(jexnom(reptJv, field), fieldIndx)
-        call jeveuo(nuchJv, 'E', vi = nuch)
+        call jeveuo(nuchJv, 'E', vi=nuch)
         nuch(fieldIndx) = ichin
 
 ! - Read link (E)
@@ -144,22 +144,22 @@ integer, optional, intent(out) :: ichout_
         if (fieldIndx .eq. 0) then
             ichout = 0
         else
-            call jeveuo(nuchJv, 'L', vi = nuch)
+            call jeveuo(nuchJv, 'L', vi=nuch)
             ichout = nuch(fieldIndx)
-        endif
+        end if
         ichout_ = ichout
 
 ! - Suppress link (S)
     else if (actionZ .eq. 'S') then
         call jenonu(jexnom(reptJv, field), fieldIndx)
         ASSERT(fieldIndx .gt. 0)
-        call jeveuo(nuchJv, 'E', vi = nuch)
+        call jeveuo(nuchJv, 'E', vi=nuch)
         nuch(fieldIndx) = 0
 
     else
         ASSERT(ASTER_FALSE)
 
-    endif
+    end if
 !
     call jedema()
 end subroutine

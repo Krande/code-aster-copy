@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfmmvs(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_loca, v_ncomp_zone)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -72,8 +72,8 @@ implicit none
 !
 ! - Access to fields
 !
-    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr = v_cnsinr_cnsv)
-    call jeveuo(cnsinr(1:19)//'.CNSL', 'E', vl = v_cnsinr_cnsl)
+    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=v_cnsinr_cnsv)
+    call jeveuo(cnsinr(1:19)//'.CNSL', 'E', vl=v_cnsinr_cnsl)
 !
 ! - Fill
 !
@@ -81,10 +81,10 @@ implicit none
 !
 ! ----- Parameters for current point
 !
-        gap            = v_ncomp_jeux(i_ncomp_poin)
+        gap = v_ncomp_jeux(i_ncomp_poin)
         node_slav_nume = v_ncomp_loca(i_ncomp_poin)
-        i_zone         = v_ncomp_zone(i_ncomp_poin)
-        tole_interp    = mminfr(ds_contact%sdcont_defi, 'TOLE_INTERP', i_zone)
+        i_zone = v_ncomp_zone(i_ncomp_poin)
+        tole_interp = mminfr(ds_contact%sdcont_defi, 'TOLE_INTERP', i_zone)
 !
 ! ----- Contact status
 !
@@ -99,25 +99,25 @@ implicit none
                     node_status = 0.d0
                 else
                     node_status = 3.d0
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ----- Save or not ?
 !
         l_save = .true.
         if (node_slav_nume .eq. -1) then
             l_save = .false.
-        endif
+        end if
 !
 ! ----- Save in CONT_NOEU datastructure
 !
         if (l_save) then
-            v_cnsinr_cnsv(zresu*(node_slav_nume-1)+1 ) = node_status
-            v_cnsinr_cnsv(zresu*(node_slav_nume-1)+2 ) = gap
-            v_cnsinr_cnsl(zresu*(node_slav_nume-1)+1 ) = .true.
-            v_cnsinr_cnsl(zresu*(node_slav_nume-1)+2 ) = .true.
-        endif
+            v_cnsinr_cnsv(zresu*(node_slav_nume-1)+1) = node_status
+            v_cnsinr_cnsv(zresu*(node_slav_nume-1)+2) = gap
+            v_cnsinr_cnsl(zresu*(node_slav_nume-1)+1) = .true.
+            v_cnsinr_cnsl(zresu*(node_slav_nume-1)+2) = .true.
+        end if
     end do
 !
 end subroutine

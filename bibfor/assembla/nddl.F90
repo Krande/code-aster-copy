@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,11 @@ function nddl(ili, nunoel, nec, idprn1, idprn2)
     nddl = 0
     do iec = 1, nec
         do j = 1, 30
-            k = iand(zzprno(ili,nunoel,iec+2),lshift(1,j))
+            k = iand(zzprno(ili, nunoel, iec+2), lshift(1, j))
             if (k .gt. 0) then
-                nddl = nddl + 1
+                nddl = nddl+1
 !
-            endif
+            end if
         end do
     end do
 end function

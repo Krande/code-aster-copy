@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine vecinc(n, s, x, inc)
 !     ET VECINC.
 !     ----------------------------------------------------------------
 !   Obligatory arguments
-    integer,         intent(in)   :: n
+    integer, intent(in)   :: n
     complex(kind=8), intent(in)   :: s
     complex(kind=8)               :: x(*)
 !   Optional argument
@@ -41,7 +41,7 @@ subroutine vecinc(n, s, x, inc)
     if (present(inc)) then
 !        ASSERT(inc .ge. 1)
         inc2 = inc
-    endif
+    end if
     ninc = n*inc2
     do i = 1, ninc, inc2
         x(i) = s

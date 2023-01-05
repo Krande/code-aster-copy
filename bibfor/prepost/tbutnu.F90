@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
+subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab, &
                   prec, crit)
     implicit none
 #include "jeveux.h"
@@ -70,37 +70,37 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
             zr(jinst+ii-1) = zr(jinstd+ii-1)
             zi(jordr+ii-1) = ii
         end do
-    endif
+    end if
 !
     call getvr8(motfac, 'INST', iocc=iocc, nbval=0, nbret=n2)
     if (n2 .ne. 0) then
         nbinst = -n2
         call wkvect(nomjv, 'V V R', nbinst, jinst)
-        call getvr8(motfac, 'INST', iocc=iocc, nbval=nbinst, vect=zr(jinst),&
+        call getvr8(motfac, 'INST', iocc=iocc, nbval=nbinst, vect=zr(jinst), &
                     nbret=n2)
         call wkvect('&&TBUTNU.ORDRE', 'V V I', nbinst, jordr)
         do ii = 1, nbinst
             zi(jordr+ii-1) = ii
         end do
-    endif
+    end if
 !
-    call tbexv1(nomtab, 'INST', '&&TBUTNU.INST_D', 'V', nbval,&
+    call tbexv1(nomtab, 'INST', '&&TBUTNU.INST_D', 'V', nbval, &
                 k8b)
     call jeveuo('&&TBUTNU.INST_D', 'L', jinstd)
     do ii = 1, nbinst
         dinst = zr(jinst+ii-1)
-        call rsindi('R8  ', jinstd, 1, jordr, ibid,&
-                    dinst, k8b, cbid, prec, crit,&
+        call rsindi('R8  ', jinstd, 1, jordr, ibid, &
+                    dinst, k8b, cbid, prec, crit, &
                     nbval, nbtrou, nutrou, 1)
         if (nbtrou .lt. 1) then
             valr = dinst
             valk = nomtab
             call utmess('F', 'PREPOST5_74', sk=valk, sr=valr)
-        else if (nbtrou.gt.1) then
+        else if (nbtrou .gt. 1) then
             valr = dinst
             valk = nomtab
             call utmess('F', 'PREPOST5_75', sk=valk, sr=valr)
-        endif
+        end if
     end do
 !
     if (nbinst .eq. 0) then
@@ -113,7 +113,7 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
         end do
     else
         call jedetr('&&TBUTNU.ORDRE')
-    endif
+    end if
     call jedetr('&&TBUTNU.INST_D')
 !
     call jedema()

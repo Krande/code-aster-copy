@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,38 +16,38 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lrchme(fieldNameAst, fieldNameMed ,&
-                  meshMed     , meshAst      ,&
-                  fieldSupport, fieldQuantity, entityType,&
-                  cmpNb       , cmpAstName   , cmpMedName,&
-                  prolz, iinst, numpt, numord, inst,&
-                  storeCrit, storeEpsi, fileUnit, option, param,&
+subroutine lrchme(fieldNameAst, fieldNameMed, &
+                  meshMed, meshAst, &
+                  fieldSupport, fieldQuantity, entityType, &
+                  cmpNb, cmpAstName, cmpMedName, &
+                  prolz, iinst, numpt, numord, inst, &
+                  storeCrit, storeEpsi, fileUnit, option, param, &
                   nbpgma, nbpgmm, nbspmm, codret, base)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/getvid.h"
 #include "asterfort/lrceme.h"
 #include "asterfort/lrcnme.h"
 #include "asterfort/utmess.h"
 !
-character(len=19) :: fieldNameAst
-character(len=*) :: cmpAstName, cmpMedName
-character(len=8) :: meshAst
-character(len=8) :: fieldQuantity
-character(len=4) :: fieldSupport
-character(len=3) :: prolz
-character(len=8) :: storeCrit, param
-character(len=24) :: option
-character(len=64) :: fieldNameMed, meshMed
-integer :: fileUnit, entityType
-integer :: codret
-integer :: cmpNb
-integer :: iinst, numpt, numord
-integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
-real(kind=8) :: inst
-real(kind=8) :: storeEpsi
-character(len=1), optional, intent(in) :: base
+    character(len=19) :: fieldNameAst
+    character(len=*) :: cmpAstName, cmpMedName
+    character(len=8) :: meshAst
+    character(len=8) :: fieldQuantity
+    character(len=4) :: fieldSupport
+    character(len=3) :: prolz
+    character(len=8) :: storeCrit, param
+    character(len=24) :: option
+    character(len=64) :: fieldNameMed, meshMed
+    integer :: fileUnit, entityType
+    integer :: codret
+    integer :: cmpNb
+    integer :: iinst, numpt, numord
+    integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
+    real(kind=8) :: inst
+    real(kind=8) :: storeEpsi
+    character(len=1), optional, intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,27 +96,27 @@ character(len=1), optional, intent(in) :: base
         bas2 = 'G'
     else
         bas2 = base
-    endif
+    end if
     if (fieldSupport(1:2) .eq. 'NO') then
-        call lrcnme(fieldNameAst, fieldNameMed, meshMed, meshAst, fieldQuantity,&
-                    entityType, cmpNb, cmpAstName, cmpMedName, iinst,&
-                    numpt, numord, inst, storeCrit, storeEpsi,&
+        call lrcnme(fieldNameAst, fieldNameMed, meshMed, meshAst, fieldQuantity, &
+                    entityType, cmpNb, cmpAstName, cmpMedName, iinst, &
+                    numpt, numord, inst, storeCrit, storeEpsi, &
                     fileUnit, codret, bas2)
-    else if (fieldSupport(1:2).eq.'EL'.or.fieldSupport(1:2).eq.'CA') then
+    else if (fieldSupport(1:2) .eq. 'EL' .or. fieldSupport(1:2) .eq. 'CA') then
         call getvid(' ', 'MODELE', scal=nommod, nbret=iaux)
         if (iaux .eq. 0 .and. fieldSupport(1:4) .ne. 'CART') then
             call utmess('F', 'MED_71')
-        endif
+        end if
         if (iaux .eq. 0) nommod = ' '
-        call lrceme(fieldNameAst, fieldNameMed, fieldSupport(1:4), meshMed, meshAst,&
-                    nommod, fieldQuantity, entityType, cmpNb, cmpAstName,&
-                    cmpMedName, prolz, iinst, numpt, numord,&
-                    inst, storeCrit, storeEpsi, fileUnit, option,&
+        call lrceme(fieldNameAst, fieldNameMed, fieldSupport(1:4), meshMed, meshAst, &
+                    nommod, fieldQuantity, entityType, cmpNb, cmpAstName, &
+                    cmpMedName, prolz, iinst, numpt, numord, &
+                    inst, storeCrit, storeEpsi, fileUnit, option, &
                     param, nbpgma, nbpgmm, nbspmm, codret)
     else
         codret = 1
         call utmess('A', 'MED_92', sk=fieldSupport(1:4))
-    endif
+    end if
 !
 !====
 ! 2. BILAN
@@ -124,6 +124,6 @@ character(len=1), optional, intent(in) :: base
 !
     if (codret .ne. 0) then
         call utmess('A', 'MED_55', sk=fieldNameAst)
-    endif
+    end if
 !
 end subroutine

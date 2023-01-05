@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ subroutine nmacto(sddisc, i_echec_acti)
 !
 ! ----------------------------------------------------------------------
 !
-    call utdidt('L', sddisc, 'LIST', 'NECHEC',&
-                vali_ = nb_echec)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', &
+                vali_=nb_echec)
     lacti = .false.
 !
 ! --- BOUCLE SUR LES EVENT-DRIVEN
@@ -60,7 +60,7 @@ subroutine nmacto(sddisc, i_echec_acti)
         if (lacti) then
             i_echec_acti = i_echec
             goto 99
-        endif
+        end if
     end do
 !
 99  continue

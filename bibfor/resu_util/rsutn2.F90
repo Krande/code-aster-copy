@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
+subroutine rsutn2(resu, nomcha, motcle, iocc, objveu, &
                   nbordr)
     implicit none
 #include "jeveux.h"
@@ -60,38 +60,38 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
 !     --- RECUPERATION DES NUMEROS D'ORDRE ---
 !
     knume = '&&RSUTN2.NUME_ORDR'
-    call rsutnu(resu, motcle, iocc, knume, nbtord,&
+    call rsutnu(resu, motcle, iocc, knume, nbtord, &
                 prec, crit, iret)
     if (iret .ne. 0) then
         k8b = resu
         call utmess('F', 'UTILITAI4_49', sk=k8b)
-    endif
+    end if
     call jeveuo(knume, 'L', lordr)
 !
 !     --- VERIFICATION QUE LE NOMCHA EXISTE DANS LA SD RESULTAT ---
 !
     ii = 0
     do iordr = 1, nbtord
-        call rsexch(' ', resu, nomcha, zi(lordr+iordr-1), cham19,&
+        call rsexch(' ', resu, nomcha, zi(lordr+iordr-1), cham19, &
                     iret)
-        if (iret .eq. 0) ii = ii + 1
+        if (iret .eq. 0) ii = ii+1
     end do
     if (ii .eq. 0) then
         k16b = nomcha
         call utmess('F', 'UTILITAI4_52', sk=k16b)
-    endif
+    end if
 !
 !     --- LISTE DES NUMEROS D'ORDRE ---
 !
     nbordr = 0
     call wkvect(objveu, 'V V I', ii, jordr)
     do iordr = 1, nbtord
-        call rsexch(' ', resu, nomcha, zi(lordr+iordr-1), cham19,&
+        call rsexch(' ', resu, nomcha, zi(lordr+iordr-1), cham19, &
                     iret)
         if (iret .eq. 0) then
-            nbordr = nbordr + 1
+            nbordr = nbordr+1
             zi(jordr+nbordr-1) = zi(lordr+iordr-1)
-        endif
+        end if
     end do
 !
     call jedetr('&&RSUTN2.NUME_ORDR')

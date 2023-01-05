@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,12 +57,12 @@ subroutine te0156(option, nomte)
             nc = 2
         else if (nomte .eq. 'MECA_BARRE') then
             nc = 3
-        endif
+        end if
         call jevech('PVECTUR', 'E', ivectu)
         call terefe('EFFORT_REFE', 'MECA_BARRE', forref)
         do ino = 1, nno
             do i = 1, nc
-                zr(ivectu+(ino-1)*nc+i-1)=forref
+                zr(ivectu+(ino-1)*nc+i-1) = forref
             end do
         end do
 !
@@ -71,14 +71,14 @@ subroutine te0156(option, nomte)
         call jevech('PCAORIE', 'L', lorien)
         call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icompo)
         reactu = .false.
-        if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'PETIT_REAC')
+        if (iretc .eq. 0) reactu = (zk16(icompo+2) .eq. 'PETIT_REAC')
 !
 !        PARAMETRES EN SORTIE
         call jevech('PVECTUR', 'E', ivectu)
-        nno=2
-        nc=3
+        nno = 2
+        nc = 3
         do i = 1, nno*nc
-            fs(i)=0.d0
+            fs(i) = 0.d0
         end do
         fs(1) = -zr(icontg)
         fs(4) = zr(icontg)
@@ -90,40 +90,40 @@ subroutine te0156(option, nomte)
             call jevech('PDEPLPR', 'L', ideplp)
             if (nomte .eq. 'MECA_BARRE') then
                 do i = 1, 3
-                    w(i) = zr(igeom-1+i) + zr(ideplm-1+i) + zr(ideplp- 1+i)
-                    w(i+3) = zr(igeom+2+i) + zr(ideplm+2+i) + zr( ideplp+2+i)
-                    xd(i) = w(i+3) - w(i)
+                    w(i) = zr(igeom-1+i)+zr(ideplm-1+i)+zr(ideplp-1+i)
+                    w(i+3) = zr(igeom+2+i)+zr(ideplm+2+i)+zr(ideplp+2+i)
+                    xd(i) = w(i+3)-w(i)
                 end do
-            else if (nomte.eq.'MECA_2D_BARRE') then
-                w(1) = zr(igeom-1+1) + zr(ideplm-1+1) + zr(ideplp-1+1)
-                w(2) = zr(igeom-1+2) + zr(ideplm-1+2) + zr(ideplp-1+2)
+            else if (nomte .eq. 'MECA_2D_BARRE') then
+                w(1) = zr(igeom-1+1)+zr(ideplm-1+1)+zr(ideplp-1+1)
+                w(2) = zr(igeom-1+2)+zr(ideplm-1+2)+zr(ideplp-1+2)
                 w(3) = 0.d0
-                w(4) = zr(igeom-1+3) + zr(ideplm-1+3) + zr(ideplp-1+3)
-                w(5) = zr(igeom-1+4) + zr(ideplm-1+4) + zr(ideplp-1+4)
+                w(4) = zr(igeom-1+3)+zr(ideplm-1+3)+zr(ideplp-1+3)
+                w(5) = zr(igeom-1+4)+zr(ideplm-1+4)+zr(ideplp-1+4)
                 w(6) = 0.d0
-                xd(1) = w(4) - w(1)
-                xd(2) = w(5) - w(2)
+                xd(1) = w(4)-w(1)
+                xd(2) = w(5)-w(2)
                 xd(3) = 0.d0
-            endif
+            end if
             call angvx(xd, ang1(1), ang1(2))
             ang1(3) = zr(lorien+2)
             call matrot(ang1, pgl)
         else
             call matrot(zr(lorien), pgl)
-        endif
+        end if
         call utpvlg(nno, nc, pgl, fs, vect)
 !
 !        ECRITURE DANS LE VECTEUR VECTU SUIVANT L'ELEMENT
 !
         if (nomte .eq. 'MECA_BARRE') then
             do i = 1, 6
-                zr(ivectu+i-1)=vect(i)
+                zr(ivectu+i-1) = vect(i)
             end do
-        else if (nomte.eq.'MECA_2D_BARRE') then
+        else if (nomte .eq. 'MECA_2D_BARRE') then
             zr(ivectu) = vect(1)
-            zr(ivectu +1) = vect(2)
-            zr(ivectu +2) = vect(4)
-            zr(ivectu +3) = vect(5)
-        endif
-    endif
+            zr(ivectu+1) = vect(2)
+            zr(ivectu+2) = vect(4)
+            zr(ivectu+3) = vect(5)
+        end if
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc7048(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
+subroutine lc7048(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, &
                   nvi, dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/lcejfr.h"
 !
@@ -65,8 +65,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    call lcejfr(BEHinteg,&
-                fami, kpg, ksp, ndim, imate,&
-                option, epsm, deps, sigp, dsidep,&
+    call lcejfr(BEHinteg, &
+                fami, kpg, ksp, ndim, imate, &
+                option, epsm, deps, sigp, dsidep, &
                 vim, vip, typmod, instam, instap)
 end subroutine

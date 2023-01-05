@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
+subroutine pochoc(trange, nbbloc, tdebut, tfin, offset, &
                   trepos, nbclas, nomres, loptio)
     implicit none
 #include "asterf_types.h"
@@ -55,12 +55,12 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
     integer :: nbnoli, nbclas, nbpt, ifm, info, ic, nbchoc, nbflam, i, j, ifl, nbtot, dec, nbvint
     real(kind=8) :: offset, tdebut, tfin, tmax, tmin, trepos
 !-----------------------------------------------------------------------
-    integer          , pointer :: desc  (:) => null()
-    real(kind=8)     , pointer :: disc  (:) => null()
-    integer          , pointer :: nltype(:) => null()
-    integer          , pointer :: vindx (:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    integer, pointer :: nltype(:) => null()
+    integer, pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
-    real(kind=8)     , pointer :: vint  (:) => null()
+    real(kind=8), pointer :: vint(:) => null()
 !-----------------------------------------------------------------------
     integer, pointer :: chindx(:) => null()
     integer, pointer :: flindx(:) => null()
@@ -85,7 +85,7 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 !
     call jeveuo(nomk19//'.DISC', 'L', vr=disc)
     call jelira(nomk19//'.DISC', 'LONMAX', nbpt)
-    write(ifm,*) ' NB DE PAS DE TEMPS :', nbpt
+    write (ifm, *) ' NB DE PAS DE TEMPS :', nbpt
 !
     tmax = disc(nbpt)
     tmin = disc(1)
@@ -93,12 +93,12 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
     if (tdebut .lt. tmin) tdebut = tmin
     if (tdebut .ge. tfin) then
         call utmess('F', 'PREPOST4_47')
-    endif
+    end if
 !
-    call jeveuo(nomk16//'.NL.TYPE', 'L', vi  =nltype)
-    call jeveuo(nomk16//'.NL.VIND', 'L', vi  =vindx)
+    call jeveuo(nomk16//'.NL.TYPE', 'L', vi=nltype)
+    call jeveuo(nomk16//'.NL.VIND', 'L', vi=vindx)
     call jeveuo(nomk16//'.NL.INTI', 'L', vk24=nlname)
-    call jeveuo(nomk16//'.NL.VINT', 'L', vr  =vint)
+    call jeveuo(nomk16//'.NL.VINT', 'L', vr=vint)
     nbvint = vindx(nbnoli+1)-1
 !
     AS_ALLOCATE(vi=chindx, size=nbnoli)
@@ -106,85 +106,85 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 
     nbchoc = 0
     do i = 1, nbnoli
-        if (nltype(i).eq.NL_CHOC) then
-            nbchoc = nbchoc + 1
+        if (nltype(i) .eq. NL_CHOC) then
+            nbchoc = nbchoc+1
             chindx(nbchoc) = i
         end if
     end do
 
     nbflam = 0
     do i = 1, nbnoli
-        if (nltype(i).eq.NL_BUCKLING) then
-            nbflam = nbflam + 1
+        if (nltype(i) .eq. NL_BUCKLING) then
+            nbflam = nbflam+1
             flindx(nbflam) = i
         end if
     end do
 
-    nbtot = nbchoc + nbflam
+    nbtot = nbchoc+nbflam
 
-    AS_ALLOCATE(vr =fcho, size=  3*nbtot*nbpt)
-    AS_ALLOCATE(vr =dloc, size=2*3*nbtot*nbpt)
-    AS_ALLOCATE(vr =vcho, size=  3*nbtot*nbpt)
-    AS_ALLOCATE(vr =vin, size=     nbtot*nbpt)
-    AS_ALLOCATE(vi =icho, size=    nbtot*nbpt)
-    AS_ALLOCATE(vk8=ncho, size=  2*nbtot)
-    AS_ALLOCATE(vk24=inti, size=    nbtot)
+    AS_ALLOCATE(vr=fcho, size=3*nbtot*nbpt)
+    AS_ALLOCATE(vr=dloc, size=2*3*nbtot*nbpt)
+    AS_ALLOCATE(vr=vcho, size=3*nbtot*nbpt)
+    AS_ALLOCATE(vr=vin, size=nbtot*nbpt)
+    AS_ALLOCATE(vi=icho, size=nbtot*nbpt)
+    AS_ALLOCATE(vk8=ncho, size=2*nbtot)
+    AS_ALLOCATE(vk24=inti, size=nbtot)
 
     do ic = 1, nbchoc
         i = chindx(ic)
         do j = 1, nbpt
-            fcho((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+1)
-            fcho((j-1)*3*nbtot+(ic-1)*3+2)     = vint((j-1)*nbvint+vindx(i)-1+2)
-            fcho((j-1)*3*nbtot+(ic-1)*3+3)     = vint((j-1)*nbvint+vindx(i)-1+3)
+            fcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+1)
+            fcho((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+2)
+            fcho((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+3)
 
-            dloc((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+4)
-            dloc((j-1)*3*nbtot+(ic-1)*3+2)     = vint((j-1)*nbvint+vindx(i)-1+5)
-            dloc((j-1)*3*nbtot+(ic-1)*3+3)     = vint((j-1)*nbvint+vindx(i)-1+6)
+            dloc((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+4)
+            dloc((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+5)
+            dloc((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+6)
             dec = 3*nbtot*nbpt
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+7)
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+8)
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+9)
 
-            vcho((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+10)
-            vcho((j-1)*3*nbtot+(ic-1)*3+2)     = vint((j-1)*nbvint+vindx(i)-1+11)
-            vcho((j-1)*3*nbtot+(ic-1)*3+3)     = vint((j-1)*nbvint+vindx(i)-1+12)
+            vcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+10)
+            vcho((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+11)
+            vcho((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+12)
 
-            vin ((j-1)*nbtot+(ic-1)+1)     = 0.d0
+            vin((j-1)*nbtot+(ic-1)+1) = 0.d0
 
-            icho((j-1)*nbtot+(ic-1)+1)  = nint(vint((j-1)*nbvint+vindx(i)-1+13))
+            icho((j-1)*nbtot+(ic-1)+1) = nint(vint((j-1)*nbvint+vindx(i)-1+13))
         end do
-        inti(ic)       = nlname((i-1)*5+1)(1:24)
-        ncho(ic)       = nlname((i-1)*5+2)(1:8)
-        ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
+        inti(ic) = nlname((i-1)*5+1) (1:24)
+        ncho(ic) = nlname((i-1)*5+2) (1:8)
+        ncho(nbtot+ic) = nlname((i-1)*5+3) (1:8)
     end do
 
     do ifl = 1, nbflam
         i = flindx(ifl)
-        ic = nbchoc + ifl
+        ic = nbchoc+ifl
         do j = 1, nbpt
-            fcho((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+1)
-            fcho((j-1)*3*nbtot+(ic-1)*3+2)     = 0.d0
-            fcho((j-1)*3*nbtot+(ic-1)*3+3)     = 0.d0
+            fcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+1)
+            fcho((j-1)*3*nbtot+(ic-1)*3+2) = 0.d0
+            fcho((j-1)*3*nbtot+(ic-1)*3+3) = 0.d0
 
-            dloc((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+2)
-            dloc((j-1)*3*nbtot+(ic-1)*3+2)     = vint((j-1)*nbvint+vindx(i)-1+3)
-            dloc((j-1)*3*nbtot+(ic-1)*3+3)     = vint((j-1)*nbvint+vindx(i)-1+4)
+            dloc((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+2)
+            dloc((j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+3)
+            dloc((j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+4)
             dec = 3*nbtot*nbpt
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+5)
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+2) = vint((j-1)*nbvint+vindx(i)-1+6)
             dloc(dec+(j-1)*3*nbtot+(ic-1)*3+3) = vint((j-1)*nbvint+vindx(i)-1+7)
 
-            vcho((j-1)*3*nbtot+(ic-1)*3+1)     = vint((j-1)*nbvint+vindx(i)-1+8)
-            vcho((j-1)*3*nbtot+(ic-1)*3+2)     = 0.d0
-            vcho((j-1)*3*nbtot+(ic-1)*3+3)     = 0.d0
+            vcho((j-1)*3*nbtot+(ic-1)*3+1) = vint((j-1)*nbvint+vindx(i)-1+8)
+            vcho((j-1)*3*nbtot+(ic-1)*3+2) = 0.d0
+            vcho((j-1)*3*nbtot+(ic-1)*3+3) = 0.d0
 
-            vin ((j-1)*nbtot+(ic-1)+1)       = vint((j-1)*nbvint+vindx(i)-1+9)
+            vin((j-1)*nbtot+(ic-1)+1) = vint((j-1)*nbvint+vindx(i)-1+9)
 
-            icho((j-1)*nbtot+(ic-1)+1)         = 0
+            icho((j-1)*nbtot+(ic-1)+1) = 0
         end do
-        inti(ic)       = nlname((i-1)*5+1)(1:24)
-        ncho(ic)       = nlname((i-1)*5+2)(1:8)
-        ncho(nbtot+ic) = nlname((i-1)*5+3)(1:8)
+        inti(ic) = nlname((i-1)*5+1) (1:24)
+        ncho(ic) = nlname((i-1)*5+2) (1:8)
+        ncho(nbtot+ic) = nlname((i-1)*5+3) (1:8)
     end do
 
     AS_DEALLOCATE(vi=chindx)
@@ -201,28 +201,28 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 !
     if (loptio) then
 !       --- Wear analysis
-        call statch(nbtot, nbpt, disc, dloc, fcho,&
-                    vcho, icho, zr(idwk1), zr(idwk2), zr(idwk3),&
-                    zi(idwk4), tdebut, tfin, nbbloc, offset,&
+        call statch(nbtot, nbpt, disc, dloc, fcho, &
+                    vcho, icho, zr(idwk1), zr(idwk2), zr(idwk3), &
+                    zi(idwk4), tdebut, tfin, nbbloc, offset, &
                     trepos, ncho, inti, nomres)
     else
 !       --- Impact analysis
-        call statim(nbtot, nbpt, disc, fcho, vcho,&
-                    vin, zr(idwk1), zr(idwk2), zr(idwk3), tdebut,&
-                    tfin, nbbloc, offset, trepos, nbclas,&
+        call statim(nbtot, nbpt, disc, fcho, vcho, &
+                    vin, zr(idwk1), zr(idwk2), zr(idwk3), tdebut, &
+                    tfin, nbbloc, offset, trepos, nbclas, &
                     ncho, inti, nomres, nbtot)
-    endif
+    end if
 !
     call jedetr('&&OP0130.WK1')
     call jedetr('&&OP0130.WK2')
     call jedetr('&&OP0130.WK3')
     call jedetr('&&OP0130.IWK4')
 
-    AS_DEALLOCATE(vr =dloc)
-    AS_DEALLOCATE(vr =fcho)
-    AS_DEALLOCATE(vr =vcho)
-    AS_DEALLOCATE(vr =vin)
-    AS_DEALLOCATE(vi =icho)
+    AS_DEALLOCATE(vr=dloc)
+    AS_DEALLOCATE(vr=fcho)
+    AS_DEALLOCATE(vr=vcho)
+    AS_DEALLOCATE(vr=vin)
+    AS_DEALLOCATE(vi=icho)
     AS_DEALLOCATE(vk8=ncho)
     AS_DEALLOCATE(vk24=inti)
 !

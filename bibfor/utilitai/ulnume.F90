@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,13 +28,13 @@ function ulnume()
 #include "asterfort/ulinit.h"
 #include "asterfort/utmess.h"
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     integer :: i, ival, k
 !
@@ -45,13 +45,13 @@ function ulnume()
         do k = 1, nbfile
             if (unitfi(k) .eq. i) then
                 goto 1
-            endif
+            end if
         end do
         ival = i
         goto 2
-  1     continue
+1       continue
     end do
     call utmess('A', 'UTILITAI5_10')
-  2 continue
+2   continue
     ulnume = ival
 end function

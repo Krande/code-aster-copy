@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcGetDataTher(list_load, model    , mate , mateco       , cara_elem,&
+subroutine calcGetDataTher(list_load, model, mate, mateco, cara_elem, &
                            temp_prev, incr_temp, compor_ther, theta)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ntdoth.h"
@@ -28,11 +28,11 @@ implicit none
 #include "asterfort/nxdocc.h"
 #include "asterfort/getvr8.h"
 !
-character(len=19), intent(out) :: list_load
-character(len=24), intent(out) :: model, mateco, cara_elem, mate
-character(len=19), intent(out) :: temp_prev, incr_temp
-character(len=24), intent(out) :: compor_ther
-real(kind=8), intent(out) :: theta
+    character(len=19), intent(out) :: list_load
+    character(len=24), intent(out) :: model, mateco, cara_elem, mate
+    character(len=19), intent(out) :: temp_prev, incr_temp
+    character(len=24), intent(out) :: compor_ther
+    real(kind=8), intent(out) :: theta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,9 +56,9 @@ real(kind=8), intent(out) :: theta
 !
     list_load = '&&OP0026.LISCHA'
     cara_elem = '&&OP0026.CARELE'
-    model     = ' '
-    mateco      = ' '
-    theta     = 0.d0
+    model = ' '
+    mateco = ' '
+    theta = 0.d0
 !
 ! - Get parameters from command file
 !
@@ -66,12 +66,12 @@ real(kind=8), intent(out) :: theta
 !
 ! - Get displacements
 !
-    call getvid(' ', 'TEMP', scal = temp_prev)
-    call getvid(' ', 'INCR_TEMP', scal = incr_temp)
+    call getvid(' ', 'TEMP', scal=temp_prev)
+    call getvid(' ', 'INCR_TEMP', scal=incr_temp)
 !
 ! - Get theta
 !
-    call getvr8(' ', 'PARM_THETA', scal = theta)
+    call getvr8(' ', 'PARM_THETA', scal=theta)
 !
 ! - Get comportment
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine te0504(option, nomte)
     integer :: itemp, itemps, jgano, ndim, nnos
     real(kind=8) :: tpgi
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PFLUXNL', 'L', iflux)
@@ -61,27 +61,27 @@ subroutine te0504(option, nomte)
     if (zk8(iflux) (1:7) .eq. '&FOZERO') goto 50
 !
     do kp = 1, npg
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         tpgi = 0.d0
         do i = 1, nno
-            l = (kp-1)*nno + i
-            r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
-            tpgi = tpgi + zr(itemp+i-1)*zr(ivf+l-1)
+            l = (kp-1)*nno+i
+            r = r+zr(igeom+2*i-2)*zr(ivf+l-1)
+            tpgi = tpgi+zr(itemp+i-1)*zr(ivf+l-1)
         end do
         if (laxi) poids = poids*r
         call foderi(zk8(iflux), tpgi, alpha, alpha0)
-        ij = imattt - 1
+        ij = imattt-1
         do i = 1, nno
-            li = ivf + (kp-1)*nno + i - 1
+            li = ivf+(kp-1)*nno+i-1
 !
             do j = 1, i
-                lj = ivf + (kp-1)*nno + j - 1
-                ij = ij + 1
-                zr(ij) = zr(ij) - poids*alpha0*zr(li)*zr(lj)
+                lj = ivf+(kp-1)*nno+j-1
+                ij = ij+1
+                zr(ij) = zr(ij)-poids*alpha0*zr(li)*zr(lj)
             end do
         end do
     end do
- 50 continue
+50  continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine rc36in(noma, nbma, listma, chindi)
     integer :: n1, n2, nbindi, iocc, nbcmp, decal, ipt, icmp, iad, nbpt
     integer :: jconx2, in, im, ima, ino, nbnoeu, jnoeu, nbmail
     integer :: jmail, nbtou, im1
-    parameter  ( nbcmp = 7 )
+    parameter(nbcmp=7)
     real(kind=8) :: vale(nbcmp)
     character(len=8) :: k8b, nomgd, type
     character(len=8) :: motcls(2), typmcs(2), motcln(2), typmcn(2)
@@ -82,7 +82,7 @@ subroutine rc36in(noma, nbma, listma, chindi)
     nocmp(6) = 'K3'
     nocmp(7) = 'TYPE'
 !
-    call rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
+    call rc36zz(noma, nomgd, nbcmp, nocmp, nbma, &
                 listma, chindi)
 !
     call jeveuo(chindi(1:19)//'.CESD', 'L', vi=cesd)
@@ -108,34 +108,34 @@ subroutine rc36in(noma, nbma, listma, chindi)
             if (type(1:3) .eq. 'COU') vale(7) = 20.d0
             if (type(1:3) .eq. 'TRN') vale(7) = 30.d0
             if (type(1:3) .eq. 'TEE') vale(7) = 40.d0
-        endif
+        end if
 !
         call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
         call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
         if (n1+n2 .ne. 0) then
-            call reliem(' ', noma, 'NU_NOEUD', motclf, iocc,&
+            call reliem(' ', noma, 'NU_NOEUD', motclf, iocc, &
                         2, motcln, typmcn, mesnoe, nbnoeu)
             call jeveuo(mesnoe, 'L', jnoeu)
         else
             nbnoeu = 0
-        endif
+        end if
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             do im = 1, nbma
                 ima = listma(im)
                 nbpt = cesd(5+4*(ima-1)+1)
-                decal= cesd(5+4*(ima-1)+4)
+                decal = cesd(5+4*(ima-1)+4)
                 do ipt = 1, nbpt
                     do icmp = 1, nbcmp
-                        iad = decal + (ipt-1)*nbcmp + icmp
+                        iad = decal+(ipt-1)*nbcmp+icmp
                         cesv(iad) = vale(icmp)
                     end do
                 end do
             end do
 !
         else
-            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
+            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc, &
                         2, motcls, typmcs, mesmai, nbmail)
             call jeveuo(mesmai, 'L', jmail)
 !
@@ -148,11 +148,11 @@ subroutine rc36in(noma, nbma, listma, chindi)
                     goto 200
 204                 continue
                     nbpt = cesd(5+4*(ima-1)+1)
-                    decal= cesd(5+4*(ima-1)+4)
+                    decal = cesd(5+4*(ima-1)+4)
                     do ipt = 1, nbpt
                         ino = connex(zi(jconx2+ima-1)+ipt-1)
                         do icmp = 1, nbcmp
-                            iad = decal + (ipt-1)*nbcmp + icmp
+                            iad = decal+(ipt-1)*nbcmp+icmp
                             cesv(iad) = vale(icmp)
                         end do
                     end do
@@ -167,26 +167,26 @@ subroutine rc36in(noma, nbma, listma, chindi)
                     goto 300
 304                 continue
                     nbpt = cesd(5+4*(ima-1)+1)
-                    decal= cesd(5+4*(ima-1)+4)
+                    decal = cesd(5+4*(ima-1)+4)
                     do ipt = 1, nbpt
                         ino = connex(zi(jconx2+ima-1)+ipt-1)
                         do in = 1, nbnoeu
                             if (zi(jnoeu+in-1) .eq. ino) then
                                 do icmp = 1, nbcmp
-                                    iad = decal + (ipt-1)*nbcmp + icmp
+                                    iad = decal+(ipt-1)*nbcmp+icmp
                                     cesv(iad) = vale(icmp)
                                 end do
                                 goto 310
-                            endif
+                            end if
                         end do
 310                     continue
                     end do
 300                 continue
                 end do
                 call jedetr(mesnoe)
-            endif
+            end if
             call jedetr(mesmai)
-        endif
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc2002(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, neps,&
-                  epsm, deps, nsig, sigm, vim,&
-                  option, sigp, vip, typmod, ndsde,&
+subroutine lc2002(fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, neps, &
+                  epsm, deps, nsig, sigm, vim, &
+                  option, sigp, vip, typmod, ndsde, &
                   dsidep, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmisex.h"
 !
@@ -59,9 +59,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call nmisex(fami, kpg, ksp, ndim, imate,&
-                compor, carcri, instam, instap, deps,&
-                sigm, vim, option, sigp, vip,&
+    call nmisex(fami, kpg, ksp, ndim, imate, &
+                compor, carcri, instam, instap, deps, &
+                sigm, vim, option, sigp, vip, &
                 typmod, dsidep, codret)
 !
 end subroutine

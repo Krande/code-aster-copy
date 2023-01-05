@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine capaca(rho0 , rho11, rho12, rho21 , rho22,&
-                  satur, phi  ,&
-                  csigm, cp11 , cp12 , cp21  , cp22 ,&
-                  dalal, temp , coeps, retcom)
+subroutine capaca(rho0, rho11, rho12, rho21, rho22, &
+                  satur, phi, &
+                  csigm, cp11, cp12, cp21, cp22, &
+                  dalal, temp, coeps, retcom)
 !
-implicit none
+    implicit none
 !
 !
-real(kind=8), intent(in) :: rho0, rho11, rho12, rho21, rho22
-real(kind=8), intent(in) :: satur, phi, csigm
-real(kind=8), intent(in) :: cp11, cp12, cp21, cp22
-real(kind=8), intent(in) :: temp, dalal
-real(kind=8), intent(out) :: coeps
-integer, intent(out) :: retcom
+    real(kind=8), intent(in) :: rho0, rho11, rho12, rho21, rho22
+    real(kind=8), intent(in) :: satur, phi, csigm
+    real(kind=8), intent(in) :: cp11, cp12, cp21, cp22
+    real(kind=8), intent(in) :: temp, dalal
+    real(kind=8), intent(out) :: coeps
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ integer, intent(out) :: retcom
 ! --------------------------------------------------------------------------------------------------
 !
     retcom = 0
-    coeps  = 0.d0
+    coeps = 0.d0
     umprhs = 0.d0
 !
 ! - Volumic mass of solid
@@ -73,20 +73,20 @@ integer, intent(out) :: retcom
     if (umprhs .le. 0.d0) then
         retcom = 1
         goto 30
-    endif
+    end if
 !
 ! - Specific heat capacity
 !
-    coeps = umprhs*csigm + &
-            phi*satur*(rho11*cp11+rho22*cp22) + &
+    coeps = umprhs*csigm+ &
+            phi*satur*(rho11*cp11+rho22*cp22)+ &
             phi*(1.d0-satur)*(rho12*cp12+rho21*cp21)
 !
 ! - Add thermic dilatation from mechanic
 !
-    coeps = coeps - temp*dalal
+    coeps = coeps-temp*dalal
     if (coeps .le. 0.d0) then
         retcom = 1
-    endif
+    end if
 !
 30  continue
 !

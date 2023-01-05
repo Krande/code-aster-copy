@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,23 +67,23 @@ subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
 !
     call jemarq()
 !
-    noma=nomaz
-    tyma=tymaz
-    lismaf='&&CGMFTM.MAILLES_FILTRE'
+    noma = nomaz
+    tyma = tymaz
+    lismaf = '&&CGMFTM.MAILLES_FILTRE'
 !
     if (tyma .eq. '0D') then
         dim = 0
-    else if (tyma.eq.'1D') then
+    else if (tyma .eq. '1D') then
         dim = 1
-    else if (tyma.eq.'2D') then
+    else if (tyma .eq. '2D') then
         dim = 2
-    else if (tyma.eq.'3D') then
+    else if (tyma .eq. '3D') then
         dim = 3
     else
 !       -- ON FILTRE SUR LE LE NOM D'UN TYPE DE MAILLE :
-        dim=-1
-        typmai=tyma
-    endif
+        dim = -1
+        typmai = tyma
+    end if
 !
     call utflmd(noma, lisma, nbma, dim, typmai, &
                 nbmaf, lismaf)
@@ -96,10 +96,10 @@ subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
         call jeveuo(lismaf, 'L', jlimaf)
         call jeveuo(lisma, 'E', jlima)
         do i = 1, nbma
-            zi(jlima+i-1)=zi(jlimaf+i-1)
+            zi(jlima+i-1) = zi(jlimaf+i-1)
         end do
 !
-    endif
+    end if
 !
     call jedetr(lismaf)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 subroutine romTableCreate(resultName, tablResu)
 !
-use Rom_Datastructure_type
-use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/nonlinDSTableIOGetName.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: resultName
-type(NL_DS_TableIO), intent(inout) :: tablResu
+    character(len=8), intent(in) :: resultName
+    type(NL_DS_TableIO), intent(inout) :: tablResu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,9 +48,9 @@ type(NL_DS_TableIO), intent(inout) :: tablResu
 !
     integer :: ifm, niv
     integer, parameter :: nbPara = 5
-    character(len=8), parameter :: paraType(nbPara) = (/'R','R','I','I','I'/)
-    character(len=24), parameter :: paraName(nbPara) = (/'COOR_REDUIT','INST       ',&
-                                                         'NUME_MODE  ','NUME_ORDRE ',&
+    character(len=8), parameter :: paraType(nbPara) = (/'R', 'R', 'I', 'I', 'I'/)
+    character(len=24), parameter :: paraName(nbPara) = (/'COOR_REDUIT', 'INST       ', &
+                                                         'NUME_MODE  ', 'NUME_ORDRE ', &
                                                          'NUME_SNAP  '/)
     character(len=16), parameter :: tablSymbName = 'COOR_REDUIT'
 !
@@ -59,18 +59,18 @@ type(NL_DS_TableIO), intent(inout) :: tablResu
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM15_2')
-    endif
+    end if
 !
 ! - Create list of parameters
 !
-    call nonlinDSTableIOSetPara(tableio_  = tablResu,&
-                                nbPara_   = nbPara,&
-                                paraName_ = paraName,&
-                                paraType_ = paraType)
+    call nonlinDSTableIOSetPara(tableio_=tablResu, &
+                                nbPara_=nbPara, &
+                                paraName_=paraName, &
+                                paraType_=paraType)
 !
 ! - Set other parameters
 !
-    tablResu%resultName   = resultName
+    tablResu%resultName = resultName
     tablResu%tablSymbName = tablSymbName
 !
 ! - Get name of table in results datastructure

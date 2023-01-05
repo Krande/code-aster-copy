@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine uttcp0(indi, para, nbv, temps)
 !               TEMPS(7) TEMPS ELAPSED POUR L'INDICE INDI
 ! ----------------------------------------------------------------------
     integer :: nb1, nb2, nb
-    parameter        ( nb1 = 0 , nb2 = 200 , nb = nb2-nb1+1)
+    parameter(nb1=0, nb2=200, nb=nb2-nb1+1)
     real(kind=8) :: uscpui(nb1:nb2), sycpui(nb1:nb2), elapsi(nb1:nb2)
     real(kind=8) :: uscpu(nb1:nb2), sycpu(nb1:nb2), elaps(nb1:nb2)
     integer :: nbappe(nb1:nb2), k, nbt
@@ -59,19 +59,19 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     real(kind=8) :: t(7), tcsm(3), tpres
 !
-    save      uscpui,sycpui,uscpu,sycpu,nbappe,parini
-    save      elapsi,elaps
+    save uscpui, sycpui, uscpu, sycpu, nbappe, parini
+    save elapsi, elaps
 !
-    data      uscpui,sycpui,uscpu,sycpu,nbappe,parini&
-     &         /nb*0d0,nb*0d0,nb*0d0,nb*0d0,nb*0,nb*'INIT '/
-    data      elapsi,elaps /nb*0d0,nb*0d0/
+    data uscpui, sycpui, uscpu, sycpu, nbappe, parini&
+     &         /nb*0d0, nb*0d0, nb*0d0, nb*0d0, nb*0, nb*'INIT '/
+    data elapsi, elaps/nb*0d0, nb*0d0/
 ! ----------------------------------------------------------------------
 !
 !     VERIFS ET INITIALISATIONS
 !
     if (indi .lt. nb1 .or. indi .gt. nb2) then
         call utmess('F', 'UTILITAI5_54')
-    endif
+    end if
 !
     do k = 1, 7
         t(k) = 0.d0
@@ -90,7 +90,7 @@ subroutine uttcp0(indi, para, nbv, temps)
         goto 999
     else
         nbt = 7
-    endif
+    end if
 !
 !     TEMPS CONSOMME
 !
@@ -112,10 +112,10 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     else if (kpara .eq. 'DEBUT') then
         if (parini(indi) .ne. 'FIN' .and. parini(indi) .ne. 'INIT') then
-            valk(1)=kpara
-            valk(2)=parini(indi)
+            valk(1) = kpara
+            valk(2) = parini(indi)
             call utmess('F', 'UTILITAI5_56', nk=2, valk=valk)
-        endif
+        end if
         parini(indi) = 'DEBUT'
         uscpui(indi) = tcsm(1)
         sycpui(indi) = tcsm(2)
@@ -125,17 +125,17 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     else if (kpara .eq. 'FIN') then
         if (parini(indi) .ne. 'DEBUT') then
-            valk(1)=kpara
-            valk(2)=parini(indi)
+            valk(1) = kpara
+            valk(2) = parini(indi)
             call utmess('F', 'UTILITAI5_56', nk=2, valk=valk)
-        endif
+        end if
         parini(indi) = 'FIN'
-        nbappe(indi) = nbappe(indi) + 1
-        uscpu (indi) = uscpu (indi) + tcsm(1) - uscpui(indi)
-        sycpu (indi) = sycpu (indi) + tcsm(2) - sycpui(indi)
-        elaps (indi) = elaps (indi) + tcsm(3) - elapsi(indi)
+        nbappe(indi) = nbappe(indi)+1
+        uscpu(indi) = uscpu(indi)+tcsm(1)-uscpui(indi)
+        sycpu(indi) = sycpu(indi)+tcsm(2)-sycpui(indi)
+        elaps(indi) = elaps(indi)+tcsm(3)-elapsi(indi)
         t(2) = nbappe(indi)
-        t(3) = uscpu(indi) + sycpu(indi)
+        t(3) = uscpu(indi)+sycpu(indi)
         t(5) = uscpu(indi)
         t(6) = sycpu(indi)
         t(7) = elaps(indi)
@@ -143,7 +143,7 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     else
         call utmess('F', 'UTILITAI5_57', sk=kpara)
-    endif
+    end if
 !
 999 continue
 !

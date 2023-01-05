@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@
 !
 subroutine mmdonf(ndim, nno, alias, ksi1, ksi2, dff)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
 !
-character(len=8) :: alias
-real(kind=8) :: ksi1, ksi2
-real(kind=8) :: dff(2, 9)
-integer :: nno, ndim
+    character(len=8) :: alias
+    real(kind=8) :: ksi1, ksi2
+    real(kind=8) :: dff(2, 9)
+    integer :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,8 +54,8 @@ integer :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !
-    dff(:,:) = 0.d0
-    d2f(:,:) = 0.d0
+    dff(:, :) = 0.d0
+    d2f(:, :) = 0.d0
     ksi(1) = ksi1
     ksi(2) = ksi2
     ASSERT(nno .ge. 1)
@@ -63,6 +63,6 @@ integer :: nno, ndim
     ASSERT(ndim .ge. 1)
     ASSERT(ndim .le. 3)
     call elrfdf(alias, ksi, d2f)
-    dff(1:2,:) = d2f(1:2,:)
+    dff(1:2, :) = d2f(1:2, :)
 !
 end subroutine

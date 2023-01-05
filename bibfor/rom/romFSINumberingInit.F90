@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine romFSINumberingInit(field, algoGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(in) :: field
-type(ROM_DS_AlgoGreedy), intent(inout) :: algoGreedy
+    type(ROM_DS_Field), intent(in) :: field
+    type(ROM_DS_AlgoGreedy), intent(inout) :: algoGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,11 +52,11 @@ type(ROM_DS_AlgoGreedy), intent(inout) :: algoGreedy
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_53')
-    endif
+    end if
 !
     cmpNume = indik8(field%listCmpName, 'PRES', 1, field%nbCmpName)
     algoGreedy%nume_pres = cmpNume
     cmpNume = indik8(field%listCmpName, 'PHI', 1, field%nbCmpName)
-    algoGreedy%nume_phi  = cmpNume
+    algoGreedy%nume_phi = cmpNume
 !
 end subroutine

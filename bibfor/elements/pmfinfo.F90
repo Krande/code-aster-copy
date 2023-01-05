@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf,nbassfi)
+subroutine pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf, nbassfi)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ subroutine pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf,nbassfi)
 #include "asterfort/utmess.h"
 !
     integer, intent(out) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(*)
-    integer, intent(out),optional :: jacf, nbassfi
+    integer, intent(out), optional :: jacf, nbassfi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,30 +58,30 @@ subroutine pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf,nbassfi)
     nbcarm = zi(jnbspi+3)
     nug(1:nbgrfi) = zi(jnbspi+3+1:jnbspi+3+nbgrfi)
 !
-    if ( tygrfi .eq. 1 ) then
-        if ( present(jacf) ) then
+    if (tygrfi .eq. 1) then
+        if (present(jacf)) then
             call jevech('PFIBRES', 'L', jacf)
-        endif
-        if ( present(nbassfi) ) then
+        end if
+        if (present(nbassfi)) then
             nbassfi = 1
-        endif
-    else if ( tygrfi .eq. 2 ) then
-        if ( present(jacf) ) then
+        end if
+    else if (tygrfi .eq. 2) then
+        if (present(jacf)) then
             call jevech('PFIBRES', 'L', jacf_loc)
             jacf = jacf_loc
-        endif
-        if ( present(nbassfi) ) then
-            if ( absent(jacf) ) then
+        end if
+        if (present(nbassfi)) then
+            if (absent(jacf)) then
                 call jevech('PFIBRES', 'L', jacf_loc)
-            endif
+            end if
             nbassfi = 0
-            do ii = 1 , nbfibr
-                numgr = nint( zr(jacf_loc - 1 + ii*nbcarm) )
-                nbassfi = max( nbassfi , numgr )
-            enddo
-            ASSERT( nbassfi .ne. 0 )
-        endif
+            do ii = 1, nbfibr
+                numgr = nint(zr(jacf_loc-1+ii*nbcarm))
+                nbassfi = max(nbassfi, numgr)
+            end do
+            ASSERT(nbassfi .ne. 0)
+        end if
     else
         call utmess('F', 'ELEMENTS2_40', si=tygrfi)
-    endif
+    end if
 end subroutine

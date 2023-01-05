@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aporth(mesh, sdcont_defi, model_ndim, elem_mast_indx, poin_coor,&
+subroutine aporth(mesh, sdcont_defi, model_ndim, elem_mast_indx, poin_coor, &
                   tau1, tau2)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -70,7 +70,7 @@ implicit none
 !
 ! - No node excluded
 !
-    ASSERT(elem_mast_indx.ne.0)
+    ASSERT(elem_mast_indx .ne. 0)
 !
 ! - Number of nodes
 !
@@ -82,9 +82,9 @@ implicit none
 !
 ! - Parameters of master element
 !
-    call aptypm(mesh          , elem_mast_nume, elem_mast_ndim, elem_mast_nbnode,&
+    call aptypm(mesh, elem_mast_nume, elem_mast_ndim, elem_mast_nbnode, &
                 elem_mast_type, elem_mast_name)
-    l_beam = (elem_mast_type(1:2).eq.'SE').and.(model_ndim.eq.3)
+    l_beam = (elem_mast_type(1:2) .eq. 'SE') .and. (model_ndim .eq. 3)
 !
 ! - Orthogonalization of local basis
 !
@@ -92,14 +92,14 @@ implicit none
         call normev(tau1, noor)
         if (noor .le. r8prem()) then
             call utmess('F', 'APPARIEMENT_38', sk=elem_mast_name)
-        endif
+        end if
     else
         call cforth(model_ndim, tau1, tau2, niverr)
         if (niverr .eq. 1) then
             call utmess('F', 'APPARIEMENT_14', sk=elem_mast_name, nr=3, valr=poin_coor)
-        else if (niverr.eq.2) then
+        else if (niverr .eq. 2) then
             call utmess('F', 'APPARIEMENT_34', sk=elem_mast_name, nr=3, valr=poin_coor)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

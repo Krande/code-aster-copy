@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romNormalize(vect_type, vect_vale, nb_equa)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,9 +29,9 @@ implicit none
 #include "blas/ddot.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=1), intent(in) :: vect_type
-character(len=19), intent(in) :: vect_vale
-integer, intent(in) :: nb_equa
+    character(len=1), intent(in) :: vect_type
+    character(len=19), intent(in) :: vect_vale
+    integer, intent(in) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,15 +55,15 @@ integer, intent(in) :: nb_equa
 ! --------------------------------------------------------------------------------------------------
 !
     if (vect_type .eq. 'C') then
-        call jeveuo(vect_vale(1:19)//'.VALE', 'E', vc = v_valec)
+        call jeveuo(vect_vale(1:19)//'.VALE', 'E', vc=v_valec)
         normc = zdotc(nb_equa, v_valec, 1, v_valec, 1)
-        v_valec(1:nb_equa) = v_valec(1:nb_equa) / sqrt(normc)
+        v_valec(1:nb_equa) = v_valec(1:nb_equa)/sqrt(normc)
     else if (vect_type .eq. 'R') then
-        call jeveuo(vect_vale(1:19)//'.VALE', 'E', vr = v_valer)
+        call jeveuo(vect_vale(1:19)//'.VALE', 'E', vr=v_valer)
         normr = ddot(nb_equa, v_valer, 1, v_valer, 1)
-        v_valer(1:nb_equa) = v_valer(1:nb_equa) / sqrt(normr)
+        v_valer(1:nb_equa) = v_valer(1:nb_equa)/sqrt(normr)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

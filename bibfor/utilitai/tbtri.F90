@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    ASSERT(AU_MOINS_UN3(tabchi,tabchr,tabchk))
+    ASSERT(AU_MOINS_UN3(tabchi, tabchr, tabchk))
 !
 !     --- ON DEMASQUE TOUS LES ELEMENTS DU TABLEAU A TRIER ---
 !
@@ -66,7 +66,7 @@ subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
             if (masq(j) .eq. 0) then
                 j1 = j
                 goto 22
-            endif
+            end if
         end do
 !
 22      continue
@@ -86,7 +86,7 @@ subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
             do j = j0+1, ndim
                 if (masq(j) .eq. 0 .and. tabchk(j) .lt. tabchk(imin)) imin = j
             end do
-        endif
+        end if
 !
 !        -- RANGEMENT DU IEME ELEMENT ET MISE A JOUR DU MASQUE --
         tabint(i) = imin

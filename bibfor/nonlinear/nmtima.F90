@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmtima(ds_measure, timer_type_, vali)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -53,30 +53,30 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_timer   = ds_measure%nb_timer
+    nb_timer = ds_measure%nb_timer
     timer_indx = 0
-    vali       = 0
+    vali = 0
     timer_type = timer_type_
 !
 ! - Find timer
 !
     do i_timer = 1, nb_timer
         if (ds_measure%timer(i_timer)%type .eq. timer_type) then
-            ASSERT(timer_indx.eq.0)
+            ASSERT(timer_indx .eq. 0)
             timer_indx = i_timer
-        endif
+        end if
     end do
 !
 ! - Get current timer
 !
-    ASSERT(timer_indx.ne.0)
-    timer     = ds_measure%timer(timer_indx)
+    ASSERT(timer_indx .ne. 0)
+    timer = ds_measure%timer(timer_indx)
 !
 ! - Get mean times
 !
     store_mean_time = ds_measure%store_mean_time
-    iter_mean_time  = ds_measure%iter_mean_time
-    step_mean_time  = ds_measure%step_mean_time
+    iter_mean_time = ds_measure%iter_mean_time
+    step_mean_time = ds_measure%step_mean_time
 !
 ! - Enough time ?
 !
@@ -86,16 +86,16 @@ implicit none
             vali = 0
         else
             vali = 1
-        endif
+        end if
     else if (timer_type .eq. 'Time_Step') then
         remaining_time = ds_measure%step_remain_time
         if (step_mean_time .le. 0.90d0*remaining_time) then
             vali = 0
         else
             vali = 1
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

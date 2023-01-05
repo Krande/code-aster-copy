@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@ function phase(h)
     real(kind=8) :: x, y, phase, pi
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    pi=r8pi()
-    x=dble(h)
-    y=dimag(h)
-    phase=0.d0
-    if ((x.gt.0.d0) .and. (y.ge.0.d0)) phase=atan2(y,x)
-    if ((x.lt.0.d0) .and. (y.ge.0.d0)) phase=atan2(y,x)+pi
-    if ((x.lt.0.d0) .and. (y.le.0.d0)) phase=atan2(y,x)+pi
-    if ((x.gt.0.d0) .and. (y.le.0.d0)) phase=atan2(y,x)+2.d0*pi
-    if ((x.eq.0.d0) .and. (y.lt.0.d0)) phase=3.d0*pi/2.d0
-    if ((x.eq.0.d0) .and. (y.gt.0.d0)) phase=pi/2.d0
-    if ((x.eq.0.d0) .and. (y.eq.0.d0)) phase=0.d0
+    pi = r8pi()
+    x = dble(h)
+    y = dimag(h)
+    phase = 0.d0
+    if ((x .gt. 0.d0) .and. (y .ge. 0.d0)) phase = atan2(y, x)
+    if ((x .lt. 0.d0) .and. (y .ge. 0.d0)) phase = atan2(y, x)+pi
+    if ((x .lt. 0.d0) .and. (y .le. 0.d0)) phase = atan2(y, x)+pi
+    if ((x .gt. 0.d0) .and. (y .le. 0.d0)) phase = atan2(y, x)+2.d0*pi
+    if ((x .eq. 0.d0) .and. (y .lt. 0.d0)) phase = 3.d0*pi/2.d0
+    if ((x .eq. 0.d0) .and. (y .gt. 0.d0)) phase = pi/2.d0
+    if ((x .eq. 0.d0) .and. (y .eq. 0.d0)) phase = 0.d0
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
+subroutine fgdomg(method, nommat, nomnap, nomfon, valmin, &
                   valmax, ncyc, dommag)
 !       ================================================================
     implicit none
@@ -77,30 +77,30 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
         cara = 'A0'
         call rcpare(nommat, pheno, cara, icodhs)
         if (icodwo .eq. 0) then
-            call fgdowh(nommat, ncyc, valmin, valmax, lke,&
+            call fgdowh(nommat, ncyc, valmin, valmax, lke, &
                         zr(ivke), lhaigh, zr(ivcorr), vdommag)
-        else if (icodba.eq.0) then
-            call fgdoba(nommat, ncyc, valmin, valmax, lke,&
+        else if (icodba .eq. 0) then
+            call fgdoba(nommat, ncyc, valmin, valmax, lke, &
                         zr(ivke), lhaigh, zr(ivcorr), vdommag)
-        else if (icodhs.eq.0) then
-            call fgdohs(nommat, ncyc, valmin, valmax, lke,&
+        else if (icodhs .eq. 0) then
+            call fgdohs(nommat, ncyc, valmin, valmax, lke, &
                         zr(ivke), lhaigh, zr(ivcorr), vdommag)
-        endif
-    else if (method.eq.'MANSON_COFFIN') then
+        end if
+    else if (method .eq. 'MANSON_COFFIN') then
         call fgdoma(nommat, ncyc, valmin, valmax, vdommag)
-    else if (method.eq.'TAHERI_MANSON') then
-        call fgtaep(nommat, nomfon, nomnap, ncyc, valmin,&
+    else if (method .eq. 'TAHERI_MANSON') then
+        call fgtaep(nommat, nomfon, nomnap, ncyc, valmin, &
                     valmax, vdommag)
-    else if (method.eq.'TAHERI_MIXTE') then
-        call fgtaes(nommat, nomnap, ncyc, valmin, valmax,&
+    else if (method .eq. 'TAHERI_MIXTE') then
+        call fgtaes(nommat, nomnap, ncyc, valmin, valmax, &
                     vdommag)
     else
         k16b = method(1:16)
         call utmess('F', 'PREPOST_4', sk=k16b)
-    endif
+    end if
 !
     do i = 1, ncyc
-        dommag = dommag + vdommag(i)
+        dommag = dommag+vdommag(i)
     end do
 !
     AS_DEALLOCATE(vr=vdommag)

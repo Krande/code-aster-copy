@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
+subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord, &
                   nbtrou)
     implicit none
 #include "jeveux.h"
@@ -53,7 +53,7 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, itrou,  jtach, nbordr
+    integer :: i, ibid, itrou, jtach, nbordr
     integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -68,21 +68,21 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
     call jenonu(jexnom(nomd2//'.DESC', noms2), ibid)
     call jeveuo(jexnum(nomd2//'.TACH', ibid), 'L', jtach)
     itrou = 0
-    do i = 0, nbordr - 1
+    do i = 0, nbordr-1
         chextr = zk24(jtach+i)
         if (chextr .ne. ' ') then
-            nbtrou = nbtrou + 1
+            nbtrou = nbtrou+1
             if (nbvale .eq. 0) goto 10
-            itrou = itrou + 1
+            itrou = itrou+1
             if (itrou .le. nbvale) then
                 tabord(itrou) = ordr(1+i)
                 tabnom(itrou) = chextr
-            endif
-        endif
- 10     continue
+            end if
+        end if
+10      continue
     end do
     if (nbtrou .gt. nbvale) nbtrou = -nbtrou
 !
- 20 continue
+20  continue
     call jedema()
 end subroutine

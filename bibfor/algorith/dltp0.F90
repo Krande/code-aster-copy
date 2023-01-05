@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,39 +67,39 @@ subroutine dltp0(t0, nume)
             else
                 call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
                 call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
-                call rsorac(dyna, 'INST', ibid, temps, k8b,&
-                            c16b, prec, crit, tnume, 1,&
+                call rsorac(dyna, 'INST', ibid, temps, k8b, &
+                            c16b, prec, crit, tnume, 1, &
                             nbtrou)
-                nume=tnume(1)
+                nume = tnume(1)
                 if (nbtrou .lt. 0) then
                     valk = dyna
                     valr = temps
                     vali = -nbtrou
                     call utmess('F', 'ALGORITH12_83', sk=valk, si=vali, sr=valr)
-                else if (nbtrou.eq.0) then
+                else if (nbtrou .eq. 0) then
                     valk = dyna
                     valr = temps
                     call utmess('F', 'ALGORITH12_84', sk=valk, sr=valr)
-                endif
-            endif
+                end if
+            end if
         else
 !           --- VERIFICATION QUE NUME EXISTE ---
-            call rsorac(dyna, 'LONUTI', 0, r8b, k8b,&
-                        c16b, r8b, k8b, nbordr, 1,&
+            call rsorac(dyna, 'LONUTI', 0, r8b, k8b, &
+                        c16b, r8b, k8b, nbordr, 1, &
                         ibid)
             call wkvect('&&COMDLT.NUME_ORDRE', 'V V I', nbordr(1), jordr)
-            call rsorac(dyna, 'TOUT_ORDRE', 0, r8b, k8b,&
-                        c16b, r8b, k8b, zi(jordr), nbordr(1),&
+            call rsorac(dyna, 'TOUT_ORDRE', 0, r8b, k8b, &
+                        c16b, r8b, k8b, zi(jordr), nbordr(1), &
                         ibid)
             do i = 1, nbordr(1)
                 if (zi(jordr+i-1) .eq. nume) goto 12
             end do
             call utmess('F', 'ALGORITH3_36', sk=dyna)
- 12         continue
-        endif
+12          continue
+        end if
 !
 !        --- RECUPERATION DE L'INSTANT ---
-        call rsadpa(dyna, 'L', 1, 'INST', nume,&
+        call rsadpa(dyna, 'L', 1, 'INST', nume, &
                     1, sjv=jadr, styp=ctype)
         t0 = zr(jadr)
     else
@@ -117,8 +117,8 @@ subroutine dltp0(t0, nume)
 !
             t0 = 0.d0
             call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=t0, nbret=np)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

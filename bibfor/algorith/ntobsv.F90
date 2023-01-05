@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ntobsv(meshz, sd_obsv, nume_time, time)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/lobs.h"
@@ -60,6 +60,6 @@ implicit none
 !
     if (l_obsv) then
         call nmobse(meshz, sd_obsv, time)
-    endif
+    end if
 !
 end subroutine

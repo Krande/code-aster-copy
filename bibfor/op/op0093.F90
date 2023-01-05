@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,12 +73,12 @@ subroutine op0093()
     masse = ' '
     amor = ' '
     raide = ' '
-    massfa=0
-    nbmodd=0
-    nbmodf=0
-    nbmoda=0
-    nbmoad=0
-    nbmodi=0
+    massfa = 0
+    nbmodd = 0
+    nbmodf = 0
+    nbmoda = 0
+    nbmoad = 0
+    nbmodi = 0
 !
 !---------------------------------------------C
 !--                                         --C
@@ -95,11 +95,11 @@ subroutine op0093()
     if (nbpsmo .ne. 0) then
         if (nma .eq. 0) then
             call utmess('F', 'ALGELINE2_77')
-        endif
-    endif
+        end if
+    end if
 !
 !     -- CREATION DU SOLVEUR :
-    solveu='&&OP0093.SOLVEUR'
+    solveu = '&&OP0093.SOLVEUR'
     call cresol(solveu)
 !
 !
@@ -108,9 +108,9 @@ subroutine op0093()
     if (ibid .ne. 0) then
         call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numedd)
     else
-        numedd=' '
-    endif
-    call vpcrea(0, resu, masse, amor, raide,&
+        numedd = ' '
+    end if
+    call vpcrea(0, resu, masse, amor, raide, &
                 numedd, ibid)
 !
 !
@@ -126,13 +126,13 @@ subroutine op0093()
     call mtdscr(raidfa)
     call jeveuo(raidfa(1:19)//'.&INT', 'E', lmatr)
     call jeveuo(raidfa(1:19)//'.REFA', 'E', jrefa)
-    zk24(jrefa-1+7)=solveu
-    call preres(solveu, 'V', iret, matpre, raidfa,&
+    zk24(jrefa-1+7) = solveu
+    call preres(solveu, 'V', iret, matpre, raidfa, &
                 ibid, -9999)
     if (iret .eq. 2) then
         valk = raide
         call utmess('F', 'ALGELINE4_37', sk=valk)
-    endif
+    end if
 !
     call getfac('MODE_STAT', nbmost)
     call getfac('FORCE_NODALE', nbfona)
@@ -144,59 +144,59 @@ subroutine op0093()
 !-- CALCUL DES DIFERENTES DEFORMEES --C
 !--                                 --C
 !-------------------------------------C
-    ddlcb='&&OP0093.DDL_STAT_DEPL'
-    mocb='&&OP0093.MODE_STAT_DEPL'
-    ddlmn='&&OP0093.DDL_STAT_FORC'
-    moatta='&&OP0093.MODE_STAT_FORC'
-    moauni='&&OP0093.MODE_STAT_ACCU'
-    moaimp='&&OP0093.MODE_ACCE_IMPO'
-    ddlac=   '&&OP0093.DDL_ACCE_IMPO'
-    mointf='&&MOIN93.MODE_INTF_DEPL'
-    vefreq='&&MOIN93.FREQ_INTF_DEPL'
+    ddlcb = '&&OP0093.DDL_STAT_DEPL'
+    mocb = '&&OP0093.MODE_STAT_DEPL'
+    ddlmn = '&&OP0093.DDL_STAT_FORC'
+    moatta = '&&OP0093.MODE_STAT_FORC'
+    moauni = '&&OP0093.MODE_STAT_ACCU'
+    moaimp = '&&OP0093.MODE_ACCE_IMPO'
+    ddlac = '&&OP0093.DDL_ACCE_IMPO'
+    mointf = '&&MOIN93.MODE_INTF_DEPL'
+    vefreq = '&&MOIN93.FREQ_INTF_DEPL'
 !
 !-- CALCUL DES MODES DE CONTRAINTES (METHODE CRAIG & BAMPTON)
     if (nbmost .gt. 0) then
         call wkvect(ddlcb, 'V V I', neq, lddld)
         call mstget(raide, 'MODE_STAT', nbmost, zi(lddld))
         do i = 0, neq-1
-            nbmodd = nbmodd + zi(lddld+i)
+            nbmodd = nbmodd+zi(lddld+i)
         end do
         call wkvect(mocb, 'V V R', neq*nbmodd, lmodd)
-        call modsta('DEPL', raidfa, matpre, solveu, ibid,&
-                    nume, zi(lddld), [0.d0], neq, nbmodd,&
+        call modsta('DEPL', raidfa, matpre, solveu, ibid, &
+                    nume, zi(lddld), [0.d0], neq, nbmodd, &
                     zr(lmodd))
-    endif
+    end if
 !
 !-- CALCUL DES MODES D'ATTACHE (METHODE MAC NEAL)
     if (nbfona .gt. 0) then
         call wkvect(ddlmn, 'V V I', neq, lddlf)
         call mstget(raide, 'FORCE_NODALE', nbfona, zi(lddlf))
         do i = 0, neq-1
-            nbmodf = nbmodf + zi(lddlf+i)
+            nbmodf = nbmodf+zi(lddlf+i)
         end do
         call wkvect(moatta, 'V V R', neq*nbmodf, lmodf)
-        call modsta('FORC', raidfa, matpre, solveu, ibid,&
-                    nume, zi(lddlf), [0.d0], neq, nbmodf,&
+        call modsta('FORC', raidfa, matpre, solveu, ibid, &
+                    nume, zi(lddlf), [0.d0], neq, nbmodf, &
                     zr(lmodf))
-    endif
+    end if
 !
 !-- CALCUL DES PSEUDO MODES
     if (nbpsmo .gt. 0) then
         call mtdscr(masse)
-        massfa=2
-        call psmo93(solveu, masse, raide, raidfa, nume,&
+        massfa = 2
+        call psmo93(solveu, masse, raide, raidfa, nume, &
                     nbpsmo, nbmoda, nbmoad)
-    endif
+    end if
 !
 !-- CALCUL DES MODES D'INTERFACE
     if (nbmoin .gt. 0) then
         if (massfa .lt. 1) then
             call mtdscr(masse)
-        endif
+        end if
         call getvis('MODE_INTERF', 'NB_MODE', iocc=1, scal=nbmodi, nbret=ibid)
-        call moin93(masse, raide, raidfa, nbmodi, mointf,&
+        call moin93(masse, raide, raidfa, nbmodi, mointf, &
                     vefreq)
-    endif
+    end if
 !
 !-----------------------------C
 !--                         --C
@@ -204,7 +204,7 @@ subroutine op0093()
 !--                         --C
 !-----------------------------C
 !
-    call arch93(resu, concep, nume, raide, nbmodd,&
+    call arch93(resu, concep, nume, raide, nbmodd, &
                 nbmodf, nbmoda, nbmoad, nbmodi, nbpsmo)
 !
 !

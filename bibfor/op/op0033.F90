@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 !
 subroutine op0033()
 !
-use NonLin_Datastructure_type
-use Behaviour_type
-use Behaviour_module
+    use NonLin_Datastructure_type
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -83,7 +83,7 @@ implicit none
     character(len=4) :: fami, cargau
     character(len=8) :: typmod(2), mater(30), table, fonimp(9), typpar(ntamax)
     character(len=16) :: option, compor(COMPOR_SIZE), nompar(ntamax), opt2
-    character(len=16) :: mult_comp, type_comp, defo_ldc,rela_comp
+    character(len=16) :: mult_comp, type_comp, defo_ldc, rela_comp
     character(len=19) :: codi, sddisc, k19b, sdcrit
     character(len=24) :: sderro
     real(kind=8) :: instam, instap, ang(7), r8b, carcri(CARCRI_SIZE), fem(9)
@@ -101,15 +101,15 @@ implicit none
     type(NL_DS_AlgoPara) :: ds_algopara
     type(Behaviour_Integ) :: BEHinteg
 !
-    data sddisc  /'&&OP0033.SDDISC'/
-    data sdcrit  /'&&OP0033.SDCRIT'/
-    data sderro  /'&&OP0033.ERRE.'/
+    data sddisc/'&&OP0033.SDDISC'/
+    data sdcrit/'&&OP0033.SDCRIT'/
+    data sderro/'&&OP0033.ERRE.'/
 !
-    data vim     /'&&OP0033.VIM'/
-    data vip     /'&&OP0033.VIP'/
-    data svip    /'&&OP0033.SVIP'/
-    data vim2    /'&&OP0033.VIM2'/
-    data nomvi   /'&&OP0033.NOMVI'/
+    data vim/'&&OP0033.VIM'/
+    data vip/'&&OP0033.VIP'/
+    data svip/'&&OP0033.SVIP'/
+    data vim2/'&&OP0033.VIM2'/
+    data nomvi/'&&OP0033.NOMVI'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,18 +118,18 @@ implicit none
 !
 ! - Initializations
 !
-    work(:)     = 0.d0
-    dsidep(:,:) = 0.d0
-    ndim        = 3
-    rac2        = sqrt(2.d0)
-    fami        = 'PMAT'
-    kpg         = 1
-    ksp         = 1
-    k19b        = ' '
-    iter        = 0
-    action      = 1
-    finpas      = ASTER_FALSE
-    itemax      = ASTER_FALSE
+    work(:) = 0.d0
+    dsidep(:, :) = 0.d0
+    ndim = 3
+    rac2 = sqrt(2.d0)
+    fami = 'PMAT'
+    kpg = 1
+    ksp = 1
+    k19b = ' '
+    iter = 0
+    action = 1
+    finpas = ASTER_FALSE
+    itemax = ASTER_FALSE
     liccvg(1:5) = 0
 !
 ! - Prepare CALCUL parameters for external state variables
@@ -172,12 +172,12 @@ implicit none
 !
 !     INITIALISATIONS SD
 !
-    call pminit(imate, nbvari, ndim, typmod, table,&
-                nbpar, iforta, nompar, typpar, ang,&
-                pgl, irota, epsm, sigm, zr(lvim),&
-                zr(lvip), vr, defimp, coef, indimp,&
+    call pminit(imate, nbvari, ndim, typmod, table, &
+                nbpar, iforta, nompar, typpar, ang, &
+                pgl, irota, epsm, sigm, zr(lvim), &
+                zr(lvip), vr, defimp, coef, indimp, &
                 fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
-                pred, matrel, imptgt, option, zk8(lnomvi),&
+                pred, matrel, imptgt, option, zk8(lnomvi), &
                 nbvita, sderro)
 !
 ! - Message if PETIT_REAC
@@ -185,13 +185,13 @@ implicit none
     if (defimp .gt. 0) then
         if (compor(DEFO) .eq. 'PETIT_REAC') then
             call utmess('I', 'COMPOR2_93')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
 !
     call nmcrcv(sdcrit)
-    nume_inst=1
+    nume_inst = 1
 !
 !==================================
 !     BOUCLE SUR lES INSTANTS
@@ -199,12 +199,12 @@ implicit none
 !
 200 continue
 !
-    liccvg(1:5)=0
+    liccvg(1:5) = 0
 !
 ! - Get times
 !
     instam = diinst(sddisc, nume_inst-1)
-    instap = diinst(sddisc, nume_inst )
+    instap = diinst(sddisc, nume_inst)
 !
 ! - Compute external state variables
 !
@@ -219,71 +219,71 @@ implicit none
 !               NORMALISATION DES TERMES EN CONTRAINTES
             if (indimp(i) .eq. 0) then
                 valimp(i) = valimp(i)/coef
-            endif
+            end if
         end do
-        ASSERT(compor(DEFO).eq.'PETIT')
+        ASSERT(compor(DEFO) .eq. 'PETIT')
     else if (defimp .eq. 2) then
-        igrad=1
+        igrad = 1
 !           VALEURS IMPOSEES DE GRADIENTS F
         do i = 1, 9
             call fointe('F', fonimp(i), 1, ['INST'], [instap], valimp(i), ier)
         end do
-    endif
+    end if
 !
     if (irota .eq. 1) then
         call tnsvec(6, ndim, vimp33, valimp, 1.0d0)
-        call utbtab('ZERO', 3, 3, vimp33, pgl,&
+        call utbtab('ZERO', 3, 3, vimp33, pgl, &
                     work, vimp2)
         call tnsvec(3, ndim, vimp2, valimp, 1.0d0)
-    endif
+    end if
 !        CISAILLEMENTS*SQRT(2) POUR NMCOMP
     if (defimp .lt. 2) then
         call dscal(3, rac2, valimp(4), 1)
-    endif
+    end if
 
 !
 ! - Initialisation of behaviour datastructure - Special for SIMU_POINT_MAT
 !
-    read (compor(DEFO_LDC),'(A16)') defo_ldc
-    rela_comp    = compor(RELA_NAME)
+    read (compor(DEFO_LDC), '(A16)') defo_ldc
+    rela_comp = compor(RELA_NAME)
     call behaviourInitPoint(carcri, rela_comp, BEHinteg)
 !
 !        6 CMP DE EPSI OU 9 CMP DE GRAD DONNEES : PAS BESOIN DE NEWTON
-    if ((defimp.ge.1) .and. (abs(carcri(2)).lt.0.1d0)) then
-        opt2='RAPH_MECA'
-        if (imptgt .eq. 1) opt2='FULL_MECA'
+    if ((defimp .ge. 1) .and. (abs(carcri(2)) .lt. 0.1d0)) then
+        opt2 = 'RAPH_MECA'
+        if (imptgt .eq. 1) opt2 = 'FULL_MECA'
         if (defimp .eq. 1) then
-            ncmp=6
+            ncmp = 6
             do i = 1, ncmp
-                deps(i)=valimp(i)-epsm(i)
+                deps(i) = valimp(i)-epsm(i)
             end do
-        else if (defimp.eq.2) then
-            ncmp=9
+        else if (defimp .eq. 2) then
+            ncmp = 9
             call matinv('S', 3, epsm, fem, jm)
             deps = reshape(matmul(reshape(valimp, (/3, 3/)), reshape(fem, (/3, 3/))), (/9/))
             call lcdetf(3, deps, jd)
             jp = jm*jd
-        endif
+        end if
         call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
         sigp = 0.d0
-        call nmcomp(BEHinteg,&
-                    fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, carcri, instam, instap,&
-                    ncmp, epsm, deps, 6, sigm,&
+        call nmcomp(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    ncmp, epsm, deps, 6, sigm, &
                     zr(lvim2), opt2, ang, &
                     sigp, zr(lvip), 6*ncmp, dsidep, iret, mult_comp)
         if (compor(DEFO) .eq. 'SIMO_MIEHE') then
             call dscal(2*ndim, 1.d0/jp, sigp, 1)
-        endif
-        call pmimpr(0, instap, indimp, valimp,&
-                    0, epsm, sigm, zr(lvim), nbvari,&
+        end if
+        call pmimpr(0, instap, indimp, valimp, &
+                    0, epsm, sigm, zr(lvim), nbvari, &
                     r, r8b, r8b)
         if (iret .ne. 0) then
             liccvg(2) = 1
             goto 500
-        endif
+        end if
         goto 550
-    endif
+    end if
 !
 !        INITIALISATION DE L'ALGO DE NEWTON
 !
@@ -292,33 +292,33 @@ implicit none
     call dcopy(6, epsm, 1, ym(7), 1)
 !
     if (pred .eq. 1) then
-        dy(:)   = 0.d0
+        dy(:) = 0.d0
         deps(:) = 0.d0
-        opt2='RIGI_MECA_TANG'
+        opt2 = 'RIGI_MECA_TANG'
         call dcopy(nbvari, zr(lvim), 1, zr(lsvip), 1)
         ssigp = 0.d0
-        call nmcomp(BEHinteg,&
-                    fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, carcri, instam, instap,&
-                    6, epsm, deps, 6, sigm,&
+        call nmcomp(BEHinteg, &
+                    fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    6, epsm, deps, 6, sigm, &
                     zr(lsvip), opt2, ang, &
                     ssigp, zr(lsvip), 36, dsidep, iret, mult_comp)
         if (iret .ne. 0) then
-            pred=0
+            pred = 0
         else
-            call pmdrdy(dsidep, coef, cimpo, valimp, ym,&
+            call pmdrdy(dsidep, coef, cimpo, valimp, ym, &
                         sigm, r, drdy)
-        endif
-    else if ((pred .eq. 0).or.((pred.eq.-1).and.(nume_inst.eq.1))) then
-        dy(:)   = 0.d0
+        end if
+    else if ((pred .eq. 0) .or. ((pred .eq. -1) .and. (nume_inst .eq. 1))) then
+        dy(:) = 0.d0
         deps(:) = 0.d0
-        call pmdrdy(kel, coef, cimpo, valimp, ym,&
+        call pmdrdy(kel, coef, cimpo, valimp, ym, &
                     sigm, r, drdy)
-    endif
+    end if
 !        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
     call dcopy(12, r, 1, rini, 1)
-    call pmimpr(0, instap, indimp, valimp,&
-                0, epsm, sigm, zr(lvim), nbvari,&
+    call pmimpr(0, instap, indimp, valimp, &
+                0, epsm, sigm, zr(lvim), nbvari, &
                 r, r8b, r8b)
 !
     iter = 0
@@ -329,9 +329,9 @@ implicit none
 !
 300 continue
 !
-    iter = iter + 1
+    iter = iter+1
 !
-    if ((iter.eq.1) .and. (pred.eq.-1) .and. (nume_inst.gt.1)) then
+    if ((iter .eq. 1) .and. (pred .eq. -1) .and. (nume_inst .gt. 1)) then
 !   prediction='extrapole'
         coefextra = (instap-instam)/(instam-diinst(sddisc, nume_inst-2))
 !       dy = dy * (ti - ti-1)/(ti-1 - ti-2)
@@ -342,18 +342,18 @@ implicit none
 !
 !      RESOLUTION DE DRDY*DDY = - R(Y)  CARGAU = 'NCSP'
         cargau = 'NCWP'
-        call mgauss(cargau, drdy, ddy, 12, 12,&
+        call mgauss(cargau, drdy, ddy, 12, 12, &
                     1, r8b, iret)
         if (iret .ne. 0) then
             liccvg(5) = 1
             conver = ASTER_FALSE
             goto 500
-        endif
+        end if
 !
 !      REACTUALISATION DE DY = DY + DDY
         call daxpy(12, 1.d0, ddy, 1, dy, 1)
 !
-    endif
+    end if
 !
     call dcopy(6, dy(7), 1, deps, 1)
 !
@@ -364,43 +364,43 @@ implicit none
     liccvg(2) = 0
     call dcopy(nbvari, zr(lvim), 1, zr(lvim2), 1)
     sigp = 0.d0
-    call nmcomp(BEHinteg,&
-                fami, kpg, ksp, ndim, typmod,&
-                imate, compor, carcri, instam, instap,&
-                6, epsm, deps, 6, sigm,&
+    call nmcomp(BEHinteg, &
+                fami, kpg, ksp, ndim, typmod, &
+                imate, compor, carcri, instam, instap, &
+                6, epsm, deps, 6, sigm, &
                 zr(lvim2), option, ang, &
                 sigp, zr(lvip), 36, dsidep, iret, mult_comp)
 !
-    call pmimpr(1, instap, indimp, valimp,&
-                iter, deps, sigp, zr(lvip), nbvari,&
+    call pmimpr(1, instap, indimp, valimp, &
+                iter, deps, sigp, zr(lvip), nbvari, &
                 r, r8b, r8b)
     if (iret .ne. 0) then
         conver = ASTER_FALSE
         liccvg(2) = 1
         goto 500
-    endif
+    end if
 !
 !           CALCUL EVENTUEL DE LA MATRICE TGTE PAR PERTURBATION
-    call pmvtgt(option, carcri, deps, sigp, zr(lvip),&
-                nbvari, epsilo, varia, matper, dsidep,&
+    call pmvtgt(option, carcri, deps, sigp, zr(lvip), &
+                nbvari, epsilo, varia, matper, dsidep, &
                 smatr, sdeps, ssigp, zr(lsvip), itgt)
     if (itgt .ne. 0) then
         goto 400
-    endif
+    end if
 !
     call dcopy(12, ym, 1, y, 1)
     call daxpy(12, 1.d0, dy, 1, y, 1)
     if (matrel .eq. 1) then
-        call pmdrdy(kel, coef, cimpo, valimp, y,&
+        call pmdrdy(kel, coef, cimpo, valimp, y, &
                     sigp, r, drdy)
     else
-        call pmdrdy(dsidep, coef, cimpo, valimp, y,&
+        call pmdrdy(dsidep, coef, cimpo, valimp, y, &
                     sigp, r, drdy)
-    endif
+    end if
 !
 !           VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-    call pmconv(r, rini, r1, instap, sigp,&
-                coef, iter, indimp, ds_conv, conver,&
+    call pmconv(r, rini, r1, instap, sigp, &
+                coef, iter, indimp, ds_conv, conver, &
                 itemax)
 !
 !           ENREGISTRE LES RESIDUS A CETTE ITERATION
@@ -408,9 +408,9 @@ implicit none
 !
 !           VERIFICATION DES EVENT-DRIVEN
 500 continue
-    call pmsta1(sigm, sigp, deps, zr(lvim), zr(lvip),&
-                nbvari, nbvita, iforta, nbpar, nompar,&
-                vr, igrad, typpar, zk8(lnomvi), sddisc,&
+    call pmsta1(sigm, sigp, deps, zr(lvim), zr(lvip), &
+                nbvari, nbvita, iforta, nbpar, nompar, &
+                vr, igrad, typpar, zk8(lnomvi), sddisc, &
                 liccvg, itemax, conver, actite)
 !
 !           ON CONTINUE NEWTON
@@ -423,8 +423,8 @@ implicit none
 !        GESTION DE LA DECOUPE DU PAS DE TEMPS
 !        EN L'ABSENCE DE CONVERGENCE ON CHERCHE A SUBDIVISER LE PAS
 !        DE TEMPS SI L'UTILISATEUR A FAIT LA DEMANDE
-    call pmactn(sddisc, ds_conv, iter, nume_inst, itemax,&
-                sderro, liccvg , actite, action)
+    call pmactn(sddisc, ds_conv, iter, nume_inst, itemax, &
+                sderro, liccvg, actite, action)
 !
 ! ---    ACTION
 !          0 ARRET DU CALCUL
@@ -433,13 +433,13 @@ implicit none
 !          3 ON FINIT LE PAS DE TEMPS
     if (action .eq. 1) then
         goto 600
-    else if (action.eq.2) then
+    else if (action .eq. 2) then
         goto 300
-    else if (action.eq.3) then
+    else if (action .eq. 3) then
         goto 550
-    else if (action.eq.0) then
+    else if (action .eq. 0) then
         goto 550
-    endif
+    end if
 !:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 !
 550 continue
@@ -451,25 +451,25 @@ implicit none
 !        ADAPTATION DU NOUVEAU PAS DE TEMPS
 !        PAS DE GESTION DE DELTA_GRANDEUR ACTUELLEMENT
     call nmfinp(sddisc, nume_inst, finpas)
-    if (.not.finpas) call nmadat(sddisc, nume_inst, iter, k19b)
-    nume_inst=nume_inst+1
+    if (.not. finpas) call nmadat(sddisc, nume_inst, iter, k19b)
+    nume_inst = nume_inst+1
 !        STOCKAGE EFFECTIF DU RESULTAT DANS LA TABLE
-    call pmstab(sigm, sigp, epsm, deps, nbvari,&
-                zr(lvim), zr(lvip), iforta, instam, instap,&
-                iter, nbpar, nompar, table, vr,&
-                igrad, valimp, imptgt, dsidep, zk8(lnomvi),&
+    call pmstab(sigm, sigp, epsm, deps, nbvari, &
+                zr(lvim), zr(lvip), iforta, instam, instap, &
+                iter, nbpar, nompar, table, vr, &
+                igrad, valimp, imptgt, dsidep, zk8(lnomvi), &
                 nbvita)
-    call pmimpr(2, instap, indimp, valimp,&
-                iter, deps, sigp, zr(lvip), nbvari,&
+    call pmimpr(2, instap, indimp, valimp, &
+                iter, deps, sigp, zr(lvip), nbvari, &
                 r, r8b, r8b)
 !
 600 continue
 !
 ! --- DERNIER INSTANT DE CALCUL ? -> ON SORT DE STAT_NON_LINE
 !
-    if (finpas .or. (action.eq.0)) then
+    if (finpas .or. (action .eq. 0)) then
         goto 900
-    endif
+    end if
     goto 200
 !==================================
 !     FIN BOUCLE SUR LES INSTANTS

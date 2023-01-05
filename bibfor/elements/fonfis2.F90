@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, iabsfon,  jnoe, ni, nj, coorfd
+    integer :: i, iabsfon, jnoe, ni, nj, coorfd
     real(kind=8) :: absci, coori(3), coorj(3), norm, xij, yij, zij
     real(kind=8), pointer :: vale(:) => null()
 !
@@ -77,16 +77,16 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 !     RECUPERATION DES COORDONNNES DE NI
     call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe)), ni)
 !
-    coori(1) = vale((ni-1)*3 + 1)
-    coori(2) = vale((ni-1)*3 + 2)
-    coori(3) = vale((ni-1)*3 + 3)
+    coori(1) = vale((ni-1)*3+1)
+    coori(2) = vale((ni-1)*3+2)
+    coori(3) = vale((ni-1)*3+3)
 !
 !    REMPLISSAGE DE .FONDFISS DANS LA SD_FOND_FISSURE :
 !    DONNEES DU CAS 2D OU DU PREMIER NOEUD POUR LE CAS 3D
-    zr(coorfd-1 + 3*(1-1) + 1) = coori(1)
-    zr(coorfd-1 + 3*(1-1) + 2) = coori(2)
-    zr(coorfd-1 + 3*(1-1) + 3) = coori(3)
-    zr(iabsfon-1 + 1) = 0.d0
+    zr(coorfd-1+3*(1-1)+1) = coori(1)
+    zr(coorfd-1+3*(1-1)+2) = coori(2)
+    zr(coorfd-1+3*(1-1)+3) = coori(3)
+    zr(iabsfon-1+1) = 0.d0
 !
 !     REMPLISSAGE DE .FONDFISS DANS LA SD_FOND_FISSURE: CAS 3D
     if (nbnoff .ne. 1) then
@@ -97,30 +97,30 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
             call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe-1+i)), nj)
 !
 !         COORDONNEES DES NOEUDS I ET J
-            coori(1) = vale((ni-1)*3 + 1)
-            coori(2) = vale((ni-1)*3 + 2)
-            coori(3) = vale((ni-1)*3 + 3)
+            coori(1) = vale((ni-1)*3+1)
+            coori(2) = vale((ni-1)*3+2)
+            coori(3) = vale((ni-1)*3+3)
 !
-            coorj(1) = vale((nj-1)*3 + 1)
-            coorj(2) = vale((nj-1)*3 + 2)
-            coorj(3) = vale((nj-1)*3 + 3)
+            coorj(1) = vale((nj-1)*3+1)
+            coorj(2) = vale((nj-1)*3+2)
+            coorj(3) = vale((nj-1)*3+3)
 
 !         COORDONNE NOEUD DU FOND
-            zr(coorfd-1 + 3*(i-1) + 1) = coorj(1)
-            zr(coorfd-1 + 3*(i-1) + 2) = coorj(2)
-            zr(coorfd-1 + 3*(i-1) + 3) = coorj(3)
+            zr(coorfd-1+3*(i-1)+1) = coorj(1)
+            zr(coorfd-1+3*(i-1)+2) = coorj(2)
+            zr(coorfd-1+3*(i-1)+3) = coorj(3)
 !
 !         CALCUL DES ABSCISSES CURVILIGNES
 
-            xij = coorj(1) - coori(1)
-            yij = coorj(2) - coori(2)
-            zij = coorj(3) - coori(3)
-            norm = sqrt(xij*xij + yij*yij + zij*zij)
-            absci = zr(iabsfon-1 + (i-2) + 1)
+            xij = coorj(1)-coori(1)
+            yij = coorj(2)-coori(2)
+            zij = coorj(3)-coori(3)
+            norm = sqrt(xij*xij+yij*yij+zij*zij)
+            absci = zr(iabsfon-1+(i-2)+1)
 !
-            zr(iabsfon-1 + (i-1) + 1) = absci + norm
-        enddo
-    endif
+            zr(iabsfon-1+(i-1)+1) = absci+norm
+        end do
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ subroutine dglrdm()
 #include "asterfort/wkvect.h"
 !
     integer :: na
-    parameter (na=10)
+    parameter(na=10)
     integer :: nnap, ibid, ilit, jlm, jmelk
     integer :: jmelr, jmelc, lonobj
     integer :: iret, icisai
@@ -121,9 +121,9 @@ subroutine dglrdm()
     call jemarq()
 !
     nnap = 1
-    a=0.d0
-    b=0.d0
-    b1=0.d0
+    a = 0.d0
+    b = 0.d0
+    b1 = 0.d0
 !
 ! - VARIABLE D IMPRESSION DES PARAMETRES GLRC_DM
     nimpr = 0
@@ -132,10 +132,10 @@ subroutine dglrdm()
         nimpr = 1
         ifr = iunifi('RESULTAT')
         fichie = ' '
-        if (.not. ulexis( impr )) then
+        if (.not. ulexis(impr)) then
             call ulopen(impr, ' ', fichie, 'NEW', 'O')
-        endif
-    endif
+        end if
+    end if
 !
 ! - RELEVE DES CARACTERISTIQUES DU BETON
     call getvid('BETON', 'MATER', iocc=1, scal=mater, nbret=ibid)
@@ -154,7 +154,7 @@ subroutine dglrdm()
 !
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
         call utmess('A', 'ALGORITH6_8')
-    endif
+    end if
 !
     eb = valres(1)
     nub = valres(2)
@@ -164,17 +164,17 @@ subroutine dglrdm()
         amora = 0.0d0
     else
         amora = valres(4)
-    endif
+    end if
     if (icodr2(5) .ne. 0) then
         amorb = 0.0d0
     else
         amorb = valres(5)
-    endif
+    end if
     if (icodr2(6) .ne. 0) then
         amorh = 0.0d0
     else
         amorh = valres(6)
-    endif
+    end if
 
     nomres(1) = 'FCJ'
     nomres(2) = 'EPSI_C'
@@ -182,13 +182,13 @@ subroutine dglrdm()
     call rcvale(mater, 'BETON_GLRC ', 0, k8b, [r8b], 3, nomres, valres, icodr2, 0)
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0 .or. icodr2(3) .ne. 0) then
         call utmess('F', 'ALGORITH6_38')
-    endif
+    end if
     fcj = valres(1)
     epsi_c = valres(2)
     ftj = valres(3)
-    if (fcj.lt. ftj) then
+    if (fcj .lt. ftj) then
         call utmess('F', 'ALGORITH6_2')
-    endif
+    end if
 
 ! DEFINITION DES PROPRIETES MECANIQUE DU FERRAILLAGE
 !      IF(NNAP .GT. 0) THEN
@@ -203,7 +203,7 @@ subroutine dglrdm()
 !
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
         call utmess('A', 'ALGORITH6_10')
-    endif
+    end if
     ea(ilit) = valres(1)
 !         NUA(ILIT)=VALRES(2) ON NE PREND PAS EN COMPTE L EFFET DE
 !         POISSON SUR LES ARMATURES
@@ -212,41 +212,41 @@ subroutine dglrdm()
     nomres(1) = 'SY'
     nomres(2) = 'SIGM_LIM'
     nomres(3) = 'EPSI_LIM'
-    call rcvale(mater, 'ECRO_LINE       ', 0, k8b, [r8b],&
+    call rcvale(mater, 'ECRO_LINE       ', 0, k8b, [r8b], &
                 3, nomres, valres, icodr2, 0)
 !
     if (icodr2(1) .eq. 0) then
         sya(ilit) = valres(1)
     else
         sya(ilit) = -1.d0
-    endif
-    if (icodr2(2) .ne. 0 .or. icodr2(3) .ne. 0)then
+    end if
+    if (icodr2(2) .ne. 0 .or. icodr2(3) .ne. 0) then
         call utmess('F', 'ALGORITH6_37')
-    endif
+    end if
     epsi_els = valres(2)/ea(1)
     epsi_lim = valres(3)
 !
     call getvr8('NAPPE', 'OMX', iocc=ilit, scal=omx(ilit), nbret=ibid)
     call getvr8('NAPPE', 'OMY', iocc=ilit, scal=omy(ilit), nbret=ibid)
-    call getvr8('NAPPE', 'RX',  iocc=ilit, scal=rx(ilit),  nbret=ibid)
-    call getvr8('NAPPE', 'RY',  iocc=ilit, scal=ry(ilit),  nbret=ibid)
+    call getvr8('NAPPE', 'RX', iocc=ilit, scal=rx(ilit), nbret=ibid)
+    call getvr8('NAPPE', 'RY', iocc=ilit, scal=ry(ilit), nbret=ibid)
     if ((omx(ilit) .ne. omy(ilit)) .or. (rx(ilit) .ne. ry(ilit))) then
         call utmess('A', 'ALGORITH6_6')
-    endif
+    end if
 ! Mise en cohérence avec GLRC_DAMAGE
 ! Développement fait pour -0.5<RX<0.5
 ! or pour la cohérence avec GLRC_DAMAGE
 ! on se met dans le cas -1<RX<1
 ! pour repasser dans les conditions initiale on multiplie RX par 1/2
-    rx(ilit)=rx(ilit)*0.5d0
-    ry(ilit)=ry(ilit)*0.5d0
+    rx(ilit) = rx(ilit)*0.5d0
+    ry(ilit) = ry(ilit)*0.5d0
 ! Fin mise en cohérence avec GLRC_DAMAGE
 !
-    b=ea(ilit)*(omx(ilit)+omy(ilit))
+    b = ea(ilit)*(omx(ilit)+omy(ilit))
 ! B1=B1+EA(ILIT)*(RX(ILIT)+RY(ILIT))/2.*(OMX(ILIT)+OMY(ILIT))
 ! B1 = 0 du à la symétrie de la plaque
-    b1=0.d0
-    a=ea(ilit)*(omx(ilit)+omy(ilit))*((rx(ilit)+ry(ilit))/2.d0)**2
+    b1 = 0.d0
+    a = ea(ilit)*(omx(ilit)+omy(ilit))*((rx(ilit)+ry(ilit))/2.d0)**2
 ! 10     CONTINUE
 !      ENDIF
 ! RECUPARATION DE LA MASSE VOLUMIQUE EQUIVALENTE ET DES COEFFICIENTS
@@ -255,23 +255,23 @@ subroutine dglrdm()
 ! ATTENTION CA NE FONCTIONNE PAS SI ON A PLUSIEURS ARMATURES
     call getvr8(' ', 'RHO', scal=rho, nbret=iret)
     if (iret .eq. 0) then
-        rho=rhob + rhoa/h*2.d0*(omx(1)+omy(1))
-    endif
+        rho = rhob+rhoa/h*2.d0*(omx(1)+omy(1))
+    end if
     alpha = 0.d0
-    beta  = 0.d0
-    hyst  = 0.d0
+    beta = 0.d0
+    hyst = 0.d0
     call getvr8(' ', 'AMOR_ALPHA', scal=alpha, nbret=ibid1)
     if (ibid1 .eq. 0) then
-        alpha=amora
-    endif
+        alpha = amora
+    end if
     call getvr8(' ', 'AMOR_BETA', scal=beta, nbret=ibid1)
     if (ibid1 .eq. 0) then
-        beta=amorb
-    endif
+        beta = amorb
+    end if
     call getvr8(' ', 'AMOR_HYST', scal=hyst, nbret=ibid1)
     if (ibid1 .eq. 0) then
-        hyst=amorh
-    endif
+        hyst = amorh
+    end if
 !
 ! RECUPERATION DES MOTS CLES "CISAIL" et "PENTE"
 
@@ -280,20 +280,20 @@ subroutine dglrdm()
 
     if (pentetrac .eq. 'UTIL') then
         ipentetrac = 3
-        call getvr8('PENTE', 'EPSI_MEMB',  iocc=1, scal=emaxm, nbret=ibid1)
+        call getvr8('PENTE', 'EPSI_MEMB', iocc=1, scal=emaxm, nbret=ibid1)
     else if (pentetrac .eq. 'PLAS_ACIER') then
         if (sya(ilit) .le. 0.d0) then
             call utmess('F', 'ALGORITH6_11')
-        endif
+        end if
         ipentetrac = 2
     else if (pentetrac .eq. 'RIGI_ACIER') then
         ipentetrac = 1
-    endif
+    end if
 
 !   PENTE/FLEXION
     call getvtx('PENTE', 'FLEXION', iocc=1, scal=penteflex, nbret=ibid1)
     kapflex = 0.d0
-    if (penteflex.eq.'UTIL')then
+    if (penteflex .eq. 'UTIL') then
         call getvr8('PENTE', 'KAPPA_FLEX', iocc=1, scal=kapflex, nbret=ibid1)
         ipenteflex = 2
     else if (penteflex .eq. 'RIGI_ACIER') then
@@ -302,152 +302,152 @@ subroutine dglrdm()
         ipenteflex = 4
     else
         ipenteflex = 1
-    endif
+    end if
 !
     call getvtx(' ', 'CISAIL', scal=cisail, nbret=ibid2)
     if (cisail .eq. 'OUI') then
         icisai = 1
     else
         icisai = 0
-    endif
+    end if
 !
 ! - CALCUL DES PARAMETRES ELASTIQUE HOMOGENEISES EM,NUM,EF,NUF
     call getres(mater, type, nomcmd)
     call dgelas(eb, nub, h, b, a, em, num, ef, nuf, icisai)
 ! - DETERMINATION DES POINTS DE FISSURATION (DXD,NYT) ET (DRD,MYF)
 !   ET DES PENTES ELASTIQUES
-    call dgseui(em, num, ef, nuf, eb, nub, ftj, h, icisai, nyt, dxd, myf, drd, pelast,&
+    call dgseui(em, num, ef, nuf, eb, nub, ftj, h, icisai, nyt, dxd, myf, drd, pelast, &
                 pelasf)
 ! - DETERMINATION DES PENTES POST ELASTIQUE
-    call dgplas(ea, sya, eb, nub, ftj, fcj, num, nuf, a, b1, b, nyt, myf, ef, dxd, drd, h,&
-                ipentetrac, ipenteflex, icisai, emaxm, kapflex, nnap, omx(1), rx, ry,&
-                np, dxp, pendt,drp, mp, pendf)
+    call dgplas(ea, sya, eb, nub, ftj, fcj, num, nuf, a, b1, b, nyt, myf, ef, dxd, drd, h, &
+                ipentetrac, ipenteflex, icisai, emaxm, kapflex, nnap, omx(1), rx, ry, &
+                np, dxp, pendt, drp, mp, pendf)
 ! - DETERMINATION DES PARAMETRES D ENDOMMAGEMENT
     call dgendo(em, h, ea(1), sya(1), fcj, epsi_c, &
-                nyt, nyc, num, pendt, pendf, pelast, pelasf,&
-                icisai, gt, gf, gc, ipentetrac,&
-                np, dxp, b,alpha_c)
+                nyt, nyc, num, pendt, pendf, pelast, pelasf, &
+                icisai, gt, gf, gc, ipentetrac, &
+                np, dxp, b, alpha_c)
 !---------------------------------------------------------------------------------------
 
 !-----REMPLISSAGE DU MATERIAU
     call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K32', 2, jlm)
-    zk32(jlm ) = 'GLRC_DM'
+    zk32(jlm) = 'GLRC_DM'
     zk32(jlm+1) = 'ELAS_GLRC'
 
 !---------ELASTIQUE---------------
     lonobj = 9
-    call codent(2,'D0',K6)
+    call codent(2, 'D0', K6)
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
-    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk16(jmelk ) = 'E_M     '
-    zr(jmelr ) = em
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R', lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C', lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI', 0)
+    zk16(jmelk) = 'E_M     '
+    zr(jmelr) = em
     zk16(jmelk+1) = 'NU_M    '
-    zr(jmelr+1 ) = num
-    zk16(jmelk+2 ) = 'E_F     '
-    zr(jmelr+2 ) = ef
+    zr(jmelr+1) = num
+    zk16(jmelk+2) = 'E_F     '
+    zr(jmelr+2) = ef
     zk16(jmelk+3) = 'NU_F    '
-    zr(jmelr+3 ) = nuf
+    zr(jmelr+3) = nuf
     zk16(jmelk+4) = 'RHO     '
-    zr(jmelr+4 ) = rho
+    zr(jmelr+4) = rho
     if (alpha .gt. 0.0d0) then
         zk16(jmelk+5) = 'AMOR_ALPHA'
-        zr(jmelr+5 ) = alpha
-    endif
+        zr(jmelr+5) = alpha
+    end if
     if (beta .gt. 0.0d0) then
         zk16(jmelk+6) = 'AMOR_BETA'
-        zr(jmelr+6 ) = beta
-    endif
+        zr(jmelr+6) = beta
+    end if
     if (hyst .gt. 0.0d0) then
         zk16(jmelk+7) = 'AMOR_HYST'
-        zr(jmelr+7 ) = hyst
-    endif
+        zr(jmelr+7) = hyst
+    end if
 
 !   -- alphat : coef. dilatation thermique :
     call getvr8(' ', 'ALPHA', iocc=1, scal=alphat, nbret=nalphat)
     if (nalphat .eq. 1) then
         zk16(jmelk+8) = 'ALPHA'
-        zr(jmelr+8 ) = alphat
-    endif
+        zr(jmelr+8) = alphat
+    end if
 
 !---------GLRC_DM---------------
     lonobj = 16
-    call codent(1,'D0',K6)
+    call codent(1, 'D0', K6)
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
-    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk16(jmelk)   = 'GAMMA_T '
-    zr(jmelr )   = gt
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R', lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C', lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI', 0)
+    zk16(jmelk) = 'GAMMA_T '
+    zr(jmelr) = gt
     zk16(jmelk+1) = 'GAMMA_F '
-    zr(jmelr+1 ) = gf
+    zr(jmelr+1) = gf
     zk16(jmelk+2) = 'GAMMA_C '
-    zr(jmelr+2 ) = gc
+    zr(jmelr+2) = gc
     zk16(jmelk+3) = 'NYT     '
-    zr(jmelr+3 ) = nyt
+    zr(jmelr+3) = nyt
     zk16(jmelk+4) = 'MYF     '
-    zr(jmelr+4 ) = myf
+    zr(jmelr+4) = myf
     zk16(jmelk+5) = 'NYC     '
-    zr(jmelr+5 ) = nyc
+    zr(jmelr+5) = nyc
     zk16(jmelk+6) = 'ALPHA_C '
-    zr(jmelr+6 ) = alpha_c
+    zr(jmelr+6) = alpha_c
     zk16(jmelk+7) = 'EPSI_C  '
-    zr(jmelr+7 ) = epsi_c
+    zr(jmelr+7) = epsi_c
     zk16(jmelk+8) = 'EPSI_ELS'
-    zr(jmelr+8 ) = epsi_els
+    zr(jmelr+8) = epsi_els
     zk16(jmelk+9) = 'EPSI_LIM'
-    zr(jmelr+9 ) = epsi_lim
+    zr(jmelr+9) = epsi_lim
     zk16(jmelk+10) = 'RX'
-    zr(jmelr+10 ) = rx(1)/2.d0
+    zr(jmelr+10) = rx(1)/2.d0
     zk16(jmelk+11) = 'OMX'
-    zr(jmelr+11 ) = omx(1)
+    zr(jmelr+11) = omx(1)
     zk16(jmelk+12) = 'EA'
-    zr(jmelr+12 ) = ea(1)
+    zr(jmelr+12) = ea(1)
     zk16(jmelk+13) = 'SY'
-    zr(jmelr+13 ) = sya(1)
+    zr(jmelr+13) = sya(1)
     zk16(jmelk+14) = 'FTJ'
-    zr(jmelr+14 ) = ftj
+    zr(jmelr+14) = ftj
     zk16(jmelk+15) = 'FCJ'
-    zr(jmelr+15 ) = fcj
+    zr(jmelr+15) = fcj
 
 !---------IMPRESSION-------------
     if (nimpr .gt. 0) then
-        write (ifr,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DM :'
-        write (ifr,*) 'PENTE EN TRACTION = :',pentetrac
-        write (ifr,*) 'PENTE EN FLEXION = :',penteflex
-        write (ifr,*) 'CISAILLEMENT = :',cisail
-        write (ifr,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN MEMBRANE:'
-        write (ifr,*) 'E_M =  :',em
-        write (ifr,*) 'NU_M =  :',num
-        write (ifr,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN FLEXION:'
-        write (ifr,*) 'E_F =  :',ef
-        write (ifr,*) 'NU_F =  :',nuf
-        write (ifr,*) 'LIMITES ELASTIQUES EN TRACTION, FLEXION ET COMPRESSION :'
-        write (ifr,*) 'NYT =   :',nyt
-        write (ifr,*) 'MYF =   :',myf
-        write (ifr,*) 'NYC =   :',nyc
-        write (ifr,*) 'PARAMETRES D ENDOMMAGEMENT:'
-        write (ifr,*) 'GAMMA_T = ',gt
-        write (ifr,*) 'GAMMA_F = ',gf
-        write (ifr,*) 'GAMMA_C = ',gc
-        write (ifr,*) 'ALPHA_C = ',alpha_c
-        write (ifr,*) 'PARAMETRES DE DEFORMATION:'
-        write (ifr,*) 'EPSI_C   = ',epsi_c
-        write (ifr,*) 'EPSI_ELS = ',epsi_els
-        write (ifr,*) 'EPSI_LIM = ',epsi_lim
-        write (ifr,*) 'MASSE VOLUMIQUE:'
-        write (ifr,*) 'RHO = ',rho
+        write (ifr, *) 'PARAMETRES HOMOGENEISES POUR GLRC_DM :'
+        write (ifr, *) 'PENTE EN TRACTION = :', pentetrac
+        write (ifr, *) 'PENTE EN FLEXION = :', penteflex
+        write (ifr, *) 'CISAILLEMENT = :', cisail
+        write (ifr, *) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN MEMBRANE:'
+        write (ifr, *) 'E_M =  :', em
+        write (ifr, *) 'NU_M =  :', num
+        write (ifr, *) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN FLEXION:'
+        write (ifr, *) 'E_F =  :', ef
+        write (ifr, *) 'NU_F =  :', nuf
+        write (ifr, *) 'LIMITES ELASTIQUES EN TRACTION, FLEXION ET COMPRESSION :'
+        write (ifr, *) 'NYT =   :', nyt
+        write (ifr, *) 'MYF =   :', myf
+        write (ifr, *) 'NYC =   :', nyc
+        write (ifr, *) 'PARAMETRES D ENDOMMAGEMENT:'
+        write (ifr, *) 'GAMMA_T = ', gt
+        write (ifr, *) 'GAMMA_F = ', gf
+        write (ifr, *) 'GAMMA_C = ', gc
+        write (ifr, *) 'ALPHA_C = ', alpha_c
+        write (ifr, *) 'PARAMETRES DE DEFORMATION:'
+        write (ifr, *) 'EPSI_C   = ', epsi_c
+        write (ifr, *) 'EPSI_ELS = ', epsi_els
+        write (ifr, *) 'EPSI_LIM = ', epsi_lim
+        write (ifr, *) 'MASSE VOLUMIQUE:'
+        write (ifr, *) 'RHO = ', rho
         if (alpha .gt. 0.0d0 .or. beta .gt. 0.0d0 .or. hyst .gt. 0.0d0) then
-            write (ifr,*) 'PARAMETRES D AMORTISSEMENT:'
-            write (ifr,*) 'AMOR_ALPHA:',alpha
-            write (ifr,*) 'AMOR_BETA:',beta
-            write (ifr,*) 'AMOR_HYST:',hyst
-        endif
-    endif
+            write (ifr, *) 'PARAMETRES D AMORTISSEMENT:'
+            write (ifr, *) 'AMOR_ALPHA:', alpha
+            write (ifr, *) 'AMOR_BETA:', beta
+            write (ifr, *) 'AMOR_HYST:', hyst
+        end if
+    end if
     call jedema()
 end subroutine

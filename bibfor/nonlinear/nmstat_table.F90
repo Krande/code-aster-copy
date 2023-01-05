@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmstat_table(ds_measure)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/tbajli.h"
 !
-type(NL_DS_Measure), intent(in) :: ds_measure
+    type(NL_DS_Measure), intent(in) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ type(NL_DS_Measure), intent(in) :: ds_measure
     integer :: i_col, i_para_real, i_para_inte, i_device
     integer :: vali(40)
     character(len=8) :: k8bid
-    complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
+    complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(40), vale_r
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
@@ -62,37 +62,37 @@ type(NL_DS_Measure), intent(in) :: ds_measure
 !
 ! - Get parameters
 !
-    table     = ds_measure%table
-    nb_cols   = table%nb_cols
+    table = ds_measure%table
+    nb_cols = table%nb_cols
     nb_device = ds_measure%nb_device
 !
 ! - Set list of values
 !
     do i_col = 1, nb_cols
-        column   = table%cols(i_col)
-        l_acti   = table%l_cols_acti(i_col)
+        column = table%cols(i_col)
+        l_acti = table%l_cols_acti(i_col)
         if (l_acti) then
-            i_device    = table%indx_vale(i_col)
-            device      = ds_measure%device(i_device)
+            i_device = table%indx_vale(i_col)
+            device = ds_measure%device(i_device)
             device_type = device%type
             l_vale_inte = column%l_vale_inte
             l_vale_real = column%l_vale_real
             if (l_vale_real) then
-                vale_r            = column%vale_real
-                i_para_real       = i_para_real + 1
+                vale_r = column%vale_real
+                i_para_real = i_para_real+1
                 valr(i_para_real) = vale_r
-            endif
+            end if
             if (l_vale_inte) then
-                vale_i            = column%vale_inte
-                i_para_inte       = i_para_inte + 1
+                vale_i = column%vale_inte
+                i_para_inte = i_para_inte+1
                 vali(i_para_inte) = vale_i
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - Add line in table
 !
-    call tbajli(table%table_io%tablName, table%table_io%nbPara, table%table_io%paraName,&
+    call tbajli(table%table_io%tablName, table%table_io%nbPara, table%table_io%paraName, &
                 vali, valr, [c16bid], k8bid, 0)
 !
 end subroutine

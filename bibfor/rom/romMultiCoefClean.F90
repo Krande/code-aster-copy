@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romMultiCoefClean(ds_multicoef)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -43,10 +43,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (ds_multicoef%l_real) then
-        AS_DEALLOCATE(vr  = ds_multicoef%coef_real)
-    endif
+        AS_DEALLOCATE(vr=ds_multicoef%coef_real)
+    end if
     if (ds_multicoef%l_cplx) then
-        AS_DEALLOCATE(vc  = ds_multicoef%coef_cplx)
-    endif
+        AS_DEALLOCATE(vc=ds_multicoef%coef_cplx)
+    end if
 !
 end subroutine

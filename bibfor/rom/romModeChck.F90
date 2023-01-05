@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine romModeChck(mode)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(in) :: mode
+    type(ROM_DS_Field), intent(in) :: mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,27 +46,27 @@ type(ROM_DS_Field), intent(in) :: mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    modeMesh  = mode%mesh
+    modeMesh = mode%mesh
     modeModel = mode%model
 !
 ! - Check mesh
 !
-    call dismoi('DIM_GEOM', modeMesh, 'MAILLAGE', repi = nbDimGeom)
+    call dismoi('DIM_GEOM', modeMesh, 'MAILLAGE', repi=nbDimGeom)
     if (nbDimGeom .ne. 3) then
-        call utmess('F','ROM10_10')
-    endif
+        call utmess('F', 'ROM10_10')
+    end if
 !
 ! - Check model
 !
     if (modeModel .eq. '#PLUSIEURS') then
-        call utmess('F','ROM10_11')
-    endif
+        call utmess('F', 'ROM10_11')
+    end if
 !
 ! - Check modelization
 !
-    call dismoi('MODELISATION', modeModel, 'MODELE', repk = modeli)
+    call dismoi('MODELISATION', modeModel, 'MODELE', repk=modeli)
     if (modeli .ne. '3D' .and. modeli .ne. '3D_DIAG' .and. modeli .ne. '3D_SI') then
-        call utmess('F','ROM10_12')
-    endif
+        call utmess('F', 'ROM10_12')
+    end if
 !
 end subroutine

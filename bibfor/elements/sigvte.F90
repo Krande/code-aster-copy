@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,9 @@ subroutine sigvte(sigmtd, sigmt)
 !
 ! ......................................................................
 !
-    real(kind=8) :: sigmtd ( 5 )
+    real(kind=8) :: sigmtd(5)
 !
-    real(kind=8) :: sigmt ( 3 , 3 )
+    real(kind=8) :: sigmt(3, 3)
 !
 !
 !
@@ -38,22 +38,22 @@ subroutine sigvte(sigmtd, sigmt)
 !
 !---- CONTRAINTES NORMALES
 !
-    sigmt ( 1 , 1 ) = sigmtd ( 1 )
-    sigmt ( 2 , 2 ) = sigmtd ( 2 )
+    sigmt(1, 1) = sigmtd(1)
+    sigmt(2, 2) = sigmtd(2)
 !
-    sigmt ( 3 , 3 ) = 0.d0
+    sigmt(3, 3) = 0.d0
 !
 !---- CISAILLEMENT
 !
-    sigmt ( 1 , 2 ) = sigmtd ( 3 )
-    sigmt ( 1 , 3 ) = sigmtd ( 4 )
-    sigmt ( 2 , 3 ) = sigmtd ( 5 )
+    sigmt(1, 2) = sigmtd(3)
+    sigmt(1, 3) = sigmtd(4)
+    sigmt(2, 3) = sigmtd(5)
 !
 !---- SYMETRISATION
 !
-    sigmt ( 2 , 1 ) = sigmt ( 1 , 2 )
-    sigmt ( 3 , 1 ) = sigmt ( 1 , 3 )
-    sigmt ( 3 , 2 ) = sigmt ( 2 , 3 )
+    sigmt(2, 1) = sigmt(1, 2)
+    sigmt(3, 1) = sigmt(1, 3)
+    sigmt(3, 2) = sigmt(2, 3)
 !
 ! FIN
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -26,11 +26,11 @@ implicit none
 #include "asterfort/cachre.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load
-character(len=8), intent(in) :: mesh
-integer, intent(in) :: geomDime
-character(len=8), intent(in) :: model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: geomDime
+    character(len=8), intent(in) :: model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,17 +49,17 @@ character(len=4), intent(in) :: valeType
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: max_load_type
-    parameter (max_load_type = 6)
+    parameter(max_load_type=6)
     integer :: nbocc(max_load_type)
     character(len=5) :: param(max_load_type)
     character(len=16) :: keywordfact(max_load_type)
 !
     integer :: i
     character(len=5) :: curr_para
-    data keywordfact / 'FORCE_CONTOUR' , 'FORCE_INTERNE' , 'FORCE_ARETE' ,&
-     &                 'FORCE_FACE'    , 'FORCE_POUTRE'  , 'FORCE_COQUE'  /
-    data param       / 'F1D2D'         , ' '             , 'F1D3D'       ,&
-     &                 'F2D3D'         , 'F1D1D'         , ' '            /
+    data keywordfact/'FORCE_CONTOUR', 'FORCE_INTERNE', 'FORCE_ARETE',&
+     &                 'FORCE_FACE', 'FORCE_POUTRE', 'FORCE_COQUE'/
+    data param/'F1D2D', ' ', 'F1D3D',&
+     &                 'F2D3D', 'F1D1D', ' '/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,11 +77,11 @@ character(len=4), intent(in) :: valeType
     if (geomDime .eq. 2) then
         if (nbocc(4) .ne. 0) then
             call utmess('F', 'CHARGES2_5', sk=keywordfact(4))
-        endif
+        end if
         if (nbocc(5) .ne. 0) then
             call utmess('F', 'CHARGES2_5', sk=keywordfact(5))
-        endif
-    endif
+        end if
+    end if
 !
 ! - Load affectation
 !
@@ -97,9 +97,9 @@ character(len=4), intent(in) :: valeType
 ! --------- FORCE_COQUE#3D
             if (keywordfact(i) .eq. 'FORCE_COQUE' .and. geomDime .eq. 3) curr_para = 'FCO3D'
 !
-            call cachre(load, model, mesh, geomDime, valeType,&
+            call cachre(load, model, mesh, geomDime, valeType, &
                         curr_para, keywordfact(i))
-        endif
+        end if
     end do
 !
 end subroutine

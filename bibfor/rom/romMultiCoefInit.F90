@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romMultiCoefInit(nb_vari_coef, ds_multicoef)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
@@ -55,12 +55,12 @@ implicit none
 ! - Allocate list of coefficients (include initial value)
 !
     if (l_real) then
-        AS_ALLOCATE(vr = ds_multicoef%coef_real, size = nb_vari_coef+1)
+        AS_ALLOCATE(vr=ds_multicoef%coef_real, size=nb_vari_coef+1)
     elseif (l_cplx) then
-        AS_ALLOCATE(vc = ds_multicoef%coef_cplx, size = nb_vari_coef+1)
+        AS_ALLOCATE(vc=ds_multicoef%coef_cplx, size=nb_vari_coef+1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Set list of coefficients if it's constant
 !
@@ -72,8 +72,8 @@ implicit none
                 ds_multicoef%coef_cplx(i_para_vale) = ds_multicoef%coef_cste_cplx
             else
                 ASSERT(.false.)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine medom2(modele, mate, mateco, cara, kcha,&
-                  ncha, result, nuord, nbordr, base,&
+subroutine medom2(modele, mate, mateco, cara, kcha, &
+                  ncha, result, nuord, nbordr, base, &
                   npass, ligrel)
 !
     implicit none
@@ -65,7 +65,7 @@ subroutine medom2(modele, mate, mateco, cara, kcha,&
 !
 !
     integer :: nbmxba
-    parameter (nbmxba=2)
+    parameter(nbmxba=2)
 !
     integer :: nbordr, npass, nbligr, i, kmod, nbmaal
     integer :: iligrs, imodls, ibases, n1, n2, n3
@@ -83,15 +83,15 @@ subroutine medom2(modele, mate, mateco, cara, kcha,&
 !
 !     RECUPERATION DU MODELE, CARA, CHARGES A PARTIR DU RESULTAT ET DU
 !     NUMERO ORDRE
-    call medom1(modele, mate, mateco, cara, kcha,&
+    call medom1(modele, mate, mateco, cara, kcha, &
                 ncha, result, nuord)
 !
 !     RECUPERATION DU LIGREL DU MODELE
 !
 !     POUR LE PREMIER PASSAGE ON INITIALISE LES TABLEAUX SAUVES
     if (npass .eq. 0) then
-        npass=npass+1
-        nbligr=0
+        npass = npass+1
+        nbligr = 0
         call jedetr('&&MEDOM2.LIGRS    ')
         call jedetr('&&MEDOM2.MODELS   ')
         call jedetr('&&MEDOM2.BASES    ')
@@ -101,48 +101,48 @@ subroutine medom2(modele, mate, mateco, cara, kcha,&
         call jeveut('&&MEDOM2.LIGRS    ', 'L', iligrs)
         call jeveut('&&MEDOM2.MODELS   ', 'L', imodls)
         call jeveut('&&MEDOM2.BASES    ', 'L', ibases)
-    endif
+    end if
 !
 !     ON REGARDE SI LE MODELE A DEJA ETE RENCONTRE
-    kmod=indik8(zk8(imodls-1),modele,1,nbligr+1)
-    baslig=' '
+    kmod = indik8(zk8(imodls-1), modele, 1, nbligr+1)
+    baslig = ' '
     do i = 1, nbligr
         if (zk8(imodls-1+i) .eq. modele) then
-            kmod=1
-            baslig=zk8(ibases-1+i)(1:1)
-        endif
+            kmod = 1
+            baslig = zk8(ibases-1+i) (1:1)
+        end if
     end do
 !
 !     SI OUI, ON REGARDE SI LE LIGREL A ETE CREE SUR LA MEME BASE
 !     QUE LA BASE DEMANDEE
-    if ((kmod.gt.0) .and. (baslig.eq.base)) then
+    if ((kmod .gt. 0) .and. (baslig .eq. base)) then
 !
 !     SI OUI ALORS ON LE REPREND
-        ligrel=zk24(iligrs-1+nbligr)
+        ligrel = zk24(iligrs-1+nbligr)
 !
 !     SI NON ON CREE UN NOUVEAU LIGREL
     else
-        n1 = getexm(' ','GROUP_MA')
-        n2 = getexm(' ','MAILLE')
-        n3 = getexm(' ','TOUT')
+        n1 = getexm(' ', 'GROUP_MA')
+        n2 = getexm(' ', 'MAILLE')
+        n3 = getexm(' ', 'TOUT')
         if (n1+n2+n3 .ne. 0) then
             call exlima(' ', 0, base, modele, ligr1)
         else
             call utmamo(modele, nbmaal, '&&MEDOM2.LISTE_MAILLES')
             call jeveuo('&&MEDOM2.LISTE_MAILLES', 'L', vi=liste_mailles)
-            noojb='12345678.LIGR000000.LIEL'
+            noojb = '12345678.LIGR000000.LIEL'
             call gnomsd(result, noojb, 14, 19)
-            ligr1=noojb(1:19)
-            ASSERT(ligr1.ne.' ')
+            ligr1 = noojb(1:19)
+            ASSERT(ligr1 .ne. ' ')
             call exlim1(liste_mailles, nbmaal, modele, base, ligr1)
             call jedetr('&&MEDOM2.LISTE_MAILLES')
-        endif
-        nbligr=nbligr+1
-        zk24(iligrs-1+nbligr)=ligr1
-        zk8( imodls-1+nbligr)=modele
-        zk8( ibases-1+nbligr)=base
-        ligrel=ligr1
-    endif
+        end if
+        nbligr = nbligr+1
+        zk24(iligrs-1+nbligr) = ligr1
+        zk8(imodls-1+nbligr) = modele
+        zk8(ibases-1+nbligr) = base
+        ligrel = ligr1
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfaddm(ds_contact, l_frot      , node_slav_indx, i_cont_link,&
-                  model_ndim, nb_node_mast, nods_mast_indx, coef_node  , tau1,&
+subroutine cfaddm(ds_contact, l_frot, node_slav_indx, i_cont_link, &
+                  model_ndim, nb_node_mast, nods_mast_indx, coef_node, tau1, &
                   tau2, norm, jeu, coornp)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -87,15 +87,15 @@ implicit none
     sdcont_tangco = ds_contact%sdcont_solv(1:14)//'.TANGCO'
     sdcont_jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
     sdcont_approj = ds_contact%sdcont_solv(1:14)//'.APPROJ'
-    call jeveuo(sdcont_tangco, 'E', vr = v_sdcont_tangco)
-    call jeveuo(sdcont_jeuite, 'E', vr = v_sdcont_jeuite)
-    call jeveuo(sdcont_approj, 'E', vr = v_sdcont_approj)
+    call jeveuo(sdcont_tangco, 'E', vr=v_sdcont_tangco)
+    call jeveuo(sdcont_jeuite, 'E', vr=v_sdcont_jeuite)
+    call jeveuo(sdcont_approj, 'E', vr=v_sdcont_approj)
 !
 ! - Compute coefficients for pairing
 !
-    call cfcoef(ds_contact    , model_ndim , nb_node_mast, nods_mast_indx, coef_node,&
-                node_slav_indx, norm       , tau1        , tau2          , coef_cont,&
-                coef_fric_x   , coef_fric_y, nb_dof_tot  , dof_indx)
+    call cfcoef(ds_contact, model_ndim, nb_node_mast, nods_mast_indx, coef_node, &
+                node_slav_indx, norm, tau1, tau2, coef_cont, &
+                coef_fric_x, coef_fric_y, nb_dof_tot, dof_indx)
 !
 ! - Update gaps
 !
@@ -120,9 +120,9 @@ implicit none
 !
 ! - Set coefficients for pairing
 !
-    call cfcoem(ds_contact , l_frot      , node_slav_indx, i_cont_link,&
-                nb_dof_tot , nb_node_mast, nods_mast_indx, dof_indx   ,&
-                coef_cont  , coef_fric_x, coef_fric_y)
+    call cfcoem(ds_contact, l_frot, node_slav_indx, i_cont_link, &
+                nb_dof_tot, nb_node_mast, nods_mast_indx, dof_indx, &
+                coef_cont, coef_fric_x, coef_fric_y)
 !
     call jedema()
 end subroutine

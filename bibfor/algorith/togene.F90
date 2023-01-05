@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine togene(dplmod, fphys, fgene, coef)
 #include "jeveux.h"
 !-----------------------------------------------------------------------
     real(kind=8), pointer  :: dplmod(:)
-    real(kind=8),           intent(in)  :: fphys(:)
-    real(kind=8),           intent(out) :: fgene(:)
+    real(kind=8), intent(in)  :: fphys(:)
+    real(kind=8), intent(out) :: fgene(:)
     real(kind=8), optional, intent(in)  :: coef
 !-----------------------------------------------------------------------
     integer :: i, j, nbmode
@@ -41,7 +41,7 @@ subroutine togene(dplmod, fphys, fgene, coef)
 
     do j = 1, 3
         do i = 1, nbmode
-            fgene(i) = fgene(i) + coef_m*dplmod((i-1)*3+j)*fphys(j)
+            fgene(i) = fgene(i)+coef_m*dplmod((i-1)*3+j)*fphys(j)
         end do
     end do
 

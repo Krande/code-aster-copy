@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine ordonp(nomfon)
     call jemarq()
 !
 !     OBJET INITIAL RECOPIE DANS FONC0
-    fonc0='&&ORDONP.FONC      '
-    chval=nomfon//'.VALE'
-    chpar=nomfon//'.PARA'
-    sfval=fonc0//'.VALE'
-    sfpar=fonc0//'.PARA'
+    fonc0 = '&&ORDONP.FONC      '
+    chval = nomfon//'.VALE'
+    chpar = nomfon//'.PARA'
+    sfval = fonc0//'.VALE'
+    sfpar = fonc0//'.PARA'
 !
     call jelira(chpar, 'LONUTI', nbpara)
 !     RECUPERE LES PARAMETRES
@@ -66,7 +66,7 @@ subroutine ordonp(nomfon)
 !     TABLEAU D'ORDRE
     call wkvect(fonc0//'.ORDR', 'V V I', nbpara, ior)
     do i = 1, nbpara
-        zi(ior-1+i)=i
+        zi(ior-1+i) = i
     end do
 !
 !     TRI DES PARAMETRES
@@ -79,26 +79,26 @@ subroutine ordonp(nomfon)
                 zi(ior-1+i) = zi(ior-1+j)
                 zr(ipar-1+j) = xt
                 zi(ior-1+j) = it
-            endif
+            end if
         end do
     end do
 !
 !     CALCULE LA TAILLE CUMULEE DE LA COLLECTION
-    nbpt=0
+    nbpt = 0
     do i = 1, nbpara
         call jelira(jexnum(sfval, i), 'LONMAX', nbp)
-        nbpt=nbpt+nbp
+        nbpt = nbpt+nbp
     end do
 !
 !     --- CREATION DE L'OBJET NOMFON.PARA ---
     call wkvect(chpar, 'G V R', nbpara, lpar)
 !     --- CREATION DE LA COLLECTION NOMFON.VALE ---
-    call jecrec(chval, 'G V R', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(chval, 'G V R', 'NU', 'CONTIG', 'VARIABLE', &
                 nbpara)
     call jeecra(chval, 'LONT', nbpt)
     do i = 1, nbpara
 !        REMPLISSAGE DU .PARA
-        zr(lpar-1+i)=zr(ipar-1+i)
+        zr(lpar-1+i) = zr(ipar-1+i)
 !        REMPLISSAGE DES .VALE EN FONCTION DE L'ORDRE
         call jelira(jexnum(sfval, zi(ior-1+i)), 'LONMAX', nbp)
         call jeveuo(jexnum(sfval, zi(ior-1+i)), 'E', ival)
@@ -107,7 +107,7 @@ subroutine ordonp(nomfon)
         call jeecra(jexnum(chval, i), 'LONUTI', nbp)
         call jeveuo(jexnum(chval, i), 'E', lval)
         do j = 1, nbp
-            zr(lval+j-1)=zr(ival+j-1)
+            zr(lval+j-1) = zr(ival+j-1)
         end do
     end do
 !

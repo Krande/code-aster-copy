@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine etenc2(cartz, iret)
     call jeexin(cart//'.DESC', iret0)
     if (iret0 .le. 0) then
         call utmess('F', 'CALCULEL2_49')
-    endif
+    end if
 !
     call jeveuo(cart//'.NOLI', 'L', noli)
     call jeveuo(cart//'.DESC', 'L', desc)
@@ -77,7 +77,7 @@ subroutine etenc2(cartz, iret)
 !       -- LA CARTE EST DEJA ETENDUE:
         if (ibid .gt. 0) goto 50
         call wkvect(cart//'.PTMA', 'V V I', nbma, jptma)
-    endif
+    end if
 !
 !
 !     2- REMPLISSAGE DE .PTMA :
@@ -93,8 +93,8 @@ subroutine etenc2(cartz, iret)
                 zi(jptma-1+i) = igd
             end do
             goto 40
-        endif
-        if ((code.eq.-1)) iret = 1
+        end if
+        if ((code .eq. -1)) iret = 1
 !
 !        ------- GROUPE DE MAILLES DU MAILLAGE:
         if (code .eq. 2) then
@@ -105,7 +105,7 @@ subroutine etenc2(cartz, iret)
                 zi(jptma-1+ii) = igd
             end do
             goto 40
-        endif
+        end if
 !
 !        ------- LISTE TARDIVE DE MAILLES ASSOCIEE A LA CARTE:
         if (abs(code) .eq. 3) then
@@ -116,21 +116,21 @@ subroutine etenc2(cartz, iret)
                     ii = zi(lima-1+i)
                     if (ii .le. 0) then
                         valk = cart
-                        vali (1) = ient
-                        vali (2) = i
-                        vali (3) = ii
+                        vali(1) = ient
+                        vali(2) = i
+                        vali(3) = ii
                         call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
-                    endif
+                    end if
                     zi(jptma-1+ii) = igd
                 end do
             else
                 iret = 1
-            endif
+            end if
             goto 40
-        endif
- 40     continue
+        end if
+40      continue
     end do
- 50 continue
+50  continue
 !
 !
     call jedema()

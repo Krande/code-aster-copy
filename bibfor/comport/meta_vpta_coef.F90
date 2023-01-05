@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine meta_vpta_coef(metaRela, metaGlob,&
-                          lgpg     , fami     , kpg      , j_mater  ,&
-                          l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
-                          phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
+subroutine meta_vpta_coef(metaRela, metaGlob, &
+                          lgpg, fami, kpg, j_mater, &
+                          l_temp, temp, meta_type, nb_phasis, phas_prev, &
+                          phas_curr, zcold_curr, young, deuxmu, coef, &
                           trans)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -37,22 +37,22 @@ implicit none
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: metaRela, metaGlob
-integer, intent(in) :: lgpg
-character(len=4), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: j_mater
-aster_logical, intent(in) :: l_temp
-real(kind=8), intent(in) :: temp
-integer, intent(in) :: meta_type
-integer, intent(in) :: nb_phasis
-real(kind=8), intent(in) :: phas_prev(*)
-real(kind=8), intent(in) :: phas_curr(*)
-real(kind=8), intent(in) :: zcold_curr
-real(kind=8), intent(in) :: young
-real(kind=8), intent(in) :: deuxmu
-real(kind=8), intent(out) :: coef
-real(kind=8), intent(out) :: trans
+    character(len=16), intent(in) :: metaRela, metaGlob
+    integer, intent(in) :: lgpg
+    character(len=4), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: j_mater
+    aster_logical, intent(in) :: l_temp
+    real(kind=8), intent(in) :: temp
+    integer, intent(in) :: meta_type
+    integer, intent(in) :: nb_phasis
+    real(kind=8), intent(in) :: phas_prev(*)
+    real(kind=8), intent(in) :: phas_curr(*)
+    real(kind=8), intent(in) :: zcold_curr
+    real(kind=8), intent(in) :: young
+    real(kind=8), intent(in) :: deuxmu
+    real(kind=8), intent(out) :: coef
+    real(kind=8), intent(out) :: trans
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,107 +93,107 @@ real(kind=8), intent(out) :: trans
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nb_phasis.le.5)
+    ASSERT(nb_phasis .le. 5)
     nb_phasis_c = nb_phasis-1
-    trans     = 0.d0
-    coef      = 1.d0
-    ksp       = 1
-    fpt(:)    = 0.d0
-    kpt(:)    = 0.d0
-    eta(:)    = 0.d0
-    n(:)      = 0.d0
+    trans = 0.d0
+    coef = 1.d0
+    ksp = 1
+    fpt(:) = 0.d0
+    kpt(:) = 0.d0
+    eta(:) = 0.d0
+    n(:) = 0.d0
     unsurn(:) = 0.d0
-    c(:)      = 0.d0
-    m(:)      = 0.d0
-    epsp(:)   = 0.d0
-    h0(:)     = 0.d0
+    c(:) = 0.d0
+    m(:) = 0.d0
+    epsp(:) = 0.d0
+    h0(:) = 0.d0
 !
 ! - Cumulated plastic strain
 !
     call jevech('PVARIPR', 'L', j_vari)
     do i_phasis = 1, nb_phasis
-        epsp(i_phasis)   = zr(j_vari+lgpg*(kpg-1)-1+i_phasis)
+        epsp(i_phasis) = zr(j_vari+lgpg*(kpg-1)-1+i_phasis)
         deltaz(i_phasis) = (phas_curr(i_phasis)-phas_prev(i_phasis))
     end do
 !
 ! - Is elastic ?
 !
     if (meta_type .eq. META_STEEL) then
-        l_elas = zr(j_vari+lgpg*(kpg-1)+(nb_phasis+1)).lt.0.5d0
+        l_elas = zr(j_vari+lgpg*(kpg-1)+(nb_phasis+1)) .lt. 0.5d0
     elseif (meta_type .eq. META_ZIRC) then
-        l_elas = zr(j_vari+lgpg*(kpg-1)+nb_phasis).lt.0.5d0
+        l_elas = zr(j_vari+lgpg*(kpg-1)+nb_phasis) .lt. 0.5d0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Mechanisms of comportment law
 !
-    call metaGetMechanism(metaRela, metaGlob,&
-                          l_visc = l_visc,&
-                          l_hard_line = l_hard_line, l_plas_tran = l_plas_tran)
+    call metaGetMechanism(metaRela, metaGlob, &
+                          l_visc=l_visc, &
+                          l_hard_line=l_hard_line, l_plas_tran=l_plas_tran)
 !
 ! - Transformation plasticity parameters
 !
     if (l_plas_tran) then
-        call metaGetParaPlasTransf('+'      , fami     , kpg   , ksp       , j_mater,&
-                                   meta_type, nb_phasis, deltaz, zcold_curr,&
-                                   kpt      , fpt)
-    endif
+        call metaGetParaPlasTransf('+', fami, kpg, ksp, j_mater, &
+                                   meta_type, nb_phasis, deltaz, zcold_curr, &
+                                   kpt, fpt)
+    end if
 !
 ! - Visco-plasticity parameters
 !
     if (l_visc) then
-        call metaGetParaVisc('+'      , fami     , kpg, ksp, j_mater,&
-                             meta_type, nb_phasis, eta, n  , unsurn ,&
-                             c        , m)
-    endif
+        call metaGetParaVisc('+', fami, kpg, ksp, j_mater, &
+                             meta_type, nb_phasis, eta, n, unsurn, &
+                             c, m)
+    end if
 !
 ! - Compute Sum(iphase) [kpt * fpt] on cold phasis
 !
-    trans     = 0.d0
+    trans = 0.d0
     do i_phasis_c = 1, nb_phasis_c
         if (deltaz(i_phasis_c) .gt. 0) then
             trans = trans+kpt(i_phasis_c)*fpt(i_phasis_c)*deltaz(i_phasis_c)
-        endif
+        end if
     end do
 !
 ! - Compute coefficient
 !
-    if (l_elas.or.l_visc) then
+    if (l_elas .or. l_visc) then
         coef = 1.d0
     else
 !
 ! ----- Mixing law: yield
 !
-        call metaGetParaMixture('+'   , fami     , kpg      , ksp       , j_mater     ,&
-                                l_visc, meta_type, nb_phasis, zcold_curr, fmel  = fmel)
+        call metaGetParaMixture('+', fami, kpg, ksp, j_mater, &
+                                l_visc, meta_type, nb_phasis, zcold_curr, fmel=fmel)
 !
 ! ----- Get point on hardening curve
 !
         if (l_hard_line) then
             coef_hard = 1.d0
-            call metaGetParaHardLine('+'      , fami     , kpg, ksp, j_mater,&
-                                     meta_type, nb_phasis,&
-                                     young    , coef_hard, h0)
+            call metaGetParaHardLine('+', fami, kpg, ksp, j_mater, &
+                                     meta_type, nb_phasis, &
+                                     young, coef_hard, h0)
         else
-            call metaGetParaHardTrac(j_mater, meta_type, nb_phasis,&
-                                     l_temp , temp     ,&
-                                     epsp   , h0)
-        endif
+            call metaGetParaHardTrac(j_mater, meta_type, nb_phasis, &
+                                     l_temp, temp, &
+                                     epsp, h0)
+        end if
 !
 ! ----- Compute coefficient
 !
         rprim = 0.d0
         if (zcold_curr .gt. 0.d0) then
             do i_phasis_c = 1, nb_phasis_c
-                rprim = rprim + phas_curr(i_phasis_c)*h0(i_phasis_c)
+                rprim = rprim+phas_curr(i_phasis_c)*h0(i_phasis_c)
             end do
             rprim = rprim/zcold_curr
         else
             rprim = 0.d0
-        endif
+        end if
         rprim = (1.d0-fmel)*h0(nb_phasis)+fmel*rprim
-        coef  = 1.d0-(1.5d0*deuxmu)/(1.5d0*deuxmu+rprim)
-    endif
+        coef = 1.d0-(1.5d0*deuxmu)/(1.5d0*deuxmu+rprim)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,26 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xcalculfmm(nbno,jcalculs, jcopiels, jnodto, ndim, nodvois, &
-                      jltno, jvcn, jgrlr, jbl, jbeta, jlistp , jvp, &
+subroutine xcalculfmm(nbno, jcalculs, jcopiels, jnodto, ndim, nodvois, &
+                      jltno, jvcn, jgrlr, jbl, jbeta, jlistp, jvp, &
                       vale, deltat, levset, signls)
 
-   implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/xcalculgeo.h"
 
-
- integer           :: jcalculs, jcopiels, jnodto
- integer           :: jbl, jbeta, jlistp, jvp
- integer           :: jvcn, jgrlr, jltno
- integer           :: ndim, nbno, nodvois
- real(kind=8)      :: deltat
- character(len=2)  :: levset
- character(len=3)  :: signls
- real(kind=8)      :: vale(:)
+    integer           :: jcalculs, jcopiels, jnodto
+    integer           :: jbl, jbeta, jlistp, jvp
+    integer           :: jvcn, jgrlr, jltno
+    integer           :: ndim, nbno, nodvois
+    real(kind=8)      :: deltat
+    character(len=2)  :: levset
+    character(len=3)  :: signls
+    real(kind=8)      :: vale(:)
 ! person_in_charge: patrick.massin at edf.fr
 !
 !       XCALCULFMM  : CALCUL EXPLICITE DES LEVEL SETS PAR FMM
@@ -84,35 +83,35 @@ subroutine xcalculfmm(nbno,jcalculs, jcopiels, jnodto, ndim, nodvois, &
    !! initialisation variables
     jvcnd = jgrlr+10
     phi(1:3) = 0.d0
-    h(1:3)   = 0.d0
+    h(1:3) = 0.d0
 
 !----------------DEBUT---------------------------------------------------
 
     !! recherche du noeud voisin à calculer!!
-    search=0
-    do i=1, nbno
+    search = 0
+    do i = 1, nbno
         if (zi(jnodto-1+i) .eq. zi(jvcn-1+nodvois)) then
-            search=i
+            search = i
             exit
-        endif
+        end if
     end do
 
     ! assertion : le numero de noeud voisin est dans le tore de calcul
-    ASSERT(search.ne.0)
+    ASSERT(search .ne. 0)
 
     !! min entre i-1 et i+1 dans les trois directions sur le noeud à calculer!!
-    do  i= 1, ndim
+    do i = 1, ndim
 
-        if (zi(jvcn-1+6*(search-1)+2*(i-1)+1) .eq. 0  ) then
+        if (zi(jvcn-1+6*(search-1)+2*(i-1)+1) .eq. 0) then
             ! si i-1 n'est pas defini, on prend la valeur en i+1
 
             phi(i) = zr(jcalculs-1+zi(jvcn-1+6*(search-1)+2*(i-1)+2))
-            h(i) = zr(jvcnd-1+ 6*(search-1)+2*(i-1)+2)
-        elseif (zi(jvcn-1+6*(search-1)+2*(i-1)+2) .eq. 0 ) then
+            h(i) = zr(jvcnd-1+6*(search-1)+2*(i-1)+2)
+        elseif (zi(jvcn-1+6*(search-1)+2*(i-1)+2) .eq. 0) then
             ! si i+1 n'est pas defini, on prend la valeur en i-1
 
             phi(i) = zr(jcalculs-1+zi(jvcn-1+6*(search-1)+2*(i-1)+1))
-            h(i) = zr(jvcnd-1+ 6*(search-1) +2*(i-1)+1)
+            h(i) = zr(jvcnd-1+6*(search-1)+2*(i-1)+1)
         else
             ! si i-1 et i+1 ont definis, on prend la plus petite des deux
 
@@ -127,62 +126,62 @@ subroutine xcalculfmm(nbno,jcalculs, jcopiels, jnodto, ndim, nodvois, &
             imin = vmin(1)
 
             phi(i) = zr(jcalculs-1+zi(jvcn-1+6*(search-1)+2*(i-1)+imin))
-            h(i) = zr(jvcnd-1+ 6*(search-1) + 2*(i-1)+imin)
-        endif
+            h(i) = zr(jvcnd-1+6*(search-1)+2*(i-1)+imin)
+        end if
 
     end do
 
     !! évalution du terme sous la racine pour verifier son signe
-     signe = 0
-     if( maxval(phi) .ne. r8gaem()) then
-         if (ndim .eq. 3) then
-             signe = (-1*2*phi(1)*h(2)**2.d0*h(3)**2.d0 - 2*phi(2)*h(1)**2.d0* &
-                     h(3)**2.d0 - 2*phi(3)*h(2)**2.d0*h(1)**2.d0)**2.d0 - &
-                     4*(h(2)**2.d0*h(3)**2.d0 + h(1)**2.d0*h(3)**2.d0 + &
-                     h(1)**2.d0*h(2)**2.d0) * (phi(1)**2.d0*h(2)**2.d0* &
-                     h(3)**2.d0 + phi(2)**2.d0*h(1)**2.d0*h(3)**2.d0 + phi(3)**2d0* &
-                     h(1)**2.d0*h(2)**2.d0 - h(2)**2.d0*h(3)**2.d0*h(1)**2.d0)
-         else
-             signe = h(1)**2.d0*h(2)**2.d0*(h(1)**2.d0+ h(2)**2.d0 &
-                     -phi(1)**2.d0+2*phi(1)*phi(2)-phi(2)**2d0)
-         endif
-     endif
+    signe = 0
+    if (maxval(phi) .ne. r8gaem()) then
+        if (ndim .eq. 3) then
+            signe = (-1*2*phi(1)*h(2)**2.d0*h(3)**2.d0-2*phi(2)*h(1)**2.d0* &
+                     h(3)**2.d0-2*phi(3)*h(2)**2.d0*h(1)**2.d0)**2.d0- &
+                    4*(h(2)**2.d0*h(3)**2.d0+h(1)**2.d0*h(3)**2.d0+ &
+                       h(1)**2.d0*h(2)**2.d0)*(phi(1)**2.d0*h(2)**2.d0* &
+                                        h(3)**2.d0+phi(2)**2.d0*h(1)**2.d0*h(3)**2.d0+phi(3)**2d0* &
+                                             h(1)**2.d0*h(2)**2.d0-h(2)**2.d0*h(3)**2.d0*h(1)**2.d0)
+        else
+            signe = h(1)**2.d0*h(2)**2.d0*(h(1)**2.d0+h(2)**2.d0 &
+                                           -phi(1)**2.d0+2*phi(1)*phi(2)-phi(2)**2d0)
+        end if
+    end if
 
     !!calcul exlicite de la valeur du noeud!!
-     if ( maxval(phi) .ne. r8gaem() .and. signe .gt. 0) then
-         if ( ndim .eq. 3 ) then
-             zr(jcalculs-1+zi(jvcn-1+nodvois)) = ( 2*phi(1)*h(2)**2.d0*h(3)**2.d0 + &
-                                                  2*phi(2)*h(1)**2.d0*h(3)**2.d0 + &
-                                                  2*phi(3)*h(1)**2.d0*h(2)**2.d0 + &
-                                                  sqrt( signe ) ) / ( 2*(h(2)**2.d0* &
-                                                  h(3)**2.d0 + h(1)**2.d0*h(3)**2.d0 &
-                                                  + h(1)**2.d0*h(2)**2.d0) )
-         else
-             zr(jcalculs-1+zi(jvcn-1+nodvois)) =  ( phi(2)*h(1)**2.d0+phi(1)* &
-                                                  h(2)**2.d0 + sqrt( signe) ) &
-                                                  / (h(1)**2.d0+h(2)**2.d0)
-         endif
+    if (maxval(phi) .ne. r8gaem() .and. signe .gt. 0) then
+        if (ndim .eq. 3) then
+            zr(jcalculs-1+zi(jvcn-1+nodvois)) = (2*phi(1)*h(2)**2.d0*h(3)**2.d0+ &
+                                                 2*phi(2)*h(1)**2.d0*h(3)**2.d0+ &
+                                                 2*phi(3)*h(1)**2.d0*h(2)**2.d0+ &
+                                                 sqrt(signe))/(2*(h(2)**2.d0* &
+                                                                  h(3)**2.d0+h(1)**2.d0*h(3)**2.d0 &
+                                                                  +h(1)**2.d0*h(2)**2.d0))
+        else
+            zr(jcalculs-1+zi(jvcn-1+nodvois)) = (phi(2)*h(1)**2.d0+phi(1)* &
+                                                 h(2)**2.d0+sqrt(signe)) &
+                                                /(h(1)**2.d0+h(2)**2.d0)
+        end if
 
-     else
-         !calcul geometrique pour les noeuds problématiques
-         call xcalculgeo(ndim, vale, jvp, jbl, deltat,jbeta, &
-                         jlistp, zi(jvcn-1+nodvois), newlst, newlsn)
-         if (levset .eq. 'LN') then
-             if (zr(jltno-1+zi(jvcn-1+nodvois)) .gt. 0.d0) then
+    else
+        !calcul geometrique pour les noeuds problématiques
+        call xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
+                        jlistp, zi(jvcn-1+nodvois), newlst, newlsn)
+        if (levset .eq. 'LN') then
+            if (zr(jltno-1+zi(jvcn-1+nodvois)) .gt. 0.d0) then
                 if (signls .eq. 'inf') then
                     zr(jcalculs-1+zi(jvcn-1+nodvois)) = -newlsn
                 else
                     zr(jcalculs-1+zi(jvcn-1+nodvois)) = newlsn
-                endif
-             else
-                 zr(jcalculs-1+zi(jvcn-1+nodvois)) = zr(jcopiels-1+zi(jvcn-1+nodvois))
-             endif
-         else
-             if (signls .eq. 'inf') then
-                 zr(jcalculs-1+zi(jvcn-1+nodvois)) = -newlst
-             else
-                 zr(jcalculs-1+zi(jvcn-1+nodvois)) = newlst
-             endif
-         endif
-     endif
+                end if
+            else
+                zr(jcalculs-1+zi(jvcn-1+nodvois)) = zr(jcopiels-1+zi(jvcn-1+nodvois))
+            end if
+        else
+            if (signls .eq. 'inf') then
+                zr(jcalculs-1+zi(jvcn-1+nodvois)) = -newlst
+            else
+                zr(jcalculs-1+zi(jvcn-1+nodvois)) = newlst
+            end if
+        end if
+    end if
 end subroutine

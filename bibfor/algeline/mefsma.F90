@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mefsma(matm, mata, matr, nugene, masgen,&
+subroutine mefsma(matm, mata, matr, nugene, masgen, &
                   amogen, riggen)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
@@ -49,13 +49,13 @@ subroutine mefsma(matm, mata, matr, nugene, masgen,&
     call jeveuo(nomnum//'.REFN', 'L', vk24=refn)
     base = refn(1)
 !
-    call mefsm1(matm, masgen, base, nomnum, nomsto,&
+    call mefsm1(matm, masgen, base, nomnum, nomsto, &
                 nbmode, nbloc, nterm)
 !
-    call mefsm1(mata, amogen, base, nomnum, nomsto,&
+    call mefsm1(mata, amogen, base, nomnum, nomsto, &
                 nbmode, nbloc, nterm)
 !
-    call mefsm1(matr, riggen, base, nomnum, nomsto,&
+    call mefsm1(matr, riggen, base, nomnum, nomsto, &
                 nbmode, nbloc, nterm)
 !
     call jedema()

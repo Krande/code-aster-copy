@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,36 +44,36 @@ subroutine xellin(elref1, nno1, elref2, nno2)
     if (iselli(elref1)) goto 999
 !
     if (elref1 .eq. 'QU8') then
-            ASSERT(nno1.eq.8)
-            elref2='QU4'
-            nno2= 4
-    else if (elref1.eq.'TR6') then
-            ASSERT(nno1.eq.6)
-            elref2='TR3'
-            nno2= 3
-    else if (elref1.eq.'SE3') then
-            ASSERT(nno1.eq.3)
-            elref2='SE2'
-            nno2= 2
-    else if (elref1.eq.'H20') then
-            ASSERT(nno1.eq.20)
-            elref2='HE8'
-            nno2= 8
-    else if (elref1.eq.'P15') then
-            ASSERT(nno1.eq.15)
-            elref2='PE6'
-            nno2= 6
-    else if (elref1.eq.'P13') then
-            ASSERT(nno1.eq.13)
-            elref2='PY5'
-            nno2= 5
-    else if (elref1.eq.'T10') then
-            ASSERT(nno1.eq.10)
-            elref2='TE4'
-            nno2= 4
+        ASSERT(nno1 .eq. 8)
+        elref2 = 'QU4'
+        nno2 = 4
+    else if (elref1 .eq. 'TR6') then
+        ASSERT(nno1 .eq. 6)
+        elref2 = 'TR3'
+        nno2 = 3
+    else if (elref1 .eq. 'SE3') then
+        ASSERT(nno1 .eq. 3)
+        elref2 = 'SE2'
+        nno2 = 2
+    else if (elref1 .eq. 'H20') then
+        ASSERT(nno1 .eq. 20)
+        elref2 = 'HE8'
+        nno2 = 8
+    else if (elref1 .eq. 'P15') then
+        ASSERT(nno1 .eq. 15)
+        elref2 = 'PE6'
+        nno2 = 6
+    else if (elref1 .eq. 'P13') then
+        ASSERT(nno1 .eq. 13)
+        elref2 = 'PY5'
+        nno2 = 5
+    else if (elref1 .eq. 'T10') then
+        ASSERT(nno1 .eq. 10)
+        elref2 = 'TE4'
+        nno2 = 4
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
 !

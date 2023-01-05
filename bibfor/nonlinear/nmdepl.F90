@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmdepl(modele         , numedd , ds_material, carele    ,&
-                  ds_constitutive, lischa , fonact     , ds_measure, ds_algopara,&
-                  noma           , numins , iterat     , solveu    , matass     ,&
-                  sddisc         , sddyna , sdnume     , sdpilo    , sderro     ,&
-                  ds_contact     , valinc , solalg     , veelem    , veasse     ,&
-                  eta            , ds_conv, ds_system  , lerrit)
+subroutine nmdepl(modele, numedd, ds_material, carele, &
+                  ds_constitutive, lischa, fonact, ds_measure, ds_algopara, &
+                  noma, numins, iterat, solveu, matass, &
+                  sddisc, sddyna, sdnume, sdpilo, sderro, &
+                  ds_contact, valinc, solalg, veelem, veasse, &
+                  eta, ds_conv, ds_system, lerrit)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cldual_maj.h"
@@ -51,24 +51,24 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-integer :: fonact(*)
-integer :: iterat, numins
-real(kind=8) :: eta
-character(len=8) :: noma
-type(NL_DS_Conv), intent(inout) :: ds_conv
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=19) :: sddisc, sdnume, sddyna, sdpilo
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: lischa, matass, solveu
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24) :: modele, numedd, carele
-character(len=24) :: sderro
-character(len=19) :: veelem(*), veasse(*)
-character(len=19) :: solalg(*), valinc(*)
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Contact), intent(inout) :: ds_contact
-aster_logical :: lerrit
+    integer :: fonact(*)
+    integer :: iterat, numins
+    real(kind=8) :: eta
+    character(len=8) :: noma
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=19) :: sddisc, sdnume, sddyna, sdpilo
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: lischa, matass, solveu
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24) :: modele, numedd, carele
+    character(len=24) :: sderro
+    character(len=19) :: veelem(*), veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,7 +122,7 @@ aster_logical :: lerrit
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
         call utmess('I', 'MECANONLINE13_43')
-    endif
+    end if
 !
 ! --- INITIALISATIONS CODES RETOURS
 !
@@ -132,24 +132,24 @@ aster_logical :: lerrit
 !
 ! - Active functionnalites
 !
-    lpilo         = isfonc(fonact,'PILOTAGE')
-    lreli         = isfonc(fonact,'RECH_LINE')
-    lunil         = isfonc(fonact,'LIAISON_UNILATER')
-    lctcd         = isfonc(fonact,'CONT_DISCRET')
-    l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
+    lpilo = isfonc(fonact, 'PILOTAGE')
+    lreli = isfonc(fonact, 'RECH_LINE')
+    lunil = isfonc(fonact, 'LIAISON_UNILATER')
+    lctcd = isfonc(fonact, 'CONT_DISCRET')
+    l_diri_undead = isfonc(fonact, 'DIRI_UNDEAD')
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
 !
 ! --- INITIALISATIONS
 !
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins)
-    deltat = instap - instam
+    instam = diinst(sddisc, numins-1)
+    instap = diinst(sddisc, numins)
+    deltat = instap-instam
     etan = eta
     rho = 1.d0
     ds_conv%line_sear_coef = 1.d0
     offset = 0.d0
     eta = 0.d0
-    call GetResi(ds_conv, type = 'RESI_GLOB_RELA' , vale_calc_ = resi_glob_rela)
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', vale_calc_=resi_glob_rela)
 !
 ! --- CALCUL DE LA RESULTANTE DES EFFORTS EXTERIEURS
 !
@@ -162,70 +162,70 @@ aster_logical :: lerrit
 !
 ! --- PAS DE RECHERCHE LINEAIRE (EN PARTICULIER SUITE A LA PREDICTION)
 !
-    if (.not.lreli .or. iterat .eq. 0) then
+    if (.not. lreli .or. iterat .eq. 0) then
         if (lpilo) then
-            call nmpich(modele         , numedd, ds_material, carele    , ds_system ,&
-                        ds_constitutive, lischa, fonact     , ds_measure, ds_contact,&
-                        sdpilo         , iterat, sdnume     , deltat    , valinc    ,&
-                        solalg         , veelem, veasse     , sddisc    , eta       ,&
-                        rho            , offset, ldccvg     , pilcvg    , matass)
+            call nmpich(modele, numedd, ds_material, carele, ds_system, &
+                        ds_constitutive, lischa, fonact, ds_measure, ds_contact, &
+                        sdpilo, iterat, sdnume, deltat, valinc, &
+                        solalg, veelem, veasse, sddisc, eta, &
+                        rho, offset, ldccvg, pilcvg, matass)
             ds_conv%line_sear_coef = 1.d0
             ds_conv%line_sear_iter = 0
-        endif
+        end if
     else
 !
 ! --- RECHERCHE LINEAIRE
 !
         if (lpilo) then
-            call nmrepl(modele         , numedd, ds_material, carele    , ds_system,&
-                        ds_constitutive, lischa, ds_algopara, fonact    , iterat   ,&
-                        ds_measure     , sdpilo, sdnume     , ds_contact,&
-                        deltat         , valinc, solalg     , veelem    , veasse   ,&
-                        sddisc         , etan  , ds_conv    , eta       , offset   ,&
-                        ldccvg         , pilcvg, matass )
+            call nmrepl(modele, numedd, ds_material, carele, ds_system, &
+                        ds_constitutive, lischa, ds_algopara, fonact, iterat, &
+                        ds_measure, sdpilo, sdnume, ds_contact, &
+                        deltat, valinc, solalg, veelem, veasse, &
+                        sddisc, etan, ds_conv, eta, offset, &
+                        ldccvg, pilcvg, matass)
         else
-            call nmreli(modele         , numedd, ds_material, carele    , ds_system ,&
-                        ds_constitutive, lischa, fonact     , iterat    , ds_measure,&
-                        sdnume         , sddyna, ds_algopara, ds_contact, valinc    ,&
-                        solalg         , veelem, veasse     , ds_conv   , ldccvg)
-        endif
-    endif
+            call nmreli(modele, numedd, ds_material, carele, ds_system, &
+                        ds_constitutive, lischa, fonact, iterat, ds_measure, &
+                        sdnume, sddyna, ds_algopara, ds_contact, valinc, &
+                        solalg, veelem, veasse, ds_conv, ldccvg)
+        end if
+    end if
 !
 ! --- SI ERREUR PENDANT L'INTEGRATION OU LE PILOTAGE -> ON SORT DIRECT
 !
     if ((ldccvg .eq. 1) .or. (pilcvg .eq. 1)) then
         goto 999
-    endif
+    end if
 !
 ! --- AJUSTEMENT DE LA DIRECTION DE DESCENTE (AVEC ETA, RHO ET OFFSET)
 !
     rho = ds_conv%line_sear_coef
-    call nmpild(numedd, sddyna, solalg, eta, rho,&
+    call nmpild(numedd, sddyna, solalg, eta, rho, &
                 offset)
 !
 ! --- MODIFICATIONS DEPLACEMENTS SI CONTACT DISCRET OU LIAISON_UNILA
 !
     if (lunil .or. lctcd) then
-        call nmcoun(noma          , fonact, solveu, numedd    , matass,&
-                    iterat        , instap, valinc, solalg    , veasse,&
+        call nmcoun(noma, fonact, solveu, numedd, matass, &
+                    iterat, instap, valinc, solalg, veasse, &
                     resi_glob_rela, ds_measure, ds_contact, ctccvg)
         if (ctccvg .eq. 0) then
             call nmsolm(sddyna, solalg)
         else
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 ! --- ACTUALISATION DES CHAMPS SOLUTIONS
 !
-    call nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
+    call nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
                 valinc, solalg)
 !
 ! - Update dualized relations for non-linear Dirichlet boundary conditions (undead)
 !
     if (l_diri_undead) then
         call cldual_maj(lischa, depplu)
-    endif
+    end if
 !
 999 continue
 !

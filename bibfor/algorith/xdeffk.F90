@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine xdeffk(kappa, mu, r, theta, ndim, fkpo)
 #include "asterc/r8depi.h"
 !
     integer :: ndim
-    real(kind=8) :: r, theta, fkpo(ndim,ndim), kappa, mu
+    real(kind=8) :: r, theta, fkpo(ndim, ndim), kappa, mu
 !
 !
 !     BUT:  FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE (R,THETA)
@@ -38,17 +38,17 @@ subroutine xdeffk(kappa, mu, r, theta, ndim, fkpo)
     real(kind=8) :: rr
 !---------------------------------------------------------------
 !
-    rr=sqrt(r)/(2.d0*mu*sqrt(r8depi()))
+    rr = sqrt(r)/(2.d0*mu*sqrt(r8depi()))
 !
 !     FONCTIONS D'ENRICHISSEMENT
-    fkpo(1,1) = rr * ( kappa - cos(theta) ) * cos(theta/2.d0)
-    fkpo(1,2) = rr * ( kappa - cos(theta) ) * sin(theta/2.d0)
-    fkpo(2,1) = rr * ( kappa + 2.d0 + cos(theta) ) * sin(theta/2.d0)
-    fkpo(2,2) = rr * ( 2.d0 - kappa - cos(theta) ) * cos(theta/2.d0)
-    if (ndim.eq.3) then
-      fkpo(1:2,3) = 0.d0
-      fkpo(3,1:2) = 0.d0
-      fkpo(3,3) = 4.d0*rr * sin(theta/2.d0)
-    endif
+    fkpo(1, 1) = rr*(kappa-cos(theta))*cos(theta/2.d0)
+    fkpo(1, 2) = rr*(kappa-cos(theta))*sin(theta/2.d0)
+    fkpo(2, 1) = rr*(kappa+2.d0+cos(theta))*sin(theta/2.d0)
+    fkpo(2, 2) = rr*(2.d0-kappa-cos(theta))*cos(theta/2.d0)
+    if (ndim .eq. 3) then
+        fkpo(1:2, 3) = 0.d0
+        fkpo(3, 1:2) = 0.d0
+        fkpo(3, 3) = 4.d0*rr*sin(theta/2.d0)
+    end if
 !
 end subroutine

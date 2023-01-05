@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
+subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
                   lcoc, base, ces3z)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
@@ -102,7 +102,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 !        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
     ces3 = '&&CESFUS.CES3'
-    ASSERT(nbchs.gt.0)
+    ASSERT(nbchs .gt. 0)
 !
     ces1 = lichs(1)
 !
@@ -133,8 +133,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
             call jeveuo(ces1//'.CESC', 'L', jce1c)
             call jelira(ces1//'.CESC', 'LONMAX', n1)
             do k = 1, n1
-                read (zk8(jce1c-1+k) (2:),'(I7)') icmp
-                ncmpmx = max(ncmpmx,icmp)
+                read (zk8(jce1c-1+k) (2:), '(I7)') icmp
+                ncmpmx = max(ncmpmx, icmp)
             end do
         end do
 !
@@ -144,7 +144,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
             call codent(k, 'G', nomcmp(2:8))
             zk8(jcmpgd-1+k) = nomcmp
         end do
-    endif
+    end if
 !
 !
 !
@@ -160,50 +160,50 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         call jeveuo(ces1//'.CESD', 'L', jce1d)
 !
 !       TEST SUR IDENTITE DES 2 MAILLAGES
-        ASSERT(ma.eq.zk8(jce1k-1+1))
+        ASSERT(ma .eq. zk8(jce1k-1+1))
 !       TEST SUR IDENTITE DES 2 GRANDEURS
-        ASSERT(nomgd.eq.zk8(jce1k-1+2))
+        ASSERT(nomgd .eq. zk8(jce1k-1+2))
 !       TEST SUR IDENTITE DES 2 TYPES (ELEM/ELNO/ELGA)
-        ASSERT(typces.eq.zk8(jce1k-1+3))
+        ASSERT(typces .eq. zk8(jce1k-1+3))
 !
         if (ichs .eq. 1) then
             do ima = 1, nbma
-                vnbpt(ima) = zi(jce1d-1+5+4* (ima-1)+1)
-                vnbsp(ima) = zi(jce1d-1+5+4* (ima-1)+2)
+                vnbpt(ima) = zi(jce1d-1+5+4*(ima-1)+1)
+                vnbsp(ima) = zi(jce1d-1+5+4*(ima-1)+2)
             end do
         else
             do ima = 1, nbma
-                nbpt = zi(jce1d-1+5+4* (ima-1)+1)
-                nbsp = zi(jce1d-1+5+4* (ima-1)+2)
-                ncmp = zi(jce1d-1+5+4* (ima-1)+3)
+                nbpt = zi(jce1d-1+5+4*(ima-1)+1)
+                nbsp = zi(jce1d-1+5+4*(ima-1)+2)
+                ncmp = zi(jce1d-1+5+4*(ima-1)+3)
                 if (nbpt*nbsp*ncmp .eq. 0) goto 50
 !
                 if (vnbpt(ima) .ne. 0) then
 !             TEST SUR IDENTITE DU NOMBRE DE POINTS
                     if (vnbpt(ima) .ne. nbpt) then
-                        vali(1)=ima
-                        vali(2)=nbpt
-                        vali(3)=vnbpt(ima)
+                        vali(1) = ima
+                        vali(2) = nbpt
+                        vali(3) = vnbpt(ima)
                         call utmess('F', 'CALCULEL_35', ni=3, vali=vali)
-                    endif
+                    end if
                 else
-                    if (nbpt .ne. 0) vnbpt(ima)=nbpt
-                endif
+                    if (nbpt .ne. 0) vnbpt(ima) = nbpt
+                end if
 !
                 if (vnbsp(ima) .ne. 0) then
 !             TEST SUR IDENTITE DU NOMBRE DE SOUS-POINTS
                     if (vnbsp(ima) .ne. nbsp) then
-                        vali(1)=ima
-                        vali(2)=nbsp
-                        vali(3)=vnbsp(ima)
+                        vali(1) = ima
+                        vali(2) = nbsp
+                        vali(3) = vnbsp(ima)
                         call utmess('F', 'CALCULEL_36', ni=3, vali=vali)
-                    endif
+                    end if
                 else
-                    if (nbsp .ne. 0) vnbsp(ima)=nbsp
-                endif
- 50             continue
+                    if (nbsp .ne. 0) vnbsp(ima) = nbsp
+                end if
+50              continue
             end do
-        endif
+        end if
         call jelibe(ces1//'.CESK')
         call jelibe(ces1//'.CESD')
     end do
@@ -226,7 +226,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
 !
-            icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
+            icmp = indik8(zk8(jcmpgd), nocmp, 1, ncmpmx)
             nucmp(icmp) = 1
         end do
         call jelibe(ces1//'.CESK')
@@ -237,9 +237,9 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     icmp3 = 0
     do icmp = 1, ncmpmx
         if (nucmp(icmp) .eq. 1) then
-            icmp3 = icmp3 + 1
+            icmp3 = icmp3+1
             licmp(icmp3) = zk8(jcmpgd-1+icmp)
-        endif
+        end if
     end do
     ncmp3 = icmp3
 !
@@ -258,17 +258,17 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         ncmp1 = zi(jce1d-1+2)
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(licmp,nocmp,1,ncmp3)
+            icmp3 = indik8(licmp, nocmp, 1, ncmp3)
             corr_cmp(icmp1) = icmp3
         end do
 !
         do ima = 1, nbma
-            ncmp1 = zi(jce1d-1+5+4* (ima-1)+3)
+            ncmp1 = zi(jce1d-1+5+4*(ima-1)+3)
             if (ncmp1 .eq. 0) goto 110
-            ASSERT(ncmp1.ge.0)
+            ASSERT(ncmp1 .ge. 0)
             do icmp1 = 1, ncmp1
                 icmp3 = corr_cmp(icmp1)
-                nbcmp(ima) = max(icmp3,nbcmp(ima))
+                nbcmp(ima) = max(icmp3, nbcmp(ima))
             end do
 110         continue
         end do
@@ -280,7 +280,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
 !     4- ALLOCATION DE CES3 :
 !     --------------------------
-    call cescre(base, ces3, typces, ma, nomgd,&
+    call cescre(base, ces3, typces, ma, nomgd, &
                 ncmp3, licmp, vnbpt, vnbsp, nbcmp)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
     call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
@@ -307,73 +307,73 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         else
             coefr = lcoefr(ichs)
             if (tsca .eq. 'I') coefi = nint(coefr)
-        endif
+        end if
 !
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(ce3c,nocmp,1,ncmp3)
+            icmp3 = indik8(ce3c, nocmp, 1, ncmp3)
             do ima = 1, nbma
-                nbpt = zi(jce3d-1+5+4* (ima-1)+1)
-                nbsp = zi(jce3d-1+5+4* (ima-1)+2)
+                nbpt = zi(jce3d-1+5+4*(ima-1)+1)
+                nbsp = zi(jce3d-1+5+4*(ima-1)+2)
                 do ipt = 1, nbpt
                     do isp = 1, nbsp
-                        call cesexi('C', jce1d, jce1l, ima, ipt,&
+                        call cesexi('C', jce1d, jce1l, ima, ipt, &
                                     isp, icmp1, iad1)
-                        call cesexi('C', jce3d, jce3l, ima, ipt,&
+                        call cesexi('C', jce3d, jce3l, ima, ipt, &
                                     isp, icmp3, iad3)
                         if (iad1 .le. 0) goto 130
 !
-                        ASSERT(iad3.ne.0)
+                        ASSERT(iad3 .ne. 0)
 !
 !
 !               -- SI AFFECTATION :
-                        if ((.not.cumul) .or. (iad3.lt.0)) then
+                        if ((.not. cumul) .or. (iad3 .lt. 0)) then
                             iad3 = abs(iad3)
                             zl(jce3l-1+iad3) = .true.
 !
                             if (tsca .eq. 'R') then
-                                zr(jce3v-1+iad3) = coefr*zr(jce1v-1+ iad1)
-                            else if (tsca.eq.'I') then
-                                zi(jce3v-1+iad3) = coefi*zi(jce1v-1+ iad1)
-                            else if (tsca.eq.'C') then
+                                zr(jce3v-1+iad3) = coefr*zr(jce1v-1+iad1)
+                            else if (tsca .eq. 'I') then
+                                zi(jce3v-1+iad3) = coefi*zi(jce1v-1+iad1)
+                            else if (tsca .eq. 'C') then
                                 if (lcoc) then
-                                    zc(jce3v-1+iad3) = coefc*zc(jce1v- 1+iad1)
+                                    zc(jce3v-1+iad3) = coefc*zc(jce1v-1+iad1)
                                 else
-                                    zc(jce3v-1+iad3) = coefr*zc(jce1v- 1+iad1)
-                                endif
-                            else if (tsca.eq.'L') then
+                                    zc(jce3v-1+iad3) = coefr*zc(jce1v-1+iad1)
+                                end if
+                            else if (tsca .eq. 'L') then
                                 zl(jce3v-1+iad3) = zl(jce1v-1+iad1)
-                            else if (tsca.eq.'K8') then
+                            else if (tsca .eq. 'K8') then
                                 zk8(jce3v-1+iad3) = zk8(jce1v-1+iad1)
-                            else if (tsca.eq.'K16') then
-                                zk16(jce3v-1+iad3) = zk16(jce1v-1+ iad1)
+                            else if (tsca .eq. 'K16') then
+                                zk16(jce3v-1+iad3) = zk16(jce1v-1+iad1)
                             else
                                 ASSERT(.false.)
-                            endif
+                            end if
 !
 !               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                         else
 !
                             if (tsca .eq. 'R') then
-                                zr(jce3v-1+iad3) = zr(jce3v-1+iad3) + coefr*zr(jce1v-1+iad1)
-                            else if (tsca.eq.'I') then
-                                zi(jce3v-1+iad3) = zi(jce3v-1+iad3) + coefi*zi(jce1v-1+iad1)
-                            else if (tsca.eq.'C') then
+                                zr(jce3v-1+iad3) = zr(jce3v-1+iad3)+coefr*zr(jce1v-1+iad1)
+                            else if (tsca .eq. 'I') then
+                                zi(jce3v-1+iad3) = zi(jce3v-1+iad3)+coefi*zi(jce1v-1+iad1)
+                            else if (tsca .eq. 'C') then
                                 if (lcoc) then
-                                    zc(jce3v-1+iad3) = zc(jce3v-1+ iad3) + coefc*zc(jce1v-1+iad1)
+                                    zc(jce3v-1+iad3) = zc(jce3v-1+iad3)+coefc*zc(jce1v-1+iad1)
                                 else
-                                    zc(jce3v-1+iad3) = zc(jce3v-1+ iad3) + coefr*zc(jce1v-1+iad1)
-                                endif
-                                else if ((tsca.eq.'L') .or. (tsca.eq.'K8')&
-                            ) then
+                                    zc(jce3v-1+iad3) = zc(jce3v-1+iad3)+coefr*zc(jce1v-1+iad1)
+                                end if
+                            else if ((tsca .eq. 'L') .or. (tsca .eq. 'K8') &
+                                     ) then
 !                   CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
                                 ASSERT(.false.)
 !                  ELSE IF (TSCA.EQ.'K16') THEN
 !                    ZK16(JCE3V-1+IAD3) = ZK16(JCE1V-1+IAD1)
                             else
                                 ASSERT(.false.)
-                            endif
-                        endif
+                            end if
+                        end if
 !
 !
 130                     continue

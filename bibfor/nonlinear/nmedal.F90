@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmedal(alphap, sigmc, gc, s, q,&
+subroutine nmedal(alphap, sigmc, gc, s, q, &
                   seuil)
 !
     implicit none
@@ -49,19 +49,19 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
     call r8inir(2, 0.d0, alphap, 1)
     eta = 1.d-12
-    norms = sqrt( s(1)*s(1) + s(2)*s(2) )
-    critg = (s(1).le.0.d0) .and. (abs(s(2)).le.sigmc)
-    critd = (s(1).gt.0.d0) .and. (norms .le. sigmc)
+    norms = sqrt(s(1)*s(1)+s(2)*s(2))
+    critg = (s(1) .le. 0.d0) .and. (abs(s(2)) .le. sigmc)
+    critd = (s(1) .gt. 0.d0) .and. (norms .le. sigmc)
 !
 !        *****************************
 !     I. CAS DANS CRITERE ET SEUIL NUL
 !        *****************************
 !
-    if ((seuil.eq.0.d0) .and. (critg .or. critd)) then
+    if ((seuil .eq. 0.d0) .and. (critg .or. critd)) then
         alphap(1) = 0.d0
         alphap(2) = 0.d0
         goto 999
-    endif
+    end if
 !
 !         **********************
 !     II. CAS DECHARGE ELASTIQUE
@@ -72,44 +72,44 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !       ON SUPPOSE QUE ALPHAP1=0, ON CALCUL ALPHAP2 (TEMPAL(2)) :
 !
         call r8inir(2, 0.d0, tempal, 1)
-        tempal(2) = s(2)/(-q(2,2)+ sigmc*exp(-sigmc*seuil/gc)/seuil)
+        tempal(2) = s(2)/(-q(2, 2)+sigmc*exp(-sigmc*seuil/gc)/seuil)
 !
         norma = abs(tempal(2))
-        sign = s(1) + q(1,2)*tempal(2)
+        sign = s(1)+q(1, 2)*tempal(2)
 !
 !     SI SIGMA NORMALE EST <=0 ET QU'ON EST SOUS LE SEUIL
-        if (((sign).le.1.d-10) .and. (norma.lt.seuil)) then
+        if (((sign) .le. 1.d-10) .and. (norma .lt. seuil)) then
             alphap(1) = 0.d0
             alphap(2) = tempal(2)
             goto 999
-        endif
+        end if
 !
 !       ON SUPPOSE QUE ALPHA1.NE.0, ON CALCUL ALPHAP1 et ALPHAP2 :
 !       RESOLTION DE (V.ID-Q)ALPHAP=S AVEC
 !       V = EXP(-SIGMC*NORMA/GC)/NORMA . ON MET (vID-Q) DANS MAT,
 !
         call r8inir(3, 0.d0, mat, 1)
-        mat(1) = sigmc*exp(-sigmc*seuil/gc)/seuil - q(1,1)
-        mat(2) = sigmc*exp(-sigmc*seuil/gc)/seuil - q(2,2)
-        mat(3) = -q(1,2)
+        mat(1) = sigmc*exp(-sigmc*seuil/gc)/seuil-q(1, 1)
+        mat(2) = sigmc*exp(-sigmc*seuil/gc)/seuil-q(2, 2)
+        mat(3) = -q(1, 2)
 !
         det = mat(1)*mat(2)-mat(3)*mat(3)
 !
-        ASSERT(abs(det).gt.1.d-12)
+        ASSERT(abs(det) .gt. 1.d-12)
 !
         call r8inir(2, 0.d0, tempal, 1)
-        tempal(1) = ( mat(2)*s(1) - mat(3)*s(2)) / det
-        tempal(2) = (-mat(3)*s(1) + mat(1)*s(2)) / det
+        tempal(1) = (mat(2)*s(1)-mat(3)*s(2))/det
+        tempal(2) = (-mat(3)*s(1)+mat(1)*s(2))/det
 !
-        norma = sqrt( tempal(1)**2 + tempal(2)**2 )
+        norma = sqrt(tempal(1)**2+tempal(2)**2)
 !
         if (norma .lt. seuil) then
             alphap(1) = tempal(1)
             alphap(2) = tempal(2)
             goto 999
-        endif
+        end if
 !
-    endif
+    end if
 !
 !        **********************
 !    III. CAS SORTIE DU CRITERE
@@ -119,78 +119,78 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !          --------------------------------------------
 !
 !     TESTS D'EXISTANCE ET D'UNICITE D'UNE SOLUTION
-    if (q(2,2) .gt. 0.d0) then
+    if (q(2, 2) .gt. 0.d0) then
         call utmess('F', 'ALGORITH7_63')
-    endif
+    end if
 !
-    if (abs(q(2,2)) .lt. (sigmc*sigmc/gc)) then
+    if (abs(q(2, 2)) .lt. (sigmc*sigmc/gc)) then
         call utmess('F', 'ALGORITH7_64')
-    endif
+    end if
 !
 !     CALCUL DE ALPHAP(2) PAR NEWTON
     if (s(2) .gt. sigmc) then
 !
-        k=0
-        xp=0.d0
-2000     continue
+        k = 0
+        xp = 0.d0
+2000    continue
 !
         x = xp
-        fx = s(2) + q(2,2)*x - sigmc*exp(-sigmc*abs(x)/gc)
-        dfx = q(2,2) + sigmc*sigmc*exp(-sigmc*abs(x)/gc)/gc
-        xp = x - fx/dfx
-        k=k+1
+        fx = s(2)+q(2, 2)*x-sigmc*exp(-sigmc*abs(x)/gc)
+        dfx = q(2, 2)+sigmc*sigmc*exp(-sigmc*abs(x)/gc)/gc
+        xp = x-fx/dfx
+        k = k+1
 !
-        if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) then
+        if ((abs(xp-x) .ge. 1.d10) .or. (k .gt. 3000)) then
             call utmess('F', 'ALGORITH7_65')
-        endif
+        end if
         if (abs(xp-x) .le. eta) goto 1000
         goto 2000
-1000     continue
+1000    continue
 !
-    else if (s(2).lt.-sigmc) then
+    else if (s(2) .lt. -sigmc) then
 !
-        k=0
-        xp=0.d0
-3000     continue
+        k = 0
+        xp = 0.d0
+3000    continue
 !
         x = xp
-        fx = s(2) + q(2,2)*x + sigmc*exp(-sigmc*abs(x)/gc)
-        dfx = q(2,2) - sigmc*sigmc*exp(-sigmc*abs(x)/gc)/gc
-        xp = x - fx/dfx
-        k=k+1
+        fx = s(2)+q(2, 2)*x+sigmc*exp(-sigmc*abs(x)/gc)
+        dfx = q(2, 2)-sigmc*sigmc*exp(-sigmc*abs(x)/gc)/gc
+        xp = x-fx/dfx
+        k = k+1
 !
-        if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) then
+        if ((abs(xp-x) .ge. 1.d10) .or. (k .gt. 3000)) then
             call utmess('F', 'ALGORITH7_66')
-        endif
+        end if
 !
         if (abs(xp-x) .le. eta) goto 4000
         goto 3000
-4000     continue
+4000    continue
 !
-    endif
+    end if
 !
 !     ON VERIFIE SI XP A ETE CALCULE DANS UN DES DEUX CAS PRECEDENTS
-    if ((s(2).gt.sigmc) .or. (s(2).lt.-sigmc)) then
+    if ((s(2) .gt. sigmc) .or. (s(2) .lt. -sigmc)) then
 !
         norma = abs(xp)
-        sign = s(1) + q(1,2)*xp
+        sign = s(1)+q(1, 2)*xp
 !
 !       SI SIGMA NORMALE EST <=0 ET QU'ON EST AU DELA DU SEUIL ALORS
-        if (((sign).le.1.d-10) .and. (norma.ge.seuil)) then
+        if (((sign) .le. 1.d-10) .and. (norma .ge. seuil)) then
             alphap(1) = 0.d0
             alphap(2) = xp
             goto 999
-        endif
+        end if
 !
-    endif
+    end if
 !
 !       2) ON SUPPOSE ALPHAP(1).NE.0, CALCUL DE ALPHAP(1) ET ALPHAP(2)
 !          -----------------------------------------------------------
 !
 ! ECRITURE DE Q EN VECTEUR : QVECT(3)= (Q(1,1)  ,  Q(2,2)  ,  Q(1,2))
-    qvect(1) = q(1,1)
-    qvect(2) = q(2,2)
-    qvect(3) = q(1,2)
+    qvect(1) = q(1, 1)
+    qvect(2) = q(2, 2)
+    qvect(3) = q(1, 2)
 !
 !     DIAGONALISATION DE Q :
     call r8inir(4, 0.d0, p, 1)
@@ -201,52 +201,52 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
     call r8inir(2, 0.d0, sp, 1)
     do i = 1, 2
         do j = 1, 2
-            sp(i) = sp(i) + p(j,i)*s(j)
+            sp(i) = sp(i)+p(j, i)*s(j)
         end do
     end do
 !
 !     CALCUL DE ALPHAP(1) ET ALPHAP(2) PAR NEWTON :
 !
-    k=0
-    xp=0.d0
+    k = 0
+    xp = 0.d0
 5000 continue
 !
     x = xp
 !
     gx = sigmc*exp(-sigmc*x/gc)
-    dgx = - (sigmc*sigmc/gc)*exp(-sigmc*x/gc)
+    dgx = -(sigmc*sigmc/gc)*exp(-sigmc*x/gc)
 !
     temp1 = sp(1)/(gx-valp(1)*x)
     temp2 = sp(2)/(gx-valp(2)*x)
     temp3 = (dgx-valp(1))/(gx-x*valp(1))
     temp4 = (dgx-valp(2))/(gx-x*valp(2))
 !
-    fx = 1.d0 - temp1*temp1 - temp2*temp2
-    dfx = 2*(temp1*temp1*temp3 + temp2*temp2*temp4)
-    xp = x - fx/dfx
-    k=k+1
+    fx = 1.d0-temp1*temp1-temp2*temp2
+    dfx = 2*(temp1*temp1*temp3+temp2*temp2*temp4)
+    xp = x-fx/dfx
+    k = k+1
 !
-    if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) then
+    if ((abs(xp-x) .ge. 1.d10) .or. (k .gt. 3000)) then
         call utmess('F', 'ALGORITH7_67')
-    endif
+    end if
 !
     if (abs(xp-x) .le. eta) goto 6000
     goto 5000
 6000 continue
 !
-    pa(1) = sp(1)/( (sigmc/xp)*exp(-sigmc*xp/gc) - valp(1) )
-    pa(2) = sp(2)/( (sigmc/xp)*exp(-sigmc*xp/gc) - valp(2) )
+    pa(1) = sp(1)/((sigmc/xp)*exp(-sigmc*xp/gc)-valp(1))
+    pa(2) = sp(2)/((sigmc/xp)*exp(-sigmc*xp/gc)-valp(2))
 !
 !    ON REMET LA SOLUTION DS LA BONNE BASE ET ON LA STOCKE DANS TEMPAL
 !
     call r8inir(2, 0.d0, tempal, 1)
     do i = 1, 2
         do j = 1, 2
-            tempal(i) = tempal(i) + p(i,j)*pa(j)
+            tempal(i) = tempal(i)+p(i, j)*pa(j)
         end do
     end do
 !
-    norma = sqrt( tempal(1)**2 + tempal(2)**2 )
+    norma = sqrt(tempal(1)**2+tempal(2)**2)
 !
 !     SI ON EST AU DELA DU SEUIL :
     if (norma .gt. seuil) then
@@ -255,7 +255,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
         alphap(2) = tempal(2)
         goto 999
 !
-    endif
+    end if
 !
 !     ON EST PASSE DANS AUCUN TEST :
     call utmess('F', 'ALGORITH7_68')

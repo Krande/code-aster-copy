@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lrfmed(fileUnit    , resultName   , meshAst     , storeLast    ,&
-                  fieldType   , fieldQuantity, fieldSupport, fieldNameMed_,&
-                  option      , param        , prolz,&
-                  storeAccess , storeCreaNb  ,&
-                  storeIndxNb , storeTimeNb  ,&
-                  storeIndx   , storeTime    ,&
-                  storeCrit   , storeEpsi    , storePara   ,&
-                  cmpNb       , cmpAstName   , cmpMedName  ,&
+subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
+                  fieldType, fieldQuantity, fieldSupport, fieldNameMed_, &
+                  option, param, prolz, &
+                  storeAccess, storeCreaNb, &
+                  storeIndxNb, storeTimeNb, &
+                  storeIndx, storeTime, &
+                  storeCrit, storeEpsi, storePara, &
+                  cmpNb, cmpAstName, cmpMedName, &
                   fieldStoreNb)
 !
-use as_med_module, only: as_med_open
-implicit none
+    use as_med_module, only: as_med_open
+    implicit none
 !
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -60,24 +60,24 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-integer, intent(in) :: fileUnit, storeLast
-character(len=8), intent(in) :: resultName, meshAst
-character(len=16), intent(in) :: fieldType
-character(len=8), intent(in) :: fieldQuantity
-character(len=4), intent(in) :: fieldSupport
-character(len=64), intent(in) :: fieldNameMed_
-character(len=24), intent(in) :: option
-character(len=8), intent(in) :: param
-character(len=3), intent(in) :: prolz
-character(len=10), intent(in) :: storeAccess
-integer, intent(in) :: storeCreaNb, storeIndxNb, storeTimeNb
-character(len=19), intent(in) :: storeIndx, storeTime
-character(len=8), intent(in) :: storeCrit
-real(kind=8), intent(in) :: storeEpsi
-character(len=4) , intent(in):: storePara
-integer, intent(in) :: cmpNb
-character(len=24), intent(in) :: cmpAstName, cmpMedName
-integer, intent(out) :: fieldStoreNb
+    integer, intent(in) :: fileUnit, storeLast
+    character(len=8), intent(in) :: resultName, meshAst
+    character(len=16), intent(in) :: fieldType
+    character(len=8), intent(in) :: fieldQuantity
+    character(len=4), intent(in) :: fieldSupport
+    character(len=64), intent(in) :: fieldNameMed_
+    character(len=24), intent(in) :: option
+    character(len=8), intent(in) :: param
+    character(len=3), intent(in) :: prolz
+    character(len=10), intent(in) :: storeAccess
+    integer, intent(in) :: storeCreaNb, storeIndxNb, storeTimeNb
+    character(len=19), intent(in) :: storeIndx, storeTime
+    character(len=8), intent(in) :: storeCrit
+    real(kind=8), intent(in) :: storeEpsi
+    character(len=4), intent(in):: storePara
+    integer, intent(in) :: cmpNb
+    character(len=24), intent(in) :: cmpAstName, cmpMedName
+    integer, intent(out) :: fieldStoreNb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,7 +114,7 @@ integer, intent(out) :: fieldStoreNb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=6), parameter :: nompro ='LRFMED'
+    character(len=6), parameter :: nompro = 'LRFMED'
     integer :: vali(2)
     integer :: ndim, typgeo(MT_NTYMAX), letype
     integer :: nbtyp, nnotyp(MT_NTYMAX)
@@ -136,7 +136,7 @@ integer, intent(out) :: fieldStoreNb
     character(len=200) :: fileName
     character(len=255) :: kfic
     integer :: typent, typgom
-    integer, parameter :: edlect=0,ednoeu=3,edmail=0,ednoma=4,ednono=-1,typnoe=0
+    integer, parameter :: edlect = 0, ednoeu = 3, edmail = 0, ednoma = 4, ednono = -1, typnoe = 0
     character(len=1) :: saux01
     character(len=8) :: saux08
     integer :: numeStep, numeStore, inum
@@ -153,7 +153,7 @@ integer, intent(out) :: fieldStoreNb
 !
     call jemarq()
 !
-    nomprn  = resultName//'.PRFCN00000.PRNO'
+    nomprn = resultName//'.PRFCN00000.PRNO'
     fieldStoreNb = 0
 !
     call infmaj()
@@ -166,19 +166,19 @@ integer, intent(out) :: fieldStoreNb
         fileName = 'fort.'//saux08
     else
         fileName = kfic(1:200)
-    endif
+    end if
 !
     call as_med_open(fid, fileName, edlect, iret)
     call as_mfinvr(fid, major, minor, rel, iret)
     fieldNameMed = fieldNameMed_
     if (major .lt. 3) then
         fieldNameMed(33:64) = '                                '
-    endif
+    end if
     call as_mficlo(fid, iret)
 !
     if (niv .gt. 1) then
-        write(ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',fileName
-    endif
+        write (ifm, *) '<', nompro, '> NOM DU FICHIER MED : ', fileName
+    end if
 !
     prefix = '&&'//nompro//'.MED'
     call jedetr(prefix//'.NUME')
@@ -191,38 +191,38 @@ integer, intent(out) :: fieldStoreNb
     if (fieldSupport(1:2) .eq. 'NO') then
         typent = ednoeu
         typgom = typnoe
-        call mdchin(fileName, ifimed, fieldNameMed, typent, typgom,&
+        call mdchin(fileName, ifimed, fieldNameMed, typent, typgom, &
                     prefix, sequenceNb, iret)
         if (sequenceNb .eq. 0) then
             call utmess('A', 'MED_95', sk=fieldNameMed)
             goto 240
-        endif
+        end if
         call jeveuo(prefix//'.INST', 'L', ipas)
         call jeveuo(prefix//'.NUME', 'L', inum)
 !
-    else if (fieldSupport(1:2).eq.'EL') then
+    else if (fieldSupport(1:2) .eq. 'EL') then
         ifimed = 0
-        call mdexpm(fileName, ifimed, meshMed, existm, ndim,&
+        call mdexpm(fileName, ifimed, meshMed, existm, ndim, &
                     iret)
-        call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
+        call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                     modnum, nuanom, numnoa)
         if (fieldSupport(1:4) .eq. 'ELNO') then
             typent = ednoma
         else
             typent = edmail
-        endif
+        end if
 !
         do letype = 1, nbtyp
             iaux = renumd(letype)
             typgom = typgeo(iaux)
             ifimed = 0
-            call mdchin(fileName, ifimed, fieldNameMed, typent, typgom,&
+            call mdchin(fileName, ifimed, fieldNameMed, typent, typgom, &
                         prefix, sequenceNb, iret)
             if (sequenceNb .ne. 0) then
                 call jeveuo(prefix//'.INST', 'L', ipas)
                 call jeveuo(prefix//'.NUME', 'L', inum)
                 goto 240
-            endif
+            end if
         end do
 !
 !         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
@@ -234,49 +234,49 @@ integer, intent(out) :: fieldStoreNb
                 iaux = renumd(letype)
                 typgom = typgeo(iaux)
                 ifimed = 0
-                call mdchin(fileName, ifimed, fieldNameMed, typent, typgom,&
+                call mdchin(fileName, ifimed, fieldNameMed, typent, typgom, &
                             prefix, sequenceNb, iret)
                 if (sequenceNb .ne. 0) then
                     call jeveuo(prefix//'.INST', 'L', ipas)
                     call jeveuo(prefix//'.NUME', 'L', inum)
                     goto 240
-                endif
+                end if
             end do
-        endif
+        end if
 !
-    endif
+    end if
 240 continue
 !
 ! - Access to storage given by user
 !
     iinst = 0
-    if (storeAccess .eq. 'INST' .or. storeAccess .eq.'LIST_INST' .or. &
-        storeAccess .eq. 'FREQ' .or. storeAccess .eq.'LIST_FREQ' ) then
+    if (storeAccess .eq. 'INST' .or. storeAccess .eq. 'LIST_INST' .or. &
+        storeAccess .eq. 'FREQ' .or. storeAccess .eq. 'LIST_FREQ') then
         iinst = 1
-    endif
+    end if
     if (storeIndxNb .ne. 0) then
-        call jeveuo(storeIndx//'.VALE', 'L', vi = vStoreIndx)
-    endif
+        call jeveuo(storeIndx//'.VALE', 'L', vi=vStoreIndx)
+    end if
     if (storeTimeNb .ne. 0) then
-        call jeveuo(storeTime//'.VALE', 'L', vr = vStoreTime)
-    endif
+        call jeveuo(storeTime//'.VALE', 'L', vr=vStoreTime)
+    end if
     if (storeAccess .eq. 'TOUT_ORDRE') then
         fieldStoreNb = sequenceNb
     else
         fieldStoreNb = storeCreaNb
-    endif
+    end if
 !
 !         DETERMINATION DES NUMEROS D'ORDRE MED : ZI(JNUOM)
     if (storeIndxNb .ne. 0) then
         call wkvect('&&OP0150_NUMORD_MED', 'V V I', sequenceNb, jnuom)
         do iSequence = 1, sequenceNb
             if (zi(inum+2*iSequence-1) .ne. ednono) then
-                zi(jnuom+iSequence-1)=zi(inum+2*iSequence-1)
-            else if (zi(inum+2*(iSequence-1)).ne.ednono) then
-                zi(jnuom+iSequence-1)=zi(inum+2*(iSequence-1))
-            endif
+                zi(jnuom+iSequence-1) = zi(inum+2*iSequence-1)
+            else if (zi(inum+2*(iSequence-1)) .ne. ednono) then
+                zi(jnuom+iSequence-1) = zi(inum+2*(iSequence-1))
+            end if
         end do
-    endif
+    end if
 !
     call dismoi('NB_MA_MAILLA', meshAst, 'MAILLAGE', repi=nbma)
     call wkvect('&&OP0150_NBPG_MAILLE', 'V V I', nbma, jnbpgm)
@@ -294,41 +294,41 @@ integer, intent(out) :: fieldStoreNb
 !
         if (storeIndxNb .ne. 0) then
             numeStore = vStoreIndx(iStore)
-            itps0     = indiis(zi(jnuom),numeStore,1,sequenceNb)
+            itps0 = indiis(zi(jnuom), numeStore, 1, sequenceNb)
             if (itps0 .eq. 0) then
                 call utmess('A', 'MED_87', sk=resultName, si=numeStore)
                 cycle
-            endif
-            numeStep  = zi(inum+2*itps0-2)
+            end if
+            numeStep = zi(inum+2*itps0-2)
         else if (storeAccess .eq. 'TOUT_ORDRE') then
             numeStore = zi(inum+2*iStore-1)
-            numeStep  = zi(inum+2*iStore-2)
+            numeStep = zi(inum+2*iStore-2)
         else if (storeTimeNb .ne. 0) then
-            timeCurr  = vStoreTime(iStore)
+            timeCurr = vStoreTime(iStore)
             timeExist = .false.
-            do iSequence = 1 , sequenceNb
+            do iSequence = 1, sequenceNb
                 if (storeCrit .eq. 'RELATIF') then
                     if (abs(zr(ipas-1+iSequence)-timeCurr) .le. abs(storeEpsi*timeCurr)) then
                         timeExist = .true.
-                    endif
+                    end if
                 else if (storeCrit .eq. 'ABSOLU') then
                     if (abs(zr(ipas-1+iSequence)-timeCurr) .le. abs(storeEpsi)) then
                         timeExist = .true.
-                    endif
-                endif
+                    end if
+                end if
                 if (timeExist) then
-                    numeStep  = zi(inum+2*iSequence-2)
+                    numeStep = zi(inum+2*iSequence-2)
                     numeStore = zi(inum+2*iSequence-1)
-                    iinst     = 0
+                    iinst = 0
                     exit
-                endif
+                end if
             end do
-        endif
+        end if
 !
-        call lrchme(fieldNameAst, fieldNameMed, k64b, meshAst, fieldSupport,&
-                    fieldQuantity, typent, cmpNb, cmpAstName, cmpMedName,&
-                    prolz, iinst, numeStep, numeStore, timeCurr,&
-                    storeCrit, storeEpsi, fileUnit, option, param,&
+        call lrchme(fieldNameAst, fieldNameMed, k64b, meshAst, fieldSupport, &
+                    fieldQuantity, typent, cmpNb, cmpAstName, cmpMedName, &
+                    prolz, iinst, numeStep, numeStore, timeCurr, &
+                    storeCrit, storeEpsi, fileUnit, option, param, &
                     zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), iret)
 !
 !         POUR LES CHAM_NO : POUR ECONOMISER L'ESPACE,
@@ -336,45 +336,45 @@ integer, intent(out) :: fieldStoreNb
 !         LE PROF_CHNO PRECEDENT :
         if (fieldSupport .eq. 'NOEU') then
             call dismoi('PROF_CHNO', fieldNameAst, 'CHAM_NO', repk=pchn1)
-            if (.not.idensd('PROF_CHNO',nomprn(1:19),pchn1)) then
+            if (.not. idensd('PROF_CHNO', nomprn(1:19), pchn1)) then
                 call gnomsd(' ', nomprn, 15, 19)
                 call copisd('PROF_CHNO', 'G', pchn1, nomprn)
-            endif
+            end if
             call jeveuo(fieldNameAst//'.REFE', 'E', vk24=refe)
             refe(2) = nomprn(1:19)
             call detrsd('PROF_CHNO', pchn1)
-        endif
+        end if
         if (numeStore .eq. ednono) then
             numeStore = numeStep
-        endif
+        end if
         if (storeTimeNb .ne. 0) then
-            ordins = ordins + 1
+            ordins = ordins+1
             numeStore = ordins
-        endif
+        end if
 !
         call rsexch(' ', resultName, fieldType, numeStore, nomch, iret)
         if (iret .eq. 100) then
-        else if (iret.eq.110) then
+        else if (iret .eq. 110) then
             call rsagsd(resultName, 0)
             call rsexch(' ', resultName, fieldType, numeStore, nomch, iret)
         else
-            valk (1) = resultName
-            valk (2) = fieldNameAst
-            vali (1) = iStore
-            vali (2) = iret
-            call utmess('F', 'UTILITAI8_27', nk=2, valk=valk, ni=2,vali=vali)
-        endif
+            valk(1) = resultName
+            valk(2) = fieldNameAst
+            vali(1) = iStore
+            vali(2) = iret
+            call utmess('F', 'UTILITAI8_27', nk=2, valk=valk, ni=2, vali=vali)
+        end if
         call copisd('CHAMP_GD', 'G', fieldNameAst, nomch)
         call rsnoch(resultName, fieldType, numeStore)
         call rsadpa(resultName, 'E', 1, storePara, numeStore, 0, sjv=jvPara)
 !
         if (storeTimeNb .ne. 0) then
             zr(jvPara) = timeCurr
-        else if (storeIndxNb.ne.0) then
+        else if (storeIndxNb .ne. 0) then
             zr(jvPara) = zr(ipas-1+itps0)
         else if (storeAccess .eq. 'TOUT_ORDRE') then
             zr(jvPara) = zr(ipas-1+iStore)
-        endif
+        end if
         call detrsd('CHAMP_GD', fieldNameAst)
     end do
     call jedetr('&&OP0150_NBPG_MAILLE')

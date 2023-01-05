@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine codree(reel, mode, chaine)
     else
         valeur = -reel
         nbchif = nbchif-1
-    endif
+    end if
     if (nbchif .lt. 1) goto 900
 !     VERIFIER QUE NBCHIF <= NB_CHIF_MAX_MACHINE
 !
@@ -69,12 +69,12 @@ subroutine codree(reel, mode, chaine)
     else if (mode .eq. 'F') then
 !        NOMBRE DE CHIFFRE DE LA PARTIE ENTIERE
         p = '  '
-        ient = int( log10(valeur)) + 1
+        ient = int(log10(valeur))+1
         if (ient .ge. 0) then
-            ndec = nbchif - ient
+            ndec = nbchif-ient
         else
             ndec = nbchif
-        endif
+        end if
         if (ndec .lt. 0) goto 900
     else if (mode .eq. 'G') then
         p = '  '
@@ -82,23 +82,23 @@ subroutine codree(reel, mode, chaine)
         if (ndec .lt. 0) goto 900
     else
         goto 900
-    endif
-    write( format, '( ''('',A2,A1,I2,''.'',I2,'')'' )' ) p,mode,&
-     &      nbchif,ndec
-    write( chaine, format ) reel
+    end if
+    write (format, '( ''('',A2,A1,I2,''.'',I2,'')'' )') p, mode,&
+     &      nbchif, ndec
+    write (chaine, format) reel
     if (mode .eq. 'E') then
         im = 0
         marktr = .false.
         do il = 1, long
             ii = long-il+1
-            if (((chaine(ii:ii).eq.'+').or.(chaine(ii:ii).eq.'-')) .and. (.not.marktr)) then
+            if (((chaine(ii:ii) .eq. '+') .or. (chaine(ii:ii) .eq. '-')) .and. (.not. marktr)) then
                 im = ii
                 marktr = .true.
-            endif
+            end if
             if (chaine(ii:ii) .eq. 'E') goto 999
         end do
         if (im .gt. 1) chaine(im-1:im-1) = 'E'
-    endif
+    end if
     goto 999
 !     ------------------------------------------------------------------
 900 continue

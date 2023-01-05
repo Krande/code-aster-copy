@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,47 +51,47 @@ subroutine trjeve(ific, nocc)
         call getvtx('OBJET', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
         call tresu_read_refe('OBJET', iocc, tbtxt)
-        lref=.false.
+        lref = .false.
         call getvr8('OBJET', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
-            lref=.true.
-            tbref(1)=tbtxt(1)
-            tbref(2)=tbtxt(2)
-            tbtxt(1)='NON_REGRESSION'
-        endif
+            lref = .true.
+            tbref(1) = tbtxt(1)
+            tbref(2) = tbtxt(2)
+            tbtxt(1) = 'NON_REGRESSION'
+        end if
 !
-        write (ific,*) '---- OBJET '
-        write (ific,*) '     ',nomobj
+        write (ific, *) '---- OBJET '
+        write (ific, *) '     ', nomobj
 !
         call getvis('OBJET', 'VALE_CALC_I', iocc=iocc, scal=refi, nbret=n2)
         if (n2 .eq. 1) then
-            call tresu_obj(nomobj, 'I', tbtxt, refi, refr,&
+            call tresu_obj(nomobj, 'I', tbtxt, refi, refr, &
                            epsi, crit, .true._1, ssigne)
             if (lref) then
                 call getvis('OBJET', 'VALE_REFE_I', iocc=iocc, scal=refir, nbret=n2r)
-                ASSERT(n2.eq.n2r)
-                call tresu_obj(nomobj, 'I', tbref, refir, refrr,&
+                ASSERT(n2 .eq. n2r)
+                call tresu_obj(nomobj, 'I', tbref, refir, refrr, &
                                epsir, crit, .false._1, ssigne)
-            endif
-        endif
+            end if
+        end if
 !
         call getvr8('OBJET', 'VALE_CALC', iocc=iocc, scal=refr, nbret=n2)
         if (n2 .eq. 1) then
             call tresu_ordgrd(refr, skip, ordgrd, mcf='OBJET', iocc=iocc)
             if (skip .and. .not. lref) then
                 call utmess('A', 'TEST0_11')
-            endif
-            call tresu_obj(nomobj, 'R', tbtxt, refi, refr,&
-                           epsi, crit, .true._1, ssigne, ignore=skip,&
+            end if
+            call tresu_obj(nomobj, 'R', tbtxt, refi, refr, &
+                           epsi, crit, .true._1, ssigne, ignore=skip, &
                            compare=ordgrd)
             if (lref) then
                 call getvr8('OBJET', 'VALE_REFE', iocc=iocc, scal=refrr, nbret=n2r)
-                ASSERT(n2.eq.n2r)
-                call tresu_obj(nomobj, 'R', tbref, refir, refrr,&
+                ASSERT(n2 .eq. n2r)
+                call tresu_obj(nomobj, 'R', tbref, refir, refrr, &
                                epsir, crit, .false._1, ssigne)
-            endif
-        endif
-        write (ific,*)' '
+            end if
+        end if
+        write (ific, *) ' '
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSPrintInit(ds_print, sdsuiv_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_Print), intent(inout) :: ds_print
-character(len=24), optional, intent(in) :: sdsuiv_
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=24), optional, intent(in) :: sdsuiv_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ character(len=24), optional, intent(in) :: sdsuiv_
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_9')
-    endif
+    end if
 !
 ! - Get convergence table
 !
@@ -71,29 +71,29 @@ character(len=24), optional, intent(in) :: sdsuiv_
 ! - Set convergence table
 !
     table_cvg%title_height = 3
-    table_cvg%l_csv        = ds_print%l_tcvg_csv
-    table_cvg%unit_csv     = ds_print%tcvg_unit
-    nb_cols                = table_cvg%nb_cols
+    table_cvg%l_csv = ds_print%l_tcvg_csv
+    table_cvg%unit_csv = ds_print%tcvg_unit
+    nb_cols = table_cvg%nb_cols
 !
 ! - Get number of columns for DOF monitoring
 !
     if (present(sdsuiv_)) then
         sdsuiv_info = sdsuiv_(1:14)//'     .INFO'
-        call jeveuo(sdsuiv_info, 'L', vi = v_sdsuiv_info)
+        call jeveuo(sdsuiv_info, 'L', vi=v_sdsuiv_info)
         nb_dof_monitor = v_sdsuiv_info(2)
         if (nb_dof_monitor .gt. 9) then
             call utmess('F', 'IMPRESSION_3', si=nb_dof_monitor)
-        endif
+        end if
     else
         nb_dof_monitor = 0
-    endif
+    end if
 !
 ! - Title of columns for DOF monitoring
 !
     if (nb_dof_monitor .ne. 0) then
         sdsuiv_titr = sdsuiv_(1:14)//'     .TITR'
-        call jeveuo(sdsuiv_titr, 'L', vk16 = v_sdsuiv_titr)
-    endif
+        call jeveuo(sdsuiv_titr, 'L', vk16=v_sdsuiv_titr)
+    end if
 !
 ! - Set list of columns for DOF monitor in convergence table
 !
@@ -101,35 +101,35 @@ character(len=24), optional, intent(in) :: sdsuiv_
 !
 ! ----- Name of the column
 !
-        write(indsui,'(I1)') i_dof_monitor
-        col_name        = 'SUIVDDL'//indsui
+        write (indsui, '(I1)') i_dof_monitor
+        col_name = 'SUIVDDL'//indsui
 !
 ! ----- Look for column index
 !
         i_col_name = 0
         do i_col = 1, nb_cols
             if (table_cvg%cols(i_col)%name .eq. col_name) then
-                ASSERT(i_col_name.eq.0)
+                ASSERT(i_col_name .eq. 0)
                 i_col_name = i_col
-            endif
+            end if
         end do
-        ASSERT(i_col_name.ne.0)
+        ASSERT(i_col_name .ne. 0)
 !
 ! ----- Set column
 !
         col = table_cvg%cols(i_col_name)
         col%l_vale_real = ASTER_TRUE
-        col%title(1)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+1)
-        col%title(2)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+2)
-        col%title(3)    = v_sdsuiv_titr(3*(i_dof_monitor-1)+3)
-        table_cvg%cols(i_col_name)  = col
+        col%title(1) = v_sdsuiv_titr(3*(i_dof_monitor-1)+1)
+        col%title(2) = v_sdsuiv_titr(3*(i_dof_monitor-1)+2)
+        col%title(3) = v_sdsuiv_titr(3*(i_dof_monitor-1)+3)
+        table_cvg%cols(i_col_name) = col
     end do
 !
 ! - Prepare file output
 !
     if (ds_print%l_tcvg_csv) then
         call ulopen(ds_print%tcvg_unit, ' ', ' ', 'NEW', 'O')
-    endif
+    end if
 !
 ! - Print every step time (default)
 !

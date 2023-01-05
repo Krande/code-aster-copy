@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/iscode.h"
 #include "asterfort/isdeco.h"
@@ -55,7 +55,7 @@ implicit none
         statut(cycl_index) = statut(cycl_index+1)
     end do
     call iscode(statut, cycl_ecodi(1), 30)
-    cycl_long = cycl_long_acti - 1
+    cycl_long = cycl_long_acti-1
     cycl_ecod = cycl_ecodi(1)
 
 end subroutine

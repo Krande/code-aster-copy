@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vectpe(nb1, nb2, vecu, vectn, vecnph,&
+subroutine vectpe(nb1, nb2, vecu, vectn, vecnph, &
                   vecpe)
 !
     implicit none
@@ -28,13 +28,13 @@ subroutine vectpe(nb1, nb2, vecu, vectn, vecnph,&
 !
     integer :: in
 !
-    real(kind=8) :: vectn ( 9 , 3 )
+    real(kind=8) :: vectn(9, 3)
 !
-    real(kind=8) :: vecnph ( 9 , 3 )
+    real(kind=8) :: vecnph(9, 3)
 !
-    real(kind=8) :: vecu ( 8 , 3 )
+    real(kind=8) :: vecu(8, 3)
 !
-    real(kind=8) :: vecpe ( 51 )
+    real(kind=8) :: vecpe(51)
 !
 !DEB
 !
@@ -48,10 +48,10 @@ subroutine vectpe(nb1, nb2, vecu, vectn, vecnph,&
 !
         do ii = 1, 3
 !
-            vecpe ((in-1)*6+ ii )= vecu ( in , ii )
+            vecpe((in-1)*6+ii) = vecu(in, ii)
 !
-            vecpe ((in-1)*6+ ii + 3 )= vecnph ( in , ii ) - vectn&
-            ( in , ii )
+            vecpe((in-1)*6+ii+3) = vecnph(in, ii)-vectn &
+                                   (in, ii)
 !
         end do
 !
@@ -61,7 +61,7 @@ subroutine vectpe(nb1, nb2, vecu, vectn, vecnph,&
 !
     do ii = 1, 3
 !
-        vecpe ( (nb1)*6+ ii )= vecnph ( nb2, ii ) - vectn ( nb2, ii )
+        vecpe((nb1)*6+ii) = vecnph(nb2, ii)-vectn(nb2, ii)
 !
     end do
 !

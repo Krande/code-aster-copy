@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine forsrg(intsn, nb1, nb2, xr, chgsrg,&
+subroutine forsrg(intsn, nb1, nb2, xr, chgsrg, &
                   rnormc, vectpt, vecl1)
     implicit none
 !
@@ -31,45 +31,45 @@ subroutine forsrg(intsn, nb1, nb2, xr, chgsrg,&
     integer :: i, i1, i2, i3, i4, i5, in
     integer :: intsx2, j, k, l1, l2
 !-----------------------------------------------------------------------
-    wgt=xr(127-1+intsn)
+    wgt = xr(127-1+intsn)
 !
-    l1=135
-    l2=459
-    intsx1=8*(intsn-1)
-    intsx2=9*(intsn-1)
+    l1 = 135
+    l2 = 459
+    intsx1 = 8*(intsn-1)
+    intsx2 = 9*(intsn-1)
 !
-    i1=l1+intsx1
-    i2=l2+intsx2
+    i1 = l1+intsx1
+    i2 = l2+intsx2
 !
 !     INTERPOLATION DES CHARGES
 !
     do j = 1, 6
-        chg(j)=0.d0
+        chg(j) = 0.d0
         do in = 1, nb1
-            chg(j)=chg(j)+chgsrg(j,in)*xr(i1+in)
+            chg(j) = chg(j)+chgsrg(j, in)*xr(i1+in)
         end do
     end do
 !
     do i = 1, nb1
 !
-        i3=5*(i-1)
-        vecl1(i3+1)=vecl1(i3+1)+wgt*chg(1)*xr(i1+i)*rnormc
-        vecl1(i3+2)=vecl1(i3+2)+wgt*chg(2)*xr(i1+i)*rnormc
-        vecl1(i3+3)=vecl1(i3+3)+wgt*chg(3)*xr(i1+i)*rnormc
+        i3 = 5*(i-1)
+        vecl1(i3+1) = vecl1(i3+1)+wgt*chg(1)*xr(i1+i)*rnormc
+        vecl1(i3+2) = vecl1(i3+2)+wgt*chg(2)*xr(i1+i)*rnormc
+        vecl1(i3+3) = vecl1(i3+3)+wgt*chg(3)*xr(i1+i)*rnormc
 !
         do k = 1, 3
-            vecl1(i3+4)=vecl1(i3+4)+wgt*chg(3+k)*(-xr(i2+i))*vectpt(i,&
-            2,k)
-            vecl1(i3+5)=vecl1(i3+5)+wgt*chg(3+k)* xr(i2+i) *vectpt(i,&
-            1,k)
+            vecl1(i3+4) = vecl1(i3+4)+wgt*chg(3+k)*(-xr(i2+i))*vectpt(i, &
+                                                                      2, k)
+            vecl1(i3+5) = vecl1(i3+5)+wgt*chg(3+k)*xr(i2+i)*vectpt(i, &
+                                                                   1, k)
         end do
     end do
 !
-    i4=5*nb1+1
-    i5=5*nb1+2
+    i4 = 5*nb1+1
+    i5 = 5*nb1+2
     do k = 1, 3
-        vecl1(i4) =vecl1(i4)+wgt*chg(3+k)*(-xr(i2+nb2))*vectpt(i,2,k)
-        vecl1(i5) =vecl1(i5)+wgt*chg(3+k)* xr(i2+nb2)* vectpt(i,1,k)
+        vecl1(i4) = vecl1(i4)+wgt*chg(3+k)*(-xr(i2+nb2))*vectpt(i, 2, k)
+        vecl1(i5) = vecl1(i5)+wgt*chg(3+k)*xr(i2+nb2)*vectpt(i, 1, k)
     end do
 !
 end subroutine

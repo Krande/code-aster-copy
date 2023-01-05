@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,5 +30,5 @@ subroutine normev(xx, norme)
         xx(1) = xx(1)/norme
         xx(2) = xx(2)/norme
         xx(3) = xx(3)/norme
-    endif
+    end if
 end subroutine

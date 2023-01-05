@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
+subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz, &
                   phenoz, modelz, nbno, linoz)
     implicit none
 !     BUT : AFFECTATION DE L'OBJET DE TYPE LIGRET
@@ -75,7 +75,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
     integer :: matard, nbma, nbmadi, nbmail, nbmax, nbno, nbnodi
     integer :: nbnox, nlolim, nlolin, numail, nutypm
 !-----------------------------------------------------------------------
-    parameter (nbmail = 10000)
+    parameter(nbmail=10000)
 !
     character(len=8) :: noma
     character(len=16) :: pheno, modeli, typel
@@ -111,7 +111,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
     if (iret .eq. 0) then
         call crelgt('V', ligret)
-    endif
+    end if
 !
 ! --- VECTEUR DE LA LISTE DES MAILLES CUMULEES DU LIGRET :
 !     --------------------------------------------------
@@ -161,13 +161,13 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !     --------------------------------
     call jeveuo(ligret//'.NBMA', 'E', vi=vnbma)
 !
-    vnbma(1) = vnbma(1) + nbma
+    vnbma(1) = vnbma(1)+nbma
 !
 ! --- ON AFFECTE UNE FOIS POUR TOUTES LE NOM DU MAILLAGE :
 !     --------------------------------------------------
     if (iret .eq. 0) then
         lgrf(1) = noma
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA LISTE DES MAILLES A AFFECTER :
 !     ===============================================
@@ -177,8 +177,8 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
             call wkvect(lima, 'V V I', 1, jdlima)
         else
             call jeveuo(lima, 'L', jdlima)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA LISTE DES NOEUDS A AFFECTER :
 !     ===============================================
@@ -188,8 +188,8 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
             call wkvect(lino, 'V V I', 1, jdlino)
         else
             call jeveuo(lino, 'L', jdlino)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- VERIFICATION DE L'ADEQUATION DE L'AFFECTATION DES MAILLES
 ! --- A LA LISTE DES MAILLES CUMULEES :
@@ -206,18 +206,18 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE DE MAILLES DISPONIBLES :
 !       -----------------------------
-        nbmadi = lolimx - lolima
+        nbmadi = lolimx-lolima
 !
 ! ---   REAJUSTEMENT EVENTUEL DES VECTEURS LIMA ET LITY :
 !       -----------------------------------------------
         if (nbma .gt. nbmadi) then
-            nlolim = nbma - nbmadi
-            nbmax = lolimx+max(nlolim,nbmail)
+            nlolim = nbma-nbmadi
+            nbmax = lolimx+max(nlolim, nbmail)
             call juveca(ligret//'.LIMA', nbmax)
             call jeveuo(ligret//'.LIMA', 'E', idlima)
             call juveca(ligret//'.LITY', nbmax)
             call jeveuo(ligret//'.LITY', 'E', idlity)
-        endif
+        end if
 !
 ! ---   VERIFICATION DE L'ADEQUATION DE LA TAILLE DU VECTEUR
 ! ---   DES POINTEURS DANS LA LISTE DE MAILLES :
@@ -225,7 +225,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE D'AFFECTATIONS DE MAILLES :
 !       --------------------------------
-        apma(1) = apma(1) + 1
+        apma(1) = apma(1)+1
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.POMA :
 !       -------------------------------
@@ -236,9 +236,9 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
         if (apma(1) .ge. lopomx) then
             call juveca(ligret//'.POMA', 2*lopomx)
             call jeveuo(ligret//'.POMA', 'E', idpoma)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- VERIFICATION DE L'ADEQUATION DE L'AFFECTATION DES NOEUDS
 ! --- A LA LISTE DES NOEUDS CUMULES :
@@ -255,16 +255,16 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE DE NOEUDS DISPONIBLES :
 !       ----------------------------
-        nbnodi = lolinx - lolino
+        nbnodi = lolinx-lolino
 !
 ! ---   REAJUSTEMENT EVENTUEL DU VECTEUR LINO :
 !       -------------------------------------
         if (nbno .gt. nbnodi) then
-            nlolin = nbno - nbnodi
-            nbnox = lolinx+max(nlolin,nbmail)
+            nlolin = nbno-nbnodi
+            nbnox = lolinx+max(nlolin, nbmail)
             call juveca(ligret//'.LINO', nbnox)
             call jeveuo(ligret//'.LINO', 'E', idlino)
-        endif
+        end if
 !
 ! ---   VERIFICATION DE L'ADEQUATION DE LA TAILLE DU VECTEUR
 ! ---   DES POINTEURS DANS LA LISTE DE NOEUDS :
@@ -272,7 +272,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE D'AFFECTATIONS DE NOEUDS :
 !       -------------------------------
-        apno(1) = apno(1) + 1
+        apno(1) = apno(1)+1
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.PONO :
 !       -------------------------------
@@ -283,9 +283,9 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
         if (apno(1) .gt. loponx) then
             call juveca(ligret//'.PONO', 2*loponx)
             call jeveuo(ligret//'.PONO', 'E', idpono)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- AFFECTATION DES MAILLES TARDIVES :
 !     ================================
@@ -293,8 +293,8 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   ON INCREMENTE LE NOMBRE DE MAILLES TARDIVES :
 !       -------------------------------------------
-        mata(1) = mata(1) + 1
-        matard = matard + 1
+        mata(1) = mata(1)+1
+        matard = matard+1
 !
 ! ---   AFFECTATION DU VECTEUR DES NOEUDS DU LIGRET :
 !       -------------------------------------------
@@ -302,7 +302,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
             zi(idlino+zi(idpono+matard-1)+i-1) = zi(jdlino+i-1)
         end do
 !
-        zi(idpono+matard) = zi(idpono+matard-1) + nbno
+        zi(idpono+matard) = zi(idpono+matard-1)+nbno
 !
         call jeecra(ligret//'.LINO', 'LONUTI', zi(idpono+matard))
 !
@@ -318,7 +318,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
             call jeveuo(typmai, 'L', jdtm)
         else
             call jenonu(jexnom('&CATA.TE.NOMTE', typel), ityp)
-        endif
+        end if
 !
 !
 ! ---   AFFECTATION DE LA LISTE DES MAILLES CUMULEES :
@@ -331,20 +331,20 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
                 ityp = zi(jdpm+nutypm-1)
             else
                 call jenonu(jexnom('&CATA.TE.NOMTE', typel), ityp)
-            endif
+            end if
 !
             zi(idlity+zi(idpoma+apma(1)-1)+i-1) = ityp
         end do
 !
-        vnbma(1) = vnbma(1) + nbma
+        vnbma(1) = vnbma(1)+nbma
 !
 ! ---   VECTEUR DE POINTEURS DANS LE VECTEUR DES MAILLES :
 !       ------------------------------------------------
-        zi(idpoma+apma(1)) = zi(idpoma+apma(1)-1) + nbma
+        zi(idpoma+apma(1)) = zi(idpoma+apma(1)-1)+nbma
 !
         call jeecra(ligret//'.LIMA', 'LONUTI', zi(idpoma+apma(1)))
 !
-    endif
+    end if
 !
 ! --- AFFECTATION DE LA MODELISATION AU LIGRET :
 !     ----------------------------------------

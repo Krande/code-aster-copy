@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
-                  ratio, typdec, nbrpas, deltac, dtmin,&
+subroutine nmdecc(nomlis, linfo, optdez, deltat, instam, &
+                  ratio, typdec, nbrpas, deltac, dtmin, &
                   retdec)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -103,56 +103,56 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
     if (optdec .eq. 'UNIFORME') then
         if (typdec .eq. 'SUBD') then
             pasdt = deltat/nbrpas
-        else if (typdec.eq.'DELT') then
+        else if (typdec .eq. 'DELT') then
             nbrpas = nint(deltat/deltac)
             pasdt = deltat/nbrpas
         else
             ASSERT(.false.)
-        endif
-    else if (optdec.eq.'PROGRESSIF') then
+        end if
+    else if (optdec .eq. 'PROGRESSIF') then
         if (typdec .eq. 'SUBD') then
             premie = ratio*deltat
             suivan = ((1.d0-ratio)*deltat)/(nbrpas-1)
             if (premie .le. r8prem() .or. suivan .le. r8prem()) then
                 retdec = 0
                 goto 99
-            endif
-        else if (typdec.eq.'DELT') then
+            end if
+        else if (typdec .eq. 'DELT') then
             ASSERT(.false.)
         else
             ASSERT(.false.)
-        endif
-    else if (optdec.eq.'DEGRESSIF') then
+        end if
+    else if (optdec .eq. 'DEGRESSIF') then
         if (typdec .eq. 'SUBD') then
             premie = ((1.d0-ratio)*deltat)/(nbrpas-1)
             suivan = ratio*deltat
             if (premie .le. r8prem() .or. suivan .le. r8prem()) then
                 retdec = 0
                 goto 99
-            endif
-        else if (typdec.eq.'DELT') then
+            end if
+        else if (typdec .eq. 'DELT') then
             premie = ((1.d0-ratio)*deltat)
             suivan = ratio*deltat
-            nbrpas = nint(premie/deltac) + 1
+            nbrpas = nint(premie/deltac)+1
             premie = deltac
             suivan = deltat-(nbrpas-1)*deltac
             if (premie .le. r8prem() .or. suivan .le. r8prem()) then
                 retdec = 0
                 goto 99
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- DECOUPE INUTILE ?
 !
     if (nbrpas .le. 1) then
         retdec = 2
         goto 99
-    endif
+    end if
 !
 ! --- CONSTRUCTION DE LA LISTE
 !
@@ -163,35 +163,35 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
     inst = instam
     if (optdec .eq. 'UNIFORME') then
         do ipas = 1, nbrpas
-            inst = inst + pasdt
+            inst = inst+pasdt
             zr(jinst+ipas-1) = inst
-            dtmin = min(dtmin ,pasdt)
+            dtmin = min(dtmin, pasdt)
         end do
-    else if (optdec.eq.'PROGRESSIF') then
+    else if (optdec .eq. 'PROGRESSIF') then
         do ipas = 1, nbrpas
             if (ipas .eq. 1) then
                 pasdt = premie
             else
                 pasdt = suivan
-            endif
-            inst = inst + pasdt
+            end if
+            inst = inst+pasdt
             zr(jinst+ipas-1) = inst
-            dtmin = min(dtmin ,pasdt)
+            dtmin = min(dtmin, pasdt)
         end do
-    else if (optdec.eq.'DEGRESSIF') then
+    else if (optdec .eq. 'DEGRESSIF') then
         do ipas = 1, nbrpas
             if (ipas .eq. nbrpas) then
                 pasdt = suivan
             else
                 pasdt = premie
-            endif
-            inst = inst + pasdt
+            end if
+            inst = inst+pasdt
             zr(jinst+ipas-1) = inst
-            dtmin = min(dtmin ,pasdt)
+            dtmin = min(dtmin, pasdt)
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- AFFICHAGE
 !
@@ -201,27 +201,27 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
             valr(1) = instam
             valr(2) = pasdt
             call utmess('I', 'SUBDIVISE_10', si=nbrpas, nr=2, valr=valr)
-        else if (optdec.eq.'PROGRESSIF') then
+        else if (optdec .eq. 'PROGRESSIF') then
             valr(1) = instam
             valr(2) = premie
             valr(3) = suivan
             call utmess('I', 'SUBDIVISE_11', si=nbrpas, nr=3, valr=valr)
-        else if (optdec.eq.'DEGRESSIF') then
+        else if (optdec .eq. 'DEGRESSIF') then
             valr(1) = instam
             valr(2) = premie
             valr(3) = suivan
             call utmess('I', 'SUBDIVISE_12', si=nbrpas, nr=3, valr=valr)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
- 99 continue
+99  continue
 !
     if (retdec .eq. 0) then
         call utmess('I', 'SUBDIVISE_50')
-        call utmess('I', 'SUBDIVISE_53', sr = premie)
-    endif
+        call utmess('I', 'SUBDIVISE_53', sr=premie)
+    end if
 !
     call jedema()
 !

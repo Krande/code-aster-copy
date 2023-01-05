@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,24 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dsipdp(ds_thm,&
-                  adcome, addep1, addep2  ,&
-                  dimcon, dimdef, dsde    ,&
+subroutine dsipdp(ds_thm, &
+                  adcome, addep1, addep2, &
+                  dimcon, dimdef, dsde, &
                   dspdp1, dspdp2, l_dspdp2)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: adcome, addep1, addep2
-integer, intent(in) :: dimdef, dimcon
-real(kind=8), intent(in) :: dsde(dimcon, dimdef)
-real(kind=8), intent(out) :: dspdp1, dspdp2
-aster_logical, intent(out) :: l_dspdp2
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: adcome, addep1, addep2
+    integer, intent(in) :: dimdef, dimcon
+    real(kind=8), intent(in) :: dsde(dimcon, dimdef)
+    real(kind=8), intent(out) :: dspdp1, dspdp2
+    aster_logical, intent(out) :: l_dspdp2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,25 +61,25 @@ aster_logical, intent(out) :: l_dspdp2
 ! --------------------------------------------------------------------------------------------------
 !
     nume_thmc = ds_thm%ds_behaviour%nume_thmc
-    dspdp1    = 0.d0
-    dspdp2    = 0.d0
-    l_dspdp2  = ASTER_FALSE
+    dspdp1 = 0.d0
+    dspdp2 = 0.d0
+    l_dspdp2 = ASTER_FALSE
 !
     if (ds_thm%ds_behaviour%nb_pres .eq. 1) then
         if (nume_thmc .eq. 2) then
-            dspdp1   = 0.d0
-            dspdp2   = dspdp2+dsde(adcome+6,addep1)
+            dspdp1 = 0.d0
+            dspdp2 = dspdp2+dsde(adcome+6, addep1)
             l_dspdp2 = ASTER_TRUE
         else
-            dspdp1   = dspdp1+dsde(adcome+6,addep1)
-            dspdp2   = 0.d0
+            dspdp1 = dspdp1+dsde(adcome+6, addep1)
+            dspdp2 = 0.d0
             l_dspdp2 = ASTER_FALSE
-        endif
-    endif
+        end if
+    end if
     if (ds_thm%ds_behaviour%nb_pres .eq. 2) then
-        dspdp1   = dspdp1+dsde(adcome+6,addep1)
-        dspdp2   = dspdp2+dsde(adcome+6,addep2)
+        dspdp1 = dspdp1+dsde(adcome+6, addep1)
+        dspdp2 = dspdp2+dsde(adcome+6, addep2)
         l_dspdp2 = ASTER_TRUE
-    endif
+    end if
 !
 end subroutine

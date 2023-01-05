@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmetca(model , mesh     , mate         , hval_incr,&
+subroutine nmetca(model, mesh, mate, hval_incr, &
                   sddisc, nume_inst, ds_errorindic)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
@@ -38,12 +38,12 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model, mate
-character(len=19), intent(in) :: hval_incr(*)
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model, mate
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     integer, parameter :: nbin = 6
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-    integer, parameter :: npara  = 2
+    integer, parameter :: npara = 2
     character(len=8) :: licmp(npara)
     real(kind=8) :: rcmp(npara)
     integer :: iret
@@ -87,13 +87,13 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_87')
-    endif
+    end if
 !
 ! - Initializations
 !
     option = 'ERRE_TEMPS_THM'
     ligrmo = model(1:8)//'.MODELE'
-    base   = 'V'
+    base = 'V'
     cartca = '&&NMETCA.GRDCA'
     chelem = '&&NMETCA.ERRE'
 !
@@ -101,7 +101,7 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
     time_curr = diinst(sddisc, nume_inst)
     time_prev = diinst(sddisc, nume_inst-1)
-    deltat    = time_curr-time_prev
+    deltat = time_curr-time_prev
 !
 ! - Previous errors
 !
@@ -125,9 +125,9 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
     licmp(1) = 'X1'
     licmp(2) = 'X2'
-    rcmp(1)  = ds_errorindic%adim_l
-    rcmp(2)  = ds_errorindic%adim_p
-    call mecact(base, cartca, 'MODELE', ligrmo, 'NEUT_R',&
+    rcmp(1) = ds_errorindic%adim_l
+    rcmp(2) = ds_errorindic%adim_p
+    call mecact(base, cartca, 'MODELE', ligrmo, 'NEUT_R', &
                 ncmp=npara, lnomcmp=licmp, vr=rcmp)
 !
 ! - Input fields
@@ -152,26 +152,26 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! - Compute
 !
-    call calcul('C', option, ligrmo, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, base,&
+    call calcul('C', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
 !
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         call utmess('F', 'CALCULEL2_88', sk=option)
-    endif
+    end if
 !
 ! - Compute
 !
     call mesomm(lchout(1), 1, vr=somme)
     taberr(1) = sqrt(deltat*somme(1))
-    taberr(2) = sqrt(taberr(2)**2 + taberr(1)**2)
+    taberr(2) = sqrt(taberr(2)**2+taberr(1)**2)
     ds_errorindic%erre_thm_loca = taberr(1)
     ds_errorindic%erre_thm_glob = taberr(2)
 !
 ! - Clean
 !
-    call detrsd('CARTE'   , cartca)
+    call detrsd('CARTE', cartca)
     call detrsd('CHAMP_GD', chelem)
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,31 +29,31 @@ subroutine jxferm(iclas)
 !-----------------------------------------------------------------------
     integer :: k
 !-----------------------------------------------------------------------
-    parameter      ( n = 5 )
+    parameter(n=5)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     character(len=8) :: nombas
-    common /kbasje/  nombas(n)
+    common/kbasje/nombas(n)
     integer :: idn, iext, nbenrg
-    common /iextje/  idn(n) , iext(n) , nbenrg(n)
+    common/iextje/idn(n), iext(n), nbenrg(n)
     character(len=128) :: repglo, repvol
-    common /banvje/  repglo,repvol
+    common/banvje/repglo, repvol
     integer :: lrepgl, lrepvo
-    common /balvje/  lrepgl,lrepvo
+    common/balvje/lrepgl, lrepvo
 !     ------------------------------------------------------------------
     character(len=512) :: nom512
     integer :: ier
 ! DEB ------------------------------------------------------------------
     ier = 0
     do k = 1, iext(iclas)
-        call get_jvbasename(nomfic(iclas)(1:4), k, nom512)
+        call get_jvbasename(nomfic(iclas) (1:4), k, nom512)
         call closdr(nom512, ier)
         if (ier .ne. 0) then
             call utmess('F', 'JEVEUX_11', sk=nombas(iclas))
-        endif
+        end if
     end do
 !
 end subroutine

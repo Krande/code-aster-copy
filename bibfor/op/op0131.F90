@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,11 +83,11 @@ subroutine op0131()
 !
     call getres(intrep, tyconc, nomcmd)
 !
-    nomref=intrep(1:8)
+    nomref = intrep(1:8)
 !
 !---1.2---INTERSPECTRE EXCIT
 !
-    call reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
+    call reciex(intexc, iderex, nindex, nnoeex, ncmpex, &
                 nvasex, graexc, excmod, napexc)
 !
     ilnoex = 1
@@ -104,12 +104,12 @@ subroutine op0131()
 !
 !---1.3---INTERSPECTRE REPONSE
 !
-    call recire(typopt, iderre, frexci, fremin, fremax,&
+    call recire(typopt, iderre, frexci, fremin, fremax, &
                 pas, nbptmd)
 !
 !---1.4---MODES DYNAMIQUES
 !
-    call recmod(modmec, nbmode, nbamor, bande, tymmec,&
+    call recmod(modmec, nbmode, nbamor, bande, tymmec, &
                 grdmod)
     call rslipa(modmec, 'FREQ', '&&OP0131.LIFREQ', iadfrq, n1)
 !
@@ -123,7 +123,7 @@ subroutine op0131()
 !
 !---1.5---MODES STATIQUES
 !
-    call recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
+    call recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex, &
                 nmost1, modsta)
     call jeexin('&&OP0131.LISTADRMODSTAC', iret)
     if (iret .gt. 0) call jeveuo('&&OP0131.LISTADRMODSTAC', 'L', ilamsc)
@@ -131,22 +131,22 @@ subroutine op0131()
 !---1.6---CONSTITUTION DE LA LISTE COMPLETE DES ET DDLS EN CAS D EFFORT
 !         ET DES ADRESSES DES MATRICES ELEMENTAIRES CORRESPONDANTES
 !
-    call prekpr(modmec, mtrmas, nbddl, numer, mailla,&
+    call prekpr(modmec, mtrmas, nbddl, numer, mailla, &
                 chamat, celem)
 !
 !---2.----CALCUL DES COEFFICIENTS DE PARTICIPATION GENERALISE
 !        IL Y EN A NAPEXC*NBMODE
 !
-    call calpim(graexc, excmod, napexc, nbmode, tymmec,&
-                mtrmas, numer, nbddl, zk8(ilnoex), zk8(ilcpex),&
+    call calpim(graexc, excmod, napexc, nbmode, tymmec, &
+                mtrmas, numer, nbddl, zk8(ilnoex), zk8(ilcpex), &
                 nvasex, zk8(ilvaex))
     call jeveuo('&&OP0131.PIM', 'L', vr=vpim)
 !
 !---3-----MISE AU POINT DE LA DISCRETISATION FREQUENTIELLE
 !   4-----ET RECALCUL DES DSP EXCITS DANS LA DISCRETISATION REPONSE
 !
-    call caldis(fremax, fremin, pas, frexci, nbptmd,&
-                nbmode, zi(ilmode), zr(iadfrq), zr(ilamor), nindex,&
+    call caldis(fremax, fremin, pas, frexci, nbptmd, &
+                nbmode, zi(ilmode), zr(iadfrq), zr(ilamor), nindex, &
                 npdsc3, frefin)
 !
     call jeveuo('&&OP0131.DISCR3', 'E', iadsc3)
@@ -163,9 +163,9 @@ subroutine op0131()
 !     DE LA DISTANCE ENTRE LES NOEUDS D APPLICATION DE LA SOURCE
 !
     if (graexc(1:5) .eq. 'SOUR_') then
-        call preflx(graexc, mailla, chamat, celem, npdsc3,&
+        call preflx(graexc, mailla, chamat, celem, npdsc3, &
                     iadsc3, nindex, ilnoex, lifex2)
-    endif
+    end if
     call jeveuo(lifex2, 'L', ilfex2)
 !
 !---6-----CALCUL DE LA REPONSE EN DSP
@@ -177,9 +177,9 @@ subroutine op0131()
         ifreq2 = iadfrq-1+zi(ilmode+imoddy-1)
         do ifreq1 = 1, npdsc3
             r8freq = zr(iadsc3+ifreq1-1)
-            r8bid1 = r8freq / zr(ifreq2)
+            r8bid1 = r8freq/zr(ifreq2)
             call transf(r8bid1, r8amor, xch)
-            xch = xch / (depi*zr(ifreq2))**2
+            xch = xch/(depi*zr(ifreq2))**2
             zc(iadhii-1+npdsc3*(imoddy-1)+ifreq1) = xch
         end do
     end do
@@ -190,11 +190,11 @@ subroutine op0131()
         nmost3 = nnoeex
     else
         nmost3 = 0
-    endif
+    end if
 !
 !------STOCKAGE DES NUMEROS DES DDLS REPONSE
 !
-    ndimre = nbmode + nmost3
+    ndimre = nbmode+nmost3
 !
 !
     if (iderre .eq. 0) then
@@ -203,20 +203,20 @@ subroutine op0131()
         nocham = 'VITE_GENE'
     else
         nocham = 'ACCE_GENE'
-    endif
+    end if
 !
     call wkvect(nomref//'.REFE', 'G V K16', 3, lrefe)
     zk16(lrefe) = nocham
     zk16(lrefe+1) = typopt
     zk16(lrefe+2) = 'FREQ'
 !
-    itail1 = ndimre * ( 1 + ndimre ) / 2
+    itail1 = ndimre*(1+ndimre)/2
     chnumi = nomref//'.NUMI'
     call wkvect(chnumi, 'G V I', itail1, lnumi)
     chnumj = nomref//'.NUMJ'
     call wkvect(chnumj, 'G V I', itail1, lnumj)
     chvale = nomref//'.VALE'
-    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 itail1)
     chfreq = nomref//'.DISC'
     call wkvect(chfreq, 'G V R', npdsc3, lfreq)
@@ -224,18 +224,18 @@ subroutine op0131()
     ij1 = 0
     do i1 = 1, ndimre
         do i2 = i1, ndimre
-            ij1=ij1+1
+            ij1 = ij1+1
             zi(lnumi-1+ij1) = i1
             zi(lnumj-1+ij1) = i2
-            if ((typopt.eq.'TOUT') .or. (i1.eq.i2)) then
+            if ((typopt .eq. 'TOUT') .or. (i1 .eq. i2)) then
                 if (i1 .eq. i2) then
                     nbabs = npdsc3
                 else
                     nbabs = 2*npdsc3
-                endif
+                end if
             else
                 nbabs = 6
-            endif
+            end if
             call jecroc(jexnum(chvale, ij1))
             call jeecra(jexnum(chvale, ij1), 'LONMAX', nbabs)
             call jeecra(jexnum(chvale, ij1), 'LONUTI', nbabs)
@@ -244,21 +244,21 @@ subroutine op0131()
 !
 !---6.5---COEFFICIENT EN PUISSANCE DE W : IEXP
 !
-    iexp = iderre - iderex
+    iexp = iderre-iderex
     if (graexc .ne. 'DEPL_R') iexp = iexp-2
 !
 !---6.6---SIGNE DEDUIT DE L ORDRE DE DERIVATION
 !
-    isign = mod(iderre-iderex+6,2)
+    isign = mod(iderre-iderex+6, 2)
     if (isign .eq. 1) then
         r8sign = -1.d0
     else
         r8sign = 1.d0
-    endif
+    end if
 !
 !---6.7---CREATION DES MATRICES DE TRAVAIL
 !
-    n1 = nmost3 + nbmode
+    n1 = nmost3+nbmode
     call wkvect('&&OP0131.J', 'V V C', n1*napexc, iadj)
     call wkvect('&&OP0131.JS', 'V V C', n1*napexc, iadjs)
     call wkvect('&&OP0131.G', 'V V C', napexc*napexc, iadg)
@@ -270,7 +270,7 @@ subroutine op0131()
     nj = napexc
     ni1 = nmost3
     ni2 = nbmode
-    ni = ni1 + ni2
+    ni = ni1+ni2
 !
     do ifreq1 = 1, npdsc3
 !
@@ -283,24 +283,24 @@ subroutine op0131()
                 r8bid1 = 0.d0
             else
                 r8bid1 = 1.d0
-            endif
+            end if
         else
             r8bid1 = r8sign*(r8omeg**iexp)*r8omg2
-        endif
+        end if
 !
 !---------REMPLISSAGE DE LA MATRICE J ET DE JS
 !
         do j = 1, nj
 !  MATRICES DES MODES STATIQUES EST L IDENTITE
             if (j .le. ni1) then
-                xcj = dcmplx(1.d0,0.d0)
-                zc(iadj -1+ni*(j-1)+j) = xcj
+                xcj = dcmplx(1.d0, 0.d0)
+                zc(iadj-1+ni*(j-1)+j) = xcj
                 zc(iadjs-1+nj*(j-1)+j) = dconjg(xcj)
-            endif
+            end if
             do i = 1, ni2
                 pim = vpim(1+(j-1)*ni2+i-1)
                 xcj = r8bid1*pim*zc(iadhii-1+npdsc3*(i-1)+ifreq1)
-                zc(iadj -1+ni*(j-1)+ni1+i) = xcj
+                zc(iadj-1+ni*(j-1)+ni1+i) = xcj
                 zc(iadjs-1+nj*(i+ni1-1)+j) = dconjg(xcj)
             end do
         end do
@@ -310,28 +310,28 @@ subroutine op0131()
         do i = 1, napexc
             do j = 1, napexc
                 if (j .ge. i) then
-                    ij1=(j*(j-1))/2+i
-                    igre=zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+1
-                    igim=zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+2
-                    xcg=dcmplx(zr(igre),zr(igim))
+                    ij1 = (j*(j-1))/2+i
+                    igre = zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+1
+                    igim = zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+2
+                    xcg = dcmplx(zr(igre), zr(igim))
                 else
-                    ij1=(i*(i-1))/2+j
-                    igre=zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+1
-                    igim=zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+2
-                    xcg=dcmplx(zr(igre),-zr(igim))
-                endif
-                zc(iadg-1+(j-1)*napexc+i)=xcg
+                    ij1 = (i*(i-1))/2+j
+                    igre = zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+1
+                    igim = zi(ilfex2-1+ij1)+npdsc3-1+2*(ifreq1-1)+2
+                    xcg = dcmplx(zr(igre), -zr(igim))
+                end if
+                zc(iadg-1+(j-1)*napexc+i) = xcg
             end do
         end do
 !
 !---------CALCUL JG A LA FREQUENCE IFREQ1
 !
-        call mlmatc(n1, napexc, napexc, zc(iadj), zc(iadg),&
+        call mlmatc(n1, napexc, napexc, zc(iadj), zc(iadg), &
                     zc(iadjg))
 !
 !---------CALCUL JGJ* A LA FREQUENCE IFREQ1
 !
-        call mlmatc(n1, napexc, n1, zc(iadjg), zc(iadjs),&
+        call mlmatc(n1, napexc, n1, zc(iadjg), zc(iadjs), &
                     zc(iadjgj))
 !
 !----------SI REPONSE MODALE ON SORT ICI LES RESULTATS
@@ -341,11 +341,11 @@ subroutine op0131()
                 nk = i
             else
                 nk = ndimre
-            endif
+            end if
             do j = i, nk
                 ij = 0
                 do num = 1, itail1
-                    if ((i .eq. zi(lnumi-1+num)) .and. (j .eq. zi( lnumj-1+num))) then
+                    if ((i .eq. zi(lnumi-1+num)) .and. (j .eq. zi(lnumj-1+num))) then
                         ij = num
                         goto 650
                     end if
@@ -358,7 +358,7 @@ subroutine op0131()
                 else
                     zr(ispec-1+2*(ifreq1-1)+1) = dble(xcgrep)
                     zr(ispec-1+2*(ifreq1-1)+2) = dimag(xcgrep)
-                endif
+                end if
             end do
         end do
 !
@@ -370,7 +370,7 @@ subroutine op0131()
             do j = i+1, ndimre
                 ij = ij+1
                 call jeveuo(jexnum(chvale, ij), 'E', ispec)
-                zr(ispec ) = 0.d0
+                zr(ispec) = 0.d0
                 zr(ispec+1) = frefin
                 zr(ispec+2) = 0.d0
                 zr(ispec+3) = 0.d0
@@ -378,7 +378,7 @@ subroutine op0131()
                 zr(ispec+5) = 0.d0
             end do
         end do
-    endif
+    end if
 !
     call titre()
 !

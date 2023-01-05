@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
-                  rval, kval, cval, epsi, crit,&
+subroutine rsindi(tysca, iaobj, paobj, jordr, ival, &
+                  rval, kval, cval, epsi, crit, &
                   nbordr, nbtrou, nutrou, ndim)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 !
-integer :: nbordr, nbtrou, nutrou(*), ndim, ival, paobj
-real(kind=8) :: rval, epsi
-character(len=4) :: tysca
-character(len=*) :: kval, crit
-complex(kind=8) :: cval
+    integer :: nbordr, nbtrou, nutrou(*), ndim, ival, paobj
+    real(kind=8) :: rval, epsi
+    character(len=4) :: tysca
+    character(len=*) :: kval, crit
+    complex(kind=8) :: cval
 !
 !      TROUVER DANS LA TABLE ZX(IAOBJ-1+I),I=1,NBORDR LE SCALAIRE
 !      IVAL,RVAL,CVAL...
@@ -74,120 +74,120 @@ complex(kind=8) :: cval
                     trouve = .true.
                 else
                     trouve = .false.
-                endif
-            else if (crit2(1:4).eq.'ABSO') then
+                end if
+            else if (crit2(1:4) .eq. 'ABSO') then
                 if (abs(zr(iaobj+(i-1)*paobj)-rval) .le. abs(epsi)) then
                     trouve = .true.
                 else
                     trouve = .false.
-                endif
+                end if
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             if (trouve) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
-    else if (tysca(1:1).eq.'I') then
+    else if (tysca(1:1) .eq. 'I') then
         do i = 1, nbordr
             if (zi(iaobj+(i-1)*paobj) .eq. ival) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
-    else if (tysca.eq.'K8  ') then
+    else if (tysca .eq. 'K8  ') then
         do i = 1, nbordr
             if (zk8(iaobj+(i-1)*paobj) .eq. kval) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
-    else if (tysca.eq.'K16 ') then
+    else if (tysca .eq. 'K16 ') then
         do i = 1, nbordr
             if (zk16(iaobj+(i-1)*paobj) .eq. kval) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
-    else if (tysca.eq.'K24 ') then
+    else if (tysca .eq. 'K24 ') then
         do i = 1, nbordr
             if (zk24(iaobj+(i-1)*paobj) .eq. kval) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
-    else if (tysca.eq.'K32 ') then
+    else if (tysca .eq. 'K32 ') then
         do i = 1, nbordr
             if (zk32(iaobj+(i-1)*paobj) .eq. kval) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
-    else if (tysca.eq.'K80 ') then
+    else if (tysca .eq. 'K80 ') then
         do i = 1, nbordr
             if (zk80(iaobj+(i-1)*paobj) .eq. kval) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
-    else if (tysca(1:1).eq.'C') then
+    else if (tysca(1:1) .eq. 'C') then
         do i = 1, nbordr
             if (crit2(1:4) .eq. 'RELA') then
                 if (abs(zc(iaobj+(i-1)*paobj)-cval) .le. abs(epsi*cval)) then
                     trouve = .true.
                 else
                     trouve = .false.
-                endif
-            else if (crit2(1:4).eq.'ABSO') then
+                end if
+            else if (crit2(1:4) .eq. 'ABSO') then
                 if (abs(zc(iaobj+(i-1)*paobj)-cval) .le. abs(epsi)) then
                     trouve = .true.
                 else
                     trouve = .false.
-                endif
+                end if
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             if (trouve) then
-                nbtrou = nbtrou + 1
+                nbtrou = nbtrou+1
                 if (nbtrou .le. ndim) then
                     nutrou(nbtrou) = zi(jordr+i-1)
                 else
                     depass = .true.
-                endif
-            endif
+                end if
+            end if
         end do
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 !
     if (depass) nbtrou = -nbtrou

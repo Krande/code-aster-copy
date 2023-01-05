@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romBaseSave(base     , nbMode   , nbSnap,&
+subroutine romBaseSave(base, nbMode, nbSnap, &
                        baseValeR, baseSing_, baseNumeSlice_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -31,11 +31,11 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-integer, intent(in) :: nbMode, nbSnap
-real(kind=8), pointer :: baseValeR(:)
-real(kind=8), optional, pointer :: baseSing_(:)
-integer, optional, pointer      :: baseNumeSlice_(:)
+    type(ROM_DS_Empi), intent(in) :: base
+    integer, intent(in) :: nbMode, nbSnap
+    real(kind=8), pointer :: baseValeR(:)
+    real(kind=8), optional, pointer :: baseSing_(:)
+    integer, optional, pointer      :: baseNumeSlice_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,42 +67,42 @@ integer, optional, pointer      :: baseNumeSlice_(:)
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM12_2', si = nbMode)
-    endif
+        call utmess('I', 'ROM12_2', si=nbMode)
+    end if
 !
 ! - Get parameters
 !
     resultName = base%resultName
-    mode       = base%mode
-    nbEqua     = mode%nbEqua
-    fieldName  = mode%fieldName
-    AS_ALLOCATE(vr = modeValeR, size = nbEqua)
+    mode = base%mode
+    nbEqua = mode%nbEqua
+    fieldName = mode%fieldName
+    AS_ALLOCATE(vr=modeValeR, size=nbEqua)
 !
 ! - Save modes
 !
     do iMode = 1, nbMode
-        numeMode  = iMode
+        numeMode = iMode
         numeSlice = 0
-        modeSing  = 0
+        modeSing = 0
         if (present(baseNumeSlice_)) then
             numeSlice = baseNumeSlice_(iMode)
-        endif
+        end if
         if (present(baseSing_)) then
-            modeSing  = baseSing_(iMode)
-        endif
+            modeSing = baseSing_(iMode)
+        end if
         do iEqua = 1, nbEqua
             modeValeR(iEqua) = baseValeR(nbEqua*(iMode-1)+iEqua)
         end do
-        call romModeSave(resultName, numeMode ,&
-                         fieldName , mode     ,&
-                         modeValeR_ = modeValeR,&
-                         modeSing_  = modeSing ,&
-                         numeSlice_ = numeSlice,&
-                         nbSnap_    = nbSnap)
+        call romModeSave(resultName, numeMode, &
+                         fieldName, mode, &
+                         modeValeR_=modeValeR, &
+                         modeSing_=modeSing, &
+                         numeSlice_=numeSlice, &
+                         nbSnap_=nbSnap)
     end do
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = modeValeR)
+    AS_DEALLOCATE(vr=modeValeR)
 !
 end subroutine

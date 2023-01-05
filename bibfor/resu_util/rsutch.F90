@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,12 +56,12 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     resu19 = nomsd
 !
     call jenonu(jexnom(resu19//'.DESC', nomsy), isymb)
-    ASSERT(isymb.gt.0)
+    ASSERT(isymb .gt. 0)
     call codent(isymb, 'D0', nuch)
 !
     call rsutrg(nomsd, iordr, irang, nbordr)
-    ASSERT(irang.ge.0)
-    ASSERT(irang.le.nbordr)
+    ASSERT(irang .ge. 0)
+    ASSERT(irang .le. nbordr)
 !
 !
 !     -- NOMCH2 : NOM QUE LE CHAMP DOIT AVOIR :
@@ -69,18 +69,18 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
         call codent(nbordr, 'D0', chford)
     else
         call codent(irang-1, 'D0', chford)
-    endif
+    end if
     nomch2 = resu19(1:8)//'.'//nuch//'.'//chford
 !
 !
 !     -- ON VERIFIE LA COHERENCE DE NOMCH2 AVEC L'OBJET .TACH :
     if (irang .gt. 0 .and. lverif) then
         call jeveuo(jexnum(resu19//'.TACH', isymb), 'L', jtach)
-        nomch3 = zk24(jtach-1+irang)(1:19)
+        nomch3 = zk24(jtach-1+irang) (1:19)
         if (nomch3 .ne. ' ') then
-            ASSERT(nomch3.eq.nomch2)
-        endif
-    endif
+            ASSERT(nomch3 .eq. nomch2)
+        end if
+    end if
 !
     nomcha = nomch2
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine irvcmp(ncmpmx, nomcgd, nomcmp, nbcmpt)
 !
     do icmp = 1, ncmpmx
         if (nomcmp .eq. nomcgd(icmp)) then
-            nbcmpt=nbcmpt+1
+            nbcmpt = nbcmpt+1
             goto 12
-        endif
+        end if
     end do
- 12 continue
+12  continue
 !
 end subroutine

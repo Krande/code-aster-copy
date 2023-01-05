@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSPrintInitTimeStep(ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/ComputeTableWidth.h"
 #include "asterfort/SetTableColumn.h"
 !
-type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,55 +55,55 @@ type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! - Get convergence table
 !
-    table_cvg   = ds_print%table_cvg
+    table_cvg = ds_print%table_cvg
 !
 ! - Get parameters
 !
     l_info_time = ds_print%l_info_time
     l_info_resi = ds_print%l_info_resi
-    l_csv       = ds_print%l_tcvg_csv
+    l_csv = ds_print%l_tcvg_csv
 !
 ! - About maximum
 !
     if (l_info_resi) then
-        call SetTableColumn(table_cvg, name_ = 'RELA_NOEU', flag_acti_ = ASTER_TRUE)
-        call SetTableColumn(table_cvg, name_ = 'MAXI_NOEU', flag_acti_ = ASTER_TRUE)
+        call SetTableColumn(table_cvg, name_='RELA_NOEU', flag_acti_=ASTER_TRUE)
+        call SetTableColumn(table_cvg, name_='MAXI_NOEU', flag_acti_=ASTER_TRUE)
     else
-        call SetTableColumn(table_cvg, name_ = 'RELA_NOEU', flag_acti_ = ASTER_FALSE)
-        call SetTableColumn(table_cvg, name_ = 'MAXI_NOEU', flag_acti_ = ASTER_FALSE)
-    endif
+        call SetTableColumn(table_cvg, name_='RELA_NOEU', flag_acti_=ASTER_FALSE)
+        call SetTableColumn(table_cvg, name_='MAXI_NOEU', flag_acti_=ASTER_FALSE)
+    end if
 !
 ! - Measure time
 !
     if (l_csv) then
-        call SetTableColumn(table_cvg, name_ = 'INCR_INST', flag_acti_ = ASTER_TRUE)
+        call SetTableColumn(table_cvg, name_='INCR_INST', flag_acti_=ASTER_TRUE)
     else
-        call SetTableColumn(table_cvg, name_ = 'INCR_INST', flag_acti_ = ASTER_FALSE)
-    endif
+        call SetTableColumn(table_cvg, name_='INCR_INST', flag_acti_=ASTER_FALSE)
+    end if
     if (l_info_time) then
-        call SetTableColumn(table_cvg, name_ = 'ITER_TIME', flag_acti_ = ASTER_TRUE)
+        call SetTableColumn(table_cvg, name_='ITER_TIME', flag_acti_=ASTER_TRUE)
     else
-        call SetTableColumn(table_cvg, name_ = 'ITER_TIME', flag_acti_ = ASTER_FALSE)
-    endif
+        call SetTableColumn(table_cvg, name_='ITER_TIME', flag_acti_=ASTER_FALSE)
+    end if
 !
 ! - Compute width of table
 !
     call ComputeTableWidth(table_cvg, line_width, nb_cols_active)
     if (line_width .gt. 255) then
-        call utmess('F', 'IMPRESSION_2', si = line_width)
-    endif
+        call utmess('F', 'IMPRESSION_2', si=line_width)
+    end if
     if (nb_cols_active .ge. 15) then
-        call utmess('F', 'IMPRESSION_1', si = nb_cols_active)
-    endif
+        call utmess('F', 'IMPRESSION_1', si=nb_cols_active)
+    end if
 !
 ! - Compute separator line
 !
     do i = 1, line_width
         sep_line(i:i) = '-'
     end do
-    table_cvg%width    = line_width
+    table_cvg%width = line_width
     table_cvg%sep_line = sep_line
-    ds_print%sep_line  = sep_line
+    ds_print%sep_line = sep_line
 !
 ! - No value affected in column
 !

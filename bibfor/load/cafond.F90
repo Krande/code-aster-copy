@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine cafond(load, mesh, model, geomDime, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -45,9 +45,9 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-integer, intent(in) :: geomDime
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    integer, intent(in) :: geomDime
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,10 +98,10 @@ character(len=4), intent(in) :: valeType
     if (npres .eq. 0) goto 99
 
 ! - Warning for COQUE_SOLIDE
-    call dismoi('EXI_COQSOL', model, 'MODELE', repk = answer)
+    call dismoi('EXI_COQSOL', model, 'MODELE', repk=answer)
     if (answer .eq. 'OUI') then
         call utmess('F', 'SOLIDSHELL1_5')
-    endif
+    end if
 !
 ! - Creation and initialization to zero of <CARTE>
 !
@@ -121,7 +121,7 @@ character(len=4), intent(in) :: valeType
 ! ----- Elements for hole
         suffix = '_INT'
         call getelem(mesh, keywordfact, iocc, 'F', listCellHole, &
-                     nbCellHole, suffix = suffix)
+                     nbCellHole, suffix=suffix)
         call jeveuo(listCellHole, 'L', jvCellHole)
 
 ! ----- Elements for section
@@ -133,7 +133,7 @@ character(len=4), intent(in) :: valeType
         call exlim1(zi(jvCellSect), nbCellSect, model, 'V', ligrel)
 
 ! ----- Get pressure
-        call char_read_val(keywordfact, iocc, 'PRES', valeType, val_nb,&
+        call char_read_val(keywordfact, iocc, 'PRES', valeType, val_nb, &
                            pres_real, pres_fonc, c16dummy, k16dummy)
         ASSERT(val_nb .eq. 1)
 
@@ -141,8 +141,8 @@ character(len=4), intent(in) :: valeType
         call peair1(mesh, nbCellHole, zi(jvCellHole), hole_area, r8dummy)
 
 ! ----- To compute area of material section
-        call calcul('S', option, ligrel, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrel, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
         call mesomm(lchout(1), 10, vr=cara_geom)
         call detrsd('LIGREL', ligrel)
@@ -151,14 +151,14 @@ character(len=4), intent(in) :: valeType
         mate_area = cara_geom(1)
         coef_mult = -hole_area/mate_area
         if (niv .eq. 2) then
-            write (ifm,*) 'SURFACE DU TROU    ',hole_area
-            write (ifm,*) 'SURFACE DE MATIERE ',mate_area
-        endif
+            write (ifm, *) 'SURFACE DU TROU    ', hole_area
+            write (ifm, *) 'SURFACE DE MATIERE ', mate_area
+        end if
 
 ! ----- Affectation of values in <CARTE> - Multiplicative ratio of pressure
         call jeveuo(map(1)//'.VALV', 'E', jvalv)
         zr(jvalv-1+1) = coef_mult
-        call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCellSect,&
+        call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCellSect, &
                     limanu=zi(jvCellSect))
 
 ! ----- Affectation of values in <CARTE> - Pressure
@@ -169,8 +169,8 @@ character(len=4), intent(in) :: valeType
             zk8(jvalv-1+1) = pres_fonc
         else
             ASSERT(ASTER_FALSE)
-        endif
-        call nocart(map(2), 3, nbCmp(2), mode='NUM', nma=nbCellSect,&
+        end if
+        call nocart(map(2), 3, nbCmp(2), mode='NUM', nma=nbCellSect, &
                     limanu=zi(jvCellSect))
 
 ! ----- Check elements
@@ -181,7 +181,7 @@ character(len=4), intent(in) :: valeType
 !
     end do
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

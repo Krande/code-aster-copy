@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,14 +47,14 @@ subroutine vpreco(nbvect, neq, vecred, vect)
 !
     do i = 1, neq
         do j = 1, nbvect
-            vilig(j) = vect(i,j)
+            vilig(j) = vect(i, j)
         end do
         do k = 1, nbvect
             rt = 0.d0
             do l = 1, nbvect
-                rt = rt + vilig(l) * vecred(l,k)
+                rt = rt+vilig(l)*vecred(l, k)
             end do
-            vect(i,k) = rt
+            vect(i, k) = rt
         end do
     end do
 !

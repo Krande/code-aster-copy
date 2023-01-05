@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ploint(vesto, modmec, chamno, num, i,&
-                  vrai, model, veprj, modx, mody,&
+subroutine ploint(vesto, modmec, chamno, num, i, &
+                  vrai, model, veprj, modx, mody, &
                   modz)
     implicit none
 !
@@ -59,9 +59,9 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    modz=' '
+    modz = ' '
     veprj = 'VEPRJ'
-    call chnucn(vesto, num, 0, k8bid, 'V',&
+    call chnucn(vesto, num, 0, k8bid, 'V', &
                 veprj)
     call jeveuo(veprj//'.VALE', 'L', ipres)
 !
@@ -71,7 +71,7 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
 !
     if (vrai) then
 !
-        call rsexch(' ', modmec, 'DEPL', i, nomcha,&
+        call rsexch(' ', modmec, 'DEPL', i, nomcha, &
                     iret)
         nocham = nomcha
 !
@@ -79,14 +79,14 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
 !
         nocham = chamno
 !
-    endif
+    end if
 !
 !----- PLONGEMENT DE LA COMPOSANTE DX QUI DEVIENT TEMPERATURE
 !
     tcorx(1) = 'DX'
     tcorx(2) = 'TEMP'
     modx = 'MODX'
-    call chnucn(nocham, num, 2, tcorx, 'V',&
+    call chnucn(nocham, num, 2, tcorx, 'V', &
                 modx)
 !
 !----- PLONGEMENT DE LA COMPOSANTE DY QUI DEVIENT TEMPERATURE
@@ -94,7 +94,7 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
     tcory(1) = 'DY'
     tcory(2) = 'TEMP'
     mody = 'MODY'
-    call chnucn(nocham, num, 2, tcory, 'V',&
+    call chnucn(nocham, num, 2, tcory, 'V', &
                 mody)
 !
 !----- PLONGEMENT DE LA COMPOSANTE DZ QUI DEVIENT TEMPERATURE
@@ -103,9 +103,9 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
         tcorz(1) = 'DZ'
         tcorz(2) = 'TEMP'
         modz = 'MODZ'
-        call chnucn(nocham, num, 2, tcorz, 'V',&
+        call chnucn(nocham, num, 2, tcorz, 'V', &
                     modz)
-    endif
+    end if
 !
     call jedema()
 end subroutine

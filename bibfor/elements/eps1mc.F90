@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
-                  ivf, idfde, xyz, depl, nharm,&
+subroutine eps1mc(nno, ndim, nbsig, npg, ipoids, &
+                  ivf, idfde, xyz, depl, nharm, &
                   eps1)
 !.======================================================================
     implicit none
@@ -75,7 +75,7 @@ subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 !  --      COURANT : (EPS_1) = (B)*(UN)
 !          ----------------------------
-        call bmatmc(igau, nbsig, xyz, ipoids, ivf,&
+        call bmatmc(igau, nbsig, xyz, ipoids, ivf, &
                     idfde, nno, nharm, jacgau, b)
 !
 ! ---      CALCUL DU VECTEUR DES COMPOSANTES DU TENSEUR DES
@@ -86,7 +86,7 @@ subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
             s = zero
 !
             do j = 1, nbinco
-                s = s + depl(j)*b((j-1)*nbsig+i)
+                s = s+depl(j)*b((j-1)*nbsig+i)
             end do
 !
             eps1(nbsig*(igau-1)+i) = s

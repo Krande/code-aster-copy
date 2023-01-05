@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred,&
-                               neps       , epsm      , deps  ,&
-                               stran      , dstran    , detf_)
+subroutine mfrontPrepareStrain(l_simomiehe, l_grotgdep, l_pred, &
+                               neps, epsm, deps, &
+                               stran, dstran, detf_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,11 +28,11 @@ implicit none
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-aster_logical, intent(in) :: l_simomiehe, l_grotgdep, l_pred
-integer, intent(in) :: neps
-real(kind=8), intent(in) :: epsm(neps), deps(neps)
-real(kind=8), intent(out) :: stran(neps), dstran(neps)
-real(kind=8), optional, intent(out) :: detf_
+    aster_logical, intent(in) :: l_simomiehe, l_grotgdep, l_pred
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps), deps(neps)
+    real(kind=8), intent(out) :: stran(neps), dstran(neps)
+    real(kind=8), optional, intent(out) :: detf_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,32 +63,32 @@ real(kind=8), optional, intent(out) :: detf_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    stran(1:neps)  = 0.d0
+    stran(1:neps) = 0.d0
     dstran(1:neps) = 0.d0
 !
     if (l_simomiehe) then
         ASSERT(neps .eq. 9)
-        dfgrd0(:,:) = 0.d0
-        dfgrd1(:,:) = 0.d0
+        dfgrd0(:, :) = 0.d0
+        dfgrd1(:, :) = 0.d0
         call dcopy(neps, epsm, 1, dfgrd0, 1)
         if (l_pred) then
             call dcopy(neps, dfgrd0, 1, dfgrd1, 1)
         else
-            dfgrd1 = matmul(reshape(deps, (/3, 3/)),dfgrd0)
-        endif
+            dfgrd1 = matmul(reshape(deps, (/3, 3/)), dfgrd0)
+        end if
         call dcopy(neps, dfgrd0, 1, stran, 1)
         call dcopy(neps, dfgrd1, 1, dstran, 1)
         call lcdetf(3, dfgrd1, detf_)
     elseif (l_grotgdep) then
         ASSERT(neps .eq. 9)
-        dfgrd0(:,:) = 0.d0
-        dfgrd1(:,:) = 0.d0
+        dfgrd0(:, :) = 0.d0
+        dfgrd1(:, :) = 0.d0
         call dcopy(neps, epsm, 1, dfgrd0, 1)
         if (l_pred) then
             call dcopy(neps, epsm, 1, dfgrd1, 1)
         else
             call dcopy(neps, deps, 1, dfgrd1, 1)
-        endif
+        end if
         call dcopy(neps, dfgrd0, 1, stran, 1)
         call dcopy(neps, dfgrd1, 1, dstran, 1)
     else
@@ -98,11 +98,11 @@ real(kind=8), optional, intent(out) :: detf_
         if (neps .eq. 6) then
             call dscal(3, rac2, dstran(4), 1)
             call dscal(3, rac2, stran(4), 1)
-        endif
+        end if
         if (neps .eq. 4) then
             call dscal(1, rac2, dstran(4), 1)
             call dscal(1, rac2, stran(4), 1)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine affdis(ndim, irep, eta, car, val,&
-                  jdc, jdv, ivr, iv, kma,&
-                  ncmp, ntp, jdcinf, jdvinf, isym )
+subroutine affdis(ndim, irep, eta, car, val, &
+                  jdc, jdv, ivr, iv, kma, &
+                  ncmp, ntp, jdcinf, jdvinf, isym)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ subroutine affdis(ndim, irep, eta, car, val,&
 !           les éléments concernés sont les éléments discrets 2D et 3D
 !
 ! --------------------------------------------------------------------------------------------------
-implicit   none
+    implicit none
 !
     integer :: ndim, irep, jdv(3), jdc(3), ivr(*), iv, ncmp, ntp
     integer :: isym, jdcinf, jdvinf
@@ -42,13 +42,13 @@ implicit   none
 ! --------------------------------------------------------------------------------------------------
 !
     if (ndim .eq. 2) then
-        call afdi2d(irep, eta, car, val, jdc,&
-                    jdv, ivr, iv, kma, ncmp,&
+        call afdi2d(irep, eta, car, val, jdc, &
+                    jdv, ivr, iv, kma, ncmp, &
                     ntp, jdcinf, jdvinf, isym)
-    else if (ndim.eq.3) then
-        call afdi3d(irep, eta, car, val, jdc,&
-                    jdv, ivr, iv, kma, ncmp,&
+    else if (ndim .eq. 3) then
+        call afdi3d(irep, eta, car, val, jdc, &
+                    jdv, ivr, iv, kma, ncmp, &
                     ntp, jdcinf, jdvinf, isym)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
     call exisd('LIGREL', ligarl, iret)
     if (iret .ne. 0) then
         call detrsd('LIGREL', ligarl)
-    endif
+    end if
 !
 ! --- INFORMATIONS SUR LE MODELE ORIGINAL
 !
@@ -95,7 +95,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 ! --- INFORMATIONS SUR LE MAILLAGE
 !
     call jeveuo(mailar(1:8)//'.DIME', 'L', jdime)
-    nbma = zi(jdime - 1 + 3)
+    nbma = zi(jdime-1+3)
 !
 ! --- CREATION DE .NOMA + ATTRIBUT DOCU
 !
@@ -106,7 +106,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 ! --- CREATION DE L'OBJET .LIEL: ON LE CREE AU MAX. AUTANT DE LIEL
 ! --- QUE DE MAILLES
 !
-    call jecrec(ligarl//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(ligarl//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbma)
     call jeecra(ligarl//'.LIEL', 'LONT', 2*nbma, k8bid)
 !
@@ -126,7 +126,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 !
         if (numori < 0) then
             numori = abs(numori)
-        endif
+        end if
         ityel = zi(jtyel-1+numori)
 !
 ! --- PAS D'EF AFFECTE SUR LA MAILLE !
@@ -136,7 +136,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
         else
             zi(jad) = ima
             zi(jad+1) = ityel
-        endif
+        end if
     end do
 !
 ! --- PAS DE NOEUDS TARDIFS

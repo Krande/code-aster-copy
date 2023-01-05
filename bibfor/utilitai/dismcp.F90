@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,38 +69,38 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
         else
             call jeexin(nomob(1:19)//'.CESD', iexi)
             if (iexi .gt. 0) then
-                tych='CES'
+                tych = 'CES'
             else
                 call jeexin(nomob(1:19)//'.CNSD', iexi)
                 if (iexi .gt. 0) then
-                    tych='CNS'
+                    tych = 'CNS'
                 else
                     repk = '?'
                     ierd = 1
                     goto 10
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 !
     if (tych .eq. 'CHNO') then
         call dismcn(questi, nomob, repi, repk, ierd)
-    else if (tych.eq.'CART') then
+    else if (tych .eq. 'CART') then
         call dismca(questi, nomob, repi, repk, ierd)
-    else if (tych.eq.'CHML') then
+    else if (tych .eq. 'CHML') then
         call dismce(questi, nomob, repi, repk, ierd)
-    else if (tych.eq.'RESL') then
+    else if (tych .eq. 'RESL') then
         call dismre(questi, nomob, repi, repk, ierd)
-    else if (tych.eq.'VGEN') then
+    else if (tych .eq. 'VGEN') then
         call dismcg(questi, nomob, repi, repk, ierd)
-    else if (tych.eq.'CNS') then
+    else if (tych .eq. 'CNS') then
         call dismns(questi, nomob, repi, repk, ierd)
-    else if (tych.eq.'CES') then
+    else if (tych .eq. 'CES') then
         call dismes(questi, nomob, repi, repk, ierd)
     else
         ierd = 1
-    endif
+    end if
 !
 10  continue
     repkz = repk

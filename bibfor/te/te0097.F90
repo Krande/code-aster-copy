@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0097(option, nomte)
 !
-implicit none
+    implicit none
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -63,21 +63,21 @@ character(len=16) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
     instan = r8vide()
-    nharm  = 0
+    nharm = 0
 
 ! - Some unknonws
-    if (lteatt('INCO','C2 ')) then
+    if (lteatt('INCO', 'C2 ')) then
         lGonf = ASTER_FALSE
         iOSGS = 0
-    elseif (lteatt('INCO','C2O')) then
+    elseif (lteatt('INCO', 'C2O')) then
         lGonf = ASTER_FALSE
         iOSGS = 1
-    elseif (lteatt('INCO','C3 ')) then
+    elseif (lteatt('INCO', 'C3 ')) then
         lGonf = ASTER_TRUE
         iOSGS = 0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - List of ELREFE
     call elref2(nomte, 10, listElrefe, nbElrefe)
@@ -90,44 +90,44 @@ character(len=16) :: option, nomte
     else
         iRefePres = 2
         iRefeGonf = 0
-    endif
+    end if
 
 ! - Get paramers of finite element for displacements
-    call elrefe_info(elrefe=listElrefe(1), fami='RIGI',&
-                     ndim=ndim, nno=nbNodeDisp, npg=npg,&
+    call elrefe_info(elrefe=listElrefe(1), fami='RIGI', &
+                     ndim=ndim, nno=nbNodeDisp, npg=npg, &
                      jpoids=jvWeightDisp, jvf=jvShapeDisp, jdfde=jvDShapeDisp)
     ASSERT(npg .le. npgMax)
     ASSERT(nbNodeDisp .le. nbNodeMax)
 
 ! - Get paramers of finite element for pres
-    call elrefe_info(elrefe=listElrefe(iRefePres), fami='RIGI',&
-                     nno=nbNodePres,&
+    call elrefe_info(elrefe=listElrefe(iRefePres), fami='RIGI', &
+                     nno=nbNodePres, &
                      jvf=jvShapePres)
     ASSERT(nbNodePres .le. nbNodeMax)
 
 ! - Get paramers of finite element for gonf
     nbNodeGonf = 0
     if (iRefeGonf .ne. 0) then
-        call elrefe_info(elrefe=listElrefe(iRefeGonf), fami='RIGI',&
+        call elrefe_info(elrefe=listElrefe(iRefeGonf), fami='RIGI', &
                          nno=nbNodeGonf)
-    endif
+    end if
     ASSERT(nbNodeGonf .le. nbNodeMax)
 
 ! - Modelling
     typmod = ' '
-    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
-    else if (ndim .eq. 2 .and. lteatt('D_PLAN','OUI')) then
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Get index of dof
-    call niinit(typmod,&
-                ndim, nbNodeDisp, nbNodeGonf, nbNodePres, iOSGS,&
+    call niinit(typmod, &
+                ndim, nbNodeDisp, nbNodeGonf, nbNodePres, iOSGS, &
                 vu, vg, vp, vpi)
 
 ! - Get input fields
@@ -139,7 +139,7 @@ character(len=16) :: option, nomte
     bary = 0.d0
     do iNodeDisp = 1, nbNodeDisp
         do idim = 1, ndim
-            bary(idim) = bary(idim) + zr(jvGeom+idim+ndim*(iNodeDisp-1)-1)/nbNodeDisp
+            bary(idim) = bary(idim)+zr(jvGeom+idim+ndim*(iNodeDisp-1)-1)/nbNodeDisp
         end do
     end do
 
@@ -162,19 +162,19 @@ character(len=16) :: option, nomte
 
 ! - Compute stresses for displacement unknowns
     sigmDisp = 0.d0
-    call sigvmc('RIGI', nbNodeDisp, ndim, nbsig, npg,&
-                jvWeightDisp, jvShapeDisp, jvDShapeDisp, zr(jvGeom), dispU,&
+    call sigvmc('RIGI', nbNodeDisp, ndim, nbsig, npg, &
+                jvWeightDisp, jvShapeDisp, jvDShapeDisp, zr(jvGeom), dispU, &
                 instan, repere, zi(jvMate), nharm, sigmDisp)
 
     do kpg = 1, npg
         presGaus(kpg) = 0.d0
         do iNodePres = 1, nbNodePres
-            presGaus(kpg) = presGaus(kpg) + &
+            presGaus(kpg) = presGaus(kpg)+ &
                             zr(jvShapePres-1+nbNodePres*(kpg-1)+iNodePres)*dispP(iNodePres)
         end do
         sigmTrac(kpg) = 0.d0
         do isig = 1, 3
-            sigmTrac(kpg) = sigmTrac(kpg) + sigmDisp(nbsig*(kpg-1)+isig)
+            sigmTrac(kpg) = sigmTrac(kpg)+sigmDisp(nbsig*(kpg-1)+isig)
         end do
     end do
 
@@ -184,13 +184,13 @@ character(len=16) :: option, nomte
     do kpg = 1, npg
         do isig = 1, nbsig+1
             if (isig .le. 3) then
-                zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmDisp(nbsig*(kpg-1)+isig) -&
-                                                       sigmTrac(kpg)/ 3.d0 + presGaus(kpg)
+                zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmDisp(nbsig*(kpg-1)+isig)- &
+                                                      sigmTrac(kpg)/3.d0+presGaus(kpg)
             elseif (isig .le. nbsig) then
                 zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmDisp(nbsig*(kpg-1)+isig)
             else
-                zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmTrac(kpg) / 3.d0 - presGaus(kpg)
-            endif
+                zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmTrac(kpg)/3.d0-presGaus(kpg)
+            end if
         end do
     end do
 !

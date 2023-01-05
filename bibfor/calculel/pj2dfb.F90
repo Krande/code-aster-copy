@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,8 +60,8 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     call jemarq()
     ntr3 = tria3(1)
     rbig = r8maem()
-    dbg=ASTER_FALSE
-    ASSERT(ntr3.ne.0)
+    dbg = ASTER_FALSE
+    ASSERT(ntr3 .ne. 0)
 !
     call jeveuo('&&PJXXCO.LINO1', 'L', vi=lino1)
     call jeveuo('&&PJXXCO.LINO2', 'L', vi=lino2)
@@ -77,31 +77,31 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     ymax = -rbig
     do i = 1, nno1
         if (lino1(i) .eq. 0) cycle
-        xmin = min(xmin,geom1(3* (i-1)+1))
-        xmax = max(xmax,geom1(3* (i-1)+1))
-        ymin = min(ymin,geom1(3* (i-1)+2))
-        ymax = max(ymax,geom1(3* (i-1)+2))
+        xmin = min(xmin, geom1(3*(i-1)+1))
+        xmax = max(xmax, geom1(3*(i-1)+1))
+        ymin = min(ymin, geom1(3*(i-1)+2))
+        ymax = max(ymax, geom1(3*(i-1)+2))
     end do
     do i = 1, nno2
         if (lino2(i) .eq. 0) cycle
-        xmin = min(xmin,geom2(3* (i-1)+1))
-        xmax = max(xmax,geom2(3* (i-1)+1))
-        ymin = min(ymin,geom2(3* (i-1)+2))
-        ymax = max(ymax,geom2(3* (i-1)+2))
+        xmin = min(xmin, geom2(3*(i-1)+1))
+        xmax = max(xmax, geom2(3*(i-1)+1))
+        ymin = min(ymin, geom2(3*(i-1)+2))
+        ymax = max(ymax, geom2(3*(i-1)+2))
     end do
-    stotal = (xmax-xmin)* (ymax-ymin)
+    stotal = (xmax-xmin)*(ymax-ymin)
     sboite = (stotal/ntr3)*5.d0
     dx = sqrt(sboite)
     dy = dx
-    nx = int((xmax-xmin)*1.05d0/dx) + 1
-    ny = int((ymax-ymin)*1.05d0/dy) + 1
-    ASSERT(nx*ny.ne.0)
-    ddx = (nx*dx- (xmax-xmin))/2.d0
-    ddy = (ny*dy- (ymax-ymin))/2.d0
-    xmin = xmin - ddx
-    xmax = xmax + ddx
-    ymin = ymin - ddy
-    ymax = ymax + ddy
+    nx = int((xmax-xmin)*1.05d0/dx)+1
+    ny = int((ymax-ymin)*1.05d0/dy)+1
+    ASSERT(nx*ny .ne. 0)
+    ddx = (nx*dx-(xmax-xmin))/2.d0
+    ddy = (ny*dy-(ymax-ymin))/2.d0
+    xmin = xmin-ddx
+    xmax = xmax+ddx
+    ymin = ymin-ddy
+    ymax = ymax+ddy
 !
 !
 !     2. : ALLOCATION DE LA SD BOITE_2D :
@@ -126,25 +126,25 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 !     3. : ON COMPTE COMBIEN DE TRIA3 SERONT CONTENUS
 !             DANS CHAQUE BOITE(P,Q)
 !     -------------------------------------------------------
-    do  i = 1, ntr3
+    do i = 1, ntr3
         xxmin = rbig
         yymin = rbig
         xxmax = -rbig
         yymax = -rbig
         do k = 1, 3
-            ino = tria3(1+4* (i-1)+k)
-            xxmin = min(xxmin,geom1(3* (ino-1)+1))
-            xxmax = max(xxmax,geom1(3* (ino-1)+1))
-            yymin = min(yymin,geom1(3* (ino-1)+2))
-            yymax = max(yymax,geom1(3* (ino-1)+2))
+            ino = tria3(1+4*(i-1)+k)
+            xxmin = min(xxmin, geom1(3*(ino-1)+1))
+            xxmax = max(xxmax, geom1(3*(ino-1)+1))
+            yymin = min(yymin, geom1(3*(ino-1)+2))
+            yymax = max(yymax, geom1(3*(ino-1)+2))
         end do
-        p1 = int((xxmin-xmin)/dx) + 1
-        p2 = int((xxmax-xmin)/dx) + 1
-        q1 = int((yymin-ymin)/dy) + 1
-        q2 = int((yymax-ymin)/dy) + 1
+        p1 = int((xxmin-xmin)/dx)+1
+        p2 = int((xxmax-xmin)/dx)+1
+        q1 = int((yymin-ymin)/dy)+1
+        q2 = int((yymax-ymin)/dy)+1
         do p = p1, p2
             do q = q1, q2
-                zi(iabtnb-1+ (q-1)*nx+p) = zi(iabtnb-1+ (q-1)*nx+p) + 1
+                zi(iabtnb-1+(q-1)*nx+p) = zi(iabtnb-1+(q-1)*nx+p)+1
             end do
         end do
 !
@@ -156,7 +156,7 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 !     -------------------------------------------------------
     zi(iabtlc-1+1) = 0
     do ib = 1, nx*ny
-        zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib) + zi(iabtnb-1+ib)
+        zi(iabtlc-1+ib+1) = zi(iabtlc-1+ib)+zi(iabtnb-1+ib)
         zi(iabtnb-1+ib) = 0
     end do
 !
@@ -169,22 +169,22 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
         yymin = rbig
         xxmax = -rbig
         yymax = -rbig
-        do  k = 1, 3
-            ino = tria3(1+4* (i-1)+k)
-            xxmin = min(xxmin,geom1(3* (ino-1)+1))
-            xxmax = max(xxmax,geom1(3* (ino-1)+1))
-            yymin = min(yymin,geom1(3* (ino-1)+2))
-            yymax = max(yymax,geom1(3* (ino-1)+2))
+        do k = 1, 3
+            ino = tria3(1+4*(i-1)+k)
+            xxmin = min(xxmin, geom1(3*(ino-1)+1))
+            xxmax = max(xxmax, geom1(3*(ino-1)+1))
+            yymin = min(yymin, geom1(3*(ino-1)+2))
+            yymax = max(yymax, geom1(3*(ino-1)+2))
         end do
-        p1 = int((xxmin-xmin)/dx) + 1
-        p2 = int((xxmax-xmin)/dx) + 1
-        q1 = int((yymin-ymin)/dy) + 1
-        q2 = int((yymax-ymin)/dy) + 1
+        p1 = int((xxmin-xmin)/dx)+1
+        p2 = int((xxmax-xmin)/dx)+1
+        q1 = int((yymin-ymin)/dy)+1
+        q2 = int((yymax-ymin)/dy)+1
         do p = p1, p2
             do q = q1, q2
-                zi(iabtnb-1+ (q-1)*nx+p) = zi(iabtnb-1+ (q-1)*nx+p) + 1
-                iposi = zi(iabtlc-1+ (q-1)*nx+p) + zi(iabtnb-1+ (q-1)* nx+p)
-                ASSERT((iposi.ge.1) .and. (iposi.le.lont))
+                zi(iabtnb-1+(q-1)*nx+p) = zi(iabtnb-1+(q-1)*nx+p)+1
+                iposi = zi(iabtlc-1+(q-1)*nx+p)+zi(iabtnb-1+(q-1)*nx+p)
+                ASSERT((iposi .ge. 1) .and. (iposi .le. lont))
                 zi(iabtco-1+iposi) = i
             end do
         end do
@@ -193,8 +193,8 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 !
     if (dbg) then
         ifm = iunifi('MESSAGE')
-        call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, boite,&
+        call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, boite, &
                     1, ' ')
-    endif
+    end if
     call jedema()
 end subroutine

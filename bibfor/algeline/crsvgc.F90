@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crsvgc(motfac, solveu, kellag )
+subroutine crsvgc(motfac, solveu, kellag)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -41,7 +41,7 @@ subroutine crsvgc(motfac, solveu, kellag )
 !
 !
 !
-    integer :: ibid,    nmaxit, niremp, reacpr, pcpiv, redmpi
+    integer :: ibid, nmaxit, niremp, reacpr, pcpiv, redmpi
     real(kind=8) :: resire, blreps
     character(len=8) :: precon
     character(len=19) :: solvbd
@@ -56,37 +56,37 @@ subroutine crsvgc(motfac, solveu, kellag )
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
     call getvtx(motfac, 'PRE_COND', iocc=1, scal=precon, nbret=ibid)
-    ASSERT(ibid.eq.1)
+    ASSERT(ibid .eq. 1)
     call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=ibid)
-    ASSERT(ibid.eq.1)
+    ASSERT(ibid .eq. 1)
     call getvis(motfac, 'NMAX_ITER', iocc=1, scal=nmaxit, nbret=ibid)
-    ASSERT(ibid.eq.1)
+    ASSERT(ibid .eq. 1)
     call getvr8(motfac, 'RESI_RELA', iocc=1, scal=resire, nbret=ibid)
-    ASSERT(ibid.eq.1)
+    ASSERT(ibid .eq. 1)
 !
 !
 ! --- LECTURES PARAMETRES LIES A LDLT_INC
 !
 !     -- INITIALISATION
-    niremp=-9999
-    reacpr=-9999
-    pcpiv =-9999
-    solvbd='XXXXXXXXXXXXXXXXXXX'
+    niremp = -9999
+    reacpr = -9999
+    pcpiv = -9999
+    solvbd = 'XXXXXXXXXXXXXXXXXXX'
 !
 !     -- LECTURE
     if (precon .eq. 'LDLT_INC') then
         call getvis(motfac, 'NIVE_REMPLISSAGE', iocc=1, scal=niremp, nbret=ibid)
-        ASSERT(ibid.eq.1)
-    else if ((precon.eq.'LDLT_SP').or.(precon.eq.'LDLT_DP')) then
+        ASSERT(ibid .eq. 1)
+    else if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
         call getvis(motfac, 'REAC_PRECOND', iocc=1, scal=reacpr, nbret=ibid)
-        ASSERT(ibid.eq.1)
+        ASSERT(ibid .eq. 1)
         call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=ibid)
-        ASSERT(ibid.eq.1)
+        ASSERT(ibid .eq. 1)
         call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=usersm, nbret=ibid)
-        ASSERT(ibid.eq.1)
+        ASSERT(ibid .eq. 1)
         call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
-        ASSERT(ibid.eq.1)
-        redmpi=-9999
+        ASSERT(ibid .eq. 1)
+        redmpi = -9999
 ! a finir de tester avant restitution
 !        call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
 !
@@ -96,7 +96,7 @@ subroutine crsvgc(motfac, solveu, kellag )
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- ON REMPLIT LA SD_SOLVEUR
     call jeveuo(solveu//'.SLVK', 'E', vk24=slvk)
@@ -112,11 +112,11 @@ subroutine crsvgc(motfac, solveu, kellag )
     slvk(7) = 'XXXX'
     slvk(8) = 'XXXX'
     slvk(9) = usersm
-    slvk(10)= 'XXXX'
-    slvk(11)= 'XXXX'
-    slvk(12)= 'XXXX'
-    slvk(13)= kellag
-    slvk(14)= 'XXXX'
+    slvk(10) = 'XXXX'
+    slvk(11) = 'XXXX'
+    slvk(12) = 'XXXX'
+    slvk(13) = kellag
+    slvk(14) = 'XXXX'
 !
 !     POUR NEWTON_KRYLOV LE RESI_RELA VARIE A CHAQUE
 !     ITERATION DE NEWTON, CEPENDANT LE RESI_RELA DONNE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calint(i, j, vect1, nbpts, vect2,&
+subroutine calint(i, j, vect1, nbpts, vect2, &
                   long, tt)
     implicit none
 #include "jeveux.h"
@@ -36,12 +36,12 @@ subroutine calint(i, j, vect1, nbpts, vect2,&
     integer :: k, lvect1, lvect2, npt, npt2
     real(kind=8) :: tt
 !-----------------------------------------------------------------------
-    npt= nbpts
+    npt = nbpts
     npt2 = npt/2
     do k = 1, npt2
-        lvect1 = (i-1)*npt2+ k
-        lvect2 = (j-1)*npt2+ k
-        vect2(k) =(dble(vect1(lvect1)*dconjg(vect1(lvect2))))/tt
-        vect2(npt2+k)=(dimag(vect1(lvect1)*dconjg(vect1(lvect2))))/tt
+        lvect1 = (i-1)*npt2+k
+        lvect2 = (j-1)*npt2+k
+        vect2(k) = (dble(vect1(lvect1)*dconjg(vect1(lvect2))))/tt
+        vect2(npt2+k) = (dimag(vect1(lvect1)*dconjg(vect1(lvect2))))/tt
     end do
 end subroutine

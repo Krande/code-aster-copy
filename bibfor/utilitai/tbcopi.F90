@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,20 +61,20 @@ subroutine tbcopi(base, sd1, sd2)
     call wkvect(tab2//'.TBBA', bas2//' V K8', 1, jtbba)
     zk8(jtbba) = bas2
     call jeveuo(tab1//'.TBNP', 'L', ktbnp)
-    nbpara = zi(ktbnp )
+    nbpara = zi(ktbnp)
     nblign = zi(ktbnp+1)
 !
     call wkvect(tab2//'.TBNP', bas2//' V I', 2, jtbnp)
-    zi(jtbnp ) = nbpara
+    zi(jtbnp) = nbpara
     zi(jtbnp+1) = nblign
-    ndim = 4 * nbpara
+    ndim = 4*nbpara
     call jecreo(tab2//'.TBLP', bas2//' V K24')
     call jeecra(tab2//'.TBLP', 'LONMAX', ndim)
     call jeecra(tab2//'.TBLP', 'LONUTI', ndim)
     call jeveuo(tab2//'.TBLP', 'E', jtblp)
     call jeveuo(tab1//'.TBLP', 'L', ktblp)
     do i = 1, nbpara
-        zk24(jtblp+4*(i-1) ) = zk24(ktblp+4*(i-1) )
+        zk24(jtblp+4*(i-1)) = zk24(ktblp+4*(i-1))
         type = zk24(ktblp+4*(i-1)+1)
         zk24(jtblp+4*(i-1)+1) = type
         nomjv = zk24(ktblp+4*(i-1)+2)
@@ -132,7 +132,7 @@ subroutine tbcopi(base, sd1, sd2)
             do j = 1, nbpm
                 zk8(jvale+j-1) = zk8(kvale+j-1)
             end do
-        endif
+        end if
         call jeecra(nomjv, 'LONUTI', nbpu)
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujopt(fami, kpg, ksp, mod, angmas,&
-                  imat, nmat, mater, nvi, vinf,&
+subroutine hujopt(fami, kpg, ksp, mod, angmas, &
+                  imat, nmat, mater, nvi, vinf, &
                   nr, drdy, sigf, dsde, iret)
 !
 !     ----------------------------------------------------------------
@@ -66,23 +66,23 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
     character(len=4) :: cargau
     aster_logical :: reorie
 !
-    parameter (ndt   = 6   )
-    parameter (ndi   = 3   )
-    parameter (zero  = 0.d0)
-    parameter (un    = 1.d0)
-    parameter (deux  = 2.d0)
-    parameter (trois = 3.d0)
+    parameter(ndt=6)
+    parameter(ndi=3)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
 ! === =================================================================
 ! --- RECHERCHE DU MAXIMUM DE DRDY
 ! === =================================================================
 !
-    norm=0
+    norm = 0
     if (norm .eq. 0) goto 5
 !
     maxi = 0.d0
     do i = 1, nr
         do j = 1, nr
-            if(abs(drdy(i,j)).gt.maxi)maxi = abs(drdy(i,j))
+            if (abs(drdy(i, j)) .gt. maxi) maxi = abs(drdy(i, j))
         end do
     end do
 !
@@ -92,11 +92,11 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
     mini = r8prem()*maxi
     do i = 1, nr
         do j = 1, nr
-            if(abs(drdy(i,j)).lt.mini)drdy(i,j) = 0.d0
+            if (abs(drdy(i, j)) .lt. mini) drdy(i, j) = 0.d0
         end do
     end do
 !
-  5 continue
+5   continue
 !
 ! === =================================================================
 ! --- SEPARATION DES TERMES DU JACOBIEN
@@ -104,92 +104,92 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 ! --- DETERMINATION DU NOMBRE DE MECANISMES ACTIFS - NBMECA
     nbmeca = 0
     do i = 1, 8
-        if (vinf(23+i) .eq. un) nbmeca = nbmeca + 1
-    enddo
+        if (vinf(23+i) .eq. un) nbmeca = nbmeca+1
+    end do
 !
     nz = 1+2*nbmeca
 !
 ! === ==============================================================
 ! --- REDIMENSIONNEMENT DU JACOBIEN
 ! === ==============================================================
-    ccond = mater(1,1)
-    pref = mater(8,2)
+    ccond = mater(1, 1)
+    pref = mater(8, 2)
 !
 ! --- DLEDR
     do i = 1, nbmeca
         do j = 1, ndt
-            drdy(j,ndt+1+i) = drdy(j,ndt+1+i)*abs(pref)
-        enddo
+            drdy(j, ndt+1+i) = drdy(j, ndt+1+i)*abs(pref)
+        end do
     end do
 !
 ! --- DLEDLA
     do i = 1, nbmeca
         do j = 1, ndt
-            drdy(j,ndt+1+nbmeca+i) = drdy(j,ndt+1+nbmeca+i)*ccond
-        enddo
+            drdy(j, ndt+1+nbmeca+i) = drdy(j, ndt+1+nbmeca+i)*ccond
+        end do
     end do
 !
 ! --- DLRDLA
     do i = 1, nbmeca
-        drdy(ndt+1+i,ndt+1+nbmeca+i) = drdy(ndt+1+i,ndt+1+nbmeca+i) *ccond/abs(pref)
+        drdy(ndt+1+i, ndt+1+nbmeca+i) = drdy(ndt+1+i, ndt+1+nbmeca+i)*ccond/abs(pref)
     end do
 !
 ! --- DLRDEVP
     do i = 1, nbmeca
-        drdy(ndt+1+i,ndt+1) = drdy(ndt+1+i,ndt+1)*ccond/abs(pref)
+        drdy(ndt+1+i, ndt+1) = drdy(ndt+1+i, ndt+1)*ccond/abs(pref)
     end do
 !
 ! --- DLEVPDS
     do i = 1, ndt
-        drdy(ndt+1,i) = drdy(ndt+1,i)*ccond
+        drdy(ndt+1, i) = drdy(ndt+1, i)*ccond
     end do
 !
 ! --- DLEVPDR
     do i = 1, nbmeca
-        drdy(ndt+1,ndt+1+i) = drdy(ndt+1,ndt+1+i)/ccond*abs(pref)
+        drdy(ndt+1, ndt+1+i) = drdy(ndt+1, ndt+1+i)/ccond*abs(pref)
     end do
 !
 ! --- DLFDR
     do i = 1, nbmeca
-        drdy(ndt+1+nbmeca+i,ndt+1+i) = drdy(ndt+1+nbmeca+i,ndt+1+i) *abs(pref)
+        drdy(ndt+1+nbmeca+i, ndt+1+i) = drdy(ndt+1+nbmeca+i, ndt+1+i)*abs(pref)
     end do
 !
 ! --- DLFDEVP
     do i = 1, nbmeca
-        drdy(ndt+1+nbmeca+i,ndt+1) = drdy(ndt+1+nbmeca+i,ndt+1) *ccond
+        drdy(ndt+1+nbmeca+i, ndt+1) = drdy(ndt+1+nbmeca+i, ndt+1)*ccond
     end do
 !
 ! ----------------------------------------------
 ! --- CONSTRUCTION DE L'OPERATEUR CONSISTANT ---
 ! ----------------------------------------------
-    y0(:,:) = zero
+    y0(:, :) = zero
     do i = 1, 9
         do j = 1, ndt
-            y1(j,i) = zero
-            y2(i,j) = zero
-        enddo
+            y1(j, i) = zero
+            y2(i, j) = zero
+        end do
         do j = 1, 9
-            y3(i,j) = zero
-        enddo
+            y3(i, j) = zero
+        end do
     end do
 !
     do i = 1, ndt
         do j = 1, ndt
-            y0(i,j) = drdy(i,j)
-        enddo
+            y0(i, j) = drdy(i, j)
+        end do
         do j = 1, nz
-            y1(i,j) = drdy(i,j+ndt)
-        enddo
+            y1(i, j) = drdy(i, j+ndt)
+        end do
     end do
 !
     do i = 1, nz
         do j = 1, ndt
-            y2(i,j) = drdy(i+ndt,j)
-        enddo
+            y2(i, j) = drdy(i+ndt, j)
+        end do
         do j = 1, nz
-            y3(i,j) = drdy(i+ndt,j+ndt)
-        enddo
-    enddo
+            y3(i, j) = drdy(i+ndt, j+ndt)
+        end do
+    end do
 !
 ! === =================================================================
 ! --- CONSTRUCTION TENSEUR RIGIDITE ELASTIQUE A T+DT
@@ -197,76 +197,76 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 ! ====================================================================
 ! --- OPERATEURS ELASTICITE LINEAIRES---------------------------------
 ! ====================================================================
-    hook(:,:) = zero
+    hook(:, :) = zero
 !
     if ((mod(1:2) .eq. '3D') .or. (mod(1:6) .eq. 'D_PLAN')) then
 !
-        if (mater(17,1) .eq. un) then
+        if (mater(17, 1) .eq. un) then
 !
-            e = mater(1,1)
-            nu = mater(2,1)
-            al = e*(un-nu) /(un+nu) /(un-deux*nu)
-            demu = e /(un+nu)
+            e = mater(1, 1)
+            nu = mater(2, 1)
+            al = e*(un-nu)/(un+nu)/(un-deux*nu)
+            demu = e/(un+nu)
             la = e*nu/(un+nu)/(un-deux*nu)
 !
             do i = 1, ndi
                 do j = 1, ndi
-                    if (i .eq. j) hook(i,j) = al
-                    if (i .ne. j) hook(i,j) = la
-                enddo
-            enddo
+                    if (i .eq. j) hook(i, j) = al
+                    if (i .ne. j) hook(i, j) = la
+                end do
+            end do
             do i = ndi+1, ndt
-                hook(i,i) = demu
-            enddo
+                hook(i, i) = demu
+            end do
 !
-        else if (mater(17,1).eq.deux) then
+        else if (mater(17, 1) .eq. deux) then
 !
-            e1 = mater(1,1)
-            e2 = mater(2,1)
-            e3 = mater(3,1)
-            nu12 = mater(4,1)
-            nu13 = mater(5,1)
-            nu23 = mater(6,1)
-            g1 = mater(7,1)
-            g2 = mater(8,1)
-            g3 = mater(9,1)
-            nu21 = mater(13,1)
-            nu31 = mater(14,1)
-            nu32 = mater(15,1)
-            denom= mater(16,1)
+            e1 = mater(1, 1)
+            e2 = mater(2, 1)
+            e3 = mater(3, 1)
+            nu12 = mater(4, 1)
+            nu13 = mater(5, 1)
+            nu23 = mater(6, 1)
+            g1 = mater(7, 1)
+            g2 = mater(8, 1)
+            g3 = mater(9, 1)
+            nu21 = mater(13, 1)
+            nu31 = mater(14, 1)
+            nu32 = mater(15, 1)
+            denom = mater(16, 1)
 !
-            hook(1,1) = (un - nu23*nu32)*e1/denom
-            hook(1,2) = (nu21 + nu31*nu23)*e1/denom
-            hook(1,3) = (nu31 + nu21*nu32)*e1/denom
-            hook(2,2) = (un - nu13*nu31)*e2/denom
-            hook(2,3) = (nu32 + nu31*nu12)*e2/denom
-            hook(3,3) = (un - nu21*nu12)*e3/denom
-            hook(2,1) = hook(1,2)
-            hook(3,1) = hook(1,3)
-            hook(3,2) = hook(2,3)
-            hook(4,4) = g1*2.d0
-            hook(5,5) = g2*2.d0
-            hook(6,6) = g3*2.d0
+            hook(1, 1) = (un-nu23*nu32)*e1/denom
+            hook(1, 2) = (nu21+nu31*nu23)*e1/denom
+            hook(1, 3) = (nu31+nu21*nu32)*e1/denom
+            hook(2, 2) = (un-nu13*nu31)*e2/denom
+            hook(2, 3) = (nu32+nu31*nu12)*e2/denom
+            hook(3, 3) = (un-nu21*nu12)*e3/denom
+            hook(2, 1) = hook(1, 2)
+            hook(3, 1) = hook(1, 3)
+            hook(3, 2) = hook(2, 3)
+            hook(4, 4) = g1*2.d0
+            hook(5, 5) = g2*2.d0
+            hook(6, 6) = g3*2.d0
 !
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
         call utmess('F', 'COMPOR1_4')
-    endif
+    end if
 ! ====================================================================
 ! --- OPERATEUR ELASTICITE NON LINEAIRE ------------------------------
 ! ====================================================================
-    i1f = trace(ndi,sigf)/trois
-    ne = mater(1,2)
+    i1f = trace(ndi, sigf)/trois
+    ne = mater(1, 2)
     if ((i1f/pref) .lt. 1.d-6) i1f = 1.d-6*pref
 !
-    coef0 = (i1f/pref) ** ne
+    coef0 = (i1f/pref)**ne
     do i = 1, ndt
         do j = 1, ndt
-            hooknl(i,j) = coef0*hook(i,j)
-        enddo
-    enddo
+            hooknl(i, j) = coef0*hook(i, j)
+        end do
+    end do
 !
 !     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS
 !     METHODE 'S' : SURE
@@ -277,63 +277,63 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 ! --- CONSTRUCTION TENSEUR CONSTITUTIF TANGENT DSDE
 ! === =================================================================
 !     Y2=INVERSE(Y3)*Y2
-    call mgauss(cargau, y3, y2, 9, nz,&
+    call mgauss(cargau, y3, y2, 9, nz, &
                 ndt, det, iret)
     if (iret .gt. 1) then
-        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
+        dsde(1:ndt, 1:ndt) = hook(1:ndt, 1:ndt)
         goto 998
-    endif
+    end if
 !
 ! --- PRODUIT DU TERME Y1 * (Y3)^-1 * Y2 = Y4
-    call promat(y1, ndt, ndt, 9, y2,&
+    call promat(y1, ndt, ndt, 9, y2, &
                 9, 9, ndt, y4)
 !
 ! --- DIFFERENCE DE MATRICE (DR1DY1 - Y4) = Y5
     do i = 1, ndt
         do j = 1, ndt
-            y5(i,j)=y0(i,j)-y4(i,j)
-        enddo
+            y5(i, j) = y0(i, j)-y4(i, j)
+        end do
     end do
 !
 ! --- INVERSION DU TERME Y5
     call r8inir(ndt*ndt, 0.d0, dsdeb, 1)
     do i = 1, ndt
-        dsdeb(i,i) = un
+        dsdeb(i, i) = un
     end do
-    call mgauss(cargau, y5, dsdeb, ndt, ndt,&
+    call mgauss(cargau, y5, dsdeb, ndt, ndt, &
                 ndt, det, iret)
 !
     if (iret .gt. 1) then
-        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
+        dsde(1:ndt, 1:ndt) = hook(1:ndt, 1:ndt)
     else
-        dsde(:,:) = zero
-        dsde(1:ndt,1:ndt) = matmul(dsdeb(1:ndt,1:ndt), hooknl(1:ndt,1:ndt))
-    endif
+        dsde(:, :) = zero
+        dsde(1:ndt, 1:ndt) = matmul(dsdeb(1:ndt, 1:ndt), hooknl(1:ndt, 1:ndt))
+    end if
 !
 998 continue
     if (angmas(1) .eq. r8vide()) then
         call utmess('F', 'ALGORITH8_20')
-    endif
-    reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero)&
-     &         .or. (angmas(3).ne.zero)
+    end if
+    reorie = (angmas(1) .ne. zero) .or. (angmas(2) .ne. zero)&
+     &         .or. (angmas(3) .ne. zero)
     if (iret .ne. 0) then
         iret = 0
-        call hujori('LOCAL', 1, reorie, angmas, sigf,&
+        call hujori('LOCAL', 1, reorie, angmas, sigf, &
                     bid66)
-        call hujtid(fami, kpg, ksp, mod, imat,&
+        call hujtid(fami, kpg, ksp, mod, imat, &
                     sigf, vinf, dsde, iret)
-        call hujori('GLOBA', 1, reorie, angmas, sigf,&
+        call hujori('GLOBA', 1, reorie, angmas, sigf, &
                     bid66)
         if (iret .ne. 0) then
             iret = 0
             do i = 1, 22
-                matert(i,1) = mater(i,1)
-                matert(i,2) = mater(i,2)
-            enddo
+                matert(i, 1) = mater(i, 1)
+                matert(i, 2) = mater(i, 2)
+            end do
             call hujtel(mod, matert, sigf, dsde)
-        endif
-    endif
-    call hujori('GLOBA', 2, reorie, angmas, bid16,&
+        end if
+    end if
+    call hujori('GLOBA', 2, reorie, angmas, bid16, &
                 dsde)
 !
 end subroutine

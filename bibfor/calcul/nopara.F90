@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 function nopara(opt, te, statut, ipar)
 
-use calcul_module, only : ca_iaopmo_, ca_iaopno_, ca_iaoptt_, ca_ilopmo_, ca_ilopno_, ca_lgco_
+    use calcul_module, only: ca_iaopmo_, ca_iaopno_, ca_iaoptt_, ca_ilopmo_, ca_ilopno_, ca_lgco_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -45,14 +45,14 @@ implicit none
 !-----------------------------------------------------------------------
 
 !     jj = ioptte(opt,te)
-    jj = zi(ca_iaoptt_-1+ (te-1)*ca_lgco_+opt)
-    optmod = ca_iaopmo_ + zi(ca_ilopmo_-1+jj) - 1
-    optnom = ca_iaopno_ + zi(ca_ilopno_-1+jj) - 1
+    jj = zi(ca_iaoptt_-1+(te-1)*ca_lgco_+opt)
+    optmod = ca_iaopmo_+zi(ca_ilopmo_-1+jj)-1
+    optnom = ca_iaopno_+zi(ca_ilopno_-1+jj)-1
     if (statut .eq. 'IN ') then
         nopara = zk8(optnom-1+ipar)
     else
-        ASSERT(statut.eq.'OUT')
+        ASSERT(statut .eq. 'OUT')
         nbin = zi(optmod-1+2)
         nopara = zk8(optnom-1+nbin+ipar)
-    endif
+    end if
 end function

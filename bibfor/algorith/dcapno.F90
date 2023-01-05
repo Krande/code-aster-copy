@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine dcapno(resuz, typchz, iord, chavaz)
     chaval = chavaz
     resu = resuz
     typch = typchz
-    call rsexch('F', resu, typch, iord, chacou,&
+    call rsexch('F', resu, typch, iord, chacou, &
                 ier)
 !
     chaval = chacou//'.VALE'
@@ -64,6 +64,6 @@ subroutine dcapno(resuz, typchz, iord, chavaz)
     chavaz = chaval
     goto 9999
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

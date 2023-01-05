@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dl_MatrixPrepare(l_harm    , l_damp    , l_damp_modal, l_impe    , resu_type,&
-                            matr_mass_, matr_rigi_, matr_damp_  , matr_impe_,&
-                            nb_matr   , matr_list , coef_type   , coef_vale ,&
+subroutine dl_MatrixPrepare(l_harm, l_damp, l_damp_modal, l_impe, resu_type, &
+                            matr_mass_, matr_rigi_, matr_damp_, matr_impe_, &
+                            nb_matr, matr_list, coef_type, coef_vale, &
                             matr_resu)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,14 +29,14 @@ implicit none
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 !
-aster_logical, intent(in) :: l_harm, l_damp, l_damp_modal, l_impe
-character(len=1), intent(in) :: resu_type
-character(len=*), intent(in) :: matr_mass_, matr_rigi_, matr_damp_, matr_impe_
-integer, intent(out) :: nb_matr
-character(len=24), intent(out) :: matr_list(*)
-character(len=1), intent(out) :: coef_type(*)
-real(kind=8), intent(out) :: coef_vale(*)
-character(len=8), intent(out) :: matr_resu
+    aster_logical, intent(in) :: l_harm, l_damp, l_damp_modal, l_impe
+    character(len=1), intent(in) :: resu_type
+    character(len=*), intent(in) :: matr_mass_, matr_rigi_, matr_damp_, matr_impe_
+    integer, intent(out) :: nb_matr
+    character(len=24), intent(out) :: matr_list(*)
+    character(len=1), intent(out) :: coef_type(*)
+    real(kind=8), intent(out) :: coef_vale(*)
+    character(len=8), intent(out) :: matr_resu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ character(len=8), intent(out) :: matr_resu
 ! --------------------------------------------------------------------------------------------------
 !
     matr_resu = '&&KTILD'
-    nb_matr   = 0
+    nb_matr = 0
     matr_mass = matr_mass_
     matr_rigi = matr_rigi_
     matr_damp = matr_damp_
@@ -79,39 +79,39 @@ character(len=8), intent(out) :: matr_resu
 !
 ! - Symmetric or not ?
 !
-    l_syme    = ASTER_TRUE
+    l_syme = ASTER_TRUE
     matr_refe = matr_rigi
     if (l_damp) then
         call mtdscr(matr_damp)
-        call jeveuo(matr_damp//'.REFA', 'L', vk24 = v_refa)
+        call jeveuo(matr_damp//'.REFA', 'L', vk24=v_refa)
         if (v_refa(9) .eq. 'MR') then
-            l_syme    = ASTER_FALSE
+            l_syme = ASTER_FALSE
             matr_refe = matr_damp
-        endif
-    endif
+        end if
+    end if
 !
     if (l_impe) then
         call mtdscr(matr_impe)
-        call jeveuo(matr_impe//'.REFA', 'L', vk24 = v_refa)
+        call jeveuo(matr_impe//'.REFA', 'L', vk24=v_refa)
         if (v_refa(9) .eq. 'MR') then
-            l_syme    = ASTER_FALSE
+            l_syme = ASTER_FALSE
             matr_refe = matr_impe
-        endif
-    endif
+        end if
+    end if
 !
-    call jeveuo(matr_rigi//'.REFA', 'L', vk24 = v_refa)
+    call jeveuo(matr_rigi//'.REFA', 'L', vk24=v_refa)
     call mtdscr(matr_rigi)
     if (v_refa(9) .eq. 'MR') then
-        l_syme    = ASTER_FALSE
+        l_syme = ASTER_FALSE
         matr_refe = matr_rigi
-    endif
+    end if
 !
-    call jeveuo(matr_mass//'.REFA', 'L', vk24 = v_refa)
+    call jeveuo(matr_mass//'.REFA', 'L', vk24=v_refa)
     call mtdscr(matr_mass)
     if (v_refa(9) .eq. 'MR') then
-        l_syme    = ASTER_FALSE
+        l_syme = ASTER_FALSE
         matr_refe = matr_mass
-    endif
+    end if
 !
 ! - Prepare matrix container
 !
@@ -124,23 +124,23 @@ character(len=8), intent(out) :: matr_resu
         matr_list(1) = matr_rigi
         coef_type(1) = 'R'
         coef_vale(1) = 1.d0
-        nb_matr  = nb_matr + 1
+        nb_matr = nb_matr+1
         matr_list(2) = matr_mass
         coef_type(2) = 'R'
         coef_vale(2) = 0.d0
-        nb_matr  = nb_matr + 1
+        nb_matr = nb_matr+1
         if (l_damp .or. l_damp_modal) then
-            nb_matr  = nb_matr + 1
+            nb_matr = nb_matr+1
             matr_list(nb_matr) = matr_damp
             coef_type(nb_matr) = 'C'
             coef_vale(nb_matr) = 0.d0
-        endif
+        end if
         if (l_impe) then
-            nb_matr  = nb_matr + 1
+            nb_matr = nb_matr+1
             matr_list(nb_matr) = matr_impe
             coef_type(nb_matr) = 'C'
             coef_vale(nb_matr) = 0.d0
-        endif
+        end if
     else
         coef_type(1) = 'R'
         coef_vale(1) = 1.d0
@@ -148,15 +148,15 @@ character(len=8), intent(out) :: matr_resu
         coef_type(2) = 'R'
         coef_vale(2) = 0.d0
         matr_list(2) = matr_mass
-        nb_matr  = 2
+        nb_matr = 2
         if (l_damp) then
             coef_type(3) = 'R'
             coef_vale(3) = 0.d0
             matr_list(3) = matr_damp
             nb_matr = 3
-        endif
-        ASSERT(.not.l_impe)
-        ASSERT(.not.l_damp_modal)
-    endif
+        end if
+        ASSERT(.not. l_impe)
+        ASSERT(.not. l_damp_modal)
+    end if
 !
 end subroutine

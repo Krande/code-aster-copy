@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,22 +79,22 @@ subroutine pascom(meca, sddyna, sddisc)
     call jelira(meca//'           .ORDR', 'LONUTI', nbmode)
     call jeveuo(meca//'           .ORDR', 'L', vi=ordr)
     iorol = ordr(1)
-    call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
+    call rsadpa(meca, 'L', 1, 'OMEGA2', iorol, &
                 0, sjv=iad, styp=k8bid)
-    if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem( )) then
-        dtcou = 1.d0 / r8prem( )
+    if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem()) then
+        dtcou = 1.d0/r8prem()
     else
-        dtcou = 1.d0 / sqrt(zr(iad))
-    endif
+        dtcou = 1.d0/sqrt(zr(iad))
+    end if
     do i = 1, nbmode-1
         iorol = ordr(1+i)
-        call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
+        call rsadpa(meca, 'L', 1, 'OMEGA2', iorol, &
                     0, sjv=iad, styp=k8bid)
-        if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem( )) then
-            dt = 1.d0 / r8prem( )
+        if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem()) then
+            dt = 1.d0/r8prem()
         else
-            dt = 1.d0 / sqrt(zr(iad))
-        endif
+            dt = 1.d0/sqrt(zr(iad))
+        end if
 !       DT = 1.D0 / SQRT(ZR(IAD))
         if (dt .lt. dtcou) dtcou = dt
     end do
@@ -102,22 +102,22 @@ subroutine pascom(meca, sddyna, sddisc)
     call getvtx('SCHEMA_TEMPS', 'STOP_CFL', iocc=1, scal=stocfl, nbret=n1)
 !
 !     VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
-    call utdidt('L', sddisc, 'LIST', 'NBINST',&
-                vali_ = nbinst)
+    call utdidt('L', sddisc, 'LIST', 'NBINST', &
+                vali_=nbinst)
     call jeveuo(sddisc//'.DITR', 'L', vr=ditr)
 !
-    if (ndynlo(sddyna,'DIFF_CENT')) then
-        dtcou =dtcou/(2.d0)
+    if (ndynlo(sddyna, 'DIFF_CENT')) then
+        dtcou = dtcou/(2.d0)
         call utmess('I', 'DYNAMIQUE_7', sr=dtcou)
     else
-        if (ndynlo(sddyna,'TCHAMWA')) then
-            phi=ndynre(sddyna,'PHI')
+        if (ndynlo(sddyna, 'TCHAMWA')) then
+            phi = ndynre(sddyna, 'PHI')
             dtcou = dtcou/(phi*2.d0)
             call utmess('I', 'DYNAMIQUE_8', sr=dtcou)
         else
             call utmess('F', 'DYNAMIQUE_1')
-        endif
-    endif
+        end if
+    end if
 !
     do i = 1, nbinst-1
         if (ditr(i+1)-ditr(i) .gt. dtcou) then
@@ -125,8 +125,8 @@ subroutine pascom(meca, sddyna, sddisc)
                 call utmess('F', 'DYNAMIQUE_2')
             else
                 call utmess('A', 'DYNAMIQUE_2')
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtcrog(a, b, nmax, n, nbsc,&
+subroutine mtcrog(a, b, nmax, n, nbsc, &
                   c, wks, ier)
     implicit none
 !
@@ -65,14 +65,14 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 !
     if (nmax .lt. n) then
         call utmess('F', 'ALGELINE2_14')
-    endif
+    end if
 !
 !
 ! --- SAUVEGARDE DE LA MATRICE B
 !
     do i = 1, n
         do j = 1, nbsc
-            c(i,j) = b(i,j)
+            c(i, j) = b(i, j)
         end do
     end do
 !
@@ -90,7 +90,7 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 !
     do j = 1, n
         do i = 1, n
-            wks(i) = wks(i) + a(i,j)**2
+            wks(i) = wks(i)+a(i, j)**2
         end do
     end do
 !
@@ -105,7 +105,7 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
         l = k
         x = 0.0d0
         do i = k, n
-            y = abs(a(i,k)*wks(i))
+            y = abs(a(i, k)*wks(i))
             if (y .le. x) goto 100
             x = y
             l = i
@@ -114,34 +114,34 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
         if (l .ne. k) then
             det = -det
             do j = 1, n
-                y = a(k,j)
-                a(k,j) = a(l,j)
-                a(l,j) = y
+                y = a(k, j)
+                a(k, j) = a(l, j)
+                a(l, j) = y
             end do
             wks(l) = wks(k)
-        endif
+        end if
         wks(k) = l
-        det = det*a(k,k)
+        det = det*a(k, k)
         if (x .lt. 8.0d0*prec) then
             ier = 1
             goto 240
-        endif
+        end if
 160     continue
         if (abs(det) .lt. 1.0d0) goto 180
         det = det*0.0625d0
-        id = id + 4
+        id = id+4
         goto 160
 180     continue
         if (abs(det) .ge. 0.0625d0) goto 200
         det = det*16.0d0
-        id = id - 4
+        id = id-4
         goto 180
 200     continue
         if (k .lt. n) then
             call mtcro1(k, a, nmax, a(1, k+1))
-            call mtcro3(n-k, k, a(k+1, 1), nmax, a(1, k+1),&
+            call mtcro3(n-k, k, a(k+1, 1), nmax, a(1, k+1), &
                         a(k+1, k+1))
-        endif
+        end if
     end do
 240 continue
 !
@@ -160,12 +160,12 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 ! ---    PERMUTATION DES ELEMENTS DE B
 !
         do i = 1, n
-            iapro = int(wks(i) + 0.5d0)
+            iapro = int(wks(i)+0.5d0)
             if (iapro .eq. i) goto 340
             do k = 1, nbsc
-                x = b(i,k)
-                b(i,k) = b(iapro,k)
-                b(iapro,k) = x
+                x = b(i, k)
+                b(i, k) = b(iapro, k)
+                b(iapro, k) = x
             end do
 340         continue
         end do
@@ -180,15 +180,15 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 !
         do i = 1, n
             do j = 1, nbsc
-                x = b(i,j)
-                b(i,j) = c(i,j)
-                c(i,j) = x
+                x = b(i, j)
+                b(i, j) = c(i, j)
+                c(i, j) = x
             end do
         end do
 !
     else
         ier = 1
-    endif
+    end if
 !
 !
 end subroutine

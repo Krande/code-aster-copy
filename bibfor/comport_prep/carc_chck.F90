@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine carc_chck(behaviourPrepCrit)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/utmess.h"
 !
-type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
+    type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,12 +57,12 @@ type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
 
 ! ----- Detection of specific cases
         call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_mfront_proto)
-        call comp_meca_l(rela_comp, 'MFRONT_OFFI' , l_mfront_offi)
+        call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
         call comp_meca_l(rela_comp, 'UMAT', l_umat)
 
         if (l_mfront_proto .or. l_umat) then
             lProtoAQ = ASTER_TRUE
-        endif
+        end if
 
 ! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
         if (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_pas .lt. 0.d0) then
@@ -70,10 +70,10 @@ type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
                 call utmess('F', 'COMPOR1_95')
             end if
         end if
-    enddo
+    end do
 
     if (lProtoAQ) then
         call utmess('A', 'QUALITY1_3')
-    endif
+    end if
 !
 end subroutine

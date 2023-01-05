@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha,&
-                  lmatb, typeps, vaux, ddlexc, delta,&
+subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, &
+                  lmatb, typeps, vaux, ddlexc, delta, &
                   dsor, omecor)
 !---------------------------------------------------------------------
 !
@@ -68,42 +68,42 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha,&
 !
 ! flag pour tester la m-orthogonalite avant/apres (niveau developpeur)
 !      lcheck=.true.
-    lcheck=.false.
+    lcheck = .false.
 ! flag pour lancer la m-orthogonalite totale (niveau developpeur)
 !      alpha=-alpha
     if (lcheck) then
-        write(ifm,*)'m-orthogonalite std avant vpgsmm'
+        write (ifm, *) 'm-orthogonalite std avant vpgsmm'
         do i = 1, nconv
-            call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
+            call mrmult('ZERO', lmatb, vect(1, i), vaux, 1, &
                         .false._1)
-            auxri=0.d0
+            auxri = 0.d0
             do j = 1, i
-                auxri1=0.d0
+                auxri1 = 0.d0
                 do k = 1, nbeq
-                    auxri1 = auxri1 + vect(k,j) * vaux(k) * ddlexc(k)
+                    auxri1 = auxri1+vect(k, j)*vaux(k)*ddlexc(k)
                 end do
-                auxri1=abs(auxri1)
-                if (j .ne. i) auxri=auxri+auxri1
+                auxri1 = abs(auxri1)
+                if (j .ne. i) auxri = auxri+auxri1
             end do
-            write(ifm,*)'sigma(j=1,i-1) abs<vj,mvi>=',i,auxri
-            write(ifm,*)'               abs<vi,mvi>=     ',auxri1
+            write (ifm, *) 'sigma(j=1,i-1) abs<vj,mvi>=', i, auxri
+            write (ifm, *) '               abs<vi,mvi>=     ', auxri1
         end do
-    endif
+    end if
 !
     if (alpha .lt. 0.d0) then
-        alpha=-alpha
-        write(ifm,*)'<vpgsmm> m-reorthogonalisation totale'
-        call vpgskp(nbeq, nconv, vect, alpha, lmatb,&
+        alpha = -alpha
+        write (ifm, *) '<vpgsmm> m-reorthogonalisation totale'
+        call vpgskp(nbeq, nconv, vect, alpha, lmatb, &
                     typeps, vaux, ddlexc, delta)
         goto 72
-    endif
+    end if
 !
     call wkvect('&&VPGSMM.REORTHO.PART1', 'V V I', nconv, ireor1)
     call wkvect('&&VPGSMM.REORTHO.PART2', 'V V I', 2*nconv, ireor2)
     do i = 1, nconv
-        zi(ireor1+i-1)=-999
-        zi(ireor2+i-1)=-999
-        zi(ireor2+nconv+i-1)=-999
+        zi(ireor1+i-1) = -999
+        zi(ireor2+i-1) = -999
+        zi(ireor2+nconv+i-1) = -999
 !         write(6,*)i,dsor(i,1)
     end do
 !
@@ -112,107 +112,107 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha,&
 ! * si deux modes ne sont pas considérés comme des modes rigides :
 !     modes multiples si leur écart relatif < seuilp
 ! rq: seuils volontairement lâches car il vaut mieux trop réorthogonaliser que l'inverse
-    seuilr=100.d0*omecor
-    seuilp=omecor
-    compt1=0
+    seuilr = 100.d0*omecor
+    seuilp = omecor
+    compt1 = 0
     do i = 1, nconv-1
-        auxri=dsor(i,1)
-        auxri1=dsor(i+1,1)
-        ltest=.false.
+        auxri = dsor(i, 1)
+        auxri1 = dsor(i+1, 1)
+        ltest = .false.
         if (abs(auxri) .lt. seuilr) then
-            ltest=(abs(auxri1).lt.seuilr)
+            ltest = (abs(auxri1) .lt. seuilr)
         else
             if (abs(auxri1) .ge. seuilr) then
-                ltest = 2.d0 * abs(auxri-auxri1) .lt. abs(auxri+auxri1) * seuilp
+                ltest = 2.d0*abs(auxri-auxri1) .lt. abs(auxri+auxri1)*seuilp
             else
-                ltest=.false.
-            endif
-        endif
+                ltest = .false.
+            end if
+        end if
         if (ltest) then
             if (zi(ireor1+i-1) .eq. -999) then
-                compt1=compt1+1
-                zi(ireor1+i-1)=compt1
-                zi(ireor1+i)  =compt1
+                compt1 = compt1+1
+                zi(ireor1+i-1) = compt1
+                zi(ireor1+i) = compt1
             else
-                zi(ireor1+i)  =zi(ireor1+i-1)
-            endif
-        endif
+                zi(ireor1+i) = zi(ireor1+i-1)
+            end if
+        end if
     end do
-    i=1
-    compt1=0
-    compt2=1
- 68 continue
-    iauxi=zi(ireor1+i-1)
+    i = 1
+    compt1 = 0
+    compt2 = 1
+68  continue
+    iauxi = zi(ireor1+i-1)
     if (iauxi .ne. -999) then
-        compt1=compt1+1
+        compt1 = compt1+1
         do j = i+1, nconv
-            iauxj=zi(ireor1+j-1)
+            iauxj = zi(ireor1+j-1)
             if (iauxj .ne. iauxi) then
-                compt2=1
+                compt2 = 1
                 goto 70
             else
-                compt2=compt2+1
-                zi(ireor2+compt1-1)=i
-                zi(ireor2+nconv+compt1-1)=compt2
-            endif
+                compt2 = compt2+1
+                zi(ireor2+compt1-1) = i
+                zi(ireor2+nconv+compt1-1) = compt2
+            end if
         end do
- 70     continue
-        i=j
+70      continue
+        i = j
         if (i .lt. nconv) goto 68
     else
-        i=i+1
+        i = i+1
         if (i .lt. nconv) goto 68
-    endif
+    end if
 !
-    compt3=nconv
-    iauxj=1
-    if ((lcheck) .or. (niv.ge.2)) write(ifm, *)'<vpgsmm> m-reorthogonalisation partielle sur ',&
-                                  compt1, ' paquets'
+    compt3 = nconv
+    iauxj = 1
+   if ((lcheck) .or. (niv .ge. 2)) write (ifm, *) '<vpgsmm> m-reorthogonalisation partielle sur ', &
+        compt1, ' paquets'
     do i = 1, compt1
-        iauxi=zi(ireor2+i-1)
-        nconvl=zi(ireor2+nconv+i-1)
+        iauxi = zi(ireor2+i-1)
+        nconvl = zi(ireor2+nconv+i-1)
 ! gardes-fous
-        if ((iauxi.lt.iauxj) .or. (iauxi.gt.(nconv-1))) then
+        if ((iauxi .lt. iauxj) .or. (iauxi .gt. (nconv-1))) then
             ASSERT(.false.)
-        endif
-        if ((nconvl.lt.2) .or. (nconvl.gt.compt3)) then
+        end if
+        if ((nconvl .lt. 2) .or. (nconvl .gt. compt3)) then
             ASSERT(.false.)
-        endif
+        end if
 !
-        if ((lcheck) .or. (niv.ge.2)) write(ifm, *)'<vpgsmm> paquet modes multiples n', i, iauxi,&
-                                      nconvl
-        call vpgskp(nbeq, nconvl, vect(1, iauxi), alpha, lmatb,&
+     if ((lcheck) .or. (niv .ge. 2)) write (ifm, *) '<vpgsmm> paquet modes multiples n', i, iauxi, &
+            nconvl
+        call vpgskp(nbeq, nconvl, vect(1, iauxi), alpha, lmatb, &
                     typeps, vaux, ddlexc, delta)
 !
 ! mise a jour des gardes-fous
-        compt3=compt3-nconvl
+        compt3 = compt3-nconvl
         if (compt3 .lt. 0) then
             ASSERT(.false.)
-        endif
-        iauxj=iauxi
+        end if
+        iauxj = iauxi
     end do
     call jedetr('&&VPGSMM.REORTHO.PART1')
     call jedetr('&&VPGSMM.REORTHO.PART2')
 !
- 72 continue
+72  continue
     if (lcheck) then
-        write(ifm,*)'m-orthogonalite std apres vpgsmm'
+        write (ifm, *) 'm-orthogonalite std apres vpgsmm'
         do i = 1, nconv
-            call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
+            call mrmult('ZERO', lmatb, vect(1, i), vaux, 1, &
                         .false._1)
-            auxri=0.d0
+            auxri = 0.d0
             do j = 1, i
-                auxri1=0.d0
+                auxri1 = 0.d0
                 do k = 1, nbeq
-                    auxri1 = auxri1 + vect(k,j) * vaux(k) * ddlexc(k)
+                    auxri1 = auxri1+vect(k, j)*vaux(k)*ddlexc(k)
                 end do
-                auxri1=abs(auxri1)
-                if (j .ne. i) auxri=auxri+auxri1
+                auxri1 = abs(auxri1)
+                if (j .ne. i) auxri = auxri+auxri1
             end do
-            write(ifm,*)'sigma(j=1,i-1) abs<vj,mvi>=',i,auxri
-            write(ifm,*)'               abs<vi,mvi>=     ',auxri1
+            write (ifm, *) 'sigma(j=1,i-1) abs<vj,mvi>=', i, auxri
+            write (ifm, *) '               abs<vi,mvi>=     ', auxri1
         end do
-    endif
+    end if
 !
 !     FIN DE VPGSMM
 !

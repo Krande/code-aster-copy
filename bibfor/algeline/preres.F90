@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine preres(solveu, base, iret, matpre, matass,&
+subroutine preres(solveu, base, iret, matpre, matass, &
                   npvneg, istop)
     implicit none
 #include "jeveux.h"
@@ -70,10 +70,10 @@ subroutine preres(solveu, base, iret, matpre, matass,&
     call jemarq()
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
-    matas1=matass
-    ASSERT(solveu.ne.' ')
+    matas1 = matass
+    ASSERT(solveu .ne. ' ')
 !
-    call matrix_factor(solveu, base, iret, matpre, matas1,&
+    call matrix_factor(solveu, base, iret, matpre, matas1, &
                        npvneg, istop)
     call uttcpu('CPU.RESO.1', 'FIN', ' ')
     call uttcpu('CPU.RESO.4', 'FIN', ' ')

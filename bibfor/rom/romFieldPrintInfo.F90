@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine romFieldPrintInfo(field)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(in) :: field
+    type(ROM_DS_Field), intent(in) :: field
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,21 +44,21 @@ type(ROM_DS_Field), intent(in) :: field
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utmess('I', 'ROM11_50', sk = field%fieldName)
-    call utmess('I', 'ROM11_51', si = field%nbEqua)
+    call utmess('I', 'ROM11_50', sk=field%fieldName)
+    call utmess('I', 'ROM11_51', si=field%nbEqua)
     if (field%fieldSupp .eq. 'NOEU') then
         call utmess('I', 'ROM11_52')
     elseif (field%fieldSupp .eq. 'ELGA') then
         call utmess('I', 'ROM11_53')
     else
         ASSERT(ASTER_FALSE)
-    endif
-    call utmess('I', 'ROM11_54', si = field%nbCmpName)
+    end if
+    call utmess('I', 'ROM11_54', si=field%nbCmpName)
     do iCmpName = 1, field%nbCmpName
-        call utmess('I', 'ROM11_55', si = iCmpName, sk = field%listCmpName(iCmpName))
+        call utmess('I', 'ROM11_55', si=iCmpName, sk=field%listCmpName(iCmpName))
     end do
     if (field%lLagr) then
         call utmess('I', 'ROM11_56')
-    endif
+    end if
 !
 end subroutine

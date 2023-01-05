@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine carcou(orien, l, pgl, rayon, theta,&
-                  pgl1, pgl2, pgl3, pgl4, nno,&
+subroutine carcou(orien, l, pgl, rayon, theta, &
+                  pgl1, pgl2, pgl3, pgl4, nno, &
                   omega, icoude)
     implicit none
 #include "asterfort/matrot.h"
@@ -51,19 +51,19 @@ subroutine carcou(orien, l, pgl, rayon, theta,&
 !-----------------------------------------------------------------------
 !
     do i = 1, 3
-        angl1(i)=orien(i)
-        angl2(i)=orien(3+i)
-        angl3(i)=orien(6+i)
+        angl1(i) = orien(i)
+        angl2(i) = orien(3+i)
+        angl3(i) = orien(6+i)
     end do
-    icmp=9
+    icmp = 9
     if (nno .eq. 4) then
         do i = 1, 3
-            angl4(i)=orien(9+i)
+            angl4(i) = orien(9+i)
         end do
-        icmp=12
-    else if (nno.ne.3) then
+        icmp = 12
+    else if (nno .ne. 3) then
         call utmess('F', 'ELEMENTS_18')
-    endif
+    end if
 !
     icoude = nint(orien(icmp+1))
     l = orien(icmp+2)
@@ -71,7 +71,7 @@ subroutine carcou(orien, l, pgl, rayon, theta,&
     theta = orien(icmp+4)
     omega = orien(icmp+5)
 !
-    if ((icoude.eq.0) .or. (icoude.eq.10)) then
+    if ((icoude .eq. 0) .or. (icoude .eq. 10)) then
         call matrot(angl1, pgl)
     else
         call matrot(angl1, pgl1)
@@ -79,6 +79,6 @@ subroutine carcou(orien, l, pgl, rayon, theta,&
         call matrot(angl3, pgl3)
         if (nno .eq. 4) then
             call matrot(angl4, pgl4)
-        endif
-    endif
+        end if
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tanmat(alpha, beta, gamma, k1, k2,&
-                  dmax1, dmax2, dam1, dam2, curv,&
+subroutine tanmat(alpha, beta, gamma, k1, k2, &
+                  dmax1, dmax2, dam1, dam2, curv, &
                   dcurv, tanma2)
 !
     implicit none
@@ -60,15 +60,15 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 !
 !     TENSEUR DES COURBURES A L INSTANT T : KAPPA ET T+1 KAPPN
 !
-    kappn(1,1)=curv(1)+dcurv(1)
-    kappn(2,2)=curv(2)+dcurv(2)
-    kappn(1,2)=(curv(3)+dcurv(3))/2.d0
-    kappn(2,1)=kappn(1,2)
+    kappn(1, 1) = curv(1)+dcurv(1)
+    kappn(2, 2) = curv(2)+dcurv(2)
+    kappn(1, 2) = (curv(3)+dcurv(3))/2.d0
+    kappn(2, 1) = kappn(1, 2)
 !
-    kappa(1,1)=curv(1)
-    kappa(2,2)=curv(2)
-    kappa(1,2)=curv(3)/2.d0
-    kappa(2,1)=kappa(1,2)
+    kappa(1, 1) = curv(1)
+    kappa(2, 2) = curv(2)
+    kappa(1, 2) = curv(3)/2.d0
+    kappa(2, 1) = kappa(1, 2)
 !
 !     VALEUR PROPRE DES DEFORAMTIONS (PRP N EST PAS UTILISE)
     call d2diag(kappa, kappvp, prp, theta)
@@ -77,52 +77,52 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 !     MISE A JOUR DE L ENDOMMAGEMENT DAM1 ET DAM2
 !     CALCUL DES TERMES DE LA MATRICE TANGENTE VENANT DE L ENDO
 !
-    call damage(kappvp, +1, k1, dmax1, dam1,&
+    call damage(kappvp, +1, k1, dmax1, dam1, &
                 tdm1rp, alpha, beta, gamma)
-    call damage(kappvp, -1, k2, dmax2, dam2,&
+    call damage(kappvp, -1, k2, dmax2, dam2, &
                 tdm2rp, alpha, beta, gamma)
 !
 !     MATRICE TANGENTE DANS LA BASE DES VECTEURS PROPRES
 !
-    trkapp = kappa(1,1)+kappa(2,2)
-    xvp1 = xifonc(kappvp(1),dam1,dam2,gamma)
-    xvp2 = xifonc(kappvp(2),dam1,dam2,gamma)
+    trkapp = kappa(1, 1)+kappa(2, 2)
+    xvp1 = xifonc(kappvp(1), dam1, dam2, gamma)
+    xvp2 = xifonc(kappvp(2), dam1, dam2, gamma)
 !
-    tanmrp(1,2)=2*alpha*xifonc(trkapp,dam1,dam2,gamma)
-    tanmrp(2,1)=tanmrp(1,2)
-    tanmrp(1,1)=tanmrp(1,2)+2*beta*xvp1
-    tanmrp(2,2)=tanmrp(1,2)+2*beta*xvp2
-    tanmrp(1,3)=0.d0
-    tanmrp(2,3)=0.d0
-    tanmrp(3,1)=0.d0
-    tanmrp(3,2)=0.d0
+    tanmrp(1, 2) = 2*alpha*xifonc(trkapp, dam1, dam2, gamma)
+    tanmrp(2, 1) = tanmrp(1, 2)
+    tanmrp(1, 1) = tanmrp(1, 2)+2*beta*xvp1
+    tanmrp(2, 2) = tanmrp(1, 2)+2*beta*xvp2
+    tanmrp(1, 3) = 0.d0
+    tanmrp(2, 3) = 0.d0
+    tanmrp(3, 1) = 0.d0
+    tanmrp(3, 2) = 0.d0
     aux = kappvp(2)-kappvp(1)
 !
-    if (abs(aux) .le. (zerdam*(abs(kappvp(1)) + abs(kappvp(2) )))) then
-        tanmrp(3,3)=0.d0
+    if (abs(aux) .le. (zerdam*(abs(kappvp(1))+abs(kappvp(2))))) then
+        tanmrp(3, 3) = 0.d0
     else
-        tanmrp(3,3)=beta*(xvp2*kappvp(2)-xvp1*kappvp(1))/aux
-    endif
+        tanmrp(3, 3) = beta*(xvp2*kappvp(2)-xvp1*kappvp(1))/aux
+    end if
 !
     cc = cos(theta)**2
     ss = sin(theta)**2
     cs = cos(theta)*sin(theta)
 !
-    prp33(1,1) = cc
-    prp33(2,1) = ss
-    prp33(3,1) = -2.0d0*cs
-    prp33(1,2) = ss
-    prp33(2,2) = cc
-    prp33(3,2) = 2.0d0*cs
-    prp33(1,3) = cs
-    prp33(2,3) = -cs
-    prp33(3,3) = cc - ss
+    prp33(1, 1) = cc
+    prp33(2, 1) = ss
+    prp33(3, 1) = -2.0d0*cs
+    prp33(1, 2) = ss
+    prp33(2, 2) = cc
+    prp33(3, 2) = 2.0d0*cs
+    prp33(1, 3) = cs
+    prp33(2, 3) = -cs
+    prp33(3, 3) = cc-ss
 !
     if ((kappvp(1)*kappvn(1) .le. 0.d0) .or. (kappvp(2)*kappvn(2) .le. 0.d0)) then
         do j = 1, 3
             do i = 1, 3
-                cp(i,j) = tdm1rp(i,j) + tdm2rp(i,j)
-                cp2(i,j) = prp33(j,i)
+                cp(i, j) = tdm1rp(i, j)+tdm2rp(i, j)
+                cp2(i, j) = prp33(j, i)
             end do
         end do
 !
@@ -134,43 +134,43 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 !
 !     MATRICE TANGENTE DANS LA BASE DES VECTEURS PROPRES (NOUVELLE DEF)
 !
-        trkapp = kappn(1,1)+kappn(2,2)
-        xvp1 = xifonc(kappvn(1),dam1,dam2,gamma)
-        xvp2 = xifonc(kappvn(2),dam1,dam2,gamma)
+        trkapp = kappn(1, 1)+kappn(2, 2)
+        xvp1 = xifonc(kappvn(1), dam1, dam2, gamma)
+        xvp2 = xifonc(kappvn(2), dam1, dam2, gamma)
 !
-        tanmrp(1,2)=2*alpha*xifonc(trkapp,dam1,dam2,gamma)
-        tanmrp(2,1)=tanmrp(1,2)
-        tanmrp(1,1)=tanmrp(1,2)+2*beta*xvp1
-        tanmrp(2,2)=tanmrp(1,2)+2*beta*xvp2
-        tanmrp(1,3)=0.d0
-        tanmrp(2,3)=0.d0
-        tanmrp(3,1)=0.d0
-        tanmrp(3,2)=0.d0
+        tanmrp(1, 2) = 2*alpha*xifonc(trkapp, dam1, dam2, gamma)
+        tanmrp(2, 1) = tanmrp(1, 2)
+        tanmrp(1, 1) = tanmrp(1, 2)+2*beta*xvp1
+        tanmrp(2, 2) = tanmrp(1, 2)+2*beta*xvp2
+        tanmrp(1, 3) = 0.d0
+        tanmrp(2, 3) = 0.d0
+        tanmrp(3, 1) = 0.d0
+        tanmrp(3, 2) = 0.d0
         aux = kappvn(2)-kappvn(1)
 !
         if (abs(aux) .le. zerdam*(abs(kappvn(1))+abs(kappvn(2)))) then
-            tanmrp(3,3)=0.d0
+            tanmrp(3, 3) = 0.d0
         else
-            tanmrp(3,3)=beta*( xvp2*kappvn(2)-xvp1*kappvn(1) )/aux
-        endif
+            tanmrp(3, 3) = beta*(xvp2*kappvn(2)-xvp1*kappvn(1))/aux
+        end if
 !
         cc = cos(thetn)**2
         ss = sin(thetn)**2
         cs = cos(thetn)*sin(thetn)
 !
-        prp33(1,1) = cc
-        prp33(2,1) = ss
-        prp33(3,1) = -2.0d0*cs
-        prp33(1,2) = ss
-        prp33(2,2) = cc
-        prp33(3,2) = 2.0d0*cs
-        prp33(1,3) = cs
-        prp33(2,3) = -cs
-        prp33(3,3) = cc - ss
+        prp33(1, 1) = cc
+        prp33(2, 1) = ss
+        prp33(3, 1) = -2.0d0*cs
+        prp33(1, 2) = ss
+        prp33(2, 2) = cc
+        prp33(3, 2) = 2.0d0*cs
+        prp33(1, 3) = cs
+        prp33(2, 3) = -cs
+        prp33(3, 3) = cc-ss
 !
         do j = 1, 3
             do i = 1, 3
-                cp2(i,j) = prp33(j,i)
+                cp2(i, j) = prp33(j, i)
             end do
         end do
 !
@@ -179,19 +179,19 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 !
         do j = 1, 3
             do i = 1, 3
-                tanma2(i,j) = (tanmto(i,j)+tanmtn(i,j))/2.d0 + tanmad( i,j)
+                tanma2(i, j) = (tanmto(i, j)+tanmtn(i, j))/2.d0+tanmad(i, j)
             end do
         end do
     else
         do j = 1, 3
             do i = 1, 3
-                cp(i,j) = tanmrp(i,j) + tdm1rp(i,j) + tdm2rp(i,j)
-                cp2(i,j) = prp33(j,i)
+                cp(i, j) = tanmrp(i, j)+tdm1rp(i, j)+tdm2rp(i, j)
+                cp2(i, j) = prp33(j, i)
             end do
         end do
 !
         cp3 = matmul(cp, prp33)
         tanma2 = matmul(cp2, cp3)
-    endif
+    end if
 !
 end subroutine

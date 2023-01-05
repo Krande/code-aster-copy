@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
-                  imat, nmat, angmas, pgl, materd,&
-                  materf, matcst, nbcomm, cpmono, ndt,&
-                  ndi, nr, nvi, nfs, nsg,&
+subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
+                  imat, nmat, angmas, pgl, materd, &
+                  materf, matcst, nbcomm, cpmono, ndt, &
+                  ndi, nr, nvi, nfs, nsg, &
                   nhsr, numhsr, hsr)
 ! aslint: disable=W1504
     implicit none
@@ -141,7 +141,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
     integer :: cerr(14), itbint, nbtbsy, nbsysi, imonoi, imonor, numhsr(nhsr)
     character(len=3) :: matcst
     character(len=*) :: fami
-        character(len=16) :: mult_comp
+    character(len=16) :: mult_comp
     character(len=16) :: nmater, necoul, necris, necrci, nomfam
     character(len=16) :: phenom, compk, compi, compr, monoi, monor
     character(len=24) :: cpmono(5*nmat+1)
@@ -158,41 +158,41 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
     if (mod(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-    else if (mod(1:6).eq.'D_PLAN'.or.mod(1:4).eq.'AXIS') then
+    else if (mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
         ndt = 6
         ndi = 3
-    else if (mod(1:6).eq.'C_PLAN') then
+    else if (mod(1:6) .eq. 'C_PLAN') then
         ndt = 6
         ndi = 3
-    endif
+    end if
     call r8inir(2*nmat, 0.d0, materd, 1)
     call r8inir(2*nmat, 0.d0, materf, 1)
 !
 
 !
 !     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
-    nr=nvi+ndt-1
-    compk=mult_comp(1:8)//'.CPRK'
-    compi=mult_comp(1:8)//'.CPRI'
-    compr=mult_comp(1:8)//'.CPRR'
+    nr = nvi+ndt-1
+    compk = mult_comp(1:8)//'.CPRK'
+    compi = mult_comp(1:8)//'.CPRI'
+    compr = mult_comp(1:8)//'.CPRR'
     call jeveuo(compk, 'L', icompk)
     call jeveuo(compi, 'L', icompi)
     call jeveuo(compr, 'L', icompr)
-    nbphas=zi(icompi-1+2)
-    dimk  =zi(icompi-1+5+3*nbphas)
-    nvloc =zi(icompi-1+5+3*nbphas+1)
+    nbphas = zi(icompi-1+2)
+    dimk = zi(icompi-1+5+3*nbphas)
+    nvloc = zi(icompi-1+5+3*nbphas+1)
 !
-    itbint=0
+    itbint = 0
 !
     do i = 1, nmat
         do j = 1, 3
-            nbcomm(i,j)=0
+            nbcomm(i, j) = 0
         end do
     end do
 !
-    nbmono=zi(icompi-1+4)
+    nbmono = zi(icompi-1+4)
     do i = 1, dimk
-        cpmono(i)=zk24(icompk-1+i)
+        cpmono(i) = zk24(icompk-1+i)
     end do
 !           MATER(*,2) : Nombre de monocristaux
 !                        indice debut premier monocristal
@@ -205,31 +205,31 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
 !                 par famille de système de glissement
 !                    coef écoulement, coef écrou isot, coef ecou cine
 !                        puis 2 (ou plus) paramètres localisation
-    materd(1,2)=nbmono
-    materf(1,2)=nbmono
-    indmat=1+nbmono+1
+    materd(1, 2) = nbmono
+    materf(1, 2) = nbmono
+    indmat = 1+nbmono+1
     do i = 1, 4*nbphas
-        materd(indmat+i,2)=zr(icompr-1+i)
-        materf(indmat+i,2)=zr(icompr-1+i)
+        materd(indmat+i, 2) = zr(icompr-1+i)
+        materf(indmat+i, 2) = zr(icompr-1+i)
     end do
-    indmat=1+nbmono+1+4*nbphas
-    materd(1+1,2)=indmat +1
-    materf(1+1,2)=indmat +1
-    indcp=3
+    indmat = 1+nbmono+1+4*nbphas
+    materd(1+1, 2) = indmat+1
+    materf(1+1, 2) = indmat+1
+    indcp = 3
 !     Boucle sur le nombre de monocristaux
     do imono = 1, nbmono
-        read (cpmono(indcp),'(I24)') nbfsys
+        read (cpmono(indcp), '(I24)') nbfsys
 !        LESCTURE EVENTUELLE DE LA TABLE DE SYST. GLISS
-        monoi=cpmono(indcp-1)(1:8)//'.CPRI'
-        monor=cpmono(indcp-1)(1:8)//'.CPRR'
+        monoi = cpmono(indcp-1) (1:8)//'.CPRI'
+        monor = cpmono(indcp-1) (1:8)//'.CPRR'
         call jeveuo(monoi, 'L', imonoi)
-        ASSERT(nbfsys.eq.zi(imonoi-1+5))
-        itbint=zi(imonoi-1+4)
-        nbsyst=zi(imonoi-1+8)
-        nbtbsy=0
+        ASSERT(nbfsys .eq. zi(imonoi-1+5))
+        itbint = zi(imonoi-1+4)
+        nbsyst = zi(imonoi-1+8)
+        nbtbsy = 0
         do ifa = 1, nbfsys
-            nbsysi=zi(imonoi-1+8+ifa)
-            nbtbsy=nbtbsy+nbsysi
+            nbsysi = zi(imonoi-1+8+ifa)
+            nbtbsy = nbtbsy+nbsysi
         end do
         if (nbtbsy .ne. 0) then
             call r8inir(900, 0.d0, tbsysg, 1)
@@ -237,97 +237,97 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
 !           TABLE CONTENANT LES SYSTEMES
             call dcopy(6*nbtbsy+12, zr(imonor), 1, tbsysg, 1)
         else
-            tbsysg(1)=0.d0
-        endif
+            tbsysg(1) = 0.d0
+        end if
 !        TABLE CONTENANT LA MATRICE D'INTERACTION
         if (itbint .eq. 1) then
-            idecal=0
+            idecal = 0
             if (nbtbsy .eq. 0) then
                 call jeveuo(monor, 'L', imonor)
-            endif
-            idecal=nint(zr(imonor+1))
+            end if
+            idecal = nint(zr(imonor+1))
             do i = 1, nbsyst
                 do j = 1, nbsyst
-                    hsr(i,j,imono)=zr(imonor-2+idecal+nbsyst*(i-1)+j)
+                    hsr(i, j, imono) = zr(imonor-2+idecal+nbsyst*(i-1)+j)
                 end do
             end do
-        endif
+        end if
 !
         do ifa = 1, nbfsys
-            nomfam=cpmono(indcp+5*(ifa-1)+1)(1:16)
-            call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
+            nomfam = cpmono(indcp+5*(ifa-1)+1) (1:16)
+            call lcmmsg(nomfam, nbsys, 0, pgl, ms, &
                         ng, lg, 0, q)
-            nmater=cpmono(indcp+5*(ifa-1)+2)(1:16)
-            necoul=cpmono(indcp+5*(ifa-1)+3)(1:16)
-            necris=cpmono(indcp+5*(ifa-1)+4)(1:16)
-            necrci=cpmono(indcp+5*(ifa-1)+5)(1:16)
+            nmater = cpmono(indcp+5*(ifa-1)+2) (1:16)
+            necoul = cpmono(indcp+5*(ifa-1)+3) (1:16)
+            necris = cpmono(indcp+5*(ifa-1)+4) (1:16)
+            necrci = cpmono(indcp+5*(ifa-1)+5) (1:16)
 !           NOMBRE DE MATRICE D'INTERACTION DIFFERENTES
 !           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
-            call lcmafl(fami, kpg, ksp, '-', nmater,&
-                        imat, necoul, nbval, valres, nmat,&
+            call lcmafl(fami, kpg, ksp, '-', nmater, &
+                        imat, necoul, nbval, valres, nmat, &
                         itbint, nfs, nsg, hsr(1, 1, imono), nbsys)
-            materd(indmat+1,2)=nbval
-            materf(indmat+1,2)=nbval
-            indmat=indmat+1
+            materd(indmat+1, 2) = nbval
+            materf(indmat+1, 2) = nbval
+            indmat = indmat+1
             do i = 1, nbval
-                materd(indmat+i,2)=valres(i)
+                materd(indmat+i, 2) = valres(i)
             end do
-            call lcmafl(fami, kpg, ksp, '+', nmater,&
-                        imat, necoul, nbval, valres, nmat,&
+            call lcmafl(fami, kpg, ksp, '+', nmater, &
+                        imat, necoul, nbval, valres, nmat, &
                         itbint, nfs, nsg, hsr(1, 1, imono), nbsys)
             do i = 1, nbval
-                materf(indmat+i,2)=valres(i)
+                materf(indmat+i, 2) = valres(i)
             end do
-            indmat=indmat+nbval
+            indmat = indmat+nbval
 !           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE CINEMATIQUE
-            call lcmaec(fami, kpg, ksp, '-', nmater,&
+            call lcmaec(fami, kpg, ksp, '-', nmater, &
                         imat, necrci, nbval, valres, nmat)
-            materd(indmat+1,2)=nbval
-            materf(indmat+1,2)=nbval
-            indmat=indmat+1
+            materd(indmat+1, 2) = nbval
+            materf(indmat+1, 2) = nbval
+            indmat = indmat+1
             do i = 1, nbval
-                materd(indmat+i,2)=valres(i)
+                materd(indmat+i, 2) = valres(i)
             end do
-            call lcmaec(fami, kpg, ksp, '+', nmater,&
+            call lcmaec(fami, kpg, ksp, '+', nmater, &
                         imat, necrci, nbval, valres, nmat)
             do i = 1, nbval
-                materf(indmat+i,2)=valres(i)
+                materf(indmat+i, 2) = valres(i)
             end do
-            indmat=indmat+nbval
+            indmat = indmat+nbval
 !           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
-            call lcmaei(fami, kpg, ksp, '-', nmater,&
-                        imat, necris, necoul, nbval, valres,&
-                        nmat, itbint, nfs, nsg, hsr(1, 1, imono),&
+            call lcmaei(fami, kpg, ksp, '-', nmater, &
+                        imat, necris, necoul, nbval, valres, &
+                        nmat, itbint, nfs, nsg, hsr(1, 1, imono), &
                         ifa, nomfam, nbsys)
-            materd(indmat+1,2)=nbval
-            materf(indmat+1,2)=nbval
-            indmat=indmat+1
+            materd(indmat+1, 2) = nbval
+            materf(indmat+1, 2) = nbval
+            indmat = indmat+1
             do i = 1, nbval
-                materd(indmat+i,2)=valres(i)
+                materd(indmat+i, 2) = valres(i)
             end do
-            call lcmaei(fami, kpg, ksp, '+', nmater,&
-                        imat, necris, necoul, nbval, valres,&
-                        nmat, itbint, nfs, nsg, hsr(1, 1, imono),&
+            call lcmaei(fami, kpg, ksp, '+', nmater, &
+                        imat, necris, necoul, nbval, valres, &
+                        nmat, itbint, nfs, nsg, hsr(1, 1, imono), &
                         ifa, nomfam, nbsys)
             do i = 1, nbval
-                materf(indmat+i,2)=valres(i)
+                materf(indmat+i, 2) = valres(i)
             end do
-            indmat=indmat+nbval
+            indmat = indmat+nbval
 !
         end do
-        tabicp(imono)=indcp
-        indcp=indcp+5*nbfsys+1+2
+        tabicp(imono) = indcp
+        indcp = indcp+5*nbfsys+1+2
 !        INDICE DU DEBUT DU MONO SUIVANT DANS MATER
-        materd(1+imono+1,2)=indmat +1
-        materf(1+imono+1,2)=indmat +1
+        materd(1+imono+1, 2) = indmat+1
+        materf(1+imono+1, 2) = indmat+1
     end do
 !     Paramètres de la loi de localisation
-    indloc=indmat+1
+    indloc = indmat+1
     do i = 1, nvloc
-        materd(indmat+i,2)=zr(icompr-1+4*nbphas+i)
-        materf(indmat+i,2)=zr(icompr-1+4*nbphas+i)
+        materd(indmat+i, 2) = zr(icompr-1+4*nbphas+i)
+        materf(indmat+i, 2) = zr(icompr-1+4*nbphas+i)
     end do
-    nbcoef=indmat+nvloc
+    nbcoef = indmat+nvloc
 !
 !  FIN remplissage de MATER(*,2)
 !
@@ -342,203 +342,203 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
 !
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
-        call rcvalb(fami, kpg, ksp, '-', imat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '-', imat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomc(1), materd(1, 1), cerr(1), 1)
-        call rcvalb(fami, kpg, ksp, '-', imat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '-', imat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, nomc(3), materd(3, 1), cerr(3), 0)
-        if (cerr(3) .ne. 0) materd(3,1) = 0.d0
-        materd(nmat,1)=0
+        if (cerr(3) .ne. 0) materd(3, 1) = 0.d0
+        materd(nmat, 1) = 0
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
-        call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomc(1), materf(1, 1), cerr(1), 1)
-        call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, nomc(3), materf(3, 1), cerr(3), 0)
-        if (cerr(3) .ne. 0) materf(3,1) = 0.d0
-        materf(nmat,1)=0
+        if (cerr(3) .ne. 0) materf(3, 1) = 0.d0
+        materf(nmat, 1) = 0
 !
-    else if (phenom.eq.'ELAS_ORTH') then
-        repere(1)=1
+    else if (phenom .eq. 'ELAS_ORTH') then
+        repere(1) = 1
         do i = 1, 3
-            repere(i+1)=angmas(i)
+            repere(i+1) = angmas(i)
         end do
 ! -    ELASTICITE ORTHOTROPE
 ! -     MATRICE D'ELASTICITE ET SON INVERSE A TEMPD(T)
 !
-        call dmat3d(fami, imat, r8vide(), '-', kpg,&
+        call dmat3d(fami, imat, r8vide(), '-', kpg, &
                     ksp, repere, xyz, hook)
-        call d1ma3d(fami, imat, r8vide(), '-', kpg,&
+        call d1ma3d(fami, imat, r8vide(), '-', kpg, &
                     ksp, repere, xyz, kooh)
 !
 !         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         do j = 4, 6
             do i = 1, 6
-                hook(i,j) = hook(i,j)*sqrt(2.d0)
+                hook(i, j) = hook(i, j)*sqrt(2.d0)
             end do
         end do
         do j = 1, 6
             do i = 4, 6
-                hook(i,j) = hook(i,j)*sqrt(2.d0)
+                hook(i, j) = hook(i, j)*sqrt(2.d0)
             end do
         end do
         do j = 4, 6
             do i = 1, 6
-                kooh(i,j) = kooh(i,j)/sqrt(2.d0)
+                kooh(i, j) = kooh(i, j)/sqrt(2.d0)
             end do
         end do
         do j = 1, 6
             do i = 4, 6
-                kooh(i,j) = kooh(i,j)/sqrt(2.d0)
+                kooh(i, j) = kooh(i, j)/sqrt(2.d0)
             end do
         end do
         do i = 1, 6
             do j = 1, 6
-                materd(6*(j-1)+i,1)=hook(i,j)
-                materd(36+6*(j-1)+i,1)=kooh(i,j)
+                materd(6*(j-1)+i, 1) = hook(i, j)
+                materd(36+6*(j-1)+i, 1) = kooh(i, j)
             end do
         end do
-        materd(nmat,1)=1
+        materd(nmat, 1) = 1
         nomc(1) = 'ALPHA_L'
         nomc(2) = 'ALPHA_T'
         nomc(3) = 'ALPHA_N'
-        call rcvalb(fami, kpg, ksp, '-', imat,&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '-', imat, &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     3, nomc, materd(73, 1), cerr, 0)
-        if (cerr(1) .ne. 0) materd(73,1) = 0.d0
-        if (cerr(2) .ne. 0) materd(74,1) = 0.d0
-        if (cerr(3) .ne. 0) materd(75,1) = 0.d0
+        if (cerr(1) .ne. 0) materd(73, 1) = 0.d0
+        if (cerr(2) .ne. 0) materd(74, 1) = 0.d0
+        if (cerr(3) .ne. 0) materd(75, 1) = 0.d0
 !
 ! -     MATRICE D'ELASTICITE ET SON INVERSE A A TEMPF (T+DT)
-        call dmat3d(fami, imat, r8vide(), '+', kpg,&
+        call dmat3d(fami, imat, r8vide(), '+', kpg, &
                     ksp, repere, xyz, hookf)
-        call d1ma3d(fami, imat, r8vide(), '+', kpg,&
+        call d1ma3d(fami, imat, r8vide(), '+', kpg, &
                     ksp, repere, xyz, kooh)
 !       termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         do j = 4, 6
             do i = 1, 6
-                hookf(i,j) = hookf(i,j)*sqrt(2.d0)
+                hookf(i, j) = hookf(i, j)*sqrt(2.d0)
             end do
         end do
         do j = 1, 6
             do i = 4, 6
-                hookf(i,j) = hookf(i,j)*sqrt(2.d0)
+                hookf(i, j) = hookf(i, j)*sqrt(2.d0)
             end do
         end do
         do j = 4, 6
             do i = 1, 6
-                kooh(i,j) = kooh(i,j)/sqrt(2.d0)
+                kooh(i, j) = kooh(i, j)/sqrt(2.d0)
             end do
         end do
         do j = 1, 6
             do i = 4, 6
-                kooh(i,j) = kooh(i,j)/sqrt(2.d0)
+                kooh(i, j) = kooh(i, j)/sqrt(2.d0)
             end do
         end do
         do i = 1, 6
             do j = 1, 6
-                materf(6*(j-1)+i,1)=hookf(i,j)
-                materf(36+6*(j-1)+i,1)=kooh(i,j)
+                materf(6*(j-1)+i, 1) = hookf(i, j)
+                materf(36+6*(j-1)+i, 1) = kooh(i, j)
             end do
         end do
-        materf(nmat,1)=1
-        call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        materf(nmat, 1) = 1
+        call rcvalb(fami, kpg, ksp, '+', imat, &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     3, nomc, materf(73, 1), cerr, 0)
-        if (cerr(1) .ne. 0) materf(73,1) = 0.d0
-        if (cerr(2) .ne. 0) materf(74,1) = 0.d0
-        if (cerr(3) .ne. 0) materf(75,1) = 0.d0
+        if (cerr(1) .ne. 0) materf(73, 1) = 0.d0
+        if (cerr(2) .ne. 0) materf(74, 1) = 0.d0
+        if (cerr(3) .ne. 0) materf(75, 1) = 0.d0
     else
         call utmess('F', 'ALGORITH4_65', sk=phenom)
-    endif
+    end if
 !
 !     Remplissage de NBCOMM : Boucle sur le nombre de phases
 !     3 : Nombre de familles de systèmes de glissement phase g
 !     Nb phases
-    nbcomm(1,1)=zi(icompi-1+2)
+    nbcomm(1, 1) = zi(icompi-1+2)
 !     Nb var. int. total
-    nbcomm(1,2)=zi(icompi-1+3)
+    nbcomm(1, 2) = zi(icompi-1+3)
 !     Nb materiaux (monocristaux) différents
-    nbcomm(1,3)=zi(icompi-1+4)
+    nbcomm(1, 3) = zi(icompi-1+4)
 !     2 : Numéro du matériau phase g
 !     3 : indice fraction volumique  dans MATER
 !     Indices de la première phase    dans NBCOMM
-    indcom=nbphas+1
+    indcom = nbphas+1
 !     Ligne précisant l'indice des coef localisation
-    indcom=indcom+1
-    nbcomm(indcom,1)=indloc
-    nbcomm(indcom,2)=nvloc
-    nbcomm(2,1)=indcom+1
-    indcom=indcom+1
-    indcp=1
+    indcom = indcom+1
+    nbcomm(indcom, 1) = indloc
+    nbcomm(indcom, 2) = nvloc
+    nbcomm(2, 1) = indcom+1
+    indcom = indcom+1
+    indcp = 1
     do iphas = 1, nbphas
 !         Indice de la fraction volumique dans MATER
-        nbcomm(1+iphas,3)=1+nbcomm(1,3)+1+4*(iphas-1)+1
-        nbfam =zi(icompi-1+4+3*(iphas-1)+1)
-        numono=zi(icompi-1+4+3*(iphas-1)+2)
-        numhsr(iphas)=numono
-        nvintg=zi(icompi-1+4+3*(iphas-1)+3)
+        nbcomm(1+iphas, 3) = 1+nbcomm(1, 3)+1+4*(iphas-1)+1
+        nbfam = zi(icompi-1+4+3*(iphas-1)+1)
+        numono = zi(icompi-1+4+3*(iphas-1)+2)
+        numhsr(iphas) = numono
+        nvintg = zi(icompi-1+4+3*(iphas-1)+3)
 !        Indice du monocristal dans CPMONO
-        nbcomm(1+iphas,2)=tabicp(numono)
-        nbcomm(indcom,1)=nbfam
+        nbcomm(1+iphas, 2) = tabicp(numono)
+        nbcomm(indcom, 1) = nbfam
 !        Indice début monocristal dans CPMONO
-        nbcomm(indcom,3)=nvintg
+        nbcomm(indcom, 3) = nvintg
 !        Debut du monocristal
-        idmono=nint(materd((1+numono),2))
+        idmono = nint(materd((1+numono), 2))
 !        Indice coef ecoulement famille ifa dans MATER
         do ifa = 1, nbfam
-            nbval1=nint(materd(idmono,2))
-            nbcomm(indcom+ifa,1)=idmono+1
-            nbval2=nint(materd((idmono+1+nbval1),2))
-            nbcomm(indcom+ifa,2)=idmono+1+nbval1+1
-            nbval3=nint(materd((idmono+1+nbval1+1+nbval2),2))
-            nbcomm(indcom+ifa,3)=idmono+1+nbval1+1+nbval2+1
-            idmono=idmono+3+nbval1+nbval2+nbval3
+            nbval1 = nint(materd(idmono, 2))
+            nbcomm(indcom+ifa, 1) = idmono+1
+            nbval2 = nint(materd((idmono+1+nbval1), 2))
+            nbcomm(indcom+ifa, 2) = idmono+1+nbval1+1
+            nbval3 = nint(materd((idmono+1+nbval1+1+nbval2), 2))
+            nbcomm(indcom+ifa, 3) = idmono+1+nbval1+1+nbval2+1
+            idmono = idmono+3+nbval1+nbval2+nbval3
         end do
-        indcom=indcom+nbfam+1
+        indcom = indcom+nbfam+1
         if (iphas .lt. nbphas) then
 !           Indice du monocristal (phase) dans NBCOMM
-            nbcomm(1+iphas+1,1)=indcom
-        endif
+            nbcomm(1+iphas+1, 1) = indcom
+        end if
     end do
 !     Nombre total de COEF
     if (nbcoef .gt. nmat) then
         call utmess('F', 'COMPOR2_6')
-    endif
+    end if
     if (nbphas .gt. nmat) then
         call utmess('F', 'COMPOR2_6')
-    endif
-    nbcomm(nmat,3)=nbcoef
+    end if
+    nbcomm(nmat, 3) = nbcoef
 !
 ! -   MATERIAU CONSTANT ?
     matcst = 'OUI'
-    epsi=r8prem()
+    epsi = r8prem()
     do i = 1, nmat
-        if (abs(materd(i,1)-materf(i,1) ) .gt. epsi*materd(i,1)) then
+        if (abs(materd(i, 1)-materf(i, 1)) .gt. epsi*materd(i, 1)) then
             matcst = 'NON'
             goto 999
-        endif
+        end if
     end do
     do i = 1, nmat
-        if (abs(materd(i,2)-materf(i,2) ) .gt. epsi*materd(i,2)) then
+        if (abs(materd(i, 2)-materf(i, 2)) .gt. epsi*materd(i, 2)) then
             matcst = 'NON'
             call utmess('F', 'COMPOR1_28')
             goto 999
-        endif
+        end if
     end do
 !
 999 continue
-    ASSERT(nmat.gt.indcom)
-    ASSERT((5*nmat+1).gt.dimk)
-    ASSERT(nmat.gt.(indmat+nvloc))
+    ASSERT(nmat .gt. indcom)
+    ASSERT((5*nmat+1) .gt. dimk)
+    ASSERT(nmat .gt. (indmat+nvloc))
 !
 !     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
-    materd(nmat,2)=nbcomm(nmat,3)
-    materf(nmat,2)=nbcomm(nmat,3)
+    materd(nmat, 2) = nbcomm(nmat, 3)
+    materf(nmat, 2) = nbcomm(nmat, 3)
 !
     call jedema()
 end subroutine

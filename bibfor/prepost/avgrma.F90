@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
-                  nmaini, nbmap, numpaq, tspaq, nomcri,&
-                  nomfor, grdvie, forvie, fordef, proaxe,&
+subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr, &
+                  nmaini, nbmap, numpaq, tspaq, nomcri, &
+                  nomfor, grdvie, forvie, fordef, proaxe, &
                   cesr)
 ! person_in_charge: van-xuan.tran at edf.fr
 !
@@ -107,12 +107,12 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !-----------------------------------------------------------------------
 !234567                                                              012
 !-----------------------------------------------------------------------
-    data  tab1/ 180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
+    data tab1/180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
      &             11.25d0, 10.588d0, 10.0d0, 10.0d0, 10.0d0, 10.588d0,&
-     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0 /
+     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0/
 !
-    data  tab2/ 1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
-     &           12, 9, 6, 3 /
+    data tab2/1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
+     &           12, 9, 6, 3/
 !
     pi = r8pi()
 !-----------------------------------------------------------------------
@@ -141,7 +141,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
     chmat = chmat1//'.CHAMP_MAT'
     cesmat = '&&AVGRMA.CESMAT'
-    call carces(chmat, 'ELEM', ' ', 'V', cesmat,&
+    call carces(chmat, 'ELEM', ' ', 'V', cesmat, &
                 'A', iret)
     call jeveuo(cesmat//'.CESD', 'L', icesd)
     call jeveuo(cesmat//'.CESL', 'L', icesl)
@@ -152,23 +152,23 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
     tneces = 209*nbordr*2
     call jedisp(1, tdisp2)
-    tdisp2(1) = (tdisp2(1) * loisem()) / lor8em()
+    tdisp2(1) = (tdisp2(1)*loisem())/lor8em()
     if (tdisp2(1) .lt. tneces) then
-        vali (1) = tdisp2(1)
-        vali (2) = tneces
+        vali(1) = tdisp2(1)
+        vali(2) = tneces
         call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
     else
         call wkvect('&&AVGRMA.VECTPG', 'V V R', tneces, jvecpg)
-    endif
+    end if
 !
 ! COEFFICIENT PERMETTANT D'UTILISER LES MEMES ROUTINES POUR LES
 ! CONTRAINTES ET LES DEFORMATIONS
 !
-    if (( nomcri(1:16) .eq. 'FATESOCI_MODI_AV' ) .or. fordef) then
+    if ((nomcri(1:16) .eq. 'FATESOCI_MODI_AV') .or. fordef) then
         fatsoc = 1.0d4
     else
         fatsoc = 1.0d0
-    endif
+    end if
 !
 ! CONSTRUCTION DES VECTEURS N, U ET V
 !
@@ -179,14 +179,14 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     ideb = 1
     dim = 627
     do j = 1, 18
-        gamma=(j-1)*dgam*(pi/180.0d0)
-        dphi=tab1(j)*(pi/180.0d0)
-        ngam=tab2(j)
+        gamma = (j-1)*dgam*(pi/180.0d0)
+        dphi = tab1(j)*(pi/180.0d0)
+        ngam = tab2(j)
         ifin = ngam
         phi0 = dphi/2.0d0
 !
-        call vecnuv(ideb, ifin, gamma, phi0, dphi,&
-                    n, k, dim, vect_norma, vect_tangu,&
+        call vecnuv(ideb, ifin, gamma, phi0, dphi, &
+                    n, k, dim, vect_norma, vect_tangu, &
                     vect_tangv)
 !
     end do
@@ -202,27 +202,27 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     do imap = nmaini, nmaini+(nbmap-1)
         if (imap .gt. nmaini) then
             kwork = 1
-            sompgw = sompgw + vnbpg(imap-1)
-        endif
+            sompgw = sompgw+vnbpg(imap-1)
+        end if
         nbpg = vnbpg(imap)
 ! SI LA MAILLE COURANTE N'A PAS DE POINTS DE GAUSS, LE PROGRAMME
 ! PASSE DIRECTEMENT A LA MAILLE SUIVANTE.
         if (nbpg .eq. 0) then
             goto 400
-        endif
+        end if
 !
-        nbpgp = nbpgp + nbpg
+        nbpgp = nbpgp+nbpg
         if ((l*int(nbpgt/10.0d0)) .lt. nbpgp) then
-            write(6,*)numpaq,'   ',(nbpgp-nbpg)
-            l = l + 1
-        endif
+            write (6, *) numpaq, '   ', (nbpgp-nbpg)
+            l = l+1
+        end if
 !
 ! RECUPERATION DU NOM DU MATERIAU AFFECTE A LA MAILLE COURANTE
 ! ET DES PARAMETRES ASSOCIES AU CRITERE CHOISI POUR LA MAILLE COURANTE.
 !
         optio = 'DOMA_ELGA'
-        call rnomat(icesd, icesl, icesv, imap, nomcri,&
-                    ibid, ibid, ibid, optio, vala,&
+        call rnomat(icesd, icesl, icesv, imap, nomcri, &
+                    ibid, ibid, ibid, optio, vala, &
                     valb, coefpa, nommat)
 !
 !
@@ -235,11 +235,11 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
 !
 ! REMPLACER PAR AVPLCR
-            call avplcr(nbvecm, vect_norma, vect_tangu, vect_tangv, nbordr,&
-                        kwork, sompgw, vwork, tdisp, tspaq,&
-                        ipg, nomcri, nomfor, grdvie, forvie,&
-                        fordef, fatsoc, proaxe, nommat, vala,&
-                        coefpa, post, cudomx, nxm, nym,&
+            call avplcr(nbvecm, vect_norma, vect_tangu, vect_tangv, nbordr, &
+                        kwork, sompgw, vwork, tdisp, tspaq, &
+                        ipg, nomcri, nomfor, grdvie, forvie, &
+                        fordef, fatsoc, proaxe, nommat, vala, &
+                        coefpa, post, cudomx, nxm, nym, &
                         nzm)
 !
 ! RECUPERER LES RESULTATS
@@ -258,12 +258,12 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 ! 12. AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 !
             do icmp = 1, 24
-                call cesexi('C', jcerd, jcerl, imap, ipg,&
+                call cesexi('C', jcerd, jcerl, imap, ipg, &
                             1, icmp, jad)
 !
                 ASSERT(jad .ne. 0)
                 jad = abs(jad)
-                zl(jcerl - 1 + jad) = .true.
+                zl(jcerl-1+jad) = .true.
                 cerv(jad) = vresu(icmp)
 !
             end do

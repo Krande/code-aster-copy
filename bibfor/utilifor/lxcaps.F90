@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ subroutine lxcaps(chaine)
 !-----------------------------------------------------------------------
     integer :: i, ilong
 !-----------------------------------------------------------------------
-    parameter ( mxchar=255 )
+    parameter(mxchar=255)
     character(len=1) :: class(0:mxchar)
     character(len=26) :: minus, major
 !
     integer :: long, first
-    save         class, first
+    save class, first
 !
 !     ------------------------------------------------------------------
     data first/0/
@@ -67,7 +67,7 @@ subroutine lxcaps(chaine)
 !-DBG    WRITE(6,'(10(1X,4A))') (' * ',CHAR(I),'= ',CLASS(I),I=0,255)
 !-DBG    WRITE(6,'(1X,79(''-''))')
 !        ---------------------------------------------------------------
-    endif
+    end if
 !
     long = len(chaine)
     do ilong = 1, long

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
     else
         umcf = mcf
         uioc = iocc
-    endif
+    end if
 !
     epsir(1) = 1.d-6
     epsir(2) = 1.d-6
@@ -64,19 +64,19 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
         call getvr8(umcf, 'TOLE_MACHINE', iocc=uioc, nbval=2, vect=epsir)
     else
         ASSERT(np .eq. 0)
-    endif
+    end if
 !
 #ifdef ASTER_TEST_STRICT
 !   Does not use TOLE_MACHINE (except for the parameter) if ASTER_TEST_STRICT
     epsir(1) = 1.d-6
     if (.not. ipass) then
         call utmess('I', 'TEST0_6', sr=epsir(1))
-    endif
+    end if
 #endif
     ipass = .true.
 !
     tole = epsir(1)
     if (present(prec)) then
         prec = epsir(2)
-    endif
+    end if
 end subroutine

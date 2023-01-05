@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine matthm(ds_thm, ndim, axi, nno1, nno2, dimuel,&
-                  dimdef, iu, ip, ipf, iq,&
-                  addep1,&
-                  addlh1, vff1, vff2, dffr2, wref,&
+subroutine matthm(ds_thm, ndim, axi, nno1, nno2, dimuel, &
+                  dimdef, iu, ip, ipf, iq, &
+                  addep1, &
+                  addlh1, vff1, vff2, dffr2, wref, &
                   geom, ang, wi, q)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dfdm1d.h"
@@ -81,7 +81,7 @@ implicit none
 ! ======================================================================
 ! --- INITIALISATION ----------------------------------------------
 ! ======================================================================
-    q(1:dimdef,1:dimuel)=0.d0
+    q(1:dimdef, 1:dimuel) = 0.d0
 !
 ! ======================================================================
 ! --- CALCUL DE Q ET WI ----------------------------------------------
@@ -89,19 +89,19 @@ implicit none
 !
 ! - CALCUL DES DERIVEES DES FONCTIONS DE FORME / ABSCISSE CURVILIGNE
 !
-    call dfdm1d(nno2, wi, dffr2, geom, dfdx,&
+    call dfdm1d(nno2, wi, dffr2, geom, dfdx, &
                 cour, jacp, cosa, sina)
 !
 ! - CALCUL DE LA MATRICE DE PASSAGE U GLOBAL -> SAUT DE U LOCAL
 !
-    call eicine(ndim, axi, nno1, nno2, vff1,&
-                vff2, wref, dffr2, geom, ang,&
+    call eicine(ndim, axi, nno1, nno2, vff1, &
+                vff2, wref, dffr2, geom, ang, &
                 wi, b)
     do i = 1, ndim
         do j = 1, ndim
             do n = 1, 2*nno1
-                kj=iu(j,n)
-                q(i,kj) = b(i,j,n)
+                kj = iu(j, n)
+                q(i, kj) = b(i, j, n)
             end do
         end do
     end do
@@ -110,15 +110,15 @@ implicit none
 !
     if (ds_thm%ds_elem%l_dof_pre1) then
         do n = 1, nno2
-            q(addep1,ip(1,n)) = vff2(n)
+            q(addep1, ip(1, n)) = vff2(n)
             do i = 1, ndim-1
-                q(addep1+i,ip(1,n)) = dfdx(n)
+                q(addep1+i, ip(1, n)) = dfdx(n)
             end do
             do f = 1, 2
-                q(addlh1+f-1,ipf(1,f,n)) = vff2(n)
-                q(addlh1+f+1,iq(1,f,1)) = 1
+                q(addlh1+f-1, ipf(1, f, n)) = vff2(n)
+                q(addlh1+f+1, iq(1, f, 1)) = 1
             end do
         end do
-    endif
+    end if
 !
 end subroutine

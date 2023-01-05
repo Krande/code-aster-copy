@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis,&
-                               l_temp , temp     ,&
-                               epsp   , h0       , rp_      , maxval_)
+subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis, &
+                               l_temp, temp, &
+                               epsp, h0, rp_, maxval_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,15 +30,15 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/Metallurgy_type.h"
 !
-integer, intent(in) :: j_mater
-integer, intent(in) :: meta_type
-integer, intent(in) :: nb_phasis
-aster_logical, intent(in) :: l_temp
-real(kind=8), intent(in) :: temp
-real(kind=8), intent(in) :: epsp(*)
-real(kind=8), intent(out) :: h0(*)
-real(kind=8), optional, intent(out) :: rp_(*)
-integer, optional, intent(out) :: maxval_
+    integer, intent(in) :: j_mater
+    integer, intent(in) :: meta_type
+    integer, intent(in) :: nb_phasis
+    aster_logical, intent(in) :: l_temp
+    real(kind=8), intent(in) :: temp
+    real(kind=8), intent(in) :: epsp(*)
+    real(kind=8), intent(out) :: h0(*)
+    real(kind=8), optional, intent(out) :: rp_(*)
+    integer, optional, intent(out) :: maxval_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ integer, optional, intent(out) :: maxval_
 ! --------------------------------------------------------------------------------------------------
 !
     keyw_fact = 'META_TRACTION'
-    maxval    = -1
+    maxval = -1
     if (meta_type .eq. META_STEEL) then
         keyw_trac(1) = 'SIGM_F1'
         keyw_trac(2) = 'SIGM_F2'
@@ -84,29 +84,29 @@ integer, optional, intent(out) :: maxval_
         keyw_trac(3) = 'SIGM_C'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     do i_phasis = 1, nb_phasis
-        call rctype(j_mater, 1, 'TEMP', [temp], para_vale,&
-                    para_type, keyw_factz = keyw_fact, keywz = keyw_trac(i_phasis))
+        call rctype(j_mater, 1, 'TEMP', [temp], para_vale, &
+                    para_type, keyw_factz=keyw_fact, keywz=keyw_trac(i_phasis))
         if ((para_type .eq. 'TEMP') .and. (.not. l_temp)) then
-            call utmess('F', 'COMPOR5_5', sk = para_type)
-        endif
-        call rctrac(j_mater, 2, keyw_trac(i_phasis), temp, j_prol,&
+            call utmess('F', 'COMPOR5_5', sk=para_type)
+        end if
+        call rctrac(j_mater, 2, keyw_trac(i_phasis), temp, j_prol, &
                     j_vale, nb_vale, r8dummy)
         if (present(rp_)) then
-            call rcfonc('V', 2, j_prol, j_vale, nb_vale,&
-                        p = epsp(i_phasis), rp = rp_(i_phasis), rprim = h0(i_phasis))
+            call rcfonc('V', 2, j_prol, j_vale, nb_vale, &
+                        p=epsp(i_phasis), rp=rp_(i_phasis), rprim=h0(i_phasis))
         else
-            call rcfonc('V', 2, j_prol, j_vale, nb_vale,&
-                         p = epsp(i_phasis), rprim = h0(i_phasis))
-        endif
+            call rcfonc('V', 2, j_prol, j_vale, nb_vale, &
+                        p=epsp(i_phasis), rprim=h0(i_phasis))
+        end if
         if (nb_vale .ge. maxval) then
             maxval = nb_vale
-        endif
+        end if
     end do
     if (present(maxval_)) then
         maxval_ = maxval
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
-                  fnmoyc, fnrmst, fnrmsc, fnmax, fnmin,&
-                  fmaxmo, fminmo, sfn, sfn2, tchoc,&
+subroutine fstapv(nbpt, fn, t, offset, fnmoyt, &
+                  fnmoyc, fnrmst, fnrmsc, fnmax, fnmin, &
+                  fmaxmo, fminmo, sfn, sfn2, tchoc, &
                   nbmaxr, nbminr)
 !
 !       MOYENNAGE STATISTIQUE DES FORCES
@@ -93,15 +93,15 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
 !
     do i = 2, nbpt-1
 !
-        if ((fn(i).gt.fn(i-1)) .and. (fn(i).gt.fn(i+1))) then
-            smaxr = smaxr + fn(i)
-            nbmaxr = nbmaxr + 1
-        endif
+        if ((fn(i) .gt. fn(i-1)) .and. (fn(i) .gt. fn(i+1))) then
+            smaxr = smaxr+fn(i)
+            nbmaxr = nbmaxr+1
+        end if
 !
-        if ((fn(i).lt.fn(i-1)) .and. (fn(i).lt.fn(i+1))) then
-            sminr = sminr + fn(i)
-            nbminr = nbminr + 1
-        endif
+        if ((fn(i) .lt. fn(i-1)) .and. (fn(i) .lt. fn(i+1))) then
+            sminr = sminr+fn(i)
+            nbminr = nbminr+1
+        end if
     end do
 !
 !
@@ -111,13 +111,13 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
         fminmo = sminr/dble(nbminr)
     else
         fminmo = 0.d0
-    endif
+    end if
 !
     if (nbmaxr .ne. 0) then
         fmaxmo = smaxr/dble(nbmaxr)
     else
         fmaxmo = 0.d0
-    endif
+    end if
 !
 !
 ! --- CALCUL DE LA FORCE MOYENNE
@@ -129,7 +129,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
         else
             zr(ift+i-1) = 0.d0
             zr(itct+i-1) = 0.d0
-        endif
+        end if
     end do
     call trapez(t, zr(ift), nbpt, sfn)
     call trapez(t, zr(itct), nbpt, tchoc)
@@ -139,7 +139,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
         fnmoyc = sfn/tchoc
     else
         fnmoyc = 0.d0
-    endif
+    end if
 !
 !
 ! --- CALCUL DE LA FORCE QUADRATIQUE MOYENNE
@@ -149,7 +149,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
             zr(ift+i-1) = fn(i)*fn(i)
         else
             zr(ift+i-1) = 0.d0
-        endif
+        end if
     end do
     call trapez(t, zr(ift), nbpt, sfn2)
     fnrmst = sqrt(sfn2/ttot)
@@ -159,7 +159,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
         fnrmsc = 0.d0
         fnmin = 0.d0
         fnmax = 0.d0
-    endif
+    end if
 !
 !
     call jedetr('&&FSTAPV.TEMP.FCNT')

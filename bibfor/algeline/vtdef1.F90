@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,8 @@ subroutine vtdef1(chpout, chpin, base, typc)
     character(len=24) :: vale, refe, desc, celk, tamp
 !
 !     ------------------------------------------------------------------
-    data refe / '                   .REFE' /
-    data celk / '                   .CELK' /
+    data refe/'                   .REFE'/
+    data celk/'                   .CELK'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -73,18 +73,18 @@ subroutine vtdef1(chpout, chpin, base, typc)
     call dismoi('TYPE_CHAMP', ch19, 'CHAMP', repk=tych)
 !
     if (tych .eq. 'NOEU') then
-        docu='CHNO'
+        docu = 'CHNO'
         tamp = refe
-        desc(20:24)='.DESC'
-        vale(20:24)='.VALE'
-    else if (tych(1:2).eq.'EL') then
-        docu='CHML'
-        desc(20:24)='.CELD'
-        vale(20:24)='.CELV'
+        desc(20:24) = '.DESC'
+        vale(20:24) = '.VALE'
+    else if (tych(1:2) .eq. 'EL') then
+        docu = 'CHML'
+        desc(20:24) = '.CELD'
+        vale(20:24) = '.CELV'
         tamp = celk
     else
         call utmess('F', 'UTILITAI_21')
-    endif
+    end if
 !
 !     --------------------------- CELK --------------------------------
 !     --- RECUPERATION DES INFORMATIONS DE CHPIN ---
@@ -98,7 +98,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
     call jeecra(tamp, 'LONMAX', nbval)
     call jeecra(tamp, 'LONUTI', nbval)
     call jeveuo(tamp, 'E', lchpou)
-    nbval1=nbval-1
+    nbval1 = nbval-1
     do ival = 0, nbval1
         zk24(lchpou+ival) = zk24(lchpin+ival)
     end do
@@ -117,7 +117,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
     call jecreo(desc, classe//' V I')
     call jeecra(desc, 'LONMAX', nbval)
     call jeecra(desc, 'LONUTI', nbval)
-    nbval1=nbval-1
+    nbval1 = nbval-1
 !
     call jeecra(desc, 'DOCU', cval=docu)
 !
@@ -133,9 +133,9 @@ subroutine vtdef1(chpout, chpin, base, typc)
     vale(1:19) = chpin
     type = typc(1:1)
     if (type .eq. ' ') call jelira(vale, 'TYPE', cval=type)
-    if (tych(1:2).eq.'EL') then
-        ASSERT( type .ne. 'C' )
-    endif
+    if (tych(1:2) .eq. 'EL') then
+        ASSERT(type .ne. 'C')
+    end if
     call jelira(vale, 'LONMAX', nbval)
     vale(1:19) = chpout
     call jecreo(vale, classe//' V '//type)

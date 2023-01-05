@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,9 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 #include "mpif.h"
 #endif
 !
-character(len=1) :: base
-character(len=8) :: nomast, nomsd
-aster_logical :: par_seqfile
+    character(len=1) :: base
+    character(len=8) :: nomast, nomsd
+    aster_logical :: par_seqfile
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,18 +93,18 @@ aster_logical :: par_seqfile
 !
     call jemarq()
     call infniv(ifm, niv)
-    if(niv > 1) then
+    if (niv > 1) then
         call cpu_time(start)
-        write(ifm,*) "<IREMED_FILTRE> DEBUT CREATION FILTRE"
+        write (ifm, *) "<IREMED_FILTRE> DEBUT CREATION FILTRE"
     end if
 !
     call jeexin(nomsd//'.NBNO', iret)
-    if(iret.eq.0) then
+    if (iret .eq. 0) then
 !
 ! 1. ==> Initialisation
 !
         call asmpi_comm('GET', world)
-        call asmpi_info(rank = mrank, size = msize)
+        call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
         ASSERT(nbproc <= MT_DOMMAX)
@@ -123,7 +123,7 @@ aster_logical :: par_seqfile
 !        . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 !        . VERIF COHERENCE AVEC LE CATALOGUE
 !
-        call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
+        call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                     modnum, nuanom, numnoa)
 !
 ! 3. ==> Construction de la liste des noeuds interieurs
@@ -141,23 +141,23 @@ aster_logical :: par_seqfile
 !
         nbnot = 0
         do ino = 1, nbnoeu
-            if(zi(jnoex+ino-1).eq.rang) then
-                nbnot = nbnot + 1
+            if (zi(jnoex+ino-1) .eq. rang) then
+                nbnot = nbnot+1
                 zi(jno+ino-1) = nbnot
             else
                 zi(jno+ino-1) = -1
-            endif
-        enddo
+            end if
+        end do
         zi(jnbno1+2*rang) = nbnot
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=2*nbproc, vi=zi(jnbno1))
         do iproc = 1, nbproc-1
             zi(jnbno1+2*iproc+1) = zi(jnbno1+2*(iproc-1))+zi(jnbno1+2*(iproc-1)+1)
-        enddo
+        end do
         do ino = 1, nbnoeu
-            if(zi(jnoex+ino-1).eq.rang) then
+            if (zi(jnoex+ino-1) .eq. rang) then
                 zi(jno+ino-1) = zi(jno+ino-1)+zi(jnbno1+2*rang+1)
-            endif
-        enddo
+            end if
+        end do
         zi(jnbno) = zi(jnbno1+rang*2+1)+1
         zi(jnbno+1) = zi(jnbno1+rang*2)
         zi(jnbno+2) = zi(jnbno1+nbproc*2-1)+zi(jnbno1+nbproc*2-2)
@@ -189,7 +189,7 @@ aster_logical :: par_seqfile
 !
             do ino = 0, nbnoee-1
                 zi(jenvoi1+ino) = zi(jno+zi(jjoine+2*ino)-1)
-            enddo
+            end do
             n4r = to_mpi_int(nbnoer)
             n4e = to_mpi_int(nbnoee)
             tag4 = to_mpi_int(v_tag(i_comm))
@@ -198,11 +198,11 @@ aster_logical :: par_seqfile
                                   zi(jrecep1), n4r, numpr4, tag4, world)
 
             do ino = 0, nbnoer-1
-                if(zi(jrecep1+ino).ne.-1) zi(jno+zi(jjoinr+2*ino)-1) = -zi(jrecep1+ino)
-            enddo
+                if (zi(jrecep1+ino) .ne. -1) zi(jno+zi(jjoinr+2*ino)-1) = -zi(jrecep1+ino)
+            end do
             call jedetr('&&IRMHDF.NOEUD_NEC_E1')
             call jedetr('&&IRMHDF.NOEUD_NEC_R1')
-        enddo
+        end do
 !
         call jeveuo(nomast//'.MAEX', 'L', jmaex)
         call wkvect(nomsd//'.NBMA', 'V V I', 2*nbproc, jnbma)
@@ -216,57 +216,57 @@ aster_logical :: par_seqfile
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), itr03)
         nbmat = 0
         do ima = 1, nbmail
-            if(zi(jmaex+ ima-1) == rang) then
+            if (zi(jmaex+ima-1) == rang) then
                 ityp = typma(ima)
-                if (ityp .eq. ite08) ityp=ite04
-                if (ityp .eq. itr04) ityp=itr03
-                zi(jtyp2+ityp-1) = zi(jtyp2+ityp-1) + 1
+                if (ityp .eq. ite08) ityp = ite04
+                if (ityp .eq. itr04) ityp = itr03
+                zi(jtyp2+ityp-1) = zi(jtyp2+ityp-1)+1
                 zi(jma+ima-1) = zi(jtyp2+ityp-1)
-                nbmat = nbmat + 1
-            endif
-        enddo
+                nbmat = nbmat+1
+            end if
+        end do
 
         call wkvect('&&FILTRE.TYPMAILG', 'V V I', MT_NTYMAX, jtypg)
         zi(jtypg-1+1:jtypg-1+MT_NTYMAX) = zi(jtyp2-1+1:jtyp2-1+MT_NTYMAX)
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=MT_NTYMAX, vi=zi(jtypg))
         do ityp = 1, MT_NTYMAX
-            if(zi(jtypg+ityp-1).ne.0) then
+            if (zi(jtypg+ityp-1) .ne. 0) then
                 zi(jnbma:jnbma-1+2*nbproc) = 0
                 zi(jnbma+rang) = zi(jtyp2+ityp-1)
-                zi(jnbma+ nbproc + rang) = zi(jtyp2+ityp-1)
+                zi(jnbma+nbproc+rang) = zi(jtyp2+ityp-1)
                 call asmpi_comm_vect('MPI_SUM', 'I', nbval=2*nbproc, vi=zi(jnbma))
                 do iproc = 1, nbproc-1
                     zi(jnbma+nbproc+iproc) = zi(jnbma+nbproc+iproc-1)+zi(jnbma+iproc)
-                enddo
+                end do
                 !! nombre de mailles proprio du type donne
-                zi(jtyp+3*(ityp-1)+1)=zi(jnbma+rang)
+                zi(jtyp+3*(ityp-1)+1) = zi(jnbma+rang)
                 !! nombre de mailles totales du type donne
                 ASSERT(zi(jnbma+2*nbproc-1) == zi(jtypg+ityp-1))
-                zi(jtyp+3*(ityp-1)+2)=zi(jnbma+2*nbproc-1)
-                zi(jnbma+nbproc-1)=0
+                zi(jtyp+3*(ityp-1)+2) = zi(jnbma+2*nbproc-1)
+                zi(jnbma+nbproc-1) = 0
                 !! numero 1ere maille du type donne
-                zi(jtyp+3*(ityp-1))=zi(jnbma+nbproc+rang-1)+1
-            endif
-        enddo
+                zi(jtyp+3*(ityp-1)) = zi(jnbma+nbproc+rang-1)+1
+            end if
+        end do
         do ima = 1, nbmail
-            if(zi(jma+ima-1).ne.0) then
+            if (zi(jma+ima-1) .ne. 0) then
                 ityp = typma(ima)
-                if (ityp .eq. ite08) ityp=ite04
-                if (ityp .eq. itr04) ityp=itr03
-                zi(jma+ima-1) = zi(jma+ima-1) + zi(jtyp+3*(ityp-1)) - 1
-            endif
-        enddo
+                if (ityp .eq. ite08) ityp = ite04
+                if (ityp .eq. itr04) ityp = itr03
+                zi(jma+ima-1) = zi(jma+ima-1)+zi(jtyp+3*(ityp-1))-1
+            end if
+        end do
         call jedetr('&&FILTRE.TYPMAILL')
         call jedetr('&&FILTRE.TYPMAILG')
         call jedetr(nomsd//'.NBMA')
         call jedetr(nomsd//'.NBNO1')
         call jedetr(comm_name)
         call jedetr(tag_name)
-    endif
+    end if
 !
-    if(niv > 1) then
+    if (niv > 1) then
         call cpu_time(end)
-        write(ifm,*) "<IREMED_FILTRE> FIN CREATION FILTRE EN ", end-start, "sec"
+        write (ifm, *) "<IREMED_FILTRE> FIN CREATION FILTRE EN ", end-start, "sec"
     end if
 !
     call jedema()

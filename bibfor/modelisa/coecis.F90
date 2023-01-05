@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,9 +50,9 @@ subroutine coecis(napcis, foncis)
 !     NOMBRE DE VALEURS PAR FONCTIONS
     nbvalf = 12
 !
-    nprol = 7 + 2*nbfonc
+    nprol = 7+2*nbfonc
     call wkvect(napcis//'.PROL', 'V V K24', nprol, lpro)
-    zk24(lpro ) = 'NAPPE   '
+    zk24(lpro) = 'NAPPE   '
     zk24(lpro+1) = 'LIN LIN '
     zk24(lpro+2) = 'ALPHA'
     zk24(lpro+3) = 'A'
@@ -87,8 +87,8 @@ subroutine coecis(napcis, foncis)
     call wkvect('&&COECIS.POINTEURS.F', 'V V I', nbfonc, ladrf)
     do ifonc = 1, nbfonc
         zk24(lnomf+ifonc-1) = '&&COECIS.F'
-        call codent(ifonc, 'G', zk24(lnomf+ifonc-1)(11:19))
-        zk24(lnomf+ifonc-1)(20:24) = '.VALE'
+        call codent(ifonc, 'G', zk24(lnomf+ifonc-1) (11:19))
+        zk24(lnomf+ifonc-1) (20:24) = '.VALE'
 !        VALEURS DES FONCTIONS A(BETA)
         if (ifonc .eq. 1) then
             zr(jval) = 0.d0
@@ -115,7 +115,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 1.2d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 1.2d0
-        else if (ifonc.eq.2) then
+        else if (ifonc .eq. 2) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -140,7 +140,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 4.71451d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 6.68937d0
-        else if (ifonc.eq.3) then
+        else if (ifonc .eq. 3) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -165,7 +165,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 5.35808d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 8.19368d0
-        else if (ifonc.eq.4) then
+        else if (ifonc .eq. 4) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -190,7 +190,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 6.21611d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 10.2937d0
-        else if (ifonc.eq.5) then
+        else if (ifonc .eq. 5) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -215,7 +215,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 6.53601d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 11.2361d0
-        else if (ifonc.eq.6) then
+        else if (ifonc .eq. 6) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -240,7 +240,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 6.40058d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 11.1893d0
-        else if (ifonc.eq.7) then
+        else if (ifonc .eq. 7) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -265,7 +265,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 5.91643d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 10.3749d0
-        else if (ifonc.eq.8) then
+        else if (ifonc .eq. 8) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -290,7 +290,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 5.18602d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 9.01404d0
-        else if (ifonc.eq.9) then
+        else if (ifonc .eq. 9) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -315,7 +315,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 4.29975d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 7.29574d0
-        else if (ifonc.eq.10) then
+        else if (ifonc .eq. 10) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -340,7 +340,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 3.33064d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 5.37206d0
-        else if (ifonc.eq.11) then
+        else if (ifonc .eq. 11) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -365,7 +365,7 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 2.33808d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 3.36741d0
-        else if (ifonc.eq.12) then
+        else if (ifonc .eq. 12) then
             zr(jval) = 0.d0
             zr(jval+1) = 1.2d0
             zr(jval+2) = 0.05d0
@@ -390,18 +390,18 @@ subroutine coecis(napcis, foncis)
             zr(jval+21) = 1.84134d0
             zr(jval+22) = 0.95d0
             zr(jval+23) = 2.37116d0
-        endif
+        end if
         call wkvect(zk24(lnomf+ifonc-1), 'V V R', nbvalf*2, lval)
         zi(ladrf+ifonc-1) = lval
         do ival = 1, nbvalf
             zr(lval-1+ival) = zr(jval-1+2*ival-1)
             zr(lval-1+nbvalf+ival) = zr(jval-1+2*ival)
         end do
-        zk24(lpro+6+2*ifonc)(1:1) = zk24(lpro+4)(1:1)
-        zk24(lpro+6+2*ifonc)(2:2) = zk24(lpro+6+2*ifonc)(1:1)
+        zk24(lpro+6+2*ifonc) (1:1) = zk24(lpro+4) (1:1)
+        zk24(lpro+6+2*ifonc) (2:2) = zk24(lpro+6+2*ifonc) (1:1)
     end do
 !
-    call jecrec(napcis//'.VALE', 'V V R', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(napcis//'.VALE', 'V V R', 'NU', 'CONTIG', 'VARIABLE', &
                 nbfonc)
     call foston(napcis//'.VALE', zk24(lnomf), nbfonc)
 !
@@ -454,7 +454,7 @@ subroutine coecis(napcis, foncis)
     zr(jval2+26) = 1.d0
     zr(jval2+27) = 2.d0
     call wkvect(foncis//'.VALE', 'V V R', nbvfon*2, lval2)
-    lfon = lval2 + nbvfon
+    lfon = lval2+nbvfon
     do ival2 = 0, nbvfon-1
         zr(lval2+ival2) = zr(jval2+2*ival2)
         zr(lfon+ival2) = zr(jval2+2*ival2+1)

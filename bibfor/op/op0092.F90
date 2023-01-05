@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine op0092()
     nbdir = -nbd
     if (nbdir .ne. 3 .and. nbdir .ne. 6) then
         call utmess('F', 'ALGELINE2_76')
-    endif
+    end if
 !
 !     SEISME ????
 !
@@ -57,7 +57,7 @@ subroutine op0092()
 !
 !        --- SEISME MULT-APPUI ---
         call simult()
-    endif
+    end if
 !
     call titre()
 !

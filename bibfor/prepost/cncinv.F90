@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,12 +99,12 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
         nma = zi(p0+2)
     else
         nma = nlima
-    endif
+    end if
 !
     call jeveuo(mail//'.CONNEX', 'L', p1)
     call jeveuo(jexatr(mail//'.CONNEX', 'LONCUM'), 'L', p2)
 !
-    if ((nno.le.0) .or. (nma.le.0)) goto 90
+    if ((nno .le. 0) .or. (nma .le. 0)) goto 90
 !
 ! --- ALLOCATION OBJETS TEMPORAIRES
 !
@@ -124,7 +124,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
             indice(i) = lima(i)
         end do
 !
-    endif
+    end if
 !
     do i = 1, nno
         zi(q1-1+i) = 0
@@ -137,12 +137,12 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
         ima = indice(i)
         p0 = zi(p2-1+ima)
         n = zi(p2+ima)-p0
-        p0 = p1 + p0 - 1
+        p0 = p1+p0-1
 !
         do j = 1, n
             p3 = q1-1+zi(p0)
-            p0 = p0 + 1
-            zi(p3) = zi(p3) + 1
+            p0 = p0+1
+            zi(p3) = zi(p3)+1
         end do
     end do
 !
@@ -156,14 +156,14 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
         n = zi(q1-1+i)
         if (n .eq. 0) n = 1
 !
-        nare = nare + n
+        nare = nare+n
         zi(q2+i) = nare
 !
     end do
 !
 ! --- ALLOCATION DU GRAPHE NOEUD/MAILLE
 !
-    call jecrec(nom, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(nom, base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nno)
     call jeecra(nom, 'LONT', nare)
 !
@@ -189,14 +189,14 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
         ima = indice(i)
         p0 = zi(p2-1+ima)
         n = zi(p2+ima)-p0
-        p0 = p1 + p0 - 1
+        p0 = p1+p0-1
 !
         do j = 1, n
 !
             q1 = q2-1+zi(p0)
-            p0 = p0 + 1
+            p0 = p0+1
             zi(q3+zi(q1)) = i
-            zi(q1) = zi(q1) + 1
+            zi(q1) = zi(q1)+1
 !
         end do
     end do
@@ -207,7 +207,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
     call jedetr('&&CNCINV.NMAILLE')
     call jedetr('&&CNCINV.POINTEUR')
 !
- 90 continue
+90  continue
 !
     call jedema()
 !

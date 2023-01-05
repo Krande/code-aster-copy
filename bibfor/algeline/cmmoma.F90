@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -30,9 +30,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
-character(len=*), intent(in) :: meshOutZ
-integer, intent(in) :: nbNodeIn, nbCellModi
-integer, pointer :: modiCellNume(:), modiCellType(:)
+    character(len=*), intent(in) :: meshOutZ
+    integer, intent(in) :: nbNodeIn, nbCellModi
+    integer, pointer :: modiCellNume(:), modiCellType(:)
 
 !     OPERATEUR CREA_MAILLAGE   MOT CLE FACTEUR "MODI_MAILLE"
 !     ------------------------------------------------------------------
@@ -55,8 +55,8 @@ integer, pointer :: modiCellNume(:), modiCellType(:)
 !
 ! - Access to mesh
 !
-    call jeveuo(meshOut//'.TYPMAIL', 'E', vi = typmail)
-    call jeveuo(meshOut//'.COORDO    .VALE', 'E', vr = vale)
+    call jeveuo(meshOut//'.TYPMAIL', 'E', vi=typmail)
+    call jeveuo(meshOut//'.COORDO    .VALE', 'E', vr=vale)
 !
     do iCell = 1, nbCellModi
 ! ----- Cell to modify
@@ -66,22 +66,22 @@ integer, pointer :: modiCellNume(:), modiCellType(:)
 ! ----- New type of cell
         if (cellType .eq. MT_TRIA6) then
             cellModiType = MT_TRIA7
-            nodeAddIndx  = 7
+            nodeAddIndx = 7
         else if (cellType .eq. MT_QUAD8) then
             cellModiType = MT_QUAD9
-            nodeAddIndx  = 9
+            nodeAddIndx = 9
         else if (cellType .eq. MT_SEG3) then
             cellModiType = MT_SEG4
-            nodeAddIndx  = 4
+            nodeAddIndx = 4
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         typmail(cellNume) = cellModiType
 !
-        call jeveuo(jexnum(meshOut//'.CONNEX', cellNume), 'E', vi = connex)
+        call jeveuo(jexnum(meshOut//'.CONNEX', cellNume), 'E', vi=connex)
 
 ! ----- Add node
-        nodeNume = nbNodeIn + iCell
+        nodeNume = nbNodeIn+iCell
         connex(nodeAddIndx) = nodeNume
 !
         if (cellType .eq. MT_SEG3) then
@@ -96,52 +96,52 @@ integer, pointer :: modiCellNume(:), modiCellType(:)
                 coo3(iNode) = vale(3*(nodeNume3-1)+iNode)
             end do
 !
-            t13 = coo3 - coo1
-            t32 = coo2 - coo3
-            t12 = coo2 - coo1
+            t13 = coo3-coo1
+            t32 = coo2-coo3
+            t12 = coo2-coo1
             call normev(t13, norme1)
             call normev(t32, norme2)
             call normev(t12, dn1n2)
             call provec(t32, t13, n)
             call normev(n, normen)
-            epsi=1.d-4*norme1
+            epsi = 1.d-4*norme1
 !
 !           VERIF QUE LE 3EME NOEUD EST BIEN AU MILIEU
 !
             if (abs(norme2-norme1) .gt. epsi) then
                 call utmess('F', 'MESH2_23')
-            endif
+            end if
 !
             if (normen .le. epsi) then
-                icoude=0
+                icoude = 0
                 theta = 0.d0
             else
-                icoude=1
-                costet=ddot(3,t13,1,t32,1)
-                theta=2.d0*atan2(normen,costet)
-            endif
+                icoude = 1
+                costet = ddot(3, t13, 1, t32, 1)
+                theta = 2.d0*atan2(normen, costet)
+            end if
 !
             if (icoude .eq. 0) then
                 do iNode = 1, 3
-                    x3(iNode)=coo1(iNode)+t12(iNode)*dn1n2/3.d0
-                    x4(iNode)=coo1(iNode)+2.d0*t12(iNode)*dn1n2/3.d0
+                    x3(iNode) = coo1(iNode)+t12(iNode)*dn1n2/3.d0
+                    x4(iNode) = coo1(iNode)+2.d0*t12(iNode)*dn1n2/3.d0
                 end do
             else
-                c2=cos(theta/2.d0)
-                c6=cos(theta/6.d0)
-                t2=tan(theta/2.d0)
-                t6=tan(theta/6.d0)
+                c2 = cos(theta/2.d0)
+                c6 = cos(theta/6.d0)
+                t2 = tan(theta/2.d0)
+                t6 = tan(theta/6.d0)
                 do iNode = 1, 3
-                    om(iNode)=(coo1(iNode)+coo2(iNode))*0.5d0
-                    n3m(iNode)=om(iNode)-coo3(iNode)
-                    mc(iNode)=n3m(iNode)*c2/(1.d0-c2)
-                    oc(iNode)=om(iNode)+mc(iNode)
-                    mp(iNode)=(coo1(iNode)-om(iNode))*t6/t2
-                    mr(iNode)=(coo2(iNode)-om(iNode))*t6/t2
-                    x3(iNode)=oc(iNode)+(mp(iNode)-mc(iNode))*c6/c2
-                    x4(iNode)=oc(iNode)+(mr(iNode)-mc(iNode))*c6/c2
+                    om(iNode) = (coo1(iNode)+coo2(iNode))*0.5d0
+                    n3m(iNode) = om(iNode)-coo3(iNode)
+                    mc(iNode) = n3m(iNode)*c2/(1.d0-c2)
+                    oc(iNode) = om(iNode)+mc(iNode)
+                    mp(iNode) = (coo1(iNode)-om(iNode))*t6/t2
+                    mr(iNode) = (coo2(iNode)-om(iNode))*t6/t2
+                    x3(iNode) = oc(iNode)+(mp(iNode)-mc(iNode))*c6/c2
+                    x4(iNode) = oc(iNode)+(mr(iNode)-mc(iNode))*c6/c2
                 end do
-            endif
+            end if
             vale(3*(nodeNume3-1)+1) = x3(1)
             vale(3*(nodeNume3-1)+2) = x3(2)
             vale(3*(nodeNume3-1)+3) = x3(3)
@@ -150,32 +150,32 @@ integer, pointer :: modiCellNume(:), modiCellType(:)
             vale(3*(nodeNume4-1)+3) = x4(3)
 
         elseif (cellType .eq. MT_TRIA6) then
-            do iDime = 1,3
+            do iDime = 1, 3
                 w = 0.d0
-                w = w + vale(3*(connex(1)-1)+iDime) * (-1.d0/9.d0)
-                w = w + vale(3*(connex(2)-1)+iDime) * (-1.d0/9.d0)
-                w = w + vale(3*(connex(3)-1)+iDime) * (-1.d0/9.d0)
-                w = w + vale(3*(connex(4)-1)+iDime) * (4.d0/9.d0)
-                w = w + vale(3*(connex(5)-1)+iDime) * (4.d0/9.d0)
-                w = w + vale(3*(connex(6)-1)+iDime) * (4.d0/9.d0)
+                w = w+vale(3*(connex(1)-1)+iDime)*(-1.d0/9.d0)
+                w = w+vale(3*(connex(2)-1)+iDime)*(-1.d0/9.d0)
+                w = w+vale(3*(connex(3)-1)+iDime)*(-1.d0/9.d0)
+                w = w+vale(3*(connex(4)-1)+iDime)*(4.d0/9.d0)
+                w = w+vale(3*(connex(5)-1)+iDime)*(4.d0/9.d0)
+                w = w+vale(3*(connex(6)-1)+iDime)*(4.d0/9.d0)
                 vale(3*(nodeNume-1)+iDime) = w
             end do
         elseif (cellType .eq. MT_QUAD8) then
-            do iDime = 1,3
+            do iDime = 1, 3
                 w = 0.d0
-                w = w + vale(3*(connex(1)-1)+iDime) * (-1.d0/4.d0)
-                w = w + vale(3*(connex(2)-1)+iDime) * (-1.d0/4.d0)
-                w = w + vale(3*(connex(3)-1)+iDime) * (-1.d0/4.d0)
-                w = w + vale(3*(connex(4)-1)+iDime) * (-1.d0/4.d0)
-                w = w + vale(3*(connex(5)-1)+iDime) * (1.d0/2.d0)
-                w = w + vale(3*(connex(6)-1)+iDime) * (1.d0/2.d0)
-                w = w + vale(3*(connex(7)-1)+iDime) * (1.d0/2.d0)
-                w = w + vale(3*(connex(8)-1)+iDime) * (1.d0/2.d0)
+                w = w+vale(3*(connex(1)-1)+iDime)*(-1.d0/4.d0)
+                w = w+vale(3*(connex(2)-1)+iDime)*(-1.d0/4.d0)
+                w = w+vale(3*(connex(3)-1)+iDime)*(-1.d0/4.d0)
+                w = w+vale(3*(connex(4)-1)+iDime)*(-1.d0/4.d0)
+                w = w+vale(3*(connex(5)-1)+iDime)*(1.d0/2.d0)
+                w = w+vale(3*(connex(6)-1)+iDime)*(1.d0/2.d0)
+                w = w+vale(3*(connex(7)-1)+iDime)*(1.d0/2.d0)
+                w = w+vale(3*(connex(8)-1)+iDime)*(1.d0/2.d0)
                 vale(3*(nodeNume-1)+iDime) = w
             end do
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end do
 !
 end subroutine

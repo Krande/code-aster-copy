@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine nmetdo(sdcriq)
 !
 ! DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     integer :: dimaki
-    parameter (dimaki=9)
+    parameter(dimaki=9)
 !
     integer :: nbocc, n1, n2, ii, jj, iocc
     integer :: idebut, iret
@@ -75,34 +75,34 @@ subroutine nmetdo(sdcriq)
         do iocc = 1, nbocc
             call getvtx('COMPORTEMENT', 'RELATION', iocc=iocc, scal=comp1, nbret=n1)
             if (comp1(1:6) .eq. 'KIT_HM') then
-                call getvtx('COMPORTEMENT', 'RELATION_KIT', iocc=iocc, nbval=dimaki,&
+                call getvtx('COMPORTEMENT', 'RELATION_KIT', iocc=iocc, nbval=dimaki, &
                             vect=comel(1), nbret=n2)
                 if (n2 .eq. 0) then
                     ASSERT(.false.)
-                else if (n2.gt.dimaki) then
+                else if (n2 .gt. dimaki) then
                     ASSERT(.false.)
                 else
                     ellisq = .false.
                     do ii = 1, n2
                         argii = comel(ii)
-                        if ((argii(1:4).eq.'ELAS') .or. (argii(1:9) .eq.'LIQU_SATU')) then
-                            idebut = ii + 1
+                        if ((argii(1:4) .eq. 'ELAS') .or. (argii(1:9) .eq. 'LIQU_SATU')) then
+                            idebut = ii+1
                             do jj = idebut, n2
                                 argjj = comel(jj)
-                                if ((argjj(1:4).eq.'ELAS') .or. (argjj(1:9).eq.'LIQU_SATU')) then
+                               if ((argjj(1:4) .eq. 'ELAS') .or. (argjj(1:9) .eq. 'LIQU_SATU')) then
                                     ellisq = .true.
-                                endif
+                                end if
                             end do
-                        endif
+                        end if
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
-    if (.not.ellisq) then
+    if (.not. ellisq) then
         call utmess('F', 'INDICATEUR_23')
-    endif
+    end if
 !
 999 continue
 !

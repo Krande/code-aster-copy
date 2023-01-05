@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine redece(BEHinteg,&
-                  fami,        kpg,    ksp,    ndim,   typmod,    &
-                  l_epsi_varc, imate,  materi, compor, mult_comp, &
-                  carcri,      instam, instap, neps,   epsdt,     &
-                  depst,       nsig,   sigd,   vind,   option,    &
-                  angmas,      cp,     numlc,  sigf,   vinf,      &
-                  ndsde,       dsde,   codret)
+subroutine redece(BEHinteg, &
+                  fami, kpg, ksp, ndim, typmod, &
+                  l_epsi_varc, imate, materi, compor, mult_comp, &
+                  carcri, instam, instap, neps, epsdt, &
+                  depst, nsig, sigd, vind, option, &
+                  angmas, cp, numlc, sigf, vinf, &
+                  ndsde, dsde, codret)
 !
-use calcul_module, only : ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
-use Behaviour_type
+    use calcul_module, only: ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/lc0000.h"
 #include "asterfort/utmess.h"
 !
-type(Behaviour_Integ) :: BEHinteg
-character(len=*) :: fami
+    type(Behaviour_Integ) :: BEHinteg
+    character(len=*) :: fami
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,7 +142,7 @@ character(len=*) :: fami
 !
     character(len=8)  :: typmod(*)
     character(len=16) :: compor(*), option
-    character(len=8),  intent(in) :: materi
+    character(len=8), intent(in) :: materi
     character(len=16), intent(in) :: mult_comp
 !
     aster_logical :: cp
@@ -171,7 +171,7 @@ character(len=*) :: fami
     real(kind=8) :: dsdelo(ndsde)
     real(kind=8) :: deltat, td, tf
 !       ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -179,23 +179,23 @@ character(len=*) :: fami
     ca_iredec_ = 1
     ca_timed1_ = instam
     ca_timef1_ = instap
-    ca_td1_    = instam
-    ca_tf1_    = instap
+    ca_td1_ = instam
+    ca_tf1_ = instap
 !
 !
-    ipal   = nint(carcri(ITER_INTE_PAS))
+    ipal = nint(carcri(ITER_INTE_PAS))
     codret = 0
     dsdelo = 0.d0
 !
 ! - No step cutting (elastic matrix or KIT_DDI behaviour)
 !
-    if (option(1:9) .eq. 'RIGI_MECA' .or. numlc .ge. 8000)  then
-        ipal=0
-    endif
+    if (option(1:9) .eq. 'RIGI_MECA' .or. numlc .ge. 8000) then
+        ipal = 0
+    end if
 !
 ! - Get number of internal variables
 !
-    read (compor(2),'(I16)') nvi
+    read (compor(2), '(I16)') nvi
 !
 ! IPAL = 0  1 OU -1 -> PAS DE REDECOUPAGE DU PAS DE TEMPS
 !
@@ -215,21 +215,21 @@ character(len=*) :: fami
     else if (ipal .gt. 1) then
         npal = ipal
         icomp = -1
-    endif
+    end if
 !
     call lc0000(BEHinteg, &
-                fami,        kpg,    ksp,    ndim,   typmod,    &
-                l_epsi_varc, imate,  materi, compor, mult_comp, &
-                carcri,      instam, instap, neps,   epsdt,     &
-                depst,       nsig,   sigd,   vind,   option,    &
-                angmas,      cp,     numlc,  sigf,   vinf,      &
-                ndsde,       dsde,   icomp,  nvi,    codret)
+                fami, kpg, ksp, ndim, typmod, &
+                l_epsi_varc, imate, materi, compor, mult_comp, &
+                carcri, instam, instap, neps, epsdt, &
+                depst, nsig, sigd, vind, option, &
+                angmas, cp, numlc, sigf, vinf, &
+                ndsde, dsde, icomp, nvi, codret)
 !
     if (codret .eq. 1) then
         goto 100
     else if (codret .eq. 2) then
         goto 999
-    endif
+    end if
 !
 ! -->   IPAL > 0 --> REDECOUPAGE IMPOSE DU PAS DE TEMPS
 ! -->   REDECOUPAGE IMPOSE ==>  RETURN DANS PLASTI APRES RECHERCHE
@@ -243,66 +243,66 @@ character(len=*) :: fami
     if (npal .eq. 0) then
         goto 999
     else
-        if (typmod(2).eq.'GRADVARI') then
+        if (typmod(2) .eq. 'GRADVARI') then
             call utmess('A', 'COMPOR2_10', sk=typmod(2))
-        endif
-    endif
+        end if
+    end if
 !
     if (icomp .gt. 3) then
         call utmess('A', 'ALGORITH10_35')
         goto 999
-    endif
+    end if
 !
-    if (icomp .ge. 1) npal = 2 * npal
-    icomp = icomp + 1
+    if (icomp .ge. 1) npal = 2*npal
+    icomp = icomp+1
 !
     do k = 1, npal
         ! INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
         if (k .eq. 1) then
             td = instam
             ca_td1_ = td
-            deltat = (instap - instam) / npal
-            tf = td + deltat
-            ca_tf1_=tf
-            if ( (option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
-                dsde(1:ndsde) = 0.0
-            endif
-            eps(1:ndt)  = epsdt(1:ndt)
-            deps(1:ndt) = depst(1:ndt)
-            deps(1:ndt) = (1.d0/npal) * deps(1:ndt)
-            sd(1:ndt)   = sigd(1:ndt)
-            !
-        ! REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
-        else if (k .gt. 1) then
-            td      = tf
-            ca_td1_ = td
-            tf      = tf + deltat
+            deltat = (instap-instam)/npal
+            tf = td+deltat
             ca_tf1_ = tf
-            eps(1:ndt)  = eps(1:ndt) + deps(1:ndt)
-            sd(1:ndt)   = sigf(1:ndt)
+            if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
+                dsde(1:ndsde) = 0.0
+            end if
+            eps(1:ndt) = epsdt(1:ndt)
+            deps(1:ndt) = depst(1:ndt)
+            deps(1:ndt) = (1.d0/npal)*deps(1:ndt)
+            sd(1:ndt) = sigd(1:ndt)
+            !
+            ! REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
+        else if (k .gt. 1) then
+            td = tf
+            ca_td1_ = td
+            tf = tf+deltat
+            ca_tf1_ = tf
+            eps(1:ndt) = eps(1:ndt)+deps(1:ndt)
+            sd(1:ndt) = sigf(1:ndt)
             vind(1:nvi) = vinf(1:nvi)
-        endif
+        end if
         !
         call lc0000(BEHinteg, &
-                    fami,        kpg,    ksp,    ndim,   typmod,    &
-                    l_epsi_varc, imate,  materi, compor, mult_comp, &
-                    carcri,      td,     tf,     neps,   eps,       &
-                    deps,        nsig,   sd,     vind,   option,    &
-                    angmas,      cp,     numlc,  sigf,   vinf,      &
-                    ndsde,       dsdelo, icomp,  nvi,    codret)
+                    fami, kpg, ksp, ndim, typmod, &
+                    l_epsi_varc, imate, materi, compor, mult_comp, &
+                    carcri, td, tf, neps, eps, &
+                    deps, nsig, sd, vind, option, &
+                    angmas, cp, numlc, sigf, vinf, &
+                    ndsde, dsdelo, icomp, nvi, codret)
         !
         if (codret .eq. 1) then
             goto 100
         else if (codret .eq. 2) then
             goto 999
-        endif
+        end if
         !
         if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            dsdelo = (1.d0/npal) * dsdelo
-            dsde = dsde + dsdelo
-        endif
+            dsdelo = (1.d0/npal)*dsdelo
+            dsde = dsde+dsdelo
+        end if
 !
-    enddo
+    end do
 !
 999 continue
 end subroutine

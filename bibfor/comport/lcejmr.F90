@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
-subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
-                  mate, option, epsm, deps, sigmo,&
-                  sigma, dsidep, vim, vip, typmod,&
+subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
+                  mate, option, epsm, deps, sigmo, &
+                  sigma, dsidep, vim, vip, typmod, &
                   instam, instap)
 !
     use Behaviour_type
@@ -63,7 +63,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
-    parameter (nbpa=12)
+    parameter(nbpa=12)
     integer :: cod(nbpa)
     integer :: i, n, diss, cass
     real(kind=8) :: sc, lc, lct, k0, val(nbpa), presfl, presg, prescl, sciage, tmp
@@ -78,18 +78,18 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
     aster_logical :: resi, rigi, elas, ifpahm, ifhyme
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
-    resi = option(1:9).eq.'FULL_MECA' .or. option.eq.'RAPH_MECA'
-    rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
-    elas = option.eq.'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
+    rigi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
+    elas = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS'
 !
 ! INDICATEUR AVEC/SANS HYDRO
-    if (typmod(2) .eq. 'EJ_HYME') ifhyme=.true.
-    if (typmod(2) .eq. 'ELEMJOIN') ifhyme=.false.
+    if (typmod(2) .eq. 'EJ_HYME') ifhyme = .true.
+    if (typmod(2) .eq. 'ELEMJOIN') ifhyme = .false.
 !
 ! SAUT DE DEPLACEMENT EN T- OU T+
     call dcopy(ndim, epsm, 1, delta, 1)
     call dcopy(ndim, deps, 1, ddelta, 1)
-    if (resi) call daxpy(ndim, 1.d0, deps, 1, delta,&
+    if (resi) call daxpy(ndim, 1.d0, deps, 1, delta, &
                          1)
 !
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
@@ -97,13 +97,13 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 !
         do n = 1, ndim-1
             gp(n) = epsm(ndim+n)
-            if (resi) gp(n) = gp(n) + deps(ndim+n)
+            if (resi) gp(n) = gp(n)+deps(ndim+n)
         end do
 !
         presg = epsm(2*ndim)
-        if (resi) presg = presg + deps(2*ndim)
+        if (resi) presg = presg+deps(2*ndim)
 !
-    endif
+    end if
 !
 ! INSTANT DE CALCUL T- OU T+
     inst = instam
@@ -120,115 +120,115 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
     nom(7) = 'PRES_FLUIDE'
     nom(8) = 'PRES_CLAVAGE'
     nom(9) = 'RHO_FLUIDE'
-    nom(10) ='VISC_FLUIDE'
-    nom(11) ='OUV_MIN'
-    nom(12) ='SCIAGE'
+    nom(10) = 'VISC_FLUIDE'
+    nom(11) = 'OUV_MIN'
+    nom(12) = 'SCIAGE'
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0], &
                 5, nom, val, cod, 2)
 !
 ! CONTRAINTE CRITIQUE SANS PENALISATION
-    sc = val(2)*(1.d0 + val(3))/val(3)
+    sc = val(2)*(1.d0+val(3))/val(3)
 ! LONGUEUR CRITIQUE AVANT LA RUPTURE COMPLETE DU JOINT
-    lc = (1.d0 + val(3))*val(2)/val(1)
+    lc = (1.d0+val(3))*val(2)/val(1)
 ! LONGUEUR AVANT L'ADOUCISSEMENT
     k0 = val(2)/val(1)
 ! PENTE NORMALE INITIAL
     r0 = val(1)
     beta = val(4)
 ! PARAMETRE QUI DEFINI LA LONGUEUR CRITIQUE TANGENTIELLE (0<=ALPHA<=2)
-    alpha= val(5)
+    alpha = val(5)
 ! LONGUEUR CRITIQUE TANGENTIELLE
 ! ALPHA=0: LCT=0; ALPHA=1: LCT=LC; ALPHA=2;LCT=INFTY
     if ((alpha .ge. 0.d0) .and. (alpha .lt. 2.d0)) then
-        lct=lc*tan(alpha*r8pi()/4.d0)
+        lct = lc*tan(alpha*r8pi()/4.d0)
     else
 ! PRESENTATION D'UNE INFINITE NUMERIQUE
-        lct=(1.d0 + lc)*1.d8
-    endif
+        lct = (1.d0+lc)*1.d8
+    end if
 ! PENTE TANGENTIELLE INITIAL (SI ELLE N'EST PAS DEFINI ALORS K_T=K_N)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0], &
                 1, nom(6), val(6), cod(6), 0)
     if (cod(6) .eq. 0) then
         rt0 = val(6)
     else
         rt0 = r0
-    endif
+    end if
 !
 ! DEFINITION DES PARAMETRES POUR LA RECUPERATION DES FONCTIONS
     coorot = 0.d0
     do i = 1, ndim
-        coorot(i) = BEHinteg%elem%coor_elga(kpg,i)
-    enddo
+        coorot(i) = BEHinteg%elem%coor_elga(kpg, i)
+    end do
     do i = 1, ndim*ndim
         coorot(ndim+i) = BEHinteg%elga%rotpg(i)
-    enddo
+    end do
 !
-    nompar(1)='INST'
-    nompar(2)='X'
-    nompar(3)='Y'
-    valpar(1)= inst
-    valpar(2)= coorot(1)
-    valpar(3)= coorot(2)
+    nompar(1) = 'INST'
+    nompar(2) = 'X'
+    nompar(3) = 'Y'
+    valpar(1) = inst
+    valpar(2) = coorot(1)
+    valpar(3) = coorot(2)
     if (ndim .eq. 3) then
-        nompar(4)='Z'
-        valpar(4)= coorot(3)
-    endif
+        nompar(4) = 'Z'
+        valpar(4) = coorot(3)
+    end if
 !
 ! RECUPERATION DE LA PRESS FLUIDE, CLAVAGE ET SCIAGE (MODELISATION MECA PURE)
 !-----------------------------------------------------------------------
 ! RECUPERATION DE LA PRESS FLUIDE (FONCTION DE L'ESPACE ET DU TEMPS)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar,&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar, &
                 1, nom(7), val(7), cod(7), 0)
 !
     if (cod(7) .eq. 0) then
         presfl = val(7)
     else
         presfl = 0.d0
-    endif
+    end if
 !
 ! RECUPERATION DE LA PRESS CLAVAGE (FONCTION DE L'ESPACE ET DU TEMPS)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar,&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar, &
                 1, nom(8), val(8), cod(8), 0)
 !
     if (cod(8) .eq. 0) then
         prescl = val(8)
     else
         prescl = -1.d0
-    endif
+    end if
 !
 ! RECUPERATION DE LA TAILLE DE SCIE = SCIAGE (FONCTION DE L'ESPACE ET DU TEMPS)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar,&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar, &
                 1, nom(12), val(12), cod(12), 0)
 !
     if (cod(12) .eq. 0) then
         sciage = val(12)
     else
         sciage = 0.d0
-    endif
+    end if
 !
 !
 ! RECUPERATION DE LA MASSE VOL ET DE LA VISCO (MODELISATION JOINT HM)
 !--------------------------------------------------------------------
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0], &
                 1, nom(9), val(9), cod(9), 0)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0], &
                 1, nom(10), val(10), cod(10), 0)
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0], &
                 1, nom(11), val(11), cod(11), 0)
 !
     if (cod(9) .eq. 0) rhof = val(9)
@@ -236,7 +236,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
     if (cod(11) .eq. 0) amin = val(11)
 !
 ! INDICATEUR SI LES PARAMETRES HYDRO SONT RENSEIGNES
-    ifpahm = (cod(9).eq.0).and.(cod(10).eq.0).and.(cod(11).eq.0)
+    ifpahm = (cod(9) .eq. 0) .and. (cod(10) .eq. 0) .and. (cod(11) .eq. 0)
 !
 ! VERIFICATION DE LA PRESENCE/ABSENCE DE PARAMETRES
 ! EN FONCTION DE LA MODELISATION MECA PUR OU HYDRO MECA
@@ -245,28 +245,28 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 !       POUR LE CALCUL HYDRO => PAS DE PRES_CLAVAGE
         if (cod(8) .eq. 0) then
             call utmess('F', 'ALGORITH17_14')
-        endif
+        end if
 !       POUR LE CALCUL HYDRO => PAS DE SCIAGE
         if (cod(12) .eq. 0) then
             call utmess('F', 'ALGORITH17_14')
-        endif
+        end if
 !       POUR LE CALCUL HYDRO => PAS DE PRES_FLUIDE
         if (cod(7) .eq. 0) then
             call utmess('F', 'ALGORITH17_14')
-        endif
+        end if
 !       POUR LE CALCUL HYDRO => PRESENCE DE PARA_HM
-        if (.not.ifpahm) then
+        if (.not. ifpahm) then
             call utmess('F', 'ALGORITH17_15')
-        endif
+        end if
     else
 !       POUR LE CALCUL MECA => PAS DE PARAMETRE HYDRO
         if (ifpahm) then
             call utmess('F', 'ALGORITH17_16')
-        endif
-    endif
+        end if
+    end if
 !
 ! INITIALISATION DU SEUIL D'ENDOMMAGEMENT ACTUEL
-    ka = max(k0,vim(1))
+    ka = max(k0, vim(1))
 !
 ! DANS LE CAS DU CLAVAGE/SCIAGE
 ! INITIALISATION DU POINT D'EQUILIBRE POUR LA LDC (OFFSET)
@@ -274,21 +274,21 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 ! CLAVAGE
 ! EPAISSEUR DE JOINT NE PEUT QUE AUGMENTER; DOFFSET(1) > 0
     doffset(1) = 0.d0
-    if (prescl .ge. 0.d0) doffset(1) = max (0.d0, delta(1) + prescl/(beta*r0) )
+    if (prescl .ge. 0.d0) doffset(1) = max(0.d0, delta(1)+prescl/(beta*r0))
 ! SCIAGE
 ! LE JOINT EST ENDOMMAGE PAR LE SCIAGE
     if (sciage .gt. 0.d0) ka = lc
 ! L'EPASSEUR SCIEE EST DIMINUEE DE L'OUVERTURE INITALE DE JOINT
-    sciage = sciage - max(0.,epsm(1))
-    if (sciage .gt. 0.d0) doffset(1) = doffset(1) - sciage
-    offset(1) = vim(10) + doffset(1)
+    sciage = sciage-max(0., epsm(1))
+    if (sciage .gt. 0.d0) doffset(1) = doffset(1)-sciage
+    offset(1) = vim(10)+doffset(1)
 ! OFFSET TANGENTIEL
     offset(2) = vim(19)
     if (ndim .eq. 3) offset(3) = vim(20)
 !
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
     do i = 1, ndim
-        delta(i) = delta(i) - offset(i)
+        delta(i) = delta(i)-offset(i)
     end do
 !
 !
@@ -300,7 +300,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
         rk = max(0.d0, sc*(1.d0-ka/lc)/ka)
     else
         rk = 0.d0
-    endif
+    end if
 !
 ! DANS LE DOMAINE DE COMPRESSION
     rc = beta*r0
@@ -309,9 +309,9 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 ! SI ALPHA=2 RT CSTE, SI ALPHA=0 ALORS LCT=0 ET DONC RT=0)
     rt = rt0
     if (delta(1) .gt. 0.d0) then
-        if (lct .ne. 0.d0) rt = max( 0.d0, rt0*( 1.d0-delta(1)/lct ) )
+        if (lct .ne. 0.d0) rt = max(0.d0, rt0*(1.d0-delta(1)/lct))
         if (lct .eq. 0.d0) rt = 0.d0
-    endif
+    end if
     if (alpha .eq. 2.d0) rt = rt0
 !
 ! INITIALISATION COMPLEMENTAIRE POUR RIGI_MECA_TANG (SECANTE PENALISEE)
@@ -320,10 +320,10 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
             diss = 0
         else
             diss = nint(vim(2))
-        endif
+        end if
         cass = nint(vim(3))
         goto 5000
-    endif
+    end if
 !
 !     INITIALISATION DE LA CONTRAINTE
     call r8inir(6, 0.d0, sigma, 1)
@@ -334,9 +334,9 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 !
     if (ifhyme) then
         do n = 1, ndim-1
-            sigma(ndim+n) = -rhof*gp(n)*(max(amin,delta(1)+amin))**3/(12*visf)
+            sigma(ndim+n) = -rhof*gp(n)*(max(amin, delta(1)+amin))**3/(12*visf)
         end do
-    endif
+    end if
 !
 ! CALCUL DE LA CONTRAINTE MECANIQUE
 !----------------------------------
@@ -345,10 +345,10 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 !    PRESFL : IMPOSEE, PRESG : CALCULEE (MODELISATION HYME)
 !
     if (ifhyme) then
-        sigma(1) = rc * min(0.d0,delta(1)) - presg
+        sigma(1) = rc*min(0.d0, delta(1))-presg
     else
-        sigma(1) = rc * min(0.d0,delta(1)) - presfl
-    endif
+        sigma(1) = rc*min(0.d0, delta(1))-presfl
+    end if
 !
 !    PARTIE TANGENTIELLE
     do i = 2, ndim
@@ -360,12 +360,12 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
         else
             sigma(i) = 0.d0
 !          glissement de joint de la valeur de delta
-            offset(i) = delta(i) + offset(i)
-        endif
+            offset(i) = delta(i)+offset(i)
+        end if
     end do
 !
 !    CONTRAINTE DE FISSURATION NORMALE
-    if ((delta(1).ge.lc) .or. (ka.ge.lc)) then
+    if ((delta(1) .ge. lc) .or. (ka .ge. lc)) then
         diss = 0
         cass = 2
     else
@@ -376,22 +376,22 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
                 cass = 1
             else
                 cass = 0
-            endif
-            sigma(1) = sigma(1) + rk*max(0.d0,delta(1))
+            end if
+            sigma(1) = sigma(1)+rk*max(0.d0, delta(1))
 !
         else
 !
             diss = 1
             cass = 1
             if (lc .ne. 0.d0) then
-                ra = max(0.d0,sc*(1.d0 - delta(1)/lc)/delta(1))
+                ra = max(0.d0, sc*(1.d0-delta(1)/lc)/delta(1))
             else
                 ra = 0.d0
-            endif
-            sigma(1) = sigma(1) + ra*max(0.d0,delta(1))
+            end if
+            sigma(1) = sigma(1)+ra*max(0.d0, delta(1))
 !
-        endif
-    endif
+        end if
+    end if
 !
 ! ACTUALISATION DES VARIABLES INTERNES
 !-------------------------------------
@@ -408,26 +408,26 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 ! V15 A V17 : COMPOSANTES DU FLUX HYDRO DANS LE REPERE GLOBAL
 ! V18 : PRESSION DE FLUIDE IMPOSEE OU CALCULEE ET INTERPOLEE (EN HYME)
 ! V19-V20 : GLISSEMENT TANGENTIELS
-    vip(1) = max(ka,delta(1))
+    vip(1) = max(ka, delta(1))
     vip(2) = diss
     vip(3) = cass
     if (lc .ne. 0.d0) then
-        tmp = max(0.d0, (vip(1) - val(2)/val(1)) / (lc - val(2)/val(1)) )
-        vip(4) = min(1.d0,tmp)
+        tmp = max(0.d0, (vip(1)-val(2)/val(1))/(lc-val(2)/val(1)))
+        vip(4) = min(1.d0, tmp)
     else
         vip(4) = 1.d0
-    endif
+    end if
     vip(5) = 0.d0
     if (rt .lt. rt0) vip(5) = 1.d0
     if (rt .eq. 0.d0) vip(5) = 2.d0
-    vip(6) = 1.d0 - rt/rt0
-    vip(7) = delta(1) + offset(1)
-    vip(8) = delta(2) + offset(2)
+    vip(6) = 1.d0-rt/rt0
+    vip(7) = delta(1)+offset(1)
+    vip(8) = delta(2)+offset(2)
     if (ndim .eq. 3) then
-        vip(9) = delta(3) + offset(3)
+        vip(9) = delta(3)+offset(3)
     else
         vip(9) = 0.d0
-    endif
+    end if
 !
 !     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 EN CAS DE CLAVAGE/SCIAGE
 !     LE CLAVAGE FAIT AUGMENTER L'EPAISSEUR DU JOINT
@@ -442,13 +442,13 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
         gploc(2) = gp(1)
         if (ndim .eq. 3) then
             gploc(3) = gp(2)
-        endif
+        end if
 !
         fhloc(1) = 0.d0
         fhloc(2) = sigma(ndim+1)
         if (ndim .eq. 3) then
             fhloc(3) = sigma(2*ndim-1)
-        endif
+        end if
 !
         call matinv('S', ndim, coorot(ndim+1), invrot, r8bid)
         call pmavec('ZERO', ndim, invrot, gploc, gpglo)
@@ -456,7 +456,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 !
 !       CONTRAINTE MECANIQUE NORMALE SANS PRESSION DE FLUIDE CALCULEE
 !       ON ANNULE SON INFLUENCE
-        vip(11) = sigma(1) + presg
+        vip(11) = sigma(1)+presg
         vip(12) = gpglo(1)
         vip(13) = gpglo(2)
         vip(15) = fhglo(1)
@@ -467,14 +467,14 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
         else
             vip(14) = 0.d0
             vip(17) = 0.d0
-        endif
+        end if
 !
 !       PRESSION DE FLUIDE CALCULEE AUX NOEUDS (DDL) ET INTERPOL AU PG
         vip(18) = presg
     else
 !       CONTRAINTE MECANIQUE NORMALE SANS PRESSION DE FLUIDE IMPOSEE
 !       ON ANNULE SON INFLUENCE
-        vip(11) = sigma(1) + presfl
+        vip(11) = sigma(1)+presfl
 !       VI PAS UTILISEES EN MODELISATION NON HYME
         vip(12) = 0.d0
         vip(13) = 0.d0
@@ -484,13 +484,13 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
         vip(17) = 0.d0
 !       PRESSION DE FLUIDE IMPOSEE AU PG :
         vip(18) = presfl
-    endif
+    end if
     vip(19) = offset(2)
     if (ndim .eq. 3) then
         vip(20) = offset(3)
     else
         vip(20) = 0.d0
-    endif
+    end if
 !
 5000 continue
 !
@@ -505,63 +505,63 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim,&
 !
 !       TERME : DW/DGP  (POUR KTAN P P)
         do n = 1, ndim-1
-            dsidep(ndim+n,ndim+n)=&
-                        -rhof*(max(amin,delta(1)+amin))**3/(12*visf)
+            dsidep(ndim+n, ndim+n) = &
+                -rhof*(max(amin, delta(1)+amin))**3/(12*visf)
         end do
 !
 !       TERME : DW/DDELTA_N  (POUR KTAN P U)
         do n = 1, ndim-1
             if (delta(1) .lt. 0.d0) then
-                dsidep(ndim+n,1) = 0.d0
+                dsidep(ndim+n, 1) = 0.d0
             else
-                dsidep(ndim+n,1) =&
-                        -3*rhof*gp(n)*(delta(1)+amin)**2/(12*visf)
-            endif
+                dsidep(ndim+n, 1) = &
+                    -3*rhof*gp(n)*(delta(1)+amin)**2/(12*visf)
+            end if
         end do
 !
-    endif
+    end if
 !
 ! CALCUL DE LA MATRICE TANGENTE MECA (POUR KTAN U U)
 !-----------------------------------
 !
-    rigart=1.d-8
+    rigart = 1.d-8
 !   MATRICE TANGENTE DE CONTACT FERME
     if (delta(1) .le. 0.d0) then
-        dsidep(1,1) = rc
+        dsidep(1, 1) = rc
 ! POUR LE JOINT CLAVE LA MATRICE DE RIGIDITE NORMALE EST ZERO
-        if ((prescl.ge.0.d0) .and. (doffset(1).gt.0.d0)) dsidep(1,1) = rigart*r0
+        if ((prescl .ge. 0.d0) .and. (doffset(1) .gt. 0.d0)) dsidep(1, 1) = rigart*r0
         do i = 2, ndim
-            dsidep(i,i) = rt0
+            dsidep(i, i) = rt0
         end do
     else
 !   MATRICE TANGENTE DE CONTACT OUVERT
 !   (NOTER QUE DANS LA SUITE DELTA(1)>0)
 !
 !       MATRICE TANGENTE DE FISSURATION
-        if ((diss.eq.0) .or. elas) then
-            dsidep(1,1) = rk
+        if ((diss .eq. 0) .or. elas) then
+            dsidep(1, 1) = rk
         else
-            if (lc .ne. 0.d0) dsidep(1,1) = -sc/lc
-        endif
+            if (lc .ne. 0.d0) dsidep(1, 1) = -sc/lc
+        end if
 !
         do i = 2, ndim
-            dsidep(i,i) = rt
-            if ((lct.ne.0.d0) .and. (delta(1).lt.lct)) then
-                dsidep(i,1) = -delta(i)*rt0/lct
-            endif
+            dsidep(i, i) = rt
+            if ((lct .ne. 0.d0) .and. (delta(1) .lt. lct)) then
+                dsidep(i, 1) = -delta(i)*rt0/lct
+            end if
         end do
 !
 !       DANS LE CAS OU L'ELEMENT EST TOTALEMENT CASSE ON INTRODUIT UNE
 !       RIGIDITE ARTIFICIELLE DANS LA MATRICE TANGENTE POUR ASSURER
 !       LA CONVERGENCE
-        if (cass .eq. 2) dsidep(1,1) = rigart*r0
+        if (cass .eq. 2) dsidep(1, 1) = rigart*r0
 !
         if (abs(rt) .lt. rigart*rt0) then
             do i = 2, ndim
-                dsidep(i,i) = rigart*rt0
+                dsidep(i, i) = rigart*rt0
             end do
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 end subroutine

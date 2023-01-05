@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine coplas(tempa, k1a, k1b, k1c, matrev,&
-                  lrev, deklag, prodef, oridef, profil,&
-                  kal, kbl, kcl, dkma, dkmb,&
+subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
+                  lrev, deklag, prodef, oridef, profil, &
+                  kal, kbl, kcl, dkma, dkmb, &
                   dkmc, k1acp, k1bcp, k1ccp)
 !
     implicit none
@@ -99,7 +99,7 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev,&
                     if (zk16(ineut2+j) .eq. 'SY') then
                         sigma = zr(ineut1+j)
                         goto 30
-                    endif
+                    end if
                 end do
             else
                 call jeveuo(ty2nom, 'L', ineut2)
@@ -111,57 +111,57 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev,&
                         call jeveuo(autnom, 'L', ineut4)
                         call jeveuo(vaenom, 'L', ineut3)
                         call jelira(vaenom, 'LONUTI', ldim)
-                        ldim = ldim / 2
+                        ldim = ldim/2
                         if (tempa .lt. zr(ineut3)) then
                             prolg = zk24(ineut4+4)
                             if (prolg(1:1) .eq. 'E') then
                                 call utmess('F', 'PREPOST_8')
-                            else if (prolg(1:1).eq.'C') then
+                            else if (prolg(1:1) .eq. 'C') then
                                 sigma = zr(ineut3+ldim)
-                            else if (prolg(1:1).eq.'L') then
+                            else if (prolg(1:1) .eq. 'L') then
                                 temp1 = zr(ineut3)
                                 temp2 = zr(ineut3+1)
                                 sigma1 = zr(ineut3+ldim)
                                 sigma2 = zr(ineut3+ldim+1)
                                 pent = (sigma2-sigma1)/(temp2-temp1)
-                                rest = sigma1 - pent*temp1
-                                sigma = pent*tempa + rest
-                            endif
-                        else if (tempa.gt.zr(ineut3+ldim-1)) then
+                                rest = sigma1-pent*temp1
+                                sigma = pent*tempa+rest
+                            end if
+                        else if (tempa .gt. zr(ineut3+ldim-1)) then
                             prolg = zk24(ineut4+4)
                             if (prolg(2:2) .eq. 'E') then
                                 call utmess('F', 'PREPOST_9')
-                            else if (prolg(2:2).eq.'C') then
+                            else if (prolg(2:2) .eq. 'C') then
                                 sigma = zr(ineut3+2*ldim-1)
-                            else if (prolg(1:1).eq.'L') then
+                            else if (prolg(1:1) .eq. 'L') then
                                 temp1 = zr(ineut3+ldim-2)
                                 temp2 = zr(ineut3+ldim-1)
                                 sigma1 = zr(ineut3+2*ldim-2)
                                 sigma2 = zr(ineut3+2*ldim-1)
                                 pent = (sigma2-sigma1)/(temp2-temp1)
-                                rest = sigma1 - pent*temp1
-                                sigma = pent*tempa + rest
-                            endif
+                                rest = sigma1-pent*temp1
+                                sigma = pent*tempa+rest
+                            end if
                         else
                             do k = 1, ldim-1
                                 if (tempa .lt. zr(ineut3+k)) then
                                     sigma1 = zr(ineut3+ldim+k-1)
-                                    sigma2 = zr(ineut3+ldim+k )
-                                    tempdi = zr(ineut3+k) - zr(ineut3+ k-1)
-                                    sigma = (&
-                                            1-(&
-                                            tempa-zr(ineut3+k-1))/ tempdi) * sigma1 + (1-(zr(ineu&
-                                            &t3+ k)-tempa&
-                                            )/tempdi&
-                                            ) * sigma2
-                                endif
+                                    sigma2 = zr(ineut3+ldim+k)
+                                    tempdi = zr(ineut3+k)-zr(ineut3+k-1)
+                                    sigma = ( &
+                                            1-( &
+                                            tempa-zr(ineut3+k-1))/tempdi)*sigma1+(1-(zr(ineu&
+                                            &t3+k)-tempa &
+                                            )/tempdi &
+                                            )*sigma2
+                                end if
                             end do
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
                 goto 30
-            endif
-        else if (phenom.eq.'TRACTION') then
+            end if
+        else if (phenom .eq. 'TRACTION') then
             romnom = matrev//'.CPT.'//k6
             cocnom = romnom//'.VALK'
             call jeveuo(cocnom, 'L', ineut6)
@@ -179,130 +179,130 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev,&
                 if (tempa .lt. zr(ineut5-1+j)) then
                     valp = j
                     goto 21
-                endif
+                end if
             end do
- 21         continue
+21          continue
             if (valp .eq. 1) then
                 if (proln(1:1) .eq. 'E') then
                     call utmess('F', 'PREPOST_8')
-                else if (proln(1:1).eq.'C') then
-                    call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt1)
-                    call jeveuo(jexnum(natnom, valp ), 'L', itot1)
+                else if (proln(1:1) .eq. 'C') then
+                    call jelira(jexnum(natnom, valp), 'LONMAX', nbpt1)
+                    call jeveuo(jexnum(natnom, valp), 'L', itot1)
                     sigma = zr(itot1-1+nbpt1/2+1)
                 else
-                    temp1 = zr(ineut5-1+valp )
+                    temp1 = zr(ineut5-1+valp)
                     temp2 = zr(ineut5-1+valp+1)
-                    call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt1)
-                    call jeveuo(jexnum(natnom, valp ), 'L', itot10)
+                    call jelira(jexnum(natnom, valp), 'LONMAX', nbpt1)
+                    call jeveuo(jexnum(natnom, valp), 'L', itot10)
                     call jelira(jexnum(natnom, valp+1), 'LONMAX', nbpt2)
                     call jeveuo(jexnum(natnom, valp+1), 'L', itot11)
                     lamb1 = zr(itot10-1+nbpt1/2+1)
                     lamb2 = zr(itot11-1+nbpt2/2+1)
                     pent = (lamb2-lamb1)/(temp2-temp1)
-                    rest = lamb1 - pent*temp1
+                    rest = lamb1-pent*temp1
                     sigma = pent*tempa+rest
-                endif
-            else if (valp.eq.0) then
+                end if
+            else if (valp .eq. 0) then
                 if (proln(2:2) .eq. 'E') then
                     call utmess('F', 'PREPOST_9')
-                else if (proln(2:2).eq.'C') then
+                else if (proln(2:2) .eq. 'C') then
                     call jelira(jexnum(natnom, npara), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, npara), 'L', itot2)
                     sigma = zr(itot2-1+nbpt1/2+1)
                 else
                     temp1 = zr(ineut5-1+npara-1)
-                    temp2 = zr(ineut5-1+npara )
+                    temp2 = zr(ineut5-1+npara)
                     call jelira(jexnum(natnom, npara-1), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, npara-1), 'L', itot12)
-                    call jelira(jexnum(natnom, npara ), 'LONMAX', nbpt2)
-                    call jeveuo(jexnum(natnom, npara ), 'L', itot13)
+                    call jelira(jexnum(natnom, npara), 'LONMAX', nbpt2)
+                    call jeveuo(jexnum(natnom, npara), 'L', itot13)
                     lamb1 = zr(itot12-1+nbpt1/2+1)
                     lamb2 = zr(itot13-1+nbpt2/2+1)
                     pent = (lamb2-lamb1)/(temp2-temp1)
-                    rest = lamb1 - pent*temp1
+                    rest = lamb1-pent*temp1
                     sigma = pent*tempa+rest
-                endif
+                end if
             else
                 temp1 = zr(ineut5-1+valp-1)
-                temp2 = zr(ineut5-1+valp )
-                tempd = temp2 - temp1
-                coef1 = 1 - (tempa-temp1)/tempd
-                coef2 = 1 - (temp2-tempa)/tempd
+                temp2 = zr(ineut5-1+valp)
+                tempd = temp2-temp1
+                coef1 = 1-(tempa-temp1)/tempd
+                coef2 = 1-(temp2-tempa)/tempd
                 call jelira(jexnum(natnom, valp-1), 'LONMAX', nbpt1)
                 call jeveuo(jexnum(natnom, valp-1), 'L', itot14)
-                call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt2)
-                call jeveuo(jexnum(natnom, valp ), 'L', itot15)
+                call jelira(jexnum(natnom, valp), 'LONMAX', nbpt2)
+                call jeveuo(jexnum(natnom, valp), 'L', itot15)
                 lamb1 = zr(itot14-1+nbpt1/2+1)
                 lamb2 = zr(itot15-1+nbpt2/2+1)
-                sigma = coef1*lamb1 + coef2*lamb2
-            endif
+                sigma = coef1*lamb1+coef2*lamb2
+            end if
             goto 30
-        endif
+        end if
     end do
     call utmess('F', 'PREPOST_10')
- 30 continue
+30  continue
 !
-    rya = (k1a * k1a)/(6 * pi * sigma * sigma)
+    rya = (k1a*k1a)/(6*pi*sigma*sigma)
     if (oridef .eq. 'LONGI') then
         ca = 0.165d0*log(prodef*1000)
         cb = 0.465d0*(1+prodef/100*1000)
     else
         ca = 0.5d0
         cb = 0.5d0
-    endif
+    end if
 !
-    betaa = 1 + ca * tanh(36*rya/(lrev+deklag))
-    betab = 1 + cb * tanh(36*rya/(lrev+deklag))
+    betaa = 1+ca*tanh(36*rya/(lrev+deklag))
+    betab = 1+cb*tanh(36*rya/(lrev+deklag))
 !
 ! --- correction plastique point A
 !
     if (k1a .lt. kal) then
-        k1acp = k1a + dkma
+        k1acp = k1a+dkma
     else
         val1 = betaa*k1a
-        val2 = k1a + dkma
+        val2 = k1a+dkma
         if (val1 .gt. val2) then
             k1acp = val1
-            dkma = k1acp - k1a
+            dkma = k1acp-k1a
         else
-            k1acp = k1a + dkma
-        endif
-    endif
+            k1acp = k1a+dkma
+        end if
+    end if
     kal = k1a
 !
 ! --- correction plastique point B
 !
     if (k1b .lt. kbl) then
-        k1bcp = k1b + dkmb
+        k1bcp = k1b+dkmb
     else
         val1 = betab*k1b
-        val2 = k1b + dkmb
+        val2 = k1b+dkmb
         if (val1 .gt. val2) then
             k1bcp = val1
-            dkmb = k1bcp - k1b
+            dkmb = k1bcp-k1b
         else
-            k1bcp = k1b + dkmb
-        endif
-    endif
+            k1bcp = k1b+dkmb
+        end if
+    end if
     kbl = k1b
 !
 ! --- correction plastique point C
 !
     if (profil(1:12) .eq. 'SEMI_ELLIPSE') then
         if (k1c .lt. kcl) then
-            k1ccp = k1c + dkmc
+            k1ccp = k1c+dkmc
         else
             val1 = betaa*k1c
-            val2 = k1c + dkmc
+            val2 = k1c+dkmc
             if (val1 .gt. val2) then
                 k1ccp = val1
-                dkmc = k1ccp - k1c
+                dkmc = k1ccp-k1c
             else
-                k1ccp = k1c + dkmc
-            endif
-        endif
+                k1ccp = k1c+dkmc
+            end if
+        end if
         kcl = k1c
-    endif
+    end if
 ! ======================================================================
     call jedema()
 ! ======================================================================

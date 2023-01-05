@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
-                  masse, amort, rigid, fexte, famor,&
-                  fliai, fnoda, fcine, lamort, ldyna,&
+subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
+                  masse, amort, rigid, fexte, famor, &
+                  fliai, fnoda, fcine, lamort, ldyna, &
                   lexpl, ds_energy, schema)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -126,12 +126,12 @@ implicit none
 !
     call jemarq()
 !
-    wint=0.d0
-    wext=0.d0
-    liai=0.d0
-    ecin=0.d0
-    amor=0.d0
-    wsch=0.d0
+    wint = 0.d0
+    wext = 0.d0
+    liai = 0.d0
+    ecin = 0.d0
+    amor = 0.d0
+    wsch = 0.d0
 !
 !
     if (ldyna) then
@@ -147,11 +147,11 @@ implicit none
         call jeveuo(masse//'.&INT', 'L', imasse)
         if (lamort) then
             call jeveuo(amort//'.&INT', 'L', iamort)
-        endif
-        neq=zi(imasse+2)
-        if (.not.lexpl) then
+        end if
+        neq = zi(imasse+2)
+        if (.not. lexpl) then
             call jeveuo(rigid//'.&INT', 'L', irigid)
-        endif
+        end if
         call wkvect('&&ENERCA.DESC', 'V V K8', neq, idesc)
         call wkvect('&&ENERCA.UMOY', 'V V R', neq, iumoy)
         call wkvect('&&ENERCA.UPMUM', 'V V R', neq, iupmum)
@@ -162,10 +162,10 @@ implicit none
         AS_ALLOCATE(vr=vmoyz, size=neq)
         AS_ALLOCATE(vr=vpmvmz, size=neq)
         do iaux = 1, neq
-            zr(iumoy-1+iaux)=(depl1(iaux)+dep0(iaux))*5.d-1
-            zr(iupmum-1+iaux)=depl1(iaux)-dep0(iaux)
-            zr(ivmoy-1+iaux)=(vite1(iaux)+vit0(iaux))*5.d-1
-            zr(ivpmvm-1+iaux)=vite1(iaux)-vit0(iaux)
+            zr(iumoy-1+iaux) = (depl1(iaux)+dep0(iaux))*5.d-1
+            zr(iupmum-1+iaux) = depl1(iaux)-dep0(iaux)
+            zr(ivmoy-1+iaux) = (vite1(iaux)+vit0(iaux))*5.d-1
+            zr(ivpmvm-1+iaux) = vite1(iaux)-vit0(iaux)
         end do
         call dcopy(neq, zr(iumoy), 1, zr(iumoyz), 1)
         call dcopy(neq, zr(iupmum), 1, zr(iupmuz), 1)
@@ -177,13 +177,13 @@ implicit none
 ! ON NE GARDE QUE LES DDL NODAUX PHYSIQUES
             call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
         else if (ds_energy%command .eq. 'DYNA_VIBRA') then
-            depplu=schema//'.DEPL1     '
+            depplu = schema//'.DEPL1     '
             if (schema .eq. '&&DLADAP') then
-                depplu=schema//'.DEP2 '
-            endif
+                depplu = schema//'.DEP2 '
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
         call ddlphy(depplu, neq, zr(iupmuz), zk8(idesc))
         call ddlphy(depplu, neq, vmoyz, zk8(idesc))
         call ddlphy(depplu, neq, vpmvmz, zk8(idesc))
@@ -196,20 +196,20 @@ implicit none
 !   DE DEPLACEMENT
 ! - RECUPERATION DE LA MATRICE DE RIGIDITE POUR OBTENIR LES LAGRANGES
 ! --------------------------------------------------------------------
-        call jeexin( rigid//'.&INT', ier)
-        if ( ier == 0 ) then
+        call jeexin(rigid//'.&INT', ier)
+        if (ier == 0) then
             call mtdscr(rigid)
-        endif
+        end if
         call jeveuo(rigid//'.&INT', 'L', irigid)
-        neq=zi(irigid+2)
+        neq = zi(irigid+2)
         call wkvect('&&ENERCA.DESC', 'V V K8', neq, idesc)
         call wkvect('&&ENERCA.UMOY', 'V V R', neq, iumoy)
         call wkvect('&&ENERCA.UPMUM', 'V V R', neq, iupmum)
         call wkvect('&&ENERCA.UMOYZ', 'V V R', neq, iumoyz)
         call wkvect('&&ENERCA.UPMUMZ', 'V V R', neq, iupmuz)
         do iaux = 1, neq
-            zr(iumoy-1+iaux)=(depl1(iaux)+dep0(iaux))*5.d-1
-            zr(iupmum-1+iaux)=depl1(iaux)-dep0(iaux)
+            zr(iumoy-1+iaux) = (depl1(iaux)+dep0(iaux))*5.d-1
+            zr(iupmum-1+iaux) = depl1(iaux)-dep0(iaux)
         end do
         call dcopy(neq, zr(iumoy), 1, zr(iumoyz), 1)
         call dcopy(neq, zr(iupmum), 1, zr(iupmuz), 1)
@@ -220,7 +220,7 @@ implicit none
         call ddlphy(depplu, neq, zr(iupmuz), zk8(idesc))
 ! ON ENLEVE UNIQUEMENT LES LAGRANGES DES CONDITIONS DE DIRICHLET
         call zerlag(neq, zi(jdeeq), vectr=zr(iumoyz))
-    endif
+    end if
 ! --------------------------------------------------------------------
 ! WINT : TRAVAIL REEL DES EFFORTS CALCULE COMME LE TRAVAIL DES FORCES
 !        INTERNES
@@ -230,61 +230,61 @@ implicit none
     AS_ALLOCATE(vr=fmoy, size=neq)
     if (ds_energy%command .eq. 'DYNA_VIBRA') then
         AS_ALLOCATE(vr=kumoyz, size=neq)
-        call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1,&
+        call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1, &
                     .true._1)
-        wint=ddot(neq,zr(iupmuz),1,kumoyz,1)
+        wint = ddot(neq, zr(iupmuz), 1, kumoyz, 1)
     else
         do iaux = 1, neq
-            fmoy(iaux)=(fnoda(iaux)+fnoda(iaux+neq))*5.d-1
+            fmoy(iaux) = (fnoda(iaux)+fnoda(iaux+neq))*5.d-1
         end do
-        wint=ddot(neq,zr(iupmuz),1,fmoy,1)
-    endif
+        wint = ddot(neq, zr(iupmuz), 1, fmoy, 1)
+    end if
 ! --------------------------------------------------------------------
 ! ECIN : ENERGIE CINETIQUE
 ! - UNIQUEMENT SI CALCUL DYNAMIQUE
 ! --------------------------------------------------------------------
     if (ldyna) then
         AS_ALLOCATE(vr=mdv, size=neq)
-        call mrmult('ZERO', imasse, vpmvmz, mdv, 1,&
+        call mrmult('ZERO', imasse, vpmvmz, mdv, 1, &
                     .true._1)
-        ecin=ddot(neq,vmoyz,1,mdv,1)
-    endif
+        ecin = ddot(neq, vmoyz, 1, mdv, 1)
+    end if
 ! --------------------------------------------------------------------
 ! WEXT : TRAVAIL DES EFFORTS EXTERIEURS
 ! --------------------------------------------------------------------
-    wext=0.d0
+    wext = 0.d0
 ! 1. CONTRIBUTION AFFE_CHAR_CINE (MECA_NON_LINE UNIQUEMENT)
     if (ds_energy%command .eq. 'MECA_NON_LINE') then
-        wext=ddot(neq,fmoy,1,fcine(1),1)
-    endif
+        wext = ddot(neq, fmoy, 1, fcine(1), 1)
+    end if
 ! 2. CONTRIBUTION DE Bt.LAMBDA (DIRICHLETS) POUR COMDLT
     if (ds_energy%command .eq. 'DYNA_VIBRA') then
         if (lexpl) then
 ! LAGRANGES PORTES PAR LA MATRICE DE MASSE
             call wkvect('&&ENERCA.MUMOY', 'V V R', neq, imumoy)
             AS_ALLOCATE(vr=mumoyz, size=neq)
-            call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1,&
+            call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1, &
                         .true._1)
-            call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1,&
+            call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1, &
                         .true._1)
             do iaux = 1, neq
-                fmoy(iaux)=mumoyz(iaux)-zr(imumoy-1+iaux)
+                fmoy(iaux) = mumoyz(iaux)-zr(imumoy-1+iaux)
             end do
-            wext = wext + ddot(neq,fmoy,1,zr(iupmuz),1)
+            wext = wext+ddot(neq, fmoy, 1, zr(iupmuz), 1)
         else
 ! LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
             call wkvect('&&ENERCA.KUMOY', 'V V R  ', neq, ikumoy)
-            call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1,&
+            call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1, &
                         .true._1)
             do iaux = 1, neq
-                fmoy(iaux)=kumoyz(iaux)-zr(ikumoy-1+iaux)
+                fmoy(iaux) = kumoyz(iaux)-zr(ikumoy-1+iaux)
             end do
-            wext = wext + ddot(neq,fmoy,1,zr(iupmuz),1)
-        endif
-    endif
+            wext = wext+ddot(neq, fmoy, 1, zr(iupmuz), 1)
+        end if
+    end if
 ! 3. CONTRIBUTION DES NEUMANN
     do iaux = 1, neq
-        fmoy(iaux)=(fexte(iaux)+fexte(iaux+neq))*5.d-1
+        fmoy(iaux) = (fexte(iaux)+fexte(iaux+neq))*5.d-1
     end do
 ! GLUT : LA CONTRIBUTION DE LA FORCE QUI TRAVAILLE EN UN POINT OU
 ! LE DEPLACEMENT EST IMPOSE EST PRIS EN COMPTE DANS WEXT1 POUR
@@ -294,67 +294,67 @@ implicit none
 ! CERTAINS TERMES DES EFFORTS EXTERIEURS.
     do iaux = 1, neq
         if (fcine(iaux) .ne. 0.d0) then
-            fmoy(iaux)=0.d0
-        endif
+            fmoy(iaux) = 0.d0
+        end if
     end do
-    wext = wext + ddot(neq,fmoy,1,zr(iupmuz),1)
+    wext = wext+ddot(neq, fmoy, 1, zr(iupmuz), 1)
 ! --------------------------------------------------------------------
 ! LIAI : ENERGIE DISSIPEE PAR LES LIAISONS
 ! - UNIQUEMENT IMPE_ABSO POUR DYNA_VIBRA
 ! --------------------------------------------------------------------
     do iaux = 1, neq
-        fmoy(iaux)=(fliai(iaux)+fliai(iaux+neq))*5.d-1
+        fmoy(iaux) = (fliai(iaux)+fliai(iaux+neq))*5.d-1
     end do
-    liai=ddot(neq,zr(iupmuz),1,fmoy,1)
+    liai = ddot(neq, zr(iupmuz), 1, fmoy, 1)
 ! --------------------------------------------------------------------
 ! AMOR : ENERGIE DISSIPEE PAR AMORTISSEMENT
 ! - UNIQUEMENT SI CALCUL DYNAMIQUE
 ! --------------------------------------------------------------------
     if (ldyna) then
         do iaux = 1, neq
-            fmoy(iaux)=(famor(iaux)+famor(iaux+neq))*5.d-1
+            fmoy(iaux) = (famor(iaux)+famor(iaux+neq))*5.d-1
         end do
-        amor=ddot(neq,zr(iupmuz),1,fmoy,1)
+        amor = ddot(neq, zr(iupmuz), 1, fmoy, 1)
         if (lamort) then
             if (zi(iamort+3) .eq. 1) then
                 call wkvect('&&ENERCA.CVMOYZ', 'V V R', neq, icvmoz)
-                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1, &
                             .true._1)
-                amor = amor + ddot(neq,zr(iupmuz),1,zr(icvmoz),1)
+                amor = amor+ddot(neq, zr(iupmuz), 1, zr(icvmoz), 1)
             else
                 call wkvect('&&ENERCA.CVMOYZ', 'V V C', neq, icvmoz)
-                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1, &
                             .true._1)
-                amor = amor + ddot(neq,zr(iupmuz),1,zr(icvmoz),1)
-            endif
-        endif
-    endif
+                amor = amor+ddot(neq, zr(iupmuz), 1, zr(icvmoz), 1)
+            end if
+        end if
+    end if
 ! --------------------------------------------------------------------
 ! WSCH : ENERGIE DISSIPEE PAR LE SCHEMA
 ! --------------------------------------------------------------------
-    wsch=wext-ecin-wint-amor-liai
+    wsch = wext-ecin-wint-amor-liai
 ! --------------------------------------------------------------------
 ! MISE A JOUR DES ENERGIES
 ! - ORDRE : WEXT - ECIN - WINT - AMOR - LIAI - WSCH
 ! --------------------------------------------------------------------
-    nbcol  = 4
+    nbcol = 4
     liai_t = 0.d0
     call IncrEnergy(ds_energy, 'TRAV_EXT', wext)
     call IncrEnergy(ds_energy, 'ENER_TOT', wint)
     call IncrEnergy(ds_energy, 'DISS_SCH', wsch)
     if (ldyna) then
-        call IncrEnergy(ds_energy, 'ENER_CIN' , ecin)
+        call IncrEnergy(ds_energy, 'ENER_CIN', ecin)
         call IncrEnergy(ds_energy, 'TRAV_AMOR', amor)
-        nbcol=nbcol+2
-    endif
+        nbcol = nbcol+2
+    end if
     call IncrEnergy(ds_energy, 'TRAV_LIAI', liai)
-    if ((liai_t.ne.0.d0) .or. (liai.ne.0.d0)) then
-        nbcol=nbcol+1
-    endif
+    if ((liai_t .ne. 0.d0) .or. (liai .ne. 0.d0)) then
+        nbcol = nbcol+1
+    end if
     call GetEnergy(ds_energy, 'TRAV_EXT', wext_t)
     call GetEnergy(ds_energy, 'ENER_TOT', wint_t)
     call GetEnergy(ds_energy, 'DISS_SCH', wsch_t)
-    call GetEnergy(ds_energy, 'ENER_CIN' , ecin_t)
+    call GetEnergy(ds_energy, 'ENER_CIN', ecin_t)
     call GetEnergy(ds_energy, 'TRAV_AMOR', amor_t)
     call GetEnergy(ds_energy, 'TRAV_LIAI', liai_t)
 
@@ -365,49 +365,49 @@ implicit none
 ! 6 COLONNES : AJOUT DE ECIN ET AMOR
 ! 7 COLONNES : AJOUT DE LIAI, ECIN ET AMOR
 ! --------------------------------------------------------------------
-    long=18+14*(nbcol-1)+1
-    write(forma,101) long
-    write(6,forma) ('-',iaux=1,long)
-    write(formb,102) nbcol-1
-    write(formc,103) nbcol-1
+    long = 18+14*(nbcol-1)+1
+    write (forma, 101) long
+    write (6, forma) ('-', iaux=1, long)
+    write (formb, 102) nbcol-1
+    write (formc, 103) nbcol-1
     if (nbcol .eq. 4) then
-        write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
-     &                 '  ENER_TOT   ','|','  DISS_SCH   ','|'
-        write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,&
-     &                 '|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',wext_t,&
-     &                 '|',wint_t,'|',wsch_t,'|'
-    else if (nbcol.eq.5) then
-        write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
-     &                 '  ENER_TOT   ','|','  TRAV_LIAI  ','|',&
-     &                 '  DISS_SCH   ','|'
-        write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',liai,&
-     &                 '|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',wext_t,&
-     &                 '|',wint_t,'|',liai_t,&
-     &                 '|',wsch_t,'|'
-    else if (nbcol.eq.6) then
-        write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
-     &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',&
-     &                 '  TRAV_AMOR  ','|','  DISS_SCH   ','|'
-        write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',ecin,&
-     &                 '|',amor,'|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',wext_t,&
-     &                 '|',wint_t,'|',ecin_t,&
-     &                 '|',amor_t,'|',wsch_t,'|'
-    else if (nbcol.eq.7) then
-        write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
-     &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',&
-     &                 '  TRAV_AMOR  ','|','  TRAV_LIAI  ','|',&
-     &                 '  DISS_SCH   ','|'
-        write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',ecin,&
-     &                 '|',amor,'|',liai,'|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',wext_t,&
-     &                 '|',wint_t,'|',ecin_t,&
-     &                 '|',amor_t,'|',liai_t,&
-     &                 '|',wsch_t,'|'
-    endif
-    write(6,forma) ('-',iaux=1,long)
+        write (6, formb) '|', 'BILAN D''ENERGIE', '|', '  TRAV_EXT   ', '|',&
+     &                 '  ENER_TOT   ', '|', '  DISS_SCH   ', '|'
+        write (6, formc) '|', '  PAS COURANT  ', '|', wext, '|', wint,&
+     &                 '|', wsch, '|'
+        write (6, formc) '|', '     TOTAL     ', '|', wext_t,&
+     &                 '|', wint_t, '|', wsch_t, '|'
+    else if (nbcol .eq. 5) then
+        write (6, formb) '|', 'BILAN D''ENERGIE', '|', '  TRAV_EXT   ', '|',&
+     &                 '  ENER_TOT   ', '|', '  TRAV_LIAI  ', '|',&
+     &                 '  DISS_SCH   ', '|'
+        write (6, formc) '|', '  PAS COURANT  ', '|', wext, '|', wint, '|', liai,&
+     &                 '|', wsch, '|'
+        write (6, formc) '|', '     TOTAL     ', '|', wext_t,&
+     &                 '|', wint_t, '|', liai_t,&
+     &                 '|', wsch_t, '|'
+    else if (nbcol .eq. 6) then
+        write (6, formb) '|', 'BILAN D''ENERGIE', '|', '  TRAV_EXT   ', '|',&
+     &                 '  ENER_TOT   ', '|', '  ENER_CIN   ', '|',&
+     &                 '  TRAV_AMOR  ', '|', '  DISS_SCH   ', '|'
+        write (6, formc) '|', '  PAS COURANT  ', '|', wext, '|', wint, '|', ecin,&
+     &                 '|', amor, '|', wsch, '|'
+        write (6, formc) '|', '     TOTAL     ', '|', wext_t,&
+     &                 '|', wint_t, '|', ecin_t,&
+     &                 '|', amor_t, '|', wsch_t, '|'
+    else if (nbcol .eq. 7) then
+        write (6, formb) '|', 'BILAN D''ENERGIE', '|', '  TRAV_EXT   ', '|',&
+     &                 '  ENER_TOT   ', '|', '  ENER_CIN   ', '|',&
+     &                 '  TRAV_AMOR  ', '|', '  TRAV_LIAI  ', '|',&
+     &                 '  DISS_SCH   ', '|'
+        write (6, formc) '|', '  PAS COURANT  ', '|', wext, '|', wint, '|', ecin,&
+     &                 '|', amor, '|', liai, '|', wsch, '|'
+        write (6, formc) '|', '     TOTAL     ', '|', wext_t,&
+     &                 '|', wint_t, '|', ecin_t,&
+     &                 '|', amor_t, '|', liai_t,&
+     &                 '|', wsch_t, '|'
+    end if
+    write (6, forma) ('-', iaux=1, long)
 !
 ! --------------------------------------------------------------------
 ! MENAGE
@@ -429,8 +429,8 @@ implicit none
     call jedetr('&&ENERCA.VPMVM')
     AS_DEALLOCATE(vr=vpmvmz)
 !
-    101 format ('(',i3,'A1)')
-    102 format ('((A1,1X,A15,1X),',i1,'(A1,A13),A1)')
-    103 format ('((A1,1X,A15,1X),',i1,'(A1,1X,ES11.4,1X),A1)')
+101 format('(', i3, 'A1)')
+102 format('((A1,1X,A15,1X),', i1, '(A1,A13),A1)')
+103 format('((A1,1X,A15,1X),', i1, '(A1,1X,ES11.4,1X),A1)')
     call jedema()
 end subroutine

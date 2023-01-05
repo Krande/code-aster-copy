@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmcrot(result, sd_obsv)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nonlinDSTableIOSetPara.h"
 #include "asterfort/nonlinDSTableIOGetName.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/nonlinDSTableIOClean.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: result
-character(len=19), intent(in) :: sd_obsv
+    character(len=8), intent(in) :: result
+    character(len=19), intent(in) :: sd_obsv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,43 +47,43 @@ character(len=19), intent(in) :: sd_obsv
 !
     integer, parameter :: nbPara = 17
     type(NL_DS_TableIO) :: tableio
-    character(len=24), parameter :: paraName(nbPara) = (/'NOM_OBSERVATION  ','TYPE_OBJET       ',&
-                                                         'NUME_REUSE       ','NUME_OBSE        ',&
-                                                         'INST             ','NOM_CHAM         ',&
-                                                         'EVAL_CHAM        ','NOM_CMP          ',&
-                                                         'NOM_VARI         ','EVAL_CMP         ',&
-                                                         'NOEUD            ','MAILLE           ',&
-                                                         'EVAL_ELGA        ','POINT            ',&
-                                                         'SOUS_POINT       ','VALE             ',&
-                                                         'NUME_GLOBAL_NOEUD' /)
-    character(len=8),  parameter :: paraType(nbPara) = (/'K16','K16',&
-                                                           'I  ','I  ',&
-                                                           'R  ','K16',&
-                                                           'K8 ','K8 ',&
-                                                           'K16','K8 ',&
-                                                           'K8 ','K8 ',&
-                                                           'K8 ','I  ',&
-                                                           'I  ','R  ',&
-                                                           'I  '/)
+    character(len=24), parameter :: paraName(nbPara) = (/'NOM_OBSERVATION  ', 'TYPE_OBJET       ', &
+                                                         'NUME_REUSE       ', 'NUME_OBSE        ', &
+                                                         'INST             ', 'NOM_CHAM         ', &
+                                                         'EVAL_CHAM        ', 'NOM_CMP          ', &
+                                                         'NOM_VARI         ', 'EVAL_CMP         ', &
+                                                         'NOEUD            ', 'MAILLE           ', &
+                                                         'EVAL_ELGA        ', 'POINT            ', &
+                                                         'SOUS_POINT       ', 'VALE             ', &
+                                                         'NUME_GLOBAL_NOEUD'/)
+    character(len=8), parameter :: paraType(nbPara) = (/'K16', 'K16', &
+                                                        'I  ', 'I  ', &
+                                                        'R  ', 'K16', &
+                                                        'K8 ', 'K8 ', &
+                                                        'K16', 'K8 ', &
+                                                        'K8 ', 'K8 ', &
+                                                        'K8 ', 'I  ', &
+                                                        'I  ', 'R  ', &
+                                                        'I  '/)
     character(len=24) :: obsv_tabl
     character(len=24), pointer :: v_obsv_tabl(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     tableio%tablSymbName = 'OBSERVATION'
-    tableio%resultName   = result
+    tableio%resultName = result
 !
 ! - Create vector for table name
 !
     obsv_tabl = sd_obsv(1:14)//'     .TABL'
-    call wkvect(obsv_tabl, 'V V K24', 1, vk24 = v_obsv_tabl)
+    call wkvect(obsv_tabl, 'V V K24', 1, vk24=v_obsv_tabl)
 !
 ! - Create list of parameters
 !
-    call nonlinDSTableIOSetPara(tableio_  = tableio,&
-                                nbPara_   = nbPara,&
-                                paraName_ = paraName,&
-                                paraType_ = paraType)
+    call nonlinDSTableIOSetPara(tableio_=tableio, &
+                                nbPara_=nbPara, &
+                                paraName_=paraName, &
+                                paraType_=paraType)
 !
 ! - Get name of table in results datastructure
 !

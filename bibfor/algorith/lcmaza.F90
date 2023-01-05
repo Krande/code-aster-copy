@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, epsm, deps, vim,&
+subroutine lcmaza(fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, epsm, deps, vim, &
                   option, sig, vip, dsidep)
     implicit none
 #include "asterf_types.h"
@@ -95,7 +95,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: epsfp(6), epscou(6), epsi(6), chi, gama, rap
     real(kind=8) :: epseqc, epsend, epsepc(3), vecpec(3, 3)
     integer :: idc
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 ! ======================================================================
 !                            INITIALISATION
 ! ======================================================================
@@ -104,60 +104,60 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !
 ! - Get temperatures
 !
-    call get_varc(fami, kpg, ksp, 'T', tm,&
+    call get_varc(fami, kpg, ksp, 'T', tm, &
                   tp, tref)
 !
 ! -- OPTION ET MODELISATION
 !
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
+    rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
 ! M.B.: NOUVELLE OPTION COUP POUR LE COUPLAGE AVEC UMLV
 ! MEME OPTION UTILISEE LE COUPLAGE UMLV-ENDO_ISOT_BETON
-    coup = (option(6:9).eq.'COUP')
-    cplan = (typmod(1).eq.'C_PLAN  ')
+    coup = (option(6:9) .eq. 'COUP')
+    cplan = (typmod(1) .eq. 'C_PLAN  ')
     prog = .false.
     elas = .true.
     ndimsi = 2*ndim
-    rac2=sqrt(2.d0)
+    rac2 = sqrt(2.d0)
 ! M.B.: INDICE POUR IDENTIFIER LES VARIABLES INTERNES DANS LES CAS:
 ! COUPLAGE ET ABSENCE DE COUPLAGE AVEC UMLV
     idc = 0
     if (coup) then
         idc = 21
-    endif
+    end if
 !   DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET
 !   DES CONDITIONS D HYDRATATION OU DE SECHAGE
     tmaxm = vim(3)
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sref, iret)
-    if (iret .ne. 0) sref=0.d0
+    if (iret .ne. 0) sref = 0.d0
     if (resi) then
         temp = tp
-        call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+        call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                     ksp, hydr, iret)
-        if (iret .ne. 0) hydr=0.d0
-        poum='+'
-        call rcvarc(' ', 'SECH', '+', fami, kpg,&
+        if (iret .ne. 0) hydr = 0.d0
+        poum = '+'
+        call rcvarc(' ', 'SECH', '+', fami, kpg, &
                     ksp, sech, iret)
-        if (iret .ne. 0) sech=0.d0
+        if (iret .ne. 0) sech = 0.d0
         if (isnan(tp)) then
             tmax = r8nnem()
             vip(idc+3) = 0.d0
         else
             tmax = max(tmaxm, tp)
             if (tmax .gt. tmaxm) vip(idc+3) = tmax
-        endif
+        end if
     else
         temp = tm
-        call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+        call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                     ksp, hydr, iret)
-        if (iret .ne. 0) hydr=0.d0
-        call rcvarc(' ', 'SECH', '-', fami, kpg,&
+        if (iret .ne. 0) hydr = 0.d0
+        call rcvarc(' ', 'SECH', '-', fami, kpg, &
                     ksp, sech, iret)
-        if (iret .ne. 0) sech=0.d0
-        poum='-'
+        if (iret .ne. 0) sech = 0.d0
+        poum = '-'
         tmax = tmaxm
-    endif
+    end if
 !  RECUPERATION DES CARACTERISTIQUES MATERIAUX QUI PEUVENT VARIER
 !  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
     nompar = 'TEMP'
@@ -166,36 +166,36 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'ELAS', 1, nompar, [valpar], &
                 2, nomres, valres, icodre, 1)
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'ELAS', 1, nompar, [valpar], &
                 1, nomres(3), valres(3), icodre(3), 0)
-    if ((.not.isnan(tp)) .and. (.not.isnan(tm))) then
-        if ((isnan(tref)) .or. (icodre(3).ne.0)) then
+    if ((.not. isnan(tp)) .and. (.not. isnan(tm))) then
+        if ((isnan(tref)) .or. (icodre(3) .ne. 0)) then
             call utmess('F', 'CALCULEL_15')
         else
             epsthe = valres(3)*(temp-tref)
-        endif
+        end if
     else
         valres(3) = 0.d0
         epsthe = 0.d0
-    endif
+    end if
     e = valres(1)
     nu = valres(2)
-    lambda = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)
+    lambda = e*nu/(1.d0+nu)/(1.d0-2.d0*nu)
     deuxmu = e/(1.d0+nu)
 ! --- LECTURE DU RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
-    nomres(1)='B_ENDOGE'
-    nomres(2)='K_DESSIC'
-    call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 1, nomres(1), valres(1), icodre(1),&
+    nomres(1) = 'B_ENDOGE'
+    nomres(2) = 'K_DESSIC'
+    call rcvala(imate, ' ', 'ELAS', 0, ' ', &
+                [0.d0], 1, nomres(1), valres(1), icodre(1), &
                 0)
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendo = valres(1)
-    call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 1, nomres(2), valres(2), icodre(2),&
+    call rcvala(imate, ' ', 'ELAS', 0, ' ', &
+                [0.d0], 1, nomres(2), valres(2), icodre(2), &
                 0)
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdess = valres(2)
@@ -207,8 +207,8 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     nomres(4) = 'AT'
     nomres(5) = 'BT'
     nomres(6) = 'K'
-    call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'MAZARS', 1, nompar, [valpar],&
+    call rcvalb(fami, kpg, ksp, poum, imate, &
+                ' ', 'MAZARS', 1, nompar, [valpar], &
                 6, nomres, valres, icodre, 1)
     epsd0 = valres(1)
     ac = valres(2)
@@ -219,11 +219,11 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !    M.B.: LECTURE DU PARAMETRE DE COUPLAGE AVEC UMLV
     if (coup) then
         nomres(7) = 'CHI'
-        call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'MAZARS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, poum, imate, &
+                    ' ', 'MAZARS', 0, ' ', [0.d0], &
                     1, nomres(7), valres(7), icodre(7), 1)
         chi = valres(7)
-    endif
+    end if
 ! ======================================================================
 !       CALCUL DES GRANDEURS UTILES QUELQUE SOIT OPTION
 ! ======================================================================
@@ -232,24 +232,24 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     call r8inir(6, 0.d0, eps, 1)
     if (resi) then
         do j = 1, ndimsi
-            eps(j) = epsm(j) + deps(j)
+            eps(j) = epsm(j)+deps(j)
         end do
     else
         do j = 1, ndimsi
-            eps(j)=epsm(j)
+            eps(j) = epsm(j)
         end do
-        d=vim(1)
-    endif
+        d = vim(1)
+    end if
 !    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE
 !    A FAIRE EVOLUER L'ENDOMMAGEMENT)
     call r8inir(6, 0.d0, epse, 1)
     do j = 1, ndimsi
-        epse(j) = eps(j) - ( epsthe - kdess * (sref-sech) - bendo * hydr ) * kron(j)
+        epse(j) = eps(j)-(epsthe-kdess*(sref-sech)-bendo*hydr)*kron(j)
     end do
     if (cplan) then
-        coplan = - nu/(1.d0-nu)
-        epse(3) = coplan * (epse(1)+epse(2))
-    endif
+        coplan = -nu/(1.d0-nu)
+        epse(3) = coplan*(epse(1)+epse(2))
+    end if
 !    M.B.: AVEC COUPLAGE, EPSF POUR L INSTANT
 !    SERT SEULEMENT AVEC  RESI A L INSTANT P, CAR LA MATRICE TANGENTE
 !    N EST PAS ENCORE IMPLEMENTEE
@@ -258,10 +258,10 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         call r8inir(6, 0.d0, epscou, 1)
         do j = 1, ndimsi
             epsi(j) = epse(j)
-            epse(j) = epsi(j) - epsfp(j)
-            epscou(j) = epsi(j) - (1-chi)*epsfp(j)
+            epse(j) = epsi(j)-epsfp(j)
+            epscou(j) = epsi(j)-(1-chi)*epsfp(j)
         end do
-    endif
+    end if
     do j = 4, ndimsi
         epse(j) = epse(j)/rac2
     end do
@@ -269,7 +269,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         do j = 4, ndimsi
             epscou(j) = epscou(j)/rac2
         end do
-    endif
+    end if
 !    2 - CALCUL DE EPSEQ = SQRT(TR (<EPSE>+ * <EPSE>+)  )
 !        C EST EPSEQ ELASTIQUE DANS LE CAS DU COUPLAGE
 !--------------------------------------------------------
@@ -294,14 +294,14 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     trij = 2
     ordrej = 2
 !
-    call jacobi(3, nperm, tol, toldyn, tr,&
-                tu, vecpe, epsep, jacaux, nitjac,&
+    call jacobi(3, nperm, tol, toldyn, tr, &
+                tu, vecpe, epsep, jacaux, nitjac, &
                 trij, ordrej)
     epseq = 0.d0
     do j = 1, 3
         if (epsep(j) .gt. 0.d0) then
-            epseq = epseq + (epsep(j)**2)
-        endif
+            epseq = epseq+(epsep(j)**2)
+        end if
     end do
     epseq = sqrt(epseq)
 !    2BIS - CALCUL DE EPSEQC = SQRT(TR (<EPSCOU>+ * <EPSCOU>+))
@@ -325,17 +325,17 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         tu(4) = 1.d0
         tu(5) = 0.d0
         tu(6) = 1.d0
-        call jacobi(3, nperm, tol, toldyn, tr,&
-                    tu, vecpec, epsepc, jacaux, nitjac,&
+        call jacobi(3, nperm, tol, toldyn, tr, &
+                    tu, vecpec, epsepc, jacaux, nitjac, &
                     trij, ordrej)
         epseqc = 0.d0
         do j = 1, 3
             if (epsepc(j) .gt. 0.d0) then
-                epseqc = epseqc + (epsepc(j)**2)
-            endif
+                epseqc = epseqc+(epsepc(j)**2)
+            end if
         end do
         epseqc = sqrt(epseqc)
-    endif
+    end if
 ! -  3     CALCUL DE <EPS>+
 ! ------------------------------------------------------
     call r8inir(6, 0.d0, tr, 1)
@@ -343,7 +343,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     do j = 1, 3
         if (epsep(j) .gt. 0.d0) then
             tr(j) = epsep(j)
-        endif
+        end if
     end do
     call bptobg(tr, epsplu, vecpe)
     do j = 4, ndimsi
@@ -355,40 +355,40 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         sigelp(j) = lambda*(epsep(1)+epsep(2)+epsep(3))
     end do
     do j = 1, 3
-        sigelp(j) = sigelp(j) + deuxmu*epsep(j)
+        sigelp(j) = sigelp(j)+deuxmu*epsep(j)
     end do
 !
     tmp1 = 0.d0
     do j = 1, 3
         if (sigelp(j) .lt. 0.d0) then
-            tmp1 = tmp1 + sigelp(j)
-        endif
+            tmp1 = tmp1+sigelp(j)
+        end if
     end do
 !   5 -     CALCUL DE R
 !----------------------------------------------------------------
-    vala=abs(sigelp(1))+abs(sigelp(2)) +abs(sigelp(3))
-    r=0.d0
+    vala = abs(sigelp(1))+abs(sigelp(2))+abs(sigelp(3))
+    r = 0.d0
     do i = 1, 3
-        r = r + max(0.00000000d0,sigelp(i))
+        r = r+max(0.00000000d0, sigelp(i))
     end do
     if (vala .gt. 1.d-10) then
-        r=r/(vala)
+        r = r/(vala)
     else
-        r=1.d0
-    endif
-    if (r .lt. 0.00001d0) r=0.d0
-    if (r .gt. 0.99999d0) r=1.d0
-    gama=0.d0
-    rap=0.d0
+        r = 1.d0
+    end if
+    if (r .lt. 0.00001d0) r = 0.d0
+    if (r .gt. 0.99999d0) r = 1.d0
+    gama = 0.d0
+    rap = 0.d0
     do i = 1, 3
-        rap = rap + min(0.d0,sigelp(i))
-        gama = gama + (min(0.d0,sigelp(i)))**2
+        rap = rap+min(0.d0, sigelp(i))
+        gama = gama+(min(0.d0, sigelp(i)))**2
     end do
-    if ((abs(rap).gt.1.d-10) .and. (r.eq.0.d0)) then
-        gama = -(sqrt(gama)/ rap)
+    if ((abs(rap) .gt. 1.d-10) .and. (r .eq. 0.d0)) then
+        gama = -(sqrt(gama)/rap)
     else
-        gama=1.d0
-    endif
+        gama = 1.d0
+    end if
 ! ======================================================================
 !       CALCUL DES CONTRAINTES ET VARIABLES INTERNES
 !           (OPTION FULL_MECA ET RAPH_MECA - (RESI) )
@@ -400,27 +400,27 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
             epsend = epseqc
         else
             epsend = epseq
-        endif
-        if (gama .le. 0.d0) gama=1.d0
-        y=gama*epsend
+        end if
+        if (gama .le. 0.d0) gama = 1.d0
+        y = gama*epsend
         if (y .le. epsd0) then
 !         PAS DE PROGRESSION DE L'ENDOMMAGEMENT
             d = vim(1)
         else
-            a=2.d0*r**2.d0*(at-2.d0*k*at+ac)-r*(at*(1.d0-4.d0*k)+3.d0*&
-            ac)+ac
-            b=r**2.d0*bt+(1.d0-r**2.d0)*bc
+            a = 2.d0*r**2.d0*(at-2.d0*k*at+ac)-r*(at*(1.d0-4.d0*k)+3.d0* &
+                                                  ac)+ac
+            b = r**2.d0*bt+(1.d0-r**2.d0)*bc
             rtemp = b*(y-epsd0)
             if (rtemp .le. 200.0d0) then
-                d=1.d0-epsd0*(1.d0-a)/y-a*exp(-rtemp)
+                d = 1.d0-epsd0*(1.d0-a)/y-a*exp(-rtemp)
             else
-                d=1.d0-epsd0*(1.d0-a)/y
-            endif
-            d = max ( vim(1), d)
-            d = min(d , 0.99999d0)
+                d = 1.d0-epsd0*(1.d0-a)/y
+            end if
+            d = max(vim(1), d)
+            d = min(d, 0.99999d0)
             if (d .gt. vim(1)) prog = .true.
             if (d .gt. 0.d0) elas = .false.
-        endif
+        end if
 !    2 -   MISE A JOUR DES VARIABLES INTERNES
 ! ------------------------------------------------------------
         vip(idc+1) = d
@@ -428,7 +428,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
             vip(idc+2) = 0.d0
         else
             vip(idc+2) = 1.d0
-        endif
+        end if
         vip(idc+4) = epsend
 !    3 - CALCUL DES CONTRAINTES
 ! ------------------------------------------------------------
@@ -442,9 +442,9 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         tr(6) = 0.d0
         call bptobg(tr, sig, vecpe)
         do j = 4, ndimsi
-            sig(j)=rac2*sig(j)
+            sig(j) = rac2*sig(j)
         end do
-    endif
+    end if
 ! ======================================================================
 !     CALCUL  DE LA MATRICE TANGENTE DSIDEP
 !         OPTION RIGI_MECA_TANG ET FULL_MECA  (RIGI)
@@ -455,37 +455,37 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !   1 -  CONTRIBUTION ELASTIQUE
 ! -------------------------------------------------------------
         call r8inir(36, 0.d0, dsidep, 1)
-        lambda = lambda * (1.d0 - d)
-        deuxmu = deuxmu * (1.d0 - d)
-        dsidep(1,1)=lambda+deuxmu
-        dsidep(2,2)=lambda+deuxmu
-        dsidep(3,3)=lambda+deuxmu
-        dsidep(1,2)=lambda
-        dsidep(2,1)=lambda
-        dsidep(1,3)=lambda
-        dsidep(3,1)=lambda
-        dsidep(2,3)=lambda
-        dsidep(3,2)=lambda
-        dsidep(4,4)=deuxmu
-        dsidep(5,5)=deuxmu
-        dsidep(6,6)=deuxmu
+        lambda = lambda*(1.d0-d)
+        deuxmu = deuxmu*(1.d0-d)
+        dsidep(1, 1) = lambda+deuxmu
+        dsidep(2, 2) = lambda+deuxmu
+        dsidep(3, 3) = lambda+deuxmu
+        dsidep(1, 2) = lambda
+        dsidep(2, 1) = lambda
+        dsidep(1, 3) = lambda
+        dsidep(3, 1) = lambda
+        dsidep(2, 3) = lambda
+        dsidep(3, 2) = lambda
+        dsidep(4, 4) = deuxmu
+        dsidep(5, 5) = deuxmu
+        dsidep(6, 6) = deuxmu
 !   2 -  CONTRIBUTION DUE A  L'ENDOMMAGEMENT
 !             ON SYMETRISE LA MATRICE (J + Kt )/2
 ! ------------------------------------------------------------
-        if ((.not.elas) .and. prog .and. (d.lt.0.99999d0)) then
+        if ((.not. elas) .and. prog .and. (d .lt. 0.99999d0)) then
             if (epseq .lt. 0.0000001d0) then
-                coef=0.d0
+                coef = 0.d0
             else
-                rtemp = b*((gama*epseq) - epsd0)
+                rtemp = b*((gama*epseq)-epsd0)
                 if (rtemp .le. 200.0d0) then
-                    coef =epsd0*(1.d0- a)/(gama*epseq)**2 + a*b/exp(&
-                    rtemp)
+                    coef = epsd0*(1.d0-a)/(gama*epseq)**2+a*b/exp( &
+                           rtemp)
                 else
-                    coef =epsd0*(1.d0- a)/(gama*epseq)**2
-                endif
-                coef = coef / epseq
-                if (r .eq. 0.d0) coef=gama*coef
-            endif
+                    coef = epsd0*(1.d0-a)/(gama*epseq)**2
+                end if
+                coef = coef/epseq
+                if (r .eq. 0.d0) coef = gama*coef
+            end if
             call r8inir(6, 0.d0, sigel, 1)
             tr(1) = sigelp(1)
             tr(2) = sigelp(2)
@@ -495,12 +495,12 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
             tr(6) = 0.d0
             call bptobg(tr, sigel, vecpe)
             do j = 4, ndimsi
-                sigel(j)=rac2*sigel(j)
+                sigel(j) = rac2*sigel(j)
             end do
             do i = 1, 6
                 do j = 1, 6
-                    dsidep (i,j) = dsidep (i,j) - coef * sigel(i)*&
-                    epsplu(j)
+                    dsidep(i, j) = dsidep(i, j)-coef*sigel(i)* &
+                                   epsplu(j)
                 end do
             end do
 ! -- CORRECTION CONTRAINTES PLANES
@@ -509,15 +509,15 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                     if (j .eq. 3) goto 300
                     do l = 1, ndimsi
                         if (l .eq. 3) goto 310
-                        if (dsidep(3,3) .ne. 0.d0) then
-                            dsidep(j,l)=dsidep(j,l) - 1.d0/dsidep(3,3)&
-                            *dsidep(j,3)*dsidep(3,l)
-                        endif
+                        if (dsidep(3, 3) .ne. 0.d0) then
+                            dsidep(j, l) = dsidep(j, l)-1.d0/dsidep(3, 3) &
+                                           *dsidep(j, 3)*dsidep(3, l)
+                        end if
 310                     continue
                     end do
 300                 continue
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 end subroutine

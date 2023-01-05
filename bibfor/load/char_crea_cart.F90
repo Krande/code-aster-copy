@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine char_crea_cart(phenom    , loadType     , load    , mesh, valeType,&
-                          nbMap     , map          , nbCmp   ,&
+subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
+                          nbMap, map, nbCmp, &
                           createMap_, physQuantity_, cmpName_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -35,16 +35,16 @@ implicit none
 #include "asterfort/lisnnl.h"
 #include "asterfort/nocart.h"
 !
-character(len=*), intent(in) :: phenom
-character(len=16), intent(in) :: loadType
-character(len=8), intent(in) :: load, mesh
-character(len=4), intent(in) :: valeType
-integer, intent(out) :: nbMap
-character(len=19), intent(out) :: map(LOAD_MAP_NBMAX)
-integer, intent(out) :: nbCmp(LOAD_MAP_NBMAX)
-aster_logical, optional, intent(in) :: createMap_
-character(len=8), optional, intent(out) :: physQuantity_(LOAD_MAP_NBMAX)
-character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)
+    character(len=*), intent(in) :: phenom
+    character(len=16), intent(in) :: loadType
+    character(len=8), intent(in) :: load, mesh
+    character(len=4), intent(in) :: valeType
+    integer, intent(out) :: nbMap
+    character(len=19), intent(out) :: map(LOAD_MAP_NBMAX)
+    integer, intent(out) :: nbCmp(LOAD_MAP_NBMAX)
+    aster_logical, optional, intent(in) :: createMap_
+    character(len=8), optional, intent(out) :: physQuantity_(LOAD_MAP_NBMAX)
+    character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,19 +79,19 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
     call jemarq()
 
 ! - Initializations
-    nbMap        = 0
-    map          = ' '
-    nbCmp        = 0
-    cmpName      = ' '
+    nbMap = 0
+    map = ' '
+    nbCmp = 0
+    cmpName = ' '
     physQuantity = ' '
-    mapType      = ' '
-    l_init       = ASTER_FALSE
+    mapType = ' '
+    l_init = ASTER_FALSE
 
 ! - Create or not the map ?
     createMap = ASTER_TRUE
     if (present(createMap_)) then
         createMap = createMap_
-    endif
+    end if
 
 ! - Prefix of <CARTE> objects
     call lisnnl(phenom, load, obje_pref)
@@ -123,11 +123,11 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbMap = 1
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     ASSERT(nbMap .le. LOAD_MAP_NBMAX)
 
 ! - Name of the <CARTE>
-    if (loadType  .eq.  'EFFE_FOND') then
+    if (loadType .eq. 'EFFE_FOND') then
         map(1) = obje_pref(1:13)//'.EFOND'
         map(2) = obje_pref(1:13)//'.PREFF'
     else if (loadType .eq. 'ONDE_PLANE') then
@@ -155,10 +155,10 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         map(1) = obje_pref(1:13)//'.IMPED'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Name of the <GRANDEUR>
-    if (loadType  .eq.  'EFFE_FOND') then
+    if (loadType .eq. 'EFFE_FOND') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'NEUT_R'
             physQuantity(2) = 'PRES_R'
@@ -167,26 +167,26 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             physQuantity(2) = 'PRES_F'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ONDE_PLANE') then
         if (valeType .eq. 'FONC') then
             physQuantity(1) = 'NEUT_K8'
             physQuantity(2) = 'NEUT_R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ROTATION') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'ROTA_R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ONDE_FLUI') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'ONDE_R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ECHANGE_THM') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'ETHM_R'
@@ -194,7 +194,7 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             physQuantity(1) = 'ETHM_F'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'PRES_REP') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'PRES_R'
@@ -202,7 +202,7 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             physQuantity(1) = 'PRES_F'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'FORCE_TUYAU') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'PRES_R'
@@ -210,25 +210,25 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             physQuantity(1) = 'PRES_F'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'PESANTEUR') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'PESA_R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'FORCE_ELEC') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'FLAP_R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'INTE_ELEC') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'NEUT_K16'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'VITE_FACE') then
         if (valeType .eq. 'COMP') then
             physQuantity(1) = 'VFAC_C'
@@ -238,7 +238,7 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             physQuantity(1) = 'VFAC_F'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'IMPE_FACE') then
         if (valeType .eq. 'COMP') then
             physQuantity(1) = 'IMPE_C'
@@ -248,14 +248,14 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             physQuantity(1) = 'IMPE_F'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Type of the <CARTE>
-    if (loadType  .eq.  'EFFE_FOND') then
-        if (valeType  .eq.  'REEL') then
+    if (loadType .eq. 'EFFE_FOND') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
             mapType(2) = 'R'
         else if (valeType .eq. 'FONC') then
@@ -263,70 +263,70 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             mapType(2) = 'K8'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ONDE_PLANE') then
-        if (valeType  .eq.  'FONC') then
+        if (valeType .eq. 'FONC') then
             mapType(1) = 'K8'
             mapType(2) = 'R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ROTATION') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ONDE_FLUI') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'ECHANGE_THM') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else if (valeType .eq. 'FONC') then
             mapType(1) = 'K8'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'PRES_REP') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else if (valeType .eq. 'FONC') then
             mapType(1) = 'K8'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'FORCE_TUYAU') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else if (valeType .eq. 'FONC') then
             mapType(1) = 'K8'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'PESANTEUR') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'FORCE_ELEC') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'R'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'INTE_ELEC') then
-        if (valeType  .eq.  'REEL') then
+        if (valeType .eq. 'REEL') then
             mapType(1) = 'K16'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'VITE_FACE') then
-        if (valeType  .eq. 'COMP') then
+        if (valeType .eq. 'COMP') then
             mapType(1) = 'C'
         elseif (valeType .eq. 'REEL') then
             mapType(1) = 'R'
@@ -334,9 +334,9 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             mapType(1) = 'K8'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (loadType .eq. 'IMPE_FACE') then
-        if (valeType  .eq. 'COMP') then
+        if (valeType .eq. 'COMP') then
             mapType(1) = 'C'
         elseif (valeType .eq. 'REEL') then
             mapType(1) = 'R'
@@ -344,13 +344,13 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             mapType(1) = 'K8'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Components of the <CARTE>
-    if (loadType  .eq.  'EFFE_FOND') then
+    if (loadType .eq. 'EFFE_FOND') then
         nbCmp(1) = 1
         nbCmp(2) = 1
         cmpName(1, 1) = 'X1'
@@ -427,29 +427,29 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(1, 1) = 'IMPE'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Creation of the <CARTE>
     if (createMap) then
-        do iMap = 1,  nbMap
+        do iMap = 1, nbMap
             call exisd('CARTE', map(iMap), iret)
-            if (iret  .eq.  0) then
+            if (iret .eq. 0) then
                 call alcart('G', map(iMap), mesh, physQuantity(iMap))
                 l_init(iMap) = ASTER_TRUE
             else
                 l_init(iMap) = ASTER_FALSE
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 
 ! - Initialization of the <CARTE>
     if (createMap) then
-        do iMap = 1,  nbMap
+        do iMap = 1, nbMap
             if (l_init(iMap)) then
                 call jeveuo(map(iMap)//'.NCMP', 'E', vk8=ncmp)
                 call jeveuo(map(iMap)//'.VALV', 'E', jvValv)
-                do i_cmp = 1,  nbCmp(iMap)
-                    ncmp(i_cmp) = cmpName(iMap,i_cmp)
+                do i_cmp = 1, nbCmp(iMap)
+                    ncmp(i_cmp) = cmpName(iMap, i_cmp)
                     if (mapType(iMap) .eq. 'R') then
                         zr(jvValv-1+i_cmp) = 0.d0
                     elseif (mapType(iMap) .eq. 'C') then
@@ -460,19 +460,19 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
                         zk16(jvValv-1+i_cmp) = ' '
                     else
                         ASSERT(ASTER_FALSE)
-                    endif
-                enddo
-                call nocart(map(iMap), 1,  nbCmp(iMap))
-            endif
-        enddo
-    endif
+                    end if
+                end do
+                call nocart(map(iMap), 1, nbCmp(iMap))
+            end if
+        end do
+    end if
 !
     if (present(physQuantity_)) then
         physQuantity_ = physQuantity
-    endif
+    end if
     if (present(cmpName_)) then
         cmpName_ = cmpName
-    endif
+    end if
 !
     call jedema()
 end subroutine

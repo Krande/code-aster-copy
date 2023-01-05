@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dfc_read_cont(sdcont, keywf       , mesh, model, model_ndim,&
+subroutine dfc_read_cont(sdcont, keywf, mesh, model, model_ndim, &
                          ligret, nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dfc_read_zone.h"
@@ -73,16 +73,16 @@ implicit none
 !
 ! - Read zone: nodes and elements
 !
-    call dfc_read_zone(sdcont      , keywf       , mesh        , model, nb_cont_zone,&
+    call dfc_read_zone(sdcont, keywf, mesh, model, nb_cont_zone, &
                        nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
 ! - Cleaning nodes and elements
 !
-    call elimco(sdcont      , mesh        , model  , nb_cont_surf,&
-                nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_ = nb_node_coq3d)
-    if (nb_node_coq3d.ne.0) then
-        call utmess('F','CONTACT_94')
-    endif
+    call elimco(sdcont, mesh, model, nb_cont_surf, &
+                nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_=nb_node_coq3d)
+    if (nb_node_coq3d .ne. 0) then
+        call utmess('F', 'CONTACT_94')
+    end if
 !
 ! - Inverse connectivities
 !
@@ -90,7 +90,7 @@ implicit none
 !
 ! - Save contact counters
 !
-    call dfc_save_dime(sdcont      , mesh        , model_ndim, nb_cont_zone, nb_cont_surf,&
+    call dfc_save_dime(sdcont, mesh, model_ndim, nb_cont_zone, nb_cont_surf, &
                        nb_cont_elem, nb_cont_node)
 !
 ! - Keyword SANS_GROUP_NO

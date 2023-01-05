@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_evcd(stop      , inst_curr , load_name, i_load  , ligrel_calc,&
-                          nb_in_maxi, nb_in_prep, lpain    , lchin   , base       ,&
-                          resu_elem , vect_elem)
+subroutine load_neum_evcd(stop, inst_curr, load_name, i_load, ligrel_calc, &
+                          nb_in_maxi, nb_in_prep, lpain, lchin, base, &
+                          resu_elem, vect_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/gettco.h"
 #include "asterfort/assert.h"
@@ -94,7 +94,7 @@ implicit none
 ! - Only scalar loadings, dead and fixed loads
 !
     load_nume_evol = 1
-    load_type      = 'Dead'
+    load_type = 'Dead'
 !
 ! - Get evol_char
 !
@@ -102,128 +102,128 @@ implicit none
     call jeexin(object, ier)
     if (ier .eq. 0) then
         goto 99
-    endif
-    call jeveuo(object, 'L', vk8 = p_object)
+    end if
+    call jeveuo(object, 'L', vk8=p_object)
     evol_char = p_object(1)
 !
 ! - Check
 !
     call dismoi('NB_CHAMP_UTI', evol_char, 'RESULTAT', repi=nb_cham)
-    ASSERT(nb_cham.gt.0)
+    ASSERT(nb_cham .gt. 0)
     call gettco(evol_char, type_sd)
     ASSERT(type_sd .eq. 'EVOL_CHAR')
 !
 ! - Get volumic forces (CHAR_MECA_FR2D2D / CHAR_MECA_FR3D3D)
 !
     option = ' '
-    call rsinch(evol_char, 'FVOL_3D', 'INST', inst_curr, load_name_evol,&
+    call rsinch(evol_char, 'FVOL_3D', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_FR3D3D'
         goto 10
-    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
         call utmess('F', 'CHARGES3_2', sk=evol_char, sr=inst_curr)
-    endif
-    call rsinch(evol_char, 'FVOL_2D', 'INST', inst_curr, load_name_evol,&
+    end if
+    call rsinch(evol_char, 'FVOL_2D', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_FR2D2D'
         goto 10
-    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
         call utmess('F', 'CHARGES3_3', sk=evol_char, sr=inst_curr)
-    endif
- 10 continue
+    end if
+10  continue
 !
 ! - Compute volumic forces (CHAR_MECA_FR2D2D / CHAR_MECA_FR3D3D)
 !
     if (option .eq. 'CHAR_MECA_FR3D3D' .or. option .eq. 'CHAR_MECA_FR2D2D') then
         if (option .eq. 'CHAR_MECA_FR3D3D') then
             iden_direct = '.F3D3D'
-        endif
+        end if
         if (option .eq. 'CHAR_MECA_FR2D2D') then
             iden_direct = '.F2D2D'
-        endif
-        call load_neum_comp(stop       , i_load    , load_name , load_nume_evol, load_type,&
-                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain         , lchin    ,&
-                            base       , resu_elem , vect_elem , iden_direct = iden_direct,&
-                            name_inputz = load_name_evol)
-    endif
+        end if
+        call load_neum_comp(stop, i_load, load_name, load_nume_evol, load_type, &
+                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                            base, resu_elem, vect_elem, iden_direct=iden_direct, &
+                            name_inputz=load_name_evol)
+    end if
 !
 ! - Get surfacic forces (CHAR_MECA_FR2D3D / CHAR_MECA_FR1D2D)
 !
-    call rsinch(evol_char, 'FSUR_3D', 'INST', inst_curr, load_name_evol,&
+    call rsinch(evol_char, 'FSUR_3D', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', ier)
     if (ier .le. 2) then
         if (option .eq. 'CHAR_MECA_FR2D2D') then
             call utmess('F', 'CHARGES3_4', sk=evol_char, sr=inst_curr)
-        endif
+        end if
         option = 'CHAR_MECA_FR2D3D'
         goto 20
-    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
         call utmess('F', 'CHARGES3_5', sk=evol_char, sr=inst_curr)
-    endif
+    end if
 !
-    call rsinch(evol_char, 'FSUR_2D', 'INST', inst_curr, load_name_evol,&
+    call rsinch(evol_char, 'FSUR_2D', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', ier)
     if (ier .le. 2) then
         if (option .eq. 'CHAR_MECA_FR3D3D') then
             call utmess('F', 'CHARGES3_6', sk=evol_char, sr=inst_curr)
-        endif
+        end if
         option = 'CHAR_MECA_FR1D2D'
         goto 20
-    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
         call utmess('F', 'CHARGES3_7', sk=evol_char, sr=inst_curr)
-    endif
- 20 continue
+    end if
+20  continue
 !
 ! - Compute surfacic forces (CHAR_MECA_FR2D3D / CHAR_MECA_FR1D2D)
 !
     if (option .eq. 'CHAR_MECA_FR2D3D' .or. option .eq. 'CHAR_MECA_FR1D2D') then
         if (option .eq. 'CHAR_MECA_FR2D3D') then
             iden_direct = '.F2D3D'
-        endif
+        end if
         if (option .eq. 'CHAR_MECA_FR1D2D') then
             iden_direct = '.F1D2D'
-        endif
-        call load_neum_comp(stop       , i_load    , load_name , load_nume_evol, load_type,&
-                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain         , lchin    ,&
-                            base       , resu_elem , vect_elem , iden_direct = iden_direct,&
-                            name_inputz = load_name_evol)
-    endif
+        end if
+        call load_neum_comp(stop, i_load, load_name, load_nume_evol, load_type, &
+                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                            base, resu_elem, vect_elem, iden_direct=iden_direct, &
+                            name_inputz=load_name_evol)
+    end if
 !
 ! - Get pressure (CHAR_MECA_PRES_R)
 !
-    call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol,&
+    call rsinch(evol_char, 'PRES', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_PRES_R'
         goto 30
-    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
         call utmess('F', 'CHARGES3_8', sk=evol_char, sr=inst_curr)
-    endif
- 30 continue
+    end if
+30  continue
 !
 ! - Compute pressure (CHAR_MECA_PRES_R)
 !
     if (option .eq. 'CHAR_MECA_PRES_R') then
         iden_direct = '.PRESS'
-        call load_neum_comp(stop       , i_load    , load_name , load_nume_evol, load_type,&
-                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain         , lchin    ,&
-                            base       , resu_elem , vect_elem , iden_direct = iden_direct,&
-                            name_inputz = load_name_evol)
-    endif
+        call load_neum_comp(stop, i_load, load_name, load_nume_evol, load_type, &
+                            ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                            base, resu_elem, vect_elem, iden_direct=iden_direct, &
+                            name_inputz=load_name_evol)
+    end if
 !
 ! - Get nodal force (VECT_ASSE)
 !
-    call rsinch(evol_char, 'FORC_NODA', 'INST', inst_curr, load_name_evol,&
+    call rsinch(evol_char, 'FORC_NODA', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', ier)
     if (ier .le. 2) then
         option = 'Copy_Load'
         goto 40
-    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
         call utmess('F', 'CHARGES3_8', sk=evol_char, sr=inst_curr)
-    endif
- 40 continue
+    end if
+40  continue
 !
 ! - Compute nodal force (VECT_ASSE)
 !
@@ -231,14 +231,14 @@ implicit none
         newnom = resu_elem(10:16)
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, ichin_ = i_load)
+        call corich('E', resu_elem, ichin_=i_load)
         call copisd('CHAMP_GD', base, load_name_evol, resu_elem)
         call exisd('CHAMP_GD', resu_elem, iexist)
-        ASSERT((iexist.gt.0).or.(stop.eq.'C'))
+        ASSERT((iexist .gt. 0) .or. (stop .eq. 'C'))
         call reajre(vect_elem, resu_elem, base)
-    endif
+    end if
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

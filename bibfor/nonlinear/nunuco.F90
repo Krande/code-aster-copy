@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nunuco(nume_ddl, sdnuco)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-character(len=24), intent(in) :: nume_ddl, sdnuco
+    character(len=24), intent(in) :: nume_ddl, sdnuco
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,21 +57,21 @@ character(len=24), intent(in) :: nume_ddl, sdnuco
 ! - Create list of components
 !
     nbCmp = 3
-    AS_ALLOCATE(vk8 = listCmp, size = nbCmp)
+    AS_ALLOCATE(vk8=listCmp, size=nbCmp)
     listCmp(1) = 'LAGS_C'
     listCmp(2) = 'LAGS_F1'
     listCmp(3) = 'LAGS_F2'
 !
 ! - Create list of equations
 !
-    call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi = nbEqua)
-    call wkvect(sdnuco, 'V V I', nbEqua, vi = listEqua)
+    call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=nbEqua)
+    call wkvect(sdnuco, 'V V I', nbEqua, vi=listEqua)
 !
 ! - Find components in list of equations
 !
     call select_dof(listEqua, &
-                    numeDofZ_      = nume_ddl,&
-                    nbCmpToSelect_ = nbCmp  , listCmpToSelect_ = listCmp)
+                    numeDofZ_=nume_ddl, &
+                    nbCmpToSelect_=nbCmp, listCmpToSelect_=listCmp)
 !
     AS_DEALLOCATE(vk8=listCmp)
 !

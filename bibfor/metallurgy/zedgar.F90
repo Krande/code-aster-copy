@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zedgar(jv_mater , nb_phase,&
-                  tm       , tp,&
-                  time_curr, time_incr,&
+subroutine zedgar(jv_mater, nb_phase, &
+                  tm, tp, &
+                  time_curr, time_incr, &
                   meta_prev, meta_curr)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -35,12 +35,12 @@ implicit none
 #include "asterfort/metaZircGetTime.h"
 #include "asterfort/Metallurgy_type.h"
 !
-integer, intent(in) :: jv_mater
-integer, intent(in) :: nb_phase
-real(kind=8), intent(in) :: tm, tp
-real(kind=8), intent(in) :: time_curr, time_incr
-real(kind=8), intent(in) :: meta_prev(5)
-real(kind=8), intent(out) :: meta_curr(5)
+    integer, intent(in) :: jv_mater
+    integer, intent(in) :: nb_phase
+    real(kind=8), intent(in) :: tm, tp
+    real(kind=8), intent(in) :: time_curr, time_incr
+    real(kind=8), intent(in) :: meta_prev(5)
+    real(kind=8), intent(out) :: meta_curr(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,18 +80,18 @@ real(kind=8), intent(out) :: meta_curr(5)
 ! - Get material parameters
 !
     call metaZircGetParameters(jv_mater, tp, metaZircPara)
-    tdeq   = metaZircPara%tdeq
-    k      = metaZircPara%k
-    n      = metaZircPara%n
-    t1c    = metaZircPara%t1c
-    t2c    = metaZircPara%t2c
-    ac     = metaZircPara%ac
-    m      = metaZircPara%m
-    qsr    = metaZircPara%qsrk
-    t1r    = metaZircPara%t1r
-    t2r    = metaZircPara%t2r
-    ar     = metaZircPara%ar
-    br     = metaZircPara%br
+    tdeq = metaZircPara%tdeq
+    k = metaZircPara%k
+    n = metaZircPara%n
+    t1c = metaZircPara%t1c
+    t2c = metaZircPara%t2c
+    ac = metaZircPara%ac
+    m = metaZircPara%m
+    qsr = metaZircPara%qsrk
+    t1r = metaZircPara%t1r
+    t2r = metaZircPara%t2r
+    ar = metaZircPara%ar
+    br = metaZircPara%br
     coeffc = ac*exp(-qsr/(tp+tabs))
 !
 ! - Get previous phases
@@ -100,13 +100,13 @@ real(kind=8), intent(out) :: meta_curr(5)
     zbetam = 1.d0-zalphm
     if (abs(zbetam) .le. zero) then
         zbetam = 0.d0
-    endif
+    end if
     if (abs(zalphm) .le. zero) then
         zbetam = 1.d0
-    endif
-    if ((zbetam.le.1.d-05) .and. (tp.le.tdeq)) then
+    end if
+    if ((zbetam .le. 1.d-05) .and. (tp .le. tdeq)) then
         zbetam = 0.d0
-    endif
+    end if
 !
 ! - Compute final temperature of transformation
 !
@@ -117,7 +117,7 @@ real(kind=8), intent(out) :: meta_curr(5)
         zeq = 1.d0-exp(-((k*(tp-tdeq))**n))
     else
         zeq = 1.d0
-    endif
+    end if
 !
 ! - Type of kinematic
 !
@@ -128,49 +128,49 @@ real(kind=8), intent(out) :: meta_curr(5)
             kine_type = HEATING
         else
             kine_type = COOLING
-        endif
+        end if
     else if (zbetam .ge. 1.d0) then
         kine_type = COOLING
-    endif
+    end if
 !
 ! - Evaluate value of time for temperature of transformation
 !
     time_tran_p = meta_prev(nb_phase+TIME_TRAN)
-    call metaZircGetTime(zbetam   ,&
-                         t1c      , t2c  ,&
-                         t1r      , t2r  ,&
-                         tm       , tp   ,&
-                         tdeq     , tfeq ,&
-                         time_curr    , time_incr, time_tran_p,&
+    call metaZircGetTime(zbetam, &
+                         t1c, t2c, &
+                         t1r, t2r, &
+                         tm, tp, &
+                         tdeq, tfeq, &
+                         time_curr, time_incr, time_tran_p, &
                          time_tran, l_integ)
 !
 ! - Compute new value of beta phase
 !
-    if (.not.l_integ) then
+    if (.not. l_integ) then
         if (zbetam .eq. 0.d0) then
             zbetap = 0.d0
-        endif
+        end if
         if (zbetam .eq. 1.d0) then
             zbetap = 1.d0
-        endif
+        end if
     else
 ! ----- Heating and phase beta is near 1 (icnreasing or decreasing ?)
         if (kine_type .eq. HEATING) then
             if (zeq .gt. 0.99d0) then
-                call zevolu(kine_type,&
-                            0.99d0   , zbetam,&
-                            time_incr    , tp    ,&
-                            k        , n     ,&
-                            tdeq     , tfeq  ,&
-                            coeffc   ,&
-                            m        , ar    , br,&
-                            g        , dg)
+                call zevolu(kine_type, &
+                            0.99d0, zbetam, &
+                            time_incr, tp, &
+                            k, n, &
+                            tdeq, tfeq, &
+                            coeffc, &
+                            m, ar, br, &
+                            g, dg)
                 if (g .lt. 0.d0) then
                     zbetap = 1.d0
                     goto 100
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 ! ----- Newton method to compute: bounds
         if (kine_type .eq. HEATING) then
             zinf = zbetam
@@ -178,85 +178,85 @@ real(kind=8), intent(out) :: meta_curr(5)
         else
             zinf = zeq
             zsup = zbetam
-        endif
+        end if
 ! ----- Newton method to compute: initialization
         zbetap = zbetam
         if (zbetam .eq. 0.d0) then
             zbetap = zeq/2.d0
-        endif
+        end if
         if (zbetam .eq. 1.d0) then
             zbetap = (zbetam+zeq)/2.d0
-        endif
+        end if
 ! ----- Newton method to compute: initial G function (evolution of beta phase)
-        call zevolu(kine_type,&
-                    zbetap   , zbetam,&
-                    time_incr    , tp    ,&
-                    k        , n     ,&
-                    tdeq     , tfeq  ,&
-                    coeffc   ,&
-                    m        , ar    , br,&
-                    g        , dg)
+        call zevolu(kine_type, &
+                    zbetap, zbetam, &
+                    time_incr, tp, &
+                    k, n, &
+                    tdeq, tfeq, &
+                    coeffc, &
+                    m, ar, br, &
+                    g, dg)
 ! ----- Newton method to compute: iterations
         do iter = 1, 15
             if (abs(g) .le. 1.d-06) then
                 goto 100
-            endif
+            end if
             if (dg .eq. 0.d0) then
                 call utmess('F', 'METALLURGY1_96')
-            endif
-            zbetap = zbetap - g/dg
+            end if
+            zbetap = zbetap-g/dg
             if (zbetap .le. zinf .or. zbetap .ge. zsup) then
-                zbetap=(zinf+zsup)/2.d0
-            endif
+                zbetap = (zinf+zsup)/2.d0
+            end if
 ! --------- Compute G function (evolution of beta phase)
-            call zevolu(kine_type,&
-                        zbetap   , zbetam,&
-                        time_incr    , tp    ,&
-                        k        , n     ,&
-                        tdeq     , tfeq  ,&
-                        coeffc   ,&
-                        m        , ar    , br,&
-                        g        , dg)
+            call zevolu(kine_type, &
+                        zbetap, zbetam, &
+                        time_incr, tp, &
+                        k, n, &
+                        tdeq, tfeq, &
+                        coeffc, &
+                        m, ar, br, &
+                        g, dg)
 ! --------- Newton method to compute: update bounds
             if (g .ge. 0.d0) then
                 zsup = zbetap
-            endif
+            end if
             if (g .le. 0.d0) then
                 zinf = zbetap
-            endif
+            end if
         end do
         call utmess('F', 'METALLURGY1_96')
 100     continue
-    endif
+    end if
 !
 ! - Compute alpha phases
 !
-    zalphp  = 1.d0 - zbetap
+    zalphp = 1.d0-zbetap
     if (zbetap .gt. 0.1d0) then
         zalph1p = 0.d0
     else
         zalph1p = 10.d0*(zalphp-0.9d0)*zalphp
-    endif
+    end if
     if (zalph1p .le. zero) then
         zalph1p = 0.d0
-    endif
+    end if
     zalph2p = zalphp-zalph1p
     if (zalph2p .le. zero) then
         zalph2p = 0.d0
-    endif
+    end if
 !
 ! - Compute beta phase
 !
     zbetap = 1.d0-zalphp
     if (abs(zbetap) .le. zero) then
         zbetap = 0.d0
-    endif
+    end if
 !
 ! - Update internal variables
 !
-    meta_curr(PALPHA1)            = zalph1p
-    meta_curr(PALPHA2)            = zalph2p
-    meta_curr(PBETA)              = zbetap
+    meta_curr(PALPHA1) = zalph1p
+    meta_curr(PALPHA2) = zalph2p
+    meta_curr(PBETA) = zbetap
     meta_curr(nb_phase+ZIRC_TEMP) = tp
     meta_curr(nb_phase+TIME_TRAN) = time_tran
 !

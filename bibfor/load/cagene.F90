@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine cagene(load, command, model, mesh, geomDime)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -28,11 +28,11 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: load
-character(len=16), intent(in) :: command
-integer, intent(out) :: geomDime
-character(len=8), intent(out) :: mesh
-character(len=8), intent(out) :: model
+    character(len=8), intent(in) :: load
+    character(len=16), intent(in) :: command
+    integer, intent(out) :: geomDime
+    character(len=8), intent(out) :: mesh
+    character(len=8), intent(out) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,14 +75,14 @@ character(len=8), intent(out) :: model
         call utmess('F', 'CHARGES2_64', nk=2, valk=valk)
     else if (command .eq. 'AFFE_CHAR_ACOU' .and. phenomenon .ne. 'ACOUSTIQUE') then
         call utmess('F', 'CHARGES2_64', nk=2, valk=valk)
-    endif
+    end if
 
 ! - Dimension of problem
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
 
 ! - Create .NOMO
     nomoJv = load(1:8)//'.CH'//phenomenon(1:2)//'.MODEL.NOMO'
-    call wkvect(nomoJv, 'G V K8', 1, vk8 = nomo)
+    call wkvect(nomoJv, 'G V K8', 1, vk8=nomo)
     nomo(1) = model
 !
     call jedema()

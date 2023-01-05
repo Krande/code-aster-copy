@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
-                  ligrma, nbno, tabnoe, rignoe, rigto,&
+subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
+                  ligrma, nbno, tabnoe, rignoe, rigto, &
                   ndim)
     implicit none
 #include "asterf_types.h"
@@ -112,25 +112,25 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=0, nbret=nfg)
     nbgr = 1
     AS_ALLOCATE(vk8=fongro, size=nbgr)
-    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
+    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro, &
                 nbret=nfg)
 !
 !
 !
     if (ndim .eq. 2) then
-        appui=1
+        appui = 1
     else
 !     LA DIMENSION DE L'APPUI N'EST PAS ENCORE DETERMINEE
-        appui=-1
-    endif
+        appui = -1
+    end if
 !
     call jeveuo(matyma, 'L', ltyp)
     do i = 1, nbgr
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
         do in = 0, nb-1
-            numa=zi(ldgm+in)
-            ASSERT(numa.gt.0)
+            numa = zi(ldgm+in)
+            ASSERT(numa .gt. 0)
             call jelira(jexnum(manoma, numa), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, numa), 'L', ldnm)
 !
@@ -139,21 +139,21 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
             if (appui .eq. -1) then
 !            LA DIMENSION DE LA PREMIERE MAILLE DEFINIT L'APPUI
-                appui=ntopo
-            else if ((appui.eq.1).or.(appui.eq.2)) then
+                appui = ntopo
+            else if ((appui .eq. 1) .or. (appui .eq. 2)) then
                 if (appui .ne. ntopo) then
                     call utmess('F', 'MODELISA6_35')
-                endif
+                end if
             else
                 call utmess('F', 'MODELISA6_29')
-            endif
+            end if
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                noemax = max(noemax,inoe)
+                noemax = max(noemax, inoe)
             end do
         end do
     end do
-    ASSERT(appui.ne.-1)
+    ASSERT(appui .ne. -1)
 !
     AS_ALLOCATE(vr=coeno, size=noemax)
     AS_ALLOCATE(vr=coenxx, size=noemax)
@@ -189,7 +189,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
         do in = 0, nb-1
-            im = im + 1
+            im = im+1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             xc = zero
@@ -197,13 +197,13 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             hc = zero
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                parno(inoe) = parno(inoe) + 1
+                parno(inoe) = parno(inoe)+1
                 x(nn) = vale(1+3*(inoe-1)+1-1)
                 y(nn) = vale(1+3*(inoe-1)+2-1)
                 z(nn) = vale(1+3*(inoe-1)+3-1)
-                xc = xc + x(nn)
-                yc = yc + y(nn)
-                hc = hc + z(nn)
+                xc = xc+x(nn)
+                yc = yc+y(nn)
+                hc = hc+z(nn)
             end do
             xc = xc/nm
             yc = yc/nm
@@ -211,73 +211,73 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
             if (appui .eq. 1) then
 !                ASSERT(.false.)
-                b(1) = x(2) - x(1)
-                b(2) = y(2) - y(1)
+                b(1) = x(2)-x(1)
+                b(2) = y(2)-y(1)
                 b(3) = zero
-                surf=ddot(3,b,1,b,1)
+                surf = ddot(3, b, 1, b, 1)
                 surmai(im) = sqrt(surf)
-                c(1) = y(1) - y(2)
-                c(2) = x(2) - x(1)
+                c(1) = y(1)-y(2)
+                c(2) = x(2)-x(1)
                 c(3) = zero
-                surf=ddot(3,c,1,c,1)
-                c(1)=c(1)/sqrt(surf)
-                c(2)=c(2)/sqrt(surf)
-                c(3)=c(3)/sqrt(surf)
-            else if (appui.eq.2) then
-                a(1) = x(3) - x(1)
-                a(2) = y(3) - y(1)
-                a(3) = z(3) - z(1)
+                surf = ddot(3, c, 1, c, 1)
+                c(1) = c(1)/sqrt(surf)
+                c(2) = c(2)/sqrt(surf)
+                c(3) = c(3)/sqrt(surf)
+            else if (appui .eq. 2) then
+                a(1) = x(3)-x(1)
+                a(2) = y(3)-y(1)
+                a(3) = z(3)-z(1)
                 if (nm .eq. 3 .or. nm .eq. 6 .or. nm .eq. 7) then
-                    b(1) = x(2) - x(1)
-                    b(2) = y(2) - y(1)
-                    b(3) = z(2) - z(1)
-                else if (nm.eq.4.or.nm.eq.8.or.nm.eq.9) then
-                    b(1) = x(4) - x(2)
-                    b(2) = y(4) - y(2)
-                    b(3) = z(4) - z(2)
+                    b(1) = x(2)-x(1)
+                    b(2) = y(2)-y(1)
+                    b(3) = z(2)-z(1)
+                else if (nm .eq. 4 .or. nm .eq. 8 .or. nm .eq. 9) then
+                    b(1) = x(4)-x(2)
+                    b(2) = y(4)-y(2)
+                    b(3) = z(4)-z(2)
                 else
                     ASSERT(.false.)
-                endif
+                end if
                 call provec(a, b, c)
-                surf=ddot(3,c,1,c,1)
-                c(1)=c(1)/sqrt(surf)
-                c(2)=c(2)/sqrt(surf)
-                c(3)=c(3)/sqrt(surf)
+                surf = ddot(3, c, 1, c, 1)
+                c(1) = c(1)/sqrt(surf)
+                c(2) = c(2)/sqrt(surf)
+                c(3) = c(3)/sqrt(surf)
                 surmai(im) = sqrt(surf)*0.5d0
             else
                 ASSERT(.false.)
-            endif
-            if (.not.lvale) surtot = surtot + surmai(im)
+            end if
+            if (.not. lvale) surtot = surtot+surmai(im)
             u(1) = xc
             u(2) = yc
             u(3) = hc
             nompar(1) = 'X'
             nompar(2) = 'Y'
             nompar(3) = 'Z'
-            call fointe('F ', fongro(i), 3, nompar, u,&
+            call fointe('F ', fongro(i), 3, nompar, u, &
                         coef, iret)
             surmai(im) = surmai(im)*coef
             if (lvale) then
-                surtot = surtot + surmai(im)
+                surtot = surtot+surmai(im)
                 surmai(im) = surmai(im)/nm
             else
-                surtxx = surtxx + surmai(im)*c(1)*c(1)
-                surtxy = surtxy + surmai(im)*c(1)*c(2)
-                surtxz = surtxz + surmai(im)*c(1)*c(3)
-                surtyy = surtyy + surmai(im)*c(2)*c(2)
-                surtyz = surtyz + surmai(im)*c(2)*c(3)
-                surtzz = surtzz + surmai(im)*c(3)*c(3)
+                surtxx = surtxx+surmai(im)*c(1)*c(1)
+                surtxy = surtxy+surmai(im)*c(1)*c(2)
+                surtxz = surtxz+surmai(im)*c(1)*c(3)
+                surtyy = surtyy+surmai(im)*c(2)*c(2)
+                surtyz = surtyz+surmai(im)*c(2)*c(3)
+                surtzz = surtzz+surmai(im)*c(3)*c(3)
                 surma1(im) = surmai(im)*c(1)*c(1)/nm
                 surma2(im) = surmai(im)*c(1)*c(2)/nm
                 surma4(im) = surmai(im)*c(1)*c(3)/nm
                 surma3(im) = surmai(im)*c(2)*c(2)/nm
                 surma5(im) = surmai(im)*c(2)*c(3)/nm
                 surma6(im) = surmai(im)*c(3)*c(3)/nm
-            endif
+            end if
         end do
     end do
 !
-    write(iunite,1010) surtxx,surtxy,surtxz,surtyy,surtyz,surtzz
+    write (iunite, 1010) surtxx, surtxy, surtxz, surtyy, surtyz, surtzz
 !
 !
 !     CALCUL DES PONDERATIONS ELEMENTAIRES
@@ -287,7 +287,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
         call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
         do in = 0, nb-1
-            im = im + 1
+            im = im+1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
@@ -295,18 +295,18 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                     if (parno(ij) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
                         if (lvale) then
-                            coeno(ij)=coeno(ij)+surmai(1+&
-                            im-1)/surtot
+                            coeno(ij) = coeno(ij)+surmai(1+ &
+                                                         im-1)/surtot
                         else
-                            coenxx(ij) = coenxx(ij) + surma1(im)
-                            coenxy(ij) = coenxy(ij) + surma2(im)
-                            coenxz(ij) = coenxz(ij) + surma4(im)
-                            coenyy(ij) = coenyy(ij) + surma3(im)
-                            coenyz(ij) = coenyz(ij) + surma5(im)
-                            coenzz(ij) = coenzz(ij) + surma6(im)
-                        endif
-                    endif
- 37                 continue
+                            coenxx(ij) = coenxx(ij)+surma1(im)
+                            coenxy(ij) = coenxy(ij)+surma2(im)
+                            coenxz(ij) = coenxz(ij)+surma4(im)
+                            coenyy(ij) = coenyy(ij)+surma3(im)
+                            coenyz(ij) = coenyz(ij)+surma5(im)
+                            coenzz(ij) = coenzz(ij)+surma6(im)
+                        end if
+                    end if
+37                  continue
                 end do
             end do
         end do
@@ -316,7 +316,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     ii = 0
     do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 51
-        ii = ii + 1
+        ii = ii+1
         if (lvale) then
             r1 = rigi(1)*coeno(ij)
             r2 = rigi(2)*coeno(ij)
@@ -325,7 +325,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             r1 = coenxx(ij)
             r2 = coenxy(ij)
             r3 = coenyy(ij)
-        endif
+        end if
         if (ndim .eq. 3) then
             if (lvale) then
                 r4 = rigi(4)*coeno(ij)
@@ -335,19 +335,19 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 r4 = coenxz(ij)
                 r5 = coenyz(ij)
                 r6 = coenzz(ij)
-            endif
+            end if
         else
             r4 = zero
             r5 = zero
             r6 = zero
-        endif
+        end if
         call jenuno(jexnum(manono, ij), nomnoe)
-        rigto(6*(ij-1)+1) = r1 + rigto(6*(ij-1)+1)
-        rigto(6*(ij-1)+2) = r2 + rigto(6*(ij-1)+2)
-        rigto(6*(ij-1)+3) = r3 + rigto(6*(ij-1)+3)
-        rigto(6*(ij-1)+4) = r4 + rigto(6*(ij-1)+4)
-        rigto(6*(ij-1)+5) = r5 + rigto(6*(ij-1)+5)
-        rigto(6*(ij-1)+6) = r6 + rigto(6*(ij-1)+6)
+        rigto(6*(ij-1)+1) = r1+rigto(6*(ij-1)+1)
+        rigto(6*(ij-1)+2) = r2+rigto(6*(ij-1)+2)
+        rigto(6*(ij-1)+3) = r3+rigto(6*(ij-1)+3)
+        rigto(6*(ij-1)+4) = r4+rigto(6*(ij-1)+4)
+        rigto(6*(ij-1)+5) = r5+rigto(6*(ij-1)+5)
+        rigto(6*(ij-1)+6) = r6+rigto(6*(ij-1)+6)
         r1 = rigto(6*(ij-1)+1)
         r2 = rigto(6*(ij-1)+2)
         r3 = rigto(6*(ij-1)+3)
@@ -361,7 +361,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
         rignoe(6*(ii-1)+5) = r5
         rignoe(6*(ii-1)+6) = r6
         tabnoe(ii) = nomnoe
- 51     continue
+51      continue
     end do
     nbno = ii
 !
@@ -383,6 +383,6 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     AS_DEALLOCATE(vr=surma6)
 !
     call jedema()
-    1010 format(' MXX= ',1pe12.5,' MXY= ',1pe12.5,' MXZ= ',1pe12.5/,&
-     &       ' MYY= ',1pe12.5,' MYZ= ',1pe12.5,' MZZ= ',1pe12.5)
+1010 format(' MXX= ', 1pe12.5, ' MXY= ', 1pe12.5, ' MXZ= ', 1pe12.5/,&
+    &       ' MYY= ', 1pe12.5, ' MYZ= ', 1pe12.5, ' MZZ= ', 1pe12.5)
 end subroutine

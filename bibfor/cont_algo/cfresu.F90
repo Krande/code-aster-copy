@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter,&
-                  cnsinr   , cnsper)
+subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
+                  cnsinr, cnsper)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -44,13 +44,13 @@ implicit none
 #include "asterfort/mmnorm.h"
 #include "asterfort/utmess.h"
 !
-real(kind=8), intent(in) :: time_incr
-character(len=19), intent(in) :: sddisc
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19), intent(in) :: disp_cumu_inst
-character(len=19), intent(in) :: disp_iter
-character(len=19), intent(in) :: cnsinr
-character(len=19), intent(in) :: cnsper
+    real(kind=8), intent(in) :: time_incr
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: disp_cumu_inst
+    character(len=19), intent(in) :: disp_iter
+    character(len=19), intent(in) :: cnsinr
+    character(len=19), intent(in) :: cnsper
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ character(len=19), intent(in) :: cnsper
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8), parameter :: eps=1.d-6
+    real(kind=8), parameter :: eps = 1.d-6
     integer :: zresu, zperc, ztacf
     integer :: node_slav_nume, iliac, icmp, iliai
     integer :: model_ndim, nbliai, nb_dof, nb_equa
@@ -120,13 +120,13 @@ character(len=19), intent(in) :: cnsper
 !
 ! - Parameters
 !
-    l_frot      = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
-    l_cont_pena = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
-    nbliai      = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
-    nbliac      = cfdisd(ds_contact%sdcont_solv,'NBLIAC')
-    model_ndim  = cfdisd(ds_contact%sdcont_solv,'NDIM' )
-    nb_equa     = cfdisd(ds_contact%sdcont_solv,'NEQ' )
-    nesmax      = cfdisd(ds_contact%sdcont_solv,'NESMAX')
+    l_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
+    l_cont_pena = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
+    nbliac = cfdisd(ds_contact%sdcont_solv, 'NBLIAC')
+    model_ndim = cfdisd(ds_contact%sdcont_solv, 'NDIM')
+    nb_equa = cfdisd(ds_contact%sdcont_solv, 'NEQ')
+    nesmax = cfdisd(ds_contact%sdcont_solv, 'NESMAX')
 !
 ! - Collision
 !
@@ -139,45 +139,45 @@ character(len=19), intent(in) :: cnsper
     zresu = cfmmvd('ZRESU')
     zperc = cfmmvd('ZPERC')
     ztacf = cfmmvd('ZTACF')
-    sdcont_afmu   = ds_contact%sdcont_solv(1:14)//'.AFMU'
+    sdcont_afmu = ds_contact%sdcont_solv(1:14)//'.AFMU'
     sdcont_apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
-    sdcont_apddl  = ds_contact%sdcont_solv(1:14)//'.APDDL'
+    sdcont_apddl = ds_contact%sdcont_solv(1:14)//'.APDDL'
     sdcont_appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
     sdcont_numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
-    sdcont_atmu   = ds_contact%sdcont_solv(1:14)//'.ATMU'
-    sdcont_liac   = ds_contact%sdcont_solv(1:14)//'.LIAC'
-    sdcont_mu     = ds_contact%sdcont_solv(1:14)//'.MU'
+    sdcont_atmu = ds_contact%sdcont_solv(1:14)//'.ATMU'
+    sdcont_liac = ds_contact%sdcont_solv(1:14)//'.LIAC'
+    sdcont_mu = ds_contact%sdcont_solv(1:14)//'.MU'
     sdcont_tangco = ds_contact%sdcont_solv(1:14)//'.TANGCO'
     sdcont_tacfin = ds_contact%sdcont_solv(1:14)//'.TACFIN'
     sdcont_jeuite = ds_contact%sdcont_solv(1:14)//'.JEUITE'
     sdcont_approj = ds_contact%sdcont_solv(1:14)//'.APPROJ'
-    call jeveuo(sdcont_appoin, 'L', vi = v_sdcont_appoin)
-    call jeveuo(sdcont_tacfin, 'L', vr = v_sdcont_tacfin)
-    call jeveuo(sdcont_numlia, 'L', vi = v_sdcont_numlia)
-    call jeveuo(sdcont_apddl , 'L', japddl)
-    call jeveuo(sdcont_atmu  , 'L', jatmu)
+    call jeveuo(sdcont_appoin, 'L', vi=v_sdcont_appoin)
+    call jeveuo(sdcont_tacfin, 'L', vr=v_sdcont_tacfin)
+    call jeveuo(sdcont_numlia, 'L', vi=v_sdcont_numlia)
+    call jeveuo(sdcont_apddl, 'L', japddl)
+    call jeveuo(sdcont_atmu, 'L', jatmu)
     if (l_frot) then
         call jeveuo(sdcont_apcofr, 'L', japcof)
-        call jeveuo(sdcont_afmu  , 'L', jafmu)
-    endif
+        call jeveuo(sdcont_afmu, 'L', jafmu)
+    end if
     if (l_cont_pena) then
         call jeveuo(sdcont_afmu, 'L', jafmu)
-    endif
-    call jeveuo(sdcont_liac  , 'L', vi  = v_sdcont_liac)
-    call jeveuo(sdcont_mu    , 'L', vr  = v_sdcont_mu)
-    call jeveuo(sdcont_tangco, 'L', vr  = v_sdcont_tangco)
-    call jeveuo(sdcont_jeuite, 'L', vr  = v_sdcont_jeuite)
-    call jeveuo(sdcont_approj, 'L', vr  = v_sdcont_approj)
+    end if
+    call jeveuo(sdcont_liac, 'L', vi=v_sdcont_liac)
+    call jeveuo(sdcont_mu, 'L', vr=v_sdcont_mu)
+    call jeveuo(sdcont_tangco, 'L', vr=v_sdcont_tangco)
+    call jeveuo(sdcont_jeuite, 'L', vr=v_sdcont_jeuite)
+    call jeveuo(sdcont_approj, 'L', vr=v_sdcont_approj)
     sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Access to fields
 !
-    call jeveuo(disp_iter(1:19)//'.VALE', 'L', vr = v_disp_iter)
-    call jeveuo(disp_cumu_inst(1:19)//'.VALE', 'L', vr = v_disp_cumu)
-    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr = v_cnsinr_cnsv)
-    call jeveuo(cnsinr(1:19)//'.CNSL', 'E', vl = v_cnsinr_cnsl)
-    call jeveuo(cnsper(1:19)//'.CNSV', 'E', vr = v_cnsper_cnsv)
-    call jeveuo(cnsper(1:19)//'.CNSL', 'E', vl = v_cnsper_cnsl)
+    call jeveuo(disp_iter(1:19)//'.VALE', 'L', vr=v_disp_iter)
+    call jeveuo(disp_cumu_inst(1:19)//'.VALE', 'L', vr=v_disp_cumu)
+    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=v_cnsinr_cnsv)
+    call jeveuo(cnsinr(1:19)//'.CNSL', 'E', vl=v_cnsinr_cnsl)
+    call jeveuo(cnsper(1:19)//'.CNSV', 'E', vr=v_cnsper_cnsv)
+    call jeveuo(cnsper(1:19)//'.CNSL', 'E', vl=v_cnsper_cnsl)
 !
 ! - Active nodes - Initializatios
 !
@@ -191,7 +191,7 @@ character(len=19), intent(in) :: cnsper
             v_cnsper_cnsl(zperc*(node_slav_nume-1)+icmp) = .true.
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+icmp) = 0.d0
         end do
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+2 ) = v_sdcont_jeuite(3*(iliai-1)+1)
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+2) = v_sdcont_jeuite(3*(iliai-1)+1)
     end do
 !
 ! - Set fields
@@ -205,16 +205,16 @@ character(len=19), intent(in) :: cnsper
         rtgx = 0.d0
         rtgy = 0.d0
         rtgz = 0.d0
-        hn   = 0.d0
+        hn = 0.d0
         glix = 0.d0
         gliy = 0.d0
         glit = 0.d0
 !
 ! ----- Current link
 !
-        lliac  = v_sdcont_liac(iliac)
+        lliac = v_sdcont_liac(iliac)
         jdecal = v_sdcont_appoin(lliac)
-        nb_dof = v_sdcont_appoin(lliac+1) - v_sdcont_appoin(lliac)
+        nb_dof = v_sdcont_appoin(lliac+1)-v_sdcont_appoin(lliac)
 !
 ! ----- Current node
 !
@@ -238,9 +238,9 @@ character(len=19), intent(in) :: cnsper
 ! ----- Get pairing
 !
         call apinfi(sdappa, 'APPARI_TYPE', lliac, pair_type)
-        if (pair_type.lt.0) then
+        if (pair_type .lt. 0) then
             node_status = -1.d0
-        endif
+        end if
 !
 ! ----- Compute normal
 !
@@ -249,18 +249,18 @@ character(len=19), intent(in) :: cnsper
 ! ----- Compute normal reactions for contact
 !
         if (l_cont_pena) then
-            call cfresa(model_ndim, zr(jafmu+zi(japddl+jdecal)-1), norm, rnx, rny,&
+            call cfresa(model_ndim, zr(jafmu+zi(japddl+jdecal)-1), norm, rnx, rny, &
                         rnz, rn)
         else
-            call cfresa(model_ndim, zr(jatmu+zi(japddl+jdecal)-1), norm, rnx, rny,&
+            call cfresa(model_ndim, zr(jatmu+zi(japddl+jdecal)-1), norm, rnx, rny, &
                         rnz, rn)
-        endif
+        end if
 !
 ! ----- Very near contact
 !
         if (rn .le. valras) then
             laffle = .true.
-        endif
+        end if
 !
 ! ----- Compute informations for friction
 !
@@ -270,26 +270,26 @@ character(len=19), intent(in) :: cnsper
 !
 ! --------- Compute slides
 !
-            call caladu(nb_equa, nb_dof, zr(japcof+jdecal), zi(japddl+jdecal), v_disp_cumu,&
+            call caladu(nb_equa, nb_dof, zr(japcof+jdecal), zi(japddl+jdecal), v_disp_cumu, &
                         val1)
-            call caladu(nb_equa, nb_dof, zr(japcof+jdecal), zi(japddl+jdecal), v_disp_iter,&
+            call caladu(nb_equa, nb_dof, zr(japcof+jdecal), zi(japddl+jdecal), v_disp_iter, &
                         val2)
-            glix = val1 + val2
+            glix = val1+val2
             gliy = 0.d0
             if (model_ndim .eq. 3) then
-                call caladu(nb_equa, nb_dof, zr(japcof+jdecal+30*nesmax),&
-                            zi(japddl+jdecal), v_disp_cumu,&
+                call caladu(nb_equa, nb_dof, zr(japcof+jdecal+30*nesmax), &
+                            zi(japddl+jdecal), v_disp_cumu, &
                             val1)
-                call caladu(nb_equa, nb_dof, zr(japcof+jdecal+30*nesmax),&
-                            zi(japddl+jdecal), v_disp_iter,&
+                call caladu(nb_equa, nb_dof, zr(japcof+jdecal+30*nesmax), &
+                            zi(japddl+jdecal), v_disp_iter, &
                             val2)
-                gliy = val1 + val2
-            endif
+                gliy = val1+val2
+            end if
             glit = sqrt(glix**2+gliy**2)
 !
 ! --------- Compute tangential forces
 !
-            call cfresb(model_ndim, 'GL', zr(jafmu+zi(japddl+jdecal)-1),&
+            call cfresb(model_ndim, 'GL', zr(jafmu+zi(japddl+jdecal)-1), &
                         tau1, tau2, rtgx, rtgy, rtgz)
             testmu = v_sdcont_mu(3*nbliai+lliac)
             coefpt = v_sdcont_tacfin(ztacf*(lliac-1)+3)
@@ -310,21 +310,21 @@ character(len=19), intent(in) :: cnsper
                     rtay = 0.d0
                     rtaz = 0.d0
                     hn = 0.d0
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ----- Total reaction
 !
-        rx = rnx + rtax + rtgx
-        ry = rny + rtay + rtgy
-        rz = rnz + rtaz + rtgz
-        r  = sqrt(rx**2+ry**2+rz**2)
+        rx = rnx+rtax+rtgx
+        ry = rny+rtay+rtgy
+        rz = rnz+rtaz+rtgz
+        r = sqrt(rx**2+ry**2+rz**2)
 !
 ! ----- Percussion
 !
         if (r .le. eps) then
-            imp  = 0.d0
+            imp = 0.d0
             impx = 0.d0
             impy = 0.d0
             impz = 0.d0
@@ -333,26 +333,26 @@ character(len=19), intent(in) :: cnsper
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+3) = 0.d0
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+4) = 0.d0
         else
-            imp  = v_cnsper_cnsv(zperc*(node_slav_nume-1)+1) + r*time_incr
-            impx = v_cnsper_cnsv(zperc*(node_slav_nume-1)+2) + rx*time_incr
-            impy = v_cnsper_cnsv(zperc*(node_slav_nume-1)+3) + ry*time_incr
-            impz = v_cnsper_cnsv(zperc*(node_slav_nume-1)+4) + rz*time_incr
+            imp = v_cnsper_cnsv(zperc*(node_slav_nume-1)+1)+r*time_incr
+            impx = v_cnsper_cnsv(zperc*(node_slav_nume-1)+2)+rx*time_incr
+            impy = v_cnsper_cnsv(zperc*(node_slav_nume-1)+3)+ry*time_incr
+            impz = v_cnsper_cnsv(zperc*(node_slav_nume-1)+4)+rz*time_incr
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+1) = imp
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+2) = impx
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+3) = impy
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+4) = impz
-        endif
+        end if
 !
 ! ----- Save in CONT_NOEU field
 !
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+1 ) = node_status
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+3 ) = rn
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+4 ) = rnx
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+5 ) = rny
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+6 ) = rnz
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+7 ) = glix
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+8 ) = gliy
-        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+9 ) = glit
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+1) = node_status
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+3) = rn
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+4) = rnx
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+5) = rny
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+6) = rnz
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+7) = glix
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+8) = gliy
+        v_cnsinr_cnsv(zresu*(node_slav_nume-1)+9) = glit
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+10) = rtax
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+11) = rtay
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+12) = rtaz
@@ -380,7 +380,7 @@ character(len=19), intent(in) :: cnsper
 !
     if (laffle .and. lcolli) then
         call utmess('A', 'CONTACT3_98')
-    endif
+    end if
 !
     call jedema()
 !

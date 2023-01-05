@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
 !
-character(len=*), intent(in) :: elrefz, fapz
-integer, intent(out) :: nbpg, ndim
-real(kind=8), intent(out) :: coopg(*), poipg(*)
+    character(len=*), intent(in) :: elrefz, fapz
+    integer, intent(out) :: nbpg, ndim
+    real(kind=8), intent(out) :: coopg(*), poipg(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,12 +65,11 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
     real(kind=8), parameter :: rac_1div3 = sqrt(1.d0/3.d0), rac_3div5 = sqrt(3.d0/5.d0)
     real(kind=8), parameter :: rac_3div7 = sqrt(3.d0/7.d0)
 
-    real(kind=8), parameter :: gauss4p12 = sqrt(3.d0/7.d0 - 2.d0/7.d0*sqrt(6.d0/5.d0))
-    real(kind=8), parameter :: gauss4p34 = sqrt(3.d0/7.d0 + 2.d0/7.d0*sqrt(6.d0/5.d0))
+    real(kind=8), parameter :: gauss4p12 = sqrt(3.d0/7.d0-2.d0/7.d0*sqrt(6.d0/5.d0))
+    real(kind=8), parameter :: gauss4p34 = sqrt(3.d0/7.d0+2.d0/7.d0*sqrt(6.d0/5.d0))
 
-    real(kind=8), parameter :: lobatto7p35 = sqrt(5.d0/11.d0 - 2.d0/11.d0 * sqrt(5.d0/3.d0))
-    real(kind=8), parameter :: lobatto7p26 = sqrt(5.d0/11.d0 + 2.d0/11.d0 * sqrt(5.d0/3.d0))
-
+    real(kind=8), parameter :: lobatto7p35 = sqrt(5.d0/11.d0-2.d0/11.d0*sqrt(5.d0/3.d0))
+    real(kind=8), parameter :: lobatto7p26 = sqrt(5.d0/11.d0+2.d0/11.d0*sqrt(5.d0/3.d0))
 
 !
 #define t(u) 2.0d0*(u) - 1.0d0
@@ -78,14 +77,14 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
 ! --------------------------------------------------------------------------------------------------
 !
     elrefa = elrefz
-    fapg   = fapz
+    fapg = fapz
 
 ! - Get list of integration schemes of geometric support
-    call elraca(elrefa,&
-                nbfpg , nofpg, nbpg1,&
-                ndim  , nno  , nnos,&
-                xno   , vol)
-    ASSERT((ndim.ge.0).and.(ndim.le.3))
+    call elraca(elrefa, &
+                nbfpg, nofpg, nbpg1, &
+                ndim, nno, nnos, &
+                xno, vol)
+    ASSERT((ndim .ge. 0) .and. (ndim .le. 3))
 
 ! - Get index for integration scheme
     ifam = indik8(nofpg, fapg, 1, nbfpg)
@@ -104,7 +103,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             if (ndim .eq. 3) zpg(iNode) = xno(ndim*(iNode-1)+3)
         end do
         goto 170
-    endif
+    end if
 
 ! - For 'NOEU_S' scheme
     if (fapg .eq. 'NOEU_S') then
@@ -116,7 +115,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             if (ndim .eq. 3) zpg(iNode) = xno(ndim*(iNode-1)+3)
         end do
         goto 170
-    endif
+    end if
 
 ! - For 'FPG1' scheme
     if (fapg .eq. 'FPG1') then
@@ -126,16 +125,16 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         if (ndim .ge. 2) ypg(1) = zero
         if (ndim .eq. 3) zpg(1) = zero
         do iNode = 1, nno
-            if (ndim .ge. 1) xpg(1) = xpg(1) + xno(ndim*(iNode-1)+1)
-            if (ndim .ge. 2) ypg(1) = ypg(1) + xno(ndim*(iNode-1)+2)
-            if (ndim .eq. 3) zpg(1) = zpg(1) + xno(ndim*(iNode-1)+3)
+            if (ndim .ge. 1) xpg(1) = xpg(1)+xno(ndim*(iNode-1)+1)
+            if (ndim .ge. 2) ypg(1) = ypg(1)+xno(ndim*(iNode-1)+2)
+            if (ndim .eq. 3) zpg(1) = zpg(1)+xno(ndim*(iNode-1)+3)
         end do
         if (ndim .ge. 1) xpg(1) = xpg(1)/nno
         if (ndim .ge. 2) ypg(1) = ypg(1)/nno
         if (ndim .eq. 3) zpg(1) = zpg(1)/nno
         hpg(1) = vol
         goto 170
-    endif
+    end if
 
 ! - For other schemes
     if (elrefa .eq. 'HE8' .or. elrefa .eq. 'H20' .or. elrefa .eq. 'H27') then
@@ -172,9 +171,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             a(2) = -a(1)
             a(3) = -gauss4p34
             a(4) = -a(3)
-            h(1) = (18.d0 + rac30)/36.d0
+            h(1) = (18.d0+rac30)/36.d0
             h(2) = h(1)
-            h(3) = (18.d0 - rac30)/36.d0
+            h(3) = (18.d0-rac30)/36.d0
             h(4) = h(3)
 
         else if (fapg .eq. 'FPG8NOS') then
@@ -195,12 +194,12 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         else
             ASSERT(ASTER_FALSE)
 
-        endif
+        end if
         npi = 0
         do ix = 1, npar
             do iy = 1, npar
                 do iz = 1, npar
-                    npi = npi + 1
+                    npi = npi+1
                     xpg(npi) = a(ix)
                     ypg(npi) = a(iy)
                     zpg(npi) = a(iz)
@@ -228,7 +227,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
                 ypg(iz) = zero
                 zpg(iz) = lobCoor(iz)
                 hpg(iz) = lobWeight(iz)*4.d0
-            enddo
+            end do
 
         else if (fapg .eq. 'LOB7') then
 ! --------- FORMULE DE QUADRATURE DE GAUSS-LOBATTO A 7 POINTS DANS
@@ -241,8 +240,8 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             lobCoor(6) = -lobCoor(2)
             lobCoor(7) = -lobCoor(1)
             lobWeight(1) = un/21.d0
-            lobWeight(2) = (124.d0 - 7.d0 * rac15)/350.d0
-            lobWeight(3) = (124.d0 + 7.d0 * rac15)/350.d0
+            lobWeight(2) = (124.d0-7.d0*rac15)/350.d0
+            lobWeight(3) = (124.d0+7.d0*rac15)/350.d0
             lobWeight(4) = 256.d0/525.d0
             lobWeight(5) = lobWeight(3)
             lobWeight(6) = lobWeight(2)
@@ -252,7 +251,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
                 ypg(iz) = zero
                 zpg(iz) = lobCoor(iz)
                 hpg(iz) = lobWeight(iz)*4.d0
-            enddo
+            end do
 
         else if (fapg .eq. 'FPG8') then
 ! --------- FORMULE DE QUADRATURE DE GAUSS A 2 POINTS DANS CHAQUE DIRECTION ( ORDRE 3 )
@@ -265,7 +264,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             do ix = 1, npar
                 do iy = 1, npar
                     do iz = 1, npar
-                        npi = npi + 1
+                        npi = npi+1
                         xpg(npi) = a(ix)
                         ypg(npi) = a(iy)
                         zpg(npi) = a(iz)
@@ -276,9 +275,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
 
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
-    else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18' .or.&
+    else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18' .or. &
              elrefa .eq. 'P21') then
         if (fapg .eq. 'FPG6') then
             npx = 2
@@ -353,23 +352,23 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             npyz = 7
             aty(1) = un/3.d0
             atz(1) = un/3.d0
-            aty(2) = (6.d0 + rac15)/21.d0
+            aty(2) = (6.d0+rac15)/21.d0
             atz(2) = aty(2)
-            aty(3) = un - deux*aty(2)
+            aty(3) = un-deux*aty(2)
             atz(3) = aty(2)
             aty(4) = aty(2)
-            atz(4) = un - deux*aty(2)
-            aty(5) = (6.d0 - rac15)/21.d0
+            atz(4) = un-deux*aty(2)
+            aty(5) = (6.d0-rac15)/21.d0
             atz(5) = aty(5)
-            aty(6) = un - deux*aty(5)
+            aty(6) = un-deux*aty(5)
             atz(6) = aty(5)
             aty(7) = aty(5)
-            atz(7) = un - deux*aty(5)
+            atz(7) = un-deux*aty(5)
             ht(1) = 9.d0/80.d0
-            ht(2) = (155.d0 + rac15)/2400.d0
+            ht(2) = (155.d0+rac15)/2400.d0
             ht(3) = ht(2)
             ht(4) = ht(2)
-            ht(5) = (155.d0 - rac15)/2400.d0
+            ht(5) = (155.d0-rac15)/2400.d0
             ht(6) = ht(5)
             ht(7) = ht(5)
 
@@ -400,11 +399,11 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         else
             ASSERT(ASTER_FALSE)
 
-        endif
+        end if
         npi = 0
         do ix = 1, npx
             do iy = 1, npyz
-                npi = npi + 1
+                npi = npi+1
                 xpg(npi) = a(ix)
                 ypg(npi) = aty(iy)
                 zpg(npi) = atz(iy)
@@ -412,9 +411,8 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             end do
         end do
 
-
     else if (elrefa .eq. 'PE7') then
-        if (fapg.eq.'LOB5') then
+        if (fapg .eq. 'LOB5') then
 ! --------- FORMULE DE QUADRATURE DE GAUSS-LOBATTO A 5 POINTS DANS
 !           L EPAISSEUR AU CENTRE DE L'ELEMENT
             lobCoor(1) = -un
@@ -432,9 +430,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
                 ypg(iz) = un/3.d0
                 zpg(iz) = lobCoor(iz)
                 hpg(iz) = lobWeight(iz)*undemi
-            enddo
+            end do
 
-        else if (fapg.eq.'LOB7') then
+        else if (fapg .eq. 'LOB7') then
 ! --------- FORMULE DE QUADRATURE DE GAUSS-LOBATTO A 7 POINTS DANS
 !           L EPAISSEUR AU CENTRE DE L'ELEMENT
             lobCoor(1) = -un
@@ -445,8 +443,8 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             lobCoor(6) = -lobCoor(2)
             lobCoor(7) = -lobCoor(1)
             lobWeight(1) = un/21.d0
-            lobWeight(2) = (124.d0 - 7.d0 * rac15)/350.d0
-            lobWeight(3) = (124.d0 + 7.d0 * rac15)/350.d0
+            lobWeight(2) = (124.d0-7.d0*rac15)/350.d0
+            lobWeight(3) = (124.d0+7.d0*rac15)/350.d0
             lobWeight(4) = 256.d0/525.d0
             lobWeight(5) = lobWeight(3)
             lobWeight(6) = lobWeight(2)
@@ -456,11 +454,11 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
                 ypg(iz) = un/3.d0
                 zpg(iz) = lobCoor(iz)
                 hpg(iz) = lobWeight(iz)
-            enddo
+            end do
 
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
     else if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10' .or. elrefa .eq. 'T15') then
         if (fapg .eq. 'FPG4') then
@@ -470,7 +468,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             h5 = un/24.d0
             npi = 0
             do i = 1, 4
-                npi = npi + 1
+                npi = npi+1
                 xpg(npi) = a1
                 ypg(npi) = a1
                 zpg(npi) = a1
@@ -506,60 +504,60 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             xpg(1) = 0.097204644587583d0
             ypg(1) = 0.106604172561993d0
             zpg(1) = 0.684390415453040d0
-            hpg(1) = 0.106468034155490d0 / 6.d0
+            hpg(1) = 0.106468034155490d0/6.d0
             xpg(2) = 0.029569495206479d0
             ypg(2) = 0.329232959742646d0
             zpg(2) = 0.317903560213394d0
-            hpg(2) = 0.110234232428497d0 / 6.d0
+            hpg(2) = 0.110234232428497d0/6.d0
             xpg(3) = 0.432710239047768d0
             ypg(3) = 0.103844116410993d0
             zpg(3) = 0.353823239209297d0
-            hpg(3) = 0.154976116016246d0 / 6.d0
+            hpg(3) = 0.154976116016246d0/6.d0
             xpg(4) = 0.240276664928072d0
             ypg(4) = 0.304448402434496d0
             zpg(4) = 0.126801725915392d0
-            hpg(4) = 0.193410812049634d0 / 6.d0
+            hpg(4) = 0.193410812049634d0/6.d0
             xpg(5) = 0.129411373788910d0
             ypg(5) = 0.538007203916185d0
             zpg(5) = 0.330190414837464d0
-            hpg(5) = 0.076162715245558d0 / 6.d0
+            hpg(5) = 0.076162715245558d0/6.d0
             xpg(6) = 0.121541991333927d0
             ypg(6) = 0.008991260093335d0
             zpg(6) = 0.306493988429690d0
-            hpg(6) = 0.079426680068025d0 / 6.d0
+            hpg(6) = 0.079426680068025d0/6.d0
             xpg(7) = 0.450765876091276d0
             ypg(7) = 0.432953490481355d0
             zpg(7) = 0.059456616299433d0
-            hpg(7) = 0.069469965937635d0 / 6.d0
+            hpg(7) = 0.069469965937635d0/6.d0
             xpg(8) = 0.419266313879513d0
             ypg(8) = 0.053341239535745d0
             zpg(8) = 0.047781435559086d0
-            hpg(8) = 0.059933185146559d0 / 6.d0
+            hpg(8) = 0.059933185146559d0/6.d0
             xpg(9) = 0.067223294893383d0
             ypg(9) = 0.741228882093622d0
             zpg(9) = 0.035183929773598d0
-            hpg(9) = 0.055393798871576d0 / 6.d0
+            hpg(9) = 0.055393798871576d0/6.d0
             xpg(10) = 0.752508507009654d0
             ypg(10) = 0.081404918402859d0
             zpg(10) = 0.068099370938206d0
-            hpg(10) = 0.055273369155936d0 / 6.d0
+            hpg(10) = 0.055273369155936d0/6.d0
             xpg(11) = 0.040490506727590d0
             ypg(11) = 0.174694058697230d0
             zpg(11) = 0.013560701879802d0
-            hpg(11) = 0.039251090924839d0 / 6.d0
+            hpg(11) = 0.039251090924839d0/6.d0
 
         else if (fapg .eq. 'FPG15') then
 ! --------- FORMULE A 15 POINTS :  (CF TOUZOT PAGE 300) - ORDRE 5 EN X Y Z
             a1 = 0.25d0
-            b1 = (7.0d0 + rac15)/34.0d0
-            b2 = (7.0d0 - rac15)/34.0d0
-            c1 = (13.0d0 - 3.0d0*rac15)/34.0d0
-            c2 = (13.0d0 + 3.0d0*rac15)/34.0d0
-            d1 =  (5.0d0 - rac15)/20.0d0
-            e1 =  (5.0d0 + rac15)/20.0d0
+            b1 = (7.0d0+rac15)/34.0d0
+            b2 = (7.0d0-rac15)/34.0d0
+            c1 = (13.0d0-3.0d0*rac15)/34.0d0
+            c2 = (13.0d0+3.0d0*rac15)/34.0d0
+            d1 = (5.0d0-rac15)/20.0d0
+            e1 = (5.0d0+rac15)/20.0d0
             h5 = 8.0d0/405.0d0
-            h1 = (2665.0d0 - 14.0d0*rac15)/226800.0d0
-            h2 = (2665.0d0 + 14.0d0*rac15)/226800.0d0
+            h1 = (2665.0d0-14.0d0*rac15)/226800.0d0
+            h2 = (2665.0d0+14.0d0*rac15)/226800.0d0
             h3 = 5.0d0/567.0d0
 
             xpg(1) = a1
@@ -725,7 +723,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             h5 = un/24.d0
             npi = 0
             do i = 1, 4
-                npi = npi + 1
+                npi = npi+1
                 xpg(npi) = a1
                 ypg(npi) = a1
                 zpg(npi) = a1
@@ -741,7 +739,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
                 if (ndim .ge. 2) ypg(iNode+4) = xno(ndim*(iNode-1)+2)
                 if (ndim .eq. 3) zpg(iNode+4) = xno(ndim*(iNode-1)+3)
             end do
-        endif
+        end if
 
     else if (elrefa .eq. 'PY5' .or. elrefa .eq. 'P13' .or. elrefa .eq. 'P19') then
         if (fapg .eq. 'FPG5') then
@@ -813,10 +811,10 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
 
             p1 = 0.6579669971265040d0
             p2 = 0.6505815563925440d0/deux
-            p3 = -0.921503432203399d0/deux + undemi
-            p4 = -0.355231700855205d0/deux + undemi
-            p5 = -0.749726093801093d0/deux + undemi
-            p6 = 0.3544655777683170d0/deux + undemi
+            p3 = -0.921503432203399d0/deux+undemi
+            p4 = -0.355231700855205d0/deux+undemi
+            p5 = -0.749726093801093d0/deux+undemi
+            p6 = 0.3544655777683170d0/deux+undemi
 
             h1 = 0.169384241783417d0/4.d0
             h2 = 0.283532234381299d0/4.d0
@@ -899,9 +897,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         else
             ASSERT(ASTER_FALSE)
 
-        endif
+        end if
 
-    else if (elrefa .eq. 'TR3'.or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
+    else if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
         if (fapg .eq. 'FPG1') then
             xpg(1) = un/3.d0
             ypg(1) = un/3.d0
@@ -937,18 +935,18 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             h2 = 0.054975871827661d0
             a1 = 0.445948490915965d0
             b1 = 0.091576213509771d0
-            xpg(3) = ( t(b1) + un ) / deux
-            ypg(3) = ( t(un-deux*b1) + un ) / deux
-            xpg(1) = ( t(b1) + un ) / deux
-            ypg(1) = ( t(b1) + un ) / deux
-            xpg(2) = ( t(un-deux*b1) + un ) / deux
-            ypg(2) = ( t(b1) + un ) / deux
-            xpg(6) = ( t(un-deux*a1) + un ) / deux
-            ypg(6) = ( t(a1) + un ) / deux
-            xpg(4) = ( t(a1) + un ) / deux
-            ypg(4) = ( t(un-deux*a1) + un ) / deux
-            xpg(5) = ( t(a1) + un ) / deux
-            ypg(5) = ( t(a1) + un ) / deux
+            xpg(3) = (t(b1)+un)/deux
+            ypg(3) = (t(un-deux*b1)+un)/deux
+            xpg(1) = (t(b1)+un)/deux
+            ypg(1) = (t(b1)+un)/deux
+            xpg(2) = (t(un-deux*b1)+un)/deux
+            ypg(2) = (t(b1)+un)/deux
+            xpg(6) = (t(un-deux*a1)+un)/deux
+            ypg(6) = (t(a1)+un)/deux
+            xpg(4) = (t(a1)+un)/deux
+            ypg(4) = (t(un-deux*a1)+un)/deux
+            xpg(5) = (t(a1)+un)/deux
+            ypg(5) = (t(a1)+un)/deux
             hpg(1) = h2
             hpg(2) = h2
             hpg(3) = h2
@@ -957,24 +955,24 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             hpg(6) = h1
 
         else if (fapg .eq. 'FPG7') then
-            p1 = (155.d0 + rac15)/2400.d0
-            p2 = (155.d0 - rac15)/2400.d0
-            a2 = (6.d0 + rac15)/21.d0
-            b2 = (6.d0 - rac15)/21.d0
+            p1 = (155.d0+rac15)/2400.d0
+            p2 = (155.d0-rac15)/2400.d0
+            a2 = (6.d0+rac15)/21.d0
+            b2 = (6.d0-rac15)/21.d0
             xpg(1) = un/3.d0
             ypg(1) = un/3.d0
             xpg(2) = a2
             ypg(2) = a2
-            xpg(3) = un - deux*a2
+            xpg(3) = un-deux*a2
             ypg(3) = a2
             xpg(4) = a2
-            ypg(4) = un - deux*a2
+            ypg(4) = un-deux*a2
             xpg(5) = b2
             ypg(5) = b2
-            xpg(6) = un - deux*b2
+            xpg(6) = un-deux*b2
             ypg(6) = b2
             xpg(7) = b2
-            ypg(7) = un - deux*b2
+            ypg(7) = un-deux*b2
             hpg(1) = 9.d0/80.d0
             hpg(2) = p1
             hpg(3) = p1
@@ -984,37 +982,37 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             hpg(7) = p2
 
         else if (fapg .eq. 'FPG12') then
-            a1=0.063089014491502d0
-            b1=0.249286745170910d0
-            c1=0.310352451033785d0
-            d1=0.053145049844816d0
+            a1 = 0.063089014491502d0
+            b1 = 0.249286745170910d0
+            c1 = 0.310352451033785d0
+            d1 = 0.053145049844816d0
             xpg(1) = a1
             ypg(1) = a1
-            xpg(2) = un - deux*a1
+            xpg(2) = un-deux*a1
             ypg(2) = a1
             xpg(3) = a1
-            ypg(3) = un - deux*a1
+            ypg(3) = un-deux*a1
             xpg(4) = b1
             ypg(4) = b1
-            xpg(5) = un - deux*b1
+            xpg(5) = un-deux*b1
             ypg(5) = b1
             xpg(6) = b1
-            ypg(6) = un - deux*b1
+            ypg(6) = un-deux*b1
             xpg(7) = c1
             ypg(7) = d1
             xpg(8) = d1
             ypg(8) = c1
-            xpg(9) = un - c1 - d1
+            xpg(9) = un-c1-d1
             ypg(9) = c1
-            xpg(10) = un - c1 - d1
+            xpg(10) = un-c1-d1
             ypg(10) = d1
             xpg(11) = c1
-            ypg(11) = un - c1 - d1
+            ypg(11) = un-c1-d1
             xpg(12) = d1
-            ypg(12) = un - c1 - d1
-            p1=0.025422453185103d0
-            p2=0.058393137863189d0
-            p3=0.041425537809187d0
+            ypg(12) = un-c1-d1
+            p1 = 0.025422453185103d0
+            p2 = 0.058393137863189d0
+            p3 = 0.041425537809187d0
             hpg(1) = p1
             hpg(2) = p1
             hpg(3) = p1
@@ -1056,10 +1054,10 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             ypg(12) = 0.4793080678419d0
             xpg(13) = 0.3333333333333d0
             ypg(13) = 0.3333333333333d0
-            p1= 0.0533472356088d0/deux
-            p2= 0.0771137608903d0/deux
-            p3= 0.1756152574332d0/deux
-            p4= -0.1495700444677d0/deux
+            p1 = 0.0533472356088d0/deux
+            p2 = 0.0771137608903d0/deux
+            p3 = 0.1756152574332d0/deux
+            p4 = -0.1495700444677d0/deux
             hpg(1) = p1
             hpg(2) = p1
             hpg(3) = p1
@@ -1107,11 +1105,11 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             ypg(15) = 0.728492392955404d0
             xpg(16) = 0.728492392955404d0
             ypg(16) = 0.263112829634638d0
-            p1= 0.144315607677787d0/deux
-            p2= 0.095091634267285d0/deux
-            p3= 0.103217370534718d0/deux
-            p4= 0.032458497623198d0/deux
-            p5= 0.027230314174435d0/deux
+            p1 = 0.144315607677787d0/deux
+            p2 = 0.095091634267285d0/deux
+            p3 = 0.103217370534718d0/deux
+            p4 = 0.032458497623198d0/deux
+            p5 = 0.027230314174435d0/deux
             hpg(1) = p1
             hpg(2) = p2
             hpg(3) = p2
@@ -1153,12 +1151,12 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             ypg(5) = undemi
             xpg(6) = zero
             ypg(6) = undemi
-            hpg(1) = un / 30.d0
-            hpg(2) = un / 30.d0
-            hpg(3) = un / 30.d0
-            hpg(4) = 4.d0 / 30.d0
-            hpg(5) = 4.d0 / 30.d0
-            hpg(6) = 4.d0 / 30.d0
+            hpg(1) = un/30.d0
+            hpg(2) = un/30.d0
+            hpg(3) = un/30.d0
+            hpg(4) = 4.d0/30.d0
+            hpg(5) = 4.d0/30.d0
+            hpg(6) = 4.d0/30.d0
 
         else if (fapg .eq. 'FPG3NOS') then
 ! --------- POUR LES POINTS DE GAUSS
@@ -1182,9 +1180,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         else
             ASSERT(ASTER_FALSE)
 
-        endif
+        end if
 
-    else if ( elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') then
+    else if (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') then
         if (fapg .eq. 'FPG1') then
             xpg(1) = zero
             ypg(1) = zero
@@ -1272,9 +1270,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             ypg(9) = zero
 
         else if (fapg .eq. 'FPG16') then
-            h(1) = (18.d0 + rac30)/36.d0
+            h(1) = (18.d0+rac30)/36.d0
             h(2) = h(1)
-            h(3) = (18.d0 - rac30)/36.d0
+            h(3) = (18.d0-rac30)/36.d0
             h(4) = h(3)
             a(1) = -gauss4p12
             a(2) = -a(1)
@@ -1284,7 +1282,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             npi = 0
             do ix = 1, npar
                 do iy = 1, npar
-                    npi = npi + 1
+                    npi = npi+1
                     xpg(npi) = a(ix)
                     ypg(npi) = a(iy)
                     hpg(npi) = h(ix)*h(iy)
@@ -1316,7 +1314,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         else
             ASSERT(ASTER_FALSE)
 
-        endif
+        end if
 
     else if (elrefa .eq. 'SE2' .or. elrefa .eq. 'SE3' .or. elrefa .eq. 'SE4') then
         if (fapg .eq. 'FPG1') then
@@ -1342,9 +1340,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             xpg(2) = -xpg(1)
             xpg(3) = gauss4p34
             xpg(4) = -xpg(3)
-            hpg(1) = (18.d0 + rac30)/36.d0
+            hpg(1) = (18.d0+rac30)/36.d0
             hpg(2) = hpg(1)
-            hpg(3) = (18.d0 - rac30)/36.d0
+            hpg(3) = (18.d0-rac30)/36.d0
             hpg(4) = hpg(3)
 
         else if (fapg .eq. 'FPG2NOS') then
@@ -1373,9 +1371,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             xpg(1) = -un
             xpg(2) = zero
             xpg(3) = un
-            hpg(1) = un / 3.d0
-            hpg(2) = 4.d0 / 3.d0
-            hpg(3) = un / 3.d0
+            hpg(1) = un/3.d0
+            hpg(2) = 4.d0/3.d0
+            hpg(3) = un/3.d0
 
         else if (fapg .eq. 'SIMP1') then
             xpg(1) = -un
@@ -1383,11 +1381,11 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             xpg(3) = zero
             xpg(4) = undemi
             xpg(5) = un
-            hpg(1) = un / 6.d0
-            hpg(2) = deux / 3.d0
-            hpg(3) = un / 3.d0
-            hpg(4) = deux / 3.d0
-            hpg(5) = un / 6.d0
+            hpg(1) = un/6.d0
+            hpg(2) = deux/3.d0
+            hpg(3) = un/3.d0
+            hpg(4) = deux/3.d0
+            hpg(5) = un/6.d0
 
         else if (fapg .eq. 'COTES') then
             xpg(1) = -un
@@ -1436,16 +1434,16 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         else
             ASSERT(ASTER_FALSE)
 
-        endif
+        end if
 
     else if (elrefa .eq. 'PO1') then
         hpg(1) = un
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
-170  continue
+170 continue
 !
     do i = 1, nbpg
         poipg(i) = hpg(i)

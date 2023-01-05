@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! aslint: disable=W1504
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine calcva(ds_thm, kpi   , ndim     ,&
-                  defgem, defgep,&
-                  addeme, addep1, addep2   , addete,&
-                  depsv , epsv  , deps     ,&
-                  temp  , dtemp , grad_temp,&
-                  p1    , dp1   , grad_p1  ,&
-                  p2    , dp2   , grad_p2  ,&
+subroutine calcva(ds_thm, kpi, ndim, &
+                  defgem, defgep, &
+                  addeme, addep1, addep2, addete, &
+                  depsv, epsv, deps, &
+                  temp, dtemp, grad_temp, &
+                  p1, dp1, grad_p1, &
+                  p2, dp2, grad_p2, &
                   retcom)
 !
-use calcul_module, only : ca_ctempr_, ca_ctempm_, ca_ctempp_
-use THM_type
+    use calcul_module, only: ca_ctempr_, ca_ctempm_, ca_ctempp_
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -39,15 +39,15 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterc/r8prem.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: kpi, ndim
-real(kind=8), intent(in) :: defgem(*), defgep(*)
-integer, intent(in) :: addeme, addep1, addep2, addete
-real(kind=8), intent(out) :: depsv, epsv, deps(6)
-real(kind=8), intent(out) :: temp, dtemp, grad_temp(ndim)
-real(kind=8), intent(out) :: p1, dp1, grad_p1(ndim)
-real(kind=8), intent(out) :: p2, dp2, grad_p2(ndim)
-integer, intent(out) :: retcom
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: kpi, ndim
+    real(kind=8), intent(in) :: defgem(*), defgep(*)
+    integer, intent(in) :: addeme, addep1, addep2, addete
+    real(kind=8), intent(out) :: depsv, epsv, deps(6)
+    real(kind=8), intent(out) :: temp, dtemp, grad_temp(ndim)
+    real(kind=8), intent(out) :: p1, dp1, grad_p1(ndim)
+    real(kind=8), intent(out) :: p2, dp2, grad_p2(ndim)
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,63 +93,63 @@ integer, intent(out) :: retcom
 ! - Mechanic - Full coupled
 !
     deps(:) = 0.d0
-    depsv   = 0.d0
-    epsv    = 0.d0
+    depsv = 0.d0
+    epsv = 0.d0
     if (ds_thm%ds_elem%l_dof_meca) then
         do i = 1, 6
-            deps(i) = defgep(addeme+ndim-1+i) - defgem(addeme+ndim-1+i)
+            deps(i) = defgep(addeme+ndim-1+i)-defgem(addeme+ndim-1+i)
         end do
         do i = 1, 3
-            depsv = depsv+defgep(addeme+ndim-1+i) - defgem(addeme+ndim-1+i)
+            depsv = depsv+defgep(addeme+ndim-1+i)-defgem(addeme+ndim-1+i)
         end do
         do i = 1, 3
-            epsv = epsv + defgep(addeme+ndim-1+i)
+            epsv = epsv+defgep(addeme+ndim-1+i)
         end do
-    endif
+    end if
 !
 ! - Mechanic - Weak coupled
 !
     if (ds_thm%ds_elem%l_weak_coupling) then
         call rcvarc(' ', 'DIVU', '-', 'RIGI', kpi, 1, epsvm, iret1)
         call rcvarc(' ', 'DIVU', '+', 'RIGI', kpi, 1, epsvp, iret2)
-        depsv = epsvp - epsvm
-        epsv  = epsvp
-    endif
+        depsv = epsvp-epsvm
+        epsv = epsvp
+    end if
 !
 ! - Hydraulic
 !
-    p1  = ds_thm%ds_parainit%pre1_init
+    p1 = ds_thm%ds_parainit%pre1_init
     dp1 = 0.d0
-    p2  = ds_thm%ds_parainit%pre2_init
+    p2 = ds_thm%ds_parainit%pre2_init
     dp2 = 0.d0
     if (ds_thm%ds_elem%l_dof_pre1) then
-        p1  = defgep(addep1) + ds_thm%ds_parainit%pre1_init
-        dp1 = defgep(addep1) - defgem(addep1)
+        p1 = defgep(addep1)+ds_thm%ds_parainit%pre1_init
+        dp1 = defgep(addep1)-defgem(addep1)
         do i = 1, ndim
             grad_p1(i) = defgep(addep1+i)
         end do
         if (ds_thm%ds_elem%l_dof_pre2) then
-            p2  = defgep(addep2) + ds_thm%ds_parainit%pre2_init
+            p2 = defgep(addep2)+ds_thm%ds_parainit%pre2_init
             if (abs(p2) .le. r8prem()) then
-              call tecael(iadzi, iazk24)
-              nomail = zk24(iazk24-1+3) (1:8)
-              call utmess('A', 'THM2_7', sk=nomail)
-            retcom = 1
-        endif
-            dp2 = defgep(addep2) - defgem(addep2)
+                call tecael(iadzi, iazk24)
+                nomail = zk24(iazk24-1+3) (1:8)
+                call utmess('A', 'THM2_7', sk=nomail)
+                retcom = 1
+            end if
+            dp2 = defgep(addep2)-defgem(addep2)
             do i = 1, ndim
                 grad_p2(i) = defgep(addep2+i)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Thermic
 !
-    temp  = ds_thm%ds_parainit%temp_init
+    temp = ds_thm%ds_parainit%temp_init
     dtemp = 0.d0
     if (ds_thm%ds_elem%l_dof_ther) then
-        dtemp = defgep(addete) - defgem(addete)
-        temp  = defgep(addete) + ds_thm%ds_parainit%temp_init
+        dtemp = defgep(addete)-defgem(addete)
+        temp = defgep(addete)+ds_thm%ds_parainit%temp_init
         do i = 1, ndim
             grad_temp(i) = defgep(addete+i)
         end do
@@ -158,7 +158,7 @@ integer, intent(out) :: retcom
             nomail = zk24(iazk24-1+3) (1:8)
             call utmess('A', 'THM2_6', sk=nomail)
             retcom = 1
-        endif
+        end if
         ca_ctempr_ = ds_thm%ds_parainit%temp_init
         ca_ctempm_ = temp-dtemp
         ca_ctempp_ = temp
@@ -166,6 +166,6 @@ integer, intent(out) :: retcom
         ca_ctempr_ = 0.d0
         ca_ctempm_ = 0.d0
         ca_ctempp_ = 0.d0
-    endif
+    end if
 !
 end subroutine

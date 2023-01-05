@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function dmwdt2(rho11, alp11, phids, satur, cs,&
+function dmwdt2(rho11, alp11, phids, satur, cs, &
                 dpvpt)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-real(kind=8), intent(in) :: rho11, alp11, phids, satur, cs, dpvpt
-real(kind=8) :: dmwdt2
+    real(kind=8), intent(in) :: rho11, alp11, phids, satur, cs, dpvpt
+    real(kind=8) :: dmwdt2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,6 +44,6 @@ real(kind=8) :: dmwdt2
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dmwdt2 = rho11*(-3.d0*alp11 + (phids-satur*satur*cs+satur*cs)*dpvpt)
+    dmwdt2 = rho11*(-3.d0*alp11+(phids-satur*satur*cs+satur*cs)*dpvpt)
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,21 +52,21 @@ subroutine te0060(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
 !
     tz0 = r8t0()
 !
 ! INITS.
     if (option(11:14) .eq. 'TEXT') then
         ltext = .true.
-    else if (option(11:14).eq.'RAYO') then
+    else if (option(11:14) .eq. 'RAYO') then
         ltext = .false.
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
 !====
@@ -84,7 +84,7 @@ subroutine te0060(option, nomte)
         call jevech('PRAYONF', 'L', iray)
         call jevech('PTEMPER', 'L', itemp)
 ! FIN DU IF LTEXT
-    endif
+    end if
 !
 ! TRONC COMMUN
     call jevech('PGEOMER', 'L', igeom)
@@ -106,12 +106,12 @@ subroutine te0060(option, nomte)
 !    CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -132,15 +132,15 @@ subroutine te0060(option, nomte)
             idec = (i-1)*ndim
             do j = 1, nno
                 jdec = (j-1)*ndim
-                nx=nx+zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(&
-                i,j)
-                ny=ny+zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(&
-                i,j)
-                nz=nz+zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(&
-                i,j)
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx( &
+                     i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy( &
+                     i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz( &
+                     i, j)
             end do
         end do
-        jac = sqrt(nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
         tem = 0.d0
         xx = 0.d0
         yy = 0.d0
@@ -149,15 +149,15 @@ subroutine te0060(option, nomte)
         if (itemp .ne. 0) then
             do i = 1, nno
 ! CALCUL DE T-
-                tem = tem + zr(itemp+i-1) * zr(ivf+ldec+i-1)
+                tem = tem+zr(itemp+i-1)*zr(ivf+ldec+i-1)
             end do
-        endif
+        end if
 !
         do i = 1, nno
 ! CALCUL DE LA POSITION GEOMETRIQUE DU PT DE GAUSS
-            xx = xx + zr(igeom+3*i-3) * zr(ivf+ldec+i-1)
-            yy = yy + zr(igeom+3*i-2) * zr(ivf+ldec+i-1)
-            zz = zz + zr(igeom+3*i-1) * zr(ivf+ldec+i-1)
+            xx = xx+zr(igeom+3*i-3)*zr(ivf+ldec+i-1)
+            yy = yy+zr(igeom+3*i-2)*zr(ivf+ldec+i-1)
+            zz = zz+zr(igeom+3*i-1)*zr(ivf+ldec+i-1)
         end do
 !
         valpar(1) = xx
@@ -170,34 +170,34 @@ subroutine te0060(option, nomte)
 !====
         if (ltext) then
 !
-            call fointe('FM', zk8(itext), 4, nompar, valpar,&
+            call fointe('FM', zk8(itext), 4, nompar, valpar, &
                         texnp1, ier)
 !
             if (theta .ne. 1.0d0) then
                 valpar(4) = zr(itemps)-zr(itemps+1)
-                call fointe('FM', zk8(itext), 4, nompar, valpar,&
+                call fointe('FM', zk8(itext), 4, nompar, valpar, &
                             texn, ier)
 !
             else
                 texn = 0.d0
-            endif
+            end if
 !
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(iech), 4, nompar, valpar,&
+            call fointe('FM', zk8(iech), 4, nompar, valpar, &
                         echnp1, ier)
 !
             if (theta .ne. 1.0d0) then
                 valpar(4) = zr(itemps)-zr(itemps+1)
-                call fointe('FM', zk8(iech), 4, nompar, valpar,&
+                call fointe('FM', zk8(iech), 4, nompar, valpar, &
                             echn, ier)
 !
             else
                 echn = 0.d0
-            endif
+            end if
 !
             do i = 1, nno
-                zr(ivectt+i-1) = zr(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zr(ivf+ldec+i-1) * ( &
-                                 &theta*echnp1*texnp1+(1.0d0- theta)*echn*(texn-tem))
+                zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
+                                 &theta*echnp1*texnp1+(1.0d0-theta)*echn*(texn-tem))
             end do
 !
 !====
@@ -205,45 +205,45 @@ subroutine te0060(option, nomte)
 !====
         else
 !
-            call fointe('FM', zk8(iray), 4, nompar, valpar,&
+            call fointe('FM', zk8(iray), 4, nompar, valpar, &
                         sigm1, ier)
             if (theta .ne. 1.0d0) then
                 valpar(4) = zr(itemps)-zr(itemps+1)
-                call fointe('FM', zk8(iray), 4, nompar, valpar,&
+                call fointe('FM', zk8(iray), 4, nompar, valpar, &
                             sigmn, ier)
             else
                 sigmn = 0.d0
-            endif
+            end if
 !
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(iray+1), 4, nompar, valpar,&
+            call fointe('FM', zk8(iray+1), 4, nompar, valpar, &
                         eps1, ier)
             if (theta .ne. 1.0d0) then
                 valpar(4) = zr(itemps)-zr(itemps+1)
-                call fointe('FM', zk8(iray+1), 4, nompar, valpar,&
+                call fointe('FM', zk8(iray+1), 4, nompar, valpar, &
                             epsn, ier)
             else
                 epsn = 0.d0
-            endif
+            end if
 !
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(iray+2), 4, nompar, valpar,&
+            call fointe('FM', zk8(iray+2), 4, nompar, valpar, &
                         tpf1, ier)
             if (theta .ne. 1.0d0) then
                 valpar(4) = zr(itemps)-zr(itemps+1)
-                call fointe('FM', zk8(iray+2), 4, nompar, valpar,&
+                call fointe('FM', zk8(iray+2), 4, nompar, valpar, &
                             tpfn, ier)
             else
                 tpfn = 0.d0
-            endif
+            end if
 !
             do i = 1, nno
-                zr(ivectt+i-1) = zr(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zr(ivf+ldec+i-1) * ( &
-                                 &theta *sigm1*eps1* (tpf1+ tz0)**4+ (1.0d0-theta)*sigmn*epsn*((t&
-                                 &pfn+tz0)**4-(tem+ tz0)**4))
+                zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)*( &
+                                 &theta*sigm1*eps1*(tpf1+tz0)**4+(1.0d0-theta)*sigmn*epsn*((t&
+                                 &pfn+tz0)**4-(tem+tz0)**4))
             end do
 ! FIN DU IF LTEXT
-        endif
+        end if
 ! FIN BOUCLE SUR LES PTS DE GAUSS
     end do
 end subroutine

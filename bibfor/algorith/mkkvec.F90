@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine mkkvec(rese, nrese, ndim, vec, resu)
 !
     do i = 1, 3
         do j = 1, 3
-            mat(i,j) = 0.d0
+            mat(i, j) = 0.d0
         end do
         resu(i) = 0.d0
     end do
@@ -64,51 +64,51 @@ subroutine mkkvec(rese, nrese, ndim, vec, resu)
 ! --- CALCUL DE LA NORME DE LAMBDA +RHO[[U]]_TAU
 !
     norme = nrese*nrese
-    if ((norme.eq.0.d0) .or. (nrese.eq.0.d0)) then
+    if ((norme .eq. 0.d0) .or. (nrese .eq. 0.d0)) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CALCUL DU PRODUIT IK()VEC
 !
     if (ndim .eq. 2) then
         do i = 1, 2
             do j = 1, 2
-                mat(i,j) = -theta*rese(i)*rese(j)/norme
+                mat(i, j) = -theta*rese(i)*rese(j)/norme
             end do
         end do
         do j = 1, 2
-            mat(j,j) = 1.d0+mat(j,j)
+            mat(j, j) = 1.d0+mat(j, j)
         end do
         do i = 1, 2
             do j = 1, 2
-                mat(i,j) = mat(i,j)/nrese
+                mat(i, j) = mat(i, j)/nrese
             end do
         end do
         do i = 1, 2
             do j = 1, 2
-                resu(i) = mat(i,j)*vec(j)+resu(i)
+                resu(i) = mat(i, j)*vec(j)+resu(i)
                 resu(3) = 0.d0
             end do
         end do
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         do i = 1, 3
             do j = 1, 3
-                mat(i,j) = -theta*rese(i)*rese(j)/norme
+                mat(i, j) = -theta*rese(i)*rese(j)/norme
             end do
         end do
         do j = 1, 3
-            mat(j,j) = 1.d0+mat(j,j)
+            mat(j, j) = 1.d0+mat(j, j)
         end do
         do i = 1, 3
             do j = 1, 3
-                mat(i,j) = mat(i,j)/nrese
+                mat(i, j) = mat(i, j)/nrese
             end do
         end do
         do i = 1, 3
             do j = 1, 3
-                resu(i) = mat(i,j)*vec(j)+resu(i)
+                resu(i) = mat(i, j)*vec(j)+resu(i)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

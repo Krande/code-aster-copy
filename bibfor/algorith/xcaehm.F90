@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 ! aslint: disable=W1504
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xcaehm(ds_thm, nomte, l_axi, l_steady, type_elem, inte_type,&
-                  mecani, press1, press2, tempe, dimdef,&
-                  dimcon, nmec, np1, np2, ndim,&
-                  nno, nnos, nnom, npi, npg,&
-                  nddls, nddlm, dimuel, ipoids, ivf,&
-                  idfde, ddld, ddlm, ddlp, enrmec, nenr,&
+subroutine xcaehm(ds_thm, nomte, l_axi, l_steady, type_elem, inte_type, &
+                  mecani, press1, press2, tempe, dimdef, &
+                  dimcon, nmec, np1, np2, ndim, &
+                  nno, nnos, nnom, npi, npg, &
+                  nddls, nddlm, dimuel, ipoids, ivf, &
+                  idfde, ddld, ddlm, ddlp, enrmec, nenr, &
                   dimenr, nnop, nnops, nnopm, enrhyd, ddlc, nfh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/thmGetElemIntegration.h"
@@ -36,17 +36,17 @@ implicit none
 #include "asterfort/xgrdhm.h"
 #include "asterfort/xitghm.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-integer :: nfh
-integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
-integer :: nno, nnos, nnom
-integer :: dimdef, dimcon, nmec, np1, np2
-integer :: npg, npi, nddls, nddlm, ipoids, ivf, idfde
-character(len=16) :: nomte
-character(len=3), intent(out) :: inte_type
-aster_logical, intent(out) :: l_axi, l_steady
-integer, intent(out) :: ndim
-character(len=8), intent(out) :: type_elem(2)
+    type(THM_DS), intent(inout) :: ds_thm
+    integer :: nfh
+    integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
+    integer :: nno, nnos, nnom
+    integer :: dimdef, dimcon, nmec, np1, np2
+    integer :: npg, npi, nddls, nddlm, ipoids, ivf, idfde
+    character(len=16) :: nomte
+    character(len=3), intent(out) :: inte_type
+    aster_logical, intent(out) :: l_axi, l_steady
+    integer, intent(out) :: ndim
+    character(len=8), intent(out) :: type_elem(2)
 
 ! ======================================================================
 ! --- BUT : PREPARATION DU CALCUL SUR UN ELEMENT THM -------------------
@@ -84,7 +84,6 @@ character(len=8), intent(out) :: type_elem(2)
 ! OUT IDFDE  : ADRESSE DU TABLEAU DES DERIVESS DES FONCTIONS DE FORME P2
 ! OUT DDLC   : NOMBRE DE DDLS DE CONTACT
 
-
 !
 ! DECLARATION POUR XFEM
     integer :: ddld, ddlm, ddlp, dimenr, ddlc
@@ -105,17 +104,17 @@ character(len=8), intent(out) :: type_elem(2)
 ! ======================================================================
 ! --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 ! ======================================================================
-    call xgrdhm(nomte, ndim, mecani, press1, press2,&
-                tempe, enrmec, dimdef, dimcon, nmec,&
+    call xgrdhm(nomte, ndim, mecani, press1, press2, &
+                tempe, enrmec, dimdef, dimcon, nmec, &
                 np1, np2, nenr, dimenr, enrhyd, nfh)
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 ! ======================================================================
-    call xitghm(inte_type, mecani, press1, ndim, nno,&
-                nnos, nnom, npi, npg, nddls,&
-                nddlm, dimuel, ddld, ddlm, nnop,&
-                nnops, nnopm, ipoids, ivf, idfde, ddlp,&
+    call xitghm(inte_type, mecani, press1, ndim, nno, &
+                nnos, nnom, npi, npg, nddls, &
+                nddlm, dimuel, ddld, ddlm, nnop, &
+                nnops, nnopm, ipoids, ivf, idfde, ddlp, &
                 ddlc)
 ! ======================================================================
 end subroutine

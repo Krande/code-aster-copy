@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
 ! person_in_charge: natacha.bereux at edf.fr
 !
-use aster_petsc_module
-use petsc_data_module
-use saddle_point_module, only : update_double_lagrange
+    use aster_petsc_module
+    use petsc_data_module
+    use saddle_point_module, only: update_double_lagrange
 
     implicit none
 #include "jeveux.h"
@@ -50,10 +50,10 @@ use saddle_point_module, only : update_double_lagrange
 !
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, nloc, nglo, rang
-    integer :: nbproc, lmat, neq, bs,ieq
+    integer :: nbproc, lmat, neq, bs, ieq
     integer :: iloc, iglo
     integer :: jrefn, jdeeq, numno1, nucmp1
-    integer, dimension(:), pointer :: nlgp => null(), nulg=> null(), prddl =>null()
+    integer, dimension(:), pointer :: nlgp => null(), nulg => null(), prddl => null()
     logical :: ldebug
 !
     character(len=8)  :: noma
@@ -73,7 +73,7 @@ use saddle_point_module, only : update_double_lagrange
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
-    ldebug=.false.
+    ldebug = .false.
 !
 !     -- LECTURE DU COMMUN
     nomat = nomat_courant
@@ -83,9 +83,9 @@ use saddle_point_module, only : update_double_lagrange
 !
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
     precon = slvk(2)
-    if ( precon == 'BLOC_LAGR' ) then
-            call update_double_lagrange( x )
-    endif
+    if (precon == 'BLOC_LAGR') then
+        call update_double_lagrange(x)
+    end if
 !
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     neqg = to_petsc_int(zi(jnequ))
@@ -101,68 +101,67 @@ use saddle_point_module, only : update_double_lagrange
         call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
         call jeveuo(nonu//'.NUML.PDDL', 'L', vi=prddl)
 
-
 !
         nloc = zi(jnequl)
         nglo = neqg
         neql = to_petsc_int(nloc)
 !
         do iloc = 1, nglo
-            rsolu(iloc)=0.d0
-        enddo
+            rsolu(iloc) = 0.d0
+        end do
 !
         call VecGetOwnershipRange(x, low2, high2, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
 !       -- RECOPIE DE DANS RSOLU
         call VecGetArray(x, xx, xidx, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
         do iloc = 1, nloc
-            if ( prddl(iloc) .eq. rang ) then
-                nuglpe= to_petsc_int(nlgp(iloc))
-                iglo= nulg(iloc)
-                rsolu(iglo)=xx(xidx+nuglpe-low2)
-            endif
-        enddo
+            if (prddl(iloc) .eq. rang) then
+                nuglpe = to_petsc_int(nlgp(iloc))
+                iglo = nulg(iloc)
+                rsolu(iglo) = xx(xidx+nuglpe-low2)
+            end if
+        end do
 !
         call asmpi_comm_vect('MPI_SUM', 'R', nbval=nglo, vr=rsolu)
 !
         call VecRestoreArray(x, xx, xidx, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
     else
         call jelira(nonu//'.SMOS.SMDI', 'LONMAX', neq)
-        ASSERT(neq.eq.neqg)
+        ASSERT(neq .eq. neqg)
 !
 !       -- RECONSTRUCTION DE LA LA SOLUTION SUR CHAQUE PROC
         call VecScatterCreateToAll(x, ctx, xgth, ierr)
-        ASSERT(ierr.eq.0)
-        call VecScatterBegin(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD,&
+        ASSERT(ierr .eq. 0)
+        call VecScatterBegin(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD, &
                              ierr)
-        ASSERT(ierr.eq.0)
-        call VecScatterEnd(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD,&
+        ASSERT(ierr .eq. 0)
+        call VecScatterEnd(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD, &
                            ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecScatterDestroy(ctx, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
 !       -- RECOPIE DE XX DANS RSOLU
         call VecGetArray(xgth, xx, xidx, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
         do ieq = 1, neq
-            rsolu(ieq)=xx(xidx+ieq)
+            rsolu(ieq) = xx(xidx+ieq)
         end do
 !
         call VecRestoreArray(xgth, xx, xidx, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
 !       -- NETTOYAGE
         call VecDestroy(xgth, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
-    endif
+    end if
 !
     call jeveuo(nomat//'.&INT', 'L', lmat)
 !
@@ -171,15 +170,15 @@ use saddle_point_module, only : update_double_lagrange
 !
     if (ldebug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-        noma = zk24(jrefn)(1:8)
+        noma = zk24(jrefn) (1:8)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
         do ieq = 1, neq
             numno1 = zi(jdeeq+2*(ieq-1))
-            nucmp1 = zi(jdeeq +2*(ieq-1) + 1)
-            write(19,*) numno1, nucmp1, rsolu(ieq)
+            nucmp1 = zi(jdeeq+2*(ieq-1)+1)
+            write (19, *) numno1, nucmp1, rsolu(ieq)
         end do
-        flush(19)
-    endif
+        flush (19)
+    end if
 !
     call jedema()
 !

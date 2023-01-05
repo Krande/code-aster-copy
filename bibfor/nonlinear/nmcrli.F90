@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmcrli(inst_init, list_inst, sddisc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -41,9 +41,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=19), intent(in) :: sddisc
-character(len=19), intent(in) :: list_inst
-real(kind=8), intent(in) :: inst_init
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: list_inst
+    real(kind=8), intent(in) :: inst_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,13 +86,13 @@ real(kind=8), intent(in) :: inst_init
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','MECANONLINE13_15')
-    endif
+        call utmess('I', 'MECANONLINE13_15')
+    end if
 !
 ! - Initializations
 !
     l_init_noexist = .false.
-    keywf          = 'INCREMENT'
+    keywf = 'INCREMENT'
     list_inst_work = '&&NMCRLI.PROVLI'
 !
 ! - Create loops object
@@ -101,12 +101,12 @@ real(kind=8), intent(in) :: inst_init
 ! --- 3 - Fixed loops (NIVEAU)
 !
     sddisc_bcle = sddisc(1:19)//'.BCLE'
-    call wkvect(sddisc_bcle, 'V V I', 3, vi = v_sddisc_bcle)
+    call wkvect(sddisc_bcle, 'V V I', 3, vi=v_sddisc_bcle)
 !
 ! - Create continuation choice object
 !
     sddisc_epil = sddisc(1:19)//'.EPIL'
-    call wkvect(sddisc_epil, 'V V I', 2, vi = v_sddisc_epil)
+    call wkvect(sddisc_epil, 'V V I', 2, vi=v_sddisc_epil)
     v_sddisc_epil(1) = 1
     v_sddisc_epil(2) = 1
 !
@@ -119,29 +119,29 @@ real(kind=8), intent(in) :: inst_init
 !
     if (list_inst_type .eq. 'LISTR8_SDASTER') then
         call nmcrlm(list_inst, sddisc, list_inst_work)
-    else if (list_inst_type.eq.'LIST_INST') then
-        sddisc_linf    = sddisc(1:19)//'.LINF'
+    else if (list_inst_type .eq. 'LIST_INST') then
+        sddisc_linf = sddisc(1:19)//'.LINF'
         list_inst_info = list_inst(1:8)//'.LIST.INFOR'
         list_inst_ditr = list_inst(1:8)//'.LIST.DITR'
         call jedup1(list_inst_ditr, 'V', list_inst_work)
         call jedup1(list_inst_info, 'V', sddisc_linf)
-    endif
+    end if
 !
 ! - Get parameters
 !
-    call utdidt('L', sddisc, 'LIST', 'DTMIN',&
-                valr_ = dtmin)
-    call utdidt('L', sddisc, 'LIST', 'NBINST',&
-                vali_ = nb_inst)
+    call utdidt('L', sddisc, 'LIST', 'DTMIN', &
+                valr_=dtmin)
+    call utdidt('L', sddisc, 'LIST', 'NBINST', &
+                vali_=nb_inst)
 !
 ! - Acces to list of times
 !
-    call jeveuo(list_inst_work, 'L', vr = v_list_work)
+    call jeveuo(list_inst_work, 'L', vr=v_list_work)
 !
 ! - Get parameters
 !
     call getvr8(keywf, 'PRECISION', iocc=1, scal=tole)
-    tole = abs(dtmin) * tole
+    tole = abs(dtmin)*tole
 !
 ! - Have an initial time in ETAT_INIT ?
 !
@@ -149,11 +149,11 @@ real(kind=8), intent(in) :: inst_init
         l_inst_init = .false.
     else
         l_inst_init = .true.
-    endif
+    end if
 !
 ! - Index of initial time
 !
-    call nmdini(keywf  , list_inst_work, inst_init, l_inst_init, tole,&
+    call nmdini(keywf, list_inst_work, inst_init, l_inst_init, tole, &
                 nb_inst, l_init_noexist, nume_ini)
 !
 ! - Index of final time
@@ -164,17 +164,17 @@ real(kind=8), intent(in) :: inst_init
 !
     if (nume_ini .ge. nume_end) then
         call utmess('F', 'DISCRETISATION_92')
-    endif
+    end if
 !
 ! - Resize list of times
 !
-    call nmcrls(sddisc   , list_inst_work, nume_ini, nume_end, l_init_noexist,&
-                inst_init, nb_inst_new   , dtmin)
+    call nmcrls(sddisc, list_inst_work, nume_ini, nume_end, l_init_noexist, &
+                inst_init, nb_inst_new, dtmin)
 !
 ! - Create object for subdividing time steps
 !
     sddisc_dini = sddisc(1:19)//'.DINI'
-    call wkvect(sddisc_dini, 'V V I', nb_inst_new, vi = v_sddisc_dini)
+    call wkvect(sddisc_dini, 'V V I', nb_inst_new, vi=v_sddisc_dini)
     do nume_inst = 1, nb_inst_new
         v_sddisc_dini(nume_inst) = 1
     end do
@@ -182,17 +182,17 @@ real(kind=8), intent(in) :: inst_init
 ! - Create object for number of iterations
 !
     sddisc_iter = sddisc(1:19)//'.ITER'
-    call wkvect(sddisc_iter, 'V V I', nb_inst_new, vi = v_sddisc_iter)
+    call wkvect(sddisc_iter, 'V V I', nb_inst_new, vi=v_sddisc_iter)
 !
 ! - Save parameters
 !
-    dt0 = diinst(sddisc,1) - diinst(sddisc,0)
-    call utdidt('E', sddisc, 'LIST', 'DT-',&
-                valr_ = dt0)
-    call utdidt('E', sddisc, 'LIST', 'NBINST',&
-                vali_ = nb_inst_new)
-    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
-                valr_ = dtmin)
+    dt0 = diinst(sddisc, 1)-diinst(sddisc, 0)
+    call utdidt('E', sddisc, 'LIST', 'DT-', &
+                valr_=dt0)
+    call utdidt('E', sddisc, 'LIST', 'NBINST', &
+                vali_=nb_inst_new)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN', &
+                valr_=dtmin)
 !
 ! - Save object of time steps
 !

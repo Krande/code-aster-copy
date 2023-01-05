@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
-                  nbelt, tbnozo, nbnoe, xy, volume,&
+subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo, &
+                  nbelt, tbnozo, nbnoe, xy, volume, &
                   energi, pe)
 !
 !********************************************************************
@@ -69,7 +69,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
     integer :: i, inno, nuef, iint, inel, noeud
     integer :: nbint
-    parameter( nbint = 6 )
+    parameter(nbint=6)
     integer :: nint, nhop, npir, next, nbi, norm(2, 4)
     real(kind=8) :: coord1(3), coord2(3), coorn(3, 12)
     real(kind=8) :: xao1, yao1, zao1, xo1o2, yo1o2, zo1o2
@@ -81,14 +81,14 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 ! 1 - COORDONNEES DE NOEU1 ET NOEU2
 !
     do i = 1, 3
-        coord1(i) = xy(i,noeu1)
-        coord2(i) = xy(i,noeu2)
+        coord1(i) = xy(i, noeu1)
+        coord2(i) = xy(i, noeu2)
     end do
     xo1o2 = coord2(1)-coord1(1)
     yo1o2 = coord2(2)-coord1(2)
     zo1o2 = coord2(3)-coord1(3)
-    do1o2 = sqrt( xo1o2**2 + yo1o2**2 + zo1o2**2 )
-    ASSERT(do1o2.ge.1.d-20)
+    do1o2 = sqrt(xo1o2**2+yo1o2**2+zo1o2**2)
+    ASSERT(do1o2 .ge. 1.d-20)
 !
 ! 2 - CALCUL DU RAYON MAXI
 !
@@ -97,15 +97,15 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
     do inno = 1, nbnoe
 !
         noeud = tbnozo(inno)
-        xao1 = xy(1,noeud)-coord1(1)
-        yao1 = xy(2,noeud)-coord1(2)
-        zao1 = xy(3,noeud)-coord1(3)
+        xao1 = xy(1, noeud)-coord1(1)
+        yao1 = xy(2, noeud)-coord1(2)
+        zao1 = xy(3, noeud)-coord1(3)
 !
-        dist = sqrt(&
-               (yao1*zo1o2 - zao1*yo1o2 )**2 + (zao1*xo1o2 - xao1*zo1o2 )**2 + (xao1*yo1o2 - yao1&
-               &*xo1o2 )**2&
-               ) / do1o2
-        rayon=max(rayon,dist)
+        dist = sqrt( &
+               (yao1*zo1o2-zao1*yo1o2)**2+(zao1*xo1o2-xao1*zo1o2)**2+(xao1*yo1o2-yao1&
+                                                                     &*xo1o2)**2 &
+               )/do1o2
+        rayon = max(rayon, dist)
 !
     end do
 !
@@ -119,7 +119,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
     do iint = 1, nbint
 !
-        r = (iint*rayon) / nbint
+        r = (iint*rayon)/nbint
         rayz(iint) = r
         ener(iint) = 0.d+0
         voltot = 0.d+0
@@ -142,36 +142,36 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
             npir = 0
             next = 0
             do inno = 1, icnc(1, nuef)
-                noeud = icnc(inno+2,nuef)
-                call drao12(coord1, coord2, xo1o2, yo1o2, zo1o2,&
-                            do1o2, xy( 1, noeud), ray)
+                noeud = icnc(inno+2, nuef)
+                call drao12(coord1, coord2, xo1o2, yo1o2, zo1o2, &
+                            do1o2, xy(1, noeud), ray)
                 if (ray(1) .le. rayz(iint)) then
                     if (ray(2) .eq. 0.0d0) then
-                        norm(1,inno) = 1
-                        norm(2,inno) = 0
-                        nint = nint + 1
-                        npir = npir + 1
+                        norm(1, inno) = 1
+                        norm(2, inno) = 0
+                        nint = nint+1
+                        npir = npir+1
                     else
-                        norm(1,inno) = -1
-                        if (ray(2) .eq. 1.0d0) norm(2,inno) = 1
-                        if (ray(2) .eq. -1.0d0) norm(2,inno) = -1
-                        next = next + 10
-                        nhop = nhop + 1
-                        npir = npir + 1
-                    endif
+                        norm(1, inno) = -1
+                        if (ray(2) .eq. 1.0d0) norm(2, inno) = 1
+                        if (ray(2) .eq. -1.0d0) norm(2, inno) = -1
+                        next = next+10
+                        nhop = nhop+1
+                        npir = npir+1
+                    end if
                 else
                     if (ray(2) .ne. 0.0d0) then
-                        norm(1,inno) = -1
-                        if (ray(2) .eq. 1.0d0) norm(2,inno) = 1
-                        if (ray(2) .eq. -1.0d0) norm(2,inno) = -1
-                        next = next + 1
-                        nhop = nhop + 1
+                        norm(1, inno) = -1
+                        if (ray(2) .eq. 1.0d0) norm(2, inno) = 1
+                        if (ray(2) .eq. -1.0d0) norm(2, inno) = -1
+                        next = next+1
+                        nhop = nhop+1
                     else
-                        norm(1,inno) = -1
-                        norm(2,inno) = 0
-                        next = next + 1
-                    endif
-                endif
+                        norm(1, inno) = -1
+                        norm(2, inno) = 0
+                        next = next+1
+                    end if
+                end if
             end do
 !
 ! 3.1.2 - VOLUME DE L INTERSECTION VOLI SELON LES CAS
@@ -180,60 +180,60 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !         SINON ON CORRIGE
 !
             if (nint .eq. 4) then
-                voli=volume(nuef)
-            else if (next.ne.4) then
+                voli = volume(nuef)
+            else if (next .ne. 4) then
                 voli = 0.0d0
                 do inno = 1, 4
-                    coorn(1,inno) = xy(1,icnc(inno+2,nuef))
-                    coorn(2,inno) = xy(2,icnc(inno+2,nuef))
-                    coorn(3,inno) = xy(3,icnc(inno+2,nuef))
+                    coorn(1, inno) = xy(1, icnc(inno+2, nuef))
+                    coorn(2, inno) = xy(2, icnc(inno+2, nuef))
+                    coorn(3, inno) = xy(3, icnc(inno+2, nuef))
                 end do
 !
 ! CALCUL DES INTERSECTIONS DES ARETES DU TETRA AVEC LE CYLINDRE
 !
-                call dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
-                            do1o2, r, norm, nint, nhop,&
+                call dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2, &
+                            do1o2, r, norm, nint, nhop, &
                             npir, coorn, nbi)
 !
                 if (nint .eq. 1 .and. nbi .eq. 3) then
                     i = -1
-                    voli = dvolu1(i,coorn,norm,volume)
-                else if (nint.eq.3.and.nbi.eq.3) then
-                    voli = dvolu1(nuef,coorn,norm,volume)
-                else if (nint.eq.2.and.nbi.eq.2) then
-                    voli = dvolu4(coorn,norm,coord1)
-                else if (nint.eq.2.and.nbi.eq.3) then
-                    voli = dvolu3(coorn,norm,coord1)
-                else if (nint.eq.2.and.nbi.eq.4) then
-                    voli = dvolu2(coorn,norm)
-                else if (nbi.eq.0) then
+                    voli = dvolu1(i, coorn, norm, volume)
+                else if (nint .eq. 3 .and. nbi .eq. 3) then
+                    voli = dvolu1(nuef, coorn, norm, volume)
+                else if (nint .eq. 2 .and. nbi .eq. 2) then
+                    voli = dvolu4(coorn, norm, coord1)
+                else if (nint .eq. 2 .and. nbi .eq. 3) then
+                    voli = dvolu3(coorn, norm, coord1)
+                else if (nint .eq. 2 .and. nbi .eq. 4) then
+                    voli = dvolu2(coorn, norm)
+                else if (nbi .eq. 0) then
                     voli = 0.0d0
                 else
 !             problème intersection cylindre tétraèdre
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
-            ASSERT(voli.ge.0.d0)
+            ASSERT(voli .ge. 0.d0)
 !
 ! 3.1.3 - CALCUL DE L ENERGIE
 !
-            ener(iint) = ener(iint) + energi(nuef)*voli/volume(nuef)
-            voltot = voltot + voli
+            ener(iint) = ener(iint)+energi(nuef)*voli/volume(nuef)
+            voltot = voltot+voli
 !
 ! 2 - FIN DE LA BOUCLE SUR TOUS LES EF
 !
         end do
 !
-        ASSERT(voltot.gt.0.d0.and.ener(iint).gt.0.d0)
-        ener(iint) = ener(iint) / voltot
+        ASSERT(voltot .gt. 0.d0 .and. ener(iint) .gt. 0.d0)
+        ener(iint) = ener(iint)/voltot
 !
 ! LISSAGE DE LA COURBE ENERGI=F(RAYON) POUR IDENTIFIER PE
 !
         if (iint .ge. 2) then
             i = iint-1
-            ener(iint) = min(ener(iint),ener(i))
-        endif
+            ener(iint) = min(ener(iint), ener(i))
+        end if
 !
 ! 3 - FIN DE LA BOUCLE SUR LE CALCUL DE L ENERGIE
 !

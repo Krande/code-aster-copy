@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefrot(ndim, som, vit0, promas, provis,&
-                  z, ru, rint, re, cp,&
-                  cf, dh, vit, rho, visc,&
-                  itypg, zg, tg, dg, rugg,&
-                  axg, xig, afluid, pm, cfg,&
+subroutine mefrot(ndim, som, vit0, promas, provis, &
+                  z, ru, rint, re, cp, &
+                  cf, dh, vit, rho, visc, &
+                  itypg, zg, tg, dg, rugg, &
+                  axg, xig, afluid, pm, cfg, &
                   vitg, rhog, viscg)
 ! aslint: disable=W1504
     implicit none
@@ -106,7 +106,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
     if (ntypg .ne. 0) then
         call wkvect('&&MEFROT.TEMP.DHG', 'V V R', ntypg, idhg)
         call wkvect('&&MEFROT.TEMP.REG', 'V V R', nbgtot, ireg)
-    endif
+    end if
 !
     pi = r8pi()
 !
@@ -116,18 +116,18 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 ! --- PROFIL DE VISCOSITE
     if (ndir .eq. 1) then
         nompar = 'X'
-    else if (ndir.eq.2) then
+    else if (ndir .eq. 2) then
         nompar = 'Y'
-    else if (ndir.eq.3) then
+    else if (ndir .eq. 3) then
         nompar = 'Z'
-    endif
+    end if
 !
 ! --- PROFIL DE MASSE VOLUMIQUE ET DE VISCOSITE AUX POINTS DE
 ! --- DISCRETISATION
     do i = 1, nbz
-        call fointe('F ', promas, 1, nompar, z(i),&
+        call fointe('F ', promas, 1, nompar, z(i), &
                     rho(i), ier)
-        call fointe('F ', provis, 1, nompar, z(i),&
+        call fointe('F ', provis, 1, nompar, z(i), &
                     visc(i), ier)
     end do
 !
@@ -138,7 +138,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 ! --- PROFIL DE VITESSE AUX POINTS DE DISCRETISATION
 !
     do i = 1, nbz
-        vit(i) = rho0 * vit0 / rho(i)
+        vit(i) = rho0*vit0/rho(i)
     end do
     vit(0) = vit0
 !
@@ -163,10 +163,10 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
         if (ntypg .ne. 0) then
             afluid = pi*rext*rext-pi*a
             pm = 2.d0*(pi*rext+pi*b)
-        endif
+        end if
 !
 ! --- ENCEINTE RECTANGULAIRE
-    else if (iencei.eq.2) then
+    else if (iencei .eq. 2) then
 !
         do i = 1, 4
             xsom(i) = som(2*i-1)
@@ -183,16 +183,16 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
         long23 = (x23*x23+y23*y23)
         long23 = sqrt(long23)
 !
-        dh = 2.d0*(long12*long23-pi*a)/ (long12+long23+pi*b)
+        dh = 2.d0*(long12*long23-pi*a)/(long12+long23+pi*b)
 !
         if (ntypg .ne. 0) then
             afluid = long12*long23-pi*a
             pm = 2.d0*(long12+long23+pi*b)
-        endif
+        end if
 !
-    else if (iencei.eq.0) then
+    else if (iencei .eq. 0) then
         dh = 100.d0
-    endif
+    end if
 !
     do i = 1, nbz
 !
@@ -221,37 +221,37 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !
             if (re(i) .lt. 2000.d0) then
                 cf(i) = 16.d0*pi/re(i)
-            endif
+            end if
 !
 ! ---       REGIME CRITIQUE
 !
-            if ((re(i).ge.2000.d0) .and. (re(i).le.4000.d0)) then
+            if ((re(i) .ge. 2000.d0) .and. (re(i) .le. 4000.d0)) then
                 cf(i) = 1.2d-04*pi*(re(i)**0.55d0)
-            endif
+            end if
 !
 ! ---       REGIME HYDRAULIQUEMENT LISSE
 !
-            if ((re(i).gt.4000.d0) .and. (re(i).lt.relim1)) then
-                cf(i) = 1.d0*pi/4.d0/( 1.8d0*log10(re(i))-1.64d0) /(1.8d0*log10(re(i))-1.64d0)
-            endif
+            if ((re(i) .gt. 4000.d0) .and. (re(i) .lt. relim1)) then
+                cf(i) = 1.d0*pi/4.d0/(1.8d0*log10(re(i))-1.64d0)/(1.8d0*log10(re(i))-1.64d0)
+            end if
 !
 ! ---       TRANSITION TURBULENTE
 !
-            if ((re(i).ge.relim1) .and. (re(i).le.relim2)) then
-                cf(i) = 0.1d0*pi*((1.46d0*ru/dh+ 100.d0/re(i))** 0.25d0)/4.d0
-            endif
+            if ((re(i) .ge. relim1) .and. (re(i) .le. relim2)) then
+                cf(i) = 0.1d0*pi*((1.46d0*ru/dh+100.d0/re(i))**0.25d0)/4.d0
+            end if
 !
 ! ---       REGIME QUADRATIQUE TURBULENT
 !
             if (re(i) .gt. relim2) then
-                cf(i) = pi/(2.d0*log10(3.7d0*dh/ru)) /(2.d0*log10( 3.7d0*dh/ru) ) /4.d0
-            endif
+                cf(i) = pi/(2.d0*log10(3.7d0*dh/ru))/(2.d0*log10(3.7d0*dh/ru))/4.d0
+            end if
 !
 !
         else
             cf(i) = 0.d0
             cp(i) = 0.d0
-        endif
+        end if
     end do
 !
 !
@@ -264,20 +264,20 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !
         do i = 2, nbz
             do j = 1, nbgtot
-                ecart=(z(i)-zg(j))*(z(i-1)-zg(j))
+                ecart = (z(i)-zg(j))*(z(i-1)-zg(j))
 !
                 if (ecart .le. 0.d0) then
-                    rhog(j)=( rho(i-1)*(z(i)-zg(j))+ rho(i)*(zg(j)-z(&
-                    i-1)) )/ (z(i)-z(i-1))
+                    rhog(j) = (rho(i-1)*(z(i)-zg(j))+rho(i)*(zg(j)-z( &
+                                                             i-1)))/(z(i)-z(i-1))
 !
 !    ----------------------------------------
 !      CALCUL DU PROFIL DE VISCOSITE CINEMATIQUE AU NIVEAU
 !     DES GRILLES PAR INTERPOLATION LINEAIRE
 !     ---------------------------------------
 !
-                    viscg(j)=( visc(i-1)*(z(i)-zg(j))+ visc(i)*(zg(j)-&
-                    z(i-1)) )/ (z(i)-z(i-1))
-                endif
+                    viscg(j) = (visc(i-1)*(z(i)-zg(j))+visc(i)*(zg(j)- &
+                                                                z(i-1)))/(z(i)-z(i-1))
+                end if
             end do
         end do
 !
@@ -287,23 +287,23 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !     ---------------------------------------------------------
 !
         do j = 1, nbgtot
-            vitg(j)=0.d0
+            vitg(j) = 0.d0
         end do
 !
-        nbplaq=2*(sqrt(dble(nbcyl))+1)
+        nbplaq = 2*(sqrt(dble(nbcyl))+1)
         do k = 1, ntypg
-            axg(k)=nbplaq*tg(k)*dg(k)-(0.5d0*nbplaq*tg(k))* (0.5d0*&
-            nbplaq*tg(k))
-            xig(k)=4*dg(k)+sqrt(dble(nbcyl))*4* (dg(k)-0.5d0*nbplaq*&
-            tg(k))
+            axg(k) = nbplaq*tg(k)*dg(k)-(0.5d0*nbplaq*tg(k))*(0.5d0* &
+                                                              nbplaq*tg(k))
+            xig(k) = 4*dg(k)+sqrt(dble(nbcyl))*4*(dg(k)-0.5d0*nbplaq* &
+                                                  tg(k))
         end do
 !
         do j = 1, nbgtot
             do k = 1, ntypg
                 if (itypg(j) .eq. k) then
-                    vitg(j)=1.d0/(1.d0-(axg(k)/afluid))* (1.d0/rhog(j)&
-                    )*rho0*vit0
-                endif
+                    vitg(j) = 1.d0/(1.d0-(axg(k)/afluid))*(1.d0/rhog(j) &
+                                                           )*rho0*vit0
+                end if
             end do
         end do
 !
@@ -313,21 +313,21 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !     ------------------------------------------------------------------
 !
         do k = 1, ntypg
-            zr(idhg+k-1)=4.d0*(afluid-axg(k))/(pm+xig(k))
+            zr(idhg+k-1) = 4.d0*(afluid-axg(k))/(pm+xig(k))
         end do
 !
         do i = 2, nbz
             do j = 1, nbgtot
-                ecart=(z(i)-zg(j))*(z(i-1)-zg(j))
+                ecart = (z(i)-zg(j))*(z(i-1)-zg(j))
 !
                 if (ecart .le. 0.d0) then
                     do k = 1, ntypg
                         if (itypg(j) .eq. k) then
-                            zr(ireg+j-1)=zr(idhg+k-1)*abs(vitg(j))/&
-                            viscg(j)
-                        endif
+                            zr(ireg+j-1) = zr(idhg+k-1)*abs(vitg(j))/ &
+                                           viscg(j)
+                        end if
                     end do
-                endif
+                end if
             end do
         end do
 !
@@ -337,7 +337,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !     ----------------------------------------------------------------
 !
         do j = 1, nbgtot
-            cfg(j)=0.d0
+            cfg(j) = 0.d0
         end do
 !
         do j = 1, nbgtot
@@ -348,15 +348,15 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !              REGIME LAMINAIRE
 !              ----------------
                 if (zr(ireg+j-1) .lt. 2000.d0) then
-                    cfg(j)=16.d0*pi/zr(ireg+j-1)
-                endif
+                    cfg(j) = 16.d0*pi/zr(ireg+j-1)
+                end if
 !
 !              ---------------
 !              REGIME CRITIQUE
 !              ---------------
-                if ((zr(ireg+j-1).ge.2000.d0) .and. (zr(ireg+j-1) .le.4000.d0)) then
-                    cfg(j)=1.2d-04*pi*(zr(ireg+j-1)**0.55d0)
-                endif
+                if ((zr(ireg+j-1) .ge. 2000.d0) .and. (zr(ireg+j-1) .le. 4000.d0)) then
+                    cfg(j) = 1.2d-04*pi*(zr(ireg+j-1)**0.55d0)
+                end if
 !
 !     REDEFINITION DES COEFFICIENTS DE TRANSITION DANS LE CAS
 !     DES GRILLES
@@ -364,48 +364,48 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
 !
                 do k = 1, ntypg
                     if (itypg(j) .eq. k) then
-                        relim1=23.d0*zr(idhg+k-1)/rugg(k)
-                        relim2=560.d0*zr(idhg+k-1)/rugg(k)
-                    endif
+                        relim1 = 23.d0*zr(idhg+k-1)/rugg(k)
+                        relim2 = 560.d0*zr(idhg+k-1)/rugg(k)
+                    end if
                 end do
 !
 !              ----------------------------
 !              REGIME HYDRAULIQUEMENT LISSE
 !              ----------------------------
-                if ((zr(ireg+j-1).gt.4000.d0) .and. (zr(ireg+j-1) .lt.relim1)) then
-                    cfg(j)=1.d0*pi/4.d0/(1.8d0*log10(zr(ireg+j-1))-&
-                    1.64d0) /(1.8d0*log10(zr(ireg+j-1))-1.64d0)
-                endif
+                if ((zr(ireg+j-1) .gt. 4000.d0) .and. (zr(ireg+j-1) .lt. relim1)) then
+                    cfg(j) = 1.d0*pi/4.d0/(1.8d0*log10(zr(ireg+j-1))- &
+                                           1.64d0)/(1.8d0*log10(zr(ireg+j-1))-1.64d0)
+                end if
 !
 !              ---------------------
 !              TRANSITION TURBULENTE
 !              ---------------------
-                if ((zr(ireg+j-1).ge.relim1) .and. (zr(ireg+j-1) .le.relim2)) then
+                if ((zr(ireg+j-1) .ge. relim1) .and. (zr(ireg+j-1) .le. relim2)) then
                     k = itypg(j)
-                    cfg(j)=0.1d0*pi*((1.46d0*rugg(k)/zr(idhg+k-1)+&
-                    100.d0/zr(ireg+j-1))**0.25d0)/4.d0
-                endif
+                    cfg(j) = 0.1d0*pi*((1.46d0*rugg(k)/zr(idhg+k-1)+ &
+                                        100.d0/zr(ireg+j-1))**0.25d0)/4.d0
+                end if
 !
 !              -----------------------------
 !              REGIME QUADRATIQUE TURBULENT
 !              -----------------------------
                 if (zr(ireg+j-1) .gt. relim2) then
                     k = itypg(j)
-                    cfg(j)=pi/(2.d0*log10(3.7d0*zr(idhg+k-1)/rugg(k)))&
-                    /(2.d0*log10(3.7d0*zr(idhg+k-1)/rugg(k))) /4.d0
-                endif
+                    cfg(j) = pi/(2.d0*log10(3.7d0*zr(idhg+k-1)/rugg(k))) &
+                             /(2.d0*log10(3.7d0*zr(idhg+k-1)/rugg(k)))/4.d0
+                end if
 !
             else
-                cfg(j)=0.d0
-            endif
+                cfg(j) = 0.d0
+            end if
 !
         end do
 !
-    endif
+    end if
 !
     if (ntypg .ne. 0) then
         call jedetr('&&MEFROT.TEMP.DHG')
         call jedetr('&&MEFROT.TEMP.REG')
-    endif
+    end if
     call jedema()
 end subroutine

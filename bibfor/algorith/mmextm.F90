@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfnumn.h"
@@ -52,7 +52,7 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 !
 !
     integer :: nbnmax
-    parameter    (nbnmax = 9)
+    parameter(nbnmax=9)
 !
     integer :: ino, nnomai
     integer :: numnno(nbnmax), posnno(nbnmax)
@@ -64,14 +64,14 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 !
 ! --- INITIALISATIONS
 !
-    do ino = 1,nbnmax
+    do ino = 1, nbnmax
         mlagr(ino) = 0.d0
     end do
 !
 ! --- NUMEROS DANS SD CONTACT DES NOEUDS DE LA MAILLE ESCLAVE
 !
     call cfposn(defico, posmae, posnno, nnomai)
-    ASSERT(nnomai.le.nbnmax)
+    ASSERT(nnomai .le. nbnmax)
 !
 ! --- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE ESCLAVE
 !

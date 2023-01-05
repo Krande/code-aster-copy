@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine foec2c(iuni, v, nbcoup, n1, n2,&
+subroutine foec2c(iuni, v, nbcoup, n1, n2, &
                   nompar, nomres)
     implicit none
     integer :: iuni, nbcoup, n1, n2
@@ -38,16 +38,16 @@ subroutine foec2c(iuni, v, nbcoup, n1, n2,&
 !-----------------------------------------------------------------------
     integer :: i, j
 !-----------------------------------------------------------------------
-    n1=min(n1,nbcoup)
-    n2=min(n2,nbcoup)
+    n1 = min(n1, nbcoup)
+    n2 = min(n2, nbcoup)
 !
     gva = nompar
     gfo = nomres
-    write(iuni, 100 )&
-     &    ( ('<-PARAMETRE->     <-RESULTAT->       ')  , j=1,2  ) ,&
-     &    ( ('   '//gva//'           '//gfo//'       '),i=1,2)
-    write(iuni,101) (v(i),v(nbcoup+(2*i-1)),v(nbcoup+(2*i)),i=n1,n2)
+    write (iuni, 100)&
+     &    (('<-PARAMETRE->     <-RESULTAT->       '), j=1, 2),&
+     &    (('   '//gva//'           '//gfo//'       '), i=1, 2)
+    write (iuni, 101) (v(i), v(nbcoup+(2*i-1)), v(nbcoup+(2*i)), i=n1, n2)
 !
-    100 format(/,1x,2a,/,1x,2a )
-    101 format( 2(1x,1pe11.4,1x,1pe11.4,1x,1pe11.4,1x) )
+100 format(/, 1x, 2a, /, 1x, 2a)
+101 format(2(1x, 1pe11.4, 1x, 1pe11.4, 1x, 1pe11.4, 1x))
 end subroutine

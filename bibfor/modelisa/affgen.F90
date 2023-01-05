@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,18 +50,18 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
     integer :: jdge, nel
     real(kind=8) :: aireint, ay, az
 !-----------------------------------------------------------------------
-    data    eps     /1.d-3/
+    data eps/1.d-3/
 !     ------------------------------------------------------------------
 !
     call jemarq()
     pi = r8pi()
 !
-    if (.not.(nel.eq.ntel(1) .or. nel.eq.ntel(2) .or. nel.eq.ntel(3) .or. nel.eq.ntel(4) .or. &
-              nel.eq.ntel(5) .or. nel.eq.ntel(11) .or. nel.eq.ntel(12) .or. nel.eq.ntel(8) .or. &
-              nel.eq.ntel(9) .or. nel.eq.ntel(10) .or. nel.eq.ntel(6) .or. nel.eq.ntel(7) .or. &
-              nel.eq.ntel(13) )) then
+if (.not. (nel .eq. ntel(1) .or. nel .eq. ntel(2) .or. nel .eq. ntel(3) .or. nel .eq. ntel(4) .or. &
+         nel .eq. ntel(5) .or. nel .eq. ntel(11) .or. nel .eq. ntel(12) .or. nel .eq. ntel(8) .or. &
+          nel .eq. ntel(9) .or. nel .eq. ntel(10) .or. nel .eq. ntel(6) .or. nel .eq. ntel(7) .or. &
+               nel .eq. ntel(13))) then
         call utmess('F', 'MODELISA_86')
-    endif
+    end if
 !
     call jeveuo(jexnom(tmp, nom), 'E', jdge)
     isec = nint(zr(jdge+35))
@@ -81,17 +81,17 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
                 igeoc = 34
                 igen = 12
                 igen2 = 38
-            endif
+            end if
             zr(jdge+igeoc-1) = 0.d0
             zr(jdge+igeoc) = 0.d0
             hy = zr(jdge+igeor-1)
             hz = zr(jdge+igeor)
             epy = zr(jdge+igeor+1)
             epz = zr(jdge+igeor+2)
-            hyi = hy - 2.d0*epy
-            hzi = hz - 2.d0*epz
+            hyi = hy-2.d0*epy
+            hzi = hz-2.d0*epz
 !           A
-            zr(jdge+igen-1) = hy * hz - hyi * hzi
+            zr(jdge+igen-1) = hy*hz-hyi*hzi
 !           IY
             zr(jdge+igen) = (hy*(hz*hz*hz)-hyi*(hzi*hzi*hzi))/12.d0
 !           IZ
@@ -101,19 +101,19 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 !           EZ
             zr(jdge+igen+5) = 0.d0
 !           RY
-            zr(jdge+igen+7) = hy / 2.d0
+            zr(jdge+igen+7) = hy/2.d0
 !           RZ
-            zr(jdge+igen+8) = hz / 2.d0
+            zr(jdge+igen+8) = hz/2.d0
 !
 !           cas de la section rectangulaire pleine
             if (abs(hyi/hy) .le. eps .or. abs(hzi/hz) .le. eps) then
-                a = hy / 2.d0
-                b = hz / 2.d0
+                a = hy/2.d0
+                b = hz/2.d0
                 if (a/b .lt. 1.d0) then
-                    a = hz / 2.d0
-                    b = hy / 2.d0
-                endif
-                a4 = a**4 * 12.d0
+                    a = hz/2.d0
+                    b = hy/2.d0
+                end if
+                a4 = a**4*12.d0
                 b4 = b**4
                 b3 = b**3
                 jx = a*b3*(16.d0/3.d0-3.36d0*b*(1.d0-b4/a4)/a)
@@ -136,58 +136,58 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 !               JX
                 zr(jdge+igen+6) = jx
 !               RT
-                zr(jdge+igen+9) = jx * (3.d0*a+1.8d0*b) / (8.d0*a*a*b* b)
+                zr(jdge+igen+9) = jx*(3.d0*a+1.8d0*b)/(8.d0*a*a*b*b)
 !               AI
                 zr(jdge+igen2-1) = 0.d0
             else
 !               cas du tube rectangulaire ---
 !               JX
                 ct = 2.d0*epy*epz*(hy-epy)*(hy-epy)*(hz-epz)*(hz-epz)
-                cd = hy*epy + hz*epz - epy*epy - epz*epz
-                jx = ct /cd
+                cd = hy*epy+hz*epz-epy*epy-epz*epz
+                jx = ct/cd
                 zr(jdge+igen+6) = jx
 !               AY  : jdge+igen+2
 !               AZ  : jdge+igen+3
-                if (nel.eq.ntel(2) .or. nel.eq.ntel(11)) then
+                if (nel .eq. ntel(2) .or. nel .eq. ntel(11)) then
                     zr(jdge+igen+2) = 0.d0
                     zr(jdge+igen+3) = 0.d0
                 else
 !                   interpolation des coefficients de cisaillement
-                    alpha = (hy - 2.d0 * epy ) / hy
-                    beta = (hz - 2.d0 * epz ) / hz
-                    ASSERT((alpha.ge.0.d0) .or. (beta.ge.0.d0))
+                    alpha = (hy-2.d0*epy)/hy
+                    beta = (hz-2.d0*epz)/hz
+                    ASSERT((alpha .ge. 0.d0) .or. (beta .ge. 0.d0))
                     if (alpha .gt. 0.95d0 .or. beta .gt. 0.95d0) then
                         call utmess('F', 'MODELISA10_15')
-                    endif
-                    nompa(1)= 'ALPHA'
-                    nompa(2)= 'BETA'
-                    valpay(1)= alpha
-                    valpay(2)= beta
-                    valpaz(1)= beta
-                    valpaz(2)= alpha
+                    end if
+                    nompa(1) = 'ALPHA'
+                    nompa(2) = 'BETA'
+                    valpay(1) = alpha
+                    valpay(2) = beta
+                    valpaz(1) = beta
+                    valpaz(2) = alpha
                     call fointe('A', napcis, 2, nompa, valpay, ay, ier)
                     call fointe('A', napcis, 2, nompa, valpaz, az, ier)
                     zr(jdge+igen+2) = ay
                     zr(jdge+igen+3) = az
-                endif
+                end if
 !               RT. TUBE RECTANGULAIRE MINCE D’ÉPAISSEUR CONSTANTE. RT=JX/2.E.AINT
                 aireint = (hy-2.d0*epy)*(hz-2.d0*epz)
                 zr(jdge+igen+9) = jx/(2.d0*epz*aireint)
 !               AI
-                zr(jdge+igen2-1) = hyi * hzi
-            endif
+                zr(jdge+igen2-1) = hyi*hzi
+            end if
 !           AY/AZ POUR TUYAUX ET 3D_FAISCEAU
-            if (nel.eq.ntel(8) .or. nel.eq.ntel(9) .or. nel.eq.ntel(10) .or. &
-                nel.eq.ntel(6) .or. nel.eq.ntel(7)) then
+            if (nel .eq. ntel(8) .or. nel .eq. ntel(9) .or. nel .eq. ntel(10) .or. &
+                nel .eq. ntel(6) .or. nel .eq. ntel(7)) then
                 zr(jdge+igen+2) = 0.d0
                 zr(jdge+igen+3) = 0.d0
-            endif
-        enddo
+            end if
+        end do
 !       JG1,JG2,IYR21,IYR22,IZR21,IZR22 :
         do i = 1, 6
             zr(jdge-1+38+i) = 0.d0
-        enddo
-    endif
+        end do
+    end if
 !
 !   calcul des caractéristiques générales section circulaire
 !       erreur   si re <= 0  ou  e > re ou e <= 0  (test dans affdef)
@@ -203,18 +203,18 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
                 igeoc = 34
                 igen = 12
                 igen2 = 38
-            endif
+            end if
             zr(jdge+igeor-1) = 0.d0
             zr(jdge+igeor) = 0.d0
             zr(jdge+igeor+1) = 0.d0
             zr(jdge+igeor+2) = 0.d0
             re = zr(jdge+igeoc-1)
             e = zr(jdge+igeoc)
-            ri = re - e
+            ri = re-e
 !           A
-            zr(jdge+igen-1) = pi * ( re*re - ri*ri )
+            zr(jdge+igen-1) = pi*(re*re-ri*ri)
 !           IY
-            zr(jdge+igen) = pi * ( re**4 - ri**4 ) / 4.d0
+            zr(jdge+igen) = pi*(re**4-ri**4)/4.d0
 !           IZ
             zr(jdge+igen+1) = zr(jdge+igen)
 !           EY
@@ -222,7 +222,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 !           EZ
             zr(jdge+igen+5) = 0.d0
 !           JX
-            zr(jdge+igen+6) = zr(jdge+igen) * 2.d0
+            zr(jdge+igen+6) = zr(jdge+igen)*2.d0
 !           RY
             zr(jdge+igen+7) = re
 !           RZ
@@ -230,34 +230,34 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 !           RT
             zr(jdge+igen+9) = re
 !           AY et AZ
-            if (nel.eq.ntel(2) .or. nel.eq.ntel(11)) then
+            if (nel .eq. ntel(2) .or. nel .eq. ntel(11)) then
                 zr(jdge+igen+2) = 0.0d0
                 zr(jdge+igen+3) = 0.0d0
             else
 !               interpolation des coefficients de cisaillement
-                alpha = ri / re
+                alpha = ri/re
                 ASSERT((alpha .ge. 0.d0) .or. (alpha .le. 1.d0))
                 nompaf = 'ALPHA'
                 valpaf = alpha
                 call fointe('A', foncis, 1, [nompaf], [valpaf], ccis, ier)
                 zr(jdge+igen+2) = ccis
                 zr(jdge+igen+3) = ccis
-            endif
+            end if
 !           AI
-            zr(jdge+igen2-1) = pi * ri * ri
+            zr(jdge+igen2-1) = pi*ri*ri
 !           AY/AZ POUR TUYAUX ET 3D_FAISCEAU
-            if (nel.eq.ntel(8) .or. nel.eq.ntel(9) .or. nel.eq.ntel(10) .or. &
-                nel.eq.ntel(6) .or. nel.eq.ntel(7)) then
+            if (nel .eq. ntel(8) .or. nel .eq. ntel(9) .or. nel .eq. ntel(10) .or. &
+                nel .eq. ntel(6) .or. nel .eq. ntel(7)) then
                 zr(jdge+igen+2) = 0.d0
                 zr(jdge+igen+3) = 0.d0
-            endif
+            end if
 !
-        enddo
+        end do
 !       JG1,JG2,IYR21,IYR22,IZR21,IZR22 :
         do i = 1, 6
             zr(jdge-1+38+i) = 0.d0
-        enddo
-    endif
+        end do
+    end if
 !
     call jedema()
 end subroutine

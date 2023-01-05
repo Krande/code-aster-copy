@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntarch(numins, modele  , mate , carele      , para       ,&
+subroutine ntarch(numins, modele, mate, carele, para, &
                   sddisc, ds_inout, force, sdcrit_nonl_, ds_algorom_)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/didern.h"
@@ -69,7 +69,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result         = ds_inout%result
+    result = ds_inout%result
     list_load_resu = ds_inout%list_load_resu
 !
 ! - Print timer
@@ -78,18 +78,18 @@ implicit none
 !
 ! - Last step => storing
 !
-    if (didern(sddisc,numins)) then
+    if (didern(sddisc, numins)) then
         force = .true.
-    endif
+    end if
 !
 ! - Get index for storing
 !
-    call dinuar(result    , sddisc    , numins, force,&
+    call dinuar(result, sddisc, numins, force, &
                 nume_store)
 !
 ! - Current time
 !
-    instan = diinst(sddisc,numins)
+    instan = diinst(sddisc, numins)
 !
 ! - Storing
 !
@@ -101,25 +101,25 @@ implicit none
 !
 ! ----- Increased result datastructure if necessary
 !
-        call rsexch(' ', result, 'TEMP', nume_store, k19bid,&
+        call rsexch(' ', result, 'TEMP', nume_store, k19bid, &
                     iret)
         if (iret .eq. 110) then
             call rsagsd(result, 0)
-        endif
+        end if
 !
 ! ----- Storing parameters
 !
         if (present(sdcrit_nonl_)) then
-            call ntarc0(result, modele    , mate  , carele      , list_load_resu,&
-                        para  , nume_store, instan, sdcrit_nonl_)
+            call ntarc0(result, modele, mate, carele, list_load_resu, &
+                        para, nume_store, instan, sdcrit_nonl_)
         else
-            call ntarc0(result, modele    , mate  , carele, list_load_resu,&
-                        para  , nume_store, instan)
-        endif
+            call ntarc0(result, modele, mate, carele, list_load_resu, &
+                        para, nume_store, instan)
+        end if
 !
 ! ----- Storing fields
 !
-        call nmarce(ds_inout, result, sddisc, instan, nume_store,&
+        call nmarce(ds_inout, result, sddisc, instan, nume_store, &
                     force)
 !
 ! ----- Storing reduced parameters table (ROM)
@@ -128,9 +128,9 @@ implicit none
             if (ds_algorom_%l_rom) then
                 if (nume_store .gt. 0) then
                     call romAlgoNLTableSave(nume_store, instan, ds_algorom_)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 end subroutine

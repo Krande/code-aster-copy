@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,18 +50,18 @@ subroutine op0035()
     real(kind=8) :: rval, rbid
 !
     call jemarq()
-    rbid=0.d0
-    cbid=(0.d0,0.d0)
+    rbid = 0.d0
+    cbid = (0.d0, 0.d0)
     call infmaj()
     call getres(result, type, nomcmd)
-    ketat='?'
+    ketat = '?'
 !
 !=======================================================================
 !- NOM DES PARAMETRES REELS A RECUPERER
 !=======================================================================
 !
     call getvtx(' ', 'LISTE_INFO', nbval=0, nbret=nbval)
-    nbval=-nbval
+    nbval = -nbval
     call wkvect('&&LISTE_INFO', 'V V K16', nbval, jkval)
     call wkvect('&&TYPE_INFO', 'V V K8', nbval, jtval)
 !
@@ -73,7 +73,7 @@ subroutine op0035()
             zk8(jtval+k-1) = 'I'
         else if (zk16(jkval+k-1) .eq. 'ETAT_UNITE') then
             zk8(jtval+k-1) = 'K8'
-        endif
+        end if
     end do
 !
     call tbcrsd(result, 'G')
@@ -83,44 +83,44 @@ subroutine op0035()
         if (zk16(jkval+k-1) .eq. 'TEMPS_RESTANT') then
 !         -- TEMPS CPU RESTANT :
             call uttrst(rval)
-            call tbajli(result, nbval, zk16(jkval+k-1), [ibid], [rval],&
+            call tbajli(result, nbval, zk16(jkval+k-1), [ibid], [rval], &
                         [cbid], k8bid, 0)
         else if (zk16(jkval+k-1) .eq. 'UNITE_LIBRE') then
-            ul = ulnume ()
-            call tbajli(result, nbval, zk16(jkval+k-1), [ul], [rbid],&
+            ul = ulnume()
+            call tbajli(result, nbval, zk16(jkval+k-1), [ul], [rbid], &
                         [cbid], k8bid, 0)
         else if (zk16(jkval+k-1) .eq. 'ETAT_UNITE') then
             call getvis(' ', 'UNITE', scal=ul, nbret=nbunit)
             if (nbunit .eq. 0) then
                 call getvtx(' ', 'FICHIER', scal=kfic, nbret=nbfic)
-                ul = ulnomf (kfic, k8bid, k8bid)
-            endif
-            etat='FERME  '
+                ul = ulnomf(kfic, k8bid, k8bid)
+            end if
+            etat = 'FERME  '
             if (ul .ge. 0) then
                 call ulisog(ul, kfic, ketat)
                 if (ketat .eq. 'O') then
-                    etat='OUVERT  '
+                    etat = 'OUVERT  '
                 else if (ketat .eq. 'R') then
-                    etat='RESERVE '
-                endif
-            endif
-            call tbajli(result, nbval, zk16(jkval+k-1), [ibid], [rbid],&
+                    etat = 'RESERVE '
+                end if
+            end if
+            call tbajli(result, nbval, zk16(jkval+k-1), [ibid], [rbid], &
                         [cbid], etat, 0)
             if ((ketat .eq. 'R') .or. (ketat .eq. 'O')) then
 !       SI LE FICHIER EST RESERVE OU OUVERT LE NOM EST MIS DANS LA TABLE
 !             K*255 = 4*K*80 = (1,80)+(81,160)+(161,240)+(241,255)
 !                                 80      80        80        15
 !           5 COLONNES SONT AJOUTÉES A LA LIGNE K DE LA TABLE
-                call tbajco(result, 'NOMFIC1', 'K80', 1, [ibid],&
-                            [rbid], [cbid], kfic( 1: 80), 'A', [k])
-                call tbajco(result, 'NOMFIC2', 'K80', 1, [ibid],&
-                            [rbid], [cbid], kfic( 81:160), 'A', [k])
-                call tbajco(result, 'NOMFIC3', 'K80', 1, [ibid],&
+                call tbajco(result, 'NOMFIC1', 'K80', 1, [ibid], &
+                            [rbid], [cbid], kfic(1:80), 'A', [k])
+                call tbajco(result, 'NOMFIC2', 'K80', 1, [ibid], &
+                            [rbid], [cbid], kfic(81:160), 'A', [k])
+                call tbajco(result, 'NOMFIC3', 'K80', 1, [ibid], &
                             [rbid], [cbid], kfic(161:240), 'A', [k])
-                call tbajco(result, 'NOMFIC4', 'K80', 1, [ibid],&
+                call tbajco(result, 'NOMFIC4', 'K80', 1, [ibid], &
                             [rbid], [cbid], kfic(241:255), 'A', [k])
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call titre()

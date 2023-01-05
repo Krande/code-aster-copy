@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@ subroutine lglpmv(cumul, n, a, x, y)
         do i = 1, n
             y(i) = 0.0d0
         end do
-    endif
+    end if
 ! ======================================================================
     do j = 1, n
         do i = 1, n
-            y(i) = y(i) + a(i,j) * x(j)
+            y(i) = y(i)+a(i, j)*x(j)
         end do
     end do
 ! ======================================================================

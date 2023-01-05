@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci,&
-                  itmax, toler, alpham, dgamma, dalpha,&
+subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci, &
+                  itmax, toler, alpham, dgamma, dalpha, &
                   iret)
     implicit none
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -50,35 +50,35 @@ subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci,&
 !
 !     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 !
-    iec=nbcomm(ifa,2)
-    absdga=abs(dgamma)
-    nuecin=nint(coeft(iec))
+    iec = nbcomm(ifa, 2)
+    absdga = abs(dgamma)
+    nuecin = nint(coeft(iec))
 !
 !----------------------------------------------------------------------
 !   POUR UN NOUVEAU TYPE D'ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF
 !----------------------------------------------------------------------
 !
-    iret=0
+    iret = 0
 !      IF (NECRCI.EQ.'ECRO_CINE1') THEN
     if (nuecin .eq. 1) then
-        d=coeft(iec+1)
-        dalpha=dgamma-d*alpham*absdga
+        d = coeft(iec+1)
+        dalpha = dgamma-d*alpham*absdga
 !
 !      IF (NECRCI.EQ.'ECRO_CINE2') THEN
-    else if (nuecin.eq.2) then
-        iret=0
-        d =coeft(iec+1)
-        gm=coeft(iec+2)
-        pm=coeft(iec+3)
-        c =coeft(iec+4)
-        cc=abs(c*alpham)
-        dalpha=dgamma-d*alpham*absdga
+    else if (nuecin .eq. 2) then
+        iret = 0
+        d = coeft(iec+1)
+        gm = coeft(iec+2)
+        pm = coeft(iec+3)
+        c = coeft(iec+4)
+        cc = abs(c*alpham)
+        dalpha = dgamma-d*alpham*absdga
         if (cc .gt. r8miem()) then
-            sgna=alpham/abs(alpham)
-            dalpha=dalpha-sgna*(cc/gm)**pm
-        endif
+            sgna = alpham/abs(alpham)
+            dalpha = dalpha-sgna*(cc/gm)**pm
+        end if
     else
         call utmess('F', 'COMPOR1_19')
-    endif
+    end if
 !
 end subroutine

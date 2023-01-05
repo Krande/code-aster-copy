@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mesomm(champ, long, vi, vr, vc,&
+subroutine mesomm(champ, long, vi, vr, vc, &
                   nbma, linuma)
     implicit none
 #include "asterf_types.h"
@@ -88,10 +88,10 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     champ2 = champ
     rzero = 0.0d0
     if (present(nbma)) then
-        nbmail=nbma
+        nbmail = nbma
     else
-        nbmail=0
-    endif
+        nbmail = 0
+    end if
 !
 !
 !     1- ON CALCULE : TYPCH,LIGREL,IGD ET SCAL :
@@ -101,19 +101,19 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     call jeexin(champ2//'.RESL', ier2)
     if (ier1+ier2 .eq. 0) then
         call utmess('F', 'CALCULEL3_73', sk=champ2)
-    endif
+    end if
 !
 !
     if (ier1 .gt. 0) then
-        typch='CHML'
+        typch = 'CHML'
 !       -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
         call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
         call celver(champ2, 'NBSPT_1', 'STOP', ibid)
         call jeveuo(champ2//'.CELD', 'L', jceld)
     else
-        typch='RESL'
+        typch = 'RESL'
         call jeveuo(champ2//'.DESC', 'L', jceld)
-    endif
+    end if
 !
     call jeveuo(champ2//'.CELK', 'L', vk24=celk)
     ligrel = celk(1) (1:19)
@@ -123,13 +123,13 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !
     if (scal(1:1) .eq. 'R') then
         ASSERT(present(vr))
-    else if (scal(1:1).eq.'C') then
+    else if (scal(1:1) .eq. 'C') then
         ASSERT(present(vc))
-    else if (scal(1:1).eq.'I') then
+    else if (scal(1:1) .eq. 'I') then
         ASSERT(present(vi))
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !     2- ON VERIFIE LES LONGUEURS:
@@ -140,33 +140,33 @@ subroutine mesomm(champ, long, vi, vr, vc,&
         mode = zi(jceld-1+zi(jceld-1+4+j)+2)
         if (mode .eq. 0) goto 10
         ncmpel = digdel(mode)
-        icoef = max(1,zi(jceld-1+4))
+        icoef = max(1, zi(jceld-1+4))
         ncmpel = ncmpel*icoef
         if (first) then
             longt = ncmpel
         else
             if (longt .ne. ncmpel) then
                 call utmess('F', 'CALCULEL3_54')
-            endif
-        endif
+            end if
+        end if
         first = .false.
- 10     continue
+10      continue
     end do
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
 !     ------------------------------------
-    ASSERT(longt.le.long)
+    ASSERT(longt .le. long)
 !
     do i = 1, long
         if (scal(1:1) .eq. 'I') then
             vi(i) = 0
-        else if (scal(1:1).eq.'R') then
+        else if (scal(1:1) .eq. 'R') then
             vr(i) = rzero
-        else if (scal(1:1).eq.'C') then
-            vc(i) = dcmplx(rzero,rzero)
+        else if (scal(1:1) .eq. 'C') then
+            vc(i) = dcmplx(rzero, rzero)
         else
             call utmess('F', 'CALCULEL3_74', sk=scal)
-        endif
+        end if
     end do
 !
 !        -- ON CUMULE :
@@ -178,20 +178,20 @@ subroutine mesomm(champ, long, vi, vr, vc,&
             do j = 1, nbgr
                 mode = zi(jceld-1+zi(jceld-1+4+j)+2)
                 if (mode .eq. 0) goto 50
-                nel = nbelem(ligrel,j)
+                nel = nbelem(ligrel, j)
                 idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
                 do k = 1, nel
                     do i = 1, longt
                         if (scal(1:1) .eq. 'I') then
-                            vi(i) = vi(i) + zi(iavale-1+idecgr+ (k-1)* longt+i-1)
-                        else if (scal(1:1).eq.'R') then
-                            vr(i) = vr(i) + zr(iavale-1+idecgr+ (k-1)* longt+i-1)
-                        else if (scal(1:1).eq.'C') then
-                            vc(i) = vc(i) + zc(iavale-1+idecgr+ (k-1)* longt+i-1)
-                        endif
+                            vi(i) = vi(i)+zi(iavale-1+idecgr+(k-1)*longt+i-1)
+                        else if (scal(1:1) .eq. 'R') then
+                            vr(i) = vr(i)+zr(iavale-1+idecgr+(k-1)*longt+i-1)
+                        else if (scal(1:1) .eq. 'C') then
+                            vc(i) = vc(i)+zc(iavale-1+idecgr+(k-1)*longt+i-1)
+                        end if
                     end do
                 end do
- 50             continue
+50              continue
             end do
         else
             call jeveuo(ligrel//'.LIEL', 'L', jligr)
@@ -200,31 +200,31 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                 do j = 1, nbgr
                     mode = zi(jceld-1+zi(jceld-1+4+j)+2)
                     if (mode .eq. 0) goto 79
-                    nel = nbelem(ligrel,j)
+                    nel = nbelem(ligrel, j)
                     idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
                     do k = 1, nel
                         iel = zi(jligr+inum+k-1)
                         if (iel .ne. linuma(im)) goto 70
                         do i = 1, longt
                             if (scal(1:1) .eq. 'I') then
-                                vi(i) = vi(i) + zi(iavale-1+idecgr+ ( k-1)*longt+i-1)
-                            else if (scal(1:1).eq.'R') then
-                                vr(i) = vr(i) + zr(iavale-1+idecgr+ ( k-1)*longt+i-1)
-                            else if (scal(1:1).eq.'C') then
-                                vc(i) = vc(i) + zc(iavale-1+idecgr+ ( k-1)*longt+i-1)
-                            endif
+                                vi(i) = vi(i)+zi(iavale-1+idecgr+(k-1)*longt+i-1)
+                            else if (scal(1:1) .eq. 'R') then
+                                vr(i) = vr(i)+zr(iavale-1+idecgr+(k-1)*longt+i-1)
+                            else if (scal(1:1) .eq. 'C') then
+                                vc(i) = vc(i)+zc(iavale-1+idecgr+(k-1)*longt+i-1)
+                            end if
                         end do
                         goto 90
- 70                     continue
+70                      continue
                     end do
- 79                 continue
-                    inum = inum + nel + 1
+79                  continue
+                    inum = inum+nel+1
                 end do
- 90             continue
+90              continue
             end do
-        endif
+        end if
 !
-    else if (typch.eq.'RESL') then
+    else if (typch .eq. 'RESL') then
 !        -- (CAS DES RESUELEM):
         if (nbmail .le. 0) then
             numel1 = 0
@@ -235,17 +235,17 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                 if (iexi .eq. 0) goto 120
                 call jeveuo(jexnum(champ2//'.RESL', j), 'L', iavale)
                 ncmpel = digdel(mode)
-                nel = nbelem(ligrel,j)
-                numel1 = numel1 + nel
+                nel = nbelem(ligrel, j)
+                numel1 = numel1+nel
                 do k = 1, nel
                     do i = 1, longt
                         if (scal(1:1) .eq. 'I') then
-                            vi(i) = vi(i) + zi(iavale+ (k-1)*ncmpel-1+ i)
-                        else if (scal(1:1).eq.'R') then
-                            vr(i) = vr(i) + zr(iavale+ (k-1)*ncmpel-1+ i)
-                        else if (scal(1:1).eq.'C') then
-                            vc(i) = vc(i) + zc(iavale+ (k-1)*ncmpel-1+ i)
-                        endif
+                            vi(i) = vi(i)+zi(iavale+(k-1)*ncmpel-1+i)
+                        else if (scal(1:1) .eq. 'R') then
+                            vr(i) = vr(i)+zr(iavale+(k-1)*ncmpel-1+i)
+                        else if (scal(1:1) .eq. 'C') then
+                            vc(i) = vc(i)+zc(iavale+(k-1)*ncmpel-1+i)
+                        end if
                     end do
                 end do
                 call jelibe(jexnum(champ2//'.RESL', j))
@@ -263,33 +263,33 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                     if (iexi .eq. 0) goto 150
                     call jeveuo(jexnum(champ2//'.RESL', j), 'L', iavale)
                     ncmpel = digdel(mode)
-                    nel = nbelem(ligrel,j)
-                    numel1 = numel1 + nel
+                    nel = nbelem(ligrel, j)
+                    numel1 = numel1+nel
                     do k = 1, nel
                         iel = zi(jligr+inum+k-1)
                         if (iel .ne. linuma(im)) goto 140
                         do i = 1, longt
                             if (scal(1:1) .eq. 'I') then
-                                vi(i) = vi(i) + zi(iavale+ (k-1)* ncmpel-1+i)
-                            else if (scal(1:1).eq.'R') then
-                                vr(i) = vr(i) + zr(iavale+ (k-1)* ncmpel-1+i)
-                            else if (scal(1:1).eq.'C') then
-                                vc(i) = vc(i) + zc(iavale+ (k-1)* ncmpel-1+i)
-                            endif
+                                vi(i) = vi(i)+zi(iavale+(k-1)*ncmpel-1+i)
+                            else if (scal(1:1) .eq. 'R') then
+                                vr(i) = vr(i)+zr(iavale+(k-1)*ncmpel-1+i)
+                            else if (scal(1:1) .eq. 'C') then
+                                vc(i) = vc(i)+zc(iavale+(k-1)*ncmpel-1+i)
+                            end if
                         end do
                         call jelibe(jexnum(champ2//'.RESL', j))
                         goto 160
 140                     continue
                     end do
 149                 continue
-                    inum = inum + nel + 1
+                    inum = inum+nel+1
 150                 continue
                 end do
 160             continue
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 !     -- IL FAUT COMMUNIQUER LE RESULTAT ENTRE LES PROCS :
@@ -297,12 +297,12 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     if (kmpic .eq. 'NON') then
         if (scal(1:1) .eq. 'I') then
             call asmpi_comm_vect('MPI_SUM', 'I', nbval=longt, vi=vi)
-        else if (scal(1:1).eq.'R') then
+        else if (scal(1:1) .eq. 'R') then
             call asmpi_comm_vect('MPI_SUM', 'R', nbval=longt, vr=vr)
-        else if (scal(1:1).eq.'C') then
+        else if (scal(1:1) .eq. 'C') then
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

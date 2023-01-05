@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,7 @@ subroutine crnustd(numddl)
     call jemarq()
     call asmpi_comm('GET', mpicou)
 !
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     ASSERT(nbproc <= MT_DOMMAX)
@@ -124,7 +124,7 @@ subroutine crnustd(numddl)
 !
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
     mesh = zk24(jrefn)
-    nomgdr = zk24(jrefn + 1)
+    nomgdr = zk24(jrefn+1)
 !
     call jeveuo(mesh//'.DIME', 'L', dime)
     call jeveuo(mesh//'.NULOGL', 'L', vi=v_nulg)
@@ -133,7 +133,7 @@ subroutine crnustd(numddl)
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
 !   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX
     call jelira(jexnum(numddl//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
-    nec = ntot/zi(dime) - 2
+    nec = ntot/zi(dime)-2
     call wkvect('&&CRNSTD.NEC', 'V V I', nec, jencod)
     call wkvect('&&CRNSTD.NEC2', 'V V I', nec, jenco2)
 !
@@ -161,8 +161,8 @@ subroutine crnustd(numddl)
 ! -- On compte les noeuds locaux proprio
     nbno_lc = 0
     do ino = 1, nbno
-        if(v_noext(ino) == rang) then
-            nbno_lc = nbno_lc + 1
+        if (v_noext(ino) == rang) then
+            nbno_lc = nbno_lc+1
         end if
     end do
 !
@@ -180,12 +180,12 @@ subroutine crnustd(numddl)
     nbno_lc = 0
     numloc = 0
     do ino = 1, nbno
-        if(v_noext(ino) == rang) then
-            nbno_lc = nbno_lc + 1
+        if (v_noext(ino) == rang) then
+            nbno_lc = nbno_lc+1
 ! -- Pour les noeuds proprio, on garde le num global et le nombre de ddl du noeud
             v_nddl(2*(nbno_lc-1)+1) = v_nulg(ino)
             v_nddl(2*(nbno_lc-1)+2) = zzprno(1, ino, 2)
-            numloc = numloc + zzprno(1, ino, 2)
+            numloc = numloc+zzprno(1, ino, 2)
         end if
     end do
 !
@@ -199,7 +199,7 @@ subroutine crnustd(numddl)
     v_tddl(1:nbno_gl) = -1
     do ino = 1, nbproc*nbno_max
         numero_noeud = v_gddl(2*(ino-1)+1)
-        if(numero_noeud .ne. -1) then
+        if (numero_noeud .ne. -1) then
 ! numero_noeud commence à 0
             v_tddl(numero_noeud+1) = v_gddl(2*(ino-1)+2)
         end if
@@ -212,7 +212,7 @@ subroutine crnustd(numddl)
 !
 ! -- On calcule le décalage
     do ino = 2, nbno_gl
-        v_tddl(ino) = v_tddl(ino) + v_tddl(ino-1)
+        v_tddl(ino) = v_tddl(ino)+v_tddl(ino-1)
     end do
     nbddl_phys_gl = v_tddl(nbno_gl)
     do ino = nbno_gl, 2, -1
@@ -223,16 +223,16 @@ subroutine crnustd(numddl)
 ! -- On renumerote les noeuds physiques proprio
     call wkvect('&&CRNSTD.DDLLOC', 'V V I', nbno, vi=v_ddlc)
     do i_ddl = 1, nbddll
-        numero_noeud = v_deeq((i_ddl-1)*2 + 1)
-        numero_cmp   = v_deeq((i_ddl-1)*2 + 2)
-        if( numero_noeud.gt.0 .and. numero_cmp.gt.0 ) then
-            v_deeg((i_ddl-1)*2 + 1) = v_nulg(numero_noeud) + 1
-            v_deeg((i_ddl-1)*2 + 2) = numero_cmp
+        numero_noeud = v_deeq((i_ddl-1)*2+1)
+        numero_cmp = v_deeq((i_ddl-1)*2+2)
+        if (numero_noeud .gt. 0 .and. numero_cmp .gt. 0) then
+            v_deeg((i_ddl-1)*2+1) = v_nulg(numero_noeud)+1
+            v_deeg((i_ddl-1)*2+2) = numero_cmp
             if (v_noext(numero_noeud) == rang) then
-                v_nuls(i_ddl) = v_tddl(v_nulg(numero_noeud)+1) + v_ddlc(numero_noeud)
-                v_ddlc(numero_noeud) = v_ddlc(numero_noeud) + 1
-            endif
-        endif
+                v_nuls(i_ddl) = v_tddl(v_nulg(numero_noeud)+1)+v_ddlc(numero_noeud)
+                v_ddlc(numero_noeud) = v_ddlc(numero_noeud)+1
+            end if
+        end if
     end do
 !
 ! -- On crée le graphe de comm
@@ -261,26 +261,26 @@ subroutine crnustd(numddl)
 !       DES DEUX COTES LES NOEUDS NE SONT PAS DANS LE MEME ORDRE ?
             tag4 = to_mpi_int(v_tag(i_join))
             numpr4 = to_mpi_int(numpro)
-            lgenve1 = nbnoee*(1 + nec) + 1
-            lgenvr1 = nbnoer*(1 + nec) + 1
+            lgenve1 = nbnoee*(1+nec)+1
+            lgenvr1 = nbnoer*(1+nec)+1
             call wkvect('&&CRNSTD.NOEUD_NEC_E1', 'V V I', lgenvr1, jenvoi1)
             call wkvect('&&CRNSTD.NOEUD_NEC_R1', 'V V I', lgenve1, jrecep1)
 !
-            lgenve2 = nbnoee*(1 + nec) + 1
-            lgenvr2 = nbnoer*(1 + nec) + 1
+            lgenve2 = nbnoee*(1+nec)+1
+            lgenvr2 = nbnoer*(1+nec)+1
 !
 !       On commence par envoyer, le but final est de recevoir les numeros de ddl
 !       On boucle donc sur les noeuds a recevoir
             nb_ddl_envoi = 0
             do jaux = 1, nbnoer
-                poscom = (jaux - 1)*(1 + nec) + 1
-                numno1 = zi(jjoinr + 2*(jaux - 1))
-                numno2 = zi(jjoinr + 2*jaux - 1)
-                zi(jenvoi1 + poscom) = numno2
+                poscom = (jaux-1)*(1+nec)+1
+                numno1 = zi(jjoinr+2*(jaux-1))
+                numno2 = zi(jjoinr+2*jaux-1)
+                zi(jenvoi1+poscom) = numno2
                 do iec = 1, nec
-                    zi(jenvoi1 + poscom + iec) = zzprno(1, numno1, 2 + iec)
+                    zi(jenvoi1+poscom+iec) = zzprno(1, numno1, 2+iec)
                 end do
-                nb_ddl_envoi = nb_ddl_envoi + zzprno(1, numno1, 2)
+                nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
             end do
             zi(jenvoi1) = nb_ddl_envoi
             n4e = lgenvr1
@@ -289,37 +289,37 @@ subroutine crnustd(numddl)
                                   zi(jrecep1), n4r, numpr4, tag4, mpicou)
 !
 !           On continue si le joint à des DDL
-            if(zi(jrecep1) > 0) then
+            if (zi(jrecep1) > 0) then
                 call wkvect('&&CRNSTD.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1), jenvoi2)
                 call wkvect('&&CRNSTD.NUM_DDL_GLOB_R', 'V V I', zi(jenvoi1), jrecep2)
 !
                 nbddl = 0
                 do jaux = 1, nbnoee
-                    poscom = (jaux - 1)*(1 + nec) + 1
-                    numno1 = zi(jrecep1 + poscom)
+                    poscom = (jaux-1)*(1+nec)+1
+                    numno1 = zi(jrecep1+poscom)
 !
                     nddl = zzprno(1, numno1, 1)
                     nddlg = v_nuls(nddl)
 !
 !           Recherche des composantes demandees
                     do iec = 1, nec
-                        zi(jencod + iec - 1) = zzprno(1, numno1, 2 + iec)
-                        zi(jenco2 + iec - 1) = zi(jrecep1 + poscom + iec)
+                        zi(jencod+iec-1) = zzprno(1, numno1, 2+iec)
+                        zi(jenco2+iec-1) = zi(jrecep1+poscom+iec)
                     end do
                     call isdeco(zi(jencod), zi(jcpnec), ncmpmx)
                     call isdeco(zi(jenco2), zi(jcpne2), ncmpmx)
                     ico2 = 0
                     do icmp = 1, ncmpmx
-                        if ( zi(jcpnec + icmp - 1) .eq. 1 ) then
-                            if ( zi(jcpne2 + icmp - 1) .eq. 1 ) then
+                        if (zi(jcpnec+icmp-1) .eq. 1) then
+                            if (zi(jcpne2+icmp-1) .eq. 1) then
                                 ASSERT(nddlg .ne. -1)
-                                zi(jenvoi2 + nbddl) = nddlg + ico2
-                                nbddl = nbddl + 1
-                            endif
-                            ico2 = ico2 + 1
-                        endif
-                    enddo
-                enddo
+                                zi(jenvoi2+nbddl) = nddlg+ico2
+                                nbddl = nbddl+1
+                            end if
+                            ico2 = ico2+1
+                        end if
+                    end do
+                end do
 !
                 ASSERT(zi(jrecep1) .eq. nbddl)
                 n4e = nbddl
@@ -329,24 +329,24 @@ subroutine crnustd(numddl)
 !
                 curpos = 0
                 do jaux = 1, nbnoer
-                    numno1 = zi(jjoinr + 2*(jaux - 1))
+                    numno1 = zi(jjoinr+2*(jaux-1))
                     nddll = zzprno(1, numno1, 1)
                     nbcmp = zzprno(1, numno1, 2)
-                    do icmp = 0, nbcmp - 1
-                        ASSERT(zi(jrecep2 + curpos) .ne. -1)
-                        v_nuls(nddll + icmp) = zi(jrecep2 + curpos)
-                        curpos = curpos + 1
-                    enddo
-                enddo
+                    do icmp = 0, nbcmp-1
+                        ASSERT(zi(jrecep2+curpos) .ne. -1)
+                        v_nuls(nddll+icmp) = zi(jrecep2+curpos)
+                        curpos = curpos+1
+                    end do
+                end do
                 ASSERT(curpos .eq. nb_ddl_envoi)
 !
                 call jedetr('&&CRNSTD.NUM_DDL_GLOB_E')
                 call jedetr('&&CRNSTD.NUM_DDL_GLOB_R')
-            endif
+            end if
 !
             call jedetr('&&CRNSTD.NOEUD_NEC_E1')
             call jedetr('&&CRNSTD.NOEUD_NEC_R1')
-        endif
+        end if
     end do
     call jedetr(comm_name)
     call jedetr(tag_name)
@@ -357,7 +357,7 @@ subroutine crnustd(numddl)
     do ili = 2, ntot
         nbno_lili_lc = 0
         call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
-        if( iret.ne.0 ) then
+        if (iret .ne. 0) then
             call jelira(jexnum(numddl//'.NUME.PRNO', ili), 'LONMAX', lonmax)
             nbno_prno = lonmax/(nec+2)
             call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
@@ -369,26 +369,26 @@ subroutine crnustd(numddl)
                 ! Le proc est proprio du noeud
                 i_ddl = zzprno(ili, ino, 1)
                 nbcmp = zzprno(ili, ino, 2)
-                ASSERT(nbcmp.eq.1)
-                numero_noeud = -nbddl_lag_gl + v_linulg(ino)
-                numero_cmp   = v_deeq((i_ddl-1)*2 + 2)
-                v_deeg((i_ddl-1)*2 + 1) = numero_noeud
-                v_deeg((i_ddl-1)*2 + 2) = numero_cmp
-                if( v_owner(ino) == rang ) then
-                    nbno_lili_lc = nbno_lili_lc + 1
-                    nbddl_lag = nbddl_lag + 1
-                    numloc = numloc + 1
-                    ASSERT(nbcmp.eq.1)
-                    v_nuls(i_ddl) = nbddl_phys_gl - 1 - v_deeg(2*(i_ddl-1)+1)
-                endif
-            enddo
+                ASSERT(nbcmp .eq. 1)
+                numero_noeud = -nbddl_lag_gl+v_linulg(ino)
+                numero_cmp = v_deeq((i_ddl-1)*2+2)
+                v_deeg((i_ddl-1)*2+1) = numero_noeud
+                v_deeg((i_ddl-1)*2+2) = numero_cmp
+                if (v_owner(ino) == rang) then
+                    nbno_lili_lc = nbno_lili_lc+1
+                    nbddl_lag = nbddl_lag+1
+                    numloc = numloc+1
+                    ASSERT(nbcmp .eq. 1)
+                    v_nuls(i_ddl) = nbddl_phys_gl-1-v_deeg(2*(i_ddl-1)+1)
+                end if
+            end do
         end if
 !
 ! -- Nbr de noeud de Lagrange total au ligrel
         nbno_lili_gl = nbno_lili_lc
         call asmpi_comm_vect('MPI_SUM', 'I', sci=nbno_lili_gl)
-        nbddl_lag_gl = nbddl_lag_gl + nbno_lili_gl
-    enddo
+        nbddl_lag_gl = nbddl_lag_gl+nbno_lili_gl
+    end do
 !
 !   Nombre total de Lagrange
     call asmpi_comm_vect('MPI_SUM', 'I', sci=nbddl_lag)
@@ -399,79 +399,79 @@ subroutine crnustd(numddl)
     call asmpi_comm_vect('MPI_SUM', 'I', sci=nbddll_gl)
 !
 ! -- Verif nb ddl total
-    ASSERT(nbddll_gl == nbddl_phys_gl + nbddl_lag_gl)
+    ASSERT(nbddll_gl == nbddl_phys_gl+nbddl_lag_gl)
 !
 ! -- On complete avec les joins
     do ili = 2, ntot
         ! call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
         ! if( iret.ne.0 ) then
-            call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
-            call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
-            call jeveuo(comm_name, 'L', vi=v_comm)
-            call jeveuo(tag_name, 'L', vi=v_tag)
-            do i_join = 1, nb_comm
-                numpro = v_comm(i_join)
-                if( numpro.ne.-1 ) then
-                    numpr4 = to_mpi_int(numpro)
-                    tag4 = to_mpi_int(v_tag(i_join))
-                    call codlet(numpro, 'G', chnbjo)
-                    nojoie = nomlig//'.E'//chnbjo
-                    nojoir = nomlig//'.R'//chnbjo
+        call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
+        call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
+        call jeveuo(comm_name, 'L', vi=v_comm)
+        call jeveuo(tag_name, 'L', vi=v_tag)
+        do i_join = 1, nb_comm
+            numpro = v_comm(i_join)
+            if (numpro .ne. -1) then
+                numpr4 = to_mpi_int(numpro)
+                tag4 = to_mpi_int(v_tag(i_join))
+                call codlet(numpro, 'G', chnbjo)
+                nojoie = nomlig//'.E'//chnbjo
+                nojoir = nomlig//'.R'//chnbjo
 
-                    call jeexin(nojoie, iret1)
-                    if( iret1.ne.0 ) then
-                        call jeveuo(nojoie, 'L', jjoine)
-                        call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
-                        call wkvect('&&CRNSTD.NUM_DDL_GLOB_E', 'V V I', nbnoee, jnujoi1)
-                        do jaux = 1, nbnoee
-                            numnoe = -zi(jjoine+jaux-1)
-                            ASSERT(zzprno(ili, numnoe, 2).eq.1)
-                            nddll = zzprno(ili, numnoe, 1)
-                            zi(jnujoi1+jaux-1) = v_nuls(nddll)
-                        enddo
-                        n4e = nbnoee
-                    endif
+                call jeexin(nojoie, iret1)
+                if (iret1 .ne. 0) then
+                    call jeveuo(nojoie, 'L', jjoine)
+                    call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
+                    call wkvect('&&CRNSTD.NUM_DDL_GLOB_E', 'V V I', nbnoee, jnujoi1)
+                    do jaux = 1, nbnoee
+                        numnoe = -zi(jjoine+jaux-1)
+                        ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
+                        nddll = zzprno(ili, numnoe, 1)
+                        zi(jnujoi1+jaux-1) = v_nuls(nddll)
+                    end do
+                    n4e = nbnoee
+                end if
 
-                    call jeexin(nojoir, iret2)
-                    if( iret2.ne.0 ) then
-                        call jeveuo(nojoir, 'L', jjoinr)
-                        call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
-                        call wkvect('&&CRNSTD.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
-                        n4r = nbnoer
-                    endif
+                call jeexin(nojoir, iret2)
+                if (iret2 .ne. 0) then
+                    call jeveuo(nojoir, 'L', jjoinr)
+                    call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
+                    call wkvect('&&CRNSTD.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
+                    n4r = nbnoer
+                end if
 
-                    if (rang .lt. numpro) then
-                        if( iret1.ne.0 ) then
-                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
-                        endif
-                        if( iret2.ne.0 ) then
-                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
-                        endif
-                    else if (rang.gt.numpro) then
-                        if( iret2.ne.0 ) then
-                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
-                        endif
-                        if( iret1.ne.0 ) then
-                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
-                        endif
-                    endif
+                if (rang .lt. numpro) then
+                    if (iret1 .ne. 0) then
+                        call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
+                    end if
+                    if (iret2 .ne. 0) then
+                        call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
+                    end if
+                else if (rang .gt. numpro) then
+                    if (iret2 .ne. 0) then
+                        call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
+                    end if
+                    if (iret1 .ne. 0) then
+                        call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
+                    end if
+                end if
 
-                    if( iret2.ne.0 ) then
-                        do jaux = 1, nbnoer
-                            numnoe = -zi(jjoinr+jaux-1)
-                            ASSERT(zzprno(ili, numnoe, 2).eq.1)
-                            nddll = zzprno(ili, numnoe, 1)
-                            v_nuls(nddll) = zi(jnujoi2+jaux-1)
-                        enddo
-                    endif
-                    call jedetr('&&CRNSTD.NUM_DDL_GLOB_E')
-                    call jedetr('&&CRNSTD.NUM_DDL_GLOB_R')
-                endif
-            enddo
-            call jedetr(comm_name)
-            call jedetr(tag_name)
+                if (iret2 .ne. 0) then
+                    do jaux = 1, nbnoer
+                        numnoe = -zi(jjoinr+jaux-1)
+                        ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
+                        nddll = zzprno(ili, numnoe, 1)
+                        v_nuls(nddll) = zi(jnujoi2+jaux-1)
+                    end do
+                end if
+                call jedetr('&&CRNSTD.NUM_DDL_GLOB_E')
+                call jedetr('&&CRNSTD.NUM_DDL_GLOB_R')
+            end if
+        end do
+        call jedetr(comm_name)
+        call jedetr(tag_name)
         ! endif
-    enddo
+    end do
 !
 ! -- Verif finale
     do i_ddl = 1, nbddll

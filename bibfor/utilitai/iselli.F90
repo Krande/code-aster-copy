@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,23 +37,23 @@ function iselli(elrefz)
 !
     elrefe = elrefz
 !
-    if (elrefe .eq. 'PO1' .or. elrefe .eq. 'SE2' .or. elrefe .eq. 'TR3' .or. elrefe .eq.&
-        'QU4' .or. elrefe .eq. 'TE4' .or. elrefe .eq. 'PY5' .or. elrefe .eq. 'PE6' .or.&
+    if (elrefe .eq. 'PO1' .or. elrefe .eq. 'SE2' .or. elrefe .eq. 'TR3' .or. elrefe .eq. &
+        'QU4' .or. elrefe .eq. 'TE4' .or. elrefe .eq. 'PY5' .or. elrefe .eq. 'PE6' .or. &
         elrefe .eq. 'HE8') then
 !
-        iselli=.true.
+        iselli = .true.
 !
-        elseif (elrefe.eq.'SE3'.or. elrefe.eq.'TR6'.or. elrefe.eq.'TR7'&
-    .or. elrefe.eq.'QU8'.or. elrefe.eq.'QU9'.or. elrefe.eq.'T10'.or.&
-    elrefe.eq.'P13'.or. elrefe.eq.'P15'.or. elrefe.eq.'P18'.or.&
-    elrefe.eq.'H20'.or. elrefe.eq.'H27') then
+    elseif (elrefe .eq. 'SE3' .or. elrefe .eq. 'TR6' .or. elrefe .eq. 'TR7' &
+            .or. elrefe .eq. 'QU8' .or. elrefe .eq. 'QU9' .or. elrefe .eq. 'T10' .or. &
+            elrefe .eq. 'P13' .or. elrefe .eq. 'P15' .or. elrefe .eq. 'P18' .or. &
+            elrefe .eq. 'H20' .or. elrefe .eq. 'H27') then
 !
-        iselli=.false.
+        iselli = .false.
 !
     else
 !
         ASSERT(.false.)
 !
-    endif
+    end if
 !
 end function

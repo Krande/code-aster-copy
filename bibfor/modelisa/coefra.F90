@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
     if (ires .eq. 0) then
         ck = zero
         goto 1000
-    endif
+    end if
 !
 ! --- ON TESTE L'EXISTENCE DU VECTEUR DE COEFFICIENTS
 !     POUR LA CORRELATION RELATIVE A IPAS ET IRES
@@ -76,8 +76,8 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
 !
 ! --- LECTURE DU FICHIER DE DONNEES
 !     =============================
-        call coefrl(nom1, nom2, nom3, nckmax, ipas,&
-                    ires, bornck, nborck, coefck, ipas1,&
+        call coefrl(nom1, nom2, nom3, nckmax, ipas, &
+                    ires, bornck, nborck, coefck, ipas1, &
                     ires1)
     else
         call jeveuo(nom1, 'L', jborne)
@@ -89,24 +89,24 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
         if (ipas1 .eq. ipas .and. ires1 .eq. ires) then
             k = 1
             do i = 1, nborck
-                bornck(i) = zr(jcoeff + i - 1)
+                bornck(i) = zr(jcoeff+i-1)
                 do j = 1, nckmax
-                    coefck(i,j) = zr(jcoeff + nborck + k - 1 )
-                    k = k + 1
+                    coefck(i, j) = zr(jcoeff+nborck+k-1)
+                    k = k+1
                 end do
             end do
         else
             call jedetr(nom1)
             call jedetr(nom2)
             call jedetr(nom3)
-            call coefrl(nom1, nom2, nom3, nckmax, ipas,&
-                        ires, bornck, nborck, coefck, ipas1,&
+            call coefrl(nom1, nom2, nom3, nckmax, ipas, &
+                        ires, bornck, nborck, coefck, ipas1, &
                         ires1)
-        endif
-    endif
+        end if
+    end if
     if (ipas1 .ne. ipas .or. ires1 .ne. ires) then
         call utmess('F', 'MODELISA4_31')
-    endif
+    end if
 !
 ! **********************************************************************
 ! ***                  FAISCEAU EN PAS CARRE LIGNE                   ***
@@ -122,23 +122,23 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
                 if (x .lt. bornck(nborck)) then
                     do i = 2, nborck
                         if (x .ge. bornck(i-1) .and. x .lt. bornck(i)) then
-                            ck = coefck(i-1,1)/(x*x*x*x*x*x*x) + coefck(i-1,2)/(x*x*x*x*x*x) + co&
-                                 &efck(i-1, 3)/(x*x*x*x*x) + coefck(i-1,4)/(x*x*x*x) + coefck(i-1&
-                                 &,5)/(x*x*x) + coefck(i-1,6)/(x* x) + coefck(i-1,7)/(x) + coefck&
-                                 &(i-1,8) + coefck(i-1,9)*(x) + coefck(i-1,10)*(x*x) + coefck(i-1&
-                                 &,11)*(x*x*x)
+                            ck = coefck(i-1, 1)/(x*x*x*x*x*x*x)+coefck(i-1, 2)/(x*x*x*x*x*x)+co&
+                                 &efck(i-1, 3)/(x*x*x*x*x)+coefck(i-1, 4)/(x*x*x*x)+coefck(i-1&
+                                 &, 5)/(x*x*x)+coefck(i-1, 6)/(x*x)+coefck(i-1, 7)/(x)+coefck&
+                                 &(i-1, 8)+coefck(i-1, 9)*(x)+coefck(i-1, 10)*(x*x)+coefck(i-1&
+                                 &, 11)*(x*x*x)
                             goto 140
-                        endif
+                        end if
                     end do
 140                 continue
                 else
-                    ck = coefck(nborck,1)/(x*x*x*x*x*x*x) + coefck( nborck,2)/(x*x*x*x*x*x) + coe&
-                         &fck(nborck,3)/(x*x*x* x*x) + coefck(nborck,4)/(x*x*x*x) + coefck(nborck&
-                         &, 5)/(x*x*x) + coefck(nborck,6)/(x*x) + coefck( nborck,7)/(x) + coefck(&
-                         &nborck,8) + coefck(nborck, 9)*(x) + coefck(nborck,10)*(x*x) + coefck(nb&
+                    ck = coefck(nborck, 1)/(x*x*x*x*x*x*x)+coefck(nborck, 2)/(x*x*x*x*x*x)+coe&
+                         &fck(nborck, 3)/(x*x*x*x*x)+coefck(nborck, 4)/(x*x*x*x)+coefck(nborck&
+                         &, 5)/(x*x*x)+coefck(nborck, 6)/(x*x)+coefck(nborck, 7)/(x)+coefck(&
+                         &nborck, 8)+coefck(nborck, 9)*(x)+coefck(nborck, 10)*(x*x)+coefck(nb&
                          &orck, 11)*(x*x*x)
-                endif
-            endif
+                end if
+            end if
 !
 ! --- CELLULE DE TUBES VIBRANTS EN DEBUT DE FAISCEAU VISCACHE1.
 !
@@ -147,14 +147,14 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,9)*x
+                ck = coefck(2, 8)+coefck(2, 9)*x
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)
             else
-                ck = coefck(4,8)
-            endif
+                ck = coefck(4, 8)
+            end if
 !
 ! --- CELLULE DE TUBES VIBRANTS EN MILIEU DE FAISCEAU CLOTAIRE.
 !     (PROFIL DE VITESSE REEL)
@@ -164,16 +164,16 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)
             else if (x .lt. bornck(5)) then
-                ck = coefck(4,8) + coefck(4,9)*x
+                ck = coefck(4, 8)+coefck(4, 9)*x
             else
-                ck = coefck(5,8)
-            endif
+                ck = coefck(5, 8)
+            end if
 !
 ! --- CELLULE DE TUBES VIBRANTS EN MILIEU DE FAISCEAU CLOTAIRE.
 !     (PROFIL DE VITESSE UNIFORME)
@@ -183,16 +183,16 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)
             else if (x .lt. bornck(5)) then
-                ck = coefck(4,8) + coefck(4,9)*x
+                ck = coefck(4, 8)+coefck(4, 9)*x
             else
-                ck = coefck(5,8)
-            endif
+                ck = coefck(5, 8)
+            end if
 !
 ! --- TUBE UNIQUE VIBRANT EN MILIEU DE FAISCEAU RIGIDE VISCACHE1.
 !
@@ -201,14 +201,14 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,9)*x
+                ck = coefck(3, 8)+coefck(3, 9)*x
             else
-                ck = coefck(4,8)
-            endif
+                ck = coefck(4, 8)
+            end if
 !
 ! --- TUBE UNIQUE VIBRANT EN DEBUT DE FAISCEAU RIGIDE VISCACHE1.
 !
@@ -217,14 +217,14 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)
             else
-                ck = coefck(4,8) + coefck(4,7)/x + coefck(4,6)/(x*x) + coefck(4,5)/(x*x*x)
-            endif
+                ck = coefck(4, 8)+coefck(4, 7)/x+coefck(4, 6)/(x*x)+coefck(4, 5)/(x*x*x)
+            end if
 !
 ! --- TUBE ROMPU
 !
@@ -234,7 +234,7 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
                 ck = 0.0d0
             else
                 call ckatrc(x, xsi0, coefck, ck)
-            endif
+            end if
 !
 ! --- TUBE UNIQUE VIBRANT EN MILIEU DE FAISCEAU RIGIDE TANAKA.
 !
@@ -243,8 +243,8 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else
-                ck = coefck(1,8) + coefck(1,7)/x + coefck(1,6)/(x*x) + coefck(1,5)/(x*x*x)
-            endif
+                ck = coefck(1, 8)+coefck(1, 7)/x+coefck(1, 6)/(x*x)+coefck(1, 5)/(x*x*x)
+            end if
 !
 ! --- TUBE UNIQUE VIBRANT EN MILIEU DE FAISCEAU RIGIDE DIVA EAU.
 !
@@ -253,14 +253,14 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x
+                ck = coefck(2, 8)+coefck(2, 7)/x
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)
             else
-                ck = coefck(4,8) + coefck(4,7)/x + coefck(4,6)/(x*x) + coefck(4,5)/(x*x*x)
-            endif
+                ck = coefck(4, 8)+coefck(4, 7)/x+coefck(4, 6)/(x*x)+coefck(4, 5)/(x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 CFD 90%
@@ -270,12 +270,12 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)
             else
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x)
-            endif
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 CFD 85 %
@@ -285,11 +285,11 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x) + coef&
-                     &ck(2,4)/(x*x*x*x) + coefck( 2,3)/(x*x*x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)+coef&
+                     &ck(2, 4)/(x*x*x*x)+coefck(2, 3)/(x*x*x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 CFD 80 %
@@ -299,13 +299,13 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
             else
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x) + coef&
-                     &ck(3,4)/(x*x*x*x)
-            endif
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)+coef&
+                     &ck(3, 4)/(x*x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 CFD 50 %
@@ -315,10 +315,10 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 CFD 20 %
@@ -328,11 +328,11 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x) + coef&
-                     &ck(2,4)/(x*x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)+coef&
+                     &ck(2, 4)/(x*x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 CFD 10 %
@@ -342,10 +342,10 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 TUM 90 %
@@ -355,11 +355,11 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x) + coef&
-                     &ck(2,4)/(x*x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)+coef&
+                     &ck(2, 4)/(x*x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 TUM 86 %
@@ -369,10 +369,10 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 TUM 82 %
@@ -382,10 +382,10 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 TUM 50 %
@@ -395,10 +395,10 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 TUM 20 %
@@ -408,10 +408,10 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
+            end if
 !
 !
 ! --- COEFFICIENT VISCACHE 2 TUM 10 %
@@ -421,16 +421,16 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
-            endif
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
+            end if
 !
         else
 !
             call utmess('F', 'MODELISA4_32')
 !
-        endif
+        end if
 !
 ! **********************************************************************
 ! ***               FAISCEAU EN PAS TRIANGULAIRE LIGNE               ***
@@ -446,23 +446,23 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
                 if (x .lt. bornck(nborck)) then
                     do i = 2, nborck
                         if (x .ge. bornck(i-1) .and. x .lt. bornck(i)) then
-                            ck = coefck(i-1,1)/(x*x*x*x*x*x*x) + coefck(i-1,2)/(x*x*x*x*x*x) + co&
-                                 &efck(i-1, 3)/(x*x*x*x*x) + coefck(i-1,4)/(x*x*x*x) + coefck(i-1&
-                                 &,5)/(x*x*x) + coefck(i-1,6)/(x* x) + coefck(i-1,7)/(x) + coefck&
-                                 &(i-1,8) + coefck(i-1,9)*(x) + coefck(i-1,10)*(x*x) + coefck(i-1&
-                                 &,11)*(x*x*x)
+                            ck = coefck(i-1, 1)/(x*x*x*x*x*x*x)+coefck(i-1, 2)/(x*x*x*x*x*x)+co&
+                                 &efck(i-1, 3)/(x*x*x*x*x)+coefck(i-1, 4)/(x*x*x*x)+coefck(i-1&
+                                 &, 5)/(x*x*x)+coefck(i-1, 6)/(x*x)+coefck(i-1, 7)/(x)+coefck&
+                                 &(i-1, 8)+coefck(i-1, 9)*(x)+coefck(i-1, 10)*(x*x)+coefck(i-1&
+                                 &, 11)*(x*x*x)
                             goto 160
-                        endif
+                        end if
                     end do
 160                 continue
                 else
-                    ck = coefck(nborck,1)/(x*x*x*x*x*x*x) + coefck( nborck,2)/(x*x*x*x*x*x) + coe&
-                         &fck(nborck,3)/(x*x*x* x*x) + coefck(nborck,4)/(x*x*x*x) + coefck(nborck&
-                         &, 5)/(x*x*x) + coefck(nborck,6)/(x*x) + coefck( nborck,7)/(x) + coefck(&
-                         &nborck,8) + coefck(nborck, 9)*(x) + coefck(nborck,10)*(x*x) + coefck(nb&
+                    ck = coefck(nborck, 1)/(x*x*x*x*x*x*x)+coefck(nborck, 2)/(x*x*x*x*x*x)+coe&
+                         &fck(nborck, 3)/(x*x*x*x*x)+coefck(nborck, 4)/(x*x*x*x)+coefck(nborck&
+                         &, 5)/(x*x*x)+coefck(nborck, 6)/(x*x)+coefck(nborck, 7)/(x)+coefck(&
+                         &nborck, 8)+coefck(nborck, 9)*(x)+coefck(nborck, 10)*(x*x)+coefck(nb&
                          &orck, 11)*(x*x*x)
-                endif
-            endif
+                end if
+            end if
 !
 ! --- CELLULE DE TUBES VIBRANTS EN DEBUT DE FAISCEAU VISCACHE1.
 !
@@ -470,14 +470,14 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,9)*x + coefck(2,10)*(x*x) + coefck(2,11)*(x*x*x)
+                ck = coefck(2, 8)+coefck(2, 9)*x+coefck(2, 10)*(x*x)+coefck(2, 11)*(x*x*x)
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)
             else
-                ck = coefck(4,8)
-            endif
+                ck = coefck(4, 8)
+            end if
 !
 ! --- CELLULE DE TUBES VIBRANTS EN MILIEU DE FAISCEAU VISCACHE1.
 !
@@ -485,18 +485,18 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x) + coefck(2,5)/(x*x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)+coefck(2, 5)/(x*x*x)
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)
             else if (x .lt. bornck(5)) then
-                ck = coefck(4,8) + coefck(4,7)/x + coefck(4,6)/(x*x) + coefck(4,5)/(x*x*x)
+                ck = coefck(4, 8)+coefck(4, 7)/x+coefck(4, 6)/(x*x)+coefck(4, 5)/(x*x*x)
             else if (x .lt. bornck(6)) then
-                ck = coefck(5,8) + coefck(5,9)*x
+                ck = coefck(5, 8)+coefck(5, 9)*x
             else
-                ck = coefck(6,8)
-            endif
+                ck = coefck(6, 8)
+            end if
 !
 ! --- TUBE UNIQUE VIBRANT EN MILIEU DE FAISCEAU RIGIDE VISCACHE1.
 !
@@ -504,20 +504,20 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x
+                ck = coefck(2, 8)+coefck(2, 7)/x
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,7)/x + coefck(3,6)/(x*x) + coefck(3,5)/(x*x*x)
+                ck = coefck(3, 8)+coefck(3, 7)/x+coefck(3, 6)/(x*x)+coefck(3, 5)/(x*x*x)
             else if (x .lt. bornck(5)) then
-                ck = coefck(4,8) + coefck(4,7)/x + coefck(4,6)/(x*x)
+                ck = coefck(4, 8)+coefck(4, 7)/x+coefck(4, 6)/(x*x)
             else if (x .lt. bornck(6)) then
-                ck = coefck(5,8) + coefck(5,7)/x
+                ck = coefck(5, 8)+coefck(5, 7)/x
             else if (x .lt. bornck(7)) then
-                ck = coefck(6,8) + coefck(6,9)*x
+                ck = coefck(6, 8)+coefck(6, 9)*x
             else
-                ck = coefck(7,8)
-            endif
+                ck = coefck(7, 8)
+            end if
 !
 ! --- TUBE UNIQUE VIBRANT EN DEBUT DE FAISCEAU RIGIDE VISCACHE1.
 !
@@ -525,22 +525,22 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
             if (x .lt. bornck(1)) then
                 ck = 0.d0
             else if (x .lt. bornck(2)) then
-                ck = coefck(1,8) + coefck(1,9)*x
+                ck = coefck(1, 8)+coefck(1, 9)*x
             else if (x .lt. bornck(3)) then
-                ck = coefck(2,8) + coefck(2,7)/x + coefck(2,6)/(x*x)
+                ck = coefck(2, 8)+coefck(2, 7)/x+coefck(2, 6)/(x*x)
             else if (x .lt. bornck(4)) then
-                ck = coefck(3,8) + coefck(3,9)*x
+                ck = coefck(3, 8)+coefck(3, 9)*x
             else if (x .lt. bornck(5)) then
-                ck = coefck(4,8) + coefck(4,7)/x + coefck(4,6)/(x*x) + coefck(4,5)/(x*x*x)
+                ck = coefck(4, 8)+coefck(4, 7)/x+coefck(4, 6)/(x*x)+coefck(4, 5)/(x*x*x)
             else if (x .lt. bornck(6)) then
-                ck = coefck(5,8) + coefck(5,9)*x
+                ck = coefck(5, 8)+coefck(5, 9)*x
             else
-                ck = coefck(6,8)
-            endif
+                ck = coefck(6, 8)
+            end if
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- INVERSION DE CK POUR CONVENTION DE SIGNE ET FIN DE COEFR.
 !

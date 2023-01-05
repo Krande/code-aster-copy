@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine cleanListOfGrpNo(mesh, listGrpNo, nbGrpNo, l_stop, iret)
     character(len=24), pointer :: listGrpNoTmp(:) => null()
 !-----------------------------------------------------------------------
 !
-    if(nbGrpNo == 0) then
+    if (nbGrpNo == 0) then
         iret = 1
         go to 999
     end if
@@ -71,7 +71,7 @@ subroutine cleanListOfGrpNo(mesh, listGrpNo, nbGrpNo, l_stop, iret)
 ! --- Initialisation
 !
     AS_ALLOCATE(vk24=listGrpNoTmp, size=nbGrpNo)
-    nbGrpNoTmp     = 0
+    nbGrpNoTmp = 0
 !
     do iGrpNo = 1, nbGrpNo
         grpNoName = listGrpNo(iGrpNo)
@@ -84,19 +84,19 @@ subroutine cleanListOfGrpNo(mesh, listGrpNo, nbGrpNo, l_stop, iret)
 ! --- The group of nodes exist in the local mesh
 !
             if (l_exi_in_grp) then
-                nbGrpNoTmp = nbGrpNoTmp + 1
+                nbGrpNoTmp = nbGrpNoTmp+1
                 listGrpNoTmp(nbGrpNoTmp) = grpNoName
-            endif
+            end if
         else
-            if(l_stop) then
+            if (l_stop) then
                 valk(1) = grpNoName
                 valk(2) = mesh
                 call utmess('F', 'MODELISA7_75', nk=2, valk=valk)
             end if
-        endif
+        end if
     end do
 !
-    if(nbGrpNoTmp < nbGrpNo) then
+    if (nbGrpNoTmp < nbGrpNo) then
         iret = 0
     else
         iret = 1
@@ -108,13 +108,13 @@ subroutine cleanListOfGrpNo(mesh, listGrpNo, nbGrpNo, l_stop, iret)
         listGrpNo(iGrpNo) = listGrpNoTmp(iGrpNo)
     end do
 !
-    do iGrpNo = nbGrpNoTmp + 1, nbGrpNo
+    do iGrpNo = nbGrpNoTmp+1, nbGrpNo
         listGrpNo(iGrpNo) = " "
     end do
 !
     nbGrpNo = nbGrpNoTmp
 !
-    AS_DEALLOCATE(vk24= listGrpNoTmp)
+    AS_DEALLOCATE(vk24=listGrpNoTmp)
 !
     call jedema()
 !

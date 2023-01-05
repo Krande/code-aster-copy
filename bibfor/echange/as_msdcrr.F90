@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
-                     geolcl,entdst,geodst,ncorr,corrtab,cret)
+subroutine as_msdcrr(fid, lmname, jname, numdt, numit, entlcl, &
+                     geolcl, entdst, geodst, ncorr, corrtab, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
@@ -28,57 +28,57 @@ subroutine as_msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
 #include "asterfort/conv_int.h"
 #include "asterfort/utmess.h"
 #include "med/msdcrr.h"
-    character(len=*) :: lmname,jname
+    character(len=*) :: lmname, jname
     med_idt :: fid
-    aster_int :: numdt,numit,entlcl,geolcl,entdst
-    aster_int :: geodst,ncorr,corrtab(*),cret
+    aster_int :: numdt, numit, entlcl, geolcl, entdst
+    aster_int :: geodst, ncorr, corrtab(*), cret
 
 #ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 
 #ifdef ASTER_DEBUG_MED
-    write(6,*) '=== as_msdcrr fid=',fid
-    write(6,*) '=== as_msdcrr lmname=',lmname
-    write(6,*) '=== as_msdcrr jname=',jname
-    write(6,*) '=== as_msdcrr numdt=',numdt
-    write(6,*) '=== as_msdcrr numit=',numit
-    write(6,*) '=== as_msdcrr entlcl=',entlcl
-    write(6,*) '=== as_msdcrr geolcl=',geolcl
-    write(6,*) '=== as_msdcrr entdst=',entdst
-    write(6,*) '=== as_msdcrr geodst=',geodst
-    write(6,*) '=== as_msdcrr ncorr=',ncorr
+    write (6, *) '=== as_msdcrr fid=', fid
+    write (6, *) '=== as_msdcrr lmname=', lmname
+    write (6, *) '=== as_msdcrr jname=', jname
+    write (6, *) '=== as_msdcrr numdt=', numdt
+    write (6, *) '=== as_msdcrr numit=', numit
+    write (6, *) '=== as_msdcrr entlcl=', entlcl
+    write (6, *) '=== as_msdcrr geolcl=', geolcl
+    write (6, *) '=== as_msdcrr entdst=', entdst
+    write (6, *) '=== as_msdcrr geodst=', geodst
+    write (6, *) '=== as_msdcrr ncorr=', ncorr
 #endif
 
 #if !ASTER_MED_SAME_INT_IDT
     med_idt :: fid4
-    med_int :: numdt4,numit4,entlcl4,geolcl4,entdst4,geodst4,cret4
+    med_int :: numdt4, numit4, entlcl4, geolcl4, entdst4, geodst4, cret4
     med_int, allocatable :: corrtab4(:)
-    fid4=to_med_idt(fid)
-    numdt4 =to_med_int(numdt)
-    numit4 =to_med_int(numit)
-    entlcl4=to_med_int(entlcl)
-    geolcl4=to_med_int(geolcl)
-    entdst4=to_med_int(entdst)
-    geodst4=to_med_int(geodst)
-    ASSERT(ncorr.gt.0)
+    fid4 = to_med_idt(fid)
+    numdt4 = to_med_int(numdt)
+    numit4 = to_med_int(numit)
+    entlcl4 = to_med_int(entlcl)
+    geolcl4 = to_med_int(geolcl)
+    entdst4 = to_med_int(entdst)
+    geodst4 = to_med_int(geodst)
+    ASSERT(ncorr .gt. 0)
     allocate (corrtab4(ncorr))
 
-    call msdcrr(fid4,lmname,jname,numdt4,numit4,entlcl4,&
-                geolcl4,entdst4,geodst4,corrtab4,cret4)
+    call msdcrr(fid4, lmname, jname, numdt4, numit4, entlcl4, &
+                geolcl4, entdst4, geodst4, corrtab4, cret4)
 
     call conv_int('med->ast', ncorr, vi_ast=corrtab, vi_med=corrtab4)
     deallocate (corrtab4)
-    cret=to_aster_int(cret4)
+    cret = to_aster_int(cret4)
 
 #else
-    call msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
-                geolcl,entdst,geodst,corrtab,cret)
+    call msdcrr(fid, lmname, jname, numdt, numit, entlcl, &
+                geolcl, entdst, geodst, corrtab, cret)
 #endif
 
 #ifdef ASTER_DEBUG_MED
-    write(6,*) '=== as_msdcrr corrtab(1:min(3,ncorr))=',corrtab(1:min(3,ncorr))
-    write(6,*) '=== as_msdcrr cret=',cret
+    write (6, *) '=== as_msdcrr corrtab(1:min(3,ncorr))=', corrtab(1:min(3, ncorr))
+    write (6, *) '=== as_msdcrr cret=', cret
 #endif
 
 #endif

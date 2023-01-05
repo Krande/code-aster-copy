@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,26 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine calcco(ds_thm , l_steady ,&
-                  lMatr, lSigm, lVari, lMatrPred, angl_naut,&
-                  j_mater,&
-                  ndim   , nbvari   ,&
-                  dimdef , dimcon   ,&
-                  adcome , adcote   , adcp11, adcp12, adcp21, adcp22,&
-                  addeme , addete   , addep1, addep2,&
-                  temp   , p1       , p2    ,&
-                  dtemp  , dp1      , dp2   ,&
-                  deps   , epsv     , depsv ,&
-                  tbiot  ,&
-                  phi    , rho11    , satur ,nl,&
-                  pad    , pvp      , h11   , h12   ,&
-                  congem , congep   ,&
-                  vintm  , vintp    , dsde  ,&
+subroutine calcco(ds_thm, l_steady, &
+                  lMatr, lSigm, lVari, lMatrPred, angl_naut, &
+                  j_mater, &
+                  ndim, nbvari, &
+                  dimdef, dimcon, &
+                  adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                  addeme, addete, addep1, addep2, &
+                  temp, p1, p2, &
+                  dtemp, dp1, dp2, &
+                  deps, epsv, depsv, &
+                  tbiot, &
+                  phi, rho11, satur, nl, &
+                  pad, pvp, h11, h12, &
+                  congem, congep, &
+                  vintm, vintp, dsde, &
                   retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -52,25 +52,25 @@ implicit none
 #include "asterfort/thmGetParaCoupling.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-aster_logical, intent(in) :: l_steady
-aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: j_mater, ndim, nbvari
-integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
-integer, intent(in) :: addeme, addete, addep1, addep2
-real(kind=8), intent(in) :: temp, p1, p2
-real(kind=8), intent(in) :: dtemp, dp1, dp2
-real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
-real(kind=8), intent(out) :: phi, rho11, satur,nl
-real(kind=8), intent(out) :: pad, pvp, h11, h12
-real(kind=8), intent(in) :: congem(dimcon)
-real(kind=8), intent(inout) :: congep(dimcon)
-real(kind=8), intent(in) :: vintm(nbvari)
-real(kind=8), intent(inout) :: vintp(nbvari)
-real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-integer, intent(out)  :: retcom
+    type(THM_DS), intent(inout) :: ds_thm
+    aster_logical, intent(in) :: l_steady
+    aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: j_mater, ndim, nbvari
+    integer, intent(in) :: dimdef, dimcon
+    integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
+    integer, intent(in) :: addeme, addete, addep1, addep2
+    real(kind=8), intent(in) :: temp, p1, p2
+    real(kind=8), intent(in) :: dtemp, dp1, dp2
+    real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
+    real(kind=8), intent(out) :: phi, rho11, satur, nl
+    real(kind=8), intent(out) :: pad, pvp, h11, h12
+    real(kind=8), intent(in) :: congem(dimcon)
+    real(kind=8), intent(inout) :: congep(dimcon)
+    real(kind=8), intent(in) :: vintm(nbvari)
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
+    integer, intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -132,20 +132,19 @@ integer, intent(out)  :: retcom
 ! --------------------------------------------------------------------------------------------------
 !
 
-
-    phi    = 0.d0
-    rho11  = 0.d0
-    satur  = 0.d0
-    pvp    = 0.d0
-    h11    = 0.d0
-    h12    = 0.d0
+    phi = 0.d0
+    rho11 = 0.d0
+    satur = 0.d0
+    pvp = 0.d0
+    h11 = 0.d0
+    h12 = 0.d0
     retcom = 0
 !
     if (l_steady) then
-        bdcp11 = adcp11 - 1
+        bdcp11 = adcp11-1
     else
         bdcp11 = adcp11
-    endif
+    end if
 !
 ! - Get parameters for coupling
 !
@@ -155,143 +154,142 @@ integer, intent(out)  :: retcom
 !
     select case (ds_thm%ds_behaviour%nume_thmc)
     case (LIQU_SATU)
-        call thmCpl001(ds_thm,&
-                       l_steady, lMatr, lSigm, lVari, angl_naut,&
-                       ndim    , nbvari, &
-                       dimdef  , dimcon,&
-                       adcome  , adcote, bdcp11,&
-                       addeme  , addete, addep1,&
-                       temp    ,&
-                       dtemp   , dp1   ,&
-                       deps    , epsv  , depsv,&
-                       tbiot   ,&
-                       phi     , rho11 , satur,&
-                       congem  , congep,&
-                       vintm   , vintp , dsde,&
+        call thmCpl001(ds_thm, &
+                       l_steady, lMatr, lSigm, lVari, angl_naut, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcome, adcote, bdcp11, &
+                       addeme, addete, addep1, &
+                       temp, &
+                       dtemp, dp1, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
         nl = phi
     case (GAZ)
-        call thmCpl002(ds_thm,&
-                       lMatr, lSigm, lVari, angl_naut,&
-                       ndim  , nbvari, &
-                       dimdef, dimcon,&
-                       adcome, adcote, adcp11,&
-                       addeme, addete, addep1,&
-                       temp  , p1    ,&
-                       dtemp , dp1   ,&
-                       deps  , epsv  , depsv,&
-                       tbiot ,&
-                       phi   , rho11 , satur,&
-                       congem, congep,&
-                       vintm , vintp , dsde,&
+        call thmCpl002(ds_thm, &
+                       lMatr, lSigm, lVari, angl_naut, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcome, adcote, adcp11, &
+                       addeme, addete, addep1, &
+                       temp, p1, &
+                       dtemp, dp1, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
         nl = phi
     case (LIQU_VAPE)
-        call thmCpl003(ds_thm,&
-                       lMatr, lSigm, lVari, lMatrPred, angl_naut,&
-                       j_mater  ,&
-                       ndim  , nbvari   ,&
-                       dimdef, dimcon   ,&
-                       adcote, adcp11   , adcp12, &
-                       addete, addep1   , &
-                       temp  , p1       ,&
-                       dtemp , dp1      ,&
-                       deps  , epsv     , depsv ,&
-                       tbiot ,&
-                       phi   , rho11    , satur ,&
-                       pvp   , h11      , h12   ,&
-                       congem, congep   ,&
-                       vintm , vintp    , dsde  ,&
+        call thmCpl003(ds_thm, &
+                       lMatr, lSigm, lVari, lMatrPred, angl_naut, &
+                       j_mater, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcote, adcp11, adcp12, &
+                       addete, addep1, &
+                       temp, p1, &
+                       dtemp, dp1, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       pvp, h11, h12, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
         nl = phi
     case (LIQU_VAPE_GAZ)
-        call thmCpl004(ds_thm,&
-                       lMatr, lSigm, lVari, angl_naut,&
-                       j_mater,&
-                       ndim  , nbvari   ,&
-                       dimdef, dimcon   ,&
-                       adcome, adcote   , adcp11, adcp12, adcp21,&
-                       addeme, addete   , addep1, addep2,&
-                       temp  , p1       , p2    ,&
-                       dtemp , dp1      , dp2   ,&
-                       deps  , epsv     , depsv ,&
-                       tbiot ,&
-                       phi   , rho11    , satur ,&
-                       pvp   , h11      , h12   ,&
-                       congem, congep   ,&
-                       vintm , vintp    , dsde  ,&
+        call thmCpl004(ds_thm, &
+                       lMatr, lSigm, lVari, angl_naut, &
+                       j_mater, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcome, adcote, adcp11, adcp12, adcp21, &
+                       addeme, addete, addep1, addep2, &
+                       temp, p1, p2, &
+                       dtemp, dp1, dp2, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       pvp, h11, h12, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
         nl = phi
     case (LIQU_GAZ)
-        call thmCpl005(ds_thm,&
-                       lMatr, lSigm, lVari, angl_naut,&
-                       j_mater,&
-                       ndim  , nbvari   ,&
-                       dimdef, dimcon   ,&
-                       adcome, adcote   , adcp11, adcp21,&
-                       addeme, addete   , addep1, addep2,&
-                       temp  , p1       , p2    ,&
-                       dtemp , dp1      , dp2   ,&
-                       deps  , epsv     , depsv ,&
-                       tbiot ,&
-                       phi   , rho11    , satur ,&
-                       congem, congep   ,&
-                       vintm , vintp    , dsde  ,&
+        call thmCpl005(ds_thm, &
+                       lMatr, lSigm, lVari, angl_naut, &
+                       j_mater, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcome, adcote, adcp11, adcp21, &
+                       addeme, addete, addep1, addep2, &
+                       temp, p1, p2, &
+                       dtemp, dp1, dp2, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
         nl = phi
     case (LIQU_GAZ_ATM)
-        call thmCpl006(ds_thm,&
-                       lMatr, lSigm, lVari, angl_naut,&
-                       j_mater,&
-                       ndim  , nbvari   ,&
-                       dimdef, dimcon   ,&
-                       adcome, adcote   , adcp11,&
-                       addeme, addete   , addep1,&
-                       temp  , p1       ,&
-                       dtemp , dp1      ,&
-                       deps  , epsv     , depsv ,&
-                       tbiot ,&
-                       phi   , rho11    , satur ,&
-                       congem, congep   ,&
-                       vintm , vintp    , dsde  ,&
+        call thmCpl006(ds_thm, &
+                       lMatr, lSigm, lVari, angl_naut, &
+                       j_mater, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcome, adcote, adcp11, &
+                       addeme, addete, addep1, &
+                       temp, p1, &
+                       dtemp, dp1, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
         nl = phi
     case (LIQU_AD_GAZ_VAPE)
 
-        call thmCpl009(ds_thm ,&
-                       lMatr, lSigm, lVari, angl_naut,&
-                       j_mater,&
-                       ndim   , nbvari   ,&
-                       dimdef , dimcon   ,&
-                       adcome , adcote   , adcp11, adcp12, adcp21, adcp22,&
-                       addeme , addete   , addep1, addep2,&
-                       temp   , p1       , p2    ,&
-                       dtemp  , dp1      , dp2   ,&
-                       deps   , epsv     , depsv ,&
-                       tbiot  ,&
-                       phi    , rho11    , satur ,&
-                       pad    , pvp      , h11   , h12   ,&
-                       congem , congep   ,&
-                       vintm  , vintp    , dsde  ,&
+        call thmCpl009(ds_thm, &
+                       lMatr, lSigm, lVari, angl_naut, &
+                       j_mater, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                       addeme, addete, addep1, addep2, &
+                       temp, p1, p2, &
+                       dtemp, dp1, dp2, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       pad, pvp, h11, h12, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
 
-
     case (LIQU_AD_GAZ)
-        call thmCpl010(ds_thm ,&
-                       lMatr, lSigm, lVari, angl_naut,&
-                       j_mater,&
-                       ndim   , nbvari   ,&
-                       dimdef , dimcon   ,&
-                       adcome , adcote   , adcp11, adcp12, adcp21, adcp22,&
-                       addeme , addete   , addep1, addep2,&
-                       temp   , p1       , p2    ,&
-                       dtemp  , dp1      , dp2   ,&
-                       deps   , epsv     , depsv ,&
-                       tbiot  ,&
-                       phi    , rho11    , satur ,&
-                       pad    , pvp      , h11   , h12   ,&
-                       congem , congep   ,&
-                       vintm  , vintp    , dsde  ,&
+        call thmCpl010(ds_thm, &
+                       lMatr, lSigm, lVari, angl_naut, &
+                       j_mater, &
+                       ndim, nbvari, &
+                       dimdef, dimcon, &
+                       adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                       addeme, addete, addep1, addep2, &
+                       temp, p1, p2, &
+                       dtemp, dp1, dp2, &
+                       deps, epsv, depsv, &
+                       tbiot, &
+                       phi, rho11, satur, &
+                       pad, pvp, h11, h12, &
+                       congem, congep, &
+                       vintm, vintp, dsde, &
                        retcom)
         nl = phi
     case default

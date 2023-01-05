@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine nmetcv(model, field_refe, field_in, field_disc_in, field_out, field_disc_out)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/chpchd.h"
 #include "asterfort/copisd.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: model
-character(len=24), intent(in) :: field_refe
-character(len=24), intent(in) :: field_in
-character(len=24), intent(in) :: field_out
-character(len=4), intent(in) :: field_disc_in
-character(len=4), intent(in) :: field_disc_out
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: field_refe
+    character(len=24), intent(in) :: field_in
+    character(len=24), intent(in) :: field_out
+    character(len=4), intent(in) :: field_disc_in
+    character(len=4), intent(in) :: field_disc_out
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,15 +70,15 @@ character(len=4), intent(in) :: field_disc_out
                 call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
             else
                 call utmess('I', 'ETATINIT_51', nk=3, valk=valk)
-            endif
+            end if
         else
             call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
-        endif
+        end if
 !
 ! ----- Not good discretization -> convert
 !
-        call chpchd(field_in , field_disc_out, field_refe, 'NON', 'V',&
+        call chpchd(field_in, field_disc_out, field_refe, 'NON', 'V', &
                     field_out, model)
-    endif
+    end if
 !
 end subroutine

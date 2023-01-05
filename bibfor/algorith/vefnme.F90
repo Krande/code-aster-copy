@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine vefnme(optionz, modelz    , mate , cara_elem,&
-                  compor , partps    , nh   , ligrelz  ,&
-                  varcz  , sigmz     , strxz,&
-                  dispz  , disp_incrz,&
-                  base   , vect_elemz)
+subroutine vefnme(optionz, modelz, mate, cara_elem, &
+                  compor, partps, nh, ligrelz, &
+                  varcz, sigmz, strxz, &
+                  dispz, disp_incrz, &
+                  base, vect_elemz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -41,15 +41,15 @@ implicit none
 #include "asterfort/xajcin.h"
 #include "asterfort/maveElemCreate.h"
 !
-character(len=*), intent(in) :: optionz, modelz
-character(len=24), intent(in) :: cara_elem, mate
-character(len=19), intent(in) :: compor
-real(kind=8), intent(in) :: partps(*)
-integer, intent(in) :: nh
-character(len=*), intent(in) :: ligrelz
-character(len=*), intent(in) :: sigmz, varcz, strxz, dispz, disp_incrz
-character(len=1), intent(in) :: base
-character(len=*), intent(in) :: vect_elemz
+    character(len=*), intent(in) :: optionz, modelz
+    character(len=24), intent(in) :: cara_elem, mate
+    character(len=19), intent(in) :: compor
+    real(kind=8), intent(in) :: partps(*)
+    integer, intent(in) :: nh
+    character(len=*), intent(in) :: ligrelz
+    character(len=*), intent(in) :: sigmz, varcz, strxz, dispz, disp_incrz
+    character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: vect_elemz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,7 +77,7 @@ character(len=*), intent(in) :: vect_elemz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxchin  = 35, nbout = 1
+    integer, parameter :: mxchin = 35, nbout = 1
     character(len=8) :: lpaout(nbout), lpain(mxchin)
     character(len=19) :: lchout(nbout), lchin(mxchin)
     aster_logical :: l_xfem
@@ -96,41 +96,41 @@ character(len=*), intent(in) :: vect_elemz
 !
 ! - Initializations
 !
-    lpaout    = ' '
-    lpain     = ' '
-    lchout    = ' '
-    lchin     = ' '
-    model     = modelz
-    sigm      = sigmz
-    varc      = varcz
-    strx      = strxz
-    disp      = dispz
+    lpaout = ' '
+    lpain = ' '
+    lchout = ' '
+    lchin = ' '
+    model = modelz
+    sigm = sigmz
+    varc = varcz
+    strx = strxz
+    disp = dispz
     disp_incr = disp_incrz
-    ligrel    = ligrelz
-    newnom    = '.0000000'
+    ligrel = ligrelz
+    newnom = '.0000000'
     vect_elem = vect_elemz
     resu_elem = vect_elem(1:8)//'.0000000'
     call exixfe(model, iret)
     l_xfem = (iret .eq. 1)
-    chharm    = '&&VEFNME.NUME_HARM'
-    tpsmoi    = '&&VEFNME.CH_INSTAM'
-    tpsplu    = '&&VEFNME.CH_INSTAP'
-    option    = optionz
+    chharm = '&&VEFNME.NUME_HARM'
+    tpsmoi = '&&VEFNME.CH_INSTAM'
+    tpsplu = '&&VEFNME.CH_INSTAP'
+    option = optionz
     if (ligrel .eq. ' ') then
         ligrel_local = model(1:8)//'.MODELE'
     else
         ligrel_local = ligrel
-    endif
+    end if
 !
 ! - Geometry field
 !
     if (disp .ne. ' ') then
         call dismoi('NOM_MAILLA', disp, 'CHAM_NO', repk=mesh)
-    else if (sigm.ne.' ') then
+    else if (sigm .ne. ' ') then
         call dismoi('NOM_MAILLA', sigm, 'CHAM_ELEM', repk=mesh)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     chgeom = mesh(1:8)//'.COORDO'
 !
 ! - Field for structural elements
@@ -139,16 +139,16 @@ character(len=*), intent(in) :: vect_elemz
 !
 ! - Field for Fourier mode
 !
-    call mecact('V', chharm, 'MAILLA', mesh, 'HARMON',&
+    call mecact('V', chharm, 'MAILLA', mesh, 'HARMON', &
                 ncmp=1, nomcmp='NH', si=nh)
 !
 ! - Field for time
 !
     instm = partps(1)
     instp = partps(2)
-    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R',&
+    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=instm)
-    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R',&
+    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=instp)
 !
 ! - Suppress old vect_elem result
@@ -206,20 +206,20 @@ character(len=*), intent(in) :: vect_elemz
 !
     if (l_xfem) then
         call xajcin(model, option, mxchin, lchin, lpain, nbin)
-    endif
+    end if
 !
 ! - Output field
 !
     lpaout(1) = 'PVECTUR'
     call gcnco2(newnom)
     resu_elem(10:16) = newnom(2:8)
-    call corich('E', resu_elem, ichin_ = -1)
+    call corich('E', resu_elem, ichin_=-1)
     lchout(1) = resu_elem
 !
 ! - Computation
 !
-    call calcul('S'  , option, ligrel_local, nbin, lchin,&
-                lpain, nbout , lchout, lpaout, base,&
+    call calcul('S', option, ligrel_local, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
 !
 ! - Copying output field

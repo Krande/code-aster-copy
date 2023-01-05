@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine apksp(kptsc)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
 !
     implicit none
 #include "jeveux.h"
@@ -83,35 +83,35 @@ use petsc_data_module
 !
 !     -- choix de l'algo KSP :
 !     ------------------------
-    if (precon.ne.'UTILISATEUR') then
+    if (precon .ne. 'UTILISATEUR') then
         if (algo .eq. 'CG') then
             call KSPSetType(ksp, KSPCG, ierr)
-            ASSERT(ierr.eq.0)
-        else if (algo.eq.'CR') then
+            ASSERT(ierr .eq. 0)
+        else if (algo .eq. 'CR') then
             call KSPSetType(ksp, KSPCR, ierr)
-            ASSERT(ierr.eq.0)
-        else if (algo.eq.'GMRES') then
+            ASSERT(ierr .eq. 0)
+        else if (algo .eq. 'GMRES') then
             call KSPSetType(ksp, KSPGMRES, ierr)
             call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
-            ASSERT(ierr.eq.0)
-        else if (algo.eq.'GMRES_LMP') then
+            ASSERT(ierr .eq. 0)
+        else if (algo .eq. 'GMRES_LMP') then
             call KSPSetType(ksp, KSPGMRES, ierr)
             call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
-            ASSERT(ierr.eq.0)
-    ! On indique qu'on veut récupérer les Ritz à la fin de la résolution
-    ! afin de construire le préconditionneur de second niveau LMP
+            ASSERT(ierr .eq. 0)
+            ! On indique qu'on veut récupérer les Ritz à la fin de la résolution
+            ! afin de construire le préconditionneur de second niveau LMP
             call KSPSetComputeRitz(ksp, petsc_true, ierr)
-            ASSERT(ierr.eq.0)
-        else if (algo.eq.'GCR') then
+            ASSERT(ierr .eq. 0)
+        else if (algo .eq. 'GCR') then
             call KSPSetType(ksp, KSPGCR, ierr)
-            ASSERT(ierr.eq.0)
-        else if (algo.eq.'FGMRES') then
+            ASSERT(ierr .eq. 0)
+        else if (algo .eq. 'FGMRES') then
             call KSPSetType(ksp, KSPFGMRES, ierr)
-            ASSERT(ierr.eq.0)
+            ASSERT(ierr .eq. 0)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 !     -- paramètres numériques :
 !     --------------------------
@@ -121,33 +121,33 @@ use petsc_data_module
         maxits = PETSC_DEFAULT_INTEGER
     else
         maxits = to_petsc_int(nmaxit)
-    endif
+    end if
 !
     rtol = resire
     atol = aster_petsc_real
     dtol = aster_petsc_real
 !
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
-    ASSERT(ierr.eq.0)
-    call KSPSetFromOptions( ksp, ierr )
-    ASSERT( ierr == 0 )
-    call KSPSetUp( ksp, ierr )
-    ASSERT( ierr == 0 )
+    ASSERT(ierr .eq. 0)
+    call KSPSetFromOptions(ksp, ierr)
+    ASSERT(ierr == 0)
+    call KSPSetUp(ksp, ierr)
+    ASSERT(ierr == 0)
 !
 !     - pour suivre les itérations de Krylov
 !     --------------------------------------
     if (niv .ge. 2) then
-        call PetscViewerAndFormatCreate(PETSC_VIEWER_STDOUT_WORLD, PETSC_VIEWER_DEFAULT, vf,ierr)
-        call KSPMonitorSet(ksp,KSPMonitorTrueResidual, vf, PetscViewerAndFormatDestroy,&
-                            ierr)
-        ASSERT(ierr.eq.0)
-    endif
+        call PetscViewerAndFormatCreate(PETSC_VIEWER_STDOUT_WORLD, PETSC_VIEWER_DEFAULT, vf, ierr)
+        call KSPMonitorSet(ksp, KSPMonitorTrueResidual, vf, PetscViewerAndFormatDestroy, &
+                           ierr)
+        ASSERT(ierr .eq. 0)
+    end if
 !
     call jedema()
 !
 #else
-kptsc=0
-ASSERT(.false.)
+    kptsc = 0
+    ASSERT(.false.)
 #endif
 !
 end subroutine

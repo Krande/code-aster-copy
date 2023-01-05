@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,9 +72,9 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     character(len=19) :: ces1, ces2
     integer ::  jce1l, jce1v, jce1k, jce1d
     integer :: jce2c, jce2l, jce2v, jce2d, ifm, niv
-    integer :: nbno1,   iaconu,  gd, nbno2
-    integer :: ncmpmx, iad1, iad2, ima1, ima2,  nbmam2
-    integer :: idecal, ino2, icmp, ico, ino1, nuno2,  ilcnx2
+    integer :: nbno1, iaconu, gd, nbno2
+    integer :: ncmpmx, iad1, iad2, ima1, ima2, nbmam2
+    integer :: idecal, ino2, icmp, ico, ino1, nuno2, ilcnx2
     real(kind=8) :: v1, v2, coef1
     complex(kind=8) :: v1c, v2c
     integer, pointer :: pjef_nb(:) => null()
@@ -104,20 +104,20 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
         ces1 = ces1z
         ces2 = ces2z
 !
-    else if (typces.eq.'ELGA') then
+    else if (typces .eq. 'ELGA') then
 !       -- ON NE PEUT PAS ENCORE TRAITER LES CHAMPS ELGA
         iret = 1
         goto 80
 !
-    else if (typces.eq.'ELEM') then
+    else if (typces .eq. 'ELEM') then
         ces1 = '&&CESPRJ.CES1'
         ces2 = '&&CESPRJ.CES2'
-        call cesces(ces1z, 'ELNO', ' ', ' ', ' ',&
+        call cesces(ces1z, 'ELNO', ' ', ' ', ' ', &
                     'V', ces1)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !     1- RECUPERATION D'INFORMATIONS DANS CES1 :
@@ -153,28 +153,28 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
         iret = 1
         goto 80
 !
-    endif
+    end if
 !
     if (tsca .ne. 'R' .and. tsca .ne. 'C') then
 !       -- ON NE TRAITE POUR L'INSTANT QUE LES CHAMPS REELS
         iret = 1
         goto 80
 !
-    endif
+    end if
 !     TEST SUR IDENTITE DES 2 MAILLAGES
-    ASSERT(pjxx_k1(1).eq.ma1)
+    ASSERT(pjxx_k1(1) .eq. ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
         call utmess('F', 'CALCULEL_67', sk=nomgd)
-    endif
+    end if
 !
 !
 !------------------------------------------------------------------
 !     4- ALLOCATION DE CES2 (ELNO):
 !     -----------------------------
     call detrsd('CHAM_ELEM_S', ces2)
-    call cescre(base, ces2, 'ELNO', ma2, nomgd,&
+    call cescre(base, ces2, 'ELNO', ma2, nomgd, &
                 ncmpmx, ce1c, [0], [-1], [-ncmpmx])
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESC', 'L', jce2c)
@@ -197,14 +197,14 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     do ino2 = 1, nbno2
         nbno1 = pjef_nb(ino2)
         videcal(ino2) = idecal
-        idecal = idecal + nbno1
+        idecal = idecal+nbno1
     end do
     call jeveuo(ma2//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', ilcnx2)
 !
 !
     do ima2 = 1, nbmam2
-        nbno2 = zi(jce2d-1+5+4* (ima2-1)+1)
+        nbno2 = zi(jce2d-1+5+4*(ima2-1)+1)
         do ino2 = 1, nbno2
             nuno2 = connex(1+zi(ilcnx2-1+ima2)-2+ino2)
             nbno1 = pjef_nb(nuno2)
@@ -218,45 +218,45 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 ! ================================================================
                 ico = 0
                 do ino1 = 1, nbno1
-                    call cesexi('C', jce1d, jce1l, ima1, ino1,&
+                    call cesexi('C', jce1d, jce1l, ima1, ino1, &
                                 1, icmp, iad1)
                     coef1 = pjef_cf(1+idecal-1+ino1)
-                    if (iad1 .gt. 0) ico = ico + 1
+                    if (iad1 .gt. 0) ico = ico+1
                 end do
                 if (ico .eq. 0) goto 50
                 if (ico .lt. nbno1) goto 50
 !
-                call cesexi('S', jce2d, jce2l, ima2, ino2,&
+                call cesexi('S', jce2d, jce2l, ima2, ino2, &
                             1, icmp, iad2)
-                ASSERT(iad2.lt.0)
+                ASSERT(iad2 .lt. 0)
                 zl(jce2l-1-iad2) = .true.
 !
                 if (tsca .eq. 'R') then
                     v2 = 0.d0
                     do ino1 = 1, nbno1
                         coef1 = pjef_cf(1+idecal-1+ino1)
-                        call cesexi('C', jce1d, jce1l, ima1, ino1,&
+                        call cesexi('C', jce1d, jce1l, ima1, ino1, &
                                     1, icmp, iad1)
-                        ASSERT(iad1.gt.0)
+                        ASSERT(iad1 .gt. 0)
                         v1 = zr(jce1v-1+iad1)
-                        v2 = v2 + coef1*v1
+                        v2 = v2+coef1*v1
                     end do
                     zr(jce2v-1-iad2) = v2
 !
-                else if (tsca.eq.'C') then
-                    v2c = dcmplx(0.d0,0.d0)
+                else if (tsca .eq. 'C') then
+                    v2c = dcmplx(0.d0, 0.d0)
                     do ino1 = 1, nbno1
                         coef1 = pjef_cf(1+idecal-1+ino1)
-                        call cesexi('C', jce1d, jce1l, ima1, ino1,&
+                        call cesexi('C', jce1d, jce1l, ima1, ino1, &
                                     1, icmp, iad1)
-                        ASSERT(iad1.gt.0)
+                        ASSERT(iad1 .gt. 0)
                         v1c = zc(jce1v-1+iad1)
-                        v2c = v2c + coef1*v1c
+                        v2c = v2c+coef1*v1c
                     end do
                     zc(jce2v-1-iad2) = v2c
-                endif
+                end if
 !
- 50             continue
+50              continue
             end do
         end do
     end do
@@ -268,9 +268,9 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !
 !     -- ON TRANSFORME LE CHAM_ELEM_S/ELNO EN ELEM SI NECESSAIRE:
     if (typces .eq. 'ELEM') then
-        call cesces(ces2, 'ELEM', ' ', ' ', ' ',&
+        call cesces(ces2, 'ELEM', ' ', ' ', ' ', &
                     base, ces2z)
-    endif
+    end if
 !
 !
 !
@@ -278,9 +278,9 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     if (typces .eq. 'ELEM') then
         call detrsd('CHAM_ELEM_S', ces1)
         call detrsd('CHAM_ELEM_S', ces2)
-    endif
+    end if
     AS_DEALLOCATE(vi=videcal)
 !
- 80 continue
+80  continue
     call jedema()
 end subroutine

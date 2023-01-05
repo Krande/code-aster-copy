@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
+subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose, &
                   nbmax, noeu, tablev)
     implicit none
 #include "jeveux.h"
@@ -69,20 +69,20 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
 !     RECUPERATION DU VECTEUR DES MAILLES CONNECTEES AU SEGMENT DU FOND
     call jeveuo(macofo, 'L', jmaco)
 !
-    comp4=0
+    comp4 = 0
     do inp = 1, nbmac
-        comp3=0
-        call jeveuo(jexnum( noma//'.CONNEX', zi(jmaco-1 + inp)), 'L', jno1)
+        comp3 = 0
+        call jeveuo(jexnum(noma//'.CONNEX', zi(jmaco-1+inp)), 'L', jno1)
 !       NOMBRE DE NOEUDS LA MAILLE
-        typ11= iatyma-1+zi(jmaco-1 + inp)
+        typ11 = iatyma-1+zi(jmaco-1+inp)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(typ11)), typ1)
         call dismoi('NBNO_TYPMAIL', typ1, 'TYPE_MAILLE', repi=nbno1)
 !       POUR CHAQUE MAILLE VOISINE (NOEUD FOND COMMUN ET MEME
 !       DIMENSION TOPO
         do inq = 1, nbmac
-            comp2=0
-            call jeveuo(jexnum( noma//'.CONNEX', zi(jmaco-1 + inq)), 'L', jno2)
-            typ22= iatyma-1+zi(jmaco-1 + inq)
+            comp2 = 0
+            call jeveuo(jexnum(noma//'.CONNEX', zi(jmaco-1+inq)), 'L', jno2)
+            typ22 = iatyma-1+zi(jmaco-1+inq)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(typ22)), typ2)
             call dismoi('NBNO_TYPMAIL', typ2, 'TYPE_MAILLE', repi=nbno2)
 !         ON COMPTE LE NOMBRE DE NOEUDS COMMUNS AFIN D'ISOLER
@@ -90,30 +90,30 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
             do inr = 1, nbno1
                 do ins = 1, nbno2
                     if (zi(jno1-1+inr) .eq. zi(jno2-1+ins)) then
-                        comp2=comp2+1
-                    endif
+                        comp2 = comp2+1
+                    end if
                 end do
             end do
 !         SI LES DEUX MAILLES ONT DES NOEUDS EN COMMUN EN DEHORS DU
 !         FOND MAIS PAS TOUS
-            if (( (nbnoff.eq.1) .and. (comp2.ne.nbno1) .and. ( comp2.ge.nbnose) ) .or.&
-                ((nbnoff.gt.1).and.(comp2.ne.nbno1) .and.(comp2.ge.nbmax) ) .or.&
-                (nbmac.eq.1)) then
-                comp3=comp3+1
-            endif
+            if (((nbnoff .eq. 1) .and. (comp2 .ne. nbno1) .and. (comp2 .ge. nbnose)) .or. &
+                ((nbnoff .gt. 1) .and. (comp2 .ne. nbno1) .and. (comp2 .ge. nbmax)) .or. &
+                (nbmac .eq. 1)) then
+                comp3 = comp3+1
+            end if
         end do
 !       ON GARDE LES MAILLES CONNECTEES QU'A 1 SEULE AUTRE MAILLE
         if (comp3 .eq. 1) then
-            comp4=comp4+1
-            ASSERT(comp4.le.2)
-            tablev(comp4)=zi(jmaco-1 + inp)
-        endif
+            comp4 = comp4+1
+            ASSERT(comp4 .le. 2)
+            tablev(comp4) = zi(jmaco-1+inp)
+        end if
     end do
 !
 !     SI AUCUNE MAILLE DE CE TYPE N'EST TROUVE
     if (comp4 .eq. 0) then
         valk(1) = noeu
         call utmess('F', 'RUPTURE0_31', sk=valk(1))
-    endif
+    end if
     call jedema()
 end subroutine

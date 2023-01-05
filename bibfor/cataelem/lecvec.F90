@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,41 +32,41 @@ subroutine lecvec(iad, long, type, unite)
 !-----------------------------------------------------------------------
     if (type .eq. 'R') then
         do k = 1, long
-            read(unite,'(1E12.5)') zr(iad-1+k)
+            read (unite, '(1E12.5)') zr(iad-1+k)
         end do
 !
-    else if (type.eq.'I') then
+    else if (type .eq. 'I') then
         do k = 1, long
-            read(unite,'(I12)') zi(iad-1+k)
+            read (unite, '(I12)') zi(iad-1+k)
         end do
 !
-    else if (type.eq.'K8') then
+    else if (type .eq. 'K8') then
         do k = 1, long
-            read(unite,'(A8)') zk8(iad-1+k)
+            read (unite, '(A8)') zk8(iad-1+k)
         end do
 !
-    else if (type.eq.'K16') then
+    else if (type .eq. 'K16') then
         do k = 1, long
-            read(unite,'(A16)') zk16(iad-1+k)
+            read (unite, '(A16)') zk16(iad-1+k)
         end do
 !
-    else if (type.eq.'K24') then
+    else if (type .eq. 'K24') then
         do k = 1, long
-            read(unite,'(A24)') zk24(iad-1+k)
+            read (unite, '(A24)') zk24(iad-1+k)
         end do
 !
-    else if (type.eq.'K32') then
+    else if (type .eq. 'K32') then
         do k = 1, long
-            read(unite,'(A32)') zk32(iad-1+k)
+            read (unite, '(A32)') zk32(iad-1+k)
         end do
 !
-    else if (type.eq.'K80') then
+    else if (type .eq. 'K80') then
         do k = 1, long
-            read(unite,'(A80)') zk80(iad-1+k)
+            read (unite, '(A80)') zk80(iad-1+k)
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 end subroutine

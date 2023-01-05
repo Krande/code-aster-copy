@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ function armin(nomaz)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    r8b=0.d0
+    r8b = 0.d0
 !
 ! --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
 !
@@ -64,18 +64,18 @@ function armin(nomaz)
         call ltnotb(noma, 'CARA_GEOM', nomt19)
         nbpar = 0
         para = 'AR_MIN                  '
-        call tbliva(nomt19, nbpar, ' ', [ibid], [r8b],&
-                    [cbid], k8b, k8b, [r8b], para,&
-                    k8b, ibid, arete, cbid, k8b,&
+        call tbliva(nomt19, nbpar, ' ', [ibid], [r8b], &
+                    [cbid], k8b, k8b, [r8b], para, &
+                    k8b, ibid, arete, cbid, k8b, &
                     ier)
         if (ier .eq. 0) then
             armin = arete
         else
             call utmess('F', 'MODELISA2_13')
-        endif
+        end if
     else
         call utmess('F', 'MODELISA3_18')
-    endif
+    end if
 !
     call jedema()
 !

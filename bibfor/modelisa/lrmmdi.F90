@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp,&
-                  nmatyp, nbnoeu, nbmail, nbnoma, descfi,&
+subroutine lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp, &
+                  nmatyp, nbnoeu, nbmail, nbnoma, descfi, &
                   adapma)
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "jeveux.h"
@@ -33,13 +33,13 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-med_idt :: fid
-integer :: nbnoeu, nbmail, nbnoma
-integer :: typgeo(*), nmatyp(*), nnotyp(*)
-character(len=8) :: nomtyp(*)
-character(len=*) :: nomamd
-character(len=*) :: adapma
-character(len=*) :: descfi
+    med_idt :: fid
+    integer :: nbnoeu, nbmail, nbnoma
+    integer :: typgeo(*), nmatyp(*), nnotyp(*)
+    character(len=8) :: nomtyp(*)
+    character(len=*) :: nomamd
+    character(len=*) :: adapma
+    character(len=*) :: descfi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ character(len=*) :: descfi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: edcoor=0,ednoeu=3,typnoe=0,edconn=1,edmail=0,ednoda=0
+    integer, parameter :: edcoor = 0, ednoeu = 3, typnoe = 0, edconn = 1, edmail = 0, ednoda = 0
     integer :: codret, iaux, jaux, ityp
     character(len=8) :: saux08
 !
@@ -75,15 +75,15 @@ character(len=*) :: descfi
 !
 ! 1.1. ==> NOMBRE DE NOEUDS
 !
-    call as_mmhnme(fid, nomamd, edcoor, ednoeu, typnoe,&
+    call as_mmhnme(fid, nomamd, edcoor, ednoeu, typnoe, &
                    iaux, nbnoeu, codret)
     if (codret .ne. 0) then
         call codent(codret, 'G', saux08)
         call utmess('F', 'MED_12', sk=saux08)
-    endif
+    end if
     if (nbnoeu .eq. 0) then
         call utmess('F', 'MED_21')
-    endif
+    end if
 !
 ! 1.2. ==> NOMBRE DE MAILLES PAR TYPE ET LONGUEUR TOTALE DU TABLEAU
 !          DE CONNECTIVITE NODALE
@@ -91,25 +91,25 @@ character(len=*) :: descfi
     nbmail = 0
     nbnoma = 0
 !
-    do ityp = 1 , MT_NTYMAX
+    do ityp = 1, MT_NTYMAX
         if (typgeo(ityp) .ne. 0) then
-            call as_mmhnme(fid, nomamd, edconn, edmail, typgeo(ityp),&
+            call as_mmhnme(fid, nomamd, edconn, edmail, typgeo(ityp), &
                            ednoda, nmatyp(ityp), codret)
             if (codret .ne. 0) then
                 call utmess('A', 'MED_23', sk=nomtyp(ityp))
                 call codent(codret, 'G', saux08)
                 call utmess('F', 'MED_12', sk=saux08)
-            endif
-            nbmail = nbmail + nmatyp(ityp)
-            nbnoma = nbnoma + nmatyp(ityp) * nnotyp(ityp)
+            end if
+            nbmail = nbmail+nmatyp(ityp)
+            nbnoma = nbnoma+nmatyp(ityp)*nnotyp(ityp)
         else
             nmatyp(ityp) = 0
-        endif
+        end if
     end do
 !
     if (nbmail .eq. 0) then
         call utmess('F', 'MED_29')
-    endif
+    end if
 !
 !====
 ! 2. NUMERO D'ITERATION POUR L'ADAPTATION DE MAILLAGE
@@ -122,13 +122,13 @@ character(len=*) :: descfi
     iaux = lxlgut(descfi)
     if (iaux .ge. 20) then
         if (descfi(1:6) .eq. 'HOMARD') then
-            read ( descfi(17:21) , fmt='(I5)' ) jaux
+            read (descfi(17:21), fmt='(I5)') jaux
         else
             jaux = 0
-        endif
+        end if
     else
         jaux = 0
-    endif
+    end if
 !
     call wkvect(adapma, 'G V I', 1, iaux)
     zi(iaux) = jaux

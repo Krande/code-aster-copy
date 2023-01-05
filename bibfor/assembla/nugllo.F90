@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,7 +147,7 @@ subroutine nugllo(nu, base)
 !
 !---- ON VERIFIE QU'IL N'Y A PAS DE SUPER-MAILLES
     call jeveuo(noma//'.DIME', 'L', vi=dime)
-    ASSERT(dime(4).eq.0)
+    ASSERT(dime(4) .eq. 0)
 !
 !---- ON RAMENE EN MEMOIRE LES OBJETS DU .NUME :
 !     CALCUL DE NEQG, NLILI
@@ -158,7 +158,7 @@ subroutine nugllo(nu, base)
     call jeveuo(jexatr(nu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
     call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili)
     call jeveuo(nu//'.NUME.NEQU', 'L', j1)
-    neqg=zi(j1)
+    neqg = zi(j1)
 !
 !---- ON CREE LE TABLEAU &&NUGLLO.TAB_NO DONT LE ROLE EST DE SE SOUVENIR
 !     SI UN NOEUD DU MAILLAGE A DEJA ETE TRAITE (ECONOMIE DE CPU)
@@ -172,30 +172,30 @@ subroutine nugllo(nu, base)
     call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
     call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
     call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
-    ldist=.false.
-    ldgrel=.false.
+    ldist = .false.
+    ldgrel = .false.
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     if (partit .ne. ' ') then
-        ASSERT(nbproc.gt.1)
-        ldist=.true.
+        ASSERT(nbproc .gt. 1)
+        ldist = .true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
-        if (.not.ldgrel) then
+        ldgrel = prtk(1) .eq. 'SOUS_DOMAINE' .or. prtk(1) .eq. 'GROUP_ELEM'
+        if (.not. ldgrel) then
             call jeveuo(partit//'.NUPR', 'L', vi=maille)
-        endif
-    endif
+        end if
+    end if
     ASSERT(ldist)
 !
 !---- ALLOCATION DU PRNO DE NUML :
-    call jecrec(nu//'.NUML.PRNO', base(1:1)//' V I ', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(nu//'.NUML.PRNO', base(1:1)//' V I ', 'NU', 'CONTIG', 'VARIABLE', &
                 nlili)
     do ili = 1, nlili
         call jelira(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', n1)
         call jeecra(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', n1)
 !       -- CALCUL DU NOMBRE D'ENTIERS CODES :
-        if (ili .eq. 1) nec=n1/nbnoma-2
+        if (ili .eq. 1) nec = n1/nbnoma-2
     end do
 !
 !---- LECTURE DE LA CONNECTIVITE
@@ -213,106 +213,106 @@ subroutine nugllo(nu, base)
 !---- REMPLISSAGE DU .PRNO ET DU TABLEAU &&NUGLLO.TAB_EQ
 !     QUI SERVIRA A CREER LE .NUEQ
 !     --------------------------------------------------------------
-    numinc=1
+    numinc = 1
     do ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
         if (ili .eq. 2) then
-            ASSERT(nomlig.eq.ligrmo)
-        endif
+            ASSERT(nomlig .eq. ligrmo)
+        end if
         do igr = 1, zzngel(ili)
-            if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 90
-            nel=zznelg(ili,igr)
+            if (ldgrel .and. mod(igr, nbproc) .ne. rang) goto 90
+            nel = zznelg(ili, igr)
             do iel = 1, nel
-                numa=zzliel(ili,igr,iel)
-                ASSERT(numa.ne.0)
-                if (.not.ldgrel) then
+                numa = zzliel(ili, igr, iel)
+                ASSERT(numa .ne. 0)
+                if (.not. ldgrel) then
                     if (numa .gt. 0) then
                         if (maille(numa) .ne. rang) goto 80
                     else
                         if (rang .ne. 0) goto 80
-                    endif
-                endif
+                    end if
+                end if
 !
                 if (numa .gt. 0) then
 !             -- MAILLE DU MAILLAGE :
-                    nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
+                    nbno = zi(jconx2+numa)-zi(jconx2+numa-1)
                     do ino = 1, nbno
-                        nuno=connex(zi(jconx2+numa-1)+ino-1)
+                        nuno = connex(zi(jconx2+numa-1)+ino-1)
                         if (tab_no(nuno) .eq. 1) goto 40
 !
-                        ddl1g=zzprno(1,nuno,1)
-                        nddl=zzprno(1,nuno,2)
+                        ddl1g = zzprno(1, nuno, 1)
+                        nddl = zzprno(1, nuno, 2)
 !
-                        zi(izzpr2(1,nuno,1))=numinc
-                        zi(izzpr2(1,nuno,2))=nddl
+                        zi(izzpr2(1, nuno, 1)) = numinc
+                        zi(izzpr2(1, nuno, 2)) = nddl
                         do numec = 1, nec
-                            zi(izzpr2(1,nuno,2+numec))=zzprno(1,nuno,2+numec)
+                            zi(izzpr2(1, nuno, 2+numec)) = zzprno(1, nuno, 2+numec)
                         end do
 !
                         do iddl = 1, nddl
-                            ddl_pres(1+ddl1g+iddl-2)=1
-                            tab_eq(1+numinc-1+iddl-1)=ddl1g+iddl-1
+                            ddl_pres(1+ddl1g+iddl-2) = 1
+                            tab_eq(1+numinc-1+iddl-1) = ddl1g+iddl-1
                         end do
-                        numinc=numinc+nddl
-                        tab_no(nuno)=1
- 40                     continue
+                        numinc = numinc+nddl
+                        tab_no(nuno) = 1
+40                      continue
                     end do
 !
                 else
 !             -- MAILLE TARDIVE :
-                    numa=-numa
-                    nbno=zznsup(ili,numa)
+                    numa = -numa
+                    nbno = zznsup(ili, numa)
                     do k1 = 1, nbno
-                        nuno=zznema(ili,numa,k1)
+                        nuno = zznema(ili, numa, k1)
                         if (nuno .lt. 0) then
-                            nuno=-nuno
-                            ilib=ili
+                            nuno = -nuno
+                            ilib = ili
                         else
                             if (tab_no(nuno) .eq. 1) goto 70
-                            ilib=1
-                            tab_no(nuno)=1
-                        endif
-                        ddl1g=zzprno(ilib,nuno,1)
+                            ilib = 1
+                            tab_no(nuno) = 1
+                        end if
+                        ddl1g = zzprno(ilib, nuno, 1)
                         if (ddl_pres(ddl1g) .eq. 1) goto 70
-                        zi(izzpr2(ilib,nuno,1))=numinc
-                        nddl=zzprno(ilib,nuno,2)
-                        zi(izzpr2(ilib,nuno,2))=nddl
+                        zi(izzpr2(ilib, nuno, 1)) = numinc
+                        nddl = zzprno(ilib, nuno, 2)
+                        zi(izzpr2(ilib, nuno, 2)) = nddl
                         do numec = 1, nec
-                            zi(izzpr2(ilib,nuno,2+numec))=zzprno(ilib,nuno, 2+numec)
+                            zi(izzpr2(ilib, nuno, 2+numec)) = zzprno(ilib, nuno, 2+numec)
                         end do
                         do iddl = 1, nddl
-                            ddl_pres(1+ddl1g+iddl-2)=1
-                            tab_eq(1+numinc-1+iddl-1)=ddl1g+iddl-1
-                            delg_tmp(1+numinc-1+iddl-1)=delg(1+&
-                            ddl1g-1+iddl-1)
+                            ddl_pres(1+ddl1g+iddl-2) = 1
+                            tab_eq(1+numinc-1+iddl-1) = ddl1g+iddl-1
+                            delg_tmp(1+numinc-1+iddl-1) = delg(1+ &
+                                                               ddl1g-1+iddl-1)
                         end do
-                        numinc=numinc+nddl
- 70                     continue
+                        numinc = numinc+nddl
+70                      continue
                     end do
-                endif
- 80             continue
+                end if
+80              continue
             end do
- 90         continue
+90          continue
         end do
     end do
-    neql=numinc-1
+    neql = numinc-1
 !
 !
 !---- ON VERIFIE QUE CHAQUE PROC A AU MOINS UN DDL
     if (neql .eq. 0) then
-        vali(1)=rang
+        vali(1) = rang
         call utmess('F', 'ASSEMBLA_4', si=vali(1))
-    endif
+    end if
 !
 !---- CREATION DU .NUML.DELG
     call wkvect(nu//'.NUML.DELG', base(1:1)//' V I', neql, jdelgl)
     do j = 1, neql
-        zi(jdelgl-1+j)=delg_tmp(j)
+        zi(jdelgl-1+j) = delg_tmp(j)
     end do
 !
 !---- CREATION DU .NUML.NEQU
     call wkvect(nu//'.NUML.NEQU', base(1:1)//' V I', 2, j1)
-    zi(j1)=neql
+    zi(j1) = neql
 !
 !---- CREATION DU .NUML.NULG ET DU .NUML.NUEQ
     call wkvect(nu//'.NUML.NULG', base(1:1)//' V I', neql, jnulg)
@@ -320,18 +320,18 @@ subroutine nugllo(nu, base)
 !
     do ili = 1, nlili
         call jelira(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', ntot)
-        ntot=ntot/(nec+2)
+        ntot = ntot/(nec+2)
 !
         do ino = 1, ntot
-            ddl1l=zzprn2(ili,ino,1)
-            nddl=zzprn2(ili,ino,2)
+            ddl1l = zzprn2(ili, ino, 1)
+            nddl = zzprn2(ili, ino, 2)
             do iddl = 1, nddl
-                ieqg=tab_eq(1+ddl1l-1+iddl-1)
-                ASSERT(ieqg.gt.0)
+                ieqg = tab_eq(1+ddl1l-1+iddl-1)
+                ASSERT(ieqg .gt. 0)
 !
-                zi(jnulg+ddl1l-1+iddl-1)=ieqg
-                zi(jnueql+ddl1l-1+iddl-1)=ddl1l+iddl-1
-                zi(jnugl+ieqg-1)=ddl1l-1+iddl
+                zi(jnulg+ddl1l-1+iddl-1) = ieqg
+                zi(jnueql+ddl1l-1+iddl-1) = ddl1l+iddl-1
+                zi(jnugl+ieqg-1) = ddl1l-1+iddl
             end do
         end do
     end do

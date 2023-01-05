@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine caraxi(sdcont, model, mesh, model_ndim)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeveuo.h"
@@ -27,10 +27,10 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/mmmaxi.h"
 !
-character(len=8), intent(in) :: sdcont
-character(len=8), intent(in) :: model
-character(len=8), intent(in) :: mesh
-integer, intent(in) :: model_ndim
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: model_ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,20 +64,20 @@ integer, intent(in) :: model_ndim
 !
 ! - Parameters
 !
-    l_verif_all  = cfdisl(sdcont     , 'ALL_VERIF')
+    l_verif_all = cfdisl(sdcont, 'ALL_VERIF')
     nb_cont_elem = cfdisi(sdcont_defi, 'NMACO')
 !
 ! - Only if not verification on all zones !
 !
-    if (.not.l_verif_all) then
+    if (.not. l_verif_all) then
         l_elem_axis = ASTER_FALSE
         if (model_ndim .eq. 2) then
             l_elem_axis = mmmaxi(sdcont_defi, model, mesh)
-        endif
+        end if
         if (l_elem_axis) then
             v_sdcont_paraci(16) = 1
         else
             v_sdcont_paraci(16) = 0
-        endif
-    endif
+        end if
+    end if
 end subroutine

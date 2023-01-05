@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine phi199(model, mate, mateco, ma, nu, num,&
+subroutine phi199(model, mate, mateco, ma, nu, num, &
                   nbmode, solvez, indice, tabad)
     implicit none
 #include "jeveux.h"
@@ -65,9 +65,9 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
 !                                 : 2 : AMORTISSEMENT ET RAIDEUR
 ! IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 !---------------------------------------------------------------------
-    integer :: ibid, nbvale, nbrefe, nbdesc, iret, nbno,  id, ier
-    integer :: ilires, jref, neq, nbd, nbdir, i, jvec,  in, nbsta
-    integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou,  tmod(1)
+    integer :: ibid, nbvale, nbrefe, nbdesc, iret, nbno, id, ier
+    integer :: ilires, jref, neq, nbd, nbdir, i, jvec, in, nbsta
+    integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, tmod(1)
     real(kind=8) :: rbid, xnorm, xd, depl(6), epsi
     complex(kind=8) :: c16b, cbid
     character(len=2) :: model
@@ -82,18 +82,18 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
     real(kind=8), pointer :: mst(:) => null()
     character(len=8), pointer :: noeud(:) => null()
 !
-    data maprec   /'&&OP0199.MAPREC'/
-    data chsol    /'&&OP0199.SOLUTION'/
-    data   tabcmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
-    data ndble /0/
+    data maprec/'&&OP0199.MAPREC'/
+    data chsol/'&&OP0199.SOLUTION'/
+    data tabcmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
+    data ndble/0/
 ! -----------------------------------------------------------------
 !
     call jemarq()
-    epsi = r8prem( )
+    epsi = r8prem()
     ier = 0
     solveu = solvez
     criter = '&&RESGRA_GCPC'
-    indice=0
+    indice = 0
 !
     call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
     call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n2)
@@ -103,23 +103,23 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
 !     DES MAILLAGES COMMUNS
 !
     if (n3 .gt. 0) then
-        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
-                    cbid, rbid, 'ABSOLU', tmod, 1,&
+        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid, &
+                    cbid, rbid, 'ABSOLU', tmod, 1, &
                     ibid)
-        nbmode=tmod(1)
-        call rsexch('F', modmec, 'DEPL', 1, nomcha,&
+        nbmode = tmod(1)
+        call rsexch('F', modmec, 'DEPL', 1, nomcha, &
                     iret)
         call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=mailla)
         call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
         if (maflui .ne. mailla) then
-            call tabcor(model, mate, mateco, mailla, maflui, moint,&
+            call tabcor(model, mate, mateco, mailla, maflui, moint, &
                         num, ndble, icor)
-            call majou(model, modmec, solveu, num, nu,&
-                       ma, mate, mateco, moint, ndble, icor,&
+            call majou(model, modmec, solveu, num, nu, &
+                       ma, mate, mateco, moint, ndble, icor, &
                        tabad)
-            indice=1
-        endif
-    endif
+            indice = 1
+        end if
+    end if
 !
 !=====================================================================
 !---------------- ALTERNATIVE MODE_MECA OU---------
@@ -128,15 +128,15 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
 ! DANS LE CAS OU ON N A PAS CALCUL DE MASSE AJOUTEE SUR UN
 ! MAILLAGE SQUELETTE
 !
-    if ((n3.gt.0) .and. (indice.ne.1)) then
+    if ((n3 .gt. 0) .and. (indice .ne. 1)) then
 !
 !
 !----- -RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA
 !
-        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
-                    cbid, rbid, 'ABSOLU', tmod, 1,&
+        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid, &
+                    cbid, rbid, 'ABSOLU', tmod, 1, &
                     ibid)
-        nbmode=tmod(1)
+        nbmode = tmod(1)
 !
         call wkvect('&&OP0199.PHI1', 'V V K24', 1, iphi1)
 !
@@ -145,14 +145,14 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
 !======================================================================
         ilires = 0
         nomcha = '&&PHI199.CHAMREF'
-        call rsexch('F', modmec, 'DEPL', 1, nocham,&
+        call rsexch('F', modmec, 'DEPL', 1, nocham, &
                     iret)
         nocham = nocham(1:19)//'.REFE'
         call jeveuo(nocham, 'L', jref)
-        nume = zk24(jref+1)(1:14)
-        call vtcreb(nomcha, 'V', 'R',&
-                    nume_ddlz = nume,&
-                    nb_equa_outz = neq)
+        nume = zk24(jref+1) (1:14)
+        call vtcreb(nomcha, 'V', 'R', &
+                    nume_ddlz=nume, &
+                    nb_equa_outz=neq)
 !
 ! --- QUELLE EST LA DIRECTION ?
 !
@@ -163,20 +163,20 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
 !     --- ON NORMALISE LE VECTEUR ---
         xnorm = 0.d0
         do i = 1, nbdir
-            xnorm = xnorm + depl(i) * depl(i)
+            xnorm = xnorm+depl(i)*depl(i)
         end do
         xnorm = sqrt(xnorm)
         if (xnorm .lt. 0.d0) then
             call utmess('F', 'ALGORITH9_81')
-        endif
+        end if
         do i = 1, nbdir
-            depl(i) = depl(i) / xnorm
+            depl(i) = depl(i)/xnorm
         end do
 !
         call jeveuo(nomcha(1:19)//'.VALE', 'E', jvec)
         AS_ALLOCATE(vi=ddl, size=neq*nbdir)
-        call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
-                    tabl_equa = ddl)
+        call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq, &
+                    tabl_equa=ddl)
 !
         do in = 0, neq-1
             zr(jvec+in) = 0.d0
@@ -193,7 +193,7 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
         motcle(2) = 'GROUP_NO'
         typmcl(1) = 'NOEUD'
         typmcl(2) = 'GROUP_NO'
-        call reliem(' ', mailla, 'NO_NOEUD', ' ', 1,&
+        call reliem(' ', mailla, 'NO_NOEUD', ' ', 1, &
                     2, motcle, typmcl, '&&PHI199.NOEUD', nbno)
         call jeveuo('&&PHI199.NOEUD', 'L', vk8=noeud)
 !
@@ -203,71 +203,71 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
             xd = depl(id)
             if (abs(xd) .gt. epsi) then
                 do in = 1, nbno
-                    acces(1:8 ) = noeud(in)
+                    acces(1:8) = noeud(in)
                     acces(9:16) = tabcmp(id)
 !
 !              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
-                    call rsorac(modsta, 'NOEUD_CMP', ibid, rbid, acces,&
-                                c16b, epsi, crit, tmod, 1,&
+                    call rsorac(modsta, 'NOEUD_CMP', ibid, rbid, acces, &
+                                c16b, epsi, crit, tmod, 1, &
                                 nbtrou)
-                    iordr=tmod(1)
+                    iordr = tmod(1)
                     if (nbtrou .ne. 1) then
-                        ier = ier + 1
-                        valk (1) = acces(1:8)
-                        valk (2) = acces(9:16)
+                        ier = ier+1
+                        valk(1) = acces(1:8)
+                        valk(2) = acces(9:16)
                         call utmess('E', 'ALGELINE4_61', nk=2, valk=valk)
                         goto 26
-                    endif
-                    call rsvpar(modsta, iordr, 'TYPE_DEFO', ibid, rbid,&
+                    end if
+                    call rsvpar(modsta, iordr, 'TYPE_DEFO', ibid, rbid, &
                                 'DEPL_IMPO', iret)
                     if (iret .ne. 100) then
-                        ier = ier + 1
-                        valk (1) = 'DDL_IMPO'
-                        valk (2) = acces(1:8)
-                        valk (3) = acces(9:16)
+                        ier = ier+1
+                        valk(1) = 'DDL_IMPO'
+                        valk(2) = acces(1:8)
+                        valk(3) = acces(9:16)
                         call utmess('E', 'ALGELINE4_62', nk=3, valk=valk)
                         goto 26
-                    endif
-                    call rsexch('F', modsta, 'DEPL', iordr, chamno,&
+                    end if
+                    call rsexch('F', modsta, 'DEPL', iordr, chamno, &
                                 iret)
                     call jeveuo(chamno//'.VALE', 'L', vr=mst)
 !
                     do i = 0, neq-1
-                        zr(jvec+i) = zr(jvec+i) - ddl(1+(id-1)*neq+ i)*xd*mst(1+i)
+                        zr(jvec+i) = zr(jvec+i)-ddl(1+(id-1)*neq+i)*xd*mst(1+i)
                     end do
                     call jelibe(chamno//'.VALE')
- 26                 continue
+26                  continue
                 end do
-            endif
+            end if
         end do
         if (ier .ne. 0) then
             call utmess('F', 'ALGORITH5_24')
-        endif
+        end if
 !
         goto 42
 !
- 41     continue
+41      continue
         do i = 1, nbdir
             do in = 0, neq-1
-                zr(jvec+in) = zr(jvec+in) - ddl(1+(i-1)*neq+in)* depl(i)
+                zr(jvec+in) = zr(jvec+in)-ddl(1+(i-1)*neq+in)*depl(i)
             end do
         end do
- 42     continue
+42      continue
 !
         nomcha = nomcha(1:19)
         vecso1 = '&&OP0199.VECSOL1'
 !
-        call calflu(nomcha, moflui, mate, mateco, nu, vecso1,&
+        call calflu(nomcha, moflui, mate, mateco, nu, vecso1, &
                     nbdesc, nbrefe, nbvale, 'R')
 !
-        ilires = ilires + 1
+        ilires = ilires+1
 !
 !------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
 !
-        call resoud(ma, maprec, solveu, ' ', 0,&
-                    vecso1, chsol, 'V', [0.d0], [cbid],&
+        call resoud(ma, maprec, solveu, ' ', 0, &
+                    vecso1, chsol, 'V', [0.d0], [cbid], &
                     criter, .true._1, 0, iret)
-        call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
+        call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19), &
                     .false._1)
         call detrsd('CHAMP_GD', chsol)
 !
@@ -277,10 +277,10 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
 !
 !------------------------------------------------------------------
         vesto1 = '&&OP0199.VEST1'
-        call prstoc(vecso1, vesto1, ilires, ilires, iphi1,&
+        call prstoc(vecso1, vesto1, ilires, ilires, iphi1, &
                     nbvale, nbrefe, nbdesc)
 !
-    endif
+    end if
 !
 ! --- MENAGE
     call detrsd('CHAM_NO', '&&PHI199.CHAMREF')
@@ -292,7 +292,7 @@ subroutine phi199(model, mate, mateco, ma, nu, num,&
         call jedetr(criter(1:19)//'.CRTI')
         call jedetr(criter(1:19)//'.CRTR')
         call jedetr(criter(1:19)//'.CRDE')
-    endif
+    end if
 !----------------------------------------------------------------
     call jedema()
 end subroutine

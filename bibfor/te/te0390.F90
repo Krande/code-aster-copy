@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0390(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -44,7 +44,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,7 +75,7 @@ character(len=16), intent(in) :: option, nomte
     aster_logical :: lVect, lMatr, lVari, lSigm
     integer, parameter :: nbres = 3
     integer :: icodre(nbres)
-    character(len=16), parameter :: nomres(nbres) =(/'E  ','NU ', 'RHO'/)
+    character(len=16), parameter :: nomres(nbres) = (/'E  ', 'NU ', 'RHO'/)
     integer :: i, iacckm, iaccp, ico, icompo, iddepl, idepde
     integer :: idepkm, idepm, idfdk, ifint, igeom, imat, imate
     integer :: imatuu, instmr, instpr, ipoids, iret, iromk, iromkm
@@ -89,15 +89,15 @@ character(len=16), intent(in) :: option, nomte
     real(kind=8) :: stoudy, un, xiy, xiz, xjx
     integer, parameter :: nb_cara = 6
     real(kind=8) :: vale_cara(nb_cara)
-    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1   ','IY1  ','IZ1  ',&
-                                                          'AY1  ','AZ1  ','JX1  '/)
+    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1   ', 'IY1  ', 'IZ1  ', &
+                                                          'AY1  ', 'AZ1  ', 'JX1  '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call elref1(elrefe)
-    r8bid=0.d0
+    r8bid = 0.d0
     demi = 5.d-1
-    un   = 1.d0
+    un = 1.d0
     deux = 2.d0
     rigi = 0.d0
     fint = 0.d0
@@ -110,18 +110,18 @@ character(len=16), intent(in) :: option, nomte
         stoudy = 0.d0
     else
         stoudy = zr(istady)
-    endif
+    end if
 !
-    call elrefe_info(fami='RIGI',nno=nno,&
-                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk)
+    call elrefe_info(fami='RIGI', nno=nno, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk)
     nord = 6*nno
 !
     ico = 0
     do kp = 1, npg
         do ne = 1, nno
-            ico = ico + 1
-            en(ne,kp) = zr(ivf-1+ico)
-            enprim(ne,kp) = zr(idfdk-1+ico)
+            ico = ico+1
+            en(ne, kp) = zr(ivf-1+ico)
+            enprim(ne, kp) = zr(idfdk-1+ico)
         end do
     end do
 !
@@ -153,41 +153,41 @@ character(len=16), intent(in) :: option, nomte
 !
     if (rela_comp(1:4) .ne. 'ELAS') then
         call utmess('F', 'POUTRE0_17')
-    endif
+    end if
     if (defo_comp .ne. 'GROT_GDEP') then
         call utmess('F', 'POUTRE0_41')
-    endif
+    end if
 !
 ! - Elastic properties
 !
-    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', [r8bid],&
-                2  , nomres, valres, icodre, 1)
-    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', [r8bid],&
-                1  , nomres(3), valres(3), icodre(3), 0)
+    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                ' ', 'ELAS', 0, '  ', [r8bid], &
+                2, nomres, valres, icodre, 1)
+    call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                ' ', 'ELAS', 0, '  ', [r8bid], &
+                1, nomres(3), valres(3), icodre(3), 0)
     if (icodre(3) .ne. 0) then
         if (stoudy .gt. demi) then
             call utmess('F', 'POUTRE0_42')
         else
             valres(3) = 0.d0
-        endif
-    endif
-    e   = valres(1)
-    nu  = valres(2)
+        end if
+    end if
+    e = valres(1)
+    nu = valres(2)
     rho = valres(3)
-    g   = e/ (deux* (un+nu))
+    g = e/(deux*(un+nu))
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !     --- LA SECTION EST SUPPOSEE CONSTANTE ---
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
-    a      = vale_cara(1)
-    xiy    = vale_cara(2)
-    xiz    = vale_cara(3)
-    ay     = vale_cara(4)
-    az     = vale_cara(5)
-    xjx    = vale_cara(6)
+    a = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
+    ay = vale_cara(4)
+    az = vale_cara(5)
+    xjx = vale_cara(6)
     granc(1) = e*a
     granc(2) = g*a/ay
     granc(3) = g*a/az
@@ -203,54 +203,54 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Get output fields
 !
     if (lMatr) then
         call jevech('PMATUNS', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', jefint)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', lsigma)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
 !
-    k0 = igeom - 1
-    k1 = idepm - 1
-    k2 = idepde - 1
-    k3 = iddepl - 1
+    k0 = igeom-1
+    k1 = idepm-1
+    k2 = idepde-1
+    k3 = iddepl-1
 !
     do ne = 1, nno
         do kc = 1, 3
-            k0 = k0 + 1
-            k1 = k1 + 1
-            k2 = k2 + 1
-            k3 = k3 + 1
-            x00(kc,ne) = zr(k0)
+            k0 = k0+1
+            k1 = k1+1
+            k2 = k2+1
+            k3 = k3+1
+            x00(kc, ne) = zr(k0)
             if (option .eq. 'RIGI_MECA_TANG') then
-                x0k(kc,ne) = zr(k0) + zr(k1)
+                x0k(kc, ne) = zr(k0)+zr(k1)
             else
-                x0k(kc,ne) = zr(k0) + zr(k1) + zr(k2)
-            endif
+                x0k(kc, ne) = zr(k0)+zr(k1)+zr(k2)
+            end if
         end do
         do kc = 1, 3
-            k1 = k1 + 1
-            k2 = k2 + 1
-            k3 = k3 + 1
-            qim(kc,ne) = zr(k1)
+            k1 = k1+1
+            k2 = k2+1
+            k3 = k3+1
+            qim(kc, ne) = zr(k1)
             if (option .eq. 'RIGI_MECA_TANG') then
-                qik(kc,ne) = 0.d0
-                tetak(kc,ne) = 0.d0
+                qik(kc, ne) = 0.d0
+                tetak(kc, ne) = 0.d0
             else
-                qik(kc,ne) = zr(k2)
-                tetak(kc,ne) = zr(k3)
-            endif
+                qik(kc, ne) = zr(k2)
+                tetak(kc, ne) = zr(k3)
+            end if
         end do
     end do
 !
@@ -258,7 +258,7 @@ character(len=16), intent(in) :: option, nomte
 !* ON TRAITE UN PROBLEME DYNAMIQUE
         instam = zr(instmr)
         instap = zr(instpr)
-        pas = instap - instam
+        pas = instap-instam
         grani(1) = rho*xjx
         grani(2) = rho*xiy
         grani(3) = rho*xiz
@@ -274,55 +274,55 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PACCPLU', 'L', iaccp)
         call jevech('PROMKM1', 'L', iromkm)
         call jevech('PROMK', 'L', iromk)
-        k1 = idepkm - 1
-        k2 = ivitkm - 1
-        k3 = iacckm - 1
-        k4 = ivitp - 1
-        k5 = iaccp - 1
-        k6 = iromkm - 1
-        k7 = iromk - 1
+        k1 = idepkm-1
+        k2 = ivitkm-1
+        k3 = iacckm-1
+        k4 = ivitp-1
+        k5 = iaccp-1
+        k6 = iromkm-1
+        k7 = iromk-1
         do ne = 1, nno
             do kc = 1, 3
-                k1 = k1 + 1
-                k2 = k2 + 1
-                k3 = k3 + 1
-                k4 = k4 + 1
-                k5 = k5 + 1
-                k6 = k6 + 1
-                k7 = k7 + 1
-                x0sk(kc,ne) = zr(k5)
+                k1 = k1+1
+                k2 = k2+1
+                k3 = k3+1
+                k4 = k4+1
+                k5 = k5+1
+                k6 = k6+1
+                k7 = k7+1
+                x0sk(kc, ne) = zr(k5)
             end do
             do kc = 1, 3
-                k1 = k1 + 1
-                k2 = k2 + 1
-                k3 = k3 + 1
-                k4 = k4 + 1
-                k5 = k5 + 1
-                k6 = k6 + 1
-                k7 = k7 + 1
-                qikm1(kc,ne) = zr(k1)
-                omkm1(kc,ne) = zr(k2)
-                ompkm1(kc,ne) = zr(k3)
-                omk(kc,ne) = zr(k4)
-                ompk(kc,ne) = zr(k5)
-                rmkm1(kc,ne) = zr(k6)
-                rmk(kc,ne) = zr(k7)
+                k1 = k1+1
+                k2 = k2+1
+                k3 = k3+1
+                k4 = k4+1
+                k5 = k5+1
+                k6 = k6+1
+                k7 = k7+1
+                qikm1(kc, ne) = zr(k1)
+                omkm1(kc, ne) = zr(k2)
+                ompkm1(kc, ne) = zr(k3)
+                omk(kc, ne) = zr(k4)
+                ompk(kc, ne) = zr(k5)
+                rmkm1(kc, ne) = zr(k6)
+                rmk(kc, ne) = zr(k7)
             end do
         end do
-    endif
+    end if
 !
 !* BOUCLE SUR LES POINTS DE GAUSS
 !
     do kp = 1, npg
-        call gdjrg0(kp, nno, enprim, x00, y0,&
+        call gdjrg0(kp, nno, enprim, x00, y0, &
                     ajacob, rot0)
         pjacob = zr(ipoids-1+kp)*ajacob
 !*** LECTURE, DANS 'PVARIMR', DU VECTEUR-COURBURE A L'ITER. PRECEDENTE
         call gdliva(kp, zr(ivarim), petikm)
 !
-        call gdstag(stoudy, kp, nno, ajacob, en,&
-                    enprim, x0k, tetak, qim, qikm1,&
-                    qik, x0pg, tetag, tetapg, rotm,&
+        call gdstag(stoudy, kp, nno, ajacob, en, &
+                    enprim, x0k, tetak, qim, qikm1, &
+                    qik, x0pg, tetag, tetapg, rotm, &
                     rotkm1, rotk)
         call gdpetk(tetag, tetapg, petikm, petik)
 !
@@ -331,77 +331,77 @@ character(len=16), intent(in) :: option, nomte
         if (option .ne. 'RIGI_MECA_TANG') then
             call jevech('PVARIPR', 'E', ivarip)
             call gdecva(kp, petik, zr(ivarip))
-        endif
+        end if
 !
-        call gdsig('RIGI', kp, 1, x0pg, petik,&
-                   rot0, rotk, granc, zi(imate), gn,&
+        call gdsig('RIGI', kp, 1, x0pg, petik, &
+                   rot0, rotk, granc, zi(imate), gn, &
                    gm, pn, pm)
         if (stoudy .gt. demi) then
 !* ON TRAITE UN PROBLEME DYNAMIQUE
-            call gddyng(kp, nno, en, x0sk, rmkm1,&
-                        rmk, omkm1, ompkm1, omk, ompk,&
-                        x0sec, rgmkm, rgmk, omgkm, ompgkm,&
+            call gddyng(kp, nno, en, x0sk, rmkm1, &
+                        rmk, omkm1, ompkm1, omk, ompk, &
+                        x0sec, rgmkm, rgmk, omgkm, ompgkm, &
                         omgk, ompgk)
-        endif
+        end if
 !
         if (lMatr) then
-            call gdmrig(kp, nno, ajacob, pjacob, en,&
-                        enprim, x0pg, rot0, rotk, granc,&
+            call gdmrig(kp, nno, ajacob, pjacob, en, &
+                        enprim, x0pg, rot0, rotk, granc, &
                         pn, pm, rigi)
             if (stoudy .gt. demi) then
 !* ON TRAITE UN PROBLEME DYNAMIQUE
-                call gdmine(kp, nno, pjacob, en, grani,&
-                            alfnmk, delnmk, pas, rot0, rotm,&
-                            rotkm1, rotk, rmkm1, rmk, omgkm,&
+                call gdmine(kp, nno, pjacob, en, grani, &
+                            alfnmk, delnmk, pas, rot0, rotm, &
+                            rotkm1, rotk, rmkm1, rmk, omgkm, &
                             ompgkm, omgk, ompgk, rigi)
-            endif
-        endif
+            end if
+        end if
 !
         if (lVect) then
             ASSERT(lSigm)
-            call gdfint(kp, nno, ajacob, pjacob, en,&
+            call gdfint(kp, nno, ajacob, pjacob, en, &
                         enprim, x0pg, pn, pm, fint)
-            lsig = lsigma - 1 + (kp-1)*6
+            lsig = lsigma-1+(kp-1)*6
             do ks = 1, 3
-                lsig = lsig + 1
+                lsig = lsig+1
 !*** ATTENTION : LE TORSEUR EST EXPRIME EN COORDONNEES LOCALES
                 zr(lsig) = gn(ks)
             end do
             do ks = 1, 3
-                lsig = lsig + 1
+                lsig = lsig+1
                 zr(lsig) = gm(ks)
             end do
             if (stoudy .gt. demi) then
-                call gdfine(kp, nno, pjacob, en, grani,&
+                call gdfine(kp, nno, pjacob, en, grani, &
                             rot0, rotk, omgk, ompgk, fint)
-            endif
-        endif
+            end if
+        end if
 !
 !* FIN DE BOUCLE SUR LES POINTS DE GAUSS
 !
     end do
 !
     if (lMatr) then
-        imat = imatuu - 1
+        imat = imatuu-1
         do i = 1, nord
             do j = 1, nord
-                imat = imat + 1
-                zr(imat) = rigi(i,j)
+                imat = imat+1
+                zr(imat) = rigi(i, j)
             end do
         end do
-    endif
+    end if
 !
     if (lVect) then
-        ifint = jefint - 1
+        ifint = jefint-1
         do ne = 1, nno
             do kc = 1, 6
-                ifint = ifint + 1
-                zr(ifint) = fint(kc,ne)
+                ifint = ifint+1
+                zr(ifint) = fint(kc, ne)
             end do
         end do
-    endif
+    end if
 !
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 end subroutine

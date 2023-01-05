@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
+subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa, &
                   nunob, nunoc, jcoor, coorg)
     implicit none
 !
@@ -57,25 +57,25 @@ subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
 !     CALCUL DE LA NORMALE
     do k = 1, 3
 !       A,B ET C SONT DES NOEUDS DE LA FACE
-        ab(k)=zr(jcoor-1+3*(nunob-1)+k)-zr(jcoor-1+3*(nunoa-1)+k)
-        ac(k)=zr(jcoor-1+3*(nunoc-1)+k)-zr(jcoor-1+3*(nunoa-1)+k)
+        ab(k) = zr(jcoor-1+3*(nunob-1)+k)-zr(jcoor-1+3*(nunoa-1)+k)
+        ac(k) = zr(jcoor-1+3*(nunoc-1)+k)-zr(jcoor-1+3*(nunoa-1)+k)
 !       G EST LE CENTRE DE GRAVITE DE LA MAILLE
-        ag(k)=coorg(k)-zr(jcoor-1+3*(nunoa-1)+k)
+        ag(k) = coorg(k)-zr(jcoor-1+3*(nunoa-1)+k)
     end do
 !
     call provec(ab, ac, normal)
 !
 !     ORIENTATION DE LA NORMALE VERS L'EXTERIEUR
-    proj = ddot(3,normal,1,ag,1)
+    proj = ddot(3, normal, 1, ag, 1)
 !
     if (proj .gt. 0) then
         normal(1) = -normal(1)
         normal(2) = -normal(2)
         normal(3) = -normal(3)
-    endif
+    end if
 !
 !     NOMBRE DE FACES DE BORD DANS LA MAILLE
-    nbfacb=nbfacb+1
+    nbfacb = nbfacb+1
 !
 !     STOCKAGE DE LA NORMALE
     vectn(1+3*(nbfacb-1)) = normal(1)
@@ -90,7 +90,7 @@ subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
         iptbor(1) = indipt
     else
         iptbor(2) = indipt
-    endif
+    end if
 !
     call jedema()
 end subroutine

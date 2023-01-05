@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine liscva(prefob, chamno)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/exisd.h"
@@ -71,12 +71,12 @@ subroutine liscva(prefob, chamno)
     else
         nomobj = prefob(1:13)//'.VEASS'
         call jeexin(nomobj, iret)
-        ASSERT(iret.ne.0)
+        ASSERT(iret .ne. 0)
         call jeveuo(nomobj, 'L', jobje)
         chamno = zk8(jobje)
         call exisd('CHAM_NO', chamno, iret)
-        ASSERT(iret.gt.0)
-    endif
+        ASSERT(iret .gt. 0)
+    end if
 !
     call jedema()
 end subroutine

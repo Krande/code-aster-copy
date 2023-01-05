@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine fpesa(nomte, xi, nb1, vecl)
 !
     do intsn = 1, npgsn
         call vectci(intsn, nb1, xi, zr(lzr), rnormc)
-        call forpes(intsn, nb1, zr(lzr), rho, epais,&
+        call forpes(intsn, nb1, zr(lzr), rho, epais, &
                     vpesan, rnormc, vecl1)
     end do
 !

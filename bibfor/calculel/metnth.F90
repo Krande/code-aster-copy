@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine metnth(modele, lchar, cara, mate, mateco, time,&
+subroutine metnth(modele, lchar, cara, mate, mateco, time, &
                   chtni, metrnl)
 !
 !
@@ -81,7 +81,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time,&
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
     if (modele(1:1) .eq. ' ') then
         call utmess('F', 'CALCULEL3_50')
-    endif
+    end if
 !
     call jeexin(lchar, iret)
     if (iret .ne. 0) then
@@ -89,7 +89,7 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time,&
         call jeveuo(lchar, 'L', jchar)
     else
         nchar = 0
-    endif
+    end if
 !
     call megeom(modele, chgeom)
     call mecara(cara, chcara)
@@ -97,11 +97,11 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time,&
     call jeexin(metrnl, iret)
     if (iret .eq. 0) then
         metrnl = '&&METNTH           .RELR'
-        call memare('V', metrnl, modele(1:8), mate, carele,&
+        call memare('V', metrnl, modele(1:8), mate, carele, &
                     'RIGI_THER_CONV_T')
     else
         call jedetr(metrnl)
-    endif
+    end if
 !
     chvite = '????'
 !
@@ -114,13 +114,13 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time,&
         convch = nomcha//'.CHTH'//'.CONVE'//'.VALE'
         call jeexin(convch, iret)
         if (iret .gt. 0) then
-            iconv = iconv + 1
+            iconv = iconv+1
             if (iconv .gt. 1) then
                 call utmess('F', 'CALCULEL3_72')
-            endif
+            end if
 !
             option = 'RIGI_THER_CONV_T'
-            call memare('V', metrnl, modele(1:8), mate, cara,&
+            call memare('V', metrnl, modele(1:8), mate, cara, &
                         option)
 !
             call jeveuo(convch, 'L', jvites)
@@ -142,14 +142,14 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time,&
 !
             ligrmo = modele(1:8)//'.MODELE'
             ilires = 0
-            ilires = ilires + 1
+            ilires = ilires+1
             call codent(ilires, 'D0', lchout(1) (12:14))
-            call calcul('S', option, ligrmo, 7, lchin,&
-                        lpain, 1, lchout, lpaout, 'V',&
+            call calcul('S', option, ligrmo, 7, lchin, &
+                        lpain, 1, lchout, lpaout, 'V', &
                         'OUI')
             call reajre(metrnl, lchout(1), 'V')
 !
-        endif
+        end if
     end do
 !
     call jedema()

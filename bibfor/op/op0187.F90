@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine op0187()
     call jemarq()
     call infmaj()
     call infniv(ifm, niv)
-    pre1=.false.
+    pre1 = .false.
 !
 !     ------------------------------------------------------------------
 !     1. RECUPERATION DES CONCEPTS UTILISATEURS
@@ -69,9 +69,9 @@ subroutine op0187()
 !        FISSURE
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'1. XPOINI'
-    call xpoini(maxfem, mo, malini, k8b, k24b,&
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '1. XPOINI'
+    call xpoini(maxfem, mo, malini, k8b, k24b, &
                 k8b, k8b, prefno, nogrfi)
     call xpofon(mo, mftot, nftot, nfcomf, ngfon)
 !
@@ -82,34 +82,34 @@ subroutine op0187()
 !              - MAILX : MAILLES SOUS-DECOUPEES (X-FEM)
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'2. XPOSEP'
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '2. XPOSEP'
     mailc = '&&OP0187.MAILC'
     mailx = '&&OP0187.MAILX'
     logrma = '&&OP0187.LOGRMA'
     listgr = '&&OP0187.LISTGR'
-    call xposep(mo, malini, mailc, mailx, nsetot,&
+    call xposep(mo, malini, mailc, mailx, nsetot, &
                 nnntot, ncotot, logrma, listgr)
 !
     if (niv .gt. 1) then
-        write(ifm,*)'NOMBRE DE NOUVELLES MAILLES A CREER',nsetot+&
-        mftot
-        write(ifm,*)'NOMBRE DE NOUVEAUX NOEUDS A CREER',nnntot+nftot
-    endif
+        write (ifm, *) 'NOMBRE DE NOUVELLES MAILLES A CREER', nsetot+ &
+            mftot
+        write (ifm, *) 'NOMBRE DE NOUVEAUX NOEUDS A CREER', nnntot+nftot
+    end if
 !
 !     ------------------------------------------------------------------
 !     3. DIMENSIONNEMENT DES OBJETS DE MAXFEM
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'3. XPODIM'
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '3. XPODIM'
     listno = '&&OP0187.LISTNO'
     dirgrm = '&&OP0187.DIRGRM'
-    call xpodim(malini, mailc, k8b, k24b, nsetot+mftot,&
-                nnntot+nftot, ncotot+nfcomf, listno, k19b, k19b,&
-                k19b, k19b, k19b, k19b, k19b,&
-                ibid, k8b, nbnoc, nbmac, logrma,&
-                dirgrm, maxfem, ngfon, k19b, k19b,&
+    call xpodim(malini, mailc, k8b, k24b, nsetot+mftot, &
+                nnntot+nftot, ncotot+nfcomf, listno, k19b, k19b, &
+                k19b, k19b, k19b, k19b, k19b, &
+                ibid, k8b, nbnoc, nbmac, logrma, &
+                dirgrm, maxfem, ngfon, k19b, k19b, &
                 pre1, mo)
 !
 !     ------------------------------------------------------------------
@@ -118,40 +118,40 @@ subroutine op0187()
 !            DANS MAXFEM A L'IDENTIQUE
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'4. XPOMAC'
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '4. XPOMAC'
 !
 !     CREATION DU VECTEUR DE REMPLISSAGE DES GROUP_MA
     nivgrm = '&&OP0187.NIVGRM'
     call jelira(maxfem//'.GROUPEMA', 'NUTIOC', nbgma2)
     if (nbgma2 .gt. 0) call wkvect(nivgrm, 'V V I', nbgma2, jnivgr)
 !
-    call xpomac(malini, mailc, listno, nbnoc, nbmac,&
-                maxfem, nivgrm, k19b, k19b, k19b,&
-                k19b, k19b, k19b, k8b, k19b,&
+    call xpomac(malini, mailc, listno, nbnoc, nbmac, &
+                maxfem, nivgrm, k19b, k19b, k19b, &
+                k19b, k19b, k19b, k8b, k19b, &
                 k19b, pre1)
 !
 !     ------------------------------------------------------------------
 !     5. TRAITEMENT DES MAILLES DE MAILX
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'5. XPOMAX'
-    call xpomax(mo, malini, mailx, nbnoc, nbmac,&
-                prefno, nogrfi, maxfem, k19b, k19b,&
-                k19b, k19b, k19b, k19b, listgr,&
-                dirgrm, nivgrm, k8b, ngfon, k19b,&
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '5. XPOMAX'
+    call xpomax(mo, malini, mailx, nbnoc, nbmac, &
+                prefno, nogrfi, maxfem, k19b, k19b, &
+                k19b, k19b, k19b, k19b, listgr, &
+                dirgrm, nivgrm, k8b, ngfon, k19b, &
                 k19b, pre1, 0)
 !
 !     ------------------------------------------------------------------
 !     6. TRAITEMENT DES FONDS DE FISSURE
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'6. XPOCRF'
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '6. XPOCRF'
     call xpocrf(mo, maxfem, mftot, nftot)
 !
-    if (niv .gt. 1) write(ifm,*)'FIN DE POST_MAIL_XFEM'
+    if (niv .gt. 1) write (ifm, *) 'FIN DE POST_MAIL_XFEM'
 !
     call titre()
 !

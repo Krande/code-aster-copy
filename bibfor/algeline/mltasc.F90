@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
+subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat, &
                   factol, factou, typsym)
 ! person_in_charge: olivier.boiteau at edf.fr
 ! COMPIL PARAL
@@ -60,14 +60,14 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
         ip = 1
         call jeveuo(jexnum(valm, ip), 'L', mati)
         do i = 1, lonmat
-            if (adinit(i) .le. 0) adinit(i) = - adinit(i)
+            if (adinit(i) .le. 0) adinit(i) = -adinit(i)
         end do
     else
         ip = 1
         call jeveuo(jexnum(valm, ip), 'L', mats)
         ip = 2
         call jeveuo(jexnum(valm, ip), 'L', mati)
-    endif
+    end if
 !===================================================================
 !     CREATION D'UNE COLLECTION DISPERSEE
 !
@@ -77,9 +77,9 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
     call jeexin(factol, irefac)
     if (irefac .gt. 0) then
         call jedetr(factol)
-    endif
+    end if
     call jelira(jexnum(valm, ip), 'CLAS', cval=base)
-    call jecrec(factol, base(1:1)//' V C ', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(factol, base(1:1)//' V C ', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbloc)
     do ib = 1, nbloc
         call jecroc(jexnum(factol, ib))
@@ -92,9 +92,9 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
         call jeexin(factou, irefac)
         if (irefac .gt. 0) then
             call jedetr(factou)
-        endif
+        end if
         call jelira(jexnum(valm, ip), 'CLAS', cval=base)
-        call jecrec(factou, base(1:1)//' V C ', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec(factou, base(1:1)//' V C ', 'NU', 'DISPERSE', 'VARIABLE', &
                     nbloc)
         do ib = 1, nbloc
             call jecroc(jexnum(factou, ib))
@@ -110,19 +110,19 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
                 zc(ifacu+i-1) = 0.d0
             end do
             deb = fin
-            fin = deb + lgbloc(ib)
-            deb = deb + 1
+            fin = deb+lgbloc(ib)
+            deb = deb+1
 !MIC$ DO ALL SHARED (ADINIT, DEB, FIN, IFACL, LONMAT, ZC)
 !MIC$*        SHARED (MATI,IFACU,MATS) VECTOR
 !MIC$*        PRIVATE (I1,CODE,ADPROV)
             do i1 = 1, lonmat
                 if (adinit(i1) .le. 0) then
-                    code =-1
-                    adprov = - adinit(i1)
+                    code = -1
+                    adprov = -adinit(i1)
                 else
-                    code =1
+                    code = 1
                     adprov = adinit(i1)
-                endif
+                end if
                 if (adprov .gt. fin) goto 120
                 if (adprov .lt. deb) goto 120
                 if (code .gt. 0) then
@@ -131,7 +131,7 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
                 else
                     zc(ifacl+adprov-deb) = zc(mats+i1-1)
                     zc(ifacu+adprov-deb) = zc(mati+i1-1)
-                endif
+                end if
 120             continue
             end do
             call jelibe(jexnum(factol, ib))
@@ -150,8 +150,8 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
             end do
 !
             deb = fin
-            fin = deb + lgbloc(ib)
-            deb = deb + 1
+            fin = deb+lgbloc(ib)
+            deb = deb+1
 !MIC$ DO ALL SHARED (ADINIT, DEB, FIN, IFACL, LONMAT, ZC)
 !MIC$*       PRIVATE (I1) SHARED (MATI) VECTOR
             do i1 = 1, lonmat
@@ -164,7 +164,7 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
         end do
         ip = 1
         call jelibe(jexnum(valm, ip))
-    endif
+    end if
     call jelibe(valm)
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ subroutine vrnoli(objet1, objet2, ier)
     call jelira(celk1, 'LONMAX', ival1)
     call jelira(celk2, 'LONMAX', ival2)
     if (ival1 .ne. ival2) then
-        ier = ier + abs(ival1-ival2)
-        nbval = min(ival1,ival2)
+        ier = ier+abs(ival1-ival2)
+        nbval = min(ival1, ival2)
     else
         nbval = ival1
-    endif
+    end if
 !
 !     --- RECUPERATION DES TABLEAUX D'INFORMATIONS DE REFERENCE ---
     call jeveuo(celk1, 'L', icelk1)
@@ -65,7 +65,7 @@ subroutine vrnoli(objet1, objet2, ier)
 !
 !     --- CONTROLE DES REFERENCES ---
     do ival = 0, nbval-1
-        if (zk24(icelk1+ival) .ne. zk24(icelk2+ival)) ier = ier + 1
+        if (zk24(icelk1+ival) .ne. zk24(icelk2+ival)) ier = ier+1
     end do
 !
 !     --- LIBERATION (AVEC I/O EN DIFFERE) ---

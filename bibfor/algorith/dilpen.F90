@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,14 @@ subroutine dilpen(imate, rpena)
 ! ======================================================================
 ! --- DEFINITION DES DONNEES INITIALES ---------------------------------
 ! ======================================================================
-    data ncra  / 'PENA_LAGR' /
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    data ncra/'PENA_LAGR'/
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     val(1) = 0.0d0
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'NON_LOCAL', 0, ' ', [0.0d0],&
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'NON_LOCAL', 0, ' ', [0.0d0], &
                 1, ncra, val, icodre, 0, nan='NON')
     rpena = val(1)
 ! ======================================================================

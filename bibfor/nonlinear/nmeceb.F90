@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine nmeceb(sderro, nombcl, etabcl)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -77,35 +77,35 @@ subroutine nmeceb(sderro, nombcl, etabcl)
 !
     if (etabcl .eq. 'CONT') then
         iconve = 0
-    else if (etabcl.eq.'CONV') then
+    else if (etabcl .eq. 'CONV') then
         iconve = 1
-    else if (etabcl.eq.'EVEN') then
+    else if (etabcl .eq. 'EVEN') then
         iconve = 2
-    else if (etabcl.eq.'ERRE') then
+    else if (etabcl .eq. 'ERRE') then
         iconve = 3
-    else if (etabcl.eq.'STOP') then
+    else if (etabcl .eq. 'STOP') then
         iconve = 4
-    else if (etabcl.eq.'CTCD') then
+    else if (etabcl .eq. 'CTCD') then
         iconve = 5
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- ENREGISTREMENT DE LA CONVERGENCE
 !
     if (nombcl .eq. 'RESI') then
         zi(jeconv-1+1) = iconve
-    else if (nombcl.eq.'NEWT') then
+    else if (nombcl .eq. 'NEWT') then
         zi(jeconv-1+2) = iconve
-    else if (nombcl.eq.'FIXE') then
+    else if (nombcl .eq. 'FIXE') then
         zi(jeconv-1+3) = iconve
-    else if (nombcl.eq.'INST') then
+    else if (nombcl .eq. 'INST') then
         zi(jeconv-1+4) = iconve
-    else if (nombcl.eq.'CALC') then
+    else if (nombcl .eq. 'CALC') then
         zi(jeconv-1+5) = iconve
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

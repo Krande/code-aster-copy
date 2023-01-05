@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,13 +28,12 @@ subroutine dtmfext(sd_dtm_, time, fext, buffdtm)
 #include "asterfort/mdfext.h"
 #include "asterfort/r8inir.h"
 
-
 !
 !   -0.1- Input/output arguments
-    character(len=*)      , intent(in)  :: sd_dtm_
-    real(kind=8)          , intent(out) :: time
+    character(len=*), intent(in)  :: sd_dtm_
+    real(kind=8), intent(out) :: time
     real(kind=8), pointer :: fext(:)
-    integer     , pointer  :: buffdtm(:)
+    integer, pointer  :: buffdtm(:)
 
 !
 !   -0.2- Local variables
@@ -42,11 +41,11 @@ subroutine dtmfext(sd_dtm_, time, fext, buffdtm)
     real(kind=8)     :: r8b
     character(len=8) :: sd_dtm
 !
-    integer         , pointer :: idescf(:)  => null()
-    integer         , pointer :: liad(:)    => null()
-    integer         , pointer :: inumor(:)  => null()
-    real(kind=8)    , pointer :: coefm(:)   => null()
-    character(len=8), pointer :: nomfon(:)  => null()
+    integer, pointer :: idescf(:) => null()
+    integer, pointer :: liad(:) => null()
+    integer, pointer :: inumor(:) => null()
+    real(kind=8), pointer :: coefm(:) => null()
+    character(len=8), pointer :: nomfon(:) => null()
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
@@ -57,13 +56,13 @@ subroutine dtmfext(sd_dtm_, time, fext, buffdtm)
     call r8inir(nbmode, 0.d0, fext, 1)
 !
     if (ntotex .ne. 0) then
-        call dtmget(sd_dtm, _DESC_FRC,vi=idescf, buffer=buffdtm)
-        call dtmget(sd_dtm, _FUNC_NAM,vk8=nomfon, buffer=buffdtm)
-        call dtmget(sd_dtm, _COEF_MLT,vr=coefm, buffer=buffdtm)
-        call dtmget(sd_dtm, _ADRES_VC,vi=liad, buffer=buffdtm)
-        call dtmget(sd_dtm, _N_ORD_VC,vi=inumor, buffer=buffdtm)
-        call mdfext(time, r8b, nbmode, ntotex, idescf,&
-                    nomfon, coefm, liad, inumor, 1,&
+        call dtmget(sd_dtm, _DESC_FRC, vi=idescf, buffer=buffdtm)
+        call dtmget(sd_dtm, _FUNC_NAM, vk8=nomfon, buffer=buffdtm)
+        call dtmget(sd_dtm, _COEF_MLT, vr=coefm, buffer=buffdtm)
+        call dtmget(sd_dtm, _ADRES_VC, vi=liad, buffer=buffdtm)
+        call dtmget(sd_dtm, _N_ORD_VC, vi=inumor, buffer=buffdtm)
+        call mdfext(time, r8b, nbmode, ntotex, idescf, &
+                    nomfon, coefm, liad, inumor, 1, &
                     fext)
     end if
 

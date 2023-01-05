@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,21 +18,21 @@
 ! aslint: disable=W1504,W1306
 !
 subroutine ngvlog(fami, option, typmod, ndim, nno, &
-                  nnob,npg, nddl, iw, vff, &
-                  vffb, idff,idffb,geomi, compor, &
-                  mate, lgpg,crit, angmas, instm, &
-                  instp, matsym,ddlm, ddld, siefm, &
-                  vim, siefp,vip, fint, matr, &
-                  lMatr, lVect, lSigm, lVari,&
+                  nnob, npg, nddl, iw, vff, &
+                  vffb, idff, idffb, geomi, compor, &
+                  mate, lgpg, crit, angmas, instm, &
+                  instp, matsym, ddlm, ddld, siefm, &
+                  vim, siefp, vip, fint, matr, &
+                  lMatr, lVect, lSigm, lVari, &
                   codret)
 !
-use gdlog_module, only: GDLOG_DS, gdlog_init, gdlog_defo, gdlog_matb,  &
-                        gdlog_rigeo, gdlog_nice_cauchy, gdlog_delete
-use bloc_fe_module, only: prod_bd, prod_sb, prod_bkb, add_fint, add_matr
-use Behaviour_type
-use Behaviour_module
+    use gdlog_module, only: GDLOG_DS, gdlog_init, gdlog_defo, gdlog_matb, &
+                            gdlog_rigeo, gdlog_nice_cauchy, gdlog_delete
+    use bloc_fe_module, only: prod_bd, prod_sb, prod_bkb, add_fint, add_matr
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -41,19 +41,19 @@ implicit none
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 !
-aster_logical,intent(in)       :: matsym
-character(len=8),intent(in)    :: typmod(*)
-character(len=*),intent(in)    :: fami
-character(len=16),intent(in)   :: option, compor(*)
-integer,intent(in)             :: ndim,nno,nnob,npg,nddl,lgpg
-integer,intent(in)             :: mate,iw,idff,idffb
-real(kind=8),intent(in)        :: geomi(ndim,nno), crit(*), instm, instp
-real(kind=8),intent(in)        :: vff(nno, npg),vffb(nnob, npg)
-real(kind=8),intent(in)        :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+2, npg)
-real(kind=8),intent(in)        :: vim(lgpg, npg)
-real(kind=8),intent(out)       :: fint(nddl),matr(nddl,nddl),siefp(3*ndim+2, npg),vip(lgpg,npg)
-aster_logical,intent(in)       :: lMatr, lVect, lSigm, lVari
-integer,intent(out)            :: codret
+    aster_logical, intent(in)       :: matsym
+    character(len=8), intent(in)    :: typmod(*)
+    character(len=*), intent(in)    :: fami
+    character(len=16), intent(in)   :: option, compor(*)
+    integer, intent(in)             :: ndim, nno, nnob, npg, nddl, lgpg
+    integer, intent(in)             :: mate, iw, idff, idffb
+    real(kind=8), intent(in)        :: geomi(ndim, nno), crit(*), instm, instp
+    real(kind=8), intent(in)        :: vff(nno, npg), vffb(nnob, npg)
+    real(kind=8), intent(in)        :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+2, npg)
+    real(kind=8), intent(in)        :: vim(lgpg, npg)
+    real(kind=8),intent(out)       :: fint(nddl),matr(nddl,nddl),siefp(3*ndim+2, npg),vip(lgpg,npg)
+    aster_logical, intent(in)       :: lMatr, lVect, lSigm, lVari
+    integer, intent(out)            :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,27 +101,27 @@ integer,intent(out)            :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical, parameter               :: grand=ASTER_TRUE
+    aster_logical, parameter               :: grand = ASTER_TRUE
 ! ----------------------------------------------------------------------
-    type(GDLOG_DS):: gdlm,gdlp
+    type(GDLOG_DS):: gdlm, gdlp
     aster_logical :: axi, resi
-    integer       :: g,n,i
-    integer       :: xu(ndim,nno),xg(2,nnob)
+    integer       :: g, n, i
+    integer       :: xu(ndim, nno), xg(2, nnob)
     integer       :: cod(npg)
-    integer       :: nnu,nng,ndu,ndg,neu,neg
-    real(kind=8)  :: r,dff(nno,ndim),dffb(nnob,ndim),poids
-    real(kind=8)  :: fm(3,3), fp(3,3)
-    real(kind=8)  :: bu(2*ndim,ndim,nno),bg(2+ndim,2,nnob)
-    real(kind=8)  :: dum(ndim,nno),dup(ndim,nno)
-    real(kind=8)  :: dgm(2,nnob),dgp(2,nnob)
-    real(kind=8)  :: epefum(2*ndim),epefgm(2+ndim)
-    real(kind=8)  :: epefup(2*ndim),epefgp(2+ndim)
-    real(kind=8)  :: siefup(2*ndim),siefgp(2+ndim)
-    real(kind=8)  :: eplcm(3*ndim+2),eplcp(3*ndim+2)
-    real(kind=8)  :: silcm(3*ndim+2),silcp(3*ndim+2)
-    real(kind=8)  :: dsde(3*ndim+2,3*ndim+2)
-    real(kind=8)  :: kefuu(2*ndim,2*ndim),kefug(2*ndim,2+ndim)
-    real(kind=8)  :: kefgu(2+ndim,2*ndim),kefgg(2+ndim,2+ndim)
+    integer       :: nnu, nng, ndu, ndg, neu, neg
+    real(kind=8)  :: r, dff(nno, ndim), dffb(nnob, ndim), poids
+    real(kind=8)  :: fm(3, 3), fp(3, 3)
+    real(kind=8)  :: bu(2*ndim, ndim, nno), bg(2+ndim, 2, nnob)
+    real(kind=8)  :: dum(ndim, nno), dup(ndim, nno)
+    real(kind=8)  :: dgm(2, nnob), dgp(2, nnob)
+    real(kind=8)  :: epefum(2*ndim), epefgm(2+ndim)
+    real(kind=8)  :: epefup(2*ndim), epefgp(2+ndim)
+    real(kind=8)  :: siefup(2*ndim), siefgp(2+ndim)
+    real(kind=8)  :: eplcm(3*ndim+2), eplcp(3*ndim+2)
+    real(kind=8)  :: silcm(3*ndim+2), silcp(3*ndim+2)
+    real(kind=8)  :: dsde(3*ndim+2, 3*ndim+2)
+    real(kind=8)  :: kefuu(2*ndim, 2*ndim), kefug(2*ndim, 2+ndim)
+    real(kind=8)  :: kefgu(2+ndim, 2*ndim), kefgg(2+ndim, 2+ndim)
     real(kind=8)  :: tbid(6)
     type(Behaviour_Integ) :: BEHinteg
 !
@@ -134,7 +134,7 @@ integer,intent(out)            :: codret
 ! Deformations ldc  : R2*EPXX, ..., R2*EPZZ, A, L, GX, ..., GZ
 
 ! - La distinction RIGI_MECA_TANG est problématique en GDEF_LOG (rigi geom ! )
-    resi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RAPH_MECA'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA'
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -142,10 +142,9 @@ integer,intent(out)            :: codret
 ! Tests de coherence
     ASSERT(nddl .eq. nno*ndim+nnob*2)
 
-
 ! --- INITIALISATION ---
 
-    axi  = typmod(1).eq.'AXIS'
+    axi = typmod(1) .eq. 'AXIS'
 
     nnu = nno
     nng = nnob
@@ -155,25 +154,23 @@ integer,intent(out)            :: codret
     neg = 2+ndim
     tbid = 0.d0
 
-
-    call gdlog_init(gdlm,ndu,nnu,axi,lMatr)
-    call gdlog_init(gdlp,ndu,nnu,axi,lMatr)
+    call gdlog_init(gdlm, ndu, nnu, axi, lMatr)
+    call gdlog_init(gdlp, ndu, nnu, axi, lMatr)
     if (lVect) fint = 0
     if (lMatr) matr = 0
     cod = 0
     silcp = 0
 
     ! tableaux de reference bloc (depl,inco,grad) -> numero du ddl
-    forall (i=1:ndg,n=1:nng) xg(i,n) = (n-1)*(ndu+ndg) + ndu + i
-    forall (i=1:ndu,n=1:nng) xu(i,n) = (n-1)*(ndu+ndg) + i
-    forall (i=1:ndu,n=nng+1:nnu) xu(i,n) = (ndu+ndg)*nng + (n-1-nng)*ndu + i
+    forall (i=1:ndg, n=1:nng) xg(i, n) = (n-1)*(ndu+ndg)+ndu+i
+    forall (i=1:ndu, n=1:nng) xu(i, n) = (n-1)*(ndu+ndg)+i
+    forall (i=1:ndu, n=nng+1:nnu) xu(i, n) = (ndu+ndg)*nng+(n-1-nng)*ndu+i
 
     ! Decompactage des ddls en t- et t+
-    forall (i=1:ndu, n=1:nnu) dum(i,n) = ddlm(xu(i,n))
-    forall (i=1:ndg, n=1:nng) dgm(i,n) = ddlm(xg(i,n))
-    forall (i=1:ndu, n=1:nnu) dup(i,n) = dum(i,n) + ddld(xu(i,n))
-    forall (i=1:ndg, n=1:nng) dgp(i,n) = dgm(i,n) + ddld(xg(i,n))
-
+    forall (i=1:ndu, n=1:nnu) dum(i, n) = ddlm(xu(i, n))
+    forall (i=1:ndg, n=1:nng) dgm(i, n) = ddlm(xg(i, n))
+    forall (i=1:ndu, n=1:nnu) dup(i, n) = dum(i, n)+ddld(xu(i, n))
+    forall (i=1:ndg, n=1:nng) dgp(i, n) = dgm(i, n)+ddld(xg(i, n))
 
     gauss: do g = 1, npg
 
@@ -182,32 +179,31 @@ integer,intent(out)            :: codret
         ! -----------------------!
 
         ! Calcul des derivees des fonctions de forme P1
-        call dfdmip(ndim, nnob, axi, geomi, g, iw, vffb(1,g), idffb, r, poids,dffb)
+        call dfdmip(ndim, nnob, axi, geomi, g, iw, vffb(1, g), idffb, r, poids, dffb)
 
         ! Calcul des derivees des fonctions de forme P2, du rayon r et des poids
         call dfdmip(ndim, nno, axi, geomi, g, iw, vff(1, g), idff, r, poids, dff)
 
         ! Calcul de la deformation mecanique en t- (fm et epm)
-        call nmepsi(ndim, nno, axi, grand, vff(1,g), r, dff, dum, fm, tbid)
-        call gdlog_defo(gdlm,fm,epefum,cod(g))
-        if (cod(g).ne.0) goto 999
+        call nmepsi(ndim, nno, axi, grand, vff(1, g), r, dff, dum, fm, tbid)
+        call gdlog_defo(gdlm, fm, epefum, cod(g))
+        if (cod(g) .ne. 0) goto 999
 
         ! Calcul de la deformation mecanique et des elements cinematiques en t+
-        call nmepsi(ndim, nno, axi, grand, vff(1,g),r, dff, dup, fp, tbid)
-        call gdlog_defo(gdlp,fp,epefup,cod(g))
-        if (cod(g).ne.0) goto 999
+        call nmepsi(ndim, nno, axi, grand, vff(1, g), r, dff, dup, fp, tbid)
+        call gdlog_defo(gdlp, fp, epefup, cod(g))
+        if (cod(g) .ne. 0) goto 999
 
         ! Calcul des matrices BU, BG
-        call gdlog_matb(gdlp,r,vff(:,g),dff,bu)
+        call gdlog_matb(gdlp, r, vff(:, g), dff, bu)
         bg = 0
-        bg(1,1,:) = vffb(:,g)
-        bg(2,2,:) = vffb(:,g)
-        bg(3:neg,1,:) = transpose(dffb)
+        bg(1, 1, :) = vffb(:, g)
+        bg(2, 2, :) = vffb(:, g)
+        bg(3:neg, 1, :) = transpose(dffb)
 
         ! Calcul des deformations non mecaniques aux points de Gauss
-        epefgm = prod_bd(bg,dgm)
-        epefgp = prod_bd(bg,dgp)
-
+        epefgm = prod_bd(bg, dgm)
+        epefgp = prod_bd(bg, dgp)
 
         ! -----------------------!
         !   LOI DE COMPORTEMENT  !
@@ -220,25 +216,24 @@ integer,intent(out)            :: codret
         eplcp(neu+1:neu+neg) = epefgp
 
         ! Preparation des contraintes generalisees de ldc en t-
-        silcm(1:neu) = vim(lgpg-5:lgpg-6+neu,g)
-        silcm(neu+1:neu+neg) = siefm(neu+1:neu+neg,g)
+        silcm(1:neu) = vim(lgpg-5:lgpg-6+neu, g)
+        silcm(neu+1:neu+neg) = siefm(neu+1:neu+neg, g)
 
         ! Comportement
         silcp = 0.d0
-        call nmcomp(BEHinteg,&
-                    fami, g, 1, ndim, typmod,&
-                    mate, compor, crit, instm, instp,&
-                    neu+neg, eplcm, eplcp-eplcm, neu+neg, silcm,&
-                    vim(1,g), option, angmas, &
-                    silcp, vip(1,g), (neu+neg)*(neu+neg), dsde, cod(g))
+        call nmcomp(BEHinteg, &
+                    fami, g, 1, ndim, typmod, &
+                    mate, compor, crit, instm, instp, &
+                    neu+neg, eplcm, eplcp-eplcm, neu+neg, silcm, &
+                    vim(1, g), option, angmas, &
+                    silcp, vip(1, g), (neu+neg)*(neu+neg), dsde, cod(g))
         if (cod(g) .eq. 1) goto 999
 
         ! Archivage des contraintes mecaniques en t+ (tau tilda) dans les vi
         if (lVari) then
-            vip(lgpg-1:lgpg,g) = 0.d0
-            vip(lgpg-5:lgpg-6+neu,g) = silcp(1:neu)
+            vip(lgpg-1:lgpg, g) = 0.d0
+            vip(lgpg-5:lgpg-6+neu, g) = silcp(1:neu)
         end if
-
 
         ! ----------------------------------------!
         !   FORCES INTERIEURES ET CONTRAINTES EF  !
@@ -248,17 +243,17 @@ integer,intent(out)            :: codret
             ! Contraintes generalisees EF par bloc
             siefup = silcp(1:neu)
             siefgp = silcp(neu+1:neu+neg)
-        endif
+        end if
         if (lVect) then
             ! Forces interieures au point de Gauss g
-            call add_fint(fint,xu,poids*prod_sb(siefup,bu))
-            call add_fint(fint,xg,poids*prod_sb(siefgp,bg))
-        endif
+            call add_fint(fint, xu, poids*prod_sb(siefup, bu))
+            call add_fint(fint, xg, poids*prod_sb(siefgp, bg))
+        end if
         if (lSigm) then
             ! Stockage des contraintes generalisees (avec Cauchy au lieu de T)
-            siefp(1:neu,g) = gdlog_nice_cauchy(gdlp,siefup)
-            siefp(neu+1:neu+neg,g) = siefgp
-        endif
+            siefp(1:neu, g) = gdlog_nice_cauchy(gdlp, siefup)
+            siefp(neu+1:neu+neg, g) = siefgp
+        end if
 
         ! -----------------------!
         !    MATRICE TANGENTE    !
@@ -272,27 +267,26 @@ integer,intent(out)            :: codret
             end if
 
             ! Rigidite geometrique
-            call add_matr(matr,xu,xu,poids*gdlog_rigeo(gdlp,siefup))
+            call add_matr(matr, xu, xu, poids*gdlog_rigeo(gdlp, siefup))
 
             ! Blocs de la matrice tangente du comportement (= matrice EF)
-            kefuu = dsde(1:neu,1:neu)
-            kefug = dsde(1:neu,neu+1:neu+neg)
-            kefgu = dsde(neu+1:neu+neg,1:neu)
-            kefgg = dsde(neu+1:neu+neg,neu+1:neu+neg)
+            kefuu = dsde(1:neu, 1:neu)
+            kefug = dsde(1:neu, neu+1:neu+neg)
+            kefgu = dsde(neu+1:neu+neg, 1:neu)
+            kefgg = dsde(neu+1:neu+neg, neu+1:neu+neg)
 
             ! Assemblage des blocs de la matrice EF
             if (.not. matsym) then
-                call add_matr(matr,xu,xu,poids*prod_bkb(bu,kefuu,bu))
-                call add_matr(matr,xu,xg,poids*prod_bkb(bu,kefug,bg))
-                call add_matr(matr,xg,xu,poids*prod_bkb(bg,kefgu,bu))
-                call add_matr(matr,xg,xg,poids*prod_bkb(bg,kefgg,bg))
+                call add_matr(matr, xu, xu, poids*prod_bkb(bu, kefuu, bu))
+                call add_matr(matr, xu, xg, poids*prod_bkb(bu, kefug, bg))
+                call add_matr(matr, xg, xu, poids*prod_bkb(bg, kefgu, bu))
+                call add_matr(matr, xg, xg, poids*prod_bkb(bg, kefgg, bg))
             else
                 ASSERT(.false.)
             end if
         end if
 
     end do gauss
-
 
 ! - SYNTHESE DES CODES RETOURS ET LIBERATION DES OBJETS
 999 continue

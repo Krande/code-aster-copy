@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine tautopk1(ndim, tau, F, PK1)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/mat_inv.h"
 !
     integer, intent(in)                         :: ndim
     real(kind=8), dimension(6), intent(in)      :: tau
-    real(kind=8), dimension(3,3), intent(in)    :: F
-    real(kind=8), dimension(3,3), intent(out)   :: PK1
+    real(kind=8), dimension(3, 3), intent(in)    :: F
+    real(kind=8), dimension(3, 3), intent(out)   :: PK1
 ! --------------------------------------------------------------------------------------------------
 ! Conversion of Kirshoff stress tensor to the first Piola-Kirshoff stress tensor
 ! PK1 = F^-1 * tau * F^-T
@@ -38,24 +38,24 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8), dimension(3,3) :: Taumat, Finv, TMP
+    real(kind=8), dimension(3, 3) :: Taumat, Finv, TMP
 !
-    Taumat(1,1) = Tau(1)
-    Taumat(2,2) = Tau(2)
-    Taumat(3,3) = Tau(3)
+    Taumat(1, 1) = Tau(1)
+    Taumat(2, 2) = Tau(2)
+    Taumat(3, 3) = Tau(3)
 !
-    Taumat(1,2) = Tau(4) / rac2
-    Taumat(2,1) = Taumat(1,2)
+    Taumat(1, 2) = Tau(4)/rac2
+    Taumat(2, 1) = Taumat(1, 2)
 !
     if (ndim == 2) then
-        Taumat(3,1:2) = 0.d0
-        Taumat(1:2,3) = 0.d0
+        Taumat(3, 1:2) = 0.d0
+        Taumat(1:2, 3) = 0.d0
     elseif (ndim == 3) then
-        Taumat(1,3) = Tau(5) / rac2
-        Taumat(3,1) = Taumat(1,3)
+        Taumat(1, 3) = Tau(5)/rac2
+        Taumat(3, 1) = Taumat(1, 3)
 !
-        Taumat(2,3) = Tau(6) / rac2
-        Taumat(3,2) = Taumat(2,3)
+        Taumat(2, 3) = Tau(6)/rac2
+        Taumat(3, 2) = Taumat(2, 3)
     else
         ASSERT(ASTER_FALSE)
     end if

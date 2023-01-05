@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pipeei(ndim, axi, nno1, nno2, npg,&
-                  wref, vff1, vff2, dffr2, geom,&
-                  ang, mat, compor, lgpg, ddlm,&
-                  ddld, ddl0, ddl1, dtau, vim,&
+subroutine pipeei(ndim, axi, nno1, nno2, npg, &
+                  wref, vff1, vff2, dffr2, geom, &
+                  ang, mat, compor, lgpg, ddlm, &
+                  ddld, ddl0, ddl1, dtau, vim, &
                   iu, im, copilo)
 !
 !
@@ -64,8 +64,8 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 !
 ! -- INITIALISATION DES ELEMENTS CINEMATIQUES
 !
-        call eicine(ndim, axi, nno1, nno2, vff1(1, g),&
-                    vff2(1, g), wref(g), dffr2(1, 1, g), geom, ang,&
+        call eicine(ndim, axi, nno1, nno2, vff1(1, g), &
+                    vff2(1, g), wref(g), dffr2(1, 1, g), geom, ang, &
                     wg, b)
 !
         do i = 1, ndim
@@ -73,9 +73,9 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
             sud(i) = 0.d0
             do j = 1, ndim
                 do n = 1, 2*nno1
-                    kk = iu(j,n)
-                    sup(i) = sup(i) + b(i,j,n) * (ddlm(kk)+ddld(kk)+ ddl0(kk))
-                    sud(i) = sud(i) + b(i,j,n) * ddl1(kk)
+                    kk = iu(j, n)
+                    sup(i) = sup(i)+b(i, j, n)*(ddlm(kk)+ddld(kk)+ddl0(kk))
+                    sud(i) = sud(i)+b(i, j, n)*ddl1(kk)
                 end do
             end do
         end do
@@ -84,28 +84,28 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
             mup(i) = 0.d0
             mud(i) = 0.d0
             do n = 1, nno2
-                kk = im(i,n)
-                mup(i) = mup(i) + vff2(n,g) * (ddlm(kk)+ddld(kk)+ddl0( kk))
-                mud(i) = mud(i) + vff2(n,g) * ddl1(kk)
+                kk = im(i, n)
+                mup(i) = mup(i)+vff2(n, g)*(ddlm(kk)+ddld(kk)+ddl0(kk))
+                mud(i) = mud(i)+vff2(n, g)*ddl1(kk)
             end do
         end do
 !
 !
 ! -- APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE A LA LOI DE COMPORTEMENT
 !
-        copilo(5,g) = r8vide()
+        copilo(5, g) = r8vide()
         if (compor .eq. 'CZM_TAC_MIX') then
-            call pipetc(mat, sup, sud, mup, mud,&
+            call pipetc(mat, sup, sud, mup, mud, &
                         vim(1, g), dtau, copilo(1, g))
-        else if (compor.eq.'CZM_OUV_MIX') then
-            call pipeou(mat, sup, sud, mup, mud,&
+        else if (compor .eq. 'CZM_OUV_MIX') then
+            call pipeou(mat, sup, sud, mup, mud, &
                         vim(1, g), dtau, copilo(1, g))
-        else if (compor.eq.'CZM_EXP_MIX') then
-            call pipeex(mat, sup, sud, mup, mud,&
+        else if (compor .eq. 'CZM_EXP_MIX') then
+            call pipeex(mat, sup, sud, mup, mud, &
                         vim(1, g), dtau, copilo(1, g))
         else
             call utmess('F', 'MECANONLINE_59')
-        endif
+        end if
 !
     end do
 !

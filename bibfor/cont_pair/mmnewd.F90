@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
-                  iter_maxi, tole_maxi, proj_dire, ksi1     , ksi2   ,&
-                  tang_1   , tang_2   , error, dist_, ksi1_init, ksi2_init)
+subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
+                  iter_maxi, tole_maxi, proj_dire, ksi1, ksi2, &
+                  tang_1, tang_2, error, dist_, ksi1_init, ksi2_init)
 !
     implicit none
 !
@@ -73,13 +73,13 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: zero
-    parameter   (zero=0.d0)
+    parameter(zero=0.d0)
     aster_logical, parameter :: debug = ASTER_FALSE
 !
     integer :: ino, idim, iter
     real(kind=8) :: ff(9), dff(2, 9)
     real(kind=8) :: vect_posi(3)
-    real(kind=8) :: matrix(3,3)
+    real(kind=8) :: matrix(3, 3)
     real(kind=8) :: residu(3)
     real(kind=8) :: dksi1, dksi2, dbeta
     real(kind=8) :: det, test, refe, beta
@@ -88,22 +88,22 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nb_node.le.9)
-    ASSERT(nb_dim.le.3)
-    ASSERT(nb_dim.ge.2)
+    ASSERT(nb_node .le. 9)
+    ASSERT(nb_dim .le. 3)
+    ASSERT(nb_dim .ge. 2)
 !
 ! - Initializations
 !
-    error     = 0
-    ksi1      = zero
-    ksi2      = zero
-    beta      = 1.d0
-    iter      = 0
+    error = 0
+    ksi1 = zero
+    ksi2 = zero
+    beta = 1.d0
+    iter = 0
     tole_abso = tole_maxi/100.d0
     tole_rela = tole_maxi
     dist_mini = r8gaem()
 !
-    if(present(ksi1_init)) then
+    if (present(ksi1_init)) then
         ksi1 = ksi1_init
         ksi2 = ksi2_init
     end if
@@ -112,108 +112,108 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 !
 20  continue
 !
-    vect_posi(1:3)  = zero
-    tang_1(1:3)     = zero
-    tang_2(1:3)     = zero
-    matrix(1:3,1:3) = zero
-    residu(1:3)     = zero
-    dksi1           = zero
-    dksi2           = zero
-    dbeta           = zero
+    vect_posi(1:3) = zero
+    tang_1(1:3) = zero
+    tang_2(1:3) = zero
+    matrix(1:3, 1:3) = zero
+    residu(1:3) = zero
+    dksi1 = zero
+    dksi2 = zero
+    dbeta = zero
 !
 ! - Shape functions (and derivates) at current point
 !
-    call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
-                ff )
-    call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
+    call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
+                ff)
+    call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
                 dff)
 !
 ! - Position vector of current point
 !
     do idim = 1, 3
         do ino = 1, nb_node
-            vect_posi(idim) = elem_coor(3*(ino-1)+idim)*ff(ino) + vect_posi(idim)
+            vect_posi(idim) = elem_coor(3*(ino-1)+idim)*ff(ino)+vect_posi(idim)
         end do
     end do
 !
 ! - Local base
 !
-    call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1,&
+    call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1, &
                 tang_2)
 !
 ! - Quantity to minimize
 !
     do idim = 1, 3
-        vect_posi(idim) = pt_coor(idim) - vect_posi(idim)
+        vect_posi(idim) = pt_coor(idim)-vect_posi(idim)
     end do
     dist = sqrt(vect_posi(1)*vect_posi(1)+vect_posi(2)*vect_posi(2)+vect_posi(3)*vect_posi(3))
 
     if (present(dist_)) then
         dist_ = dist
-    endif
+    end if
 !
 ! - Newton residual
 !
     do idim = 1, 3
-        residu(idim) = vect_posi(idim) - beta*proj_dire(idim)
+        residu(idim) = vect_posi(idim)-beta*proj_dire(idim)
     end do
 !
 ! - Tangent matrix (Newton)
 !
     do idim = 1, 3
-        matrix(idim,1) = tang_1(idim)
+        matrix(idim, 1) = tang_1(idim)
         if (nb_dim .eq. 2) then
-            matrix(idim,2) = proj_dire(idim)
+            matrix(idim, 2) = proj_dire(idim)
         elseif (nb_dim .eq. 3) then
-            matrix(idim,2) = tang_2(idim)
-            matrix(idim,3) = proj_dire(idim)
+            matrix(idim, 2) = tang_2(idim)
+            matrix(idim, 3) = proj_dire(idim)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end do
 !
 ! - System determinant
 !
     if (nb_dim .eq. 2) then
-        det = matrix(1,1)*matrix(2,2) - matrix(1,2)*matrix(2,1)
+        det = matrix(1, 1)*matrix(2, 2)-matrix(1, 2)*matrix(2, 1)
     else if (nb_dim .eq. 3) then
-        det = matrix(1,1)*(matrix(2,2)*matrix(3,3)-matrix(3,2)*matrix(2,3))-&
-              matrix(2,1)*(matrix(1,2)*matrix(3,3)-matrix(3,2)*matrix(1,3))+&
-              matrix(3,1)*(matrix(1,2)*matrix(2,3)-matrix(2,2)*matrix(1,3))
+        det = matrix(1, 1)*(matrix(2, 2)*matrix(3, 3)-matrix(3, 2)*matrix(2, 3))- &
+              matrix(2, 1)*(matrix(1, 2)*matrix(3, 3)-matrix(3, 2)*matrix(1, 3))+ &
+              matrix(3, 1)*(matrix(1, 2)*matrix(2, 3)-matrix(2, 2)*matrix(1, 3))
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     if (det .eq. 0.d0) then
         error = 1
         goto 999
-    endif
+    end if
 !
 ! - Solve system
 !
     if (nb_dim .eq. 2) then
-        dksi1 = (residu(1)*matrix(2,2)-residu(2)*matrix(1,2))/det
+        dksi1 = (residu(1)*matrix(2, 2)-residu(2)*matrix(1, 2))/det
         dksi2 = 0.d0
-        dbeta = (residu(2)*matrix(1,1)-residu(1)*matrix(2,1))/det
-    else if (nb_dim.eq.3) then
-        dksi1 = (residu(1)*(matrix(2,2)*matrix(3,3)-matrix(3,2)*matrix(2,3))+&
-                 residu(2)*(matrix(3,2)*matrix(1,3)-matrix(1,2)*matrix(3,3))+&
-                 residu(3)*(matrix(1,2)*matrix(2,3)-matrix(2,2)*matrix(1,3)))/det
-        dksi2 = (residu(1)*(matrix(3,1)*matrix(2,3)-matrix(2,1)*matrix(3,3))+&
-                 residu(2)*(matrix(1,1)*matrix(3,3)-matrix(3,1)*matrix(1,3))+&
-                 residu(3)*(matrix(2,1)*matrix(1,3)-matrix(2,3)*matrix(1,1)))/det
-        dbeta = (residu(1)*(matrix(2,1)*matrix(3,2)-matrix(3,1)*matrix(2,2))+&
-                 residu(2)*(matrix(3,1)*matrix(1,2)-matrix(1,1)*matrix(3,2))+&
-                 residu(3)*(matrix(1,1)*matrix(2,2)-matrix(2,1)*matrix(1,2)))/det
+        dbeta = (residu(2)*matrix(1, 1)-residu(1)*matrix(2, 1))/det
+    else if (nb_dim .eq. 3) then
+        dksi1 = (residu(1)*(matrix(2, 2)*matrix(3, 3)-matrix(3, 2)*matrix(2, 3))+ &
+                 residu(2)*(matrix(3, 2)*matrix(1, 3)-matrix(1, 2)*matrix(3, 3))+ &
+                 residu(3)*(matrix(1, 2)*matrix(2, 3)-matrix(2, 2)*matrix(1, 3)))/det
+        dksi2 = (residu(1)*(matrix(3, 1)*matrix(2, 3)-matrix(2, 1)*matrix(3, 3))+ &
+                 residu(2)*(matrix(1, 1)*matrix(3, 3)-matrix(3, 1)*matrix(1, 3))+ &
+                 residu(3)*(matrix(2, 1)*matrix(1, 3)-matrix(2, 3)*matrix(1, 1)))/det
+        dbeta = (residu(1)*(matrix(2, 1)*matrix(3, 2)-matrix(3, 1)*matrix(2, 2))+ &
+                 residu(2)*(matrix(3, 1)*matrix(1, 2)-matrix(1, 1)*matrix(3, 2))+ &
+                 residu(3)*(matrix(1, 1)*matrix(2, 2)-matrix(2, 1)*matrix(1, 2)))/det
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Update
 !
-    ksi1 = ksi1 + dksi1
-    ksi2 = ksi2 + dksi2
-    beta = beta + dbeta
+    ksi1 = ksi1+dksi1
+    ksi2 = ksi2+dksi2
+    beta = beta+dbeta
 !
 ! - Save values if Newton avoids
 !
@@ -222,7 +222,7 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
         ksi1_mini = ksi1
         ksi2_mini = ksi2
         beta_mini = beta
-    endif
+    end if
 
 !
 ! - Convergence
@@ -230,45 +230,45 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
     refe = (ksi1*ksi1+ksi2*ksi2+beta*beta)
     if (refe .le. tole_rela) then
         tole_newt = tole_abso
-        test      = sqrt(dksi1*dksi1+dksi2*dksi2+dbeta*dbeta)
+        test = sqrt(dksi1*dksi1+dksi2*dksi2+dbeta*dbeta)
     else
         tole_newt = tole_rela
-        test      = sqrt(dksi1*dksi1+dksi2*dksi2+dbeta*dbeta)/sqrt(refe)
-    endif
+        test = sqrt(dksi1*dksi1+dksi2*dksi2+dbeta*dbeta)/sqrt(refe)
+    end if
 !
 ! - Continue or not ?
 !
-    if ((test.gt.tole_newt) .and. (iter.lt.iter_maxi)) then
-        iter = iter + 1
+    if ((test .gt. tole_newt) .and. (iter .lt. iter_maxi)) then
+        iter = iter+1
         goto 20
-    else if ((iter.ge.iter_maxi).and.(test.gt.tole_newt)) then
+    else if ((iter .ge. iter_maxi) .and. (test .gt. tole_newt)) then
         ksi1 = ksi1_mini
         ksi2 = ksi2_mini
-        call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
-                    ff )
-        call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
+        call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
+                    ff)
+        call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2, &
                     dff)
-        call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1,&
+        call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1, &
                     tang_2)
         error = 1
-    endif
+    end if
 !
 ! - End of loop
 !
 999 continue
 !
     if (debug .and. error .eq. 1) then
-        write(6,*) 'POINT A PROJETER : ',pt_coor(1),pt_coor(2),pt_coor(3)
-        write(6,*) 'MAILLE             ',type_elem,nb_node
+        write (6, *) 'POINT A PROJETER : ', pt_coor(1), pt_coor(2), pt_coor(3)
+        write (6, *) 'MAILLE             ', type_elem, nb_node
 !
         do ino = 1, nb_node
-            write(6,*) '  NOEUD ',ino
-            write(6,*) '   (X,Y,Z)',elem_coor(3*(ino-1)+1) ,&
-                                    elem_coor(3*(ino-1)+2),&
-                                    elem_coor(3*(ino-1)+3)
+            write (6, *) '  NOEUD ', ino
+            write (6, *) '   (X,Y,Z)', elem_coor(3*(ino-1)+1), &
+                elem_coor(3*(ino-1)+2), &
+                elem_coor(3*(ino-1)+3)
         end do
-        write(6,*) 'KSI   : ',ksi1,ksi2
-        write(6,*) 'BETA  : ',beta
-    endif
+        write (6, *) 'KSI   : ', ksi1, ksi2
+        write (6, *) 'BETA  : ', beta
+    end if
 !
 end subroutine

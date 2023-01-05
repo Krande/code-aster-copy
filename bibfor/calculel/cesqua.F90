@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 !        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
     ces3 = '&&CESQUA.CES3'
-    ASSERT(nbchs.gt.0)
+    ASSERT(nbchs .gt. 0)
 !
     ces1 = lichs(1)
 !
@@ -122,8 +122,8 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
             call jeveuo(ces1//'.CESC', 'L', jce1c)
             call jelira(ces1//'.CESC', 'LONMAX', n1)
             do k = 1, n1
-                read (zk8(jce1c-1+k) (2:),'(I7)') icmp
-                ncmpmx = max(ncmpmx,icmp)
+                read (zk8(jce1c-1+k) (2:), '(I7)') icmp
+                ncmpmx = max(ncmpmx, icmp)
             end do
         end do
 !
@@ -134,7 +134,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
             zk8(jcmpgd-1+k) = nomcmp
         end do
 !
-    endif
+    end if
 !
 !     1- QUELQUES VERIFICATIONS SUR LES CHAMPS "IN"
 !        + CALCUL DES OBJETS CONTENANT LES NOMBRES DE POINTS
@@ -148,30 +148,30 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         call jeveuo(ces1//'.CESD', 'L', jce1d)
 !
 !       TEST SUR IDENTITE DES 2 MAILLAGES
-        ASSERT(ma.eq.zk8(jce1k-1+1))
+        ASSERT(ma .eq. zk8(jce1k-1+1))
 !       TEST SUR IDENTITE DES 2 GRANDEURS
-        ASSERT(nomgd.eq.zk8(jce1k-1+2))
+        ASSERT(nomgd .eq. zk8(jce1k-1+2))
 !       TEST SUR IDENTITE DES 2 TYPES (CART/ELNO/ELGA)
-        ASSERT(typces.eq.zk8(jce1k-1+3))
+        ASSERT(typces .eq. zk8(jce1k-1+3))
 !
         if (ichs .eq. 1) then
             do ima = 1, nbma
-                vnbpt(ima) = zi(jce1d-1+5+4* (ima-1)+1)
-                vnbsp(ima) = zi(jce1d-1+5+4* (ima-1)+2)
+                vnbpt(ima) = zi(jce1d-1+5+4*(ima-1)+1)
+                vnbsp(ima) = zi(jce1d-1+5+4*(ima-1)+2)
             end do
         else
             do ima = 1, nbma
-                nbpt = zi(jce1d-1+5+4* (ima-1)+1)
-                nbsp = zi(jce1d-1+5+4* (ima-1)+2)
-                ncmp = zi(jce1d-1+5+4* (ima-1)+3)
+                nbpt = zi(jce1d-1+5+4*(ima-1)+1)
+                nbsp = zi(jce1d-1+5+4*(ima-1)+2)
+                ncmp = zi(jce1d-1+5+4*(ima-1)+3)
                 if (nbpt*nbsp*ncmp .eq. 0) goto 50
 !           TEST SUR IDENTITE DU NOMBRE DE POINTS
-                ASSERT(vnbpt(ima).eq.nbpt)
+                ASSERT(vnbpt(ima) .eq. nbpt)
 !           TEST SUR IDENTITE DU NOMBRE DE SOUS-POINTS
-                ASSERT(vnbsp(ima).eq.nbsp)
- 50             continue
+                ASSERT(vnbsp(ima) .eq. nbsp)
+50              continue
             end do
-        endif
+        end if
         call jelibe(ces1//'.CESK')
         call jelibe(ces1//'.CESD')
     end do
@@ -193,7 +193,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
 !
-            icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
+            icmp = indik8(zk8(jcmpgd), nocmp, 1, ncmpmx)
             nucmp(icmp) = 1
         end do
         call jelibe(ces1//'.CESK')
@@ -204,9 +204,9 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     icmp3 = 0
     do icmp = 1, ncmpmx
         if (nucmp(icmp) .eq. 1) then
-            icmp3 = icmp3 + 1
+            icmp3 = icmp3+1
             licmp(icmp3) = zk8(jcmpgd-1+icmp)
-        endif
+        end if
     end do
     ncmp3 = icmp3
 !
@@ -223,16 +223,16 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         ncmp1 = zi(jce1d-1+2)
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(licmp,nocmp,1,ncmp3)
+            icmp3 = indik8(licmp, nocmp, 1, ncmp3)
             corr_cmp(icmp1) = icmp3
         end do
 !
         do ima = 1, nbma
-            icmp1 = zi(jce1d-1+5+4* (ima-1)+3)
+            icmp1 = zi(jce1d-1+5+4*(ima-1)+3)
             if (icmp1 .eq. 0) goto 110
-            ASSERT(icmp1.gt.0)
+            ASSERT(icmp1 .gt. 0)
             icmp3 = corr_cmp(icmp1)
-            nbcmp(ima) = max(icmp3,nbcmp(ima))
+            nbcmp(ima) = max(icmp3, nbcmp(ima))
 110         continue
         end do
 !
@@ -242,7 +242,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
 !     4- ALLOCATION DE CES3 :
 !     --------------------------
-    call cescre(base, ces3, typces, ma, nomgd,&
+    call cescre(base, ces3, typces, ma, nomgd, &
                 ncmp3, licmp, vnbpt, vnbsp, nbcmp)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
     call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
@@ -264,40 +264,40 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(ce3c,nocmp,1,ncmp3)
+            icmp3 = indik8(ce3c, nocmp, 1, ncmp3)
             do ima = 1, nbma
-                nbpt = zi(jce3d-1+5+4* (ima-1)+1)
-                nbsp = zi(jce3d-1+5+4* (ima-1)+2)
+                nbpt = zi(jce3d-1+5+4*(ima-1)+1)
+                nbsp = zi(jce3d-1+5+4*(ima-1)+2)
                 do ipt = 1, nbpt
                     do isp = 1, nbsp
-                        call cesexi('C', jce1d, jce1l, ima, ipt,&
+                        call cesexi('C', jce1d, jce1l, ima, ipt, &
                                     isp, icmp1, iad1)
-                        call cesexi('C', jce3d, jce3l, ima, ipt,&
+                        call cesexi('C', jce3d, jce3l, ima, ipt, &
                                     isp, icmp3, iad3)
                         if (iad1 .le. 0) goto 130
 !
-                        ASSERT(iad3.ne.0)
+                        ASSERT(iad3 .ne. 0)
 !
 !               -- SI AFFECTATION :
-                        if ((.not.cumul) .or. (iad3.lt.0)) then
+                        if ((.not. cumul) .or. (iad3 .lt. 0)) then
                             iad3 = abs(iad3)
                             zl(jce3l-1+iad3) = .true.
 !
                             if (tsca .eq. 'R') then
-                                ce3v(iad3) = ce1v(iad1)** 2
+                                ce3v(iad3) = ce1v(iad1)**2
                             else
                                 ASSERT(.false.)
-                            endif
+                            end if
 !
 !               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                         else
 !
                             if (tsca .eq. 'R') then
-                                ce3v(iad3) = ce3v(iad3) + ce1v(iad1)**2
+                                ce3v(iad3) = ce3v(iad3)+ce1v(iad1)**2
                             else
                                 ASSERT(.false.)
-                            endif
-                        endif
+                            end if
+                        end if
 !
 !
 130                     continue
@@ -320,13 +320,13 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
             nbsp = zi(jce3d-1+5+4*(ima-1)+2)
             do ipt = 1, nbpt
                 do isp = 1, nbsp
-                    call cesexi('C', jce3d, jce3l, ima, ipt,&
+                    call cesexi('C', jce3d, jce3l, ima, ipt, &
                                 isp, icmp3, iad3)
                     if (iad3 .eq. 0) goto 230
 !
                     if (tsca .eq. 'R') then
-                        ce3v(iad3) = sqrt( ce3v(iad3) )
-                    endif
+                        ce3v(iad3) = sqrt(ce3v(iad3))
+                    end if
 230                 continue
                 end do
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
+subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
                   cvpn2, cuon, cvon, rayon)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -76,37 +76,37 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
     dv12 = abs(cvpn1-cvpn2)/2.0d0
 !
     if (cupn0 .lt. cupn1) then
-        cuon01 = cupn0 + du01
+        cuon01 = cupn0+du01
     else
-        cuon01 = cupn1 + du01
-    endif
+        cuon01 = cupn1+du01
+    end if
     if (cvpn0 .lt. cvpn1) then
-        cvon01 = cvpn0 + dv01
+        cvon01 = cvpn0+dv01
     else
-        cvon01 = cvpn1 + dv01
-    endif
+        cvon01 = cvpn1+dv01
+    end if
 !
     if (cupn0 .lt. cupn2) then
-        cuon02 = cupn0 + du02
+        cuon02 = cupn0+du02
     else
-        cuon02 = cupn2 + du02
-    endif
+        cuon02 = cupn2+du02
+    end if
     if (cvpn0 .lt. cvpn2) then
-        cvon02 = cvpn0 + dv02
+        cvon02 = cvpn0+dv02
     else
-        cvon02 = cvpn2 + dv02
-    endif
+        cvon02 = cvpn2+dv02
+    end if
 !
     if (cupn1 .lt. cupn2) then
-        cuon12 = cupn1 + du12
+        cuon12 = cupn1+du12
     else
-        cuon12 = cupn2 + du12
-    endif
+        cuon12 = cupn2+du12
+    end if
     if (cvpn1 .lt. cvpn2) then
-        cvon12 = cvpn1 + dv12
+        cvon12 = cvpn1+dv12
     else
-        cvon12 = cvpn2 + dv12
-    endif
+        cvon12 = cvpn2+dv12
+    end if
 !
 ! CALCUL DES NORMALES AUX TROIS SEGMENTS PASSANT PAR LEURS POINTS
 ! MILIEUX.
@@ -114,9 +114,9 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
 ! 1/ NORMALE AU SEGMENT : PN0 PN1 PASSANT PAR ON01
 !
     flag = 0
-    cuo01p = cuon01 + (cvon01 - cvpn0)
-    cvo01p = cvon01 + (cupn0 - cuon01)
-    if (abs(cuo01p - cuon01) .lt. eps1) then
+    cuo01p = cuon01+(cvon01-cvpn0)
+    cvo01p = cvon01+(cupn0-cuon01)
+    if (abs(cuo01p-cuon01) .lt. eps1) then
         cuon1 = cuon01
         cuon2 = cuon01
         cuon3 = cuon01
@@ -124,14 +124,14 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
         b01 = 0.0d0
         flag = 1
     else
-        a01 = (cvo01p - cvon01)/(cuo01p - cuon01)
-        b01 = (cuo01p*cvon01 - cuon01*cvo01p)/(cuo01p - cuon01)
-    endif
+        a01 = (cvo01p-cvon01)/(cuo01p-cuon01)
+        b01 = (cuo01p*cvon01-cuon01*cvo01p)/(cuo01p-cuon01)
+    end if
 ! 2/ NORMALE AU SEGMENT : PN0 PN2 PASSANT PAR ON02
 !
-    cuo02p = cuon02 + (cvon02 - cvpn0)
-    cvo02p = cvon02 + (cupn0 - cuon02)
-    if (abs(cuo02p - cuon02) .lt. eps1) then
+    cuo02p = cuon02+(cvon02-cvpn0)
+    cvo02p = cvon02+(cupn0-cuon02)
+    if (abs(cuo02p-cuon02) .lt. eps1) then
         cuon1 = cuon02
         cuon2 = cuon02
         cuon3 = cuon02
@@ -139,15 +139,15 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
         b02 = 0.0d0
         flag = 2
     else
-        a02 = (cvo02p - cvon02)/(cuo02p - cuon02)
-        b02 = (cuo02p*cvon02 - cuon02*cvo02p)/(cuo02p - cuon02)
-    endif
+        a02 = (cvo02p-cvon02)/(cuo02p-cuon02)
+        b02 = (cuo02p*cvon02-cuon02*cvo02p)/(cuo02p-cuon02)
+    end if
 !
 ! 3/ NORMALE AU SEGMENT : PN1 PN2 PASSANT PAR ON12
 !
-    cuo12p = cuon12 + (cvon12 - cvpn1)
-    cvo12p = cvon12 + (cupn1 - cuon12)
-    if (abs(cuo12p - cuon12) .lt. eps1) then
+    cuo12p = cuon12+(cvon12-cvpn1)
+    cvo12p = cvon12+(cupn1-cuon12)
+    if (abs(cuo12p-cuon12) .lt. eps1) then
         cuon1 = cuon12
         cuon2 = cuon12
         cuon3 = cuon12
@@ -155,21 +155,21 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
         b12 = 0.0d0
         flag = 3
     else
-        a12 = (cvo12p - cvon12)/(cuo12p - cuon12)
-        b12 = (cuo12p*cvon12 - cuon12*cvo12p)/(cuo12p - cuon12)
-    endif
+        a12 = (cvo12p-cvon12)/(cuo12p-cuon12)
+        b12 = (cuo12p*cvon12-cuon12*cvo12p)/(cuo12p-cuon12)
+    end if
 !
 ! CALCUL DU CENTRE SITUE A EGALES DISTANCES DES POINTS PN0, PN1 ET PN2.
 !
     if (flag .eq. 0) then
-        cuon1 = (b02 - b01)/(a01 - a02)
-        cvon1 = (a01*b02 - a02*b01)/(a01 - a02)
+        cuon1 = (b02-b01)/(a01-a02)
+        cvon1 = (a01*b02-a02*b01)/(a01-a02)
 !
-        cuon2 = (b12 - b01)/(a01 - a12)
-        cvon2 = (a01*b12 - a12*b01)/(a01 - a12)
+        cuon2 = (b12-b01)/(a01-a12)
+        cvon2 = (a01*b12-a12*b01)/(a01-a12)
 !
-        cuon3 = (b12 - b02)/(a02 - a12)
-        cvon3 = (a02*b12 - a12*b02)/(a02 - a12)
+        cuon3 = (b12-b02)/(a02-a12)
+        cvon3 = (a02*b12-a12*b02)/(a02-a12)
 !
 !  FLAG = 1, 2, 3 <=> TROIS CAS PARTICULIERS :
 !
@@ -184,50 +184,50 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
 !    FLAG = 1            FLAG = 2            FLAG = 3
 !
     else if (flag .eq. 1) then
-        cvon2 = (a02*b12 - a12*b02)/(a02 - a12)
-        cvon3 = (a02*b12 - a12*b02)/(a02 - a12)
-        cvon1 = (a02*b12 - a12*b02)/(a02 - a12)
+        cvon2 = (a02*b12-a12*b02)/(a02-a12)
+        cvon3 = (a02*b12-a12*b02)/(a02-a12)
+        cvon1 = (a02*b12-a12*b02)/(a02-a12)
     else if (flag .eq. 2) then
-        cvon1 = (a01*b12 - a12*b01)/(a01 - a12)
-        cvon3 = (a01*b12 - a12*b01)/(a01 - a12)
-        cvon2 = (a01*b12 - a12*b01)/(a01 - a12)
+        cvon1 = (a01*b12-a12*b01)/(a01-a12)
+        cvon3 = (a01*b12-a12*b01)/(a01-a12)
+        cvon2 = (a01*b12-a12*b01)/(a01-a12)
     else if (flag .eq. 3) then
-        cvon1 = (a01*b02 - a02*b01)/(a01 - a02)
-        cvon2 = (a01*b02 - a02*b01)/(a01 - a02)
-        cvon3 = (a01*b02 - a02*b01)/(a01 - a02)
-    endif
+        cvon1 = (a01*b02-a02*b01)/(a01-a02)
+        cvon2 = (a01*b02-a02*b01)/(a01-a02)
+        cvon3 = (a01*b02-a02*b01)/(a01-a02)
+    end if
 !
 ! ON CALCULE LE RAYON ET ON VERIFIE LA PRECISION DE SON CALCUL.
 !
-    ray0 = sqrt((cuon1 - cupn0)**2 + (cvon1 - cvpn0)**2)
-    ray1 = sqrt((cuon2 - cupn1)**2 + (cvon2 - cvpn1)**2)
-    ray2 = sqrt((cuon3 - cupn2)**2 + (cvon3 - cvpn2)**2)
-    rayon = max(ray0,ray1,ray2)
-    raymin = min(ray0,ray1,ray2)
+    ray0 = sqrt((cuon1-cupn0)**2+(cvon1-cvpn0)**2)
+    ray1 = sqrt((cuon2-cupn1)**2+(cvon2-cvpn1)**2)
+    ray2 = sqrt((cuon3-cupn2)**2+(cvon3-cvpn2)**2)
+    rayon = max(ray0, ray1, ray2)
+    raymin = min(ray0, ray1, ray2)
 !
-    if ((((rayon - raymin)/raymin) .gt. eps2) .and. ((rayon - raymin) .gt. eps2)) then
-        valr (1) = cupn0
-        valr (2) = cvpn0
-        valr (3) = cupn1
-        valr (4) = cvpn1
-        valr (5) = cupn2
-        valr (6) = cvpn2
-        valr (7) = cuon1
-        valr (8) = cuon2
-        valr (9) = cuon3
-        valr (10) = cvon1
-        valr (11) = cvon2
-        valr (12) = cvon3
-        valr (13) = rayon
-        valr (14) = raymin
-        valr (15) = (rayon - raymin)
-        valr (16) = ((rayon-raymin)/raymin)
+    if ((((rayon-raymin)/raymin) .gt. eps2) .and. ((rayon-raymin) .gt. eps2)) then
+        valr(1) = cupn0
+        valr(2) = cvpn0
+        valr(3) = cupn1
+        valr(4) = cvpn1
+        valr(5) = cupn2
+        valr(6) = cvpn2
+        valr(7) = cuon1
+        valr(8) = cuon2
+        valr(9) = cuon3
+        valr(10) = cvon1
+        valr(11) = cvon2
+        valr(12) = cvon3
+        valr(13) = rayon
+        valr(14) = raymin
+        valr(15) = (rayon-raymin)
+        valr(16) = ((rayon-raymin)/raymin)
         vali = flag
         call utmess('F', 'PREPOST5_78', si=vali, nr=16, valr=valr)
     else
         cuon = cuon1
         cvon = cvon1
-    endif
+    end if
 !
     call jedema()
 end subroutine

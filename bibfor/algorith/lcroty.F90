@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,10 @@ function lcroty(t, prec, itemax)
 !
         y = 0.d0
         do iter = 1, itemax
-            h = y*exp(y) - t
-            dh = (1+y) * exp(y)
+            h = y*exp(y)-t
+            dh = (1+y)*exp(y)
             if (abs(h) .le. prec*t) goto 100
-            y = y - h/dh
+            y = y-h/dh
         end do
 !
 !
@@ -53,15 +53,15 @@ function lcroty(t, prec, itemax)
     else
         u = t
         do iter = 1, itemax
-            h = u*log(u) - t
-            dh = 1 + log(u)
+            h = u*log(u)-t
+            dh = 1+log(u)
             if (abs(h) .le. prec*t) then
                 y = log(u)
                 goto 100
-            endif
-            u = u - h/dh
+            end if
+            u = u-h/dh
         end do
-    endif
+    end if
 !
     call utmess('F', 'ALGORITH3_55')
 !

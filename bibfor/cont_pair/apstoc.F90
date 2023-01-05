@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apstoc(ds_contact, nb_pair, list_pair, list_nbptit, list_ptitsl,&
+subroutine apstoc(ds_contact, nb_pair, list_pair, list_nbptit, list_ptitsl, &
                   list_ptitma, list_ptgama)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/wkvect.h"
 #include "asterfort/jemarq.h"
@@ -59,15 +59,15 @@ implicit none
     real(kind=8), pointer :: v_sdappa_apli3(:) => null()
     real(kind=8), pointer :: v_sdappa_apli4(:) => null()
     real(kind=8), pointer :: v_sdappa_apli5(:) => null()
-    character(len=24) :: sdappa_apli, sdappa_apli2, sdappa_apli3,sdappa_apli4, sdappa_apli5
+    character(len=24) :: sdappa_apli, sdappa_apli2, sdappa_apli3, sdappa_apli4, sdappa_apli5
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     ds_contact%nb_cont_pair = nb_pair
-    if (nb_pair.ne.0) then
-        sdappa       = ds_contact%sdcont_solv(1:14)//'.APPA'
-        sdappa_apli  = sdappa(1:19)//'.APLI'
+    if (nb_pair .ne. 0) then
+        sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+        sdappa_apli = sdappa(1:19)//'.APLI'
         sdappa_apli2 = sdappa(1:19)//'.APNP'
         sdappa_apli3 = sdappa(1:19)//'.APTS'
         sdappa_apli4 = sdappa(1:19)//'.APTM'
@@ -77,19 +77,19 @@ implicit none
         call jedetr(sdappa_apli3)
         call jedetr(sdappa_apli4)
         call jedetr(sdappa_apli5)
-        call wkvect(sdappa_apli,'V V I', 3*nb_pair, vi = v_sdappa_apli)
-        call wkvect(sdappa_apli2,'V V I', nb_pair, vi = v_sdappa_apli2)
-        call wkvect(sdappa_apli3,'V V R', 16*nb_pair, vr = v_sdappa_apli3)
-        call wkvect(sdappa_apli4,'V V R', 16*nb_pair, vr = v_sdappa_apli4)
-        call wkvect(sdappa_apli5,'V V R', 72*nb_pair, vr = v_sdappa_apli5)
-        v_sdappa_apli(1:3*nb_pair)   = list_pair(1:3*nb_pair)
-        v_sdappa_apli2(1:nb_pair)    = list_nbptit(1:nb_pair)
+        call wkvect(sdappa_apli, 'V V I', 3*nb_pair, vi=v_sdappa_apli)
+        call wkvect(sdappa_apli2, 'V V I', nb_pair, vi=v_sdappa_apli2)
+        call wkvect(sdappa_apli3, 'V V R', 16*nb_pair, vr=v_sdappa_apli3)
+        call wkvect(sdappa_apli4, 'V V R', 16*nb_pair, vr=v_sdappa_apli4)
+        call wkvect(sdappa_apli5, 'V V R', 72*nb_pair, vr=v_sdappa_apli5)
+        v_sdappa_apli(1:3*nb_pair) = list_pair(1:3*nb_pair)
+        v_sdappa_apli2(1:nb_pair) = list_nbptit(1:nb_pair)
         v_sdappa_apli3(1:16*nb_pair) = list_ptitsl(1:16*nb_pair)
         v_sdappa_apli4(1:16*nb_pair) = list_ptitma(1:16*nb_pair)
         v_sdappa_apli5(1:72*nb_pair) = list_ptgama(1:72*nb_pair)
     else
-        sdappa       = ds_contact%sdcont_solv(1:14)//'.APPA'
-        sdappa_apli  = sdappa(1:19)//'.APLI'
+        sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+        sdappa_apli = sdappa(1:19)//'.APLI'
         sdappa_apli2 = sdappa(1:19)//'.APNP'
         sdappa_apli3 = sdappa(1:19)//'.APTS'
         sdappa_apli4 = sdappa(1:19)//'.APTM'

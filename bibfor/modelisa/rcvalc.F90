@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
+subroutine rcvalc(jmat, phenom, nbres, nomres, valres, &
                   icodre, iarret)
     implicit none
 #include "jeveux.h"
@@ -57,8 +57,8 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
     integer :: icomp, idf, ik, ipi, ir, ires, ivalc
     integer :: ivalk, nbc, nbf, nbobj, nbr, nbt
 !-----------------------------------------------------------------------
-    nbmat=zi(jmat)
-    ASSERT(nbmat.eq.1)
+    nbmat = zi(jmat)
+    ASSERT(nbmat .eq. 1)
     imat = jmat+zi(jmat+nbmat+1)
 !
 !
@@ -70,25 +70,25 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
         if (nomphe .eq. zk32(zi(imat)+icomp-1)) then
             ipi = zi(imat+2+icomp-1)
             goto 11
-        endif
+        end if
     end do
     call utmess('A', 'ELEMENTS2_63')
     goto 999
- 11 continue
+11  continue
 !
     nbobj = 0
-    nbr = zi(ipi )
+    nbr = zi(ipi)
     nbc = zi(ipi+1)
     ivalk = zi(ipi+3)
     ivalc = zi(ipi+5)
-    nbt = nbr + nbc
+    nbt = nbr+nbc
     do ir = 1, nbt
         do ires = 1, nbres
             if (nomres(ires) .eq. zk16(ivalk+ir-1)) then
                 valres(ires) = zc(ivalc-1+ir)
                 icodre(ires) = 0
-                nbobj = nbobj + 1
-            endif
+                nbobj = nbobj+1
+            end if
         end do
     end do
     if (nbobj .ne. nbres) then
@@ -100,10 +100,10 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
                     call utmess('F', 'MODELISA6_93')
 !              CALL FOINTA (IFON,NBPAR,NOMPAR,VALPAR,VALRES(IRES))
                     icodre(ires) = 0
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 999 continue
 !
     call rcvals(iarret, icodre, nbres, nomres)

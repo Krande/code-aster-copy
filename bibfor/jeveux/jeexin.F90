@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine jeexin(nomlu, iret)
 ! OUT IRET   : =0 LE DESCRIPTEUR N'EXISTE PAS
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibacol, iblong, ibnum, ic, icre, id, ilong
@@ -40,14 +40,14 @@ subroutine jeexin(nomlu, iret)
     integer :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
     integer :: jmarq, n, nuti
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
     integer :: idnom, idlong, idnum
-    parameter    ( idnom  = 5 , idlong = 7 ,idnum  = 10 )
+    parameter(idnom=5, idlong=7, idnum=10)
 ! ----------------------------------------------------------------------
     character(len=32) :: noml32
 ! DEB ------------------------------------------------------------------
@@ -62,10 +62,10 @@ subroutine jeexin(nomlu, iret)
         else
             if (iadm(jiadm(iclaos)+2*idatos-1) .eq. 0) then
                 call jxveuo('L', itab, iret, jctab)
-            endif
+            end if
             call jjcroc('        ', icre)
             id = idatoc
-        endif
+        end if
     else if (iret .eq. 2) then
         ic = iclaco
         if (noml32(25:32) .eq. '        ') then
@@ -73,25 +73,25 @@ subroutine jeexin(nomlu, iret)
         else
             call jjallc(ic, idatco, 'L', ibacol)
             call jjcroc(noml32(25:32), icre)
-            ixnum = iszon(jiszon+ibacol+idnum )
-            ixnom = iszon(jiszon+ibacol+idnom )
+            ixnum = iszon(jiszon+ibacol+idnum)
+            ixnom = iszon(jiszon+ibacol+idnom)
             ixlong = iszon(jiszon+ibacol+idlong)
             if (ixnum .ne. 0) then
                 ibnum = iadm(jiadm(ic)+2*ixnum-1)
                 nuti = iszon(jiszon+ibnum+1)
             else
-                nuti = luti ( jluti(ic) + ixnom )
-            endif
+                nuti = luti(jluti(ic)+ixnom)
+            end if
             id = idatoc
             if (ixlong .ne. 0) then
                 iblong = iadm(jiadm(ic)+2*ixlong-1)
-                ilong = iszon(jiszon+iblong - 1 + idatoc)
+                ilong = iszon(jiszon+iblong-1+idatoc)
                 if (ilong .le. 0) id = 0
             else
                 if (idatoc .gt. nuti) id = 0
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
     iret = id
 ! FIN ------------------------------------------------------------------
 end subroutine

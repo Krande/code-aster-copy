@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcg(dfds, vecn, g, devg, traceg,&
+subroutine calcg(dfds, vecn, g, devg, traceg, &
                  devgii)
 !
     implicit none
@@ -40,22 +40,22 @@ subroutine calcg(dfds, vecn, g, devg, traceg,&
     integer :: ii, ndt, ndi
     real(kind=8) :: fact1
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- CALCUL DE G ------------------------------------------------------
 ! ======================================================================
-    fact1=ddot(ndt,dfds,1,vecn,1)
+    fact1 = ddot(ndt, dfds, 1, vecn, 1)
     do ii = 1, ndt
-        g(ii) = dfds(ii) - fact1*vecn(ii)
+        g(ii) = dfds(ii)-fact1*vecn(ii)
     end do
 ! ======================================================================
 ! --- CALCUL DU DEVIATEUR DE G ET DE SA NORME --------------------------
 ! ======================================================================
     call lcdevi(g, devg)
-    devgii=ddot(ndt,devg,1,devg,1)
-    devgii = sqrt (devgii)
+    devgii = ddot(ndt, devg, 1, devg, 1)
+    devgii = sqrt(devgii)
 ! ======================================================================
 ! --- CALCUL DU PREMIER INVARIANT DE G ---------------------------------
 ! ======================================================================

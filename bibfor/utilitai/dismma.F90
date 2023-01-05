@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,163 +79,163 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         repi = dime(3)
 !
 !
-    else if (questi.eq.'NB_SM_MAILLA') then
+    else if (questi .eq. 'NB_SM_MAILLA') then
 !     ---------------------------------
         repi = dime(4)
 !
 !
-    else if (questi.eq.'NB_NO_MAILLA') then
+    else if (questi .eq. 'NB_NO_MAILLA') then
 !     ---------------------------------
         repi = dime(1)
 !
 !
-    else if (questi.eq.'NB_NL_MAILLA') then
+    else if (questi .eq. 'NB_NL_MAILLA') then
 !     ---------------------------------
         repi = dime(2)
 !
 !
-    else if (questi.eq.'PARALLEL_MESH') then
+    else if (questi .eq. 'PARALLEL_MESH') then
 !     ---------------------------------
         call gettco(nomob, typeco)
         if (typeco .eq. 'MAILLAGE_P') then
             repk = 'OUI'
         else
             repk = 'NON'
-        endif
+        end if
 !
 !
-    else if (questi.eq.'NB_NO_SS_MAX') then
+    else if (questi .eq. 'NB_NO_SS_MAX') then
 !     ---------------------------------
         nbsm = dime(4)
         repi = 0
         do ism = 1, nbsm
             call jelira(jexnum(nomob//'.SUPMAIL', ism), 'LONMAX', nno)
-            repi = max(repi,nno)
+            repi = max(repi, nno)
         end do
 !
 !
-    else if (questi.eq.'Z_CST') then
+    else if (questi .eq. 'Z_CST') then
 !     ---------------------------------
         call ltnotb(nomob, 'CARA_GEOM', table)
-        call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MIN',&
-                    k1bid, ibid, zmin, c16b, k1bid,&
+        call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MIN', &
+                    k1bid, ibid, zmin, c16b, k1bid, &
                     ier)
-        call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX',&
-                    k1bid, ibid, zmax, c16b, k1bid,&
+        call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX', &
+                    k1bid, ibid, zmax, c16b, k1bid, &
                     ier)
 !
         if (zmin .eq. zmax) then
             repk = 'OUI'
         else
             repk = 'NON'
-        endif
+        end if
 !
 !
-    else if (questi.eq.'Z_ZERO'.or.questi.eq.'Z_QUASI_ZERO'.or.questi.eq.'DIM_GEOM') then
+    else if (questi .eq. 'Z_ZERO' .or. questi .eq. 'Z_QUASI_ZERO' .or. questi .eq. 'DIM_GEOM') then
 !     -----------------------------------------------------------------------------------
         call ltnotb(nomob, 'CARA_GEOM', table)
-        call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MIN',&
-                    k1bid, ibid, zmin, c16b, k1bid,&
+        call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MIN', &
+                    k1bid, ibid, zmin, c16b, k1bid, &
                     ier)
-        call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX',&
-                    k1bid, ibid, zmax, c16b, k1bid,&
+        call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                    [c16b], k1bid, 'ABSO', [0.d0], 'Z_MAX', &
+                    k1bid, ibid, zmax, c16b, k1bid, &
                     ier)
 !
         if (zmin .eq. zmax .and. zmin .eq. 0.d0) then
             repk = 'OUI'
         else
             repk = 'NON'
-        endif
+        end if
 !
         if (questi .eq. 'Z_QUASI_ZERO') then
 !       ------------------------------------
-            call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                        [c16b], k1bid, 'ABSO', [0.d0], 'X_MIN',&
-                        k1bid, ibid, xmin, c16b, k1bid,&
+            call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                        [c16b], k1bid, 'ABSO', [0.d0], 'X_MIN', &
+                        k1bid, ibid, xmin, c16b, k1bid, &
                         ier)
-            call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                        [c16b], k1bid, 'ABSO', [0.d0], 'X_MAX',&
-                        k1bid, ibid, xmax, c16b, k1bid,&
+            call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                        [c16b], k1bid, 'ABSO', [0.d0], 'X_MAX', &
+                        k1bid, ibid, xmax, c16b, k1bid, &
                         ier)
-            call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                        [c16b], k1bid, 'ABSO', [0.d0], 'Y_MIN',&
-                        k1bid, ibid, ymin, c16b, k1bid,&
+            call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                        [c16b], k1bid, 'ABSO', [0.d0], 'Y_MIN', &
+                        k1bid, ibid, ymin, c16b, k1bid, &
                         ier)
-            call tbliva(table, 0, ' ', [ibid], [0.d0],&
-                        [c16b], k1bid, 'ABSO', [0.d0], 'Y_MAX',&
-                        k1bid, ibid, ymax, c16b, k1bid,&
+            call tbliva(table, 0, ' ', [ibid], [0.d0], &
+                        [c16b], k1bid, 'ABSO', [0.d0], 'Y_MAX', &
+                        k1bid, ibid, ymax, c16b, k1bid, &
                         ier)
-            if (max(abs(zmax),abs(zmin))/max(xmax-xmin,ymax-ymin) .lt. 1.e-8) then
-                repk='OUI'
+            if (max(abs(zmax), abs(zmin))/max(xmax-xmin, ymax-ymin) .lt. 1.e-8) then
+                repk = 'OUI'
             else
-                repk='NON'
-            endif
-            repi=0
-        endif
+                repk = 'NON'
+            end if
+            repi = 0
+        end if
 !
         if (questi .eq. 'DIM_GEOM') then
 !       --------------------------------
             repi = dime(6)
 !          -- ON RETOURNE 2 SI Z=0. PARTOUT :
-            if ((repi.eq.3) .and. (repk.eq.'OUI')) then
-                repi=2
-            endif
-            repk='???'
-        endif
+            if ((repi .eq. 3) .and. (repk .eq. 'OUI')) then
+                repi = 2
+            end if
+            repk = '???'
+        end if
 !
 !
-    else if (questi.eq.'DIM_GEOM_B') then
+    else if (questi .eq. 'DIM_GEOM_B') then
 !     ----------------------------------------
         repi = dime(6)
-        repk='???'
+        repk = '???'
 !
 !
-    else if (questi.eq.'NB_NO_MA_MAX') then
+    else if (questi .eq. 'NB_NO_MA_MAX') then
 !     ----------------------------------------
         nbma = dime(3)
         call jeveuo(jexatr(nomob//'.CONNEX', 'LONCUM'), 'L', ilmaco)
         repi = 0
         do k = 1, nbma
-            nbno = zi(ilmaco+k) - zi(ilmaco-1+k)
-            repi = max(repi,nbno)
+            nbno = zi(ilmaco+k)-zi(ilmaco-1+k)
+            repi = max(repi, nbno)
         end do
 !
 !
-        else if ((questi.eq.'EXI_TRIA3' ) .or. (questi.eq.'EXI_TRIA6'&
-    ) .or. (questi.eq.'EXI_QUAD4' ) .or. (questi.eq.'EXI_QUAD8'&
-    ) .or. (questi.eq.'EXI_QUAD9' ) .or. (questi.eq.'EXI_SEG2'&
-    ) .or. (questi.eq.'EXI_SEG3' ) .or. (questi.eq.'EXI_HEXA8'&
-    ) .or. (questi.eq.'EXI_HEXA20' ) .or. (questi.eq.'EXI_HEXA27' )&
-    .or. (questi.eq.'EXI_PENTA6' ) .or. (questi.eq.'EXI_PENTA15')&
-    .or. (questi.eq.'EXI_TETRA4' ) .or. (questi.eq.'EXI_TETRA10')&
-    .or. (questi.eq.'EXI_PYRAM5' ) .or. (questi.eq.'EXI_PYRAM13')&
-    .or. (questi.eq.'EXI_POI1' )) then
+    else if ((questi .eq. 'EXI_TRIA3') .or. (questi .eq. 'EXI_TRIA6' &
+                                    ) .or. (questi .eq. 'EXI_QUAD4') .or. (questi .eq. 'EXI_QUAD8' &
+                                     ) .or. (questi .eq. 'EXI_QUAD9') .or. (questi .eq. 'EXI_SEG2' &
+                                     ) .or. (questi .eq. 'EXI_SEG3') .or. (questi .eq. 'EXI_HEXA8' &
+                                 ) .or. (questi .eq. 'EXI_HEXA20') .or. (questi .eq. 'EXI_HEXA27') &
+             .or. (questi .eq. 'EXI_PENTA6') .or. (questi .eq. 'EXI_PENTA15') &
+             .or. (questi .eq. 'EXI_TETRA4') .or. (questi .eq. 'EXI_TETRA10') &
+             .or. (questi .eq. 'EXI_PYRAM5') .or. (questi .eq. 'EXI_PYRAM13') &
+             .or. (questi .eq. 'EXI_POI1')) then
 !     ----------------------------------------
-        typma='XXXX'
-        if (questi .eq. 'EXI_TRIA3') typma='TRIA3'
-        if (questi .eq. 'EXI_TRIA6') typma='TRIA6'
-        if (questi .eq. 'EXI_QUAD4') typma='QUAD4'
-        if (questi .eq. 'EXI_QUAD8') typma='QUAD8'
-        if (questi .eq. 'EXI_QUAD9') typma='QUAD9'
-        if (questi .eq. 'EXI_SEG2') typma='SEG2'
-        if (questi .eq. 'EXI_SEG3') typma='SEG3'
-        if (questi .eq. 'EXI_HEXA8') typma='HEXA8'
-        if (questi .eq. 'EXI_HEXA20') typma='HEXA20'
-        if (questi .eq. 'EXI_HEXA27') typma='HEXA27'
-        if (questi .eq. 'EXI_PENTA6') typma='PENTA6'
-        if (questi .eq. 'EXI_PENTA15') typma='PENTA15'
-        if (questi .eq. 'EXI_TETRA4') typma='TETRA4'
-        if (questi .eq. 'EXI_TETRA10') typma='TETRA10'
-        if (questi .eq. 'EXI_PYRAM5') typma='PYRAM5'
-        if (questi .eq. 'EXI_PYRAM13') typma='PYRAM13'
-        if (questi .eq. 'EXI_POI1') typma='POI1'
-        ASSERT(typma.ne.'XXXX')
+        typma = 'XXXX'
+        if (questi .eq. 'EXI_TRIA3') typma = 'TRIA3'
+        if (questi .eq. 'EXI_TRIA6') typma = 'TRIA6'
+        if (questi .eq. 'EXI_QUAD4') typma = 'QUAD4'
+        if (questi .eq. 'EXI_QUAD8') typma = 'QUAD8'
+        if (questi .eq. 'EXI_QUAD9') typma = 'QUAD9'
+        if (questi .eq. 'EXI_SEG2') typma = 'SEG2'
+        if (questi .eq. 'EXI_SEG3') typma = 'SEG3'
+        if (questi .eq. 'EXI_HEXA8') typma = 'HEXA8'
+        if (questi .eq. 'EXI_HEXA20') typma = 'HEXA20'
+        if (questi .eq. 'EXI_HEXA27') typma = 'HEXA27'
+        if (questi .eq. 'EXI_PENTA6') typma = 'PENTA6'
+        if (questi .eq. 'EXI_PENTA15') typma = 'PENTA15'
+        if (questi .eq. 'EXI_TETRA4') typma = 'TETRA4'
+        if (questi .eq. 'EXI_TETRA10') typma = 'TETRA10'
+        if (questi .eq. 'EXI_PYRAM5') typma = 'PYRAM5'
+        if (questi .eq. 'EXI_PYRAM13') typma = 'PYRAM13'
+        if (questi .eq. 'EXI_POI1') typma = 'POI1'
+        ASSERT(typma .ne. 'XXXX')
         call jenonu(jexnom('&CATA.TM.NOMTM', typma), typv)
-        ASSERT(typv.gt.0)
+        ASSERT(typv .gt. 0)
 !
         repk = 'NON'
         nbma = dime(3)
@@ -244,29 +244,29 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
             if (typmail(k) .eq. typv) goto 51
         end do
         goto 52
- 51     continue
-        repk='OUI'
- 52     continue
+51      continue
+        repk = 'OUI'
+52      continue
 !
 !
-    else if (questi.eq.'ONLY_SEG2') then
+    else if (questi .eq. 'ONLY_SEG2') then
 !     ----------------------------------------
-        typma='SEG2'
+        typma = 'SEG2'
         call jenonu(jexnom('&CATA.TM.NOMTM', typma), typv)
-        ASSERT(typv.gt.0)
+        ASSERT(typv .gt. 0)
 !
         repk = 'OUI'
         nbma = dime(3)
         call jeveuo(nomob//'.TYPMAIL', 'L', vi=typmail)
         do k = 1, nbma
             if (typmail(k) .ne. typv) then
-                repk='NON'
+                repk = 'NON'
                 exit
-            endif
+            end if
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !

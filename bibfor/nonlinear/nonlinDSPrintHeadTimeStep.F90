@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine nonlinDSPrintHeadTimeStep(sddisc, nume_inst, ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmimpt.h"
 #include "asterfort/nmimpx.h"
 !
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,19 +49,19 @@ type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_print = mod(nume_inst+1,ds_print%reac_print) .eq. 0
+    l_print = mod(nume_inst+1, ds_print%reac_print) .eq. 0
     ds_print%l_print = l_print
 !
 ! - Print separator line
 !
     if (l_print) then
         call nmimpx(ds_print)
-    endif
+    end if
 !
 ! - Print head of convergence table
 !
     if (l_print) then
         call nmimpt(nume_inst, sddisc, ds_print)
-    endif
+    end if
 !
 end subroutine

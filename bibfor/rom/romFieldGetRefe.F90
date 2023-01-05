@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,25 +17,25 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldGetRefe(resultNameZ  , modelZ,&
+subroutine romFieldGetRefe(resultNameZ, modelZ, &
                            nbFieldResult, resultField, resultFieldNume, &
-                           fieldName    , field)
+                           fieldName, field)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/romFieldGetInfo.h"
 !
-character(len=*), intent(in) :: resultNameZ, modelZ
-integer, intent(in)  :: nbFieldResult
-character(len=16), pointer :: resultField(:)
-integer, pointer :: resultFieldNume(:)
-character(len=24), intent(in)  :: fieldName
-type(ROM_DS_Field), intent(inout) :: field
+    character(len=*), intent(in) :: resultNameZ, modelZ
+    integer, intent(in)  :: nbFieldResult
+    character(len=16), pointer :: resultField(:)
+    integer, pointer :: resultFieldNume(:)
+    character(len=24), intent(in)  :: fieldName
+    type(ROM_DS_Field), intent(inout) :: field
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ type(ROM_DS_Field), intent(inout) :: field
         if (fieldName .eq. resultField(iFieldResult)) then
             numeStore = resultFieldNume(iFieldResult)
             exit
-        endif
+        end if
     end do
     ASSERT(numeStore .ge. 0)
 !

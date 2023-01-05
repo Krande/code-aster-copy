@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,34 +17,34 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmihht(model    , nume_dof , ds_material   , ds_constitutive,&
-                  cara_elem, list_load, list_func_acti, ds_measure     ,&
-                  sddyna   , sdnume   , hval_incr     ,&
-                  sddisc   , hval_algo, hval_measse   , ds_inout)
+subroutine nmihht(model, nume_dof, ds_material, ds_constitutive, &
+                  cara_elem, list_load, list_func_acti, ds_measure, &
+                  sddyna, sdnume, hval_incr, &
+                  sddisc, hval_algo, hval_measse, ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmchht.h"
 !
-character(len=24), intent(in) :: model
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24), intent(in) :: cara_elem
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: list_load
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sddyna
-character(len=19), intent(in) :: sddisc
-character(len=19), intent(in) :: sdnume
-character(len=19), intent(in) :: hval_incr(*)
-character(len=19), intent(in) :: hval_algo(*)
-character(len=19), intent(in) :: hval_measse(*)
-type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=24), intent(in) :: model
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24), intent(in) :: cara_elem
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: list_load
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sdnume
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: hval_measse(*)
+    type(NL_DS_InOut), intent(in) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,19 +80,19 @@ type(NL_DS_InOut), intent(in) :: ds_inout
 !
 ! - Does ETAT_INIT (initial state) exist ?
 !
-    l_init_state = isfonc(list_func_acti,'ETAT_INIT')
+    l_init_state = isfonc(list_func_acti, 'ETAT_INIT')
 !
 ! - REUSE ?
 !
-    l_reuse      = isfonc(list_func_acti,'REUSE')
+    l_reuse = isfonc(list_func_acti, 'REUSE')
 !
 ! - Compute previous second member for multi-step schemes
 !
     if (l_reuse .or. l_init_state) then
-        call nmchht(model    , ds_material, cara_elem     , ds_constitutive,&
-                    list_load, nume_dof   , list_func_acti, ds_measure     ,&
-                    sddyna   , sddisc     , sdnume        , &
-                    hval_incr, hval_algo  , hval_measse   , ds_inout)
-    endif
+        call nmchht(model, ds_material, cara_elem, ds_constitutive, &
+                    list_load, nume_dof, list_func_acti, ds_measure, &
+                    sddyna, sddisc, sdnume, &
+                    hval_incr, hval_algo, hval_measse, ds_inout)
+    end if
 
 end subroutine

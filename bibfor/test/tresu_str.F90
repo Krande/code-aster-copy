@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,20 +36,20 @@ subroutine tresu_str(tbtxt, refk, valk, ific, llab)
 ! ----------------------------------------------------------------------
     integer :: i
     character(len=4) :: testok
-    integer, parameter :: nl=4
+    integer, parameter :: nl = 4
     character(len=24) :: lign2(nl)
-    data lign2 /'REFERENCE', 'LEGENDE', 'VALE_REFE', 'VALE_CALC'/
+    data lign2/'REFERENCE', 'LEGENDE', 'VALE_REFE', 'VALE_CALC'/
 !
     testok = 'NOOK'
     if (refk .eq. valk) then
         testok = ' OK '
-    endif
+    end if
     if (llab) then
-        write(ific,100) (lign2(i),i=1,nl)
-    endif
-    write(ific,101) testok, tbtxt(1), tbtxt(2), refk, valk
+        write (ific, 100) (lign2(i), i=1, nl)
+    end if
+    write (ific, 101) testok, tbtxt(1), tbtxt(2), refk, valk
 !
-    100 format(5x,2(1x,a16),2(1x,a24))
-    101 format(a4,1x,2(1x,a16),2(1x,a24))
+100 format(5x, 2(1x, a16), 2(1x, a24))
+101 format(a4, 1x, 2(1x, a16), 2(1x, a24))
 !
 end subroutine

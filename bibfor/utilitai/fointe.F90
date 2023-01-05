@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
+subroutine fointe(codmes, nomf, nbpu, nompu, valpu, &
                   resu, ier)
     implicit none
 #include "jeveux.h"
@@ -96,12 +96,12 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
     character(len=24) :: svinte
     character(len=16) :: svnomp
     character(len=19) :: svnomf
-    common /ifosav/ mxsave, mxpara, svnbpa(4) , svpar(10,4) ,&
-     &                isvnxt , isvind(4), nextsv(4)
-    common /jfosav/ iaprol(4),iavale(4),iapara(4),luvale(4),lupara(4)
-    common /rfosav/ svresu(4)
-    common /kfosav/ svnomp(10,4) , svnomf(4) ,&
-     &                svtypf(4) , svprgd(4) , svinte(4)
+    common/ifosav/mxsave, mxpara, svnbpa(4), svpar(10, 4),&
+     &                isvnxt, isvind(4), nextsv(4)
+    common/jfosav/iaprol(4), iavale(4), iapara(4), luvale(4), lupara(4)
+    common/rfosav/svresu(4)
+    common/kfosav/svnomp(10, 4), svnomf(4),&
+     &                svtypf(4), svprgd(4), svinte(4)
 !
 !     ------------------------------------------------------------------
 !     FONCTION EN LIGNE
@@ -117,7 +117,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
     call jemarq()
 !
     codme2 = codmes
-    epsi = sqrt ( r8prem() )
+    epsi = sqrt(r8prem())
     ier = 0
     izero = 0
     nomfon = nomf
@@ -130,27 +130,27 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
     do i = 1, mxsave
         if (nomfon .eq. svnomf(i)) then
             isave = i
-            lprol=iaprol(isave)
-            lvar =iavale(isave)
-            nbpt =luvale(isave)
-            lpara=iapara(isave)
-            nbvn=lupara(isave)
+            lprol = iaprol(isave)
+            lvar = iavale(isave)
+            nbpt = luvale(isave)
+            lpara = iapara(isave)
+            nbvn = lupara(isave)
             goto 11
-        endif
+        end if
     end do
 !
 !
     call jeveut(chprol, 'L', lprol)
     if (zk24(lprol) .eq. 'INTERPRE') then
 !     ------------------------ CAS DES FORMULES ------------------------
-        call fiintf(nomf, nbpu, nompu, valpu, ier,&
+        call fiintf(nomf, nbpu, nompu, valpu, ier, &
                     'A', tresu)
         resu = tresu(1)
         if (ier .gt. 0) then
             ier = 200
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
 !
 !     --- MEMORISATION DES INFORMATIONS NOUVELLES ---
@@ -163,16 +163,16 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
     if (xous .eq. 'S') then
         call jelira(chvale, 'LONUTI', nbpt)
     else
-        nbpt=0
-    endif
+        nbpt = 0
+    end if
     call jeexin(chpara, iret)
     if (iret .gt. 0) then
         call jeveut(chpara, 'L', lpara)
         call jelira(chpara, 'LONUTI', nbvn)
     else
-        lpara=0
-        nbvn=0
-    endif
+        lpara = 0
+        nbvn = 0
+    end if
 !
     iaprol(isave) = lprol
     iavale(isave) = lvar
@@ -180,89 +180,89 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
     iapara(isave) = lpara
     lupara(isave) = nbvn
 !
-    svtypf(isave) = zk24(lprol)(1:1)
+    svtypf(isave) = zk24(lprol) (1:1)
     svinte(isave) = zk24(lprol+1)
-    svprgd(isave) = zk24(lprol+4)(1:2)
+    svprgd(isave) = zk24(lprol+4) (1:2)
 !
- 11 continue
+11  continue
 !
 !     --- CAS PARTICULIER DES CONSTANTES ---
     if (svtypf(isave) .eq. 'C') then
         if (nomfon .ne. svnomf(isave)) then
-            lvar=iavale(isave)
+            lvar = iavale(isave)
             svresu(isave) = zr(lvar+1)
             svnomf(isave) = nomfon
-        endif
+        end if
         resu = svresu(isave)
         goto 9998
-    endif
+    end if
 !
 !
 !     --- VERIFICATION DE LA VALIDITE DES PARAMETRES ----
     if (nomfon .eq. svnomf(isave)) then
         if (nbpu .eq. svnbpa(isave)) then
             do i = 1, svnbpa(isave)
-                if (nompu(i) .ne. svnomp(i,isave)) then
+                if (nompu(i) .ne. svnomp(i, isave)) then
                     goto 19
                 else
-                    svpar(i,isave)=i
-                endif
+                    svpar(i, isave) = i
+                end if
             end do
 !           --- SI SUCCES ALORS ON SAUTE LES VERIFICATIONS ----
             goto 30
-        endif
-    endif
+        end if
+    end if
 !
 !     --- SI ECHEC PRECEDENT ALORS ON VERIFIE ---
- 19 continue
-    call fonbpa(nomfon, zk24(lprol), cbid, mxpara, svnbpa(isave),&
+19  continue
+    call fonbpa(nomfon, zk24(lprol), cbid, mxpara, svnbpa(isave), &
                 svnomp(1, isave))
     if (nbpu .lt. svnbpa(isave)) then
         ier = 160
-        vali(1)=nbpu
-        vali(2)=svnbpa(isave)
+        vali(1) = nbpu
+        vali(2) = svnbpa(isave)
         call utmess('A+', 'FONCT0_9', sk=nomfon)
         call utmess('A', 'FONCT0_14', ni=2, vali=vali)
         goto 9998
-    endif
+    end if
     do i = 1, svnbpa(isave)
-        svpar(i,isave)=0
+        svpar(i, isave) = 0
         do nupar = 1, nbpu
-            if (nompu(nupar) .eq. svnomp(i,isave)) then
-                if (svpar(i,isave) .eq. 0) then
-                    svpar(i,isave)=nupar
+            if (nompu(nupar) .eq. svnomp(i, isave)) then
+                if (svpar(i, isave) .eq. 0) then
+                    svpar(i, isave) = nupar
                 else
                     ier = 120
                     call utmess('A+', 'FONCT0_9', sk=nomfon)
                     call utmess('A', 'FONCT0_15', nk=nbpu, valk=nompu)
                     goto 9998
-                endif
-            endif
+                end if
+            end if
         end do
-        if (svpar(i,isave) .eq. 0) then
+        if (svpar(i, isave) .eq. 0) then
             ier = 130
             call utmess('A+', 'FONCT0_9', sk=nomfon)
             call utmess('A+', 'FONCT0_16', nk=svnbpa(isave), valk=svnomp(1, isave))
             call utmess('A', 'FONCT0_17', nk=nbpu, valk=nompu)
             goto 9998
-        endif
+        end if
     end do
 !
 !     ------------------------ INTERPOLATION --------------------------
- 30 continue
+30  continue
 !
     if (svtypf(isave) .eq. 'F') then
 !
 !        --- FONCTION ---
-        lvar=iavale(isave)
-        nbpt=luvale(isave)
+        lvar = iavale(isave)
+        nbpt = luvale(isave)
         nbpt = nbpt/2
-        lfon = lvar + nbpt
-        rvar = valpu(svpar(1,isave))
-        call folocx(zr(lvar), nbpt, rvar, svprgd(isave), isvind(isave),&
+        lfon = lvar+nbpt
+        rvar = valpu(svpar(1, isave))
+        call folocx(zr(lvar), nbpt, rvar, svprgd(isave), isvind(isave), &
                     epsi, coli, ier)
         if (ier .ne. 0) goto 9998
-        call focoli(isvind(isave), coli, svinte(isave), zr(lvar), zr(lfon),&
+        call focoli(isvind(isave), coli, svinte(isave), zr(lvar), zr(lfon), &
                     rvar, resu, ier)
         if (ier .ne. 0) goto 9998
         svresu(isave) = resu
@@ -270,64 +270,64 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 !     --- NAPPE ---
 !
     else if (svtypf(isave) .eq. 'N') then
-        rpar = valpu(svpar(1,isave))
-        rvar = valpu(svpar(2,isave))
-        lpara=iapara(isave)
-        nbvn=lupara(isave)
+        rpar = valpu(svpar(1, isave))
+        rvar = valpu(svpar(2, isave))
+        lpara = iapara(isave)
+        nbvn = lupara(isave)
         i = 1
-        call folocx(zr(lpara), nbvn, rpar, svprgd(isave), i,&
+        call folocx(zr(lpara), nbvn, rpar, svprgd(isave), i, &
                     epsi, coli, ier)
         if (ier .ne. 0) goto 9998
 !
         if (coli .eq. 'C') then
-            call fointn(izero, nomf, rvar, i, epsi,&
+            call fointn(izero, nomf, rvar, i, epsi, &
                         resu, ier)
             if (ier .ne. 0) goto 9998
-        else if (coli.eq.'I') then
-            call fointn(izero, nomf, rvar, i, epsi,&
+        else if (coli .eq. 'I') then
+            call fointn(izero, nomf, rvar, i, epsi, &
                         tab(3), ier)
             if (ier .ne. 0) goto 9998
-            call fointn(izero, nomf, rvar, i+1, epsi,&
+            call fointn(izero, nomf, rvar, i+1, epsi, &
                         tab(4), ier)
             if (ier .ne. 0) goto 9998
 !
 !           --- INTERPOLATION FINALE SUR LES PARAMETRES ---
             tab(1) = zr(lpara+i-1)
-            tab(2) = zr(lpara+i )
+            tab(2) = zr(lpara+i)
             if (svinte(isave) .eq. 'LIN LIN ') then
-                resu = linlin(rpar,tab(1),tab(3),tab(2),tab(4))
-            else if (svinte(isave).eq.'LIN LOG ') then
-                resu = linlog(rpar,tab(1),tab(3),tab(2),tab(4))
-            else if (svinte(isave).eq.'LOG LOG ') then
-                resu = loglog(rpar,tab(1),tab(3),tab(2),tab(4))
-            else if (svinte(isave).eq.'LOG LIN ') then
-                resu = loglin(rpar,tab(1),tab(3),tab(2),tab(4))
-            endif
-        else if (coli.eq.'E') then
-            call fointn(izero, nomf, rvar, i, epsi,&
+                resu = linlin(rpar, tab(1), tab(3), tab(2), tab(4))
+            else if (svinte(isave) .eq. 'LIN LOG ') then
+                resu = linlog(rpar, tab(1), tab(3), tab(2), tab(4))
+            else if (svinte(isave) .eq. 'LOG LOG ') then
+                resu = loglog(rpar, tab(1), tab(3), tab(2), tab(4))
+            else if (svinte(isave) .eq. 'LOG LIN ') then
+                resu = loglin(rpar, tab(1), tab(3), tab(2), tab(4))
+            end if
+        else if (coli .eq. 'E') then
+            call fointn(izero, nomf, rvar, i, epsi, &
                         tab(3), ier)
             if (ier .ne. 0) goto 9998
-            call fointn(izero, nomf, rvar, i+1, epsi,&
+            call fointn(izero, nomf, rvar, i+1, epsi, &
                         tab(4), ier)
             if (ier .ne. 0) goto 9998
             tab(1) = zr(lpara+i-1)
-            tab(2) = zr(lpara+i )
-            resu = linlin(rpar,tab(1),tab(3),tab(2),tab(4))
+            tab(2) = zr(lpara+i)
+            resu = linlin(rpar, tab(1), tab(3), tab(2), tab(4))
         else
             call utmess('A+', 'FONCT0_9', sk=nomfon)
             call utmess('A', 'FONCT0_12', sr=rvar)
             ier = 140
             goto 9998
-        endif
+        end if
 !
     else
-        valk(1)=nomfon
-        valk(2)=svtypf(isave)
-        valk(3)='FOINTE'
+        valk(1) = nomfon
+        valk(2) = svtypf(isave)
+        valk(3) = 'FOINTE'
         call utmess('A', 'FONCT0_13', nk=3, valk=valk)
         ier = 150
         goto 9998
-    endif
+    end if
 !
 9998 continue
     svnomf(isave) = nomfon
@@ -338,18 +338,18 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 !          SI ON A L'INFO, ON AFFICHERA LA MAILLE CONCERNEE
             if (codme2(2:2) .eq. 'M') then
                 call tecael(iadzi, iazk24)
-                nomail = zk24(iazk24-1+3)(1:8)
+                nomail = zk24(iazk24-1+3) (1:8)
                 codme2(2:2) = '+'
             else
                 codme2(2:2) = ' '
-            endif
+            end if
             call utmess(codme2(1:1)//'+', 'FONCT0_9', sk=nomfon)
             call utmess(codme2, 'FONCT0_54', nk=nbpu, valk=nompu, si=nbpu)
             if (codme2(2:2) .eq. '+') then
                 call utmess(codme2(1:1), 'FONCT0_10', sk=nomail)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jedema()
 end subroutine

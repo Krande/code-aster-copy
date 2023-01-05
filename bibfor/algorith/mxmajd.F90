@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,13 +61,13 @@ subroutine mxmajd(deltat, sddyna)
 !
 ! --- COEFFICIENTS
 !
-    if (ndynlo(sddyna,'DIFF_CENT')) then
+    if (ndynlo(sddyna, 'DIFF_CENT')) then
         coevi1 = 0.5d0*deltat
         coevi2 = 0.5d0*deltat
-    else if (ndynlo(sddyna,'TCHAMWA')) then
+    else if (ndynlo(sddyna, 'TCHAMWA')) then
         coevi1 = 0.d0
         coevi2 = deltat
-    endif
+    end if
 !
 ! --- NOM DES OBJETS POUR PROJECTION MODALE
 !
@@ -77,7 +77,7 @@ subroutine mxmajd(deltat, sddyna)
     call ndynkk(sddyna, 'PRMO_DEPGEP', depgep)
     call ndynkk(sddyna, 'PRMO_VITGEP', vitgep)
     call ndynkk(sddyna, 'PRMO_ACCGEP', accgep)
-    nbmodp = ndynin(sddyna,'NBRE_MODE_PROJ')
+    nbmodp = ndynin(sddyna, 'NBRE_MODE_PROJ')
 !
     call jeveuo(depgep, 'E', jdepgp)
     call jeveuo(depgem, 'E', jdepgm)
@@ -87,7 +87,7 @@ subroutine mxmajd(deltat, sddyna)
     call jeveuo(accgem, 'E', jaccgm)
 !
     do imode = 1, nbmodp
-        zr(jvitgp+imode-1) = zr(jvitgm+imode-1) + coevi1*zr(jaccgp+ imode-1) + coevi2*zr(jaccgm+i&
+        zr(jvitgp+imode-1) = zr(jvitgm+imode-1)+coevi1*zr(jaccgp+imode-1)+coevi2*zr(jaccgm+i&
                              &mode-1)
         zr(jdepgm+imode-1) = zr(jdepgp+imode-1)
         zr(jvitgm+imode-1) = zr(jvitgp+imode-1)

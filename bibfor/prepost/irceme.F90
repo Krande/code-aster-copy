@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irceme(ifi, nochmd, chanom, typech, modele,&
-                  nbcmp, nomcmp, etiqcp, partie, numpt,&
-                  instan, numord, nbmaec, limaec, sdcarm,&
+subroutine irceme(ifi, nochmd, chanom, typech, modele, &
+                  nbcmp, nomcmp, etiqcp, partie, numpt, &
+                  instan, numord, nbmaec, limaec, sdcarm, &
                   carael, field_type, nbCmpDyna, lfichUniq, codret)
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -80,7 +80,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'IRCEME' )
+    parameter(nompro='IRCEME')
 !
     character(len=19) :: chamns
 !
@@ -98,12 +98,12 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
     chamns = '&&      .CES.MED'
     chamns(3:8) = nompro
     if (typech .eq. 'CART') then
-        call carces(chanom, 'ELEM', ' ', 'V', chamns,&
+        call carces(chanom, 'ELEM', ' ', 'V', chamns, &
                     ' ', cret)
         typech = 'ELEM'
     else
         call celces(chanom, 'V', chamns)
-    endif
+    end if
 !
 !    --- ON RECUPERE LES OBJETS
 !
@@ -117,10 +117,10 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
 ! 2. ECRITURE DES CHAMPS AU FORMAT MED
 !====
 !
-    call ircame(ifi, nochmd, chanom, typech, modele,&
-                nbcmp, nomcmp, etiqcp, partie, numpt,&
-                instan, numord, jcesk, jcesd, jcesc,&
-                jcesv, jcesl, nbmaec, limaec, sdcarm,&
+    call ircame(ifi, nochmd, chanom, typech, modele, &
+                nbcmp, nomcmp, etiqcp, partie, numpt, &
+                instan, numord, jcesk, jcesd, jcesc, &
+                jcesv, jcesl, nbmaec, limaec, sdcarm, &
                 carael, field_type, nbCmpDyna, lfichUniq, codret)
 !
 !====
@@ -135,7 +135,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
 !
     if (codret .ne. 0 .and. codret .ne. 100) then
         call utmess('A', 'MED_89', sk=chanom)
-    endif
+    end if
 !
     call jedema()
 !

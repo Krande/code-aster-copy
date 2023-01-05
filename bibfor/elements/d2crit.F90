@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
-                  cnbn, cplas, rpara, cief, cdeps,&
+subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
+                  cnbn, cplas, rpara, cief, cdeps, &
                   cdtg, cier, cdepsp, dc1, dc2)
     implicit none
 !
@@ -69,21 +69,21 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
     call dfplgl(nmnbn, nmplas, nmdpla, 2, df2)
 !
     do j = 1, 6
-        df(j,1) = df1(j)
-        df(j,2) = df2(j)
-        tdf(1,j) = df(j,1)
-        tdf(2,j) = df(j,2)
+        df(j, 1) = df1(j)
+        df(j, 2) = df2(j)
+        tdf(1, j) = df(j, 1)
+        tdf(2, j) = df(j, 2)
     end do
 !
 !     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
-    call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 1,&
+    call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 1, &
                 dfu1)
-    call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 2,&
+    call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 2, &
                 dfu2)
 !
     do j = 1, 6
-        dfu(j,1) = dfu1(j)
-        dfu(j,2) = dfu2(j)
+        dfu(j, 1) = dfu1(j)
+        dfu(j, 2) = dfu2(j)
     end do
 !
     cp = matmul(cdtg, cdeps)
@@ -94,42 +94,42 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
     b2 = matmul(tdf, cp)
 !
     denom = b1(1)*b2(2)-b1(2)*b2(1)
-    aux = b1(1)**2 + b2(1)**2 + b1(2)**2 + b2(2)**2
+    aux = b1(1)**2+b2(1)**2+b1(2)**2+b2(2)**2
 !
 !     CALUL DES MULTIPLICATEURS PLASTIQUES
     call r8inir(2*2, 0.0d0, lambda, 1)
 !
-    f1 = fplass(nmnbn,nmplas,1) + a(1)
-    f2 = fplass(nmnbn,nmplas,2) + a(2)
+    f1 = fplass(nmnbn, nmplas, 1)+a(1)
+    f2 = fplass(nmnbn, nmplas, 2)+a(2)
 !
-    if (abs(denom) .lt. 1.0d-3 * aux) then
+    if (abs(denom) .lt. 1.0d-3*aux) then
         denom = b1(1)+b2(2)+b1(2)+b2(1)
 !
-        if (abs(denom) .lt. 1.0d-3 * sqrt(aux)) then
-            cier=3
+        if (abs(denom) .lt. 1.0d-3*sqrt(aux)) then
+            cier = 3
             call r8inir(6, 0.0d0, cdepsp, 1)
             goto 40
-        endif
+        end if
 !
-        lambda(1,1) = (f1 + f2) / denom
-        lambda(2,2) = lambda(1,1)
+        lambda(1, 1) = (f1+f2)/denom
+        lambda(2, 2) = lambda(1, 1)
     else
-        lambda(1,1) = (f1*b2(2)-f2*b2(1))/denom
-        lambda(2,2) = (f2*b1(1)-f1*b1(2))/denom
-    endif
+        lambda(1, 1) = (f1*b2(2)-f2*b2(1))/denom
+        lambda(2, 2) = (f2*b1(1)-f1*b1(2))/denom
+    end if
 !
     depsp2 = matmul(dfu, lambda)
 !
     do j = 1, 6
-        cdepsp(j) = depsp2(j,1)+depsp2(j,2)
+        cdepsp(j) = depsp2(j, 1)+depsp2(j, 2)
     end do
 !
 !     CALCUL DE CNBN ET DEPSP2 QUAND DEUX CRITERES PLAST SONT ACTIVES
-    call nmnet2(zimat, nmnbn, cnbn, cplas, czef,&
-                czeg, cief, cdeps, cdtg, cier,&
+    call nmnet2(zimat, nmnbn, cnbn, cplas, czef, &
+                czeg, cief, cdeps, cdtg, cier, &
                 dc1, dc2, depsp2, normm)
 !
- 40 continue
+40  continue
 !
     rpara(1) = czef
     rpara(2) = czeg

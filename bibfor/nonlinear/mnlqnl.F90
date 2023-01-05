@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
-                  xvec2, ninc, nd, nchoc, h,&
+subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
+                  xvec2, ninc, nd, nchoc, h, &
                   hf, xqnl)
     implicit none
 !
@@ -84,7 +84,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 ! --- INITIALISATION DES VARIABLES POUR UTILISER MNLAFT
 ! ----------------------------------------------------------------------
 ! --- NT EST LA TAILLE DU VECTEUR AUQUEL ON APPLIQUE LA FFT
-    puismax=int(dlog(4.d0*dble(hf)+1.d0)/dlog(2.d0)+1.d0)
+    puismax = int(dlog(4.d0*dble(hf)+1.d0)/dlog(2.d0)+1.d0)
     nt = 2**puismax
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DU NOM DE LA MATRICE ET TAILLE DE LA MATRICE
@@ -126,35 +126,35 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
     call wkvect('&&MNLQNL.VTEP2', 'V V R', neq*(2*h), ivtp2)
 ! --- VECTEMP1 = X_K DE MEME TAILLE QUE LE NBRE D'EQUATION
     do j = 1, 2*h
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                zr(ivtp1-1+(j-1)*neq+k)=zr(ivec2-1+j*nd+i)
-            endif
+                i = i+1
+                zr(ivtp1-1+(j-1)*neq+k) = zr(ivec2-1+j*nd+i)
+            end if
         end do
     end do
 ! --- VECTEMP2 = M*VECTEMP1
-    call mrmult('ZERO', imat(2), zr(ivtp1), zr(ivtp2), 2*h,&
+    call mrmult('ZERO', imat(2), zr(ivtp1), zr(ivtp2), 2*h, &
                 .false._1)
 ! --- VECTEMP3 = VECTEMP2 (ON ELIMINE LES DDLS NON ACTIFS)
     call wkvect('&&MNLQNL.VTEP3', 'V V R', nd*(2*h), ivtp3)
     do j = 1, 2*h
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                zr(ivtp3-1+(j-1)*nd+i)=zr(ivtp2-1+(j-1)*neq+k)/zr(&
-                iadim-1+2)
-            endif
+                i = i+1
+                zr(ivtp3-1+(j-1)*nd+i) = zr(ivtp2-1+(j-1)*neq+k)/zr( &
+                                         iadim-1+2)
+            end if
         end do
     end do
 ! --- QNL = QNL - (K^2)*GAMMA2*VECTEMP3
     do k = 1, h
-        kk=dble(k)**2
-        call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(k-1)*nd+1), 1, zr(iqnl-1+k*nd+1),&
+        kk = dble(k)**2
+        call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(k-1)*nd+1), 1, zr(iqnl-1+k*nd+1), &
                    1)
-        call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(h+k-1)*nd+1), 1,&
+        call daxpy(nd, -kk*zr(ivec1-1+ninc-2), zr(ivtp3-1+(h+k-1)*nd+1), 1, &
                    zr(iqnl-1+(h+k)*nd+1), 1)
     end do
 ! ----------------------------------------------------------------------
@@ -164,156 +164,156 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
     call wkvect('&&MNLQNL.VTEP4', 'V V R', 2*hf+1, ivtp4)
     call wkvect('&&MNLQNL.VTEP5', 'V V R', 2*hf+1, ivtp5)
     AS_ALLOCATE(vr=vtep6, size=2*hf+1)
-    neqs=0
+    neqs = 0
     do i = 1, nchoc
-        alpha=raid(i)/zr(iadim-1+1)
-        jeu=vjeu(i)/jeumax(1)
+        alpha = raid(i)/zr(iadim-1+1)
+        jeu = vjeu(i)/jeumax(1)
 !        WRITE(6,*) 'JEUV',JEU
-        if (type(i)(1:7) .eq. 'BI_PLAN') then
-            nddl=vnddl(6*(i-1)+1)
+        if (type(i) (1:7) .eq. 'BI_PLAN') then
+            nddl = vnddl(6*(i-1)+1)
 !          WRITE(6,*) 'NDDLV',NDDL
 ! ---     -F*Z
-            call mnlaft(zr(ivec1-1+nd*(2*h+1)+neqs*(2*hf+1)+1),&
-                        zr(ivec2-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), hf, nt,&
-                        zr( iqnl+nd*(2*h+1)+neqs*(2*hf+1)))
+            call mnlaft(zr(ivec1-1+nd*(2*h+1)+neqs*(2*hf+1)+1), &
+                        zr(ivec2-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), hf, nt, &
+                        zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)))
             call dscal(2*hf+1, -1.d0, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)), 1)
 ! ---     -(F/ALPHA-XG)*(F/ALPHA-XG))
 !           VECTEMP4=F1/ALPHA - XG
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1-1+nd*(2*h+1)+neqs*( 2*hf+1)+1), 1, zr(ivtp4),&
+            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1, zr(ivtp4), &
                        1)
 !           CSTE & COS
-            call daxpy(h+1, -1.d0/jeu, zr(ivec1-1+nddl), nd, zr(ivtp4),&
+            call daxpy(h+1, -1.d0/jeu, zr(ivec1-1+nddl), nd, zr(ivtp4), &
                        1)
 !           SIN
-            call daxpy(h, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), nd, zr(ivtp4+hf+1),&
+            call daxpy(h, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), nd, zr(ivtp4+hf+1), &
                        1)
 !           VECTEMP5=F2/ALPHA - XG
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec2-1+nd*(2*h+1)+neqs*( 2*hf+1)+1), 1, zr(ivtp5),&
+            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec2-1+nd*(2*h+1)+neqs*(2*hf+1)+1), 1, zr(ivtp5), &
                        1)
 !           CSTE & COS
-            call daxpy(h+1, -1.d0/jeu, zr(ivec2-1+nddl), nd, zr(ivtp5),&
+            call daxpy(h+1, -1.d0/jeu, zr(ivec2-1+nddl), nd, zr(ivtp5), &
                        1)
 !           SIN
-            call daxpy(h, -1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddl), nd, zr(ivtp5+hf+1),&
+            call daxpy(h, -1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddl), nd, zr(ivtp5+hf+1), &
                        1)
 !          WRITE(6,*) 'VECT5',ZR(IVTP5:IVTP5+2*HF)
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl-1+nd*(2* h+1)+(neqs+1)*(2*hf+1)+1))
-            call dscal(2*hf+1, -1.d0, zr(iqnl-1+nd*(2*h+1)+(neqs+1)*(2* hf+1)+1), 1)
-        else if (type(i)(1:6).eq.'CERCLE') then
-            nddlx=vnddl(6*(i-1)+1)
-            nddly=vnddl(6*(i-1)+2)
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1))
+            call dscal(2*hf+1, -1.d0, zr(iqnl-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1)
+        else if (type(i) (1:6) .eq. 'CERCLE') then
+            nddlx = vnddl(6*(i-1)+1)
+            nddly = vnddl(6*(i-1)+2)
 ! ---     FX*R - FN*(UX/JEU)
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddlx), nd, zr(ivtp4),&
+            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddlx), nd, zr(ivtp4), &
                        1)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp4+hf+1),&
+            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp4+hf+1), &
                        1)
 !           FN*(UX/JEU)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr( ivtp4), hf, nt, zr(ivtp5))
+            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr(ivtp4), hf, nt, zr(ivtp5))
 !           FX*R
-            call mnlaft(zr(ivec1+nd*(2*h+1)+neqs*(2*hf+1)),&
-                        zr(ivec2+ nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt,&
-                        zr(iqnl+nd*(2*h+1)+ neqs*(2*hf+1)))
-            call daxpy(2*hf+1, -1.d0, zr(ivtp5), 1, zr(iqnl+nd*(2*h+1)+ neqs*(2*hf+1)),&
+            call mnlaft(zr(ivec1+nd*(2*h+1)+neqs*(2*hf+1)), &
+                        zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, &
+                        zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)))
+            call daxpy(2*hf+1, -1.d0, zr(ivtp5), 1, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)), &
                        1)
 ! ---     FY*R - FN*(UY/JEU)
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddly), nd, zr(ivtp4),&
+            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddly), nd, zr(ivtp4), &
                        1)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr( ivtp4+hf+1),&
+            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr(ivtp4+hf+1), &
                        1)
 !           FN*(UY/JEU)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr( ivtp4), hf, nt, zr(ivtp5))
+            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), zr(ivtp4), hf, nt, zr(ivtp5))
 !           FY*R
-            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+1)*(2*hf+1)),&
-                        zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt,&
-                        zr(iqnl+ nd*(2*h+1)+(neqs+1)*(2*hf+1)))
-            call daxpy(2*hf+1, -1.d0, zr(ivtp5), 1, zr(iqnl+nd*(2*h+1)+( neqs+1)*(2*hf+1)),&
+            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+1)*(2*hf+1)), &
+                        zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, &
+                        zr(iqnl+nd*(2*h+1)+(neqs+1)*(2*hf+1)))
+            call daxpy(2*hf+1, -1.d0, zr(ivtp5), 1, zr(iqnl+nd*(2*h+1)+(neqs+1)*(2*hf+1)), &
                        1)
 ! ---     R*R - (UX/JEU)^2 - (UY/JEU)^2
 !          - (UY/JEU)^2
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec1-1+nddly), nd, zr(ivtp4),&
+            call daxpy(h+1, 1.d0/jeu, zr(ivec1-1+nddly), nd, zr(ivtp4), &
                        1)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddly), nd, zr( ivtp4+hf+1),&
+            call daxpy(h, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddly), nd, zr(ivtp4+hf+1), &
                        1)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddly), nd, zr(ivtp5),&
+            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddly), nd, zr(ivtp5), &
                        1)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr( ivtp5+hf+1),&
+            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr(ivtp5+hf+1), &
                        1)
             call dscal(2*hf+1, 0.d0, vtep6, 1)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, vtep6)
-            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
+            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
                        1)
 !         - (UX/JEU)^2
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec1-1+nddlx), nd, zr(ivtp4),&
+            call daxpy(h+1, 1.d0/jeu, zr(ivec1-1+nddlx), nd, zr(ivtp4), &
                        1)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddlx), nd, zr(ivtp4+hf+1),&
+            call daxpy(h, 1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddlx), nd, zr(ivtp4+hf+1), &
                        1)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
 !           CSTE & COS
-            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddlx), nd, zr(ivtp5),&
+            call daxpy(h+1, 1.d0/jeu, zr(ivec2-1+nddlx), nd, zr(ivtp5), &
                        1)
 !           SIN
-            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp5+hf+1),&
+            call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp5+hf+1), &
                        1)
             call dscal(2*hf+1, 0.d0, vtep6, 1)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, vtep6)
-            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
+            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
                        1)
 !          + R^2
             call dscal(2*hf+1, 0.d0, vtep6, 1)
-            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)),&
+            call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
                         zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, vtep6)
-            call daxpy(2*hf+1, 1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
+            call daxpy(2*hf+1, 1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+(neqs+2)*(2*hf+1)), &
                        1)
 ! ---     (FN/ALPHA - R)*FN
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
-            call daxpy(2*hf+1, -1.d0, zr(ivec1+nd*(2*h+1)+(neqs+2)*(2* hf+1)), 1, zr(ivtp4),&
+            call daxpy(2*hf+1, -1.d0, zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)), 1, zr(ivtp4), &
                        1)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+(neqs+3) *(2*hf+1)), 1, zr(ivtp4),&
+            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, zr(ivtp4), &
                        1)
             call dcopy(2*hf+1, zr(ivec2+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1, zr(ivtp5), 1)
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+ 1)+(neqs+3)*(2*hf+1)))
-        else if (type(i)(1:4).eq.'PLAN') then
-            nddl=vnddl(6*(i-1)+1)
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+1)+(neqs+3)*(2*hf+1)))
+        else if (type(i) (1:4) .eq. 'PLAN') then
+            nddl = vnddl(6*(i-1)+1)
 ! ---     (F/ALPHA - XG)*F
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
             call dscal(2*hf+1, 0.d0, zr(ivtp5), 1)
 !            call jxveri(' ', ' ')
 !           (F/ALPHA - XG)
-            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+neqs*(2* hf+1)), 1, zr(ivtp4),&
+            call daxpy(2*hf+1, 1.d0/alpha, zr(ivec1+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(ivtp4), &
                        1)
 !           CSTE & COS
-            call daxpy(h+1, -1.d0/jeu, zr(ivec1-1+nddl), nd, zr(ivtp4),&
+            call daxpy(h+1, -1.d0/jeu, zr(ivec1-1+nddl), nd, zr(ivtp4), &
                        1)
 !           SIN
-            call daxpy(h, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), nd, zr(ivtp4+hf+1),&
+            call daxpy(h, -1.d0/jeu, zr(ivec1-1+nd*(h+1)+nddl), nd, zr(ivtp4+hf+1), &
                        1)
 !           F
-            call daxpy(2*hf+1, 1.d0, zr(ivec2+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(ivtp5),&
+            call daxpy(2*hf+1, 1.d0, zr(ivec2+nd*(2*h+1)+neqs*(2*hf+1)), 1, zr(ivtp5), &
                        1)
 !
-            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+ 1)+neqs*(2*hf+1)))
-        endif
-        neqs=neqs+vneqs(i)
+            call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt, zr(iqnl+nd*(2*h+1)+neqs*(2*hf+1)))
+        end if
+        neqs = neqs+vneqs(i)
 !        WRITE(6,*) 'NEQS',NEQS
     end do
 ! ----------------------------------------------------------------------
@@ -326,7 +326,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 ! --- EQUATION DE PHASE
     zr(iqnl+ninc-2) = 0.d0
     do k = 1, h
-        zr(iqnl+ninc-2) = zr(iqnl+ninc-2)+ k*zr(ivec1-1+ninc)*zr( ivec2-1+(h+k)*nd+1)
+        zr(iqnl+ninc-2) = zr(iqnl+ninc-2)+k*zr(ivec1-1+ninc)*zr(ivec2-1+(h+k)*nd+1)
     end do
 ! ----------------------------------------------------------------------
 ! --- DESTRUCTION DES VECTEURS TEMPORAIRES

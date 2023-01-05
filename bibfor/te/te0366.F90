@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine te0366(option, nomte)
 !
 !
     integer :: n
-    parameter    (n=336)
+    parameter(n=336)
 !
     integer :: nfaes
     integer :: ndim, nddl, nnc
@@ -89,7 +89,7 @@ subroutine te0366(option, nomte)
     integer :: contac, ibid, npte
     integer :: ndeple, nne(3), nnm(3), ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
-    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3), ka, mu
+    real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3), ka, mu
     integer :: imate, jbaslo, jlsn
     aster_logical :: lmulti
     integer :: iadzi, iazk24
@@ -99,23 +99,23 @@ subroutine te0366(option, nomte)
 !
 ! --- INFOS SUR LA MAILLE DE CONTACT
 !
-    call xmelet(nomte, typmai, elrees, elrema, elreco,&
-                ndim, nddl, nne, nnm, nnc,&
-                ddle, ddlm, contac, ndeple, nsinge,&
+    call xmelet(nomte, typmai, elrees, elrema, elreco, &
+                ndim, nddl, nne, nnm, nnc, &
+                ddle, ddlm, contac, ndeple, nsinge, &
                 nsingm, nfhe, nfhm)
 !
-    ASSERT(nddl.le.n)
+    ASSERT(nddl .le. n)
     lmulti = .false.
     if (nfhe .gt. 1 .or. nfhm .gt. 1) lmulti = .true.
 !
 ! --- INITIALISATIONS
 !
-    mmat(:,:) = 0.d0
+    mmat(:, :) = 0.d0
     geopi(:) = 0.d0
     dlagrf(:) = 0.d0
     ddeple(:) = 0.d0
     ddeplm(:) = 0.d0
-    fk_escl(:,:,:) = 0.d0
+    fk_escl(:, :, :) = 0.d0
     dlagrc = 0.d0
     jeu = 0.d0
 !
@@ -157,8 +157,8 @@ subroutine te0366(option, nomte)
     rrm = zr(jpcpo-1+23)
     if (nnm(1) .eq. 0) rre = 2*rre
 !
-    lpenaf=((coeffr.eq.0.d0).and.(coeffp.ne.0.d0))
-    lpenac=((coefcr.eq.0.d0).and.(coefcp.ne.0.d0))
+    lpenaf = ((coeffr .eq. 0.d0) .and. (coeffp .ne. 0.d0))
+    lpenac = ((coefcr .eq. 0.d0) .and. (coefcp .ne. 0.d0))
 !
 ! --- RECUPERATION DES DONNEES DE LA CARTE CONTACT PINTER (VOIR XMCART)
 !
@@ -179,11 +179,11 @@ subroutine te0366(option, nomte)
     call jevech('PDEPL_M', 'L', jdepm)
 !
     if (nfhe .gt. 0 .or. nfhm .gt. 0) then
-      call jevech('PHEA_NO', 'L', jheavn)
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-    endif
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+    end if
 !
     if (lmulti) then
 !
@@ -195,45 +195,45 @@ subroutine te0366(option, nomte)
 !
         call jevech('PHEAVNO', 'L', jheano)
     else
-        jheafa=1
-        jheano=1
-    endif
+        jheafa = 1
+        jheano = 1
+    end if
 !
 ! --- CALCUL DES COORDONNEES REELLES DES POINTS D'INTERSECTION ESCLAVES
 !
-    call xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
+    call xmpint(ndim, npte, nfaes, jpcpi, jpccf, &
                 geopi)
 !
 ! --- FONCTIONS DE FORME
 !
-    call xtform(elrees, elrema, elreco,&
-                nnm(1), coore, coorm, coorc,&
+    call xtform(elrees, elrema, elreco, &
+                nnm(1), coore, coorm, coorc, &
                 ffe, ffm, dffc)
 !
 ! --- CALCUL DES FCTS SINGULIERES
 !
     call jevech('PSTANO', 'L', jstno)
-    if (nsinge.eq.1 .and. nne(1).gt. 0) then
-      call jevech('PLSNGG', 'L', jlsn)
-      call jevech('PBASLOC', 'L', jbaslo)
-      call jevech('PMATERC', 'L', imate)
-      call xkamat(zi(imate), ndim, .false._1, ka, mu)
-      call xcalfev_wrap(ndim, nne(1), zr(jbaslo), zi(jstno), -1.d0,&
-                   zr(jlsn), zr(jlsn), zr(jgeom), ka, mu, ffe, fk_escl, face='ESCL')
-    endif
+    if (nsinge .eq. 1 .and. nne(1) .gt. 0) then
+        call jevech('PLSNGG', 'L', jlsn)
+        call jevech('PBASLOC', 'L', jbaslo)
+        call jevech('PMATERC', 'L', imate)
+        call xkamat(zi(imate), ndim, .false._1, ka, mu)
+        call xcalfev_wrap(ndim, nne(1), zr(jbaslo), zi(jstno), -1.d0, &
+                          zr(jlsn), zr(jlsn), zr(jgeom), ka, mu, ffe, fk_escl, face='ESCL')
+    end if
 !
 ! --- BRICOLAGES POUR RESPECTER LES ANCIENNES CONVENTIONS DE SIGNE
-    fk_escl=-1.d0*fk_escl
-    if (nnm(1) .eq. 0) fk_escl=2.d0*fk_escl
-    if (nsingm.eq.1 .and. nnm(1).gt.0) then
-      call jevech('PLSNGG', 'L', jlsn)
-      call jevech('PBASLOC', 'L', jbaslo)
-      call jevech('PMATERC', 'L', imate)
-      call xkamat(zi(imate), ndim, .false._1, ka, mu)
-      call xcalfev_wrap(ndim, nnm(1), zr(jbaslo+nne(1)*3*ndim), zi(jstno+nne(1)), +1.d0,&
-                   zr(jlsn+nne(1)), zr(jlsn+nne(1)), zr(jgeom+nne(1)*ndim),&
-                   ka, mu, ffm, fk_mait, face='MAIT')
-    endif
+    fk_escl = -1.d0*fk_escl
+    if (nnm(1) .eq. 0) fk_escl = 2.d0*fk_escl
+    if (nsingm .eq. 1 .and. nnm(1) .gt. 0) then
+        call jevech('PLSNGG', 'L', jlsn)
+        call jevech('PBASLOC', 'L', jbaslo)
+        call jevech('PMATERC', 'L', imate)
+        call xkamat(zi(imate), ndim, .false._1, ka, mu)
+        call xcalfev_wrap(ndim, nnm(1), zr(jbaslo+nne(1)*3*ndim), zi(jstno+nne(1)), +1.d0, &
+                          zr(jlsn+nne(1)), zr(jlsn+nne(1)), zr(jgeom+nne(1)*ndim), &
+                          ka, mu, ffm, fk_mait, face='MAIT')
+    end if
 !
 ! --- FONCTION DE FORMES POUR LES LAGRANGIENS
 ! --- SI ON EST EN LINEAIRE, ON IMPOSE QUE LE NB DE NOEUDS DE CONTACTS
@@ -244,15 +244,15 @@ subroutine te0366(option, nomte)
         nnc = nne(2)
         call xlacti(typmai, ninter, jpcai, lact, nlact)
         call xmoffc(lact, nlact, nnc, ffe, ffc)
-    else if (contac.eq.3) then
+    else if (contac .eq. 3) then
         nnc = nne(2)
         call elelin(contac, elrees, typmec, ibid, ibid)
         call elrfvf(typmec, coore, ffec)
         call xlacti(typmai, ninter, jpcai, lact, nlact)
         call xmoffc(lact, nlact, nnc, ffec, ffc)
     else
-        ASSERT(contac.eq.0)
-    endif
+        ASSERT(contac .eq. 0)
+    end if
 !
 ! --- JACOBIEN POUR LE POINT DE CONTACT
 !
@@ -266,33 +266,33 @@ subroutine te0366(option, nomte)
 !
     if (indnor .eq. 1) then
         indco = 0
-    endif
+    end if
 !
 ! - CALCUL DES MATRICES DE CONTACT
 !
     if (indco .eq. 1) then
-        call xmmaa1(ndim, nne, ndeple, nnc, nnm,&
-                    hpg, ffc, ffe,&
-                    ffm, jacobi, coefcr, coefcp,&
-                    lpenac, norm, nsinge, nsingm,&
-                    fk_escl, fk_mait, ddle, ddlm,&
-                    nfhe, nfhm, lmulti, zi(jheano), zi(jheavn), zi(jheafa),&
+        call xmmaa1(ndim, nne, ndeple, nnc, nnm, &
+                    hpg, ffc, ffe, &
+                    ffm, jacobi, coefcr, coefcp, &
+                    lpenac, norm, nsinge, nsingm, &
+                    fk_escl, fk_mait, ddle, ddlm, &
+                    nfhe, nfhm, lmulti, zi(jheano), zi(jheavn), zi(jheafa), &
                     mmat)
     else if (indco .eq. 0) then
         if (nvit .eq. 1) then
-            call xmmaa0(ndim, nnc, nne, hpg,&
-                        ffc, jacobi, coefcr,&
-                        coefcp, lpenac, ddle,&
+            call xmmaa0(ndim, nnc, nne, hpg, &
+                        ffc, jacobi, coefcr, &
+                        coefcp, lpenac, ddle, &
                         nfhe, lmulti, zi(jheano), mmat)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - CALCUL DES INCREMENTS - LAGRANGE DE CONTACT
 !
-    call xtlagc(ndim, nnc, nne, ddle(1),&
-                jdepde, ffc,&
+    call xtlagc(ndim, nnc, nne, ddle(1), &
+                jdepde, ffc, &
                 nfhe, lmulti, zi(jheano), dlagrc)
 !
     if (coefff .eq. 0.d0) indco = 0
@@ -305,92 +305,92 @@ subroutine te0366(option, nomte)
 !
 ! --- CALCUL DE LA MATRICE F - CAS SANS FROTTEMENT
 !
-            call xmmab0(ndim, nnc, nne,&
-                        hpg, ffc, jacobi, lpenac,&
-                        tau1, tau2, ddle,&
+            call xmmab0(ndim, nnc, nne, &
+                        hpg, ffc, jacobi, lpenac, &
+                        tau1, tau2, ddle, &
                         nfhe, lmulti, zi(jheano), mmat)
-        endif
+        end if
     else if (indco .eq. 1) then
 !
 ! --- CALCUL DES INCREMENTS - DEPLACEMENTS
 !
-        call xtdepm(ndim, nnm, nne, ndeple, nsinge,&
-                    nsingm, ffe, ffm, jdepde, fk_escl,&
-                    fk_mait, ddle, ddlm, nfhe, nfhm, lmulti,&
-                    zi(jheavn), zi(jheafa),&
+        call xtdepm(ndim, nnm, nne, ndeple, nsinge, &
+                    nsingm, ffe, ffm, jdepde, fk_escl, &
+                    fk_mait, ddle, ddlm, nfhe, nfhm, lmulti, &
+                    zi(jheavn), zi(jheafa), &
                     ddeple, ddeplm)
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE FROTTEMENT
 !
-        call xtlagf(ndim, nnc, nne, ddle(1),&
-                    jdepde, ffc,&
+        call xtlagf(ndim, nnc, nne, ddle(1), &
+                    jdepde, ffc, &
                     nfhe, dlagrf)
 !
 ! --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 !
-        call ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
-                    tau1, tau2, mprojt, inadh, rese,&
+        call ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr, &
+                    tau1, tau2, mprojt, inadh, rese, &
                     nrese, coeffp, lpenaf, dvitet)
 !
 ! --- CALCUL DU JEU
 !
-        jeu =0.d0
+        jeu = 0.d0
         if (ndim .eq. 3 .and. contac .eq. 3) then
-            call xmmjeu(ndim, nnm, nne, ndeple, nsinge,&
-                        nsingm, ffe, ffm, norm, jgeom,&
-                        jdepde, jdepm, fk_escl, fk_mait, ddle,&
-                        ddlm, nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa),&
+            call xmmjeu(ndim, nnm, nne, ndeple, nsinge, &
+                        nsingm, ffe, ffm, norm, jgeom, &
+                        jdepde, jdepm, fk_escl, fk_mait, ddle, &
+                        ddlm, nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa), &
                         jeu)
-        endif
+        end if
 !
         if (inadh .eq. 1) then
 !
 ! --- CALCUL DE B, BT, BU - CAS ADHERENT
 !
-            call xmmab1(ndim, nne, ndeple, nnc, nnm,&
-                        hpg, ffc, ffe,&
-                        ffm, jacobi, dlagrc, coefcr,&
-                        dvitet, coeffr, jeu,&
-                        coeffp, coefff, lpenaf, tau1, tau2,&
-                        rese, mprojt, norm, nsinge,&
-                        nsingm, fk_escl, fk_mait, nvit, contac,&
+            call xmmab1(ndim, nne, ndeple, nnc, nnm, &
+                        hpg, ffc, ffe, &
+                        ffm, jacobi, dlagrc, coefcr, &
+                        dvitet, coeffr, jeu, &
+                        coeffp, coefff, lpenaf, tau1, tau2, &
+                        rese, mprojt, norm, nsinge, &
+                        nsingm, fk_escl, fk_mait, nvit, contac, &
                         ddle, ddlm, nfhe, nfhm, zi(jheavn), mmat)
 !
-        else if (inadh.eq.0) then
+        else if (inadh .eq. 0) then
 !
 ! --- CALCUL DE B, BT, BU, F - CAS GLISSANT
 !
-            call xmmab2(ndim, nne, ndeple, nnc, nnm,&
-                        hpg, ffc, ffe,&
-                        ffm, jacobi, dlagrc, coefcr,&
-                        coeffr, jeu, coeffp,&
-                        lpenaf, coefff, tau1, tau2, rese,&
-                        nrese, mprojt, norm, nsinge,&
-                        nsingm, fk_escl, fk_mait, nvit, contac,&
+            call xmmab2(ndim, nne, ndeple, nnc, nnm, &
+                        hpg, ffc, ffe, &
+                        ffm, jacobi, dlagrc, coefcr, &
+                        coeffr, jeu, coeffp, &
+                        lpenaf, coefff, tau1, tau2, rese, &
+                        nrese, mprojt, norm, nsinge, &
+                        nsingm, fk_escl, fk_mait, nvit, contac, &
                         ddle, ddlm, nfhe, nfhm, zi(jheavn), mmat)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! --- SUPPRESSION DES DDLS SUPERFLUS (CONTACT ET XHTC)
 !
-    lesclx = nsinge.eq.1.and.nnm(1).ne.0
-    lmaitx = nsingm.eq.1
-    lcontx = (contac.eq.1.or.contac.eq.3).and.nlact.lt.nne(2)
-    call xtedd2(ndim, nne, ndeple, nnm, nddl,&
-                option, lesclx, lmaitx, lcontx, zi(jstno),&
-                lact, ddle, ddlm, nfhe, nfhm,&
+    lesclx = nsinge .eq. 1 .and. nnm(1) .ne. 0
+    lmaitx = nsingm .eq. 1
+    lcontx = (contac .eq. 1 .or. contac .eq. 3) .and. nlact .lt. nne(2)
+    call xtedd2(ndim, nne, ndeple, nnm, nddl, &
+                option, lesclx, lmaitx, lcontx, zi(jstno), &
+                lact, ddle, ddlm, nfhe, nfhm, &
                 lmulti, zi(jheano), mmat=mmat)
 !
 ! --- RECOPIE VALEURS FINALES (SYMETRIQUE OU NON)
 !
     if (lpenac .or. lpenaf) then
         call writeMatrix('PMATUNS', nddl, nddl, ASTER_FALSE, mmat)
-    else if ((coefff.eq.0.d0) .or.(ifrott.ne.3)) then
+    else if ((coefff .eq. 0.d0) .or. (ifrott .ne. 3)) then
         call writeMatrix('PMATUUR', nddl, nddl, ASTER_TRUE, mmat)
     else
         call writeMatrix('PMATUNS', nddl, nddl, ASTER_FALSE, mmat)
-    endif
+    end if
 !
 end subroutine

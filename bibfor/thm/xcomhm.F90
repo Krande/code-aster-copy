@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! aslint: disable=W1504,W1306
 !
-subroutine xcomhm(ds_thm,&
-                  option, j_mater, time_curr,&
-                  ndim, dimdef, dimcon, nbvari,&
-                  addeme, adcome, addep1, adcp11,&
-                  addep2, addete, defgem,&
-                  defgep, congem, congep, vintm,&
-                  vintp, dsde, gravity, retcom, kpi,&
-                  npg, dimenr,&
+subroutine xcomhm(ds_thm, &
+                  option, j_mater, time_curr, &
+                  ndim, dimdef, dimcon, nbvari, &
+                  addeme, adcome, addep1, adcp11, &
+                  addep2, addete, defgem, &
+                  defgep, congem, congep, vintm, &
+                  vintp, dsde, gravity, retcom, kpi, &
+                  npg, dimenr, &
                   angl_naut, yaenrh, adenhy, nfh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcva.h"
@@ -47,20 +47,20 @@ implicit none
 #include "asterfort/thmEvalGravity.h"
 #include "asterfort/tebiot.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-integer :: retcom, kpi, npg, nfh
-integer :: ndim, dimdef, dimcon, nbvari, j_mater
-integer :: addeme, addep1, addep2, addete
-integer :: adcome, adcp11
-real(kind=8) :: defgem(1:dimdef), defgep(1:dimdef), congep(1:dimcon)
-real(kind=8) :: congem(1:dimcon), vintm(1:nbvari), vintp(1:nbvari)
-real(kind=8) :: time_curr
-character(len=16) :: option
-integer :: dimenr
-integer :: yaenrh, adenhy
-real(kind=8) :: dsde(1:dimcon, 1:dimenr)
-real(kind=8) :: gravity(3)
-real(kind=8) :: angl_naut(3)
+    type(THM_DS), intent(inout) :: ds_thm
+    integer :: retcom, kpi, npg, nfh
+    integer :: ndim, dimdef, dimcon, nbvari, j_mater
+    integer :: addeme, addep1, addep2, addete
+    integer :: adcome, adcp11
+    real(kind=8) :: defgem(1:dimdef), defgep(1:dimdef), congep(1:dimcon)
+    real(kind=8) :: congem(1:dimcon), vintm(1:nbvari), vintp(1:nbvari)
+    real(kind=8) :: time_curr
+    character(len=16) :: option
+    integer :: dimenr
+    integer :: yaenrh, adenhy
+    real(kind=8) :: dsde(1:dimcon, 1:dimenr)
+    real(kind=8) :: gravity(3)
+    real(kind=8) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,17 +114,17 @@ real(kind=8) :: angl_naut(3)
 !
 ! - Update unknowns
 !
-    call calcva(ds_thm, kpi   , ndim  ,&
-                defgem, defgep,&
-                addeme, addep1, addep2   , addete,&
-                depsv , epsv  , deps     ,&
-                t     , dt    , grat  ,&
-                p1    , dp1   , grap1 ,&
-                p2    , dp2   , grap2 ,&
+    call calcva(ds_thm, kpi, ndim, &
+                defgem, defgep, &
+                addeme, addep1, addep2, addete, &
+                depsv, epsv, deps, &
+                t, dt, grat, &
+                p1, dp1, grap1, &
+                p2, dp2, grap2, &
                 retcom)
     if (retcom .ne. 0) then
         goto 99
-    endif
+    end if
 !
 ! - Get hydraulic parameters
 !
@@ -150,40 +150,40 @@ real(kind=8) :: angl_naut(3)
 ! ======================================================================
 ! --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 ! ======================================================================
-    call xhmsat(ds_thm, option,&
-                ndim, dimenr,&
-                dimcon, nbvari, addeme,&
-                adcome,&
-                addep1, adcp11, congem, congep, vintm,&
-                vintp, dsde, epsv, depsv,&
-                dp1, phi, rho11,&
-                satur, retcom, tbiot,&
+    call xhmsat(ds_thm, option, &
+                ndim, dimenr, &
+                dimcon, nbvari, addeme, &
+                adcome, &
+                addep1, adcp11, congem, congep, vintm, &
+                vintp, dsde, epsv, depsv, &
+                dp1, phi, rho11, &
+                satur, retcom, tbiot, &
                 angl_naut, yaenrh, adenhy, nfh)
     if (retcom .ne. 0) then
         goto 99
-    endif
+    end if
 ! ======================================================================
 ! --- CALCUL DES GRANDEURS MECANIQUES PURES
 ! SI ON EST SUR UN POINT DE GAUSS (POUR L'INTEGRATION REDUITE)
 !  C'EST A DIRE SI KPI<NPG
 ! ======================================================================
     if (ds_thm%ds_elem%l_dof_meca .and. kpi .le. npg) then
-        call xcalme(ds_thm, option, ndim, dimenr,&
-                    dimcon, addeme, adcome, congep,&
+        call xcalme(ds_thm, option, ndim, dimenr, &
+                    dimcon, addeme, adcome, congep, &
                     dsde, deps, angl_naut)
         if (retcom .ne. 0) then
             goto 99
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get permeability tensor
 !
-    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
+    if ((option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA')) then
         endo = vintp(1)
     else
         endo = vintm(1)
-    endif
-    call thmGetPermeabilityTensor(ds_thm, ndim , angl_naut, j_mater, phi, endo,&
+    end if
+    call thmGetPermeabilityTensor(ds_thm, ndim, angl_naut, j_mater, phi, endo, &
                                   tperm)
 !
 ! - Compute gravity
@@ -192,17 +192,17 @@ real(kind=8) :: angl_naut(3)
 ! ======================================================================
 ! --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT
 ! ======================================================================
-    if ((ds_thm%ds_elem%l_dof_pre1).and.(yaenrh.eq.1)) then
-        call xcalfh(ds_thm, option, ndim, dimcon,&
-                    addep1, adcp11, addeme, congep, dsde,&
+    if ((ds_thm%ds_elem%l_dof_pre1) .and. (yaenrh .eq. 1)) then
+        call xcalfh(ds_thm, option, ndim, dimcon, &
+                    addep1, adcp11, addeme, congep, dsde, &
                     grap1, rho11, gravity, tperm, &
-                    dimenr,&
+                    dimenr, &
                     adenhy, nfh)
         if (retcom .ne. 0) then
             goto 99
-        endif
-    endif
+        end if
+    end if
 !
-99 continue
+99  continue
 !
 end subroutine

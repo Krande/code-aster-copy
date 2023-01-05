@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 !
 subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
 !
-use as_med_module, only: as_med_open
-implicit none
+    use as_med_module, only: as_med_open
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,11 +34,11 @@ implicit none
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: paraListNb
-character(len=16), pointer :: paraListName(:)
-character(len=*) :: nomcon
-integer :: ifichi, numdt, numit
-real(kind=8) :: dt
+    integer, intent(in) :: paraListNb
+    character(len=16), pointer :: paraListName(:)
+    character(len=*) :: nomcon
+    integer :: ifichi, numdt, numit
+    real(kind=8) :: dt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,45 +78,45 @@ real(kind=8) :: dt
         nofimd = 'fort.'//saux08
     else
         nofimd = kfic(1:200)
-    endif
-    inquire(file=nofimd,exist=ficexi)
+    end if
+    inquire (file=nofimd, exist=ficexi)
     if (ficexi) then
         call as_mficom(nofimd, hdfok, medok, codret)
-        if ( medok.eq.0.or.hdfok.eq.0.or.codret.ne.0 ) then
+        if (medok .eq. 0 .or. hdfok .eq. 0 .or. codret .ne. 0) then
             edleaj = 3
             call as_med_open(idfimd, nofimd, edleaj, codret)
         else
             edleaj = 1
             call as_med_open(idfimd, nofimd, edleaj, codret)
-        endif
+        end if
     else
         edleaj = 3
         call as_med_open(idfimd, nofimd, edleaj, codret)
-    endif
+    end if
     if (codret .ne. 0) then
-        saux08='mfiope'
+        saux08 = 'mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     do iPara = 1, paraListNb
         paraName = paraListName(iPara)
-        call rsadpa(nomcon, 'L', 1, paraName, numdt,&
+        call rsadpa(nomcon, 'L', 1, paraName, numdt, &
                     0, sjv=iaux, styp=saux08, istop=1)
 !
         saux64 = nomcon//paraName
-        call as_mprrvw(idfimd, saux64, numdt, numit, dt,&
+        call as_mprrvw(idfimd, saux64, numdt, numit, dt, &
                        zr(iaux), codret)
         if (codret .ne. 0) then
-            saux08='mprcre'
+            saux08 = 'mprcre'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
-    enddo
+        end if
+    end do
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='mficlo'
+        saux08 = 'mficlo'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,12 +64,12 @@ subroutine op0098()
 ! --- CREATION .REFE
 !
     call getvid('   ', 'NUME_DDL', iocc=1, scal=numddl, nbret=nbid)
-    numddl(15:19)='.NUME'
+    numddl(15:19) = '.NUME'
     call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
     call wkvect(nomres//'.IDC_REFE', 'G V K24', 3, iadref)
-    zk24(iadref)=mailla
-    zk24(iadref+1)=numddl
-    zk24(iadref+2)='              '
+    zk24(iadref) = mailla
+    zk24(iadref+1) = numddl
+    zk24(iadref+2) = '              '
 !
 ! --- CREATION DU .DESC
 !
@@ -79,11 +79,11 @@ subroutine op0098()
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
 !
     call wkvect(nomres//'.IDC_DESC', 'G V I', 5, lddesc)
-    zi(lddesc)=1
-    zi(lddesc+1)=nbec
-    zi(lddesc+2)=nbcmp
-    zi(lddesc+3)=numgd
-    zi(lddesc+4)=0
+    zi(lddesc) = 1
+    zi(lddesc+1) = nbec
+    zi(lddesc+2) = nbcmp
+    zi(lddesc+3) = numgd
+    zi(lddesc+4) = 0
 !
 ! CETTE DERNIERE VALEUR SERA REACTUALISEE PAR LE NOMBRE DE DEFORMEE
 ! STATIQUE A CALCULER

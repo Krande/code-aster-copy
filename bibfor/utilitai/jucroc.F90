@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,10 +40,10 @@ subroutine jucroc(nomc, nooc, nuoc, dim, ldec)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     if (nuoc .gt. 0) then
-        nom = jexnum(nomc,nuoc)
+        nom = jexnum(nomc, nuoc)
     else
-        nom = jexnom(nomc,nooc)
-    endif
+        nom = jexnom(nomc, nooc)
+    end if
     call jecroc(nom)
     call jeecra(nom, 'LONMAX', dim)
     call jeecra(nom, 'LONUTI', dim)

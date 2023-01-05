@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
-                  epucisa, ferrmin, rholmin, rhotmin, compress,&
-                  cequi, enrobi, enrobs, sigs, sigci,&
-                  sigcs, alphacc, gammas, gammac, facier,&
-                  eys, typdiag, fbeton, clacier, uc,&
-                  um, wmaxi, wmaxs, sigelsqp, kt,&
-                  phixi, phixs, phiyi, phiys, ht,&
+subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp, &
+                  epucisa, ferrmin, rholmin, rhotmin, compress, &
+                  cequi, enrobi, enrobs, sigs, sigci, &
+                  sigcs, alphacc, gammas, gammac, facier, &
+                  eys, typdiag, fbeton, clacier, uc, &
+                  um, wmaxi, wmaxs, sigelsqp, kt, &
+                  phixi, phixs, phiyi, phiys, ht, &
                   effrts, dnsits, ierr)
 !
 !_____________________________________________________________________
@@ -35,7 +35,7 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !      I TYPCO         CODIFICATION UTILISEE (1 = BAEL91, 2 = EC2)
 !      I FERRSYME      FERRAILLAGE SYMETRIQUE?
 !                      (0 = NON, 1 = OUI)
-!      I SLSYME        SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE 
+!      I SLSYME        SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE
 !      I FERRCOMP      FERRAILLAGE DE COMPRESSION ADMIS?
 !                      (0 = NON, 1 = OUI)
 !      I EPUCISA       IMPACT DE L'EFFORT TRANCHANT ET DE LA TORSION SUR LE
@@ -196,25 +196,25 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !print *,"effrts = ",effrts
     do i = 1, 36
 !print *,"i = ",i
-        effn = fcttab(i,1) * effrts(1) + fcttab(i,2) * effrts(2) + fcttab(i,3) * effrts(3)
-        effm = fcttab(i,1) * effrts(4) + fcttab(i,2) * effrts(5) + fcttab(i,3) * effrts(6)
+        effn = fcttab(i, 1)*effrts(1)+fcttab(i, 2)*effrts(2)+fcttab(i, 3)*effrts(3)
+        effm = fcttab(i, 1)*effrts(4)+fcttab(i, 2)*effrts(5)+fcttab(i, 3)*effrts(6)
         effn = -effn
         effm = -effm
 !
-        efft = abs(effrts(7)*fcttab(i,4) + effrts(8)*fcttab(i,5))
-        phisup = fcttab(i,1) * phixs + fcttab(i,2) * phiys
-        phiinf = fcttab(i,1) * phixi + fcttab(i,2) * phiyi
+        efft = abs(effrts(7)*fcttab(i, 4)+effrts(8)*fcttab(i, 5))
+        phisup = fcttab(i, 1)*phixs+fcttab(i, 2)*phiys
+        phiinf = fcttab(i, 1)*phixi+fcttab(i, 2)*phiyi
 !
 !       CALCUL DU FERRAILLAGE A L'ELU
 !
         if (typcmb .eq. 0) then
 !
 !           CALCUL DES ACIERS DE FLEXION A L'ELU
-            call cafelu(typco, alphacc, effm, effn, ht,&
-                        1.0, enrobi, enrobs, facier, fbeton,&
-                        gammas, gammac, clacier, eys, typdiag,&
-                        ferrcomp, ferrsyme, slsyme, uc, ai(i),&
-                        as(i), sigmsi, sigmss, ecinf, ecsup,&
+            call cafelu(typco, alphacc, effm, effn, ht, &
+                        1.0, enrobi, enrobs, facier, fbeton, &
+                        gammas, gammac, clacier, eys, typdiag, &
+                        ferrcomp, ferrsyme, slsyme, uc, ai(i), &
+                        as(i), sigmsi, sigmss, ecinf, ecsup, &
                         alpha, pivot, etat, ierr)
 !
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELU
@@ -223,7 +223,7 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 ierr = 1001
                 goto 999
-            endif
+            end if
 !
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELU
             if (ierr .eq. 2) then
@@ -231,16 +231,16 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 ierr = 10011
                 goto 999
-            endif
+            end if
 !
 !           CALCUL DU FERRAILLAGE TRANSVERSAL A L'ELU
             if (ierr .eq. 0) then
 !               Calcul si aucune alarne émise pour les aciers de flexion
-                call cftelu(typco, 0, effrts, effm, effn,&
-                            efft, 0.0, ai(i), as(i), sigmsi,&
-                            sigmss, alpha, ht, 1.0, enrobi,&
-                            enrobs, facier, fbeton, alphacc, gammac,&
-                            gammas, uc, um, compress, dnstra(i),&
+                call cftelu(typco, 0, effrts, effm, effn, &
+                            efft, 0.0, ai(i), as(i), sigmsi, &
+                            sigmss, alpha, ht, 1.0, enrobi, &
+                            enrobs, facier, fbeton, alphacc, gammac, &
+                            gammas, uc, um, compress, dnstra(i), &
                             thetab, ak, uk, ierr)
 !
 !
@@ -250,39 +250,39 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !                   Alarme dans te0146 + on sort de la boucle + dnstra = -1 pour l'élément
                     ierr = 1002
                     goto 999
-                endif
+                end if
 !
 !               Ajout de l'epure (impact de l'effort tranchant sur le ferr longi)
-                if ((ierr.eq.0) .and. (epucisa.eq.1)) then
+                if ((ierr .eq. 0) .and. (epucisa .eq. 1)) then
                     Asl = abs(efft)/(tan(thetab))
                     if (effm .ge. 0) then
                         if (sigmsi .ne. (-1)) then
                             Asl = Asl/(-sigmsi)
                         else
                             Asl = Asl/(facier/gammas)
-                        endif
-                        ai(i) = max(ai(i) + Asl,0.0)
+                        end if
+                        ai(i) = max(ai(i)+Asl, 0.0)
                     else
                         if (sigmss .ne. (-1)) then
                             Asl = Asl/(-sigmss)
                         else
                             Asl = Asl/(facier/gammas)
-                        endif
-                        as(i) = max(as(i) + Asl,0.0)
-                    endif
-                endif
+                        end if
+                        as(i) = max(as(i)+Asl, 0.0)
+                    end if
+                end if
 !
-            endif
+            end if
 !
 !       CALCUL DU FERRAILLAGE A L'ELS
 !
         else if (typcmb .eq. 1) then
 !
 !           CALCUL DES ACIERS DE FLEXION A L'ELS
-            call cafels(cequi, effm, effn, ht, 1.0,&
-                        enrobi, enrobs, sigci, sigcs, sigs,&
-                        ferrcomp, ferrsyme, slsyme, uc, ai(i),&
-                        as(i), sigmsi, sigmss, sigmci, sigmcs,&
+            call cafels(cequi, effm, effn, ht, 1.0, &
+                        enrobi, enrobs, sigci, sigcs, sigs, &
+                        ferrcomp, ferrsyme, slsyme, uc, ai(i), &
+                        as(i), sigmsi, sigmss, sigmci, sigmcs, &
                         alpha, pivot, etat, ierr)
 !
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELS
@@ -291,7 +291,7 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 ierr = 1003
                 goto 999
-            endif
+            end if
 !
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELU
             if (ierr .eq. 2) then
@@ -299,17 +299,17 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 ierr = 10011
                 goto 999
-            endif
+            end if
 !
 !           CALCUL DU FERRAILLAGE TRANSVERSAL A L'ELS
             if (ierr .eq. 0) then
 !               Calcul si aucune alarne émise pour les aciers de flexion
-                call cftels(typco, 0, effrts, effm, effn,&
-                            efft, 0.0, ai(i), as(i), sigmsi,&
-                            sigmss, sigmci, sigmcs, alpha, ht,&
-                            1.0, enrobi, enrobs, facier, fbeton,&
-                            sigci, sigcs, sigs, uc, um,&
-                            compress, dnstra(i), thetab, ak, uk,&
+                call cftels(typco, 0, effrts, effm, effn, &
+                            efft, 0.0, ai(i), as(i), sigmsi, &
+                            sigmss, sigmci, sigmcs, alpha, ht, &
+                            1.0, enrobi, enrobs, facier, fbeton, &
+                            sigci, sigcs, sigs, uc, um, &
+                            compress, dnstra(i), thetab, ak, uk, &
                             ierr)
 !
 !               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELS
@@ -318,41 +318,41 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !                   Alarme dans te0146 + on sort de la boucle + dnstra = -1 pour l'élément
                     ierr = 1004
                     goto 999
-                endif
+                end if
 !
 !               Ajout de l'epure (impact de l'effort tranchant sur le ferr longi)
-                if ((ierr.eq.0) .and. (dnstra(i).gt.0) .and. (epucisa.eq.1)) then
+                if ((ierr .eq. 0) .and. (dnstra(i) .gt. 0) .and. (epucisa .eq. 1)) then
                     Asl = abs(efft)/(tan(thetab))
                     if (effm .ge. 0) then
                         if (sigmsi .ne. (-1)) then
                             Asl = Asl/(-sigmsi)
                         else
                             Asl = Asl/sigs
-                        endif
-                        ai(i) = max(ai(i) + Asl,0.0)
+                        end if
+                        ai(i) = max(ai(i)+Asl, 0.0)
                     else
                         if (sigmss .ne. (-1)) then
                             Asl = Asl/(-sigmss)
                         else
                             Asl = Asl/sigs
-                        endif
-                        as(i) = max(as(i) + Asl,0.0)
-                    endif
-                endif
+                        end if
+                        as(i) = max(as(i)+Asl, 0.0)
+                    end if
+                end if
 !
-            endif
+            end if
 !
 !       CALCUL DU FERRAILLAGE A L'ELS QP
 !
         else if (typcmb .eq. 2) then
 !
 !           CALCUL DES ACIERS DE FLEXION A L'ELS QP
-            call cafelsqp(cequi, effm, effn, ht, 1.0,&
-                          enrobi, enrobs, wmaxi, wmaxs, ferrcomp,&
-                          ferrsyme, slsyme, uc, um, kt,&
-                          facier, fbeton, eys, sigelsqp, phiinf,&
-                          phisup, ai(i), as(i), sigmsi, sigmss,&
-                          sigmci, sigmcs, alpha, pivot, etat,&
+            call cafelsqp(cequi, effm, effn, ht, 1.0, &
+                          enrobi, enrobs, wmaxi, wmaxs, ferrcomp, &
+                          ferrsyme, slsyme, uc, um, kt, &
+                          facier, fbeton, eys, sigelsqp, phiinf, &
+                          phisup, ai(i), as(i), sigmsi, sigmss, &
+                          sigmci, sigmcs, alpha, pivot, etat, &
                           wfini, wfins, kvarf, ierr)
 !
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELS QP
@@ -361,31 +361,31 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 ierr = 1005
                 goto 999
-            endif
+            end if
 !           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELU
             if (ierr .eq. 2) then
 !               Ferraillage symétrique non possible!
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 ierr = 10011
                 goto 999
-            endif
+            end if
             if (ierr .eq. 3) then
 !               Résolution itérative impossible à l'els qp !
 !               Alarme dans te0146 + on sort de la boucle + densité = -1 pour l'élément
                 ierr = 1006
                 goto 999
-            endif
+            end if
 !
 !           CALCUL DU FERRAILLAGE TRANSVERSAL A L'ELS QP
             if (ierr .eq. 0) then
 !               Calcul si aucune alarne émise pour les aciers de flexion
                 Sacier = kvarf*facier
-                call cftels(typco, 0, effrts, effm, effn,&
-                            efft, 0.0, ai(i), as(i), sigmsi,&
-                            sigmss, sigmci, sigmcs, alpha, ht,&
-                            1.0, enrobi, enrobs, facier, fbeton,&
-                            sigelsqp, sigelsqp, Sacier, uc, um,&
-                            compress, dnstra(i), thetab, ak, uk,&
+                call cftels(typco, 0, effrts, effm, effn, &
+                            efft, 0.0, ai(i), as(i), sigmsi, &
+                            sigmss, sigmci, sigmcs, alpha, ht, &
+                            1.0, enrobi, enrobs, facier, fbeton, &
+                            sigelsqp, sigelsqp, Sacier, uc, um, &
+                            compress, dnstra(i), thetab, ak, uk, &
                             ierr)
 !
 !               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELS
@@ -394,76 +394,76 @@ subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp,&
 !                   Alarme dans te0146 + on sort de la boucle + dnstra = -1 pour l'élément
                     ierr = 1007
                     goto 999
-                endif
+                end if
 !
 !               Ajout de l'epure (impact de l'effort tranchant sur le ferr longi)
-                if ((ierr.eq.0) .and. (dnstra(i).gt.0) .and. (epucisa.eq.1)) then
+                if ((ierr .eq. 0) .and. (dnstra(i) .gt. 0) .and. (epucisa .eq. 1)) then
                     Asl = abs(efft)/(tan(thetab))
                     if (effm .ge. 0) then
                         if (sigmsi .ne. (-1)) then
                             Asl = Asl/(-sigmsi)
                         else
                             Asl = Asl/Sacier
-                        endif
-                        ai(i) = max(ai(i) + Asl,0.0)
+                        end if
+                        ai(i) = max(ai(i)+Asl, 0.0)
                     else
                         if (sigmss .ne. (-1)) then
                             Asl = Asl/(-sigmss)
                         else
                             Asl = Asl/Sacier
-                        endif
-                        as(i) = max(as(i) + Asl,0.0)
-                    endif
-                endif
+                        end if
+                        as(i) = max(as(i)+Asl, 0.0)
+                    end if
+                end if
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
 !  -- VERIFICATION DU FERRAILLAGE MINIMUM :
 !  ----------------------------------------
 !
-        if ((ferrmin.eq.1) .or. (ferrmin.eq.2)) then
+        if ((ferrmin .eq. 1) .or. (ferrmin .eq. 2)) then
 !
             if (uc .eq. 0) then
                 unite_pa = 1.e6
                 unite_m = 1.
-            else if (uc.eq.1) then
+            else if (uc .eq. 1) then
                 unite_pa = 1.
                 unite_m = 1.e-3
-            endif
+            end if
 !
             if (fbeton .le. (50*unite_pa)) then
                 fctm = 0.30*((fbeton/unite_pa)**(2.0/3.0))
             else
                 fctm = 2.12*LOG(1.0+((fbeton/unite_pa)+8.0)/10.0)
-            endif
+            end if
 !
             if (ferrmin .eq. 2) then
-                rholmin = max(0.26*(fctm/facier),0.0013)
+                rholmin = max(0.26*(fctm/facier), 0.0013)
                 rhotmin = 0
-            endif
+            end if
 !
 !ferraillage inferieur
-            d = ht - enrobi
-            if ((ai(i).lt.(rholmin*d)) .and. (ierr.ne.1001) .and. (ierr.ne.1003) .and.&
-                (ierr.ne.1005) .and. (ierr.ne.1006)) then
+            d = ht-enrobi
+            if ((ai(i) .lt. (rholmin*d)) .and. (ierr .ne. 1001) .and. (ierr .ne. 1003) .and. &
+                (ierr .ne. 1005) .and. (ierr .ne. 1006)) then
                 ai(i) = rholmin*d
-            endif
+            end if
 !
 !ferraillage supérieur
-            d = ht - enrobs
-            if ((as(i).lt.(rholmin*d)) .and. (ierr.ne.1001) .and. (ierr.ne.1003) .and.&
-                (ierr.ne.1005) .and. (ierr.ne.1006)) then
+            d = ht-enrobs
+            if ((as(i) .lt. (rholmin*d)) .and. (ierr .ne. 1001) .and. (ierr .ne. 1003) .and. &
+                (ierr .ne. 1005) .and. (ierr .ne. 1006)) then
                 as(i) = rholmin*d
-            endif
+            end if
 !
-            if ((dnstra(i).lt.(rhotmin*ht)) .and. (ierr.ne.1002) .and. (ierr.ne.1004) .and.&
-                (ierr.ne.1007)) then
+            if ((dnstra(i) .lt. (rhotmin*ht)) .and. (ierr .ne. 1002) .and. (ierr .ne. 1004) .and. &
+                (ierr .ne. 1007)) then
                 dnstra(i) = rhotmin*ht
-            endif
+            end if
 !
-        endif
+        end if
     end do
 !
 !   OPTIMISATION DES FERRAILLAGES

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romAlgoNLCorrEFMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, resi)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -29,11 +29,11 @@ implicit none
 #include "asterfort/assert.h"
 #include "blas/ddot.h"
 !
-real(kind=8), pointer :: v_cnequi(:)
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-aster_logical, intent(in) :: l_cine
-integer, pointer :: v_ccid(:)
-real(kind=8), intent(out) :: resi
+    real(kind=8), pointer :: v_cnequi(:)
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    aster_logical, intent(in) :: l_cine
+    integer, pointer :: v_ccid(:)
+    real(kind=8), intent(out) :: resi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,11 +63,11 @@ real(kind=8), intent(out) :: resi
 !
 ! - Get parameters
 !
-    l_hrom     = ds_algorom%l_hrom
+    l_hrom = ds_algorom%l_hrom
     resultName = ds_algorom%ds_empi%resultName
-    nbEqua     = ds_algorom%ds_empi%mode%nbEqua
-    nbMode     = ds_algorom%ds_empi%nbMode
-    fieldName  = ds_algorom%ds_empi%mode%fieldName
+    nbEqua = ds_algorom%ds_empi%mode%nbEqua
+    nbMode = ds_algorom%ds_empi%nbMode
+    fieldName = ds_algorom%ds_empi%mode%fieldName
     ASSERT(ds_algorom%ds_empi%mode%fieldSupp .eq. 'NOEU')
 !
 ! - Compute equilibrium residual
@@ -77,11 +77,11 @@ real(kind=8), intent(out) :: resi
         if (l_cine) then
             if (v_ccid(iEqua) .ne. 1) then
                 v_resi(iEqua) = v_cnequi(iEqua)
-            endif
+            end if
         else
             v_resi(iEqua) = v_cnequi(iEqua)
-        endif
-    enddo
+        end if
+    end do
 !
 ! - Truncation of residual
 !
@@ -89,15 +89,15 @@ real(kind=8), intent(out) :: resi
         do iEqua = 1, nbEqua
             if (ds_algorom%v_equa_sub(iEqua) .eq. 1) then
                 v_resi(iEqua) = 0.d0
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
 ! - Find the residual
 !
     do iEqua = 1, nbEqua
-        resi = max (resi, abs(v_resi(iEqua)))
-    enddo
+        resi = max(resi, abs(v_resi(iEqua)))
+    end do
 !
 ! - Cleaning
 !

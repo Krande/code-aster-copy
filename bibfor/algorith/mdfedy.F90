@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
-                  tcf, vrotat, dplmod, depgen, vitgen,&
-                  fexgen, typal, finpal, cnpal, prdeff,&
+subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto, &
+                  tcf, vrotat, dplmod, depgen, vitgen, &
+                  fexgen, typal, finpal, cnpal, prdeff, &
                   conv, fsauv)
 ! aslint: disable=W1306
     implicit none
@@ -56,60 +56,60 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
     integer :: i, j, k, l, palmax
     real(kind=8) :: dep(nbpal, 6), vit(nbpal, 6), force(nbpal, 3)
 !-----------------------------------------------------------------------
-    parameter (palmax=20)
+    parameter(palmax=20)
     character(len=3) :: finpal(palmax)
     character(len=6) :: typal(palmax)
     character(len=8) :: cnpal(palmax), sd_nl
     real(kind=8) :: fsauv(palmax, 3)
 
-    real(kind=8)          , pointer :: modal_depl_no1(:) => null()
+    real(kind=8), pointer :: modal_depl_no1(:) => null()
 !
     sd_nl = '&&OP29NL'
     do j = 1, nbpal
         do l = 1, 6
-            dep(j,l)= 0.d0
-            vit(j,l)= 0.d0
+            dep(j, l) = 0.d0
+            vit(j, l) = 0.d0
         end do
         do i = 1, nbmode
             do k = 1, 6
-                dep(j,k)= dep(j,k)+ dplmod(j,i,k)*depgen(i)
-                vit(j,k)= vit(j,k)+ dplmod(j,i,k)*vitgen(i)
+                dep(j, k) = dep(j, k)+dplmod(j, i, k)*depgen(i)
+                vit(j, k) = vit(j, k)+dplmod(j, i, k)*vitgen(i)
             end do
         end do
     end do
     prdeff = .true.
 !   ENVOI DES CHAMPS CINEMTATIQUES A EDYOS
-    call envdep(numpas, nbpal, dt, dtsto, tcf,&
+    call envdep(numpas, nbpal, dt, dtsto, tcf, &
                 dep, vit, vrotat, finpal, prdeff)
 !   RECEPTION DES EFFORTS VENANT D'EDYOS
-    call recfor(numpas, nbpal, force, typal, finpal,&
+    call recfor(numpas, nbpal, force, typal, finpal, &
                 cnpal, prdeff, conv)
 !   COMBINAISON DES EFFORTS GENERALISES
     if (conv .gt. 0.0d0) then
         do j = 1, nbpal
-            fsauv(j,1)=force(j,1)
-            fsauv(j,2)=force(j,2)
-            fsauv(j,2)=force(j,3)
+            fsauv(j, 1) = force(j, 1)
+            fsauv(j, 2) = force(j, 2)
+            fsauv(j, 2) = force(j, 3)
             do i = 1, nbmode
                 call nlget(sd_nl, _MODAL_DEPL_NO1, iocc=j, vr=modal_depl_no1)
-                fexgen(i) = fexgen(i)+dplmod(j, i, 1)*force(j, 1)+&
-                                      dplmod(j, i, 2)*force(j, 2)+&
-                                      dplmod(j, i, 3)*force(j, 3)
+                fexgen(i) = fexgen(i)+dplmod(j, i, 1)*force(j, 1)+ &
+                            dplmod(j, i, 2)*force(j, 2)+ &
+                            dplmod(j, i, 3)*force(j, 3)
             end do
         end do
     else
 !      NON CONVERGENCE EDYOS : ON UTILISE FSAUV
         do j = 1, nbpal
-            fsauv(j,1)=force(j,1)
-            fsauv(j,2)=force(j,2)
-            fsauv(j,2)=force(j,3)
+            fsauv(j, 1) = force(j, 1)
+            fsauv(j, 2) = force(j, 2)
+            fsauv(j, 2) = force(j, 3)
             do i = 1, nbmode
                 call nlget(sd_nl, _MODAL_DEPL_NO1, iocc=j, vr=modal_depl_no1)
-                fexgen(i) = fexgen(i)+dplmod(j, i, 1)*fsauv(j, 1)+&
-                                      dplmod(j, i, 2)*fsauv(j, 2)+&
-                                      dplmod(j, i, 3)*fsauv(j, 3)
+                fexgen(i) = fexgen(i)+dplmod(j, i, 1)*fsauv(j, 1)+ &
+                            dplmod(j, i, 2)*fsauv(j, 2)+ &
+                            dplmod(j, i, 3)*fsauv(j, 3)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

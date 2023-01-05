@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
-                  mdeg, dhead, dforw, dbakw, qsize,&
+subroutine mmdupd(ehead, neqns, xadj, adjncy, delta, &
+                  mdeg, dhead, dforw, dbakw, qsize, &
                   llist, marker, maxint, tag)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -63,7 +63,7 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    mdeg0 = mdeg + delta
+    mdeg0 = mdeg+delta
     elmnt = ehead
 100 continue
 !            -------------------------------------------------------
@@ -71,13 +71,13 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
 !            (RESET TAG VALUE IF NECESSARY.)
 !            -------------------------------------------------------
     if (elmnt .le. 0) goto 999
-    mtag = tag + mdeg0
+    mtag = tag+mdeg0
     if (mtag .lt. maxint) goto 300
     tag = 1
     do i = 1, neqns
         if (marker(i) .lt. maxint) marker(i) = 0
     end do
-    mtag = tag + mdeg0
+    mtag = tag+mdeg0
 300 continue
 !            ---------------------------------------------
 !            CREATE TWO LINKED LISTS FROM NODES ASSOCIATED
@@ -92,21 +92,21 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
     link = elmnt
 400 continue
     istrt = xadj(link)
-    istop = xadj(link+1) - 1
+    istop = xadj(link+1)-1
     do i = istrt, istop
         enode = adjncy(i)
-        link = - enode
+        link = -enode
         if (enode < 0) then
             goto 400
         else if (enode == 0) then
             goto 800
         else
             goto 500
-        endif
+        end if
 !
 500     continue
         if (qsize(enode) .eq. 0) goto 700
-        deg0 = deg0 + qsize(enode)
+        deg0 = deg0+qsize(enode)
         marker(enode) = mtag
 !                        ----------------------------------
 !                        IF ENODE REQUIRES A DEGREE UPDATE,
@@ -134,7 +134,7 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
 900 continue
     if (enode .le. 0) goto 1500
     if (dbakw(enode) .ne. 0) goto 2200
-    tag = tag + 1
+    tag = tag+1
     deg = deg0
 !                    ------------------------------------------
 !                    IDENTIFY THE OTHER ADJACENT ELEMENT NABOR.
@@ -147,7 +147,7 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
 !                    ------------------------------------------------
     link = nabor
     if (dforw(nabor) .lt. 0) goto 1000
-    deg = deg + qsize(nabor)
+    deg = deg+qsize(nabor)
     goto 2100
 1000 continue
 !                        --------------------------------------------
@@ -155,10 +155,10 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
 !                        DO THE FOLLOWING.
 !                        --------------------------------------------
     istrt = xadj(link)
-    istop = xadj(link+1) - 1
+    istop = xadj(link+1)-1
     do i = istrt, istop
         node = adjncy(i)
-        link = - node
+        link = -node
         if (node .eq. enode) goto 1400
         if (node < 0) then
             goto 1000
@@ -166,36 +166,36 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
             goto 2100
         else
             goto 1100
-        endif
+        end if
 !
-1100     continue
+1100    continue
         if (qsize(node) .eq. 0) goto 1400
         if (marker(node) .ge. tag) goto 1200
 !                                -------------------------------------
 !                                CASE WHEN NODE IS NOT YET CONSIDERED.
 !                                -------------------------------------
         marker(node) = tag
-        deg = deg + qsize(node)
+        deg = deg+qsize(node)
         goto 1400
-1200     continue
+1200    continue
 !                            ----------------------------------------
 !                            CASE WHEN NODE IS INDISTINGUISHABLE FROM
 !                            ENODE.  MERGE THEM INTO A NEW SUPERNODE.
 !                            ----------------------------------------
         if (dbakw(node) .ne. 0) goto 1400
         if (dforw(node) .ne. 2) goto 1300
-        qsize(enode) = qsize(enode) + qsize(node)
+        qsize(enode) = qsize(enode)+qsize(node)
         qsize(node) = 0
         marker(node) = maxint
-        dforw(node) = - enode
-        dbakw(node) = - maxint
+        dforw(node) = -enode
+        dbakw(node) = -maxint
         goto 1400
-1300     continue
+1300    continue
 !                            --------------------------------------
 !                            CASE WHEN NODE IS OUTMATCHED BY ENODE.
 !                            --------------------------------------
-        if (dbakw(node) .eq. 0) dbakw(node) = - maxint
-1400     continue
+        if (dbakw(node) .eq. 0) dbakw(node) = -maxint
+1400    continue
     end do
     goto 2100
 1500 continue
@@ -207,14 +207,14 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
 1600 continue
     if (enode .le. 0) goto 2300
     if (dbakw(enode) .ne. 0) goto 2200
-    tag = tag + 1
+    tag = tag+1
     deg = deg0
 !                        ---------------------------------
 !                        FOR EACH UNMARKED NABOR OF ENODE,
 !                        DO THE FOLLOWING.
 !                        ---------------------------------
     istrt = xadj(enode)
-    istop = xadj(enode+1) - 1
+    istop = xadj(enode+1)-1
     do i = istrt, istop
         nabor = adjncy(i)
         if (nabor .eq. 0) goto 2100
@@ -226,44 +226,44 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
 !                                DEG COUNT.
 !                                ------------------------------
         if (dforw(nabor) .lt. 0) goto 1700
-        deg = deg + qsize(nabor)
+        deg = deg+qsize(nabor)
         goto 2000
-1700     continue
+1700    continue
 !                                    -------------------------------
 !                                    IF ELIMINATED, INCLUDE UNMARKED
 !                                    NODES IN THIS ELEMENT INTO THE
 !                                    DEGREE COUNT.
 !                                    -------------------------------
         jstrt = xadj(link)
-        jstop = xadj(link+1) - 1
+        jstop = xadj(link+1)-1
         do j = jstrt, jstop
             node = adjncy(j)
-            link = - node
+            link = -node
             if (node < 0) then
                 goto 1700
             else if (node == 0) then
                 goto 2000
             else
                 goto 1800
-            endif
+            end if
 !
-1800         continue
+1800        continue
             if (marker(node) .ge. tag) goto 1900
             marker(node) = tag
-            deg = deg + qsize(node)
-1900         continue
+            deg = deg+qsize(node)
+1900        continue
         end do
-2000     continue
+2000    continue
     end do
 2100 continue
 !                    -------------------------------------------
 !                    UPDATE EXTERNAL DEGREE OF ENODE IN DEGREE
 !                    STRUCTURE, AND MDEG (MIN DEG) IF NECESSARY.
 !                    -------------------------------------------
-    deg = deg - qsize(enode) + 1
+    deg = deg-qsize(enode)+1
     fnode = dhead(deg)
     dforw(enode) = fnode
-    dbakw(enode) = - deg
+    dbakw(enode) = -deg
     if (fnode .gt. 0) dbakw(fnode) = enode
     dhead(deg) = enode
     if (deg .lt. mdeg) mdeg = deg

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine porea3(nno, nc, deplm, deplp, geom,&
+subroutine porea3(nno, nc, deplm, deplp, geom, &
                   gamma, pgl, xl1, angp)
     implicit none
 #include "asterf_types.h"
@@ -29,9 +29,9 @@ subroutine porea3(nno, nc, deplm, deplp, geom,&
 #include "asterfort/trigom.h"
 #include "blas/ddot.h"
 
-integer :: nno, nc
-real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
-real(kind=8) :: pgl(3, 3), xl1, angp(3)
+    integer :: nno, nc
+    real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
+    real(kind=8) :: pgl(3, 3), xl1, angp(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,19 +59,19 @@ real(kind=8) :: pgl(3, 3), xl1, angp(3)
     real(kind=8) :: utg(14), xug(6), xd0(3), alfa1, beta1
 
 ! --------------------------------------------------------------------------------------------------
-    ASSERT(nno.eq.2)
+    ASSERT(nno .eq. 2)
     !   Calcul du vecteur xlocal au temps t-
 !   Déplacement total a t+
     do i = 1, nno*nc
-        utg(i) = deplm(i) + deplp(i)
-    enddo
+        utg(i) = deplm(i)+deplp(i)
+    end do
     do i = 1, 3
-        xug(i)   = geom(i,1) + utg(i)
-        xug(i+3) = geom(i,2) + utg(i+nc)
-        xd0(i)   = xug(i+3) - xug(i)
-    enddo
+        xug(i) = geom(i, 1)+utg(i)
+        xug(i+3) = geom(i, 2)+utg(i+nc)
+        xd0(i) = xug(i+3)-xug(i)
+    end do
 !
-    call normev(xd0,xl1)
+    call normev(xd0, xl1)
 
 !   calcul des deux premiers angles nautiques
     call angvx(xd0, alfa1, beta1)
@@ -84,4 +84,4 @@ real(kind=8) :: pgl(3, 3), xl1, angp(3)
 !   Matrice de passage global -> local
     call matrot(angp, pgl)
 
-  end subroutine porea3
+end subroutine porea3

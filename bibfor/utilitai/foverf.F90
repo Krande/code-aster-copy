@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,87 +52,87 @@ subroutine foverf(v, nc, ier)
     call infniv(ifm, niv)
 !
     if (nc .gt. 1) then
-        isens=99
-        ilarge=1
-        i=2
+        isens = 99
+        ilarge = 1
+        i = 2
         if (v(i) .eq. v(i-1)) then
-            ilarge=0
-        else if (v(i).gt.v(i-1)) then
-            isens=1
+            ilarge = 0
+        else if (v(i) .gt. v(i-1)) then
+            isens = 1
         else
-            isens=-1
-        endif
+            isens = -1
+        end if
 !
         do i = 3, nc
             if (v(i) .eq. v(i-1)) then
-                ilarge=0
+                ilarge = 0
                 if (niv .ge. 2) then
-                    write(ifm,1000) i,v(i)
-                endif
-            else if (v(i).gt.v(i-1)) then
+                    write (ifm, 1000) i, v(i)
+                end if
+            else if (v(i) .gt. v(i-1)) then
                 if (isens .eq. 99 .or. isens .eq. 1) then
-                    isens=1
+                    isens = 1
                 else
-                    isens=0
+                    isens = 0
                     if (niv .ge. 2) then
-                        write(ifm,1001) i,v(i-1),v(i)
-                    endif
-                endif
+                        write (ifm, 1001) i, v(i-1), v(i)
+                    end if
+                end if
             else
                 if (isens .eq. 99 .or. isens .eq. -1) then
-                    isens=-1
+                    isens = -1
                 else
-                    isens=0
+                    isens = 0
                     if (niv .ge. 2) then
-                        write(ifm,1002) i,v(i-1),v(i)
-                    endif
-                endif
-            endif
+                        write (ifm, 1002) i, v(i-1), v(i)
+                    end if
+                end if
+            end if
 !         POUR SORTIE ANTICIPEE DE LA BOUCLE
             if (isens .eq. 0) goto 11
         end do
- 11     continue
+11      continue
         if (isens .eq. 99) then
 !         AU CAS OU ON NE SAIT TOUJOURS PAS
-            isens=1
-            ilarge=0
-        endif
-        isens=isens+(isens*ilarge)
+            isens = 1
+            ilarge = 0
+        end if
+        isens = isens+(isens*ilarge)
 !       ON RENVOIT LE SENS OU UN MESSAGE D'ERREUR
         if (ier .eq. 0) then
-            ier=isens
-        else if (ier.ne.isens) then
+            ier = isens
+        else if (ier .ne. isens) then
             call getres(nomfon, typfon, nomcmd)
             if (ier .eq. 2) then
 !            PARAMETRES NON STRICTEMENT CROISSANTS
                 call utmess('F', 'FONCT0_44', sk=nomfon)
-            else if (ier.eq.1) then
+            else if (ier .eq. 1) then
 !           PARAMETRES NON CROISSANTS
                 call utmess('F', 'FONCT0_45', sk=nomfon)
-            else if (ier.eq.-1) then
+            else if (ier .eq. -1) then
 !           PARAMETRES NON DECROISSANTS
                 call utmess('F', 'FONCT0_46', sk=nomfon)
-            else if (ier.eq.-2) then
+            else if (ier .eq. -2) then
 !           PARAMETRES NON STRICTEMENT DECROISSANTS
                 call utmess('F', 'FONCT0_47', sk=nomfon)
-            endif
+            end if
             ASSERT(.false.)
-        endif
+        end if
     else
 !        UNE SEULE VALEUR, ON RETOURNE CROISSANT STRICT SI IER=0
         if (ier .eq. 0) then
-            isens=2
+            isens = 2
         else
 !        ON RETOURNE CE QU'ON A DEMANDE
-            isens=ier
-        endif
-    endif
-    ier=isens
+            isens = ier
+        end if
+    end if
+    ier = isens
 !
-    1000 format('EGALITE       I=',i6,'   VALEUR(I)   :',1pe16.9)
-    1001 format('CROISSANT     I=',i6,'   VALEUR(I-1) :',1pe16.9,&
-     &       '   VALEUR(I)   :',1pe16.9)
-    1002 format('DECROISSANT   I=',i6,'   VALEUR(I-1) :',1pe16.9,&
-     &       '   VALEUR(I)   :',1pe16.9)
+1000 format('EGALITE       I=', i6, '   VALEUR(I)   :', 1pe16.9)
+1001 format('CROISSANT     I=', i6, '   VALEUR(I-1) :', 1pe16.9,&
+    &       '   VALEUR(I)   :', 1pe16.9)
+1002 format('DECROISSANT   I=', i6, '   VALEUR(I-1) :', 1pe16.9,&
+    &       '   VALEUR(I)   :', 1pe16.9)
 !
 end subroutine

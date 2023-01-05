@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,8 +73,8 @@ subroutine ccvrpu(resuin, lisord, nbordr)
     call getvid(' ', 'CARA_ELEM', scal=carelu, nbret=n2)
     call getvid(' ', 'CHAM_MATER', scal=chmatu, nbret=n3)
 !
-    nchalu=0
-    if (getexm('EXCIT','CHARGE') .eq. 1) then
+    nchalu = 0
+    if (getexm('EXCIT', 'CHARGE') .eq. 1) then
         call getfac('EXCIT', nchalu)
 !
         if (nchalu .ne. 0) then
@@ -82,16 +82,16 @@ subroutine ccvrpu(resuin, lisord, nbordr)
             call wkvect(kfon, 'V V K8', nchalu, fchalu)
 !
             do icharg = 1, nchalu
-                call getvid('EXCIT', 'CHARGE', iocc=icharg, scal=zk8( lchalu+icharg-1), nbret=n1)
+                call getvid('EXCIT', 'CHARGE', iocc=icharg, scal=zk8(lchalu+icharg-1), nbret=n1)
 !
                 call getvid('EXCIT', 'FONC_MULT', iocc=icharg, scal=fonclu, nbret=n2)
 !
                 if (n2 .ne. 0) then
                     zk8(fchalu+icharg-1) = fonclu
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
     if (modelu .ne. ' ' .or. carelu .ne. ' ' .or. chmatu .ne. ' ' .or. nchalu .ne. 0) then
         do iordr = 1, nbordr
@@ -99,7 +99,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 !
 !         VERIFICATION DU MODELE
             if (modelu .ne. ' ') then
-                call rsadpa(resuin, 'L', 1, 'MODELE', numord,&
+                call rsadpa(resuin, 'L', 1, 'MODELE', numord, &
                             0, sjv=jpara, styp=k8b)
                 modelr = zk8(jpara)
                 if (modelr .ne. ' ' .and. modelr .ne. modelu) then
@@ -108,45 +108,45 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                     valk(3) = modelu
                     call utmess('F', 'CALCULEL_33', nk=3, valk=valk)
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
 !         VERIFICATION DU CARAELEM
             if (carelu .ne. ' ') then
-                call rsadpa(resuin, 'L', 1, 'CARAELEM', numord,&
+                call rsadpa(resuin, 'L', 1, 'CARAELEM', numord, &
                             0, sjv=jpara, styp=k8b)
-                carelr=zk8(jpara)
+                carelr = zk8(jpara)
                 if (carelr .ne. ' ' .and. carelr .ne. carelu) then
                     valk(1) = 'CARA_ELEM'
                     valk(2) = carelr
                     valk(3) = carelu
                     call utmess('F', 'CALCULEL_33', nk=3, valk=valk)
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
 !         VERIFICATION DU CHAMATER
             if (chmatu .ne. ' ') then
-                call rsadpa(resuin, 'L', 1, 'CHAMPMAT', numord,&
+                call rsadpa(resuin, 'L', 1, 'CHAMPMAT', numord, &
                             0, sjv=jpara, styp=k8b)
-                chmatr=zk8(jpara)
+                chmatr = zk8(jpara)
                 if (chmatr .ne. ' ' .and. chmatr .ne. chmatu) then
                     valk(1) = 'CHAM_MATER'
                     valk(2) = chmatr
                     valk(3) = chmatu
                     call utmess('F', 'CALCULEL_33', nk=3, valk=valk)
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
 !         VERIFICATION DU CHARGEMENT
             if (nchalu .ne. 0) then
-                call rsadpa(resuin, 'L', 1, 'EXCIT', numord,&
+                call rsadpa(resuin, 'L', 1, 'EXCIT', numord, &
                             0, sjv=jpara, styp=k8b)
-                excisd=zk24(jpara)
-                nchasd=0
+                excisd = zk24(jpara)
+                nchasd = 0
                 if (excisd .ne. ' ') then
-                    excit=excisd(1:19)
+                    excit = excisd(1:19)
                     call jeveuo(excit//'.LCHA', 'L', vk24=lcha)
                     call jeveuo(excit//'.INFC', 'L', vi=infc)
                     call jeveuo(excit//'.FCHA', 'L', jfcha)
@@ -154,18 +154,18 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                     if (nchasd .ne. nchalu) then
                         call utmess('F', 'CALCULEL_39')
                         ASSERT(.false.)
-                    endif
+                    end if
                     do ilu = 1, nchalu
                         do isd = 1, nchasd
-                            if (zk8(lchalu-1+ilu) .eq. lcha(isd)( 1:8)) goto 30
+                            if (zk8(lchalu-1+ilu) .eq. lcha(isd) (1:8)) goto 30
                         end do
                         call utmess('F', 'CALCULEL_39')
- 30                     continue
+30                      continue
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
     call jedetr(kcha)
     call jedetr(kfon)

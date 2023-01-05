@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function dmwdp1(rho11, signe, satur , dsatur , phi,&
-                cs   , cliq , dp11p1, l_emmag, em )
+function dmwdp1(rho11, signe, satur, dsatur, phi, &
+                cs, cliq, dp11p1, l_emmag, em)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-real(kind=8), intent(in) :: rho11, signe, phi, satur, dsatur
-real(kind=8), intent(in) :: cs, cliq, dp11p1, em
-aster_logical, intent(in) :: l_emmag
-real(kind=8) :: dmwdp1
+    real(kind=8), intent(in) :: rho11, signe, phi, satur, dsatur
+    real(kind=8), intent(in) :: cs, cliq, dp11p1, em
+    aster_logical, intent(in) :: l_emmag
+    real(kind=8) :: dmwdp1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,10 +55,10 @@ real(kind=8) :: dmwdp1
 ! --------------------------------------------------------------------------------------------------
 !
     if (l_emmag) then
-        dphip1 = - satur*signe*em
-        dmwdp1 = rho11*(satur*dphip1+signe*dsatur*phi- signe*satur*phi*cliq*dp11p1)
+        dphip1 = -satur*signe*em
+        dmwdp1 = rho11*(satur*dphip1+signe*dsatur*phi-signe*satur*phi*cliq*dp11p1)
     else
-        dmwdp1 = rho11*signe*(dsatur*phi - satur*phi*cliq*dp11p1 - satur*satur*cs)
-    endif
+        dmwdp1 = rho11*signe*(dsatur*phi-satur*phi*cliq*dp11p1-satur*satur*cs)
+    end if
 !
 end function

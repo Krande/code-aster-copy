@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine get_patchzi_num(mesh, nmgrma, num)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,7 +26,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/utmess.h"
-
 
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
@@ -54,18 +53,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jeveuo(mesh//'.PTRNOMPAT', 'L', vk24 = nm_patchzi)
+    call jeveuo(mesh//'.PTRNOMPAT', 'L', vk24=nm_patchzi)
     call jelira(mesh//'.PTRNOMPAT', 'LONMAX', nb_patchzi)
     num = 0
 !
-    do i_patchzi=1, nb_patchzi
-        if (nm_patchzi(i_patchzi).eq. nmgrma) then
+    do i_patchzi = 1, nb_patchzi
+        if (nm_patchzi(i_patchzi) .eq. nmgrma) then
             num = i_patchzi
-            find=.true.
-        endif
-    enddo
-    if ( .not. find ) then
-        call utmess('F', 'CONTACT2_18',valk=nm_patchzi(i_patchzi))
-    endif
+            find = .true.
+        end if
+    end do
+    if (.not. find) then
+        call utmess('F', 'CONTACT2_18', valk=nm_patchzi(i_patchzi))
+    end if
 !
 end subroutine

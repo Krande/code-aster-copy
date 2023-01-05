@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,12 +58,12 @@ function inits(os, nos, eta)
 !
     err = 0.d0
     do ii = 1, nos
-        i = nos + 1 - ii
-        err = err + abs(os(i))
+        i = nos+1-ii
+        err = err+abs(os(i))
         if (err .gt. eta) goto 20
     end do
 !
- 20 continue
+20  continue
 !     ASSERT SI SERIE DE CHEBYSHEV TROP COURTE POUR LA PRECISION
     ASSERT(i .ne. nos)
     inits = i

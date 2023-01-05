@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine nmleeb(sderro, nombcl, etabcl)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -78,35 +78,35 @@ subroutine nmleeb(sderro, nombcl, etabcl)
 !
     if (nombcl .eq. 'RESI') then
         iconve = zi(jeconv-1+1)
-    else if (nombcl.eq.'NEWT') then
+    else if (nombcl .eq. 'NEWT') then
         iconve = zi(jeconv-1+2)
-    else if (nombcl.eq.'FIXE') then
+    else if (nombcl .eq. 'FIXE') then
         iconve = zi(jeconv-1+3)
-    else if (nombcl.eq.'INST') then
+    else if (nombcl .eq. 'INST') then
         iconve = zi(jeconv-1+4)
-    else if (nombcl.eq.'CALC') then
+    else if (nombcl .eq. 'CALC') then
         iconve = zi(jeconv-1+5)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- SELON ETAT
 !
     if (iconve .eq. 0) then
         etabcl = 'CONT'
-    else if (iconve.eq.1) then
+    else if (iconve .eq. 1) then
         etabcl = 'CONV'
-    else if (iconve.eq.2) then
+    else if (iconve .eq. 2) then
         etabcl = 'EVEN'
-    else if (iconve.eq.3) then
+    else if (iconve .eq. 3) then
         etabcl = 'ERRE'
-    else if (iconve.eq.4) then
+    else if (iconve .eq. 4) then
         etabcl = 'STOP'
-    else if (iconve.eq.5) then
+    else if (iconve .eq. 5) then
         etabcl = 'CTCD'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

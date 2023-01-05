@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine accept(f, nbm, method, imode, jmode,&
-                  uflui, jc, dir, uc, uct,&
+subroutine accept(f, nbm, method, imode, jmode, &
+                  uflui, jc, dir, uc, uct, &
                   l, lt)
     implicit none
 !     OPERATEUR PROJ_SPEC_BASE
@@ -46,87 +46,87 @@ subroutine accept(f, nbm, method, imode, jmode,&
     real(kind=8) :: uct, lt, rayon, dist, dteta, jc1
     character(len=8) :: method
 !
-    parameter (pi=3.14159265d0)
-    data     (local(i),i=1,3) /3*0.d0/
+    parameter(pi=3.14159265d0)
+    data(local(i), i=1, 3)/3*0.d0/
 !
 !
 !-----------------------------------------------------------------------
     call jemarq()
 !
 ! QUELQUES CONSTANTES
-    deuxpi=2*pi
-    omega=deuxpi*f
+    deuxpi = 2*pi
+    omega = deuxpi*f
 ! on commente cette ligne pour fix un bug
-    if (method(1:7) .ne. 'AU_YANG') uc=0.65d0*uflui
+    if (method(1:7) .ne. 'AU_YANG') uc = 0.65d0*uflui
     kl = 0.1d0*omega/uc
     kt = 0.55d0*omega/uc
 !
 ! BOUCLE SUR LES ELEMENTS DU MODELE
-    jc=0.d0
-    jc1=0.d0
+    jc = 0.d0
+    jc1 = 0.d0
     call jeveuo('&&GROTAB.TAB', 'L', itab)
     call jelira('&&GROTAB.TAB', 'LONUTI', ntail)
     if (method(1:7) .eq. 'AU_YANG') rayon = zr(itab+ntail-1)
-    ntail = ntail - 1
-    ntail1=ntail/(6*nbm)
-    ntail2=ntail/nbm
-    iorig=(imode-1)*ntail2
-    jorig=(jmode-1)*ntail2
-    jpgfin=(jmode-1)*ntail2+ntail1-1
+    ntail = ntail-1
+    ntail1 = ntail/(6*nbm)
+    ntail2 = ntail/nbm
+    iorig = (imode-1)*ntail2
+    jorig = (jmode-1)*ntail2
+    jpgfin = (jmode-1)*ntail2+ntail1-1
     do ipg = (imode-1)*ntail2, (imode-1)*ntail2+ntail1-1
         if (jmode .eq. imode) then
             jpgini = ipg
         else
             jpgini = (jmode-1)*ntail
-        endif
-        ispe=ipg-(imode-1)*ntail2
-        iad1=itab + iorig + 6*ispe
+        end if
+        ispe = ipg-(imode-1)*ntail2
+        iad1 = itab+iorig+6*ispe
         do jpg = jpgini, jpgfin
-            jspe=jpg-(jmode-1)*ntail2
-            iad2=itab + jorig + 6*jspe
+            jspe = jpg-(jmode-1)*ntail2
+            iad2 = itab+jorig+6*jspe
 ! CALCUL DISTANCES INTER POINTS DE GAUSS
 ! ABSCISSES
-            mes(1)=zr(iad1+1)-zr(iad2+1)
+            mes(1) = zr(iad1+1)-zr(iad2+1)
 ! ORDONNEES
-            mes(2)=zr(iad1+2)-zr(iad2+2)
+            mes(2) = zr(iad1+2)-zr(iad2+2)
 !
 ! COTE
-            mes(3)=zr(iad1+3)-zr(iad2+3)
+            mes(3) = zr(iad1+3)-zr(iad2+3)
 !
 ! COHERENCE CORCOS
             if (method(1:6) .eq. 'CORCOS') then
                 do ind = 1, 3
-                    local(ind)=0.d0
+                    local(ind) = 0.d0
                     do jnd = 1, 3
-                        local(ind)=local(ind)+dir(ind,jnd)*mes(jnd)
+                        local(ind) = local(ind)+dir(ind, jnd)*mes(jnd)
                     end do
                 end do
 !
-                d1=abs(local(1))
-                d2=abs(local(2))
-                d3=abs(local(3))
+                d1 = abs(local(1))
+                d2 = abs(local(2))
+                d3 = abs(local(3))
 !
-                coeh=corcos(d1,d2,local(1),uc,kt,kl,omega)
+                coeh = corcos(d1, d2, local(1), uc, kt, kl, omega)
 !
 ! COHERENCE GENERALE
-            else if (method.eq.'GENERALE') then
-                d1=abs(mes(1))
-                d2=abs(mes(2))
-                d3=abs(mes(3))
-                coeh=coegen(d1,d2,d3,l,omega,uc)
-            else if (method(1:7).eq.'AU_YANG') then
+            else if (method .eq. 'GENERALE') then
+                d1 = abs(mes(1))
+                d2 = abs(mes(2))
+                d3 = abs(mes(3))
+                coeh = coegen(d1, d2, d3, l, omega, uc)
+            else if (method(1:7) .eq. 'AU_YANG') then
                 dist = abs(zr(iad1+4)-zr(iad2+4))
-                dteta= abs(zr(iad1+5)-zr(iad2+5))
-                coeh = coyang (dist,dteta,rayon,omega,uc,uct,l,lt)
-            endif
+                dteta = abs(zr(iad1+5)-zr(iad2+5))
+                coeh = coyang(dist, dteta, rayon, omega, uc, uct, l, lt)
+            end if
             if (jmode .eq. imode .and. jpg .gt. ipg) then
-                jc1 = jc1 + coeh*zr(iad1)*zr(iad2)
+                jc1 = jc1+coeh*zr(iad1)*zr(iad2)
             else
-                jc = jc + coeh*zr(iad1)*zr(iad2)
-            endif
+                jc = jc+coeh*zr(iad1)*zr(iad2)
+            end if
         end do
     end do
-    if (imode .eq. jmode) jc = jc + 2*jc1
+    if (imode .eq. jmode) jc = jc+2*jc1
 !
     call jedema()
 end subroutine

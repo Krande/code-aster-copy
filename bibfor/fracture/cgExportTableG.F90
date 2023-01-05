@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cgExportTableG(cgField, cgTheta, cgTable, cgStat)
 !
-use calcG_type
+    use calcG_type
 !
     implicit none
 !
@@ -54,18 +54,18 @@ use calcG_type
     character(len=24) :: obje_sdname(nb_objet)
 !
     integer, parameter :: nbpara = 3
-    character(len=19), parameter :: nompar(nbpara) = (/&
-        'NOM_OBJET ', 'TYPE_OBJET', 'NOM_SD    '/)
-    character(len=19), parameter :: typpar(nbpara) = (/&
-        'K16', 'K16', 'K24'/)
+    character(len=19), parameter :: nompar(nbpara) = (/ &
+                                    'NOM_OBJET ', 'TYPE_OBJET', 'NOM_SD    '/)
+    character(len=19), parameter :: typpar(nbpara) = (/ &
+                                    'K16', 'K16', 'K24'/)
 !
     integer, parameter :: l_nb_obje = 2
-    character(len=16), parameter :: l_obje_name(l_nb_obje) = (/&
-        'TABLE_G         ', 'CHAM_THETA      '/)
-    character(len=16), parameter :: l_obje_type(l_nb_obje) = (/&
-        'TABLE_SDASTER   ', 'CHAM_NO_SDASTER '/)
+    character(len=16), parameter :: l_obje_name(l_nb_obje) = (/ &
+                                    'TABLE_G         ', 'CHAM_THETA      '/)
+    character(len=16), parameter :: l_obje_type(l_nb_obje) = (/ &
+                                    'TABLE_SDASTER   ', 'CHAM_NO_SDASTER '/)
     character(len=80), parameter :: def_title = &
-        'CALCUL DES FACTEURS D''INTENSITE DES CONTRAINTES PAR LA METHODE CALC_G'
+                            'CALCUL DES FACTEURS D''INTENSITE DES CONTRAINTES PAR LA METHODE CALC_G'
     integer, parameter :: l_def_title = 70
 !
     integer :: i_l_obj, i_obj
@@ -80,10 +80,10 @@ use calcG_type
 !
 ! --- Create table_container to store (calc_g and cham_theta)
 !
-    obje_name(1)   = "TABLE_G"
+    obje_name(1) = "TABLE_G"
     obje_sdname(1) = cgTable%table_g
 !
-    obje_name(2)   = "CHAM_THETA"
+    obje_name(2) = "CHAM_THETA"
     obje_sdname(2) = cgTheta%theta_factors
 !
 ! - Create new table_container
@@ -94,9 +94,9 @@ use calcG_type
 !
 ! - Loop on objects to add new one
 !
-    if(debug) then
-        print*, "Create table_container in CALC_G"
-        print*, "Number of object: ", nb_objet
+    if (debug) then
+        print *, "Create table_container in CALC_G"
+        print *, "Number of object: ", nb_objet
     end if
 !
     do i_obj = 1, nb_objet
@@ -108,16 +108,16 @@ use calcG_type
             if (l_obje_name(i_l_obj) .eq. obje_name(i_obj)) then
                 obje_type = l_obje_type(i_l_obj)
                 exit
-            endif
+            end if
         end do
         ASSERT(obje_type .ne. ' ')
 !
 ! ----- Add object (new line)
 !
-        if(debug) then
-            print*, "OBJET NAME", i_obj, " : ", obje_name(i_obj)
-            print*, "OBJET TYPE", i_obj, " : ", obje_type
-            print*, "SD NAME   ", i_obj, " : ", obje_sdname(i_obj)
+        if (debug) then
+            print *, "OBJET NAME", i_obj, " : ", obje_name(i_obj)
+            print *, "OBJET TYPE", i_obj, " : ", obje_type
+            print *, "SD NAME   ", i_obj, " : ", obje_sdname(i_obj)
         end if
 !
         vk(1) = obje_name(i_obj)
@@ -133,6 +133,6 @@ use calcG_type
     call titre(defTitle=def_title, lDefTitle=l_def_title)
 !
     call cpu_time(finish)
-    cgStat%cgExpTabl = cgStat%cgExpTabl + finish - start
+    cgStat%cgExpTabl = cgStat%cgExpTabl+finish-start
 !
 end subroutine

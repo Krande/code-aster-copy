@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,13 +67,13 @@ subroutine utims3(comm, sch1, ipos, base)
     long = len(sch1)
     if (len(sch1) .gt. 24) then
         call utmess('F', 'UTILITAI5_42')
-    endif
-    if ((ipos.lt.0) .or. (ipos.gt.24)) then
+    end if
+    if ((ipos .lt. 0) .or. (ipos .gt. 24)) then
         call utmess('F', 'UTILITAI5_43')
-    endif
+    end if
     if (ipos+len(sch1) .gt. 25) then
         call utmess('F', 'UTILITAI5_44')
-    endif
+    end if
 !
 !
 !     -- DETERMINATION DU NOMBRE DES OBJETS TROUVES :
@@ -84,12 +84,12 @@ subroutine utims3(comm, sch1, ipos, base)
             nbobj = 1
         else
             nbobj = 0
-        endif
+        end if
     else
-        call jelstc(bas2, sch1, ipos, 0, kbid,&
+        call jelstc(bas2, sch1, ipos, 0, kbid, &
                     nbval)
         nbobj = -nbval
-    endif
+    end if
 !
 !
 !     -- ECRITURE DE L'ENTETE :
@@ -98,10 +98,10 @@ subroutine utims3(comm, sch1, ipos, base)
     ifm = iunifi(ficou)
     chain2 = '????????????????????????'
     chain2(ipos:ipos-1+long) = sch1
-    write (ifm,*) ' '
-    write (ifm,*) '#AJ1 ====> UTIMS3 DE LA STRUCTURE DE DONNEE : ',&
+    write (ifm, *) ' '
+    write (ifm, *) '#AJ1 ====> UTIMS3 DE LA STRUCTURE DE DONNEE : ',&
      &  chain2
-    write (ifm,*) '#AJ1 NOMBRE D''OBJETS (OU COLL.) TROUVES :',nbobj
+    write (ifm, *) '#AJ1 NOMBRE D''OBJETS (OU COLL.) TROUVES :', nbobj
     if (nbobj .eq. 0) goto 20
 !
 !
@@ -111,9 +111,9 @@ subroutine utims3(comm, sch1, ipos, base)
     if (long .eq. 24) then
         liste(1) = sch1
     else
-        call jelstc(bas2, sch1, ipos, nbobj, liste,&
+        call jelstc(bas2, sch1, ipos, nbobj, liste, &
                     nbval)
-    endif
+    end if
 !
 !     -- ON TRIE PAR ORDRE ALPHABETIQUE:
     call uttr24(liste, nbobj)
@@ -121,8 +121,8 @@ subroutine utims3(comm, sch1, ipos, base)
 !
 !     -- ECRITURE D'UNE LIGNE D'INFO POUR CHAQUE OBJET
 !    -------------------------------------------------------
-    write (ifm,1001) comm2,'#AJ2>','NOMOBJ','<','LONUTI',&
-     &  'LONMAX','TYPE','IRET','SOMMI','RESUME','SOMMR'
+    write (ifm, 1001) comm2, '#AJ2>', 'NOMOBJ', '<', 'LONUTI',&
+     &  'LONMAX', 'TYPE', 'IRET', 'SOMMI', 'RESUME', 'SOMMR'
 !
     do i = 1, nbobj
         ob1 = liste(i)
@@ -131,8 +131,8 @@ subroutine utims3(comm, sch1, ipos, base)
 !
 !
     AS_DEALLOCATE(vk24=liste)
- 20 continue
+20  continue
     call jedema()
 !
-    1001 format (a8,a4,a5,a24,a1,a8,a8,a5,a5,a10,a10,a15)
+1001 format(a8, a4, a5, a24, a1, a8, a8, a5, a5, a10, a10, a15)
 end subroutine

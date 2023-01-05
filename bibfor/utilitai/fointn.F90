@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fointn(ipif, nomf, rvar, inume, epsi,&
+subroutine fointn(ipif, nomf, rvar, inume, epsi, &
                   resu, ier)
     implicit none
 #include "jeveux.h"
@@ -60,23 +60,23 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi,&
         call jelira(jexnum(chvale, inume), 'LONMAX', nbpt)
     else
         jpro = zi(ipif+1)
-        prolgd = zk24(jpro+6+ (2*inume))
-        interp = zk24(jpro+6+ (2*inume-1))
+        prolgd = zk24(jpro+6+(2*inume))
+        interp = zk24(jpro+6+(2*inume-1))
         nbpcum = 0
-        do i = 1, inume - 1
-            nbpcum = nbpcum + zi(zi(ipif+3)+i) - zi(zi(ipif+3)+i-1)
+        do i = 1, inume-1
+            nbpcum = nbpcum+zi(zi(ipif+3)+i)-zi(zi(ipif+3)+i-1)
         end do
-        nbpt = zi(zi(ipif+3)+inume) - zi(zi(ipif+3)+inume-1)
-        lvar = zi(ipif+2) + nbpcum
-    endif
-    nbpt = nbpt / 2
-    lfon = lvar + nbpt
+        nbpt = zi(zi(ipif+3)+inume)-zi(zi(ipif+3)+inume-1)
+        lvar = zi(ipif+2)+nbpcum
+    end if
+    nbpt = nbpt/2
+    lfon = lvar+nbpt
     ipt = 1
 !
-    call folocx(zr(lvar), nbpt, rvar, prolgd, ipt,&
+    call folocx(zr(lvar), nbpt, rvar, prolgd, ipt, &
                 epsi, coli, ier)
     if (ier .ne. 0) goto 999
-    call focoli(ipt, coli, interp, zr(lvar), zr(lfon),&
+    call focoli(ipt, coli, interp, zr(lvar), zr(lfon), &
                 rvar, resu, ier)
     if (ier .ne. 0) goto 999
 !

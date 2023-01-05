@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem,&
+subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem, &
                          is_xfem, nbnoxfem)
 !
 !-----------------------------------------------------------------------
@@ -60,19 +60,19 @@ subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem,&
 !
     call jemarq()
 !
-    nbnoxfem=0
+    nbnoxfem = 0
     do ieq = 1, neq
-        nuno=deeq(2*(ieq-1)+1)
-        nucmp=deeq(2*(ieq-1)+2)
-        nocmp=k8cmp(nucmp)
+        nuno = deeq(2*(ieq-1)+1)
+        nucmp = deeq(2*(ieq-1)+2)
+        nocmp = k8cmp(nucmp)
         if (nuno .lt. 1) goto 10
         if (is_xfem(nuno)) goto 10
         if (xfem_cmps(nocmp)) then
-            nbnoxfem=nbnoxfem+1
-            ino_xfem(nuno)=nbnoxfem
-            is_xfem(nuno)=.true.
-        endif
- 10     continue
+            nbnoxfem = nbnoxfem+1
+            ino_xfem(nuno) = nbnoxfem
+            is_xfem(nuno) = .true.
+        end if
+10      continue
     end do
     ASSERT(nbnoxfem .gt. 0)
 !

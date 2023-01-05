@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmpipe(modele         , ligrpi    , cartyp, careta, ds_material,&
-                  ds_constitutive, ds_contact, valinc, depdel, ddepl0,&
-                  ddepl1         , tau       , nbeffe, eta   , pilcvg,&
-                  typpil         , carele)
+subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
+                  ds_constitutive, ds_contact, valinc, depdel, ddepl0, &
+                  ddepl1, tau, nbeffe, eta, pilcvg, &
+                  typpil, carele)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -48,16 +48,16 @@ implicit none
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
 !
-integer :: pilcvg, nbeffe
-real(kind=8) :: tau, eta(2)
-character(len=24) :: typpil
-character(len=19) :: ddepl0, ddepl1
-character(len=19) :: ligrpi, cartyp, careta
-character(len=24) :: modele, carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19) :: depdel, valinc(*)
-type(NL_DS_Contact), intent(in) :: ds_contact
+    integer :: pilcvg, nbeffe
+    real(kind=8) :: tau, eta(2)
+    character(len=24) :: typpil
+    character(len=19) :: ddepl0, ddepl1
+    character(len=19) :: ligrpi, cartyp, careta
+    character(len=24) :: modele, carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19) :: depdel, valinc(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=24)
+    parameter(nbout=1, nbin=24)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -115,9 +115,9 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: xfem_cont(:) => null()
 !
-    data copilo, copils  /'&&NMPIPE.COPILO','&&NMPIPE.COPILS'/
-    data ctau            /'&&NMPIPE.CTAU'/
-    data a0a1, trav      /'&&NMPIPE.A0A1', '&&NMPIPE.TRAV'/
+    data copilo, copils/'&&NMPIPE.COPILO', '&&NMPIPE.COPILS'/
+    data ctau/'&&NMPIPE.CTAU'/
+    data a0a1, trav/'&&NMPIPE.A0A1', '&&NMPIPE.TRAV'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,7 +127,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! --- MODELE X-FEM AVEC CONTACT ?
 !
     call jeexin(modele(1:8)//'.XFEM_CONT', ier)
-    lcontx = ier.ne.0
+    lcontx = ier .ne. 0
 !
 ! --- ON FAIT UN CALCUL DE PILOTAGE
 !
@@ -137,21 +137,21 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
     if (typpil .eq. 'PRED_ELAS') then
         if (lcontx) then
-            call jeveuo(modele(1:8)//'.XFEM_CONT','L',vi=xfem_cont)
-            if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) then
+            call jeveuo(modele(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
+            if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) then
                 option = 'PILO_PRED_ELAS'
             else
                 option = 'PILO_PRED_ELAS_M'
-            endif
+            end if
         else
             option = 'PILO_PRED_ELAS'
-        endif
-    else if (typpil.eq.'DEFORMATION') then
+        end if
+    else if (typpil .eq. 'DEFORMATION') then
         option = 'PILO_PRED_DEFO'
     else
         ASSERT(.false.)
-    endif
-    debug = nivdbg.ge.2
+    end if
+    debug = nivdbg .ge. 2
 !
 ! --- RECUPERATION DES DONNEES XFEM
 !
@@ -168,7 +168,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
@@ -190,7 +190,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
     call detrsd('CARTE', ctau)
     cpar = 'A0'
-    call mecact('V', ctau, 'LIGREL', ligrpi, 'PILO_R',&
+    call mecact('V', ctau, 'LIGREL', ligrpi, 'PILO_R', &
                 ncmp=1, nomcmp=cpar, sr=tau)
 !
 ! --- REMPLISSAGE DES CHAMPS D'ENTREE
@@ -213,18 +213,18 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     lchin(8) = ddepl0
     lpain(9) = 'PDEPL1R'
     lchin(9) = ddepl1
-    lpain(10)= 'PTYPEPI'
-    lchin(10)=  cartyp
-    lpain(11)= 'PBORNPI'
-    lchin(11)=  careta
-    lpain(12)= 'PCDTAU'
-    lchin(12)=  ctau
-    lpain(13)= 'PCAMASS'
-    lchin(13)=  carele(1:8)//'.CARMASSI'
-    lpain(14)= 'PINDCOI'
-    lchin(14)=  xindco
-    lpain(15)= 'PDONCO'
-    lchin(15)=  xdonco
+    lpain(10) = 'PTYPEPI'
+    lchin(10) = cartyp
+    lpain(11) = 'PBORNPI'
+    lchin(11) = careta
+    lpain(12) = 'PCDTAU'
+    lchin(12) = ctau
+    lpain(13) = 'PCAMASS'
+    lchin(13) = carele(1:8)//'.CARMASSI'
+    lpain(14) = 'PINDCOI'
+    lchin(14) = xindco
+    lpain(15) = 'PDONCO'
+    lchin(15) = xdonco
     lpain(16) = 'PLSN'
     lchin(16) = lnno
     lpain(17) = 'PLST'
@@ -251,14 +251,14 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --- CALCUL DE L'OPTION
 !
-    call calcul('S', option, ligrpi, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrpi, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
 ! --- EN ATTENDANT DE FAIRE MIEUX, POUR PERMETTRE MUMPS/DISTRIBUE :
 !
@@ -270,8 +270,8 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call jeveuo(copils//'.CESD', 'L', jcesd)
     call jeveuo(copils//'.CESL', 'L', jcesl)
     call jeveuo(copils//'.CESV', 'L', vr=cesv)
-    nbma = zi(jcesd-1 + 1)
-    nbpt = zi(jcesd-1 + 3)
+    nbma = zi(jcesd-1+1)
+    nbpt = zi(jcesd-1+3)
     nbgmax = nbma*nbpt
 !
 ! --- ESPACE MEMOIRE POUR LE TABLEAU A0,A1
@@ -283,33 +283,33 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     else
         call jeveuo(a0a1, 'E', ja0a1)
         call jeveuo(trav, 'E', jtrav)
-    endif
+    end if
 !
 ! --- LECTURE DES COMPOSANTES DU CHAM_ELEM_S
 !
     icmp = 0
     do ma = 1, nbma
         do pt = 1, nbpt
-            call cesexi('C', jcesd, jcesl, ma, pt,&
+            call cesexi('C', jcesd, jcesl, ma, pt, &
                         1, 1, ja0)
-            call cesexi('C', jcesd, jcesl, ma, pt,&
+            call cesexi('C', jcesd, jcesl, ma, pt, &
                         1, 2, ja1)
-            call cesexi('C', jcesd, jcesl, ma, pt,&
+            call cesexi('C', jcesd, jcesl, ma, pt, &
                         1, 3, ja2)
-            call cesexi('C', jcesd, jcesl, ma, pt,&
+            call cesexi('C', jcesd, jcesl, ma, pt, &
                         1, 4, ja3)
-            call cesexi('C', jcesd, jcesl, ma, pt,&
+            call cesexi('C', jcesd, jcesl, ma, pt, &
                         1, 5, ja4)
 !
 !
 !
             if (lcontx) then
 ! - XFEM : SI PAS DE SOL AU PT DE GAUSS, ON N AJOUTE PAS DE DROITE
-                result = abs( cesv(ja0))+abs(cesv(ja1))+ abs(cesv(ja2))+abs(cesv(1-1+ja3) )
+                result = abs(cesv(ja0))+abs(cesv(ja1))+abs(cesv(ja2))+abs(cesv(1-1+ja3))
                 if (result .eq. 0) then
                     goto 200
-                endif
-            endif
+                end if
+            end if
 !
 ! ---     LECTURE DU CODE RETOUR
 !
@@ -318,28 +318,28 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! ---         A T ON REMPLI CODE-RETOUR ? OUI -> PAS DE SOLUTION
                     pilcvg = 1
                     goto 999
-                endif
-            endif
+                end if
+            end if
 !
 ! ---     COEFFICIENTS DE LA OU DES DROITES
 !
             if (ja0 .ne. 0) then
                 if (cesv(ja0) .ne. r8vide()) then
-                    zr(ja0a1 + icmp ) = cesv(ja0)
-                    zr(ja0a1 + icmp + 1) = cesv(ja1)
+                    zr(ja0a1+icmp) = cesv(ja0)
+                    zr(ja0a1+icmp+1) = cesv(ja1)
                     icmp = icmp+2
                     if (cesv(ja2) .ne. r8vide()) then
-                        zr(ja0a1 + icmp ) = cesv(ja2)
-                        zr(ja0a1 + icmp + 1) = cesv(ja3)
+                        zr(ja0a1+icmp) = cesv(ja2)
+                        zr(ja0a1+icmp+1) = cesv(ja3)
                         icmp = icmp+2
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
 200         continue
         end do
     end do
 !
-    npg = icmp / 2
+    npg = icmp/2
 !
 ! --- RESOLUTION DE L'EQUATION DE PILOTAGE P(U(ETA)) = TAU
 !
@@ -347,7 +347,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
     if (nbeffe .eq. 0) then
         pilcvg = 1
-    endif
+    end if
 !
 999 continue
 !

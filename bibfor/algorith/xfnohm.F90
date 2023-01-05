@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! aslint: disable=W1504,W1306
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xfnohm(ds_thm,&
-                  fnoevo, deltat, nno, npg, ipoids,&
-                  ivf, idfde, geom, congem, b,&
-                  dfdi, dfdi2, r, vectu, imate,&
-                  mecani, press1, dimcon, nddls, nddlm,&
-                  dimuel, nmec, np1, ndim, axi,&
-                  dimenr, nnop, nnops, nnopm, igeom,&
-                  jpintt, jpmilt, jheavn, lonch, cnset, heavt,&
+subroutine xfnohm(ds_thm, &
+                  fnoevo, deltat, nno, npg, ipoids, &
+                  ivf, idfde, geom, congem, b, &
+                  dfdi, dfdi2, r, vectu, imate, &
+                  mecani, press1, dimcon, nddls, nddlm, &
+                  dimuel, nmec, np1, ndim, axi, &
+                  dimenr, nnop, nnops, nnopm, igeom, &
+                  jpintt, jpmilt, jheavn, lonch, cnset, heavt, &
                   enrmec, enrhyd, nfiss, nfh, jfisno)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -56,7 +56,7 @@ implicit none
     integer :: yaenrh, enrhyd(3), adenhy, ncomp, ifiss
     integer :: igeom, jpintt, jpmilt, jheavn, iret, jtab(7)
     integer :: lonch(10), cnset(*), heavt(*), fisno(nnop, nfiss)
-    integer :: heavn(nnop,5), ig, ncompn
+    integer :: heavn(nnop, 5), ig, ncompn
     real(kind=8) :: coorse(81), he(nfiss), xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: ff(nnop), ff2(nnops), geom(ndim, nnop)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
@@ -97,7 +97,7 @@ implicit none
     call xlinhm(elrefp, elref2)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2, &
                 itab=jtab)
     ncomp = jtab(2)
 !
@@ -105,16 +105,16 @@ implicit none
 !     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÃ~I
     if (nfiss .eq. 1) then
         do ino = 1, nnop
-            fisno(ino,1) = 1
+            fisno(ino, 1) = 1
         end do
     else
         do i = 1, nfh
 !    ON REMPLIT JUSQU'A NFH <= NFISS
             do ino = 1, nnop
-                fisno(ino,i) = zi(jfisno-1+(ino-1)*nfh+i)
+                fisno(ino, i) = zi(jfisno-1+(ino-1)*nfh+i)
             end do
         end do
-    endif
+    end if
 !
 ! ======================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU --------------
@@ -130,40 +130,40 @@ implicit none
 ! --- INITIALISATION DE VECTU ------------------------------------------
 ! ======================================================================
     do i = 1, dimuel
-        vectu(i)=0.d0
+        vectu(i) = 0.d0
     end do
 ! =====================================================================
 ! --- MISE EN OEUVRE DE LA METHODE XFEM -------------------------------
 ! =====================================================================
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMEN
-    nse=lonch(1)
+    nse = lonch(1)
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
-    call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+    call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
                 itab=jtab)
     ncompn = jtab(2)/jtab(3)
-    ASSERT(ncompn.eq.5)
+    ASSERT(ncompn .eq. 5)
     do in = 1, nnop
-      do ig = 1 , ncompn
-        heavn(in,ig) = zi(jheavn-1+ncompn*(in-1)+ig)
-      enddo
-    enddo
+        do ig = 1, ncompn
+            heavn(in, ig) = zi(jheavn-1+ncompn*(in-1)+ig)
+        end do
+    end do
 !
 !     BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !     BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=cnset(nno*(ise-1)+in)
+            ino = cnset(nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else if (ino.gt.1000 .and. ino.lt.2000) then
-                    coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-1)+j)
-                else if (ino.gt.2000 .and. ino.lt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-1)+j)
-                else if (ino.gt.3000) then
-                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-1)+j)
-                endif
+                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
+                    coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000-1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-2000-1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j) = zr(jpmilt-1+ndim*(ino-3000-1)+j)
+                end if
             end do
         end do
 !
@@ -179,15 +179,15 @@ implicit none
 ! --- INITIALISATION DE R ----------------------------------------------
 ! ======================================================================
             do i = 1, dimenr
-                r(i)=0.d0
+                r(i) = 0.d0
             end do
 !
 !     COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
             xg(:) = 0.d0
             do j = 1, ndim
                 do in = 1, nno
-                    xg(j)=xg(j)+zr(ivf-1+nno*(kpi-1)+in)* coorse(ndim*&
-                    (in-1)+j)
+                    xg(j) = xg(j)+zr(ivf-1+nno*(kpi-1)+in)*coorse(ndim* &
+                                                                  (in-1)+j)
                 end do
             end do
 !
@@ -196,34 +196,34 @@ implicit none
 !
 !     CALCUL DES FF ET DES DERIVEES DFDI POUR L'ELEMENT PARENTS
 !     QUDRATIQUE (MECANIQUE)
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
                         xe, ff, dfdi)
 !
 !     CALCUL DES FF2 ET DES DERIVEES DFDI2 POUR L'ELEMENT LINEAIRE
 !     ASSOCIE A ELREFP (HYDRAULIQUE)
-            call reeref(elref2, nnops, zr(igeom), xg, ndim,&
+            call reeref(elref2, nnops, zr(igeom), xg, ndim, &
                         bid3, ff2, dfdi2)
 ! ======================================================================
 ! --- CALCUL DE LA MATRICE B AU POINT DE GAUSS -------------------------
 ! ======================================================================
-            call xcabhm(ds_thm,&
-                        nddls, nddlm, nnop, nnops, nnopm,&
-                        dimuel, ndim, kpi, ff, ff2,&
-                        dfdi, dfdi2, b, nmec,&
-                        addeme, addep1, np1, axi,&
-                        ivf, ipoids, idfde, poids, coorse,&
-                        nno, geom, yaenrm, adenme, dimenr,&
+            call xcabhm(ds_thm, &
+                        nddls, nddlm, nnop, nnops, nnopm, &
+                        dimuel, ndim, kpi, ff, ff2, &
+                        dfdi, dfdi2, b, nmec, &
+                        addeme, addep1, np1, axi, &
+                        ivf, ipoids, idfde, poids, coorse, &
+                        nno, geom, yaenrm, adenme, dimenr, &
                         he, heavn, yaenrh, adenhy, nfiss, nfh)
 ! ======================================================================
-            call xfnoda(ds_thm, imate, mecani, press1, enrmec, dimenr,&
-                        dimcon, ndim, dt, fnoevo, congem(npg*(ise-1)*dimcon+(kpi-1)*dimcon+1),&
+            call xfnoda(ds_thm, imate, mecani, press1, enrmec, dimenr, &
+                        dimcon, ndim, dt, fnoevo, congem(npg*(ise-1)*dimcon+(kpi-1)*dimcon+1), &
                         r, enrhyd, nfh)
 ! ======================================================================
 ! --- CONTRIBUTION DU POINT D'INTEGRATION KPI AU RESIDU ----------------
 ! ======================================================================
             do i = 1, dimuel
                 do n = 1, dimenr
-                    vectu(i)=vectu(i)+b(n,i)*r(n)*poids
+                    vectu(i) = vectu(i)+b(n, i)*r(n)*poids
                 end do
             end do
         end do

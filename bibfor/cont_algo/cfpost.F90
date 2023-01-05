@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfpost(mesh, disp_iter, ds_contact, ctccvg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -62,31 +62,31 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... POST-TRAITEMENT DU CALCUL'
-    endif
+        write (ifm, *) '<CONTACT> ...... POST-TRAITEMENT DU CALCUL'
+    end if
 !
 ! - Get contact parameters
 !
-    l_pena_cont = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
-    l_gcp       = cfdisl(ds_contact%sdcont_defi,'CONT_GCP' )
+    l_pena_cont = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
+    l_gcp = cfdisl(ds_contact%sdcont_defi, 'CONT_GCP')
 !
 ! - Error management
 !
     if (ctccvg .ne. 0) then
-        if (.not.l_gcp) then
+        if (.not. l_gcp) then
             if (niv .ge. 2) then
-                write (ifm,*) '<CONTACT> ...... SORTIE DIRECTE CAR ERREUR'
-            endif
+                write (ifm, *) '<CONTACT> ...... SORTIE DIRECTE CAR ERREUR'
+            end if
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 ! - Copy contact solution
 !
     sdcont_delc = ds_contact%sdcont_solv(1:14)//'.DELC'
-    if ((.not.l_pena_cont) .and. (ctccvg.eq.0)) then
+    if ((.not. l_pena_cont) .and. (ctccvg .eq. 0)) then
         call copisd('CHAMP_GD', 'V', sdcont_delc, disp_iter)
-    endif
+    end if
 !
 ! - Compute final gaps
 !

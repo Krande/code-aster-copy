@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,16 +49,16 @@ subroutine codlet(entier, cadre, chaine, kstop)
     integer :: lg, ent, ival, base, basmax, il1, il, ier, i
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    parameter   (basmax = 36, base = 36 )
+    parameter(basmax=36, base=36)
     character(len=1) :: chiffr(0:basmax-1)
-    data        chiffr/'0','1','2','3','4','5','6','7','8','9',&
-     &                   'A','B','C','D','E','F','G','H','I','J',&
-     &                   'K','L','M','N','O','P','Q','R','S','T',&
-     &                   'U','V','W','X','Y','Z'/
+    data chiffr/'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',&
+     &                   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',&
+     &                   'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',&
+     &                   'U', 'V', 'W', 'X', 'Y', 'Z'/
 !
 !
     if (present(kstop)) then
-        ASSERT(kstop.eq.' '.or.kstop.eq.'F')
+        ASSERT(kstop .eq. ' ' .or. kstop .eq. 'F')
     else
         kstop = 'F'
     end if
@@ -70,17 +70,17 @@ subroutine codlet(entier, cadre, chaine, kstop)
     lg = len(chaine)
 !
 !     ON CADRE A DROITE A PRIORI   CADRAGE A DROITE
-    il = lg + 1
- 10 continue
-    il = il - 1
+    il = lg+1
+10  continue
+    il = il-1
     if (il .le. 0) then
         ier = 1
         goto 99000
     else
-        ival = mod(ent,base)
+        ival = mod(ent, base)
         chaine(il:il) = chiffr(ival)
-        ent = ent / base
-    endif
+        ent = ent/base
+    end if
     if (ent .ne. 0) goto 10
 !
 !
@@ -91,8 +91,8 @@ subroutine codlet(entier, cadre, chaine, kstop)
                 do i = il-1, 1, -1
                     chaine(i:i) = '0'
                 end do
-            endif
-        endif
+            end if
+        end if
 !
     else if (cadre(1:1) .eq. 'G') then
 !        --- CADRAGE A GAUCHE ---
@@ -103,7 +103,7 @@ subroutine codlet(entier, cadre, chaine, kstop)
         chaine(lg-il1+1:) = ' '
     else
         ier = 1
-    endif
+    end if
 !
 !     SORTIE -----------------------------------------------------------
 99000 continue
@@ -114,7 +114,7 @@ subroutine codlet(entier, cadre, chaine, kstop)
             end do
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

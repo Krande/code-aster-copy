@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asexci(masse, momec, amort, nbmode, corfre,&
-                  impr, ndir, monoap, muapde, kspect,&
-                  kasysp, nbsup, nsupp, knoeu, nopara,&
+subroutine asexci(masse, momec, amort, nbmode, corfre, &
+                  impr, ndir, monoap, muapde, kspect, &
+                  kasysp, nbsup, nsupp, knoeu, nopara, &
                   nordr)
     implicit none
 #include "asterf_types.h"
@@ -88,15 +88,15 @@ subroutine asexci(masse, momec, amort, nbmode, corfre,&
     im2 = 0
     call getvtx(' ', 'MONO_APPUI', scal=k8b, nbret=nm)
     if (nm .ne. 0) then
-        im1 = im1 + 1
+        im1 = im1+1
         if (k8b(1:3) .eq. 'OUI') monoap = .true.
-    endif
+    end if
 !
     call getvtx(' ', 'MULTI_APPUI', scal=k8b, nbret=nm)
     if (nm .ne. 0) then
-        im2 = im2 + 1
+        im2 = im2+1
         if (k8b(1:7) .eq. 'CORRELE') muapde = .false.
-    endif
+    end if
 !
 !     --- VERIFICATION DES APPUIS ---
     motfac = 'EXCIT'
@@ -105,59 +105,59 @@ subroutine asexci(masse, momec, amort, nbmode, corfre,&
 !
         call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
         if (nn .ne. 0 .and. monoap) then
-            ier = ier + 1
+            ier = ier+1
             call utmess('E', 'SEISME_8')
-        endif
+        end if
 !
         call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=ng)
         if (ng .ne. 0 .and. monoap) then
-            ier = ier + 1
+            ier = ier+1
             call utmess('E', 'SEISME_8')
-        endif
+        end if
     end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
-    endif
+    end if
     if (im1 .ne. 0 .and. im2 .ne. 0) then
         call utmess('F', 'SEISME_8')
-    endif
+    end if
 !
 !
 ! SI DECORRELE LA SOMME INTERGROUPE DOIT ETRE QUADRATIQUE
 !
-    if ((.not.monoap) .and. (.not.muapde)) then
+    if ((.not. monoap) .and. (.not. muapde)) then
         call getfac('GROUP_APPUI', noc)
         if (noc .ne. 0) then
             call utmess('F', 'SEISME_29')
-        endif
-    endif
+        end if
+    end if
 !
     if (monoap) then
         nbsup = 1
         call wkvect(kspect, 'V V R', nbmode*3, jspe)
         call wkvect(kasysp, 'V V R', 3, jasy)
-        call asexc1(motfac, nbocc, nbmode, momec, amort,&
-                    corfre, ndir, zr(jspe), zr(jasy), nopara,&
+        call asexc1(motfac, nbocc, nbmode, momec, amort, &
+                    corfre, ndir, zr(jspe), zr(jasy), nopara, &
                     nordr)
     else
         call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
         call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
         call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
         call wkvect('&&ASEXCI.POSITION.DDL1', 'V V I', neq, jddl1)
-        call typddl('BLOQ', nume, neq, zi(jddl1), nba,&
+        call typddl('BLOQ', nume, neq, zi(jddl1), nba, &
                     nbbloq, nbl, nbliai)
         if (nbbloq .eq. 0) then
             call utmess('F', 'SEISME_34')
-        endif
+        end if
         AS_ALLOCATE(vk8=nom_noeud, size=3*nbbloq)
         AS_ALLOCATE(vk8=nom_spectre, size=3*nbbloq)
         AS_ALLOCATE(vr=dir_spectre, size=3*nbbloq)
         AS_ALLOCATE(vr=ech_spectre, size=3*nbbloq)
         AS_ALLOCATE(vi=nat_spectre, size=3*nbbloq)
-        call asexc2(motfac, nbocc, nbmode, momec, amort,&
-                    corfre, noma, ndir, nom_noeud, nom_spectre,&
-                    dir_spectre, ech_spectre, nat_spectre, nbsup, nsupp,&
+        call asexc2(motfac, nbocc, nbmode, momec, amort, &
+                    corfre, noma, ndir, nom_noeud, nom_spectre, &
+                    dir_spectre, ech_spectre, nat_spectre, nbsup, nsupp, &
                     knoeu, kspect, kasysp, nopara, nordr)
         call jedetr('&&ASEXCI.POSITION.DDL1')
         AS_DEALLOCATE(vk8=nom_noeud)
@@ -165,7 +165,7 @@ subroutine asexci(masse, momec, amort, nbmode, corfre,&
         AS_DEALLOCATE(vr=dir_spectre)
         AS_DEALLOCATE(vr=ech_spectre)
         AS_DEALLOCATE(vi=nat_spectre)
-    endif
+    end if
 !
     call jedema()
 end subroutine

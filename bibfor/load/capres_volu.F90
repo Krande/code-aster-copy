@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine capres_volu(load, mesh, valeType, nbOccPresRep)
 !
-use SolidShell_Mesh_module, only : setValueOnFace
+    use SolidShell_Mesh_module, only: setValueOnFace
 !
-implicit none
+    implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
@@ -39,9 +39,9 @@ implicit none
 #include "asterfort/getelem.h"
 #include "asterfort/dismoi.h"
 !
-character(len=4), intent(in) :: valeType
-character(len=8), intent(in) :: load, mesh
-integer, intent(in) :: nbOccPresRep
+    character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh
+    integer, intent(in) :: nbOccPresRep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,34 +88,34 @@ integer, intent(in) :: nbOccPresRep
 !   NOTHING => already done in capres_skin
 !
 ! - Set name of components
-    call jeveuo(carte//'.NCMP', 'E', vk8 = mapCmpName)
+    call jeveuo(carte//'.NCMP', 'E', vk8=mapCmpName)
     mapCmpName(1) = cmpName(1)
     mapCmpName(2) = cmpName(2)
 
 ! - Access to values
     if (valeType .eq. 'REEL') then
-        call jeveuo(carte//'.VALV', 'E', vr = mapCmpValeR)
+        call jeveuo(carte//'.VALV', 'E', vr=mapCmpValeR)
     else
-        call jeveuo(carte//'.VALV', 'E', vk8 = mapCmpValeK)
-    endif
+        call jeveuo(carte//'.VALV', 'E', vk8=mapCmpValeK)
+    end if
 
 ! - Access to mesh
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', nbCellMesh)
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = meshTypmail)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=meshTypmail)
 
 ! - Number of HEXA9 cells
     nbCellHexa9 = 0
-    do iCell = 1 , nbCellMesh
+    do iCell = 1, nbCellMesh
         if (meshTypmail(iCell) .eq. MT_HEXA9) then
-            nbCellHexa9 = nbCellHexa9 + 1
-        endif
+            nbCellHexa9 = nbCellHexa9+1
+        end if
     end do
     ASSERT(nbCellHexa9 .gt. 0)
 
 ! - Prepare vector
-    AS_ALLOCATE(vi = presCell, size = nbCellHexa9)
-    AS_ALLOCATE(vr = presFaceR, size = 2*nbCellHexa9)
-    AS_ALLOCATE(vk8 = presFaceK, size = 2*nbCellHexa9)
+    AS_ALLOCATE(vi=presCell, size=nbCellHexa9)
+    AS_ALLOCATE(vr=presFaceR, size=2*nbCellHexa9)
+    AS_ALLOCATE(vk8=presFaceK, size=2*nbCellHexa9)
     presFaceK = '&FOZERO'
 
 ! - Set values in CARTE
@@ -128,23 +128,23 @@ integer, intent(in) :: nbOccPresRep
             call getvr8(keywFact, 'PRES', iocc=iocc, scal=presUserR)
         else
             call getvid(keywFact, 'PRES', iocc=iocc, scal=presUserK)
-        endif
+        end if
 
 ! ----- No cracks
         call getvid(keywFact, 'FISSURE', iocc=iocc, nbval=0, nbret=nbCrack)
         if (nbCrack .ne. 0) then
             call utmess('F', 'CHARGES_7')
-        endif
+        end if
 
 ! ----- Get list of faces from user
         call getelem(mesh, keywFact, iocc, 'A', cellSkinJv, nbCellSkin)
-        call jeveuo(cellSkinJv, 'L', vi = cellSkin)
+        call jeveuo(cellSkinJv, 'L', vi=cellSkin)
 
 ! ----- Get volume elements from list of faces
-        call setValueOnFace(mesh      ,&
-                            presUserR , presUserK,&
-                            nbCellSkin, cellSkin ,&
-                            presCell  , presFaceR, presFaceK)
+        call setValueOnFace(mesh, &
+                            presUserR, presUserK, &
+                            nbCellSkin, cellSkin, &
+                            presCell, presFaceR, presFaceK)
 !
         call jedetr(cellSkinJv)
     end do
@@ -158,17 +158,17 @@ integer, intent(in) :: nbOccPresRep
         else
             mapCmpValeK(1) = presFaceK(2*(iCellSkin-1)+1)
             mapCmpValeK(2) = presFaceK(2*(iCellSkin-1)+2)
-        endif
+        end if
         if (cellVoluNume .ne. 0) then
-            call nocart(carte, 3, nbCmp, mode='NUM', nma=1,&
+            call nocart(carte, 3, nbCmp, mode='NUM', nma=1, &
                         limanu=[cellVoluNume])
-        endif
+        end if
     end do
 
 ! - Clean
-    AS_DEALLOCATE(vi = presCell)
-    AS_DEALLOCATE(vr = presFaceR)
-    AS_DEALLOCATE(vk8 = presFaceK)
+    AS_DEALLOCATE(vi=presCell)
+    AS_DEALLOCATE(vr=presFaceR)
+    AS_DEALLOCATE(vk8=presFaceK)
 !
     call jedema()
 end subroutine

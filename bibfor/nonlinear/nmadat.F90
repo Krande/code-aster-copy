@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -42,9 +42,9 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/getAdapAction.h"
 !
-character(len=19) :: valinc(*)
-character(len=19) :: sddisc
-integer :: numins, nbiter
+    character(len=19) :: valinc(*)
+    character(len=19) :: sddisc
+    integer :: numins, nbiter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,16 +85,16 @@ integer :: numins, nbiter
 !
 ! - Parameters
 !
-    call utdidt('L', sddisc, 'LIST', 'PAS_MINI',&
-                valr_ = pasmin)
-    call utdidt('L', sddisc, 'LIST', 'PAS_MAXI',&
-                valr_ = pasmax)
-    call utdidt('L', sddisc, 'LIST', 'METHODE',&
-                valk_ = metlis)
-    call utdidt('L', sddisc, 'LIST', 'NBINST',&
-                vali_ = nb_inst)
-    call utdidt('L', sddisc, 'LIST', 'NB_PAS_MAXI',&
-                vali_ = nmax)
+    call utdidt('L', sddisc, 'LIST', 'PAS_MINI', &
+                valr_=pasmin)
+    call utdidt('L', sddisc, 'LIST', 'PAS_MAXI', &
+                valr_=pasmax)
+    call utdidt('L', sddisc, 'LIST', 'METHODE', &
+                valk_=metlis)
+    call utdidt('L', sddisc, 'LIST', 'NBINST', &
+                vali_=nb_inst)
+    call utdidt('L', sddisc, 'LIST', 'NB_PAS_MAXI', &
+                vali_=nmax)
 !
 ! --- NOM SDS DE LA SDDISC
 !
@@ -109,11 +109,11 @@ integer :: numins, nbiter
 !
     if (metlis .eq. 'MANUEL') then
         goto 999
-    endif
+    end if
 !
 ! --- INSTANT COURANT
 !
-    inst = diinst(sddisc,numins)
+    inst = diinst(sddisc, numins)
 !
 ! --- PROCHAIN INSTANT DE PASSAGE OBLIGATOIRE (JALON) ?
 !
@@ -122,7 +122,7 @@ integer :: numins, nbiter
 !
 ! --- NOMBRE DE SCHEMAS D'ADAPTATION : NADAPT
 !
-    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_ = nb_adap)
+    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_=nb_adap)
 !
 ! --- LISTE DES NADAPT PAS DE TEMPS POSSIBLES
 !
@@ -130,8 +130,8 @@ integer :: numins, nbiter
 !
 ! --- PAS DE TEMPS PAR DEFAUT (LE DERNIER, SAUF SI JALON) : DTM
 !
-    call utdidt('L', sddisc, 'LIST', 'DT-',&
-                valr_ = dtm)
+    call utdidt('L', sddisc, 'LIST', 'DT-', &
+                valr_=dtm)
 !
 ! --- STOCKAGE DU NOMBRE D'ITERATIONS DE NEWTON ET EXTENSION
 !
@@ -156,7 +156,7 @@ integer :: numins, nbiter
         ladap = diadap(sddisc, i_adap)
         if (ladap) then
             call nmcadt(sddisc, i_adap, numins, valinc, zr(jdt-1+i_adap))
-        endif
+        end if
         newdt = zr(jdt-1+i_adap)
 !
 ! ----- AFFICHAGE
@@ -165,7 +165,7 @@ integer :: numins, nbiter
             call utmess('I', 'ADAPTATION_2', sk=adapActionKeyword(action_type), sr=newdt)
         else
             call utmess('I', 'ADAPTATION_3', sk=adapActionKeyword(action_type))
-        endif
+        end if
     end do
 !
 ! --- ON CHOISIT LE PLUS PETIT DT PARMI LES NADAPT PAS DE TEMPS
@@ -177,9 +177,9 @@ integer :: numins, nbiter
     do i_adap = 1, nb_adap
         newdt = zr(jdt-1+i_adap)
         if (newdt .ne. r8vide()) then
-            dt = min(dt,newdt)
+            dt = min(dt, newdt)
             uncrok = .true.
-        endif
+        end if
     end do
 !
     if (uncrok) then
@@ -187,7 +187,7 @@ integer :: numins, nbiter
     else
         dt = dtm
         call utmess('I', 'ADAPTATION_4', sr=dt)
-    endif
+    end if
 !
 ! --- PROJECTION SUR LA BORNE SUP (POUR TOUTES LES METHODES)
 !
@@ -197,16 +197,16 @@ integer :: numins, nbiter
             valr(1) = dt
             valr(2) = pasmax
             call utmess('I', 'ADAPTATION_12', nr=2, valr=valr)
-        endif
+        end if
         dt = pasmax
-    endif
+    end if
 !
 ! --- PROJECTION SUR LA BORNE INF POUR IMPLEX
 ! --- (ATTENTION : A FAIRE AVANT L'AJUSTEMENT / JALON)
 !
     if (action_type .eq. ADAP_ACT_IMPLEX) then
         if (dt .lt. pasmin) dt = pasmin
-    endif
+    end if
 !
 ! --- LA DECOUPE DU PAS DE TEMPS PEUT DONNER UN DELTAT MAXI A RESPECTER
 !
@@ -221,27 +221,27 @@ integer :: numins, nbiter
             call utmess('I', 'ADAPTATION_10', sr=dt)
         else
             zr(jtpsex-1+1) = r8vide()
-        endif
-    endif
+        end if
+    end if
 !
 ! --- AJUSTEMENT DE DT EN FONCTION DU PROCHAIN JALON
 !
-    if (compr8(inst+dt ,'GT',jalon,prec,1)) then
+    if (compr8(inst+dt, 'GT', jalon, prec, 1)) then
 !       LE NOUVEAU PAS DEPASSE LE PROCHAIN IPO :
 !       ON FORCE A Y PASSER ET ON N'ENREGISTRE PAS DT
         dt = jalon-inst
-    else if (compr8(inst+dt ,'GT',jalon-pasmin,prec,1)) then
+    else if (compr8(inst+dt, 'GT', jalon-pasmin, prec, 1)) then
 !       NOUVEAU DE PAS INFERIEUR A JALON, MAIS TROP PROCHE DE JALON :
 !       ON FORCE A Y PASSER ET ON ENREGISTRE DT
         dt = jalon-inst
-        call utdidt('E', sddisc, 'LIST', 'DT-',&
-                    valr_ = dt)
+        call utdidt('E', sddisc, 'LIST', 'DT-', &
+                    valr_=dt)
     else
 !       NOUVEAU PAS DE TEMPS OK
 !       ON ENREGISTRE DT
-        call utdidt('E', sddisc, 'LIST', 'DT-',&
-                    valr_ = dt)
-    endif
+        call utdidt('E', sddisc, 'LIST', 'DT-', &
+                    valr_=dt)
+    end if
 !
     call utmess('I', 'ADAPTATION_6', sr=dt)
 !
@@ -250,17 +250,17 @@ integer :: numins, nbiter
     if (action_type .ne. ADAP_ACT_IMPLEX) then
         if (dt .lt. pasmin) then
             call utmess('F', 'ADAPTATION_11', sr=dt)
-        endif
-    endif
+        end if
+    end if
     if (numins .gt. nmax) then
         call utmess('F', 'ADAPTATION_13')
-    endif
+    end if
 !
 ! --- INSERTION DU NOUVEL INSTANT
 !
     inspas = 1
     newins = inst+dt
-    call nmdcei(sddisc, numins, [newins], nb_inst, inspas,&
+    call nmdcei(sddisc, numins, [newins], nb_inst, inspas, &
                 'ADAP', r8bid)
 !
 999 continue

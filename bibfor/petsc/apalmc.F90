@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine apalmc(kptsc)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
     implicit none
 
 #include "jeveux.h"
@@ -49,7 +49,7 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: rang, nbproc
     integer :: nsmdi, nsmhc, nz, bs, nblloc2
-    integer :: k, ilig, jcol1,jcol2,nbo, nbd, nzdeb, nzfin
+    integer :: k, ilig, jcol1, jcol2, nbo, nbd, nzdeb, nzfin
     PetscInt :: mm
     mpi_int :: mpicou
     integer, pointer :: smdi(:) => null()
@@ -59,8 +59,8 @@ use petsc_data_module
     character(len=16) :: idxo, idxd
     character(len=14) :: nonu
 !
-    parameter   (idxo  ='&&APALMC.IDXO___')
-    parameter   (idxd  ='&&APALMC.IDXD___')
+    parameter(idxo='&&APALMC.IDXO___')
+    parameter(idxd='&&APALMC.IDXD___')
 !
     PetscInt, pointer :: v_idxd(:) => null()
     PetscInt, pointer :: v_idxo(:) => null()
@@ -92,10 +92,10 @@ use petsc_data_module
     nz = smdi(neq)
 !
     call apbloc(kptsc)
-    bs=tblocs(kptsc)
+    bs = tblocs(kptsc)
 
-    ASSERT(bs.ge.1)
-    ASSERT(mod(neq,bs).eq.0)
+    ASSERT(bs .ge. 1)
+    ASSERT(mod(neq, bs) .eq. 0)
 
 !
 !     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
@@ -110,21 +110,21 @@ use petsc_data_module
 !     ON EST OBLIGE DE PASSER PAR UN VECTEUR TEMPORAIRE CONSTRUIT
 !     PAR MORCEAUX POUR OBTENIR LE BON DECOUPAGE PAR BLOC
     call VecCreate(mpicou, vtmp, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecSetBlockSize(vtmp, to_petsc_int(bs), ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecSetSizes(vtmp, PETSC_DECIDE, to_petsc_int(neq), ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecSetType(vtmp, VECMPI, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
     call VecGetOwnershipRange(vtmp, low2, high2, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecDestroy(vtmp, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
 !   -- NB DE LIGNES QUE L'ON STOCKE LOCALEMENT
-    nblloc2 = high2 - low2
+    nblloc2 = high2-low2
 
 !   -- CES DEUX VECTEURS SONT LES D_NNZ ET O_NNZ A PASSER A PETSc
 #if ASTER_PETSC_INT_SIZE == 4
@@ -140,78 +140,77 @@ use petsc_data_module
 !      Indices F : jcol1, ilig
 !   -----------------------------------------------------------------------------
     do jcol2 = low2, high2-1
-       jcol1=jcol2+1
-       nbo = 0
-       nbd = 0
-       if (jcol1.eq.1) then
-           nzdeb = 1
-       else
-           ASSERT(jcol1.ge.2)
-           nzdeb = smdi(jcol1-1) + 1
-       endif
-       nzfin = smdi(jcol1)
-       do k = nzdeb, nzfin
-           ilig = smhc(k)
-           if (ilig .lt. (low2+1)) then
-               nbo = nbo + 1
-           else
-               nbd = nbd + 1
-               v_idxd(ilig-low2) = v_idxd(ilig-low2) + to_petsc_int(1)
-           endif
-       end do
-       v_idxd(jcol2+1-low2) = v_idxd(jcol2+1-low2) + to_petsc_int(nbd - 1)
-       v_idxo(jcol2+1-low2) = v_idxo(jcol2+1-low2) + to_petsc_int(nbo)
+        jcol1 = jcol2+1
+        nbo = 0
+        nbd = 0
+        if (jcol1 .eq. 1) then
+            nzdeb = 1
+        else
+            ASSERT(jcol1 .ge. 2)
+            nzdeb = smdi(jcol1-1)+1
+        end if
+        nzfin = smdi(jcol1)
+        do k = nzdeb, nzfin
+            ilig = smhc(k)
+            if (ilig .lt. (low2+1)) then
+                nbo = nbo+1
+            else
+                nbd = nbd+1
+                v_idxd(ilig-low2) = v_idxd(ilig-low2)+to_petsc_int(1)
+            end if
+        end do
+        v_idxd(jcol2+1-low2) = v_idxd(jcol2+1-low2)+to_petsc_int(nbd-1)
+        v_idxo(jcol2+1-low2) = v_idxo(jcol2+1-low2)+to_petsc_int(nbo)
     end do
 !   -- Ensuite on complete le tableau du bloc hors diagonal
 !      Indices C : jcol2
 !      Indices F : jcol1, ilig
 !   ---------------------------------------------------------
     do jcol2 = high2, neq-1
-        jcol1= jcol2+1
-        ASSERT(jcol1.ge.2)
-        nzdeb = smdi(jcol1-1) + 1
+        jcol1 = jcol2+1
+        ASSERT(jcol1 .ge. 2)
+        nzdeb = smdi(jcol1-1)+1
         nzfin = smdi(jcol1)
         do k = nzdeb, nzfin
             ilig = smhc(k)
             if (ilig .lt. (low2+1)) then
                 continue
-            else if (ilig.le.high2) then
-                v_idxo(ilig-low2) = v_idxo(ilig-low2) + to_petsc_int(1)
+            else if (ilig .le. high2) then
+                v_idxo(ilig-low2) = v_idxo(ilig-low2)+to_petsc_int(1)
             else
                 exit
-            endif
+            end if
         end do
     end do
 !
     call MatCreate(mpicou, a, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call MatSetSizes(a, to_petsc_int(nblloc2), to_petsc_int(nblloc2), &
-                     to_petsc_int(neq), to_petsc_int(neq),&
+                     to_petsc_int(neq), to_petsc_int(neq), &
                      ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
     call MatSetBlockSize(a, to_petsc_int(bs), ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
     if (nbproc .eq. 1) then
         call MatSetType(a, MATSEQAIJ, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         mm = to_petsc_int(nblloc2)
         unused_nz = -1
         call MatSeqAIJSetPreallocation(a, unused_nz, v_idxd(1:mm), ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
     else
         call MatSetType(a, MATMPIAIJ, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         mm = to_petsc_int(nblloc2)
         unused_nz = -1
-        call MatMPIAIJSetPreallocation(a, unused_nz, v_idxd(1:mm),&
+        call MatMPIAIJSetPreallocation(a, unused_nz, v_idxd(1:mm), &
                                        unused_nz, v_idxo(1:mm), ierr)
-        ASSERT(ierr.eq.0)
-    endif
+        ASSERT(ierr .eq. 0)
+    end if
 !
-    ap(kptsc)=a
-
+    ap(kptsc) = a
 
 !   -- menage :
 !   -----------

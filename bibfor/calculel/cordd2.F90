@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
+subroutine cordd2(jprn1, jprn2, ili, ecodl, nec, &
                   ncmp, n, nddloc, pos)
 ! aslint: disable=
     implicit none
@@ -42,7 +42,7 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
     integer :: nbecmx, ncmp
-    parameter (nbecmx = 10)
+    parameter(nbecmx=10)
     integer :: ifin(nbecmx)
     integer :: pos(1)
     integer :: ecodg, ecodl(*)
@@ -59,12 +59,12 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
 ! --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE DDLS
 ! --- QUE L'ON PEUT TROUVER SUR CET ENTIER :
 !     ------------------------------------
-    ASSERT(nec.gt.0.and.nec.le.nbecmx)
-    ASSERT(ncmp.gt.0.and.ncmp.le.30*nbecmx)
+    ASSERT(nec .gt. 0 .and. nec .le. nbecmx)
+    ASSERT(ncmp .gt. 0 .and. ncmp .le. 30*nbecmx)
     do iec = 1, nec-1
         ifin(iec) = 30
     end do
-    ifin(nec) = ncmp - 30*(nec-1)
+    ifin(nec) = ncmp-30*(nec-1)
 !
     in = 0
     nddloc = 0
@@ -77,20 +77,20 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
     do iec = 1, nec
 !
 !      ECODG = PRNO(ILI,N,3)
-        ecodg = prno(ili,n,2+iec)
+        ecodg = prno(ili, n, 2+iec)
 !
         do i = 1, ifin(iec)
             ecodg = ecodg/2
             ecodl(iec) = ecodl(iec)/2
-            iecdg = iand(1,ecodg)
+            iecdg = iand(1, ecodg)
             if (iecdg .gt. 0) then
-                in = in + 1
-                iecdl = iand(1,ecodl(iec))
+                in = in+1
+                iecdl = iand(1, ecodl(iec))
                 if (iecdl .gt. 0) then
-                    nddloc = nddloc + 1
+                    nddloc = nddloc+1
                     pos(nddloc) = in
-                endif
-            endif
+                end if
+            end if
         end do
 !
     end do

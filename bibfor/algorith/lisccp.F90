@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,9 +71,9 @@ subroutine lisccp(phenom, lischa)
 ! ----- CODE DU GENRE DE LA CHARGE
 !
         call lislco(lischa, ichar, genrec)
-        lveac = lisico('VECT_ASSE_CHAR',genrec)
-        lveag = lisico('VECT_ASSE_GENE',genrec)
-        lveas = lisico('VECT_ASSE' ,genrec)
+        lveac = lisico('VECT_ASSE_CHAR', genrec)
+        lveag = lisico('VECT_ASSE_GENE', genrec)
+        lveas = lisico('VECT_ASSE', genrec)
 !
 ! ----- PHENOMENE DE LA CHARGE
 !
@@ -82,28 +82,28 @@ subroutine lisccp(phenom, lischa)
         else
             call lislch(lischa, ichar, charge)
             call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=phecha)
-        endif
+        end if
 !
         if (phenom .eq. 'MECANIQUE') then
-            if ((phecha(1:4).eq.'MECA') .or. (phecha(1:4).eq.'CIME') .or.&
-                (lveac.or.lveas.or.lveag)) then
+            if ((phecha(1:4) .eq. 'MECA') .or. (phecha(1:4) .eq. 'CIME') .or. &
+                (lveac .or. lveas .or. lveag)) then
                 lok = .true.
-            endif
-        else if (phenom.eq.'THERMIQUE') then
-            if ((phecha(1:4).eq.'THER') .or. (phecha(1:4).eq.'CITH')) then
+            end if
+        else if (phenom .eq. 'THERMIQUE') then
+            if ((phecha(1:4) .eq. 'THER') .or. (phecha(1:4) .eq. 'CITH')) then
                 lok = .true.
-            endif
-        else if (phenom.eq.'ACOUSTIQUE') then
-            if ((phecha(1:4).eq.'ACOU') .or. (phecha(1:4).eq.'CIAC')) then
+            end if
+        else if (phenom .eq. 'ACOUSTIQUE') then
+            if ((phecha(1:4) .eq. 'ACOU') .or. (phecha(1:4) .eq. 'CIAC')) then
                 lok = .true.
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-        if (.not.lok) then
+        if (.not. lok) then
             call utmess('F', 'CHARGES5_4', sk=charge)
-        endif
+        end if
     end do
 !
 999 continue

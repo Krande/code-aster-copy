@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 function isfonc(list_func_acti, func_name_z)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-aster_logical :: isfonc
-integer, intent(in) :: list_func_acti(*)
-character(len=*), intent(in) :: func_name_z
+    aster_logical :: isfonc
+    integer, intent(in) :: list_func_acti(*)
+    character(len=*), intent(in) :: func_name_z
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,142 +122,142 @@ character(len=*), intent(in) :: func_name_z
     func_name = func_name_z
 !
     if (func_name .eq. 'RECH_LINE') then
-        isfonc = list_func_acti(1).eq.1
-    else if (func_name.eq.'PILOTAGE') then
-        isfonc = list_func_acti(2).eq.1
-    else if (func_name.eq.'CONTACT') then
-        isfonc = list_func_acti(64).eq.1
-    else if (func_name.eq.'LIAISON_UNILATER') then
-        isfonc = list_func_acti(12).eq.1
-    else if (func_name.eq.'ELT_CONTACT') then
-        isfonc = list_func_acti(26).eq.1
-    else if (func_name.eq.'CONT_DISCRET') then
-        isfonc = list_func_acti(4).eq.1
-    else if (func_name.eq.'CONT_CONTINU') then
-        isfonc = list_func_acti(5).eq.1
-    else if (func_name.eq.'CONT_XFEM') then
-        isfonc = list_func_acti(9) .eq.1
-    else if (func_name.eq.'CONT_XFEM_THM') then
-        isfonc = list_func_acti(65).eq.1
-    else if (func_name.eq.'CONT_LAC') then
-        isfonc = list_func_acti(63) .eq.1
-    else if (func_name.eq.'CONTACT_INIT') then
-        isfonc = list_func_acti(17).eq.1
-    else if (func_name.eq.'DIS_CHOC') then
-        isfonc = list_func_acti(29).eq.1
-    else if (func_name.eq.'FROT_DISCRET') then
-        isfonc = list_func_acti(3).eq.1
-    else if (func_name.eq.'FROT_CONTINU') then
-        isfonc = list_func_acti(10).eq.1
-    else if (func_name.eq.'FROT_XFEM') then
-        isfonc = list_func_acti(25).eq.1
-    else if (func_name.eq.'BOUCLE_EXT_GEOM') then
-        isfonc = list_func_acti(31).eq.1
-    else if (func_name.eq.'BOUCLE_EXT_FROT') then
-        isfonc = list_func_acti(32).eq.1
-    else if (func_name.eq.'BOUCLE_EXT_CONT') then
-        isfonc = list_func_acti(33).eq.1
-    else if (func_name.eq.'BOUCLE_EXTERNE') then
-        isfonc = list_func_acti(34).eq.1
-    else if (func_name.eq.'GEOM_NEWTON') then
-        isfonc = list_func_acti(55).eq.1
-    else if (func_name.eq.'EXIS_PENA') then
-        isfonc = list_func_acti(66).eq.1
-    else if (func_name.eq.'FROT_NEWTON') then
-        isfonc = list_func_acti(47).eq.1
-    else if (func_name.eq.'CONT_NEWTON') then
-        isfonc = list_func_acti(53).eq.1
-    else if (func_name.eq.'CONT_ALL_VERIF') then
-        isfonc = list_func_acti(38).eq.1
+        isfonc = list_func_acti(1) .eq. 1
+    else if (func_name .eq. 'PILOTAGE') then
+        isfonc = list_func_acti(2) .eq. 1
+    else if (func_name .eq. 'CONTACT') then
+        isfonc = list_func_acti(64) .eq. 1
+    else if (func_name .eq. 'LIAISON_UNILATER') then
+        isfonc = list_func_acti(12) .eq. 1
+    else if (func_name .eq. 'ELT_CONTACT') then
+        isfonc = list_func_acti(26) .eq. 1
+    else if (func_name .eq. 'CONT_DISCRET') then
+        isfonc = list_func_acti(4) .eq. 1
+    else if (func_name .eq. 'CONT_CONTINU') then
+        isfonc = list_func_acti(5) .eq. 1
+    else if (func_name .eq. 'CONT_XFEM') then
+        isfonc = list_func_acti(9) .eq. 1
+    else if (func_name .eq. 'CONT_XFEM_THM') then
+        isfonc = list_func_acti(65) .eq. 1
+    else if (func_name .eq. 'CONT_LAC') then
+        isfonc = list_func_acti(63) .eq. 1
+    else if (func_name .eq. 'CONTACT_INIT') then
+        isfonc = list_func_acti(17) .eq. 1
+    else if (func_name .eq. 'DIS_CHOC') then
+        isfonc = list_func_acti(29) .eq. 1
+    else if (func_name .eq. 'FROT_DISCRET') then
+        isfonc = list_func_acti(3) .eq. 1
+    else if (func_name .eq. 'FROT_CONTINU') then
+        isfonc = list_func_acti(10) .eq. 1
+    else if (func_name .eq. 'FROT_XFEM') then
+        isfonc = list_func_acti(25) .eq. 1
+    else if (func_name .eq. 'BOUCLE_EXT_GEOM') then
+        isfonc = list_func_acti(31) .eq. 1
+    else if (func_name .eq. 'BOUCLE_EXT_FROT') then
+        isfonc = list_func_acti(32) .eq. 1
+    else if (func_name .eq. 'BOUCLE_EXT_CONT') then
+        isfonc = list_func_acti(33) .eq. 1
+    else if (func_name .eq. 'BOUCLE_EXTERNE') then
+        isfonc = list_func_acti(34) .eq. 1
+    else if (func_name .eq. 'GEOM_NEWTON') then
+        isfonc = list_func_acti(55) .eq. 1
+    else if (func_name .eq. 'EXIS_PENA') then
+        isfonc = list_func_acti(66) .eq. 1
+    else if (func_name .eq. 'FROT_NEWTON') then
+        isfonc = list_func_acti(47) .eq. 1
+    else if (func_name .eq. 'CONT_NEWTON') then
+        isfonc = list_func_acti(53) .eq. 1
+    else if (func_name .eq. 'CONT_ALL_VERIF') then
+        isfonc = list_func_acti(38) .eq. 1
 !
-    else if (func_name.eq.'XFEM') then
-        isfonc = list_func_acti(6).eq.1
-    else if (func_name.eq.'DEBORST') then
-        isfonc = list_func_acti(7).eq.1
+    else if (func_name .eq. 'XFEM') then
+        isfonc = list_func_acti(6) .eq. 1
+    else if (func_name .eq. 'DEBORST') then
+        isfonc = list_func_acti(7) .eq. 1
 !
-    else if (func_name.eq.'RESI_REFE') then
-        isfonc = list_func_acti(8).eq.1
-    else if (func_name.eq.'RESI_COMP') then
-        isfonc = list_func_acti(35).eq.1
-    else if (func_name.eq.'DIRI_CINE') then
-        isfonc = list_func_acti(36).eq.1
-    else if (func_name.eq.'NEUM_UNDEAD') then
-        isfonc = list_func_acti(13).eq.1
-    else if (func_name.eq.'DIRI_UNDEAD') then
-        isfonc = list_func_acti(60).eq.1
-    else if (func_name.eq.'LAPLACE') then
-        isfonc = list_func_acti(20).eq.1
-    else if (func_name.eq.'DIDI') then
-        isfonc = list_func_acti(22).eq.1
+    else if (func_name .eq. 'RESI_REFE') then
+        isfonc = list_func_acti(8) .eq. 1
+    else if (func_name .eq. 'RESI_COMP') then
+        isfonc = list_func_acti(35) .eq. 1
+    else if (func_name .eq. 'DIRI_CINE') then
+        isfonc = list_func_acti(36) .eq. 1
+    else if (func_name .eq. 'NEUM_UNDEAD') then
+        isfonc = list_func_acti(13) .eq. 1
+    else if (func_name .eq. 'DIRI_UNDEAD') then
+        isfonc = list_func_acti(60) .eq. 1
+    else if (func_name .eq. 'LAPLACE') then
+        isfonc = list_func_acti(20) .eq. 1
+    else if (func_name .eq. 'DIDI') then
+        isfonc = list_func_acti(22) .eq. 1
 !
-    else if (func_name.eq.'MACR_ELEM_STAT') then
-        isfonc = list_func_acti(14).eq.1
-    else if (func_name.eq.'GD_ROTA') then
-        isfonc = list_func_acti(15) .eq.1
-    else if (func_name.eq.'ENDO_NO') then
-        isfonc = list_func_acti(40).eq.1
-    else if (func_name.eq.'CRIT_STAB') then
-        isfonc = list_func_acti(18) .eq.1
-    else if (func_name.eq.'DDL_STAB') then
-        isfonc = list_func_acti(49) .eq.1
-    else if (func_name.eq.'MODE_VIBR') then
-        isfonc = list_func_acti(19).eq.1
-    else if (func_name.eq.'ERRE_TEMPS_THM') then
-        isfonc = list_func_acti(21).eq.1
-    else if (func_name.eq.'SOUS_STRUC') then
-        isfonc = list_func_acti(24).eq.1
-    else if (func_name.eq.'IMPLEX') then
-        isfonc = list_func_acti(28).eq.1
-    else if (func_name.eq.'EXI_VARC') then
-        isfonc = list_func_acti(30).eq.1
-    else if (func_name.eq.'THM') then
-        isfonc = list_func_acti(37).eq.1
-    else if (func_name.eq.'HHO') then
-        isfonc = list_func_acti(68).eq.1
-    else if (func_name.eq.'REUSE') then
-        isfonc = list_func_acti(39).eq.1
+    else if (func_name .eq. 'MACR_ELEM_STAT') then
+        isfonc = list_func_acti(14) .eq. 1
+    else if (func_name .eq. 'GD_ROTA') then
+        isfonc = list_func_acti(15) .eq. 1
+    else if (func_name .eq. 'ENDO_NO') then
+        isfonc = list_func_acti(40) .eq. 1
+    else if (func_name .eq. 'CRIT_STAB') then
+        isfonc = list_func_acti(18) .eq. 1
+    else if (func_name .eq. 'DDL_STAB') then
+        isfonc = list_func_acti(49) .eq. 1
+    else if (func_name .eq. 'MODE_VIBR') then
+        isfonc = list_func_acti(19) .eq. 1
+    else if (func_name .eq. 'ERRE_TEMPS_THM') then
+        isfonc = list_func_acti(21) .eq. 1
+    else if (func_name .eq. 'SOUS_STRUC') then
+        isfonc = list_func_acti(24) .eq. 1
+    else if (func_name .eq. 'IMPLEX') then
+        isfonc = list_func_acti(28) .eq. 1
+    else if (func_name .eq. 'EXI_VARC') then
+        isfonc = list_func_acti(30) .eq. 1
+    else if (func_name .eq. 'THM') then
+        isfonc = list_func_acti(37) .eq. 1
+    else if (func_name .eq. 'HHO') then
+        isfonc = list_func_acti(68) .eq. 1
+    else if (func_name .eq. 'REUSE') then
+        isfonc = list_func_acti(39) .eq. 1
 !
-    else if (func_name.eq.'LDLT') then
-        isfonc = list_func_acti(41).eq.1
-    else if (func_name.eq.'MULT_FRONT') then
-        isfonc = list_func_acti(42).eq.1
-    else if (func_name.eq.'GCPC') then
-        isfonc = list_func_acti(43).eq.1
-    else if (func_name.eq.'MUMPS') then
-        isfonc = list_func_acti(44).eq.1
-    else if (func_name.eq.'PETSC') then
-        isfonc = list_func_acti(45).eq.1
-    else if (func_name.eq.'LDLT_SP') then
-        isfonc = list_func_acti(46).eq.1
-    else if (func_name.eq.'NEWTON_KRYLOV') then
-        isfonc = list_func_acti(48).eq.1
-    else if (func_name.eq.'ROM') then
-        isfonc = list_func_acti(61).eq.1
-    else if (func_name.eq.'HROM') then
-        isfonc = list_func_acti(62).eq.1
-    else if (func_name.eq.'HROM_CORR_EF') then
-        isfonc = list_func_acti(67).eq.1
-    else if (func_name.eq.'ENERGIE') then
-        isfonc = list_func_acti(50).eq.1
-    else if (func_name.eq.'PROJ_MODAL') then
-        isfonc = list_func_acti(51).eq.1
-    else if (func_name.eq.'MATR_DISTRIBUEE') then
-        isfonc = list_func_acti(52).eq.1
-    else if (func_name.eq.'EXPLICITE') then
-        isfonc = list_func_acti(54).eq.1
-    else if (func_name.eq.'DYNAMIQUE') then
-        isfonc = list_func_acti(69).eq.1
-    else if (func_name.eq.'EXI_STRX') then
-        isfonc = list_func_acti(56).eq.1
-    else if (func_name.eq.'ELAS_FO') then
-        isfonc = list_func_acti(57).eq.1
-    else if (func_name.eq.'POST_INCR') then
-        isfonc = list_func_acti(58).eq.1
-    else if (func_name.eq.'ETAT_INIT') then
-        isfonc = list_func_acti(59).eq.1
+    else if (func_name .eq. 'LDLT') then
+        isfonc = list_func_acti(41) .eq. 1
+    else if (func_name .eq. 'MULT_FRONT') then
+        isfonc = list_func_acti(42) .eq. 1
+    else if (func_name .eq. 'GCPC') then
+        isfonc = list_func_acti(43) .eq. 1
+    else if (func_name .eq. 'MUMPS') then
+        isfonc = list_func_acti(44) .eq. 1
+    else if (func_name .eq. 'PETSC') then
+        isfonc = list_func_acti(45) .eq. 1
+    else if (func_name .eq. 'LDLT_SP') then
+        isfonc = list_func_acti(46) .eq. 1
+    else if (func_name .eq. 'NEWTON_KRYLOV') then
+        isfonc = list_func_acti(48) .eq. 1
+    else if (func_name .eq. 'ROM') then
+        isfonc = list_func_acti(61) .eq. 1
+    else if (func_name .eq. 'HROM') then
+        isfonc = list_func_acti(62) .eq. 1
+    else if (func_name .eq. 'HROM_CORR_EF') then
+        isfonc = list_func_acti(67) .eq. 1
+    else if (func_name .eq. 'ENERGIE') then
+        isfonc = list_func_acti(50) .eq. 1
+    else if (func_name .eq. 'PROJ_MODAL') then
+        isfonc = list_func_acti(51) .eq. 1
+    else if (func_name .eq. 'MATR_DISTRIBUEE') then
+        isfonc = list_func_acti(52) .eq. 1
+    else if (func_name .eq. 'EXPLICITE') then
+        isfonc = list_func_acti(54) .eq. 1
+    else if (func_name .eq. 'DYNAMIQUE') then
+        isfonc = list_func_acti(69) .eq. 1
+    else if (func_name .eq. 'EXI_STRX') then
+        isfonc = list_func_acti(56) .eq. 1
+    else if (func_name .eq. 'ELAS_FO') then
+        isfonc = list_func_acti(57) .eq. 1
+    else if (func_name .eq. 'POST_INCR') then
+        isfonc = list_func_acti(58) .eq. 1
+    else if (func_name .eq. 'ETAT_INIT') then
+        isfonc = list_func_acti(59) .eq. 1
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end function

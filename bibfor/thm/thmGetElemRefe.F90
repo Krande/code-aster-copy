@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine thmGetElemRefe(l_vf, elrefe, elref2)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 !
-aster_logical, intent(in) :: l_vf
-character(len=8), intent(out) :: elrefe
-character(len=8), intent(out) :: elref2
+    aster_logical, intent(in) :: l_vf
+    character(len=8), intent(out) :: elrefe
+    character(len=8), intent(out) :: elref2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,35 +46,35 @@ character(len=8), intent(out) :: elref2
     if (l_vf) then
         if (elrefe .eq. 'TR7') then
             elref2 = 'TR3'
-        else if (elrefe.eq.'QU9') then
+        else if (elrefe .eq. 'QU9') then
             elref2 = 'QU4'
-        else if (elrefe.eq.'H27') then
+        else if (elrefe .eq. 'H27') then
             elref2 = 'HE8'
-        else if (elrefe.eq.'SE3') then
+        else if (elrefe .eq. 'SE3') then
             elref2 = 'SE2'
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         if (elrefe .eq. 'TR6') then
             elref2 = 'TR3'
-        else if (elrefe.eq.'QU8') then
+        else if (elrefe .eq. 'QU8') then
             elref2 = 'QU4'
-        else if (elrefe.eq.'QU9') then
+        else if (elrefe .eq. 'QU9') then
             elref2 = 'QU4'
-        else if (elrefe.eq.'H20') then
+        else if (elrefe .eq. 'H20') then
             elref2 = 'HE8'
-        else if (elrefe.eq.'P15') then
+        else if (elrefe .eq. 'P15') then
             elref2 = 'PE6'
-        else if (elrefe.eq.'P13') then
+        else if (elrefe .eq. 'P13') then
             elref2 = 'PY5'
-        else if (elrefe.eq.'T10') then
+        else if (elrefe .eq. 'T10') then
             elref2 = 'TE4'
-        else if (elrefe.eq.'SE3') then
+        else if (elrefe .eq. 'SE3') then
             elref2 = 'SE2'
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

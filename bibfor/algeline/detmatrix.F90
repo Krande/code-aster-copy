@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine detmatrix(matass)
-use elg_data_module
+    use elg_data_module
     implicit none
 !
     character(len=19), intent(in) :: matass
@@ -41,11 +41,11 @@ use elg_data_module
     call dismoi('SOLVEUR', matass, 'MATR_ASSE', repk=solveu, arret='C', ier=ier)
     if (ier .eq. 0 .and. solveu(1:4) .ne. 'XXXX' .and. solveu(1:4) .ne. ' ') then
         call detlsp(matass, solveu)
-    endif
+    end if
 !
 !  -- on detruit les eventuels pré-conditinneurs xfem stockés sous forme de matr_asse
     call dismoi('XFEM', matass, 'MATR_ASSE', repk=kxfem)
-    if ( kxfem .eq. 'XFEM_PRECOND') call xfem_precond('FIN', matass)
+    if (kxfem .eq. 'XFEM_PRECOND') call xfem_precond('FIN', matass)
 !
 !  -- on detruit les eventuelles structures creees pour eliminer les multiplicateurs
 !          de Lagrange

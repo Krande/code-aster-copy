@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
-                  sigma, matopa, matpsc, raide, lqz,&
+subroutine wpfopr(lmasse, lamor, lraide, appr, fmin, &
+                  sigma, matopa, matpsc, raide, lqz, &
                   solveu)
     implicit none
 #include "asterf_types.h"
@@ -81,27 +81,27 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
 !
     if (abs(ashift) .ge. 1.d0) then
         ashift = 0.95d0
-        valr (1) = 1.d0
-        valr (2) = 0.95d0
+        valr(1) = 1.d0
+        valr(2) = 0.95d0
         call utmess('I+', 'ALGELINE4_95')
         call utmess('I', 'ALGELINE4_96', nr=2, valr=valr)
-    endif
+    end if
 !
-    ashift = - (ashift*fshift)/sqrt(1.d0-ashift*ashift)
-    sigma = dcmplx(ashift,fshift)
+    ashift = -(ashift*fshift)/sqrt(1.d0-ashift*ashift)
+    sigma = dcmplx(ashift, fshift)
 !
 ! --- POUR QZ CALCUL DE LA MATRICE SHIFTEE ET DE SA FACTORISEE INUTILE
     if (lqz) goto 999
 !
     if (fmin .eq. 0.d0) then
-        jpomr=0
+        jpomr = 0
         do icomb = 1, 3
 !           ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
-            nomi=nmat(icomb)
+            nomi = nmat(icomb)
             call jeveuo(nomi//'.REFA', 'L', jrefe)
             if (zk24(jrefe-1+9) .eq. 'MR') then
-                jpomr=icomb
-            endif
+                jpomr = icomb
+            end if
         end do
 !
 !        --- DECALAGE REEL ---
@@ -110,9 +110,9 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         else
             nomt = nmat(jpomr)
             call mtdefs(matopa, nomt, 'V', 'C')
-        endif
+        end if
         call mtdscr(matopa)
-        nmatra=matopa(1:19)//'.&INT'
+        nmatra = matopa(1:19)//'.&INT'
         call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
         do icomb = 1, 3
             typcst(icomb) = 'R'
@@ -120,19 +120,19 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         constr(1) = ashift*ashift
         constr(2) = ashift
         constr(3) = 1.d0
-        call mtcmbl(3, typcst, constr, nmat, nmatra,&
+        call mtcmbl(3, typcst, constr, nmat, nmatra, &
                     namddl, ' ', 'ELIM=')
         lmtpsc = 0
 !
     else
-        jpomr=0
+        jpomr = 0
         do icomb = 1, 3
 !           ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
-            nomi=nmat(icomb)
+            nomi = nmat(icomb)
             call jeveuo(nomi//'.REFA', 'L', jrefe)
             if (zk24(jrefe-1+9) .eq. 'MR') then
-                jpomr=icomb
-            endif
+                jpomr = icomb
+            end if
         end do
 !
 !        --- DECALAGE COMPLEXE ---
@@ -141,9 +141,9 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         else
             nomt = nmat(jpomr)
             call mtdefs(matopa, nomt, 'V', 'C')
-        endif
+        end if
         call mtdscr(matopa)
-        nmatra=matopa(1:19)//'.&INT'
+        nmatra = matopa(1:19)//'.&INT'
         call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
         do icomb = 1, 3
             typcst(icomb) = 'C'
@@ -154,7 +154,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
         constc(4) = dimag(sigma)
         constc(5) = 1.d0
         constc(6) = 0.d0
-        call mtcmbl(3, typcst, constc, nmat, nmatra,&
+        call mtcmbl(3, typcst, constc, nmat, nmatra, &
                     namddl, ' ', 'ELIM=')
         if (appr .eq. 'R') then
             if (jpomr .eq. 0) then
@@ -162,9 +162,9 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
             else
                 nomt = nmat(jpomr)
                 call mtdefs(matpsc, nomt, 'V', 'R')
-            endif
+            end if
             call mtdscr(matpsc)
-            nmtpsc=matpsc(1:19)//'.&INT'
+            nmtpsc = matpsc(1:19)//'.&INT'
             call jeveuo(matpsc(1:19)//'.&INT', 'E', lmtpsc)
             do icomb = 1, 3
                 typcst(icomb) = 'R'
@@ -172,29 +172,29 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
             constr(1) = ashift*ashift
             constr(2) = ashift
             constr(3) = 1.d0
-            call mtcmbl(3, typcst, constr, nmat, nmtpsc,&
+            call mtcmbl(3, typcst, constr, nmat, nmtpsc, &
                         namddl, ' ', 'ELIM=')
 !
         else
 !
             lmtpsc = 0
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !     --- FACTORISATION DES MATRICES ---
 !
-    base='V'
-    matpre=' '
-    matass=zk24(zi(lmatra+1))
-    call preres(solveu, base, ibid, matpre, matass,&
+    base = 'V'
+    matpre = ' '
+    matass = zk24(zi(lmatra+1))
+    call preres(solveu, base, ibid, matpre, matass, &
                 jbid, 1)
     if (lmtpsc .ne. 0) then
-        matass=zk24(zi(lmtpsc+1))
-        call preres(solveu, base, ibid, matpre, matass,&
+        matass = zk24(zi(lmtpsc+1))
+        call preres(solveu, base, ibid, matpre, matass, &
                     jbid, 1)
-    endif
+    end if
 !
 999 continue
     call jedema()

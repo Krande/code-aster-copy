@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0179(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,9 +61,9 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PVITEFC', 'L', jvLoad)
 
 ! - Get element parameters
-    l_axis = (lteatt('AXIS','OUI'))
-    call elrefe_info(fami='RIGI',&
-                     nno=nbNode, npg=npg, ndim=cellDime,&
+    l_axis = (lteatt('AXIS', 'OUI'))
+    call elrefe_info(fami='RIGI', &
+                     nno=nbNode, npg=npg, ndim=cellDime, &
                      jpoids=jvWeight, jvf=jvShape, jdfde=jvDShape)
     ndof = nbNode
 
@@ -84,24 +84,24 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
-        call vff2dn(cellDime, nbNode, ipg, jvWeight, jvDShape,&
+        call vff2dn(cellDime, nbNode, ipg, jvWeight, jvDShape, &
                     zr(jvGeom), nx, ny, poids)
         if (l_axis) then
             r = 0.d0
             do i = 1, nbNode
-                r = r + zr(jvGeom+2*(i-1))*zr(jvShape+ldec+i-1)
+                r = r+zr(jvGeom+2*(i-1))*zr(jvShape+ldec+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 
 ! ----- Get value of speed
         speedVale = zc(jvLoad-1+1)
 
 ! ----- Compute vector
         do i = 1, nbNode
-            zc(jvVect+i-1) = zc(jvVect+i-1) + &
-                             poids *&
-                             zr(jvShape+ldec+i-1) * speedVale * rho
+            zc(jvVect+i-1) = zc(jvVect+i-1)+ &
+                             poids* &
+                             zr(jvShape+ldec+i-1)*speedVale*rho
         end do
 
     end do

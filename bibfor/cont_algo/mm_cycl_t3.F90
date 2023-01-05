@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine mm_cycl_t3(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
                       cycl_stat_curr)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 !
@@ -51,7 +51,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: cycl_type, idim
-    real(kind=8) :: laug_frot_curr(3),laug_frot_prev(3)
+    real(kind=8) :: laug_frot_curr(3), laug_frot_prev(3)
     real(kind=8) :: nrese_curr, nrese_prev
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,19 +66,19 @@ implicit none
 !
 ! - Augmented ratios
 !
-    laug_frot_prev(1) = pres_frot_prev(1) + coef_frot_prev*dist_frot_prev(1)
-    laug_frot_prev(2) = pres_frot_prev(2) + coef_frot_prev*dist_frot_prev(2)
-    laug_frot_prev(3) = pres_frot_prev(3) + coef_frot_prev*dist_frot_prev(3)
+    laug_frot_prev(1) = pres_frot_prev(1)+coef_frot_prev*dist_frot_prev(1)
+    laug_frot_prev(2) = pres_frot_prev(2)+coef_frot_prev*dist_frot_prev(2)
+    laug_frot_prev(3) = pres_frot_prev(3)+coef_frot_prev*dist_frot_prev(3)
     do idim = 1, 3
-        nrese_prev = laug_frot_prev(idim)*laug_frot_prev(idim) + nrese_prev
+        nrese_prev = laug_frot_prev(idim)*laug_frot_prev(idim)+nrese_prev
     end do
     nrese_prev = sqrt(nrese_prev)
 !
-    laug_frot_curr(1) = pres_frot_prev(1) + coef_frot_prev*dist_frot_prev(1)
-    laug_frot_curr(2) = pres_frot_prev(2) + coef_frot_prev*dist_frot_prev(2)
-    laug_frot_curr(3) = pres_frot_prev(3) + coef_frot_prev*dist_frot_prev(3)
+    laug_frot_curr(1) = pres_frot_prev(1)+coef_frot_prev*dist_frot_prev(1)
+    laug_frot_curr(2) = pres_frot_prev(2)+coef_frot_prev*dist_frot_prev(2)
+    laug_frot_curr(3) = pres_frot_prev(3)+coef_frot_prev*dist_frot_prev(3)
     do idim = 1, 3
-        nrese_curr = laug_frot_curr(idim)*laug_frot_curr(idim) + nrese_curr
+        nrese_curr = laug_frot_curr(idim)*laug_frot_curr(idim)+nrese_curr
     end do
     nrese_curr = sqrt(nrese_curr)
     cycl_stat_curr = -2

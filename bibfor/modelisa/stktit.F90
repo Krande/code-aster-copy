@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine stktit(ifl, icl, iv, rv, cv,&
-                  cnl, mcl, nbm, nlt, tit,&
+subroutine stktit(ifl, icl, iv, rv, cv, &
+                  cnl, mcl, nbm, nlt, tit, &
                   irteti)
     implicit none
 !       SECONDE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE TITRE
@@ -68,13 +68,13 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 !
 ! - LIRE LIGNE SUIVANTE
 !
-  4 continue
+4   continue
     call lirlig(ifl, cnl, lig, 2)
 !
 ! - LIRE PREMIER ITEM DE LA LIGNE
 !
     ideb = 1
-    call lxscan(lig, ideb, icl, iv, rv,&
+    call lxscan(lig, ideb, icl, iv, rv, &
                 cv)
 !
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
@@ -84,7 +84,7 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
         goto 1
     else if (irtet .eq. 2) then
         goto 2
-    endif
+    end if
 !
 ! - STOCKAGE DE LA LIGNE NLT
 !
@@ -92,19 +92,19 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 !
 ! - INCREMENTATION DU NUMERO DE LIGNE TITRE
 !
-    nlt = nlt + 1
+    nlt = nlt+1
 !
 ! - LIGNE SUIVANTE
 !
     goto 4
 !
-  1 continue
+1   continue
     irteti = 1
     goto 999
-  2 continue
+2   continue
     irteti = 2
     goto 999
-  3 continue
+3   continue
     irteti = 0
     goto 999
 !

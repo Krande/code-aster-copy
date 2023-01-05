@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
+subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar, &
                   nbres, nomres, valres, icodre, iarret)
     implicit none
 #include "asterf_types.h"
@@ -76,7 +76,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !
     integer :: nbmx, nbresp, ires, ier, nbr, nbc, nbk, iret
     integer :: nbobj, nbf, ir, ik
-    parameter        ( nbmx=30 )
+    parameter(nbmx=30)
     integer :: nbfp
     real(kind=8) :: valrep(nbmx)
     aster_logical :: change
@@ -89,22 +89,22 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     character(len=8) :: nommat
     real(kind=8), pointer :: valr(:) => null()
     character(len=16), pointer :: valk(:) => null()
-    save  matpre,phepre,nbfp,nbresp,nomrep,valrep,icodr2,nomfop
+    save matpre, phepre, nbfp, nbresp, nomrep, valrep, icodr2, nomfop
 !
     call jemarq()
     nommat = nommaz
     phen = phenom
-    kstop='F '
+    kstop = 'F '
     k11 = ''
 !
-    ASSERT(iarret.ge.0 .and. iarret.le.2)
+    ASSERT(iarret .ge. 0 .and. iarret .le. 2)
 !
 !
 ! --- TESTS: CELA A-T-IL CHANGE ?
     change = .false.
     if (nbres .gt. nbmx) then
         call utmess('F', 'MODELISA6_94', sk=nommat)
-    endif
+    end if
     if (nommat .ne. matpre) change = .true.
     if (phen .ne. phepre) change = .true.
     if (nbres .ne. nbresp) change = .true.
@@ -113,7 +113,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     end do
 !
 !
-    if (.not.change) then
+    if (.not. change) then
         do ires = 1, nbres
             valres(ires) = valrep(ires)
             icodre(ires) = icodr2(ires)
@@ -122,13 +122,13 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !
         do ires = 1, nbres
             if (nomfop(ires) .ne. ' ') then
-                call fointe(kstop, nomfop(ires), nbpar, nompar, valpar,&
+                call fointe(kstop, nomfop(ires), nbpar, nompar, valpar, &
                             valres(ires), ier)
-                ASSERT(ier.eq.0)
+                ASSERT(ier .eq. 0)
                 icodre(ires) = 0
             else
                 icodre(ires) = 1
-            endif
+            end if
         end do
 !
 !
@@ -141,7 +141,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                 icodre(ires) = 1
             end do
             goto 999
-        endif
+        end if
 !
         call jeveuo(nommat//k11//'.VALR', 'L', vr=valr)
         call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
@@ -158,8 +158,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                 if (nomres(ires) .eq. valk(ir)) then
                     valres(ires) = valr(ir)
                     icodre(ires) = 0
-                    nbobj = nbobj + 1
-                endif
+                    nbobj = nbobj+1
+                end if
             end do
         end do
         if (nbobj .ne. nbres) then
@@ -168,16 +168,16 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                 do ik = 1, nbf
                     if (nomres(ires) .eq. valk(nbr+nbc+ik)) then
                         nomfop(ires) = valk(nbr+nbc+nbf+ik)
-                        call fointe(kstop, nomfop(ires), nbpar, nompar, valpar,&
+                        call fointe(kstop, nomfop(ires), nbpar, nompar, valpar, &
                                     valres(ires), ier)
-                        ASSERT(ier.eq.0)
+                        ASSERT(ier .eq. 0)
                         icodre(ires) = 0
-                    endif
+                    end if
                 end do
             end do
         else
             nbf = 0
-        endif
+        end if
 !
 !       -- SAUVEGARDE DES VALEURS POUR LE PROCHAIN APPEL :
         matpre = nommat
@@ -190,7 +190,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             icodr2(ires) = icodre(ires)
         end do
 !
-    endif
+    end if
 999 continue
 9999 continue
 !

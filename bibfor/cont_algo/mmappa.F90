@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine mmappa(mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/apcalc.h"
@@ -33,8 +33,8 @@ implicit none
 #include "asterfort/mmptch.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,13 +56,13 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_17')
-    endif
+        call utmess('I', 'CONTACT5_17')
+    end if
 !
 ! - Get parameters
 !
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_lac   = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Pairing
 !
@@ -84,6 +84,6 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

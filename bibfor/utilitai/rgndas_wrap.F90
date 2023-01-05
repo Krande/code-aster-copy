@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine rgndas_wrap(nume_ddlz, i_equa, type_equaz, name_nodez,&
-                  name_cmpz, ligrelz)
+subroutine rgndas_wrap(nume_ddlz, i_equa, type_equaz, name_nodez, &
+                       name_cmpz, ligrelz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/rgndas.h"
 !
-character(len=*), intent(in) :: nume_ddlz
-integer, intent(in) :: i_equa
-character(len=1), intent(out) :: type_equaz
-character(len=*), intent(out) :: name_nodez
-character(len=*), intent(out) :: name_cmpz
-character(len=*), intent(out) :: ligrelz
+    character(len=*), intent(in) :: nume_ddlz
+    integer, intent(in) :: i_equa
+    character(len=1), intent(out) :: type_equaz
+    character(len=*), intent(out) :: name_nodez
+    character(len=*), intent(out) :: name_cmpz
+    character(len=*), intent(out) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ character(len=*), intent(out) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call rgndas(nume_ddlz, i_equa , .false., type_equaz=type_equaz, &
-                    name_nodez=name_nodez, name_cmpz=name_cmpz, ligrelz=ligrelz)
+    call rgndas(nume_ddlz, i_equa, .false., type_equaz=type_equaz, &
+                name_nodez=name_nodez, name_cmpz=name_cmpz, ligrelz=ligrelz)
 !
 end subroutine

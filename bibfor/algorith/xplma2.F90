@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xplma2(ndim, nne, nnes, ndls, n,&
+subroutine xplma2(ndim, nne, nnes, ndls, n, &
                   nfhe, pl)
 !
 !
@@ -45,12 +45,12 @@ subroutine xplma2(ndim, nne, nnes, ndls, n,&
 !
 ! ----------------------------------------------------------------------
 !
-    ASSERT(n.le.nne)
+    ASSERT(n .le. nne)
 !
     if (n .le. nnes) then
-        pl= ndls*n - ndim*max(1,nfhe) + 1
+        pl = ndls*n-ndim*max(1, nfhe)+1
     else
-        pl=nnes*3*ndim+ndim*(n-nnes-1)+1
-    endif
+        pl = nnes*3*ndim+ndim*(n-nnes-1)+1
+    end if
 !
 end subroutine

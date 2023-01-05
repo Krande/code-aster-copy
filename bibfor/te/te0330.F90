@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,33 +54,33 @@ subroutine te0330(option, nomte)
         k = 0.d0
 !
         do i = 1, ndl
-            k(i,ndl+1) = zr(jdmul-1+i)
+            k(i, ndl+1) = zr(jdmul-1+i)
         end do
         if (option(1:4) .eq. 'MECA') call jevech('PMATUUR', 'E', jmat)
         if (option(1:4) .eq. 'THER') call jevech('PMATTTR', 'E', jmat)
         ip = 0
-        do i = 1, ndl + 1
+        do i = 1, ndl+1
             do j = 1, i
-                zr(jmat-1+ip+j) = k(j,i)
+                zr(jmat-1+ip+j) = k(j, i)
             end do
-            ip = ip + i
+            ip = ip+i
         end do
 !
     else if (option(6:12) .eq. 'DDLM_C') then
         ASSERT(.false.)
         call jevech('PDDLMUC', 'L', jdmul)
-        kc = (0.d0,0.d0)
+        kc = (0.d0, 0.d0)
 !
         do i = 1, ndl
-            kc(i,ndl+1) = zc(jdmul-1+i)
+            kc(i, ndl+1) = zc(jdmul-1+i)
         end do
         if (option(1:4) .eq. 'ACOU') call jevech('PMATTTC', 'E', jmat)
         ip = 0
-        do i = 1, ndl + 1
+        do i = 1, ndl+1
             do j = 1, i
-                zc(jmat-1+ip+j) = kc(j,i)
+                zc(jmat-1+ip+j) = kc(j, i)
             end do
-            ip = ip + i
+            ip = ip+i
         end do
 !
     else if (option(6:11) .eq. 'BTLA_R') then
@@ -88,16 +88,16 @@ subroutine te0330(option, nomte)
         call jevech('PLAGRAR', 'L', jlagr)
         if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jvec)
         if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jvec)
-        zr(jvec )=zr(jdmul)*zr(jlagr+1)
-        zr(jvec+1)=0.d0
+        zr(jvec) = zr(jdmul)*zr(jlagr+1)
+        zr(jvec+1) = 0.d0
 !
     else if (option(6:9) .eq. 'BU_R') then
         call jevech('PDDLMUR', 'L', jdmul)
         call jevech('PDDLIMR', 'L', jdimp)
         if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jvec)
         if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jvec)
-        zr(jvec )=0.d0
-        zr(jvec+1)=zr(jdmul)*zr(jdimp)
+        zr(jvec) = 0.d0
+        zr(jvec+1) = zr(jdmul)*zr(jdimp)
 !
     else if (option(6:11) .eq. 'DDLI_R') then
         call jevech('PDDLIMR', 'L', jdimp)
@@ -119,7 +119,7 @@ subroutine te0330(option, nomte)
         if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jvec)
         if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jvec)
         if (option(1:4) .eq. 'ACOU') call jevech('PVECTTC', 'E', jvec)
-        nomfon = zk24(jdimp-1+1)(1:19)
+        nomfon = zk24(jdimp-1+1) (1:19)
         nbpar = 4
         nompar(1) = 'X'
         nompar(2) = 'Y'
@@ -129,13 +129,13 @@ subroutine te0330(option, nomte)
         valpar(2) = zr(jgeom-1+2)
         valpar(3) = zr(jgeom-1+3)
         valpar(4) = zr(jtime-1+1)
-        call fointe('FM', nomfon, nbpar, nompar, valpar,&
+        call fointe('FM', nomfon, nbpar, nompar, valpar, &
                     result, ier)
         if (option(1:4) .eq. 'ACOU') then
             zc(jvec-1+ndl+1) = result
         else
             zr(jvec-1+ndl+1) = result
-        endif
-    endif
+        end if
+    end if
 ! ----------------------------------------------------------------------
 end subroutine

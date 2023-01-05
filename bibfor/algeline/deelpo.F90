@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine deelpo(caelem, noma, numail, phie)
     character(len=19) :: carte
     character(len=24) :: cadesc, cavale, calima, gpmama, nomama
 !
-    data nomcmp /'R1      ','R2      '/
+    data nomcmp/'R1      ', 'R2      '/
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -72,7 +72,7 @@ subroutine deelpo(caelem, noma, numail, phie)
     call jeexin(cadesc, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_33')
-    endif
+    end if
     call jeveuo(cadesc, 'L', icad)
     call jeveuo(cavale, 'L', icav)
 !
@@ -89,17 +89,17 @@ subroutine deelpo(caelem, noma, numail, phie)
             call jeveuo(jexnum(gpmama, nuenti), 'L', iglma)
             call jelira(jexnum(gpmama, nuenti), 'LONMAX', nbma)
 !        SI AFFECATION SUR UNE LISTE DE MAILLE
-        else if (icode.eq.3) then
+        else if (icode .eq. 3) then
             call jeveuo(jexnum(calima, nuenti), 'L', iglma)
             call jelira(jexnum(calima, nuenti), 'LONMAX', nbma)
-        endif
+        end if
 !        RECHERCHE DE LA MAILLE
         do ima = 1, nbma
             numa = zi(iglma+ima-1)
             if (numa .eq. numail) then
                 iasbon = ias
                 goto 40
-            endif
+            end if
         end do
 !
     end do
@@ -108,9 +108,9 @@ subroutine deelpo(caelem, noma, numail, phie)
         nomama = noma//'.NOMMAI'
         call jenuno(jexnum(nomama, numail), nomail)
         call utmess('F', 'ALGELINE_34', sk=nomail)
-    endif
+    end if
 !
- 40 continue
+40  continue
 !
 !     EXTRACTION DES RAYONS EXTERIEURS AUX DEUX EXTREMITES DE L'ELEMENT
 !       SI LE RAYON EXTERIEUR EST CONSTANT SUR L'ELEMENT, ON DEDUIT
@@ -121,34 +121,34 @@ subroutine deelpo(caelem, noma, numail, phie)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO'), 'L', inomcp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('NB_EC', 'CAGEPO', 'GRANDEUR', repi=nbec)
-    irang1 = indik8( zk8(inomcp) , nomcmp(1) , 1 , nbcmp )
-    irang2 = indik8( zk8(inomcp) , nomcmp(2) , 1 , nbcmp )
+    irang1 = indik8(zk8(inomcp), nomcmp(1), 1, nbcmp)
+    irang2 = indik8(zk8(inomcp), nomcmp(2), 1, nbcmp)
     if (irang1 .eq. 0 .or. irang2 .eq. 0) then
         call utmess('F', 'ALGELINE_35')
-    endif
+    end if
     icode = zi(icad-1+3+2*iasmax+nbec*(iasbon-1)+1)
     iranv1 = 0
     do icmp = 1, irang1
-        if (exisdg([icode],icmp)) iranv1 = iranv1 + 1
+        if (exisdg([icode], icmp)) iranv1 = iranv1+1
     end do
     iranv2 = 0
     do icmp = 1, irang2
-        if (exisdg([icode],icmp)) iranv2 = iranv2 + 1
+        if (exisdg([icode], icmp)) iranv2 = iranv2+1
     end do
     if (iranv1 .eq. 0 .or. iranv2 .eq. 0) then
         call utmess('F', 'ALGELINE_36')
-    endif
+    end if
 !
     r1 = zr(icav+nbcmp*(iasbon-1)+iranv1-1)
     r2 = zr(icav+nbcmp*(iasbon-1)+iranv2-1)
     if (r1 .eq. 0.d0 .or. r2 .eq. 0.d0) then
         call utmess('F', 'ALGELINE_37')
-    endif
+    end if
     tolr = r8prem()
     difr = dble(abs(r1-r2))
     if (difr .gt. r1*tolr) then
         call utmess('F', 'ALGELINE_38')
-    endif
+    end if
 !
     phie = 2.d0*r1
 !

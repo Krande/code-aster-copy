@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmulco(contac, ddls, ddlc, ddlm, iaint,&
-                  ifiss, jheano, vstnc, lact, lcalel,&
-                  lelim, ndim, nfh, nfiss, ninter,&
-                  nlact, nno, nnol, nnom, nnos,&
+subroutine xmulco(contac, ddls, ddlc, ddlm, iaint, &
+                  ifiss, jheano, vstnc, lact, lcalel, &
+                  lelim, ndim, nfh, nfiss, ninter, &
+                  nlact, nno, nnol, nnom, nnos, &
                   pla, typma)
 ! aslint: disable=W1504
     implicit none
@@ -65,26 +65,26 @@ subroutine xmulco(contac, ddls, ddlc, ddlm, iaint,&
         if (nlact .lt. nnos) lelim = .true.
         if (nfiss .eq. 1) then
             do i = 1, nnos
-                if (lact(i) .eq. 0) vstnc(i)=0
+                if (lact(i) .eq. 0) vstnc(i) = 0
             end do
         else
             do i = 1, nnos
-                if (lact(i) .eq. 0) vstnc((i-1)*nfh+zi(jheano-1+(i-1)*nfiss+ifiss))=0
+                if (lact(i) .eq. 0) vstnc((i-1)*nfh+zi(jheano-1+(i-1)*nfiss+ifiss)) = 0
             end do
-        endif
-    endif
+        end if
+    end if
 ! --- NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
-    if (contac .eq. 1) nnol=nno
-    if (contac .eq. 2) nnol=nno
-    if (contac .eq. 3) nnol=nnos
+    if (contac .eq. 1) nnol = nno
+    if (contac .eq. 2) nnol = nno
+    if (contac .eq. 3) nnol = nnos
     do i = 1, nnol
-        call xplmat(ddls, ddlc, ddlm, nnos, nnom,&
+        call xplmat(ddls, ddlc, ddlm, nnos, nnom, &
                     i, pli)
         if (nfiss .eq. 1) then
             pla(i) = pli
         else
             pla(i) = pli+ndim*(zi(jheano-1+(i-1)*nfiss+ifiss)-1)
-        endif
+        end if
 !
     end do
 end subroutine

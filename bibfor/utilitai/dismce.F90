@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dismce(questi, nomobz, repi, repkz, ierd)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
@@ -44,7 +44,7 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  iret, gd,  jcelk
+    integer ::  iret, gd, jcelk
     character(len=8) :: nogd, docu
     character(len=19) :: nomob
     character(len=24) :: questl, k24
@@ -65,28 +65,28 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
     if (iret .eq. 0) then
         ierd = 1
         goto 9999
-    endif
+    end if
 !
     call jeveuo(nomob//'.CELD', 'L', vi=celd)
     call jelira(nomob//'.CELD', 'DOCU', cval=docu)
-    ASSERT(docu.eq. 'CHML')
+    ASSERT(docu .eq. 'CHML')
     gd = celd(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nogd)
 !
     if (questi .eq. 'TYPE_CHAMP') then
         call jeveuo(nomob//'.CELK', 'L', jcelk)
-        repk = zk24(jcelk-1+3)(1:4)
+        repk = zk24(jcelk-1+3) (1:4)
 !
     else if (questi .eq. 'TYPE_SUPERVIS') then
         repk = 'CHAM_ELEM_'//nogd
 !
     else if (questi .eq. 'NOM_OPTION') then
         call jeveuo(nomob//'.CELK', 'L', jcelk)
-        repk = zk24(jcelk-1+2)(1:16)
+        repk = zk24(jcelk-1+2) (1:16)
 !
     else if (questi .eq. 'NOM_PARAM') then
         call jeveuo(nomob//'.CELK', 'L', jcelk)
-        repk = zk24(jcelk-1+6)(1:8)
+        repk = zk24(jcelk-1+6) (1:8)
 !
     else if (questi .eq. 'NOM_MAILLA') then
         call jeveuo(nomob//'.CELK', 'L', jcelk)
@@ -105,31 +105,31 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
     else if (questi .eq. 'MPI_COMPLET') then
         call jeveuo(nomob//'.CELK', 'L', jcelk)
         k24 = zk24(jcelk-1+7)
-        ASSERT(k24.eq.'MPI_COMPLET'.or.k24.eq.'MPI_INCOMPLET')
+        ASSERT(k24 .eq. 'MPI_COMPLET' .or. k24 .eq. 'MPI_INCOMPLET')
         if (k24 .eq. 'MPI_COMPLET') then
-            repk='OUI'
+            repk = 'OUI'
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
 !
     else if (questi .eq. 'NOM_MODELE') then
         call jeveuo(nomob//'.CELK', 'L', jcelk)
         call dismlg(questi, zk24(jcelk), repi, repk, ierd)
 !
     else if (questi .eq. 'MXNBSP') then
-        repi=max(1,celd(3))
+        repi = max(1, celd(3))
 !
     else if (questi .eq. 'MXVARI') then
-        repi=max(1,celd(4))
+        repi = max(1, celd(4))
 !
     else if (questi .eq. 'TYPE_SCA') then
         call dismgd(questi, nogd, repi, repk, ierd)
 !
     else
         ierd = 1
-    endif
+    end if
 !
-9999  continue
+9999 continue
     repkz = repk
 !
     call jedema()

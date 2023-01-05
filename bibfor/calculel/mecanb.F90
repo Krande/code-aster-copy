@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine mecanb(modele, matel)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    call memare('V', matel, modele, ' ', ' ',&
+    call memare('V', matel, modele, ' ', ' ', &
                 'CHAR_MECA')
 !
     call jedetr(matel//'.RELR')
@@ -71,8 +71,8 @@ subroutine mecanb(modele, matel)
     lchout(1) = matel(1:8)//'.VE001'
     ligrmo = modele//'.MODELE'
     option = 'CALC_NOEU_BORD'
-    call calcul('S', option, ligrmo, 1, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, 1, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
     call reajre(matel, lchout(1), 'V')
 !

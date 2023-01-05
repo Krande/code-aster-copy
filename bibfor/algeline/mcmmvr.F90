@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
+subroutine mcmmvr(cumul, lmat, smdi, smhc, neq, &
                   vect, xsol, nbvect, vectmp, prepos)
     implicit none
 #include "asterf_types.h"
@@ -56,54 +56,54 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
 !
 !
     call jemarq()
-    nom19=zk24(zi(lmat+1))
-    valm=nom19//'.VALM'
+    nom19 = zk24(zi(lmat+1))
+    valm = nom19//'.VALM'
     call jelira(valm, 'NMAXOC', nbloc)
-    ASSERT(nbloc.eq.1 .or. nbloc.eq.2)
-    nonsym=(nbloc.eq.2)
-    czero=dcmplx(0.d0,0.d0)
+    ASSERT(nbloc .eq. 1 .or. nbloc .eq. 2)
+    nonsym = (nbloc .eq. 2)
+    czero = dcmplx(0.d0, 0.d0)
     if (cumul .eq. 'ZERO') then
         do i = 1, nbvect
             do j = 1, neq
-                xsol(j,i)=czero
+                xsol(j, i) = czero
             end do
         end do
-    endif
+    end if
 !     -- VALM(1) : AU DESSUS DE LA DIAGONALE
     call jeveuo(jexnum(valm, 1), 'L', jmat1)
     if (nonsym) then
 !        -- VALM(2) : AU DESSOUS DE LA DIAGONALE
         call jeveuo(jexnum(valm, 2), 'L', jmat2)
     else
-        jmat2=jmat1
-    endif
+        jmat2 = jmat1
+    end if
 !
 !
     do jvec = 1, nbvect
         do k = 1, neq
-            vectmp(k)=vect(k,jvec)
+            vectmp(k) = vect(k, jvec)
         end do
 !        -- LES LAGRANGE DOIVENT ETRE MIS A L'ECHELLE AVANT LA
 !           MULTIPLICATION :
-        if (prepos) call mcconl('DIVI', lmat, 0, 'C', vectmp,&
+        if (prepos) call mcconl('DIVI', lmat, 0, 'C', vectmp, &
                                 1)
 !
 !        -- PREMIERE LIGNE
-        xsol(1,jvec)=xsol(1,jvec)+zr(jmat1-1+1)*vectmp(1)
+        xsol(1, jvec) = xsol(1, jvec)+zr(jmat1-1+1)*vectmp(1)
 !
 !        -- LIGNES SUIVANTES
         do i = 2, neq
-            kdeb=smdi(i-1)+1
-            kfin=smdi(i)-1
+            kdeb = smdi(i-1)+1
+            kfin = smdi(i)-1
             do ki = kdeb, kfin
-                jcol=smhc(ki)
-                xsol(jcol,jvec)=xsol(jcol,jvec)+zr(jmat1-1+ki)*vectmp(&
-                i)
-                xsol(i,jvec)=xsol(i,jvec)+zr(jmat2-1+ki)*vectmp(jcol)
+                jcol = smhc(ki)
+                xsol(jcol, jvec) = xsol(jcol, jvec)+zr(jmat1-1+ki)*vectmp( &
+                                   i)
+                xsol(i, jvec) = xsol(i, jvec)+zr(jmat2-1+ki)*vectmp(jcol)
             end do
-            xsol(i,jvec)=xsol(i,jvec)+zr(jmat1+kfin)*vectmp(i)
+            xsol(i, jvec) = xsol(i, jvec)+zr(jmat1+kfin)*vectmp(i)
         end do
-        if (prepos) call mcconl('DIVI', lmat, 0, 'C', xsol(1, jvec),&
+        if (prepos) call mcconl('DIVI', lmat, 0, 'C', xsol(1, jvec), &
                                 1)
     end do
 !
@@ -116,12 +116,12 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
         call jeveuo(nom19//'.CCID', 'L', vi=ccid)
         do jvec = 1, nbvect
             do ieq = 1, neq
-                keta=ccid(ieq)
-                ASSERT(keta.eq.1 .or. keta.eq.0)
-                if (keta .eq. 1) xsol(ieq,jvec)=dcmplx(0.d0,0.d0)
+                keta = ccid(ieq)
+                ASSERT(keta .eq. 1 .or. keta .eq. 0)
+                if (keta .eq. 1) xsol(ieq, jvec) = dcmplx(0.d0, 0.d0)
             end do
         end do
-    endif
+    end if
 !
 !
     call jedema()

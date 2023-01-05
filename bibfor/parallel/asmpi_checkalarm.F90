@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine asmpi_checkalarm()
 #include "asterc/asmpi_send_i4.h"
 !
     mpi_int :: i, rank, nbpro4, ival(1), mpicou, mpicow, nbv
-    mpi_int, parameter :: pr0=0
+    mpi_int, parameter :: pr0 = 0
     integer :: ia, np1, vali(2)
     aster_logical :: vu
 !
@@ -51,15 +51,15 @@ subroutine asmpi_checkalarm()
     call asmpi_comm('GET', mpicou)
     ASSERT(mpicow == mpicou)
     call asmpi_info(mpicou, rank=rank, size=nbpro4)
-    np1 = nbpro4 - 1
+    np1 = nbpro4-1
     nbv = 1
 !
     if (.not. gtstat(ST_OK)) then
         if (rank .eq. 0) then
             call utmess('I', 'CATAMESS_88')
-        endif
+        end if
         goto 9999
-    endif
+    end if
 !
 !     SUR LES PROCESSEURS AUTRES QUE #0
 !
@@ -86,14 +86,14 @@ subroutine asmpi_checkalarm()
                     call utmess('A+', 'APPELMPI_1', ni=2, vali=vali)
                 else
                     call utmess('A+', 'APPELMPI_2', ni=2, vali=vali)
-                endif
-            endif
+                end if
+            end if
         end do
         if (vu) then
             call utmess('A', 'VIDE_1')
-        endif
+        end if
 !
-    endif
+    end if
 9999 continue
 #endif
 end subroutine

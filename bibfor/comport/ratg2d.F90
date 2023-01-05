@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 ! Declaration of integer type variables
     aster_logical :: epflag
 !
-    parameter (mmax=3, nmax=6)
+    parameter(mmax=3, nmax=6)
 !
 ! Declaration of vector and matrix type variables
     real(kind=8) :: dpstrs(mmax, mmax), pstra(mmax), pstrs(mmax)
@@ -72,13 +72,13 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
     real(kind=8) :: r0, r1, r2, r3, r4, sqr, dmax1, tol, refe
 !
 ! Declaration of constant variables
-    data  r0   ,r1   ,r2   ,r3   ,r4   ,small ,tol   ,sqr   /&
-     &    0.0d0,1.0d0,2.0d0,3.0d0,4.0d0,1.d-06,1.d-10,&
-     &    1.4142135623730951d0                              /
-    data  mxiter / 50 /
+    data r0, r1, r2, r3, r4, small, tol, sqr/&
+     &    0.0d0, 1.0d0, 2.0d0, 3.0d0, 4.0d0, 1.d-06, 1.d-10,&
+     &    1.4142135623730951d0/
+    data mxiter/50/
 !
 ! Declaration of Common space variables
-    common / debug / epflag
+    common/debug/epflag
 !
 !     if (epflag) then
 !        write(6,'(A)')'!'
@@ -96,39 +96,39 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 ! ITRI =  0 : TRI EN VALEUR RELATIVE
 !         1 : TRI EN VALEUR ABSOLUE
 !         2 : PAS DE TRI
-    itri  =2
+    itri = 2
 ! IORDER =  0 : TRI PAR ORDRE CROISSANT
 !           1 : TRI PAR ORDRE DECROISSANT
 !           2 : PAS DE TRI
-    iorder=2
+    iorder = 2
 !
 ! Initialize unit matrix = (1 0 0 1 0 1) for Jacobi
     t1(:) = r0
-    t1(1)=r1
-    t1(4)=r1
-    t1(6)=r1
+    t1(1) = r1
+    t1(4) = r1
+    t1(6) = r1
 !
-    eigprj(:,:) = r0
+    eigprj(:, :) = r0
 ! Matrix  TR = (SIXX SIXY SIYY) for Jacobi
 ! Produce EIGPRJ: Base Projection Matrix from initial base
 !                 to principal directions base
 !         PSTRS : principal stresses
-    tr(1)=stress(1)
-    tr(2)=stress(4)/sqr
-    tr(3)=r0
-    tr(4)=stress(2)
-    tr(5)=r0
-    tr(6)=r0
+    tr(1) = stress(1)
+    tr(2) = stress(4)/sqr
+    tr(3) = r0
+    tr(4) = stress(2)
+    tr(5) = r0
+    tr(6) = r0
 !
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
     tu(1:nmax) = t1(1:nmax)
 !
-    call jacobi(mmax, mxiter, tol, small, tr,&
-                tu, eigprj, pstrs, vaux, itjac1,&
+    call jacobi(mmax, mxiter, tol, small, tr, &
+                tu, eigprj, pstrs, vaux, itjac1, &
                 itri, iorder)
 !
-    pstrs(3)         =stress(3)
-    eigprj(mmax,mmax)=r1
+    pstrs(3) = stress(3)
+    eigprj(mmax, mmax) = r1
 !
 !     if (epflag) then
 !         write(6,'(A)')'! EIGEN VALUES AND VECTORS OF STRESS:'
@@ -173,23 +173,23 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 ! Produce EIGXPR: Base Projection Matrix from initial base
 !                 to principal directions base
 !         PSTRA : principal strains
-    tr(1)=strain(1)
-    tr(2)=strain(4)
-    tr(4)=strain(2)
-    tr(3)=r0
-    tr(5)=r0
-    tr(6)=r0
+    tr(1) = strain(1)
+    tr(2) = strain(4)
+    tr(4) = strain(2)
+    tr(3) = r0
+    tr(5) = r0
+    tr(6) = r0
 !
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
     tu(1:nmax) = t1(1:nmax)
-    eigxpr(:,:) = r0
+    eigxpr(:, :) = r0
 !
-    call jacobi(mmax, mxiter, tol, small, tr,&
-                tu, eigxpr, pstra, vaux, itjac1,&
+    call jacobi(mmax, mxiter, tol, small, tr, &
+                tu, eigxpr, pstra, vaux, itjac1, &
                 itri, iorder)
 !
-    pstra(3)         =strain(3)
-    eigxpr(mmax,mmax)=r1
+    pstra(3) = strain(3)
+    eigxpr(mmax, mmax) = r1
 !
 !     if (epflag) then
 !         write(6,'(A)')'!'
@@ -248,9 +248,9 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 !     endif
 !
 ! Check for repeated eigenvalues of strain
-    refe=dmax1(abs(pstra(1)),abs(pstra(2)))*small
+    refe = dmax1(abs(pstra(1)), abs(pstra(2)))*small
     if (abs(pstra(1)-pstra(2)) .lt. refe) then
-        edge=r1
+        edge = r1
 !
 !         if (epflag) then
 !             write(6,'(A)')'!(@_@)'
@@ -258,8 +258,8 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 !             write(6,'(A)')'!(@_@)'
 !         endif
     else
-        edge=r0
-    endif
+        edge = r0
+    end if
 !
 ! Inputs:
 !

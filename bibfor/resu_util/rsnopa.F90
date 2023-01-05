@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,13 +76,13 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
             call jenuno(jexnum(nomd2//'.NOVA', ipar), nompar)
             call jenonu(jexnom(nomd2//'.NOVA', nompar), ibid)
             call jeveuo(jexnum(nomd2//'.TAVA', ibid), 'L', iatava)
-            if (zk8(iatava+3)(1:4) .eq. 'PARA') then
-                nbpara = nbpara + 1
+            if (zk8(iatava+3) (1:4) .eq. 'PARA') then
+                nbpara = nbpara+1
                 nom_para(nbpara) = nompar
             else
-                nbacc = nbacc + 1
+                nbacc = nbacc+1
                 nom_acce(nbacc) = nompar
-            endif
+            end if
         end do
         if (icode .eq. 0) nbpara = 0
         if (icode .eq. 1) nbacc = 0
@@ -90,28 +90,28 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
         if (iret .ne. 0) call jedetr(nomjv)
         if (icode .eq. 0 .and. nbacc .eq. 0) then
             call utmess('A', 'UTILITAI4_44')
-        endif
+        end if
         if (icode .eq. 1 .and. nbpara .eq. 0) then
             call utmess('A', 'UTILITAI4_45')
-        endif
+        end if
         if ((nbacc+nbpara) .ne. 0) then
             call wkvect(nomjv, 'V V K16', (nbacc+nbpara), jpara)
             if (nbacc .ne. 0) then
                 do iacc = 1, nbacc
                     zk16(jpara-1+iacc) = nom_acce(iacc)
                 end do
-            endif
+            end if
             if (nbpara .ne. 0) then
                 do ipar = 1, nbpara
                     zk16(jpara-1+ipar+nbacc) = nom_para(ipar)
                 end do
-            endif
-        endif
+            end if
+        end if
         AS_DEALLOCATE(vk16=nom_acce)
         AS_DEALLOCATE(vk16=nom_para)
     else
 !        -- RIEN A FAIRE
-    endif
+    end if
 !
 !
     call jedema()

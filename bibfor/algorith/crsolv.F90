@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
 !
     resire = 1.d-6
     nprec = 8
-    epsmat=-1.d0
+    epsmat = -1.d0
 !
 ! --- CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
 !
@@ -70,11 +70,11 @@ subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
 ! --- REMPLISSAGE DE LA S.D. SOLVEUR
 !
     zk24(islvk-1+1) = method
-    if ((method.eq.'MULT_FRONT') .or. (method.eq.'LDLT')) then
+    if ((method .eq. 'MULT_FRONT') .or. (method .eq. 'LDLT')) then
         zk24(islvk-1+2) = 'XXXX'
     else
         zk24(islvk-1+2) = preco
-    endif
+    end if
     if (method .eq. 'MUMPS') then
         zk24(islvk-1+3) = 'AUTO'
         zk24(islvk-1+5) = kacmum
@@ -83,7 +83,7 @@ subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
         zk24(islvk-1+3) = 'XXXX'
         zk24(islvk-1+5) = 'XXXX'
         zk24(islvk-1+6) = 'XXXX'
-    endif
+    end if
     zk24(islvk-1+4) = renum
     zk24(islvk-1+7) = 'XXXX'
     zk24(islvk-1+8) = 'XXXX'
@@ -103,15 +103,15 @@ subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
         zr(islvr-1+3) = jevtbl('TAILLE_BLOC')
         zr(islvr-1+4) = 0.d0
         zr(islvr-1+5) = 0.d0
-    endif
+    end if
 !
     zi(islvi-1+1) = nprec
-    zi(islvi-1+2) =-9999
-    zi(islvi-1+3) =-9999
-    zi(islvi-1+4) =-9999
-    zi(islvi-1+5) =-9999
-    zi(islvi-1+6) =-9999
-    zi(islvi-1+7) =-9999
+    zi(islvi-1+2) = -9999
+    zi(islvi-1+3) = -9999
+    zi(islvi-1+4) = -9999
+    zi(islvi-1+5) = -9999
+    zi(islvi-1+6) = -9999
+    zi(islvi-1+7) = -9999
     zi(islvi-1+8) = 0
     zi(islvi-1+9) = 0
 !

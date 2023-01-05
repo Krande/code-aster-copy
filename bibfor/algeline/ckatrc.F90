@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,16 +34,16 @@ subroutine ckatrc(vr, xsi, coefck, ck)
 !-----------------------------------------------------------------------
     ior = 2
     pi = r8pi()
-    dcldy = coefck(1,1)
-    a0(1) = coefck(1,2)
-    dr(1) = coefck(1,3)
-    a0(2) = coefck(1,4)
-    dr(2) = coefck(1,5)
+    dcldy = coefck(1, 1)
+    a0(1) = coefck(1, 2)
+    dr(1) = coefck(1, 3)
+    a0(2) = coefck(1, 4)
+    dr(2) = coefck(1, 5)
 !
     xcor = dble(sqrt(1.0d0-xsi*xsi))
     omr = 2.0d0*pi/vr
-    pr = dcmplx(-xsi,xcor)*omr
-    call routhc(hr, hi, pr, a0, dr,&
+    pr = dcmplx(-xsi, xcor)*omr
+    call routhc(hr, hi, pr, a0, dr, &
                 ior)
     ck = dcldy*(hr+hi*xsi/xcor)
 !

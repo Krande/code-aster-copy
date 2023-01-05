@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ subroutine conlag(matasz, cond)
 !
     call jemarq()
 !
-    matass=matasz
-    cond=1.d0
+    matass = matasz
+    cond = 1.d0
 !
 ! ---  on sort des que l'on trouve un conditionnement de lagrange
     call jeexin(matass//'.CONL', iret)
@@ -61,7 +61,7 @@ subroutine conlag(matasz, cond)
             cond = 1.d0/conl(jcol)
             if (cond .ne. 1.d0) goto 999
         end do
-    endif
+    end if
 !
 999 continue
 !

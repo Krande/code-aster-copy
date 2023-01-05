@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,45 +60,45 @@ subroutine pmfite(typfib, nf, ncarf, vf, ve, vs)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ii
-    real(kind=8) :: eds,yy,zz,aire
+    real(kind=8) :: eds, yy, zz, aire
 !
 ! --------------------------------------------------------------------------------------------------
 !
     vs(:) = 0.0d0
 !
-    if ( typfib.eq.1 ) then
+    if (typfib .eq. 1) then
 !       3 caractéristiques utiles par fibre : y z aire
         do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            aire = vf(3,ii)
+            yy = vf(1, ii)
+            zz = vf(2, ii)
+            aire = vf(3, ii)
 !
             eds = aire*ve(ii)
-            vs(1) = vs(1) + eds
-            vs(2) = vs(2) + yy*eds
-            vs(3) = vs(3) + zz*eds
-            vs(4) = vs(4) + yy*yy*eds
-            vs(5) = vs(5) + zz*zz*eds
-            vs(6) = vs(6) + yy*zz*eds
-        enddo
-    else if ( typfib.eq.2 ) then
+            vs(1) = vs(1)+eds
+            vs(2) = vs(2)+yy*eds
+            vs(3) = vs(3)+zz*eds
+            vs(4) = vs(4)+yy*yy*eds
+            vs(5) = vs(5)+zz*zz*eds
+            vs(6) = vs(6)+yy*zz*eds
+        end do
+    else if (typfib .eq. 2) then
 
 !       6 caractéristiques utiles par fibre : y z aire yp zp numgr
         do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            aire = vf(3,ii)
+            yy = vf(1, ii)
+            zz = vf(2, ii)
+            aire = vf(3, ii)
 !
             eds = aire*ve(ii)
-            vs(1) = vs(1) + eds
-            vs(2) = vs(2) + yy*eds
-            vs(3) = vs(3) + zz*eds
-            vs(4) = vs(4) + yy*yy*eds
-            vs(5) = vs(5) + zz*zz*eds
-            vs(6) = vs(6) + yy*zz*eds
-        enddo
+            vs(1) = vs(1)+eds
+            vs(2) = vs(2)+yy*eds
+            vs(3) = vs(3)+zz*eds
+            vs(4) = vs(4)+yy*yy*eds
+            vs(5) = vs(5)+zz*zz*eds
+            vs(6) = vs(6)+yy*zz*eds
+        end do
     else
         call utmess('F', 'ELEMENTS2_40', si=typfib)
-    endif
+    end if
 !
 end subroutine

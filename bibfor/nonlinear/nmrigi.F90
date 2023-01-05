@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmrigi(modelz         , cara_elem,&
-                  ds_material    , ds_constitutive,&
-                  list_func_acti , iter_newt      , sddyna, ds_measure, ds_system,&
-                  hval_incr      , hval_algo      , hhoField, &
-                  optioz         , ldccvg)
+subroutine nmrigi(modelz, cara_elem, &
+                  ds_material, ds_constitutive, &
+                  list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
+                  hval_incr, hval_algo, hhoField, &
+                  optioz, ldccvg)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/isfonc.h"
@@ -37,19 +37,19 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/infdbg.h"
 !
-character(len=*), intent(in) :: modelz
-character(len=24), intent(in) :: cara_elem
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-integer, intent(in) :: list_func_acti(*)
-integer, intent(in) :: iter_newt
-character(len=19), intent(in) :: sddyna
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-type(HHO_Field), intent(in) :: hhoField
-character(len=*), intent(in) :: optioz
-integer, intent(out) :: ldccvg
+    character(len=*), intent(in) :: modelz
+    character(len=24), intent(in) :: cara_elem
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: list_func_acti(*)
+    integer, intent(in) :: iter_newt
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    type(HHO_Field), intent(in) :: hhoField
+    character(len=*), intent(in) :: optioz
+    integer, intent(out) :: ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,43 +91,43 @@ integer, intent(out) :: ldccvg
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_29')
-    endif
+    end if
 !
 ! - Initializations
 !
-    base      = 'V'
-    optrig    = optioz
-    model     = modelz
-    ldccvg    = 0
+    base = 'V'
+    optrig = optioz
+    model = modelz
+    ldccvg = 0
 !
 ! - Active functionnalities
 !
-    l_xfem      = isfonc(list_func_acti, 'XFEM')
+    l_xfem = isfonc(list_func_acti, 'XFEM')
     l_macr_elem = isfonc(list_func_acti, 'MACR_ELEM_STAT')
-    lendo       = isfonc(list_func_acti, 'ENDO_NO')
-    l_hho       = isfonc(list_func_acti, 'HHO')
+    lendo = isfonc(list_func_acti, 'ENDO_NO')
+    l_hho = isfonc(list_func_acti, 'HHO')
 !
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
 !
-    if (.not.lendo) then
+    if (.not. lendo) then
         if (optrig(1:9) .eq. 'RIGI_MECA') then
             call nmdep0('ON ', hval_algo)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Init timer
 !
-    call nmtime(ds_measure, 'Init'  , 'Integrate')
+    call nmtime(ds_measure, 'Init', 'Integrate')
     call nmtime(ds_measure, 'Launch', 'Integrate')
 !
 ! - Computation
 !
-    call merimo(base           ,&
-                l_xfem         , l_macr_elem, l_hho      ,&
-                model          , cara_elem  , iter_newt+1,&
-                ds_constitutive, ds_material, ds_system  ,&
-                hval_incr      , hval_algo  , hhoField   ,&
-                optrig         , ldccvg     , sddyna)
+    call merimo(base, &
+                l_xfem, l_macr_elem, l_hho, &
+                model, cara_elem, iter_newt+1, &
+                ds_constitutive, ds_material, ds_system, &
+                hval_incr, hval_algo, hhoField, &
+                optrig, ldccvg, sddyna)
 !
 ! - End timer
 !
@@ -138,6 +138,6 @@ integer, intent(out) :: ldccvg
 !
     if (optrig(1:9) .eq. 'RIGI_MECA') then
         call nmdep0('OFF', hval_algo)
-    endif
+    end if
 !
 end subroutine

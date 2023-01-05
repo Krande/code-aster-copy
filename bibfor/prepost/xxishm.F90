@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ function xxishm(mailc, mailx, mo)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
     end do
 !
-  1 continue
+1   continue
 !
     call jeveuo(mailx, 'L', jmax)
     call jelira(mailx, 'LONMAX', nbmac2, k8b)
@@ -81,13 +81,13 @@ function xxishm(mailc, mailx, mo)
     end do
 !
 !
-    if ((notype(1:2).eq.'HM') .or. (notyp2(1:2).eq.'HM')) then
-        pre1=.true.
+    if ((notype(1:2) .eq. 'HM') .or. (notyp2(1:2) .eq. 'HM')) then
+        pre1 = .true.
     else
-        pre1=.false.
-    endif
+        pre1 = .false.
+    end if
 !
-    xxishm=pre1
+    xxishm = pre1
 !
     call jedema()
 end function

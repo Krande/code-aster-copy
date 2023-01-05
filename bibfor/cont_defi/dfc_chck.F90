@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine dfc_chck(sdcont, mesh, model_ndim)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfnodb.h"
@@ -52,7 +52,7 @@ implicit none
 !
     call cfnodb(sdcont)
 
-    iform = cfdisi(sdcont(1:8)//'.CONTACT','FORMULATION')
+    iform = cfdisi(sdcont(1:8)//'.CONTACT', 'FORMULATION')
 !
 ! - Check dimension of elements versus model dimension
 !
@@ -62,6 +62,6 @@ implicit none
 ! - Check normals/tangents
 !
         call chckco(sdcont, mesh, model_ndim)
-    endif
+    end if
 !
 end subroutine

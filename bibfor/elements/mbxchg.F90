@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom,&
-                  imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
+subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoids, igeom, &
+                  imate, ipesa, ivectu, icontm, vff, dff, alpha, beta)
 !
     implicit none
 #include "jeveux.h"
@@ -35,7 +35,7 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
     character(len=4) :: fami
     integer :: nddl, nno, ncomp, npg
     integer :: kpg
-    integer :: ipoids, igeom, imate, ipesa,iepsin,itemps
+    integer :: ipoids, igeom, imate, ipesa, iepsin, itemps
     integer :: ivectu, icontm
     real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
 ! ----------------------------------------------------------------------
@@ -86,13 +86,13 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
 ! - CALCUL DE LA MATRICE "B" :
 !   DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
 !
-    call mbcine(nno, zr(igeom), dff, alpha, beta,&
+    call mbcine(nno, zr(igeom), dff, alpha, beta, &
                 b, jac)
 !
 ! - BRANCHEMENT DES DIFFERENTES OPTIONS
 !
-    if ((option.eq.'FORC_NODA') .or. (option.eq.'CHAR_MECA_TEMP_R') .or.&
-        (option(1:15).eq.'CHAR_MECA_EPSI_')) then
+    if ((option .eq. 'FORC_NODA') .or. (option .eq. 'CHAR_MECA_TEMP_R') .or. &
+        (option(1:15) .eq. 'CHAR_MECA_EPSI_')) then
 !
 ! ---   FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
 !
@@ -103,18 +103,18 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
 !
 ! ---   CHAR_MECA_EPSI_R : SIG = RIG*EPSIN
 !
-        else if (option.eq.'CHAR_MECA_EPSI_R') then
+        else if (option .eq. 'CHAR_MECA_EPSI_R') then
 !
             call mbrigi(fami, kpg, imate, rig)
 !
             call r8inir(3, 0.d0, sig, 1)
             do c = 1, ncomp
                 do cc = 1, ncomp
-                    sig(c) = sig(c) + zr(iepsin+ncomp*(kpg-1)+cc-1)*rig(cc,c)
+                    sig(c) = sig(c)+zr(iepsin+ncomp*(kpg-1)+cc-1)*rig(cc, c)
                 end do
             end do
 !
-        else if (option.eq.'CHAR_MECA_EPSI_F') then
+        else if (option .eq. 'CHAR_MECA_EPSI_F') then
 !
             call mbrigi(fami, kpg, imate, rig)
 !
@@ -130,10 +130,10 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
             zgau = 0.d0
 !
             do i = 1, nno
-                xgau = xgau + vff(i)*zr(igeom-1+1+3*(i-1))
-                ygau = ygau + vff(i)*zr(igeom-1+2+3*(i-1))
-                zgau = zgau + vff(i)*zr(igeom-1+3+3*(i-1))
-            enddo
+                xgau = xgau+vff(i)*zr(igeom-1+1+3*(i-1))
+                ygau = ygau+vff(i)*zr(igeom-1+2+3*(i-1))
+                zgau = zgau+vff(i)*zr(igeom-1+3+3*(i-1))
+            end do
 !
             valpar(1) = xgau
             valpar(2) = ygau
@@ -145,73 +145,73 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
 !
             do c = 1, ncomp
                 do cc = 1, ncomp
-                    sig(c) = sig(c) + epsinif(cc)*rig(cc,c)
+                    sig(c) = sig(c)+epsinif(cc)*rig(cc, c)
                 end do
             end do
 
 !
 ! ---   CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
 !
-        else if (option.eq.'CHAR_MECA_TEMP_R') then
+        else if (option .eq. 'CHAR_MECA_TEMP_R') then
 !
-            call verift(fami, kpg, 1, '+', zi(imate),&
+            call verift(fami, kpg, 1, '+', zi(imate), &
                         epsth_=epsthe)
 !
             call mbrigi(fami, kpg, imate, rig)
 !
             call r8inir(3, 0.d0, sig, 1)
             do c = 1, ncomp
-                sig(c) = epsthe*(rig(1,c)+rig(2,c))
+                sig(c) = epsthe*(rig(1, c)+rig(2, c))
             end do
 !
-        endif
+        end if
 !
         do n = 1, nno
             do i = 1, nddl
                 do c = 1, ncomp
-                    zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
-                    nddl+i-1) +b(c,i,n)*sig(c)*zr(ipoids+kpg-1)*&
-                    jac
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)* &
+                                                   nddl+i-1)+b(c, i, n)*sig(c)*zr(ipoids+kpg-1)* &
+                                                jac
                 end do
             end do
         end do
 !
 ! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
 !
-    else if (option.eq.'REFE_FORC_NODA') then
+    else if (option .eq. 'REFE_FORC_NODA') then
 !
         call terefe('EPSI_REFE', 'MEMBRANE', epsref)
         if (epsref .eq. r8vide()) then
             ASSERT(.false.)
-        endif
+        end if
 !
         call mbrigi(fami, kpg, imate, rig)
 !
 ! ---   ON CALCULE UN ORDRE DE GRANDEUR DE LA CONTRAINTE MEMBRANAIRE
-        sgmref = epsref*(rig(1,1) + rig(2,2))/2.d0
-        ASSERT(sgmref.gt.0.d0)
+        sgmref = epsref*(rig(1, 1)+rig(2, 2))/2.d0
+        ASSERT(sgmref .gt. 0.d0)
 !
         do n = 1, nno
             do i = 1, nddl
-                zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sgmref*sqrt(abs(jac)&
-                                            )/npg
+                zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+i-1)+sgmref*sqrt(abs(jac) &
+                                                                                  )/npg
             end do
         end do
 !
 ! - CHAR_MECA_PESA_R
 !
-    else if (option.eq.'CHAR_MECA_PESA_R') then
-        call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                    ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
+    else if (option .eq. 'CHAR_MECA_PESA_R') then
+        call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                    ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0], &
                     1, 'RHO', rho, codres, 1)
         do n = 1, nno
             do i = 1, nddl
-                zr(ivectu+(n-1)*nddl+i-1) = zr(&
-                                            ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)* zr(ip&
-                                            &esa+i) *vff(n)*zr( ipoids+kpg-1&
+                zr(ivectu+(n-1)*nddl+i-1) = zr( &
+                                            ivectu+(n-1)*nddl+i-1)+rho(1)*zr(ipesa)*zr(ip&
+                                            &esa+i)*vff(n)*zr(ipoids+kpg-1 &
                                             )*jac
             end do
         end do
-    endif
+    end if
 
 end subroutine

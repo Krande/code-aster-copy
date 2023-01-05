@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine vefnme_cplx(option, base, model, mate, carele,&
-                       compor, partps, nh, ligrelz, varicomz,&
+subroutine vefnme_cplx(option, base, model, mate, carele, &
+                       compor, partps, nh, ligrelz, varicomz, &
                        sigmaz, strxz, deplz, depl_incrz, vecelz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -46,21 +46,21 @@ implicit none
 #include "asterfort/sepach.h"
 #include "asterfort/copisd.h"
 !
-character(len=16), intent(in) :: option
-character(len=1), intent(in) :: base
-character(len=8), intent(in) :: model
-real(kind=8), intent(in) :: partps(*)
-character(len=24), intent(in) :: carele
-character(len=24), intent(in) :: mate
-character(len=*), intent(in) :: ligrelz
-integer, intent(in) :: nh
-character(len=19), intent(in) :: compor
-character(len=*), intent(in) :: sigmaz
-character(len=*), intent(in) :: varicomz
-character(len=*), intent(in) :: strxz
-character(len=*), intent(in) :: deplz
-character(len=*), intent(in) :: depl_incrz
-character(len=*), intent(inout) :: vecelz(*)
+    character(len=16), intent(in) :: option
+    character(len=1), intent(in) :: base
+    character(len=8), intent(in) :: model
+    real(kind=8), intent(in) :: partps(*)
+    character(len=24), intent(in) :: carele
+    character(len=24), intent(in) :: mate
+    character(len=*), intent(in) :: ligrelz
+    integer, intent(in) :: nh
+    character(len=19), intent(in) :: compor
+    character(len=*), intent(in) :: sigmaz
+    character(len=*), intent(in) :: varicomz
+    character(len=*), intent(in) :: strxz
+    character(len=*), intent(in) :: deplz
+    character(len=*), intent(in) :: depl_incrz
+    character(len=*), intent(inout) :: vecelz(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,7 +90,7 @@ character(len=*), intent(inout) :: vecelz(*)
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 1
-    integer, parameter :: nbin  = 32
+    integer, parameter :: nbin = 32
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -117,7 +117,7 @@ character(len=*), intent(inout) :: vecelz(*)
 !
 ! - Initializations
 !
-    carael =carele(1:8)
+    carael = carele(1:8)
     sigma = sigmaz
     varicom = varicomz
     strx = strxz
@@ -135,17 +135,17 @@ character(len=*), intent(inout) :: vecelz(*)
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
 !
 ! - Get mesh
 !
     if (depl .ne. ' ') then
         call dismoi('NOM_MAILLA', depl, 'CHAM_NO', repk=mesh)
-    else if (sigma.ne.' ') then
+    else if (sigma .ne. ' ') then
         call dismoi('NOM_MAILLA', sigma, 'CHAM_ELEM', repk=mesh)
     else
         ASSERT(.false.)
-    endif
+    end if
     chgeom = mesh(1:8)//'.COORDO'
 !
 ! - VECT_ELEM name
@@ -153,16 +153,16 @@ character(len=*), intent(inout) :: vecelz(*)
     vecele = vecelz(1)
     if (vecele .eq. ' ') then
         vecele = '&&VEFNME'
-    endif
+    end if
     veceli = vecelz(2)
     if (veceli .eq. ' ') then
         veceli = '&&VEFNMI'
-    endif
+    end if
     if (ligrel .eq. ' ') then
         ligrel_local = model(1:8)//'.MODELE'
     else
         ligrel_local = ligrel
-    endif
+    end if
 !
 ! - <CARTE> for structural elements
 !
@@ -170,25 +170,25 @@ character(len=*), intent(inout) :: vecelz(*)
 !
 ! - <CARTE> for Fourier mode
 !
-    call mecact('V', numhar, 'MAILLA', mesh, 'HARMON',&
+    call mecact('V', numhar, 'MAILLA', mesh, 'HARMON', &
                 ncmp=1, nomcmp='NH', si=nh)
 !
 ! - <CARTE> for instant
 !
     instm = partps(1)
     instp = partps(2)
-    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R',&
+    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=instm)
-    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R',&
+    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=instp)
 !
 ! - Init fields
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 ch1)
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 ch2)
 !
 ! - CREATION DES LISTES DES CHAMPS IN
@@ -259,7 +259,7 @@ character(len=*), intent(inout) :: vecelz(*)
         stano = '&&VEFNME.STNO.BID'
         fissno = '&&VEFNME.FISSNO.BID'
         hea_no = '&&VEFNME.HEA_NO.BID'
-    endif
+    end if
 !
     lpain(20) = 'PPINTTO'
     lchin(20) = pintto
@@ -293,92 +293,92 @@ character(len=*), intent(inout) :: vecelz(*)
     lpaout(1) = 'PVECTUR'
     call gcnco2(newnom)
     lchout(1) = vecele(1:8)//newnom
-    call corich('E', lchout(1), ichin_ = -1)
+    call corich('E', lchout(1), ichin_=-1)
     call gcnco2(newnom)
     ch1(1) = vecele(1:8)//newnom
-    call corich('E', ch1(1), ichin_ = -1)
+    call corich('E', ch1(1), ichin_=-1)
     call gcnco2(newnom)
     ch2(1) = veceli(1:8)//newnom
-    call corich('E', ch2(1), ichin_ = -1)
+    call corich('E', ch2(1), ichin_=-1)
 !
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare(base, vecele, model, ' ', carele,&
+    call memare(base, vecele, model, ' ', carele, &
                 'CHAR_MECA')
 !
-    lcmplx=.false.
+    lcmplx = .false.
     do k = 1, nbin
-        inddec(k)=0
+        inddec(k) = 0
         if (lpain(k) .eq. ' ') goto 1
-        ch19=lchin(k)
+        ch19 = lchin(k)
         if (ch19 .eq. ' ') goto 1
         call exisd('CHAMP', ch19, iexi)
         if (iexi .eq. 0) goto 1
         call dismoi('NOM_GD', ch19, 'CHAMP', repk=nomgd)
         if (nomgd(5:6) .eq. '_C') then
-            lcmplx=.true.
-            inddec(k)=1
-            chr='&&VEFNME.CHXX.R'
-            chi='&&VEFNME.CHXX.I'
+            lcmplx = .true.
+            inddec(k) = 1
+            chr = '&&VEFNME.CHXX.R'
+            chi = '&&VEFNME.CHXX.I'
             call codent(k, 'D0', chr(12:13))
             call codent(k, 'D0', chi(12:13))
             call sepach(carael, ch19, 'V', chr, chi)
-            chdecr(k)=chr
-            chdeci(k)=chi
-        endif
-  1     continue
+            chdecr(k) = chr
+            chdeci(k) = chi
+        end if
+1       continue
     end do
 
     if (lcmplx) then
         call detrsd('VECT_ELEM', veceli)
-    endif
+    end if
 
     call exisd('CHAM_ELEM_S', lchout(1), iexi)
-    lsspt=(iexi.ne.0)
+    lsspt = (iexi .ne. 0)
 
     if (lcmplx) then
         do k = 1, nbin
             if (inddec(k) .eq. 0) then
-                lchinr(k)=lchin(k)
-                lchini(k)=lchin(k)
+                lchinr(k) = lchin(k)
+                lchini(k) = lchin(k)
             else
-                lchinr(k)=chdecr(k)
-                lchini(k)=chdeci(k)
-            endif
+                lchinr(k) = chdecr(k)
+                lchini(k) = chdeci(k)
+            end if
         end do
-        call memare(base, veceli, model, ' ', carele,&
-                'CHAR_MECA')
-    endif
+        call memare(base, veceli, model, ' ', carele, &
+                    'CHAR_MECA')
+    end if
 
     if (debug) then
-        call dbgcal(optio2, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(optio2, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
 ! - APPEL A CALCUL
 !
     if (lcmplx) then
         if (lsspt) call copisd('CHAM_ELEM_S', 'V', lchout(1), ch1(1))
-        call calcul('S', optio2, ligrel_local, nbin, lchinr,&
-                lpain, nbout, ch1, lpaout, 'V',&
-                'OUI')
+        call calcul('S', optio2, ligrel_local, nbin, lchinr, &
+                    lpain, nbout, ch1, lpaout, 'V', &
+                    'OUI')
         call reajre(vecele, ch1(1), 'V')
         vecelz(1) = vecele//'.RELR'
 !
         if (lsspt) call copisd('CHAM_ELEM_S', 'V', lchout(1), ch2(1))
-        call calcul('S', optio2, ligrel_local, nbin, lchini,&
-                lpain, nbout, ch2, lpaout, 'V',&
-                'OUI')
+        call calcul('S', optio2, ligrel_local, nbin, lchini, &
+                    lpain, nbout, ch2, lpaout, 'V', &
+                    'OUI')
         call reajre(veceli, ch2(1), 'V')
         vecelz(2) = veceli//'.RELR'
     else
-        call calcul('S', optio2, ligrel_local, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, base,&
-                'OUI')
+        call calcul('S', optio2, ligrel_local, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
+                    'OUI')
         call reajre(vecele, lchout(1), base)
         vecelz(1) = vecele//'.RELR'
-    endif
+    end if
 !
 ! - Cleaning
 !
@@ -386,7 +386,7 @@ character(len=*), intent(inout) :: vecelz(*)
         if (inddec(k) .ne. 0) then
             call detrsd('CHAMP', chdecr(k))
             call detrsd('CHAMP', chdeci(k))
-        endif
+        end if
     end do
 
     call detrsd('CHAMP_GD', numhar)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,31 +17,31 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine fneihm(ds_thm, fnoevo, deltat, perman, nno1, nno2,&
-                  npi, npg, wref, iu, ip,&
-                  ipf, iq, vff1, vff2, dffr2,&
-                  geom, ang, congem, r, vectu,&
-                  mecani, press1, press2, dimdef,&
+subroutine fneihm(ds_thm, fnoevo, deltat, perman, nno1, nno2, &
+                  npi, npg, wref, iu, ip, &
+                  ipf, iq, vff1, vff2, dffr2, &
+                  geom, ang, congem, r, vectu, &
+                  mecani, press1, press2, dimdef, &
                   dimcon, dimuel, ndim, axi)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/fonoei.h"
 #include "asterfort/matthm.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical :: fnoevo, perman, axi
-integer :: dimdef, dimcon, nno1, nno2
-integer :: dimuel, ndim
-integer :: npi, npg, mecani(8), press1(9), press2(9)
-integer :: addeme, addep1, addep2
-integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
-real(kind=8) :: deltat, geom(ndim, nno2), dffr2(ndim-1, nno2, npi)
-real(kind=8) :: congem(dimcon, npi), vff1(nno1, npi), vff2(nno2, npi)
-real(kind=8) :: vectu(dimuel), r(dimdef), ang(24), wref(npg)
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical :: fnoevo, perman, axi
+    integer :: dimdef, dimcon, nno1, nno2
+    integer :: dimuel, ndim
+    integer :: npi, npg, mecani(8), press1(9), press2(9)
+    integer :: addeme, addep1, addep2
+    integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
+    real(kind=8) :: deltat, geom(ndim, nno2), dffr2(ndim-1, nno2, npi)
+    real(kind=8) :: congem(dimcon, npi), vff1(nno1, npi), vff2(nno2, npi)
+    real(kind=8) :: vectu(dimuel), r(dimdef), ang(24), wref(npg)
 !
 ! ======================================================================
 !     BUT:  CALCUL  DE L'OPTION FORC_NODA POUR JOINT AVEC COUPLAGE HM
@@ -99,13 +99,13 @@ real(kind=8) :: vectu(dimuel), r(dimdef), ang(24), wref(npg)
         dt = 1.d0
     else
         dt = deltat
-    endif
+    end if
 !
 ! ======================================================================
 ! --- INITIALISATION DE VECTU ------------------------------------------
 ! ======================================================================
     do i = 1, dimuel
-        vectu(i)=0.d0
+        vectu(i) = 0.d0
     end do
 ! ======================================================================
 ! --- CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG ---------------
@@ -116,25 +116,25 @@ real(kind=8) :: vectu(dimuel), r(dimdef), ang(24), wref(npg)
 ! --- INITIALISATION DE R ----------------------------------------------
 ! ======================================================================
         do i = 1, dimdef
-            r(i)=0.d0
+            r(i) = 0.d0
         end do
 !
 ! ======================================================================
 ! --- CALCUL DE LA MATRICE Q AU POINT DE GAUSS -------------------------
 ! ======================================================================
 !
-        call matthm(ds_thm, ndim, axi, nno1, nno2, dimuel,&
-                    dimdef, iu, ip, ipf, iq,&
-                    addep1,&
-                    addlh1, vff1(1, kpi), vff2(1, kpi), dffr2(1, 1, kpi), wref(kpi),&
+        call matthm(ds_thm, ndim, axi, nno1, nno2, dimuel, &
+                    dimdef, iu, ip, ipf, iq, &
+                    addep1, &
+                    addlh1, vff1(1, kpi), vff2(1, kpi), dffr2(1, 1, kpi), wref(kpi), &
                     geom, ang, wi, q)
 !
 ! ======================================================================
-        call fonoei(ds_thm, ndim, dt, fnoevo, dimdef, dimcon,&
-                    addeme,&
-                    addep1, addep2, addlh1, adcome,&
-                    adcp11,&
-                    adcop1, adcop2, congem(1, kpi),&
+        call fonoei(ds_thm, ndim, dt, fnoevo, dimdef, dimcon, &
+                    addeme, &
+                    addep1, addep2, addlh1, adcome, &
+                    adcp11, &
+                    adcop1, adcop2, congem(1, kpi), &
                     r)
 !
 ! ======================================================================
@@ -143,7 +143,7 @@ real(kind=8) :: vectu(dimuel), r(dimdef), ang(24), wref(npg)
 !
         do i = 1, dimuel
             do n = 1, dimdef
-                vectu(i)=vectu(i)+q(n,i)*r(n)*wi
+                vectu(i) = vectu(i)+q(n, i)*r(n)*wi
             end do
         end do
 !

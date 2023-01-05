@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadesc, iaec,  iaprno
+    integer :: i, iad, iadesc, iaec, iaprno
     integer :: ibid, ifc, ino, iret, itype
     integer ::  nbno, ncmpmx, nec
     character(len=8), pointer :: nomnoe(:) => null()
@@ -83,7 +83,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         call getres(k8b, k8b, nomcmd)
         call utmess('A', 'PREPOST_97', sk=type(1:1))
         goto 999
-    endif
+    end if
 !
     call jeveuo(chamn//'.DESC', 'L', iadesc)
     gd = zi(iadesc-1+1)
@@ -99,14 +99,14 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         numi = zi(iadesc-1+2)
         if (gdi .ne. gd) then
             call utmess('F', 'PREPOST2_67')
-        endif
+        end if
         if (numi .ne. num) then
             call utmess('F', 'PREPOST2_68')
-        endif
+        end if
         call jelira(chamn//'.VALE', 'TYPE', cval=typi)
         if (typi .ne. type) then
             call utmess('F', 'PREPOST2_69')
-        endif
+        end if
     end do
 !
 !     --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR NOMGD
@@ -124,7 +124,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         call jeveuo(nomnu(1:19)//'.NUEQ', 'L', vi=nueq)
         call jenonu(jexnom(nomnu(1:19)//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(nomnu(1:19)//'.PRNO', ibid), 'L', iaprno)
-    endif
+    end if
 !
 !     --- NOMBRE DE NOEUDS DU MAILLAGE: NBNO
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
@@ -139,13 +139,13 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !
     if (num .ge. 0) then
         ncmpmx = 6
-        call irmad1(ifc, versio, nbno, zi(iaprno), nueq,&
-                    nec, zi(iaec), ncmpmx, itype, nstat,&
-                    chamno, zk8(iad), nomsym,numnoe)
+        call irmad1(ifc, versio, nbno, zi(iaprno), nueq, &
+                    nec, zi(iaec), ncmpmx, itype, nstat, &
+                    chamno, zk8(iad), nomsym, numnoe)
     else
         call getres(k8b, k8b, nomcmd)
         call utmess('E', 'PREPOST2_70')
-    endif
+    end if
 !
 ! --- MENAGE
     call jedetr('&&IRMAD0.ENT_COD')

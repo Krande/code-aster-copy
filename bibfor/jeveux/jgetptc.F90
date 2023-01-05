@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine jgetptc(jad, pteur_c, vl, vi, vi4,&
-                   vr, vc, vk8, vk16, vk24,&
+subroutine jgetptc(jad, pteur_c, vl, vi, vi4, &
+                   vr, vc, vk8, vk16, vk24, &
                    vk32, vk80)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -31,7 +31,7 @@ subroutine jgetptc(jad, pteur_c, vl, vi, vi4,&
     integer :: jad
     type(c_ptr) :: pteur_c
 !
-    aster_logical , optional, target :: vl(*)
+    aster_logical, optional, target :: vl(*)
     integer, optional, target :: vi(*)
     integer(kind=4), optional, target :: vi4(*)
     real(kind=8), optional, target :: vr(*)
@@ -47,28 +47,28 @@ subroutine jgetptc(jad, pteur_c, vl, vi, vi4,&
 !
 !
     if (present(vl)) then
-        pteur_c=c_loc(vl(jad))
+        pteur_c = c_loc(vl(jad))
     else if (present(vi)) then
-        pteur_c=c_loc(vi(jad))
+        pteur_c = c_loc(vi(jad))
     else if (present(vi4)) then
-        pteur_c=c_loc(vi4(jad))
+        pteur_c = c_loc(vi4(jad))
     else if (present(vr)) then
-        pteur_c=c_loc(vr(jad))
+        pteur_c = c_loc(vr(jad))
     else if (present(vc)) then
-        pteur_c=c_loc(vc(jad))
+        pteur_c = c_loc(vc(jad))
     else if (present(vk8)) then
-        pteur_c=c_loc(vk8(jad))
+        pteur_c = c_loc(vk8(jad))
     else if (present(vk16)) then
-        pteur_c=c_loc(vk16(jad))
+        pteur_c = c_loc(vk16(jad))
     else if (present(vk24)) then
-        pteur_c=c_loc(vk24(jad))
+        pteur_c = c_loc(vk24(jad))
     else if (present(vk32)) then
-        pteur_c=c_loc(vk32(jad))
+        pteur_c = c_loc(vk32(jad))
     else if (present(vk80)) then
-        pteur_c=c_loc(vk80(jad))
+        pteur_c = c_loc(vk80(jad))
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end

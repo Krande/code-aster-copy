@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbajva(table, nbpara, nompar, vi, livi,&
-                  vr, livr, vc, livc, vk,&
+subroutine tbajva(table, nbpara, nompar, vi, livi, &
+                  vr, livr, vc, livc, vk, &
                   livk)
     implicit none
 #include "jeveux.h"
@@ -65,16 +65,16 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
     if (nomtab(18:19) .ne. '  ') then
         call utmess('F', 'UTILITAI4_68')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
     nbcol = tbnp(1)
-    ASSERT(nbcol.ne.0)
-    ASSERT(nbcol.eq.nbpara)
+    ASSERT(nbcol .ne. 0)
+    ASSERT(nbcol .eq. nbpara)
 !
     ki = 0
     kr = 0
@@ -84,33 +84,33 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
         nomcol = tblp(4*(i-1)+1)
         type = tblp(4*(i-1)+2)
         if (type(1:1) .eq. 'I') then
-            ki = ki + 1
+            ki = ki+1
             if (nompar .eq. nomcol) then
                 livi(ki) = vi
                 goto 20
-            endif
-        else if (type(1:1).eq.'R') then
-            kr = kr + 1
+            end if
+        else if (type(1:1) .eq. 'R') then
+            kr = kr+1
             if (nompar .eq. nomcol) then
                 livr(kr) = vr
                 goto 20
-            endif
-        else if (type(1:1).eq.'C') then
-            kc = kc + 1
+            end if
+        else if (type(1:1) .eq. 'C') then
+            kc = kc+1
             if (nompar .eq. nomcol) then
                 livc(kc) = vc
                 goto 20
-            endif
-        else if (type(1:1).eq.'K') then
-            kk = kk + 1
+            end if
+        else if (type(1:1) .eq. 'K') then
+            kk = kk+1
             if (nompar .eq. nomcol) then
                 livk(kk) = vk
                 goto 20
-            endif
-        endif
+            end if
+        end if
     end do
     call utmess('F', 'TABLE0_1', sk=nompar)
- 20 continue
+20  continue
 !
     call jedema()
 !

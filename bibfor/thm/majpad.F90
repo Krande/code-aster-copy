@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine majpad(rgaz , kh  ,&
-                  temp , p2  ,&
-                  dtemp, dp2 ,&
-                  pvpm , pvp ,&
-                  padm , padp, dpad)
+subroutine majpad(rgaz, kh, &
+                  temp, p2, &
+                  dtemp, dp2, &
+                  pvpm, pvp, &
+                  padm, padp, dpad)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: rgaz, kh
-real(kind=8), intent(in) :: temp, p2
-real(kind=8), intent(in) :: dtemp, dp2
-real(kind=8), intent(in) :: pvpm, pvp
-real(kind=8), intent(out) :: padm, padp, dpad
+    real(kind=8), intent(in) :: rgaz, kh
+    real(kind=8), intent(in) :: temp, p2
+    real(kind=8), intent(in) :: dtemp, dp2
+    real(kind=8), intent(in) :: pvpm, pvp
+    real(kind=8), intent(out) :: padm, padp, dpad
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,8 +52,8 @@ real(kind=8), intent(out) :: padm, padp, dpad
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    padp = (p2 - pvp)*rgaz*temp/kh
-    padm = ((p2-dp2) - pvpm)*rgaz*(temp-dtemp)/kh
-    dpad = padp - padm
+    padp = (p2-pvp)*rgaz*temp/kh
+    padm = ((p2-dp2)-pvpm)*rgaz*(temp-dtemp)/kh
+    dpad = padp-padm
 !
 end subroutine

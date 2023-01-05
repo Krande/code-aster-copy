@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,22 +49,22 @@ subroutine op0101()
 !
 ! --- RECUPERATION DU RESULTAT
     call getres(chcine, type, oper)
-    chci19=chcine
-    ASSERT(type(1:9).eq.'CHAR_CINE')
-    pheno=type(11:14)
-    cinef=(oper(15:16).eq.'_F')
+    chci19 = chcine
+    ASSERT(type(1:9) .eq. 'CHAR_CINE')
+    pheno = type(11:14)
+    cinef = (oper(15:16) .eq. '_F')
 !
 ! --- RECUPERATION DU MODELE :
     call getvid(' ', 'MODELE', scal=mo, nbret=n1)
 !
 ! --- CREATION DU .AFCK:
     call wkvect(chci19//'.AFCK', 'G V K8', 3, jafck)
-    zk8(jafck-1+2)=mo
+    zk8(jafck-1+2) = mo
 !
     if (oper .eq. 'AFFE_CHAR_CINE') then
         call getvid(' ', 'EVOL_IMPO', scal=evoim, nbret=n1)
-        if (n1 .eq. 1) zk8(jafck-1+3)=evoim
-    endif
+        if (n1 .eq. 1) zk8(jafck-1+3) = evoim
+    end if
 !
 !
 !     REMARQUE :
@@ -73,28 +73,28 @@ subroutine op0101()
 !        PARFOIS :  '_RE' -> '_FT'  (EVOL_IMPO)
 !
     if (pheno .eq. 'MECA') then
-        if (.not.cinef) then
-            zk8(jafck-1+1)='CIME_RE'
+        if (.not. cinef) then
+            zk8(jafck-1+1) = 'CIME_RE'
             call charci(chcine, 'MECA_IMPO', mo, 'R')
         else
-            zk8(jafck-1+1)='CIME_FT'
+            zk8(jafck-1+1) = 'CIME_FT'
             call charci(chcine, 'MECA_IMPO', mo, 'F')
-        endif
-    else if (pheno.eq.'THER') then
-        if (.not.cinef) then
-            zk8(jafck-1+1)='CITH_RE'
+        end if
+    else if (pheno .eq. 'THER') then
+        if (.not. cinef) then
+            zk8(jafck-1+1) = 'CITH_RE'
             call charci(chcine, 'THER_IMPO', mo, 'R')
         else
-            zk8(jafck-1+1)='CITH_FT'
+            zk8(jafck-1+1) = 'CITH_FT'
             call charci(chcine, 'THER_IMPO', mo, 'F')
-        endif
-    else if (pheno.eq.'ACOU') then
-        ASSERT(.not.cinef)
-        zk8(jafck-1+1)='CIAC_CX'
+        end if
+    else if (pheno .eq. 'ACOU') then
+        ASSERT(.not. cinef)
+        zk8(jafck-1+1) = 'CIAC_CX'
         call charci(chcine, 'ACOU_IMPO', mo, 'C')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !

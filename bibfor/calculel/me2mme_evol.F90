@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine me2mme_evol(model_    , cara_elem_, mate_      , mateco_  , nharm    , base_    ,&
-                       i_load    , load_name , ligrel_calc, inst_prev, inst_curr,&
-                       inst_theta, resu_elem , vect_elem)
+subroutine me2mme_evol(model_, cara_elem_, mate_, mateco_, nharm, base_, &
+                       i_load, load_name, ligrel_calc, inst_prev, inst_curr, &
+                       inst_theta, resu_elem, vect_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -53,7 +53,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_in_maxi, nbout
-    parameter (nb_in_maxi = 42, nbout = 1)
+    parameter(nb_in_maxi=42, nbout=1)
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
@@ -63,28 +63,28 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    stop      = 'S'
-    base      = base_
-    model     = model_
+    stop = 'S'
+    base = base_
+    model = model_
     cara_elem = cara_elem_
-    mate      = mate_
-    mateco    = mateco_
+    mate = mate_
+    mateco = mateco_
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Preparing input fields
 !
-    call load_neum_prep(model    , cara_elem , mate      , mateco      , 'Dead'   , inst_prev,&
-                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
-                        lpain    , nharm = nharm)
+    call load_neum_prep(model, cara_elem, mate, mateco, 'Dead', inst_prev, &
+                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+                        lpain, nharm=nharm)
 !
 ! - Compute composite dead Neumann loads (EVOL_CHAR)
 !
-    call load_neum_evcd(stop      , inst_prev , load_name, i_load, ligrel_calc,&
-                        nb_in_maxi, nb_in_prep, lpain    , lchin , base       ,&
-                        resu_elem , vect_elem)
+    call load_neum_evcd(stop, inst_prev, load_name, i_load, ligrel_calc, &
+                        nb_in_maxi, nb_in_prep, lpain, lchin, base, &
+                        resu_elem, vect_elem)
 
 end subroutine

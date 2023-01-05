@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,16 +39,11 @@ module yacs_module
 #include "asterc/cpech.h"
 #include "asterc/cplch.h"
 
-
-
-
-
     private :: clean_port
 
-    public ::  port, add_port, icompo , get_port_by_name, delete_port
+    public ::  port, add_port, icompo, get_port_by_name, delete_port
     public :: com_port
     public :: PORT_IN, PORT_OUT
-
 
     type port
         character(len=144) :: name
@@ -59,293 +54,258 @@ module yacs_module
         character(len=8), pointer :: vk8(:) => null()
     end type port
 
-
-
-
-
     ! ports will be a linked list !
-    type(port), pointer :: first_port=> null()
-
+    type(port), pointer :: first_port => null()
 
     ! YACS
     integer :: icompo
     integer(kind=4), parameter :: cpiter = 41
     integer(kind=4), parameter :: izero4 = 0
-    real(kind=4),    parameter :: dzero4 = 0.0
+    real(kind=4), parameter :: dzero4 = 0.0
 
     integer, parameter :: PORT_IN = -1
     integer, parameter :: PORT_OUT = 1
 
-
-
-
-
-    contains
-
-
+contains
 
 !--
 
-       subroutine initialize_compo()
-          integer, pointer :: ic(:) => null()
-          call jeveuo('&ADR_YACS','L', vi=ic)
-          icompo=ic(1)
-       end subroutine
-
-
-
+    subroutine initialize_compo()
+        integer, pointer :: ic(:) => null()
+        call jeveuo('&ADR_YACS', 'L', vi=ic)
+        icompo = ic(1)
+    end subroutine
 
 !--
 
-      logical function are_ports_equals( p1, p2)
+    logical function are_ports_equals(p1, p2)
         type(port), pointer :: p1, p2
 
         are_ports_equals = .false.
 
-        if( associated(p1) .and. associated(p2)) then
+        if (associated(p1) .and. associated(p2)) then
 
-            if(p1%name == p2%name) then
+            if (p1%name == p2%name) then
                 are_ports_equals = .true.
             end if
 
-        endif
+        end if
 
-      end function are_ports_equals
-
-
+    end function are_ports_equals
 
 !--
 
-
-      subroutine get_port_by_name(port_name, fport)
-          character(len=*), intent(in) :: port_name
-          type(port), pointer :: fport
-          logical :: exist
-          call is_port_exist(port_name, exist, fport)
-          ASSERT( exist )
-      end subroutine
-
-
+    subroutine get_port_by_name(port_name, fport)
+        character(len=*), intent(in) :: port_name
+        type(port), pointer :: fport
+        logical :: exist
+        call is_port_exist(port_name, exist, fport)
+        ASSERT(exist)
+    end subroutine
 
 !--
 
-       subroutine com_port( fport, itime, time)
-            type(port), intent(in) :: fport
-            integer, intent(in) :: itime
-            real(kind=8), intent(in) :: time
+    subroutine com_port(fport, itime, time)
+        type(port), intent(in) :: fport
+        integer, intent(in) :: itime
+        real(kind=8), intent(in) :: time
 
+        integer(kind=4) :: nele4, info4, nlu, itime4
+        real(kind=4) :: time4
 
-            integer(kind=4) :: nele4, info4, nlu, itime4
-            real(kind=4) :: time4
+        call initialize_compo()
 
-            call initialize_compo()
+        itime4 = itime
+        time4 = time
 
-            itime4=itime
-            time4=time
+        if (fport%direction .eq. PORT_OUT) then
 
-            if( fport%direction .eq. PORT_OUT) then
+            if (associated(fport%vr)) then
+                nele4 = size(fport%vr)
+                call cpedb(icompo, cpiter, time, itime4, &
+                           fport%name, nele4, fport%vr, info4)
+                call errcou('Writing ', itime4, fport%name, info4, nele4, nele4)
+            end if
 
-               if (associated(fport%vr)) then
-                  nele4 = size(fport%vr)
-                  call cpedb(icompo, cpiter, time, itime4,&
-                            fport%name, nele4, fport%vr , info4 )
-                  call errcou('Writing ', itime4, fport%name, info4, nele4, nele4)
-               endif
+            if (associated(fport%vi4)) then
+                nele4 = size(fport%vi4)
+                call cpeen(icompo, cpiter, time4, itime4, &
+                           fport%name, nele4, fport%vi4, info4)
+                call errcou('Writing ', itime4, fport%name, info4, nele4, nele4)
+            end if
 
-               if (associated(fport%vi4)) then
-                  nele4 = size(fport%vi4)
-                  call cpeen(icompo, cpiter, time4, itime4, &
-                            fport%name, nele4, fport%vi4, info4 )
-                  call errcou('Writing ', itime4, fport%name, info4, nele4, nele4)
-               endif
+            if (associated(fport%vk8)) then
+                nele4 = size(fport%vk8)
+                call cpech(icompo, cpiter, time4, itime4, &
+                           fport%name, nele4, fport%vk8(1), info4)
+                call errcou('Writing ', itime4, fport%name, info4, nele4, nele4)
+            end if
 
-               if (associated(fport%vk8)) then
-                  nele4 = size(fport%vk8)
-                  call cpech(icompo, cpiter, time4, itime4, &
-                            fport%name, nele4, fport%vk8(1) , info4 )
-                  call errcou('Writing ', itime4, fport%name, info4, nele4, nele4)
-               endif
+        else
 
+            if (associated(fport%vr)) then
+                nele4 = size(fport%vr)
+                call cpldb(icompo, cpiter, time, time, itime4, &
+                           fport%name, nele4, nlu, fport%vr, info4)
+                call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
+            end if
 
-            else
+            if (associated(fport%vi4)) then
+                nele4 = size(fport%vi4)
+                time4 = time
+                call cplen(icompo, cpiter, time4, time4, itime4, &
+                           fport%name, nele4, nlu, fport%vi4, info4)
+                call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
+            end if
 
-               if(associated(fport%vr)) then
-                    nele4 = size(fport%vr)
-                    call cpldb(icompo, cpiter, time, time, itime4,&
-                              fport%name, nele4, nlu, fport%vr, info4)
-                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
-               endif
+            if (associated(fport%vi4)) then
+                nele4 = size(fport%vk8)
+                time4 = time
+                call cplch(icompo, cpiter, time4, time4, itime4, &
+                           fport%name, nele4, nlu, fport%vk8(1), info4)
+                call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
+            end if
 
-               if(associated(fport%vi4)) then
-                    nele4 = size(fport%vi4)
-                    time4 = time
-                    call cplen(icompo, cpiter, time4, time4, itime4,&
-                              fport%name, nele4, nlu, fport%vi4, info4)
-                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
-               endif
+        end if
 
-               if(associated(fport%vi4)) then
-                    nele4 = size(fport%vk8)
-                    time4 = time
-                    call cplch(icompo, cpiter, time4, time4, itime4, &
-                              fport%name, nele4, nlu, fport%vk8(1), info4)
-                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
-               endif
+    end subroutine
 
-            endif
+    subroutine add_port(name, direction, nvalues, typ)
+        implicit none
+        character(len=*), intent(in) :: name
+        integer, intent(in) :: direction
+        integer, intent(in) :: nvalues
+        character(len=*), intent(in), optional :: typ
+        logical exist
 
-       end subroutine
+        ! for foundport
+        type(port), pointer :: fport => null()
 
+        if (.not. associated(first_port)) then
+            allocate (first_port)
+            fport => first_port
 
-       subroutine add_port(  name , direction, nvalues, typ)
-           implicit none
-           character(len=*), intent(in) :: name
-           integer, intent(in) :: direction
-           integer, intent(in) :: nvalues
-           character(len=*), intent(in), optional :: typ
-           logical exist
+        else
 
-           ! for foundport
-           type(port), pointer :: fport => null()
+            call is_port_exist(name, exist, fport)
+            ASSERT(.not. exist)
+            allocate (fport%next)
+            fport => fport%next
+        end if
 
-           if( .not. associated(first_port) ) then
-              allocate(first_port)
-              fport => first_port
+        fport%name = name
+        fport%direction = direction
 
-           else
+        if (.not. present(typ)) then
+            AS_ALLOCATE(vr=fport%vr, size=nvalues)
+        else
+            select case (trim(typ))
+            case ('I4')
+                AS_ALLOCATE(vi4=fport%vi4, size=nvalues)
+            case ('R8')
+                AS_ALLOCATE(vr=fport%vr, size=nvalues)
+            case ('K8')
+                AS_ALLOCATE(vk8=fport%vk8, size=nvalues)
+            case default
+                ASSERT(.false.)
+            end select
+        end if
+    end subroutine
 
-              call is_port_exist(name, exist, fport )
-              ASSERT(.not. exist)
-              allocate(fport%next)
-              fport => fport%next
-           endif
+    subroutine is_port_exist(name, exist, current)
+        character(len=*), intent(in) :: name
+        logical, intent(out) :: exist
+        type(port), pointer, optional :: current
+        current => null()
+        exist = .false.
 
-           fport%name =name
-           fport%direction = direction
+        if (associated(first_port)) then
 
-           if(.not. present(typ)) then
-              AS_ALLOCATE(vr=fport%vr, size=nvalues)
-           else
-              select case (trim(typ))
-                case ('I4')
-                    AS_ALLOCATE(vi4=fport%vi4, size=nvalues)
-                case ('R8')
-                    AS_ALLOCATE(vr=fport%vr,   size=nvalues)
-                case ('K8')
-                    AS_ALLOCATE(vk8 = fport%vk8, size=nvalues)
-                case default
-                   ASSERT(.false.)
-              end select
-           endif
-       end subroutine
+            current => first_port
 
+            do
+                if (trim(current%name) == trim(name)) then
+                    exist = .true.
+                    exit
+                end if
 
-       subroutine is_port_exist(  name, exist, current )
-           character(len=*), intent(in) :: name
-           logical , intent(out) :: exist
-           type(port), pointer, optional :: current
-           current =>null()
-           exist = .false.
+                if (.not. associated(current%next)) then
+                    exit
+                end if
 
+                current => current%next
 
-           if(associated(first_port)) then
+            end do
+        end if
 
-               current => first_port
-
-               do
-                    if (trim(current%name) == trim(name) ) then
-                        exist = .true.
-                        exit
-                    endif
-
-                    if( .not. associated( current%next) ) then
-                        exit
-                    endif
-
-                    current => current%next
-
-               end do
-           endif
-
-       end subroutine
-
+    end subroutine
 
 ! ---
 
+    subroutine delete_port(fport)
+        type(port), pointer :: fport
 
-        subroutine delete_port(  fport )
-            type(port), pointer :: fport
+        type(port), pointer :: precedent => null()
 
-            type(port), pointer :: precedent => null()
+        if (associated(fport)) then
 
-            if( associated(fport) ) then
+            ! first you need to find the preceeding port
+            precedent => first_port
 
-                ! first you need to find the preceeding port
-                precedent => first_port
+            if (are_ports_equals(fport, first_port)) then
+                first_port => first_port%next
+                call clean_port(precedent)
+            else
+                call get_previous_element(fport, precedent)
+                ASSERT(associated(precedent))
+                precedent%next => fport%next
+                call clean_port(fport)
+            end if
+        end if
 
-                if( are_ports_equals(fport, first_port) ) then
-                        first_port => first_port % next
-                        call clean_port(precedent)
-                else
-                    call get_previous_element( fport, precedent )
-                    ASSERT( associated(precedent) )
-                    precedent%next => fport%next
-                    call clean_port(fport)
-                endif
-            endif
-
-
-
-
-
-        end subroutine
-
+    end subroutine
 
 !--
 
-        subroutine get_previous_element(element, backele)
-            ! return the element before
-            type(port), pointer  :: element
-            type(port), pointer :: backele
-            type(port), pointer              :: current => null()
-            backele => null()
-            current => first_port
+    subroutine get_previous_element(element, backele)
+        ! return the element before
+        type(port), pointer  :: element
+        type(port), pointer :: backele
+        type(port), pointer              :: current => null()
+        backele => null()
+        current => first_port
 
-            do while ( associated( current ) )
-                if( are_ports_equals( current%next, element ) ) then
-                    backele => current
-                    exit
-                endif
-                current => current%next
-            end do
+        do while (associated(current))
+            if (are_ports_equals(current%next, element)) then
+                backele => current
+                exit
+            end if
+            current => current%next
+        end do
 
-        end subroutine
+    end subroutine
 
 !--
 
-        subroutine clean_port(fport)
-            type(port), pointer :: fport
+    subroutine clean_port(fport)
+        type(port), pointer :: fport
 
-            if(associated(fport%vr)) then
-                AS_DEALLOCATE( vr = fport%vr )
+        if (associated(fport%vr)) then
+            AS_DEALLOCATE(vr=fport%vr)
 
-            endif
-            if(associated(fport%vi4)) then
-                AS_DEALLOCATE(vi4= fport%vi4)
+        end if
+        if (associated(fport%vi4)) then
+            AS_DEALLOCATE(vi4=fport%vi4)
 
-            endif
+        end if
 
-            if(associated(fport%vk8)) then
-                AS_DEALLOCATE(vk8=fport%vk8)
-            endif
+        if (associated(fport%vk8)) then
+            AS_DEALLOCATE(vk8=fport%vk8)
+        end if
 
-            nullify(fport%next)
-            deallocate(fport)
+        nullify (fport%next)
+        deallocate (fport)
 
-        end subroutine
-
-
-
-
+    end subroutine
 
 end module

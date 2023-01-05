@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,31 +86,31 @@ subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
         tymocl(2) = 'MAILLE'
         limocl(1) = 'GROUP_MA'
         limocl(2) = 'MAILLE'
-        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone,&
+        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone, &
                     nbmocl, limocl, tymocl, listmn, nbmano)
         if (nbmano .ne. 0) then
             call jeveuo(listmn, 'L', jlist)
             do ino = 1, nbmano
                 zi(jnl+jdecal-1) = zi(jlist+ino-1)
-                jdecal = jdecal +1
+                jdecal = jdecal+1
             end do
-        endif
+        end if
         call jedetr(listmn)
 !
         tymocl(1) = 'GROUP_NO'
         tymocl(2) = 'NOEUD'
         limocl(1) = 'GROUP_NO'
         limocl(2) = 'NOEUD'
-        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone,&
+        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone, &
                     nbmocl, limocl, tymocl, listnn, nbnono)
 !
         if (nbnono .ne. 0) then
             call jeveuo(listnn, 'L', jlist)
             do ino = 1, nbnono
                 zi(jnl+jdecal-1) = zi(jlist+ino-1)
-                jdecal = jdecal +1
+                jdecal = jdecal+1
             end do
-        endif
+        end if
         call jedetr(listnn)
 !
     end do

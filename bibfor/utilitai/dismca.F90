@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dismca(question_, object_, answeri, answerk_, ierd)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/dismgd.h"
 !
-character(len=*), intent(in) :: question_
-character(len=*), intent(in) :: object_
-integer, intent(out) :: answeri, ierd
-character(len=*), intent(out)  :: answerk_
+    character(len=*), intent(in) :: question_
+    character(len=*), intent(in) :: object_
+    integer, intent(out) :: answeri, ierd
+    character(len=*), intent(out)  :: answerk_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ character(len=*), intent(out)  :: answerk_
     character(len=24)   :: question
     character(len=32)   :: answerk
     character(len=19)   :: object, func_name, field
-    integer, parameter  :: max_para_name=15
+    integer, parameter  :: max_para_name = 15
     character(len=8)    :: func_type, para_name(max_para_name), type, nogd
     integer             :: iexi, iret, repi
     integer             :: jvale, i_zone, i_para, nb_zone, ltyp, nb_para
@@ -71,9 +71,9 @@ character(len=*), intent(out)  :: answerk_
 ! - Initializations
 !
     answerk_ = ' '
-    answeri  = 0
-    ierd     = 0
-    object   = object_
+    answeri = 0
+    ierd = 0
+    object = object_
     question = question_
 !
 ! - Object exists ?
@@ -82,7 +82,7 @@ character(len=*), intent(out)  :: answerk_
     if (iexi .eq. 0) then
         ierd = 1
         goto 999
-    endif
+    end if
 !
     if (question .eq. 'NOM_MAILLA') then
         call jeveuo(object//'.NOMA', 'L', vk8=v_noma)
@@ -107,7 +107,7 @@ character(len=*), intent(out)  :: answerk_
 !
     else if (question .eq. 'PARA_INST') then
         answerk = ' '
-        field   = object
+        field = object
         call jeveuo(field//'.VALE', 'L', jvale)
         call jelira(field//'.VALE', 'TYPE', cval=type)
         if (type(1:1) .eq. 'K') then
@@ -117,29 +117,29 @@ character(len=*), intent(out)  :: answerk_
                 if (ltyp .eq. 8) then
                     func_name = zk8(jvale+i_zone-1)
                 else if (ltyp .eq. 24) then
-                    func_name = zk24(jvale+i_zone-1)(1:19)
+                    func_name = zk24(jvale+i_zone-1) (1:19)
                 else
                     ASSERT(.false.)
-                endif
+                end if
                 if (func_name(1:8) .ne. ' ') then
                     call jeexin(func_name//'.PROL', iret)
                     if (iret .gt. 0) then
                         call jeveuo(func_name//'.PROL', 'L', vk24=v_prol)
                         call fonbpa(func_name, v_prol, func_type, max_para_name, nb_para, para_name)
                         do i_para = 1, nb_para
-                            if (para_name(i_para)(1:4) .eq. 'INST') then
+                            if (para_name(i_para) (1:4) .eq. 'INST') then
                                 answerk = 'OUI'
                                 goto 999
-                            endif
-                        enddo
-                    endif
-                endif
-            enddo
-        endif
+                            end if
+                        end do
+                    end if
+                end if
+            end do
+        end if
 !
     else if (question .eq. 'PARA_VITE') then
         answerk = ' '
-        field   = object
+        field = object
         call jeveuo(field//'.VALE', 'L', jvale)
         call jelira(field//'.VALE', 'TYPE', cval=type)
         if (type(1:1) .eq. 'K') then
@@ -149,31 +149,31 @@ character(len=*), intent(out)  :: answerk_
                 if (ltyp .eq. 8) then
                     func_name = zk8(jvale+i_zone-1)
                 else if (ltyp .eq. 24) then
-                    func_name = zk24(jvale+i_zone-1)(1:19)
+                    func_name = zk24(jvale+i_zone-1) (1:19)
                 else
                     ASSERT(.false.)
-                endif
+                end if
                 if (func_name(1:8) .ne. ' ') then
                     call jeexin(func_name//'.PROL', iret)
                     if (iret .gt. 0) then
                         call jeveuo(func_name//'.PROL', 'L', vk24=v_prol)
                         call fonbpa(func_name, v_prol, func_type, max_para_name, nb_para, para_name)
                         do i_para = 1, nb_para
-                            if (para_name(i_para) .eq. 'VITE_X' .or.&
-                                para_name(i_para) .eq. 'VITE_Y' .or.&
+                            if (para_name(i_para) .eq. 'VITE_X' .or. &
+                                para_name(i_para) .eq. 'VITE_Y' .or. &
                                 para_name(i_para) .eq. 'VITE_Z') then
                                 answerk = 'OUI'
                                 goto 999
-                            endif
-                        enddo
-                    endif
-                endif
-            enddo
-        endif
+                            end if
+                        end do
+                    end if
+                end if
+            end do
+        end if
 !
     else if (question .eq. 'PARA_ACCE') then
         answerk = ' '
-        field   = object
+        field = object
         call jeveuo(field//'.VALE', 'L', jvale)
         call jelira(field//'.VALE', 'TYPE', cval=type)
         if (type(1:1) .eq. 'K') then
@@ -183,30 +183,30 @@ character(len=*), intent(out)  :: answerk_
                 if (ltyp .eq. 8) then
                     func_name = zk8(jvale+i_zone-1)
                 else if (ltyp .eq. 24) then
-                    func_name = zk24(jvale+i_zone-1)(1:19)
+                    func_name = zk24(jvale+i_zone-1) (1:19)
                 else
                     ASSERT(.false.)
-                endif
+                end if
                 if (func_name(1:8) .ne. ' ') then
                     call jeexin(func_name//'.PROL', iret)
                     if (iret .gt. 0) then
                         call jeveuo(func_name//'.PROL', 'L', vk24=v_prol)
                         call fonbpa(func_name, v_prol, func_type, max_para_name, nb_para, para_name)
                         do i_para = 1, nb_para
-                            if (para_name(i_para) .eq. 'ACCE_X' .or.&
-                                para_name(i_para) .eq. 'ACCE_Y' .or.&
+                            if (para_name(i_para) .eq. 'ACCE_X' .or. &
+                                para_name(i_para) .eq. 'ACCE_Y' .or. &
                                 para_name(i_para) .eq. 'ACCE_Z') then
                                 answerk = 'OUI'
                                 goto 999
-                            endif
-                        enddo
-                    endif
-                endif
-            enddo
-        endif
+                            end if
+                        end do
+                    end if
+                end if
+            end do
+        end if
     else
         ierd = 1
-    endif
+    end if
 !
 999 continue
 !

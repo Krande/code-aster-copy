@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
+subroutine ratu3d(iprno, lonlis, klisno, noepou, noma, &
                   ligrel, mod, cara, numddl, &
                   lisrel, coorig, sectio)
     implicit none
@@ -45,7 +45,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !     ECRITURE DES RELATIONS SUR LES DDLS DE FOURIER
 !
     integer :: nbcmp, nbmode
-    parameter (nbmode=3,nbcmp=6* (nbmode-1))
+    parameter(nbmode=3, nbcmp=6*(nbmode-1))
     character(len=8) :: nocmp(nbcmp), lpain(5), lpaout(6), nomddl(4)
     character(len=24) :: lchin(5), lchout(6), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3), sectio
@@ -68,8 +68,8 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     lpaout(1) = 'PRAYONM'
     lchout(1) = '&&RATU3D.PRAYO'
 !
-    call calcul('S', 'CARA_SECT_POU3R', ligrel, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POU3R', ligrel, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     AS_ALLOCATE(vr=rayon_raccord, size=1)
@@ -79,7 +79,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
 !     CREATION D'UNE CARTE CONTENANT LE POINT P ORIGINE DE PHI
 !
-    call raorfi(noma, ligrel, noepou, cara, coorig,&
+    call raorfi(noma, ligrel, noepou, cara, coorig, &
                 eg1, eg2, eg3, '&&RATU3D', rayon)
 !
 ! --- DETERMINATION DE 3 LISTES  DE VECTEURS PAR ELEMENT PRENANT
@@ -122,16 +122,16 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
 !
-    call memare('V', '&&RATU3D', mod, ' ', ' ',&
+    call memare('V', '&&RATU3D', mod, ' ', ' ', &
                 'CHAR_MECA')
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WO
 !
     imod = 0
-    call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD',&
+    call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD', &
                 ncmp=1, nomcmp='NUM', si=imod)
-    call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin,&
-                lpain, 6, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin, &
+                lpain, 6, lchout, lpaout, 'V', &
                 'OUI')
     call jedetr('&&RATU3D           .RELR')
     call reajre('&&RATU3D', lchout(3), 'V')
@@ -141,8 +141,8 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     idec = 0
     nomddl(1) = 'WO'
     coef(1) = -1.d0*sectio
-    call afretu(iprno, lonlis, klisno, noepou, noma,&
-                valech, nbcoef, idec, coef, nomddl,&
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
                 lisrel)
 !
 !   RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE
@@ -163,12 +163,12 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
     imod = 1
     if (info .eq. 2) then
-        write (ifm,*) 'RELATIONS SUR LE MODE ',imod
-    endif
-    call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD',&
+        write (ifm, *) 'RELATIONS SUR LE MODE ', imod
+    end if
+    call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD', &
                 ncmp=1, nomcmp='NUM', si=imod)
-    call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin,&
-                lpain, 6, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin, &
+                lpain, 6, lchout, lpaout, 'V', &
                 'OUI')
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WIM
@@ -191,8 +191,8 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     coef(3) = eg3(3)*sectio/2.d0
     coef(4) = -sectio/2.d0
 
-    call afretu(iprno, lonlis, klisno, noepou, noma,&
-                valech, nbcoef, idec, coef, nomddl,&
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
                 lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WOM
@@ -214,78 +214,78 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     coef(3) = eg2(3)*sectio/2.d0
     coef(4) = -sectio/2.d0
 !
-    call afretu(iprno, lonlis, klisno, noepou, noma,&
-                valech, nbcoef, idec, coef, nomddl,&
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
                 lisrel)
 !
     do imod = 2, nbmode
         if (info .eq. 2) then
-            write (ifm,*) 'RELATIONS SUR LE MODE ',imod
-        endif
-        call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD',&
+            write (ifm, *) 'RELATIONS SUR LE MODE ', imod
+        end if
+        call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD', &
                     ncmp=1, nomcmp='NUM', si=imod)
-        call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin,&
-                    lpain, 6, lchout, lpaout, 'V',&
+        call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin, &
+                    lpain, 6, lchout, lpaout, 'V', &
                     'OUI')
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL UIM
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(1), 'V')
-        call assvec('V', 'CH_DEPL_1', 1, '&&RATU3D           .RELR', [1.d0],&
+        call assvec('V', 'CH_DEPL_1', 1, '&&RATU3D           .RELR', [1.d0], &
                     numddl)
         valech = 'CH_DEPL_1          .VALE'
         idec = 0
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+1)
+        nomddl(1) = nocmp(6*(imod-2)+1)
         coef(1) = -sectio/2.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL UOM
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(4), 'V')
-        call assvec('V', 'CH_DEPL_4', 1, '&&RATU3D           .RELR', [1.d0],&
+        call assvec('V', 'CH_DEPL_4', 1, '&&RATU3D           .RELR', [1.d0], &
                     numddl)
         valech = 'CH_DEPL_4          .VALE'
         idec = 0
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+4)
+        nomddl(1) = nocmp(6*(imod-2)+4)
         coef(1) = -sectio/2.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL VOM
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(2), 'V')
-        call assvec('V', 'CH_DEPL_2', 1, '&&RATU3D           .RELR', [1.d0],&
+        call assvec('V', 'CH_DEPL_2', 1, '&&RATU3D           .RELR', [1.d0], &
                     numddl)
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+5)
+        nomddl(1) = nocmp(6*(imod-2)+5)
         coef(1) = -sectio/2.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL VIM
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(5), 'V')
-        call assvec('V', 'CH_DEPL_5', 1, '&&RATU3D           .RELR', [1.d0],&
+        call assvec('V', 'CH_DEPL_5', 1, '&&RATU3D           .RELR', [1.d0], &
                     numddl)
         valech = 'CH_DEPL_5          .VALE'
         idec = 0
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+2)
+        nomddl(1) = nocmp(6*(imod-2)+2)
         coef(1) = -sectio/2.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WIM
@@ -294,17 +294,17 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(3), 'V')
-        call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0],&
+        call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0], &
                     numddl)
         valech = 'CH_DEPL_3          .VALE'
         idec = 0
 !
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+3)
+        nomddl(1) = nocmp(6*(imod-2)+3)
         coef(1) = -sectio/2.d0
 !
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !         ENDIF
 !
@@ -313,17 +313,17 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(6), 'V')
-        call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', [1.d0],&
+        call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', [1.d0], &
                     numddl)
         valech = 'CH_DEPL_6          .VALE'
         idec = 0
 !
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+6)
+        nomddl(1) = nocmp(6*(imod-2)+6)
         coef(1) = -sectio/2.d0
 !
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !     FIN DE LA BOUCLE SUR LES MODES

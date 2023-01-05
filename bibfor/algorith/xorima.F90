@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
+subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
                   jcoor, sens)
 !
     implicit none
@@ -120,31 +120,31 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
                 nmaabs = zi(jdlima-1+i)
                 nbnoma = zi(jconx2+nmaabs)-zi(jconx2+nmaabs-1)
 !
-                inoma=1
-                nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
-                a(1)=zr(jcoor-1+3*(nuno-1)+1)
-                a(2)=zr(jcoor-1+3*(nuno-1)+2)
-                a(3)=zr(jcoor-1+3*(nuno-1)+3)
+                inoma = 1
+                nuno = zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
+                a(1) = zr(jcoor-1+3*(nuno-1)+1)
+                a(2) = zr(jcoor-1+3*(nuno-1)+2)
+                a(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
-                inoma=2
-                nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
-                b(1)=zr(jcoor-1+3*(nuno-1)+1)
-                b(2)=zr(jcoor-1+3*(nuno-1)+2)
-                b(3)=zr(jcoor-1+3*(nuno-1)+3)
+                inoma = 2
+                nuno = zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
+                b(1) = zr(jcoor-1+3*(nuno-1)+1)
+                b(2) = zr(jcoor-1+3*(nuno-1)+2)
+                b(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
-                inoma=3
-                nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
-                c(1)=zr(jcoor-1+3*(nuno-1)+1)
-                c(2)=zr(jcoor-1+3*(nuno-1)+2)
-                c(3)=zr(jcoor-1+3*(nuno-1)+3)
+                inoma = 3
+                nuno = zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
+                c(1) = zr(jcoor-1+3*(nuno-1)+1)
+                c(2) = zr(jcoor-1+3*(nuno-1)+2)
+                c(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
-                ab(1)=b(1)-a(1)
-                ab(2)=b(2)-a(2)
-                ab(3)=b(3)-a(3)
+                ab(1) = b(1)-a(1)
+                ab(2) = b(2)-a(2)
+                ab(3) = b(3)-a(3)
 !
-                ac(1)=c(1)-a(1)
-                ac(2)=c(2)-a(2)
-                ac(3)=c(3)-a(3)
+                ac(1) = c(1)-a(1)
+                ac(2) = c(2)-a(2)
+                ac(3) = c(3)-a(3)
 !
                 call provec(ab, ac, vnref)
                 call normev(vnref, norme)
@@ -156,7 +156,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
 !              LOOP ON EACH NODE OF THE SELECTED ELEMENT
                 do j = 1, nbnoma
 !
-                    nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+j-1)
+                    nuno = zi(jconx1-1+zi(jconx2+nmaabs-1)+j-1)
 !
 !                 SEARCH FOR THE ELEMENTS CONNECTED TO THE SELECTED ONE
 !                 BY MEANS OF NODE J
@@ -166,7 +166,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
 !                 LOOP ON EACH ELEMENT CONNECTED TO NODE J
                     do elj = 1, nbelno
 !
-                        numelm=zi(jelno-1+elj)
+                        numelm = zi(jelno-1+elj)
 !
 !                    CHECK IF THE CONNECTED ELEMENT HAS ALREADY BEEN
 !                    SELECTED
@@ -178,57 +178,57 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
 !                       CALCULATE THE NORMAL TO THE ELEMENT USING THE
 !                       FIRST THREE NODES DEFINING IT
                             nmaass = zi(jdlima-1+numelm)
-                            nbnoma = zi(jconx2+nmaass)-zi(jconx2+ nmaass-1)
+                            nbnoma = zi(jconx2+nmaass)-zi(jconx2+nmaass-1)
 !
-                            inoma=1
-                            nuno=zi(jconx1-1+zi(jconx2+nmaass-1)+&
-                            inoma-1)
-                            a(1)=zr(jcoor-1+3*(nuno-1)+1)
-                            a(2)=zr(jcoor-1+3*(nuno-1)+2)
-                            a(3)=zr(jcoor-1+3*(nuno-1)+3)
+                            inoma = 1
+                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+ &
+                                      inoma-1)
+                            a(1) = zr(jcoor-1+3*(nuno-1)+1)
+                            a(2) = zr(jcoor-1+3*(nuno-1)+2)
+                            a(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
-                            inoma=2
-                            nuno=zi(jconx1-1+zi(jconx2+nmaass-1)+&
-                            inoma-1)
-                            b(1)=zr(jcoor-1+3*(nuno-1)+1)
-                            b(2)=zr(jcoor-1+3*(nuno-1)+2)
-                            b(3)=zr(jcoor-1+3*(nuno-1)+3)
+                            inoma = 2
+                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+ &
+                                      inoma-1)
+                            b(1) = zr(jcoor-1+3*(nuno-1)+1)
+                            b(2) = zr(jcoor-1+3*(nuno-1)+2)
+                            b(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
-                            inoma=3
-                            nuno=zi(jconx1-1+zi(jconx2+nmaass-1)+&
-                            inoma-1)
-                            c(1)=zr(jcoor-1+3*(nuno-1)+1)
-                            c(2)=zr(jcoor-1+3*(nuno-1)+2)
-                            c(3)=zr(jcoor-1+3*(nuno-1)+3)
+                            inoma = 3
+                            nuno = zi(jconx1-1+zi(jconx2+nmaass-1)+ &
+                                      inoma-1)
+                            c(1) = zr(jcoor-1+3*(nuno-1)+1)
+                            c(2) = zr(jcoor-1+3*(nuno-1)+2)
+                            c(3) = zr(jcoor-1+3*(nuno-1)+3)
 !
-                            ab(1)=b(1)-a(1)
-                            ab(2)=b(2)-a(2)
-                            ab(3)=b(3)-a(3)
+                            ab(1) = b(1)-a(1)
+                            ab(2) = b(2)-a(2)
+                            ab(3) = b(3)-a(3)
 !
-                            ac(1)=c(1)-a(1)
-                            ac(2)=c(2)-a(2)
-                            ac(3)=c(3)-a(3)
+                            ac(1) = c(1)-a(1)
+                            ac(2) = c(2)-a(2)
+                            ac(3) = c(3)-a(3)
 !
                             call provec(ab, ac, vn)
                             call normev(vn, norme)
 !
 !                       CHECK THE ORIENTATION OF THE ELEMENT NORMAL
 !                       WITH RESPECT TO THE REFERENCE NORMAL
-                            ps=ddot(3,vn,1,vnref,1)
+                            ps = ddot(3, vn, 1, vnref, 1)
 !
                             if (ps .lt. 0.d0) then
-                                zi(jsens-1+numelm)=-1
+                                zi(jsens-1+numelm) = -1
                             else
-                                zi(jsens-1+numelm)=1
-                            endif
+                                zi(jsens-1+numelm) = 1
+                            end if
 !
-                        endif
+                        end if
 !
                     end do
 !
                 end do
 !
-            endif
+            end if
 !
         end do
 !
@@ -239,7 +239,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
     do i = 1, nbmaf
         if (zi(nlayer-1+i) .eq. 0) then
             call utmess('F', 'XFEM_9')
-        endif
+        end if
     end do
 !
 !     CLEAN THE TEMPORARY JEVEUX OBJECTS

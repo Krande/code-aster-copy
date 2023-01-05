@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
+subroutine defcur(vecr1, veck1, nb, vecr2, nv, &
                   nommai, nm, prolgd, interp)
     implicit none
 !     LECTURE DE LA DEFINITION D'UNE FONCTION (ABSCISSE CURVILIGNE)
@@ -82,7 +82,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     call jeexin(cooabs, iexi)
     if (iexi .eq. 0) then
         call utmess('F', 'UTILITAI_46')
-    endif
+    end if
     call jeveuo(cooabs, 'L', labs)
 !     --- CREATION D OBJETS TEMPORAIRES ---
 !
@@ -91,7 +91,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
         zi(iagm+ii-1) = ii
     end do
     nbrma2 = 2*nbrma
-    nbrma1 = nbrma + 1
+    nbrma1 = nbrma+1
     call wkvect('&&DEFOCU.TEMP.VOIS1', 'V V I', nbrma, iav1)
     call wkvect('&&DEFOCU.TEMP.VOIS2', 'V V I', nbrma, iav2)
     call wkvect('&&DEFOCU.TEMP.CHM  ', 'V V I', nbrma1, ptch)
@@ -102,55 +102,55 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     call wkvect('&&DEFOCU.TEMP.ISEG2', 'V V I', nbrma, ima2)
 !
 !     TRI DES MAILLES POI1 ET SEG2
-    nbseg2=0
-    nbpoi1=0
-    kseg=0
+    nbseg2 = 0
+    nbpoi1 = 0
+    kseg = 0
     do im = 1, nbrma
         call jeveuo(typmai, 'L', itypm)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+im-1)), typm)
         if (typm .eq. 'SEG2') then
-            kseg=zi(itypm+im-1)
-            nbseg2=nbseg2+1
-            zi(ima2+nbseg2-1)=im
+            kseg = zi(itypm+im-1)
+            nbseg2 = nbseg2+1
+            zi(ima2+nbseg2-1) = im
         else if (typm .eq. 'POI1') then
-            nbpoi1=nbpoi1+1
-            zi(ima1+nbpoi1-1)=im
+            nbpoi1 = nbpoi1+1
+            zi(ima1+nbpoi1-1) = im
         else
             call utmess('F', 'MODELISA_2')
-        endif
+        end if
     end do
-    conseg='&&DEFOCU.CONNEX'
-    typseg='&&DEFOCU.TYPMAI'
+    conseg = '&&DEFOCU.CONNEX'
+    typseg = '&&DEFOCU.TYPMAI'
     call wkvect(typseg, 'V V I', nbrma, itym)
     do im = 1, nbrma
-        zi(itym-1+im)=kseg
+        zi(itym-1+im) = kseg
     end do
 !     IL FAUT CREER UNE TABLE DE CONNECTIVITE POUR LES SEG2
 !
-    nbnoma=2*nbseg2
-    nbrseg=nbseg2
-    nbrse1=nbseg2+1
-    nbrse2=nbseg2*2
-    call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    nbnoma = 2*nbseg2
+    nbrseg = nbseg2
+    nbrse1 = nbseg2+1
+    nbrse2 = nbseg2*2
+    call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbseg2)
     call jeecra(conseg, 'LONT', nbnoma)
     do iseg2 = 1, nbseg2
-        im=zi(ima2+iseg2-1)
-        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma)
-        call jeveuo(jexnum(connex, im ), 'L', iacnex)
+        im = zi(ima2+iseg2-1)
+        call jelira(jexnum(connex, im), 'LONMAX', nbnoma)
+        call jeveuo(jexnum(connex, im), 'L', iacnex)
         call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma)
         call jeveuo(jexnum(conseg, iseg2), 'E', jgcnx)
         do ino = 1, nbnoma
-            numno=zi(iacnex-1+ino)
-            zi(jgcnx+ino-1)=numno
+            numno = zi(iacnex-1+ino)
+            zi(jgcnx+ino-1) = numno
         end do
     end do
 !
-    call i2vois(conseg, typseg, zi(iagm), nbrseg, zi(iav1),&
+    call i2vois(conseg, typseg, zi(iagm), nbrseg, zi(iav1), &
                 zi(iav2))
-    call i2tgrm(zi(iav1), zi(iav2), nbrseg, zi(iach), zi(ptch),&
+    call i2tgrm(zi(iav1), zi(iav2), nbrseg, zi(iach), zi(ptch), &
                 nbchm)
-    call i2sens(zi(iach), nbrse2, zi(iagm), nbrseg, conseg,&
+    call i2sens(zi(iach), nbrse2, zi(iagm), nbrseg, conseg, &
                 typseg, zr(labs))
 !
 !     --- CREATION D UNE LISTE ORDONNEE DE NOEUDS ---
@@ -160,8 +160,8 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
         if (mi .lt. 0) then
             mi = -mi
             isens = -1
-        endif
-        call i2extf(mi, 1, conseg, typseg, ing,&
+        end if
+        call i2extf(mi, 1, conseg, typseg, ing, &
                     ind)
         if (isens .eq. 1) then
             zi(lnoe+i-1) = ing
@@ -169,23 +169,23 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
         else
             zi(lnoe+i) = ing
             zi(lnoe+i-1) = ind
-        endif
+        end if
     end do
 !
 !
 !     --- VERIFICATION DE LA DEFINITION DE LA FONCTION ---
 !
-    call vefcur(zi(lnoe), nbrse1, veck1, zi(pnoe), nb,&
+    call vefcur(zi(lnoe), nbrse1, veck1, zi(pnoe), nb, &
                 nomnoe)
 !
 !
     call wkvect('&&DEFOCU.TEMP.VALE', 'V V R8', nv, lvali)
 !
     do i = 1, nbrseg
-        zr(lvali+2*(i-1)) = min(zr(labs+4*(i-1)),zr(labs+4*(i-1)+1))
+        zr(lvali+2*(i-1)) = min(zr(labs+4*(i-1)), zr(labs+4*(i-1)+1))
     end do
 !
-    zr(lvali+2*nbrseg) = max(zr(labs+4*(nbrseg-1)),zr(labs+4*(nbrseg-1)+1))
+    zr(lvali+2*nbrseg) = max(zr(labs+4*(nbrseg-1)), zr(labs+4*(nbrseg-1)+1))
 !
     do i = 1, nb
         kk = 2*(zi(pnoe+i-1)-1)+1
@@ -199,7 +199,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
             if (zi(pnoe+jj-1) .lt. jp) then
                 ji = jj
                 jp = zi(pnoe+jj-1)
-            endif
+            end if
         end do
         zi(pnoe+ji-1) = zi(pnoe+i-1)
         zi(pnoe+i-1) = jp
@@ -208,7 +208,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 !     ------------- INTERPOLATION DE LA FONCTION -------------
 !     --- PROLONGEMENT DE LA FONCTION A GAUCHE ET A DROITE ---
 !
-    call prfcur(zi(pnoe), nb, zr(lvali), nv, interp,&
+    call prfcur(zi(pnoe), nb, zr(lvali), nv, interp, &
                 prolgd)
 !
 !     --- REMPLISSAGE DE L OBJET .VALE ---

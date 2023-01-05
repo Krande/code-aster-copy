@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, tinstm, tinstp, epsm,&
-                  deps, sigm, vim, option, rela_plas,&
+subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, tinstm, tinstp, epsm, &
+                  deps, sigm, vim, option, rela_plas, &
                   sigp, vip, dsidep)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/lceibt.h"
 #include "asterfort/lcldsb.h"
@@ -232,7 +232,7 @@ implicit none
 !
     real(kind=8) :: tmaxp, tmaxm, younm, xnum
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
-    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 
 !
 !   CALCUL DE L'INTERVALLE DE TEMPS
@@ -253,7 +253,7 @@ implicit none
         ifou = 0
     else
         ifou = 2
-    endif
+    end if
 !
 !   INITIALISATION DU FLUAGE SPHERIQUE PROPRE
 !
@@ -261,61 +261,61 @@ implicit none
 !
 ! - Get temperatures
 !
-    call get_varc(fami, kpg, ksp ,'T',&
-                  tm  , tp , tref)
+    call get_varc(fami, kpg, ksp, 'T', &
+                  tm, tp, tref)
 !
 !
 !  ------- LECTURE DES CARACTERISTIQUES ELASTIQUES
 !  MB: LA DEPENDENCE DES PARAMETRES PAR RAPPORT A LA TEMPERATURE
 !  CHANGE PAR RAPPORT A LA LOI D ENDOMMAGEMENT (COUPLAGE)
 !
-    nomres(1)='E'
-    nomres(2)='NU'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
     nomres(4) = 'ALPHA'
 !
     if (rela_plas .eq. 'ENDO_ISOT_BETON') then
 !
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'ELAS', 1, 'TEMP', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'ELAS', 1, 'TEMP', [0.d0], &
                     2, nomres, valres, icodre, 1)
 !
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'ELAS', 1, 'TEMP', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'ELAS', 1, 'TEMP', [0.d0], &
                     1, nomres(3), valres(3), icodre(3), 0)
         valres(4) = valres(3)
         icodre(4) = icodre(3)
 !
-    else if (rela_plas.eq.'MAZARS') then
+    else if (rela_plas .eq. 'MAZARS') then
         tmaxm = vim(24)
         tmaxp = max(tmaxm, tp)
 !
-        call rcvalb(fami, 1, 1, '-', imate,&
-                    ' ', 'ELAS', 1, 'TEMP', [tmaxm],&
+        call rcvalb(fami, 1, 1, '-', imate, &
+                    ' ', 'ELAS', 1, 'TEMP', [tmaxm], &
                     2, nomres, valres, icodre, 1)
         younm = valres(1)
         xnum = valres(2)
 !
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'ELAS', 1, 'TEMP', [tmaxp],&
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'ELAS', 1, 'TEMP', [tmaxp], &
                     2, nomres, valres, icodre, 1)
-        call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 1, 'TEMP', [tmaxm],&
+        call rcvalb(fami, kpg, ksp, '-', imate, &
+                    ' ', 'ELAS', 1, 'TEMP', [tmaxm], &
                     1, nomres(3), valres(3), icodre(3), 0)
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 1, 'TEMP', [tmaxp],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'ELAS', 1, 'TEMP', [tmaxp], &
                     1, nomres(4), valres(4), icodre(4), 0)
 !
     else
-        call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '-', imate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 1)
         younm = valres(1)
         xnum = valres(2)
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 1)
-    endif
+    end if
 !
     youn = valres(1)
     xnu = valres(2)
@@ -323,52 +323,52 @@ implicit none
 !
 !  -------CALCUL DES DEFORMATIONS THERMIQUES
 !
-    if ((rela_plas.eq.'MAZARS') .or. (rela_plas.eq.'ENDO_ISOT_BETON')) then
-        if ((isnan(tref)) .or. (icodre(3).ne.0) .or. (icodre(4).ne.0)) then
+    if ((rela_plas .eq. 'MAZARS') .or. (rela_plas .eq. 'ENDO_ISOT_BETON')) then
+        if ((isnan(tref)) .or. (icodre(3) .ne. 0) .or. (icodre(4) .ne. 0)) then
             call utmess('F', 'CALCULEL_15')
         else
-            if (.not.isnan(tm)) then
-                epsthm = valres(3) * (tm - tref)
+            if (.not. isnan(tm)) then
+                epsthm = valres(3)*(tm-tref)
             else
                 epsthm = 0.d0
-            endif
-            if (.not.isnan(tp)) then
-                epsthp = valres(4) * (tp - tref)
+            end if
+            if (.not. isnan(tp)) then
+                epsthp = valres(4)*(tp-tref)
             else
                 epsthp = 0.d0
-            endif
-        endif
+            end if
+        end if
     else
 !
-        call verift(fami, kpg, ksp, '+', imate,&
+        call verift(fami, kpg, ksp, '+', imate, &
                     epsth_=epsthp)
-        call verift(fami, kpg, ksp, '-', imate,&
+        call verift(fami, kpg, ksp, '-', imate, &
                     epsth_=epsthm)
-    endif
+    end if
 !
 !  ------- CARACTERISTIQUES DE RETRAIT ENDOGENE ET DE DESSICCATION
 !
-    nomres(1)='B_ENDOGE'
-    nomres(2)='K_DESSIC'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    nomres(1) = 'B_ENDOGE'
+    nomres(2) = 'K_DESSIC'
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres, valres, icodre, 1)
-    bendo=valres(1)
-    kdess=valres(2)
+    bendo = valres(1)
+    kdess = valres(2)
 !
 !  ------- CARACTERISTIQUES FLUAGE PROPRE UMLV
 !
-    nomres(1)='K_RS'
-    nomres(2)='ETA_RS'
-    nomres(3)='K_IS'
-    nomres(4)='ETA_IS'
-    nomres(5)='K_RD'
-    nomres(6)='ETA_RD'
-    nomres(7)='ETA_ID'
+    nomres(1) = 'K_RS'
+    nomres(2) = 'ETA_RS'
+    nomres(3) = 'K_IS'
+    nomres(4) = 'ETA_IS'
+    nomres(5) = 'K_RD'
+    nomres(6) = 'ETA_RD'
+    nomres(7) = 'ETA_ID'
 !
     rbid = 0.0d0
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'BETON_UMLV', 0, ' ', [rbid],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'BETON_UMLV', 0, ' ', [rbid], &
                 7, nomres, valres, icodre, 2)
     krs = valres(1)
     etars = valres(2)
@@ -380,9 +380,9 @@ implicit none
 !
 ! ------- CARACTERISTIQUE FLUAGE DE DESSICATION DE BAZANT
 !
-    nomres(8)='ETA_FD'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'BETON_UMLV', 0, ' ', [rbid],&
+    nomres(8) = 'ETA_FD'
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'BETON_UMLV', 0, ' ', [rbid], &
                 8, nomres, valres, icodre, 0)
 !     FLUAGE DE DESSICCATION NON ACTIVE
     if (icodre(8) .ne. 0) then
@@ -392,25 +392,25 @@ implicit none
     else
         cmat(14) = 1
         etafd = valres(8)
-    endif
+    end if
 !
 !  ------- CARACTERISTIQUES HYGROMETRIE H
 !
-    nomres(1)='FONC_DESORP'
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', [rbid],&
+    nomres(1) = 'FONC_DESORP'
+    call rcvalb(fami, kpg, ksp, '-', imate, &
+                ' ', 'ELAS', 0, ' ', [rbid], &
                 1, nomres(1), valres(1), icodre(1), 2)
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH4_94')
-    endif
-    hygrm=valres(1)
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [rbid],&
+    end if
+    hygrm = valres(1)
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [rbid], &
                 1, nomres(1), valres(1), icodre(1), 2)
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH4_94')
-    endif
-    hygrp=valres(1)
+    end if
+    hygrp = valres(1)
 !
 ! CONSTRUCTION DU VECTEUR CMAT CONTENANT LES CARACTERISTIQUES MECANIQUES
 !
@@ -445,7 +445,7 @@ implicit none
 !   DANS LE CAS OU LE TEST DE DEFORMATION DE FLUAGE PROPRE
 !        IRREVE A ECHOUE : ISPH = 0
 !
- 10 continue
+10  continue
 !
 ! INITIALISATION DES VARIABLES
 !
@@ -455,9 +455,9 @@ implicit none
     do i = 1, 6
         an(i) = 0.d0
         do j = 1, 6
-            dep(i,j) = 0.d0
-            bn(i,j) = 0.d0
-            cn(i,j) = 0.d0
+            dep(i, j) = 0.d0
+            bn(i, j) = 0.d0
+            cn(i, j) = 0.d0
         end do
     end do
 !_______________________________________________________________________
@@ -468,12 +468,12 @@ implicit none
 !
     if (tdt .ne. 0.d0) then
         if (option(1:9) .eq. 'RIGI_MECA') then
-            isph=nint(vim(21))
-        endif
-        call lcummd(vim, 20, cmat, 15, sigm,&
-                    nstrs, isph, tdt, hygrm, hygrp,&
+            isph = nint(vim(21))
+        end if
+        call lcummd(vim, 20, cmat, 15, sigm, &
+                    nstrs, isph, tdt, hygrm, hygrp, &
                     an, bn, cn, cfps, cfpd)
-    endif
+    end if
 !
 !_______________________________________________________________________
 !
@@ -485,25 +485,25 @@ implicit none
     call lcumvi('FT', vim, epsfm)
 !
 !
-    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
-        call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    if ((option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RAPH_MECA')) then
+        call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                     ksp, hydrp, iret)
-        if (iret .ne. 0) hydrp=0.d0
-        call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+        if (iret .ne. 0) hydrp = 0.d0
+        call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                     ksp, hydrm, iret)
-        if (iret .ne. 0) hydrm=0.d0
-        call rcvarc(' ', 'SECH', '+', fami, kpg,&
+        if (iret .ne. 0) hydrm = 0.d0
+        call rcvarc(' ', 'SECH', '+', fami, kpg, &
                     ksp, sechp, iret)
-        if (iret .ne. 0) sechp=0.d0
-        call rcvarc(' ', 'SECH', '-', fami, kpg,&
+        if (iret .ne. 0) sechp = 0.d0
+        call rcvarc(' ', 'SECH', '-', fami, kpg, &
                     ksp, sechm, iret)
-        if (iret .ne. 0) sechm=0.d0
-        call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+        if (iret .ne. 0) sechm = 0.d0
+        call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                     ksp, sref, iret)
-        if (iret .ne. 0) sref=0.d0
+        if (iret .ne. 0) sref = 0.d0
 !
-        epsrm = kdess*(sechm-sref)-bendo*hydrm + epsthm
-        epsrp = kdess*(sechp-sref)-bendo*hydrp + epsthp
+        epsrm = kdess*(sechm-sref)-bendo*hydrm+epsthm
+        epsrp = kdess*(sechp-sref)-bendo*hydrp+epsthp
 !
 !
 ! - MB: CALCUL DE LA DEFORMATION ELASTIQUE AU TEMP M
@@ -513,15 +513,15 @@ implicit none
         if (rela_plas .eq. 'MAZARS') then
             call r8inir(6, 0.d0, epsel, 1)
             do k = 1, nstrs
-                epsel(k) = epsm(k) - epsrm * kron(k) - epsfm(k)
+                epsel(k) = epsm(k)-epsrm*kron(k)-epsfm(k)
             end do
 !
 !  -  ON CALCUL LES CONTRAINTES ELASTIQUES AU TEMP M
 !          CALL SIGELA (NDIM,'LAMBD',LAMBDA,DEUXMU,EPSEL,SIGELM)
 !
-            call sigela(typmod, ndim, younm, xnum, epsel,&
+            call sigela(typmod, ndim, younm, xnum, epsel, &
                         sigelm)
-        endif
+        end if
 !
 ! ________________________________________________________________
 !
@@ -532,9 +532,9 @@ implicit none
 !
         if (rela_plas .eq. 'ENDO_ISOT_BETON') then
 !    MATRICE ELASTO-ENDOMMAGEE ET MISE A JOUR DE L ENDOMMAGEMENT
-            call lcldsb(fami, kpg, ksp, ndim,&
-                        imate, epsm, deps, vim(22),&
-                        'RAPH_COUP       ', tbid,&
+            call lcldsb(fami, kpg, ksp, ndim, &
+                        imate, epsm, deps, vim(22), &
+                        'RAPH_COUP       ', tbid, &
                         vip(22), dep)
         else
 !    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
@@ -543,8 +543,8 @@ implicit none
             else
                 call lcumme(youn, xnu, ifou, dep)
                 call lcumme(younm, xnum, ifou, depm)
-            endif
-        endif
+            end if
+        end if
 ! ________________________________________________________________
 !   MODIFIE MB 20 OCT 2008
 !
@@ -560,35 +560,35 @@ implicit none
 !   PAR LES DEFORMATIONS DE RETRAIT
 !
         if (rela_plas .eq. 'MAZARS') then
-            call lcumef(rela_plas, dep, dep, an, bn,&
-                        cn, epsm, epsrm, epsrp, deps,&
+            call lcumef(rela_plas, dep, dep, an, bn, &
+                        cn, epsm, epsrm, epsrp, deps, &
                         epsfm, sigelm, nstrs, sigelp)
-            call lcumsf(sigelm, sigelp, nstrs, vim, 20,&
-                        cmat, 15, isph, tdt, hygrm,&
+            call lcumsf(sigelm, sigelp, nstrs, vim, 20, &
+                        cmat, 15, isph, tdt, hygrm, &
                         hygrp, vip)
-        else if (rela_plas.eq.'ENDO_ISOT_BETON') then
-            call lcumef(rela_plas, dep, dep, an, bn,&
-                        cn, epsm, epsrm, epsrp, deps,&
+        else if (rela_plas .eq. 'ENDO_ISOT_BETON') then
+            call lcumef(rela_plas, dep, dep, an, bn, &
+                        cn, epsm, epsrm, epsrp, deps, &
                         epsfm, sigm, nstrs, sigp)
-            call lcumsf(sigm, sigp, nstrs, vim, 20,&
-                        cmat, 15, isph, tdt, hygrm,&
+            call lcumsf(sigm, sigp, nstrs, vim, 20, &
+                        cmat, 15, isph, tdt, hygrm, &
                         hygrp, vip)
         else
-            call lcumef(rela_plas, dep, depm, an, bn,&
-                        cn, epsm, epsrm, epsrp, deps,&
+            call lcumef(rela_plas, dep, depm, an, bn, &
+                        cn, epsm, epsrm, epsrp, deps, &
                         epsfm, sigm, nstrs, sigp)
-            call lcumsf(sigm, sigp, nstrs, vim, 20,&
-                        cmat, 15, isph, tdt, hygrm,&
+            call lcumsf(sigm, sigp, nstrs, vim, 20, &
+                        cmat, 15, isph, tdt, hygrm, &
                         hygrp, vip)
-        endif
-        vip(21)=1
+        end if
+        vip(21) = 1
 !
 !  TEST DE LA CROISSANCE SUR LA DEFORMATION DE FLUAGE PROPRE SPHERIQUE
 !
         if (isph .eq. 2) then
             isph = 0
             goto 10
-        endif
+        end if
 !
 !___________________________________________________________
 !
@@ -597,20 +597,20 @@ implicit none
 !
 !
         if (rela_plas .eq. 'MAZARS') then
-            option2='RAPH_COUP'
-            call lcmaza(fami, kpg, ksp, ndim, typmod,&
-                        imate, compor, epsm, deps, vim(22),&
-                        option2, sigp,&
+            option2 = 'RAPH_COUP'
+            call lcmaza(fami, kpg, ksp, ndim, typmod, &
+                        imate, compor, epsm, deps, vim(22), &
+                        option2, sigp, &
                         vip, tbid)
-        endif
-    endif
+        end if
+    end if
 !
 !_______________________________________________________________________
 !
 ! CONSTRUCTION DE LA MATRICE TANGENTE
 !_______________________________________________________________________
 !
-    if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RIGI_MECA')) then
+    if ((option(1:9) .eq. 'FULL_MECA') .or. (option(1:9) .eq. 'RIGI_MECA')) then
 !
 ! - MB: SI COUPLAGE AVEC MAZARS, ON UTILISE POUR LE COUPLAGE
 !       LA MATRICE TANGENTE DE CETTE LOI
@@ -618,32 +618,32 @@ implicit none
             option2 = option
             if (option(1:9) .eq. 'FULL_MECA') then
                 option2 = 'RIGI_COUP'
-            endif
-            call lcmaza(fami, kpg, ksp, ndim, typmod,&
-                        imate, compor, epsm, deps, vim(22),&
-                        option2, tbid,&
+            end if
+            call lcmaza(fami, kpg, ksp, ndim, typmod, &
+                        imate, compor, epsm, deps, vim(22), &
+                        option2, tbid, &
                         vip, dsidep)
         else
-            option2='RIGI_COUP'
+            option2 = 'RIGI_COUP'
             if (option(1:9) .eq. 'RIGI_MECA') then
                 if (rela_plas .eq. 'ENDO_ISOT_BETON') then
-                    call lcldsb(fami, kpg, ksp, ndim,&
-                                imate, epsm, tbid, vim(22),&
-                                option2, tbid,&
+                    call lcldsb(fami, kpg, ksp, ndim, &
+                                imate, epsm, tbid, vim(22), &
+                                option2, tbid, &
                                 tbid, dep)
                 else
                     call lcumme(youn, xnu, ifou, dep)
-                endif
-            endif
+                end if
+            end if
             call r8inir(36, 0.d0, matn, 1)
             do i = 1, nstrs
-                matn(i,i)=1.d0
+                matn(i, i) = 1.d0
             end do
 !
             do i = 1, nstrs
                 do j = 1, nstrs
                     do k = 1, nstrs
-                        matn(i,j)=matn(i,j)+cn(i,k)*dep(k,j)
+                        matn(i, j) = matn(i, j)+cn(i, k)*dep(k, j)
                     end do
                 end do
             end do
@@ -651,10 +651,10 @@ implicit none
             call r8inir(36, 0.d0, invn, 1)
 !
             do i = 1, nstrs
-                invn(i,i)=1.d0
+                invn(i, i) = 1.d0
             end do
 !
-            call mgauss('NFVP', matn, invn, 6, nstrs,&
+            call mgauss('NFVP', matn, invn, 6, nstrs, &
                         nstrs, det, iret)
 !
             call r8inir(36, 0.d0, dsidep, 1)
@@ -662,64 +662,64 @@ implicit none
             do i = 1, nstrs
                 do j = 1, nstrs
                     do k = 1, nstrs
-                        dsidep(i,j)=dsidep(i,j)+invn(k,j)*dep(i,k)
+                        dsidep(i, j) = dsidep(i, j)+invn(k, j)*dep(i, k)
                     end do
                 end do
             end do
 !
             if (rela_plas .eq. 'ENDO_ISOT_BETON') then
                 if (option .eq. 'RIGI_MECA_TANG') then
-                    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+                    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                                 ksp, hydrp, iret)
-                    if (iret .ne. 0) hydrp=0.d0
-                    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+                    if (iret .ne. 0) hydrp = 0.d0
+                    call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                                 ksp, hydrm, iret)
-                    if (iret .ne. 0) hydrm=0.d0
-                    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+                    if (iret .ne. 0) hydrm = 0.d0
+                    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                                 ksp, sechp, iret)
-                    if (iret .ne. 0) sechp=0.d0
-                    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+                    if (iret .ne. 0) sechp = 0.d0
+                    call rcvarc(' ', 'SECH', '-', fami, kpg, &
                                 ksp, sechm, iret)
-                    if (iret .ne. 0) sechm=0.d0
-                    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+                    if (iret .ne. 0) sechm = 0.d0
+                    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                                 ksp, sref, iret)
-                    if (iret .ne. 0) sref=0.d0
+                    if (iret .ne. 0) sref = 0.d0
                     if (nint(vim(23)) .eq. 1) then
-                        epsrm = kdess*(sechm-sref)-bendo*hydrm + epsthm
+                        epsrm = kdess*(sechm-sref)-bendo*hydrm+epsthm
                         do i = 1, nstrs
-                            epsme(i)=epsm(i)-epsrm*kron(i)
+                            epsme(i) = epsm(i)-epsrm*kron(i)
                         end do
-                        call lceibt(nstrs, epsme, epsfm, dep, invn,&
+                        call lceibt(nstrs, epsme, epsfm, dep, invn, &
                                     cn, dsidep)
-                    endif
-                else if ((option.eq.'RAPH_MECA').or. (option .eq.'FULL_MECA')) then
+                    end if
+                else if ((option .eq. 'RAPH_MECA') .or. (option .eq. 'FULL_MECA')) then
                     if (nint(vip(23)) .eq. 1) then
                         call dcopy(nstrs, epsm, 1, eps, 1)
-                        call daxpy(nstrs, 1.d0, deps, 1, eps,&
+                        call daxpy(nstrs, 1.d0, deps, 1, eps, &
                                    1)
                         do i = 1, nstrs
-                            epse(i)=epsm(i)+deps(i)-epsrp*kron(i)
+                            epse(i) = epsm(i)+deps(i)-epsrp*kron(i)
                         end do
                         call lcumvi('FT', vip, epsf)
-                        call lceibt(nstrs, epse, epsf, dep, invn,&
+                        call lceibt(nstrs, epse, epsf, dep, invn, &
                                     cn, dsidep)
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
 !----------- CORRECTION POUR LES CONTRAINTES PLANES :
             if (ifou .eq. -2) then
                 do k = 1, nstrs
                     if (k .ne. 3) then
                         do l = 1, nstrs
                             if (l .ne. 3) then
-                                dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*&
-                                dsidep(k,3)*dsidep(3,l)
-                            endif
+                                dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)* &
+                                               dsidep(k, 3)*dsidep(3, l)
+                            end if
                         end do
-                    endif
+                    end if
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

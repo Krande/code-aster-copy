@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine teneps(jrwork, adr, sig, eps, epse,&
+subroutine teneps(jrwork, adr, sig, eps, epse, &
                   epsp)
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 !
     integer, intent(in) :: jrwork, adr
@@ -43,15 +43,15 @@ subroutine teneps(jrwork, adr, sig, eps, epse,&
     do k = 1, 6
         sig(k) = 0.0d0
         eps(k) = 0.0d0
-        epse(k)= 0.0d0
-        epsp(k)= 0.0d0
+        epse(k) = 0.0d0
+        epsp(k) = 0.0d0
     end do
 !
     do k = 1, 6
-        sig(k) = zr(jrwork + adr + k - 1)
-        eps(k) = zr(jrwork + adr + k - 1 + 6)
-        epsp(k) = zr(jrwork + adr + k - 1 + 12)
-        epse(k) = eps(k) - epsp(k)
+        sig(k) = zr(jrwork+adr+k-1)
+        eps(k) = zr(jrwork+adr+k-1+6)
+        epsp(k) = zr(jrwork+adr+k-1+12)
+        epse(k) = eps(k)-epsp(k)
     end do
 !
 ! ON SUPPOSE QUE EPS_TOT = EPS_ELAS + EPSPLAS

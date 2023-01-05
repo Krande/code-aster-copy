@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,9 +75,9 @@ function nmchcr(dp)
     real(kind=8) :: pp, cp, gammap, mp, rppmdp, seq, s(6), grjeps, norm(6)
     real(kind=8) :: mumem, valden, kvi, etam, q0mem, qmmem, dr, depsp(6)
     real(kind=8) :: rpp, coef, denom, sdenom(6), beta1, beta2
-    common/fchab/mat,pm,sigedv,epspm,alfam,alfa2m,deuxmu,rm,rp,&
-     &    qm,q,ksim,ksi,dt,n1,n2,depsp,&
-     &    beta1,beta2,ndimsi,nbvar,visc,memo,idelta
+    common/fchab/mat, pm, sigedv, epspm, alfam, alfa2m, deuxmu, rm, rp,&
+     &    qm, q, ksim, ksi, dt, n1, n2, depsp,&
+     &    beta1, beta2, ndimsi, nbvar, visc, memo, idelta
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
@@ -98,65 +98,65 @@ function nmchcr(dp)
     gamma0 = mat(7)
     ainf = mat(8)
     if (nbvar .eq. 2) then
-        c2inf =mat(9)
-        gamm20=mat(10)
-    endif
+        c2inf = mat(9)
+        gamm20 = mat(10)
+    end if
     if (visc .eq. 1) then
-        valden=mat(11)
-        kvi =mat(12)
-    endif
+        valden = mat(11)
+        kvi = mat(12)
+    end if
     if (memo .eq. 1) then
-        etam=mat(13)
-        q0mem=mat(14)
-        qmmem=mat(15)
-        mumem=mat(16)
-    endif
+        etam = mat(13)
+        q0mem = mat(14)
+        qmmem = mat(15)
+        mumem = mat(16)
+    end if
     if (idelta .gt. 0) then
         delta1 = mat(17)
         delta2 = mat(18)
     else
-        delta1=1.d0
-        delta2=1.d0
-    endif
-    beta1=0.d0
-    beta2=0.d0
+        delta1 = 1.d0
+        delta2 = 1.d0
+    end if
+    beta1 = 0.d0
+    beta2 = 0.d0
 !
 ! --- CALCUL DES DIFFERENTS TERMES INTERVENANT DANS LE CRITERE
 ! --- DE PLASTICITE :
 !     =============
-    pp = pm + dp
-    cp = cinf * (un+(k-un)*exp(-w*pp))
-    gammap = gamma0 * (ainf + (un-ainf)*exp(-b*pp))
+    pp = pm+dp
+    cp = cinf*(un+(k-un)*exp(-w*pp))
+    gammap = gamma0*(ainf+(un-ainf)*exp(-b*pp))
     mp = cp/(un+gammap*dp*delta1)
     if (nbvar .eq. 2) then
-        c2p = c2inf * (un+(k-un)*exp(-w*pp))
-        gamm2p = gamm20 * (ainf + (un-ainf)*exp(-b*pp))
+        c2p = c2inf*(un+(k-un)*exp(-w*pp))
+        gamm2p = gamm20*(ainf+(un-ainf)*exp(-b*pp))
         m2p = c2p/(un+gamm2p*dp*delta2)
     else
-        c2p=zero
-        gamm2p=zero
-        m2p=zero
-    endif
+        c2p = zero
+        gamm2p = zero
+        m2p = zero
+    end if
 !
 ! CALCUL DE LA NORMALE
     seq = zero
     do i = 1, ndimsi
         if (nbvar .eq. 1) then
-            s(i) = sigedv(i) -deux/trois*mp*alfam(i)
-        else if (nbvar.eq.2) then
-            s(i) = sigedv(i) -deux/trois*mp*alfam(i) -deux/trois*m2p* alfa2m(i)
-        endif
-        seq = seq + s(i)*s(i)
+            s(i) = sigedv(i)-deux/trois*mp*alfam(i)
+        else if (nbvar .eq. 2) then
+            s(i) = sigedv(i)-deux/trois*mp*alfam(i)-deux/trois*m2p*alfa2m(i)
+        end if
+        seq = seq+s(i)*s(i)
     end do
     seq = sqrt(trois/deux*seq)
     do i = 1, ndimsi
-        norm(i)=sqrt(1.5d0)*s(i)/seq
+        norm(i) = sqrt(1.5d0)*s(i)/seq
     end do
 !
 !     R(P) SANS EFFET DE MEMOIRE
     if (memo .eq. 0) then
-        rpp = rinf + (r0-rinf)*exp(-b*pp)
-    endif
+        rpp = rinf+(r0-rinf)*exp(-b*pp)
+    end if
 !
     call dcopy(ndimsi, norm, 1, depsp, 1)
     call dscal(ndimsi, dp*sqrt(1.5d0), depsp, 1)
@@ -166,29 +166,29 @@ function nmchcr(dp)
 ! --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
 !
         call dcopy(ndimsi, epspm, 1, epspp, 1)
-        call daxpy(ndimsi, 1.d0, depsp, 1, epspp,&
+        call daxpy(ndimsi, 1.d0, depsp, 1, epspp, &
                    1)
 !
-        grjeps=0.0d0
+        grjeps = 0.0d0
         do i = 1, ndimsi
-            grjeps=grjeps+(epspp(i)-ksim(i))**2
+            grjeps = grjeps+(epspp(i)-ksim(i))**2
         end do
-        grjeps=sqrt(grjeps*1.5d0)
-        critme=grjeps/1.5d0-qm
+        grjeps = sqrt(grjeps*1.5d0)
+        critme = grjeps/1.5d0-qm
         if (critme .le. 0.0d0) then
-            dq=0.0d0
+            dq = 0.0d0
             do i = 1, ndimsi
-                dksi(i)=0.0d0
+                dksi(i) = 0.0d0
             end do
         else
-            dq=etam*critme
-            coef=etam*qm+dq
+            dq = etam*critme
+            coef = etam*qm+dq
             do i = 1, ndimsi
                 if (coef .gt. r8miem()) then
-                    dksi(i)=(1.d0-etam)*dq*(epspp(i)-ksim(i))/coef
+                    dksi(i) = (1.d0-etam)*dq*(epspp(i)-ksim(i))/coef
                 else
-                    dksi(i)=0.d0
-                endif
+                    dksi(i) = 0.d0
+                end if
             end do
 !            test partie positive de <n:n*>. Utilité ?
 !            NNE=0.D0
@@ -202,58 +202,58 @@ function nmchcr(dp)
 !             KSI(I)=KSIM(I)
 !             ENDDO
 !            ENDIF
-        endif
-        q=qm+dq
+        end if
+        q = qm+dq
         do i = 1, ndimsi
-            ksi(i)=ksim(i)+dksi(i)
+            ksi(i) = ksim(i)+dksi(i)
         end do
-        gq=qmmem+(q0mem-qmmem)*exp(-2.d0*mumem*q)
-        dr=b*(gq-rm)*dp/(1.d0+b*dp)
-        rp = rm + dr
-        rpp = r0 + rp
-    endif
+        gq = qmmem+(q0mem-qmmem)*exp(-2.d0*mumem*q)
+        dr = b*(gq-rm)*dp/(1.d0+b*dp)
+        rp = rm+dr
+        rpp = r0+rp
+    end if
 !
 !
-    n1=1.d0
-    n2=1.d0
+    n1 = 1.d0
+    n2 = 1.d0
     if (idelta .gt. 0) then
 !        CALCUL DES BETA - N1, N2 - EFFET NON RADIAL
-        beta1=ddot(ndimsi,alfam,1,norm,1)/sqrt(1.5d0)
-        beta2=ddot(ndimsi,alfa2m,1,norm,1)/sqrt(1.5d0)
-        if ((idelta.eq.1) .or. (idelta.eq.3)) then
-            n1=(1.d0+gammap*delta1*dp-gammap*(1.d0-delta1)*beta1)
-            n1=n1/(1.d0+gammap*dp)
-        endif
-        if ((idelta.eq.2) .or. (idelta.eq.3)) then
-            n2=(1.d0+gamm2p*delta2*dp-gamm2p*(1.d0-delta2)*beta2)
-            n2=n2/(1.d0+gamm2p*dp)
-        endif
-    endif
+        beta1 = ddot(ndimsi, alfam, 1, norm, 1)/sqrt(1.5d0)
+        beta2 = ddot(ndimsi, alfa2m, 1, norm, 1)/sqrt(1.5d0)
+        if ((idelta .eq. 1) .or. (idelta .eq. 3)) then
+            n1 = (1.d0+gammap*delta1*dp-gammap*(1.d0-delta1)*beta1)
+            n1 = n1/(1.d0+gammap*dp)
+        end if
+        if ((idelta .eq. 2) .or. (idelta .eq. 3)) then
+            n2 = (1.d0+gamm2p*delta2*dp-gamm2p*(1.d0-delta2)*beta2)
+            n2 = n2/(1.d0+gamm2p*dp)
+        end if
+    end if
 !
 !
 ! POUR NORMER L'EQUATION
     denom = zero
     do i = 1, ndimsi
         if (nbvar .eq. 1) then
-            sdenom(i) = sigedv(i) -deux/trois*cinf*alfam(i)
-        else if (nbvar.eq.2) then
-            sdenom(i) = sigedv(i) -deux/trois*cinf*alfam(i) -deux/ trois*c2inf*alfa2m(i)
-        endif
-        denom=denom+sdenom(i)*sdenom(i)
+            sdenom(i) = sigedv(i)-deux/trois*cinf*alfam(i)
+        else if (nbvar .eq. 2) then
+            sdenom(i) = sigedv(i)-deux/trois*cinf*alfam(i)-deux/trois*c2inf*alfa2m(i)
+        end if
+        denom = denom+sdenom(i)*sdenom(i)
     end do
     denom = sqrt(trois/deux*denom)
 !
-    rppmdp = rpp + (trois/deux*deuxmu+mp*n1+m2p*n2)*dp
+    rppmdp = rpp+(trois/deux*deuxmu+mp*n1+m2p*n2)*dp
 !
     if (visc .eq. 1) then
-        rppmdp = rppmdp + kvi*((dp/dt)**(un/valden))
-    endif
+        rppmdp = rppmdp+kvi*((dp/dt)**(un/valden))
+    end if
     if (denom .le. r8miem()) then
-        f = seq - rppmdp
+        f = seq-rppmdp
     else
-        f = (seq - rppmdp)/denom
-    endif
+        f = (seq-rppmdp)/denom
+    end if
 !
-    nmchcr=-f
+    nmchcr = -f
 !
 end function

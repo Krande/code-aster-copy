@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,12 +56,12 @@ subroutine te0084(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(option.eq.'CHAR_MECA_ROTA_R')
+    ASSERT(option .eq. 'CHAR_MECA_ROTA_R')
 !
 ! - Finite element parameters
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - IN fields
 !
@@ -82,62 +82,62 @@ subroutine te0084(option, nomte)
 !
 ! - Checking
 !
-    if (lteatt('C_PLAN','OUI').or.lteatt('C_PLAN','OUI')) then
+    if (lteatt('C_PLAN', 'OUI') .or. lteatt('C_PLAN', 'OUI')) then
 ! AXE=direction Oz
         if (abs(rota_axis(3)) .le. r8miem()) then
             call utmess('F', 'CHARGES2_67')
-        endif
+        end if
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(2)) .gt. r8miem()) then
             call utmess('F', 'CHARGES2_67')
-        endif
-    else if (lteatt('AXIS','OUI')) then
+        end if
+    else if (lteatt('AXIS', 'OUI')) then
 ! AXE=Oy et CENTRE=ORIGINE
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
             call utmess('F', 'CHARGES2_65')
-        endif
+        end if
         if (abs(rota_axis(2)) .le. r8miem()) then
             call utmess('F', 'CHARGES2_65')
-        endif
-        if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or.&
+        end if
+        if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or. &
             abs(rota_cent(3)) .gt. r8miem()) then
             call utmess('F', 'CHARGES2_66')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Material
 !
     call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb('FPG1', 1, 1, '+', zi(j_mate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(j_mate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre(1), 1)
 !
 ! - Computation
 !
     do kp = 1, npg1
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(j_geom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(j_geom), &
                     poids)
-        poids = poids * rho(1) * rota_speed**2
-        rx= 0.d0
-        ry= 0.d0
+        poids = poids*rho(1)*rota_speed**2
+        rx = 0.d0
+        ry = 0.d0
         do i = 1, nno
-            rx= rx+ zr(j_geom+2*i-2)*zr(ivf+k+i-1)
-            ry= ry+ zr(j_geom+2*i-1)*zr(ivf+k+i-1)
+            rx = rx+zr(j_geom+2*i-2)*zr(ivf+k+i-1)
+            ry = ry+zr(j_geom+2*i-1)*zr(ivf+k+i-1)
         end do
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             poids = poids*rx
             do i = 1, nno
-                k=(kp-1)*nno
-                zr(j_vect+2*i-2) = zr(j_vect+2*i-2) + poids*rota_axis(2)**2*rx*zr(ivf+k+i-1)
+                k = (kp-1)*nno
+                zr(j_vect+2*i-2) = zr(j_vect+2*i-2)+poids*rota_axis(2)**2*rx*zr(ivf+k+i-1)
             end do
         else
-            rx = rx - rota_cent(1)
-            ry = ry - rota_cent(2)
+            rx = rx-rota_cent(1)
+            ry = ry-rota_cent(2)
             do i = 1, nno
-                k=(kp-1)*nno
-                zr(j_vect+2*i-2) = zr(j_vect+2*i-2) + poids*rota_axis(3)**2*rx*zr(ivf+k+i-1)
-                zr(j_vect+2*i-1) = zr(j_vect+2*i-1) + poids*rota_axis(3)**2*ry*zr(ivf+k+i-1)
+                k = (kp-1)*nno
+                zr(j_vect+2*i-2) = zr(j_vect+2*i-2)+poids*rota_axis(3)**2*rx*zr(ivf+k+i-1)
+                zr(j_vect+2*i-1) = zr(j_vect+2*i-1)+poids*rota_axis(3)**2*ry*zr(ivf+k+i-1)
             end do
-        endif
+        end if
     end do
 end subroutine

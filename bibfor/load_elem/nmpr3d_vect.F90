@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,21 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmpr3d_vect(nno   , npg , ndof,&
-                       poidsg, vff , dff ,&
-                       geom  , pres, vect)
+subroutine nmpr3d_vect(nno, npg, ndof, &
+                       poidsg, vff, dff, &
+                       geom, pres, vect)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 !
-integer, intent(in) :: nno, npg, ndof
-real(kind=8), intent(in) :: poidsg(npg), vff(nno, npg), dff(2, nno, npg)
-real(kind=8), intent(in) :: geom(3, nno)
-real(kind=8), intent(in) :: pres(npg)
-real(kind=8), intent(out) :: vect(ndof, nno)
+    integer, intent(in) :: nno, npg, ndof
+    real(kind=8), intent(in) :: poidsg(npg), vff(nno, npg), dff(2, nno, npg)
+    real(kind=8), intent(in) :: geom(3, nno)
+    real(kind=8), intent(in) :: pres(npg)
+    real(kind=8), intent(out) :: vect(ndof, nno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,10 +70,10 @@ real(kind=8), intent(out) :: vect(ndof, nno)
 ! ----- Compute
         do n = 1, nno
             do i = 1, 3
-                vect(i,n) = vect(i,n) - &
-                            poidsg(kpg) * jac * pres(kpg) * cova(i,3)*vff(n,kpg)
-            enddo
-        enddo
-     enddo
+                vect(i, n) = vect(i, n)- &
+                             poidsg(kpg)*jac*pres(kpg)*cova(i, 3)*vff(n, kpg)
+            end do
+        end do
+    end do
 !
 end subroutine

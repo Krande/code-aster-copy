@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine SetTableColumn(table     , name_ , flag_acti_,&
-                          flag_affe_, valer_, valei_    , valek_, mark_)
+subroutine SetTableColumn(table, name_, flag_acti_, &
+                          flag_affe_, valer_, valei_, valek_, mark_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -61,57 +61,57 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_col_name    = 0
-    nb_cols       = table%nb_cols
+    i_col_name = 0
+    nb_cols = table%nb_cols
 !
 ! - On all cols
 !
-    if (.not.present(name_)) then
+    if (.not. present(name_)) then
         do i_col = 1, nb_cols
             if (present(flag_acti_)) then
                 table%l_cols_acti(i_col) = flag_acti_
-            endif
+            end if
             if (present(mark_)) then
                 table%cols(i_col)%mark = mark_
-            endif
-            ASSERT(.not.present(valer_))
-            ASSERT(.not.present(valei_))
-            ASSERT(.not.present(valek_))
-            ASSERT(.not.present(flag_affe_))
+            end if
+            ASSERT(.not. present(valer_))
+            ASSERT(.not. present(valei_))
+            ASSERT(.not. present(valek_))
+            ASSERT(.not. present(flag_affe_))
         end do
-    endif
+    end if
 !
 ! - On one column
 !
     if (present(name_)) then
         do i_col = 1, nb_cols
             if (table%cols(i_col)%name .eq. name_) then
-                ASSERT(i_col_name.eq.0)
+                ASSERT(i_col_name .eq. 0)
                 i_col_name = i_col
-            endif
+            end if
         end do
-        ASSERT(i_col_name.ne.0)
+        ASSERT(i_col_name .ne. 0)
         if (present(mark_)) then
             table%cols(i_col_name)%mark = mark_
-        endif
+        end if
         if (present(flag_acti_)) then
             table%l_cols_acti(i_col_name) = flag_acti_
-        endif
+        end if
         if (present(flag_affe_)) then
             table%cols(i_col_name)%l_vale_affe = flag_affe_
-        endif
+        end if
         if (present(valer_)) then
             table%cols(i_col_name)%vale_real = valer_
             ASSERT(table%cols(i_col_name)%l_vale_real)
-        endif
+        end if
         if (present(valei_)) then
             table%cols(i_col_name)%vale_inte = valei_
             ASSERT(table%cols(i_col_name)%l_vale_inte)
-        endif
+        end if
         if (present(valek_)) then
             table%cols(i_col_name)%vale_strg = valek_
             ASSERT(table%cols(i_col_name)%l_vale_strg)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

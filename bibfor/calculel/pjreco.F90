@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc,&
+subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc, &
                   nbNodeInterc)
     implicit none
 ! ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc,&
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    nameLNodeVerif  = '&&PJRECO.LINOVER'
+    nameLNodeVerif = '&&PJRECO.LINOVER'
     nameLNodeInterc = '&&PJRECO.LINOINT'
     lonListInterc = 0
 
@@ -79,26 +79,26 @@ subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc,&
 !       intersection dans listNodeInterc
         call jeexin(nameLNodeInterc, iexi)
         if (iexi .le. 0) then
-            lonListInterc = min(nbNodeVerif, nbNodeOcc) + 1
+            lonListInterc = min(nbNodeVerif, nbNodeOcc)+1
             call wkvect(nameLNodeInterc, 'V V I', lonListInterc, vi=listNodeInterc)
         else
             call jeveuo(nameLNodeInterc, 'E', vi=listNodeInterc)
             call jelira(nameLNodeInterc, 'LONMAX', lonListInterc)
-        endif
+        end if
         ASSERT(lonListInterc .gt. 0)
 
-        call utlisi('INTER', listNodeVerif, nbNodeVerif, listNodeOcc, nbNodeOcc,&
-                    listNodeInterc, lonListInterc-1 , nbNodeInterc)
-        if (nbNodeInterc.lt.0)then
+        call utlisi('INTER', listNodeVerif, nbNodeVerif, listNodeOcc, nbNodeOcc, &
+                    listNodeInterc, lonListInterc-1, nbNodeInterc)
+        if (nbNodeInterc .lt. 0) then
 !           listNodeInterc n'est pas assez long
-            nbNodeInterc = - nbNodeInterc
-            lonListInterc = nbNodeInterc + 1
+            nbNodeInterc = -nbNodeInterc
+            lonListInterc = nbNodeInterc+1
             call jedetr(nameLNodeInterc)
             call wkvect(nameLNodeInterc, 'V V I', lonListInterc, vi=listNodeInterc)
-            call utlisi('INTER', listNodeVerif, nbNodeVerif, listNodeOcc, nbNodeOcc,&
+            call utlisi('INTER', listNodeVerif, nbNodeVerif, listNodeOcc, nbNodeOcc, &
                         listNodeInterc, lonListInterc, nbNodeInterc)
-            ASSERT(nbNodeInterc.ge.0)
-        endif
+            ASSERT(nbNodeInterc .ge. 0)
+        end if
         listNodeInterc(nbNodeInterc+1) = numOcc
 
 !       union dans listNodeVerif (pour iteration suivante)
@@ -109,18 +109,18 @@ subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc,&
         lonListVerif = nbNodeVerif+nbNodeOcc-nbNodeInterc
         call wkvect(nameLNodeVerif, 'V V I', lonListVerif, vi=listNodeVerif)
 
-        call utlisi('UNION', listNodeCopy, nbNodeVerif, listNodeOcc, nbNodeOcc,&
+        call utlisi('UNION', listNodeCopy, nbNodeVerif, listNodeOcc, nbNodeOcc, &
                     listNodeVerif, lonListVerif, nbNodeUnion)
-        ASSERT(nbNodeUnion.eq.lonListVerif)
+        ASSERT(nbNodeUnion .eq. lonListVerif)
         AS_DEALLOCATE(vi=listNodeCopy)
     else
 !       first occ
-        ASSERT(numOcc .eq.1)
+        ASSERT(numOcc .eq. 1)
         nbNodeVerif = nbNodeOcc
         call wkvect(nameLNodeVerif, 'V V I', nbNodeVerif, vi=listNodeVerif)
         listNodeVerif(1:nbNodeOcc) = listNodeOcc(1:nbNodeOcc)
         nbNodeInterc = 0
-    endif
+    end if
 
     if (finalOcc) call jedetr(nameLNodeVerif)
 

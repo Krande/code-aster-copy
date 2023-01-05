@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,11 +87,11 @@ subroutine regene(nomres, resgen, profno)
     character(len=24), pointer :: nllref4(:) => null()
 !
 !-----------------------------------------------------------------------
-    data depl   /'DEPL            '/
-    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2',&
+    data depl/'DEPL            '/
+    data nompar/'FREQ', 'RIGI_GENE', 'MASS_GENE', 'OMEGA2',&
      &           'AMOR_REDUIT',&
-     &           'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ',&
-     &           'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
+     &           'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
+     &           'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &           'NUME_MODE',&
      &           'TYPE_MODE'/
 !-----------------------------------------------------------------------
@@ -105,10 +105,10 @@ subroutine regene(nomres, resgen, profno)
     call jelira(chamol, 'TYPE', cval=typsca)
     if (typsca .eq. 'C') zcmplx = .true.
 !
-    call rsorac(resgen, 'LONUTI', 0, rbid, kbid,&
-                cbid, rbid, kbid, tmod, 1,&
+    call rsorac(resgen, 'LONUTI', 0, rbid, kbid, &
+                cbid, rbid, kbid, tmod, 1, &
                 ibid)
-    nbmod=tmod(1)
+    nbmod = tmod(1)
 !
 ! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 !
@@ -122,7 +122,7 @@ subroutine regene(nomres, resgen, profno)
         do i = 1, nbmod
             zi(jbid+i-1) = i
         end do
-    endif
+    end if
 !
 ! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
 !
@@ -130,15 +130,15 @@ subroutine regene(nomres, resgen, profno)
         call rscrsd('G', nomres, 'MODE_MECA_C', nbmod)
     else
         call rscrsd('G', nomres, 'MODE_MECA', nbmod)
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA BASE MODALE
 !
     call jeveuo(jexnum(resgen//'           .TACH', 1), 'L', iarefe)
-    kint = zk24(iarefe)(1:19)
+    kint = zk24(iarefe) (1:19)
     call jeveuo(kint//'.VALE', 'L', itresu)
     call jeveuo(kint//'.REFE', 'L', vk24=refe)
-    basmod = refe(1)(1:8)
+    basmod = refe(1) (1:8)
 !
     basmo2 = basmod
     call gettco(basmo2, typrep)
@@ -153,7 +153,7 @@ subroutine regene(nomres, resgen, profno)
         if (iret .eq. 0) then
             valk = mailsk
             call utmess('F', 'ALGORITH14_27', sk=valk)
-        endif
+        end if
         call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
 !
 ! ------ RECUPERATION DU MODELE GENERALISE
@@ -161,23 +161,23 @@ subroutine regene(nomres, resgen, profno)
         call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
         call jeveuo(raid//'.REFA', 'L', vk24=nllref2)
-        numgen(1:14)=nllref2(2)
-        numgen(15:19)='.NUME'
+        numgen(1:14) = nllref2(2)
+        numgen(15:19) = '.NUME'
         call jelibe(raid//'.REFA')
 !
         call jeveuo(numgen//'.REFN', 'L', vk24=nllref3)
-        respro=nllref3(1)(1:8)
+        respro = nllref3(1) (1:8)
         call jelibe(numgen//'.REFN')
 !
         call dismoi('REF_RIGI_PREM', respro, 'RESU_DYNA', repk=raid)
 !
         call jeveuo(raid//'.REFA', 'L', vk24=nllref4)
-        numgen(1:14)=nllref4(2)
-        numgen(15:19)='.NUME'
+        numgen(1:14) = nllref4(2)
+        numgen(15:19) = '.NUME'
         call jelibe(raid//'.REFA')
 !
         call jeveuo(numgen//'.REFN', 'L', vk24=nllref5)
-        modgen=nllref5(1)(1:8)
+        modgen = nllref5(1) (1:8)
         call jelibe(numgen//'.REFN')
 !
 ! ------ CREATION DU PROF-CHAMNO
@@ -191,19 +191,19 @@ subroutine regene(nomres, resgen, profno)
 !
 ! ------ RECUPERATION DE LA BASE MODALE
 !
-        crefe(1)=mailsk
-        crefe(2)=profno
+        crefe(1) = mailsk
+        crefe(2) = profno
 !
 !C
 !CC ---- RESTITUTION PROPREMENT DITE
 !C
 !
         call getvid(' ', 'MODE_MECA', scal=modmec, nbret=ibid)
-        if (ibid .ne. 0) basmod=modmec
-        call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
-                    cbid, rbid, kbid, tmod, 1,&
+        if (ibid .ne. 0) basmod = modmec
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
+                    cbid, rbid, kbid, tmod, 1, &
                     ibid)
-        nbmo2=tmod(1)
+        nbmo2 = tmod(1)
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
         call copmod(basmod, numer=profno(1:14), bmodr=zr(idbase), nequa=neq)
 !
@@ -219,30 +219,30 @@ subroutine regene(nomres, resgen, profno)
 !
 ! --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
 !
-            call rsexch(' ', nomres, depl, i, chamne,&
+            call rsexch(' ', nomres, depl, i, chamne, &
                         ier)
             if (zcmplx) then
                 call vtcrea(chamne, crefe, 'G', 'C', neq)
             else
                 call vtcrea(chamne, crefe, 'G', 'R', neq)
-            endif
+            end if
             call jeveuo(chamne//'.VALE', 'E', ldnew)
 !
-            call rsadpa(resgen, 'L', 13, nompar, iord,&
+            call rsadpa(resgen, 'L', 13, nompar, iord, &
                         0, tjv=iadpar, styp=kbid)
 !
             if (zcmplx) then
-                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc( ldnew))
+                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc(ldnew))
             else
-                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr( ldnew))
-            endif
+                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr(ldnew))
+            end if
 !
             call rsnoch(nomres, depl, i)
-            call rsadpa(nomres, 'E', 13, nompar, i,&
+            call rsadpa(nomres, 'E', 13, nompar, i, &
                         0, tjv=iadpas, styp=kbid)
             do j = 1, 11
                 zr(iadpas(j)) = zr(iadpar(j))
-            enddo
+            end do
             zi(iadpas(12)) = zi(iadpar(12))
             zk16(iadpas(13)) = 'MODE_DYN'
 !
@@ -253,17 +253,17 @@ subroutine regene(nomres, resgen, profno)
 !-----------------------------------------------------------------------
 !
 !
-        call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
-                    cbid, rbid, kbid, tmod, 1,&
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
+                    cbid, rbid, kbid, tmod, 1, &
                     ibid)
-        nbmo2=tmod(1)
+        nbmo2 = tmod(1)
 !
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numedd)
         call getvid(' ', 'NUME_DDL', scal=k8b, nbret=iret1)
         if (iret1 .ne. 0) then
             call getvid(' ', 'NUME_DDL', scal=numedd, nbret=ibid)
             numedd = numedd(1:14)//'.NUME'
-        endif
+        end if
         numddl = numedd(1:14)
         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
@@ -283,40 +283,40 @@ subroutine regene(nomres, resgen, profno)
                 call jelira(chamol, 'LONMAX', nbmo1)
                 if (nbmo1 .ne. nbmo2) then
                     call utmess('F', 'ALGORITH9_9')
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- REQUETE NOM ET ADRESSE NOUVEAU CHAMNO
 !
-            call rsexch(' ', nomres, depl, i, chamno,&
+            call rsexch(' ', nomres, depl, i, chamno, &
                         ier)
             if (zcmplx) then
-                call vtcreb(chamno, 'G', 'C',&
-                            nume_ddlz = numedd,&
-                            nb_equa_outz = neq)
+                call vtcreb(chamno, 'G', 'C', &
+                            nume_ddlz=numedd, &
+                            nb_equa_outz=neq)
             else
-                call vtcreb(chamno, 'G', 'R',&
-                            nume_ddlz = numedd,&
-                            nb_equa_outz = neq)
-            endif
+                call vtcreb(chamno, 'G', 'R', &
+                            nume_ddlz=numedd, &
+                            nb_equa_outz=neq)
+            end if
             call jeveuo(chamno//'.VALE', 'E', ldnew)
 !
-            call rsadpa(resgen, 'L', 13, nompar, iord,&
+            call rsadpa(resgen, 'L', 13, nompar, iord, &
                         0, tjv=iadpar, styp=kbid, istop=0)
 !
             if (zcmplx) then
-                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc( ldnew))
+                call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc(ldnew))
             else
-                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr( ldnew))
-            endif
+                call mdgeph(neq, nbmo2, zr(idbase), zr(llchol), zr(ldnew))
+            end if
 !
             call rsnoch(nomres, depl, i)
 !
-            call rsadpa(nomres, 'E', 13, nompar, i,&
+            call rsadpa(nomres, 'E', 13, nompar, i, &
                         0, tjv=iadpas, styp=kbid)
             do j = 1, 11
                 zr(iadpas(j)) = zr(iadpar(j))
-            enddo
+            end do
             zi(iadpas(12)) = zi(iadpar(12))
             zk16(iadpas(13)) = 'MODE_DYN'
 !
@@ -327,12 +327,12 @@ subroutine regene(nomres, resgen, profno)
             matric(1) = ' '
             matric(2) = ' '
             matric(3) = ' '
-            call refdaj('F', nomres, nbmod, numedd, 'DYNAMIQUE',&
+            call refdaj('F', nomres, nbmod, numedd, 'DYNAMIQUE', &
                         matric, ier)
         else
             call refdcp(basmod, nomres)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- MENAGE
     call jedetr('&&REGENE.NUME')

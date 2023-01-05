@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,21 +43,21 @@ subroutine irrnvi(model, ndt, ndi, nr, nvi)
     if (model(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-        nr = ndt + nvint
+        nr = ndt+nvint
 ! --- D_PLAN AXIS C_PLAN
-    else if (model(1:6).eq.'D_PLAN'.or.model(1:4).eq.'AXIS') then
+    else if (model(1:6) .eq. 'D_PLAN' .or. model(1:4) .eq. 'AXIS') then
         ndt = 4
         ndi = 3
-        nr = ndt + nvint
-    else if (model(1:6).eq.'C_PLAN') then
+        nr = ndt+nvint
+    else if (model(1:6) .eq. 'C_PLAN') then
         ndt = 4
         ndi = 3
-        nr = ndt + nvint + 1
-    else if (model(1:6).eq.'POUTRE') then
+        nr = ndt+nvint+1
+    else if (model(1:6) .eq. 'POUTRE') then
         ndt = 0
         ndi = 0
         nr = 0
-    else if (model(1:2).eq.'1D') then
+    else if (model(1:2) .eq. '1D') then
 ! === =================================================================
 !        MODELISATION DE TYPE 1D NON AUTORISEE
         call utmess('F', 'ALGORITH4_45')
@@ -65,6 +65,6 @@ subroutine irrnvi(model, ndt, ndi, nr, nvi)
 ! === ==============================================================
 !        MODELISATION INCONNUE
         call utmess('F', 'ALGORITH2_20')
-    endif
+    end if
 !
 end subroutine

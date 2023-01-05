@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine te0032(option, nomte)
     character(len=24) :: valk
 ! DEB ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
     undemi = 0.5d0
@@ -70,7 +70,7 @@ subroutine te0032(option, nomte)
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
-    endif
+    end if
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
 !
 ! --- CAS DES CHARGEMENTS DE FORME REEL
@@ -80,14 +80,14 @@ subroutine te0032(option, nomte)
         call jevech('PPRESSR', 'L', jpres)
         do j = 1, nno
             do i = 1, 6
-                for(i,j) = 0.d0
-                for2(i,j) = 0.d0
+                for(i, j) = 0.d0
+                for2(i, j) = 0.d0
             end do
 !----------------------------------------------------------------------
 !           LE SIGNE MOINS CORRESPOND A LA CONVENTION :
 !              UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
 !----------------------------------------------------------------------
-            for(3,j) = - zr(jpres+j-1)
+            for(3, j) = -zr(jpres+j-1)
         end do
 !
     else if (option .eq. 'CHAR_MECA_FRCO3D') then
@@ -95,12 +95,12 @@ subroutine te0032(option, nomte)
         call jevech('PFRCO3D', 'L', jpres)
         global = abs(zr(jpres+6)) .lt. 1.d-3
         if (global) then
-            call utpvgl(1, 6, pgl, zr(jpres ), for(1, 1))
-            call utpvgl(1, 6, pgl, zr(jpres+ 8), for(1, 2))
+            call utpvgl(1, 6, pgl, zr(jpres), for(1, 1))
+            call utpvgl(1, 6, pgl, zr(jpres+8), for(1, 2))
             call utpvgl(1, 6, pgl, zr(jpres+16), for(1, 3))
             if (nno .eq. 4) then
                 call utpvgl(1, 6, pgl, zr(jpres+24), for(1, 4))
-            endif
+            end if
         else
 !----------------------------------------------------------------------
 !          LE SIGNE AFFECTE A FOR(3,J) A ETE CHANGE PAR AFFE_CHAR_MECA
@@ -110,11 +110,11 @@ subroutine te0032(option, nomte)
 !----------------------------------------------------------------------
             do j = 1, nno
                 do i = 1, 5
-                    for(i,j) = zr(jpres-1+8*(j-1)+i)
+                    for(i, j) = zr(jpres-1+8*(j-1)+i)
                 end do
-                for(6,j) = 0.d0
+                for(6, j) = 0.d0
             end do
-        endif
+        end if
         iplan = nint(zr(jpres+7))
 !
 ! --- CAS DES CHARGEMENTS DE FORME FONCTION
@@ -130,17 +130,17 @@ subroutine te0032(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'Z'
         do j = 0, nno-1
-            valpar(1) = zr(jgeom+3*j )
+            valpar(1) = zr(jgeom+3*j)
             valpar(2) = zr(jgeom+3*j+1)
             valpar(3) = zr(jgeom+3*j+2)
-            call fointe('FM', zk8(jpres), 4, nompar, valpar,&
+            call fointe('FM', zk8(jpres), 4, nompar, valpar, &
                         pr, ier)
             if (pr .ne. 0.d0) then
                 call tecael(iadzi, iazk24)
-                nomail = zk24(iazk24-1+3)(1:8)
+                nomail = zk24(iazk24-1+3) (1:8)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_92', sk=valk)
-            endif
+            end if
         end do
         goto 999
 !
@@ -158,34 +158,34 @@ subroutine te0032(option, nomte)
         moplan = zk8(jpres+7)
         if (moplan .eq. 'SUP') then
             iplan = 1
-        else if (moplan.eq.'INF') then
+        else if (moplan .eq. 'INF') then
             iplan = -1
-        else if (moplan.eq.'MOY') then
+        else if (moplan .eq. 'MOY') then
             iplan = 2
-        endif
+        end if
 !
         if (global) then
 !          REPERE GLOBAL
 ! --       LECTURE DES INTERPOLATIONS DE FX, FY, FZ, MX, MY, MZ
 !
             do j = 0, nno-1
-                valpar(1) = zr(jgeom+3*j )
+                valpar(1) = zr(jgeom+3*j)
                 valpar(2) = zr(jgeom+3*j+1)
                 valpar(3) = zr(jgeom+3*j+2)
 !------------------------------------------------------
 !  PAS DE CHANGEMENT DE SIGNE POUR LES FORCES REPARTIES
 !------------------------------------------------------
-                call fointe('FM', zk8(jpres ), 4, nompar, valpar,&
-                            for2(1, j+ 1), ier)
-                call fointe('FM', zk8(jpres+1), 4, nompar, valpar,&
+                call fointe('FM', zk8(jpres), 4, nompar, valpar, &
+                            for2(1, j+1), ier)
+                call fointe('FM', zk8(jpres+1), 4, nompar, valpar, &
                             for2(2, j+1), ier)
-                call fointe('FM', zk8(jpres+2), 4, nompar, valpar,&
+                call fointe('FM', zk8(jpres+2), 4, nompar, valpar, &
                             for2(3, j+1), ier)
-                call fointe('FM', zk8(jpres+3), 4, nompar, valpar,&
+                call fointe('FM', zk8(jpres+3), 4, nompar, valpar, &
                             for2(4, j+1), ier)
-                call fointe('FM', zk8(jpres+4), 4, nompar, valpar,&
+                call fointe('FM', zk8(jpres+4), 4, nompar, valpar, &
                             for2(5, j+1), ier)
-                call fointe('FM', zk8(jpres+5), 4, nompar, valpar,&
+                call fointe('FM', zk8(jpres+5), 4, nompar, valpar, &
                             for2(6, j+1), ier)
             end do
 !
@@ -194,28 +194,28 @@ subroutine te0032(option, nomte)
             call utpvgl(1, 6, pgl, for2(1, 3), for(1, 3))
             if (nno .eq. 4) then
                 call utpvgl(1, 6, pgl, for2(1, 4), for(1, 4))
-            endif
+            end if
 !
         else if (locapr) then
 ! --        REPERE LOCAL - CAS D UNE PRESSION
 ! --        LECTURE DES INTERPOLATIONS DE LA PRESSION PRES
 !
             do j = 0, nno-1
-                valpar(1) = zr(jgeom+3*j )
+                valpar(1) = zr(jgeom+3*j)
                 valpar(2) = zr(jgeom+3*j+1)
                 valpar(3) = zr(jgeom+3*j+2)
-                call fointe('FM', zk8(jpres+2), 4, nompar, valpar,&
+                call fointe('FM', zk8(jpres+2), 4, nompar, valpar, &
                             pr, ier)
 !-----------------------------------------------------
 !       LE SIGNE MOINS DE FOR(3,J+1) CORRESPOND A LA CONVENTION :
 !          UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
 !-----------------------------------------------------
-                for(3,j+1) = -1 * pr
-                for(1,j+1) = 0.d0
-                for(2,j+1) = 0.d0
-                for(4,j+1) = 0.d0
-                for(5,j+1) = 0.d0
-                for(6,j+1) = 0.d0
+                for(3, j+1) = -1*pr
+                for(1, j+1) = 0.d0
+                for(2, j+1) = 0.d0
+                for(4, j+1) = 0.d0
+                for(5, j+1) = 0.d0
+                for(6, j+1) = 0.d0
             end do
 !
         else
@@ -223,66 +223,66 @@ subroutine te0032(option, nomte)
 ! --        LECTURE DES INTERPOLATIONS DE F1, F2, F3, MF1, MF2
 !
             do j = 0, nno-1
-                valpar(1) = zr(jgeom+3*j )
+                valpar(1) = zr(jgeom+3*j)
                 valpar(2) = zr(jgeom+3*j+1)
                 valpar(3) = zr(jgeom+3*j+2)
 !------------------------------------------------------
 !  PAS DE CHANGEMENT DE SIGNE POUR LES FORCES REPARTIES
 !------------------------------------------------------
-                call fointe('FM', zk8(jpres ), 4, nompar, valpar,&
-                            for(1, j+ 1), ier)
-                call fointe('FM', zk8(jpres+1), 4, nompar, valpar,&
-                            for(2, j+ 1), ier)
-                call fointe('FM', zk8(jpres+2), 4, nompar, valpar,&
-                            for(3, j+ 1), ier)
-                call fointe('FM', zk8(jpres+3), 4, nompar, valpar,&
-                            for(4, j+ 1), ier)
-                call fointe('FM', zk8(jpres+4), 4, nompar, valpar,&
-                            for(5, j+ 1), ier)
-                for(6,j+1) = 0.d0
+                call fointe('FM', zk8(jpres), 4, nompar, valpar, &
+                            for(1, j+1), ier)
+                call fointe('FM', zk8(jpres+1), 4, nompar, valpar, &
+                            for(2, j+1), ier)
+                call fointe('FM', zk8(jpres+2), 4, nompar, valpar, &
+                            for(3, j+1), ier)
+                call fointe('FM', zk8(jpres+3), 4, nompar, valpar, &
+                            for(4, j+1), ier)
+                call fointe('FM', zk8(jpres+4), 4, nompar, valpar, &
+                            for(5, j+1), ier)
+                for(6, j+1) = 0.d0
             end do
-        endif
+        end if
 !
-    else if (option.eq.'CHAR_MECA_PESA_R') then
+    else if (option .eq. 'CHAR_MECA_PESA_R') then
 !              ------------------------------
         global = .true.
 !
         call dxroep(rho, epais)
         call jevech('PPESANR', 'L', lpesa)
         do i = 1, 3
-            pglo(i) = zr(lpesa) * zr(lpesa+i) * rho * epais
+            pglo(i) = zr(lpesa)*zr(lpesa+i)*rho*epais
         end do
         call utpvgl(1, 3, pgl, pglo, ploc)
         do i = 1, nno
             do j = 1, 3
-                for(j ,i) = ploc(j)
-                for(j+3,i) = 0.d0
+                for(j, i) = ploc(j)
+                for(j+3, i) = 0.d0
             end do
         end do
-    endif
+    end if
 !
     if (iplan .ne. 0) then
         epais = zr(jcoqu)
         excent = zr(jcoqu+4)
         if (iplan .eq. 1) then
-            dist = excent + undemi*epais
+            dist = excent+undemi*epais
         else if (iplan .eq. -1) then
-            dist = excent - undemi*epais
+            dist = excent-undemi*epais
         else if (iplan .eq. 2) then
             dist = excent
-        endif
+        end if
 !
         do i = 1, nno
-            for(4,i) = for(4,i) - dist*for(2,i)
-            for(5,i) = for(5,i) + dist*for(1,i)
+            for(4, i) = for(4, i)-dist*for(2, i)
+            for(5, i) = for(5, i)+dist*for(1, i)
         end do
-    endif
+    end if
 !
     if (nno .eq. 3) then
         call dxtfor(global, xyzl, pgl, for, vecl)
     else if (nno .eq. 4) then
         call dxqfor(global, xyzl, pgl, for, vecl)
-    endif
+    end if
 !
     call utpvlg(nno, 6, pgl, vecl, zr(jvecg))
 !

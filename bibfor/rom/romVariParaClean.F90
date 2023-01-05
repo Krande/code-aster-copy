@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romVariParaClean(ds_varipara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -43,6 +43,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    AS_DEALLOCATE(vr   = ds_varipara%para_vale)
+    AS_DEALLOCATE(vr=ds_varipara%para_vale)
 !
 end subroutine

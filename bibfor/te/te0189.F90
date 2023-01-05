@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,18 +38,18 @@ subroutine te0189(option, nomte)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    ASSERT(option.eq.'PRAC_ELNO')
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    ASSERT(option .eq. 'PRAC_ELNO')
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PPRESSC', 'L', ipres)
     call jevech('PPRAC_R', 'E', ipdeb)
 !
     do ino = 1, nno
-        idino = ipdeb +3*(ino - 1)
-        zr(idino-1+1) = dble(zc(ipres +ino-1))
-        zr(idino-1+2) = dimag(zc(ipres +ino-1))
-        zr(idino-1+3) = 20.d0*log10(abs(zc(ipres +ino-1))/2.d-5)
+        idino = ipdeb+3*(ino-1)
+        zr(idino-1+1) = dble(zc(ipres+ino-1))
+        zr(idino-1+2) = dimag(zc(ipres+ino-1))
+        zr(idino-1+3) = 20.d0*log10(abs(zc(ipres+ino-1))/2.d-5)
     end do
 !
 end subroutine

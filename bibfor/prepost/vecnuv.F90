@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vecnuv(ipre, ider, gamma, phinit, dphi,&
-                  n, k, dim, vectn, vectu,&
+subroutine vecnuv(ipre, ider, gamma, phinit, dphi, &
+                  n, k, dim, vectn, vectu, &
                   vectv)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -53,20 +53,20 @@ subroutine vecnuv(ipre, ider, gamma, phinit, dphi,&
     call jemarq()
 !
     do i = ipre, ider
-        n = n + 1
-        phi = phinit + (i-k)*dphi
+        n = n+1
+        phi = phinit+(i-k)*dphi
 !
-        vectn((n-1)*3 + 1) = sin(gamma)*cos(phi)
-        vectn((n-1)*3 + 2) = sin(gamma)*sin(phi)
-        vectn((n-1)*3 + 3) = cos(gamma)
+        vectn((n-1)*3+1) = sin(gamma)*cos(phi)
+        vectn((n-1)*3+2) = sin(gamma)*sin(phi)
+        vectn((n-1)*3+3) = cos(gamma)
 !
-        vectu((n-1)*3 + 1) = -sin(phi)
-        vectu((n-1)*3 + 2) = cos(phi)
-        vectu((n-1)*3 + 3) = 0.0d0
+        vectu((n-1)*3+1) = -sin(phi)
+        vectu((n-1)*3+2) = cos(phi)
+        vectu((n-1)*3+3) = 0.0d0
 !
-        vectv((n-1)*3 + 1) = -cos(gamma)*cos(phi)
-        vectv((n-1)*3 + 2) = -cos(gamma)*sin(phi)
-        vectv((n-1)*3 + 3) = sin(gamma)
+        vectv((n-1)*3+1) = -cos(gamma)*cos(phi)
+        vectv((n-1)*3+2) = -cos(gamma)*sin(phi)
+        vectv((n-1)*3+3) = sin(gamma)
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmtaac(type, ndimsi, mat, sigel, vim,&
-                  epm, dp, sp, xi, sigp,&
+subroutine nmtaac(type, ndimsi, mat, sigel, vim, &
+                  epm, dp, sp, xi, sigp, &
                   vip)
 !
 !
@@ -49,21 +49,21 @@ subroutine nmtaac(type, ndimsi, mat, sigel, vim,&
 !
 !    ACTUALISATION DES CONTRAINTES
     if (type .ge. 2) then
-        call nmtacr(4, ndimsi, mat, sigel, vim,&
-                    epm, dp, sp, xi, f,&
-                    g, fds, gds, fdp, gdp,&
+        call nmtacr(4, ndimsi, mat, sigel, vim, &
+                    epm, dp, sp, xi, f, &
+                    g, fds, gds, fdp, gdp, &
                     fdx, gdx, dpmax, sig, tang)
         do k = 1, ndimsi
-            sigp(k) = sigp(k) - sig(k)
+            sigp(k) = sigp(k)-sig(k)
         end do
-    endif
+    end if
 !
 !
 !    ACTUALISATION DES VARIABLES INTERNES
-    vip(1) = vim(1) + dp
+    vip(1) = vim(1)+dp
     vip(2) = sp
     do k = 1, ndimsi
-        vip(k+2) = epm(k) - xi * (epm(k) - vim(k+2))
+        vip(k+2) = epm(k)-xi*(epm(k)-vim(k+2))
     end do
     vip(9) = type
 !

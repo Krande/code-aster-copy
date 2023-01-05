@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine thmCompLoad(option, ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,8 +32,8 @@ implicit none
 #include "asterfort/thmGetGene.h"
 #include "asterfort/thmGetElemIntegration.h"
 !
-character(len=16), intent(in) :: option
-type(THM_DS), intent(inout) :: ds_thm
+    character(len=16), intent(in) :: option
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,8 +75,8 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf  , ndim  ,&
-                    mecani, press1  , press2, tempe)
+    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+                    mecani, press1, press2, tempe)
 !
 ! - Get reference elements
 !
@@ -84,27 +84,27 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get informations about element
 !
-    call thmGetElemInfo(l_vf, elrefe, elref2,&
+    call thmGetElemInfo(l_vf, elrefe, elref2, &
                         nno, nnos, nnom, &
-                        jv_gano, jv_poids, jv_poids2,&
-                        jv_func, jv_func2, jv_dfunc, jv_dfunc2,&
-                        inte_type, npi   , npi2    , npg)
+                        jv_gano, jv_poids, jv_poids2, &
+                        jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                        inte_type, npi, npi2, npg)
     ASSERT(npi .le. 27)
     ASSERT(nno .le. 20)
 !
 ! - Get dimensions about element
 !
-    call thmGetElemDime(ndim     , nnos   , nnom   ,&
-                        mecani   , press1 , press2 , tempe ,&
-                        nddls    , nddlm  ,&
-                        nddl_meca, nddl_p1, nddl_p2,&
-                        dimdep   , dimdef , dimcon , dimuel)
+    call thmGetElemDime(ndim, nnos, nnom, &
+                        mecani, press1, press2, tempe, &
+                        nddls, nddlm, &
+                        nddl_meca, nddl_p1, nddl_p2, &
+                        dimdep, dimdef, dimcon, dimuel)
 !
 ! - Compute loads
 !
-    call thmevc(option  , l_axi  ,&
-                nno     , nnos   ,&
-                npg     , nddls  , nddlm   ,&
+    call thmevc(option, l_axi, &
+                nno, nnos, &
+                npg, nddls, nddlm, &
                 jv_poids, jv_func, jv_dfunc)
 !
 end subroutine

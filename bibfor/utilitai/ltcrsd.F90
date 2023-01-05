@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine ltcrsd(litab, base)
-    implicit   none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/wkvect.h"
@@ -40,7 +40,7 @@ subroutine ltcrsd(litab, base)
 ! DEB------------------------------------------------------------------
 !
     baselt = base(1:1)
-    ASSERT(baselt.eq.'V' .or. baselt.eq.'G')
+    ASSERT(baselt .eq. 'V' .or. baselt .eq. 'G')
 !
     listab = litab
 !

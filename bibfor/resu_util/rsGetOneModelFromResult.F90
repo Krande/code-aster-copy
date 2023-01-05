@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine rsGetOneModelFromResult(resultZ, nbStore, listStore, model)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/rsadpa.h"
 !
-character(len=*), intent(in) :: resultZ
-integer, intent(in) :: nbStore, listStore(nbStore)
-character(len=*), intent(out) :: model
+    character(len=*), intent(in) :: resultZ
+    integer, intent(in) :: nbStore, listStore(nbStore)
+    character(len=*), intent(out) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ character(len=*), intent(out) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model     = ' '
+    model = ' '
     numeStore = listStore(1)
     call rsadpa(resultZ, 'L', 1, 'MODELE', numeStore, 0, sjv=jvPara)
     modelRefe = zk8(jvPara)
@@ -59,11 +59,11 @@ character(len=*), intent(out) :: model
         if (model .ne. modelRefe) then
             model = '#PLUSIEURS'
             goto 99
-        endif
+        end if
     end do
 !
     model = modelRefe
 !
- 99 continue
+99  continue
 !
 end subroutine

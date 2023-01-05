@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
-                  tspaq, ipg, nommet, nommat, nomcri,&
-                  vala, coefpa, nomfor, grdvie, forvie,&
+subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork, &
+                  tspaq, ipg, nommet, nommat, nomcri, &
+                  vala, coefpa, nomfor, grdvie, forvie, &
                   forcri, valpar, vresu)
 ! aslint: disable=W1501
     implicit none
@@ -107,7 +107,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     aster_logical :: endur, plcicr, lbid
 !----------------------------------------------------------------
 !---------------------------------------------------------------
-    data  nompar/   'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&
+    data nompar/'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&
      &                  'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1',&
      &                  'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',&
      &                  'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',&
@@ -126,7 +126,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !
 !  INITIALISER
 !
-    call anacri(nomcri, nomfor, typcha, 'NON', paract,&
+    call anacri(nomcri, nomfor, typcha, 'NON', paract, &
                 lbid, lbid, lbid, lbid, lbid)
 !
 !
@@ -179,14 +179,14 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     do i = 1, 6
         sig(i) = 0.0d0
         eps(i) = 0.0d0
-        epse(i)= 0.0d0
-        epsp(i)= 0.0d0
-        vepsp(i)= 0.0d0
+        epse(i) = 0.0d0
+        epsp(i) = 0.0d0
+        vepsp(i) = 0.0d0
         vepse(i) = 0.d0
-        vsig(i)= 0.0d0
-        epsl(i)= 0.0d0
-        epsel(i)= 0.0d0
-        epspl(i)= 0.0d0
+        vsig(i) = 0.0d0
+        epsl(i) = 0.0d0
+        epsel(i) = 0.0d0
+        epspl(i) = 0.0d0
         sigl(i) = 0.0d0
     end do
 !
@@ -260,7 +260,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !   EPSP : DEFORMATION PLASTIQUE
 !
 !
-        call teneps(jrwork, adr, sig, eps, epse,&
+        call teneps(jrwork, adr, sig, eps, epse, &
                     epsp)
 !
 ! ---------------------------------------------------------------
@@ -270,19 +270,19 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 ! -- CALCULER LES GRANDEURS PRESSION HYDROSTATIQUE
 !
 !    CALCULER PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
-        if ((paract(2) .eq. 1) .or. (paract(12) .eq. 1) .or. (paract( 13) .eq. 1)) then
+        if ((paract(2) .eq. 1) .or. (paract(12) .eq. 1) .or. (paract(13) .eq. 1)) then
 !
-            phydro = (sig(1) + sig(2) + sig(3))/3.0d0
+            phydro = (sig(1)+sig(2)+sig(3))/3.0d0
 !
             if (phydro .gt. phydrm) then
                 phydrm = phydro
-            endif
+            end if
 !
             if (phydro .lt. phymin) then
                 phymin = phydro
-            endif
+            end if
 !
-        endif
+        end if
 !
 ! ---------------------------------------------------------------
 ! -- CALCULER LA DEMI-AMPLITUDE DE LA DEFORMATION PLASIQUE EQVA
@@ -293,11 +293,11 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel, &
                             epspl)
 !
                 do k = 1, 6
-                    vepsp(k)= epsp(k) - epspl(k)
+                    vepsp(k) = epsp(k)-epspl(k)
                 end do
                 call fgequi(vepsp, 'EPSI', 3, equi)
                 eqepsp = equi(1)
@@ -305,13 +305,13 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !
                 if (vepspe .lt. eqepsp) then
                     vepspe = eqepsp
-                endif
+                end if
             end do
 !
-        endif
+        end if
 !
 ! SIG PRIN MAX-----------------------------------------------
-        if ((paract(8) .eq. 1) .or. (paract(9) .eq. 1) .or. (paract( 19) .eq. 1)) then
+        if ((paract(8) .eq. 1) .or. (paract(9) .eq. 1) .or. (paract(19) .eq. 1)) then
             nvp = 3
             nperm = 12
             tol = 1.d-10
@@ -331,45 +331,45 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             br(5) = 0.d0
             br(6) = 1.d0
 !
-            call jacobi(nvp, nperm, tol, toldyn, ar,&
-                        br, vecpro, valpro, jacaux, nitjac,&
+            call jacobi(nvp, nperm, tol, toldyn, ar, &
+                        br, vecpro, valpro, jacaux, nitjac, &
                         itype, iordre)
 !
             if (eprmax .lt. valpro(1)) then
                 eprmax = valpro(1)
-                nm1x = vecpro (1,1)
-                nm1y = vecpro (2,1)
-                nm1z = vecpro (3,1)
+                nm1x = vecpro(1, 1)
+                nm1y = vecpro(2, 1)
+                nm1z = vecpro(3, 1)
 ! CALCvect_F = [SIG].vect_n
 !
-                fxm = sig(1)*nm1x + sig(4)*nm1y + sig(5)*nm1z
-                fym = sig(4)*nm1x + sig(2)*nm1y + sig(6)*nm1z
-                fzm = sig(5)*nm1x + sig(6)*nm1y + sig(3)*nm1z
+                fxm = sig(1)*nm1x+sig(4)*nm1y+sig(5)*nm1z
+                fym = sig(4)*nm1x+sig(2)*nm1y+sig(6)*nm1z
+                fzm = sig(5)*nm1x+sig(6)*nm1y+sig(3)*nm1z
 !
 ! CALCNORM = vect_F.vect_n
 !
-                signm1 = fxm*nm1x + fym*nm1y + fzm*nm1z
+                signm1 = fxm*nm1x+fym*nm1y+fzm*nm1z
 !
                 if (abs(signm1) .gt. sinm1m) then
                     sinm1m = abs(signm1)
-                endif
+                end if
 !
 !
-            endif
+            end if
 !
 !
             if (eprmin .gt. valpro(1)) then
                 eprmin = valpro(1)
-            endif
+            end if
 !
             if (etrema .lt. (valpro(1)-valpro(3))) then
                 etrema = (valpro(1)-valpro(3))
-            endif
+            end if
 !
             if (etremi .gt. (valpro(1)-valpro(3))) then
                 etremi = valpro(1)-valpro(3)
-            endif
-        endif
+            end if
+        end if
 !
 ! ---------------------------------------------------------------
 ! CALCULER DENSITE D'ENERGIE DISTORSION ELASTIQUE
@@ -383,7 +383,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             if (j .lt. ordfin) then
                 adrl = (j+1-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel, &
                             epspl)
 !
                 call lcdevi(sigl, dsigl)
@@ -392,17 +392,17 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
                 somden = 0.d0
                 do i = 1, 6
 !
-                    somden= somden + 0.5d0*(devsig(i)+dsigl(i))&
-                    *(depsl(i)- dvepse(i))
+                    somden = somden+0.5d0*(devsig(i)+dsigl(i)) &
+                             *(depsl(i)-dvepse(i))
                 end do
 !
                 if (somden .gt. 0) then
-                    dendie = dendie + somden
-                endif
+                    dendie = dendie+somden
+                end if
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
 ! ---------------------------------------------------------------
 ! CALCULER DENSITE D'ENERGIE DISSIPISE PLASTIQUE
@@ -412,21 +412,21 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             if (j .lt. ordfin) then
                 adrl = (j+1-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel, &
                             epspl)
 !
                 somden = 0.d0
                 do i = 1, 6
-                    somden= somden + 0.5d0*(sig(i)+sigl(i)) *(epspl(i)&
-                    - epsp(i))
+                    somden = somden+0.5d0*(sig(i)+sigl(i))*(epspl(i) &
+                                                            -epsp(i))
 !
                 end do
 !
-                dendis = dendis + somden
+                dendis = dendis+somden
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
 ! ---------------------------------------------------------------
 ! -- CALCULER LA DEMI-AMPLITUDE DE LA CONTRAINTE EQVALENTE
@@ -437,25 +437,25 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel, &
                             epspl)
 !
                 do i = 1, 6
-                    vsig(i)= sig(i) - sigl(i)
+                    vsig(i) = sig(i)-sigl(i)
                 end do
                 call fgequi(vsig, 'SIGM', 3, equi)
                 eqsig = equi(1)
 !
                 if (vsige .lt. eqsig) then
                     vsige = eqsig
-                endif
+                end if
             end do
 !
-        endif
+        end if
 !
 ! ---------------------------------------------------------------
 ! CALCULER CONTRAINTES PRINCIPALES MAX ET LA DEF TRACTION DU PLAN
-        if ((paract(15) .eq. 1) .or. (paract(16) .eq. 1) .or. (paract( 18) .eq. 1)) then
+        if ((paract(15) .eq. 1) .or. (paract(16) .eq. 1) .or. (paract(18) .eq. 1)) then
             nvp = 3
             nperm = 12
             tol = 1.d-10
@@ -475,43 +475,43 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             br(5) = 0.d0
             br(6) = 1.d0
 !
-            call jacobi(nvp, nperm, tol, toldyn, ar,&
-                        br, vecpro, valpro, jacaux, nitjac,&
+            call jacobi(nvp, nperm, tol, toldyn, ar, &
+                        br, vecpro, valpro, jacaux, nitjac, &
                         itype, iordre)
 !
             if (sigmax .lt. valpro(1)) then
                 sigmax = valpro(1)
-                nm1x = vecpro (1,1)
-                nm1y = vecpro (2,1)
-                nm1z = vecpro (3,1)
+                nm1x = vecpro(1, 1)
+                nm1y = vecpro(2, 1)
+                nm1z = vecpro(3, 1)
 ! CALCvect_F = [SIG].vect_n
 !
-                exm = eps(1)*nm1x + eps(4)*nm1y + eps(5)*nm1z
-                eym = eps(4)*nm1x + eps(2)*nm1y + eps(6)*nm1z
-                ezm = eps(5)*nm1x + eps(6)*nm1y + eps(3)*nm1z
+                exm = eps(1)*nm1x+eps(4)*nm1y+eps(5)*nm1z
+                eym = eps(4)*nm1x+eps(2)*nm1y+eps(6)*nm1z
+                ezm = eps(5)*nm1x+eps(6)*nm1y+eps(3)*nm1z
 !
 ! CALCNORM = vect_F.vect_n
 !
-                epsnm1 = exm*nm1x + eym*nm1y + ezm*nm1z
+                epsnm1 = exm*nm1x+eym*nm1y+ezm*nm1z
 !
                 if (abs(epsnm1) .gt. epnm1m) then
                     epnm1m = abs(epsnm1)
-                endif
+                end if
 !
-            endif
+            end if
 !
             if (sigmin .gt. valpro(1)) then
                 sigmin = valpro(1)
-            endif
+            end if
 !
             if (strema .lt. (valpro(1)-valpro(3))) then
                 strema = (valpro(1)-valpro(3))
-            endif
+            end if
 !
             if (stremi .gt. (valpro(1)-valpro(3))) then
                 stremi = valpro(1)-valpro(3)
-            endif
-        endif
+            end if
+        end if
 !
 ! ---------------------------------------------------------------
 ! CALCULER CONTRAINTES PRINCIPALES MAX ET LA TRACTION DE CE PLAN
@@ -520,20 +520,20 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 
-                call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel, &
                             epspl)
 !
                 do i = 1, 6
-                    veps(i)= eps(i) - epsl(i)
+                    veps(i) = eps(i)-epsl(i)
                 end do
                 eqeps = lciv2e(veps)
 !
                 if (vepst .lt. eqeps) then
                     vepst = eqeps
-                endif
+                end if
             end do
 !
-        endif
+        end if
 !
 ! ---------------------------------------------------------------
 ! CALCULER DEFORMATION PLASTIQUE ACCUMULEE
@@ -542,17 +542,17 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             if (j .lt. ordfin) then
                 adrl = (j+1-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel, &
                             epspl)
 !
                 somdef = 0.d0
                 do k = 1, 6
-                    somdef = somdef + (epspl(k)-epsp(k))* (epspl(k)- epsp(k))
+                    somdef = somdef+(epspl(k)-epsp(k))*(epspl(k)-epsp(k))
                 end do
-                epspac = epspac + somdef**0.5d0
-            endif
+                epspac = epspac+somdef**0.5d0
+            end if
 !
-        endif
+        end if
 !
 !
 !
@@ -566,11 +566,11 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-               call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel, &
                             epspl)
 !
                 do k = 1, 6
-                    vepse(k)= epse(k) - epsel(k)
+                    vepse(k) = epse(k)-epsel(k)
                 end do
 !
                 call fgequi(vepse, 'EPSI', 3, equi)
@@ -578,11 +578,11 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
                 !
                 if (vepsem .lt. eqepse) then
                     vepsem = eqepse
-                endif
+                end if
 !
             end do
             !
-        endif
+        end if
 !
     end do
 !
@@ -600,26 +600,26 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !
             adr = (j-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-            call teneps(jrwork, adr, sig, eps, epse,&
+            call teneps(jrwork, adr, sig, eps, epse, &
                         epsp)
 !
             do k = 1, 6
-                sigm((j-1)*6+ k) = sig(k)
+                sigm((j-1)*6+k) = sig(k)
             end do
         end do
 !
         nbf = 6
-        nbtot = ordfin - ordini +1
+        nbtot = ordfin-ordini+1
         call fmrayo(nbf, nbtot, sigm, raysph)
 !
-    endif
+    end if
 !
 !
 ! ---------------------------------------------------------------
 ! POUR LES GRANDEURS DES CRITERERS "CISSAILEMENT PLAN CRITIQUE",
 ! ACMATA  CALCULE LES 8 PREMIER GRANDEURS ET CEUX DE 13-20
 !
-    if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or.&
+    if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or. &
         (paract(5) .eq. 1) .or. (paract(6) .eq. 1)) then
 !
 !
@@ -628,13 +628,13 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             nxm(k) = 0.d0
             nym(k) = 0.d0
             nzm(k) = 0.d0
-            normax(k)= 0.d0
-            normoy(k)= 0.d0
-            epnmax(k)= 0.d0
-            epnmoy(k)= 0.d0
+            normax(k) = 0.d0
+            normoy(k) = 0.d0
+            epnmax(k) = 0.d0
+            epnmoy(k) = 0.d0
         end do
 !
-        call acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
+        call acmata(nbordr, kwork, sompgw, jrwork, tspaq, &
                     ipg, nommet, resupc)
 !
         do k = 1, 2
@@ -642,14 +642,14 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             nxm(k) = resupc(2+(k-1)*11)
             nym(k) = resupc(3+(k-1)*11)
             nzm(k) = resupc(4+(k-1)*11)
-            normax(k)= resupc(5+(k-1)*11)
-            normoy(k)= resupc(6+(k-1)*11)
-            epnmax(k)= resupc(7+(k-1)*11)
-            epnmoy(k)= resupc(8+(k-1)*11)
+            normax(k) = resupc(5+(k-1)*11)
+            normoy(k) = resupc(6+(k-1)*11)
+            epnmax(k) = resupc(7+(k-1)*11)
+            epnmoy(k) = resupc(8+(k-1)*11)
 !
         end do
 !
-    endif
+    end if
 !
 ! ----------------------------------------------------------
 ! POUR LES GRANDEURS DES CRITERERS "PLAN CRITIQUE"
@@ -660,12 +660,12 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !
 !
     do i = 24, 35
-        if (paract(i) .eq. 1) plcicr =.true.
+        if (paract(i) .eq. 1) plcicr = .true.
     end do
 !
     if ((plcicr) .and. (forcri .eq. '        ')) then
         call utmess('F', 'FATIGUE1_53')
-    endif
+    end if
 !
 !
     if (plcicr) then
@@ -676,28 +676,28 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
         end do
 !
         vanocr(7) = vepspe/2.d0
-        vanocr(8) = (eprmax - eprmin)/2.d0
+        vanocr(8) = (eprmax-eprmin)/2.d0
         vanocr(9) = sinm1m
         vanocr(10) = dendis
         vanocr(11) = dendie
-        vanocr(12) = (phydrm - phymin)/2.d0
-        vanocr(13) = (phydrm + phymin)/2.d0
+        vanocr(12) = (phydrm-phymin)/2.d0
+        vanocr(13) = (phydrm+phymin)/2.d0
         vanocr(14) = vsige/2.d0
-        vanocr(15) = (sigmax - sigmin)/2.d0
+        vanocr(15) = (sigmax-sigmin)/2.d0
         vanocr(16) = epnm1m
         vanocr(17) = vepst/2.d0
-        vanocr(18) = (strema -stremi)/4.d0
-        vanocr(19) = (etrema -etremi)/4.d0
+        vanocr(18) = (strema-stremi)/4.d0
+        vanocr(19) = (etrema-etremi)/4.d0
         vanocr(20) = epspac
         vanocr(21) = raysph
         vanocr(22) = vsige/(2.d0*1.732051d0)
         vanocr(23) = vepsem/2.d0
 !
-        call acgrpc(nbordr, kwork, sompgw, jrwork, tspaq,&
-                    ipg, nommet, forcri, nompar, vanocr,&
+        call acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
+                    ipg, nommet, forcri, nompar, vanocr, &
                     respc, vnmax)
 !
-    endif
+    end if
 !
 !
 !!!!!!EVALUER DES CRITERS
@@ -713,50 +713,50 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !        1/ C DE MATAKE
             if (nomcri(1:14) .eq. 'MATAKE_MODI_AC') then
                 if (normax(k) .gt. 0.0d0) then
-                    sigeq(k) = coepre*dtaum(k) + (vala*normax(k))
+                    sigeq(k) = coepre*dtaum(k)+(vala*normax(k))
                     sigeq(k) = sigeq(k)*coefpa
                 else
                     sigeq(k) = coepre*dtaum(k)
                     sigeq(k) = sigeq(k)*coefpa
-                endif
+                end if
                 grdeq(k) = sigeq(k)
 !
-            endif
+            end if
 !
 !        2/ C DE DANG VAN
             if (nomcri(1:16) .eq. 'DANG_VAN_MODI_AC') then
                 if (phydrm .gt. 0.0d0) then
-                    sigeq(k) = coepre*dtaum(k) + (vala*phydrm)
+                    sigeq(k) = coepre*dtaum(k)+(vala*phydrm)
                     sigeq(k) = sigeq(k)*coefpa
                 else
                     sigeq(k) = coepre*dtaum(k)
                     sigeq(k) = sigeq(k)*coefpa
-                endif
+                end if
                 grdeq(k) = sigeq(k)
 !
-            endif
+            end if
 !
 !        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
             call rccome(nommat, 'FATIGUE', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
-            endif
+            end if
 !        POUR CRITERE= DANG_VAN OU MATAKE
 !
 !
             call limend(nommat, grdeq(1), 'WOHLER', ' ', endur)
             if (endur) then
-                nrupt(k)=r8maem()
+                nrupt(k) = r8maem()
             else
 !
 !
-                call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', grdeq(k),&
+                call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', grdeq(k), &
                             1, 'WOHLER  ', nrupt(k), icodre(1), 1)
-            endif
+            end if
             dom(k) = 1.d0/nrupt(k)
-            nrupt(k)= nint(nrupt(k))
+            nrupt(k) = nint(nrupt(k))
 !
-        endif
+        end if
 !
     end do
 !
@@ -772,7 +772,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do j = 1, 12
                 valpar(23+j) = respc(j+(k-1)*12)
             end do
-        endif
+        end if
 !
         if (nomcri(1:7) .eq. 'FORMULE') then
 !        NOMBRE DE PARAMETRES DISPONIBLES
@@ -786,18 +786,18 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             valpar(6) = epnmoy(k)
 !
             valpar(7) = vepspe/2.d0
-            valpar(8) = (eprmax - eprmin)/2.d0
+            valpar(8) = (eprmax-eprmin)/2.d0
             valpar(9) = sinm1m
             valpar(10) = dendis
             valpar(11) = dendie
-            valpar(12) = (phydrm - phymin)/2.d0
-            valpar(13) = (phydrm + phymin)/2.d0
+            valpar(12) = (phydrm-phymin)/2.d0
+            valpar(13) = (phydrm+phymin)/2.d0
             valpar(14) = vsige/2.d0
-            valpar(15) = (sigmax - sigmin)/2.d0
+            valpar(15) = (sigmax-sigmin)/2.d0
             valpar(16) = epnm1m
             valpar(17) = vepst/2.d0
-            valpar(18) = (strema -stremi)/4.d0
-            valpar(19) = (etrema -etremi)/4.d0
+            valpar(18) = (strema-stremi)/4.d0
+            valpar(19) = (etrema-etremi)/4.d0
             valpar(20) = epspac
             valpar(21) = raysph
             valpar(22) = vsige/(2.d0*1.732051d0)
@@ -808,7 +808,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             chnom(1:19) = nomfor
 !
             call jeveuo(chnom, 'L', jprof)
-            call fonbpa(nomfor, zk24(jprof), cbid, nparma, np,&
+            call fonbpa(nomfor, zk24(jprof), cbid, nparma, np, &
                         nompf)
 !
             do j = 1, np
@@ -816,12 +816,12 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
                     if (nompf(j) .eq. nompar(ipar)) then
                         valpu(j) = valpar(ipar)
                         goto 30
-                    endif
+                    end if
                 end do
- 30             continue
+30              continue
             end do
 !
-            call fointe('F', nomfor, np, nompf, valpu,&
+            call fointe('F', nomfor, np, nompf, valpu, &
                         grdeq(k), ibid)
 !
 ! PAS DE CRITERE DE FATEMI ET SOCIE EN ELASTIQUE ET AMPLITUDE CONSTANTE,
@@ -831,7 +831,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             call rccome(nommat, 'FATIGUE', icodre(1))
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
-            endif
+            end if
 !
 !        POUR CRITERE= FORMULE
 !
@@ -839,32 +839,32 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             call limend(nommat, grdeq(k), grdvie, forvie, endur)
 !
             if (endur) then
-                nrupt(k)=r8maem()
+                nrupt(k) = r8maem()
             else
 !
                 if (grdvie .eq. 'WOHLER') then
                     nomgrd = 'SIGM    '
-                    call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k),&
+                    call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k), &
                                 1, grdvie, nrupt(k), icodre(1), 1)
-                endif
+                end if
 !
                 if (grdvie .eq. 'MANSON_COFFIN') then
                     nomgrd = 'EPSI    '
-                    call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k),&
+                    call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k), &
                                 1, grdvie, nrupt(k), icodre(1), 1)
-                endif
+                end if
 !
                 if (grdvie .eq. 'FORM_VIE') then
 !
                     call renrfa(forvie, grdeq(k), nrupt(k), icodre(1))
 !
-                endif
+                end if
 !
                 dom(k) = 1.d0/nrupt(k)
                 nrupt(k) = nint(nrupt(k))
-            endif
+            end if
 !
-        endif
+        end if
 !
     end do
 !
@@ -897,7 +897,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             vresu(2+(k-1)*11) = vnmax(3*(k-1)+1)
             vresu(3+(k-1)*11) = vnmax(3*(k-1)+2)
             vresu(4+(k-1)*11) = vnmax(3*(k-1)+3)
-        endif
+        end if
 !
     end do
     vresu(23) = 0.0d0

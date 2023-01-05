@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmprof(model        , result, list_load, nume_ddl,&
+subroutine nmprof(model, result, list_load, nume_ddl, &
                   sd_iden_relaz)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/gnomsd.h"
 #include "asterfort/numero.h"
@@ -57,21 +57,21 @@ implicit none
     sd_iden_rela = ' '
     if (present(sd_iden_relaz)) then
         sd_iden_rela = sd_iden_relaz
-    endif
+    end if
 !
 ! - Generate name of numbering object (nume_ddl)
 !
     nume_ddl = '12345678.NUMED'
-    noojb    = '12345678.00000.NUME.PRNO'
+    noojb = '12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
     nume_ddl = noojb(1:14)
     call rsnume(result, 'DEPL', nuposs)
 !
 ! - Create numbering
 !
-    call numero(nume_ddl, 'VG',&
-                old_nume_ddlz = nuposs,&
-                modelz = model , list_loadz = list_load,&
-                sd_iden_relaz = sd_iden_rela)
+    call numero(nume_ddl, 'VG', &
+                old_nume_ddlz=nuposs, &
+                modelz=model, list_loadz=list_load, &
+                sd_iden_relaz=sd_iden_rela)
 !
 end subroutine

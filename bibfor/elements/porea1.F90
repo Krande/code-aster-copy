@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine porea1(nno, nc, deplm, deplp, geom,&
+subroutine porea1(nno, nc, deplm, deplp, geom, &
                   gamma, vecteu, pgl, xl1, angp)
     implicit none
 #include "asterf_types.h"
@@ -71,37 +71,37 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
     real(kind=8) :: valrm
 !
 ! --------------------------------------------------------------------------------------------------
-    ASSERT(nno.eq.2)
+    ASSERT(nno .eq. 2)
 !   Calcul du vecteur xlocal au temps t-
     do i = 1, 3
-        xug(i)   = geom(i,1) + deplm(i)
-        xug(i+3) = geom(i,2) + deplm(i+nc)
-        xd0(i)   = xug(i+3) - xug(i)
-    enddo
+        xug(i) = geom(i, 1)+deplm(i)
+        xug(i+3) = geom(i, 2)+deplm(i+nc)
+        xd0(i) = xug(i+3)-xug(i)
+    end do
 !   Déplacement total a t+
     do i = 1, nno*nc
-        utg(i) = deplm(i) + deplp(i)
-    enddo
+        utg(i) = deplm(i)+deplp(i)
+    end do
 !   Calcul du vecteur xlocal au temps t+
     do i = 1, 3
-        xug(i)   = geom(i,1) + utg(i)
-        xug(i+3) = geom(i,2) + utg(i+nc)
-        xd1(i)   = xug(i+3) - xug(i)
-    enddo
+        xug(i) = geom(i, 1)+utg(i)
+        xug(i+3) = geom(i, 2)+utg(i+nc)
+        xd1(i) = xug(i+3)-xug(i)
+    end do
 !   Angle entre xd0 et xd1
     xdn0(:) = xd0(:)
     xdn1(:) = xd1(:)
     call normev(xdn0, xl0)
     call normev(xdn1, xl1)
 !   si angle > pi/8 : cos(angle) < 0.9238
-    cosangle = ddot(3,xdn0,1,xdn1,1)
+    cosangle = ddot(3, xdn0, 1, xdn1, 1)
     if (cosangle .lt. 0.9238) then
         call tecael(iadzi, iazk24)
         valkm(1) = zk24(iazk24+3-1)
         valkm(2) = ' '
-        valrm = trigom('ACOS',cosangle)
+        valrm = trigom('ACOS', cosangle)
         call utmess('A', 'ELEMENTS_38', nk=2, valk=valkm, sr=valrm)
-    endif
+    end if
 !
     if (vecteu) then
 !       mise a jour du 3eme angle nautique au temps t+
@@ -113,23 +113,23 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
             valkm(2) = 'GAMMA'
             valrm = dgamma*r8rddg()
             call utmess('A', 'ELEMENTS_38', nk=2, valk=valkm, sr=valrm)
-        endif
+        end if
     else
         dgamma = 0.d0
-    endif
+    end if
 !
 !   calcul des deux premiers angles nautiques au temps t+, pour mémorisation
     call angvx(xd1, alfa1, beta1)
 !
-    tet1 = ddot(3,utg(4),1,xd1,1)
-    tet2 = ddot(3,utg(nc+4),1,xd1,1)
+    tet1 = ddot(3, utg(4), 1, xd1, 1)
+    tet2 = ddot(3, utg(nc+4), 1, xd1, 1)
     tet1 = tet1/xl1
     tet2 = tet2/xl1
-    gamma1 = gamma + dgamma + (tet1+tet2)/2.d0
+    gamma1 = gamma+dgamma+(tet1+tet2)/2.d0
 !   Sauvegarde des angles nautiques
     angp(1) = alfa1
     angp(2) = beta1
-    angp(3) = gamma + dgamma
+    angp(3) = gamma+dgamma
 !   Matrice de passage global -> local
     ang1(1) = alfa1
     ang1(2) = beta1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 ! person_in_charge: samuel.geniaut at edf.fr
 ! aslint: disable=W1504, W1501
 !
-subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
-                  prefno, nogrfi, maxfem, cns1, cns2,&
-                  ces1, ces2, cesvi1, cesvi2, listgr,&
-                  dirgrm, nivgrm, resuco, ngfon, comps1,&
+subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
+                  prefno, nogrfi, maxfem, cns1, cns2, &
+                  ces1, ces2, cesvi1, cesvi2, listgr, &
+                  dirgrm, nivgrm, resuco, ngfon, comps1, &
                   comps2, pre1, iord)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -112,14 +112,14 @@ implicit none
 !
 !
     integer :: nbch, ddlmax
-    parameter (nbch=17,ddlmax=52)
+    parameter(nbch=17, ddlmax=52)
 !
     integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in, l, jbaslo, ncmp
     integer :: jcesd(nbch), jcesv(nbch), jcesl(nbch), iad, jconx1, jconx2
     integer :: ifisc, jfiss, kfiss
     integer :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
     integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm, nfimax
-    integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv, heavno(20,3)
+    integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv, heavno(20, 3)
     parameter(nfimax=10)
     integer :: jcnse, iad4, iad3, itypel, nbelr, jhea, fisc(2*nfimax)
     integer :: igeom, nfh, ifh, nfe, ddlc, cmp(ddlmax), jlst, jheavn, fisco(2*nfimax)
@@ -127,7 +127,7 @@ implicit none
     integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2, lacthm(16)
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter(4), vit(16)
     integer :: jnivgr, iagma, ngrm, jdirgr, iagno, iad10, iad11, npg, nlachm(2)
-    integer :: nbar, ar(12,3), dec, ino1, ino2, iar, iad16, nli, ncompi, nvit
+    integer :: nbar, ar(12, 3), dec, ino1, ino2, iar, iad16, nli, ncompi, nvit
     real(kind=8) :: lsno, ff(20), pinter(3)
     integer :: jstno
     integer :: nuflpg, nblfpg, nufgpg
@@ -162,9 +162,9 @@ implicit none
     integer :: jcesd_varc, jcesv_varc, jcesl_varc, nbvarc, k, nbf, ik, nbr, nbc, nbk
 
 !
-    data  typese /'SEG2','TRIA3','TETRA4','SEG3','TRIA6','TETRA10'/
-    data  elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data  tabse  /   2  ,   3   ,   4    ,   3  ,   6   ,   10    /
+    data typese/'SEG2', 'TRIA3', 'TETRA4', 'SEG3', 'TRIA6', 'TETRA10'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data tabse/2, 3, 4, 3, 6, 10/
 !
     call jemarq()
 !
@@ -181,9 +181,9 @@ implicit none
     call getres(k8b, k16b, nomcmd)
     if (nomcmd .eq. 'POST_MAIL_XFEM') then
         opmail = .true.
-    else if (nomcmd.eq.'POST_CHAM_XFEM') then
+    else if (nomcmd .eq. 'POST_CHAM_XFEM') then
         opmail = .false.
-    endif
+    end if
 !
     call jeveuo(mailx, 'L', jmax)
     call jelira(mailx, 'LONMAX', nbmax)
@@ -219,7 +219,7 @@ implicit none
         call jeveuo(chs(8)//'.CESD', 'L', jcesd(8))
         call jeveuo(chs(8)//'.CESV', 'E', jcesv(8))
         call jeveuo(chs(8)//'.CESL', 'L', jcesl(8))
-    endif
+    end if
 !
     call jeexin(mo//'.TOPOSE.PMI.CELD', ier)
     if (ier .ne. 0) then
@@ -227,7 +227,7 @@ implicit none
         call jeveuo(chs(9)//'.CESD', 'L', jcesd(9))
         call jeveuo(chs(9)//'.CESV', 'E', jcesv(9))
         call jeveuo(chs(9)//'.CESL', 'L', jcesl(9))
-    endif
+    end if
 !
 !      CALL JEEXIN(MO//'.TOPOFAC.LO.CELD',IER)
 !      IF (IER.NE.0) THEN
@@ -256,7 +256,7 @@ implicit none
         call jeveuo(chs(13)//'.CESD', 'L', jcesd(13))
         call jeveuo(chs(13)//'.CESV', 'E', jcesv(13))
         call jeveuo(chs(13)//'.CESL', 'L', jcesl(13))
-    endif
+    end if
 !
     call jeexin(mo//'.FISSCO    .CELD', ier)
     if (ier .ne. 0) then
@@ -264,7 +264,7 @@ implicit none
         call jeveuo(chs(14)//'.CESD', 'L', jcesd(14))
         call jeveuo(chs(14)//'.CESV', 'E', jcesv(14))
         call jeveuo(chs(14)//'.CESL', 'L', jcesl(14))
-    endif
+    end if
 !
     call celces(mo//'.TOPOFAC.PI', 'V', chs(15))
     call jeveuo(chs(15)//'.CESD', 'L', jcesd(15))
@@ -305,7 +305,7 @@ implicit none
     call jeveuo(maxfem//'.TYPMAIL', 'E', jtypm2)
     call jeveuo(mo//'.MAILLE', 'L', vi=maille)
 !
-    if (.not.opmail) then
+    if (.not. opmail) then
         call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
         call jeveuo(cns1//'.CNSD', 'L', vi=cnsd)
         call jeveuo(cns1//'.CNSV', 'L', jcnsv1)
@@ -332,7 +332,7 @@ implicit none
                 jcviv1 = 0
                 jcvid1 = 0
                 jcvil1 = 0
-            endif
+            end if
             iviex = iret
 !
             call jeexin(cesvi2//'.CESV', iret)
@@ -344,10 +344,10 @@ implicit none
                 jcviv2 = 0
                 jcvid2 = 0
                 jcvil2 = 0
-            endif
+            end if
             iviex = iviex*iret
 !
-        endif
+        end if
 !
 !       COMPORTEMENT
 !       RECUPERATION DU CHAM_ELEM_S DU COMPORTEMENT EN ENTREE
@@ -364,7 +364,7 @@ implicit none
 !
 !         VERIF QUE LE CHAMP DE SORTIE A BIEN ETE CREE
             call exisd('CHAM_ELEM_S', comps2, iret)
-            ASSERT(iret.ne.0)
+            ASSERT(iret .ne. 0)
 !
 !         RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
             call jeveuo(comps2//'.CESD', 'L', jresd2)
@@ -373,36 +373,36 @@ implicit none
         else
 !         ON MET A ZERO NB CMP
             nbcmpc = 0
-        endif
+        end if
 !
         if (tysd(1:4) .eq. 'EVOL') then
-            call rsadpa(resuco, 'L', 1, 'INST', iord,&
+            call rsadpa(resuco, 'L', 1, 'INST', iord, &
                         0, sjv=jinst1, styp=kbid)
             inst = zr(jinst1)
         else
-            inst=0.
-        endif
-        varcns='&&XPOMAX.VARC'
-        call res2mat(resuco, inst, chmat, mu=mu, ka=ka,&
-                     nommat=nommat, lvarc=lvarc, varcns=varcns,&
+            inst = 0.
+        end if
+        varcns = '&&XPOMAX.VARC'
+        call res2mat(resuco, inst, chmat, mu=mu, ka=ka, &
+                     nommat=nommat, lvarc=lvarc, varcns=varcns, &
                      cplan=cplan)
         if (lvarc) then
-          call jeveuo(varcns//'.CESD', 'L', jcesd_varc)
-          call jeveuo(varcns//'.CESV', 'L', jcesv_varc)
-          call jeveuo(varcns//'.CESL', 'L', jcesl_varc)
-          call rccome(nommat, 'ELAS', iret, k11_ind_nomrc=k11)
-          call jeexin(nommat//k11//'.VALR', iret)
-          call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
-          call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
-          call jeveuo(nommat//k11//'.VALK', 'L', vk16=valk)
-          call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
-          nbf = (nbk-nbr-nbc)/2
-          call jelira(chmat//'.CVRCVARC', 'LONMAX', nbvarc)
-          ASSERT(nbvarc.le.2)
-          call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
-        endif
+            call jeveuo(varcns//'.CESD', 'L', jcesd_varc)
+            call jeveuo(varcns//'.CESV', 'L', jcesv_varc)
+            call jeveuo(varcns//'.CESL', 'L', jcesl_varc)
+            call rccome(nommat, 'ELAS', iret, k11_ind_nomrc=k11)
+            call jeexin(nommat//k11//'.VALR', iret)
+            call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
+            call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
+            call jeveuo(nommat//k11//'.VALK', 'L', vk16=valk)
+            call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
+            nbf = (nbk-nbr-nbc)/2
+            call jelira(chmat//'.CVRCVARC', 'LONMAX', nbvarc)
+            ASSERT(nbvarc .le. 2)
+            call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
+        end if
 !
-    endif
+    end if
 !
 !     RECUP DES POINTS DE GAUSS
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', vk32=pnlocfpg)
@@ -423,39 +423,39 @@ implicit none
     inmtot = 0
 !
 !     COMPTEUR ET LISTE DE NOEUDS PORTANT DES DDLS DE CONTACT
-    linofi='&&XPOMAX.LINOFI'
+    linofi = '&&XPOMAX.LINOFI'
 !      LINOLA='&&XPOMAX.LINOLA'
-    inofi=-1
+    inofi = -1
     if (opmail) then
         call dismoi('NB_NO_MAILLA', maxfem, 'MAILLAGE', repi=nbnofi)
         call wkvect(linofi, 'V V I', nbnofi, inofi)
 !       CALL WKVECT(LINOLA,'V V I',NBNOFI,INOLA)
-    endif
-    nbnofi=0
+    end if
+    nbnofi = 0
 !      NBNOLA=0
 !
 !     RECUPERATION DU VECTEUR DE REMPLISSAGE DES GROUP_MA
     if (opmail) then
         call jeexin(nivgrm, iret)
         if (iret .ne. 0) call jeveuo(nivgrm, 'E', jnivgr)
-    endif
+    end if
 !
 !     RECUPERATION DU VECTEUR D'INDIRECTION ENTRE LES GROUP_MA
     if (opmail) then
         call jeexin(dirgrm, iret)
         if (iret .ne. 0) call jeveuo(dirgrm, 'L', jdirgr)
-    endif
+    end if
 !
 !     RECUPERATION DES INFOS DU MAILLAGE SAIN
-    if (.not.opmail) then
-        noma=cnsk(1)
+    if (.not. opmail) then
+        noma = cnsk(1)
         call jeveuo(noma//'.TYPMAIL        ', 'L', vi=vtypma)
-    endif
+    end if
 !
     call jeveuo(mo//'.XFEM_CONT', 'L', jxc)
 !
 !     LE RESULTAT EN ENTREE DE POST_CHAM_XFEM EST-IL MECANIQUE
-    if (.not.opmail) lmeca = xismec()
+    if (.not. opmail) lmeca = xismec()
 !
 !     ------------------------------------------------------------------
 !                   BOUCLE SUR LES MAILLES DE MAILX
@@ -471,15 +471,15 @@ implicit none
 !
 !       RECUPERATION DU NOMBRE DE NOEUDS (2 METHODES)
         call jelira(jexnum(malini//'.CONNEX', ima), 'LONMAX', n)
-        nbnoma=zi(jconx2+ima) - zi(jconx2+ima-1)
-        ASSERT(n.eq.nbnoma)
+        nbnoma = zi(jconx2+ima)-zi(jconx2+ima-1)
+        ASSERT(n .eq. nbnoma)
 !
 !       RECUPERATION DU NOMBRE TOTAL DE SOUS ELEMENTS
 !       CORRESPOD AU NOMBRE DE MAILLES À CREER
-        call cesexi('C', jcesd(3), jcesl(3), ima, 1,&
+        call cesexi('C', jcesd(3), jcesl(3), ima, 1, &
                     1, 1, iad3)
-        ASSERT(iad3.gt.0)
-        nse=zi(jcesv(3)-1+iad3)
+        ASSERT(iad3 .gt. 0)
+        nse = zi(jcesv(3)-1+iad3)
 !
 !       RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION
 !        NPI=ZI(JCESV(3)-1+IAD3+NIT+1)
@@ -488,7 +488,7 @@ implicit none
 !        NMI=ZI(JCESV(3)-1+IAD3+NIT+3)
 !
 !       RECUPERATION DU NOMBRE DE NOUVEAUX NOEUDS A CREER
-        nnn=zi(jcesv(3)-1+iad3+2)
+        nnn = zi(jcesv(3)-1+iad3+2)
         if (nnn .eq. 0) goto 100
 !        ASSERT(NNN.NE.0)
 !
@@ -498,26 +498,26 @@ implicit none
 !       CORRESPONDANCE ENTRE FISSURE ET DDL HEAVISIDE
         call jeexin(mo//'.HEAVNO    .CELD', ier)
         if (pre1) then
-           do ifiss = 1, nfiss
-              do j = 1, n
-                 if (ier .ne. 0) then
-                    call cesexi('C', jcesd(13), jcesl(13), ima, j,&
-                                ifiss, 1, iad3)
-                    if (iad3 .gt. 0) then
-                       heavno(j,ifiss)=zi(jcesv(13)-1+iad3)
+            do ifiss = 1, nfiss
+                do j = 1, n
+                    if (ier .ne. 0) then
+                        call cesexi('C', jcesd(13), jcesl(13), ima, j, &
+                                    ifiss, 1, iad3)
+                        if (iad3 .gt. 0) then
+                            heavno(j, ifiss) = zi(jcesv(13)-1+iad3)
+                        else
+                            heavno(j, ifiss) = 1
+                        end if
                     else
-                       heavno(j,ifiss)=1
-                    endif
-                 else
-                    heavno(j,ifiss)=1
-                 endif
-              end do
-           end do
+                        heavno(j, ifiss) = 1
+                    end if
+                end do
+            end do
         else
-           do j = 1, 20
-              heavno(j,1:3)=0
-           end do
-        endif
+            do j = 1, 20
+                heavno(j, 1:3) = 0
+            end do
+        end if
 !
 !       CONNECTIVITE DES JONCTIONS DE FISSURES
         nfijon(1:3) = 0
@@ -525,177 +525,177 @@ implicit none
         fisc(1:2*nfimax) = 0
         call jeexin(mo//'.FISSCO    .CELD', ier)
         if (ier .ne. 0) then
-           do ifiss = 1, nfiss
-              call cesexi('C', jcesd(14), jcesl(14), ima, 1,&
-                          ifiss, 1, iad)
-              if (iad .gt. 0) then
-                 fisco(2*(ifiss-1)+1)= zi(jcesv(14)-1+iad)
-              endif
-              call cesexi('C', jcesd(14), jcesl(14), ima, 1,&
-                          ifiss, 2, iad)
-              if (iad .gt. 0) then
-                 fisco(2*ifiss) = zi(jcesv(14)-1+iad)
-              endif
-           end do
+            do ifiss = 1, nfiss
+                call cesexi('C', jcesd(14), jcesl(14), ima, 1, &
+                            ifiss, 1, iad)
+                if (iad .gt. 0) then
+                    fisco(2*(ifiss-1)+1) = zi(jcesv(14)-1+iad)
+                end if
+                call cesexi('C', jcesd(14), jcesl(14), ima, 1, &
+                            ifiss, 2, iad)
+                if (iad .gt. 0) then
+                    fisco(2*ifiss) = zi(jcesv(14)-1+iad)
+                end if
+            end do
 !
-           do ifiss = 1, nfiss
+            do ifiss = 1, nfiss
 !
-              ifisc = ifiss
-              nfisc = 0
- 80           continue
-              if (fisco(2*ifisc-1) .gt. 0) then
+                ifisc = ifiss
+                nfisc = 0
+80              continue
+                if (fisco(2*ifisc-1) .gt. 0) then
 !       STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
-                 nfisc = nfisc+1
-                 fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
-                 ifisc = fisco(2*ifisc-1)
-                 fisc(2*(nfisc-1)+1) = ifisc
-                 goto 80
-              endif
+                    nfisc = nfisc+1
+                    fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+                    ifisc = fisco(2*ifisc-1)
+                    fisc(2*(nfisc-1)+1) = ifisc
+                    goto 80
+                end if
 !
-              nfisc2 = 0
-              do jfiss = ifiss+1, nfiss
+                nfisc2 = 0
+                do jfiss = ifiss+1, nfiss
 !       STOCKAGE DES FISSURES QUI SE BRANCHENT SUR IFISS
-                 kfiss = fisco(2*jfiss-1)
-                 do k = nfisc+1, nfisc+nfisc2
-                    if (fisc(2*(k-1)+1) .eq. kfiss) then
-                       nfisc2 = nfisc2 + 1
-                       fisc(2*(nfisc+nfisc2-1)+1) = jfiss
-                       fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
-                    endif
-                 end do
-                 if (kfiss .eq. ifiss) then
-                    nfisc2 = nfisc2 + 1
-                    fisc(2*(nfisc+nfisc2-1)+1) = jfiss
-                    fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
-                 endif
-              end do
+                    kfiss = fisco(2*jfiss-1)
+                    do k = nfisc+1, nfisc+nfisc2
+                        if (fisc(2*(k-1)+1) .eq. kfiss) then
+                            nfisc2 = nfisc2+1
+                            fisc(2*(nfisc+nfisc2-1)+1) = jfiss
+                            fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
+                        end if
+                    end do
+                    if (kfiss .eq. ifiss) then
+                        nfisc2 = nfisc2+1
+                        fisc(2*(nfisc+nfisc2-1)+1) = jfiss
+                        fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
+                    end if
+                end do
 !       ON NOTE LE NUMERO DE LA PREMIERE FISSURE BRANCHEE SUR IFISS EN CAS DE
 !       JONCTION
-              ASSERT(nfisc2.le.2)
-              if (nfisc2.gt.0) then
-                 nfijon(1) = ifiss
-                 do kfiss = 1, nfisc2
-                    nfijon(1+kfiss) = fisc(2*(nfisc+kfiss-1)+1)
-                 end do
-              endif
-              if (nfisc2.eq.1) nfijon(3)=nfijon(2)
-           end do
+                ASSERT(nfisc2 .le. 2)
+                if (nfisc2 .gt. 0) then
+                    nfijon(1) = ifiss
+                    do kfiss = 1, nfisc2
+                        nfijon(1+kfiss) = fisc(2*(nfisc+kfiss-1)+1)
+                    end do
+                end if
+                if (nfisc2 .eq. 1) nfijon(3) = nfijon(2)
+            end do
 
-        endif
+        end if
 !
 !       NOMBRE DE COMPOSANTE DE LA TOPOSE.HEA
         ncomp = zi(jcesd(4)-1+5+4*(ima-1)+3)
 !
 !       CREATION DU VECTEUR D'INDIRECTION DES NOEUDS (LOCAL A IMA)
-        dirno='&&XPOMAX.DIRNO'
+        dirno = '&&XPOMAX.DIRNO'
         call wkvect(dirno, 'V V I', nnn*(2+nfiss), jdirno)
 !        CALL WKVECT(DIRNO,'V V I',(N+NPI+NMI)*3,JDIRNO)
 !
 !       DIMENSION TOPOLOGIQUE DE LA MAILLE
-        ndime= tmdim(typm1(ima))
+        ndime = tmdim(typm1(ima))
 !
 !       1ER ELEMENT DE REFERENCE ASSOCIE A LA MAILLE
         itypel = maille(ima)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
         call elref2(notype, 10, lirefe, nbelr)
-        elrefp= lirefe(1)
+        elrefp = lirefe(1)
 !       NOMBRE DE POINT DE GAUSS
-        if (.not.iselli(elrefp)) then
-            irese=3
+        if (.not. iselli(elrefp)) then
+            irese = 3
         else
-            irese=0
-        endif
-        if (ndime.eq.ndim) then
-           noflpg = notype//elrese(ndime+irese)//'XINT'
+            irese = 0
+        end if
+        if (ndime .eq. ndim) then
+            noflpg = notype//elrese(ndime+irese)//'XINT'
         else
-           noflpg = notype//elrese(ndime+irese)//'RIGI'
-        endif
-        nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
-        ASSERT(nuflpg.ne.0)
+            noflpg = notype//elrese(ndime+irese)//'RIGI'
+        end if
+        nuflpg = indk32(pnlocfpg, noflpg, 1, nblfpg)
+        ASSERT(nuflpg .ne. 0)
         nufgpg = nolocfpg(nuflpg)
-        npg=tmfpg(nufgpg)
+        npg = tmfpg(nufgpg)
 !
 !       CREATION DE VECTEUR DES COORDONNÉES DE LA MAILLE IMA
 !       AVEC DES VALEURS CONTIGUES
         geom = '&&XPOAJD.GEOM'
         call wkvect(geom, 'V V R', ndim*n, igeom)
         do in = 1, n
-            ino=zi(jconx1-1+zi(jconx2+ima-1)+in-1)
+            ino = zi(jconx1-1+zi(jconx2+ima-1)+in-1)
             do j = 1, ndim
-                zr(igeom-1+ndim*(in-1)+j)=zr(iacoo1-1+3*(ino-1)+j)
+                zr(igeom-1+ndim*(in-1)+j) = zr(iacoo1-1+3*(ino-1)+j)
             end do
         end do
 !
-        if (.not.opmail) then
+        if (.not. opmail) then
 !         TYPE DE LA MAILLE PARENT
             call jenuno(jexnum('&CATA.TM.NOMTM', vtypma(ima)), typma)
 !         CONNECTIVITES DU MAILLAGE QUADRATIQUE
 !         POUR RECUPERER LES LAGRANGES
             call jeveuo(noma//'.CONNEX', 'L', jconq1)
             call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconq2)
-        endif
+        end if
 !
-        nfe=0
-        nfh=0
+        nfe = 0
+        nfh = 0
 !
 !       COMPOSANTES DU CHAMP DE DEPLACEMENT 1 POUR LA MAILLE IMA
 !       ET RECUPERATION DES CONTRAINTES 1
-        if (.not.opmail) then
+        if (.not. opmail) then
             nbcmp = cnsd(2)
-            ASSERT(nbcmp.le.ddlmax)
-            call xpocmp(elrefp, cns1, ima, n, jconx1,&
-                        jconx2, ndim, nfh, nfe, ddlc,&
+            ASSERT(nbcmp .le. ddlmax)
+            call xpocmp(elrefp, cns1, ima, n, jconx1, &
+                        jconx2, ndim, nfh, nfe, ddlc, &
                         nbcmp, cmp, lmeca, pre1)
 !
             if (tysd(1:9) .ne. 'MODE_MECA' .and. tysd(1:9) .ne. 'EVOL_THER') then
-                call cesexi('C', jcesd1, jcesl1, ima, 1,&
+                call cesexi('C', jcesd1, jcesl1, ima, 1, &
                             1, 1, iadc)
-                if (iviex .ne. 0) call cesexi('C', jcvid1, jcvil1, ima, 1,&
+                if (iviex .ne. 0) call cesexi('C', jcvid1, jcvil1, ima, 1, &
                                               1, 1, iadv)
-            endif
-        endif
+            end if
+        end if
 !
 !       RECUPERATION DES COORDONNEES DES POINTS D'INTERSECTION
-        call cesexi('C', jcesd(1), jcesl(1), ima, 1,&
+        call cesexi('C', jcesd(1), jcesl(1), ima, 1, &
                     1, 1, iad1)
-        ASSERT(iad1.gt.0)
+        ASSERT(iad1 .gt. 0)
 !
 !       RECUPERATION DES COORDONNEES DES POINTS MILIEUX
-        if (.not.iselli(elrefp)) then
-            call cesexi('C', jcesd(9), jcesl(9), ima, 1,&
+        if (.not. iselli(elrefp)) then
+            call cesexi('C', jcesd(9), jcesl(9), ima, 1, &
                         1, 1, iad9)
-            ASSERT(iad9.gt.0)
+            ASSERT(iad9 .gt. 0)
         else
-            iad9=0
-        endif
+            iad9 = 0
+        end if
 !
 !       RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION
 !       PAR FISSURE SUR LES MAILLES PORTEUSES DE DDL DE CONTACT
 !
         do ifiss = 1, nfiss
-           call cesexi('C', jcesd(10), jcesl(10), ima, 1,&
-                       ifiss, 1, iad10)
-           ninter(ifiss)=zi(jcesv(10)-1+iad10)
+            call cesexi('C', jcesd(10), jcesl(10), ima, 1, &
+                        ifiss, 1, iad10)
+            ninter(ifiss) = zi(jcesv(10)-1+iad10)
         end do
-        call cesexi('C', jcesd(11), jcesl(11), ima, 1,&
+        call cesexi('C', jcesd(11), jcesl(11), ima, 1, &
                     1, 1, iad11)
         ncompa = zi(jcesd(11)-1+5+4*(ima-1)+3)
 !
 !       RECUPERATION DE LA CONNECTIVITE DES SOUS-ELEMENTS
-        call cesexi('C', jcesd(2), jcesl(2), ima, 1,&
+        call cesexi('C', jcesd(2), jcesl(2), ima, 1, &
                     1, 1, iad2)
-        ASSERT(iad2.gt.0)
+        ASSERT(iad2 .gt. 0)
 !
 !       RECUPERATION DE LA FONCTION HEAVISIDE
-        call cesexi('C', jcesd(4), jcesl(4), ima, 1,&
+        call cesexi('C', jcesd(4), jcesl(4), ima, 1, &
                     1, 1, iad4)
-        ASSERT(iad4.gt.0)
+        ASSERT(iad4 .gt. 0)
 !
 !       RECUPERATION DES INFOS CONCERNANT LES GROUP_MA CONTENANT IMA
         if (opmail) then
             call jelira(jexnum(listgr, ima), 'LONMAX', ngrm)
             if (ngrm .gt. 0) call jeveuo(jexnum(listgr, ima), 'L', iagma)
-        endif
+        end if
 !
 !       RECUPERATION DES LEVELS SET AUX NOEUDS
         lst = '&&XPOAJD.LST'
@@ -706,13 +706,13 @@ implicit none
         call wkvect(hea, 'V V I', nfiss, jhea)
         do ifiss = 1, nfiss
             do j = 1, n
-                call cesexi('C', jcesd(6), jcesl(6), ima, j,&
+                call cesexi('C', jcesd(6), jcesl(6), ima, j, &
                             ifiss, 1, iad)
-                ASSERT(iad.gt.0)
+                ASSERT(iad .gt. 0)
                 zr(jlsn-1+(j-1)*nfiss+ifiss) = zr(jcesv(6)-1+iad)
-                call cesexi('C', jcesd(7), jcesl(7), ima, j,&
+                call cesexi('C', jcesd(7), jcesl(7), ima, j, &
                             ifiss, 1, iad)
-                ASSERT(iad.gt.0)
+                ASSERT(iad .gt. 0)
                 zr(jlst-1+(j-1)*nfiss+ifiss) = zr(jcesv(7)-1+iad)
             end do
         end do
@@ -721,162 +721,162 @@ implicit none
         nlachm(1:2) = 0
         lacthm(1:16) = 0
         vit(1:16) = 0
-        if (pre1 .and. nfijon(1).ne.0 .and. ndim.eq.ndime .and. .not.opmail) then
-           call cesexi('C', jcesd(15), jcesl(15), ima, 1,&
-                       1, 1, iad16)
-           ncompi = zi(jcesd(15)-1+5+4*(ima-1)+3)
-           call conare(typma, ar, nbar)
-           do nli = 1, ninter(nfijon(1))
-              pinter(:) = 0.d0
-              do j = 1, ndim
-                 pinter(j) = zr(jcesv(15)-1-1+iad16+ncompi*(nfijon(1)-1)+ndim*(nli-1)+j)
-              end do
-              ff(:) = 0.d0
-              call elrfvf(elrefp, pinter, ff, n)
-              lsno = 0.d0
-              do j = 1, n
-                 lsno = lsno+ff(j)*zr(jlsn-1+(j-1)*nfiss+nfijon(2))
-              end do
-              dec = 0
-              if (lsno.gt.-1.d-8) dec=8
-              iar=int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+1))
-              ino=int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+2))
-              nvit=int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+5))
-              if (ino .gt. 0) then
-                 lacthm(ino+dec)=nli
-              else if (iar.gt.0) then
-                 ino1=ar(iar,1)
-                 ino2=ar(iar,2)
-                 if (nvit .eq. 1) then
-                    lacthm(ino1+dec)=nli
-                    vit(ino1+dec)=1
-                    lacthm(ino2+dec)=nli
-                    vit(ino2+dec)=1
-                 else
-                    if (vit(ino1+dec) .eq. 0) lacthm(ino1+dec)=nli
-                    if (vit(ino2+dec) .eq. 0) lacthm(ino2+dec)=nli
-                 endif
-              endif
-           end do
-           do ino = 1, 8
-              if (lacthm(ino) .ne. 0) nlachm(1)=nlachm(1)+1
-              if (lacthm(ino+8) .ne. 0) nlachm(2)=nlachm(2)+1
-           end do
-        endif
+        if (pre1 .and. nfijon(1) .ne. 0 .and. ndim .eq. ndime .and. .not. opmail) then
+            call cesexi('C', jcesd(15), jcesl(15), ima, 1, &
+                        1, 1, iad16)
+            ncompi = zi(jcesd(15)-1+5+4*(ima-1)+3)
+            call conare(typma, ar, nbar)
+            do nli = 1, ninter(nfijon(1))
+                pinter(:) = 0.d0
+                do j = 1, ndim
+                    pinter(j) = zr(jcesv(15)-1-1+iad16+ncompi*(nfijon(1)-1)+ndim*(nli-1)+j)
+                end do
+                ff(:) = 0.d0
+                call elrfvf(elrefp, pinter, ff, n)
+                lsno = 0.d0
+                do j = 1, n
+                    lsno = lsno+ff(j)*zr(jlsn-1+(j-1)*nfiss+nfijon(2))
+                end do
+                dec = 0
+                if (lsno .gt. -1.d-8) dec = 8
+                iar = int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+1))
+                ino = int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+2))
+                nvit = int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+5))
+                if (ino .gt. 0) then
+                    lacthm(ino+dec) = nli
+                else if (iar .gt. 0) then
+                    ino1 = ar(iar, 1)
+                    ino2 = ar(iar, 2)
+                    if (nvit .eq. 1) then
+                        lacthm(ino1+dec) = nli
+                        vit(ino1+dec) = 1
+                        lacthm(ino2+dec) = nli
+                        vit(ino2+dec) = 1
+                    else
+                        if (vit(ino1+dec) .eq. 0) lacthm(ino1+dec) = nli
+                        if (vit(ino2+dec) .eq. 0) lacthm(ino2+dec) = nli
+                    end if
+                end if
+            end do
+            do ino = 1, 8
+                if (lacthm(ino) .ne. 0) nlachm(1) = nlachm(1)+1
+                if (lacthm(ino+8) .ne. 0) nlachm(2) = nlachm(2)+1
+            end do
+        end if
 !
 !       RECUPERATION DE LA CONNECTIVITÉ DES FISSURES
-        if (.not.opmail .and. nfh .gt. 0) then
+        if (.not. opmail .and. nfh .gt. 0) then
 !         CORRECTION DE NFH SI ON SE TROMPE DANS XPOCMP
             if (nfh .gt. nfiss) nfh = nfiss
-            if (nfiss.gt.1) nfh = zi(jcesd(8)-1+5+4*(ima-1)+2)
-        endif
+            if (nfiss .gt. 1) nfh = zi(jcesd(8)-1+5+4*(ima-1)+2)
+        end if
 !
 !       RECUPERATION DE LA DEFINITION DES FONCTION HEAVISIDES
-        if (.not.opmail .and. nfh .gt. 0) then
+        if (.not. opmail .and. nfh .gt. 0) then
 !       NOMBRE DE COMPOSANTE DE LA SD TOPONO.HNO
-          ncompn_tmp = zi(jcesd(12)-1+5+4*(ima-1)+3)
-          heavn='&&XPOAJD.HEAVN'
+            ncompn_tmp = zi(jcesd(12)-1+5+4*(ima-1)+3)
+            heavn = '&&XPOAJD.HEAVN'
 !       EN PRINCIPE, TOPONO N EST DEFINI QUE DANS LES MAILLES XH
 !          MAIS IL PEUT ARRIVER QUE LA MAILLE VOIT AU MOINS
 !          1 NOEUD  AVEC UNE COMPOSANTE HEAVISIDE.
 !          LE DEPLACEMEMENT ASSOCIE DOIT VALOIR ZERO SUR LA MAILLE COURANTE
 !          DANS CE CAS, ON NE PREND PAS DE RISQUE, ON CALCULE AUSSI UN COEF
 !          HEAVISIDE EGAL ZERO PAR LE HEAVN.
-          if (ncompn_tmp.eq.0) then
-            ncompn=5
-            call wkvect(heavn, 'V V I', n*ncompn, jheavn)
-            do ifh = 1, ncompn
-              do j = 1, n
-                zi(jheavn-1+(j-1)*ncompn+ifh) = -99
-              end do
-            end do
-          else
-            ncompn=ncompn_tmp
-            call wkvect(heavn, 'V V I', n*ncompn, jheavn)
-            do ifh = 1, ncompn
-              do j = 1, n
-                call cesexi('C', jcesd(12), jcesl(12), ima, j,&
-                            1, ifh, iad)
-                ASSERT(iad.gt.0)
-                zi(jheavn-1+(j-1)*ncompn+ifh) = zi(jcesv(12)-1+iad)
-              end do
-            end do
-          endif
-          ASSERT(ncompn.eq.5)
-        endif
+            if (ncompn_tmp .eq. 0) then
+                ncompn = 5
+                call wkvect(heavn, 'V V I', n*ncompn, jheavn)
+                do ifh = 1, ncompn
+                    do j = 1, n
+                        zi(jheavn-1+(j-1)*ncompn+ifh) = -99
+                    end do
+                end do
+            else
+                ncompn = ncompn_tmp
+                call wkvect(heavn, 'V V I', n*ncompn, jheavn)
+                do ifh = 1, ncompn
+                    do j = 1, n
+                        call cesexi('C', jcesd(12), jcesl(12), ima, j, &
+                                    1, ifh, iad)
+                        ASSERT(iad .gt. 0)
+                        zi(jheavn-1+(j-1)*ncompn+ifh) = zi(jcesv(12)-1+iad)
+                    end do
+                end do
+            end if
+            ASSERT(ncompn .eq. 5)
+        end if
 !
 !       RECUPERATION DE LA BASE LOCALE EN FOND DE FISSURE ET DU STATUT DES NOEUDS
-        if (.not.opmail .and. (nfh+nfe) .gt. 0) then
-          ncmp = zi(jcesd(17)-1+5+4*(ima-1)+3)
-          stano='&&XPOAJD.STANO'
-          call wkvect(stano, 'V V I', n, jstno)
-          if (ncmp.gt.0) then
-            do j = 1, n
-              call cesexi('C', jcesd(17), jcesl(17), ima, j,&
-                           1, 1, iad)
-              ASSERT(iad.gt.0)
-              zi(jstno-1+j)=zi(jcesv(17)-1+iad)
-            enddo
-          else
-             zi(jstno:(jstno-1+n))=-99
-          endif
-        endif
-        if (.not.opmail .and. nfe .gt. 0) then
-          ncmp = zi(jcesd(16)-1+5+4*(ima-1)+3)
-          basloc='&&XPOAJD.BASLOC'
-          call wkvect(basloc, 'V V R', 3*ndim*n, jbaslo)
-          if (ncmp.gt.0) then
-            do j = 1, n
-              do l = 1, 3*ndim
-                 call cesexi('C', jcesd(16), jcesl(16), ima, j,&
-                              1, l, iad)
-                 ASSERT(iad.gt.0)
-                 zr(jbaslo-1+(j-1)*3*ndim+l)=zr(jcesv(16)-1+iad)
-              enddo
-            enddo
-          else
-             zr(jbaslo:(jbaslo-1+n*3*ndim))=0.d0
-          endif
-        endif
+        if (.not. opmail .and. (nfh+nfe) .gt. 0) then
+            ncmp = zi(jcesd(17)-1+5+4*(ima-1)+3)
+            stano = '&&XPOAJD.STANO'
+            call wkvect(stano, 'V V I', n, jstno)
+            if (ncmp .gt. 0) then
+                do j = 1, n
+                    call cesexi('C', jcesd(17), jcesl(17), ima, j, &
+                                1, 1, iad)
+                    ASSERT(iad .gt. 0)
+                    zi(jstno-1+j) = zi(jcesv(17)-1+iad)
+                end do
+            else
+                zi(jstno:(jstno-1+n)) = -99
+            end if
+        end if
+        if (.not. opmail .and. nfe .gt. 0) then
+            ncmp = zi(jcesd(16)-1+5+4*(ima-1)+3)
+            basloc = '&&XPOAJD.BASLOC'
+            call wkvect(basloc, 'V V R', 3*ndim*n, jbaslo)
+            if (ncmp .gt. 0) then
+                do j = 1, n
+                    do l = 1, 3*ndim
+                        call cesexi('C', jcesd(16), jcesl(16), ima, j, &
+                                    1, l, iad)
+                        ASSERT(iad .gt. 0)
+                        zr(jbaslo-1+(j-1)*3*ndim+l) = zr(jcesv(16)-1+iad)
+                    end do
+                end do
+            else
+                zr(jbaslo:(jbaslo-1+n*3*ndim)) = 0.d0
+            end if
+        end if
 !       CALCUL DES PARAMETRES MATERIAUX
 !         INTERPOLATION DES VARC
-        if (.not.opmail .and. lvarc) then
-          ncmp = zi(jcesd_varc-1+5+4*(ima-1)+3)
-          if (ncmp.eq.0) then
-            mu=1.
-            ka=3.
-            goto 15
-          endif
-          varc(:)=0.
-          do j = 1, n
-            do k = 1, nbvarc
-              call cesexi('C', jcesd_varc, jcesl_varc, ima, j,&
-                           1, k, iad)
-              ASSERT(iad.gt.0)
-              varc(k)=varc(k)+zr(jcesv_varc-1+iad)/n
-            enddo
-          enddo
-          poiss=.false.
-          young=.false.
-          do ik = 1, nbf
-            if (valk(nbr+nbc+ik).eq.'NU') then
-              call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc),&
-                          nu, ier)
-              if (ier.eq.0) poiss=.true.
-            endif
-            if (valk(nbr+nbc+ik).eq.'E') then
-              call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc),&
-                           e, ier)
-              if (ier.eq.0) young=.true.
-            endif
-          enddo
-          if (poiss) then
-            ka = 3.d0-4.d0*nu
-            if (cplan) ka = (3.d0-nu)/(1.d0+nu)
-            if (young) mu = e/(2.d0*(1.d0+nu))
-          endif
-15        continue
-        endif
+        if (.not. opmail .and. lvarc) then
+            ncmp = zi(jcesd_varc-1+5+4*(ima-1)+3)
+            if (ncmp .eq. 0) then
+                mu = 1.
+                ka = 3.
+                goto 15
+            end if
+            varc(:) = 0.
+            do j = 1, n
+                do k = 1, nbvarc
+                    call cesexi('C', jcesd_varc, jcesl_varc, ima, j, &
+                                1, k, iad)
+                    ASSERT(iad .gt. 0)
+                    varc(k) = varc(k)+zr(jcesv_varc-1+iad)/n
+                end do
+            end do
+            poiss = .false.
+            young = .false.
+            do ik = 1, nbf
+                if (valk(nbr+nbc+ik) .eq. 'NU') then
+                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
+                                nu, ier)
+                    if (ier .eq. 0) poiss = .true.
+                end if
+                if (valk(nbr+nbc+ik) .eq. 'E') then
+                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
+                                e, ier)
+                    if (ier .eq. 0) young = .true.
+                end if
+            end do
+            if (poiss) then
+                ka = 3.d0-4.d0*nu
+                if (cplan) ka = (3.d0-nu)/(1.d0+nu)
+                if (young) mu = e/(2.d0*(1.d0+nu))
+            end if
+15          continue
+        end if
 !
 ! ----- ON AJOUTE LES NOUVELLES MAILLES ET LES NOUVEAUX NOEUDS
 !
@@ -888,63 +888,63 @@ implicit none
                 zi(jhea-1+ifiss) = zi(jcesv(4)-1+iad4-1+ncomp*(ifiss-1)+ise)
             end do
             jcnse = jcesv(2)-1+iad2
-            call xpoajm(maxfem, jtypm2, itypse(ndime+irese), jcnse, ise,&
-                        n, nnose, prefno, jdirno, nse,&
-                        inm, inmtot, nbmac, zi(jhea), jnivgr,&
-                        iagma, ngrm, jdirgr, opmail, nfiss,&
-                        ndim, ndime, jconx1, jconx2, jconq1,&
-                        jconq2, ima, iad1+jcesv(1)-1, nnn, inn,&
-                        inntot, nbnoc, nbnofi, inofi, iacoo1,&
-                        iacoo2, iad9+jcesv(9)-1, ninter, jcesv( 11)+iad11-1,&
+            call xpoajm(maxfem, jtypm2, itypse(ndime+irese), jcnse, ise, &
+                        n, nnose, prefno, jdirno, nse, &
+                        inm, inmtot, nbmac, zi(jhea), jnivgr, &
+                        iagma, ngrm, jdirgr, opmail, nfiss, &
+                        ndim, ndime, jconx1, jconx2, jconq1, &
+                        jconq2, ima, iad1+jcesv(1)-1, nnn, inn, &
+                        inntot, nbnoc, nbnofi, inofi, iacoo1, &
+                        iacoo2, iad9+jcesv(9)-1, ninter, jcesv(11)+iad11-1, &
                         ncompa, elrefp, jlsn, jlst, typma, igeom, jheavn, ncompn, &
-                        zi(jxc), cmp, nbcmp, nfh, nfe,&
-                        ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                        pre1, heavno, fisco, nlachm, lacthm,&
+                        zi(jxc), cmp, nbcmp, nfh, nfe, &
+                        ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca, &
+                        pre1, heavno, fisco, nlachm, lacthm, &
                         jbaslo, jstno, ka, mu)
-            if (.not.opmail) then
+            if (.not. opmail) then
                 if (tysd(1:9) .ne. 'MODE_MECA' .and. tysd(1:9) .ne. 'EVOL_THER') then
 !
 !             ON AJOUTE DES CONTRAINTES
-                    call xpoajc(nse, inm, inmtot, nbmac, ise,&
-                                npg, jcesd1, jcesd2, jcvid1, jcvid2,&
-                                ima, ndim, ndime, iadc, iadv,&
-                                jcesv1, jcesl2, jcesv2, jcviv1, jcvil2,&
+                    call xpoajc(nse, inm, inmtot, nbmac, ise, &
+                                npg, jcesd1, jcesd2, jcvid1, jcvid2, &
+                                ima, ndim, ndime, iadc, iadv, &
+                                jcesv1, jcesl2, jcesv2, jcviv1, jcvil2, &
                                 jcviv2)
 !
-                    call xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
+                    call xpocox(nbmac, ima, inmtot, nbcmpc, jresd1, &
                                 jresv1, jresl1, jresd2, jresv2, jresl2)
 !
 !
-                endif
-            endif
+                end if
+            end if
         end do
 !
         if (opmail) then
-            ASSERT(inn.eq.nnn)
-        endif
+            ASSERT(inn .eq. nnn)
+        end if
 !
         call jedetr(geom)
         call jedetr(dirno)
         call jedetr(lsn)
         call jedetr(lst)
         call jedetr(hea)
-        if (.not.opmail .and. nfh .gt. 0) call jedetr(heavn)
-        if (.not.opmail .and. nfe .gt. 0) call jedetr(basloc)
-        if (.not.opmail .and. (nfh+nfe) .gt. 0) call jedetr(stano)
+        if (.not. opmail .and. nfh .gt. 0) call jedetr(heavn)
+        if (.not. opmail .and. nfe .gt. 0) call jedetr(basloc)
+        if (.not. opmail .and. (nfh+nfe) .gt. 0) call jedetr(stano)
 !
 100     continue
     end do
 !
 !     CREATION DU GROUPE DES NOEUDS SITUES SUR LA FISSURE
 !     PORTANT DES DDLS DE CONTACT
-    grpnoe=maxfem//'.GROUPENO'
+    grpnoe = maxfem//'.GROUPENO'
     if (opmail .and. nbnofi .gt. 0) then
-        nogno=nogrfi
+        nogno = nogrfi
 !       ON SAIT QUE LE .GROUPENO N'EXISTE PAS
         gpptnn = maxfem//'.PTRNOMNOE'
         call jecreo(gpptnn, 'G N K24')
         call jeecra(gpptnn, 'NOMMAX', 1+ngfon)
-        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
+        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', &
                     1+ngfon)
         call jecroc(jexnom(grpnoe, nogno))
         call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, nbnofi))
@@ -953,7 +953,7 @@ implicit none
         do j = 1, nbnofi
             zi(iagno-1+j) = zi(inofi-1+j)
         end do
-    endif
+    end if
 !      IF (OPMAIL.AND.NBNOLA.GT.0) THEN
 !        NOGNO=NOGRLA
 !        CALL JECROC(JEXNOM(GRPNOE,NOGNO))
@@ -970,7 +970,7 @@ implicit none
         call detrsd('CHAM_ELEM_S', chs(ich))
     end do
 !
-    if (.not.opmail) call detrsd('CHAM_NO_S', varcns)
+    if (.not. opmail) call detrsd('CHAM_NO_S', varcns)
 !
     if (opmail) call jedetr(mailx)
     if (opmail) call jedetr(linofi)

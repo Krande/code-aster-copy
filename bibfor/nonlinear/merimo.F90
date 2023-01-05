@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine merimo(base           ,&
-                  l_xfem         , l_macr_elem, l_hho    ,&
-                  model          , cara_elem  , iter_newt,&
-                  ds_constitutive, ds_material, ds_system,&
-                  hval_incr      , hval_algo  , hhoField ,&
-                  optioz         , ldccvg     , sddynz_)
+subroutine merimo(base, &
+                  l_xfem, l_macr_elem, l_hho, &
+                  model, cara_elem, iter_newt, &
+                  ds_constitutive, ds_material, ds_system, &
+                  hval_incr, hval_algo, hhoField, &
+                  optioz, ldccvg, sddynz_)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,18 +47,18 @@ implicit none
 #include "asterfort/ndynlo.h"
 #include "asterfort/detrsd.h"
 !
-character(len=1), intent(in) :: base
-aster_logical, intent(in) :: l_xfem, l_macr_elem, l_hho
-character(len=24), intent(in) :: model, cara_elem
-integer, intent(in) :: iter_newt
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-type(HHO_Field), intent(in) :: hhoField
-character(len=*), intent(in) :: optioz
-integer, intent(out) :: ldccvg
-character(len=*), optional, intent(in) :: sddynz_
+    character(len=1), intent(in) :: base
+    aster_logical, intent(in) :: l_xfem, l_macr_elem, l_hho
+    character(len=24), intent(in) :: model, cara_elem
+    integer, intent(in) :: iter_newt
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    type(HHO_Field), intent(in) :: hhoField
+    character(len=*), intent(in) :: optioz
+    integer, intent(out) :: ldccvg
+    character(len=*), optional, intent(in) :: sddynz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,16 +111,16 @@ character(len=*), optional, intent(in) :: sddynz_
 !
 ! - Initializations
 !
-    option    = optioz
-    sddyna    = ' '
+    option = optioz
+    sddyna = ' '
     if (present(sddynz_)) then
         sddyna = sddynz_
-    endif
-    ligrmo    = model(1:8)//'.MODELE'
-    caco3d    = '&&MERIMO.CARA_ROTAF'
+    end if
+    ligrmo = model(1:8)//'.MODELE'
+    caco3d = '&&MERIMO.CARA_ROTAF'
     tabret(:) = ASTER_FALSE
-    ldccvg    = 0
-    l_dyna    = ndynlo(sddyna,'DYNAMIQUE')
+    ldccvg = 0
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
 ! - Get fields from hat-variables
 !
@@ -131,11 +131,11 @@ character(len=*), optional, intent(in) :: sddynz_
 !
 ! - Input fields
 !
-    call merimp(l_xfem         , l_dyna     , l_hho   ,&
-                model          , cara_elem  , sddyna  , iter_newt,&
-                ds_constitutive, ds_material,&
-                hval_incr      , hval_algo  , hhoField, caco3d   ,&
-                mxchin         , lpain      , lchin   , nbin)
+    call merimp(l_xfem, l_dyna, l_hho, &
+                model, cara_elem, sddyna, iter_newt, &
+                ds_constitutive, ds_material, &
+                hval_incr, hval_algo, hhoField, caco3d, &
+                mxchin, lpain, lchin, nbin)
 !
 ! - Prepare flags
 !
@@ -166,7 +166,7 @@ character(len=*), optional, intent(in) :: sddynz_
         if (option .eq. 'RIGI_MECA_TANG') then
             call detrsd('CHAM_ELEM', ds_constitutive%comp_error)
             l_codret = ASTER_TRUE
-        endif
+        end if
     else if (option(1:9) .eq. 'RAPH_MECA') then
         l_merigi = ASTER_FALSE
         l_veinte = ASTER_TRUE
@@ -175,7 +175,7 @@ character(len=*), optional, intent(in) :: sddynz_
         l_codpre = ASTER_FALSE
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Prepare vector and matrix
 !
@@ -183,25 +183,25 @@ character(len=*), optional, intent(in) :: sddynz_
         call detrsd('MATR_ELEM', ds_system%merigi)
         call jeexin(ds_system%merigi//'.RERR', ires)
         if (ires .eq. 0) then
-            call memare(base, ds_system%merigi, model, ds_material%mater, cara_elem,&
+            call memare(base, ds_system%merigi, model, ds_material%mater, cara_elem, &
                         'RIGI_MECA')
-        endif
+        end if
         if (l_macr_elem) then
             call jeveuo(ds_system%merigi//'.RERR', 'E', vk24=v_rerr)
             v_rerr(3) = 'OUI_SOUS_STRUC'
-        endif
+        end if
         call reajre(ds_system%merigi, ' ', base)
-    endif
+    end if
 !
     if (l_veinte) then
         call jeexin(ds_system%veinte//'.RELR', iret)
         if (iret .eq. 0) then
-            call memare(base, ds_system%veinte, model, ds_material%mater, cara_elem,&
+            call memare(base, ds_system%veinte, model, ds_material%mater, cara_elem, &
                         'CHAR_MECA')
-        endif
+        end if
         call jedetr(ds_system%veinte//'.RELR')
         call reajre(ds_system%veinte, ' ', base)
-    endif
+    end if
 !
 ! - Output fields
 !
@@ -221,24 +221,24 @@ character(len=*), optional, intent(in) :: sddynz_
         lpaout(nbout) = 'PMATUNS'
         lchout(nbout) = ds_system%merigi(1:15)//'.M02'
         ich_matrixn = nbout
-    endif
+    end if
     if (l_veinte) then
         nbout = nbout+1
         lpaout(nbout) = 'PVECTUR'
         lchout(nbout) = ds_system%veinte(1:15)//'.R01'
         ich_veinte = nbout
-    endif
+    end if
     if (l_sigmex) then
         nbout = nbout+1
         lpaout(nbout) = 'PCONTXR'
         lchout(nbout) = sigm_extr(1:19)
-    endif
+    end if
     if (l_codret) then
         nbout = nbout+1
         lpaout(nbout) = 'PCODRET'
         lchout(nbout) = ds_constitutive%comp_error(1:19)
         ich_codret = nbout
-    endif
+    end if
     if (l_codpre) then
         nbout = nbout+1
         lpaout(nbout) = 'PCOPRED'
@@ -251,15 +251,15 @@ character(len=*), optional, intent(in) :: sddynz_
         nbout = nbout+1
         lpaout(nbout) = 'PCONTPR'
         lchout(nbout) = sigm_curr(1:19)
-    endif
+    end if
 !
-    ASSERT(nbout.le.mxchout)
-    ASSERT(nbin.le.mxchin)
+    ASSERT(nbout .le. mxchout)
+    ASSERT(nbin .le. mxchin)
 !
 ! - Compute
 !
-    call calcul('S'  , option, ligrmo, nbin  , lchin,&
-                lpain, nbout , lchout, lpaout, base ,&
+    call calcul('S', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'NON')
 !
 ! - Save
@@ -268,10 +268,10 @@ character(len=*), optional, intent(in) :: sddynz_
         call reajre(ds_system%merigi, lchout(ich_matrixs), base)
         call reajre(ds_system%merigi, lchout(ich_matrixn), base)
         call redetr(ds_system%merigi)
-    endif
+    end if
     if (l_veinte) then
         call reajre(ds_system%veinte, lchout(ich_veinte), base)
-    endif
+    end if
 !
 ! - Errors
 !
@@ -286,12 +286,12 @@ character(len=*), optional, intent(in) :: sddynz_
                 ldccvg = 2
             else
                 ldccvg = 1
-            endif
+            end if
             if (tabret(1)) then
                 ldccvg = 1
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jedema()
 end subroutine

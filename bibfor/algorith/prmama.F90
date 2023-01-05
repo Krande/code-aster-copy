@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prmama(iprod, amat, na, na1, na2,&
-                  bmat, nb, nb1, nb2, cmat,&
+subroutine prmama(iprod, amat, na, na1, na2, &
+                  bmat, nb, nb1, nb2, cmat, &
                   nc, nc1, nc2, ier)
     implicit none
 ! DESCRIPTION : PRODUITS DE MATRICES PLEINES RECTANGULAIRES
@@ -87,16 +87,16 @@ subroutine prmama(iprod, amat, na, na1, na2,&
 !
     case (1)
         if (na2 .ne. nb1) ier = 1
-        if (nc1 .ne. na1 .or. nc2 .ne. nb2) ier = ier + 2
+        if (nc1 .ne. na1 .or. nc2 .ne. nb2) ier = ier+2
         if (ier .ne. 0) goto 999
 !
         do j = 1, nb2
             do i = 1, na1
                 ctemp = zero
                 do k = 1, nb1
-                    ctemp = ctemp + amat(i,k) * bmat(k,j)
+                    ctemp = ctemp+amat(i, k)*bmat(k, j)
                 end do
-                cmat(i,j) = ctemp
+                cmat(i, j) = ctemp
             end do
         end do
 !
@@ -105,16 +105,16 @@ subroutine prmama(iprod, amat, na, na1, na2,&
 !
     case (2)
         if (na2 .ne. nb2) ier = 1
-        if (nc1 .ne. na1 .or. nc2 .ne. nb1) ier = ier + 2
+        if (nc1 .ne. na1 .or. nc2 .ne. nb1) ier = ier+2
         if (ier .ne. 0) goto 999
 !
         do j = 1, nb1
             do i = 1, na1
                 ctemp = zero
                 do k = 1, nb2
-                    ctemp = ctemp + amat(i,k) * bmat(j,k)
+                    ctemp = ctemp+amat(i, k)*bmat(j, k)
                 end do
-                cmat(i,j) = ctemp
+                cmat(i, j) = ctemp
             end do
         end do
 !
@@ -123,12 +123,12 @@ subroutine prmama(iprod, amat, na, na1, na2,&
 !
     case (3)
         if (na1 .ne. nb1) ier = 1
-        if (nc1 .ne. na2 .or. nc2 .ne. nb2) ier = ier + 2
+        if (nc1 .ne. na2 .or. nc2 .ne. nb2) ier = ier+2
         if (ier .ne. 0) goto 999
 !
         do j = 1, nb2
             do i = 1, na2
-                cmat(i,j) = ddot(nb1,amat(1,i),1,bmat(1,j),1)
+                cmat(i, j) = ddot(nb1, amat(1, i), 1, bmat(1, j), 1)
             end do
         end do
 !
@@ -137,16 +137,16 @@ subroutine prmama(iprod, amat, na, na1, na2,&
 !
     case (4)
         if (na1 .ne. nb2) ier = 1
-        if (nc1 .ne. na2 .or. nc2 .ne. nb1) ier = ier + 2
+        if (nc1 .ne. na2 .or. nc2 .ne. nb1) ier = ier+2
         if (ier .ne. 0) goto 999
 !
         do j = 1, nb1
             do i = 1, na2
                 ctemp = zero
                 do k = 1, nb2
-                    ctemp = ctemp + amat(k,i) * bmat(j,k)
+                    ctemp = ctemp+amat(k, i)*bmat(j, k)
                 end do
-                cmat(i,j) = ctemp
+                cmat(i, j) = ctemp
             end do
         end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ subroutine lcmfga(mode, eps, gameps, dgamde, itemax, precvg, iret)
 #include "asterfort/lcmfdr.h"
 #include "asterfort/lcmfra.h"
 #include "asterfort/lcvalp.h"
-    integer,intent(in) :: mode, itemax
-    real(kind=8),intent(in) :: eps(6), precvg
-    integer,intent(out):: iret
-    real(kind=8),intent(out):: gameps, dgamde(6)
+    integer, intent(in) :: mode, itemax
+    real(kind=8), intent(in) :: eps(6), precvg
+    integer, intent(out):: iret
+    real(kind=8), intent(out):: gameps, dgamde(6)
 ! --------------------------------------------------------------------------------------------------
 !  CALCUL DE GAMMA(EPS) POUR LA LOI ENDO_SCALAIRE AVEC GRAD_VARI
 ! --------------------------------------------------------------------------------------------------
@@ -35,18 +35,18 @@ subroutine lcmfga(mode, eps, gameps, dgamde, itemax, precvg, iret)
 !  PRECVG  PRECISION POUR CALCUL DE GAMMA: DGAM < PRECVG
 !  IRET    0 SI OK, 1 SI PB POUR CALCULER LE RAYON
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8),parameter,dimension(6):: kr=(/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter, dimension(6):: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: treps, sig(6), sigvp(3), chi, dchids(6), coef, trchid, precx1
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
+    common/lcee/lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp
-    common /lces/ pk,pm,pp
+    common/lces/pk, pm, pp
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pct, pch, pcs
-    common /lcmqu/ pch,pct,pcs
+    common/lcmqu/pch, pct, pcs
 ! --------------------------------------------------------------------------------------------------
 !
 !  INITIALISATION: PRECISION RECHERCHEE SUR CHI * DCHI
@@ -56,7 +56,7 @@ subroutine lcmfga(mode, eps, gameps, dgamde, itemax, precvg, iret)
 !  CALCUL DE LA VALEUR
 !
     treps = eps(1)+eps(2)+eps(3)
-    sig = lambda*treps*kr + deuxmu*eps
+    sig = lambda*treps*kr+deuxmu*eps
     call lcvalp(sig, sigvp)
     call lcmfra(sigvp, itemax, precx1, chi, iret)
     if (iret .eq. 1) goto 999
@@ -74,8 +74,8 @@ subroutine lcmfga(mode, eps, gameps, dgamde, itemax, precvg, iret)
             dgamde = coef*(lambda*trchid*kr+deuxmu*dchids)
         else
             dgamde = 0
-        endif
-    endif
+        end if
+    end if
 !
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 5
                 n3 = 13
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.2 .and. i2.eq.0) then
+    else if (i1 .eq. 2 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 2
@@ -62,10 +62,10 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 6
                 n3 = 14
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.3 .and. i2.eq.0) then
+    else if (i1 .eq. 3 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 3
@@ -79,10 +79,10 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 3
                 n2 = 7
                 n3 = 15
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.4 .and. i2.eq.0) then
+    else if (i1 .eq. 4 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 4
@@ -96,10 +96,10 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 4
                 n2 = 8
                 n3 = 16
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.5 .and. i2.eq.0) then
+    else if (i1 .eq. 5 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 5
@@ -113,10 +113,10 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 5
                 n2 = 8
                 n3 = 20
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.6 .and. i2.eq.0) then
+    else if (i1 .eq. 6 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 6
@@ -130,10 +130,10 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 6
                 n2 = 7
                 n3 = 18
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.7 .and. i2.eq.0) then
+    else if (i1 .eq. 7 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 7
@@ -147,10 +147,10 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 7
                 n2 = 8
                 n3 = 19
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.8 .and. i2.eq.0) then
+    else if (i1 .eq. 8 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 8
@@ -164,7 +164,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 8
                 n2 = 7
                 n3 = 19
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -189,11 +189,11 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 4
                 n3 = 12
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
-    else if ((i1+i2.eq.5) .and. (i1.eq.2 .or. i2.eq.2)) then
+    else if ((i1+i2 .eq. 5) .and. (i1 .eq. 2 .or. i2 .eq. 2)) then
         do i = 1, 4
             if (i .eq. 1) then
                 n1 = 3
@@ -211,7 +211,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 1
                 n3 = 9
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -233,11 +233,11 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 3
                 n2 = 2
                 n3 = 10
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
-    else if ((i1+i2.eq.5) .and. (i1.eq.4 .or. i2.eq.4)) then
+    else if ((i1+i2 .eq. 5) .and. (i1 .eq. 4 .or. i2 .eq. 4)) then
         do i = 1, 4
             if (i .eq. 1) then
                 n1 = 4
@@ -255,7 +255,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 2
                 n3 = 9
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -277,7 +277,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 2
                 n3 = 9
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -299,7 +299,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 1
                 n3 = 9
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -321,7 +321,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 3
                 n2 = 2
                 n3 = 10
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -343,7 +343,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 4
                 n2 = 1
                 n3 = 12
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -365,11 +365,11 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 5
                 n2 = 1
                 n3 = 13
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
-    else if ((i1+i2.eq.13) .and. (i1.eq.7 .or. i2.eq.7)) then
+    else if ((i1+i2 .eq. 13) .and. (i1 .eq. 7 .or. i2 .eq. 7)) then
         do i = 1, 4
             if (i .eq. 1) then
                 n1 = 7
@@ -387,7 +387,7 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 6
                 n2 = 2
                 n3 = 14
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -409,11 +409,11 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 7
                 n2 = 3
                 n3 = 15
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
-    else if ((i1+i2.eq.13) .and. (i1.eq.8 .or. i2.eq.8)) then
+    else if ((i1+i2 .eq. 13) .and. (i1 .eq. 8 .or. i2 .eq. 8)) then
         do i = 1, 4
             if (i .eq. 1) then
                 n1 = 8
@@ -431,13 +431,13 @@ subroutine barhex(i1, i2, coor, poin)
                 n1 = 5
                 n2 = 1
                 n3 = 13
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
     else
         call utmess('F', 'ALGORITH_36', sk='HEXA')
 !
-    endif
+    end if
 !
 end subroutine

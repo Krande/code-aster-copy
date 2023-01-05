@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0234(option, nomte)
 !
 !---- DECLARATIONS LOCALES ( RAMENEES DE TE0239.F FULL_MECA )
 !
-    parameter (nbres=2)
+    parameter(nbres=2)
     character(len=8) :: elrefe
     character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
@@ -63,7 +63,7 @@ subroutine te0234(option, nomte)
     real(kind=8) :: zmin, hic
 !
 !
-    data zero,un,deux/0.d0,1.d0,2.d0/
+    data zero, un, deux/0.d0, 1.d0, 2.d0/
 !
 !-- SHIFT POUR LES COURBURES
     call elref1(elrefe)
@@ -72,7 +72,7 @@ subroutine te0234(option, nomte)
 !DEB
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !
@@ -81,10 +81,10 @@ subroutine te0234(option, nomte)
     nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
-    endif
+    end if
     if (nbcou .gt. 30) then
         call utmess('F', 'ELEMENTS3_50')
-    endif
+    end if
 !
     npge = 3
 !
@@ -104,80 +104,80 @@ subroutine te0234(option, nomte)
     call jevech('PMATERC', 'L', imate)
     nomres(1) = 'E'
     nomres(2) = 'NU'
-    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
                 itab=itab)
-    icontm=itab(1)
-    nbsp=itab(7)
+    icontm = itab(1)
+    nbsp = itab(7)
     if (nbsp .ne. npge*nbcou) then
         call utmess('F', 'ELEMENTS_4')
-    endif
+    end if
 !
     call jevech('PDEPLMR', 'L', ideplm)
 !---- INITIALISATION DU VECTEUR FORCE INTERNE
 !
     call jevech('PVECTUR', 'E', ivectu)
-    do  i = 1, 3*nno
+    do i = 1, 3*nno
         zr(ivectu+i-1) = 0.d0
-   end do
+    end do
 !
     kpki = 0
     do kp = 1, npg
 !-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
 !
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                     cour, jacp, cosa, sina)
 !
         call r8inir(5, 0.d0, sigmtd, 1)
         r = zero
-        call moytpg('RIGI', kp, npge, '+', tpg,&
+        call moytpg('RIGI', kp, npge, '+', tpg, &
                     iret)
 !
         do i = 1, nno
-            r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
         end do
 !
-        call rcvala(zi(imate), ' ', 'ELAS', 1, 'TEMP',&
-                    [tpg], 2, nomres, valres, icodre,&
+        call rcvala(zi(imate), ' ', 'ELAS', 1, 'TEMP', &
+                    [tpg], 2, nomres, valres, icodre, &
                     1)
         nu = valres(2)
-        cisail = valres(1)/ (un+nu)
+        cisail = valres(1)/(un+nu)
         if (nomte .eq. 'MECXSE3') jacp = jacp*r
         test = abs(h*cour/deux)
         if (test .ge. un) correc = zero
-        test2 = abs(h*cosa/ (deux*r))
+        test2 = abs(h*cosa/(deux*r))
         if (test2 .ge. un) correc = zero
 !
-        testl1 = (test.le.eps .or. correc.eq.zero)
-        testl2 = (&
-                 test2 .le. eps .or. correc .eq. zero .or. abs(cosa) .le. eps .or. abs(cour*r)&
-                 .le. eps .or. abs(cosa-cour*r) .le. eps&
+        testl1 = (test .le. eps .or. correc .eq. zero)
+        testl2 = ( &
+                 test2 .le. eps .or. correc .eq. zero .or. abs(cosa) .le. eps .or. abs(cour*r) &
+                 .le. eps .or. abs(cosa-cour*r) .le. eps &
                  )
 !
         do icou = 1, nbcou
             do inte = 1, npge
                 if (inte .eq. 1) then
-                    zic = zmin + (icou-1)*hic
+                    zic = zmin+(icou-1)*hic
                     coef = 1.d0/3.d0
-                else if (inte.eq.2) then
-                    zic = zmin + hic/2.d0 + (icou-1)*hic
+                else if (inte .eq. 2) then
+                    zic = zmin+hic/2.d0+(icou-1)*hic
                     coef = 4.d0/3.d0
                 else
-                    zic = zmin + hic + (icou-1)*hic
+                    zic = zmin+hic+(icou-1)*hic
                     coef = 1.d0/3.d0
-                endif
+                end if
                 x3 = zic
 !
                 if (testl1) then
                     rhos = 1.d0
                 else
-                    rhos = 1.d0 + x3*cour
-                endif
+                    rhos = 1.d0+x3*cour
+                end if
                 if (testl2) then
                     rhot = 1.d0
                 else
-                    rhot = 1.d0 + x3*cosa/r
-                endif
+                    rhot = 1.d0+x3*cosa/r
+                end if
 !
 !-- CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
 !-- EPSSS, EPSTT, EPSSX3
@@ -185,20 +185,20 @@ subroutine te0234(option, nomte)
 !-- DE L'INSTANT PRECEDANT ET DES DEFORMATIONS INCREMENTALES
 !-- DE L'INSTANT PRESENT
 !
-                call defgen(testl1, testl2, nno, r, x3,&
-                            sina, cosa, cour, zr(ivf+k), dfdx,&
+                call defgen(testl1, testl2, nno, r, x3, &
+                            sina, cosa, cour, zr(ivf+k), dfdx, &
                             zr(ideplm), eps2d, epsx3)
 !
 !
 !-- CONSTRUCTION DE LA DEFORMATION GSX3 ET DE LA CONTRAINTE SGMSX3
 !
-                gsx3 = 2.d0* epsx3
+                gsx3 = 2.d0*epsx3
                 sgmsx3 = cisail*kappa*gsx3/2.d0
 !-- JEU D'INDICES DANS LA BOUCLE SUR LES POINTS D'INTEGRATION
 !                                  DE LA SURFACE MOYENNE
 !
-                kpki = kpki + 1
-                k1 = 4* (kpki-1)
+                kpki = kpki+1
+                k1 = 4*(kpki-1)
 !-- CALCUL DES CONTRAINTES TILDE, ON A REMPLACE ICONTP PAR ICONTM
 !
 
@@ -210,7 +210,7 @@ subroutine te0234(option, nomte)
 
 !
                 do i = 1, 5
-                    sigmtd(i) = sigmtd(i) + sigtdi(i)*0.5d0*hic*coef
+                    sigmtd(i) = sigmtd(i)+sigtdi(i)*0.5d0*hic*coef
                 end do
 !
             end do
@@ -218,7 +218,7 @@ subroutine te0234(option, nomte)
 !
 !-- CALCUL DES EFFORTS INTERIEURS
 !
-        call effi(nomte, sigmtd, zr(ivf+k), dfdx, jacp,&
+        call effi(nomte, sigmtd, zr(ivf+k), dfdx, jacp, &
                   sina, cosa, r, zr(ivectu))
 !
     end do

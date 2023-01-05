@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,29 +17,29 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmnsta(ndim  , leltf ,&
-                  lpenaf, coefaf,&
-                  indco ,&
-                  lambda, djeut , dlagrf,&
-                  tau1  , tau2  ,&
-                  lcont , ladhe ,&
-                  rese  , nrese)
+subroutine mmnsta(ndim, leltf, &
+                  lpenaf, coefaf, &
+                  indco, &
+                  lambda, djeut, dlagrf, &
+                  tau1, tau2, &
+                  lcont, ladhe, &
+                  rese, nrese)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/mmtrpr.h"
 !
-integer, intent(in) :: ndim
-aster_logical, intent(in) :: leltf
-aster_logical, intent(in) :: lpenaf
-integer, intent(in) :: indco
-real(kind=8), intent(in) :: coefaf, lambda
-real(kind=8), intent(in) :: djeut(3), dlagrf(2)
-real(kind=8), intent(in)  :: tau1(3), tau2(3)
-aster_logical, intent(out) :: lcont, ladhe
-real(kind=8), intent(out) :: rese(3), nrese
+    integer, intent(in) :: ndim
+    aster_logical, intent(in) :: leltf
+    aster_logical, intent(in) :: lpenaf
+    integer, intent(in) :: indco
+    real(kind=8), intent(in) :: coefaf, lambda
+    real(kind=8), intent(in) :: djeut(3), dlagrf(2)
+    real(kind=8), intent(in)  :: tau1(3), tau2(3)
+    aster_logical, intent(out) :: lcont, ladhe
+    real(kind=8), intent(out) :: rese(3), nrese
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,9 +67,9 @@ real(kind=8), intent(out) :: rese(3), nrese
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lcont   = ASTER_FALSE
-    ladhe   = ASTER_FALSE
-    nrese   = 0.d0
+    lcont = ASTER_FALSE
+    ladhe = ASTER_FALSE
+    nrese = 0.d0
     rese(:) = 0.d0
 !
 ! - Contact state of contact
@@ -80,14 +80,14 @@ real(kind=8), intent(out) :: rese(3), nrese
 ! ONE MUST HAVE ATTENTION WHEN MODIFYING
         if (lambda .eq. 0.d0) then
             lcont = ASTER_FALSE
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute state of friction
 !
     if (leltf .and. lcont) then
-        call mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
-                    tau1, tau2  , ladhe, rese  , nrese)
-    endif
+        call mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf, &
+                    tau1, tau2, ladhe, rese, nrese)
+    end if
 !
 end subroutine

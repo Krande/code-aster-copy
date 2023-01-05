@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,21 +53,21 @@ subroutine create_enthalpy(rhocp, enthalpy)
     is_cste = nbval .eq. 2
 
     if (.not. is_cste) then
-        rhomoy = values(nbval/2 + 2) + values(nbval/2 + 1)
-        beta0 = 0.5d0 * rhomoy * (-273.15 - values(1))
+        rhomoy = values(nbval/2+2)+values(nbval/2+1)
+        beta0 = 0.5d0*rhomoy*(-273.15-values(1))
     else
-        beta0 = values(2) * (-273.15 - values(1))
-    endif
+        beta0 = values(2)*(-273.15-values(1))
+    end if
 
     call focain('TRAPEZE', rhocp, -beta0, enthalpy, 'G')
 
     call jeveuo(enthalpy//'.PROL', 'E', vk24=prol2)
     ! The extension on the left is necessarly linear.
     ! If rho_cp has a constant extension, the enthalpy extension is linear.
-    prol2(5)(1:1) = 'L'
-    if (prol1(5)(2:2) .eq. 'C') then
-        prol2(5)(2:2) = 'L'
-    endif
+    prol2(5) (1:1) = 'L'
+    if (prol1(5) (2:2) .eq. 'C') then
+        prol2(5) (2:2) = 'L'
+    end if
 
     call jedema()
 

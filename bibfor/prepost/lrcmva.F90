@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
-                  nomcmr, nbcmfi, nmcmfi, nbcmpv, ncmpvm,&
+subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf, &
+                  nomcmr, nbcmfi, nmcmfi, nbcmpv, ncmpvm, &
                   numcmp, nochmd, adsl, adsv, codret)
 !_____________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -79,7 +79,7 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'LRCMVA' )
+    parameter(nompro='LRCMVA')
 !
 !
     integer :: iaux, jaux, kaux, laux, maux
@@ -109,24 +109,24 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
     call jeveuo(ntvale, 'L', advale)
     if (nbcmpv .ne. 0) then
         call jeveuo(ncmpvm, 'L', adncvm)
-    endif
+    end if
     call jeveuo(nmcmfi, 'L', adncfi)
     call jeveuo(numcmp, 'L', adnucm)
 !
     if (lgproa .ne. 0) then
         call jeveuo(ntproa, 'L', adproa)
-    endif
+    end if
 !
-    do 11 , iaux = 1 , nbcmfi
+    do 11, iaux = 1, nbcmfi
 !
-    ncmpdb = 1
+        ncmpdb = 1
 !
 ! 1.1. ==> REPERAGE DU NUMERO DE LA COMPOSANTE DU CHAMP ASTER DANS
 !          LAQUELLE AURA LIEU LE TRANSFERT DE LA IAUX-EME COMPOSANTE LUE
 !
-110 continue
+110     continue
 !
-    nrcmp = 0
+        nrcmp = 0
 !
 ! 1.1.1. ==> QUAND ON VEUT UNE SERIE DE COMPOSANTES :
 !            BOUCLE 111 : ON CHERCHE, DANS LA LISTE VOULUE EN MED,
@@ -156,16 +156,16 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
 !                ARRETE : NCMPDB.
 !              . ON FAIT LE TRANSFERT DES VALEURS (GOTO 12).
 !
-    if (nbcmpv .ne. 0) then
+        if (nbcmpv .ne. 0) then
 !
-        do 111 , jaux = ncmpdb , nbcmpv
-        if (zk16(adncvm-1+jaux) .eq. zk16(adncfi-1+iaux)) then
-            nrcmp = zi(adnucm-1+jaux)
-            ncmpdb = jaux + 1
-            goto 12
-        endif
-111     continue
-        goto 11
+            do 111, jaux = ncmpdb, nbcmpv
+            if (zk16(adncvm-1+jaux) .eq. zk16(adncfi-1+iaux)) then
+                nrcmp = zi(adnucm-1+jaux)
+                ncmpdb = jaux+1
+                goto 12
+            end if
+111         continue
+            goto 11
 !
 ! 1.1.2. ==> QUAND ON STOCKE A L'IDENTIQUE, ON RECHERCHE LE NUMERO DE
 !            COMPOSANTE DE REFERENCE QUI A LE MEME NOM QUE LA
@@ -173,43 +173,43 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
 !            RIEN NE GARANTIT QUE L'ORDRE DES COMPOSANTES SOIT LE MEME
 !            DANS LA REFERENCE ASTER ET DANS LE CHAMP ECRIT DANS LE
 !            FICHIER.
-    else
+            else
 !
-        saux08 = zk16(adncfi-1+iaux)(1:8)
-        if (lxlgut(zk16(adncfi-1+iaux)) .gt. 8) then
-            valk(1) = zk16(adncfi-1+iaux)
-            valk(2) = saux08
-            call utmess('A', 'MED_72', nk=2, valk=valk)
-        endif
-        nrcmp = indik8 ( nomcmr, saux08, 1, ncmprf )
+            saux08 = zk16(adncfi-1+iaux) (1:8)
+            if (lxlgut(zk16(adncfi-1+iaux)) .gt. 8) then
+                valk(1) = zk16(adncfi-1+iaux)
+                valk(2) = saux08
+                call utmess('A', 'MED_72', nk=2, valk=valk)
+            end if
+            nrcmp = indik8(nomcmr, saux08, 1, ncmprf)
 !
-    endif
+            end if
 !
 ! 1.2. ==> SI AUCUNE COMPOSANTE N'A ETE TROUVEE, MALAISE ...
 !
- 12 continue
+12          continue
 !
-    if (nrcmp .eq. 0) then
-        call utmess('F', 'MED_73', sk=zk16(adncfi-1+iaux))
-    endif
+            if (nrcmp .eq. 0) then
+                call utmess('F', 'MED_73', sk=zk16(adncfi-1+iaux))
+            end if
 !
 ! 1.3. ==> TRANSFERT DES VALEURS DANS LA COMPOSANTE NRCMP
 !
-    zl(adremp+nrcmp-1) = .true.
+            zl(adremp+nrcmp-1) = .true.
 !
 ! 1.3.1. ==> SANS PROFIL : ON PARCOURT LES NOEUDS DU PREMIER AU DERNIER
 !
-    if (lgproa .eq. 0) then
-        kaux = -ncmprf+nrcmp-1
-        laux = advale-nbcmfi+iaux-1
-        do 131 , jaux = 1 , nbvato
-        kaux = kaux + ncmprf
-        laux = laux + nbcmfi
-        zl(adsl+kaux) = .true.
-        zr(adsv+kaux) = zr(laux)
-131     continue
+            if (lgproa .eq. 0) then
+                kaux = -ncmprf+nrcmp-1
+                laux = advale-nbcmfi+iaux-1
+                do 131, jaux = 1, nbvato
+                    kaux = kaux+ncmprf
+                    laux = laux+nbcmfi
+                    zl(adsl+kaux) = .true.
+                    zr(adsv+kaux) = zr(laux)
+131                 continue
 !
-    else
+                    else
 !
 ! 1.3.2. ==> AVEC PROFIL : ON PARCOURT LES NOEUDS STOCKES DANS LE PROFIL
 !            ON RECUPERE LEURS NUMEROS ET ON PLACE LA VALEUR AU BON
@@ -217,56 +217,56 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
 !            NUMEROS APPARAISENT DANS L'ORDRE, DONC IL FAUT RECALCULER
 !            LA POSITION A CHAQUE FOIS.
 !
-        maux = -ncmprf+nrcmp-1
-        laux = advale-nbcmfi+iaux-1
-        do 132 , nuval = 0 , lgproa-1
-        jaux = zi(adproa+nuval)
-        kaux = maux + jaux*ncmprf
-        laux = laux + nbcmfi
-        zl(adsl+kaux) = .true.
-        zr(adsv+kaux) = zr(laux)
-132     continue
+                    maux = -ncmprf+nrcmp-1
+                    laux = advale-nbcmfi+iaux-1
+                    do 132, nuval = 0, lgproa-1
+                        jaux = zi(adproa+nuval)
+                        kaux = maux+jaux*ncmprf
+                        laux = laux+nbcmfi
+                        zl(adsl+kaux) = .true.
+                        zr(adsv+kaux) = zr(laux)
+132                     continue
 !
-    endif
+                        end if
 !
 ! 1.4. ==> QUAND ON VEUT UNE SERIE DE COMPOSANTES, ON REPREND
 !          L'EXPLORATION DE LA LISTE VOULUE
 !
-    if (nbcmpv .ne. 0) then
-        goto 110
-    endif
+                        if (nbcmpv .ne. 0) then
+                            goto 110
+                        end if
 !
-    11 end do
+11                  end do
 !
 !====
 ! 2. ON INFORME SUR LES COMPOSANTES QUI ONT ETE REMPLIES
 !====
 !
-    kaux = 0
-    do 21 , jaux = 1 , ncmprf
-    if (.not.zl(adremp+jaux-1)) then
-        kaux = kaux + 1
-    endif
-    21 end do
+                    kaux = 0
+                    do 21, jaux = 1, ncmprf
+                    if (.not. zl(adremp+jaux-1)) then
+                        kaux = kaux+1
+                    end if
+21                  end do
 !
-    if (kaux .gt. 0 .and. nivinf .gt. 1) then
-        write(ifm,2001) nochmd
-        do 22 , jaux = 1 , ncmprf
-        if (zl(adremp+jaux-1)) then
-            saux08 = nomcmr(jaux)
-            write(ifm,2002) saux08
-        endif
- 22     continue
-        write(ifm,*) ' '
-    endif
+                    if (kaux .gt. 0 .and. nivinf .gt. 1) then
+                        write (ifm, 2001) nochmd
+                        do 22, jaux = 1, ncmprf
+                        if (zl(adremp+jaux-1)) then
+                            saux08 = nomcmr(jaux)
+                            write (ifm, 2002) saux08
+                        end if
+22                      continue
+                        write (ifm, *) ' '
+                        end if
 !
-    2001 format('CHAMP ',a)
-    2002 format('. LA COMPOSANTE LUE : ',a8,'.')
+2001                    format('CHAMP ', a)
+2002                    format('. LA COMPOSANTE LUE : ', a8, '.')
 !
 !====
 ! 3. MENAGE
 !====
 !
-    call jedetr(ntcmpl)
+                        call jedetr(ntcmpl)
 !
-end subroutine
+                        end subroutine

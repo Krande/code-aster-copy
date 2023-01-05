@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ subroutine hsall(vectt, hstout)
 #include "asterfort/hfmss.h"
     integer :: i, j
 !
-    real(kind=8) :: vectt ( 3 , 3 )
+    real(kind=8) :: vectt(3, 3)
 !
-    real(kind=8) :: hstout ( 5 , 9 )
+    real(kind=8) :: hstout(5, 9)
 !
-    real(kind=8) :: hsfm ( 3 , 9 )
+    real(kind=8) :: hsfm(3, 9)
 !
-    real(kind=8) :: hss ( 2 , 9 )
+    real(kind=8) :: hss(2, 9)
 !
 !
 !DEB
@@ -61,10 +61,10 @@ subroutine hsall(vectt, hstout)
 !
     do j = 1, 9
         do i = 1, 2
-            hstout ( i , j ) = hsfm ( i , j )
-            hstout ( i + 3 , j ) = hss ( i , j )
+            hstout(i, j) = hsfm(i, j)
+            hstout(i+3, j) = hss(i, j)
         end do
-        hstout ( 3 , j ) = hsfm ( 3 , j )
+        hstout(3, j) = hsfm(3, j)
     end do
 !
 !

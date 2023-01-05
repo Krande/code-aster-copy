@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,11 +74,11 @@ subroutine op0143()
     integer :: nbcr, nbgrma, nbgtot, nbocc, ntypg, nzex
     real(kind=8) :: pas, pi, y
 !-----------------------------------------------------------------------
-    data typas   /'CARRE_LIG','TRIA_LIGN'/
-    data mcfac   /'FAISCEAU_TRANS ','GRAPPE',&
-                  'FAISCEAU_AXIAL ','COQUE_COAX'/
-    data motcle  /'NOEUD','GROUP_NO'/
-    data typmcl  /'NOEUD','GROUP_NO'/
+    data typas/'CARRE_LIG', 'TRIA_LIGN'/
+    data mcfac/'FAISCEAU_TRANS ', 'GRAPPE', &
+        'FAISCEAU_AXIAL ', 'COQUE_COAX'/
+    data motcle/'NOEUD', 'GROUP_NO'/
+    data typmcl/'NOEUD', 'GROUP_NO'/
 
 !=======================================================================
     call jemarq()
@@ -87,15 +87,15 @@ subroutine op0143()
     pi = r8pi()
 !
     call getres(nomu, concep, cmd)
-    nomu8=nomu(1:8)
+    nomu8 = nomu(1:8)
 !
     do itypf2 = 1, 4
         call getfac(mcfac(itypf2), nbocc)
         if (nbocc .ge. 1) goto 11
     end do
 11  continue
-    itypfl=itypf2
-    nommcf=mcfac(itypf2)
+    itypfl = itypf2
+    nommcf = mcfac(itypf2)
 !
 !=====================================================================
 ! ----VERIFICATIONS AVANT EXECUTION ----
@@ -129,7 +129,7 @@ subroutine op0143()
             call wkvect(nomu8//'.UNIT_FAISCEAU', 'G V I', 2, iunit)
         else
             call jeveuo(nomu8//'.UNIT_FAISCEAU', 'L', iunit)
-        endif
+        end if
         zi(iunit-1+1) = unit1
         zi(iunit-1+2) = unit2
 !
@@ -147,7 +147,7 @@ subroutine op0143()
             call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=iocc, nbval=0, nbret=icm)
             if (icm .ne. 0) jcm = iocc
             call getvr8(nommcf, 'RHO_TUBE', iocc=iocc, nbval=0, nbret=irho)
-            if (irho .ne. 0) jrho=iocc
+            if (irho .ne. 0) jrho = iocc
             call getvtx(nommcf, 'TYPE_PAS', iocc=iocc, nbval=0, nbret=itpas)
             if (itpas .ne. 0) jtpas = iocc
             call getvis(nommcf, 'TYPE_RESEAU', iocc=iocc, nbval=0, nbret=itres)
@@ -167,18 +167,18 @@ subroutine op0143()
             call wkvect(fsvi, 'G V I', 2+2*nzex, lfsvi)
             zi(lfsvi+1) = nzex
             do iocc = 1, nzex
-                call getvis(nommcf, 'TYPE_RESEAU', iocc=iocc, scal=zi( lfsvi+1+iocc), nbret=ibid)
-                call getvr8(nommcf, 'CSTE_CONNORS', iocc=iocc, nbval=2, vect=zr(lfsvr+2*iocc+1),&
+                call getvis(nommcf, 'TYPE_RESEAU', iocc=iocc, scal=zi(lfsvi+1+iocc), nbret=ibid)
+                call getvr8(nommcf, 'CSTE_CONNORS', iocc=iocc, nbval=2, vect=zr(lfsvr+2*iocc+1), &
                             nbret=ibid)
-                call getvis(nommcf, 'NB_CONNORS', iocc=iocc, nbval=2,&
-                            vect=zi(lfsvi+ 1+nzex+iocc), nbret=ibid)
+                call getvis(nommcf, 'NB_CONNORS', iocc=iocc, nbval=2, &
+                            vect=zi(lfsvi+1+nzex+iocc), nbret=ibid)
             end do
             call getvtx(nommcf, 'TYPE_PAS', iocc=jtpas, scal=tpas, nbret=ibid)
             if (tpas .eq. typas(1)) then
                 zi(lfsvi) = 1
             else
                 zi(lfsvi) = 2
-            endif
+            end if
 !
 ! ---------- PAS REDUIT
             call getvr8(nommcf, 'PAS', iocc=jpas, scal=pas, nbret=ibid)
@@ -189,12 +189,12 @@ subroutine op0143()
                 else
 ! ---------------- RESEAU A PAS CARRE
                     y = (1.07d0+0.56d0*pas)*pas
-                endif
+                end if
                 zr(lfsvr) = (pi*(y*y+1.d0))/(2.d0*(y*y-1.d0))
-                if (niv .eq. 2) write(ifm,100) zr(lfsvr)
+                if (niv .eq. 2) write (ifm, 100) zr(lfsvr)
             else
                 call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=jcm, scal=zr(lfsvr), nbret=ibid)
-            endif
+            end if
             zr(lfsvr+1) = pas
 !
             call getvr8(nommcf, 'RHO_TUBE', iocc=jrho, scal=zr(lfsvr+2), nbret=irho)
@@ -210,7 +210,7 @@ subroutine op0143()
             call wkvect(fsvr, 'G V R', 1, lfsvr)
             call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=jcm, scal=zr(lfsvr), nbret=ibid)
 !
-        endif
+        end if
 !
 ! --------1.3.DANS LES DEUX CAS CREATION ET REMPLISSAGE DU .FSVK
         call wkvect(fsvk, 'G V K8', 4+nzex, lfsvk)
@@ -219,7 +219,7 @@ subroutine op0143()
         call getvid(nommcf, 'PROF_RHO_F_INT', iocc=1, scal=zk8(lfsvk+2), nbret=ibid)
         call getvid(nommcf, 'PROF_RHO_F_EXT', iocc=1, scal=zk8(lfsvk+3), nbret=ibid)
         do iocc = 1, nzex
-            call getvid(nommcf, 'PROF_VITE_FLUI', iocc=iocc, scal=zk8( lfsvk+3+iocc), nbret=ibid)
+            call getvid(nommcf, 'PROF_VITE_FLUI', iocc=iocc, scal=zk8(lfsvk+3+iocc), nbret=ibid)
         end do
 !
 ! -------1.4.VERIFICATION DES NUMERO ET NOMS DE ZONE D EXCITATION DU
@@ -228,13 +228,13 @@ subroutine op0143()
             do j = i+1, nzex
                 if (zk8(lfsvk+i+3) .eq. zk8(lfsvk+j+3)) then
                     call utmess('F', 'MODELISA5_65')
-                endif
+                end if
             end do
         end do
 !-----------------------------------------------------------------------
 ! ----- 2.CAS D'UNE GRAPPE
 !       ------------------
-    else if (itypfl.eq.2) then
+    else if (itypfl .eq. 2) then
 !
         call getvtx(nommcf, 'COUPLAGE', iocc=1, scal=ouinon, nbret=ibid)
 !
@@ -251,15 +251,15 @@ subroutine op0143()
             iocc = 1
             lisno = '&&OP0143.LISTE_NOEUD'
             call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maillage)
-            call reliem(modele, maillage, 'NO_NOEUD', 'GRAPPE', iocc,&
+            call reliem(modele, maillage, 'NO_NOEUD', 'GRAPPE', iocc, &
                         2, motcle, typmcl, lisno, nbno)
-            ASSERT(nbno.eq.1)
+            ASSERT(nbno .eq. 1)
             call jeveuo(lisno, 'L', jno)
 !
-            zk8(lfsvk  )=grappe
-            zk8(lfsvk+1)=zk8(jno-1+1)
-            zk8(lfsvk+2)=carael
-            zk8(lfsvk+3)=modele
+            zk8(lfsvk) = grappe
+            zk8(lfsvk+1) = zk8(jno-1+1)
+            zk8(lfsvk+2) = carael
+            zk8(lfsvk+3) = modele
 !
 ! ----      STOCKAGE DE L'UNITE LOGIQUE
             call getvis(nommcf, 'UNITE_CA', iocc=1, scal=unit1, nbret=ibid1)
@@ -269,7 +269,7 @@ subroutine op0143()
                 call wkvect(nomu8//'.UNIT_GRAPPES', 'G V I', 2, iunit)
             else
                 call jeveuo(nomu8//'.UNIT_GRAPPES', 'L', iunit)
-            endif
+            end if
 !
             zi(iunit-1+1) = unit1
             zi(iunit-1+2) = unit2
@@ -277,21 +277,21 @@ subroutine op0143()
             call wkvect(fsvr, 'G V R', 2, lfsvr)
             call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=1, nbval=0, nbret=icm)
             if (icm .ne. 0) then
-                call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=1, scal=zr( lfsvr), nbret=ibid)
+                call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=1, scal=zr(lfsvr), nbret=ibid)
             else
-                zr(lfsvr) = pi * 1.078014d0
-            endif
+                zr(lfsvr) = pi*1.078014d0
+            end if
             call getvr8(nommcf, 'RHO_FLUI', iocc=1, scal=zr(lfsvr+1), nbret=ibid)
 !
 ! --------2.2.SI NON PRISE EN COMPTE DU COUPLAGE
         else
             zi(lfsic+1) = 0
 !
-        endif
+        end if
 !-----------------------------------------------------------------------
 ! ----- 3.CAS D'UN FAISCEAU_AXIAL
 !       -------------------------
-    else if (itypfl.eq.3) then
+    else if (itypfl .eq. 3) then
 !
         zi(lfsic+1) = 1
 !
@@ -304,7 +304,7 @@ subroutine op0143()
         if (nbocc .eq. 1) then
             call getvid(nommcf, 'CARA_ELEM', iocc=1, nbval=0, nbret=icael)
             if (icael .ne. 0) iequiv = 0
-        endif
+        end if
 !
         ocvect = 1
         ocprho = 1
@@ -328,7 +328,7 @@ subroutine op0143()
             else
                 ience = 2
                 nbangl = 1
-            endif
+            end if
             call getvr8(nommcf, 'COOR_GRILLE', iocc=1, nbval=0, nbret=nbgtot)
             if (nbgtot .ne. 0) then
                 ocgril = 1
@@ -338,22 +338,22 @@ subroutine op0143()
             else
                 ntypg = 0
                 nbgtot = 0
-            endif
+            end if
 !
             if (ocgril .ne. 0) then
-                dimvi = 6 + nbgtot
-                dimgr = nbgtot + 6*ntypg
+                dimvi = 6+nbgtot
+                dimgr = nbgtot+6*ntypg
             else
                 dimvi = 5
                 dimgr = 0
-            endif
+            end if
             dimvk = 3
-            dimvr = 5 + nbcara + nbangl
+            dimvr = 5+nbcara+nbangl
             if (nbgrma .ne. 0) then
                 dimgm = nbgrma
             else
                 dimgm = 1
-            endif
+            end if
 !
         else
 !
@@ -377,7 +377,7 @@ subroutine op0143()
                 call getvr8(nommcf, 'COOR_TUBE', iocc=iocc, nbval=0, nbret=icoor)
                 icoor = abs(icoor)
                 zi(lnbcr+iocc-1) = icoor
-                nbcoor = nbcoor + icoor
+                nbcoor = nbcoor+icoor
                 call getvr8(nommcf, 'COOR_GRILLE', iocc=iocc, nbval=0, nbret=nbgtot)
                 if (nbgtot .ne. 0) ocgril = iocc
             end do
@@ -390,27 +390,27 @@ subroutine op0143()
             else
                 ience = 2
                 nbangl = 1
-            endif
+            end if
             if (ocgril .ne. 0) then
                 call getvr8(nommcf, 'COOR_GRILLE', iocc=ocgril, nbval=0, nbret=nbgtot)
                 nbgtot = abs(nbgtot)
                 call getvr8(nommcf, 'LONG_TYPG', iocc=ocgril, nbval=0, nbret=ntypg)
                 ntypg = abs(ntypg)
-                dimvi = 6 + nbgrma + 1 + nbgtot
-                dimgr = nbgtot + 6*ntypg
+                dimvi = 6+nbgrma+1+nbgtot
+                dimgr = nbgtot+6*ntypg
             else
                 nbgtot = 0
                 ntypg = 0
-                dimvi = 6 + nbgrma
+                dimvi = 6+nbgrma
                 dimgr = 0
-            endif
+            end if
             dimvk = 2
-            dimvr = 5 + nbcara + nbangl + nbgrma
+            dimvr = 5+nbcara+nbangl+nbgrma
             dimgm = nbgrma
 !
             call wkvect(fscr, 'G V R', nbcoor, lfscr)
 !
-        endif
+        end if
 !
         call wkvect(fsvi, 'G V I', dimvi, lfsvi)
         call wkvect(fsvk, 'G V K8', dimvk, lfsvk)
@@ -423,7 +423,7 @@ subroutine op0143()
 ! --------3.2.1.OBJET .FSVI
         zi(lfsvi) = iequiv
 !
-        call getvr8(nommcf, 'VECT_X', iocc=ocvect, nbval=3, vect=vect(1),&
+        call getvr8(nommcf, 'VECT_X', iocc=ocvect, nbval=3, vect=vect(1), &
                     nbret=ibid)
         if (abs(vect(1)-1.d0) .le. r8prem()) then
             zi(lfsvi+1) = 1
@@ -431,7 +431,7 @@ subroutine op0143()
             zi(lfsvi+1) = 2
         else
             zi(lfsvi+1) = 3
-        endif
+        end if
 !
         zi(lfsvi+2) = ience
         zi(lfsvi+3) = nbgrma
@@ -440,40 +440,40 @@ subroutine op0143()
         if (ocgril .ne. 0) then
             if (iequiv .eq. 0) then
                 zi(lfsvi+5) = nbgtot
-                call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zi(lfsvi+6),&
+                call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zi(lfsvi+6), &
                             nbret=ibid)
             else
                 zi(lfsvi+6+nbgrma) = nbgtot
-                call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot,&
+                call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot, &
                             vect=zi(lfsvi+7+nbgrma), nbret=ibid)
-            endif
-        endif
+            end if
+        end if
 !
 ! --------3.2.2.OBJET .FSVK
         call getvid(nommcf, 'PROF_RHO_FLUI', iocc=ocprho, scal=zk8(lfsvk), nbret=ibid)
-        call getvid(nommcf, 'PROF_VISC_CINE', iocc=ocpvis, scal=zk8(lfsvk+ 1), nbret=ibid)
+        call getvid(nommcf, 'PROF_VISC_CINE', iocc=ocpvis, scal=zk8(lfsvk+1), nbret=ibid)
 !
 ! --------3.2.3.OBJET .FSVR
         if (ocpesa .ne. 0) then
-            call getvr8(nommcf, 'PESANTEUR', iocc=ocpesa, nbval=4, vect=zr(lfsvr),&
+            call getvr8(nommcf, 'PESANTEUR', iocc=ocpesa, nbval=4, vect=zr(lfsvr), &
                         nbret=ibid)
         else
             zr(lfsvr) = 9.81d0
             zr(lfsvr+1) = 0.d0
             zr(lfsvr+2) = 0.d0
             zr(lfsvr+3) = -1.d0
-        endif
+        end if
         call getvr8(nommcf, 'RUGO_TUBE', iocc=ocrugo, scal=zr(lfsvr+4), nbret=ibid)
 !
-        call getvtx(nommcf, 'CARA_PAROI', iocc=occapa, nbval=nbcara, vect=carapa(1),&
+        call getvtx(nommcf, 'CARA_PAROI', iocc=occapa, nbval=nbcara, vect=carapa(1), &
                     nbret=ibid)
-        call getvr8(nommcf, 'VALE_PAROI', iocc=occapa, nbval=nbcara, vect=valepa(1),&
+        call getvr8(nommcf, 'VALE_PAROI', iocc=occapa, nbval=nbcara, vect=valepa(1), &
                     nbret=ibid)
         if (ience .eq. 1) then
             do icar = 1, nbcara
                 if (carapa(icar) .eq. 'YC') zr(lfsvr+5) = valepa(icar)
                 if (carapa(icar) .eq. 'ZC') zr(lfsvr+6) = valepa(icar)
-                if (carapa(icar)(1:1) .eq. 'R') zr(lfsvr+7) = valepa( icar)
+                if (carapa(icar) (1:1) .eq. 'R') zr(lfsvr+7) = valepa(icar)
             end do
         else
             do icar = 1, nbcara
@@ -483,41 +483,41 @@ subroutine op0143()
                 if (carapa(icar) .eq. 'HZ') zr(lfsvr+8) = valepa(icar)
             end do
             call getvr8(nommcf, 'ANGL_VRIL', iocc=occapa, scal=zr(lfsvr+9), nbret=ibid)
-        endif
+        end if
 !
 ! --------3.2.4.OBJET .FSGR
         if (ocgril .ne. 0) then
-            call getvr8(nommcf, 'COOR_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zr(lfsgr),&
+            call getvr8(nommcf, 'COOR_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zr(lfsgr), &
                         nbret=ibid)
-            call getvr8(nommcf, 'LONG_TYPG', iocc=ocgril, nbval=ntypg, vect=zr( lfsgr+nbgtot),&
+            call getvr8(nommcf, 'LONG_TYPG', iocc=ocgril, nbval=ntypg, vect=zr(lfsgr+nbgtot), &
                         nbret=ibid)
-            call getvr8(nommcf, 'LARG_TYPG', iocc=ocgril, nbval=ntypg,&
-                        vect=zr( lfsgr+nbgtot+ntypg), nbret=ibid)
-            call getvr8(nommcf, 'EPAI_TYPG', iocc=ocgril, nbval=ntypg,&
-                        vect=zr( lfsgr+nbgtot+2*ntypg), nbret=ibid)
-            call getvr8(nommcf, 'COEF_TRAI_TYPG', iocc=ocgril, nbval=ntypg,&
+            call getvr8(nommcf, 'LARG_TYPG', iocc=ocgril, nbval=ntypg, &
+                        vect=zr(lfsgr+nbgtot+ntypg), nbret=ibid)
+            call getvr8(nommcf, 'EPAI_TYPG', iocc=ocgril, nbval=ntypg, &
+                        vect=zr(lfsgr+nbgtot+2*ntypg), nbret=ibid)
+            call getvr8(nommcf, 'COEF_TRAI_TYPG', iocc=ocgril, nbval=ntypg, &
                         vect=zr(lfsgr+nbgtot+3*ntypg), nbret=ibid)
-            call getvr8(nommcf, 'COEF_DPOR_TYPG', iocc=ocgril, nbval=ntypg,&
+            call getvr8(nommcf, 'COEF_DPOR_TYPG', iocc=ocgril, nbval=ntypg, &
                         vect=zr(lfsgr+nbgtot+4*ntypg), nbret=ibid)
-            call getvr8(nommcf, 'RUGO_TYPG', iocc=ocgril, nbval=ntypg,&
-                        vect=zr( lfsgr+nbgtot+5*ntypg), nbret=ibid)
-        endif
+            call getvr8(nommcf, 'RUGO_TYPG', iocc=ocgril, nbval=ntypg, &
+                        vect=zr(lfsgr+nbgtot+5*ntypg), nbret=ibid)
+        end if
 !
 ! --------3.3.INFORMATIONS PARTICULIERES POUR UN FAISCEAU EQUIVALENT
         if (iequiv .eq. 1) then
 !
             zi(lfsvi+5) = nbcoor/2
-            idecvr = 5 + nbcara + nbangl
+            idecvr = 5+nbcara+nbangl
             ideccr = 0
             do iocc = 1, nbocc
                 nbcr = zi(lnbcr+iocc-1)
                 zi(lfsvi+6+iocc-1) = nbcr/2
-                call getvr8(nommcf, 'RAYON_TUBE', iocc=iocc, scal=zr(lfsvr+ idecvr+iocc-1),&
+                call getvr8(nommcf, 'RAYON_TUBE', iocc=iocc, scal=zr(lfsvr+idecvr+iocc-1), &
                             nbret=ibid)
-                call getvtx(nommcf, 'GROUP_MA', iocc=iocc, scal=zk24(lfsgm+ iocc-1), nbret=ibid)
-                call getvr8(nommcf, 'COOR_TUBE', iocc=iocc, nbval=nbcr, vect=zr(lfscr+ideccr),&
+                call getvtx(nommcf, 'GROUP_MA', iocc=iocc, scal=zk24(lfsgm+iocc-1), nbret=ibid)
+                call getvr8(nommcf, 'COOR_TUBE', iocc=iocc, nbval=nbcr, vect=zr(lfscr+ideccr), &
                             nbret=ibid)
-                ideccr = ideccr + nbcr
+                ideccr = ideccr+nbcr
             end do
 !
 ! --------3.4.INFORMATIONS PARTICULIERES POUR UN FAISCEAU COMPLET
@@ -525,13 +525,13 @@ subroutine op0143()
 !
             call getvid(nommcf, 'CARA_ELEM', iocc=1, scal=zk8(lfsvk+2), nbret=ibid)
             if (nbgrma .ne. 0) then
-                call getvtx(nommcf, 'GROUP_MA', iocc=1, nbval=nbgrma, vect=zk24( lfsgm),&
+                call getvtx(nommcf, 'GROUP_MA', iocc=1, nbval=nbgrma, vect=zk24(lfsgm), &
                             nbret=ibid)
             else
-                call getvtx(nommcf, 'TRI_GROUP_MA', iocc=1, scal=zk24( lfsgm), nbret=ibid)
-            endif
+                call getvtx(nommcf, 'TRI_GROUP_MA', iocc=1, scal=zk24(lfsgm), nbret=ibid)
+            end if
 !
-        endif
+        end if
 !-----------------------------------------------------------------------
 ! ----- 4.CAS DE COQUE_COAX
 !       -------------------
@@ -544,8 +544,8 @@ subroutine op0143()
             zi(lfsvi) = 1
         else
             zi(lfsvi) = 0
-        endif
-        call getvr8(nommcf, 'VECT_X', iocc=1, nbval=3, vect=vect(1),&
+        end if
+        call getvr8(nommcf, 'VECT_X', iocc=1, nbval=3, vect=vect(1), &
                     nbret=ibid)
         if (abs(vect(1)-1.d0) .le. r8prem()) then
             zi(lfsvi+1) = 1
@@ -553,7 +553,7 @@ subroutine op0143()
             zi(lfsvi+1) = 2
         else
             zi(lfsvi+1) = 3
-        endif
+        end if
 !
         call wkvect(fsvk, 'G V K8', 3, lfsvk)
         call getvid(nommcf, 'CARA_ELEM', iocc=1, scal=zk8(lfsvk), nbret=ibid)
@@ -573,7 +573,7 @@ subroutine op0143()
         call getvtx(nommcf, 'GROUP_MA_INT', iocc=1, scal=zk24(lfsgm), nbret=ibid)
         call getvtx(nommcf, 'GROUP_MA_EXT', iocc=1, scal=zk24(lfsgm+1), nbret=ibid)
 !
-    endif
+    end if
 !=======================================================================
 ! ----- IMPRESSION -----
 !       ==========
@@ -583,7 +583,7 @@ subroutine op0143()
     call jedetr('&&OP0143.TEMP.NBCR')
     call jedetc('G', 'AJGR2.FLAG', 4)
 !
-    100 format(1p,'    COEF_MASS_AJOU CALCULE: ',e12.5)
+100 format(1p, '    COEF_MASS_AJOU CALCULE: ', e12.5)
 !
     call jedema()
 end subroutine

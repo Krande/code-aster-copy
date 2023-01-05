@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,59 +62,59 @@ subroutine op0017()
         lattr = .true.
     else
         lattr = .false.
-    endif
+    end if
 !
     call getvtx(' ', 'CONTENU', scal=chaine, nbret=n3)
     if (chaine(1:3) .eq. 'OUI') then
         lcont = .true.
     else
         lcont = .false.
-    endif
+    end if
 !
     call getvtx(' ', 'BASE', scal=chaine, nbret=n1)
-    base=chaine(1:1)
+    base = chaine(1:1)
 !
     ifi = 0
     nomfi = ' '
     call getvis(' ', 'UNITE', scal=ifi, nbret=n2)
-    if (.not. ulexis( ifi )) then
+    if (.not. ulexis(ifi)) then
         call ulopen(ifi, ' ', nomfi, 'NEW', 'O')
-    endif
+    end if
 !
     call getfac('CONCEPT', nbocc)
     do iocc = 1, nbocc
         call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=0, nbret=ncon)
-        ncon= -ncon
+        ncon = -ncon
         if (ncon .gt. 0) then
             AS_ALLOCATE(vk8=liste_co, size=ncon)
-            call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=liste_co,&
+            call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=liste_co, &
                         nbret=n1)
             do i = 1, ncon
                 leresu = liste_co(i)
-                call utimsd(ifi, nivo, lattr, lcont, leresu,&
+                call utimsd(ifi, nivo, lattr, lcont, leresu, &
                             1, base, perm=perm)
             end do
             AS_DEALLOCATE(vk8=liste_co)
-        endif
+        end if
     end do
 !
     call getvtx(' ', 'CHAINE', scal=chaine, nbret=n2)
     if (n2 .gt. 0) then
-        call getltx(' ', 'CHAINE', 1, 72, 1,&
+        call getltx(' ', 'CHAINE', 1, 72, 1, &
                     long, n3)
         call getvis(' ', 'POSITION', scal=ipos, nbret=n4)
-        call utimsd(ifi, nivo, lattr, lcont, chaine(1:long(1)),&
+        call utimsd(ifi, nivo, lattr, lcont, chaine(1:long(1)), &
                     ipos, base, perm=perm)
-    endif
+    end if
 !
     call getvtx(' ', 'TOUT', scal=chaine, nbret=n2)
     if (n2 .gt. 0) then
-        call utimsd(ifi, nivo, lattr, lcont, ' ',&
+        call utimsd(ifi, nivo, lattr, lcont, ' ', &
                     0, base, perm=perm)
-    endif
-    flush(ifi)
-    if( ifi.ne.6 ) then
+    end if
+    flush (ifi)
+    if (ifi .ne. 6) then
         call ulopen(-ifi, ' ', ' ', ' ', ' ')
-    endif
+    end if
     call jedema()
 end subroutine

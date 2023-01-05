@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,18 +37,18 @@ subroutine xlinhm(elrefp, elref2)
     call elref1(elrefp)
 !
     if (elrefp .eq. 'SE3') then
-        elref2='SE2'
+        elref2 = 'SE2'
     else if (elrefp .eq. 'QU8') then
-        elref2='QU4'
-    else if (elrefp.eq.'TR6') then
-        elref2='TR3'
-    else if (elrefp.eq.'H20') then
-        elref2='HE8'
-    else if (elrefp.eq.'P15') then
-        elref2='PE6'
-    else if (elrefp.eq.'P13') then
-        elref2='PY5'
-    else if (elrefp.eq.'T10') then
-        elref2='TE4'
-    endif
+        elref2 = 'QU4'
+    else if (elrefp .eq. 'TR6') then
+        elref2 = 'TR3'
+    else if (elrefp .eq. 'H20') then
+        elref2 = 'HE8'
+    else if (elrefp .eq. 'P15') then
+        elref2 = 'PE6'
+    else if (elrefp .eq. 'P13') then
+        elref2 = 'PY5'
+    else if (elrefp .eq. 'T10') then
+        elref2 = 'TE4'
+    end if
 end subroutine

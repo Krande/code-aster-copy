@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,18 +56,18 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
     if (nomtab(18:19) .ne. '  ') then
         call utmess('F', 'UTILITAI4_68')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBBA', 'L', vk8=tbba)
-    base = tbba(1)(1:1)
+    base = tbba(1) (1:1)
 !
     call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
     nbpara = tbnp(1)
     nbligu = tbnp(2)
-    nblign = max (nbligu , 10 )
+    nblign = max(nbligu, 10)
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
     if (nbpara .eq. 0) then
 !
         tbnp(1) = nbpar
-        ndim = 4 * nbpar
+        ndim = 4*nbpar
 !
         call jecreo(nomtab//'.TBLP', base//' V K24')
         call jeecra(nomtab//'.TBLP', 'LONMAX', ndim)
@@ -84,7 +84,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         call jeveuo(nomtab//'.TBLP', 'E', jtblp)
 !
         do i = 1, nbpar
-            zk24(jtblp+4*(i-1) ) = nompar(i)
+            zk24(jtblp+4*(i-1)) = nompar(i)
             zk24(jtblp+4*(i-1)+1) = typpar(i)
             call codent(i, 'D0', knume)
             nomjv = nomtab//'.'//knume
@@ -133,19 +133,19 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
                 jnpar = zk24(jtblp+4*(j-1))
                 if (inpar .eq. jnpar) goto 20
             end do
-            nbpar1 = nbpar1 + 1
- 20         continue
+            nbpar1 = nbpar1+1
+20          continue
         end do
         if (nbpar1 .eq. 0) goto 999
 !
         ideb = nbpara
-        nbpara = nbpara + nbpar1
+        nbpara = nbpara+nbpar1
         tbnp(1) = nbpara
         ndim = 4*nbpara
 !
         if (ndim .gt. nbpm) then
             call juveca(nomtab//'.TBLP', ndim)
-        endif
+        end if
         call jeecra(nomtab//'.TBLP', 'LONUTI', ndim)
         call jeveuo(nomtab//'.TBLP', 'E', jtblp)
         do i = 1, nbpar
@@ -154,9 +154,9 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
                 jnpar = zk24(jtblp+4*(j-1))
                 if (inpar .eq. jnpar) goto 30
             end do
-            ideb = ideb + 1
+            ideb = ideb+1
             j = ideb
-            zk24(jtblp+4*(j-1) ) = nompar(i)
+            zk24(jtblp+4*(j-1)) = nompar(i)
             zk24(jtblp+4*(j-1)+1) = typpar(i)
             call codent(j, 'D0', knume)
             nomjv = nomtab//'.'//knume
@@ -176,10 +176,10 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
                 zi(jnjv+k-1) = 0
             end do
             zk24(jtblp+4*(j-1)+3) = nomjv
- 30         continue
+30          continue
         end do
 !
-    endif
+    end if
 999 continue
 !
     call jedema()

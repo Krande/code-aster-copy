@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,26 +85,26 @@ subroutine te0347(option, nomte)
     integer, parameter :: nb_cara = 7
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1'/
+    data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    okelem = (nomte.eq.'MECA_POU_D_TG') .or. (nomte.eq.'MECA_POU_D_T') .or.&
-             (nomte.eq.'MECA_POU_D_E')
+    okelem = (nomte .eq. 'MECA_POU_D_TG') .or. (nomte .eq. 'MECA_POU_D_T') .or. &
+             (nomte .eq. 'MECA_POU_D_E')
     ASSERT(okelem)
 !
     nno = 2
     fami = 'RIGI'
 !   nombre de points de gauss
     call elrefe_info(fami=fami, npg=npg)
-    ASSERT((npg.eq.2).or.(npg.eq.3))
+    ASSERT((npg .eq. 2) .or. (npg .eq. 3))
     if (nomte .eq. 'MECA_POU_D_TG') then
         nc = 7
     else
         nc = 6
-    endif
-    lefgno=(option.eq.'SIEF_ELNO')
-    if (lefgno) peffor='PSIEFNOR'
+    end if
+    lefgno = (option .eq. 'SIEF_ELNO')
+    if (lefgno) peffor = 'PSIEFNOR'
 !
     if (option .eq. 'REFE_FORC_NODA  ') then
         call jevech('PVECTUR', 'E', ivectu)
@@ -112,12 +112,12 @@ subroutine te0347(option, nomte)
         call terefe('MOMENT_REFE', 'MECA_POUTRE', momref)
         do in = 1, nno
             do i = 1, 3
-                zr(ivectu+(in-1)*nc+i-1)=forref
-            enddo
+                zr(ivectu+(in-1)*nc+i-1) = forref
+            end do
             do i = 4, nc
-                zr(ivectu+(in-1)*nc+i-1)=momref
-            enddo
-        enddo
+                zr(ivectu+(in-1)*nc+i-1) = momref
+            end do
+        end do
 !
     else if (option .eq. 'VARI_ELNO  ') then
         call jevech('PVARIGR', 'L', ichg)
@@ -125,30 +125,30 @@ subroutine te0347(option, nomte)
         call jevech('PVARINR', 'E', ichn)
 !
         call tecach('OOO', 'PVARIGR', 'L', iret(1), nval=7, itab=jtab)
-        lgpg = max(jtab(6),1)*jtab(7)
-        read (zk16(icompo+1),'(I16)') nbvar
+        lgpg = max(jtab(6), 1)*jtab(7)
+        read (zk16(icompo+1), '(I16)') nbvar
 !       pour les variables internes, on projette avec les fonctions de forme sur les
 !       noeuds debut et fin de l'element
 !       pour le point 1
-        ksi1 = -sqrt( 5.d0 / 3.d0 )
-        d1b3(1,1) = ksi1*(ksi1-1.d0)/2.0d0
-        d1b3(1,2) = 1.d0-ksi1*ksi1
-        d1b3(1,3) = ksi1*(ksi1+1.d0)/2.0d0
+        ksi1 = -sqrt(5.d0/3.d0)
+        d1b3(1, 1) = ksi1*(ksi1-1.d0)/2.0d0
+        d1b3(1, 2) = 1.d0-ksi1*ksi1
+        d1b3(1, 3) = ksi1*(ksi1+1.d0)/2.0d0
 !       pour le point 2
-        ksi1 = sqrt( 5.d0 / 3.d0 )
-        d1b3(2,1) = ksi1*(ksi1-1.d0)/2.0d0
-        d1b3(2,2) = 1.d0-ksi1*ksi1
-        d1b3(2,3) = ksi1*(ksi1+1.d0)/2.0d0
+        ksi1 = sqrt(5.d0/3.d0)
+        d1b3(2, 1) = ksi1*(ksi1-1.d0)/2.0d0
+        d1b3(2, 2) = 1.d0-ksi1*ksi1
+        d1b3(2, 3) = ksi1*(ksi1+1.d0)/2.0d0
         do i = 1, nbvar
             do k = 1, 3
-                zr(ichn +i-1) = zr(ichn +i-1) + zr(ichg + lgpg*(k-1) + i-1)*d1b3(1,k)
-                zr(ichn+lgpg+i-1) = zr(ichn+lgpg+i-1) + zr(ichg + lgpg*(k-1) + i-1)*d1b3(2,k)
-            enddo
-        enddo
+                zr(ichn+i-1) = zr(ichn+i-1)+zr(ichg+lgpg*(k-1)+i-1)*d1b3(1, k)
+                zr(ichn+lgpg+i-1) = zr(ichn+lgpg+i-1)+zr(ichg+lgpg*(k-1)+i-1)*d1b3(2, k)
+            end do
+        end do
 !
 !
 ! --- ------------------------------------------------------------------
-    else if (lefgno .or. option.eq.'FORC_NODA') then
+    else if (lefgno .or. option .eq. 'FORC_NODA') then
 !        recopie des valeurs au point gauss 1 et [2|3] qui contiennent deja les efforts aux noeuds
 !           npg=2 : recopie des points 1 et 2
 !           npg=3 : recopie des points 1 et 3
@@ -159,13 +159,13 @@ subroutine te0347(option, nomte)
                 do i = 1, nc
                     zr(icontn-1+i) = zr(icgp-1+i)
                     zr(icontn-1+i+nc) = zr(icgp-1+i+nc)
-                enddo
+                end do
             else
                 do i = 1, nc
                     zr(icontn-1+i) = zr(icgp-1+i)
                     zr(icontn-1+i+nc) = zr(icgp-1+i+nc+nc)
-                enddo
-            endif
+                end do
+            end if
         else if (option .eq. 'FORC_NODA') then
             call jevech('PCONTMR', 'L', icontg)
             call jevech('PCAORIE', 'L', lorien)
@@ -174,7 +174,7 @@ subroutine te0347(option, nomte)
 !
             call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icompo)
             reactu = .false.
-            if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'GROT_GDEP')
+            if (iretc .eq. 0) reactu = (zk16(icompo+2) .eq. 'GROT_GDEP')
 !
             if (nomte .eq. 'MECA_POU_D_TG') then
                 call jevech('PMATERC', 'L', imate)
@@ -188,51 +188,51 @@ subroutine te0347(option, nomte)
                 call moytem(fami, npg, 1, '+', temp, iret(1))
                 nomres(1) = 'E'
                 nomres(2) = 'NU'
-                call rcvalb(fami, 1, 1, '+', zi(imate), ' ', 'ELAS', 1, 'TEMP', [temp],&
+                call rcvalb(fami, 1, 1, '+', zi(imate), ' ', 'ELAS', 1, 'TEMP', [temp], &
                             2, nomres, valres, iret, 1)
                 e = valres(1)
                 nu = valres(2)
-                g = e / (2.d0*(1.d0+nu))
+                g = e/(2.d0*(1.d0+nu))
 !
                 call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-                aa     = vale_cara(1)
-                xiy    = vale_cara(2)
-                xiz    = vale_cara(3)
-                alfay  = vale_cara(4)
-                alfaz  = vale_cara(5)
-                ey     = vale_cara(6)
-                ez     = vale_cara(7)
+                aa = vale_cara(1)
+                xiy = vale_cara(2)
+                xiz = vale_cara(3)
+                alfay = vale_cara(4)
+                alfaz = vale_cara(5)
+                ey = vale_cara(6)
+                ez = vale_cara(7)
 !
-                phiy = e*xiz*12.d0*alfay/ (xl*xl*g*aa)
-                phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*aa)
+                phiy = e*xiz*12.d0*alfay/(xl*xl*g*aa)
+                phiz = e*xiy*12.d0*alfaz/(xl*xl*g*aa)
 !
                 do kp = 1, npg
                     call jsd1ff(kp, xl, phiy, phiz, d1b)
                     do i = 1, nc
                         sigp(i) = zr(icontg-1+nc*(kp-1)+i)
-                    enddo
+                    end do
                     do k = 1, 2*nc
                         do kk = 1, nc
-                            fs(k)=fs(k)+xl*sigp(kk)*d1b(kk,k)*co(kp)*0.50d0
-                        enddo
-                    enddo
-                enddo
+                            fs(k) = fs(k)+xl*sigp(kk)*d1b(kk, k)*co(kp)*0.50d0
+                        end do
+                    end do
+                end do
 !               prendre en compte centre de torsion
-                fs( 4)=fs( 4)-ez*fs(2)+ey*fs( 3)
-                fs(11)=fs(11)-ez*fs(9)+ey*fs(10)
+                fs(4) = fs(4)-ez*fs(2)+ey*fs(3)
+                fs(11) = fs(11)-ez*fs(9)+ey*fs(10)
             else
                 if (npg .eq. 2) then
                     do in = 1, nc
                         fs(in) = -zr(icontg+in-1)
                         fs(in+nc) = zr(icontg+in+nc-1)
-                    enddo
+                    end do
                 else
                     do in = 1, nc
                         fs(in) = -zr(icontg+in-1)
                         fs(in+nc) = zr(icontg+in+nc+nc-1)
-                    enddo
-                endif
-            endif
+                    end do
+                end if
+            end if
 !
             if (reactu) then
                 call jevech('PSTRXMR', 'L', istrxm)
@@ -240,9 +240,9 @@ subroutine te0347(option, nomte)
                 call porea2(nno, nc, zr(igeom), gamma, pgl, xl)
             else
                 call matrot(zr(lorien), pgl)
-            endif
+            end if
             call utpvlg(nno, nc, pgl, fs, zr(ivectu))
-        endif
+        end if
 !
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,14 @@ subroutine dbgcha(valinc, instap, iterat)
 !
     call jemarq()
 !
-    dbg=.false.
+    dbg = .false.
 !
     if (dbg) then
         call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
         call codree(instap, 'G', instxt)
         call codent(iterat, 'G', itetxt)
-        call irchmd(80, depplu, 'REEL', 'INST:'//instxt//'ITERAT:'// itetxt, codret)
-    endif
+        call irchmd(80, depplu, 'REEL', 'INST:'//instxt//'ITERAT:'//itetxt, codret)
+    end if
 !
     call jedema()
 end subroutine

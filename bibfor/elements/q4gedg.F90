@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,18 +52,18 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                          jgano=jgano)
         ne = npg
-        fami='RIGI'
-    else if (option(6:9).eq.'ELNO') then
-        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+        fami = 'RIGI'
+    else if (option(6:9) .eq. 'ELNO') then
+        call elrefe_info(fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                         jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                          jgano=jgano)
         ne = nno
-        fami='NOEU'
-    endif
+        fami = 'NOEU'
+    end if
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------
@@ -71,17 +71,17 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
-    call dxmate(fami, df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate(fami, df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
     do j = 1, nno
         do i = 1, 2
-            depm(i+2* (j-1)) = depl(i+6* (j-1))
+            depm(i+2*(j-1)) = depl(i+6*(j-1))
         end do
-        depf(1+3* (j-1)) = depl(1+2+6* (j-1))
-        depf(2+3* (j-1)) = depl(3+2+6* (j-1))
-        depf(3+3* (j-1)) = -depl(2+2+6* (j-1))
+        depf(1+3*(j-1)) = depl(1+2+6*(j-1))
+        depf(2+3*(j-1)) = depl(3+2+6*(j-1))
+        depf(3+3*(j-1)) = -depl(2+2+6*(j-1))
     end do
     if (option(1:4) .eq. 'DEGE') then
         do ie = 1, ne
@@ -101,8 +101,8 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             bcdf(1) = 0.d0
             bcdf(2) = 0.d0
             do j = 1, 12
-                bcdf(1) = bcdf(1) + bc(1,j)*depf(j)
-                bcdf(2) = bcdf(2) + bc(2,j)*depf(j)
+                bcdf(1) = bcdf(1)+bc(1, j)*depf(j)
+                bcdf(2) = bcdf(2)+bc(2, j)*depf(j)
             end do
             do k = 1, 3
                 bdf(k) = 0.d0
@@ -110,23 +110,23 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             end do
             do i = 1, 3
                 do j = 1, 12
-                    bdf(i) = bdf(i) + bf(i,j)*depf(j)
+                    bdf(i) = bdf(i)+bf(i, j)*depf(j)
                 end do
                 do j = 1, 8
-                    bdm(i) = bdm(i) + bm(i,j)*depm(j)
+                    bdm(i) = bdm(i)+bm(i, j)*depm(j)
                 end do
             end do
             do i = 1, 3
-                edgl(i+8* (ie-1)) = bdm(i)
-                edgl(i+3+8* (ie-1)) = bdf(i)
+                edgl(i+8*(ie-1)) = bdm(i)
+                edgl(i+3+8*(ie-1)) = bdf(i)
             end do
-            edgl(7+8* (ie-1)) = bcdf(1)
-            edgl(8+8* (ie-1)) = bcdf(2)
+            edgl(7+8*(ie-1)) = bcdf(1)
+            edgl(8+8*(ie-1)) = bcdf(2)
 !           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
-            edgl(3+8* (ie-1)) = edgl(3+8* (ie-1))/2.d0
-            edgl(6+8* (ie-1)) = edgl(6+8* (ie-1))/2.d0
-            edgl(7+8* (ie-1)) = bcdf(1)/2.d0
-            edgl(8+8* (ie-1)) = bcdf(2)/2.d0
+            edgl(3+8*(ie-1)) = edgl(3+8*(ie-1))/2.d0
+            edgl(6+8*(ie-1)) = edgl(6+8*(ie-1))/2.d0
+            edgl(7+8*(ie-1)) = bcdf(1)/2.d0
+            edgl(8+8*(ie-1)) = bcdf(2)/2.d0
         end do
     else
         do ie = 1, ne
@@ -148,11 +148,11 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
             bcdf(1) = 0.d0
             bcdf(2) = 0.d0
             do j = 1, 12
-                bcdf(1) = bcdf(1) + bc(1,j)*depf(j)
-                bcdf(2) = bcdf(2) + bc(2,j)*depf(j)
+                bcdf(1) = bcdf(1)+bc(1, j)*depf(j)
+                bcdf(2) = bcdf(2)+bc(2, j)*depf(j)
             end do
-            vt(1) = dc(1,1)*bcdf(1) + dc(1,2)*bcdf(2)
-            vt(2) = dc(2,1)*bcdf(1) + dc(2,2)*bcdf(2)
+            vt(1) = dc(1, 1)*bcdf(1)+dc(1, 2)*bcdf(2)
+            vt(2) = dc(2, 1)*bcdf(1)+dc(2, 2)*bcdf(2)
             do k = 1, 3
                 bdf(k) = 0.d0
                 bdm(k) = 0.d0
@@ -171,45 +171,45 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
 !           ------ VM = DM.BM.DEPM , VMF = DMF.BF.DEPF ----------------
             do i = 1, 3
                 do j = 1, 12
-                    bdf(i) = bdf(i) + bf(i,j)*depf(j)
+                    bdf(i) = bdf(i)+bf(i, j)*depf(j)
                 end do
                 do j = 1, 8
-                    bdm(i) = bdm(i) + bm(i,j)*depm(j)
+                    bdm(i) = bdm(i)+bm(i, j)*depm(j)
                 end do
             end do
             do i = 1, 3
                 do j = 1, 3
-                    vf(i) = vf(i) + df(i,j)*bdf(j)
-                    vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
-                    vm(i) = vm(i) + dm(i,j)*bdm(j)
-                    vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
+                    vf(i) = vf(i)+df(i, j)*bdf(j)
+                    vfm(i) = vfm(i)+dmf(i, j)*bdm(j)
+                    vm(i) = vm(i)+dm(i, j)*bdm(j)
+                    vmf(i) = vmf(i)+dmf(i, j)*bdf(j)
                 end do
             end do
 !
-            dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
-            dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
+            dcis(1) = dci(1, 1)*vt(1)+dci(1, 2)*vt(2)
+            dcis(2) = dci(2, 1)*vt(1)+dci(2, 2)*vt(2)
 !
-            vmc(1) = dmc(1,1)*dcis(1) + dmc(1,2)*dcis(2)
-            vmc(2) = dmc(2,1)*dcis(1) + dmc(2,2)*dcis(2)
-            vmc(3) = dmc(3,1)*dcis(1) + dmc(3,2)*dcis(2)
+            vmc(1) = dmc(1, 1)*dcis(1)+dmc(1, 2)*dcis(2)
+            vmc(2) = dmc(2, 1)*dcis(1)+dmc(2, 2)*dcis(2)
+            vmc(3) = dmc(3, 1)*dcis(1)+dmc(3, 2)*dcis(2)
 !
-            vcm(1) = dmc(1,1)*vm(1) + dmc(2,1)*vm(2) + dmc(3,1)*vm(3)
-            vcm(2) = dmc(1,2)*vm(1) + dmc(2,2)*vm(2) + dmc(3,2)*vm(3)
+            vcm(1) = dmc(1, 1)*vm(1)+dmc(2, 1)*vm(2)+dmc(3, 1)*vm(3)
+            vcm(2) = dmc(1, 2)*vm(1)+dmc(2, 2)*vm(2)+dmc(3, 2)*vm(3)
 !
-            vfc(1) = dfc(1,1)*dcis(1) + dfc(1,2)*dcis(2)
-            vfc(2) = dfc(2,1)*dcis(1) + dfc(2,2)*dcis(2)
-            vfc(3) = dfc(3,1)*dcis(1) + dfc(3,2)*dcis(2)
+            vfc(1) = dfc(1, 1)*dcis(1)+dfc(1, 2)*dcis(2)
+            vfc(2) = dfc(2, 1)*dcis(1)+dfc(2, 2)*dcis(2)
+            vfc(3) = dfc(3, 1)*dcis(1)+dfc(3, 2)*dcis(2)
 !
-            vcf(1) = dfc(1,1)*vf(1) + dfc(2,1)*vf(2) + dfc(3,1)*vf(3)
-            vcf(2) = dfc(1,2)*vf(1) + dfc(2,2)*vf(2) + dfc(3,2)*vf(3)
+            vcf(1) = dfc(1, 1)*vf(1)+dfc(2, 1)*vf(2)+dfc(3, 1)*vf(3)
+            vcf(2) = dfc(1, 2)*vf(1)+dfc(2, 2)*vf(2)+dfc(3, 2)*vf(3)
 !
             do i = 1, 3
-                edgl(i+8* (ie-1)) = vm(i) + vmf(i) + vmc(i)
-                edgl(i+3+8* (ie-1)) = vf(i) + vfm(i) + vfc(i)
+                edgl(i+8*(ie-1)) = vm(i)+vmf(i)+vmc(i)
+                edgl(i+3+8*(ie-1)) = vf(i)+vfm(i)+vfc(i)
             end do
-            edgl(7+8* (ie-1)) = vt(1) + vcm(1) + vcf(1)
-            edgl(8+8* (ie-1)) = vt(2) + vcm(2) + vcf(2)
+            edgl(7+8*(ie-1)) = vt(1)+vcm(1)+vcf(1)
+            edgl(8+8*(ie-1)) = vt(2)+vcm(2)+vcf(2)
         end do
-    endif
+    end if
 !
 end subroutine

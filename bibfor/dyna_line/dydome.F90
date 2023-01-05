@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine dydome(nomo, mate, mateco, carele)
 !
 !
-    implicit      none
+    implicit none
 #include "asterfort/ledome.h"
     character(len=8) :: nomo
     character(len=24) :: mate, carele, mateco

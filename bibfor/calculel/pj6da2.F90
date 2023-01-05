@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pj6da2(ino2, geom2, i, geom1, seg2,&
+subroutine pj6da2(ino2, geom2, i, geom1, seg2, &
                   cobary, d2, long)
     implicit none
 #include "asterc/r8maem.h"
@@ -45,33 +45,31 @@ subroutine pj6da2(ino2, geom2, i, geom1, seg2,&
     real(kind=8) :: a(3), b(3), m(3), ab(3)
 ! DEB ------------------------------------------------------------------
 
-    do k=1,3
-        m(k)=geom2(3*(ino2-1)+k)
-        a(k)=geom1(3*(seg2(1+3*(i-1)+1)-1)+k)
-        b(k)=geom1(3*(seg2(1+3*(i-1)+2)-1)+k)
-        ab(k)=b(k)-a(k)
+    do k = 1, 3
+        m(k) = geom2(3*(ino2-1)+k)
+        a(k) = geom1(3*(seg2(1+3*(i-1)+1)-1)+k)
+        b(k) = geom1(3*(seg2(1+3*(i-1)+2)-1)+k)
+        ab(k) = b(k)-a(k)
     end do
 
-    d2=r8maem()
-    dp=r8maem()
-
+    d2 = r8maem()
+    dp = r8maem()
 
 !   1. on cherche le point le plus proche de ab :
 !   -------------------------------------------------------------
-    call pj3da4(m, a, b, l1, l2,&
+    call pj3da4(m, a, b, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        la=l1
-        lb=l2
-    endif
-
+        d2 = dp
+        la = l1
+        lb = l2
+    end if
 
 !   2. on calcule long :
 !   --------------------
-    long=sqrt(ab(1)**2+ab(2)**2+ab(3)**2)
+    long = sqrt(ab(1)**2+ab(2)**2+ab(3)**2)
 
-    cobary(1)=la
-    cobary(2)=lb
+    cobary(1) = la
+    cobary(2) = lb
 
 end subroutine

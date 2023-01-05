@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
+subroutine mefgri(ntypg, nbgtot, zg, hg, itypg, &
                   zmin, zmax)
     implicit none
 #include "asterf_types.h"
@@ -47,32 +47,32 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
     real(kind=8) :: z1, z1ig, z1jg, z2, z2ig, z2jg
 !-----------------------------------------------------------------------
     do ig = 1, nbgtot
-        z1 = zg(ig) - hg(itypg(ig))/2.0d0
-        z2 = zg(ig) + hg(itypg(ig))/2.0d0
-        if ((z1.lt.zmin) .or. (z2.gt.zmax)) then
-            write(k3ig,'(I3.3)') ig
+        z1 = zg(ig)-hg(itypg(ig))/2.0d0
+        z2 = zg(ig)+hg(itypg(ig))/2.0d0
+        if ((z1 .lt. zmin) .or. (z2 .gt. zmax)) then
+            write (k3ig, '(I3.3)') ig
             call utmess('F', 'ALGELINE_83', sk=k3ig)
-        endif
+        end if
     end do
 !
     if (nbgtot .gt. 1) then
         do ig = 1, nbgtot-1
-            z1ig = zg(ig) - hg(itypg(ig))/2.0d0
-            z2ig = zg(ig) + hg(itypg(ig))/2.0d0
+            z1ig = zg(ig)-hg(itypg(ig))/2.0d0
+            z2ig = zg(ig)+hg(itypg(ig))/2.0d0
             do jg = ig+1, nbgtot
-                z1jg = zg(jg) - hg(itypg(jg))/2.0d0
-                z2jg = zg(jg) + hg(itypg(jg))/2.0d0
-                intnul = ((z2ig.lt.z1jg).or.(z2jg.lt.z1ig))
-                if (.not.intnul) then
-                    write(k3ig,'(I3.3)') ig
-                    write(k3jg,'(I3.3)') jg
+                z1jg = zg(jg)-hg(itypg(jg))/2.0d0
+                z2jg = zg(jg)+hg(itypg(jg))/2.0d0
+                intnul = ((z2ig .lt. z1jg) .or. (z2jg .lt. z1ig))
+                if (.not. intnul) then
+                    write (k3ig, '(I3.3)') ig
+                    write (k3jg, '(I3.3)') jg
                     valk(1) = k3ig
                     valk(2) = k3jg
                     call utmess('F', 'ALGELINE_84', nk=2, valk=valk)
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
 ! --- FIN DE MEFGRI.
 end subroutine

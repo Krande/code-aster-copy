@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xxlag3(ffc, idepl, idepm, idep0, lact,&
+subroutine xxlag3(ffc, idepl, idepm, idep0, lact, &
                   ndim, nnol, pla, lamb, nvec)
     implicit none
 #include "jeveux.h"
@@ -48,19 +48,19 @@ subroutine xxlag3(ffc, idepl, idepm, idep0, lact,&
 ! --- (DEPDEL+DEPMOI)
     lamb(:) = 0.d0
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) goto 1
         do j = 1, ndim
-            lamb(j) = lamb(j) + ffi * zr(idepl-1+pli-1+j)
+            lamb(j) = lamb(j)+ffi*zr(idepl-1+pli-1+j)
             if (nvec .ge. 2) then
-                lamb(j) = lamb(j) + ffi * zr(idepm-1+pli-1+j)
-            endif
+                lamb(j) = lamb(j)+ffi*zr(idepm-1+pli-1+j)
+            end if
             if (nvec .ge. 3) then
-                lamb(j) = lamb(j) + ffi * zr(idep0-1+pli-1+j)
-            endif
+                lamb(j) = lamb(j)+ffi*zr(idep0-1+pli-1+j)
+            end if
         end do
-  1     continue
+1       continue
     end do
 end subroutine

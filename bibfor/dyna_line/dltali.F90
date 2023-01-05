@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dltali(neq, result, imat, masse, rigid,&
-                  liad, lifo, nchar, nveca, lcrea,&
-                  lprem, lamort, t0, mate, mateco, carele,&
-                  charge, infoch, fomult, modele, numedd,&
-                  nume, solveu, criter, dep0, vit0,&
+subroutine dltali(neq, result, imat, masse, rigid, &
+                  liad, lifo, nchar, nveca, lcrea, &
+                  lprem, lamort, t0, mate, mateco, carele, &
+                  charge, infoch, fomult, modele, numedd, &
+                  nume, solveu, criter, dep0, vit0, &
                   acc0, fexte0, famor0, fliai0, &
                   tabwk, force0, force1, ds_energy, kineLoad)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -48,8 +48,8 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
-character(len=8), intent(in) :: result
-type(NL_DS_Energy), intent(out) :: ds_energy
+    character(len=8), intent(in) :: result
+    type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,13 +110,13 @@ type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call vtcreb(force0, 'V', 'R',&
-                nume_ddlz = numedd,&
-                nb_equa_outz = neq)
+    call vtcreb(force0, 'V', 'R', &
+                nume_ddlz=numedd, &
+                nb_equa_outz=neq)
     call jeveuo(force0(1:19)//'.VALE', 'E', iforc0)
-    call vtcreb(force1, 'V', 'R',&
-                nume_ddlz = numedd,&
-                nb_equa_outz = neq)
+    call vtcreb(force1, 'V', 'R', &
+                nume_ddlz=numedd, &
+                nb_equa_outz=neq)
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
 !
 ! 1.2. ==> NOM DES STRUCTURES DE TRAVAIL
@@ -130,8 +130,8 @@ type(NL_DS_Energy), intent(out) :: ds_energy
 !
     inchac = 0
     lcrea = .true.
-    call dltini(lcrea, nume, result, dep0, vit0,&
-                acc0, fexte0, famor0, fliai0, neq,&
+    call dltini(lcrea, nume, result, dep0, vit0, &
+                acc0, fexte0, famor0, fliai0, neq, &
                 numedd, inchac, ds_energy)
 !
 !
@@ -139,8 +139,8 @@ type(NL_DS_Energy), intent(out) :: ds_energy
 ! 4. --- CHARGEMENT A L'INSTANT INITIAL OU DE REPRISE ---
 !====
 !
-    call dlfext(nveca, nchar, t0, neq, liad,&
-                lifo, charge, infoch, fomult, modele,&
+    call dlfext(nveca, nchar, t0, neq, liad, &
+                lifo, charge, infoch, fomult, modele, &
                 mate, mateco, carele, numedd, zr(iforc0))
 !
 !====
@@ -153,24 +153,24 @@ type(NL_DS_Energy), intent(out) :: ds_energy
 !
         call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
         call dcopy(neq, zr(iforc0), 1, zr(iforc1), 1)
-        call dlfdyn(imat(1), imat(3), lamort, neq, dep0,&
+        call dlfdyn(imat(1), imat(3), lamort, neq, dep0, &
                     vit0, zr(iforc1), tabwk)
 !
         matrei = '&&MASSI'
         if (lprem) then
-            lprem=.false.
+            lprem = .false.
             call ajlagr(rigid, masse, matrei)
 !
 ! 5.2. ==> DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONEMENT
-            call preres(solveu, 'V', icode, maprei, matrei,&
+            call preres(solveu, 'V', icode, maprei, matrei, &
                         ibid, -9999)
-        endif
+        end if
 !                                       ..          .
 ! 5.3. ==> RESOLUTION DU PROBLEME:  M.X  =  F - C.X - K.X
 !                                       ..          .
 !
-        call resoud(matrei, maprei, solveu, kineLoad, 0,&
-                    force1, chsol, 'V', [0.d0], [cbid],&
+        call resoud(matrei, maprei, solveu, kineLoad, 0, &
+                    force1, chsol, 'V', [0.d0], [cbid], &
                     criter, .true._1, 0, iret)
 !
 ! 5.4. ==> SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VDEPL
@@ -186,7 +186,7 @@ type(NL_DS_Energy), intent(out) :: ds_energy
 !           EN TANT QUE CHAMP D'ACCELERATION A L'INSTANT COURANT
         call dcopy(neq, zr(iforc1), 1, acc0, 1)
 !
-    endif
+    end if
 !
 ! CALCUL DE LA FORCE INITIALE SI PAS DE REPRISE A PARTIR D UN RESULTAT
 !
@@ -194,24 +194,24 @@ type(NL_DS_Energy), intent(out) :: ds_energy
     call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=dyna, nbret=ndy)
     if (ndy .eq. 0) then
         call wkvect('FEXT0M', 'V V R', neq, ifextm)
-        call mrmult('ZERO', imat(1), dep0, fexte0, 1,&
+        call mrmult('ZERO', imat(1), dep0, fexte0, 1, &
                     .true._1)
-        call mrmult('ZERO', imat(2), acc0, zr(ifextm), 1,&
+        call mrmult('ZERO', imat(2), acc0, zr(ifextm), 1, &
                     .true._1)
         call wkvect('FEXT0C', 'V V R', neq, ifextc)
         if (lamort) then
-            call mrmult('ZERO', imat(3), vit0, zr(ifextc), 1,&
+            call mrmult('ZERO', imat(3), vit0, zr(ifextc), 1, &
                         .true._1)
-        endif
+        end if
         do ieq = 1, neq
-            fexte0(ieq)=fexte0(ieq)+zr(ifextm-1+ieq) +zr(ifextc-1+ieq)
+            fexte0(ieq) = fexte0(ieq)+zr(ifextm-1+ieq)+zr(ifextc-1+ieq)
         end do
-    endif
+    end if
     call jedetr('FEXT0M')
     call jedetr('FEXT0C')
 !
     if (ds_energy%l_comp .and. kineLoad .ne. ' ') then
         call utmess('F', 'DYNALINE2_11')
-    endif
+    end if
 !
 end subroutine

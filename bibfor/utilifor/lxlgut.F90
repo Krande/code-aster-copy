@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ function lxlgut(chaine)
 !-----------------------------------------------------------------------
     integer :: i, lg
 !-----------------------------------------------------------------------
-    lg = len( chaine )
+    lg = len(chaine)
     do i = lg, 1, -1
         if (chaine(i:i) .ne. ' ') then
             lxlgut = i
             goto 999
-        endif
+        end if
     end do
     lxlgut = 0
 999 continue

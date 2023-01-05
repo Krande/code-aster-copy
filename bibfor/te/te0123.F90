@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine te0123(option, nomte)
 !
-use calcul_module, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
-use Behaviour_module, only : behaviourOption
+    use calcul_module, only: ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -39,7 +39,7 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "blas/dcopy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ character(len=16), intent(in) :: option, nomte
     real(kind=8) :: angmas(7), bary(3)
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, nbvois
-    parameter(nvoima=12,nscoma=4)
+    parameter(nvoima=12, nscoma=4)
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     integer :: numa
@@ -95,31 +95,31 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call elref2(nomte, 10, lielrf, ntrou)
-    ASSERT(ntrou.ge.2)
+    ASSERT(ntrou .ge. 2)
     if (lMass) then
-        call elrefe_info(elrefe=lielrf(1),fami='MASS',&
-                         ndim=ndim,nno=nno,nnos=nnos,npg=npg,&
-                         jpoids=ipoids,jvf=ivf,jdfde=idfde)
+        call elrefe_info(elrefe=lielrf(1), fami='MASS', &
+                         ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde)
     else
-        call elrefe_info(elrefe=lielrf(1),fami='RIGI',&
-                         ndim=ndim,nno=nno,nnos=nnos,npg=npg,&
-                         jpoids=ipoids,jvf=ivf,jdfde=idfde)
-        call elrefe_info(elrefe=lielrf(2),fami='RIGI',&
-                         ndim=ndim,nno=nnob,nnos=nnos, npg=npg,&
-                         jpoids=ipoids,jvf=ivfb,jdfde=idfdeb)
-    endif
+        call elrefe_info(elrefe=lielrf(1), fami='RIGI', &
+                         ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                         jpoids=ipoids, jvf=ivf, jdfde=idfde)
+        call elrefe_info(elrefe=lielrf(2), fami='RIGI', &
+                         ndim=ndim, nno=nnob, nnos=nnos, npg=npg, &
+                         jpoids=ipoids, jvf=ivfb, jdfde=idfdeb)
+    end if
 !
 ! - Type of finite element
 !
-    if (ndim .eq. 2 .and. lteatt('C_PLAN','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('C_PLAN', 'OUI')) then
         typmod(1) = 'C_PLAN  '
-    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
         ASSERT(ndim .eq. 3)
-    endif
+    end if
     typmod(2) = 'GRADSIGM'
 !
 ! - Get input fields
@@ -132,15 +132,15 @@ character(len=16), intent(in) :: option, nomte
         if (ndim .eq. 2) then
 ! - 2 DEPLACEMENTS + 4 DEF
             dlns = 6
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
 ! - 3 DEPLACEMENTS + 6 DEF
             dlns = 9
         else
             ASSERT(ndim .eq. 3)
-        endif
-        call massup(option, ndim, dlns, nno, nnos,&
-                    zi(imate), phenom, npg, ipoids, idfde,&
-                    zr(igeom), zr(ivf), imatuu, icodr1, igeom,&
+        end if
+        call massup(option, ndim, dlns, nno, nnos, &
+                    zi(imate), phenom, npg, ipoids, idfde, &
+                    zr(igeom), zr(ivf), imatuu, icodr1, igeom, &
                     ivf)
     else
         call jevech('PCONTMR', 'L', icontm)
@@ -152,21 +152,21 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PINSTPR', 'L', iinstp)
         call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
         ASSERT(jtab(1) .eq. ivarim)
-        lgpg = max(jtab(6),1)*jtab(7)
+        lgpg = max(jtab(6), 1)*jtab(7)
 ! ----- Properties of behaviour
         call jevech('PCOMPOR', 'L', icompo)
         rela_comp = zk16(icompo-1+RELA_NAME)
         defo_comp = zk16(icompo-1+DEFO)
         if (rela_comp .ne. 'ENDO_HETEROGENE') then
             call utmess('F', 'COMPOR2_13')
-        endif
+        end if
         if (defo_comp .ne. 'PETIT') then
             call utmess('F', 'ELEMENTS3_16', sk=defo_comp)
-        endif
+        end if
 ! ----- Select objects to construct from option name
-        call behaviourOption(option, zk16(icompo),&
-                             lMatr , lVect ,&
-                             lVari , lSigm ,&
+        call behaviourOption(option, zk16(icompo), &
+                             lMatr, lVect, &
+                             lVari, lSigm, &
                              codret)
 ! ----- Compute barycentric center
         bary = 0.d0
@@ -180,50 +180,50 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Get output fields
         if (lMatr) then
             call jevech('PMATUNS', 'E', imatuu)
-        endif
+        end if
         if (lVect) then
             call jevech('PVECTUR', 'E', ivectu)
-        endif
+        end if
         if (lVari) then
             call tecach('OOO', 'PVARIPR', 'E', iret, nval=7, itab=jtab)
-            lgpg2 = max(jtab(6),1)*jtab(7)
+            lgpg2 = max(jtab(6), 1)*jtab(7)
             call jevech('PVARIPR', 'E', ivarip)
             call jevech('PVARIMP', 'L', ivarix)
             call dcopy(npg*lgpg2, zr(ivarix), 1, zr(ivarip), 1)
-        endif
+        end if
         if (lSigm) then
             call jevech('PCONTPR', 'E', icontp)
-        endif
+        end if
         if (lVari) then
             if (lgpg .ne. lgpg2) then
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3) (1:8)
-                vali(1)=lgpg
-                vali(2)=lgpg2
+                vali(1) = lgpg
+                vali(2) = lgpg2
                 call utmess('F', 'CALCULEL6_64', sk=nomail, ni=2, vali=vali)
-            endif
-        endif
+            end if
+        end if
 ! ----- HYPO-ELASTICITE
         call tecael(iadzi, iazk24)
-        numa=zi(iadzi-1+1)
-        codvoi='A2'
+        numa = zi(iadzi-1+1)
+        codvoi = 'A2'
 
-        call voiuti(numa, codvoi, nvoima, nscoma, ca_jrepe_,&
-                    ca_jptvoi_, ca_jelvoi_, nbvois, livois, tyvois,&
+        call voiuti(numa, codvoi, nvoima, nscoma, ca_jrepe_, &
+                    ca_jptvoi_, ca_jelvoi_, nbvois, livois, tyvois, &
                     nbnovo, nbsoco, lisoco)
 ! ----- Compute
-        call nmplgs(ndim, nno, zr(ivf), idfde, nnob,&
-                    zr(ivfb), idfdeb, npg, ipoids, zr(igeom),&
-                    typmod, option, zi(imate), zk16(icompo), zr(icarcr),&
-                    zr(iinstm), zr(iinstp), angmas, zr(idplgm), zr(iddplg),&
-                    zr(icontm), lgpg, zr(ivarim), zr(icontp), zr(ivarip),&
-                    zr(imatuu), zr(ivectu), codret, livois,&
-                    nbvois, numa, lisoco, nbsoco,&
+        call nmplgs(ndim, nno, zr(ivf), idfde, nnob, &
+                    zr(ivfb), idfdeb, npg, ipoids, zr(igeom), &
+                    typmod, option, zi(imate), zk16(icompo), zr(icarcr), &
+                    zr(iinstm), zr(iinstp), angmas, zr(idplgm), zr(iddplg), &
+                    zr(icontm), lgpg, zr(ivarim), zr(icontp), zr(ivarip), &
+                    zr(imatuu), zr(ivectu), codret, livois, &
+                    nbvois, numa, lisoco, nbsoco, &
                     lVari, lSigm, lMatr, lVect)
 ! ----- Save return code
         if (lSigm) then
             call jevech('PCODRET', 'E', icoret)
             zi(icoret) = codret
-        endif
-    endif
+        end if
+    end if
 end subroutine

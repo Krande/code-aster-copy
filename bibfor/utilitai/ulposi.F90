@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,25 +45,25 @@ subroutine ulposi(unit, posi, ierr)
 !
     ierr = 100
     k1 = posi
-    write(k4b,'(I2)') unit
+    write (k4b, '(I2)') unit
 !
-    inquire(unit=unit, opened=lop, named=lnom, access=kacc)
+    inquire (unit=unit, opened=lop, named=lnom, access=kacc)
     if (lop) then
         if (kacc .ne. 'SEQUENTIAL') then
-            ierr=101
+            ierr = 101
             valk(1) = kacc
             valk(2) = k4b
             call utmess('E', 'UTILITAI5_24', nk=2, valk=valk)
         else
             if (.not. lnom) then
-                ierr=102
+                ierr = 102
                 call utmess('E', 'UTILITAI5_25', sk=k4b)
-            endif
-        endif
+            end if
+        end if
     else
-        ierr=103
+        ierr = 103
         call utmess('E', 'UTILITAI5_26', sk=k4b)
-    endif
+    end if
 !
     if (posi .eq. 'N') then
         rewind (unit=unit, iostat=ios)
@@ -72,18 +72,18 @@ subroutine ulposi(unit, posi, ierr)
         else
             ierr = 104
             call utmess('E', 'UTILITAI5_27', sk=k4b)
-        endif
+        end if
     else if (posi .eq. 'O') then
         ierr = 0
     else if (posi .eq. 'A') then
 !       POSITIONNEMENT EN FIN DE FICHIER
 !
 201     continue
-        iend=0
+        iend = 0
         if (iend .le. 0) then
-            read (unit,*,end=301)
+            read (unit, *, end=301)
             goto 201
-        endif
+        end if
 301     continue
         ierr = 0
         backspace unit
@@ -92,6 +92,6 @@ subroutine ulposi(unit, posi, ierr)
         valk(1) = k1
         valk(2) = k4b
         call utmess('E', 'UTILITAI5_28', nk=2, valk=valk)
-    endif
+    end if
 !
 end subroutine

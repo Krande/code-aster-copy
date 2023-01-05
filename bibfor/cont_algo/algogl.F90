@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 IFP - MARTIN GUITTON         WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass,&
+subroutine algogl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
                   noma, ctccvg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -123,8 +123,8 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : CONT. ACTIVES'
-    endif
+        write (ifm, *) '<CONTACT><CALC> ALGO_CONTACT   : CONT. ACTIVES'
+    end if
 !
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 ! --- DDEPL0: INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
@@ -136,7 +136,7 @@ implicit none
     ddelt = sdcont_solv(1:14)//'.DDEL'
     call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
     call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
+    call jeveuo(ddelt(1:19)//'.VALE', 'E', vr=vddelt)
 !
 ! --- PREPARATION DE LA MATRICE DE CONTACT
 !
@@ -151,11 +151,11 @@ implicit none
 !
 ! --- INITIALISATION DES VARIABLES
 !
-    nbliai = cfdisd(sdcont_solv,'NBLIAI')
-    neq = cfdisd(sdcont_solv,'NEQ' )
-    ndim = cfdisd(sdcont_solv,'NDIM' )
-    nesmax = cfdisd(sdcont_solv,'NESMAX')
-    nbliac = cfdisd(sdcont_solv,'NBLIAC')
+    nbliai = cfdisd(sdcont_solv, 'NBLIAI')
+    neq = cfdisd(sdcont_solv, 'NEQ')
+    ndim = cfdisd(sdcont_solv, 'NDIM')
+    nesmax = cfdisd(sdcont_solv, 'NESMAX')
+    nbliac = cfdisd(sdcont_solv, 'NBLIAC')
     itemul = 2
     itemax = itemul*nbliai
     typeaj = 'A'
@@ -163,32 +163,32 @@ implicit none
 !
 ! --- GESTION DE LA FACTORISATION
 !
-    isto = cfdisi(sdcont_defi,'STOP_SINGULIER')
+    isto = cfdisi(sdcont_defi, 'STOP_SINGULIER')
     ajliai = 0
     spliai = 0
     if (nbliac .gt. 0) then
         indic = 1
     else
         indic = 0
-    endif
+    end if
     indfac = 1
 !
     iter = 1
 !
     if (niv .ge. 2) then
-        write(ifm,210) itemax
-    endif
+        write (ifm, 210) itemax
+    end if
 !
 ! ======================================================================
 !                    REPRISE DE LA BOUCLE PRINCIPALE
 ! ======================================================================
 !
- 40 continue
+40  continue
 !
 ! --- MISE A JOUR DE LA SOLUTION ITERATION DE CONTACT
 !
     do ieq = 1, neq
-        vddelt(ieq) = ddep0(ieq) - ddepc(ieq)
+        vddelt(ieq) = ddep0(ieq)-ddepc(ieq)
     end do
 !
 ! --- RESOLUTION MATRICIELLE POUR DES LIAISONS ACTIVES
@@ -199,21 +199,21 @@ implicit none
 !
 ! ----- CALCUL DE [-A.C-1.AT] COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 !
-        call cfacat(indic, nbliac, ajliai, spliai,&
+        call cfacat(indic, nbliac, ajliai, spliai, &
                     indfac, &
                     sdcont_defi, sdcont_solv, solveu, lmat, &
                     xjvmax)
 !
 ! ----- DETECTION DES PIVOTS NULS
 !
-        call elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
+        call elpiv1(xjvmax, indic, nbliac, ajliai, spliai, &
                     spavan, noma, sdcont_defi, sdcont_solv)
 !
 ! ----- ON A SUPPRIME UNE LIAISON
 !
         if (indic .eq. -1) then
             goto 150
-        endif
+        end if
 !
 ! ----- FACTORISATION LDLT DE [-A.C-1.AT]
 !
@@ -225,7 +225,7 @@ implicit none
         if (lechec) then
             ctccvg = 2
             goto 999
-        endif
+        end if
 !
 ! ----- CALCUL DU SECOND MEMBRE : {JEU(DEPTOT) - A.DDEPL0} -> {MU}
 !
@@ -238,11 +238,11 @@ implicit none
 ! ----- MISE A JOUR DU VECTEUR SOLUTION ITERATION DE CONTACT
 !
         call cfmajc(sdcont_solv, neq, nbliac)
-    endif
+    end if
 !
 ! --- VERIFICATION SI L'ENSEMBLE DES LIAISONS SUPPOSEES EST TROP PETIT
 !
-    call cfpeti(sdcont_solv, neq, nbliai, nbliac,&
+    call cfpeti(sdcont_solv, neq, nbliai, nbliac, &
                 rho, llliai, llliac)
 !
 ! --- ACTUALISATION DE DDEPLC = DDEPLC + RHO .DDELT
@@ -256,31 +256,31 @@ implicit none
 ! ----- SI AU MOINS UNE LIAISON SUPPOSEE NON ACTIVE EST VIOLEE
 ! ----- ON AJOUTE A L'ENSEMBLE DES LIAISONS ACTIVES LA PLUS VIOLEE
 !
-        ASSERT(llliai.gt.0)
-        call cftabl(indic, nbliac, ajliai, spliai,&
-                    sdcont_solv, typeaj, llliac,&
+        ASSERT(llliai .gt. 0)
+        call cftabl(indic, nbliac, ajliai, spliai, &
+                    sdcont_solv, typeaj, llliac, &
                     llliai)
-        call cfimp2(sdcont_defi, sdcont_solv, noma, llliai,&
+        call cfimp2(sdcont_defi, sdcont_solv, noma, llliai, &
                     'ACT')
     else
 !
 ! ----- ON A CONVERGE
 !
         goto 160
-    endif
+    end if
 !
 ! --- ON PASSE A L'ITERATION DE CONTRAINTES ACTIVES SUIVANTE
 !
 150 continue
 !
-    iter = iter + 1
+    iter = iter+1
 !
 ! --- A-T-ON DEPASSE LE NOMBRE D'ITERATIONS DE CONTACT AUTORISE ?
 !
     if (iter .gt. itemax+1) then
         ctccvg = 1
         goto 999
-    endif
+    end if
 !
     goto 40
 !
@@ -303,19 +303,19 @@ implicit none
     call cfecrd(sdcont_solv, 'NBLIAC', nbliac)
 !
     if (niv .ge. 2) then
-        write(ifm,220) iter
-    endif
+        write (ifm, 220) iter
+    end if
 !
 999 continue
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(ds_measure, 'Cont_Algo ', input_count = iter)
-    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_Algo ', input_count=iter)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count=nbliac)
 !
     call jedema()
 !
-210 format (' <CONTACT><CALC> DEBUT DES ITERATIONS (MAX: ',i6,')')
-220 format (' <CONTACT><CALC> FIN DES ITERATIONS (NBR: ',i6,')')
+210 format(' <CONTACT><CALC> DEBUT DES ITERATIONS (MAX: ', i6, ')')
+220 format(' <CONTACT><CALC> FIN DES ITERATIONS (NBR: ', i6, ')')
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
-                  iord, iorg, iora, cmode, vecmod,&
+subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd, &
+                  iord, iorg, iora, cmode, vecmod, &
                   neq, beta)
     implicit none
 #include "jeveux.h"
@@ -71,12 +71,12 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
 ! --- MISE A ZERO DU MODE PROPRES RESULTAT
 !
     do i = 1, neq
-        vecmod(i) = dcmplx( 0.d0,0.d0 )
+        vecmod(i) = dcmplx(0.d0, 0.d0)
     end do
 !
     abeta = cos(beta)
     bbeta = sin(beta)
-    dephc = dcmplx( abeta,bbeta )
+    dephc = dcmplx(abeta, bbeta)
 !
 ! --- CONTRIBUTION DES MODES PROPRES
 !
@@ -84,8 +84,8 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
         call dcapno(basmod, 'DEPL    ', i, chaval)
         call jeveuo(chaval, 'L', llcham)
         do j = 1, neq
-            cfact = dcmplx( zr(llcham+j-1),0.d0 )
-            vecmod(j) = vecmod(j) + cmode(i)*cfact
+            cfact = dcmplx(zr(llcham+j-1), 0.d0)
+            vecmod(j) = vecmod(j)+cmode(i)*cfact
         end do
         call jelibe(chaval)
     end do
@@ -96,8 +96,8 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
         call dcapno(basmod, 'DEPL    ', iord(i), chaval)
         call jeveuo(chaval, 'L', llcham)
         do j = 1, neq
-            cfact = dcmplx( zr(llcham+j-1),0.d0 )
-            vecmod(j) = vecmod(j) + cmode(i+nbmod)*cfact
+            cfact = dcmplx(zr(llcham+j-1), 0.d0)
+            vecmod(j) = vecmod(j)+cmode(i+nbmod)*cfact
         end do
         call jelibe(chaval)
     end do
@@ -110,16 +110,16 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
         call dcapno(basmod, 'DEPL    ', iorg(i), chaval)
         call jeveuo(chaval, 'L', llcham)
 !
-        cmult = dcmplx( 0.d0,0.d0 )
+        cmult = dcmplx(0.d0, 0.d0)
         do j = 1, nbddr
-            iad = lltgd + ((j-1)*nbddr) + i - 1
-            cfact = dcmplx( zr(iad),0.d0 )*cmode(j+nbmod)
-            cmult = cmult + cfact
+            iad = lltgd+((j-1)*nbddr)+i-1
+            cfact = dcmplx(zr(iad), 0.d0)*cmode(j+nbmod)
+            cmult = cmult+cfact
         end do
 !
         do j = 1, neq
-            cfact = dcmplx( zr(llcham+j-1),0.d0 )
-            vecmod(j) = vecmod(j) + dephc*cfact*cmult
+            cfact = dcmplx(zr(llcham+j-1), 0.d0)
+            vecmod(j) = vecmod(j)+dephc*cfact*cmult
         end do
 !
         call jelibe(chaval)
@@ -133,12 +133,12 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
             call dcapno(basmod, 'DEPL    ', iora(i), chaval)
             call jeveuo(chaval, 'L', llcham)
             do j = 1, neq
-                cfact = dcmplx( 2*zr(llcham+j-1),0.d0 )
-                vecmod(j) = vecmod(j) + cfact*cmode(i+nbmod+nbddr)
+                cfact = dcmplx(2*zr(llcham+j-1), 0.d0)
+                vecmod(j) = vecmod(j)+cfact*cmode(i+nbmod+nbddr)
             end do
             call jelibe(chaval)
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

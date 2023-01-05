@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine digou2(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use te0047_type
-implicit none
+    use te0047_type
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/digouj.h"
@@ -39,8 +39,8 @@ implicit none
 #include "asterfort/utpslg.h"
 #include "blas/dcopy.h"
 !
-type(te0047_dscr), intent(in) :: for_discret
-integer, intent(out)          :: iret
+    type(te0047_dscr), intent(in) :: for_discret
+    integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,40 +61,40 @@ integer, intent(out)          :: iret
     if (irep .eq. 1) then
         if (for_discret%ndim .eq. 3) then
             call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
-        else if (for_discret%ndim.eq.2) then
+        else if (for_discret%ndim .eq. 2) then
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
-        endif
+        end if
     else
         call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
-    endif
+    end if
 !
-    ifono  = 1
+    ifono = 1
     icontp = 1
     ivarip = 1
     if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
-    endif
+    end if
     if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
 !   relation de comportement : élastique partout
 !   sauf suivant Y local : élasto-plastique VMIS_ISOT_TRAC
     neq = for_discret%nno*for_discret%nc
     call digouj(for_discret%option, for_discret%rela_comp, for_discret%nno, for_discret%nbt, &
-                neq, for_discret%nc, zi(imat), for_discret%dul, zr(icontm), zr(ivarim),&
-                for_discret%pgl, klv, klv2, zr(ivarip), zr(ifono),&
+                neq, for_discret%nc, zi(imat), for_discret%dul, zr(icontm), zr(ivarim), &
+                for_discret%pgl, klv, klv2, zr(ivarip), zr(ifono), &
                 zr(icontp), for_discret%nomte)
 !
     if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imat)
         if (for_discret%ndim .eq. 3) then
             call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-        else if (for_discret%ndim.eq.2) then
+        else if (for_discret%ndim .eq. 2) then
             call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhcre(fid, nom, dim, type, desc,&
+subroutine as_mmhcre(fid, nom, dim, type, desc, &
                      descdt, typrep, nocomp, unit, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -44,14 +44,14 @@ subroutine as_mmhcre(fid, nom, dim, type, desc,&
     type4 = type
     stund4 = stunde
     typre4 = typrep
-    call mmhcre(fidm, nom, dim4, dim4, type4,&
-                desc, descdt, stund4, typre4, nocomp,&
+    call mmhcre(fidm, nom, dim4, dim4, type4, &
+                desc, descdt, stund4, typre4, nocomp, &
                 unit, cret4)
     cret = cret4
 #else
     stunde = 1
-    call mmhcre(fid, nom, dim, dim, type,&
-                desc, descdt, stunde, typrep, nocomp,&
+    call mmhcre(fid, nom, dim, dim, type, &
+                desc, descdt, stunde, typrep, nocomp, &
                 unit, cret)
 #endif
 !

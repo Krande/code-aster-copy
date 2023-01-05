@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,23 +46,23 @@ subroutine utppgl(nn, nc, p, sg, sl)
 !OUT  R   SG   NN*NC COMPOSANTES DE LA TRIANGULAIRE SG DANS GLOBAL
 !     ------------------------------------------------------------------
 !
-    nddl = nn * nc
+    nddl = nn*nc
     n = nddl*nddl
     n1 = (nddl+1)*nddl/2
 !
     call vecmap(sg, n, matril, nddl)
     matsy1 = transpose(matril)
-    matsy2 = matril + matsy1
-    matas2 = matril - matsy1
-    matsym = 0.5d0 * matsy2
+    matsy2 = matril+matsy1
+    matas2 = matril-matsy1
+    matsym = 0.5d0*matsy2
     call mavec(matsym, nddl, vecsym, n1)
-    matasy = 0.5d0 * matas2
+    matasy = 0.5d0*matas2
     call mavec(matasy, nddl, vecasy, n1)
     call utpsgl(nn, nc, p, vecsym, parsym)
     call uplstr(nddl, parsmg, parsym)
     call utpagl(nn, nc, p, vecasy, parasy)
     call upletr(nddl, parayg, parasy)
-    matrig = parsmg + parayg
+    matrig = parsmg+parayg
     call mapvec(matrig, nddl, sl, n)
 !
 !

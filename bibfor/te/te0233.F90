@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ subroutine te0233(option, nomte)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -58,26 +58,26 @@ subroutine te0233(option, nomte)
     call jevech('PCACOQU', 'L', icaco)
     call jevech('PPESANR', 'L', ipesa)
     call jevech('PVECTUR', 'E', ivectu)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
     do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                     cour, poids, nx, ny)
         poids = poids*rho(1)*zr(ipesa)*zr(icaco)
         rx = 0.d0
         do i = 1, nno
-            rx = rx + zr(igeom+2*i-2)*zr(ivf+k+i-1)
+            rx = rx+zr(igeom+2*i-2)*zr(ivf+k+i-1)
         end do
         poids = poids*rx
-        do  i = 1, nno
-            zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids*zr(ipesa+ 2)*zr(ivf+k+i-1)
+        do i = 1, nno
+            zr(ivectu+3*i-2) = zr(ivectu+3*i-2)+poids*zr(ipesa+2)*zr(ivf+k+i-1)
         end do
 
     end do

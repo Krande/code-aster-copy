@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
+subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr, &
                   axok, liax, nbliax, zvec)
     implicit none
 #include "asterf_types.h"
@@ -52,17 +52,17 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
         do j = 1, nbmod
 !
             do i = 1, nbliax
-                zvec(i)=zmat(i+nbmob+nbddr,j)
+                zvec(i) = zmat(i+nbmob+nbddr, j)
             end do
 !
             if ((nbmob+nbddr) .lt. nbddg) then
                 do i = nbmob+nbddr+1, nbddg
-                    zmat(i,j)=dcmplx(0.d0,0.d0)
+                    zmat(i, j) = dcmplx(0.d0, 0.d0)
                 end do
-            endif
+            end if
 !
             do i = 1, nbliax
-                zmat(nbmob+nbddr+liax(i),j)=zvec(i)
+                zmat(nbmob+nbddr+liax(i), j) = zvec(i)
             end do
 !
         end do
@@ -73,10 +73,10 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
         if ((nbmob+nbddr) .lt. nbddg) then
             do j = 1, nbmod
                 do i = nbmob+nbddr+1, nbddg
-                    zmat(i,j)=dcmplx(0.d0,0.d0)
+                    zmat(i, j) = dcmplx(0.d0, 0.d0)
                 end do
             end do
-        endif
+        end if
 !
-    endif
+    end if
 end subroutine

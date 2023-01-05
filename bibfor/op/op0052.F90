@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine op0052()
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
     character(len=6) :: nompro
-    parameter  (nompro='OP0052')
+    parameter(nompro='OP0052')
 !
     integer :: ifm, niv, ibid, n0, iret, np, nc
     integer :: nbordr, nbropt
@@ -71,37 +71,37 @@ subroutine op0052()
 !
     call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
-    call rsutnu(resuco, ' ', 0, lisord, nbordr,&
+    call rsutnu(resuco, ' ', 0, lisord, nbordr, &
                 prec, crit, iret)
     if (iret .eq. 10) then
         call utmess('A', 'CALCULEL4_8', sk=resuco)
         goto 9999
-    endif
+    end if
     if (iret .ne. 0) then
         call utmess('A', 'ALGORITH3_41')
         goto 9999
-    endif
+    end if
 !
 !     ON VEUT INTERDIRE LA REENTRANCE DE LA COMMANDE SI
 !     ON UTILISE L'UN DES MOTS CLES : MODELE, CARAEL_ELEM,
 !     CHAM_CHMATER OU EXCIT
     if (resuco .eq. resuc1) then
         call ccvrpu(resuco, lisord, nbordr)
-    endif
+    end if
 !
 !     FABRICATION DE LA LISTE DES OPTIONS
-    call cclopu(resuco, resuc1, lisord, nbordr, lisopt,&
+    call cclopu(resuco, resuc1, lisord, nbordr, lisopt, &
                 nbropt)
 !
 !     APPEL A LA ROUTINE PREPARANT L'APPEL A CALCOP
-    call ccbcop(resuco, resuc1, lisord, nbordr, lisopt,&
+    call ccbcop(resuco, resuc1, lisord, nbordr, lisopt, &
                 nbropt)
 !
     call jedetr(lisopt)
 !
     call ccchut(resuco, resuc1, lisord, nbordr)
 !
-9999  continue
+9999 continue
 !     ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
     call onerrf(compex, k16bid, ibid)
 !

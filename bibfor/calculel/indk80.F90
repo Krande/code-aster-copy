@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,13 +49,13 @@ function indk80(lk80, k80z, rang, nbk80)
     do i = 1, nbk80
         lk80z = lk80(i)
         if (lk80z .eq. k80) then
-            j = j + 1
+            j = j+1
             if (j .eq. rang) goto 20
-        endif
+        end if
     end do
     indk80 = 0
     goto 30
- 20 continue
+20  continue
     indk80 = i
- 30 continue
+30  continue
 end function

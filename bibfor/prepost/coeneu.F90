@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,8 @@ subroutine coeneu(imod, nbnode)
 !
 ! --- TEST SI MAILLAGE 2D OU 3D :
 !     ------------------------------------------------------
-    write(imod,'(A,4X,A)')'COOR_3D',chenti
-    write(imod,'(A)') chfone
+    write (imod, '(A,4X,A)') 'COOR_3D', chenti
+    write (imod, '(A)') chfone
 !
 ! --- ECRITURE DES NUMEROS DE NOEUDS ET DE LEURS COORDONNEES :
 !     ------------------------------------------------------
@@ -92,12 +92,12 @@ subroutine coeneu(imod, nbnode)
         z = coor(3*(inode-1)+3)
 !
         call codent(node, 'G', chnode(2:8))
-        write(imod,'(1X,A8,3(1X,1PE21.14))') chnode,x,y,z
+        write (imod, '(1X,A8,3(1X,1PE21.14))') chnode, x, y, z
 !
     end do
 !
-    write(imod,'(A)') 'FINSF'
-    write(imod,'(A)') '%'
+    write (imod, '(A)') 'FINSF'
+    write (imod, '(A)') '%'
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,20 +65,20 @@ subroutine xfem_ksolv(solveu, kxfem)
 !----------------------------------------------------------------------
     call jemarq()
 !
-    kxfem='NON'
+    kxfem = 'NON'
 !
-    solv19=solveu(1:19)
-    slvk24=solv19//'.SLVK'
+    solv19 = solveu(1:19)
+    slvk24 = solv19//'.SLVK'
     call jeexin(slvk24, iret)
-    if ( iret .eq. 0 ) goto 999
+    if (iret .eq. 0) goto 999
     call jeveuo(slvk24, 'L', islvk)
-    metres=zk24(islvk-1+1)
-    kprecond=zk24(islvk-1+14)
+    metres = zk24(islvk-1+1)
+    kprecond = zk24(islvk-1+14)
 !
-    if ( kprecond(1:3) .eq. 'OUI' .and. (metres .eq. 'MUMPS' .or.&
-                                    metres .eq. 'LDLT'  .or.&
-                                    metres .eq. 'MULT_FRONT'))&
-      kxfem='OUI'
+    if (kprecond(1:3) .eq. 'OUI' .and. (metres .eq. 'MUMPS' .or. &
+                                        metres .eq. 'LDLT' .or. &
+                                        metres .eq. 'MULT_FRONT')) &
+        kxfem = 'OUI'
 !
 999 continue
 !

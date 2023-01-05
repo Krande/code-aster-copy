@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,21 +36,21 @@ subroutine coefdg(compor, mat, dpida2)
     character(len=8) :: nom(2), fami, poum
     integer :: k2(5), kpg, spt
 ! ---------------------------------------------------------------------
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
     if (compor .eq. 'ENDO_CARRE') then
 !
         nom(1) = 'E'
         nom(2) = 'NU'
-        call rcvalb(fami, kpg, spt, poum, mat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, spt, poum, mat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, nom(1), val(1), k2, 2)
 !
         dpida2 = val(1)
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine xfisco(noma, modelx)
 !
 !
 !
-    integer ::  jcesd,  jcesl, ibid, iret, nncp
-    integer :: jcesd2,  jcesl2,   iad, iad3
+    integer ::  jcesd, jcesl, ibid, iret, nncp
+    integer :: jcesd2, jcesl2, iad, iad3
     integer :: ima, nbma, ifiss, ifis2, ifis3, nfiss, nfis2
     character(len=19) :: ces, ces2, ligrel, chglo
     character(len=8) :: nomfis, nomfi3, licmp(2), valk(3)
@@ -64,7 +64,7 @@ subroutine xfisco(noma, modelx)
     licmp(1) = 'X1'
     licmp(2) = 'X2'
 !
-    call cescre('V', ces, 'ELEM', noma, 'NEUT_I',&
+    call cescre('V', ces, 'ELEM', noma, 'NEUT_I', &
                 2, licmp, [ibid], nbsp, [-2])
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', vi=cesv)
@@ -89,9 +89,9 @@ subroutine xfisco(noma, modelx)
 ! --- BOUCLE SUR LES FISSURE DE LA MAILLE
 !
         do ifiss = 1, nfiss
-            call cesexi('S', jcesd2, jcesl2, ima, 1,&
+            call cesexi('S', jcesd2, jcesl2, ima, 1, &
                         ifiss, 1, iad)
-            ASSERT(iad.gt.0)
+            ASSERT(iad .gt. 0)
             nomfis = cesv2(iad)
             call jeexin(nomfis//'.JONFISS', iret)
             if (iret .ne. 0) then
@@ -106,7 +106,7 @@ subroutine xfisco(noma, modelx)
 !
 ! --- RECUPERATION DU NOM GLOBALE  NOMFI3 DE IFIS3
 !
-                    call cesexi('S', jcesd2, jcesl2, ima, 1,&
+                    call cesexi('S', jcesd2, jcesl2, ima, 1, &
                                 ifis3, 1, iad)
                     nomfi3 = cesv2(iad)
 !
@@ -118,11 +118,11 @@ subroutine xfisco(noma, modelx)
                                 valk(1) = nomfis
                                 valk(2) = nomfi3
                                 call utmess('F', 'XFEM_46', nk=2, valk=valk)
-                            endif
-                            call cesexi('S', jcesd, jcesl, ima, 1,&
+                            end if
+                            call cesexi('S', jcesd, jcesl, ima, 1, &
                                         ifiss, 1, iad)
                             if (iad .gt. 0) then
-                                call cesexi('S', jcesd, jcesl, ima, 1,&
+                                call cesexi('S', jcesd, jcesl, ima, 1, &
                                             ifis3, 1, iad3)
                                 if (cesv(iad) .eq. cesv(iad3)) then
                                     iad = -iad
@@ -130,35 +130,35 @@ subroutine xfisco(noma, modelx)
                                     valk(1) = nomfis
                                     valk(3) = nomfi3
                                     call utmess('F', 'XFEM_47', nk=3, valk=valk)
-                                endif
-                            endif
+                                end if
+                            end if
                             valk(2) = nomfi3
                             zl(jcesl-1-iad) = .true.
                             cesv(1-1-iad) = ifis3
-                            call cesexi('S', jcesd, jcesl, ima, 1,&
+                            call cesexi('S', jcesd, jcesl, ima, 1, &
                                         ifiss, 2, iad)
                             if (iad .gt. 0) iad = -iad
                             zl(jcesl-1-iad) = .true.
                             cesv(1-1-iad) = joncoef(ifis2)
-                        endif
+                        end if
                     end do
 130                 continue
                 end do
-            endif
+            end if
 !
 ! --- SI ON A RIEN TROUVER
 !
-            call cesexi('S', jcesd, jcesl, ima, 1,&
+            call cesexi('S', jcesd, jcesl, ima, 1, &
                         ifiss, 1, iad)
             if (iad .lt. 0) then
                 zl(jcesl-1-iad) = .true.
                 cesv(1-1-iad) = 0
-                call cesexi('S', jcesd, jcesl, ima, 1,&
+                call cesexi('S', jcesd, jcesl, ima, 1, &
                             ifiss, 2, iad)
-                ASSERT(iad.lt.0)
+                ASSERT(iad .lt. 0)
                 zl(jcesl-1-iad) = .true.
                 cesv(1-1-iad) = 0
-            endif
+            end if
         end do
 !
     end do
@@ -167,7 +167,7 @@ subroutine xfisco(noma, modelx)
 !
     chglo = modelx(1:8)//'.FISSCO'
     ligrel = modelx(1:8)//'.MODELE'
-    call cescel(ces, ligrel, 'TOPOSE', 'PFISCO', 'OUI',&
+    call cescel(ces, ligrel, 'TOPOSE', 'PFISCO', 'OUI', &
                 nncp, 'G', chglo, 'F', ibid)
     call detrsd('CHAM_ELEM_S', ces)
 !

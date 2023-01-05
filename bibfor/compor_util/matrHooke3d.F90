@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matrHooke3d(elas_type, repere,&
-                       h, g, g1, g2, g3,&
-                       matr_elas , xyzgau_)
+subroutine matrHooke3d(elas_type, repere, &
+                       h, g, g1, g2, g3, &
+                       matr_elas, xyzgau_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dpassa.h"
@@ -75,9 +75,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    matr_elas(:,:) = 0.d0
-    dorth(:,:)     = 0.d0
-    work(:,:)      = 0.d0
+    matr_elas(:, :) = 0.d0
+    dorth(:, :) = 0.d0
+    work(:, :) = 0.d0
 !
 ! - Compute Hooke matrix
 !
@@ -85,35 +85,35 @@ implicit none
 !
 ! ----- Isotropic elastic matrix
 !
-        matr_elas(1,1) = h(1)
-        matr_elas(1,2) = h(2)
-        matr_elas(1,3) = h(2)
-        matr_elas(2,1) = h(2)
-        matr_elas(2,2) = h(1)
-        matr_elas(2,3) = h(2)
-        matr_elas(3,1) = h(2)
-        matr_elas(3,2) = h(2)
-        matr_elas(3,3) = h(1)
-        matr_elas(4,4) = g
-        matr_elas(5,5) = g
-        matr_elas(6,6) = g
+        matr_elas(1, 1) = h(1)
+        matr_elas(1, 2) = h(2)
+        matr_elas(1, 3) = h(2)
+        matr_elas(2, 1) = h(2)
+        matr_elas(2, 2) = h(1)
+        matr_elas(2, 3) = h(2)
+        matr_elas(3, 1) = h(2)
+        matr_elas(3, 2) = h(2)
+        matr_elas(3, 3) = h(1)
+        matr_elas(4, 4) = g
+        matr_elas(5, 5) = g
+        matr_elas(6, 6) = g
 !
     else if (elas_type .eq. 2 .or. elas_type .eq. 5) then
 !
 ! ----- Orthotropic matrix
 !
-        dorth(1,1) = h(1)
-        dorth(1,2) = h(2)
-        dorth(1,3) = h(3)
-        dorth(2,2) = h(4)
-        dorth(2,3) = h(5)
-        dorth(3,3) = h(6)
-        dorth(2,1) = dorth(1,2)
-        dorth(3,1) = dorth(1,3)
-        dorth(3,2) = dorth(2,3)
-        dorth(4,4) = g1
-        dorth(5,5) = g2
-        dorth(6,6) = g3
+        dorth(1, 1) = h(1)
+        dorth(1, 2) = h(2)
+        dorth(1, 3) = h(3)
+        dorth(2, 2) = h(4)
+        dorth(2, 3) = h(5)
+        dorth(3, 3) = h(6)
+        dorth(2, 1) = dorth(1, 2)
+        dorth(3, 1) = dorth(1, 3)
+        dorth(3, 2) = dorth(2, 3)
+        dorth(4, 4) = g1
+        dorth(5, 5) = g2
+        dorth(6, 6) = g3
 !
 ! ----- Compute transition matrix from orthotropic basis to global 3D basis
 !
@@ -121,33 +121,33 @@ implicit none
 !
 ! ----- Change Hooke matrix to global 3D basis
 !
-        ASSERT((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 6, 6, dorth, matr_tran, work, matr_elas)
-        else if (irep.eq.0) then
+        else if (irep .eq. 0) then
             do i = 1, 6
                 do j = 1, 6
-                    matr_elas(i,j) = dorth(i,j)
+                    matr_elas(i, j) = dorth(i, j)
                 end do
             end do
-        endif
+        end if
 !
     else if (elas_type .eq. 3 .or. elas_type .eq. 6) then
 !
 ! ----- Transverse isotropic matrix
 !
-        dorth(1,1) = h(1)
-        dorth(1,2) = h(2)
-        dorth(1,3) = h(3)
-        dorth(2,1) = dorth(1,2)
-        dorth(2,2) = dorth(1,1)
-        dorth(2,3) = dorth(1,3)
-        dorth(3,1) = dorth(1,3)
-        dorth(3,2) = dorth(2,3)
-        dorth(3,3) = h(4)
-        dorth(4,4) = h(5)
-        dorth(5,5) = g
-        dorth(6,6) = dorth(5,5)
+        dorth(1, 1) = h(1)
+        dorth(1, 2) = h(2)
+        dorth(1, 3) = h(3)
+        dorth(2, 1) = dorth(1, 2)
+        dorth(2, 2) = dorth(1, 1)
+        dorth(2, 3) = dorth(1, 3)
+        dorth(3, 1) = dorth(1, 3)
+        dorth(3, 2) = dorth(2, 3)
+        dorth(3, 3) = h(4)
+        dorth(4, 4) = h(5)
+        dorth(5, 5) = g
+        dorth(6, 6) = dorth(5, 5)
 !
 ! ----- Compute transition matrix from orthotropic basis to global 3D basis
 !
@@ -155,19 +155,19 @@ implicit none
 !
 ! ----- Change Hooke matrix to global 3D basis
 !
-        ASSERT((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 6, 6, dorth, matr_tran, work, matr_elas)
-        else if (irep.eq.0) then
+        else if (irep .eq. 0) then
             do i = 1, 6
                 do j = 1, 6
-                    matr_elas(i,j) = dorth(i,j)
+                    matr_elas(i, j) = dorth(i, j)
                 end do
             end do
-        endif
+        end if
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

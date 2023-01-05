@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verstp(model     , lload_name,  lload_info, cara_elem, mate     ,&
-                   time_curr,       time, compor_ther, temp_prev, temp_iter,&
-                   varc_curr, vect_elem , base       , &
-                  hydr_prev_, hydr_curr_ , dry_prev_ , dry_curr_)
+subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
+                  time_curr, time, compor_ther, temp_prev, temp_iter, &
+                  varc_curr, vect_elem, base, &
+                  hydr_prev_, hydr_curr_, dry_prev_, dry_curr_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/detrsd.h"
@@ -34,23 +34,23 @@ implicit none
 #include "asterfort/reajre.h"
 #include "asterfort/resi_ther.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: lload_name
-character(len=24), intent(in) :: lload_info
-character(len=24), intent(in) :: cara_elem
-character(len=24), intent(in) :: mate
-real(kind=8), intent(in) :: time_curr
-character(len=24), intent(in) :: time
-character(len=24), intent(in) :: compor_ther
-character(len=24), intent(in) :: temp_prev
-character(len=24), intent(in) :: temp_iter
-character(len=19), intent(in) :: varc_curr
-character(len=24), intent(in) :: vect_elem
-character(len=1), intent(in) :: base
-character(len=24), optional, intent(in) :: hydr_prev_
-character(len=24), optional, intent(in) :: hydr_curr_
-character(len=24), optional, intent(in) :: dry_prev_
-character(len=24), optional, intent(in) :: dry_curr_
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: lload_name
+    character(len=24), intent(in) :: lload_info
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: mate
+    real(kind=8), intent(in) :: time_curr
+    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: compor_ther
+    character(len=24), intent(in) :: temp_prev
+    character(len=24), intent(in) :: temp_iter
+    character(len=19), intent(in) :: varc_curr
+    character(len=24), intent(in) :: vect_elem
+    character(len=1), intent(in) :: base
+    character(len=24), optional, intent(in) :: hydr_prev_
+    character(len=24), optional, intent(in) :: hydr_curr_
+    character(len=24), optional, intent(in) :: dry_prev_
+    character(len=24), optional, intent(in) :: dry_curr_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,8 +80,8 @@ character(len=24), optional, intent(in) :: dry_curr_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer , parameter :: nb_in_maxi = 5
-    integer , parameter :: nbout = 2
+    integer, parameter :: nb_in_maxi = 5
+    integer, parameter :: nbout = 2
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
     character(len=1) :: stop_calc
@@ -104,19 +104,19 @@ character(len=24), optional, intent(in) :: dry_curr_
     hydr_prev = ' '
     if (present(hydr_prev_)) then
         hydr_prev = hydr_prev_
-    endif
+    end if
     hydr_curr = '&&VEHYDR'
     if (present(hydr_curr_)) then
         hydr_curr = hydr_curr_
-    endif
+    end if
     dry_prev = ' '
     if (present(dry_prev_)) then
         dry_prev = dry_prev_
-    endif
+    end if
     dry_curr = ' '
     if (present(dry_curr_)) then
         dry_curr = dry_curr_
-    endif
+    end if
 !
 ! - Init fields
 !
@@ -124,13 +124,13 @@ character(len=24), optional, intent(in) :: dry_curr_
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
                         lload_name, lload_info)
 !
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, ' ', ' ',&
+    call memare(base, vect_elem, model, ' ', ' ', &
                 'CHAR_THER')
     call reajre(vect_elem, ' ', base)
 !
@@ -142,30 +142,30 @@ character(len=24), optional, intent(in) :: dry_curr_
 !
 ! - Residuals from non-linear laws
 !
-    call resi_ther(model    , cara_elem,      mate, time     , compor_ther,&
-                   temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev   ,&
-                   dry_curr , varc_curr, resu_elem, vect_elem, base)
+    call resi_ther(model, cara_elem, mate, time, compor_ther, &
+                   temp_prev, temp_iter, hydr_prev, hydr_curr, dry_prev, &
+                   dry_curr, varc_curr, resu_elem, vect_elem, base)
 !
 ! - Preparing input fields
 !
-    call load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain,&
-                        temp_iter_ = temp_iter)
+    call load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                        temp_iter_=temp_iter)
 !
 ! - Computation
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
+        load_name = v_load_name(i_load) (1:8)
         load_nume = v_load_info(nb_load+i_load+1)
         if (load_nume .gt. 0) then
-            call load_neut_comp('RESI'   , stop_calc, model     , time_curr , time ,&
-                                load_name, load_nume, nb_in_maxi, nb_in_prep, lpain,&
-                                lchin    , base     , resu_elem , vect_elem )
-        endif
+            call load_neut_comp('RESI', stop_calc, model, time_curr, time, &
+                                load_name, load_nume, nb_in_maxi, nb_in_prep, lpain, &
+                                lchin, base, resu_elem, vect_elem)
+        end if
     end do
 !
 !   delete temporary object
     if (.not. present(hydr_curr_)) then
         call detrsd('CHAMP', hydr_curr)
-    endif
+    end if
 !
-    end subroutine
+end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,8 @@ subroutine crvrc2()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
-    integer :: nbfac, n1, nbinst, kinst,  iordr
-    integer :: nbin, iret, jinst,  iexi
+    integer :: nbfac, n1, nbinst, kinst, iordr
+    integer :: nbin, iret, jinst, iexi
     real(kind=8) :: vinst
     character(len=8) :: kbid, resu, modele, model2, carele, paout, lpain(10)
     character(len=16) :: type, oper
@@ -61,7 +61,7 @@ subroutine crvrc2()
 !
     call getfac('PREP_VRC2', nbfac)
     if (nbfac .eq. 0) goto 20
-    ASSERT(nbfac.eq.1)
+    ASSERT(nbfac .eq. 1)
 !
 !
     call getres(resu, type, oper)
@@ -73,26 +73,26 @@ subroutine crvrc2()
     call jeexin(carele//'.CANBSP    .CELK', iexi)
     if (iexi .eq. 0) then
         call utmess('F', 'CALCULEL4_14', sk=carele)
-    endif
+    end if
     call jeveuo(carele//'.CANBSP    .CELK', 'L', vk24=celk)
-    model2=celk(1)(1:8)
+    model2 = celk(1) (1:8)
     if (model2 .ne. modele) then
         call utmess('F', 'CALCULEL4_15', sk=carele)
-    endif
+    end if
 !
 !
 !
 !
     call jelira(resu1//'.ORDR', 'LONUTI', nbinst)
     call jeveuo(resu1//'.ORDR', 'L', vi=ordr)
-    ASSERT(nbinst.gt.0)
+    ASSERT(nbinst .gt. 0)
 !
     call jeexin(resu//'           .DESC', iret)
     if (iret .ne. 0) then
         call utmess('F', 'CALCULEL7_6', sk=resu)
     else
         call rscrsd('G', resu, 'EVOL_THER', nbinst)
-    endif
+    end if
 !
     paout = 'PTEMPCR'
     call mecara(carele, chcara)
@@ -108,24 +108,24 @@ subroutine crvrc2()
 !
 !     -- BOUCLE SUR LES INSTANTS :
 !     --------------------------------
-    do kinst = 1,nbinst
+    do kinst = 1, nbinst
         iordr = ordr(kinst)
-        call rsexch('F', resu1, 'TEMP', iordr, chtemp,&
+        call rsexch('F', resu1, 'TEMP', iordr, chtemp, &
                     iret)
         lchin(2) = chtemp
 !
-        call rsexch(' ', resu, 'TEMP', iordr, chout,&
+        call rsexch(' ', resu, 'TEMP', iordr, chout, &
                     iret)
         call cesvar(carele, ' ', ligrel, chout)
-        call calcul('S', 'PREP_VRC', ligrel, nbin, lchin,&
-                    lpain, 1, chout, paout, 'G',&
+        call calcul('S', 'PREP_VRC', ligrel, nbin, lchin, &
+                    lpain, 1, chout, paout, 'G', &
                     'OUI')
         call detrsd('CHAM_ELEM_S', chout)
         call rsnoch(resu, 'TEMP', iordr)
-        call rsadpa(resu1, 'L', 1, 'INST', iordr,&
+        call rsadpa(resu1, 'L', 1, 'INST', iordr, &
                     0, sjv=jinst, styp=kbid)
-        vinst=zr(jinst)
-        call rsadpa(resu, 'E', 1, 'INST', iordr,&
+        vinst = zr(jinst)
+        call rsadpa(resu, 'E', 1, 'INST', iordr, &
                     0, sjv=jinst, styp=kbid)
         zr(jinst) = vinst
 !

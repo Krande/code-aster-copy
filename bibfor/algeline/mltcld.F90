@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltcld(n, front, adper, t1, ad,&
+subroutine mltcld(n, front, adper, t1, ad, &
                   eps, ier)
     implicit none
 #include "asterfort/sspmvc.h"
@@ -26,42 +26,42 @@ subroutine mltcld(n, front, adper, t1, ad,&
     complex(kind=8) :: front(*), t1(*), alpha, beta
     integer :: i, k
     integer :: seuin, seuik
-    parameter(seuin=1500,seuik=300)
+    parameter(seuin=1500, seuik=300)
     integer :: nn, kk, lda, incx, incy
     character(len=1) :: tra
 !
     lda = n
-    tra='N'
-    alpha= dcmplx(-1.d0,0.d0)
-    beta = dcmplx( 1.d0,0.d0)
+    tra = 'N'
+    alpha = dcmplx(-1.d0, 0.d0)
+    beta = dcmplx(1.d0, 0.d0)
     incx = 1
     incy = 1
     do k = 1, n
-        do i = 1, k - 1
-            ad(i) = adper(i) + k - i
+        do i = 1, k-1
+            ad(i) = adper(i)+k-i
             t1(i) = front(ad(i))*front(adper(i))
         end do
         if (k .gt. 1) then
 !
-            nn= n-k+1
-            kk= k-1
+            nn = n-k+1
+            kk = k-1
             if (nn .lt. seuin .or. kk .lt. seuik) then
-                call sspmvc(n-k+1, k-1, front, ad, t1,&
+                call sspmvc(n-k+1, k-1, front, ad, t1, &
                             front(adper(k)))
             else
-                call zgemv(tra, nn, kk, alpha, front(k),&
-                           lda, t1, incx, beta, front(adper(k)),&
+                call zgemv(tra, nn, kk, alpha, front(k), &
+                           lda, t1, incx, beta, front(adper(k)), &
                            incy)
-            endif
-        endif
+            end if
+        end if
 !         DIVISION PAR LE TERME DIAGONAL
         if (abs(front(adper(k))) .le. eps) then
             ier = k
             goto 40
-        endif
-        do i = 1, n - k
+        end if
+        do i = 1, n-k
             front(adper(k)+i) = front(adper(k)+i)/front(adper(k))
         end do
     end do
- 40 continue
+40  continue
 end subroutine

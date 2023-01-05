@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujiid(mod, mater, indi, deps, i1e,&
-                  yd, vind, dy, loop, dsig,&
+subroutine hujiid(mod, mater, indi, deps, i1e, &
+                  yd, vind, dy, loop, dsig, &
                   bnews, mtrac, iret)
 ! aslint: disable=W1501
     implicit none
@@ -82,41 +82,41 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     character(len=8) :: mod, nomail
     aster_logical :: debug, loop, bnews(3), mtrac
 ! ====================================================================
-    parameter   ( d13  = .3333333333334d0 )
-    parameter   ( un   = 1.d0 )
-    parameter   ( zero = 0.d0 )
-    parameter   ( deux = 2.d0 )
-    parameter   ( tole1 = 1.d-7 )
-    parameter   ( degr = 0.0174532925199d0 )
+    parameter(d13=.3333333333334d0)
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(tole1=1.d-7)
+    parameter(degr=0.0174532925199d0)
 !
 !
 ! ====================================================================
-    common /tdim/     ndt, ndi
-    common /meshuj/   debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 ! ====================================================================
     call infniv(ifm, niv)
 !
     do i = 1, 18
         ye(i) = zero
-    enddo
+    end do
 ! ====================================================================
 ! --- PROPRIETES HUJEUX MATERIAU -------------------------------------
 ! ====================================================================
-    n = mater(1,2)
-    beta = mater(2,2)
-    d = mater(3,2)
-    b = mater(4,2)
-    phi = mater(5,2)
-    angdil = mater(6,2)
-    pco = mater(7,2)
-    pref = mater(8,2)
-    acyc = mater(9,2)
-    amon = mater(10,2)
-    ccyc = deux*mater(11,2)
-    cmon = mater(12,2)
+    n = mater(1, 2)
+    beta = mater(2, 2)
+    d = mater(3, 2)
+    b = mater(4, 2)
+    phi = mater(5, 2)
+    angdil = mater(6, 2)
+    pco = mater(7, 2)
+    pref = mater(8, 2)
+    acyc = mater(9, 2)
+    amon = mater(10, 2)
+    ccyc = deux*mater(11, 2)
+    cmon = mater(12, 2)
     m = sin(degr*phi)
     mdil = sin(degr*angdil)
-    ptrac = mater(21,2)
+    ptrac = mater(21, 2)
     piso = zero
     rtrac = abs(1.d-6*pref)
 !
@@ -128,10 +128,10 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     nbmeca = 0
 !
     do k = 1, 4
-        if (indi(k) .gt. 0) nbmeca=nbmeca+1
+        if (indi(k) .gt. 0) nbmeca = nbmeca+1
         q(k) = zero
         qe(k) = zero
-    enddo
+    end do
 !
 !
 ! ====================================================================
@@ -142,68 +142,68 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     if ((i1e-piso) .ge. zero) then
         iret = 1
         goto 998
-    endif
+    end if
 !
-    hooknl(:,:) = zero
+    hooknl(:, :) = zero
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
 !
-        if (mater(17,1) .eq. un) then
+        if (mater(17, 1) .eq. un) then
 !
-            e = mater(1,1)*((i1e -piso)/pref)**n
-            nu = mater(2,1)
-            al = e*(un-nu) /(un+nu) /(un-deux*nu)
-            demu = e /(un+nu)
+            e = mater(1, 1)*((i1e-piso)/pref)**n
+            nu = mater(2, 1)
+            al = e*(un-nu)/(un+nu)/(un-deux*nu)
+            demu = e/(un+nu)
             la = e*nu/(un+nu)/(un-deux*nu)
 !
             do i = 1, ndi
                 do j = 1, ndi
-                    if (i .eq. j) hooknl(i,j) = al
-                    if (i .ne. j) hooknl(i,j) = la
-                enddo
-            enddo
+                    if (i .eq. j) hooknl(i, j) = al
+                    if (i .ne. j) hooknl(i, j) = la
+                end do
+            end do
             do i = ndi+1, ndt
-                hooknl(i,i) = demu
-            enddo
+                hooknl(i, i) = demu
+            end do
 !
-        else if (mater(17,1).eq.deux) then
+        else if (mater(17, 1) .eq. deux) then
 !
-            e1 = mater(1,1)*((i1e -piso)/pref)**n
-            e2 = mater(2,1)*((i1e -piso)/pref)**n
-            e3 = mater(3,1)*((i1e -piso)/pref)**n
-            nu12 = mater(4,1)
-            nu13 = mater(5,1)
-            nu23 = mater(6,1)
-            g1 = mater(7,1)*((i1e -piso)/pref)**n
-            g2 = mater(8,1)*((i1e -piso)/pref)**n
-            g3 = mater(9,1)*((i1e -piso)/pref)**n
-            nu21 = mater(13,1)
-            nu31 = mater(14,1)
-            nu32 = mater(15,1)
-            delta= mater(16,1)
+            e1 = mater(1, 1)*((i1e-piso)/pref)**n
+            e2 = mater(2, 1)*((i1e-piso)/pref)**n
+            e3 = mater(3, 1)*((i1e-piso)/pref)**n
+            nu12 = mater(4, 1)
+            nu13 = mater(5, 1)
+            nu23 = mater(6, 1)
+            g1 = mater(7, 1)*((i1e-piso)/pref)**n
+            g2 = mater(8, 1)*((i1e-piso)/pref)**n
+            g3 = mater(9, 1)*((i1e-piso)/pref)**n
+            nu21 = mater(13, 1)
+            nu31 = mater(14, 1)
+            nu32 = mater(15, 1)
+            delta = mater(16, 1)
 !
-            hooknl(1,1) = (un - nu23*nu32)*e1/delta
-            hooknl(1,2) = (nu21 + nu31*nu23)*e1/delta
-            hooknl(1,3) = (nu31 + nu21*nu32)*e1/delta
-            hooknl(2,2) = (un - nu13*nu31)*e2/delta
-            hooknl(2,3) = (nu32 + nu31*nu12)*e2/delta
-            hooknl(3,3) = (un - nu21*nu12)*e3/delta
-            hooknl(2,1) = hooknl(1,2)
-            hooknl(3,1) = hooknl(1,3)
-            hooknl(3,2) = hooknl(2,3)
-            hooknl(4,4) = g1*2.d0
-            hooknl(5,5) = g2*2.d0
-            hooknl(6,6) = g3*2.d0
+            hooknl(1, 1) = (un-nu23*nu32)*e1/delta
+            hooknl(1, 2) = (nu21+nu31*nu23)*e1/delta
+            hooknl(1, 3) = (nu31+nu21*nu32)*e1/delta
+            hooknl(2, 2) = (un-nu13*nu31)*e2/delta
+            hooknl(2, 3) = (nu32+nu31*nu12)*e2/delta
+            hooknl(3, 3) = (un-nu21*nu12)*e3/delta
+            hooknl(2, 1) = hooknl(1, 2)
+            hooknl(3, 1) = hooknl(1, 3)
+            hooknl(3, 2) = hooknl(2, 3)
+            hooknl(4, 4) = g1*2.d0
+            hooknl(5, 5) = g2*2.d0
+            hooknl(6, 6) = g3*2.d0
 !
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
         call utmess('F', 'COMPOR1_4')
 !
-    endif
+    end if
 !
 !
 ! ====================================================================
@@ -211,9 +211,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! --- ELASTIQUE EN TANT QUE DE BESOIN --------------------------------
 ! ====================================================================
     if (.not. loop) then
-       dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
+        dsig(1:ndt) = matmul(hooknl(1:ndt, 1:ndt), deps(1:ndt))
     end if
-    ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
+    ye(1:ndt) = yd(1:ndt)+dsig(1:ndt)
 !      LOOP = .FALSE.
 ! ====================================================================
 ! --- CALCUL DE L'INCRMEENT DE CONTRAINTES ELASTIQUE SI LOOP ACTIVE
@@ -222,89 +222,89 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !     L'ETAT DE CONTRAINTES CONVERGES PRECEDENT
 ! ====================================================================
     if (loop) then
-        dsigt(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
+        dsigt(1:ndt) = matmul(hooknl(1:ndt, 1:ndt), deps(1:ndt))
     else
         dsigt(1:ndt) = dsig(1:ndt)
-    endif
-    sigt(1:ndt) = yd(1:ndt) + dsigt(1:ndt)
+    end if
+    sigt(1:ndt) = yd(1:ndt)+dsigt(1:ndt)
 !
 ! --- FAUT-IL CONSIDERER LES MECANISMES DE TRACTION?
     nbmect = nbmeca
     sige(1:ndt) = ye(1:ndt)
 !
 !
-    if (debug) write(6,*)'BNEWS =',(bnews(i),i=1,3)
+    if (debug) write (6, *) 'BNEWS =', (bnews(i), i=1, 3)
     do i = 1, 3
         call hujprj(i, sigt, sigd, pt, qt)
-        if ((((pt+deux*rtrac-ptrac)/abs(pref)).ge.-r8prem()) .and. ( .not.bnews(i))) then
-            nbmect = nbmect + 1
-            indi(nbmect) = 8 + i
-        else if ((.not.bnews(i)).and.(mtrac)) then
-            nbmect = nbmect + 1
-            indi(nbmect) = 8 + i
-        endif
-    enddo
+        if ((((pt+deux*rtrac-ptrac)/abs(pref)) .ge. -r8prem()) .and. (.not. bnews(i))) then
+            nbmect = nbmect+1
+            indi(nbmect) = 8+i
+        else if ((.not. bnews(i)) .and. (mtrac)) then
+            nbmect = nbmect+1
+            indi(nbmect) = 8+i
+        end if
+    end do
 !
     maxi = un
     cohes = -rtrac+ptrac
     factor = un
 !
-    if ((nbmect.ne.nbmeca) .and. (nbmeca.eq.0)) goto 51
+    if ((nbmect .ne. nbmeca) .and. (nbmeca .eq. 0)) goto 51
 !
     do i = 1, ndi
         call hujprj(i, sige, sigd, pe(i), qe(i))
         call hujprj(i, yd, sigd, p(i), q(i))
         call hujprj(i, dsig, sigd, dp(i), q(i))
-        if ((pe(i).gt.cohes) .and. (dp(i).gt.tole1)) then
+        if ((pe(i) .gt. cohes) .and. (dp(i) .gt. tole1)) then
             factor = (-p(i)+cohes)/dp(i)
-            if ((factor.gt.zero) .and. (factor.lt.maxi)) then
+            if ((factor .gt. zero) .and. (factor .lt. maxi)) then
                 maxi = factor
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
 !
 ! ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION
     if (maxi .lt. un) then
         do i = 1, ndt
-            dsig(i) = maxi * dsig(i)
-        enddo
+            dsig(i) = maxi*dsig(i)
+        end do
         if (debug) then
-            write (6,'(A,A,E12.5)')&
+            write (6, '(A,A,E12.5)')&
      &   'HUJIID DEBUT : APPLICATION DE FACTOR POUR MODIFIER ',&
-     &    'LA PREDICTION -> FACTOR =',factor
-            write(6,*)'YE =',(yd(i)+dsig(i),i=1,ndt)
-        endif
-        ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
-    endif
- 51 continue
+     &    'LA PREDICTION -> FACTOR =', factor
+            write (6, *) 'YE =', (yd(i)+dsig(i), i=1, ndt)
+        end if
+        ye(1:ndt) = yd(1:ndt)+dsig(1:ndt)
+    end if
+51  continue
 !
-    if ((nbmeca .eq. 1) .and. ((indi(1).eq.4) .or. (indi(1).eq.8))) then
+    if ((nbmeca .eq. 1) .and. ((indi(1) .eq. 4) .or. (indi(1) .eq. 8))) then
 !
         do i = ndt+1, 18
-            dy(i)=zero
-        enddo
+            dy(i) = zero
+        end do
         do i = 1, ndt
             dy(i) = dsig(i)
-        enddo
+        end do
 !
         goto 998
 !
-    endif
+    end if
 !
     do k = 1, 42
         psi(k) = zero
-    enddo
+    end do
 !
     do k = 1, 7
         pe(k) = zero
         q(k) = zero
         qe(k) = zero
         p(k) = zero
-    enddo
+    end do
 !
     do k = 1, nbmect
 !
-        call hujddd('PSI   ', indi(k), mater, indi, yd,&
+        call hujddd('PSI   ', indi(k), mater, indi, yd, &
                     vind, psi((k-1)*ndt+1), dpsids, iret)
         if (iret .eq. 1) goto 999
 !
@@ -316,50 +316,50 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
                 call hujprj(indi(k), yd, sigd, p(k), q(k))
                 call hujprj(indi(k), ye, sigd, pe(k), qe(k))
-                if (((p(k) -ptrac)/pref) .le. tole1 .or. ((pe(k)- ptrac)/pref) .le. tole1) &
-                goto 999
+                if (((p(k)-ptrac)/pref) .le. tole1 .or. ((pe(k)-ptrac)/pref) .le. tole1) &
+                    goto 999
                 call hujksi('KSI   ', mater, rc(k), ksi(k), iret)
                 if (iret .eq. 1) goto 999
                 ad(k) = acyc+ksi(k)*(amon-acyc)
 !
             else if ((indi(k) .gt. 4) .and. (indi(k) .lt. 8)) then
 !
-                call hujprc(k, indi(k)-4, yd, vind, mater,&
+                call hujprc(k, indi(k)-4, yd, vind, mater, &
                             yd, p(k), q(k), sigdc(3*k-2))
-                call hujprc(k, indi(k)-4, ye, vind, mater,&
+                call hujprc(k, indi(k)-4, ye, vind, mater, &
                             yd, pe(k), qe(k), sigdce(3*k-2))
-                if (((p(k) -ptrac)/pref) .le. tole1 .or. ((pe(k)- ptrac)/pref) .le. tole1) &
-                goto 999
+                if (((p(k)-ptrac)/pref) .le. tole1 .or. ((pe(k)-ptrac)/pref) .le. tole1) &
+                    goto 999
                 call hujksi('KSI   ', mater, rc(k), ksi(k), iret)
                 if (iret .eq. 1) goto 999
 !
                 th(1) = vind(4*indi(k)-9)
                 th(2) = vind(4*indi(k)-8)
-                prod = sigdce(3*k-2)*th(1) + sigdce(3*k)*th(2)/deux
+                prod = sigdce(3*k-2)*th(1)+sigdce(3*k)*th(2)/deux
 !
                 if (qe(k) .lt. tole1) then
                     ad(k) = (acyc+ksi(k)*(amon-acyc))
-                else if ((un+prod/qe(k)).lt.tole1) then
+                else if ((un+prod/qe(k)) .lt. tole1) then
                     ad(k) = (acyc+ksi(k)*(amon-acyc))
                 else
                     ad(k) = (acyc+ksi(k)*(amon-acyc))*(un+prod/qe(k))
-                endif
+                end if
 !
             else if (indi(k) .eq. 8) then
 !
-                call hujpic(k, indi(k), yd, vind, mater,&
+                call hujpic(k, indi(k), yd, vind, mater, &
                             yd, p(k))
-                call hujpic(k, indi(k), ye, vind, mater,&
+                call hujpic(k, indi(k), ye, vind, mater, &
                             yd, pe(k))
 !
-                if (((p(k) -piso)/pref) .le. tole1 .or. ((pe(k)-piso)/ pref) .le. tole1) &
-                goto 999
+                if (((p(k)-piso)/pref) .le. tole1 .or. ((pe(k)-piso)/pref) .le. tole1) &
+                    goto 999
 !
-            endif
+            end if
 !
             ye(ndt+1+k) = yd(ndt+1+k)
 !
-        endif
+        end if
 !
     end do
 !
@@ -367,10 +367,10 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     ye(ndt+1) = yd(ndt+1)
     pc = pco*exp(-beta*epsvp)
 !
-    cmon = cmon * pc/pref
-    ccyc = ccyc * pc/pref
+    cmon = cmon*pc/pref
+    ccyc = ccyc*pc/pref
 !
-    coef = mater(20,2)
+    coef = mater(20, 2)
 !
 ! ====================================================================
 ! --- CALCUL DE DLAMBI, DLAMBD ---------------------------------------
@@ -388,27 +388,27 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! ====================================================================
     do k = 1, nbmect
         do l = 1, nbmect
-            dfdl(k,l) = zero
-        enddo
-    enddo
+            dfdl(k, l) = zero
+        end do
+    end do
 !
 !
 ! ---> I. CALCUL DE DF. / DDLAMB. POUR DDLAMB. = 0
 ! ---> I.1. CALCUL DE DFDSE(K)*HOOKNL*PSI-(L)
     do k = 1, nbmect
         kk = indi(k)
-        call hujddd('DFDS  ', kk, mater, indi, ye,&
+        call hujddd('DFDS  ', kk, mater, indi, ye, &
                     vind, dfds, dpsids, iret)
         if (iret .eq. 1) goto 999
         do l = 1, nbmect
             ll = (l-1)*ndt
             do i = 1, ndt
                 do j = 1, ndt
-                    dfdl(k,l) = dfdl(k,l) - hooknl(i,j)*dfds(i)*psi( ll+j)
-                enddo
-            enddo
-        enddo
-    enddo
+                    dfdl(k, l) = dfdl(k, l)-hooknl(i, j)*dfds(i)*psi(ll+j)
+                end do
+            end do
+        end do
+    end do
 !
 ! ---- FIN I.1.
 ! ---> I.2. CALCUL DE DFDEVPE(K)*DEVPDDLAMB-(L)
@@ -416,10 +416,10 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     do k = 1, nbmect
 !
         kk = indi(k)
-        pek =pe(k) -ptrac
+        pek = pe(k)-ptrac
         if (kk .lt. 4) then
 !
-            f2(k) = -qe(k) - m*pek*rc(k) * ( un - b*log(pek/pc) )
+            f2(k) = -qe(k)-m*pek*rc(k)*(un-b*log(pek/pc))
             if (f2(k) .gt. zero) f2(k) = zero
 !
             do l = 1, nbmeca
@@ -433,51 +433,51 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
                         dpsi = mdil+q(l)/p(l)
                     else
                         dpsi = mdil+1.d+6*q(l)/pref
-                    endif
-                    dfdl(k,l) = dfdl(k,l) + b*m*pek*rc(k)*beta * ksi(l)*coef*dpsi
+                    end if
+                    dfdl(k, l) = dfdl(k, l)+b*m*pek*rc(k)*beta*ksi(l)*coef*dpsi
 !
                 else if (ll .eq. 4) then
 !
-                    dfdl(k,l) = dfdl(k,l) + b*m*pek*rc(k)*beta
+                    dfdl(k, l) = dfdl(k, l)+b*m*pek*rc(k)*beta
 !
                 else if ((ll .gt. 4) .and. (ll .lt. 8)) then
 !
                     call hujprj(ll-4, ye, sigd, tp, tp1)
                     ps = 2*sigd(1)*sigdce(3*l-2)+sigd(3)*sigdce(3*l)
 !kh -- traction
-                    if (((p(l)/pref).gt.tole1) .and. ((-q(l)/pref) .gt.tole1)) then
-                        dpsi =mdil+ps/(2.d0*p(l)*q(l))
-                        elseif (((p(l)/pref).le.tole1) .and. ((-q(l)/pref)&
-                    .gt.tole1)) then
-                        dpsi =mdil+ps/(2.d-6*pref*q(l))
+                    if (((p(l)/pref) .gt. tole1) .and. ((-q(l)/pref) .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d0*p(l)*q(l))
+                    elseif (((p(l)/pref) .le. tole1) .and. ((-q(l)/pref) &
+                                                            .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d-6*pref*q(l))
                     else
-                        dpsi =mdil
-                    endif
-                    dfdl(k,l) = dfdl(k,l) + b*m*pek*rc(k)*beta * ksi(l)*coef * dpsi
+                        dpsi = mdil
+                    end if
+                    dfdl(k, l) = dfdl(k, l)+b*m*pek*rc(k)*beta*ksi(l)*coef*dpsi
 !
                 else if (ll .eq. 8) then
 !
                     if (vind(22) .eq. un) then
-                        dfdl(k,l) = dfdl(k,l) - b*m*pek*rc(k)*beta
+                        dfdl(k, l) = dfdl(k, l)-b*m*pek*rc(k)*beta
                     else
-                        dfdl(k,l) = dfdl(k,l) + b*m*pek*rc(k)*beta
-                    endif
+                        dfdl(k, l) = dfdl(k, l)+b*m*pek*rc(k)*beta
+                    end if
 !
-                endif
+                end if
 !
-           enddo
+            end do
 !
 ! ---- I.2.2. MECANISME ISOTROPE MONOTONE
         else if (kk .eq. 4) then
 !
             if (k .ne. nbmeca) then
                 call utmess('F', 'COMPOR1_5')
-            endif
-            i1de = d13*trace(ndi,ye)
-            f2(k) = -abs(i1de) - rc(k)*d*pc
+            end if
+            i1de = d13*trace(ndi, ye)
+            f2(k) = -abs(i1de)-rc(k)*d*pc
             if (f2(k) .gt. zero) f2(k) = zero
 !
-            dfdl(k,k) = dfdl(k,k) + rc(k)*d*pc*beta
+            dfdl(k, k) = dfdl(k, k)+rc(k)*d*pc*beta
 !
             do l = 1, nbmeca-1, 1
                 ll = indi(l)
@@ -485,41 +485,41 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
 !kh --- traction
                     if ((p(l)/pref) .gt. tole1) then
-                        dpsi =mdil+q(l)/p(l)
+                        dpsi = mdil+q(l)/p(l)
                     else
                         dpsi = mdil+1.d+6*q(l)/pref
-                    endif
+                    end if
 !
-                    dfdl(k,l) = dfdl(k,l) + rc(k)*d*pc*beta * ksi(l)* coef*dpsi
+                    dfdl(k, l) = dfdl(k, l)+rc(k)*d*pc*beta*ksi(l)*coef*dpsi
 !
-                else if ((ll.gt.4).and.(ll.lt.8)) then
+                else if ((ll .gt. 4) .and. (ll .lt. 8)) then
 !
                     call hujprj(ll-4, ye, sigd, tp, tp1)
                     ps = 2*sigd(1)*sigdce(3*l-2)+sigd(3)*sigdce(3*l)
 !kh --- traction
-                    if (((p(l)/pref).gt.tole1) .and. ((-q(l)/pref) .gt.tole1)) then
-                        dpsi =mdil+ps/(2.d0*p(l)*q(l))
-                        elseif (((p(l)/pref).le.tole1) .and. ((-q(l)/pref)&
-                    .gt.tole1)) then
-                        dpsi =mdil+ps/(2.d-6*pref*q(l))
+                    if (((p(l)/pref) .gt. tole1) .and. ((-q(l)/pref) .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d0*p(l)*q(l))
+                    elseif (((p(l)/pref) .le. tole1) .and. ((-q(l)/pref) &
+                                                            .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d-6*pref*q(l))
                     else
-                        dpsi =mdil
-                    endif
-                    dfdl(k,l) = dfdl(k,l) + rc(k)*d*pc*beta * ksi(l)* coef*mdil
-                endif
-            enddo
+                        dpsi = mdil
+                    end if
+                    dfdl(k, l) = dfdl(k, l)+rc(k)*d*pc*beta*ksi(l)*coef*mdil
+                end if
+            end do
 !
 ! --- I.2.3. MECANISME DEVIATOIRE CYCLIQUE
         else if ((kk .lt. 8) .and. (kk .gt. 4)) then
 !
-            f2(k) = -qe(k) - m*pek*rc(k) * ( un - b*log(pek/pc) )
+            f2(k) = -qe(k)-m*pek*rc(k)*(un-b*log(pek/pc))
             if (f2(k) .gt. zero) f2(k) = zero
 !
             xk(1) = vind(4*kk-11)
             xk(2) = vind(4*kk-10)
             th(1) = vind(4*kk-9)
             th(2) = vind(4*kk-8)
-            prod = sigdce(3*k-2)*(xk(1)-rc(k)*th(1)) + sigdce(3*k)*( xk(2)-rc(k)*th(2))/deux
+            prod = sigdce(3*k-2)*(xk(1)-rc(k)*th(1))+sigdce(3*k)*(xk(2)-rc(k)*th(2))/deux
 !
             do l = 1, nbmeca
 !
@@ -528,77 +528,77 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
 !kh --- traction
                     if ((p(l)/pref) .gt. tole1) then
-                        dpsi =mdil+q(l)/p(l)
+                        dpsi = mdil+q(l)/p(l)
                     else
-                        dpsi =mdil+1.d+6*q(l)/pref
-                    endif
+                        dpsi = mdil+1.d+6*q(l)/pref
+                    end if
 !
                     if ((-qe(k)/pref) .gt. tole1) then
-                        dfdl(k,l) = dfdl(k,l) + b*m*pek*beta* (-prod/ qe(k)+ rc(k)) * ksi(l)*coef&
+                        dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*(-prod/qe(k)+rc(k))*ksi(l)*coef&
                                     &*dpsi
                     else
-                        dfdl(k,l) = dfdl(k,l) + b*m*pek*beta*rc(k) * ksi(l)*coef*dpsi
-                    endif
+                        dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*rc(k)*ksi(l)*coef*dpsi
+                    end if
 !
                 else if (ll .eq. 4) then
 !
                     if ((-qe(k)/pref) .lt. tole1) then
-                        dfdl(k,l) = dfdl(k,l) + b*m*pek*beta*rc(k)
+                        dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*rc(k)
                     else
-                        dfdl(k,l) = dfdl(k,l) + b*m*pek*beta* (-prod/ qe(k) + rc(k))
-                    endif
+                        dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*(-prod/qe(k)+rc(k))
+                    end if
 !
                 else if ((ll .gt. 4) .and. (ll .lt. 8)) then
 !
                     call hujprj(ll-4, ye, sigd, tp, tp1)
                     ps = 2*sigd(1)*sigdce(3*l-2)+sigd(3)*sigdce(3*l)
 !kh --- traction
-                    if (((p(l)/pref).gt.tole1) .and. ((-q(l)/pref) .gt.tole1)) then
-                        dpsi =mdil+ps/(2.d0*p(l)*q(l))
-                        elseif (((p(l)/pref).le.tole1) .and. ((-q(l)/pref)&
-                    .gt.tole1)) then
-                        dpsi =mdil+ps/(2.d-6*pref*q(l))
+                    if (((p(l)/pref) .gt. tole1) .and. ((-q(l)/pref) .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d0*p(l)*q(l))
+                    elseif (((p(l)/pref) .le. tole1) .and. ((-q(l)/pref) &
+                                                            .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d-6*pref*q(l))
                     else
-                        dpsi =mdil
-                    endif
+                        dpsi = mdil
+                    end if
 !
                     if ((-qe(k)/pref) .lt. tole1) then
-                        dfdl(k,l) = dfdl(k,l) + b*m*pek*beta*rc(k) * ksi(l)*coef*dpsi
+                        dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*rc(k)*ksi(l)*coef*dpsi
                     else
-                        dfdl(k,l) = dfdl(k,l) + b*m*pek*beta* (-prod/ qe(k) + rc(k)) * ksi(l)*coe&
+                        dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*(-prod/qe(k)+rc(k))*ksi(l)*coe&
                                     &f*dpsi
-                    endif
+                    end if
 !
                 else if (ll .eq. 8) then
 !
                     if ((-qe(k)/pref) .lt. tole1) then
                         if (vind(22) .eq. un) then
-                            dfdl(k,l) = dfdl(k,l) - b*m*pek*beta*rc(k)
+                            dfdl(k, l) = dfdl(k, l)-b*m*pek*beta*rc(k)
                         else
-                            dfdl(k,l) = dfdl(k,l) + b*m*pek*beta*rc(k)
-                        endif
+                            dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*rc(k)
+                        end if
                     else
                         if (vind(22) .eq. un) then
-                            dfdl(k,l) = dfdl(k,l) - b*m*pek*beta* (-prod*qe(k) + rc(k))
+                            dfdl(k, l) = dfdl(k, l)-b*m*pek*beta*(-prod*qe(k)+rc(k))
                         else
-                            dfdl(k,l) = dfdl(k,l) + b*m*pek*beta* (-prod*qe(k) + rc(k))
-                        endif
-                    endif
-                endif
+                            dfdl(k, l) = dfdl(k, l)+b*m*pek*beta*(-prod*qe(k)+rc(k))
+                        end if
+                    end if
+                end if
 !
-            enddo
+            end do
 !
 ! --- I.2.4. MECANISME ISOTROPE CYCLIQUE
         else if (kk .eq. 8) then
 !
-            f2(k) = -abs(pe(k)) - d*rc(k)*pc
+            f2(k) = -abs(pe(k))-d*rc(k)*pc
             if (f2(k) .gt. zero) f2(k) = zero
 !
             if (vind(22) .eq. un) then
-                dfdl(k,k) = dfdl(k,k) - d*pc*beta* (rc(k)-vind(21))
+                dfdl(k, k) = dfdl(k, k)-d*pc*beta*(rc(k)-vind(21))
             else
-                dfdl(k,k) = dfdl(k,k) + d*pc*beta* (rc(k)+vind(21))
-            endif
+                dfdl(k, k) = dfdl(k, k)+d*pc*beta*(rc(k)+vind(21))
+            end if
 !
             do l = 1, nbmeca-1, 1
 !
@@ -607,46 +607,46 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !
 !kh --- traction
                     if ((p(l)/pref) .gt. tole1) then
-                        dpsi =mdil+q(l)/p(l)
+                        dpsi = mdil+q(l)/p(l)
                     else
-                        dpsi =mdil+1.d+6*q(l)/pref
-                    endif
+                        dpsi = mdil+1.d+6*q(l)/pref
+                    end if
 !
                     if (vind(22) .eq. un) then
-                        dfdl(k,l) = dfdl(k,l) + d*pc*beta* (rc(k)- vind(21)) *ksi(l)*coef*dpsi
+                        dfdl(k, l) = dfdl(k, l)+d*pc*beta*(rc(k)-vind(21))*ksi(l)*coef*dpsi
                     else
-                        dfdl(k,l) = dfdl(k,l) + d*pc*beta* (rc(k)+ vind(21)) *ksi(l)*coef*dpsi
-                    endif
+                        dfdl(k, l) = dfdl(k, l)+d*pc*beta*(rc(k)+vind(21))*ksi(l)*coef*dpsi
+                    end if
 !
-                else if ((ll.lt.8) .and. (ll.gt.4)) then
+                else if ((ll .lt. 8) .and. (ll .gt. 4)) then
 !
                     call hujprj(ll-4, ye, sigd, tp, tp1)
                     ps = 2*sigd(1)*sigdce(3*l-2)+sigd(3)*sigdce(3*l)
 !
 !kh --- traction
-                    if (((p(l)/pref).gt.tole1) .and. ((-q(l)/pref) .gt.tole1)) then
-                        dpsi =mdil+ps/(2.d0*p(l)*q(l))
-                        elseif (((p(l)/pref).le.tole1) .and. ((-q(l)/pref)&
-                    .gt.tole1))then
-                        dpsi =mdil+ps/(2.d-6*pref*q(l))
+                    if (((p(l)/pref) .gt. tole1) .and. ((-q(l)/pref) .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d0*p(l)*q(l))
+                    elseif (((p(l)/pref) .le. tole1) .and. ((-q(l)/pref) &
+                                                            .gt. tole1)) then
+                        dpsi = mdil+ps/(2.d-6*pref*q(l))
                     else
-                        dpsi =mdil
-                    endif
+                        dpsi = mdil
+                    end if
 !
                     if (vind(22) .eq. un) then
-                        dfdl(k,l) = dfdl(k,l) + d*pc*beta* (rc(k)- vind(21)) *ksi(l)*coef*dpsi
+                        dfdl(k, l) = dfdl(k, l)+d*pc*beta*(rc(k)-vind(21))*ksi(l)*coef*dpsi
                     else
-                        dfdl(k,l) = dfdl(k,l) + d*pc*beta* (rc(k)+ vind(21)) *ksi(l)*coef*dpsi
-                    endif
-                endif
-            enddo
+                        dfdl(k, l) = dfdl(k, l)+d*pc*beta*(rc(k)+vind(21))*ksi(l)*coef*dpsi
+                    end if
+                end if
+            end do
 !
-        else if (kk.gt.8) then
+        else if (kk .gt. 8) then
             call hujprj(kk-8, ye, vec, tp, tp1)
-            f2(k) = -tp - deux*rtrac + ptrac
+            f2(k) = -tp-deux*rtrac+ptrac
             if (f2(k) .gt. zero) f2(k) = zero
-        endif
-    enddo
+        end if
+    end do
 !
 ! ---- FIN I.2.
 ! ---> I.3. CALCUL DE DFDRE(K)*DRDLAMB-(K)
@@ -654,51 +654,51 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     do k = 1, nbmeca, 1
 !
         kk = indi(k)
-        pek =pe(k) -ptrac
+        pek = pe(k)-ptrac
 !
         if (kk .lt. 4) then
 !
-            dfdl(k,k) = dfdl(k,k) + m*pek*(un-b*log(pek/pc)) * (un-rc( k))**deux /ad(k)
+            dfdl(k, k) = dfdl(k, k)+m*pek*(un-b*log(pek/pc))*(un-rc(k))**deux/ad(k)
 !
         else if (kk .eq. 4) then
 !
-            dfdl(k,k) = dfdl(k,k) + d*pc * (un-rc(k))**deux /cmon
+            dfdl(k, k) = dfdl(k, k)+d*pc*(un-rc(k))**deux/cmon
 !
         else if ((kk .gt. 4) .and. (kk .lt. 8)) then
 !
             th(1) = vind(4*kk-9)
             th(2) = vind(4*kk-8)
 !
-            prod = sigdce(3*k-2)*th(1) + sigdce(3*k)*th(2)/deux
+            prod = sigdce(3*k-2)*th(1)+sigdce(3*k)*th(2)/deux
             if ((-qe(k)/pref) .lt. tole1) then
-                dfdl(k,k) = dfdl(k,k) + m*pek*(un-b*log(pek/pc)) * (un-rc(k))**deux /ad(k)
+                dfdl(k, k) = dfdl(k, k)+m*pek*(un-b*log(pek/pc))*(un-rc(k))**deux/ad(k)
 !
             else
-                dfdl(k,k) = dfdl(k,k) + m*pek*(un-b*log(pek/pc)) * (un+prod/qe(k)) * (un-rc(k))**&
-                            &deux /ad(k)
+                dfdl(k, k) = dfdl(k, k)+m*pek*(un-b*log(pek/pc))*(un+prod/qe(k))*(un-rc(k))**&
+                            &deux/ad(k)
 !
-                if (dfdl(k,k) .eq. zero) dfdl(k,k) = dfdl(k,k) + 2.d0*m* pek*(un-b*log(pek/pc)) *&
-                                                     & (un-rc(k))**deux /ad(k)
-            endif
+                if (dfdl(k, k) .eq. zero) dfdl(k, k) = dfdl(k, k)+2.d0*m*pek*(un-b*log(pek/pc))*&
+                                                     & (un-rc(k))**deux/ad(k)
+            end if
 !
         else if (kk .eq. 8) then
 !
-            dfdl(k,k) = dfdl(k,k) + d*pc*(un-rc(k))**deux /ccyc
+            dfdl(k, k) = dfdl(k, k)+d*pc*(un-rc(k))**deux/ccyc
 !
-        endif
-    enddo
+        end if
+    end do
 !
 160 continue
 ! ---- RESOLUTION PAR PIVOT DE GAUSS
 !
-    call mgauss('NCVP', dfdl, f2, 7, nbmect,&
+    call mgauss('NCVP', dfdl, f2, 7, nbmect, &
                 1, det, iret)
     if (iret .eq. 1) goto 998
 !
 ! --- MULTIPLICATEUR PLASTIQUE NEGATIF NON AUTORISE
     do k = 1, nbmect
-        if (f2(k) .lt. zero) f2(k)=zero
-    enddo
+        if (f2(k) .lt. zero) f2(k) = zero
+    end do
 !
 !
 ! ====================================================================
@@ -706,22 +706,22 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! ====================================================================
     do i = 1, ndt
         depse(i) = deps(i)
-    enddo
+    end do
 !
     do k = 1, nbmect
         kk = (k-1)*ndt
         do i = 1, ndt
-            depse(i) = depse(i) - f2(k)*psi(kk+i)
-        enddo
-    enddo
+            depse(i) = depse(i)-f2(k)*psi(kk+i)
+        end do
+    end do
 !
 ! ====================================================================
 ! --- CALCUL INCREMENT DE CONTRAINTES  DSIG = HOOKNL-.DEPSE ----------
 ! ====================================================================
     if (.not. loop) then
-       dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
+        dsig(1:ndt) = matmul(hooknl(1:ndt, 1:ndt), depse(1:ndt))
     end if
-    ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
+    ye(1:ndt) = yd(1:ndt)+dsig(1:ndt)
 !
     maxi = un
     cohes = -rtrac+ptrac
@@ -733,46 +733,46 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
         call hujprj(i, dsig, sigd, dp(i), q(i))
         if (pe(i) .gt. cohes .and. dp(i) .gt. tole1) then
             factor = (-p(i)+cohes)/dp(i)
-            if ((factor.gt.zero) .and. (factor.lt.maxi)) then
+            if ((factor .gt. zero) .and. (factor .lt. maxi)) then
                 maxi = factor
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
 !
 !KH ON IMPOSE UNE VARIATION DE DSIGMA < 50% DE SIGMA_INIT
 !AF A CONDITION QU'IL N'Y AIT PAS DE MECANISMES DE TRACTION ACTIVES
     if (nbmect .eq. nbmeca) then
-        s=0.d0
-        ds=0.d0
+        s = 0.d0
+        ds = 0.d0
         tol = .5d0
         do i = 1, ndt
             s = s+yd(i)**2.d0
-            ds= ds+dsig(i)**2.d0
-        enddo
-        s=sqrt(s)
-        ds=sqrt(ds)
+            ds = ds+dsig(i)**2.d0
+        end do
+        s = sqrt(s)
+        ds = sqrt(ds)
 !
         factor = un
         if ((-s/pref) .gt. tole1) then
             if (ds/s .gt. tol) factor = tol*s/ds
         else if ((-ds/pref) .gt. tol) then
             factor = -tol*pref/ds
-        endif
+        end if
 !
-        maxi=min(factor,maxi)
-    endif
+        maxi = min(factor, maxi)
+    end if
 ! ---> SI IL EXISTE SIG(I)>0, ALORS MODIFICATION DE LA PREDICTION
     if (maxi .lt. un) then
         do i = 1, ndt
-            dsig(i) = maxi * dsig(i)
-        enddo
+            dsig(i) = maxi*dsig(i)
+        end do
         if (debug) then
-            write (6,'(A,A,E12.5)')&
+            write (6, '(A,A,E12.5)')&
      &     'HUJIID FIN:: APPLICATION DE FACTOR POUR MODIFIER ',&
-     &     'LA PREDICTION -> FACTOR =',factor
-            write(6,*)'YE =',(yd(i)+dsig(i),i=1,ndt)
-        endif
-    endif
+     &     'LA PREDICTION -> FACTOR =', factor
+            write (6, *) 'YE =', (yd(i)+dsig(i), i=1, ndt)
+        end if
+    end if
 !
 ! ====================================================================
 ! --- CALCUL INCREMENT DE LA VARIABLE INTERNE RC ---------------------
@@ -782,26 +782,26 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     do k = 1, nbmeca
         kk = indi(k)
         if (kk .lt. 4) then
-            dr(k) = f2(k) *(un-rc(k))**deux /ad(k)
+            dr(k) = f2(k)*(un-rc(k))**deux/ad(k)
             if ((yd(ndt+1+k)+dr(k)) .gt. un) then
-                f2(k) = (un-rc(k))/((un-rc(k))**deux /ad(k))
+                f2(k) = (un-rc(k))/((un-rc(k))**deux/ad(k))
                 dr(k) = f2(k)*(un-rc(k))**deux/ad(k)
-            endif
-        else if (kk.eq.4) then
-            dr(k) = f2(k) *(un-rc(k))**deux /cmon
+            end if
+        else if (kk .eq. 4) then
+            dr(k) = f2(k)*(un-rc(k))**deux/cmon
 !
         else if ((kk .lt. 8) .and. (kk .gt. 4)) then
-            dr(k) = f2(k) *(un-rc(k))**deux /ad(k)
+            dr(k) = f2(k)*(un-rc(k))**deux/ad(k)
             if ((yd(ndt+1+k)+dr(k)) .gt. vind(kk-4)) then
-                f2(k) = (vind(kk-4)-rc(k))/ ((un-rc(k))**deux /ad(k))
+                f2(k) = (vind(kk-4)-rc(k))/((un-rc(k))**deux/ad(k))
                 dr(k) = f2(k)*(un-rc(k))**deux/ad(k)
-            endif
+            end if
 !
         else if (kk .eq. 8) then
-            dr(k) = f2(k) *(un-rc(k))**deux /ccyc
+            dr(k) = f2(k)*(un-rc(k))**deux/ccyc
 !
-        endif
-    enddo
+        end if
+    end do
 !
 281 continue
 ! ====================================================================
@@ -809,78 +809,78 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! ====================================================================
     depsvp = zero
     do k = 1, nbmect
-        kk=indi(k)
+        kk = indi(k)
         if (kk .lt. 4) then
 !
 !kh --- traction
             if ((p(k)/pref) .gt. tole1) then
-                dpsi =mdil+q(k)/p(k)
+                dpsi = mdil+q(k)/p(k)
             else
-                dpsi =mdil+1.d+6*q(k)/pref
-            endif
-            depsvp = depsvp - f2(k)*coef*ksi(k)*dpsi
+                dpsi = mdil+1.d+6*q(k)/pref
+            end if
+            depsvp = depsvp-f2(k)*coef*ksi(k)*dpsi
 !
         else if (kk .eq. 4) then
 !
-            depsvp = depsvp - f2(k)
+            depsvp = depsvp-f2(k)
 !
         else if ((kk .lt. 8) .and. (kk .gt. 4)) then
 !
             call hujprj(kk-4, yd, sigd, tp, tp1)
             ps = 2*sigd(1)*sigdc(3*k-2)+sigd(3)*sigdc(3*k)
 !kh --- traction
-            if (((p(k)/pref).gt.tole1) .and. ((-q(k)/pref).gt.tole1)) then
-                dpsi =mdil+ps/(2.d0*p(k)*q(k))
-                elseif (((p(k)/pref).le.tole1) .and. ((-q(k)/pref)&
-            .gt.tole1)) then
-                dpsi =mdil+ps/(2.d-6*pref*q(k))
+            if (((p(k)/pref) .gt. tole1) .and. ((-q(k)/pref) .gt. tole1)) then
+                dpsi = mdil+ps/(2.d0*p(k)*q(k))
+            elseif (((p(k)/pref) .le. tole1) .and. ((-q(k)/pref) &
+                                                    .gt. tole1)) then
+                dpsi = mdil+ps/(2.d-6*pref*q(k))
             else
-                dpsi =mdil
-            endif
+                dpsi = mdil
+            end if
 !
-            depsvp = depsvp - f2(k)*coef*ksi(k)*dpsi
+            depsvp = depsvp-f2(k)*coef*ksi(k)*dpsi
 !
         else if (kk .eq. 8) then
             if (vind(22) .eq. un) then
-                depsvp = depsvp + f2(k)
+                depsvp = depsvp+f2(k)
             else
-                depsvp = depsvp - f2(k)
-            endif
+                depsvp = depsvp-f2(k)
+            end if
 !
-        endif
+        end if
 !
-    enddo
+    end do
 !
 ! ====================================================================
 ! --- SOLUTION D ESSAI -----------------------------------------------
 ! ====================================================================
     do i = 1, 18
         dy(i) = zero
-    enddo
+    end do
 !
     do i = 1, ndt
         dy(i) = dsig(i)
-    enddo
+    end do
 !
     if (abs(depsvp) .lt. 1.d-1) then
         dy(ndt+1) = depsvp
     else
         dy(ndt+1) = zero
-    endif
+    end if
 !
     if (nbmeca .eq. 0) goto 271
     do k = 1, nbmeca
         dy(ndt+1+k) = dr(k)
         dy(ndt+1+nbmeca+k) = f2(k)
-    enddo
+    end do
 !
 271 continue
 !
     if (nbmeca .lt. nbmect) then
         do i = 1, nbmect
             if (indi(i) .gt. 8) dy(ndt+1+nbmeca+i) = f2(i)
-        enddo
-    endif
+        end do
+    end if
 !
     goto 998
 !
@@ -889,14 +889,14 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     if (debug) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        write (ifm,'(10(A))')&
-     &    'HUJIID :: LOG(PK/PC) NON DEFINI DANS LA MAILLE',nomail
-        write (ifm,'(A)') '          ON NE FAIT PAS LA PREDICTION'
-    endif
+        write (ifm, '(10(A))')&
+     &    'HUJIID :: LOG(PK/PC) NON DEFINI DANS LA MAILLE', nomail
+        write (ifm, '(A)') '          ON NE FAIT PAS LA PREDICTION'
+    end if
 !
     do i = 1, 18
         dy(i) = zero
-    enddo
+    end do
 !
 998 continue
 !

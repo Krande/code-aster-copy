@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine forpes(intsn, nb1, xr, rho, epais,&
+subroutine forpes(intsn, nb1, xr, rho, epais, &
                   vpesan, rnormc, vecl1)
     implicit none
 !
@@ -28,20 +28,20 @@ subroutine forpes(intsn, nb1, xr, rho, epais,&
     integer :: i, i1, i2, l1
     real(kind=8) :: epais, rnormc
 !-----------------------------------------------------------------------
-    wgt=xr(127-1+intsn)
+    wgt = xr(127-1+intsn)
 !
-    l1=135
-    intsx=8*(intsn-1)
+    l1 = 135
+    intsx = 8*(intsn-1)
 !
-    i1=l1+intsx
+    i1 = l1+intsx
 !
     do i = 1, nb1
-        i2=5*(i-1)
-        vecl1(i2+1)=vecl1(i2+1)+wgt*rho*epais*vpesan(1)*xr(i1+i)*&
-        rnormc
-        vecl1(i2+2)=vecl1(i2+2)+wgt*rho*epais*vpesan(2)*xr(i1+i)*&
-        rnormc
-        vecl1(i2+3)=vecl1(i2+3)+wgt*rho*epais*vpesan(3)*xr(i1+i)*&
-        rnormc
+        i2 = 5*(i-1)
+        vecl1(i2+1) = vecl1(i2+1)+wgt*rho*epais*vpesan(1)*xr(i1+i)* &
+                      rnormc
+        vecl1(i2+2) = vecl1(i2+2)+wgt*rho*epais*vpesan(2)*xr(i1+i)* &
+                      rnormc
+        vecl1(i2+3) = vecl1(i2+3)+wgt*rho*epais*vpesan(3)*xr(i1+i)* &
+                      rnormc
     end do
 end subroutine

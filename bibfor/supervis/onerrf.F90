@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,16 +41,16 @@ subroutine onerrf(set, get, long)
     integer :: long
 !     ----------------------------------------------------------------
     integer :: vexcf, vini
-    save             vexcf, vini
-    data vexcf       /  0 /
-    data vini        / -1 /
+    save vexcf, vini
+    data vexcf/0/
+    data vini/-1/
 !     ----------------------------------------------------------------
 !
 !     SI DANS DEBUT, ON A CHOISI ABORT, ON Y RESTE
     if (vini .eq. 0) then
-        get='ABORT'
+        get = 'ABORT'
         goto 99
-    endif
+    end if
 !
     get = set
 ! --- L'INITIALISATION EST FAITE PAR UN PREMIER APPEL AVEC SET<>' '
@@ -59,44 +59,44 @@ subroutine onerrf(set, get, long)
     if (set(1:1) .eq. ' ') then
 !        ON RETOURNE LA VALEUR COURANTE
         if (vexcf .eq. 0) then
-            get='ABORT'
+            get = 'ABORT'
         else if (vexcf .eq. 1) then
-            get='EXCEPTION'
+            get = 'EXCEPTION'
         else if (vexcf .eq. 2) then
-            get='EXCEPTION+VALID'
+            get = 'EXCEPTION+VALID'
         else
-            write(6,*) 'ERREUR DE PROGRAMMATION : ONERRF NUMERO 1'
+            write (6, *) 'ERREUR DE PROGRAMMATION : ONERRF NUMERO 1'
             call jefini('ERREUR')
-        endif
+        end if
 !
 ! --- ON POSITIONNE LA VALEUR
     else if (set .eq. 'INIT') then
 !        PERMET DE REMETTRE LA VALEUR INITIALE
-        vexcf=vini
+        vexcf = vini
 !
     else if (set .eq. 'EXCEPTION+VALID') then
 !        EXCEPTION EN CAS D'ERREUR ET VALIDATION DU CONCEPT COURANT
-        vexcf=2
+        vexcf = 2
 !
     else if (set .eq. 'EXCEPTION') then
 !        EXCEPTION EN CAS D'ERREUR ET SUPPRESSION DU CONCEPT COURANT
-        vexcf=1
+        vexcf = 1
 !
     else if (set .eq. 'ABORT') then
 !        "CALL ABORT" EN CAS D'ERREUR
-        vexcf=0
+        vexcf = 0
 !
     else
 !        PAS D'ASSERT ICI (RECURSIVITE)
-        write(6,*) 'ERREUR DE PROGRAMMATION : ONERRF NUMERO 2'
+        write (6, *) 'ERREUR DE PROGRAMMATION : ONERRF NUMERO 2'
         call jefini('ERREUR')
-    endif
+    end if
 !
 99  continue
     long = lxlgut(get)
 !
     if (vini .lt. 0 .and. set(1:1) .ne. ' ') then
         vini = vexcf
-    endif
+    end if
 !
 end subroutine

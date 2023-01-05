@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comcq1(fami  , kpg   , ksp   , imate   , compor,&
-                  carcri, instm , instp , eps     , deps  ,&
-                  sigm  , vim   , option, angmas  , sigp  ,&
-                  vip   , dsde  , codret, BEHinteg)
+subroutine comcq1(fami, kpg, ksp, imate, compor, &
+                  carcri, instm, instp, eps, deps, &
+                  sigm, vim, option, angmas, sigp, &
+                  vip, dsde, codret, BEHinteg)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmcomp.h"
 !
@@ -40,8 +40,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dsde   = 0.d0
-    sigp   = 0.d0
+    dsde = 0.d0
+    sigp = 0.d0
     codret = 0
 !     INTEGRATION DE LA LOI DE COMPORTEMENT POUR LES COQUE_1D :
 !     COQUE_AXIS : COMPORTEMENT C_PLAN
@@ -50,10 +50,10 @@ implicit none
 !
     typmod(1) = 'C_PLAN'
     typmod(2) = ' '
-    call nmcomp(BEHinteg,&
-                fami, kpg, ksp, 2, typmod,&
-                imate, compor, carcri, instm, instp,&
-                4, eps, deps, 4, sigm,&
+    call nmcomp(BEHinteg, &
+                fami, kpg, ksp, 2, typmod, &
+                imate, compor, carcri, instm, instp, &
+                4, eps, deps, 4, sigm, &
                 vim, option, angmas, &
                 sigp, vip, 36, dsde, codret)
 !

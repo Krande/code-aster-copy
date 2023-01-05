@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xtform(typmae, typmam, typmac,&
-                  nnm, coore, coorm, coorc,&
+subroutine xtform(typmae, typmam, typmac, &
+                  nnm, coore, coorm, coorc, &
                   ffe, ffm, dffc)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
 !
-character(len=8), intent(in) :: typmae, typmam, typmac
-real(kind=8), intent(in) :: coorc(2), coore(3), coorm(3)
-integer, intent(in) :: nnm
-real(kind=8), intent(out) :: ffe(20), ffm(20), dffc(3, 9)
+    character(len=8), intent(in) :: typmae, typmam, typmac
+    real(kind=8), intent(in) :: coorc(2), coore(3), coorm(3)
+    integer, intent(in) :: nnm
+    real(kind=8), intent(out) :: ffe(20), ffm(20), dffc(3, 9)
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ real(kind=8), intent(out) :: ffe(20), ffm(20), dffc(3, 9)
 !
     if (nnm .ne. 0) then
         call elrfvf(typmam, coorm, ffm)
-    endif
+    end if
 !
 !
 end subroutine

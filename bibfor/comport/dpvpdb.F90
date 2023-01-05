@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
-                  vinp, nvi, seqe, i1e, seqm,&
+subroutine dpvpdb(nbmat, mater, crit, dt, vinm, &
+                  vinp, nvi, seqe, i1e, seqm, &
                   i1m, dp, nbre, retcom)
     implicit none
 #include "asterfort/dpvpdf.h"
@@ -64,17 +64,17 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
     real(kind=8) :: dp0
     real(kind=8) :: fi
 ! =====================================================================
-    parameter ( trois  =  3.0d0 )
-    parameter ( neuf   =  9.0d0 )
-    parameter ( zero   =  0.0d0 )
+    parameter(trois=3.0d0)
+    parameter(neuf=9.0d0)
+    parameter(zero=0.0d0)
 ! =====================================================================
 ! --- AFFECTATION DES VARIABLES ---------------------------------------
 ! =====================================================================
-    mu = mater(4,1)
-    k = mater(5,1)
-    pref = mater(1,2)
-    a = mater(2,2)
-    n = mater(3,2)
+    mu = mater(4, 1)
+    k = mater(5, 1)
+    pref = mater(1, 2)
+    a = mater(2, 2)
+    n = mater(3, 2)
 ! =====================================================================
 !
     const = a*dt/(pref)**n
@@ -96,9 +96,9 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
     drdp = fonder(2)
     dbetdp = fonder(3)
 !
-    fonc1 = seqe + alpham*i1e - rm
+    fonc1 = seqe+alpham*i1e-rm
 !
-    fonc2 = trois*mu + drdp - dalpdp*i1e +neuf*k *alpham*betam
+    fonc2 = trois*mu+drdp-dalpdp*i1e+neuf*k*alpham*betam
 !
     fonc3 = neuf*k*(alpham*dbetdp+betam*dalpdp)
 !
@@ -109,15 +109,15 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
         fonc1 = fonc1
     else
         fonc1 = zero
-    endif
+    end if
 !
     xinf = zero
 !
-    xsup = a * (abs(fonc1)/pref)**n * dt
+    xsup = a*(abs(fonc1)/pref)**n*dt
 !
-    finf = dpvpeq(xinf,n,const,fonc1,fonc2,fonc3,fonc4)
+    finf = dpvpeq(xinf, n, const, fonc1, fonc2, fonc3, fonc4)
 !
-    fsup = dpvpeq(xsup,n,const,fonc1,fonc2,fonc3,fonc4)
+    fsup = dpvpeq(xsup, n, const, fonc1, fonc2, fonc3, fonc4)
 !
 !
     niter = int(crit(1))
@@ -126,10 +126,10 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
     dp0 = xinf
 !
 !
-    f = dpvpeq(dp0,n,const,fonc1,fonc2,fonc3,fonc4)
-    fp = dpvpdf(dp0,n,const,fonc1,fonc2,fonc3,fonc4)
+    f = dpvpeq(dp0, n, const, fonc1, fonc2, fonc3, fonc4)
+    fp = dpvpdf(dp0, n, const, fonc1, fonc2, fonc3, fonc4)
 !
-    seuil = dpvpeq(xinf,n,const,fonc1,fonc2,fonc3,fonc4)
+    seuil = dpvpeq(xinf, n, const, fonc1, fonc2, fonc3, fonc4)
 !
     if (abs(finf/seuil) .le. crit(3)) then
         dp0 = xinf
@@ -139,35 +139,35 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
         dp0 = xsup
         nbre = 1
         goto 50
-    endif
+    end if
 !
     do i = 1, niter
 !
         if ((abs(f/seuil)) .lt. crit(3)) then
             nbre = i
             goto 50
-        endif
+        end if
 !
-        dp0 = dp0 - f/fp
+        dp0 = dp0-f/fp
 !
         if (dp0 .ge. xsup .or. dp0 .le. xinf) dp0 = (xinf+xsup)/2
 !
-        f = dpvpeq(dp0,n,const,fonc1,fonc2,fonc3,fonc4)
-        fp = dpvpdf(dp0,n,const,fonc1,fonc2,fonc3,fonc4)
+        f = dpvpeq(dp0, n, const, fonc1, fonc2, fonc3, fonc4)
+        fp = dpvpdf(dp0, n, const, fonc1, fonc2, fonc3, fonc4)
 !
 !
         if (f .gt. zero) then
             signf = 1
         else
             signf = -1
-        endif
+        end if
 !
-        fi = dpvpeq(xinf,n,const,fonc1,fonc2,fonc3,fonc4)
+        fi = dpvpeq(xinf, n, const, fonc1, fonc2, fonc3, fonc4)
         if (fi .gt. zero) then
             signfi = 1
         else
             signfi = -1
-        endif
+        end if
 !
         if ((signf*signfi) .lt. zero) xsup = dp0
         if ((signf*signfi) .gt. zero) xinf = dp0
@@ -180,14 +180,14 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
             dp0 = xsup
             nbre = 1
             goto 50
-        endif
+        end if
 !
     end do
     retcom = 1
     goto 30
 ! =====================================================================
- 50 continue
-    dp=dp0
- 30 continue
+50  continue
+    dp = dp0
+30  continue
 ! =====================================================================
 end subroutine

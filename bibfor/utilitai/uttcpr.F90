@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,12 +54,12 @@ subroutine uttcpr(nommes, nbv, temps)
 !
 !     -- COMMONS POUR MESURE DE TEMPS :
     integer :: mtpniv, mtpsta, indmax
-    parameter (indmax=5)
+    parameter(indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)
-    common /mestp1/ mtpniv,mtpsta
-    common /mestp2/ snolon
-    common /mestp3/ valmes,valmei
+    common/mestp1/mtpniv, mtpsta
+    common/mestp2/snolon
+    common/mestp3/valmes, valmei
 ! ----------------------------------------------------------------------
 !
 !     1. CALCUL DE INDI ET LJEV :
@@ -67,17 +67,17 @@ subroutine uttcpr(nommes, nbv, temps)
 !     -- POUR CERTAINES MESURES, ON NE PEUT PAS FAIRE DE JEVEUX :
 !        ON GARDE ALORS LES INFOS DANS LES COMMON MESTPX
     if (nommes .eq. 'CPU.MEMD.1') then
-        indi=1
-    else if (nommes.eq.'CPU.MEMD.2') then
-        indi=2
+        indi = 1
+    else if (nommes .eq. 'CPU.MEMD.2') then
+        indi = 2
     else
-        ljev=.true.
+        ljev = .true.
         call jenonu(jexnom('&&UTTCPU.NOMMES', nommes), indi)
         if (indi .eq. 0) goto 999
         goto 9998
-    endif
-    ASSERT(indi.le.indmax)
-    ljev=.false.
+    end if
+    ASSERT(indi .le. indmax)
+    ljev = .false.
 !
 !
 !     2. RECUPERATION DES TEMPS :
@@ -86,13 +86,13 @@ subroutine uttcpr(nommes, nbv, temps)
     if (ljev) then
         call jeveuo('&&UTTCPU.VALMES', 'L', jvalms)
         do k = 1, nbv
-            temps(k)= zr(jvalms-1+7*(indi-1)+k)
+            temps(k) = zr(jvalms-1+7*(indi-1)+k)
         end do
     else
         do k = 1, nbv
-            temps(k)= valmes(7*(indi-1)+k)
+            temps(k) = valmes(7*(indi-1)+k)
         end do
-    endif
+    end if
 !
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 function lteatt(noattr, vattr, typel)
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -54,10 +54,10 @@ implicit none
         call teattr('C', noattr, vattr2, iret, typel=typel)
     else
         call teattr('C', noattr, vattr2, iret)
-    endif
-    if ((iret.eq.0) .and. (vattr.eq.vattr2)) then
-        lteatt=.true.
+    end if
+    if ((iret .eq. 0) .and. (vattr .eq. vattr2)) then
+        lteatt = .true.
     else
-        lteatt=.false.
-    endif
+        lteatt = .false.
+    end if
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1)
 #include "asterf_petsc.h"
-use aster_petsc_module
+    use aster_petsc_module
     implicit none
 ! aslint: disable=
 ! person_in_charge: natacha.bereux at edf.fr
@@ -61,16 +61,16 @@ use aster_petsc_module
     character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------
     call jemarq()
-    matas1=mat1z
-    matas2=mat2z
-    solve1=solv1z
+    matas1 = mat1z
+    matas2 = mat2z
+    solve1 = solv1z
 !
     call asmpi_info(rank=rang, size=nbproc)
 !    if (nbproc .ne. 1) call utmess('F', 'ELIMLAGR_2')
     call jeveuo(matas1//'.REFA', 'L', vk24=refa)
-    if (refa(11)(1:11) .ne. 'MPI_COMPLET') then
-            call utmess('F', 'ELIMLAGR_2')
-    endif
+    if (refa(11) (1:11) .ne. 'MPI_COMPLET') then
+        call utmess('F', 'ELIMLAGR_2')
+    end if
 !
 !     -- quelques garde fous :
     call jelira(matas1//'.VALM', 'TYPE', ibid, ktyp)
@@ -86,17 +86,17 @@ use aster_petsc_module
 !       a deja ete reduite ...
         ASSERT(.false.)
         call detrsd('MATR_ASSE', refa(19))
-    endif
-    refa(19)=matas2
+    end if
+    refa(19) = matas2
 
 !
 !     1. CALCUL DANS PETSC DES MATRICES NECESSAIRES :
 !        Kproj, Tfinal, ...
 !     --------------------------------------------------
-    call apetsc('ELIM_LAGR', solve1, matas1, rbid, ' ',&
-                    0, 0, iret)
+    call apetsc('ELIM_LAGR', solve1, matas1, rbid, ' ', &
+                0, 0, iret)
 
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
 !
 !     2. CALCUL DANS L'ESPACE JEVEUX DE LA MATRICE Kproj
@@ -109,7 +109,7 @@ use aster_petsc_module
 #else
     character(len=1) :: kdummy
     call utmess('F', 'ELIMLAGR_1')
-    kdummy = mat1z(1:1) // mat2z(1:1) // solv1z(1:1) // bas1(1:1)
+    kdummy = mat1z(1:1)//mat2z(1:1)//solv1z(1:1)//bas1(1:1)
 #endif
 !
 end subroutine

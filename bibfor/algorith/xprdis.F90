@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv,  nbptfr,  numfon,  nbptfd, i, j, fon
+    integer :: ifm, niv, nbptfr, numfon, nbptfd, i, j, fon
     real(kind=8) :: eps, xm, ym, zm, xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij
     real(kind=8) :: xim, yim, zim, s, norm2, xn, yn, zn, d, dmin
     real(kind=8) :: dismin, dismax, difmin, difmax
@@ -96,17 +96,17 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !     FRONT FISREF
 !     ***************************************************************
 !
-    dismin=r8maem()
-    dismax=0.d0
+    dismin = r8maem()
+    dismax = 0.d0
 !
 !     BOUCLE SUR LES NOEUDS M DU MAILLAGE POUR CALCULER PROJ
     eps = 1.d-12
     do i = 1, nbptfd
 !
 !        COORDINATES OF THE POINT M OF THE FRONT FISDIS
-        xm=fond(4*(i-1)+1)
-        ym=fond(4*(i-1)+2)
-        zm=fond(4*(i-1)+3)
+        xm = fond(4*(i-1)+1)
+        ym = fond(4*(i-1)+2)
+        zm = fond(4*(i-1)+3)
 !
 !        INITIALISATION
         dmin = r8maem()
@@ -118,7 +118,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !           MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE FORMING THE
 !           FRONT)
             do fon = 1, numfon
-                if ((j.eq.fondmult(2*fon)) .and. (j.lt.nbptfr)) goto 210
+                if ((j .eq. fondmult(2*fon)) .and. (j .lt. nbptfr)) goto 210
             end do
 !
 !           COORD PT I, ET J
@@ -139,9 +139,9 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
             zim = zm-zi1
 !
 !           PARAM S (PRODUIT SCALAIRE...)
-            s = xij*xim + yij*yim + zij*zim
-            norm2 = xij*xij + yij*yij + zij*zij
-            ASSERT(norm2.gt.r8prem())
+            s = xij*xim+yij*yim+zij*zim
+            norm2 = xij*xij+yij*yij+zij*zij
+            ASSERT(norm2 .gt. r8prem())
             s = s/norm2
 !           SI N=P(M) SORT DU SEGMENT
             if ((s-1) .ge. eps) s = 1.d0
@@ -155,55 +155,55 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !           DISTANCE MN
 !           SAVE CPU TIME: THE SQUARE OF THE DISTANCE IS EVALUATED!
             d = (xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm)
-            if (d .lt. dmin) dmin=d
+            if (d .lt. dmin) dmin = d
 !
 210         continue
         end do
 !
-        if (dmin .gt. dismax) dismax=dmin
-        if (dmin .lt. dismin) dismin=dmin
+        if (dmin .gt. dismax) dismax = dmin
+        if (dmin .lt. dismin) dismin = dmin
 !
     end do
 !
-    dismax=sqrt(dismax)
-    dismin=sqrt(dismin)
+    dismax = sqrt(dismax)
+    dismin = sqrt(dismin)
 !
 !     CHECK IF THE TOLERANCE ON THE CALCULATED DISTANCE IS RESPECTED
-    ASSERT(lcmin.gt.r8prem())
+    ASSERT(lcmin .gt. r8prem())
     difmin = (dismin-dist)/lcmin*100
     difmax = (dismax-dist)/lcmin*100
 !
 !     WRITE SOME INFORMATIONS
-    write(ifm,*)
-    write(ifm,*)'------------------------------------------------'
-    write(ifm,*)'TEST SUR LA FORME DU FOND DE FISSURE PAR RAPPORT'
-    write(ifm,*)'AU FOND INITIAL. LE NOUVEAU FOND DOIT ETRE'
-    write(ifm,*)'HOMOTHETIQUE AU FOND INITIAL.'
-    write(ifm,*)
-    write(ifm,*)'LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE:',lcmin
-    write(ifm,901) tol
-    write(ifm,*)
-    write(ifm,*)'DISTANCE ATTENDUE ENTRE LES DEUX FONDS: ',dist
-    write(ifm,*)'DISTANCE MINIMALE CALCULEE = ',dismin
-    write(ifm,900) difmin
-    write(ifm,*)'DISTANCE MAXIMALE CALCULEE = ',dismax
-    write(ifm,900) difmax
-    write(ifm,*)
-    write(ifm,*)'L''ERREUR EST CALCULE PAR RAPPORT A LA LONGUEUR DE'
-    write(ifm,*)'LA PLUS PETITE ARETE DU MAILLAGE.'
-    write(ifm,*)
-    if ((abs(difmin).le.tol) .and. (abs(difmax).le.tol)) then
+    write (ifm, *)
+    write (ifm, *) '------------------------------------------------'
+    write (ifm, *) 'TEST SUR LA FORME DU FOND DE FISSURE PAR RAPPORT'
+    write (ifm, *) 'AU FOND INITIAL. LE NOUVEAU FOND DOIT ETRE'
+    write (ifm, *) 'HOMOTHETIQUE AU FOND INITIAL.'
+    write (ifm, *)
+    write (ifm, *) 'LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE:', lcmin
+    write (ifm, 901) tol
+    write (ifm, *)
+    write (ifm, *) 'DISTANCE ATTENDUE ENTRE LES DEUX FONDS: ', dist
+    write (ifm, *) 'DISTANCE MINIMALE CALCULEE = ', dismin
+    write (ifm, 900) difmin
+    write (ifm, *) 'DISTANCE MAXIMALE CALCULEE = ', dismax
+    write (ifm, 900) difmax
+    write (ifm, *)
+    write (ifm, *) 'L''ERREUR EST CALCULE PAR RAPPORT A LA LONGUEUR DE'
+    write (ifm, *) 'LA PLUS PETITE ARETE DU MAILLAGE.'
+    write (ifm, *)
+    if ((abs(difmin) .le. tol) .and. (abs(difmax) .le. tol)) then
 !        OK. TEST PASSED.
-        write(ifm,*)'RESULTAT DU TEST: OK.'
-        write(ifm,*)'------------------------------------------------'
-        write(ifm,*)
+        write (ifm, *) 'RESULTAT DU TEST: OK.'
+        write (ifm, *) '------------------------------------------------'
+        write (ifm, *)
     else
 !        TEST FAILED.
         call utmess('A', 'XFEM2_91')
-    endif
+    end if
 !
-    900 format('                     ERREUR = ',f6.1,'%')
-    901 format(' TOLERANCE = ',f6.1,'%')
+900 format('                     ERREUR = ', f6.1, '%')
+901 format(' TOLERANCE = ', f6.1, '%')
 !
 !-----------------------------------------------------------------------
 !     FIN

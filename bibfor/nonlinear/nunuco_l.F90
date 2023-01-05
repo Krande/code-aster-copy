@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nunuco_l(mesh, ds_contact, nume_dof, sdnume)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -69,28 +69,28 @@ implicit none
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh//'.CONOPA','L', vi = v_mesh_conopa)
+    call jeveuo(mesh//'.CONOPA', 'L', vi=v_mesh_conopa)
 !
 ! - Access to unknowns
 !
     sdnume_nuco = sdnume(1:19)//'.NUCO'
-    call jeveuo(sdnume_nuco, 'L', vi = v_sdnume_nuco)
+    call jeveuo(sdnume_nuco, 'L', vi=v_sdnume_nuco)
 !
 ! - Create object
 !
     sdcont_ddlc = ds_contact%sdcont_solv(1:14)//'.DDLC'
-    call wkvect(sdcont_ddlc, 'V V I', nt_patch, vi = v_sdcont_ddlc)
+    call wkvect(sdcont_ddlc, 'V V I', nt_patch, vi=v_sdcont_ddlc)
 !
 ! - Set equation number for each patch
 !
-    do i_equa = 1,nb_equa
+    do i_equa = 1, nb_equa
         if (v_sdnume_nuco(i_equa) .eq. 1) then
-            call get_equa_info(nume_dof, i_equa, type_equa, nume_nodez = nume_node)
+            call get_equa_info(nume_dof, i_equa, type_equa, nume_nodez=nume_node)
             ASSERT(type_equa .eq. 'A')
             i_patch = v_mesh_conopa(nume_node)
-            ASSERT(i_patch.gt.0 .and. i_patch.le.nt_patch)
+            ASSERT(i_patch .gt. 0 .and. i_patch .le. nt_patch)
             v_sdcont_ddlc(i_patch) = i_equa
-        endif
+        end if
     end do
 !
 end subroutine

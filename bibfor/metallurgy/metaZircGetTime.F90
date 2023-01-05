@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,27 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaZircGetTime(zbetam   ,&
-                           t1c      , t2c  ,&
-                           t1r      , t2r  ,&
-                           tm       , tp   ,&
-                           tdeq     , tfeq ,&
-                           time_curr, time_incr, time_tran_p,&
+subroutine metaZircGetTime(zbetam, &
+                           t1c, t2c, &
+                           t1r, t2r, &
+                           tm, tp, &
+                           tdeq, tfeq, &
+                           time_curr, time_incr, time_tran_p, &
                            time_tran, l_integ)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-real(kind=8), intent(in) :: zbetam
-real(kind=8), intent(in) :: t1c, t2c
-real(kind=8), intent(in) :: t1r, t2r
-real(kind=8), intent(in) :: tm, tp, tdeq, tfeq
-real(kind=8), intent(in) :: time_curr, time_incr, time_tran_p
-real(kind=8), intent(out) :: time_tran
-aster_logical, intent(out) :: l_integ
+    real(kind=8), intent(in) :: zbetam
+    real(kind=8), intent(in) :: t1c, t2c
+    real(kind=8), intent(in) :: t1r, t2r
+    real(kind=8), intent(in) :: tm, tp, tdeq, tfeq
+    real(kind=8), intent(in) :: time_curr, time_incr, time_tran_p
+    real(kind=8), intent(out) :: time_tran
+    aster_logical, intent(out) :: l_integ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +67,7 @@ aster_logical, intent(out) :: l_integ
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dtemp   = tp - tm
+    dtemp = tp-tm
     l_integ = ASTER_TRUE
 !
     if (zbetam .eq. 0.d0) then
@@ -76,10 +76,10 @@ aster_logical, intent(out) :: l_integ
                 time_tran = time_curr
             else
                 time_tran = time_curr+(time_incr/dtemp)*(tdeq-tp)
-            endif
+            end if
         else
             time_tran = time_tran_p
-        endif
+        end if
         if (tp .gt. tdeq) then
             vitesc = (tp-tdeq)/(time_curr-time_tran)
             if (vitesc .lt. 0.d0) then
@@ -89,24 +89,24 @@ aster_logical, intent(out) :: l_integ
                     tc = tdeq
                 else
                     tc = t1c*(vitesc**t2c)
-                endif
+                end if
                 if (tp .le. tc) then
                     l_integ = ASTER_FALSE
-                endif
-            endif
+                end if
+            end if
         else
             l_integ = ASTER_FALSE
-        endif
+        end if
     elseif (zbetam .eq. 1.d0) then
         if ((tfeq .ge. tp) .and. (tfeq .le. tm)) then
             if (tp .eq. tm) then
                 time_tran = time_curr
             else
                 time_tran = time_curr+(time_incr/dtemp)*(tfeq-tp)
-            endif
+            end if
         else
             time_tran = time_tran_p
-        endif
+        end if
         if (tp .lt. tfeq) then
             vitesr = (tp-tfeq)/(time_curr-time_tran)
             if (vitesr .gt. 0.d0) then
@@ -118,17 +118,17 @@ aster_logical, intent(out) :: l_integ
                     tr = t1r+t2r*log(abs(vitesr))
                     if (tr .gt. tfeq) then
                         tr = tfeq
-                    endif
-                endif
+                    end if
+                end if
                 if (tp .ge. tr) then
                     l_integ = ASTER_FALSE
-                endif
-            endif
+                end if
+            end if
         else
             l_integ = ASTER_FALSE
-        endif
+        end if
     else
         time_tran = time_tran_p
-    endif
+    end if
 !
 end subroutine

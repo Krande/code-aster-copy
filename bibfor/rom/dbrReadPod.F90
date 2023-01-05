@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrReadPod(operation, paraPod)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/romTableParaRead.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: operation
-type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
+    character(len=16), intent(in) :: operation
+    type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,68 +65,68 @@ type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_1')
-    endif
+    end if
 !
 ! - Initializations
 !
-    toleSVD        = 0.d0
-    toleIncr       = 0.d0
-    nbModeMaxi     = 0
-    fieldName      = ' '
-    lineicAxis     = ' '
-    lineicSect     = ' '
-    baseType       = ' '
-    resultDomName  = ' '
-    nbCmpToFilter  = 0
+    toleSVD = 0.d0
+    toleIncr = 0.d0
+    nbModeMaxi = 0
+    fieldName = ' '
+    lineicAxis = ' '
+    lineicSect = ' '
+    baseType = ' '
+    resultDomName = ' '
+    nbCmpToFilter = 0
     nbVariToFilter = 0
 !
 ! - Get parameters - Result
 !
-    call getvid(' ', 'RESULTAT', scal = resultDomName)
+    call getvid(' ', 'RESULTAT', scal=resultDomName)
 !
 ! - Get parameters - Field
 !
-    call getvtx(' ', 'NOM_CHAM', scal = fieldName, nbret = nocc)
+    call getvtx(' ', 'NOM_CHAM', scal=fieldName, nbret=nocc)
     ASSERT(nocc .eq. 1)
-    call getvtx(' ', 'NOM_CMP', iocc = 1, nbval=0, nbret = nbCmpToFilter)
+    call getvtx(' ', 'NOM_CMP', iocc=1, nbval=0, nbret=nbCmpToFilter)
     if (nbCmpToFilter .ne. 0) then
         nbCmpToFilter = abs(nbCmpToFilter)
-        AS_ALLOCATE(vk8 = paraPod%cmpToFilter, size = nbCmpToFilter)
-        call getvtx(' ', 'NOM_CMP', iocc = 1, nbval = nbCmpToFilter, vect = paraPod%cmpToFilter)
-    endif
-    call getvtx(' ', 'NOM_VARI', iocc = 1, nbval=0, nbret = nbVariToFilter)
+        AS_ALLOCATE(vk8=paraPod%cmpToFilter, size=nbCmpToFilter)
+        call getvtx(' ', 'NOM_CMP', iocc=1, nbval=nbCmpToFilter, vect=paraPod%cmpToFilter)
+    end if
+    call getvtx(' ', 'NOM_VARI', iocc=1, nbval=0, nbret=nbVariToFilter)
     if (nbVariToFilter .ne. 0) then
         ASSERT(nbCmpToFilter .eq. 0)
         nbVariToFilter = abs(nbVariToFilter)
-        AS_ALLOCATE(vk16 = paraPod%variToFilter, size = nbVariToFilter)
-        call getvtx(' ', 'NOM_VARI', iocc = 1, nbval = nbVariToFilter, vect = paraPod%variToFilter)
+        AS_ALLOCATE(vk16=paraPod%variToFilter, size=nbVariToFilter)
+        call getvtx(' ', 'NOM_VARI', iocc=1, nbval=nbVariToFilter, vect=paraPod%variToFilter)
         nbCmpToFilter = nbVariToFilter
-        AS_ALLOCATE(vk8 = paraPod%cmpToFilter, size = nbCmpToFilter)
-    endif
+        AS_ALLOCATE(vk8=paraPod%cmpToFilter, size=nbCmpToFilter)
+    end if
 !
 ! - Maximum number of modes
 !
-    call getvis(' ', 'NB_MODE' , scal = nbModeMaxi, nbret = nocc)
+    call getvis(' ', 'NB_MODE', scal=nbModeMaxi, nbret=nocc)
     if (nocc .eq. 0) then
         nbModeMaxi = 0
-    endif
+    end if
 !
 ! - Get parameters - Base type to numbering
 !
-    call getvtx(' ', 'TYPE_BASE', scal = baseType)
+    call getvtx(' ', 'TYPE_BASE', scal=baseType)
     if (baseType .eq. 'LINEIQUE') then
-        call getvtx(' ', 'AXE', scal = lineicAxis, nbret = nocc)
+        call getvtx(' ', 'AXE', scal=lineicAxis, nbret=nocc)
         ASSERT(nocc .eq. 1)
-        call getvtx(' ', 'SECTION', scal = lineicSect, nbret = nocc)
+        call getvtx(' ', 'SECTION', scal=lineicSect, nbret=nocc)
         ASSERT(nocc .eq. 1)
-    endif
+    end if
 !
 ! - Get parameters - For SVD selection
 !
-    call getvr8(' ', 'TOLE_SVD', scal = toleSVD)
+    call getvr8(' ', 'TOLE_SVD', scal=toleSVD)
     if (operation .eq. 'POD_INCR') then
-        call getvr8(' ', 'TOLE', scal = toleIncr)
-    endif
+        call getvr8(' ', 'TOLE', scal=toleIncr)
+    end if
 !
 ! - Read parameters for snapshot selection
 !
@@ -136,7 +136,7 @@ type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
 !
     if (operation .eq. 'POD_INCR') then
         call romTableParaRead(paraPod%tablReduCoor)
-    endif
+    end if
 !
 ! - Get parameters for result datastructure
 !
@@ -144,16 +144,16 @@ type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
 !
 ! - Save parameters in datastructure
 !
-    paraPod%nbCmpToFilter  = nbCmpToFilter
+    paraPod%nbCmpToFilter = nbCmpToFilter
     paraPod%nbVariToFilter = nbVariToFilter
-    paraPod%fieldName      = fieldName
-    paraPod%baseType       = baseType
-    paraPod%lineicAxis     = lineicAxis
-    paraPod%lineicSect     = lineicSect
-    paraPod%toleSVD        = toleSVD
-    paraPod%toleIncr       = toleIncr
-    paraPod%nbModeMaxi     = nbModeMaxi
-    paraPod%resultDomName  = resultDomName
-    paraPod%resultDom      = resultDom
+    paraPod%fieldName = fieldName
+    paraPod%baseType = baseType
+    paraPod%lineicAxis = lineicAxis
+    paraPod%lineicSect = lineicSect
+    paraPod%toleSVD = toleSVD
+    paraPod%toleIncr = toleIncr
+    paraPod%nbModeMaxi = nbModeMaxi
+    paraPod%resultDomName = resultDomName
+    paraPod%resultDom = resultDom
 !
 end subroutine

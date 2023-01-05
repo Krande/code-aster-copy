@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
+subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
                   search, alpha)
 !
 !
@@ -108,7 +108,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
     ddelt = resoco(1:14)//'.DDEL'
     call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
     call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
+    call jeveuo(ddelt(1:19)//'.VALE', 'E', vr=vddelt)
 !
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 !
@@ -121,17 +121,17 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
     if (search .eq. 'ADMISSIBLE') then
         do iliai = 1, nbliai
             if (zr(jdirec-1+iliai) .lt. 0.d0) then
-                alpha = min(alpha,-zr(jmu+iliai-1)/zr(jdirec-1+iliai))
-            endif
+                alpha = min(alpha, -zr(jmu+iliai-1)/zr(jdirec-1+iliai))
+            end if
         end do
         if (niv .eq. 2) then
-            write (ifm,9050) alpha
-        endif
-    endif
+            write (ifm, 9050) alpha
+        end if
+    end if
 !
 ! --- MISE A JOUR DE MU
 !
-    call daxpy(nbliai, alpha, zr(jdirec), 1, zr(jmu),&
+    call daxpy(nbliai, alpha, zr(jdirec), 1, zr(jmu), &
                1)
 !
 ! --- DESACTIVATION DE MU POUR UNE SOLUTION NON-ADMISSIBLE
@@ -140,9 +140,9 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
         do iliai = 1, nbliai
             if (zr(jmu-1+iliai) .lt. 0.d0) then
                 zr(jmu-1+iliai) = 0.d0
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! --- RECALCUL D'UN SOLUTION
 !
@@ -155,25 +155,25 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
 !
         do iliai = 1, nbliai
             jdecal = zi(japptr+iliai-1)
-            nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-            call calatm(neq, nbddl, zr(jmu-1+iliai), zr(japcoe+jdecal), zi(japddl+jdecal),&
+            nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
+            call calatm(neq, nbddl, zr(jmu-1+iliai), zr(japcoe+jdecal), zi(japddl+jdecal), &
                         zr(jsecmb))
         end do
 !
 ! ----- RESOLUTION [K].{DDELT} = [A]T.{MU} -> {DDELT}
 !
-        call resoud(matass, k19bla, solveu, cncin0, 0,&
-                    secmbr, ddelt, 'V', [0.d0], [c16bid],&
+        call resoud(matass, k19bla, solveu, cncin0, 0, &
+                    secmbr, ddelt, 'V', [0.d0], [c16bid], &
                     k19bla, .true._1, 0, iret)
 !
 ! ----- RECOPIE DE LA SPOLUTION SANS CONTACT
 !
         call dcopy(neq, ddep0, 1, ddepc, 1)
         alpha = 1.d0
-    endif
+    end if
 !
-    9050 format (' <CONTACT><CALC> PAS D''AVANCEMENT APRES PROJECTION : ',&
-     &       1pe12.5)
+9050 format(' <CONTACT><CALC> PAS D''AVANCEMENT APRES PROJECTION : ',&
+    &       1pe12.5)
 !
     call jedema()
 !

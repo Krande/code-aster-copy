@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0596(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -58,22 +58,22 @@ implicit none
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
-    ASSERT(ntrou.ge.2)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    ASSERT(ntrou .ge. 2)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
 !
 ! - TYPE DE MODELISATION
-    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS  '
-    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
         call utmess('F', 'ELEMENTS_34', sk=nomte)
-    endif
+    end if
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -84,7 +84,7 @@ implicit none
 !
 ! - CALCUL DES FORCES INTERIEURES
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
-        if (lteatt('INCO','C2 ')) then
+        if (lteatt('INCO', 'C2 ')) then
 !
 ! - MINI ELEMENT ?
             call teattr('S', 'ALIAS8', alias8, ibid)
@@ -92,33 +92,33 @@ implicit none
                 mini = .true.
             else
                 mini = .false.
-            endif
+            end if
 ! --------- Get index of dof
-            call niinit(typmod, ndim, nno1, 0,&
-                        nno2, 0, vu, vg, vp,&
+            call niinit(typmod, ndim, nno1, 0, &
+                        nno2, 0, vu, vg, vp, &
                         vpi)
 !
-            call nufnpd(ndim, nno1, nno2, npg, iw,&
-                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
-                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
+            call nufnpd(ndim, nno1, nno2, npg, iw, &
+                        zr(ivf1), zr(ivf2), idf1, vu, vp, &
+                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm), &
                         zr(iddlm), mini, zr(ivectu))
-        else if (lteatt('INCO','C2O')) then
+        else if (lteatt('INCO', 'C2O')) then
 ! --------- Get index of dof
-            call niinit(typmod, ndim, nno1, 0,&
-                        nno2, nno2, vu, vg, vp,&
+            call niinit(typmod, ndim, nno1, 0, &
+                        nno2, nno2, vu, vg, vp, &
                         vpi)
 !
-            call nofnpd(ndim, nno1, nno2, nno2, npg,&
-                        iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
-                        vu, vp, vpi, typmod, zi(imate),&
-                        zk16(icompo), zr(igeom), nomte, zr(icontm), zr(iddlm),&
+            call nofnpd(ndim, nno1, nno2, nno2, npg, &
+                        iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1, &
+                        vu, vp, vpi, typmod, zi(imate), &
+                        zk16(icompo), zr(igeom), nomte, zr(icontm), zr(iddlm), &
                         zr(ivectu))
         else
             valk = zk16(icompo+2)
             call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
-    else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
-        if (lteatt('INCO','C2 ')) then
+        end if
+    else if (zk16(icompo+2) (1:8) .eq. 'GDEF_LOG') then
+        if (lteatt('INCO', 'C2 ')) then
 !
 ! - MINI ELEMENT ?
             call teattr('S', 'ALIAS8', alias8, ibid)
@@ -126,22 +126,22 @@ implicit none
 ! - PAS ENCORE INTRODUIT
                 valk = zk16(icompo+2)
                 call utmess('F', 'MODELISA10_18', sk=valk)
-            endif
+            end if
 ! --------- Get index of dof
-            call niinit(typmod, ndim, nno1, 0,&
-                        nno2, 0, vu, vg, vp,&
+            call niinit(typmod, ndim, nno1, 0, &
+                        nno2, 0, vu, vg, vp, &
                         vpi)
 !
-            call nufnlg(ndim, nno1, nno2, npg, iw,&
-                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
-                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
+            call nufnlg(ndim, nno1, nno2, npg, iw, &
+                        zr(ivf1), zr(ivf2), idf1, vu, vp, &
+                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm), &
                         zr(iddlm), zr(ivectu))
         else
             valk = zk16(icompo+2)
             call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
+        end if
     else
         call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,36 +57,36 @@ subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
 !
 ! --- NIVEAU DE REDECOUPAGE ACTUEL
 !
-    lenivo = dinins(sddisc,nume_inst)
+    lenivo = dinins(sddisc, nume_inst)
 !
 ! --- NIVEAU MAXI DE SUBDIVISION
 !
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_NIVEAU', index_ = i_event_acti, &
-                vali_ = nbnivo)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_NIVEAU', index_=i_event_acti, &
+                vali_=nbnivo)
 !
 ! --- PAS MINIMUM
 !
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_PAS_MINI', index_ = i_event_acti, &
-                valr_ = pasmin)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_PAS_MINI', index_=i_event_acti, &
+                valr_=pasmin)
 !
 ! --- TAILLE DE PAS MINIMALE ATTEINTE PENDANT LA SUBDIVISION
 !
-    if ((dtmin .lt. pasmin) .or. (dtmin.le.r8prem())) then
+    if ((dtmin .lt. pasmin) .or. (dtmin .le. r8prem())) then
         retdec = 0
         call utmess('I', 'SUBDIVISE_16', sr=pasmin)
         goto 999
     else
         retdec = 1
-    endif
+    end if
 !
 ! --- NIVEAU MAXIMUM DE REDECOUPAGE ATTEINT
 !
-    if (( nbnivo .gt. 1 ) .and. (lenivo.eq.nbnivo)) then
+    if ((nbnivo .gt. 1) .and. (lenivo .eq. nbnivo)) then
         call utmess('I', 'SUBDIVISE_17', si=lenivo)
         retdec = 0
     else
         retdec = 1
-    endif
+    end if
 !
 999 continue
 

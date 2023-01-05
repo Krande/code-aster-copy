@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptka02(id, sk, e, a1, a2,&
-                  xl, xiy, xiy2, xiz, xiz2,&
-                  xjx, xjx2, g, alfay1, alfay2,&
+subroutine ptka02(id, sk, e, a1, a2, &
+                  xl, xiy, xiy2, xiz, xiz2, &
+                  xjx, xjx2, g, alfay1, alfay2, &
                   alfaz1, alfaz2, ey, ez, ist)
     implicit none
 #include "asterc/r8gaem.h"
@@ -104,8 +104,8 @@ subroutine ptka02(id, sk, e, a1, a2,&
     real(kind=8) :: exl, xl2, xl3, phiy, phiz, asy, asz
     real(kind=8) :: aa, aas1, aas2, as1, as2, tk, vt, q, xkk, zero
 !-----------------------------------------------------------------------
-    parameter  (zero = 0.d0)
-    data        ip/ 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66 /
+    parameter(zero=0.d0)
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/
 ! ---------------------------------------------------------------------
     do i = 1, 78
         sk(i) = zero
@@ -115,12 +115,12 @@ subroutine ptka02(id, sk, e, a1, a2,&
     if (abs(g) .lt. 1.d0/r8gaem()) then
         if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
-    endif
+    end if
 !
 !     1/ TRACTION-COMPRESSION
     call fun1(aa, a1, a2, id)
 !
-    sk(ip(1)+1) = e*aa/ xl
+    sk(ip(1)+1) = e*aa/xl
     sk(ip(7)+1) = -sk(ip(1)+1)
     sk(ip(7)+7) = sk(ip(1)+1)
 !
@@ -132,44 +132,44 @@ subroutine ptka02(id, sk, e, a1, a2,&
     xl3 = xl*xl2
     exl = e/xl
     if (alfaz1 .ne. zero) then
-        as1=a1/alfaz1
+        as1 = a1/alfaz1
     else
-        as1=a1
-    endif
+        as1 = a1
+    end if
     if (alfaz2 .ne. zero) then
-        as2=a2/alfaz2
+        as2 = a2/alfaz2
     else
-        as2=a2
-    endif
+        as2 = a2
+    end if
     if (alfaz1 .eq. zero .and. alfaz2 .eq. zero) then
         phiz = zero
     else
         call fun1(asy, as1, as2, id)
-        phiz=e/(g*asy*xl2)
-    endif
+        phiz = e/(g*asy*xl2)
+    end if
 !
     if (alfay1 .ne. zero) then
-        aas1=a1/alfay1
+        aas1 = a1/alfay1
     else
-        aas1=a1
-    endif
+        aas1 = a1
+    end if
     if (alfay2 .ne. zero) then
-        aas2=a2/alfay2
+        aas2 = a2/alfay2
     else
-        aas2=a2
-    endif
+        aas2 = a2
+    end if
     if (alfay1 .eq. zero .and. alfay2 .eq. zero) then
         phiy = zero
     else
         call fun1(asz, aas1, aas2, id)
-        phiy=e/(g*asz*xl2)
-    endif
+        phiy = e/(g*asz*xl2)
+    end if
 !
 !     2.2) REMPLISSAGE DE LA MATRICE
 !
 !     2.2.1/  FLEXION DANS LE PLAN X0Y
-    k=id+2
-    call fun2(xiz, xiz2, phiy, xkk, q,&
+    k = id+2
+    call fun2(xiz, xiz2, phiy, xkk, q, &
               vt, k)
     sk(ip(2)+2) = e*xkk/xl3
     sk(ip(6)+2) = xl*q*sk(ip(2)+2)
@@ -179,7 +179,7 @@ subroutine ptka02(id, sk, e, a1, a2,&
     sk(ip(8)+6) = -sk(ip(6)+2)
     sk(ip(12)+6) = exl*(xkk*q*(1.d0-q)-vt)
 !
-    call fun2(xiz2, xiz, phiy, xkk, q,&
+    call fun2(xiz2, xiz, phiy, xkk, q, &
               vt, k)
     sk(ip(8)+8) = sk(ip(2)+2)
     sk(ip(12)+8) = -sk(ip(12)+2)
@@ -192,9 +192,9 @@ subroutine ptka02(id, sk, e, a1, a2,&
         k = 4
     else
         k = 1
-    endif
+    end if
 !
-    call fun2(xiy, xiy2, phiz, xkk, q,&
+    call fun2(xiy, xiy2, phiz, xkk, q, &
               vt, k)
     sk(ip(3)+3) = e*xkk/xl3
     sk(ip(5)+3) = -xl*q*sk(ip(3)+3)
@@ -204,7 +204,7 @@ subroutine ptka02(id, sk, e, a1, a2,&
     sk(ip(9)+5) = -sk(ip(5)+3)
     sk(ip(11)+5) = exl*(xkk*q*(1.d0-q)-vt)
 !
-    call fun2(xiy2, xiy, phiz, xkk, q,&
+    call fun2(xiy2, xiy, phiz, xkk, q, &
               vt, k)
     sk(ip(9)+9) = sk(ip(3)+3)
     sk(ip(11)+9) = -sk(ip(11)+3)
@@ -218,7 +218,7 @@ subroutine ptka02(id, sk, e, a1, a2,&
     if (ez .eq. zero .and. ey .eq. zero) goto 999
 !
 !     2.2.4/ AVEC EXCENTREMENT, TORSION DANS CE CAS
-    sk(ip( 4)+ 4) = sk(ip(4)+4) + ez*ez*sk(ip(2)+2) + ey*ey*sk(ip(3)+3)
+    sk(ip(4)+4) = sk(ip(4)+4)+ez*ez*sk(ip(2)+2)+ey*ey*sk(ip(3)+3)
     sk(ip(10)+4) = -sk(ip(4)+4)
     sk(ip(10)+10) = sk(ip(4)+4)
 !

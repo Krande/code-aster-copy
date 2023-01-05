@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0227(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8depi.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/getDensity.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,22 +43,22 @@ character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: dfdx(3), r, rm, poids, cour, nx, ny,  yg
+    real(kind=8) :: dfdx(3), r, rm, poids, cour, nx, ny, yg
     real(kind=8) :: rho, x(3), y(3), xxi, xyi, yyi
     real(kind=8) :: matine(6), volume, depi
-    integer :: nno,ipoids, ivf, idfdk, igeom, imate, icaco
+    integer :: nno, ipoids, ivf, idfdk, igeom, imate, icaco
     integer :: kp, npg, i, j, k, lcastr
 !
 ! --------------------------------------------------------------------------------------------------
 !
     depi = r8depi()
 !
-    call elrefe_info(fami='RIGI',nno=nno,&
-                      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk)
+    call elrefe_info(fami='RIGI', nno=nno, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
-    do  i = 1, nno
+    do i = 1, nno
         x(i) = zr(igeom-2+2*i)
         y(i) = zr(igeom-1+2*i)
     end do
@@ -76,33 +76,33 @@ character(len=16) :: option, nomte
 !
 !     --- BOUCLE SUR LES POINTS DE GAUSS ---
 !
-    do  kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                     cour, poids, nx, ny)
         r = 0.d0
-        do  i = 1, nno
-            r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
+        do i = 1, nno
+            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
         end do
         poids = poids*r
-        volume = volume + poids
+        volume = volume+poids
 !
         do i = 1, nno
 !           --- CDG ---
-            zr(lcastr+1) = zr(lcastr+1) + poids*x(i)*zr(ivf+k+i-1)
-            zr(lcastr+2) = zr(lcastr+2) + poids*y(i)*zr(ivf+k+i-1)
+            zr(lcastr+1) = zr(lcastr+1)+poids*x(i)*zr(ivf+k+i-1)
+            zr(lcastr+2) = zr(lcastr+2)+poids*y(i)*zr(ivf+k+i-1)
 !           --- INERTIE ---
             xxi = 0.d0
             xyi = 0.d0
             yyi = 0.d0
-            do  j = 1, nno
-                xxi = xxi + x(i)*zr(ivf+k+i-1)*x(j)*zr(ivf+k+j-1)
-                xyi = xyi + x(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
-                yyi = yyi + y(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
+            do j = 1, nno
+                xxi = xxi+x(i)*zr(ivf+k+i-1)*x(j)*zr(ivf+k+j-1)
+                xyi = xyi+x(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
+                yyi = yyi+y(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
             end do
-            matine(1) = matine(1) + poids*yyi
-            matine(2) = matine(2) + poids*xyi
-            matine(3) = matine(3) + poids*xxi
+            matine(1) = matine(1)+poids*yyi
+            matine(2) = matine(2)+poids*xyi
+            matine(3) = matine(3)+poids*xxi
         end do
     end do
 !
@@ -114,7 +114,7 @@ character(len=16) :: option, nomte
 !
 !    --- ON DONNE LES INERTIES AU CDG ---
     matine(6) = matine(3)*rm*depi
-    matine(1) = matine(1)*rm*depi + matine(6)/2.d0 - zr(lcastr)* yg*yg
+    matine(1) = matine(1)*rm*depi+matine(6)/2.d0-zr(lcastr)*yg*yg
     matine(2) = 0.d0
     matine(3) = matine(1)
     zr(lcastr+4) = matine(1)

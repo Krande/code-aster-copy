@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine quadco(sdcont, l_node_q8)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -47,14 +47,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_node_q8   = .true.
+    l_node_q8 = .true.
     sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Parameters
 !
-    l_all_verif = cfdisl(sdcont_defi,'ALL_VERIF')
-    l_pena_cont = cfdisl(sdcont_defi,'CONT_PENA')
-    l_gliss     = cfdisl(sdcont_defi,'CONT_DISC_GLIS')
+    l_all_verif = cfdisl(sdcont_defi, 'ALL_VERIF')
+    l_pena_cont = cfdisl(sdcont_defi, 'CONT_PENA')
+    l_gliss = cfdisl(sdcont_defi, 'CONT_DISC_GLIS')
 !
 ! - Activate elimination of QUAD8 middle nodes
 !
@@ -62,6 +62,6 @@ implicit none
         l_node_q8 = .false.
     else
         l_node_q8 = .true.
-    endif
+    end if
 !
 end subroutine

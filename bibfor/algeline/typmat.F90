@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ function typmat(nbmat, tlimat)
     do i = 1, nbmat
         matel = tlimat(i)
         call jeexin(matel//'.RELR', iexi)
-        iexi=min(1,abs(iexi))
+        iexi = min(1, abs(iexi))
         if (iexi .ne. 0) then
 !
 !       -- LA LOGIQUE CI-DESSOUS N'EST VALABLE QUE SI LE MATR_ELEM
@@ -71,13 +71,13 @@ function typmat(nbmat, tlimat)
                 call dismoi('ZERO', matel, 'MATR_ELEM', repk=zero)
                 if (zero .eq. 'NON') then
                     itymat = 1
-                endif
-            endif
+                end if
+            end if
 
             call dismoi('NOM_MAILLA', matel, 'MATR_ELEM', repk=mesh)
             l_pmesh = isParallelMesh(mesh)
 !
-            if(.not.l_pmesh) then
+            if (.not. l_pmesh) then
 !
 ! --- Il faut communiquer entre proc pour sortir tous en même temps
                 call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
@@ -90,13 +90,13 @@ function typmat(nbmat, tlimat)
 !
     end do
 !
-    if(l_pmesh) then
+    if (l_pmesh) then
         call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
     end if
 !
     if (itymat .eq. 0) then
-        typmat='S'
+        typmat = 'S'
     else
-        typmat='N'
-    endif
+        typmat = 'N'
+    end if
 end function

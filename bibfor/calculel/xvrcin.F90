@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,14 +115,14 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
     call jelira(resu19//'.ORDR', 'LONUTI', nbord)
     ASSERT(nbord .ge. 1)
     AS_ALLOCATE(vi=vcode, size=nbord)
-    do iord=1,nbord
+    do iord = 1, nbord
         call rsexch(' ', evol, 'TEMP_ELGA', vordr(iord), chamel, vcode(iord))
-    enddo
+    end do
 !   verif de coherence (pb par ex. si on a fait une mauvaise utilisation de CREA_RESU)
     icode_ini = vcode(1)
-    do iord=1,nbord
+    do iord = 1, nbord
         ASSERT(vcode(iord) .eq. icode_ini)
-    enddo
+    end do
     AS_DEALLOCATE(vi=vcode)
     if (icode_ini .ne. 0) goto 999
 !
@@ -137,18 +137,18 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !   -> on recupere modevo via le ligrel de definition des cham_elem
 !      TEMP_ELGA, ligrel qui doit lui aussi etre unique
     AS_ALLOCATE(vk24=vligr, size=nbord)
-    do iord=1,nbord
+    do iord = 1, nbord
         call rsexch(' ', evol, 'TEMP_ELGA', vordr(iord), chamel, ibid)
         call jeveuo(chamel//'.CELK', 'L', vk24=vcelk)
         ligrch = vcelk(1)
         call exisd('LIGREL', ligrch, iret)
         ASSERT(iret .eq. 1)
         vligr(iord) = ligrch
-    enddo
+    end do
     ligrch = vligr(1)
-    do iord=1,nbord
+    do iord = 1, nbord
         ASSERT(vligr(iord) .eq. ligrch)
-    enddo
+    end do
     AS_DEALLOCATE(vk24=vligr)
     modevo = ligrch(1:8)
     call exisd('MODELE', modevo, iret)
@@ -181,7 +181,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 !   allocation de celmex
-    call alchml(ligmex, 'TOU_INI_ELGA', 'PTEMP_R', 'V', celmex,&
+    call alchml(ligmex, 'TOU_INI_ELGA', 'PTEMP_R', 'V', celmex, &
                 iret, ' ')
     ASSERT(iret .eq. 0)
 !
@@ -204,14 +204,14 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
     do ima = 1, nbma
         vecma_me(ima) = 0
         vecma_th(ima) = 0
-    enddo
+    end do
 !
 !   on ecrit 1 dans vecma_me pour les mailles sur lesquelles celmex
 !   est defini -> boucle sur les grels de ligmex
     nbgrm = celdm(2)
     do igrm = 1, nbgrm
         debgrm = celdm(4+igrm)
-        nbelm  = celdm(debgrm+1)
+        nbelm = celdm(debgrm+1)
         imolom = celdm(debgrm+2)
 !       si celmex existe sur ce grel
         if (imolom .gt. 0) then
@@ -220,10 +220,10 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
             do ielm = 1, nbelm
                 ima = zi(alielm-1+ielm)
                 vecma_me(ima) = 1
-            enddo
+            end do
 !           fin boucle sur les elements de igrm
-        endif
-    enddo
+        end if
+    end do
 !   fin boucle sur les grels de ligmex
 !
 !   on ecrit 1 dans vecma_th pour les mailles sur lesquelles celthx
@@ -231,7 +231,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
     nbgrt = celdt(2)
     do igrt = 1, nbgrt
         debgrt = celdt(4+igrt)
-        nbelt  = celdt(debgrt+1)
+        nbelt = celdt(debgrt+1)
         imolot = celdt(debgrt+2)
 !       si celthx existe sur ce grel
         if (imolot .gt. 0) then
@@ -240,16 +240,16 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
             do ielt = 1, nbelt
                 ima = zi(alielt-1+ielt)
                 vecma_th(ima) = 1
-            enddo
+            end do
 !           fin boucle sur les elements de igrt
-        endif
-    enddo
+        end if
+    end do
 !   fin boucle sur les grels de ligthx
 !
 !   ces deux cham_elem doivent etre definis sur les memes mailles
-     do ima = 1, nbma
+    do ima = 1, nbma
         ASSERT(vecma_me(ima) .eq. vecma_th(ima))
-    enddo
+    end do
 !
     AS_DEALLOCATE(vi=vecma_me)
     AS_DEALLOCATE(vi=vecma_th)
@@ -267,7 +267,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
     do igrm = 1, nbgrm
 !
         debgrm = celdm(4+igrm)
-        nbelm  = celdm(debgrm+1)
+        nbelm = celdm(debgrm+1)
         imolom = celdm(debgrm+2)
         lgcatm = celdm(debgrm+3)
 !
@@ -296,7 +296,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
             call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpgm), 'LONMAX', nbfamm)
             call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpgm), 'L', adfpgm)
 !           il ne peut y avoir que 2 familles dans la liste MATER
-            nbfamm=nbfamm-1
+            nbfamm = nbfamm-1
             ASSERT(nbfamm .eq. 2)
             elrefm = zk8(adfpgm-1+nbfamm+1)
 !
@@ -304,7 +304,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !           (l'ordre est important au moment ou l'on recopie les champs)
             ASSERT(zk8(adfpgm-1+1) .eq. 'XFEM')
             noflpg = ktyelm//elrefm//zk8(adfpgm-1+1)
-            nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
+            nuflpg = indk32(zk32(jpnlfp), noflpg, 1, nblfpg)
             ASSERT(nuflpg .gt. 0)
             nufgpg = zi(jnolfp-1+nuflpg)
             ASSERT(nufgpg .gt. 0)
@@ -314,7 +314,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !           la seconde famille doit etre 'NOEU'
             ASSERT(zk8(adfpgm-1+2) .eq. 'NOEU')
             noflpg = ktyelm//elrefm//zk8(adfpgm-1+2)
-            nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
+            nuflpg = indk32(zk32(jpnlfp), noflpg, 1, nblfpg)
             ASSERT(nuflpg .gt. 0)
             nufgpg = zi(jnolfp-1+nuflpg)
             ASSERT(nufgpg .gt. 0)
@@ -340,12 +340,12 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !               verification de la coherence du mode local mecanique
 !               et thermique (code et grandeur)
                 imolot = celdt(debgrt+2)
-                call jeveuo(jexnum('&CATA.TE.MODELOC', imolot), 'L',&
+                call jeveuo(jexnum('&CATA.TE.MODELOC', imolot), 'L', &
                             amolot)
                 call jenuno(jexnum('&CATA.TE.NOMMOLOC', imolot), nomolt)
-                do i = 1,2
+                do i = 1, 2
                     ASSERT(zi(amolom-1+i) .eq. zi(amolot-1+i))
-                enddo
+                end do
 !
 !               calcul du nombre de cmp de la grandeur
                 nbscal_t = zi(amolot-1+3)
@@ -363,13 +363,13 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !               verification des longueurs locales des champs
                 lgelm = celdm(debgrm+4+4*(ielm-1)+3)
                 lgelt = celdt(debgrt+4+4*(ielt-1)+3)
-                ASSERT( lgelm .eq. nbmcp*(nbpg_x+nbpg_n))
-                ASSERT( lgelt .eq. nbmcp*nbpg_x)
+                ASSERT(lgelm .eq. nbmcp*(nbpg_x+nbpg_n))
+                ASSERT(lgelt .eq. nbmcp*nbpg_x)
 !
 !               il ne peut pas y avoir de sous-points
                 lgcatt = celdt(debgrt+3)
-                ASSERT( lgelm .eq. lgcatm )
-                ASSERT( lgelt .eq. lgcatt )
+                ASSERT(lgelm .eq. lgcatm)
+                ASSERT(lgelt .eq. lgcatt)
 !
 !               ecriture sur l'element ielm du segment de valeurs lu sur l'element ielt
                 advelm = celdm(debgrm+4+4*(ielm-1)+4)
@@ -377,21 +377,21 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
                 advelt = celdt(debgrt+4+4*(ielt-1)+4)
                 advelt = jcelvt-1+advelt
 !               -> sur la famille XFEM : recopie des valeurs lues
-                zr(advelm : advelm+lgelt-1) = zr(advelt : advelt+lgelt-1)
+                zr(advelm:advelm+lgelt-1) = zr(advelt:advelt+lgelt-1)
 !               -> sur la famille NOEU : on ecrit NaN
-                do ival = lgelt+1,lgelm
+                do ival = lgelt+1, lgelm
                     zr(advelm-1+ival) = r8nan
-                enddo
+                end do
 !
-            enddo
+            end do
 !
 ! ----------------------------------------------------------------------
 ! --------- fin boucle sur les elements de igrm
 ! ----------------------------------------------------------------------
 !
-        endif
+        end if
 !
-    enddo
+    end do
 !
 ! ----------------------------------------------------------------------
 ! - fin boucle sur les grels de ligmex

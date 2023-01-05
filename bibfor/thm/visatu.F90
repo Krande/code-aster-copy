@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 !
 subroutine visatu(nbvari, vintp, advico, vicsat, satur)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: nbvari
-real(kind=8), intent(inout) :: vintp(nbvari)
-integer, intent(in) :: advico
-integer, intent(in) :: vicsat
-real(kind=8), intent(in) :: satur
+    integer, intent(in) :: nbvari
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    integer, intent(in) :: advico
+    integer, intent(in) :: vicsat
+    real(kind=8), intent(in) :: satur
 !
 ! --------------------------------------------------------------------------------------------------
 !

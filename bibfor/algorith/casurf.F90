@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine casurf(ndim, nno, geom, surff)
 ! ----------------------------------------------------------------------
 !
     integer :: maxfa1, maxdi1
-    parameter    (maxfa1=6,maxdi1=3)
+    parameter(maxfa1=6, maxdi1=3)
 !
     real(kind=8) :: t(maxdi1, maxfa1)
     integer :: ifa, i, ideb, ifin
@@ -38,25 +38,25 @@ subroutine casurf(ndim, nno, geom, surff)
 !
     do ifa = 1, nno
 !
-        ideb=ifa
-        ifin=ifa+1
+        ideb = ifa
+        ifin = ifa+1
         if (ifin .gt. nno) then
-            ifin=ifin-nno
-        endif
+            ifin = ifin-nno
+        end if
         do i = 1, ndim
-            t(i,ifa)=geom(i,ifin)-geom(i,ideb)
+            t(i, ifa) = geom(i, ifin)-geom(i, ideb)
 !
         end do
     end do
 !
     if (nno .eq. 3) then
-        vol=abs(t(1,1)*t(2,2)-t(2,1)*t(1,2))/2.d0
+        vol = abs(t(1, 1)*t(2, 2)-t(2, 1)*t(1, 2))/2.d0
     else
-        pdvd1 = t(1,1)*t(2,4)-t(2,1)*t(1,4)
-        pdvd2 = t(1,3)*t(2,2)-t(2,3)*t(1,2)
+        pdvd1 = t(1, 1)*t(2, 4)-t(2, 1)*t(1, 4)
+        pdvd2 = t(1, 3)*t(2, 2)-t(2, 3)*t(1, 2)
         vol = (abs(pdvd1)+abs(pdvd2))/2.d0
-    endif
+    end if
 !
-    surff=vol
+    surff = vol
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,22 +67,22 @@ subroutine rfnapp(nappe)
     call jeveuo(nappe//'.PARA', 'L', vr=para)
 !
     do indic = 1, npar
-        vpar=para(indic)
+        vpar = para(indic)
         if (crit .eq. 'RELATIF') then
-            delta=abs((vpar-valp)/valp)
+            delta = abs((vpar-valp)/valp)
             if (delta .le. prec) goto 20
         else if (crit .eq. 'ABSOLU') then
-            delta=abs(vpar-valp)
+            delta = abs(vpar-valp)
             if (delta .le. prec) goto 20
-        endif
+        end if
     end do
     call utmess('F', 'UTILITAI5_90')
- 20 continue
+20  continue
 !
 !     --- REMPLISSAGE DU .PROL ---
 !
     call jeveuo(nappe//'.PROL', 'L', vk24=prol)
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro) = 'FONCTION'
     zk24(lpro+1) = prol(1+6+indic*2-1)
@@ -95,7 +95,7 @@ subroutine rfnapp(nappe)
     call jelira(jexnum(nappe//'.VALE', indic), 'LONMAX', nbvr)
     call wkvect(nomfon//'.VALE', 'G V R', nbvr, lval)
     do ival = 1, nbvr
-        zr(lval+ival-1)=zr(jval+ival-1)
+        zr(lval+ival-1) = zr(jval+ival-1)
     end do
 !
 !     --- CREATION D'UN TITRE ---

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,17 +73,17 @@ subroutine nmeraz(sderro, typevt)
 ! --- EVENEMENTS DESACTIVES
 !
     do ieven = 1, zeven
-        teven = zk16(jeeniv-1+ieven)(1:9)
+        teven = zk16(jeeniv-1+ieven) (1:9)
         if (typevt .eq. 'TOUS') then
             zi(jeeact-1+ieven) = 0
-        else if (typevt.eq.'EVEN') then
+        else if (typevt .eq. 'EVEN') then
             if (teven .eq. 'EVEN') zi(jeeact-1+ieven) = 0
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

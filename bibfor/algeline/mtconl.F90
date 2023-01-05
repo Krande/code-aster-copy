@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
+subroutine mtconl(nbcomb, typcst, const, lmat, typres, &
                   lres)
     implicit none
 #include "jeveux.h"
@@ -78,14 +78,14 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                 if (type .ne. typrez) then
                     call jedetr(cbid(1)//'.CONL')
                     ier1 = 0
-                endif
-            endif
+                end if
+            end if
             if (ier1 .eq. 0) then
                 call jelira(cbid(1)//'.VALM', 'CLAS', cval=clas)
                 call wkvect(cbid(1)//'.CONL', clas(1:1)//' V '//typrez, neq, lconl1)
             else
                 call jeveuo(cbid(1)//'.CONL', 'E', lconl1)
-            endif
+            end if
 !
 !           --- REMPLISSAGE ---
             cumul = 'ZERO'
@@ -102,32 +102,32 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
 !                 FORCEMENT REELLES DU COUP ON DOIT FOURNIR UN
 !                 CONST REEL !
                     if (typcst(jcomb) .eq. 'C') then
-                        tcst = abs(dcmplx(const(iconst),const(iconst+ 1)))
+                        tcst = abs(dcmplx(const(iconst), const(iconst+1)))
                         tpcst = 'R'
-                        call mtxcnl(cumul, tpcst, [tcst, 0.d0], type, lconl2,&
+                        call mtxcnl(cumul, tpcst, [tcst, 0.d0], type, lconl2, &
                                     typrez, lconl1, neq)
                     else
-                        call mtxcnl(cumul, typcst(jcomb), const(iconst), type, lconl2,&
+                        call mtxcnl(cumul, typcst(jcomb), const(iconst), type, lconl2, &
                                     typrez, lconl1, neq)
-                    endif
+                    end if
                     cumul = 'CUMU'
-                endif
-                iconst = iconst + 1
-                if (typcst(jcomb) .eq. 'C') iconst = iconst + 1
+                end if
+                iconst = iconst+1
+                if (typcst(jcomb) .eq. 'C') iconst = iconst+1
             end do
             goto 20
         else
-            iconst = iconst + 1
-            if (typcst(icomb) .eq. 'C') iconst = iconst + 1
-        endif
+            iconst = iconst+1
+            if (typcst(icomb) .eq. 'C') iconst = iconst+1
+        end if
     end do
 !
 !
- 20 continue
+20  continue
     if (jcomb .eq. 0) then
 !        --- PAS DE .CONL ---
         call jeexin(cbid(1)//'.CONL', ier1)
         if (ier1 .ne. 0) call jedetr(cbid(1)//'.CONL')
-    endif
+    end if
     call jedema()
 end subroutine

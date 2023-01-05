@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pbflu0(rhof, hmoy, rmoy, long, icoq,&
+subroutine pbflu0(rhof, hmoy, rmoy, long, icoq, &
                   imod, nbm, rkip, tcoef, d)
     implicit none
 #include "asterfort/utmess.h"
@@ -63,40 +63,40 @@ subroutine pbflu0(rhof, hmoy, rmoy, long, icoq,&
     if (icoq .eq. 2) then
         itab = 5
         poids = 1.d0
-    endif
-    ln = tcoef(1+itab,imod)
-    a1 = tcoef(2+itab,imod) * poids
-    a2 = tcoef(3+itab,imod) * poids
-    a3 = tcoef(4+itab,imod) * poids
-    a4 = tcoef(5+itab,imod) * poids
-    b1 = tcoef(2+itab,imod) / 2.d0
-    b2 = tcoef(3+itab,imod) / 2.d0
-    b3 = tcoef(4+itab,imod) / 2.d0
-    b4 = tcoef(5+itab,imod) / 2.d0
-    c1 = a1/hmoy + b1/rmoy
-    c2 = a2/hmoy + b2/rmoy
-    c3 = a3/hmoy + b3/rmoy
-    c4 = a4/hmoy + b4/rmoy
+    end if
+    ln = tcoef(1+itab, imod)
+    a1 = tcoef(2+itab, imod)*poids
+    a2 = tcoef(3+itab, imod)*poids
+    a3 = tcoef(4+itab, imod)*poids
+    a4 = tcoef(5+itab, imod)*poids
+    b1 = tcoef(2+itab, imod)/2.d0
+    b2 = tcoef(3+itab, imod)/2.d0
+    b3 = tcoef(4+itab, imod)/2.d0
+    b4 = tcoef(5+itab, imod)/2.d0
+    c1 = a1/hmoy+b1/rmoy
+    c2 = a2/hmoy+b2/rmoy
+    c3 = a3/hmoy+b3/rmoy
+    c4 = a4/hmoy+b4/rmoy
 !
     u = -1.d0*rhof*(rkip**2)
-    v = (ln/long)**2 + (rkip/rmoy)**2
+    v = (ln/long)**2+(rkip/rmoy)**2
 !
     d(1) = u*c1/v
     d(2) = u*c2/v
 !
-    v = -1.d0*(ln/long)**2 + (rkip/rmoy)**2
+    v = -1.d0*(ln/long)**2+(rkip/rmoy)**2
     if (dble(abs(v)) .lt. tole) then
         call utmess('F', 'ALGELINE3_18')
-    endif
+    end if
     d(3) = u*c3/v
     d(4) = u*c4/v
 !
-    vi1 = d(1) + d(3)
-    vi2 = d(1)*dble(cos(ln)) + d(2)*dble(sin(ln)) + d(3)*dble(cosh(ln)) + d(4)*dble(sinh(ln))
+    vi1 = d(1)+d(3)
+    vi2 = d(1)*dble(cos(ln))+d(2)*dble(sin(ln))+d(3)*dble(cosh(ln))+d(4)*dble(sinh(ln))
     x = -1.d0*rkip*long/rmoy
     y = dble(exp(x))
     z = 1.d0/(1.d0-y*y)
-    d(5) = z * (vi1*y-vi2)
-    d(6) = z * (vi2*y-vi1)
+    d(5) = z*(vi1*y-vi2)
+    d(6) = z*(vi2*y-vi1)
 !
 end subroutine

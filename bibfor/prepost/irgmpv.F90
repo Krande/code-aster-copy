@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
-                  para, nocmp, nbel, scal, vect,&
+subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr, &
+                  para, nocmp, nbel, scal, vect, &
                   tens, versio)
     implicit none
 !
@@ -46,24 +46,24 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
     integer :: typpyr, typpri, typhex
 !     ------------------------------------------------------------------
 !
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1' ), typpoi)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2' ), typseg)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3' ), typtri)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4' ), typqua)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4' ), typtet)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5' ), typpyr)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6' ), typpri)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8' ), typhex)
-    nbpoi=nbel(typpoi)
-    nbseg=nbel(typseg)
-    nbtri=nbel(typtri)
-    nbqua=nbel(typqua)
-    nbtet=nbel(typtet)
-    nbpyr=nbel(typpyr)
-    nbpri=nbel(typpri)
-    nbhex=nbel(typhex)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), typpoi)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), typseg)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typtri)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), typqua)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), typtet)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), typpyr)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), typpri)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), typhex)
+    nbpoi = nbel(typpoi)
+    nbseg = nbel(typseg)
+    nbtri = nbel(typtri)
+    nbqua = nbel(typqua)
+    nbtet = nbel(typtet)
+    nbpyr = nbel(typpyr)
+    nbpri = nbel(typpri)
+    nbhex = nbel(typhex)
 !
-    write(ifi,1000) '$View'
+    write (ifi, 1000) '$View'
 !
 !     ECRITURE DE LIGNE 1 (VIEW_NAME NB_TIME_STEPS)
 !
@@ -76,16 +76,16 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
         ich = lch+1
 !
         k50b(ich:ich) = '_'
-        lch=lxlgut(chamsy)
+        lch = lxlgut(chamsy)
         k50b(ich+1:ich+lch) = chamsy(1:lch)
         ich = ich+lch+1
 !
         k50b(ich:ich) = '_'
-        lch=lxlgut(nocmp)
+        lch = lxlgut(nocmp)
         k50b(ich+1:ich+lch) = nocmp(1:lch)
 !
         k50b(ich+lch+1:ich+lch+1) = ' '
-        write(ifi,1020) k50b(1:ich+lch+1), nbordr
+        write (ifi, 1020) k50b(1:ich+lch+1), nbordr
 !
     else
 !
@@ -94,71 +94,71 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
 !
         ich = lch+1
         k50b(ich:ich) = '_'
-        lch=lxlgut(nocmp)
+        lch = lxlgut(nocmp)
         k50b(ich+1:ich+lch) = nocmp(1:lch)
 !
         k50b(ich+lch+1:ich+lch+1) = ' '
-        write(ifi,1022) k50b(1:ich+lch+1), nbordr
+        write (ifi, 1022) k50b(1:ich+lch+1), nbordr
 !
-    endif
+    end if
 !
 !     ECRITURE DE LA LIGNE 2 A 4 (nb elt par de type de maille)
 !
     if (scal) then
-        write(ifi,1030) nbpoi, 0, 0
-        write(ifi,1030) nbseg, 0, 0
-        write(ifi,1030) nbtri, 0, 0
+        write (ifi, 1030) nbpoi, 0, 0
+        write (ifi, 1030) nbseg, 0, 0
+        write (ifi, 1030) nbtri, 0, 0
         if (versio .eq. 2) then
-            write(ifi,1030) nbqua, 0, 0
-        endif
-        write(ifi,1030) nbtet, 0, 0
+            write (ifi, 1030) nbqua, 0, 0
+        end if
+        write (ifi, 1030) nbtet, 0, 0
         if (versio .eq. 2) then
-            write(ifi,1030) nbhex, 0, 0
-            write(ifi,1030) nbpri, 0, 0
-            write(ifi,1030) nbpyr, 0, 0
-        endif
+            write (ifi, 1030) nbhex, 0, 0
+            write (ifi, 1030) nbpri, 0, 0
+            write (ifi, 1030) nbpyr, 0, 0
+        end if
     else if (vect) then
-        write(ifi,1030) 0, nbpoi, 0
-        write(ifi,1030) 0, nbseg, 0
-        write(ifi,1030) 0, nbtri, 0
+        write (ifi, 1030) 0, nbpoi, 0
+        write (ifi, 1030) 0, nbseg, 0
+        write (ifi, 1030) 0, nbtri, 0
         if (versio .eq. 2) then
-            write(ifi,1030) 0, nbqua, 0
-        endif
-        write(ifi,1030) 0, nbtet, 0
+            write (ifi, 1030) 0, nbqua, 0
+        end if
+        write (ifi, 1030) 0, nbtet, 0
         if (versio .eq. 2) then
-            write(ifi,1030) 0, nbhex, 0
-            write(ifi,1030) 0, nbpri, 0
-            write(ifi,1030) 0, nbpyr, 0
-        endif
+            write (ifi, 1030) 0, nbhex, 0
+            write (ifi, 1030) 0, nbpri, 0
+            write (ifi, 1030) 0, nbpyr, 0
+        end if
     else if (tens) then
-        write(ifi,1030) 0, 0, nbpoi
-        write(ifi,1030) 0, 0, nbseg
-        write(ifi,1030) 0, 0, nbtri
+        write (ifi, 1030) 0, 0, nbpoi
+        write (ifi, 1030) 0, 0, nbseg
+        write (ifi, 1030) 0, 0, nbtri
         if (versio .eq. 2) then
-            write(ifi,1030) 0, 0, nbqua
-        endif
-        write(ifi,1030) 0, 0, nbtet
+            write (ifi, 1030) 0, 0, nbqua
+        end if
+        write (ifi, 1030) 0, 0, nbtet
         if (versio .eq. 2) then
-            write(ifi,1030) 0, 0, nbhex
-            write(ifi,1030) 0, 0, nbpri
-            write(ifi,1030) 0, 0, nbpyr
-        endif
+            write (ifi, 1030) 0, 0, nbhex
+            write (ifi, 1030) 0, 0, nbpri
+            write (ifi, 1030) 0, 0, nbpyr
+        end if
     else
-    endif
+    end if
 !
     if (versio .eq. 2) then
-        write(ifi,1050) 0,0,0,0
-    endif
+        write (ifi, 1050) 0, 0, 0, 0
+    end if
 !
 !     ECRITURE DE LA LIGNE 5 (time_step_values)
 !
-    write(ifi,1040) (para(ior), ior=1,nbordr)
+    write (ifi, 1040) (para(ior), ior=1, nbordr)
 !
-    1000 format(a5)
-    1020 format(a,1x,i4)
-    1022 format(a,1x,i4)
-    1030 format(3(i8,1x))
-    1040 format(1p,10(e15.8,1x))
-    1050 format(4(i6,1x))
+1000 format(a5)
+1020 format(a, 1x, i4)
+1022 format(a, 1x, i4)
+1030 format(3(i8, 1x))
+1040 format(1p, 10(e15.8, 1x))
+1050 format(4(i6, 1x))
 !
 end subroutine

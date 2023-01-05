@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prccm3(nommat, para, sm, sn, sp,&
+subroutine prccm3(nommat, para, sm, sn, sp, &
                   ke, salt, nadm)
     implicit none
 #include "asterf_types.h"
@@ -38,7 +38,7 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
 !     ------------------------------------------------------------------
 !
     un = 1.0d0
-    troism = 3.0d0 * sm
+    troism = 3.0d0*sm
 !
 ! --- CALCUL DU COEFFICIENT DE CONCENTRATION ELASTO-PLASTIQUE KE :
 !     ----------------------------------------------------------
@@ -54,20 +54,20 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
     else if (sn .lt. 3.d0*para(1)*sm) then
         xm = para(1)
         xn = para(2)
-        sns3 = sn / 3.d0
+        sns3 = sn/3.d0
         ke = un+((un-xn)/(xn*(xm-un)))*((sns3/sm)-un)
 !
 ! --- SI 3*M*SM < SN   KE = 1/N :
 !     -------------------------
     else
-        ke = un / para(2)
-    endif
+        ke = un/para(2)
+    end if
 !
 !
 ! --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
 ! --- PAR DEFINITION SALT = 0.5*EC/E*KE*SP(TEMP1,TEMP2) :
 !     -------------------------------------------------
-    salt = 0.5d0 * para(3) * ke * sp
+    salt = 0.5d0*para(3)*ke*sp
 !
 !
 ! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM EN UTILISANT
@@ -75,16 +75,16 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
 !     --------------------------------------------
     call limend(nommat, salt, 'WOHLER', kbid, endur)
     if (endur) then
-        nadm=r8maem()
+        nadm = r8maem()
     else
-        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salt],&
+        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salt], &
                     1, 'WOHLER  ', tnadm(1), icodre(1), 2)
-        nadm=tnadm(1)
+        nadm = tnadm(1)
         if (nadm .lt. 0) then
-            valr (1) = salt
-            valr (2) = nadm
+            valr(1) = salt
+            valr(2) = nadm
             call utmess('A', 'POSTRELE_61', nr=2, valr=valr)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

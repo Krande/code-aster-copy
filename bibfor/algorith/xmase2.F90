@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
-                  nfh, ddlc, nfe, basloc, nnop,&
-                  npg, imate, lsn, lst, matuu, heavn,&
+subroutine xmase2(elrefp, ndim, coorse, igeom, he, &
+                  nfh, ddlc, nfe, basloc, nnop, &
+                  npg, imate, lsn, lst, matuu, heavn, &
                   jstno, nnops, ddlm)
     implicit none
 #include "jeveux.h"
@@ -38,7 +38,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/iimatu.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/indent.h"
-    integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, nfe, heavn(27,5)
+    integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, nfe, heavn(27, 5)
     integer :: jstno, nnops, ddlm
     character(len=8) :: elrefp
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
@@ -82,7 +82,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
     real(kind=8) :: rho(1)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: enr(ndim, nnop, 1+nfh+ndim*nfe)
-    real(kind=8) :: fk(27,3,3), ka, mu
+    real(kind=8) :: fk(27, 3, 3), ka, mu
     integer :: alp, dec(nnop), nn, mn, ii, jj, irese, singu
     integer :: ddln, ij, kddl(ndim, 1+nfh+ndim*nfe)
 !
@@ -90,17 +90,17 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
     aster_logical :: axi
     character(len=8) :: elrese(6), fami(6)
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 !
 !--------------------------------------------------------------------
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
     call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
-    ddln=int(ddld/ndim)
-    axi=lteatt('AXIS','OUI')
-    enr(:,:,:)=0.d0
-    kddl(:,:)=0
+    ddln = int(ddld/ndim)
+    axi = lteatt('AXIS', 'OUI')
+    enr(:, :, :) = 0.d0
+    kddl(:, :) = 0
 !
 ! DECALAGES CALCULES EN AMONT: PERF
     do n = 1, nnop
@@ -108,20 +108,20 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
     end do
 !
 ! CALCUL DE L IDENTIFIANT DU SS ELEMENT
-    hea_se=xcalc_code(1, he_real=[he])
+    hea_se = xcalc_code(1, he_real=[he])
 !
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
+        irese = 0
+    end if
 !
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),&
-                     ndim=ndimb,nno=nno,nnos=nnos,&
-                     npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-                     jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), &
+                     ndim=ndimb, nno=nno, nnos=nnos, &
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde, &
+                     jdfd2=jdfd2, jgano=jgano)
 !
-    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg .eq. npgbis .and. ndim .eq. ndimb)
 !
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
@@ -131,8 +131,8 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
         xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
-                xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+&
-                i)
+                xg(i) = xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+ &
+                                                             i)
             end do
         end do
 !
@@ -141,79 +141,79 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !
         if (nfe .gt. 0) then
             call xkamat(imate, ndim, axi, ka, mu)
-            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he,&
-                         lsn, lst, zr(igeom), ka, mu, ff, fk)
-        endif
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he, &
+                              lsn, lst, zr(igeom), ka, mu, ff, fk)
+        end if
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
 !--------CALCUL DES FONCTIONS ENRICHIES--------------------------
         do n = 1, nnop
 !         FONCTIONS DE FORME CLASSIQUES
-            cpt=0
+            cpt = 0
             do i = 1, ndim
-                cpt=cpt+1
-                enr(i,n,1) = ff(n)
-                kddl(i,1)=cpt
+                cpt = cpt+1
+                enr(i, n, 1) = ff(n)
+                kddl(i, 1) = cpt
             end do
 !         ENRICHISSEMENT PAR HEAVYSIDE
             do i = 1, ndim
-              do j = 1, nfh
-                cpt=cpt+1
-                enr(i,n,1+j) = ff(n) * xcalc_heav(heavn(n,j),hea_se,heavn(n,5))
-                kddl(i,1+j)=cpt
-              enddo
+                do j = 1, nfh
+                    cpt = cpt+1
+                    enr(i, n, 1+j) = ff(n)*xcalc_heav(heavn(n, j), hea_se, heavn(n, 5))
+                    kddl(i, 1+j) = cpt
+                end do
             end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
             do alp = 1, nfe*ndim
                 do i = 1, ndim
-                    cpt=cpt+1
-                    enr(i,n,1+nfh+alp)=fk(n,alp,i)
-                    kddl(i,1+nfh+alp)=cpt
+                    cpt = cpt+1
+                    enr(i, n, 1+nfh+alp) = fk(n, alp, i)
+                    kddl(i, 1+nfh+alp) = cpt
                 end do
             end do
 !
-            ASSERT(cpt.eq.ddld)
+            ASSERT(cpt .eq. ddld)
 !
         end do
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       ON ENVOIE DFDM2D AVEC LES COORD DU SS-ELT
-        call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+        call dfdm2d(nno, kpg, ipoids, idfde, coorse, &
                     jac)
 !
 !
 !       ON RECUPERE LA MASSE VOLUMIQUE
 !
         call rccoma(imate, 'ELAS', 1, phenom, retour(1))
-        call rcvalb('RIGI', kpg, 1, '+', imate,&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb('RIGI', kpg, 1, '+', imate, &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     1, 'RHO', rho, retour, 1)
 !
 !
         do n = 1, nnop
-          nn=dec(n)
-          do ij = 1, ndim
-            do i = 1, ddln
-                ii=iimatu(kddl(ij,i),ndim,nfh,nfe)
-                kkd = (nn+ii-1) * (nn+ii) /2
-                do j = 1, ddln
-                    jj=iimatu(kddl(ij,j),ndim,nfh,nfe)
-                    do m = 1, n
-                        mn=dec(m)
-                        if (m .eq. n) then
-                            j1 = kddl(ij,i)
-                        else
-                            j1 = ddld
-                        endif
-                        if (jj .le. j1) then
-                            kk = kkd + mn + jj
-                            matuu(kk) = matuu(kk)+enr(ij,n,i)*enr(ij,m,j)* jac*rho(1)
-                        endif
+            nn = dec(n)
+            do ij = 1, ndim
+                do i = 1, ddln
+                    ii = iimatu(kddl(ij, i), ndim, nfh, nfe)
+                    kkd = (nn+ii-1)*(nn+ii)/2
+                    do j = 1, ddln
+                        jj = iimatu(kddl(ij, j), ndim, nfh, nfe)
+                        do m = 1, n
+                            mn = dec(m)
+                            if (m .eq. n) then
+                                j1 = kddl(ij, i)
+                            else
+                                j1 = ddld
+                            end if
+                            if (jj .le. j1) then
+                                kk = kkd+mn+jj
+                                matuu(kk) = matuu(kk)+enr(ij, n, i)*enr(ij, m, j)*jac*rho(1)
+                            end if
+                        end do
                     end do
                 end do
             end do
-          end do
         end do
 !
     end do

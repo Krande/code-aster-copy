@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,21 +18,21 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmprma(mesh       , modelz     , ds_material   , carele    , ds_constitutive,&
-                  ds_algopara, lischa     , numedd        , numfix    , solveu, ds_system,&
-                  ds_print   , ds_measure , ds_algorom    , sddisc    ,&
-                  sddyna     , nume_inst  , list_func_acti, ds_contact,&
-                  valinc     , solalg     , hhoField      , meelem    , measse,&
-                  maprec     , matass     , faccvg        , ldccvg    , condcvg)
+subroutine nmprma(mesh, modelz, ds_material, carele, ds_constitutive, &
+                  ds_algopara, lischa, numedd, numfix, solveu, ds_system, &
+                  ds_print, ds_measure, ds_algorom, sddisc, &
+                  sddyna, nume_inst, list_func_acti, ds_contact, &
+                  valinc, solalg, hhoField, meelem, measse, &
+                  maprec, matass, faccvg, ldccvg, condcvg)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
-use NonLinear_module, only : getOption, getMatrType, isMatrUpdate,&
-                             isDampMatrCompute, isMassMatrCompute, isRigiMatrCompute,&
-                             factorSystem
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
+    use NonLinear_module, only: getOption, getMatrType, isMatrUpdate, &
+                                isDampMatrCompute, isMassMatrCompute, isRigiMatrCompute, &
+                                factorSystem
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
@@ -54,26 +54,26 @@ implicit none
 #include "asterfort/nmxmat.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=8), intent(in) :: mesh
-character(len=*) :: modelz
-character(len=24) :: carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Print), intent(inout) :: ds_print
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-type(HHO_Field), intent(in) :: hhoField
-character(len=24) :: numedd, numfix
-character(len=19) :: sddisc, sddyna, lischa, solveu
-character(len=19) :: solalg(*), valinc(*)
-character(len=19) :: meelem(*), measse(*)
-type(NL_DS_System), intent(in) :: ds_system
-integer, intent(in) :: nume_inst, list_func_acti(*)
-type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=19) :: maprec, matass, partit
-aster_logical :: ldist
-integer :: faccvg, ldccvg, condcvg
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=8), intent(in) :: mesh
+    character(len=*) :: modelz
+    character(len=24) :: carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    type(HHO_Field), intent(in) :: hhoField
+    character(len=24) :: numedd, numfix
+    character(len=19) :: sddisc, sddyna, lischa, solveu
+    character(len=19) :: solalg(*), valinc(*)
+    character(len=19) :: meelem(*), measse(*)
+    type(NL_DS_System), intent(in) :: ds_system
+    integer, intent(in) :: nume_inst, list_func_acti(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=19) :: maprec, matass, partit
+    aster_logical :: ldist
+    integer :: faccvg, ldccvg, condcvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,7 +140,7 @@ integer :: faccvg, ldccvg, condcvg
     character(len=8) :: ksym
     character(len=16) :: list_calc_opti(20), list_asse_opti(20)
     aster_logical :: list_l_asse(20), list_l_calc(20)
-    aster_logical :: l_contact_adapt,l_cont_cont
+    aster_logical :: l_contact_adapt, l_cont_cont
     real(kind=8) ::  minmat, maxmat, exponent_val
 !
 ! --------------------------------------------------------------------------------------------------
@@ -148,15 +148,15 @@ integer :: faccvg, ldccvg, condcvg
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_35')
-    endif
+    end if
 !
 ! - Initializations
 !
     call nmchex(measse, 'MEASSE', 'MERIGI', rigid)
-    nb_matr              = 0
+    nb_matr = 0
     list_matr_type(1:20) = ' '
-    faccvg  = -1
-    ldccvg  = -1
+    faccvg = -1
+    ldccvg = -1
     condcvg = -1
 !
 ! - Prediction
@@ -167,26 +167,26 @@ integer :: faccvg, ldccvg, condcvg
 !
     l_neum_undead = isfonc(list_func_acti, 'NEUM_UNDEAD')
     l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
-    l_rom         = isfonc(list_func_acti, 'ROM')
-    l_comp_cont   = isfonc(list_func_acti, 'ELT_CONTACT')
+    l_rom = isfonc(list_func_acti, 'ROM')
+    l_comp_cont = isfonc(list_func_acti, 'ELT_CONTACT')
 !
 ! - Renumbering equations ?
 !
-    call nmrenu(modelz    , list_func_acti, lischa,&
-                ds_measure, ds_contact    , numedd,&
+    call nmrenu(modelz, list_func_acti, lischa, &
+                ds_measure, ds_contact, numedd, &
                 l_renumber)
 !
 ! - Get type of matrix
 !
-    call getMatrType(PRED_EULER  , list_func_acti, sddisc, nume_inst, ds_algopara,&
-                     predMatrType, reac_incr_ = reac_incr)
+    call getMatrType(PRED_EULER, list_func_acti, sddisc, nume_inst, ds_algopara, &
+                     predMatrType, reac_incr_=reac_incr)
 !
 ! - Update global matrix ?
 !
-    call isMatrUpdate(PRED_EULER   , predMatrType, list_func_acti,&
-                      sddyna       , ds_system   ,&
-                      l_update_matr,&
-                      nume_inst_ = nume_inst, reac_incr_ = reac_incr)
+    call isMatrUpdate(PRED_EULER, predMatrType, list_func_acti, &
+                      sddyna, ds_system, &
+                      l_update_matr, &
+                      nume_inst_=nume_inst, reac_incr_=reac_incr)
 !
 ! - Select non-linear option for compute matrices
 !
@@ -202,110 +202,110 @@ integer :: faccvg, ldccvg, condcvg
 !
 ! - Do the rigidity matrices have to be calculated/assembled ?
 !
-    call isRigiMatrCompute(PRED_EULER   , list_func_acti,&
-                           sddyna       , nume_inst     ,&
-                           l_update_matr, l_comp_damp   ,&
-                           l_comp_rigi  , l_asse_rigi)
+    call isRigiMatrCompute(PRED_EULER, list_func_acti, &
+                           sddyna, nume_inst, &
+                           l_update_matr, l_comp_damp, &
+                           l_comp_rigi, l_asse_rigi)
 !
 ! - Compute contact elementary matrices
 !
     if (l_comp_cont) then
         call nmchex(meelem, 'MEELEM', 'MEELTC', matr_elem)
-        call nmelcm(mesh       , modelz    ,&
-                    ds_material, ds_contact, ds_constitutive, ds_measure,&
-                    valinc     , solalg    ,&
+        call nmelcm(mesh, modelz, &
+                    ds_material, ds_contact, ds_constitutive, ds_measure, &
+                    valinc, solalg, &
                     matr_elem)
-    endif
+    end if
 !
 ! - Compute rigidity elementary matrices / internal forces elementary vectors
 !
     if (l_comp_rigi) then
-        call nmrigi(modelz        , carele         ,&
-                    ds_material   , ds_constitutive,&
-                    list_func_acti, iter_newt      , sddyna  , ds_measure, ds_system,&
-                    valinc        , solalg         , hhoField, &
-                    option_nonlin , ldccvg)
+        call nmrigi(modelz, carele, &
+                    ds_material, ds_constitutive, &
+                    list_func_acti, iter_newt, sddyna, ds_measure, ds_system, &
+                    valinc, solalg, hhoField, &
+                    option_nonlin, ldccvg)
         if (l_asse_rigi) then
             call asmari(ds_system, meelem, lischa, rigid)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Update dualized matrix for non-linear Dirichlet boundary conditions (undead)
 !
-    if (l_diri_undead .and. (predMatrType.ne.'EXTRAPOLE')) then
-        call nmcmat('MEDIRI', ' ', ' ', ASTER_TRUE,&
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+    if (l_diri_undead .and. (predMatrType .ne. 'EXTRAPOLE')) then
+        call nmcmat('MEDIRI', ' ', ' ', ASTER_TRUE, &
+                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
-    endif
+    end if
 !
 ! - Compute damping (Rayleigh) elementary matrices
 !
     if (l_comp_damp) then
-        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE,&
-                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+        call nmcmat('MEAMOR', ' ', ' ', ASTER_TRUE, &
+                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
-    endif
+    end if
 !
 ! --- CALCUL DES MATR-ELEM DES CHARGEMENTS
 !
-    if (l_neum_undead .and. (predMatrType.ne.'EXTRAPOLE')) then
-        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE,&
-                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+    if (l_neum_undead .and. (predMatrType .ne. 'EXTRAPOLE')) then
+        call nmcmat('MESUIV', ' ', ' ', ASTER_TRUE, &
+                    ASTER_FALSE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
-    endif
+    end if
 !
 ! - Compute mass elementary matrices
 !
     if (l_comp_mass) then
-        call nmcmat('MEMASS', ' ', ' ', ASTER_FALSE,&
-                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
+        call nmcmat('MEMASS', ' ', ' ', ASTER_FALSE, &
+                    ASTER_TRUE, nb_matr, list_matr_type, list_calc_opti, list_asse_opti, &
                     list_l_calc, list_l_asse)
         ASSERT(l_update_matr)
-    endif
+    end if
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
     if (nb_matr .gt. 0) then
-        call nmxmat(modelz         , ds_material   , carele        ,&
-                    ds_constitutive, sddisc        , nume_inst        ,&
-                    valinc         , solalg        , lischa        ,&
-                    numedd         , numfix        , ds_measure    ,&
-                    nb_matr        , list_matr_type, list_calc_opti,&
-                    list_asse_opti , list_l_calc   , list_l_asse   ,&
-                    meelem         , measse        , ds_system)
-    endif
+        call nmxmat(modelz, ds_material, carele, &
+                    ds_constitutive, sddisc, nume_inst, &
+                    valinc, solalg, lischa, &
+                    numedd, numfix, ds_measure, &
+                    nb_matr, list_matr_type, list_calc_opti, &
+                    list_asse_opti, list_l_calc, list_l_asse, &
+                    meelem, measse, ds_system)
+    end if
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
     if (l_update_matr) then
-        call nmmatr('PREDICTION', list_func_acti    , lischa, numedd, sddyna,&
-                    nume_inst      , ds_contact, meelem, measse, matass)
+        call nmmatr('PREDICTION', list_func_acti, lischa, numedd, sddyna, &
+                    nume_inst, ds_contact, meelem, measse, matass)
         call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=ksym)
-        select case( ksym(1:7) )
-            case( 'SYMETRI' )
-                predMatrType(12:16) = '(SYM)'
-            case( 'NON_SYM' )
-                predMatrType(10:16) = '(NOSYM)'
-            case default
-                ASSERT(.false.)
+        select case (ksym(1:7))
+        case ('SYMETRI')
+            predMatrType(12:16) = '(SYM)'
+        case ('NON_SYM')
+            predMatrType(10:16) = '(NOSYM)'
+        case default
+            ASSERT(.false.)
         end select
         call nmimck(ds_print, 'MATR_ASSE', predMatrType, ASTER_TRUE)
     else
-        call nmimck(ds_print, 'MATR_ASSE', ' '   , ASTER_FALSE)
-    endif
-    l_cont_cont         = isfonc(list_func_acti,'CONT_CONTINU')
+        call nmimck(ds_print, 'MATR_ASSE', ' ', ASTER_FALSE)
+    end if
+    l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
     if (l_cont_cont) then
-        minmat=0.0
-        maxmat=0.0
-        exponent_val=0.0
-    !   -- Avant la factorisation et pour le cas ou il y a du contact continu avec adaptation de
-    !      coefficient
-    !   -- On cherche le coefficient optimal pour eviter une possible singularite de matrice
-    !   -- La valeur est estimee une seule fois a la premiere prediction du premier pas de
-    !      temps pour l'etape de calcul
-    !   -- Cette valeur estimee est passee directement a mmchml_c sans passer par mmalgo car
-    !   -- a la premiere iteration on ne passe pas par mmalgo
-        l_contact_adapt = cfdisl(ds_contact%sdcont_defi,'EXIS_ADAP')
+        minmat = 0.0
+        maxmat = 0.0
+        exponent_val = 0.0
+        !   -- Avant la factorisation et pour le cas ou il y a du contact continu avec adaptation de
+        !      coefficient
+        !   -- On cherche le coefficient optimal pour eviter une possible singularite de matrice
+        !   -- La valeur est estimee une seule fois a la premiere prediction du premier pas de
+        !      temps pour l'etape de calcul
+        !   -- Cette valeur estimee est passee directement a mmchml_c sans passer par mmalgo car
+        !   -- a la premiere iteration on ne passe pas par mmalgo
+        l_contact_adapt = cfdisl(ds_contact%sdcont_defi, 'EXIS_ADAP')
 !            write (6,*) "l_contact_adapt", &
 !                l_contact_adapt,ds_contact%update_init_coefficient
         if ((nint(ds_contact%update_init_coefficient) .eq. 0) .and. l_contact_adapt) then
@@ -320,29 +320,29 @@ integer :: faccvg, ldccvg, condcvg
                 if (abs(log(maxmat))/abs(log(minmat)) .lt. 4.0d0) then
 !                     Le rapport d'arete max/min est
 !  un bon compromis pour initialiser le coefficient
-                    ds_contact%estimated_coefficient =&
-                    ((1.D3*ds_contact%arete_max)/(1.D-2*ds_contact%arete_min))
+                    ds_contact%estimated_coefficient = &
+                        ((1.D3*ds_contact%arete_max)/(1.D-2*ds_contact%arete_min))
                     ds_contact%update_init_coefficient = 1.0d0
                 else
-                    exponent_val = min(abs(log(minmat)),abs(log(maxmat)))/10.d0
+                    exponent_val = min(abs(log(minmat)), abs(log(maxmat)))/10.d0
                     ds_contact%estimated_coefficient = 10.d0**(exponent_val)
                     ds_contact%update_init_coefficient = 1.0d0
-                endif
+                end if
             else
-               ds_contact%estimated_coefficient = 1.d16*ds_contact%arete_min
-                    ds_contact%update_init_coefficient = 1.0d0
-            endif
+                ds_contact%estimated_coefficient = 1.d16*ds_contact%arete_min
+                ds_contact%update_init_coefficient = 1.0d0
+            end if
 !             write (6,*) "min,max,coef estime,abs(log(maxmat))/abs(log(minmat))", &
 !                 minmat,maxmat,ds_contact%estimated_coefficient,abs(log(maxmat))/abs(log(minmat))
-        endif
-    endif
+        end if
+    end if
 !
 ! - Factorization of global matrix of system
 !
     if (l_update_matr) then
-        call factorSystem(list_func_acti, ds_measure, ds_algorom,&
-                          numedd        , solveu    , maprec    , matass,&
+        call factorSystem(list_func_acti, ds_measure, ds_algorom, &
+                          numedd, solveu, maprec, matass, &
                           faccvg)
-    endif
+    end if
 !
 end subroutine

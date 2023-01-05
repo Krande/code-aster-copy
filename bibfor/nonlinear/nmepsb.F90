@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
+subroutine nmepsb(ndim, nno, axi, vff, dfdi, &
                   deplg, epsb, geps)
 !
 !
@@ -55,13 +55,13 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
     call r8inir(6, 0.d0, epsb, 1)
     call r8inir(18, 0.d0, geps, 1)
     do kl = 1, ndimsi
-        epsb(kl)=ddot(nno,deplg(kl+ndim),ndl,vff,1)
+        epsb(kl) = ddot(nno, deplg(kl+ndim), ndl, vff, 1)
         do i = 1, ndim
-            geps(kl,i) = ddot(nno,deplg(kl+ndim),ndl,dfdi(1,i),1)
+            geps(kl, i) = ddot(nno, deplg(kl+ndim), ndl, dfdi(1, i), 1)
         end do
     end do
 !
     if (axi) then
         call utmess('F', 'ALGORITH7_76')
-    endif
+    end if
 end subroutine

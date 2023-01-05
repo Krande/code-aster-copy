@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,22 +59,22 @@ subroutine pewext(resu)
 !
 !
     call jemarq()
-    c16b=(0.d0,0.d0)
-    lisord='&&PEWEXT.VECTORDR'
+    c16b = (0.d0, 0.d0)
+    lisord = '&&PEWEXT.VECTORDR'
     call getvid(' ', 'RESULTAT', scal=result, nbret=iret)
 !
 !
 ! -- INITIALISATION DE LA TABLE RESULTAT
 !
-    typarr(1)='I'
-    typarr(2)='R'
-    typarr(3)='R'
-    typarr(4)='R'
+    typarr(1) = 'I'
+    typarr(2) = 'R'
+    typarr(3) = 'R'
+    typarr(4) = 'R'
 !
-    noparr(1)='NUME_ORDRE'
-    noparr(2)='INST'
-    noparr(3)='TRAV_ELAS'
-    noparr(4)='TRAV_REEL'
+    noparr(1) = 'NUME_ORDRE'
+    noparr(2) = 'INST'
+    noparr(3) = 'TRAV_ELAS'
+    noparr(4) = 'TRAV_REEL'
 !
     call tbcrsd(resu, 'G')
     call tbajpa(resu, 4, noparr, typarr)
@@ -85,33 +85,33 @@ subroutine pewext(resu)
 !
     call getvr8(' ', 'PRECISION', scal=prec, nbret=iret)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=iret)
-    call rsutnu(result, ' ', 0, lisord, nbord,&
+    call rsutnu(result, ' ', 0, lisord, nbord, &
                 prec, crit, iret)
     if (iret .ne. 0) then
         call utmess('F', 'POSTELEM_11', sk=result)
-    endif
+    end if
     call jeveuo(lisord, 'L', jord)
 !
 !
 ! -- CALCUL DU TRAVAIL DES FORCES EXTERIEURES AUX DIFFERENTS INSTANTS
 !
-    depls0='&&PEWEXT.DEPLS0'
-    depls1='&&PEWEXT.DEPLS1'
-    forcs0='&&PEWEXT.FORCS0'
-    forcs1='&&PEWEXT.FORCS1'
+    depls0 = '&&PEWEXT.DEPLS0'
+    depls1 = '&&PEWEXT.DEPLS1'
+    forcs0 = '&&PEWEXT.FORCS0'
+    forcs1 = '&&PEWEXT.FORCS1'
 !
     do i = 1, nbord
         call jemarq()
         call jerecu('V')
-        numord=zi(jord-1+i)
+        numord = zi(jord-1+i)
 !
 !       EXTRACTION DE L'INSTANT DE CALCUL
-        call rsadpa(result, 'L', 1, 'INST', numord,&
+        call rsadpa(result, 'L', 1, 'INST', numord, &
                     0, sjv=jinst, styp=k8b)
-        inst=zr(jinst)
+        inst = zr(jinst)
 !
 !       EXTRACTION DU CHAMP DE DEPLCAMENT
-        call rsexch('F', result, 'DEPL', numord, depla1,&
+        call rsexch('F', result, 'DEPL', numord, depla1, &
                     iret)
 !
 !       -- TOUS LES CHAMPS DE LA SD_RESULTAT N'ONT PAS FORCEMENT
@@ -120,34 +120,34 @@ subroutine pewext(resu)
         call cnocns(depla1, 'V', depls1)
 !
 !       EXTRACTION DU CHAMP DE FORCE NODALE
-        call rsexch('F', result, 'FORC_NODA', numord, force1,&
+        call rsexch('F', result, 'FORC_NODA', numord, force1, &
                     iret)
         call cnocns(force1, 'V', forcs1)
 !
 !       CALCUL DU PRODUIT SCALAIRE F.U
         call cnsdot(depls1, forcs1, f1u1, ier)
-        ASSERT(ier.eq.0)
+        ASSERT(ier .eq. 0)
 !
 !       CALCUL DE L'INTEGRALE I(F.DU)
         if (i .ge. 2) then
             call cnsdot(depls0, forcs1, f1u0, ier)
-            ASSERT(ier.eq.0)
+            ASSERT(ier .eq. 0)
             call cnsdot(depls1, forcs0, f0u1, ier)
-            ASSERT(ier.eq.0)
-            w=w+0.5d0*(f0u1-f1u0+f1u1-f0u0)
+            ASSERT(ier .eq. 0)
+            w = w+0.5d0*(f0u1-f1u0+f1u1-f0u0)
         else
-            w=0
-        endif
+            w = 0
+        end if
 !
-        valer(1)=inst
-        valer(2)=f1u1/2
-        valer(3)=w
-        call tbajli(resu, 4, noparr, [numord], valer,&
+        valer(1) = inst
+        valer(2) = f1u1/2
+        valer(3) = w
+        call tbajli(resu, 4, noparr, [numord], valer, &
                     [c16b], k8b, 0)
 !
         call copisd('CHAM_NO_S', 'V', depls1, depls0)
         call copisd('CHAM_NO_S', 'V', forcs1, forcs0)
-        f0u0=f1u1
+        f0u0 = f1u1
 !
         call jedema()
     end do

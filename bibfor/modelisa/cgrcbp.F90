@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,11 +94,11 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
     call getvtx(motfac, 'PREF_GRNO', iocc=iocc, scal=prefix, nbret=ibid)
     lgpref = lxlgut(prefix)
 !
-    list_rela= cabl_prec//'.LIRELA'
+    list_rela = cabl_prec//'.LIRELA'
     call jeexin(list_rela//'.RLNR', iret)
     if (iret .eq. 0) then
         call utmess('F', 'CHARGES2_48', sk=cabl_prec)
-    endif
+    end if
 !
 !   nombre de relations
 !
@@ -124,17 +124,17 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
         nbno_liai = 0
 !       position du dernier terme de la relation
         adr = pointeur(irela)
-        adr = adr - nb_coef
+        adr = adr-nb_coef
         do i_coef = 1, nb_coef
-            nom_ddl = v_ddl(adr + i_coef)
-            if (nom_ddl(2:2).eq.'R')then
+            nom_ddl = v_ddl(adr+i_coef)
+            if (nom_ddl(2:2) .eq. 'R') then
                 cycle
-            endif
-            nbno_liai = nbno_liai + 1
-        enddo
+            end if
+            nbno_liai = nbno_liai+1
+        end do
         if (nbno_liai .gt. nbno_max) nbno_max = nbno_liai
-        nbgraj = nbgraj + 1
-    enddo
+        nbgraj = nbgraj+1
+    end do
 !
     if (l_write) then
         AS_ALLOCATE(vk8=listno, size=nbno_max)
@@ -144,21 +144,21 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
             nbno_liai = 0
 !           position du dernier terme de la relation
             adr = pointeur(irela)
-            adr = adr - nb_coef
+            adr = adr-nb_coef
             do i_coef = 1, nb_coef
-                nom_ddl = v_ddl(adr + i_coef)
-                if (nom_ddl(2:2).eq.'R')then
+                nom_ddl = v_ddl(adr+i_coef)
+                if (nom_ddl(2:2) .eq. 'R') then
                     cycle
-                endif
-                nbno_liai = nbno_liai + 1
-                listno(nbno_liai) = v_nomnoe(adr + i_coef)
-            enddo
-            ASSERT(nbno_liai.gt.1)
+                end if
+                nbno_liai = nbno_liai+1
+                listno(nbno_liai) = v_nomnoe(adr+i_coef)
+            end do
+            ASSERT(nbno_liai .gt. 1)
 !
 !           ajout du groupe
 !
             lennom = lxlgut(listno(1))
-            nomgno = prefix(1:lgpref) // listno(1)(1:lennom)
+            nomgno = prefix(1:lgpref)//listno(1) (1:lennom)
             call jecroc(jexnom(grpno, nomgno))
             call jeecra(jexnom(grpno, nomgno), 'LONMAX', nbno_liai)
             call jeecra(jexnom(grpno, nomgno), 'LONUTI', nbno_liai)
@@ -167,9 +167,9 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
                 call jenonu(jexnom(nomnoe, listno(j)), nuno)
                 zi(iad2-1+j) = nuno
             end do
-        enddo
+        end do
         AS_DEALLOCATE(vk8=listno)
-    endif
+    end if
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

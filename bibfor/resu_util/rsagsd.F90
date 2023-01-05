@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine rsagsd(nomsd, ilong)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: iundef, iret, nbcham, nbordr, nborlu, newnb, neword, neworl
-    integer :: jtachg,  jordrg, i, j, k, jordrv, jpara
+    integer :: jtachg, jordrg, i, j, k, jordrv, jpara
     real(kind=8) :: rundef
     integer :: n1, n2, kk, ier1
     character(len=24) :: nomobj
@@ -65,11 +65,11 @@ subroutine rsagsd(nomsd, ilong)
 !
     if (ilong .lt. 0) then
         call utmess('F', 'UTILITAI4_29')
-    endif
+    end if
     call jeexin(nomd2//'.DESC', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI_40', sk=nomd2)
-    endif
+    end if
 !
     call jelira(nomd2//'.DESC', 'NOMMAX', nbcham)
     call jelira(nomd2//'.ORDR', 'LONMAX', nbordr)
@@ -78,10 +78,10 @@ subroutine rsagsd(nomsd, ilong)
         newnb = 2*nbordr
     else
         newnb = ilong
-    endif
+    end if
     if (newnb .le. nbordr) goto 999
-    neword = min(newnb,nbordr)
-    neworl = min(newnb,nborlu)
+    neword = min(newnb, nbordr)
+    neworl = min(newnb, nborlu)
 !
 !
 !    -- LE .DESC, .NOVA, .TAVA ---
@@ -96,32 +96,32 @@ subroutine rsagsd(nomsd, ilong)
     AS_ALLOCATE(vk24=tach, size=neword*nbcham)
     call jeveuo(nomd2//'.ORDR', 'L', jordrg)
     call wkvect('&&RSAGSD.ORDR', 'V V I', max(neworl, 1), jordrv)
-    do i = 0, neworl - 1
+    do i = 0, neworl-1
         zi(jordrv+i) = zi(jordrg+i)
     end do
-    do i = 0, nbcham - 1
-        do j = 0, neword - 1
+    do i = 0, nbcham-1
+        do j = 0, neword-1
             tach(1+j+i*neword) = zk24(jtachg+j+i*nbordr)
         end do
     end do
     call jedetr(nomd2//'.TACH')
     call jedetr(nomd2//'.ORDR')
-    call jecrec(nomd2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT',&
+    call jecrec(nomd2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT', &
                 nbcham)
     call jeecra(nomd2//'.TACH', 'LONMAX', newnb)
     call jeveuo(nomd2//'.TACH', 'E', jtachg)
-    do k = 1,nbcham
+    do k = 1, nbcham
         call jecroc(jexnum(nomd2//'.TACH', k))
     end do
 !
     call wkvect(nomd2//'.ORDR', 'G V I', newnb, jordrg)
     call jeecra(nomd2//'.ORDR', 'LONUTI', neworl)
 !
-    do i = 0, neworl - 1
+    do i = 0, neworl-1
         zi(jordrg+i) = zi(jordrv+i)
     end do
-    do i = 0, nbcham - 1
-        do j = 0, neword - 1
+    do i = 0, nbcham-1
+        do j = 0, neword-1
             zk24(jtachg+j+i*newnb) = tach(1+j+i*neword)
         end do
     end do
@@ -135,89 +135,89 @@ subroutine rsagsd(nomsd, ilong)
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 !
-    nomobj=nomd2//'.RSPR'
+    nomobj = nomd2//'.RSPR'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
-        ASSERT(n1.eq.n2*nbordr)
+        n2 = n1/nbordr
+        ASSERT(n1 .eq. n2*nbordr)
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*nbordr+1, n2*newnb
-            zr(jpara-1+kk)=rundef
+        do kk = n2*nbordr+1, n2*newnb
+            zr(jpara-1+kk) = rundef
         end do
-    endif
+    end if
 !
 !
-    nomobj=nomd2//'.RSPC'
+    nomobj = nomd2//'.RSPC'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
+        n2 = n1/nbordr
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*nbordr+1, n2*newnb
-            zc(jpara-1+kk) = dcmplx(rundef,rundef)
+        do kk = n2*nbordr+1, n2*newnb
+            zc(jpara-1+kk) = dcmplx(rundef, rundef)
         end do
-    endif
+    end if
 !
 !
-    nomobj=nomd2//'.RSPI'
+    nomobj = nomd2//'.RSPI'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
+        n2 = n1/nbordr
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
-        do kk=n2*nbordr+1, n2*newnb
-            zi(jpara-1+kk)=iundef
+        do kk = n2*nbordr+1, n2*newnb
+            zi(jpara-1+kk) = iundef
         end do
-    endif
+    end if
 !
 !
-    nomobj=nomd2//'.RSP8'
+    nomobj = nomd2//'.RSP8'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
+        n2 = n1/nbordr
         call juveca(nomobj, n2*newnb)
-    endif
+    end if
 !
 !
-    nomobj=nomd2//'.RS16'
+    nomobj = nomd2//'.RS16'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
+        n2 = n1/nbordr
         call juveca(nomobj, n2*newnb)
-    endif
+    end if
 !
 !
-    nomobj=nomd2//'.RS24'
+    nomobj = nomd2//'.RS24'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
+        n2 = n1/nbordr
         call juveca(nomobj, n2*newnb)
-    endif
+    end if
 !
 !
-    nomobj=nomd2//'.RS32'
+    nomobj = nomd2//'.RS32'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
+        n2 = n1/nbordr
         call juveca(nomobj, n2*newnb)
-    endif
+    end if
 !
 !
-    nomobj=nomd2//'.RS80'
+    nomobj = nomd2//'.RS80'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1)
-        n2=n1/nbordr
+        n2 = n1/nbordr
         call juveca(nomobj, n2*newnb)
-    endif
+    end if
 !
 999 continue
 !

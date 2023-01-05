@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,10 +50,10 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
     zero = 0.d0
     un = 1.d0
     de = 2.d0
-    uns3 = un / 3.d0
-    des3 = de / 3.d0
-    uns5 = un / 5.d0
-    des5 = de / 5.d0
+    uns3 = un/3.d0
+    des3 = de/3.d0
+    uns5 = un/5.d0
+    des5 = de/5.d0
     depi = r8depi()
     crit = 'RELA'
     epsi = 1.d-06
@@ -75,7 +75,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         call getvr8(' ', 'ANGL_INCLI', scal=para_cont(4), nbret=n4)
         call getvr8(' ', 'ANGL_ISTHME', scal=para_cont(5), nbret=n5)
         call getvr8(' ', 'ANGL_IMPACT', scal=para_cont(6), nbret=n6)
-    endif
+    end if
 !
 !
 !     --- TUBE - BARRE ANTI VIBRATOIRE ---
@@ -90,32 +90,32 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !
         if (n6 .ne. 0) then
             aimp = para_cont(6)
-            rapp = cos ( aimp * r8dgrd() )
+            rapp = cos(aimp*r8dgrd())
         else
             rapp = un
-        endif
+        end if
         if (n4 .eq. 0) then
-            cst1 = ( un / ( de * rayt ) ) ** uns3
-            cst2 = 3.d0 / ( 4.d0 * lsup )
+            cst1 = (un/(de*rayt))**uns3
+            cst2 = 3.d0/(4.d0*lsup)
             do i = 1, nbinst
-                v1 = vusurt(i)*rapp + vusuro(i)*rapp
-                v2 = vusurt(i)*rapp / v1
-                prust(i) = v2 * cst1 * ( ( cst2 * v1 ) ** des3 )
+                v1 = vusurt(i)*rapp+vusuro(i)*rapp
+                v2 = vusurt(i)*rapp/v1
+                prust(i) = v2*cst1*((cst2*v1)**des3)
             end do
         else
-            angl = para_cont(4) * r8dgrd()
-            xla = lsup * angl
-            cst1 = ( un / ( de * rayt ) ) ** uns5
-            cst2 = 15.d0 * angl / 8.d0
+            angl = para_cont(4)*r8dgrd()
+            xla = lsup*angl
+            cst1 = (un/(de*rayt))**uns5
+            cst2 = 15.d0*angl/8.d0
             para(1) = rayt
             para(2) = lsup
             para(3) = angl
             x1 = xla
             x2 = rayt
             do i = 1, nbinst
-                v1 = vusurt(i)*rapp + vusuro(i)*rapp
-                v2 = vusurt(i)*rapp / v1
-                prust(i) = v2 * cst1 * ( ( cst2 * v1 ) ** des5 )
+                v1 = vusurt(i)*rapp+vusuro(i)*rapp
+                v2 = vusurt(i)*rapp/v1
+                prust(i) = v2*cst1*((cst2*v1)**des5)
                 if (prust(i) .gt. xla) then
                     para(4) = vusurt(i)*rapp
                     para(5) = vusuro(i)*rapp
@@ -123,19 +123,19 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
                         call utmess('A', 'PREPOST4_83')
                         prust(i) = 9999.d0
                         goto 12
-                    endif
-                    call usunew(type, para, crit, epsi, x1,&
+                    end if
+                    call usunew(type, para, crit, epsi, x1, &
                                 x2, resu, iret)
                     if (iret .eq. 0) then
                         prust(i) = resu
                         x1 = resu
                     else
                         prust(i) = 9999.d0
-                    endif
-                endif
- 12             continue
+                    end if
+                end if
+12              continue
             end do
-        endif
+        end if
 !
 !     --- TUBE - TROU CIRCULAIRE ---
     else if (type(1:12) .eq. 'TUBE_ALESAGE') then
@@ -152,12 +152,12 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         para(1) = para_cont(1)
         para(2) = para_cont(2)
         para(3) = para_cont(3)
-        if (n4 .ne. 0) angl = para_cont(4) * r8dgrd()
+        if (n4 .ne. 0) angl = para_cont(4)*r8dgrd()
         para(4) = angl
 !
         if (n2 .eq. 0) then
             do i = 1, nbinst
-                prust(i) = vusurt(i) / ( depi * lsup * rayt )
+                prust(i) = vusurt(i)/(depi*lsup*rayt)
             end do
         else
             x1 = zero
@@ -166,20 +166,20 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
                 do i = 1, nbinst
                     para(5) = vusurt(i)
                     para(6) = vusuro(i)
-                    call usubis(type, para, crit, epsi, x1,&
+                    call usubis(type, para, crit, epsi, x1, &
                                 x2, resu, iret)
                     if (iret .eq. 0) then
                         if (resu .ge. x2) then
                             call utmess('A', 'PREPOST4_83')
                             prust(i) = 9999.d0
                             goto 22
-                        endif
+                        end if
                         prust(i) = resu
                         x1 = resu
                     else
                         prust(i) = 9999.d0
-                    endif
- 22                 continue
+                    end if
+22                  continue
                 end do
             else
 !            --- CAS 3 OU D < L * THETA ---
@@ -187,38 +187,38 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !            --- CAS 3 OU D > L * THETA ---
                 typ2 = 'TUBE_ALESAG_3B'
 !
-                xla = lsup * angl
+                xla = lsup*angl
                 x1 = zero
-                x2 = de * rayo
+                x2 = de*rayo
                 do i = 1, nbinst
                     para(5) = vusurt(i)
                     para(6) = vusuro(i)
-                    call usubis(typ1, para, crit, epsi, x1,&
+                    call usubis(typ1, para, crit, epsi, x1, &
                                 x2, resu, ire1)
                     if (ire1 .eq. 0) then
                         if (resu .gt. xla) then
-                            call usubis(typ2, para, crit, epsi, x1,&
+                            call usubis(typ2, para, crit, epsi, x1, &
                                         x2, resu, ire2)
                             if (ire2 .eq. 0) then
                                 prust(i) = resu
                                 x1 = resu
                             else
                                 prust(i) = 9999.d0
-                            endif
+                            end if
                         else
                             prust(i) = resu
                             x1 = resu
-                        endif
+                        end if
                     else
                         prust(i) = 9999.d0
-                    endif
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !     --- TUBE - TROU QUADRIFOLIE OU TRIFOLIE ---
-        elseif ( type(1:11) .eq. 'TUBE_4_ENCO' .or. type(1:11) .eq.&
-    'TUBE_3_ENCO' ) then
+    elseif (type(1:11) .eq. 'TUBE_4_ENCO' .or. type(1:11) .eq. &
+            'TUBE_3_ENCO') then
 !
         if (n1 .eq. 0) call utmess('F', 'PREPOST4_1', nk=2, valk=[type, 'RAYON_MOBILE'])
         if (n2 .eq. 0) call utmess('F', 'PREPOST4_1', nk=2, valk=[type, 'RAYON_OBST'])
@@ -228,34 +228,34 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         para(1) = para_cont(1)
         para(2) = para_cont(2)
         para(3) = para_cont(3)
-        if (n4 .ne. 0) para(4) = para_cont(4) * r8dgrd()
-        if (n5 .ne. 0) para(7) = para_cont(5) * r8dgrd()
+        if (n4 .ne. 0) para(4) = para_cont(4)*r8dgrd()
+        if (n5 .ne. 0) para(7) = para_cont(5)*r8dgrd()
 !
         x1 = zero
         x2 = para(1)
         if (n4 .eq. 0) then
             do i = 1, nbinst
                 if (type(1:11) .eq. 'TUBE_4_ENCO') then
-                    para(5) = vusurt(i) / de
-                    para(6) = vusuro(i) / de
+                    para(5) = vusurt(i)/de
+                    para(6) = vusuro(i)/de
                 else
                     para(5) = vusurt(i)
                     para(6) = vusuro(i)
-                endif
-                call usubis(type, para, crit, epsi, x1,&
+                end if
+                call usubis(type, para, crit, epsi, x1, &
                             x2, resu, iret)
                 if (iret .eq. 0) then
                     if (resu .ge. x2) then
                         call utmess('A', 'PREPOST4_83')
                         prust(i) = 9999.d0
                         goto 30
-                    endif
+                    end if
                     prust(i) = resu
                     x1 = resu
                 else
                     prust(i) = 9999.d0
-                endif
- 30             continue
+                end if
+30              continue
             end do
         else
 !           --- CAS 2 OU D < L * THETA ---
@@ -263,38 +263,38 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !           --- CAS 2 OU D > L * THETA ---
             typ2 = 'TUBE_ENCO_2B'
 !
-            xla = para(3) * para(4)
+            xla = para(3)*para(4)
             x1 = zero
-            x2 = de * para(2)
+            x2 = de*para(2)
             do i = 1, nbinst
                 if (type(1:11) .eq. 'TUBE_4_ENCO') then
-                    para(5) = vusurt(i) / de
-                    para(6) = vusuro(i) / de
+                    para(5) = vusurt(i)/de
+                    para(6) = vusuro(i)/de
                 else
                     para(5) = vusurt(i)
                     para(6) = vusuro(i)
-                endif
-                call usubis(typ1, para, crit, epsi, x1,&
+                end if
+                call usubis(typ1, para, crit, epsi, x1, &
                             x2, resu, ire1)
                 if (ire1 .eq. 0) then
                     if (resu .gt. xla) then
-                        call usubis(typ2, para, crit, epsi, x1,&
+                        call usubis(typ2, para, crit, epsi, x1, &
                                     x2, resu, ire2)
                         if (ire2 .eq. 0) then
                             prust(i) = resu
                             x1 = resu
                         else
                             prust(i) = 9999.d0
-                        endif
+                        end if
                     else
                         prust(i) = resu
                         x1 = resu
-                    endif
+                    end if
                 else
                     prust(i) = 9999.d0
-                endif
+                end if
             end do
-        endif
+        end if
 !
 !     --- TUBE - TUBE ---
     else if (type(1:9) .eq. 'TUBE_TUBE') then
@@ -308,10 +308,10 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         rayt = para_cont(1)
         if (n4 .ne. 0) angl = para_cont(4)
 !
-        cst1 = ( un / ( de * rayt ) ) ** uns5
-        cst2 = 15.d0 * angl * r8dgrd() / 8.d0
+        cst1 = (un/(de*rayt))**uns5
+        cst2 = 15.d0*angl*r8dgrd()/8.d0
         do i = 1, nbinst
-            prust(i) = cst1 * ( ( cst2 * vusurt(i) ) ** des5 )
+            prust(i) = cst1*((cst2*vusurt(i))**des5)
         end do
 !
 !     --- GRAPPE - ALESAGE ---
@@ -332,23 +332,23 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         do i = 1, nbinst
             prust(i) = 9999.d0
             para(5) = vusurt(i)
-            call usubis(type, para, crit, epsi, x11,&
+            call usubis(type, para, crit, epsi, x11, &
                         x2, resu, iret)
             if (iret .eq. 0) then
                 if (resu .ge. x2) then
                     call utmess('A', 'PREPOST4_83')
                     goto 50
-                endif
+                end if
                 prust(i) = resu
                 x11 = resu
-            endif
- 50         continue
+            end if
+50          continue
         end do
 !
 !     --- GRAPPE - 1 ENCOCHE ---
 !     --- GRAPPE - 2 ENCOCHE ---
-        elseif ( type(1:13) .eq. 'GRAPPE_1_ENCO' .or. type(1:13) .eq.&
-    'GRAPPE_2_ENCO' ) then
+    elseif (type(1:13) .eq. 'GRAPPE_1_ENCO' .or. type(1:13) .eq. &
+            'GRAPPE_2_ENCO') then
 !
         if (n1 .ne. 0) call utmess('A', 'PREPOST4_2', nk=2, valk=[type, 'RAYON_MOBILE'])
         if (n2 .ne. 0) call utmess('A', 'PREPOST4_2', nk=2, valk=[type, 'RAYON_OBST'])
@@ -358,14 +358,14 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         if (n6 .ne. 0) call utmess('A', 'PREPOST4_2', nk=2, valk=[type, 'ANGL_IMPACT'])
 !
         if (type(1:13) .eq. 'GRAPPE_2_ENCO') then
-            para(1) = -48.89d+03 / 11.d0
-            para(2) = 106.03d0 / 11.d0
-            para(3) = -0.88d-03 / 11.d0
+            para(1) = -48.89d+03/11.d0
+            para(2) = 106.03d0/11.d0
+            para(3) = -0.88d-03/11.d0
         else
-            para(1) = -0.5d0 * 48.89d+03 / 11.d0
-            para(2) = 0.5d0 * 106.03d0 / 11.d0
-            para(3) = -0.5d0 * 0.88d-03 / 11.d0
-        endif
+            para(1) = -0.5d0*48.89d+03/11.d0
+            para(2) = 0.5d0*106.03d0/11.d0
+            para(3) = -0.5d0*0.88d-03/11.d0
+        end if
         x11 = zero
         x2 = 0.00144d0
         para(5) = zero
@@ -374,19 +374,19 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
             prust(i) = 9999.d0
             para(5) = vusurt(i)
             if (vusurt(i) .gt. vulim) goto 62
-            call usunew(type, para, crit, epsi, x11,&
+            call usunew(type, para, crit, epsi, x11, &
                         x2, resu, iret)
             if (iret .eq. 0) then
                 if (resu .ge. x2) then
                     call utmess('A', 'PREPOST4_83')
                     goto 62
-                endif
+                end if
                 prust(i) = resu
                 x11 = resu
-            endif
- 62         continue
+            end if
+62          continue
         end do
 !
-    endif
+    end if
 !
 end subroutine

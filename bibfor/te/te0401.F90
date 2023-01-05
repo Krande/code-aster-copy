@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine te0401(optioz, nomtz)
     integer :: i, j, kompt
     integer :: iu, imatuu
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
-    real(kind=8) :: vrs (1326)
+    real(kind=8) :: vrs(1326)
     real(kind=8) :: bsigth(51), enerth
     aster_logical :: indith
 ! DEB
@@ -57,26 +57,26 @@ subroutine te0401(optioz, nomtz)
 !
     if (option .eq. 'RIGI_MECA' .or. option .eq. 'EPOT_ELEM') then
 !
-        call vdxrig(nomte, zr(jgeom), matloc, nb1, 0,&
+        call vdxrig(nomte, zr(jgeom), matloc, nb1, 0, &
                     0)
 !
 !     CONSTRUCTION DE LA MATRICE DE PASSAGE REPERE GLOBAL REPERE LOCAL
 !
         call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
-        nb2 = nb1 + 1
+        nb2 = nb1+1
         call matpgl(nb2, zr(lzr), plg)
 !
         call r8inir(1326, 0.d0, vrs, 1)
 !
-        nddlet = 6*nb1 + 3
+        nddlet = 6*nb1+3
 !
-        call tranlg(nb1, 51, nddlet, plg, matloc,&
+        call tranlg(nb1, 51, nddlet, plg, matloc, &
                     vrs)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     if (option .eq. 'RIGI_MECA') then
@@ -87,14 +87,14 @@ subroutine te0401(optioz, nomtz)
 !
         kompt = 0
 !
-        do j = 1, 6 * nb1 + 3
+        do j = 1, 6*nb1+3
             do i = 1, j
-                kompt = kompt + 1
-                zr ( imatuu - 1 + kompt ) = vrs ( kompt )
+                kompt = kompt+1
+                zr(imatuu-1+kompt) = vrs(kompt)
             end do
         end do
 !
-    endif
+    end if
 !
 !---- ENERGIES DE DEFORMATION ELASTIQUE
 !
@@ -111,63 +111,63 @@ subroutine te0401(optioz, nomtz)
 !
 !------- ENERGIE DE DEFORMATION TOTALE
 !
-        call utvtsv('ZERO', 6 * nb1 + 3, vrs, zr ( iu ), zr ( jener ))
+        call utvtsv('ZERO', 6*nb1+3, vrs, zr(iu), zr(jener))
 !
-        zr ( jener ) = 0.5d0 * zr ( jener )
+        zr(jener) = 0.5d0*zr(jener)
 !
         call bsthco(nomte, bsigth, indith)
 !
         if (indith) then
-            do i = 1, 6 * nb1 + 3
-                enerth = enerth + bsigth(i)*zr(iu+i-1)
+            do i = 1, 6*nb1+3
+                enerth = enerth+bsigth(i)*zr(iu+i-1)
             end do
-            zr(jener) = zr(jener) - enerth
-        endif
+            zr(jener) = zr(jener)-enerth
+        end if
 !
-        if (abs ( zr ( jener ) ) .gt. 1.d-6) then
+        if (abs(zr(jener)) .gt. 1.d-6) then
 !
 !--------- ENERGIE DE DEFORMATION DE MEMBRANE
 !
-            call vdxrig(nomte, zr(jgeom), matloc, nb1, 1,&
+            call vdxrig(nomte, zr(jgeom), matloc, nb1, 1, &
                         0)
 !
             call r8inir(1326, 0.d0, vrs, 1)
 !
-            call tranlg(nb1, 51, nddlet, plg, matloc,&
+            call tranlg(nb1, 51, nddlet, plg, matloc, &
                         vrs)
 !
-            call utvtsv('ZERO', 6 * nb1 + 3, vrs, zr ( iu ), zr ( jener + 1 ))
+            call utvtsv('ZERO', 6*nb1+3, vrs, zr(iu), zr(jener+1))
 !
-            zr ( jener + 1 ) = 0.5d0 * zr ( jener + 1 )
+            zr(jener+1) = 0.5d0*zr(jener+1)
 !
 !
 !--------- ENERGIE DE DEFORMATION DE FLEXION
 !
-            call vdxrig(nomte, zr(jgeom), matloc, nb1, 0,&
+            call vdxrig(nomte, zr(jgeom), matloc, nb1, 0, &
                         1)
 !
             call r8inir(1326, 0.d0, vrs, 1)
 !
-            call tranlg(nb1, 51, nddlet, plg, matloc,&
+            call tranlg(nb1, 51, nddlet, plg, matloc, &
                         vrs)
 !
-            call utvtsv('ZERO', 6 * nb1 + 3, vrs, zr ( iu ), zr ( jener + 2 ))
+            call utvtsv('ZERO', 6*nb1+3, vrs, zr(iu), zr(jener+2))
 !
-            zr ( jener + 2 ) = 0.5d0 * zr ( jener + 2 )
+            zr(jener+2) = 0.5d0*zr(jener+2)
 !
 !--------- VALEURS RELATIVES
 !
-            zr ( jener + 1 ) = zr ( jener + 1 ) / zr ( jener )
-            zr ( jener + 2 ) = zr ( jener + 2 ) / zr ( jener )
+            zr(jener+1) = zr(jener+1)/zr(jener)
+            zr(jener+2) = zr(jener+2)/zr(jener)
 !
         else
 !
-            call r8inir(2, 0.d0, zr ( jener + 1 ), 1)
+            call r8inir(2, 0.d0, zr(jener+1), 1)
 !
-        endif
+        end if
 !
 !
-    endif
+    end if
 !
 !
 end subroutine

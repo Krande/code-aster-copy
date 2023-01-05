@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine jjimhd(idfic, inat, crnom, ngrp, kattr,&
+subroutine jjimhd(idfic, inat, crnom, ngrp, kattr, &
                   iadmi, genri, typei, lt, lonoi)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -52,123 +52,123 @@ subroutine jjimhd(idfic, inat, crnom, ngrp, kattr,&
     integer :: jdocu, jgenr, ji, jitab, jorig, jrnom
     integer :: jtype, kitab, n
 !-----------------------------------------------------------------------
-    parameter      ( n = 5 )
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    parameter(n=5)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 ! ----------------------------------------------------------------------
     integer :: ilorep, ideno, ilnom, ilmax, idehc
-    parameter      ( ilorep=1,ideno=2,ilnom=3,ilmax=4,idehc=6)
+    parameter(ilorep=1, ideno=2, ilnom=3, ilmax=4, idehc=6)
 ! ----------------------------------------------------------------------
     integer :: lg, iret, kadm, ladm
     hid_t :: iddat, idg
     character(len=24) :: nomatr
-    parameter      ( nomatr = 'ATTRIBUTS JEVEUX' )
+    parameter(nomatr='ATTRIBUTS JEVEUX')
 ! DEB ------------------------------------------------------------------
     kadm = iadmi
-    ladm = iszon(jiszon + kadm - 3)
+    ladm = iszon(jiszon+kadm-3)
 !
     if (inat .eq. 0) then
-        kattr(1)='OBJET SYSTEME'
+        kattr(1) = 'OBJET SYSTEME'
     else if (inat .eq. 1) then
-        kattr(1)='OBJET SIMPLE'
+        kattr(1) = 'OBJET SIMPLE'
     else if (inat .eq. 2) then
-        kattr(1)='OBJ. SYSTEME COLLECTION'
+        kattr(1) = 'OBJ. SYSTEME COLLECTION'
     else if (inat .eq. 3) then
-        kattr(1)='OBJET DE COLLECTION'
+        kattr(1) = 'OBJET DE COLLECTION'
     else if (inat .eq. -1) then
-        kattr(1)='COLLECTION'
-    endif
-    kattr(3)(3:3)=genri
+        kattr(1) = 'COLLECTION'
+    end if
+    kattr(3) (3:3) = genri
     if (genri .ne. 'N') then
         if (typei .eq. 'S') then
-            ji = 1 + (jiszon +kadm - 1) *lois+ladm
-            lg=lonoi/(lor8/2)
-            iret = hdfwsv (idfic,ngrp,crnom,typei,lt,k1zon(ji),lg)
-            kattr(3)(4:24)=' I4'
-            kattr(4)='INTEGER*4'
+            ji = 1+(jiszon+kadm-1)*lois+ladm
+            lg = lonoi/(lor8/2)
+            iret = hdfwsv(idfic, ngrp, crnom, typei, lt, k1zon(ji), lg)
+            kattr(3) (4:24) = ' I4'
+            kattr(4) = 'INTEGER*4'
         else if (typei .eq. 'I') then
-            ji = 1 + (jiszon +kadm - 1) *lois+ladm
-            lg=lonoi/lois
-            iret = hdfwsv (idfic,ngrp,crnom,typei,lt,k1zon(ji),lg)
-            kattr(3)(4:24)=' I'
-            kattr(4)='INTEGER'
+            ji = 1+(jiszon+kadm-1)*lois+ladm
+            lg = lonoi/lois
+            iret = hdfwsv(idfic, ngrp, crnom, typei, lt, k1zon(ji), lg)
+            kattr(3) (4:24) = ' I'
+            kattr(4) = 'INTEGER'
         else if (typei .eq. 'R') then
-            ji = 1 + (jiszon +kadm - 1) *lois+ladm
-            lg=lonoi/lor8
-            iret = hdfwsv (idfic,ngrp,crnom,typei,lt,k1zon(ji),lg)
-            kattr(3)(4:24)=' R'
-            kattr(4)='REAL*8'
+            ji = 1+(jiszon+kadm-1)*lois+ladm
+            lg = lonoi/lor8
+            iret = hdfwsv(idfic, ngrp, crnom, typei, lt, k1zon(ji), lg)
+            kattr(3) (4:24) = ' R'
+            kattr(4) = 'REAL*8'
         else if (typei .eq. 'C') then
-            ji = 1 + (jiszon +kadm - 1) *lois+ladm
-            lg=lonoi/lor8
-            iret = hdfwsv (idfic,ngrp,crnom,typei,lt,k1zon(ji),lg)
-            kattr(3)(4:24)=' C'
-            kattr(4)='COMPLEX*16'
+            ji = 1+(jiszon+kadm-1)*lois+ladm
+            lg = lonoi/lor8
+            iret = hdfwsv(idfic, ngrp, crnom, typei, lt, k1zon(ji), lg)
+            kattr(3) (4:24) = ' C'
+            kattr(4) = 'COMPLEX*16'
         else if (typei .eq. 'L') then
-            ji = 1 + ( jiszon + kadm - 1) * lois + ladm
-            lg=lonoi/lols
-            iret = hdfwsv (idfic,ngrp,crnom,typei,lt,k1zon(ji),lg)
-            kattr(3)(4:24)=' L'
-            kattr(4)='LOGICAL'
+            ji = 1+(jiszon+kadm-1)*lois+ladm
+            lg = lonoi/lols
+            iret = hdfwsv(idfic, ngrp, crnom, typei, lt, k1zon(ji), lg)
+            kattr(3) (4:24) = ' L'
+            kattr(4) = 'LOGICAL'
         else if (typei .eq. 'K') then
-            ji = 1 + ( jiszon + kadm - 1) * lois + ladm
-            lg=lonoi/lt
-            iret = hdfwsv (idfic,ngrp,crnom,typei,lt,k1zon(ji),lg)
-            kattr(3)(4:24)=' K'
-            kattr(4)='CHARACTER*'
+            ji = 1+(jiszon+kadm-1)*lois+ladm
+            lg = lonoi/lt
+            iret = hdfwsv(idfic, ngrp, crnom, typei, lt, k1zon(ji), lg)
+            kattr(3) (4:24) = ' K'
+            kattr(4) = 'CHARACTER*'
             if (lt .gt. 9) then
-                write(kattr(3)(6:7),'(I2)') lt
-                write(kattr(4)(11:12),'(I2)') lt
+                write (kattr(3) (6:7), '(I2)') lt
+                write (kattr(4) (11:12), '(I2)') lt
             else
-                write(kattr(3)(6:6),'(I1)') lt
-                write(kattr(4)(11:11),'(I1)') lt
-            endif
+                write (kattr(3) (6:6), '(I1)') lt
+                write (kattr(4) (11:11), '(I1)') lt
+            end if
         else
             call utmess('F', 'JEVEUX1_43', sk=typei)
-        endif
-        iddat = hdfopd (idfic,ngrp,crnom)
-        iret = hdfwat (iddat,nomatr,5,kattr)
+        end if
+        iddat = hdfopd(idfic, ngrp, crnom)
+        iret = hdfwat(iddat, nomatr, 5, kattr)
         if (iret .lt. 0) then
             call utmess('A', 'JEVEUX1_48', sk=crnom)
-        endif
-        iret = hdfcld (iddat)
+        end if
+        iret = hdfcld(iddat)
     else
-        idg = hdfcrg (idfic,ngrp,crnom)
-        jitab = jiszon + kadm - 1
-        kitab = jk1zon + (kadm - 1) * lois
-        ji = kitab+iszon(jitab+ideno)+ 1
+        idg = hdfcrg(idfic, ngrp, crnom)
+        jitab = jiszon+kadm-1
+        kitab = jk1zon+(kadm-1)*lois
+        ji = kitab+iszon(jitab+ideno)+1
         lg = iszon(jitab+ilmax)
         lt = iszon(jitab+ilnom)
-        kattr(3)(2:24)=' N K'
-        kattr(4)='CHARACTER*'
+        kattr(3) (2:24) = ' N K'
+        kattr(4) = 'CHARACTER*'
         if (lt .gt. 9) then
-            write(kattr(3)(6:7),'(I2)') lt
-            write(kattr(4)(11:12),'(I2)') lt
+            write (kattr(3) (6:7), '(I2)') lt
+            write (kattr(4) (11:12), '(I2)') lt
         else
-            write(kattr(3)(6:6),'(I1)') lt
-            write(kattr(4)(11:11),'(I1)') lt
-        endif
-        iret = hdfwat (idg,nomatr,5,kattr)
+            write (kattr(3) (6:6), '(I1)') lt
+            write (kattr(4) (11:11), '(I1)') lt
+        end if
+        iret = hdfwat(idg, nomatr, 5, kattr)
         if (iret .lt. 0) then
             call utmess('A', 'JEVEUX1_48', sk=crnom)
-        endif
-        iret = hdfwsv (idfic,crnom,'T_NOM',typei,lt,k1zon(ji),lg)
+        end if
+        iret = hdfwsv(idfic, crnom, 'T_NOM', typei, lt, k1zon(ji), lg)
         typei = 'I'
-        ji = 1 + (jiszon +kadm - 1) *lois+ladm
-        lg = iszon(jitab + ilorep)+ idehc
+        ji = 1+(jiszon+kadm-1)*lois+ladm
+        lg = iszon(jitab+ilorep)+idehc
         lt = lois
-        iret = hdfwsv (idfic,crnom,'T_HCOD',typei,lt,k1zon(ji),lg)
-        iret = hdfclg (idg)
-    endif
+        iret = hdfwsv(idfic, crnom, 'T_HCOD', typei, lt, k1zon(ji), lg)
+        iret = hdfclg(idg)
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,9 +97,9 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 
     real(kind=8) :: instev
 
-    integer :: n1, ibid, nbma, jcesd1, jcesl1,  iad, lonk80
+    integer :: n1, ibid, nbma, jcesd1, jcesl1, iad, lonk80
     integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
-    integer :: nbcvrc,  jlisch, nval1
+    integer :: nbcvrc, jlisch, nval1
     aster_logical :: l_xfem, l_elga
     character(len=8) :: varc, mailla, tysd, proldr, prolga, nomevo, finst
     character(len=8) :: ma2
@@ -121,11 +121,11 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 !   nom du parametre "nompar" servant a allouer le cham_elem "celmod" :
 !   PVARCPR <-> ELGA (par defaut dans vrcins)
 !   PVARCNO <-> ELNO
-    ASSERT( (nompar .eq. 'PVARCPR') .or. (nompar .eq. 'PVARCNO') )
+    ASSERT((nompar .eq. 'PVARCPR') .or. (nompar .eq. 'PVARCNO'))
     l_elga = .true.
     if (nompar .eq. 'PVARCNO') then
         l_elga = .false.
-    endif
+    end if
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
@@ -134,118 +134,113 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jeveuo(chmat//'.CVRCGD', 'L', vk8=cvrcgd)
 
-
     codret = 'OK'
-
 
 !     1. CREATION DE CHMAT.LISTE_SD :
 !     -------------------------------
     call jeexin(chmat//'.LISTE_SD', iret)
     if (iret .eq. 0) then
-        varc=' '
-        k80pre=' '
-        nbk80=0
-        lonk80=5
+        varc = ' '
+        k80pre = ' '
+        nbk80 = 0
+        lonk80 = 5
         call wkvect('&&VRCIN1.LK80', 'V V K80', lonk80, jlk80)
         do k = 1, nbcvrc
             if (cvrcvarc(k) .eq. varc) goto 1
-            varc=cvrcvarc(k)
+            varc = cvrcvarc(k)
             cart2 = chmat//'.'//varc//'.2'
-            ces1='&&VRCIN1.CES1'
-            call carces(cart2, 'ELEM', ' ', 'V', ces1,&
+            ces1 = '&&VRCIN1.CES1'
+            call carces(cart2, 'ELEM', ' ', 'V', ces1, &
                         'A', iret)
-            ASSERT(iret.eq.0)
+            ASSERT(iret .eq. 0)
             call jeveuo(ces1//'.CESD', 'L', jcesd1)
             call jeveuo(ces1//'.CESL', 'L', jcesl1)
             call jeveuo(ces1//'.CESV', 'L', vk16=cesv)
             do ima = 1, nbma
-                call cesexi('C', jcesd1, jcesl1, ima, 1,&
+                call cesexi('C', jcesd1, jcesl1, ima, 1, &
                             1, 1, iad)
                 if (iad .le. 0) goto 2
-                iad=iad-1
-                tysd=cesv(iad+2)(1:8)
-                nomsd =cesv(iad+3)(1:8)
-                nomsym=cesv(iad+4)
-                prolga=cesv(iad+5)(1:8)
-                proldr=cesv(iad+6)(1:8)
-                finst =cesv(iad+7)(1:8)
-                ASSERT((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP') .or. (tysd.eq.'VIDE'))
+                iad = iad-1
+                tysd = cesv(iad+2) (1:8)
+                nomsd = cesv(iad+3) (1:8)
+                nomsym = cesv(iad+4)
+                prolga = cesv(iad+5) (1:8)
+                proldr = cesv(iad+6) (1:8)
+                finst = cesv(iad+7) (1:8)
+                ASSERT((tysd .eq. 'EVOL') .or. (tysd .eq. 'CHAMP') .or. (tysd .eq. 'VIDE'))
                 if (tysd .eq. 'VIDE') goto 2
 
-                k80=' '
-                k80(1:8) =tysd
-                k80(9:16) =nomsd
-                k80(17:32)=nomsym
-                k80(33:40)=varc
-                k80(41:48)=prolga
-                k80(49:56)=proldr
-                k80(57:64)=finst
+                k80 = ' '
+                k80(1:8) = tysd
+                k80(9:16) = nomsd
+                k80(17:32) = nomsym
+                k80(33:40) = varc
+                k80(41:48) = prolga
+                k80(49:56) = proldr
+                k80(57:64) = finst
                 if (k80 .eq. k80pre) goto 2
-                k80pre=k80
-                itrou=indk80(zk80(jlk80),k80,1,nbk80)
+                k80pre = k80
+                itrou = indk80(zk80(jlk80), k80, 1, nbk80)
                 if (itrou .gt. 0) goto 2
-                nbk80=nbk80+1
+                nbk80 = nbk80+1
                 if (nbk80 .gt. lonk80) then
-                    lonk80=2*lonk80
+                    lonk80 = 2*lonk80
                     call juveca('&&VRCIN1.LK80', lonk80)
                     call jeveuo('&&VRCIN1.LK80', 'E', jlk80)
-                endif
-                zk80(jlk80-1+nbk80)=k80
-  2             continue
+                end if
+                zk80(jlk80-1+nbk80) = k80
+2               continue
             end do
             call detrsd('CHAM_ELEM_S', ces1)
-  1         continue
+1           continue
         end do
 
-        nbchs=nbk80
+        nbchs = nbk80
         if (nbchs .eq. 0) then
             call jedetr('&&VRCIN1.LK80')
             goto 999
-        endif
+        end if
         call wkvect(chmat//'.LISTE_SD', 'V V K16', 7*nbchs, jlissd)
         do ichs = 1, nbchs
-            k80=zk80(jlk80-1+ichs)
-            zk16(jlissd-1+7*(ichs-1)+1)=k80(1:8)
-            zk16(jlissd-1+7*(ichs-1)+2)=k80(9:16)
-            zk16(jlissd-1+7*(ichs-1)+3)=k80(17:32)
-            zk16(jlissd-1+7*(ichs-1)+4)=k80(33:40)
-            zk16(jlissd-1+7*(ichs-1)+5)=k80(41:48)
-            zk16(jlissd-1+7*(ichs-1)+6)=k80(49:56)
-            zk16(jlissd-1+7*(ichs-1)+7)=k80(57:64)
+            k80 = zk80(jlk80-1+ichs)
+            zk16(jlissd-1+7*(ichs-1)+1) = k80(1:8)
+            zk16(jlissd-1+7*(ichs-1)+2) = k80(9:16)
+            zk16(jlissd-1+7*(ichs-1)+3) = k80(17:32)
+            zk16(jlissd-1+7*(ichs-1)+4) = k80(33:40)
+            zk16(jlissd-1+7*(ichs-1)+5) = k80(41:48)
+            zk16(jlissd-1+7*(ichs-1)+6) = k80(49:56)
+            zk16(jlissd-1+7*(ichs-1)+7) = k80(57:64)
         end do
         call jedetr('&&VRCIN1.LK80')
-    endif
-
+    end if
 
 !   2. CREATION DE CHMAT.LISTE_CH :
 !   -------------------------------
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
     call jelira(chmat//'.LISTE_SD', 'LONMAX', n1)
-    nbchs=n1/7
-    ASSERT(n1.eq.7*nbchs)
+    nbchs = n1/7
+    ASSERT(n1 .eq. 7*nbchs)
     call jedetr(chmat//'.LISTE_CH')
     call wkvect(chmat//'.LISTE_CH', 'V V K24', nbchs, jlisch)
-    chs=chmat//'.CHS000'
-
+    chs = chmat//'.CHS000'
 
 !   2.0.1  CREATION DE CESMOD :
 !   ---------------------------
-    cesmod=modele//'.VRC.CESMOD'
+    cesmod = modele//'.VRC.CESMOD'
 !   --  cesmod n'est pas detruit pour gagner du temps
     call exisd('CHAM_ELEM_S', cesmod, iret)
     if (iret .eq. 0) then
-        celmod='&&VRCIN1.CELMOD'
-        dceli='&&VRCIN1.DCELI'
+        celmod = '&&VRCIN1.CELMOD'
+        dceli = '&&VRCIN1.DCELI'
         call cesvar(carele, ' ', modelLigrel, dceli)
-        call alchml(modelLigrel, 'INIT_VARC', nompar, 'V', celmod,&
+        call alchml(modelLigrel, 'INIT_VARC', nompar, 'V', celmod, &
                     iret, dceli)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
         call detrsd('CHAMP', dceli)
         call celces(celmod, 'V', cesmod)
         call jelira(celmod//'.CELV', 'LONMAX', nval1)
         call detrsd('CHAMP', celmod)
-    endif
-
+    end if
 
 !   2.0.2  CREATION DE MNOGA :
 !   ---------------------------
@@ -253,62 +248,61 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
     call exisd('CHAM_ELEM_S', mnoga, iret)
     if (iret .eq. 0) call manopg(modele, modelLigrel, 'INIT_VARC', 'PVARCPR', mnoga)
 
-
     do ichs = 1, nbchs
         call codent(ichs, 'D0', chs(13:15))
-        zk24(jlisch-1+ichs)=chs
-        tysd=zk16(jlissd-1+7*(ichs-1)+1)(1:8)
-        varc=zk16(jlissd-1+7*(ichs-1)+4)(1:8)
+        zk24(jlisch-1+ichs) = chs
+        tysd = zk16(jlissd-1+7*(ichs-1)+1) (1:8)
+        varc = zk16(jlissd-1+7*(ichs-1)+4) (1:8)
 
 !       2.1 INTERPOLATION EN TEMPS => NOMCH
 !       ------------------------------------
         if (tysd .eq. 'EVOL') then
 !           -- SI TYSD='EVOL', ON INTERPOLE AU TEMPS INST
-            nomevo=zk16(jlissd-1+7*(ichs-1)+2)(1:8)
-            nomsym=zk16(jlissd-1+7*(ichs-1)+3)
-            prolga=zk16(jlissd-1+7*(ichs-1)+5)(1:8)
-            proldr=zk16(jlissd-1+7*(ichs-1)+6)(1:8)
-            finst =zk16(jlissd-1+7*(ichs-1)+7)(1:8)
-            nomch='&&VRCIN1.NOMCH'
+            nomevo = zk16(jlissd-1+7*(ichs-1)+2) (1:8)
+            nomsym = zk16(jlissd-1+7*(ichs-1)+3)
+            prolga = zk16(jlissd-1+7*(ichs-1)+5) (1:8)
+            proldr = zk16(jlissd-1+7*(ichs-1)+6) (1:8)
+            finst = zk16(jlissd-1+7*(ichs-1)+7) (1:8)
+            nomch = '&&VRCIN1.NOMCH'
 
 !           -- PRISE EN COMPTE DE L'EVENTUELLE TRANSFORMATION DU TEMPS
 !              (AFFE_VARC/FONC_INST):
             if (finst .ne. ' ') then
-                call fointe('F', finst, 1, ['INST'], [inst],&
+                call fointe('F', finst, 1, ['INST'], [inst], &
                             instev, ibid)
             else
-                instev=inst
-            endif
-            call rsinch(nomevo, nomsym, 'INST', instev, nomch,&
+                instev = inst
+            end if
+            call rsinch(nomevo, nomsym, 'INST', instev, nomch, &
                         proldr, prolga, 2, 'V', iret)
-            ASSERT(iret.le.12)
+            ASSERT(iret .le. 12)
             if (iret .ge. 10) then
                 codret = 'NO'
                 goto 999
-            endif
+            end if
         else
-            ASSERT(tysd.eq.'CHAMP')
+            ASSERT(tysd .eq. 'CHAMP')
 !           -- SI TYSD='CHAMP', C'EST UN CHAMP INDEPENDANT DU TEMPS :
-            nomch=zk16(jlissd-1+7*(ichs-1)+2)
-        endif
+            nomch = zk16(jlissd-1+7*(ichs-1)+2)
+        end if
         call dismoi('NOM_MAILLA', nomch, 'CHAMP', repk=ma2)
         if (ma2 .ne. mailla) then
-            valk(1)=mailla
-            valk(2)=ma2
+            valk(1) = mailla
+            valk(2) = ma2
             call utmess('F', 'MATERIAL2_13', nk=2, valk=valk)
-        endif
+        end if
 
 !       -- VERIFICATION DE NOMCH :
-        itrou=indik8(cvrcvarc,varc,1,nbcvrc)
-        ASSERT(itrou.gt.0)
-        nomgd=cvrcgd(itrou)
+        itrou = indik8(cvrcvarc, varc, 1, nbcvrc)
+        ASSERT(itrou .gt. 0)
+        nomgd = cvrcgd(itrou)
         call dismoi('NOM_GD', nomch, 'CHAMP', repk=nomgd2)
         if (nomgd .ne. nomgd2) then
             valk(1) = varc
             valk(2) = nomgd
             valk(3) = nomgd2
             call utmess('F', 'CALCULEL5_39', nk=3, valk=valk)
-        endif
+        end if
         call dismoi('TYPE_CHAMP', nomch, 'CHAMP', repk=tych)
 
 !       2.2.1 Cas particulier ou l'on ne souhaite pas ELGA mais ELNO
@@ -317,27 +311,27 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
             call vrcin_elno(nomch, cesmod, chs)
 !           on passe a l'iteration suivante de la boucle sur LISTE_CH
             cycle
-        endif
+        end if
 
 !       2.2.2 PASSAGE AUX POINTS DE GAUSS => CHS (cas general ELGA)
 !       --------------------------------------
         if (tych .eq. 'CART') then
             call carces(nomch, 'ELGA', cesmod, 'V', chs, 'A', iret)
-            ASSERT(iret.eq.0)
+            ASSERT(iret .eq. 0)
 
-        else if (tych.eq.'NOEU') then
-            cns1='&&VRCIN1.CNS1'
+        else if (tych .eq. 'NOEU') then
+            cns1 = '&&VRCIN1.CNS1'
             call cnocns(nomch, 'V', cns1)
             call cnsces(cns1, 'ELGA', cesmod, mnoga, 'V', chs)
             call detrsd('CHAM_NO_S', cns1)
 
-        else if ((tych.eq.'ELNO').or.(tych.eq.'ELEM')) then
-            ces1='&&VRCIN1.CES1'
+        else if ((tych .eq. 'ELNO') .or. (tych .eq. 'ELEM')) then
+            ces1 = '&&VRCIN1.CES1'
             call celces(nomch, 'V', ces1)
             call cesces(ces1, 'ELGA', cesmod, mnoga, ' ', 'V', chs)
             call detrsd('CHAM_ELEM_S', ces1)
 
-        else if (tych.eq.'ELGA') then
+        else if (tych .eq. 'ELGA') then
 !
             celtmp = '&&VRCIN1.CELTMP'
             l_xfem = .false.
@@ -354,33 +348,31 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 !
             else
 !               on verifie que le champ est bien prepare
-                call dismoi('NOM_LIGREL', nomch, 'CHAM_ELEM',&
+                call dismoi('NOM_LIGREL', nomch, 'CHAM_ELEM', &
                             repk=ligr1)
                 if (ligr1 .ne. modelLigrel) then
-                    valk(1)=nomch
-                    valk(2)=ligr1
-                    valk(3)=modelLigrel
+                    valk(1) = nomch
+                    valk(2) = ligr1
+                    valk(3) = modelLigrel
                     call utmess('F', 'CALCULEL4_25', nk=3, valk=valk)
-                endif
+                end if
 !
-                call dismoi('NOM_OPTION', nomch, 'CHAM_ELEM',&
+                call dismoi('NOM_OPTION', nomch, 'CHAM_ELEM', &
                             repk=optio1)
                 if (optio1 .ne. 'INI_SP_MATER') then
-                    valk(1)=nomch
-                    valk(2)=optio1
+                    valk(1) = nomch
+                    valk(2) = optio1
                     call utmess('F', 'CALCULEL4_26', nk=2, valk=valk)
-                endif
+                end if
 !
 !               simple recopie
                 call celces(nomch, 'V', chs)
 !
-            endif
+            end if
 !
         else
             ASSERT(.false.)
-        endif
-
-
+        end if
 
         if (tysd .eq. 'EVOL') call detrsd('CHAMP', nomch)
     end do

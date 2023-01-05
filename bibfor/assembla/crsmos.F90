@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,22 +44,22 @@ subroutine crsmos(nomsto, typroz, neq)
 !
 !
     call jemarq()
-    sto19=nomsto
-    typrof=typroz
+    sto19 = nomsto
+    typrof = typroz
 !
-    ASSERT(typrof.eq.'PLEIN' .or. typrof.eq.'DIAG')
+    ASSERT(typrof .eq. 'PLEIN' .or. typrof .eq. 'DIAG')
     if (typrof .eq. 'DIAG') then
-        nterm=neq
+        nterm = neq
     else
-        nterm=neq*(neq+1)/2
-    endif
+        nterm = neq*(neq+1)/2
+    end if
 !
     call wkvect(sto19//'.SMHC', 'G V S', nterm, jsmhc)
     call wkvect(sto19//'.SMDI', 'G V I', neq, jsmdi)
     call wkvect(sto19//'.SMDE', 'G V I', 6, jsmde)
 !
 !
-    zi(jsmde-1+1 ) = neq
+    zi(jsmde-1+1) = neq
     zi(jsmde-1+2) = nterm
     zi(jsmde-1+3) = 1
 !
@@ -69,16 +69,16 @@ subroutine crsmos(nomsto, typroz, neq)
             zi(jsmdi+i-1) = i
             zi4(jsmhc+i-1) = i
         end do
-    else if (typrof.eq.'PLEIN') then
-        ico=0
+    else if (typrof .eq. 'PLEIN') then
+        ico = 0
         do i = 1, neq
             zi(jsmdi+i-1) = i*(i+1)/2
             do j = 1, i
-                ico=ico+1
+                ico = ico+1
                 zi4(jsmhc-1+ico) = j
             end do
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

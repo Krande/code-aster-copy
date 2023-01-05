@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,20 +58,20 @@ subroutine bsthpl(nomte, bsigth, indith)
 !     ----------------------------------------------------
     call jevech('PGEOMER', 'L', jgeom)
 !
-    if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDSTR3' .or. nomte .eq. 'MEDKTG3' .or. nomte&
+    if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDSTR3' .or. nomte .eq. 'MEDKTG3' .or. nomte &
         .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
         nno = 3
         call dxtpgl(zr(jgeom), pgl)
-        else if (nomte.eq.'MEDKQU4' .or.&
-     &         nomte.eq.'MEDKQG4' .or.&
-     &         nomte.eq.'MEDSQU4' .or.&
-     &         nomte.eq.'MEQ4QU4' .or.&
-     &         nomte.eq.'MEQ4GG4' ) then
+    else if (nomte .eq. 'MEDKQU4' .or.&
+ &         nomte .eq. 'MEDKQG4' .or.&
+ &         nomte .eq. 'MEDSQU4' .or.&
+ &         nomte .eq. 'MEQ4QU4' .or.&
+ &         nomte .eq. 'MEQ4GG4') then
         nno = 4
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
     else
         call utmess('F', 'ELEMENTS_14', sk=nomte)
-    endif
+    end if
 !
 ! --- DETERMINATION DES COORDONNEES LOCALES XYZL DES NOEUDS
 ! --- DE L'ELEMENT :
@@ -85,7 +85,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 !
 ! --- CALCUL DE BT*SIGTH :
 !     ------------------
-    call dxbsig(nomte, xyzl, pgl, sigth, bsigth,&
+    call dxbsig(nomte, xyzl, pgl, sigth, bsigth, &
                 'FORC_NODA')
 !
 !

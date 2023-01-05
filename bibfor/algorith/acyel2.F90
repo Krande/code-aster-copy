@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
-                  lilig, nblig, licol, nbcol, cmat,&
+subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart, &
+                  lilig, nblig, licol, nbcol, cmat, &
                   ndim, ideb, jdeb, x)
     implicit none
 !
@@ -84,25 +84,25 @@ subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
 !
         do j = 1, nbcol
             do i = 1, nblig
-                iad=llob+(licol(j)-1)*nobl+lilig(i)-1
-                call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
-                            1, ideb+i-1, jdeb+ j-1, x, 1,&
+                iad = llob+(licol(j)-1)*nobl+lilig(i)-1
+                call ampcpr(cmat, ndim, ndim, zr(iad), 1, &
+                            1, ideb+i-1, jdeb+j-1, x, 1, &
                             1)
-                call ampcpr(cmat, ndim, ndim, zr(iad), 1,&
-                            1, jdeb+j-1, ideb+ i-1, x, 1,&
+                call ampcpr(cmat, ndim, ndim, zr(iad), 1, &
+                            1, jdeb+j-1, ideb+i-1, x, 1, &
                             1)
             end do
         end do
 !
     else
-        call ampcpr(cmat, ndim, ndim, zr(llob), nobl,&
-                    nobc, ideb, jdeb, x, 1,&
+        call ampcpr(cmat, ndim, ndim, zr(llob), nobl, &
+                    nobc, ideb, jdeb, x, 1, &
                     1)
-        call ampcpr(cmat, ndim, ndim, zr(llob), nobl,&
-                    nobc, jdeb, ideb, x, 1,&
-                    - 1)
+        call ampcpr(cmat, ndim, ndim, zr(llob), nobl, &
+                    nobc, jdeb, ideb, x, 1, &
+                    -1)
 !
-    endif
+    end if
 !
 !
 999 continue

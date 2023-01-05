@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ function xifonc(x, dplus, dmoins, gamma)
         dd = dmoins
     else
         dd = (dplus+dmoins)/2.d0
-    endif
+    end if
 !
     xifonc = (1.d0+gamma*dd)/(1.d0+dd)
 !

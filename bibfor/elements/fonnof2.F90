@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,13 +59,13 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !        BASNOF     : BASE LOCALE EN FOND DE FISSURE
 !-----------------------------------------------------------------------
 !
-    integer :: nbma, jlima, im, n1,  nbnoe, iret, jsup, jnols, inols
+    integer :: nbma, jlima, im, n1, nbnoe, iret, jsup, jnols, inols
     integer :: idlino, nbnols, jcoors, in, nbnoft, inoff, ifm, niv, jnofo
     integer :: nuno, jints, nbtrls, iera, inols2, inoli2
     integer :: numfin, isym, inoli, jinf, jnoli, nbnoli, jcoori, jinti
     integer :: nbtrli, ino, inos, nbs, numun, jts, jti, nbi, inoi
-    integer :: jnofos, irlev,  ndim
-    integer :: ninfsup_norm,ninfsup_norm2
+    integer :: jnofos, irlev, ndim
+    integer :: ninfsup_norm, ninfsup_norm2
     real(kind=8) :: x0(3), x1, x2, y1, y2, z1, z2, d, vplan(3), dmin
     real(kind=8) :: dmax, prec, preco, ps, vectan(3), precn
     character(len=6) :: nompro
@@ -84,10 +84,9 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !   INDICATEUR DE COMMANDE POUR OREINO: 3-DEFI_FOND_FISS/PREC_NORM
     iera = 3
     jnofos = 0
-    
-    
-    ninfsup_norm=20
-    ninfsup_norm2=100
+
+    ninfsup_norm = 20
+    ninfsup_norm2 = 100
 !
 !     ------------------------------------------------------------------
 !                        LE MAILLAGE, LE FOND
@@ -111,7 +110,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !        call jeveuo(fonnoe, 'L', jnofo)
 !        fonnoe =resu//'.FOND_SUP.NOEU'
 !        call jeveuo(fonnoe, 'L', jnofos)
-    endif
+    end if
 !
 !     BASE LOCALE EN FOND DE FISSURE
     call jeveuo(basnof, 'L', vr=basefond)
@@ -125,9 +124,9 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !
     call jeexin(resu//'.LEVREINF.MAIL', isym)
     if (isym .ne. 0) then
-       call wkvect(resu//'.INFNORM.NOEU', 'G V K8', nbnoff*ninfsup_norm, inoli)
-       call wkvect(resu//'.INFNORM.NOEU2', 'G V K8', nbnoff*ninfsup_norm2, inoli2)
-    endif
+        call wkvect(resu//'.INFNORM.NOEU', 'G V K8', nbnoff*ninfsup_norm, inoli)
+        call wkvect(resu//'.INFNORM.NOEU2', 'G V K8', nbnoff*ninfsup_norm2, inoli2)
+    end if
 !
 !     ------------------------------------------------------------------
 !         GROUP_MA LEVRE_SUP --> GROUP_NO LEVRE_SUP
@@ -141,9 +140,9 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !
     call wkvect('&&'//nompro//'_MAILLE_LEV_SUP', 'V V I', nbma, jlima)
     do im = 1, nbma
-        call jenonu(jexnom(noma//'.NOMMAI', zk8(jsup-1 + im)), zi( jlima-1 + im))
+        call jenonu(jexnom(noma//'.NOMMAI', zk8(jsup-1+im)), zi(jlima-1+im))
     end do
-    call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma,&
+    call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma, &
                 zi(jnols), nbnols, 'TOUS')
 !
     call wkvect('&&PKFOND_COOR_LEV_SUP', 'V V R', 3*nbnols, jcoors)
@@ -167,19 +166,19 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
         call wkvect('&&'//nompro//'_NOEU_NORM_INF', 'V V I', nbnoe, jnoli)
         call wkvect('&&'//nompro//'_MAILLE_LEV_INF', 'V V I', nbma, jlima)
         do im = 1, nbma
-            call jenonu(jexnom(noma//'.NOMMAI', zk8(jinf-1 + im)), zi(jlima-1 + im))
+            call jenonu(jexnom(noma//'.NOMMAI', zk8(jinf-1+im)), zi(jlima-1+im))
         end do
-        call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma,&
+        call gmgnre(noma, nbnoe, zi(idlino), zi(jlima), nbma, &
                     zi(jnoli), nbnoli, 'TOUS')
 !
         call wkvect('&&PKFOND_COOR_LEV_INF', 'V V R', 3*nbnoli, jcoori)
         do in = 1, nbnoli
-            zr(jcoori-1+3*(in-1)+1) = vale(3*(zi(jnoli-1+in)-1)+ 1)
-            zr(jcoori-1+3*(in-1)+2) = vale(3*(zi(jnoli-1+in)-1)+ 2)
-            zr(jcoori-1+3*(in-1)+3) = vale(3*(zi(jnoli-1+in)-1)+ 3)
+            zr(jcoori-1+3*(in-1)+1) = vale(3*(zi(jnoli-1+in)-1)+1)
+            zr(jcoori-1+3*(in-1)+2) = vale(3*(zi(jnoli-1+in)-1)+2)
+            zr(jcoori-1+3*(in-1)+3) = vale(3*(zi(jnoli-1+in)-1)+3)
         end do
         call jedetr('&&'//nompro//'_TRAV')
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !        BOUCLE SUR LES NOEUDS DU FOND DE FISSURE
@@ -189,10 +188,10 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 ! ------ CAS DU FOND_FERME: LE PREMIER ET LE DERNIER NOEUD SONT
 !                           IDENTIQUES
     if (typfon .eq. 'FERME') then
-        nbnoft = nbnoff - 1
+        nbnoft = nbnoff-1
     else
         nbnoft = nbnoff
-    endif
+    end if
 !
 !
     do inoff = 1, nbnoft
@@ -211,27 +210,27 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !
 !        D = LONGUEUR DU SEGMENT DU FOND DE FISSURE
         if (ndim .eq. 3) then
-            call dfflon(vale, zk8(jnofo), nomnoe, inoff, nbnoff,&
+            call dfflon(vale, zk8(jnofo), nomnoe, inoff, nbnoff, &
                         typfon, d)
-        else if (ndim.eq.2) then
+        else if (ndim .eq. 2) then
 !          D N'A PAS DE SENS EN 2D, ON PREND ALORS UNE VALEUR CARACT
             d = sqrt(x0(1)**2+x0(2)**2)
-        endif
+        end if
 !
 !        PREC = PRECISION POUR LA RECHERCHE DES NOEUDS DES LEVRES
-        prec = d * precn
+        prec = d*precn
 !
 ! ------ CALCUL DE L'INTERSECTION DU PLAN AVEC LES NOEUDS DES MAILLES
 !        DEFINISSANT LA LEVRE INFERIEURE - SAUVEGARDE
 !
         if (isym .ne. 0) then
             call wkvect('&&PKFOND_INTERS_INF', 'V V I', nbnoe, jinti)
-            call cgnop0(nbnoli, zr(jcoori), x0, vplan, prec,&
+            call cgnop0(nbnoli, zr(jcoori), x0, vplan, prec, &
                         nbtrli, zi(jinti))
             if (nbtrli .le. 2) then
                 call jedetr('&&PKFOND_INTERS_INF')
                 goto 200
-            endif
+            end if
             call wkvect('&&PKFOND_TRAV_INF', 'V V I', nbtrli, jti)
 !
 ! ---- ORDRE DES NOEUDS
@@ -240,7 +239,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
             dmin = 100.d0
             nbi = 1
             inoi = 1
-            zi(jti-1 + inoi) = nuno
+            zi(jti-1+inoi) = nuno
             x1 = vale(3*(nuno-1)+1)
             y1 = vale(3*(nuno-1)+2)
             z1 = vale(3*(nuno-1)+3)
@@ -248,16 +247,16 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 ! identification noeuds sur bon cote de la levre (cas fond ferme)
 ! a partir du noeud le plus proche du fond
             do in = 1, nbtrli
-                ino = jnoli+zi(jinti-1 + in)-1
+                ino = jnoli+zi(jinti-1+in)-1
                 if (zi(ino) .eq. nuno) goto 310
                 x2 = vale(3*(zi(ino)-1)+1)
                 y2 = vale(3*(zi(ino)-1)+2)
                 z2 = vale(3*(zi(ino)-1)+3)
-                d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
+                d = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
                 if (d .lt. dmin) then
                     dmin = d
                     numun = zi(ino)
-                endif
+                end if
 310             continue
             end do
 
@@ -267,63 +266,63 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
             vectan(3) = vale(3*(numun-1)+3)-z1
 !
             do in = 1, nbtrli
-                ino = jnoli+zi(jinti-1 + in)-1
+                ino = jnoli+zi(jinti-1+in)-1
                 if (zi(ino) .eq. nuno) goto 320
                 x2 = vale(3*(zi(ino)-1)+1)
                 y2 = vale(3*(zi(ino)-1)+2)
                 z2 = vale(3*(zi(ino)-1)+3)
-                d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
-                ps=(x2-x1)*vectan(1)+(y2-y1)*vectan(2)+(z2-z1)*vectan(&
-                3)
+                d = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
+                ps = (x2-x1)*vectan(1)+(y2-y1)*vectan(2)+(z2-z1)*vectan( &
+                     3)
                 if (ps .ge. 0.d0) then
                     nbi = nbi+1
                     inoi = inoi+1
-                    zi(jti-1 + inoi) = zi(ino)
+                    zi(jti-1+inoi) = zi(ino)
                     if (d .gt. dmax) then
                         dmax = d
                         numfin = zi(ino)
-                    endif
-                endif
+                    end if
+                end if
 320             continue
             end do
 !
             preco = prec*10
-            call oreino(noma, zi(jti), nbi, nuno, numfin,&
+            call oreino(noma, zi(jti), nbi, nuno, numfin, &
                         vale, critn, preco, iera, iret)
 
-           do in = 1, min(nbi, ninfsup_norm)
-              call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1 + ninfsup_norm*(inoff-1)+in))
+            do in = 1, min(nbi, ninfsup_norm)
+                call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1+ninfsup_norm*(inoff-1)+in))
             end do
             do in = 1, min(nbi, ninfsup_norm2)
-              call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli2-1 + ninfsup_norm2*(inoff-1)+in))
-           end do
+                call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli2-1+ninfsup_norm2*(inoff-1)+in))
+            end do
 !
             call jedetr('&&PKFOND_INTERS_INF')
             call jedetr('&&PKFOND_TRAV_INF')
-        endif
+        end if
 !
 ! ------ CALCUL DE L'INTERSECTION DU PLAN AVEC LES NOEUDS DES MAILLES
 !        DEFINISSANT LA LEVRE SUPERIEURE - SAUVEGARDE
 !
         call wkvect('&&PKFOND_INTERS_SUP', 'V V I', nbnoe, jints)
-        call cgnop0(nbnols, zr(jcoors), x0, vplan, prec,&
+        call cgnop0(nbnols, zr(jcoors), x0, vplan, prec, &
                     nbtrls, zi(jints))
         if (nbtrls .le. 2) then
             call jedetr('&&PKFOND_INTERS_SUP')
             goto 200
-        endif
+        end if
         call wkvect('&&PKFOND_TRAV_SUP', 'V V I', nbtrls, jts)
 !
 ! ---- ORDRE DES NOEUDS
         if (irlev .eq. 0) then
-            call jenonu(jexnom(nomnoe, zk8(jnofos-1 + inoff)), nuno)
-        endif
+            call jenonu(jexnom(nomnoe, zk8(jnofos-1+inoff)), nuno)
+        end if
         numfin = nuno
         dmax = 0.d0
         dmin = 100.d0
         nbs = 1
         inos = 1
-        zi(jts-1 + inos) = nuno
+        zi(jts-1+inos) = nuno
         x1 = vale(3*(nuno-1)+1)
         y1 = vale(3*(nuno-1)+2)
         z1 = vale(3*(nuno-1)+3)
@@ -331,16 +330,16 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 ! identification noeuds sur bon cote de la levre (cas fond ferme)
 ! a partir du noeud le plus proche du fond
         do in = 1, nbtrls
-            ino = jnols+zi(jints-1 + in)-1
+            ino = jnols+zi(jints-1+in)-1
             if (zi(ino) .eq. nuno) goto 210
             x2 = vale(3*(zi(ino)-1)+1)
             y2 = vale(3*(zi(ino)-1)+2)
             z2 = vale(3*(zi(ino)-1)+3)
-            d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
+            d = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
             if (d .lt. dmin) then
                 dmin = d
                 numun = zi(ino)
-            endif
+            end if
 210         continue
         end do
 !
@@ -349,33 +348,33 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
         vectan(3) = vale(3*(numun-1)+3)-z1
 !
         do in = 1, nbtrls
-            ino = jnols+zi(jints-1 +in)-1
+            ino = jnols+zi(jints-1+in)-1
             if (zi(ino) .eq. nuno) goto 220
             x2 = vale(3*(zi(ino)-1)+1)
             y2 = vale(3*(zi(ino)-1)+2)
             z2 = vale(3*(zi(ino)-1)+3)
-            d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
-            ps=(x2-x1)*vectan(1)+(y2-y1)*vectan(2)+(z2-z1)*vectan(3)
+            d = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
+            ps = (x2-x1)*vectan(1)+(y2-y1)*vectan(2)+(z2-z1)*vectan(3)
             if (ps .ge. 0.d0) then
                 nbs = nbs+1
                 inos = inos+1
-                zi(jts-1 + inos) = zi(ino)
+                zi(jts-1+inos) = zi(ino)
                 if (d .gt. dmax) then
                     dmax = d
                     numfin = zi(ino)
-                endif
-            endif
+                end if
+            end if
 220         continue
         end do
         preco = prec*10
-        call oreino(noma, zi(jts), nbs, nuno, numfin,&
+        call oreino(noma, zi(jts), nbs, nuno, numfin, &
                     vale, critn, preco, iera, iret)
 !
         do in = 1, min(nbs, ninfsup_norm)
-            call jenuno(jexnum(nomnoe, zi(jts-1 + in)), zk8(inols-1 + ninfsup_norm*(inoff-1)+in))
+            call jenuno(jexnum(nomnoe, zi(jts-1+in)), zk8(inols-1+ninfsup_norm*(inoff-1)+in))
         end do
         do in = 1, min(nbs, ninfsup_norm2)
-            call jenuno(jexnum(nomnoe, zi(jts-1+in)), zk8(inols2-1 + ninfsup_norm2*(inoff-1)+in))
+            call jenuno(jexnum(nomnoe, zi(jts-1+in)), zk8(inols2-1+ninfsup_norm2*(inoff-1)+in))
         end do
 !
         call jedetr('&&PKFOND_INTERS_SUP')

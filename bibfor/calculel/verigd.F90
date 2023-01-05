@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
         call utmess('A', 'POSTRELE_57', sk=nomgd)
         iret = 1
         goto 30
-    endif
+    end if
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !
@@ -77,7 +77,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 !     -------------------------------------------
     if (ncmp .gt. 3000) then
         call utmess('F', 'POSTRELE_13')
-    endif
+    end if
     do k = 1, ncmp
         lcmp2(k) = lcmp(k)
     end do
@@ -90,13 +90,13 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
         call utmess('A', 'POSTRELE_55', sk=lcmp2(i1))
         iret = 2
         goto 30
-    endif
+    end if
 !
 !
 !     3. LCMP2 EST INCLUSE DANS LA LISTE DES CMPS DE LA GRANDEUR :
 !     -----------------------------------------------------------
     if (nomgd(1:5) .ne. 'VARI_') then
-        call knincl(8, lcmp2, ncmp, zk8(jcmpgd), ncmpmx,&
+        call knincl(8, lcmp2, ncmp, zk8(jcmpgd), ncmpmx, &
                     i1)
         if (i1 .gt. 0) then
             valk(1) = lcmp2(i1)
@@ -104,23 +104,23 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
             call utmess('A', 'POSTRELE_56', nk=2, valk=valk)
             iret = 3
             goto 30
-        endif
+        end if
     else
 !       -- POUR NOMGD=VARI_* : CMP='V1','V2',..,'V999'
         do k = 1, ncmp
             call lxliis(lcmp2(k) (2:8), ibid, i1)
-            if ((lcmp2(k) (1:1).ne.'V') .or. (i1.gt.0)) then
+            if ((lcmp2(k) (1:1) .ne. 'V') .or. (i1 .gt. 0)) then
                 valk(1) = lcmp2(k)
                 valk(2) = nomgd
                 call utmess('A', 'POSTRELE_56', nk=2, valk=valk)
                 iret = 3
                 goto 30
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !
- 30 continue
+30  continue
     call jedema()
 !
 end subroutine

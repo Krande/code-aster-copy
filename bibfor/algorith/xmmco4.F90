@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmmco4(ndim, nno, pla, nd, tau1,&
-                  tau2, ffc, ddls, jac, ffp,&
+subroutine xmmco4(ndim, nno, pla, nd, tau1, &
+                  tau2, ffc, ddls, jac, ffp, &
                   nnol, ddlm, nnos, mmat)
     implicit none
 #include "jeveux.h"
@@ -63,26 +63,26 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
 !     INITIALISATION
 ! on reecrit tout
 ! matrices A et AT
-    au(:,:) = 0.d0
-    dside2(:,:) = 0.d0
-    temp(:,:) = 0.d0
-    ptr(:,:) = 0.d0
-    p(:,:) = 0.d0
-    coefj=xcalc_saut(1,0,1)
+    au(:, :) = 0.d0
+    dside2(:, :) = 0.d0
+    temp(:, :) = 0.d0
+    ptr(:, :) = 0.d0
+    p(:, :) = 0.d0
+    coefj = xcalc_saut(1, 0, 1)
 ! idem, il va falloir introduire les matrices de passage
     do i = 1, ndim
-        p(1,i) = nd(i)
+        p(1, i) = nd(i)
     end do
     do i = 1, ndim
-        p(2,i) = tau1(i)
+        p(2, i) = tau1(i)
     end do
     if (ndim .eq. 3) then
         do i = 1, ndim
-            p(3,i) = tau2(i)
+            p(3, i) = tau2(i)
         end do
-    endif
+    end if
 ! on construit la transposee de la matrice de passage
-    call transp(p, 3, ndim, ndim, ptr,&
+    call transp(p, 3, ndim, ndim, ptr, &
                 3)
 !
     do i = 1, nnol
@@ -92,11 +92,11 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
             do l = 1, ndim
                 do k = 1, ndim
 ! on remplit A : matrice [u*] / mu
-                    mmat(pli+2*ndim-1+k,jn+ndim+l) = mmat(pli+2*ndim-1+k,jn+ndim+l)+ coefj*ffc(i)&
-                                                     &*p(k,l)*ffp(j)*jac
+                    mmat(pli+2*ndim-1+k, jn+ndim+l) = mmat(pli+2*ndim-1+k, jn+ndim+l)+coefj*ffc(i)&
+                                                     &*p(k, l)*ffp(j)*jac
 ! et sa transposee
-                    mmat(jn+ndim+l,pli+2*ndim-1+k) = mmat(jn+ndim+l,pli+2*ndim-1+k)+ coefj*ffc(i)&
-                                                     &*p(k,l)*ffp(j)*jac
+                    mmat(jn+ndim+l, pli+2*ndim-1+k) = mmat(jn+ndim+l, pli+2*ndim-1+k)+coefj*ffc(i)&
+                                                     &*p(k, l)*ffp(j)*jac
                 end do
             end do
         end do
@@ -104,15 +104,15 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
 !
 ! on remplit B : matrice w* / mu
     do i = 1, nnol
-        pli=pla(i)
+        pli = pla(i)
         do j = 1, nnol
-            plj=pla(j)
+            plj = pla(j)
             do l = 1, ndim
 ! on remplit B
-                mmat(pli-1+ndim+l,plj+2*ndim-1+l) = mmat(pli-1+ndim+l,plj+2*ndim-1+ l)- ffc(i)*ff&
+                mmat(pli-1+ndim+l, plj+2*ndim-1+l) = mmat(pli-1+ndim+l, plj+2*ndim-1+l)-ffc(i)*ff&
                                                     &c(j)*jac
 ! et sa transposee
-                mmat(plj+2*ndim-1+l,pli+ndim-1+l) = mmat(plj+2*ndim-1+l,pli+ndim-1+ l)- ffc(i)*ff&
+                mmat(plj+2*ndim-1+l, pli+ndim-1+l) = mmat(plj+2*ndim-1+l, pli+ndim-1+l)-ffc(i)*ff&
                                                     &c(j)*jac
 !
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 201662017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 201662023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
+subroutine prasmp(option, nugene, tminbl, nomprn, modgen, &
                   tmnobl, tmadbl, knombl, inumbl, ssmax)
     implicit none
 !
@@ -100,22 +100,22 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     integer, pointer :: nueq(:) => null()
     integer, pointer :: smdi(:) => null()
 !-----------------------------------------------------------------------
-    data rigopt,ricopt,masopt,amoopt/'RIGI_GENE','RIGI_GENE_C',&
-     &                                 'MASS_GENE','AMOR_GENE'/
+    data rigopt, ricopt, masopt, amoopt/'RIGI_GENE', 'RIGI_GENE_C',&
+     &                                 'MASS_GENE', 'AMOR_GENE'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
     if (nomprn .ne. '&SOUSSTR') then
         goto 999
-    endif
+    end if
 !
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
-    prgene=nugene//'.NUME'
+    prgene = nugene//'.NUME'
     call nueq_chck(prgene)
-    stomor=nugene//'.SMOS'
+    stomor = nugene//'.SMOS'
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), i_ligr_ss)
     call jelira(jexnum(prgene//'.PRNO', i_ligr_ss), 'LONMAX', nbsst)
-    nbsst=nbsst/2
+    nbsst = nbsst/2
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
 !
@@ -123,13 +123,13 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !------------------CREATION DU NOM A CONCATENER-------------------------
 !   POUR RECUPERER LE NOM DES MATRICES PROJETEES
 !
-    if ((option.eq.rigopt) .or. (option.eq.ricopt)) then
-        adnom='.MAEL_RAID'
-    else if (option.eq.masopt) then
-        adnom='.MAEL_MASS'
-    else if (option.eq.amoopt) then
-        adnom='.MAEL_AMOR'
-    endif
+    if ((option .eq. rigopt) .or. (option .eq. ricopt)) then
+        adnom = '.MAEL_RAID'
+    else if (option .eq. masopt) then
+        adnom = '.MAEL_MASS'
+    else if (option .eq. amoopt) then
+        adnom = '.MAEL_AMOR'
+    end if
 !
 !---------------------REMPLISSAGE DES OBJETS DE TRAVAIL-----------------
 !
@@ -140,7 +140,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     call jenonu(jexnom('&&ASSGEN.REP.NOM.PROF', nomprn), ibid)
     call jeveuo(jexnum(tminbl, ibid), 'L', ltinbl)
     call jelira(jexnum(tminbl, ibid), 'LONMAX', ntprno)
-    ntprno=ntprno/2
+    ntprno = ntprno/2
 !
     call jenonu(jexnom(prgene//'.LILI', nomprn), i_ligr)
     call jeveuo(jexnum(prgene//'.ORIG', i_ligr), 'L', llors)
@@ -151,19 +151,19 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     do j = 1, ntprno
 !
 !  RECUPERATION NUMERO SOUS-STRUCTURE
-        nusst=zi(llors+j-1)
+        nusst = zi(llors+j-1)
 ! RECUPERATION DU PROFIL BLOC ELEMENTAIRE
-        ibl1=zi(ltinbl+(j-1)*2)
+        ibl1 = zi(ltinbl+(j-1)*2)
 !
 ! POUR UNE MATRICE ELEMENTAIRE BLOC IL FAUDRA FAIRE UNE BOUCLE
 ! SUR LES BLOC A ASSEMBLER (DO IBLOC=1,NBBL)
 !
 ! RECUPERATION DU NOM DU MACR_ELEM AMONT
-        kbid='   '
-        call mgutdm(modgen, kbid, nusst, 'NOM_MACR_ELEM', ibid,&
+        kbid = '   '
+        call mgutdm(modgen, kbid, nusst, 'NOM_MACR_ELEM', ibid, &
                     nommcl)
-        knombl(ibl1)=nommcl//adnom//'_VALE'
-        call jelira(knombl(ibl1),'NMAXOC',ntria)
+        knombl(ibl1) = nommcl//adnom//'_VALE'
+        call jelira(knombl(ibl1), 'NMAXOC', ntria)
 !
 ! VERIFICATION DE L'EXISTENCE DE LA MATRICE D'AMORTISSEMENT ASSOCIEE
 ! AU MACRO-ELEMENT
@@ -173,25 +173,25 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
             if (iret .eq. 0) then
                 valk = nommcl
                 call utmess('F', 'ALGORITH13_99', sk=valk)
-            endif
-        endif
+            end if
+        end if
 !
-        inumbl(ibl1)=0
+        inumbl(ibl1) = 0
 ! TYPE DE LA MATRICE DU MACRO ELEMENT (IE REELLE OU COMPLEXE)
         if (option .eq. ricopt) then
             call maxblc(jexnum(nommcl//adnom//'_VALE           ', 1), ssmax)
         else
             call maxblo(jexnum(nommcl//adnom//'_VALE           ', 1), ssmax)
-        endif
+        end if
 !  RECUPERATION DIMENSIONS ET NUMERO PREMIERE EQUATION DANS NUEQ
-        nblig=zi(llprs+(j-1)*2+1)
-        nbcol=nblig
-        inul=zi(llprs+(j-1)*2)
-        inuc=inul
+        nblig = zi(llprs+(j-1)*2+1)
+        nbcol = nblig
+        inul = zi(llprs+(j-1)*2)
+        inuc = inul
 !
 ! TAILLE BLOC MATRICE PROJETEE (STOCKAGE TRIANGLE SUPERIEUR)
 !
-        ntail=nbcol*(nbcol+1)/2
+        ntail = nbcol*(nbcol+1)/2
 !
         call jecroc(jexnum(tmnobl, ibl1))
         call jeecra(jexnum(tmnobl, ibl1), 'LONMAX', ntail)
@@ -205,11 +205,11 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
         do ll = 1, nblig
             do lc = ll, nbcol
 !    ADRESSE DANS BLOC ELEMENTAIRE
-                iad=(lc-1)*lc/2+ll
+                iad = (lc-1)*lc/2+ll
 !    NUMERO D'EQUATION DU TERME COURANT
-                ieqc=nueq(1+(inuc-1)+(lc-1))
-                 zi(ltnobl+iad-1)=1
-                 zi(ltadbl+iad-1)=smdi(ieqc)-(lc-ll)
+                ieqc = nueq(1+(inuc-1)+(lc-1))
+                zi(ltnobl+iad-1) = 1
+                zi(ltadbl+iad-1) = smdi(ieqc)-(lc-ll)
 !
             end do
         end do

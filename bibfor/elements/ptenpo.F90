@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,18 +54,18 @@ subroutine ptenpo(n, x, mat, ep, itype, iform)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    data jcft/  2 ,  3 ,  5 ,  6 ,  8 ,  9 , 11 , 12 /
-    data ncft/  2 ,  6 ,  6 /
-    data icft/  1 ,  7 ,  0 ,  0 ,  0 ,  0 , &
-                2 ,  4 ,  6 ,  8 , 10 , 12 ,&
-                3 ,  4 ,  5 ,  9 , 10 , 11 /
+    data jcft/2, 3, 5, 6, 8, 9, 11, 12/
+    data ncft/2, 6, 6/
+    data icft/1, 7, 0, 0, 0, 0, &
+        2, 4, 6, 8, 10, 12, &
+        3, 4, 5, 9, 10, 11/
 !
 !   element droit classique
-    data na/  2 ,  2 ,  4 ,  4  /
-    data ia/  1 ,  7 ,  0 ,  0 ,&
-              4 , 10 ,  0 ,  0 ,&
-              2 ,  6 ,  8 , 12 ,&
-              3 ,  5 ,  9 , 11  /
+    data na/2, 2, 4, 4/
+    data ia/1, 7, 0, 0, &
+        4, 10, 0, 0, &
+        2, 6, 8, 12, &
+        3, 5, 9, 11/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ subroutine ptenpo(n, x, mat, ep, itype, iform)
 !
 !   energie potentielle globale
     call vtmv(n, x, mat, r)
-    ep(1) = r / 2.0d0
+    ep(1) = r/2.0d0
     if (iform .eq. 0) goto 900
     if (abs(ep(1)) .lt. 1.d-06) goto 900
 ! --------------------------------------------------------------------------------------------------
@@ -84,79 +84,79 @@ subroutine ptenpo(n, x, mat, ep, itype, iform)
 !       element droit de section constante ou variable
         nn = 4
         do kk = 1, 8
-            if (mat( 4,jcft(kk)).ne.zero .or. mat(10,jcft(kk)).ne.zero) then
+            if (mat(4, jcft(kk)) .ne. zero .or. mat(10, jcft(kk)) .ne. zero) then
 !               couplage flexion-torsion
                 do l = 1, 3
                     do i = 1, ncft(l)
-                        x2(i) = x(icft(i,l))
+                        x2(i) = x(icft(i, l))
                         do j = 1, ncft(l)
-                            mat2(ncft(l)*(j-1)+i) = mat(icft(i,l), icft(j,l) )
-                        enddo
-                    enddo
+                            mat2(ncft(l)*(j-1)+i) = mat(icft(i, l), icft(j, l))
+                        end do
+                    end do
                     call vtmv(ncft(l), x2, mat2, r)
-                    ep(1+l) = r / 2.0d0
-                enddo
-                iform= 101
+                    ep(1+l) = r/2.0d0
+                end do
+                iform = 101
                 goto 900
-            endif
-        enddo
+            end if
+        end do
 !       element droit classique
         do l = 1, 4
             do i = 1, na(l)
-                x2(i) = x(ia(i,l))
+                x2(i) = x(ia(i, l))
                 do j = 1, na(l)
-                    mat2(na(l)*(j-1)+i) = mat ( ia(i,l) , ia(j,l) )
-                enddo
-            enddo
+                    mat2(na(l)*(j-1)+i) = mat(ia(i, l), ia(j, l))
+                end do
+            end do
             call vtmv(na(l), x2, mat2, r)
-            ep(1+l) = r / 2.0d0
-        enddo
+            ep(1+l) = r/2.0d0
+        end do
 !
-    else if (itype .eq. 20 .or. itype.eq.21) then
+    else if (itype .eq. 20 .or. itype .eq. 21) then
 !       element discret type nodal
         nn = n
         do i = 2, n
             do j = 1, i-1
-                if (mat(i,j).ne.zero) goto 900
-            enddo
-        enddo
+                if (mat(i, j) .ne. zero) goto 900
+            end do
+        end do
         do i = 1, n
-            ep(1+i) = x(i) * mat(i,i) * x(i) / 2.0d0
-        enddo
+            ep(1+i) = x(i)*mat(i, i)*x(i)/2.0d0
+        end do
 !
-    else if (itype .eq. 22 .or. itype.eq.23) then
+    else if (itype .eq. 22 .or. itype .eq. 23) then
 !       element discret type nodal
         nn = n
         do i = 1, n
-            ep(1+i) = x(i) * mat(i,i) * x(i) / 2.0d0
-        enddo
+            ep(1+i) = x(i)*mat(i, i)*x(i)/2.0d0
+        end do
 !
-    else if (itype .eq. 40 .or. itype.eq.41) then
+    else if (itype .eq. 40 .or. itype .eq. 41) then
 !       element discret type liaison
-        nn = n / 2
+        nn = n/2
         do i = 2, nn
             do j = 1, i-1
-                if (mat(i,j).ne.zero .or. mat(i,j+nn).ne.zero .or. mat(i+nn,j+nn).ne.zero) goto 900
-            enddo
-        enddo
+        if (mat(i, j) .ne. zero .or. mat(i, j+nn) .ne. zero .or. mat(i+nn, j+nn) .ne. zero) goto 900
+            end do
+        end do
         do i = 1, nn
-            ep(1+i) = (x(i)*mat(i,i)*x(i) + 2.0d0*x(i)*mat(i,i+nn)*x(i+nn) + &
-                       x(i+nn)*mat(i+nn,i+nn)*x(i+nn))/2.0d0
-        enddo
+            ep(1+i) = (x(i)*mat(i, i)*x(i)+2.0d0*x(i)*mat(i, i+nn)*x(i+nn)+ &
+                       x(i+nn)*mat(i+nn, i+nn)*x(i+nn))/2.0d0
+        end do
 !
-    else if (itype .eq. 42 .or. itype.eq.43) then
+    else if (itype .eq. 42 .or. itype .eq. 43) then
 !       element discret type liaison
-        nn = n / 2
+        nn = n/2
         do i = 1, nn
-            ep(1+i) = (x(i)*mat(i,i)*x(i) + x(i)*mat(i,i+nn)*x(i+nn) + &
-                       x(i+nn)*mat(i+nn,i)*x(i) + x(i+nn)*mat(i+nn,i+nn)*x(i+nn))/2.0d0
-        enddo
-    endif
+            ep(1+i) = (x(i)*mat(i, i)*x(i)+x(i)*mat(i, i+nn)*x(i+nn)+ &
+                       x(i+nn)*mat(i+nn, i)*x(i)+x(i+nn)*mat(i+nn, i+nn)*x(i+nn))/2.0d0
+        end do
+    end if
 !
 !   pourcentage
     do i = 2, nn+1
         ep(i) = ep(i)/ep(1)
-    enddo
+    end do
 !
-900  continue
+900 continue
 end subroutine

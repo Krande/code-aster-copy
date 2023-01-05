@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmetob(ds_inout, field_type, i_field_obsv)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -49,7 +49,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     i_field_obsv = 0
-    nb_field     = ds_inout%nb_field
+    nb_field = ds_inout%nb_field
 !
 ! - Find field
 !
@@ -57,7 +57,7 @@ implicit none
         obsv_keyw = ds_inout%field(i_field)%obsv_keyw
         if (obsv_keyw .eq. field_type) then
             i_field_obsv = i_field
-        endif
+        end if
     end do
 !
 end subroutine

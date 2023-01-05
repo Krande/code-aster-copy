@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine op0165()
         call rccome(nommat, 'RCCM', icodre)
         if (icodre .eq. 1) then
             call utmess('F', 'POSTRCCM_7', sk='RCCM')
-        endif
+        end if
 !
         call rcevol(typtab, nommat, symax, nbopt, kopt)
 !
@@ -90,13 +90,13 @@ subroutine op0165()
     else if (typmec .eq. 'B3600') then
 !
         call getvtx(' ', 'OPTION', scal=option, nbret=n1)
-        if (option.eq.'FATIGUE') then
+        if (option .eq. 'FATIGUE') then
             call rc3600()
-        elseif (option.eq.'MOMENT_EQUIVALENT')then
+        elseif (option .eq. 'MOMENT_EQUIVALENT') then
             call rc3600_momeq()
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !     ------------------------------------------------------------------
 !
@@ -108,7 +108,7 @@ subroutine op0165()
 !
         call rc3200()
 !
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !

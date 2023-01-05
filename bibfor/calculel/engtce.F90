@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,85 +49,85 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
 !
     call jemarq()
 !
-    lg1 = lxlgut( formr )
-    lg2 = lxlgut( typtes )
+    lg1 = lxlgut(formr)
+    lg2 = lxlgut(typtes)
     form1 = '(&
-            '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', ' //formr(1:lg1)//',&
-            '' ), ''&
-            )'
-    form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' ), '' )'
+&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)//',&
+&            '' ), ''&
+&            )'
+    form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC_I = '', I9, '' ), '' )'
 !
-    write(ific,1000)
+    write (ific, 1000)
 !
     call jeveuo(chamel//'.CELV', 'L', jvale)
     call jelira(chamel//'.CELV', 'LONMAX', long)
     call jelira(chamel//'.CELV', 'TYPE', cval=type)
 !
-    write(ific,1010) chamel(1:8)
-    write(ific,1020) preci
+    write (ific, 1010) chamel(1:8)
+    write (ific, 1020) preci
 !
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
             vali = 0
             do i = 1, long
-                vali = vali + abs(zi(jvale+i-1))
+                vali = vali+abs(zi(jvale+i-1))
             end do
         else if (typtes .eq. 'SOMM') then
             vali = 0
             do i = 1, long
-                vali = vali + zi(jvale+i-1)
+                vali = vali+zi(jvale+i-1)
             end do
         else if (typtes .eq. 'MAX') then
             vali = -ismaem()
             do i = 1, long
-                vali = max( vali , zi(jvale+i-1) )
+                vali = max(vali, zi(jvale+i-1))
             end do
         else if (typtes .eq. 'MIN') then
             vali = ismaem()
             do i = 1, long
-                vali = min( vali , zi(jvale+i-1) )
+                vali = min(vali, zi(jvale+i-1))
             end do
-        endif
-        if (vali .eq. 0) write(ific,1022)
-        write(ific,form2) vali
+        end if
+        if (vali .eq. 0) write (ific, 1022)
+        write (ific, form2) vali
 !
     else if (type .eq. 'R') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
             do i = 1, long
-                valr = valr + abs(zr(jvale+i-1))
+                valr = valr+abs(zr(jvale+i-1))
             end do
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
             do i = 1, long
-                valr = valr + zr(jvale+i-1)
+                valr = valr+zr(jvale+i-1)
             end do
         else if (typtes .eq. 'MAX') then
             valr = -r8maem()
             do i = 1, long
-                valr = max( valr , zr(jvale+i-1) )
+                valr = max(valr, zr(jvale+i-1))
             end do
         else if (typtes .eq. 'MIN') then
             valr = r8maem()
             do i = 1, long
-                valr = min( valr , zr(jvale+i-1) )
+                valr = min(valr, zr(jvale+i-1))
             end do
-        endif
-        if (abs(valr) .le. r8prem()) write(ific,1022)
-        write(ific,form1) valr
-    endif
+        end if
+        if (abs(valr) .le. r8prem()) write (ific, 1022)
+        write (ific, form1) valr
+    end if
 !
-    write(ific,1030)
+    write (ific, 1030)
 !
     call jedema()
 !
-    1000 format ( 'TEST_RESU(CHAM_ELEM= ' )
+1000 format('TEST_RESU(CHAM_ELEM= ')
 !
-    1010 format ('          _F( CHAM_GD= ',a8,', ' )
+1010 format('          _F( CHAM_GD= ', a8, ', ')
 !
-    1022 format ('              CRITERE= ''ABSOLU'', ')
-    1020 format ('              TOLE_MACHINE= ',a10,',')
+1022 format('              CRITERE= ''ABSOLU'', ')
+1020 format('              TOLE_MACHINE= ', a10, ',')
 !
-    1030 format ( '          )' )
+1030 format('          )')
 !
 end subroutine

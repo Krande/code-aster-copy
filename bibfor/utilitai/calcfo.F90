@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
+subroutine calcfo(compl, nomfin, nomfon, nbval, vale, &
                   nopara)
     implicit none
 #include "asterf_types.h"
@@ -47,30 +47,30 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
         nbval2 = 3*nbval
     else
         nbval2 = 2*nbval
-    endif
+    end if
 !
     call wkvect(nomfon//'.VALE', 'G V R', nbval2, lvale)
-    lfon = lvale + nbval
+    lfon = lvale+nbval
     do ival = 0, nbval-1
         zr(lvale+ival) = vale(ival+1)
         if (compl) then
-            call fointc('F', nomfin, 1, nopara, zr(lvale+ival),&
+            call fointc('F', nomfin, 1, nopara, zr(lvale+ival), &
                         zr(lfon+2*ival), zr(lfon+2*ival+1), ier)
         else
-            call fointe('F', nomfin, 1, nopara, zr(lvale+ival),&
-                        zr( lfon+ival), ier)
-        endif
+            call fointe('F', nomfin, 1, nopara, zr(lvale+ival), &
+                        zr(lfon+ival), ier)
+        end if
     end do
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lprol)
     if (compl) then
         zk24(lprol) = 'FONCT_C         '
     else
         zk24(lprol) = 'FONCTION        '
-    endif
+    end if
     zk24(lprol+1) = 'LIN LIN         '
     zk24(lprol+2) = nopara
     zk24(lprol+3) = 'TOUTRESU        '

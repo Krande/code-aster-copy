@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmnble(mesh     , model    , list_func_acti, sddisc    , nume_inst ,&
-                  sddyna   , sdnume   , nume_dof      , ds_measure, ds_contact,&
+subroutine nmnble(mesh, model, list_func_acti, sddisc, nume_inst, &
+                  sddyna, sdnume, nume_dof, ds_measure, ds_contact, &
                   hval_incr, hval_algo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -39,14 +39,14 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/nonlinInitDisp.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model, nume_dof
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sddyna, sddisc, sdnume
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-integer, intent(in) :: nume_inst
+    integer, intent(in) :: list_func_acti(*)
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model, nume_dof
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sddyna, sddisc, sdnume
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,21 +81,21 @@ integer, intent(in) :: nume_inst
 !
 ! - Active functionnalities
 !
-    l_cont_elem = isfonc(list_func_acti,'ELT_CONTACT')
-    l_dyna      = ndynlo(sddyna,'DYNAMIQUE')
+    l_cont_elem = isfonc(list_func_acti, 'ELT_CONTACT')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
     if (l_cont_elem) then
-        l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+        l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
         if (l_all_verif) then
             goto 99
-        endif
+        end if
 ! ----- Display
         if (niv .ge. 2) then
             call utmess('I', 'CONTACT5_20')
-        endif
+        end if
 ! ----- Initializations of displacements for external loop management
-        call nonlinInitDisp(list_func_acti, sdnume   , nume_dof,&
-                            hval_algo     , hval_incr)
+        call nonlinInitDisp(list_func_acti, sdnume, nume_dof, &
+                            hval_algo, hval_incr)
 !
 ! ----- AFIN QUE LE VECTEUR DES FORCES D'INERTIE NE SOIT PAS MODIFIE AU
 ! ----- COURS DE LA BOUCLE DES CONTRAINTES ACTIVES PAR L'APPEL A OP0070
@@ -108,7 +108,7 @@ integer, intent(in) :: nume_inst
             acce_init = ds_contact%sdcont_solv(1:14)//'.ACCI'
             call copisd('CHAMP_GD', 'V', vite_init, vite_curr)
             call copisd('CHAMP_GD', 'V', acce_init, acce_curr)
-        endif
+        end if
 ! ----- Start timer for preparation of contact
         call nmtime(ds_measure, 'Launch', 'Cont_Prep')
 ! ----- Create elements for contact
@@ -118,7 +118,7 @@ integer, intent(in) :: nume_inst
 ! ----- Stop timer for preparation of contact
         call nmtime(ds_measure, 'Stop', 'Cont_Prep')
         call nmrinc(ds_measure, 'Cont_Prep')
-    endif
+    end if
 !
 99  continue
 !

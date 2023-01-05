@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rvrlln(xy, tn, n, repere, v1,&
+subroutine rvrlln(xy, tn, n, repere, v1, &
                   v2)
     implicit none
 !
@@ -70,20 +70,20 @@ subroutine rvrlln(xy, tn, n, repere, v1,&
             ys = xy(3*(tn(i+1)-1)+2)
             zzs = xy(3*(tn(i+1)-1)+3)
 !
-        endif
+        end if
 !
         if (repere(1:5) .eq. 'LOCAL') then
 !
-            xaux = xs - xc
-            yaux = ys - yc
-            zaux = zzs - zzc
+            xaux = xs-xc
+            yaux = ys-yc
+            zaux = zzs-zzc
 !
             if (i .ne. n) then
 !
-                l = sqrt(xaux*xaux + yaux*yaux + zaux*zaux)
+                l = sqrt(xaux*xaux+yaux*yaux+zaux*zaux)
                 l = 1.0d0/l
 !
-            endif
+            end if
 !
             t1s = xaux*l
             t2s = yaux*l
@@ -93,25 +93,25 @@ subroutine rvrlln(xy, tn, n, repere, v1,&
             if (i .eq. 1) then
 !
                 v1(2*i-1) = t1s
-                v1(2*i ) = t2s
+                v1(2*i) = t2s
                 v2(2*i-1) = n1s
-                v2(2*i ) = n2s
+                v2(2*i) = n2s
 !
             else if (i .ne. n) then
 !
-                v1(2*i-1) = 0.5d0*(t1s + t1p)
-                v1(2*i ) = 0.5d0*(t2s + t2p)
-                v2(2*i-1) = 0.5d0*(n1s + n1p)
-                v2(2*i ) = 0.5d0*(n2s + n2p)
+                v1(2*i-1) = 0.5d0*(t1s+t1p)
+                v1(2*i) = 0.5d0*(t2s+t2p)
+                v2(2*i-1) = 0.5d0*(n1s+n1p)
+                v2(2*i) = 0.5d0*(n2s+n2p)
 !
             else
 !
                 v1(2*i-1) = t1p
-                v1(2*i ) = t2p
+                v1(2*i) = t2p
                 v2(2*i-1) = n1p
-                v2(2*i ) = n2p
+                v2(2*i) = n2p
 !
-            endif
+            end if
 !
             if (i .ne. n) then
 !
@@ -120,14 +120,14 @@ subroutine rvrlln(xy, tn, n, repere, v1,&
                 n1p = n1s
                 n2p = n2s
 !
-            endif
+            end if
 !
         else
 !
-            call rvrthe(xc, yc, v1(2*i-1), v1(2*i), v2(2*i-1),&
+            call rvrthe(xc, yc, v1(2*i-1), v1(2*i), v2(2*i-1), &
                         v2(2*i))
 !
-        endif
+        end if
 !
         xc = xs
         yc = ys

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine compGetRelation(factorKeyword, iFactorKeyword, rela_comp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/deprecated_behavior.h"
 #include "asterfort/getvtx.h"
 !
-character(len=16), intent(in) :: factorKeyword
-integer, intent(in) :: iFactorKeyword
-character(len=16), intent(out) :: rela_comp
+    character(len=16), intent(in) :: factorKeyword
+    integer, intent(in) :: iFactorKeyword
+    character(len=16), intent(out) :: rela_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,10 +43,10 @@ character(len=16), intent(out) :: rela_comp
 ! --------------------------------------------------------------------------------------------------
 !
     rela_comp = ' '
-    call getvtx(factorKeyword, 'RELATION', iocc = iFactorKeyword, scal = rela_comp)
+    call getvtx(factorKeyword, 'RELATION', iocc=iFactorKeyword, scal=rela_comp)
     call deprecated_behavior(rela_comp)
-    if ( (rela_comp(1:4) .eq. 'META') .and. (rela_comp .ne. 'META_LEMA_ANI')) then
+    if ((rela_comp(1:4) .eq. 'META') .and. (rela_comp .ne. 'META_LEMA_ANI')) then
         rela_comp = 'KIT_META'
-    endif
+    end if
 !
 end subroutine

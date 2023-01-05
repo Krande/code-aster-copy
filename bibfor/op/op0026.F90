@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine op0026()
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -81,27 +81,27 @@ implicit none
 !
 ! - Get commons data
 !
-    call calcGetData(table_new, table_old  ,&
-                     nb_option, list_option,&
-                     nume_inst, list_inst  ,&
+    call calcGetData(table_new, table_old, &
+                     nb_option, list_option, &
+                     nume_inst, list_inst, &
                      phenom, l_pred)
     if (phenom .eq. 'MECANIQUE') then
-        call calcGetDataMeca(list_load      , model         , mate     , mateco   , cara_elem,&
-                             disp_prev      , disp_cumu_inst, vari_prev, sigm_prev,&
-                             ds_constitutive, l_elem_nonl   , nume_harm)
+        call calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
+                             disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
+                             ds_constitutive, l_elem_nonl, nume_harm)
     elseif (phenom .eq. 'THERMIQUE') then
-        call calcGetDataTher(list_load  , model    , mate       , mateco,  cara_elem,&
-                             temp_prev  , incr_temp, compor_ther, theta)
+        call calcGetDataTher(list_load, model, mate, mateco, cara_elem, &
+                             temp_prev, incr_temp, compor_ther, theta)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Get current and previous times
 !
     time_prev = diinst(list_inst, nume_inst-1)
     time_curr = diinst(list_inst, nume_inst)
-    deltat    = time_curr - time_prev
-    khi       = 1.d0
+    deltat = time_curr-time_prev
+    khi = 1.d0
 !
 ! - Check lengths
 !
@@ -113,58 +113,58 @@ implicit none
 ! - Prepare data
 !
     if (phenom .eq. 'MECANIQUE') then
-        call calcPrepDataMeca(model          , mate          , mateco   , cara_elem,&
-                              disp_prev      , disp_cumu_inst, vari_prev, sigm_prev,&
-                              time_prev      , time_curr     ,&
-                              ds_constitutive, ds_material   , ds_system  ,&
-                              hval_incr      , hval_algo     ,&
-                              vediri         , vefnod        ,&
-                              vevarc_prev    , vevarc_curr)
+        call calcPrepDataMeca(model, mate, mateco, cara_elem, &
+                              disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
+                              time_prev, time_curr, &
+                              ds_constitutive, ds_material, ds_system, &
+                              hval_incr, hval_algo, &
+                              vediri, vefnod, &
+                              vevarc_prev, vevarc_curr)
     elseif (phenom .eq. 'THERMIQUE') then
-        call calcPrepDataTher(model        , temp_prev     , incr_temp  ,&
-                              time_curr    , deltat        , theta      , khi,&
-                              time         , temp_curr     ,&
-                              ve_charther  , me_mtanther   , vediri     ,&
+        call calcPrepDataTher(model, temp_prev, incr_temp, &
+                              time_curr, deltat, theta, khi, &
+                              time, temp_curr, &
+                              ve_charther, me_mtanther, vediri, &
                               ve_evolther_l, ve_evolther_nl, ve_resither)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Compute
 !
     if (phenom .eq. 'MECANIQUE') then
-        call calcCalcMeca(nb_option      , list_option,&
-                          l_elem_nonl    , nume_harm  ,&
-                          list_load      , model      , cara_elem,&
-                          ds_constitutive, ds_material, ds_system,&
-                          hval_incr      , hval_algo  ,&
-                          vediri         , vefnod     ,&
-                          vevarc_prev    , vevarc_curr,&
-                          nb_obje_maxi   , obje_name  , obje_sdname, nb_obje,&
+        call calcCalcMeca(nb_option, list_option, &
+                          l_elem_nonl, nume_harm, &
+                          list_load, model, cara_elem, &
+                          ds_constitutive, ds_material, ds_system, &
+                          hval_incr, hval_algo, &
+                          vediri, vefnod, &
+                          vevarc_prev, vevarc_curr, &
+                          nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                           l_pred)
     elseif (phenom .eq. 'THERMIQUE') then
-        call calcCalcTher(nb_option    , list_option   , &
-                          list_load    , model         , mate       , mateco, cara_elem,&
-                          time_curr    , time          ,&
-                          temp_prev    , incr_temp     , compor_ther, temp_curr,&
-                          ve_charther  , me_mtanther   , vediri     ,&
-                          ve_evolther_l, ve_evolther_nl, ve_resither,&
-                          nb_obje_maxi , obje_name     , obje_sdname, nb_obje)
+        call calcCalcTher(nb_option, list_option, &
+                          list_load, model, mate, mateco, cara_elem, &
+                          time_curr, time, &
+                          temp_prev, incr_temp, compor_ther, temp_curr, &
+                          ve_charther, me_mtanther, vediri, &
+                          ve_evolther_l, ve_evolther_nl, ve_resither, &
+                          nb_obje_maxi, obje_name, obje_sdname, nb_obje)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Table management
 !
     if (phenom .eq. 'MECANIQUE') then
-        call catabl(table_new, table_old, time_curr, nume_inst, nb_obje,&
-                     obje_name, obje_sdname)
+        call catabl(table_new, table_old, time_curr, nume_inst, nb_obje, &
+                    obje_name, obje_sdname)
     elseif (phenom .eq. 'THERMIQUE') then
-        call catabl_ther(table_new, table_old, time_curr, nume_inst, nb_obje,&
+        call catabl_ther(table_new, table_old, time_curr, nume_inst, nb_obje, &
                          obje_name, obje_sdname)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jedema()
 !

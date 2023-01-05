@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmja(typmod, nmat, materf, timed,&
-                  timef, itmax, toler, nbcomm, cpmono,&
-                  pgl, nfs, nsg, toutms, hsr,&
-                  nr, nvi, vind, df, yf,&
+subroutine lcmmja(typmod, nmat, materf, timed, &
+                  timef, itmax, toler, nbcomm, cpmono, &
+                  pgl, nfs, nsg, toutms, hsr, &
+                  nr, nvi, vind, df, yf, &
                   yd, dy, drdy, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -75,15 +75,15 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: typmod
 !     ----------------------------------------------------------------
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
-    data ind/1,4,5,4,2,6,5,6,3/
+    data ind/1, 4, 5, 4, 2, 6, 5, 6, 3/
 !     ----------------------------------------------------------------
 !
-    iret=0
-    dt=timef-timed
+    iret = 0
+    dt = timef-timed
 !
     call r8inir(nr*nr, 0.d0, drdy, 1)
     call r8inir(36, 0.d0, msdgdt, 1)
@@ -93,58 +93,58 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
 !     Inverse de la matrice de Hooke
     if (materf(nmat) .eq. 0) then
         call lcopil('ISOTROPE', typmod, materf(1), fkooh)
-    else if (materf(nmat).eq.1) then
+    else if (materf(nmat) .eq. 1) then
         call lcopil('ORTHOTRO', typmod, materf(1), fkooh)
-    endif
+    end if
 !
     if (gdef .eq. 1) then
         call r8inir(81, 0.d0, dfpds, 1)
         call r8inir(3*3*nsg, 0.d0, dfpdbs, 1)
 !        calcul de DFPDGA : dFp / dGamma_S pour tous les systemes S
-        call lcmmjg(nmat, nbcomm, cpmono, hsr,&
-                    dt, nvi, vind, yd, dy,&
-                    itmax, toler, materf, sigf, fkooh,&
-                    nfs, nsg, toutms, pgl, msnst,&
+        call lcmmjg(nmat, nbcomm, cpmono, hsr, &
+                    dt, nvi, vind, yd, dy, &
+                    itmax, toler, materf, sigf, fkooh, &
+                    nfs, nsg, toutms, pgl, msnst, &
                     gamsns, dfpdga, iret)
-    endif
+    end if
 !
 !     NSFA : debut de la famille IFA dans DY et YD, YF
-    nsfa=6
+    nsfa = 6
 !     NSFV : debut de la famille IFA dans les variables internes
-    nsfv=6
+    nsfv = 6
 !     LE NUMERO GLOBAL DU SYSTEME IS DANS Y EST NUVS
-    nbfsys=nbcomm(nmat,2)
+    nbfsys = nbcomm(nmat, 2)
 !
     do ifa = 1, nbfsys
 !
-        nomfam=cpmono(5*(ifa-1)+1)(1:16)
-        ifl=nbcomm(ifa,1)
-        nuecou=nint(materf(nmat+ifl))
+        nomfam = cpmono(5*(ifa-1)+1) (1:16)
+        ifl = nbcomm(ifa, 1)
+        nuecou = nint(materf(nmat+ifl))
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ns, ms, 0, q)
 !
         do is = 1, nbsys
 !
 !           calcul de Tau_s HPP ou GDEF
 !
-            call caltau(ifa, is, sigf, fkooh,&
-                        nfs, nsg, toutms, taus, mus,&
+            call caltau(ifa, is, sigf, fkooh, &
+                        nfs, nsg, toutms, taus, mus, &
                         msns)
 !
-            nuvs=nsfa+is
+            nuvs = nsfa+is
 !
 !           CALCUL DES DERIVEES :
 !           DGSDTS=dGamma_S/dTau_S,  DKSDTS=dK_s/dTau_S,
 !           DGRDBS=dGamma_R/dBeta_S, DKRDBS=dK_S/dBeta_R
 !
-            iexp=0
-            if (is .eq. 1) iexp=1
-            call lcmmjb(taus, materf, cpmono, ifa, nmat,&
-                        nbcomm, dt, nuecou, nsfv, nsfa,&
-                        is, is, nbsys, nfs, nsg,&
-                        hsr, vind, dy, iexp, expbp,&
-                        itmax, toler, dgsdts, dksdts, dgrdbs,&
+            iexp = 0
+            if (is .eq. 1) iexp = 1
+            call lcmmjb(taus, materf, cpmono, ifa, nmat, &
+                        nbcomm, dt, nuecou, nsfv, nsfa, &
+                        is, is, nbsys, nfs, nsg, &
+                        hsr, vind, dy, iexp, expbp, &
+                        itmax, toler, dgsdts, dksdts, dgrdbs, &
                         dkrdbs, iret)
 !           ici  DGRDBS,DKRDBS sont inutiles
             if (iret .gt. 0) goto 999
@@ -155,13 +155,13 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
 !                 dR1/dS
                     do i = 1, 6
                         do j = 1, 6
-                            msdgdt(i,j)=msdgdt(i,j)+mus(i)*mus(j)*&
-                            dgsdts
+                            msdgdt(i, j) = msdgdt(i, j)+mus(i)*mus(j)* &
+                                           dgsdts
                         end do
                     end do
 !                 dR2/dS
                     do i = 1, 6
-                        drdy(nuvs,i)=-mus(i)*dksdts
+                        drdy(nuvs, i) = -mus(i)*dksdts
                     end do
                 else
                     call caldto(sigf, fkooh, msns, dtods)
@@ -170,8 +170,8 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
                         do j = 1, 3
                             do k = 1, 3
                                 do l = 1, 3
-                                    dfpds(i,j,k,l)=dfpds(i,j,k,l)+&
-                                    dfpdga(i,j,is)*dgsdts*dtods(k,l)
+                                    dfpds(i, j, k, l) = dfpds(i, j, k, l)+ &
+                                                        dfpdga(i, j, is)*dgsdts*dtods(k, l)
                                 end do
                             end do
                         end do
@@ -179,28 +179,28 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
 !                 dR2/dS
                     do i = 1, 3
                         do j = 1, 3
-                            drdy(nuvs,ind(i,j))=-dksdts*dtods(i,j)
+                            drdy(nuvs, ind(i, j)) = -dksdts*dtods(i, j)
                         end do
                     end do
-                endif
-            endif
+                end if
+            end if
 !
 !------------------------
 !           calcul des ns termes dR1_i/dBeta_s
 !           et     des ns termes dR2_r/dBeta_s
 !------------------------
             do ir = 1, nbsys
-                call caltau(ifa, ir, sigf, fkooh,&
-                            nfs, nsg, toutms, taur, mur,&
+                call caltau(ifa, ir, sigf, fkooh, &
+                            nfs, nsg, toutms, taur, mur, &
                             mrnr)
 !
-                nuvr=nsfa+ir
+                nuvr = nsfa+ir
 !
-                call lcmmjb(taur, materf, cpmono, ifa, nmat,&
-                            nbcomm, dt, nuecou, nsfv, nsfa,&
-                            ir, is, nbsys, nfs, nsg,&
-                            hsr, vind, dy, iexp, expbp,&
-                            itmax, toler, dgsdts, dksdts, dgrdbs,&
+                call lcmmjb(taur, materf, cpmono, ifa, nmat, &
+                            nbcomm, dt, nuecou, nsfv, nsfa, &
+                            ir, is, nbsys, nfs, nsg, &
+                            hsr, vind, dy, iexp, expbp, &
+                            itmax, toler, dgsdts, dksdts, dgrdbs, &
                             dkrdbs, iret)
 !              ici DGSDTS,DKSDTS sont inutiles
                 if (iret .gt. 0) goto 999
@@ -209,36 +209,36 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
                     if (gdef .eq. 0) then
 !                    terme dR1/dAlpha_s
                         do i = 1, 6
-                            drdy(i,nuvs)=drdy(i,nuvs)+mur(i)*dgrdbs
+                            drdy(i, nuvs) = drdy(i, nuvs)+mur(i)*dgrdbs
                         end do
                     else
                         do i = 1, 3
                             do j = 1, 3
-                                dfpdbs(i,j,is)=dfpdbs(i,j,is)+&
-                                dfpdga(i,j,ir)*dgrdbs
+                                dfpdbs(i, j, is) = dfpdbs(i, j, is)+ &
+                                                   dfpdga(i, j, ir)*dgrdbs
                             end do
                         end do
-                    endif
+                    end if
 !                 terme dR2r/dGammas
-                    drdy(nuvr,nuvs)=-dkrdbs
-                endif
+                    drdy(nuvr, nuvs) = -dkrdbs
+                end if
             end do
-            drdy(nuvs,nuvs)=drdy(nuvs,nuvs)+1.d0
+            drdy(nuvs, nuvs) = drdy(nuvs, nuvs)+1.d0
         end do
-        nsfa=nsfa+nbsys
-        nsfv=nsfv+nbsys*3
+        nsfa = nsfa+nbsys
+        nsfv = nsfv+nbsys*3
     end do
 !
     if (gdef .eq. 1) then
-        call calcfe(nr, ndt, nvi, vind, df,&
+        call calcfe(nr, ndt, nvi, vind, df, &
                     gamsns, fe, fp, iret)
-        call caldfe(df, nr, nvi, vind, dfpds,&
+        call caldfe(df, nr, nvi, vind, dfpds, &
                     fe, dfpdbs, msdgdt, drdy)
-    endif
+    end if
 !
-    msdgdt(1:ndt,1:ndt) = msdgdt(1:ndt,1:ndt) + fkooh(1:ndt,1:ndt)
-    call lcicma(msdgdt, 6, 6, ndt, ndt,&
-                1, 1, drdy, nr, nr,&
+    msdgdt(1:ndt, 1:ndt) = msdgdt(1:ndt, 1:ndt)+fkooh(1:ndt, 1:ndt)
+    call lcicma(msdgdt, 6, 6, ndt, ndt, &
+                1, 1, drdy, nr, nr, &
                 1, 1)
 999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,20 +77,20 @@ subroutine trcart(ific, nocc)
         lign2 = ' '
         noddl = ' '
         call getvid('CARTE', 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
-        lign1(1:21)='---- '//motcle(1:9)
-        lign1(22:22)='.'
-        lign2(1:21)='     '//cham19(1:8)
-        lign2(22:22)='.'
+        lign1(1:21) = '---- '//motcle(1:9)
+        lign1(22:22) = '.'
+        lign2(1:21) = '     '//cham19(1:8)
+        lign2(22:22) = '.'
         call tresu_read_refe('CARTE', iocc, tbtxt)
 !
         call getvtx('CARTE', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
-        ASSERT(n1.eq.1)
+        ASSERT(n1 .eq. 1)
         nl1 = lxlgut(lign1)
         nl2 = lxlgut(lign2)
-        lign1(1:nl1+16)=lign1(1:nl1-1)//' NOM_CMP'
-        lign2(1:nl2+16)=lign2(1:nl2-1)//' '//noddl
-        lign1(nl1+17:nl1+17)='.'
-        lign2(nl2+17:nl2+17)='.'
+        lign1(1:nl1+16) = lign1(1:nl1-1)//' NOM_CMP'
+        lign2(1:nl2+16) = lign2(1:nl2-1)//' '//noddl
+        lign1(nl1+17:nl1+17) = '.'
+        lign2(nl2+17:nl2+17) = '.'
 !
 !
         call tresu_tole(epsi, mcf='CARTE', iocc=iocc)
@@ -108,22 +108,22 @@ subroutine trcart(ific, nocc)
         else if (n2 .eq. 1) then
             typres = 'I'
         else
-            ASSERT(n3.eq.1)
+            ASSERT(n3 .eq. 1)
             typres = 'C'
-        endif
+        end if
 ! ----------------------------------------------------------------------
-        lref=.false.
+        lref = .false.
         call getvr8('CARTE', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
-            lref=.true.
+            lref = .true.
             call getvr8('CARTE', 'VALE_REFE', iocc=iocc, scal=valrr, nbret=n1r)
             call getvis('CARTE', 'VALE_REFE_I', iocc=iocc, scal=valir, nbret=n2r)
             call getvc8('CARTE', 'VALE_REFE_C', iocc=iocc, scal=valcr, nbret=n3r)
-            ASSERT(n1r.eq.n1 .and. n2r.eq.n2 .and. n3r.eq.n3)
-        endif
+            ASSERT(n1r .eq. n1 .and. n2r .eq. n2 .and. n3r .eq. n3)
+        end if
         if (skip .and. .not. lref) then
             call utmess('A', 'TEST0_11')
-        endif
+        end if
 ! ----------------------------------------------------------------------
 !
 !
@@ -132,39 +132,39 @@ subroutine trcart(ific, nocc)
         l_parallel_mesh = isParallelMesh(nomma)
         if (l_parallel_mesh) then
             call utmess('F', 'MODELISA7_88')
-        endif
+        end if
 !
-        call getvem(nomma, 'MAILLE', 'CARTE', 'MAILLE', iocc,&
+        call getvem(nomma, 'MAILLE', 'CARTE', 'MAILLE', iocc, &
                     1, nomail, n1a)
-        if (n1a.eq.0) then
-            call getvem(nomma, 'GROUP_MA', 'CARTE', 'GROUP_MA', iocc,&
-                    1, nogrma, n1b)
-            ASSERT(n1b.eq.1)
-            call jelira(jexnom(nomma//'.GROUPEMA', nogrma),'LONUTI',ival=n1b)
-            if (n1b .ne. 1) call utmess('F', 'TEST0_20',sk=nogrma,si=n1b)
+        if (n1a .eq. 0) then
+            call getvem(nomma, 'GROUP_MA', 'CARTE', 'GROUP_MA', iocc, &
+                        1, nogrma, n1b)
+            ASSERT(n1b .eq. 1)
+            call jelira(jexnom(nomma//'.GROUPEMA', nogrma), 'LONUTI', ival=n1b)
+            if (n1b .ne. 1) call utmess('F', 'TEST0_20', sk=nogrma, si=n1b)
             call jeveuo(jexnom(nomma//'.GROUPEMA', nogrma), 'L', jnuma)
             call jenuno(jexnum(nomma//'.NOMMAI', zi(jnuma)), nomail)
         else
             if (l_parallel_mesh) then
                 call utmess('F', 'MODELISA7_86')
-            endif
-        endif
+            end if
+        end if
 !
-        if (n1a.ne.0) then
+        if (n1a .ne. 0) then
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
-            lign1(1:nl1+16)=lign1(1:nl1-1)//' MAILLE'
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nomail
-            lign1(nl1+17:nl1+17)='.'
-            lign2(nl2+17:nl2+17)='.'
+            lign1(1:nl1+16) = lign1(1:nl1-1)//' MAILLE'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//nomail
+            lign1(nl1+17:nl1+17) = '.'
+            lign2(nl2+17:nl2+17) = '.'
         else
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
-            lign1(1:nl1+16)=lign1(1:nl1-1)//' GROUP_MA'
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nogrma
-            lign1(nl1+17:nl1+17)='.'
-            lign2(nl2+17:nl2+17)='.'
-        endif
+            lign1(1:nl1+16) = lign1(1:nl1-1)//' GROUP_MA'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//nogrma
+            lign1(nl1+17:nl1+17) = '.'
+            lign2(nl2+17:nl2+17) = '.'
+        end if
 !
 !
         call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
@@ -174,23 +174,23 @@ subroutine trcart(ific, nocc)
         nl1 = lxlgut(lign1(1:nl1-1))
         nl2 = lxlgut(lign2)
         nl2 = lxlgut(lign2(1:nl2-1))
-        write (ific,*) lign1(1:nl1)
-        write (ific,*) lign2(1:nl2)
+        write (ific, *) lign1(1:nl1)
+        write (ific, *) lign2(1:nl2)
 !
         if (lref) then
-            tbref(1)=tbtxt(1)
-            tbref(2)=tbtxt(2)
-            tbtxt(1)='NON_REGRESSION'
-        endif
-        call tresu_carte(cham19, nomail, noddl, tbtxt, vali,&
-                         valr, valc, typres, epsi, crit,&
+            tbref(1) = tbtxt(1)
+            tbref(2) = tbtxt(2)
+            tbtxt(1) = 'NON_REGRESSION'
+        end if
+        call tresu_carte(cham19, nomail, noddl, tbtxt, vali, &
+                         valr, valc, typres, epsi, crit, &
                          .true._1, ignore=skip, compare=ordgrd)
         if (lref) then
-            call tresu_carte(cham19, nomail, noddl, tbref, valir,&
-                             valrr, valcr, typres, epsir, crit,&
+            call tresu_carte(cham19, nomail, noddl, tbref, valir, &
+                             valrr, valcr, typres, epsir, crit, &
                              .false._1)
-        endif
-        write (ific,*)' '
+        end if
+        write (ific, *) ' '
 !
     end do
 !

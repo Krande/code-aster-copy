@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmfield_prep(field_in    , field_out    ,&
-                        l_update_   , field_update_, alpha_   ,&
-                        l_sort_     , nb_cmp_      , list_cmp_)
+subroutine mmfield_prep(field_in, field_out, &
+                        l_update_, field_update_, alpha_, &
+                        l_sort_, nb_cmp_, list_cmp_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/vtgpld.h"
@@ -75,38 +75,38 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     field_simple = '&&MMFIELD.SIMPLE'
-    l_sort       = .false.
-    l_update     = .false.
-    ASSERT(EXCLUS2(l_sort_,l_update_))
+    l_sort = .false.
+    l_update = .false.
+    ASSERT(EXCLUS2(l_sort_, l_update_))
     if (present(alpha_)) then
         alpha = alpha_
     else
         alpha = 1.d0
-    endif
+    end if
     if (present(l_sort_)) then
-        l_sort   = l_sort_
-    endif
+        l_sort = l_sort_
+    end if
     if (present(l_update_)) then
         l_update = l_update_
-    endif
+    end if
 !
     if (l_update) then
         ASSERT(present(field_update_))
         field_update = field_update_
         if (present(alpha_)) then
-            call vtgpld('CUMU'    , alpha, field_in,  field_update, 'V',&
+            call vtgpld('CUMU', alpha, field_in, field_update, 'V', &
                         field_out)
         else
-            call vtgpld('ZERO'    ,  alpha, field_in, field_update, 'V',&
+            call vtgpld('ZERO', alpha, field_in, field_update, 'V', &
                         field_out)
-        endif
-    endif
+        end if
+    end if
     if (l_sort) then
 !
 ! ----- Count number of components to sort
 !
         nb_cmp = nb_cmp_
-        ASSERT(nb_cmp.gt.0)
+        ASSERT(nb_cmp .gt. 0)
 !
 ! ----- Convert
 !
@@ -114,9 +114,9 @@ implicit none
 !
 ! ----- Sort components
 !
-        call cnsred(field_simple, 0, [0], nb_cmp, list_cmp_,&
+        call cnsred(field_simple, 0, [0], nb_cmp, list_cmp_, &
                     'V', field_out)
-    endif
+    end if
 !
 ! - Cleaning
 !

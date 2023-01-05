@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cpte04(main  , maout , inc   , jcoor , jcnnpa, conloc,&
-                  limane, nomnoe, nbno  , jmacou, jmacsu, macou ,&
-                  macsu , ind   , ind1)
+subroutine cpte04(main, maout, inc, jcoor, jcnnpa, conloc, &
+                  limane, nomnoe, nbno, jmacou, jmacsu, macou, &
+                  macsu, ind, ind1)
 !
     implicit none
 #include "jeveux.h"
@@ -57,80 +57,80 @@ subroutine cpte04(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !
-    call jecroc(jexnum(maout//'.PATCH',inc+1))
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONMAX', ival=2)
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONUTI', ival=2)
-    call jeveuo(jexnum(maout//'.PATCH',inc+1), 'E', patch)
+    call jecroc(jexnum(maout//'.PATCH', inc+1))
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONMAX', ival=2)
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONUTI', ival=2)
+    call jeveuo(jexnum(maout//'.PATCH', inc+1), 'E', patch)
 ! --- TYPE DE MAILLE PATCH
     zi(patch-1+1) = 18
 ! --- DDL INTERNE
-    zi(patch-1+2)=nbno+ind1
+    zi(patch-1+2) = nbno+ind1
     zi(jcnnpa+nbno+ind1-1) = inc
 ! --- CREATION DU NOEUD DDL INTERNE
-    call cpnno(main,macou,zr(jcoor),ind1,nbno,nomnoe)
+    call cpnno(main, macou, zr(jcoor), ind1, nbno, nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
-    call jeecra(jexnum(conloc,ind), 'LONMAX', ival=3)
-    call jeecra(jexnum(conloc,ind), 'LONUTI', ival=3)
-    call jeveuo(jexnum(conloc,ind), 'E', jconloc)
-    zi(jconloc+1-1)=zi(jmacou+1-1)
-    zi(jconloc+2-1)=zi(jmacou+2-1)
-    zi(jconloc+3-1)=nbno+ind1
-    call jeecra(jexnum(conloc,ind+1), 'LONMAX', ival=3)
-    call jeecra(jexnum(conloc,ind+1), 'LONUTI', ival=3)
-    call jeveuo(jexnum(conloc,ind+1), 'E', jconloc)
-    zi(jconloc+1-1)=zi(jmacou+2-1)
-    zi(jconloc+2-1)=zi(jmacou+3-1)
-    zi(jconloc+3-1)=nbno+ind1
-    call jeecra(jexnum(conloc,ind+2), 'LONMAX', ival=3)
-    call jeecra(jexnum(conloc,ind+2), 'LONUTI', ival=3)
-    call jeveuo(jexnum(conloc,ind+2), 'E', jconloc)
-    zi(jconloc+1-1)=zi(jmacou+3-1)
-    zi(jconloc+2-1)=zi(jmacou+1-1)
-    zi(jconloc+3-1)=nbno+ind1
+    call jeecra(jexnum(conloc, ind), 'LONMAX', ival=3)
+    call jeecra(jexnum(conloc, ind), 'LONUTI', ival=3)
+    call jeveuo(jexnum(conloc, ind), 'E', jconloc)
+    zi(jconloc+1-1) = zi(jmacou+1-1)
+    zi(jconloc+2-1) = zi(jmacou+2-1)
+    zi(jconloc+3-1) = nbno+ind1
+    call jeecra(jexnum(conloc, ind+1), 'LONMAX', ival=3)
+    call jeecra(jexnum(conloc, ind+1), 'LONUTI', ival=3)
+    call jeveuo(jexnum(conloc, ind+1), 'E', jconloc)
+    zi(jconloc+1-1) = zi(jmacou+2-1)
+    zi(jconloc+2-1) = zi(jmacou+3-1)
+    zi(jconloc+3-1) = nbno+ind1
+    call jeecra(jexnum(conloc, ind+2), 'LONMAX', ival=3)
+    call jeecra(jexnum(conloc, ind+2), 'LONUTI', ival=3)
+    call jeveuo(jexnum(conloc, ind+2), 'E', jconloc)
+    zi(jconloc+1-1) = zi(jmacou+3-1)
+    zi(jconloc+2-1) = zi(jmacou+1-1)
+    zi(jconloc+3-1) = nbno+ind1
 ! --- NOUVEAUX ELEMENTS DE CORPS
-    call utlisi('INTER', zi(jmacou),3, zi(jmacsu), 4,&
-                linop,3, ntrou)
-    call utlisi('DIFFE', zi(jmacsu), 4, zi(jmacou),3,&
-                linoc,1, ntrou)
+    call utlisi('INTER', zi(jmacou), 3, zi(jmacsu), 4, &
+                linop, 3, ntrou)
+    call utlisi('DIFFE', zi(jmacsu), 4, zi(jmacou), 3, &
+                linoc, 1, ntrou)
 !
-    call jeecra(jexnum(conloc,ind+3), 'LONMAX', ival=4)
-    call jeecra(jexnum(conloc,ind+3), 'LONUTI', ival=4)
-    call jeveuo(jexnum(conloc,ind+3), 'E', jconloc)
-    zi(jconloc+2-1)=linop(1)
-    zi(jconloc+3-1)=linop(2)
-    zi(jconloc+4-1)=nbno+ind1
-    zi(jconloc+1-1)=linoc(1)
-    call jeecra(jexnum(conloc,ind+4), 'LONMAX', ival=4)
-    call jeecra(jexnum(conloc,ind+4), 'LONUTI', ival=4)
-    call jeveuo(jexnum(conloc,ind+4), 'E', jconloc)
-    zi(jconloc+2-1)=linop(2)
-    zi(jconloc+3-1)=linop(3)
-    zi(jconloc+4-1)=nbno+ind1
-    zi(jconloc+1-1)=linoc(1)
-    call jeecra(jexnum(conloc,ind+5), 'LONMAX', ival=4)
-    call jeecra(jexnum(conloc,ind+5), 'LONUTI', ival=4)
-    call jeveuo(jexnum(conloc,ind+5), 'E', jconloc)
-    zi(jconloc+2-1)=linop(3)
-    zi(jconloc+3-1)=linop(1)
-    zi(jconloc+4-1)=nbno+ind1
-    zi(jconloc+1-1)=linoc(1)
+    call jeecra(jexnum(conloc, ind+3), 'LONMAX', ival=4)
+    call jeecra(jexnum(conloc, ind+3), 'LONUTI', ival=4)
+    call jeveuo(jexnum(conloc, ind+3), 'E', jconloc)
+    zi(jconloc+2-1) = linop(1)
+    zi(jconloc+3-1) = linop(2)
+    zi(jconloc+4-1) = nbno+ind1
+    zi(jconloc+1-1) = linoc(1)
+    call jeecra(jexnum(conloc, ind+4), 'LONMAX', ival=4)
+    call jeecra(jexnum(conloc, ind+4), 'LONUTI', ival=4)
+    call jeveuo(jexnum(conloc, ind+4), 'E', jconloc)
+    zi(jconloc+2-1) = linop(2)
+    zi(jconloc+3-1) = linop(3)
+    zi(jconloc+4-1) = nbno+ind1
+    zi(jconloc+1-1) = linoc(1)
+    call jeecra(jexnum(conloc, ind+5), 'LONMAX', ival=4)
+    call jeecra(jexnum(conloc, ind+5), 'LONUTI', ival=4)
+    call jeveuo(jexnum(conloc, ind+5), 'E', jconloc)
+    zi(jconloc+2-1) = linop(3)
+    zi(jconloc+3-1) = linop(1)
+    zi(jconloc+4-1) = nbno+ind1
+    zi(jconloc+1-1) = linoc(1)
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS
 
     call jeveuo(jexnum(limane, macou), 'E', jlimane)
-    zi(jlimane+1-1)=ind
-    zi(jlimane+2-1)=ind+1
-    zi(jlimane+3-1)=ind+2
+    zi(jlimane+1-1) = ind
+    zi(jlimane+2-1) = ind+1
+    zi(jlimane+3-1) = ind+2
 ! ----- INFO PATCH LIE
-    zi(jlimane+4-1)=inc
+    zi(jlimane+4-1) = inc
 !
 
     call jeveuo(jexnum(limane, macsu), 'E', jlimane)
-    zi(jlimane+1-1)=ind+3
-    zi(jlimane+2-1)=ind+4
-    zi(jlimane+3-1)=ind+5
+    zi(jlimane+1-1) = ind+3
+    zi(jlimane+2-1) = ind+4
+    zi(jlimane+3-1) = ind+5
 
-    ind=ind+6
-    ind1=ind1+1
+    ind = ind+6
+    ind1 = ind1+1
 !
     call jedema()
 end subroutine

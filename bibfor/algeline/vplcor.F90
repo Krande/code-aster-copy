@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
+subroutine vplcor(ldynam, neq, nbvect, nborto, prorto, &
                   signes, vect, ivecp, pkx, plx)
     implicit none
 #include "jeveux.h"
@@ -61,7 +61,7 @@ subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
 !
         xjkxi = 0.d0
         do ieq = 1, neq
-            xjkxi = xjkxi + pkx(ieq,jvec) * vect(ieq,ivecp)
+            xjkxi = xjkxi+pkx(ieq, jvec)*vect(ieq, ivecp)
         end do
 !
         iortho = 0
@@ -71,37 +71,37 @@ subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
                 iortho = ito
 !
                 do ieq = 1, neq
-                    plx(ieq) = vect(ieq,ivecp) - xjkxi*signes(jvec)* vect(ieq,jvec)
+                    plx(ieq) = vect(ieq, ivecp)-xjkxi*signes(jvec)*vect(ieq, jvec)
                 end do
 !
                 xjkxis = 0.d0
                 do ieq = 1, neq
-                    xjkxis = xjkxis + pkx(ieq,jvec) * plx(ieq)
+                    xjkxis = xjkxis+pkx(ieq, jvec)*plx(ieq)
                 end do
 !
                 if (abs(xjkxis) .lt. prorto) then
                     do ieq = 1, neq
-                        vect(ieq,ivecp) = plx(ieq)
+                        vect(ieq, ivecp) = plx(ieq)
                     end do
                     xjkxi = xjkxis
                     goto 100
-                else if (abs(xjkxis).lt.abs(xjkxi)) then
+                else if (abs(xjkxis) .lt. abs(xjkxi)) then
                     do ieq = 1, neq
-                        vect(ieq,ivecp) = plx(ieq)
+                        vect(ieq, ivecp) = plx(ieq)
                     end do
                     xjkxi = xjkxis
                 else
                     call utmess('A', 'ALGELINE4_76', si=iortho)
                     goto 100
-                endif
+                end if
 !
             end do
-            iortho = - nborto
+            iortho = -nborto
 !
 100         continue
-            call mrmult('ZERO', ldynam, vect(1, ivecp), pkx(1, ivecp), 1,&
+            call mrmult('ZERO', ldynam, vect(1, ivecp), pkx(1, ivecp), 1, &
                         .false._1)
-        endif
+        end if
 !
     end do
 !
@@ -111,14 +111,14 @@ subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
     if (ior .eq. 1) then
         xikxi = 0.d0
         do ieq = 1, neq
-            xikxi = xikxi + vect(ieq,ivecp) * pkx(ieq,ivecp)
+            xikxi = xikxi+vect(ieq, ivecp)*pkx(ieq, ivecp)
         end do
-        signes(ivecp) = sign(1.d0,xikxi)
-        coef = 1.d0 / sqrt(abs(xikxi))
+        signes(ivecp) = sign(1.d0, xikxi)
+        coef = 1.d0/sqrt(abs(xikxi))
         do ieq = 1, neq
-            vect(ieq,ivecp) = coef * vect(ieq,ivecp)
-            pkx(ieq,ivecp) = coef * pkx(ieq,ivecp)
+            vect(ieq, ivecp) = coef*vect(ieq, ivecp)
+            pkx(ieq, ivecp) = coef*pkx(ieq, ivecp)
         end do
-    endif
+    end if
 !
 end subroutine

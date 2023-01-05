@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
+subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
                   csolu, prepos)
     implicit none
 #include "asterf_types.h"
@@ -69,49 +69,49 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    vci19=vcine
-    nomma2=nommat
+    vci19 = vcine
+    nomma2 = nommat
 !
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
-    metres=slvk(1)(1:16)
+    metres = slvk(1) (1:16)
 !
-    call dismoi('MATR_HPC',nomma2,'MATR_ASSE',repk=khpc)
-    if( khpc == "OUI" ) then
-        call utmess( 'F', 'FACTOR_93' )
-    endif
+    call dismoi('MATR_HPC', nomma2, 'MATR_ASSE', repk=khpc)
+    if (khpc == "OUI") then
+        call utmess('F', 'FACTOR_93')
+    end if
 !
     call mtdscr(nomma2)
     call jeveuo(nomma2(1:19)//'.&INT', 'E', lmat)
     if (lmat .eq. 0) then
         call utmess('F', 'ALGELINE3_40')
-    endif
+    end if
 !
-    neq=zi(lmat+2)
-    nimpo=zi(lmat+7)
+    neq = zi(lmat+2)
+    nimpo = zi(lmat+7)
     if (vci19 .eq. ' ') then
 ! --- SI ON NE FAIT PAS LES PREPOS, ON NE SE PREOCCUPE PAS DES
 !     AFFE_CHAR_CINE. DONC C'EST NORMAL QUE L'INFO SOIT INCOHERENTE
 !     A CE NIVEAU
-        if ((nimpo.ne.0) .and. prepos) then
+        if ((nimpo .ne. 0) .and. prepos) then
             call utmess('F', 'ALGELINE3_41')
-        endif
-        idvalc=0
+        end if
+        idvalc = 0
     else
         call jeveuo(vci19//'.VALE', 'L', idvalc)
         call jelira(vci19//'.VALE', 'TYPE', cval=type)
-        if (((type.eq.'R').and.(zi(lmat+3).ne.1)) .or.&
-            ((type.eq.'C') .and.(zi(lmat+3).ne.2))) then
+        if (((type .eq. 'R') .and. (zi(lmat+3) .ne. 1)) .or. &
+            ((type .eq. 'C') .and. (zi(lmat+3) .ne. 2))) then
             call utmess('F', 'ALGELINE3_42')
-        endif
-    endif
+        end if
+    end if
 !
     if (zi(lmat+3) .eq. 1) then
-        type='R'
-    else if (zi(lmat+3).eq.2) then
-        type='C'
+        type = 'R'
+    else if (zi(lmat+3) .eq. 2) then
+        type = 'C'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !
@@ -120,45 +120,45 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
 !     ----------------------------------------
         if (prepos) then
 !         MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
-            call mrconl('MULT', lmat, 0, 'R', rsolu,&
+            call mrconl('MULT', lmat, 0, 'R', rsolu, &
                         nsecm)
             if (idvalc .ne. 0) then
                 do k = 1, nsecm
-                    kdeb=(k-1)*neq+1
-                    call csmbgg(lmat, rsolu(kdeb), zr(idvalc), [cbid], [cbid],&
+                    kdeb = (k-1)*neq+1
+                    call csmbgg(lmat, rsolu(kdeb), zr(idvalc), [cbid], [cbid], &
                                 'R')
                 end do
-            endif
-        endif
+            end if
+        end if
         call rldlg3(metres, lmat, rsolu, [cbid], nsecm)
         if (prepos) then
 !         MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
-            call mrconl('MULT', lmat, 0, 'R', rsolu,&
+            call mrconl('MULT', lmat, 0, 'R', rsolu, &
                         nsecm)
-        endif
+        end if
 !
 !
-    else if (type.eq.'C') then
+    else if (type .eq. 'C') then
 !     ----------------------------------------
         if (prepos) then
 !         MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
-            call mcconl('MULT', lmat, 0, 'C', csolu,&
+            call mcconl('MULT', lmat, 0, 'C', csolu, &
                         nsecm)
             if (idvalc .ne. 0) then
                 do k = 1, nsecm
-                    kdeb=(k-1)*neq+1
-                    call csmbgg(lmat, [0.d0], [0.d0], csolu(kdeb), zc(idvalc),&
+                    kdeb = (k-1)*neq+1
+                    call csmbgg(lmat, [0.d0], [0.d0], csolu(kdeb), zc(idvalc), &
                                 'C')
                 end do
-            endif
-        endif
+            end if
+        end if
         call rldlg3(metres, lmat, [0.d0], csolu, nsecm)
         if (prepos) then
 !         MISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
-            call mcconl('MULT', lmat, 0, 'C', csolu,&
+            call mcconl('MULT', lmat, 0, 'C', csolu, &
                         nsecm)
-        endif
-    endif
+        end if
+    end if
 !
 !
     call jedema()

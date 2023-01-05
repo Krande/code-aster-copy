@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmfocc(phase      , model     , ds_material, nume_dof , list_func_acti ,&
-                  ds_contact , ds_measure, hval_algo  , hval_incr, ds_constitutive)
+subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
+                  ds_contact, ds_measure, hval_algo, hval_incr, ds_constitutive)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assvec.h"
@@ -39,16 +39,16 @@ implicit none
 #include "asterfort/nmvcex.h"
 #include "asterfort/utmess.h"
 !
-character(len=10), intent(in) :: phase
-character(len=24), intent(in) :: model
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24), intent(in) :: nume_dof
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: hval_algo(*)
-character(len=19), intent(in) :: hval_incr(*)
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=10), intent(in) :: phase
+    character(len=24), intent(in) :: model
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24), intent(in) :: nume_dof
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: hval_incr(*)
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,13 +90,13 @@ type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 ! - Active functionnalities
 !
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    l_cont_elem = isfonc(list_func_acti,'ELT_CONTACT')
-    l_fric      = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
-    l_all_verif = isfonc(list_func_acti,'CONT_ALL_VERIF')
-    l_newt_cont = isfonc(list_func_acti,'CONT_NEWTON')
-    l_newt_geom = isfonc(list_func_acti,'GEOM_NEWTON')
-    l_cont_lac  = isfonc(list_func_acti,'CONT_LAC')
-    l_xthm      = isfonc(list_func_acti,'CONT_XFEM_THM')
+    l_cont_elem = isfonc(list_func_acti, 'ELT_CONTACT')
+    l_fric = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
+    l_all_verif = isfonc(list_func_acti, 'CONT_ALL_VERIF')
+    l_newt_cont = isfonc(list_func_acti, 'CONT_NEWTON')
+    l_newt_geom = isfonc(list_func_acti, 'GEOM_NEWTON')
+    l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
+    l_xthm = isfonc(list_func_acti, 'CONT_XFEM_THM')
 !
 ! - Get fields
 !
@@ -116,39 +116,39 @@ type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! - Generalized Newton: contact status evaluate before
 !
-    if ((phase.eq.'CONVERGENC') .and. (l_newt_cont .or. l_newt_geom)) then
+    if ((phase .eq. 'CONVERGENC') .and. (l_newt_cont .or. l_newt_geom)) then
         goto 999
-    endif
+    end if
 !
 ! - Compute contact forces
 !
-    if (l_cont_elem .and. (.not.l_all_verif) .and. &
-        ((.not.l_cont_lac) .or. ds_contact%nb_cont_pair.ne.0)) then
-        call nmtime(ds_measure, 'Init'  , 'Cont_Elem')
+    if (l_cont_elem .and. (.not. l_all_verif) .and. &
+        ((.not. l_cont_lac) .or. ds_contact%nb_cont_pair .ne. 0)) then
+        call nmtime(ds_measure, 'Init', 'Cont_Elem')
         call nmtime(ds_measure, 'Launch', 'Cont_Elem')
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE11_30')
-        endif
-        call nmelcv(mesh          , model         ,&
-                    ds_material   , ds_contact    , ds_constitutive,&
-                    disp_prev     , vite_prev     ,&
-                    acce_prev     , vite_curr     ,&
-                    time_prev     , time_curr     ,&
+        end if
+        call nmelcv(mesh, model, &
+                    ds_material, ds_contact, ds_constitutive, &
+                    disp_prev, vite_prev, &
+                    acce_prev, vite_curr, &
+                    time_prev, time_curr, &
                     disp_cumu_inst, &
                     vect_elem_cont, vect_elem_fric)
         call assvec('V', vect_asse_cont, 1, vect_elem_cont, [1.d0], nume_dof)
         if (l_fric) then
             call assvec('V', vect_asse_fric, 1, vect_elem_fric, [1.d0], nume_dof)
-        endif
+        end if
         call nmtime(ds_measure, 'Stop', 'Cont_Elem')
         call nmrinc(ds_measure, 'Cont_Elem')
         if (niv .eq. 2) then
             call nmdebg('VECT', vect_asse_cont, ifm)
             if (l_fric) then
                 call nmdebg('VECT', vect_asse_fric, ifm)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Special post-treatment for LAC contact method
 !

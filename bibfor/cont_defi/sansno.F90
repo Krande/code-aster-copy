@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine sansno(sdcont, keywf, mesh, sans, psans,&
+subroutine sansno(sdcont, keywf, mesh, sans, psans, &
                   nb_keyw, keyw_type, keyw_name)
 !
     implicit none
@@ -94,13 +94,13 @@ subroutine sansno(sdcont, keywf, mesh, sans, psans,&
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
     sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
-    call jeveuo(sdcont_noeuco, 'L', vi = v_sdcont_noeuco)
-    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
+    call jeveuo(sdcont_noeuco, 'L', vi=v_sdcont_noeuco)
+    call jeveuo(sdcont_pzoneco, 'L', vi=v_sdcont_pzoneco)
 !
 ! - Parameters
 !
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
-    nb_cont_node = cfdisi(sdcont_defi,'NNOCO')
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    nb_cont_node = cfdisi(sdcont_defi, 'NNOCO')
 !
 ! - Working vector
 !
@@ -109,7 +109,7 @@ subroutine sansno(sdcont, keywf, mesh, sans, psans,&
 !
 ! - Create pointer/contact surf. list of nodes from SANS_* keywords
 !
-    call wkvect(psans, 'G V I', nb_cont_zone+1, vi = v_psans)
+    call wkvect(psans, 'G V I', nb_cont_zone+1, vi=v_psans)
     v_psans(1) = 0
 !
 ! - Loop on contact zones
@@ -118,11 +118,11 @@ subroutine sansno(sdcont, keywf, mesh, sans, psans,&
 !
 ! ----- Read list of nodes for SANS_* keyword
 !
-        call reliem(' ', mesh, 'NU_NOEUD', keywf, i_zone,&
+        call reliem(' ', mesh, 'NU_NOEUD', keywf, i_zone, &
                     nb_keyw, keyw_name, keyw_type, list_elim, nb_elim)
         if (nb_elim .ne. 0) then
-            call jeveuo(list_elim, 'L', vi = v_list_elim)
-        endif
+            call jeveuo(list_elim, 'L', vi=v_list_elim)
+        end if
 !
 ! ----- Nodes belong to contact surface ?
 !
@@ -134,33 +134,33 @@ subroutine sansno(sdcont, keywf, mesh, sans, psans,&
             do i_node = 1, nb_node
                 node_nume = v_sdcont_noeuco(jdecno+i_node)
                 if (node_nume .eq. node_nume_elim) then
-                    nb_node_elim = nb_node_elim + 1
+                    nb_node_elim = nb_node_elim+1
                     v_vect_work(1+nt_node_elim-1+nb_node_elim) = node_nume_elim
                     goto 50
-                endif
+                end if
             end do
- 50         continue
+50          continue
         end do
 !
 ! ----- Update pointer
 !
-        nt_node_elim = nt_node_elim + nb_node_elim
-        ASSERT(nt_node_elim.le.work_vect_len)
-        v_psans(i_zone+1) = v_psans(i_zone) + nb_node_elim
+        nt_node_elim = nt_node_elim+nb_node_elim
+        ASSERT(nt_node_elim .le. work_vect_len)
+        v_psans(i_zone+1) = v_psans(i_zone)+nb_node_elim
     end do
 !
 ! - Create datastructure
 !
     if (nt_node_elim .eq. 0) then
-        call wkvect(sans, 'G V I', 1, vi = v_sans)
+        call wkvect(sans, 'G V I', 1, vi=v_sans)
     else
-        call wkvect(sans, 'G V I', nt_node_elim, vi = v_sans)
+        call wkvect(sans, 'G V I', nt_node_elim, vi=v_sans)
         do i_node = 1, nt_node_elim
             if (v_vect_work(i_node) .ne. 0) then
                 v_sans(i_node) = v_vect_work(i_node)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! - Clean
 !

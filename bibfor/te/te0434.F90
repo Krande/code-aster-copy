@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine te0434(option, nomte)
     character(len=32) :: phenom
     integer :: nddl, nno, nnos, npg, ndim, ncomp
     integer :: n, kpg
-    integer :: ipoids, ivf, idfde, jgano, iret, icompo,itab(1), itemps
+    integer :: ipoids, ivf, idfde, jgano, iret, icompo, itab(1), itemps
     integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
     integer :: icodre1, icodre2
     real(kind=8) :: dff(2, 9), vff(9)
@@ -68,31 +68,31 @@ subroutine te0434(option, nomte)
 ! - FONCTIONS DE FORME ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
 ! - grav : permet d'utiliser PESANTEUR en STAT_NON_LINE
-    grav = (option.eq.'CHAR_MECA_PESA_R')
+    grav = (option .eq. 'CHAR_MECA_PESA_R')
 
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCACOQU', 'L', icacoq)
 
-    call tecach('N','PCOMPOR', 'L',iret ,1 , itab)
+    call tecach('N', 'PCOMPOR', 'L', iret, 1, itab)
     icompo = itab(1)
 !
     if (option .eq. 'FORC_NODA') then
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PMATERC', 'L', imate)
 !
-    else if (option.eq.'REFE_FORC_NODA') then
+    else if (option .eq. 'REFE_FORC_NODA') then
         call jevech('PMATERC', 'L', imate)
 !
-    else if (option.eq.'CHAR_MECA_EPSI_R') then
+    else if (option .eq. 'CHAR_MECA_EPSI_R') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PEPSINR', 'L', iepsin)
 !
-    else if (option.eq.'CHAR_MECA_EPSI_F') then
+    else if (option .eq. 'CHAR_MECA_EPSI_F') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PEPSINF', 'L', iepsin)
         call jevech('PTEMPSR', 'L', itemps)
@@ -101,10 +101,10 @@ subroutine te0434(option, nomte)
         call jevech('PMATERC', 'L', imate)
         call jevech('PPESANR', 'L', ipesa)
 !
-    else if (option.eq.'CHAR_MECA_TEMP_R') then
+    else if (option .eq. 'CHAR_MECA_TEMP_R') then
         call jevech('PMATERC', 'L', imate)
 !
-    endif
+    end if
 !
 ! - PARAMETRES EN SORTIE
 !
@@ -112,8 +112,8 @@ subroutine te0434(option, nomte)
 !
 ! - DIRECTION DE REFERENCE POUR UN COMPORTEMENT ANISOTROPE
 !
-    alpha = zr(icacoq+1) * r8dgrd()
-    beta = zr(icacoq+2) * r8dgrd()
+    alpha = zr(icacoq+1)*r8dgrd()
+    beta = zr(icacoq+2)*r8dgrd()
 
 ! - EPAISSEUR ET PRETCONTRAINTES
     h = zr(icacoq)
@@ -127,15 +127,15 @@ subroutine te0434(option, nomte)
     call rccoma(zi(imate), 'ELAS', 0, phenom, icodre2)
 
     if (icodre1 .eq. 0) then
-        if ((icompo.ne.0) .and. (zk16( icompo + 2 )(1:5) .ne. 'PETIT')) then
+        if ((icompo .ne. 0) .and. (zk16(icompo+2) (1:5) .ne. 'PETIT')) then
             call utmess('F', 'MEMBRANE_10')
-        endif
+        end if
     elseif (icodre2 .eq. 0) then
-        if (((icompo.eq.0) .or. (zk16( icompo + 2 )(1:9) .ne. 'GROT_GDEP')) &
-              .and. (.not.grav)) then
+        if (((icompo .eq. 0) .or. (zk16(icompo+2) (1:9) .ne. 'GROT_GDEP')) &
+            .and. (.not. grav)) then
             call utmess('F', 'MEMBRANE_10')
-        endif
-    endif
+        end if
+    end if
 !
 ! -----------------------------------------------------------------
 ! ---       DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS          ---
@@ -147,25 +147,25 @@ subroutine te0434(option, nomte)
 !     DES FONCTIONS DE FORME
 !
         do n = 1, nno
-            vff(n) =zr(ivf+(kpg-1)*nno+n-1)
-            dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
-            dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
+            vff(n) = zr(ivf+(kpg-1)*nno+n-1)
+            dff(1, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2)
+            dff(2, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
         end do
 
         if (icodre1 .eq. 0) then
 
-            call mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom,&
-                  imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
+            call mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoids, igeom, &
+                        imate, ipesa, ivectu, icontm, vff, dff, alpha, beta)
 
         elseif (icodre2 .eq. 0) then
 
-            if ((option.ne.'FORC_NODA') .and. (option.ne.'CHAR_MECA_PESA_R')) then
+            if ((option .ne. 'FORC_NODA') .and. (option .ne. 'CHAR_MECA_PESA_R')) then
                 call utmess('F', 'MEMBRANE_7')
-            endif
-            call mbgchg(option,fami,nddl,nno,ncomp,kpg,imate,icontm,&
-              ipoids,ipesa,igeom,ivectu,vff,dff,h,alpha,beta,preten)
+            end if
+            call mbgchg(option, fami, nddl, nno, ncomp, kpg, imate, icontm, &
+                        ipoids, ipesa, igeom, ivectu, vff, dff, h, alpha, beta, preten)
 
-        endif
+        end if
     end do
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS

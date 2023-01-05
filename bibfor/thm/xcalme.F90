@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xcalme(ds_thm,&
-                  option, ndim, dimenr,&
-                  dimcon, addeme, adcome, congep,&
+subroutine xcalme(ds_thm, &
+                  option, ndim, dimenr, &
+                  dimcon, addeme, adcome, congep, &
                   dsde, deps, angl_naut)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/thmTherElas.h"
@@ -33,7 +33,7 @@ implicit none
 ! CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE MECANIQUES
 ! ======================================================================
 !
-type(THM_DS), intent(in) :: ds_thm
+    type(THM_DS), intent(in) :: ds_thm
     real(kind=8), intent(in) :: angl_naut(3)
 
     integer :: ndim, dimenr, dimcon, addeme
@@ -55,69 +55,69 @@ type(THM_DS), intent(in) :: ds_thm
 ! - Initializations
 !
     fami = 'XFEM'
-    kpg  = 1
-    spt  = 1
+    kpg = 1
+    spt = 1
     poum = '+'
     rac2 = sqrt(2.0d0)
 !
 ! - Get storage parameters for behaviours
 !
-    meca      = ds_thm%ds_behaviour%rela_meca
+    meca = ds_thm%ds_behaviour%rela_meca
 
-    if ((meca.eq.'ELAS')) then
+    if ((meca .eq. 'ELAS')) then
 !
 !   DANS LE CAS ELASTIQUE ON REPASSE AUX CONTRAINTES RELLES POUR APPLIQU
 !  LA MATRICE DE ROTATION DANS LE CAS ANISOTROPE
 !
         depstr = deps
 !
-        if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
+        if ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
             do i = 4, 6
                 depstr(i) = deps(i)*rac2
-                congep(adcome+i-1)= congep(adcome+i-1)/rac2
+                congep(adcome+i-1) = congep(adcome+i-1)/rac2
             end do
-        endif
+        end if
 !
 ! ----- Compute thermic quantities
 !
         call thmTherElas(ds_thm, angl_naut, mdal, dalal)
 !
-        if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
+        if ((option(1:9) .eq. 'RIGI_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
             do i = 1, 3
                 do j = 1, 3
-                    dsde(adcome-1+i,addeme+ndim-1+j) = dsde(adcome-1+i,addeme+ndim-1+j)+&
-                                                       ds_thm%ds_material%elas%d(i,j)
+                    dsde(adcome-1+i, addeme+ndim-1+j) = dsde(adcome-1+i, addeme+ndim-1+j)+ &
+                                                        ds_thm%ds_material%elas%d(i, j)
                 end do
                 do j = 4, 6
-                    dsde(adcome-1+i,addeme+ndim-1+j) = dsde(adcome-1+i,addeme+ndim-1+j)+&
-                                                       ds_thm%ds_material%elas%d(i,j)*rac2
-               end do
+                    dsde(adcome-1+i, addeme+ndim-1+j) = dsde(adcome-1+i, addeme+ndim-1+j)+ &
+                                                        ds_thm%ds_material%elas%d(i, j)*rac2
+                end do
             end do
 !
             do i = 4, 6
                 do j = 1, 3
-                    dsde(adcome-1+i,addeme+ndim-1+j) = dsde(adcome-1+i,addeme+ndim-1+j)+&
-                                                       ds_thm%ds_material%elas%d(i,j)*rac2
-                 end do
+                    dsde(adcome-1+i, addeme+ndim-1+j) = dsde(adcome-1+i, addeme+ndim-1+j)+ &
+                                                        ds_thm%ds_material%elas%d(i, j)*rac2
+                end do
                 do j = 4, 6
-                    dsde(adcome-1+i,addeme+ndim-1+j) = dsde(adcome-1+i,addeme+ndim-1+j)+&
-                                                       ds_thm%ds_material%elas%d(i,j)*2.d0
-                 end do
-             end do
-        endif
-        if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
+                    dsde(adcome-1+i, addeme+ndim-1+j) = dsde(adcome-1+i, addeme+ndim-1+j)+ &
+                                                        ds_thm%ds_material%elas%d(i, j)*2.d0
+                end do
+            end do
+        end if
+        if ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
             do i = 1, 6
                 do j = 1, 6
-                    congep(adcome+i-1) = congep(adcome+i-1)+&
-                                         ds_thm%ds_material%elas%d(i,j)*depstr(j)
-                 end do
+                    congep(adcome+i-1) = congep(adcome+i-1)+ &
+                                         ds_thm%ds_material%elas%d(i, j)*depstr(j)
+                end do
             end do
             do i = 4, 6
-                congep(adcome+i-1)= congep(adcome+i-1)*rac2
+                congep(adcome+i-1) = congep(adcome+i-1)*rac2
             end do
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine cftypm(defico, posma, typma)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
@@ -65,11 +65,11 @@ subroutine cftypm(defico, posma, typma)
 !
     if (zi(jtypma+ztypm*(posma-1)+1-1) .eq. 1) then
         typma = 'MAIT'
-    else if (zi(jtypma+ztypm*(posma-1)+1-1).eq.-1) then
+    else if (zi(jtypma+ztypm*(posma-1)+1-1) .eq. -1) then
         typma = 'ESCL'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

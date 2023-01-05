@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function xextr_uplet(n,id)
+function xextr_uplet(n, id)
 !
 !-----------------------------------------------------------------------
 ! BUT : EXTRACTION DU P-UPLET CORRESPONDANT A UN IDENTIFIANT
@@ -35,14 +35,14 @@ function xextr_uplet(n,id)
     integer :: xextr_uplet(n)
 !-----------------------------------------------------------------------
     integer :: base_codage, idigi, res, p
-    parameter (base_codage=4)
+    parameter(base_codage=4)
 !-----------------------------------------------------------------------
 !
-    res=id
-    do idigi=1,n
-      p=int(res/base_codage**(n-idigi))
-      res=res-p*base_codage**(n-idigi)
-      xextr_uplet(idigi)=p-2
-    enddo
+    res = id
+    do idigi = 1, n
+        p = int(res/base_codage**(n-idigi))
+        res = res-p*base_codage**(n-idigi)
+        xextr_uplet(idigi) = p-2
+    end do
 !
 end function

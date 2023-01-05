@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ subroutine xstan2(noma, modele, crit2, lfiss)
     call jemarq()
     call infdbg('XFEM', ifm, niv)
 !
-    write(ifm,*)'RECHERCHE DES DDLS HEAVISIDE A ANNULER'
+    write (ifm, *) 'RECHERCHE DES DDLS HEAVISIDE A ANNULER'
 !
 !     RECUPERATION DES DONNEES SUR LE MAILLAGE
 !
@@ -143,19 +143,19 @@ subroutine xstan2(noma, modele, crit2, lfiss)
         call jeveuo(ces(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(ces(i)//'.CESL', 'L', jcesl(i))
         call jeveuo(ces(i)//'.CESV', 'E', jcesv(i))
- 10     continue
+10      continue
     end do
 !
     cpt = 0
 !     BOUCLE SUR LES NOEUDS DU MAILLAGE
     do nuno = 1, nbno
-        if (.not.zl(jnoxfl-1+2*nuno)) goto 20
+        if (.not. zl(jnoxfl-1+2*nuno)) goto 20
 ! --- RECUP DU NUMERO LOCAL INO DU NOEUD NUNO DANS LA MAILLE X-FEM NUMA
         numa = cnsv(2*(nuno-1)+1)
         ino = cnsv(2*(nuno-1)+2)
         nfiss = nbsp(numa)
-        ASSERT(nfiss.ge.1)
-        nheav = max(1,nbsp2(numa))
+        ASSERT(nfiss .ge. 1)
+        nheav = max(1, nbsp2(numa))
 !
 !       RECUPERATION DES MAILLES CONTENANT LE NOEUD
         call jelira(jexnum(cnxinv, nuno), 'LONMAX', nbmano)
@@ -164,35 +164,35 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 !       BOUCLE SUR LES DDL HEAVISIDE
         do iheav = 1, nheav
             if (nfiss .eq. 1) then
-                ifiss=1
+                ifiss = 1
             else
-                call cesexi('S', jcesd(7), jcesl(7), numa, ino,&
+                call cesexi('S', jcesd(7), jcesl(7), numa, ino, &
                             iheav, 1, iad)
                 ifiss = zi(jcesv(7)-1+iad)
-            endif
-            call cesexi('S', jcesd(2), jcesl(2), numa, ino,&
+            end if
+            call cesexi('S', jcesd(2), jcesl(2), numa, ino, &
                         ifiss, 1, iad)
-            if (zi(jcesv(2)-1+iad).ne.1 .and. zi(jcesv(2)-1+iad).ne.3) goto 40
+            if (zi(jcesv(2)-1+iad) .ne. 1 .and. zi(jcesv(2)-1+iad) .ne. 3) goto 40
 !
 !         INITIALISATION DES VOLUMES
             vhea = 0
             vtot = 0
 !         BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
             do ima = 1, nbmano
-                numa2 = zi(adrma-1 + ima)
+                numa2 = zi(adrma-1+ima)
                 ndime = tmdim(typmail(numa2))
                 if (ndime .lt. ndim) goto 50
                 itypma = typmail(numa2)
                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-                if (.not.ismali(typma)) then
+                if (.not. ismali(typma)) then
                     if (ndim .eq. 2) then
                         nnose = 6
                     else
                         nnose = 10
-                    endif
+                    end if
                 else
                     nnose = ndim+1
-                endif
+                end if
 !
 !         1ER ELEMENT DE REFERENCE ASSOCIE A LA MAILLE
                 itypel = maille(numa2)
@@ -200,14 +200,14 @@ subroutine xstan2(noma, modele, crit2, lfiss)
                 call elref2(notype, 10, lirefe, nbelr)
                 elrefp = lirefe(1)
 !           NOMBRE DE NOEUDS
-                nbnoma = zi(jconx2+numa2) - zi(jconx2+numa2-1)
+                nbnoma = zi(jconx2+numa2)-zi(jconx2+numa2-1)
 !           RECUP DU NUM DE FISS CORRESPONDANT À IHEAV DE NUNO DS NUMA2
 !           ET DU NUMERO LOCALE INOLOC DANS LA MAILLE
                 do ino2 = 1, nbnoma
                     if (connex(zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
                         inoloc = ino2
                         goto 200
-                    endif
+                    end if
                 end do
                 ASSERT(.false.)
 200             continue
@@ -215,114 +215,114 @@ subroutine xstan2(noma, modele, crit2, lfiss)
                 if (nfiss2 .eq. 1) then
                     ifiss = 1
                 else
-                    call cesexi('S', jcesd(7), jcesl(7), numa2, inoloc,&
+                    call cesexi('S', jcesd(7), jcesl(7), numa2, inoloc, &
                                 iheav, 1, iad)
                     ifiss = zi(jcesv(7)-1+iad)
-                endif
+                end if
 !           CREATION DE VECTEUR DES COORDONNÉES DE LA MAILLE IMA
 !           AVEC DES VALEURS CONTIGUES
                 call wkvect(geom, 'V V R', ndim*nbnoma, igeom)
                 do ino2 = 1, nbnoma
-                    nuno2=connex(zi(jconx2+numa2-1)+ino2-1)
+                    nuno2 = connex(zi(jconx2+numa2-1)+ino2-1)
                     do j = 1, ndim
-                        zr(igeom-1+ndim*(ino2-1)+j)=vale(3*(&
-                        nuno2-1)+j)
+                        zr(igeom-1+ndim*(ino2-1)+j) = vale(3*( &
+                                                           nuno2-1)+j)
                     end do
                 end do
 !
 !           RECUPERATION DU NOMBRE TOTAL DE SOUS ELEMENTS
-                call cesexi('S', jcesd(1), jcesl(1), numa2, 1,&
+                call cesexi('S', jcesd(1), jcesl(1), numa2, 1, &
                             1, 1, iad)
-                nse=zi(jcesv(1)-1+iad)
+                nse = zi(jcesv(1)-1+iad)
 !           POINTEUR DE CONNECTIVITÉ DU SOUS ELEMENT
-                call cesexi('S', jcesd(4), jcesl(4), numa2, 1,&
+                call cesexi('S', jcesd(4), jcesl(4), numa2, 1, &
                             1, 1, iad)
-                jcnse=jcesv(4)-1+iad
+                jcnse = jcesv(4)-1+iad
 !           POINTEUR DE COORDONNÉES DES POINTS D'INTERSECTIONS
-                call cesexi('S', jcesd(5), jcesl(5), numa2, 1,&
+                call cesexi('S', jcesd(5), jcesl(5), numa2, 1, &
                             1, 1, iad)
-                jpint=jcesv(5)-1+iad
-                call xcrvol(nse, ndim, jcnse, nnose, jpint,&
-                            igeom, elrefp, inoloc, nbnoma, jcesd(3),&
-                            jcesl(3), jcesv(3), numa2, iheav, nfiss2, vhea,&
+                jpint = jcesv(5)-1+iad
+                call xcrvol(nse, ndim, jcnse, nnose, jpint, &
+                            igeom, elrefp, inoloc, nbnoma, jcesd(3), &
+                            jcesl(3), jcesv(3), numa2, iheav, nfiss2, vhea, &
                             jcesd(8), jcesl(8), jcesv(8), lfiss, vtot)
                 call jedetr(geom)
- 50             continue
+50              continue
             end do
 !         CALCUL DU CRITERE
-            if (.not.isnomi(elrefp,inoloc)) then
-              crimaxi=crit2(1)**ndim
+            if (.not. isnomi(elrefp, inoloc)) then
+                crimaxi = crit2(1)**ndim
             else
-              crimaxi=crit2(2)**ndim
-            endif
-            crit=vhea/vtot
+                crimaxi = crit2(2)**ndim
+            end if
+            crit = vhea/vtot
             if (crit .lt. crimaxi) then
-                cpt = cpt + 1
+                cpt = cpt+1
 !           BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
                 do ima = 1, nbmano
-                    numa2 = zi(adrma-1 + ima)
+                    numa2 = zi(adrma-1+ima)
 !             MISE À ZÉRO DU STATUT DANS TOUS LES ÉLÉMENTS DU SUPPORT
-                    nbnoma = zi(jconx2+numa2) - zi(jconx2+numa2-1)
+                    nbnoma = zi(jconx2+numa2)-zi(jconx2+numa2-1)
                     do ino2 = 1, nbnoma
                         if (connex(zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
                             if (nbsp(numa2) .eq. 1) then
                                 ifiss = 1
-                            else if (nbsp(numa2).eq.0) then
+                            else if (nbsp(numa2) .eq. 0) then
                                 goto 150
                             else
-                                call cesexi('S', jcesd(7), jcesl(7), numa2, ino2,&
+                                call cesexi('S', jcesd(7), jcesl(7), numa2, ino2, &
                                             iheav, 1, iad)
                                 ifiss = zi(jcesv(7)-1+iad)
-                            endif
-                            call cesexi('S', jcesd(2), jcesl(2), numa2, ino2,&
+                            end if
+                            call cesexi('S', jcesd(2), jcesl(2), numa2, ino2, &
                                         ifiss, 1, iad)
-                            if (zi(jcesv(2)-1+iad).eq.3) then
-                              zi(jcesv(2)-1+iad) = 2
-                            elseif (zi(jcesv(2)-1+iad).eq.1) then
-                              zi(jcesv(2)-1+iad) = 0
-                            endif
+                            if (zi(jcesv(2)-1+iad) .eq. 3) then
+                                zi(jcesv(2)-1+iad) = 2
+                            elseif (zi(jcesv(2)-1+iad) .eq. 1) then
+                                zi(jcesv(2)-1+iad) = 0
+                            end if
                             goto 150
-                        endif
+                        end if
                     end do
                     ASSERT(.false.)
 150                 continue
                 end do
-            endif
+            end if
 !
- 40         continue
+40          continue
         end do
 !       ELIMINATION DE LA LISTE DES NOEUDS XFEM SI NECESSAIRE
         lelim = .true.
         do iheav = 1, nheav
             nfiss = nbsp(numa)
             if (nfiss .eq. 1) then
-                ifiss=1
+                ifiss = 1
             else
-                call cesexi('S', jcesd(7), jcesl(7), numa, ino,&
+                call cesexi('S', jcesd(7), jcesl(7), numa, ino, &
                             iheav, 1, iad)
                 ifiss = zi(jcesv(7)-1+iad)
-            endif
-            call cesexi('S', jcesd(2), jcesl(2), numa, ino,&
+            end if
+            call cesexi('S', jcesd(2), jcesl(2), numa, ino, &
                         ifiss, 1, iad)
             if (abs(zi(jcesv(2)-1+iad)) .ge. 1) lelim = .false.
         end do
         if (lelim) then
             zl(jnoxfl-1+2*(nuno-1)+1) = .false.
             zl(jnoxfl-1+2*(nuno-1)+2) = .false.
-        endif
- 20     continue
+        end if
+20      continue
     end do
 !
-    write(ifm,*)'NOMBRE DE NOEUDS OU LES DDLS H SONT MIS A ZERO :',cpt
+    write (ifm, *) 'NOMBRE DE NOEUDS OU LES DDLS H SONT MIS A ZERO :', cpt
 !
 ! --- CONVERSION CHAM_NO_S -> CHAM_NO POUR MODELE.NOXFEM
 !
-    call cnscno(cns2, noxfem(1:13)//".PRCHN", 'NON', 'G', noxfem,&
+    call cnscno(cns2, noxfem(1:13)//".PRCHN", 'NON', 'G', noxfem, &
                 'F', ibid)
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM POUR MODELE.STNO
 !
-    call cescel(ces(2), ligrel, 'INI_XFEM_ELNO', 'PSTANO', 'OUI',&
+    call cescel(ces(2), ligrel, 'INI_XFEM_ELNO', 'PSTANO', 'OUI', &
                 nncp, 'G', cel(2), 'F', ibid)
 !
 ! --- MENAGE

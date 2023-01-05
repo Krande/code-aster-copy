@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 !
 subroutine resuIdeasPermut(permutJvName, versio, maxnod)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/iradhs.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=24), intent(in) :: permutJvName
-integer, intent(in) :: versio
-integer, intent(out) :: maxnod
+    character(len=24), intent(in) :: permutJvName
+    integer, intent(in) :: versio
+    integer, intent(out) :: maxnod
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ integer, intent(out) :: maxnod
     call jeexin(permutJvName, iret)
     if (iret .eq. 0) then
         call iradhs(versio)
-    endif
+    end if
     call jeveuo(permutJvName, 'L', vi=permuta)
     call jelira(permutJvName, 'LONMAX', lonl)
     maxnod = permuta(lonl)

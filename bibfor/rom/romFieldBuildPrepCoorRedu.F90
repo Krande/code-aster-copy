@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine romFieldBuildPrepCoorRedu(resultRom, tablReduCoor, fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romFieldBuildGappy.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Result), intent(in) :: resultRom
-type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
-type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
+    type(ROM_DS_Result), intent(in) :: resultRom
+    type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
+    type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,15 +57,15 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
     if (fieldBuild%operation .eq. 'GAPPY_POD') then
         if (niv .ge. 2) then
             call utmess('I', 'ROM17_4')
-        endif
+        end if
 ! ----- Compute reduced coordinates with Gappy-POD
         call romFieldBuildGappy(resultRom, fieldBuild)
     else
         if (niv .ge. 2) then
             call utmess('I', 'ROM17_5')
-        endif
+        end if
 ! ----- Get from table
         fieldBuild%reduMatr => tablReduCoor%coorRedu
-    endif
+    end if
 !
 end subroutine

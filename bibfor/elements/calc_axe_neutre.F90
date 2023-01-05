@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a,&
-                                y_a, f_ta, kappa,&
-                                e0, cas)
+subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a, &
+                           y_a, f_ta, kappa, &
+                           e0, cas)
 !
     implicit none
 !
@@ -29,7 +29,6 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a,&
 ! PARAMETRES SORTANTS
     real(kind=8) :: e0
     integer :: cas
-
 
 ! PARAMETRES D'ENTREE
 !     e_b   MODULE DU BETON MODIFIE
@@ -64,37 +63,37 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a,&
     integer :: action
 
 !     valeurs intermediaires
-    e_t=f_t/e_b
-    e_c=-f_c/e_b
-    e_u=(1.d0+c)*e_t
-    e_ta=f_ta/e_a
+    e_t = f_t/e_b
+    e_c = -f_c/e_b
+    e_u = (1.d0+c)*e_t
+    e_ta = f_ta/e_a
 
     e0 = 1.d3
     cas = 0
     action = 1
 
 !   CAS 1 ELASTIQUE
-    if (kappa .lt. ((2*e_t)/h))then
+    if (kappa .lt. ((2*e_t)/h)) then
 !       TOUT ELASTIQUE
         e0 = 0.d0
         cas = 1
         action = 0
-    endif
+    end if
 
 !   CAS BETON FISSURE / PAS DE COMPRESSION / ACIER ELASTIQUES
-    if (action .eq. 1)then
-    !     on suppose que c!=0
-    !     on suppose qu"on est dans le cas2 : fissuration du beton <eu
+    if (action .eq. 1) then
+        !     on suppose que c!=0
+        !     on suppose qu"on est dans le cas2 : fissuration du beton <eu
         a = -(e_b/(2.d0*kappa))*(1.d0+(1.d0/c))
-        b = e_b*((1.d0/kappa)*(1.d0+(1.d0/c))*e_t+0.5d0*h*(1.d0-(1.d0/c)))&
+        b = e_b*((1.d0/kappa)*(1.d0+(1.d0/c))*e_t+0.5d0*h*(1.d0-(1.d0/c))) &
             +2.d0*e_a*s_a
-        s = (1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))*(e_t**2)&
-             -0.125d0*kappa*(h**2))*e_b
+        s = (1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))*(e_t**2) &
+                             -0.125d0*kappa*(h**2))*e_b
         d = (b**2)-4.d0*a*s
-        if (d .ge. 0)then
-            f=(-b+sqrt(d))/(2.d0*a)
-        !   verification de la plastification des aciers
-            if (f+kappa*y_a  .lt. e_ta .and. f-kappa*y_a .gt. -e_ta)then
+        if (d .ge. 0) then
+            f = (-b+sqrt(d))/(2.d0*a)
+            !   verification de la plastification des aciers
+            if (f+kappa*y_a .lt. e_ta .and. f-kappa*y_a .gt. -e_ta) then
                 e0 = f
 !               CAS BETON FISSURE / PAS DE COMPRESSION / ACIER ELASTIQUES=
                 cas = 2
@@ -104,186 +103,186 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a,&
                 b = b-e_a*s_a
                 s = s+e_a*s_a*(e_ta-kappa*y_a)
                 d = (b**2)-4.d0*a*s
-                if (d .ge. 0.d0)then
-                    f=(-b+sqrt(d))/(2.d0*a)
+                if (d .ge. 0.d0) then
+                    f = (-b+sqrt(d))/(2.d0*a)
                 else
                     f = 0.d0
-                endif
+                end if
 
-                if (f .ne. 0.d0 .and. (f+kappa*y_a) .gt. e_ta .and. (f-kappa*y_a) .gt. -e_ta)then
+                if (f .ne. 0.d0 .and. (f+kappa*y_a) .gt. e_ta .and. (f-kappa*y_a) .gt. -e_ta) then
                     e0 = f
                     cas = 3
                     action = 2
                 else
-                    b=b-e_a*s_a
-                    s=(1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))*(e_t**2)&
-                      -0.125d0*kappa*(h**2))*e_b
-                    d=b**2-4.d0*a*s
-                    if (d .ge. 0.d0)then
-                        f=(-b+sqrt(d))/(2.d0*a)
+                    b = b-e_a*s_a
+                    s = (1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))*(e_t**2) &
+                                         -0.125d0*kappa*(h**2))*e_b
+                    d = b**2-4.d0*a*s
+                    if (d .ge. 0.d0) then
+                        f = (-b+sqrt(d))/(2.d0*a)
                         e0 = f
                         cas = 4
                         action = 2
                     else
                         action = 4
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         else
             action = 4
-        endif
-    endif
+        end if
+    end if
 
 !   VERIFICATION DE LA COMPRESSION DU BETON
-    if (action .eq. 2)then
+    if (action .eq. 2) then
 !       si on a passe la limite en compression
         if ((e0-0.5d0*kappa*h) .lt. e_c) then
-            a=-(e_b/(2.d0*kappa))*(1.d0+(1.d0/c))+(e_b/(2.d0*kappa))
-            b=e_b*((1.d0/kappa)*(1.d0+(1.d0/c))*e_t+0.5d0*h*(1.d0-(1.d0/c)))&
-              +2.d0*e_a*s_a+(f_c/kappa)-0.5d0*h*e_b
-            s=(1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))*(e_t**2)-0.125d0*kappa*(h**2))*e_b&
-               +0.125d0*kappa*e_b*h**2+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
-            d=(b**2)-4.d0*a*s
-            if (d .ge. 0.d0)then
-                f=(-b+sqrt(d))/(2.d0*a)
-                if (f+kappa*y_a .lt. e_ta .and. f-kappa*y_a .gt. -e_ta)then
+            a = -(e_b/(2.d0*kappa))*(1.d0+(1.d0/c))+(e_b/(2.d0*kappa))
+            b = e_b*((1.d0/kappa)*(1.d0+(1.d0/c))*e_t+0.5d0*h*(1.d0-(1.d0/c))) &
+                +2.d0*e_a*s_a+(f_c/kappa)-0.5d0*h*e_b
+           s = (1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))*(e_t**2)-0.125d0*kappa*(h**2))*e_b &
+                +0.125d0*kappa*e_b*h**2+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
+            d = (b**2)-4.d0*a*s
+            if (d .ge. 0.d0) then
+                f = (-b+sqrt(d))/(2.d0*a)
+                if (f+kappa*y_a .lt. e_ta .and. f-kappa*y_a .gt. -e_ta) then
                     e0 = f
 !                   BETON FISS / COMPRESSION / ACIER ELASTIQUE
                     cas = 5
                     action = 3
                 else
-                    b=b-e_a*s_a
-                    s=s+e_a*s_a*(e_ta-kappa*y_a)
-                    d=(b**2)-4.d0*a*s
-                    if (d .ge. 0.d0)then
-                        f=(-b+sqrt(d))/(2.d0*a)
+                    b = b-e_a*s_a
+                    s = s+e_a*s_a*(e_ta-kappa*y_a)
+                    d = (b**2)-4.d0*a*s
+                    if (d .ge. 0.d0) then
+                        f = (-b+sqrt(d))/(2.d0*a)
                     else
                         f = 0.d0
-                    endif
-                    if (f .ne. 0.d0 .and. f+kappa*y_a .gt. e_ta .and. f-kappa*y_a .gt. -e_ta)then
+                    end if
+                    if (f .ne. 0.d0 .and. f+kappa*y_a .gt. e_ta .and. f-kappa*y_a .gt. -e_ta) then
                         e0 = f
 !                       BETON FISS / COMPRESSION / ACIER PLASTIQUE
                         cas = 6
                         action = 3
                     else
-                        b=b-e_a*s_a
-                        s=(1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2d0*kappa))*(e_t**2)&
-                          -0.125d0*kappa*(h**2))*e_b&
-                           +0.125d0*kappa*e_b*h**2+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
-                        d=b**2-4.d0*a*s
-                        if (d .ge. 0.d0)then
-                            f=(-b+sqrt(d))/(2.d0*a)
+                        b = b-e_a*s_a
+                        s = (1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2d0*kappa))*(e_t**2) &
+                                             -0.125d0*kappa*(h**2))*e_b &
+                            +0.125d0*kappa*e_b*h**2+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
+                        d = b**2-4.d0*a*s
+                        if (d .ge. 0.d0) then
+                            f = (-b+sqrt(d))/(2.d0*a)
                             e0 = f
 !                           BETON FISS / COMPRESSION / ACIERS PLASTIQUES
                             cas = 7
                             action = 3
                         else
-                            action =4
-                        endif
-                    endif
-                endif
+                            action = 4
+                        end if
+                    end if
+                end if
             else
                 action = 4
-            endif
+            end if
         else
             action = 3
-        endif
-    endif
+        end if
+    end if
 !
 !   verification hypothese BETON FISSURE / RUPTURE
     if (action .eq. 3) then
-        if (e0+0.5d0*kappa*h .lt. e_u)then
+        if (e0+0.5d0*kappa*h .lt. e_u) then
             action = 0
         else
             action = 4
-        endif
-    endif
+        end if
+    end if
 
 !   BETON RUPTURE
-    if (action .eq. 4)then
-        a=-e_b/(2.d0*kappa)
-        b=e_b*(0.5d0*h)+2.d0*e_a*s_a
-        s=((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2)-0.125d0*kappa*(h**2))*e_b
-        d=(b**2)-4.d0*a*s
-        if (d .ge. 0.d0)then
-            f=(-b+sqrt(d))/(2.d0*a)
+    if (action .eq. 4) then
+        a = -e_b/(2.d0*kappa)
+        b = e_b*(0.5d0*h)+2.d0*e_a*s_a
+        s = ((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2)-0.125d0*kappa*(h**2))*e_b
+        d = (b**2)-4.d0*a*s
+        if (d .ge. 0.d0) then
+            f = (-b+sqrt(d))/(2.d0*a)
             if (f+kappa*y_a .lt. e_ta .and. f-kappa*y_a .gt. -e_ta) then
                 e0 = f
 !               BETON FISS RUPT / COMPRE ELAS / ACIER ELASTIQUE
                 cas = 8
                 action = 5
             else
-                b=b-e_a*s_a
-                s=s+e_a*s_a*(e_ta-kappa*y_a)
-                d=(b**2)-4.d0*a*s
+                b = b-e_a*s_a
+                s = s+e_a*s_a*(e_ta-kappa*y_a)
+                d = (b**2)-4.d0*a*s
                 if (d .ge. 0.d0) then
-                    f=(-b+sqrt(d))/(2.d0*a)
+                    f = (-b+sqrt(d))/(2.d0*a)
                 else
-                    f=0.d0
-                endif
+                    f = 0.d0
+                end if
 
-                if (f.ne. 0.d0 .and. f+kappa*y_a .gt. e_ta .and. f-kappa*y_a .gt. -e_ta)then
+                if (f .ne. 0.d0 .and. f+kappa*y_a .gt. e_ta .and. f-kappa*y_a .gt. -e_ta) then
                     e0 = f
 !                   BETON FISS RUPT / COMPRE ELAS / ACIER PLASTIQUE
                     cas = 9
                     action = 5
                 else
-                    b=b-e_a*s_a
-                    s=((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2)-0.125d0*kappa*(h**2))*e_b
-                    d=(b**2)-4.d0*a*s
-                    if (d .ge. 0.d0)then
-                        f=(-b+sqrt(d))/(2.d0*a)
+                    b = b-e_a*s_a
+                    s = ((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2)-0.125d0*kappa*(h**2))*e_b
+                    d = (b**2)-4.d0*a*s
+                    if (d .ge. 0.d0) then
+                        f = (-b+sqrt(d))/(2.d0*a)
                         e0 = f
 !                       BETON FISS RUPT / COMPRE ELAS / ACIER PLASTIQUE TRAC
                         cas = 10
                         action = 5
                     else
                         action = 10
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         else
 !           sortie sans solution
             action = 10
-        endif
-    endif
+        end if
+    end if
 
 !   VERIFICATION DE LA COMPRESSION DU BETON
-    if (action .eq. 5)then
+    if (action .eq. 5) then
 !       si on a passe la limite en compression
-        if (f-0.5d0*kappa*h .lt. e_c)then
-            a=0.d0
-            b= 2*e_a*s_a+(f_c/kappa)
-            s=((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2))*e_b+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
-            f=-s/b
+        if (f-0.5d0*kappa*h .lt. e_c) then
+            a = 0.d0
+            b = 2*e_a*s_a+(f_c/kappa)
+            s = ((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2))*e_b+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
+            f = -s/b
             if (f+kappa*y_a .lt. e_ta .and. f-kappa*y_a .gt. -e_ta) then
                 e0 = f
 !               BETON FISS RUPT / COMPRESSION / ACIER ELASTIQUE
                 cas = 11
             else
-                b=b-e_a*s_a
-                s=s+e_a*s_a*(e_ta-kappa*y_a)
-                f=-s/b
-                if (f+kappa*y_a .gt. e_ta .and. f-kappa*y_a .gt. -e_ta)then
+                b = b-e_a*s_a
+                s = s+e_a*s_a*(e_ta-kappa*y_a)
+                f = -s/b
+                if (f+kappa*y_a .gt. e_ta .and. f-kappa*y_a .gt. -e_ta) then
                     e0 = f
 !                   BETON FISS RUPT / COMPRESSION / ACIER PLASTIQUE
                     cas = 12
                 else
-                    b=b-e_a*s_a
-                    s=((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2))*e_b&
-                      +(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
-                    f=-s/b
+                    b = b-e_a*s_a
+                    s = ((c+1.d0)*(1.d0/(2.d0*kappa))*(e_t**2))*e_b &
+                        +(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
+                    f = -s/b
                     e0 = f
 !                   BETON FISS RUPT / COMPRESSION / ACIERS PLASTIQUES
                     cas = 13
-                endif
-            endif
+                end if
+            end if
             action = 0
         else
             action = 0
-        endif
-    endif
+        end if
+    end if
 
-    ASSERT(action.eq.0)
+    ASSERT(action .eq. 0)
 
 end subroutine

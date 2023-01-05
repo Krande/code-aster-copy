@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
+subroutine nmceni(numedd, depdel, deppr1, deppr2, rho, &
                   sdpilo, eta, isxfe, f)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -73,7 +73,7 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
         call jeveuo(chapil(1:19)//'.VALE', 'L', vr=coef)
         chapic = sdpilo(1:14)//'.PLCI'
         call jeveuo(chapic(1:19)//'.VALE', 'L', vr=coee)
-    endif
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -96,30 +96,30 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 !
     if (isxfe) then
         do i = 1, neq
-            if (deeq(2*i ) .gt. 0) then
+            if (deeq(2*i) .gt. 0) then
                 if (coee(i) .eq. 0.d0) then
-                    f = f + coef(i)**2* (depde(i)+rho*du0(i)+ eta*du1(i))**2
+                    f = f+coef(i)**2*(depde(i)+rho*du0(i)+eta*du1(i))**2
                 else
                     dn = 0.d0
                     dc = 0.d0
                     dp = 0.d0
                     do j = i+1, neq
                         if (coee(i) .eq. coee(j)) then
-                            dn = dn + coef(i)*depde(i)+ coef(j)*depde(j)
-                            dc = dc + coef(i)*du0(i)+ coef(j)*du0(j)
-                            dp = dp + coef(i)*du1(i)+ coef(j)*du1(j)
-                        endif
+                            dn = dn+coef(i)*depde(i)+coef(j)*depde(j)
+                            dc = dc+coef(i)*du0(i)+coef(j)*du0(j)
+                            dp = dp+coef(i)*du1(i)+coef(j)*du1(j)
+                        end if
                     end do
-                    f = f + (dn+rho*dc+eta*dp)**2
-                endif
-            endif
+                    f = f+(dn+rho*dc+eta*dp)**2
+                end if
+            end if
         end do
     else
         do i = 1, neq
-            if (deeq(2*i + 2) .gt. 0) then
-                f = f + (depde(1+i)+rho*du0(1+i)+eta*du1(1+i))** 2
-            endif
+            if (deeq(2*i+2) .gt. 0) then
+                f = f+(depde(1+i)+rho*du0(1+i)+eta*du1(1+i))**2
+            end if
         end do
-    endif
+    end if
     call jedema()
 end subroutine

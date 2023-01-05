@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine memame(optionz    , modelz   , matez, matecoz      , caraElemz, time,&
+subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
                   comporMultz, matrElemz, basez, listElemCalcz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -39,11 +39,11 @@ implicit none
 #include "asterfort/vrcins.h"
 #include "asterfort/xajcin.h"
 !
-character(len=*), intent(in) :: optionz
-character(len=*), intent(in) :: modelz, matez, matecoz, caraElemz
-real(kind=8), intent(in) :: time
-character(len=*), intent(in) :: comporMultz, matrElemz
-character(len=*), intent(in) :: basez, listElemCalcz
+    character(len=*), intent(in) :: optionz
+    character(len=*), intent(in) :: modelz, matez, matecoz, caraElemz
+    real(kind=8), intent(in) :: time
+    character(len=*), intent(in) :: comporMultz, matrElemz
+    character(len=*), intent(in) :: basez, listElemCalcz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,27 +89,27 @@ character(len=*), intent(in) :: basez, listElemCalcz
     call jemarq()
 
 ! - Initializations
-    option       = optionz
-    model        = modelz
-    caraElem     = caraElemz
-    mate         = matez
-    mateco       = matecoz
-    matrElem     = matrElemz
-    comporMult   = comporMultz
-    base         = basez
+    option = optionz
+    model = modelz
+    caraElem = caraElemz
+    mate = matez
+    mateco = matecoz
+    matrElem = matrElemz
+    comporMult = comporMultz
+    base = basez
     listElemCalc = listElemCalcz
-    lpain  = ' '
-    lchin  = ' '
+    lpain = ' '
+    lchin = ' '
     lpaout = ' '
     lchout = ' '
 
 ! - Prepare flags
     call exixfe(model, iret)
-    lxfem  = iret .ne. 0
-    call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
+    lxfem = iret .ne. 0
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nbSubstruct)
 
 ! - Preparation of input fields
-    call mecham(option, model , caraElem, modeFourier, chgeom,&
+    call mecham(option, model, caraElem, modeFourier, chgeom, &
                 chcara, chharm, iret)
     hasFiniteElement = iret .eq. 0
 
@@ -122,11 +122,11 @@ character(len=*), intent(in) :: basez, listElemCalcz
         call memare(base, matrElem, model, mate, caraElem, option)
     else
         call jedetr(matrElem(1:19)//'.RELR')
-    endif
-    call jeveuo(matrElem//'.RERR', 'E', vk24 = rerr)
+    end if
+    call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
     if (nbSubstruct .gt. 0) then
         rerr(3) = 'OUI_SOUS_STRUC'
-    endif
+    end if
 
 ! - Input fields
     lpain(1) = 'PGEOMER'
@@ -134,43 +134,43 @@ character(len=*), intent(in) :: basez, listElemCalcz
     lpain(2) = 'PMATERC'
     lchin(2) = mateco(1:19)
     lpain(3) = 'PCAORIE'
-    lchin(3) = chcara(1)(1:19)
+    lchin(3) = chcara(1) (1:19)
     lpain(4) = 'PCADISM'
-    lchin(4) = chcara(3)(1:19)
+    lchin(4) = chcara(3) (1:19)
     lpain(5) = 'PCAGNPO'
-    lchin(5) = chcara(6)(1:19)
+    lchin(5) = chcara(6) (1:19)
     lpain(6) = 'PCACOQU'
-    lchin(6) = chcara(7)(1:19)
+    lchin(6) = chcara(7) (1:19)
     lpain(7) = 'PCASECT'
-    lchin(7) = chcara(8)(1:19)
+    lchin(7) = chcara(8) (1:19)
     lpain(8) = 'PVARCPR'
     lchin(8) = chvarc(1:19)
     lpain(9) = 'PCAARPO'
-    lchin(9) = chcara(9)(1:19)
+    lchin(9) = chcara(9) (1:19)
     lpain(10) = 'PCACABL'
-    lchin(10) = chcara(10)(1:19)
+    lchin(10) = chcara(10) (1:19)
     lpain(11) = 'PCAGEPO'
-    lchin(11) = chcara(5)(1:19)
+    lchin(11) = chcara(5) (1:19)
     lpain(12) = 'PABSCUR'
     lchin(12) = chgeom(1:8)//'.ABSC_CURV'
     lpain(13) = 'PCAGNBA'
-    lchin(13) = chcara(11)(1:19)
+    lchin(13) = chcara(11) (1:19)
     lpain(14) = 'PCAPOUF'
-    lchin(14) = chcara(13)(1:19)
+    lchin(14) = chcara(13) (1:19)
     lpain(15) = 'PCOMPOR'
     lchin(15) = comporMult(1:19)
     lpain(16) = 'PNBSP_I'
-    lchin(16) = chcara(16)(1:19)
+    lchin(16) = chcara(16) (1:19)
     lpain(17) = 'PFIBRES'
-    lchin(17) = chcara(17)(1:19)
+    lchin(17) = chcara(17) (1:19)
     lpain(18) = 'PCINFDI'
-    lchin(18) = chcara(15)(1:19)
+    lchin(18) = chcara(15) (1:19)
     nbFieldIn = 18
 
 ! - Add input XFEM fields if required
     if (lxfem) then
         call xajcin(model, option, nbFieldInMax, lchin, lpain, nbFieldIn)
-    endif
+    end if
 
 ! - Output fields
     lpaout(1) = 'PMATUUR'
@@ -181,24 +181,24 @@ character(len=*), intent(in) :: basez, listElemCalcz
         nbFieldOut = 2
     else
         nbFieldOut = 1
-    endif
+    end if
 
 ! - Mass
     if (hasFiniteElement) then
 ! ----- Compute
-        call calcul('S',&
-                    option, listElemCalc,&
-                    nbFieldIn, lchin, lpain,&
-                    nbFieldOut, lchout, lpaout,&
+        call calcul('S', &
+                    option, listElemCalc, &
+                    nbFieldIn, lchin, lpain, &
+                    nbFieldOut, lchout, lpaout, &
                     base, 'OUI')
 
 ! ----- Save RESU_ELEM
         call reajre(matrElem, lchout(1), base)
         if (nbFieldOut .eq. 2) then
             call reajre(matrElem, lchout(2), base)
-        endif
+        end if
 
-    endif
+    end if
 
 ! - Clean
     call redetr(matrElem)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,15 +53,15 @@ subroutine te0077(option, nomte)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
-        if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
-    endif
+        if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
+        if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='NOEU', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg2, jpoids=ipoid2, jvf=ivf2, jdfde=idfde2, jgano=jgano)
-    call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !
@@ -72,37 +72,37 @@ subroutine te0077(option, nomte)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     if (phenom .eq. 'THER') then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemps)],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
                     1, 'RHO_CP', cp, icodre(1), 1)
     else if (phenom .eq. 'THER_ORTH') then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemps)],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
                     1, 'RHO_CP', cp, icodre(1), 1)
     else
         call utmess('F', 'ELEMENTS2_63')
-    endif
+    end if
 !
 !
-    if (.not.lteatt('LUMPE','OUI')) then
+    if (.not. lteatt('LUMPE', 'OUI')) then
 !
         do kp = 1, npg
-            k=(kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
-            if (lteatt('AXIS','OUI')) then
+            if (lteatt('AXIS', 'OUI')) then
                 r = 0.d0
                 do i = 1, nno
-                    r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                    r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
                 end do
                 poids = poids*r
-            endif
-            ij = imattt - 1
+            end if
+            ij = imattt-1
             do i = 1, nno
 !
                 do j = 1, i
-                    ij = ij + 1
-                    zr(ij) = zr(ij) + poids * cp(1)* zr(ivf+k+i- 1) * zr(ivf+k+j-1)
+                    ij = ij+1
+                    zr(ij) = zr(ij)+poids*cp(1)*zr(ivf+k+i-1)*zr(ivf+k+j-1)
                 end do
             end do
         end do
@@ -113,7 +113,7 @@ subroutine te0077(option, nomte)
 !
         do i = 1, nnop2
             do j = 1, nnop2
-                mt(i,j)=0.d0
+                mt(i, j) = 0.d0
             end do
         end do
 !
@@ -123,32 +123,32 @@ subroutine te0077(option, nomte)
 !
             do i = 1, nno
                 do j = 1, 2
-                    coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
+                    coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
                 end do
             end do
 !
             do kp = 1, npg2
-                k=(kp-1)*nno
-                call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
+                k = (kp-1)*nno
+                call dfdm2d(nno, kp, ipoid2, idfde2, coorse, &
                             poids, dfdx, dfdy)
-                if (lteatt('AXIS','OUI')) then
+                if (lteatt('AXIS', 'OUI')) then
                     r = 0.d0
                     do i = 1, nno
-                        r = r + coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
+                        r = r+coorse(2*(i-1)+1)*zr(ivf2+k+i-1)
                     end do
 !
                     poids = poids*r
                     if (r .eq. 0.d0) then
                         call utmess('F', 'ELEMENTS3_10')
-                    endif
-                endif
+                    end if
+                end if
 !
                 do i = 1, nno
                     do j = 1, nno
-                        mt(c(ise,i),c(ise,j)) = mt(&
-                                                c(ise, i),&
-                                                c(ise, j)) + poids * cp(1) * zr(ivf2+k+i-1&
-                                                &) * zr(ivf2+k+j-1&
+                        mt(c(ise, i), c(ise, j)) = mt( &
+                                                c(ise, i), &
+                                                c(ise, j))+poids*cp(1)*zr(ivf2+k+i-1&
+                                                &)*zr(ivf2+k+j-1 &
                                                 )
                     end do
                 end do
@@ -159,10 +159,10 @@ subroutine te0077(option, nomte)
         ij = imattt-1
         do i = 1, nnop2
             do j = 1, i
-                ij = ij +1
-                zr(ij)=mt(i,j)
+                ij = ij+1
+                zr(ij) = mt(i, j)
             end do
         end do
 !
-    endif
+    end if
 end subroutine

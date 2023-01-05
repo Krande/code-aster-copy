@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,11 +90,11 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
 !
     do iliai = 1, nbliai
         jdecal = zi(japptr+iliai-1)
-        nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
+        nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
         jeuold = zr(jjeuit+3*(iliai-1)+1-1)
-        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
+        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale, &
                     jeuinc)
-        jeunew = jeuold - jeuinc
+        jeunew = jeuold-jeuinc
         ssgrad = -jeunew
         zr(jsgrap-1+iliai) = ssgrad
     end do
@@ -104,15 +104,15 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
     do iliai = 1, nbliai
         ssgrad = zr(jsgrap-1+iliai)
         if (zr(jmu+iliai-1) .le. tole) then
-            zr(jsgrap-1+iliai) = max(ssgrad,0.d0)
-        endif
+            zr(jsgrap-1+iliai) = max(ssgrad, 0.d0)
+        end if
     end do
 !
 ! --- NORME INFINIE DU RESIDU
 !
     ninf = 0.d0
     do iliai = 1, nbliai
-        ninf = max(abs(zr(jsgrap-1+iliai)),ninf)
+        ninf = max(abs(zr(jsgrap-1+iliai)), ninf)
     end do
 !
     call jedema()

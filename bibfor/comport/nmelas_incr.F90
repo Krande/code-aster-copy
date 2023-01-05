@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmelas_incr(BEHinteg,&
-                  fami, kpg, ksp, typmod,&
-                  imate, deps, sigm, option, sigp,&
-                  vip, dsidep)
+subroutine nmelas_incr(BEHinteg, &
+                       fami, kpg, ksp, typmod, &
+                       imate, deps, sigm, option, sigp, &
+                       vip, dsidep)
 !
-use Behaviour_type
-use tenseur_dime_module, only: sph_norm, deviator, kron, voigt, proten, identity
+    use Behaviour_type
+    use tenseur_dime_module, only: sph_norm, deviator, kron, voigt, proten, identity
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/rcvalb.h"
@@ -40,8 +40,8 @@ implicit none
     character(len=8), intent(in)      :: typmod(*)
     character(len=16), intent(in)     :: option
     integer, intent(in)               :: imate, kpg, ksp
-    real(kind=8), intent(in)          :: sigm(:),deps(:)
-    real(kind=8), intent(out)         :: sigp(:),vip(1),dsidep(:,:)
+    real(kind=8), intent(in)          :: sigm(:), deps(:)
+    real(kind=8), intent(out)         :: sigp(:), vip(1), dsidep(:, :)
 ! --------------------------------------------------------------------------------------------------
 !     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
 !     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -67,26 +67,23 @@ implicit none
     integer, parameter :: elas_id = 1
     character(len=16), parameter :: elas_keyword = 'ELAS'
 ! --------------------------------------------------------------------------------------------------
-    aster_logical :: cplan,resi,rigi
-    integer       :: ndimsi,k,l
+    aster_logical :: cplan, resi, rigi
+    integer       :: ndimsi, k, l
     real(kind=8)  :: kr(size(deps))
-    real(kind=8)  :: em, num, lambdam, deuxmum, troiskm 
-    real(kind=8)  :: ep, nup, lambdap, deuxmup, troiskp 
-    real(kind=8)  :: e , nu , lambda , deuxmu , troisk  
+    real(kind=8)  :: em, num, lambdam, deuxmum, troiskm
+    real(kind=8)  :: ep, nup, lambdap, deuxmup, troiskp
+    real(kind=8)  :: e, nu, lambda, deuxmu, troisk
     real(kind=8)  :: deps_th, deps_hy, deps_se, deps_an(6), deps_vc(size(deps))
     real(kind=8)  :: deps_me(size(deps)), sigmp(size(deps))
 ! --------------------------------------------------------------------------------------------------
 
-
     ! Initialisation
     ndimsi = size(deps)
-    kr     = kron(ndimsi)
-    cplan  = typmod(1) .eq. 'C_PLAN'
-    rigi   = option(1:10).eq.'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA'
-    resi   = option(1:9).eq.'RAPH_MECA'   .or. option(1:9).eq.'FULL_MECA' .or. &
-             option.eq. 'RIGI_MECA_IMPLEX' 
-
-
+    kr = kron(ndimsi)
+    cplan = typmod(1) .eq. 'C_PLAN'
+    rigi = option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA'
+    resi = option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. &
+           option .eq. 'RIGI_MECA_IMPLEX'
 
     ! Caracteristiques elastiques t- et t+
 
@@ -94,67 +91,60 @@ implicit none
     lambdam = em*num/((1-2*num)*(1+num))
     deuxmum = em/(1+num)
     troiskm = em/(1-2*num)
-    
+
     call get_elas_para(fami,imate,'+',kpg,ksp,elas_id,elas_keyword,e_=ep,nu_=nup,BEHinteg=BEHinteg)
     lambdap = ep*nup/((1-2*nup)*(1+nup))
     deuxmup = ep/(1+nup)
     troiskp = ep/(1-2*nup)
 
-    e      = merge(ep,em,resi)
-    nu     = merge(nup,num,resi)   
-    lambda = merge(lambdap,lambdam,resi)
-    deuxmu = merge(deuxmup,deuxmum,resi)   
-    troisk = merge(troiskp,troiskm,resi)
-
+    e = merge(ep, em, resi)
+    nu = merge(nup, num, resi)
+    lambda = merge(lambdap, lambdam, resi)
+    deuxmu = merge(deuxmup, deuxmum, resi)
+    troisk = merge(troiskp, troiskm, resi)
 
     ! Contrainte initiale corrigee
-    sigmp   = deuxmup/deuxmum*deviator(sigm) + troiskp/troiskm*dot_product(kr,sigm)/3.d0*kr
-        
+    sigmp = deuxmup/deuxmum*deviator(sigm)+troiskp/troiskm*dot_product(kr, sigm)/3.d0*kr
 
     ! Increment de variables de commande
 
-    call verift   (fami, kpg, ksp, 'T', imate, epsth_=deps_th)
-    call verifh   (fami, kpg, ksp, 'T', imate, deps_hy)
-    call verifs   (fami, kpg, ksp, 'T', imate, deps_se)
-    call verifepsa(fami, kpg, ksp, 'T',        deps_an)
-    deps_vc = (deps_th + deps_hy + deps_se)*kr + deps_an(1:ndimsi)*voigt(ndimsi)
-
-
+    call verift(fami, kpg, ksp, 'T', imate, epsth_=deps_th)
+    call verifh(fami, kpg, ksp, 'T', imate, deps_hy)
+    call verifs(fami, kpg, ksp, 'T', imate, deps_se)
+    call verifepsa(fami, kpg, ksp, 'T', deps_an)
+    deps_vc = (deps_th+deps_hy+deps_se)*kr+deps_an(1:ndimsi)*voigt(ndimsi)
 
     ! Calcul de la contrainte
 
     if (resi) then
-        deps_me = deps - deps_vc       
-        if (cplan) deps_me(3) = -(lambda*(deps_me(1)+deps_me(2)) + sigmp(3))/(lambda+deuxmu) 
+        deps_me = deps-deps_vc
+        if (cplan) deps_me(3) = -(lambda*(deps_me(1)+deps_me(2))+sigmp(3))/(lambda+deuxmu)
 
-        sigp = sigmp + lambda*dot_product(kr,deps_me)*kr + deuxmu*deps_me
-        vip(1)  = 0.d0
-    
+        sigp = sigmp+lambda*dot_product(kr, deps_me)*kr+deuxmu*deps_me
+        vip(1) = 0.d0
+
     else
         ! Pour la prediction (loi old)
         sigp = sigmp
-    
-    endif
- 
 
- 
+    end if
+
     ! Matrice tangente (ancienne formulation de la prediction)
 
-    if (rigi) then 
-        dsidep = lambda*proten(kr,kr) + deuxmu*identity(ndimsi)
+    if (rigi) then
+        dsidep = lambda*proten(kr, kr)+deuxmu*identity(ndimsi)
 
         if (cplan) then
             do k = 1, ndimsi
                 if (k .ne. 3) then
                     do l = 1, ndimsi
                         if (l .ne. 3) then
-                            dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
-                        endif
+                            dsidep(k, l) = dsidep(k, l)-1.d0/dsidep(3, 3)*dsidep(k, 3)*dsidep(3, l)
+                        end if
                     end do
-                endif
+                end if
             end do
-        endif
+        end if
     end if
 
-    
 end subroutine

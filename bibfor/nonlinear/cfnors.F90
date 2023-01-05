@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfnors(noma, ds_contact, posmai, typent,&
-                  nument, lpoutr, lpoint, ksi1, ksi2,&
-                  lliss, itype, vector, tau1, tau2,&
+subroutine cfnors(noma, ds_contact, posmai, typent, &
+                  nument, lpoutr, lpoint, ksi1, ksi2, &
+                  lliss, itype, vector, tau1, tau2, &
                   lnfixe)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -92,51 +92,51 @@ implicit none
 !
     if (typent .eq. 'MAIL') then
         call jenuno(jexnum(noma//'.NOMMAI', nument), noment)
-    else if (typent.eq.'NOEU') then
+    else if (typent .eq. 'NOEU') then
         call jenuno(jexnum(noma//'.NOMNOE', nument), noment)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- MODIF DE LA NORMALE SI FIXE (LNFIXE = .TRUE.)
 !
-    call cfnord(noma, typent, nument, itype, vector,&
+    call cfnord(noma, typent, nument, itype, vector, &
                 tau1, tau2, lnfixe)
 !
 ! --- VERIFICATION POUTRES
 !
     if (lpoutr) then
-        if (.not.lnfixe) then
+        if (.not. lnfixe) then
             if (typent .eq. 'MAIL') then
                 call utmess('F', 'CONTACT_60', sk=noment)
-            else if (typent.eq.'NOEU') then
+            else if (typent .eq. 'NOEU') then
                 call utmess('F', 'CONTACT_61', sk=noment)
             else
                 ASSERT(.false.)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- VERIFICATION MAILLE POINT
 !
     if (lpoint) then
-        if (.not.lnfixe) then
+        if (.not. lnfixe) then
             call utmess('F', 'CONTACT3_60', sk=noment)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- LISSAGE DES VECTEURS TANGENTS
 !
     if (lliss) then
         if (lnfixe) then
             ASSERT(.false.)
-        endif
+        end if
         if (typent .eq. 'MAIL') then
-            call copnor(noma, ds_contact, posmai, ksi1,&
+            call copnor(noma, ds_contact, posmai, ksi1, &
                         ksi2, tau1, tau2)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine op0115()
 !
     call getres(nomu, concep, nomcmd)
 !
-    nomref=nomu(1:8)
+    nomref = nomu(1:8)
 !
     motfac(1) = 'PAR_FONCTION'
     motfac(2) = 'KANAI_TAJIMI'
@@ -88,7 +88,7 @@ subroutine op0115()
 !
     call wkvect('&&FONC', 'V V K8', mxval, lfonc)
     chvale = nomref//'.VALE'
-    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 mxval)
     chfreq = nomref//'.DISC'
 !
@@ -112,18 +112,18 @@ subroutine op0115()
                 chnumj = nomref//'.NUMJ'
                 call wkvect(chnumi, 'G V I', mxval, lnumi)
                 call wkvect(chnumj, 'G V I', mxval, lnumj)
-            endif
-        endif
+            end if
+        end if
 !
         if (n2 .lt. 0) then
-            call getvtx(motfac(1), 'NOEUD_I', iocc=ipf, scal=zk8(lnoei-1+ ipf), nbret=nbval)
-            call getvtx(motfac(1), 'NOEUD_J', iocc=ipf, scal=zk8(lnoej-1+ ipf), nbret=nbval)
-            call getvtx(motfac(1), 'NOM_CMP_I', iocc=ipf, scal=zk8(lcmpi-1+ ipf), nbret=nbval)
-            call getvtx(motfac(1), 'NOM_CMP_J', iocc=ipf, scal=zk8(lcmpj-1+ ipf), nbret=nbval)
+            call getvtx(motfac(1), 'NOEUD_I', iocc=ipf, scal=zk8(lnoei-1+ipf), nbret=nbval)
+            call getvtx(motfac(1), 'NOEUD_J', iocc=ipf, scal=zk8(lnoej-1+ipf), nbret=nbval)
+            call getvtx(motfac(1), 'NOM_CMP_I', iocc=ipf, scal=zk8(lcmpi-1+ipf), nbret=nbval)
+            call getvtx(motfac(1), 'NOM_CMP_J', iocc=ipf, scal=zk8(lcmpj-1+ipf), nbret=nbval)
         else if (n3 .lt. 0) then
-            call getvis(motfac(1), 'NUME_ORDRE_I', iocc=ipf, scal=zi(lnumi- 1+ipf), nbret=nbval)
-            call getvis(motfac(1), 'NUME_ORDRE_J', iocc=ipf, scal=zi(lnumj- 1+ipf), nbret=nbval)
-        endif
+            call getvis(motfac(1), 'NUME_ORDRE_I', iocc=ipf, scal=zi(lnumi-1+ipf), nbret=nbval)
+            call getvis(motfac(1), 'NUME_ORDRE_J', iocc=ipf, scal=zi(lnumj-1+ipf), nbret=nbval)
+        end if
 !
         call getvid(motfac(1), 'FONCTION', iocc=ipf, scal=zk8(lfonc-1+ipf), nbret=nbval)
     end do
@@ -134,7 +134,7 @@ subroutine op0115()
         call jeveuo(chfonc//'.VALE', 'L', vr=vale)
         call jelira(chfonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(chfonc//'.PROL', 'L', vk24=prol)
-        tfonc = prol(1)(1:8)
+        tfonc = prol(1) (1:8)
         if (tfonc .eq. 'FONCTION') nbfreq = nbval/2
         if (tfonc .eq. 'FONCT_C') nbfreq = nbval/3
         if (ifonc .eq. 1) then
@@ -142,25 +142,25 @@ subroutine op0115()
         else
             if (nbfreq .ne. nbfreqold) then
                 call utmess('F', 'ALGORITH3_79')
-            endif
-        endif
+            end if
+        end if
         diag = .false.
         if (n2 .lt. 0) then
-            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoej-1+ifonc)) .and.&
+            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoej-1+ifonc)) .and. &
                 (zk8(lcmpi-1+ifonc) .eq. zk8(lcmpj-1+ifonc))) then
                 nbabs = nbfreq
                 diag = .true.
             else
                 nbabs = nbfreq*2
-            endif
+            end if
         else if (n3 .lt. 0) then
             if (zi(lnumi-1+ifonc) .eq. zi(lnumj-1+ifonc)) then
                 nbabs = nbfreq
                 diag = .true.
             else
                 nbabs = 2*nbfreq
-            endif
-        endif
+            end if
+        end if
         call jecroc(jexnum(chvale, ifonc))
         call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbabs)
         call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs)
@@ -169,17 +169,17 @@ subroutine op0115()
             do inum = 1, nbabs
                 zr(ispec-1+inum) = vale(nbfreq+2*(inum-1)+1)
             end do
-        else if ((.not.diag) .and. (tfonc .eq. 'FONCTION')) then
+        else if ((.not. diag) .and. (tfonc .eq. 'FONCTION')) then
             do inum = 1, nbfreq
                 zr(ispec-1+2*inum-1) = vale(nbfreq+inum)
                 zr(ispec-1+2*inum) = 0.d0
             end do
         else
-            nbabs = nbval - nbfreq
+            nbabs = nbval-nbfreq
             do inum = 1, nbabs
                 zr(ispec-1+inum) = vale(nbfreq+inum)
             end do
-        endif
+        end if
     end do
 !
     if (iocpf .gt. 0) then
@@ -189,8 +189,8 @@ subroutine op0115()
             do ifreq = 1, nbfreq
                 zr(lfreq-1+ifreq) = vale(ifreq)
             end do
-        endif
-    endif
+        end if
+    end if
 !
     depi = r8depi()
 !
@@ -210,7 +210,7 @@ subroutine op0115()
                     call wkvect(chnoej, 'G V K8', mxval, lnoej)
                     call wkvect(chcmpi, 'G V K8', mxval, lcmpi)
                     call wkvect(chcmpj, 'G V K8', mxval, lcmpj)
-                endif
+                end if
             else if (n5 .lt. 0) then
                 chnumi = nomref//'.NUMI'
                 chnumj = nomref//'.NUMJ'
@@ -218,25 +218,25 @@ subroutine op0115()
                 if (n7 .eq. 0) then
                     call wkvect(chnumi, 'G V I', mxval, lnumi)
                     call wkvect(chnumj, 'G V I', mxval, lnumj)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         if (n4 .lt. 0) then
-            call getvtx(motfac(2), 'NOEUD_I', iocc=ikt, scal=zk8(lnoei-1+ iocpf+ikt),&
+            call getvtx(motfac(2), 'NOEUD_I', iocc=ikt, scal=zk8(lnoei-1+iocpf+ikt), &
                         nbret=nbval)
-            call getvtx(motfac(2), 'NOEUD_J', iocc=ikt, scal=zk8(lnoej-1+ iocpf+ikt),&
+            call getvtx(motfac(2), 'NOEUD_J', iocc=ikt, scal=zk8(lnoej-1+iocpf+ikt), &
                         nbret=nbval)
-            call getvtx(motfac(2), 'NOM_CMP_I', iocc=ikt, scal=zk8(lcmpi-1+ iocpf+ikt),&
+            call getvtx(motfac(2), 'NOM_CMP_I', iocc=ikt, scal=zk8(lcmpi-1+iocpf+ikt), &
                         nbret=nbval)
-            call getvtx(motfac(2), 'NOM_CMP_J', iocc=ikt, scal=zk8(lcmpj-1+ iocpf+ikt),&
+            call getvtx(motfac(2), 'NOM_CMP_J', iocc=ikt, scal=zk8(lcmpj-1+iocpf+ikt), &
                         nbret=nbval)
         else if (n5 .lt. 0) then
-            call getvis(motfac(2), 'NUME_ORDRE_I', iocc=ikt, scal=zi(lnumi- 1+iocpf+ikt),&
+            call getvis(motfac(2), 'NUME_ORDRE_I', iocc=ikt, scal=zi(lnumi-1+iocpf+ikt), &
                         nbret=nbval)
-            call getvis(motfac(2), 'NUME_ORDRE_J', iocc=ikt, scal=zi(lnumj- 1+iocpf+ikt),&
+            call getvis(motfac(2), 'NUME_ORDRE_J', iocc=ikt, scal=zi(lnumj-1+iocpf+ikt), &
                         nbret=nbval)
-        endif
+        end if
         nbvalr = 0
         call getvr8(motfac(2), 'VALE_R', iocc=ikt, nbval=0, nbret=nbvalr)
         if (nbvalr .lt. 0) then
@@ -245,7 +245,7 @@ subroutine op0115()
             call getvc8(motfac(2), 'VALE_C', iocc=ikt, scal=valc, nbret=nbval)
 ! ON NE RETIENT QUE LA PARTIE REELLE
             valr = dble(valc)
-        endif
+        end if
         call getvr8(motfac(2), 'FREQ_MOY', iocc=ikt, scal=fmoy, nbret=nbval)
         call getvr8(motfac(2), 'AMOR_REDUIT', iocc=ikt, scal=ared, nbret=nbval)
         call getvr8(motfac(2), 'FREQ_MIN', iocc=ikt, scal=fmin, nbret=nbval)
@@ -253,15 +253,15 @@ subroutine op0115()
         call getvr8(motfac(2), 'PAS', iocc=ikt, scal=pas, nbret=nbval)
         if (fmax .lt. fmin) then
             call utmess('F', 'SPECTRAL0_2', sk=motfac(2))
-        endif
-        nbfreq=int((fmax-fmin)/pas) + 1
-        ifonc = iocpf + ikt
+        end if
+        nbfreq = int((fmax-fmin)/pas)+1
+        ifonc = iocpf+ikt
         call jecroc(jexnum(chvale, ifonc))
         call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbfreq)
         call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbfreq)
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
         do ifreq = 1, nbfreq
-            freq = fmin + pas*(ifreq-1)
+            freq = fmin+pas*(ifreq-1)
             if (ifreq .eq. nbfreq) freq = fmax
             rbid = 4.0d0*ared*ared*fmoy*fmoy*freq*freq
             num = rbid+fmoy*fmoy*fmoy*fmoy
@@ -287,7 +287,7 @@ subroutine op0115()
                     call wkvect(chnoej, 'G V K8', mxval, lnoej)
                     call wkvect(chcmpi, 'G V K8', mxval, lcmpi)
                     call wkvect(chcmpj, 'G V K8', mxval, lcmpj)
-                endif
+                end if
             else if (n7 .lt. 0) then
                 chnumi = nomref//'.NUMI'
                 chnumj = nomref//'.NUMJ'
@@ -295,57 +295,57 @@ subroutine op0115()
                 if (n5 .eq. 0) then
                     call wkvect(chnumi, 'G V I', mxval, lnumi)
                     call wkvect(chnumj, 'G V I', mxval, lnumj)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         if (n6 .lt. 0) then
-            call getvtx(motfac(3), 'NOEUD_I', iocc=ics, scal=zk8(lnoei-1+ iocpf+iockt+ics),&
+            call getvtx(motfac(3), 'NOEUD_I', iocc=ics, scal=zk8(lnoei-1+iocpf+iockt+ics), &
                         nbret=nbval)
-            call getvtx(motfac(3), 'NOEUD_J', iocc=ics, scal=zk8(lnoej-1+ iocpf+iockt+ics),&
+            call getvtx(motfac(3), 'NOEUD_J', iocc=ics, scal=zk8(lnoej-1+iocpf+iockt+ics), &
                         nbret=nbval)
-            call getvtx(motfac(3), 'NOM_CMP_I', iocc=ics, scal=zk8(lcmpi-1+ iocpf+iockt+ics),&
+            call getvtx(motfac(3), 'NOM_CMP_I', iocc=ics, scal=zk8(lcmpi-1+iocpf+iockt+ics), &
                         nbret=nbval)
-            call getvtx(motfac(3), 'NOM_CMP_J', iocc=ics, scal=zk8(lcmpj-1+ iocpf+iockt+ics),&
+            call getvtx(motfac(3), 'NOM_CMP_J', iocc=ics, scal=zk8(lcmpj-1+iocpf+iockt+ics), &
                         nbret=nbval)
         else if (n7 .lt. 0) then
-            call getvis(motfac(3), 'NUME_ORDRE_I', iocc=ics, scal=zi(lnumi- 1+iocpf+iockt+ics),&
+            call getvis(motfac(3), 'NUME_ORDRE_I', iocc=ics, scal=zi(lnumi-1+iocpf+iockt+ics), &
                         nbret=nbval)
-            call getvis(motfac(3), 'NUME_ORDRE_J', iocc=ics, scal=zi(lnumj- 1+iocpf+iockt+ics),&
+            call getvis(motfac(3), 'NUME_ORDRE_J', iocc=ics, scal=zi(lnumj-1+iocpf+iockt+ics), &
                         nbret=nbval)
-        endif
-        ifonc = iocpf + iockt +ics
+        end if
+        ifonc = iocpf+iockt+ics
         nbvalr = 0
         call getvr8(motfac(3), 'VALE_R', iocc=ics, nbval=0, nbret=nbvalr)
         if (nbvalr .lt. 0) then
             call getvr8(motfac(3), 'VALE_R', iocc=ics, scal=valr, nbret=nbval)
         else
             call getvc8(motfac(3), 'VALE_C', iocc=ics, scal=valc, nbret=nbval)
-        endif
+        end if
         call getvr8(motfac(3), 'FREQ_MIN', iocc=ics, scal=fmin, nbret=nbval)
         call getvr8(motfac(3), 'FREQ_MAX', iocc=ics, scal=fmax, nbret=nbval)
         call getvr8(motfac(3), 'PAS', iocc=ics, scal=pas, nbret=nbval)
         if (fmax .lt. fmin) then
             call utmess('F', 'SPECTRAL0_2', sk=motfac(3))
-        endif
-        nbfreq=int((fmax-fmin)/pas) + 1
+        end if
+        nbfreq = int((fmax-fmin)/pas)+1
         diag = .false.
         if (n6 .lt. 0) then
-            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoej-1+ifonc)) .and.&
+            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoej-1+ifonc)) .and. &
                 (zk8(lcmpi-1+ifonc) .eq. zk8(lcmpj-1+ifonc))) then
                 nbabs = nbfreq
                 diag = .true.
             else
                 nbabs = nbfreq*2
-            endif
+            end if
         else if (n7 .lt. 0) then
             if (zi(lnumi-1+ifonc) .eq. zi(lnumj-1+ifonc)) then
                 nbabs = nbfreq
                 diag = .true.
             else
                 nbabs = nbfreq*2
-            endif
-        endif
+            end if
+        end if
         call jecroc(jexnum(chvale, ifonc))
         call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbabs)
         call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs)
@@ -356,7 +356,7 @@ subroutine op0115()
                     zr(ispec-1+ifreq) = valr
                 else
                     zr(ispec-1+ifreq) = dble(valc)
-                endif
+                end if
             else
                 if (nbvalr .lt. 0) then
                     zr(ispec-1+2*ifreq-1) = valr
@@ -364,8 +364,8 @@ subroutine op0115()
                 else
                     zr(ispec-1+2*ifreq-1) = dble(valc)
                     zr(ispec-1+2*ifreq) = dimag(valc)
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
@@ -374,12 +374,12 @@ subroutine op0115()
         if (ibid .eq. 0) then
             call wkvect(chfreq, 'G V R', nbfreq, lfreq)
             do ifreq = 1, nbfreq
-                freq = fmin + pas*(ifreq-1)
+                freq = fmin+pas*(ifreq-1)
                 if (ifreq .eq. nbfreq) freq = fmax
                 zr(lfreq-1+ifreq) = freq
             end do
-        endif
-    endif
+        end if
+    end if
 !
     call titre()
 !

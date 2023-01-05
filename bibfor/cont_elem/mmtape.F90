@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmtape(phase , leltf , l_pena_cont, l_pena_fric,&
-                  ndim  , nnl   , nne        , nnm        , nbcps, &
-                  wpg   , jacobi,&
-                  ffl   , ffe   , ffm        ,&
-                  norm  , tau1  , tau2       , mprojt,&
-                  rese  , nrese , lambda     ,&
-                  coefff, coefaf, coefac     ,&
-                  matrcc, matrff,&
-                  matrce, matrcm, matrfe     , matrfm)
+subroutine mmtape(phase, leltf, l_pena_cont, l_pena_fric, &
+                  ndim, nnl, nne, nnm, nbcps, &
+                  wpg, jacobi, &
+                  ffl, ffe, ffm, &
+                  norm, tau1, tau2, mprojt, &
+                  rese, nrese, lambda, &
+                  coefff, coefaf, coefac, &
+                  matrcc, matrff, &
+                  matrce, matrcm, matrfe, matrfm)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,17 +37,17 @@ implicit none
 #include "asterfort/mmmtff.h"
 #include "asterfort/mmmtfu.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: leltf , l_pena_cont, l_pena_fric
-integer, intent(in) :: ndim, nnl, nne, nnm, nbcps
-real(kind=8), intent(in) :: wpg, jacobi
-real(kind=8), intent(in) :: ffe(9), ffl(9), ffm(9)
-real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: rese(3), nrese, lambda
-real(kind=8), intent(in) :: coefff, coefaf, coefac
-real(kind=8), intent(out) :: matrcc(9, 9), matrff(18, 18)
-real(kind=8), intent(out) :: matrce(9, 27), matrcm(9, 27)
-real(kind=8), intent(out) :: matrfe(18, 27), matrfm(18, 27)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: leltf, l_pena_cont, l_pena_fric
+    integer, intent(in) :: ndim, nnl, nne, nnm, nbcps
+    real(kind=8), intent(in) :: wpg, jacobi
+    real(kind=8), intent(in) :: ffe(9), ffl(9), ffm(9)
+    real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: rese(3), nrese, lambda
+    real(kind=8), intent(in) :: coefff, coefaf, coefac
+    real(kind=8), intent(out) :: matrcc(9, 9), matrff(18, 18)
+    real(kind=8), intent(out) :: matrce(9, 27), matrcm(9, 27)
+    real(kind=8), intent(out) :: matrfe(18, 27), matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,86 +97,86 @@ real(kind=8), intent(out) :: matrfe(18, 27), matrfm(18, 27)
     if (phase .eq. 'SANS') then
         call mmmtcc(nnl, wpg, ffl, jacobi, coefac, matrcc)
         if (leltf) then
-            call mmmtff(phase , l_pena_fric,&
-                        ndim  , nbcps      , nnl   ,&
-                        wpg   , ffl        , jacobi,&
-                        tau1  , tau2       ,&
-                        rese  , nrese      , lambda,&
-                        coefaf, coefff,&
+            call mmmtff(phase, l_pena_fric, &
+                        ndim, nbcps, nnl, &
+                        wpg, ffl, jacobi, &
+                        tau1, tau2, &
+                        rese, nrese, lambda, &
+                        coefaf, coefff, &
                         matrff)
-        endif
+        end if
     else if (phase .eq. 'NCON') then
-        call mmmtff(phase , l_pena_fric,&
-                    ndim  , nbcps      , nnl   ,&
-                    wpg   , ffl        , jacobi,&
-                    tau1  , tau2       ,&
-                    rese  , nrese      , lambda,&
-                    coefaf, coefff,&
+        call mmmtff(phase, l_pena_fric, &
+                    ndim, nbcps, nnl, &
+                    wpg, ffl, jacobi, &
+                    tau1, tau2, &
+                    rese, nrese, lambda, &
+                    coefaf, coefff, &
                     matrff)
-        call mmmtcu(ndim  , nnl   , nne   , nnm,&
-                    ffl   , ffe   , ffm   ,&
-                    norm  , wpg   , jacobi,&
+        call mmmtcu(ndim, nnl, nne, nnm, &
+                    ffl, ffe, ffm, &
+                    norm, wpg, jacobi, &
                     matrce, matrcm)
         if (l_pena_cont) then
             call mmmtcc(nnl, wpg, ffl, jacobi, coefac, matrcc)
-        endif
+        end if
     else if (phase .eq. 'ADHE') then
 ! ----- For contact
         if (l_pena_cont) then
             call mmmtcc(nnl, wpg, ffl, jacobi, coefac, matrcc)
-        endif
-        call mmmtcu(ndim  , nnl   , nne   , nnm,&
-                    ffl   , ffe   , ffm   ,&
-                    norm  , wpg   , jacobi,&
+        end if
+        call mmmtcu(ndim, nnl, nne, nnm, &
+                    ffl, ffe, ffm, &
+                    norm, wpg, jacobi, &
                     matrce, matrcm)
-        call mmmtfu(phase ,&
-                    ndim  , nnl   , nne   , nnm   , nbcps,&
-                    wpg   , jacobi, ffl   , ffe   , ffm  ,&
-                    tau1  , tau2  , mprojt,&
-                    rese  , nrese , lambda, coefff,&
+        call mmmtfu(phase, &
+                    ndim, nnl, nne, nnm, nbcps, &
+                    wpg, jacobi, ffl, ffe, ffm, &
+                    tau1, tau2, mprojt, &
+                    rese, nrese, lambda, coefff, &
                     matrfe, matrfm)
         if (l_pena_fric) then
-            call mmmtff(phase , l_pena_fric,&
-                        ndim  , nbcps      , nnl   ,&
-                        wpg   , ffl        , jacobi,&
-                        tau1  , tau2       ,&
-                        rese  , nrese      , lambda,&
-                        coefaf, coefff,&
+            call mmmtff(phase, l_pena_fric, &
+                        ndim, nbcps, nnl, &
+                        wpg, ffl, jacobi, &
+                        tau1, tau2, &
+                        rese, nrese, lambda, &
+                        coefaf, coefff, &
                         matrff)
-        endif
+        end if
     else if (phase .eq. 'GLIS') then
 ! ----- For contact
         if (l_pena_cont) then
             call mmmtcc(nnl, wpg, ffl, jacobi, coefac, matrcc)
-        endif
-        call mmmtcu(ndim  , nnl   , nne   , nnm,&
-                    ffl   , ffe   , ffm   ,&
-                    norm  , wpg   , jacobi,&
+        end if
+        call mmmtcu(ndim, nnl, nne, nnm, &
+                    ffl, ffe, ffm, &
+                    norm, wpg, jacobi, &
                     matrce, matrcm)
-        call mmmtff(phase , l_pena_fric,&
-                    ndim  , nbcps      , nnl   ,&
-                    wpg   , ffl        , jacobi,&
-                    tau1  , tau2       ,&
-                    rese  , nrese      , lambda,&
-                    coefaf, coefff,&
+        call mmmtff(phase, l_pena_fric, &
+                    ndim, nbcps, nnl, &
+                    wpg, ffl, jacobi, &
+                    tau1, tau2, &
+                    rese, nrese, lambda, &
+                    coefaf, coefff, &
                     matrff)
-        call mmmtfu(phase ,&
-                    ndim  , nnl   , nne   , nnm   , nbcps,&
-                    wpg   , jacobi, ffl   , ffe   , ffm  ,&
-                    tau1  , tau2  , mprojt,&
-                    rese  , nrese , lambda, coefff,&
+        call mmmtfu(phase, &
+                    ndim, nnl, nne, nnm, nbcps, &
+                    wpg, jacobi, ffl, ffe, ffm, &
+                    tau1, tau2, mprojt, &
+                    rese, nrese, lambda, coefff, &
                     matrfe, matrfm)
     elseif (phase .eq. 'CONT') then
 ! ----- For contact ONLY
         if (l_pena_cont) then
             call mmmtcc(nnl, wpg, ffl, jacobi, coefac, matrcc)
-        endif
-        call mmmtcu(ndim  , nnl   , nne   , nnm,&
-                    ffl   , ffe   , ffm   ,&
-                    norm  , wpg   , jacobi,&
+        end if
+        call mmmtcu(ndim, nnl, nne, nnm, &
+                    ffl, ffe, ffm, &
+                    norm, wpg, jacobi, &
                     matrce, matrcm)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

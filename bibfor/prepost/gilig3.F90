@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
     else
         nbnom = 8
         nbnum = 10
-    endif
+    end if
     if (nbnono .gt. 0) then
 !
 !     -- ON CREE LES 2 OBJETS QUI CONTIENDRONT LES NOMS ET NUMEROS
@@ -61,39 +61,39 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
         call wkvect('&&GILIRE.POINT_NOM', 'V V K8', nbnono, iaptno)
         call wkvect('&&GILIRE.POINT_NUM', 'V V I', nbnono, iaptnu)
 !
-        nbfois = nbnono / nbnom
-        nbrest = nbnono - nbnom*nbfois
+        nbfois = nbnono/nbnom
+        nbrest = nbnono-nbnom*nbfois
         icoj = 0
         do i = 1, nbfois
-            read(nfic,1007) (zk8(iaptno-1+j),j=icoj+1,icoj+nbnom)
-            icoj = icoj + nbnom
+            read (nfic, 1007) (zk8(iaptno-1+j), j=icoj+1, icoj+nbnom)
+            icoj = icoj+nbnom
         end do
         if (nbrest .gt. 0) then
-            read(nfic,1007) (zk8(iaptno-1+j),j=icoj+1,icoj+nbrest)
-        endif
+            read (nfic, 1007) (zk8(iaptno-1+j), j=icoj+1, icoj+nbrest)
+        end if
 !
-        nbfois = nbnono / nbnum
-        nbrest = nbnono - nbnum*nbfois
+        nbfois = nbnono/nbnum
+        nbrest = nbnono-nbnum*nbfois
         icoj = 0
         do i = 1, nbfois
             if (niv .eq. 3) then
-                read(nfic,1009) (zi(iaptnu-1+j),j=icoj+1,icoj+nbnum)
-                icoj = icoj + nbnum
+                read (nfic, 1009) (zi(iaptnu-1+j), j=icoj+1, icoj+nbnum)
+                icoj = icoj+nbnum
             else
-                read(nfic,1008) (zi(iaptnu-1+j),j=icoj+1,icoj+nbnum)
-                icoj = icoj + nbnum
-            endif
+                read (nfic, 1008) (zi(iaptnu-1+j), j=icoj+1, icoj+nbnum)
+                icoj = icoj+nbnum
+            end if
         end do
         if (nbrest .gt. 0) then
             if (niv .eq. 3) then
-                read(nfic,1009) (zi(iaptnu-1+j),j=icoj+1,icoj+nbrest)
+                read (nfic, 1009) (zi(iaptnu-1+j), j=icoj+1, icoj+nbrest)
             else
-                read(nfic,1008) (zi(iaptnu-1+j),j=icoj+1,icoj+nbrest)
-            endif
-        endif
-    endif
+                read (nfic, 1008) (zi(iaptnu-1+j), j=icoj+1, icoj+nbrest)
+            end if
+        end if
+    end if
 !
-    read(nfic,1008) nbobj
+    read (nfic, 1008) nbobj
     ASSERT(nbobj .eq. nboblu)
 !
 ! LECTURE DES INDIRECTIONS
@@ -103,34 +103,34 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
         call wkvect('&&GILIRE.INDIRECT', 'V V I', nboblu, iaptin)
     else
         call jeveuo('&&GILIRE.INDIRECT', 'E', iaptin)
-    endif
-    nbfois = nboblu / nbnum
-    nbrest = nboblu - nbnum*nbfois
+    end if
+    nbfois = nboblu/nbnum
+    nbrest = nboblu-nbnum*nbfois
     icoj = 0
     do i = 1, nbfois
         if (niv .eq. 3) then
-            read(nfic,1009) (zi(iaptin-1+j),j=icoj+1,icoj+nbnum)
-            icoj = icoj + nbnum
+            read (nfic, 1009) (zi(iaptin-1+j), j=icoj+1, icoj+nbnum)
+            icoj = icoj+nbnum
         else
-            read(nfic,1008) (zi(iaptin-1+j),j=icoj+1,icoj+nbnum)
-            icoj = icoj + nbnum
-        endif
+            read (nfic, 1008) (zi(iaptin-1+j), j=icoj+1, icoj+nbnum)
+            icoj = icoj+nbnum
+        end if
     end do
     if (nbrest .gt. 0) then
         if (niv .eq. 3) then
-            read(nfic,1009) (zi(iaptin-1+j),j=icoj+1,icoj+nbrest)
+            read (nfic, 1009) (zi(iaptin-1+j), j=icoj+1, icoj+nbrest)
         else
-            read(nfic,1008) (zi(iaptin-1+j),j=icoj+1,icoj+nbrest)
-        endif
-    endif
+            read (nfic, 1008) (zi(iaptin-1+j), j=icoj+1, icoj+nbrest)
+        end if
+    end if
     do i = 1, nbnono
         zi(iaptnu+i-1) = zi(iaptin+zi(iaptnu+i-1)-1)
     end do
 !
 !
-    1007 format( 8(1x,a8) )
-    1008 format( 10(i8) )
-    1009 format( 16(i5) )
+1007 format(8(1x, a8))
+1008 format(10(i8))
+1009 format(16(i5))
 !
     call jedema()
 !

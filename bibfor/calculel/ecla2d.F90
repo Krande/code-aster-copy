@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
-                  nterm1, nsomm1, csomm1, tyma, nbno2,&
-                  connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+subroutine ecla2d(nomte, elrefa, fapg, npg, npoini, &
+                  nterm1, nsomm1, csomm1, tyma, nbno2, &
+                  connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
                   nbsel, corsel)
     implicit none
 #include "jeveux.h"
@@ -75,645 +75,645 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
 !
         if (fapg .eq. 'FPG1') then
 !           -----------------
-            npoini=3
-            tyma(1)=itria3
-            nbno2(1)=3
+            npoini = 3
+            tyma(1) = itria3
+            nbno2(1) = 3
 !
 !        -- DEFINITION DES POINT_I :
-            nterm1(1)=1
-            call eclan1(1, mxnbpi, nsomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            nterm1(1) = 1
+            call eclan1(1, mxnbpi, nsomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(1, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(2)=1
-            call eclan1(2, mxnbpi, nsomm1, nterm1, 2,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(2, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(1, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(3)=1
-            call eclan1(3, mxnbpi, nsomm1, nterm1, 3,&
-                        0, 0, 0, 0, 0,&
+            nterm1(2) = 1
+            call eclan1(2, mxnbpi, nsomm1, nterm1, 2, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(3, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(2, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(3) = 1
+            call eclan1(3, mxnbpi, nsomm1, nterm1, 3, &
+                        0, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(3, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
-            call eclaco(1, mxnbn2, connx, nbno2, 1,&
-                        2, 3, 0, 0, 0,&
+            call eclaco(1, mxnbn2, connx, nbno2, 1, &
+                        2, 3, 0, 0, 0, &
                         0, 0)
 !
 !
-        else if (fapg.eq.'FPG3') then
+        else if (fapg .eq. 'FPG3') then
 !               -----------------
-            npoini=7
+            npoini = 7
             do k = 1, npg
-                tyma(k)=iquad4
-                nbno2(k)=4
+                tyma(k) = iquad4
+                nbno2(k) = 4
             end do
 !
 !
 !        -- DEFINITION DES POINT_I :
-            nterm1(1)=1
-            call eclan1(1, mxnbpi, nsomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            nterm1(1) = 1
+            call eclan1(1, mxnbpi, nsomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(1, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(2)=1
-            call eclan1(2, mxnbpi, nsomm1, nterm1, 2,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(2, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(1, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(3)=1
-            call eclan1(3, mxnbpi, nsomm1, nterm1, 3,&
-                        0, 0, 0, 0, 0,&
+            nterm1(2) = 1
+            call eclan1(2, mxnbpi, nsomm1, nterm1, 2, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(3, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(4)=3
-            call eclan1(4, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 3, 0, 0, 0,&
-                        0, 0)
-            call eclac1(4, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 0, 0, 0,&
+            call eclac1(2, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(5)=2
-            call eclan1(5, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
+            nterm1(3) = 1
+            call eclan1(3, mxnbpi, nsomm1, nterm1, 3, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(5, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(6)=2
-            call eclan1(6, mxnbpi, nsomm1, nterm1, 2,&
-                        3, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(6, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(3, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(7)=2
-            call eclan1(7, mxnbpi, nsomm1, nterm1, 3,&
-                        1, 0, 0, 0, 0,&
+            nterm1(4) = 3
+            call eclan1(4, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 3, 0, 0, 0, &
                         0, 0)
-            call eclac1(7, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(4, mxnbpi, csomm1, nterm1, 1, &
+                        1, 1, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(5) = 2
+            call eclan1(5, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(5, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(6) = 2
+            call eclan1(6, mxnbpi, nsomm1, nterm1, 2, &
+                        3, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(6, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(7) = 2
+            call eclan1(7, mxnbpi, nsomm1, nterm1, 3, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(7, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
-            call eclaco(1, mxnbn2, connx, nbno2, 1,&
-                        5, 4, 7, 0, 0,&
+            call eclaco(1, mxnbn2, connx, nbno2, 1, &
+                        5, 4, 7, 0, 0, &
                         0, 0)
-            call eclaco(2, mxnbn2, connx, nbno2, 2,&
-                        6, 4, 5, 0, 0,&
+            call eclaco(2, mxnbn2, connx, nbno2, 2, &
+                        6, 4, 5, 0, 0, &
                         0, 0)
-            call eclaco(3, mxnbn2, connx, nbno2, 6,&
-                        3, 7, 4, 0, 0,&
+            call eclaco(3, mxnbn2, connx, nbno2, 6, &
+                        3, 7, 4, 0, 0, &
                         0, 0)
 !
-        else if (fapg.eq.'FPG6') then
+        else if (fapg .eq. 'FPG6') then
 !               -----------------
-            npoini=10
-            tyma(1)=itria3
-            tyma(2)=itria3
-            tyma(3)=itria3
-            tyma(4)=iquad4
-            tyma(5)=iquad4
-            tyma(6)=iquad4
-            nbno2(1)=3
-            nbno2(2)=3
-            nbno2(3)=3
-            nbno2(4)=4
-            nbno2(5)=4
-            nbno2(6)=4
+            npoini = 10
+            tyma(1) = itria3
+            tyma(2) = itria3
+            tyma(3) = itria3
+            tyma(4) = iquad4
+            tyma(5) = iquad4
+            tyma(6) = iquad4
+            nbno2(1) = 3
+            nbno2(2) = 3
+            nbno2(3) = 3
+            nbno2(4) = 4
+            nbno2(5) = 4
+            nbno2(6) = 4
 !
 !        -- DEFINITION DES POINT_I :
-            nterm1(1)=1
-            call eclan1(1, mxnbpi, nsomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            nterm1(1) = 1
+            call eclan1(1, mxnbpi, nsomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(1, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(2)=1
-            call eclan1(2, mxnbpi, nsomm1, nterm1, 2,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(2, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(1, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(3)=1
-            call eclan1(3, mxnbpi, nsomm1, nterm1, 3,&
-                        0, 0, 0, 0, 0,&
+            nterm1(2) = 1
+            call eclan1(2, mxnbpi, nsomm1, nterm1, 2, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(3, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(4)=2
-            call eclan1(4, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(4, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(2, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(5)=2
-            call eclan1(5, mxnbpi, nsomm1, nterm1, 2,&
-                        3, 0, 0, 0, 0,&
+            nterm1(3) = 1
+            call eclan1(3, mxnbpi, nsomm1, nterm1, 3, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(5, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(6)=2
-            call eclan1(6, mxnbpi, nsomm1, nterm1, 3,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(6, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(3, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(7)=3
-            call eclan1(7, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 3, 0, 0, 0,&
+            nterm1(4) = 2
+            call eclan1(4, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(7, mxnbpi, csomm1, nterm1, 1,&
-                        2, 1, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(8)=3
-            call eclan1(8, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 3, 0, 0, 0,&
-                        0, 0)
-            call eclac1(8, mxnbpi, csomm1, nterm1, 1,&
-                        1, 2, 0, 0, 0,&
+            call eclac1(4, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(9)=3
-            call eclan1(9, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 3, 0, 0, 0,&
+            nterm1(5) = 2
+            call eclan1(5, mxnbpi, nsomm1, nterm1, 2, &
+                        3, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(9, mxnbpi, csomm1, nterm1, 2,&
-                        1, 1, 0, 0, 0,&
+            call eclac1(5, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(10)=3
-            call eclan1(10, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 3, 0, 0, 0,&
+            nterm1(6) = 2
+            call eclan1(6, mxnbpi, nsomm1, nterm1, 3, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(10, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 0, 0, 0,&
+            call eclac1(6, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(7) = 3
+            call eclan1(7, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 3, 0, 0, 0, &
+                        0, 0)
+            call eclac1(7, mxnbpi, csomm1, nterm1, 1, &
+                        2, 1, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(8) = 3
+            call eclan1(8, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 3, 0, 0, 0, &
+                        0, 0)
+            call eclac1(8, mxnbpi, csomm1, nterm1, 1, &
+                        1, 2, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(9) = 3
+            call eclan1(9, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 3, 0, 0, 0, &
+                        0, 0)
+            call eclac1(9, mxnbpi, csomm1, nterm1, 2, &
+                        1, 1, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(10) = 3
+            call eclan1(10, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 3, 0, 0, 0, &
+                        0, 0)
+            call eclac1(10, mxnbpi, csomm1, nterm1, 1, &
+                        1, 1, 0, 0, 0, &
                         0, 0)
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
-            call eclaco(1, mxnbn2, connx, nbno2, 1,&
-                        4, 6, 0, 0, 0,&
+            call eclaco(1, mxnbn2, connx, nbno2, 1, &
+                        4, 6, 0, 0, 0, &
                         0, 0)
-            call eclaco(2, mxnbn2, connx, nbno2, 2,&
-                        5, 4, 0, 0, 0,&
+            call eclaco(2, mxnbn2, connx, nbno2, 2, &
+                        5, 4, 0, 0, 0, &
                         0, 0)
-            call eclaco(3, mxnbn2, connx, nbno2, 5,&
-                        3, 6, 0, 0, 0,&
+            call eclaco(3, mxnbn2, connx, nbno2, 5, &
+                        3, 6, 0, 0, 0, &
                         0, 0)
 !
-            call eclaco(4, mxnbn2, connx, nbno2, 4,&
-                        7, 10, 9, 0, 0,&
+            call eclaco(4, mxnbn2, connx, nbno2, 4, &
+                        7, 10, 9, 0, 0, &
                         0, 0)
-            call eclaco(5, mxnbn2, connx, nbno2, 7,&
-                        5, 8, 10, 0, 0,&
+            call eclaco(5, mxnbn2, connx, nbno2, 7, &
+                        5, 8, 10, 0, 0, &
                         0, 0)
-            call eclaco(6, mxnbn2, connx, nbno2, 6,&
-                        9, 10, 8, 0, 0,&
+            call eclaco(6, mxnbn2, connx, nbno2, 6, &
+                        9, 10, 8, 0, 0, &
                         0, 0)
 !
         else
-            valk(1)=nomte
-            valk(2)=elrefa
-            valk(3)=fapg
+            valk(1) = nomte
+            valk(2) = elrefa
+            valk(3) = fapg
             call utmess('F', 'CALCULEL5_76', nk=3, valk=valk)
 !
-        endif
+        end if
 !
 !
 !     -----------------------------------------------------------------
 !     ELEMENT QUADRANGLE
 !     -----------------------------------------------------------------
-        elseif (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or. elrefa.eq.'QU9')&
-    then
+    elseif (elrefa .eq. 'QU4' .or. elrefa .eq. 'QU8' .or. elrefa .eq. 'QU9') &
+        then
 !
         if (fapg .eq. 'FPG1') then
 !           -----------------
-            npoini=4
-            tyma(1)=iquad4
-            nbno2(1)=4
+            npoini = 4
+            tyma(1) = iquad4
+            nbno2(1) = 4
 !
 !        -- DEFINITION DES POINT_I :
-            nterm1(1)=1
-            call eclan1(1, mxnbpi, nsomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            nterm1(1) = 1
+            call eclan1(1, mxnbpi, nsomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(1, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(2)=1
-            call eclan1(2, mxnbpi, nsomm1, nterm1, 2,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(2, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(1, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(3)=1
-            call eclan1(3, mxnbpi, nsomm1, nterm1, 3,&
-                        0, 0, 0, 0, 0,&
+            nterm1(2) = 1
+            call eclan1(2, mxnbpi, nsomm1, nterm1, 2, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(3, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(2, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(4)=1
-            call eclan1(4, mxnbpi, nsomm1, nterm1, 4,&
-                        0, 0, 0, 0, 0,&
+            nterm1(3) = 1
+            call eclan1(3, mxnbpi, nsomm1, nterm1, 3, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(4, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(3, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(4) = 1
+            call eclan1(4, mxnbpi, nsomm1, nterm1, 4, &
+                        0, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(4, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
-            call eclaco(1, mxnbn2, connx, nbno2, 1,&
-                        2, 3, 4, 0, 0,&
+            call eclaco(1, mxnbn2, connx, nbno2, 1, &
+                        2, 3, 4, 0, 0, &
                         0, 0)
 !
 !
-        else if (fapg.eq.'FIS2') then
+        else if (fapg .eq. 'FIS2') then
 !              -----------------------
-            npoini=6
-            tyma(1)=iquad4
-            nbno2(1)=4
-            tyma(2)=iquad4
-            nbno2(2)=4
+            npoini = 6
+            tyma(1) = iquad4
+            nbno2(1) = 4
+            tyma(2) = iquad4
+            nbno2(2) = 4
 !
 !        -- DEFINITION DES POINT_I :
-            nterm1(1)=1
-            call eclan1(1, mxnbpi, nsomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            nterm1(1) = 1
+            call eclan1(1, mxnbpi, nsomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(1, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(2)=1
-            call eclan1(2, mxnbpi, nsomm1, nterm1, 2,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(2, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(1, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(3)=1
-            call eclan1(3, mxnbpi, nsomm1, nterm1, 3,&
-                        0, 0, 0, 0, 0,&
+            nterm1(2) = 1
+            call eclan1(2, mxnbpi, nsomm1, nterm1, 2, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(3, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(4)=1
-            call eclan1(4, mxnbpi, nsomm1, nterm1, 4,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(4, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(2, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(5)=2
-            call eclan1(5, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
+            nterm1(3) = 1
+            call eclan1(3, mxnbpi, nsomm1, nterm1, 3, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(5, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(3, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(6)=2
-            call eclan1(6, mxnbpi, nsomm1, nterm1, 3,&
-                        4, 0, 0, 0, 0,&
+            nterm1(4) = 1
+            call eclan1(4, mxnbpi, nsomm1, nterm1, 4, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(6, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(4, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(5) = 2
+            call eclan1(5, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(5, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(6) = 2
+            call eclan1(6, mxnbpi, nsomm1, nterm1, 3, &
+                        4, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(6, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
 !
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
-            call eclaco(1, mxnbn2, connx, nbno2, 1,&
-                        5, 6, 4, 0, 0,&
+            call eclaco(1, mxnbn2, connx, nbno2, 1, &
+                        5, 6, 4, 0, 0, &
                         0, 0)
-            call eclaco(2, mxnbn2, connx, nbno2, 5,&
-                        2, 3, 6, 0, 0,&
+            call eclaco(2, mxnbn2, connx, nbno2, 5, &
+                        2, 3, 6, 0, 0, &
                         0, 0)
 !
 !
-        else if (fapg.eq.'FPG4') then
+        else if (fapg .eq. 'FPG4') then
 !               -----------------
-            npoini=9
+            npoini = 9
             do k = 1, npg
-                tyma(k)=iquad4
-                nbno2(k)=4
+                tyma(k) = iquad4
+                nbno2(k) = 4
             end do
 !
 !        -- DEFINITION DES POINT_I :
-            nterm1(1)=1
-            call eclan1(1, mxnbpi, nsomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            nterm1(1) = 1
+            call eclan1(1, mxnbpi, nsomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(1, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(2)=1
-            call eclan1(2, mxnbpi, nsomm1, nterm1, 2,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(2, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(1, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(3)=1
-            call eclan1(3, mxnbpi, nsomm1, nterm1, 3,&
-                        0, 0, 0, 0, 0,&
+            nterm1(2) = 1
+            call eclan1(2, mxnbpi, nsomm1, nterm1, 2, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(3, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(4)=1
-            call eclan1(4, mxnbpi, nsomm1, nterm1, 4,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(4, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(2, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(5)=2
-            call eclan1(5, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
+            nterm1(3) = 1
+            call eclan1(3, mxnbpi, nsomm1, nterm1, 3, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(5, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(6)=2
-            call eclan1(6, mxnbpi, nsomm1, nterm1, 2,&
-                        3, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(6, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(3, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(7)=2
-            call eclan1(7, mxnbpi, nsomm1, nterm1, 3,&
-                        4, 0, 0, 0, 0,&
+            nterm1(4) = 1
+            call eclan1(4, mxnbpi, nsomm1, nterm1, 4, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(7, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(8)=2
-            call eclan1(8, mxnbpi, nsomm1, nterm1, 4,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(8, mxnbpi, csomm1, nterm1, 1,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(4, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(9)=4
-            call eclan1(9, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 3, 4, 0, 0,&
+            nterm1(5) = 2
+            call eclan1(5, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(9, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 1, 0, 0,&
+            call eclac1(5, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(6) = 2
+            call eclan1(6, mxnbpi, nsomm1, nterm1, 2, &
+                        3, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(6, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(7) = 2
+            call eclan1(7, mxnbpi, nsomm1, nterm1, 3, &
+                        4, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(7, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(8) = 2
+            call eclan1(8, mxnbpi, nsomm1, nterm1, 4, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(8, mxnbpi, csomm1, nterm1, 1, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(9) = 4
+            call eclan1(9, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 3, 4, 0, 0, &
+                        0, 0)
+            call eclac1(9, mxnbpi, csomm1, nterm1, 1, &
+                        1, 1, 1, 0, 0, &
                         0, 0)
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
-            call eclaco(1, mxnbn2, connx, nbno2, 8,&
-                        1, 5, 9, 0, 0,&
+            call eclaco(1, mxnbn2, connx, nbno2, 8, &
+                        1, 5, 9, 0, 0, &
                         0, 0)
-            call eclaco(2, mxnbn2, connx, nbno2, 5,&
-                        2, 6, 9, 0, 0,&
+            call eclaco(2, mxnbn2, connx, nbno2, 5, &
+                        2, 6, 9, 0, 0, &
                         0, 0)
-            call eclaco(3, mxnbn2, connx, nbno2, 6,&
-                        3, 7, 9, 0, 0,&
+            call eclaco(3, mxnbn2, connx, nbno2, 6, &
+                        3, 7, 9, 0, 0, &
                         0, 0)
-            call eclaco(4, mxnbn2, connx, nbno2, 7,&
-                        4, 8, 9, 0, 0,&
+            call eclaco(4, mxnbn2, connx, nbno2, 7, &
+                        4, 8, 9, 0, 0, &
                         0, 0)
 !
 !
-        else if (fapg.eq.'FPG9') then
+        else if (fapg .eq. 'FPG9') then
 !               -----------------
-            npoini=16
+            npoini = 16
             do k = 1, npg
-                tyma(k)=iquad4
-                nbno2(k)=4
+                tyma(k) = iquad4
+                nbno2(k) = 4
             end do
 !
 !        -- DEFINITION DES POINT_I :
-            nterm1(1)=1
-            call eclan1(1, mxnbpi, nsomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            nterm1(1) = 1
+            call eclan1(1, mxnbpi, nsomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(1, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(2)=1
-            call eclan1(2, mxnbpi, nsomm1, nterm1, 2,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(2, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(1, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(3)=1
-            call eclan1(3, mxnbpi, nsomm1, nterm1, 3,&
-                        0, 0, 0, 0, 0,&
+            nterm1(2) = 1
+            call eclan1(2, mxnbpi, nsomm1, nterm1, 2, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(3, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(4)=1
-            call eclan1(4, mxnbpi, nsomm1, nterm1, 4,&
-                        0, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(4, mxnbpi, csomm1, nterm1, 1,&
-                        0, 0, 0, 0, 0,&
+            call eclac1(2, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(5)=2
-            call eclan1(5, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
+            nterm1(3) = 1
+            call eclan1(3, mxnbpi, nsomm1, nterm1, 3, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(5, mxnbpi, csomm1, nterm1, 2,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(6)=2
-            call eclan1(6, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(6, mxnbpi, csomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
+            call eclac1(3, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(7)=2
-            call eclan1(7, mxnbpi, nsomm1, nterm1, 2,&
-                        3, 0, 0, 0, 0,&
+            nterm1(4) = 1
+            call eclan1(4, mxnbpi, nsomm1, nterm1, 4, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(7, mxnbpi, csomm1, nterm1, 2,&
-                        1, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(8)=2
-            call eclan1(8, mxnbpi, nsomm1, nterm1, 2,&
-                        3, 0, 0, 0, 0,&
-                        0, 0)
-            call eclac1(8, mxnbpi, csomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
+            call eclac1(4, mxnbpi, csomm1, nterm1, 1, &
+                        0, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(9)=2
-            call eclan1(9, mxnbpi, nsomm1, nterm1, 3,&
-                        4, 0, 0, 0, 0,&
+            nterm1(5) = 2
+            call eclan1(5, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(9, mxnbpi, csomm1, nterm1, 2,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(5, mxnbpi, csomm1, nterm1, 2, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
 !
-!
-            nterm1(10)=2
-            call eclan1(10, mxnbpi, nsomm1, nterm1, 3,&
-                        4, 0, 0, 0, 0,&
+            nterm1(6) = 2
+            call eclan1(6, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(10, mxnbpi, csomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
+            call eclac1(6, mxnbpi, csomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(7) = 2
+            call eclan1(7, mxnbpi, nsomm1, nterm1, 2, &
+                        3, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(7, mxnbpi, csomm1, nterm1, 2, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(8) = 2
+            call eclan1(8, mxnbpi, nsomm1, nterm1, 2, &
+                        3, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(8, mxnbpi, csomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(9) = 2
+            call eclan1(9, mxnbpi, nsomm1, nterm1, 3, &
+                        4, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(9, mxnbpi, csomm1, nterm1, 2, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
 !
 !
-            nterm1(11)=2
-            call eclan1(11, mxnbpi, nsomm1, nterm1, 4,&
-                        1, 0, 0, 0, 0,&
+            nterm1(10) = 2
+            call eclan1(10, mxnbpi, nsomm1, nterm1, 3, &
+                        4, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(11, mxnbpi, csomm1, nterm1, 2,&
-                        1, 0, 0, 0, 0,&
+            call eclac1(10, mxnbpi, csomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
+                        0, 0)
+!
+!
+            nterm1(11) = 2
+            call eclan1(11, mxnbpi, nsomm1, nterm1, 4, &
+                        1, 0, 0, 0, 0, &
+                        0, 0)
+            call eclac1(11, mxnbpi, csomm1, nterm1, 2, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
 !
 !
-            nterm1(12)=2
-            call eclan1(12, mxnbpi, nsomm1, nterm1, 4,&
-                        1, 0, 0, 0, 0,&
+            nterm1(12) = 2
+            call eclan1(12, mxnbpi, nsomm1, nterm1, 4, &
+                        1, 0, 0, 0, 0, &
                         0, 0)
-            call eclac1(12, mxnbpi, csomm1, nterm1, 1,&
-                        2, 0, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(13)=3
-            call eclan1(13, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 4, 0, 0, 0,&
-                        0, 0)
-            call eclac1(13, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 0, 0, 0,&
+            call eclac1(12, mxnbpi, csomm1, nterm1, 1, &
+                        2, 0, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(14)=3
-            call eclan1(14, mxnbpi, nsomm1, nterm1, 1,&
-                        2, 3, 0, 0, 0,&
+            nterm1(13) = 3
+            call eclan1(13, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 4, 0, 0, 0, &
                         0, 0)
-            call eclac1(14, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 0, 0, 0,&
-                        0, 0)
-!
-            nterm1(15)=3
-            call eclan1(15, mxnbpi, nsomm1, nterm1, 2,&
-                        3, 4, 0, 0, 0,&
-                        0, 0)
-            call eclac1(15, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 0, 0, 0,&
+            call eclac1(13, mxnbpi, csomm1, nterm1, 1, &
+                        1, 1, 0, 0, 0, &
                         0, 0)
 !
-            nterm1(16)=3
-            call eclan1(16, mxnbpi, nsomm1, nterm1, 1,&
-                        3, 4, 0, 0, 0,&
+            nterm1(14) = 3
+            call eclan1(14, mxnbpi, nsomm1, nterm1, 1, &
+                        2, 3, 0, 0, 0, &
                         0, 0)
-            call eclac1(16, mxnbpi, csomm1, nterm1, 1,&
-                        1, 1, 0, 0, 0,&
+            call eclac1(14, mxnbpi, csomm1, nterm1, 1, &
+                        1, 1, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(15) = 3
+            call eclan1(15, mxnbpi, nsomm1, nterm1, 2, &
+                        3, 4, 0, 0, 0, &
+                        0, 0)
+            call eclac1(15, mxnbpi, csomm1, nterm1, 1, &
+                        1, 1, 0, 0, 0, &
+                        0, 0)
+!
+            nterm1(16) = 3
+            call eclan1(16, mxnbpi, nsomm1, nterm1, 1, &
+                        3, 4, 0, 0, 0, &
+                        0, 0)
+            call eclac1(16, mxnbpi, csomm1, nterm1, 1, &
+                        1, 1, 0, 0, 0, &
                         0, 0)
 !
 !        -- CONNECTIVITE DES SOUS-ELEMENTS :
-            call eclaco(1, mxnbn2, connx, nbno2, 1,&
-                        5, 13, 12, 0, 0,&
+            call eclaco(1, mxnbn2, connx, nbno2, 1, &
+                        5, 13, 12, 0, 0, &
                         0, 0)
-            call eclaco(2, mxnbn2, connx, nbno2, 2,&
-                        7, 14, 6, 0, 0,&
+            call eclaco(2, mxnbn2, connx, nbno2, 2, &
+                        7, 14, 6, 0, 0, &
                         0, 0)
-            call eclaco(3, mxnbn2, connx, nbno2, 8,&
-                        3, 9, 15, 0, 0,&
+            call eclaco(3, mxnbn2, connx, nbno2, 8, &
+                        3, 9, 15, 0, 0, &
                         0, 0)
-            call eclaco(4, mxnbn2, connx, nbno2, 16,&
-                        10, 4, 11, 0, 0,&
+            call eclaco(4, mxnbn2, connx, nbno2, 16, &
+                        10, 4, 11, 0, 0, &
                         0, 0)
-            call eclaco(5, mxnbn2, connx, nbno2, 6,&
-                        14, 13, 5, 0, 0,&
+            call eclaco(5, mxnbn2, connx, nbno2, 6, &
+                        14, 13, 5, 0, 0, &
                         0, 0)
-            call eclaco(6, mxnbn2, connx, nbno2, 7,&
-                        8, 15, 14, 0, 0,&
+            call eclaco(6, mxnbn2, connx, nbno2, 7, &
+                        8, 15, 14, 0, 0, &
                         0, 0)
-            call eclaco(7, mxnbn2, connx, nbno2, 15,&
-                        9, 10, 16, 0, 0,&
+            call eclaco(7, mxnbn2, connx, nbno2, 15, &
+                        9, 10, 16, 0, 0, &
                         0, 0)
-            call eclaco(8, mxnbn2, connx, nbno2, 16,&
-                        11, 12, 13, 0, 0,&
+            call eclaco(8, mxnbn2, connx, nbno2, 16, &
+                        11, 12, 13, 0, 0, &
                         0, 0)
-            call eclaco(9, mxnbn2, connx, nbno2, 13,&
-                        14, 15, 16, 0, 0,&
+            call eclaco(9, mxnbn2, connx, nbno2, 13, &
+                        14, 15, 16, 0, 0, &
                         0, 0)
 !
         else
-            valk(1)=nomte
-            valk(2)=elrefa
-            valk(3)=fapg
+            valk(1) = nomte
+            valk(2) = elrefa
+            valk(3) = fapg
             call utmess('F', 'CALCULEL5_76', nk=3, valk=valk)
-        endif
+        end if
 !
     else
-        valk(1)=nomte
-        valk(2)=elrefa
+        valk(1) = nomte
+        valk(2) = elrefa
         call utmess('F', 'CALCULEL5_78', nk=2, valk=valk)
-    endif
+    end if
 !
 !     -- POUR TOUS LES SCHEMAS 2D, IL Y A IDENTITE : KSE -> KPG :
-    nbsel=npg
+    nbsel = npg
     do k = 1, npg
-        corsel(k)=k
+        corsel(k) = k
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine cftypn(defico, posno, typno)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
@@ -63,13 +63,13 @@ subroutine cftypn(defico, posno, typno)
 !
 ! --- REPONSE
 !
-    if (zi(jtypno+ztypn*(posno -1)+1-1) .eq. 1) then
+    if (zi(jtypno+ztypn*(posno-1)+1-1) .eq. 1) then
         typno = 'MAIT'
-    else if (zi(jtypno+ztypn*(posno -1)+1-1).eq.-1) then
+    else if (zi(jtypno+ztypn*(posno-1)+1-1) .eq. -1) then
         typno = 'ESCL'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

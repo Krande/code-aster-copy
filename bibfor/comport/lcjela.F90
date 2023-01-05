@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcjela(rela_comp, mod, nmat, mater, vin,&
+subroutine lcjela(rela_comp, mod, nmat, mater, vin, &
                   dsde)
-    implicit   none
+    implicit none
 !       MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT ELASTIQUE A T+DT OU T
 !       IN  LOI    :  MODELE DE COMPORTEMENT
 !           MOD    :  TYPE DE MODELISATION
@@ -37,22 +37,22 @@ subroutine lcjela(rela_comp, mod, nmat, mater, vin,&
     character(len=16), intent(in) :: rela_comp
 !       ----------------------------------------------------------------
     if (rela_comp .eq. 'ROUSS_PR' .or. rela_comp .eq. 'ROUSS_VISC') then
-        call rslpli('ISOTROPE', mod, mater, dsde, nmat,&
+        call rslpli('ISOTROPE', mod, mater, dsde, nmat, &
                     vin)
 !
     else if (rela_comp .eq. 'MONOCRISTAL') then
 !
-        if (mater(nmat,1) .eq. 0) then
+        if (mater(nmat, 1) .eq. 0) then
             call lcopli('ISOTROPE', mod, mater(1, 1), dsde)
-        else if (mater(nmat,1).eq.1) then
+        else if (mater(nmat, 1) .eq. 1) then
             call lcopli('ORTHOTRO', mod, mater(1, 1), dsde)
-        endif
+        end if
 !
 !    CAS GENERAL : ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
     else
 !
         call lcopli('ISOTROPE', mod, mater(1, 1), dsde)
 !
-    endif
+    end if
 !
 end subroutine

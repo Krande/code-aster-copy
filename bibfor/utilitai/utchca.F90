@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
+subroutine utchca(cartez, maz, nomaiz, nocmp, typrez, &
                   valr, vali, valc, ier)
     implicit none
 #include "jeveux.h"
@@ -53,7 +53,7 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
 !             ELLE NE DOIT ETRE APPELEE QUE DANS TEST_RESU
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, numa, iad1,  jcesd, jcesl
+    integer :: iret, numa, iad1, jcesd, jcesl
     integer :: jcesv, kcmp, nbcmp
     character(len=1) :: typsca
     character(len=4) :: type
@@ -64,25 +64,25 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
 !
     call jemarq()
     ier = 0
-    cart19=cartez
-    nomail=nomaiz
-    ma=maz
+    cart19 = cartez
+    nomail = nomaiz
+    ma = maz
     typsca = typrez
 !
     call jelira(cart19//'.VALE', 'TYPE', cval=type)
     if (type .ne. 'R' .and. type .ne. 'I' .and. type .ne. 'C') then
         call utmess('E', 'UTILITAI5_29', sk=type)
-    endif
-    ASSERT(type.eq.typsca)
+    end if
+    ASSERT(type .eq. typsca)
 !
     call jenonu(jexnom(ma//'.NOMMAI', nomail), numa)
-    ASSERT(numa.gt.0)
+    ASSERT(numa .gt. 0)
 !
 !
-    ces='&&UTCHCA.CES'
-    call carces(cart19, 'ELEM', ' ', 'V', ces,&
+    ces = '&&UTCHCA.CES'
+    call carces(cart19, 'ELEM', ' ', 'V', ces, &
                 ' ', iret)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESC', 'L', vk8=cesc)
@@ -90,24 +90,24 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !
     call jelira(ces//'.CESC', 'LONMAX', nbcmp)
-    kcmp = indik8(cesc,nocmp,1,nbcmp)
+    kcmp = indik8(cesc, nocmp, 1, nbcmp)
     if (kcmp .eq. 0) then
         call utmess('F', 'CHAMPS_3', sk=nocmp)
-    endif
+    end if
 !
-    call cesexi('C', jcesd, jcesl, numa, 1,&
+    call cesexi('C', jcesd, jcesl, numa, 1, &
                 1, kcmp, iad1)
     if (iad1 .le. 0) then
         call utmess('F', 'CALCULEL3_6', sk=nocmp)
-    endif
+    end if
 !
     if (typsca .eq. 'R') then
-        valr=zr(jcesv-1+iad1)
-    else if (typsca.eq.'C') then
-        valc=zc(jcesv-1+iad1)
-    else if (typsca.eq.'I') then
-        vali=zi(jcesv-1+iad1)
-    endif
+        valr = zr(jcesv-1+iad1)
+    else if (typsca .eq. 'C') then
+        valc = zc(jcesv-1+iad1)
+    else if (typsca .eq. 'I') then
+        vali = zi(jcesv-1+iad1)
+    end if
 !
 !
     call jedema()

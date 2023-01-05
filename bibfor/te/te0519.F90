@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,23 +59,23 @@ subroutine te0519(option, nomte)
     integer :: jheafa, jeu(2), jheavn, ncompn
     integer :: jstno, jlsn, igeom, jbaslo, alp, imate
     real(kind=8) :: ptref(3), deple(3), deplm(3), ff(20)
-    real(kind=8) :: fk_mait(27,3,3), fk_escl(27,3,3), ka, mu
+    real(kind=8) :: fk_mait(27, 3, 3), fk_escl(27, 3, 3), ka, mu
     aster_logical :: axi
 !
 ! ---------------------------------------------------------------------
 !
-    ASSERT(option.eq.'GEOM_FAC')
+    ASSERT(option .eq. 'GEOM_FAC')
 !
 !
 ! --- RECUPERATION DU TYPE DE MAILLE, DE SA DIMENSION
 ! --- ET DE SON NOMBRE DE NOEUDS
 !
     call elref1(elref)
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
 ! --- INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, singu, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 ibid)
 !
 ! --- RECUPERATION DES ENTRÉES / SORTIE
@@ -84,35 +84,35 @@ subroutine te0519(option, nomte)
     call jevech('PPINTER', 'L', jpint)
     call jevech('PLONGCO', 'L', jlon)
     call jevech('PLST', 'L', jlst)
-    if (nfh.gt.0) then
+    if (nfh .gt. 0) then
         call jevech('PHEA_NO', 'L', jheavn)
-        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
         ncompn = jtab(2)/jtab(3)
-    endif
+    end if
     if (nfe .gt. 0) then
         call jevech('PBASLOR', 'L', jbaslo)
         call jevech('PLSN', 'L', jlsn)
         call jevech('PSTANO', 'L', jstno)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PMATERC', 'L', imate)
-        axi=lteatt('AXIS','OUI')
-    endif
+        axi = lteatt('AXIS', 'OUI')
+    end if
 ! --- LES GEOMETRIES MAITRES ET ESCLAVES INITIALES SONT
 ! --- ET RESTENT LES MEMES
     call jevech('PGESCLO', 'L', jgeo)
 ! --- CAS MULTI-HEAVISIDE
     if (nfiss .gt. 1) then
         call jevech('PHEA_FA', 'L', jheafa)
-        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
-                itab=jtab)
+        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2, &
+                    itab=jtab)
         ncomph = jtab(2)
-    endif
-    call tecach('OOO', 'PPINTER', 'L', iret, nval=2,&
+    end if
+    call tecach('OOO', 'PPINTER', 'L', iret, nval=2, &
                 itab=jtab)
     ncompp = jtab(2)
-    jeu(1) = xcalc_code(1,[-1])
-    jeu(2) = xcalc_code(1,[+1])
+    jeu(1) = xcalc_code(1, [-1])
+    jeu(2) = xcalc_code(1, [+1])
 !
     call jevech('PNEWGES', 'E', jges)
     call jevech('PNEWGEM', 'E', jgma)
@@ -123,10 +123,10 @@ subroutine te0519(option, nomte)
 !
 ! --- RECUPERATION DU NOMBRE DES POINTS D'INTERSECTION
 !
-        ninter=zi(jlon-1+3*(ifiss-1)+1)
-        if (ndim .eq. 2 .and. .not.iselli(elref)) then
-            if (ninter .eq. 2) ninter=3
-        endif
+        ninter = zi(jlon-1+3*(ifiss-1)+1)
+        if (ndim .eq. 2 .and. .not. iselli(elref)) then
+            if (ninter .eq. 2) ninter = 3
+        end if
 !
 ! --- BOUCLE SUR LES POINTS D'INTERSECTION
 !
@@ -137,7 +137,7 @@ subroutine te0519(option, nomte)
 !
 ! --- RECUPERATION DES COORDONNEES DE REFERENCE DU POINT D'INTERSECTION
 !
-                ptref(i)=zr(jpint-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i)
+                ptref(i) = zr(jpint-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i)
             end do
 !
 ! --- CALCUL DES FONCTIONS DE FORMES DU POINT D'INTERSECTION
@@ -145,14 +145,14 @@ subroutine te0519(option, nomte)
             call elrfvf(elref, ptref, ff)
 !
             if (nfe .gt. 0) then
-              call xkamat(zi(imate), ndim, axi, ka, mu)
-              call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), +1.d0,&
-                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff,&
-                           fk_mait, face='MAIT')
-              call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), -1.d0,&
-                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff,&
-                           fk_escl, face='ESCL')
-            endif
+                call xkamat(zi(imate), ndim, axi, ka, mu)
+                call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), +1.d0, &
+                                  zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, &
+                                  fk_mait, face='MAIT')
+                call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), -1.d0, &
+                                  zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, &
+                                  fk_escl, face='ESCL')
+            end if
 !
 ! --- CALCUL DES DEPLACEMENTS MAITRES ET ESCLAVES
 ! --- DU POINT D'INTERSECTION
@@ -160,30 +160,30 @@ subroutine te0519(option, nomte)
             do i = 1, nno
                 call indent(i, ddls, ddlm, nnos, in)
                 do j = 1, ndim
-                    deplm(j)=deplm(j)+ff(i)*zr(jdepl-1+in+j)
-                    deple(j)=deple(j)+ff(i)*zr(jdepl-1+in+j)
+                    deplm(j) = deplm(j)+ff(i)*zr(jdepl-1+in+j)
+                    deple(j) = deple(j)+ff(i)*zr(jdepl-1+in+j)
                 end do
                 do ifh = 1, nfh
                     if (nfiss .gt. 1) then
                         jeu(1) = zi(jheafa-1+ncomph*(ifiss-1)+1)
                         jeu(2) = zi(jheafa-1+ncomph*(ifiss-1)+2)
-                    endif
+                    end if
                     do j = 1, ndim
-                        deplm(j)=deplm(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh),jeu(2),&
-                                                     zi(jheavn-1+ncompn*(i-1)+ncompn))&
-                                         *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
-                        deple(j)=deple(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh),jeu(1),&
-                                                     zi(jheavn-1+ncompn*(i-1)+ncompn))&
-                                         *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
+                        deplm(j) = deplm(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh), jeu(2), &
+                                                       zi(jheavn-1+ncompn*(i-1)+ncompn)) &
+                                   *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
+                        deple(j) = deple(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh), jeu(1), &
+                                                       zi(jheavn-1+ncompn*(i-1)+ncompn)) &
+                                   *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
                     end do
                 end do
                 do alp = 1, nfe*ndim
-                  do j = 1, ndim
-                    deplm(j)=deplm(j)+fk_mait(i,alp,j)*zr(jdepl-1+in+ndim*(1+&
-                    nfh)+alp)
-                    deple(j)=deple(j)+fk_escl(i,alp,j)*zr(jdepl-1+in+ndim*(1+&
-                    nfh)+alp)
-                  enddo
+                    do j = 1, ndim
+                        deplm(j) = deplm(j)+fk_mait(i, alp, j)*zr(jdepl-1+in+ndim*(1+ &
+                                                                                   nfh)+alp)
+                        deple(j) = deple(j)+fk_escl(i, alp, j)*zr(jdepl-1+in+ndim*(1+ &
+                                                                                   nfh)+alp)
+                    end do
                 end do
             end do
 !
@@ -192,13 +192,13 @@ subroutine te0519(option, nomte)
 ! --- NOUVELLES COORDONNEES = ANCIENNES COORDONEES + DEPLACEMENT
 !
             do i = 1, ndim
-                zr(jges-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i) = zr(&
-                                                             jgeo- 1+ncompp*(ifiss-1)+ndim*(ipt-1&
-                                                             &)+i) + deple(i&
+                zr(jges-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i) = zr( &
+                                                             jgeo-1+ncompp*(ifiss-1)+ndim*(ipt-1&
+                                                             &)+i)+deple(i &
                                                              )
-                zr(jgma-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i) = zr(&
-                                                             jgeo- 1+ncompp*(ifiss-1)+ndim*(ipt-1&
-                                                             &)+i) + deplm(i&
+                zr(jgma-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i) = zr( &
+                                                             jgeo-1+ncompp*(ifiss-1)+ndim*(ipt-1&
+                                                             &)+i)+deplm(i &
                                                              )
             end do
         end do

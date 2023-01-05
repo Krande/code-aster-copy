@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romResultSetZero(resultName, numeStore, ds_mode)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 !
-character(len=8), intent(in) :: resultName
-integer, intent(in) :: numeStore
-type(ROM_DS_Field), intent(in) :: ds_mode
+    character(len=8), intent(in) :: resultName
+    integer, intent(in) :: numeStore
+    type(ROM_DS_Field), intent(in) :: ds_mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,8 +59,8 @@ type(ROM_DS_Field), intent(in) :: ds_mode
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM13_2', sk = ds_mode%fieldName, si = numeStore)
-    endif
+        call utmess('I', 'ROM13_2', sk=ds_mode%fieldName, si=numeStore)
+    end if
 !
 ! - Set zero
 !
@@ -68,11 +68,11 @@ type(ROM_DS_Field), intent(in) :: ds_mode
     ASSERT(iret .eq. 100)
     call copisd('CHAMP_GD', 'G', ds_mode%fieldRefe, resultField)
     if (ds_mode%fieldSupp .eq. 'NOEU') then
-        call jeveuo(resultField(1:19)//'.VALE', 'E', vr = v_resultField)
+        call jeveuo(resultField(1:19)//'.VALE', 'E', vr=v_resultField)
         v_resultField(:) = 0.d0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     call rsnoch(resultName, ds_mode%fieldName, numeStore)
 !
 end subroutine

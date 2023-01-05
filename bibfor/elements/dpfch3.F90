@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
-                  dfrdkf, coor, dfrdeg, dfrdng, dfrdkg,&
+subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf, &
+                  dfrdkf, coor, dfrdeg, dfrdng, dfrdkg, &
                   dfdx, dfdy, dfdz, jac)
     implicit none
 !      REAL*8 (A-H,O-Z)
@@ -54,7 +54,7 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
 !
 !     --- INITIALISATION DE LA MATRICE JACOBIENNE A ZERO
 !
-    g(:,:) = 0.d0
+    g(:, :) = 0.d0
 !
 !
 !     --- CALCUL DE LA MATRICE JACOBIENNE (TRANSFORMATION GEOMETRIQUE)
@@ -65,31 +65,31 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
         dn = dfrdng(i)
         dk = dfrdkg(i)
         do j = 1, 3
-            g(1,j) = g(1,j) + coor(ii+j) * de
-            g(2,j) = g(2,j) + coor(ii+j) * dn
-            g(3,j) = g(3,j) + coor(ii+j) * dk
+            g(1, j) = g(1, j)+coor(ii+j)*de
+            g(2, j) = g(2, j)+coor(ii+j)*dn
+            g(3, j) = g(3, j)+coor(ii+j)*dk
         end do
     end do
 !
 !     --- CALCUL DE L'INVERSE DE LA MATRICE JACOBIENNE
 !
-    j11 = g(2,2) * g(3,3) - g(2,3) * g(3,2)
-    j21 = g(3,1) * g(2,3) - g(2,1) * g(3,3)
-    j31 = g(2,1) * g(3,2) - g(3,1) * g(2,2)
-    j12 = g(1,3) * g(3,2) - g(1,2) * g(3,3)
-    j22 = g(1,1) * g(3,3) - g(1,3) * g(3,1)
-    j32 = g(1,2) * g(3,1) - g(3,2) * g(1,1)
-    j13 = g(1,2) * g(2,3) - g(1,3) * g(2,2)
-    j23 = g(2,1) * g(1,3) - g(2,3) * g(1,1)
-    j33 = g(1,1) * g(2,2) - g(1,2) * g(2,1)
+    j11 = g(2, 2)*g(3, 3)-g(2, 3)*g(3, 2)
+    j21 = g(3, 1)*g(2, 3)-g(2, 1)*g(3, 3)
+    j31 = g(2, 1)*g(3, 2)-g(3, 1)*g(2, 2)
+    j12 = g(1, 3)*g(3, 2)-g(1, 2)*g(3, 3)
+    j22 = g(1, 1)*g(3, 3)-g(1, 3)*g(3, 1)
+    j32 = g(1, 2)*g(3, 1)-g(3, 2)*g(1, 1)
+    j13 = g(1, 2)*g(2, 3)-g(1, 3)*g(2, 2)
+    j23 = g(2, 1)*g(1, 3)-g(2, 3)*g(1, 1)
+    j33 = g(1, 1)*g(2, 2)-g(1, 2)*g(2, 1)
 !
 !     --- DETERMINANT DE LA MATRICE JACOBIENNE
 !
-    jac = g(1,1) * j11 + g(1,2) * j21 + g(1,3) * j31
+    jac = g(1, 1)*j11+g(1, 2)*j21+g(1, 3)*j31
     if (jac .le. 0.0d0) then
         valr = jac
         call utmess('A', 'ELEMENTS5_30', sr=valr)
-    endif
+    end if
 !
 !     --- CALCUL DES DERIVEES EN ESPACE DES FONCTIONS DE FORME
 !         DES VARIABLES
@@ -101,6 +101,6 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
     end do
 !
 !
-    jac = abs(jac) * poids
+    jac = abs(jac)*poids
 !
 end subroutine

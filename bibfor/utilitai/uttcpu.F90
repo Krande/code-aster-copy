@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,40 +58,40 @@ subroutine uttcpu(nommes, action, nomlon)
 !
 !     -- COMMONS POUR MESURE DE TEMPS :
     integer :: mtpniv, mtpsta, indmax
-    parameter (indmax=5)
+    parameter(indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)
-    common /mestp1/ mtpniv,mtpsta
-    common /mestp2/ snolon
-    common /mestp3/ valmes,valmei
+    common/mestp1/mtpniv, mtpsta
+    common/mestp2/snolon
+    common/mestp3/valmes, valmei
 ! ----------------------------------------------------------------------
 !
 !     -- POUR CERTAINES MESURES, ON NE PEUT PAS FAIRE DE JEVEUX :
 !        ON GARDE ALORS LES INFOS DANS LES COMMON MESTPX
     if (nommes .eq. 'CPU.MEMD.1') then
-        indi=1
-    else if (nommes.eq.'CPU.MEMD.2') then
-        indi=2
+        indi = 1
+    else if (nommes .eq. 'CPU.MEMD.2') then
+        indi = 2
     else
         goto 9998
-    endif
-    ASSERT(indi.le.indmax)
+    end if
+    ASSERT(indi .le. indmax)
 !
     if (action .eq. 'INIT') then
-        snolon(indi)=nomlon
+        snolon(indi) = nomlon
 !       -- IL FAUT REMETTRE LES COMMON A ZERO :
-        do k=1,7
-            valmes(k)=0.d0
-            valmei(k)=0.d0
+        do k = 1, 7
+            valmes(k) = 0.d0
+            valmei(k) = 0.d0
         end do
-    endif
+    end if
 !
     call uttcp0(indi, action, 7, valmes(7*(indi-1)+1))
     goto 9999
 !
 !
 !
-9998  continue
+9998 continue
 !     -- INITIALISATION DES OBJETS JEVEUX :
     call jeexin('&&UTTCPU.NOMMES', iexi)
     if (iexi .eq. 0) then
@@ -102,24 +102,24 @@ subroutine uttcpu(nommes, action, nomlon)
         call wkvect('&&UTTCPU.NOMLON', 'V V K80', 100, jnoml)
     else
         call jeveuo('&&UTTCPU.VALMES', 'E', jvalms)
-    endif
+    end if
 !
     call jenonu(jexnom('&&UTTCPU.NOMMES', nommes), indi)
     if (indi .eq. 0) then
         if (action .eq. 'INIT') then
             call jecroc(jexnom('&&UTTCPU.NOMMES', nommes))
             call jenonu(jexnom('&&UTTCPU.NOMMES', nommes), indi)
-            ASSERT(indi.gt.0)
-            ASSERT(indi.lt.100)
+            ASSERT(indi .gt. 0)
+            ASSERT(indi .lt. 100)
             call jeveuo('&&UTTCPU.NOMLON', 'E', jnoml)
-            zk80(jnoml-1+indi)=nomlon
+            zk80(jnoml-1+indi) = nomlon
         else
 !         -- LA MESURE N'A PAS ETE INITIALISEE: ON NE LA FAIT PAS
             goto 9999
-        endif
-    endif
+        end if
+    end if
 !
     call uttcp0(100+indi, action, 7, zr(jvalms-1+7*(indi-1)+1))
 !
-9999  continue
+9999 continue
 end subroutine

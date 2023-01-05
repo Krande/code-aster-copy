@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdehy(fami, kpg, ksp, nmat, materd,&
+subroutine lcdehy(fami, kpg, ksp, nmat, materd, &
                   materf, depsm, epsdm, l_epsi_varc_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/rcvarc.h"
@@ -63,34 +63,34 @@ implicit none
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     aster_logical :: l_epsi_varc
 !       ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !
     l_epsi_varc = ASTER_TRUE
     if (present(l_epsi_varc_)) then
         l_epsi_varc = l_epsi_varc_
-    endif
+    end if
 
-    bendod = materd(4,1)
-    bendof = materf(4,1)
-    kdessd = materd(5,1)
-    kdessf = materf(5,1)
+    bendod = materd(4, 1)
+    bendof = materf(4, 1)
+    kdessd = materd(5, 1)
+    kdessf = materf(5, 1)
     call rcvarc(' ', 'HYDR', '-', fami, kpg, ksp, hd, iret)
-    if (iret .ne. 0) hd=0.d0
+    if (iret .ne. 0) hd = 0.d0
     call rcvarc(' ', 'HYDR', '+', fami, kpg, ksp, hf, iret)
-    if (iret .ne. 0) hf=0.d0
+    if (iret .ne. 0) hf = 0.d0
     call rcvarc(' ', 'SECH', '-', fami, kpg, ksp, sd, iret)
-    if (iret .ne. 0) sd=0.d0
+    if (iret .ne. 0) sd = 0.d0
     call rcvarc(' ', 'SECH', '+', fami, kpg, ksp, sf, iret)
-    if (iret .ne. 0) sf=0.d0
+    if (iret .ne. 0) sf = 0.d0
     call rcvarc(' ', 'SECH', 'REF', fami, kpg, ksp, sref, iret)
-    if (iret .ne. 0) sref=0.d0
+    if (iret .ne. 0) sref = 0.d0
 !
     if (l_epsi_varc) then
         do k = 1, ndi
-            depsm(k) = depsm(k) + ( bendof*hf - bendod*hd) + ( kdessf*( sref-sf) - kdessd*(sref-sd))
-            epsdm(k) = epsdm(k) + bendod*hd + kdessd*(sref-sd)
+            depsm(k) = depsm(k)+(bendof*hf-bendod*hd)+(kdessf*(sref-sf)-kdessd*(sref-sd))
+            epsdm(k) = epsdm(k)+bendod*hd+kdessd*(sref-sd)
         end do
-    endif
+    end if
 !
 end subroutine

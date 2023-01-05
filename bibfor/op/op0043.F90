@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,14 +46,14 @@ subroutine op0043()
 !
     call getvis(' ', 'UNITE_MAILLAGE', scal=nfis, nbret=n)
 ! LECTURE DU MAILLAGE FLUIDE
-    k16nom='                '
-    if (ulisop ( nfis, k16nom ) .eq. 0) then
+    k16nom = '                '
+    if (ulisop(nfis, k16nom) .eq. 0) then
         call ulopen(nfis, ' ', 'FICHIER-MODELE', 'NEW', 'O')
-    endif
+    end if
     call getvtx(' ', 'TYPE_MAILLAGE', scal=typema, nbret=n)
     call precou(nfis, typema)
 !
-    write(nfis,*) 'FIN'
+    write (nfis, *) 'FIN'
     rewind nfis
 !
     call jedema()

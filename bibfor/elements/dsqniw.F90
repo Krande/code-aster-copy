@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
-                  bcb, bca, an, am, wsq,&
+subroutine dsqniw(qsi, eta, caraq4, dci, bcm, &
+                  bcb, bca, an, am, wsq, &
                   wmesq)
     implicit none
     real(kind=8) :: qsi, eta, caraq4(*), dci(2, 2), bcb(2, 12), bca(2, 4)
@@ -109,29 +109,29 @@ subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
         wmesq(i) = zero
     end do
 !
-    peta = un + eta
-    meta = un - eta
-    pqsi = un + qsi
-    mqsi = un - qsi
-    etac = un - eta * eta
-    qsic = un - qsi * qsi
+    peta = un+eta
+    meta = un-eta
+    pqsi = un+qsi
+    mqsi = un-qsi
+    etac = un-eta*eta
+    qsic = un-qsi*qsi
 !
 ! --- FONCTIONS DE FORME RELATIVES A LA FLECHE CORRESPONDANTES
 ! --- A L'INTERPOLATION DE TYPE HERMITE :
 ! ---     W = NI*WI + NQSII*(D WI)/(D QSI) + NETAI*(D WI)/(D ETA) :
 !     -----------------------------------------------------------
-    n(1) = mqsi * meta / huit * (qsic + etac - qsi - eta)
-    n(2) = mqsi * meta / huit * qsic
-    n(3) = mqsi * meta / huit * etac
-    n(4) = pqsi * meta / huit * (qsic + etac + qsi - eta)
-    n(5) = - pqsi * meta / huit * qsic
-    n(6) = pqsi * meta / huit * etac
-    n(7) = pqsi * peta / huit * (qsic + etac + qsi + eta)
-    n(8) = - pqsi * peta / huit * qsic
-    n(9) = - pqsi * peta / huit * etac
-    n(10) = mqsi * peta / huit * (qsic + etac - qsi + eta)
-    n(11) = mqsi * peta / huit * qsic
-    n(12) = - mqsi * peta / huit * etac
+    n(1) = mqsi*meta/huit*(qsic+etac-qsi-eta)
+    n(2) = mqsi*meta/huit*qsic
+    n(3) = mqsi*meta/huit*etac
+    n(4) = pqsi*meta/huit*(qsic+etac+qsi-eta)
+    n(5) = -pqsi*meta/huit*qsic
+    n(6) = pqsi*meta/huit*etac
+    n(7) = pqsi*peta/huit*(qsic+etac+qsi+eta)
+    n(8) = -pqsi*peta/huit*qsic
+    n(9) = -pqsi*peta/huit*etac
+    n(10) = mqsi*peta/huit*(qsic+etac-qsi+eta)
+    n(11) = mqsi*peta/huit*qsic
+    n(12) = -mqsi*peta/huit*etac
 !
 ! --- CALCUL DE (GAMMA) = [DCI]*(T)
 ! --- SOIT      (GAMMA) = [DCI]*([BCA]*[AN]*(UN) + [BCB])
@@ -147,76 +147,76 @@ subroutine dsqniw(qsi, eta, caraq4, dci, bcm,&
 !       -------------------------------------
     do i = 1, 2
         do j = 1, 12
-            bn(i,j) = zero
+            bn(i, j) = zero
         end do
     end do
     do j = 1, 12
         do k = 1, 4
-            bn(1,j) = bn(1,j) + bca(1,k)*an(k,j)
-            bn(2,j) = bn(2,j) + bca(2,k)*an(k,j)
+            bn(1, j) = bn(1, j)+bca(1, k)*an(k, j)
+            bn(2, j) = bn(2, j)+bca(2, k)*an(k, j)
         end do
-        bn(1,j) = bn(1,j) + bcb(1,j)
-        bn(2,j) = bn(2,j) + bcb(2,j)
+        bn(1, j) = bn(1, j)+bcb(1, j)
+        bn(2, j) = bn(2, j)+bcb(2, j)
     end do
     do j = 1, 12
-        dba(1,j) = dci(1,1)*bn(1,j) + dci(1,2)*bn(2,j)
-        dba(2,j) = dci(2,1)*bn(2,j) + dci(2,2)*bn(2,j)
+        dba(1, j) = dci(1, 1)*bn(1, j)+dci(1, 2)*bn(2, j)
+        dba(2, j) = dci(2, 1)*bn(2, j)+dci(2, 2)*bn(2, j)
     end do
 !
 ! ---   FONCTIONS D'INTERPOLATION WST RELATIVES AUX DDLS DE FLEXION
 ! ---   W, BETA_X ET BETA_Y :
 !       -------------------
     do j = 1, 12
-        wsq(j) = (&
-                 - dba(1,j)*x5 + dba(2,j)*x8) * n(2) + (- dba(1,j)* y5 + dba(2,j)*y8) * n(2) + (-&
-                 & dba(1,j)*x5 - dba(2,j)*x6) * n( 5) + (- dba(1,j)*y5 - dba(2,j)*y6) * n(5) + ( &
-                 &dba(1,j)*x7 - dba(2,j)*x6) * n(8) + ( dba(1,j)*y7 - dba(2,j)*y6) * n(8) + ( dba&
-                 &(1,j)*x7 + dba(2,j)*x8) * n(11) + ( dba(1,j)*y7 + dba( 2,j)*y8) * n(11&
+        wsq(j) = ( &
+                 -dba(1, j)*x5+dba(2, j)*x8)*n(2)+(-dba(1, j)*y5+dba(2, j)*y8)*n(2)+(-&
+                 & dba(1, j)*x5-dba(2, j)*x6)*n(5)+(-dba(1, j)*y5-dba(2, j)*y6)*n(5)+( &
+                 &dba(1, j)*x7-dba(2, j)*x6)*n(8)+(dba(1, j)*y7-dba(2, j)*y6)*n(8)+(dba&
+                 &(1, j)*x7+dba(2, j)*x8)*n(11)+(dba(1, j)*y7+dba(2, j)*y8)*n(11 &
                  )
     end do
 !
-    wsq(1) = wsq(1) + n(1)
-    wsq(2) = wsq(2) + (- x5*n(2) + x8*n(3) ) * undemi
-    wsq(3) = wsq(3) + (- y5*n(2) + y8*n(3) ) * undemi
-    wsq(4) = wsq(4) + n(4)
-    wsq(5) = wsq(5) + (- x5*n(5) - x6*n(6) ) * undemi
-    wsq(6) = wsq(6) + (- y5*n(5) - y6*n(6) ) * undemi
-    wsq(7) = wsq(7) + n(7)
-    wsq(8) = wsq(8) + ( x7*n(8) - x6*n(9) ) * undemi
-    wsq(9) = wsq(9) + ( y7*n(8) - y6*n(9) ) * undemi
-    wsq(10) = wsq(10) + n(10)
-    wsq(11) = wsq(11) + ( x7*n(11) + x8*n(12)) * undemi
-    wsq(12) = wsq(12) + ( y7*n(11) + y8*n(12)) * undemi
+    wsq(1) = wsq(1)+n(1)
+    wsq(2) = wsq(2)+(-x5*n(2)+x8*n(3))*undemi
+    wsq(3) = wsq(3)+(-y5*n(2)+y8*n(3))*undemi
+    wsq(4) = wsq(4)+n(4)
+    wsq(5) = wsq(5)+(-x5*n(5)-x6*n(6))*undemi
+    wsq(6) = wsq(6)+(-y5*n(5)-y6*n(6))*undemi
+    wsq(7) = wsq(7)+n(7)
+    wsq(8) = wsq(8)+(x7*n(8)-x6*n(9))*undemi
+    wsq(9) = wsq(9)+(y7*n(8)-y6*n(9))*undemi
+    wsq(10) = wsq(10)+n(10)
+    wsq(11) = wsq(11)+(x7*n(11)+x8*n(12))*undemi
+    wsq(12) = wsq(12)+(y7*n(11)+y8*n(12))*undemi
 !
 ! ---   CALCUL DE  [DCI]*([BCA]*[AM]+[BCM]) :
 !       -----------------------------------
     do j = 1, 4
-        db(1,j) = dci(1,1)*bca(1,j) + dci(1,2)*bca(2,j)
-        db(2,j) = dci(2,1)*bca(1,j) + dci(2,2)*bca(2,j)
+        db(1, j) = dci(1, 1)*bca(1, j)+dci(1, 2)*bca(2, j)
+        db(2, j) = dci(2, 1)*bca(1, j)+dci(2, 2)*bca(2, j)
     end do
     do j = 1, 8
-        dbam(1,j) = db(1,1)*am(1,j) + db(1,2)*am(2,j) + db(1,3)*am(3, j) + db(1,4)*am(4,j)
-        dbam(2,j) = db(2,1)*am(1,j) + db(2,2)*am(2,j) + db(2,3)*am(3, j) + db(2,4)*am(4,j)
+        dbam(1, j) = db(1, 1)*am(1, j)+db(1, 2)*am(2, j)+db(1, 3)*am(3, j)+db(1, 4)*am(4, j)
+        dbam(2, j) = db(2, 1)*am(1, j)+db(2, 2)*am(2, j)+db(2, 3)*am(3, j)+db(2, 4)*am(4, j)
     end do
     do j = 1, 8
-        dcm(1,j) = dci(1,1)*bcm(1,j) + dci(1,2)*bcm(2,j)
-        dcm(2,j) = dci(2,1)*bcm(1,j) + dci(2,2)*bcm(2,j)
+        dcm(1, j) = dci(1, 1)*bcm(1, j)+dci(1, 2)*bcm(2, j)
+        dcm(2, j) = dci(2, 1)*bcm(1, j)+dci(2, 2)*bcm(2, j)
     end do
     do j = 1, 8
-        dbam(1,j) = dbam(1,j) + dcm(1,j)
-        dbam(2,j) = dbam(2,j) + dcm(2,j)
+        dbam(1, j) = dbam(1, j)+dcm(1, j)
+        dbam(2, j) = dbam(2, j)+dcm(2, j)
     end do
 !
 ! ---   FONCTIONS D'INTERPOLATION WMESQ RELATIVES AUX DDLS DE
 ! ---   MEMBRANE U ET V :
 !       ---------------
     do j = 1, 8
-        wmesq(j) = (&
-                   - dbam(1,j)*x5 + dbam(2,j)*x8) * n(2) + (- dbam(1, j)*y5 + dbam(2,j)*y8) * n(2&
-                   &) + (- dbam(1,j)*x5 - dbam(2,j)*x6) * n(5) + (- dbam(1,j)*y5 - dbam(2,j)*y6) &
-                   &* n(5) + ( dbam(1,j)* x7 - dbam(2,j)*x6) * n(8) + ( dbam(1,j)*y7 - dbam(2,j)*&
-                   &y6) * n(8) + ( dbam(1,j)*x7 + dbam(2,j)*x8) * n(11) + ( dbam(1,j)* y7 + dbam(&
-                   &2,j)*y8) * n(11&
+        wmesq(j) = ( &
+                   -dbam(1, j)*x5+dbam(2, j)*x8)*n(2)+(-dbam(1, j)*y5+dbam(2, j)*y8)*n(2&
+                   &)+(-dbam(1, j)*x5-dbam(2, j)*x6)*n(5)+(-dbam(1, j)*y5-dbam(2, j)*y6) &
+                   &*n(5)+(dbam(1, j)*x7-dbam(2, j)*x6)*n(8)+(dbam(1, j)*y7-dbam(2, j)*&
+                   &y6)*n(8)+(dbam(1, j)*x7+dbam(2, j)*x8)*n(11)+(dbam(1, j)*y7+dbam(&
+                   &2, j)*y8)*n(11 &
                    )
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,9 +81,9 @@ subroutine vecgen(nomres, numeg)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadmod, iavale, iddeeq, idvale, idvect, ioc
-    integer :: ipos, iret, j,  lddesc,  ldnddl
+    integer :: ipos, iret, j, lddesc, ldnddl
     integer :: ldnsst, ldnvec, ldprs, ldstr
-    integer :: lrdesc,  lrref, lrval, nbchar, nbmod, nddl0
+    integer :: lrdesc, lrref, lrval, nbchar, nbmod, nddl0
     integer :: neq, neqgen, num, nusst
     real(kind=8) :: rbid
     real(kind=8), pointer :: vale(:) => null()
@@ -108,26 +108,26 @@ subroutine vecgen(nomres, numeg)
 !     0/ TEST SI ON ELIMINE LES CONTRAINTES
 !     =====================================
 !
-    elim=0
-    seliai=numeg(1:8)//'      .ELIM.BASE'
-    sizlia=numeg(1:8)//'      .ELIM.TAIL'
-    sst=   numeg(1:8)//'      .ELIM.NOMS'
+    elim = 0
+    seliai = numeg(1:8)//'      .ELIM.BASE'
+    sizlia = numeg(1:8)//'      .ELIM.TAIL'
+    sst = numeg(1:8)//'      .ELIM.NOMS'
     call jeexin(seliai, elim)
 !
 !     RECUPERATION DE LA BASE SI ELIMINATION
 !
     if (elim .ne. 0) then
         call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
-        neqet=0
+        neqet = 0
         call jeveuo(numeg//'      .NUME.NEQU', 'L', ibid)
-        neqred=zi(ibid)
+        neqred = zi(ibid)
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
         do i = 1, nbsst
-            neqet=neqet+zi(lsilia+i-1)
+            neqet = neqet+zi(lsilia+i-1)
         end do
-    endif
+    end if
 !
 !     1/ LECTURE ET STOCKAGE DES INFORMATIONS
 !     =======================================
@@ -145,18 +145,18 @@ subroutine vecgen(nomres, numeg)
         call jelira(jexnum(profg//'.PRNO', ibid), 'LONMAX', nblia)
         if (nblia .eq. 1) then
             call utmess('F', 'ALGORITH_32')
-        endif
+        end if
 !
 !       VERIFIER QUE LE NOMBRE NBCHAR DE SOUS-STRUCTURES CHARGEES EST
 !       INFERIEUR AU NOMBRE TOTAL NBSST DE SOUS-STRUCTURES
         call jenonu(jexnom(profg//'.LILI', '&SOUSSTR'), ibid)
         call jelira(jexnum(profg//'.ORIG', ibid), 'LONMAX', nbsst)
         if (nbchar .gt. nbsst) then
-            vali (1) = nbchar
-            vali (2) = nbsst
+            vali(1) = nbchar
+            vali(2) = nbsst
             call utmess('F', 'ALGORITH15_69', ni=2, vali=vali)
-        endif
-    endif
+        end if
+    end if
 !
 !-----------------------------------------------------------------------
 !     1.2/ CREATION DE LA STRUCTURE DE DONNEES NOMRES
@@ -201,7 +201,7 @@ subroutine vecgen(nomres, numeg)
     call wkvect(resval, 'G V R', neqgen, lrval)
     call wkvect(chadsc, 'V V I', 1, lddesc)
 !
-    call jecrec(chalis, 'V V K8', 'NO', 'CONTIG', 'CONSTANT',&
+    call jecrec(chalis, 'V V K8', 'NO', 'CONTIG', 'CONSTANT', &
                 3)
     call jecroc(jexnom(chalis, 'SOUSSTR'))
     call jecroc(jexnom(chalis, 'VECTASS'))
@@ -212,7 +212,7 @@ subroutine vecgen(nomres, numeg)
     call jeveuo(jexnom(chalis, 'VECTASS'), 'E', ldnvec)
     call jeveuo(jexnom(chalis, 'NUMEDDL'), 'E', ldnddl)
 !
-    call jecrec(chaval, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
+    call jecrec(chaval, 'V V R', 'NO', 'DISPERSE', 'VARIABLE', &
                 nbchar)
 !
 !-----------------------------------------------------------------------
@@ -236,13 +236,13 @@ subroutine vecgen(nomres, numeg)
         call getvtx(motfac, 'SOUS_STRUC', iocc=i, nbval=0, nbret=ioc)
         ioc = -ioc
         if (ioc .ne. 1) then
-            vali (1) = i
-            vali (2) = 1
-            vali (3) = ioc
+            vali(1) = i
+            vali(2) = 1
+            vali(3) = ioc
             call utmess('F', 'ALGORITH15_70', ni=3, vali=vali)
         else
             call getvtx(motfac, 'SOUS_STRUC', iocc=i, scal=nomsst, nbret=ioc)
-        endif
+        end if
         zk8(ldnsst+i-1) = nomsst
 !
 !-----------------------------------------------------------------------
@@ -253,14 +253,14 @@ subroutine vecgen(nomres, numeg)
         call getvid(motfac, 'VECT_ASSE', iocc=i, nbval=0, nbret=ioc)
         ioc = -ioc
         if (ioc .ne. 1) then
-            vali (1) = i
-            vali (2) = 1
-            vali (3) = ioc
+            vali(1) = i
+            vali(2) = 1
+            vali(3) = ioc
             call utmess('F', 'ALGORITH15_71', ni=3, vali=vali)
         else
             call getvid(motfac, 'VECT_ASSE', iocc=i, scal=nom2mb, nbret=ioc)
             call chpver('F', nom2mb, 'NOEU', 'DEPL_R', ier)
-        endif
+        end if
 !
 !     RECUPERATION DU NUME_DDL ASSOCIE AU SECOND MEMBRE.
 !
@@ -271,9 +271,9 @@ subroutine vecgen(nomres, numeg)
         call jeveuo(nom2mb//'           .DESC', 'L', vi=desc)
         num = desc(2)
         if (num .lt. 0) then
-            valk (1) = nom2mb
+            valk(1) = nom2mb
             call utmess('F', 'ALGORITH15_72', sk=valk(1))
-        endif
+        end if
         call jeveuo(nom2mb//'           .REFE', 'L', vk24=refe)
         nuchar = refe(2)
 !
@@ -282,16 +282,16 @@ subroutine vecgen(nomres, numeg)
         gd = desc(1)
         if (i .eq. 1) then
             gd0 = gd
-        endif
-        sstold='        '
+        end if
+        sstold = '        '
         if (gd .ne. gd0) then
-            vali (1) = gd0
-            vali (2) = gd
-            valk (1) = sstold
-            valk (2) = nomsst
-            call utmess('F+', 'ALGORITH15_73', nk=2, valk=valk, ni=2,&
+            vali(1) = gd0
+            vali(2) = gd
+            valk(1) = sstold
+            valk(2) = nomsst
+            call utmess('F+', 'ALGORITH15_73', nk=2, valk=valk, ni=2, &
                         vali=vali)
-        endif
+        end if
         gd0 = gd
         sstold = nomsst
         zk8(ldnvec+i-1) = nom2mb
@@ -303,27 +303,27 @@ subroutine vecgen(nomres, numeg)
 !     ON UTILISE LA BASE MODALE, ET ON VERIFIE AU PASSAGE QUE
 !     SON TYPE EST BIEN CELUI D'UNE BASE CLASSIQUE OU DE RITZ.
 !
-        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid,&
+        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid, &
                     basmod)
 !
         call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=nubamo)
         call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=typeba)
 !
         if (typeba(1:4) .ne. 'RITZ' .and. typeba(1:9) .ne. 'CLASSIQUE') then
-            valk (1) = nomsst
+            valk(1) = nomsst
             call utmess('F', 'ALGORITH15_74', sk=valk(1))
-        endif
+        end if
 !
 !     PAR SECURITE, ON S'ASSURE QUE LE NUME_DDL ASSOCIE AU CHARGEMENT
 !     COINCIDE AVEC CELUI ASSOCIE A LA SOUS-STRUCTURE.
 !
-        if (.not. idensd('PROF_CHNO', nuchar(1:19), nubamo(1:19)))then
+        if (.not. idensd('PROF_CHNO', nuchar(1:19), nubamo(1:19))) then
 !        if (nuchar(1:14) .ne. nubamo(1:14)) then
-            valk (1) = nomsst
-            valk (2) = nubamo
-            valk (3) = nuchar
+            valk(1) = nomsst
+            valk(2) = nubamo
+            valk(3) = nuchar
             call utmess('F', 'ALGORITH15_75', nk=3, valk=valk)
-        endif
+        end if
 !
 !     COPIE DU NUME_DDL DANS LE .LICH
         zk8(ldnddl+i-1) = nubamo(1:8)
@@ -355,14 +355,14 @@ subroutine vecgen(nomres, numeg)
         nomddl = zk8(ldnddl+i-1)
 !
 !     RECUPERATION DE LA BASE MODALE ASSOCIEE A LA SOUS-STRUCTURE
-        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid,&
+        call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid, &
                     basmod)
 !
 !     NOMBRE DE MODES NBMOD DE LA BASE MODALE
-        call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
-                    cbid, rbid, kbid, tmod, 1,&
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid, &
+                    cbid, rbid, kbid, tmod, 1, &
                     ibid)
-        nbmod=tmod(1)
+        nbmod = tmod(1)
 !
 !     RECUPERATION DU .VALE ASSOCIE AU SECOND MEMBRE
         call jeveuo(nom2mb//'           .VALE', 'L', vr=vale)
@@ -397,7 +397,7 @@ subroutine vecgen(nomres, numeg)
         do j = 1, nbmod
 !
 !     EXTRACTION DU CHAMP DE DEPLACEMENTS ASSOCIE AU MODE J
-            call rsexch('F', basmod, 'DEPL', j, nomcha,&
+            call rsexch('F', basmod, 'DEPL', j, nomcha, &
                         iret)
             nomcha = nomcha(1:19)//'.VALE'
             call jeveuo(nomcha, 'L', iadmod)
@@ -409,7 +409,7 @@ subroutine vecgen(nomres, numeg)
             call zerlag(neq, zi(iddeeq), vectr=zr(idvect))
 !
 !     PRODUIT SCALAIRE SECOND MEMBRE ET MODE
-            zr(iavale+j-1) = ddot(neq,zr(idvect),1,vale,1)
+            zr(iavale+j-1) = ddot(neq, zr(idvect), 1, vale, 1)
 !
         end do
         call jedetr('&&'//pgc//'.VECTA')
@@ -439,10 +439,10 @@ subroutine vecgen(nomres, numeg)
 !     CAS OU ON RECOURS A L'ELIMINATION
             do i1 = 1, nbsst
                 if (zk8(lsst+i1-1) .eq. nomsst) then
-                    nusst=i1
-                endif
+                    nusst = i1
+                end if
             end do
-        endif
+        end if
 !
 !     RECUPERATION DU D.D.L. GENERALISE DE DEPART ET DU NOMBRE TOTAL
 !     DE D.D.L., ASSOCIES A LA SOUS-STRUCTURE.
@@ -451,13 +451,13 @@ subroutine vecgen(nomres, numeg)
             nbmod = zi(ldprs+2*nusst-1)
         else
 !     CAS OU ON RECOURS A L'ELIMINATION
-            nddl0=0
-            nbmod=0
+            nddl0 = 0
+            nbmod = 0
             do i1 = 1, nusst-1
-                nddl0 = nddl0 + zi(lsilia+i1-1)
+                nddl0 = nddl0+zi(lsilia+i1-1)
             end do
             nbmod = zi(lsilia+nusst-1)
-        endif
+        end if
 !
 !     ASSEMBLAGE DES VALEURS DE CHARGEMENT
 !
@@ -468,20 +468,20 @@ subroutine vecgen(nomres, numeg)
 !     BOUCLE SUR LES MODES DE LA SOUS-STRUCTURE
         if (elim .eq. 0) then
             do j = 1, nbmod
-                ipos=(nddl0 - 1) + (j - 1)
-                zr(lrval+ipos) = zr(lrval+ipos) + zr(idvale+j-1)
+                ipos = (nddl0-1)+(j-1)
+                zr(lrval+ipos) = zr(lrval+ipos)+zr(idvale+j-1)
             end do
         else
 !     CAS OU ON RECOURS A L'ELIMINATION
 !     ON RE PROJETTE SUR LA BASE T : F_proj = T^t * (Phi^t * F)
             do j1 = 1, neqred
-                zr(lrval+j1-1)=0.0d0
+                zr(lrval+j1-1) = 0.0d0
                 do i1 = 1, nbmod
-                    zr(lrval+j1-1) = zr(lrval+j1-1) + zr(idvale+i1-1)* zr(lmapro+(j1-1)*neqet+ndd&
+                    zr(lrval+j1-1) = zr(lrval+j1-1)+zr(idvale+i1-1)*zr(lmapro+(j1-1)*neqet+ndd&
                                      &l0+i1-1)
                 end do
             end do
-        endif
+        end if
     end do
 !
     call jedema()

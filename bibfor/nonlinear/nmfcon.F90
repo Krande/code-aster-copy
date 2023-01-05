@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,24 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmfcon(modele    , numedd, ds_material, fonact         , ds_contact,&
-                  ds_measure, valinc, solalg     , ds_constitutive)
+subroutine nmfcon(modele, numedd, ds_material, fonact, ds_contact, &
+                  ds_measure, valinc, solalg, ds_constitutive)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmfocc.h"
 !
-integer :: fonact(*)
-character(len=24) :: modele, numedd
-character(len=19) :: solalg(*), valinc(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer :: fonact(*)
+    character(len=24) :: modele, numedd
+    character(len=19) :: solalg(*), valinc(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,13 +60,13 @@ type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! ----------------------------------------------------------------------
 !
-    leltc = isfonc(fonact,'ELT_CONTACT')
+    leltc = isfonc(fonact, 'ELT_CONTACT')
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
     if (leltc) then
-        call nmfocc('CORRECTION', modele    , ds_material, numedd, fonact,&
-                    ds_contact  , ds_measure, solalg,valinc, ds_constitutive)
-    endif
+        call nmfocc('CORRECTION', modele, ds_material, numedd, fonact, &
+                    ds_contact, ds_measure, solalg, valinc, ds_constitutive)
+    end if
 !
 end subroutine

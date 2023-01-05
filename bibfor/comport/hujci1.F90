@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,82 +53,82 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
     aster_logical :: tract, debug
     integer :: i, niter, icmpt
 !
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
-    data zero /0.d0/
-    data un   /1.d0/
-    data deux /2.d0/
-    data d13  /0.33333333333334d0/
-    data niter /50/
-    data prec /1.e-8/
+    data zero/0.d0/
+    data un/1.d0/
+    data deux/2.d0/
+    data d13/0.33333333333334d0/
+    data niter/50/
+    data prec/1.e-8/
 !
     call infniv(ifm, niv)
 !
 !
 !       METHODE DE LA SECANTE
 !       =====================
-    young = mater(1,1)
-    poisso = mater(2,1)
-    pa = mater(8,2)
-    n = mater(1,2)
-    piso = 1.5d0*mater(21,2)
+    young = mater(1, 1)
+    poisso = mater(2, 1)
+    pa = mater(8, 2)
+    n = mater(1, 2)
+    piso = 1.5d0*mater(21, 2)
     piso = zero
     iret = 0
     theta = un
 !
 !
 !---> DETERMINATION DU TERME COEF = K0 x DEPS_VOLUMIQUE
-    if (mater(17,1) .eq. un) then
+    if (mater(17, 1) .eq. un) then
 !
         trdeps = zero
         do i = 1, ndi
-            trdeps = trdeps + deps(i)
+            trdeps = trdeps+deps(i)
         end do
 !
 !        COEF = YOUNG*D13 /(UN-N)/(UN-DEUX*POISSO) * TRDEPS
-        coef = young*d13 /(un-deux*poisso) * trdeps
+        coef = young*d13/(un-deux*poisso)*trdeps
 !
-    else if (mater(17,1).eq.deux) then
+    else if (mater(17, 1) .eq. deux) then
 !
-        e1 = mater(1,1)
-        e2 = mater(2,1)
-        e3 = mater(3,1)
-        nu12 = mater(4,1)
-        nu13 = mater(5,1)
-        nu23 = mater(6,1)
-        nu21 = mater(13,1)
-        nu31 = mater(14,1)
-        nu32 = mater(15,1)
-        delta= mater(16,1)
+        e1 = mater(1, 1)
+        e2 = mater(2, 1)
+        e3 = mater(3, 1)
+        nu12 = mater(4, 1)
+        nu13 = mater(5, 1)
+        nu23 = mater(6, 1)
+        nu21 = mater(13, 1)
+        nu31 = mater(14, 1)
+        nu32 = mater(15, 1)
+        delta = mater(16, 1)
 !
-        c11 = (un - nu23*nu32)*e1/delta
-        c12 = (nu21 + nu31*nu23)*e1/delta
-        c13 = (nu31 + nu21*nu32)*e1/delta
-        c22 = (un - nu13*nu31)*e2/delta
-        c23 = (nu32 + nu31*nu12)*e2/delta
-        c33 = (un - nu21*nu12)*e3/delta
+        c11 = (un-nu23*nu32)*e1/delta
+        c12 = (nu21+nu31*nu23)*e1/delta
+        c13 = (nu31+nu21*nu32)*e1/delta
+        c22 = (un-nu13*nu31)*e2/delta
+        c23 = (nu32+nu31*nu12)*e2/delta
+        c33 = (un-nu21*nu12)*e3/delta
 !
-        coef = (c11+c12+c13)*deps(1) + (c12+c22+c23)*deps(2) + (c13+ c23+c33)*deps(3)
-        coef = d13*coef /(un-n)
+        coef = (c11+c12+c13)*deps(1)+(c12+c22+c23)*deps(2)+(c13+c23+c33)*deps(3)
+        coef = d13*coef/(un-n)
 !
-    endif
+    end if
 !
     i1d = zero
     do i = 1, ndi
-        i1d = i1d + d13*sigd(i)
+        i1d = i1d+d13*sigd(i)
     end do
 !
-    i1d =i1d -piso
+    i1d = i1d-piso
 !
     if (i1d .ge. zero) then
-        i1d = 1.d-6 * pa
+        i1d = 1.d-6*pa
         call utmess('A', 'COMPOR1_18')
-    endif
+    end if
     if (trdeps .eq. zero) then
         i1f = i1d
         goto 999
-    endif
+    end if
 !
 ! ---> COEF < 0 => ON VERIFIE UN CRITERE APPROXIMATIF
 !                  D'EXISTENCE DE LA SOLUTION AVEC P+ < P- < 0
@@ -147,10 +147,10 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
 !
     tract = .false.
     if (n .eq. zero) then
-        i1f = i1d + coef
+        i1f = i1d+coef
         if (i1f .ge. zero) tract = .true.
         goto 999
-    endif
+    end if
 !
 !
 !
@@ -163,23 +163,23 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
         x(1) = i1d
         y(1) = coef*(x(1)/pa)**n
         icmpt = 1
- 45     continue
+45      continue
         x(2) = alpha*x(1)
-        y(2) = coef*(x(2)/pa)**n - x(2) + i1d
+        y(2) = coef*(x(2)/pa)**n-x(2)+i1d
 !
         if (y(2) .le. zero .and. icmpt .le. 20) then
             x(1) = x(2)
             y(1) = coef*(x(1)/pa)**n
-            icmpt= icmpt+1
+            icmpt = icmpt+1
             goto 45
         else if (y(2) .le. zero) then
             if (debug) then
                 call utmess('A', 'COMPOR1_17')
-            endif
+            end if
             x(4) = zero
             theta = zero
             goto 50
-        endif
+        end if
 !
 !
 ! ---> COEF > 0 => LA SOLUTION EXISTE NECESSAIREMENT ET P- < P+ < 0
@@ -194,7 +194,7 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
 ! ---> COEF = 0 => LA SOLUTION N'EXISTE PAS :: ERREUR FATALE!
     else
         call utmess('F', 'COMPOR1_12')
-    endif
+    end if
 !
 !
 !
@@ -205,14 +205,14 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
     y(3) = y(1)
     x(4) = x(2)
     y(4) = y(2)
-    icmpt= 0
+    icmpt = 0
 !
- 41 continue
+41  continue
     do i = 1, niter
 !
         if (abs(y(4)/pa) .lt. prec) goto 50
         call zeroco(x, y)
-        y(4) = coef*(x(4)/pa)**n - x(4) + i1d
+        y(4) = coef*(x(4)/pa)**n-x(4)+i1d
 !
     end do
 !
@@ -220,21 +220,21 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
     if (icmpt .lt. 5) goto 41
 !
     if (debug) then
-        write (ifm,*) 'MODELE DE HUJEUX : ATTENTION DANS HUJCI1'
-        write (ifm,*) 'NON CONVERGENCE A LA PRECISION DEMANDEE',prec
-        write (ifm,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE',niter
-        write (ifm,*) 'VALEUR DE F ACTUELLE', y(4),' ET P=',x(4)
-        write (ifm,*) 'AUGMENTER ITER_INTE_MAXI'
-    endif
+        write (ifm, *) 'MODELE DE HUJEUX : ATTENTION DANS HUJCI1'
+        write (ifm, *) 'NON CONVERGENCE A LA PRECISION DEMANDEE', prec
+        write (ifm, *) 'AU BOUT DU NOMBRE D ITERATION DEMANDE', niter
+        write (ifm, *) 'VALEUR DE F ACTUELLE', y(4), ' ET P=', x(4)
+        write (ifm, *) 'AUGMENTER ITER_INTE_MAXI'
+    end if
 !
-    if ((y(4)/(coef*(i1d/pa)**n + i1d)) .gt. 1.d-2) then
+    if ((y(4)/(coef*(i1d/pa)**n+i1d)) .gt. 1.d-2) then
         x(4) = zero
         theta = zero
-    endif
+    end if
 !
- 50 continue
+50  continue
 !
-    i1f = (un-theta)*(coef*(i1d/pa)**n + i1d) + theta*x(4) +piso
+    i1f = (un-theta)*(coef*(i1d/pa)**n+i1d)+theta*x(4)+piso
     if (i1f .ge. piso) tract = .true.
 !
 999 continue

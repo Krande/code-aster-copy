@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ subroutine te0362(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf, jdfde=idf, jgano=jgn)
-    ndim = ndim + 1
+    ndim = ndim+1
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCOORPG', 'E', icopg)
@@ -58,7 +58,7 @@ subroutine te0362(option, nomte)
         call r8inir(ndim, 0.d0, x, 1)
         do n = 1, nno
             do i = 1, ndim
-                x(i) = x(i) + zr(igeom+ndim*(n-1)+i-1)*zr(ivf+(g-1)* nno+n-1)
+                x(i) = x(i)+zr(igeom+ndim*(n-1)+i-1)*zr(ivf+(g-1)*nno+n-1)
             end do
         end do
 !
@@ -67,10 +67,10 @@ subroutine te0362(option, nomte)
             call subaco(nno, zr(idf+(g-1)*(ndim-1)*nno), zr(igeom), cova)
             call sumetr(cova, metr, jac)
             wg = wref*jac
-        else if (ndim.eq.2) then
-            call dfdm1d(nno, wref, zr(idf+(g-1)*(ndim-1)*nno), zr(igeom), dfdx,&
+        else if (ndim .eq. 2) then
+            call dfdm1d(nno, wref, zr(idf+(g-1)*(ndim-1)*nno), zr(igeom), dfdx, &
                         cour, wg, cosa, sina)
-        endif
+        end if
 !
         do i = 1, ndim
             zr(icopg+(ndim+1)*(g-1)+i-1) = x(i)

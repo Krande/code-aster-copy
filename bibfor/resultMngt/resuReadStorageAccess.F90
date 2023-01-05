@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuReadStorageAccess(storeAccess,&
-                                 storeIndxNb, storeIndx  ,&
-                                 storeTimeNb, storeTime  ,&
-                                 storeEpsi  , storeCrit)
+subroutine resuReadStorageAccess(storeAccess, &
+                                 storeIndxNb, storeIndx, &
+                                 storeTimeNb, storeTime, &
+                                 storeEpsi, storeCrit)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,11 +34,11 @@ implicit none
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
 !
-integer, intent(out) :: storeIndxNb, storeTimeNb
-character(len=10), intent(out) :: storeAccess
-character(len=19), intent(out) :: storeIndx, storeTime
-real(kind=8), intent(out) :: storeEpsi
-character(len=8), intent(out) :: storeCrit
+    integer, intent(out) :: storeIndxNb, storeTimeNb
+    character(len=10), intent(out) :: storeAccess
+    character(len=19), intent(out) :: storeIndx, storeTime
+    real(kind=8), intent(out) :: storeEpsi
+    character(len=8), intent(out) :: storeCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,71 +68,71 @@ character(len=8), intent(out) :: storeCrit
     storeAccess = ' '
     storeIndxNb = 0
     storeTimeNb = 0
-    storeIndx   = ' '
-    storeTime   = ' '
-    storeEpsi   = 0.d0
-    storeCrit   = ' '
+    storeIndx = ' '
+    storeTime = ' '
+    storeEpsi = 0.d0
+    storeCrit = ' '
     call getvtx(' ', 'TOUT_ORDRE', scal=answer, nbret=nbOcc)
     if (nbOcc .ne. 0) then
         storeAccess = 'TOUT_ORDRE'
         goto 99
-    endif
+    end if
 !
     call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=storeIndxNb)
     if (storeIndxNb .ne. 0) then
         storeAccess = 'NUME_ORDRE'
-        storeIndx   = '&&OP0150'
+        storeIndx = '&&OP0150'
         storeIndxNb = -storeIndxNb
-        call wkvect(storeIndx//'.VALE', 'V V I', storeIndxNb, vi = vStoreIndx)
+        call wkvect(storeIndx//'.VALE', 'V V I', storeIndxNb, vi=vStoreIndx)
         call getvis(' ', 'NUME_ORDRE', nbval=storeIndxNb, vect=vStoreIndx, nbret=nbOcc)
         call uttrii(vStoreIndx, storeIndxNb)
         goto 99
-    endif
+    end if
 !
     call getvid(' ', 'LIST_ORDRE', scal=storeIndx, nbret=storeIndxNb)
     if (storeIndxNb .ne. 0) then
         storeAccess = 'LIST_ORDRE'
-        call jeveuo(storeIndx//'.VALE', 'L', vi = vStoreIndx)
+        call jeveuo(storeIndx//'.VALE', 'L', vi=vStoreIndx)
         call jelira(storeIndx//'.VALE', 'LONMAX', storeIndxNb)
         call uttrii(vStoreIndx, storeIndxNb)
         goto 99
-    endif
+    end if
 !
-    call getvr8(' ', 'INST', nbval=0, nbret = storeTimeNb)
+    call getvr8(' ', 'INST', nbval=0, nbret=storeTimeNb)
     if (storeTimeNb .ne. 0) then
         storeAccess = 'INST'
-        storeTime   = '&&OP0150'
-        storeTimeNb = - storeTimeNb
-        call wkvect(storeTime//'.VALE', 'V V R', storeTimeNb, vr = vStoreTime)
+        storeTime = '&&OP0150'
+        storeTimeNb = -storeTimeNb
+        call wkvect(storeTime//'.VALE', 'V V R', storeTimeNb, vr=vStoreTime)
         call getvr8(' ', 'INST', nbval=storeTimeNb, vect=vStoreTime, nbret=nbOcc)
         goto 99
-    endif
+    end if
 !
     call getvid(' ', 'LIST_INST', scal=storeTime, nbret=storeTimeNb)
     if (storeTimeNb .ne. 0) then
         storeAccess = 'LIST_INST'
         call jelira(storeTime//'.VALE', 'LONMAX', storeTimeNb)
         goto 99
-    endif
+    end if
 !
     call getvr8(' ', 'FREQ', nbval=0, nbret=storeTimeNb)
     if (storeTimeNb .ne. 0) then
         storeAccess = 'FREQ'
-        storeTime   = '&&OP0150'
+        storeTime = '&&OP0150'
         storeTimeNb = -storeTimeNb
-        call wkvect(storeTime//'.VALE', 'V V R', storeTimeNb, vr = vStoreTime)
+        call wkvect(storeTime//'.VALE', 'V V R', storeTimeNb, vr=vStoreTime)
         call getvr8(' ', 'FREQ', nbval=storeTimeNb, vect=vStoreTime, nbret=nbOcc)
         goto 99
-    endif
+    end if
 !
     call getvid(' ', 'LIST_FREQ', scal=storeTime, nbret=storeTimeNb)
     if (storeTimeNb .ne. 0) then
         storeAccess = 'LIST_FREQ'
         call jelira(storeTime//'.VALE', 'LONMAX', storeTimeNb)
         goto 99
-    endif
+    end if
 !
- 99 continue
+99  continue
 !
 ! - To select real
 !
@@ -141,6 +141,6 @@ character(len=8), intent(out) :: storeCrit
         ASSERT(nbOcc .eq. 1)
         call getvr8(' ', 'PRECISION', scal=storeEpsi, nbret=nbOcc)
         ASSERT(nbOcc .eq. 1)
-    endif
+    end if
 !
 end subroutine

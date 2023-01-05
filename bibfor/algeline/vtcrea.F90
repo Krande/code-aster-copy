@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
         type = 'F'
     else
         type = typc(1:1)
-    endif
+    end if
 !
 !     --- RECOPIE DE L'OBJET .REFE MODELE :
     refe(1:19) = champ
@@ -83,9 +83,9 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
     desc(1:19) = champ
     call wkvect(desc, classe//' V I', 2, lchamp)
     call jeecra(desc, 'DOCU', ibid, 'CHNO')
-    nu= crefe(2)(1:14)
+    nu = crefe(2) (1:14)
     call dismoi('NUM_GD_SI', nu, 'NUME_DDL', repi=nugdsi)
-    zi(lchamp-1+1)=nugdsi
+    zi(lchamp-1+1) = nugdsi
     zi(lchamp-1+2) = 1
 !
 !     -- CREATION DE L'OBJET .VALE :

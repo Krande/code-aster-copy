@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -70,14 +70,14 @@ subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
 ! --- INITIALISATIONS
 !
     if (typent .eq. 'NOEU') then
-        nbent = zi(jsuno+isurf) - zi(jsuno+isurf-1)
+        nbent = zi(jsuno+isurf)-zi(jsuno+isurf-1)
         jdec = zi(jsuno+isurf-1)
-    else if (typent.eq.'MAIL') then
-        nbent = zi(jsuma+isurf) - zi(jsuma+isurf-1)
+    else if (typent .eq. 'MAIL') then
+        nbent = zi(jsuma+isurf)-zi(jsuma+isurf-1)
         jdec = zi(jsuma+isurf-1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,16 +30,16 @@ subroutine pcdiag(n, icpl, icpc, icpd)
     k1 = 1
     do i = 1, n
         k2 = icpl(i)
-        icpd(i) = k1 - 1
+        icpd(i) = k1-1
         do k = k1, k2
             if (icpc(k) .lt. i) then
                 icpd(i) = k
             else
                 goto 20
-            endif
+            end if
         end do
- 20     continue
-        k1 = k2 + 1
+20      continue
+        k1 = k2+1
     end do
 !
 end subroutine

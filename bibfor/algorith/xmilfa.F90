@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
-                  nnose, it, ainter, ip1, ip2,&
-                  pm2, typma, pinref, pmiref, ksi,&
+subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
+                  nnose, it, ainter, ip1, ip2, &
+                  pm2, typma, pinref, pmiref, ksi, &
                   milfa, pintt, pmitt)
     implicit none
 !
@@ -67,34 +67,34 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     aster_logical :: courbe
 !
 ! --------------------------------------------------------------------
-    zxain=xxmmvd('ZXAIN')
+    zxain = xxmmvd('ZXAIN')
 !   IDENTIFICATION DES NOEUDS DE LA FACE QUADRANGLE DANS LE SOUS TETRA
     call conare(typma, ar, nbar)
-    a1=nint(ainter(zxain*(ip1-1)+1))
-    a2=nint(ainter(zxain*(ip2-1)+1))
+    a1 = nint(ainter(zxain*(ip1-1)+1))
+    a2 = nint(ainter(zxain*(ip2-1)+1))
 !
-    a=0
-    b=0
-    d=0
+    a = 0
+    b = 0
+    d = 0
 !
     do i = 1, 2
         do j = 1, 2
-            if (ar(a1,i) .eq. ar(a2,j)) then
-                a=ar(a1,3-i)
-                b=ar(a2,3-j)
-            endif
+            if (ar(a1, i) .eq. ar(a2, j)) then
+                a = ar(a1, 3-i)
+                b = ar(a2, 3-j)
+            end if
         end do
     end do
     do i = 1, nbar
         do j = 1, 2
-            if ((ar(i,j).eq.a) .and. (ar(i,3-j).eq.b)) d=ar(i,3)
+            if ((ar(i, j) .eq. a) .and. (ar(i, 3-j) .eq. b)) d = ar(i, 3)
         end do
     end do
-    ASSERT((a*b*d).gt.0)
+    ASSERT((a*b*d) .gt. 0)
 !   INDICE CORRECPONDANT DANS L ELEMENT PARENT
-    ia=cnset(nnose*(it-1)+a)
-    ib=cnset(nnose*(it-1)+b)
-    id=cnset(nnose*(it-1)+d)
+    ia = cnset(nnose*(it-1)+a)
+    ib = cnset(nnose*(it-1)+b)
+    id = cnset(nnose*(it-1)+d)
 !
     call xelrex(elrefp, nno, xref)
 !
@@ -106,9 +106,9 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ib-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     ptb, ff)
-    endif
+    end if
 !
     if (id .lt. 2000) then
         do j = 1, ndime
@@ -118,9 +118,9 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         do j = 1, ndim
             newpt(j) = pmitt(ndim*(id-2001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     ptd, ff)
-    endif
+    end if
 !
     if (ia .lt. 1000) then
         do j = 1, ndime
@@ -130,19 +130,19 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
         do j = 1, ndim
             newpt(j) = pintt(ndim*(ia-1001)+j)
         end do
-        call reeref(elrefp, nno, geom, newpt, ndim,&
+        call reeref(elrefp, nno, geom, newpt, ndim, &
                     pta, ff)
-    endif
+    end if
 !
     do i = 1, ndime
-        ksi(i)=(pinref(ndime*(ip1-1)+i)+ptb(i))/2.d0
+        ksi(i) = (pinref(ndime*(ip1-1)+i)+ptb(i))/2.d0
     end do
 ! --- TEST SI LSN COURBE :
-    courbe=.false.
+    courbe = .false.
     do i = 1, ndime
         t1(i) = ksi(i)-pinref(ndime*(ip1-1)+i)
-        t2(i) = -1.5d0*pinref(&
-                ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+ 2.d0*pmiref(ndime*(pm2-1)+i)
+        t2(i) = -1.5d0*pinref( &
+                ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+2.d0*pmiref(ndime*(pm2-1)+i)
         t3(i) = pta(i)-pinref(ndime*(ip1-1)+i)
     end do
     call xnormv(ndime, t1, rbid)
@@ -162,17 +162,17 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !   EN DEUXIEME APPROXIMATION: ON CHOISIT LE MILIEU DES "MILIEUX" PM2 ET D
 !
         do i = 1, ndime
-            ksi(i)=(pmiref(ndime*(pm2-1)+i)+ptd(i))/2.d0
-        enddo
-    endif
+            ksi(i) = (pmiref(ndime*(pm2-1)+i)+ptd(i))/2.d0
+        end do
+    end if
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
 !
     do i = 1, ndime
         ASSERT(abs(ksi(i)) .le. 1.d0+1.d-12)
-        if (ksi(i) .gt. 1.d0) ksi(i) =1.d0
-        if (ksi(i) .lt. -1.d0) ksi(i) =-1.d0
-    enddo
-    call reerel(elrefp, nno, ndim, geom, ksi,&
+        if (ksi(i) .gt. 1.d0) ksi(i) = 1.d0
+        if (ksi(i) .lt. -1.d0) ksi(i) = -1.d0
+    end do
+    call reerel(elrefp, nno, ndim, geom, ksi, &
                 milfa)
 end subroutine

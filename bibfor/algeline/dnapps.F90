@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dnapps(n, kev, np, shiftr, shifti,&
-                  v, ldv, h, ldh, resid,&
+subroutine dnapps(n, kev, np, shiftr, shifti, &
+                  v, ldv, h, ldh, resid, &
                   q, ldq, workl, workd)
 !
 !     SUBROUTINE ARPACK PREPARANT LE RESTART VIA UN QR IMPLICITE POUR
@@ -189,7 +189,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 #include "blas/dscal.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !
@@ -211,7 +211,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     %------------%
 !
     real(kind=8) :: one, zero, deux
-    parameter (one = 1.0d+0, zero = 0.0d+0, deux = 2.0d+0)
+    parameter(one=1.0d+0, zero=0.0d+0, deux=2.0d+0)
 !
 !     %------------------------%
 !     | LOCAL SCALARS & ARRAYS |
@@ -234,7 +234,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     | DATA STATMENTS |
 !     %----------------%
 !
-    data first / .true. /
+    data first/.true./
 !
 !     %-----------------------%
 !     | EXECUTABLE STATEMENTS |
@@ -253,10 +253,10 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !
         unfl = r8miem()
 ! DUE RO CRS512         OVFL = ONE / UNFL
-        ulp = r8prem() *0.5d0 * isbaem()
-        smlnum = unfl*( n / ulp )
+        ulp = r8prem()*0.5d0*isbaem()
+        smlnum = unfl*(n/ulp)
         first = .false.
-    endif
+    end if
 !
 !     %-------------------------------%
 !     | INITIALIZE TIMING STATISTICS  |
@@ -264,7 +264,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     %-------------------------------%
 !
     msglvl = mnapps
-    kplusp = kev + np
+    kplusp = kev+np
 !
 !     %--------------------------------------------%
 !     | INITIALIZE Q TO THE IDENTITY TO ACCUMULATE |
@@ -273,7 +273,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !
 ! DUE TO CRP_102 CALL DLASET ('ALL', KPLUSP, KPLUSP, ZERO,
 ! ONE, Q, LDQ)
-    call dlaset('A', kplusp, kplusp, zero, one,&
+    call dlaset('A', kplusp, kplusp, zero, one, &
                 q, ldq)
 !
 !     %----------------------------------------------%
@@ -297,7 +297,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
             call ivout(logfil, 1, [jj], ndigit, '_NAPPS: SHIFT NUMBER.')
             call dvout(logfil, 1, [sigmar], ndigit, '_NAPPS: THE REAL PART OF THE SHIFT ')
             call dvout(logfil, 1, [sigmai], ndigit, '_NAPPS: THE IMAGINARY PART OF THE SHIFT ')
-        endif
+        end if
 !
 !        %-------------------------------------------------%
 !        | THE FOLLOWING SET OF CONDITIONALS IS NECESSARY  |
@@ -314,14 +314,14 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !
             cconj = .false.
             goto 110
-        else if (jj .lt. np .and. abs( sigmai ) .gt. zero) then
+        else if (jj .lt. np .and. abs(sigmai) .gt. zero) then
 !
 !           %------------------------------------%
 !           | START OF A COMPLEX CONJUGATE PAIR. |
 !           %------------------------------------%
 !
             cconj = .true.
-        else if (jj .eq. np .and. abs( sigmai ) .gt. zero) then
+        else if (jj .eq. np .and. abs(sigmai) .gt. zero) then
 !
 !           %----------------------------------------------%
 !           | THE LAST SHIFT HAS A NONZERO IMAGINARY PART. |
@@ -330,11 +330,11 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !           | WERE APPLIED.                                |
 !           %----------------------------------------------%
 !
-            kev = kev + 1
+            kev = kev+1
             goto 110
-        endif
+        end if
         istart = 1
- 20     continue
+20      continue
 !
 !        %--------------------------------------------------%
 !        | IF SIGMAI = 0 THEN                               |
@@ -355,28 +355,28 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !           | REFERENCE: LAPACK SUBROUTINE DLAHQR    |
 !           %----------------------------------------%
 !
-            tst1 = abs( h( i, i ) ) + abs( h( i+1, i+1 ) )
+            tst1 = abs(h(i, i))+abs(h(i+1, i+1))
             if (tst1 .eq. zero) tst1 = dlanhs('1', kplusp-jj+1, h, ldh, workl)
-            if (abs( h( i+1,i ) ) .le. max( ulp*tst1, smlnum )) then
+            if (abs(h(i+1, i)) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
-                    call ivout(logfil, 1, [i], ndigit,&
+                    call ivout(logfil, 1, [i], ndigit, &
                                '_NAPPS: MATRIX SPLITTING AT ROW/COLUMN NO.')
-                    call ivout(logfil, 1, [jj], ndigit,&
+                    call ivout(logfil, 1, [jj], ndigit, &
                                '_NAPPS: MATRIX SPLITTING WITH SHIFT NUMBER.')
                     call dvout(logfil, 1, h(i+1, i), ndigit, '_NAPPS: OFF DIAGONAL ELEMENT.')
-                endif
+                end if
                 iend = i
-                h(i+1,i) = zero
+                h(i+1, i) = zero
                 goto 40
-            endif
+            end if
         end do
         iend = kplusp
- 40     continue
+40      continue
 !
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, [istart], ndigit, '_NAPPS: START OF CURRENT BLOCK ')
             call ivout(logfil, 1, [iend], ndigit, '_NAPPS: END OF CURRENT BLOCK ')
-        endif
+        end if
 !
 !        %------------------------------------------------%
 !        | NO REASON TO APPLY A SHIFT TO BLOCK OF ORDER 1 |
@@ -389,17 +389,17 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !        | COMPLEX CONJUGATE PAIR OF SHIFTS ON A 2 BY 2 MATRIX. |
 !        %------------------------------------------------------%
 !
-        if (istart + 1 .eq. iend .and. abs( sigmai ) .gt. zero) goto 100
+        if (istart+1 .eq. iend .and. abs(sigmai) .gt. zero) goto 100
 !
-        h11 = h(istart,istart)
-        h21 = h(istart+1,istart)
-        if (abs( sigmai ) .le. zero) then
+        h11 = h(istart, istart)
+        h21 = h(istart+1, istart)
+        if (abs(sigmai) .le. zero) then
 !
 !           %---------------------------------------------%
 !           | REAL-VALUED SHIFT ==> APPLY SINGLE SHIFT QR |
 !           %---------------------------------------------%
 !
-            f = h11 - sigmar
+            f = h11-sigmar
             g = h21
 !
             do i = istart, iend-1
@@ -421,19 +421,19 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
                         r = -r
                         c = -c
                         s = -s
-                    endif
-                    h(i,i-1) = r
-                    h(i+1,i-1) = zero
-                endif
+                    end if
+                    h(i, i-1) = r
+                    h(i+1, i-1) = zero
+                end if
 !
 !              %---------------------------------------------%
 !              | APPLY ROTATION TO THE LEFT OF H,  H <- G'*H |
 !              %---------------------------------------------%
 !
                 do j = i, kplusp
-                    t = c*h(i,j) + s*h(i+1,j)
-                    h(i+1,j) = -s*h(i,j) + c*h(i+1,j)
-                    h(i,j) = t
+                    t = c*h(i, j)+s*h(i+1, j)
+                    h(i+1, j) = -s*h(i, j)+c*h(i+1, j)
+                    h(i, j) = t
                 end do
 !
 !              %---------------------------------------------%
@@ -441,19 +441,19 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !              %---------------------------------------------%
 !
                 do j = 1, min(i+2, iend)
-                    t = c*h(j,i) + s*h(j,i+1)
-                    h(j,i+1) = -s*h(j,i) + c*h(j,i+1)
-                    h(j,i) = t
+                    t = c*h(j, i)+s*h(j, i+1)
+                    h(j, i+1) = -s*h(j, i)+c*h(j, i+1)
+                    h(j, i) = t
                 end do
 !
 !              %----------------------------------------------------%
 !              | ACCUMULATE THE ROTATION IN THE MATRIX Q,  Q <- Q*G |
 !              %----------------------------------------------------%
 !
-                do j = 1, min( i+jj, kplusp )
-                    t = c*q(j,i) + s*q(j,i+1)
-                    q(j,i+1) = - s*q(j,i) + c*q(j,i+1)
-                    q(j,i) = t
+                do j = 1, min(i+jj, kplusp)
+                    t = c*q(j, i)+s*q(j, i+1)
+                    q(j, i+1) = -s*q(j, i)+c*q(j, i+1)
+                    q(j, i) = t
                 end do
 !
 !              %---------------------------%
@@ -461,9 +461,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !              %---------------------------%
 !
                 if (i .lt. iend-1) then
-                    f = h(i+1,i)
-                    g = h(i+2,i)
-                endif
+                    f = h(i+1, i)
+                    g = h(i+2, i)
+                end if
             end do
 !
 !           %-----------------------------------%
@@ -476,23 +476,23 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !           | COMPLEX CONJUGATE SHIFTS ==> APPLY DOUBLE SHIFT QR |
 !           %----------------------------------------------------%
 !
-            h12 = h(istart,istart+1)
-            h22 = h(istart+1,istart+1)
-            h32 = h(istart+2,istart+1)
+            h12 = h(istart, istart+1)
+            h22 = h(istart+1, istart+1)
+            h32 = h(istart+2, istart+1)
 !
 !           %---------------------------------------------------------%
 !           | COMPUTE 1ST COLUMN OF (H - SHIFT*I)*(H - CONJ(SHIFT)*I) |
 !           %---------------------------------------------------------%
 !
             s = deux*sigmar
-            t = dlapy2 ( sigmar, sigmai )
-            u(1) = ( h11 * (h11 - s) + t * t ) / h21 + h12
-            u(2) = h11 + h22 - s
+            t = dlapy2(sigmar, sigmai)
+            u(1) = (h11*(h11-s)+t*t)/h21+h12
+            u(2) = h11+h22-s
             u(3) = h32
 !
             do i = istart, iend-1
 !
-                nr = min ( 3, iend-i+1 )
+                nr = min(3, iend-i+1)
 !
 !              %-----------------------------------------------------%
 !              | CONSTRUCT HOUSEHOLDER REFLECTOR G TO ZERO OUT U(1). |
@@ -502,26 +502,26 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
                 call ar_dlarfg(nr, u(1), u(2), 1, tau)
 !
                 if (i .gt. istart) then
-                    h(i,i-1) = u(1)
-                    h(i+1,i-1) = zero
-                    if (i .lt. iend-1) h(i+2,i-1) = zero
-                endif
+                    h(i, i-1) = u(1)
+                    h(i+1, i-1) = zero
+                    if (i .lt. iend-1) h(i+2, i-1) = zero
+                end if
                 u(1) = one
 !
 !              %--------------------------------------%
 !              | APPLY THE REFLECTOR TO THE LEFT OF H |
 !              %--------------------------------------%
 ! DUE TO CRP_102 CALL DLARF ('LEFT', NR, KPLUSP-I+1, U, 1, TAU,
-                call dlarf('L', nr, kplusp-i+1, u, 1,&
+                call dlarf('L', nr, kplusp-i+1, u, 1, &
                            tau, h(i, i), ldh, workl)
 !
 !              %---------------------------------------%
 !              | APPLY THE REFLECTOR TO THE RIGHT OF H |
 !              %---------------------------------------%
 !
-                ir = min ( i+3, iend )
+                ir = min(i+3, iend)
 ! DUE TO CRP_102 CALL DLARF ('RIGHT', IR, NR, U, 1, TAU,
-                call dlarf('R', ir, nr, u, 1,&
+                call dlarf('R', ir, nr, u, 1, &
                            tau, h(1, i), ldh, workl)
 !
 !              %-----------------------------------------------------%
@@ -529,7 +529,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !              %-----------------------------------------------------%
 !
 ! DUE TO CRP_102 CALL DLARF ('RIGHT', KPLUSP, NR, U, 1, TAU,
-                call dlarf('R', kplusp, nr, u, 1,&
+                call dlarf('R', kplusp, nr, u, 1, &
                            tau, q(1, i), ldq, workl)
 !
 !              %----------------------------%
@@ -537,10 +537,10 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !              %----------------------------%
 !
                 if (i .lt. iend-1) then
-                    u(1) = h(i+1,i)
-                    u(2) = h(i+2,i)
-                    if (i .lt. iend-2) u(3) = h(i+3,i)
-                endif
+                    u(1) = h(i+1, i)
+                    u(2) = h(i+2, i)
+                    if (i .lt. iend-2) u(3) = h(i+3, i)
+                end if
 !
             end do
 !
@@ -549,7 +549,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !           | TO THE CURRENT BLOCK                       |
 !           %--------------------------------------------%
 !
-        endif
+        end if
 !
 100     continue
 !
@@ -557,7 +557,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !        | APPLY THE SAME SHIFT TO THE NEXT BLOCK IF THERE IS ANY. |
 !        %---------------------------------------------------------%
 !
-        istart = iend + 1
+        istart = iend+1
         if (iend .lt. kplusp) goto 20
 !
 !        %---------------------------------------------%
@@ -573,11 +573,11 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     %--------------------------------------------------%
 !
     do j = 1, kev
-        if (h(j+1,j) .lt. zero) then
+        if (h(j+1, j) .lt. zero) then
             call dscal(kplusp-j+1, -one, h(j+1, j), ldh)
             call dscal(min(j+2, kplusp), -one, h(1, j+1), 1)
             call dscal(min(j+np+1, kplusp), -one, q(1, j+1), 1)
-        endif
+        end if
     end do
 !
     do i = 1, kev
@@ -588,9 +588,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !        | REFERENCE: LAPACK SUBROUTINE DLAHQR        |
 !        %--------------------------------------------%
 !
-        tst1 = abs( h( i, i ) ) + abs( h( i+1, i+1 ) )
-        if (tst1 .eq. zero) tst1 = dlanhs( '1', kev, h, ldh, workl )
-        if (h( i+1,i ) .le. max( ulp*tst1, smlnum )) h(i+1,i) = zero
+        tst1 = abs(h(i, i))+abs(h(i+1, i+1))
+        if (tst1 .eq. zero) tst1 = dlanhs('1', kev, h, ldh, workl)
+        if (h(i+1, i) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
     end do
 !
 !     %-------------------------------------------------%
@@ -601,9 +601,9 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 !     %-------------------------------------------------%
 !
-    if (h(kev+1,kev) .gt. zero) call dgemv('N', n, kplusp, one, v,&
-                                           ldv, q(1, kev+1), 1, zero, workd(n+1),&
-                                           1)
+    if (h(kev+1, kev) .gt. zero) call dgemv('N', n, kplusp, one, v, &
+                                            ldv, q(1, kev+1), 1, zero, workd(n+1), &
+                                            1)
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE COLUMN 1 TO KEV OF (V*Q) IN BACKWARD ORDER       |
@@ -611,8 +611,8 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     %----------------------------------------------------------%
 !
     do i = 1, kev
-        call dgemv('N', n, kplusp-i+1, one, v,&
-                   ldv, q(1, kev-i+1), 1, zero, workd,&
+        call dgemv('N', n, kplusp-i+1, one, v, &
+                   ldv, q(1, kev-i+1), 1, zero, workd, &
                    1)
         call dcopy(n, workd, 1, v(1, kplusp-i+1), 1)
     end do
@@ -621,14 +621,14 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 !     %-------------------------------------------------%
 !
-    call dlacpy('A', n, kev, v(1, kplusp-kev+1), ldv,&
+    call dlacpy('A', n, kev, v(1, kplusp-kev+1), ldv, &
                 v, ldv)
 !
 !     %--------------------------------------------------------------%
 !     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 !     %--------------------------------------------------------------%
 !
-    if (h(kev+1,kev) .gt. zero) call dcopy(n, workd(n+1), 1, v(1, kev+1), 1)
+    if (h(kev+1, kev) .gt. zero) call dcopy(n, workd(n+1), 1, v(1, kev+1), 1)
 !
 !     %-------------------------------------%
 !     | UPDATE THE RESIDUAL VECTOR:         |
@@ -639,18 +639,18 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     %-------------------------------------%
 !
     call dscal(n, q(kplusp, kev), resid, 1)
-    if (h(kev+1,kev) .gt. zero) call daxpy(n, h(kev+1, kev), v(1, kev+1), 1, resid,&
-                                           1)
+    if (h(kev+1, kev) .gt. zero) call daxpy(n, h(kev+1, kev), v(1, kev+1), 1, resid, &
+                                            1)
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, 1, q(kplusp, kev), ndigit, '_NAPPS: SIGMAK = (E_(KEV+P)T*Q)*E_(KEV)')
         call dvout(logfil, 1, h(kev+1, kev), ndigit, '_NAPPS: BETAK = E_(KEV+1)T*H*E_(KEV)')
         call ivout(logfil, 1, [kev], ndigit, '_NAPPS: ORDER OF THE FINAL HESSENBERG MATRIX ')
         if (msglvl .gt. 2) then
-            call dmout(logfil, kev, kev, h, ldh,&
+            call dmout(logfil, kev, kev, h, ldh, &
                        ndigit, '_NAPPS: UPDATED HESSENBERG MATRIX H FOR NEXT ITERATION')
-        endif
-    endif
+        end if
+    end if
 !
 9000 continue
 !

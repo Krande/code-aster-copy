@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
         call dismoi('NOM_NUME_DDL', mafrot, 'MATR_ASSE', repk=numedf)
         call detrsd('NUME_DDL', numedf)
         call detrsd('MATR_ASSE', mafrot)
-    endif
+    end if
 !
 ! --- PREPARATION COMBINAISON LINEAIRE MAFROT=MAF1-MAF2
 !
@@ -75,18 +75,18 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
     coefmu(1) = 1.0d0
     if (koper .eq. '+') then
         coefmu(2) = +1.0d0
-    else if (koper.eq.'-') then
+    else if (koper .eq. '-') then
         coefmu(2) = -1.0d0
     else
         ASSERT(.false.)
-    endif
+    end if
     typcst(1) = 'R'
     typcst(2) = 'R'
 !
 ! --- COMBINAISON LINEAIRE MAFROT=MAF1-MAF2
 !
     call mtdefs(mafrot, maf1, 'V', 'R')
-    call mtcmbl(2, typcst, coefmu, limat, mafrot,&
+    call mtcmbl(2, typcst, coefmu, limat, mafrot, &
                 ' ', numedd, 'ELIM=')
 !
 ! --- DESTRUCTION DES NUME_DDL

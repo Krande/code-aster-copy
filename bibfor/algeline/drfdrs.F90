@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine drfdrs(q, parame, h0, sigc, rgdev,&
+subroutine drfdrs(q, parame, h0, sigc, rgdev, &
                   duds, dfds)
 !
     implicit none
@@ -40,9 +40,9 @@ subroutine drfdrs(q, parame, h0, sigc, rgdev,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( un     =  1.0d0   )
+    parameter(un=1.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine inslri(nbx, nbn, lister, listei, valr,&
+subroutine inslri(nbx, nbn, lister, listei, valr, &
                   vali)
     implicit none
     integer :: nbx, nbn
@@ -49,17 +49,17 @@ subroutine inslri(nbx, nbn, lister, listei, valr,&
         lister(1) = valr
     else
         indx = nbn+1
-        do ii = nbn,1,-1
+        do ii = nbn, 1, -1
             if (valr .gt. lister(ii)) indx = ii
-        enddo
-        if (nbn .lt. nbx) nbn = nbn + 1
-        do ii = nbn,indx+1,-1
+        end do
+        if (nbn .lt. nbx) nbn = nbn+1
+        do ii = nbn, indx+1, -1
             listei(ii) = listei(ii-1)
             lister(ii) = lister(ii-1)
-        enddo
+        end do
         if (indx .le. nbx) then
             listei(indx) = vali
             lister(indx) = valr
-        endif
-    endif
+        end if
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,16 +60,16 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    k8b=' '
+    k8b = ' '
 !
 !     RECUPERATION DU MOT-CLE FACULTATIF GROUP_MA_ENRI
 !     (GOINOP PERMET DE DISTINGUER OP0041 et OP0010)
-    if (.not.goinop) then
-        call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_ENRI', 1,&
+    if (.not. goinop) then
+        call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_ENRI', 1, &
                     0, k8b, n)
     else
-        n=0
-    endif
+        n = 0
+    end if
 !
     if (n .eq. 0) then
 !
@@ -82,24 +82,24 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
         call wkvect(lisnoe, 'V V I  ', nbnoe, jnoe)
 !
         do i = 1, nbmae
-            zi(jmae-1+i)=i
+            zi(jmae-1+i) = i
         end do
 !
         do i = 1, nbnoe
-            zi(jnoe-1+i)=i
+            zi(jnoe-1+i) = i
         end do
 !
     else
 !
 !       GROUP_MA_ENRI EST RENSEIGNE
 !
-        call reliem(' ', noma, 'NU_MAILLE', ' ', 1,&
+        call reliem(' ', noma, 'NU_MAILLE', ' ', 1, &
                     1, 'GROUP_MA_ENRI', 'GROUP_MA', lismae, nbmae)
 !
-        call reliem(' ', noma, 'NU_NOEUD', ' ', 1,&
+        call reliem(' ', noma, 'NU_NOEUD', ' ', 1, &
                     1, 'GROUP_MA_ENRI', 'GROUP_MA', lisnoe, nbnoe)
 !
-    endif
+    end if
 !
 !     ENREGISTREMENT DANS LA BASE GLOBALE
     call jedupo(lismae, 'G', fiss(1:8)//'.GROUP_MA_ENRI', .false._1)

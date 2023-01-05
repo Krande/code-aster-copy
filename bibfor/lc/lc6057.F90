@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104,C1509
 
-subroutine lc6057(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
+subroutine lc6057(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, ndsde,&
+                  sigp, vip, typmod, icomp, ndsde, &
                   dsidep, codret)
-                  
+
     use Behaviour_type
     implicit none
 
@@ -35,44 +35,44 @@ subroutine lc6057(BEHinteg,&
 #include "asterfort/lcmfga.h"
 ! --------------------------------------------------------------------------------------------------
     type(Behaviour_Integ)        :: BEHinteg
-    character(len=*) ,intent(in) :: fami
-    integer          ,intent(in) :: kpg
-    integer          ,intent(in) :: ksp
-    integer          ,intent(in) :: ndim
-    integer          ,intent(in) :: imate
-    character(len=16),intent(in) :: compor(*)
-    real(kind=8)     ,intent(in) :: carcri(*)
-    real(kind=8)     ,intent(in) :: instam
-    real(kind=8)     ,intent(in) :: instap
-    integer          ,intent(in) :: neps
-    real(kind=8)     ,intent(in) :: epsm(neps)
-    real(kind=8)     ,intent(in) :: deps(neps)
-    integer          ,intent(in) :: nsig
-    real(kind=8)     ,intent(in) :: sigm(nsig)
-    integer          ,intent(in) :: nvi
-    real(kind=8)     ,intent(in) :: vim(nvi)
-    character(len=16),intent(in) :: option
-    real(kind=8)     ,intent(in) :: angmas(*)
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps)
+    real(kind=8), intent(in) :: deps(neps)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(nsig)
+    integer, intent(in) :: nvi
+    real(kind=8), intent(in) :: vim(nvi)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
-    character(len=8) ,intent(in) :: typmod(*)
-    integer          ,intent(in) :: icomp
-    integer          ,intent(in) :: ndsde
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: ndsde
     real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
-    integer          ,intent(out):: codret
+    integer, intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATION ENDO_FISS_EXP
 ! --------------------------------------------------------------------------------------------------
     aster_logical         :: lMatr, lSigm, lVari
-    real(kind=8)          :: sig(nsig),dsde(nsig,neps),vi(nvi)
+    real(kind=8)          :: sig(nsig), dsde(nsig, neps), vi(nvi)
 ! --------------------------------------------------------------------------------------------------
 
-    ASSERT (nsig .eq. neps)
-    ASSERT (neps*nsig.eq.ndsde)
+    ASSERT(nsig .eq. neps)
+    ASSERT(neps*nsig .eq. ndsde)
 
-    sig    = 0
-    vi     = 0
-    dsde   = 0
+    sig = 0
+    vi = 0
+    dsde = 0
 
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
@@ -82,12 +82,12 @@ subroutine lc6057(BEHinteg,&
 
     call lcesgv(fami, kpg, ksp, ndim, neps, typmod, option, imate, lcmfma, lcmfga, &
                 epsm, deps, vim, nint(carcri(1)), carcri(3), sig, &
-                vi, dsde,codret)
+                vi, dsde, codret)
 
-    if (codret.eq.0) then
-        if (lSigm) sigp   = sig
-        if (lVari) vip    = vi
+    if (codret .eq. 0) then
+        if (lSigm) sigp = sig
+        if (lVari) vip = vi
         if (lMatr) dsidep = dsde
-    endif
+    end if
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,12 +77,12 @@ subroutine crprol()
 !
     call jemarq()
 !
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
     motfac = 'PROL_RTZ'
     call getres(resu, typres, nomcmd)
     if (typres .ne. 'EVOL_THER') then
         call utmess('F', 'ALGORITH2_44')
-    endif
+    end if
 !
 ! --- RECUPERATION DES DONNEES UTILISATEUR :
 !     ------------------------------------
@@ -91,9 +91,9 @@ subroutine crprol()
     call getvid(motfac, 'TABLE', iocc=1, scal=table, nbret=ibid)
     call getvtx(motfac, 'PROL_DROITE', iocc=1, scal=pdroit, nbret=ibid)
     call getvtx(motfac, 'PROL_GAUCHE', iocc=1, scal=pgauch, nbret=ibid)
-    call getvr8(motfac, 'ORIGINE', iocc=1, nbval=3, vect=orig,&
+    call getvr8(motfac, 'ORIGINE', iocc=1, nbval=3, vect=orig, &
                 nbret=ibid)
-    call getvr8(motfac, 'AXE_Z', iocc=1, nbval=3, vect=axez,&
+    call getvr8(motfac, 'AXE_Z', iocc=1, nbval=3, vect=axez, &
                 nbret=ibid)
 !
     call dismoi('NB_NO_MAILLA', nommaf, 'MAILLAGE', repi=nbnof)
@@ -103,7 +103,7 @@ subroutine crprol()
     if (ndimf .ne. 3) then
         valk(1) = nommaf
         call utmess('F', 'ALGORITH12_68', sk=valk(1))
-    endif
+    end if
     call jeveuo(nommaf//'.COORDO    .VALE', 'L', axyzmf)
 !
     call tbexp2(table, 'INST')
@@ -112,7 +112,7 @@ subroutine crprol()
     call normev(axez, xnormr)
 !
     knum = '&&RS1D3D.INSTANT'
-    call tbutnu(motfac, 1, knum, nbinst, table,&
+    call tbutnu(motfac, 1, knum, nbinst, table, &
                 prec, crit)
     call jeveuo(knum, 'L', jinst)
 !
@@ -137,8 +137,8 @@ subroutine crprol()
 ! ------ ON EXTRAIT LA SOUS-TABLE POUR L'INSTANT COURANT
 !
         dinst = zr(jinst+iord-1)
-        call tbextb(table, 'V', tabl2, 1, 'INST',&
-                    'EQ', [ibid], [dinst], [cbid], k8b,&
+        call tbextb(table, 'V', tabl2, 1, 'INST', &
+                    'EQ', [ibid], [dinst], [cbid], k8b, &
                     [prec], crit, iret)
         if (iret .eq. 10) then
             valk(1) = 'INST'
@@ -148,18 +148,18 @@ subroutine crprol()
             valk(1) = table
             valk(2) = 'INST'
             call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-        endif
+        end if
 !
 ! ------ ON RECUPERE LES COORCONNEES DES NOEUDS POUR L'INSTANT COURANT
 !
-        call tbexve(tabl2, 'COOR_X', tabcor, 'V', nbnoi,&
+        call tbexve(tabl2, 'COOR_X', tabcor, 'V', nbnoi, &
                     k8b)
         call jeveuo(tabcor, 'L', jtbcor)
         call wkvect(tabres, 'V V I', nbnoi, jtbres)
 !
 ! ------ ON RECUPERE LES VALEURS DE TEMPERATURE AUX NOEUDS
 !
-        call tbexve(tabl2, 'TEMP', tabval, 'V', nbval,&
+        call tbexve(tabl2, 'TEMP', tabval, 'V', nbval, &
                     k8b)
         call jeveuo(tabval, 'L', jcnsvl)
 !
@@ -168,29 +168,29 @@ subroutine crprol()
         rmax = 0.0d0
         rmin = 1.d0/r8prem()
         do inoi = 1, nbnoi
-            rval = zr(jtbcor - 1 + inoi)
-            rmax = max(rval,rmax)
-            rmin = min(rval,rmin)
+            rval = zr(jtbcor-1+inoi)
+            rmax = max(rval, rmax)
+            rmin = min(rval, rmin)
             if (rmin .ne. 0.0d0) then
                 call utmess('F', 'ALGORITH12_69')
-            endif
+            end if
         end do
 !
 ! ------ ON TRIE PAR ORDRE CROISSANT
 !
         call tbtri(nbnoi, zi(jtbres), tabchr=zr(jtbcor))
 !
-        prosca=ddot(3,orig,1,axez,1)
-        axer(1) = orig(1) - prosca*axez(1)
-        axer(2) = orig(2) - prosca*axez(2)
-        axer(3) = orig(3) - prosca*axez(3)
+        prosca = ddot(3, orig, 1, axez, 1)
+        axer(1) = orig(1)-prosca*axez(1)
+        axer(2) = orig(2)-prosca*axez(2)
+        axer(3) = orig(3)-prosca*axez(3)
         call normev(axer, xnormr)
-        rref=ddot(3,orig,1,axer,1)
-        rref = abs( rref )
+        rref = ddot(3, orig, 1, axer, 1)
+        rref = abs(rref)
 !
         nomgd = 'TEMP_R'
         licmpr = 'TEMP'
-        call cnscre(nommaf, nomgd, 1, licmpr, 'V',&
+        call cnscre(nommaf, nomgd, 1, licmpr, 'V', &
                     cnsinr)
         call jeveuo(cnsinr//'.CNSV', 'E', vr=cnsv)
         call jeveuo(cnsinr//'.CNSL', 'E', jcnsle)
@@ -198,22 +198,22 @@ subroutine crprol()
         indice = 0
         do inof = 1, nbnof
             zl(jcnsle-1+(inof-1)+1) = .false.
-            axet(1) = zr( axyzmf + 3*(inof-1) - 1 + 1 )
-            axet(2) = zr( axyzmf + 3*(inof-1) - 1 + 2 )
-            axet(3) = zr( axyzmf + 3*(inof-1) - 1 + 3 )
-            prosca=ddot(3,axet,1,axez,1)
-            axer(1) = axet(1) - prosca*axez(1)
-            axer(2) = axet(2) - prosca*axez(2)
-            axer(3) = axet(3) - prosca*axez(3)
+            axet(1) = zr(axyzmf+3*(inof-1)-1+1)
+            axet(2) = zr(axyzmf+3*(inof-1)-1+2)
+            axet(3) = zr(axyzmf+3*(inof-1)-1+3)
+            prosca = ddot(3, axet, 1, axez, 1)
+            axer(1) = axet(1)-prosca*axez(1)
+            axer(2) = axet(2)-prosca*axez(2)
+            axer(3) = axet(3)-prosca*axez(3)
             call normev(axer, xnormr)
-            rpro=ddot(3,axet,1,axer,1)
-            rval = rpro - rref
+            rpro = ddot(3, axet, 1, axer, 1)
+            rval = rpro-rref
             if (rval .lt. 0.0d0) then
-                indice = indice + 1
+                indice = indice+1
                 zr(jtbpdg-1+indice) = rval
                 zi(jtbnoe-1+indice) = inof
                 goto 3
-            endif
+            end if
             do inoi = 1, nbnoi
                 if (rval .le. zr(jtbcor-1+zi(jtbres-1+inoi))) then
                     imin = zi(jtbres-1+inoi-1)
@@ -221,21 +221,21 @@ subroutine crprol()
                     imax = zi(jtbres-1+inoi)
                     rmax = zr(jtbcor-1+imax)
                     goto 5
-                endif
+                end if
             end do
-            indice = indice + 1
+            indice = indice+1
             zr(jtbpdg-1+indice) = rval
             zi(jtbnoe-1+indice) = inof
             goto 3
-  5         continue
+5           continue
             if ((rmax-rmin) .eq. 0.0d0) then
                 call utmess('F', 'ALGORITH12_70')
-            endif
-            lambda = ( rval - rmin )/( rmax - rmin )
-            cnsv((inof-1)+1)=(1-lambda)*zr(jcnsvl-1+(imin-1)+1)&
-            + lambda*zr(jcnsvl-1+(imax-1)+1)
+            end if
+            lambda = (rval-rmin)/(rmax-rmin)
+            cnsv((inof-1)+1) = (1-lambda)*zr(jcnsvl-1+(imin-1)+1) &
+                               +lambda*zr(jcnsvl-1+(imax-1)+1)
             zl(jcnsle-1+(inof-1)+1) = .true.
-  3         continue
+3           continue
         end do
         do ordef = 1, indice
             ino = zi(jtbnoe-1+ordef)
@@ -245,7 +245,7 @@ subroutine crprol()
                     call jenuno(jexnum(nommaf//'.NOMNOE', ino), nom1)
                     valk(1) = nom1
                     call utmess('F', 'ALGORITH12_71', sk=valk(1))
-                else if (pgauch.eq.'CONSTANT') then
+                else if (pgauch .eq. 'CONSTANT') then
                     inomin = zi(jtbres)
                     cnsv((ino-1)+1) = zr(jcnsvl-1+(inomin-1)+1)
                     zl(jcnsle-1+(ino-1)+1) = .true.
@@ -254,21 +254,21 @@ subroutine crprol()
                     inomax = zi(jtbres+1)
                     rmin = zr(jtbcor-1+inomin)
                     rmax = zr(jtbcor-1+inomax)
-                    lambda = (rmin - rval)/(rmax - rval)
-                    cnsv((ino-1)+1) = (&
-                                             zr(&
-                                             jcnsvl-1+(inomin-1)+ 1)- zr(jcnsvl-1+(inomax-1)+1)*l&
-                                             &ambda&
-                                             )/(1-lambda&
+                    lambda = (rmin-rval)/(rmax-rval)
+                    cnsv((ino-1)+1) = ( &
+                                             zr( &
+                                             jcnsvl-1+(inomin-1)+1)-zr(jcnsvl-1+(inomax-1)+1)*l&
+                                             &ambda &
+                                             )/(1-lambda &
                                              )
                     zl(jcnsle-1+(ino-1)+1) = .true.
-                endif
+                end if
             else
                 if (pdroit .eq. 'EXCLU') then
                     call jenuno(jexnum(nommaf//'.NOMNOE', ino), nom1)
                     valk(1) = nom1
                     call utmess('F', 'ALGORITH12_72', sk=valk(1))
-                else if (pdroit.eq.'CONSTANT') then
+                else if (pdroit .eq. 'CONSTANT') then
                     inomax = zi(jtbres-1+nbnoi)
                     cnsv((ino-1)+1) = zr(jcnsvl-1+(inomax-1)+1)
                     zl(jcnsle-1+(ino-1)+1) = .true.
@@ -277,31 +277,31 @@ subroutine crprol()
                     inomax = zi(jtbres-1+nbnoi)
                     rmin = zr(jtbcor-1+inomin)
                     rmax = zr(jtbcor-1+inomax)
-                    lambda = (rmax - rmin)/(rval - rmin)
-                    cnsv((ino-1)+1) = (&
-                                             zr(&
-                                             jcnsvl-1+(inomax-1)+ 1)- zr(jcnsvl-1+(inomin-1)+1)*(&
-                                             &1-lambda&
-                                             )&
+                    lambda = (rmax-rmin)/(rval-rmin)
+                    cnsv((ino-1)+1) = ( &
+                                             zr( &
+                                             jcnsvl-1+(inomax-1)+1)-zr(jcnsvl-1+(inomin-1)+1)*(&
+                                             &1-lambda &
+                                             ) &
                                              )/lambda
                     zl(jcnsle-1+(ino-1)+1) = .true.
-                endif
-            endif
+                end if
+            end if
         end do
 !
-        call rsexch(' ', resu, 'TEMP', iord, cnoinr,&
+        call rsexch(' ', resu, 'TEMP', iord, cnoinr, &
                     ibid)
         if (ibid .ne. 100) then
             valk(1) = resu
             vali = iord
             call utmess('F', 'ALGORITH12_73', sk=valk(1), si=vali)
-        endif
-        call cnscno(cnsinr, ' ', 'NON', 'G', cnoinr,&
+        end if
+        call cnscno(cnsinr, ' ', 'NON', 'G', cnoinr, &
                     'F', ibid)
         call rsnoch(resu, 'TEMP', iord)
         call detrsd('CHAM_NO_S', cnsinr)
 !
-        call rsadpa(resu, 'E', 1, 'INST', iord,&
+        call rsadpa(resu, 'E', 1, 'INST', iord, &
                     0, sjv=iad, styp=k8b)
         zr(iad) = dinst
 !

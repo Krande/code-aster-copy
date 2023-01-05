@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
+subroutine eps2mc(nno, ndim, nbsig, npg, ipoids, &
                   ivf, idfde, xyz, depl, eps2)
 !.======================================================================
     implicit none
@@ -89,87 +89,87 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 !       -------------
 ! ----  CAS MASSIF 3D
 !       -------------
-        if (lteatt('DIM_TOPO_MAILLE','3')) then
+        if (lteatt('DIM_TOPO_MAILLE', '3')) then
 !
 ! ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
 !         ----------------------------------------------
-            call dfdm3d(nno, igau, ipoids, idfde, xyz,&
+            call dfdm3d(nno, igau, ipoids, idfde, xyz, &
                         jacob, dfdx, dfdy, dfdz)
 !
 ! ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 !         ------------------------------------
             do i = 1, nno
 !
-                dudx = dudx + dfdx(i)*depl((i-1)*ndim+1)
-                dudy = dudy + dfdy(i)*depl((i-1)*ndim+1)
-                dudz = dudz + dfdz(i)*depl((i-1)*ndim+1)
+                dudx = dudx+dfdx(i)*depl((i-1)*ndim+1)
+                dudy = dudy+dfdy(i)*depl((i-1)*ndim+1)
+                dudz = dudz+dfdz(i)*depl((i-1)*ndim+1)
 !
-                dvdx = dvdx + dfdx(i)*depl((i-1)*ndim+2)
-                dvdy = dvdy + dfdy(i)*depl((i-1)*ndim+2)
-                dvdz = dvdz + dfdz(i)*depl((i-1)*ndim+2)
+                dvdx = dvdx+dfdx(i)*depl((i-1)*ndim+2)
+                dvdy = dvdy+dfdy(i)*depl((i-1)*ndim+2)
+                dvdz = dvdz+dfdz(i)*depl((i-1)*ndim+2)
 !
-                dwdx = dwdx + dfdx(i)*depl((i-1)*ndim+3)
-                dwdy = dwdy + dfdy(i)*depl((i-1)*ndim+3)
-                dwdz = dwdz + dfdz(i)*depl((i-1)*ndim+3)
+                dwdx = dwdx+dfdx(i)*depl((i-1)*ndim+3)
+                dwdy = dwdy+dfdy(i)*depl((i-1)*ndim+3)
+                dwdz = dwdz+dfdz(i)*depl((i-1)*ndim+3)
 !
             end do
 !
 ! ----    DEFORMATIONS DU SECOND ORDRE :
 !         ----------------------------
-            eps2(nbsig*(igau-1)+1) = undemi*(dudx*dudx + dvdx*dvdx + dwdx*dwdx)
-            eps2(nbsig*(igau-1)+2) = undemi*(dudy*dudy + dvdy*dvdy + dwdy*dwdy)
-            eps2(nbsig*(igau-1)+3) = undemi*(dudz*dudz + dvdz*dvdz + dwdz*dwdz)
+            eps2(nbsig*(igau-1)+1) = undemi*(dudx*dudx+dvdx*dvdx+dwdx*dwdx)
+            eps2(nbsig*(igau-1)+2) = undemi*(dudy*dudy+dvdy*dvdy+dwdy*dwdy)
+            eps2(nbsig*(igau-1)+3) = undemi*(dudz*dudz+dvdz*dvdz+dwdz*dwdz)
 !
-            eps2(nbsig*(igau-1)+4) = undemi*(dudx*dudy + dvdx*dvdy + dwdx*dwdy)
-            eps2(nbsig*(igau-1)+5) = undemi*(dudx*dudz + dvdx*dvdz + dwdx*dwdz)
-            eps2(nbsig*(igau-1)+6) = undemi*(dudy*dudz + dvdy*dvdz + dwdy*dwdz)
+            eps2(nbsig*(igau-1)+4) = undemi*(dudx*dudy+dvdx*dvdy+dwdx*dwdy)
+            eps2(nbsig*(igau-1)+5) = undemi*(dudx*dudz+dvdx*dvdz+dwdx*dwdz)
+            eps2(nbsig*(igau-1)+6) = undemi*(dudy*dudz+dvdy*dvdz+dwdy*dwdz)
 !
 !       ------------------------------------------------------------
 ! ----  CAS MASSIF 2D CONTRAINTES PLANES, DEFORMATIONS PLANES ET AXI
 !       ------------------------------------------------------------
-            elseif (lteatt('C_PLAN','OUI').or. lteatt('D_PLAN',&
-        'OUI').or. lteatt('AXIS','OUI')) then
+        elseif (lteatt('C_PLAN', 'OUI') .or. lteatt('D_PLAN', &
+                                                    'OUI') .or. lteatt('AXIS', 'OUI')) then
 !
             k = (igau-1)*nno
 !
 ! ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
 !         ----------------------------------------------
-            call dfdm2d(nno, igau, ipoids, idfde, xyz,&
+            call dfdm2d(nno, igau, ipoids, idfde, xyz, &
                         jacob, dfdx, dfdy)
 !
 ! ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 !         ------------------------------------
             do i = 1, nno
 !
-                dudx = dudx + dfdx(i)*depl((i-1)*ndim+1)
-                dudy = dudy + dfdy(i)*depl((i-1)*ndim+1)
+                dudx = dudx+dfdx(i)*depl((i-1)*ndim+1)
+                dudy = dudy+dfdy(i)*depl((i-1)*ndim+1)
 !
-                dvdx = dvdx + dfdx(i)*depl((i-1)*ndim+2)
-                dvdy = dvdy + dfdy(i)*depl((i-1)*ndim+2)
+                dvdx = dvdx+dfdx(i)*depl((i-1)*ndim+2)
+                dvdy = dvdy+dfdy(i)*depl((i-1)*ndim+2)
 !
-                if (lteatt('AXIS','OUI')) then
+                if (lteatt('AXIS', 'OUI')) then
                     idecno = 2*(i-1)
-                    rayon = rayon + zr(ivf+i+k-1)*xyz(1+idecno)
-                    dx = dx + zr(ivf+i+k-1)*depl(1+idecno)
-                endif
+                    rayon = rayon+zr(ivf+i+k-1)*xyz(1+idecno)
+                    dx = dx+zr(ivf+i+k-1)*depl(1+idecno)
+                end if
             end do
 !
 ! ----    DEFORMATIONS DU SECOND ORDRE :
 !         ----------------------------
-            eps2(nbsig*(igau-1)+1) = undemi*( dudx*dudx + dvdx*dvdx )
-            eps2(nbsig*(igau-1)+2) = undemi*( dudy*dudy + dvdy*dvdy )
+            eps2(nbsig*(igau-1)+1) = undemi*(dudx*dudx+dvdx*dvdx)
+            eps2(nbsig*(igau-1)+2) = undemi*(dudy*dudy+dvdy*dvdy)
             eps2(nbsig*(igau-1)+3) = zero
 !
-            if (lteatt('AXIS','OUI')) then
+            if (lteatt('AXIS', 'OUI')) then
                 eps2(nbsig*(igau-1)+3) = undemi*dx*dx/rayon/rayon
-            endif
+            end if
 !
-            eps2(nbsig*(igau-1)+4) = undemi*(dudx*dudy + dvdx*dvdy)
+            eps2(nbsig*(igau-1)+4) = undemi*(dudx*dudy+dvdx*dvdy)
         else
             call utmess('F', 'ELEMENTS_11')
-        endif
+        end if
 !
     end do
 !

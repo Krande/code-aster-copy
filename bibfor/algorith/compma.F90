@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,34 +53,34 @@ subroutine compma(mailla, nbgr, nomgr, nbto)
     integer :: i, ier, nb, nbto, num
 !-----------------------------------------------------------------------
     if (nbgr .eq. 0) then
-        nbto=0
+        nbto = 0
         goto 999
-    endif
+    end if
 !
 !-------RECUPERATION DES POINTEURS DE GROU_MA---------------------------
 !
     call jeexin(mailla//'.GROUPEMA', ier)
     if (ier .eq. 0) then
-        valk (1) = mailla
+        valk(1) = mailla
         call utmess('E', 'ALGORITH12_55', sk=valk(1))
-    endif
+    end if
 !
 !-------COMPTAGE DES MAILLES DEFINIS PAR GROUPES------------------------
 !
-    nbto=0
+    nbto = 0
 !
     do i = 1, nbgr
-        nomcou=nomgr(i)
+        nomcou = nomgr(i)
         call jenonu(jexnom(mailla//'.GROUPEMA', nomcou), num)
 !
         if (num .eq. 0) then
-            valk (1) = mailla
-            valk (2) = nomcou
+            valk(1) = mailla
+            valk(2) = nomcou
             call utmess('E', 'ALGORITH12_56', nk=2, valk=valk)
-        endif
+        end if
 !
         call jelira(jexnom(mailla//'.GROUPEMA', nomcou), 'LONUTI', nb)
-        nbto=nbto+nb
+        nbto = nbto+nb
 !
     end do
 !

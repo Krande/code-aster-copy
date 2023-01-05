@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utmavo(mail, kdim, lima, nlima, base,&
+subroutine utmavo(mail, kdim, lima, nlima, base, &
                   nomz, nbmavo, mailvo)
     implicit none
 #include "jeveux.h"
@@ -96,7 +96,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !        ON FORCE LE CALCUL DE LA CONNECTIVITE INVERSE
         call jedetr(ncninv)
         call cncinv(mail, mailvo, nbmavo, 'V', ncninv)
-    endif
+    end if
     call jeveuo(jexatr(ncninv, 'LONCUM'), 'L', adrvlc)
     call jeveuo(ncninv, 'L', acncin)
 !
@@ -113,63 +113,63 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
     nare = 0
     do i = 1, nlima
         numa = lima(i)
-        nbno = zi(p2+numa+1-1) - zi(p2+numa-1)
+        nbno = zi(p2+numa+1-1)-zi(p2+numa-1)
         iad = zi(p2+numa-1)
         nbmat = 0
         do ino = 1, nbno
             nuno = connex(1+iad-1+ino-1)
-            nbman = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
+            nbman = zi(adrvlc+nuno+1-1)-zi(adrvlc+nuno-1)
             adra = zi(adrvlc+nuno-1)
             do j = 1, nbman
                 ii = zi(acncin+adra-1+j-1)
 !              -- SI UN NOEUD EST ORPHELIN : II=0
 !                 (PAS D'OBJET JEVEUX DE LONG=0)
                 if (ii .eq. 0) then
-                    ASSERT(nbman.eq.1)
+                    ASSERT(nbman .eq. 1)
                     goto 120
-                endif
+                end if
                 if (nbmavo .eq. 0) then
-                    ima=ii
+                    ima = ii
                 else
-                    ima=mailvo(ii)
-                endif
+                    ima = mailvo(ii)
+                end if
                 if (ima .eq. numa) goto 120
                 nutyma = typmail(ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
                 if (type(1:4) .eq. 'HEXA') then
                     if (kdim .eq. '2D' .or. kdim .eq. '1D') goto 120
-                else if (type(1:4).eq.'PENT') then
+                else if (type(1:4) .eq. 'PENT') then
                     if (kdim .eq. '2D' .or. kdim .eq. '1D') goto 120
-                else if (type(1:4).eq.'PYRA') then
+                else if (type(1:4) .eq. 'PYRA') then
                     if (kdim .eq. '2D' .or. kdim .eq. '1D') goto 120
-                else if (type(1:4).eq.'TETR') then
+                else if (type(1:4) .eq. 'TETR') then
                     if (kdim .eq. '2D' .or. kdim .eq. '1D') goto 120
-                else if (type(1:4).eq.'QUAD') then
+                else if (type(1:4) .eq. 'QUAD') then
                     if (kdim .eq. '3D' .or. kdim .eq. '1D') goto 120
-                else if (type(1:4).eq.'TRIA') then
+                else if (type(1:4) .eq. 'TRIA') then
                     if (kdim .eq. '3D' .or. kdim .eq. '1D') goto 120
-                else if (type(1:3).eq.'SEG') then
+                else if (type(1:3) .eq. 'SEG') then
                     if (kdim .eq. '3D' .or. kdim .eq. '2D') goto 120
-                else if (type(1:3).eq.'POI') then
+                else if (type(1:3) .eq. 'POI') then
                     if (kdim .ne. '  ') goto 120
                 else
                     call utmess('F', 'PREPOST4_89', sk=type)
-                endif
+                end if
                 do k = 1, nbmat
                     if (jtr1(k) .eq. ima) goto 120
                 end do
-                nbmat = nbmat + 1
+                nbmat = nbmat+1
                 jtr1(nbmat) = ima
 120             continue
             end do
         end do
         trav2(i) = nbmat
-        nare = nare + max(nbmat,1)
+        nare = nare+max(nbmat, 1)
     end do
 !
 ! --- CREATION DE LA SD
 !
-    call jecrec(nom, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(nom, base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nlima)
     call jeecra(nom, 'LONT', nare)
 !
@@ -177,7 +177,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !
     do i = 1, nlima
         numa = lima(i)
-        nbno = zi(p2+numa+1-1) - zi(p2+numa-1)
+        nbno = zi(p2+numa+1-1)-zi(p2+numa-1)
         iad = zi(p2+numa-1)
         call jecroc(jexnum(nom, i))
         if (trav2(i) .eq. 0) then
@@ -188,55 +188,55 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
             call jeecra(jexnum(nom, i), 'LONMAX', trav2(i))
             call jeecra(jexnum(nom, i), 'LONUTI', trav2(i))
             call jeveuo(jexnum(nom, i), 'E', jmail)
-        endif
+        end if
 !
         nbmat = 0
         do ino = 1, nbno
             nuno = connex(1+iad-1+ino-1)
-            nbman = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
+            nbman = zi(adrvlc+nuno+1-1)-zi(adrvlc+nuno-1)
             adra = zi(adrvlc+nuno-1)
             do j = 1, nbman
                 ii = zi(acncin+adra-1+j-1)
                 if (ii .eq. 0) goto 220
 !
                 if (nbmavo .eq. 0) then
-                    ima=ii
+                    ima = ii
                 else
-                    ima=mailvo(ii)
-                endif
+                    ima = mailvo(ii)
+                end if
                 if (ima .eq. numa) goto 220
                 nutyma = typmail(ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
                 if (type(1:4) .eq. 'HEXA') then
                     if (kdim .eq. '2D') goto 220
                     if (kdim .eq. '1D') goto 220
-                else if (type(1:4).eq.'PENT') then
+                else if (type(1:4) .eq. 'PENT') then
                     if (kdim .eq. '2D') goto 220
                     if (kdim .eq. '1D') goto 220
-                else if (type(1:4).eq.'PYRA') then
+                else if (type(1:4) .eq. 'PYRA') then
                     if (kdim .eq. '2D') goto 220
                     if (kdim .eq. '1D') goto 220
-                else if (type(1:4).eq.'TETR') then
+                else if (type(1:4) .eq. 'TETR') then
                     if (kdim .eq. '2D') goto 220
                     if (kdim .eq. '1D') goto 220
-                else if (type(1:4).eq.'QUAD') then
+                else if (type(1:4) .eq. 'QUAD') then
                     if (kdim .eq. '3D') goto 220
                     if (kdim .eq. '1D') goto 220
-                else if (type(1:4).eq.'TRIA') then
+                else if (type(1:4) .eq. 'TRIA') then
                     if (kdim .eq. '3D') goto 220
                     if (kdim .eq. '1D') goto 220
-                else if (type(1:3).eq.'SEG') then
+                else if (type(1:3) .eq. 'SEG') then
                     if (kdim .eq. '3D') goto 220
                     if (kdim .eq. '2D') goto 220
-                else if (type(1:3).eq.'POI') then
+                else if (type(1:3) .eq. 'POI') then
                     if (kdim .ne. '  ') goto 220
                 else
                     call utmess('F', 'PREPOST4_89', sk=type)
-                endif
+                end if
                 do k = 1, nbmat
                     if (zi(jmail-1+k) .eq. ima) goto 220
                 end do
-                nbmat = nbmat + 1
+                nbmat = nbmat+1
                 zi(jmail-1+nbmat) = ima
 220             continue
             end do

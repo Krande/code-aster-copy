@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
+subroutine gcharm(lfchar, cartei, nomfct, newfct, time, &
                   carteo)
 !
 !
@@ -72,7 +72,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 !
 ! - VALEUR DE LA FONCTION
 !
-    call fointe('A', nomfct, 1, ['INST'], [time],&
+    call fointe('A', nomfct, 1, ['INST'], [time], &
                 const, iret)
     charge = cartei(1:8)
 !
@@ -84,39 +84,39 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 !
 ! - 1. CHARGEMENT 'SCALAIRE'
 !
-    if (.not.lfchar) then
+    if (.not. lfchar) then
         do in = 1, nbvale
-            zr(jvalou+in-1) = const*zr(jvalin +in-1)
+            zr(jvalou+in-1) = const*zr(jvalin+in-1)
         end do
 !
 ! - 2. CHARGEMENT 'FONCTION'
 !
     else
-        k=0
+        k = 0
         do in = 1, nbvale
-            if (zk8(jvalin+in-1)(1:7) .ne. '&FOZERO' .and. zk8(jvalin+in-1)(1:7) .ne.&
-                '       ' .and. zk8(jvalin+in-1)(1:6) .ne. 'GLOBAL') then
-                k=k+1
+            if (zk8(jvalin+in-1) (1:7) .ne. '&FOZERO' .and. zk8(jvalin+in-1) (1:7) .ne. &
+                '       ' .and. zk8(jvalin+in-1) (1:6) .ne. 'GLOBAL') then
+                k = k+1
                 call codent(k, 'D0', newfct(8:8))
                 call copisd('FONCTION', 'V', zk8(jvalin+in-1), newfct)
                 nch19 = newfct
                 call jeveuo(nch19//'.PROL', 'L', vk24=prol)
-                if (prol(1)(1:8) .ne. 'INTERPRE') then
+                if (prol(1) (1:8) .ne. 'INTERPRE') then
                     call jeveuo(nch19//'.VALE', 'E', vr=valf)
                     call jelira(nch19//'.VALE', 'LONMAX', nb)
-                    npt=nb/2
+                    npt = nb/2
                     do i = 1, npt
-                        valf(1+npt+i-1)=const*valf(1+npt+i-1)
+                        valf(1+npt+i-1) = const*valf(1+npt+i-1)
                     end do
                     zk8(jvalou+in-1) = newfct
                 else
                     call utmess('A', 'RUPTURE2_4', sk=charge)
                     call jedupo(cartei//'.VALE', 'V', carteo//'.VALE', .false._1)
                     goto 999
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 999 continue
     call jedema()

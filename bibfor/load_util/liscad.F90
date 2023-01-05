@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,25 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine liscad(phenom       , list_load      , i_load    , load_namez  , load_funcz,&
+subroutine liscad(phenom, list_load, i_load, load_namez, load_funcz, &
                   nb_info_typez, list_info_typez, info_typez, i_neum_laplz)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=4), intent(in) :: phenom
-character(len=19), intent(in) :: list_load
-integer, intent(in) :: i_load
-character(len=*), intent(in) :: load_namez
-character(len=*), intent(in) :: load_funcz
-integer, optional, intent(in) :: nb_info_typez
-character(len=*), optional, intent(in) :: list_info_typez(*)
-character(len=*), optional, intent(in) :: info_typez
-integer, optional, intent(in) :: i_neum_laplz
+    character(len=4), intent(in) :: phenom
+    character(len=19), intent(in) :: list_load
+    integer, intent(in) :: i_load
+    character(len=*), intent(in) :: load_namez
+    character(len=*), intent(in) :: load_funcz
+    integer, optional, intent(in) :: nb_info_typez
+    character(len=*), optional, intent(in) :: list_info_typez(*)
+    character(len=*), optional, intent(in) :: info_typez
+    integer, optional, intent(in) :: i_neum_laplz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,15 +72,15 @@ integer, optional, intent(in) :: i_neum_laplz
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
     lload_func = list_load(1:19)//'.FCHA'
-    call jeveuo(lload_name, 'E', vk24 = v_load_name)
-    call jeveuo(lload_info, 'E', vi   = v_load_info)
-    call jeveuo(lload_func, 'E', vk24 = v_load_func)
+    call jeveuo(lload_name, 'E', vk24=v_load_name)
+    call jeveuo(lload_info, 'E', vi=v_load_info)
+    call jeveuo(lload_func, 'E', vk24=v_load_func)
 !
 ! - Datastructure informations
 !
     nb_load = v_load_info(1)
-    ASSERT(i_load.gt.0)
-    ASSERT(i_load.le.nb_load)
+    ASSERT(i_load .gt. 0)
+    ASSERT(i_load .le. nb_load)
 !
 ! - Set basic properties of load
 !
@@ -93,17 +93,17 @@ integer, optional, intent(in) :: i_neum_laplz
         nb_info_type = nb_info_typez
     else
         nb_info_type = 1
-    endif
+    end if
 !
 ! - Set type of load
 !
-    if (phenom.eq.'MECA') then
+    if (phenom .eq. 'MECA') then
         do i_info_type = 1, nb_info_type
             if (present(info_typez)) then
                 info_type = info_typez
             else
                 info_type = list_info_typez(i_info_type)
-            endif
+            end if
             if (info_type .eq. 'CINE_CSTE') then
                 v_load_info(i_load+1) = -1
             else if (info_type .eq. 'CINE_FO') then
@@ -161,65 +161,65 @@ integer, optional, intent(in) :: i_neum_laplz
             else if (info_type .eq. 'NEUM_LAPL') then
                 v_load_info(2*nb_load+3) = i_neum_laplz
             else
-                write(6,*) 'LISCAD: ',info_type
+                write (6, *) 'LISCAD: ', info_type
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         end do
-    elseif (phenom.eq.'THER') then
+    elseif (phenom .eq. 'THER') then
         do i_info_type = 1, nb_info_type
             if (present(info_typez)) then
                 info_type = info_typez
             else
                 info_type = list_info_typez(i_info_type)
-            endif
+            end if
             if (info_type .eq. 'CINE_CSTE') then
                 v_load_info(i_load+1) = -1
-            else if (info_type.eq.'CINE_FO') then
+            else if (info_type .eq. 'CINE_FO') then
                 v_load_info(i_load+1) = -2
-            else if (info_type.eq.'CINE_FT') then
+            else if (info_type .eq. 'CINE_FT') then
                 v_load_info(i_load+1) = -3
-            else if (info_type(1:9).eq.'DIRI_CSTE') then
+            else if (info_type(1:9) .eq. 'DIRI_CSTE') then
                 v_load_info(i_load+1) = 1
-            else if (info_type(1:9).eq.'DIRI_FO') then
+            else if (info_type(1:9) .eq. 'DIRI_FO') then
                 v_load_info(i_load+1) = 2
-            else if (info_type(1:9).eq.'DIRI_FT') then
+            else if (info_type(1:9) .eq. 'DIRI_FT') then
                 v_load_info(i_load+1) = 3
-            else if (info_type.eq.'NEUM_CSTE') then
+            else if (info_type .eq. 'NEUM_CSTE') then
                 v_load_info(nb_load+i_load+1) = 1
-            else if (info_type.eq.'NEUM_FO') then
+            else if (info_type .eq. 'NEUM_FO') then
                 v_load_info(nb_load+i_load+1) = 2
-            else if (info_type.eq.'NEUM_FT') then
+            else if (info_type .eq. 'NEUM_FT') then
                 v_load_info(nb_load+i_load+1) = 3
             else
-                write(6,*) 'LISCAD: ',info_type
+                write (6, *) 'LISCAD: ', info_type
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         end do
-    elseif (phenom.eq.'ACOU') then
+    elseif (phenom .eq. 'ACOU') then
         do i_info_type = 1, nb_info_type
             if (present(info_typez)) then
                 info_type = info_typez
             else
                 info_type = list_info_typez(i_info_type)
-            endif
+            end if
             if (info_type .eq. 'CINE_CSTE') then
                 v_load_info(i_load+1) = -1
-            else if (info_type.eq.'CINE_FO') then
+            else if (info_type .eq. 'CINE_FO') then
                 v_load_info(i_load+1) = -2
-            else if (info_type.eq.'CINE_FT') then
+            else if (info_type .eq. 'CINE_FT') then
                 v_load_info(i_load+1) = -3
-            else if (info_type(1:9).eq.'DIRI_CSTE') then
+            else if (info_type(1:9) .eq. 'DIRI_CSTE') then
                 v_load_info(i_load+1) = 1
-            else if (info_type.eq.'NEUM_CSTE') then
+            else if (info_type .eq. 'NEUM_CSTE') then
                 v_load_info(nb_load+i_load+1) = 1
             else
-                write(6,*) 'LISCAD: ',info_type
+                write (6, *) 'LISCAD: ', info_type
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         end do
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jedema()
 end subroutine

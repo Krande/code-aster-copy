@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0121(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/pmfmats.h"
 #include "asterfort/lteatt.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ character(len=16), intent(in) :: option, nomte
     character(len=8), parameter :: paraName(nbPara) = (/'X', 'Y', 'Z'/)
     real(kind=8) :: paraVale(nbPara)
     integer, parameter :: nbResu = 2
-    character(len=16), parameter :: resuName(nbResu) = (/'AMOR_ALPHA',&
+    character(len=16), parameter :: resuName(nbResu) = (/'AMOR_ALPHA', &
                                                          'AMOR_BETA '/)
     real(kind=8) :: resuVale(nbResu)
     integer :: icodre(nbResu)
@@ -88,7 +88,7 @@ character(len=16), intent(in) :: option, nomte
         lRigiSyme = ASTER_TRUE
         jvRigi = itab(1)
         matrRigiSize = itab(2)
-    endif
+    end if
 
 ! - Get MASS_MECA
     call tecach('ONO', 'PMASSEL', 'L', iret, nval=tecachNbVal, itab=itab)
@@ -99,7 +99,7 @@ character(len=16), intent(in) :: option, nomte
         call tecach('OOO', 'PMASSEL', 'L', iret, nval=tecachNbVal, itab=itab)
         jvMass = itab(1)
         matrMassSize = itab(2)
-    endif
+    end if
 
 ! - Select output matrix (symmetric or not)
     lMatrResuSyme = ASTER_TRUE
@@ -111,19 +111,19 @@ character(len=16), intent(in) :: option, nomte
         lMatrResuSyme = ASTER_FALSE
         if (iret .ne. 0) then
             lMatrResuSyme = ASTER_TRUE
-            call tecach('ONO', 'PMATUUR', 'E', iret,&
+            call tecach('ONO', 'PMATUUR', 'E', iret, &
                         nval=tecachNbVal, itab=itab)
-        endif
-    endif
+        end if
+    end if
     jvResu = itab(1)
     matrResuSize = itab(2)
 
-    if (.not.lMatrRigi .and. .not. lMatrResuSyme) then
+    if (.not. lMatrRigi .and. .not. lMatrResuSyme) then
         call tecach('OOO', 'PRIGINS', 'L', iret, nval=tecachNbVal, itab=itab)
         lMatrRigi = ASTER_TRUE
         jvRigi = itab(1)
         matrRigiSize = itab(2)
-    endif
+    end if
 
 ! - Access to geometry
     call tecach('ONO', 'PGEOMER', 'L', iret, tecachNbVal, itab=itab)
@@ -136,28 +136,28 @@ character(len=16), intent(in) :: option, nomte
     do iGeomDime = 1, geomDime
         vxyz = 0.d0
         do iNode = 1, nbNode
-            vxyz = vxyz+zr(jvGeom + geomDime*(iNode-1)+iGeomDime -1)
-        enddo
+            vxyz = vxyz+zr(jvGeom+geomDime*(iNode-1)+iGeomDime-1)
+        end do
         paraVale(iGeomDime) = vxyz/nbNode
-    enddo
+    end do
 
 ! - Get material parameters
     call jevech('PMATERC', 'L', jvMate)
     jvMateCod = zi(jvMate)
     call rccoma(jvMateCod, 'ELAS', 1, elasKeyword, icodre(1))
-    if(.not.(elasKeyword .eq. 'ELAS'       .or. elasKeyword .eq. 'ELAS_COQMU' .or. &
-             elasKeyword .eq. 'ELAS_GLRC'  .or. elasKeyword .eq. 'ELAS_DHRC'  .or. &
-             elasKeyword .eq. 'ELAS_ORTH')) then
+    if (.not. (elasKeyword .eq. 'ELAS' .or. elasKeyword .eq. 'ELAS_COQMU' .or. &
+               elasKeyword .eq. 'ELAS_GLRC' .or. elasKeyword .eq. 'ELAS_DHRC' .or. &
+               elasKeyword .eq. 'ELAS_ORTH')) then
         call utmess('F', 'PLATE1_1', nk=2, valk=[option, elasKeyword])
-    endif
+    end if
 
 !   si l'élément est multifibre, il faut prendre le materiau "section"
 !   pour récupérer les coefficients de dilatation :
     call pmfmats(jvMateCod, materPMF)
     resuVale = 0.d0
-    call rcvalb('RIGI', 1, 1, '+', jvMateCod, materPMF, elasKeyword,&
-                nbParaEff, paraName, paraVale,&
-                nbResu, resuName, resuVale,&
+    call rcvalb('RIGI', 1, 1, '+', jvMateCod, materPMF, elasKeyword, &
+                nbParaEff, paraName, paraVale, &
+                nbResu, resuName, resuVale, &
                 icodre, 0, nan='NON')
     alpha = resuVale(1)
     beta = resuVale(2)
@@ -166,20 +166,20 @@ character(len=16), intent(in) :: option, nomte
     if (lMatrResuSyme) then
         if (lMatrMass) then
             ASSERT(matrMassSize .eq. matrResuSize)
-        endif
+        end if
     else
         nbddl = int(sqrt(dble(matrResuSize)))
         if (lMatrMass) then
             ASSERT(matrMassSize .eq. nbddl*(nbddl+1)/2)
-        endif
-    endif
+        end if
+    end if
     if (lMatrRigi) then
         ASSERT(matrRigiSize .eq. matrResuSize)
-    endif
+    end if
     ASSERT(jvRigi .ne. 0 .or. jvMass .ne. 0)
     if (jvMass .eq. 0 .and. .not. lAbso) then
         call utmess('F', "MATRICE0_12")
-    endif
+    end if
 
 ! - Compute
     if (lMatrResuSyme) then
@@ -190,10 +190,10 @@ character(len=16), intent(in) :: option, nomte
                 if (jvMass .eq. 0) then
                     zr(jvResu-1+i) = alpha*zr(jvRigi-1+i)
                 else
-                    zr(jvResu-1+i) = alpha*zr(jvRigi-1+i) + beta*zr(jvMass-1+i)
-                endif
-            endif
-        enddo
+                    zr(jvResu-1+i) = alpha*zr(jvRigi-1+i)+beta*zr(jvMass-1+i)
+                end if
+            end if
+        end do
     else
         ASSERT(jvRigi .ne. 0)
         ASSERT(nbddl .gt. 0)
@@ -204,14 +204,14 @@ character(len=16), intent(in) :: option, nomte
                     ks = (i-1)*i/2+j
                 else
                     ks = (j-1)*j/2+i
-                endif
+                end if
                 if (jvMass .eq. 0) then
                     zr(jvResu-1+kns+j) = alpha*zr(jvRigi-1+kns+j)
                 else
-                    zr(jvResu-1+kns+j) = alpha*zr(jvRigi-1+kns+j) + beta*zr(jvMass-1+ks)
-                endif
-            enddo
-        enddo
-    endif
+                    zr(jvResu-1+kns+j) = alpha*zr(jvRigi-1+kns+j)+beta*zr(jvMass-1+ks)
+                end if
+            end do
+        end do
+    end if
 !
 end subroutine

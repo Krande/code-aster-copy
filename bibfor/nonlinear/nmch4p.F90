@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 !
 subroutine nmch4p(veelem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmcha0.h"
 !
-character(len=19) :: veelem(*)
+    character(len=19) :: veelem(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,15 +43,15 @@ character(len=19) :: veelem(*)
     character(len=19) :: verefe
     character(len=19) :: veimpe
 !
-    data vefedo,vefsdo    /'&&NMCH4P.VEFEDO','&&NMCH4P.VEFSDO'/
-    data vedido,vefepi    /'&&NMCH4P.VEDIDO','&&NMCH4P.VEFEPI'/
-    data vedipi           /'&&NMCH4P.VEDIPI'/
-    data vebudi,vedidi    /'&&NMCH4P.VEBUDI','&&NMCH4P.VEDIDI'/
-    data veondp,velapl    /'&&NMCH4P.VEONDP','&&NMCH4P.VELAPL'/
-    data vediri           /'&&NMCH4P.VEDIRI'/
-    data vesstf           /'&&NMCH4P.VESSTF'/
-    data verefe           /'&&NMCH4P.VEREFE'/
-    data veimpe           /'&&NMCH4P.VEIMPE'/
+    data vefedo, vefsdo/'&&NMCH4P.VEFEDO', '&&NMCH4P.VEFSDO'/
+    data vedido, vefepi/'&&NMCH4P.VEDIDO', '&&NMCH4P.VEFEPI'/
+    data vedipi/'&&NMCH4P.VEDIPI'/
+    data vebudi, vedidi/'&&NMCH4P.VEBUDI', '&&NMCH4P.VEDIDI'/
+    data veondp, velapl/'&&NMCH4P.VEONDP', '&&NMCH4P.VELAPL'/
+    data vediri/'&&NMCH4P.VEDIRI'/
+    data vesstf/'&&NMCH4P.VESSTF'/
+    data verefe/'&&NMCH4P.VEREFE'/
+    data veimpe/'&&NMCH4P.VEIMPE'/
 !
 ! ----------------------------------------------------------------------
 !

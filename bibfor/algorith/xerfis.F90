@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 !
     if (ndime .eq. 3) then
 !
-       if (ninter.eq.3 .and. npts.eq.2) then
+        if (ninter .eq. 3 .and. npts .eq. 2) then
             call utmess('F', 'XFEM_64')
-       endif
+        end if
 !
 ! --- POUR LES TRIA6
 !
@@ -56,48 +56,48 @@ subroutine xerfis(ndime, ninter, npts, nptm)
             call utmess('F', 'XFEM_64')
 !
 !       NBRE DE POINT D'INTERSECTION INCORRECT (1) OU (2)
-        else if (ninter.gt.3) then
+        else if (ninter .gt. 3) then
             call utmess('F', 'XFEM_64')
 !
 !       NBRE PT INTER SOMMET > NBRE PT INTER TOTAL (1)
-        else if (npts.gt.ninter) then
+        else if (npts .gt. ninter) then
             call utmess('F', 'XFEM_64')
 !
 !       LA FISSURE INTERCEPTE DEUX NOEUDS SOMMETS UNIQUEMENT (1) OU (2)
-        else if (ninter.eq.2 .and. npts.eq.2) then
+        else if (ninter .eq. 2 .and. npts .eq. 2) then
             call utmess('F', 'XFEM_64')
 !
 !       LA FISSURE INTERCEPTE LES 3 ARETES STRICTEMENT (2)
-        else if (ninter.eq.3 .and. npts.eq.0) then
+        else if (ninter .eq. 3 .and. npts .eq. 0) then
             call utmess('F', 'XFEM_64')
 !
 !       (2)
-        else if (ninter.eq.3 .and. npts.eq.1 .and. nptm.ne.1) then
+        else if (ninter .eq. 3 .and. npts .eq. 1 .and. nptm .ne. 1) then
             call utmess('F', 'XFEM_64')
 !
 !       LA FISSURE JOUXTE UN BORD DE L'ELEMENT (1)
-        else if (ninter.eq.3 .and. npts.eq.2 .and. nptm.eq.1) then
+        else if (ninter .eq. 3 .and. npts .eq. 2 .and. nptm .eq. 1) then
             call utmess('F', 'XFEM_64')
 !
 !       (1) OU (2)
-        else if (ninter.eq.3 .and. npts.eq.2 .and. nptm.ne.1) then
+        else if (ninter .eq. 3 .and. npts .eq. 2 .and. nptm .ne. 1) then
             call utmess('F', 'XFEM_64')
 !
 !       (1) OU (2)
-        else if (ninter.eq.3 .and. npts.eq.3) then
+        else if (ninter .eq. 3 .and. npts .eq. 3) then
             call utmess('F', 'XFEM_64')
 !
-        endif
+        end if
 !
 ! --- POUR LES SEG3
 !
-    else if (ndime.eq.1) then
+    else if (ndime .eq. 1) then
 !
 !       NBRE DE POINT D'INTERSECTION INCORRECT (1) OU (2)
         if (ninter .ne. 1 .and. npts .ne. 0) then
             call utmess('F', 'XFEM_64')
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

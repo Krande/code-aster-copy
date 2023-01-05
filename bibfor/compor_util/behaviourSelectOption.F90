@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 subroutine behaviourSelectOption(option, l_matr, l_vect, l_inte, l_pred)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-character(len=16), intent(in) :: option
-aster_logical, intent(out) :: l_matr, l_vect, l_inte, l_pred
+    character(len=16), intent(in) :: option
+    aster_logical, intent(out) :: l_matr, l_vect, l_inte, l_pred
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,9 +41,9 @@ aster_logical, intent(out) :: l_matr, l_vect, l_inte, l_pred
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_vect = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG'
-    l_matr = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
+l_vect = option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG'
+    l_matr = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
     l_pred = option .eq. 'RIGI_MECA_TANG'
-    l_inte = option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
+    l_inte = option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA'
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmchap(valinc, solalg, meelem, veelem, veasse, measse)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmch1p.h"
 #include "asterfort/nmch2p.h"
@@ -28,9 +28,9 @@ implicit none
 #include "asterfort/nmch5p.h"
 #include "asterfort/nmch6p.h"
 !
-character(len=19) :: veelem(*), meelem(*)
-character(len=19) :: veasse(*), measse(*)
-character(len=19) :: solalg(*), valinc(*)
+    character(len=19) :: veelem(*), meelem(*)
+    character(len=19) :: veasse(*), measse(*)
+    character(len=19) :: solalg(*), valinc(*)
 !
 ! ----------------------------------------------------------------------
 !

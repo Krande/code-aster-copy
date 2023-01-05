@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,48 +66,48 @@ subroutine ops026()
         if (nu .eq. 0) then
 ! --------- L'ACCES AU FICHIER EST REALISE PAR NOM, IL FAUT VERIFIER
 !           SA PRESENCE DANS LA STRUCTURE DE DONNEES
-            unite = ulnomf ( fichie, kacc, ktyp )
+            unite = ulnomf(fichie, kacc, ktyp)
             if (unite .lt. 0) then
                 call utmess('A', 'UTILITAI3_33', sk=fichie)
                 goto 999
-            endif
-        endif
+            end if
+        end if
         unite = -unite
 !
-    elseif ( (action .eq. 'ASSOCIER') .or. (action .eq. 'RESERVER') ) then
+    elseif ((action .eq. 'ASSOCIER') .or. (action .eq. 'RESERVER')) then
 !               ---------------------
         if (nu .eq. 0 .and. nf .gt. 0) then
             sortie = .true.
             unite = ulnume()
             if (unite .lt. 0) then
                 call utmess('F', 'UTILITAI3_34')
-            endif
-        endif
+            end if
+        end if
 !
     else
 !
         call utmess('F', 'UTILITAI3_35', sk=action)
 !
-    endif
+    end if
 !
     if (ktyp .eq. 'A') then
         if (action .eq. 'RESERVER') then
             call ulopen(unite, fichie, knom, kacc, 'R')
         else
             call ulopen(unite, fichie, knom, kacc, 'O')
-        endif
+        end if
     else
-        call uldefi(unite, fichie, knom, ktyp, kacc,&
+        call uldefi(unite, fichie, knom, ktyp, kacc, &
                     'O')
-    endif
+    end if
 !
 !---- POUR DETRUIRE LE FICHIER SI CE DERNIER EST OUVERT EN NEW
 !
     if (ktyp .ne. 'A') then
         if (kacc .eq. 'N' .and. fichie .ne. ' ') then
             call rmfile(fichie, 1, iret)
-        endif
-    endif
+        end if
+    end if
 !
 !    if (sortie) call putvir(unite)
 !

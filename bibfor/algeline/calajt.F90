@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calajt(j1, j, diag, col, n,&
-                  itab, deb, tab, suiv, lt,&
+subroutine calajt(j1, j, diag, col, n, &
+                  itab, deb, tab, suiv, lt, &
                   ier)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -35,37 +35,37 @@ subroutine calajt(j1, j, diag, col, n,&
 !     OK N' EST PAS UN VOISIN INITIAL DE OJ ON L INSERE DANS
 !     LA LISTE DES VOISINS
         if (deb(oj) .eq. 0) then
-            itab = itab + 1
+            itab = itab+1
             if (itab .gt. lt) then
-                ier=1
+                ier = 1
                 goto 22
-            endif
+            end if
             deb(oj) = itab
             tab(itab) = ok
             suiv(itab) = 0
         else
             it = deb(oj)
-            pred =it
- 10         continue
+            pred = it
+10          continue
             if (it .gt. 0) then
                 if (tab(it) .eq. ok) goto 9
                 pred = it
                 it = suiv(it)
                 goto 10
-            endif
+            end if
 !     OK N'EST PAS DANS TAB
-            itab = itab + 1
+            itab = itab+1
             if (itab .gt. lt) then
-                ier=1
+                ier = 1
                 goto 22
-            endif
+            end if
             tab(itab) = ok
             suiv(pred) = itab
             suiv(itab) = 0
-  9         continue
-        endif
-  3     continue
+9           continue
+        end if
+3       continue
     end do
     ier = -itab
- 22 continue
+22  continue
 end subroutine

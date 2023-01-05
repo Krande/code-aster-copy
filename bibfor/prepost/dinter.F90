@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine dinter(coorc, ray, coor1, coor2, coorin)
     real(kind=8) :: xc, yc, x1, y1, x2, y2, xi, yi
     real(kind=8) :: det, val, m
     real(kind=8) :: prec
-    parameter( prec=10.d-6)
+    parameter(prec=10.d-6)
 !
     xc = coorc(1)
     yc = coorc(2)
@@ -54,49 +54,49 @@ subroutine dinter(coorc, ray, coor1, coor2, coorin)
     if ((y2-y1) .ge. prec .or. (y2-y1) .le. -prec) then
         m = (x2-x1)/(y2-y1)
         val = x1-xc-m*y1
-        det =(yc - m*val)**2 -(1.d0+m**2) *( val**2 + yc**2 - ray**2 )
+        det = (yc-m*val)**2-(1.d0+m**2)*(val**2+yc**2-ray**2)
         if (det .ge. (-prec)) then
             det = abs(det)
-            yi =( yc -m*val + sqrt(det) ) /(1.d0+m**2)
-            if (((yi-y1).le. prec.and.(yi-y2).ge.-prec) .or.&
-                ((yi-y1) .ge.-prec.and.(yi-y2).le.prec)) then
+            yi = (yc-m*val+sqrt(det))/(1.d0+m**2)
+            if (((yi-y1) .le. prec .and. (yi-y2) .ge. -prec) .or. &
+                ((yi-y1) .ge. -prec .and. (yi-y2) .le. prec)) then
                 coorin(2) = yi
-                coorin(1) = x1 + m *(yi-y1)
+                coorin(1) = x1+m*(yi-y1)
             else
-                yi =( yc -m*val - sqrt(det) ) /(1.d0+m**2)
-                if (((yi-y1).le. prec.and.(yi-y2).ge.-prec) .or.&
-                    ((yi-y1).ge.-prec.and.(yi-y2).le.prec)) then
+                yi = (yc-m*val-sqrt(det))/(1.d0+m**2)
+                if (((yi-y1) .le. prec .and. (yi-y2) .ge. -prec) .or. &
+                    ((yi-y1) .ge. -prec .and. (yi-y2) .le. prec)) then
                     coorin(2) = yi
-                    coorin(1) = x1 + m *(yi-y1)
+                    coorin(1) = x1+m*(yi-y1)
                 else
                     call utmess('F', 'PREPOST_21')
-                endif
-            endif
+                end if
+            end if
         else
 !          R1 = SQRT((XC-X1)**2 +(YC-Y1)**2 )
 !          R2 = SQRT((XC-X2)**2 +(YC-Y2)**2 )
-        endif
+        end if
     else
-        det = ray**2 -(y1-yc)**2
+        det = ray**2-(y1-yc)**2
         if (det .ge. (-prec)) then
             det = abs(det)
-            xi = xc + sqrt(det)
-            if (((xi-x1).le. prec.and.(xi-x2).ge.-prec) .or.&
-                ((xi-x1) .ge.-prec.and.(xi-x2).le.prec)) then
+            xi = xc+sqrt(det)
+            if (((xi-x1) .le. prec .and. (xi-x2) .ge. -prec) .or. &
+                ((xi-x1) .ge. -prec .and. (xi-x2) .le. prec)) then
                 coorin(1) = xi
                 coorin(2) = y1
             else
-                xi = xc - sqrt(det)
-                if (((xi-x1).le. prec.and.(xi-x2).ge.-prec) .or.&
-                    ((xi-x1).ge.-prec.and.(xi-x2).le.prec)) then
+                xi = xc-sqrt(det)
+                if (((xi-x1) .le. prec .and. (xi-x2) .ge. -prec) .or. &
+                    ((xi-x1) .ge. -prec .and. (xi-x2) .le. prec)) then
                     coorin(1) = xi
                     coorin(2) = y1
                 else
                     call utmess('F', 'PREPOST_21')
-                endif
-            endif
+                end if
+            end if
         else
             call utmess('F', 'PREPOST_21')
-        endif
-    endif
+        end if
+    end if
 end subroutine

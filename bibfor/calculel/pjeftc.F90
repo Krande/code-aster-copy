@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
-    ASSERT(base.eq.'V')
+    ASSERT(base .eq. 'V')
     corre1 = '&&PJEFTC.CORRES1'
     corre2 = '&&PJEFTC.CORRES2'
     corre3 = '&&PJEFTC.CORRES3'
@@ -69,7 +69,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
         vali(1) = nbgno2
         vali(2) = nbocc
         call utmess('F', 'COUPLAGEIFS_8', ni=2, vali=vali)
-    endif
+    end if
 !
 !     PROJECTION ENTRE GROUP_MAILLE ET GROUP_NOEUDS
 !     ---------------------------------------------
@@ -95,14 +95,14 @@ subroutine pjeftc(ma1, ma2, resuou, base)
                 call detrsd('CORRESP_2_MAILLA', corre2)
                 call copisd('CORRESP_2_MAILLA', 'V', corre3, corre2)
                 call detrsd('CORRESP_2_MAILLA', corre3)
-            endif
+            end if
             call detrsd('CORRESP_2_MAILLA', corre1)
         end do
         call copisd('CORRESP_2_MAILLA', 'G', corre2, resuou)
         call detrsd('CORRESP_2_MAILLA', corre2)
     else
         call utmess('F', 'COUPLAGEIFS_2')
-    endif
+    end if
 !
     call jedema()
 end subroutine

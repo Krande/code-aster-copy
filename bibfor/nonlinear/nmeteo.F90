@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmeteo(result, sddisc , ds_inout , force, nume_store,&
-                  time  , i_field, ds_print_)
+subroutine nmeteo(result, sddisc, ds_inout, force, nume_store, &
+                  time, i_field, ds_print_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -78,11 +78,11 @@ implicit none
         l_print = .true.
         if (present(ds_print_)) then
             l_print = ds_print_%l_print
-        endif
+        end if
 !
 ! ----- Is field should been active ?
 !
-        l_acti     = ds_inout%l_field_acti(i_field)
+        l_acti = ds_inout%l_field_acti(i_field)
 !
 ! ----- Name of field (type) in results datastructure
 !
@@ -90,20 +90,20 @@ implicit none
 !
 ! ----- Name of field in algorithm
 !
-        algo_name  = ds_inout%field(i_field)%algo_name
+        algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
 !
 ! ----- Store field
 !
         if (l_acti) then
             call exisd('CHAMP', field_algo, iret)
-            if (diincl(sddisc, field_type, force).and.(iret.eq.1)) then
+            if (diincl(sddisc, field_type, force) .and. (iret .eq. 1)) then
                 if (l_print) then
                     call utmess('I', 'ARCHIVAGE_6', sk=field_type, si=nume_store, sr=time)
-                endif
+                end if
                 call nmarcc(result, nume_store, field_type, field_algo)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

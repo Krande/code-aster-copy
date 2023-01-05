@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
+subroutine fglema(nbf, nbpoin, sig, defpla, temp, &
                   nommat, dom)
     implicit none
 #include "jeveux.h"
@@ -59,7 +59,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
     integer :: i, ide, idev, nbpar
     real(kind=8) :: rbid, zero
 !-----------------------------------------------------------------------
-    data zero /1.d-13/
+    data zero/1.d-13/
 !
     call jemarq()
 !
@@ -73,12 +73,12 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
     call rccome(nommat, pheno, icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'FATIGUE1_6')
-    endif
+    end if
     pheno = 'ELAS'
     call rccome(nommat, pheno, icodre(1))
     if (icodre(1) .eq. 1) then
         call utmess('F', 'FATIGUE1_7')
-    endif
+    end if
 !
 ! --- CALCUL DU DOMMAGE ELEMENTAIRE
 !
@@ -94,7 +94,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 ! --- RECUPERATION DE EXP_S
         nompar = '       '
         nomres(1) = 'EXP_S'
-        call rcvale(nommat, 'DOMMA_LEMAITRE', 0, nompar, [rbid],&
+        call rcvale(nommat, 'DOMMA_LEMAITRE', 0, nompar, [rbid], &
                     1, nomres(1), exps(1), icodre(1), 2)
 ! --- RECUPERATION DU VSEUIL AUX INSTANTS TI+1
         nbpar = 1
@@ -102,7 +102,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
         temmoi = temp(i)
         templu = temp(i+1)
         nomres(1) = 'EPSP_SEUIL'
-        call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [templu],&
+        call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [templu], &
                     1, nomres(1), vseuil(1), icodre(1), 2)
 !
         pmoi = defpla(i)
@@ -116,44 +116,44 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
             nomres(2) = 'NU'
             nomres(3) = 'S'
 !
-            call rcvale(nommat, 'ELAS', nbpar, nompar, [temmoi],&
+            call rcvale(nommat, 'ELAS', nbpar, nompar, [temmoi], &
                         2, nomres(1), valmoi(1), icodre(1), 2)
-            call rcvale(nommat, 'ELAS', nbpar, nompar, [templu],&
+            call rcvale(nommat, 'ELAS', nbpar, nompar, [templu], &
                         2, nomres(1), valplu(1), icodre(1), 2)
-            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [temmoi],&
+            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [temmoi], &
                         1, nomres(3), valmoi(3), icodre(3), 2)
-            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [templu],&
+            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [templu], &
                         1, nomres(3), valplu(3), icodre(3), 2)
 !
 ! --- CALCUL DE SIGMAH ET SIGMA EQUIVALENTE AUX INSTANTS TI ET TI+1
 !
             ide = (i-1)*nbf
-            sihmoi=(sig(ide+1)+sig(ide+2)+sig(ide+3))/trois
-            sihmoi=sihmoi**2
+            sihmoi = (sig(ide+1)+sig(ide+2)+sig(ide+3))/trois
+            sihmoi = sihmoi**2
             if (nbf .eq. 6) then
-                seqmoi=(zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)*&
-                zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux&
-                +zr(idev+ide+3)*zr(idev+ide+3)+zr(idev+ide+4)*&
-                zr(idev+ide+4)+zr(idev+ide+5)*zr(idev+ide+5)
-            else if (nbf.eq.4) then
-                seqmoi=(zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)*&
-                zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux&
-                +zr(idev+ide+3)*zr(idev+ide+3)
-            endif
+                seqmoi = (zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)* &
+                          zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux &
+                         +zr(idev+ide+3)*zr(idev+ide+3)+zr(idev+ide+4)* &
+                         zr(idev+ide+4)+zr(idev+ide+5)*zr(idev+ide+5)
+            else if (nbf .eq. 4) then
+                seqmoi = (zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)* &
+                          zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux &
+                         +zr(idev+ide+3)*zr(idev+ide+3)
+            end if
             seqmoi = trois*seqmoi
             ide = i*nbf
-            sihplu=(sig(ide+1)+sig(ide+2)+sig(ide+3))/trois
-            sihplu=sihplu**2
+            sihplu = (sig(ide+1)+sig(ide+2)+sig(ide+3))/trois
+            sihplu = sihplu**2
             if (nbf .eq. 6) then
-                seqplu=(zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)*&
-                zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux&
-                +zr(idev+ide+3)*zr(idev+ide+3)+zr(idev+ide+4)*&
-                zr(idev+ide+4)+zr(idev+ide+5)*zr(idev+ide+5)
-            else if (nbf.eq.4) then
-                seqplu=(zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)*&
-                zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux&
-                +zr(idev+ide+3)*zr(idev+ide+3)
-            endif
+                seqplu = (zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)* &
+                          zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux &
+                         +zr(idev+ide+3)*zr(idev+ide+3)+zr(idev+ide+4)* &
+                         zr(idev+ide+4)+zr(idev+ide+5)*zr(idev+ide+5)
+            else if (nbf .eq. 4) then
+                seqplu = (zr(idev+ide)*zr(idev+ide)+zr(idev+ide+1)* &
+                          zr(idev+ide+1)+zr(idev+ide+2)*zr(idev+ide+2))/deux &
+                         +zr(idev+ide+3)*zr(idev+ide+3)
+            end if
             seqplu = trois*seqplu
 !
             vmoi = ((un/trois)*(un+valmoi(2))*seqmoi)
@@ -169,27 +169,27 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 !
 !
             vale = (un/deux)*(vmoi+vplu)
-            vale = vale * (pplu-pmoi)
+            vale = vale*(pplu-pmoi)
 !
             expo = deux*exps(1)+un
             if (dom(i) .gt. un) then
                 vale = -expo*vale
             else
-                vale = (un-dom(i))**expo - expo*vale
-            endif
+                vale = (un-dom(i))**expo-expo*vale
+            end if
 !
             if (vale .gt. null) then
-                dom(i+1) = un - (vale)**(un/expo)
+                dom(i+1) = un-(vale)**(un/expo)
             else
-                dom(i+1) = un + (-vale)**(un/expo)
-            endif
+                dom(i+1) = un+(-vale)**(un/expo)
+            end if
         else
             dom(i+1) = null
-        endif
+        end if
 ! La valeur de l'endommagement est bornée à 1
         if (dom(i+1) .gt. un) then
             dom(i+1) = un
-        endif
+        end if
     end do
 !
 ! --- MENAGE

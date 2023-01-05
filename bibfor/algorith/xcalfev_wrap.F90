@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
-                        lsn, lst, geom, kappa, mu, ff, fk,&
+subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he, &
+                        lsn, lst, geom, kappa, mu, ff, fk, &
                         dfdi, dkdgl, face, elref, nnop2, &
                         ff2, dfdi2, kstop)
 !
@@ -36,15 +36,15 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
 #include "asterfort/is_enr_line.h"
 !
     integer :: ndim, nnop, stano(*)
-    real(kind=8) :: he, lsn(*), basloc(*), fk(27,3,3), lst(*)
+    real(kind=8) :: he, lsn(*), basloc(*), fk(27, 3, 3), lst(*)
     real(kind=8) :: kappa, ff(*), geom(*), mu
-    real(kind=8), optional :: dkdgl(27,3,3,3)
-    real(kind=8), optional :: dfdi(nnop,ndim)
+    real(kind=8), optional :: dkdgl(27, 3, 3, 3)
+    real(kind=8), optional :: dfdi(nnop, ndim)
     character(len=1), optional :: kstop
     character(len=4), optional :: face
     character(len=8), optional :: elref
     integer, optional :: nnop2
-    real(kind=8), optional :: ff2(:), dfdi2(:,:)
+    real(kind=8), optional :: ff2(:), dfdi2(:, :)
 !
 !
 !     BUT:  CALCUL DES FONCTIONS D'ENRICHISSEMENT <VECTORIEL> EN UN POINT DE GAUSS
@@ -76,98 +76,98 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
     integer :: ino, nnop_lin, j
     character(len=4) :: fac2
     character(len=8) :: elrefp, elrefp_lin
-    real(kind=8) :: ff_lin(8), dfdi_lin(8,3), xe_lin(ndim), xg(ndim)
+    real(kind=8) :: ff_lin(8), dfdi_lin(8, 3), xe_lin(ndim), xg(ndim)
 !----------------------------------------------------------------
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    PREPARATION DES ARGUMENTS DE XCALFEV
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    fac2=' '
-    if (present(face)) fac2=face
+    fac2 = ' '
+    if (present(face)) fac2 = face
 !
-    lstop=.true.
+    lstop = .true.
     if (present(kstop)) then
-      if (kstop.eq.'C') lstop=.false.
-    endif
+        if (kstop .eq. 'C') lstop = .false.
+    end if
 !
-    if (.not.present(dkdgl)) then
-      lderiv=.false.
+    if (.not. present(dkdgl)) then
+        lderiv = .false.
     else
-      lderiv=.true.
-      if (.not.present(dfdi)) then
-          call utmess('F', 'ELEMENTS6_6', sk='dfdi')
-      endif
-      dkdgl(:,:,:,:)=0.d0
-    endif
+        lderiv = .true.
+        if (.not. present(dfdi)) then
+            call utmess('F', 'ELEMENTS6_6', sk='dfdi')
+        end if
+        dkdgl(:, :, :, :) = 0.d0
+    end if
 !
-    elrefp=' '
+    elrefp = ' '
     if (present(elref)) then
-      elrefp=elref
-      if (iselli(elrefp)) goto 10
-      if (.not. lstop) goto 5
-      if (.not.present(nnop2)) then
-          call utmess('F', 'ELEMENTS6_6', sk='nnop2')
-      endif
-      if (.not.present(ff2)) then
-          call utmess('F', 'ELEMENTS6_6', sk='ff2')
-      endif
-      nnop_lin=nnop2
-      ff_lin(1:nnop_lin)=ff2(1:nnop_lin)
-      if (.not.lderiv) goto 10
-      if (.not.present(dfdi2)) then
-          call utmess('F', 'ELEMENTS6_6', sk='dfdi2')
-      endif
-      dfdi_lin(1:nnop_lin,1:ndim)= dfdi2(1:nnop_lin,1:ndim)
-    endif
+        elrefp = elref
+        if (iselli(elrefp)) goto 10
+        if (.not. lstop) goto 5
+        if (.not. present(nnop2)) then
+            call utmess('F', 'ELEMENTS6_6', sk='nnop2')
+        end if
+        if (.not. present(ff2)) then
+            call utmess('F', 'ELEMENTS6_6', sk='ff2')
+        end if
+        nnop_lin = nnop2
+        ff_lin(1:nnop_lin) = ff2(1:nnop_lin)
+        if (.not. lderiv) goto 10
+        if (.not. present(dfdi2)) then
+            call utmess('F', 'ELEMENTS6_6', sk='dfdi2')
+        end if
+        dfdi_lin(1:nnop_lin, 1:ndim) = dfdi2(1:nnop_lin, 1:ndim)
+    end if
 5   continue
-    if (elrefp.eq.' ') call elref1(elrefp)
+    if (elrefp .eq. ' ') call elref1(elrefp)
     if (iselli(elrefp)) goto 10
-    xg(:)=0.
-    do ino=1, nnop
-        do j=1, ndim
-          xg(j)=xg(j)+ff(ino)*geom(ndim*(ino-1)+j)
-        enddo
-    enddo
+    xg(:) = 0.
+    do ino = 1, nnop
+        do j = 1, ndim
+            xg(j) = xg(j)+ff(ino)*geom(ndim*(ino-1)+j)
+        end do
+    end do
     call xellin(elrefp, nnop, elrefp_lin, nnop_lin)
-    if (.not.lderiv) then
-        call reeref(elrefp_lin, nnop_lin, geom, xg, ndim, xe_lin,&
-                          ff_lin(1:nnop_lin))
+    if (.not. lderiv) then
+        call reeref(elrefp_lin, nnop_lin, geom, xg, ndim, xe_lin, &
+                    ff_lin(1:nnop_lin))
     else
-        call reeref(elrefp_lin, nnop_lin, geom, xg, ndim, xe_lin,&
-                          ff_lin(1:nnop_lin), dfdi=dfdi_lin(1:nnop_lin,1:ndim))
-    endif
+        call reeref(elrefp_lin, nnop_lin, geom, xg, ndim, xe_lin, &
+                    ff_lin(1:nnop_lin), dfdi=dfdi_lin(1:nnop_lin, 1:ndim))
+    end if
 !
 10  continue
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    APPEL A XCALFEV
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if (.not.iselli(elrefp).and.is_enr_line()) then
+    if (.not. iselli(elrefp) .and. is_enr_line()) then
 !
-       if (lderiv) then
-          call xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
-                    geom, kappa, mu, ff, fk,&
-                    dfdi, dkdgl, face=fac2, nnop_lin=nnop_lin,&
-                    ff_lin=ff_lin, dfdi_lin=dfdi_lin)
-       else
-          call xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
-                    geom, kappa, mu, ff, fk,&
-                    face=fac2, nnop_lin=nnop_lin,&
-                    ff_lin=ff_lin)
-        endif
+        if (lderiv) then
+            call xcalfev(elrefp, ndim, nnop, basloc, stano, he, &
+                         geom, kappa, mu, ff, fk, &
+                         dfdi, dkdgl, face=fac2, nnop_lin=nnop_lin, &
+                         ff_lin=ff_lin, dfdi_lin=dfdi_lin)
+        else
+            call xcalfev(elrefp, ndim, nnop, basloc, stano, he, &
+                         geom, kappa, mu, ff, fk, &
+                         face=fac2, nnop_lin=nnop_lin, &
+                         ff_lin=ff_lin)
+        end if
 !
-     else
+    else
 !
-       if (lderiv) then
-          call xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
-                    geom, kappa, mu, ff, fk,&
-                    dfdi, dkdgl, face=fac2)
-       else
-          call xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
-                    geom, kappa, mu, ff, fk,&
-                    face=fac2)
-       endif
+        if (lderiv) then
+            call xcalfev(elrefp, ndim, nnop, basloc, stano, he, &
+                         geom, kappa, mu, ff, fk, &
+                         dfdi, dkdgl, face=fac2)
+        else
+            call xcalfev(elrefp, ndim, nnop, basloc, stano, he, &
+                         geom, kappa, mu, ff, fk, &
+                         face=fac2)
+        end if
 !
-     endif
+    end if
 !
 end subroutine

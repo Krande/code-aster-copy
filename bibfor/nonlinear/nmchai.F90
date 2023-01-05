@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmchai(tychap, tyvarz, vali, tychap_out)
 !
-implicit none
+    implicit none
 !
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 !
-character(len=6), intent(in) :: tychap
-character(len=*), intent(in) :: tyvarz
-integer :: vali
-character(len=6), optional, intent(out) :: tychap_out
+    character(len=6), intent(in) :: tychap
+    character(len=*), intent(in) :: tyvarz
+    integer :: vali
+    character(len=6), optional, intent(out) :: tychap_out
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,89 +67,89 @@ character(len=6), optional, intent(out) :: tychap_out
 !
     character(len=8) :: tyvari
 !
-    data lmeelm /'MEDIRI','MEMASS','MEAMOR','MESUIV',&
-     &             'MESSTR','MEGEOM','MEELTC','MEELTF'/
-    data lmeass /'MERIGI','MEMASS','MEAMOR','MESSTR'/
+    data lmeelm/'MEDIRI', 'MEMASS', 'MEAMOR', 'MESUIV',&
+     &             'MESSTR', 'MEGEOM', 'MEELTC', 'MEELTF'/
+    data lmeass/'MERIGI', 'MEMASS', 'MEAMOR', 'MESSTR'/
 !
-    data lveelm /'CNDIRI','CNBUDI','CNDIDO',&
-     &             'CNDIPI','CNFEDO','CNFEPI','CNLAPL','CNONDP',&
-     &             'CNFSDO','CNIMPE','CNDIDI','CNSSTF',&
+    data lveelm/'CNDIRI', 'CNBUDI', 'CNDIDO',&
+     &             'CNDIPI', 'CNFEDO', 'CNFEPI', 'CNLAPL', 'CNONDP',&
+     &             'CNFSDO', 'CNIMPE', 'CNDIDI', 'CNSSTF',&
      &             'CNREFE'/
-    data lveass /'CNDIRI','CNBUDI','CNDIDO',&
-     &             'CNDIPI','CNFEDO','CNFEPI','CNLAPL','CNONDP',&
-     &             'CNFSDO','CNIMPE','CNDIDI','CNSSTF',&
+    data lveass/'CNDIRI', 'CNBUDI', 'CNDIDO',&
+     &             'CNDIPI', 'CNFEDO', 'CNFEPI', 'CNLAPL', 'CNONDP',&
+     &             'CNFSDO', 'CNIMPE', 'CNDIDI', 'CNSSTF',&
      &             'CNREFE',&
-     &             'CNCINE','CNSSTR','CNDYNA',&
-     &             'CNAMOD','CNFEXT',&
+     &             'CNCINE', 'CNSSTR', 'CNDYNA',&
+     &             'CNAMOD', 'CNFEXT',&
      &             'CNVISS'/
 !
-    data lsolal /'DDEPLA','DEPDEL','DEPOLD','DEPPR1','DEPPR2',&
-     &             'DVITLA','VITDEL','VITOLD','VITPR1','VITPR2',&
-     &             'DACCLA','ACCDEL','ACCOLD','ACCPR1','ACCPR2',&
-     &             'DEPSO1','DEPSO2'/
+    data lsolal/'DDEPLA', 'DEPDEL', 'DEPOLD', 'DEPPR1', 'DEPPR2',&
+     &             'DVITLA', 'VITDEL', 'VITOLD', 'VITPR1', 'VITPR2',&
+     &             'DACCLA', 'ACCDEL', 'ACCOLD', 'ACCPR1', 'ACCPR2',&
+     &             'DEPSO1', 'DEPSO2'/
 !
-    data lvalin /'DEPMOI','SIGMOI','VARMOI','VITMOI','ACCMOI',&
-     &             'COMMOI','DEPPLU','SIGPLU','VARPLU','VITPLU',&
-     &             'ACCPLU','COMPLU','SIGEXT','DEPKM1','VITKM1',&
-     &             'ACCKM1','ROMKM1','ROMK'  ,'STRMOI','STRPLU',&
-     &             'FEXMOI','FEXPLU','FAMMOI','FAMPLU','FLIMOI',&
-     &             'FLIPLU','FNOMOI','FNOPLU'/
+    data lvalin/'DEPMOI', 'SIGMOI', 'VARMOI', 'VITMOI', 'ACCMOI',&
+     &             'COMMOI', 'DEPPLU', 'SIGPLU', 'VARPLU', 'VITPLU',&
+     &             'ACCPLU', 'COMPLU', 'SIGEXT', 'DEPKM1', 'VITKM1',&
+     &             'ACCKM1', 'ROMKM1', 'ROMK', 'STRMOI', 'STRPLU',&
+     &             'FEXMOI', 'FEXPLU', 'FAMMOI', 'FAMPLU', 'FLIMOI',&
+     &             'FLIPLU', 'FNOMOI', 'FNOPLU'/
 !
 ! ----------------------------------------------------------------------
 !
     tyvari = tyvarz
     if (present(tychap_out)) then
-        ASSERT(tychap.eq.'VEASSE')
-        ASSERT(vali.ge.1)
-        ASSERT(vali.le.zveass)
-        tychap_out = lveass(vali)(1:6)
-        ASSERT(tychap_out.eq.tyvari(1:6))
+        ASSERT(tychap .eq. 'VEASSE')
+        ASSERT(vali .ge. 1)
+        ASSERT(vali .le. zveass)
+        tychap_out = lveass(vali) (1:6)
+        ASSERT(tychap_out .eq. tyvari(1:6))
         goto 99
-    endif
+    end if
     vali = -1
 !
     if (tychap .eq. 'MEELEM') then
         if (tyvari .eq. 'LONMAX') then
             vali = zmeelm
         else
-            vali = indik8(lmeelm,tyvari,1,zmeelm)
-        endif
-    else if (tychap.eq.'MEASSE') then
+            vali = indik8(lmeelm, tyvari, 1, zmeelm)
+        end if
+    else if (tychap .eq. 'MEASSE') then
         if (tyvari .eq. 'LONMAX') then
             vali = zmeass
         else
-            vali = indik8(lmeass,tyvari,1,zmeass)
-        endif
-    else if (tychap.eq.'VEELEM') then
+            vali = indik8(lmeass, tyvari, 1, zmeass)
+        end if
+    else if (tychap .eq. 'VEELEM') then
         if (tyvari .eq. 'LONMAX') then
             vali = zveelm
         else
-            vali = indik8(lveelm,tyvari,1,zveelm)
-        endif
-    else if (tychap.eq.'VEASSE') then
+            vali = indik8(lveelm, tyvari, 1, zveelm)
+        end if
+    else if (tychap .eq. 'VEASSE') then
         if (tyvari .eq. 'LONMAX') then
             vali = zveass
         else
-            vali = indik8(lveass,tyvari,1,zveass)
-        endif
-    else if (tychap.eq.'SOLALG') then
+            vali = indik8(lveass, tyvari, 1, zveass)
+        end if
+    else if (tychap .eq. 'SOLALG') then
         if (tyvari .eq. 'LONMAX') then
             vali = zsolal
         else
-            vali = indik8(lsolal,tyvari,1,zsolal)
-        endif
-    else if (tychap.eq.'VALINC') then
+            vali = indik8(lsolal, tyvari, 1, zsolal)
+        end if
+    else if (tychap .eq. 'VALINC') then
         if (tyvari .eq. 'LONMAX') then
             vali = zvalin
         else
-            vali = indik8(lvalin,tyvari,1,zvalin)
-        endif
+            vali = indik8(lvalin, tyvari, 1, zvalin)
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
- 99 continue
+99  continue
 !
-    ASSERT(vali.gt.0)
+    ASSERT(vali .gt. 0)
 !
 end subroutine

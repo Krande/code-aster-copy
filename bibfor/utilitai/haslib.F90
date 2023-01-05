@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,24 +41,24 @@ subroutine haslib(libraz, iret)
     character(len=5) :: librai
 !---------------------------------------------------------------
     librai = libraz
-    iret=0
+    iret = 0
     if (librai .eq. 'MUMPS') then
 #ifdef ASTER_HAVE_MUMPS
-        iret=1
+        iret = 1
 #endif
-    else if (librai.eq.'PETSC') then
+    else if (librai .eq. 'PETSC') then
 #ifdef ASTER_HAVE_PETSC
-        iret=1
+        iret = 1
 #endif
-    else if (librai.eq.'HDF5') then
+    else if (librai .eq. 'HDF5') then
 #ifdef ASTER_HAVE_HDF5
-        iret=1
+        iret = 1
 #endif
-    else if (librai.eq.'MED') then
+    else if (librai .eq. 'MED') then
 #ifdef ASTER_HAVE_MED
-        iret=1
+        iret = 1
 #endif
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

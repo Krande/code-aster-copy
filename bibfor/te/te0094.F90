@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine te0094(option, nomte)
 !
     integer :: ndim, nno, nnos, kp, npg, i, k, itemps, ifr2d, ivectu, icode
     integer :: nbres, jgano, ipoids, ivf, idfde, igeom
-    parameter     ( nbres=3 )
+    parameter(nbres=3)
     real(kind=8) :: valpar(nbres)
     real(kind=8) :: poids, r, z, tx, ty
     character(len=8) :: nompar(nbres)
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PFF2D2D', 'L', ifr2d)
@@ -57,25 +57,25 @@ subroutine te0094(option, nomte)
     call jevech('PVECTUR', 'E', ivectu)
 !
     do kp = 1, npg
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
         r = 0.d0
         z = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-            z = z + zr(igeom+2*i-1)*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
+            z = z+zr(igeom+2*i-1)*zr(ivf+k+i-1)
         end do
-        if (lteatt('AXIS','OUI')) poids = poids*r
+        if (lteatt('AXIS', 'OUI')) poids = poids*r
         valpar(1) = r
         valpar(2) = z
-        call fointe('FM', zk8(ifr2d ), 3, nompar, valpar,&
+        call fointe('FM', zk8(ifr2d), 3, nompar, valpar, &
                     tx, icode)
-        call fointe('FM', zk8(ifr2d+1), 3, nompar, valpar,&
+        call fointe('FM', zk8(ifr2d+1), 3, nompar, valpar, &
                     ty, icode)
         do i = 1, nno
-            zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids * tx * zr(ivf+ k+i-1)
-            zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids * ty * zr(ivf+ k+i-1)
+            zr(ivectu+2*i-2) = zr(ivectu+2*i-2)+poids*tx*zr(ivf+k+i-1)
+            zr(ivectu+2*i-1) = zr(ivectu+2*i-1)+poids*ty*zr(ivf+k+i-1)
         end do
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -52,13 +52,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_elem_patch  = 0
+    nb_elem_patch = 0
     list_elem(1:5) = 0
 !
 ! - Access to datastructure
 !
     sdappa_info = sdappa(1:19)//'.INFO'
-    call jeveuo(sdappa_info, 'L', vi = v_sdappa_info)
+    call jeveuo(sdappa_info, 'L', vi=v_sdappa_info)
 !
 ! - Get parameters
 !

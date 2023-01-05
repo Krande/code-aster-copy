@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine cucrsd(mesh, nume_dof, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -44,9 +44,9 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: nume_dof
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,13 +89,13 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_29')
-    endif
+    end if
 !
 ! --- INITIALISATIONS
 !
     sdunil_defi = ds_contact%sdunil_defi
     sdunil_solv = ds_contact%sdunil_solv
-    mesh_nomnoe = mesh // '.NOMNOE'
+    mesh_nomnoe = mesh//'.NOMNOE'
     call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=neq)
     l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
 !
@@ -105,12 +105,12 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(atmu, iret)
     if (iret .eq. 0) then
         call wkvect(atmu, 'V V R', neq, jatmu)
-    endif
+    end if
 !
 ! --- NOMBRE TOTAL DE DDLS ET NOMBRE TOTAL DE NOEUDS
 !
-    nnocu = cudisi(sdunil_defi,'NNOCU')
-    ncmpg = cudisi(sdunil_defi,'NCMPG')
+    nnocu = cudisi(sdunil_defi, 'NNOCU')
+    ncmpg = cudisi(sdunil_defi, 'NCMPG')
 !
 ! --- SD D'INFOS
 !
@@ -138,34 +138,34 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
         numno = zi(jnoe+ino-1)
         call jenuno(jexnum(mesh_nomnoe, numno), nomno)
-        nbcmp = zi(jpoi+ino) - zi(jpoi+ino-1)
+        nbcmp = zi(jpoi+ino)-zi(jpoi+ino-1)
         jdecal = zi(jpoi+ino-1)
 !
         do icmp = jdecal, jdecal+nbcmp-1
 !
             cmp = zk8(jcmpg-1+icmp)
 !
-            call posddl('NUME_DDL', nume_dof, nomno, cmp, numno,&
+            call posddl('NUME_DDL', nume_dof, nomno, cmp, numno, &
                         cddl)
             if (cddl .eq. 0) then
-                valk (1) = nomno
-                valk (2) = cmp
+                valk(1) = nomno
+                valk(2) = cmp
                 call utmess('F', 'UNILATER_75', nk=2, valk=valk)
             else
                 zk8(jnomno+iddl-1) = nomno
                 zk8(jnomcm+iddl-1) = cmp
                 zi(jddl+iddl) = cddl
                 iddl = iddl+1
-            endif
+            end if
         end do
     end do
     if ((iddl-1) .ne. ncmpg) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- VECTEUR COEFFICIENTS DES DDLS DE GAUCHE
 !
-    apcoef = sdunil_solv(1:14)// '.APCOEF'
+    apcoef = sdunil_solv(1:14)//'.APCOEF'
     call wkvect(apcoef, 'V V R', 30*nnocu, japcoe)
 !
 ! --- VECTEUR PSEUDO-JEU
@@ -174,7 +174,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(apjeu, iret)
     if (iret .eq. 0) then
         call wkvect(apjeu, 'V V R', nnocu, japjeu)
-    endif
+    end if
 !
 ! --- VECTEURS DE TRAVAIL
 !
@@ -182,8 +182,8 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(coco, ier)
     if (ier .eq. 0) then
         call wkvect(coco, 'V V I', 8, jcoco)
-    endif
-    zi(jcoco ) = 3
+    end if
+    zi(jcoco) = 3
     zi(jcoco+1) = 0
     zi(jcoco+2) = 0
     zi(jcoco+3) = 0
@@ -196,7 +196,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(liac, iret)
     if (iret .eq. 0) then
         call wkvect(liac, 'V V I', 3*nnocu+1, jliac)
-    endif
+    end if
 !
 ! --- VECTEUR MU
 !
@@ -204,7 +204,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(mu, iret)
     if (iret .eq. 0) then
         call wkvect(mu, 'V V R', 6*nnocu, jmu)
-    endif
+    end if
 !
 ! --- VECTEUR COEFMU
 !
@@ -212,7 +212,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(coefmu, iret)
     if (iret .eq. 0) then
         call wkvect(coefmu, 'V V R', nnocu, jcoef)
-    endif
+    end if
 !
 ! --- VECTEUR DELTA ET DELTA0
 !
@@ -220,12 +220,12 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(delt0, iret)
     if (iret .eq. 0) then
         call wkvect(delt0, 'V V R', neq, jdelt0)
-    endif
+    end if
     delta = sdunil_solv(1:14)//'.DELT'
     call jeexin(delta, iret)
     if (iret .eq. 0) then
         call wkvect(delta, 'V V R', neq, jdelta)
-    endif
+    end if
 !
 ! --- VECTEUR POUR PIVOTS NULS
 !
@@ -233,12 +233,12 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jeexin(liot, ier)
     if (ier .eq. 0) then
         call wkvect(liot, 'V V I', 4*nnocu+4, jliot)
-    endif
+    end if
 !
 ! --- MATRICE CM1AT
 !
     cm1a = sdunil_solv(1:14)//'.CM1A'
-    call jecrec(cm1a, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(cm1a, 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 ncmpg)
     call jeecra(cm1a, 'LONMAX', neq)
     do i = 1, ncmpg
@@ -251,7 +251,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! - Forces to solve
 !
-    call vtcreb(ds_contact%cnunil, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(ds_contact%cnunil, 'V', 'R', nume_ddlz=nume_dof)
     ds_contact%l_cnunil = ASTER_TRUE
 !
 ! --- CAS DE LA PENALISATION - MATRICE ENAT
@@ -260,14 +260,14 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 ! ---   TAILLE : NBENAT*30
 
     if (l_unil_pena) then
-       enat = sdunil_solv(1:14)//'.ENAT'
-       call jecrec(enat, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
-                nnocu)
-       call jeecra(enat, 'LONMAX', ival=30)
-       do inoe = 1, nnocu
-          call jecroc(jexnum(enat, inoe))
-       end do
-    endif
+        enat = sdunil_solv(1:14)//'.ENAT'
+        call jecrec(enat, 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
+                    nnocu)
+        call jeecra(enat, 'LONMAX', ival=30)
+        do inoe = 1, nnocu
+            call jecroc(jexnum(enat, inoe))
+        end do
+    end if
 !
     call jedema()
 end subroutine

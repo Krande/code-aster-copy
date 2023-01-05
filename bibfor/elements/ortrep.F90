@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine ortrep(ndim, coor, repere)
 !
 ! -----  VARIABLES LOCALES
     integer :: nbres, i, iret, icamas, imate
-    parameter         ( nbres=9 )
+    parameter(nbres=9)
     integer :: icodre(nbres)
     character(len=16) :: phenom
     real(kind=8) :: p(3, 3), xg(3), yg(3), orig(3), dire(3)
@@ -78,7 +78,7 @@ subroutine ortrep(ndim, coor, repere)
 !
     if (ndim .eq. 2 .and. phenom .eq. 'ELAS_ISTR') then
         call utmess('F', 'ELEMENTS3_2')
-    endif
+    end if
 !
     call tecach('NNO', 'PCAMASS', 'L', iret, iad=icamas)
 !
@@ -110,30 +110,30 @@ subroutine ortrep(ndim, coor, repere)
 !-----      LES INFORMATIONS FOURNIES SONT POUR UN REPERE
 !-----      CYLINDRIQUES. ON TRANSFORME DIRECTEMENT
 !-----      EN REPERE LOCAL CARTESIEN
-                    alpha=zr(icamas+1)*r8dgrd()
-                    beta =zr(icamas+2)*r8dgrd()
+                    alpha = zr(icamas+1)*r8dgrd()
+                    beta = zr(icamas+2)*r8dgrd()
                     dire(1) = cos(alpha)*cos(beta)
                     dire(2) = sin(alpha)*cos(beta)
                     dire(3) = -sin(beta)
-                    orig(1)=zr(icamas+4)
-                    orig(2)=zr(icamas+5)
-                    orig(3)=zr(icamas+6)
+                    orig(1) = zr(icamas+4)
+                    orig(2) = zr(icamas+5)
+                    orig(3) = zr(icamas+6)
                     call utrcyl(coor, dire, orig, p)
                     do i = 1, 3
-                        xg(i)=p(1,i)
-                        yg(i)=p(2,i)
+                        xg(i) = p(1, i)
+                        yg(i) = p(2, i)
                     end do
                     call angvxy(xg, yg, angmas)
-                    repere(1)=1.d0
-                    repere(2)=angmas(1)
-                    repere(3)=angmas(2)
-                    repere(4)=angmas(3)
-                endif
-            endif
+                    repere(1) = 1.d0
+                    repere(2) = angmas(1)
+                    repere(3) = angmas(2)
+                    repere(4) = angmas(3)
+                end if
+            end if
 !
 ! ---- TRAITEMENT DU CAS 2D :
 !      ====================
-        else if (ndim.eq.2) then
+        else if (ndim .eq. 2) then
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !
@@ -148,12 +148,12 @@ subroutine ortrep(ndim, coor, repere)
                     repere(2) = zr(icamas+1)*r8dgrd()
 !
                 else
-                    repere(1)=1.d0
+                    repere(1) = 1.d0
                     call utmess('F', 'ELEMENTS2_38')
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !     -----
 !
 !.============================ FIN DE LA ROUTINE ======================

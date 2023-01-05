@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine provec(xx, yy, normal)
     real(kind=8) :: xx(3), yy(3), normal(3)
 !     BUT : CALCUL DU PRODUIT VECTORIEL DE DEUX VECTEURS
 !
-    normal(1) = xx(2)*yy(3) - xx(3)*yy(2)
-    normal(2) = xx(3)*yy(1) - xx(1)*yy(3)
-    normal(3) = xx(1)*yy(2) - xx(2)*yy(1)
+    normal(1) = xx(2)*yy(3)-xx(3)*yy(2)
+    normal(2) = xx(3)*yy(1)-xx(1)*yy(3)
+    normal(3) = xx(1)*yy(2)-xx(2)*yy(1)
 end subroutine

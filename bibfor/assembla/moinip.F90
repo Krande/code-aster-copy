@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
+subroutine moinip(nch, ncoef, iich, iisuiv, ilig, &
                   ilig2)
     implicit none
     integer :: iich(*), iisuiv(*), ilig(*)
@@ -45,11 +45,11 @@ subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
         ii1 = iich(j)
         if (ii1 .le. 0) then
 !            PREMIER MAILLON DE LA CHAINE VIDE
-            iich(j) = ii2 - 1
+            iich(j) = ii2-1
         else
 !            CHAINE NON VIDE    PREMIER MAILLON
             ilig2(ii2) = ilig(ii1)
-            ii2 = ii2 + 1
+            ii2 = ii2+1
             ii1 = iisuiv(ii1)
 !
 !             MAILLONS SUIVANTS DE LA CHAINE
@@ -57,15 +57,15 @@ subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
 110         continue
             if (ii1 .le. 0) then
 !                 FIN DE LA CHAINE J
-                iich(j) = ii2 - 1
+                iich(j) = ii2-1
                 goto 120
             else
                 ilig2(ii2) = ilig(ii1)
-                ii2 = ii2 + 1
+                ii2 = ii2+1
                 ii1 = iisuiv(ii1)
                 goto 110
-            endif
-        endif
+            end if
+        end if
 !
 120     continue
     end do

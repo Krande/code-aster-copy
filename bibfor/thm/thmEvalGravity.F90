@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine thmEvalGravity(j_mater, time, grav)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 !
-integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: time
-real(kind=8), intent(out) :: grav(3)
+    integer, intent(in) :: j_mater
+    real(kind=8), intent(in) :: time
+    real(kind=8), intent(out) :: grav(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,29 +46,29 @@ real(kind=8), intent(out) :: grav(3)
     integer, parameter :: nb_resu = 3
     integer :: icodre(nb_resu)
     real(kind=8) :: resu_vale(nb_resu)
-    character(len=16), parameter :: resu_name(nb_resu) = (/'PESA_X','PESA_Y','PESA_Z'/)
+    character(len=16), parameter :: resu_name(nb_resu) = (/'PESA_X', 'PESA_Y', 'PESA_Z'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    grav(:)      = 0.d0
+    grav(:) = 0.d0
     resu_vale(:) = 0.d0
 !
 ! - Get parameters
 !
-    call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                0      , ' '      , [0.0d0]    ,&
-                nb_resu, resu_name, resu_vale  ,&
-                icodre , 0        , nan='NON')
+    call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                0, ' ', [0.0d0], &
+                nb_resu, resu_name, resu_vale, &
+                icodre, 0, nan='NON')
 !
 ! - Get function
 !
-    call rcvala(j_mater  , ' '        , 'THM_DIFFU',&
-                1        , 'INST'     , [time]     ,&
-                1        , 'PESA_MULT', grav_func  ,&
-                icodre(1), 0          , nan='NON')
+    call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                1, 'INST', [time], &
+                1, 'PESA_MULT', grav_func, &
+                icodre(1), 0, nan='NON')
     if (icodre(1) .eq. 1) then
         grav_func(1) = 1.d0
-    endif
+    end if
 !
     grav(1) = grav_func(1)*resu_vale(1)
     grav(2) = grav_func(1)*resu_vale(2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lglite(yf, nbmat, mater, f0, devg,&
+subroutine lglite(yf, nbmat, mater, f0, devg, &
                   devgii, traceg, dy, codret)
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calcdr.h"
 #include "asterfort/calcdy.h"
@@ -58,9 +58,9 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( epssig  = 1.0d-8 )
+    parameter(epssig=1.0d-8)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -73,15 +73,15 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
 ! ======================================================================
 ! --- RECUPERATION DE DONNEES ------------------------------------------
 ! ======================================================================
-    mu = mater ( 4,1)
-    k = mater ( 5,1)
-    gamcjs = mater (12,2)
-    pref = mater (15,2)
+    mu = mater(4, 1)
+    k = mater(5, 1)
+    gamcjs = mater(12, 2)
+    pref = mater(15, 2)
     sn(1:ndt) = yf(1:ndt)
-    invn  =yf(ndt+1)
-    gampn =yf(ndt+2)
-    evpn  =yf(ndt+3)
-    deltan=yf(ndt+4)
+    invn = yf(ndt+1)
+    gampn = yf(ndt+2)
+    evpn = yf(ndt+3)
+    deltan = yf(ndt+4)
 ! ======================================================================
 ! --- CALCUL DES VARIABLES D'ECROUISSAGES ET DE SES DERIVEES -----------
 ! ======================================================================
@@ -90,11 +90,11 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
 ! ======================================================================
 ! --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 ! ======================================================================
-    snii=ddot(ndt,sn,1,sn,1)
-    snii = sqrt (snii)
-    rcos3t = cos3t (sn, pref, epssig)
-    rn = hlode (gamcjs, rcos3t)
-    gn = gdev (snii, rn)
+    snii = ddot(ndt, sn, 1, sn, 1)
+    snii = sqrt(snii)
+    rcos3t = cos3t(sn, pref, epssig)
+    rn = hlode(gamcjs, rcos3t)
+    gn = gdev(snii, rn)
 ! ======================================================================
 ! --- CALCUL DE Q ------------------------------------------------------
 ! ======================================================================
@@ -103,18 +103,18 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
 ! ======================================================================
 ! --- CALCUL DES DIFFERENTES DERIVEES ----------------------------------
 ! ======================================================================
-    call calcdr(nbmat, mater, zr(jpara), zr(jderiv), gn,&
-                invn, q, devg, devgii, traceg,&
+    call calcdr(nbmat, mater, zr(jpara), zr(jderiv), gn, &
+                invn, q, devg, devgii, traceg, &
                 dfdl)
 ! ======================================================================
 ! --- CALCUL DES DIFFERENTS INCREMENTS ---------------------------------
 ! ======================================================================
-    call calcdy(mu, k, f0, devg, devgii,&
+    call calcdy(mu, k, f0, devg, devgii, &
                 traceg, dfdl, deltan, dy)
 ! ======================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES --------------------------------
 ! ======================================================================
-100  continue
+100 continue
     call jedetr(parecr)
     call jedetr(derive)
 ! ======================================================================

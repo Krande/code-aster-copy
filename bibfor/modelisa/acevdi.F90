@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
+subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
                   nlg, nln, nlj, ier)
 !
 !
@@ -68,7 +68,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 #include "asterfort/as_allocate.h"
 ! --------------------------------------------------------------------------------------------------
     integer ::  i3d, i2d, ndim1, ioc, nc, ng, nm, nsom, nbmail, un
-    integer :: n1, ima, nbgrm,  ig, jmail, numa, nutyma, lmax2
+    integer :: n1, ima, nbgrm, ig, jmail, numa, nutyma, lmax2
     character(len=4) :: type
     character(len=8) :: k8b, nomu, noma, nomo, nomail, typel
     character(len=16) :: concep, cmd
@@ -87,7 +87,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
     nlg = 0
     nln = 0
     nlj = 0
-    un  = 1
+    un = 1
     grmama = noma//'.GROUPEMA'
     mailma = noma//'.NOMMAI'
     l_parallel_mesh = isParallelMesh(noma)
@@ -97,7 +97,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 !
 !   Vérification des dimensions / modélisations
     call verdis(nomo, noma, 'E', i3d, i2d, ndim1, ier)
-    ASSERT((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
+    ASSERT((mcf .eq. 'DISCRET_2D') .or. (mcf .eq. 'DISCRET'))
 !
 !   boucle sur les occurences
     do ioc = 1, nbocc
@@ -106,24 +106,24 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
         call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, 0, k8b, ng)
         call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc, 0, k8b, nm)
 !
-        nsom = ng + nm
-        if ((nsom.eq.ng) .or. (nsom.eq.nm) ) then
-            nlm = max(nlm,-nm)
-            nlg = max(nlg,-ng)
-        endif
+        nsom = ng+nm
+        if ((nsom .eq. ng) .or. (nsom .eq. nm)) then
+            nlm = max(nlm, -nm)
+            nlg = max(nlg, -ng)
+        end if
 !
 !       Vérification du bon type de maille en fonction de cara
-        if ((cara(2:7) .eq. '_T_D_N') .or. (cara(2:8) .eq. '_TR_D_N') .or.&
-            (cara(2:5) .eq. '_T_N')   .or. (cara(2:6) .eq. '_TR_N')) then
+        if ((cara(2:7) .eq. '_T_D_N') .or. (cara(2:8) .eq. '_TR_D_N') .or. &
+            (cara(2:5) .eq. '_T_N') .or. (cara(2:6) .eq. '_TR_N')) then
             type = 'POI1'
         else
             type = 'SEG2'
-        endif
+        end if
 !
         if (nm .ne. 0) then
             if (l_parallel_mesh) then
                 call utmess('F', 'MODELISA7_86')
-            endif
+            end if
             nbmail = -nm
             call wkvect('&&ACEVDI.MAILLE', 'V V K8', nbmail, jmail)
             call getvtx(mcf, 'MAILLE', iocc=ioc, nbval=nbmail, vect=zk8(jmail), nbret=n1)
@@ -139,10 +139,10 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                     valk(3) = typel
                     valk(4) = cara
                     call utmess('F', 'MODELISA_56', nk=4, valk=valk)
-                endif
-            enddo
+                end if
+            end do
             call jedetr('&&ACEVDI.MAILLE')
-        endif
+        end if
 !
         if (ng .ne. 0) then
             nbgrm = -ng
@@ -152,7 +152,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                 nogrm = group_ma(ig)
                 un = 1
                 call verima(noma, nogrm, un, 'GROUP_MA')
-                if (un.eq.0.and.l_parallel_mesh) cycle
+                if (un .eq. 0 .and. l_parallel_mesh) cycle
                 call jelira(jexnom(grmama, nogrm), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, nogrm), 'L', jmail)
                 do ima = 1, nbmail
@@ -166,14 +166,14 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                         valk(3) = typel
                         valk(4) = cara
                         call utmess('F', 'MODELISA_56', nk=4, valk=valk)
-                    endif
-                enddo
-            enddo
+                    end if
+                end do
+            end do
             AS_DEALLOCATE(vk24=group_ma)
-        endif
+        end if
 !
-    enddo
+    end do
 !
-    lmax2 = max(1,nlm,nlg,nln,nlj)
+    lmax2 = max(1, nlm, nlg, nln, nlj)
     call acevd2(noma, nomo, mcf, lmax2, nbocc)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mm_cycl_init(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -70,27 +70,27 @@ implicit none
 !
 ! - Initializations
 !
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
-    n_cychis     = ds_contact%n_cychis
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    n_cychis = ds_contact%n_cychis
 !
 ! - Access to cycling objects
 !
     sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
     sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
-    call jeveuo(sdcont_cychis, 'E', vr = p_sdcont_cychis)
-    call jeveuo(sdcont_cyccoe, 'E', vr = p_sdcont_cyccoe)
-    call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
+    call jeveuo(sdcont_cychis, 'E', vr=p_sdcont_cychis)
+    call jeveuo(sdcont_cyccoe, 'E', vr=p_sdcont_cyccoe)
+    call jeveuo(sdcont_cyceta, 'E', vi=p_sdcont_cyceta)
 !
 ! - Init history
 !
     i_cont_poin = 1
     do zone_index = 1, nb_cont_zone
-        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,zone_index)
-        slave_elt_nb = mminfi(ds_contact%sdcont_defi,'NBMAE' ,zone_index)
-        slave_elt_shift = mminfi(ds_contact%sdcont_defi,'JDECME',zone_index)
-        coef_cont = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_CONT',zone_index)
-        coef_frot = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_FROT',zone_index)
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', zone_index)
+        slave_elt_nb = mminfi(ds_contact%sdcont_defi, 'NBMAE', zone_index)
+        slave_elt_shift = mminfi(ds_contact%sdcont_defi, 'JDECME', zone_index)
+        coef_cont = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', zone_index)
+        coef_frot = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_FROT', zone_index)
         p_sdcont_cyccoe(6*(zone_index-1)+1) = coef_cont
         p_sdcont_cyccoe(6*(zone_index-1)+2) = coef_frot
         p_sdcont_cyccoe(6*(zone_index-1)+3) = +1.d12
@@ -105,7 +105,7 @@ implicit none
 !
 ! --------- Absolute number of slave element
 !
-            slave_elt_num = slave_elt_shift + slave_elt_index
+            slave_elt_num = slave_elt_shift+slave_elt_index
 !
 ! --------- Number of points on slave element
 !
@@ -114,15 +114,15 @@ implicit none
 ! --------- Loop on points
 !
             do slave_pt_index = 1, slave_pt_nb
-                do i_cyc =1,60
-                    p_sdcont_cychis(n_cychis*(i_cont_poin-1) + i_cyc) = 0
-                enddo
+                do i_cyc = 1, 60
+                    p_sdcont_cychis(n_cychis*(i_cont_poin-1)+i_cyc) = 0
+                end do
                 coef_init = p_sdcont_cyccoe(6*(zone_index-1)+1)
                 if (nint(ds_contact%update_init_coefficient) .eq. 1) &
                     coef_init = ds_contact%estimated_coefficient
-                do i_cyc =1,4
-                    p_sdcont_cyceta(4*(i_cont_poin-1) + i_cyc) = -1
-                enddo
+                do i_cyc = 1, 4
+                    p_sdcont_cyceta(4*(i_cont_poin-1)+i_cyc) = -1
+                end do
                 p_sdcont_cychis(n_cychis*(i_cont_poin-1)+2) = coef_init
                 p_sdcont_cychis(n_cychis*(i_cont_poin-1)+6) = coef_frot
                 p_sdcont_cychis(n_cychis*(i_cont_poin-1)+60) = zone_index
@@ -131,10 +131,10 @@ implicit none
                 p_sdcont_cychis(n_cychis*(i_cont_poin-1)+54) = 1.0
                 p_sdcont_cychis(n_cychis*(i_cont_poin-1)+55) = 1.0
                 p_sdcont_cychis(n_cychis*(i_cont_poin-1)+51) = 1.0
-                i_cont_poin = i_cont_poin + 1
+                i_cont_poin = i_cont_poin+1
             end do
         end do
- 25     continue
+25      continue
     end do
 !
     call jedema()

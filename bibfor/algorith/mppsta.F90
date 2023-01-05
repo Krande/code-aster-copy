@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mppsta(h, ldh, v, ldv, ddlsta,&
+subroutine mppsta(h, ldh, v, ldv, ddlsta, &
                   n, vectt, ddlexc, indico, proj)
 !-----------------------------------------------------------------------
 !
@@ -63,10 +63,10 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
     real(kind=8) :: norm
     real(kind=8) :: temp, epsil, one, zero
     real(kind=8) :: crit2, epsf
-    parameter (epsil=1.d-15)
-    parameter (crit2=1.d-12)
-    parameter (nitmax = 40000)
-    parameter (one = 1.0d+0, zero = 0.0d+0)
+    parameter(epsil=1.d-15)
+    parameter(crit2=1.d-12)
+    parameter(nitmax=40000)
+    parameter(one=1.0d+0, zero=0.0d+0)
 !
     call wkvect('&&MPPSTA.VECT.TEM1', 'V V R', ldh, x0)
     call wkvect('&&MPPSTA.VECT.TEM2', 'V V R', ldh, bounds)
@@ -79,16 +79,16 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
 !     INITIALISATION PAR UN VECT RANDOMDE TAILLE LDH
 !
     if (indico .eq. 1) then
-        call dgemv('T', ldv, ldh, one, v,&
-                   ldv, vectt, 1, zero, zr(x0),&
+        call dgemv('T', ldv, ldh, one, v, &
+                   ldv, vectt, 1, zero, zr(x0), &
                    1)
-        temp = dnrm2(ldh,zr(x0),1)
-        call dscal(ldh, one / temp, zr(x0), 1)
+        temp = dnrm2(ldh, zr(x0), 1)
+        call dscal(ldh, one/temp, zr(x0), 1)
         epsf = crit2
         goto 100
     else
         epsf = epsil
-    endif
+    end if
 !
     iseed(1) = 1
     iseed(2) = 3
@@ -99,8 +99,8 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
 !
 !     PROJECTION DANS LA BASE INITIALE
 !
-    call dgemv('N', ldv, ldh, one, v,&
-               ldv, zr(x0), 1, zero, vectt,&
+    call dgemv('N', ldv, ldh, one, v, &
+               ldv, zr(x0), 1, zero, vectt, &
                1)
 !
 !     PROJECTION DANS SUR LES DDLS_STAB POSITIFS ET CL
@@ -109,22 +109,22 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
         if (ddlsta(i) .eq. 0 .and. proj .eq. 1) then
             if (vectt(i) .lt. zero) then
                 vectt(i) = zero
-            endif
+            end if
         else
             vectt(i) = vectt(i)*ddlexc(i)
-        endif
+        end if
     end do
 !
 !     RETOUR DANS LA BASE D'ARNOLDI
 !
-    call dgemv('T', ldv, ldh, one, v,&
-               ldv, vectt, 1, zero, zr(x0),&
+    call dgemv('T', ldv, ldh, one, v, &
+               ldv, vectt, 1, zero, zr(x0), &
                1)
 !
 !     ON NORME X0
 !
-    temp = dnrm2(ldh,zr(x0),1)
-    call dscal(ldh, one / temp, zr(x0), 1)
+    temp = dnrm2(ldh, zr(x0), 1)
+    call dscal(ldh, one/temp, zr(x0), 1)
 !
 !     ON APPLIQUE LA METHODE DES PUISSANCES
 !
@@ -134,11 +134,11 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
     do j = 1, nitmax
         npro = 0
         num = 0
-        call dgemv('N', ldh, ldh, one, h,&
-                   ldh, zr(x0), 1, zero, zr(x),&
+        call dgemv('N', ldh, ldh, one, h, &
+                   ldh, zr(x0), 1, zero, zr(x), &
                    1)
-        call dgemv('N', ldv, ldh, one, v,&
-                   ldv, zr(x), 1, zero, vectt,&
+        call dgemv('N', ldv, ldh, one, v, &
+                   ldv, zr(x), 1, zero, vectt, &
                    1)
         do i = 1, n
             if (ddlsta(i) .eq. 0 .and. proj .eq. 1) then
@@ -146,20 +146,20 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
                 if (vectt(i) .le. zero) then
                     vectt(i) = zero
                     npro = npro+1
-                endif
+                end if
             else
                 vectt(i) = vectt(i)*ddlexc(i)
-            endif
+            end if
         end do
-        call dgemv('T', ldv, ldh, one, v,&
-                   ldv, vectt, 1, zero, zr(x),&
+        call dgemv('T', ldv, ldh, one, v, &
+                   ldv, vectt, 1, zero, zr(x), &
                    1)
-        temp = dnrm2(ldh,zr(x),1)
-        call dscal(ldh, one / temp, zr(x), 1)
+        temp = dnrm2(ldh, zr(x), 1)
+        call dscal(ldh, one/temp, zr(x), 1)
         do i = 1, ldh
             zr(bounds+i-1) = zr(x0+i-1)-zr(x+i-1)
         end do
-        norm = dnrm2(ldh,zr(bounds),1)
+        norm = dnrm2(ldh, zr(bounds), 1)
 !
         do i = 1, ldh
             zr(x0+i-1) = zr(x+i-1)
@@ -167,9 +167,9 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
 !
         if (norm .le. epsf) then
             goto 900
-        else if (j.eq.nitmax) then
+        else if (j .eq. nitmax) then
             goto 900
-        endif
+        end if
     end do
 !
 900 continue

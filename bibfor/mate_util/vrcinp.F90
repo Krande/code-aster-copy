@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine vrcinp(ind, instam, instap)
 !
-use calcul_module, only : ca_iactif_, ca_jvcnom_, ca_nbcvrc_ , ca_jvcfon_, ca_jvcval_
+    use calcul_module, only: ca_iactif_, ca_jvcnom_, ca_nbcvrc_, ca_jvcfon_, ca_jvcval_
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -68,7 +68,7 @@ implicit none
         ca_iactif_ = 2
         call getfac(keywf, nbocc)
         ca_nbcvrc_ = nbocc
-        ASSERT(ca_nbcvrc_.le.100)
+        ASSERT(ca_nbcvrc_ .le. 100)
 
         if (ca_nbcvrc_ .ne. 0) then
 ! --------- Create objects
@@ -83,27 +83,27 @@ implicit none
 
 ! --------- Fill objects
             do iocc = 1, nbocc
-                call getvtx(keywf, 'NOM_VARC' , iocc=iocc, scal=zk8(ca_jvcnom_-1+iocc),&
+                call getvtx(keywf, 'NOM_VARC', iocc=iocc, scal=zk8(ca_jvcnom_-1+iocc), &
                             nbret=n1)
-                call getvid(keywf, 'VALE_FONC', iocc=iocc, scal=zk8(ca_jvcfon_-1+iocc),&
+                call getvid(keywf, 'VALE_FONC', iocc=iocc, scal=zk8(ca_jvcfon_-1+iocc), &
                             nbret=n1)
-                call getvr8(keywf, 'VALE_REF' , iocc=iocc, scal=zr(ca_jvcval_-1+3*(iocc-1)+3),&
+                call getvr8(keywf, 'VALE_REF', iocc=iocc, scal=zr(ca_jvcval_-1+3*(iocc-1)+3), &
                             nbret=n1)
             end do
-        endif
+        end if
 
-    else if (ind.eq.0) then
-        ca_iactif_=0
+    else if (ind .eq. 0) then
+        ca_iactif_ = 0
 
-    else if (ind.eq.2) then
-        ca_iactif_=2
+    else if (ind .eq. 2) then
+        ca_iactif_ = 2
         do iocc = 1, ca_nbcvrc_
-            call fointe('F', zk8(ca_jvcfon_-1+iocc), 1, ['INST'], [instam],&
-                        zr( ca_jvcval_-1+3*(iocc-1)+1), ier)
-            call fointe('F', zk8(ca_jvcfon_-1+iocc), 1, ['INST'], [instap],&
-                        zr( ca_jvcval_-1+3*(iocc-1)+2), ier)
+            call fointe('F', zk8(ca_jvcfon_-1+iocc), 1, ['INST'], [instam], &
+                        zr(ca_jvcval_-1+3*(iocc-1)+1), ier)
+            call fointe('F', zk8(ca_jvcfon_-1+iocc), 1, ['INST'], [instap], &
+                        zr(ca_jvcval_-1+3*(iocc-1)+2), ier)
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

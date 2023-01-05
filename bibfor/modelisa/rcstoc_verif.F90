@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,126 +50,126 @@ subroutine rcstoc_verif(nomfcz, nomclz, nomrz, nbmax)
     nomcle = nomclz
     nomrc = nomrz
     call jeveuo(nomfct//'.PROL', 'L', vk24=prol)
-    if (prol(1)(1:1) .eq. 'F') then
+    if (prol(1) (1:1) .eq. 'F') then
         call jelira(nomfct//'.VALE', 'LONMAX', nbptm)
         if (nomrc(1:8) .eq. 'TRACTION') then
             if (nbptm .lt. 4) then
                 call utmess('F', 'MODELISA6_71', sk=nomcle)
-            endif
-        endif
+            end if
+        end if
         if (nomrc(1:13) .eq. 'META_TRACTION') then
             if (nbptm .lt. 2) then
                 call utmess('F', 'MODELISA6_72', sk=nomcle)
-            endif
-        endif
-        nbcoup = nbptm / 2
+            end if
+        end if
+        nbcoup = nbptm/2
         if (nbptm .ge. nbmax) nbmax = nbptm
 !
         call jeveuo(nomfct//'.VALE', 'L', jrpv)
         if (zr(jrpv) .le. 0.d0) then
-            valkk (1) = nomcle
-            valkk (2) = nomfct
-            valrr (1) = zr(jrpv)
+            valkk(1) = nomcle
+            valkk(2) = nomfct
+            valrr(1) = zr(jrpv)
             call utmess('F', 'MODELISA9_59', nk=2, valk=valkk, sr=valrr(1))
-        endif
+        end if
         if (zr(jrpv+nbptm/2) .le. 0.d0) then
-            valkk (1) = nomcle
-            valkk (2) = nomfct
-            valrr (1) = zr(jrpv+nbptm/2)
+            valkk(1) = nomcle
+            valkk(2) = nomfct
+            valrr(1) = zr(jrpv+nbptm/2)
             call utmess('F', 'MODELISA9_60', nk=2, valk=valkk, sr=valrr(1))
-        endif
+        end if
 !        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
-        iret=2
+        iret = 2
         call foverf(zr(jrpv), nbcoup, iret)
         iret = 0
-        e1 = zr(jrpv+nbcoup) / zr(jrpv)
+        e1 = zr(jrpv+nbcoup)/zr(jrpv)
         precma = 1.d-10
 !
         do i = 1, nbcoup-1
-            ei = (zr(jrpv+nbcoup+i) - zr(jrpv+nbcoup+i-1) ) / ( zr(jrpv+i) - zr(jrpv+i-1)&
-                    )
+            ei = (zr(jrpv+nbcoup+i)-zr(jrpv+nbcoup+i-1))/(zr(jrpv+i)-zr(jrpv+i-1) &
+                                                          )
             if (ei .gt. e1) then
-                iret = iret + 1
-                valkk (1) = nomcle
-                valrr (1) = e1
-                valrr (2) = ei
-                valrr (3) = zr(jrpv+i)
+                iret = iret+1
+                valkk(1) = nomcle
+                valrr(1) = e1
+                valrr(2) = ei
+                valrr(3) = zr(jrpv+i)
                 call utmess('E', 'MODELISA9_61', sk=valkk(1), nr=3, valr=valrr)
             else if ((e1-ei)/e1 .le. precma) then
-                valkk (1) = nomcle
-                valrr (1) = e1
-                valrr (2) = ei
-                valrr (3) = precma
-                valrr (4) = zr(jrpv+i)
+                valkk(1) = nomcle
+                valrr(1) = e1
+                valrr(2) = ei
+                valrr(3) = precma
+                valrr(4) = zr(jrpv+i)
                 call utmess('A', 'MODELISA9_62', sk=valkk(1), nr=4, valr=valrr)
-            endif
-        enddo
+            end if
+        end do
         if (iret .ne. 0) then
             call utmess('F', 'MODELISA6_73')
-        endif
+        end if
 !
-    else if (prol(1)(1:1) .eq. 'N') then
+    else if (prol(1) (1:1) .eq. 'N') then
         call jelira(nomfct//'.VALE', 'NUTIOC', nbfct)
         nbptm = 0
         do k = 1, nbfct
             call jelira(jexnum(nomfct//'.VALE', k), 'LONMAX', nbpts)
-            nbcoup = nbpts / 2
+            nbcoup = nbpts/2
             if (nbpts .ge. nbmax) nbmax = nbpts
             if (nomrc(1:8) .eq. 'TRACTION') then
                 if (nbpts .lt. 4) then
                     call utmess('F', 'MODELISA6_74')
-                endif
-            endif
+                end if
+            end if
             if (nomrc(1:13) .eq. 'META_TRACTION') then
                 if (nbpts .lt. 2) then
                     call utmess('F', 'MODELISA6_75', sk=nomcle)
-                endif
-            endif
+                end if
+            end if
             call jeveuo(jexnum(nomfct//'.VALE', k), 'L', jrpv)
             if (zr(jrpv) .le. 0.d0) then
                 vali = k
-                valkk (1) = nomcle
-                valkk (2) = nomfct
-                valrr (1) = zr(jrpv)
-                call utmess('F', 'MODELISA9_63', nk=2, valk=valkk, si=vali,&
+                valkk(1) = nomcle
+                valkk(2) = nomfct
+                valrr(1) = zr(jrpv)
+                call utmess('F', 'MODELISA9_63', nk=2, valk=valkk, si=vali, &
                             sr=valrr(1))
-            endif
+            end if
             if (zr(jrpv+nbpts/2) .le. 0.d0) then
                 vali = k
-                valkk (1) = nomcle
-                valkk (2) = nomfct
-                valrr (1) = zr(jrpv+nbpts/2)
-                call utmess('F', 'MODELISA9_64', nk=2, valk=valkk, si=vali,&
+                valkk(1) = nomcle
+                valkk(2) = nomfct
+                valrr(1) = zr(jrpv+nbpts/2)
+                call utmess('F', 'MODELISA9_64', nk=2, valk=valkk, si=vali, &
                             sr=valrr(1))
-            endif
+            end if
 
 !           verif abscisses croissantes (au sens large)
-            iret=2
+            iret = 2
             call foverf(zr(jrpv), nbcoup, iret)
             iret = 0
-            e1 = zr(jrpv+nbcoup) / zr(jrpv)
+            e1 = zr(jrpv+nbcoup)/zr(jrpv)
             do i = 1, nbcoup-1
-                ei = (&
-                        zr(jrpv+nbcoup+i) - zr(jrpv+nbcoup+i-1) ) / ( zr(jrpv+i) - zr(jrpv+i&
-                        &-1)&
+                ei = ( &
+                        zr(jrpv+nbcoup+i)-zr(jrpv+nbcoup+i-1))/(zr(jrpv+i)-zr(jrpv+i&
+                        &-1) &
                         )
                 if (ei .gt. e1) then
-                    iret = iret + 1
-                    valkk (1) = nomcle
-                    valrr (1) = e1
-                    valrr (2) = ei
-                    valrr (3) = zr(jrpv+i)
+                    iret = iret+1
+                    valkk(1) = nomcle
+                    valrr(1) = e1
+                    valrr(2) = ei
+                    valrr(3) = zr(jrpv+i)
                     call utmess('E', 'MODELISA9_65', sk=valkk(1), nr=3, valr=valrr)
-                endif
-            enddo
+                end if
+            end do
             if (iret .ne. 0) then
                 call utmess('F', 'MODELISA6_73')
-            endif
-        enddo
+            end if
+        end do
 !
     else
         call utmess('F', 'MODELISA6_76')
-    endif
+    end if
 !
     call jedema()
 end subroutine

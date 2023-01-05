@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,41 +52,41 @@ subroutine te0391(option, nomte)
     integer, parameter :: nb_cara = 4
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','JX1'/
+    data noms_cara/'A1', 'IY1', 'IZ1', 'JX1'/
 !-----------------------------------------------------------------------
 !
     call elref1(elrefe)
     zero = 0.0d0
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     nord = 6*nno
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
     ico = 0
     do kp = 1, npg
         do ne = 1, nno
-            ico = ico + 1
-            en(ne,kp) = zr(ivf-1+ico)
-            enprim(ne,kp) = zr(idfdk-1+ico)
+            ico = ico+1
+            en(ne, kp) = zr(ivf-1+ico)
+            enprim(ne, kp) = zr(idfdk-1+ico)
         end do
     end do
 !
     call jevech('PGEOMER', 'L', igeom)
-    k0 = igeom - 1
+    k0 = igeom-1
 !
     do ne = 1, nno
         do ic = 1, 3
-            k0 = k0 + 1
-            x00(ic,ne) = zr(k0)
+            k0 = k0+1
+            x00(ic, ne) = zr(k0)
         end do
     end do
 !
     call jevech('PMATERC', 'L', imate)
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -110,33 +110,33 @@ subroutine te0391(option, nomte)
 !
     do j = 1, nord
         do i = 1, nord
-            mass(i,j) = zero
+            mass(i, j) = zero
         end do
     end do
 !
 !* BOUCLE SUR LES POINTS DE GAUSS
 !
     do kp = 1, npg
-        call gdjrg0(kp, nno, enprim, x00, y0,&
+        call gdjrg0(kp, nno, enprim, x00, y0, &
                     ajacob, rot0)
         pjacob = zr(ipoids-1+kp)*ajacob
-        call gdmmas(kp, nno, pjacob, en, grani,&
+        call gdmmas(kp, nno, pjacob, en, grani, &
                     rot0, mass)
     end do
 !
     if (option .eq. 'MASS_MECA') then
         call jevech('PMATUNS', 'E', imatuu)
-        imat = imatuu - 1
+        imat = imatuu-1
         do i = 1, nord
             do j = 1, nord
-                imat = imat + 1
-                zr(imat) = mass(i,j)
+                imat = imat+1
+                zr(imat) = mass(i, j)
             end do
         end do
-    else if (option.eq.'M_GAMMA') then
+    else if (option .eq. 'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
         call pmavec('ZERO', nord, mass, zr(iacce), zr(ivect))
-    endif
+    end if
 !
 end subroutine

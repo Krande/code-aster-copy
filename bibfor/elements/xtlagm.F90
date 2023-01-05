@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xtlagm(ndim, nnc, jnn, nddls,&
-                  jdepde, ffc,&
-                  lfrott, nfhe, lmulti, heavno,&
+subroutine xtlagm(ndim, nnc, jnn, nddls, &
+                  jdepde, ffc, &
+                  lfrott, nfhe, lmulti, heavno, &
                   dlagrc, dlagrf)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -61,14 +61,14 @@ subroutine xtlagm(ndim, nnc, jnn, nddls,&
 !
 ! ----------------------------------------------------------------------
 !
-    call xtlagc(ndim, nnc, jnn, nddls,&
-                jdepde, ffc,&
+    call xtlagc(ndim, nnc, jnn, nddls, &
+                jdepde, ffc, &
                 nfhe, lmulti, heavno, dlagrc)
 !
     if (lfrott) then
-        call xtlagf(ndim, nnc, jnn, nddls,&
-                    jdepde, ffc,&
+        call xtlagf(ndim, nnc, jnn, nddls, &
+                    jdepde, ffc, &
                     nfhe, dlagrf)
-    endif
+    end if
 !
 end subroutine

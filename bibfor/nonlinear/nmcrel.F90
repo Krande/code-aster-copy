@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,12 +98,12 @@ subroutine nmcrel(sderro, nomevt, vall)
         if (neven .eq. nomevt) then
             ievact = ieven
             goto 66
-        endif
+        end if
     end do
 !
- 66 continue
+66  continue
 !
-    ASSERT(ievact.ne.0)
+    ASSERT(ievact .ne. 0)
 !
 ! --- (DES-)ACTIVATION DE L'EVENEMENT
 !
@@ -111,7 +111,7 @@ subroutine nmcrel(sderro, nomevt, vall)
         zi(jeeact-1+ievact) = 1
     else
         zi(jeeact-1+ievact) = 0
-    endif
+    end if
 !
 ! --- EVENEMENT DE TYPE ERREUR ACTIVE: ON CHANGE LE STATUT DE LA BOUCLE
 !
@@ -127,9 +127,9 @@ subroutine nmcrel(sderro, nomevt, vall)
                 call nmeceb(sderro, 'NEWT', 'STOP')
                 call nmeceb(sderro, 'FIXE', 'STOP')
                 call nmeceb(sderro, 'INST', 'STOP')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
     call jedema()

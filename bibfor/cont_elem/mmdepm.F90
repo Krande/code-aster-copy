@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,22 +17,22 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmdepm(nbdm  , ndim  ,&
-                  nne   , nnm   ,&
-                  jdepm , jdepde,&
-                  ffe   , ffm   ,&
-                  ddeple, ddeplm,&
+subroutine mmdepm(nbdm, ndim, &
+                  nne, nnm, &
+                  jdepm, jdepde, &
+                  ffe, ffm, &
+                  ddeple, ddeplm, &
                   deplme, deplmm)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 !
-integer, intent(in) :: nbdm, ndim, nne, nnm
-integer, intent(in) :: jdepde, jdepm
-real(kind=8), intent(in) :: ffe(9), ffm(9)
-real(kind=8), intent(out) :: ddeple(3), deplme(3)
-real(kind=8), intent(out) :: ddeplm(3), deplmm(3)
+    integer, intent(in) :: nbdm, ndim, nne, nnm
+    integer, intent(in) :: jdepde, jdepm
+    real(kind=8), intent(in) :: ffe(9), ffm(9)
+    real(kind=8), intent(out) :: ddeple(3), deplme(3)
+    real(kind=8), intent(out) :: ddeplm(3), deplmm(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ real(kind=8), intent(out) :: ddeplm(3), deplmm(3)
 !
     do idim = 1, ndim
         do inoe = 1, nne
-            deplme(idim) = deplme(idim) + ffe(inoe)*zr(jdepm+(inoe-1)*nbdm+idim-1)
+            deplme(idim) = deplme(idim)+ffe(inoe)*zr(jdepm+(inoe-1)*nbdm+idim-1)
         end do
     end do
 !
@@ -76,7 +76,7 @@ real(kind=8), intent(out) :: ddeplm(3), deplmm(3)
 !
     do idim = 1, ndim
         do inoe = 1, nne
-            ddeple(idim) = ddeple(idim) + ffe(inoe)*zr(jdepde+(inoe-1)*nbdm+idim-1)
+            ddeple(idim) = ddeple(idim)+ffe(inoe)*zr(jdepde+(inoe-1)*nbdm+idim-1)
         end do
     end do
 !
@@ -84,7 +84,7 @@ real(kind=8), intent(out) :: ddeplm(3), deplmm(3)
 !
     do idim = 1, ndim
         do inoe = 1, nnm
-            deplmm(idim) = deplmm(idim) + ffm(inoe)* zr(jdepm+nne*nbdm+(inoe-1)*ndim+idim-1)
+            deplmm(idim) = deplmm(idim)+ffm(inoe)*zr(jdepm+nne*nbdm+(inoe-1)*ndim+idim-1)
         end do
     end do
 !
@@ -92,7 +92,7 @@ real(kind=8), intent(out) :: ddeplm(3), deplmm(3)
 !
     do idim = 1, ndim
         do inoe = 1, nnm
-            ddeplm(idim) = ddeplm(idim) + ffm(inoe)* zr(jdepde+nne*nbdm+(inoe-1)*ndim+idim-1)
+            ddeplm(idim) = ddeplm(idim)+ffm(inoe)*zr(jdepde+nne*nbdm+(inoe-1)*ndim+idim-1)
         end do
     end do
 !

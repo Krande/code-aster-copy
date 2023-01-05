@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine dismoi_carcri(questi_, nomobj_, repi, repk, ierd)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -55,7 +55,7 @@ implicit none
     aster_logical :: l_post_incr
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
-    data  lcham/ 'POSTINCR'/
+    data lcham/'POSTINCR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,26 +65,26 @@ implicit none
 !
     questi = questi_
     nomobj = nomobj_
-    ASSERT(questi.eq.'POST_INCR')
-    repk   = 'NON'
-    repi   = 0
-    ierd   = 0
+    ASSERT(questi .eq. 'POST_INCR')
+    repk = 'NON'
+    repi = 0
+    ierd = 0
     l_post_incr = .false.
     cham_elem_s = '&&DISMCO.CHTMP'
-    chcalc      = '&&GVERLC.CHCALC'
+    chcalc = '&&GVERLC.CHCALC'
 !
 ! - Convert to cham_elem_s
 !
-    call carces(nomobj, 'ELEM', ' ', 'V', cham_elem_s,&
-                'A'   , iret)
-    if (iret.gt.0) then
+    call carces(nomobj, 'ELEM', ' ', 'V', cham_elem_s, &
+                'A', iret)
+    if (iret .gt. 0) then
         ierd = 1
         goto 999
-    endif
+    end if
 !
 ! - Reduction on specific GRANDEUR
 !
-    call cesred(cham_elem_s, 0, [0], 1, lcham,&
+    call cesred(cham_elem_s, 0, [0], 1, lcham, &
                 'V', chcalc)
     call detrsd('CHAM_ELEM_S', cham_elem_s)
 !
@@ -97,20 +97,20 @@ implicit none
     nb_elem = zi(jcald-1+1)
 !
     do i_elem = 1, nb_elem
-        call cesexi('C', jcald, jcall, i_elem, 1,&
+        call cesexi('C', jcald, jcall, i_elem, 1, &
                     1, 1, iadc)
         if (iadc .gt. 0) then
             if (cesv(iadc) .gt. 0.d0) then
                 l_post_incr = .true.
-            endif
-        endif
+            end if
+        end if
     end do
 !
 999 continue
 !
     if (l_post_incr) then
         repk = 'OUI'
-    endif
+    end if
     call detrsd('CHAM_ELEM_S', chcalc)
 !
     call jedema()

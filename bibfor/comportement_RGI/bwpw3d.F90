@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,55 +16,55 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine bwpw3d(mfr,biotw,poro,vw,xnsat,&
-                                          mw,pw,bw,srw)
+subroutine bwpw3d(mfr, biotw, poro, vw, xnsat, &
+                  mw, pw, bw, srw)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   calcul de la pression hydrique en saturé et non saturé
-      implicit none
+    implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 !   variables externes
-      integer, intent(in) :: mfr
-      real(kind=8), intent(in) :: biotw, poro, vw, xnsat, mw
-      real(kind=8), intent(out) :: pw, bw
-      real(kind=8), intent(inout) :: srw
+    integer, intent(in) :: mfr
+    real(kind=8), intent(in) :: biotw, poro, vw, xnsat, mw
+    real(kind=8), intent(out) :: pw, bw
+    real(kind=8), intent(inout) :: srw
 
 !   variables locales
-      real(kind=8) :: vvw
-      real(kind=8), dimension(1) :: valr
+    real(kind=8) :: vvw
+    real(kind=8), dimension(1) :: valr
 
 !   pression capillaire si non sature actif
-      if(mfr.ne.33) then
+    if (mfr .ne. 33) then
 !      formulation non poreuse : on ne traite que les depression hydriques
-         vvw=poro
-         srw=(vw/vvw)
-         bw=srw*biotw
-         if(vw.lt.vvw) then
-            if(srw.gt.0.0d0) then
-                srw=dmin1(srw,1.d0)
+        vvw = poro
+        srw = (vw/vvw)
+        bw = srw*biotw
+        if (vw .lt. vvw) then
+            if (srw .gt. 0.0d0) then
+                srw = dmin1(srw, 1.d0)
             else
-                srw=0.01d0
+                srw = 0.01d0
             end if
 !         van genuchten
-            if (abs(mw).ge.r8prem()) then
-                pw=-xnsat*((((srw**(-1.d0/mw))-1.d0))**(1.d0-mw))
+            if (abs(mw) .ge. r8prem()) then
+                pw = -xnsat*((((srw**(-1.d0/mw))-1.d0))**(1.d0-mw))
             else
                 call utmess('F', 'COMPOR3_14')
             end if
-         else
-            pw=0.d0
-            bw=biotw
-            srw=1.d0
-         end if
-      else
+        else
+            pw = 0.d0
+            bw = biotw
+            srw = 1.d0
+        end if
+    else
 !      en poreux la pression d eau n est pas geree dans le modele local
 !      il serait possible de gerer le complement au calcul poro meca
 !      si necessaire (supplement de pression/ resolution poro elastique)
-         pw=0.d0
-         bw=biotw
-         valr(1) = srw
-         call utmess('A', 'COMPOR3_15', nr=1, valr=valr)
+        pw = 0.d0
+        bw = biotw
+        valr(1) = srw
+        call utmess('A', 'COMPOR3_15', nr=1, valr=valr)
 !      cela influe sur la vitesse de fluage...
-      end if
+    end if
 end subroutine

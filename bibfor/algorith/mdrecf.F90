@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
-                  iadvec, inumor, fondep, fonvit, fonacc,&
-                  neq, typbas, basemo, nbmode, riggen,&
+subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
+                  iadvec, inumor, fondep, fonvit, fonacc, &
+                  neq, typbas, basemo, nbmode, riggen, &
                   nommot, nomres)
     implicit none
 #include "jeveux.h"
@@ -71,7 +71,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
 !
 !
-    integer :: i, ier, ninst,  jprol, nexcit
+    integer :: i, ier, ninst, jprol, nexcit
     real(kind=8) :: alpha
     real(kind=8) :: coef
     character(len=2) :: ires
@@ -97,7 +97,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     call jemarq()
     ier = 0
 ! ---    CALCUL TRANSITOIRE CLASSIQUE
-    call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C',&
+    call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C', &
                 ier=ier)
 !
 !
@@ -107,15 +107,15 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
         call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=numddl)
         deeq = numddl//'.NUME.DEEQ'
         call jeveuo(deeq, 'L', iddeeq)
-    else if (typeba(1:1).ne.' ') then
+    else if (typeba(1:1) .ne. ' ') then
         call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl)
         call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
         deeq = numddl//'.NUME.DEEQ'
         call jeveuo(deeq, 'L', iddeeq)
-    endif
+    end if
     nommot = 'NON'
 !
-    nexcit = nexci + nexcir*nbmode
+    nexcit = nexci+nexcir*nbmode
     npsdel = nexcit*neq
 !
 ! --- EXCITATIONS SOUS LE MOT-CLE EXCIT
@@ -134,58 +134,58 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !         CAS D'UNE FONC_MULT
             nomfon(i) = fonct(1:8)
             call jeveuo(fonct//'.PROL', 'L', lprol)
-            nomfon(i+nexcit) = zk24(lprol)(1:8)
+            nomfon(i+nexcit) = zk24(lprol) (1:8)
             if (l1 .ne. 0) then
 !           CAS D'UN VECT_ASSE_GENE
                 call jeveut(veasge//'.VALE', 'L', jvale)
-                iadvec(i)=jvale
-                idescf(i)=1
+                iadvec(i) = jvale
+                idescf(i) = 1
             else
 !           CAS D'UN NUME_ORDRE
 !           VERIF : LE NUME_ORDRE EST INFERIEUR AU NUME_ORDRE MAX
                 if (inum .gt. neq) then
                     call utmess('F', 'ALGORITH5_76')
-                endif
-                inumor(i)=inum
-                idescf(i)=2
-            endif
-        else if (m1.ne.0) then
+                end if
+                inumor(i) = inum
+                idescf(i) = 2
+            end if
+        else if (m1 .ne. 0) then
 !         CAS D'UN COEF MULT
-            coefm(i)=alpha
+            coefm(i) = alpha
             if (l1 .ne. 0) then
 !           CAS D'UN VECT_ASSE_GENE
                 call jeveut(veasge//'.VALE', 'L', jvale)
-                iadvec(i)=jvale
-                idescf(i)=3
+                iadvec(i) = jvale
+                idescf(i) = 3
             else
 !           CAS D'UN NUME_ORDRE
                 if (inum .gt. neq) then
                     call utmess('F', 'ALGORITH5_76')
-                endif
-                inumor(i)=inum
-                idescf(i)=4
-            endif
-        else if (na.ne.0) then
+                end if
+                inumor(i) = inum
+                idescf(i) = 4
+            end if
+        else if (na .ne. 0) then
 !         CAS D'UN ACCELEROGRAMME
             nomfon(i) = facce(1:8)
             fonacc(i) = facce(1:8)
             call jeveuo(facce//'.PROL', 'L', lprol)
-            nomfon(i+nexcit) = zk24(lprol)(1:8)
-            fonacc(i+nexcit) = zk24(lprol)(1:8)
+            nomfon(i+nexcit) = zk24(lprol) (1:8)
+            fonacc(i+nexcit) = zk24(lprol) (1:8)
             if (l1 .ne. 0) then
 !           CAS D'UN VECT_ASSE_GENE
                 call jeveut(veasge//'.VALE', 'L', jvale)
-                iadvec(i)=jvale
-                idescf(i)=1
+                iadvec(i) = jvale
+                idescf(i) = 1
             else
 !           CAS D'UN NUME_ORDRE
                 if (inum .gt. neq) then
                     call utmess('F', 'ALGORITH5_76')
-                endif
-                inumor(i)=inum
-                idescf(i)=2
-            endif
-        endif
+                end if
+                inumor(i) = inum
+                idescf(i) = 2
+            end if
+        end if
         if (n2 .ne. 0) then
             if (monmot(1) .eq. 'OUI') then
                 nommot = 'OUI'
@@ -194,29 +194,29 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                     call wkvect(nomres//'           .IPSD', 'G V R8', npsdel, jpsdel)
                 else
                     call jeveuo(nomres//'           .IPSD', 'E', jpsdel)
-                endif
+                end if
 !
                 call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
                 if (nbv .eq. 0) then
-                    ier =ier+1
+                    ier = ier+1
                     call utmess('F', 'ALGORITH13_46')
                     goto 10
-                endif
+                end if
 
-                call trmult(modsta, i, mailla, neq, iddeeq,&
-                            zr(jpsdel+(i-1) *neq), numddl)
+                call trmult(modsta, i, mailla, neq, iddeeq, &
+                            zr(jpsdel+(i-1)*neq), numddl)
                 call getvid('EXCIT', 'VITE', iocc=i, scal=fonvit(i), nbret=n4)
                 fonct = fonvit(i)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
-                fonvit(i+nexcit) = zk24(lprol)(1:8)
+                fonvit(i+nexcit) = zk24(lprol) (1:8)
                 call getvid('EXCIT', 'DEPL', iocc=i, scal=fondep(i), nbret=n5)
-                fonct = fondep(i)(1:8)
+                fonct = fondep(i) (1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
-                fondep(i+nexcit) = zk24(lprol)(1:8)
+                fondep(i+nexcit) = zk24(lprol) (1:8)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
         if (n3 .ne. 0) then
             if (monmot(2) .eq. 'OUI') then
                 nommot = 'OUI'
@@ -225,18 +225,18 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                     call wkvect(nomres//'           .IPSD', 'G V R8', npsdel, jpsdel)
                 else
                     call jeveuo(nomres//'           .IPSD', 'E', jpsdel)
-                endif
+                end if
                 call getvid(' ', 'MODE_CORR', scal=modcor, nbret=nbv)
                 if (nbv .eq. 0) then
-                    ier =ier+1
+                    ier = ier+1
                     call utmess('F', 'ALGORITH13_47')
                     goto 10
-                endif
+                end if
 !
 
 !               Add the identifier .DESC[5] to 1 , i.e. CORR_STAT exists
-                call jeexin(nomres//'           .DESC',iret)
-                if (iret.eq.0) then
+                call jeexin(nomres//'           .DESC', iret)
+                if (iret .eq. 0) then
                     call wkvect(nomres//'           .DESC', 'G V I', 5, jdesc)
                 else
                     call jeveuo(nomres//'           .DESC', 'E', jdesc)
@@ -244,17 +244,17 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 zi(jdesc+5-1) = 1
 !
                 call getvid('EXCIT', 'D_FONC_DT', iocc=i, scal=fonvit(i), nbret=n4)
-                fonct = fonvit(i)(1:8)
+                fonct = fonvit(i) (1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
-                fonvit(i+nexcit) = zk24(lprol)(1:8)
+                fonvit(i+nexcit) = zk24(lprol) (1:8)
                 call getvid('EXCIT', 'D_FONC_DT2', iocc=i, scal=fonacc(i), nbret=n5)
-                fonct = fonacc(i)(1:8)
+                fonct = fonacc(i) (1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
-                fonacc(i+nexcit) = zk24(lprol)(1:8)
-                fondep(i) = nomfon(i)(1:8)
-                fondep(i+nexcit) = nomfon(i+nexcit)(1:8)
+                fonacc(i+nexcit) = zk24(lprol) (1:8)
+                fondep(i) = nomfon(i) (1:8)
+                fondep(i+nexcit) = nomfon(i+nexcit) (1:8)
 !
-                call rsexch('F', modcor, 'DEPL', i, chamno,&
+                call rsexch('F', modcor, 'DEPL', i, chamno, &
                             iret)
                 call jeveuo(chamno//'.VALE', 'L', vr=modco)
                 do ieq = 1, neq
@@ -262,27 +262,27 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 end do
                 do nm = 1, nbmode
                     coef = zr(iadvec(i)+nm-1)/riggen(nm)
-                    call rsexch('F', basemo, 'DEPL', nm, chamn2,&
+                    call rsexch('F', basemo, 'DEPL', nm, chamn2, &
                                 iret)
                     call jeveuo(chamn2//'.VALE', 'L', vr=mod)
                     do ieq = 1, neq
-                        zr(jpsdel+ieq-1+(i-1)*neq) = zr(&
-                                                     jpsdel+ieq-1+(i-1)* neq&
-                                                     ) - coef*mod(1+ieq-1&
-                                                     )
+                        zr(jpsdel+ieq-1+(i-1)*neq) = zr( &
+                                                     jpsdel+ieq-1+(i-1)*neq &
+                                                     )-coef*mod(1+ieq-1 &
+                                                                )
                     end do
                     call jelibe(chamn2//'.VALE')
                 end do
                 call jelibe(chamno//'.VALE')
 !
 !           --- MISE A ZERO DES DDL DE LAGRANGE
-                call zerlag(neq, zi( iddeeq), vectr=zr(jpsdel+(i-1)*neq))
+                call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+(i-1)*neq))
 !
             else
                 ASSERT(.false.)
-            endif
-        endif
- 10     continue
+            end if
+        end if
+10      continue
     end do
 !
 !
@@ -293,9 +293,8 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
     call jeveuo(basemo//'           .ORDR', 'L', vi=ordr)
 
-
     !if (nbmode .gt. 999) then
-     !   call utmess('F', 'ALGORITH5_77')
+    !   call utmess('F', 'ALGORITH5_77')
     !endif
 
     do i = 1, nexcir
@@ -318,21 +317,21 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
             call wkvect(nofk19//'.VALE', 'V V R8', 2*ninst, jvale)
             do iinst = 1, ninst
                 zr(jvale-1+iinst) = disc(iinst)
-                zr(jvale-1+ninst+iinst) = alpha* zr( jdepl-1+nbmode*( iinst-1)+jmod)
+                zr(jvale-1+ninst+iinst) = alpha*zr(jdepl-1+nbmode*(iinst-1)+jmod)
             end do
 !
             call wkvect(nofk19//'.PROL', 'V V K24', 6, jprol)
-            zk24(jprol-1+1)='FONCTION'
-            zk24(jprol-1+2)='LIN LIN'
-            zk24(jprol-1+3)='INST'
-            zk24(jprol-1+4)='TOUTRESU'
-            zk24(jprol-1+5)='EE'
-            zk24(jprol-1+6)=nomfon(ii)
+            zk24(jprol-1+1) = 'FONCTION'
+            zk24(jprol-1+2) = 'LIN LIN'
+            zk24(jprol-1+3) = 'INST'
+            zk24(jprol-1+4) = 'TOUTRESU'
+            zk24(jprol-1+5) = 'EE'
+            zk24(jprol-1+6) = nomfon(ii)
 !
-            nomfon(nexcit+ii+jmod) = zk24(jprol)(1:8)
+            nomfon(nexcit+ii+jmod) = zk24(jprol) (1:8)
 !
-            inumor(ii+jmod)=ordr(jmod)
-            idescf(ii+jmod)=2
+            inumor(ii+jmod) = ordr(jmod)
+            idescf(ii+jmod) = 2
 !
         end do
 !

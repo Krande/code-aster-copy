@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romMultiParaROMMatrCreate(base, ds_multipara, i_coef, syst_matr)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/zdotc.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-integer, intent(in) :: i_coef
-character(len=19), intent(in) :: syst_matr
+    type(ROM_DS_Empi), intent(in) :: base
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    integer, intent(in) :: i_coef
+    character(len=19), intent(in) :: syst_matr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,64 +66,64 @@ character(len=19), intent(in) :: syst_matr
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_67')
-    endif
+    end if
 !
 ! - Initializations
 !
-    nbMode     = base%nbMode
+    nbMode = base%nbMode
     nbModeMaxi = base%nbModeMaxi
-    nbMatr     = ds_multipara%nb_matr
+    nbMatr = ds_multipara%nb_matr
 !
-    if(ds_multipara%syst_type .eq.'R') then
-       call jeveuo(syst_matr, 'E', vr = vr_syst_matr)
-       vr_syst_matr(:) = 0.d0
-    else if(ds_multipara%syst_type .eq.'C') then
-       call jeveuo(syst_matr, 'E', vc = vc_syst_matr)
-       vc_syst_matr(:) = dcmplx(0.d0,0.d0)
+    if (ds_multipara%syst_type .eq. 'R') then
+        call jeveuo(syst_matr, 'E', vr=vr_syst_matr)
+        vr_syst_matr(:) = 0.d0
+    else if (ds_multipara%syst_type .eq. 'C') then
+        call jeveuo(syst_matr, 'E', vc=vc_syst_matr)
+        vc_syst_matr(:) = dcmplx(0.d0, 0.d0)
     else
-       ASSERT(ASTER_FALSE)
+        ASSERT(ASTER_FALSE)
     end if
 !
 ! - Compute matrix
 !
-    if (ds_multipara%syst_type .eq.'R') then
+    if (ds_multipara%syst_type .eq. 'R') then
         do iMatr = 1, nbMatr
-           l_coef_cplx = ds_multipara%matr_coef(iMatr)%l_cplx
-           l_coef_real = ds_multipara%matr_coef(iMatr)%l_real
-           if (l_coef_cplx) then
-               ASSERT(.false.)
-           else
-               coef_r    = ds_multipara%matr_coef(iMatr)%coef_real(i_coef)
-           endif
-           call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vr = vr_matr_red)
-           do iMode = 1, nbMode
-              do jMode = 1, nbMode
-                 vr_syst_matr(nbMode*(iMode-1)+jMode) = vr_syst_matr(nbMode*(iMode-1)+jMode)+&
-                                          vr_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_r
-              end do
+            l_coef_cplx = ds_multipara%matr_coef(iMatr)%l_cplx
+            l_coef_real = ds_multipara%matr_coef(iMatr)%l_real
+            if (l_coef_cplx) then
+                ASSERT(.false.)
+            else
+                coef_r = ds_multipara%matr_coef(iMatr)%coef_real(i_coef)
+            end if
+            call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vr=vr_matr_red)
+            do iMode = 1, nbMode
+                do jMode = 1, nbMode
+                    vr_syst_matr(nbMode*(iMode-1)+jMode) = vr_syst_matr(nbMode*(iMode-1)+jMode)+ &
+                                                      vr_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_r
+                end do
             end do
-         end do
-    else if (ds_multipara%syst_type .eq.'C') then
+        end do
+    else if (ds_multipara%syst_type .eq. 'C') then
         do iMatr = 1, nbMatr
-           l_coef_cplx = ds_multipara%matr_coef(iMatr)%l_cplx
-           l_coef_real = ds_multipara%matr_coef(iMatr)%l_real
-           if (l_coef_cplx) then
-               coef_c    = ds_multipara%matr_coef(iMatr)%coef_cplx(i_coef)
-               coef_cplx = coef_c
-           else
-               coef_r    = ds_multipara%matr_coef(iMatr)%coef_real(i_coef)
-               coef_cplx = dcmplx(coef_r)
-           endif
-           call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vc = vc_matr_red)
-           do iMode = 1, nbMode
-              do jMode = 1, nbMode
-                 vc_syst_matr(nbMode*(iMode-1)+jMode) = vc_syst_matr(nbMode*(iMode-1)+jMode)+&
-                                          vc_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_cplx
-              end do
+            l_coef_cplx = ds_multipara%matr_coef(iMatr)%l_cplx
+            l_coef_real = ds_multipara%matr_coef(iMatr)%l_real
+            if (l_coef_cplx) then
+                coef_c = ds_multipara%matr_coef(iMatr)%coef_cplx(i_coef)
+                coef_cplx = coef_c
+            else
+                coef_r = ds_multipara%matr_coef(iMatr)%coef_real(i_coef)
+                coef_cplx = dcmplx(coef_r)
+            end if
+            call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vc=vc_matr_red)
+            do iMode = 1, nbMode
+                do jMode = 1, nbMode
+                    vc_syst_matr(nbMode*(iMode-1)+jMode) = vc_syst_matr(nbMode*(iMode-1)+jMode)+ &
+                                                   vc_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_cplx
+                end do
             end do
-         end do
+        end do
     else
-       ASSERT(ASTER_FALSE)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

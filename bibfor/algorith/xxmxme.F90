@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine xxmxme(mesh, model, nume_dof, list_func_acti, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,10 +40,10 @@ implicit none
 #include "asterfort/xmele3.h"
 #include "asterfort/vtcreb.h"
 !
-character(len=8), intent(in) :: mesh, model
-character(len=24), intent(in) :: nume_dof
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=8), intent(in) :: mesh, model
+    character(len=24), intent(in) :: nume_dof
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nfiss
-    integer, parameter :: nfismx =100
+    integer, parameter :: nfismx = 100
     character(len=24) :: tabfin
     integer :: jtabf, ifm, niv
     integer :: ntpc
@@ -78,15 +78,15 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_9')
-    endif
+        call utmess('I', 'CONTACT5_9')
+    end if
 !
 ! - Active functionnalities
 !
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
-    lxffm = isfonc(list_func_acti,'FROT_XFEM')
-    l_thm = isfonc(list_func_acti,'THM')
-    lxczm = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
+    ntpc = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    lxffm = isfonc(list_func_acti, 'FROT_XFEM')
+    l_thm = isfonc(list_func_acti, 'THM')
+    lxczm = cfdisl(ds_contact%sdcont_defi, 'EXIS_XFEM_CZM')
     ds_contact%l_cont_thm = l_thm
 !
 ! --- INITIALISATIONS
@@ -99,14 +99,14 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
-    endif
+    end if
     if (nfiss .le. 0) then
         call utmess('F', 'XFEM_3')
-    endif
+    end if
 !
 ! --- TYPE DE CONTACT : CLASSIQUE OU MORTAR?
 !
-    call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
+    call jeveuo(model//'.XFEM_CONT', 'L', vi=xfem_cont)
     contac = xfem_cont(1)
 !
 ! --- NOM DES CHAMPS
@@ -118,9 +118,9 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC' )
-    lxffm = isfonc(list_func_acti,'FROT_XFEM')
-    lxczm = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
+    ntpc = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    lxffm = isfonc(list_func_acti, 'FROT_XFEM')
+    lxczm = cfdisl(ds_contact%sdcont_defi, 'EXIS_XFEM_CZM')
 !
 ! --- TABLEAU CONTENANT LES INFORMATIONS DIVERSES
 !
@@ -130,41 +130,41 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --- PREPARATION CHAM_ELEM VIERGES
 !
-    if(contac.eq.1.or.contac.eq.3) then
-        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
+    if (contac .eq. 1 .or. contac .eq. 3) then
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
                     xindc0, 'PINDCOI', 'RIGI_CONT', list_func_acti)
-    else if(contac.eq.2) then
-        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
+    else if (contac .eq. 2) then
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
                     xindc0, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
-    endif
+    end if
 !
     if (lxczm) then
 !
 !       SI CONTACT CLASSIQUE, CHAMP AUX PTS GAUSS
 !
-        if(contac.eq.1.or.contac.eq.3) then
-            call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
+        if (contac .eq. 1 .or. contac .eq. 3) then
+            call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
                         xcohe0, 'PCOHES', 'RIGI_CONT', list_func_acti)
 !
 !       SI CONTACT MORTAR, CHAMP ELNO
 !
-        else if(contac.eq.2) then
-            call xmele3(mesh, model, ligrel, nfiss,&
+        else if (contac .eq. 2) then
+            call xmele3(mesh, model, ligrel, nfiss, &
                         xcohe0, 'PCOHES', 'RIGI_CONT_M', list_func_acti)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
     if (lxffm) then
-        call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
+        call xmele1(mesh, model, ds_contact, ligrel, nfiss, &
                     xseuc0, 'PSEUIL', 'RIGI_CONT', list_func_acti)
-    endif
+    end if
 !
 ! - Forces to solve
 !
-    call vtcreb(ds_contact%cneltc, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(ds_contact%cneltc, 'V', 'R', nume_ddlz=nume_dof)
     ds_contact%l_cneltc = ASTER_TRUE
-    call vtcreb(ds_contact%cneltf, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(ds_contact%cneltf, 'V', 'R', nume_ddlz=nume_dof)
     ds_contact%l_cneltf = ASTER_TRUE
 !
     call jedema()

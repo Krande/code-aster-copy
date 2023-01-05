@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ function ioriv2(num, n, noeud, vect, coor)
     real(kind=8) :: y1, y2, y3, ya, yb, yn, z1
     real(kind=8) :: z2, z3, za, zb, zn
 !-----------------------------------------------------------------------
-    data nsom /0,0,3,4,0,3,3,4,4/
+    data nsom/0, 0, 3, 4, 0, 3, 3, 4, 4/
 !
 #define x(i) coor(1,i)
 #define y(i) coor(2,i)
@@ -51,63 +51,63 @@ function ioriv2(num, n, noeud, vect, coor)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
-    nso=nsom(n)
+    nso = nsom(n)
 !     BOUCLE SUR LES SOMMETS
-    ioriv2=0
+    ioriv2 = 0
     do i = 1, nso
         if (num(i) .eq. noeud) then
-            i1=i
-            i2=i-1
-            if (i .eq. 1) i2=nso
-            i3=i+1
-            if (i .eq. nso) i3=1
-            n1=num(i1)
-            n2=num(i2)
-            n3=num(i3)
-            x1=x(n1)
-            y1=y(n1)
-            z1=z(n1)
-            x2=x(n2)
-            y2=y(n2)
-            z2=z(n2)
-            x3=x(n3)
-            y3=y(n3)
-            z3=z(n3)
-            xa=x2-x1
-            ya=y2-y1
-            za=z2-z1
-            xb=x3-x1
-            yb=y3-y1
-            zb=z3-z1
+            i1 = i
+            i2 = i-1
+            if (i .eq. 1) i2 = nso
+            i3 = i+1
+            if (i .eq. nso) i3 = 1
+            n1 = num(i1)
+            n2 = num(i2)
+            n3 = num(i3)
+            x1 = x(n1)
+            y1 = y(n1)
+            z1 = z(n1)
+            x2 = x(n2)
+            y2 = y(n2)
+            z2 = z(n2)
+            x3 = x(n3)
+            y3 = y(n3)
+            z3 = z(n3)
+            xa = x2-x1
+            ya = y2-y1
+            za = z2-z1
+            xb = x3-x1
+            yb = y3-y1
+            zb = z3-z1
 !     VECTEUR NORMAL AU PLAN TANGENT AU NOEUD
-            xn=ya*zb-yb*za
-            yn=za*xb-zb*xa
-            zn=xa*yb-xb*ya
-            scal=xn*vect(1)+yn*vect(2)+zn*vect(3)
+            xn = ya*zb-yb*za
+            yn = za*xb-zb*xa
+            zn = xa*yb-xb*ya
+            scal = xn*vect(1)+yn*vect(2)+zn*vect(3)
             if (scal .lt. 0) then
-                ioriv2= 1
-            else if (scal.gt.0) then
-                ioriv2=-1
+                ioriv2 = 1
+            else if (scal .gt. 0) then
+                ioriv2 = -1
             else
                 call utmess('F', 'MODELISA4_76')
-            endif
-        endif
+            end if
+        end if
     end do
     if (ioriv2 .lt. 0) then
 !       ON PERMUTE LES SOMMETS
-        k=num(2)
-        l=num(nso)
-        num(2)=l
-        num(nso)=k
+        k = num(2)
+        l = num(nso)
+        num(2) = l
+        num(nso) = k
 !       ON PERMUTE LES NOEUDS INTERMEDIAIRES
         if (n .ne. nso) then
             do i = 1, nso/2
-                k=num(nso+i)
-                l=num(2*nso+1-i)
-                num(nso+i)=l
-                num(2*nso+1-i)=k
+                k = num(nso+i)
+                l = num(2*nso+1-i)
+                num(nso+i) = l
+                num(2*nso+1-i) = k
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end function

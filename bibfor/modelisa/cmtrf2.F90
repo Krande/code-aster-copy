@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
+subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf, &
                   ltrf, nbma, codint, lint, nint)
     implicit none
 #include "asterfort/assert.h"
@@ -30,9 +30,9 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
 !
     integer :: k
 ! ----------------------------------------------------------------------
-    ASSERT(codcm1.eq.1 .or. codcm1.eq.3)
-    ASSERT(codtrf.eq.1 .or. codtrf.eq.3)
-    ASSERT(nbma.gt.0)
+    ASSERT(codcm1 .eq. 1 .or. codcm1 .eq. 3)
+    ASSERT(codtrf .eq. 1 .or. codtrf .eq. 3)
+    ASSERT(nbma .gt. 0)
     codint = 3
 !
     if (codcm1 .eq. 1) then
@@ -45,7 +45,7 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
                 lint(k) = ltrf(k)
                 nint = ntrf
             end do
-        endif
+        end if
 !
     else
         if (codtrf .eq. 1) then
@@ -64,20 +64,20 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
                 lint(lcm1(k)) = 1
             end do
             do k = 1, ntrf
-                lint(ltrf(k)) = lint(ltrf(k)) + 1
+                lint(ltrf(k)) = lint(ltrf(k))+1
             end do
 !          -- LES MAILLES COMMUNES CONTIENNENT 2 (1+1) :
             nint = 0
             do k = 1, nbma
                 if (lint(k) .eq. 2) then
-                    nint = nint + 1
+                    nint = nint+1
                     lint(nint) = k
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
-    ASSERT(codint.eq.1 .or. codint.eq.3)
-    ASSERT(nint.ge.0)
+    ASSERT(codint .eq. 1 .or. codint .eq. 3)
+    ASSERT(nint .ge. 0)
 end subroutine

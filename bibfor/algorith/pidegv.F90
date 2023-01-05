@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidegv(neps, tau, epsm, epsp, epsd,&
+subroutine pidegv(neps, tau, epsm, epsp, epsd, &
                   copilo)
 !
 !
@@ -52,24 +52,24 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd,&
 !
 ! -- COEFFICIENTS DE PILOTAGE
 !
-    epsmno = dnrm2(ndimsi,epsm,1)
+    epsmno = dnrm2(ndimsi, epsm, 1)
 !
     if (epsmno .gt. 1.d0/r8gaem()) then
-        copilo(1,1) = ddot(ndimsi, epsm,1, epsp,1)/epsmno
-        copilo(2,1) = ddot(ndimsi, epsm,1, epsd,1)/epsmno
+        copilo(1, 1) = ddot(ndimsi, epsm, 1, epsp, 1)/epsmno
+        copilo(2, 1) = ddot(ndimsi, epsm, 1, epsd, 1)/epsmno
 !
     else
 !
 !      PREMIER PAS : PILOTAGE PAR LA NORME DE L'INCREMENT
-        p2=ddot(ndimsi,epsd,1,epsd,1)
-        p1=ddot(ndimsi,epsd,1,epsp,1)*2
-        p0=ddot(ndimsi,epsp,1,epsp,1)
+        p2 = ddot(ndimsi, epsd, 1, epsd, 1)
+        p1 = ddot(ndimsi, epsd, 1, epsp, 1)*2
+        p0 = ddot(ndimsi, epsp, 1, epsp, 1)
         call zerop2(p1/p2, (p0-tau**2)/p2, rac, nrac)
 !
         do i = 1, nrac
-            copilo(2,i) = 0.5d0*(2*p2*rac(i)+p1)/tau
-            copilo(1,i) = tau**2-rac(i)*copilo(2,i)
+            copilo(2, i) = 0.5d0*(2*p2*rac(i)+p1)/tau
+            copilo(1, i) = tau**2-rac(i)*copilo(2, i)
         end do
 !
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
-                  chflup, mateco, valthe, insold, inst,&
-                  resu, niveau, ifm, niv, ma,&
-                  cartef, nomgdf, carteh, nomgdh, cartet,&
-                  nomgdt, cartes, nomgds, chgeom, chsour,&
+subroutine resthe(ligrel, evol, chtemm, chtemp, chflum, &
+                  chflup, mateco, valthe, insold, inst, &
+                  resu, niveau, ifm, niv, ma, &
+                  cartef, nomgdf, carteh, nomgdh, cartet, &
+                  nomgdt, cartes, nomgds, chgeom, chsour, &
                   psourc, iaux)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -114,29 +114,29 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
         call jeveuo(chflum(1:19)//'.CELD', 'L', mceld)
         call jeveuo(chflum(1:19)//'.CELV', 'L', mcelv)
     else
-        mceld=1
-        mcelv=1
-    endif
+        mceld = 1
+        mcelv = 1
+    end if
     call jeveuo(chflup(1:19)//'.CELD', 'L', pceld)
     call jeveuo(chflup(1:19)//'.CELV', 'L', pcelv)
 !
 ! RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES SEGMENTS ET DE
 ! LEURS NOMBRES DE COMPOSANTES AU NIVEAU INFO (GRANDEUR PREMIERE)
-    iadef=1
-    iavaf=1
-    ncmpf=0
-    iadeh=1
-    iavah=1
-    ncmph=0
-    iadet=1
-    iavat=1
-    ncmpt=0
+    iadef = 1
+    iavaf = 1
+    ncmpf = 0
+    iadeh = 1
+    iavah = 1
+    ncmph = 0
+    iadet = 1
+    iavat = 1
+    ncmpt = 0
     if (cartef .ne. ' ') then
         call jeveuo(cartef//'.DESC', 'L', iadef)
         call jeveuo(cartef//'.VALE', 'L', iavaf)
         igd = zi(iadef)
         call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpf)
-    endif
+    end if
     if (carteh .ne. ' ') then
         call jeveuo(carteh//'.DESC', 'L', iadeh)
         call jeveuo(carteh//'.VALE', 'L', iavah)
@@ -146,7 +146,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
         call jeveuo(cartet//'.VALE', 'L', iavat)
         igd = zi(iadet)
         call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpt)
-    endif
+    end if
 !
 ! STOCKAGE DE CES DONNEES DANS UN VECTEUR D'ENTIER DONT LE NOM SERA
 ! TRANSMIS VIA LA CARTE
@@ -177,7 +177,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
         charev = 'EVOL'
     else
         charev = ' '
-    endif
+    end if
     licmp(1) = 'Z1'
     licmp(2) = 'Z2'
     licmp(3) = 'Z3'
@@ -209,11 +209,11 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
     kcmp(10) = nomgdt
     kcmp(11) = cartes
     kcmp(12) = nomgds
-    write(kcmp(13),'(F19.8)')valthe
-    write(kcmp(14),'(F19.8)')insold
-    write(kcmp(15),'(F19.8)')inst
+    write (kcmp(13), '(F19.8)') valthe
+    write (kcmp(14), '(F19.8)') insold
+    write (kcmp(15), '(F19.8)') inst
     kcmp(16) = charev
-    write(kcmp(17),'(I24)')ijeveo
+    write (kcmp(17), '(I24)') ijeveo
 ! DEUX DERNIERES COMPOSANTES REDONDANTES POUR PLUS TARD
     kcmp(18) = ma
     kcmp(19) = ma
@@ -221,7 +221,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 !
 ! CARTE NOMMEE &&RESTHER.CHARGE SUR LE MODELE LIGREL.
     base = 'V'
-    call mecact(base, '&&RESTHER.CHARGE', 'MODELE', ligrel, 'NEUT_K24',&
+    call mecact(base, '&&RESTHER.CHARGE', 'MODELE', ligrel, 'NEUT_K24', &
                 ncmp=nbcmp, lnomcmp=licmp, vk=kcmp)
 !
 ! LANCEMENT DES CALCULS ELEMENTAIRES-----------------------------------
@@ -249,8 +249,8 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
     lchout(1) = resu
     nbout = 1
 !
-    call calcul('S', 'ERTH_ELEM', ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'G',&
+    call calcul('S', 'ERTH_ELEM', ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'G', &
                 'OUI')
 !
     call jedetr('&&RESTHE.JEVEUO')

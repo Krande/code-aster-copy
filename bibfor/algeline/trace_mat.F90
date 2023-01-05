@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function trace_mat(ndim,m)
+function trace_mat(ndim, m)
 !
-      implicit none
+    implicit none
 !
-      real(kind=8) :: trace_mat
-      integer, intent(in) :: ndim
-      real(kind=8), intent(in) :: m(ndim,ndim)
+    real(kind=8) :: trace_mat
+    integer, intent(in) :: ndim
+    real(kind=8), intent(in) :: m(ndim, ndim)
 !
 !
 !     TRACE D UNE MATRICE
@@ -31,11 +31,11 @@ function trace_mat(ndim,m)
 ! IN  M  : MATRICE
 !
 !
-      integer :: i
+    integer :: i
 !
-      trace_mat = 0.d0
-      do i=1,ndim
-          trace_mat = trace_mat + m(i,i)
-      end do
+    trace_mat = 0.d0
+    do i = 1, ndim
+        trace_mat = trace_mat+m(i, i)
+    end do
 !
 end function

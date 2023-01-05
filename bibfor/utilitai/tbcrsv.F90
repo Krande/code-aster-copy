@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tbcrsv(nomta, baseta, nbpar, nompar, typpar,&
+subroutine tbcrsv(nomta, baseta, nbpar, nompar, typpar, &
                   nblign)
     implicit none
 #include "jeveux.h"
@@ -58,10 +58,10 @@ subroutine tbcrsv(nomta, baseta, nbpar, nompar, typpar,&
 !
     if (nomtab(18:19) .ne. '  ') then
         call utmess('F', 'UTILITAI4_75')
-    endif
+    end if
 !
     base = baseta(1:1)
-    ASSERT(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base .eq. 'V' .or. base .eq. 'G')
 !
 !     --- CREATION DU .TBBA ---
 !
@@ -71,7 +71,7 @@ subroutine tbcrsv(nomta, baseta, nbpar, nompar, typpar,&
 !     --- CREATION DU .TBNP ---
 !
     call wkvect(nomtab//'.TBNP', base//' V I', 2, jtbnp)
-    zi(jtbnp ) = 0
+    zi(jtbnp) = 0
     zi(jtbnp+1) = nblign
 !
 !     --- INITIALISATION DE LA TABLE ET DIMENSIONNEMENT

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine nonlinDSPrintTableLine(table, col_sep, unit_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/nonlinDSColumnWriteValue.h"
 #include "asterfort/PrepareTableLine.h"
 !
-type(NL_DS_Table), intent(in) :: table
-character(len=1), intent(in) :: col_sep
-integer, intent(in) :: unit_print
+    type(NL_DS_Table), intent(in) :: table
+    character(len=1), intent(in) :: col_sep
+    integer, intent(in) :: unit_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,14 +62,14 @@ integer, intent(in) :: unit_print
 ! --------------------------------------------------------------------------------------------------
 !
     chvide = ' '
-    pos    = 2
-    longr  = 12
-    longi  = 6
+    pos = 2
+    longr = 12
+    longi = 6
 !
 ! - Get parameters
 !
-    nb_cols         = table%nb_cols
-    line_width      = table%width
+    nb_cols = table%nb_cols
+    line_width = table%width
     ASSERT(line_width .le. 512)
 !
 ! - Prepare line of table - Void columns
@@ -80,49 +80,49 @@ integer, intent(in) :: unit_print
 !
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            col         = table%cols(i_col)
-            col_width   = 16
-            mark        = col%mark
-            name        = col%name
+            col = table%cols(i_col)
+            col_width = 16
+            mark = col%mark
+            name = col%name
             l_vale_affe = col%l_vale_affe
             l_vale_real = col%l_vale_real
             l_vale_inte = col%l_vale_inte
             l_vale_strg = col%l_vale_strg
-            posfin      = col_width+pos-1
+            posfin = col_width+pos-1
 !
 ! --------- Set values
 !
-            if (.not.l_vale_affe) then
+            if (.not. l_vale_affe) then
                 table_line(pos:posfin) = chvide(1:col_width)
             else
                 if (l_vale_inte) then
                     vali = col%vale_inte
-                    call nonlinDSColumnWriteValue(longi, table_line(pos: posfin),&
-                                                  value_i_ = vali)
+                    call nonlinDSColumnWriteValue(longi, table_line(pos:posfin), &
+                                                  value_i_=vali)
                 else if (l_vale_real) then
                     valr = col%vale_real
-                    call nonlinDSColumnWriteValue(longr, table_line(pos: posfin),&
-                                                  value_r_ = valr)
+                    call nonlinDSColumnWriteValue(longr, table_line(pos:posfin), &
+                                                  value_r_=valr)
                 else if (l_vale_strg) then
                     valk = col%vale_strg
                     table_line(pos:posfin) = valk(1:col_width)
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- Set mark
 !
             if (mark(1:1) .ne. ' ') then
-                posmar = pos + col_width - 2
+                posmar = pos+col_width-2
                 table_line(posmar:posmar) = mark(1:1)
-            endif
-            pos = pos + col_width + 1
-        endif
+            end if
+            pos = pos+col_width+1
+        end if
     end do
 !
 ! - Print
 !
-    call nonlinDSColumnWriteValue(line_width,  output_unit_ = unit_print, value_k_ = table_line)
+    call nonlinDSColumnWriteValue(line_width, output_unit_=unit_print, value_k_=table_line)
 !
 end subroutine

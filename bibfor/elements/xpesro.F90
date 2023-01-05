@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
-                  heavn, nfh, ddlc, nfe, nfiss,&
-                  ise, nnop, jlsn, jlst, ivectu,&
+subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp, &
+                  heavn, nfh, ddlc, nfe, nfiss, &
+                  ise, nnop, jlsn, jlst, ivectu, &
                   fno, imate, jbaslo, jstno)
 !
 ! aslint: disable=W1306
@@ -40,7 +40,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
     real(kind=8) :: coorse(*)
     integer :: igeom, ndim, ddlc, nfe, nnop
     integer :: ivectu, jlsn, jlst, imate, jbaslo, jstno
-    integer :: jheavt, nfh, nfiss, ise, heavn(27,5), ncomp
+    integer :: jheavt, nfh, nfiss, ise, heavn(27, 5), ncomp
     real(kind=8) :: fno(ndim*nnop)
 !-----------------------------------------------------------------------
 ! FONCTION REALISEE : CALCUL DU SECOND MEMBRE AUX PG DU SOUS EL COURANT
@@ -73,7 +73,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
     integer :: ndimb, nno, nnos, nnops, npgbis, pos, ifiz, he(nfiss), hea_se
     integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop)
-    real(kind=8) :: fk(27,3,3), ka, mu
+    real(kind=8) :: fk(27, 3, 3), ka, mu
     integer :: alp, singu
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: poids, r
@@ -81,33 +81,33 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
     aster_logical :: grdepl, axi
     integer :: irese
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
-    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
+    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
 !
 !-----------------------------------------------------------------------
-    grdepl=.false.
+    grdepl = .false.
 !
-    axi = lteatt('AXIS','OUI')
-    singu=min(1,nfe)
+    axi = lteatt('AXIS', 'OUI')
+    singu = min(1, nfe)
 !
     call elrefe_info(fami='RIGI', nnos=nnops)
 !
 !       FONCTION HEAVYSIDE CSTE POUR CHAQUE FISSURE SUR LE SS-ELT
     do ifiz = 1, nfiss
-      he(ifiz) = zi(jheavt-1+ncomp*(ifiz-1)+ise)
+        he(ifiz) = zi(jheavt-1+ncomp*(ifiz-1)+ise)
     end do
-    hea_se=xcalc_code(nfiss, he_inte=[he])
+    hea_se = xcalc_code(nfiss, he_inte=[he])
 !
 !     SOUS-ELEMENT DE REFERENCE
-    if (.not.iselli(elrefp)) then
-        irese=3
+    if (.not. iselli(elrefp)) then
+        irese = 3
     else
-        irese=0
-    endif
-    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), ndim=ndimb, nno=nno,&
-                     nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf,&
+        irese = 0
+    end if
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), ndim=ndimb, nno=nno, &
+                     nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, &
                      jdfde=idfde, jdfd2=jdfd2, jgano=jgano)
-    ASSERT(ndim.eq.ndimb)
+    ASSERT(ndim .eq. ndimb)
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT COURANT
@@ -119,19 +119,19 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
         xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
-                xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
+                xg(i) = xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+i)
             end do
         end do
 !
 !       CALCUL DES FF DE L'ELEMENT DE REFERENCE PARENT AU PG COURANT
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
                     xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse, &
                                      poids)
-        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse, &
                                      poids)
 !
 !
@@ -140,26 +140,26 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
         if (axi) then
             r = 0.d0
             do ino = 1, nnop
-                r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+                r = r+ff(ino)*zr(igeom-1+2*(ino-1)+1)
             end do
 !
 !
 !
-            ASSERT(r.gt.0d0)
-        endif
+            ASSERT(r .gt. 0d0)
+        end if
 !
         if (axi) then
-            poids= poids * r
-        endif
+            poids = poids*r
+        end if
 !
 !       CALCUL DES FONCTIONS D'ENRICHISSEMENT
 !       -------------------------------------
 !
         if (nfe .gt. 0) then
             call xkamat(imate, ndim, axi, ka, mu)
-            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1),8),&
-                         zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk)
-        endif
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1), 8), &
+                              zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk)
+        end if
 !
 !
 !       CALCUL DE LA FORCE VOLUMIQUE AU PG COURANT
@@ -168,7 +168,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
         forvol(:) = 0.d0
         do ino = 1, nnop
             do j = 1, ndim
-                forvol(j)=forvol(j)+fno(ndim*(ino-1)+j)*ff(ino)
+                forvol(j) = forvol(j)+fno(ndim*(ino-1)+j)*ff(ino)
             end do
         end do
 !
@@ -176,39 +176,39 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
 !       CALCUL EFFECTIF DU SECOND MEMBRE
 !       --------------------------------
 !
-        pos=0
+        pos = 0
         do ino = 1, nnop
 !
 !         TERME CLASSIQUE
             do j = 1, ndim
-                pos=pos+1
-                zr(ivectu-1+pos) = zr(ivectu-1+pos) + forvol(j)*poids* ff(ino)
+                pos = pos+1
+                zr(ivectu-1+pos) = zr(ivectu-1+pos)+forvol(j)*poids*ff(ino)
             end do
 !
 !         TERME HEAVISIDE
             do ig = 1, nfh
                 do j = 1, ndim
-                    pos=pos+1
-                    zr(ivectu-1+pos) = zr(ivectu-1+pos) + &
-                                       xcalc_heav(heavn(ino,ig),hea_se,heavn(ino,5))&
+                    pos = pos+1
+                    zr(ivectu-1+pos) = zr(ivectu-1+pos)+ &
+                                       xcalc_heav(heavn(ino, ig), hea_se, heavn(ino, 5)) &
                                        *forvol(j)*poids*ff(ino)
                 end do
             end do
 !
 !         TERME SINGULIER
             do alp = 1, ndim*singu
-                pos=pos+1
+                pos = pos+1
                 do j = 1, ndim
-                    zr(ivectu-1+pos) = zr(ivectu-1+pos) + fk(ino,alp,j)*forvol(j)*poids
+                    zr(ivectu-1+pos) = zr(ivectu-1+pos)+fk(ino, alp, j)*forvol(j)*poids
                 end do
             end do
 !
 !         ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
-            if (.not.iselli(elrefp)) then
-                if (ino .le. nnops) pos = pos + ddlc
+            if (.not. iselli(elrefp)) then
+                if (ino .le. nnops) pos = pos+ddlc
             else
-                pos = pos + ddlc
-            endif
+                pos = pos+ddlc
+            end if
 !
 !
         end do

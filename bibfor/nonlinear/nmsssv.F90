@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmsssv(modelz, matez, caraElemz, listLoad, vesstf)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/memare.h"
 #include "asterfort/ss2mme.h"
 !
-character(len=*), intent(in) :: modelz, matez, caraElemz
-character(len=19), intent(in) :: vesstf, listLoad
+    character(len=*), intent(in) :: modelz, matez, caraElemz
+    character(len=19), intent(in) :: vesstf, listLoad
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,9 +50,9 @@ character(len=19), intent(in) :: vesstf, listLoad
     call jemarq()
 
 ! - Initializations
-    mate     = matez
+    mate = matez
     caraElem = caraElemz
-    model    = modelz
+    model = modelz
     funcMultSuper = listLoad(1:19)//'.FCSS'
 
 ! - CALCUL

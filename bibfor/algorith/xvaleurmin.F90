@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,42 +46,42 @@ subroutine xvaleurmin(jcalculs, jvtemp, jnodto, nbno, minlo)
     real(kind=8) :: minimum
 
     !   tolerances --- absolue et relative --- pour determiner si deux valeurs sont egales
-    real(kind=8), parameter :: atol=1.e-12
-    real(kind=8), parameter :: rtol=1.e-12
+    real(kind=8), parameter :: atol = 1.e-12
+    real(kind=8), parameter :: rtol = 1.e-12
     aster_logical :: near
 
 !----------------DEBUT---------------------------------------------------
 
     ! recherche du premier noeud dans la narrow band
-    ideb  = 0
+    ideb = 0
     nodeb = 0
 
-    do inod = 1 , nbno
+    do inod = 1, nbno
         node = zi(jnodto-1+inod)
         if (zl(jvtemp-1+node)) then
-            ideb=inod
-            nodeb=node
+            ideb = inod
+            nodeb = node
             exit
-        endif
+        end if
     end do
 
     ! assertion : la narrow band n'est pas vide
-    ASSERT(ideb.ne.0)
+    ASSERT(ideb .ne. 0)
 
     ! initialisation du minimum : valeur du premier noeud de la narrow band
     minlo = ideb
     minimum = zr(jcalculs-1+nodeb)
 
     ! recherche du minimum sur les autres noeuds de la narrow band
-    do inod = ideb + 1 , nbno
+    do inod = ideb+1, nbno
         node = zi(jnodto-1+inod)
 
         ! la valeur courante est-elle egale au minimum ?
-        near = abs(zr(jcalculs-1+node) - minimum) .le. (atol + minimum*rtol)
+        near = abs(zr(jcalculs-1+node)-minimum) .le. (atol+minimum*rtol)
 
-        if (zr(jcalculs-1+node) .lt. minimum .and. .not.near .and. zl(jvtemp-1+node))  then
+        if (zr(jcalculs-1+node) .lt. minimum .and. .not. near .and. zl(jvtemp-1+node)) then
             minimum = zr(jcalculs-1+node)
             minlo = inod
-        endif
+        end if
     end do
 end subroutine

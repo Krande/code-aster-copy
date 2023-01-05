@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gtlmex(v_cninv, v_cninv_lcum, nume_node_cl, nb_elem_mast, list_elem_mast ,&
+subroutine gtlmex(v_cninv, v_cninv_lcum, nume_node_cl, nb_elem_mast, list_elem_mast, &
                   list_el_ma_ax, nb_el_ma_ax)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -61,10 +61,10 @@ implicit none
 !
 ! - List construction
 !
-     nb_el_ma_ax=v_cninv_lcum(nume_node_cl+1)-v_cninv_lcum(nume_node_cl)
-     do i_elem=1, nb_el_ma_ax
-        list_el_ma_ax(i_elem)=list_elem_mast(v_cninv(v_cninv_lcum(nume_node_cl)-1+i_elem))
-     end do
+    nb_el_ma_ax = v_cninv_lcum(nume_node_cl+1)-v_cninv_lcum(nume_node_cl)
+    do i_elem = 1, nb_el_ma_ax
+        list_el_ma_ax(i_elem) = list_elem_mast(v_cninv(v_cninv_lcum(nume_node_cl)-1+i_elem))
+    end do
 !
 ! - Print check
 !

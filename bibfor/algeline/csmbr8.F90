@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
+subroutine csmbr8(nommat, ccll, ccii, neq, vcine, &
                   vsmb)
     implicit none
 #include "jeveux.h"
@@ -66,17 +66,17 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
 !
     call jeveuo(mat//'.CCVA', 'L', vr=ccva)
     call jelira(mat//'.CCLL', 'LONMAX', nelim)
-    nelim=nelim/3
+    nelim = nelim/3
 !
     call jeveuo(mat//'.REFA', 'L', vk24=refa)
     if (refa(11) .eq. 'MATR_DISTR') then
         imatd = 1
-        nu = refa(2)(1:14)
+        nu = refa(2) (1:14)
         call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
         call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
     else
         imatd = 0
-    endif
+    end if
 !
     do ielim = 1, nelim
         ieq = ccll(3*(ielim-1)+1)
@@ -87,19 +87,19 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
             ieqg = ieq
         else
             ieqg = nulg(ieq)
-        endif
+        end if
         coef = vcine(ieqg)
 !
         if (coef .ne. 0.d0) then
             do kterm = 1, nterm
                 if (imatd .eq. 0) then
-                    j=ccii(deciel+kterm)
+                    j = ccii(deciel+kterm)
                 else
-                    j=nulg(ccii(deciel+kterm))
-                endif
-                vsmb(j) = vsmb(j) - coef*ccva(deciel+kterm)
+                    j = nulg(ccii(deciel+kterm))
+                end if
+                vsmb(j) = vsmb(j)-coef*ccva(deciel+kterm)
             end do
-        endif
+        end if
 !
     end do
     call jelibe(mat//'.CCVA')
@@ -108,7 +108,7 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
         do ieq = 1, neq
             if (nugl(ieq) .eq. 0) vcine(ieq) = 0.d0
         end do
-    endif
+    end if
 !
 !
     call jeveuo(mat//'.CCID', 'L', vi=ccid)
@@ -118,8 +118,8 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
         else
             if (vcine(ieq) .ne. 0.d0) then
                 call utmess('F', 'ALGELINE_32')
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !

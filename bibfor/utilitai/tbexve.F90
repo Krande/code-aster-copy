@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tbexve(nomta, para, nomobj, basobj_, nbval_,&
+subroutine tbexve(nomta, para, nomobj, basobj_, nbval_, &
                   typval_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -31,10 +31,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*) :: nomta, para, nomobj
-character(len=*), optional, intent(in) :: basobj_
-integer, optional, intent(out) :: nbval_
-character(len=*), optional, intent(out) :: typval_
+    character(len=*) :: nomta, para, nomobj
+    character(len=*), optional, intent(in) :: basobj_
+    integer, optional, intent(out) :: nbval_
+    character(len=*), optional, intent(out) :: typval_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ character(len=*), optional, intent(out) :: typval_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbpara, nblign,   ipar
+    integer :: iret, nbpara, nblign, ipar
     integer :: i, iv, jvale, jvall, kvale, nbval
     character(len=1) :: base
     character(len=4) :: type
@@ -69,29 +69,29 @@ character(len=*), optional, intent(out) :: typval_
     base = 'V'
     if (present(basobj_)) then
         base = basobj_(1:1)
-    endif
+    end if
     inpar = para
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    ASSERT(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base .eq. 'V' .or. base .eq. 'G')
 !
 !     --- VERIFICATION DE LA TABLE ---
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
     nbpara = tbnp(1)
     nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
-    endif
+    end if
     if (nblign .eq. 0) then
         call utmess('F', 'UTILITAI4_76')
-    endif
+    end if
 !
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
 !
@@ -104,15 +104,15 @@ character(len=*), optional, intent(out) :: typval_
     call utmess('F', 'UTILITAI6_89', sk=valk)
 12  continue
 !
-    type   = tblp(1+4*(ipar-1)+1)(1:4)
-    nomjv  = tblp(1+4*(ipar-1)+2)
+    type = tblp(1+4*(ipar-1)+1) (1:4)
+    nomjv = tblp(1+4*(ipar-1)+2)
     nomjvl = tblp(1+4*(ipar-1)+3)
 !
     call jeveuo(nomjv, 'L', jvale)
     call jeveuo(nomjvl, 'L', jvall)
     nbval = 0
     do i = 1, nblign
-        if (zi(jvall+i-1) .eq. 1) nbval = nbval + 1
+        if (zi(jvall+i-1) .eq. 1) nbval = nbval+1
     end do
 !
     iv = 0
@@ -120,81 +120,81 @@ character(len=*), optional, intent(out) :: typval_
         call wkvect(nomobj, base//' V I', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zi(kvale+iv-1) = zi(jvale+i-1)
-            endif
+            end if
         end do
 !
     else if (type(1:1) .eq. 'R') then
         call wkvect(nomobj, base//' V R', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zr(kvale+iv-1) = zr(jvale+i-1)
-            endif
+            end if
         end do
 !
     else if (type(1:1) .eq. 'C') then
         call wkvect(nomobj, base//' V C', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zc(kvale+iv-1) = zc(jvale+i-1)
-            endif
+            end if
         end do
 !
     else if (type(1:3) .eq. 'K80') then
         call wkvect(nomobj, base//' V K80', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk80(kvale+iv-1) = zk80(jvale+i-1)
-            endif
+            end if
         end do
 !
     else if (type(1:3) .eq. 'K32') then
         call wkvect(nomobj, base//' V K32', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk32(kvale+iv-1) = zk32(jvale+i-1)
-            endif
+            end if
         end do
 !
     else if (type(1:3) .eq. 'K24') then
         call wkvect(nomobj, base//' V K24', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk24(kvale+iv-1) = zk24(jvale+i-1)
-            endif
+            end if
         end do
 !
     else if (type(1:3) .eq. 'K16') then
         call wkvect(nomobj, base//' V K16', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk16(kvale+iv-1) = zk16(jvale+i-1)
-            endif
+            end if
         end do
 !
     else if (type(1:2) .eq. 'K8') then
         call wkvect(nomobj, base//' V K8', nbval, kvale)
         do i = 1, nblign
             if (zi(jvall+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk8(kvale+iv-1) = zk8(jvale+i-1)
-            endif
+            end if
         end do
-    endif
+    end if
 !
     if (present(typval_)) then
         typval_ = type
-    endif
+    end if
     if (present(nbval_)) then
         nbval_ = iv
-    endif
+    end if
     call jeecra(nomobj, 'LONUTI', iv)
 !
     call jedema()

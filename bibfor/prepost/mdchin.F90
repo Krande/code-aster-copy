@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
+subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo, &
                   prefix, nbtv, codret)
 !_____________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -70,7 +70,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
     character(len=8) :: saux08
 !
     integer :: edlect
-    parameter (edlect=0)
+    parameter(edlect=0)
 !
     med_idt :: idfimd
     aster_logical :: dejouv
@@ -84,30 +84,30 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
     else
         dejouv = .true.
         codret = 0
-    endif
+    end if
     if (codret .ne. 0) then
-        saux08='mfiope'
+        saux08 = 'mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 !====
 ! 2. APPEL DU PROGRAMME GENERIQUE
 !====
 !
-    call mdchii(idfimd, nochmd, typent, typgeo, prefix,&
+    call mdchii(idfimd, nochmd, typent, typgeo, prefix, &
                 nbtv, codret)
 !
 !====
 ! 3. FERMETURE DU FICHIER MED
 !====
 !
-    if (.not.dejouv) then
+    if (.not. dejouv) then
         call as_mficlo(idfimd, codret)
         if (codret .ne. 0) then
-            saux08='mficlo'
+            saux08 = 'mficlo'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
         idfimd = 0
-    endif
+    end if
 !
 end subroutine

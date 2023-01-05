@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine romSnapInfo(snap)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Snap), intent(in) :: snap
+    type(ROM_DS_Snap), intent(in) :: snap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,6 +40,6 @@ type(ROM_DS_Snap), intent(in) :: snap
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utmess('I','ROM14_50', si = snap%nbSnap)
+    call utmess('I', 'ROM14_50', si=snap%nbSnap)
 !
 end subroutine

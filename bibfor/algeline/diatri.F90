@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine diatri(n, d, e, vector, evec,&
+subroutine diatri(n, d, e, vector, evec, &
                   ldevec)
     implicit none
 #include "asterf_types.h"
@@ -66,84 +66,84 @@ subroutine diatri(n, d, e, vector, evec,&
     iter = 0
     do l = 1, n
 !    --- RECHERCHE DE LA PLUS PETITE VALEUR DE LA DIAGONALE SUPERIEURE.
- 10     continue
+10      continue
         do m = l, n
             if (m .eq. n) goto 30
             if (abs(e(m)) .le. max(tol*(abs(d(m))+abs(d(m+1))), tiny)) goto 30
         end do
 !
- 30     continue
+30      continue
         p = d(l)
         if (m .eq. l) goto 60
         if (iter .eq. 30*n) then
 !C            WRITE(6,*)  'THE ITERATION FOR THE EIGENVALUES DID '//
 !C     &                  'NOT CONVERGE.'
             ASSERT(.false.)
-        endif
-        iter = iter + 1
+        end if
+        iter = iter+1
 !       --- VALEUR DE SHIFT ---
         g = (d(l+1)-p)/(2.0d0*e(l))
-        r = r8sqrt(g,1.0d0)
-        g = d(m) - p + e(l)/(g+sign(r,g))
+        r = r8sqrt(g, 1.0d0)
+        g = d(m)-p+e(l)/(g+sign(r, g))
         s = 1.0d0
         c = 1.0d0
         p = 0.0d0
 !
-        do i = m - 1, l, -1
+        do i = m-1, l, -1
             f = s*e(i)
             b = c*e(i)
             call r8rotg(g, f, c, s)
             e(i+1) = g
             if (g .eq. 0.0d0) goto 50
-            g = d(i+1) - p
-            r = (d(i)-g)*s + 2.0d0*c*b
+            g = d(i+1)-p
+            r = (d(i)-g)*s+2.0d0*c*b
             p = s*r
-            d(i+1) = g + p
-            g = c*r - b
+            d(i+1) = g+p
+            g = c*r-b
 !
-            if (vector) call drot(n, evec(1, i+1), 1, evec(1, i), 1,&
+            if (vector) call drot(n, evec(1, i+1), 1, evec(1, i), 1, &
                                   c, s)
 !
         end do
 !
-        d(l) = d(l) - p
+        d(l) = d(l)-p
         e(l) = g
         e(m) = 0.0d0
         goto 10
 !
- 50     continue
-        d(i+1) = d(i+1) - p
+50      continue
+        d(i+1) = d(i+1)-p
         e(m) = 0.0d0
         goto 10
- 60     continue
+60      continue
     end do
 !    --- POSITION DES VALEURS ET VECTERUS PROPRES ---
-    do i = 1, n - 1
+    do i = 1, n-1
         k = i
         p = d(i)
 !
-        do j = i + 1, n
+        do j = i+1, n
             if (d(j) .lt. p) then
                 k = j
                 p = d(j)
-            endif
+            end if
         end do
 !
         if (k .ne. i) then
             d(k) = d(i)
             d(i) = p
             if (vector) call dswap(n, evec(1, i), 1, evec(1, k), 1)
-        endif
+        end if
 !
     end do
 !          --- NORMALISATION DES VECTEURS PROPRES ---
     if (vector) then
         do j = 1, n
-            i = idamax(n,evec(1,j),1)
-            scale = evec(i,j)
+            i = idamax(n, evec(1, j), 1)
+            scale = evec(i, j)
             call dscal(n, 1.0d0/scale, evec(1, j), 1)
         end do
-    endif
+    end if
 !
 9000 continue
 end subroutine

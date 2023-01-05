@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romLineicPrepNume(base, nbNodeWithDof)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -36,8 +36,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/uttrir.h"
 !
-type(ROM_DS_Empi), intent(inout) :: base
-integer, intent(in) ::  nbNodeWithDof
+    type(ROM_DS_Empi), intent(inout) :: base
+    integer, intent(in) ::  nbNodeWithDof
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,35 +58,35 @@ integer, intent(in) ::  nbNodeWithDof
     real(kind=8) :: toleNode
     character(len=8) :: lineicAxis, mesh
     character(len=24) :: lineicSect
-    integer          , pointer :: v_grno(:) => null()
-    real(kind=8)     , pointer :: v_coor(:) => null()
-    real(kind=8)     , pointer :: v_coor_x(:) => null()
-    real(kind=8)     , pointer :: v_coor_y(:) => null()
-    real(kind=8)     , pointer :: v_coor_z(:) => null()
-    real(kind=8)     , pointer :: v_coor_w(:) => null()
-    real(kind=8)     , pointer :: v_coor_p(:) => null()
-    real(kind=8)     , pointer :: v_coor_1(:) => null()
-    real(kind=8)     , pointer :: v_coor_2(:) => null()
+    integer, pointer :: v_grno(:) => null()
+    real(kind=8), pointer :: v_coor(:) => null()
+    real(kind=8), pointer :: v_coor_x(:) => null()
+    real(kind=8), pointer :: v_coor_y(:) => null()
+    real(kind=8), pointer :: v_coor_z(:) => null()
+    real(kind=8), pointer :: v_coor_w(:) => null()
+    real(kind=8), pointer :: v_coor_p(:) => null()
+    real(kind=8), pointer :: v_coor_1(:) => null()
+    real(kind=8), pointer :: v_coor_2(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-       call utmess('I', 'ROM18_12')
-    endif
+        call utmess('I', 'ROM18_12')
+    end if
 !
 ! - Get parameters
 !
-    nbNode     = nbNodeWithDof
-    mesh       = base%mode%mesh
+    nbNode = nbNodeWithDof
+    mesh = base%mode%mesh
     lineicAxis = base%lineicAxis
     lineicSect = base%lineicSect
     lineicNume = base%lineicNume
-    nbEqua     = base%mode%nbEqua
-    toleNode   = lineicNume%toleNode
+    nbEqua = base%mode%nbEqua
+    toleNode = lineicNume%toleNode
     if (niv .ge. 2) then
-        call utmess('I', 'ROM18_13', sr = toleNode)
-    endif
+        call utmess('I', 'ROM18_13', sr=toleNode)
+    end if
 !
 ! - Count number of components by node for lineic model
 !
@@ -95,100 +95,100 @@ integer, intent(in) ::  nbNodeWithDof
 ! - Allocate pointers for lineic objects
 !
     nbSlice = nbNode
-    AS_ALLOCATE(vi = lineicNume%numeSlice, size = nbSlice)
-    AS_ALLOCATE(vi = lineicNume%numeSection, size = nbSlice)
+    AS_ALLOCATE(vi=lineicNume%numeSlice, size=nbSlice)
+    AS_ALLOCATE(vi=lineicNume%numeSection, size=nbSlice)
 !
 ! - Get coordinates of nodes
 !
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr = v_coor)
-    AS_ALLOCATE(vr = v_coor_x, size = nbNode)
-    AS_ALLOCATE(vr = v_coor_y, size = nbNode)
-    AS_ALLOCATE(vr = v_coor_z, size = nbNode)
-    AS_ALLOCATE(vr = v_coor_w, size = nbNode)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=v_coor)
+    AS_ALLOCATE(vr=v_coor_x, size=nbNode)
+    AS_ALLOCATE(vr=v_coor_y, size=nbNode)
+    AS_ALLOCATE(vr=v_coor_z, size=nbNode)
+    AS_ALLOCATE(vr=v_coor_w, size=nbNode)
     do iNode = 1, nbNode
         v_coor_x(iNode) = v_coor(1+3*(iNode-1)+0)
         v_coor_y(iNode) = v_coor(1+3*(iNode-1)+1)
         v_coor_z(iNode) = v_coor(1+3*(iNode-1)+2)
-    enddo
+    end do
 !
 ! - Get coordinates of nodes for one slice
 !
-    call jelira(jexnom(mesh//'.GROUPENO',lineicSect), 'LONUTI', nbNodeSlice)
-    call jeveuo(jexnom(mesh//'.GROUPENO',lineicSect), 'L'     , vi = v_grno)
-    AS_ALLOCATE(vr = v_coor_1, size = nbNodeSlice)
-    AS_ALLOCATE(vr = v_coor_2, size = nbNodeSlice)
+    call jelira(jexnom(mesh//'.GROUPENO', lineicSect), 'LONUTI', nbNodeSlice)
+    call jeveuo(jexnom(mesh//'.GROUPENO', lineicSect), 'L', vi=v_grno)
+    AS_ALLOCATE(vr=v_coor_1, size=nbNodeSlice)
+    AS_ALLOCATE(vr=v_coor_2, size=nbNodeSlice)
 !
 ! - In case of lineic model, we must create a new numbering for the nodes on mesh
 !
     if (lineicAxis .eq. 'OX') then
         v_coor_w(1:nbNode) = v_coor_x(1:nbNode)
         call uttrir(nbSlice, v_coor_w, toleNode)
-        AS_ALLOCATE(vr = v_coor_p, size = nbSlice)
+        AS_ALLOCATE(vr=v_coor_p, size=nbSlice)
         v_coor_p(1:nbSlice) = v_coor_w(1:nbSlice)
-        call romLineicIndexList(toleNode,&
-                                nbNode      , v_coor_x,&
-                                nbSlice     , v_coor_p,&
+        call romLineicIndexList(toleNode, &
+                                nbNode, v_coor_x, &
+                                nbSlice, v_coor_p, &
                                 lineicNume%numeSlice)
         do iNode = 1, nbNodeSlice
             v_coor_1(iNode) = v_coor(1+3*(v_grno(iNode)-1)+1)
             v_coor_2(iNode) = v_coor(1+3*(v_grno(iNode)-1)+2)
-        enddo
-        call romLineicIndexSurf(toleNode  ,&
-                                nbNode     , v_coor_y , v_coor_z,&
-                                nbNodeSlice, v_coor_1 , v_coor_2,&
+        end do
+        call romLineicIndexSurf(toleNode, &
+                                nbNode, v_coor_y, v_coor_z, &
+                                nbNodeSlice, v_coor_1, v_coor_2, &
                                 lineicNume%numeSection)
     elseif (lineicAxis .eq. 'OY') then
         v_coor_w(1:nbNode) = v_coor_y(1:nbNode)
         call uttrir(nbSlice, v_coor_w, toleNode)
         AS_ALLOCATE(vr=v_coor_p, size=nbSlice)
         v_coor_p(1:nbSlice) = v_coor_w(1:nbSlice)
-        call romLineicIndexList(toleNode,&
-                                nbNode      , v_coor_y,&
-                                nbSlice     , v_coor_p,&
+        call romLineicIndexList(toleNode, &
+                                nbNode, v_coor_y, &
+                                nbSlice, v_coor_p, &
                                 lineicNume%numeSlice)
         do iNode = 1, nbNodeSlice
             v_coor_1(iNode) = v_coor(1+3*(v_grno(iNode)-1)+2)
             v_coor_2(iNode) = v_coor(1+3*(v_grno(iNode)-1)+0)
-        enddo
-        call romLineicIndexSurf(toleNode  ,&
-                                nbNode     , v_coor_z , v_coor_x,&
-                                nbNodeSlice, v_coor_1 , v_coor_2,&
+        end do
+        call romLineicIndexSurf(toleNode, &
+                                nbNode, v_coor_z, v_coor_x, &
+                                nbNodeSlice, v_coor_1, v_coor_2, &
                                 lineicNume%numeSection)
     elseif (lineicAxis .eq. 'OZ') then
         v_coor_w(1:nbNode) = v_coor_z(1:nbNode)
         call uttrir(nbSlice, v_coor_w, toleNode)
         AS_ALLOCATE(vr=v_coor_p, size=nbSlice)
         v_coor_p(1:nbSlice) = v_coor_w(1:nbSlice)
-        call romLineicIndexList(toleNode,&
-                                nbNode      , v_coor_z,&
-                                nbSlice     , v_coor_p,&
+        call romLineicIndexList(toleNode, &
+                                nbNode, v_coor_z, &
+                                nbSlice, v_coor_p, &
                                 lineicNume%numeSlice)
         do iNode = 1, nbNodeSlice
             v_coor_1(iNode) = v_coor(1+3*(v_grno(iNode)-1)+0)
             v_coor_2(iNode) = v_coor(1+3*(v_grno(iNode)-1)+1)
-        enddo
-        call romLineicIndexSurf(toleNode  ,&
-                                nbNode     , v_coor_x , v_coor_y,&
-                                nbNodeSlice, v_coor_1 , v_coor_2,&
+        end do
+        call romLineicIndexSurf(toleNode, &
+                                nbNode, v_coor_x, v_coor_y, &
+                                nbNodeSlice, v_coor_1, v_coor_2, &
                                 lineicNume%numeSection)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = v_coor_p)
-    AS_DEALLOCATE(vr = v_coor_x)
-    AS_DEALLOCATE(vr = v_coor_y)
-    AS_DEALLOCATE(vr = v_coor_z)
-    AS_DEALLOCATE(vr = v_coor_w)
-    AS_DEALLOCATE(vr = v_coor_1)
-    AS_DEALLOCATE(vr = v_coor_2)
+    AS_DEALLOCATE(vr=v_coor_p)
+    AS_DEALLOCATE(vr=v_coor_x)
+    AS_DEALLOCATE(vr=v_coor_y)
+    AS_DEALLOCATE(vr=v_coor_z)
+    AS_DEALLOCATE(vr=v_coor_w)
+    AS_DEALLOCATE(vr=v_coor_1)
+    AS_DEALLOCATE(vr=v_coor_2)
 !
 ! - Save
 !
     lineicNume%nbSlice = nbSlice
-    lineicNume%nbCmp   = nbCmp
-    base%lineicNume    = lineicNume
+    lineicNume%nbCmp = nbCmp
+    base%lineicNume = lineicNume
 !
 end subroutine

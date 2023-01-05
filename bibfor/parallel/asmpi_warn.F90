@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,8 @@ subroutine asmpi_warn(iexc)
     if (mpicou .ne. mpicow) then
         call asmpi_comm('FREE', mpicou)
         call asmpi_comm('SET', mpicow)
-        mpicou=mpicow
-    endif
+        mpicou = mpicow
+    end if
 !
     call asmpi_info(mpicou, rank=rank)
     call asmpi_info(mpicou, size=nbpro4)
@@ -71,7 +71,7 @@ subroutine asmpi_warn(iexc)
 !     SI PAS 'ST_OK', IL NE FAUT PAS COMMUNIQUER ENCORE UNE FOIS
     if (nbpro4 .le. 1 .or. .not. gtstat(ST_OK)) then
         goto 999
-    endif
+    end if
     DEBUG_MPI('mpi_warn', rank, nbpro4)
 !
 !     SUR LES PROCESSEURS AUTRES QUE #0
@@ -82,7 +82,7 @@ subroutine asmpi_warn(iexc)
         else
             call utmess('I', 'APPELMPI_92')
             call ststat(ST_EXCEPT)
-        endif
+        end if
         call asmpi_status(ST_ER, iret)
 !
 !     SUR LE PROCESSEUR #0
@@ -90,12 +90,12 @@ subroutine asmpi_warn(iexc)
         call ststat(ST_ER_PR0)
         if (iexc .eq. 1) then
             call ststat(ST_EXCEPT)
-        endif
+        end if
         call asmpi_check(iret)
-    endif
+    end if
 !     INUTILE DE TESTER IRET, ON SAIT QU'IL Y A UNE ERREUR
 !
-999  continue
+999 continue
 # endif
 #else
     integer :: idummy

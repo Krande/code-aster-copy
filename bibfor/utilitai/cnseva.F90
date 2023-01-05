@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,10 +58,10 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     ------------------------------------------------------------------
     integer ::    jfl
     integer :: jpd, jpc, jpv, jpl
-    integer :: jrd, jrc,  jrl, jrk
+    integer :: jrd, jrc, jrl, jrk
     integer :: nbno, k, ino, ncmp, nbpu, ier, nbpumx
-    integer :: k2, ncmp2, ipara,  ibid
-    parameter (nbpumx=50)
+    integer :: k2, ncmp2, ipara, ibid
+    parameter(nbpumx=50)
     character(len=8) :: ma, nomgdf, nomgdr, fo, nompu(nbpumx)
     character(len=8) :: ma2, nomgd2
     character(len=3) :: tsca
@@ -96,7 +96,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
     call dismoi('TYPE_SCA', nomgdf, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'K8') then
         call utmess('F', 'UTILITAI_16')
-    endif
+    end if
 !
 !
 !     2- ALLOCATION DU CHAM_NO_S RESULTAT ET RECUPERATION
@@ -104,7 +104,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     ------------------------------------------------------------
     r = cnsr
     nomgdr = nomgdf(1:4)//'_R'
-    call cnscre(ma, nomgdr, ncmp, fc, 'V',&
+    call cnscre(ma, nomgdr, ncmp, fc, 'V', &
                 r)
     call jeveuo(r//'.CNSK', 'L', jrk)
     call jeveuo(r//'.CNSD', 'L', jrd)
@@ -129,14 +129,14 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
         call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca)
         if (tsca .ne. 'R') then
             call utmess('F', 'UTILITAI_17')
-        endif
+        end if
         if (ma2 .ne. ma) then
             call utmess('F', 'UTILITAI_18')
-        endif
-        vjad1(4* (ipara-1)+1) = jpc
-        vjad1(4* (ipara-1)+2) = jpd
-        vjad1(4* (ipara-1)+3) = jpl
-        vjad1(4* (ipara-1)+4) = jpv
+        end if
+        vjad1(4*(ipara-1)+1) = jpc
+        vjad1(4*(ipara-1)+2) = jpd
+        vjad1(4*(ipara-1)+3) = jpl
+        vjad1(4*(ipara-1)+4) = jpv
     end do
 !
 !
@@ -148,8 +148,8 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !
     do k = 1, ncmp
         do ino = 1, nbno
-            if (zl(jfl-1+ (ino-1)*ncmp+k)) then
-                zl(jrl-1+ (ino-1)*ncmp+k) = .true.
+            if (zl(jfl-1+(ino-1)*ncmp+k)) then
+                zl(jrl-1+(ino-1)*ncmp+k) = .true.
                 fo = fv((ino-1)*ncmp+k)
                 if (fo .eq. ' ') goto 40
 !
@@ -157,48 +157,48 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !           -------------------------------------------------------
                 nbpu = 0
                 do ipara = 1, npara
-                    jpc = vjad1(4* (ipara-1)+1)
-                    jpd = vjad1(4* (ipara-1)+2)
-                    jpl = vjad1(4* (ipara-1)+3)
-                    jpv = vjad1(4* (ipara-1)+4)
+                    jpc = vjad1(4*(ipara-1)+1)
+                    jpd = vjad1(4*(ipara-1)+2)
+                    jpl = vjad1(4*(ipara-1)+3)
+                    jpv = vjad1(4*(ipara-1)+4)
                     ncmp2 = zi(jpd-1+2)
                     do k2 = 1, ncmp2
-                        if (zl(jpl-1+ (ino-1)*ncmp2+k2)) then
-                            nbpu = nbpu + 1
+                        if (zl(jpl-1+(ino-1)*ncmp2+k2)) then
+                            nbpu = nbpu+1
                             if (nbpu .gt. nbpumx) then
                                 call utmess('F', 'CALCULEL2_66')
-                            endif
+                            end if
 !
 !                 -- ON VERIFIE QU'UN MEME PARAMETRE N'EST PAS AJOUTE
 !                    PLUSIEURS FOIS:
-                            ibid=indik8(nompu,zk8(jpc-1+k2),1,nbpu-1)
+                            ibid = indik8(nompu, zk8(jpc-1+k2), 1, nbpu-1)
                             if (ibid .gt. 0) then
                                 call utmess('F', 'CALCULEL2_78', sk=zk8(jpc-1+k2))
-                            endif
+                            end if
 !
                             nompu(nbpu) = zk8(jpc-1+k2)
-                            valpu(nbpu) = zr(jpv-1+ (ino-1)*ncmp2+k2)
-                        endif
+                            valpu(nbpu) = zr(jpv-1+(ino-1)*ncmp2+k2)
+                        end if
                     end do
                 end do
 !
 !
 !           4.2 APPEL A FOINTE :
 !           --------------------
-                call fointe('E', fo, nbpu, nompu, valpu,&
+                call fointe('E', fo, nbpu, nompu, valpu, &
                             x, ier)
                 if (ier .ne. 0) then
                     call utmess('F+', 'FONCT0_9', sk=fo)
                     call jenuno(jexnum(ma//'.NOMNOE', ino), valk)
                     call utmess('F', 'FONCT0_53', sk=valk)
-                endif
+                end if
 !
 !           4.3 STOCKAGE DU RESULTAT :
 !           --------------------------
                 rv((ino-1)*ncmp+k) = x
 !
-            endif
- 40         continue
+            end if
+40          continue
         end do
     end do
 !

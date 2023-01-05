@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinLoadDirichletCompute(list_load  , model      , nume_dof ,&
-                                      ds_measure , matr_asse  , disp    ,&
+subroutine nonlinLoadDirichletCompute(list_load, model, nume_dof, &
+                                      ds_measure, matr_asse, disp, &
                                       hval_veelem, hval_veasse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ap_assembly_vector.h"
@@ -39,12 +39,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vebume.h"
 !
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: model, nume_dof
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: matr_asse
-character(len=19), intent(in) :: disp
-character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: model, nume_dof
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: matr_asse
+    character(len=19), intent(in) :: disp
+    character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,7 +75,7 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_12')
-    endif
+    end if
 !
 ! - Get hat variables
 !
@@ -84,7 +84,7 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
     call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! - Compute
@@ -95,8 +95,8 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
 ! - Pour les lagrange distribués, il faut assembler le vecteur pour avoir les contrib
 !   des autres procs (ceci arrive quand un Lagrange est relié à plusieurs sous-domaines)
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-    if( isParallelMesh(mesh) ) then
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    if (isParallelMesh(mesh)) then
         call ap_assembly_vector(cnbudi)
     end if
 !
@@ -108,6 +108,6 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', cnbudi, 6)
-    endif
+    end if
 !
 end subroutine

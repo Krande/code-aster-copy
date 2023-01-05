@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine splin1(x, y, d2y, n, ptx,&
+subroutine splin1(x, y, d2y, n, ptx, &
                   dyptx, iret)
     implicit none
 ! DESCRIPTION : INTERPOLATION SPLINE CUBIQUE
@@ -76,21 +76,21 @@ subroutine splin1(x, y, d2y, n, ptx,&
             ksup = k
         else
             kinf = k
-        endif
+        end if
         goto 10
-    endif
+    end if
 !
     h = x(ksup)-x(kinf)
     if (h .eq. 0.0d0) then
         iret = 1
         goto 9999
-    endif
+    end if
     a = (x(ksup)-ptx)/h
     b = (ptx-x(kinf))/h
-    dyptx = (y(ksup)-y(kinf))/h + ((1.0d0-3.0d0*a*a)*d2y(kinf)+(3.0d0*b*b-1.0d0)*d2y(ksup)&
-            ) * h/6.0d0
+    dyptx = (y(ksup)-y(kinf))/h+((1.0d0-3.0d0*a*a)*d2y(kinf)+(3.0d0*b*b-1.0d0)*d2y(ksup) &
+                                 )*h/6.0d0
 !
-9999  continue
+9999 continue
 !
 ! --- FIN DE SPLIN1.
 end subroutine

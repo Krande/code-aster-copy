@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arlclc(modarl,nbchel,chamel,marlel)
-
-
+subroutine arlclc(modarl, nbchel, chamel, marlel)
 
     implicit none
 
@@ -46,26 +44,24 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
 
 ! ----------------------------------------------------------------------
 
-
 ! IN  MODARL : NOM DU PSEUDO-MODELE
 ! IN  NBCHEL : NOMBRE DE CHAM_ELEM CREES
 ! IN  CHAMEL : LISTE DES CHAM_ELEM D'ENTREES
 ! I/O MARLEL : IN  -> NOM DES MATR_ELEM A CREER
 !              OUT -> MATR_ELEM
 
-
 ! ----------------------------------------------------------------------
 
-    integer ::      nbout,nbin
-    parameter    (nbout=2, nbin=7)
-    character(len=8) ::  lpaout(nbout),lpain(nbin)
-    character(len=19) :: lchout(nbout),lchin(nbin)
+    integer ::      nbout, nbin
+    parameter(nbout=2, nbin=7)
+    character(len=8) ::  lpaout(nbout), lpain(nbin)
+    character(len=19) :: lchout(nbout), lchin(nbin)
 
     character(len=19) :: ligarl
     character(len=16) :: option
-    character(len=19) :: ctfami,ctinfo,ctref1,ctcoo1,ctref2,ctcoo2,chgeom
+    character(len=19) :: ctfami, ctinfo, ctref1, ctcoo1, ctref2, ctcoo2, chgeom
     integer ::      jarlm1, jarlm2
-    parameter   (option = 'ARLQ_MATR')
+    parameter(option='ARLQ_MATR')
 
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -83,8 +79,8 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
 
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 
-    call inical(nbin  ,lpain ,lchin , &
-                nbout ,lpaout,lchout)
+    call inical(nbin, lpain, lchin, &
+                nbout, lpaout, lchout)
 
 ! --- DESTRUCTION DU MARLEL
 
@@ -93,7 +89,7 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
 
 ! --- CREATION DES LISTES DES CHAMPS IN
 
-    call megeom(modarl,chgeom)
+    call megeom(modarl, chgeom)
 
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
@@ -112,8 +108,8 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
 
 ! --- CALCUL DE MARLEL : MATRICES ELEMENTAIRES
 
-    call wkvect(marlel(1:8)//'.ARLMT1','V V K24',1,jarlm1)
-    call wkvect(marlel(1:8)//'.ARLMT2','V V K24',1,jarlm2)
+    call wkvect(marlel(1:8)//'.ARLMT1', 'V V K24', 1, jarlm1)
+    call wkvect(marlel(1:8)//'.ARLMT2', 'V V K24', 1, jarlm2)
 
 ! --- CREATION DES LISTES DES CHAMPS OUT
 
@@ -124,8 +120,8 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
 
 ! --- APPEL A CALCUL
 
-    call calcul('S',option,ligarl,nbin  ,lchin ,lpain, &
-                nbout ,lchout,lpaout,'V','OUI')
+    call calcul('S', option, ligarl, nbin, lchin, lpain, &
+                nbout, lchout, lpaout, 'V', 'OUI')
 
     call jedema()
 

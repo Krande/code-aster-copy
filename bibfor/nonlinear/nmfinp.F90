@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine nmfinp(sddisc, numins, lstop)
 ! ----------------------------------------------------------------------
 !
     lstop = .false.
-    inst = diinst(sddisc,numins)
+    inst = diinst(sddisc, numins)
 !
 ! --- PRECISION SUR LES INSTANTS
 ! --- (LIEE A CELLE DE VAL_MIN DE PAS_MINI DANS DEFI_LIST_INST.CAPY)
@@ -63,18 +63,18 @@ subroutine nmfinp(sddisc, numins, lstop)
 !
 ! --- METHODE DE GESTION DE LA LISTE D'INSTANTS
 !
-    call utdidt('L', sddisc, 'LIST', 'METHODE',&
-                valk_ = metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE', &
+                valk_=metlis)
 !
 ! --- CONVERGENCE DU CALCUL: DERNIER PAS !
 !
-    if (didern(sddisc,numins)) lstop = .true.
+    if (didern(sddisc, numins)) lstop = .true.
 !
 ! --- CONVERGENCE DU CALCUL: CAS LISTE AUTOMATIQUE
 !
     if (metlis .eq. 'AUTO') then
         call nmjalo(sddisc, inst, prec, jalon)
         if (jalon .eq. r8vide()) lstop = .true.
-    endif
+    end if
 !
 end subroutine

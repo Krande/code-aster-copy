@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
+subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
                  ipt, isp, type_gd, rc, p, permvec)
     implicit none
 #include "jeveux.h"
@@ -27,7 +27,7 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
 #include "blas/dgemv.h"
 !
     integer, intent(in)                         :: nbcmp, jcesd, jcesl, jcesv, imai, ipt, isp
-    real(kind=8), dimension(:,:), intent(in)    :: p
+    real(kind=8), dimension(:, :), intent(in)    :: p
     character(len=*), intent(in)                :: type_gd
     character, intent(in)                       :: rc
 !
@@ -60,89 +60,89 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
 !       Les composantes non lues sont mises à 0.
 !       On ne distingue pas dim=2 et dim=3
 !
-    val(:)      = 0.d0
-    valr(:)     = 0.d0
-    vali(:)     = 0.d0
-    val1(:)     = 0.d0
-    val1r(:)    = 0.d0
-    val1i(:)    = 0.d0
+    val(:) = 0.d0
+    valr(:) = 0.d0
+    vali(:) = 0.d0
+    val1(:) = 0.d0
+    val1r(:) = 0.d0
+    val1i(:) = 0.d0
 
 !   Vecteur (optionnel) permettant de permuter les composantes (du tenseur ou du vecteur)
 !   après application du changement de repère.  Cette possibilité est utilisée pour le
 !   changement de repère vers un repère cylindrique dans les éléments de milieu continu.
     if (present(permvec)) then
-        permvec_loc(:)=permvec(:)
+        permvec_loc(:) = permvec(:)
     else
-        permvec_loc(:)=(/(ii, ii=1,6)/)
-    endif
+        permvec_loc(:) = (/(ii, ii=1, 6)/)
+    end if
 !
     do ii = 1, nbcmp
         call cesexi('C', jcesd, jcesl, imai, ipt, isp, ii, iad)
         if (iad .gt. 0) then
             select case (rc)
-                case ('R')
-                    val1(ii) =zr(jcesv-1+iad)
-                case ('C')
-                    val1r(ii)=dreal(zc(jcesv-1+iad))
-                    val1i(ii)=dimag(zc(jcesv-1+iad))
-                case default
-                    ASSERT(.false.)
+            case ('R')
+                val1(ii) = zr(jcesv-1+iad)
+            case ('C')
+                val1r(ii) = dreal(zc(jcesv-1+iad))
+                val1i(ii) = dimag(zc(jcesv-1+iad))
+            case default
+                ASSERT(.false.)
             end select
-        endif
-    enddo
+        end if
+    end do
 !   Changement de base
-    select case( type_gd(1:7) )
-        case ( 'TENS_3D', 'TENS_2D' )
+    select case (type_gd(1:7))
+    case ('TENS_3D', 'TENS_2D')
 !           Sigma <- P^T Sigma P
-            select case (rc)
-                case('R')
-                    val(:)=val1(:)
-                    call tpsivp(p, val)
-                case('C')
-                    valr(:)=val1r(:)
-                    vali(:)=val1i(:)
-                    call tpsivp(p, valr)
-                    call tpsivp(p, vali)
-            end select
-        case( 'VECT_3D', 'VECT_2D' )
+        select case (rc)
+        case ('R')
+            val(:) = val1(:)
+            call tpsivp(p, val)
+        case ('C')
+            valr(:) = val1r(:)
+            vali(:) = val1i(:)
+            call tpsivp(p, valr)
+            call tpsivp(p, vali)
+        end select
+    case ('VECT_3D', 'VECT_2D')
 !           val = P^T val1
-            select case (rc)
-                case('R')
-                    call dgemv(trans='T', m=3,     n=3,    alpha=1.d0, a=p,&
-                               lda=3,     x=val1,  incx=1, beta =0.d0, y=val, incy=1)
-                case('C')
-                    call dgemv(trans='T', m=3,     n=3,    alpha=1.d0, a=p,&
-                               lda=3,     x=val1r, incx=1, beta =0.d0, y=valr, incy=1)
-                    call dgemv(trans='T', m=3,     n=3,    alpha=1.d0, a=p,&
-                               lda=3,     x=val1i, incx=1, beta =0.d0, y=vali, incy=1)
-            end select
-        case( 'VECTR_3')
+        select case (rc)
+        case ('R')
+            call dgemv(trans='T', m=3, n=3, alpha=1.d0, a=p, &
+                       lda=3, x=val1, incx=1, beta=0.d0, y=val, incy=1)
+        case ('C')
+            call dgemv(trans='T', m=3, n=3, alpha=1.d0, a=p, &
+                       lda=3, x=val1r, incx=1, beta=0.d0, y=valr, incy=1)
+            call dgemv(trans='T', m=3, n=3, alpha=1.d0, a=p, &
+                       lda=3, x=val1i, incx=1, beta=0.d0, y=vali, incy=1)
+        end select
+    case ('VECTR_3')
 !           val = P val1 sur 2 blocs de 3 composantes  X,Y,Z  RX,RY,RZ
-            select case (rc)
-                case('R')
-                    do ii = 1, 3
-                        do kk = 1, 3
-                            val(ii)   = val(ii)   + p(ii,kk)*val1(kk)
-                            val(ii+3) = val(ii+3) + p(ii,kk)*val1(kk+3)
-                        enddo
-                    enddo
-                case('C')
-                    call utmess('F', 'ALGORITH2_31')
-            end select
-        case default
-            ASSERT(.false.)
+        select case (rc)
+        case ('R')
+            do ii = 1, 3
+                do kk = 1, 3
+                    val(ii) = val(ii)+p(ii, kk)*val1(kk)
+                    val(ii+3) = val(ii+3)+p(ii, kk)*val1(kk+3)
+                end do
+            end do
+        case ('C')
+            call utmess('F', 'ALGORITH2_31')
+        end select
+    case default
+        ASSERT(.false.)
     end select
 !   Copie des composantes modifiées dans le champ
     do ii = 1, nbcmp
         call cesexi('C', jcesd, jcesl, imai, ipt, isp, ii, iad)
         if (iad .gt. 0) then
             select case (rc)
-                case('R')
-                    zr(jcesv-1+iad) = val(permvec_loc(ii))
-                case('C')
-                    zc(jcesv-1+iad) = dcmplx( valr(permvec_loc(ii)), vali(permvec_loc(ii)))
+            case ('R')
+                zr(jcesv-1+iad) = val(permvec_loc(ii))
+            case ('C')
+                zc(jcesv-1+iad) = dcmplx(valr(permvec_loc(ii)), vali(permvec_loc(ii)))
             end select
-        endif
-    enddo
+        end if
+    end do
 !
 end subroutine chrgd

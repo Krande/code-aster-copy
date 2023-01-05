@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,11 +106,11 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
     call jenonu(jexnom(ma1//'.SUPMAIL', mail), isma)
     if (isma .le. 0) then
-        valk(1)=mail
-        valk(2)=ma1
+        valk(1) = mail
+        valk(2) = ma1
         call utmess('F', 'CALCULEL5_53', nk=2, valk=valk)
-    endif
-    macrel= nomacr(isma)
+    end if
+    macrel = nomacr(isma)
 !
     call dismoi('NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', repk=promes)
 !
@@ -126,13 +126,13 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 ! MODEL3 : MODELE MESURE
     call jeveuo(vrange, 'L', lrange)
     call jeveuo(vrefpm, 'L', lrefms)
-    k16bid=zk16(lrefms-1 +1)
-    model3=k16bid(1:8)
+    k16bid = zk16(lrefms-1+1)
+    model3 = k16bid(1:8)
 !
     vref = macrel//'.PROJM    .PJMRF'
     call jeveuo(vref, 'L', lref)
-    k16bid=zk16(lref-1 +3)
-    basemo=k16bid(1:8)
+    k16bid = zk16(lref-1+3)
+    basemo = k16bid(1:8)
 !
 ! POUR LES ORIENTATIONS DES CAPTEURS
     call jeveuo(vorien, 'L', lori)
@@ -150,12 +150,12 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !        -- ON NE TRAITE QUE LES CHAMPS R/C :
         iret = 1
         goto 999
-    endif
+    end if
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
         call utmess('F', 'CALCULEL_67', sk=nomgd)
-    endif
+    end if
 !
 ! ALLOCATION DE CNS2 :
     call detrsd('CHAM_NO_S', cns2)
@@ -166,7 +166,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     licmp = '&&LICMP'
     call wkvect(licmp, 'V V K8', 3*ncmp, lcmp)
     do icmp = 1, ncmp
-        zk8(lcmp-1+icmp)=cns1c(icmp)
+        zk8(lcmp-1+icmp) = cns1c(icmp)
     end do
     ncmp2 = ncmp
     do iddl = 1, nbmesu
@@ -179,10 +179,10 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
         if (newk) then
             ncmp2 = ncmp2+1
             zk8(lcmp-1+ncmp2) = kcmp
-        endif
+        end if
     end do
 !
-    call cnscre(ma3, nomgd, ncmp2, zk8(lcmp), base,&
+    call cnscre(ma3, nomgd, ncmp2, zk8(lcmp), base, &
                 cns2)
     call jeveuo(cns2//'.CNSK', 'L', jcns2k)
     call jeveuo(cns2//'.CNSD', 'L', jcns2d)
@@ -218,25 +218,25 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             do imod = 1, nbord
                 iposi = (imod-1)*nbmesu+iddl
                 iposj = (jddl-1)*nbord+imod
-                zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lmesu-1+ iposi)*zr(lvsu-1+iposj)
+                zr(ltrav-1+ipos) = zr(ltrav-1+ipos)+zr(lmesu-1+iposi)*zr(lvsu-1+iposj)
             end do
         end do
     end do
 !
 !
 ! INITIALISATION A ZERO
-    v2=0.d0
-    v2c = dcmplx(0.d0,0.d0)
+    v2 = 0.d0
+    v2c = dcmplx(0.d0, 0.d0)
 !
     do iddl = 1, nbmesu
         ino2 = zi(lnoeud-1+iddl)
         do icmp = 1, ncmp2
-            zl(jcns2l-1+ (ino2-1)*ncmp2+icmp)=.true.
+            zl(jcns2l-1+(ino2-1)*ncmp2+icmp) = .true.
             if (tsca .eq. 'R') then
-                zr(jcns2v-1+ (ino2-1)*ncmp2+icmp)=v2
+                zr(jcns2v-1+(ino2-1)*ncmp2+icmp) = v2
             else
-                zc(jcns2v-1+ (ino2-1)*ncmp2+icmp)=v2c
-            endif
+                zc(jcns2v-1+(ino2-1)*ncmp2+icmp) = v2c
+            end if
         end do
     end do
 !
@@ -249,14 +249,14 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
         do icmp = 1, ncmp2
             if (cns2c(icmp) .eq. kcmp2) then
-                icmp2=icmp
+                icmp2 = icmp
                 goto 60
-            endif
+            end if
         end do
- 60     continue
+60      continue
 !
-        v2=0.d0
-        v2c = dcmplx(0.d0,0.d0)
+        v2 = 0.d0
+        v2c = dcmplx(0.d0, 0.d0)
 !
         do jddl = 1, nddle
             ino1 = zi(lnoeum-1+jddl)
@@ -267,74 +267,74 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
             do icmp = 1, ncmp
                 if (cns1c(icmp) .eq. kcmp) then
-                    icmp1=icmp
+                    icmp1 = icmp
                     goto 160
-                endif
+                end if
             end do
 160         continue
 !
             coef1 = zr(ltrav-1+(jddl-1)*nbmesu+iddl)
 !
             if (tsca .eq. 'R') then
-                v1=zr(jcns1v-1+(ino1-1)*ncmp+icmp1)
-                v2=v2+coef1*v1
+                v1 = zr(jcns1v-1+(ino1-1)*ncmp+icmp1)
+                v2 = v2+coef1*v1
             else
-                v1c=zc(jcns1v-1+(ino1-1)*ncmp+icmp1)
-                v2c=v2c+coef1*v1c
-            endif
+                v1c = zc(jcns1v-1+(ino1-1)*ncmp+icmp1)
+                v2c = v2c+coef1*v1c
+            end if
 !
         end do
 !
-        zl(jcns2l-1+ (ino2-1)*ncmp2+icmp2)=.true.
+        zl(jcns2l-1+(ino2-1)*ncmp2+icmp2) = .true.
         if (tsca .eq. 'R') then
-            zr(jcns2v-1+ (ino2-1)*ncmp2+icmp2)=v2
+            zr(jcns2v-1+(ino2-1)*ncmp2+icmp2) = v2
         else
-            zc(jcns2v-1+ (ino2-1)*ncmp2+icmp2)=v2c
-        endif
+            zc(jcns2v-1+(ino2-1)*ncmp2+icmp2) = v2c
+        end if
 !
 ! VERIFICATION SI LA MESURE EST SUR UN DES AXES DE COORDONNEES
 ! CERTAINS UTILISATEURS SONT HABITUES AUX CMP DX, DY, DZ
-        if ((kcmp2.eq.'D1') .or. (kcmp2.eq.'D2') .or. (kcmp2.eq.'D3')) then
+        if ((kcmp2 .eq. 'D1') .or. (kcmp2 .eq. 'D2') .or. (kcmp2 .eq. 'D3')) then
             valx = zr(lori-1+(iddl-1)*3+1)
             valy = zr(lori-1+(iddl-1)*3+2)
             valz = zr(lori-1+(iddl-1)*3+3)
 !
-            valx= abs(valx)
-            valy= abs(valy)
-            valz= abs(valz)
+            valx = abs(valx)
+            valy = abs(valy)
+            valz = abs(valz)
 !
             eps = 1.d2*r8prem()
             axe = .false.
-            if ((valy.lt.eps) .and. (valz.lt.eps)) then
+            if ((valy .lt. eps) .and. (valz .lt. eps)) then
                 dir = 'DX'
                 axe = .true.
-            endif
-            if ((valx.lt.eps) .and. (valz.lt.eps)) then
+            end if
+            if ((valx .lt. eps) .and. (valz .lt. eps)) then
                 dir = 'DY'
                 axe = .true.
-            endif
-            if ((valx.lt.eps) .and. (valy.lt.eps)) then
+            end if
+            if ((valx .lt. eps) .and. (valy .lt. eps)) then
                 dir = 'DZ'
                 axe = .true.
-            endif
+            end if
 !
             if (axe) then
                 do icmp = 1, ncmp2
                     if (cns2c(icmp) .eq. dir) then
-                        icmpd=icmp
+                        icmpd = icmp
                         goto 260
-                    endif
+                    end if
                 end do
 260             continue
 !
-                zl(jcns2l-1+ (ino2-1)*ncmp2+icmpd)=.true.
+                zl(jcns2l-1+(ino2-1)*ncmp2+icmpd) = .true.
                 if (tsca .eq. 'R') then
-                    zr(jcns2v-1+ (ino2-1)*ncmp2+icmpd)=v2
+                    zr(jcns2v-1+(ino2-1)*ncmp2+icmpd) = v2
                 else
-                    zc(jcns2v-1+ (ino2-1)*ncmp2+icmpd)=v2c
-                endif
-            endif
-        endif
+                    zc(jcns2v-1+(ino2-1)*ncmp2+icmpd) = v2c
+                end if
+            end if
+        end if
 !
     end do
 !

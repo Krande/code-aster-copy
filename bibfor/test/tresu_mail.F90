@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tresu_mail(nommai, tbtxt, refi, iocc,&
-                     epsi, crit, llab, ssigne)
+subroutine tresu_mail(nommai, tbtxt, refi, iocc, &
+                      epsi, crit, llab, ssigne)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/getvtx.h"
@@ -55,78 +55,75 @@ subroutine tresu_mail(nommai, tbtxt, refi, iocc,&
 ! ----------------------------------------------------------------------
 
     call getvtx('MAILLAGE', 'CARA', iocc=iocc, scal=cara, nbret=n1)
-    ASSERT(n1.eq.1)
-
+    ASSERT(n1 .eq. 1)
 
 !   -- calcul de la valeur (entiere) a tester : nb1
 !   ------------------------------------------------
-    if (cara.eq.'NB_MAILLE') then
-       call jeexin(nommai//'.NOMMAI', iexi)
-       if (iexi.eq.0) then
-          nb1=0
-          goto 100
-       endif
-       call jelira(nommai//'.NOMMAI', 'NOMMAX', nb1)
+    if (cara .eq. 'NB_MAILLE') then
+        call jeexin(nommai//'.NOMMAI', iexi)
+        if (iexi .eq. 0) then
+            nb1 = 0
+            goto 100
+        end if
+        call jelira(nommai//'.NOMMAI', 'NOMMAX', nb1)
 
-    elseif (cara.eq.'NB_NOEUD') then
-       call jeexin(nommai//'.NOMNOE', iexi)
-       if (iexi.eq.0) then
-          nb1=0
-          goto 100
-       endif
-       call jelira(nommai//'.NOMNOE', 'NOMMAX', nb1)
+    elseif (cara .eq. 'NB_NOEUD') then
+        call jeexin(nommai//'.NOMNOE', iexi)
+        if (iexi .eq. 0) then
+            nb1 = 0
+            goto 100
+        end if
+        call jelira(nommai//'.NOMNOE', 'NOMMAX', nb1)
 
-    elseif (cara.eq.'NB_GROUP_MA') then
-       call jeexin(nommai//'.GROUPEMA', iexi)
-       if (iexi.eq.0) then
-          nb1=0
-          goto 100
-       endif
-       call jelira(nommai//'.GROUPEMA', 'NMAXOC', nb1)
+    elseif (cara .eq. 'NB_GROUP_MA') then
+        call jeexin(nommai//'.GROUPEMA', iexi)
+        if (iexi .eq. 0) then
+            nb1 = 0
+            goto 100
+        end if
+        call jelira(nommai//'.GROUPEMA', 'NMAXOC', nb1)
 
-    elseif (cara.eq.'NB_GROUP_NO') then
-       call jeexin(nommai//'.GROUPENO', iexi)
-       if (iexi.eq.0) then
-          nb1=0
-          goto 100
-       endif
-       call jelira(nommai//'.GROUPENO', 'NMAXOC', nb1)
+    elseif (cara .eq. 'NB_GROUP_NO') then
+        call jeexin(nommai//'.GROUPENO', iexi)
+        if (iexi .eq. 0) then
+            nb1 = 0
+            goto 100
+        end if
+        call jelira(nommai//'.GROUPENO', 'NMAXOC', nb1)
 
-    elseif (cara.eq.'NB_MA_GROUP_MA') then
-       nb1=0
-       call jeexin(nommai//'.GROUPEMA', iexi)
-       if (iexi.eq.0)  goto 100
+    elseif (cara .eq. 'NB_MA_GROUP_MA') then
+        nb1 = 0
+        call jeexin(nommai//'.GROUPEMA', iexi)
+        if (iexi .eq. 0) goto 100
 
-       call getvtx('MAILLAGE', 'NOM_GROUP_MA', iocc=iocc, scal=nomgr, nbret=n1)
-       ASSERT(n1.eq.1)
-       call jenonu(jexnom(nommai//'.PTRNOMMAI', nomgr),igr)
-       if (igr.eq.0)  goto 100
+        call getvtx('MAILLAGE', 'NOM_GROUP_MA', iocc=iocc, scal=nomgr, nbret=n1)
+        ASSERT(n1 .eq. 1)
+        call jenonu(jexnom(nommai//'.PTRNOMMAI', nomgr), igr)
+        if (igr .eq. 0) goto 100
 
-       call jelira(jexnum(nommai//'.GROUPEMA', igr),'LONMAX',nb1)
+        call jelira(jexnum(nommai//'.GROUPEMA', igr), 'LONMAX', nb1)
 
-    elseif (cara.eq.'NB_NO_GROUP_NO') then
-       nb1=0
-       call jeexin(nommai//'.GROUPENO', iexi)
-       if (iexi.eq.0) goto 100
+    elseif (cara .eq. 'NB_NO_GROUP_NO') then
+        nb1 = 0
+        call jeexin(nommai//'.GROUPENO', iexi)
+        if (iexi .eq. 0) goto 100
 
-       call getvtx('MAILLAGE', 'NOM_GROUP_NO', iocc=iocc, scal=nomgr, nbret=n1)
-       ASSERT(n1.eq.1)
-       call jenonu(jexnom(nommai//'.PTRNOMNOE', nomgr),igr)
-       if (igr.eq.0)  goto 100
+        call getvtx('MAILLAGE', 'NOM_GROUP_NO', iocc=iocc, scal=nomgr, nbret=n1)
+        ASSERT(n1 .eq. 1)
+        call jenonu(jexnom(nommai//'.PTRNOMNOE', nomgr), igr)
+        if (igr .eq. 0) goto 100
 
-       call jelira(jexnum(nommai//'.GROUPENO', igr),'LONMAX',nb1)
+        call jelira(jexnum(nommai//'.GROUPENO', igr), 'LONMAX', nb1)
 
     else
-       ASSERT(.false.)
-    endif
-
-
+        ASSERT(.false.)
+    end if
 
 !   -- test de la valeur recuperee :
 !   ---------------------------------
 100 continue
 
-    call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit,&
+    call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
                      epsi, ssigne, refi=[refi], vali=nb1)
 
 end subroutine

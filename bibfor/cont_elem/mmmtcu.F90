@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmtcu(ndim  , nnl   , nne   , nnm,&
-                  ffl   , ffe   , ffm   ,&
-                  norm  , wpg   , jacobi,&
+subroutine mmmtcu(ndim, nnl, nne, nnm, &
+                  ffl, ffe, ffm, &
+                  norm, wpg, jacobi, &
                   matrce, matrcm)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: ndim, nne, nnl, nnm
-real(kind=8), intent(in) :: ffe(9), ffl(9), ffm(9)
-real(kind=8), intent(in) :: norm(3), wpg, jacobi
-real(kind=8), intent(out) :: matrce(9, 27), matrcm(9, 27)
+    integer, intent(in) :: ndim, nne, nnl, nnm
+    real(kind=8), intent(in) :: ffe(9), ffl(9), ffm(9)
+    real(kind=8), intent(in) :: norm(3), wpg, jacobi
+    real(kind=8), intent(out) :: matrce(9, 27), matrcm(9, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,8 +60,8 @@ real(kind=8), intent(out) :: matrce(9, 27), matrcm(9, 27)
         do inoe = 1, nne
             do idim = 1, ndim
                 jj = ndim*(inoe-1)+idim
-                matrce(inoc,jj) = matrce(inoc,jj) -&
-                                  wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
+                matrce(inoc, jj) = matrce(inoc, jj)- &
+                                   wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
             end do
         end do
     end do
@@ -69,8 +69,8 @@ real(kind=8), intent(out) :: matrce(9, 27), matrcm(9, 27)
         do inom = 1, nnm
             do idim = 1, ndim
                 jj = ndim*(inom-1)+idim
-                matrcm(inoc,jj) = matrcm(inoc,jj) +&
-                                  wpg*ffl(inoc)*ffm(inom)*jacobi*norm(idim)
+                matrcm(inoc, jj) = matrcm(inoc, jj)+ &
+                                   wpg*ffl(inoc)*ffm(inom)*jacobi*norm(idim)
             end do
         end do
     end do

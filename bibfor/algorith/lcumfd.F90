@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
-                  iflu, tdt, hini, hfin, afpd,&
+subroutine lcumfd(vari, nvari, nstrs, cmat, nmat, &
+                  iflu, tdt, hini, hfin, afpd, &
                   bfpd, cfpd)
 !
 !
@@ -77,7 +77,7 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
     if (ifpo .eq. 1) then
         hini = 1.d0
         hfin = 1.d0
-    endif
+    end if
 !
 ! TEST SI TDT = 0
 !
@@ -88,7 +88,7 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
         bfpd = 0.d0
         cfpd = 0.d0
         goto 20
-    endif
+    end if
 !
 ! RECUPERATION DES VARIABLES INTERNES INITIALES
 !
@@ -116,16 +116,16 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
 !
 !  VALEUR DES PARAMETRES => EQUATION (3.4-4)
 !
-    tdev = vrdv / rrdv
+    tdev = vrdv/rrdv
     tdexp = exp(-tdt/tdev)
-    adr = tdexp - 1.d0
-    bdr = 1.d0/rrdv*(&
-          tdexp*(&
-          -hini*(2*tdev/tdt+1.d0) + hfin*tdev/tdt) + hini*(2.d0*(tdev-tdt)/tdt+1.d0) - hfin*(tdev&
-          &-tdt&
-          )/tdt&
+    adr = tdexp-1.d0
+    bdr = 1.d0/rrdv*( &
+          tdexp*( &
+          -hini*(2*tdev/tdt+1.d0)+hfin*tdev/tdt)+hini*(2.d0*(tdev-tdt)/tdt+1.d0)-hfin*(tdev&
+          &-tdt &
+          )/tdt &
           )
-    cdr = hini/(tdt*rrdv)*( tdev*tdexp - (tdev - tdt) )
+    cdr = hini/(tdt*rrdv)*(tdev*tdexp-(tdev-tdt))
 !
 ! CONSTRUCTION DE LA MATRICE DEVIATOIRE IRREVERSIBLE
 !
@@ -158,26 +158,26 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat,&
     do i = 1, 6
         if (iflu .eq. 0) then
 !
-            afpd(i) = adr * epsdvr(i) + adi * epsdvi(i)
-            bfpd = bdr + bdi
-            cfpd = cdr + cdi
+            afpd(i) = adr*epsdvr(i)+adi*epsdvi(i)
+            bfpd = bdr+bdi
+            cfpd = cdr+cdi
 !
-        else if (iflu.eq.1) then
+        else if (iflu .eq. 1) then
 !
-            afpd(i) = adr * epsdvr(i)
+            afpd(i) = adr*epsdvr(i)
             bfpd = bdr
             cfpd = cdr
 !
-        else if (iflu.eq.2) then
+        else if (iflu .eq. 2) then
 !
-            afpd(i) = adi * epsdvi(i)
+            afpd(i) = adi*epsdvi(i)
             bfpd = bdi
             cfpd = cdi
-        endif
+        end if
 !
     end do
 !
- 20 continue
+20  continue
 !
     hini = hvini
     hfin = hvfin

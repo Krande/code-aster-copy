@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 function dileau(satur, phi, alphfi, alpliq)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
-real(kind=8), intent(in) :: satur
-real(kind=8), intent(in) :: phi
-real(kind=8), intent(in) :: alpliq
-real(kind=8), intent(in) :: alphfi
-real(kind=8) :: dileau
+    real(kind=8), intent(in) :: satur
+    real(kind=8), intent(in) :: phi
+    real(kind=8), intent(in) :: alpliq
+    real(kind=8), intent(in) :: alphfi
+    real(kind=8) :: dileau
 !
 ! --------------------------------------------------------------------------------------------------
 !

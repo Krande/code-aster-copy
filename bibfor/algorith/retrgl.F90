@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     integer, pointer :: nueq(:) => null()
     real(kind=8), pointer :: disc(:) => null()
 !-----------------------------------------------------------------------
-    data pgc   /'RETRGL'/
+    data pgc/'RETRGL'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -109,7 +109,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     if (iret .eq. 0) then
         valk = mailsk
         call utmess('F', 'ALGORITH14_27', sk=valk)
-    endif
+    end if
     call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
 !
 ! --- DETERMINATION DES CHAMPS A RESTITUER, PARMI DEPL, VITE ET ACCE
@@ -120,19 +120,19 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     if (ire1 .eq. 0 .and. ire2 .eq. 0 .and. ire3 .eq. 0.d0) then
         valk = resgen
         call utmess('F', 'ALGORITH14_35', sk=valk)
-    endif
+    end if
 !
     call getvtx(' ', 'TOUT_CHAM', scal=k8rep, nbret=n1)
     if (k8rep(1:3) .eq. 'OUI') then
         if (ire1 .eq. 0) then
             call utmess('F', 'ALGORITH10_44')
-        endif
+        end if
         if (ire2 .eq. 0) then
             call utmess('F', 'ALGORITH10_45')
-        endif
+        end if
         if (ire3 .eq. 0) then
             call utmess('F', 'ALGORITH10_46')
-        endif
+        end if
         nbcham = 3
         chmp(1) = 'DEPL'
         chmp(2) = 'VITE'
@@ -144,35 +144,35 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
         call getvtx(' ', 'NOM_CHAM', scal=k8rep, nbret=n1)
         if (k8rep(1:4) .eq. 'DEPL' .and. ire1 .eq. 0) then
             call utmess('F', 'ALGORITH10_44')
-        else if (k8rep(1:4).eq.'DEPL'.and.ire1.ne.0) then
+        else if (k8rep(1:4) .eq. 'DEPL' .and. ire1 .ne. 0) then
             nbcham = 1
             chmp(1) = 'DEPL'
             call jeveuo(trange//'.DEPL', 'L', itresu(1))
-        else if (k8rep(1:4).eq.'VITE'.and.ire2.eq.0) then
+        else if (k8rep(1:4) .eq. 'VITE' .and. ire2 .eq. 0) then
             call utmess('F', 'ALGORITH10_45')
-        else if (k8rep(1:4).eq.'VITE'.and.ire2.ne.0) then
+        else if (k8rep(1:4) .eq. 'VITE' .and. ire2 .ne. 0) then
             nbcham = 1
             chmp(1) = 'VITE'
             call jeveuo(trange//'.VITE', 'L', itresu(1))
-        else if (k8rep(1:4).eq.'ACCE'.and.ire3.eq.0) then
+        else if (k8rep(1:4) .eq. 'ACCE' .and. ire3 .eq. 0) then
             call utmess('F', 'ALGORITH10_46')
-        else if (k8rep(1:4).eq.'ACCE'.and.ire3.ne.0) then
+        else if (k8rep(1:4) .eq. 'ACCE' .and. ire3 .ne. 0) then
             nbcham = 1
             chmp(1) = 'ACCE'
             call jeveuo(trange//'.ACCE', 'L', itresu(1))
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
     call dismoi('NUME_DDL', trange, 'RESU_DYNA', repk=nume_gene)
     prof_gene = nume_gene//'.NUME'
     call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
-    model_gene = refn(1)(1:8)
+    model_gene = refn(1) (1:8)
     call nueq_chck(prof_gene, neqgen)
 !
     call jelira(model_gene//'      .MODG.SSNO', 'NOMMAX', nbsst)
     k8bid = '  '
-    call mgutdm(model_gene, k8bid, 1, 'NB_CMP_MAX', nbcmp,&
+    call mgutdm(model_gene, k8bid, 1, 'NB_CMP_MAX', nbcmp, &
                 k8bid)
 !
 ! --- RECUPERATION DES ROTATIONS
@@ -204,16 +204,16 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
     knume = '&&RETREC.NUM_RANG'
     kinst = '&&RETREC.INSTANT'
-    call rstran(interp, trange, ' ', 1, kinst,&
+    call rstran(interp, trange, ' ', 1, kinst, &
                 knume, nbinst, iretou)
     if (iretou .ne. 0) then
         call utmess('F', 'ALGORITH10_47')
-    endif
+    end if
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
         call jeveuo(kinst, 'E', jinst)
         call jeveuo(knume, 'E', jnume)
-    endif
+    end if
 !
 ! --- ALLOCATION DE LA STRUCTURE DE DONNEES RESULTAT-COMPOSE
 !
@@ -221,23 +221,23 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
-    seliai=nume_gene(1:14)//'.ELIM.BASE'
-    sizlia=nume_gene(1:14)//'.ELIM.TAIL'
-    sst=   nume_gene(1:14)//'.ELIM.NOMS'
+    seliai = nume_gene(1:14)//'.ELIM.BASE'
+    sizlia = nume_gene(1:14)//'.ELIM.TAIL'
+    sst = nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
     if (elim .ne. 0) then
-        neqet=0
-        neqred=neqgen
-        nomsst=model_gene//'      .MODG.SSNO'
+        neqet = 0
+        neqred = neqgen
+        nomsst = model_gene//'      .MODG.SSNO'
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
         do i = 1, nbsst
-            neqet=neqet+zi(lsilia+i-1)
+            neqet = neqet+zi(lsilia+i-1)
         end do
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
-    endif
+    end if
 !
 ! -------------------------------------
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
@@ -258,38 +258,38 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
             call wkvect('&&RETREC.VECTGENE', 'V V R', neqgen, idvecg)
         else
             call wkvect('&&RETREC.VECTGENE', 'V V R', neqet, idvecg)
-        endif
+        end if
 !
         do i = 0, nbinst-1
-            iarchi = iarchi + 1
+            iarchi = iarchi+1
 !
             do ich = 1, nbcham
 !
                 idresu = itresu(ich)
-                call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
+                call rsexch(' ', nomres, chmp(ich), iarchi, chamno, &
                             iret)
                 if (iret .eq. 0) then
                     call utmess('A', 'ALGORITH2_64', sk=chamno)
-                else if (iret.eq.100) then
+                else if (iret .eq. 100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else
                     ASSERT(.false.)
-                endif
+                end if
                 chamno(20:24) = '.VALE'
                 call jeveuo(chamno, 'E', ldnew)
-                call extrac(interp, epsi, crit, nbinsg, disc,&
-                            zr( jinst+i), zr(idresu), neqgen, zr(idvecg), ier)
+                call extrac(interp, epsi, crit, nbinsg, disc, &
+                            zr(jinst+i), zr(idresu), neqgen, zr(idvecg), ier)
 !
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
                 if (elim .ne. 0) then
                     do i1 = 1, neqet
-                        zr(lmoet+i1-1)=0.d0
+                        zr(lmoet+i1-1) = 0.d0
                         do k1 = 1, neqred
-                            zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(&
-                            k1-1)*neqet+i1-1)* zr(idvecg+k1-1)
+                            zr(lmoet+i1-1) = zr(lmoet+i1-1)+zr(lmapro+( &
+                                                               k1-1)*neqet+i1-1)*zr(idvecg+k1-1)
                         end do
                     end do
-                endif
+                end if
 !
 ! --- BOUCLE SUR LES SOUS-STRUCTURESs
 !
@@ -304,25 +304,25 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
                         if (elim .ne. 0) then
                             call jenonu(jexnom(nomsst, zk8(lsst+k-1)), numsst)
-                            ieq=0
+                            ieq = 0
                             do i1 = 1, k-1
-                                ieq=ieq+zi(lsilia+i1-1)
+                                ieq = ieq+zi(lsilia+i1-1)
                             end do
                         else
-                            numsst=k
+                            numsst = k
 !  RECUPERATION DU NUMERO TARDIF DE LA SST
                             do j = 1, nbsst
-                                if (zi(llors+j-1) .eq. numsst) nutars=j
+                                if (zi(llors+j-1) .eq. numsst) nutars = j
                             end do
-                            ieq=zi(llprs+(nutars-1)*2)
-                        endif
+                            ieq = zi(llprs+(nutars-1)*2)
+                        end if
 !
                         k8bid = '  '
-                        call mgutdm(model_gene, k8bid, numsst, 'NOM_BASE_MODALE', ibid,&
+                        call mgutdm(model_gene, k8bid, numsst, 'NOM_BASE_MODALE', ibid, &
                                     basmod)
                         call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
                         k8bid = '  '
-                        call mgutdm(model_gene, k8bid, numsst, 'NOM_NUME_DDL', ibid,&
+                        call mgutdm(model_gene, k8bid, numsst, 'NOM_NUME_DDL', ibid, &
                                     numddl)
                         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
                         call wkvect('&&'//pgc//'.TRAV', 'V V R', neqs, ltvec)
@@ -334,16 +334,16 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                             call jeveuo(chamba, 'L', llchab)
 !
                             if (elim .ne. 0) then
-                                iad=lmoet+ieq+j-1
+                                iad = lmoet+ieq+j-1
                             else
-                                iad=idvecg+nueq(1+ieq+j-2)-1
-                            endif
+                                iad = idvecg+nueq(1+ieq+j-2)-1
+                            end if
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
                             do l = 1, neqs
-                                zr(ltvec+l-1)=zr(ltvec+l-1)+zr(llchab+&
-                                l-1)*zr(iad)
+                                zr(ltvec+l-1) = zr(ltvec+l-1)+zr(llchab+ &
+                                                                 l-1)*zr(iad)
                             end do
                             call jedetr('&&'//pgc//'.VECTA')
                         end do
@@ -357,22 +357,22 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                             zr(ldnew+iar-1) = zr(ltvec+idep-1)
                         end do
                         call jedetr('&&'//pgc//'.TRAV')
-                    endif
+                    end if
 !
                 end do
                 call rsnoch(nomres, chmp(ich), iarchi)
 !
 ! --- ROTATION DU CHAMP AUX NOEUDS
 !
-                call rotchm(profno, zr(ldnew), zr(ltrotz), nbsst, zi( llinsk),&
+                call rotchm(profno, zr(ldnew), zr(ltrotz), nbsst, zi(llinsk), &
                             nbnot, nbcmp, 3)
-                call rotchm(profno, zr(ldnew), zr(ltroty), nbsst, zi( llinsk),&
+                call rotchm(profno, zr(ldnew), zr(ltroty), nbsst, zi(llinsk), &
                             nbnot, nbcmp, 2)
-                call rotchm(profno, zr(ldnew), zr(ltrotx), nbsst, zi( llinsk),&
+                call rotchm(profno, zr(ldnew), zr(ltrotx), nbsst, zi(llinsk), &
                             nbnot, nbcmp, 1)
 !
             end do
-            call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
+            call rsadpa(nomres, 'E', 1, 'INST', iarchi, &
                         0, sjv=linst, styp=k8bid)
             zr(linst) = zr(jinst+i)
         end do
@@ -380,34 +380,34 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     else
 !
         call jeexin(trange//'.ORDR', iret)
-        if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi=-1
+        if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
 !
         do i = 0, nbinst-1
-            iarchi = iarchi + 1
+            iarchi = iarchi+1
 !
             do ich = 1, nbcham
                 idresu = itresu(ich)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
                 if (elim .ne. 0) then
                     do i1 = 1, neqet
-                        zr(lmoet+i1-1)=0.d0
+                        zr(lmoet+i1-1) = 0.d0
                         do k1 = 1, neqred
-                            zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(&
-                            k1-1)*neqet+i1-1)* zr(idresu+k1-1+(zi(&
-                            jnume+i)-1)*neqred)
+                            zr(lmoet+i1-1) = zr(lmoet+i1-1)+zr(lmapro+( &
+                                                             k1-1)*neqet+i1-1)*zr(idresu+k1-1+(zi( &
+                                                                                 jnume+i)-1)*neqred)
                         end do
                     end do
-                endif
+                end if
 !
-                call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
+                call rsexch(' ', nomres, chmp(ich), iarchi, chamno, &
                             iret)
                 if (iret .eq. 0) then
                     call utmess('A', 'ALGORITH2_64', sk=chamno)
-                else if (iret.eq.100) then
+                else if (iret .eq. 100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else
                     ASSERT(.false.)
-                endif
+                end if
                 chamno(20:24) = '.VALE'
                 call jeveuo(chamno, 'E', ldnew)
 !
@@ -424,24 +424,24 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
                         if (elim .ne. 0) then
                             call jenonu(jexnom(nomsst, zk8(lsst+k-1)), numsst)
-                            ieq=0
+                            ieq = 0
                             do i1 = 1, k-1
-                                ieq=ieq+zi(lsilia+i1-1)
+                                ieq = ieq+zi(lsilia+i1-1)
                             end do
                         else
-                            numsst=k
+                            numsst = k
 !  RECUPERATION DU NUMERO TARDIF DE LA SST
                             do j = 1, nbsst
-                                if (zi(llors+j-1) .eq. numsst) nutars=j
+                                if (zi(llors+j-1) .eq. numsst) nutars = j
                             end do
-                            ieq=zi(llprs+(nutars-1)*2)
-                        endif
+                            ieq = zi(llprs+(nutars-1)*2)
+                        end if
                         k8bid = '  '
-                        call mgutdm(model_gene, k8bid, numsst, 'NOM_BASE_MODALE', ibid,&
+                        call mgutdm(model_gene, k8bid, numsst, 'NOM_BASE_MODALE', ibid, &
                                     basmod)
                         call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbbas)
                         k8bid = '  '
-                        call mgutdm(model_gene, k8bid, numsst, 'NOM_NUME_DDL', ibid,&
+                        call mgutdm(model_gene, k8bid, numsst, 'NOM_NUME_DDL', ibid, &
                                     numddl)
                         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
                         call wkvect('&&'//pgc//'.TRAV', 'V V R', neqs, ltvec)
@@ -454,16 +454,16 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                             call jeveuo(chamba, 'L', llchab)
 !
                             if (elim .ne. 0) then
-                                iad=lmoet+ieq+j-1
+                                iad = lmoet+ieq+j-1
                             else
-                                iad=idresu+(zi(jnume+i)-1)*neqgen+&
-                                nueq(1+ieq+j-2)-1
-                            endif
+                                iad = idresu+(zi(jnume+i)-1)*neqgen+ &
+                                      nueq(1+ieq+j-2)-1
+                            end if
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
 !
                             do l = 1, neqs
-                                zr(ltvec+l-1)=zr(ltvec+l-1)+zr(llchab+l-1)*zr(iad)
+                                zr(ltvec+l-1) = zr(ltvec+l-1)+zr(llchab+l-1)*zr(iad)
                             end do
                         end do
                         call jeveuo(jexnum(indirf, numsst), 'L', llind)
@@ -475,27 +475,27 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                             zr(ldnew+iar-1) = zr(ltvec+idep-1)
                         end do
                         call jedetr('&&'//pgc//'.TRAV')
-                    endif
+                    end if
 !
                 end do
                 call rsnoch(nomres, chmp(ich), iarchi)
 !
 ! --- ROTATION DU CHAMP AUX NOEUDS
 !
-                call rotchm(profno, zr(ldnew), zr(ltrotz), nbsst, zi( llinsk),&
+                call rotchm(profno, zr(ldnew), zr(ltrotz), nbsst, zi(llinsk), &
                             nbnot, nbcmp, 3)
-                call rotchm(profno, zr(ldnew), zr(ltroty), nbsst, zi( llinsk),&
+                call rotchm(profno, zr(ldnew), zr(ltroty), nbsst, zi(llinsk), &
                             nbnot, nbcmp, 2)
-                call rotchm(profno, zr(ldnew), zr(ltrotx), nbsst, zi( llinsk),&
+                call rotchm(profno, zr(ldnew), zr(ltrotx), nbsst, zi(llinsk), &
                             nbnot, nbcmp, 1)
 !
             end do
-            call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
+            call rsadpa(nomres, 'E', 1, 'INST', iarchi, &
                         0, sjv=linst, styp=k8bid)
             zr(linst) = zr(jinst+i)
         end do
 !
-    endif
+    end if
 !
     call refdcp(trange, nomres)
 !

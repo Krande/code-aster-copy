@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine titre1(st, nomobj, base, nbtitr, titdon,&
+subroutine titre1(st, nomobj, base, nbtitr, titdon, &
                   lgdon, formr, nomsym, iordr)
     implicit none
 #include "asterf_types.h"
@@ -43,7 +43,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
     aster_logical :: lDefault
 !
 !-----------------------------------------------------------------------
-    parameter            (mxligs=50 )
+    parameter(mxligs=50)
     character(len=1) :: kavant, kcoura
 !
 !     ------------------------------------------------------------------
@@ -55,7 +55,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
     if (nbtitr .lt. 0) then
         lDefault = ASTER_FALSE
         nbtitr = -nbtitr
-    endif
+    end if
 !
 ! -------------------------
 !     ICOLS  = INDICE DE LA DERNIERE COLONNE REMPLIE DANS LA SORTIE
@@ -73,67 +73,67 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
         vali(2) = nbtitr
         call utmess('A', 'UTILITAI4_89', ni=2, vali=vali)
         nbtitr = mxligs
-    endif
+    end if
 1000 continue
     if (iligd .le. nbtitr .and. iligd .le. mxligs) then
 !
 !        --- TANT QU'IL Y A DES COLONNES FAIRE ---
         icold = 1
         mxcold = lgdon(iligd)
-1100     continue
+1100    continue
         if (icold .le. mxcold) then
-            if (titdon(iligd)(icold:icold) .eq. '&' .and. lDefault) then
+            if (titdon(iligd) (icold:icold) .eq. '&' .and. lDefault) then
 !
 !              --- ON A TROUVE UN "&",  ATTENTION DEMON ---
 !               uniquement pour les titres par défaut
-                call titreb(titdon, iligd, icold, nbtitr, zk80(1),&
+                call titreb(titdon, iligd, icold, nbtitr, zk80(1), &
                             ldons1, icols, formr, nomsym, iordr)
 !
             else
-                icols = icols + 1
+                icols = icols+1
                 if (icols .gt. 80) then
 !
 !                 --- ON EVITE DE COUPER LES MOTS ---
                     icols = 80
-                    kavant = zk80(ldons1)(icols:icols)
-                    kcoura = titdon(iligd)(icold:icold)
+                    kavant = zk80(ldons1) (icols:icols)
+                    kcoura = titdon(iligd) (icold:icold)
                     if (kavant .ne. ' ' .and. kcoura .ne. ' ') then
 200                     continue
-                        icols = icols - 1
+                        icols = icols-1
                         if (icols .gt. 0) then
-                            kavant = zk80(ldons1)(icols:icols)
+                            kavant = zk80(ldons1) (icols:icols)
                             if (kavant .ne. ' ') goto 200
-                            ideb = icols + 1
+                            ideb = icols+1
                             icols = 0
                             do i = ideb, 80
-                                icols = icols + 1
-                                kavant = zk80(ldons1)(i:i)
-                                zk80(ldons1+1)(icols:icols) = kavant
-                                zk80(ldons1)(i:i) = ' '
+                                icols = icols+1
+                                kavant = zk80(ldons1) (i:i)
+                                zk80(ldons1+1) (icols:icols) = kavant
+                                zk80(ldons1) (i:i) = ' '
                             end do
-                            icols = icols + 1
-                            ldons1 = ldons1 + 1
+                            icols = icols+1
+                            ldons1 = ldons1+1
                         else
-                            ldons1 = ldons1 + 1
+                            ldons1 = ldons1+1
                             icols = 1
-                        endif
+                        end if
                     else
-                        ldons1 = ldons1 + 1
+                        ldons1 = ldons1+1
                         icols = 1
-                    endif
-                endif
+                    end if
+                end if
                 if (ldons1 .gt. ldons-1+mxligs) then
-                    ldons1 = ldons1 - 1
+                    ldons1 = ldons1-1
                     goto 1200
-                endif
-                zk80(ldons1)(icols:icols)=titdon(iligd)(icold:icold)
-                icold = icold + 1
-            endif
+                end if
+                zk80(ldons1) (icols:icols) = titdon(iligd) (icold:icold)
+                icold = icold+1
+            end if
             goto 1100
-        endif
-        iligd = iligd + 1
+        end if
+        iligd = iligd+1
         goto 1000
-    endif
+    end if
 1200 continue
 !
 !     --- RECOPIE DANS L'OBJET FINAL ----
@@ -143,7 +143,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
     if (ierx .eq. 0) then
         call wkvect(nomobj, base(1:1)//' V K80', iligs, lsort)
         lonmax = 0
-    else if (st.eq.'C') then
+    else if (st .eq. 'C') then
         call jelira(nomobj, 'LONMAX', lonmax)
         call juveca(nomobj, lonmax+iligs)
         call jeveuo(nomobj, 'E', lsort)
@@ -151,11 +151,11 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
         call jedetr(nomobj)
         call wkvect(nomobj, base(1:1)//' V K80', iligs, lsort)
         lonmax = 0
-    endif
+    end if
     do ilig = 1, iligs
         if (ilig .gt. mxligs) then
             goto 2001
-        endif
+        end if
         zk80(lsort+lonmax+ilig-1) = zk80(ldons+ilig-1)
     end do
 2001 continue

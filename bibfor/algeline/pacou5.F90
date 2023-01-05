@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,32 +33,32 @@ subroutine pacou5(r, qt, n, u, v)
     end do
     k = 1
 !
-  1 continue
+1   continue
 !
     do i = k-1, 1, -1
 !
-        call pacou6(r, qt, n, i, u(i),&
+        call pacou6(r, qt, n, i, u(i), &
                     -u(i+1))
 !
         if (abs(u(i)) .le. 1.0d-30) then
             u(i) = abs(u(i+1))
 !
         else if (abs(u(i)) .gt. abs(u(i+1))) then
-            u(i) = abs(u(i)) * sqrt(1.0d0+(u(i+1)/u(i))**2)
+            u(i) = abs(u(i))*sqrt(1.0d0+(u(i+1)/u(i))**2)
 !
         else
-            u(i) = abs(u(i+1)) * sqrt(1.0d0+(u(i)/u(i+1))**2)
+            u(i) = abs(u(i+1))*sqrt(1.0d0+(u(i)/u(i+1))**2)
 !
-        endif
+        end if
     end do
 !
     do j = 1, n
-        r(1,j) = r(1,j) + u(1)*v(j)
+        r(1, j) = r(1, j)+u(1)*v(j)
     end do
 !
     do i = 1, k-1
 !
-        call pacou6(r, qt, n, i, r(i, i),&
+        call pacou6(r, qt, n, i, r(i, i), &
                     -r(i+1, i))
     end do
 !

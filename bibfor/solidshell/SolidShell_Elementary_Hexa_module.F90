@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,24 +24,24 @@
 !
 module SolidShell_Elementary_Hexa_module
 ! ==================================================================================================
-use SolidShell_type
-use SolidShell_Utilities_module
-use SolidShell_Debug_module
-use SolidShell_Geometry_Hexa_module
-use SolidShell_Kinematic_Hexa_module
-use SolidShell_Stabilization_Hexa_module
+    use SolidShell_type
+    use SolidShell_Utilities_module
+    use SolidShell_Debug_module
+    use SolidShell_Geometry_Hexa_module
+    use SolidShell_Kinematic_Hexa_module
+    use SolidShell_Stabilization_Hexa_module
 ! ==================================================================================================
-implicit none
+    implicit none
 ! ==================================================================================================
-public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
-           compRigiGeomHexaKpg,&
-           compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa,&
-           compLoadHexa, compMassMatrHexa, compRigiGeomMatrHexa,&
-           compRefeForcNodaHexa,&
-           compLoadExteStatVariHexa, compEpvcElgaHexa
-private :: prodBTSigm, compSiefExteStatVariHexa
+    public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa, &
+               compRigiGeomHexaKpg, &
+               compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa, &
+               compLoadHexa, compMassMatrHexa, compRigiGeomMatrHexa, &
+               compRefeForcNodaHexa, &
+               compLoadExteStatVariHexa, compEpvcElgaHexa
+    private :: prodBTSigm, compSiefExteStatVariHexa
 ! ==================================================================================================
-private
+    private
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -74,73 +74,73 @@ contains
 ! Out matrRigi         : rigidity matrix
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compRigiMatrHexa(elemProp, cellGeom, matePara, matrRigi)
+    subroutine compRigiMatrHexa(elemProp, cellGeom, matePara, matrRigi)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    type(SSH_MATE_PARA), intent(in) :: matePara
-    real(kind=8), intent(out)       :: matrRigi(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        type(SSH_MATE_PARA), intent(in) :: matePara
+        real(kind=8), intent(out)       :: matrRigi(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    type(SSH_STAB_HEXA) :: stabHexa
-    real(kind=8) :: zeta, poids, jacob, Ueff
-    integer :: nbIntePoint, kpg, jvCoor, jvWeight
-    real(kind=8) :: tBDB(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        type(SSH_STAB_HEXA) :: stabHexa
+        real(kind=8) :: zeta, poids, jacob, Ueff
+        integer :: nbIntePoint, kpg, jvCoor, jvWeight
+        real(kind=8) :: tBDB(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    jvCoor      = elemProp%elemInte%jvCoor
-    jvWeight    = elemProp%elemInte%jvWeight
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvCoor = elemProp%elemInte%jvCoor
+        jvWeight = elemProp%elemInte%jvWeight
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomHexa, kineHexa)
+        call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
-    call compBCartMatrHexa(geomHexa, kineHexa)
+        call compBCartMatrHexa(geomHexa, kineHexa)
 
-    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
-        zeta  = zr(jvCoor-1+3*kpg)
-        poids = zr(jvWeight-1+kpg)
-        jacob = poids * cellGeom%detJac0
+        do kpg = 1, nbIntePoint
+            zeta = zr(jvCoor-1+3*kpg)
+            poids = zr(jvWeight-1+kpg)
+            jacob = poids*cellGeom%detJac0
 
 ! ----- Compute EAS B matrix in cartesian frame at current Gauss point
-        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+            call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
 ! ----- Compute B matrix
-        call compBMatrHexa(zeta, kineHexa)
-        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_ = ASTER_TRUE)
+            call compBMatrHexa(zeta, kineHexa)
+            if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_=ASTER_TRUE)
 
 ! ----- Compute product tBSB
-        call prodBTDB(matePara%elemHookeMatrix, SSH_SIZE_TENS, elemProp%nbDof, kineHexa%B, tBDB)
+            call prodBTDB(matePara%elemHookeMatrix, SSH_SIZE_TENS, elemProp%nbDof, kineHexa%B, tBDB)
 
 ! ----- Update matrix
-        matrRigi = matrRigi +  jacob * tBDB
-        if (SSH_DBG_ELEM) call dbgMatrRigiKpg(kpg, zeta, poids, jacob, matrRigi)
+            matrRigi = matrRigi+jacob*tBDB
+            if (SSH_DBG_ELEM) call dbgMatrRigiKpg(kpg, zeta, poids, jacob, matrRigi)
 
-    end do
+        end do
 
 ! - Effective shear modulus for stabilization (elasticity)
-    Ueff = matePara%elemHookeMatrix(5, 5)
+        Ueff = matePara%elemHookeMatrix(5, 5)
 
 ! - Compute stabilization matrix (material part, elasticity)
-    call compStabMatrMateHexa(geomHexa, kineHexa, Ueff, stabHexa)
-    if (SSH_DBG_STAB) call dbgObjStabHexa(Ueff, stabHexa)
+        call compStabMatrMateHexa(geomHexa, kineHexa, Ueff, stabHexa)
+        if (SSH_DBG_STAB) call dbgObjStabHexa(Ueff, stabHexa)
 
 ! - Compute matrix
-    matrRigi(1:SSH_NBDOFG_HEXA, 1:SSH_NBDOFG_HEXA) = &
-        matrRigi(1:SSH_NBDOFG_HEXA, 1:SSH_NBDOFG_HEXA) + stabHexa%matrStabMate
+        matrRigi(1:SSH_NBDOFG_HEXA, 1:SSH_NBDOFG_HEXA) = &
+            matrRigi(1:SSH_NBDOFG_HEXA, 1:SSH_NBDOFG_HEXA)+stabHexa%matrStabMate
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compSiefElgaHexa
@@ -154,63 +154,63 @@ end subroutine
 ! Out siefElga         : stresses at Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
-                            siefElga)
+    subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp, &
+                                siefElga)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    type(SSH_MATE_PARA), intent(in) :: matePara
-    real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
-    real(kind=8), intent(out)       :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        type(SSH_MATE_PARA), intent(in) :: matePara
+        real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
+        real(kind=8), intent(out)       :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
-    integer :: nbIntePoint, kpg, jvCoor
-    character(len=16), parameter :: option = 'EPVC_ELGA'
-    real(kind=8) :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
+        integer :: nbIntePoint, kpg, jvCoor
+        character(len=16), parameter :: option = 'EPVC_ELGA'
+        real(kind=8) :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    jvCoor      = elemProp%elemInte%jvCoor
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvCoor = elemProp%elemInte%jvCoor
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomHexa, kineHexa)
+        call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
-    call compBCartMatrHexa(geomHexa, kineHexa)
-    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+        call compBCartMatrHexa(geomHexa, kineHexa)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
 ! - Compute strains from external state variables
-    call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+        call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
-        zeta  = zr(jvCoor-1+3*kpg)
+        do kpg = 1, nbIntePoint
+            zeta = zr(jvCoor-1+3*kpg)
 
 ! ----- Compute EAS B matrix in cartesian frame at current Gauss point
-        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+            call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
 ! ----- Compute B matrix
-        call compBMatrHexa(zeta, kineHexa)
-        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_ = ASTER_TRUE)
+            call compBMatrHexa(zeta, kineHexa)
+            if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_=ASTER_TRUE)
 
 ! ----- Compute small strains
-        call compEpsiHexa(kineHexa, disp, epsi)
-        epsi = epsi - epvcElga(kpg, :)
+            call compEpsiHexa(kineHexa, disp, epsi)
+            epsi = epsi-epvcElga(kpg, :)
 
 ! ----- Compute stresses
         siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = matmul(matePara%elemHookeMatrix, epsi)
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compForcNodaHexa
@@ -223,59 +223,59 @@ end subroutine
 ! Out forcNoda         : nodal forces
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compForcNodaHexa(elemProp, cellGeom,&
-                            siefElga, forcNoda)
+    subroutine compForcNodaHexa(elemProp, cellGeom, &
+                                siefElga, forcNoda)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    real(kind=8), intent(in)        :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
-    real(kind=8), intent(out)       :: forcNoda(SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        real(kind=8), intent(in)        :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        real(kind=8), intent(out)       :: forcNoda(SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: disp(SSH_NBDOF_HEXA)
-    integer :: jvCompor, jvDisp, iretc, iDof
-    character(len=16) :: defoComp
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        real(kind=8) :: disp(SSH_NBDOF_HEXA)
+        integer :: jvCompor, jvDisp, iretc, iDof
+        character(len=16) :: defoComp
 !   ------------------------------------------------------------------------------------------------
 !
 
 ! - Select configuration
-    call tecach('ONO', 'PCOMPOR', 'L', iretc, iad = jvCompor)
-    defoComp = 'PETIT'
-    if (iretc .eq. 0) then
-        defoComp = zk16(jvCompor-1+DEFO)
-    endif
+        call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=jvCompor)
+        defoComp = 'PETIT'
+        if (iretc .eq. 0) then
+            defoComp = zk16(jvCompor-1+DEFO)
+        end if
 
 ! - Update configuration
-    if (defoComp .eq. 'PETIT') then
-        call initGeomCellHexa(cellGeom, geomHexa)
-    else
-        call tecach('ONO', 'PDEPLMR', 'L', iretc, iad = jvDisp)
-        if (iretc .eq. 0) then
-            do iDof = 1, SSH_NBDOF_HEXA
-                disp(iDof) = zr(jvDisp-1+iDof)
-            end do
-            call initGeomCellHexa(cellGeom, geomHexa, disp)
+        if (defoComp .eq. 'PETIT') then
+            call initGeomCellHexa(cellGeom, geomHexa)
         else
-            call utmess('F', 'SOLIDSHELL1_4')
-        endif
-    endif
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+            call tecach('ONO', 'PDEPLMR', 'L', iretc, iad=jvDisp)
+            if (iretc .eq. 0) then
+                do iDof = 1, SSH_NBDOF_HEXA
+                    disp(iDof) = zr(jvDisp-1+iDof)
+                end do
+                call initGeomCellHexa(cellGeom, geomHexa, disp)
+            else
+                call utmess('F', 'SOLIDSHELL1_4')
+            end if
+        end if
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomHexa, kineHexa)
+        call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
-    call compBCartMatrHexa(geomHexa, kineHexa)
-    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+        call compBCartMatrHexa(geomHexa, kineHexa)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
 ! - Compute Bt.Sigma
-    call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
+        call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! prodBTSigm
@@ -288,47 +288,47 @@ end subroutine
 ! Out forcNoda         : nodal forces
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
+    subroutine prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in)    :: elemProp
-    type(SSH_CELL_GEOM), intent(in)    :: cellGeom
-    type(SSH_GEOM_HEXA), intent(in)    :: geomHexa
-    type(SSH_KINE_HEXA), intent(inout) :: kineHexa
-    real(kind=8), intent(in)           :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
-    real(kind=8), intent(out)          :: forcNoda(SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in)    :: elemProp
+        type(SSH_CELL_GEOM), intent(in)    :: cellGeom
+        type(SSH_GEOM_HEXA), intent(in)    :: geomHexa
+        type(SSH_KINE_HEXA), intent(inout) :: kineHexa
+        real(kind=8), intent(in)           :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        real(kind=8), intent(out)          :: forcNoda(SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-    real(kind=8) :: zeta, poids, jacob
-    integer :: nbIntePoint, kpg, jvCoor, jvWeight
+        real(kind=8) :: zeta, poids, jacob
+        integer :: nbIntePoint, kpg, jvCoor, jvWeight
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    jvCoor      = elemProp%elemInte%jvCoor
-    jvWeight    = elemProp%elemInte%jvWeight
-    forcNoda    = 0.d0
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvCoor = elemProp%elemInte%jvCoor
+        jvWeight = elemProp%elemInte%jvWeight
+        forcNoda = 0.d0
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
-        zeta  = zr(jvCoor-1+3*kpg)
-        poids = zr(jvWeight-1+kpg)
-        jacob = poids * cellGeom%detJac0
+        do kpg = 1, nbIntePoint
+            zeta = zr(jvCoor-1+3*kpg)
+            poids = zr(jvWeight-1+kpg)
+            jacob = poids*cellGeom%detJac0
 
 ! ----- Compute EAS B matrix in cartesian frame at current Gauss point
-        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+            call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
 ! ----- Compute B matrix
-        call compBMatrHexa(zeta, kineHexa)
-        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_ = ASTER_TRUE)
+            call compBMatrHexa(zeta, kineHexa)
+            if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_=ASTER_TRUE)
 
 ! ----- Product BT . sigma CUMULATED (see btsig subroutine)
-        call btsig(elemProp%nbDof, SSH_SIZE_TENS, jacob,&
-                   kineHexa%B, siefElga(1+SSH_SIZE_TENS*(kpg-1)), forcNoda)
+            call btsig(elemProp%nbDof, SSH_SIZE_TENS, jacob, &
+                       kineHexa%B, siefElga(1+SSH_SIZE_TENS*(kpg-1)), forcNoda)
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compRigiGeomHexaKpg
@@ -342,62 +342,62 @@ end subroutine
 ! Out matrRigi         : rigidity matrix
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compRigiGeomHexaKpg(geomHexa, zeta, sigm, matrGeom)
+    subroutine compRigiGeomHexaKpg(geomHexa, zeta, sigm, matrGeom)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_GEOM_HEXA), intent(in) :: geomHexa
-    real(kind=8), intent(in)        :: zeta, sigm(SSH_SIZE_TENS)
-    real(kind=8), intent(out)       :: matrGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+        type(SSH_GEOM_HEXA), intent(in) :: geomHexa
+        real(kind=8), intent(in)        :: zeta, sigm(SSH_SIZE_TENS)
+        real(kind=8), intent(out)       :: matrGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-    integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-    integer :: iNodeGeom, jNodeGeom
-    real(kind=8) :: const(SSH_SIZE_TENS)
-    real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS), GCovaZETAZETA(SSH_SIZE_TENS)
-    real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS), GPinchZZ(SSH_SIZE_TENS)
+        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer :: iNodeGeom, jNodeGeom
+        real(kind=8) :: const(SSH_SIZE_TENS)
+       real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS), GCovaZETAZETA(SSH_SIZE_TENS)
+      real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS), GPinchZZ(SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
-    matrGeom = 0.d0
+        matrGeom = 0.d0
 
 ! - For "standard" nodes
-    do iNodeGeom = 1, nbNodeGeom
-        do jNodeGeom = 1, nbNodeGeom
+        do iNodeGeom = 1, nbNodeGeom
+            do jNodeGeom = 1, nbNodeGeom
 
 ! --------- Compute gradients for geometric matrix
-            call compGCovaMatrHexa(iNodeGeom, jNodeGeom, GCova0, GCovaZETA, GCovaZETAZETA)
+                call compGCovaMatrHexa(iNodeGeom, jNodeGeom, GCova0, GCovaZETA, GCovaZETAZETA)
 
 ! --------- Compute matrix
-            const = matmul(geomHexa%T0, GCova0)+&
-                    zeta*(matmul(geomHexa%T0, GCovaZETA) + &
-                          matmul(geomHexa%TZETA, GCova0))+ &
-                    zeta*zeta*(matmul(geomHexa%T0, GCovaZETAZETA) + &
-                               matmul(geomHexa%TZETA, GCovaZETA))
-            matrGeom(3*(iNodeGeom-1)+1: 3*(iNodeGeom-1)+3, 3*(jNodeGeom-1)+1: 3*(jNodeGeom-1)+3) =&
+                const = matmul(geomHexa%T0, GCova0)+ &
+                        zeta*(matmul(geomHexa%T0, GCovaZETA)+ &
+                              matmul(geomHexa%TZETA, GCova0))+ &
+                        zeta*zeta*(matmul(geomHexa%T0, GCovaZETAZETA)+ &
+                                   matmul(geomHexa%TZETA, GCovaZETA))
+              matrGeom(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3, 3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
                     sum(const*sigm)*matr3Iden
-        enddo
-    enddo
+            end do
+        end do
 
 ! - For "pinch" node
-    GPinchZETA  = 0.d0
-    GPinchZZETA = 0.d0
-    GPinchZZ    = 0.d0
-    do iNodeGeom = 1, nbNodeGeom
-        GPinchZETA(3)  = -2.d0*hexaVectG3(iNodeGeom)
-        GPinchZETA(5)  = -2.d0*hexaVectG1(iNodeGeom)
-        GPinchZETA(6)  = -2.d0*hexaVectG2(iNodeGeom)
-        GPinchZZETA(5) = -2.d0*hexaVectH3(iNodeGeom)
-        GPinchZZETA(6) = -2.d0*hexaVectH2(iNodeGeom)
-        const = zeta*matmul(geomHexa%T0, GPinchZETA)+&
-                zeta*zeta*(matmul(geomHexa%T0, GPinchZZETA) + matmul(geomHexa%TZETA, GPinchZETA))
-        matrGeom(25, 3*(iNodeGeom-1)+3) = sum(const*sigm)
-        matrGeom(3*(iNodeGeom-1)+3, 25) = sum(const*sigm)
-    enddo
-    GPinchZZ(3) = 4.d0
-    const = matmul(geomHexa%T0, GPinchZZ)*zeta*zeta
-    matrGeom(25, 25) = sum(const*sigm)
+        GPinchZETA = 0.d0
+        GPinchZZETA = 0.d0
+        GPinchZZ = 0.d0
+        do iNodeGeom = 1, nbNodeGeom
+            GPinchZETA(3) = -2.d0*hexaVectG3(iNodeGeom)
+            GPinchZETA(5) = -2.d0*hexaVectG1(iNodeGeom)
+            GPinchZETA(6) = -2.d0*hexaVectG2(iNodeGeom)
+            GPinchZZETA(5) = -2.d0*hexaVectH3(iNodeGeom)
+            GPinchZZETA(6) = -2.d0*hexaVectH2(iNodeGeom)
+            const = zeta*matmul(geomHexa%T0, GPinchZETA)+ &
+                    zeta*zeta*(matmul(geomHexa%T0, GPinchZZETA)+matmul(geomHexa%TZETA, GPinchZETA))
+            matrGeom(25, 3*(iNodeGeom-1)+3) = sum(const*sigm)
+            matrGeom(3*(iNodeGeom-1)+3, 25) = sum(const*sigm)
+        end do
+        GPinchZZ(3) = 4.d0
+        const = matmul(geomHexa%T0, GPinchZZ)*zeta*zeta
+        matrGeom(25, 25) = sum(const*sigm)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compEpsiElgaHexa
@@ -410,54 +410,54 @@ end subroutine
 ! Out epsiElga         : small strains at Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
+    subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
-    real(kind=8), intent(out)       :: epsiElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
+        real(kind=8), intent(out)       :: epsiElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
-    integer :: nbIntePoint, kpg, jvCoor
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
+        integer :: nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    jvCoor      = elemProp%elemInte%jvCoor
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvCoor = elemProp%elemInte%jvCoor
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomHexa, kineHexa)
+        call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
-    call compBCartMatrHexa(geomHexa, kineHexa)
-    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+        call compBCartMatrHexa(geomHexa, kineHexa)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
-        zeta  = zr(jvCoor-1+3*kpg)
+        do kpg = 1, nbIntePoint
+            zeta = zr(jvCoor-1+3*kpg)
 
 ! ----- Compute EAS B matrix in cartesian frame at current Gauss point
-        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+            call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
 ! ----- Compute B matrix
-        call compBMatrHexa(zeta, kineHexa)
-        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_ = ASTER_TRUE)
+            call compBMatrHexa(zeta, kineHexa)
+            if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_=ASTER_TRUE)
 
 ! ----- Compute small strains
-        call compEpsiHexa(kineHexa, disp, epsi)
-        epsi(4:6) = 0.5 * epsi(4:6)
-        epsiElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsi
+            call compEpsiHexa(kineHexa, disp, epsi)
+            epsi(4:6) = 0.5*epsi(4:6)
+            epsiElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsi
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compEpsgElgaHexa
@@ -470,49 +470,49 @@ end subroutine
 ! Out epsgElga         : Euler-Lagrange strains at Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compEpsgElgaHexa(elemProp, cellGeom, disp, epsgElga)
+    subroutine compEpsgElgaHexa(elemProp, cellGeom, disp, epsgElga)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
-    real(kind=8), intent(out)       :: epsgElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
+        real(kind=8), intent(out)       :: epsgElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    type(SSH_EPSG_HEXA) :: epsgHexa
-    real(kind=8) :: zeta
-    integer :: nbIntePoint, kpg, jvCoor
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        type(SSH_EPSG_HEXA) :: epsgHexa
+        real(kind=8) :: zeta
+        integer :: nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    jvCoor      = elemProp%elemInte%jvCoor
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvCoor = elemProp%elemInte%jvCoor
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Flag for large strains
-    kineHexa%lLarge = ASTER_TRUE
+        kineHexa%lLarge = ASTER_TRUE
 
-    do kpg = 1, nbIntePoint
-        zeta  = zr(jvCoor-1+3*kpg)
+        do kpg = 1, nbIntePoint
+            zeta = zr(jvCoor-1+3*kpg)
 
 ! ----- Compute EAS B matrix in cartesian frame at current Gauss point
-        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+            call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
 ! ----- Compute Green-Lagrange strains
-        call compECovaMatrHexa(cellGeom, disp, epsgHexa)
-        call compEpsgHexa(zeta, geomHexa, epsgHexa)
-        epsgHexa%vale = epsgHexa%vale + kineHexa%BCartEAS * disp(25)
-        if (SSH_DBG_KINE) call dbgObjEpsgHexa(epsgHexa)
+            call compECovaMatrHexa(cellGeom, disp, epsgHexa)
+            call compEpsgHexa(zeta, geomHexa, epsgHexa)
+            epsgHexa%vale = epsgHexa%vale+kineHexa%BCartEAS*disp(25)
+            if (SSH_DBG_KINE) call dbgObjEpsgHexa(epsgHexa)
 
-        epsgElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsgHexa%vale(1:SSH_SIZE_TENS)
+            epsgElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsgHexa%vale(1:SSH_SIZE_TENS)
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compEpslElgaHexa
@@ -525,54 +525,54 @@ end subroutine
 ! Out epslElga         : logarithmic strains at Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compEpslElgaHexa(elemProp, cellGeom,  disp, epslElga)
+    subroutine compEpslElgaHexa(elemProp, cellGeom, disp, epslElga)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
-    real(kind=8), intent(out)       :: epslElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
+        real(kind=8), intent(out)       :: epslElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    type(SSH_EPSG_HEXA) :: epsgHexa
-    type(SSH_EPSL_HEXA) :: epslHexa
-    real(kind=8) :: zeta
-    integer :: cod, nbIntePoint, kpg, jvCoor
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        type(SSH_EPSG_HEXA) :: epsgHexa
+        type(SSH_EPSL_HEXA) :: epslHexa
+        real(kind=8) :: zeta
+        integer :: cod, nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    jvCoor      = elemProp%elemInte%jvCoor
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvCoor = elemProp%elemInte%jvCoor
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Flag for large strains
-    kineHexa%lLarge = ASTER_TRUE
+        kineHexa%lLarge = ASTER_TRUE
 
-    do kpg = 1, nbIntePoint
-        zeta  = zr(jvCoor-1+3*kpg)
+        do kpg = 1, nbIntePoint
+            zeta = zr(jvCoor-1+3*kpg)
 
 ! ----- Compute EAS B matrix in cartesian frame at current Gauss point
-        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+            call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 
 ! ----- Compute Green-Lagrange strains
-        call compECovaMatrHexa(cellGeom, disp, epsgHexa)
-        call compEpsgHexa(zeta, geomHexa, epsgHexa)
-        epsgHexa%vale = epsgHexa%vale + kineHexa%BCartEAS * disp(25)
-        if (SSH_DBG_KINE) call dbgObjEpsgHexa(epsgHexa)
+            call compECovaMatrHexa(cellGeom, disp, epsgHexa)
+            call compEpsgHexa(zeta, geomHexa, epsgHexa)
+            epsgHexa%vale = epsgHexa%vale+kineHexa%BCartEAS*disp(25)
+            if (SSH_DBG_KINE) call dbgObjEpsgHexa(epsgHexa)
 
 ! ----- Compute Logarithmic strains
-        call compEpslHexa(epsgHexa, epslHexa, cod)
-        if (SSH_DBG_KINE) call dbgObjEpslHexa(epslHexa)
+            call compEpslHexa(epsgHexa, epslHexa, cod)
+            if (SSH_DBG_KINE) call dbgObjEpslHexa(epslHexa)
 
-        epslElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epslHexa%vale
+            epslElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epslHexa%vale
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compLoadHexa
@@ -586,177 +586,177 @@ end subroutine
 ! Out loadNoda         : nodal force from loads (Neumann)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compLoadHexa(elemProp, cellGeom, matePara, option, loadNoda)
+    subroutine compLoadHexa(elemProp, cellGeom, matePara, option, loadNoda)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    type(SSH_MATE_PARA), intent(in) :: matePara
-    character(len=16), intent(in)   :: option
-    real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        type(SSH_MATE_PARA), intent(in) :: matePara
+        character(len=16), intent(in)   :: option
+        real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
 ! - Local
-    character(len=4) :: inteFami
-    integer, parameter :: nbNode = SSH_NBNODE_HEXA, nbNodeGeom = SSH_NBNODEG_HEXA
-    integer :: iNodeGeom, iDim, nbIntePoint, kpg, kdec, ldec, iret
-    integer :: jvPres, jvPesa, jvForc, jvTime
-    integer :: jvShape, jvDShape, jvWeight
-    real(kind=8) :: presSup, presInf, area, fx, fy, fz, xx, yy, zz
-    real(kind=8) :: coefGrav, jacob
-    real(kind=8) :: rho(1)
-    integer :: valeIret(1)
-    integer, parameter :: nbPara = 4
-    real(kind=8) :: paraVale(nbPara)
-    character(len=8), parameter :: paraName(nbPara) =(/'X   ','Y   ','Z   ','INST'/)
+        character(len=4) :: inteFami
+        integer, parameter :: nbNode = SSH_NBNODE_HEXA, nbNodeGeom = SSH_NBNODEG_HEXA
+        integer :: iNodeGeom, iDim, nbIntePoint, kpg, kdec, ldec, iret
+        integer :: jvPres, jvPesa, jvForc, jvTime
+        integer :: jvShape, jvDShape, jvWeight
+        real(kind=8) :: presSup, presInf, area, fx, fy, fz, xx, yy, zz
+        real(kind=8) :: coefGrav, jacob
+        real(kind=8) :: rho(1)
+        integer :: valeIret(1)
+        integer, parameter :: nbPara = 4
+        real(kind=8) :: paraVale(nbPara)
+        character(len=8), parameter :: paraName(nbPara) = (/'X   ', 'Y   ', 'Z   ', 'INST'/)
 !   ------------------------------------------------------------------------------------------------
 !
-    loadNoda = 0.d0
-    inteFami = elemProp%elemInte%inteFami
+        loadNoda = 0.d0
+        inteFami = elemProp%elemInte%inteFami
 
-    if (option .eq. 'CHAR_MECA_PRES_R') then
+        if (option .eq. 'CHAR_MECA_PRES_R') then
 ! ----- Get input fields: for pressure, no node affected -> 0
-        call jevecd('PPRESSR', jvPres, 0.d0)
+            call jevecd('PPRESSR', jvPres, 0.d0)
 
 ! ----- Compute quantities in Ahmad frame for pinch quantities
-        call compAhmadFrame(cellGeom, area)
+            call compAhmadFrame(cellGeom, area)
 
 ! ----- Get pressures
-        presSup = zr(jvPres-1+1)
-        presInf = zr(jvPres-1+2)
+            presSup = zr(jvPres-1+1)
+            presInf = zr(jvPres-1+2)
 
 ! ----- Compute
-        loadNoda(25) = loadNoda(25) +&
-                       4.d0*(presInf-presSup)*area/3.d0
+            loadNoda(25) = loadNoda(25)+ &
+                           4.d0*(presInf-presSup)*area/3.d0
 
-    elseif (option .eq. 'CHAR_MECA_PESA_R') then
+        elseif (option .eq. 'CHAR_MECA_PESA_R') then
 
 ! ----- Get references to integration scheme
-        inteFami    = elemProp%elemInte%inteFami
-        nbIntePoint = elemProp%elemInte%nbIntePoint
-        jvShape     = elemProp%elemInte%jvShape
-        jvDShape    = elemProp%elemInte%jvDShape
-        jvWeight    = elemProp%elemInte%jvWeight
+            inteFami = elemProp%elemInte%inteFami
+            nbIntePoint = elemProp%elemInte%nbIntePoint
+            jvShape = elemProp%elemInte%jvShape
+            jvDShape = elemProp%elemInte%jvDShape
+            jvWeight = elemProp%elemInte%jvWeight
 
 ! ----- Get input field: for gravity
-        call jevech('PPESANR', 'L', jvPesa)
+            call jevech('PPESANR', 'L', jvPesa)
 
 ! ----- Loop on Gauss points
-        do kpg = 1, nbIntePoint
+            do kpg = 1, nbIntePoint
 ! --------- Get density
-            call rcvalb(inteFami, kpg   , 1  , '+'        , matePara%jvMater,&
-                        ' '     , 'ELAS', 0  , ' '        , [0.d0]          ,&
-                        1       , 'RHO' , rho, valeIret(1), 1)
+                call rcvalb(inteFami, kpg, 1, '+', matePara%jvMater, &
+                            ' ', 'ELAS', 0, ' ', [0.d0], &
+                            1, 'RHO', rho, valeIret(1), 1)
 
 ! --------- Compute gradient matrix
-            call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
+                call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
 
 ! --------- Compute
-            coefGrav = rho(1) * jacob * zr(jvPesa)
-            do iNodeGeom = 1, nbNodeGeom
-                do iDim = 1, 3
-                    loadNoda(3*(iNodeGeom-1)+iDim) = loadNoda(3*(iNodeGeom-1)+iDim) +&
-                                                     coefGrav *&
-                                                     zr(jvShape+(kpg-1)*nbNode+iNodeGeom-1) * &
-                                                     zr(jvPesa+iDim)
+                coefGrav = rho(1)*jacob*zr(jvPesa)
+                do iNodeGeom = 1, nbNodeGeom
+                    do iDim = 1, 3
+                        loadNoda(3*(iNodeGeom-1)+iDim) = loadNoda(3*(iNodeGeom-1)+iDim)+ &
+                                                         coefGrav* &
+                                                         zr(jvShape+(kpg-1)*nbNode+iNodeGeom-1)* &
+                                                         zr(jvPesa+iDim)
+                    end do
                 end do
             end do
-        end do
 
-    elseif (option .eq. 'CHAR_MECA_FR3D3D') then
+        elseif (option .eq. 'CHAR_MECA_FR3D3D') then
 ! ----- Get references to integration scheme
-        nbIntePoint = elemProp%elemInte%nbIntePoint
-        jvShape     = elemProp%elemInte%jvShape
-        jvDShape    = elemProp%elemInte%jvDShape
-        jvWeight    = elemProp%elemInte%jvWeight
+            nbIntePoint = elemProp%elemInte%nbIntePoint
+            jvShape = elemProp%elemInte%jvShape
+            jvDShape = elemProp%elemInte%jvDShape
+            jvWeight = elemProp%elemInte%jvWeight
 
 ! ----- Get input fields
-        call tefrep(option, 'PFR3D3D', jvForc)
-        call jevech('PFR3D3D', 'L', jvForc)
+            call tefrep(option, 'PFR3D3D', jvForc)
+            call jevech('PFR3D3D', 'L', jvForc)
 
 ! ----- Loop on Gauss points
-        do kpg = 1, nbIntePoint
-            ldec = (kpg-1)*nbNode
+            do kpg = 1, nbIntePoint
+                ldec = (kpg-1)*nbNode
 
 ! --------- Compute gradient matrix
-            call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
+                call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
 
 ! --------- Evaluate force at Gauss points from node values
-            fx = 0.d0
-            fy = 0.d0
-            fz = 0.d0
-            do iNodeGeom = 1, nbNodeGeom
-                kdec = SSH_NDIM*(iNodeGeom-1)
-                fx = fx + zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec)
-                fy = fy + zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec+1)
-                fz = fz + zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec+2)
-            end do
+                fx = 0.d0
+                fy = 0.d0
+                fz = 0.d0
+                do iNodeGeom = 1, nbNodeGeom
+                    kdec = SSH_NDIM*(iNodeGeom-1)
+                    fx = fx+zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec)
+                    fy = fy+zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec+1)
+                    fz = fz+zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec+2)
+                end do
 
 ! --------- Compute load
-            do iNodeGeom = 1, nbNodeGeom
-                kdec = SSH_NDIM*(iNodeGeom-1)
-                loadNoda(kdec+1) = loadNoda(kdec+1) +&
-                                   jacob * fx * zr(jvShape-1+ldec+iNodeGeom)
-                loadNoda(kdec+2) = loadNoda(kdec+2) +&
-                                   jacob * fy * zr(jvShape-1+ldec+iNodeGeom)
-                loadNoda(kdec+3) = loadNoda(kdec+3) +&
-                                   jacob * fz * zr(jvShape-1+ldec+iNodeGeom)
+                do iNodeGeom = 1, nbNodeGeom
+                    kdec = SSH_NDIM*(iNodeGeom-1)
+                    loadNoda(kdec+1) = loadNoda(kdec+1)+ &
+                                       jacob*fx*zr(jvShape-1+ldec+iNodeGeom)
+                    loadNoda(kdec+2) = loadNoda(kdec+2)+ &
+                                       jacob*fy*zr(jvShape-1+ldec+iNodeGeom)
+                    loadNoda(kdec+3) = loadNoda(kdec+3)+ &
+                                       jacob*fz*zr(jvShape-1+ldec+iNodeGeom)
+                end do
             end do
-        end do
 
-    elseif (option .eq. 'CHAR_MECA_FF3D3D') then
+        elseif (option .eq. 'CHAR_MECA_FF3D3D') then
 ! ----- Get references to integration scheme
-        nbIntePoint = elemProp%elemInte%nbIntePoint
-        jvShape     = elemProp%elemInte%jvShape
-        jvDShape    = elemProp%elemInte%jvDShape
-        jvWeight    = elemProp%elemInte%jvWeight
+            nbIntePoint = elemProp%elemInte%nbIntePoint
+            jvShape = elemProp%elemInte%jvShape
+            jvDShape = elemProp%elemInte%jvDShape
+            jvWeight = elemProp%elemInte%jvWeight
 
 ! ----- Get input fields
-        call jevech('PFF3D3D', 'L', jvForc)
-        call jevech('PTEMPSR', 'L', jvTime)
-        paraVale(4) = zr(jvTime)
+            call jevech('PFF3D3D', 'L', jvForc)
+            call jevech('PTEMPSR', 'L', jvTime)
+            paraVale(4) = zr(jvTime)
 
 ! ----- Loop on Gauss points
-        do kpg = 1, nbIntePoint
-            ldec = (kpg-1)*nbNode
+            do kpg = 1, nbIntePoint
+                ldec = (kpg-1)*nbNode
 
 ! --------- Compute gradient matrix
-            call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
+                call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
 
 ! --------- Compute coordinates of current Gauss point
-            xx = 0.d0
-            yy = 0.d0
-            zz = 0.d0
-            do iNodeGeom = 1, nbNodeGeom
-                xx = xx + zr(cellGeom%jvGeom+3*iNodeGeom-3) * zr(jvShape-1+ldec+iNodeGeom)
-                yy = yy + zr(cellGeom%jvGeom+3*iNodeGeom-2) * zr(jvShape-1+ldec+iNodeGeom)
-                zz = zz + zr(cellGeom%jvGeom+3*iNodeGeom-1) * zr(jvShape-1+ldec+iNodeGeom)
-            end do
-            paraVale(1) = xx
-            paraVale(2) = yy
-            paraVale(3) = zz
+                xx = 0.d0
+                yy = 0.d0
+                zz = 0.d0
+                do iNodeGeom = 1, nbNodeGeom
+                    xx = xx+zr(cellGeom%jvGeom+3*iNodeGeom-3)*zr(jvShape-1+ldec+iNodeGeom)
+                    yy = yy+zr(cellGeom%jvGeom+3*iNodeGeom-2)*zr(jvShape-1+ldec+iNodeGeom)
+                    zz = zz+zr(cellGeom%jvGeom+3*iNodeGeom-1)*zr(jvShape-1+ldec+iNodeGeom)
+                end do
+                paraVale(1) = xx
+                paraVale(2) = yy
+                paraVale(3) = zz
 
 ! --------- Evaluate force at Gauss points from function
-            call fointe('FM', zk8(jvForc  ), nbPara, paraName, paraVale, fx, iret)
-            call fointe('FM', zk8(jvForc+1), nbPara, paraName, paraVale, fy, iret)
-            call fointe('FM', zk8(jvForc+2), nbPara, paraName, paraVale, fz, iret)
+                call fointe('FM', zk8(jvForc), nbPara, paraName, paraVale, fx, iret)
+                call fointe('FM', zk8(jvForc+1), nbPara, paraName, paraVale, fy, iret)
+                call fointe('FM', zk8(jvForc+2), nbPara, paraName, paraVale, fz, iret)
 
 ! --------- Compute load
-            do iNodeGeom = 1, nbNodeGeom
-                kdec = SSH_NDIM*(iNodeGeom-1)
-                loadNoda(kdec+1) = loadNoda(kdec+1) +&
-                                   jacob * fx * zr(jvShape-1+ldec+iNodeGeom)
-                loadNoda(kdec+2) = loadNoda(kdec+2) +&
-                                   jacob * fy * zr(jvShape-1+ldec+iNodeGeom)
-                loadNoda(kdec+3) = loadNoda(kdec+3) +&
-                                   jacob * fz * zr(jvShape-1+ldec+iNodeGeom)
+                do iNodeGeom = 1, nbNodeGeom
+                    kdec = SSH_NDIM*(iNodeGeom-1)
+                    loadNoda(kdec+1) = loadNoda(kdec+1)+ &
+                                       jacob*fx*zr(jvShape-1+ldec+iNodeGeom)
+                    loadNoda(kdec+2) = loadNoda(kdec+2)+ &
+                                       jacob*fy*zr(jvShape-1+ldec+iNodeGeom)
+                    loadNoda(kdec+3) = loadNoda(kdec+3)+ &
+                                       jacob*fz*zr(jvShape-1+ldec+iNodeGeom)
+                end do
             end do
-        end do
 
-    else
-        ASSERT(ASTER_FALSE)
-    endif
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compMassMatrHexa
@@ -769,76 +769,76 @@ end subroutine
 ! Out matrMass         : mass matrix
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compMassMatrHexa(elemProp, cellGeom, matePara, matrMass)
+    subroutine compMassMatrHexa(elemProp, cellGeom, matePara, matrMass)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    type(SSH_MATE_PARA), intent(in) :: matePara
-    real(kind=8), intent(out)       :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        type(SSH_MATE_PARA), intent(in) :: matePara
+        real(kind=8), intent(out)       :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 ! - Local
-    integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-    integer :: iNodeGeom, jNodeGeom
-    real(kind=8) :: poids, jacob, XI(3)
-    real(kind=8) :: rho(1), N(SSH_NBNODEG_HEXA), NPinch
-    integer :: valeIret(1)
-    character(len=4) :: inteFami
-    integer :: nbIntePoint, kpg, jvCoor, jvWeight
-    real(kind=8) :: matrMassPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer :: iNodeGeom, jNodeGeom
+        real(kind=8) :: poids, jacob, XI(3)
+        real(kind=8) :: rho(1), N(SSH_NBNODEG_HEXA), NPinch
+        integer :: valeIret(1)
+        character(len=4) :: inteFami
+        integer :: nbIntePoint, kpg, jvCoor, jvWeight
+        real(kind=8) :: matrMassPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 !
-    matrMass    = 0.d0
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    inteFami    = elemProp%elemInte%inteFami
-    jvCoor      = elemProp%elemInte%jvCoor
-    jvWeight    = elemProp%elemInte%jvWeight
+        matrMass = 0.d0
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        inteFami = elemProp%elemInte%inteFami
+        jvCoor = elemProp%elemInte%jvCoor
+        jvWeight = elemProp%elemInte%jvWeight
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
-        XI(1) = zr(jvCoor+3*(kpg-1)-1+1)
-        XI(2) = zr(jvCoor+3*(kpg-1)-1+2)
-        XI(3) = zr(jvCoor+3*(kpg-1)-1+3)
-        poids = zr(jvWeight-1+kpg)
-        jacob = poids * cellGeom%detJac0
+        do kpg = 1, nbIntePoint
+            XI(1) = zr(jvCoor+3*(kpg-1)-1+1)
+            XI(2) = zr(jvCoor+3*(kpg-1)-1+2)
+            XI(3) = zr(jvCoor+3*(kpg-1)-1+3)
+            poids = zr(jvWeight-1+kpg)
+            jacob = poids*cellGeom%detJac0
 
 ! ----- Get density
-        call rcvalb(inteFami, kpg   , 1  , '+'        , matePara%jvMater,&
-                    ' '     , 'ELAS', 0  , ' '        , [0.d0]          ,&
-                    1       , 'RHO' , rho, valeIret(1), 1)
+            call rcvalb(inteFami, kpg, 1, '+', matePara%jvMater, &
+                        ' ', 'ELAS', 0, ' ', [0.d0], &
+                        1, 'RHO', rho, valeIret(1), 1)
 
 ! ----- Construction of shape functions
-        N  = hexaVectS1 + &
-             XI(1)*hexaVectG1+XI(2)*hexaVectG2+XI(3)*hexaVectG3+&
-             XI(1)*XI(2)*hexaVectH1+&
-             XI(3)*XI(2)*hexaVectH2+&
-             XI(1)*XI(3)*hexaVectH3+&
-             XI(1)*XI(2)*XI(3)*hexaVectH4
-        NPinch = 1.d0 - XI(3)*XI(3)
+            N = hexaVectS1+ &
+                XI(1)*hexaVectG1+XI(2)*hexaVectG2+XI(3)*hexaVectG3+ &
+                XI(1)*XI(2)*hexaVectH1+ &
+                XI(3)*XI(2)*hexaVectH2+ &
+                XI(1)*XI(3)*hexaVectH3+ &
+                XI(1)*XI(2)*XI(3)*hexaVectH4
+            NPinch = 1.d0-XI(3)*XI(3)
 
 ! ----- Compute matrix on volumic nodes
-        matrMassPt = 0.d0
-        do iNodeGeom = 1, nbNodeGeom
-            do jNodeGeom = 1, nbNodeGeom
-                matrMassPt(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3,&
-                           3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
-                    rho(1) * jacob * N(iNodeGeom) * N(jNodeGeom) * matr3Iden
+            matrMassPt = 0.d0
+            do iNodeGeom = 1, nbNodeGeom
+                do jNodeGeom = 1, nbNodeGeom
+                    matrMassPt(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3, &
+                               3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
+                        rho(1)*jacob*N(iNodeGeom)*N(jNodeGeom)*matr3Iden
+                end do
             end do
-        end do
 
 ! ----- Compute matrix on pinch node
-        do iNodeGeom = 1, nbNodeGeom
-            matrMassPt(SSH_NBDOF_HEXA, 3*(iNodeGeom-1)+3) = rho(1) * jacob*N(iNodeGeom) * NPinch
-            matrMassPt(3*(iNodeGeom-1)+3, SSH_NBDOF_HEXA) = rho(1) * jacob*N(iNodeGeom) * NPinch
-        enddo
-        matrMassPt(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) = rho(1) * poids * NPinch * NPinch
+            do iNodeGeom = 1, nbNodeGeom
+                matrMassPt(SSH_NBDOF_HEXA, 3*(iNodeGeom-1)+3) = rho(1)*jacob*N(iNodeGeom)*NPinch
+                matrMassPt(3*(iNodeGeom-1)+3, SSH_NBDOF_HEXA) = rho(1)*jacob*N(iNodeGeom)*NPinch
+            end do
+            matrMassPt(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) = rho(1)*poids*NPinch*NPinch
 
 ! ----- Update matrix
-        matrMass = matrMass + matrMassPt
+            matrMass = matrMass+matrMassPt
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compRigiGeomMatrHexa
@@ -852,45 +852,45 @@ end subroutine
 ! Out matrRigiGeom     : geometric rigidity matrix
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, sigm, matrRigiGeom)
+    subroutine compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, sigm, matrRigiGeom)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    integer, intent(in)             :: nbIntePoint
-    real(kind=8), intent(in)        :: sigm(SSH_SIZE_TENS, nbIntePoint)
-    real(kind=8), intent(out)       :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        integer, intent(in)             :: nbIntePoint
+        real(kind=8), intent(in)        :: sigm(SSH_SIZE_TENS, nbIntePoint)
+        real(kind=8), intent(out)       :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    real(kind=8) :: zeta, poids, jacob
-    integer :: kpg, jvCoor, jvWeight
-    real(kind=8) :: matrRigiGeomPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+        type(SSH_GEOM_HEXA) :: geomHexa
+        real(kind=8) :: zeta, poids, jacob
+        integer :: kpg, jvCoor, jvWeight
+        real(kind=8) :: matrRigiGeomPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 !
-    matrRigiGeom = 0.d0
-    jvCoor       = elemProp%elemInte%jvCoor
-    jvWeight     = elemProp%elemInte%jvWeight
+        matrRigiGeom = 0.d0
+        jvCoor = elemProp%elemInte%jvCoor
+        jvWeight = elemProp%elemInte%jvWeight
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
-        zeta  = zr(jvCoor-1+3*kpg)
-        poids = zr(jvWeight-1+kpg)
-        jacob = poids * cellGeom%detJac0
+        do kpg = 1, nbIntePoint
+            zeta = zr(jvCoor-1+3*kpg)
+            poids = zr(jvWeight-1+kpg)
+            jacob = poids*cellGeom%detJac0
 
 ! ----- Compute geometric matrix at current Gauss point for HEXA
-        call compRigiGeomHexaKpg(geomHexa, zeta, sigm(:, kpg), matrRigiGeomPt)
+            call compRigiGeomHexaKpg(geomHexa, zeta, sigm(:, kpg), matrRigiGeomPt)
 
 ! ----- Update matrix
-        matrRigiGeom = matrRigiGeom + jacob * matrRigiGeomPt
+            matrRigiGeom = matrRigiGeom+jacob*matrRigiGeomPt
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compRefeForcNodaHexa
@@ -903,51 +903,51 @@ end subroutine
 ! Out refeForcNoda     : reference force
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compRefeForcNodaHexa(elemProp, cellGeom, sigmRefe, refeForcNoda)
+    subroutine compRefeForcNodaHexa(elemProp, cellGeom, sigmRefe, refeForcNoda)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    real(kind=8), intent(in)        :: sigmRefe
-    real(kind=8), intent(out)       :: refeForcNoda(SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        real(kind=8), intent(in)        :: sigmRefe
+        real(kind=8), intent(out)       :: refeForcNoda(SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
-    real(kind=8) :: forcNoda(SSH_NBDOF_MAX)
-    integer :: iDof, iCmp, nbIntePoint
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        real(kind=8) :: forcNoda(SSH_NBDOF_MAX)
+        integer :: iDof, iCmp, nbIntePoint
 !   ------------------------------------------------------------------------------------------------
 !
-    refeForcNoda = 0.d0
-    nbIntePoint  = elemProp%elemInte%nbIntePoint
+        refeForcNoda = 0.d0
+        nbIntePoint = elemProp%elemInte%nbIntePoint
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomHexa, kineHexa)
+        call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
-    call compBCartMatrHexa(geomHexa, kineHexa)
-    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+        call compBCartMatrHexa(geomHexa, kineHexa)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
 ! - Compute force
-    do iCmp = 1, SSH_SIZE_TENS * nbIntePoint
-        siefElga = 0.d0
-        siefElga(iCmp) = sigmRefe
-        call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
-        do iDof = 1, elemProp%nbDof
-            refeForcNoda(iDof) = refeForcNoda(iDof) + abs(forcNoda(iDof))
+        do iCmp = 1, SSH_SIZE_TENS*nbIntePoint
+            siefElga = 0.d0
+            siefElga(iCmp) = sigmRefe
+            call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
+            do iDof = 1, elemProp%nbDof
+                refeForcNoda(iDof) = refeForcNoda(iDof)+abs(forcNoda(iDof))
+            end do
         end do
-    end do
-    do iDof = 1, elemProp%nbDof
-        refeForcNoda(iDof) = refeForcNoda(iDof)/nbIntePoint
-    end do
+        do iDof = 1, elemProp%nbDof
+            refeForcNoda(iDof) = refeForcNoda(iDof)/nbIntePoint
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compLoadExteStatVariHexa
@@ -961,41 +961,41 @@ end subroutine
 ! Out loadNoda         : nodal force from loads (Neumann)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compLoadExteStatVariHexa(elemProp, cellGeom, matePara, option, loadNoda)
+    subroutine compLoadExteStatVariHexa(elemProp, cellGeom, matePara, option, loadNoda)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_CELL_GEOM), intent(in) :: cellGeom
-    type(SSH_MATE_PARA), intent(in) :: matePara
-    character(len=16), intent(in)   :: option
-    real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_CELL_GEOM), intent(in) :: cellGeom
+        type(SSH_MATE_PARA), intent(in) :: matePara
+        character(len=16), intent(in)   :: option
+        real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
 ! - Local
-    type(SSH_GEOM_HEXA) :: geomHexa
-    type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        type(SSH_GEOM_HEXA) :: geomHexa
+        type(SSH_KINE_HEXA) :: kineHexa
+        real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 !   ------------------------------------------------------------------------------------------------
 !
-    loadNoda = 0.d0
+        loadNoda = 0.d0
 
 ! - Compute stresses from external state variables
-    call compSiefExteStatVariHexa(elemProp, matePara, option, siefElga)
+        call compSiefExteStatVariHexa(elemProp, matePara, option, siefElga)
 
 ! - Prepare geometric quantities
-    call initGeomCellHexa(cellGeom, geomHexa)
-    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+        call initGeomCellHexa(cellGeom, geomHexa)
+        if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomHexa, kineHexa)
+        call compBCovaMatrHexa(geomHexa, kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
-    call compBCartMatrHexa(geomHexa, kineHexa)
-    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+        call compBCartMatrHexa(geomHexa, kineHexa)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_=ASTER_TRUE)
 
 ! - Compute Bt.Sigma
-    call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, loadNoda)
+        call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, loadNoda)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compSiefExteStatVariHexa
@@ -1008,48 +1008,48 @@ end subroutine
 ! Out siefElga         : stresses at Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compSiefExteStatVariHexa(elemProp, matePara, option, siefElga)
+    subroutine compSiefExteStatVariHexa(elemProp, matePara, option, siefElga)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_MATE_PARA), intent(in) :: matePara
-    character(len=16), intent(in)   :: option
-    real(kind=8), intent(out)       :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_MATE_PARA), intent(in) :: matePara
+        character(len=16), intent(in)   :: option
+        real(kind=8), intent(out)       :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 ! - Local
-    character(len=4) :: inteFami
-    integer, parameter :: kspg = 1
-    integer :: nbIntePoint, kpg
-    real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
+        character(len=4) :: inteFami
+        integer, parameter :: kspg = 1
+        integer :: nbIntePoint, kpg
+        real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    inteFami    = elemProp%elemInte%inteFami
-    xyzgau      = 0.d0
-    siefElga    = 0.d0
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        inteFami = elemProp%elemInte%inteFami
+        xyzgau = 0.d0
+        siefElga = 0.d0
 
 ! - Non-sense ! To suppress (see issue30887)
-    timeCurr = r8vide()
+        timeCurr = r8vide()
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
+        do kpg = 1, nbIntePoint
 
 ! ----- Compute strains from external state variables
-        call epstmc(inteFami, SSH_NDIM         , timeCurr        ,&
-                    '+'     , kpg              , kspg            ,&
-                    xyzgau  , matePara%mateBase, matePara%jvMater,&
-                    option  , epsiExteStatVari)
+            call epstmc(inteFami, SSH_NDIM, timeCurr, &
+                        '+', kpg, kspg, &
+                        xyzgau, matePara%mateBase, matePara%jvMater, &
+                        option, epsiExteStatVari)
 
 ! ----- Shear components with sqrt(2)
-        epsiExteStatVari(4:6) = 2.d0 * epsiExteStatVari(4:6)
+            epsiExteStatVari(4:6) = 2.d0*epsiExteStatVari(4:6)
 
 ! ----- Compute stresses from external state variables
-        siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) =&
+            siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = &
                 matmul(matePara%elemHookeMatrix, epsiExteStatVari)
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! compEpvcElgaHexa
@@ -1062,46 +1062,46 @@ end subroutine
 ! Out epvcElga         : strains from external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+    subroutine compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    type(SSH_ELEM_PROP), intent(in) :: elemProp
-    type(SSH_MATE_PARA), intent(in) :: matePara
-    character(len=16), intent(in)   :: option
-    real(kind=8), intent(out)       :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
+        type(SSH_ELEM_PROP), intent(in) :: elemProp
+        type(SSH_MATE_PARA), intent(in) :: matePara
+        character(len=16), intent(in)   :: option
+        real(kind=8), intent(out)       :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
 ! - Local
-    character(len=4) :: inteFami
-    integer, parameter :: kspg = 1
-    integer :: nbIntePoint, kpg
-    real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
+        character(len=4) :: inteFami
+        integer, parameter :: kspg = 1
+        integer :: nbIntePoint, kpg
+        real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    inteFami    = elemProp%elemInte%inteFami
-    xyzgau      = 0.d0
-    epvcElga    = 0.d0
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        inteFami = elemProp%elemInte%inteFami
+        xyzgau = 0.d0
+        epvcElga = 0.d0
 
 ! - Non-sense ! To suppress (see issue30887)
-    timeCurr = r8vide()
+        timeCurr = r8vide()
 
 ! - Loop on Gauss points
-    do kpg = 1, nbIntePoint
+        do kpg = 1, nbIntePoint
 
 ! ----- Compute strains from external state variables
-        call epstmc(inteFami, SSH_NDIM         , timeCurr        ,&
-                    '+'     , kpg              , kspg            ,&
-                    xyzgau  , matePara%mateBase, matePara%jvMater,&
-                    option  , epsiExteStatVari)
+            call epstmc(inteFami, SSH_NDIM, timeCurr, &
+                        '+', kpg, kspg, &
+                        xyzgau, matePara%mateBase, matePara%jvMater, &
+                        option, epsiExteStatVari)
 
 ! ----- Shear components with sqrt(2)
-        epsiExteStatVari(4:6) = 2.d0 * epsiExteStatVari(4:6)
+            epsiExteStatVari(4:6) = 2.d0*epsiExteStatVari(4:6)
 
 ! ----- Copy strains
-        epvcElga(kpg, 1:SSH_SIZE_TENS) = epsiExteStatVari
+            epvcElga(kpg, 1:SSH_SIZE_TENS) = epsiExteStatVari
 
-    end do
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 !
 end module SolidShell_Elementary_Hexa_module

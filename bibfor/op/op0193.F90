@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,12 +50,12 @@ subroutine op0193()
 !
 ! --- PROJECTION SUR LE MODELE NUMERIQUE
 !
-    call mpmod2(basemo, nommes, nbmesu, nbmode, basepr,&
+    call mpmod2(basemo, nommes, nbmesu, nbmode, basepr, &
                 vnoeud, vrange, vcham)
 !
 ! --- ECRITURE SD RESULTAT (TRAN_GENE, HARM_GENE OU MODE_GENE)
 !
-    call mptran(basemo, nommes, nbmesu, nbmode, basepr,&
+    call mptran(basemo, nommes, nbmesu, nbmode, basepr, &
                 vnoeud, vrange, vcham)
 !
     call jedema()

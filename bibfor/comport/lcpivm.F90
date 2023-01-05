@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcpivm(fami, kpg, ksp, mate, compor,&
-                  carcri, instam, instap, fm, df,&
-                  vim, option, taup, vip, dtaudf,&
+subroutine lcpivm(fami, kpg, ksp, mate, compor, &
+                  carcri, instam, instap, fm, df, &
+                  vim, option, taup, vip, dtaudf, &
                   iret)
 !
 !
@@ -85,10 +85,10 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
     character(len=1) :: poum
     real(kind=8) :: xap, precr, rprim
 !
-    common /lcpim/&
-     &          pm,young,nu,mu,unk,troisk,cother,&
-     &          sigm0,epsi0,dt,coefm,rpm,pente,&
-     &          apui,npui,sigy,jprol,jvale,nbval
+    common/lcpim/&
+     &          pm, young, nu, mu, unk, troisk, cother,&
+     &          sigm0, epsi0, dt, coefm, rpm, pente,&
+     &          apui, npui, sigy, jprol, jvale, nbval
 ! ----------------------------------------------------------------------
 ! COMMON GRANDES DEFORMATIONS SIMO - MIEHE
 !
@@ -98,13 +98,13 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
     real(kind=8) :: jp, dj, jm, dfb(3, 3), mutrbe, tauteq
     real(kind=8) :: djdf(3, 3), dbtrdf(6, 3, 3)
 !
-    common /rconm6/mutrbe,tauteq
+    common/rconm6/mutrbe, tauteq
 !
-    common /gdsmc/&
-     &            bem,betr,dvbetr,eqbetr,trbetr,&
-     &            jp,dj,jm,dfb,&
-     &            djdf,dbtrdf,&
-     &            kr,id,rac2,rc,ind,ind1,ind2
+    common/gdsmc/&
+     &            bem, betr, dvbetr, eqbetr, trbetr,&
+     &            jp, dj, jm, dfb,&
+     &            djdf, dbtrdf,&
+     &            kr, id, rac2, rc, ind, ind1, ind2
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     aster_logical :: resi, rigi, elas
@@ -120,14 +120,14 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 !-----------------------------------------------------------------------
 !
 !    DONNEES DE CONTROLE DE L'ALGORITHME
-    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-    elas = option(11:14).eq.'ELAS'
+    resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
+    rigi = option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL'
+    elas = option(11:14) .eq. 'ELAS'
     call gdsmin()
 !
 !    LECTURE DES VARIABLES INTERNES (DEFORMATION PLASTIQUE CUMULEE ET
 !                                   -DEFORMATION ELASTIQUE)
-    pm=vim(1)
+    pm = vim(1)
     call dcopy(6, vim(3), 1, em, 1)
     call dscal(3, rac2, em(4), 1)
 !
@@ -136,18 +136,18 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 !
 !    CARACTERISTIQUES MATERIAU
     if (resi) then
-        poum='+'
+        poum = '+'
     else
-        poum='-'
-    endif
-    call lcpima(fami, kpg, ksp, poum, mate,&
-                compor, instam, instap, carcri, taup,&
+        poum = '-'
+    end if
+    call lcpima(fami, kpg, ksp, poum, mate, &
+                compor, instam, instap, carcri, taup, &
                 vim)
 !
 ! 2 - RESOLUTION
 !-----------------------------------------------------------------------
     if (resi) then
-        seuil = mu*eqbetr - rpm
+        seuil = mu*eqbetr-rpm
 !
         if (seuil .le. 0.d0) then
             dp = 0.d0
@@ -159,49 +159,49 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
                 dp = seuil/(pente+mu*trbetr)
 !
             else if (compor .eq. 'VMIS_ISOT_PUIS') then
-                tauteq=mu*eqbetr
-                mutrbe=mu*trbetr
-                call ecpuis(young, sigy, apui, 1.d0/npui, pm,&
+                tauteq = mu*eqbetr
+                mutrbe = mu*trbetr
+                call ecpuis(young, sigy, apui, 1.d0/npui, pm, &
                             0.d0, rp, rprim)
-                xap = (tauteq - rp)/mutrbe
-                precr = carcri(3) * sigy
+                xap = (tauteq-rp)/mutrbe
+                precr = carcri(3)*sigy
                 itmx = nint(carcri(1))
 !
-                call zerofr(0, 'DEKKER', nmcri6, 0.d0, xap,&
+                call zerofr(0, 'DEKKER', nmcri6, 0.d0, xap, &
                             precr, itmx, dp, iret, n)
                 if (iret .ne. 0) goto 999
-                call ecpuis(young, sigy, apui, 1.d0/npui, pm,&
+                call ecpuis(young, sigy, apui, 1.d0/npui, pm, &
                             dp, rp, rprim)
-                pente=rprim
-            else if (compor.eq.'VMIS_ISOT_TRAC') then
-                call rcfonc('E', 1, jprol, jvale, nbval,&
-                            e = young* trbetr/3, nu = nu, p = pm, rp = rp, rprim = pente,&
-                            airerp = airerp, sieleq = mu*eqbetr, dp = dp)
+                pente = rprim
+            else if (compor .eq. 'VMIS_ISOT_TRAC') then
+                call rcfonc('E', 1, jprol, jvale, nbval, &
+                            e=young*trbetr/3, nu=nu, p=pm, rp=rp, rprim=pente, &
+                            airerp=airerp, sieleq=mu*eqbetr, dp=dp)
             else
 ! CAS VISQUEUX : CALCUL DE DP PAR RESOLUTION DE
 !  FPLAS - (R'+MU TR BEL)DP - PHI(DP) = 0
-                call calcdp(carcri, seuil, dt, pente, mu*trbetr,&
+                call calcdp(carcri, seuil, dt, pente, mu*trbetr, &
                             sigm0, epsi0, coefm, dp, iret)
 ! DANS LE CAS NON LINEAIRE ON VERFIE QUE L ON A LA BONNE PENTE
                 if (compor(10:14) .eq. '_TRAC') then
-                    call rcfonc('V', 1, jprol, jvale, nbval,&
-                                p = pm+dp, rp = rp, rprim = pentep)
+                    call rcfonc('V', 1, jprol, jvale, nbval, &
+                                p=pm+dp, rp=rp, rprim=pentep)
                     do i = 1, nbval
                         if (abs(pente-pentep) .le. 1.d-3) then
                             goto 20
                         else
-                            pente=pentep
-                            seuil = mu*eqbetr - (rp-pente*dp)
-                            call calcdp(carcri, seuil, dt, pente, mu* trbetr,&
+                            pente = pentep
+                            seuil = mu*eqbetr-(rp-pente*dp)
+                            call calcdp(carcri, seuil, dt, pente, mu*trbetr, &
                                         sigm0, epsi0, coefm, dp, iret)
-                            call rcfonc('V', 1, jprol, jvale, nbval,&
-                                        p = vim(1)+dp, rp = rp, rprim = pentep)
-                        endif
+                            call rcfonc('V', 1, jprol, jvale, nbval, &
+                                        p=vim(1)+dp, rp=rp, rprim=pentep)
+                        end if
                     end do
- 20                 continue
-                endif
-            endif
-        endif
+20                  continue
+                end if
+            end if
+        end if
 !
 ! 4 - MISE A JOUR DES CHAMPS
 ! 4.1 - CONTRAINTE
@@ -209,17 +209,17 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
         call dcopy(6, dvbetr, 1, dvbe, 1)
         if (line .eq. 1) call dscal(6, 1-dp*trbetr/eqbetr, dvbe, 1)
 !
-        trtau = (troisk*(jp**2-1) - 3.d0*cother*(jp+1.d0/jp)) / 2.d0
+        trtau = (troisk*(jp**2-1)-3.d0*cother*(jp+1.d0/jp))/2.d0
 !
         do ij = 1, 6
-            taup(ij) = mu*dvbe(ij) + trtau/3.d0*kr(ij)
+            taup(ij) = mu*dvbe(ij)+trtau/3.d0*kr(ij)
         end do
 !
 ! 4.2 - CORRECTION HYDROSTATIQUE A POSTERIORI
 !
         do ij = 1, 6
-            ep(ij)=(kr(ij)-jp**(2.d0/3.d0)*(dvbe(ij)+trbetr/3.d0*kr(&
-            ij))) /2.d0
+            ep(ij) = (kr(ij)-jp**(2.d0/3.d0)*(dvbe(ij)+trbetr/3.d0*kr( &
+                                              ij)))/2.d0
         end do
         call gdsmhy(jp, ep)
 !
@@ -229,7 +229,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
         vip(2) = line
         call dcopy(6, ep, 1, vip(3), 1)
         call dscal(3, 1.d0/rac2, vip(6), 1)
-    endif
+    end if
 !
 ! 5 - CALCUL DE LA MATRICE TANGENTE
 !
@@ -238,13 +238,13 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
             dp = 0.d0
             line = nint(vim(2))
             call dcopy(6, dvbetr, 1, dvbe, 1)
-        endif
+        end if
 !
         if (elas) line = 0
 !
         call gdsmtg()
-        call lcpitg(compor, df, line, dp, dvbe,&
+        call lcpitg(compor, df, line, dp, dvbe, &
                     dtaudf)
-    endif
+    end if
 999 continue
 end subroutine

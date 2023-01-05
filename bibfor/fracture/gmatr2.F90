@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine gmatr2(nnoff, ndeg, abscur, xl, matr, norfon)
 
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -66,7 +66,7 @@ implicit none
 ! ......................................................................
 
 !    COOR ET POID DU POINT DE GAUSS
-    data xpg /  -.1080549487073437,&
+    data xpg/-.1080549487073437,&
      &           .1080549487073437,&
      &          -.3191123689278897,&
      &           .3191123689278897,&
@@ -82,7 +82,7 @@ implicit none
      &           .9862838086968123/
 !
 !
-    data wpg /    .2152638534631578,&
+    data wpg/.2152638534631578,&
      &            .2152638534631578,&
      &            .2051984637212956,&
      &            .2051984637212956,&
@@ -122,72 +122,72 @@ implicit none
 
 !   BOUCLE SUR LES SEGMENTS
     conn = 0
-    ksi  = 0.d0
-    ff   = 0.d0
-    dff  = 0.d0
+    ksi = 0.d0
+    ff = 0.d0
+    dff = 0.d0
 
     do iseg = 1, nseg
 
-         conn(1) = iseg
-         conn(2) = iseg+1
+        conn(1) = iseg
+        conn(2) = iseg+1
 
 !       CALCUL DES COORDONNEES DES POINTS DE GAUSS DU SEGMENT DANS L'ESPACE REEL
-         do ipg = 1,npg
-              ksi(1) = xpg(ipg)
-              call elrfvf(elrefe, ksi, ff, nno)
+        do ipg = 1, npg
+            ksi(1) = xpg(ipg)
+            call elrfvf(elrefe, ksi, ff, nno)
 
-              zr(jstmp-1+ipg) = 0.d0
-              do ino = 1, nno
-                  zr(jstmp-1+ipg) = zr(jstmp-1+ipg) + zr(js-1+conn(ino))*ff(ino)
-              end do
+            zr(jstmp-1+ipg) = 0.d0
+            do ino = 1, nno
+                zr(jstmp-1+ipg) = zr(jstmp-1+ipg)+zr(js-1+conn(ino))*ff(ino)
+            end do
 
-         end do
+        end do
 !
 !       EVALUATION DES POLYNOMES DE LEGENDRE AUX POINTS DE GAUSS DU SEGMENT
-         call glegen(ndeg, npg, xl, stemp, zr(iadpol))
+        call glegen(ndeg, npg, xl, stemp, zr(iadpol))
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DU SEGMENT
-         mele = 0.d0
-         do ipg = 1,npg
+        mele = 0.d0
+        do ipg = 1, npg
 !
 !             CALCUL DES FONCTIONS DE FORMES ET DERIVEES
-              ksi(1) = xpg(ipg)
-              call elrfvf(elrefe, ksi, ff, nno)
-              call elrfdf(elrefe, ksi, dff)
+            ksi(1) = xpg(ipg)
+            call elrfvf(elrefe, ksi, ff, nno)
+            call elrfdf(elrefe, ksi, dff)
 
 !             CALCUL DU JACOBIEN (SEGM DE REFERENCE --> SEGM REEL)
-              jac = 0.d0
-              do ino = 1, nno
-                  jac = jac + zr(js-1+conn(ino))*dff(1, ino)
-              end do
+            jac = 0.d0
+            do ino = 1, nno
+                jac = jac+zr(js-1+conn(ino))*dff(1, ino)
+            end do
 
 !             RECUPERATION DES NORMALES AUX NOEUDS EXTREMITE
-              nor(1, :) = zr(jtabm-1+(conn(1)-1)*3+1:jtabm-1+(conn(1)-1)*3+3)
-              nor(2, :) = zr(jtabm-1+(conn(2)-1)*3+1:jtabm-1+(conn(2)-1)*3+3)
+            nor(1, :) = zr(jtabm-1+(conn(1)-1)*3+1:jtabm-1+(conn(1)-1)*3+3)
+            nor(2, :) = zr(jtabm-1+(conn(2)-1)*3+1:jtabm-1+(conn(2)-1)*3+3)
 !
 !             CALCUL DE LA NORMALE MOYENNE
-              normoy = 0.5d0*(nor(1, :) + nor(2, :))
+            normoy = 0.5d0*(nor(1, :)+nor(2, :))
 !
 !           CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE
-              do i = 1, nno
-                   do j = 1, ndeg+1
+            do i = 1, nno
+                do j = 1, ndeg+1
 !
 !                      PRODUIT SCALIRE : NORMALE AU NOEUD * NORMALE MOYENNE
-                       prod = dot_product(nor(i, :), normoy)
+                    prod = dot_product(nor(i, :), normoy)
 !
-                       mele(i, j) = mele(i, j) + ff(i)*zr(iadpol+(j-1)*npg+ipg-1)*prod*jac*wpg(ipg)
-                   end do
-              end do
-         end do
+                    mele(i, j) = mele(i, j)+ff(i)*zr(iadpol+(j-1)*npg+ipg-1)*prod*jac*wpg(ipg)
+                end do
+            end do
+        end do
 !
 !       AJOUT DE LA CONTRIBUTION DE DE LA MATRICE DE MASSE ELEMENTAIRE
 !       A LA MATRICE DE MASSE ASSEMBLEE
-         do i=1, nno
-             do j=1, ndeg+1
-                 ij = (conn(i)-1)*(ndeg+1) + j
-                 zr(imatr + ij - 1) = zr(imatr + ij - 1) + mele(i, j)
-             end do
-         end do
+        do i = 1, nno
+            do j = 1, ndeg+1
+                ij = (conn(i)-1)*(ndeg+1)+j
+                zr(imatr+ij-1) = zr(imatr+ij-1)+mele(i, j)
+            end do
+        end do
 !
     end do
 

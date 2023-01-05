@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function distfo(zimat, kfonc, xx, yy, normx,&
+function distfo(zimat, kfonc, xx, yy, normx, &
                 normy)
 !
     implicit none
@@ -46,8 +46,8 @@ function distfo(zimat, kfonc, xx, yy, normx,&
     phenom = 'GLRC_DAMAGE'
 !
     tol = 1.0d-3
-    x0 = xx / normx
-    y0 = yy / normy
+    x0 = xx/normx
+    y0 = yy/normy
     res = 1.0d6
     xi = x0
 !
@@ -57,20 +57,20 @@ function distfo(zimat, kfonc, xx, yy, normx,&
     xm1 = 1.0d20
     ym1 = 1.0d20
 !
-    xi = xi* normx
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zimat,&
-                ' ', phenom, 1, 'X ', [xi],&
+    xi = xi*normx
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zimat, &
+                ' ', phenom, 1, 'X ', [xi], &
                 1, kfonc, val, codres, 1)
-    yi=val(1)
-    call cdnfon(zimat, kfonc, xi, 1, dyi,&
+    yi = val(1)
+    call cdnfon(zimat, kfonc, xi, 1, dyi, &
                 ier)
-    yi = yi/ normy
-    xi = xi/ normx
-    dyi = dyi * normx / normy
+    yi = yi/normy
+    xi = xi/normx
+    dyi = dyi*normx/normy
 !
     do i = 1, itmax
         xm2 = xm1
@@ -79,32 +79,32 @@ function distfo(zimat, kfonc, xx, yy, normx,&
         ym1 = yi
         dym1 = dyi
 !
-        rp = (xm2 - xm1)*(xm2 - xm1) + (ym2 - ym1)*(ym2 - ym1)
+        rp = (xm2-xm1)*(xm2-xm1)+(ym2-ym1)*(ym2-ym1)
         res = sqrt(rp*rp)
 !
         if (res .lt. tol) goto 30
 !
-        rp = dym1/(dym1*dym1 + 1.0d0)
-        xi = rp*(y0 - ym1 + dym1*xm1) + x0/(dym1*dym1 + 1.0d0)
-        xi = xi* normx
+        rp = dym1/(dym1*dym1+1.0d0)
+        xi = rp*(y0-ym1+dym1*xm1)+x0/(dym1*dym1+1.0d0)
+        xi = xi*normx
 !
-        call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', [xi],&
+        call rcvalb(fami, kpg, spt, poum, zimat, &
+                    ' ', phenom, 1, 'X ', [xi], &
                     1, kfonc, val, codres, 1)
-        yi=val(1)
-        call cdnfon(zimat, kfonc, xi, 1, dyi,&
+        yi = val(1)
+        call cdnfon(zimat, kfonc, xi, 1, dyi, &
                     ier)
 !
-        yi = yi/ normy
-        xi = xi/ normx
-        dyi = dyi * normx / normy
+        yi = yi/normy
+        xi = xi/normx
+        dyi = dyi*normx/normy
 !
     end do
 !
- 30 continue
+30  continue
 !
-    rp = (xm1 - x0)*(xm1 - x0)
-    rp = rp + (ym1 - y0)*(ym1 - y0)
+    rp = (xm1-x0)*(xm1-x0)
+    rp = rp+(ym1-y0)*(ym1-y0)
     distfo = sqrt(rp)
 !
 end function

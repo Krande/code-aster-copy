@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine capoco(sdcont, keywf)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -83,7 +83,7 @@ implicit none
     sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
     sdcont_jeupou = sdcont_defi(1:16)//'.JEUPOU'
-    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Parameters
 !
@@ -92,7 +92,7 @@ implicit none
 !
 ! - Create beam gap datastructure
 !
-    call wkvect(sdcont_jeupou, 'G V R', nb_cont_elem, vr = v_sdcont_jeupou)
+    call wkvect(sdcont_jeupou, 'G V R', nb_cont_elem, vr=v_sdcont_jeupou)
 !
 ! - Get elementary characteristics datastructure
 !
@@ -102,17 +102,17 @@ implicit none
         if (l_dist_beam) then
             l_dist_exist = .true.
             call getvid(keywf, 'CARA_ELEM', iocc=i_zone, scal=cara_elem, nbret=noc)
-            ASSERT(noc.ne.0)
-        endif
+            ASSERT(noc .ne. 0)
+        end if
     end do
 !
     if (.not. l_dist_exist) then
         goto 999
-    endif
+    end if
 !
 ! - Access to elementary characteristics
 !
-    call carces(cara_elem//'.CARGEOPO', 'ELEM', ' ', 'V', cara_elem_s,&
+    call carces(cara_elem//'.CARGEOPO', 'ELEM', ' ', 'V', cara_elem_s, &
                 'A', iret)
     call jeveuo(cara_elem_s//'.CESC', 'L', vk8=v_caraelem_cesc)
     call jeveuo(cara_elem_s//'.CESD', 'L', j_caraelem_cesd)
@@ -121,18 +121,18 @@ implicit none
 !
 ! - Get index for storing beam parameters
 !
-    nb_para_maxi   = zi(j_caraelem_cesd-1+2)
-    beam_tsec_indx = indik8(v_caraelem_cesc,'TSEC    ',1,nb_para_maxi)
-    beam_r1_indx   = indik8(v_caraelem_cesc,'R1      ',1,nb_para_maxi)
-    beam_r2_indx   = indik8(v_caraelem_cesc,'R2      ',1,nb_para_maxi)
+    nb_para_maxi = zi(j_caraelem_cesd-1+2)
+    beam_tsec_indx = indik8(v_caraelem_cesc, 'TSEC    ', 1, nb_para_maxi)
+    beam_r1_indx = indik8(v_caraelem_cesc, 'R1      ', 1, nb_para_maxi)
+    beam_r2_indx = indik8(v_caraelem_cesc, 'R2      ', 1, nb_para_maxi)
 !
 ! - Loop on contact zones
 !
     do i_zone = 1, nb_cont_zone
         l_dist_beam = mminfl(sdcont_defi, 'DIST_POUTRE', i_zone)
         if (l_dist_beam) then
-            nb_slav_elem = mminfi(sdcont_defi, 'NBMAE' , i_zone)
-            jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
+            nb_slav_elem = mminfi(sdcont_defi, 'NBMAE', i_zone)
+            jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
             do i_slav_elem = 1, nb_slav_elem
 !
 ! ------------- Current element
@@ -142,43 +142,43 @@ implicit none
 !
 ! ------------- Beam section shape
 !
-                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1, &
                             1, beam_tsec_indx, iad1)
                 if (iad1 .gt. 0) then
                     i_beam_sect = nint(v_caraelem_cesv(abs(iad1)))
                 else
                     i_beam_sect = 0
-                endif
+                end if
 !
 ! ------------- Beam section shape is only circular !
 !
                 if (i_beam_sect .ne. 2) then
                     call utmess('F', 'CONTACT3_32')
-                endif
+                end if
 !
 ! ------------- Get radius
 !
-                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1, &
                             1, beam_r1_indx, iad1)
-                ASSERT(iad1.gt.0)
+                ASSERT(iad1 .gt. 0)
                 beam_radius_1 = v_caraelem_cesv(iad1)
-                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1,&
+                call cesexi('C', j_caraelem_cesd, j_caraelem_cesl, elem_slav_nume, 1, &
                             1, beam_r2_indx, iad2)
-                ASSERT(iad2.gt.0)
+                ASSERT(iad2 .gt. 0)
                 beam_radius_2 = v_caraelem_cesv(iad2)
 !
 ! ------------- Different radius: mean value
 !
-                if (abs(beam_radius_1 - beam_radius_2).gt.r8prem()) then
+                if (abs(beam_radius_1-beam_radius_2) .gt. r8prem()) then
                     call utmess('I', 'CONTACT3_37')
-                endif
+                end if
                 beam_radius = (beam_radius_1+beam_radius_2)/2.d0
 !
 ! ------------- Save value
 !
                 v_sdcont_jeupou(elem_slav_indx) = beam_radius
             end do
-        endif
+        end if
     end do
 !
 999 continue

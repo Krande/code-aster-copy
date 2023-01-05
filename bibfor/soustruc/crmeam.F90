@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,11 +62,11 @@ subroutine crmeam(promes, iaapee)
     character(len=24) :: vnoeud, vrange, basepr, noeums, baseit, vsu, mesint
     character(len=24) :: modid, vref, refms
 !
-    integer :: nbmesu, nbvecb, nbord,  isol, affici(2)
+    integer :: nbmesu, nbvecb, nbord, isol, affici(2)
     integer ::  lred, lrange, lint, ier, iposi, ipuls
     integer :: imod, jmod, iret, llncmp, iddl, lmesu, jddl, iexist
     integer :: iposj, ino, nddle, nddli, ico, ipos
-    integer :: lnoeud, ltrav, lredi, lwks,  lrefms, lref
+    integer :: lnoeud, ltrav, lredi, lwks, lrefms, lref
     integer ::  jcnsc
     integer :: ibid, nbcmpi, numgd, lmaela
     integer :: lu, lvals, lv, lvsu
@@ -91,11 +91,11 @@ subroutine crmeam(promes, iaapee)
 !
     refms = promes//'.PROJM    .PJMRF'
     call jeveuo(refms, 'L', lrefms)
-    k16bid=zk16(lrefms-1 +1)
-    modlms=k16bid(1:8)
-    nomchp=zk16(lrefms-1 +2)
-    k16bid=zk16(lrefms-1 +3)
-    basemo=k16bid(1:8)
+    k16bid = zk16(lrefms-1+1)
+    modlms = k16bid(1:8)
+    nomchp = zk16(lrefms-1+2)
+    k16bid = zk16(lrefms-1+3)
+    basemo = k16bid(1:8)
 !
     basepr = promes//'.PROJM    .PJMBP'
     call jeveuo(basepr, 'L', lred)
@@ -119,18 +119,18 @@ subroutine crmeam(promes, iaapee)
     call jeexin(vref, iexist)
     if (iexist .eq. 0) then
         call wkvect(vref, 'G V K16', 5, lref)
-        zk16(lref-1 +1) = modlms
-        zk16(lref-1 +2) = nomchp
-        zk16(lref-1 +3) = basemo
-        zk16(lref-1 +4) = modmes
-        zk16(lref-1 +5) = promes
-    endif
+        zk16(lref-1+1) = modlms
+        zk16(lref-1+2) = nomchp
+        zk16(lref-1+3) = basemo
+        zk16(lref-1+4) = modmes
+        zk16(lref-1+5) = promes
+    end if
 !
     modid = nomres//'.PROJM    .PJMMM'
     call jeexin(modid, iexist)
     if (iexist .eq. 0) then
         call remome(promes, modmes, nomres)
-    endif
+    end if
     call jeveuo(modid, 'L', lmesu)
     call jelira(modid, 'LONUTI', nbord)
     nbord = nbord/nbmesu
@@ -151,10 +151,10 @@ subroutine crmeam(promes, iaapee)
 !
         call wkvect(baseit, 'G V R', nddle*nbvecb, lredi)
         call jeveuo(basemo//'           .ORDR', 'L', vi=ordr)
-        ch1s='&BASEIT.CH1S'
+        ch1s = '&BASEIT.CH1S'
 !
         do imod = 1, nbvecb
-            call rsexch('F', basemo, nomchp, ordr(imod), chamno,&
+            call rsexch('F', basemo, nomchp, ordr(imod), chamno, &
                         iret)
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CH1S
@@ -179,20 +179,20 @@ subroutine crmeam(promes, iaapee)
                 vrange = nomres//'.PROJM    .PJMRG'
                 call wkvect(vnoeud, 'G V I', nddle, lnoeud)
                 call wkvect(vrange, 'G V K8', nddle, lrange)
-            endif
+            end if
 !
             call jeveuo(nu//'.DEEQ', 'L', vi=deeq)
 !
             do iddl = 1, nddle
-                ino=deeq(nddli*2+(iddl-1)*2+1)
-                ico=deeq(nddli*2+(iddl-1)*2+2)
+                ino = deeq(nddli*2+(iddl-1)*2+1)
+                ico = deeq(nddli*2+(iddl-1)*2+2)
                 if (imod .eq. 1) then
-                    typ=zk8(llncmp-1+ico)
+                    typ = zk8(llncmp-1+ico)
                     zi(lnoeud-1+iddl) = ino
                     zk8(lrange-1+iddl) = typ
-                endif
-                ipos = (imod-1)*nddle + iddl
-                zr(lredi-1 +ipos) = cnsv((ino-1)*nbcmpi+ico)
+                end if
+                ipos = (imod-1)*nddle+iddl
+                zr(lredi-1+ipos) = cnsv((ino-1)*nbcmpi+ico)
             end do
 !
         end do
@@ -217,7 +217,7 @@ subroutine crmeam(promes, iaapee)
             affici(1) = nbmesu
             affici(2) = nbvecb
             call utmess('F', 'SOUSTRUC_82', ni=2, vali=affici)
-        endif
+        end if
 !
         vals = '&VALS'
         u = '&U'
@@ -238,10 +238,10 @@ subroutine crmeam(promes, iaapee)
             do jddl = 1, nbmesu
                 ipos = (jddl-1)*nbmesu+iddl
                 if (iddl .eq. jddl) then
-                    zr(isol-1 +ipos) = 1.d0
+                    zr(isol-1+ipos) = 1.d0
                 else
-                    zr(isol-1 +ipos) = 0.d0
-                endif
+                    zr(isol-1+ipos) = 0.d0
+                end if
             end do
         end do
 !
@@ -251,14 +251,14 @@ subroutine crmeam(promes, iaapee)
             zr(ltrav-1+iddl) = zr(lred-1+iddl)
         end do
 !
-        call rslsvd(nbmesu, nbmesu, nbvecb, zr(ltrav), zr(lvals),&
-                    zr(lu), zr(lv), nbmesu, zr(isol), eps,&
+        call rslsvd(nbmesu, nbmesu, nbvecb, zr(ltrav), zr(lvals), &
+                    zr(lu), zr(lv), nbmesu, zr(isol), eps, &
                     ier, zr(lwks))
 !
         call jedetr(trav)
         if (ier .ne. 0) then
             call utmess('F', 'UTILITAI3_8')
-        endif
+        end if
 !
         call wkvect(trav, 'V V R', nbvecb*nbmesu, ltrav)
 !
@@ -281,12 +281,12 @@ subroutine crmeam(promes, iaapee)
 !
         do iddl = 1, nddle
             do jddl = 1, nbmesu
-                ipos = (jddl-1)*nddle + iddl
+                ipos = (jddl-1)*nddle+iddl
                 zr(lint-1+ipos) = 0.d0
                 do imod = 1, nbvecb
                     iposi = (imod-1)*nddle+iddl
                     iposj = (jddl-1)*nbvecb+imod
-                    zr(lint-1+ipos) = zr(lint-1+ipos) + zr(lredi-1+ iposi)*zr(ltrav-1+iposj)
+                    zr(lint-1+ipos) = zr(lint-1+ipos)+zr(lredi-1+iposi)*zr(ltrav-1+iposj)
                 end do
             end do
         end do
@@ -309,12 +309,12 @@ subroutine crmeam(promes, iaapee)
 !
         do iddl = 1, nddle
             do jmod = 1, nbord
-                ipos = (jmod-1)*nddle + iddl
+                ipos = (jmod-1)*nddle+iddl
                 zr(ltrav-1+ipos) = 0.d0
                 do jddl = 1, nbmesu
                     iposi = (jddl-1)*nddle+iddl
                     iposj = (jmod-1)*nbmesu+jddl
-                    zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lint-1+ iposi)*zr(lmesu-1+iposj)
+                    zr(ltrav-1+ipos) = zr(ltrav-1+ipos)+zr(lint-1+iposi)*zr(lmesu-1+iposj)
                 end do
             end do
         end do
@@ -325,7 +325,7 @@ subroutine crmeam(promes, iaapee)
             affici(1) = nddle
             affici(2) = nbord
             call utmess('F', 'SOUSTRUC_83', ni=2, vali=affici)
-        endif
+        end if
 !
         call wkvect(vals, 'V V R', nbord, lvals)
         call wkvect(u, 'V V R', nddle*nddle, lu)
@@ -339,10 +339,10 @@ subroutine crmeam(promes, iaapee)
             do jddl = 1, nddle
                 ipos = (jddl-1)*nddle+iddl
                 if (iddl .eq. jddl) then
-                    zr(isol-1 +ipos) = 1.d0
+                    zr(isol-1+ipos) = 1.d0
                 else
-                    zr(isol-1 +ipos) = 0.d0
-                endif
+                    zr(isol-1+ipos) = 0.d0
+                end if
             end do
         end do
 !
@@ -350,13 +350,13 @@ subroutine crmeam(promes, iaapee)
 !
         call wkvect(vsu, 'G V R', nbord*nddle, lvsu)
 !
-        call rslsvd(nddle, nddle, nbord, zr(ltrav), zr(lvals),&
-                    zr(lu), zr(lv), nddle, zr(isol), eps,&
+        call rslsvd(nddle, nddle, nbord, zr(ltrav), zr(lvals), &
+                    zr(lu), zr(lv), nddle, zr(isol), eps, &
                     ier, zr(lwks))
 !
         if (ier .ne. 0) then
             call utmess('F', 'UTILITAI3_8')
-        endif
+        end if
 !
         call jedetr(wks)
 !
@@ -380,7 +380,7 @@ subroutine crmeam(promes, iaapee)
 !
     else
         call jeveuo(vsu, 'L', lvsu)
-    endif
+    end if
 !
 ! ===============================
 ! FIN TEST : CALCUL INVERSE MATRICE DE PASSAGE DEJA REALISE
@@ -391,17 +391,17 @@ subroutine crmeam(promes, iaapee)
     call wkvect(wks, 'V V R', nbord*nddle, lwks)
 !
     do imod = 1, nbord
-        call rsadpa(modmes, 'L', 1, 'AMOR_GENE', imod,&
+        call rsadpa(modmes, 'L', 1, 'AMOR_GENE', imod, &
                     0, sjv=ipuls, styp=k8bid)
         amog = zr(ipuls)
-        call rsadpa(modmes, 'L', 1, 'MASS_GENE', imod,&
+        call rsadpa(modmes, 'L', 1, 'MASS_GENE', imod, &
                     0, sjv=ipuls, styp=k8bid)
         masg = zr(ipuls)
         do iddl = 1, nddle
             ipos = (iddl-1)*nbord+imod
             iposi = (imod-1)*nddle+iddl
-            zr(ltrav-1+iposi)=zr(lvsu-1+ipos)*sqrt(amog*masg)
-            zr(lwks-1+ipos)=zr(lvsu-1+ipos)*sqrt(amog*masg)
+            zr(ltrav-1+iposi) = zr(lvsu-1+ipos)*sqrt(amog*masg)
+            zr(lwks-1+ipos) = zr(lvsu-1+ipos)*sqrt(amog*masg)
         end do
     end do
 !
@@ -419,7 +419,7 @@ subroutine crmeam(promes, iaapee)
             do imod = 1, nbord
                 iposi = (imod-1)*nddle+iddl
                 iposj = (jddl-1)*nbord+imod
-                zr(lmaela-1+ipos) = zr(lmaela-1+ipos) + zr(ltrav-1+ iposi)*zr(lwks-1+iposj)
+                zr(lmaela-1+ipos) = zr(lmaela-1+ipos)+zr(ltrav-1+iposi)*zr(lwks-1+iposj)
             end do
         end do
     end do
@@ -428,8 +428,8 @@ subroutine crmeam(promes, iaapee)
 !
     do iddl = 1, nddle
         do jddl = 1, iddl
-            ipos = (iddl-1)*iddl/2 + jddl
-            iposi = (jddl-1)*nddle + iddl
+            ipos = (iddl-1)*iddl/2+jddl
+            iposi = (jddl-1)*nddle+iddl
             zr(iaapee-1+ipos) = zr(lmaela-1+iposi)
         end do
     end do

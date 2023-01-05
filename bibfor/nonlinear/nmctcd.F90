@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmctcd(list_func_acti, ds_contact, nume_dof)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/cufoco.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=24), intent(in) :: nume_dof
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: nume_dof
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,31 +61,31 @@ character(len=24), intent(in) :: nume_dof
 !
 ! - Active functionnalites
 !
-    l_cont_disc = isfonc(list_func_acti        , 'CONT_DISCRET')
-    l_frot_disc = isfonc(list_func_acti        , 'FROT_DISCRET')
+    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
+    l_frot_disc = isfonc(list_func_acti, 'FROT_DISCRET')
     l_cont_pena = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
-    l_unil      = isfonc(list_func_acti        , 'LIAISON_UNILATER')
+    l_unil = isfonc(list_func_acti, 'LIAISON_UNILATER')
     l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-    if (.not.l_all_verif) then
+    if (.not. l_all_verif) then
 ! ----- Print
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE11_31')
-        endif
+        end if
 ! ----- Contact (DISCRETE) forces
         if (l_cont_disc) then
             vect_asse = ds_contact%cnctdc
             call cffoco(nume_dof, ds_contact%sdcont_solv, vect_asse)
-        endif
+        end if
 ! ----- Friction (DISCRETE) forces
         if ((l_frot_disc) .or. (l_cont_pena)) then
             vect_asse = ds_contact%cnctdf
             call cffofr(nume_dof, ds_contact%sdcont_solv, vect_asse)
-        endif
+        end if
 ! ----- Unilateral conditions (DISCRETE) forces
         if (l_unil) then
             vect_asse = ds_contact%cnunil
             call cufoco(nume_dof, ds_contact%sdunil_solv, vect_asse)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

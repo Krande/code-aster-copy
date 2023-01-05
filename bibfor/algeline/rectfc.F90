@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr,&
+subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr, &
                   valpro, nvpro, resufi, resufr, nfreq)
     implicit none
 #include "asterc/r8miem.h"
@@ -44,7 +44,7 @@ subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr,&
 !     ------------------------------------------------------------------
 !     INITS
 !     PRECISION MACHINE COMME DANS ARPACK
-    prec=(r8miem()*0.5d0)**(2.0d+0/3.0d+0)
+    prec = (r8miem()*0.5d0)**(2.0d+0/3.0d+0)
 !
 !     ------------------------------------------------------------------
 !     --------  RECTIFICATION DES FREQUENCES DUE AU SHIFT  -------------
@@ -57,39 +57,39 @@ subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr,&
     do ivec = 1, nbvect
         om = valpro(ivec)
         if (dble(om) .gt. 0.0d0) then
-            ip = ip + 1
+            ip = ip+1
             in = ip
         else
-            im = im - 1
+            im = im-1
             in = im
-        endif
+        end if
 !
-        om = om - omeshi
+        om = om-omeshi
         if (dble(om) .lt. 0.d0) then
-            ineg = ineg + 1
-        endif
+            ineg = ineg+1
+        end if
         if (ivec .le. nbmode) then
-            resufi(ivec,1) = npivot+in
-            resufr(ivec,2) = dble(om)
+            resufi(ivec, 1) = npivot+in
+            resufr(ivec, 2) = dble(om)
             if (abs(dble(om)) .lt. prec) then
-                resufr(ivec,3) = 1.d+70
+                resufr(ivec, 3) = 1.d+70
             else
-                resufr(ivec,3) = (dimag(om) / dble(om)) /2.d0
-            endif
-        endif
+                resufr(ivec, 3) = (dimag(om)/dble(om))/2.d0
+            end if
+        end if
     end do
     if (ineg .eq. nbvect) then
         do ivec = 1, nbmode
-            resufi(ivec,1) = npivot + ivec
+            resufi(ivec, 1) = npivot+ivec
         end do
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     -- RECTIFICATION DE LA POSITION MODALE (A CAUSE DES LAGRANGE) ----
 !     ------------------------------------------------------------------
 !
     do ifreq = 1, nbmode
-        resufi(ifreq,1) = resufi(ifreq,1) - nblagr
+        resufi(ifreq, 1) = resufi(ifreq, 1)-nblagr
     end do
 !
 end subroutine

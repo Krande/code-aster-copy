@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
-                  nbvari, epsilo, varia, matper, dsidep,&
+subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
+                  nbvari, epsilo, varia, matper, dsidep, &
                   smatr, sdeps, ssigp, svip, iret)
 ! person_in_charge: jean-michel.proix at edf.fr
 !-----------------------------------------------------------------------
@@ -67,23 +67,23 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
     character(len=24) :: matra, matrc
     integer :: ematra, ematrc, exi, i, j, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxeps
-    save init,pos
-    data matra  /'PYTHON.TANGENT.MATA'/
-    data matrc  /'PYTHON.TANGENT.MATC'/
-    data init,pos /1,0/
+    save init, pos
+    data matra/'PYTHON.TANGENT.MATA'/
+    data matrc/'PYTHON.TANGENT.MATC'/
+    data init, pos/1, 0/
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
 !     Calcul de la matrice TGTE par PERTURBATION
 !
-    iret=0
+    iret = 0
     if (abs(carcri(2)) .lt. 0.1d0) then
         goto 999
-    endif
+    end if
     if (option(1:9) .eq. 'RIGI_MECA') then
         goto 999
-    endif
+    end if
 !
 ! --  INITIALISATION (PREMIER APPEL)
 !
@@ -92,19 +92,19 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 !       PERTURBATION OU VERIFICATION => FULL_MECA
         if (option .ne. 'FULL_MECA') then
             goto 999
-        endif
+        end if
 !
 !       CALCUL de la valeur de la perturbation
-        maxeps=0.d0
+        maxeps = 0.d0
         do i = 1, 6
-            maxeps=max(maxeps,abs(deps2(i)))
+            maxeps = max(maxeps, abs(deps2(i)))
         end do
-        pertu=carcri(7)
-        epsilo=pertu*maxeps
+        pertu = carcri(7)
+        epsilo = pertu*maxeps
         if (epsilo .lt. r8miem()) then
             call utmess('A', 'ALGORITH11_86')
             goto 999
-        endif
+        end if
 !
 !      ARCHIVAGE DES VALEURS DE REFERENCE
         call dcopy(6, deps2, 1, sdeps, 1)
@@ -118,7 +118,7 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
         init = 0
         pos = 0
 !
-    endif
+    end if
 !
 ! -- TRAITEMENT DES VARIATIONS
 !
@@ -129,21 +129,21 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 !
     if (nvar .gt. 0) then
         call dcopy(6, sigp, 1, varia(1+(pos-1)*6), 1)
-    endif
+    end if
 !
-    pos = pos + 1
+    pos = pos+1
     nvar = int((pos+1)/2)
-    indi = 1-2*mod(pos,2)
+    indi = 1-2*mod(pos, 2)
 !
     if (nvar .le. 6) then
         call dcopy(6, sdeps, 1, deps2, 1)
-        deps2(nvar) = sdeps(nvar) + indi*epsilo
+        deps2(nvar) = sdeps(nvar)+indi*epsilo
 !
 !      INITIALISATION DES CHAMPS 'E'
         call r8inir(6, 0.d0, sigp, 1)
-        iret=1
+        iret = 1
         goto 999
-    endif
+    end if
 !
 !    CALCUL DE LA MATRICE TANGENTE
 !
@@ -175,7 +175,7 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 !
 !     VERIFICATION
 !
-    else if (abs(carcri(2)-2.d0).lt.0.1d0) then
+    else if (abs(carcri(2)-2.d0) .lt. 0.1d0) then
         call dcopy(36, smatr, 1, dsidep, 1)
 !
 !      CREATION DES OBJETS
@@ -185,14 +185,14 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
         if (exi .ne. 0) then
             call jedetr(matra)
             call jedetr(matrc)
-        endif
+        end if
         call wkvect(matra, 'G V R', 36, ematra)
         call wkvect(matrc, 'G V R', 36, ematrc)
         call dcopy(36, smatr, 1, zr(ematra), 1)
         call dcopy(36, matper, 1, zr(ematrc), 1)
 !         CALL JELIBE(MATRA)
 !         CALL JELIBE(MATRC)
-    endif
+    end if
 !
 999 continue
 !

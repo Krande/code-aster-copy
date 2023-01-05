@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,10 @@ subroutine bartri(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 3
                 n3 = 6
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.2 .and. i2.eq.0) then
+    else if (i1 .eq. 2 .and. i2 .eq. 0) then
         do i = 1, 2
             if (i .eq. 1) then
                 n1 = 2
@@ -54,10 +54,10 @@ subroutine bartri(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 3
                 n3 = 5
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.3 .and. i2.eq.0) then
+    else if (i1 .eq. 3 .and. i2 .eq. 0) then
         do i = 1, 2
             if (i .eq. 1) then
                 n1 = 3
@@ -67,7 +67,7 @@ subroutine bartri(i1, i2, coor, poin)
                 n1 = 3
                 n2 = 2
                 n3 = 5
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -84,7 +84,7 @@ subroutine bartri(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 3
                 n3 = 6
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -98,7 +98,7 @@ subroutine bartri(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 1
                 n3 = 4
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -112,13 +112,13 @@ subroutine bartri(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 2
                 n3 = 4
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
     else
         call utmess('F', 'ALGORITH_36', sk='TRIA')
 !
-    endif
+    end if
 !
 end subroutine

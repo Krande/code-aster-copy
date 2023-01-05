@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine allir8(base, nolir8, nbr8, lr8)
     integer :: i, jbor, jnbp, jpas, jval, nbb
 !-----------------------------------------------------------------------
     call jemarq()
-    b=base
-    nbb = nbr8 - 1
+    b = base
+    nbb = nbr8-1
     call wkvect(nolir8//'           .LPAS', b//' V R', max(1, nbb), jpas)
     call wkvect(nolir8//'           .NBPA', b//' V I', max(1, nbb), jnbp)
     call wkvect(nolir8//'           .VALE', b//' V R', nbr8, jval)
@@ -57,14 +57,14 @@ subroutine allir8(base, nolir8, nbr8, lr8)
         zr(jbor) = lr8(1)
     else
         do i = 1, nbb
-            zr(jpas-1+i) = lr8(i+1) - lr8(i)
+            zr(jpas-1+i) = lr8(i+1)-lr8(i)
             zi(jnbp-1+i) = 1
             zr(jval-1+i) = lr8(i)
             zr(jbor-1+i) = lr8(i)
         end do
         zr(jval-1+nbr8) = lr8(nbr8)
         zr(jbor-1+nbr8) = lr8(nbr8)
-    endif
+    end if
 !
     call jedema()
 end subroutine

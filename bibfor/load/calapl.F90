@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine calapl(load, mesh, model, nbOcc)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "LoadTypes_type.h"
@@ -36,8 +36,8 @@ implicit none
 #include "asterfort/getelem.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-integer, intent(in) :: nbOcc
+    character(len=8), intent(in) :: load, mesh, model
+    integer, intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,9 +80,9 @@ integer, intent(in) :: nbOcc
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact , load , mesh, valeType,&
-                        nbMap      , map         , nbCmp,&
-                        createMap  , physQuantity, cmpName)
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
+                        nbMap, map, nbCmp, &
+                        createMap, physQuantity, cmpName)
     ASSERT(nbMap .eq. 1)
     ASSERT(nbCmp(1) .eq. 2)
 !
@@ -97,7 +97,7 @@ integer, intent(in) :: nbOcc
 ! ----- Generate names
         listma(1:14) = load//'.LISMA'
         ltrans(1:14) = load//'.TRANS'
-        call codent(iocc, 'D0', map(1)(18:19))
+        call codent(iocc, 'D0', map(1) (18:19))
         call codent(iocc, 'D0', listma(15:16))
         call codent(iocc, 'D0', ltrans(15:16))
 
@@ -128,13 +128,13 @@ integer, intent(in) :: nbOcc
         nsym = -nsym
         if (ntra .ne. 0) then
             call getvr8(keywordfact, 'TRANS', iocc=iocc, nbval=ntra, vect=zr(jtran))
-        endif
+        end if
         if (nsym .ne. 0) then
             call getvr8(keywordfact, 'SYME', iocc=iocc, nbval=nsym, vect=zr(jtran))
-        endif
+        end if
 
 ! ----- GEOMETRIE DU CONDUCTEUR SECONDAIRE
-        call getelem(mesh, keywordfact, iocc, 'A', listCell2, nbCell2, suffix = '_2', model=model)
+        call getelem(mesh, keywordfact, iocc, 'A', listCell2, nbCell2, suffix='_2', model=model)
         if (nbCell2 .eq. 0) cycle
         call jeveuo(listCell2, 'L', jma2)
 
@@ -152,7 +152,7 @@ integer, intent(in) :: nbOcc
         end do
 
 ! ----- Affect map
-        call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell1,&
+        call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell1, &
                     limanu=zi(jma1))
 
         call jedetr(listCell1)

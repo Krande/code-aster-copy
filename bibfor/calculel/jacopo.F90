@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine jacopo(long, tpscaz, iad1, iad2)
 !
 !     -- QUELQUES VERIFICATIONS:
 !
-    ASSERT(long.ge.0)
+    ASSERT(long .ge. 0)
 !
 !     -- RECOPIE SELON LE TYPE DE SCALAIRE:
 !
@@ -52,41 +52,41 @@ subroutine jacopo(long, tpscaz, iad1, iad2)
         do i = 1, long
             zi(iad2-1+i) = zi(iad1-1+i)
         end do
-    else if (t.eq.'R  ') then
+    else if (t .eq. 'R  ') then
         do i = 1, long
             zr(iad2-1+i) = zr(iad1-1+i)
         end do
-    else if (t.eq.'C  ') then
+    else if (t .eq. 'C  ') then
         do i = 1, long
             zc(iad2-1+i) = zc(iad1-1+i)
         end do
-    else if (t.eq.'L  ') then
+    else if (t .eq. 'L  ') then
         do i = 1, long
             zl(iad2-1+i) = zl(iad1-1+i)
         end do
-    else if (t.eq.'K8 ') then
+    else if (t .eq. 'K8 ') then
         do i = 1, long
             zk8(iad2-1+i) = zk8(iad1-1+i)
         end do
-    else if (t.eq.'K16') then
+    else if (t .eq. 'K16') then
         do i = 1, long
             zk16(iad2-1+i) = zk16(iad1-1+i)
         end do
-    else if (t.eq.'K24') then
+    else if (t .eq. 'K24') then
         do i = 1, long
             zk24(iad2-1+i) = zk24(iad1-1+i)
         end do
-    else if (t.eq.'K32') then
+    else if (t .eq. 'K32') then
         do i = 1, long
             zk32(iad2-1+i) = zk32(iad1-1+i)
         end do
-    else if (t.eq.'K80') then
+    else if (t .eq. 'K80') then
         do i = 1, long
             zk80(iad2-1+i) = zk80(iad1-1+i)
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,13 +55,13 @@ subroutine op0145()
     integer :: lfon, lnat, lnom, long, lvain, lvare
     integer :: lvate, nbmcl
 !-----------------------------------------------------------------------
-    data mcfac /'SPEC_LONG_COR_1','SPEC_LONG_COR_2',&
-     &            'SPEC_LONG_COR_3','SPEC_LONG_COR_4',&
-     &            'SPEC_CORR_CONV_1','SPEC_CORR_CONV_2',&
+    data mcfac/'SPEC_LONG_COR_1', 'SPEC_LONG_COR_2',&
+     &            'SPEC_LONG_COR_3', 'SPEC_LONG_COR_4',&
+     &            'SPEC_CORR_CONV_1', 'SPEC_CORR_CONV_2',&
      &            'SPEC_CORR_CONV_3',&
-     &            'SPEC_FONC_FORME','SPEC_EXCI_POINT'/
-    data motcle  /'NOEUD','GROUP_NO'/
-    data typmcl  /'NOEUD','GROUP_NO'/
+     &            'SPEC_FONC_FORME', 'SPEC_EXCI_POINT'/
+    data motcle/'NOEUD', 'GROUP_NO'/
+    data typmcl/'NOEUD', 'GROUP_NO'/
 ! ----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -77,18 +77,18 @@ subroutine op0145()
 !     DE MC SIMPLES DES 9 MC FACTEURS
     nbmcl = 12
 !
-    nommcf=mcfac(imcf)
+    nommcf = mcfac(imcf)
 !
-    read(nommcf(6:6),'(A1)') typspe
+    read (nommcf(6:6), '(A1)') typspe
     if (typspe .eq. 'L') then
-        read(nommcf(15:15),'(I1)') ispect
-    else if (typspe.eq.'F') then
+        read (nommcf(15:15), '(I1)') ispect
+    else if (typspe .eq. 'F') then
         ispect = 11
-    else if (typspe.eq.'C') then
-        read(nommcf(16:16),'(I1)') ispect
+    else if (typspe .eq. 'C') then
+        read (nommcf(16:16), '(I1)') ispect
     else
         ispect = 21
-    endif
+    end if
 !
 ! ----VERIFICATIONS AVANT EXECUTION----
 !     =============================
@@ -100,19 +100,19 @@ subroutine op0145()
             call getvr8(nommcf, 'ANGLE', iocc=1, nbval=0, nbret=iangl)
             call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
             call getvtx(nommcf, 'GROUP_NO', iocc=1, nbval=0, nbret=igrno)
-            if (abs(igrno).gt.abs(inoeud)) inoeud = igrno
+            if (abs(igrno) .gt. abs(inoeud)) inoeud = igrno
             if (inatur .ne. iangl .or. inatur .ne. inoeud .or. inoeud .ne. iangl) then
                 call utmess('F', 'MODELISA5_66')
-            endif
+            end if
         else
             call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
             call getvtx(nommcf, 'GROUP_NO', iocc=1, nbval=0, nbret=igrno)
-            if (abs(igrno).gt.abs(inoeud)) inoeud = igrno
+            if (abs(igrno) .gt. abs(inoeud)) inoeud = igrno
             if (abs(inoeud) .ne. 1) then
                 call utmess('F', 'MODELISA5_67', sk=nommcf, si=inoeud)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! ----FIN DES VERIFICATIONS AVANT EXECUTION----
 !     =====================================
@@ -147,20 +147,20 @@ subroutine op0145()
                 dim = dim*(dim+1)/2
                 if (dim .ne. mxval) then
                     call utmess('F', 'MODELISA5_68')
-                endif
+                end if
             else
                 call getvid(nommcf, 'MODELE', iocc=1, scal=modele, nbret=ibid)
                 call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maillage)
-                call reliem(modele, maillage, 'NO_NOEUD', nommcf, iocc,&
+                call reliem(modele, maillage, 'NO_NOEUD', nommcf, iocc, &
                             2, motcle, typmcl, nomno, nbno)
 
                 dim = nbno*(nbno+1)/2
                 if (dim .ne. mxval) then
                     call utmess('F', 'MODELISA5_69')
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 ! ----FIN DES VERIFICATIONS A L'EXECUTION----
 !     ===================================
@@ -175,7 +175,7 @@ subroutine op0145()
 !
         call wkvect(vain, 'G V I', 1, lvain)
         call wkvect(vare, 'G V R', nbmcl, lvare)
-        long = nbmcl + 1
+        long = nbmcl+1
         call wkvect(vate, 'G V K16', long, lvate)
 !
 ! ------1.2.CREATION D'OBJETS SUR LA BASE VOLATILE
@@ -185,86 +185,86 @@ subroutine op0145()
 ! ------1.3.REMPLISSAGE DES OBJETS
 !
         if (nommcf .eq. 'SPEC_LONG_COR_1') then
-            zk16(lnom)      ='LONG_COR        '
-            zk16(lnom+1)    ='PROF_VITE_FLUI  '
-            zk16(lnom+2)    ='VISC_CINE       '
-        else if (nommcf.eq.'SPEC_LONG_COR_2') then
-            zk16(lnom)      ='LONG_COR        '
-            zk16(lnom+1)    ='PROF_VITE_FLUI  '
-            zk16(lnom+2)    ='FREQ_COUP       '
-            zk16(lnom+3)    ='PHI0            '
-            zk16(lnom+4)    ='BETA            '
-        else if (nommcf.eq.'SPEC_LONG_COR_3') then
-            zk16(lnom)      ='LONG_COR        '
-            zk16(lnom+1)    ='PROF_VITE_FLUI  '
-            zk16(lnom+2)    ='FREQ_COUP       '
-            zk16(lnom+3)    ='PHI0_1          '
-            zk16(lnom+4)    ='BETA_1          '
-            zk16(lnom+5)    ='PHI0_2          '
-            zk16(lnom+6)    ='BETA_2          '
-        else if (nommcf.eq.'SPEC_LONG_COR_4') then
-            zk16(lnom)      ='LONG_COR        '
-            zk16(lnom+1)    ='PROF_VITE_FLUI  '
-            zk16(lnom+2)    ='TAUX_VIDE       '
-            zk16(lnom+3)    ='BETA            '
-            zk16(lnom+4)    ='GAMMA           '
-        else if (nommcf.eq.'SPEC_CORR_CONV_1') then
-            zk16(lnom)      ='LONG_COR_1      '
-            zk16(lnom+1)    ='LONG_COR_2      '
-            zk16(lnom+2)    ='VITE_FLUI       '
-            zk16(lnom+3)    ='RHO_FLUI        '
-            zk16(lnom+4)    ='FREQ_COUP       '
-            zk16(lnom+5)    ='K               '
-            zk16(lnom+6)    ='D_FLUI          '
-            zk16(lnom+7) ='COEF_VITE_FLUI_A'
-            zk16(lnom+8) ='COEF_VITE_FLUI_O'
-            zk16(lnom+9)    ='METHODE         '
-        else if (nommcf.eq.'SPEC_CORR_CONV_2') then
-            zk16(lnom)      ='FONCTION        '
-            zk16(lnom+1)    ='VITE_FLUI       '
-            zk16(lnom+2)    ='FREQ_COUP       '
-            zk16(lnom+3)    ='METHODE         '
-            zk16(lnom+4) ='COEF_VITE_FLUI_A'
-            zk16(lnom+5) ='COEF_VITE_FLUI_O'
-        else if (nommcf.eq.'SPEC_CORR_CONV_3') then
-            zk16(lnom)      ='TABLE_FONCTION  '
-        else if (nommcf.eq.'SPEC_FONC_FORME') then
-            zk16(lnom)      ='INTE_SPEC       '
-            zk16(lnom+1)    ='FONCTION        '
-            zk16(lnom+2)    ='GRAPPE_1        '
-            zk16(lnom+3)    ='NOEUD           '
-            zk16(lnom+4)    ='CARA_ELEM       '
-            zk16(lnom+5)    ='MODELE          '
-        else if (nommcf.eq.'SPEC_EXCI_POINT') then
-            zk16(lnom)      ='INTE_SPEC      '
-            zk16(lnom+1)    ='NATURE         '
-            zk16(lnom+2)    ='ANGL           '
-            zk16(lnom+3)    ='GRAPPE_2       '
-            zk16(lnom+4)    ='RHO_FLUI       '
-            zk16(lnom+5)    ='NOEUD          '
-            zk16(lnom+6)    ='CARA_ELEM      '
-            zk16(lnom+7)    ='MODELE         '
-        endif
+            zk16(lnom) = 'LONG_COR        '
+            zk16(lnom+1) = 'PROF_VITE_FLUI  '
+            zk16(lnom+2) = 'VISC_CINE       '
+        else if (nommcf .eq. 'SPEC_LONG_COR_2') then
+            zk16(lnom) = 'LONG_COR        '
+            zk16(lnom+1) = 'PROF_VITE_FLUI  '
+            zk16(lnom+2) = 'FREQ_COUP       '
+            zk16(lnom+3) = 'PHI0            '
+            zk16(lnom+4) = 'BETA            '
+        else if (nommcf .eq. 'SPEC_LONG_COR_3') then
+            zk16(lnom) = 'LONG_COR        '
+            zk16(lnom+1) = 'PROF_VITE_FLUI  '
+            zk16(lnom+2) = 'FREQ_COUP       '
+            zk16(lnom+3) = 'PHI0_1          '
+            zk16(lnom+4) = 'BETA_1          '
+            zk16(lnom+5) = 'PHI0_2          '
+            zk16(lnom+6) = 'BETA_2          '
+        else if (nommcf .eq. 'SPEC_LONG_COR_4') then
+            zk16(lnom) = 'LONG_COR        '
+            zk16(lnom+1) = 'PROF_VITE_FLUI  '
+            zk16(lnom+2) = 'TAUX_VIDE       '
+            zk16(lnom+3) = 'BETA            '
+            zk16(lnom+4) = 'GAMMA           '
+        else if (nommcf .eq. 'SPEC_CORR_CONV_1') then
+            zk16(lnom) = 'LONG_COR_1      '
+            zk16(lnom+1) = 'LONG_COR_2      '
+            zk16(lnom+2) = 'VITE_FLUI       '
+            zk16(lnom+3) = 'RHO_FLUI        '
+            zk16(lnom+4) = 'FREQ_COUP       '
+            zk16(lnom+5) = 'K               '
+            zk16(lnom+6) = 'D_FLUI          '
+            zk16(lnom+7) = 'COEF_VITE_FLUI_A'
+            zk16(lnom+8) = 'COEF_VITE_FLUI_O'
+            zk16(lnom+9) = 'METHODE         '
+        else if (nommcf .eq. 'SPEC_CORR_CONV_2') then
+            zk16(lnom) = 'FONCTION        '
+            zk16(lnom+1) = 'VITE_FLUI       '
+            zk16(lnom+2) = 'FREQ_COUP       '
+            zk16(lnom+3) = 'METHODE         '
+            zk16(lnom+4) = 'COEF_VITE_FLUI_A'
+            zk16(lnom+5) = 'COEF_VITE_FLUI_O'
+        else if (nommcf .eq. 'SPEC_CORR_CONV_3') then
+            zk16(lnom) = 'TABLE_FONCTION  '
+        else if (nommcf .eq. 'SPEC_FONC_FORME') then
+            zk16(lnom) = 'INTE_SPEC       '
+            zk16(lnom+1) = 'FONCTION        '
+            zk16(lnom+2) = 'GRAPPE_1        '
+            zk16(lnom+3) = 'NOEUD           '
+            zk16(lnom+4) = 'CARA_ELEM       '
+            zk16(lnom+5) = 'MODELE          '
+        else if (nommcf .eq. 'SPEC_EXCI_POINT') then
+            zk16(lnom) = 'INTE_SPEC      '
+            zk16(lnom+1) = 'NATURE         '
+            zk16(lnom+2) = 'ANGL           '
+            zk16(lnom+3) = 'GRAPPE_2       '
+            zk16(lnom+4) = 'RHO_FLUI       '
+            zk16(lnom+5) = 'NOEUD          '
+            zk16(lnom+6) = 'CARA_ELEM      '
+            zk16(lnom+7) = 'MODELE         '
+        end if
         zk16(lvate) = nommcf
         imci = 0
         do imc = 1, nbmcl
             if (zk16(lnom+imc-1) .eq. 'PROF_VITE_FLUI  ') then
                 call getvid(nommcf, 'PROF_VITE_FLUI', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
-            else if (zk16(lnom+imc-1).eq.'METHODE         ') then
+            else if (zk16(lnom+imc-1) .eq. 'METHODE         ') then
                 call getvtx(nommcf, 'METHODE', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
-            else if (zk16(lnom+imc-1).eq.'FONCTION        ') then
+            else if (zk16(lnom+imc-1) .eq. 'FONCTION        ') then
                 call getvid(nommcf, 'FONCTION', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
-            else if (zk16(lnom+imc-1).eq.'TABLE_FONCTION  ') then
+            else if (zk16(lnom+imc-1) .eq. 'TABLE_FONCTION  ') then
                 call getvid(nommcf, 'TABLE_FONCTION', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
-            else if (zk16(lnom+imc-1).ne.'                ') then
-                imci = imci + 1
+            else if (zk16(lnom+imc-1) .ne. '                ') then
+                imci = imci+1
                 zk16(lvate+imc) = zk16(lnom+imc-1)
-                call getvr8(nommcf, zk16(lnom+imc-1), iocc=1, scal=zr( lvare+imci-1), nbret=ibid)
-            endif
+                call getvr8(nommcf, zk16(lnom+imc-1), iocc=1, scal=zr(lvare+imci-1), nbret=ibid)
+            end if
         end do
         zi(lvain) = ispect
 !
@@ -281,20 +281,20 @@ subroutine op0145()
         call wkvect(vain, 'G V I', 3, lvain)
         call getvid(nommcf, 'MODELE', iocc=1, scal=modele, nbret=ibid)
         call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maillage)
-        call reliem(modele, maillage, 'NO_NOEUD', nommcf, iocc,&
+        call reliem(modele, maillage, 'NO_NOEUD', nommcf, iocc, &
                     2, motcle, typmcl, nomno, nbno)
         call jeveuo(nomno, 'L', jnomno)
 !
         if (nbno .ne. 1) then
             call utmess('F', 'MODELISA5_67', sk=nommcf, si=nbno)
-        endif
+        end if
 !
         zi(lvain) = ispect
         if (iinter .eq. 0) then
             zi(lvain+1) = 1
         else
             zi(lvain+1) = 0
-        endif
+        end if
         zi(lvain+2) = nbno
 !
 ! ------2.1.2.OBJET .NNOE
@@ -311,12 +311,12 @@ subroutine op0145()
         if (iinter .ne. 0) then
             if (ispect .eq. 11) then
                 ifonct = abs(ifonct)
-                long = 4 + ifonct
+                long = 4+ifonct
             else
                 inoeud = abs(inoeud)
-                long = 4 + inoeud
-            endif
-        endif
+                long = 4+inoeud
+            end if
+        end if
 !
         call wkvect(vate, 'G V K16', long, lvate)
         call getvid(nommcf, 'CARA_ELEM', iocc=1, scal=caelem, nbret=ibid)
@@ -334,13 +334,13 @@ subroutine op0145()
                 call getvtx(nommcf, 'GRAPPE_1', iocc=1, scal=zk16(lvate+4), nbret=ibid)
             else
                 call wkvect('OP0145.TEMP.FON', 'V V K8', ifonct, lfon)
-                call getvid(nommcf, 'FONCTION', iocc=1, nbval=ifonct, vect=zk8(lfon),&
+                call getvid(nommcf, 'FONCTION', iocc=1, nbval=ifonct, vect=zk8(lfon), &
                             nbret=ibid)
                 zk16(lvate+3) = intspe
-                do  ifo = 1, ifonct
+                do ifo = 1, ifonct
                     zk16(lvate+3+ifo) = zk8(lfon+ifo-1)
                 end do
-            endif
+            end if
 !
 ! ------2.2.2.MODELE "EXCITATIONS PONCTUELLES"
 !
@@ -354,22 +354,22 @@ subroutine op0145()
 !
             else
                 call wkvect('OP0145.TEMP.NAT', 'V V K8', inoeud, lnat)
-                call getvtx(nommcf, 'NATURE', iocc=1, nbval=inoeud, vect=zk8(lnat),&
+                call getvtx(nommcf, 'NATURE', iocc=1, nbval=inoeud, vect=zk8(lnat), &
                             nbret=ibid)
                 zk16(lvate+3) = intspe
-                do  inat = 1, inoeud
+                do inat = 1, inoeud
                     zk16(lvate+3+inat) = zk8(lnat+inat-1)
                 end do
 !
                 call wkvect(vare, 'G V R', inoeud, lvare)
-                call getvr8(nommcf, 'ANGLE', iocc=1, nbval=inoeud, vect=zr(lvare),&
+                call getvr8(nommcf, 'ANGLE', iocc=1, nbval=inoeud, vect=zr(lvare), &
                             nbret=ibid)
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
     call titre()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmimre(ds_conv, ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -57,13 +57,13 @@ implicit none
 ! - Loop on residuals
 !
     do i_resi = 1, nb_resi
-        vale_calc       = ds_conv%list_resi(i_resi)%vale_calc
-        locus_calc      = ds_conv%list_resi(i_resi)%locus_calc
-        col_name        = ds_conv%list_resi(i_resi)%col_name
-        col_name_locus  = ds_conv%list_resi(i_resi)%col_name_locus
-        call nmimcr(ds_print, col_name      , vale_calc , l_affe = .true._1)
+        vale_calc = ds_conv%list_resi(i_resi)%vale_calc
+        locus_calc = ds_conv%list_resi(i_resi)%locus_calc
+        col_name = ds_conv%list_resi(i_resi)%col_name
+        col_name_locus = ds_conv%list_resi(i_resi)%col_name_locus
+        call nmimcr(ds_print, col_name, vale_calc, l_affe=.true._1)
         if (i_resi .ne. 7) &
-             call nmimck(ds_print, col_name_locus, locus_calc, l_affe = .true._1)
+            call nmimck(ds_print, col_name_locus, locus_calc, l_affe=.true._1)
     end do
 !
 end subroutine

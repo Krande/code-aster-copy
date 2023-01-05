@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine caflux(load, model, mesh, geomDime, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -38,9 +38,9 @@ implicit none
 #include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-integer, intent(in) :: geomDime
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    integer, intent(in) :: geomDime
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,8 +86,8 @@ character(len=4), intent(in) :: valeType
             call getvr8(keywordFact, 'FLUN_INF', iocc=iocc, nbval=0, nbret=n2)
             call getvr8(keywordFact, 'FLUN_SUP', iocc=iocc, nbval=0, nbret=n3)
             call getvid(keywordFact, 'CARA_TORSION', iocc=iocc, nbval=0, nbret=n12)
-            n1 = n11 + n12
-        else if (valeType.eq.'FONC') then
+            n1 = n11+n12
+        else if (valeType .eq. 'FONC') then
             call getvid(keywordFact, 'FLUN', iocc=iocc, nbval=0, nbret=n1)
             call getvid(keywordFact, 'FLUN_INF', iocc=iocc, nbval=0, nbret=n2)
             call getvid(keywordFact, 'FLUN_SUP', iocc=iocc, nbval=0, nbret=n3)
@@ -97,44 +97,44 @@ character(len=4), intent(in) :: valeType
             n5 = n6+n7+n8
         else
             ASSERT(.false.)
-        endif
+        end if
         n4 = n1+n2+n3
-        if ((n5.ne.0) .and. (n4.ne.0)) then
+        if ((n5 .ne. 0) .and. (n4 .ne. 0)) then
             if (valeType .eq. 'FONC') then
                 call utmess('F', 'MODELISA2_64')
-            endif
-        endif
+            end if
+        end if
         if (n4 .ne. 0) icre1 = .true.
         if (n5 .ne. 0) icre2 = .true.
     end do
 !
 !     ALLOCATION EVENTUELLE DES CARTES CART1 ET CART2 :
 !
-    cart1= load//'.CHTH.FLURE'
-    cart2= load//'.CHTH.FLUR2'
+    cart1 = load//'.CHTH.FLURE'
+    cart2 = load//'.CHTH.FLUR2'
     if (valeType .eq. 'REEL') then
         if (icre1) call alcart('G', cart1, mesh, 'FLUN_R')
         if (icre2) call alcart('G', cart2, mesh, 'FLUX_R')
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         if (icre1) call alcart('G', cart1, mesh, 'FLUN_F')
         if (icre2) call alcart('G', cart2, mesh, 'FLUX_F')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (icre1) then
         call jeveuo(cart1//'.NCMP', 'E', vk8=vncmp1)
         call jeveuo(cart1//'.VALV', 'E', jvalv1)
-    endif
+    end if
     if (icre2) then
         call jeveuo(cart2//'.NCMP', 'E', vk8=vncmp2)
         call jeveuo(cart2//'.VALV', 'E', jvalv2)
-    endif
+    end if
 !
 !      STOCKAGE DE FLUX NULS SUR TOUT LE MAILLAGE
 !
     if (icre1) then
-        ncmp=3
+        ncmp = 3
         vncmp1(1) = 'FLUN'
         vncmp1(2) = 'FLUN_INF'
         vncmp1(3) = 'FLUN_SUP'
@@ -146,12 +146,12 @@ character(len=4), intent(in) :: valeType
             zk8(jvalv1-1+1) = '&FOZERO'
             zk8(jvalv1-1+2) = '&FOZERO'
             zk8(jvalv1-1+3) = '&FOZERO'
-        endif
+        end if
         call nocart(cart1, 1, ncmp)
-    endif
+    end if
 !
     if (icre2) then
-        ncmp=3
+        ncmp = 3
         vncmp2(1) = 'FLUX'
         vncmp2(2) = 'FLUY'
         vncmp2(3) = 'FLUZ'
@@ -163,9 +163,9 @@ character(len=4), intent(in) :: valeType
             zk8(jvalv2-1+1) = '&FOZERO'
             zk8(jvalv2-1+2) = '&FOZERO'
             zk8(jvalv2-1+3) = '&FOZERO'
-        endif
+        end if
         call nocart(cart2, 1, ncmp)
-    endif
+    end if
 !
 !     STOCKAGE DANS LES CARTES
 !
@@ -182,109 +182,109 @@ character(len=4), intent(in) :: valeType
                 call tbexp2(nomtab, 'LONGUEUR')
                 call tbexp2(nomtab, 'GROUP_MA')
 !
-                call getvem(mesh, 'GROUP_MA', keywordFact, 'GROUP_MA', iocc,&
+                call getvem(mesh, 'GROUP_MA', keywordFact, 'GROUP_MA', iocc, &
                             1, mongrm, ngr)
                 para = 'AIRE'
-                call tbliva(nomtab, 1, 'GROUP_MA', [ibid], [r8b],&
-                            [c16b], mongrm, k8b, [r8b], para,&
-                            k8b, ibid, aire, c16b, k8b,&
+                call tbliva(nomtab, 1, 'GROUP_MA', [ibid], [r8b], &
+                            [c16b], mongrm, k8b, [r8b], para, &
+                            k8b, ibid, aire, c16b, k8b, &
                             iret)
                 if (iret .eq. 1) then
-                    valk (1) = para
-                    valk (2) = nomtab
+                    valk(1) = para
+                    valk(2) = nomtab
                     call utmess('F', 'MODELISA8_34', nk=2, valk=valk)
                 else if (iret .eq. 2) then
-                    valk (1) = para
+                    valk(1) = para
                     call utmess('F', 'MODELISA8_35', sk=valk(1))
                 else if (iret .eq. 3) then
-                    valk (1) = mongrm
+                    valk(1) = mongrm
                     call utmess('F', 'MODELISA8_36', sk=valk(1))
-                endif
+                end if
                 para = 'LONGUEUR'
-                call tbliva(nomtab, 1, 'GROUP_MA', [ibid], [r8b],&
-                            [c16b], mongrm, k8b, [r8b], para,&
-                            k8b, ibid, xlong, c16b, k8b,&
+                call tbliva(nomtab, 1, 'GROUP_MA', [ibid], [r8b], &
+                            [c16b], mongrm, k8b, [r8b], para, &
+                            k8b, ibid, xlong, c16b, k8b, &
                             iret)
                 if (iret .eq. 1) then
-                    valk (1) = para
-                    valk (2) = nomtab
+                    valk(1) = para
+                    valk(2) = nomtab
                     call utmess('F', 'MODELISA8_34', nk=2, valk=valk)
                 else if (iret .eq. 2) then
-                    valk (1) = para
+                    valk(1) = para
                     call utmess('F', 'MODELISA8_35', sk=valk(1))
                 else if (iret .eq. 3) then
-                    valk (1) = mongrm
+                    valk(1) = mongrm
                     call utmess('F', 'MODELISA8_36', sk=valk(1))
-                endif
-                ncmp1 = ncmp1 + 1
+                end if
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'FLUN'
-                zr(jvalv1-1 + ncmp1) = 2.0d0 * aire / xlong
-            endif
+                zr(jvalv1-1+ncmp1) = 2.0d0*aire/xlong
+            end if
             call getvr8(keywordFact, 'FLUN', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'FLUN'
-                zr(jvalv1-1 + ncmp1) = r8b
-            endif
+                zr(jvalv1-1+ncmp1) = r8b
+            end if
             call getvr8(keywordFact, 'FLUN_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'FLUN_INF'
-                zr(jvalv1-1 + ncmp1) = r8b
-            endif
+                zr(jvalv1-1+ncmp1) = r8b
+            end if
             call getvr8(keywordFact, 'FLUN_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'FLUN_SUP'
-                zr(jvalv1-1 + ncmp1) = r8b
-            endif
+                zr(jvalv1-1+ncmp1) = r8b
+            end if
 !
         else
             call getvid(keywordFact, 'FLUN', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'FLUN'
-                zk8(jvalv1-1 + ncmp1) = k8b
-            endif
+                zk8(jvalv1-1+ncmp1) = k8b
+            end if
             call getvid(keywordFact, 'FLUN_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'FLUN_INF'
-                zk8(jvalv1-1 + ncmp1) = k8b
-            endif
+                zk8(jvalv1-1+ncmp1) = k8b
+            end if
             call getvid(keywordFact, 'FLUN_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp1 = ncmp1 + 1
+                ncmp1 = ncmp1+1
                 vncmp1(ncmp1) = 'FLUN_SUP'
-                zk8(jvalv1-1 + ncmp1) = k8b
-            endif
+                zk8(jvalv1-1+ncmp1) = k8b
+            end if
 !
             call getvid(keywordFact, 'FLUX_X', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'FLUX'
-                zk8(jvalv2-1 + ncmp2) = k8b
-            endif
+                zk8(jvalv2-1+ncmp2) = k8b
+            end if
             call getvid(keywordFact, 'FLUX_Y', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'FLUY'
-                zk8(jvalv2-1 + ncmp2) = k8b
-            endif
+                zk8(jvalv2-1+ncmp2) = k8b
+            end if
             call getvid(keywordFact, 'FLUX_Z', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
-                ncmp2 = ncmp2 + 1
+                ncmp2 = ncmp2+1
                 vncmp2(ncmp2) = 'FLUZ'
-                zk8(jvalv2-1 + ncmp2) = k8b
-            endif
-        endif
+                zk8(jvalv2-1+ncmp2) = k8b
+            end if
+        end if
 !
 !
         cartes(1) = cart1
         cartes(2) = cart2
         ncmps(1) = ncmp1
         ncmps(2) = ncmp2
-        call char_affe_neum(model , mesh, geomDime, keywordFact, iocc, 2,&
+        call char_affe_neum(model, mesh, geomDime, keywordFact, iocc, 2, &
                             cartes, ncmps)
 !
     end do

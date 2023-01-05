@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function wdefca(ino, s, alpha, f0, frco,&
+function wdefca(ino, s, alpha, f0, frco, &
                 frli)
     implicit none
 !  DESCRIPTION : CALCUL D'UNE ENERGIE DE DEFORMATION POUR DETERMINATION
@@ -64,21 +64,21 @@ function wdefca(ino, s, alpha, f0, frco,&
     if (ino .eq. 1) then
         wdefca = 0.0d0
         goto 999
-    endif
+    end if
 !
-    xref = - frco * alpha(ino) - frli * s(ino)
-    xref = 2.0d0 * xref
+    xref = -frco*alpha(ino)-frli*s(ino)
+    xref = 2.0d0*xref
     xref = dble(exp(xref))
 !
     wdefca = 0.0d0
     do i = 1, ino-1
-        xi = - frco * alpha(i) - frli * s(i)
+        xi = -frco*alpha(i)-frli*s(i)
         xi = dble(exp(xi))
-        xip1 = - frco * alpha(i+1) - frli * s(i+1)
+        xip1 = -frco*alpha(i+1)-frli*s(i+1)
         xip1 = dble(exp(xip1))
-        wdefca = wdefca + ( xi - xref/xi + xip1 - xref/xip1 ) / 2.0d0 * ( s(i+1) - s(i) )
+        wdefca = wdefca+(xi-xref/xi+xip1-xref/xip1)/2.0d0*(s(i+1)-s(i))
     end do
-    wdefca = wdefca * f0
+    wdefca = wdefca*f0
 !
 999 continue
 !

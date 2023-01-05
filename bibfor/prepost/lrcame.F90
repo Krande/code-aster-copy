@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
-                  option, param, typech, typen, npgma,&
-                  npgmm, nspmm, nbcmpv, ncmpva, ncmpvm,&
-                  iinst, numpt, numord, inst, crit,&
-                  prec, nomgd, ncmprf, jnocmp, chames,&
+subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
+                  option, param, typech, typen, npgma, &
+                  npgmm, nspmm, nbcmpv, ncmpva, ncmpvm, &
+                  iinst, numpt, numord, inst, crit, &
+                  prec, nomgd, ncmprf, jnocmp, chames, &
                   codret)
 !
     use as_med_module, only: as_med_open
@@ -65,20 +65,20 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-integer :: nrofic, typen
-integer :: ncmprf, jnocmp
-integer :: nbcmpv
-integer :: iinst, numpt, numord
-integer :: npgma(*), npgmm(*), nspmm(*)
-integer :: codret, codre2
-character(len=*) :: typech
-character(len=8) :: nomgd, nomaas
-character(len=8) :: crit, param
-character(len=19) :: chames, ligrel
-character(len=24) :: option
-character(len=*) :: nochmd, nomamd
-character(len=*) :: ncmpva, ncmpvm
-real(kind=8) :: inst, prec
+    integer :: nrofic, typen
+    integer :: ncmprf, jnocmp
+    integer :: nbcmpv
+    integer :: iinst, numpt, numord
+    integer :: npgma(*), npgmm(*), nspmm(*)
+    integer :: codret, codre2
+    character(len=*) :: typech
+    character(len=8) :: nomgd, nomaas
+    character(len=8) :: crit, param
+    character(len=19) :: chames, ligrel
+    character(len=24) :: option
+    character(len=*) :: nochmd, nomamd
+    character(len=*) :: ncmpva, ncmpvm
+    real(kind=8) :: inst, prec
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,9 +121,9 @@ real(kind=8) :: inst, prec
 !
     character(len=6), parameter :: nompro = 'LRCAME'
     integer :: typent, vali(4)
-    character(len=64), parameter :: ednopf=' '
-    integer, parameter :: ednoeu=3, edmail=0, edconn=1, ednoda=0
-    integer, parameter :: edlect=0, typnoe=0, ntypel=26, npgmax=27
+    character(len=64), parameter :: ednopf = ' '
+    integer, parameter :: ednoeu = 3, edmail = 0, edconn = 1, ednoda = 0
+    integer, parameter :: edlect = 0, typnoe = 0, ntypel = 26, npgmax = 27
     integer :: iaux, letype, vlib(3), vfic(3), iret
     med_idt :: idfimd, ifimed
     integer :: indpg(ntypel, npgmax)
@@ -169,10 +169,10 @@ real(kind=8) :: inst, prec
     nomprf = ' '
 !
     if (niv .gt. 1) then
-        write (ifm,101) 'DEBUT DE '//nompro
-        write (ifm,*) '.. NOM DU CHAMP A LIRE : ',nochmd
-    endif
-101 format(/,10('='),a,10('='),/)
+        write (ifm, 101) 'DEBUT DE '//nompro
+        write (ifm, *) '.. NOM DU CHAMP A LIRE : ', nochmd
+    end if
+101 format(/, 10('='), a, 10('='),/)
 !
 ! 1.2. ==> NOMS DES TABLEAUX DE TRAVAIL
 !
@@ -191,11 +191,11 @@ real(kind=8) :: inst, prec
         nofimd = 'fort.'//saux08
     else
         nofimd = kfic(1:200)
-    endif
+    end if
 !
     if (niv .gt. 1) then
-        write (ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',nofimd
-    endif
+        write (ifm, *) '<', nompro, '> NOM DU FICHIER MED : ', nofimd
+    end if
 !
 ! 1.4. ==> VERIFICATION DU FICHIER MED
 !
@@ -203,43 +203,43 @@ real(kind=8) :: inst, prec
 !
     call as_mficom(nofimd, hdfok, medok, codret)
     if (hdfok .eq. 0) then
-        saux08='mficom'
+        saux08 = 'mficom'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 ! 1.4.2. ==> VERIFICATION DE LA VERSION MED
 !
     if (medok .eq. 0) then
-        vali (1) = codret
+        vali(1) = codret
         call utmess('F+', 'MED_24')
         call as_mlbnuv(vlib(1), vlib(2), vlib(3), iret)
         if (iret .eq. 0) then
-            vali (1) = vlib(1)
-            vali (2) = vlib(2)
-            vali (3) = vlib(3)
+            vali(1) = vlib(1)
+            vali(2) = vlib(2)
+            vali(3) = vlib(3)
             call utmess('F+', 'MED_25', ni=3, vali=vali)
-        endif
+        end if
         call as_med_open(idfimd, nofimd, edlect, codret)
         call as_mfinvr(idfimd, vfic(1), vfic(2), vfic(3), iret)
         if (iret .eq. 0) then
             if (vfic(2) .eq. -1 .or. vfic(3) .eq. -1) then
                 call utmess('F+', 'MED_26')
             else
-                vali (1) = vfic(1)
-                vali (2) = vfic(2)
-                vali (3) = vfic(3)
+                vali(1) = vfic(1)
+                vali(2) = vfic(2)
+                vali(3) = vfic(3)
                 call utmess('F+', 'MED_27', ni=3, vali=vali)
-            endif
-            if (vfic(1) .lt. vlib(1) .or. ( vfic(1).eq.vlib(1) .and. vfic(2).lt.vlib(2) )&
-                .or.&
-                (&
-                vfic(1) .eq. vlib(1) .and. vfic( 2) .eq. vlib(2) .and. vfic(3) .eq. vlib(3)&
+            end if
+            if (vfic(1) .lt. vlib(1) .or. (vfic(1) .eq. vlib(1) .and. vfic(2) .lt. vlib(2)) &
+                .or. &
+                ( &
+                vfic(1) .eq. vlib(1) .and. vfic(2) .eq. vlib(2) .and. vfic(3) .eq. vlib(3) &
                 )) then
                 call utmess('F+', 'MED_28')
-            endif
-        endif
+            end if
+        end if
         call as_mficlo(idfimd, codret)
-    endif
+    end if
 !
 ! 1.5. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE CONCERNE
 !
@@ -248,11 +248,11 @@ real(kind=8) :: inst, prec
 !
     if (nomamd .eq. ' ') then
         ifimed = 0
-        call mdexpm(nofimd, ifimed, nomamd, existm, ndim,&
+        call mdexpm(nofimd, ifimed, nomamd, existm, ndim, &
                     codret)
-        if (.not.existm) then
+        if (.not. existm) then
             call utmess('F', 'MED_50', sk=nofimd)
-        endif
+        end if
 !
 ! 1.5.2. ==> C'EST UN MAILLAGE DESIGNE PAR UN NOM
 !            ON RECUPERE SA DIMENSION.
@@ -260,14 +260,14 @@ real(kind=8) :: inst, prec
     else
         iaux = 1
         ifimed = 0
-        call mdexma(nofimd, ifimed, nomamd, iaux, existm,&
+        call mdexma(nofimd, ifimed, nomamd, iaux, existm, &
                     ndim, codret)
-        if (.not.existm) then
+        if (.not. existm) then
             valk(1) = nomamd(1:24)
             valk(2) = nofimd(1:24)
             call utmess('F', 'MED_51', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     if (typech .eq. 'NOEU') then
         call dismoi('NB_NO_MAILLA', nomaas, 'MAILLAGE', repi=nbnoma)
@@ -275,12 +275,12 @@ real(kind=8) :: inst, prec
     else
         call dismoi('NB_MA_MAILLA', nomaas, 'MAILLAGE', repi=nbma)
         nbvato = nbma
-    endif
+    end if
 !
     if (niv .gt. 1) then
-        write (ifm,*) '.. NOM DU MAILLAGE MED ASSOCIE : ', nomamd
-        write (ifm,*) '   DE DIMENSION ', ndim
-    endif
+        write (ifm, *) '.. NOM DU MAILLAGE MED ASSOCIE : ', nomamd
+        write (ifm, *) '   DE DIMENSION ', ndim
+    end if
 !
 ! 2.2. ==> VERIFICATIONS DES COMPOSANTES ASTER DEMANDEES
 !          EN SORTIE, ON A :
@@ -293,25 +293,25 @@ real(kind=8) :: inst, prec
         call jeveuo(ncmpva, 'L', iaux)
     else
         iaux = 1
-    endif
+    end if
 !
-    if(nbcmpv > 0) then
-        AS_ALLOCATE(vk8 = cmpUserName, size = nbcmpv)
+    if (nbcmpv > 0) then
+        AS_ALLOCATE(vk8=cmpUserName, size=nbcmpv)
         do iCmp = 1, nbcmpv
             cmpUserName(iCmp) = zk8(iaux-1+iCmp)
         end do
     end if
-    AS_ALLOCATE(vk8 = cmpCataName, size = ncmprf)
+    AS_ALLOCATE(vk8=cmpCataName, size=ncmprf)
     do iCmp = 1, ncmprf
         cmpCataName(iCmp) = zk8(jnocmp-1+iCmp)
     end do
-    call utlicm(nomgd ,&
-                nbcmpv, cmpUserName,&
-                ncmprf, cmpCataName,&
-                ncmput, numcmp,&
+    call utlicm(nomgd, &
+                nbcmpv, cmpUserName, &
+                ncmprf, cmpCataName, &
+                ncmput, numcmp, &
                 ntncmp, ntucmp)
-    AS_DEALLOCATE(vk8 = cmpUserName)
-    AS_DEALLOCATE(vk8 = cmpCataName)
+    AS_DEALLOCATE(vk8=cmpUserName)
+    AS_DEALLOCATE(vk8=cmpCataName)
 !
 !====
 ! 2. OUVERTURE DU FICHIER EN LECTURE
@@ -319,16 +319,16 @@ real(kind=8) :: inst, prec
 !
     call as_med_open(idfimd, nofimd, edlect, codret)
     if (codret .ne. 0) then
-        saux08='mfiope'
+        saux08 = 'mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 ! 2.1. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
 !            DANS CATALOGUE
 !          . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 !          . VERIF COHERENCE AVEC LE CATALOGUE
 !
-    call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
+    call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                 modnum, nuanom, numnoa)
 !
 ! 2.1.1 ==> LE CHAMP EXISTE-T-IL DANS LE FICHIER ?
@@ -368,17 +368,17 @@ real(kind=8) :: inst, prec
             iaux = renumd(iaux)
             typent = typen
             tygeom = typgeo(iaux)
-        endif
+        end if
 !
 !       RECUPERE LE NOMBRE DE MAILLES DE TYPE TYGEOM
 
         ! incompatibilite (tygeom==0 <=> MED_NONE) et (edmail==0 <=> MED_CELL)
         ! => on saute pour eviter une Erreur d'appel de l'API dans MED
-        if (tygeom.eq.0.and.edmail.eq.0) then
+        if (tygeom .eq. 0 .and. edmail .eq. 0) then
             cycle
-        endif
+        end if
 
-        call as_mmhnme(idfimd, nomamd, edconn, edmail, tygeom,&
+        call as_mmhnme(idfimd, nomamd, edconn, edmail, tygeom, &
                        ednoda, nmatyp, codre2)
 !
         if (codre2 .eq. 0) then
@@ -388,8 +388,8 @@ real(kind=8) :: inst, prec
 !
             if (iinst .ne. 0) then
                 if (niv .gt. 1) then
-                    write (ifm,*) '.... INSTANT : ', inst
-                endif
+                    write (ifm, *) '.... INSTANT : ', inst
+                end if
                 call mdchin(nofimd, idfimd, nochmd, typent, tygeom, prefix, npas, codret)
                 if (npas .ne. 0) then
                     call jeveuo(prefix//'.INST', 'L', vr=vinst)
@@ -397,56 +397,56 @@ real(kind=8) :: inst, prec
                     logaux = ASTER_FALSE
                     do iaux2 = 1, npas
                         if (crit(1:4) .eq. 'RELA') then
-                            if (abs(vinst(iaux2)-inst) .le. abs( prec*inst)) then
+                            if (abs(vinst(iaux2)-inst) .le. abs(prec*inst)) then
                                 logaux = ASTER_TRUE
-                            endif
-                        else if (crit(1:4).eq.'ABSO') then
-                            if (abs(vinst(iaux2)-inst) .le. abs( prec)) then
+                            end if
+                        else if (crit(1:4) .eq. 'ABSO') then
+                            if (abs(vinst(iaux2)-inst) .le. abs(prec)) then
                                 logaux = ASTER_TRUE
-                            endif
-                        endif
+                            end if
+                        end if
                         if (logaux) then
                             numpt = nume(1+2*iaux2-2)
                             numord = nume(1+2*iaux2-1)
                             goto 222
-                        endif
-                    enddo
-                    valk (1) = nofimd(1:24)
-                    valk (2) = nochmd(1:24)
+                        end if
+                    end do
+                    valk(1) = nofimd(1:24)
+                    valk(2) = nochmd(1:24)
                     valr = inst
-                    vali (1) = typent
-                    vali (2) = typgeo(1)
+                    vali(1) = typent
+                    vali(2) = typgeo(1)
                     call utmess('A', 'MED_97', nk=2, valk=valk, ni=2, vali=vali, sr=valr)
                     call utmess('A', 'MED_52')
                     goto 22
 222                 continue
                     if (niv .gt. 1) then
-                        valk (1) = nochmd(1:24)
-                        vali (1) = typent
-                        vali (2) = typgeo(1)
-                        vali (3) = numord
-                        vali (4) = numpt
+                        valk(1) = nochmd(1:24)
+                        vali(1) = typent
+                        vali(2) = typgeo(1)
+                        vali(3) = numord
+                        vali(4) = numpt
                         valr = inst
-                        call utmess('I', 'MED_86', sk=valk(1), ni=4, vali=vali,&
+                        call utmess('I', 'MED_86', sk=valk(1), ni=4, vali=vali, &
                                     sr=valr)
-                    endif
+                    end if
                     call jedetr(prefix//'.INST')
                     call jedetr(prefix//'.NUME')
-                endif
-            endif
+                end if
+            end if
 !
 ! 2.2.3. ==> RECHERCHE DES COMPOSANTES
 !
             call codent(letype, 'G', k2bid)
             nmcmfl = '&&'//nompro//'.NOMCMP_FICHIE'//k2bid
 !
-            call mdexch(nofimd, idfimd, nochmd, numpt, numord,&
-                        nbcmpv, ncmpvm, nbvato, typent, tygeom,&
-                        existc, nbcmfi, nmcmfl, nbval, nbprof,&
+            call mdexch(nofimd, idfimd, nochmd, numpt, numord, &
+                        nbcmpv, ncmpvm, nbvato, typent, tygeom, &
+                        existc, nbcmfi, nmcmfl, nbval, nbprof, &
                         codret)
             if (existc .ge. 3) then
                 existt = ASTER_TRUE
-                nbtylu = nbtylu + 1
+                nbtylu = nbtylu+1
                 nmcmfi(nbtylu) = nmcmfl
                 if (typech(1:4) .ne. 'NOEU') then
                     lypent(nbtylu) = typent
@@ -455,47 +455,47 @@ real(kind=8) :: inst, prec
                     ltyp(nbtylu) = iaux
                     nbty(nbtylu) = nmatyp
                     lnbpro(nbtylu) = nbprof
-                endif
-            endif
+                end if
+            end if
 !
 !       ENDIF <<< IF ( CODRE2.EQ.0 )
-        endif
+        end if
 !       INCREMENTE LE NUMERO INITIAL DES MAILLES DU TYPE SUIVANT
         if (nmatyp .gt. 0) then
-            numma = numma + nmatyp
-        endif
+            numma = numma+nmatyp
+        end if
 22      continue
-    enddo
+    end do
 !
 ! 2.3. ==> IL MANQUE DES CHOSES !
 !
-    if (.not.existt) then
-        valk (1) = nofimd(1:64)
-        valk (2) = nochmd(1:64)
+    if (.not. existt) then
+        valk(1) = nofimd(1:64)
+        valk(2) = nochmd(1:64)
         call utmess('A+', 'MED_98', nk=2, valk=valk)
         if (iinst .ne. 0) then
             valr = inst
             call utmess('A+', 'MED_68', sr=valr)
         else
-            vali (1) = numord
-            vali (2) = numpt
+            vali(1) = numord
+            vali(2) = numpt
             call utmess('A+', 'MED_69', ni=2, vali=vali)
-        endif
+        end if
         if (existc .eq. 0) then
             call utmess('A', 'MED_32')
-        else if (existc.eq.1) then
+        else if (existc .eq. 1) then
             call utmess('A', 'MED_33')
-        else if (existc.eq.2) then
+        else if (existc .eq. 2) then
             if (iinst .ne. 0) then
                 call utmess('A', 'MED_34')
             else
                 call utmess('A', 'MED_35')
-            endif
-        else if (existc.eq.4) then
+            end if
+        else if (existc .eq. 4) then
             call utmess('A', 'MED_36')
-        endif
+        end if
         call utmess('F', 'MED_37')
-    endif
+    end if
 !
 !====
 ! 0. TRAITEMENT PARTICULIER POUR LES CHAMPS ELGA
@@ -507,12 +507,12 @@ real(kind=8) :: inst, prec
 !
     do i = 1, ntypel
         do j = 1, npgmax
-            indpg(i,j)=0
+            indpg(i, j) = 0
         end do
     end do
 !
     if (typech(1:4) .eq. 'NOEU') then
-        call cnscre(nomaas, nomgd, ncmprf, zk8(jnocmp), 'V',&
+        call cnscre(nomaas, nomgd, ncmprf, zk8(jnocmp), 'V', &
                     chames)
 !
         call jeveuo(chames//'.CNSD', 'L', adsd)
@@ -520,25 +520,25 @@ real(kind=8) :: inst, prec
         call jeveuo(chames//'.CNSL', 'E', adsl)
     else
         if (typech(1:4) .eq. 'ELGA') then
-            call lrmpga(nrofic, ligrel, nochmd, nbma, npgma,&
-                        npgmm, nspmm, ntypel, npgmax, indpg,&
+            call lrmpga(nrofic, ligrel, nochmd, nbma, npgma, &
+                        npgmm, nspmm, ntypel, npgmax, indpg, &
                         numpt, numord, option, param)
-            call cescre('V', chames, typech, nomaas, nomgd,&
+            call cescre('V', chames, typech, nomaas, nomgd, &
                         ncmprf, zk8(jnocmp), npgma, nspmm, [-ncmprf])
-        else if (typech(1:4).eq.'CART') then
-            call cescre('V', chames, 'ELEM', nomaas, nomgd,&
+        else if (typech(1:4) .eq. 'CART') then
+            call cescre('V', chames, 'ELEM', nomaas, nomgd, &
                         ncmprf, zk8(jnocmp), [-1], [-1], [-ncmprf])
-        else if (typech(1:4).eq.'ELNO'.or.typech(1:4).eq.'ELEM') then
-            call cescre('V', chames, typech, nomaas, nomgd,&
+        else if (typech(1:4) .eq. 'ELNO' .or. typech(1:4) .eq. 'ELEM') then
+            call cescre('V', chames, typech, nomaas, nomgd, &
                         ncmprf, zk8(jnocmp), [-1], [-1], [-ncmprf])
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
         call jeveuo(chames//'.CESD', 'L', adsd)
         call jeveuo(chames//'.CESV', 'E', adsv)
         call jeveuo(chames//'.CESL', 'E', adsl)
-    endif
+    end if
 !
 !=====================================================================
 ! 3. TRAITEMENT DES CHAMPS AUX NOEUDS                             ====
@@ -552,8 +552,8 @@ real(kind=8) :: inst, prec
 !
         typent = typen
         tygeom = typnoe
-        call lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
-                    numord, typent, tygeom, 1, ntvale,&
+        call lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt, &
+                    numord, typent, tygeom, 1, ntvale, &
                     nomprf, codret)
 !
 !====
@@ -564,14 +564,14 @@ real(kind=8) :: inst, prec
             lgproa = 0
         else
             call lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
-        endif
+        end if
 !
 !====
 ! 3.3   TRANFERT DES VALEURS
 !====
 !
-        call lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf,&
-                    zk8( jnocmp), nbcmfi, nmcmfi(1), nbcmpv, ncmpvm,&
+        call lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf, &
+                    zk8(jnocmp), nbcmfi, nmcmfi(1), nbcmpv, ncmpvm, &
                     numcmp, nochmd, adsl, adsv, codret)
 !
     else
@@ -590,28 +590,28 @@ real(kind=8) :: inst, prec
 !       - POUR UN ELEM : 1
 !       - POUR UN ELGA : VARIABLE (INFO PRESENTE DANS LE TABLEAU NPGMA)
 !
-        ASSERT( zi(adsd).eq.nbma )
+        ASSERT(zi(adsd) .eq. nbma)
         call jeveuo(nomaas(1:8)//'.TYPMAIL', 'L', vi=typmail)
 !
-        do letype = 1 , nbtylu
+        do letype = 1, nbtylu
 !
             nbprof = lnbpro(nbtylu)
             do iprof = 1, nbprof
-                nbnoma=1
+                nbnoma = 1
                 if (typech(1:4) .eq. 'ELNO') then
                     nbnoma = nnotyp(ltyp(letype))
-                endif
+                end if
                 if (niv .gt. 1) then
-                    write (ifm,*) '.... NBNOMA : ', nbnoma
-                endif
+                    write (ifm, *) '.... NBNOMA : ', nbnoma
+                end if
 !
 !====
 ! 4.0   LECTURE DES VALEURS
 !====
 !
                 call jedetr(ntvale)
-                call lrcmle(idfimd, nochmd, nbcmfi, nlyval(letype), numpt,&
-                            numord, lypent(letype), lygeom(letype), iprof, ntvale,&
+                call lrcmle(idfimd, nochmd, nbcmfi, nlyval(letype), numpt, &
+                            numord, lypent(letype), lygeom(letype), iprof, ntvale, &
                             nomprf, codret)
 !
 !====
@@ -625,7 +625,7 @@ real(kind=8) :: inst, prec
                     call lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
                     call jeveuo(ntproa, 'L', jntpro)
                     call jelira(ntproa, 'LONMAX', lgprof)
-                endif
+                end if
 !
 !====
 ! 4.2   VECTEUR CONTENANT LES NUMEROS DES MAILLES POUR CE TYPE
@@ -638,69 +638,69 @@ real(kind=8) :: inst, prec
                 call jeexin(ligrel//'.LGRF', iret)
                 if (iret .ne. 0) then
                     call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-                    modele=lgrf(2)
+                    modele = lgrf(2)
                     call jeveuo(modele//'.MAILLE', 'L', jmaill)
                 else
-                    jmaill=0
-                endif
+                    jmaill = 0
+                end if
 !
-                call wkvect('&&'//nompro//'.NUM.'//nomtyp(ltyp(letype)),&
+                call wkvect('&&'//nompro//'.NUM.'//nomtyp(ltyp(letype)), &
                             'V V I', nbty(letype), jnumty)
-                k=0
+                k = 0
                 if (lgproa .eq. 0) then
                     do ima = 1, nbma
                         if (typmail(ima) .eq. ltyp(letype)) then
-                            if ( jmaill .eq. 0 ) then
-                                k=k+1
-                                zi(jnumty+k-1)=ima
-                            else if( zi(jmaill+ ima-1).ne.0 ) then
-                                k=k+1
-                                zi(jnumty+k-1)=ima
-                            endif
-                        endif
+                            if (jmaill .eq. 0) then
+                                k = k+1
+                                zi(jnumty+k-1) = ima
+                            else if (zi(jmaill+ima-1) .ne. 0) then
+                                k = k+1
+                                zi(jnumty+k-1) = ima
+                            end if
+                        end if
                     end do
                     if (k .ne. nbty(letype)) then
                         call utmess('F', 'MED_58')
-                    endif
+                    end if
                 else
-                    k=0
-                    cptyma=1
+                    k = 0
+                    cptyma = 1
                     do ima = 1, nbma
                         if (typmail(ima) .eq. ltyp(letype)) then
                             if (zi(jntpro+k) .eq. cptyma) then
-                                if ( jmaill .eq. 0 ) then
-                                    k=k+1
-                                    zi(jnumty+k-1)=ima
-                                else if( zi(jmaill+ ima-1).ne.0 ) then
-                                    k=k+1
-                                    zi(jnumty+k-1)=ima
-                                endif
-                            endif
-                            cptyma=cptyma+1
-                        endif
+                                if (jmaill .eq. 0) then
+                                    k = k+1
+                                    zi(jnumty+k-1) = ima
+                                else if (zi(jmaill+ima-1) .ne. 0) then
+                                    k = k+1
+                                    zi(jnumty+k-1) = ima
+                                end if
+                            end if
+                            cptyma = cptyma+1
+                        end if
                     end do
                     if (k .ne. lgprof) then
                         call utmess('F', 'MED_58')
-                    endif
-                endif
+                    end if
+                end if
 !
 !====
 ! 4.3   TRANFERT DES VALEURS
 !====
 !
                 lrenum = ASTER_FALSE
-                if ( modnum(ltyp(letype)).eq.1 ) lrenum = ASTER_TRUE
-                call lrcmve(ntvale, nbty(letype), nbnoma, ntproa, lgproa,&
-                            ncmprf, zk8(jnocmp), ntypel, npgmax, indpg,&
-                            nbcmfi, nmcmfi(letype), nbcmpv, ncmpvm, numcmp,&
-                            jnumty, nochmd, nbma, npgma, npgmm,&
-                            nspmm, typech, ltyp(letype), adsl, adsv,&
+                if (modnum(ltyp(letype)) .eq. 1) lrenum = ASTER_TRUE
+                call lrcmve(ntvale, nbty(letype), nbnoma, ntproa, lgproa, &
+                            ncmprf, zk8(jnocmp), ntypel, npgmax, indpg, &
+                            nbcmfi, nmcmfi(letype), nbcmpv, ncmpvm, numcmp, &
+                            jnumty, nochmd, nbma, npgma, npgmm, &
+                            nspmm, typech, ltyp(letype), adsl, adsv, &
                             adsd, lrenum, nuanom, codret)
                 call jedetr('&&'//nompro//'.NUM.'//nomtyp(ltyp(letype)))
 !
-            enddo
-        enddo
-    endif
+            end do
+        end do
+    end if
 !
 !====
 ! 5. FIN
@@ -710,9 +710,9 @@ real(kind=8) :: inst, prec
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='mficlo'
+        saux08 = 'mficlo'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 ! 5.2. ==> MENAGE
 !
@@ -725,11 +725,11 @@ real(kind=8) :: inst, prec
     do letype = 0, nbtyp
         call codent(letype, 'G', k2bid)
         call jedetr('&&'//nompro//'.NOMCMP_FICHIE'//k2bid)
-    enddo
+    end do
 !
     if (niv .gt. 1) then
-        write (ifm,101) 'FIN DE '//nompro
-    endif
+        write (ifm, 101) 'FIN DE '//nompro
+    end if
     call jedema()
 !
 end subroutine

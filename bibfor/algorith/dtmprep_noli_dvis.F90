@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,9 +67,9 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/as_allocate.h"
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in) :: sd_dtm_
-    character(len=*) , intent(in) :: sd_nl_
-    integer          , intent(in) :: icomp
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_nl_
+    integer, intent(in) :: icomp
 !
 !   -0.2- Local variables
     aster_logical     :: lnoeu2
@@ -92,22 +92,22 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     character(len=19) :: nomres
     character(len=24) :: nl_title
 !
-    integer     , pointer       :: ddlcho(:)         => null()
-    real(kind=8), pointer       :: coor_no1(:)       => null()
-    real(kind=8), pointer       :: coor_no2(:)       => null()
-    real(kind=8), pointer       :: vale(:)           => null()
+    integer, pointer       :: ddlcho(:) => null()
+    real(kind=8), pointer       :: coor_no1(:) => null()
+    real(kind=8), pointer       :: coor_no2(:) => null()
+    real(kind=8), pointer       :: vale(:) => null()
     real(kind=8), pointer       :: sincos_angle_a(:) => null()
     real(kind=8), pointer       :: sincos_angle_b(:) => null()
     real(kind=8), pointer       :: sincos_angle_g(:) => null()
-    real(kind=8), pointer       :: defmod1(:)        => null()
-    real(kind=8), pointer       :: defmod2(:)        => null()
-    real(kind=8), pointer       :: ps2del1(:)        => null()
-    real(kind=8), pointer       :: ps2del2(:)        => null()
-    real(kind=8), pointer       :: origob(:)         => null()
-    real(kind=8), pointer       :: bmodal_v(:)       => null()
-    real(kind=8), pointer       :: ps1del_v(:)       => null()
+    real(kind=8), pointer       :: defmod1(:) => null()
+    real(kind=8), pointer       :: defmod2(:) => null()
+    real(kind=8), pointer       :: ps2del1(:) => null()
+    real(kind=8), pointer       :: ps2del2(:) => null()
+    real(kind=8), pointer       :: origob(:) => null()
+    real(kind=8), pointer       :: bmodal_v(:) => null()
+    real(kind=8), pointer       :: ps1del_v(:) => null()
 !
-    character(len=8) , pointer  :: noeud(:)          => null()
+    character(len=8), pointer  :: noeud(:) => null()
 !
 #define ps1del(m,n) ps1del_v((n-1)*neq+m)
 #define bmodal(m,n) bmodal_v((n-1)*neq+m)
@@ -116,15 +116,15 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     call jemarq()
 !
     sd_dtm = sd_dtm_
-    sd_nl  = sd_nl_
+    sd_nl = sd_nl_
 !
     lnoeu2 = .false.
     one = 1.d0
- !
+    !
     motfac = 'COMPORTEMENT'
     call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
-    nbnoli = mxlevel + 1
-    i = mxlevel + 1
+    nbnoli = mxlevel+1
+    i = mxlevel+1
 !
     call infmaj()
     call infniv(ibid, info)
@@ -138,7 +138,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
 !
 !   --- 1.1 - Case with a simple modal projection (direct calculation)
     if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
-        call dismoi('NOM_MAILLA' , nume , 'NUME_DDL' , repk=mesh)
+        call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=mesh)
         mesh1 = mesh
         nume1 = nume
         mesh2 = mesh
@@ -148,7 +148,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
 
 !   --- 1.2 - Case with double (or triple) projections (sub-structuring case)
 !             Not supported for buckling non linearities
-    else if (typnum(1:13).eq.'NUME_DDL_GENE') then
+    else if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
         call utmess('F', 'ALGORITH5_36')
     else
         ASSERT(.false.)
@@ -166,12 +166,12 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     limocl(2) = 'NOEUD_1'
     tymocl(1) = 'GROUP_NO'
     tymocl(2) = 'NOEUD'
-    call reliem(' ', mesh1, typem, motfac, icomp,&
+    call reliem(' ', mesh1, typem, motfac, icomp, &
                 nbmcl, limocl, tymocl, sd_nl//'.INDI_NO1.TEMP', nbno1)
 !
-    if (nbno1.gt.0) then
-        ASSERT(nbno1.eq.1)
-        call jeveuo(sd_nl//'.INDI_NO1.TEMP','L', vk8=noeud)
+    if (nbno1 .gt. 0) then
+        ASSERT(nbno1 .eq. 1)
+        call jeveuo(sd_nl//'.INDI_NO1.TEMP', 'L', vk8=noeud)
         no1_name = noeud(1)
         call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=no1_name)
         call jedetr(sd_nl//'.INDI_NO1.TEMP')
@@ -180,12 +180,12 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
         nbmcl = 2
         limocl(1) = 'GROUP_NO_2'
         limocl(2) = 'NOEUD_2'
-        call reliem(' ', mesh2, typem, motfac, icomp,&
+        call reliem(' ', mesh2, typem, motfac, icomp, &
                     nbmcl, limocl, tymocl, sd_nl//'.INDI_NO2.TEMP', nbno2)
 
-        if (nbno2.gt.0) then
-            ASSERT(nbno2.eq.1)
-            call jeveuo(sd_nl//'.INDI_NO2.TEMP','L', vk8=noeud)
+        if (nbno2 .gt. 0) then
+            ASSERT(nbno2 .eq. 1)
+            call jeveuo(sd_nl//'.INDI_NO2.TEMP', 'L', vk8=noeud)
             no2_name = noeud(1)
             call nlsav(sd_nl, _NO2_NAME, 1, iocc=i, kscal=no2_name)
             call jedetr(sd_nl//'.INDI_NO2.TEMP')
@@ -206,7 +206,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
 !   --- Loop over the detected nonlineary in the current COMPORTEMENT
 !       occurence
 !
-    call nlsav(sd_nl, _NL_TYPE , 1, iocc=i, iscal=NL_DIS_VISC)
+    call nlsav(sd_nl, _NL_TYPE, 1, iocc=i, iscal=NL_DIS_VISC)
 !
 !   --- 3.1 - DOF numbering localisation index for the concerned nodes
     call mdchdl(lnoeu2, i, ddlcho, ier)
@@ -237,27 +237,27 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _DISVISC_K1, 1, iocc=i, rscal=1.0d0/r8bid)
     else
         call getvr8(motfac, 'UNSUR_K1', iocc=icomp, scal=r8bid, nbret=n1)
-        ASSERT( n1.eq.1 )
+        ASSERT(n1 .eq. 1)
         call nlsav(sd_nl, _DISVISC_K1, 1, iocc=i, rscal=r8bid)
-    endif
+    end if
 
     call getvr8(motfac, 'K2', iocc=icomp, scal=r8bid, nbret=n1)
     if (n1 .eq. 1) then
         call nlsav(sd_nl, _DISVISC_K2, 1, iocc=i, rscal=r8bid)
     else
         call getvr8(motfac, 'UNSUR_K2', iocc=icomp, scal=r8bid, nbret=n1)
-        ASSERT( n1.eq.1 )
+        ASSERT(n1 .eq. 1)
         call nlsav(sd_nl, _DISVISC_K2, 1, iocc=i, rscal=1.0d0/r8bid)
-    endif
+    end if
 
     call getvr8(motfac, 'K3', iocc=icomp, scal=r8bid, nbret=n1)
     if (n1 .eq. 1) then
         call nlsav(sd_nl, _DISVISC_K3, 1, iocc=i, rscal=1.0d0/r8bid)
     else
         call getvr8(motfac, 'UNSUR_K3', iocc=icomp, scal=r8bid, nbret=n1)
-        ASSERT( n1.eq.1 )
+        ASSERT(n1 .eq. 1)
         call nlsav(sd_nl, _DISVISC_K3, 1, iocc=i, rscal=r8bid)
-    endif
+    end if
 
     call getvr8(motfac, 'C', iocc=icomp, scal=dv_c, nbret=n1)
     call nlsav(sd_nl, _DISVISC_C, 1, iocc=i, rscal=dv_c)
@@ -272,7 +272,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     r8bid = (dv_k1+dv_k2*dv_k1*dv_k3+dv_k3)
     if (r8bid .le. r8miem()) then
         call utmess('F', 'DISCRETS_41')
-    endif
+    end if
     call getvis(motfac, 'ITER_INTE_MAXI', iocc=icomp, scal=vali, nbret=n1)
     call nlsav(sd_nl, _MAX_INTE, 1, iocc=i, iscal=vali)
 
@@ -292,7 +292,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     r8bid = axe(1)**2+axe(2)**2+axe(3)**2
     if (r8bid .le. r8miem()) then
         call utmess('F', 'DISCRETS_43')
-    endif
+    end if
 
     call angvx(axe, alpha, beta)
     call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=i, rvect=[sin(alpha), cos(alpha)])
@@ -322,27 +322,27 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     dpiglo(1) = coor_no1(1)
     dpiglo(2) = coor_no1(2)
     dpiglo(3) = coor_no1(3)
-    call gloloc(dpiglo, origob, sina, cosa, sinb,&
+    call gloloc(dpiglo, origob, sina, cosa, sinb, &
                 cosb, sing, cosg, dpiloc)
 !   --- Differential distance given a single node
     ddpilo(1) = dpiloc(1)
     ddpilo(2) = dpiloc(2)
     ddpilo(3) = dpiloc(3)
 !
-    if (obst_typ(1:2).eq.'BI') then
+    if (obst_typ(1:2) .eq. 'BI') then
 !       --- Initial position of node 2 in the local (obstacle) reference
         call nlget(sd_nl, _COOR_NO2, iocc=i, vr=coor_no2)
         dpiglo(4) = coor_no2(1)
         dpiglo(5) = coor_no2(2)
         dpiglo(6) = coor_no2(3)
-        call gloloc(dpiglo(4), origob, sina, cosa, sinb,&
+        call gloloc(dpiglo(4), origob, sina, cosa, sinb, &
                     cosb, sing, cosg, dpiloc(4))
 !   --- Differential coordinates (distance) for the binodal system
         ddpilo(1) = dpiloc(1)-dpiloc(4)
         ddpilo(2) = dpiloc(2)-dpiloc(5)
         ddpilo(3) = dpiloc(3)-dpiloc(6)
-    endif
-    call nlsav(sd_nl, _SIGN_DYZ, 2, iocc=i, rvect=[-sign(one,ddpilo(2)), -sign(one,ddpilo(3))])
+    end if
+    call nlsav(sd_nl, _SIGN_DYZ, 2, iocc=i, rvect=[-sign(one, ddpilo(2)), -sign(one, ddpilo(3))])
 !
 !
 !   --- 3.5 - Printing out user information
@@ -359,27 +359,27 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
         if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
             call nlget(sd_nl, _SS2_NAME, iocc=i, kscal=valk(1))
             call utmess('I', 'ALGORITH16_3', sk=valk(1))
-        endif
+        end if
         call nlget(sd_nl, _COOR_NO2, iocc=i, rvect=valr)
         call utmess('I', 'ALGORITH16_4', nr=3, valr=valr)
 
-        valr(1)  = 0.d0
-        valr(2)  = origob(1)
-        valr(3)  = origob(2)
-        valr(4)  = origob(3)
-        valr(5)  = sincos_angle_a(1)
-        valr(6)  = sincos_angle_a(2)
-        valr(7)  = sincos_angle_b(1)
-        valr(8)  = sincos_angle_b(2)
-        valr(9)  = sincos_angle_g(1)
+        valr(1) = 0.d0
+        valr(2) = origob(1)
+        valr(3) = origob(2)
+        valr(4) = origob(3)
+        valr(5) = sincos_angle_a(1)
+        valr(6) = sincos_angle_a(2)
+        valr(7) = sincos_angle_b(1)
+        valr(8) = sincos_angle_b(2)
+        valr(9) = sincos_angle_g(1)
         valr(10) = sincos_angle_g(2)
         call utmess('I', 'ALGORITH16_8', nr=10, valr=valr)
 
-        valr (1) = 0.d0
+        valr(1) = 0.d0
         call utmess('I', 'ALGORITH16_9', sr=valr(1))
 
         call utmess('I', 'VIDE_1')
-    endif
+    end if
 !
 !   -- 3.6 - Modal displacements of the node(s)
 !            Note : if a single node is used, we fill with zeros the
@@ -391,52 +391,52 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     call nlinivec(sd_nl, _MODAL_DEPL_NO2, 3*nbmode, iocc=i, vr=defmod2)
 
     do j = 1, nbmode
-        defmod1(3*(j-1)+1) = bmodal(ddlcho(1),j)
-        defmod1(3*(j-1)+2) = bmodal(ddlcho(2),j)
-        defmod1(3*(j-1)+3) = bmodal(ddlcho(3),j)
+        defmod1(3*(j-1)+1) = bmodal(ddlcho(1), j)
+        defmod1(3*(j-1)+2) = bmodal(ddlcho(2), j)
+        defmod1(3*(j-1)+3) = bmodal(ddlcho(3), j)
 
-        if (obst_typ(1:2).eq.'BI') then
-            defmod2(3*(j-1)+1) = bmodal(ddlcho(4),j)
-            defmod2(3*(j-1)+2) = bmodal(ddlcho(5),j)
-            defmod2(3*(j-1)+3) = bmodal(ddlcho(6),j)
+        if (obst_typ(1:2) .eq. 'BI') then
+            defmod2(3*(j-1)+1) = bmodal(ddlcho(4), j)
+            defmod2(3*(j-1)+2) = bmodal(ddlcho(5), j)
+            defmod2(3*(j-1)+3) = bmodal(ddlcho(6), j)
         else
             defmod2(3*(j-1)+1) = 0.d0
             defmod2(3*(j-1)+2) = 0.d0
             defmod2(3*(j-1)+3) = 0.d0
-        endif
-    enddo
+        end if
+    end do
 !
 !   --- 3.7 - Multi supported systems, filling up of psixdelta for the
 !             concerned nodes
     call dtmget(sd_dtm, _MULTI_AP, kscal=monmot)
     if (monmot(1:3) .eq. 'OUI') then
-        call dtmget(sd_dtm, _CALC_SD , kscal=nomres)
+        call dtmget(sd_dtm, _CALC_SD, kscal=nomres)
         call dtmget(sd_dtm, _NB_EXC_T, iscal=nexcit)
         call jeveuo(nomres//'.IPSD', 'E', vr=ps1del_v)
 
         call nlinivec(sd_nl, _PSI_DELT_NO1, 3*nexcit, iocc=i, vr=ps2del1)
         do j = 1, nexcit
-            ps2del1(3*(j-1)+1) = ps1del(ddlcho(1),j)
-            ps2del1(3*(j-1)+2) = ps1del(ddlcho(2),j)
-            ps2del1(3*(j-1)+3) = ps1del(ddlcho(3),j)
-        enddo
-        if (obst_typ(1:2).eq.'BI') then
+            ps2del1(3*(j-1)+1) = ps1del(ddlcho(1), j)
+            ps2del1(3*(j-1)+2) = ps1del(ddlcho(2), j)
+            ps2del1(3*(j-1)+3) = ps1del(ddlcho(3), j)
+        end do
+        if (obst_typ(1:2) .eq. 'BI') then
             call nlinivec(sd_nl, _PSI_DELT_NO2, 3*nexcit, iocc=i, vr=ps2del2)
             do j = 1, nexcit
-                ps2del2(3*(j-1)+1) = ps1del(ddlcho(4),j)
-                ps2del2(3*(j-1)+2) = ps1del(ddlcho(5),j)
-                ps2del2(3*(j-1)+3) = ps1del(ddlcho(6),j)
+                ps2del2(3*(j-1)+1) = ps1del(ddlcho(4), j)
+                ps2del2(3*(j-1)+2) = ps1del(ddlcho(5), j)
+                ps2del2(3*(j-1)+3) = ps1del(ddlcho(6), j)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !   --- 4 - Updating indices for sd_nl and sd_dtm
     call nlsav(sd_nl, _MAX_LEVEL, 1, iscal=nbnoli)
     call dtmsav(sd_dtm, _NB_NONLI, 1, iscal=nbnoli)
 !
-    call nlget(sd_nl, _NB_DIS_VISC, iscal = nbdisv)
-    nbdisv = nbdisv + 1
-    call nlsav(sd_nl, _NB_DIS_VISC, 1, iscal = nbdisv)
+    call nlget(sd_nl, _NB_DIS_VISC, iscal=nbdisv)
+    nbdisv = nbdisv+1
+    call nlsav(sd_nl, _NB_DIS_VISC, 1, iscal=nbdisv)
 !
     AS_DEALLOCATE(vi=ddlcho)
 !

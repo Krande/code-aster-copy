@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmEvalPermLiquGaz(ds_thm ,&
-                              j_mater, satur       , p2, temp,&
-                              krl    , dkrl_dsatur ,&
-                              krg_   , dkrg_dsatur_, dkrg_dp2_)
+subroutine thmEvalPermLiquGaz(ds_thm, &
+                              j_mater, satur, p2, temp, &
+                              krl, dkrl_dsatur, &
+                              krg_, dkrg_dsatur_, dkrg_dp2_)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,11 +32,11 @@ implicit none
 #include "asterfort/permvg.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: satur, p2, temp
-real(kind=8), intent(out) :: krl, dkrl_dsatur
-real(kind=8), optional, intent(out) :: krg_, dkrg_dsatur_, dkrg_dp2_
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: j_mater
+    real(kind=8), intent(in) :: satur, p2, temp
+    real(kind=8), intent(out) :: krl, dkrl_dsatur
+    real(kind=8), optional, intent(out) :: krg_, dkrg_dsatur_, dkrg_dp2_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,75 +66,75 @@ real(kind=8), optional, intent(out) :: krg_, dkrg_dsatur_, dkrg_dp2_
     integer, parameter :: nb_resu = 5
     integer :: icodre(nb_resu)
     real(kind=8) :: resu_vale(nb_resu)
-    character(len=16), parameter :: resu_name(nb_resu) = (/'PERM_LIQU       ','D_PERM_LIQU_SATU',&
-                                                           'PERM_GAZ        ','D_PERM_SATU_GAZ ',&
+    character(len=16), parameter :: resu_name(nb_resu) = (/'PERM_LIQU       ', 'D_PERM_LIQU_SATU', &
+                                                           'PERM_GAZ        ', 'D_PERM_SATU_GAZ ', &
                                                            'D_PERM_PRES_GAZ '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    krl          = 0.d0
-    dkrl_dsatur  = 0.d0
-    krg          = 0.d0
-    dkrg_dsatur  = 0.d0
-    dkrg_dp2     = 0.d0
+    krl = 0.d0
+    dkrl_dsatur = 0.d0
+    krg = 0.d0
+    dkrg_dsatur = 0.d0
+    dkrg_dp2 = 0.d0
     resu_vale(:) = 0.d0
     para_vale(:) = 0.d0
 !
     if (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_VGM') then
-        call permvg(ds_thm, satur,&
-                    krl   , dkrl_dsatur, krg_, dkrg_dsatur_)
+        call permvg(ds_thm, satur, &
+                    krl, dkrl_dsatur, krg_, dkrg_dsatur_)
         dkrg_dp2_ = 0.d0
     else if (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_VGC') then
-        call permvc(ds_thm, satur,&
-                    krl   , dkrl_dsatur, krg_, dkrg_dsatur_)
+        call permvc(ds_thm, satur, &
+                    krl, dkrl_dsatur, krg_, dkrg_dsatur_)
         dkrg_dp2_ = 0.d0
     else if ((ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_UTIL') &
-    .or. (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_TABBAL')) then
+             .or. (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_TABBAL')) then
         para_vale(1) = satur
         para_vale(2) = p2
         para_vale(3) = temp
         if (present(krg_)) then
-            call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        nb_para, para_name, para_vale  ,&
-                        nb_resu, resu_name, resu_vale  ,&
-                        icodre , 1        )
-            krl          = resu_vale(1)
-            dkrl_dsatur  = resu_vale(2)
-            krg_         = resu_vale(3)
+            call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                        nb_para, para_name, para_vale, &
+                        nb_resu, resu_name, resu_vale, &
+                        icodre, 1)
+            krl = resu_vale(1)
+            dkrl_dsatur = resu_vale(2)
+            krg_ = resu_vale(3)
             dkrg_dsatur_ = resu_vale(4)
-            dkrg_dp2_     = resu_vale(5)
+            dkrg_dp2_ = resu_vale(5)
         else
-            call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        nb_para, para_name, para_vale  ,&
-                        2      , resu_name, resu_vale  ,&
-                        icodre , 1        )
-            krl          = resu_vale(1)
-            dkrl_dsatur  = resu_vale(2)
-        endif
+            call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                        nb_para, para_name, para_vale, &
+                        2, resu_name, resu_vale, &
+                        icodre, 1)
+            krl = resu_vale(1)
+            dkrl_dsatur = resu_vale(2)
+        end if
     else if (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_ENDO') then
         para_vale(1) = satur
         para_vale(2) = p2
         para_vale(3) = temp
         if (present(krg_)) then
-            call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        nb_para, para_name, para_vale  ,&
-                        nb_resu, resu_name, resu_vale  ,&
-                        icodre , 1        )
-            krl          = resu_vale(1)
-            dkrl_dsatur  = resu_vale(2)
-            krg_         = resu_vale(3)
+            call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                        nb_para, para_name, para_vale, &
+                        nb_resu, resu_name, resu_vale, &
+                        icodre, 1)
+            krl = resu_vale(1)
+            dkrl_dsatur = resu_vale(2)
+            krg_ = resu_vale(3)
             dkrg_dsatur_ = resu_vale(4)
-            dkrg_dp2_    = resu_vale(5)
+            dkrg_dp2_ = resu_vale(5)
         else
-            call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        nb_para, para_name, para_vale  ,&
-                        2      , resu_name, resu_vale  ,&
-                        icodre , 1        )
-            krl          = resu_vale(1)
-            dkrl_dsatur  = resu_vale(2)
-        endif
+            call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                        nb_para, para_name, para_vale, &
+                        2, resu_name, resu_vale, &
+                        icodre, 1)
+            krl = resu_vale(1)
+            dkrl_dsatur = resu_vale(2)
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

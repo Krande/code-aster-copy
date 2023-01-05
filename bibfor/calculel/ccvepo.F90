@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
-                  option,&
+subroutine ccvepo(modele, resuin, typesd, lisord, nbordr, &
+                  option, &
                   nbchre, ioccur, suropt, ligrel, exipou)
     implicit none
 !     --- ARGUMENTS ---
@@ -92,26 +92,26 @@ subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
     nbchre = 0
     lischa = '&&CCVEPO.LISCHA'
     if (typesd .eq. 'MODE_MECA') then
-        call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1,&
+        call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1, &
                     0, sjv=ltymo)
-        typemo=zk16(ltymo)
-    endif
+        typemo = zk16(ltymo)
+    end if
 !
 !     REDUCTION DU LIGREL SUR LA BASE DE GROUP_MA, GROUP_NO, ETC.
-    n1 = getexm(' ','GROUP_MA')
-    n2 = getexm(' ','MAILLE')
+    n1 = getexm(' ', 'GROUP_MA')
+    n2 = getexm(' ', 'MAILLE')
     if (n1+n2 .ne. 0) then
         call exlima(' ', 0, 'V', modele, ligrel)
     else
         call utmamo(modele, nbmaal, '&&CCVEPO.LISTE_MAILLES')
         call jeveuo('&&CCVEPO.LISTE_MAILLES', 'L', vi=liste_mailles)
-        noojb='12345678.LIGR000000.LIEL'
+        noojb = '12345678.LIGR000000.LIEL'
         call gnomsd(' ', noojb, 14, 19)
-        ligrel=noojb(1:19)
-        ASSERT(ligrel.ne.' ')
+        ligrel = noojb(1:19)
+        ASSERT(ligrel .ne. ' ')
         call exlim1(liste_mailles, nbmaal, modele, 'V', ligrel)
         call jedetr('&&CCVEPO.LISTE_MAILLES')
-    endif
+    end if
 !
     call dismoi('EXI_POUX', ligrel, 'LIGREL', repk=k8b)
     exipou = .false.
@@ -119,40 +119,40 @@ subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
     if (k8b(1:3) .eq. 'OUI') then
         exipou = .true.
 !       ON VERIFIE SI DERIERE LE TYPESD MODE_MECA ON TROUVE UN MODE_DYN
-        if ((typesd.eq.'MODE_MECA'.and.typemo(1:8).eq.'MODE_DYN') .or. typesd .eq.&
+        if ((typesd .eq. 'MODE_MECA' .and. typemo(1:8) .eq. 'MODE_DYN') .or. typesd .eq. &
             'DYNA_TRANS' .or. typesd .eq. 'MODE_ACOU' .or. typesd .eq. 'DYNA_HARMO') then
-            refe=resuin
-            suropt='MASS_MECA'
-            call dismoi('REF_MASS_PREM', refe, 'RESU_DYNA', repk=masse, arret='C',&
+            refe = resuin
+            suropt = 'MASS_MECA'
+            call dismoi('REF_MASS_PREM', refe, 'RESU_DYNA', repk=masse, arret='C', &
                         ier=ierd)
             if (masse .ne. ' ') then
-                call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=suropt, arret='C',&
+                call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=suropt, arret='C', &
                             ier=ierd)
-            endif
-            call rsexch('F', resuin, 'DEPL', 1, chdepl,&
+            end if
+            call rsexch('F', resuin, 'DEPL', 1, chdepl, &
                         ierd)
-            chdynr='&&MECALM.M.GAMMA'
+            chdynr = '&&MECALM.M.GAMMA'
             call copich('V', chdepl(1:19), chdynr)
-        endif
-        call jeveuo(lisord, 'L', vi = v_list_store)
-        if (option.eq.'REAC_NODA') then
-            call medome_once(resuin, v_list_store, nbordr,&
-                             list_load_ = lischa)
+        end if
+        call jeveuo(lisord, 'L', vi=v_list_store)
+        if (option .eq. 'REAC_NODA') then
+            call medome_once(resuin, v_list_store, nbordr, &
+                             list_load_=lischa)
             call lisnch(lischa, nbchar)
         else
-            call medom1(model , mater , mateco, cara_elem, lischa, nbchar,&
+            call medom1(model, mater, mateco, cara_elem, lischa, nbchar, &
                         resuin, v_list_store(1))
-        endif
+        end if
 !       VERIFIE L'UNICITE DE LA CHARGE REPARTIE
         if (nbchar .ne. 0) then
             call jeveuo(lischa//'.LCHA', 'L', vk8=lcha)
-            ioccur=0
+            ioccur = 0
             call cochre(lcha, nbchar, nbchre, ioccur)
             if (nbchre .gt. 1) then
                 call utmess('F', 'CALCULEL2_92')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jedema()
 !

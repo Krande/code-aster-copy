@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
-                  fsvr, icoq, imod, nbm, tcoef,&
-                  s1, s2, lambda, kcalcu, condit,&
+subroutine pbflga(umoy, hmoy, rmoy, long, cf0, &
+                  fsvr, icoq, imod, nbm, tcoef, &
+                  s1, s2, lambda, kcalcu, condit, &
                   gamma)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -87,25 +87,25 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
 !
     u = 1.d0+cde
     v = 1.d0-cds
-    r = -1.d0*dcmplx(s1/umoy+(cf0/hmoy),s2/umoy)
-    w = -0.5d0*cdep*umoy*defaxe(icoq,imod,0.d0,long,nbm,tcoef)
-    x = 0.5d0*cdsp*umoy*defaxe(icoq,imod,long,long,nbm,tcoef)
+    r = -1.d0*dcmplx(s1/umoy+(cf0/hmoy), s2/umoy)
+    w = -0.5d0*cdep*umoy*defaxe(icoq, imod, 0.d0, long, nbm, tcoef)
+    x = 0.5d0*cdsp*umoy*defaxe(icoq, imod, long, long, nbm, tcoef)
 !
     itab = 0
     if (icoq .eq. 2) itab = 5
-    ln = tcoef(1+itab,imod)
-    gamma(1) = pbflkz(2,0.d0,long,ln,kcalcu)/rmoy
-    gamma(2) = -1.d0*u*pbflkz(1,0.d0,long,ln,kcalcu) - pbflkz(3,0.d0,long,ln,kcalcu)/(rhof*umoy) &
-               &+ dcmplx(w)
-    gamma(3) = -1.d0*v*pbflkz(1,long,long,ln,kcalcu) - pbflkz(3,long,long,ln,kcalcu)/(rhof*umoy) &
-               &+ dcmplx(x)
+    ln = tcoef(1+itab, imod)
+    gamma(1) = pbflkz(2, 0.d0, long, ln, kcalcu)/rmoy
+gamma(2) = -1.d0*u*pbflkz(1, 0.d0, long, ln, kcalcu)-pbflkz(3, 0.d0, long, ln, kcalcu)/(rhof*umoy) &
+                   &+dcmplx(w)
+gamma(3) = -1.d0*v*pbflkz(1, long, long, ln, kcalcu)-pbflkz(3, long, long, ln, kcalcu)/(rhof*umoy) &
+                   &+dcmplx(x)
     do i = 1, 3
         reeli = dble(lambda(i))
         if (reeli .gt. 0.d0) then
             condit(i) = 1.d0
         else
             condit(i) = 0.d0
-        endif
+        end if
     end do
 !
     call wkvect('&&PBFLGA.TEMP.MATA', 'V V C', 3*3, imata)
@@ -118,11 +118,11 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
         zc(imata+3*(j-1)+2) = (t+dcmplx(v))*ei
     end do
 !
-    call lcsolz(zc(imata), gamma, 3, 3, 1,&
+    call lcsolz(zc(imata), gamma, 3, 3, 1, &
                 iret)
     if (iret .ne. 0) then
         call utmess('F', 'ALGELINE3_17')
-    endif
+    end if
 !
     call jedetr('&&PBFLGA.TEMP.MATA')
     call jedema()

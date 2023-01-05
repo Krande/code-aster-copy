@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine te0295(option, nomte)
 !
     rac2 = sqrt(2.d0)
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- RECUPERATION DES CHAMPS IN
@@ -128,9 +128,9 @@ subroutine te0295(option, nomte)
     do i = 1, nno
         thet = 0.d0
         do j = 1, ndim
-            thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
+            thet = thet+abs(zr(ithet+ndim*(i-1)+j-1))
         end do
-        if (thet .lt. r8prem()) compt = compt + 1
+        if (thet .lt. r8prem()) compt = compt+1
     end do
     if (compt .eq. nno) goto 999
 !
@@ -148,33 +148,33 @@ subroutine te0295(option, nomte)
         nompar(2) = 'Y'
         if (ndim .eq. 2) then
             nompar(3) = 'INST'
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             nompar(3) = 'Z'
             nompar(4) = 'INST'
-        endif
+        end if
         valpar(ndim+1) = zr(itemps)
-    else if (option.eq.'CALC_K_G_XFEM') then
-        fonc =.false.
+    else if (option .eq. 'CALC_K_G_XFEM') then
+        fonc = .false.
         call jevech('PFRVOLU', 'L', iforc)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     lpesa = .false.
-    call tecach('ONO', 'PPESANR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PPESANR', 'L', iret, nval=7, &
                 itab=jtab)
-    ipesa=jtab(1)
+    ipesa = jtab(1)
     if (iret .eq. 0) then
         lpesa = .true.
-    endif
+    end if
 !
     lrota = .false.
-    call tecach('ONO', 'PROTATR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PROTATR', 'L', iret, nval=7, &
                 itab=jtab)
-    irota=jtab(1)
+    irota = jtab(1)
     if (iret .eq. 0) then
         lrota = .true.
-    endif
+    end if
 !
 ! --- VERFICATION DU COMPORTEMENT
 !
@@ -185,22 +185,22 @@ subroutine te0295(option, nomte)
     if (compor(3) .eq. 'GROT_GDEP') then
         call utmess('F', 'RUPTURE1_24')
     end if
-    if ((compor(1).ne.'ELAS' ) .or. (compor(4).eq.'COMP_INCR')) then
+    if ((compor(1) .ne. 'ELAS') .or. (compor(4) .eq. 'COMP_INCR')) then
         if (compor(1) .ne. 'ELAS') then
             call utmess('F', 'RUPTURE1_24')
         end if
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA PULSATION
 !
-    call tecach('ONO', 'PPULPRO', 'L', iret, nval=7,&
+    call tecach('ONO', 'PPULPRO', 'L', iret, nval=7, &
                 itab=jtab)
-    ipuls=jtab(1)
+    ipuls = jtab(1)
     if (iret .eq. 0) then
         puls = zr(ipuls)
     else
         puls = 0.d0
-    endif
+    end if
 !
 ! --- RECUPERATION DES CHARGES
 !
@@ -210,8 +210,8 @@ subroutine te0295(option, nomte)
                 valpar(j) = zr(igeom+ndim*(i-1)+j-1)
             end do
             do j = 1, ndim
-                kk = ndim*(i-1) + j
-                call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar,&
+                kk = ndim*(i-1)+j
+                call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar, &
                             fno(kk), ier)
             end do
         end do
@@ -221,54 +221,54 @@ subroutine te0295(option, nomte)
                 fno(ndim*(i-1)+j) = zr(iforc+ndim*(i-1)+j-1)
             end do
         end do
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
 !
     if (lpesa .or. lrota) then
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-        call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, ' ', [rbid],&
+        call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, ' ', [rbid], &
                     1, 'RHO', val, icodre, 1)
         rhocst = val(1)
         if (lpesa) then
             do i = 1, nno
                 do j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rhocst*zr(ipesa)*zr(ipesa+j)
+                    fno(kk) = fno(kk)+rhocst*zr(ipesa)*zr(ipesa+j)
                 end do
             end do
-        endif
+        end if
 !
         if (lrota) then
             om = zr(irota)
             do i = 1, nno
                 omo = 0.d0
                 do j = 1, ndim
-                    omo = omo + zr(irota+j)* zr(igeom+ndim*(i-1)+j-1)
+                    omo = omo+zr(irota+j)*zr(igeom+ndim*(i-1)+j-1)
                 end do
                 do j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr(&
-                    irota+j))
+                    fno(kk) = fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr( &
+                                                    irota+j))
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA TEMPERATURE
 !
-    call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
+    call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, &
                 1, tref, iret)
     if (iret .ne. 0) tref = 0.d0
     do kp = 1, npg
-        call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+        call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, &
                     1, tpg(kp), iret)
         if (iret .ne. 0) tpg(kp) = 0.d0
     end do
 !
     do ino = 1, nno
-        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
+        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino, &
                     1, tno(ino), iret)
         if (iret .ne. 0) tno(ino) = 0.d0
     end do
@@ -283,39 +283,39 @@ subroutine te0295(option, nomte)
 !
     do kp = 1, npg
 !INITIALISATIONS
-        l = (kp-1) * nno
+        l = (kp-1)*nno
         xg = 0.d0
         yg = 0.d0
         zg = 0.d0
-        lsng=0.d0
-        lstg=0.d0
+        lsng = 0.d0
+        lstg = 0.d0
         do i = 1, 3
             tgdm(i) = 0.d0
             tgvdm(i) = 0.d0
             do j = 1, 4
-                dudm(i,j) = 0.d0
-                du1dm(i,j)= 0.d0
-                du2dm(i,j)= 0.d0
-                du3dm(i,j)= 0.d0
-                dtdm(i,j) = 0.d0
-                dfdm(i,j) = 0.d0
-                dfvdm(i,j) = 0.d0
+                dudm(i, j) = 0.d0
+                du1dm(i, j) = 0.d0
+                du2dm(i, j) = 0.d0
+                du3dm(i, j) = 0.d0
+                dtdm(i, j) = 0.d0
+                dfdm(i, j) = 0.d0
+                dfvdm(i, j) = 0.d0
             end do
         end do
         do i = 1, 6
             sigin(i) = 0.d0
-            epsref(i)= 0.d0
+            epsref(i) = 0.d0
             do j = 1, 3
-                dsigin(i,j) = 0.d0
+                dsigin(i, j) = 0.d0
             end do
         end do
 !
 ! ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
 !       EN UN PT DE GAUSS
 !
-        call nmgeom(ndim, nno, .false._1, .false._1, zr(igeom),&
-                    kp, ipoids, ivf, idfde, zr(idepl),&
-                    .true._1, poids, dfdi, f, eps,&
+        call nmgeom(ndim, nno, .false._1, .false._1, zr(igeom), &
+                    kp, ipoids, ivf, idfde, zr(idepl), &
+                    .true._1, poids, dfdi, f, eps, &
                     rbid)
 !
 ! ----- CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)
@@ -328,65 +328,65 @@ subroutine te0295(option, nomte)
             der(3) = dfdi(i+2*nno)
             der(4) = zr(ivf+l+i-1)
 !
-            xg = xg + zr(igeom-1+ndim*(i-1)+1)*der(4)
-            yg = yg + zr(igeom-1+ndim*(i-1)+2)*der(4)
-            zg = zg + zr(igeom-1+ndim*(i-1)+3)*der(4)
+            xg = xg+zr(igeom-1+ndim*(i-1)+1)*der(4)
+            yg = yg+zr(igeom-1+ndim*(i-1)+2)*der(4)
+            zg = zg+zr(igeom-1+ndim*(i-1)+3)*der(4)
 !
-            lsng = lsng + zr(jlsn-1+i) * der(4)
-            lstg = lstg + zr(jlst-1+i) * der(4)
+            lsng = lsng+zr(jlsn-1+i)*der(4)
+            lstg = lstg+zr(jlst-1+i)*der(4)
 !
             do j = 1, ndim
-                tgdm(j) = tgdm(j) + tno(i) * der(j)
+                tgdm(j) = tgdm(j)+tno(i)*der(j)
                 do k = 1, ndim
-                    dudm(j,k) = dudm(j,k) + zr(idepl+ndim*(i-1)+j-1)* der(k)
-                    dtdm(j,k) = dtdm(j,k) + zr(ithet+ndim*(i-1)+j-1)* der(k)
-                    dfdm(j,k) = dfdm(j,k) + fno(ndim*(i-1)+j)*der(k)
+                    dudm(j, k) = dudm(j, k)+zr(idepl+ndim*(i-1)+j-1)*der(k)
+                    dtdm(j, k) = dtdm(j, k)+zr(ithet+ndim*(i-1)+j-1)*der(k)
+                    dfdm(j, k) = dfdm(j, k)+fno(ndim*(i-1)+j)*der(k)
                 end do
-                dudm(j,4) = dudm(j,4) + zr(idepl+ndim*(i-1)+j-1)*der( 4)
-                dtdm(j,4) = dtdm(j,4) + zr(ithet+ndim*(i-1)+j-1)*der( 4)
-                dfdm(j,4) = dfdm(j,4) + fno(ndim*(i-1)+j)*der(4)
+                dudm(j, 4) = dudm(j, 4)+zr(idepl+ndim*(i-1)+j-1)*der(4)
+                dtdm(j, 4) = dtdm(j, 4)+zr(ithet+ndim*(i-1)+j-1)*der(4)
+                dfdm(j, 4) = dfdm(j, 4)+fno(ndim*(i-1)+j)*der(4)
             end do
         end do
 !
-        ttrg = tpg(kp) - tref
+        ttrg = tpg(kp)-tref
         ttrgv = 0.d0
 !
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
 ! ----- RECUPERATION DE E, NU, ALPHA ET RHO
 !
-        call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
+        call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, &
                     1, r8bid, iret)
-        call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kp, 1, '+', zi(imate), &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     4, nomres, valres, icodre, 0)
-        ASSERT(icodre(1)+icodre(2).eq.0)
+        ASSERT(icodre(1)+icodre(2) .eq. 0)
         if (icodre(3) .ne. 0) then
-            ASSERT(iret.ne.0)
+            ASSERT(iret .ne. 0)
             valres(3) = 0.d0
-        endif
+        end if
         if (icodre(4) .ne. 0) then
             valres(4) = 0.d0
-        endif
+        end if
 !
         e = valres(1)
         nu = valres(2)
         alpha = valres(3)
         rho = valres(4)
-        k3a = alpha * e / (1.d0-2.d0*nu)
+        k3a = alpha*e/(1.d0-2.d0*nu)
 !
         la = nu*e/((1.d0+nu)*(1.d0-2.d0*nu))
         mu = e/(2.d0*(1.d0+nu))
 !       EN DP
-        ka=3.d0-4.d0*nu
-        coeff=e/(1.d0-nu*nu)
-        coeff3=2.d0 * mu
+        ka = 3.d0-4.d0*nu
+        coeff = e/(1.d0-nu*nu)
+        coeff3 = 2.d0*mu
 !       EN CP
 !       KA=(3.D0-NU)/(1.D0+NU)
 !       COEFF=E
 !       COEFF3=2.D0 * MU
 !
-        c1 = la + 2.d0 * mu
+        c1 = la+2.d0*mu
         c2 = la
         c3 = mu
 !
@@ -402,13 +402,13 @@ subroutine te0295(option, nomte)
 ! CALCUL DE SIGMA INITIAL
 !
                 do j = 1, ncmp
-                    sigin(j) = sigin(j) + zr(isigi+ncmp* (i-1)+j-1)* der(4)
+                    sigin(j) = sigin(j)+zr(isigi+ncmp*(i-1)+j-1)*der(4)
                 end do
 !
 ! CALCUL DU GRADIENT DE SIGMA INITIAL
                 do j = 1, ncmp
                     do k = 1, ndim
-                        dsigin(j,k) = dsigin(j,k) + zr(isigi+ncmp*(i-1)+j-1)*der(k)
+                        dsigin(j, k) = dsigin(j, k)+zr(isigi+ncmp*(i-1)+j-1)*der(k)
                     end do
                 end do
             end do
@@ -417,7 +417,7 @@ subroutine te0295(option, nomte)
             do i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
                 do j = 1, ndim
-                    dsigin(i,j) = dsigin(i,j)*rac2
+                    dsigin(i, j) = dsigin(i, j)*rac2
                 end do
             end do
 !
@@ -426,46 +426,46 @@ subroutine te0295(option, nomte)
 ! CALCUL DE LA DEFORMATION DE REFERENCE
 !
 !
-            epsref(1)=-(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
-            epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
-            epsref(3)=-(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
-            epsref(4)=-(1.d0/mu)*sigin(4)
-            epsref(5)=-(1.d0/mu)*sigin(5)
-            epsref(6)=-(1.d0/mu)*sigin(6)
+            epsref(1) = -(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
+            epsref(2) = -(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
+            epsref(3) = -(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
+            epsref(4) = -(1.d0/mu)*sigin(4)
+            epsref(5) = -(1.d0/mu)*sigin(5)
+            epsref(6) = -(1.d0/mu)*sigin(6)
 !
-        endif
+        end if
 !
 !
 ! ----- CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
 !
         do ino = 1, nno
-            ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
-        enddo
-        p(:,:)=0.d0
-        invp(:,:)=0.d0
+            ffp(ino) = zr(ivf-1+nno*(kp-1)+ino)
+        end do
+        p(:, :) = 0.d0
+        invp(:, :) = 0.d0
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    CALCUL DES COOR. CYL.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
-        call coor_cyl(ndim, nno, zr(ibalo), zr(igeom), ffp,&
+        call coor_cyl(ndim, nno, zr(ibalo), zr(igeom), ffp, &
                       p, invp, rg, phig, l_not_zero)
 !
 !       PRISE EN COMPTE DE LA COURBURE : OUI
 !
-        lcour=.true.
+        lcour = .true.
 !       RECUPERATION DU TENSEUR DE COURBURE
         call jevech('PCOURB', 'L', icour)
         do i = 1, ndim
             do j = 1, ndim
-                courb(i,1,j)=zr(icour-1+ndim*(i-1)+j)
-                courb(i,2,j)=zr(icour-1+ndim*(i+3-1)+j)
-                courb(i,3,j)=zr(icour-1+ndim*(i+6-1)+j)
+                courb(i, 1, j) = zr(icour-1+ndim*(i-1)+j)
+                courb(i, 2, j) = zr(icour-1+ndim*(i+3-1)+j)
+                courb(i, 3, j) = zr(icour-1+ndim*(i+6-1)+j)
             end do
         end do
 !
 !
-        call chauxi(ndim, mu, ka, rg, phig,&
-                    invp, lcour, courb, du1dm, du2dm,&
+        call chauxi(ndim, mu, ka, rg, phig, &
+                    invp, lcour, courb, du1dm, du2dm, &
                     du3dm, u1l, u2l, u3l)
 !
 !
@@ -477,50 +477,50 @@ subroutine te0295(option, nomte)
 !
         guv = 0.d0
         coef = 2.d0
-        call gbil3d(dudm, dudm, dtdm, dfdm, dfdm,&
-                    tgdm, tgdm, ttrg, ttrg, poids,&
-                    sigin, dsigin, epsref, c1, c2,&
-                    c3, k3a, alpha, coef, rho,&
+        call gbil3d(dudm, dudm, dtdm, dfdm, dfdm, &
+                    tgdm, tgdm, ttrg, ttrg, poids, &
+                    sigin, dsigin, epsref, c1, c2, &
+                    c3, k3a, alpha, coef, rho, &
                     puls, guv)
-        g = g + guv
+        g = g+guv
 !
         guv1 = 0.d0
         coef = 1.d0
-        call gbil3d(dudm, du1dm, dtdm, dfdm, dfvdm,&
-                    tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    sigin, dsigin, epsref, c1, c2,&
-                    c3, k3a, alpha, coef, rho,&
+        call gbil3d(dudm, du1dm, dtdm, dfdm, dfvdm, &
+                    tgdm, tgvdm, ttrg, ttrgv, poids, &
+                    sigin, dsigin, epsref, c1, c2, &
+                    c3, k3a, alpha, coef, rho, &
                     puls, guv1)
-        k1 = k1 + guv1
+        k1 = k1+guv1
 !
         guv2 = 0.d0
         coef = 1.d0
-        call gbil3d(dudm, du2dm, dtdm, dfdm, dfvdm,&
-                    tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    sigin, dsigin, epsref, c1, c2,&
-                    c3, k3a, alpha, coef, rho,&
+        call gbil3d(dudm, du2dm, dtdm, dfdm, dfvdm, &
+                    tgdm, tgvdm, ttrg, ttrgv, poids, &
+                    sigin, dsigin, epsref, c1, c2, &
+                    c3, k3a, alpha, coef, rho, &
                     puls, guv2)
-        k2 = k2 + guv2
+        k2 = k2+guv2
 !
         guv3 = 0.d0
         coef = 1.d0
-        call gbil3d(dudm, du3dm, dtdm, dfdm, dfvdm,&
-                    tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    sigin, dsigin, epsref, c1, c2,&
-                    c3, k3a, alpha, coef, rho,&
+        call gbil3d(dudm, du3dm, dtdm, dfdm, dfvdm, &
+                    tgdm, tgvdm, ttrg, ttrgv, poids, &
+                    sigin, dsigin, epsref, c1, c2, &
+                    c3, k3a, alpha, coef, rho, &
                     puls, guv3)
-        k3 = k3 + guv3
+        k3 = k3+guv3
 !
     end do
 !
-    k1 = k1 * coeff
-    k2 = k2 * coeff
-    k3 = k3 * coeff3
+    k1 = k1*coeff
+    k2 = k2*coeff
+    k3 = k3*coeff3
 !
     zr(ificg) = g
-    zr(ificg+1) = k1 / sqrt(coeff)
-    zr(ificg+2) = k2 / sqrt(coeff)
-    zr(ificg+3) = k3 / sqrt(coeff3)
+    zr(ificg+1) = k1/sqrt(coeff)
+    zr(ificg+2) = k2/sqrt(coeff)
+    zr(ificg+3) = k3/sqrt(coeff3)
     zr(ificg+4) = k1
     zr(ificg+5) = k2
     zr(ificg+6) = k3

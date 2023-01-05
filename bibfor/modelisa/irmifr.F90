@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,38 +29,38 @@ subroutine irmifr(ifmis, freq, ifreq, nfreq, ic)
     integer :: i, j
 !-----------------------------------------------------------------------
     rewind ifmis
-    read(ifmis,'(A72)') texte
-    read(ifmis,'(A72)') texte
+    read (ifmis, '(A72)') texte
+    read (ifmis, '(A72)') texte
     ic = 1
     nfreq = 0
-  1 continue
-    nfreq = nfreq + 1
-    read(ifmis,'(A72)') texte
+1   continue
+    nfreq = nfreq+1
+    read (ifmis, '(A72)') texte
     if (texte(1:3) .eq. 'CHA') then
-        nfreq = nfreq -1
+        nfreq = nfreq-1
     else
         goto 1
-    endif
+    end if
     rewind ifmis
-    read(ifmis,'(A72)') texte
-    read(ifmis,'(A72)') texte
+    read (ifmis, '(A72)') texte
+    read (ifmis, '(A72)') texte
     do i = 1, nfreq
-        read(ifmis,*) (a(j),j=1,3)
+        read (ifmis, *) (a(j), j=1, 3)
         if (freq .le. (a(1)*1.0001d0)) then
             ifreq = i
             if (i .gt. 1 .and. freq .lt. (a(1)*0.9999d0)) then
                 ifreq = ifreq-1
-            endif
-            if (freq .le. r8prem( )) ic = 2
+            end if
+            if (freq .le. r8prem()) ic = 2
             if (i .eq. 1 .and. nfreq .eq. 1) ic = 0
             if (i .eq. nfreq .and. freq .ge. (a(1)*0.9999d0)) then
                 ic = 0
                 ifreq = nfreq
-            endif
+            end if
             goto 4
-        endif
+        end if
     end do
     ifreq = nfreq
     ic = 0
-  4 continue
+4   continue
 end subroutine

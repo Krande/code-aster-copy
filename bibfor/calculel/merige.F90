@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine merige(model_, cara_elem_, sigg, strx, matel,&
+subroutine merige(model_, cara_elem_, sigg, strx, matel, &
                   base, nh, deplr, mateco)
     implicit none
 #include "jeveux.h"
@@ -36,8 +36,8 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel,&
     character(len=1) :: base
     character(len=*) :: sigg, strx
     character(len=19) :: matel
-    character(len=*) , intent(in) :: model_
-    character(len=*) , intent(in) :: cara_elem_
+    character(len=*), intent(in) :: model_
+    character(len=*), intent(in) :: cara_elem_
     character(len=*), optional, intent(in) :: deplr
     character(len=*), optional, intent(in) :: mateco
 !
@@ -65,16 +65,16 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel,&
     call jemarq()
 !
     modele = model_
-    cara   = cara_elem_
+    cara = cara_elem_
     option = 'RIGI_GEOM'
     if (modele(1:1) .eq. ' ') then
         call utmess('F', 'CALCULEL2_82')
-    endif
+    end if
     call detrsd('MATR_ELEM', matel)
-    call mecham(option, modele, cara, nh, chgeom,&
+    call mecham(option, modele, cara, nh, chgeom, &
                 chcara, chharm, icode)
 !
-    call memare(base, matel, modele, ' ', cara,&
+    call memare(base, matel, modele, ' ', cara, &
                 option)
 !
 !  -----CAS DU MODELE X-FEM-----------------------
@@ -122,7 +122,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel,&
         lchin(12) = strx
         lpain(13) = 'PHEA_NO'
         lchin(13) = hea_no
-        nbpara=13
+        nbpara = 13
 !
 ! --- CHAMPS DE SORTIE
 !
@@ -131,12 +131,12 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel,&
 !
         option = 'RIGI_GEOM'
 !
-        call calcul('S', option, ligrmo, nbpara, lchin,&
-                    lpain, 1, lchout, lpaout, base,&
+        call calcul('S', option, ligrmo, nbpara, lchin, &
+                    lpain, 1, lchout, lpaout, base, &
                     'OUI')
         call reajre(matel, lchout(1), base)
 !
-    else if (ier.eq.0) then
+    else if (ier .eq. 0) then
 !
         lpaout(1) = 'PMATUUR'
         lchout(1) = matel(1:8)//'.ME001'
@@ -166,29 +166,29 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel,&
         lchin(11) = chcara(17)
         lpain(12) = 'PCACABL'
         lchin(12) = chcara(10)
-        nbpara= 12
-        if ( present(deplr) ) then
-            if ( deplr.ne.' ') then
-                nbpara= nbpara+1
+        nbpara = 12
+        if (present(deplr)) then
+            if (deplr .ne. ' ') then
+                nbpara = nbpara+1
                 lpain(nbpara) = 'PDEPLPR'
                 lchin(nbpara) = deplr
-            endif
-        endif
-        if ( present(mateco) ) then
-            if ( mateco.ne.' ' ) then
-                nbpara= nbpara+1
+            end if
+        end if
+        if (present(mateco)) then
+            if (mateco .ne. ' ') then
+                nbpara = nbpara+1
                 lpain(nbpara) = 'PMATERC'
                 lchin(nbpara) = mateco
-            endif
-        endif
+            end if
+        end if
 
         option = 'RIGI_GEOM'
-        call calcul('S', option, ligrmo, nbpara, lchin,&
-                    lpain, 1, lchout, lpaout, base,&
+        call calcul('S', option, ligrmo, nbpara, lchin, &
+                    lpain, 1, lchout, lpaout, base, &
                     'OUI')
         call reajre(matel, lchout(1), base)
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

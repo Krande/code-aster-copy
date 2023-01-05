@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,12 @@ subroutine jaexin(nomlu, iret)
     call jelira(noml32, 'IADM', iadm)
     if (iadm .eq. 0 .and. iadd .eq. 0) goto 9998
 !
-    iret=1
+    iret = 1
     goto 9999
 !
-9998  continue
-    iret=0
+9998 continue
+    iret = 0
     goto 9999
 !
-9999  continue
+9999 continue
 end subroutine

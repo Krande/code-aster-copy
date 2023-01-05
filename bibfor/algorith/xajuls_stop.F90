@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
 !   rq : crit est le critere relatif en deca duquel on considere que
 !   norm_p == norm_s (cf "verif 3" plus bas). Le choix de la valeur
 !   de crit n'est base sur aucun argument geometrique et est discutable
-    parameter (crit=1.d-1)
+    parameter(crit=1.d-1)
 !
 ! ---------------------------------------------------------------------
 !
@@ -115,8 +115,8 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     r8pre = r8prem()
     do ino = 1, nbnos
         nuno = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
-        ASSERT( abs(vr_lts(nuno)) .lt. r8pre )
-    enddo
+        ASSERT(abs(vr_lts(nuno)) .lt. r8pre)
+    end do
 !
 ! --
 !   verif 2 : les level-sets on ete calculees depuis FORM_FISS == SEGMENT
@@ -126,21 +126,21 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     mxval = 0
     nbret = 0
     geofi = ''
-    call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofi,&
+    call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofi, &
                 nbret=nbret)
     if (nbret .eq. -1) then
         call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, scal=geofi, nbret=nbret)
-        if (geofi.eq.'SEGMENT') then
-            call getvr8('DEFI_FISS', 'PFON_ORIG', iocc=1, nbval=3, vect=vect1,&
+        if (geofi .eq. 'SEGMENT') then
+            call getvr8('DEFI_FISS', 'PFON_ORIG', iocc=1, nbval=3, vect=vect1, &
                         nbret=ibid)
-            call getvr8('DEFI_FISS', 'PFON_EXTR', iocc=1, nbval=3, vect=vect2,&
+            call getvr8('DEFI_FISS', 'PFON_EXTR', iocc=1, nbval=3, vect=vect2, &
                         nbret=ibid)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --
 !   verif 3 : pour chaque arete de la maille ima, on compare la longueur de son
@@ -150,38 +150,38 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
 ! --
 !
 !   v_seg : vecteur associe au segment fissure, de norme norm_s
-    v_seg(:) = vect2(:) - vect1(:)
+    v_seg(:) = vect2(:)-vect1(:)
     norm_s = ddot(3, v_seg, 1, v_seg, 1)
     norm_s = sqrt(norm_s)
-    v_seg(:) = v_seg(:) / norm_s
+    v_seg(:) = v_seg(:)/norm_s
 !
 !   boucle sur les aretes de ima
     l_crit = .false.
     do ia = 1, nbar
-        na=ar(ia,1)
-        nb=ar(ia,2)
-        nunoa=zi(jconx1-1+zi(jconx2+ima-1)+na-1)
-        nunob=zi(jconx1-1+zi(jconx2+ima-1)+nb-1)
+        na = ar(ia, 1)
+        nb = ar(ia, 2)
+        nunoa = zi(jconx1-1+zi(jconx2+ima-1)+na-1)
+        nunob = zi(jconx1-1+zi(jconx2+ima-1)+nb-1)
 !       v_are : vecteur associe a l'arete courante
-        do i=1, 3
-            v_are(i) = vr_coo(3*(nunob-1)+i) - vr_coo(3*(nunoa-1)+i)
-        enddo
+        do i = 1, 3
+            v_are(i) = vr_coo(3*(nunob-1)+i)-vr_coo(3*(nunoa-1)+i)
+        end do
         pscal = ddot(3, v_are, 1, v_seg, 1)
 !       v_pro : vecteur projete orthogonal de v_are sur v_seg, de norme norm_p
         v_pro(:) = pscal*v_seg(:)
         norm_p = ddot(3, v_pro, 1, v_pro, 1)
         norm_p = sqrt(norm_p)
 !       ecart relatif entre norm_p et norm_s
-        diffe = abs( norm_p - norm_s ) / norm_s
+        diffe = abs(norm_p-norm_s)/norm_s
         if (diffe .lt. crit) then
             l_crit = .true.
             exit
-        endif
-    enddo
+        end if
+    end do
 !
-    if (.not.l_crit) then
+    if (.not. l_crit) then
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

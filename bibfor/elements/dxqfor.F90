@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,23 +52,23 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
     call gquad4(xyzl, caraq4)
 !
     call jevech('PCACOQU', 'L', jcara)
-    alpha = zr(jcara+1) * r8dgrd()
-    beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    alpha = zr(jcara+1)*r8dgrd()
+    beta = zr(jcara+2)*r8dgrd()
+    call coqrep(pgl, alpha, beta, t2iu, t2ui, &
                 c, s)
 !
     if (.not. global) then
         do i = 1, nno
-            fx = for(1,i)
-            fy = for(2,i)
-            for(1,i) = t2iu(1)*fx + t2iu(3)*fy
-            for(2,i) = t2iu(2)*fx + t2iu(4)*fy
-            fx = for(4,i)
-            fy = for(5,i)
-            for(4,i) = t2iu(1)*fx + t2iu(3)*fy
-            for(5,i) = t2iu(2)*fx + t2iu(4)*fy
+            fx = for(1, i)
+            fy = for(2, i)
+            for(1, i) = t2iu(1)*fx+t2iu(3)*fy
+            for(2, i) = t2iu(2)*fx+t2iu(4)*fy
+            fx = for(4, i)
+            fy = for(5, i)
+            for(4, i) = t2iu(1)*fx+t2iu(3)*fy
+            for(5, i) = t2iu(2)*fx+t2iu(4)*fy
         end do
-    endif
+    end if
 !
     do ino = 1, nno
         airetr(ino) = caraq4(21+ino)
@@ -77,7 +77,7 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
     do i = 1, 6
         do j = 1, nno
             do k = 1, nno
-                fno(i,j,k) = 0.d0
+                fno(i, j, k) = 0.d0
             end do
         end do
     end do
@@ -86,27 +86,27 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
         vecl(i) = 0.d0
     end do
 !
-    c1 = 1.d0 / 6.d0
-    c2 = 1.d0 / 12.d0
+    c1 = 1.d0/6.d0
+    c2 = 1.d0/12.d0
 !
     do i = 1, 6
-        fno(i,1,1) = (c1*for(i,1)+c2*for(i,2)+c2*for(i,4)) * airetr(1)
-        fno(i,1,2) = (c2*for(i,1)+c1*for(i,2)+c2*for(i,4)) * airetr(1)
-        fno(i,1,4) = (c2*for(i,1)+c2*for(i,2)+c1*for(i,4)) * airetr(1)
-        fno(i,2,2) = (c1*for(i,2)+c2*for(i,3)+c2*for(i,1)) * airetr(2)
-        fno(i,2,3) = (c2*for(i,2)+c1*for(i,3)+c2*for(i,1)) * airetr(2)
-        fno(i,2,1) = (c2*for(i,2)+c2*for(i,3)+c1*for(i,1)) * airetr(2)
-        fno(i,3,3) = (c1*for(i,3)+c2*for(i,4)+c2*for(i,2)) * airetr(3)
-        fno(i,3,4) = (c2*for(i,3)+c1*for(i,4)+c2*for(i,2)) * airetr(3)
-        fno(i,3,2) = (c2*for(i,3)+c2*for(i,4)+c1*for(i,2)) * airetr(3)
-        fno(i,4,4) = (c1*for(i,4)+c2*for(i,1)+c2*for(i,3)) * airetr(4)
-        fno(i,4,1) = (c2*for(i,4)+c1*for(i,1)+c2*for(i,3)) * airetr(4)
-        fno(i,4,3) = (c2*for(i,4)+c2*for(i,1)+c1*for(i,3)) * airetr(4)
+        fno(i, 1, 1) = (c1*for(i, 1)+c2*for(i, 2)+c2*for(i, 4))*airetr(1)
+        fno(i, 1, 2) = (c2*for(i, 1)+c1*for(i, 2)+c2*for(i, 4))*airetr(1)
+        fno(i, 1, 4) = (c2*for(i, 1)+c2*for(i, 2)+c1*for(i, 4))*airetr(1)
+        fno(i, 2, 2) = (c1*for(i, 2)+c2*for(i, 3)+c2*for(i, 1))*airetr(2)
+        fno(i, 2, 3) = (c2*for(i, 2)+c1*for(i, 3)+c2*for(i, 1))*airetr(2)
+        fno(i, 2, 1) = (c2*for(i, 2)+c2*for(i, 3)+c1*for(i, 1))*airetr(2)
+        fno(i, 3, 3) = (c1*for(i, 3)+c2*for(i, 4)+c2*for(i, 2))*airetr(3)
+        fno(i, 3, 4) = (c2*for(i, 3)+c1*for(i, 4)+c2*for(i, 2))*airetr(3)
+        fno(i, 3, 2) = (c2*for(i, 3)+c2*for(i, 4)+c1*for(i, 2))*airetr(3)
+        fno(i, 4, 4) = (c1*for(i, 4)+c2*for(i, 1)+c2*for(i, 3))*airetr(4)
+        fno(i, 4, 1) = (c2*for(i, 4)+c1*for(i, 1)+c2*for(i, 3))*airetr(4)
+        fno(i, 4, 3) = (c2*for(i, 4)+c2*for(i, 1)+c1*for(i, 3))*airetr(4)
         do ino = 1, nno
             do it = 1, nno
-                vecl(i+6*(ino-1)) = vecl(i+6*(ino-1)) + fno(i,it,ino)
+                vecl(i+6*(ino-1)) = vecl(i+6*(ino-1))+fno(i, it, ino)
             end do
-            vecl(i+6*(ino-1)) = vecl(i+6*(ino-1)) / 2.d0
+            vecl(i+6*(ino-1)) = vecl(i+6*(ino-1))/2.d0
         end do
     end do
 !

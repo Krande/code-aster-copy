@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,18 +48,18 @@ subroutine triins(clef, tab, ntab, n)
 !
 ! ----- INSERTION DE INSER
 !
- 20     continue
+20      continue
 !
-        g = g - 1
+        g = g-1
 !
         if (g .gt. 0) then
             if (clef(g) .gt. inser) then
                 clef(g+1) = clef(g)
                 goto 20
-            endif
-        endif
+            end if
+        end if
 !
-        g = g + 1
+        g = g+1
 !
         if (g .ne. d) then
 !
@@ -68,14 +68,14 @@ subroutine triins(clef, tab, ntab, n)
 ! ------- DEPLACEMENT TABLEAU
 !
             do i = 1, ntab
-                inser = tab(d,i)
+                inser = tab(d, i)
                 do j = d-1, g, -1
-                    tab(j+1,i) = tab(j,i)
+                    tab(j+1, i) = tab(j, i)
                 end do
-                tab(g,i) = inser
+                tab(g, i) = inser
             end do
 !
-        endif
+        end if
 !
     end do
 !

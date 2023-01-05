@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmequi(l_disp     , l_pilo, l_macr, cnequi,&
-                  cnfint     , cnfext, cndiri, cnsstr,&
-                  ds_contact_,&
-                  cnbudi_    , cndfdo_,&
-                  cndipi_    , eta_)
+subroutine nmequi(l_disp, l_pilo, l_macr, cnequi, &
+                  cnfint, cnfext, cndiri, cnsstr, &
+                  ds_contact_, &
+                  cnbudi_, cndfdo_, &
+                  cndipi_, eta_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,12 +37,12 @@ implicit none
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/utmess.h"
 !
-aster_logical, intent(in) :: l_disp, l_pilo, l_macr
-character(len=19), intent(in) :: cnequi
-character(len=19), intent(in) :: cnfint, cnfext, cndiri, cnsstr
-type(NL_DS_Contact), optional, intent(in) :: ds_contact_
-character(len=19), optional, intent(in) :: cnbudi_, cndfdo_, cndipi_
-real(kind=8), optional, intent(in) :: eta_
+    aster_logical, intent(in) :: l_disp, l_pilo, l_macr
+    character(len=19), intent(in) :: cnequi
+    character(len=19), intent(in) :: cnfint, cnfext, cndiri, cnsstr
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
+    character(len=19), optional, intent(in) :: cnbudi_, cndfdo_, cndipi_
+    real(kind=8), optional, intent(in) :: eta_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ real(kind=8), optional, intent(in) :: eta_
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_66')
-    endif
+    end if
 !
 ! - Initializations
 !
@@ -85,30 +85,30 @@ real(kind=8), optional, intent(in) :: eta_
     if (present(ds_contact_)) then
         if (ds_contact_%l_cnctdf) then
             call nonlinDSVectCombAddAny(ds_contact_%cnctdf, +1.d0, ds_vectcomb)
-        endif
+        end if
         if (ds_contact_%l_cnunil) then
             l_unil_pena = cfdisl(ds_contact_%sdcont_defi, 'UNIL_PENA')
             if (l_unil_pena) then
                 call nonlinDSVectCombAddAny(ds_contact_%cnunil, +1.d0, ds_vectcomb)
-            endif
-        endif
+            end if
+        end if
         if (ds_contact_%l_cneltc) then
             call nonlinDSVectCombAddAny(ds_contact_%cneltc, +1.d0, ds_vectcomb)
-        endif
+        end if
         if (ds_contact_%l_cneltf) then
             call nonlinDSVectCombAddAny(ds_contact_%cneltf, +1.d0, ds_vectcomb)
-        endif
-    endif
+        end if
+    end if
     if (l_disp) then
         call nonlinDSVectCombAddAny(cnbudi_, +1.d0, ds_vectcomb)
         call nonlinDSVectCombAddAny(cndfdo_, -1.d0, ds_vectcomb)
-    endif
+    end if
     if (l_pilo) then
         call nonlinDSVectCombAddAny(cndipi_, -eta_, ds_vectcomb)
-    endif
+    end if
     if (l_macr) then
         call nonlinDSVectCombAddAny(cnsstr, +1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Combination
 !
@@ -118,6 +118,6 @@ real(kind=8), optional, intent(in) :: eta_
 !
     if (niv .eq. 2) then
         call nmdebg('VECT', cnequi, ifm)
-    endif
+    end if
 !
 end subroutine

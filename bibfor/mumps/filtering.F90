@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,47 +40,47 @@ subroutine filtering(ltypr, k, lmnsy, jvale, jvale2, rfiltre, rmin, rmax, &
     complex(kind=8) :: cval
 !
     if (ltypr) then
-        rval = zr(jvale - 1 + k)
-        if (lmnsy) rval = zr(jvale2 - 1 + k)
+        rval = zr(jvale-1+k)
+        if (lmnsy) rval = zr(jvale2-1+k)
         if (rval /= 0.d0) then
             rtest = abs(rval)
             if (rtest .gt. rfiltre) then
                 if (rtest .lt. rmin) then
-                    nfilt3 = nfilt3 + 1
+                    nfilt3 = nfilt3+1
                     iok(k) = -2
                 else if (rtest .gt. rmax) then
-                    nfilt2 = nfilt2 + 1
+                    nfilt2 = nfilt2+1
                     iok(k) = -1
                 else
                     iok(k) = 1
                 end if
-                nzloc = nzloc + 1
+                nzloc = nzloc+1
             end if
         else
 ! ---   TERME RIGOUREUSEMENT NUL
-            nfilt1 = nfilt1 + 1
+            nfilt1 = nfilt1+1
         end if
 !
     else
-        cval = zc(jvale - 1 + k)
-        if (lmnsy) cval = zc(jvale2 - 1 + k)
+        cval = zc(jvale-1+k)
+        if (lmnsy) cval = zc(jvale2-1+k)
         if (cval /= (0.d0, 0.d0)) then
             rtest = abs(cval)
             if (rtest .gt. rfiltre) then
                 if (rtest .lt. rmin) then
-                    nfilt3 = nfilt3 + 1
+                    nfilt3 = nfilt3+1
                     iok(k) = -2
                 else if (rtest .gt. rmax) then
-                    nfilt2 = nfilt2 + 1
+                    nfilt2 = nfilt2+1
                     iok(k) = -1
                 else
                     iok(k) = 1
                 end if
-                nzloc = nzloc + 1
+                nzloc = nzloc+1
             end if
         else
 ! ---   TERME RIGOUREUSEMENT NUL
-            nfilt1 = nfilt1 + 1
+            nfilt1 = nfilt1+1
         end if
     end if
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0518(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ character(len=16), intent(in) :: option, nomte
     integer :: iret, nnos, jv_ganoQ, jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL, jv_ganoL
     integer :: igeom, imate, itype, icontm, ivarim, icopil, iborne, ictau
     integer :: iddlm, iddld, iddl0, iddl1, icompo
-    real(kind=8),allocatable:: b(:,:,:), w(:,:),ni2ldc(:,:)
+    real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
     real(kind=8) :: etamin, etamax
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,25 +62,25 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Type of modelling
 !
-    call teattr('S', 'TYPMOD' , typmod(1))
+    call teattr('S', 'TYPMOD', typmod(1))
     call teattr('S', 'TYPMOD2', typmod(2))
-    axi       = typmod(1).eq.'AXIS'
+    axi = typmod(1) .eq. 'AXIS'
 !
 ! - Get parameters of element
 !
-    call elrefv('RIGI'  , ndim    ,&
-                nnoL    , nnoQ    , nnos,&
-                npg     , jv_poids,&
-                jv_vfL  , jv_vfQ  ,&
-                jv_dfdeL, jv_dfdeQ,&
+    call elrefv('RIGI', ndim, &
+                nnoL, nnoQ, nnos, &
+                npg, jv_poids, &
+                jv_vfL, jv_vfQ, &
+                jv_dfdeL, jv_dfdeQ, &
                 jv_ganoL, jv_ganoQ)
 !
 ! - CALCUL DES ELEMENTS CINEMATIQUES
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLMR', 'L', iddlm)
-    call nmgvmb(ndim, nnoQ, nnoL, npg, axi,&
-                zr(igeom),zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL,&
+    call nmgvmb(ndim, nnoQ, nnoL, npg, axi, &
+                zr(igeom), zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
                 jv_poids, nddl, neps, b, w, ni2ldc)
 !
 ! - TYPE DE PILOTAGE (IDENTIQUE A UNE SELECTION VIA LE NOM DE L'OPTION
@@ -94,7 +94,7 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PDDEPLR', 'L', iddld)
     call jevech('PDEPL0R', 'L', iddl0)
     call jevech('PDEPL1R', 'L', iddl1)
-    call jevech('PCDTAU',  'L', ictau)
+    call jevech('PCDTAU', 'L', ictau)
     call jevech('PCOPILO', 'E', icopil)
     call jevech('PCOMPOR', 'L', icompo)
 !
@@ -107,28 +107,28 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PBORNPI', 'L', iborne)
 !
 !      BORNES POUR LE PILOTAGE (SELON LOIS DE COMPORTEMENT)
-        etamin=zr(iborne+1)
-        etamax=zr(iborne)
+        etamin = zr(iborne+1)
+        etamax = zr(iborne)
 !
 !      NOMBRE DE VARIABLES INTERNES
-        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                     itab=jtab)
-        lgpg = max(jtab(6),1)*jtab(7)
+        lgpg = max(jtab(6), 1)*jtab(7)
     else
-        imate=1
-        icontm=1
-        ivarim=1
-        iborne=1
-        lgpg=0
-        etamin=0.d0
-        etamax=0.d0
-    endif
+        imate = 1
+        icontm = 1
+        ivarim = 1
+        iborne = 1
+        lgpg = 0
+        etamin = 0.d0
+        etamax = 0.d0
+    end if
 !
-    call ngpipe(typilo, npg, neps, nddl, b,&
-                ni2ldc, typmod, zi(imate), zk16(icompo), lgpg,&
-                zr(iddlm), zr(icontm), zr(ivarim), zr(iddld), zr(iddl0),&
+    call ngpipe(typilo, npg, neps, nddl, b, &
+                ni2ldc, typmod, zi(imate), zk16(icompo), lgpg, &
+                zr(iddlm), zr(icontm), zr(ivarim), zr(iddld), zr(iddl0), &
                 zr(iddl1), zr(ictau), etamin, etamax, zr(icopil))
 !
 
-    deallocate(b,w,ni2ldc)
+    deallocate (b, w, ni2ldc)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 module Rom_Datastructure_type
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
@@ -39,17 +39,17 @@ implicit none
 !
     type ROM_DS_Result
 ! ----- Type of result: evol_ther, evol_noli, etc .
-        character(len=16)       :: resultType    = ' '
+        character(len=16)       :: resultType = ' '
 ! ----- Name of datastructure
-        character(len=8)        :: resultName    = ' '
+        character(len=8)        :: resultName = ' '
 ! ----- Number of time steps saved in results
-        integer                 :: nbStore       = 0
+        integer                 :: nbStore = 0
 ! ----- Flag for reduced coordinates table
         aster_logical           :: lTablFromResu = ASTER_FALSE
 ! ----- Reference model
-        character(len=8)        :: modelRefe     = ' '
+        character(len=8)        :: modelRefe = ' '
 ! ----- Reference behaviour
-        character(len=24)       :: comporRefe    = ' '
+        character(len=24)       :: comporRefe = ' '
     end type ROM_DS_Result
 !
 ! - Datastructure to save reduced coordinates
@@ -60,16 +60,16 @@ implicit none
 ! ----- Flag if table is given by user
         aster_logical          :: lTablFromUser = ASTER_FALSE
 ! ----- Name of table when given by user
-        character(len=8)       :: tablUserName  = ' '
+        character(len=8)       :: tablUserName = ' '
 ! ----- Values of reduced coordinates
-        real(kind=8), pointer  :: coorRedu(:)   => null()
+        real(kind=8), pointer  :: coorRedu(:) => null()
     end type ROM_DS_TablReduCoor
 !
 ! - Datastructure to select snapshots
 !
     type ROM_DS_Snap
 ! ----- Number of snapshots
-        integer           :: nbSnap   = 0
+        integer           :: nbSnap = 0
 ! ----- List of snapshots
         integer, pointer  :: listSnap(:) => null()
     end type ROM_DS_Snap
@@ -78,15 +78,15 @@ implicit none
 !
     type ROM_DS_LineicNumb
 ! ----- Number of slices
-        integer           :: nbSlice        = 0
+        integer           :: nbSlice = 0
 ! ----- For each node => which slice ?
-        integer, pointer  :: numeSlice(:)   => null()
+        integer, pointer  :: numeSlice(:) => null()
 ! ----- For each node => which IN slice ?
         integer, pointer  :: numeSection(:) => null()
 ! ----- Tolerance for separating nodes
-        real(kind=8)      :: toleNode       = 1.d-7
+        real(kind=8)      :: toleNode = 1.d-7
 ! ----- Number of components by node
-        integer           :: nbCmp          = 0
+        integer           :: nbCmp = 0
     end type ROM_DS_LineicNumb
 !
 ! - Parameters for field
@@ -94,38 +94,38 @@ implicit none
     type ROM_DS_Field
 
 ! ----- Name of field (NOM_CHAM)
-        character(len=24)         :: fieldName      = ' '
+        character(len=24)         :: fieldName = ' '
 
 ! ----- A real field for reference (to manipulate)
-        character(len=24)         :: fieldRefe      = ' '
+        character(len=24)         :: fieldRefe = ' '
 
 ! ----- Type of field (NOEU/ELGA)
-        character(len=4)          :: fieldSupp      = ' '
+        character(len=4)          :: fieldSupp = ' '
 
 ! ----- Model
-        character(len=8)          :: model          = ' '
+        character(len=8)          :: model = ' '
 
 ! ----- Mesh
-        character(len=8)          :: mesh           = ' '
+        character(len=8)          :: mesh = ' '
 
 ! ----- Number of equations
-        integer                   :: nbEqua         = 0
+        integer                   :: nbEqua = 0
 
 ! ----- Components in the field: number and name
         character(len=8), pointer :: listCmpName(:) => null()
-        integer                   :: nbCmpName      = 0
+        integer                   :: nbCmpName = 0
 
 ! ----- For each dof: index of name of components (from listCmpName)
         integer, pointer          :: equaCmpName(:) => null()
 
 ! ----- Flag if has Lagrange multipliers
-        aster_logical             :: lLagr          = ASTER_FALSE
+        aster_logical             :: lLagr = ASTER_FALSE
 
 ! ----- Filter to apply on field
-        aster_logical             :: lFilter        = ASTER_FALSE
+        aster_logical             :: lFilter = ASTER_FALSE
 
 ! ----- For each equation: 1 to keep this component
-        integer, pointer          :: equaFilter(:)  => null()
+        integer, pointer          :: equaFilter(:) => null()
 
     end type ROM_DS_Field
 !
@@ -137,17 +137,17 @@ implicit none
 ! ----- Datastructure for mode
         type(ROM_DS_Field)      :: mode
 ! ----- Type of reduced base
-        character(len=8)        :: baseType   = ' '
+        character(len=8)        :: baseType = ' '
 ! ----- Direction of the linear model
         character(len=8)        :: lineicAxis = ' '
 ! ----- First section of the linear model
         character(len=24)       :: lineicSect = ' '
 ! ----- Number of modes in base
-        integer                 :: nbMode     = 0
+        integer                 :: nbMode = 0
 ! ----- Number of modes max
         integer                 :: nbModeMaxi = 0
 ! ----- Number of snapshots when created base
-        integer                 :: nbSnap     = 0
+        integer                 :: nbSnap = 0
 ! ----- Datastructure for lineic base numbering
         type(ROM_DS_LineicNumb) :: lineicNume
     end type ROM_DS_Empi
@@ -166,38 +166,38 @@ implicit none
         type(ROM_DS_Empi)          :: base
 
 ! ----- Flag when field is solution of a linear system (primal variable)
-        aster_logical              :: lLinearSolve          = ASTER_FALSE
+        aster_logical              :: lLinearSolve = ASTER_FALSE
 
 ! ----- Name of operation
-        character(len=24)          :: operation             = ' '
+        character(len=24)          :: operation = ' '
 
 ! ----- RID_Total = RID_Trunc + RID_Interface
 
 ! ----- Flag to truncate RID
-        aster_logical              :: lRIDTrunc             = ASTER_FALSE
+        aster_logical              :: lRIDTrunc = ASTER_FALSE
 
 ! ----- Name of GROUP_NO RID_Interface (when lRIDTrunc = .true.)
-        character(len=24)          :: grNodeRIDInterface    = ' '
+        character(len=24)          :: grNodeRIDInterface = ' '
 
 ! ----- Number of equations in RID (final: complete or truncated)
-        integer                    :: nbEquaRID             = 0
+        integer                    :: nbEquaRID = 0
 
 ! ----- Access to equations in complete RID  (when lRIDTrunc = .true.)
-        integer                    :: nbEquaRIDTotal        = 0
-        integer, pointer           :: equaRIDTotal(:)       => null()
+        integer                    :: nbEquaRIDTotal = 0
+        integer, pointer           :: equaRIDTotal(:) => null()
 
 ! ----- Access to equation in truncated RID
-        integer                    :: nbEquaRIDTrunc        = 0
-        integer, pointer           :: equaRIDTrunc(:)       => null()
+        integer                    :: nbEquaRIDTrunc = 0
+        integer, pointer           :: equaRIDTrunc(:) => null()
 
 ! ----- [PHI] matrix on RID (size: nbEqua*nbMode)
-        real(kind=8), pointer      :: matrPhi(:)            => null()
+        real(kind=8), pointer      :: matrPhi(:) => null()
 
 ! ----- [PHI] matrix on RID (size: nbEquaRID*nbMode)
-        real(kind=8), pointer      :: matrPhiRID(:)         => null()
+        real(kind=8), pointer      :: matrPhiRID(:) => null()
 
 ! ----- Matrix of reduced coordinates for all numbering store (size: nbStore * nbMode)
-        real(kind=8), pointer      :: reduMatr(:)           => null()
+        real(kind=8), pointer      :: reduMatr(:) => null()
 
 ! ----- Reconstructed field (on all domain) for all numbering store (size: nbStore * nbEqua)
         real(kind=8), pointer      :: fieldTransientVale(:) => null()
@@ -208,7 +208,7 @@ implicit none
 !
     type ROM_DS_ParaRRC
 ! ----- Mesh
-        character(len=8)                 :: mesh          = ' '
+        character(len=8)                 :: mesh = ' '
 
 ! ----- Input result datastructure (ROM)
         type(ROM_DS_Result)              :: resultRom
@@ -217,17 +217,17 @@ implicit none
         type(ROM_DS_Result)              :: resultDom
 
 ! ----- Model for reduced model
-        character(len=8)                 :: modelRom      = ' '
+        character(len=8)                 :: modelRom = ' '
 
 ! ----- Model for complete model
-        character(len=8)                 :: modelDom      = ' '
+        character(len=8)                 :: modelDom = ' '
 
 ! ----- Table in result datastructure
         type(ROM_DS_TablReduCoor)        :: tablReduCoor
 
 ! ----- List of fields to reconstruct
-        integer                          :: nbFieldBuild  = 0
-        character(len=24), pointer       :: fieldName(:)  => null()
+        integer                          :: nbFieldBuild = 0
+        character(len=24), pointer       :: fieldName(:) => null()
         type(ROM_DS_FieldBuild), pointer :: fieldBuild(:) => null()
 
     end type ROM_DS_ParaRRC
@@ -311,55 +311,55 @@ implicit none
 ! - Parameters to solve systems
 !
     type ROM_DS_Solve
-        character(len=1)         :: syst_type      = ' '
+        character(len=1)         :: syst_type = ' '
         character(len=1)         :: syst_matr_type = ' '
         character(len=1)         :: syst_2mbr_type = ' '
-        character(len=19)        :: syst_matr      = ' '
-        character(len=19)        :: syst_2mbr      = ' '
-        character(len=19)        :: syst_solu      = ' '
-        character(len=19)        :: vect_zero      = ' '
-        integer                  :: syst_size      = 0
+        character(len=19)        :: syst_matr = ' '
+        character(len=19)        :: syst_2mbr = ' '
+        character(len=19)        :: syst_solu = ' '
+        character(len=19)        :: vect_zero = ' '
+        integer                  :: syst_size = 0
     end type ROM_DS_Solve
 !
 ! - Parameters for DEFI_BASE_REDUITE operator (POD)
 !
     type ROM_DS_ParaDBR_POD
 ! ----- Name of result to read (high fidelity)
-        character(len=8)           :: resultDomName   = ' '
+        character(len=8)           :: resultDomName = ' '
 
 ! ----- Result to read (high fidelity)
         type(ROM_DS_Result)        :: resultDom
 
 ! ----- Name of field to read (NOM_CHAM)
-        character(len=24)          :: fieldName       = ' '
+        character(len=24)          :: fieldName = ' '
 
 ! ----- Field to read (high fidelity)
         type(ROM_DS_Field)         :: field
-        integer                    :: nbCmpToFilter   = 0
-        character(len=8), pointer  :: cmpToFilter(:)  => null()
-        integer                    :: nbVariToFilter  = 0
+        integer                    :: nbCmpToFilter = 0
+        character(len=8), pointer  :: cmpToFilter(:) => null()
+        integer                    :: nbVariToFilter = 0
         character(len=16), pointer :: variToFilter(:) => null()
 
 ! ----- Type of reduced base
-        character(len=8)           :: baseType        = ' '
+        character(len=8)           :: baseType = ' '
 
 ! ----- Direction of the linear model
-        character(len=8)           :: lineicAxis      = ' '
+        character(len=8)           :: lineicAxis = ' '
 
 ! ----- First section of the linear model
-        character(len=24)          :: lineicSect      = ' '
+        character(len=24)          :: lineicSect = ' '
 
 ! ----- Tolerance for SVD
-        real(kind=8)               :: toleSVD         = 0.d0
+        real(kind=8)               :: toleSVD = 0.d0
 
 ! ----- Tolerance for incremental POD
-        real(kind=8)               :: toleIncr        = 0.d0
+        real(kind=8)               :: toleIncr = 0.d0
 
 ! ----- Table for reduced coordinates
         type(ROM_DS_TablReduCoor)  :: tablReduCoor
 
 ! ----- Maximum number of modes
-        integer                    :: nbModeMaxi      = 0
+        integer                    :: nbModeMaxi = 0
 
 ! ----- Datastructure for snapshot selection
         type(ROM_DS_Snap)          :: snap
@@ -382,14 +382,14 @@ implicit none
         type(ROM_DS_Solve)      :: solveDOM
 ! ----- Index of components FSI transient problem
         integer                 :: nume_pres = 0
-        integer                 :: nume_phi  = 0
+        integer                 :: nume_phi = 0
     end type ROM_DS_AlgoGreedy
 !
 ! - Parameters for DEFI_BASE_REDUITE operator (GREEDY)
 !
     type ROM_DS_ParaDBR_Greedy
 ! ----- Datastructure for solver's parameters
-        character(len=19)       :: solver       = ' '
+        character(len=19)       :: solver = ' '
 
 ! ----- Datastructure for multiparametric problem
         type(ROM_DS_MultiPara)  :: multiPara
@@ -401,7 +401,7 @@ implicit none
         aster_logical           :: lOrthoBase = ASTER_FALSE
 
 ! ----- Flag to stabilize the basis for FSI transient problem
-        aster_logical           :: lStabFSI   = ASTER_FALSE
+        aster_logical           :: lStabFSI = ASTER_FALSE
 
 ! ----- Tolerance for greedy algorithm
         real(kind=8)            :: toleGreedy = 0.d0
@@ -421,19 +421,19 @@ implicit none
         type(ROM_DS_Empi)       :: baseinit
 
 ! ----- Model for truncation
-        character(len=8)        :: modelRom     = ' '
+        character(len=8)        :: modelRom = ' '
 
 ! ----- List of equations into RID
-        integer, pointer        :: equaRom(:)   => null()
+        integer, pointer        :: equaRom(:) => null()
 
 ! ----- Profile of nodal field
-        character(len=24)       :: profChnoRom  = ' '
+        character(len=24)       :: profChnoRom = ' '
 
 ! ----- Number of equation for RID
-        integer                 :: nbEquaRom    = 0
+        integer                 :: nbEquaRom = 0
 
 ! ----- Index of GRANDEUR
-        integer                 :: physNume     = 0
+        integer                 :: physNume = 0
     end type ROM_DS_ParaDBR_Trunc
 !
 ! - Parameters for DEFI_BASE_REDUITE operator (ORTHO)
@@ -446,7 +446,7 @@ implicit none
         type(ROM_DS_Empi)       :: baseinit
 
 ! ----- Parameter for KAHAN-PARLETT algorithm
-        real(kind=8)            :: alpha        = 0.d0
+        real(kind=8)            :: alpha = 0.d0
 
     end type ROM_DS_ParaDBR_Ortho
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
-                        time, itime, dt, depl, vite, fext)
+subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl, &
+                       time, itime, dt, depl, vite, fext)
 
     use lub_module, only: first_bearing, bearing, communicate, init_com_with_edyos
     implicit none
@@ -39,7 +39,6 @@ subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !
 ! =======================================================================
 
-
 #include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -47,121 +46,107 @@ subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/nlget.h"
 #include "asterfort/dtmget.h"
 
-
 !     1. Input / output arguments
-      character(len=*)      , intent(in)  :: sd_dtm_
-      character(len=*)      , intent(in)  :: sd_nl_
-      integer     , pointer  :: buffdtm  (:)
-      integer     , pointer  :: buffnl   (:)
-      real(kind=8), pointer  :: depl     (:)
-      real(kind=8), pointer  :: vite     (:)
-      real(kind=8), pointer :: fext     (:)
-      real(kind=8),           intent(in)  :: time, dt
-      integer               , intent(in)  :: itime
-
-
+    character(len=*), intent(in)  :: sd_dtm_
+    character(len=*), intent(in)  :: sd_nl_
+    integer, pointer  :: buffdtm(:)
+    integer, pointer  :: buffnl(:)
+    real(kind=8), pointer  :: depl(:)
+    real(kind=8), pointer  :: vite(:)
+    real(kind=8), pointer :: fext(:)
+    real(kind=8), intent(in)  :: time, dt
+    integer, intent(in)  :: itime
 
 !     2. Local variable
-      real(kind=8), pointer               :: dplmod   (:)   => null()
-      character(len=8)                    :: sd_dtm, sd_nl
-      integer                             :: i,j, nbmodes
+    real(kind=8), pointer               :: dplmod(:) => null()
+    character(len=8)                    :: sd_dtm, sd_nl
+    integer                             :: i, j, nbmodes
 
+    type(bearing), pointer              :: cb => null()
+    integer, parameter                  :: nddl = 2
 
-      type(bearing), pointer              :: cb => null()
-      integer, parameter                  :: nddl = 2
-
-      real(kind=8)                        :: dtini, tinit, tfin
-      integer                             :: nbpas
-      logical , save                      :: premier_passage = .true.
-
-
-
+    real(kind=8)                        :: dtini, tinit, tfin
+    integer                             :: nbpas
+    logical, save                      :: premier_passage = .true.
 
 !--
 
-      ! thanks for visiting
-      if(.not.associated(first_bearing)) return
+    ! thanks for visiting
+    if (.not. associated(first_bearing)) return
 
-
-
-      call jemarq()
+    call jemarq()
 
 !      print *, "dtform called"
 
-      sd_dtm = sd_dtm_
-      sd_nl = sd_nl_
+    sd_dtm = sd_dtm_
+    sd_nl = sd_nl_
 
-
-      ! this call should be performed from dtmprep_noli_lub not from here !
-      ! but i can't do it since time step is not set when dtmprep_noli_xxx are called
-      !
-      if (premier_passage) then
-            premier_passage = .false.
-            call dtmget(sd_dtm, _DT, rscal = dtini)
-            call dtmget(sd_dtm, _INST_INI, rscal = tinit)
-            call dtmget(sd_dtm, _INST_FIN, rscal = tfin)
-            call dtmget(sd_dtm, _NB_STEPS, iscal = nbpas)
-            call init_com_with_edyos(nbpas, tinit, tfin, dtini)
+    ! this call should be performed from dtmprep_noli_lub not from here !
+    ! but i can't do it since time step is not set when dtmprep_noli_xxx are called
+    !
+    if (premier_passage) then
+        premier_passage = .false.
+        call dtmget(sd_dtm, _DT, rscal=dtini)
+        call dtmget(sd_dtm, _INST_INI, rscal=tinit)
+        call dtmget(sd_dtm, _INST_FIN, rscal=tfin)
+        call dtmget(sd_dtm, _NB_STEPS, iscal=nbpas)
+        call init_com_with_edyos(nbpas, tinit, tfin, dtini)
 !            print *, "NBPAS => ", nbpas
 !            print *, "TINIT => ", tinit
 !            print *, "tfin => ", tfin
 !            print *, "dtinit=>", dtini
-      endif
+    end if
 
+    ! in order to have parallel computing it is better
+    ! to send all information regarding all bearing and then receive
+    ! all responses that's why there is two while loops
 
-      ! in order to have parallel computing it is better
-      ! to send all information regarding all bearing and then receive
-      ! all responses that's why there is two while loops
+    cb => first_bearing
 
-      cb => first_bearing
+    do while (associated(cb))
+        ! retrieve modal basis
+        dplmod => cb%defmod
 
-      do while( associated( cb ) )
-            ! retrieve modal basis
-            dplmod => cb%defmod
+        ! retrieve the number of modes
+        nbmodes = cb%nbmodes
 
-            ! retrieve the number of modes
-            nbmodes = cb%nbmodes
+        cb%depl(:) = 0.0
+        cb%vite(:) = 0.0
+        cb%force(:) = 0.0
 
-            cb%depl(:)  = 0.0
-            cb%vite(:)  = 0.0
-            cb%force(:) = 0.0
-
-            do j=1, nbmodes
-                do i=1, 2
-                    cb%depl(i)= cb%depl(i) + dplmod(nddl*(j-1)+i)*depl(j)
-                    cb%vite(i)= cb%vite(i) + dplmod(nddl*(j-1)+i)*vite(j)
-                end do
+        do j = 1, nbmodes
+            do i = 1, 2
+                cb%depl(i) = cb%depl(i)+dplmod(nddl*(j-1)+i)*depl(j)
+                cb%vite(i) = cb%vite(i)+dplmod(nddl*(j-1)+i)*vite(j)
             end do
+        end do
 
-            cb => cb%next
+        cb => cb%next
 
-      end do
+    end do
 
+    ! send and recieve
+    call communicate(itime+1, time, dt)
 
-      ! send and recieve
-      call communicate(itime+1, time, dt)
+    cb => first_bearing
 
+    do while (associated(cb))
 
-      cb => first_bearing
+        dplmod => cb%defmod
+        nbmodes = cb%nbmodes
 
-      do while ( associated( cb ) )
+        ! now transform force from the physical to modal coordinates
 
-            dplmod => cb%defmod
-            nbmodes = cb%nbmodes
-
-
-            ! now transform force from the physical to modal coordinates
-
-            do j=1, nbmodes
-                do i=1, 2
-                   fext(j) = fext(j) + dplmod(nddl*(j-1)+i)*cb%force(i)
-                end do
+        do j = 1, nbmodes
+            do i = 1, 2
+                fext(j) = fext(j)+dplmod(nddl*(j-1)+i)*cb%force(i)
             end do
+        end do
 
-            cb => cb%next
+        cb => cb%next
 
-      end do
+    end do
 
-      call jedema()
+    call jedema()
 
 end subroutine

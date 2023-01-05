@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
+subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar, &
                   immer)
     implicit none
 !  DESCRIPTION : TENTATIVE D'IMMERSION D'UN NOEUD CABLE X3DCA(3) DANS
@@ -69,29 +69,29 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
-    ii=0
+    ii = 0
 !CCC    POSITION COTE INTERNE PREMIERE FACE (1 PLAN)
-    call cotfac(xyzma, 1, 2, 3, 4,&
+    call cotfac(xyzma, 1, 2, 3, 4, &
                 x3dca(1), id(1))
 !CCC    POSITION COTE INTERNE DEUXIEME FACE (1 PLAN)
     if (id(1) .ge. 0) then
-        ii=ii+1
-        call cotfac(xyzma, 2, 3, 4, 1,&
+        ii = ii+1
+        call cotfac(xyzma, 2, 3, 4, 1, &
                     x3dca(1), id(2))
 !CCC    POSITION COTE INTERNE TROISIEME FACE (1 PLAN)
         if (id(2) .ge. 0) then
-            ii=ii+1
-            call cotfac(xyzma, 3, 4, 1, 2,&
+            ii = ii+1
+            call cotfac(xyzma, 3, 4, 1, 2, &
                         x3dca(1), id(3))
 !CCC    POSITION COTE INTERNE QUATRIEME FACE (1 PLAN)
             if (id(3) .ge. 0) then
-                ii=ii+1
-                call cotfac(xyzma, 1, 2, 4, 3,&
+                ii = ii+1
+                call cotfac(xyzma, 1, 2, 4, 3, &
                             x3dca(1), id(4))
-                if (id(4) .ge. 0) ii=ii+1
-            endif
-        endif
-    endif
+                if (id(4) .ge. 0) ii = ii+1
+            end if
+        end if
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD A L EXTERIEUR DU VOLUME DE LA MAILLE
@@ -100,14 +100,14 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
     if (ii .lt. 4) then
 !
-        immer=-1
+        immer = -1
         goto 999
 !
     else
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        ktest=0
+        ktest = 0
         do j = 1, 4
-            ktest=ktest+id(j)
+            ktest = ktest+id(j)
         end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,16 +119,16 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
             if (nbcnx .eq. 10) then
                 do j = 5, 10, 1
-                    dx = xyzma(1,j) - x3dca(1)
-                    dy = xyzma(2,j) - x3dca(2)
-                    dz = xyzma(3,j) - x3dca(3)
-                    d = dx*dx + dy*dy + dz*dz
+                    dx = xyzma(1, j)-x3dca(1)
+                    dy = xyzma(2, j)-x3dca(2)
+                    dz = xyzma(3, j)-x3dca(3)
+                    d = dx*dx+dy*dy+dz*dz
                     if (d .lt. r8prem()) then
-                        immer=2
+                        immer = 2
                         goto 999
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
 !     TEST D'APPARTENANCE A UN SOUS-DOMAINE TETRAEDRE PAR DETERMINATION
 !     DES COORDONNEES BARYCENTRIQUES (DECOUPAGE D HEXA EN CINQ TETRAS)
@@ -136,13 +136,13 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
 !.....TETRAEDRE 1-2-3-4
 !
             itetra = 1
-            call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 4),&
+            call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 4), &
                         x3dca(1), xbar(1), immer)
             if (immer .ge. 0) goto 999
 !
             if (immer .lt. 0) then
                 call utmess('F', 'MODELISA4_72')
-            endif
+            end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD COINCIDANT AVEC UN NOEUD SOMMET -APPARTIENT A + DE 3 PLANS
@@ -151,11 +151,11 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
         else
 !
-            immer=2
+            immer = 2
             goto 999
 !
-        endif
-    endif
+        end if
+    end if
 !
 !
 999 continue

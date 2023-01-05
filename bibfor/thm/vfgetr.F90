@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vfgetr(xs  , t   , xg ,&
+subroutine vfgetr(xs, t, xg, &
                   surf, norm, xgf, d)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/provec.h"
 !
-real(kind=8), intent(in) :: xs(3, 3), t(3, 2), xg(3)
-real(kind=8), intent(out) :: surf, norm(3), xgf(3), d
+    real(kind=8), intent(in) :: xs(3, 3), t(3, 2), xg(3)
+    real(kind=8), intent(out) :: surf, norm(3), xgf(3), d
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,28 +51,28 @@ real(kind=8), intent(out) :: surf, norm(3), xgf(3), d
 ! --------------------------------------------------------------------------------------------------
 !
     do idim = 1, 3
-        xgf(idim)=0.d0
+        xgf(idim) = 0.d0
         do is = 1, 3
-            xgf(idim)=xgf(idim)+xs(idim,is)
+            xgf(idim) = xgf(idim)+xs(idim, is)
         end do
-        xgf(idim)=xgf(idim)/3
+        xgf(idim) = xgf(idim)/3
     end do
 !
     call provec(t(1, 1), t(1, 2), norm)
-    xnorm   = sqrt(norm(1)**2+norm(2)**2+norm(3)**2)
+    xnorm = sqrt(norm(1)**2+norm(2)**2+norm(3)**2)
     norm(1) = norm(1)/xnorm
     norm(2) = norm(2)/xnorm
     norm(3) = norm(3)/xnorm
-    surf    = xnorm/2.d0
+    surf = xnorm/2.d0
 !
-    d       = (xgf(1)-xg(1))*norm(1)+&
-              (xgf(2)-xg(2))*norm(2)+&
-              (xgf(3)-xg(3))*norm(3)
+    d = (xgf(1)-xg(1))*norm(1)+ &
+        (xgf(2)-xg(2))*norm(2)+ &
+        (xgf(3)-xg(3))*norm(3)
     if (d .lt. 0.d0) then
-        d       = -d
+        d = -d
         norm(1) = -norm(1)
         norm(2) = -norm(2)
         norm(3) = -norm(3)
-    endif
+    end if
 !
 end subroutine

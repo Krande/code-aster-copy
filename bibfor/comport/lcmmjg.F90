@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmjg(nmat, nbcomm, cpmono, hsr,&
-                  dt, nvi, vind, yd, dy,&
-                  itmax, toler, materf, sigf, fkooh,&
-                  nfs, nsg, toutms, pgl, msnst,&
+subroutine lcmmjg(nmat, nbcomm, cpmono, hsr, &
+                  dt, nvi, vind, yd, dy, &
+                  itmax, toler, materf, sigf, fkooh, &
+                  nfs, nsg, toutms, pgl, msnst, &
                   gamsns, dfpdga, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -67,34 +67,34 @@ subroutine lcmmjg(nmat, nbcomm, cpmono, hsr,&
 !     ----------------------------------------------------------------
 !
 !     NSFA : debut de la famille IFA dans DY et YD, YF
-    nsfa=6
+    nsfa = 6
 !     NSFV : debut de la famille IFA dans les variables internes
-    nsfv=6
-    nbfsys=nbcomm(nmat,2)
+    nsfv = 6
+    nbfsys = nbcomm(nmat, 2)
 !     PROGRAMMATION VALABLE POUR UNE SEULE FAMILLE DE SYSTEMES
-    ASSERT(nbfsys.eq.1)
+    ASSERT(nbfsys .eq. 1)
     do ifa = 1, nbfsys
 !        Calcul preliminaire de somme(dgamma*ms*ns)
         call r8inir(9, 0.d0, gamsns, 1)
-        nomfam=cpmono(5*(ifa-1)+1)(1:16)
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+        nomfam = cpmono(5*(ifa-1)+1) (1:16)
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ns, ms, 0, q)
         do is = 1, nbsys
-            call caltau(ifa, is, sigf, fkooh,&
-                        nfs, nsg, toutms, taus, mus,&
+            call caltau(ifa, is, sigf, fkooh, &
+                        nfs, nsg, toutms, taus, mus, &
                         msnst(1, 1, is))
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
-                        hsr, nsfv, nsfa, ifa, nbsys,&
-                        is, dt, nvi, vind, yd,&
-                        dy, itmax, toler, materf, expbp,&
-                        taus, dalpha, dgamma, dp, crit,&
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
+                        hsr, nsfv, nsfa, ifa, nbsys, &
+                        is, dt, nvi, vind, yd, &
+                        dy, itmax, toler, materf, expbp, &
+                        taus, dalpha, dgamma, dp, crit, &
                         sgns, rp, iret)
             call daxpy(9, dgamma, msnst(1, 1, is), 1, gamsns, 1)
         end do
         do is = 1, nbsys
             call caldfp(msnst(1, 1, is), gamsns, dfpdga(1, 1, is), iret)
         end do
-        nsfa=nsfa+nbsys
-        nsfv=nsfv+nbsys*3
+        nsfa = nsfa+nbsys
+        nsfv = nsfv+nbsys*3
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,33 +52,33 @@ subroutine dismff(questi, nomobz, repi, repkz, ierd)
     repi = 0
     ierd = 0
 !
-    nomob=nomobz
+    nomob = nomobz
 !
     if (questi .eq. 'SYME') then
 !
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk24(jinfo-1+1)
 !
-    else if (questi.eq.'CONFIG_INIT') then
+    else if (questi .eq. 'CONFIG_INIT') then
 !
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk24(jinfo-1+2)
 !
-    else if (questi.eq.'TYPE_FOND') then
+    else if (questi .eq. 'TYPE_FOND') then
 !
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk24(jinfo-1+3)
 !
-    else if (questi.eq.'NOM_MAILLA') then
+    else if (questi .eq. 'NOM_MAILLA') then
 !
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk24(jinfo-1+4)
 !
     else
 !
-        ierd=1
+        ierd = 1
 !
-    endif
+    end if
 !
     repkz = repk
     call jedema()

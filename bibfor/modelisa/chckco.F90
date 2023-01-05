@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine chckco(char, noma, ndimg)
 ! --- INITIALISATIONS
 !
     defico = char(1:8)//'.CONTACT'
-    nmaco = cfdisi(defico,'NMACO')
+    nmaco = cfdisi(defico, 'NMACO')
 !
 ! --- BOUCLE SUR LES MAILLES
 !
@@ -88,7 +88,7 @@ subroutine chckco(char, noma, ndimg)
 ! ----- NUMERO ABSOLU DE LA MAILLE
 !
         call cfnumm(defico, posma, numma)
-        call jenuno(jexnum(noma//'.NOMMAI', numma ), nomma)
+        call jenuno(jexnum(noma//'.NOMMAI', numma), nomma)
 !
 ! ----- TYPE DE LA MAILLE
 !
@@ -108,8 +108,8 @@ subroutine chckco(char, noma, ndimg)
 !
 ! ----- TYPE DE MAILLE
 !
-        lpoutr = (alias(1:2).eq.'SE').and.(ndimg.eq.3)
-        lpoint = alias.eq.'PO1'
+        lpoutr = (alias(1:2) .eq. 'SE') .and. (ndimg .eq. 3)
+        lpoint = alias .eq. 'PO1'
 !
 ! ----- BOUCLE SUR LES NOEUDS DE LA MAILLE
 !
@@ -123,19 +123,19 @@ subroutine chckco(char, noma, ndimg)
 ! ------- TYPE DU NOEUD
 !
             call cftypn(defico, posno, typno)
-            if (.not.cfcald(defico,izone ,typno )) then
+            if (.not. cfcald(defico, izone, typno)) then
                 goto 16
-            endif
+            end if
 !
 ! ------- CHOIX DE LA NORMALE SUIVANT UTILISATEUR
 !
             if (typno .eq. 'ESCL') then
-                itype = mminfi(defico,'VECT_ESCL',izone)
-            else if (typno.eq.'MAIT') then
-                itype = mminfi(defico,'VECT_MAIT',izone)
+                itype = mminfi(defico, 'VECT_ESCL', izone)
+            else if (typno .eq. 'MAIT') then
+                itype = mminfi(defico, 'VECT_MAIT', izone)
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! ------- CALCUL DES TANGENTES EN CE NOEUD SI ELEMENT POINT
 !
@@ -145,29 +145,29 @@ subroutine chckco(char, noma, ndimg)
 !
                 if (typma .eq. 'MAIT') then
                     call utmess('F', 'CONTACT3_75', sk=nomma)
-                endif
+                end if
 !
 ! -------- CHOIX DE LA NORMALE SUIVANT UTILISATEUR
 !
-                if ((itype.eq.0) .or. (itype.eq.2)) then
+                if ((itype .eq. 0) .or. (itype .eq. 2)) then
                     call utmess('F', 'CONTACT3_60', sk=nomma)
-                endif
+                end if
                 goto 15
-            endif
+            end if
 !
 ! ------- CALCUL DES TANGENTES EN CE NOEUD SI ELEMENT POUTRE
 !
             if (lpoutr) then
                 if (itype .eq. 0) then
                     call utmess('F', 'CONTACT3_61', sk=nomma)
-                endif
+                end if
                 goto 15
-            endif
+            end if
 !
- 16         continue
+16          continue
 !
         end do
- 15     continue
+15      continue
     end do
 !
     call jedema()

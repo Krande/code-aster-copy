@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine list_grma(mailla,ima,n1,lgrma,nbgrma)
+subroutine list_grma(mailla, ima, n1, lgrma, nbgrma)
     implicit none
 !
 ! person_in_charge: jacques.pellet at edf.fr
@@ -54,31 +54,30 @@ subroutine list_grma(mailla,ima,n1,lgrma,nbgrma)
 !
 !-----------------------------------------------------------------------
     character(len=24) :: nomgrma
-    integer :: nbgroup,igrma,jgrma,nbma,kma,iexi
+    integer :: nbgroup, igrma, jgrma, nbma, kma, iexi
 
 !-----------------------------------------------------------------------
 !
     call jemarq()
 
+    nbgrma = 0
+    call jeexin(mailla//'.GROUPEMA', iexi)
+    if (iexi .eq. 0) goto 999
 
-    nbgrma=0
-    call jeexin(mailla//'.GROUPEMA',iexi)
-    if (iexi.eq.0) goto 999
-
-    call jelira(mailla//'.GROUPEMA','NUTIOC',nbgroup)
-    do igrma=1,nbgroup
-       call jeveuo(jexnum(mailla//'.GROUPEMA', igrma), 'L',jgrma)
-       call jelira(jexnum(mailla//'.GROUPEMA', igrma), 'LONMAX',nbma)
-       do kma=1,nbma
-           if (zi(jgrma-1+kma).eq.ima) then
-               call jenuno(jexnum(mailla//'.PTRNOMMAI', igrma), nomgrma)
-               nbgrma=nbgrma+1
-               lgrma(nbgrma)=nomgrma
-               goto 1
-           endif
-       enddo
-1      continue
-    enddo
+    call jelira(mailla//'.GROUPEMA', 'NUTIOC', nbgroup)
+    do igrma = 1, nbgroup
+        call jeveuo(jexnum(mailla//'.GROUPEMA', igrma), 'L', jgrma)
+        call jelira(jexnum(mailla//'.GROUPEMA', igrma), 'LONMAX', nbma)
+        do kma = 1, nbma
+            if (zi(jgrma-1+kma) .eq. ima) then
+                call jenuno(jexnum(mailla//'.PTRNOMMAI', igrma), nomgrma)
+                nbgrma = nbgrma+1
+                lgrma(nbgrma) = nomgrma
+                goto 1
+            end if
+        end do
+1       continue
+    end do
 
 999 continue
     call jedema()

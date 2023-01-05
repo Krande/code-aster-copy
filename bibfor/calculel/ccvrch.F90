@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,35 +36,35 @@ subroutine ccvrch(resuin, numor0, lforc_noda)
     character(len=8) :: k8b
     character(len=24) :: excisd, modele
 !
-    nchalu=0
+    nchalu = 0
 !
-    if (getexm('EXCIT','CHARGE') .eq. 1) call getfac('EXCIT', nchalu)
+    if (getexm('EXCIT', 'CHARGE') .eq. 1) call getfac('EXCIT', nchalu)
 !
-    call rsadpa(resuin, 'L', 1, 'EXCIT', numor0,&
+    call rsadpa(resuin, 'L', 1, 'EXCIT', numor0, &
                 0, sjv=jpara, styp=k8b)
-    excisd=zk24(jpara)
+    excisd = zk24(jpara)
 !
     if (excisd .eq. ' ') then
         if (nchalu .eq. 0) then
 !
-            call rsadpa(resuin, 'L', 1, 'MODELE', numor0,&
+            call rsadpa(resuin, 'L', 1, 'MODELE', numor0, &
                         0, sjv=jpara, styp=k8b)
-            modele=zk8(jpara)
+            modele = zk8(jpara)
             ! Si on n'a pas de modele dans la sd_resu, ca veut sans doute dire
             ! qu'on est en presence d'une sd issue de la dynamique
             ! Dans ce cas-la l'emission de l'alarme CALCCHAMP_6 a tout son sens
-            if (modele.ne.' ') then
+            if (modele .ne. ' ') then
                 call dismoi('EXI_POUX', modele, 'MODELE', repk=k8b)
             else
                 k8b = 'OUI'
-            endif
+            end if
 !
-            if (k8b.eq.'OUI' .or. lforc_noda) then
+            if (k8b .eq. 'OUI' .or. lforc_noda) then
                 call utmess('A', 'CALCCHAMP_6', sk=resuin)
-            endif
+            end if
         else
             call utmess('A', 'CALCCHAMP_5', sk=resuin)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

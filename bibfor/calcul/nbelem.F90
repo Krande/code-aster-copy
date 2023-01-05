@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 function nbelem(ligrlz, igrel, icalc)
 
-use calcul_module, only : ca_illiel_
+    use calcul_module, only: ca_illiel_
 
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -29,10 +29,10 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jexnum.h"
 
-        character(len=*), intent(in) :: ligrlz
-        integer, intent(in) :: igrel
-        integer, intent(in), optional :: icalc
-        integer :: nbelem
+    character(len=*), intent(in) :: ligrlz
+    integer, intent(in) :: igrel
+    integer, intent(in), optional :: icalc
+    integer :: nbelem
 !-----------------------------------------------------------------------
 !     Entrees:
 !       ligrel (o) : nom d'1 ligrel
@@ -46,16 +46,16 @@ implicit none
     integer :: n1
     character(len=19) :: ligrel
 !-------------------------------------------------------------------
-    ligrel=ligrlz
-    ASSERT(igrel.gt.0)
+    ligrel = ligrlz
+    ASSERT(igrel .gt. 0)
 
 !   -- si on est "sous" calcul, on peut aller plus vite :
     if (present(icalc)) then
-        ASSERT(icalc.eq.1)
-        n1=zi(ca_illiel_-1+igrel+1)-zi(ca_illiel_-1+igrel)
+        ASSERT(icalc .eq. 1)
+        n1 = zi(ca_illiel_-1+igrel+1)-zi(ca_illiel_-1+igrel)
     else
         call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
-    endif
-    nbelem=n1-1
+    end if
+    nbelem = n1-1
 
 end function

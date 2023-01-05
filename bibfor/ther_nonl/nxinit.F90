@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxinit(mesh         , model   , mate       ,&
-                  cara_elem    , compor  , list_load  ,&
-                  para         , nume_dof, &
-                  sddisc       , ds_inout, sdobse     ,&
-                  sdcrit       , time    , ds_algopara,&
-                  ds_algorom   , ds_print, vhydr      ,&
-                  l_stat       , l_evol  , l_rom      ,&
+subroutine nxinit(mesh, model, mate, &
+                  cara_elem, compor, list_load, &
+                  para, nume_dof, &
+                  sddisc, ds_inout, sdobse, &
+                  sdcrit, time, ds_algopara, &
+                  ds_algorom, ds_print, vhydr, &
+                  l_stat, l_evol, l_rom, &
                   l_line_search, lnkry)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ntcrob.h"
@@ -46,21 +46,21 @@ implicit none
 #include "asterfort/romAlgoNLInit.h"
 #include "asterfort/nonlinDSPrintInit.h"
 !
-character(len=24), intent(in) :: model, mate, cara_elem, compor
-character(len=19), intent(in) :: list_load
-real(kind=8), intent(in) :: para(*)
-character(len=24), intent(out) :: nume_dof
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: sddisc
-type(NL_DS_InOut), intent(inout) :: ds_inout
-character(len=19), intent(out) :: sdobse
-character(len=19), intent(in) :: sdcrit
-character(len=24), intent(out) :: time
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
-type(NL_DS_Print), intent(inout) :: ds_print
-character(len=24), intent(in) :: vhydr
-aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
+    character(len=24), intent(in) :: model, mate, cara_elem, compor
+    character(len=19), intent(in) :: list_load
+    real(kind=8), intent(in) :: para(*)
+    character(len=24), intent(out) :: nume_dof
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    character(len=19), intent(out) :: sdobse
+    character(len=19), intent(in) :: sdcrit
+    character(len=24), intent(out) :: time
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=24), intent(in) :: vhydr
+    aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,12 +105,12 @@ aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
     l_stat = ASTER_FALSE
     l_evol = ASTER_FALSE
     result = ds_inout%result
-    time   = result(1:8)//'.CHTPS'
+    time = result(1:8)//'.CHTPS'
 !
 ! - Active functionnalities
 !
-    l_rom         = ds_algorom%l_rom
-    lnkry         = ds_algopara%method == 'NEWTON_KRYLOV'
+    l_rom = ds_algorom%l_rom
+    lnkry = ds_algopara%method == 'NEWTON_KRYLOV'
     l_line_search = ds_algopara%line_search%iter_maxi .gt. 0
 !
 ! - Create numbering
@@ -131,8 +131,8 @@ aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
 !
 ! - Create input/output datastructure
 !
-    call ntetcr(nume_dof , ds_inout,&
-                list_load, compor  , vhydr, hydr_init)
+    call ntetcr(nume_dof, ds_inout, &
+                list_load, compor, vhydr, hydr_init)
 !
 ! - Read initial state
 !
@@ -142,7 +142,7 @@ aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
 !
     if (l_rom) then
         call romAlgoNLInit('THER', model, mesh, nume_dof, result, ds_algorom, l_line_search)
-    endif
+    end if
 !
 ! - Initializations for printing
 !
@@ -158,12 +158,12 @@ aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
 !
 ! - Create observation datastructure
 !
-    call ntcrob(mesh  , model, result, sddisc, ds_inout,&
+    call ntcrob(mesh, model, result, sddisc, ds_inout, &
                 sdobse)
 !
 ! - Prepare storing
 !
-    call nxnoli(model, mate  , cara_elem, l_stat  , l_evol    ,&
-                para , sddisc, sdcrit   , ds_inout, ds_algorom)
+    call nxnoli(model, mate, cara_elem, l_stat, l_evol, &
+                para, sddisc, sdcrit, ds_inout, ds_algorom)
 !
 end subroutine

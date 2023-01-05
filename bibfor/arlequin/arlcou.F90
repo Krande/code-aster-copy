@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arlcou(mail  ,iocc   ,nomo  ,typmai,        &
-    nom1  ,nom2  ,cine  , &
-    dime, lisrel, charge)
-
-
+subroutine arlcou(mail, iocc, nomo, typmai, &
+                  nom1, nom2, cine, &
+                  dime, lisrel, charge)
 
     implicit none
 
@@ -33,12 +31,12 @@ subroutine arlcou(mail  ,iocc   ,nomo  ,typmai,        &
 !     ARGUMENTS:
 !     ----------
     character(len=24) :: typmai
-    character(len=8) ::  mail,nomo
+    character(len=8) ::  mail, nomo
     character(len=8) ::  charge
     character(len=19) :: lisrel
-    character(len=10) :: nom1,nom2
+    character(len=10) :: nom1, nom2
     character(len=8) ::  cine(3)
-    integer ::      dime,iocc
+    integer ::      dime, iocc
 
 ! ----------------------------------------------------------------------
 
@@ -49,7 +47,6 @@ subroutine arlcou(mail  ,iocc   ,nomo  ,typmai,        &
 
 ! ----------------------------------------------------------------------
 
-
 ! IN  MAIL   : NOM DU MAILLAGE
 ! IN  NOMO   : NOM DU MODELE
 ! IN  TYPMAI : SD CONTENANT NOM DES TYPES ELEMENTS (&&CATA.NOMTM)
@@ -58,13 +55,12 @@ subroutine arlcou(mail  ,iocc   ,nomo  ,typmai,        &
 ! IN  CINE   : CINEMATIQUES DES GROUPES DE MAILLE
 ! IN  DIME   : DIMENSION DE L'ESPACE GLOBAL (2 OU 3)
 
-
 ! ----------------------------------------------------------------------
 
-    character(len=10) :: nomgr1,nomgr2
-    character(len=8) ::  cine1,cine2
-    integer ::      nbma1,nbma2
-    character(len=19) :: ngrm1,ngrm2
+    character(len=10) :: nomgr1, nomgr2
+    character(len=8) ::  cine1, cine2
+    integer ::      nbma1, nbma2
+    character(len=19) :: ngrm1, ngrm2
     character(len=8) ::  k8bid
 
 ! ----------------------------------------------------------------------
@@ -74,20 +70,19 @@ subroutine arlcou(mail  ,iocc   ,nomo  ,typmai,        &
 
     nomgr1 = nom1
     nomgr2 = nom2
-    cine1  = cine(1)
-    cine2  = cine(2)
+    cine1 = cine(1)
+    cine2 = cine(2)
 
 ! --- CALCUL DES MATRICES DE COUPLAGE ELEMENTAIRE ARLEQUIN
 
-
     ngrm1 = nom1(1:10)//'.GROUPEMA'
     ngrm2 = nom2(1:10)//'.GROUPEMA'
-    call jelira(ngrm1,'LONMAX',nbma1,k8bid)
-    call jelira(ngrm2,'LONMAX',nbma2,k8bid)
+    call jelira(ngrm1, 'LONMAX', nbma1, k8bid)
+    call jelira(ngrm2, 'LONMAX', nbma2, k8bid)
 
-    call arlcpl(iocc ,nbma1 ,nbma2 , &
-                mail  ,nomo  ,typmai,        &
-                nomgr1,nomgr2,dime, lisrel, charge)
+    call arlcpl(iocc, nbma1, nbma2, &
+                mail, nomo, typmai, &
+                nomgr1, nomgr2, dime, lisrel, charge)
 
     call jedema()
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
+subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc, &
                   jsmdi, nbi1, ti1, ti2)
     implicit none
 #include "asterf_types.h"
@@ -41,78 +41,78 @@ subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
     integer :: ili, jco, icoefc, icoefl, i, ncoefc, nubloc, k, i1, i2
 ! -----------------------------------------------------------------
     do k = 1, nbi1
-        i1=ti1(k)
-        i2=ti2(k)
+        i1 = ti1(k)
+        i2 = ti2(k)
 !
         if (i1 .le. i2) then
-            ili=i1
-            jco=i2
-            nubloc=1
+            ili = i1
+            jco = i2
+            nubloc = 1
         else
-            ili=i2
-            jco=i1
-            nubloc=2
-        endif
-        if (lmasym) nubloc=1
+            ili = i2
+            jco = i1
+            nubloc = 2
+        end if
+        if (lmasym) nubloc = 1
 !
         if (jco .eq. 1) then
-            icoefc=0
+            icoefc = 0
         else
-            icoefc=zi(jsmdi+jco-2)
-        endif
-        ncoefc=zi(jsmdi+jco-1)-icoefc
+            icoefc = zi(jsmdi+jco-2)
+        end if
+        ncoefc = zi(jsmdi+jco-1)-icoefc
 !
 !
 !     -- CALCUL DE ICOEFL :
 !     ------------------------------------------
-        icoefl=0
+        icoefl = 0
         if (.false._1) then
 !         -- RECHERCHE BESTIALE :
             do i = 1, ncoefc
                 if (zi4(jsmhc-1+icoefc+i) .eq. ili) then
-                    icoefl=i
+                    icoefl = i
                     goto 40
 !
-                endif
+                end if
             end do
 !
         else
 !          -- RECHERCHE PAR DICHOTOMIE :
-            ideb=1
-            ifin=ncoefc
- 20         continue
+            ideb = 1
+            ifin = ncoefc
+20          continue
             if (ifin-ideb .lt. 5) then
                 do i = ideb, ifin
                     if (zi4(jsmhc-1+icoefc+i) .eq. ili) then
-                        icoefl=i
+                        icoefl = i
                         goto 40
 !
-                    endif
+                    end if
                 end do
-            endif
-            imil=(ideb+ifin)/2
+            end if
+            imil = (ideb+ifin)/2
             if (zi4(jsmhc-1+icoefc+imil) .gt. ili) then
-                ifin=imil
+                ifin = imil
             else
-                ideb=imil
-            endif
+                ideb = imil
+            end if
             goto 20
 !
-        endif
+        end if
 !       IF (ICOEFL.EQ.0) CALL UTMESS('F','MODELISA_67')
 !
 !
- 40     continue
+40      continue
 !
 !     -- NBTERM COMPTE LES REELS TRAITES:
-        nbterm=nbterm+1
+        nbterm = nbterm+1
         if (2*nbterm .gt. lgtmp2) then
-            lgtmp2=2*lgtmp2
+            lgtmp2 = 2*lgtmp2
             call juveca('&&ASSMAM.TMP2', lgtmp2)
 !         -- IL NE FAUT PAS QUE .TMP2 SOIT LIBERE :
             call jeveut('&&ASSMAM.TMP2', 'E', jtmp2)
-        endif
-        zi(jtmp2-1+(nbterm-1)*2+1)=nubloc
-        zi(jtmp2-1+(nbterm-1)*2+2)=icoefc+icoefl
+        end if
+        zi(jtmp2-1+(nbterm-1)*2+1) = nubloc
+        zi(jtmp2-1+(nbterm-1)*2+2) = icoefc+icoefl
     end do
 end subroutine

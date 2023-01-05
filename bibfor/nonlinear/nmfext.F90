@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmfext(eta, fonact, veasse, cnfext, ds_contact_, sddynz_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,12 +42,12 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "asterfort/utmess.h"
 !
-real(kind=8) :: eta
-integer :: fonact(*)
-character(len=19) :: veasse(*)
-type(NL_DS_Contact), optional, intent(in) :: ds_contact_
-character(len=19) :: cnfext
-character(len=*), optional, intent(in) :: sddynz_
+    real(kind=8) :: eta
+    integer :: fonact(*)
+    character(len=19) :: veasse(*)
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
+    character(len=19) :: cnfext
+    character(len=*), optional, intent(in) :: sddynz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,48 +81,48 @@ character(len=*), optional, intent(in) :: sddynz_
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_44')
-    endif
+    end if
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lctcd = isfonc(fonact,'CONT_DISCRET' )
-    lunil = isfonc(fonact,'LIAISON_UNILATER')
-    lallv = isfonc(fonact,'CONT_ALL_VERIF' )
-    l_pilo = isfonc(fonact,'PILOTAGE')
+    lctcd = isfonc(fonact, 'CONT_DISCRET')
+    lunil = isfonc(fonact, 'LIAISON_UNILATER')
+    lallv = isfonc(fonact, 'CONT_ALL_VERIF')
+    l_pilo = isfonc(fonact, 'PILOTAGE')
 !
 ! --- INITIALISATIONS
 !
-    sddyna    = ' '
+    sddyna = ' '
     if (present(sddynz_)) then
         sddyna = sddynz_
-    endif
+    end if
     ifdo = 0
     cnffdo = '&&CNCHAR.FFDO'
     cnffpi = '&&CNCHAR.FFPI'
     cnfvdo = '&&CNCHAR.FVDO'
     cnvady = '&&CNCHAR.FVDY'
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     call vtzero(cnfext)
 !
 ! --- FORCES DE CONTACT DISCRET
 !
-    if (lctcd .and. (.not.lallv)) then
-        ifdo = ifdo + 1
+    if (lctcd .and. (.not. lallv)) then
+        ifdo = ifdo+1
         coef(ifdo) = -1.d0
         vect(ifdo) = ds_contact_%cnctdc
-    endif
+    end if
 !
 ! --- FORCES DE LIAISON_UNILATER
 !
     if (lunil) then
 !    On desactive pour l'instant en penalisation
         l_unil_pena = cfdisl(ds_contact_%sdcont_defi, 'UNIL_PENA')
-        if (.not.l_unil_pena) then
-            ifdo = ifdo + 1
+        if (.not. l_unil_pena) then
+            ifdo = ifdo+1
             coef(ifdo) = -1.d0
             vect(ifdo) = ds_contact_%cnunil
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get dead Neumann loads and multi-step dynamic schemes forces
 !
@@ -135,16 +135,16 @@ character(len=*), optional, intent(in) :: sddynz_
 ! - Get undead Neumann loads for dynamic
 !
     if (ldyna) then
-        coeequ = ndynre(sddyna,'COEF_MPAS_EQUI_COUR')
+        coeequ = ndynre(sddyna, 'COEF_MPAS_EQUI_COUR')
         call ndasva(sddyna, veasse, cnvady)
-    endif
+    end if
 !
 ! --- CHARGEMENTS EXTERIEURS DONNEES
 !
-    ifdo = ifdo + 1
+    ifdo = ifdo+1
     coef(ifdo) = 1.d0
     vect(ifdo) = cnffdo
-    ifdo = ifdo + 1
+    ifdo = ifdo+1
     coef(ifdo) = 1.d0
     vect(ifdo) = cnfvdo
 !
@@ -152,24 +152,24 @@ character(len=*), optional, intent(in) :: sddynz_
 !
     if (l_pilo) then
         call nmchex(veasse, 'VEASSE', 'CNFEPI', cnffpi)
-        ifdo = ifdo + 1
+        ifdo = ifdo+1
         coef(ifdo) = eta
         vect(ifdo) = cnffpi
-    endif
+    end if
 !
 ! --- TERMES DE RAPPEL DYNAMIQUE
 !
     if (ldyna) then
-        ifdo = ifdo + 1
+        ifdo = ifdo+1
         coef(ifdo) = coeequ
         vect(ifdo) = cnvady
-    endif
+    end if
 !
 ! --- VECTEUR RESULTANT
 !
     if (ifdo .gt. 20) then
         ASSERT(.false.)
-    endif
+    end if
     do n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cnfext)
     end do
@@ -178,7 +178,7 @@ character(len=*), optional, intent(in) :: sddynz_
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', cnfext, ifm)
-    endif
+    end if
 !
     call jedema()
 end subroutine

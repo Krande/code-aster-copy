@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcsmelas(fm    , df     , dtaudf, &
-                    nmat  , materd_, young_, nu_)
+subroutine lcsmelas(fm, df, dtaudf, &
+                    nmat, materd_, young_, nu_)
 !
-implicit none
+    implicit none
 !
 #include "blas/ddot.h"
 #include "asterfort/assert.h"
@@ -55,16 +55,16 @@ implicit none
     real(kind=8) :: jp, dj, jm, dfb(3, 3)
     real(kind=8) :: djdf(3, 3), dbtrdf(6, 3, 3)
 !
-    common /gdsmc/&
-     &            bem,betr,dvbetr,eqbetr,trbetr,&
-     &            jp,dj,jm,dfb,&
-     &            djdf,dbtrdf,&
-     &            kr,id,rac2,rc,ind,ind1,ind2
+    common/gdsmc/&
+     &            bem, betr, dvbetr, eqbetr, trbetr,&
+     &            jp, dj, jm, dfb,&
+     &            djdf, dbtrdf,&
+     &            kr, id, rac2, rc, ind, ind1, ind2
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dtaudf(:,:,:) = 0.d0
-    em(:)         = 0.d0
+    dtaudf(:, :, :) = 0.d0
+    em(:) = 0.d0
 !
 ! - Some initialisations
 !
@@ -77,15 +77,15 @@ implicit none
 ! - Material properties
 !
     if (present(materd_)) then
-        young  = materd_(1,1)
-        nu     = materd_(2,1)
+        young = materd_(1, 1)
+        nu = materd_(2, 1)
     else
-        young  = young_
-        nu     = nu_
-    endif
+        young = young_
+        nu = nu_
+    end if
     troisk = young/(1.d0-2.d0*nu)
-    mu     = young/(2.d0*(1.d0+nu))
-    unk    = troisk/3.d0
+    mu = young/(2.d0*(1.d0+nu))
+    unk = troisk/3.d0
 !
 ! - Prepare matrix
 !
@@ -93,13 +93,13 @@ implicit none
 !
     do ij = 1, 6
         do kl = 1, 6
-            dvbbtr(ij,kl)= (id(ij,kl)-kr(ij)*kr(kl)/3.d0)
+            dvbbtr(ij, kl) = (id(ij, kl)-kr(ij)*kr(kl)/3.d0)
         end do
     end do
     do ij = 1, 6
         do k = 1, 3
             do l = 1, 3
-                dvbedf(ij,k,l) = ddot(6,dvbbtr(ij,1),6,dbtrdf(1,k,l), 1)
+                dvbedf(ij, k, l) = ddot(6, dvbbtr(ij, 1), 6, dbtrdf(1, k, l), 1)
             end do
         end do
     end do
@@ -111,7 +111,7 @@ implicit none
     do ij = 1, 6
         do k = 1, 3
             do l = 1, 3
-                dtaudf(ij,k,l) = dtaudb*dvbedf(ij,k,l) + dtaudj*kr(ij)*djdf(k,l)
+                dtaudf(ij, k, l) = dtaudb*dvbedf(ij, k, l)+dtaudj*kr(ij)*djdf(k, l)
             end do
         end do
     end do

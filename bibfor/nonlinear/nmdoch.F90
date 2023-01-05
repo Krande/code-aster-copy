@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
                   ligrel_slav, ligrel_cont)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,11 +47,11 @@ implicit none
 #include "asterfort/loadGetNeumannType.h"
 #include "asterfort/loadExcludedForAnalysis.h"
 !
-character(len=19), intent(in) :: list_load
-aster_logical, intent(in) :: l_load_user
-aster_logical, optional, intent(in) :: l_calc_user
-character(len=19), optional, intent(in) :: list_load_resu_, ligrel_slav, ligrel_cont
-character(len=1), optional, intent(in) :: base
+    character(len=19), intent(in) :: list_load
+    aster_logical, intent(in) :: l_load_user
+    aster_logical, optional, intent(in) :: l_calc_user
+    character(len=19), optional, intent(in) :: list_load_resu_, ligrel_slav, ligrel_cont
+    character(len=1), optional, intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,147 +93,147 @@ character(len=1), optional, intent(in) :: base
     call jemarq()
     call getres(k8bid, typesd, nomcmd)
     bas = 'V'
-    if( present(base) ) then
+    if (present(base)) then
         bas = base
-    endif
+    end if
 !
 ! - Initializations
 !
-    l_stat         = nomcmd .eq. 'STAT_NON_LINE'
+    l_stat = nomcmd .eq. 'STAT_NON_LINE'
     list_load_resu = ' '
     if (present(list_load_resu_)) then
         list_load_resu = list_load_resu_
-    endif
-    nb_load        = 0
-    nb_load_cont   = 0
-    const_func     = '&&NMDOME'
-    lisdbl         = '&&NMDOME.LISDBL'
-    l_func_c       = ASTER_FALSE
-    info_type      = 'RIEN'
-    npilo          = 0
-    i_excit        = 0
-    i_load_new     = 0
-    i_diri_suiv    = 0
+    end if
+    nb_load = 0
+    nb_load_cont = 0
+    const_func = '&&NMDOME'
+    lisdbl = '&&NMDOME.LISDBL'
+    l_func_c = ASTER_FALSE
+    info_type = 'RIEN'
+    npilo = 0
+    i_excit = 0
+    i_load_new = 0
+    i_diri_suiv = 0
     l_diri_undead = ASTER_FALSE
 !
 ! - Command for computation ?
 !
-    if(present(l_calc_user)) then
+    if (present(l_calc_user)) then
         l_calc = l_calc_user
     else
-        l_calc = nomcmd.eq.'DYNA_NON_LINE'.or.&
-                nomcmd.eq.'STAT_NON_LINE'.or.&
-                nomcmd.eq.'MECA_STATIQUE'.or.&
-                nomcmd.eq.'CALC_FORC_NONL'.or.&
-                nomcmd.eq.'DYNA_VIBRA'
+        l_calc = nomcmd .eq. 'DYNA_NON_LINE' .or. &
+                 nomcmd .eq. 'STAT_NON_LINE' .or. &
+                 nomcmd .eq. 'MECA_STATIQUE' .or. &
+                 nomcmd .eq. 'CALC_FORC_NONL' .or. &
+                 nomcmd .eq. 'DYNA_VIBRA'
     end if
 !
 ! - Get model
 !
-    model=' '
+    model = ' '
     if (nomcmd .ne. 'CREA_RESU') then
         call getvid(' ', 'MODELE', scal=model, nbret=n1)
-    endif
+    end if
 !
 ! - Can we create "zero-load" list of loads datastructure ?
 !
     l_zero_allowed = ASTER_FALSE
     if (l_load_user) then
-        l_zero_allowed = nomcmd.eq.'DYNA_NON_LINE'.or.&
-                         nomcmd.eq.'STAT_NON_LINE'.or.&
-                         nomcmd.eq.'MECA_STATIQUE'.or.&
-                         nomcmd.eq.'CALC_FORC_NONL'.or.&
-                         nomcmd.eq.'CALC_CHAMP'.or.&
-                         nomcmd.eq.'POST_ELEM'.or.&
-                         nomcmd.eq.'LIRE_RESU'.or.&
-                         nomcmd.eq.'CREA_RESU'
+        l_zero_allowed = nomcmd .eq. 'DYNA_NON_LINE' .or. &
+                         nomcmd .eq. 'STAT_NON_LINE' .or. &
+                         nomcmd .eq. 'MECA_STATIQUE' .or. &
+                         nomcmd .eq. 'CALC_FORC_NONL' .or. &
+                         nomcmd .eq. 'CALC_CHAMP' .or. &
+                         nomcmd .eq. 'POST_ELEM' .or. &
+                         nomcmd .eq. 'LIRE_RESU' .or. &
+                         nomcmd .eq. 'CREA_RESU'
     else
         l_zero_allowed = ASTER_TRUE
-    endif
+    end if
 !
 ! - Get number of loads for loads datastructure
 !
-    call nmdoch_nbload(l_load_user, list_load_resu, l_zero_allowed, nb_load,&
+    call nmdoch_nbload(l_load_user, list_load_resu, l_zero_allowed, nb_load, &
                        load_keyword)
 !
 ! - Get number of contact ligrel for loads datastructure
 !
-    if(present(ligrel_slav) .and. ligrel_slav.ne.' ') then
-        nb_load_cont = nb_load_cont + 1
+    if (present(ligrel_slav) .and. ligrel_slav .ne. ' ') then
+        nb_load_cont = nb_load_cont+1
     end if
-    if(present(ligrel_cont) .and. ligrel_cont.ne.' ') then
-        nb_load_cont = nb_load_cont + 1
+    if (present(ligrel_cont) .and. ligrel_cont .ne. ' ') then
+        nb_load_cont = nb_load_cont+1
     end if
 !
 ! - Create "zero-load" list of loads datastructure
 !
-    if (nb_load + nb_load_cont .eq. 0) then
+    if (nb_load+nb_load_cont .eq. 0) then
         call lisccr('MECA', list_load, 1, bas)
         call jeveuo(list_load(1:19)//'.INFC', 'E', vi=v_ll_infc)
         v_ll_infc(1) = 1
-    endif
+    end if
 !
 ! - Access to saved list of loads datastructure
 !
-    if (.not.l_load_user) then
-        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi   = v_llresu_info)
-        call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24 = v_llresu_name)
-    endif
+    if (.not. l_load_user) then
+        call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi=v_llresu_info)
+        call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24=v_llresu_name)
+    end if
 !
-    if (nb_load + nb_load_cont .ne. 0) then
+    if (nb_load+nb_load_cont .ne. 0) then
         ASSERT(load_keyword .ne. 'None')
 !
 ! ----- Create list of loads
 !
-        call lisccr('MECA', list_load, nb_load + nb_load_cont, bas)
+        call lisccr('MECA', list_load, nb_load+nb_load_cont, bas)
 !
 ! ----- List of loads to avoid same loads
 !
-        AS_ALLOCATE(vk8 = v_list_dble, size = nb_load)
+        AS_ALLOCATE(vk8=v_list_dble, size=nb_load)
 !
 ! ----- Loop on loads
 !
         do i_load = 1, nb_load
 !
-            if (.not.l_load_user) then
-                if ( v_llresu_name(i_load).eq.' ' ) cycle
-            endif
+            if (.not. l_load_user) then
+                if (v_llresu_name(i_load) .eq. ' ') cycle
+            end if
 !
 ! --------- Get parameters for construct list of loads
 !
-            call load_list_getp('MECA'      , l_load_user , v_llresu_info, v_llresu_name,&
-                                v_list_dble , load_keyword, i_load       , nb_load      ,&
-                                i_excit     , load_name   , load_type    , ligrch       ,&
+            call load_list_getp('MECA', l_load_user, v_llresu_info, v_llresu_name, &
+                                v_list_dble, load_keyword, i_load, nb_load, &
+                                i_excit, load_name, load_type, ligrch, &
                                 load_apply)
 !
 ! --------- Check model / model of load
 !
-            if (n1.eq.1 .and. model.ne.' ') then
+            if (n1 .eq. 1 .and. model .ne. ' ') then
                 call dismoi('NOM_MODELE', load_name, 'CHARGE', repk=load_model)
                 if (load_model .ne. model) then
                     call utmess('F', 'CHARGES_33', nk=3, valk=[load_name, load_model, model])
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- Get function applied to load
 !
             if (nomcmd(1:10) .eq. 'DYNA_VIBRA') then
                 call getvtx(' ', 'TYPE_CALCUL', iocc=1, scal=typcal)
-                l_func_c = (typcal.eq.'HARM')
+                l_func_c = (typcal .eq. 'HARM')
             else
-                l_func_c = (nomcmd.eq.'LIRE_RESU' .and. typesd.eq.'DYNA_HARMO' )
+                l_func_c = (nomcmd .eq. 'LIRE_RESU' .and. typesd .eq. 'DYNA_HARMO')
             end if
-            call lislfc(list_load_resu, i_load      , i_excit   , l_load_user,&
-                        l_func_c      , load_keyword, const_func, load_func, bas)
+            call lislfc(list_load_resu, i_load, i_excit, l_load_user, &
+                        l_func_c, load_keyword, const_func, load_func, bas)
 !
 ! --------- Check loads "PILOTAGE"
 !
             if (load_apply .eq. 'FIXE_PILO' .or. load_apply .eq. 'SUIV_PILO') then
-                npilo = npilo + 1
+                npilo = npilo+1
                 if (load_func .ne. const_func) then
                     call utmess('F', 'CHARGES_38', sk=load_name)
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- Dirichlet loads (AFFE_CHAR_CINE)
 !
@@ -249,20 +249,20 @@ character(len=1), optional, intent(in) :: base
                 else if (load_apply .eq. 'FIXE_CSTE') then
                     if (load_type(5:7) .eq. '_FT') then
                         info_type = 'CINE_FT'
-                    else if (load_type(5:7).eq.'_FO') then
+                    else if (load_type(5:7) .eq. '_FO') then
                         info_type = 'CINE_FO'
                     else
                         info_type = 'CINE_CSTE'
-                    endif
+                    end if
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
             if (info_type .ne. 'RIEN') then
-                nb_info_type = nb_info_type + 1
-                ASSERT(nb_info_type.lt.nb_info_maxi)
+                nb_info_type = nb_info_type+1
+                ASSERT(nb_info_type .lt. nb_info_maxi)
                 list_info_type(nb_info_type) = info_type
-            endif
+            end if
 !
 ! --------- Dirichlet loads (AFFE_CHAR_MECA)
 !
@@ -272,50 +272,50 @@ character(len=1), optional, intent(in) :: base
             if (iret .ne. 0) then
                 call dismoi('PARA_INST', lchin, 'CARTE', repk=func_para_inst)
                 if (load_apply .eq. 'SUIV') then
-                    info_type     = 'DIRI_SUIV'
+                    info_type = 'DIRI_SUIV'
                     l_diri_undead = .true.
                 else if (load_apply .eq. 'FIXE_PILO') then
-                    if (load_type(5:7).eq.'_FO') then
+                    if (load_type(5:7) .eq. '_FO') then
                         info_type = 'DIRI_PILO_F'
                         if (func_para_inst(1:3) .eq. 'OUI') then
                             call utmess('F', 'CHARGES_28', sk=load_name)
-                        endif
+                        end if
                     else
                         info_type = 'DIRI_PILO'
-                    endif
+                    end if
                 else if (load_apply .eq. 'DIDI') then
                     if (load_type(5:7) .eq. '_FO') then
                         info_type = 'DIRI_FO_DIDI'
                         if (func_para_inst(1:3) .eq. 'OUI') then
                             info_type = 'DIRI_FT_DIDI'
-                        endif
+                        end if
                     else
                         info_type = 'DIRI_CSTE_DIDI'
-                    endif
+                    end if
                 else if (load_apply .eq. 'FIXE_CSTE') then
                     if (load_type(5:7) .eq. '_FO') then
                         info_type = 'DIRI_FO'
                         if (func_para_inst(1:3) .eq. 'OUI') then
                             info_type = 'DIRI_FT'
-                        endif
+                        end if
                     else
                         info_type = 'DIRI_CSTE'
-                    endif
+                    end if
                 else
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
             if (info_type .ne. 'RIEN') then
-                nb_info_type = nb_info_type + 1
-                ASSERT(nb_info_type.lt.nb_info_maxi)
+                nb_info_type = nb_info_type+1
+                ASSERT(nb_info_type .lt. nb_info_maxi)
                 list_info_type(nb_info_type) = info_type
-            endif
+            end if
 !
 ! --------- Get Neuman loads
 !
-            call loadGetNeumannType(l_stat      , load_name   , ligrch        ,&
-                                    load_apply  , load_type   ,&
-                                    nb_info_type, nb_info_maxi, list_info_type,&
+            call loadGetNeumannType(l_stat, load_name, ligrch, &
+                                    load_apply, load_type, &
+                                    nb_info_type, nb_info_maxi, list_info_type, &
                                     i_neum_lapl)
 !
 ! --------- Add new load(s) in list
@@ -323,15 +323,15 @@ character(len=1), optional, intent(in) :: base
 
             if (nb_info_type .gt. 0) then
                 i_load_new = i_load_new+1
-                call liscad('MECA'      , list_load     , i_load_new, load_name, load_func, &
-                            nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
-            endif
+                call liscad('MECA', list_load, i_load_new, load_name, load_func, &
+                            nb_info_type, list_info_type, i_neum_laplz=i_neum_lapl)
+            end if
 !
         end do
 !
 ! ---- Add contact ligrel
 !
-        if(nb_load_cont > 0) then
+        if (nb_load_cont > 0) then
 !
 ! --- Prepare constant function
 !
@@ -340,17 +340,17 @@ character(len=1), optional, intent(in) :: base
             if (iret .eq. 0) then
                 coef = 1.d0
                 call focste(func_cont, 'TOUTRESU', coef, bas)
-            endif
-
-            if(present(ligrel_slav) .and. ligrel_slav.ne.' ') then
-                i_load_new = i_load_new+1
-                call liscad('MECA'        ,list_load, i_load_new, ligrel_slav, func_cont,&
-                            info_typez = 'ELEM_TARDIF')
             end if
-            if(present(ligrel_cont) .and. ligrel_cont.ne.' ') then
+
+            if (present(ligrel_slav) .and. ligrel_slav .ne. ' ') then
                 i_load_new = i_load_new+1
-                call liscad('MECA'        ,list_load, i_load_new, ligrel_cont, func_cont,&
-                            info_typez = 'ELEM_TARDIF')
+                call liscad('MECA', list_load, i_load_new, ligrel_slav, func_cont, &
+                            info_typez='ELEM_TARDIF')
+            end if
+            if (present(ligrel_cont) .and. ligrel_cont .ne. ' ') then
+                i_load_new = i_load_new+1
+                call liscad('MECA', list_load, i_load_new, ligrel_cont, func_cont, &
+                            info_typez='ELEM_TARDIF')
             end if
         end if
 !
@@ -361,33 +361,33 @@ character(len=1), optional, intent(in) :: base
                 call getvtx('PILOTAGE', 'TYPE', iocc=1, nbret=n1)
                 if (n1 .ne. 0 .and. npilo .eq. 0) then
                     call utmess('F', 'CHARGES_39')
-                endif
+                end if
                 if (npilo .gt. 1) then
                     call utmess('F', 'CHARGES_40')
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ----- Some loads are prohibited with PILOTAGE
 !
         if (npilo .ge. 1) then
             call lisexp(list_load)
-        endif
+        end if
 !
 ! ----- Some loads are prohibited
 !
         if (l_calc) then
             call loadExcludedForAnalysis(list_load)
-        endif
+        end if
 
-    endif
+    end if
 !
 ! - Modify list for undead Dirichlet loads
 !
     if (l_diri_undead) then
         call load_unde_diri(list_load)
-    endif
+    end if
 
-    AS_DEALLOCATE(vk8 = v_list_dble)
+    AS_DEALLOCATE(vk8=v_list_dble)
     call jedema()
 end subroutine

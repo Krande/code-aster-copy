@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mbcine(nno, geom, dff, alpha, beta,&
+subroutine mbcine(nno, geom, dff, alpha, beta, &
                   b, jac)
 !
 ! ----------------------------------------------------------------------
@@ -67,23 +67,23 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
 !
     projn = 0.d0
     do i = 1, 3
-        projn = projn + vdirec(i)*cova(i,3)
+        projn = projn+vdirec(i)*cova(i, 3)
     end do
 !
-    if (abs( 1.d0 - projn*projn ) .le. r8prem()) then
+    if (abs(1.d0-projn*projn) .le. r8prem()) then
         call utmess('F', 'ELEMENTS_3')
-    endif
+    end if
 !
-    denomi = sqrt(1.d0 - projn*projn)
+    denomi = sqrt(1.d0-projn*projn)
     do i = 1, 3
-        vdirec(i) = (vdirec(i) - projn*cova(i,3))/denomi
+        vdirec(i) = (vdirec(i)-projn*cova(i, 3))/denomi
     end do
 !
 ! - CALCUL DU VECTEUR TANGENT ORTHOGONAL AU VECTEUR DIRECTION
 !
-    vortho(1) = cova(2,3)*vdirec(3) - cova(3,3)*vdirec(2)
-    vortho(2) = cova(3,3)*vdirec(1) - cova(1,3)*vdirec(3)
-    vortho(3) = cova(1,3)*vdirec(2) - cova(2,3)*vdirec(1)
+    vortho(1) = cova(2, 3)*vdirec(3)-cova(3, 3)*vdirec(2)
+    vortho(2) = cova(3, 3)*vdirec(1)-cova(1, 3)*vdirec(3)
+    vortho(3) = cova(1, 3)*vdirec(2)-cova(2, 3)*vdirec(1)
 !
 ! - CALCUL DE LA MATRICE B
 !
@@ -97,8 +97,8 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
     call r8inir(2, 0.d0, orcnva, 1)
     do gamma = 1, 2
         do i = 1, 3
-            dicnva(gamma) = dicnva(gamma) + vdirec(i)*cnva(i,gamma)
-            orcnva(gamma) = orcnva(gamma) + vortho(i)*cnva(i,gamma)
+            dicnva(gamma) = dicnva(gamma)+vdirec(i)*cnva(i, gamma)
+            orcnva(gamma) = orcnva(gamma)+vortho(i)*cnva(i, gamma)
         end do
     end do
 !
@@ -107,9 +107,9 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
     do n = 1, nno
         do i = 1, 3
             do gamma = 1, 2
-                b(1,i,n) = b(1,i,n) + dff(gamma,n)*dicnva(gamma)* vdirec(i)
-                b(2,i,n) = b(2,i,n) + dff(gamma,n)*orcnva(gamma)* vortho(i)
-                b(3,i,n) = b(3,i,n) + factor*dff(gamma,n) *(dicnva( gamma)*vortho(i)+orcnva(gamma&
+                b(1, i, n) = b(1, i, n)+dff(gamma, n)*dicnva(gamma)*vdirec(i)
+                b(2, i, n) = b(2, i, n)+dff(gamma, n)*orcnva(gamma)*vortho(i)
+                b(3, i, n) = b(3, i, n)+factor*dff(gamma, n)*(dicnva(gamma)*vortho(i)+orcnva(gamma&
                            &)*vdirec(i))
             end do
         end do

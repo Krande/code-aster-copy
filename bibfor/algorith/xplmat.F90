@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xplmat(ddls, ddlc, ddlm,&
+subroutine xplmat(ddls, ddlc, ddlm, &
                   nnos, nnom, n, pl)
 !
     implicit none
@@ -40,13 +40,13 @@ subroutine xplmat(ddls, ddlc, ddlm,&
 ! OUT PL      : PLACE DU LMBDA DANS LA MATRICE
 !     ------------------------------------------------------------------
 !
-    ASSERT(n.le.(nnos+nnom))
+    ASSERT(n .le. (nnos+nnom))
 !
 !     PLACE DU PREMIER DDL DE CONTACT POUR CHAQUE N
     if (n .le. nnos) then
-        pl=ddls*n-ddlc+1
+        pl = ddls*n-ddlc+1
     else
-        pl=ddls*nnos+ddlm*(n-nnos)-ddlc+1
-    endif
+        pl = ddls*nnos+ddlm*(n-nnos)-ddlc+1
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,13 +38,13 @@ subroutine hujcrd(k, mater, sig, vin, seuild, iret)
     integer :: ndt, ndi
     real(kind=8) :: r, epsvp, pcr
     real(kind=8) :: beta, b, m, phi, pcref, ptrac
-    real(kind=8) :: sigd(3), p, q,rap
+    real(kind=8) :: sigd(3), p, q, rap
     real(kind=8), parameter :: un = 1.d0, degr = 0.0174532925199d0
     aster_logical :: debug
 !
 !       ------------------------------------------------------------
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
     iret = 0
     seuild = 0.d0
@@ -65,9 +65,9 @@ subroutine hujcrd(k, mater, sig, vin, seuild, iret)
     if (-beta*epsvp .gt. 700.d0) then
         iret = 1
         goto 999
-    endif
+    end if
     pcr = pcref*exp(-beta*epsvp)
-    ptrac = mater(21,2)
+    ptrac = mater(21, 2)
     m = sin(degr*phi)
 !
 ! ==================================================================
@@ -75,14 +75,14 @@ subroutine hujcrd(k, mater, sig, vin, seuild, iret)
 ! ==================================================================
     call hujprj(k, sig, sigd, p, q)
 !
-    p = p - ptrac
+    p = p-ptrac
 !
     rap = p/pcr
     if (rap .le. 1.d-7 .or. abs(p) .le. r8prem() .or. abs(m) .le. r8prem()) then
         if (debug) write (6, '(A)') 'HUJCRD :: LOG(P/PCR) NON DEFINI'
         seuild = -1.d0
         goto 999
-    endif
+    end if
 !
 !        IF(K.EQ.1)THEN
 !         WRITE(6,*)'QK =',QK,' --- FR =',RK*(UN-B*LOG(PK/PCR))*M*PK
@@ -90,7 +90,7 @@ subroutine hujcrd(k, mater, sig, vin, seuild, iret)
 ! ==================================================================
 ! --- CALCUL DU SEUIL DU MECANISME DEVIATOIRE K ------------------
 ! ==================================================================
-    seuild = -q /m/p - r*(un-b*log(rap))
+    seuild = -q/m/p-r*(un-b*log(rap))
 !
 999 continue
 end subroutine

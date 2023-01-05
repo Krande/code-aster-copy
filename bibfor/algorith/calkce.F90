@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calkce(nno, ndim, kbp, kbb, pm,&
+subroutine calkce(nno, ndim, kbp, kbb, pm, &
                   dp, kce, rce)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
@@ -52,7 +52,7 @@ subroutine calkce(nno, ndim, kbp, kbb, pm,&
     call r8inir(ndim*nno, 0.d0, prod, 1)
 !
 ! - TRANSPOSITION DE LA MATRICE KBP
-    call transp(kbp, ndim, ndim, nno, kpb,&
+    call transp(kbp, ndim, ndim, nno, kpb, &
                 nno)
 !
 ! - INVERSE DE LA MATRICE KBB
@@ -66,7 +66,7 @@ subroutine calkce(nno, ndim, kbp, kbb, pm,&
 !
 ! - CALCUL DU PRODUIT RCE
     do i = 1, nno
-        pp(i)=pm(i)+dp(i)
+        pp(i) = pm(i)+dp(i)
     end do
 !
     rce = matmul(kce, pp)

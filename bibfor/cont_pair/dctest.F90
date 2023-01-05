@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 
 subroutine dctest(elem_code, elin_sub, elin_nbnode, elin_nbsub, elin_code)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
 !
     character(len=8), intent(in) :: elem_code
-    integer, intent(out) :: elin_sub(1,4)
+    integer, intent(out) :: elin_sub(1, 4)
     integer, intent(out) :: elin_nbnode(1)
     integer, intent(out) :: elin_nbsub
-    character(len=8),intent(out) :: elin_code
+    character(len=8), intent(out) :: elin_code
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,27 +55,27 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (elem_code .eq. 'SE2' .or.elem_code .eq. 'SE3') then
-        elin_code      = 'SE2'
-        elin_nbsub     = 1
+    if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3') then
+        elin_code = 'SE2'
+        elin_nbsub = 1
         elin_nbnode(1) = 2
-        elin_sub(1,1)  = 1
-        elin_sub(1,2)  = 2
-    elseif (elem_code .eq. 'TR3' .or.elem_code .eq. 'TR6') then
-        elin_code      = 'TR3'
-        elin_nbsub     = 1
+        elin_sub(1, 1) = 1
+        elin_sub(1, 2) = 2
+    elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6') then
+        elin_code = 'TR3'
+        elin_nbsub = 1
         elin_nbnode(1) = 3
-        elin_sub(1,1)  = 1
-        elin_sub(1,2)  = 2
-        elin_sub(1,3)  = 3
+        elin_sub(1, 1) = 1
+        elin_sub(1, 2) = 2
+        elin_sub(1, 3) = 3
     else if (elem_code .eq. 'QU4' .or. elem_code .eq. 'QU8' .or. elem_code .eq. 'QU9') then
-        elin_code      = 'QU4'
-        elin_nbsub     = 1
+        elin_code = 'QU4'
+        elin_nbsub = 1
         elin_nbnode(1) = 4
-        elin_sub(1,1)  = 1
-        elin_sub(1,2)  = 2
-        elin_sub(1,3)  = 3
-        elin_sub(1,4)  = 4
+        elin_sub(1, 1) = 1
+        elin_sub(1, 2) = 2
+        elin_sub(1, 3) = 3
+        elin_sub(1, 4) = 4
     else
         ASSERT(.false.)
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,38 +56,38 @@ subroutine wkvectc(nom, carac, dim, pc)
 !
 !     -- cas : on veut un pointeur
     call jelira(nom, 'TYPELONG', cval=ktyp)
-    if (ktyp.eq.'L') then
+    if (ktyp .eq. 'L') then
         call jgetptc(jad, pc, vl=zl(1))
 !
-    else if (ktyp.eq.'I') then
+    else if (ktyp .eq. 'I') then
         call jgetptc(jad, pc, vi=zi(1))
 !
-    else if (ktyp.eq.'S') then
+    else if (ktyp .eq. 'S') then
         call jgetptc(jad, pc, vi4=zi4(1))
 !
-    else if (ktyp.eq.'R') then
+    else if (ktyp .eq. 'R') then
         call jgetptc(jad, pc, vr=zr(1))
 !
-    else if (ktyp.eq.'C') then
+    else if (ktyp .eq. 'C') then
         call jgetptc(jad, pc, vc=zc(1))
 !
-    else if (ktyp.eq.'K8') then
+    else if (ktyp .eq. 'K8') then
         call jgetptc(jad, pc, vk8=zk8(1))
 !
-    else if (ktyp.eq.'K16') then
+    else if (ktyp .eq. 'K16') then
         call jgetptc(jad, pc, vk16=zk16(1))
 !
-    else if (ktyp.eq.'K24') then
+    else if (ktyp .eq. 'K24') then
         call jgetptc(jad, pc, vk24=zk24(1))
 !
-    else if (ktyp.eq.'K32') then
+    else if (ktyp .eq. 'K32') then
         call jgetptc(jad, pc, vk32=zk32(1))
 !
-    else if (ktyp.eq.'K80') then
+    else if (ktyp .eq. 'K80') then
         call jgetptc(jad, pc, vk80=zk80(1))
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

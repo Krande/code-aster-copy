@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
+subroutine as_mfdcsi(fid, cha, ind, numdt, numo, &
                      dt, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -39,13 +39,13 @@ subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
     med_int :: ind4, numdt4, numo4, cret4
     fidm = to_med_idt(fid)
     ind4 = ind
-    call mfdcsi(fidm, cha, ind4, numdt4, numo4,&
+    call mfdcsi(fidm, cha, ind4, numdt4, numo4, &
                 dt, cret4)
     numdt = numdt4
     numo = numo4
     cret = cret4
 #else
-    call mfdcsi(fid, cha, ind, numdt, numo,&
+    call mfdcsi(fid, cha, ind, numdt, numo, &
                 dt, cret)
 #endif
 !

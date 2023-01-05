@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine varcCalcElem(modelz    , cara_elemz, matez     ,&
-                        nume_harm , time_comp , l_new     ,&
-                        varc_refez, varc_prevz, varc_currz,&
-                        comporz   , mult_compz,&
-                        base      , vect_elemz,&
-                        sigmz_    , variz_    )
+subroutine varcCalcElem(modelz, cara_elemz, matez, &
+                        nume_harm, time_comp, l_new, &
+                        varc_refez, varc_prevz, varc_currz, &
+                        comporz, mult_compz, &
+                        base, vect_elemz, &
+                        sigmz_, variz_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -34,15 +34,15 @@ implicit none
 #include "asterfort/varcCalcComp.h"
 #include "asterfort/detrsd.h"
 !
-character(len=*), intent(in) :: modelz, cara_elemz, matez
-integer, intent(in) :: nume_harm
-character(len=1), intent(in) :: time_comp
-aster_logical, intent(in) :: l_new
-character(len=*), intent(in) :: varc_refez, varc_prevz, varc_currz
-character(len=*), intent(in) :: comporz, mult_compz
-character(len=1), intent(in) :: base
-character(len=*), intent(in) :: vect_elemz
-character(len=*), optional, intent(in) :: sigmz_, variz_
+    character(len=*), intent(in) :: modelz, cara_elemz, matez
+    integer, intent(in) :: nume_harm
+    character(len=1), intent(in) :: time_comp
+    aster_logical, intent(in) :: l_new
+    character(len=*), intent(in) :: varc_refez, varc_prevz, varc_currz
+    character(len=*), intent(in) :: comporz, mult_compz
+    character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: vect_elemz
+    character(len=*), optional, intent(in) :: sigmz_, variz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,20 +82,20 @@ character(len=*), optional, intent(in) :: sigmz_, variz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo    = modelz(1:8)//'.MODELE'
-    newnom    = '.0000000'
+    ligrmo = modelz(1:8)//'.MODELE'
+    newnom = '.0000000'
     resu_elem = '&&VECTME.???????'
-    chsith    = '&&VECTME.CHSITH'
-    compor    = comporz
+    chsith = '&&VECTME.CHSITH'
+    compor = comporz
     mult_comp = mult_compz
-    sigm      = ' '
+    sigm = ' '
     if (present(sigmz_)) then
         sigm = sigmz_
-    endif
-    vari      = ' '
+    end if
+    vari = ' '
     if (present(variz_)) then
         vari = variz_
-    endif
+    end if
 !
 ! - Detect external state variables
 !
@@ -103,32 +103,32 @@ character(len=*), optional, intent(in) :: sigmz_, variz_
 !
 ! - Prepare computation of elementary vector
 !
-    call varcCalcPrep(modelz    , cara_elemz, matez     ,&
-                      nume_harm , time_comp ,&
-                      l_temp    , l_meta    ,&
-                      varc_refez, varc_prevz, varc_currz,&
-                      compor    , mult_comp , chsith    ,&
-                      sigm      , vari      ,&
-                      mxchin    , mxchout   ,&
-                      nbin      , nbout     ,&
-                      lpain     , lchin     ,&
-                      lpaout    , lchout)
+    call varcCalcPrep(modelz, cara_elemz, matez, &
+                      nume_harm, time_comp, &
+                      l_temp, l_meta, &
+                      varc_refez, varc_prevz, varc_currz, &
+                      compor, mult_comp, chsith, &
+                      sigm, vari, &
+                      mxchin, mxchout, &
+                      nbin, nbout, &
+                      lpain, lchin, &
+                      lpaout, lchout)
 !
 ! - Suppress old vect_elem result
 !
     if (l_new) then
         call detrsd('VECT_ELEM', vect_elemz)
         call maveElemCreate(base, 'MECA', vect_elemz, modelz, matez, cara_elemz)
-    endif
+    end if
 !
 ! - Calls to CALCUL
 !
-    call varcCalcComp(modelz, chsith    ,&
-                      l_temp, l_hydr    , l_ptot,&
-                      l_sech, l_epsa    ,&
-                      nbin  , nbout     ,&
-                      lpain , lchin     ,&
-                      lpaout, lchout    ,&
-                      base  , vect_elemz)
+    call varcCalcComp(modelz, chsith, &
+                      l_temp, l_hydr, l_ptot, &
+                      l_sech, l_epsa, &
+                      nbin, nbout, &
+                      lpain, lchin, &
+                      lpaout, lchout, &
+                      base, vect_elemz)
 !
 end subroutine

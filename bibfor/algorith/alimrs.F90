@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble,&
+subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
                   nume_ddl, cn1, chno, cmp, icor)
     implicit none
 #include "asterf_types.h"
@@ -80,9 +80,9 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble,&
 !
 !-----------------------------------------------------------------------
     call jemarq()
-    if (cmp .eq. 'DX') nocmp=1
-    if (cmp .eq. 'DY') nocmp=2
-    if (cmp .eq. 'DZ') nocmp=3
+    if (cmp .eq. 'DX') nocmp = 1
+    if (cmp .eq. 'DY') nocmp = 2
+    if (cmp .eq. 'DZ') nocmp = 3
 !
 ! RECUPERATION DE LA TAILLE DE REFERENCE
 !
@@ -91,13 +91,13 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble,&
 !
 ! ON CREE UN CHAMNO BIDON SUR L INTERFACE THERMIQUE
 !
-    chnul='&&ALIMRS.CHNUL'
-    call vtcreb(chnul, 'V', 'R',&
-                nume_ddlz = nume_ddl)
+    chnul = '&&ALIMRS.CHNUL'
+    call vtcreb(chnul, 'V', 'R', &
+                nume_ddlz=nume_ddl)
     call jeveuo(chnul//'.VALE', 'E', ichnul)
 !
-    cn2=chno
-    call calflu(chnul, moint, mate, mateco, nume_ddl, cn2,&
+    cn2 = chno
+    call calflu(chnul, moint, mate, mateco, nume_ddl, cn2, &
                 nbdesc, nbrefe, nbvale, 'X')
 !
 !
@@ -141,20 +141,20 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble,&
 !
         if (zi(icor(1)+ino1-1) .eq. 0) goto 10
 !
-        ncmp2= zi(iprn2-1+ (zi(icor(1)+ino1-1)-1)* (nec2+2)+2)
+        ncmp2 = zi(iprn2-1+(zi(icor(1)+ino1-1)-1)*(nec2+2)+2)
         if (ncmp2 .eq. 0) goto 20
 !
-        ival2 = zi(iprn2-1+(zi(icor(1)+ino1-1)-1)* (nec2+2)+1)
+        ival2 = zi(iprn2-1+(zi(icor(1)+ino1-1)-1)*(nec2+2)+1)
         ieq2 = nueq2(ival2-1+1)
 !
-        ival1 = zi(iprn1-1+ (ino1-1)* (nec1+2)+1)
-        iadg1 = iprn1 - 1 + (ino1-1)* (nec1+2) + 3
+        ival1 = zi(iprn1-1+(ino1-1)*(nec1+2)+1)
+        iadg1 = iprn1-1+(ino1-1)*(nec1+2)+3
 !
 ! EXISTENCE DE LA COMPOSANTE A PLONGER DANS LE CHAMNO
 ! DE DEPL_R DE LA STRUCTURE : SI ELLE EXISTE, ON LA
 ! RECOPIE DANS LE CHAMNO DE TEMP_R CREE SUR
 ! L INTERFACE
-        test = exisdg(zi(iadg1),nocmp)
+        test = exisdg(zi(iadg1), nocmp)
 !
         if (test) then
 !
@@ -167,29 +167,29 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble,&
             val2(ieq2) = val1(ieq1)
             goto 20
 !
-        endif
+        end if
 !
 ! PRECHERCHE DE NOEUDS DOUBLES
 !
- 20     continue
+20      continue
         if (ndble .eq. 1) then
 !
             if (zi(icor(2)+ino1-1) .eq. 0) goto 10
 !
-            ncmp2= zi(iprn2-1+ (zi(icor(2)+ino1-1)-1)* (nec2+2)+2)
+            ncmp2 = zi(iprn2-1+(zi(icor(2)+ino1-1)-1)*(nec2+2)+2)
             if (ncmp2 .eq. 0) goto 10
 !
-            ival2 = zi(iprn2-1+(zi(icor(2)+ino1-1)-1)* (nec2+2)+1)
+            ival2 = zi(iprn2-1+(zi(icor(2)+ino1-1)-1)*(nec2+2)+1)
             ieq2 = nueq2(ival2-1+1)
 !
-            ival1 = zi(iprn1-1+ (ino1-1)* (nec1+2)+1)
-            iadg1 = iprn1 - 1 + (ino1-1)* (nec1+2) + 3
+            ival1 = zi(iprn1-1+(ino1-1)*(nec1+2)+1)
+            iadg1 = iprn1-1+(ino1-1)*(nec1+2)+3
 !
 ! EXISTENCE DE LA COMPOSANTE A PLONGER DANS LE CHAMNO
 ! DE DEPL_R DE LA STRUCTURE : SI ELLE EXISTE, ON LA
 ! RECOPIE DANS LE CHAMNO DE TEMP_R CREE SUR
 ! L INTERFACE
-            test = exisdg(zi(iadg1),nocmp)
+            test = exisdg(zi(iadg1), nocmp)
 !
             if (test) then
 !
@@ -202,11 +202,11 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble,&
                 val2(ieq2) = val1(ieq1)
                 goto 10
 !
-            endif
-        endif
+            end if
+        end if
 !
 !
- 10     continue
+10      continue
     end do
 !
 ! --- MENAGE

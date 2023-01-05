@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,23 +31,23 @@ subroutine dsde2d(ndim, f, dsde, d)
     integer :: ndim, indi(6), indj(6), mn, op, ij, kl, nmax
     real(kind=8) :: f(3, 3), d(6, 6), dsde(6, 6), f1, f2, f3, f4
     real(kind=8) :: rind(6)
-    data    indi / 1, 2, 3, 1, 1, 2 /
-    data    indj / 1, 2, 3, 2, 3, 3 /
-    data    rind / 0.5d0, 0.5d0, 0.5d0, 0.70710678118655d0,&
-     &               0.70710678118655d0, 0.70710678118655d0 /
+    data indi/1, 2, 3, 1, 1, 2/
+    data indj/1, 2, 3, 2, 3, 3/
+    data rind/0.5d0, 0.5d0, 0.5d0, 0.70710678118655d0,&
+     &               0.70710678118655d0, 0.70710678118655d0/
 !
-    nmax=2*ndim
+    nmax = 2*ndim
 !
     do mn = 1, nmax
         do op = 1, nmax
-            d(mn,op) = 0.d0
+            d(mn, op) = 0.d0
             do ij = 1, nmax
                 do kl = 1, nmax
-                    f1 = f(indi(mn),indi(ij))*f(indj(mn),indj(ij))
-                    f2 = f(indi(op),indi(kl))*f(indj(op),indj(kl))
-                    f3 = f(indi(mn),indj(ij))*f(indj(mn),indi(ij))
-                    f4 = f(indi(op),indj(kl))*f(indj(op),indi(kl))
-                    d(mn,op) = d(mn,op) +(f1+f3)*(f2+f4)*dsde(ij,kl)* rind(ij)*rind(kl)
+                    f1 = f(indi(mn), indi(ij))*f(indj(mn), indj(ij))
+                    f2 = f(indi(op), indi(kl))*f(indj(op), indj(kl))
+                    f3 = f(indi(mn), indj(ij))*f(indj(mn), indi(ij))
+                    f4 = f(indi(op), indj(kl))*f(indj(op), indi(kl))
+                    d(mn, op) = d(mn, op)+(f1+f3)*(f2+f4)*dsde(ij, kl)*rind(ij)*rind(kl)
                 end do
             end do
         end do

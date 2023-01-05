@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmconv(noma    , modele, ds_material, numedd     , sdnume    ,&
-                  fonact  , sddyna, ds_conv    , ds_print   , ds_measure,&
-                  sddisc  , sdcrit, sderro     , ds_algopara, ds_algorom,&
-                  ds_inout, matass, solveu     , ds_system  , numins    ,&
-                  iterat  , eta   , ds_contact , valinc     , solalg    ,&
-                  measse  , veasse)
+subroutine nmconv(noma, modele, ds_material, numedd, sdnume, &
+                  fonact, sddyna, ds_conv, ds_print, ds_measure, &
+                  sddisc, sdcrit, sderro, ds_algopara, ds_algorom, &
+                  ds_inout, matass, solveu, ds_system, numins, &
+                  iterat, eta, ds_contact, valinc, solalg, &
+                  measse, veasse)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -56,25 +56,25 @@ implicit none
 #include "asterfort/nmrvai.h"
 #include "asterfort/utmess.h"
 !
-integer :: fonact(*)
-integer :: iterat, numins
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-real(kind=8) :: eta
-character(len=19) :: sdcrit, sddisc, sddyna, sdnume
-character(len=19) :: matass, solveu
-character(len=19) :: measse(*), veasse(*)
-character(len=19) :: solalg(*), valinc(*)
-character(len=8) :: noma
-character(len=24) :: numedd, modele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=24) :: sderro
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_InOut), intent(in) :: ds_inout
-type(NL_DS_Print), intent(inout) :: ds_print
-type(NL_DS_Conv), intent(inout) :: ds_conv
-type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    integer :: fonact(*)
+    integer :: iterat, numins
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    real(kind=8) :: eta
+    character(len=19) :: sdcrit, sddisc, sddyna, sdnume
+    character(len=19) :: matass, solveu
+    character(len=19) :: measse(*), veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    character(len=8) :: noma
+    character(len=24) :: numedd, modele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=24) :: sderro
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,10 +127,10 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('MECANONLINE',ifm, niv)
+    call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_64')
-    endif
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -144,15 +144,15 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lreli = isfonc(fonact,'RECH_LINE')
-    lnkry = isfonc(fonact,'NEWTON_KRYLOV')
-    limpex = isfonc(fonact,'IMPLEX')
-    lcont = isfonc(fonact,'CONTACT')
+    lreli = isfonc(fonact, 'RECH_LINE')
+    lnkry = isfonc(fonact, 'NEWTON_KRYLOV')
+    limpex = isfonc(fonact, 'IMPLEX')
+    lcont = isfonc(fonact, 'CONTACT')
 !
 ! --- INSTANTS
 !
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins )
+    instam = diinst(sddisc, numins-1)
+    instap = diinst(sddisc, numins)
 !
 ! - Set values are not affected on rows for residuals loop
 !
@@ -161,7 +161,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 ! --- EVENEMENT ERREUR ACTIVE ?
 !
     call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-    if (.not.lerror) then
+    if (.not. lerror) then
 !
 ! ----- EXAMEN DU NOMBRE D'ITERATIONS
 !
@@ -171,10 +171,10 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
                 nbiter = ds_conv%iter_glob_elas
             else
                 nbiter = ds_conv%iter_glob_maxi
-            endif
+            end if
         else
             call nmlerr(sddisc, 'L', 'NBITER', r8bid, nbiter)
-        endif
+        end if
         itemax = (iterat+1) .ge. nbiter
 !
 ! ----- STATISTIQUES POUR RECHERCHE LINEAIRE
@@ -182,53 +182,53 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         if (lreli) then
             line_sear_coef = ds_conv%line_sear_coef
             line_sear_iter = ds_conv%line_sear_iter
-            call nmrvai(ds_measure, 'LineSearch', input_count = line_sear_iter)
-        endif
+            call nmrvai(ds_measure, 'LineSearch', input_count=line_sear_iter)
+        end if
 !
 ! ----- Compute residuals
 !
-        call nmresi(noma    , fonact    , ds_material,&
-                    numedd  , sdnume    , sddyna     ,&
-                    ds_conv , ds_print  , ds_contact ,&
-                    ds_inout, ds_algorom, ds_system  ,&
-                    matass  , numins    , eta        ,&
-                    valinc  , solalg    ,&
-                    veasse  , measse    ,&
-                    vresi   , vchar)
+        call nmresi(noma, fonact, ds_material, &
+                    numedd, sdnume, sddyna, &
+                    ds_conv, ds_print, ds_contact, &
+                    ds_inout, ds_algorom, ds_system, &
+                    matass, numins, eta, &
+                    valinc, solalg, &
+                    veasse, measse, &
+                    vresi, vchar)
 !
 ! ----- Evaluate convergence of residuals
 !
-        call nmcore(sdcrit        , sderro, fonact, numins, iterat ,&
-                    line_sear_iter, eta   , vresi , vchar , ds_conv)
+        call nmcore(sdcrit, sderro, fonact, numins, iterat, &
+                    line_sear_iter, eta, vresi, vchar, ds_conv)
 !
 ! ----- METHODE IMPLEX: CONVERGENCE FORCEE
 !
         if (limpex) then
             call nmeceb(sderro, 'RESI', 'CONV')
-        endif
+        end if
 !
 ! ----- Evaluate convergence of contact and PRED_CONTACT
 !
         if (lcont) then
-            call cfmmcv(noma  , modele    , fonact    , iterat, numins,&
-                        sddyna, ds_measure, sddisc    , sderro, valinc,&
-                        solalg, ds_print  , ds_contact)
+            call cfmmcv(noma, modele, fonact, iterat, numins, &
+                        sddyna, ds_measure, sddisc, sderro, valinc, &
+                        solalg, ds_print, ds_contact)
             if (ds_contact%lContStab) then
                 if (ds_contact%iContStab .lt. ds_contact%sContStab) then
                     ds_algopara%l_swapToElastic = ASTER_TRUE
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ----- Set value of informations in convergence table (residuals are in nmimre)
 !
-        call nmimrv(ds_print, fonact, iterat, line_sear_coef, line_sear_iter,&
+        call nmimrv(ds_print, fonact, iterat, line_sear_coef, line_sear_iter, &
                     eta, ds_algorom%eref_rom)
 !
 ! ----- CAPTURE ERREUR EVENTUELLE
 !
         call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-        if (.not.lerror) then
+        if (.not. lerror) then
 !
 ! --------- INFORMATION POUR DEBORST
 !
@@ -236,7 +236,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
             call nmerge(sderro, 'DIVE_DEBO', dvdebo)
             if (cvresi .and. dvdebo) then
                 call utmess('I', 'MECANONLINE2_3')
-            endif
+            end if
 !
 ! --------- EVALUATION DE LA CONVERGENCE DE L'ITERATION DE NEWTON
 !
@@ -259,7 +259,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
             if (cvnewt) then
                 itemax = .false.
-            endif
+            end if
 !
 ! --------- ENREGISTREMENT EVENEMENT MAX ITERATION DE NEWTON
 !
@@ -269,9 +269,9 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
             if (lnkry) then
                 call nmnkft(solveu, sddisc, iterat)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Set iteration number in convergence table
 !

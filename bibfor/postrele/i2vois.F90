@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine i2vois(conec, type, maille, n, v1,&
+subroutine i2vois(conec, type, maille, n, v1, &
                   v2)
     implicit none
 !
@@ -81,7 +81,7 @@ subroutine i2vois(conec, type, maille, n, v1,&
 !
         mi = maille(i)
 !
-        call i2extf(mi, 1, conec(1:15), type(1:16), nig,&
+        call i2extf(mi, 1, conec(1:15), type(1:16), nig, &
                     nid)
 !
         nonv1 = .true.
@@ -89,19 +89,19 @@ subroutine i2vois(conec, type, maille, n, v1,&
 !
         j = 0
 !
- 20     continue
+20      continue
         if ((nonv1 .or. nonv2) .and. (j .lt. n)) then
 !
-            j = j + 1
+            j = j+1
 !
             if (i .ne. j) then
 !
                 mj = maille(j)
 !
-                call i2extf(mj, 1, conec(1:15), type(1:16), njg,&
+                call i2extf(mj, 1, conec(1:15), type(1:16), njg, &
                             njd)
 !
-                if ((nig .eq. njg) .or. (nid .eq. njg) .or. (nig .eq. njd) .or.&
+                if ((nig .eq. njg) .or. (nid .eq. njg) .or. (nig .eq. njd) .or. &
                     (nid .eq. njd)) then
 !
                     if (nonv1) then
@@ -118,27 +118,27 @@ subroutine i2vois(conec, type, maille, n, v1,&
 !
                     else
 !
-                    endif
+                    end if
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
             goto 20
 !
-        endif
+        end if
 !
         if (nonv1) then
 !
             v1(i) = 0
 !
-        endif
+        end if
 !
         if (nonv2) then
 !
             v2(i) = 0
 !
-        endif
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,9 +75,9 @@ subroutine op0082()
 !     EN ENTREE PEUT BIEN ETRE UTILISE POUR LA DEFINITION DE LA GRILLE
     cnxinv = '&&OP0082.CNCINV'
     call cncinv(mail, [ibid], 0, 'V', cnxinv)
-    vcn=grille//'.GRLI'
-    grlr=grille//'.GRLR'
-    call xprcnu(mail, cnxinv, 'G', vcn, grlr,&
+    vcn = grille//'.GRLI'
+    grlr = grille//'.GRLR'
+    call xprcnu(mail, cnxinv, 'G', vcn, grlr, &
                 lcmin)
 !
 !     STOCKE LA VALEUR DE LA PLUS PETITE ARETE DE LA GRILLE
@@ -89,20 +89,20 @@ subroutine op0082()
 !
 !     INFO
     if (niv .gt. 0) then
-        write(ifm,*)'  LONGUEUR DE LA PLUS PETITE ARETE DE LA GRILLE: '&
-     &                ,lcmin
-        write(ifm,*)' '
-        write(ifm,*)'  BASE LOCALE DE LA GRILLE:'
+        write (ifm, *) '  LONGUEUR DE LA PLUS PETITE ARETE DE LA GRILLE: '&
+     &                , lcmin
+        write (ifm, *) ' '
+        write (ifm, *) '  BASE LOCALE DE LA GRILLE:'
         call jeveuo(grlr, 'E', ibid)
         ibid = ibid+1
-        write(ifm,900)zr(ibid-1+1),zr(ibid-1+2),zr(ibid-1+3)
-        write(ifm,901)zr(ibid-1+4),zr(ibid-1+5),zr(ibid-1+6)
-        write(ifm,902)zr(ibid-1+7),zr(ibid-1+8),zr(ibid-1+9)
-    endif
+        write (ifm, 900) zr(ibid-1+1), zr(ibid-1+2), zr(ibid-1+3)
+        write (ifm, 901) zr(ibid-1+4), zr(ibid-1+5), zr(ibid-1+6)
+        write (ifm, 902) zr(ibid-1+7), zr(ibid-1+8), zr(ibid-1+9)
+    end if
 !
-    900 format(6x,' ','X=(',e11.4,',',e11.4,',',e11.4,')')
-    901 format(6x,' ','Y=(',e11.4,',',e11.4,',',e11.4,')')
-    902 format(6x,' ','Z=(',e11.4,',',e11.4,',',e11.4,')')
+900 format(6x, ' ', 'X=(', e11.4, ',', e11.4, ',', e11.4, ')')
+901 format(6x, ' ', 'Y=(', e11.4, ',', e11.4, ',', e11.4, ')')
+902 format(6x, ' ', 'Z=(', e11.4, ',', e11.4, ',', e11.4, ')')
 !
     call jedema()
 end subroutine

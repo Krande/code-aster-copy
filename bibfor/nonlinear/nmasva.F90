@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmasva(list_func_acti, hval_veasse, cnvado, sddyna_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/ndynre.h"
 #include "asterfort/isfonc.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: hval_veasse(*), cnvado
-character(len=19), optional, intent(in) :: sddyna_
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: hval_veasse(*), cnvado
+    character(len=19), optional, intent(in) :: sddyna_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,13 +57,13 @@ character(len=19), optional, intent(in) :: sddyna_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_dyna      = ASTER_FALSE
+    l_dyna = ASTER_FALSE
     l_mult_step = ASTER_FALSE
     if (present(sddyna_)) then
-        l_mult_step = ndynlo(sddyna_,'MULTI_PAS')
-        l_dyna      = ndynlo(sddyna_,'DYNAMIQUE')
-    endif
-    l_macr = isfonc(list_func_acti,'MACR_ELEM_STAT')
+        l_mult_step = ndynlo(sddyna_, 'MULTI_PAS')
+        l_dyna = ndynlo(sddyna_, 'DYNAMIQUE')
+    end if
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 !
 ! - Initializations
 !
@@ -79,7 +79,7 @@ character(len=19), optional, intent(in) :: sddyna_
         coeext = 1.d0
         coeex2 = 1.d0
         coeint = 1.d0
-    endif
+    end if
 !
 ! - Undead Neumann forces
 !
@@ -94,8 +94,8 @@ character(len=19), optional, intent(in) :: sddyna_
         call nonlinDSVectCombAddDyna(sddyna_, 'CNELTF', -1.d0*coeint, ds_vectcomb)
         if (l_macr) then
             call nonlinDSVectCombAddDyna(sddyna_, 'CNSSTR', -1.d0*coeint, ds_vectcomb)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Combination
 !

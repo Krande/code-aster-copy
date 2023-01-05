@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine SetResiRefe(ds_conv   , type_ ,&
+subroutine SetResiRefe(ds_conv, type_, &
                        user_para_, cmp_name_, l_refe_test_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -55,44 +55,44 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_type      = 0
-    nb_refe     = ds_conv%nb_refe
+    i_type = 0
+    nb_refe = ds_conv%nb_refe
 !
 ! - On all residuals
 !
-    if (.not.present(type_)) then
+    if (.not. present(type_)) then
         do i_refe = 1, nb_refe
             if (present(user_para_)) then
                 ds_conv%list_refe(i_refe)%user_para = user_para_
-            endif
+            end if
             if (present(cmp_name_)) then
-                ds_conv%list_refe(i_refe)%cmp_name  = cmp_name_
-            endif
+                ds_conv%list_refe(i_refe)%cmp_name = cmp_name_
+            end if
             if (present(l_refe_test_)) then
-                ds_conv%l_refe_test(i_refe)         = l_refe_test_
-            endif
+                ds_conv%l_refe_test(i_refe) = l_refe_test_
+            end if
         end do
-    endif
+    end if
 !
 ! - On one residual
 !
     if (present(type_)) then
         do i_refe = 1, nb_refe
             if (ds_conv%list_refe(i_refe)%type .eq. type_) then
-                ASSERT(i_type.eq.0)
+                ASSERT(i_type .eq. 0)
                 i_type = i_refe
-            endif
+            end if
         end do
-        ASSERT(i_type.ne.0)
+        ASSERT(i_type .ne. 0)
         if (present(user_para_)) then
             ds_conv%list_refe(i_type)%user_para = user_para_
-        endif
+        end if
         if (present(cmp_name_)) then
-            ds_conv%list_refe(i_type)%cmp_name  = cmp_name_
-        endif
+            ds_conv%list_refe(i_type)%cmp_name = cmp_name_
+        end if
         if (present(l_refe_test_)) then
-            ds_conv%l_refe_test(i_type)         = l_refe_test_
-        endif
-    endif
+            ds_conv%l_refe_test(i_type) = l_refe_test_
+        end if
+    end if
 !
 end subroutine

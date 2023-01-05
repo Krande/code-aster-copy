@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,32 +34,32 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
 ! IN  LONOI  : LONGUEUR EN OCTETS DE L'OBJET
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, jiecr, jusadi, n, nbgros, nblent
     integer :: nblim, nbpeti
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
     integer :: nitecr, kmarq
-    common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
-     &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
-     &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
+    common/ificje/nblmax(n), nbluti(n), longbl(n),&
+     &                 kitlec(n), kitecr(n), kiadm(n),&
+     &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
     aster_logical :: litlec
-    common /lficje/  litlec(n)
-    common /jusadi/  jusadi(n)
-    common /inbdet/  nblim(n),nbgros(n),nbpeti(n)
+    common/lficje/litlec(n)
+    common/jusadi/jusadi(n)
+    common/inbdet/nblim(n), nbgros(n), nbpeti(n)
 !     ------------------------------------------------------------------
     integer :: kadd, ladd, lgbl
     aster_logical :: lpetit, lrab
 ! DEB ------------------------------------------------------------------
     kadd = iaddi(1)
     ladd = iaddi(2)
-    lpetit = ( ( iusadi(jusadi(ic)+3*kadd-2) .eq. 0 .and. iusadi(jusadi(ic)+3*kadd-1) .eq. 0 ) )
+    lpetit = ((iusadi(jusadi(ic)+3*kadd-2) .eq. 0 .and. iusadi(jusadi(ic)+3*kadd-1) .eq. 0))
     lgbl = 1024*longbl(ic)*lois
 !
     if (lpetit) then
@@ -77,24 +77,24 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
             iszon(jiecr-2) = -idos
         else
             if (litlec(ic)) then
-                call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0,&
+                call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0, &
                             0)
-            endif
+            end if
             call jxlirb(ic, kadd, kitlec(ic)+1, lgbl)
             jiecr = (jk1zon+kitlec(ic)+ladd)/lois+1
             iszon(jiecr-3) = -idco
             iszon(jiecr-2) = -idos
             iitlec(ic) = kadd
             litlec(ic) = .true.
-        endif
-        iusadi(jusadi(ic)+3*kadd) = iusadi(jusadi(ic)+3*kadd) + 1
-        nbpeti(ic) = nbpeti(ic) + 1
+        end if
+        iusadi(jusadi(ic)+3*kadd) = iusadi(jusadi(ic)+3*kadd)+1
+        nbpeti(ic) = nbpeti(ic)+1
     else
 !
 ! ----- GROS  OBJET
 !
-        nblent = lonoi / lgbl
-        lrab = ( mod (lonoi , lgbl) .ne. 0 )
+        nblent = lonoi/lgbl
+        lrab = (mod(lonoi, lgbl) .ne. 0)
         do i = 1, nblent
             iusadi(jusadi(ic)+3*(kadd+i-1)-2) = -idco
             iusadi(jusadi(ic)+3*(kadd+i-1)-1) = -idos
@@ -102,8 +102,8 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
         if (lrab) then
             iusadi(jusadi(ic)+3*(kadd+nblent)-2) = -idco
             iusadi(jusadi(ic)+3*(kadd+nblent)-1) = -idos
-        endif
-    endif
-    nbgros(ic) = nbgros(ic) + 1
+        end if
+    end if
+    nbgros(ic) = nbgros(ic)+1
 ! FIN ------------------------------------------------------------------
 end subroutine

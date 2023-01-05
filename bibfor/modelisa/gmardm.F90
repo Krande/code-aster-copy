@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine gmardm(nomgrm, modele, ier)
     character(len=8), intent(in) :: modele
     character(len=24), intent(in) :: nomgrm
 
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +56,7 @@ subroutine gmardm(nomgrm, modele, ier)
     karg = nomgrm
 
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-    call jeveuo(modele//'.MAILLE', 'L', vi = v_model_elem)
+    call jeveuo(modele//'.MAILLE', 'L', vi=v_model_elem)
 
     ! nombre de mailles dans le groupe : nma
     call jelira(jexnom(noma//'.GROUPEMA', karg), 'LONUTI', nma)
@@ -65,10 +64,10 @@ subroutine gmardm(nomgrm, modele, ier)
     ! -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
     call jelira(jexnom(noma//'.GROUPEMA', karg), 'LONMAX', ibid)
     if (ibid .eq. 1) then
-        ASSERT(nma.le.1)
+        ASSERT(nma .le. 1)
     else
-        ASSERT(nma.eq.ibid)
-    endif
+        ASSERT(nma .eq. ibid)
+    end if
 
     ! verifier chaque maille
     call jeveuo(jexnom(noma//'.GROUPEMA', karg), 'L', kma)
@@ -76,11 +75,11 @@ subroutine gmardm(nomgrm, modele, ier)
         ima = zi(kma-1+jma)
         if (v_model_elem(ima) .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', v_model_elem(ima)), nomte)
-            if (lteatt('COQUE','OUI', typel=nomte)) ier = 1
-            if (lteatt('POUTRE','OUI', typel=nomte)) ier = 1
-            if (lteatt('DISCRET','OUI', typel=nomte)) ier = 1
+            if (lteatt('COQUE', 'OUI', typel=nomte)) ier = 1
+            if (lteatt('POUTRE', 'OUI', typel=nomte)) ier = 1
+            if (lteatt('DISCRET', 'OUI', typel=nomte)) ier = 1
             if (ier == 1) exit
-        endif
+        end if
     end do
     call jedema()
 

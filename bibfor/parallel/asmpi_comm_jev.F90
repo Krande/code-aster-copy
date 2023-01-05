@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,57 +80,57 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
 !
     call jelira(nomjev, 'XOUS', ibid, xous)
-    ASSERT(xous.eq.'S'.or. xous.eq.'X')
+    ASSERT(xous .eq. 'S' .or. xous .eq. 'X')
     call jelira(nomjev, 'TYPE', ibid, typsca)
 !
     if (xous .eq. 'X') then
         call jelira(nomjev, 'NMAXOC', nbobj, kbid)
         call jelira(nomjev, 'STOCKAGE', cval=stock)
-        unseul=.false.
+        unseul = .false.
         if (stock .eq. 'CONTIG') then
-            nbobj=1
-            unseul=.true.
-        endif
+            nbobj = 1
+            unseul = .true.
+        end if
     else
-        nbobj=1
-        unseul=.true.
-    endif
+        nbobj = 1
+        unseul = .true.
+    end if
 !
 !
-    bcrank=0
+    bcrank = 0
 !
     do iobj = 1, nbobj
         if (unseul) then
-            ASSERT (nbobj.eq.1)
+            ASSERT(nbobj .eq. 1)
             call jeveuo(nomjev, 'E', jnomjv)
             if (xous .eq. 'X') then
                 call jelira(nomjev, 'LONT', nlong, kbid)
             else
                 call jelira(nomjev, 'LONMAX', nlong, kbid)
-            endif
+            end if
         else
             call jeexin(jexnum(nomjev, iobj), iexi)
             if (iexi .eq. 0) goto 10
             call jeveuo(jexnum(nomjev, iobj), 'E', jnomjv)
             call jelira(jexnum(nomjev, iobj), 'LONMAX', nlong, kbid)
-        endif
+        end if
 !
         nbv = to_mpi_int(nlong)
 !
         if (typsca .eq. 'R') then
             call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vr=zr(jnomjv))
-        else if (typsca.eq.'C') then
+        else if (typsca .eq. 'C') then
             call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vc=zc(jnomjv))
-        else if (typsca.eq.'I') then
+        else if (typsca .eq. 'I') then
             call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vi=zi(jnomjv))
-        else if (typsca.eq.'S') then
+        else if (typsca .eq. 'S') then
             call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vi4=zi4(jnomjv))
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         if (xous .eq. 'X' .and. stock .ne. 'CONTIG') call jelibe(jexnum(nomjev, iobj))
- 10     continue
+10      continue
     end do
 !
 !

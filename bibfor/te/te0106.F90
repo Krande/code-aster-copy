@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine te0106(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, ndim
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     zero = 0.d0
 !
@@ -56,55 +56,55 @@ subroutine te0106(option, nomte)
         pc(1) = zero
         pc(2) = fmo
         pc(3) = fpl
-    endif
+    end if
 !
-    if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ' .and. nomte .ne. 'THCOSE3 ' .and.&
+    if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ' .and. nomte .ne. 'THCOSE3 ' .and. &
         nomte .ne. 'THCOSE2 ') then
 !
         call cq3d2d(nno, zr(igeom), 1.d0, zero, coor2d)
 !
         do kp = 1, npg1
             k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+            call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                         poids, dfdx, dfdy)
             do gi = 1, nno
                 do pi = 1, 3
-                    i = 3* (gi-1) + pi - 1 + ivectt
-                    zr(i) = zr(i) + pc(pi)*zr(ivf+k+gi-1)*poids
+                    i = 3*(gi-1)+pi-1+ivectt
+                    zr(i) = zr(i)+pc(pi)*zr(ivf+k+gi-1)*poids
                 end do
             end do
         end do
 !
-        else if (nomte.eq.'THCPSE3' .or. nomte.eq.'THCASE3')&
-    then
+    else if (nomte .eq. 'THCPSE3' .or. nomte .eq. 'THCASE3') &
+        then
 !
         do kp = 1, npg1
             k = (kp-1)*nno
-            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
+            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx, &
                         cour, poids, cosa, sina)
 !
             if (nomte .eq. 'THCASE3') then
                 r = zero
                 do i = 1, nno
-                    r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
+                    r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
                 end do
                 poids = poids*r
-            endif
+            end if
 !
             do gi = 1, nno
                 do pi = 1, 3
-                    i = 3* (gi-1) + pi - 1 + ivectt
-                    zr(i) = zr(i) + pc(pi)*zr(ivf+k+gi-1)*poids
+                    i = 3*(gi-1)+pi-1+ivectt
+                    zr(i) = zr(i)+pc(pi)*zr(ivf+k+gi-1)*poids
                 end do
             end do
         end do
 !
-        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
-    then
+    else if (nomte .eq. 'THCOSE3' .or. nomte .eq. 'THCOSE2') &
+        then
 !
-        long = (&
-               zr(igeom+3)-zr(igeom))**2 + (zr(igeom+3+1)-zr(igeom+1) )**2 + (zr(igeom+3+2)-zr(ig&
-               &eom+2)&
+        long = ( &
+               zr(igeom+3)-zr(igeom))**2+(zr(igeom+3+1)-zr(igeom+1))**2+(zr(igeom+3+2)-zr(ig&
+               &eom+2) &
                )**2
         long = sqrt(long)/2.d0
 !
@@ -134,13 +134,13 @@ subroutine te0106(option, nomte)
                 matnp(7) = rp1*poids*zr(ivf-1+k+3)
                 matnp(8) = rp2*poids*zr(ivf-1+k+3)
                 matnp(9) = rp3*poids*zr(ivf-1+k+3)
-            endif
+            end if
 !
             do i = 1, 3*nno
-                zr(ivectt-1+i) = zr(ivectt-1+i) + long*matnp(i)*flux
+                zr(ivectt-1+i) = zr(ivectt-1+i)+long*matnp(i)*flux
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

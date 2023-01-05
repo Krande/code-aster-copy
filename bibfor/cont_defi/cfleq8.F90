@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfleq8(mesh         , sdcont_defi, nb_cont_zone, nb_cont_surf, nb_cont_node,&
+subroutine cfleq8(mesh, sdcont_defi, nb_cont_zone, nb_cont_surf, nb_cont_node, &
                   nb_cont_node0, v_list_node, v_poin_node)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -68,12 +68,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     nt_node_middle = 0
-    nb_node_elim   = 0
+    nb_node_elim = 0
 !
 ! - Datastructure for contact definition
 !
-    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
-    call jeveuo(sdcont_noeuco , 'L', vi = v_sdcont_noeuco)
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
+    call jeveuo(sdcont_noeuco, 'L', vi=v_sdcont_noeuco)
 !
 ! - Total number of middle nodes
 !
@@ -82,7 +82,7 @@ implicit none
         goto 999
     else
         call utmess('A', 'CONTACT_8')
-    endif
+    end if
 !
 ! - Save list in contact datastructure
 !
@@ -90,12 +90,12 @@ implicit none
 !
 ! - Create list of (middle) nodes to suppress
 !
-    call cfleqc(mesh       , sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf,&
+    call cfleqc(mesh, sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf, &
                 v_poin_node, v_indi_node, nb_node_elim)
 !
 ! - Non-suppressed nodes vector
 !
-    nb_cont_node = nb_cont_node0 - nb_node_elim
+    nb_cont_node = nb_cont_node0-nb_node_elim
     AS_ALLOCATE(vi=v_list_node, size=nb_cont_node)
 !
 ! - Create list of nodes to suppress
@@ -103,11 +103,11 @@ implicit none
     k = 0
     do i_node = 1, nb_cont_node0
         if (v_indi_node(i_node) .eq. 0) then
-            k = k + 1
+            k = k+1
             v_list_node(k) = v_sdcont_noeuco(i_node)
-        endif
+        end if
     end do
-    ASSERT(k.eq.nb_cont_node)
+    ASSERT(k .eq. nb_cont_node)
 !
 999 continue
 !

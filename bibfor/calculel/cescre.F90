@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
+subroutine cescre(basez, cesz, typcez, maz, nomgdz, &
                   ncmpg, licmp, npg, nspt, ncmp, undf0_)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-  implicit none
+    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -122,9 +122,9 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     ma = maz
 
     undf0 = ASTER_FALSE
-    if ( present(undf0_)) then
+    if (present(undf0_)) then
         undf0 = undf0_
-     endif
+    end if
 !
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -139,17 +139,17 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !
     typces = typcez
     if (typces .eq. 'ELEM') then
-    else if (typces.eq.'ELGA') then
-    else if (typces.eq.'ELNO') then
+    else if (typces .eq. 'ELGA') then
+    else if (typces .eq. 'ELNO') then
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlconx)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
         call utmess('F', 'CALCULEL_67', sk=nomgd)
-    endif
+    end if
 !
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
@@ -159,16 +159,16 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !     -- ON CALCULE ET ON VERIFIE :  '&&CESCRE.LICMP' :
 !     --------------------------------------------------
     if (ncmpg .eq. 0) then
-        ASSERT(nomgd(1:5).ne.'VARI_')
+        ASSERT(nomgd(1:5) .ne. 'VARI_')
         ncmp2 = ncmpmx
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
         do k = 1, ncmp2
             zk8(jlicmp-1+k) = zk8(jcmpgd-1+k)
         end do
 !
-    else if (ncmpg.gt.0) then
+    else if (ncmpg .gt. 0) then
         call verigd(nomgd, licmp, ncmpg, iret)
-        ASSERT(iret.le.0)
+        ASSERT(iret .le. 0)
 !
         ncmp2 = ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
@@ -176,8 +176,8 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
             zk8(jlicmp-1+k) = licmp(k)
         end do
 !
-    else if (ncmpg.lt.0) then
-        ASSERT(nomgd(1:5).eq.'VARI_')
+    else if (ncmpg .lt. 0) then
+        ASSERT(nomgd(1:5) .eq. 'VARI_')
         ncmp2 = -ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
         nomcmp(1:1) = 'V'
@@ -185,23 +185,23 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
             call codent(k, 'G', nomcmp(2:8))
             zk8(jlicmp-1+k) = nomcmp
         end do
-    endif
+    end if
 !
     do icmp = 1, ncmp2
         if (nomgd(1:5) .ne. 'VARI_') then
-            jcmp = indik8(zk8(jcmpgd),zk8(jlicmp-1+icmp),1,ncmpmx)
+            jcmp = indik8(zk8(jcmpgd), zk8(jlicmp-1+icmp), 1, ncmpmx)
         else
             if (zk8(jlicmp-1+icmp) (1:1) .ne. 'V') then
                 jcmp = 0
             else
                 jcmp = 1
-            endif
-        endif
+            end if
+        end if
         if (jcmp .eq. 0) then
             valk(1) = zk8(jlicmp-1+icmp)
             valk(2) = nomgd
             call utmess('F', 'CALCULEL_52', nk=2, valk=valk)
-        endif
+        end if
     end do
 !
 !
@@ -236,44 +236,44 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !       -- CALCUL DE NPT(IMA):
         if (typces .eq. 'ELEM') then
             nptma = 1
-        else if (typces.eq.'ELNO') then
+        else if (typces .eq. 'ELNO') then
             nptma = nbnoma(ima)
-        else if (typces.eq.'ELGA') then
+        else if (typces .eq. 'ELGA') then
             if (npg(1) .lt. 0) then
                 nptma = -npg(1)
             else
                 nptma = npg(ima)
-            endif
-        endif
+            end if
+        end if
 !
 !       -- CALCUL DE NSPT(IMA):
         if (nspt(1) .lt. 0) then
             nsptma = -nspt(1)
         else
             nsptma = nspt(ima)
-        endif
+        end if
 !
 !       -- CALCUL DE NCMP(IMA):
         if (ncmp(1) .lt. 0) then
             ncmpma = -ncmp(1)
         else
             ncmpma = ncmp(ima)
-        endif
+        end if
 !
-        zi(jcesd-1+5+4* (ima-1)+1) = nptma
-        zi(jcesd-1+5+4* (ima-1)+2) = nsptma
-        zi(jcesd-1+5+4* (ima-1)+3) = ncmpma
-        zi(jcesd-1+5+4* (ima-1)+4) = decal
+        zi(jcesd-1+5+4*(ima-1)+1) = nptma
+        zi(jcesd-1+5+4*(ima-1)+2) = nsptma
+        zi(jcesd-1+5+4*(ima-1)+3) = ncmpma
+        zi(jcesd-1+5+4*(ima-1)+4) = decal
 !
-        decal = decal + nptma*nsptma*ncmpma
+        decal = decal+nptma*nsptma*ncmpma
 !
-        zi(jcesd-1+3) = max(nptma,zi(jcesd-1+3))
-        zi(jcesd-1+4) = max(nsptma,zi(jcesd-1+4))
-        zi(jcesd-1+5) = max(ncmpma,zi(jcesd-1+5))
+        zi(jcesd-1+3) = max(nptma, zi(jcesd-1+3))
+        zi(jcesd-1+4) = max(nsptma, zi(jcesd-1+4))
+        zi(jcesd-1+5) = max(ncmpma, zi(jcesd-1+5))
     end do
 !
 !     -- POUR POUVOIR CONTINUER SI DECAL=0 (CES VIDE):
-    decal=max(decal,1)
+    decal = max(decal, 1)
 !
 !------------------------------------------------------------------
 !     5- CREATION DE CES.CESL:

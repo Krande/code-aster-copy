@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine op0073()
 #include "asterfort/wkvect.h"
     character(len=8) :: nomres
     integer :: nbpara, nbinfo
-    parameter   ( nbpara = 3 )
+    parameter(nbpara=3)
     character(len=8) :: typara(nbpara)
     character(len=16) :: typres, nomcom, nopara(nbpara)
     character(len=24) :: type, tabk(nbpara)
@@ -53,13 +53,13 @@ subroutine op0073()
     complex(kind=8) :: cbid
     aster_logical :: crprol
 !     ------------------------------------------------------------------
-    data nopara / 'LIEU'    , 'TYPE'    , 'FONCTION' /
-    data typara / 'K8'      , 'K24'     , 'K24'      /
+    data nopara/'LIEU', 'TYPE', 'FONCTION'/
+    data typara/'K8', 'K24', 'K24'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    cbid=(0.d0,0.d0)
-    r8bid=0.d0
+    cbid = (0.d0, 0.d0)
+    r8bid = 0.d0
     call infmaj()
     call infniv(ifm, niv)
 !
@@ -70,7 +70,7 @@ subroutine op0073()
     nbval = -nbval
     if ((nbval/2)*2 .ne. nbval) then
         call utmess('F', 'ALGORITH9_43')
-    endif
+    end if
 !
 ! --- CREATION DE LA TABLE
     call tbcrsd(nomres, 'G')
@@ -94,7 +94,7 @@ subroutine op0073()
 !
 ! --- DIMENSIONNEMENT DES OBJETS DE STOCKAGE ---
     rad = r8dgrd()
-    nbpair = nbval / 2
+    nbpair = nbval/2
 !
     if (type(1:7) .eq. 'DISCRET') then
         if (nbval .gt. 0) then
@@ -102,21 +102,21 @@ subroutine op0073()
             call getvr8(' ', 'VALE', nbval=nbval, vect=zr(idtemp), nbret=ibid)
 !
             call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
-            lfon = lval + nbpair
+            lfon = lval+nbpair
             do i = 1, nbpair
-                zr(lval-1+i) = zr(idtemp+2*(i-1)) * rad
+                zr(lval-1+i) = zr(idtemp+2*(i-1))*rad
                 zr(lfon-1+i) = zr(idtemp+2*(i-1)+1)
             end do
-        endif
+        end if
 !
 ! --- CAS CERCLE, PLAN... SEUL LE .REFO ETAIT PRODUIT DANS L'ANCIENNE SD
     else
         crprol = .false.
         nbinfo = 2
-    endif
+    end if
 !
     if (crprol) then
-        ASSERT(lxlgut(nomfon).le.24)
+        ASSERT(lxlgut(nomfon) .le. 24)
         call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
         zk24(lpro) = 'FONCTION'
         zk24(lpro+1) = 'LIN LIN'
@@ -124,10 +124,10 @@ subroutine op0073()
         zk24(lpro+3) = 'R'
         zk24(lpro+4) = 'EE'
         zk24(lpro+5) = nomfon
-    endif
+    end if
 !
 ! --- INSERTION EFFECTIVE DE LA LIGNE DANS LA TABLE
-    call tbajli(nomres, nbinfo, nopara, [ibid], [r8bid],&
+    call tbajli(nomres, nbinfo, nopara, [ibid], [r8bid], &
                 [cbid], tabk, 0)
 !
     call jedema()

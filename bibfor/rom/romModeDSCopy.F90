@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 !
 subroutine romModeDSCopy(modeIn, modeOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
-type(ROM_DS_Field), intent(in)  :: modeIn
-type(ROM_DS_Field), intent(out) :: modeOut
+    type(ROM_DS_Field), intent(in)  :: modeIn
+    type(ROM_DS_Field), intent(out) :: modeOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,11 +40,11 @@ type(ROM_DS_Field), intent(out) :: modeOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    modeOut%fieldName     = modeIn%fieldName
-    modeOut%fieldRefe     = modeIn%fieldRefe
-    modeOut%fieldSupp     = modeIn%fieldSupp
-    modeOut%mesh          = modeIn%mesh
-    modeOut%model         = modeIn%model
-    modeOut%nbEqua        = modeIn%nbEqua
+    modeOut%fieldName = modeIn%fieldName
+    modeOut%fieldRefe = modeIn%fieldRefe
+    modeOut%fieldSupp = modeIn%fieldSupp
+    modeOut%mesh = modeIn%mesh
+    modeOut%model = modeIn%model
+    modeOut%nbEqua = modeIn%nbEqua
 !
 end subroutine

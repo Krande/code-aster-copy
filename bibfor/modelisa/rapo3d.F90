@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
-    parameter (nmocl=300)
+    parameter(nmocl=300)
     aster_logical :: vexcen
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg, k8bid, cara
@@ -96,7 +96,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: iop, nliai, i, narl, ibid, inom
     integer :: nbcmp, nddla, nbec, nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, numnop
-    integer :: ino, j, idch1, idch2, nbterm,jno2
+    integer :: ino, j, idch1, idch2, nbterm, jno2
     integer :: ival
     integer :: ncara, iocc
     real(kind=8) :: ig(6), coorig(3), angt, beta, eps, un, vtang(6)
@@ -125,23 +125,23 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
     motfac = 'LIAISON_ELEM'
     call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
-    if ((option.ne.'3D_POU') .and. (option.ne.'3D_TUYAU') .and.&
-        (option.ne.'PLAQ_POUT_ORTH')) then
+    if ((option .ne. '3D_POU') .and. (option .ne. '3D_TUYAU') .and. &
+        (option .ne. 'PLAQ_POUT_ORTH')) then
         call utmess('F', 'MODELISA6_39', sk=option)
-    endif
+    end if
 !
     call getfac(motfac, nliai)
     if (nliai .eq. 0) goto 999
 !
 !     VERIFIE-T'ON L'EXCENTREMENT DES POUTRES
-    vexcen=.true.
+    vexcen = .true.
     if (option .eq. 'PLAQ_POUT_ORTH') then
         call getvtx(motfac, 'VERIF_EXCENT', iocc=iocc, nbval=0, nbret=narl)
         if (narl .ne. 0) then
             call getvtx(motfac, 'VERIF_EXCENT', iocc=iocc, scal=k8bid, nbret=narl)
-            if (k8bid(1:3) .eq. 'NON') vexcen=.false.
-        endif
-    endif
+            if (k8bid(1:3) .eq. 'NON') vexcen = .false.
+        end if
+    end if
 ! --- INITIALISATIONS
 !     ---------------
 !
@@ -154,7 +154,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VALEUR DU SECOND MEMBRE DES RELATIONS QUAND C'EST UN REEL
     beta = 0.0d0
 ! --- VALEUR DU SECOND MEMBRE DES RELATIONS QUAND C'EST UN COMPLEXE
-    betac = (0.0d0,0.0d0)
+    betac = (0.0d0, 0.0d0)
     eps = 1.0d-02
     un = 1.0d0
     kcmp(1) = ' '
@@ -166,9 +166,9 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     cmp(4) = 'DRX'
     cmp(5) = 'DRY'
     cmp(6) = 'DRZ'
-    ccmp(1) = (0.0d0,0.0d0)
-    ccmp(2) = (0.0d0,0.0d0)
-    ccmp(3) = (0.0d0,0.0d0)
+    ccmp(1) = (0.0d0, 0.0d0)
+    ccmp(2) = (0.0d0, 0.0d0)
+    ccmp(3) = (0.0d0, 0.0d0)
     do i = 1, 6
         icmp(i) = 0
     end do
@@ -206,12 +206,12 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
-    nddla = nbcmp - 1
+    nddla = nbcmp-1
     if (nddla .gt. nmocl) then
-        vali (1) = nmocl
-        vali (2) = nddla
+        vali(1) = nmocl
+        vali(2) = nddla
         call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
-    endif
+    end if
     do i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
@@ -224,7 +224,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         call utmess('F', 'MODELISA_94')
     else
         call jeveuo(ligrmo//'.PRNM', 'L', vi=prnm)
-    endif
+    end if
 !
 ! --- -----------------------------------------------------------------
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE
@@ -234,15 +234,15 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         call jenuno(jexnum(numddl//'.NUME.LILI', i), nolili)
         if (nolili(1:8) .ne. '&MAILLA') goto 30
         k = i
- 30     continue
+30      continue
     end do
-    ASSERT(k.ne.0)
+    ASSERT(k .ne. 0)
     call jeveuo(jexnum(numddl//'.NUME.PRNO', k), 'L', iaprno)
 !
 ! --- -----------------------------------------------------------------
 ! --- ACQUISITION DE LA LISTE DES NOEUDS A LIER
 !     (CETTE LISTE EST NON REDONDANTE)
-    call malin1(motfac, charge, iocc, 1, lisnoe,&
+    call malin1(motfac, charge, iocc, 1, lisnoe, &
                 lonlis)
     call jeveuo(lisnoe, 'L', ilisno)
 !
@@ -252,7 +252,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- CREATION ET AFFECTATION DU VECTEUR DE K8 DE NOM LISMAI
 !     CONTENANT LES NOMS DES MAILLES FORMANT LE LIGREL A CREER
-    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc,&
+    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
                 2, motcle(1), typmcl(1), lismai, nbma)
     call jeveuo(lismai, 'L', jlisma)
 !
@@ -265,26 +265,26 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         call veripl(noma, nbma, zi(jlisma), angt, 'F')
     else
         call veripl(noma, nbma, zi(jlisma), angt, 'A')
-    endif
+    end if
 !
 ! --- -----------------------------------------------------------------
 ! --- Recuperation du noeud "poutre" (_2) :
-    motcle(1)='GROUP_NO_2'
-    motcle(2)='NOEUD_2'
-    motcle(3)='GROUP_MA_2'
-    motcle(4)='MAILLE_2'
-    typmcl(1)='GROUP_NO'
-    typmcl(2)='NOEUD'
-    typmcl(3)='GROUP_MA'
-    typmcl(4)='MAILLE'
-    call reliem(' ', noma, 'NO_NOEUD', motfac, iocc,&
-                  4, motcle, typmcl, '&&RAPO3D.NO2', nbno)
+    motcle(1) = 'GROUP_NO_2'
+    motcle(2) = 'NOEUD_2'
+    motcle(3) = 'GROUP_MA_2'
+    motcle(4) = 'MAILLE_2'
+    typmcl(1) = 'GROUP_NO'
+    typmcl(2) = 'NOEUD'
+    typmcl(3) = 'GROUP_MA'
+    typmcl(4) = 'MAILLE'
+    call reliem(' ', noma, 'NO_NOEUD', motfac, iocc, &
+                4, motcle, typmcl, '&&RAPO3D.NO2', nbno)
 
     if (nbno .ne. 1) then
         call utmess('F', 'MODELISA6_40', si=nbno)
-    endif
-    call jeveuo('&&RAPO3D.NO2','L',jno2)
-    noepou=zk8(jno2)
+    end if
+    call jeveuo('&&RAPO3D.NO2', 'L', jno2)
+    noepou = zk8(jno2)
     call jenonu(jexnom(noeuma, noepou), numnop)
     call jedetr('&&RAPO3D.NO2')
 !   --- coordonnees du noeud poutre
@@ -307,17 +307,17 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
                 valr(2) = ypou
                 valr(3) = zpou
                 vali(1) = iocc
-                call utmess('F', 'MODELISA6_28', sk=valk(1), si=vali(1), nr=3,&
+                call utmess('F', 'MODELISA6_28', sk=valk(1), si=vali(1), nr=3, &
                             valr=valr)
-            endif
+            end if
             dg = prnm((ino-1)*nbec+1)
             do j = 4, 6
-                icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-                if (.not. exisdg([dg],icmp(j))) then
+                icmp(j) = indik8(nomcmp, cmp(j), 1, nddla)
+                if (.not. exisdg([dg], icmp(j))) then
                     valk(1) = zk8(ilisno+i-1)
                     valk(2) = cmp(j)
                     call utmess('F', 'MODELISA6_32', nk=2, valk=valk)
-                endif
+                end if
             end do
         end do
     else
@@ -326,27 +326,27 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
             call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), ino)
             dg = prnm((ino-1)*nbec+1)
             do j = 4, 6
-                icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-                if (exisdg([dg],icmp(j))) then
+                icmp(j) = indik8(nomcmp, cmp(j), 1, nddla)
+                if (exisdg([dg], icmp(j))) then
                     valk(1) = zk8(ilisno+i-1)
                     valk(2) = cmp(j)
                     call utmess('F', 'MODELISA6_44', nk=2, valk=valk)
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
 ! --- -----------------------------------------------------------------
 ! --- VERIFICATION DU FAIT QUE LE NOEUD POUTRE A RACCORDER PORTE
 !     LES 3 DDLS DE TRANSLATION ET LES 3 DDLS DE ROTATION.
     dg = prnm((numnop-1)*nbec+1)
     do j = 1, 6
-        icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
-        if (.not.exisdg([dg],icmp(j))) then
+        icmp(j) = indik8(nomcmp, cmp(j), 1, nddla)
+        if (.not. exisdg([dg], icmp(j))) then
             valk(1) = noepou
             valk(2) = cmp(j)
             call utmess('F', 'MODELISA6_45', nk=2, valk=valk)
-        endif
+        end if
     end do
 !
 ! --- -----------------------------------------------------------------
@@ -358,8 +358,8 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     lpaout(1) = 'PCASECT'
     lchout(1) = '&&RAPO3D.PSECT'
 !
-    call calcul('S', 'CARA_SECT_POUT3', ligrel, 1, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT3', ligrel, 1, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! --- -----------------------------------------------------------------
@@ -386,7 +386,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
     if (abs(s) .lt. r8prem()) then
         call utmess('F', 'MODELISA6_46')
-    endif
+    end if
     s1 = 1.0d0/s
 !
 ! --- -----------------------------------------------------------------
@@ -398,8 +398,8 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 !     VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 !     NOEUD POUTRE A RACCORDER :
-    dnorme = sqrt(&
-             (xpou-xg)*(xpou-xg)+ (ypou-yg)*(ypou-yg)+ (zpou-zg)*(zpou-zg))/sqrt(s/3.14159265d0)
+    dnorme = sqrt( &
+             (xpou-xg)*(xpou-xg)+(ypou-yg)*(ypou-yg)+(zpou-zg)*(zpou-zg))/sqrt(s/3.14159265d0)
     if (dnorme .gt. eps) then
         valr(1) = xg
         valr(2) = yg
@@ -413,13 +413,13 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         valk(1) = option
         vali(1) = iocc
         if (vexcen) then
-            call utmess('A', 'CALCULEL3_80', sk=valk(1), si=vali(1), nr=9,&
+            call utmess('A', 'CALCULEL3_80', sk=valk(1), si=vali(1), nr=9, &
                         valr=valr)
         else
-            call utmess('I', 'CALCULEL3_78', sk=valk(1), si=vali(1), nr=9,&
+            call utmess('I', 'CALCULEL3_78', sk=valk(1), si=vali(1), nr=9, &
                         valr=valr)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- -----------------------------------------------------------------
 !     RECUPERATION DES VECTEURS TANGENTS ORTHONORMES DU 1ER ELEMENT
@@ -431,24 +431,24 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         vtang(4) = inertie_raccord(14)
         vtang(5) = inertie_raccord(15)
         vtang(6) = inertie_raccord(16)
-    endif
+    end if
 !
 ! --- -----------------------------------------------------------------
 !     CALCUL DU TENSEUR D'INERTIE EN G, CE TENSEUR EST SYMETRIQUE :
 !     ON CALCULE LES COMPOSANTES DE LA PARTIE SUPERIEURE PAR LIGNE
 !
 ! --- IGXX = AYY + AZZ -S*(YG*YG+ZG*ZG)
-    ig(1) = ayy + azz - s*(yg*yg+zg*zg)
+    ig(1) = ayy+azz-s*(yg*yg+zg*zg)
 ! --- IGXY = -AXY + S*XG*YG
-    ig(2) = -axy + s*xg*yg
+    ig(2) = -axy+s*xg*yg
 ! --- IGXZ = -AXZ + S*XG*ZG
-    ig(3) = -axz + s*xg*zg
+    ig(3) = -axz+s*xg*zg
 ! --- IGYY = AZZ + AXX -S*(ZG*ZG+XG*XG)
-    ig(4) = azz + axx - s*(zg*zg+xg*xg)
+    ig(4) = azz+axx-s*(zg*zg+xg*xg)
 ! --- IGYZ = -AYZ + S*YG*ZG
-    ig(5) = -ayz + s*yg*zg
+    ig(5) = -ayz+s*yg*zg
 ! --- IGZZ = AXX + AYY -S*(XG*XG+YG*YG)
-    ig(6) = axx + ayy - s*(xg*xg+yg*yg)
+    ig(6) = axx+ayy-s*(xg*xg+yg*yg)
 !
 ! --- -----------------------------------------------------------------
 !     NOTATION DANS LA CARTE DE NOM '&&RAPO3D.CAORIGE' DES
@@ -461,7 +461,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     coorig(2) = yg
     coorig(3) = zg
 !
-    call mecact('V', '&&RAPO3D.CAORIGE', 'LIGREL', ligrel, 'GEOM_R',&
+    call mecact('V', '&&RAPO3D.CAORIGE', 'LIGREL', ligrel, 'GEOM_R', &
                 ncmp=3, lnomcmp=nocmp, vr=coorig)
 !
 ! --- DETERMINATION DE 2 LISTES  DE VECTEURS PAR ELEMENT PRENANT
@@ -483,13 +483,13 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     lchout(1) = '&&RAPO3D.VECT_NI'
     lchout(2) = '&&RAPO3D.VECT_XYZNI'
 !
-    call calcul('S', 'CARA_SECT_POUT4', ligrel, 2, lchin,&
-                lpain, 2, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT4', ligrel, 2, lchin, &
+                lpain, 2, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! --- -----------------------------------------------------------------
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
-    call memare('V', '&&RAPO3D', mod, ' ', ' ',&
+    call memare('V', '&&RAPO3D', mod, ' ', ' ', &
                 'CHAR_MECA')
 !
 ! --- -----------------------------------------------------------------
@@ -512,7 +512,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 ! --- CREATION DES TABLEAUX NECESSAIRES A L'AFFECTATION DE LISREL
 ! --- MAJORANT DU NOMBRE DE TERMES DANS UNE RELATION
-    nbterm = 3*lonlis + 3
+    nbterm = 3*lonlis+3
 ! --- VECTEUR DU NOM DES NOEUDS
     AS_ALLOCATE(vk8=lisno, size=nbterm)
 ! --- VECTEUR DU NOM DES DDLS
@@ -535,12 +535,12 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 ! --- PREMIERE RELATION :
 !     -S.DX(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DX(NOEUD_I) = 0
-    nbterm = lonlis + 1
+    nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno + (ino-1)*(nbec+2))
+        ival = zi(iaprno+(ino-1)*(nbec+2))
 !
         lisno(i) = zk8(ilisno+i-1)
         lisddl(i) = 'DX'
@@ -551,20 +551,20 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     lisddl(1+lonlis+1-1) = 'DX'
     coer(1+lonlis+1-1) = -s
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! --- DEUXIEME RELATION :
 !     -S.DY(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DY(NOEUD_I) = 0
-    nbterm = lonlis + 1
+    nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno + (ino-1)*(nbec+2))
+        ival = zi(iaprno+(ino-1)*(nbec+2))
 !
         lisno(i) = zk8(ilisno+i-1)
         lisddl(i) = 'DY'
@@ -575,20 +575,20 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     lisddl(1+lonlis+1-1) = 'DY'
     coer(1+lonlis+1-1) = -s
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! --- TROISIEME RELATION :
 !     -S.DZ(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DZ(NOEUD_I) = 0
-    nbterm = lonlis + 1
+    nbterm = lonlis+1
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno + (ino-1)*(nbec+2))
+        ival = zi(iaprno+(ino-1)*(nbec+2))
 !
         lisno(i) = zk8(ilisno+i-1)
         lisddl(i) = 'DZ'
@@ -599,10 +599,10 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     lisddl(1+lonlis+1-1) = 'DZ'
     coer(1+lonlis+1-1) = -s
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! --- -----------------------------------------------------------------
@@ -614,12 +614,12 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        (SOMME/S_RACCORD(Z*NI.DS)).DY(NOEUD_I) -
 !        IXX.DRX(NOEUD_POUTRE) - IXY.DRY(NOEUD_POUTRE) -
 !        IXZ.DRZ(NOEUD_POUTRE)                          = 0
-    nbterm = 2*lonlis + 3
+    nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA COQUE
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno + (ino-1)*(nbec+2))
+        ival = zi(iaprno+(ino-1)*(nbec+2))
 !
         lisno(1+2*(i-1)+1-1) = zk8(ilisno+i-1)
         lisno(1+2*(i-1)+2-1) = zk8(ilisno+i-1)
@@ -643,10 +643,10 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     coer(1+2*lonlis+2-1) = -ig(2)
     coer(1+2*lonlis+3-1) = -ig(3)
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! --- CINQUIEME RELATION :
@@ -654,12 +654,12 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        (SOMME/S_RACCORD(X*NI.DS)).DZ(NOEUD_I) -
 !        IXY.DRX(NOEUD_POUTRE) - IYY.DRY(NOEUD_POUTRE) -
 !        IYZ.DRZ(NOEUD_POUTRE)                            = 0
-    nbterm = 2*lonlis + 3
+    nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE SURFACE DU MASSIF
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno+ (ino-1)* (nbec+2))
+        ival = zi(iaprno+(ino-1)*(nbec+2))
 !
         lisno(1+2*(i-1)+1-1) = zk8(ilisno+i-1)
         lisno(1+2*(i-1)+2-1) = zk8(ilisno+i-1)
@@ -683,10 +683,10 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     coer(1+2*lonlis+2-1) = -ig(4)
     coer(1+2*lonlis+3-1) = -ig(5)
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! --- SIXIEME RELATION :
@@ -694,12 +694,12 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        (SOMME/S_RACCORD(Y*NI.DS)).DX(NOEUD_I) -
 !        IXZ.DRX(NOEUD_POUTRE) - IYZ.DRY(NOEUD_POUTRE) -
 !        IZZ.DRZ(NOEUD_POUTRE)                            = 0
-    nbterm = 2*lonlis + 3
+    nbterm = 2*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE SURFACE DU MASSIF
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-        ival = zi(iaprno+ (ino-1)* (nbec+2))
+        ival = zi(iaprno+(ino-1)*(nbec+2))
 !
         lisno(1+2*(i-1)+1-1) = zk8(ilisno+i-1)
         lisno(1+2*(i-1)+2-1) = zk8(ilisno+i-1)
@@ -723,10 +723,10 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     coer(1+2*lonlis+2-1) = -ig(5)
     coer(1+2*lonlis+3-1) = -ig(6)
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 typcoe, typval, 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 ! === =================================================================
@@ -739,12 +739,12 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 ! --- PREMIERE RELATION :
 !     -S.DRX(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DRX(NOEUD_I) = 0
-        nbterm = 3*lonlis + 3
+        nbterm = 3*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
         do i = 1, lonlis
             call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-            ival = zi(iaprno + (ino-1)*(nbec+2))
+            ival = zi(iaprno+(ino-1)*(nbec+2))
 !
             lisno(1+3*(i-1)+1-1) = zk8(ilisno+i-1)
             lisno(1+3*(i-1)+2-1) = zk8(ilisno+i-1)
@@ -767,20 +767,20 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         coer(1+3*lonlis+2-1) = -s*vtang(2)
         coer(1+3*lonlis+3-1) = -s*vtang(3)
 !
-        call afrela(coer, coec, lisddl, lisno, dime,&
-                    direct, nbterm, beta, betac, betaf,&
+        call afrela(coer, coec, lisddl, lisno, dime, &
+                    direct, nbterm, beta, betac, betaf, &
                     typcoe, typval, 0.d0, lisrel)
-        call imprel(motfac, nbterm, coer, lisddl, lisno,&
+        call imprel(motfac, nbterm, coer, lisddl, lisno, &
                     beta)
 !
 ! --- PREMIERE RELATION :
 !     -S.DRY(NOEUD_POUTRE) + (SOMME/S_RACCORD(NI.DS)).DRY(NOEUD_I) = 0
-        nbterm = 3*lonlis + 3
+        nbterm = 3*lonlis+3
 !     BOUCLE SUR LES NOEUDS DES MAILLES DE LA TRACE DE LA POUTRE
         do i = 1, lonlis
             call jenonu(jexnom(noeuma, zk8(ilisno+i-1)), ino)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
-            ival = zi(iaprno + (ino-1)*(nbec+2))
+            ival = zi(iaprno+(ino-1)*(nbec+2))
 !
             lisno(1+3*(i-1)+1-1) = zk8(ilisno+i-1)
             lisno(1+3*(i-1)+2-1) = zk8(ilisno+i-1)
@@ -803,13 +803,13 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         coer(1+3*lonlis+2-1) = -s*vtang(5)
         coer(1+3*lonlis+3-1) = -s*vtang(6)
 !
-        call afrela(coer, coec, lisddl, lisno, dime,&
-                    direct, nbterm, beta, betac, betaf,&
+        call afrela(coer, coec, lisddl, lisno, dime, &
+                    direct, nbterm, beta, betac, betaf, &
                     typcoe, typval, 0.d0, lisrel)
-        call imprel(motfac, nbterm, coer, lisddl, lisno,&
+        call imprel(motfac, nbterm, coer, lisddl, lisno, &
                     beta)
 !
-    endif
+    end if
 ! === =================================================================
 !
 ! --- -----------------------------------------------------------------
@@ -818,11 +818,11 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         call getvid(motfac, 'CARA_ELEM', iocc=iocc, scal=cara, nbret=ncara)
         if (ncara .eq. 0) then
             call utmess('F', 'MODELISA6_47')
-        endif
-        call ratu3d(zi(iaprno), lonlis, zk8(ilisno), noepou, noma,&
-                    ligrel, mod, cara, numddl, lisrel,&
+        end if
+        call ratu3d(zi(iaprno), lonlis, zk8(ilisno), noepou, noma, &
+                    ligrel, mod, cara, numddl, lisrel, &
                     coorig, s)
-    endif
+    end if
 !
 ! --- -----------------------------------------------------------------
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL

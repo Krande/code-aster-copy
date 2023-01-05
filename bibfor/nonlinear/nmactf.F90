@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmactf(ds_print, sddisc, sderro, ds_contact,&
-                  ds_conv , iterat, numins)
+subroutine nmactf(ds_print, sddisc, sderro, ds_contact, &
+                  ds_conv, iterat, numins)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -78,21 +78,21 @@ implicit none
 !
     if (etfixe .eq. 'CONV') then
         retact = 0
-    else if (etfixe.eq.'EVEN') then
+    else if (etfixe .eq. 'EVEN') then
         call nmacto(sddisc, i_event_acti)
-        call nmevac(sddisc, sderro  , i_event_acti, numins, iterat,&
+        call nmevac(sddisc, sderro, i_event_acti, numins, iterat, &
                     retact, ds_print, ds_contact)
 ! ----- ON NE PEUT PAS CONTINUER LES ITERATIONS DE NEWTON ICI
-        ASSERT(retact.ne.2)
-    else if (etfixe.eq.'CONT') then
+        ASSERT(retact .ne. 2)
+    else if (etfixe .eq. 'CONT') then
         retact = 2
-    else if (etfixe.eq.'ERRE') then
+    else if (etfixe .eq. 'ERRE') then
         retact = 1
-    else if (etfixe.eq.'STOP') then
+    else if (etfixe .eq. 'STOP') then
         retact = 4
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- TRAITEMENT DE L'ACTION
 !
@@ -101,21 +101,21 @@ implicit none
 ! ----- TOUT EST OK -> ON PASSE A LA SUITE
 !
         actfix = 0
-    else if (retact.eq.1) then
+    else if (retact .eq. 1) then
 !
 ! ----- ON REFAIT LE PAS DE TEMPS
 !
         actfix = 1
-    else if (retact.eq.2) then
+    else if (retact .eq. 2) then
 !
 ! ----- ON CONTINUE LES ITERATIONS DE POINT FIXE
 !
         actfix = 2
-    else if (retact.eq.3) then
+    else if (retact .eq. 3) then
 !
 ! ----- ECHEC DE L'ACTION
 !
-        if (.not.ds_conv%l_stop) then
+        if (.not. ds_conv%l_stop) then
 !
 ! ------- CONVERGENCE FORCEE -> ON PASSE A LA SUITE
 !
@@ -126,28 +126,28 @@ implicit none
 ! ------- ARRET DU CALCUL
 !
             actfix = 3
-        endif
-    else if (retact.eq.4) then
+        end if
+    else if (retact .eq. 4) then
 !
 ! ----- ARRET DU CALCUL
 !
         actfix = 3
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
 !
     if (actfix .eq. 0) then
         call nmeceb(sderro, 'FIXE', 'CONV')
-    else if (actfix.eq.1) then
+    else if (actfix .eq. 1) then
         call nmeceb(sderro, 'FIXE', 'ERRE')
-    else if (actfix.eq.2) then
+    else if (actfix .eq. 2) then
         call nmeceb(sderro, 'FIXE', 'CONT')
-    else if (actfix.eq.3) then
+    else if (actfix .eq. 3) then
         call nmeceb(sderro, 'FIXE', 'STOP')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

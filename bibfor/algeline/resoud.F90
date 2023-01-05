@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
-                  chsecm, chsolu, base, rsolu, csolu,&
+subroutine resoud(matass, matpre, solveu, chcine, nsecm, &
+                  chsecm, chsolu, base, rsolu, csolu, &
                   criter, prepos, istop, iret)
     implicit none
 #include "asterf_types.h"
@@ -93,24 +93,24 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     call jemarq()
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
-    matas1=matass
-    solve1=solveu
-    ASSERT(solve1.ne.' ')
+    matas1 = matass
+    solve1 = solveu
+    ASSERT(solve1 .ne. ' ')
 !
-    call dismoi('XFEM',matass,'MATR_ASSE',repk=kxfem)
+    call dismoi('XFEM', matass, 'MATR_ASSE', repk=kxfem)
 !
     if (kxfem .eq. 'XFEM_PRECOND') then
 !
-        call resou3(matas1, matpre, solve1, chcine, nsecm,&
-                    chsecm, chsolu, base, rsolu, csolu,&
+        call resou3(matas1, matpre, solve1, chcine, nsecm, &
+                    chsecm, chsolu, base, rsolu, csolu, &
                     criter, prepos, istop, iret)
 !
     else
 !
-        call resou2(matas1, matpre, solve1, chcine, nsecm,&
-                    chsecm, chsolu, base, rsolu, csolu,&
+        call resou2(matas1, matpre, solve1, chcine, nsecm, &
+                    chsecm, chsolu, base, rsolu, csolu, &
                     criter, prepos, istop, iret)
-    endif
+    end if
 !
     call uttcpu('CPU.RESO.1', 'FIN', ' ')
     call uttcpu('CPU.RESO.5', 'FIN', ' ')

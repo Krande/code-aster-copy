@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,28 +17,28 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine thm_kit_nvar(rela_thmc     , rela_hydr     , rela_meca     , rela_ther     ,&
-                        nb_vari_thmc  , nb_vari_hydr  , nb_vari_meca  , nb_vari_ther  ,&
+subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, &
+                        nb_vari_thmc, nb_vari_hydr, nb_vari_meca, nb_vari_ther, &
                         nume_comp_thmc, nume_comp_hydr, nume_comp_meca, nume_comp_ther)
 !
-implicit none
+    implicit none
 !
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
 !
-character(len=16), intent(in) :: rela_thmc
-character(len=16), intent(in) :: rela_hydr
-character(len=16), intent(in) :: rela_meca
-character(len=16), intent(in) :: rela_ther
-integer, intent(out) :: nb_vari_thmc
-integer, intent(out) :: nb_vari_hydr
-integer, intent(out) :: nb_vari_meca
-integer, intent(out) :: nb_vari_ther
-integer, intent(out) :: nume_comp_thmc
-integer, intent(out) :: nume_comp_hydr
-integer, intent(out) :: nume_comp_meca
-integer, intent(out) :: nume_comp_ther
+    character(len=16), intent(in) :: rela_thmc
+    character(len=16), intent(in) :: rela_hydr
+    character(len=16), intent(in) :: rela_meca
+    character(len=16), intent(in) :: rela_ther
+    integer, intent(out) :: nb_vari_thmc
+    integer, intent(out) :: nb_vari_hydr
+    integer, intent(out) :: nb_vari_meca
+    integer, intent(out) :: nb_vari_ther
+    integer, intent(out) :: nume_comp_thmc
+    integer, intent(out) :: nume_comp_hydr
+    integer, intent(out) :: nume_comp_meca
+    integer, intent(out) :: nume_comp_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,10 +68,10 @@ integer, intent(out) :: nume_comp_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_vari_thmc   = 0
-    nb_vari_ther   = 0
-    nb_vari_hydr   = 0
-    nb_vari_meca   = 0
+    nb_vari_thmc = 0
+    nb_vari_ther = 0
+    nb_vari_hydr = 0
+    nb_vari_meca = 0
     nume_comp_thmc = 0
     nume_comp_ther = 0
     nume_comp_hydr = 0

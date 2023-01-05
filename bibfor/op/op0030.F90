@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0030()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
@@ -74,8 +74,8 @@ implicit none
 
 ! - Initializations
     cont_form = 0
-    ligret    = '&&OP0030.LIGRET'
-    ligrel    = '&&OP0030.LIGREL'
+    ligret = '&&OP0030.LIGRET'
+    ligrel = '&&OP0030.LIGREL'
     vale_type = 'REEL'
     call asmpi_comm('GET', mpicou)
     call asmpi_info(mpicou, size=nb_proc)
@@ -90,11 +90,11 @@ implicit none
     call cagene(sdcont, command, model, mesh, geomDime)
 
 ! - Forbiden for a ParallelMesh
-    ASSERT(.not.isParallelMesh(mesh))
+    ASSERT(.not. isParallelMesh(mesh))
 
 ! - Load type
     ligrch = sdcont//'.CHME.LIGRE'
-    call wkvect(sdcont//'.TYPE', 'G V K8', 1, vk8 = p_sdcont_type)
+    call wkvect(sdcont//'.TYPE', 'G V K8', 1, vk8=p_sdcont_type)
     p_sdcont_type(1) = 'MECA_RE'
 
 ! - Get contact formulation
@@ -111,7 +111,7 @@ implicit none
         call caliun(sdcont, mesh, model)
     else
         call calico(sdcont, mesh, model, geomDime, cont_form, ligret)
-    endif
+    end if
 
 ! - MPI forbidden for some methods (issue25897)
     if ((cont_form .eq. 1) .or. (cont_form .eq. 4)) then
@@ -120,21 +120,21 @@ implicit none
             call dismoi('PARTITION', model//'.MODELE', 'LIGREL', repk=partit)
             if ((partit .ne. ' ')) then
                 call utmess('F', 'CONTACT3_45')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - New <LIGREL>
 !
-    lallv = cfdisl(sdcont_defi,'ALL_VERIF')
+    lallv = cfdisl(sdcont_defi, 'ALL_VERIF')
     if (cont_form .eq. 2 .or. cont_form .eq. 5) then
-        if (.not.lallv) then
+        if (.not. lallv) then
             call lgtlgr('V', ligret, ligrel)
             call detrsd('LIGRET', ligret)
             call copisd('LIGREL', 'G', ligrel, ligrch)
             call detrsd('LIGREL', ligrel)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Update loads <LIGREL>
 !
@@ -144,13 +144,13 @@ implicit none
         call cormgi('G', ligrch)
         call jeecra(ligrch//'.LGRF', 'DOCU', cval='MECA')
         call initel(ligrch)
-    endif
+    end if
 !
 ! - Check mesh orientation (normals)
 !
-    if ((cont_form.eq.1) .or. (cont_form.eq.2) .or. (cont_form.eq.5)) then
+    if ((cont_form .eq. 1) .or. (cont_form .eq. 2) .or. (cont_form .eq. 5)) then
         call chveno(vale_type, mesh, model)
-    endif
+    end if
 !
     call jedema()
 !

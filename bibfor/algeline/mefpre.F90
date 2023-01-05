@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefpre(ndim, alpha, z, cf, dh,&
-                  vit, rho, pstat, dpstat, dvit,&
-                  itypg, zg, hg, axg, pm,&
-                  xig, afluid, cdg, cfg, vitg,&
+subroutine mefpre(ndim, alpha, z, cf, dh, &
+                  vit, rho, pstat, dpstat, dvit, &
+                  itypg, zg, hg, axg, pm, &
+                  xig, afluid, cdg, cfg, vitg, &
                   rhog)
 ! aslint: disable=W1504
     implicit none
@@ -92,7 +92,7 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
     if (ntypg .ne. 0) then
         AS_ALLOCATE(vr=deltap, size=nbgtot)
         AS_ALLOCATE(vr=cfnew, size=nbgtot)
-    endif
+    end if
 !
     pi = r8pi()
 !
@@ -107,23 +107,23 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 ! --- DEVELOPPEMENTS DE TAYLOR DE VIT(Z)
 ! --- A GAUCHE ET A DROITE
 !
-    dvit(1) = ( vit(2)-vit(1) ) / (z(2)-z(1))
+    dvit(1) = (vit(2)-vit(1))/(z(2)-z(1))
 !
     do n = 2, nbz-1
-        dvit(n) = (&
-                  (&
-                  vit(n+1)-vit(n))*(z(n+1)-z(n)) +(vit(n-1)-vit(n)) *(z(n-1)-z(n)) ) /( (z(n+1)-z&
-                  &(n))*(z(n+1)-z(n)) +(z(n-1)-z(n)) *(z(n-1)-z(n)&
-                  )&
+        dvit(n) = ( &
+                  ( &
+                  vit(n+1)-vit(n))*(z(n+1)-z(n))+(vit(n-1)-vit(n))*(z(n-1)-z(n)))/((z(n+1)-z&
+                  &(n))*(z(n+1)-z(n))+(z(n-1)-z(n))*(z(n-1)-z(n) &
+                  ) &
                   )
     end do
 !
-    dvit(nbz) = ( vit(nbz)-vit(nbz-1) ) / (z(nbz)-z(nbz-1))
+    dvit(nbz) = (vit(nbz)-vit(nbz-1))/(z(nbz)-z(nbz-1))
 !
 ! --- CALCUL DU PROFIL DE GRADIENT DE PRESSION STATIONNAIRE
 !
     do n = 1, nbz
-        dpstat(n) = -rho(n)*vit(n)*dvit(n) + rho(n)*g -2.d0*rho(n)*cf( n)*abs(vit(n))*vit(n)/pi/d&
+        dpstat(n) = -rho(n)*vit(n)*dvit(n)+rho(n)*g-2.d0*rho(n)*cf(n)*abs(vit(n))*vit(n)/pi/d&
                     &h
     end do
 !
@@ -131,7 +131,7 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 !
     pstat(1) = 0.d0
     do n = 2, nbz
-        pstat(n) = pstat(n-1)+(dpstat(n-1)+dpstat(n))* (z(n)-z(n-1))/ 2.d0
+        pstat(n) = pstat(n-1)+(dpstat(n-1)+dpstat(n))*(z(n)-z(n-1))/2.d0
     end do
 !
 !--- CALCUL DU SAUT DE PRESSION AU PASSAGE DE CHAQUE GRILLE
@@ -144,22 +144,22 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 !
         do i = 2, nbz
             do j = 1, nbgtot
-                ecart=(z(i)-zg(j))*(z(i-1)-zg(j))
+                ecart = (z(i)-zg(j))*(z(i-1)-zg(j))
 !
                 if (ecart .le. 0.d0) then
-                    cfnew(j)=( cf(i-1)*(z(i)-zg(j))+ cf(i)*(zg(&
-                    j)-z(i-1)) ) / (z(i)-z(i-1))
-                endif
+                    cfnew(j) = (cf(i-1)*(z(i)-zg(j))+cf(i)*(zg( &
+                                                            j)-z(i-1)))/(z(i)-z(i-1))
+                end if
             end do
         end do
 !
         do j = 1, nbgtot
             do k = 1, ntypg
                 if (itypg(j) .eq. k) then
-                    deltap(j) = 0.5d0*rhog(j)*abs(vitg(j))*vitg( j)* (axg(k)*cdg(k)+xig(k)*hg(k)*&
-                                &cfg(j))/afluid + 0.5d0*rhog(j)*abs(vitg(j))*vitg(j)* (1.d0-(1.d0&
-                                &- axg(k)/afluid)**2)*pm*hg(k)*cfnew(j)/afluid
-                endif
+                    deltap(j) = 0.5d0*rhog(j)*abs(vitg(j))*vitg(j)*(axg(k)*cdg(k)+xig(k)*hg(k)*&
+                                &cfg(j))/afluid+0.5d0*rhog(j)*abs(vitg(j))*vitg(j)*(1.d0-(1.d0&
+                                &-axg(k)/afluid)**2)*pm*hg(k)*cfnew(j)/afluid
+                end if
             end do
         end do
 !
@@ -170,15 +170,15 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
                     do k = n, nbz
                         pstat(k) = pstat(k)-deltap(j)
                     end do
-                endif
+                end if
             end do
         end do
 !
-    endif
+    end if
 !
     if (ntypg .ne. 0) then
         AS_DEALLOCATE(vr=deltap)
         AS_DEALLOCATE(vr=cfnew)
-    endif
+    end if
     call jedema()
 end subroutine

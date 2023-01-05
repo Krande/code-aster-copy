@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfmmci(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -51,11 +51,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
 !
 ! - Get parameters
 !
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
 !
 ! - Initial filling
 !
@@ -67,7 +67,7 @@ implicit none
             call cfmmco(ds_contact, i_zone, 'E_T', 'E', coef_pena_fric)
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 end subroutine

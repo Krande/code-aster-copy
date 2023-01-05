@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,16 +59,16 @@ subroutine cfverd(noma, numedd, defico)
 !
 ! --- INITIALISATIONS
 !
-    nnoco = cfdisi(defico,'NNOCO')
+    nnoco = cfdisi(defico, 'NNOCO')
 !
     do ino = 1, nnoco
         posno = ino
         call cfnomm(noma, defico, 'NOEU', posno, nomno)
-        call posddl('NUME_DDL', numedd, nomno, 'DZ', jbid,&
+        call posddl('NUME_DDL', numedd, nomno, 'DZ', jbid, &
                     verdim)
         if (verdim .ne. 0) then
             call utmess('F', 'CONTACT_85')
-        endif
+        end if
     end do
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine asmpi_stop(imode)
 
 !
 
-    use parameters_module, only : ST_ER_OTH, ST_EXCEPT
+    use parameters_module, only: ST_ER_OTH, ST_EXCEPT
     implicit none
 #include "asterf.h"
 #include "asterf_debug.h"
@@ -62,8 +62,8 @@ subroutine asmpi_stop(imode)
         if (compex(1:lout) == 'ABORT') then
             imod2 = 1
             DEBUG_MPI('mpi_stop ', 'mode forced to', imod2)
-        endif
-    endif
+        end if
+    end if
     DEBUG_MPI('mpi_stop', imod2, ' (1:abort, 2:except)')
 !
     if (imod2 == 1) then
@@ -75,10 +75,10 @@ subroutine asmpi_stop(imode)
     else if (imod2 == 2) then
         if (labort) then
             call utmess('M', 'APPELMPI_95')
-        endif
+        end if
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

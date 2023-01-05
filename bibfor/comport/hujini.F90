@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujini(mod, nmat, mater, intg, deps,&
-                  nr, yd, nvi, vind, sigd,&
-                  sigf, bnews, mtrac, dy, indi,&
+subroutine hujini(mod, nmat, mater, intg, deps, &
+                  nr, yd, nvi, vind, sigd, &
+                  sigf, bnews, mtrac, dy, indi, &
                   iret)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -56,35 +56,35 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
     aster_logical :: loop, nodef
     integer :: nbmeca, nbmect, i, ii, ndt, ndi, indis(7), diff
 !
-    parameter     (ndi   = 3   )
-    parameter     (ndt   = 6   )
-    parameter     (zero  = 0.d0)
-    parameter     (un    = 1.d0)
-    parameter     (trois = 3.d0)
+    parameter(ndi=3)
+    parameter(ndt=6)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
+    parameter(trois=3.d0)
 !     ----------------------------------------------------------------
 !--------------------------
 ! ---- PROPRIETES MATERIAU
 ! -------------------------
-    pref = mater(8,2)
-    e0 = mater(1,1)
+    pref = mater(8, 2)
+    e0 = mater(1, 1)
 !
 ! --- GESTION DES BOUCLES
     if (iret .eq. 2) then
         loop = .true.
         do i = 1, 7
             indis(i) = indi(i)
-        enddo
+        end do
     else
         loop = .false.
         do i = 1, 7
             indis(i) = 0
-        enddo
-    endif
+        end do
+    end if
 !
     iret = 0
 !
 ! --- PREPARATION DE L'APPEL A HUJIID (ROUTINE DE L'ALGO SPECIFIQUE)
-  1 continue
+1   continue
 !
     if (iret .eq. 3) goto 999
 !
@@ -96,7 +96,7 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
 ! ---  DEFINITION DU NOMBRE DE MECANISMES POTENTIELS ACTIFS
     nbmeca = 0
     do i = 1, 8
-        if (vind(23+i) .eq. un) nbmeca = nbmeca + 1
+        if (vind(23+i) .eq. un) nbmeca = nbmeca+1
     end do
 !
 ! --- REMPLISSAGE DES MECANISMES POTENTIELLEMENT ACTIFS
@@ -109,14 +109,14 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
                 indi(ii) = i
                 yd(ndt+1+ii) = vind(i)
                 yd(ndt+1+nbmeca+ii) = zero
-                ii = ii + 1
+                ii = ii+1
             else
                 indi(nbmeca) = i
                 yd(ndt+1+nbmeca) = vind(i)
                 yd(ndt+1+2*nbmeca) = zero
-            endif
+            end if
 !
-        endif
+        end if
     end do
 !
 ! --- REDIMENSIONNEMENT DE YD POUR S'ADAPTER A HUJIID
@@ -130,19 +130,19 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
 !
     diff = 0
     do i = 1, 7
-        diff = diff + indi(i)-indis(i)
+        diff = diff+indi(i)-indis(i)
     end do
-    if ((diff.eq.0) .and. (nbmeca.eq.1)) loop=.false.
+    if ((diff .eq. 0) .and. (nbmeca .eq. 1)) loop = .false.
 !
     if (loop) then
         do i = 1, ndt
-            dsig(i) = sigf(i) - sigd(i)
-        enddo
+            dsig(i) = sigf(i)-sigd(i)
+        end do
     else
         do i = 1, ndt
             dsig(i) = zero
-        enddo
-    endif
+        end do
+    end if
 !
     i1f = (sigf(1)+sigf(2)+sigf(3))/trois
 !
@@ -150,12 +150,12 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
 ! --- APPEL A HUJIID
 !
     do i = 1, 22
-        matert(i,1) = mater(i,1)
-        matert(i,2) = mater(i,2)
+        matert(i, 1) = mater(i, 1)
+        matert(i, 2) = mater(i, 2)
     end do
 !
-    call hujiid(mod, matert, indi, deps, i1f,&
-                yd, vind, dy, loop, dsig,&
+    call hujiid(mod, matert, indi, deps, i1f, &
+                yd, vind, dy, loop, dsig, &
                 bnews, mtrac, iret)
 !
 !
@@ -164,15 +164,15 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
     nbmect = nbmeca
     do i = 1, 7
         if (indi(i) .gt. 8) then
-            nbmect = nbmect + 1
-        endif
+            nbmect = nbmect+1
+        end if
     end do
 !
     nodef = .false.
     if (nbmeca .ne. nbmect) then
         do i = 1, ndi
             if (abs(yd(i)+dsig(i)) .gt. pref**2.d0) nodef = .true.
-        enddo
+        end do
         if (nodef) then
             iret = 3
             if (intg .gt. 5) then
@@ -182,12 +182,12 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
                     if (dy(ndt+1+nbmeca+i) .eq. zero) then
                         bnews(indi(i)-8) = .true.
                         iret = 2
-                    endif
-                enddo
+                    end if
+                end do
                 goto 1
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- REDIMENSIONNEMENT DE YD POUR S'ADAPTER A LCPLNL
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID

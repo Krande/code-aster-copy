@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romGreedyAlgoInit(nb_mode, nb_vari_coef, vect_refe, ds_algoGreedy)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -30,9 +30,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-integer, intent(in) :: nb_mode, nb_vari_coef
-character(len=19), intent(in) :: vect_refe
-type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
+    integer, intent(in) :: nb_mode, nb_vari_coef
+    character(len=19), intent(in) :: vect_refe
+    type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,11 +57,11 @@ type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_42')
-    endif
+    end if
 !
-    call wkvect(ds_algoGreedy%coef_redu, 'V V '//ds_algoGreedy%resi_type, nb_mode*nb_vari_coef,&
+    call wkvect(ds_algoGreedy%coef_redu, 'V V '//ds_algoGreedy%resi_type, nb_mode*nb_vari_coef, &
                 jv_dummy)
     call copisd('CHAMP_GD', 'V', vect_refe, ds_algoGreedy%resi_vect)
-    AS_ALLOCATE(vr = ds_algoGreedy%resi_norm, size = nb_vari_coef+1)
+    AS_ALLOCATE(vr=ds_algoGreedy%resi_norm, size=nb_vari_coef+1)
 !
 end subroutine

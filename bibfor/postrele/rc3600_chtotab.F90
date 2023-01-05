@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,48 +76,48 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     character(len=24) :: mesmai
     aster_logical :: l_abscurv, l_alarm
 
-    real(kind=8),       pointer :: cesv(:) => null()
-    character(len= 8),  pointer :: cesc(:) => null()
-    real(kind=8),       pointer :: cesv2(:) => null()
-    integer,            pointer :: connex(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    real(kind=8), pointer :: cesv2(:) => null()
+    integer, pointer :: connex(:) => null()
 
-    character(len=9) :: parata1(9),parata2(8), parata(9), parata_tmp(9)
+    character(len=9) :: parata1(9), parata2(8), parata(9), parata_tmp(9)
     character(len=3) :: typarata1(9), typarata2(8), typarata(9), nomcmp(nbcmp)
-    data  nomcmp / 'MT ','MFY','MFZ', 'MEQ'/
-    data  parata1 / 'RESULTAT ','NOM_CHAM ','MAILLE   ','NOEUD    ','ABSC_CURV',&
-                    'MT       ', 'MFY      ', 'MFZ      ','MEQ      '/
-    data  parata2 / 'CHAM_GD  ','MAILLE   ','NOEUD    ','ABSC_CURV',&
-                    'MT       ', 'MFY      ', 'MFZ      ','MEQ      '/
-    data  typarata1 / 'K8 ','K16','K8 ', 'K8 ','R  ','R  ','R  ','R  ','R  '/
-    data  typarata2 / 'K8 ','K8 ', 'K8 ','R  ','R  ','R  ','R  ','R  '/
+    data nomcmp/'MT ', 'MFY', 'MFZ', 'MEQ'/
+    data parata1/'RESULTAT ', 'NOM_CHAM ', 'MAILLE   ', 'NOEUD    ', 'ABSC_CURV', &
+        'MT       ', 'MFY      ', 'MFZ      ', 'MEQ      '/
+    data parata2/'CHAM_GD  ', 'MAILLE   ', 'NOEUD    ', 'ABSC_CURV', &
+        'MT       ', 'MFY      ', 'MFZ      ', 'MEQ      '/
+    data typarata1/'K8 ', 'K16', 'K8 ', 'K8 ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  '/
+    data typarata2/'K8 ', 'K8 ', 'K8 ', 'R  ', 'R  ', 'R  ', 'R  ', 'R  '/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 
 !   0 - Initialisations
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
 
 !   1 - Création de la table
 
-    if(nsymb.eq. ' ')then
+    if (nsymb .eq. ' ') then
         nbpara = 8
-        parata(1:8)= parata2(1:8)
-        typarata(1:8)= typarata2(1:8)
-        nr=5
-        nk=3
+        parata(1:8) = parata2(1:8)
+        typarata(1:8) = typarata2(1:8)
+        nr = 5
+        nk = 3
         table_valk(1) = conceptin
         kk = 1
     else
         nbpara = 9
-        parata(1:9)= parata1(1:9)
-        typarata(1:9)= typarata1(1:9)
-        nr=5
-        nk=4
+        parata(1:9) = parata1(1:9)
+        typarata(1:9) = typarata1(1:9)
+        nr = 5
+        nk = 4
         table_valk(1) = conceptin
         table_valk(2) = nsymb
         kk = 2
-    endif
+    end if
     call tbcrsv(nomtb, 'G', nbpara, parata, typarata, 0)
 
 !   2 - Liste des mailles
@@ -130,27 +130,25 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     typmcl(2) = 'MAILLE'
     typmcl(3) = 'GROUP_MA'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-    call reliem(modele, noma, 'NU_MAILLE', 'ZONE_ANALYSE', 1,&
-                        3, motcle, typmcl, mesmai, nbma)
+    call reliem(modele, noma, 'NU_MAILLE', 'ZONE_ANALYSE', 1, &
+                3, motcle, typmcl, mesmai, nbma)
     call jeveuo(mesmai, 'L', jlma)
 
-
 !   3 - Abscisses curvilignes
-
 
     call jeexin(noma//'.ABSC_CURV .VALE', iexi)
     if (iexi .eq. 0) then
         l_abscurv = .false.
-        call utmess('A','POSTRELE_16')
+        call utmess('A', 'POSTRELE_16')
     else
         l_abscurv = .true.
         chamescurv = '&&RC3600.ACURV.CES'
         call carces(noma//'.ABSC_CURV', 'ELEM', ' ', 'V', chamescurv, ' ', iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
         call jeveuo(chamescurv//'.CESV', 'L', vr=cesv2)
         call jeveuo(chamescurv//'.CESL', 'L', jcesl2)
         call jeveuo(chamescurv//'.CESD', 'L', jcesd2)
-    endif
+    end if
 
 !   4 - Champ à traiter
 
@@ -166,47 +164,47 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     call jeveuo(chames//'.CESC', 'L', vk8=cesc)
 !
 !   NOMBRE DE MAILLES MAX DU CHAMP : NBMAX
-    nbmax=zi(jcesd)
+    nbmax = zi(jcesd)
 !   NOMBRE DE COMPOSANTES MAX DU CHAMP : NBCMPX
-    nbcmpx=zi(jcesd+1)
-    ASSERT(nbcmpx.eq.nbcmp)
+    nbcmpx = zi(jcesd+1)
+    ASSERT(nbcmpx .eq. nbcmp)
 
 !   5 - parcours de mailles et remplissage de la table
     do ima = 1, nbmax
 !       SI LA MAILLE FAIT PARTIE DES MAILLES DESIREES,
 !       ON POURSUIT, SINON ON VA A LA MAILLE SUIVANTE:
-        indma=indiis(zi(jlma),ima,1,nbma)
+        indma = indiis(zi(jlma), ima, 1, nbma)
         if (indma .eq. 0) cycle
 
         call jenuno(jexnum(noma//'.NOMMAI', ima), kma)
-        table_valk(kk+1)=kma
+        table_valk(kk+1) = kma
 
 !       NOMBRE DE POINTS DE LA MAILLE IMA : NBPT
-        nbpt=zi(jcesd+5+4*(ima-1))
+        nbpt = zi(jcesd+5+4*(ima-1))
 !       NOMBRE DE COMPOSANTES PORTEES PAR LES POINTS DE LA MAILLE IMA
-        nbcmpt=zi(jcesd+5+4*(ima-1)+2)
-        ASSERT(nbcmpt.eq.nbcmp)
+        nbcmpt = zi(jcesd+5+4*(ima-1)+2)
+        ASSERT(nbcmpt .eq. nbcmp)
 
 !       ON PARCOURT LES COMPOSANTES DE LA CARTE DES ABSCISSES CURVILIGNES
         if (l_abscurv) then
             nbabsc = 0
-            val_absc(:)= -1.d0
+            val_absc(:) = -1.d0
             l_alarm = .false.
             do icmp = 1, nbcmp
-    !           Valeur de icmp au point ipt de la maille ima: zr(jcesv2+iad-1)
+                !           Valeur de icmp au point ipt de la maille ima: zr(jcesv2+iad-1)
                 call cesexi('C', jcesd2, jcesl2, ima, 1, 1, icmp, iad)
                 if (iad .gt. 0) then
-                    val_absc(icmp)=cesv2(iad)
-                    nbabsc = nbabsc + 1
+                    val_absc(icmp) = cesv2(iad)
+                    nbabsc = nbabsc+1
                 else
-                    if ((.not. l_alarm) .and. icmp .le.nbpt) then
-                        call utmess('A','POSTRELE_4', sk=kma)
+                    if ((.not. l_alarm) .and. icmp .le. nbpt) then
+                        call utmess('A', 'POSTRELE_4', sk=kma)
                         l_alarm = .true.
-                    endif
-                endif
-            enddo
-            ASSERT(nbabsc.eq.0 .or. nbabsc.eq.nbpt)
-        endif
+                    end if
+                end if
+            end do
+            ASSERT(nbabsc .eq. 0 .or. nbabsc .eq. nbpt)
+        end if
 !       la composante i de val_absc correspond au point ipt
 !
 !       ON PARCOURT LES POINTS DE LA MAILLE IMA
@@ -214,36 +212,36 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 !           NUMERO DU POINT (DU MAILLAGE GLOBAL): INOT
             inot = connex(zi(jconx2-1+ima)+ipt-1)
             call jenuno(jexnum(noma//'.NOMNOE', inot), kno)
-            table_valk(kk+2)=kno
+            table_valk(kk+2) = kno
             ispt = 1
-            kcp=0
+            kcp = 0
 !           ON PARCOURT LES COMPOSANTES PORTEES PAR LE POINT IPT
             do icmp = 1, nbcmpt
 !               Valeur de icmp au point ipt de la maille ima: zr(jcesv+iad-1)
                 call cesexi('C', jcesd, jcesl, ima, ipt, ispt, icmp, iad)
                 if (iad .gt. 0) then
-                    kcp=kcp+1
-                    val_cmp(kcp)=cesv(iad)
-                    ASSERT(cesc(icmp).eq.nomcmp(icmp))
-                endif
-            enddo
+                    kcp = kcp+1
+                    val_cmp(kcp) = cesv(iad)
+                    ASSERT(cesc(icmp) .eq. nomcmp(icmp))
+                end if
+            end do
 
-            if (l_abscurv .and. val_absc(ipt).gt.-1.d0) then
+            if (l_abscurv .and. val_absc(ipt) .gt. -1.d0) then
                 table_valr(1) = val_absc(ipt)
-                table_valr(2: nbcmp+1) = val_cmp(1:nbcmp)
-                parata_tmp(:)=parata(:)
+                table_valr(2:nbcmp+1) = val_cmp(1:nbcmp)
+                parata_tmp(:) = parata(:)
                 nbpara_tmp = nbpara
             else
-                table_valr(1: nbcmp) = val_cmp(1:nbcmp)
-                parata_tmp(1:nbpara-nbcmp-1)=parata(1:nbpara-nbcmp-1)
-                parata_tmp(nbpara-nbcmp : nbpara -1)=parata(nbpara-nbcmp+1 : nbpara)
-                nbpara_tmp = nbpara - 1
-            endif
+                table_valr(1:nbcmp) = val_cmp(1:nbcmp)
+                parata_tmp(1:nbpara-nbcmp-1) = parata(1:nbpara-nbcmp-1)
+                parata_tmp(nbpara-nbcmp:nbpara-1) = parata(nbpara-nbcmp+1:nbpara)
+                nbpara_tmp = nbpara-1
+            end if
 
-            call tbajli(nomtb, nbpara_tmp, parata_tmp, [0], table_valr,&
-                            [cbid], table_valk, 0)
-        enddo
-    enddo
+            call tbajli(nomtb, nbpara_tmp, parata_tmp, [0], table_valr, &
+                        [cbid], table_valk, 0)
+        end do
+    end do
 !
     call jedema()
 !

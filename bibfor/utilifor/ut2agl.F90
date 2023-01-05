@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,17 +40,17 @@ subroutine ut2agl(nn, nc, p, sg, sl)
 !-----------------------------------------------------------------------
     zero = 0.0d0
 !
-    if (mod(nc,2) .eq. 0) then
-        nb = nn * nc / 2
+    if (mod(nc, 2) .eq. 0) then
+        nb = nn*nc/2
         do i = 1, nb
-            k = 2 * ( i - 1 )
+            k = 2*(i-1)
             do j = 1, i
-                in(1) = k * (k+1) / 2 + 2*(j-1)
-                in(2) = (k+1) * (k+2) / 2 + 2*(j-1)
+                in(1) = k*(k+1)/2+2*(j-1)
+                in(2) = (k+1)*(k+2)/2+2*(j-1)
                 if (i .eq. j) then
 !            --------- BLOC DIAGONAL
                     r(1) = sg(in(1)+1)
-                    r(2) = - sg(in(2)+1)
+                    r(2) = -sg(in(2)+1)
                     r(3) = sg(in(2)+1)
                     r(4) = sg(in(2)+2)
 !
@@ -58,11 +58,11 @@ subroutine ut2agl(nn, nc, p, sg, sl)
                         do n = 1, m
                             sl(in(m)+n) = zero
                             do l = 1, 2
-                                sl(in(m)+n) = sl(&
-                                              in(m)+n) + p(l,&
-                                              m) * (r( 2*(l-1)+1)*p(1, n) + r(2*(l-1)+2 )*p( 2, n&
-                                              )&
-                                              )
+                                sl(in(m)+n) = sl( &
+                                              in(m)+n)+p(l, &
+                                                      m)*(r(2*(l-1)+1)*p(1, n)+r(2*(l-1)+2)*p(2, n &
+                                                                                                 ) &
+                                                             )
                             end do
                         end do
                     end do
@@ -72,17 +72,17 @@ subroutine ut2agl(nn, nc, p, sg, sl)
                         do n = 1, 2
                             sl(in(m)+n) = zero
                             do l = 1, 2
-                                sl(in(m)+n) = sl(&
-                                              in(m)+n) + p(l,&
-                                              m) * ( sg(in(l)+1)*p(1, n) + sg(in(l)+2 )*p(2, n )&
-                                              )
+                                sl(in(m)+n) = sl( &
+                                              in(m)+n)+p(l, &
+                                                       m)*(sg(in(l)+1)*p(1, n)+sg(in(l)+2)*p(2, n) &
+                                                             )
                             end do
                         end do
                     end do
-                endif
+                end if
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

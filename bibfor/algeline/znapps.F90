@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine znapps(n, kev, np, shift, v,&
-                  ldv, h, ldh, resid, q,&
+subroutine znapps(n, kev, np, shift, v, &
+                  ldv, h, ldh, resid, q, &
                   ldq, workl, workd)
     implicit none
 !
@@ -181,7 +181,7 @@ subroutine znapps(n, kev, np, shift, v,&
 #include "blas/zlaset.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !
@@ -204,8 +204,8 @@ subroutine znapps(n, kev, np, shift, v,&
 !
     complex(kind=8) :: one, zero
     real(kind=8) :: rzero
-    parameter (one = (1.0d+0, 0.0d+0), zero = (0.0d+0, 0.0d+0),&
-     &           rzero = 0.0d+0)
+    parameter(one=(1.0d+0, 0.0d+0), zero=(0.0d+0, 0.0d+0),&
+     &           rzero=0.0d+0)
 !
 !     %------------------------%
 !     | LOCAL SCALARS & ARRAYS |
@@ -215,7 +215,7 @@ subroutine znapps(n, kev, np, shift, v,&
     aster_logical :: first
     complex(kind=8) :: f, g, h11, h21, r, s, sigma(1), t
     real(kind=8) :: c, smlnum, ulp, unfl, tst1, rbid(1)
-    save       first, smlnum, ulp, unfl
+    save first, smlnum, ulp, unfl
 !
 !
 !     %--------------------%
@@ -233,7 +233,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | DATA STATMENTS |
 !     %----------------%
 !
-    data       first / .true. /
+    data first/.true./
 !
 !     %-----------------------%
 !     | EXECUTABLE STATEMENTS |
@@ -241,7 +241,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !
     call matfpe(-1)
 !
-    rbid=0.d0
+    rbid = 0.d0
     if (first) then
 !
 !        %-----------------------------------------------%
@@ -254,10 +254,10 @@ subroutine znapps(n, kev, np, shift, v,&
 !
         unfl = r8miem()
 ! DUE RO CRS512         OVFL = ONE / UNFL
-        ulp = r8prem() *0.5d0 * isbaem()
-        smlnum = unfl*( n / ulp )
+        ulp = r8prem()*0.5d0*isbaem()
+        smlnum = unfl*(n/ulp)
         first = .false.
-    endif
+    end if
 !
 !     %-------------------------------%
 !     | INITIALIZE TIMING STATISTICS  |
@@ -266,14 +266,14 @@ subroutine znapps(n, kev, np, shift, v,&
 !
     msglvl = mnapps
 !
-    kplusp = kev + np
+    kplusp = kev+np
 !
 !     %--------------------------------------------%
 !     | INITIALIZE Q TO THE IDENTITY TO ACCUMULATE |
 !     | THE ROTATIONS AND REFLECTIONS              |
 !     %--------------------------------------------%
 !
-    call zlaset('A', kplusp, kplusp, zero, one,&
+    call zlaset('A', kplusp, kplusp, zero, one, &
                 q, ldq)
 !
 !     %----------------------------------------------%
@@ -294,10 +294,10 @@ subroutine znapps(n, kev, np, shift, v,&
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, [jj], ndigit, '_NAPPS: SHIFT NUMBER.')
             call zvout(logfil, 1, sigma, ndigit, '_NAPPS: VALUE OF THE SHIFT ')
-        endif
+        end if
 !
         istart = 1
- 20     continue
+20      continue
 !
         do i = istart, kplusp-1
 !
@@ -307,29 +307,29 @@ subroutine znapps(n, kev, np, shift, v,&
 !           | REFERENCE: LAPACK SUBROUTINE ZLAHQR    |
 !           %----------------------------------------%
 !
-            tst1 = zabs1( h( i, i ) ) + zabs1( h( i+1, i+1 ) )
-            if (tst1 .eq. rzero) tst1 = zlanhs( '1', kplusp-jj+1, h, ldh, rbid)
+            tst1 = zabs1(h(i, i))+zabs1(h(i+1, i+1))
+            if (tst1 .eq. rzero) tst1 = zlanhs('1', kplusp-jj+1, h, ldh, rbid)
 !
-            if (abs(dble(h(i+1,i))) .le. max(ulp*tst1, smlnum)) then
+            if (abs(dble(h(i+1, i))) .le. max(ulp*tst1, smlnum)) then
                 if (msglvl .gt. 0) then
-                    call ivout(logfil, 1, [i], ndigit,&
+                    call ivout(logfil, 1, [i], ndigit, &
                                '_NAPPS: MATRIX SPLITTING AT ROW/COLUMN NO.')
-                    call ivout(logfil, 1, [jj], ndigit,&
+                    call ivout(logfil, 1, [jj], ndigit, &
                                '_NAPPS: MATRIX SPLITTING WITH SHIFT NUMBER.')
                     call zvout(logfil, 1, h(i+1, i), ndigit, '_NAPPS: OFF DIAGONAL ELEMENT.')
-                endif
+                end if
                 iend = i
-                h(i+1,i) = zero
+                h(i+1, i) = zero
                 goto 40
-            endif
+            end if
         end do
         iend = kplusp
- 40     continue
+40      continue
 !
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, [istart], ndigit, '_NAPPS: START OF CURRENT BLOCK ')
             call ivout(logfil, 1, [iend], ndigit, '_NAPPS: END OF CURRENT BLOCK ')
-        endif
+        end if
 !
 !        %------------------------------------------------%
 !        | NO REASON TO APPLY A SHIFT TO BLOCK OF ORDER 1 |
@@ -339,9 +339,9 @@ subroutine znapps(n, kev, np, shift, v,&
 !
         if (istart .eq. iend .or. istart .gt. kev) goto 100
 !
-        h11 = h(istart,istart)
-        h21 = h(istart+1,istart)
-        f = h11 - sigma(1)
+        h11 = h(istart, istart)
+        h21 = h(istart+1, istart)
+        f = h11-sigma(1)
         g = h21
 !
         do i = istart, iend-1
@@ -352,18 +352,18 @@ subroutine znapps(n, kev, np, shift, v,&
 !
             call ar_zlartg(f, g, c, s, r)
             if (i .gt. istart) then
-                h(i,i-1) = r
-                h(i+1,i-1) = zero
-            endif
+                h(i, i-1) = r
+                h(i+1, i-1) = zero
+            end if
 !
 !           %---------------------------------------------%
 !           | APPLY ROTATION TO THE LEFT OF H;  H <- G'*H |
 !           %---------------------------------------------%
 !
             do j = i, kplusp
-                t = c*h(i,j) + s*h(i+1,j)
-                h(i+1,j) = -dconjg(s)*h(i,j) + c*h(i+1,j)
-                h(i,j) = t
+                t = c*h(i, j)+s*h(i+1, j)
+                h(i+1, j) = -dconjg(s)*h(i, j)+c*h(i+1, j)
+                h(i, j) = t
             end do
 !
 !           %---------------------------------------------%
@@ -371,9 +371,9 @@ subroutine znapps(n, kev, np, shift, v,&
 !           %---------------------------------------------%
 !
             do j = 1, min(i+2, iend)
-                t = c*h(j,i) + dconjg(s)*h(j,i+1)
-                h(j,i+1) = -s*h(j,i) + c*h(j,i+1)
-                h(j,i) = t
+                t = c*h(j, i)+dconjg(s)*h(j, i+1)
+                h(j, i+1) = -s*h(j, i)+c*h(j, i+1)
+                h(j, i) = t
             end do
 !
 !           %-----------------------------------------------------%
@@ -381,9 +381,9 @@ subroutine znapps(n, kev, np, shift, v,&
 !           %-----------------------------------------------------%
 !
             do j = 1, min(i+jj, kplusp)
-                t = c*q(j,i) + dconjg(s)*q(j,i+1)
-                q(j,i+1) = - s*q(j,i) + c*q(j,i+1)
-                q(j,i) = t
+                t = c*q(j, i)+dconjg(s)*q(j, i+1)
+                q(j, i+1) = -s*q(j, i)+c*q(j, i+1)
+                q(j, i) = t
             end do
 !
 !           %---------------------------%
@@ -391,9 +391,9 @@ subroutine znapps(n, kev, np, shift, v,&
 !           %---------------------------%
 !
             if (i .lt. iend-1) then
-                f = h(i+1,i)
-                g = h(i+2,i)
-            endif
+                f = h(i+1, i)
+                g = h(i+2, i)
+            end if
         end do
 !
 !        %-------------------------------%
@@ -406,7 +406,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !        | APPLY THE SAME SHIFT TO THE NEXT BLOCK IF THERE IS ANY. |
 !        %---------------------------------------------------------%
 !
-        istart = iend + 1
+        istart = iend+1
         if (iend .lt. kplusp) goto 20
 !
 !        %---------------------------------------------%
@@ -422,13 +422,13 @@ subroutine znapps(n, kev, np, shift, v,&
 !     %---------------------------------------------------%
 !
     do j = 1, kev
-        if (dble( h(j+1,j) ) .lt. rzero .or. dimag( h(j+1,j) ) .ne. rzero) then
-            t = h(j+1,j) / dlapy2(dble(h(j+1,j)),dimag(h(j+1,j)))
+        if (dble(h(j+1, j)) .lt. rzero .or. dimag(h(j+1, j)) .ne. rzero) then
+            t = h(j+1, j)/dlapy2(dble(h(j+1, j)), dimag(h(j+1, j)))
             call zlscal(kplusp-j+1, dconjg(t), h(j+1, j), ldh)
             call zlscal(min(j+2, kplusp), t, h(1, j+1), 1)
             call zlscal(min(j+np+1, kplusp), t, q(1, j+1), 1)
-            h(j+1,j) = dcmplx( dble( h(j+1,j) ), rzero )
-        endif
+            h(j+1, j) = dcmplx(dble(h(j+1, j)), rzero)
+        end if
     end do
 !
     do i = 1, kev
@@ -442,9 +442,9 @@ subroutine znapps(n, kev, np, shift, v,&
 !        | WE TAKE ADVANTAGE OF THIS.                 |
 !        %--------------------------------------------%
 !
-        tst1 = zabs1( h( i, i ) ) + zabs1( h( i+1, i+1 ) )
-        if (tst1 .eq. rzero) tst1 = zlanhs( '1', kev, h, ldh, rbid)
-        if (dble( h( i+1,i ) ) .le. max( ulp*tst1, smlnum )) h(i+1,i) = zero
+        tst1 = zabs1(h(i, i))+zabs1(h(i+1, i+1))
+        if (tst1 .eq. rzero) tst1 = zlanhs('1', kev, h, ldh, rbid)
+        if (dble(h(i+1, i)) .le. max(ulp*tst1, smlnum)) h(i+1, i) = zero
     end do
 !
 !     %-------------------------------------------------%
@@ -455,9 +455,9 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 !     %-------------------------------------------------%
 !
-    if (dble( h(kev+1,kev) ) .gt. rzero) call zgemv('N', n, kplusp, one, v,&
-                                                    ldv, q(1, kev+1), 1, zero, workd(n+1),&
-                                                    1)
+    if (dble(h(kev+1, kev)) .gt. rzero) call zgemv('N', n, kplusp, one, v, &
+                                                   ldv, q(1, kev+1), 1, zero, workd(n+1), &
+                                                   1)
 !
 !     %----------------------------------------------------------%
 !     | COMPUTE COLUMN 1 TO KEV OF (V*Q) IN BACKWARD ORDER       |
@@ -465,8 +465,8 @@ subroutine znapps(n, kev, np, shift, v,&
 !     %----------------------------------------------------------%
 !
     do i = 1, kev
-        call zgemv('N', n, kplusp-i+1, one, v,&
-                   ldv, q(1, kev-i+1), 1, zero, workd,&
+        call zgemv('N', n, kplusp-i+1, one, v, &
+                   ldv, q(1, kev-i+1), 1, zero, workd, &
                    1)
         call zcopy(n, workd, 1, v(1, kplusp-i+1), 1)
     end do
@@ -475,14 +475,14 @@ subroutine znapps(n, kev, np, shift, v,&
 !     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 !     %-------------------------------------------------%
 !
-    call zlacpy('A', n, kev, v(1, kplusp-kev+1), ldv,&
+    call zlacpy('A', n, kev, v(1, kplusp-kev+1), ldv, &
                 v, ldv)
 !
 !     %--------------------------------------------------------------%
 !     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 !     %--------------------------------------------------------------%
 !
-    if (dble( h(kev+1,kev) ) .gt. rzero) call zcopy(n, workd(n+1), 1, v(1, kev+1), 1)
+    if (dble(h(kev+1, kev)) .gt. rzero) call zcopy(n, workd(n+1), 1, v(1, kev+1), 1)
 !
 !     %-------------------------------------%
 !     | UPDATE THE RESIDUAL VECTOR:         |
@@ -493,19 +493,19 @@ subroutine znapps(n, kev, np, shift, v,&
 !     %-------------------------------------%
 !
     call zlscal(n, q(kplusp, kev), resid, 1)
-    if (dble( h(kev+1,kev) ) .gt. rzero) call zaxpy(n, h(kev+1, kev), v(1, kev+1), 1, resid,&
-                                                    1)
+    if (dble(h(kev+1, kev)) .gt. rzero) call zaxpy(n, h(kev+1, kev), v(1, kev+1), 1, resid, &
+                                                   1)
 !
     if (msglvl .gt. 1) then
         call zvout(logfil, 1, q(kplusp, kev), ndigit, '_NAPPS: SIGMAK = (E_(KEV+P)T*Q)*E_(KEV)')
         call zvout(logfil, 1, h(kev+1, kev), ndigit, '_NAPPS: BETAK = E_(KEV+1)T*H*E_(KEV)')
         call ivout(logfil, 1, [kev], ndigit, '_NAPPS: ORDER OF THE FINAL HESSENBERG MATRIX ')
         if (msglvl .gt. 2) then
-            call zmout(logfil, kev, kev, h, ldh,&
+            call zmout(logfil, kev, kev, h, ldh, &
                        ndigit, '_NAPPS: UPDATED HESSENBERG MATRIX H FOR NEXT ITERATION')
-        endif
+        end if
 !
-    endif
+    end if
 !
 9000 continue
     call matfpe(1)

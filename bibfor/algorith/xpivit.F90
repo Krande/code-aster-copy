@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xpivit(jcesd, jcesv, jcesl, ifiss,&
-                  ndim, nummae, iface, xpc, ypc,&
+subroutine xpivit(jcesd, jcesv, jcesl, ifiss, &
+                  ndim, nummae, iface, xpc, ypc, &
                   nvit)
 !
 !
@@ -84,18 +84,18 @@ subroutine xpivit(jcesd, jcesv, jcesl, ifiss,&
     if (ndim .eq. 2) then
         if (xpc .eq. -1) then
             pint = 1
-        else if (xpc.eq.1) then
+        else if (xpc .eq. 1) then
             pint = 2
-        endif
-    else if (ndim.eq.3) then
-        if ((xpc.eq.0) .and. (ypc.eq.0)) then
+        end if
+    else if (ndim .eq. 3) then
+        if ((xpc .eq. 0) .and. (ypc .eq. 0)) then
             pint = 1
-        else if ((xpc.eq.1).and.(ypc.eq.0)) then
+        else if ((xpc .eq. 1) .and. (ypc .eq. 0)) then
             pint = 2
-        else if ((xpc.eq.0).and.(ypc.eq.1)) then
+        else if ((xpc .eq. 0) .and. (ypc .eq. 1)) then
             pint = 3
-        endif
-    endif
+        end if
+    end if
 !
 ! --- SI IL EST SUR UNE ARETE
 !
@@ -103,26 +103,26 @@ subroutine xpivit(jcesd, jcesv, jcesl, ifiss,&
 !
 ! --- ON RECUPERE LE NUMERO DU POINT D'INTERSECTION COUPEE CORESPONDANT
 !
-        call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
-                    ifiss, ndim*( iface-1)+pint, iad)
-        ASSERT(iad.gt.0)
+        call cesexi('S', jcesd(4), jcesl(4), nummae, 1, &
+                    ifiss, ndim*(iface-1)+pint, iad)
+        ASSERT(iad .gt. 0)
         pint = zi(jcesv(4)-1+iad)
 !
 ! --- ON RECUPERE LE NUMERO D'ARETE COUPÉE ET L'INFO VITAL OU PAS DE
 ! --- CETTE ARETE COUPEE
 !
-        call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
-                    ifiss, zxain*(pint- 1)+1, iad)
-        ASSERT(iad.gt.0)
+        call cesexi('S', jcesd(2), jcesl(2), nummae, 1, &
+                    ifiss, zxain*(pint-1)+1, iad)
+        ASSERT(iad .gt. 0)
 ! --- Numéro local de l'arête
         aret = nint(zr(jcesv(2)-1+iad))
-        call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
-                    ifiss, zxain*(pint- 1)+5, iad)
-        ASSERT(iad.gt.0)
+        call cesexi('S', jcesd(2), jcesl(2), nummae, 1, &
+                    ifiss, zxain*(pint-1)+5, iad)
+        ASSERT(iad .gt. 0)
 ! --- 5ème composante du .AI: information arête vitale ou non (0 ou 1)
         nvit = nint(zr(jcesv(2)-1+iad))
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

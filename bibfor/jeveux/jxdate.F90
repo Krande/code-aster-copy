@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,6 @@ subroutine jxdate(idate)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call datetoi(ival)
-    idate = 100000000 * ival(3) + 1000000 * ival(2) + 10000 * ival(1) + 100 * ival(4) + ival(5)
+    idate = 100000000*ival(3)+1000000*ival(2)+10000*ival(1)+100*ival(4)+ival(5)
 !
 end subroutine

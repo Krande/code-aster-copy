@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujdp(mod, deps, sigd, sigf, mater,&
+subroutine hujdp(mod, deps, sigd, sigf, mater, &
                  vin, ndec, iret)
     implicit none
 !       TESTS SUR LES CRITERES D'EVOLUTION RELATIFS AUX CONTRAINTES
@@ -51,30 +51,30 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     character(len=8) :: mod
     aster_logical :: debug
 !
-    common /tdim/ ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
-    parameter   ( degr = 0.0174532925199d0 )
+    parameter(degr=0.0174532925199d0)
 !
     data zero, d13, un, deux, tol&
-     &/ 0.d0, 0.33333333333334d0, 1.d0, 2.d0, 1.d-7 /
+     &/0.d0, 0.33333333333334d0, 1.d0, 2.d0, 1.d-7/
 !
     if (ndec .gt. 1) then
-        iret =1
+        iret = 1
         goto 500
-    endif
+    end if
 !
 !      PISO  = 1.5d0*MATER(21,2)
     piso = zero
-    pref = mater(8,2)
-    n = mater(1,2)
-    beta = mater(2,2)
-    d = mater(3,2)
-    pco = mater(7,2)
-    phi = mater(5,2)
+    pref = mater(8, 2)
+    n = mater(1, 2)
+    beta = mater(2, 2)
+    d = mater(3, 2)
+    pco = mater(7, 2)
+    phi = mater(5, 2)
     m = sin(degr*phi)
-    b = mater(4,2)
-    ptrac = mater(21,2)
+    b = mater(4, 2)
+    ptrac = mater(21, 2)
     epsvp = vin(23)
     depsv = deps(1)+deps(2)+deps(3)
     tole1 = 0.05d0
@@ -83,53 +83,53 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 ! 1 --- CRITERE LIMITANT L EVOLUTION DE P: DP/P < TOLE1
 ! ----------------------------------------------------
     i1d = d13*(sigd(1)+sigd(2)+sigd(3))
-    if (mater(17,1) .eq. un) then
+    if (mater(17, 1) .eq. un) then
 !
-        k0 = d13*mater(1,1) /(un-deux*mater(2,1))
-        depsv= deps(1)+deps(2)+deps(3)
-        di1d = depsv*k0*((i1d -piso)/pref)**n
+        k0 = d13*mater(1, 1)/(un-deux*mater(2, 1))
+        depsv = deps(1)+deps(2)+deps(3)
+        di1d = depsv*k0*((i1d-piso)/pref)**n
 !
-    else if (mater(17,1).eq.deux) then
+    else if (mater(17, 1) .eq. deux) then
 !
-        e1 = mater(1,1)*((i1d -piso)/pref)**n
-        e2 = mater(2,1)*((i1d -piso)/pref)**n
-        e3 = mater(3,1)*((i1d -piso)/pref)**n
-        nu12 = mater(4,1)
-        nu13 = mater(5,1)
-        nu23 = mater(6,1)
-        nu21 = mater(13,1)
-        nu31 = mater(14,1)
-        nu32 = mater(15,1)
-        delta= mater(16,1)
+        e1 = mater(1, 1)*((i1d-piso)/pref)**n
+        e2 = mater(2, 1)*((i1d-piso)/pref)**n
+        e3 = mater(3, 1)*((i1d-piso)/pref)**n
+        nu12 = mater(4, 1)
+        nu13 = mater(5, 1)
+        nu23 = mater(6, 1)
+        nu21 = mater(13, 1)
+        nu31 = mater(14, 1)
+        nu32 = mater(15, 1)
+        delta = mater(16, 1)
 !
-        c11 = (un - nu23*nu32)*e1/delta
-        c12 = (nu21 + nu31*nu23)*e1/delta
-        c13 = (nu31 + nu21*nu32)*e1/delta
-        c22 = (un - nu13*nu31)*e2/delta
-        c23 = (nu32 + nu31*nu12)*e2/delta
-        c33 = (un - nu21*nu12)*e3/delta
+        c11 = (un-nu23*nu32)*e1/delta
+        c12 = (nu21+nu31*nu23)*e1/delta
+        c13 = (nu31+nu21*nu32)*e1/delta
+        c22 = (un-nu13*nu31)*e2/delta
+        c23 = (nu32+nu31*nu12)*e2/delta
+        c33 = (un-nu21*nu12)*e3/delta
 !
-        di1d = (c11+c12+c13)*deps(1) + (c12+c22+c23)*deps(2) + (c13+ c23+c33)*deps(3)
+        di1d = (c11+c12+c13)*deps(1)+(c12+c22+c23)*deps(2)+(c13+c23+c33)*deps(3)
         di1d = d13*di1d
 !
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     if ((i1d/pref) .gt. tol) then
-        ri = di1d /i1d
+        ri = di1d/i1d
     else if ((-piso/pref) .gt. tol) then
-        ri = di1d /(-piso)
+        ri = di1d/(-piso)
     else
         ri = zero
-        write(6,'(A)')'HUJDP :: DP/P NON CONTROLE CAR P VOISIN DE ZERO'
-    endif
+        write (6, '(A)') 'HUJDP :: DP/P NON CONTROLE CAR P VOISIN DE ZERO'
+    end if
 !
     if (ri .gt. un) then
         ri = un
-    else if (ri.lt.tole1) then
+    else if (ri .lt. tole1) then
         ri = tole1
-    endif
+    end if
     ndec = nint(ri/tole1)
 !
 !
@@ -139,69 +139,69 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 ! ====================================================================
 ! -------------------- 2.1 CONSTRUCTION DE C -------------------------
 ! ====================================================================
-    hooknl(:,:) = zero
+    hooknl(:, :) = zero
     i1e = d13*(sigf(1)+sigf(2)+sigf(3))
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
 !
-        if (mater(17,1) .eq. un) then
+        if (mater(17, 1) .eq. un) then
 !
-            e = mater(1,1)*((i1e -piso)/pref)**n
-            nu = mater(2,1)
-            al = e*(un-nu) /(un+nu) /(un-deux*nu)
-            demu = e /(un+nu)
+            e = mater(1, 1)*((i1e-piso)/pref)**n
+            nu = mater(2, 1)
+            al = e*(un-nu)/(un+nu)/(un-deux*nu)
+            demu = e/(un+nu)
             la = e*nu/(un+nu)/(un-deux*nu)
 !
             do i = 1, ndi
                 do j = 1, ndi
-                    if (i .eq. j) hooknl(i,j) = al
-                    if (i .ne. j) hooknl(i,j) = la
-                enddo
-            enddo
+                    if (i .eq. j) hooknl(i, j) = al
+                    if (i .ne. j) hooknl(i, j) = la
+                end do
+            end do
             do i = ndi+1, ndt
-                hooknl(i,i) = demu
-            enddo
+                hooknl(i, i) = demu
+            end do
 !
-        else if (mater(17,1).eq.deux) then
+        else if (mater(17, 1) .eq. deux) then
 !
-            e1 = mater(1,1)*((i1e -piso)/pref)**n
-            e2 = mater(2,1)*((i1e -piso)/pref)**n
-            e3 = mater(3,1)*((i1e -piso)/pref)**n
-            nu12 = mater(4,1)
-            nu13 = mater(5,1)
-            nu23 = mater(6,1)
-            g1 = mater(7,1)*((i1e -piso)/pref)**n
-            g2 = mater(8,1)*((i1e -piso)/pref)**n
-            g3 = mater(9,1)*((i1e -piso)/pref)**n
-            nu21 = mater(13,1)
-            nu31 = mater(14,1)
-            nu32 = mater(15,1)
-            delta= mater(16,1)
+            e1 = mater(1, 1)*((i1e-piso)/pref)**n
+            e2 = mater(2, 1)*((i1e-piso)/pref)**n
+            e3 = mater(3, 1)*((i1e-piso)/pref)**n
+            nu12 = mater(4, 1)
+            nu13 = mater(5, 1)
+            nu23 = mater(6, 1)
+            g1 = mater(7, 1)*((i1e-piso)/pref)**n
+            g2 = mater(8, 1)*((i1e-piso)/pref)**n
+            g3 = mater(9, 1)*((i1e-piso)/pref)**n
+            nu21 = mater(13, 1)
+            nu31 = mater(14, 1)
+            nu32 = mater(15, 1)
+            delta = mater(16, 1)
 !
-            hooknl(1,1) = (un - nu23*nu32)*e1/delta
-            hooknl(1,2) = (nu21 + nu31*nu23)*e1/delta
-            hooknl(1,3) = (nu31 + nu21*nu32)*e1/delta
-            hooknl(2,2) = (un - nu13*nu31)*e2/delta
-            hooknl(2,3) = (nu32 + nu31*nu12)*e2/delta
-            hooknl(3,3) = (un - nu21*nu12)*e3/delta
-            hooknl(2,1) = hooknl(1,2)
-            hooknl(3,1) = hooknl(1,3)
-            hooknl(3,2) = hooknl(2,3)
-            hooknl(4,4) = g1*2.d0
-            hooknl(5,5) = g2*2.d0
-            hooknl(6,6) = g3*2.d0
+            hooknl(1, 1) = (un-nu23*nu32)*e1/delta
+            hooknl(1, 2) = (nu21+nu31*nu23)*e1/delta
+            hooknl(1, 3) = (nu31+nu21*nu32)*e1/delta
+            hooknl(2, 2) = (un-nu13*nu31)*e2/delta
+            hooknl(2, 3) = (nu32+nu31*nu12)*e2/delta
+            hooknl(3, 3) = (un-nu21*nu12)*e3/delta
+            hooknl(2, 1) = hooknl(1, 2)
+            hooknl(3, 1) = hooknl(1, 3)
+            hooknl(3, 2) = hooknl(2, 3)
+            hooknl(4, 4) = g1*2.d0
+            hooknl(5, 5) = g2*2.d0
+            hooknl(6, 6) = g3*2.d0
 !
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
         call utmess('F', 'COMPOR1_4')
 !
-    endif
+    end if
 !
-    dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
+    dsig(1:ndt) = matmul(hooknl(1:ndt, 1:ndt), deps(1:ndt))
 !
 ! ====================================================================
 ! -------------- 2.2 CALCUL DE FIDSIG = DFDS*DSIG --------------------
@@ -210,31 +210,31 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 ! 1- MECANISME ISOTROPE
     fidsig = zero
     do i = 1, ndi
-        fidsig = fidsig - d13*dsig(i)
-    enddo
+        fidsig = fidsig-d13*dsig(i)
+    end do
     fr = d*pco*exp(-beta*epsvp)
     ri = abs(fidsig/fr)
 !
     if (ri .gt. un) then
         ri = un
-    else if (ri.lt.tole1) then
+    else if (ri .lt. tole1) then
         ri = tole1
-    endif
+    end if
     ni = nint(ri/tole1)
     if (ndec .lt. ni) ndec = ni
 !
 ! 2- MECANISME DEVIATOIRE
     do i = 1, ndt
         dfds(i) = zero
-    enddo
+    end do
 !
     do i = 1, 18
         yf(i) = zero
-    enddo
+    end do
 !
     do i = 1, 7
         indi(i) = 0
-    enddo
+    end do
 !
     yf(7) = epsvp
     yf(1:ndt) = sigd(1:ndt)
@@ -242,59 +242,59 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     nbmeca = 0
     do i = 1, 8
         if (vin(23+i) .eq. un) then
-            nbmeca = nbmeca + 1
+            nbmeca = nbmeca+1
             indi(nbmeca) = i
             yf(ndt+1+nbmeca) = vin(i)
-        else if ((vin(23+i).eq.zero).and.(i.lt.5)) then
-            nbmeca = nbmeca + 1
+        else if ((vin(23+i) .eq. zero) .and. (i .lt. 5)) then
+            nbmeca = nbmeca+1
             indi(nbmeca) = i
             yf(ndt+1+nbmeca) = vin(i)
-        endif
+        end if
     end do
 !
     do i = 1, 3
 !
         call hujprj(i, sigd, taud, pd, qd)
 !
-        if ((vin(23+i).eq.un) .or. (vin(23+i).eq.zero)) then
+        if ((vin(23+i) .eq. un) .or. (vin(23+i) .eq. zero)) then
 
-            call hujddd('DFDS  ', i, mater, indi, yf,&
+            call hujddd('DFDS  ', i, mater, indi, yf, &
                         vin, dfds, mat, iret)
 
-            if (iret.eq.1) then
-               goto 500
-            endif
+            if (iret .eq. 1) then
+                goto 500
+            end if
 
-            fr = -m*(pd-ptrac)*(un-b*log((pd-ptrac)/ (pco*exp(-beta* epsvp))))*vin(i)
+            fr = -m*(pd-ptrac)*(un-b*log((pd-ptrac)/(pco*exp(-beta*epsvp))))*vin(i)
 !
-        else if (vin(27+i).eq.un) then
+        else if (vin(27+i) .eq. un) then
 
-            call hujddd('DFDS  ', i+4, mater, indi, yf,&
+            call hujddd('DFDS  ', i+4, mater, indi, yf, &
                         vin, dfds, mat, iret)
 
-            if (iret.eq.1) then
-               goto 500
-            endif
+            if (iret .eq. 1) then
+                goto 500
+            end if
 
-            fr = -m*(pd-ptrac)*(un-b*log((pd-ptrac)/ (pco*exp(-beta* epsvp))))*vin(i+4)
+            fr = -m*(pd-ptrac)*(un-b*log((pd-ptrac)/(pco*exp(-beta*epsvp))))*vin(i+4)
 !
-        endif
+        end if
 !
         fidsig = 0
         do j = 1, ndt
-            fidsig = fidsig + dfds(j)*dsig(j)
-        enddo
+            fidsig = fidsig+dfds(j)*dsig(j)
+        end do
 !
         ri = abs(fidsig/fr)
         if (ri .gt. un) then
             ri = un
-        else if (ri.lt.tole1) then
+        else if (ri .lt. tole1) then
             ri = tole1
-        endif
+        end if
         ni = nint(ri/tole1)
         if (ndec .lt. ni) ndec = ni
 !
-    enddo
+    end do
 !
 ! -------------------------------------------------------
 ! 3 --- CRITERE LIMITANT L EVOLUTION DE Q: DQ/PREF < TOLE1
@@ -307,26 +307,26 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 ! --- AVEC PROD = PRODUIT SCALAIRE (SIGDC*TH)
             yf(1:ndt) = sigf(1:ndt)
             yf(8) = vin(4+i)
-            call hujprc(1, i, sigf, vin, mater,&
+            call hujprc(1, i, sigf, vin, mater, &
                         yf, pf, qf, sigdc)
             prodf = sigdc(1)*vin(4*i+7)+sigdc(3)*vin(4*i+8)/deux
             prodf = qf+prodf
             yf(1:ndt) = sigd(1:ndt)
-            call hujprc(1, i, sigd, vin, mater,&
+            call hujprc(1, i, sigd, vin, mater, &
                         yf, pd, qd, sigdc)
             prodd = sigdc(1)*vin(4*i+7)+sigdc(3)*vin(4*i+8)/deux
             prodd = qd+prodd
 !
-            if ((qd.lt.tol) .or. (prodf.lt.tol)) then
+            if ((qd .lt. tol) .or. (prodf .lt. tol)) then
                 ri = zero
             else
                 ri = abs(un-qf*prodd/qd/prodf)
-            endif
+            end if
             if (ri .gt. un) then
                 ri = un
-            else if (ri.lt.tole1) then
+            else if (ri .lt. tole1) then
                 ri = tole1
-            endif
+            end if
             ni = nint(ri/tole1)
             if (ndec .lt. ni) ndec = ni
 !
@@ -334,31 +334,31 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
         else
             call hujprj(i, sigd, taud, pd, qd)
             call hujprj(i, sigf, tauf, pf, qf)
-            fr = m*(pd -ptrac)* (un-b*log((pd-ptrac)/pco*exp(-beta* epsvp)))*vin(i)
+            fr = m*(pd-ptrac)*(un-b*log((pd-ptrac)/pco*exp(-beta*epsvp)))*vin(i)
 !
             if (abs(fr/pref) .lt. tol) then
-                ri =zero
+                ri = zero
             else
-                ri =abs((qf-qd)/fr)
-            endif
+                ri = abs((qf-qd)/fr)
+            end if
 !
             rela1 = zero
             rela2 = zero
             if (abs(fr/pref) .gt. tol) then
                 rela1 = abs((tauf(1)-taud(1))/fr)
                 rela2 = abs((tauf(3)-taud(3))/fr)
-            endif
+            end if
             if (rela1 .gt. ri) ri = rela1
             if (rela2 .gt. ri) ri = rela2
 !
             if (ri .gt. un) then
                 ri = un
-            else if (ri.lt.tole1) then
+            else if (ri .lt. tole1) then
                 ri = tole1
-            endif
+            end if
             ni = nint(ri/tole1)
             if (ndec .lt. ni) ndec = ni
-        endif
+        end if
 !
     end do
 !
@@ -369,8 +369,8 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     prodf = 0.d0
 !
     do i = 1, ndt
-        prodd = prodd + sigd(i)**deux
-        prodf = prodf + (sigf(i)-sigd(i))**deux
+        prodd = prodd+sigd(i)**deux
+        prodf = prodf+(sigf(i)-sigd(i))**deux
     end do
     prodd = sqrt(prodd)
     prodf = sqrt(prodf)
@@ -382,8 +382,8 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
             ni = int(ri)
             if (ndec .lt. ni) ndec = ni
 !            WRITE (6,'(A,I6)') 'HUJDP :: NSUBD =',NI
-        endif
-    endif
+        end if
+    end if
 !      IF (NDEC.GT.1) WRITE (6,'(A,I4)') ' NDEC =',NDEC
 !
 500 continue

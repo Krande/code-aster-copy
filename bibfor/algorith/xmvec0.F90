@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvec0(ndim, jnne, nnc, dlagrc, hpg,&
-                  ffc, jacobi, coefcr, coefcp, lpenac,&
+subroutine xmvec0(ndim, jnne, nnc, dlagrc, hpg, &
+                  ffc, jacobi, coefcr, coefcp, lpenac, &
                   jddle, nfhe, lmulti, heavno, vtmp)
 !
 !
@@ -60,19 +60,19 @@ subroutine xmvec0(ndim, jnne, nnc, dlagrc, hpg,&
 !
 ! --------------------- CALCUL DE {L2_CONT}-----------------------------
 !
-    nne=jnne(1)
-    nnes=jnne(2)
-    ddles=jddle(1)
+    nne = jnne(1)
+    nnes = jnne(2)
+    ddles = jddle(1)
 !
     do i = 1, nnc
-        call xplma2(ndim, nne, nnes, ddles, i,&
+        call xplma2(ndim, nne, nnes, ddles, i, &
                     nfhe, pl)
-        if (lmulti) pl = pl + (heavno(i)-1)*ndim
+        if (lmulti) pl = pl+(heavno(i)-1)*ndim
         if (lpenac) then
             vtmp(pl) = -hpg*jacobi*dlagrc*ffc(i)/coefcp
         else
             vtmp(pl) = -hpg*jacobi*dlagrc*ffc(i)/coefcr
-        endif
+        end if
     end do
 !
 end subroutine

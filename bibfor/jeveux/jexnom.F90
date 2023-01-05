@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,26 +21,26 @@ function jexnom(nomc, nomo)
 #include "jeveux.h"
 !
     character(len=32) :: jexnom
-    character(len=*),intent(in) :: nomc, nomo
+    character(len=*), intent(in) :: nomc, nomo
 !     ------------------------------------------------------------------
     integer :: numec
-    common /inumje/  numec
+    common/inumje/numec
     real(kind=8) :: reelc
-    common /reelje/  reelc
+    common/reelje/reelc
     character(len=24) :: nomec
-    common /knomje/  nomec
+    common/knomje/nomec
 !     ------------------------------------------------------------------
     character(len=24) :: ch24
     character(len=8) :: ch8
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data             ch8      / '$$XNOM  ' /
+    data ch8/'$$XNOM  '/
 !     ------------------------------------------------------------------
 !
     numec = 0
     reelc = 0.d0
     nomec = nomo
     ch24 = nomc
-    jexnom( 1:24) = ch24
+    jexnom(1:24) = ch24
     jexnom(25:32) = ch8
 end function

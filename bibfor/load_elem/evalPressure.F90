@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine evalPressure(lFunc     , lTime   , time     ,&
-                        nbNode    , cellDime, ipg      ,&
-                        jvShapFunc, jvGeom  , jvPres   ,&
-                        pres      , cisa_   , geomCurr_)
+subroutine evalPressure(lFunc, lTime, time, &
+                        nbNode, cellDime, ipg, &
+                        jvShapFunc, jvGeom, jvPres, &
+                        pres, cisa_, geomCurr_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -30,13 +30,13 @@ implicit none
 #include "asterfort/fointe.h"
 #include "asterfort/evalPressureSetFuncPara.h"
 !
-aster_logical, intent(in) :: lFunc, lTime
-integer, intent(in) :: cellDime, nbNode, ipg
-integer, intent(in) :: jvGeom, jvShapFunc, jvPres
-real(kind=8), intent(in) :: time
-real(kind=8), intent(out) :: pres
-real(kind=8), optional, intent(out) :: cisa_
-real(kind=8), optional, intent(in) :: geomCurr_(*)
+    aster_logical, intent(in) :: lFunc, lTime
+    integer, intent(in) :: cellDime, nbNode, ipg
+    integer, intent(in) :: jvGeom, jvShapFunc, jvPres
+    real(kind=8), intent(in) :: time
+    real(kind=8), intent(out) :: pres
+    real(kind=8), optional, intent(out) :: cisa_
+    real(kind=8), optional, intent(in) :: geomCurr_(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,35 +71,35 @@ real(kind=8), optional, intent(in) :: geomCurr_(*)
     pres = 0.d0
     if (present(cisa_)) then
         cisa_ = 0.d0
-    endif
+    end if
 !
     ldec = (ipg-1)*nbNode
 !
     if (lFunc) then
 
 ! ----- Prepare parameters when pressure is function
-        call evalPressureSetFuncPara(lTime     , time    ,&
-                                     nbNode    , cellDime, ipg,&
-                                     jvShapFunc, jvGeom  , &
-                                     paraNbMax , paraNb  , paraName, paraVale,&
+        call evalPressureSetFuncPara(lTime, time, &
+                                     nbNode, cellDime, ipg, &
+                                     jvShapFunc, jvGeom, &
+                                     paraNbMax, paraNb, paraName, paraVale, &
                                      geomCurr_)
 
 ! ----- Evaluate function
         call fointe('FM', zk8(jvPres-1+1), paraNb, paraName, paraVale, pres, iret)
         if (present(cisa_)) then
-            call fointe('FM', zk8(jvPres-1+2),paraNb, paraName, paraVale, cisa_, iret)
-        endif
+            call fointe('FM', zk8(jvPres-1+2), paraNb, paraName, paraVale, cisa_, iret)
+        end if
     else
         if (present(cisa_)) then
             do iNode = 1, nbNode
-                pres  = pres  + zr(jvPres+2*(iNode-1)-1+1) * zr(jvShapFunc+ldec-1+iNode)
-                cisa_ = cisa_ + zr(jvPres+2*(iNode-1)-1+2) * zr(jvShapFunc+ldec-1+iNode)
+                pres = pres+zr(jvPres+2*(iNode-1)-1+1)*zr(jvShapFunc+ldec-1+iNode)
+                cisa_ = cisa_+zr(jvPres+2*(iNode-1)-1+2)*zr(jvShapFunc+ldec-1+iNode)
             end do
         else
             do iNode = 1, nbNode
-                pres  = pres  + zr(jvPres+(iNode-1)-1+1) * zr(jvShapFunc+ldec-1+iNode)
+                pres = pres+zr(jvPres+(iNode-1)-1+1)*zr(jvShapFunc+ldec-1+iNode)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

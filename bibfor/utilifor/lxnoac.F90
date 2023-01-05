@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,13 +30,13 @@ subroutine lxnoac(chin, chout)
 ! ----------------------------------------------------------------------
 !
     integer :: mxchar
-    parameter ( mxchar=255 )
+    parameter(mxchar=255)
     character(len=1) :: class(0:mxchar)
     character(len=255) :: keep
     integer :: i, long, long2
 !
     integer :: first
-    save         class, first
+    save class, first
 !
 !     ------------------------------------------------------------------
     data first/0/
@@ -61,7 +61,7 @@ subroutine lxnoac(chin, chout)
 !        WRITE(6,'(10(1X,4A))') (' * ',CHAR(I),'= ',CLASS(I),I=0,255)
 !        WRITE(6,'(1X,79(''-''))')
 !        ---------------------------------------------------------------
-    endif
+    end if
 !
 !       LONG = LEN(CHIN)
     long = lxlgut(chin)

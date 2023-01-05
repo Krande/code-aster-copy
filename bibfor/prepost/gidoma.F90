@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,8 +71,8 @@ subroutine gidoma(nbnoto)
 !        ONT UNE CONNECTIVITE QUI COMMENCE PAR CE NOEUD:
     call wkvect('&&GILIRE.OBJET_WK1', 'V V I', nbnoto, iawk1)
     do ima = 1, nbmato
-        nuno1= connex2(zi(ilcnx2-1+ima)-1+1 )
-        zi(iawk1-1+nuno1) =zi(iawk1-1+nuno1) +1
+        nuno1 = connex2(zi(ilcnx2-1+ima)-1+1)
+        zi(iawk1-1+nuno1) = zi(iawk1-1+nuno1)+1
     end do
 !
 !     -- CREATION ET REMPLISSAGE DE L'OBJET &&GILIRE.OBJET_WK2
@@ -87,60 +87,60 @@ subroutine gidoma(nbnoto)
     call wkvect('&&GILIRE.OBJET_WK3', 'V V I', nbnoto, iawk3)
 !
 !     -- CALCUL DE OBJET_WK3:
-    ico=1
+    ico = 1
     do ino = 1, nbnoto
         nbma = zi(iawk1-1+ino)
         if (nbma .eq. 0) goto 21
         zi(iawk3-1+ino) = ico
-        ico = ico + nbma
- 21     continue
+        ico = ico+nbma
+21      continue
     end do
 !
 !     -- CALCUL DE OBJET_WK2: (ON MODIFIE _WK3 A CHAQUE MAILLE TRAITEE)
     do ima = 1, nbmato
-        nuno1= connex2(zi(ilcnx2-1+ima)-1+1 )
+        nuno1 = connex2(zi(ilcnx2-1+ima)-1+1)
         ipos = zi(iawk3-1+nuno1)
-        ASSERT(ipos.ne.0)
-        ASSERT(zi(iawk2-1+ipos).eq.0)
+        ASSERT(ipos .ne. 0)
+        ASSERT(zi(iawk2-1+ipos) .eq. 0)
         zi(iawk2-1+ipos) = ima
-        zi(iawk3-1+nuno1) = ipos + 1
+        zi(iawk3-1+nuno1) = ipos+1
     end do
 !
 !     -- ON DECLARE IDENTIQUES 2 MAILLES AYANT MEME CONNECTIVITE:
-    ico=0
+    ico = 0
     do ino = 1, nbnoto
-        nbma= zi(iawk1-1+ino)
+        nbma = zi(iawk1-1+ino)
         if (nbma .eq. 0) goto 1
         do j = 1, nbma
-            iden=.false.
-            imaj= zi(iawk2-1+ico+j)
-            nbnoj=zi(ilcnx2-1+imaj+1)-zi(ilcnx2-1+imaj)
+            iden = .false.
+            imaj = zi(iawk2-1+ico+j)
+            nbnoj = zi(ilcnx2-1+imaj+1)-zi(ilcnx2-1+imaj)
             do k = 1, j-1
-                imak= zi(iawk2-1+ico+k)
-                nbnok=zi(ilcnx2-1+imak+1)-zi(ilcnx2-1+imak)
+                imak = zi(iawk2-1+ico+k)
+                nbnok = zi(ilcnx2-1+imak+1)-zi(ilcnx2-1+imak)
                 if (nbnoj .ne. nbnok) goto 3
                 do l = 1, nbnoj
-                    nunoj= connex2(zi(ilcnx2-1+imaj)-1+l )
-                    nunok= connex2(zi(ilcnx2-1+imak)-1+l )
+                    nunoj = connex2(zi(ilcnx2-1+imaj)-1+l)
+                    nunok = connex2(zi(ilcnx2-1+imak)-1+l)
                     if (nunoj .ne. nunok) goto 3
                     if (l .eq. nbnoj) then
-                        iden=.true.
+                        iden = .true.
                         goto 5
-                    endif
+                    end if
                 end do
-  3             continue
+3               continue
             end do
-  5         continue
+5           continue
             if (iden) then
-                zi(ianema-1+imaj) =zi(ianema-1+imak)
+                zi(ianema-1+imaj) = zi(ianema-1+imak)
                 goto 2
             else
-                zi(ianema-1+imaj) =imaj
-            endif
-  2         continue
+                zi(ianema-1+imaj) = imaj
+            end if
+2           continue
         end do
-        ico = ico + nbma
-  1     continue
+        ico = ico+nbma
+1       continue
     end do
 !
     call jedema()

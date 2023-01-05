@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,11 +85,11 @@ subroutine op0003()
     if (nbvc .ne. 0) then
         if (nbvc .lt. 3) then
             call utmess('F', 'UTILITAI2_66')
-        endif
-        nbcoup = nbvc / 3
-        if (mod(nbvc,3) .ne. 0) then
+        end if
+        nbcoup = nbvc/3
+        if (mod(nbvc, 3) .ne. 0) then
             call utmess('F', 'UTILITAI2_67')
-        endif
+        end if
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvc, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
         call getvr8(' ', 'VALE_C', nbval=nbvc, vect=zr(lpara), nbret=l)
@@ -98,18 +98,18 @@ subroutine op0003()
         end do
 !        VERIF QUE LES PARAMETRES SONT STRICT CROISSANTS
         if (verif .eq. 'CROISSANT') then
-            iret=2
+            iret = 2
             call foverf(zr(lpar2), nbcoup, iret)
-            ASSERT(iret.eq.2)
-        endif
-    else if (nbvr.ne.0 .and. nbln.eq.0) then
+            ASSERT(iret .eq. 2)
+        end if
+    else if (nbvr .ne. 0 .and. nbln .eq. 0) then
         if (nbvr .lt. 2) then
             call utmess('F', 'UTILITAI2_66')
-        endif
-        nbcoup = nbvr / 2
-        if (mod(nbvr,2) .ne. 0) then
+        end if
+        nbcoup = nbvr/2
+        if (mod(nbvr, 2) .ne. 0) then
             call utmess('F', 'UTILITAI2_68')
-        endif
+        end if
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvr, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
         call getvr8(' ', 'VALE', nbval=nbvr, vect=zr(lpara), nbret=l)
@@ -118,28 +118,28 @@ subroutine op0003()
         end do
 !        VERIF QUE LES PARAMETRES SONT STRICT CROISSANTS
         if (verif .eq. 'CROISSANT') then
-            iret=2
+            iret = 2
             call foverf(zr(lpar2), nbcoup, iret)
-            ASSERT(iret.eq.2)
-        endif
-    else if (nbla.ne.0) then
+            ASSERT(iret .eq. 2)
+        end if
+    else if (nbla .ne. 0) then
         if (nbla .lt. 2) then
             call utmess('F', 'UTILITAI2_66')
-        endif
+        end if
         call getvr8(' ', 'ORDONNEE', nbval=0, nbret=nblo)
         nblo = abs(nblo)
         if (nblo .ne. nbla) then
             call utmess('F', 'UTILITAI2_77')
-        endif
+        end if
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbla, lpar2)
         call getvr8(' ', 'ABSCISSE', nbval=nbla, vect=zr(lpar2), nbret=l)
 !        VERIF QUE LES PARAMETRES SONT STRICT CROISSANTS
         if (verif .eq. 'CROISSANT') then
-            iret=2
+            iret = 2
             call foverf(zr(lpar2), nbla, iret)
-            ASSERT(iret.eq.2)
-        endif
-    endif
+            ASSERT(iret .eq. 2)
+        end if
+    end if
 !
     call getvtx(' ', 'NOM_PARA', scal=nompar, nbret=n1)
     call getvtx(' ', 'NOM_RESU', scal=nomres, nbret=n2)
@@ -149,7 +149,7 @@ subroutine op0003()
     call getvtx(' ', 'PROL_DROITE', scal=prolgd(2:2), nbret=n5)
 !
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     if (nbln .ne. 0) then
         zk24(lpro) = 'FONCTION'
@@ -163,20 +163,20 @@ subroutine op0003()
             zk24(lpro) = 'FONCT_C '
         else
             zk24(lpro) = 'FONCTION'
-        endif
+        end if
         zk24(lpro+1) = interp(1)//interp(2)
         zk24(lpro+2) = nompar
         zk24(lpro+3) = nomres
         zk24(lpro+4) = prolgd
         zk24(lpro+5) = nomfon
-    endif
+    end if
 !
 !     MINI DES ABSCISSES
-    min1=r8maem()
+    min1 = r8maem()
 !     MINI DES ORDONNEES
-    min2=r8maem()
+    min2 = r8maem()
 !     MINI DES ORDONNEES (PARTIE IMAGINAIRE)
-    min3=r8maem()
+    min3 = r8maem()
 !
     if (nbln .ne. 0) then
         call getvid(' ', 'MAILLAGE', scal=nommai, nbret=ibid)
@@ -187,49 +187,49 @@ subroutine op0003()
         call wkvect('&&OP0003.NOEUDS_LUES', 'V V K8', nbln, jnoe)
         if (nblv .ne. nbln) then
             call utmess('F', 'UTILITAI2_69')
-        endif
+        end if
         call getvr8(' ', 'VALE_Y', nbval=nblv, vect=zr(jval), nbret=n)
-        call getvem(nommai, 'NOEUD', ' ', 'NOEUD_PARA', 0,&
-                    nblv, zk8( jnoe), n)
+        call getvem(nommai, 'NOEUD', ' ', 'NOEUD_PARA', 0, &
+                    nblv, zk8(jnoe), n)
         nbval = 2*(nbrma+1)
         call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
 !
         k8b = interp(1)
-        call defcur(zr(jval), zk8(jnoe), nblv, zr(lval), nbval,&
+        call defcur(zr(jval), zk8(jnoe), nblv, zr(lval), nbval, &
                     nommai, nbrma, prolgd, k8b)
 !
         do ival = 0, nblv-1
-            if (zr(jval+ival) .lt. min1) min1=zr(jval+ival)
+            if (zr(jval+ival) .lt. min1) min1 = zr(jval+ival)
         end do
-    else if (nbvc.ne.0) then
+    else if (nbvc .ne. 0) then
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nbvc, jval)
         call getvr8(' ', 'VALE_C', nbval=nbvc, vect=zr(jval), nbret=n)
         call wkvect(nomfon//'.VALE', 'G V R', nbvc, lval)
-        nbcoup = nbvc / 3
-        lfon = lval + nbcoup - 1
+        nbcoup = nbvc/3
+        lfon = lval+nbcoup-1
         do ival = 0, nbcoup-1
-            zr(lval+ ival ) = zr(jval+3*ival)
+            zr(lval+ival) = zr(jval+3*ival)
             zr(lfon+(ival*2)+1) = zr(jval+3*ival+1)
             zr(lfon+(ival*2)+2) = zr(jval+3*ival+2)
-            if (zr(lval+ival) .lt. min1) min1=zr(lval+ival)
-            if (zr(lfon+(ival*2)+1) .lt. min2) min2=zr(lfon+(ival*2)+1)
-            if (zr(lfon+(ival*2)+2) .lt. min3) min3=zr(lfon+(ival*2)+2)
+            if (zr(lval+ival) .lt. min1) min1 = zr(lval+ival)
+            if (zr(lfon+(ival*2)+1) .lt. min2) min2 = zr(lfon+(ival*2)+1)
+            if (zr(lfon+(ival*2)+2) .lt. min3) min3 = zr(lfon+(ival*2)+2)
         end do
 !
-    else if (nbvr.ne.0 .and. nbln.eq.0) then
+    else if (nbvr .ne. 0 .and. nbln .eq. 0) then
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nbvr, jval)
         call getvr8(' ', 'VALE', nbval=nbvr, vect=zr(jval), nbret=n)
         call wkvect(nomfon//'.VALE', 'G V R', nbvr, lval)
-        nbcoup = nbvr / 2
-        lfon = lval + nbcoup
+        nbcoup = nbvr/2
+        lfon = lval+nbcoup
         do ival = 0, nbcoup-1
             zr(lval+ival) = zr(jval+2*ival)
             zr(lfon+ival) = zr(jval+2*ival+1)
-            if (zr(lval+ival) .lt. min1) min1=zr(lval+ival)
-            if (zr(lfon+ival) .lt. min2) min2=zr(lfon+ival)
+            if (zr(lval+ival) .lt. min1) min1 = zr(lval+ival)
+            if (zr(lfon+ival) .lt. min2) min2 = zr(lfon+ival)
         end do
 !
-    else if (nblr.ne.0) then
+    else if (nblr .ne. 0) then
         call getvid(' ', 'VALE_PARA', scal=listpa, nbret=n1)
         call getvid(' ', 'VALE_FONC', scal=listfo, nbret=n1)
         call jelira(listpa//'.VALE', 'LONMAX', nbcoup)
@@ -239,47 +239,47 @@ subroutine op0003()
                 valk(1) = listfo
                 valk(2) = listpa
                 call utmess('F', 'UTILITAI2_70', nk=2, valk=valk)
-            endif
+            end if
             if (nbcoup .lt. nbcou2) then
                 valk(1) = listpa
                 valk(2) = listfo
                 call utmess('F', 'UTILITAI2_70', nk=2, valk=valk)
-            endif
-        endif
-        nbval = nbcoup * 2
+            end if
+        end if
+        nbval = nbcoup*2
         call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
         call jeveuo(listpa//'.VALE', 'L', vr=par)
         call jeveuo(listfo//'.VALE', 'L', vr=fon)
-        lfon = lval + nbcoup
+        lfon = lval+nbcoup
         do ival = 0, nbcoup-1
             zr(lval+ival) = par(ival+1)
             zr(lfon+ival) = fon(ival+1)
-            if (zr(lval+ival) .lt. min1) min1=zr(lval+ival)
-            if (zr(lfon+ival) .lt. min2) min2=zr(lfon+ival)
+            if (zr(lval+ival) .lt. min1) min1 = zr(lval+ival)
+            if (zr(lfon+ival) .lt. min2) min2 = zr(lfon+ival)
         end do
-    else if (nbla.ne.0) then
+    else if (nbla .ne. 0) then
         call wkvect(nomfon//'.VALE', 'G V R', nbla*2, lval)
         call getvr8(' ', 'ABSCISSE', nbval=nbla, vect=zr(lval), nbret=n)
         call getvr8(' ', 'ORDONNEE', nbval=nbla, vect=zr(lval+nbla), nbret=n)
 !
-    endif
+    end if
 !
 !     --- VERIFICATION QUE LES VALEURS SONT >=0 SI INTERPOLATION 'LOG'
 !     JE NE VOIS PAS A QUOI CELA PEUT CORRESPONDRE SUR UNE FONCTION
 !     A VALEURS COMPLEXES, MAIS AUTANT LE LAISSER POSSIBLE
-    if (interp(2) .eq. 'LOG' .and. (nbvc.ne.0)) then
+    if (interp(2) .eq. 'LOG' .and. (nbvc .ne. 0)) then
         call utmess('F', 'UTILITAI5_92')
-    endif
+    end if
     if ((interp(1).eq.'LOG'.and.min1.le.0.d0) .or. (interp(2).eq.'LOG'.and.(min2.le.0.d0))) then
         call utmess('F', 'UTILITAI2_71')
-    endif
+    end if
 !
 !     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 !         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
 !         CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
     if (verif .ne. 'CROISSANT') then
         call ordonn(nomfon, 0)
-    endif
+    end if
 !
 !     --- CREATION D'UN TITRE ---
     call titre()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
-                  itmax, toler, alpham, dgamma, dalpha,&
+subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci, &
+                  itmax, toler, alpham, dgamma, dalpha, &
                   iret)
     implicit none
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -51,77 +51,77 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
 !
 !     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 !
-    iec=nbcomm(ifa,2)
-    absdga=abs(dgamma)
-    nuecin=nint(coeft(iec))
+    iec = nbcomm(ifa, 2)
+    absdga = abs(dgamma)
+    nuecin = nint(coeft(iec))
 !
 !----------------------------------------------------------------------
 !   POUR UN NOUVEAU TYPE D'ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF
 !----------------------------------------------------------------------
 !
-    iret=0
+    iret = 0
 !      IF (NECRCI.EQ.'ECRO_CINE1') THEN
     if (nuecin .eq. 1) then
 !          D=COEFT(IEC-1+1)
-        d=coeft(iec+1)
-        dalpha=(dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
+        d = coeft(iec+1)
+        dalpha = (dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
 !
 !      IF (NECRCI.EQ.'ECRO_CINE2') THEN
-    else if (nuecin.eq.2) then
-        iret=0
+    else if (nuecin .eq. 2) then
+        iret = 0
 !           D=COEFT(IEC-1+1)
 !           GM=COEFT(IEC-1+2)
 !           PM=COEFT(IEC-1+3)
 !           C=COEFT(IEC-1+4)
-        d =coeft(iec+1)
-        gm=coeft(iec+2)
-        pm=coeft(iec+3)
-        c =coeft(iec+4)
-        cc=c*alpham
+        d = coeft(iec+1)
+        gm = coeft(iec+2)
+        pm = coeft(iec+3)
+        c = coeft(iec+4)
+        cc = c*alpham
         if (cc .eq. 0.d0) then
-            dalpha=(dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
+            dalpha = (dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
         else
 !            RECHERCHE DE DALPHA PAR SECANTE. dF/dAlpha TOUJOURS >0
-            f0=lcine2(d,gm,pm,c,dgamma,alpham,0.d0)
+            f0 = lcine2(d, gm, pm, c, dgamma, alpham, 0.d0)
             if (abs(f0) .le. toler) then
                 dalpha = 0.d0
                 goto 50
-            else if (f0.le.0.d0) then
+            else if (f0 .le. 0.d0) then
                 x(1) = 0.d0
                 y(1) = f0
 !               F0 < 0 , ON CHERCHE X TEL QUE FMAX > 0 :
-                x1 =(dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
-                if (abs(x1) .le. r8miem()) x1=1.d-10
+                x1 = (dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
+                if (abs(x1) .le. r8miem()) x1 = 1.d-10
                 do iter = 1, itmax
-                    fmax=lcine2(d,gm,pm,c,dgamma,alpham,x1)
+                    fmax = lcine2(d, gm, pm, c, dgamma, alpham, x1)
                     if (fmax .ge. 0.d0) then
                         x(2) = x1
                         y(2) = fmax
                         goto 20
                     else
                         x1 = x1*2.d0
-                    endif
+                    end if
                 end do
                 goto 60
             else
                 x(2) = 0.d0
                 y(2) = f0
 !               F0 > 0 , ON CHERCHE X TEL QUE FMAX < 0 :
-                x1 =(dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
-                if (abs(x1) .le. r8miem()) x1=-1.d-10
+                x1 = (dgamma-d*alpham*absdga)/(1.0d0+d*absdga)
+                if (abs(x1) .le. r8miem()) x1 = -1.d-10
                 do iter = 1, itmax
-                    fmax=lcine2(d,gm,pm,c,dgamma,alpham,x1)
+                    fmax = lcine2(d, gm, pm, c, dgamma, alpham, x1)
                     if (fmax .le. 0.d0) then
                         x(1) = x1
                         y(1) = fmax
                         goto 20
                     else
                         x1 = x1*2.d0
-                    endif
+                    end if
                 end do
                 goto 60
-            endif
- 20         continue
+            end if
+20          continue
 !             CALCUL DE X(4) SOLUTION DE L'EQUATION F = 0 :
             x(3) = x(1)
             y(3) = y(1)
@@ -131,17 +131,17 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
                 if (abs(y(4)) .lt. toler) goto 50
                 call zeroco(x, y)
                 dalpha = x(4)
-                y(4)=lcine2(d,gm,pm,c,dgamma,alpham,dalpha)
+                y(4) = lcine2(d, gm, pm, c, dgamma, alpham, dalpha)
             end do
- 60         continue
+60          continue
 !               CALL INFNIV(IFM,NIV)
 !               WRITE (IFM,*) 'ECRO_CIN2 : NON CONVERGENCE'
 !               WRITE (IFM,*) 'VALEURS DE X ET Y ',X,Y
             iret = 1
- 50         continue
-        endif
+50          continue
+        end if
     else
         call utmess('F', 'COMPOR1_19')
-    endif
+    end if
 !
 end subroutine

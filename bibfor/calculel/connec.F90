@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine connec(nomte, nse, nnop2, c)
 !-----------------------------------------------------------------------
     integer :: ibid
 !-----------------------------------------------------------------------
-    parameter (nsemax = 6)
-    parameter (nnomax = 9)
+    parameter(nsemax=6)
+    parameter(nnomax=9)
     integer :: nse, nnop2, c(nsemax, nnomax)
 !
 ! ......................................................................
@@ -55,7 +55,7 @@ subroutine connec(nomte, nse, nnop2, c)
     nnop2 = nno
     do i = 1, nsemax
         do j = 1, nnomax
-            c(i,j) = j
+            c(i, j) = j
         end do
     end do
 !
@@ -63,50 +63,50 @@ subroutine connec(nomte, nse, nnop2, c)
 !
     call teattr('S', 'ALIAS8', alias8, ibid)
 !
-    if (lteatt('LUMPE','OUI') .and. (alias8(6:8).eq.'SE3')) then
+    if (lteatt('LUMPE', 'OUI') .and. (alias8(6:8) .eq. 'SE3')) then
         nnop2 = 3
         nse = 2
-        c(1,1) = 1
-        c(1,2) = 3
-        c(2,1) = c(1,2)
-        c(2,2) = 2
+        c(1, 1) = 1
+        c(1, 2) = 3
+        c(2, 1) = c(1, 2)
+        c(2, 2) = 2
 !
-        else if (lteatt('LUMPE','OUI').and. (alias8(6:8).eq.'TR6'))&
-    then
+    else if (lteatt('LUMPE', 'OUI') .and. (alias8(6:8) .eq. 'TR6')) &
+        then
         nnop2 = 6
         nse = 4
-        c(1,1) = 1
-        c(1,2) = 4
-        c(1,3) = 6
-        c(2,1) = c(1,2)
-        c(2,2) = 2
-        c(2,3) = 5
-        c(3,1) = c(1,3)
-        c(3,2) = c(2,3)
-        c(3,3) = 3
-        c(4,1) = c(1,2)
-        c(4,2) = c(2,3)
-        c(4,3) = c(1,3)
-        else if (lteatt('LUMPE','OUI').and. (alias8(6:8).eq.'QU9'))&
-    then
+        c(1, 1) = 1
+        c(1, 2) = 4
+        c(1, 3) = 6
+        c(2, 1) = c(1, 2)
+        c(2, 2) = 2
+        c(2, 3) = 5
+        c(3, 1) = c(1, 3)
+        c(3, 2) = c(2, 3)
+        c(3, 3) = 3
+        c(4, 1) = c(1, 2)
+        c(4, 2) = c(2, 3)
+        c(4, 3) = c(1, 3)
+    else if (lteatt('LUMPE', 'OUI') .and. (alias8(6:8) .eq. 'QU9')) &
+        then
         nnop2 = 9
         nse = 4
-        c(1,1) = 1
-        c(1,2) = 5
-        c(1,3) = 9
-        c(1,4) = 8
-        c(2,1) = c(1,2)
-        c(2,2) = 2
-        c(2,3) = 6
-        c(2,4) = c(1,3)
-        c(3,1) = c(1,3)
-        c(3,2) = c(2,3)
-        c(3,3) = 3
-        c(3,4) = 7
-        c(4,1) = c(1,4)
-        c(4,2) = c(1,3)
-        c(4,3) = c(3,4)
-        c(4,4) = 4
-    endif
+        c(1, 1) = 1
+        c(1, 2) = 5
+        c(1, 3) = 9
+        c(1, 4) = 8
+        c(2, 1) = c(1, 2)
+        c(2, 2) = 2
+        c(2, 3) = 6
+        c(2, 4) = c(1, 3)
+        c(3, 1) = c(1, 3)
+        c(3, 2) = c(2, 3)
+        c(3, 3) = 3
+        c(3, 4) = 7
+        c(4, 1) = c(1, 4)
+        c(4, 2) = c(1, 3)
+        c(4, 3) = c(3, 4)
+        c(4, 4) = 4
+    end if
 !
 end subroutine

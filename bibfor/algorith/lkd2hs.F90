@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
+subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t, &
                   dhds, d2hds2)
 ! person_in_charge: alexandre.foucault at edf.fr
     implicit none
@@ -44,27 +44,27 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
     real(kind=8) :: coef6, ddetds(6), mat1(6, 6), mat2(6, 6)
     real(kind=8) :: mat6(6, 6), mat7(6, 6), d2dets(6, 6), mat5(6, 6)
     real(kind=8) :: coef5, coef2, six
-    parameter       ( zero   = 0.0d0 )
-    parameter       ( un     = 1.0d0 )
-    parameter       ( deux   = 2.0d0 )
-    parameter       ( trois  = 3.0d0 )
-    parameter       ( cinq   = 5.0d0 )
-    parameter       ( six    = 6.0d0 )
-    parameter       ( r54    = 5.4d1 )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(cinq=5.0d0)
+    parameter(six=6.0d0)
+    parameter(r54=5.4d1)
 !     ------------------------------------------------------------------
-    common /tdim/   ndt,ndi
+    common/tdim/ndt, ndi
 !     ------------------------------------------------------------------
 !
 ! --- RECUPERATION PROPRIETES MATERIAUX
-    gamcjs = materf(5,2)
+    gamcjs = materf(5, 2)
 !
 ! --- CONSTRUCTION TENSEUR IDENTITE
-    mident(:,:) = zero
+    mident(:, :) = zero
     do i = 1, ndt
-        mident(i,i) = un
+        mident(i, i) = un
     end do
 !
-    rhlode = lkhlod (gamcjs, rcos3t)
+    rhlode = lkhlod(gamcjs, rcos3t)
 !
     coef1 = gamcjs*sqrt(r54)/(deux*(rhlode**5)*(sii**5))
     coef2 = trois*gamcjs*rcos3t/(deux*(rhlode**5)*(sii**4))
@@ -90,8 +90,8 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
 !
     do i = 1, ndt
         do j = 1, ndt
-            d2hds2(i,j) = coef1*mat1(i,j)-coef2*mat2(i,j)+ coef3* mident(i,j)-coef4*mat2(i,j)- co&
-                          &ef5*mat5(i,j)+coef6*mat6(i, j)+ coef1*mat7(i,j)-coef7*d2dets(i,j)
+            d2hds2(i, j) = coef1*mat1(i, j)-coef2*mat2(i, j)+coef3*mident(i, j)-coef4*mat2(i, j)-co&
+                          &ef5*mat5(i, j)+coef6*mat6(i, j)+coef1*mat7(i, j)-coef7*d2dets(i, j)
         end do
     end do
 !

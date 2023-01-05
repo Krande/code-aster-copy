@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ntdata(list_load, solver, matcst   , coecst  , result,&
-                  model    , mater  , mateco, cara_elem, ds_inout, theta )
+subroutine ntdata(list_load, solver, matcst, coecst, result, &
+                  model, mater, mateco, cara_elem, ds_inout, theta)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -31,16 +31,16 @@ implicit none
 #include "asterfort/ntdomt.h"
 #include "asterfort/nonlinDSInOutRead.h"
 !
-character(len=19), intent(inout) :: list_load
-character(len=19), intent(in) :: solver
-aster_logical, intent(out) :: matcst
-aster_logical, intent(out) :: coecst
-character(len=8), intent(out) :: result
-character(len=24), intent(out) :: model
-character(len=24), intent(out) :: mater, mateco
-character(len=24), intent(out) :: cara_elem
-type(NL_DS_InOut), intent(inout) :: ds_inout
-real(kind=8), intent(out) :: theta
+    character(len=19), intent(inout) :: list_load
+    character(len=19), intent(in) :: solver
+    aster_logical, intent(out) :: matcst
+    aster_logical, intent(out) :: coecst
+    character(len=8), intent(out) :: result
+    character(len=24), intent(out) :: model
+    character(len=24), intent(out) :: mater, mateco
+    character(len=24), intent(out) :: cara_elem
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    real(kind=8), intent(out) :: theta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,8 +74,8 @@ real(kind=8), intent(out) :: theta
 !
 ! - Read parameters
 !
-    call ntdoth(model, mater, mateco, cara_elem, list_load,&
-                matcst_ = matcst, coecst_ = coecst )
+    call ntdoth(model, mater, mateco, cara_elem, list_load, &
+                matcst_=matcst, coecst_=coecst)
 !
 ! - Get parameters for linear solver
 !

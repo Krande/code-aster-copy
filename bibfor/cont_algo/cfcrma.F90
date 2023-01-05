@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cfcrma(neqmat, noma, resoco)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-integer :: neqmat
-character(len=8) :: noma
-character(len=24) :: resoco
+    integer :: neqmat
+    character(len=8) :: noma
+    character(len=24) :: resoco
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,7 +109,7 @@ character(len=24) :: resoco
         vali(2) = hmax
         vali(3) = hmax/1024+1
         call utmess('F', 'CONTACT_17', ni=3, vali=vali)
-    endif
+    end if
 !
 ! --- ON FAIT LA PREMIERE COLONNE (DU 1ER BLOC) A PART
 !
@@ -138,33 +138,33 @@ character(len=24) :: resoco
 ! --- CALCUL DU NOMBRE DE BLOCS ET MISE A JOUR DE SCDI
 !
     do ieq = 2, neqmat
-        ntblc = ntblc + zi(jschc+ieq-1)
+        ntblc = ntblc+zi(jschc+ieq-1)
         if (ntblc .le. itbloc) then
 !         ON PEUT TOUJOURS AJOUTER LA COLONNE DANS LE BLOC
-            zi(jscdi+ieq-1) = zi(jscdi+ieq-2) + zi(jschc+ieq-1)
+            zi(jscdi+ieq-1) = zi(jscdi+ieq-2)+zi(jschc+ieq-1)
         else
 !         LA COLONNE NE PEUT PAS ENTRER DANS LE NOUVEAU BLOC
 !         TAUX DE VIDE LAISSE DANS LE BLOC
             tv = (1.d0*itbloc-zi(jscdi+ieq-2))/itbloc
             if (tv .ge. tvmax) then
                 tvmax = tv
-            endif
+            end if
             if (tv .ge. tvala) then
                 ivala = ivala+1
-            endif
+            end if
             if (zi(jscdi+ieq-2) .ge. tbmax) then
                 tbmax = zi(jscdi+ieq-2)
-            endif
+            end if
 !         NOUVEAU BLOC
             ntblc = zi(jschc+ieq-1)
-            nblc = nblc + 1
+            nblc = nblc+1
             zi(jscdi+ieq-1) = zi(jschc+ieq-1)
-        endif
+        end if
     end do
 !
     if (zi(jscdi-1+neqmat) .ge. tbmax) then
         tbmax = zi(jscdi-1+neqmat)
-    endif
+    end if
 !
 ! --- CREATION .SCBL
 !
@@ -174,14 +174,14 @@ character(len=24) :: resoco
     ntblc = zi(jschc)
 !
     do ieq = 2, neqmat
-        ntblc = ntblc + zi(jschc+ieq-1)
+        ntblc = ntblc+zi(jschc+ieq-1)
         if (ntblc .gt. itbloc) then
             ntblc = zi(jschc+ieq-1)
-            zi(jscbl+iblc) = ieq - 1
-            iblc = iblc + 1
-        endif
+            zi(jscbl+iblc) = ieq-1
+            iblc = iblc+1
+        end if
     end do
-    ASSERT(iblc.eq.nblc)
+    ASSERT(iblc .eq. nblc)
     zi(jscbl+nblc) = neqmat
 !
 ! --- CREATION .SCIB
@@ -189,13 +189,13 @@ character(len=24) :: resoco
     call wkvect(stoc(1:19)//'.SCIB', 'V V I', neqmat, jscib)
     icompt = 0
     do iblc = 1, nblc
-        nbcol = zi(jscbl+iblc) - zi(jscbl+iblc-1)
+        nbcol = zi(jscbl+iblc)-zi(jscbl+iblc-1)
         do icol = 1, nbcol
-            icompt = icompt + 1
+            icompt = icompt+1
             zi(jscib-1+icompt) = iblc
         end do
     end do
-    ASSERT(icompt.eq.neqmat)
+    ASSERT(icompt .eq. neqmat)
 !
 ! --- CREATION .SCDE
 !

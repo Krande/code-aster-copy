@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cjsjid(mod, mater, epsd, deps, yd,&
+subroutine cjsjid(mod, mater, epsd, deps, yd, &
                   yf, gd, r, signe, drdy)
 ! aslint: disable=W1501
     implicit none
@@ -57,7 +57,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod, i, j, k, codret
-    parameter     (nmod = 16)
+    parameter(nmod=16)
     real(kind=8) :: epsd(6), deps(6), depse(6), depsdp(6)
     real(kind=8) :: dsignl(6), dsigl(6), sigf(6)
     real(kind=8) :: yd(nmod), yf(nmod), r(nmod), drdy(nmod, nmod)
@@ -105,26 +105,26 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
     real(kind=8) :: kron(6), iden6(6, 6)
     character(len=8) :: mod
 ! ======================================================================
-    parameter     ( mun5   =-1.5d0  )
-    parameter     ( d12    = 0.5d0  )
-    parameter     ( un     = 1.d0   )
-    parameter     ( zero   = 0.d0   )
-    parameter     ( deux   = 2.d0   )
-    parameter     ( trois  = 3.d0   )
-    parameter     ( quatre = 4.d0   )
-    parameter     ( cinq   = 5.d0   )
-    parameter     ( six    = 6.d0   )
-    parameter     ( epssig = 1.d-8   )
+    parameter(mun5=-1.5d0)
+    parameter(d12=0.5d0)
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
+    parameter(quatre=4.d0)
+    parameter(cinq=5.d0)
+    parameter(six=6.d0)
+    parameter(epssig=1.d-8)
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
-    data    iden6   /un     , zero  , zero  , zero  ,zero  ,zero,&
-         &                   zero   , un    , zero  , zero  ,zero  ,zero,&
-         &                   zero   , zero  , un    , zero  ,zero  ,zero,&
-         &                   zero   , zero  , zero  , un    ,zero  ,zero,&
-         &                   zero   , zero  , zero  , zero  ,un    ,zero,&
-         &                   zero   , zero  , zero  , zero  ,zero  ,un/
-    data          kron /un , un , un , zero ,zero ,zero/
+    data iden6/un, zero, zero, zero, zero, zero,&
+         &                   zero, un, zero, zero, zero, zero,&
+         &                   zero, zero, un, zero, zero, zero,&
+         &                   zero, zero, zero, un, zero, zero,&
+         &                   zero, zero, zero, zero, un, zero,&
+         &                   zero, zero, zero, zero, zero, un/
+    data kron/un, un, un, zero, zero, zero/
 ! ======================================================================
 ! --- ATTENTION : NE PAS CONFONDRE LA VARIABLE INTERNE R ---------------
 ! --- --------- : AVEC LE SYSTEME NON LINEAIRE GLOBAL NOTE AUSSI R -----
@@ -133,150 +133,150 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- PROPRIETES CJS MATERIAU ------------------------------------------
 ! ======================================================================
-    beta = mater(1,2)
-    rm = mater(2,2)
-    n = mater(3,2)
-    kop = mater(4,2)
-    rc = mater(5,2)
-    a = mater(6,2)
-    b = mater(7,2)
-    c = mater(8,2)
-    gamma = mater(9,2)
-    mucjs = mater(10,2)
-    pco = mater(11,2)
-    pa = mater(12,2)
-    qinit = mater(13,2)
+    beta = mater(1, 2)
+    rm = mater(2, 2)
+    n = mater(3, 2)
+    kop = mater(4, 2)
+    rc = mater(5, 2)
+    a = mater(6, 2)
+    b = mater(7, 2)
+    c = mater(8, 2)
+    gamma = mater(9, 2)
+    mucjs = mater(10, 2)
+    pco = mater(11, 2)
+    pa = mater(12, 2)
+    qinit = mater(13, 2)
 ! ======================================================================
 ! --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES ---------------------
 ! ======================================================================
-    i1f = trace(ndi,yf)
+    i1f = trace(ndi, yf)
     if ((i1f+qinit) .eq. 0.d0) then
-       i1f = -qinit+1.d-12 * pa
-       pref = abs(pa)
+        i1f = -qinit+1.d-12*pa
+        pref = abs(pa)
     else
-       pref = abs(i1f+qinit)
-    endif
+        pref = abs(i1f+qinit)
+    end if
     qiso = yf(ndt+1)
     rf = yf(ndt+2)
     do i = 1, ndt
-       xf(i)= yf(ndt+2+i)
-       gdd(i) = gd(i)
+        xf(i) = yf(ndt+2+i)
+        gdd(i) = gd(i)
     end do
-    dlambi = yf(2*ndt+3) - yd(2*ndt+3)
-    dlambd = yf(2*ndt+4) - yd(2*ndt+4)
+    dlambi = yf(2*ndt+3)-yd(2*ndt+3)
+    dlambd = yf(2*ndt+4)-yd(2*ndt+4)
 ! ======================================================================
     do i = 1, ndt
-       sigf(i) = yf(i)
+        sigf(i) = yf(i)
     end do
-    kp = kop * ( qiso/pa )**n
+    kp = kop*(qiso/pa)**n
 ! ======================================================================
 ! --- OPERATEURS DE RIGIDITE ET DE SOUPLESSE (LINEAIRES OU NON LINEA.) -
 ! ======================================================================
 ! --- OPERATEURS LINEAIRES ---------------------------------------------
 ! ======================================================================
-    hook(:,:) = zero
-    kooh(:,:) = zero
-    e = mater(1,1)
-    nu = mater(2,1)
-    al = e * (un-nu) / (un+nu) / (un-deux*nu)
-    la = nu * e / (un+nu) / (un-deux*nu)
-    mu = e * d12 / (un+nu)
-    unpnue = ( un + nu ) / e
-    unsure = un / e
-    mnuse = - nu / e
+    hook(:, :) = zero
+    kooh(:, :) = zero
+    e = mater(1, 1)
+    nu = mater(2, 1)
+    al = e*(un-nu)/(un+nu)/(un-deux*nu)
+    la = nu*e/(un+nu)/(un-deux*nu)
+    mu = e*d12/(un+nu)
+    unpnue = (un+nu)/e
+    unsure = un/e
+    mnuse = -nu/e
 ! ======================================================================
 ! --- 3D/DP/AX ---------------------------------------------------------
 ! ======================================================================
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-       do i = 1, ndi
-          do j = 1, ndi
-             if (i .eq. j) then
-                hook(i,j) = al
-                kooh(i,j) = unsure
-             endif
-             if (i .ne. j) then
-                hook(i,j) = la
-                kooh(i,j) = mnuse
-             endif
-          end do
-       end do
-       do i = ndi+1, ndt
-          do j = ndi+1, ndt
-             if (i .eq. j) then
-                hook(i,j) = deux* mu
-                kooh(i,j) = unpnue
-             endif
-          end do
-       end do
+        do i = 1, ndi
+            do j = 1, ndi
+                if (i .eq. j) then
+                    hook(i, j) = al
+                    kooh(i, j) = unsure
+                end if
+                if (i .ne. j) then
+                    hook(i, j) = la
+                    kooh(i, j) = mnuse
+                end if
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
+                if (i .eq. j) then
+                    hook(i, j) = deux*mu
+                    kooh(i, j) = unpnue
+                end if
+            end do
+        end do
 ! ======================================================================
 ! --- CP/1D ------------------------------------------------------------
 ! ======================================================================
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-       call utmess('F', 'ALGORITH2_15')
-    endif
+        call utmess('F', 'ALGORITH2_15')
+    end if
 ! ======================================================================
 ! --- OPERATEURS NON LINEAIRE ------------------------------------------
 ! ======================================================================
     coef0 = ((i1f+qinit)/trois/pa)**n
     do i = 1, ndt
-       do j = 1, ndt
-          hooknl(i,j) = coef0*hook(i,j)
-       end do
+        do j = 1, ndt
+            hooknl(i, j) = coef0*hook(i, j)
+        end do
     end do
 ! ======================================================================
 ! --- LOIS D ECROUISSAGE : GQISO, GR ET GX -----------------------------
 ! ======================================================================
 ! --- ECROUISSAGE ISOTROPE DU MECANISME ISOTROPE -----------------------
 ! ======================================================================
-    gqiso = - kp
+    gqiso = -kp
 ! ======================================================================
 ! --- ECROUISSAGE ISOTROPE DU MECANISME DEVIATOIRE ---------------------
 ! ======================================================================
     coef1 = ((i1f+qinit)/trois/pa)**mun5
-    gr = - a * (un-rf/rm)**deux * (i1f+qinit) * coef1
+    gr = -a*(un-rf/rm)**deux*(i1f+qinit)*coef1
 ! ======================================================================
 ! --- ECROUISSAGE CINEMATIQUE DU MECANISME DEVIATOIRE ------------------
 ! ======================================================================
-    call cjsqco(gamma, sigf, xf, pref, epssig,&
-         i1f, s, sii, siirel, cos3ts,&
-         hts, dets, q, qii, qiirel,&
-         cos3tq, htq, detq)
+    call cjsqco(gamma, sigf, xf, pref, epssig, &
+                i1f, s, sii, siirel, cos3ts, &
+                hts, dets, q, qii, qiirel, &
+                cos3tq, htq, detq)
 !
-    call calcq(q, gamma, pref, epssig, qq,&
-         codret)
+    call calcq(q, gamma, pref, epssig, qq, &
+               codret)
     qqii = norm2(qq(1:ndt))
     xii = norm2(xf(1:ndt))
     epsv = zero
     do i = 1, ndi
-       epsv = epsv + epsd(i)+ deps(i)
+        epsv = epsv+epsd(i)+deps(i)
     end do
 !
     pc = pco*exp(-c*epsv)
 !
     if (xii .le. epssig) then
-       phi = un
+        phi = un
     else if (siirel .le. epssig) then
-       cosa = un
-       cosdif = un
-       rr = rc + mucjs*max(zero,log(trois*pc/(i1f+qinit)))
-       phio = cosa/( rr - hts/htq*rm*cosdif)
-       phi = phio * hts * qqii
+        cosa = un
+        cosdif = un
+        rr = rc+mucjs*max(zero, log(trois*pc/(i1f+qinit)))
+        phio = cosa/(rr-hts/htq*rm*cosdif)
+        phi = phio*hts*qqii
     else
-       cosa = ( qii*qii - sii*sii - i1f*i1f*xii*xii ) / (deux*sii* i1f*xii)
+        cosa = (qii*qii-sii*sii-i1f*i1f*xii*xii)/(deux*sii*i1f*xii)
 !
-       tangs = sqrt(un-cos3ts*cos3ts) / cos3ts
-       tangq = sqrt(un-cos3tq*cos3tq) / cos3tq
-       tetas = atan2(tangs,1.d0) / trois
-       tetaq = atan2(tangq,1.d0) / trois
-       cosdif = cos(tetas-tetaq)
+        tangs = sqrt(un-cos3ts*cos3ts)/cos3ts
+        tangq = sqrt(un-cos3tq*cos3tq)/cos3tq
+        tetas = atan2(tangs, 1.d0)/trois
+        tetaq = atan2(tangq, 1.d0)/trois
+        cosdif = cos(tetas-tetaq)
 !
-       rr = rc + mucjs*max(zero,log(trois*pc/(i1f+qinit)))
-       phio = cosa/( rr - hts/htq*rm*cosdif)
-       phi = phio * hts * qqii
-    endif
+        rr = rc+mucjs*max(zero, log(trois*pc/(i1f+qinit)))
+        phio = cosa/(rr-hts/htq*rm*cosdif)
+        phi = phio*hts*qqii
+    end if
 ! ======================================================================
     do i = 1, ndt
-       gx(i) = (i1f+qinit)/b*( qq(i) + phi*xf(i) ) * coef1
+        gx(i) = (i1f+qinit)/b*(qq(i)+phi*xf(i))*coef1
     end do
 ! ======================================================================
 ! --- LOIS D ECOULEMENTS : ---------------------------------------------
@@ -286,9 +286,9 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- LOI D'ECOULEMENT DU MECANISME DEVIATOIRE : GD --------------------
 ! ======================================================================
-    truc = dot_product(qq(1:ndt), xf(1:ndt)) - rf
+    truc = dot_product(qq(1:ndt), xf(1:ndt))-rf
     do i = 1, ndt
-       dfdds(i) = qq(i) - truc*kron(i)
+        dfdds(i) = qq(i)-truc*kron(i)
     end do
 ! ======================================================================
 ! --- CALCUL DE L INCREMENT DE DEFORMATION PLASTIQUE DEV. EN -----------
@@ -296,27 +296,27 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! --- ET LA VALEUR DE DLAMBD -------------------------------------------
 ! ======================================================================
     do i = 1, ndt
-       depsdp(i) = dlambd*gdd(i)
+        depsdp(i) = dlambd*gdd(i)
     end do
 ! ======================================================================
     truc = dot_product(s(1:ndt), depsdp(1:ndt))
     if (truc .ge. zero) then
-       signe = un
+        signe = un
     else
-       signe = - un
-    endif
-    siic = -rc * (i1f+qinit) / hts
-    betapr = beta * (sii/siic - un) * signe
-    coef4 = betapr / sii
-    coef5 = un / sqrt( betapr*betapr + trois )
+        signe = -un
+    end if
+    siic = -rc*(i1f+qinit)/hts
+    betapr = beta*(sii/siic-un)*signe
+    coef4 = betapr/sii
+    coef5 = un/sqrt(betapr*betapr+trois)
     do i = 1, ndt
-       vectan(i) = coef4 * s(i) + kron(i)
-       norm(i) = coef5 * vectan(i)
+        vectan(i) = coef4*s(i)+kron(i)
+        norm(i) = coef5*vectan(i)
     end do
 ! ======================================================================
     prod0 = dot_product(dfdds(1:ndt), norm(1:ndt))
     do i = 1, ndt
-       gd(i) = dfdds(i) - prod0 * norm(i)
+        gd(i) = dfdds(i)-prod0*norm(i)
     end do
 ! ======================================================================
 ! --- CALCULS PRELIMIAIRES DE DERIVEES ---------------------------------
@@ -324,17 +324,17 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! --- DERIVEE DE S PAR RAPPORT A SIG : DSDS ----------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          dsds(i,j) = iden6(i,j) - kron(i) * kron(j) / trois
-       end do
+        do j = 1, ndt
+            dsds(i, j) = iden6(i, j)-kron(i)*kron(j)/trois
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE Q PAR RAPPORT A SIG : DQDS ----------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          dqds(i,j) = iden6(i,j) - kron(j) * ( kron(i)/trois + xf(i) )
-       end do
+        do j = 1, ndt
+            dqds(i, j) = iden6(i, j)-kron(j)*(kron(i)/trois+xf(i))
+        end do
     end do
 ! ======================================================================
 ! --- EXPRESSION DE TS, T, TD ET DE SA DERIVEE PAR RAPPORT A Q, DTDDQ --
@@ -348,129 +348,129 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! --- DERIVEE DE HTS PAR RAPPORT A S : DHDS ----------------------------
 ! ======================================================================
     coef6 = sqrt(trois/deux)*gamma/htq**cinq/qii**trois
-    coef7 = - gamma*cos3tq/(deux*htq**cinq*qii**deux)
+    coef7 = -gamma*cos3tq/(deux*htq**cinq*qii**deux)
     coef8 = sqrt(trois/deux)*gamma/hts**cinq/sii**trois
-    coef9 = - gamma*cos3ts/(deux*hts**cinq*sii**deux)
+    coef9 = -gamma*cos3ts/(deux*hts**cinq*sii**deux)
     do i = 1, ndt
-       dhdq(i) = coef6*t(i) + coef7*q(i)
-       dhds(i) = coef8*ts(i) + coef9*s(i)
+        dhdq(i) = coef6*t(i)+coef7*q(i)
+        dhds(i) = coef8*ts(i)+coef9*s(i)
     end do
 ! ======================================================================
 ! --- DERIVEE DE QQ PAR RAPPORT A Q : DQQDQ ----------------------------
 ! ======================================================================
-    coef6 = un + gamma/deux*cos3tq
+    coef6 = un+gamma/deux*cos3tq
     coef7 = sqrt(54.0d0)*gamma/(six*qii*qii)
     coef8 = sqrt(54.0d0)*gamma/deux/qii**quatre/htq**cinq
     coef9 = sqrt(54.0d0)*gamma/six/qii**deux/htq**cinq
     do i = 1, ndt
-       do j = 1, ndt
-          dqqdq(i,j)= -cinq/htq**six*(coef6*q(i)/qii+coef7*td(i))*&
-               dhdq(j) + coef6/htq**cinq*(iden6(i,j)/qii-q(i)*q(j)/qii**&
-               trois) + coef8*q(i)*(t(j)-3*q(j)*detq/qii**deux) + coef9*(&
-               dtddq(i,j)-deux*td(i)*q(j)/qii**deux)
-       end do
+        do j = 1, ndt
+            dqqdq(i, j) = -cinq/htq**six*(coef6*q(i)/qii+coef7*td(i))* &
+                          dhdq(j)+coef6/htq**cinq*(iden6(i, j)/qii-q(i)*q(j)/qii** &
+                                            trois)+coef8*q(i)*(t(j)-3*q(j)*detq/qii**deux)+coef9*( &
+                          dtddq(i, j)-deux*td(i)*q(j)/qii**deux)
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE QQ PAR RAPPORT A SIG : DQQDS --------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          dqqds(i,j) = zero
-          do k = 1, ndt
-             dqqds(i,j) = dqqds(i,j) + dqqdq(i,k)*dqds(k,j)
-          end do
-       end do
+        do j = 1, ndt
+            dqqds(i, j) = zero
+            do k = 1, ndt
+                dqqds(i, j) = dqqds(i, j)+dqqdq(i, k)*dqds(k, j)
+            end do
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE DFDDS PAR RAPPORT A Q : D2FDSQ ------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          prod1 = zero
-          do k = 1, ndt
-             prod1 = prod1 + dqqdq(k,j) * xf(k)
-          end do
-          d2fdsq(i,j) = dqqdq(i,j) - prod1 * kron(i)
-       end do
+        do j = 1, ndt
+            prod1 = zero
+            do k = 1, ndt
+                prod1 = prod1+dqqdq(k, j)*xf(k)
+            end do
+            d2fdsq(i, j) = dqqdq(i, j)-prod1*kron(i)
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE DFDDS PAR RAPPORT A SIG : D2FDS2 ----------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          d2fds2(i,j) = zero
-          do k = 1, ndt
-             d2fds2(i,j) = d2fds2(i,j) + d2fdsq(i,k) * dqds(k,j)
-          end do
-       end do
+        do j = 1, ndt
+            d2fds2(i, j) = zero
+            do k = 1, ndt
+                d2fds2(i, j) = d2fds2(i, j)+d2fdsq(i, k)*dqds(k, j)
+            end do
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE SII PAR RAPPORT A SIG : DS2DS -------------------------
 ! ======================================================================
     do i = 1, ndt
-       ds2ds(i) = zero
-       do j = 1, ndt
-          ds2ds(i) = ds2ds(i) + s(j) * dsds(i,j)
-       end do
-       ds2ds(i) = ds2ds(i) / sii
+        ds2ds(i) = zero
+        do j = 1, ndt
+            ds2ds(i) = ds2ds(i)+s(j)*dsds(i, j)
+        end do
+        ds2ds(i) = ds2ds(i)/sii
     end do
 ! ======================================================================
 ! --- DERIVEE DE SIIC PAR RAPPORT A SIG : DS2CDS -----------------------
 ! ======================================================================
-    coef9 = - rc / hts
-    coef10 = rc * (i1f+qinit) / hts**deux
+    coef9 = -rc/hts
+    coef10 = rc*(i1f+qinit)/hts**deux
     do i = 1, ndt
-       prod2 = zero
-       do j = 1, ndt
-          prod2 = prod2 + dhds(j) * dsds(j,i)
-       end do
-       ds2cds(i) = coef9 * kron(i) + coef10 * prod2
+        prod2 = zero
+        do j = 1, ndt
+            prod2 = prod2+dhds(j)*dsds(j, i)
+        end do
+        ds2cds(i) = coef9*kron(i)+coef10*prod2
     end do
 ! ======================================================================
 ! --- DERIVEE DU RAPPORT (SII/SIIC) PAR RAPPORT A SIG : DSSDS ----------
 ! ======================================================================
     do i = 1, ndt
-       dssds(i) = ds2ds(i) / siic - ds2cds(i) * sii / siic / siic
+        dssds(i) = ds2ds(i)/siic-ds2cds(i)*sii/siic/siic
     end do
 ! ======================================================================
 ! --- DERIVEE DU VECTEUR TANGENT A LA SURFACE POTENTIELLE, VECTAN, -----
 ! --- PAR RAPPORT A SIG : DVDS -----------------------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          dvds(i,j) = betapr / sii * dsds(i,j) + signe*beta*s(i)*( ds2ds(j)/sii/sii - ds2cds(j)&
-               &/siic/siic)
-       end do
+        do j = 1, ndt
+            dvds(i, j) = betapr/sii*dsds(i, j)+signe*beta*s(i)*(ds2ds(j)/sii/sii-ds2cds(j)&
+                 &/siic/siic)
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE QII PAR RAPPORT A SIG : DQIIDS ------------------------
 ! ======================================================================
     do i = 1, ndt
-       dqiids(i) = zero
-       do j = 1, ndt
-          dqiids(i) = dqiids(i) + q(j)/qii*dqds(j,i)
-       end do
+        dqiids(i) = zero
+        do j = 1, ndt
+            dqiids(i) = dqiids(i)+q(j)/qii*dqds(j, i)
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE QQII PAR RAPPORT A SIG : DQQ2DS -----------------------
 ! ======================================================================
     do i = 1, ndt
-       dqq2ds(i) = zero
-       do j = 1, ndt
-          dqq2ds(i) = dqq2ds(i) + qq(j)/qqii*dqqds(j,i)
-       end do
+        dqq2ds(i) = zero
+        do j = 1, ndt
+            dqq2ds(i) = dqq2ds(i)+qq(j)/qqii*dqqds(j, i)
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE HTQ PAR RAPPORT A SIG : DHTQDS ------------------------
 ! --- DERIVEE DE HTS PAR RAPPORT A SIG : DHTSDS ------------------------
 ! ======================================================================
     do i = 1, ndt
-       dhtqds(i) = zero
-       dhtsds(i) = zero
-       do j = 1, ndt
-          dhtqds(i) = dhtqds(i) + dhdq(j) * dqds(j,i)
-          dhtsds(i) = dhtsds(i) + dhds(j) * dsds(j,i)
-       end do
+        dhtqds(i) = zero
+        dhtsds(i) = zero
+        do j = 1, ndt
+            dhtqds(i) = dhtqds(i)+dhdq(j)*dqds(j, i)
+            dhtsds(i) = dhtsds(i)+dhds(j)*dsds(j, i)
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE PHI PAR RAPPORT A SIG : DPHIDS ------------------------
@@ -479,7 +479,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! --- INITIALISATION : -------------------------------------------------
 ! ======================================================================
     do i = 1, ndt
-       dphids(i) = zero
+        dphids(i) = zero
     end do
 ! ======================================================================
 ! --- 1ER CAS : XII = 0  ON NE FAIT RIEN -------------------------------
@@ -488,98 +488,98 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- 2EME CAS : SII = 0 -----------------------------------------------
 ! ======================================================================
-       if (siirel .lt. epssig) then
+        if (siirel .lt. epssig) then
 ! ======================================================================
 ! --- DERIVEE DE RR PAR RAPPORT A SIG : DRRDS --------------------------
 ! ======================================================================
-          do i = 1, ndt
-             drrds(i) = - mucjs/(i1f+qinit) * kron(i)
-          end do
+            do i = 1, ndt
+                drrds(i) = -mucjs/(i1f+qinit)*kron(i)
+            end do
 ! ======================================================================
 ! --- DERIVEE DE PHIO PAR RAPPORT A SIG : DPHODS -----------------------
 ! ======================================================================
-          do i = 1, ndt
-             dphods(i) = - cosa/( rr - hts/htq*rm*cosdif )**deux * ( drrds(i) - rm*cosdif/htq*&
-                  &dhtsds(i) + hts/htq/htq*rm* cosdif*dhtqds(i) )
-          end do
+            do i = 1, ndt
+                dphods(i) = -cosa/(rr-hts/htq*rm*cosdif)**deux*(drrds(i)-rm*cosdif/htq*&
+                     &dhtsds(i)+hts/htq/htq*rm*cosdif*dhtqds(i))
+            end do
 ! ======================================================================
 ! --- DERIVEE DE PHI PAR RAPPORT A SIG : DPHIDS ------------------------
 ! ======================================================================
-          do i = 1, ndt
-             dphids(i) = hts*qqii*dphods(i) + phio*qqii*dhtsds(i) + phio*hts*dqq2ds(i)
-          end do
+            do i = 1, ndt
+                dphids(i) = hts*qqii*dphods(i)+phio*qqii*dhtsds(i)+phio*hts*dqq2ds(i)
+            end do
 ! ======================================================================
 ! --- 3EME CAS : SII ET XII NON NULS -----------------------------------
 ! ======================================================================
-       else
+        else
 ! ======================================================================
 ! --- DERIVEE DE COSA PAR RAPPORT A SIG : DCADS ------------------------
 ! ======================================================================
-          do i = 1, ndt
-             dcads(i) = (&
-                  qii*dqiids(i)-i1f*xii*xii*kron(i)-sii* ds2ds(i) ) /sii/i1f/xii - d12*(&
-                  & qii*qii - sii*sii - i1f*i1f*xii*xii ) /(sii*i1f*xii)**deux*(i1f*xii*&
-                  &ds2ds( i)+sii*xii*kron(i)&
-                  )
-          end do
+            do i = 1, ndt
+                dcads(i) = ( &
+                     qii*dqiids(i)-i1f*xii*xii*kron(i)-sii*ds2ds(i))/sii/i1f/xii-d12*(&
+                     & qii*qii-sii*sii-i1f*i1f*xii*xii)/(sii*i1f*xii)**deux*(i1f*xii*&
+                     &ds2ds(i)+sii*xii*kron(i) &
+                     )
+            end do
 ! ======================================================================
 ! --- DERIVEE DE COSDIF PAR RAPPORT A SIG : DCFDS ----------------------
 ! ======================================================================
-          coef17 = sqrt(54.0d0)/sii**trois
-          coef18 = sqrt(54.0d0)/qii**trois
-          coef19 = trois*dets/sii**deux
-          coef20 = trois*detq/qii**deux
-          coef21 = sqrt(un - cos3ts*cos3ts)
-          coef22 = sqrt(un - cos3tq*cos3tq)
-          do i = 1, ndt
-             dcfds(i) = sin(tetas-tetaq)/trois * ( coef21 * ( coef17 * ( ts(i) - coef19 * s(i)&
-                  & ) )- coef22 * ( coef18 * ( t(i) - coef20 * q(i) ) ))
-          end do
+            coef17 = sqrt(54.0d0)/sii**trois
+            coef18 = sqrt(54.0d0)/qii**trois
+            coef19 = trois*dets/sii**deux
+            coef20 = trois*detq/qii**deux
+            coef21 = sqrt(un-cos3ts*cos3ts)
+            coef22 = sqrt(un-cos3tq*cos3tq)
+            do i = 1, ndt
+                dcfds(i) = sin(tetas-tetaq)/trois*(coef21*(coef17*(ts(i)-coef19*s(i)&
+                     & ))-coef22*(coef18*(t(i)-coef20*q(i))))
+            end do
 
 ! ======================================================================
 ! --- DERIVEE DE RR PAR RAPPORT A SIG : DRRDS --------------------------
 ! ======================================================================
-          do  i = 1, ndt
-             drrds(i) = - mucjs/(i1f+qinit) * kron(i)
-          end do
+            do i = 1, ndt
+                drrds(i) = -mucjs/(i1f+qinit)*kron(i)
+            end do
 ! ======================================================================
 ! --- DERIVEE DE PHIO PAR RAPPORT A SIG : DPHODS -----------------------
 ! ======================================================================
-          do i = 1, ndt
-             dphods(i) = dcads(i) / ( rr - hts/htq*rm*cosdif ) - cosa/( rr - hts/htq*rm*cosdif&
-                  & )**deux * ( drrds(i) - rm*cosdif/htq*dhtsds(i) + hts/htq/htq*rm*cos&
-                  &dif* dhtqds(i) - hts/htq*rm*dcfds(i) )
-          end do
+            do i = 1, ndt
+                dphods(i) = dcads(i)/(rr-hts/htq*rm*cosdif)-cosa/(rr-hts/htq*rm*cosdif&
+                     & )**deux*(drrds(i)-rm*cosdif/htq*dhtsds(i)+hts/htq/htq*rm*cos&
+                     &dif*dhtqds(i)-hts/htq*rm*dcfds(i))
+            end do
 ! ======================================================================
 ! --- DERIVEE DE PHI PAR RAPPORT A SIG : DPHIDS ------------------------
 ! ======================================================================
-          do i = 1, ndt
-             dphids(i) = hts*qqii*dphods(i) + phio*qqii*dhtsds(i) + phio*hts*dqq2ds(i)
-          end do
-       endif
-    endif
+            do i = 1, ndt
+                dphids(i) = hts*qqii*dphods(i)+phio*qqii*dhtsds(i)+phio*hts*dqq2ds(i)
+            end do
+        end if
+    end if
 ! ======================================================================
 ! --- DERIVEE DE QQ PAR RAPPORT A X : DQQDX ----------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          dqqdx(i,j) = zero
-          do k = 1, ndt
-             dqqdx(i,j) = dqqdx(i,j) - i1f * dqqdq(i,k) * iden6(k, j)
-          end do
-       end do
+        do j = 1, ndt
+            dqqdx(i, j) = zero
+            do k = 1, ndt
+                dqqdx(i, j) = dqqdx(i, j)-i1f*dqqdq(i, k)*iden6(k, j)
+            end do
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEE DE DFDDS PAR RAPPORT A X : D2FDSX ------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          prod3 = zero
-          do k = 1, ndt
-             prod3 = prod3 + dqqdx(k,j) * xf(k) + qq(k) * iden6(k, j)
-          end do
-          d2fdsx(i,j) = dqqdx(i,j) - prod3 * kron(i)
-       end do
+        do j = 1, ndt
+            prod3 = zero
+            do k = 1, ndt
+                prod3 = prod3+dqqdx(k, j)*xf(k)+qq(k)*iden6(k, j)
+            end do
+            d2fdsx(i, j) = dqqdx(i, j)-prod3*kron(i)
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEES DES LOIS D ECROUISSAGE GQISO, GR ET GX ------------------
@@ -588,52 +588,52 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- DERIVEES DE LA LOI D ECROUISSAGE ISOTROPE DU MECANISME ISOTROPE --
 ! ======================================================================
-    dgqdq = - n * kop / pa * ( pa/qiso )**(un-n)
+    dgqdq = -n*kop/pa*(pa/qiso)**(un-n)
 ! ======================================================================
 ! --- DERIVEES DE LA LOI D ECROUISSAGE ISOTROPE DU MECANISME DEVIATOIRE-
 ! ======================================================================
-    dgrdr = deux * a / rm * (un-rf/rm) * (i1f+qinit) * coef1
+    dgrdr = deux*a/rm*(un-rf/rm)*(i1f+qinit)*coef1
     do i = 1, ndt
-       dgrds(i) = a / deux * (un-rf/rm)**deux * coef1 * kron(i)
+        dgrds(i) = a/deux*(un-rf/rm)**deux*coef1*kron(i)
     end do
 ! ======================================================================
 ! --- DERIVEES DE LA LOI D ECROUISSAGE CINEMATIQUE ---------------------
 ! --- DU MECANISME DEVIATOIRE ------------------------------------------
 ! ======================================================================
     do i = 1, ndt
-       do j = 1, ndt
-          dgxds(i,j) = - coef1/deux/b * (&
-               qq(i) + phi*xf(i) ) * kron(j) + (i1f+qinit)*coef1/b * ( dqqds(i,j) + xf(&
-               &i)* dphids(j)&
-               )
-          dgxdx(i,j) = (i1f+qinit)*coef1/b * ( dqqdx(i,j) + phi* iden6(i,j) )
-       end do
+        do j = 1, ndt
+            dgxds(i, j) = -coef1/deux/b*( &
+                 qq(i)+phi*xf(i))*kron(j)+(i1f+qinit)*coef1/b*(dqqds(i, j)+xf(&
+                 &i)*dphids(j) &
+                 )
+            dgxdx(i, j) = (i1f+qinit)*coef1/b*(dqqdx(i, j)+phi*iden6(i, j))
+        end do
     end do
 ! ======================================================================
 ! --- DERIVEES DE LA LOI D ECOULEMENT DU MECANISME DEVIATOIRE ----------
 ! ======================================================================
-    coef13 = coef5 * coef5 * deux * beta * beta * (sii/siic - un)
+    coef13 = coef5*coef5*deux*beta*beta*(sii/siic-un)
     do i = 1, ndt
-       do j = 1, ndt
-          prod4 = zero
-          prod5 = zero
-          prod6 = zero
-          do k = 1, ndt
-             prod4 = prod4 + d2fds2(k,j) * norm(k)
-             prod5 = prod5 + dfdds(k) * dvds(k,j)
-             prod6 = prod6 + d2fdsx(k,j) * norm(k)
-          end do
+        do j = 1, ndt
+            prod4 = zero
+            prod5 = zero
+            prod6 = zero
+            do k = 1, ndt
+                prod4 = prod4+d2fds2(k, j)*norm(k)
+                prod5 = prod5+dfdds(k)*dvds(k, j)
+                prod6 = prod6+d2fdsx(k, j)*norm(k)
+            end do
 
-          dgdds(i,j) = d2fds2(i,j) - prod4 * norm(i) - coef5 * prod5 * norm(i) - coef5 * prod0 &
-               &* dvds(i,j) + coef13 * prod0 * norm(i) * dssds(j)
-          dgddx(i,j) = d2fdsx(i,j) - prod6 * norm(i)
-       end do
+            dgdds(i, j) = d2fds2(i, j)-prod4*norm(i)-coef5*prod5*norm(i)-coef5*prod0 &
+                         &*dvds(i, j)+coef13*prod0*norm(i)*dssds(j)
+            dgddx(i, j) = d2fdsx(i, j)-prod6*norm(i)
+        end do
     end do
 ! ======================================================================
-    coef14 = betapr * betapr / ( betapr * betapr + trois )
-    coef15 = - trois * betapr / sii / ( betapr * betapr + trois )
+    coef14 = betapr*betapr/(betapr*betapr+trois)
+    coef15 = -trois*betapr/sii/(betapr*betapr+trois)
     do i = 1, ndt
-       dgddr(i) = coef14*kron(i) + coef15 * s(i)
+        dgddr(i) = coef14*kron(i)+coef15*s(i)
     end do
 ! ======================================================================
 ! --- LOI D ETAT : LE --------------------------------------------------
@@ -642,43 +642,43 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! --- LOI D ETAT -------------------------------------------------------
 ! ======================================================================
     do i = 1, ndt
-       depse(i) = deps(i) + dlambi/trois*kron(i) - dlambd*gd(i)
+        depse(i) = deps(i)+dlambi/trois*kron(i)-dlambd*gd(i)
     end do
-    dsignl(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
+    dsignl(1:ndt) = matmul(hooknl(1:ndt, 1:ndt), depse(1:ndt))
     do i = 1, ndt
-       le(i) = yf(i) - yd(i) - dsignl(i)
+        le(i) = yf(i)-yd(i)-dsignl(i)
     end do
 ! ======================================================================
 ! --- DERIVEE DE LA LOI D ETAT -----------------------------------------
 ! ======================================================================
-    coef16 = n/trois/pa * (trois*pa/(i1f+qinit))**(un-n)
-    dsigl(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
-    dleds(:,:) = zero
+    coef16 = n/trois/pa*(trois*pa/(i1f+qinit))**(un-n)
+    dsigl(1:ndt) = matmul(hook(1:ndt, 1:ndt), depse(1:ndt))
+    dleds(:, :) = zero
     do i = 1, ndt
-       do j = 1, ndt
-          terme1=zero
-          terme2=zero
-          do k = 1, ndt
-             terme1 = terme1 + hooknl(i,k)*dgdds(k,j)
-             terme2 = terme2 + hooknl(i,k)*dgddx(k,j)
-          end do
-          dleds(i,j) = iden6(i,j) - coef16 * dsigl(i) * kron(j) + dlambd * terme1
+        do j = 1, ndt
+            terme1 = zero
+            terme2 = zero
+            do k = 1, ndt
+                terme1 = terme1+hooknl(i, k)*dgdds(k, j)
+                terme2 = terme2+hooknl(i, k)*dgddx(k, j)
+            end do
+            dleds(i, j) = iden6(i, j)-coef16*dsigl(i)*kron(j)+dlambd*terme1
 !
-          dledx(i,j) = dlambd * terme2
-       end do
+            dledx(i, j) = dlambd*terme2
+        end do
 ! ======================================================================
-       dledq(i) = zero
-       terme3 = zero
-       terme4 = zero
-       terme5 = zero
-       do k = 1, ndt
-          terme3 = terme3 + hooknl(i,k)*dgddr(k)
-          terme4 = terme4 - hooknl(i,k)*kron(k)/trois
-          terme5 = terme5 + hooknl(i,k)*gd(k)
-       end do
-       dledr(i) = dlambd * terme3
-       dledli(i) = terme4
-       dledld(i) = terme5
+        dledq(i) = zero
+        terme3 = zero
+        terme4 = zero
+        terme5 = zero
+        do k = 1, ndt
+            terme3 = terme3+hooknl(i, k)*dgddr(k)
+            terme4 = terme4-hooknl(i, k)*kron(k)/trois
+            terme5 = terme5+hooknl(i, k)*gd(k)
+        end do
+        dledr(i) = dlambd*terme3
+        dledli(i) = terme4
+        dledld(i) = terme5
     end do
 ! ======================================================================
 ! --- LOI D ECROUISSAGE DE QISO : LQ -----------------------------------
@@ -686,17 +686,17 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- LOI D ECROUISSAGE DE QISO ----------------------------------------
 ! ======================================================================
-    lq = qiso - yd(ndt+1) - dlambi*gqiso
+    lq = qiso-yd(ndt+1)-dlambi*gqiso
 ! ======================================================================
 ! --- DERIVEE DE LA LOI D ECROUISSAGE DE QISO --------------------------
 ! ======================================================================
     do i = 1, ndt
-       dlqds(i) = zero
-       dlqdx(i) = zero
+        dlqds(i) = zero
+        dlqdx(i) = zero
     end do
-    dlqdq = un - dlambi*dgqdq
+    dlqdq = un-dlambi*dgqdq
     dlqdr = zero
-    dlqdli = - gqiso
+    dlqdli = -gqiso
     dlqdld = zero
 ! ======================================================================
 ! --- LOI D ECROUISSAGE DE R : LR --------------------------------------
@@ -704,39 +704,39 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- LOI D ECROUISSAGE DE R -------------------------------------------
 ! ======================================================================
-    lr = rf - yd(ndt+2) - dlambd*gr
+    lr = rf-yd(ndt+2)-dlambd*gr
 ! ======================================================================
 ! --- DERIVEE DE LA LOI D ECROUISSAGE DE R -----------------------------
 ! ======================================================================
     do i = 1, ndt
-       dlrds(i)= - dlambd * dgrds(i)
-       dlrdx(i)= zero
+        dlrds(i) = -dlambd*dgrds(i)
+        dlrdx(i) = zero
     end do
     dlrdq = zero
-    dlrdr = un - dlambd * dgrdr
+    dlrdr = un-dlambd*dgrdr
     dlrdli = zero
-    dlrdld = - gr
+    dlrdld = -gr
 ! ======================================================================
 ! --- LOI D ECROUISSAGE DE X : LX --------------------------------------
 ! --- ET SES DERIVEES : DLXDS, DLXDQ, DLXDR, DLXDX, DLXDLI, DLXDLD -----
 ! ======================================================================
 ! --- LOI D ECROUISSAGE DE X -------------------------------------------
 ! ======================================================================
-    do  i = 1, ndt
-       lx(i) = xf(i) - yd(ndt+2+i) - dlambd*gx(i)
+    do i = 1, ndt
+        lx(i) = xf(i)-yd(ndt+2+i)-dlambd*gx(i)
     end do
 ! ======================================================================
 ! --- DERIVEE DE LA LOI D ECROUISSAGE DE X -----------------------------
 ! ======================================================================
-    do  i = 1, ndt
-       do  j = 1, ndt
-          dlxds(i,j)= - dlambd * dgxds(i,j)
-          dlxdx(i,j)= iden6(i,j) - dlambd * dgxdx(i,j)
-       end do
-       dlxdq(i) = zero
-       dlxdr(i) = zero
-       dlxdli(i) = zero
-       dlxdld(i) = - gx(i)
+    do i = 1, ndt
+        do j = 1, ndt
+            dlxds(i, j) = -dlambd*dgxds(i, j)
+            dlxdx(i, j) = iden6(i, j)-dlambd*dgxdx(i, j)
+        end do
+        dlxdq(i) = zero
+        dlxdr(i) = zero
+        dlxdli(i) = zero
+        dlxdld(i) = -gx(i)
     end do
 ! ======================================================================
 ! --- FONCTION SEUIL ISOTROPE : FI -------------------------------------
@@ -744,13 +744,13 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- SEUIL ISOTROPE ---------------------------------------------------
 ! ======================================================================
-    fi = -(i1f+qinit)/trois + qiso
+    fi = -(i1f+qinit)/trois+qiso
 ! ======================================================================
 ! --- DERIVEES DU SEUIL ISOTROPE ---------------------------------------
 ! ======================================================================
-    do  i = 1, ndt
-       dfids(i) = - kron(i)/trois
-       dfidx(i) = zero
+    do i = 1, ndt
+        dfids(i) = -kron(i)/trois
+        dfidx(i) = zero
     end do
     dfidq = un
     dfidr = zero
@@ -762,7 +762,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- SEUIL DEVIATOIRE -------------------------------------------------
 ! ======================================================================
-    fd = qii*htq + rf*(i1f+qinit)
+    fd = qii*htq+rf*(i1f+qinit)
 ! ======================================================================
 ! --- DERIVEES DU SEUIL DEVIATOIRE : -----------------------------------
 ! ======================================================================
@@ -772,11 +772,11 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
     dfddr = (i1f+qinit)
     dfddli = zero
     dfddld = zero
-    do  i = 1, ndt
-       dfddx(i) = zero
-       do  j = 1, ndt
-          dfddx(i) = dfddx(i) -(i1f+qinit)*(qii*dhdq(j)+htq*q(j)/ qii)*iden6(j,i)
-       end do
+    do i = 1, ndt
+        dfddx(i) = zero
+        do j = 1, ndt
+            dfddx(i) = dfddx(i)-(i1f+qinit)*(qii*dhdq(j)+htq*q(j)/qii)*iden6(j, i)
+        end do
     end do
 ! ======================================================================
 ! --- ASSEMBLAGE DE R : ------------------------------------------------
@@ -794,96 +794,96 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- ASSEMBLAGE DE R --------------------------------------------------
 ! ======================================================================
-    do  i = 1, ndt
-       r(i) = -le(i)
-       r(ndt+2+i) = - lx(i)
+    do i = 1, ndt
+        r(i) = -le(i)
+        r(ndt+2+i) = -lx(i)
     end do
-    r(ndt+1) = - lq
-    r(ndt+2) = - lr
-    r(2*ndt+3) = - fi
-    r(2*ndt+4) = - fd
+    r(ndt+1) = -lq
+    r(ndt+2) = -lr
+    r(2*ndt+3) = -fi
+    r(2*ndt+4) = -fd
 ! ======================================================================
 ! --- ASSEMBLAGE DE DRDY -----------------------------------------------
 ! ======================================================================
-    call lcicma(dleds, 6, 6, ndt, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         1, 1)
-    call lcicma(dledq, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         1, ndt+1)
-    call lcicma(dledr, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         1, ndt+2)
-    call lcicma(dledx, 6, 6, ndt, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         1, ndt+3)
-    call lcicma(dledli, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         1, 2*ndt+3)
-    call lcicma(dledld, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         1, 2*ndt+4)
+    call lcicma(dleds, 6, 6, ndt, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                1, 1)
+    call lcicma(dledq, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                1, ndt+1)
+    call lcicma(dledr, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                1, ndt+2)
+    call lcicma(dledx, 6, 6, ndt, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                1, ndt+3)
+    call lcicma(dledli, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                1, 2*ndt+3)
+    call lcicma(dledld, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                1, 2*ndt+4)
 !
-    call lcicma(dlqds, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+1, 1)
+    call lcicma(dlqds, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+1, 1)
     drdy(ndt+1, ndt+1) = dlqdq
     drdy(ndt+1, ndt+2) = dlqdr
-    call lcicma(dlqdx, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+1, ndt+3)
+    call lcicma(dlqdx, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+1, ndt+3)
     drdy(ndt+1, 2*ndt+3) = dlqdli
     drdy(ndt+1, 2*ndt+4) = dlqdld
 !
-    call lcicma(dlrds, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+2, 1)
+    call lcicma(dlrds, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+2, 1)
     drdy(ndt+2, ndt+1) = dlrdq
     drdy(ndt+2, ndt+2) = dlrdr
-    call lcicma(dlrdx, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+2, ndt+3)
+    call lcicma(dlrdx, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+2, ndt+3)
     drdy(ndt+2, 2*ndt+3) = dlrdli
     drdy(ndt+2, 2*ndt+4) = dlrdld
 !
-    call lcicma(dlxds, 6, 6, ndt, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+3, 1)
-    call lcicma(dlxdq, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+3, ndt+1)
-    call lcicma(dlxdr, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+3, ndt+2)
-    call lcicma(dlxdx, 6, 6, ndt, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+3, ndt+3)
-    call lcicma(dlxdli, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+3, 2*ndt+3)
-    call lcicma(dlxdld, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+3, 2*ndt+4)
+    call lcicma(dlxds, 6, 6, ndt, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+3, 1)
+    call lcicma(dlxdq, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+3, ndt+1)
+    call lcicma(dlxdr, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+3, ndt+2)
+    call lcicma(dlxdx, 6, 6, ndt, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+3, ndt+3)
+    call lcicma(dlxdli, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+3, 2*ndt+3)
+    call lcicma(dlxdld, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+3, 2*ndt+4)
 !
-    call lcicma(dfids, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         2*ndt+3, 1)
+    call lcicma(dfids, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                2*ndt+3, 1)
     drdy(2*ndt+3, ndt+1) = dfidq
     drdy(2*ndt+3, ndt+2) = dfidr
-    call lcicma(dfidx, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         2*ndt+3, ndt+3)
+    call lcicma(dfidx, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                2*ndt+3, ndt+3)
     drdy(2*ndt+3, 2*ndt+3) = dfidli
     drdy(2*ndt+3, 2*ndt+4) = dfidld
 !
-    call lcicma(dfdds, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         2*ndt+4, 1)
+    call lcicma(dfdds, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                2*ndt+4, 1)
     drdy(2*ndt+4, ndt+1) = dfddq
     drdy(2*ndt+4, ndt+2) = dfddr
-    call lcicma(dfddx, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         2*ndt+4, ndt+3)
+    call lcicma(dfddx, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                2*ndt+4, ndt+3)
     drdy(2*ndt+4, 2*ndt+3) = dfddli
     drdy(2*ndt+4, 2*ndt+4) = dfddld
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
+subroutine rebdfr(freq, nfi, nff, freqi, freqf, &
                   nmodi, nmodf, nbm, npv)
     implicit none
 !     BUT : DEFINIR LA BANDE DE FREQUENCE POUR LE CALCUL DU SPECTRE
@@ -67,24 +67,24 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
 !
     if (nfi .eq. 0) then
         do i = 1, npv
-            if (freq(1,1,i) .gt. 0.d0) then
-                frqmin = min(frqmin,freq(1,1,i))
-                frqmma = max(frqmma,freq(1,1,i))
-            endif
+            if (freq(1, 1, i) .gt. 0.d0) then
+                frqmin = min(frqmin, freq(1, 1, i))
+                frqmma = max(frqmma, freq(1, 1, i))
+            end if
         end do
         nmodi = 1
         freqi = frqmin/2.d0
-    endif
+    end if
 !
     if (nff .eq. 0) then
         do i = 1, npv
-            if (freq(1,nbm,i) .gt. 0.d0) then
-                frqmax = max(frqmax,freq(1,nbm,i))
-            endif
+            if (freq(1, nbm, i) .gt. 0.d0) then
+                frqmax = max(frqmax, freq(1, nbm, i))
+            end if
         end do
         nmodf = nbm
-        freqf = frqmax + ( frqmma/2.d0)
-    endif
+        freqf = frqmax+(frqmma/2.d0)
+    end if
 !
 ! 2. ---- ON SECTIONNE LES MODES COMPRIS ENTRE FREQI ET FREQF
 !
@@ -92,16 +92,16 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
         do i = 1, nbm
             ind = 1
             do j = 1, npv
-                if (freq(1,i,j) .le. freqi) then
+                if (freq(1, i, j) .le. freqi) then
                     ind = 0
-                endif
+                end if
             end do
             if (ind .eq. 1) then
                 nmodi = i
                 goto 900
-            endif
+            end if
         end do
-    endif
+    end if
 900 continue
     if (nmodi .eq. 0) nmodi = 1
 !
@@ -109,21 +109,21 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
         do i = nbm, 1, -1
             ind = 1
             do j = 1, npv
-                if (freq(1,i,j) .gt. freqf) then
+                if (freq(1, i, j) .gt. freqf) then
                     ind = 0
-                endif
+                end if
             end do
             if (ind .eq. 1) then
                 nmodf = i
                 goto 901
-            endif
+            end if
         end do
-    endif
+    end if
 901 continue
     if (nmodf .eq. 0) nmodi = nbm
 !
     if (nmodf .lt. nmodi) then
         call utmess('F', 'MODELISA6_95')
-    endif
+    end if
 !
 end subroutine

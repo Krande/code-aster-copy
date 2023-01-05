@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gloloc(xgloba, xorig, sina, cosa, sinb,&
+subroutine gloloc(xgloba, xorig, sina, cosa, sinb, &
                   cosb, sing, cosg, xlocal)
 !
 !***********************************************************************
@@ -46,8 +46,8 @@ subroutine gloloc(xgloba, xorig, sina, cosa, sinb,&
     real(kind=8) :: cosa, cosb, cosg, sina, sinb, sing
 !-----------------------------------------------------------------------
     do i = 1, 3
-        xpiv(i)=xgloba(i)-xorig(i)
+        xpiv(i) = xgloba(i)-xorig(i)
     end do
-    call rot3d(xpiv, sina, cosa, sinb, cosb,&
+    call rot3d(xpiv, sina, cosa, sinb, cosb, &
                sing, cosg, xlocal)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,29 +18,29 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmmtuc(phase , l_pena_cont, l_pena_fric,&
-                  ndim  , nnl        , nne        , nnm,&
-                  norm  , tau1       , tau2       , mprojt,&
-                  wpg   , ffl        , ffe        , ffm   , jacobi,&
-                  coefff, coefaf,&
-                  dlagrf, djeut ,&
-                  rese  , nrese ,&
+subroutine mmmtuc(phase, l_pena_cont, l_pena_fric, &
+                  ndim, nnl, nne, nnm, &
+                  norm, tau1, tau2, mprojt, &
+                  wpg, ffl, ffe, ffm, jacobi, &
+                  coefff, coefaf, &
+                  dlagrf, djeut, &
+                  rese, nrese, &
                   matrec, matrmc)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/mmmtec.h"
 #include "asterfort/mmmtmc.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont, l_pena_fric
-integer, intent(in) :: ndim, nne, nnl, nnm
-real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), ffm(9), jacobi
-real(kind=8), intent(in) :: coefff, coefaf
-real(kind=8), intent(in) :: dlagrf(2), djeut(3)
-real(kind=8), intent(in) :: rese(3), nrese
-real(kind=8), intent(out) :: matrec(27, 9), matrmc(27, 9)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont, l_pena_fric
+    integer, intent(in) :: ndim, nne, nnl, nnm
+    real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), ffm(9), jacobi
+    real(kind=8), intent(in) :: coefff, coefaf
+    real(kind=8), intent(in) :: dlagrf(2), djeut(3)
+    real(kind=8), intent(in) :: rese(3), nrese
+    real(kind=8), intent(out) :: matrec(27, 9), matrmc(27, 9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,20 +80,20 @@ real(kind=8), intent(out) :: matrec(27, 9), matrmc(27, 9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call mmmtec(phase , l_pena_cont, l_pena_fric,&
-                ndim  , nnl        , nne        ,&
-                norm  , tau1       , tau2       , mprojt,&
-                wpg   , ffl        , ffe        , jacobi,&
-                coefff, coefaf     ,&
-                dlagrf, djeut      ,&
-                rese  , nrese      , matrec)
+    call mmmtec(phase, l_pena_cont, l_pena_fric, &
+                ndim, nnl, nne, &
+                norm, tau1, tau2, mprojt, &
+                wpg, ffl, ffe, jacobi, &
+                coefff, coefaf, &
+                dlagrf, djeut, &
+                rese, nrese, matrec)
 !
-    call mmmtmc(phase , l_pena_cont, l_pena_fric,&
-                ndim  , nnl        , nnm        ,&
-                norm  , tau1       , tau2       , mprojt,&
-                wpg   , ffl        , ffm        , jacobi,&
-                coefff, coefaf     ,&
-                dlagrf, djeut      ,&
-                rese  , nrese      , matrmc)
+    call mmmtmc(phase, l_pena_cont, l_pena_fric, &
+                ndim, nnl, nnm, &
+                norm, tau1, tau2, mprojt, &
+                wpg, ffl, ffm, jacobi, &
+                coefff, coefaf, &
+                dlagrf, djeut, &
+                rese, nrese, matrmc)
 !
 end subroutine

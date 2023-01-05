@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer, pointer :: linotm2(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
-    ASSERT(base.eq.'V')
+    ASSERT(base .eq. 'V')
 !
     corre1 = '&&PJEFCO.CORRES1'
     corre2 = '&&PJEFCO.CORRES2'
@@ -91,30 +91,30 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
     call jeexin(moa1//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
-        nomo1=moa1
+        nomo1 = moa1
         call dismoi('NOM_MAILLA', nomo1, 'MODELE', repk=noma1)
     else
-        nomo1=' '
-        noma1=moa1
-    endif
+        nomo1 = ' '
+        noma1 = moa1
+    end if
 !
     call jeexin(moa2//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
-        nomo2=moa2
+        nomo2 = moa2
         call dismoi('NOM_MAILLA', nomo2, 'MODELE', repk=noma2)
     else
-        nomo2=' '
-        noma2=moa2
-    endif
+        nomo2 = ' '
+        noma2 = moa2
+    end if
 !
 !
 !   Determination de dmax et l_dmax:
 !   --------------------------------------------------------
-    dmax=0.d0
+    dmax = 0.d0
     call getvr8(' ', 'DISTANCE_MAX', scal=dmax, nbret=n1)
-    l_dmax=n1.eq.1
+    l_dmax = n1 .eq. 1
     call getvr8(' ', 'DISTANCE_ALARME', scal=dala, nbret=n1)
-    if (n1.eq.0) dala=-1.d0
+    if (n1 .eq. 0) dala = -1.d0
 !
 !
     call getfac('VIS_A_VIS', nbocc)
@@ -130,7 +130,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 !
 !
-        dbg=.false.
+        dbg = .false.
         if (dbg) then
 !          -- pour debug : on copie les 2 maillages sous les noms
 !          'XXXMA1' et 'XXXMA2' sur la base globale
@@ -146,28 +146,28 @@ subroutine pjefco(moa1, moa2, corres, base)
             call detrsd('MAILLAGE', 'XXXMA2')
             call copisd('MAILLAGE', 'G', noma1, 'XXXMA1')
             call copisd('MAILLAGE', 'G', noma2, 'XXXMA2')
-        endif
+        end if
 !
 !
         if (ncas .eq. '2D') then
-            call pj2dco('TOUT', moa1, moa2, 0, [0],&
-                        0, [0], geom1, geom2, corres,&
+            call pj2dco('TOUT', moa1, moa2, 0, [0], &
+                        0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
-        else if (ncas.eq.'3D') then
-            call pj3dco('TOUT', moa1, moa2, 0, [0],&
-                        0, [0], geom1, geom2, corres,&
+        else if (ncas .eq. '3D') then
+            call pj3dco('TOUT', moa1, moa2, 0, [0], &
+                        0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
-        else if (ncas.eq.'2.5D') then
-            call pj4dco('TOUT', moa1, moa2, 0, [0],&
-                        0, [0], geom1, geom2, corres,&
+        else if (ncas .eq. '2.5D') then
+            call pj4dco('TOUT', moa1, moa2, 0, [0], &
+                        0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
-        else if (ncas.eq.'1.5D') then
-            call pj6dco('TOUT', moa1, moa2, 0, [0],&
-                        0, [0], geom1, geom2, corres,&
+        else if (ncas .eq. '1.5D') then
+            call pj6dco('TOUT', moa1, moa2, 0, [0], &
+                        0, [0], geom1, geom2, corres, &
                         l_dmax, dmax, dala)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     else
 !
@@ -177,11 +177,11 @@ subroutine pjefco(moa1, moa2, corres, base)
 !       -- le mot cle VIS_A_VIS ne peut pas fonctionner avec la methode ECLA_PG :
         if (noma1(1:2) .eq. '&&') then
             call utmess('F', 'CALCULEL4_17')
-        endif
+        end if
 !
         do iocc = 1, nbocc
-           final_occ = .false.
-           if (iocc.eq. nbocc) final_occ = .true.
+            final_occ = .false.
+            if (iocc .eq. nbocc) final_occ = .true.
 !
 !           -- RECUPERATION DE LA LISTE DE MAILLES LMA1 :
 !           ----------------------------------------------
@@ -194,7 +194,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 !
 !
-            call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc,&
+            call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc, &
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
             call jeveuo('&&PJEFCO.LIMANU1', 'L', vi=limanu1)
 
@@ -208,7 +208,7 @@ subroutine pjefco(moa1, moa2, corres, base)
             tymocl(2) = 'GROUP_MA'
             motcle(3) = 'TOUT_2'
             tymocl(3) = 'TOUT'
-            call reliem(' ', noma2, 'NU_MAILLE', 'VIS_A_VIS', iocc,&
+            call reliem(' ', noma2, 'NU_MAILLE', 'VIS_A_VIS', iocc, &
                         3, motcle, tymocl, '&&PJEFCO.LIMANU2', nbma2)
 
             nbnoma2 = 0
@@ -218,22 +218,22 @@ subroutine pjefco(moa1, moa2, corres, base)
 
                 if (ncas .eq. '2D') then
                     dim = '2D'
-                else if (ncas.eq.'3D') then
-                    dim='3D'
-                else if (ncas.eq.'2.5D') then
-                    dim='2D'
-                else if (ncas.eq.'1.5D') then
-                    dim='1D'
-                else if (ncas.eq.'0D') then
-                    dim='0D'
+                else if (ncas .eq. '3D') then
+                    dim = '3D'
+                else if (ncas .eq. '2.5D') then
+                    dim = '2D'
+                else if (ncas .eq. '1.5D') then
+                    dim = '1D'
+                else if (ncas .eq. '0D') then
+                    dim = '0D'
                 else
                     ASSERT(.false.)
-                endif
+                end if
 
-                call pjxxu2(dim, moa2, limanu2, nbma2, '&&PJEFCO.LINOTMP',&
+                call pjxxu2(dim, moa2, limanu2, nbma2, '&&PJEFCO.LINOTMP', &
                             nbnoma2)
                 call jedetr('&&PJEFCO.LIMANU2')
-            endif
+            end if
 !
 !           -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 :
 !           ----------------------------------------------
@@ -242,37 +242,37 @@ subroutine pjefco(moa1, moa2, corres, base)
             motcle(2) = 'GROUP_NO_2'
             tymocl(2) = 'GROUP_NO'
 
-            call reliem(' ', noma2, 'NU_NOEUD', 'VIS_A_VIS', iocc,&
+            call reliem(' ', noma2, 'NU_NOEUD', 'VIS_A_VIS', iocc, &
                         2, motcle, tymocl, '&&PJEFCO.LINOTM2', nbnono2)
 
             call wkvect('&&PJEFCO.LINONU2', 'V V I', nbnono2+nbnoma2, vi=linonu2)
 
-            if (nbnono2.gt.0 .and. nbnoma2.eq.0) then
+            if (nbnono2 .gt. 0 .and. nbnoma2 .eq. 0) then
                 call jeveuo('&&PJEFCO.LINOTM2', 'L', vi=linotm2)
                 nbno2 = nbnono2
                 linonu2(1:nbno2) = linotm2(1:nbno2)
                 call jedetr('&&PJEFCO.LINOTM2')
-            elseif (nbnono2.eq.0 .and. nbnoma2.gt.0) then
+            elseif (nbnono2 .eq. 0 .and. nbnoma2 .gt. 0) then
                 call jeveuo('&&PJEFCO.LINOTMP', 'L', vi=linotmp)
                 nbno2 = nbnoma2
                 linonu2(1:nbno2) = linotmp(1:nbno2)
                 call jedetr('&&PJEFCO.LINOTMP')
-            elseif (nbnono2.gt.0 .and. nbnoma2.gt.0)then
+            elseif (nbnono2 .gt. 0 .and. nbnoma2 .gt. 0) then
                 call jeveuo('&&PJEFCO.LINOTM2', 'L', vi=linotm2)
                 call jeveuo('&&PJEFCO.LINOTMP', 'L', vi=linotmp)
-                call utlisi('UNION', linotm2, nbnono2, linotmp, nbnoma2,&
+                call utlisi('UNION', linotm2, nbnono2, linotmp, nbnoma2, &
                             linonu2, nbnono2+nbnoma2, nbno2)
-                ASSERT(nbno2.gt.0)
+                ASSERT(nbno2 .gt. 0)
                 call jedetr('&&PJEFCO.LINOTM2')
                 call jedetr('&&PJEFCO.LINOTMP')
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 !
 !           intersection entre les noeuds2 des occurrences precedentes
 !           et de l'occurrence courante
-            call pjreco(linonu2, nbno2, iocc, final_occ, nameListInterc,&
+            call pjreco(linonu2, nbno2, iocc, final_occ, nameListInterc, &
                         nbNodeInterc)
 !
 !           PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2]
@@ -286,33 +286,33 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
             call detrsd('CORRESP_2_MAILLA', corre1)
             if (ncas .eq. '2D') then
-                call pj2dco('PARTIE', moa1, moa2, nbma1, limanu1,&
-                            nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
-                            nbInterc_ = nbNodeInterc)
-            else if (ncas.eq.'3D') then
-                call pj3dco('PARTIE', moa1, moa2, nbma1, limanu1,&
-                            nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
-                            nbInterc_ = nbNodeInterc)
-            else if (ncas.eq.'2.5D') then
-                call pj4dco('PARTIE', moa1, moa2, nbma1, limanu1,&
-                            nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
-                            nbInterc_ = nbNodeInterc)
-            else if (ncas.eq.'1.5D') then
-                call pj6dco('PARTIE', moa1, moa2, nbma1, limanu1,&
-                            nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
-                            nbInterc_ = nbNodeInterc)
-            else if (ncas.eq.'0D') then
-                call getvr8('VIS_A_VIS', 'DISTANCE_0D',iocc=iocc, scal=dmax0d, nbret=n1)
-                call pj0dco('PARTIE', moa1, moa2, nbma1, limanu1,&
-                            nbno2, linonu2, geom1, geom2, corre1,&
+                call pj2dco('PARTIE', moa1, moa2, nbma1, limanu1, &
+                            nbno2, linonu2, geom1, geom2, corre1, &
+                            l_dmax, dmax, dala, listInterc_=nameListInterc, &
+                            nbInterc_=nbNodeInterc)
+            else if (ncas .eq. '3D') then
+                call pj3dco('PARTIE', moa1, moa2, nbma1, limanu1, &
+                            nbno2, linonu2, geom1, geom2, corre1, &
+                            l_dmax, dmax, dala, listInterc_=nameListInterc, &
+                            nbInterc_=nbNodeInterc)
+            else if (ncas .eq. '2.5D') then
+                call pj4dco('PARTIE', moa1, moa2, nbma1, limanu1, &
+                            nbno2, linonu2, geom1, geom2, corre1, &
+                            l_dmax, dmax, dala, listInterc_=nameListInterc, &
+                            nbInterc_=nbNodeInterc)
+            else if (ncas .eq. '1.5D') then
+                call pj6dco('PARTIE', moa1, moa2, nbma1, limanu1, &
+                            nbno2, linonu2, geom1, geom2, corre1, &
+                            l_dmax, dmax, dala, listInterc_=nameListInterc, &
+                            nbInterc_=nbNodeInterc)
+            else if (ncas .eq. '0D') then
+                call getvr8('VIS_A_VIS', 'DISTANCE_0D', iocc=iocc, scal=dmax0d, nbret=n1)
+                call pj0dco('PARTIE', moa1, moa2, nbma1, limanu1, &
+                            nbno2, linonu2, geom1, geom2, corre1, &
                             dmax0d)
             else
                 ASSERT(.false.)
-            endif
+            end if
             if (final_occ) call jedetr(nameListInterc)
 !
 !
@@ -325,7 +325,7 @@ subroutine pjefco(moa1, moa2, corres, base)
                 call detrsd('CORRESP_2_MAILLA', corre2)
                 call copisd('CORRESP_2_MAILLA', 'V', corre3, corre2)
                 call detrsd('CORRESP_2_MAILLA', corre3)
-            endif
+            end if
 !
             call jedetr('&&PJEFCO.LIMANU1')
             call jedetr('&&PJEFCO.LINONU2')
@@ -333,7 +333,7 @@ subroutine pjefco(moa1, moa2, corres, base)
         call copisd('CORRESP_2_MAILLA', 'V', corre2, corres)
         call detrsd('CORRESP_2_MAILLA', corre1)
         call detrsd('CORRESP_2_MAILLA', corre2)
-    endif
+    end if
 !
 !
     call jedema()

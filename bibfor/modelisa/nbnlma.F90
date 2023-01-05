@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nbnlma(noma, nbm    , limanu    , nbtyp, lityp,&
-                  nbn , l_error, elem_error)
+subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp, &
+                  nbn, l_error, elem_error)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -37,14 +37,14 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: noma
-integer, intent(in) :: nbm
-integer, intent(in) :: limanu(*)
-integer, intent(in) :: nbtyp
-character(len=8), intent(in) :: lityp(*)
-integer, intent(out) :: nbn
-aster_logical, intent(out) :: l_error
-character(len=8), intent(out) :: elem_error
+    character(len=8), intent(in) :: noma
+    integer, intent(in) :: nbm
+    integer, intent(in) :: limanu(*)
+    integer, intent(in) :: nbtyp
+    character(len=8), intent(in) :: lityp(*)
+    integer, intent(out) :: nbn
+    aster_logical, intent(out) :: l_error
+    character(len=8), intent(out) :: elem_error
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@ character(len=8), intent(out) :: elem_error
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iatyma, iret, it, itrou, j, jln, jnbn, jtyp, m, mi, n, nbna, nbnm
-    integer :: nn, numtyp,  p2
+    integer :: nn, numtyp, p2
     character(len=8) :: mk, valk
     integer, pointer :: connex(:) => null()
 !
@@ -79,8 +79,8 @@ character(len=8), intent(out) :: elem_error
 !
     call jemarq()
 !
-    nbn        = 0
-    l_error    = ASTER_FALSE
+    nbn = 0
+    l_error = ASTER_FALSE
     elem_error = ' '
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', p2)
@@ -91,32 +91,32 @@ character(len=8), intent(out) :: elem_error
         nbnm = 0
         do m = 1, nbm
             mi = limanu(m)
-            jtyp = iatyma-1 + mi
+            jtyp = iatyma-1+mi
             nn = 0
             do it = 1, nbtyp
                 call jenonu(jexnom('&CATA.TM.NBNO', lityp(it)), numtyp)
                 if (zi(jtyp) .eq. numtyp) then
-                    nn = zi(p2+mi+1-1) - zi(p2+mi-1)
-                endif
+                    nn = zi(p2+mi+1-1)-zi(p2+mi-1)
+                end if
             end do
             if (nn .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMMAI', mi), mk)
                 valk = mk
-                l_error    = ASTER_TRUE
+                l_error = ASTER_TRUE
                 elem_error = mk
                 goto 99
             else
-                nbnm = nbnm + nn
-            endif
+                nbnm = nbnm+nn
+            end if
         end do
     else
         nbnm = 0
         do m = 1, nbm
             mi = limanu(m)
-            nn = zi(p2+mi+1-1) - zi(p2+mi-1)
-            nbnm = nbnm + nn
+            nn = zi(p2+mi+1-1)-zi(p2+mi-1)
+            nbnm = nbnm+nn
         end do
-    endif
+    end if
 !
 !
     call jeexin('&&NBNLMA.LN', iret)
@@ -131,7 +131,7 @@ character(len=8), intent(out) :: elem_error
 !
     do m = 1, nbm
         mi = limanu(m)
-        nn = zi(p2+mi+1-1) - zi(p2+mi-1)
+        nn = zi(p2+mi+1-1)-zi(p2+mi-1)
 !
         do n = 1, nn
 !
@@ -147,7 +147,7 @@ character(len=8), intent(out) :: elem_error
                 if (connex(1+zi(p2+mi-1)-1+n-1) .eq. zi(jln-1+j)) then
                     zi(jnbn-1+j) = zi(jnbn-1+j)+1
                     itrou = 1
-                endif
+                end if
             end do
 !
 !           SI LE NUMERO DE NOEUD N'EXISTE PAS,
@@ -155,18 +155,18 @@ character(len=8), intent(out) :: elem_error
 !           ET ON STOCKE 1 A LA PLACE NBNA LE TABLEAU &&NBNLMA.NBN
 !
             if (itrou .eq. 0) then
-                nbna = nbna + 1
-                zi( jln-1+nbna) = connex(1+zi(p2+mi-1)-1+n-1)
+                nbna = nbna+1
+                zi(jln-1+nbna) = connex(1+zi(p2+mi-1)-1+n-1)
                 zi(jnbn-1+nbna) = 1
                 call jeecra('&&NBNLMA.LN', 'LONUTI', nbna)
                 call jeecra('&&NBNLMA.NBN', 'LONUTI', nbna)
-            endif
+            end if
         end do
     end do
 !
     nbn = nbna
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

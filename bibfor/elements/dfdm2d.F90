@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfdm2d(nno, ipg, ipoids, idfde, coor,&
+subroutine dfdm2d(nno, ipg, ipoids, idfde, coor, &
                   jac, dfdx, dfdy)
     implicit none
 #include "jeveux.h"
@@ -59,19 +59,19 @@ subroutine dfdm2d(nno, ipg, ipoids, idfde, coor,&
         ii = 2*(i-1)
         de = zr(idfde-1+k+ii+1)
         dk = zr(idfde-1+k+ii+2)
-        dxde = dxde + coor(2*i-1)*de
-        dxdk = dxdk + coor(2*i-1)*dk
-        dyde = dyde + coor(2*i )*de
-        dydk = dydk + coor(2*i )*dk
+        dxde = dxde+coor(2*i-1)*de
+        dxdk = dxdk+coor(2*i-1)*dk
+        dyde = dyde+coor(2*i)*de
+        dydk = dydk+coor(2*i)*dk
     end do
 !
-    jac = dxde*dydk - dxdk*dyde
+    jac = dxde*dydk-dxdk*dyde
 !
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
-    endif
+    end if
 !
     if (present(dfdx)) then
         ASSERT(present(dfdy))
@@ -82,10 +82,10 @@ subroutine dfdm2d(nno, ipg, ipoids, idfde, coor,&
             dk = zr(idfde-1+k+ii+2)
             dfdx(i) = (dydk*de-dyde*dk)/jac
             dfdy(i) = (dxde*dk-dxdk*de)/jac
-        enddo
+        end do
     else
-        ASSERT(.not.present(dfdy))
-    endif
+        ASSERT(.not. present(dfdy))
+    end if
 !
     jac = abs(jac)*poids
 !

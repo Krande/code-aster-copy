@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,29 +28,29 @@ function cotsti(typsup)
 !----------------------------------------------------------------------
 !
     if (typsup .eq. 'LISTR8_SDASTER') then
-        typinf='LISTR8'
-    else if (typsup.eq.'LISTIS_SDASTER') then
-        typinf='LISTIS'
-    else if (typsup.eq.'MAILLAGE_SDASTER'.or.typsup.eq.'MAILLAGE') then
-        typinf='MAILLAGE'
-    else if (typsup.eq.'MODELE_SDASTER') then
-        typinf='MODELE'
-    else if (typsup.eq.'FONCTION_SDASTER') then
-        typinf='FONCTION'
-    else if (typsup.eq.'NAPPE_SDASTER') then
-        typinf='FONCTION'
-    else if (typsup.eq.'TABLE_SDASTER') then
-        typinf='TABLE'
-    else if (typsup.eq.'EVOL_ELAS') then
-        typinf='RESULTAT'
-    else if (typsup.eq.'EVOL_NOLI') then
-        typinf='RESULTAT'
-    else if (typsup.eq.'EVOL_THER') then
-        typinf='RESULTAT'
-    else if (typsup.eq.'CABL_PRECONT') then
-        typinf='CABL_PRECONT'
+        typinf = 'LISTR8'
+    else if (typsup .eq. 'LISTIS_SDASTER') then
+        typinf = 'LISTIS'
+    else if (typsup .eq. 'MAILLAGE_SDASTER' .or. typsup .eq. 'MAILLAGE') then
+        typinf = 'MAILLAGE'
+    else if (typsup .eq. 'MODELE_SDASTER') then
+        typinf = 'MODELE'
+    else if (typsup .eq. 'FONCTION_SDASTER') then
+        typinf = 'FONCTION'
+    else if (typsup .eq. 'NAPPE_SDASTER') then
+        typinf = 'FONCTION'
+    else if (typsup .eq. 'TABLE_SDASTER') then
+        typinf = 'TABLE'
+    else if (typsup .eq. 'EVOL_ELAS') then
+        typinf = 'RESULTAT'
+    else if (typsup .eq. 'EVOL_NOLI') then
+        typinf = 'RESULTAT'
+    else if (typsup .eq. 'EVOL_THER') then
+        typinf = 'RESULTAT'
+    else if (typsup .eq. 'CABL_PRECONT') then
+        typinf = 'CABL_PRECONT'
     else
-        typinf='INCONNU'
-    endif
-    cotsti=typinf
+        typinf = 'INCONNU'
+    end if
+    cotsti = typinf
 end function

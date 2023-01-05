@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dicor4(k0, sim, sip, pi, ui,&
-                  ti, dxu1, dxu2, dryu1, dryu2,&
-                  nu1, nu2, mu1, mu2, feq1,&
-                  c1, dbar2, uu, tt, dur,&
-                  dryr, p2, utot, ttot, dnsdu,&
+subroutine dicor4(k0, sim, sip, pi, ui, &
+                  ti, dxu1, dxu2, dryu1, dryu2, &
+                  nu1, nu2, mu1, mu2, feq1, &
+                  c1, dbar2, uu, tt, dur, &
+                  dryr, p2, utot, ttot, dnsdu, &
                   dmsdt, dnsdt, dnsdu2, dmsdt2, dnsdt2)
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1504
@@ -82,7 +82,7 @@ subroutine dicor4(k0, sim, sip, pi, ui,&
     else
         ubr1 = sip(7)/nu1/feq1
         tbr1 = sip(11)/mu1/feq1
-    endif
+    end if
     feq1 = sqrt(ubr1**2+tbr1**2)
     ubr1 = ubr1/feq1
     tbr1 = tbr1/feq1
@@ -101,7 +101,7 @@ subroutine dicor4(k0, sim, sip, pi, ui,&
     tbr2 = p2b*zmb2/feq2
     ub2 = ubr2*dxu2
     tb2 = tbr2*dryu2
-    feq2 = sqrt ( (sip(7)/nu2)**2 + (sip(11)/mu2)**2 )
+    feq2 = sqrt((sip(7)/nu2)**2+(sip(11)/mu2)**2)
     p2 = feq2**2/(1.d0-feq2)/dbar2
     ur2 = p2*sip(7)/nu2/feq2
     tr2 = p2*sip(11)/mu2/feq2
@@ -122,7 +122,7 @@ subroutine dicor4(k0, sim, sip, pi, ui,&
     sip(1) = -sip(7)
     sip(5) = -sip(11)
 !
-    call dicor3(k0, dur, dryr, sim, sip,&
+    call dicor3(k0, dur, dryr, sim, sip, &
                 dnsdu, dmsdt, dnsdt)
 ! ----------------------------------------------------------------------
 !

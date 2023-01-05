@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,16 +40,16 @@ subroutine trgfct(fcttab)
     real(kind=8) :: pas
     integer :: i
 !
-    fcttab(1,1) = 0d0
-    fcttab(1,2) = 1d0
-    fcttab(1,3) = 0d0
-    fcttab(1,4) = 0d0
-    fcttab(1,5) = -1d0
+    fcttab(1, 1) = 0d0
+    fcttab(1, 2) = 1d0
+    fcttab(1, 3) = 0d0
+    fcttab(1, 4) = 0d0
+    fcttab(1, 5) = -1d0
 !
 !       -PI/2
-    angle = (-4d0 * atan2(1.d0,1.d0))/2.d0
+    angle = (-4d0*atan2(1.d0, 1.d0))/2.d0
 !       2PI/N
-    pas = -2.d0*angle / 36d0
+    pas = -2.d0*angle/36d0
 !
 !   POUR CHAQUE FACETTE, LES VALEURS SONT
 !     1 = COS^2
@@ -58,11 +58,11 @@ subroutine trgfct(fcttab)
 !     4 = SIN
 !     5 = COS
     do i = 2, 36
-        angle = angle + pas
-        fcttab(i,1) = cos(angle)*cos(angle)
-        fcttab(i,2) = sin(angle)*sin(angle)
-        fcttab(i,3) = -2.d0*sin(angle)*cos(angle)
-        fcttab(i,4) = cos(angle)
-        fcttab(i,5) = sin(angle)
+        angle = angle+pas
+        fcttab(i, 1) = cos(angle)*cos(angle)
+        fcttab(i, 2) = sin(angle)*sin(angle)
+        fcttab(i, 3) = -2.d0*sin(angle)*cos(angle)
+        fcttab(i, 4) = cos(angle)
+        fcttab(i, 5) = sin(angle)
     end do
 end subroutine

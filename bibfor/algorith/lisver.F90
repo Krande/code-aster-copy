@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,9 +75,9 @@ subroutine lisver(lischa)
 !
 ! ----- IDENTIFICATION DES GENRES ACTIFS DANS LA CHARGE
 !
-        lelim = lisico('DIRI_ELIM',genrec)
-        ldual = lisico('DIRI_DUAL',genrec)
-        levoc = lisico('EVOL_CHAR',genrec)
+        lelim = lisico('DIRI_ELIM', genrec)
+        ldual = lisico('DIRI_DUAL', genrec)
+        levoc = lisico('EVOL_CHAR', genrec)
 !
 ! ----- TYPE D'APPLICATION DE LA CHARGE
 !
@@ -88,30 +88,30 @@ subroutine lisver(lischa)
         if (lelim) then
             if (typapp .eq. 'SUIV') then
                 call utmess('F', 'CHARGES5_7', sk=charge)
-            endif
+            end if
             if (typapp .eq. 'DIDI') then
                 call utmess('F', 'CHARGES5_8', sk=charge)
-            endif
+            end if
             if (typapp .eq. 'FIXE_PILO') then
                 call utmess('F', 'CHARGES5_9', sk=charge)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- RESTRICTIONS SUR AFFE_CHAR_MECA/DIRICHLET
 !
         if (ldual) then
             if (typapp .eq. 'SUIV') then
                 call utmess('F', 'CHARGES5_10', sk=charge)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- RESTRICTIONS SUR EVOL_CHAR
 !
         if (levoc) then
             if (typapp .eq. 'FIXE_PILO') then
                 call utmess('F', 'CHARGES5_11', sk=charge)
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !

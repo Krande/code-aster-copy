@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
-                  yh, yb, zh, zb, u1,&
+subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq, &
+                  yh, yb, zh, zb, u1, &
                   u2, u3, n, solveu)
     implicit none
 #include "jeveux.h"
@@ -60,16 +60,16 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
 ! INIT. OBJETS ASTER
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    matass=zk24(zi(lmatra+1))
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(lmatra+1))
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
 !
-    call mcmult('ZERO', lamor, yh, u1, 1,&
+    call mcmult('ZERO', lamor, yh, u1, 1, &
                 .false._1)
-    call mcmult('ZERO', lmasse, yb, u2, 1,&
+    call mcmult('ZERO', lmasse, yb, u2, 1, &
                 .false._1)
-    call mcmult('ZERO', lmasse, yh, u3, 1,&
+    call mcmult('ZERO', lmasse, yh, u3, 1, &
                 .false._1)
 !-RM-DEB
 !     LA BOUCLE 5 REALISE LE PRODUIT PAR MASSE*INV(MASSE_REG)*MASSR
@@ -81,13 +81,13 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
     end do
 !-RM-FIN
     do i = 1, n, 1
-        u1(i) = u1(i) + sigma*u3(i) + u2(i)
+        u1(i) = u1(i)+sigma*u3(i)+u2(i)
     end do
-    call resoud(matass, k19bid, solveu, chcine, 1,&
-                k19bid, k19bid, kbid, [0.d0], u1,&
+    call resoud(matass, k19bid, solveu, chcine, 1, &
+                k19bid, k19bid, kbid, [0.d0], u1, &
                 criter, .false._1, 0, iret)
     do i = 1, n, 1
-        zh(i) = - u1(i)
-        zb(i) = (yh(i) - sigma*u1(i))*lbloq(i)
+        zh(i) = -u1(i)
+        zb(i) = (yh(i)-sigma*u1(i))*lbloq(i)
     end do
 end subroutine

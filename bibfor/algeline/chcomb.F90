@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine chcomb(tablez, nomaou)
     integer :: ibid, iret, idcode, dimcoo, nbno, jcoor, idcoor, ino
     real(kind=8) :: r8b, xt, yt
     complex(kind=8) :: c16b
-    character(len=8) :: k8b, noma,typobj
+    character(len=8) :: k8b, noma, typobj
     character(len=19) :: table
     character(len=24) :: cooval, coodes
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -86,32 +86,32 @@ subroutine chcomb(tablez, nomaou)
 ! --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE
 ! --- DE CISAILLEMENT-TORSION :
 !     -----------------------
-    call tbliva(table, 0, k8b, [ibid], [r8b],&
-                [c16b], k8b, k8b, [r8b], 'TYPE_OBJET',&
-                k8b, ibid, r8b, c16b, typobj,&
+    call tbliva(table, 0, k8b, [ibid], [r8b], &
+                [c16b], k8b, k8b, [r8b], 'TYPE_OBJET', &
+                k8b, ibid, r8b, c16b, typobj, &
                 iret)
-    if (typobj.ne.'MAILLAGE') call utmess('F', 'MODELISA2_89')
+    if (typobj .ne. 'MAILLAGE') call utmess('F', 'MODELISA2_89')
 
     call tbexp2(table, 'NOM_SD')
-    call tbliva(table, 0, k8b, [ibid], [r8b],&
-                [c16b], k8b, k8b, [r8b], 'NOM_SD',&
-                k8b, ibid, r8b, c16b, noma,&
+    call tbliva(table, 0, k8b, [ibid], [r8b], &
+                [c16b], k8b, k8b, [r8b], 'NOM_SD', &
+                k8b, ibid, r8b, c16b, noma, &
                 iret)
 
-    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
-                [c16b], noma, k8b, [r8b], 'EY',&
-                k8b, ibid, xt, c16b, k8b,&
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b], &
+                [c16b], noma, k8b, [r8b], 'EY', &
+                k8b, ibid, xt, c16b, k8b, &
                 iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
-    endif
-    call tbliva(table, 1, 'LIEU', [ibid], [r8b],&
-                [c16b], noma, k8b, [r8b], 'EZ',&
-                k8b, ibid, yt, c16b, k8b,&
+    end if
+    call tbliva(table, 1, 'LIEU', [ibid], [r8b], &
+                [c16b], noma, k8b, [r8b], 'EZ', &
+                k8b, ibid, yt, c16b, k8b, &
                 iret)
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
@@ -131,8 +131,8 @@ subroutine chcomb(tablez, nomaou)
     do ino = 1, nbno
 !
         idcoor = jcoor-1+dimcoo*(ino-1)
-        zr(idcoor+1) = zr(idcoor+1) + xt
-        zr(idcoor+2) = zr(idcoor+2) + yt
+        zr(idcoor+1) = zr(idcoor+1)+xt
+        zr(idcoor+2) = zr(idcoor+2)+yt
     end do
 !
     call jedema()

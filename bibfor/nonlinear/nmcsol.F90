@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,20 +79,20 @@ subroutine nmcsol(lischa, sddyna, lviss)
 !
     do ichar = 1, nchar
         if (zi(jinfch+nchar+ichar) .eq. 20) then
-            nfsol = nfsol + 1
-            cnfsol = zk24(jalich+ichar-1)(1:8)
-        endif
+            nfsol = nfsol+1
+            cnfsol = zk24(jalich+ichar-1) (1:8)
+        end if
     end do
 !
 ! --- ACTIVATION CHARGE
 !
     if (nfsol .eq. 0) then
         lviss = .false.
-    else if (nfsol.eq.1) then
+    else if (nfsol .eq. 1) then
         lviss = .true.
     else
         call utmess('F', 'DYNAMIQUE_9')
-    endif
+    end if
 !
 ! --- NOM DE _LA_CHARGE
 !
@@ -100,7 +100,7 @@ subroutine nmcsol(lischa, sddyna, lviss)
         nchsol = sdexso(1:15)//'.CHAR'
         call wkvect(nchsol, 'V V K8', 1, jchsol)
         zk8(jchsol) = cnfsol
-    endif
+    end if
 !
     call jedema()
 !

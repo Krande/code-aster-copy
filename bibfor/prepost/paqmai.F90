@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
-                  nomfor, grdvie, forvie, forcri, fordef,&
+subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri, &
+                  nomfor, grdvie, forvie, forcri, fordef, &
                   typcha, proaxe, instic, inscri, prec)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -104,9 +104,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !-----------------------------------------------------------------------
 !234567                                                              012
 !-----------------------------------------------------------------------
-    data  lsig/ 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ' /
+    data lsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/
 !
-    data  leps/ 'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ' /
+    data leps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -116,73 +116,73 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     call dismoi('TYPE_RESU', nomsd, 'RESULTAT', repk=typres)
     if ((typres(1:9) .ne. 'EVOL_ELAS') .and. (typres(1:9) .ne. 'EVOL_NOLI')) then
         call utmess('F', 'PREPOST4_26')
-    endif
+    end if
 !
 ! CONSTRUCTION DU CHAMP SIMPLE DESTINE A RECEVOIR LES RESULTATS :
 ! DTAUM,....
 !
-    call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig,&
+    call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig, &
                 iret)
 !
     call dismoi('NOM_LIGREL', chsig, 'CHAM_ELEM', repk=ligre)
     cesr = '&&PAQMAI.FACY'
     celbid = '&&PAQMAI.BID'
-    call alchml(ligre, 'TOU_INI_ELGA', 'PFACY_R', 'V', celbid,&
+    call alchml(ligre, 'TOU_INI_ELGA', 'PFACY_R', 'V', celbid, &
                 ierd, ' ')
     if (ierd .ne. 0) then
         call utmess('A', 'FATIGUE1_1')
-    endif
+    end if
     call celces(celbid, 'V', cesr)
 !
 ! RECUPERATION DU NOMBRE DE NUMEROS D'ORDRE ET DE LA LISTE
 ! DES NUMEROS D'ORDRE
 !
-    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, tord, 1,&
+    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b, &
+                c16b, r8b, k8b, tord, 1, &
                 nbordr)
-    lordr=tord(1)
+    lordr = tord(1)
 !
     if (nbordr .lt. 0) then
         ndim = -nbordr
     else if (nbordr .gt. 0) then
         ndim = nbordr
-    endif
+    end if
 !
     AS_ALLOCATE(vi=nume_ordre, size=ndim)
-    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nume_ordre, ndim,&
+    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b, &
+                c16b, r8b, k8b, nume_ordre, ndim, &
                 nbordr)
     if (nume_ordre(1) .eq. 0) then
         call utmess('A', 'PREPOST4_27')
-        nbordr = nbordr - 1
-    endif
+        nbordr = nbordr-1
+    end if
 !
     ordini = 1
     do k = 2, nbordr
         iord = nume_ordre(k)
-        call rsadpa(nomsd, 'L', 1, 'INST', iord,&
+        call rsadpa(nomsd, 'L', 1, 'INST', iord, &
                     0, sjv=jinst, styp=kbid)
         if (instic .gt. r8prem()) then
             if (inscri .eq. 'ABSOLU') then
-                if (abs(zr(jinst) - instic) .lt. prec) then
+                if (abs(zr(jinst)-instic) .lt. prec) then
                     ordini = k
                     goto 410
-                endif
+                end if
             else
                 if (inscri .eq. 'RELATIF') then
-                    if (abs(zr(jinst)/instic - 1.d0) .lt. prec) then
+                    if (abs(zr(jinst)/instic-1.d0) .lt. prec) then
                         ordini = k
                         goto 410
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
     end do
 410 continue
 !
-    if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
+    if ((ordini .eq. 1) .and. ((inscri .eq. 'ABSOLU') .or. (inscri .eq. 'RELATIF'))) then
         call utmess('A', 'PREPOST4_48')
-    endif
+    end if
 !
 !  INITIALISER
     crsigm = .false.
@@ -190,7 +190,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     crepse = .false.
     crepsp = .false.
 !---    ANALYSER LE CRITERE
-    call anacri(nomcri, nomfor, typcha, 'NON', paract,&
+    call anacri(nomcri, nomfor, typcha, 'NON', paract, &
                 lbid, crsigm, crepst, crepse, crepsp)
 !
 !
@@ -200,18 +200,18 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         if (.not. crepst) then
             call utmess('A', 'PREPOST4_45')
             crepst = .true.
-        endif
-        if (( .not. crepsp )) then
+        end if
+        if ((.not. crepsp)) then
             call utmess('A', 'PREPOST4_46')
             creppe = .true.
-        endif
+        end if
 !
-    endif
+    end if
 ! RECUPERATION DU NOMBRE DE MAILLES ET DU NOMBRE DE POINTS DE GAUSS
 ! PAR MAILLE
 !
 ! CAS OU L'ON CALCULE LA FATIGUE SUR TOUT LE MAILLAGE
-    call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig,&
+    call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig, &
                 iret)
     chsigs = '&&PAQMAI.SIELGA'
     call celces(chsig, 'V', chsigs)
@@ -230,7 +230,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         tymocl(1) = 'GROUP_MA'
         motcle(2) = 'MAILLE'
         tymocl(2) = 'MAILLE'
-        call reliem(' ', nommai, 'NU_MAILLE', ' ', 0,&
+        call reliem(' ', nommai, 'NU_MAILLE', ' ', 0, &
                     2, motcle, tymocl, lismai, nbmagm)
         call jeveuo(lismai, 'L', jmail)
 !
@@ -240,9 +240,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         call wkvect('&&PAQMAI.NBMAGR', 'V V I', nbmagm, jgrma)
 !
         do i = 1, nbmagm
-            zi(jgrma-1 + i) = zi(jmail-1 + i)
+            zi(jgrma-1+i) = zi(jmail-1+i)
         end do
-    endif
+    end if
 !
 !     VECTEUR CONTENANT LE NBR. DE PT. DE GAUSS DES MAILLES DU MAILLAGE
     call wkvect('&&PAQMAI.NBPG', 'V V I', nbma, jnbpg)
@@ -257,25 +257,25 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     nbpggm = 0
 !
     do ima = 1, nbma
-        zi(jnbpg - 1 + ima) = cesd(5 + 4*(ima-1) + 1)
-        nbpgt = nbpgt + cesd(5 + 4*(ima-1) + 1)
-        if (cesd(5 + 4*(ima-1) + 1) .gt. nbpgmx) then
-            nbpgmx = cesd(5 + 4*(ima-1) + 1)
-        endif
+        zi(jnbpg-1+ima) = cesd(5+4*(ima-1)+1)
+        nbpgt = nbpgt+cesd(5+4*(ima-1)+1)
+        if (cesd(5+4*(ima-1)+1) .gt. nbpgmx) then
+            nbpgmx = cesd(5+4*(ima-1)+1)
+        end if
     end do
     if (nommai .ne. '        ') then
         do ima = 1, nbmagm
-            nbpggm=nbpggm + cesd(5 + 4*(zi(jmail+ima-1)-1) +&
-            1)
+            nbpggm = nbpggm+cesd(5+4*(zi(jmail+ima-1)-1)+ &
+                                 1)
         end do
-        write(6,*)'NOMBRE DE POINTS DE GAUSS DU GROUPE DE MAILLES ==>',&
+        write (6, *) 'NOMBRE DE POINTS DE GAUSS DU GROUPE DE MAILLES ==>',&
      &              nbpggm
-        write(6,*)' '
-    endif
-    write(6,*)'NOMBRE TOTAL DE POINTS DE GAUSS A EXPLORER ==>',nbpgt
-    write(6,*)' '
+        write (6, *) ' '
+    end if
+    write (6, *) 'NOMBRE TOTAL DE POINTS DE GAUSS A EXPLORER ==>', nbpgt
+    write (6, *) ' '
 !
-    write(6,*)'NUMERO DU PAQUET DE MAILLES  -  ' //&
+    write (6, *) 'NUMERO DU PAQUET DE MAILLES  -  '//&
      &           'NOMBRE DE POINTS DE GAUSS TRAITES'
 !
 ! CONSTRUCTION DES PAQUETS DE MAILLES.
@@ -285,7 +285,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !    JEDISP REND LA DIMENSION EN ENTIERS, ON LA CONVERTIT A L'AIDE
 !    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS.
     call jedisp(1, tdisp)
-    tdisp(1) = (tdisp(1) / lor8em()) * loisem()
+    tdisp(1) = (tdisp(1)/lor8em())*loisem()
     tdisp(1) = int(0.6d0*tdisp(1))
     call wkvect('&&PAQMAI.RWORK', 'V V R', tdisp(1), jrwork)
 !
@@ -303,10 +303,10 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     val1 = dble(tdisp(1))/dble(bormax)
 !
     if (val1 .lt. 1.0d0) then
-        nbpmax = int(1.0d0/val1) + 1
+        nbpmax = int(1.0d0/val1)+1
     else
         nbpmax = 2
-    endif
+    end if
     AS_ALLOCATE(vi=paqma, size=nbpmax*4)
 !
 ! TPAQ   = TAILLE DU PAQUET DE MAILLES
@@ -322,62 +322,62 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     nmapaq = 0
 !
     do ima = 1, nbma
-        tpaq = tpaq + zi(jnbpg - 1 + ima)*nbordr*nbcmp
-        nmapaq = nmapaq + 1
+        tpaq = tpaq+zi(jnbpg-1+ima)*nbordr*nbcmp
+        nmapaq = nmapaq+1
 !
         if (tpaq .lt. tdisp(1)) then
             if (ima .eq. nbma) then
-                numpaq = numpaq + 1
-                paqma(1 + (numpaq-1)*4) = numpaq
-                paqma(1 + (numpaq-1)*4 + 1) = tpaq
-                paqma(1 + (numpaq-1)*4 + 2) = ima - (nmapaq - 1)
-                paqma(1 + (numpaq-1)*4 + 3) = nmapaq
+                numpaq = numpaq+1
+                paqma(1+(numpaq-1)*4) = numpaq
+                paqma(1+(numpaq-1)*4+1) = tpaq
+                paqma(1+(numpaq-1)*4+2) = ima-(nmapaq-1)
+                paqma(1+(numpaq-1)*4+3) = nmapaq
                 nbpaq = numpaq
-            endif
+            end if
 !
-        else if (( tpaq .ge. tdisp(1) ) .and. (ima .lt. 3)) then
-            vali (1) = tdisp(1)
-            vali (2) = tpaq
+        else if ((tpaq .ge. tdisp(1)) .and. (ima .lt. 3)) then
+            vali(1) = tdisp(1)
+            vali(2) = tpaq
             call utmess('F', 'PREPOST5_67', ni=2, vali=vali)
 !
 ! 2/ STOCKAGE DES NUMEROS DES PAQUETS, DE LA TAILLE DES PAQUETS,
 !    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
 !    DU NOMBRE DE MAILLE DE CHAQUE PAQUET ET DU NOMBRE DE PAQUET.
 !
-        else if (( tpaq .ge. tdisp(1) ) .and. (ima .gt. 2)) then
+        else if ((tpaq .ge. tdisp(1)) .and. (ima .gt. 2)) then
 ! ON RECULE DE DEUX MAILLES POUR ETRE SUR DE NE PAS DEBORDER DU VECTEUR
 ! DE TRAVAIL (JRWORK).
 !
-            tpaq = tpaq - zi(jnbpg-1 + ima)*nbordr*nbcmp
-            tpaq = tpaq - zi(jnbpg-1 + ima-1)*nbordr*nbcmp
+            tpaq = tpaq-zi(jnbpg-1+ima)*nbordr*nbcmp
+            tpaq = tpaq-zi(jnbpg-1+ima-1)*nbordr*nbcmp
 !
-            numpaq = numpaq + 1
-            paqma(1 + (numpaq-1)*4) = numpaq
-            paqma(1 + (numpaq-1)*4 + 1) = tpaq
-            paqma(1 + (numpaq-1)*4 + 2) = (ima - nmapaq + 1)
-            paqma(1 + (numpaq-1)*4 + 3) = nmapaq - 2
+            numpaq = numpaq+1
+            paqma(1+(numpaq-1)*4) = numpaq
+            paqma(1+(numpaq-1)*4+1) = tpaq
+            paqma(1+(numpaq-1)*4+2) = (ima-nmapaq+1)
+            paqma(1+(numpaq-1)*4+3) = nmapaq-2
             nbpaq = numpaq
 !
-            tpaq = zi(jnbpg-1 + ima-1)*nbordr*nbcmp
-            tpaq = tpaq + zi(jnbpg-1 + ima)*nbordr*nbcmp
+            tpaq = zi(jnbpg-1+ima-1)*nbordr*nbcmp
+            tpaq = tpaq+zi(jnbpg-1+ima)*nbordr*nbcmp
             nmapaq = 2
             if (ima .eq. nbma) then
-                numpaq = numpaq + 1
-                paqma(1 + (numpaq-1)*4) = numpaq
-                paqma(1 + (numpaq-1)*4 + 1) = tpaq
-                paqma(1 + (numpaq-1)*4 + 2) = ima - (nmapaq - 1)
-                paqma(1 + (numpaq-1)*4 + 3) = nmapaq
+                numpaq = numpaq+1
+                paqma(1+(numpaq-1)*4) = numpaq
+                paqma(1+(numpaq-1)*4+1) = tpaq
+                paqma(1+(numpaq-1)*4+2) = ima-(nmapaq-1)
+                paqma(1+(numpaq-1)*4+3) = nmapaq
                 nbpaq = numpaq
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !
     if (nbpaq .gt. nbpmax) then
-        vali (1) = nbpmax
-        vali (2) = nbpaq
+        vali(1) = nbpmax
+        vali(2) = nbpaq
         call utmess('F', 'PREPOST5_68', ni=2, vali=vali)
-    endif
+    end if
 !
 ! TRAITEMENT DES PAQUETS DE MAILLES.
 !
@@ -389,137 +389,137 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !
     do numpaq = 1, nbpaq
         call jerazo('&&PAQMAI.RWORK', tdisp(1), 1)
-        tpaq = paqma(1 + (numpaq-1)*4 + 1)
-        nmaini = paqma(1 + (numpaq-1)*4 + 2)
-        nbmap = paqma(1 + (numpaq-1)*4 + 3)
+        tpaq = paqma(1+(numpaq-1)*4+1)
+        nmaini = paqma(1+(numpaq-1)*4+2)
+        nbmap = paqma(1+(numpaq-1)*4+3)
         tspaq = tpaq/nbordr
 !
 !        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
         if (numpaq .gt. 1) then
             sompgi = sompgs
-        endif
+        end if
 !
         do iordr = 1, nbordr
             if ((numpaq .gt. 1) .and. (iordr .eq. 1)) then
                 ninit = nmemo
             else if ((numpaq .eq. 1) .and. (iordr .eq. 1)) then
                 ninit = nmaini
-            endif
+            end if
             n = ninit
 !
 ! IF CRITERE CONTIENT CONTRAINTE
             if (crsigm) then
 !
-                call rsexch('F', nomsd, 'SIEF_ELGA', iordr, chsig,&
+                call rsexch('F', nomsd, 'SIEF_ELGA', iordr, chsig, &
                             iret)
 !
                 ces1 = '&&PAQMAI.SIG_S1'
                 ces2 = '&&PAQMAI.SIG_ORDO'
                 call celces(chsig, 'V', ces1)
-                call cesred(ces1, 0, [ibid], 6, lsig,&
+                call cesred(ces1, 0, [ibid], 6, lsig, &
                             'V', ces2)
                 call jeexin(ces2(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'PREPOST4_29')
-                endif
+                end if
                 call jeveuo(ces2(1:19)//'.CESD', 'L', jsigd)
                 call jeveuo(ces2(1:19)//'.CESL', 'L', jsigl)
                 call jeveuo(ces2(1:19)//'.CESV', 'L', jsigv)
-            endif
+            end if
 !
 ! IF CRITERE CONTIENT DEFORMATION TOTALE
             if (crepst) then
 !
-                call rsexch('F', nomsd, 'EPSI_ELGA', iordr, cheps,&
+                call rsexch('F', nomsd, 'EPSI_ELGA', iordr, cheps, &
                             iret1)
 !
                 ces3 = '&&PAQMAI.EPS_S3'
                 ces4 = '&&PAQMAI.EPS_ORDO'
                 call celces(cheps, 'V', ces3)
-                call cesred(ces3, 0, [ibid], 6, leps,&
+                call cesred(ces3, 0, [ibid], 6, leps, &
                             'V', ces4)
                 call jeexin(ces4(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'PREPOST4_34')
-                endif
+                end if
                 call jeveuo(ces4(1:19)//'.CESD', 'L', jepsd)
                 call jeveuo(ces4(1:19)//'.CESL', 'L', jepsl)
                 call jeveuo(ces4(1:19)//'.CESV', 'L', jepsv)
-            endif
+            end if
 !
 ! IF CRITERE CONTIENT DEFORMATION PLASTIQUE
             if (crepsp) then
 !
-                call rsexch('F', nomsd, 'EPSP_ELGA', iordr, chepsp,&
+                call rsexch('F', nomsd, 'EPSP_ELGA', iordr, chepsp, &
                             iret2)
 !
                 ces5 = '&&PAQMAI.EPSP_S3'
                 ces6 = '&&PAQMAI.EPSP_ORDO'
                 call celces(chepsp, 'V', ces5)
-                call cesred(ces5, 0, [ibid], 6, leps,&
+                call cesred(ces5, 0, [ibid], 6, leps, &
                             'V', ces6)
                 call jeexin(ces5(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'PREPOST4_37')
-                endif
+                end if
                 call jeveuo(ces6(1:19)//'.CESD', 'L', jepspd)
                 call jeveuo(ces6(1:19)//'.CESL', 'L', jepspl)
                 call jeveuo(ces6(1:19)//'.CESV', 'L', jepspv)
-            endif
+            end if
 !
 ! IF CRITERE CONTIENT DEFORMATION ELASTIQUE
             if (creppe) then
 !
-                call rsexch(' ', nomsd, 'EPSP_ELGA', iordr, cheppe,&
+                call rsexch(' ', nomsd, 'EPSP_ELGA', iordr, cheppe, &
                             valep)
                 if (valep .ne. 0) then
                     call utmess('A', 'PREPOST4_46')
-                endif
+                end if
                 if (valep .eq. 0) then
                     ces7 = '&&PAQMAI.EPSPE_S3'
                     ces8 = '&&PAQMAI.EPSPE_ORDO'
                     call celces(cheppe, 'V', ces7)
-                    call cesred(ces7, 0, [ibid], 6, leps,&
+                    call cesred(ces7, 0, [ibid], 6, leps, &
                                 'V', ces8)
                     call jeexin(ces7(1:19)//'.CESV', iret)
                     if (iret .eq. 0) then
                         call utmess('F', 'PREPOST4_37')
-                    endif
+                    end if
                     call jeveuo(ces8(1:19)//'.CESD', 'L', jepped)
                     call jeveuo(ces8(1:19)//'.CESL', 'L', jeppel)
                     call jeveuo(ces8(1:19)//'.CESV', 'L', jeppev)
-                endif
-            endif
+                end if
+            end if
 !
 !
             if (numpaq .eq. 1) then
                 sompgs = 0
             else if (numpaq .gt. 1) then
                 sompgs = sompgi
-            endif
+            end if
             sompgw = 0
             kwork = 0
             decal = 18
 !
             do imap = nmaini, nmaini+(nbmap-1)
                 if ((imap .gt. nmaini) .and. (numpaq .eq. 1)) then
-                    sompgs = sompgs + zi(jnbpg + imap-2)
+                    sompgs = sompgs+zi(jnbpg+imap-2)
                     kwork = 1
-                    sompgw = sompgw + zi(jnbpg + imap-2)
-                endif
+                    sompgw = sompgw+zi(jnbpg+imap-2)
+                end if
 !
                 if ((imap .gt. nmaini) .and. (numpaq .gt. 1)) then
                     kwork = 1
-                    sompgw = sompgw + zi(jnbpg + imap-2)
-                endif
+                    sompgw = sompgw+zi(jnbpg+imap-2)
+                end if
 !
                 if (numpaq .gt. 1) then
-                    sompgs = sompgs + zi(jnbpg + imap-2)
-                endif
-                nbpg = zi(jnbpg + imap-1)
+                    sompgs = sompgs+zi(jnbpg+imap-2)
+                end if
+                nbpg = zi(jnbpg+imap-1)
 !
                 if ((nommai .ne. '        ') .and. (imap .ne. zi(jgrma+n-1))) then
-                    n = n - 1
+                    n = n-1
                 else
                     do ipg = 1, nbpg
 !
@@ -527,96 +527,96 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                         if (crsigm) then
 !
                             do icmp = 1, 6
-                                call cesexi('C', jsigd, jsigl, imap, ipg,&
+                                call cesexi('C', jsigd, jsigl, imap, ipg, &
                                             1, icmp, jad)
                                 if (jad .le. 0) then
                                     if (icmp .eq. 5) then
                                         call utmess('F', 'FATIGUE1_2', si=icmp)
                                     else
                                         call utmess('F', 'PREPOST4_30')
-                                    endif
+                                    end if
                                 else
-                                    zr( jrwork + (icmp-1) + (ipg-1)*&
-                                    decal + kwork*sompgw*decal + (&
-                                    iordr-1)*tspaq ) = zr( jsigv -1 +&
-                                    jad)
-                                endif
+                                    zr(jrwork+(icmp-1)+(ipg-1)* &
+                                       decal+kwork*sompgw*decal+( &
+                                       iordr-1)*tspaq) = zr(jsigv-1+ &
+                                                            jad)
+                                end if
                             end do
-                        endif
+                        end if
 !
 ! BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
                         if (crepst) then
                             do icmp = 1, 6
-                                call cesexi('C', jepsd, jepsl, imap, ipg,&
+                                call cesexi('C', jepsd, jepsl, imap, ipg, &
                                             1, icmp, jad)
                                 if (jad .le. 0) then
                                     if (icmp .eq. 5) then
                                         call utmess('F', 'FATIGUE1_3', si=icmp)
                                     else
                                         call utmess('F', 'PREPOST4_35')
-                                    endif
+                                    end if
                                 else
-                                    zr( jrwork + (icmp+6-1) + (ipg-1)*&
-                                    decal + kwork*sompgw*decal + (&
-                                    iordr-1)*tspaq ) = zr( jepsv -1+&
-                                    jad)
-                                endif
+                                    zr(jrwork+(icmp+6-1)+(ipg-1)* &
+                                       decal+kwork*sompgw*decal+( &
+                                       iordr-1)*tspaq) = zr(jepsv-1+ &
+                                                            jad)
+                                end if
                             end do
-                        endif
+                        end if
 !
 ! BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
                         if (crepsp) then
                             do icmp = 1, 6
-                                call cesexi('C', jepspd, jepspl, imap, ipg,&
+                                call cesexi('C', jepspd, jepspl, imap, ipg, &
                                             1, icmp, jad)
                                 if (jad .le. 0) then
                                     if (icmp .eq. 5) then
                                         call utmess('F', 'FATIGUE1_3', si=icmp)
                                     else
                                         call utmess('F', 'PREPOST4_35')
-                                    endif
+                                    end if
                                 else
-                                    zr( jrwork + (icmp+6+6-1) + (ipg-&
-                                    1)*decal + kwork*sompgw*decal + (&
-                                    iordr-1)*tspaq ) = zr( jepspv -1+&
-                                    jad)
-                                endif
+                                    zr(jrwork+(icmp+6+6-1)+(ipg- &
+                                                            1)*decal+kwork*sompgw*decal+( &
+                                       iordr-1)*tspaq) = zr(jepspv-1+ &
+                                                            jad)
+                                end if
                             end do
-                        endif
+                        end if
 !
 ! BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
                         if (crepse) then
                             if (valep .eq. 0) then
                                 do icmp = 1, 6
-                                    call cesexi('C', jepped, jeppel, imap, ipg,&
+                                    call cesexi('C', jepped, jeppel, imap, ipg, &
                                                 1, icmp, jad)
                                     if (jad .le. 0) then
                                         if (icmp .eq. 5) then
                                             call utmess('F', 'FATIGUE1_3', si=icmp)
                                         else
                                             call utmess('F', 'PREPOST4_35')
-                                        endif
+                                        end if
                                     else
-                                        zr(jrwork + (icmp+6+6-1)+(ipg-&
-                                        1)*decal+ kwork*sompgw*decal +&
-                                        (iordr-1)*tspaq ) = zr(&
-                                        jeppev -1+jad)
-                                    endif
+                                        zr(jrwork+(icmp+6+6-1)+(ipg- &
+                                                                1)*decal+kwork*sompgw*decal+ &
+                                           (iordr-1)*tspaq) = zr( &
+                                                           jeppev-1+jad)
+                                    end if
                                 end do
                             else
                                 do icmp = 1, 6
-                                    zr( jrwork + (icmp+6+6-1) +(ipg-1)&
-                                    *decal + kwork*sompgw*decal + (&
-                                    iordr-1)*tspaq ) = 0.d0
+                                    zr(jrwork+(icmp+6+6-1)+(ipg-1) &
+                                       *decal+kwork*sompgw*decal+( &
+                                       iordr-1)*tspaq) = 0.d0
                                 end do
-                            endif
-                        endif
+                            end if
+                        end if
 !
                     end do
-                endif
+                end if
                 if ((nommai .ne. '        ') .and. (n .lt. nbmagm)) then
-                    n = n + 1
-                endif
+                    n = n+1
+                end if
 !
             end do
             nmemo = n
@@ -626,23 +626,23 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !
         if (nomcri(1:11) .eq. 'VMIS_TRESCA') then
             nomopt = 'DOMA_ELGA'
-            call vampli(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr,&
+            call vampli(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr, &
                         nmaini, nbmap, tspaq, nomopt, cesr)
             goto 200
-        endif
+        end if
 !
         if (typcha .eq. 'PERIODIQUE') then
-            call deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
-                        nmaini, nbmap, numpaq, tspaq, nommet,&
-                        nomcri, nomfor, grdvie, forvie, forcri,&
+            call deltau(jrwork, jnbpg, nbpgt, nbordr, ordini, &
+                        nmaini, nbmap, numpaq, tspaq, nommet, &
+                        nomcri, nomfor, grdvie, forvie, forcri, &
                         cesr)
 !
         else if (typcha .eq. 'NON_PERIODIQUE') then
-            call avgrma(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr,&
-                        nmaini, nbmap, numpaq, tspaq, nomcri,&
-                        nomfor, grdvie, forvie, fordef, proaxe,&
+            call avgrma(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr, &
+                        nmaini, nbmap, numpaq, tspaq, nomcri, &
+                        nomfor, grdvie, forvie, fordef, proaxe, &
                         cesr)
-        endif
+        end if
 !
 200     continue
     end do
@@ -650,10 +650,10 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !
 ! TRANSFORMATION D'UN CHAM_ELEM SIMPLE EN CHAM_ELEM
 !
-    call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig,&
+    call rsexch('F', nomsd, 'SIEF_ELGA', 1, chsig, &
                 iret)
     call dismoi('NOM_LIGREL', chsig, 'CHAM_ELEM', repk=ligre)
-    call cescel(cesr, ligre, 'TOU_INI_ELGA', ' ', 'NON',&
+    call cescel(cesr, ligre, 'TOU_INI_ELGA', ' ', 'NON', &
                 nncp, 'G', nomu, 'F', ibid)
 !
 ! MENAGE
@@ -665,22 +665,22 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     if (crsigm) then
         call detrsd('CHAM_ELEM_S', ces1)
         call detrsd('CHAM_ELEM_S', ces2)
-    endif
+    end if
 !
     if (crepst) then
         call detrsd('CHAM_ELEM_S', ces3)
         call detrsd('CHAM_ELEM_S', ces4)
-    endif
+    end if
 !
     if (crepsp) then
         call detrsd('CHAM_ELEM_S', ces5)
         call detrsd('CHAM_ELEM_S', ces6)
-    endif
+    end if
 !
     if (((creppe)) .and. (valep .eq. 0)) then
         call detrsd('CHAM_ELEM_S', ces7)
         call detrsd('CHAM_ELEM_S', ces8)
-    endif
+    end if
 !
     AS_DEALLOCATE(vi=nume_ordre)
     call jedetr('&&PAQMAI.NBMAGR')
@@ -689,7 +689,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     AS_DEALLOCATE(vi=paqma)
     if (nommai .ne. '        ') then
         call jedetr('&&PAQMAI.L_MAILLES')
-    endif
+    end if
 !
     call jedema()
 end subroutine

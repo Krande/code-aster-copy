@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine cbondp(load, mesh, ndim, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -39,9 +39,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vetyma.h"
 !
-character(len=8), intent(in) :: load, mesh
-integer, intent(in) :: ndim
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh
+    integer, intent(in) :: ndim
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ character(len=4), intent(in) :: valeType
     real(kind=8) :: r8dummy
     character(len=8) :: k8dummy
     character(len=16) :: k16dummy
-    real(kind=8) :: wave_dire(3), coor_vect(2),wave_type_r, dist
+    real(kind=8) :: wave_dire(3), coor_vect(2), wave_type_r, dist
     character(len=8) :: signal, signde
     character(len=16) :: wave_type
     integer :: jvalv
@@ -88,8 +88,8 @@ character(len=4), intent(in) :: valeType
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType,&
-                        nbMap, map , nbCmp)
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
+                        nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 2)
 !
 ! - Loop on factor keyword
@@ -102,20 +102,20 @@ character(len=4), intent(in) :: valeType
             call jeveuo(listCell, 'L', jvCell)
 
 ! --------- Get wave function
-            call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb,&
+            call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb, &
                                r8dummy, signal, c16dummy, k16dummy)
-            ASSERT(val_nb.eq.1)
-            call char_read_val(keywordfact, iocc, 'DEPL_IMPO', 'FONC', val_nb,&
+            ASSERT(val_nb .eq. 1)
+            call char_read_val(keywordfact, iocc, 'DEPL_IMPO', 'FONC', val_nb, &
                                r8dummy, signde, c16dummy, k16dummy)
             if (val_nb .ne. 1) then
-               signde = '&FOZERO'
-            endif
+                signde = '&FOZERO'
+            end if
 
 ! --------- Affectation of values in <CARTE> - Wave function
             call jeveuo(map(1)//'.VALV', 'E', jvalv)
             zk8(jvalv-1+1) = signal
             zk8(jvalv-1+2) = signde
-            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell,&
+            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell, &
                         limanu=zi(jvCell))
 
 ! --------- Get direction
@@ -123,40 +123,40 @@ character(len=4), intent(in) :: valeType
             wave_dire(2) = 0.d0
             wave_dire(3) = 0.d0
             call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=0, nbret=ndir)
-            ndir = - ndir
+            ndir = -ndir
             ASSERT(ndir .eq. 3)
             call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=ndir, vect=wave_dire)
 
 ! --------- Get wave type
-            call char_read_val(keywordfact, iocc, 'TYPE_ONDE', 'TEXT', val_nb,&
+            call char_read_val(keywordfact, iocc, 'TYPE_ONDE', 'TEXT', val_nb, &
                                r8dummy, k8dummy, c16dummy, wave_type)
             ASSERT(val_nb .eq. 1)
             if (ndim .eq. 3) then
                 if (wave_type .eq. 'P ') then
                     wave_type_r = 0.d0
-                else if (wave_type.eq.'SV') then
+                else if (wave_type .eq. 'SV') then
                     wave_type_r = 1.d0
-                else if (wave_type.eq.'SH') then
+                else if (wave_type .eq. 'SH') then
                     wave_type_r = 2.d0
-                else if (wave_type.eq.'S ') then
+                else if (wave_type .eq. 'S ') then
                     call utmess('F', 'CHARGES2_61')
                 else
                     ASSERT(ASTER_FALSE)
-                endif
+                end if
             else if (ndim .eq. 2) then
                 if (wave_type .eq. 'P ') then
                     wave_type_r = 0.d0
-                else if (wave_type.eq.'S ') then
+                else if (wave_type .eq. 'S ') then
                     wave_type_r = 1.d0
-                else if (wave_type.eq.'SV'.or.wave_type.eq.'SH') then
+                else if (wave_type .eq. 'SV' .or. wave_type .eq. 'SH') then
                     call utmess('A', 'CHARGES2_62')
                     wave_type_r = 1.d0
                 else
                     ASSERT(ASTER_FALSE)
-                endif
+                end if
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
 
 ! --------- Affectation of values in <CARTE> - Wave type and direction
             call jeveuo(map(2)//'.VALV', 'E', jvalv)
@@ -166,32 +166,32 @@ character(len=4), intent(in) :: valeType
             zr(jvalv-1+4) = wave_type_r
             zr(jvalv-1+5) = r8vide()
             zr(jvalv-1+6) = r8vide()
-            call getvr8(keywordfact, 'DIST', iocc=iocc,&
+            call getvr8(keywordfact, 'DIST', iocc=iocc, &
                         nbval=0, nbret=ndir)
             if (ndir .ne. 0) then
-               call getvr8(keywordfact, 'DIST', iocc=iocc, scal=dist)
-               zr(jvalv-1+5) = dist
-            endif
-            call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc,&
+                call getvr8(keywordfact, 'DIST', iocc=iocc, scal=dist)
+                zr(jvalv-1+5) = dist
+            end if
+            call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc, &
                         nbval=0, nbret=ndir)
             if (ndir .ne. 0) then
-               call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc,&
-                           scal=dist)
-               zr(jvalv-1+6) = dist
-            endif
+                call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc, &
+                            scal=dist)
+                zr(jvalv-1+6) = dist
+            end if
             coor_vect(1) = r8vide()
             coor_vect(2) = r8vide()
             call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, nbval=0, nbret=ncoor)
-            ncoor = - ncoor
+            ncoor = -ncoor
             if (ncoor .ne. 0) then
                 call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, nbval=ncoor, vect=coor_vect)
-            endif
+            end if
             zr(jvalv-1+7) = coor_vect(1)
             zr(jvalv-1+8) = coor_vect(2)
 
-            call nocart(map(2), 3, nbCmp(2), mode='NUM', nma=nbCell,&
+            call nocart(map(2), 3, nbCmp(2), mode='NUM', nma=nbCell, &
                         limanu=zi(jvCell))
-        endif
+        end if
 
 ! ----- Check elements
         call vetyma(mesh, ndim, keywordfact, listCell, nbCell)

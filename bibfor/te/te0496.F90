@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine te0496(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -50,12 +50,12 @@ implicit none
     call jevech('PDCEL_I', 'E', jdcel)
     call tecach('ONO', 'PCOMPOR', 'L', iret, nval=2, itab=itab)
     if (itab(1) .ne. 0) then
-        ASSERT(itab(2).eq.1)
-        jcompo=itab(1)
-        read (zk16(jcompo-1+1),'(I16)') nbvari
+        ASSERT(itab(2) .eq. 1)
+        jcompo = itab(1)
+        read (zk16(jcompo-1+1), '(I16)') nbvari
     else
-        nbvari=0
-    endif
+        nbvari = 0
+    end if
 !
 !   Par défaut pour tous les éléments
     zi(jdcel-1+1) = 1
@@ -67,39 +67,39 @@ implicit none
     if (jnbsp .eq. 0) goto 999
 !
 !   Cas des éléments "coque épaisse" (multi-couche)
-    if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H').or. (nomte.eq.'MECXSE3')) then
+    if ((nomte .eq. 'MEC3QU9H') .or. (nomte .eq. 'MEC3TR7H') .or. (nomte .eq. 'MECXSE3')) then
         nbcou = zi(jnbsp-1+1)
-        npgh  = 3
+        npgh = 3
         zi(jdcel-1+1) = npgh*nbcou
 !
 !   Cas des éléments "DKT"
-    else if ( (nomte.eq.'MEDKQU4') .or. (nomte.eq.'MEDKTR3') .or. &
-              (nomte.eq.'MEDSQU4') .or. (nomte.eq.'MEDSTR3') .or. &
-              (nomte.eq.'MEQ4QU4') .or. (nomte.eq.'MET3TR3') ) then
+    else if ((nomte .eq. 'MEDKQU4') .or. (nomte .eq. 'MEDKTR3') .or. &
+             (nomte .eq. 'MEDSQU4') .or. (nomte .eq. 'MEDSTR3') .or. &
+             (nomte .eq. 'MEQ4QU4') .or. (nomte .eq. 'MET3TR3')) then
         nbcou = zi(jnbsp-1+1)
-        npgh  = 3
+        npgh = 3
         zi(jdcel-1+1) = npgh*nbcou
 !
 !   Cas des éléments "TUYAU" :
-    else if ( (nomte.eq.'MET3SEG3') .or. (nomte.eq.'MET6SEG3') .or. &
-              (nomte.eq.'MET3SEG4') ) then
-        nbcou         = zi(jnbsp-1+1)
-        nbsect        = zi(jnbsp-1+2)
+    else if ((nomte .eq. 'MET3SEG3') .or. (nomte .eq. 'MET6SEG3') .or. &
+             (nomte .eq. 'MET3SEG4')) then
+        nbcou = zi(jnbsp-1+1)
+        nbsect = zi(jnbsp-1+2)
         zi(jdcel-1+1) = (2*nbsect+1)*(2*nbcou+1)
 !
 !   Cas des éléments de poutre "multi-fibres"
-    else if (nomte.eq.'MECA_POU_D_EM') then
-        nbfibr        = zi(jnbsp-1+1)
+    else if (nomte .eq. 'MECA_POU_D_EM') then
+        nbfibr = zi(jnbsp-1+1)
         zi(jdcel-1+1) = nbfibr
 !
-    else if (nomte.eq.'MECA_POU_D_TGM') then
-        nbfibr        = zi(jnbsp-1+1)
+    else if (nomte .eq. 'MECA_POU_D_TGM') then
+        nbfibr = zi(jnbsp-1+1)
         zi(jdcel-1+1) = nbfibr
 !
-    else if (nomte.eq.'MECA_POU_D_SQUE') then
-        nbfibr        = zi(jnbsp-1+1)
+    else if (nomte .eq. 'MECA_POU_D_SQUE') then
+        nbfibr = zi(jnbsp-1+1)
         zi(jdcel-1+1) = nbfibr
-    endif
+    end if
 !
 999 continue
 end subroutine

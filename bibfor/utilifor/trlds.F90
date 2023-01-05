@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,41 +45,41 @@ subroutine trlds(a, nmax, nordre, ierr)
         do jn = 1, in-1
 !
             if (jn .eq. 1) goto 36
-            ibm = jn - 1
+            ibm = jn-1
 !
-            r8val = a ( jn , in )
+            r8val = a(jn, in)
             do i = 1, ibm
-                r8val = r8val - a ( jn , i ) * a ( i , in ) * a(i,i)
+                r8val = r8val-a(jn, i)*a(i, in)*a(i, i)
             end do
-            a ( jn , in ) = r8val
+            a(jn, in) = r8val
 !
-            r8val = a ( in , jn )
+            r8val = a(in, jn)
             do i = 1, ibm
-                r8val = r8val - a ( in , i ) * a ( i , jn ) * a(i,i)
+                r8val = r8val-a(in, i)*a(i, jn)*a(i, i)
             end do
-            a ( in , jn ) = r8val
+            a(in, jn) = r8val
 !
- 36         continue
-            a ( jn , in ) = a ( jn , in ) / a(jn,jn)
-            a ( in , jn ) = a ( in , jn ) / a(jn,jn)
+36          continue
+            a(jn, in) = a(jn, in)/a(jn, jn)
+            a(in, jn) = a(in, jn)/a(jn, jn)
         end do
 !
- 50     continue
+50      continue
 !
 !        UTILISATION  DE LA LIGNE IN ( CALCUL DU TERME PIVOT)
-        ibm = in - 1
+        ibm = in-1
 !
-        r8val = a ( in , in )
+        r8val = a(in, in)
         do i = 1, ibm
-            r8val = r8val - a ( in , i ) * a ( i , in ) * a(i,i)
+            r8val = r8val-a(in, i)*a(i, in)*a(i, i)
         end do
-        a ( in , in ) = r8val
+        a(in, in) = r8val
         if (r8val .eq. 0.d00) then
             ierr = in
-            ifm=iunifi('MESSAGE')
-            write(ifm,*) ' TRLDS : PIVOT NUL A LA LIGNE ',in
+            ifm = iunifi('MESSAGE')
+            write (ifm, *) ' TRLDS : PIVOT NUL A LA LIGNE ', in
             goto 999
-        endif
+        end if
 !
     end do
 !

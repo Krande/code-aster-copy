@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
-                  expo, pivot, ier, solveu, caldet,&
+subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis, &
+                  expo, pivot, ier, solveu, caldet, &
                   calfac)
     implicit none
 #include "asterf_types.h"
@@ -72,7 +72,7 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
 !
 !     --- INITIALISATION ---
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
-    metres=slvk(1)
+    metres = slvk(1)
     call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
 !
 !
@@ -81,56 +81,56 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
 ! ---- CARACTERE SINGULIER ET LE NBRE DE TERMES <0 DE LA DIAGONALE NOUS
 ! ---- INTERESSENT
 ! ---- SI CALDET=.TRUE.: A PARTIR DE MUMPS.4.10.0 ON CALCULE LE DET
-    iold=-9999
-    iold2=-9999
+    iold = -9999
+    iold2 = -9999
     if (metres(1:5) .eq. 'MUMPS') then
-        if (.not.calfac) then
-            iold=slvi(4)
-            slvi(4)=1
-        endif
+        if (.not. calfac) then
+            iold = slvi(4)
+            slvi(4) = 1
+        end if
         if (caldet) then
-            iold2=slvi(5)
-            slvi(5)=1
-        endif
-    endif
+            iold2 = slvi(5)
+            slvi(5) = 1
+        end if
+    end if
 !
 !     --- DECALAGE SPECTRAL  K - W * M    (W ETANT LE SHIFT) ---
     call vpshif(lmatk, valshi, lmatm, lmatsh)
 !
 !     --- FACTORISATION LDLT DE LA MATRICE SHIFTEE---
-    ier=0
+    ier = 0
 !
-    matpre=' '
-    matass=zk24(zi(lmatsh+1))
-    call preres(solveu, 'V', iret, matpre, matass,&
+    matpre = ' '
+    matass = zk24(zi(lmatsh+1))
+    call preres(solveu, 'V', iret, matpre, matass, &
                 npvneg, 2)
 !
     if (iret .ge. 1) ier = 1
     if (iret .gt. 1) then
         valr = freqom(valshi)
         call utmess('A', 'ALGELINE5_27', sr=valr)
-    endif
-    pivot = - npvneg
+    end if
+    pivot = -npvneg
 !
 ! ---  CALCUL OPTIONNEL DU DETERMINANT
 ! ---- OPTIMISATION VIA CALDET (SI MF OU LDLT OU MUMPS V4.10.0 ET PLUS)
     if (caldet) then
-        if ((metres(1:10).ne.'MULT_FRONT') .and. (metres(1:4) .ne.'LDLT') .and.&
-            (metres(1:5).ne.'MUMPS')) then
+        if ((metres(1:10) .ne. 'MULT_FRONT') .and. (metres(1:4) .ne. 'LDLT') .and. &
+            (metres(1:5) .ne. 'MUMPS')) then
             call utmess('F', 'ALGELINE5_73')
         else
-            call mtdete(1, metres, lmatsh, mantis, expo,&
+            call mtdete(1, metres, lmatsh, mantis, expo, &
                         cbid)
-        endif
-    endif
+        end if
+    end if
 !
 ! ---- OPTIMISATION MUMPSVIA CALFAC/CALDET: PART 2/2
 ! ---- ON REMET DANS LA SD_SOLVEUR.SLVI(4) L'ANCIENNE VALEUR
 ! ---- (NORMALEMENT LA VALEUR INITIALISEE PAR DEFAUT -9999).
     if (metres(1:5) .eq. 'MUMPS') then
-        if (.not.calfac) slvi(4)=iold
-        if (caldet) slvi(5)=iold2
-    endif
+        if (.not. calfac) slvi(4) = iold
+        if (caldet) slvi(5) = iold2
+    end if
 !
     call jedema()
 end subroutine

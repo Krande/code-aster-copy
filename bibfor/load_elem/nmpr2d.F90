@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmpr2d(l_axis, nno  , npg ,&
-                  poidsg, vff  , dff ,&
-                  geom  , pres , cisa,&
-                  vect_ , matr_)
+subroutine nmpr2d(l_axis, nno, npg, &
+                  poidsg, vff, dff, &
+                  geom, pres, cisa, &
+                  vect_, matr_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,11 +30,11 @@ implicit none
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
 !
-aster_logical, intent(in):: l_axis
-integer, intent(in) :: nno, npg
-real(kind=8), intent(in) :: poidsg(npg), vff(nno, npg), dff(nno, npg)
-real(kind=8), intent(in) :: geom(2, nno), pres(npg), cisa(npg)
-real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)
+    aster_logical, intent(in):: l_axis
+    integer, intent(in) :: nno, npg
+    real(kind=8), intent(in) :: poidsg(npg), vff(nno, npg), dff(nno, npg)
+    real(kind=8), intent(in) :: geom(2, nno), pres(npg), cisa(npg)
+    real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,10 +66,10 @@ real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)
 !
     if (present(vect_)) then
         vect_ = 0.d0
-    endif
+    end if
     if (present(matr_)) then
         matr_ = 0.d0
-    endif
+    end if
 !
 ! - Loop on Gauss points
 !
@@ -77,32 +77,32 @@ real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)
 ! ----- Shear stress => no undead loads
         if (cisa(kpg) .ne. 0.d0) then
             call utmess('F', 'ALGORITH8_24')
-        endif
+        end if
 ! ----- Check
         if (l_axis) then
             r = 0.d0
             do ino1 = 1, nno
-                r = r + vff(ino1,kpg)*geom(1,ino1)
+                r = r+vff(ino1, kpg)*geom(1, ino1)
             end do
             if (r .eq. 0.d0) then
                 if (pres(kpg) .ne. 0.d0) then
                     call utmess('F', 'ALGORITH8_25')
-                endif
+                end if
                 goto 100
-            endif
-        endif
+            end if
+        end if
 ! ----- Covariant basis
-        call subac1(l_axis, nno, vff(1, kpg), dff(1, kpg), geom,&
+        call subac1(l_axis, nno, vff(1, kpg), dff(1, kpg), geom, &
                     cova)
 ! ----- Metric tensor
         call sumetr(cova, metr, jac)
 ! ----- Compute vector
         if (present(vect_)) then
             do ino1 = 1, nno
-                vect_(1,ino1) = vect_(1,ino1)- poidsg(kpg)*jac*pres(kpg)*cova(1,3)*vff(ino1,kpg)
-                vect_(2,ino1) = vect_(2,ino1)- poidsg(kpg)*jac*pres(kpg)*cova(2,3)*vff(ino1,kpg)
+                vect_(1, ino1) = vect_(1, ino1)-poidsg(kpg)*jac*pres(kpg)*cova(1, 3)*vff(ino1, kpg)
+                vect_(2, ino1) = vect_(2, ino1)-poidsg(kpg)*jac*pres(kpg)*cova(2, 3)*vff(ino1, kpg)
             end do
-        endif
+        end if
 ! ----- Compute matrix
         if (present(matr_)) then
             call subacv(cova, metr, jac, cnva, acv)
@@ -110,12 +110,12 @@ real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)
                 do idim1 = 1, 2
                     do ino1 = 1, nno
                         do idim2 = 1, 2
-                            t1                           = dff(ino2,kpg)*vff(ino1,kpg)*&
-                                                           cnva(idim1,1)*cova(idim2,3)
-                            t2                           = dff(ino2,kpg)*vff(ino1,kpg)*&
-                                                           cnva(idim2,1)*cova(idim1,3)
-                            t                            = poidsg(kpg)*pres(kpg)*jac*(t1 - t2)
-                            matr_(idim2,ino1,idim1,ino2) = matr_(idim2,ino1,idim1,ino2) + t
+                            t1 = dff(ino2, kpg)*vff(ino1, kpg)* &
+                                 cnva(idim1, 1)*cova(idim2, 3)
+                            t2 = dff(ino2, kpg)*vff(ino1, kpg)* &
+                                 cnva(idim2, 1)*cova(idim1, 3)
+                            t = poidsg(kpg)*pres(kpg)*jac*(t1-t2)
+                            matr_(idim2, ino1, idim1, ino2) = matr_(idim2, ino1, idim1, ino2)+t
                         end do
                     end do
                 end do
@@ -124,15 +124,15 @@ real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)
                 do ino1 = 1, nno
                     do ino2 = 1, nno
                         do idim1 = 1, 2
-                            t1                       = vff(ino1,kpg)*vff(ino2,kpg)*&
-                                                       cnva(3,2)*cova(idim1,3)
-                            t                        = poidsg(kpg)*pres(kpg)*jac*t1
-                            matr_(1,ino1,idim1,ino2) = matr_(1,ino1,idim1,ino2) + t
+                            t1 = vff(ino1, kpg)*vff(ino2, kpg)* &
+                                 cnva(3, 2)*cova(idim1, 3)
+                            t = poidsg(kpg)*pres(kpg)*jac*t1
+                            matr_(1, ino1, idim1, ino2) = matr_(1, ino1, idim1, ino2)+t
                         end do
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 100     continue
 !

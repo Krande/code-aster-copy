@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,40 +38,40 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
 !
     if (nconta .ge. 2) then
         if (elref1 .eq. 'QU8') then
-            elref2='QU4'
+            elref2 = 'QU4'
             nnop = 8
-            nnops= 4
-        else if (elref1.eq.'TR6') then
-            elref2='TR3'
+            nnops = 4
+        else if (elref1 .eq. 'TR6') then
+            elref2 = 'TR3'
             nnop = 6
-            nnops= 3
-        else if (elref1.eq.'SE3') then
-            elref2='SE2'
+            nnops = 3
+        else if (elref1 .eq. 'SE3') then
+            elref2 = 'SE2'
             nnop = 3
-            nnops= 2
-        else if (elref1.eq.'H20') then
-            elref2='HE8'
+            nnops = 2
+        else if (elref1 .eq. 'H20') then
+            elref2 = 'HE8'
             nnop = 20
-            nnops= 8
-        else if (elref1.eq.'P15') then
-            elref2='PE6'
+            nnops = 8
+        else if (elref1 .eq. 'P15') then
+            elref2 = 'PE6'
             nnop = 15
-            nnops= 6
-        else if (elref1.eq.'P13') then
-            elref2='PY5'
+            nnops = 6
+        else if (elref1 .eq. 'P13') then
+            elref2 = 'PY5'
             nnop = 13
-            nnops= 5
-        else if (elref1.eq.'T10') then
-            elref2='TE4'
+            nnops = 5
+        else if (elref1 .eq. 'T10') then
+            elref2 = 'TE4'
             nnop = 10
-            nnops= 4
+            nnops = 4
         else
-            elref2=elref1
+            elref2 = elref1
             call elrfno(elref1, nnop, nnops)
-        endif
+        end if
     else
-        elref2=elref1
+        elref2 = elref1
         call elrfno(elref1, nnop, nnops)
-    endif
+    end if
 !
 end subroutine

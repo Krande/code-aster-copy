@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine fft(s, n, ifft)
     real(kind=8) :: pi
 !-----------------------------------------------------------------------
 !
-    m= int(log(dble(n))/log(2.d0))
+    m = int(log(dble(n))/log(2.d0))
 !    if (m .gt. 30) call veri32()
     n2 = 2**m
     if (n2 .ne. n) then
@@ -51,47 +51,47 @@ subroutine fft(s, n, ifft)
         n2 = 2**m
         if (n2 .ne. n) then
             m = m-2
-        endif
-    endif
+        end if
+    end if
     isgn = 1
-    if (ifft .lt. 0) isgn=-1
-    pi= r8pi()*isgn
-    nm1=n-1
+    if (ifft .lt. 0) isgn = -1
+    pi = r8pi()*isgn
+    nm1 = n-1
     j = 1
-    nv2=n/2
+    nv2 = n/2
     do i = 1, nm1
         if (i .ge. j) goto 5
-        t=s(j)
-        s(j)=s(i)
-        s(i)=t
-  5     continue
-        k=nv2
-  6     continue
+        t = s(j)
+        s(j) = s(i)
+        s(i) = t
+5       continue
+        k = nv2
+6       continue
         if (k .ge. j) goto 7
-        j=j-k
-        k=k/2
+        j = j-k
+        k = k/2
         goto 6
-  7     continue
-        j=j+k
+7       continue
+        j = j+k
     end do
     do l = 1, m
 !        if (l .gt. 30) call veri32()
-        le=2**l
-        le1=le/2
-        u=(1.d0,0.d0)
-        w=dcmplx(cos(-pi/dble(le1)),sin(-pi/dble(le1)))
+        le = 2**l
+        le1 = le/2
+        u = (1.d0, 0.d0)
+        w = dcmplx(cos(-pi/dble(le1)), sin(-pi/dble(le1)))
         do j = 1, le1
             do i = j, n, le
-                ip=i+le1
-                t=s(ip)*u
-                s(ip)=s(i)-t
-                s(i)=s(i)+t
+                ip = i+le1
+                t = s(ip)*u
+                s(ip) = s(i)-t
+                s(i) = s(i)+t
             end do
-            u=u*w
+            u = u*w
         end do
     end do
     if (ifft .lt. 0) then
-        calpha=dcmplx(1.d0,0.d0)/(n2*1.d0)
+        calpha = dcmplx(1.d0, 0.d0)/(n2*1.d0)
         call zscal(n2, calpha, s, 1)
-    endif
+    end if
 end subroutine

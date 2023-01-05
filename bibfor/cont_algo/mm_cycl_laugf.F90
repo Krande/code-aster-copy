@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mm_cycl_laugf(pres, dist, coef_augm, lagr_norm)
 !
-implicit none
+    implicit none
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -51,12 +51,12 @@ implicit none
 !
 ! -- Test to prevent FPE
 !
-    if(maxval(abs(pres)) > 10.d50) then
+    if (maxval(abs(pres)) > 10.d50) then
         lagr_norm = 10.d50
-    elseif(maxval(abs(dist)) > 10.d10) then
+    elseif (maxval(abs(dist)) > 10.d10) then
         lagr_norm = 10.d50
     else
-        lagr_augm(1:3) = pres(1:3) + coef_augm *dist(1:3)
+        lagr_augm(1:3) = pres(1:3)+coef_augm*dist(1:3)
         lagr_norm = norm2(lagr_augm)
     end if
 !

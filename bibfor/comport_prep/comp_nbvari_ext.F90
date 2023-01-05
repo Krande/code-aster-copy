@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine comp_nbvari_ext(l_umat        , nb_vari_umat ,&
-                           l_mfront_proto, l_mfront_offi,&
-                           libr_name     , subr_name    ,&
-                           model_dim     , model_mfront ,&
+subroutine comp_nbvari_ext(l_umat, nb_vari_umat, &
+                           l_mfront_proto, l_mfront_offi, &
+                           libr_name, subr_name, &
+                           model_dim, model_mfront, &
                            nb_vari_exte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/mfront_get_nbvari.h"
@@ -70,16 +70,16 @@ implicit none
 !
     if (l_umat) then
         nb_vari_exte = nb_vari_umat
-    endif
+    end if
 !
 ! - Number of internal variables for MFront
 !
-    if ((l_mfront_offi .or. l_mfront_proto) .and. libr_name.ne.' ') then
+    if ((l_mfront_offi .or. l_mfront_proto) .and. libr_name .ne. ' ') then
         call mfront_get_nbvari(libr_name, subr_name, model_mfront, model_dim, nb_vari_mfront)
-        if ( nb_vari_mfront .eq. 0 ) then
+        if (nb_vari_mfront .eq. 0) then
             nb_vari_mfront = 1
-        endif
+        end if
         nb_vari_exte = nb_vari_mfront
-    endif
+    end if
 !
 end subroutine

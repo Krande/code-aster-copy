@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmiclg(fami, kpg, ksp, option, rela_comp,&
-                  imate, epsm, deps, sigm, vim,&
+subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
+                  imate, epsm, deps, sigm, vim, &
                   sigp, vip, dsde, carcri, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -70,14 +70,14 @@ implicit none
 !----------VARIABLES LOCALES
 !
     integer :: ncstpm
-    parameter (ncstpm=13)
+    parameter(ncstpm=13)
     character(len=8) :: nomasl(4)
     real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: depsth, depsm, tmoins, tplus
     real(kind=8) :: em, ep, dsdem, dsdep
     real(kind=8) :: valres(4), syc, etc, syt, ett, cr, val(1)
     aster_logical :: isot, cine, elas, corr, implex, isotli, pinto, asyml, sans
-    data nomasl / 'SY_C', 'DC_SIGM_','SY_T','DT_SIGM_' /
+    data nomasl/'SY_C', 'DC_SIGM_', 'SY_T', 'DT_SIGM_'/
 !
 !
 !----------INITIALISATIONS
@@ -92,113 +92,113 @@ implicit none
     asyml = .false.
     if (rela_comp .eq. 'ELAS') then
         elas = .true.
-    else if ((rela_comp.eq.'VMIS_ISOT_LINE') .or. (rela_comp.eq.'VMIS_ISOT_TRAC')) then
+    else if ((rela_comp .eq. 'VMIS_ISOT_LINE') .or. (rela_comp .eq. 'VMIS_ISOT_TRAC')) then
         isot = .true.
         if (rela_comp .eq. 'VMIS_ISOT_LINE') then
             isotli = .true.
-        endif
-    else if (rela_comp.eq.'VMIS_CINE_LINE') then
+        end if
+    else if (rela_comp .eq. 'VMIS_CINE_LINE') then
         cine = .true.
-    else if (rela_comp.eq.'CORR_ACIER') then
+    else if (rela_comp .eq. 'CORR_ACIER') then
         corr = .true.
-    else if (rela_comp.eq.'PINTO_MENEGOTTO') then
+    else if (rela_comp .eq. 'PINTO_MENEGOTTO') then
         pinto = .true.
-    else if (rela_comp.eq.'VMIS_ASYM_LINE') then
+    else if (rela_comp .eq. 'VMIS_ASYM_LINE') then
         asyml = .true.
-    else if (rela_comp.eq.'SANS') then
+    else if (rela_comp .eq. 'SANS') then
         sans = .true.
-    endif
+    end if
     if (implex) then
-        if ((.not.elas) .and. (.not.isotli)) then
-            call utmess('F', 'POUTRE0_49', sk = rela_comp)
-        endif
-    endif
+        if ((.not. elas) .and. (.not. isotli)) then
+            call utmess('F', 'POUTRE0_49', sk=rela_comp)
+        end if
+    end if
 !
 !
 ! --- CARACTERISTIQUES ELASTIQUES A TMOINS
 !
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '-', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'E', val, codres, 1)
-    em=val(1)
+    em = val(1)
 !
 ! --- CARACTERISTIQUES ELASTIQUES A TPLUS
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'E', val, codres, 1)
-    ep=val(1)
+    ep = val(1)
 !
 !
-    if (isot .and. (.not.implex)) then
-        call verift(fami, kpg, ksp, 'T', imate,&
-                    epsth_=depsth)
-        depsm=deps-depsth
-        call nm1dis(fami, kpg, ksp, imate, em,&
-                    ep, sigm, depsm, vim, option,&
-                    rela_comp, ' ', sigp, vip, dsde)
-    else if (cine) then
-        call verift(fami, kpg, ksp, 'T', imate,&
+    if (isot .and. (.not. implex)) then
+        call verift(fami, kpg, ksp, 'T', imate, &
                     epsth_=depsth)
         depsm = deps-depsth
-        call nm1dci(fami, kpg, ksp, imate, em,&
-                    ep, sigm, depsm, vim, option,&
+        call nm1dis(fami, kpg, ksp, imate, em, &
+                    ep, sigm, depsm, vim, option, &
+                    rela_comp, ' ', sigp, vip, dsde)
+    else if (cine) then
+        call verift(fami, kpg, ksp, 'T', imate, &
+                    epsth_=depsth)
+        depsm = deps-depsth
+        call nm1dci(fami, kpg, ksp, imate, em, &
+                    ep, sigm, depsm, vim, option, &
                     ' ', sigp, vip, dsde)
     else if (elas) then
         dsde = ep
         vip(1) = 0.d0
-        call verift(fami, kpg, ksp, 'T', imate,&
+        call verift(fami, kpg, ksp, 'T', imate, &
                     epsth_=depsth)
-        sigp = ep* (sigm/em+deps-depsth)
+        sigp = ep*(sigm/em+deps-depsth)
     else if (corr) then
-        call nm1dco(fami, kpg, ksp, option, imate,&
-                    ' ', ep, sigm, epsm, deps,&
-                    vim, sigp, vip, dsde, carcri,&
+        call nm1dco(fami, kpg, ksp, option, imate, &
+                    ' ', ep, sigm, epsm, deps, &
+                    vim, sigp, vip, dsde, carcri, &
                     codret)
     else if (implex) then
-        call lcimpl(fami, kpg, ksp, imate, em,&
-                    ep, sigm, tmoins, tplus, deps,&
+        call lcimpl(fami, kpg, ksp, imate, em, &
+                    ep, sigm, tmoins, tplus, deps, &
                     vim, option, sigp, vip, dsde)
     else if (asyml) then
-        call nmmaba(imate, rela_comp, ep, dsde, sigy,&
+        call nmmaba(imate, rela_comp, ep, dsde, sigy, &
                     ncstpm, cstpm)
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'ECRO_ASYM_LINE', 0, ' ', [0.d0],&
+        call rcvalb(fami, 1, 1, '+', imate, &
+                    ' ', 'ECRO_ASYM_LINE', 0, ' ', [0.d0], &
                     4, nomasl, valres, codres, 1)
         syc = valres(1)
         etc = valres(2)
         syt = valres(3)
         ett = valres(4)
         cr = 0.d0
-        call nm1das(fami, kpg, ksp, ep, syc,&
-                    syt, etc, ett, cr, tmoins,&
-                    tplus, imate, sigm, deps, vim,&
+        call nm1das(fami, kpg, ksp, ep, syc, &
+                    syt, etc, ett, cr, tmoins, &
+                    tplus, imate, sigm, deps, vim, &
                     sigp, vip, dsdem, dsdep)
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
             if (option(11:14) .eq. 'ELAS') then
-                dsde=ep
+                dsde = ep
             else
                 if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-                    dsde= dsdem
+                    dsde = dsdem
                 else
-                    dsde= dsdep
-                endif
-            endif
-        endif
+                    dsde = dsdep
+                end if
+            end if
+        end if
     else if (pinto) then
-        call verift(fami, kpg, ksp, 'T', imate,&
+        call verift(fami, kpg, ksp, 'T', imate, &
                     epsth_=depsth)
-        depsm=deps-depsth
-        call nmmaba(imate, rela_comp, ep, dsde, sigy,&
+        depsm = deps-depsth
+        call nmmaba(imate, rela_comp, ep, dsde, sigy, &
                     ncstpm, cstpm)
-        call nm1dpm(fami, kpg, ksp, imate, option,&
-                    8, ncstpm, cstpm, sigm, vim,&
+        call nm1dpm(fami, kpg, ksp, imate, option, &
+                    8, ncstpm, cstpm, sigm, vim, &
                     depsm, vip, sigp, dsde)
     else if (sans) then
-        sigp=0.d0
-        dsde=0.d0
+        sigp = 0.d0
+        dsde = 0.d0
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 !
 !
     integer :: iaux
-    integer :: adtabo,  jtach
+    integer :: adtabo, jtach
     integer :: nbtono
 !
     character(len=16) :: nomsym
@@ -107,12 +107,12 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 !          VOULU, ON LE MEMORISE
 !
     nbordr = 0
-    do iaux = 0 , nbtono - 1
+    do iaux = 0, nbtono-1
         chextr = zk24(jtach+iaux)
         if (chextr .ne. ' ') then
             zi(adtabo+nbordr) = ordr(iaux+1)
-            nbordr = nbordr + 1
-        endif
+            nbordr = nbordr+1
+        end if
     end do
 !
 !====
@@ -123,6 +123,6 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
         valk(1) = noresu
         valk(2) = nomsym
         call utmess('A', 'UTILITAI4_30', nk=2, valk=valk)
-    endif
+    end if
 !
 end subroutine

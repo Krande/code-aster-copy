@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine nmondp(list_load, londe, chondp, nondp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -28,10 +28,10 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/ischar_iden.h"
 !
-integer :: nondp
-character(len=24) :: chondp
-character(len=19) :: list_load
-aster_logical :: londe
+    integer :: nondp
+    character(len=24) :: chondp
+    character(len=19) :: list_load
+    aster_logical :: londe
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,21 +44,21 @@ aster_logical :: londe
 !
 ! - Initializations
 !
-    londe  = .false.
-    nondp  = 0
+    londe = .false.
+    nondp = 0
     chondp = '&&NMONDP.ONDP'
 !
 ! - Datastructure access
 !
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
-    call jeveuo(lload_name, 'L', vk24 = v_load_name)
-    call jeveuo(lload_info, 'L', vi   = v_load_info)
+    call jeveuo(lload_name, 'L', vk24=v_load_name)
+    call jeveuo(lload_info, 'L', vi=v_load_info)
     nb_load = v_load_info(1)
     do i_load = 1, nb_load
         if (ischar_iden(v_load_info, i_load, nb_load, 'NEUM', 'ONDE', v_load_name(i_load))) then
-            nondp = nondp + 1
-        endif
+            nondp = nondp+1
+        end if
     end do
 !
 ! --- RECUPERATION DES DONNEES DE CHARGEMENT PAR ONDE PLANE
@@ -71,10 +71,10 @@ aster_logical :: londe
         nond = 0
         do i_load = 1, nb_load
             if (ischar_iden(v_load_info, i_load, nb_load, 'NEUM', 'ONDE', v_load_name(i_load))) then
-                nond = nond + 1
-                zk8(iondp+nond-1) = v_load_name(i_load)(1:8)
-            endif
+                nond = nond+1
+                zk8(iondp+nond-1) = v_load_name(i_load) (1:8)
+            end if
         end do
-    endif
+    end if
     call jedema()
 end subroutine

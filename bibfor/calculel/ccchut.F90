@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,24 +74,24 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
 
 !
 ! Time parallelism not available here
-    if (nuti.ge.1) then
-      call getvtx(' ', 'PARALLELISME_TEMPS', scal=kmpi, nbret=ibid)
-      ASSERT(ibid.ge.0)
-      if (kmpi(1:3).eq.'OUI') then
-        call utmess('A', 'PREPOST_19')
-      else if (kmpi(1:3).eq.'NON') then
+    if (nuti .ge. 1) then
+        call getvtx(' ', 'PARALLELISME_TEMPS', scal=kmpi, nbret=ibid)
+        ASSERT(ibid .ge. 0)
+        if (kmpi(1:3) .eq. 'OUI') then
+            call utmess('A', 'PREPOST_19')
+        else if (kmpi(1:3) .eq. 'NON') then
 ! Nothing to do
-      else
+        else
 ! Bad option
-         ASSERT(.false.)
-      endif
-    endif
+            ASSERT(.false.)
+        end if
+    end if
 ! - Loop on occurrences
 !
     do ioc = 1, nuti
         call getvtx(keywordfact, 'NOM_CHAM', iocc=ioc, scal=field_type, nbret=ibid)
         call getvis(keywordfact, 'NUME_CHAM_RESU', iocc=ioc, scal=nume_field_out, nbret=ibid)
-        ASSERT(nume_field_out.ge.1 .and. nume_field_out.le.20)
+        ASSERT(nume_field_out .ge. 1 .and. nume_field_out .le. 20)
 !
 ! ----- Which kind of computation ?
 !
@@ -106,7 +106,7 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
 !
         if (nb_form .eq. 1) then
 !
-        endif
+        end if
 !
 ! ----- Type of computation
 !
@@ -114,40 +114,40 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
         norm = ' '
         jform = 1
         if (nb_crit .ne. 0) then
-            ASSERT(nb_crit.eq.1)
-            ASSERT(nb_form.eq.0)
-            ASSERT(nb_norm.eq.0)
+            ASSERT(nb_crit .eq. 1)
+            ASSERT(nb_form .eq. 0)
+            ASSERT(nb_norm .eq. 0)
             type_comp = 'CRITERE'
-            call getvtx(keywordfact, type_comp, iocc=ioc, nbval=nb_crit, vect=crit,&
+            call getvtx(keywordfact, type_comp, iocc=ioc, nbval=nb_crit, vect=crit, &
                         nbret=ibid)
 !
         else if (nb_form .ne. 0) then
-            ASSERT(nb_crit.eq.0)
-            ASSERT(nb_norm.eq.0)
+            ASSERT(nb_crit .eq. 0)
+            ASSERT(nb_norm .eq. 0)
             type_comp = 'FORMULE'
             call wkvect(lform, 'V V K8', nb_form, jform)
-            call getvid(keywordfact, type_comp, iocc=ioc, nbval=nb_form, vect=zk8(jform),&
+            call getvid(keywordfact, type_comp, iocc=ioc, nbval=nb_form, vect=zk8(jform), &
                         nbret=ibid)
 !
         else if (nb_norm .ne. 0) then
-            ASSERT(nb_crit.eq.0)
-            ASSERT(nb_form.eq.0)
-            ASSERT(nb_norm.eq.1)
+            ASSERT(nb_crit .eq. 0)
+            ASSERT(nb_form .eq. 0)
+            ASSERT(nb_norm .eq. 1)
             type_comp = 'NORME'
-            call getvtx(keywordfact, type_comp, iocc=ioc, nbval=nb_norm, vect=norm,&
+            call getvtx(keywordfact, type_comp, iocc=ioc, nbval=nb_norm, vect=norm, &
                         nbret=ibid)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Computation
 !
-        call ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
-                    crit, norm, nb_form, zk8(jform), list_ordr,&
+        call ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, &
+                    crit, norm, nb_form, zk8(jform), list_ordr, &
                     nb_ordr, ioc)
 !
         call jedetr(lform)
-    enddo
+    end do
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine concom(macor, nblir, macoc, nblic, nbnoco,&
+subroutine concom(macor, nblir, macoc, nblic, nbnoco, &
                   nococ)
 !
 !  ROUTINE CONCOM
@@ -49,9 +49,9 @@ subroutine concom(macor, nblir, macoc, nblic, nbnoco,&
     do inc = 1, nblic
         do inr = 1, nblir
             if (macor(inr+2) .eq. macoc(inc+2)) then
-                nbnoco = nbnoco + 1
+                nbnoco = nbnoco+1
                 nococ(nbnoco) = inc
-            endif
+            end if
         end do
     end do
 !

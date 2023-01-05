@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcGetDataMeca(list_load      , model         , mate , mateco     , cara_elem,&
-                           disp_prev      , disp_cumu_inst, vari_prev, sigm_prev,&
+subroutine calcGetDataMeca(list_load, model, mate, mateco, cara_elem, &
+                           disp_prev, disp_cumu_inst, vari_prev, sigm_prev, &
                            ds_constitutive, l_elem_nonl, nume_harm)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -36,17 +36,17 @@ implicit none
 #include "asterfort/isOptionPossible.h"
 #include "asterfort/utmess.h"
 !
-character(len=19), intent(out) :: list_load
-character(len=24), intent(out) :: model
-character(len=24), intent(out) :: mateco, mate
-character(len=24), intent(out) :: cara_elem
-character(len=19), intent(out) :: disp_prev
-character(len=19), intent(out) :: disp_cumu_inst
-character(len=19), intent(out) :: vari_prev
-character(len=19), intent(out) :: sigm_prev
-type(NL_DS_Constitutive), intent(out) :: ds_constitutive
-aster_logical, intent(out) :: l_elem_nonl
-integer, intent(out) :: nume_harm
+    character(len=19), intent(out) :: list_load
+    character(len=24), intent(out) :: model
+    character(len=24), intent(out) :: mateco, mate
+    character(len=24), intent(out) :: cara_elem
+    character(len=19), intent(out) :: disp_prev
+    character(len=19), intent(out) :: disp_cumu_inst
+    character(len=19), intent(out) :: vari_prev
+    character(len=19), intent(out) :: sigm_prev
+    type(NL_DS_Constitutive), intent(out) :: ds_constitutive
+    aster_logical, intent(out) :: l_elem_nonl
+    integer, intent(out) :: nume_harm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,15 +77,15 @@ integer, intent(out) :: nume_harm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_load      = '&&OP0026.LISCHA'
-    cara_elem      = '&&OP0026.CARELE'
-    model          = ' '
-    mateco         = ' '
-    vari_prev      = ' '
-    sigm_prev      = ' '
-    disp_prev      = ' '
+    list_load = '&&OP0026.LISCHA'
+    cara_elem = '&&OP0026.CARELE'
+    model = ' '
+    mateco = ' '
+    vari_prev = ' '
+    sigm_prev = ' '
+    disp_prev = ' '
     disp_cumu_inst = ' '
-    l_elem_nonl    = ASTER_FALSE
+    l_elem_nonl = ASTER_FALSE
 !
 ! - Get parameters from command file
 !
@@ -94,22 +94,22 @@ integer, intent(out) :: nume_harm
 ! - Can have internal variables ?
 !
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
-    call isOptionPossible(ligrmo, 'TOU_INI_ELGA', 'PVARI_R', l_some_ = l_elem_nonl)
+    call isOptionPossible(ligrmo, 'TOU_INI_ELGA', 'PVARI_R', l_some_=l_elem_nonl)
 ! - Does option FULL_MECA exist ?
     if (l_elem_nonl) then
-        call isOptionPossible(ligrmo, 'FULL_MECA', 'PDEPLPR', l_some_ = l_elem_nonl)
-    endif
+        call isOptionPossible(ligrmo, 'FULL_MECA', 'PDEPLPR', l_some_=l_elem_nonl)
+    end if
 !
 ! - Get displacements
 !
-    call getvid(' ', 'DEPL', scal=disp_prev, nbret = nocc)
+    call getvid(' ', 'DEPL', scal=disp_prev, nbret=nocc)
     if (nocc .eq. 0) then
         disp_prev = ' '
-    endif
-    call getvid(' ', 'INCR_DEPL', scal=disp_cumu_inst, nbret = nocc)
+    end if
+    call getvid(' ', 'INCR_DEPL', scal=disp_cumu_inst, nbret=nocc)
     if (nocc .eq. 0) then
         disp_cumu_inst = ' '
-    endif
+    end if
 !
 ! - Get stresses
 !
@@ -117,46 +117,46 @@ integer, intent(out) :: nume_harm
     l_etat_init = nocc .ne. 0
     if (nocc .eq. 0) then
         sigm_prev = ' '
-    endif
+    end if
 !
 ! - Get internal variables
 !
     call getvid(' ', 'VARI', scal=vari_prev, nbret=nocc)
     if (nocc .eq. 0) then
         vari_prev = ' '
-    endif
+    end if
     if (vari_prev .ne. ' ' .and. .not. l_elem_nonl) then
         call utmess('I', 'CALCUL1_7')
-    endif
+    end if
 !
 ! - Get Fourier Mode
 !
     call getvis(' ', 'MODE_FOURIER', scal=nume_harm, nbret=nocc)
     if (nocc .eq. 0) then
         nume_harm = 0
-    endif
+    end if
 !
 ! - Prepare constitutive laws management datastructure
 !
     if (l_elem_nonl) then
-        call getvid('COMPORTEMENT', 'CARCRI', iocc =1, nbret = nocc)
-        if( nocc > 0 ) then
-            call getvid('COMPORTEMENT', 'CARCRI', iocc =1, nbret = nocc, &
-                scal = ds_constitutive%carcri)
+        call getvid('COMPORTEMENT', 'CARCRI', iocc=1, nbret=nocc)
+        if (nocc > 0) then
+            call getvid('COMPORTEMENT', 'CARCRI', iocc=1, nbret=nocc, &
+                        scal=ds_constitutive%carcri)
             ASSERT(nocc == 1)
-            call getvid('COMPORTEMENT', 'COMPOR', iocc =1, nbret = nocc, &
-                scal = ds_constitutive%compor)
+            call getvid('COMPORTEMENT', 'COMPOR', iocc=1, nbret=nocc, &
+                        scal=ds_constitutive%compor)
             ASSERT(nocc == 1)
-            call getvid('COMPORTEMENT', 'MULT_COMP', iocc =1, nbret = nocc, &
-                scal = ds_constitutive%mult_comp)
+            call getvid('COMPORTEMENT', 'MULT_COMP', iocc=1, nbret=nocc, &
+                        scal=ds_constitutive%mult_comp)
             ASSERT(nocc == 1)
             verbose = ASTER_FALSE
         else
-            call nmdorc(model, mate, l_etat_init,&
+            call nmdorc(model, mate, l_etat_init, &
                         ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
             verbose = ASTER_TRUE
         end if
         call nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose)
-    endif
+    end if
 !
 end subroutine

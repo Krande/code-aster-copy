@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
-                  lcharp, lchard, ncharp, nchard, chs,&
+subroutine qires1(modele, ligrel, chtime, sigmap, sigmad, &
+                  lcharp, lchard, ncharp, nchard, chs, &
                   mateco, chvois, tabido, chelem)
 !
 !     BUT:
@@ -87,13 +87,13 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 ! DECLARATION VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'QIRES1' )
+    parameter(nompro='QIRES1')
 !
     integer :: nbcmp
-    parameter ( nbcmp = 12 )
+    parameter(nbcmp=12)
 !
     integer :: nbchix
-    parameter ( nbchix = 17 )
+    parameter(nbchix=17)
 !
     integer :: i, iret, iret1, iret2, iret3, iret4, iret5, iret6, iret7
     integer :: iret8, iret9, iret10, iret11, iret12, iret13, iret14
@@ -104,11 +104,11 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     integer :: jceldp, jcelvp, jceldd, jcelvd
     integer :: iptmp1, iptmp2, numgp1, numgp2
     integer :: iptmd1, iptmd2, numgd1, numgd2
-    integer :: icmpp(nbcmp ), icmpd(nbcmp )
+    integer :: icmpp(nbcmp), icmpd(nbcmp)
     integer :: nbrin
     character(len=1) :: base
     character(len=8) :: lpain(nbchix), lpaout(1)
-    character(len=8) :: licmpp(nbcmp ), licmpd(nbcmp )
+    character(len=8) :: licmpp(nbcmp), licmpd(nbcmp)
     character(len=8) :: typcp3, typcd3
     character(len=16) :: option
     character(len=19) :: cartp1, cartp2, nomgp1, nomgp2
@@ -145,23 +145,23 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
             call etenca(cartp1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_67')
-            endif
-        else if (iret2.ne.0) then
+            end if
+        else if (iret2 .ne. 0) then
             cartp1 = lcharp(i)//'.CHME.F2D3D'
             call dismoi('NOM_GD', cartp1, 'CARTE', repk=nomgp1)
             call etenca(cartp1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_67')
-            endif
-        endif
+            end if
+        end if
         if (iret3 .ne. 0) then
             cartp2 = lcharp(i)//'.CHME.PRESS'
             call dismoi('NOM_GD', cartp2, 'CARTE', repk=nomgp2)
             call etenca(cartp2, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_67')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! ------- FIN TEST SUR LE TYPE DE CHARGE DES BORDS POUR LE PB. PRIMAL
@@ -188,23 +188,23 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
             call etenca(cartd1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_68')
-            endif
-        else if (iret5.ne.0) then
+            end if
+        else if (iret5 .ne. 0) then
             cartd1 = lchard(i)//'.CHME.F2D3D'
             call dismoi('NOM_GD', cartd1, 'CARTE', repk=nomgd1)
             call etenca(cartd1, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_68')
-            endif
-        endif
+            end if
+        end if
         if (iret6 .ne. 0) then
             cartd2 = lchard(i)//'.CHME.PRESS'
             call dismoi('NOM_GD', cartd2, 'CARTE', repk=nomgd2)
             call etenca(cartd2, ligrel, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CALCULEL4_68')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! ------- FIN TEST SUR LE TYPE DE CHARGE DES BORDS POUR LE PB. DUAL
@@ -239,14 +239,14 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         else
 !            LA CARTE A ETE ETENDUE
             call jeveuo(cartp1//'.PTMA', 'L', iptmp1)
-        endif
+        end if
         call jenonu(jexnom('&CATA.GD.NOMGD', nomgp1), numgp1)
     else
         iadep1 = 0
         iavap1 = 0
         iptmp1 = 1
         numgp1 = 0
-    endif
+    end if
 !
     if (cartp2 .ne. ' ') then
         call jeveuo(cartp2//'.DESC', 'L', iadep2)
@@ -257,14 +257,14 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         else
 !            LA CARTE A ETE ETENDUE
             call jeveuo(cartp2//'.PTMA', 'L', iptmp2)
-        endif
+        end if
         call jenonu(jexnom('&CATA.GD.NOMGD', nomgp2), numgp2)
     else
         iadep2 = 0
         iavap2 = 0
         iptmp2 = 1
         numgp2 = 0
-    endif
+    end if
 !
     iatyma = tabido(1)
     iagd = tabido(2)
@@ -288,7 +288,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     icmpp(12) = iconx2
 !
 !
-    call mecact(base, '&&'//nompro//'.CH_FORCEP', 'MODELE', ligrel, 'NEUT_I',&
+    call mecact(base, '&&'//nompro//'.CH_FORCEP', 'MODELE', ligrel, 'NEUT_I', &
                 ncmp=nbcmp, lnomcmp=licmpp, vi=icmpp)
 !
     icmpp(2) = -1
@@ -299,7 +299,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     icmpp(7) = iptmp2
     icmpp(8) = numgp2
 !
-    call mecact(base, '&&'//nompro//'.CH_PRESSP', 'MODELE', ligrel, 'NEUT_I',&
+    call mecact(base, '&&'//nompro//'.CH_PRESSP', 'MODELE', ligrel, 'NEUT_I', &
                 ncmp=nbcmp, lnomcmp=licmpp, vi=icmpp)
 !
 ! ------- FIN CREATION CARTES PB. PRIMAL--------------------------------
@@ -333,14 +333,14 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         else
 !            LA CARTE A ETE ETENDUE
             call jeveuo(cartd1//'.PTMA', 'L', iptmd1)
-        endif
+        end if
         call jenonu(jexnom('&CATA.GD.NOMGD', nomgd1), numgd1)
     else
         iaded1 = 0
         iavad1 = 0
         numgd1 = 0
         iptmd1 = 1
-    endif
+    end if
 !
     if (cartd2 .ne. ' ') then
         call jeveuo(cartd2//'.DESC', 'L', iaded2)
@@ -351,14 +351,14 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         else
 !            LA CARTE A ETE ETENDUE
             call jeveuo(cartd2//'.PTMA', 'L', iptmd2)
-        endif
+        end if
         call jenonu(jexnom('&CATA.GD.NOMGD', nomgd2), numgd2)
     else
         iaded2 = 0
         iavad2 = 0
         numgd2 = 0
         iptmd2 = 1
-    endif
+    end if
 !
     icmpd(1) = iarepe
     icmpd(2) = jceldd
@@ -374,7 +374,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     icmpd(12) = iconx2
 !
 !
-    call mecact(base, '&&'//nompro//'.CH_FORCED', 'MODELE', ligrel, 'NEUT_I',&
+    call mecact(base, '&&'//nompro//'.CH_FORCED', 'MODELE', ligrel, 'NEUT_I', &
                 ncmp=nbcmp, lnomcmp=licmpd, vi=icmpd)
 !
 !
@@ -386,7 +386,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     icmpd(7) = iptmd2
     icmpd(8) = numgd2
 !
-    call mecact(base, '&&'//nompro//'.CH_PRESSD', 'MODELE', ligrel, 'NEUT_I',&
+    call mecact(base, '&&'//nompro//'.CH_PRESSD', 'MODELE', ligrel, 'NEUT_I', &
                 ncmp=nbcmp, lnomcmp=licmpd, vi=icmpd)
 !
 ! ------- FIN CREATION CARTES PB. DUAL----------------------------------
@@ -412,22 +412,22 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         call exisd('CHAMP_GD', lcharp(i)//'.CHME.F3D3D', iret10)
         if (iret7 .ne. 0) then
             chfop1 = lcharp(i)//'.CHME.PESAN.DESC'
-        endif
+        end if
         if (iret8 .ne. 0) then
             chfop2 = lcharp(i)//'.CHME.ROTAT.DESC'
-        endif
+        end if
         if (iret9 .ne. 0) then
             chfop3 = lcharp(i)//'.CHME.F2D2D.DESC'
             call jeveuo(lcharp(i)//'.TYPE', 'L', ibid)
             typcp3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F2D2D AVEC '//CHFOP3//' ET '//TYPCP3
-        endif
+        end if
         if (iret10 .ne. 0) then
             chfop3 = lcharp(i)//'.CHME.F3D3D.DESC'
             call jeveuo(lcharp(i)//'.TYPE', 'L', ibid)
             typcp3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOP3//' ET '//TYPCP3
-        endif
+        end if
     end do
 !
 ! ------- FIN TEST SUR LES CHARGEMENTS VOLUMIQUES POUR LE PB. PRIMAL ---
@@ -452,22 +452,22 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
         call exisd('CHAMP_GD', lchard(i)//'.CHME.F3D3D', iret14)
         if (iret11 .ne. 0) then
             chfod1 = lchard(i)//'.CHME.PESAN.DESC'
-        endif
+        end if
         if (iret12 .ne. 0) then
             chfod2 = lchard(i)//'.CHME.ROTAT.DESC'
-        endif
+        end if
         if (iret13 .ne. 0) then
             chfod3 = lchard(i)//'.CHME.F2D2D.DESC'
             call jeveuo(lcharp(i)//'.TYPE', 'L', ibid)
             typcd3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F2D2D AVEC '//CHFOD3//' ET '//TYPCD3
-        endif
+        end if
         if (iret14 .ne. 0) then
             chfod3 = lchard(i)//'.CHME.F3D3D.DESC'
             call jeveuo(lcharp(i)//'.TYPE', 'L', ibid)
             typcd3 = zk8(ibid)
 !GN          WRITE(6,*) 'ON A DU F3D3D AVEC '//CHFOD3//' ET '//TYPCD3
-        endif
+        end if
     end do
 !
 ! ------- FIN TEST SUR LES CHARGEMENTS VOLUMIQUES POUR LE PB. DUAL ---
@@ -505,24 +505,24 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     nbrin = 15
 !
     if (typcp3(1:1) .ne. ' ') then
-        nbrin = nbrin + 1
+        nbrin = nbrin+1
         if (typcp3(1:7) .eq. 'MECA_RE') then
             lpain(nbrin) = 'PFRVOLUP'
-        else if (typcp3(1:7).eq.'MECA_FO') then
+        else if (typcp3(1:7) .eq. 'MECA_FO') then
             lpain(nbrin) = 'PFFVOLUP'
-        endif
+        end if
         lchin(nbrin) = chfop3
-    endif
+    end if
 !
     if (typcd3(1:1) .ne. ' ') then
-        nbrin = nbrin + 1
+        nbrin = nbrin+1
         if (typcd3(1:7) .eq. 'MECA_RE') then
             lpain(nbrin) = 'PFRVOLUD'
-        else if (typcd3(1:7).eq.'MECA_FO') then
+        else if (typcd3(1:7) .eq. 'MECA_FO') then
             lpain(nbrin) = 'PFFVOLUD'
-        endif
+        end if
         lchin(nbrin) = chfod3
-    endif
+    end if
 !
     lpaout(1) = 'PERREUR'
     lchout(1) = chelem
@@ -536,13 +536,13 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 !GN   33 CONTINUE
 !GN 3000 FORMAT(I2,1X,A8,1X,A24)
 !
-    call calcul('C', option, ligrel, nbrin, lchin,&
-                lpain, 1, lchout, lpaout, 'G',&
+    call calcul('C', option, ligrel, nbrin, lchin, &
+                lpain, 1, lchout, lpaout, 'G', &
                 'OUI')
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         call utmess('F', 'CALCULEL2_88', sk=option)
-    endif
+    end if
 !
 !====
 ! 4. MENAGE FINAL

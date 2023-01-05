@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irdepl(fileUnit   ,&
-                  fieldTypeZ , fieldNameZ  ,&
-                  cmpUserNb  , cmpUserName ,&
-                  nodeUserNb , nodeUserNume,&
-                  lMeshCoor_ , lmax_       , lmin_,&
-                  lsup_      , borsup_     ,&
-                  linf_      , borinf_     ,&
+subroutine irdepl(fileUnit, &
+                  fieldTypeZ, fieldNameZ, &
+                  cmpUserNb, cmpUserName, &
+                  nodeUserNb, nodeUserNume, &
+                  lMeshCoor_, lmax_, lmin_, &
+                  lsup_, borsup_, &
+                  linf_, borinf_, &
                   realFormat_, cplxFormat_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -50,16 +50,16 @@ implicit none
 #include "asterfort/cnsimp.h"
 #include "asterfort/nbec.h"
 !
-integer, intent(in) :: fileUnit
-character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
-integer, intent(in) :: cmpUserNb
-character(len=8), pointer :: cmpUserName(:)
-integer, intent(in) :: nodeUserNb
-integer, pointer :: nodeUserNume(:)
-aster_logical, optional, intent(in) :: lMeshCoor_
-aster_logical, optional, intent(in) :: lsup_, linf_, lmax_, lmin_
-real(kind=8),  optional, intent(in) :: borsup_, borinf_
-character(len=*),  optional, intent(in) :: realFormat_, cplxFormat_
+    integer, intent(in) :: fileUnit
+    character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
+    integer, intent(in) :: cmpUserNb
+    character(len=8), pointer :: cmpUserName(:)
+    integer, intent(in) :: nodeUserNb
+    integer, pointer :: nodeUserNume(:)
+    aster_logical, optional, intent(in) :: lMeshCoor_
+    aster_logical, optional, intent(in) :: lsup_, linf_, lmax_, lmin_
+    real(kind=8), optional, intent(in) :: borsup_, borinf_
+    character(len=*), optional, intent(in) :: realFormat_, cplxFormat_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,44 +126,44 @@ character(len=*),  optional, intent(in) :: realFormat_, cplxFormat_
     lMeshCoor = ASTER_FALSE
     if (present(lMeshCoor_)) then
         lMeshCoor = lMeshCoor_
-    endif
+    end if
     lsup = ASTER_FALSE
     if (present(lsup_)) then
         lsup = lsup_
-    endif
+    end if
     linf = ASTER_FALSE
     if (present(linf_)) then
         linf = linf_
-    endif
+    end if
     lmax = ASTER_FALSE
     if (present(lmax_)) then
         lmax = lmax_
-    endif
+    end if
     lmin = ASTER_FALSE
     if (present(lmin_)) then
         lmin = lmin_
-    endif
+    end if
     borsup = 0.d0
     if (present(borsup_)) then
         borsup = borsup_
-    endif
+    end if
     borinf = 0.d0
     if (present(borinf_)) then
         borinf = borinf_
-    endif
+    end if
     realFormat = '1PE12.5'
     if (present(realFormat_)) then
         realFormat = realFormat_
-    endif
+    end if
     cplxFormat = ' '
     if (present(cplxFormat_)) then
         cplxFormat = cplxFormat_
-    endif
+    end if
 !
 ! - Get properties of field
 !
-    call jeveuo(fieldName//'.DESC', 'L', vi = desc)
-    call jeveuo(fieldName//'.REFE', 'L', vk24 = refe)
+    call jeveuo(fieldName//'.DESC', 'L', vi=desc)
+    call jeveuo(fieldName//'.REFE', 'L', vk24=refe)
     call jelira(fieldName//'.VALE', 'TYPE', cval=type)
     if (type(1:1) .eq. 'R') then
         fieldScalar = 1
@@ -175,78 +175,78 @@ character(len=*),  optional, intent(in) :: realFormat_, cplxFormat_
         fieldScalar = 4
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     quantityIndx = desc(1)
-    fieldRepr    = desc(2)
+    fieldRepr = desc(2)
 !
 ! - "coded" integers
 !
     nec = nbec(quantityIndx)
-    AS_ALLOCATE(vi = codeInte, size = nec)
+    AS_ALLOCATE(vi=codeInte, size=nec)
 !
 ! - Access to mesh
 !
-    meshName = refe(1)(1:8)
-    call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi = meshDime)
-    call jeveuo(meshName//'.COORDO    .VALE', 'L', vr = meshCoor)
-    call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi = meshNodeNb)
+    meshName = refe(1) (1:8)
+    call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi=meshDime)
+    call jeveuo(meshName//'.COORDO    .VALE', 'L', vr=meshCoor)
+    call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
 !
 ! - Access to profile of numbering
 !
     profName = refe(2)
     if (fieldRepr .ge. 0) then
-        call jeveuo(profName(1:19)//'.NUEQ', 'L', vi = nueq)
+        call jeveuo(profName(1:19)//'.NUEQ', 'L', vi=nueq)
         call jenonu(jexnom(profName(1:19)//'.LILI', '&MAILLA'), liliMesh)
-        call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi = prno)
-    endif
+        call jeveuo(jexnum(profName(1:19)//'.PRNO', liliMesh), 'L', vi=prno)
+    end if
 !
 ! - Select list of components
 !
-    call resuSelectCmp(quantityIndx,&
-                       cmpUserNb   , cmpUserName,&
-                       cmpCataNb   , cmpCataName,&
-                       cmpListNb   , cmpListIndx)
-    if (cmpListNb .eq. 0 .and. cmpUserNb .ne.0) then
+    call resuSelectCmp(quantityIndx, &
+                       cmpUserNb, cmpUserName, &
+                       cmpCataNb, cmpCataName, &
+                       cmpListNb, cmpListIndx)
+    if (cmpListNb .eq. 0 .and. cmpUserNb .ne. 0) then
         goto 997
-    endif
+    end if
 !
 ! - Select list of nodes
 !
-    AS_ALLOCATE(vk8=nodeListName, size = meshNodeNb)
-    AS_ALLOCATE(vi=nodeListNume, size = meshNodeNb)
-    call resuSelectNode(meshName    , meshNodeNb  ,&
-                        nodeUserNb  , nodeUserNume,&
-                        nodeListName, nodeListNume,&
+    AS_ALLOCATE(vk8=nodeListName, size=meshNodeNb)
+    AS_ALLOCATE(vi=nodeListNume, size=meshNodeNb)
+    call resuSelectNode(meshName, meshNodeNb, &
+                        nodeUserNb, nodeUserNume, &
+                        nodeListName, nodeListNume, &
                         nodeNb)
 !
 ! - Print nodal field
 !
     if (fieldScalar .eq. 1 .and. fieldRepr .ge. 0) then
-        call jeveuo(fieldName//'.VALE', 'L', vr = valeR)
-        call ircnrl(fileUnit, nodeNb, prno, nueq, nec,&
-                    codeInte, cmpCataNb, valeR, cmpCataName, nodeListName,&
-                    lMeshCoor, meshDime, meshCoor, nodeListNume, cmpListNb,&
-                    cmpListIndx, lsup, borsup, linf, borinf,&
+        call jeveuo(fieldName//'.VALE', 'L', vr=valeR)
+        call ircnrl(fileUnit, nodeNb, prno, nueq, nec, &
+                    codeInte, cmpCataNb, valeR, cmpCataName, nodeListName, &
+                    lMeshCoor, meshDime, meshCoor, nodeListNume, cmpListNb, &
+                    cmpListIndx, lsup, borsup, linf, borinf, &
                     lmax, lmin, realFormat)
     else if (fieldScalar .eq. 1 .and. fieldRepr .lt. 0) then
-        call jeveuo(fieldName//'.VALE', 'L', vr = valeR)
-        call ircrrl(fileUnit, nodeNb, desc, nec, codeInte,&
-                    cmpCataNb, valeR, cmpCataName, nodeListName, lMeshCoor,&
-                    meshDime, meshCoor, nodeListNume, cmpListNb, cmpListIndx,&
-                    lsup, borsup, linf, borinf, lmax,&
+        call jeveuo(fieldName//'.VALE', 'L', vr=valeR)
+        call ircrrl(fileUnit, nodeNb, desc, nec, codeInte, &
+                    cmpCataNb, valeR, cmpCataName, nodeListName, lMeshCoor, &
+                    meshDime, meshCoor, nodeListNume, cmpListNb, cmpListIndx, &
+                    lsup, borsup, linf, borinf, lmax, &
                     lmin, realFormat)
     else if (fieldScalar .eq. 2 .and. fieldRepr .ge. 0) then
-        call jeveuo(fieldName//'.VALE', 'L', vc = valeC)
-        call ircnc8(fileUnit , realFormat  , cplxFormat  ,&
-                    nodeNb   , nodeListNume, nodeListName,&
-                    lMeshCoor, meshDime    , meshCoor    ,&
-                    cmpCataNb, cmpCataName ,&
-                    cmpListNb, cmpListIndx ,&
-                    nec      , nueq        ,&
-                    prno     , codeInte    ,&
-                    lmax     , lmin        ,&
-                    lsup     , borsup      ,&
-                    linf     , borinf      ,&
+        call jeveuo(fieldName//'.VALE', 'L', vc=valeC)
+        call ircnc8(fileUnit, realFormat, cplxFormat, &
+                    nodeNb, nodeListNume, nodeListName, &
+                    lMeshCoor, meshDime, meshCoor, &
+                    cmpCataNb, cmpCataName, &
+                    cmpListNb, cmpListIndx, &
+                    nec, nueq, &
+                    prno, codeInte, &
+                    lmax, lmin, &
+                    lsup, borsup, &
+                    linf, borinf, &
                     valeC)
     else if (fieldScalar .eq. 2 .and. fieldRepr .lt. 0) then
         call utmess('F', 'RESULT3_34')
@@ -255,21 +255,21 @@ character(len=*),  optional, intent(in) :: realFormat_, cplxFormat_
         call cnocns(fieldName, 'V', fieldNameS)
         call cnsimp(fieldNameS, fileUnit)
         call detrsd('CHAM_NO_S', fieldNameS)
-    endif
+    end if
     goto 999
 !
 997 continue
 !
-    call utmess('A', 'RESULT3_40', sk = fieldType)
+    call utmess('A', 'RESULT3_40', sk=fieldType)
 !
 999 continue
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi  = cmpListIndx)
-    AS_DEALLOCATE(vi  = codeInte)
-    AS_DEALLOCATE(vk8 = nodeListName)
-    AS_DEALLOCATE(vi  = nodeListNume)
+    AS_DEALLOCATE(vi=cmpListIndx)
+    AS_DEALLOCATE(vi=codeInte)
+    AS_DEALLOCATE(vk8=nodeListName)
+    AS_DEALLOCATE(vi=nodeListNume)
 !
     call jedema()
 end subroutine

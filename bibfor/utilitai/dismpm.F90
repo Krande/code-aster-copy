@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,21 +55,21 @@ subroutine dismpm(questi, nomobz, repi, repkz, ierd)
     ierd = 0
 !
     nomob = nomobz
-    phen=nomob(1:16)
-    mode=nomob(17:32)
+    phen = nomob(1:16)
+    mode = nomob(17:32)
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call jenonu(jexnom('&CATA.'//phen(1:13)//'.MODL', mode), imode)
-    ASSERT(imode.gt.0)
+    ASSERT(imode .gt. 0)
     call jeveuo(jexnum('&CATA.'//phen, imode), 'L', jphen)
 !
     if (questi .eq. 'DIM_GEOM') then
-        repi=zi(jphen-1+nbtm+2)
-    else if (questi.eq.'DIM_TOPO') then
-        repi=zi(jphen-1+nbtm+1)
+        repi = zi(jphen-1+nbtm+2)
+    else if (questi .eq. 'DIM_TOPO') then
+        repi = zi(jphen-1+nbtm+1)
     else
         ierd = 1
-    endif
+    end if
 !
     repkz = repk
 end subroutine

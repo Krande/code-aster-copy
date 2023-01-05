@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmEvalConductivity(ds_thm   ,&
-                               angl_naut, ndim  , j_mater,&
-                               satur    , phi   , &
-                               lambs    , dlambs, lambp , dlambp,&
-                               tlambt   , tlamct, tdlamt)
+subroutine thmEvalConductivity(ds_thm, &
+                               angl_naut, ndim, j_mater, &
+                               satur, phi, &
+                               lambs, dlambs, lambp, dlambp, &
+                               tlambt, tlamct, tdlamt)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
@@ -33,16 +33,16 @@ implicit none
 #include "asterfort/telamb.h"
 #include "asterfort/tlambc.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: ndim
-real(kind=8), intent(in) :: satur, phi
-real(kind=8), intent(out) :: lambs, dlambs
-real(kind=8), intent(out) :: lambp, dlambp
-real(kind=8), intent(out) :: tlambt(ndim, ndim)
-real(kind=8), intent(out) :: tlamct(ndim, ndim)
-real(kind=8), intent(out) :: tdlamt(ndim, ndim)
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: j_mater
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: ndim
+    real(kind=8), intent(in) :: satur, phi
+    real(kind=8), intent(out) :: lambs, dlambs
+    real(kind=8), intent(out) :: lambp, dlambp
+    real(kind=8), intent(out) :: tlambt(ndim, ndim)
+    real(kind=8), intent(out) :: tlamct(ndim, ndim)
+    real(kind=8), intent(out) :: tdlamt(ndim, ndim)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,19 +73,19 @@ real(kind=8), intent(out) :: tdlamt(ndim, ndim)
 !
     integer, parameter :: nb_para = 2
     real(kind=8) :: para_vale(nb_para)
-    character(len=4), parameter :: para_name(nb_para)  = (/'SAT ', 'PORO'/)
+    character(len=4), parameter :: para_name(nb_para) = (/'SAT ', 'PORO'/)
     integer, parameter :: nb_resu = 4
     real(kind=8) :: resu_vale(nb_resu)
-    character(len=16), parameter :: resu_name(nb_resu) = (/'LAMB_S  ', 'D_LB_S  ',&
+    character(len=16), parameter :: resu_name(nb_resu) = (/'LAMB_S  ', 'D_LB_S  ', &
                                                            'LAMB_PHI', 'D_LB_PHI'/)
     integer :: icodre(nb_resu)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lambs        = 1.d0
-    dlambs       = 0.d0
-    lambp        = 1.d0
-    dlambp       = 0.d0
+    lambs = 1.d0
+    dlambs = 0.d0
+    lambp = 1.d0
+    dlambp = 0.d0
     resu_vale(:) = 0.d0
     resu_vale(1) = 1.d0
     resu_vale(3) = 1.d0
@@ -94,14 +94,14 @@ real(kind=8), intent(out) :: tdlamt(ndim, ndim)
 !
     para_vale(1) = satur
     para_vale(2) = phi
-    call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                nb_para, para_name, para_vale  ,&
-                nb_resu, resu_name, resu_vale  ,&
-                icodre , 0        , nan='NON')
-    lambs     = resu_vale(1)
-    dlambs    = resu_vale(2)
-    lambp     = resu_vale(3)
-    dlambp    = resu_vale(4)
+    call rcvala(j_mater, ' ', 'THM_DIFFU', &
+                nb_para, para_name, para_vale, &
+                nb_resu, resu_name, resu_vale, &
+                icodre, 0, nan='NON')
+    lambs = resu_vale(1)
+    dlambs = resu_vale(2)
+    lambp = resu_vale(3)
+    dlambp = resu_vale(4)
 !
 ! - Compute tensor of thermal conductivity
 !

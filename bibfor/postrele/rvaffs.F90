@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
-                  quant, option, rep, nomtab, ncheff,&
+subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy, &
+                  quant, option, rep, nomtab, ncheff, &
                   i1, isd)
     implicit none
 #include "jeveux.h"
@@ -61,7 +61,7 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
     call jemarq()
     call infniv(ifm, niv)
     oper = 'SOMME'
-    if (niv .gt. 1) call rvinfa(ifm, mcf, iocc, quant, option,&
+    if (niv .gt. 1) call rvinfa(ifm, mcf, iocc, quant, option, &
                                 oper, rep(1:1))
     nnocp = sdmoy(1:19)//'.NOCP'
     nabsc = sdlieu(1:19)//'.ABSC'
@@ -75,25 +75,25 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
     call jeveuo(sdeval//'.PNSP', 'L', i)
     nbsp = zi(i)
     do ioc = 1, nboc, 1
-        call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
-        call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
+        call jelira(jexnum(nabsc, ioc), 'LONMAX', nbpt)
+        call jeveuo(jexnum(nabsc, ioc), 'L', aabsc)
         call jeveuo(jexnum(sdmoy(1:19)//'.VALE', ioc), 'L', asdmo)
-        s1 = zr(aabsc + 1-1)
-        s2 = zr(aabsc + nbpt-1)
+        s1 = zr(aabsc+1-1)
+        s2 = zr(aabsc+nbpt-1)
         if (niv .gt. 1) then
             if (docul .eq. 'LSTN') then
-                write(ifm,*)'CHEMIN RELIANT LES NOEUDS :'
+                write (ifm, *) 'CHEMIN RELIANT LES NOEUDS :'
                 do i = 1, nbpt/8, 1
-                    write(ifm,'(8(1X,A8))')(zk8(anomnd+(i-1)*8+k-1),k=&
-                    1,8,1)
+                    write (ifm, '(8(1X,A8))') (zk8(anomnd+(i-1)*8+k-1), k= &
+                                               1, 8, 1)
                 end do
-                write(ifm,*)'   '
-                write(ifm,*)(zk8(anomnd+k-1)//' ',k=8*(nbpt/8)+1,nbpt,&
-                1)
-            endif
-            write(ifm,*)' '
-        endif
-        call rvtaso(zr(asdmo), zk8(anocp), nbcp, nbco, nbsp,&
+                write (ifm, *) '   '
+                write (ifm, *) (zk8(anomnd+k-1)//' ', k=8*(nbpt/8)+1, nbpt, &
+                                1)
+            end if
+            write (ifm, *) ' '
+        end if
+        call rvtaso(zr(asdmo), zk8(anocp), nbcp, nbco, nbsp, &
                     nomtab, iocc, ncheff, i1)
     end do
 !

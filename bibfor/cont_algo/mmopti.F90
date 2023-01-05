@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -51,9 +51,9 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/mmvalp.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(inout) :: ds_contact
-integer, intent(in) :: list_func_acti(*)
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,10 +87,10 @@ integer, intent(in) :: list_func_acti(*)
     integer :: ztabf
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
-    integer  ::  elem_mast_nume,elem_mast_nbno
+    integer  ::  elem_mast_nume, elem_mast_nbno
     character(len=8) :: elem_mast_type
     character(len=19) :: oldgeo, newgeo
-    real(kind=8) :: elem_mast_coor(27),lenght_master_elem,lenght_master_elem_init,milieu(3)
+    real(kind=8) :: elem_mast_coor(27), lenght_master_elem, lenght_master_elem_init, milieu(3)
     real(kind=8) :: coef_cont, cont_eval, elem_slav_coor(27)
     aster_logical :: l_reuse
 !
@@ -98,30 +98,30 @@ integer, intent(in) :: list_func_acti(*)
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_18')
-    endif
+        call utmess('I', 'CONTACT5_18')
+    end if
 !
 ! - Initializations
 !
-    cnscon       = '&&MMOPTI.CNSCON'
-    i_poin_appa  = 1
-    i_cont_poin  = 1
+    cnscon = '&&MMOPTI.CNSCON'
+    i_poin_appa = 1
+    i_cont_poin = 1
     nb_cont_init = 0
     nb_cont_excl = 0
-    lenght_master_elem      = 0.0
-    milieu      = 0.0
+    lenght_master_elem = 0.0
+    milieu = 0.0
     lenght_master_elem_init = -1
 !
 ! - Parameters
 !
-    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
-    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM')
-    l_reuse = isfonc(list_func_acti,'REUSE')
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    l_reuse = isfonc(list_func_acti, 'REUSE')
 !
 ! - Datastructure for contact solving
 !
     sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-    call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
+    call jeveuo(sdcont_tabfin, 'E', vr=v_sdcont_tabfin)
     ztabf = cfmmvd('ZTABF')
 !
 ! - Pairing datastructure
@@ -143,16 +143,16 @@ integer, intent(in) :: list_func_acti(*)
 ! - Preparation for SEUIL_INIT
 !
     do i_zone = 1, nb_cont_zone
-        l_auto_seuil = mminfl(ds_contact%sdcont_defi,'SEUIL_AUTO', i_zone)
-        cont_init    = mminfi(ds_contact%sdcont_defi,'CONTACT_INIT', i_zone)
-        if ((l_auto_seuil) .or. ((l_reuse) .and. (cont_init .eq. 2)) ) then
-            disp_init =  ds_contact%sdcont_solv(1:14)//'.INIT'
-            call mmfield_prep(disp_init, cnscon,&
-                              l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
+        l_auto_seuil = mminfl(ds_contact%sdcont_defi, 'SEUIL_AUTO', i_zone)
+        cont_init = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', i_zone)
+        if ((l_auto_seuil) .or. ((l_reuse) .and. (cont_init .eq. 2))) then
+            disp_init = ds_contact%sdcont_solv(1:14)//'.INIT'
+            call mmfield_prep(disp_init, cnscon, &
+                              l_sort_=.true._1, nb_cmp_=1, list_cmp_=['LAGS_C  '])
             goto 30
-        endif
+        end if
     end do
- 30 continue
+30  continue
 !
 ! - Loop on contact zones
 !
@@ -160,23 +160,23 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! ----- Parameters of zone
 !
-        jdecme       = mminfi(ds_contact%sdcont_defi,'JDECME'        , i_zone)
-        nb_elem_slav = mminfi(ds_contact%sdcont_defi,'NBMAE'         , i_zone)
-        l_gliss      = mminfl(ds_contact%sdcont_defi,'GLISSIERE_ZONE', i_zone)
-        l_auto_seuil = mminfl(ds_contact%sdcont_defi,'SEUIL_AUTO'    , i_zone)
-        seuil_init   = mminfr(ds_contact%sdcont_defi,'SEUIL_INIT'    , i_zone)
-        seuil_init   = -abs(seuil_init)
-        cont_init    = mminfi(ds_contact%sdcont_defi,'CONTACT_INIT'  , i_zone)
-        coef_cont    = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_CONT', i_zone)
+        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', i_zone)
+        nb_elem_slav = mminfi(ds_contact%sdcont_defi, 'NBMAE', i_zone)
+        l_gliss = mminfl(ds_contact%sdcont_defi, 'GLISSIERE_ZONE', i_zone)
+        l_auto_seuil = mminfl(ds_contact%sdcont_defi, 'SEUIL_AUTO', i_zone)
+        seuil_init = mminfr(ds_contact%sdcont_defi, 'SEUIL_INIT', i_zone)
+        seuil_init = -abs(seuil_init)
+        cont_init = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', i_zone)
+        coef_cont = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', i_zone)
 !
 ! ----- No computation: no contact point
 !
-        l_veri = mminfl(ds_contact%sdcont_defi,'VERIF', i_zone)
+        l_veri = mminfl(ds_contact%sdcont_defi, 'VERIF', i_zone)
         if (l_veri) then
             nb_poin_elem = mminfi(ds_contact%sdcont_defi, 'NBPT', i_zone)
-            i_poin_appa  = i_poin_appa + nb_poin_elem
+            i_poin_appa = i_poin_appa+nb_poin_elem
             goto 25
-        endif
+        end if
 !
 ! ----- Loop on slave elements
 !
@@ -184,7 +184,7 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! --------- Slave element index in contact datastructure
 !
-            elem_slav_indx = jdecme + i_elem_slav
+            elem_slav_indx = jdecme+i_elem_slav
 !
 ! --------- Informations about slave element
 !
@@ -193,7 +193,7 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! --------- Number of integration points on element
 !
-            call mminfm(elem_slav_indx, ds_contact%sdcont_defi, 'NPTM'  , nb_poin_elem)
+            call mminfm(elem_slav_indx, ds_contact%sdcont_defi, 'NPTM', nb_poin_elem)
 !
 ! --------- SANS_GROUP_NO_FR or SANS_NOEUD_FR ?
 !
@@ -210,53 +210,53 @@ integer, intent(in) :: list_func_acti(*)
 ! --------- Get coordinates of master element
 !
                 if ((l_reuse) .and. (cont_init .eq. 2)) then
-                    call mcomce(mesh          , newgeo, elem_mast_nume, elem_mast_coor, &
+                    call mcomce(mesh, newgeo, elem_mast_nume, elem_mast_coor, &
                                 elem_mast_type, elem_mast_nbno)
-                    call mcomce(mesh          , newgeo, elem_slav_nume, elem_slav_coor, &
+                    call mcomce(mesh, newgeo, elem_slav_nume, elem_slav_coor, &
                                 elem_slav_type, elem_slav_nbno)
                 else
-                    call mcomce(mesh          , oldgeo, elem_mast_nume, elem_mast_coor, &
+                    call mcomce(mesh, oldgeo, elem_mast_nume, elem_mast_coor, &
                                 elem_mast_type, elem_mast_nbno)
-                    call mcomce(mesh          , oldgeo, elem_slav_nume, elem_slav_coor, &
+                    call mcomce(mesh, oldgeo, elem_slav_nume, elem_slav_coor, &
                                 elem_slav_type, elem_slav_nbno)
-                endif
-    ! Compute the minima lenght of the master element in the current zone
+                end if
+                ! Compute the minima lenght of the master element in the current zone
 !                 write (6,*) "elem_mast_type",elem_mast_type
 
-                 if ((elem_mast_type(1:2) .eq. 'SE') ) then
-                 ! On calcule la distance des noeuds sommets
-                    lenght_master_elem      = 0.0
-                    lenght_master_elem = sqrt(                                            &
-                                abs((elem_mast_coor(4)-elem_mast_coor(1)))**2.d0 +&
-                                abs((elem_mast_coor(5)-elem_mast_coor(2)))**2.d0 +&
-                                abs((elem_mast_coor(6)-elem_mast_coor(3)))**2.d0 &
-                                 )
-                 elseif  ((elem_mast_type(1:2) .eq. 'TR')) then
-                     lenght_master_elem      = 0.0
-                 ! On calcule la mediane
-                    milieu(1) =  (elem_mast_coor(1)+elem_mast_coor(4))*0.5
-                    milieu(2) =  (elem_mast_coor(2)+elem_mast_coor(5))*0.5
-                    milieu(3) =  (elem_mast_coor(3)+elem_mast_coor(6))*0.5
-                    lenght_master_elem = sqrt(                                            &
-                                abs((elem_mast_coor(7)-milieu(1)))**2.d0 +&
-                                abs((elem_mast_coor(8)-milieu(2)))**2.d0 +&
-                                abs((elem_mast_coor(9)-milieu(3)))**2.d0 &
-                                 )
+                if ((elem_mast_type(1:2) .eq. 'SE')) then
+                    ! On calcule la distance des noeuds sommets
+                    lenght_master_elem = 0.0
+                    lenght_master_elem = sqrt( &
+                                         abs((elem_mast_coor(4)-elem_mast_coor(1)))**2.d0+ &
+                                         abs((elem_mast_coor(5)-elem_mast_coor(2)))**2.d0+ &
+                                         abs((elem_mast_coor(6)-elem_mast_coor(3)))**2.d0 &
+                                         )
+                elseif ((elem_mast_type(1:2) .eq. 'TR')) then
+                    lenght_master_elem = 0.0
+                    ! On calcule la mediane
+                    milieu(1) = (elem_mast_coor(1)+elem_mast_coor(4))*0.5
+                    milieu(2) = (elem_mast_coor(2)+elem_mast_coor(5))*0.5
+                    milieu(3) = (elem_mast_coor(3)+elem_mast_coor(6))*0.5
+                    lenght_master_elem = sqrt( &
+                                         abs((elem_mast_coor(7)-milieu(1)))**2.d0+ &
+                                         abs((elem_mast_coor(8)-milieu(2)))**2.d0+ &
+                                         abs((elem_mast_coor(9)-milieu(3)))**2.d0 &
+                                         )
 
-                 elseif  ((elem_mast_type(1:2) .eq. 'QU')) then
-                    lenght_master_elem      = 0.0
-                 ! On calcule la moyenne des diagonale
-                    lenght_master_elem = sqrt(                                            &
-                                abs((elem_mast_coor(7)-elem_mast_coor(1)))**2.d0 +&
-                                abs((elem_mast_coor(8)-elem_mast_coor(2)))**2.d0 +&
-                                abs((elem_mast_coor(9)-elem_mast_coor(3)))**2.d0 &
-                                 )  + &
-                                 sqrt(                                            &
-                                abs((elem_mast_coor(10)-elem_mast_coor(4)))**2.d0 +&
-                                abs((elem_mast_coor(11)-elem_mast_coor(5)))**2.d0 +&
-                                abs((elem_mast_coor(12)-elem_mast_coor(6)))**2.d0 &
-                                 )
-                 endif
+                elseif ((elem_mast_type(1:2) .eq. 'QU')) then
+                    lenght_master_elem = 0.0
+                    ! On calcule la moyenne des diagonale
+                    lenght_master_elem = sqrt( &
+                                         abs((elem_mast_coor(7)-elem_mast_coor(1)))**2.d0+ &
+                                         abs((elem_mast_coor(8)-elem_mast_coor(2)))**2.d0+ &
+                                         abs((elem_mast_coor(9)-elem_mast_coor(3)))**2.d0 &
+                                         )+ &
+                                         sqrt( &
+                                         abs((elem_mast_coor(10)-elem_mast_coor(4)))**2.d0+ &
+                                         abs((elem_mast_coor(11)-elem_mast_coor(5)))**2.d0+ &
+                                         abs((elem_mast_coor(12)-elem_mast_coor(6)))**2.d0 &
+                                         )
+                end if
 
                 ! On cherche a initialiser lenght_master_elem_init,ds_contact%arete_min,max
                 ! avec la premiere arete non nulle de la zone maitre
@@ -266,19 +266,19 @@ integer, intent(in) :: list_func_acti(*)
                     lenght_master_elem_init = lenght_master_elem
                     ds_contact%arete_min = lenght_master_elem_init
                     ds_contact%arete_max = lenght_master_elem_init
-                endif
+                end if
 
-                if ( (lenght_master_elem_init .le. 0.0d0 )) then
+                if ((lenght_master_elem_init .le. 0.0d0)) then
                     lenght_master_elem_init = -1
                 elseif (i_poin_elem .ge. 2 .and. lenght_master_elem_init .ne. -1) then
-                    if ( (lenght_master_elem .lt. ds_contact%arete_min)  ) then
+                    if ((lenght_master_elem .lt. ds_contact%arete_min)) then
                         ds_contact%arete_min = lenght_master_elem
-                    endif
-                    if ( (lenght_master_elem .gt. ds_contact%arete_max)  ) then
+                    end if
+                    if ((lenght_master_elem .gt. ds_contact%arete_max)) then
                         ds_contact%arete_max = lenght_master_elem
-                    endif
+                    end if
 
-                endif
+                end if
 
 !                write (6,*) "armin,armax",ds_contact%arete_min,ds_contact%arete_max
 
@@ -291,9 +291,9 @@ integer, intent(in) :: list_func_acti(*)
                 else
                     call apinfr(sdappa, 'APPARI_PROJ_KSI1', i_poin_appa, ksipr1)
                     call apinfr(sdappa, 'APPARI_PROJ_KSI2', i_poin_appa, ksipr2)
-                endif
-                call apinfi(sdappa, 'APPARI_TYPE'     , i_poin_appa, pair_type)
-                call apvect(sdappa, 'APPARI_VECTPM'   , i_poin_appa, vectpm)
+                end if
+                call apinfi(sdappa, 'APPARI_TYPE', i_poin_appa, pair_type)
+                call apvect(sdappa, 'APPARI_VECTPM', i_poin_appa, vectpm)
 !
 ! ------------- No nodal pairing !
 !
@@ -319,14 +319,14 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! ------------- Option: SEUIL_INIT
 !
-                if ((l_auto_seuil) .or. ((l_reuse) .and. (cont_init .eq. 2)) ) then
+                if ((l_auto_seuil) .or. ((l_reuse) .and. (cont_init .eq. 2))) then
                     call mmextm(ds_contact%sdcont_defi, cnscon, elem_slav_indx, mlagc)
-                    call mmvalp_scal(model_ndim, elem_slav_type, elem_slav_nbno, ksipr1,&
-                                     ksipr2    , mlagc         , pres_cont)
+                    call mmvalp_scal(model_ndim, elem_slav_type, elem_slav_nbno, ksipr1, &
+                                     ksipr2, mlagc, pres_cont)
                     v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17) = pres_cont
                 else
                     v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17) = seuil_init
-                endif
+                end if
 !
 ! ------------- Option: CONTACT_INIT
 !
@@ -334,45 +334,45 @@ integer, intent(in) :: list_func_acti(*)
                 if (cont_init .eq. 2) then
 ! ----------------- Only interpenetrated points
                     if (l_reuse) then
-                        cont_eval = pres_cont + jeusgn*coef_cont
+                        cont_eval = pres_cont+jeusgn*coef_cont
                         if (cont_eval .lt. 0.0) then
                             flag_cont = 1.0
-                            nb_cont_init = nb_cont_init + 1
-                        endif
+                            nb_cont_init = nb_cont_init+1
+                        end if
                     else
                         if (jeusgn .le. epsint) then
                             flag_cont = 1.d0
-                            nb_cont_init = nb_cont_init + 1
-                        endif
-                    endif
+                            nb_cont_init = nb_cont_init+1
+                        end if
+                    end if
                 else if (cont_init .eq. 1) then
 ! ----------------- All points
                     flag_cont = 1.d0
-                    nb_cont_init = nb_cont_init + 1
+                    nb_cont_init = nb_cont_init+1
                 else if (cont_init .eq. 0) then
 ! ----------------- No initial contact
                     flag_cont = 0.d0
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !
 ! ------------- Option: GLISSIERE
 !
                 if (l_gliss) then
                     if (cont_init .eq. 1) then
                         v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0
-                    endif
+                    end if
                     if (cont_init .eq. 2 .and. (jeusgn .le. epsint)) then
                         v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0
-                    endif
-                endif
+                    end if
+                end if
 !
 ! ------------- Excluded nodes => no contact !
 !
                 if (l_node_excl) then
                     flag_cont = 0.d0
-                    nb_cont_excl = nb_cont_excl + 1
-                endif
+                    nb_cont_excl = nb_cont_excl+1
+                end if
 !
 ! ------------- Save initial contact
 !
@@ -380,14 +380,14 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! ------------- Next contact point
 !
-                i_poin_appa  = i_poin_appa + 1
-                i_cont_poin  = i_cont_poin + 1
+                i_poin_appa = i_poin_appa+1
+                i_cont_poin = i_cont_poin+1
             end do
         end do
- 25     continue
+25      continue
     end do
 !
-    call utmess('I', 'CONTACT3_5', ni = 2 , vali = [nb_cont_init, nb_cont_excl])
+    call utmess('I', 'CONTACT3_5', ni=2, vali=[nb_cont_init, nb_cont_excl])
 !
     call detrsd('CHAM_NO_S', cnscon)
 !

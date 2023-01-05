@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine rs_get_liststore(result_, nb_store, v_list_store_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: result_
-integer, intent(out) :: nb_store
-integer, pointer, optional :: v_list_store_(:)
+    character(len=*), intent(in) :: result_
+    integer, intent(out) :: nb_store
+    integer, pointer, optional :: v_list_store_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,20 +55,20 @@ integer, pointer, optional :: v_list_store_(:)
 ! --------------------------------------------------------------------------------------------------
 !
     nb_store = 0
-    result   = result_
-    call rsorac(result   , 'LONUTI', 0       , r8_dummy, k8_dummy,&
-                c16_dummy, r8_dummy, k8_dummy, tord    , 1       ,&
+    result = result_
+    call rsorac(result, 'LONUTI', 0, r8_dummy, k8_dummy, &
+                c16_dummy, r8_dummy, k8_dummy, tord, 1, &
                 i_dummy)
     nb_store = tord(1)
     if (nb_store .eq. 0) then
         if (present(v_list_store_)) then
-            call utmess('F', 'RESULT1_3', sk = result)
-        endif
-    endif
+            call utmess('F', 'RESULT1_3', sk=result)
+        end if
+    end if
     if (present(v_list_store_)) then
-        call rsorac(result   , 'TOUT_ORDRE', 0       , r8_dummy     , k8_dummy,&
-                    c16_dummy, r8_dummy    , k8_dummy, v_list_store_, nb_store,&
+        call rsorac(result, 'TOUT_ORDRE', 0, r8_dummy, k8_dummy, &
+                    c16_dummy, r8_dummy, k8_dummy, v_list_store_, nb_store, &
                     i_dummy)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,17 +53,17 @@ subroutine te0299(option, nomte)
 #include "asterfort/coor_cyl.h"
 #include "asterfort/provec.h"
 !
-    integer :: icodre(3),matcod,ncmp, i1, ij
+    integer :: icodre(3), matcod, ncmp, i1, ij
     integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano, icomp
     integer :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls, isigi
     integer :: imate, iforc, iforf, ifond, itemps, k, i, j, kk, l, ndim, jtab(7)
     integer :: ino
 !
-    real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18), sigin(6), dsigin(6,3)
+    real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18), sigin(6), dsigin(6, 3)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4), epsref(6)
     real(kind=8) :: rhocst, rho, om, omo, rbid, e, nu, rbid2(3, 3, 3)
-    real(kind=8) :: thet, tno(20), tgdm(3),rac2
+    real(kind=8) :: thet, tno(20), tgdm(3), rac2
     real(kind=8) :: xg, yg, e1(3), e2(3), e3(3)
     real(kind=8) :: c1, c2, c3, cs, u1(2), u2(2)
     real(kind=8) :: basloc(9*6), p(3, 3), invp(3, 3), rg, phig, ffp(9)
@@ -82,10 +82,10 @@ subroutine te0299(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    rbid=0.d0
+    rbid = 0.d0
     fami = 'RIGI'
     call elref1(elrefp)
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- RECUPERATION DES CHAMPS IN
@@ -106,7 +106,7 @@ subroutine te0299(option, nomte)
     call jevech('PGTHETA', 'E', ificg)
 !
     axi = .false.
-    if (lteatt('AXIS','OUI')) axi = .true.
+    if (lteatt('AXIS', 'OUI')) axi = .true.
 !
     g = 0.d0
     k1 = 0.d0
@@ -122,9 +122,9 @@ subroutine te0299(option, nomte)
     do i = 1, nno
         thet = 0.d0
         do j = 1, ndim
-            thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
+            thet = thet+abs(zr(ithet+ndim*(i-1)+j-1))
         end do
-        if (thet .lt. r8prem()) compt = compt + 1
+        if (thet .lt. r8prem()) compt = compt+1
     end do
     if (compt .eq. nno) goto 999
 !
@@ -142,33 +142,33 @@ subroutine te0299(option, nomte)
         nompar(2) = 'Y'
         if (ndim .eq. 2) then
             nompar(3) = 'INST'
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             nompar(3) = 'Z'
             nompar(4) = 'INST'
-        endif
+        end if
         valpar(ndim+1) = zr(itemps)
-    else if (option.eq.'CALC_K_G_XFEM') then
-        fonc =.false.
+    else if (option .eq. 'CALC_K_G_XFEM') then
+        fonc = .false.
         call jevech('PFRVOLU', 'L', iforc)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     lpesa = .false.
-    call tecach('ONO', 'PPESANR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PPESANR', 'L', iret, nval=7, &
                 itab=jtab)
-    ipesa=jtab(1)
+    ipesa = jtab(1)
     if (iret .eq. 0) then
         lpesa = .true.
-    endif
+    end if
 !
     lrota = .false.
-    call tecach('ONO', 'PROTATR', 'L', iret, nval=7,&
+    call tecach('ONO', 'PROTATR', 'L', iret, nval=7, &
                 itab=jtab)
-    irota=jtab(1)
+    irota = jtab(1)
     if (iret .eq. 0) then
         lrota = .true.
-    endif
+    end if
 !
 ! --- VERFICATION DU COMPORTEMENT : ELASTICITE INCREMENTALE AUTORISEE
 !
@@ -176,25 +176,25 @@ subroutine te0299(option, nomte)
         compor(i) = zk16(icomp+i-1)
     end do
 !
-    if (compor(3).eq.'GROT_GDEP') then
+    if (compor(3) .eq. 'GROT_GDEP') then
         call utmess('F', 'RUPTURE1_24')
     end if
-    if ((compor(1).ne.'ELAS' ) .or.  (compor(4).eq.'COMP_INCR')) then
-        if (compor(1).ne.'ELAS' ) then
+    if ((compor(1) .ne. 'ELAS') .or. (compor(4) .eq. 'COMP_INCR')) then
+        if (compor(1) .ne. 'ELAS') then
             call utmess('F', 'RUPTURE1_24')
         end if
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA PULSATION
 !
-    call tecach('ONO', 'PPULPRO', 'L', iret, nval=7,&
+    call tecach('ONO', 'PPULPRO', 'L', iret, nval=7, &
                 itab=jtab)
-    ipuls=jtab(1)
+    ipuls = jtab(1)
     if (iret .eq. 0) then
         puls = zr(ipuls)
     else
         puls = 0.d0
-    endif
+    end if
 !
 ! --- RECUPERATION DES CHARGES
 !
@@ -204,8 +204,8 @@ subroutine te0299(option, nomte)
                 valpar(j) = zr(igeom+ndim*(i-1)+j-1)
             end do
             do j = 1, ndim
-                kk = ndim*(i-1) + j
-                call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar,&
+                kk = ndim*(i-1)+j
+                call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar, &
                             fno(kk), ier)
             end do
         end do
@@ -215,52 +215,51 @@ subroutine te0299(option, nomte)
                 fno(ndim*(i-1)+j) = zr(iforc+ndim*(i-1)+j-1)
             end do
         end do
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
 !
     if (lpesa .or. lrota) then
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
-        call rcvalb('RIGI', 1, 1, '+', matcod,&
-                    ' ', phenom, 1, ' ', [rbid],&
+        call rcvalb('RIGI', 1, 1, '+', matcod, &
+                    ' ', phenom, 1, ' ', [rbid], &
                     1, 'RHO', val, icodre, 1)
         rhocst = val(1)
         if (lpesa) then
             do i = 1, nno
                 do j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rhocst*zr(ipesa)*zr(ipesa+j)
+                    fno(kk) = fno(kk)+rhocst*zr(ipesa)*zr(ipesa+j)
                 end do
             end do
-        endif
+        end if
 !
         if (lrota) then
             om = zr(irota)
             do i = 1, nno
                 omo = 0.d0
                 do j = 1, ndim
-                    omo = omo + zr(irota+j)* zr(igeom+ndim*(i-1)+j-1)
+                    omo = omo+zr(irota+j)*zr(igeom+ndim*(i-1)+j-1)
                 end do
                 do j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr(&
-                    irota+j))
+                    fno(kk) = fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr( &
+                                                    irota+j))
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DE LA TEMPERATURE
 !
     do ino = 1, nno
-        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
+        call rcvarc(' ', 'TEMP', '+', 'NOEU', ino, &
                     1, tno(ino), iret)
         if (iret .ne. 0) tno(ino) = 0.d0
     end do
 !
 ! --- RECUPERATION DE LA CONTRAINTE INITIALE
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
-
 
 ! ----------------------------------------------------------------------
 !
@@ -270,33 +269,33 @@ subroutine te0299(option, nomte)
 !
     do kp = 1, npg
 !INITIALISATIONS
-        l = (kp-1) * nno
+        l = (kp-1)*nno
         xg = 0.d0
         yg = 0.d0
         do i = 1, 3
             tgdm(i) = 0.d0
             do j = 1, 4
-                dudm(i,j) = 0.d0
-                du1dm(i,j)= 0.d0
-                du2dm(i,j)= 0.d0
-                dtdm(i,j) = 0.d0
-                dfdm(i,j) = 0.d0
+                dudm(i, j) = 0.d0
+                du1dm(i, j) = 0.d0
+                du2dm(i, j) = 0.d0
+                dtdm(i, j) = 0.d0
+                dfdm(i, j) = 0.d0
             end do
         end do
         do i = 1, 6
             sigin(i) = 0.d0
-            epsref(i)= 0.d0
+            epsref(i) = 0.d0
             do j = 1, 3
-                dsigin(i,j) = 0.d0
+                dsigin(i, j) = 0.d0
             end do
-         end do
+        end do
 !
 ! ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
 !       EN UN PT DE GAUSS
 !
-        call nmgeom(ndim, nno, axi, .false._1, zr(igeom),&
-                    kp, ipoids, ivf, idfde, zr(idepl),&
-                    .true._1, poids, dfdi, f, eps,&
+        call nmgeom(ndim, nno, axi, .false._1, zr(igeom), &
+                    kp, ipoids, ivf, idfde, zr(idepl), &
+                    .true._1, poids, dfdi, f, eps, &
                     ray)
 !
 ! ----- CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)
@@ -308,51 +307,50 @@ subroutine te0299(option, nomte)
             der(3) = 0.d0
             der(4) = zr(ivf+l+i-1)
 !
-            xg = xg + zr(igeom-1+ndim*(i-1)+1)*der(4)
-            yg = yg + zr(igeom-1+ndim*(i-1)+2)*der(4)
+            xg = xg+zr(igeom-1+ndim*(i-1)+1)*der(4)
+            yg = yg+zr(igeom-1+ndim*(i-1)+2)*der(4)
 !
             do j = 1, ndim
-                tgdm(j) = tgdm(j) + tno(i) * der(j)
+                tgdm(j) = tgdm(j)+tno(i)*der(j)
                 do k = 1, ndim
-                    dudm(j,k) = dudm(j,k) + zr(idepl+ndim*(i-1)+j-1)* der(k)
-                    dtdm(j,k) = dtdm(j,k) + zr(ithet+ndim*(i-1)+j-1)* der(k)
-                    dfdm(j,k) = dfdm(j,k) + fno(ndim*(i-1)+j)*der(k)
+                    dudm(j, k) = dudm(j, k)+zr(idepl+ndim*(i-1)+j-1)*der(k)
+                    dtdm(j, k) = dtdm(j, k)+zr(ithet+ndim*(i-1)+j-1)*der(k)
+                    dfdm(j, k) = dfdm(j, k)+fno(ndim*(i-1)+j)*der(k)
                 end do
-                dudm(j,4) = dudm(j,4) + zr(idepl+ndim*(i-1)+j-1)*der( 4)
-                dtdm(j,4) = dtdm(j,4) + zr(ithet+ndim*(i-1)+j-1)*der( 4)
-                dfdm(j,4) = dfdm(j,4) + fno(ndim*(i-1)+j)*der(4)
+                dudm(j, 4) = dudm(j, 4)+zr(idepl+ndim*(i-1)+j-1)*der(4)
+                dtdm(j, 4) = dtdm(j, 4)+zr(ithet+ndim*(i-1)+j-1)*der(4)
+                dfdm(j, 4) = dfdm(j, 4)+fno(ndim*(i-1)+j)*der(4)
             end do
         end do
 !
         if (axi) then
             if (ray .lt. r8prem()) then
                 call utmess('F', 'RUPTURE0_56')
-            endif
-            dudm(3,3)= dudm(1,4)/ray
-            dtdm(3,3)= dtdm(1,4)/ray
-            dfdm(3,3)= dfdm(1,4)/ray
-        endif
+            end if
+            dudm(3, 3) = dudm(1, 4)/ray
+            dtdm(3, 3) = dtdm(1, 4)/ray
+            dfdm(3, 3) = dfdm(1, 4)/ray
+        end if
 !
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
-
 
 !
 ! ----- RECUPERATION DE E, NU
 !
-        call rcvalb(fami, kp, 1, '+', matcod,&
-                    ' ', phenom, 0, ' ', [0.d0],&
+        call rcvalb(fami, kp, 1, '+', matcod, &
+                    ' ', phenom, 0, ' ', [0.d0], &
                     3, nomres, valres, icodre, 0)
-        ASSERT(icodre(1)+icodre(2).eq.0)
+        ASSERT(icodre(1)+icodre(2) .eq. 0)
         if (icodre(3) .ne. 0) then
             valres(3) = 0.d0
-        endif
+        end if
 !
         e = valres(1)
         nu = valres(2)
         rho = valres(3)
 !
         c3 = e/(2.d0*(1.d0+nu))
-        if (lteatt('D_PLAN','OUI') .or. lteatt('AXIS','OUI')) then
+        if (lteatt('D_PLAN', 'OUI') .or. lteatt('AXIS', 'OUI')) then
             mu = e/(2.d0*(1.d0+nu))
             ka = 3.d0-4.d0*nu
             c1 = e*(1.d0-nu)/((1.d0+nu)*(1.d0-2.d0*nu))
@@ -366,7 +364,7 @@ subroutine te0299(option, nomte)
             c2 = nu*c1
             th = (1.d0-2.d0*nu)/(1.d0-nu)
             coefk = e
-        endif
+        end if
 !
 ! ---- DETERMINATION DES GRANDEURS UTILES A LA PRISE EN COMPTE DE LA CONTRAINTE INITIALE
 ! ---- CONTRAINTE INITIALE, SA DERIVEE ET LA DEFORMATION ASSOCIEE EPSREF
@@ -382,32 +380,32 @@ subroutine te0299(option, nomte)
 ! CALCUL DE SIGMA INITIAL
                 ij = isigi+ncmp*i1-1
                 do j = 1, ncmp
-                    sigin(j) = sigin(j)+ zr(ij+j)*der(4)
+                    sigin(j) = sigin(j)+zr(ij+j)*der(4)
                 end do
 !
 ! CALCUL DU GRADIENT DE SIGMA INITIAL
                 do j = 1, ncmp
                     do k = 1, ndim
-                        dsigin(j,k)=dsigin(j,k)+zr(ij+j)*der(k)
+                        dsigin(j, k) = dsigin(j, k)+zr(ij+j)*der(k)
                     end do
                 end do
             end do
 !
 ! TRAITEMENTS PARTICULIERS DES TERMES CROISES
-            do  i = 4, ncmp
+            do i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
                 do j = 1, ndim
-                    dsigin(i,j) = dsigin(i,j)*rac2
+                    dsigin(i, j) = dsigin(i, j)*rac2
                 end do
             end do
 !
 ! CALCUL DE LA DEFORMATION DE REFERENCE
 !
-            epsref(1)=-(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
-            epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
-            epsref(3)=-(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
-            epsref(4)=-(1.d0/mu)*sigin(4)
-        endif
+            epsref(1) = -(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
+            epsref(2) = -(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
+            epsref(3) = -(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
+            epsref(4) = -(1.d0/mu)*sigin(4)
+        end if
 !
 !
 ! ----- CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
@@ -415,31 +413,31 @@ subroutine te0299(option, nomte)
 !
 ! ----- BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
 !
-        p(:,:)=0.d0
-        invp(:,:)=0.d0
+        p(:, :) = 0.d0
+        invp(:, :) = 0.d0
         do ino = 1, nno
-          ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
-          basloc((6*(ino-1)+1):(6*(ino-1)+6))=zr((ifond-1+1):(ifond-1+6))
-        enddo
-        call coor_cyl(ndim, nno, basloc, zr(igeom), ffp,&
-                      p, invp, rg, phig,&
+            ffp(ino) = zr(ivf-1+nno*(kp-1)+ino)
+            basloc((6*(ino-1)+1):(6*(ino-1)+6)) = zr((ifond-1+1):(ifond-1+6))
+        end do
+        call coor_cyl(ndim, nno, basloc, zr(igeom), ffp, &
+                      p, invp, rg, phig, &
                       l_not_zero)
 
 ! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
-        e1(:)=0.d0
-        e1(1:ndim)=p(1:ndim,1)
-        e2(:)=0.d0
-        e2(1:ndim)=p(1:ndim,2)
+        e1(:) = 0.d0
+        e1(1:ndim) = p(1:ndim, 1)
+        e2(:) = 0.d0
+        e2(1:ndim) = p(1:ndim, 2)
         call provec(e1, e2, e3)
-        p(3,3)=e3(3)
-        invp(3,3)=e3(3)
+        p(3, 3) = e3(3)
+        invp(3, 3) = e3(3)
 !
 !       PRISE EN COMPTE DE LA COURBURE : NON
 !
-        lcour=.false.
+        lcour = .false.
 !
-        call chauxi(ndim, mu, ka, rg, phig,&
-                    invp, lcour, rbid2, du1dm, du2dm,&
+        call chauxi(ndim, mu, ka, rg, phig, &
+                    invp, lcour, rbid2, du1dm, du2dm, &
                     rbid4, u1l, u2l, rbid3)
 !
         if (axi) then
@@ -448,67 +446,65 @@ subroutine te0299(option, nomte)
             u2(:) = 0.d0
             do i = 1, ndim
                 do j = 1, ndim
-                    u1(i) = u1(i) + p(i,j) * u1l(j)
-                    u2(i) = u2(i) + p(i,j) * u2l(j)
+                    u1(i) = u1(i)+p(i, j)*u1l(j)
+                    u2(i) = u2(i)+p(i, j)*u2l(j)
                 end do
             end do
 !
-            du1dm(3,3)= u1(1)/ray
-            du2dm(3,3)= u2(1)/ray
-        endif
+            du1dm(3, 3) = u1(1)/ray
+            du2dm(3, 3) = u2(1)/ray
+        end if
 !
 !-----------------------------------------------------------------------
 !       CALCUL DE G, K1, K2 AU POINT DE GAUSS
 !-----------------------------------------------------------------------
 !
 
-          guv = 0.d0
+        guv = 0.d0
 
         cs = 1.d0
-        call gbilin(fami, kp, zi(imate), dudm, dudm,&
-                    dtdm, dfdm, tgdm, poids, sigin,&
-                    dsigin, epsref, c1,&
-                    c2, c3, cs, th, 2.d0,&
+        call gbilin(fami, kp, zi(imate), dudm, dudm, &
+                    dtdm, dfdm, tgdm, poids, sigin, &
+                    dsigin, epsref, c1, &
+                    c2, c3, cs, th, 2.d0, &
                     rho, puls, axi, guv)
 
-          g = g + guv
+        g = g+guv
 !
 
-          guv1 = 0.d0
+        guv1 = 0.d0
 
         cs = 0.5d0
-        call gbilin(fami, kp, zi(imate), dudm, du1dm,&
-                    dtdm, dfdm, tgdm, poids, sigin,&
-                    dsigin, epsref, c1,&
-                    c2, c3, cs, th, 1.d0,&
+        call gbilin(fami, kp, zi(imate), dudm, du1dm, &
+                    dtdm, dfdm, tgdm, poids, sigin, &
+                    dsigin, epsref, c1, &
+                    c2, c3, cs, th, 1.d0, &
                     rho, puls, axi, guv1)
-        k1 = k1 + guv1
+        k1 = k1+guv1
 !
 
-          guv2 = 0.d0
+        guv2 = 0.d0
 
         cs = 0.5d0
 
-        call gbilin(fami, kp, zi(imate), dudm, du2dm,&
-                    dtdm, dfdm, tgdm, poids, sigin,&
-                    dsigin, epsref, c1,&
-                    c2, c3, cs, th, 1.d0,&
+        call gbilin(fami, kp, zi(imate), dudm, du2dm, &
+                    dtdm, dfdm, tgdm, poids, sigin, &
+                    dsigin, epsref, c1, &
+                    c2, c3, cs, th, 1.d0, &
                     rho, puls, axi, guv2)
-        k2 = k2 + guv2
+        k2 = k2+guv2
 
 !
     end do
 !
-    k1 = k1 * coefk
-    k2 = k2 * coefk
+    k1 = k1*coefk
+    k2 = k2*coefk
 !     if (e3(3) .lt. 0) k2=-k2
 !
 
-
-
     zr(ificg) = g
-    zr(ificg+1) = k1 / sqrt(coefk)
-    zr(ificg+2) = k2 / sqrt(coefk)
+    zr(ificg+1) = k1/sqrt(coefk)
+    zr(ificg+2) = k2/sqrt(coefk)
     zr(ificg+3) = k1
     zr(ificg+4) = k2
 !

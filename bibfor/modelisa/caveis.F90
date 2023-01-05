@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,16 +63,16 @@ subroutine caveis(chargz)
     obj = charge//'.CHME.VEISS'
 !
     call wkvect(obj, 'G V K24', 8, idveis)
-    ifmis=0
+    ifmis = 0
     call getvis('FORCE_SOL', 'UNITE_RESU_RIGI', iocc=1, scal=ifmis, nbret=n1)
     call codent(ifmis, 'D', zk24(idveis))
-    ifmis=0
+    ifmis = 0
     call getvis('FORCE_SOL', 'UNITE_RESU_MASS', iocc=1, scal=ifmis, nbret=n1)
     call codent(ifmis, 'D', zk24(idveis+1))
-    ifmis=0
+    ifmis = 0
     call getvis('FORCE_SOL', 'UNITE_RESU_AMOR', iocc=1, scal=ifmis, nbret=n1)
     call codent(ifmis, 'D', zk24(idveis+2))
-    iffor=0
+    iffor = 0
     call getvis('FORCE_SOL', 'UNITE_RESU_FORC', iocc=1, scal=iffor, nbret=n1)
     call codent(iffor, 'D', zk24(idveis+3))
     gnintf = ' '
@@ -87,7 +87,7 @@ subroutine caveis(chargz)
     ibin = 1
     if (typbin .ne. 'BINAIRE') then
         ibin = 0
-    endif
+    end if
     call codent(ibin, 'D', zk24(idveis+7))
 !
 999 continue

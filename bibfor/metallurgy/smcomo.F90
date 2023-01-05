@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,18 +16,18 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine smcomo(coef, fmod, temp_curr, nb_hist,&
+subroutine smcomo(coef, fmod, temp_curr, nb_hist, &
                   ftrc, trc)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/metaSteelTRCPolynom.h"
 !
-real(kind=8), intent(in) :: coef(*), fmod(*), temp_curr
-integer, intent(in) :: nb_hist
-real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
+    real(kind=8), intent(in) :: coef(*), fmod(*), temp_curr
+    integer, intent(in) :: nb_hist
+    real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,10 +91,10 @@ real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
 !
     do i_hist = 1, nb_hist
 ! ----- Compute derivative of temperature from polynomial order 5 approximation for TRC
-        call metaSteelTRCPolynom(coef(3+9*(i_hist-1)), coef(1+9*(i_hist-1)), tempe,&
-                      dtemp_trc)
-        trc(i_hist,4) = dtemp_trc
-        trc(i_hist,5) = tempe
+        call metaSteelTRCPolynom(coef(3+9*(i_hist-1)), coef(1+9*(i_hist-1)), tempe, &
+                                 dtemp_trc)
+        trc(i_hist, 4) = dtemp_trc
+        trc(i_hist, 5) = tempe
     end do
 !
 ! - Function of each phase (1 = 3) and derivatives (T)
@@ -102,140 +102,140 @@ real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
     lg = 0
     do i_hist = 1, nb_hist
 ! ----- Number of experimental points
-        nb_exp = nint( coef(9+9*(i_hist-1)) )
+        nb_exp = nint(coef(9+9*(i_hist-1)))
         do i_exp = 1, nb_exp-1
             temp_exp_prev = fmod(4*(lg+i_exp))
             temp_exp_curr = fmod(4*(lg+i_exp+1))
-            if ((tempe .le. temp_exp_prev) .and.&
+            if ((tempe .le. temp_exp_prev) .and. &
                 (tempe .ge. (temp_exp_curr-1.d-9))) then
-                coeffz         = (tempe-temp_exp_prev) / (temp_exp_curr-temp_exp_prev)
-                trc(i_hist,1)  = fmod(4*(lg+i_exp)-3) +&
+                coeffz = (tempe-temp_exp_prev)/(temp_exp_curr-temp_exp_prev)
+                trc(i_hist, 1) = fmod(4*(lg+i_exp)-3)+ &
                                  (fmod(4*(lg+i_exp+1)-3)-fmod(4*(lg+i_exp)-3))*coeffz
-                trc(i_hist,2)  = fmod(4*(lg+i_exp)-2) +&
+                trc(i_hist, 2) = fmod(4*(lg+i_exp)-2)+ &
                                  (fmod(4*(lg+i_exp+1)-2)-fmod(4*(lg+i_exp)-2))*coeffz
-                trc(i_hist,3)  = fmod(4*(lg+i_exp)-1) +&
+                trc(i_hist, 3) = fmod(4*(lg+i_exp)-1)+ &
                                  (fmod(4*(lg+i_exp+1)-1)-fmod(4*(lg+i_exp)-1))*coeffz
-                ftrc(i_hist,1) = (fmod(4*(lg+i_exp)-3)-fmod(4*(lg+i_exp+1)-3)) /&
-                                 (temp_exp_prev-temp_exp_curr)
-                ftrc(i_hist,2) = (fmod(4*(lg+i_exp)-2)-fmod(4*(lg+i_exp+1)-2)) /&
-                                 (temp_exp_prev-temp_exp_curr)
-                ftrc(i_hist,3) = (fmod(4*(lg+i_exp)-1)-fmod(4*(lg+i_exp+1)-1)) /&
-                                 (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 1) = (fmod(4*(lg+i_exp)-3)-fmod(4*(lg+i_exp+1)-3))/ &
+                                  (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 2) = (fmod(4*(lg+i_exp)-2)-fmod(4*(lg+i_exp+1)-2))/ &
+                                  (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 3) = (fmod(4*(lg+i_exp)-1)-fmod(4*(lg+i_exp+1)-1))/ &
+                                  (temp_exp_prev-temp_exp_curr)
             else
                 if (tempe .lt. temp_exp_prev) then
-                    trc(i_hist,1)  = fmod(4*(nb_exp+lg)-3)
-                    trc(i_hist,2)  = fmod(4*(nb_exp+lg)-2)
-                    trc(i_hist,3)  = fmod(4*(nb_exp+lg)-1)
-                    ftrc(i_hist,1) = zero
-                    ftrc(i_hist,2) = zero
-                    ftrc(i_hist,3) = zero
-                endif
-            endif
+                    trc(i_hist, 1) = fmod(4*(nb_exp+lg)-3)
+                    trc(i_hist, 2) = fmod(4*(nb_exp+lg)-2)
+                    trc(i_hist, 3) = fmod(4*(nb_exp+lg)-1)
+                    ftrc(i_hist, 1) = zero
+                    ftrc(i_hist, 2) = zero
+                    ftrc(i_hist, 3) = zero
+                end if
+            end if
         end do
-        lg = lg + nb_exp
+        lg = lg+nb_exp
     end do
 !
 ! - Get temperature and derivative of temperature (T+5)
 !
-    tempe = tempe + t_5
+    tempe = tempe+t_5
     do i_hist = nb_hist+1, (2*nb_hist)
-        k      = i_hist - nb_hist
+        k = i_hist-nb_hist
         nb_exp = nint(coef(9+9*(k-1)))
 ! ----- Compute derivative of temperature from polynomial order 5 approximation for TRC
-        call metaSteelTRCPolynom(coef(3+9*(k-1)), coef(1+9*(k-1)), tempe,&
+        call metaSteelTRCPolynom(coef(3+9*(k-1)), coef(1+9*(k-1)), tempe, &
                                  dtemp_trc)
-        trc(i_hist,4) = dtemp_trc
-        trc(i_hist,5) = tempe
+        trc(i_hist, 4) = dtemp_trc
+        trc(i_hist, 5) = tempe
     end do
-    tempe = tempe - t_5
+    tempe = tempe-t_5
 !
 ! - Function of each phase (1 = 3) and derivative (T+5)
 !
     lg = 0
     do i_hist = nb_hist+1, (2*nb_hist)
-        k      = i_hist - nb_hist
-        nb_exp = nint( coef(9+9*(k-1)) )
-        do i_exp = 1, nb_exp - 1
+        k = i_hist-nb_hist
+        nb_exp = nint(coef(9+9*(k-1)))
+        do i_exp = 1, nb_exp-1
             temp_exp_prev = fmod(4*(lg+i_exp))
             temp_exp_curr = fmod(4*(lg+i_exp+1))
-            if ((tempe+t_5 .le. temp_exp_prev) .and.&
+            if ((tempe+t_5 .le. temp_exp_prev) .and. &
                 (tempe+t_5 .ge. (temp_exp_curr-1.d-9))) then
-                coeffz         = (tempe+t_5-temp_exp_prev) / (temp_exp_curr-temp_exp_prev)
-                trc(i_hist,1)  = fmod(4*(lg+i_exp)-3) +&
+                coeffz = (tempe+t_5-temp_exp_prev)/(temp_exp_curr-temp_exp_prev)
+                trc(i_hist, 1) = fmod(4*(lg+i_exp)-3)+ &
                                  (fmod(4*(lg+i_exp+1)-3)-fmod(4*(lg+i_exp)-3))*coeffz
-                trc(i_hist,2)  = fmod(4*(lg+i_exp)-2) +&
+                trc(i_hist, 2) = fmod(4*(lg+i_exp)-2)+ &
                                  (fmod(4*(lg+i_exp+1)-2)-fmod(4*(lg+i_exp)-2))*coeffz
-                trc(i_hist,3)  = fmod(4*(lg+i_exp)-1) +&
+                trc(i_hist, 3) = fmod(4*(lg+i_exp)-1)+ &
                                  (fmod(4*(lg+i_exp+1)-1)-fmod(4*(lg+i_exp)-1))*coeffz
-                ftrc(i_hist,1) = (fmod(4*(lg+i_exp)-3)-fmod(4*(lg+i_exp+1)-3)) /&
-                                 (temp_exp_prev-temp_exp_curr)
-                ftrc(i_hist,2) = (fmod(4*(lg+i_exp)-2)-fmod(4*(lg+i_exp+1)-2)) /&
-                                 (temp_exp_prev-temp_exp_curr)
-                ftrc(i_hist,3) = (fmod(4*(lg+i_exp)-1)-fmod(4*(lg+i_exp+1)-1)) /&
-                                 (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 1) = (fmod(4*(lg+i_exp)-3)-fmod(4*(lg+i_exp+1)-3))/ &
+                                  (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 2) = (fmod(4*(lg+i_exp)-2)-fmod(4*(lg+i_exp+1)-2))/ &
+                                  (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 3) = (fmod(4*(lg+i_exp)-1)-fmod(4*(lg+i_exp+1)-1))/ &
+                                  (temp_exp_prev-temp_exp_curr)
             else
                 if (tempe+t_5 .lt. fmod(4*(nb_exp+lg))) then
-                    trc(i_hist,1)  = fmod(4*(nb_exp+lg)-3)
-                    trc(i_hist,2)  = fmod(4*(nb_exp+lg)-2)
-                    trc(i_hist,3)  = fmod(4*(nb_exp+lg)-1)
-                    ftrc(i_hist,1) = zero
-                    ftrc(i_hist,2) = zero
-                    ftrc(i_hist,3) = zero
-                endif
-            endif
+                    trc(i_hist, 1) = fmod(4*(nb_exp+lg)-3)
+                    trc(i_hist, 2) = fmod(4*(nb_exp+lg)-2)
+                    trc(i_hist, 3) = fmod(4*(nb_exp+lg)-1)
+                    ftrc(i_hist, 1) = zero
+                    ftrc(i_hist, 2) = zero
+                    ftrc(i_hist, 3) = zero
+                end if
+            end if
         end do
-        lg = lg + nb_exp
+        lg = lg+nb_exp
     end do
 !
 ! - Get temperature and derivative of temperature (T-5)
 !
-    tempe = tempe - t_5
+    tempe = tempe-t_5
     do i_hist = (2*nb_hist)+1, (3*nb_hist)
-        k = i_hist - 2*nb_hist
+        k = i_hist-2*nb_hist
 ! ----- Compute derivative of temperature from polynomial order 5 approximation for TRC
-        call metaSteelTRCPolynom(coef(3+9*(k-1)), coef(1+9*(k-1)), tempe,&
-                      dtemp_trc)
-        trc(i_hist,4) = dtemp_trc
-        trc(i_hist,5) = tempe
+        call metaSteelTRCPolynom(coef(3+9*(k-1)), coef(1+9*(k-1)), tempe, &
+                                 dtemp_trc)
+        trc(i_hist, 4) = dtemp_trc
+        trc(i_hist, 5) = tempe
     end do
-    tempe = tempe + t_5
+    tempe = tempe+t_5
 !
 ! - Function of each phase (1 = 3) and derivative (T-5)
 !
     lg = 0
     do i_hist = (2*nb_hist+1), (3*nb_hist)
-        k = i_hist - 2*nb_hist
-        nb_exp = nint( coef(9+9*(k-1)) )
+        k = i_hist-2*nb_hist
+        nb_exp = nint(coef(9+9*(k-1)))
         do i_exp = 1, nb_exp-1
             temp_exp_prev = fmod(4*(lg+i_exp))
             temp_exp_curr = fmod(4*(lg+i_exp+1))
-            if ((tempe-t_5 .le. fmod(4*(lg+i_exp))) .and.&
+            if ((tempe-t_5 .le. fmod(4*(lg+i_exp))) .and. &
                 (tempe-t_5 .ge. (fmod(4*(lg+i_exp+1))-1.d-9))) then
-                coeffz         = (tempe-t_5-temp_exp_prev) / (temp_exp_curr-temp_exp_prev)
-                trc(i_hist,1)  = fmod( 4*(lg+i_exp)-3) +&
+                coeffz = (tempe-t_5-temp_exp_prev)/(temp_exp_curr-temp_exp_prev)
+                trc(i_hist, 1) = fmod(4*(lg+i_exp)-3)+ &
                                  (fmod(4*(lg+i_exp+1)-3)-fmod(4*(lg+i_exp)-3))*coeffz
-                trc(i_hist,2)  = fmod( 4*(lg+i_exp)-2) +&
+                trc(i_hist, 2) = fmod(4*(lg+i_exp)-2)+ &
                                  (fmod(4*(lg+i_exp+1)-2)-fmod(4*(lg+i_exp)-2))*coeffz
-                trc(i_hist,3)  = fmod( 4*(lg+i_exp)-1) +&
+                trc(i_hist, 3) = fmod(4*(lg+i_exp)-1)+ &
                                  (fmod(4*(lg+i_exp+1)-1)-fmod(4*(lg+i_exp)-1))*coeffz
-                ftrc(i_hist,1) = (fmod(4*(lg+i_exp)-3)-fmod(4*(lg+i_exp+1)-3))/&
-                                 (temp_exp_prev-temp_exp_curr)
-                ftrc(i_hist,2) = (fmod(4*(lg+i_exp)-2)-fmod(4*(lg+i_exp+1)-2))/&
-                                 (temp_exp_prev-temp_exp_curr)
-                ftrc(i_hist,3) = (fmod(4*(lg+i_exp)-1)-fmod(4*(lg+i_exp+1)-1))/&
-                                 (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 1) = (fmod(4*(lg+i_exp)-3)-fmod(4*(lg+i_exp+1)-3))/ &
+                                  (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 2) = (fmod(4*(lg+i_exp)-2)-fmod(4*(lg+i_exp+1)-2))/ &
+                                  (temp_exp_prev-temp_exp_curr)
+                ftrc(i_hist, 3) = (fmod(4*(lg+i_exp)-1)-fmod(4*(lg+i_exp+1)-1))/ &
+                                  (temp_exp_prev-temp_exp_curr)
             else
                 if (tempe-t_5 .lt. fmod(4*(nb_exp+lg))) then
-                    trc(i_hist,1)  = fmod(4*(nb_exp+lg)-3)
-                    trc(i_hist,2)  = fmod(4*(nb_exp+lg)-2)
-                    trc(i_hist,3)  = fmod(4*(nb_exp+lg)-1)
-                    ftrc(i_hist,1) = zero
-                    ftrc(i_hist,2) = zero
-                    ftrc(i_hist,3) = zero
-                endif
-            endif
+                    trc(i_hist, 1) = fmod(4*(nb_exp+lg)-3)
+                    trc(i_hist, 2) = fmod(4*(nb_exp+lg)-2)
+                    trc(i_hist, 3) = fmod(4*(nb_exp+lg)-1)
+                    ftrc(i_hist, 1) = zero
+                    ftrc(i_hist, 2) = zero
+                    ftrc(i_hist, 3) = zero
+                end if
+            end if
         end do
-        lg = lg + nb_exp
+        lg = lg+nb_exp
     end do
 !
 end subroutine

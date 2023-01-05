@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ function lcnrts(d)
 !       ----------------------------------------------------------------
     integer :: n, nd
     real(kind=8) :: d(6), lcnrts
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    lcnrts = sqrt ( 1.5d0 * dot_product(d(1:n), d(1:n)) )
+    lcnrts = sqrt(1.5d0*dot_product(d(1:n), d(1:n)))
 end function

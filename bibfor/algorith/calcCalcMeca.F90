@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcCalcMeca(nb_option      , list_option,&
-                        l_elem_nonl    , nume_harm  ,&
-                        list_load      , model      , cara_elem,&
-                        ds_constitutive, ds_material, ds_system,&
-                        hval_incr      , hval_algo  ,&
-                        vediri         , vefnod     ,&
-                        vevarc_prev    , vevarc_curr,&
-                        nb_obje_maxi   , obje_name  , obje_sdname, nb_obje,&
+subroutine calcCalcMeca(nb_option, list_option, &
+                        l_elem_nonl, nume_harm, &
+                        list_load, model, cara_elem, &
+                        ds_constitutive, ds_material, ds_system, &
+                        hval_incr, hval_algo, &
+                        vediri, vefnod, &
+                        vevarc_prev, vevarc_curr, &
+                        nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                         l_pred)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/exixfe.h"
@@ -49,23 +49,23 @@ implicit none
 #include "asterfort/nmvcd2.h"
 #include "asterfort/vtzero.h"
 !
-integer, intent(in) :: nb_option
-character(len=16), intent(in) :: list_option(:)
-aster_logical, intent(in) :: l_elem_nonl
-integer, intent(in) :: nume_harm
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: model, cara_elem
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: hval_incr(:), hval_algo(:)
-character(len=19), intent(in) :: vediri, vefnod
-character(len=19), intent(in) :: vevarc_prev, vevarc_curr
-integer, intent(in) :: nb_obje_maxi
-character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
-character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
-integer, intent(out) ::  nb_obje
-aster_logical, intent(in) :: l_pred
+    integer, intent(in) :: nb_option
+    character(len=16), intent(in) :: list_option(:)
+    aster_logical, intent(in) :: l_elem_nonl
+    integer, intent(in) :: nume_harm
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: model, cara_elem
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: hval_incr(:), hval_algo(:)
+    character(len=19), intent(in) :: vediri, vefnod
+    character(len=19), intent(in) :: vevarc_prev, vevarc_curr
+    integer, intent(in) :: nb_obje_maxi
+    character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
+    character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
+    integer, intent(out) ::  nb_obje
+    aster_logical, intent(in) :: l_pred
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,9 +114,9 @@ aster_logical, intent(in) :: l_pred
 ! --------------------------------------------------------------------------------------------------
 !
     partps(:) = 0.d0
-    nb_obje   = 0
-    base      = 'G'
-    caco3d    = '&&MERIMO.CARA_ROTAF'
+    nb_obje = 0
+    base = 'G'
+    caco3d = '&&MERIMO.CARA_ROTAF'
 !
 ! - Get LIGREL
 !
@@ -125,7 +125,7 @@ aster_logical, intent(in) :: l_pred
 ! - Specific functionnalities
 !
     call exixfe(model, ixfem)
-    l_xfem      = ixfem .ne. 0
+    l_xfem = ixfem .ne. 0
     call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nb_subs_stat)
     l_macr_elem = nb_subs_stat .gt. 0
     call dismoi('EXI_HHO', model, 'MODELE', repk=answer)
@@ -140,49 +140,49 @@ aster_logical, intent(in) :: l_pred
     call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
     call nmchex(hval_incr, 'VALINC', 'SIGMOI', sigm_prev)
     call nmchex(hval_incr, 'VALINC', 'VARMOI', vari_prev)
-    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst )
+    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst)
 !
 ! - What we are computing
 !
-    l_matr      = (knindi(16, 'MATR_TANG_ELEM', list_option, nb_option) .gt. 0)
-    l_nonl      = (knindi(16, 'MATR_TANG_ELEM', list_option, nb_option) .gt. 0).or.&
-                  (knindi(16, 'COMPORTEMENT'  , list_option, nb_option) .gt. 0).or.&
-                  (knindi(16, 'FORC_INTE_ELEM', list_option, nb_option) .gt. 0)
-    l_forc_noda = (knindi(16, 'FORC_NODA_ELEM'  , list_option, nb_option) .gt. 0)
+    l_matr = (knindi(16, 'MATR_TANG_ELEM', list_option, nb_option) .gt. 0)
+    l_nonl = (knindi(16, 'MATR_TANG_ELEM', list_option, nb_option) .gt. 0) .or. &
+             (knindi(16, 'COMPORTEMENT', list_option, nb_option) .gt. 0) .or. &
+             (knindi(16, 'FORC_INTE_ELEM', list_option, nb_option) .gt. 0)
+    l_forc_noda = (knindi(16, 'FORC_NODA_ELEM', list_option, nb_option) .gt. 0)
     l_varc_prev = (knindi(16, 'FORC_VARC_ELEM_M', list_option, nb_option) .gt. 0)
     l_varc_curr = (knindi(16, 'FORC_VARC_ELEM_P', list_option, nb_option) .gt. 0)
-    l_lagr      = l_matr
+    l_lagr = l_matr
 !
 ! - Some checks
 !
     if (l_nonl) then
-        if (.not.l_elem_nonl) then
+        if (.not. l_elem_nonl) then
             call utmess('F', 'CALCUL1_8')
-        endif
+        end if
         if (l_xfem) then
             call utmess('F', 'CALCUL1_10')
-        endif
+        end if
         if (l_macr_elem) then
             call utmess('F', 'CALCUL1_11')
-        endif
+        end if
         if (disp_prev .eq. ' ' .or. sigm_prev .eq. ' ' .or. vari_prev .eq. ' ') then
             call utmess('F', 'CALCUL1_12')
-        endif
-    endif
+        end if
+    end if
 !
     if (l_forc_noda) then
         if (disp_prev .eq. ' ' .or. sigm_prev .eq. ' ') then
             call utmess('F', 'CALCUL1_13')
-        endif
-    endif
+        end if
+    end if
 !
     if (l_varc_prev .or. l_varc_curr) then
-        call nmvcd2('M_ZIRC' , ds_material%mater, l_meta_zirc)
+        call nmvcd2('M_ZIRC', ds_material%mater, l_meta_zirc)
         call nmvcd2('M_ACIER', ds_material%mater, l_meta_acier)
-        if ((l_meta_zirc .or. l_meta_acier) .and. (.not.l_elem_nonl)) then
+        if ((l_meta_zirc .or. l_meta_acier) .and. (.not. l_elem_nonl)) then
             call utmess('F', 'CALCUL1_9')
-        endif
-    endif
+        end if
+    end if
 !
 ! - How we are computing
 !
@@ -190,131 +190,131 @@ aster_logical, intent(in) :: l_pred
     if (l_matr) then
         if (l_pred) then
             option = 'RIGI_MECA_TANG'
-            l_nonl=ASTER_FALSE
+            l_nonl = ASTER_FALSE
         else
             option = 'FULL_MECA'
-        endif
+        end if
     else
         option = 'RAPH_MECA'
-    endif
+    end if
 !
 ! - Physical dof computation
 !
     if (l_nonl .or. l_matr) then
         iter_newt = 1
-        call merimo(base           ,&
-                    l_xfem         , l_macr_elem, l_hho    ,&
-                    model          , cara_elem  , iter_newt,&
-                    ds_constitutive, ds_material, ds_system,&
-                    hval_incr      , hval_algo  , hhoField ,&
-                    option         , ldccvg)
+        call merimo(base, &
+                    l_xfem, l_macr_elem, l_hho, &
+                    model, cara_elem, iter_newt, &
+                    ds_constitutive, ds_material, ds_system, &
+                    hval_incr, hval_algo, hhoField, &
+                    option, ldccvg)
         call detrsd('CHAMP', caco3d)
-    endif
+    end if
 !
 ! - Lagrange dof computation
 !
     if (l_lagr) then
         call medime(base, 'CUMU', model, list_load, ds_system%merigi)
-        call vebtla(base, model, ds_material%mater, cara_elem, disp_curr,&
+        call vebtla(base, model, ds_material%mater, cara_elem, disp_curr, &
                     list_load, vediri)
-    endif
+    end if
 !
 ! - Nodal forces
 !
     if (l_forc_noda) then
-        option    = 'FORC_NODA'
+        option = 'FORC_NODA'
         if (.not. l_nonl .and. .not. l_matr) then
             ! calcul avec sigma init (sans integration de comportement)
             call copisd('CHAMP_GD', 'V', sigm_prev, sigm_curr)
-            call vefnme(option            , model    , ds_material%mateco, cara_elem,&
-                    ds_constitutive%compor, partps   , 0                 , ligrmo   ,&
-                    varc_curr             , sigm_curr, ' '               , disp_prev,&
-                    disp_cumu_inst        , base     , vefnod)
+            call vefnme(option, model, ds_material%mateco, cara_elem, &
+                        ds_constitutive%compor, partps, 0, ligrmo, &
+                        varc_curr, sigm_curr, ' ', disp_prev, &
+                        disp_cumu_inst, base, vefnod)
         else
             ! t(i) => t(i+1) : depplu => depmoi, depdel = 0
-            depnul='&&calcul.depl_nul'
+            depnul = '&&calcul.depl_nul'
             call copisd('CHAMP_GD', 'V', disp_cumu_inst, depnul)
             call vtzero(depnul)
-            call vefnme(option            , model    , ds_material%mateco, cara_elem,&
-                    ds_constitutive%compor, partps   , 0                 , ligrmo   ,&
-                    varc_curr             , sigm_curr, ' '               , disp_curr,&
-                    depnul                , base     , vefnod)
-        endif
-    endif
+            call vefnme(option, model, ds_material%mateco, cara_elem, &
+                        ds_constitutive%compor, partps, 0, ligrmo, &
+                        varc_curr, sigm_curr, ' ', disp_curr, &
+                        depnul, base, vefnod)
+        end if
+    end if
 !
 ! - State variables
 !
     if (l_varc_prev) then
-        call nmvcpr_elem(model                , ds_material%mater     ,ds_material%mateco, &
-                         cara_elem,&
-                         nume_harm            , '-'                   , hval_incr,&
-                         ds_material%varc_refe, ds_constitutive%compor,&
-                         base                 , vevarc_prev)
-    endif
+        call nmvcpr_elem(model, ds_material%mater, ds_material%mateco, &
+                         cara_elem, &
+                         nume_harm, '-', hval_incr, &
+                         ds_material%varc_refe, ds_constitutive%compor, &
+                         base, vevarc_prev)
+    end if
     if (l_varc_curr) then
-        call nmvcpr_elem(model                , ds_material%mater     ,ds_material%mateco, &
-                         cara_elem,&
-                         nume_harm            , '+'                   , hval_incr,&
-                         ds_material%varc_refe, ds_constitutive%compor,&
-                         base                 , vevarc_curr)
-    endif
+        call nmvcpr_elem(model, ds_material%mater, ds_material%mateco, &
+                         cara_elem, &
+                         nume_harm, '+', hval_incr, &
+                         ds_material%varc_refe, ds_constitutive%compor, &
+                         base, vevarc_curr)
+    end if
 !
 ! - New objects in table
 !
     nb_obje = 0
     if (l_lagr) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'FORC_DIRI_ELEM'
         obje_sdname(nb_obje) = vediri
-    endif
+    end if
     if (l_nonl) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'FORC_INTE_ELEM'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'FORC_INTE_ELEM'
         obje_sdname(nb_obje) = ds_system%veinte
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'SIEF_ELGA'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'SIEF_ELGA'
         obje_sdname(nb_obje) = sigm_curr
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'VARI_ELGA'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'VARI_ELGA'
         obje_sdname(nb_obje) = vari_curr
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'CODE_RETOUR_INTE'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'CODE_RETOUR_INTE'
         obje_sdname(nb_obje) = ds_constitutive%comp_error
-    endif
+    end if
     if (l_matr) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'MATR_TANG_ELEM'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'MATR_TANG_ELEM'
         obje_sdname(nb_obje) = ds_system%merigi
         if (l_pred) then
-            nb_obje = nb_obje + 1
-            ASSERT(nb_obje.le.nb_obje_maxi)
-            obje_name(nb_obje)   = 'CODE_RETOUR_INTE'
+            nb_obje = nb_obje+1
+            ASSERT(nb_obje .le. nb_obje_maxi)
+            obje_name(nb_obje) = 'CODE_RETOUR_INTE'
             obje_sdname(nb_obje) = ds_constitutive%comp_error
-        endif
-    endif
+        end if
+    end if
     if (l_forc_noda) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'FORC_NODA_ELEM'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'FORC_NODA_ELEM'
         obje_sdname(nb_obje) = vefnod
-    endif
+    end if
     if (l_varc_prev) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'FORC_VARC_ELEM_M'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'FORC_VARC_ELEM_M'
         obje_sdname(nb_obje) = vevarc_prev
-    endif
+    end if
     if (l_varc_curr) then
-        nb_obje = nb_obje + 1
-        ASSERT(nb_obje.le.nb_obje_maxi)
-        obje_name(nb_obje)   = 'FORC_VARC_ELEM_P'
+        nb_obje = nb_obje+1
+        ASSERT(nb_obje .le. nb_obje_maxi)
+        obje_name(nb_obje) = 'FORC_VARC_ELEM_P'
         obje_sdname(nb_obje) = vevarc_curr
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,11 +86,11 @@ subroutine op0044()
 #include "asterfort/onerrf.h"
 !
     integer :: nbpari, nbparr, nbpark, nbpara, mxddl
-    parameter     ( nbpari=8 , nbparr=16 , nbpark=3, nbpara=27 )
-    parameter     ( mxddl = 1 )
+    parameter(nbpari=8, nbparr=16, nbpark=3, nbpara=27)
+    parameter(mxddl=1)
 !
     integer :: indf, ifreq, ifm, iret, ierfr, ierd, idet1, ieme1, ierx, idet2
-    integer :: ieme2, ieq, i, ibid, npivot(2),islvi_old
+    integer :: ieme2, ieq, i, ibid, npivot(2), islvi_old
     integer :: jvalp, jdet, jidet, jieme, jnpas, kfreq, k
     integer :: lmat(3), l, lamor, ltypre, lbrss, lmo, lmf, lborne, lmasse
     integer :: lraide, ldynam, lfreq, lamort, lddl, lprod, nblagr, lresui
@@ -119,32 +119,32 @@ subroutine op0044()
     character(len=24), pointer :: nkrefa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------
-    data zam     / 0.01d0 , 0.02d0 , 0.03d0 /
-    data zfr     / -1.0d0 , 1.00d0 , 0.00d0 /
-    data  work(1)/ '&&OP0044.VALEURS_PROPRES' /
-    data  work(2)/ '&&OP0044.MANTISSE_DET   ' /
-    data  work(3)/ '&&OP0044.EXPOSANT_DET   ' /
-    data  work(4)/ '&&OP0044.POSITION       ' /
-    data  work(5)/ '&&OP0044.NOMBRE_ITERE   ' /
-    data  cborne / '&&OP0044.BORNE.USR ' /
-    data  camor  / '&&OP0044.AMOR.USR ' /
-    data  cfreq  / '&&OP0044.CFREQ.USR ' /
-    data  nopara /&
-     &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,&
-     &  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,&
-     &  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,&
-     &  'NORME'           , 'METHODE'         , 'TYPE_MODE'       ,&
-     &  'FREQ'            ,&
-     &  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,&
-     &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,&
-     &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,&
-     &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,&
-     &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
+    data zam/0.01d0, 0.02d0, 0.03d0/
+    data zfr/-1.0d0, 1.00d0, 0.00d0/
+    data work(1)/'&&OP0044.VALEURS_PROPRES'/
+    data work(2)/'&&OP0044.MANTISSE_DET   '/
+    data work(3)/'&&OP0044.EXPOSANT_DET   '/
+    data work(4)/'&&OP0044.POSITION       '/
+    data work(5)/'&&OP0044.NOMBRE_ITERE   '/
+    data cborne/'&&OP0044.BORNE.USR '/
+    data camor/'&&OP0044.AMOR.USR '/
+    data cfreq/'&&OP0044.CFREQ.USR '/
+    data nopara/&
+     &  'NUME_MODE', 'ITER_QR', 'ITER_BATHE',&
+     &  'ITER_ARNO', 'ITER_JACOBI', 'ITER_SEPARE',&
+     &  'ITER_AJUSTE', 'ITER_INVERSE',&
+     &  'NORME', 'METHODE', 'TYPE_MODE',&
+     &  'FREQ',&
+     &  'OMEGA2', 'AMOR_REDUIT', 'ERREUR',&
+     &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
+     &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
+     &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
     undf = r8vide()
     indf = isnnem()
     det1 = 0.d0
@@ -183,29 +183,29 @@ subroutine op0044()
         matrb = 'MATR_B'
         matrc = 'MATR_C'
         typevp = 'CHAR_CRIT'
-        typres='MODE_FLAMB'
-    endif
+        typres = 'MODE_FLAMB'
+    end if
 !
 !     --- RECUPERATION DES ARGUMENTS MATRICIELS
     amor = ' '
     call getvid(' ', matra, scal=raide, nbret=l)
     call getvid(' ', matrb, scal=masse, nbret=l)
-    lamor=0
+    lamor = 0
     if (typres .ne. 'MODE_FLAMB') then
         call getvid(' ', matrc, scal=amor, nbret=lamor)
-    endif
+    end if
 !
 !     ON NE SAIT TRAITER ICI QUE LE CAS DES MATRICES REELLES SYMETRIQUES
-    ktyp='R'
+    ktyp = 'R'
 !
 !     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
     call exisd('MATR_ASSE', raide, ibid)
     if (ibid .ne. 0) then
         call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numedd)
     else
-        numedd=' '
-    endif
-    call vpcrea(0, modes, masse, amor, raide,&
+        numedd = ' '
+    end if
+    call vpcrea(0, modes, masse, amor, raide, &
                 numedd, i)
 !
 !     TYPE_RESU : 'DYNAMIQUE' OU 'FLAMBEMENT'
@@ -238,7 +238,7 @@ subroutine op0044()
 !
         nfreq = -nfreqr
         ncrit = -ncritr
-        nbmod = max(nfreq,ncrit)
+        nbmod = max(nfreq, ncrit)
         if (nbmod .lt. 2) then
             valk(1) = optiof
             valk(2) = typevp
@@ -246,32 +246,32 @@ subroutine op0044()
         else
             call wkvect(cborne, 'V V R', nbmod, lborne)
             if (nfreq .ne. 0) then
-                call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne),&
+                call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne), &
                             nbret=l)
             else
-                call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne),&
+                call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne), &
                             nbret=l)
-            endif
+            end if
             call jedetr(cborne)
-        endif
-    endif
-    na1=0
+        end if
+    end if
+    na1 = 0
     if (typres .ne. 'MODE_FLAMB') then
         call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na1)
-    endif
+    end if
     namorr = na1
-    if ((lamor.eq.0) .and. (namorr.ne.0)) then
+    if ((lamor .eq. 0) .and. (namorr .ne. 0)) then
         call utmess('E', 'ALGELINE2_55')
-    endif
-    if ((lamor.ne.0) .and. (namorr.ne.0) .and. (optiof.ne.'PROCHE')) then
+    end if
+    if ((lamor .ne. 0) .and. (namorr .ne. 0) .and. (optiof .ne. 'PROCHE')) then
         call utmess('E', 'ALGELINE2_56')
-    endif
+    end if
     if (optiof .eq. 'PROCHE') then
         call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=nfreqr)
-        if ((namorr.ne.0) .and. (namorr.ne.nfreqr)) then
+        if ((namorr .ne. 0) .and. (namorr .ne. nfreqr)) then
             call utmess('E', 'ALGELINE2_57')
-        endif
-    endif
+        end if
+    end if
 !
 !     ------------------------------------------------------------------
 !
@@ -286,13 +286,13 @@ subroutine op0044()
         valk(1) = raide
         valk(2) = masse
         call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
-    endif
+    end if
     if (lamor .ne. 0) call vrrefe(masse, amor, iret)
     if (iret .gt. 0) then
         valk(1) = amor
         valk(2) = masse
         call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
-    endif
+    end if
 !
 !
 !     -----------------------------------------------------------------
@@ -304,23 +304,23 @@ subroutine op0044()
 !        TREE LE SOLVEUR LINEAIRE, ET NON PAS LA SD SOLVEUR CREE PAR LA
 !        CMDE ECLATEE NUME_DDL LORS DE LA CONSTITUTION DES MATRICES.
     call jeveuo(raide//'.REFA', 'L', jrefa)
-    solveu='&&OP0044.SOLVEUR'
+    solveu = '&&OP0044.SOLVEUR'
     call cresol(solveu)
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
-    metres=slvk(1)
+    metres = slvk(1)
 !    if (metres(1:5).eq.'MUMPS') call utmess('F', 'ALGELINE5_72')
-    if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
-        (metres(1:5).ne.'MUMPS')) then
+    if ((metres(1:4) .ne. 'LDLT') .and. (metres(1:10) .ne. 'MULT_FRONT') .and. &
+        (metres(1:5) .ne. 'MUMPS')) then
         call utmess('F', 'ALGELINE5_71')
-    endif
+    end if
 !
 !     --- CREATION DE LA MATRICE DYNAMIQUE ---
     typer = 'R'
     dynam = '&&OP0044.DYNAMIQUE'
     call mtdefs(dynam, raide, 'V', typer)
     call jeveuo(dynam(1:19)//'.REFA', 'E', vk24=nkrefa)
-    nkrefa(7)=solveu
+    nkrefa(7) = solveu
 !
 !     --- CREATION DES DESCRIPTEURS NORMALISES DE MATRICE ---
     call mtdscr(masse)
@@ -328,24 +328,24 @@ subroutine op0044()
     if (lamor .ne. 0) then
         call mtdscr(amor)
         call jeveuo(amor(1:19)//'.&INT', 'E', lamor)
-    endif
+    end if
     call mtdscr(raide)
     call jeveuo(raide(1:19)//'.&INT', 'E', lraide)
     call mtdscr(dynam)
     call jeveuo(dynam(1:19)//'.&INT', 'E', ldynam)
 !
-    neq = zi( ldynam + 2 )
+    neq = zi(ldynam+2)
 !
 !     TEST DE LA VALIDITE DES MATRICES PAR RAPPORT AU PERIMETRE DU
 !     TEST DE STURM
-    if ((zi(lmasse+3).ne.1) .or. (zi(lmasse+4).ne.1)) then
-        valk(1)=masse
+    if ((zi(lmasse+3) .ne. 1) .or. (zi(lmasse+4) .ne. 1)) then
+        valk(1) = masse
         call utmess('F', 'ALGELINE3_48', sk=valk(1))
-    endif
-    if ((zi(lraide+3).ne.1) .or. (zi(lraide+4).ne.1)) then
-        valk(1)=raide
+    end if
+    if ((zi(lraide+3) .ne. 1) .or. (zi(lraide+4) .ne. 1)) then
+        valk(1) = raide
         call utmess('F', 'ALGELINE3_48', sk=valk(1))
-    endif
+    end if
 !     ------------------------------------------------------------------
 !
 !     --- OPTION DES FREQUENCES ET DES MODES  ---
@@ -353,10 +353,10 @@ subroutine op0044()
     call getvtx('CALC_MODE', 'OPTION', iocc=1, scal=optiom, nbret=lmo)
 !
     optior = 'SEPARE'
-    if ((lamor.ne.0) .and. (optiof.eq.'AJUSTE')) then
+    if ((lamor .ne. 0) .and. (optiof .eq. 'AJUSTE')) then
         optiof = 'SEPARE'
         optior = 'AJUSTE'
-    endif
+    end if
 !
 !     --- LISTE DE FREQUENCES REELLES ---
     nfreqr = 0
@@ -365,62 +365,62 @@ subroutine op0044()
         call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=nfreqr)
     else
         call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=ncritr)
-    endif
-    na1=0
+    end if
+    na1 = 0
     if (typres .ne. 'MODE_FLAMB') then
         call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na1)
-    endif
+    end if
     namorr = na1
-    nfreq = - nfreqr
-    ncrit = - ncritr
-    nbmod = max (nfreq, ncrit)
+    nfreq = -nfreqr
+    ncrit = -ncritr
+    nbmod = max(nfreq, ncrit)
 !
-    if ((nfreqr .ne. 0) .and. (namorr.eq.0)) then
+    if ((nfreqr .ne. 0) .and. (namorr .eq. 0)) then
         nfreq = -nfreqr
         call wkvect(cborne, 'V V R', nfreq, lborne)
-        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne),&
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne), &
                     nbret=l)
 !         --- CONTROLE DE FREQUENCE NEGATIVE ---
         ierfr = 0
-        do ifreq = 0, nfreq - 1
-            if (zr(lborne+ifreq) .lt. 0.d0) ierfr = ierfr + 1
+        do ifreq = 0, nfreq-1
+            if (zr(lborne+ifreq) .lt. 0.d0) ierfr = ierfr+1
         end do
         if (ierfr .gt. 0) then
             call utmess('A', 'ALGELINE2_59', sk=typevp)
-        endif
+        end if
 !
-    endif
-    if ((typres.eq.'MODE_FLAMB') .and. (namorr.eq.0)) then
+    end if
+    if ((typres .eq. 'MODE_FLAMB') .and. (namorr .eq. 0)) then
         ncrit = -ncritr
         call wkvect(cborne, 'V V R', ncrit, lborne)
-        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=ncrit, vect=zr(lborne),&
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=ncrit, vect=zr(lborne), &
                     nbret=l)
-    endif
+    end if
 
 !   passage de charges critiques a  frequences
-    if (typres.eq.'MODE_FLAMB') then
+    if (typres .eq. 'MODE_FLAMB') then
         do ifreq = 1, ncrit/2
             rbid = zr(lborne-1+ifreq)
-            zr(lborne-1+ifreq) = - zr(lborne+ncrit-ifreq)
-            zr(lborne+ncrit-ifreq) = - rbid
-        enddo
-        if (ncrit - ncrit/2 * 2 .eq.1)then
-            zr(lborne+ncrit/2) = - zr(lborne+ncrit/2)
-        endif
-    endif
+            zr(lborne-1+ifreq) = -zr(lborne+ncrit-ifreq)
+            zr(lborne+ncrit-ifreq) = -rbid
+        end do
+        if (ncrit-ncrit/2*2 .eq. 1) then
+            zr(lborne+ncrit/2) = -zr(lborne+ncrit/2)
+        end if
+    end if
 !
 !     --- LISTE DES AMORTISSEMENTS (CAS QUADRATIQUE) ---
-    if ((nfreqr .ne. 0) .and. (namorr.ne.0)) then
+    if ((nfreqr .ne. 0) .and. (namorr .ne. 0)) then
         nfreq = -nfreqr
         call wkvect(cborne, 'V V R', 2*nfreq, lborne)
         call wkvect(cfreq, 'V V R', nfreq, lfreq)
-        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lfreq),&
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lfreq), &
                     nbret=l)
         call wkvect(camor, 'V V R', nfreq, lamort)
         if (na1 .ne. 0) then
-            call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=nfreq, vect=zr(lamort),&
+            call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=nfreq, vect=zr(lamort), &
                         nbret=l)
-        endif
+        end if
 !
 !         --- PASSAGE EN VALEURS PROPRES COMPLEXES ---
 !         ZR(0) ZR(1)   ZR(2) ZR(3)   ZR(4), ZR(5)
@@ -430,21 +430,21 @@ subroutine op0044()
         do ifreq = 0, nfreq-1
             am = zr(lamort+ifreq)
             fr = zr(lfreq+ifreq)
-            omeg = fr * depi
+            omeg = fr*depi
             am = -abs(am*omeg)/sqrt(1.d0-am*am)
             zr(lborne+2*ifreq) = am
             zr(lborne+2*ifreq+1) = omeg
         end do
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     ----------- DDL : LAGRANGE, BLOQUE PAR AFFE_CHAR_CINE  -----------
 !     ------------------------------------------------------------------
 !
-    if (nfreq>20) call utmess('A', 'MODAL_22', si=nfreq)
+    if (nfreq > 20) call utmess('A', 'MODAL_22', si=nfreq)
     call wkvect('&&OP0044.POSITION.DDL', 'V V I', neq*mxddl, lddl)
     call wkvect('&&OP0044.DDL.BLOQ.CINE', 'V V I', neq, lprod)
-    call vpddl(raide, masse, neq, nblagr, nbcine,&
+    call vpddl(raide, masse, neq, nblagr, nbcine, &
                neqact, zi(lddl), zi(lprod), ierd)
     if (ierd .ne. 0) goto 999
 
@@ -452,17 +452,17 @@ subroutine op0044()
 ! --- ON PREND LES MEMES BORNES QUE POUR MODE_ITER_SIMULT, ON NE CORRIGE PAS PAR
 ! --- LES NOUVELLES BORNES DU PAQUET DE NOUVELLES VALEURS CALCULEES.
 ! --- USAGE FOCALISE SUR AMELIORATION='OUI'
-    vpinf  = zr(lborne)
-    vpmax  = zr(lborne+nbmod-1)
+    vpinf = zr(lborne)
+    vpmax = zr(lborne+nbmod-1)
     if (typres .eq. 'DYNAMIQUE') then
-       omecor = omega2(fcorig)
-       vpinf = omega2(vpinf)
-       vpmax = omega2(vpmax)
+        omecor = omega2(fcorig)
+        vpinf = omega2(vpinf)
+        vpmax = omega2(vpmax)
     else
-       omecor = fcorig
-    endif
-    if (abs(vpinf) .le. omecor) vpinf=-omecor
-    if (abs(vpmax) .le. omecor) vpmax=omecor
+        omecor = fcorig
+    end if
+    if (abs(vpinf) .le. omecor) vpinf = -omecor
+    if (abs(vpmax) .le. omecor) vpmax = omecor
 !     ==================================================================
 !
 !     ----------------- CALCUL DES VALEURS PROPRES ---------------------
@@ -478,25 +478,25 @@ subroutine op0044()
 !
 !         --- PASSAGE EN OMEGA**2 ---
         if (nfreq .ne. 0) then
-            do ifreq = 0, nbmod - 1
+            do ifreq = 0, nbmod-1
                 zr(lborne+ifreq) = omega2(zr(lborne+ifreq))
             end do
-        endif
+        end if
 !
-        omgmax=zr(lborne+nbmod-1)
-        omgmin=zr(lborne)
-        call vpfopr('STURMAD', typres, lmasse, lraide, ldynam,&
-                    omgmin, omgmax, rbid, nfreqb, npivot,&
-                    omecor, precsh, nbrss, nblagr, solveu,&
+        omgmax = zr(lborne+nbmod-1)
+        omgmin = zr(lborne)
+        call vpfopr('STURMAD', typres, lmasse, lraide, ldynam, &
+                    omgmin, omgmax, rbid, nfreqb, npivot, &
+                    omecor, precsh, nbrss, nblagr, solveu, &
                     det, idet)
-        det1=det(1)
-        det2=det(2)
-        idet1=idet(1)
-        idet2=idet(2)
-        ieme1=npivot(1)
-        ieme2=npivot(2)
-        zr(lborne+nbmod-1)=omgmax
-        zr(lborne) =omgmin
+        det1 = det(1)
+        det2 = det(2)
+        idet1 = idet(1)
+        idet2 = idet(2)
+        ieme1 = npivot(1)
+        ieme2 = npivot(2)
+        zr(lborne+nbmod-1) = omgmax
+        zr(lborne) = omgmin
 !
 !
         if (nfreqb .gt. 0) then
@@ -505,7 +505,7 @@ subroutine op0044()
 !
             if (mxfreq .eq. 0) then
                 mxfreq = nfreqb
-            endif
+            end if
 !
 !           --- CREATION DU RESUFREQ ---
             mxresf = nfreqb
@@ -522,7 +522,7 @@ subroutine op0044()
                 zi(lresui+ieq-1) = indf
             end do
 !
-            ndim = 2*nfreqb + nfreq
+            ndim = 2*nfreqb+nfreq
             call wkvect(work(1), ' V V R ', ndim, jvalp)
             call wkvect(work(2), ' V V R ', ndim, jdet)
             call wkvect(work(3), ' V V I ', ndim, jidet)
@@ -530,19 +530,19 @@ subroutine op0044()
             call wkvect(work(5), ' V V I ', ndim, jnpas)
 !
             zi(jidet) = idet1
-            zr(jdet ) = det1
+            zr(jdet) = det1
             zi(jieme) = ieme1-nblagr
             zi(jidet+nbmod-1) = idet2
-            zr(jdet +nbmod-1) = det2
+            zr(jdet+nbmod-1) = det2
             zi(jieme+nbmod-1) = ieme2-nblagr
             if (typres .ne. 'DYNAMIQUE') then
                 if (zr(lborne) .lt. 0.d0) then
-                    zi(jieme) = - zi(jieme)
-                endif
+                    zi(jieme) = -zi(jieme)
+                end if
                 if (zr(lborne+nbmod-1) .lt. 0.d0) then
-                    zi(jieme+nbmod-1) = - zi(jieme+nbmod-1)
-                endif
-            endif
+                    zi(jieme+nbmod-1) = -zi(jieme+nbmod-1)
+                end if
+            end if
 !
             do ifreq = 0, nbmod-1
                 zr(jvalp+ifreq) = zr(lborne+ifreq)
@@ -551,78 +551,78 @@ subroutine op0044()
 ! Precaution pour permettre a MUMPS de resoudre des systemes quasi-singuliers sans
 ! procedure de decalage du shift. Et ce, afin d'etre homogene avec MULT_FRONT/LDLT
 ! Début procédure
-            if (metres(1:5).eq.'MUMPS') then
-              islvi_old=slvi(1)
-              slvi(1)=99
-            endif
+            if (metres(1:5) .eq. 'MUMPS') then
+                islvi_old = slvi(1)
+                slvi(1) = 99
+            end if
 !           --- CALCUL DES FREQUENCES PAR DICHOTOMIE
-            call vpdich(lraide, lmasse, ldynam, tolsep, nitsep,&
-                        mxfreq, nbmod, zr(jvalp), zi(jieme), zr(jdet),&
+            call vpdich(lraide, lmasse, ldynam, tolsep, nitsep, &
+                        mxfreq, nbmod, zr(jvalp), zi(jieme), zr(jdet), &
                         zi(jidet), zi(jnpas), typres, nblagr, solveu)
 !
 !                  --- AJUSTEMENT DES VALEURS PROPRES ---
 !           --- PRISE EN COMPTE DES VALEURS PROPRES MULTIPLES ---
-            call vpinte(optiof, nbmod, zr(jvalp), zr(jdet), zi(jidet),&
-                        zi(jieme), zi(jnpas), tolaju, nitaju, lraide,&
-                        lmasse, ldynam, zi(lresui), zr(lresur), mxresf,&
+            call vpinte(optiof, nbmod, zr(jvalp), zr(jdet), zi(jidet), &
+                        zi(jieme), zi(jnpas), tolaju, nitaju, lraide, &
+                        lmasse, ldynam, zi(lresui), zr(lresur), mxresf, &
                         solveu)
 !
 ! Fin procédure
-            if (metres(1:5).eq.'MUMPS') then
-              slvi(1)=islvi_old
-            endif
+            if (metres(1:5) .eq. 'MUMPS') then
+                slvi(1) = islvi_old
+            end if
 !
         else
             call utmess('F', 'ALGELINE2_62')
-        endif
+        end if
 !
 !        --- CAS QUADRATIQUE ---
 !
         if (lamor .ne. 0) then
-            do ifreq = 0, nbmod - 1
-                zr(lresur+mxresf+ifreq) = sqrt(zr(lresur+mxresf+ifreq) )
+            do ifreq = 0, nbmod-1
+                zr(lresur+mxresf+ifreq) = sqrt(zr(lresur+mxresf+ifreq))
                 am = 0.02d0
                 omeg = zr(lresur+mxresf+ifreq)
-                zr(lresur+2*mxresf+ifreq)=-abs(am*omeg)/sqrt(1.d0-am*&
-                am)
+                zr(lresur+2*mxresf+ifreq) = -abs(am*omeg)/sqrt(1.d0-am* &
+                                                               am)
                 zr(lresur+3*mxresf+ifreq) = 0.0d0
                 zr(lresur+4*mxresf+ifreq) = 0.0d0
                 zr(lresur+5*mxresf+ifreq) = 0.0d0
                 zr(lresur+6*mxresf+ifreq) = 0.0d0
             end do
 !
-        endif
+        end if
 !
 !        --- CAS QUADRATIQUE : OPTION AJUSTE ---
 !
-        if ((lamor.ne.0) .and. optior .eq. 'AJUSTE') then
+        if ((lamor .ne. 0) .and. optior .eq. 'AJUSTE') then
             call wkvect('&&OP0044.VP.MULLER', 'V V C', 3*mxresf, lvalp)
             kfreq = 0
             do ifreq = 0, nbmod-1
                 omeg = zr(lresur+mxresf+ifreq)
                 do i = 1, 3
-                    kfreq = kfreq + 1
+                    kfreq = kfreq+1
                     rbid = omeg+zfr(i)
                     am = -abs(zam(i)*rbid)/sqrt(1.d0-zam(i)*zam(i))
-                    zc(lvalp+kfreq-1) = dcmplx(am,omeg)
+                    zc(lvalp+kfreq-1) = dcmplx(am, omeg)
                 end do
             end do
 !
-            call wp1mul(lmasse, lamor, lraide, zc(lvalp), tolaju,&
-                        nitaju, nbmod, mxresf, nbmod, zi(lresui),&
-                        zr(lresur),solveu)
-        endif
+            call wp1mul(lmasse, lamor, lraide, zc(lvalp), tolaju, &
+                        nitaju, nbmod, mxresf, nbmod, zi(lresui), &
+                        zr(lresur), solveu)
+        end if
 !
         if (mxfreq .ne. 0) then
-            nbmod = min ( mxfreq , nbmod )
-        endif
+            nbmod = min(mxfreq, nbmod)
+        end if
 !
 !     ------------------------------------------------------------------
 !                          --- OPTION PROCHE ---
 !                         --- CAS GENERALISE ----
 !     ------------------------------------------------------------------
 !
-    else if (lamor.eq.0 .and. optiof.eq.'PROCHE  ') then
+    else if (lamor .eq. 0 .and. optiof .eq. 'PROCHE  ') then
 !
         mxresf = nbmod
         jvalp = lborne
@@ -649,21 +649,21 @@ subroutine op0044()
             zr(lresur+2*mxresf+ifreq) = 0.0d0
         end do
         if (nfreq .ne. 0) then
-            do ifreq = 0, nbmod -1
+            do ifreq = 0, nbmod-1
                 zr(lresur+mxresf+ifreq) = omega2(zr(lborne+ifreq))
             end do
         else
-            do ifreq = 0, nbmod -1
+            do ifreq = 0, nbmod-1
                 zr(lresur+mxresf+ifreq) = zr(lborne+ifreq)
             end do
-        endif
+        end if
 !
 !     ------------------------------------------------------------------
 !                          --- OPTION PROCHE ---
 !                         --- CAS QUADRATIQUE ----
 !     ------------------------------------------------------------------
 !
-    else if (lamor.ne.0 .and. optiof.eq.'PROCHE  ') then
+    else if (lamor .ne. 0 .and. optiof .eq. 'PROCHE  ') then
 !
         mxresf = nfreq
         call wkvect('&&OP0044.RESU_I', 'V V I', nbpari*mxresf, lresui)
@@ -683,19 +683,19 @@ subroutine op0044()
         k = -1
         do ifreq = 0, nfreq-1
             zi(lresui+ifreq) = ifreq+1
-            k = k + 1
+            k = k+1
             zr(lresur+ifreq) = zr(lborne+k)
             if (namorr .ne. 0) then
-                k = k + 1
+                k = k+1
                 zr(lresur+2*mxresf+ifreq) = zr(lborne+k)
             else
-                omeg = depi * zr(lborne+k)
+                omeg = depi*zr(lborne+k)
                 am = 0.02d0
                 zr(lresur+mxresf+ifreq) = omeg
-                raux1=-abs(am*omeg)
-                raux2=sqrt(1.d0-am*am)
-                zr(lresur+2*mxresf+ifreq)=raux1/raux2
-            endif
+                raux1 = -abs(am*omeg)
+                raux2 = sqrt(1.d0-am*am)
+                zr(lresur+2*mxresf+ifreq) = raux1/raux2
+            end if
         end do
         nblagr = 0
         nbmod = nfreq
@@ -703,7 +703,7 @@ subroutine op0044()
     else
 !        --- ERREUR ---
         ASSERT(.false.)
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !         --- CALCUL DES VECTEURS PROPRES PAR ITERATION INVERSE ---
@@ -713,19 +713,19 @@ subroutine op0044()
 ! Precaution pour permettre a MUMPS de resoudre des systemes quasi-singuliers sans
 ! procedure de decalage du shift. Et ce, afin d'etre homogene avec MULT_FRONT/LDLT
 ! Début procédure
-    if (metres(1:5).eq.'MUMPS') then
-      islvi_old=slvi(1)
-      slvi(1)=99
-    endif
+    if (metres(1:5) .eq. 'MUMPS') then
+        islvi_old = slvi(1)
+        slvi(1) = 99
+    end if
     if (lamor .eq. 0) then
 !
 !        --- CAS GENERALISE
 !
         call wkvect('&&OP0044.VECTEUR.PROPRE', 'V V R', neq*nbmod, lvec)
-        call vp1pro(optiom, lraide, lmasse, ldynam, neq,&
-                    nbmod, mxresf, tolv, nitv, zi(lprod),&
-                    omecor, zr(lvec), zi(lresui), zr(lresur), zk24(lresuk),&
-                    nbrss, nbpari, nbparr, nbpark, typres,&
+        call vp1pro(optiom, lraide, lmasse, ldynam, neq, &
+                    nbmod, mxresf, tolv, nitv, zi(lprod), &
+                    omecor, zr(lvec), zi(lresui), zr(lresur), zk24(lresuk), &
+                    nbrss, nbpari, nbparr, nbpark, typres, &
                     optiof, solveu)
 !
     else
@@ -733,27 +733,27 @@ subroutine op0044()
 !        --- CAS QUADRATIQUE
 !
         call wkvect('&&OP0044.VECTEUR.PROPRE', 'V V C', neq*nbmod, lvec)
-        call wp1inv(lmasse, lamor, lraide, tolv, nitv,&
-                    mxresf, nbmod, neq, zi(lresui), zr(lresur),&
+        call wp1inv(lmasse, lamor, lraide, tolv, nitv, &
+                    mxresf, nbmod, neq, zi(lresui), zr(lresur), &
                     zk24(lresuk), zc(lvec), solveu)
-    endif
+    end if
 ! Fin procédure
-    if (metres(1:5).eq.'MUMPS') then
-      slvi(1)=islvi_old
-    endif
+    if (metres(1:5) .eq. 'MUMPS') then
+        slvi(1) = islvi_old
+    end if
 !
 !     ------------------------------------------------------------------
 !     ------------------------- POSITION DES MODES ---------------------
 !     ------------------------------------------------------------------
 !
-    if ((typres.eq.'DYNAMIQUE') .and. (optiof.ne.'PROCHE') .and. (lamor.eq.0)) then
+    if ((typres .eq. 'DYNAMIQUE') .and. (optiof .ne. 'PROCHE') .and. (lamor .eq. 0)) then
 !
         do ifreq = 0, nbmod-1
-            zi(lresui+ifreq) = zi(lresui+ifreq) - nblagr
+            zi(lresui+ifreq) = zi(lresui+ifreq)-nblagr
         end do
 !
 !
-    endif
+    end if
     if (zi(lresui) .eq. 0) zi(lresui) = 1
 !
 !     ------------------------------------------------------------------
@@ -769,23 +769,23 @@ subroutine op0044()
     if (typcon .eq. 'MODE_ACOU') nparr = 7
 !
     if (lamor .eq. 0) then
-        call vppara(modes, typcon, knega, lraide, lmasse,&
-                    lamor, mxresf, neq, nbmod, omecor,&
-                    zi(lddl), zi(lprod), zr(lvec), [cbid], nbpari,&
-                    nparr, nbpark, nopara, '    ', zi(lresui),&
-                    zr(lresur), zk24(lresuk), ktyp, .false._1, ibid,&
+        call vppara(modes, typcon, knega, lraide, lmasse, &
+                    lamor, mxresf, neq, nbmod, omecor, &
+                    zi(lddl), zi(lprod), zr(lvec), [cbid], nbpari, &
+                    nparr, nbpark, nopara, '    ', zi(lresui), &
+                    zr(lresur), zk24(lresuk), ktyp, .false._1, ibid, &
                     ibid, k16bid, ibid)
     else
-        call vppara(modes, typcon, knega, lraide, lmasse,&
-                    lamor, mxresf, neq, nbmod, omecor,&
-                    zi(lddl), zi(lprod), [rbid], zc(lvec), nbpari,&
-                    nparr, nbpark, nopara, '    ', zi(lresui),&
-                    zr(lresur), zk24(lresuk), ktyp, .false._1, ibid,&
+        call vppara(modes, typcon, knega, lraide, lmasse, &
+                    lamor, mxresf, neq, nbmod, omecor, &
+                    zi(lddl), zi(lprod), [rbid], zc(lvec), nbpari, &
+                    nparr, nbpark, nopara, '    ', zi(lresui), &
+                    zr(lresur), zk24(lresuk), ktyp, .false._1, ibid, &
                     ibid, k16bid, ibid)
-    endif
+    end if
 !
 !     --- IMPRESSION PROPRE A LA METHODE ----
-    call vpwecf(optiof, typres, nbmod, mxresf, zi(lresui),&
+    call vpwecf(optiof, typres, nbmod, mxresf, zi(lresui), &
                 zr(lresur), zk24(lresuk), lamor, ktyp, lbid)
 !
     call titre()
@@ -799,7 +799,7 @@ subroutine op0044()
         ctyp = 'E'
     else
         ctyp = 'A'
-    endif
+    end if
     optiov = ' '
 !
     call getvr8('VERI_MODE', 'SEUIL', iocc=1, scal=seuil, nbret=lmf)
@@ -808,38 +808,38 @@ subroutine op0044()
     lmat(3) = 0
 !
     call getvr8('VERI_MODE', 'PREC_SHIFT', iocc=1, scal=precdc, nbret=lmf)
-    ASSERT(lmf.eq.1)
+    ASSERT(lmf .eq. 1)
     call getvtx('VERI_MODE', 'STURM', iocc=1, scal=sturm, nbret=lmf)
-    ASSERT(lmf.eq.1)
+    ASSERT(lmf .eq. 1)
 
 ! --- GEP SYMETRIQUE REEL STD, ON VA RETESTER QUE LES VALEURS PROPRES
 !     VERIFIENT LE CRITERE DE STURM ET RESTENT DANS LA BANDE
 !   SI STURM='OUI'. TRES UTILES POUR APPEL VIA AMELIORATION='OUI'
-    if ((lamor .eq. 0).and.(sturm(1:3).eq.'OUI')) then
-      optiov='BANDE'
-      lmat(3) = ldynam
+    if ((lamor .eq. 0) .and. (sturm(1:3) .eq. 'OUI')) then
+        optiov = 'BANDE'
+        lmat(3) = ldynam
 ! -- LE DECALAGE VIA PRECDC EST FAIT EN INTERNE VPCNTL POUR OMEMIN/MAX
 ! -- ON NOURRIT VPCNTL AVEC LES VALEURS DE TRAVAIL DES VALEURS PROPRES:
 ! -- (2*PI*LAMBDA)**2 SI DYNAMIQUE, -LAMBDA SI MODE_FLAMB AVEC LAMBDA UNE
 ! -- VALEUR DE BORNE SAISIE PAR L'UTILISATEUR
-      omemin = vpinf
-      omemax = vpmax
-      vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
-      vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
-    endif
+        omemin = vpinf
+        omemax = vpmax
+        vpinf = vpinf*(1.d0-sign(precdc, vpinf))
+        vpmax = vpmax*(1.d0+sign(precdc, vpmax))
+    end if
 !
 ! --- ON PASSE DANS LE MODE "VALIDATION DU CONCEPT EN CAS D'ERREUR"
     call onerrf('EXCEPTION+VALID', k16bid, ibid)
 !
-    call vpcntl(ctyp, modes, optiov, omemin, omemax,&
-                seuil, nbmod, zi(lresui), lmat, omecor,&
-                precdc, ierx, vpinf, vpmax, zr(lresur),&
-                zr(lresur+3*mxresf), zr(lresur+mxresf), typres, nblagr, solveu,&
+    call vpcntl(ctyp, modes, optiov, omemin, omemax, &
+                seuil, nbmod, zi(lresui), lmat, omecor, &
+                precdc, ierx, vpinf, vpmax, zr(lresur), &
+                zr(lresur+3*mxresf), zr(lresur+mxresf), typres, nblagr, solveu, &
                 nbrss, precsh)
 !
-    if ((ctyp.eq.'E') .and. (ierx.ne.0)) then
+    if ((ctyp .eq. 'E') .and. (ierx .ne. 0)) then
         call utmess('Z', 'ALGELINE2_74', num_except=ASTER_SOLVER_ERROR)
-    endif
+    end if
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
 !

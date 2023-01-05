@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbr_calcpod_svd(m, n, q, s, v, nb_sing)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -30,11 +30,11 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-integer, intent(in) :: m, n
-real(kind=8), pointer :: q(:)
-real(kind=8), pointer :: v(:)
-real(kind=8), pointer :: s(:)
-integer, intent(out) :: nb_sing
+    integer, intent(in) :: m, n
+    real(kind=8), pointer :: q(:)
+    real(kind=8), pointer :: v(:)
+    real(kind=8), pointer :: s(:)
+    integer, intent(out) :: nb_sing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,49 +65,49 @@ integer, intent(out) :: nb_sing
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_7')
-    endif
+    end if
 !
 ! - Init
 !
-    nb_sing      = 0
-    v            => null()
-    s            => null()
+    nb_sing = 0
+    v => null()
+    s => null()
 !
 ! - Prepare parameters for LAPACK
 !
-    lda         = max(1, m)
-    nb_sing     = min(m, n)
-    lwork       = -1
-    AS_ALLOCATE(vr = v, size = m*nb_sing)
-    AS_ALLOCATE(vr = s, size = nb_sing)
-    AS_ALLOCATE(vr = work, size = 1)
-    call dgesvd('S', 'N', m, n, qSave,&
-                lda, s, v, m, w,&
+    lda = max(1, m)
+    nb_sing = min(m, n)
+    lwork = -1
+    AS_ALLOCATE(vr=v, size=m*nb_sing)
+    AS_ALLOCATE(vr=s, size=nb_sing)
+    AS_ALLOCATE(vr=work, size=1)
+    call dgesvd('S', 'N', m, n, qSave, &
+                lda, s, v, m, w, &
                 1, work, lwork, info)
-    lwork       = nint(work(1))
-    AS_DEALLOCATE(vr = work)
-    AS_ALLOCATE(vr = work, size = lwork)
+    lwork = nint(work(1))
+    AS_DEALLOCATE(vr=work)
+    AS_ALLOCATE(vr=work, size=lwork)
 !
 ! - Use copy of Q matrix (because dgesvd change it ! )
 !
-    AS_ALLOCATE(vr = qSave, size = m*n)
+    AS_ALLOCATE(vr=qSave, size=m*n)
     qSave(1:m*n) = q(1:m*n)
 !
 ! - Compute SVD: Q = V S Wt
 !
-    call dgesvd('S', 'N', m, n, qSave,&
-                lda, s, v, m, w,&
+    call dgesvd('S', 'N', m, n, qSave, &
+                lda, s, v, m, w, &
                 1, work, lwork, info)
     if (info .ne. 0) then
         call utmess('F', 'ROM5_8')
-    endif
+    end if
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_10', si = 8*lwork)
-    endif
+        call utmess('I', 'ROM7_10', si=8*lwork)
+    end if
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = qSave)
-    AS_DEALLOCATE(vr = work)
+    AS_DEALLOCATE(vr=qSave)
+    AS_DEALLOCATE(vr=work)
 !
 end subroutine

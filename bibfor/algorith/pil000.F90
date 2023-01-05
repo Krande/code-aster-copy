@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pil000(typilo, compor, neps, tau, mat,&
-                  vim, sigm, epsm, epsp, epsd,&
+subroutine pil000(typilo, compor, neps, tau, mat, &
+                  vim, sigm, epsm, epsp, epsd, &
                   typmod, etamin, etamax, copilo)
 !
 !
@@ -33,12 +33,12 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
 #include "asterfort/pieigv.h"
 #include "asterfort/piesgv.h"
 #include "asterfort/utmess.h"
-    character(len=8),intent(in) :: typmod(*)
-    character(len=16),intent(in) :: compor(*), typilo
-    integer,intent(in) :: neps, mat
-    real(kind=8),intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax
-    real(kind=8),intent(in) :: vim(*), sigm(neps)
-    real(kind=8),intent(out) :: copilo(2, 2)
+    character(len=8), intent(in) :: typmod(*)
+    character(len=16), intent(in) :: compor(*), typilo
+    integer, intent(in) :: neps, mat
+    real(kind=8), intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax
+    real(kind=8), intent(in) :: vim(*), sigm(neps)
+    real(kind=8), intent(out) :: copilo(2, 2)
 !
 ! ----------------------------------------------------------------------
 !     PILOTAGE PRED_ELAS : BRANCHEMENT SELON COMPORTEMENT
@@ -74,20 +74,20 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
             call utmess('F', 'MECANONLINE_60', sk=compor(1))
 !
         if (compor(1) .eq. 'ENDO_SCALAIRE') then
-            call piesgv(neps, tau, mat, lcquma, vim, epsm, epsp, epsd, typmod, lcquga,&
+            call piesgv(neps, tau, mat, lcquma, vim, epsm, epsp, epsd, typmod, lcquga, &
                         etamin, etamax, lcqubo, copilo)
 !
-        else if (compor(1).eq.'ENDO_FISS_EXP') then
-            call piesgv(neps,tau,mat,lcmfma,vim,epsm,epsp,epsd,typmod,lcmfga,etamin,etamax, &
-                        lcmfbo,copilo)
+        else if (compor(1) .eq. 'ENDO_FISS_EXP') then
+        call piesgv(neps, tau, mat, lcmfma, vim, epsm, epsp, epsd, typmod, lcmfga, etamin, etamax, &
+                        lcmfbo, copilo)
 !
-        else if (compor(1).eq.'ENDO_ISOT_BETON') then
+        else if (compor(1) .eq. 'ENDO_ISOT_BETON') then
             call pieigv(neps, tau, mat, vim, epsm, epsp, epsd, typmod, etamin, etamax, copilo)
 !
         else
             call utmess('F', 'MECANONLINE_59')
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

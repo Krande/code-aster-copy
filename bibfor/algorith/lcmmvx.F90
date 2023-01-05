@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
-                  cpmono, pgl, nvi, hsr, nfs,&
-                  nsg, toutms, timed, timef, deps,&
+subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
+                  cpmono, pgl, nvi, hsr, nfs, &
+                  nsg, toutms, timed, timef, deps, &
                   seuil)
 ! aslint: disable=W1306
     implicit none
@@ -58,84 +58,84 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
     real(kind=8) :: pgl(3, 3), crit, sgns, toutms(nfs, nsg, 6), gammam
     character(len=24) :: cpmono(5*nmat+1)
     character(len=16) :: nomfam, necoul, necris
-    common /deps6/depsdt
+    common/deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !
-    seuil=-1.d0
-    dt=timef-timed
-    nbfsys=nbcomm(nmat,2)
+    seuil = -1.d0
+    dt = timef-timed
+    nbfsys = nbcomm(nmat, 2)
     call r8inir(nvi, 0.d0, dy, 1)
     call dcopy(6, deps, 1, depst, 1)
-    depsdt=sqrt(ddot(6,depst,1,depst,1)/1.5d0)/dt
+    depsdt = sqrt(ddot(6, depst, 1, depst, 1)/1.5d0)/dt
 !
 !     NSFV : debut de la famille IFA dans les variables internes
-    nsfv=6
+    nsfv = 6
 !     NSFA : debut de la famille IFA dans DY et YD, YF
-    nsfa=6
+    nsfa = 6
     do ifa = 1, nbfsys
 !
-        nomfam=cpmono(5*(ifa-1)+1)
-        necoul=cpmono(5*(ifa-1)+3)
-        necris=cpmono(5*(ifa-1)+4)
+        nomfam = cpmono(5*(ifa-1)+1)
+        necoul = cpmono(5*(ifa-1)+3)
+        necris = cpmono(5*(ifa-1)+4)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
+        call lcmmsg(nomfam, nbsys, 0, pgl, ms, &
                     ng, lg, 0, q)
 !
         if (nbsys .eq. 0) then
             call utmess('F', 'ALGORITH_70')
-        endif
+        end if
 !
         do is = 1, nbsys
 !
-            nuvi=nsfv+3*(is-1)
-            alpham=vin(nuvi+1)
-            gammam=vin(nuvi+2)
+            nuvi = nsfv+3*(is-1)
+            alpham = vin(nuvi+1)
+            gammam = vin(nuvi+2)
 !
 !           CALCUL DE LA SCISSION REDUITE =
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MS
             do i = 1, 6
-                ms(i)=toutms(ifa,is,i)
+                ms(i) = toutms(ifa, is, i)
             end do
 !
-            taus=0.d0
+            taus = 0.d0
             do i = 1, 6
-                taus=taus+sigf(i)*ms(i)
+                taus = taus+sigf(i)*ms(i)
             end do
 !
 !           ECROUISSAGE ISOTROPE
 !
             if (necoul .ne. 'MONO_DD_KR') then
-                iexp=0
-                if (is .eq. 1) iexp=1
-                call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, necris,&
-                            is, nbsys, vin, nsfv, dy(nsfa+1),&
-                            nfs, nsg, hsr, iexp, expbp,&
+                iexp = 0
+                if (is .eq. 1) iexp = 1
+                call lcmmfi(materf(nmat+1), ifa, nmat, nbcomm, necris, &
+                            is, nbsys, vin, nsfv, dy(nsfa+1), &
+                            nfs, nsg, hsr, iexp, expbp, &
                             rp)
-            endif
+            end if
 !
 !           ECOULEMENT VISCOPLASTIQUE
 !
-            decal=nsfv
-            call lcmmfe(taus, materf(nmat+1), materf, ifa, nmat,&
-                        nbcomm, necoul, is, nbsys, vin,&
-                        dy(nsfa+1), rp, alpham, gammam, dt,&
-                        dalpha, dgamma, dp, crit, sgns,&
+            decal = nsfv
+            call lcmmfe(taus, materf(nmat+1), materf, ifa, nmat, &
+                        nbcomm, necoul, is, nbsys, vin, &
+                        dy(nsfa+1), rp, alpham, gammam, dt, &
+                        dalpha, dgamma, dp, crit, sgns, &
                         nfs, nsg, hsr, iret)
 !
             if (iret .gt. 0) then
-                dp=1.d0
-            endif
+                dp = 1.d0
+            end if
             if (dp .gt. 0.d0) then
-                seuil=1.d0
+                seuil = 1.d0
                 goto 999
-            endif
+            end if
 !
         end do
 !
-        nsfa=nsfa+nbsys
-        nsfv=nsfv+3*nbsys
+        nsfa = nsfa+nbsys
+        nsfv = nsfv+3*nbsys
     end do
 999 continue
 end subroutine

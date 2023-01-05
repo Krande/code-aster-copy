@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fonoei(ds_thm, ndim, dt, fnoevo, dimdef, dimcon,&
-                  addeme,&
-                  addep1, addep2, addlh1, adcome,&
+subroutine fonoei(ds_thm, ndim, dt, fnoevo, dimdef, dimcon, &
+                  addeme, &
+                  addep1, addep2, addlh1, adcome, &
                   adcp11, &
-                  adcop1, adcop2,congem,&
+                  adcop1, adcop2, congem, &
                   r)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
@@ -69,19 +69,19 @@ implicit none
 ! -------------------------------------
 ! ======================================================================
     do i = 1, ndim
-        r(addeme+i-1)= r(addeme+i-1)+congem(adcome-1+i)
+        r(addeme+i-1) = r(addeme+i-1)+congem(adcome-1+i)
     end do
-    r(addeme) = r(addeme) + congem(adcome+ndim)
+    r(addeme) = r(addeme)+congem(adcome+ndim)
     if (ds_thm%ds_elem%l_dof_pre1) then
         do f = 1, 2
-            r(addlh1+1+f)=r(addlh1+1+f)+congem(adcop1+1+f)
+            r(addlh1+1+f) = r(addlh1+1+f)+congem(adcop1+1+f)
         end do
-    endif
+    end if
     if (ds_thm%ds_elem%l_dof_pre2) then
         do f = 1, 2
-            r(addep2+ndim+1+f)=r(addep1+ndim+1+f)+congem(adcop2+1+f)
+            r(addep2+ndim+1+f) = r(addep1+ndim+1+f)+congem(adcop2+1+f)
         end do
-    endif
+    end if
 !
     if (fnoevo) then
 ! ======================================================================
@@ -89,13 +89,13 @@ implicit none
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_pre1) then
             do f = 1, 2
-                r(addep1) = r(addep1) + dt*congem(adcop1-1+f)
+                r(addep1) = r(addep1)+dt*congem(adcop1-1+f)
                 r(addlh1-1+f) = -dt*congem(adcop1-1+f)
             end do
             do i = 1, ndim-1
                 r(addep1+i) = dt*congem(adcp11+i)
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

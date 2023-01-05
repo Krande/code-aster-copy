@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,10 +74,10 @@ subroutine op0196()
 !     1. RECUPERATION DES CONCEPTS UTILISATEURS
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'1. XPOINI'
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '1. XPOINI'
     licham = '&&OP0196.LICHAM'
-    call xpoini(maxfem, mo, malini, modvis, licham,&
+    call xpoini(maxfem, mo, malini, modvis, licham, &
                 resuco, resux, k2b, k24b)
     call xpofon(mo, mftot, nftot, nfcomf, ngfon)
 !
@@ -88,13 +88,13 @@ subroutine op0196()
 !              - MAILX : MAILLES SOUS-DECOUPEES (X-FEM)
 !     ------------------------------------------------------------------
 !
-    if (niv .gt. 1) write(ifm,*)' '
-    if (niv .gt. 1) write(ifm,*)'2. XPOSEP'
+    if (niv .gt. 1) write (ifm, *) ' '
+    if (niv .gt. 1) write (ifm, *) '2. XPOSEP'
     mailc = '&&OP0196.MAILC'
     mailx = '&&OP0196.MAILX'
     logrma = '&&OP0196.LOGRMA'
     listgr = '&&OP0196.LISTGR'
-    call xposep(mo, malini, mailc, mailx, nsetot,&
+    call xposep(mo, malini, mailc, mailx, nsetot, &
                 nnntot, ncotot, logrma, listgr)
 !
 !     PRE1=.FALSE. :
@@ -103,10 +103,10 @@ subroutine op0196()
 !     ON POST TRAITE SUR DES ELEMENTS HM-XFEM --> ATTENTION AUX DDLs DE
 !     PRESSION
 !
-    pre1=xxishm(mailc,mailx,mo)
+    pre1 = xxishm(mailc, mailx, mo)
 !
 !     CREATION DE LA NOUVELLE SD RESULTAT
-    ordr=resuco//'           .ORDR'
+    ordr = resuco//'           .ORDR'
     call jeveuo(ordr, 'L', jord)
     call jelira(ordr, 'LONUTI', nbordr)
     call gettco(resuco, tysd)
@@ -115,13 +115,13 @@ subroutine op0196()
 !     BOUCLE SUR LES NBORDR NUMEROS D'ORDRE
     do ior = 1, nbordr
 !
-        iord=zi(jord-1+ior)
+        iord = zi(jord-1+ior)
 !       ----------------------------------------------------------------
 !       3. DIMENSIONNEMENT DES OBJETS DU RESU X-FEM
 !       ----------------------------------------------------------------
 !
-        if (niv .gt. 1) write(ifm,*)' '
-        if (niv .gt. 1) write(ifm,*)'3. XPODIM'
+        if (niv .gt. 1) write (ifm, *) ' '
+        if (niv .gt. 1) write (ifm, *) '3. XPODIM'
         cns1 = '&&OP0196.CNS1'
         ces1 = '&&OP0196.CES1'
         cesvi1 = '&&OP0196.CESVI1'
@@ -130,36 +130,36 @@ subroutine op0196()
         cesvi2 = '&&OP0196.CESVI2'
         cel2 = '&&OP0196.CEL2'
         listno = '&&OP0196.LISTNO'
-        comps1 ='&&OP0196.COMPOR1'
-        comps2 ='&&OP0196.COMPOR2'
-        call xpodim(malini, mailc, modvis, licham, nsetot+mftot,&
-                    nnntot+ nftot, ncotot+nfcomf, listno, cns1, cns2,&
-                    ces1, ces2, cel2, cesvi1, cesvi2,&
-                    ior, resuco, nbnoc, nbmac, logrma,&
-                    k24, maxfem, ibid, comps1, comps2,&
+        comps1 = '&&OP0196.COMPOR1'
+        comps2 = '&&OP0196.COMPOR2'
+        call xpodim(malini, mailc, modvis, licham, nsetot+mftot, &
+                    nnntot+nftot, ncotot+nfcomf, listno, cns1, cns2, &
+                    ces1, ces2, cel2, cesvi1, cesvi2, &
+                    ior, resuco, nbnoc, nbmac, logrma, &
+                    k24, maxfem, ibid, comps1, comps2, &
                     pre1, mo)
 !
 !       ----------------------------------------------------------------
 !       4. TRAITEMENT DES MAILLES DE MAILC
 !       ----------------------------------------------------------------
 !
-        if (niv .gt. 1) write(ifm,*)' '
-        if (niv .gt. 1) write(ifm,*)'4. XPOMAC'
-        call xpomac(malini, mailc, listno, nbnoc, nbmac,&
-                    maxfem, k24, cns1, cns2, ces1,&
-                    ces2, cesvi1, cesvi2, resuco, comps1,&
+        if (niv .gt. 1) write (ifm, *) ' '
+        if (niv .gt. 1) write (ifm, *) '4. XPOMAC'
+        call xpomac(malini, mailc, listno, nbnoc, nbmac, &
+                    maxfem, k24, cns1, cns2, ces1, &
+                    ces2, cesvi1, cesvi2, resuco, comps1, &
                     comps2, pre1)
 !
 !       ----------------------------------------------------------------
 !       5. TRAITEMENT DES MAILLES DE MAILX
 !       ----------------------------------------------------------------
 !
-        if (niv .gt. 1) write(ifm,*)' '
-        if (niv .gt. 1) write(ifm,*)'5. XPOMAX'
-        call xpomax(mo, malini, mailx, nbnoc, nbmac,&
-                    k2b, k24b, maxfem, cns1, cns2,&
-                    ces1, ces2, cesvi1, cesvi2, listgr,&
-                    k24, k24, resuco, ibid, comps1,&
+        if (niv .gt. 1) write (ifm, *) ' '
+        if (niv .gt. 1) write (ifm, *) '5. XPOMAX'
+        call xpomax(mo, malini, mailx, nbnoc, nbmac, &
+                    k2b, k24b, maxfem, cns1, cns2, &
+                    ces1, ces2, cesvi1, cesvi2, listgr, &
+                    k24, k24, resuco, ibid, comps1, &
                     comps2, pre1, iord)
 !
 !       ----------------------------------------------------------------
@@ -172,69 +172,69 @@ subroutine op0196()
             nomcha = zk16(jlicha-1+ic)
 !
 !         SI LE CHAMP N'EXISTE PAS DANS LE RESU EN ENTREE, ON PASSE
-            call rsexch(' ', resuco, nomcha, iord, k19,&
+            call rsexch(' ', resuco, nomcha, iord, k19, &
                         iret)
             if (iret .gt. 0) goto 20
 !
-            if (niv .gt. 1) write(ifm,*)'6. ENREGISTREMENT DE ',nomcha
+            if (niv .gt. 1) write (ifm, *) '6. ENREGISTREMENT DE ', nomcha
 !
 !         RECUPERATION DU NOM DU CHAMP A ECRIRE : CH
-            call rsexch(' ', resux, nomcha, iord, ch,&
+            call rsexch(' ', resux, nomcha, iord, ch, &
                         iret)
 !
             if (nomcha .eq. 'DEPL' .or. nomcha .eq. 'TEMP') then
 !
-                call cnscno(cns2, ' ', 'NON', 'G', ch,&
+                call cnscno(cns2, ' ', 'NON', 'G', ch, &
                             'F', ibid)
 !
-            else if (nomcha.eq.'SIEF_ELGA') then
+            else if (nomcha .eq. 'SIEF_ELGA') then
 !
-                call cescel(ces2, modvis//'.MODELE', 'FULL_MECA', 'PCONTMR', 'NON',&
+                call cescel(ces2, modvis//'.MODELE', 'FULL_MECA', 'PCONTMR', 'NON', &
                             ibid, 'G', ch, 'F', ibid)
 !
-            else if (nomcha.eq.'VARI_ELGA') then
+            else if (nomcha .eq. 'VARI_ELGA') then
 !
-                call cescel(cesvi2, modvis//'.MODELE', 'FULL_MECA', 'PVARIMR', 'NON',&
+                call cescel(cesvi2, modvis//'.MODELE', 'FULL_MECA', 'PVARIMR', 'NON', &
                             ibid, 'G', ch, 'F', ibid)
 !
-            endif
+            end if
             call rsnoch(resux, nomcha, iord)
- 20         continue
+20          continue
         end do
 !
 !       CARTE DU COMPORTEMENT
-        call rsexch(' ', resuco, 'COMPORTEMENT', iord, k19,&
+        call rsexch(' ', resuco, 'COMPORTEMENT', iord, k19, &
                     iret)
         if (iret .eq. 0) then
 !         RECUPERATION DU NOM DU CHAMP A ECRIRE : CH
-            call rsexch(' ', resux, 'COMPORTEMENT', iord, ch,&
+            call rsexch(' ', resux, 'COMPORTEMENT', iord, ch, &
                         iret)
             call cescar(comps2, ch, 'G')
             call rsnoch(resux, 'COMPORTEMENT', iord)
-        endif
+        end if
 !
         if (tysd(1:4) .eq. 'EVOL') then
-            call rsadpa(resuco, 'L', 1, 'INST', iord,&
+            call rsadpa(resuco, 'L', 1, 'INST', iord, &
                         0, sjv=jinst1, styp=kbid)
-            call rsadpa(resux, 'E', 1, 'INST', iord,&
+            call rsadpa(resux, 'E', 1, 'INST', iord, &
                         0, sjv=jinst2, styp=kbid)
             zr(jinst2) = zr(jinst1)
-            call rsadpa(resux, 'E', 1, 'MODELE', iord,&
+            call rsadpa(resux, 'E', 1, 'MODELE', iord, &
                         0, sjv=jmod, styp=kbid)
-            zk8(jmod)=modvis
-        else if (tysd(1:9).eq.'MODE_MECA') then
-            call rsadpa(resuco, 'L', 1, 'FREQ', iord,&
+            zk8(jmod) = modvis
+        else if (tysd(1:9) .eq. 'MODE_MECA') then
+            call rsadpa(resuco, 'L', 1, 'FREQ', iord, &
                         0, sjv=jinst1, styp=kbid)
-            call rsadpa(resux, 'E', 1, 'FREQ', iord,&
+            call rsadpa(resux, 'E', 1, 'FREQ', iord, &
                         0, sjv=jinst2, styp=kbid)
             zr(jinst2) = zr(jinst1)
 !
-            call rsadpa(resux, 'E', 1, 'MODELE', iord,&
+            call rsadpa(resux, 'E', 1, 'MODELE', iord, &
                         0, sjv=jmod, styp=kbid)
-            zk8(jmod)=mo
+            zk8(jmod) = mo
 !
             call refdcp(resuco, resux)
-        endif
+        end if
 !
         call detrsd('CHAM_NO_S', cns1)
         call detrsd('CHAM_NO_S', cns2)
@@ -256,7 +256,7 @@ subroutine op0196()
     call jeexin(listgr, iret)
     if (iret .ne. 0) call jedetr(listgr)
 !
-    if (niv .gt. 1) write(ifm,*)'FIN DE POST_CHAM_XFEM'
+    if (niv .gt. 1) write (ifm, *) 'FIN DE POST_CHAM_XFEM'
 !
 !
     call jedema()

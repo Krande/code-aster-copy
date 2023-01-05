@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
+subroutine dy2mbr(numddl, neq, lischa, freq, vediri, &
                   veneum, vevoch, vassec, j2nd)
 !
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/ascomb.h"
 #include "asterfort/cnvesl.h"
@@ -73,27 +73,27 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
 !
     typres = 'C'
     para = 'FREQ'
-    czero = dcmplx(0.d0,0.d0)
+    czero = dcmplx(0.d0, 0.d0)
     cndiri = '&&DY2MBR.CNDIRI'
     cnneum = '&&DY2MBR.CNNEUM'
     cnvoch = '&&DY2MBR.CNVOCH'
     cnveac = '&&DY2MBR.CNVEAC'
     cnvass = '&&DY2MBR.CNVASS'
-    call vtcreb(cndiri, 'V', typres,&
-                nume_ddlz = numddl,&
-                nb_equa_outz = neq)
-    call vtcreb(cnneum, 'V', typres,&
-                nume_ddlz = numddl,&
-                nb_equa_outz = neq)
-    call vtcreb(cnvoch, 'V', typres,&
-                nume_ddlz = numddl,&
-                nb_equa_outz = neq)
-    call vtcreb(cnveac, 'V', typres,&
-                nume_ddlz = numddl,&
-                nb_equa_outz = neq)
-    call vtcreb(cnvass, 'V', typres,&
-                nume_ddlz = numddl,&
-                nb_equa_outz = neq)
+    call vtcreb(cndiri, 'V', typres, &
+                nume_ddlz=numddl, &
+                nb_equa_outz=neq)
+    call vtcreb(cnneum, 'V', typres, &
+                nume_ddlz=numddl, &
+                nb_equa_outz=neq)
+    call vtcreb(cnvoch, 'V', typres, &
+                nume_ddlz=numddl, &
+                nb_equa_outz=neq)
+    call vtcreb(cnveac, 'V', typres, &
+                nume_ddlz=numddl, &
+                nb_equa_outz=neq)
+    call vtcreb(cnvass, 'V', typres, &
+                nume_ddlz=numddl, &
+                nb_equa_outz=neq)
 !
 ! --- VECTEUR RESULTANT
 !
@@ -127,7 +127,7 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
     call jeveuo(cnveac(1:19)//'.VALE', 'L', j2nd4)
     call jeveuo(cnvass(1:19)//'.VALE', 'L', j2nd5)
     do ieq = 1, neq
-        zc(j2nd+ieq-1) = zc(j2nd1+ieq-1) + zc(j2nd2+ieq-1) + zc(j2nd3+ ieq-1) + zc(j2nd4+ieq-1) +&
+        zc(j2nd+ieq-1) = zc(j2nd1+ieq-1)+zc(j2nd2+ieq-1)+zc(j2nd3+ieq-1)+zc(j2nd4+ieq-1)+&
                          & zc(j2nd5+ieq-1)
     end do
 !

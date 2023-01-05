@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,39 +40,39 @@ subroutine q4gbc(qsi, eta, jacob, caraq4, bc)
     y7 = caraq4(7)
     y8 = caraq4(8)
 !
-    peta = (1.d0 + eta) / 8.d0
-    meta = (1.d0 - eta) / 8.d0
-    pqsi = (1.d0 + qsi) / 8.d0
-    mqsi = (1.d0 - qsi) / 8.d0
+    peta = (1.d0+eta)/8.d0
+    meta = (1.d0-eta)/8.d0
+    pqsi = (1.d0+qsi)/8.d0
+    mqsi = (1.d0-qsi)/8.d0
 !     --------- CALCUL DE BQSI -----------------------
-    bqsi( 1) = -2.d0 * meta
-    bqsi( 2) = x5 * meta
-    bqsi( 3) = y5 * meta
-    bqsi( 4) = 2.d0 * meta
-    bqsi( 5) = x5 * meta
-    bqsi( 6) = y5 * meta
-    bqsi( 7) = 2.d0 * peta
-    bqsi( 8) = - x7 * peta
-    bqsi( 9) = - y7 * peta
-    bqsi(10) = -2.d0 * peta
-    bqsi(11) = - x7 * peta
-    bqsi(12) = - y7 * peta
-    beta( 1) = -2.d0 * mqsi
-    beta( 2) = - x8 * mqsi
-    beta( 3) = - y8 * mqsi
-    beta( 4) = -2.d0 * pqsi
-    beta( 5) = x6 * pqsi
-    beta( 6) = y6 * pqsi
-    beta( 7) = 2.d0 * pqsi
-    beta( 8) = x6 * pqsi
-    beta( 9) = y6 * pqsi
-    beta(10) = 2.d0 * mqsi
-    beta(11) = - x8 * mqsi
-    beta(12) = - y8 * mqsi
+    bqsi(1) = -2.d0*meta
+    bqsi(2) = x5*meta
+    bqsi(3) = y5*meta
+    bqsi(4) = 2.d0*meta
+    bqsi(5) = x5*meta
+    bqsi(6) = y5*meta
+    bqsi(7) = 2.d0*peta
+    bqsi(8) = -x7*peta
+    bqsi(9) = -y7*peta
+    bqsi(10) = -2.d0*peta
+    bqsi(11) = -x7*peta
+    bqsi(12) = -y7*peta
+    beta(1) = -2.d0*mqsi
+    beta(2) = -x8*mqsi
+    beta(3) = -y8*mqsi
+    beta(4) = -2.d0*pqsi
+    beta(5) = x6*pqsi
+    beta(6) = y6*pqsi
+    beta(7) = 2.d0*pqsi
+    beta(8) = x6*pqsi
+    beta(9) = y6*pqsi
+    beta(10) = 2.d0*mqsi
+    beta(11) = -x8*mqsi
+    beta(12) = -y8*mqsi
 !     --------------------- CALCUL DE BC ------------------------------
     do j = 1, 12
-        bc(1,j) = vj11 * bqsi(j) + vj12 * beta(j)
-        bc(2,j) = vj21 * bqsi(j) + vj22 * beta(j)
+        bc(1, j) = vj11*bqsi(j)+vj12*beta(j)
+        bc(2, j) = vj21*bqsi(j)+vj22*beta(j)
 !
     end do
 end subroutine

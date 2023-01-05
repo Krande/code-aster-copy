@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mtdete(option, method, lmat, mantis, expo,&
+subroutine mtdete(option, method, lmat, mantis, expo, &
                   cmod)
     implicit none
 #include "jeveux.h"
@@ -56,77 +56,77 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
     real(kind=8) :: trent, trent1, rinf12, rinf13, rmin, rauxx, rauxy, rauxm
     complex(kind=8) :: cun, caux
     character(len=24) :: nomdia, kpiv
-    data  nomdia/'                   .DIGS'/
+    data nomdia/'                   .DIGS'/
 !     ------------------------------------------------------------------
 !
 !
     call jemarq()
     call infniv(ifm, niv)
-    cun=dcmplx(1.d0,0.d0)
-    rmin=r8miem()*100
+    cun = dcmplx(1.d0, 0.d0)
+    rmin = r8miem()*100
 ! --- TEST DES PARAMETRES D'ENTREES
     if (option .eq. 1) then
 ! --- LA MATRICE DOIT ETRE REELLE
         if (zi(lmat+3) .ne. 1) then
             ASSERT(.false.)
-        endif
-    else if (option.eq.2) then
+        end if
+    else if (option .eq. 2) then
 ! --- LA MATRICE DOIT ETRE COMPLEXE
         if (zi(lmat+3) .ne. 2) then
             ASSERT(.false.)
-        endif
+        end if
     else
 ! --- MAUVAISE OPTION DE CALCUL
         ASSERT(.false.)
-    endif
+    end if
 !
 !
-    if ((method(1:4).eq.'LDLT') .or. (method(1:10).eq.'MULT_FRONT')) then
+    if ((method(1:4) .eq. 'LDLT') .or. (method(1:10) .eq. 'MULT_FRONT')) then
 ! --- INITS. LDLT/MF
         nomdia(1:19) = zk24(zi(lmat+1))
-        neq = zi(lmat+2 )
+        neq = zi(lmat+2)
         call jeexin(nomdia, iret)
         if (iret .eq. 0) then
             call utmess('F', 'MODELISA2_9', sk=nomdia)
-        endif
+        end if
         call jeveuo(nomdia, 'L', ldiag)
-        ldiag=ldiag+neq
+        ldiag = ldiag+neq
 !
         if (option .eq. 1) then
 ! --- CALCUL DET AVEC LDLT/MF
             call almulr('ZERO', zr(ldiag), neq, mantis, expo)
-            nbneg=0
+            nbneg = 0
             do i = 0, neq-1
-                if (zr(ldiag+i) .le. 0.d0) nbneg=nbneg+1
+                if (zr(ldiag+i) .le. 0.d0) nbneg = nbneg+1
             end do
             call jedetr(nomdia)
-            if (niv .ge. 2) write(ifm, *)'<MTDETE 1 LDLT/MF>  MANTIS/EXPO  ', mantis, expo
+            if (niv .ge. 2) write (ifm, *) '<MTDETE 1 LDLT/MF>  MANTIS/EXPO  ', mantis, expo
 !
-        else if (option.eq.2) then
+        else if (option .eq. 2) then
 ! --- CALCUL DET NORMALISE AVEC LDLT/MF
-            cmod=cun
+            cmod = cun
             do i = 1, neq
-                caux=zc(ldiag+i-1)
-                rauxx=dble(cmod)
-                rauxy=dimag(cmod)
-                rauxm=sqrt(rauxx*rauxx+rauxy*rauxy)
-                if (rauxm .lt. rmin) rauxm=1.d0
-                caux=caux/rauxm
-                cmod=cmod*caux
+                caux = zc(ldiag+i-1)
+                rauxx = dble(cmod)
+                rauxy = dimag(cmod)
+                rauxm = sqrt(rauxx*rauxx+rauxy*rauxy)
+                if (rauxm .lt. rmin) rauxm = 1.d0
+                caux = caux/rauxm
+                cmod = cmod*caux
             end do
 !
-            if (niv .ge. 2) write(ifm,*)'<MTDETE 2 LDLT/MF>  CMOD  ',cmod
-        endif
+            if (niv .ge. 2) write (ifm, *) '<MTDETE 2 LDLT/MF>  CMOD  ', cmod
+        end if
 !
-    else if (method(1:5).eq.'MUMPS') then
+    else if (method(1:5) .eq. 'MUMPS') then
 ! --- INITS. MUMPS
-        kpiv='&&AMUMP.DETERMINANT'
+        kpiv = '&&AMUMP.DETERMINANT'
         call jeexin(kpiv, ibid)
         if (ibid .ne. 0) then
             call jeveuo(kpiv, 'L', ipiv)
         else
             ASSERT(.false.)
-        endif
+        end if
 ! --- LE DETERMINANT ISSU DE MUMPS EST STOCKE SOUS LA FORME:
 ! ---                 MANTISSE * (2**EXP)   MANTISSE COMPLEXE
 ! --- CF. ROUTINE AMUMPU.F OPTION=4
@@ -140,60 +140,60 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
         itrent = 30
 !
 ! --- DONNEES ISSUES DE MUMPS
-        rinf12=zr(ipiv)
-        rinf13=zr(ipiv+1)
-        info34=nint(zr(ipiv+2))
+        rinf12 = zr(ipiv)
+        rinf13 = zr(ipiv+1)
+        info34 = nint(zr(ipiv+2))
 !
         if (option .eq. 1) then
 ! --- CALCUL DET AVEC LDLT/MF
 !
 ! --- ON S'ATTEND A UN DETERMINANT REEL, CETTE VALEUR EST SUSPECTE !
-            if ((rinf12.gt.trent1) .and. (rinf13.gt.(0.05d0*rinf12))) then
+            if ((rinf12 .gt. trent1) .and. (rinf13 .gt. (0.05d0*rinf12))) then
                 ASSERT(.false.)
-            endif
-            mantis=rinf12
+            end if
+            mantis = rinf12
             expo = 0
             do i = 1, info34
-                mantis=mantis*2.d0
+                mantis = mantis*2.d0
                 if (abs(mantis) .ge. trent) then
                     mantis = mantis*trent1
-                    expo = expo + itrent
-                else if (abs(mantis).le.trent1) then
+                    expo = expo+itrent
+                else if (abs(mantis) .le. trent1) then
                     mantis = mantis*trent
-                    expo = expo - itrent
-                endif
+                    expo = expo-itrent
+                end if
             end do
             if (abs(mantis) .gt. rmin) then
                 ie = nint(log10(abs(mantis)))
-                mantis = mantis/ (10.d0**ie)
-                expo = expo + ie
+                mantis = mantis/(10.d0**ie)
+                expo = expo+ie
             else
-                mantis=0.d0
-                expo =1
-            endif
+                mantis = 0.d0
+                expo = 1
+            end if
 !
             if (niv .ge. 2) then
-                write(ifm,*)'<MTDETE 1 MUMPS> RINF ',rinf12,rinf13,&
-                info34
-                write(ifm,*)'<MTDETE 1 MUMPS>  MANTIS/EXPO  ',&
-     &                   mantis,expo
-            endif
+                write (ifm, *) '<MTDETE 1 MUMPS> RINF ', rinf12, rinf13, &
+                    info34
+                write (ifm, *) '<MTDETE 1 MUMPS>  MANTIS/EXPO  ',&
+     &                   mantis, expo
+            end if
 !
-        else if (option.eq.2) then
+        else if (option .eq. 2) then
 ! --- CALCUL DET NORMALISE POUR LDLT/MF
-            rauxm=sqrt(rinf12*rinf12+rinf13*rinf13)
-            if (rauxm .lt. rmin) rauxm=1.d0
-            cmod=dcmplx(rinf12,rinf13)/rauxm
+            rauxm = sqrt(rinf12*rinf12+rinf13*rinf13)
+            if (rauxm .lt. rmin) rauxm = 1.d0
+            cmod = dcmplx(rinf12, rinf13)/rauxm
 !
             if (niv .ge. 2) then
-                write(ifm,*)'<MTDETE 2 MUMPS> RINF ',rinf12,rinf13,&
-                info34
-                write(ifm,*)'<MTDETE 2 MUMPS>  CMOD  ',cmod
-            endif
-        endif
+                write (ifm, *) '<MTDETE 2 MUMPS> RINF ', rinf12, rinf13, &
+                    info34
+                write (ifm, *) '<MTDETE 2 MUMPS>  CMOD  ', cmod
+            end if
+        end if
 !
 ! --- FIN IF METHOD
-    endif
+    end if
 !
     call jedema()
 end subroutine

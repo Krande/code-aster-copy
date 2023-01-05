@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine haymat(fami, kpg, ksp, mod, imat,&
-                  nmat, poum, coefel, coefpl, nvi,&
+subroutine haymat(fami, kpg, ksp, mod, imat, &
+                  nmat, poum, coefel, coefpl, nvi, &
                   nr)
     implicit none
 !     HAYHURST   : RECUPERATION DU MATERIAU A T ET T+DT
@@ -47,7 +47,7 @@ subroutine haymat(fami, kpg, ksp, mod, imat,&
     character(len=*) :: fami, poum
     character(len=8) :: mod, nomc(16)
 !     ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
 !
 ! -   RECUPERATION MATERIAU -----------------------------------------
@@ -72,18 +72,18 @@ subroutine haymat(fami, kpg, ksp, mod, imat,&
 !
 ! -   RECUPERATION MATERIAU A (T)
 !
-    call rcvalb(fami, kpg, ksp, poum, imat,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imat, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 3, nomc(1), coefel, cerr(1), 0)
 !
     if (cerr(3) .ne. 0) coefel(3) = 0.d0
 !
-    call rcvalb(fami, kpg, ksp, poum, imat,&
-                ' ', 'HAYHURST', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, imat, &
+                ' ', 'HAYHURST', 0, ' ', [0.d0], &
                 13, nomc(4), coefpl, cerr(4), 1)
 !
 !     NOMBRE DE COEF MATERIAU
-    coefpl(nmat)=15
+    coefpl(nmat) = 15
 !
     if (mod(1:2) .eq. '3D') then
 ! =================================================================
@@ -91,20 +91,20 @@ subroutine haymat(fami, kpg, ksp, mod, imat,&
 ! =================================================================
         ndt = 6
         ndi = 3
-        else if ( mod(1:6).eq.'D_PLAN'.or. mod(1:4).eq.'AXIS' .or.&
-    mod(1:6).eq.'C_PLAN' ) then
+    else if (mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS' .or. &
+             mod(1:6) .eq. 'C_PLAN') then
 ! =================================================================
 ! - D_PLAN AXIS C_PLAN --------------------------------------------
 ! =================================================================
 !         ON DEVRAIT AVOIR NDT=4 MAIS PB DANS LCJACP
         ndt = 6
         ndi = 3
-    endif
+    end if
 ! =================================================================
 ! - NOMBRE DE VARIABLES INTERNES
 ! =================================================================
     nvi = 12
-    nr=ndt+4
+    nr = ndt+4
 !     ON PEUT DIMINUER : NR=NDT+2
 !
 end subroutine

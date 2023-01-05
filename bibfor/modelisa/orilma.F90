@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine orilma(noma, ndim, listma, nbmail, norien,&
+subroutine orilma(noma, ndim, listma, nbmail, norien, &
                   ntrait, reorie, nbmavo, mailvo)
     implicit none
 #include "asterf_types.h"
@@ -118,7 +118,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
         numa = listma(ima)
         call jenuno(jexnum(mailma, numa), nomail)
         ori3(ima) = nomail
-        ori1(ima) = zi(p2+numa+1-1) - zi(p2+numa-1)
+        ori1(ima) = zi(p2+numa+1-1)-zi(p2+numa-1)
         ori2(ima) = zi(p2+numa-1)
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
@@ -129,29 +129,29 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
         if (tpmail(1:4) .eq. 'QUAD') then
             dime2 = .true.
-        else if (tpmail(1:4).eq.'TRIA') then
+        else if (tpmail(1:4) .eq. 'TRIA') then
             dime2 = .true.
-        else if (tpmail(1:3).eq.'SEG') then
+        else if (tpmail(1:3) .eq. 'SEG') then
             dime1 = .true.
         else
             valk(1) = nomail
             valk(2) = tpmail
             call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
-        endif
+        end if
         if (dime1 .and. dime2) then
             call utmess('F', 'MODELISA5_98')
-        endif
+        end if
 !
     end do
 !
 ! --- RECHERCHE DES MAILLES SUPPORTS
 !
-    kdim =' '
-    if (dime1) kdim ='2D'
-    if (dime2) kdim ='3D'
-    ASSERT(kdim.ne.' ')
+    kdim = ' '
+    if (dime1) kdim = '2D'
+    if (dime2) kdim = '3D'
+    ASSERT(kdim .ne. ' ')
     nomob1 = '&&ORILMA.MAILLE_3D'
-    call utmasu(noma, kdim, nbmail, listma, nomob1,&
+    call utmasu(noma, kdim, nbmail, listma, nomob1, &
                 vale, nbmavo, mailvo, .false._1)
     call jeveuo(nomob1, 'L', jm3d)
 !
@@ -166,22 +166,22 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
         jdesm = ori2(ima)
         numa3d = zi(jm3d-1+ima)
         if (numa3d .eq. 0) then
-            ntrait = ntrait + 1
+            ntrait = ntrait+1
             goto 100
-        endif
+        end if
         jdes3d = zi(p2+numa3d-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', typmail(numa3d)), typ3d)
 !
-        call oriema(nomail, tpmail, nbnmai, zi(p1+jdesm-1), typ3d,&
-                    zi(p1+jdes3d-1), ndim, vale, reorie, noriem,&
+        call oriema(nomail, tpmail, nbnmai, zi(p1+jdesm-1), typ3d, &
+                    zi(p1+jdes3d-1), ndim, vale, reorie, noriem, &
                     ifm, niv)
 !
-        norieg = norieg + noriem
+        norieg = norieg+noriem
 !
 100     continue
     end do
 !
-    norien = norien + norieg
+    norien = norien+norieg
 !
     AS_DEALLOCATE(vi=ori1)
     AS_DEALLOCATE(vi=ori2)

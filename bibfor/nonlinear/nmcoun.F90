@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcoun(mesh          , list_func_acti, solver    , nume_dof_ , matr_asse  ,&
-                  iter_newt     , time_curr     , hval_incr , hval_algo , hval_veasse,&
-                  resi_glob_rela, ds_measure    , ds_contact, ctccvg)
+subroutine nmcoun(mesh, list_func_acti, solver, nume_dof_, matr_asse, &
+                  iter_newt, time_curr, hval_incr, hval_algo, hval_veasse, &
+                  resi_glob_rela, ds_measure, ds_contact, ctccvg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -86,43 +86,43 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ctccvg   = -1
+    ctccvg = -1
     nume_dof = nume_dof_(1:14)
 !
 ! - Active functionnalities
 !
-    l_unil      = isfonc(list_func_acti,'LIAISON_UNILATER')
-    l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
+    l_unil = isfonc(list_func_acti, 'LIAISON_UNILATER')
+    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
 !
 ! - Get fields
 !
-    call nmchex(hval_incr  , 'VALINC', 'DEPPLU', disp_curr)
-    call nmchex(hval_algo  , 'SOLALG', 'DDEPLA', disp_iter)
-    call nmchex(hval_algo  , 'SOLALG', 'DEPDEL', disp_cumu_inst)
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
+    call nmchex(hval_algo, 'SOLALG', 'DDEPLA', disp_iter)
+    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst)
     call nmchex(hval_veasse, 'VEASSE', 'CNCINE', cncine)
 !
 ! - Discrete contact
 !
     if (l_cont_disc) then
-        l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-        if (.not.l_all_verif) then
-            call nmcofr(mesh      , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
-                        nume_dof  , matr_asse, iter_newt     , time_curr, resi_glob_rela,&
-                        ds_measure, ds_contact    , ctccvg)
+        l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+        if (.not. l_all_verif) then
+            call nmcofr(mesh, disp_curr, disp_cumu_inst, disp_iter, solver, &
+                        nume_dof, matr_asse, iter_newt, time_curr, resi_glob_rela, &
+                        ds_measure, ds_contact, ctccvg)
         else
             ctccvg = 0
-        endif
-    endif
+        end if
+    end if
 !
 ! - Unilateral condition
 !
     if (l_unil) then
-        call nmunil(mesh  , disp_curr, disp_iter, solver    , matr_asse,&
-                    cncine, iter_newt, time_curr, ds_contact, nume_dof , ctccvg)
-    endif
+        call nmunil(mesh, disp_curr, disp_iter, solver, matr_asse, &
+                    cncine, iter_newt, time_curr, ds_contact, nume_dof, ctccvg)
+    end if
 !
 ! - Yes for computation
 !
-    ASSERT(ctccvg.ge.0)
+    ASSERT(ctccvg .ge. 0)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ subroutine op0117()
 !
 !     ICOMPO MIS EN COMMON ASTER
 !     --------------------------
-    ayacs='&ADR_YACS'
+    ayacs = '&ADR_YACS'
     call wkvect(ayacs, 'G V I', 1, zyacs)
-    zi(zyacs)=icompo
+    zi(zyacs) = icompo
 !
     call jedema()
 !

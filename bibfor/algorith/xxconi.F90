@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,23 +77,23 @@ function xxconi(defico, nomfis, typmai)
             fiscou = zk8(jfimai-1+izone)
         else
             ASSERT(.false.)
-        endif
+        end if
         if (fiscou .eq. nomfis) then
             if (iret .eq. 0) then
                 iret = izone
                 goto 11
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     end do
- 11 continue
+11  continue
 !
     if (iret .le. 0) then
         call utmess('F', 'XFEM_4')
     else
         xxconi = iret
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@ subroutine elg_calcx0()
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use elg_data_module
+    use aster_petsc_module
+    use elg_data_module
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
 #include "jeveux.h"
@@ -64,7 +64,7 @@ use elg_data_module
 !----------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
-    info=niv.eq.2
+    info = niv .eq. 2
     debug = .false.
     !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
@@ -72,9 +72,9 @@ use elg_data_module
     call asmpi_info(rank=rang, size=nbproc)
 !
 !   -- Le système est-il bien sous-déterminé ?
-    call MatGetSize( elg_context(ke)%matc, nn, mm , ierr)
-    ASSERT( ierr == 0 )
-    ASSERT( mm > nn )
+    call MatGetSize(elg_context(ke)%matc, nn, mm, ierr)
+    ASSERT(ierr == 0)
+    ASSERT(mm > nn)
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                      Solve the linear system
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,22 +82,22 @@ use elg_data_module
 !
 !    y0 = ( A * A' )  \ c
 !
-    call VecDuplicate( elg_context(ke)%vecc, y0, ierr)
-    ASSERT( ierr == 0 )
-    call KSPSolve( elg_context(ke)%ksp, elg_context(ke)%vecc, y0, ierr)
-    ASSERT( ierr == 0 )
+    call VecDuplicate(elg_context(ke)%vecc, y0, ierr)
+    ASSERT(ierr == 0)
+    call KSPSolve(elg_context(ke)%ksp, elg_context(ke)%vecc, y0, ierr)
+    ASSERT(ierr == 0)
 !
 !  Check the reason why KSP solver ended
     call KSPGetConvergedReason(elg_context(ke)%ksp, reason, ierr)
-    ASSERT( ierr == 0 )
+    ASSERT(ierr == 0)
 !  Reason < 0 indicates a problem during the resolution
-    if (reason<0) then
-      call utmess('F','ELIMLAGR_8')
-    endif
+    if (reason < 0) then
+        call utmess('F', 'ELIMLAGR_8')
+    end if
 !
 !   x0 = A' * y0
-    call MatMultTranspose( elg_context(ke)%matc, y0, elg_context(ke)%vx0, ierr)
-    ASSERT( ierr == 0 )
+    call MatMultTranspose(elg_context(ke)%matc, y0, elg_context(ke)%vx0, ierr)
+    ASSERT(ierr == 0)
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                     Check solution and clean up
@@ -105,31 +105,31 @@ use elg_data_module
 
 !  Check the error ||A*x0 - c||
 !
-      if (info) then
-      call VecDuplicate(elg_context(ke)%vecc ,vy,ierr)
-      ASSERT( ierr == 0 )
-      call MatMult(elg_context(ke)%matc,  elg_context(ke)%vx0, vy, ierr)
-      ASSERT( ierr == 0 )
-      call VecAXPY(vy,neg_rone,elg_context(ke)%vecc ,ierr)
-      ASSERT( ierr == 0 )
-      call VecNorm(vy,norm_2,norm,ierr)
-      ASSERT( ierr == 0 )
-      call KSPGetIterationNumber(elg_context(ke)%ksp,its,ierr)
-      ASSERT( ierr == 0 )
+    if (info) then
+        call VecDuplicate(elg_context(ke)%vecc, vy, ierr)
+        ASSERT(ierr == 0)
+        call MatMult(elg_context(ke)%matc, elg_context(ke)%vx0, vy, ierr)
+        ASSERT(ierr == 0)
+        call VecAXPY(vy, neg_rone, elg_context(ke)%vecc, ierr)
+        ASSERT(ierr == 0)
+        call VecNorm(vy, norm_2, norm, ierr)
+        ASSERT(ierr == 0)
+        call KSPGetIterationNumber(elg_context(ke)%ksp, its, ierr)
+        ASSERT(ierr == 0)
 
-      if (debug.and.rang==0) then
-           write(6,100) norm,its
-      endif
-  100 format('  ELG CALCX0: Norm of error = ',e11.4,', iterations = ',i5)
-      call VecDestroy(vy,ierr)
-      ASSERT( ierr == 0 )
-      endif
+        if (debug .and. rang == 0) then
+            write (6, 100) norm, its
+        end if
+100     format('  ELG CALCX0: Norm of error = ', e11.4, ', iterations = ', i5)
+        call VecDestroy(vy, ierr)
+        ASSERT(ierr == 0)
+    end if
 !
 !  Free work space.  All PETSc objects should be destroyed when they
 !  are no longer needed.
 
-      call VecDestroy(y0, ierr)
-      ASSERT( ierr == 0 )
+    call VecDestroy(y0, ierr)
+    ASSERT(ierr == 0)
 !
     call jedema()
 !

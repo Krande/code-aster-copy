@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! aslint: disable=W1504
 !
 subroutine lcplnf(BEHinteg, &
-                  rela_comp, vind, nbcomm, nmat, cpmono,&
-                  materf, iter, nvi, itmax,&
-                  toler, pgl, nfs, nsg, toutms,&
-                  hsr, dt, dy, yd, yf,&
-                  vinf, sigd, sigf,&
-                  deps, nr, mod, timef,&
+                  rela_comp, vind, nbcomm, nmat, cpmono, &
+                  materf, iter, nvi, itmax, &
+                  toler, pgl, nfs, nsg, toutms, &
+                  hsr, dt, dy, yd, yf, &
+                  vinf, sigd, sigf, &
+                  deps, nr, mod, timef, &
                   indi, vins, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHinteg
 !   POST-TRAITEMENTS SPECIFIQUES AUX LOIS
 !
 !   CORRESPONDANCE ENTRE LES VARIABLES INTERNES ET LES EQUATIONS
@@ -79,7 +79,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=8) :: mod
     real(kind=8) :: sigf(6), deps(*), sigd(6)
 !
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 ! --- -------------------------------------------------------------
 !
 !     MISE A JOUR DE SIGF , VINF
@@ -88,22 +88,22 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     if (rela_comp .eq. 'MONOCRISTAL') then
 ! ---    DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
         call lcdpec(BEHinteg, &
-                    vind, nbcomm, nmat, ndt, cpmono,&
-                    materf, iter, nvi, itmax, toler,&
-                    pgl, nfs, nsg, toutms, hsr,&
-                    dt, dy, yd, vinf,&
-                    sigf, deps, nr, mod,&
+                    vind, nbcomm, nmat, ndt, cpmono, &
+                    materf, iter, nvi, itmax, toler, &
+                    pgl, nfs, nsg, toutms, hsr, &
+                    dt, dy, yd, vinf, &
+                    sigf, deps, nr, mod, &
                     codret)
 !
-    else if (rela_comp .eq.'IRRAD3M') then
+    else if (rela_comp .eq. 'IRRAD3M') then
         call irrlnf(nmat, materf, yf(ndt+1), 1.0d0, vinf)
     else if (rela_comp .eq. 'LETK') then
-        call lkilnf(nvi, vind, nmat, materf, dt,&
-                    sigd, nr, yd, yf, deps,&
+        call lkilnf(nvi, vind, nmat, materf, dt, &
+                    sigd, nr, yd, yf, deps, &
                     vinf)
-    else if (rela_comp .eq.'LKR') then
-        call srilnf(nvi,vind,nmat,materf,dt,&
-                    nr,yf,deps,vinf)
+    else if (rela_comp .eq. 'LKR') then
+        call srilnf(nvi, vind, nmat, materf, dt, &
+                    nr, yf, deps, vinf)
     else if (rela_comp .eq. 'HAYHURST') then
 !        DEFORMATION PLASTIQUE CUMULEE
         vinf(7) = yf(ndt+1)
@@ -112,28 +112,28 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !        H2
         vinf(9) = yf(ndt+3)
 !        PHI
-        pkc=materf(11,2)
-        m13=-1.d0/3.d0
-        vinf(10)=1.d0-(1.d0+pkc*timef)**m13
+        pkc = materf(11, 2)
+        m13 = -1.d0/3.d0
+        vinf(10) = 1.d0-(1.d0+pkc*timef)**m13
 !        DEFORMATION PLASTIQUE
 !        D
         vinf(11) = yf(ndt+4)
-        dtot=(1.d0-vinf(11))
+        dtot = (1.d0-vinf(11))
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
-        sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), yf(1:ndt))
-        sigf(1:ndt) = dtot * sigf(1:ndt)
+        sigf(1:ndt) = matmul(hookf(1:ndt, 1:ndt), yf(1:ndt))
+        sigf(1:ndt) = dtot*sigf(1:ndt)
         do i = 1, ndt
             vinf(i) = yf(i)
         end do
         vinf(nvi) = iter
     else if (rela_comp .eq. 'HUJEUX') then
-        call hujlnf(toler, nmat, materf, nvi, vind,&
-                    vinf, vins, nr, yd, yf,&
+        call hujlnf(toler, nmat, materf, nvi, vind, &
+                    vinf, vins, nr, yd, yf, &
                     sigd, sigf, indi, codret)
     else
 !        CAS GENERAL :
         vinf(1:nvi-1) = yf(ndt+1:ndt+nvi-1)
         vinf(nvi) = iter
-    endif
+    end if
 !
 end subroutine

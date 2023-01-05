@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cazocx(sdcont, model, keywf, i_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -58,7 +58,7 @@ implicit none
     character(len=16) :: s_type_inte, s_algo_lagr, s_gliss, s_czm_rela
     character(len=16) :: s_algo_cont, s_algo_frot, s_cont_init
     integer :: iret, noc, inte_order
-    real(kind=8) :: coef_pena_cont,  coef_pena_frot, coef_augm_cont, coef_augm_frot
+    real(kind=8) :: coef_pena_cont, coef_pena_frot, coef_augm_cont, coef_augm_frot
     real(kind=8) :: algo_cont, algo_frot
     real(kind=8) :: coef_coul_frot, seuil_init, tole_proj_ext
     aster_logical :: l_frot, l_xfem_gg
@@ -68,36 +68,36 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tole_proj_ext  = 0.d0
+    tole_proj_ext = 0.d0
     coef_pena_cont = 100.d0
     coef_augm_cont = 100.d0
     coef_pena_frot = 100.d0
     coef_augm_frot = 100.d0
     coef_coul_frot = 0.d0
-    algo_cont      = 0.d0
-    algo_frot      = 0.d0
+    algo_cont = 0.d0
+    algo_frot = 0.d0
     coef_coul_frot = 0.d0
-    seuil_init     = 0.d0
-    s_type_inte    = 'FPG4'
-    s_algo_lagr    = 'NON'
-    s_algo_cont    = 'STANDARD'
-    s_algo_frot    = 'STANDARD'
-    s_gliss        = ' '
-    s_czm_rela     = ' '
-    s_cont_init    = ' '
+    seuil_init = 0.d0
+    s_type_inte = 'FPG4'
+    s_algo_lagr = 'NON'
+    s_algo_cont = 'STANDARD'
+    s_algo_frot = 'STANDARD'
+    s_gliss = ' '
+    s_czm_rela = ' '
+    s_cont_init = ' '
 !
 ! - Datastructure for contact definition
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_caraxf = sdcont_defi(1:16)//'.CARAXF'
-    call jeveuo(sdcont_caraxf, 'E', vr  = v_sdcont_caraxf)
+    call jeveuo(sdcont_caraxf, 'E', vr=v_sdcont_caraxf)
     zcmxf = cfmmvd('ZCMXF')
     ztole = cfmmvd('ZTOLE')
 !
 ! - Parameters
 !
-    l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
-    l_xfem_gg   = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+    l_frot = cfdisl(sdcont_defi, 'FROTTEMENT')
+    l_xfem_gg = cfdisl(sdcont_defi, 'CONT_XFEM_GG')
 !
 ! - Check model (XFEM)
 !
@@ -108,8 +108,8 @@ implicit none
         call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=v_xfem_cont)
         if (v_xfem_cont(1) .eq. 0) then
             call utmess('F', 'XFEM2_9')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Integration scheme
 !
@@ -118,35 +118,35 @@ implicit none
         v_sdcont_caraxf(zcmxf*(i_zone-1)+1) = 1.d0
     else if (s_type_inte .eq. 'GAUSS') then
         call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
-        v_sdcont_caraxf(zcmxf*(i_zone-1)+1) = 10.d0*inte_order + 2.d0
+        v_sdcont_caraxf(zcmxf*(i_zone-1)+1) = 10.d0*inte_order+2.d0
     else if (s_type_inte(1:7) .eq. 'SIMPSON') then
         call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
-        v_sdcont_caraxf(zcmxf*(i_zone-1)+1) = 10.d0*inte_order + 3.d0
+        v_sdcont_caraxf(zcmxf*(i_zone-1)+1) = 10.d0*inte_order+3.d0
     else if (s_type_inte(1:6) .eq. 'NCOTES') then
         call getvis(keywf, 'ORDRE_INT', iocc=i_zone, scal=inte_order)
-        v_sdcont_caraxf(zcmxf*(i_zone-1)+1) = 10.d0*inte_order + 4.d0
+        v_sdcont_caraxf(zcmxf*(i_zone-1)+1) = 10.d0*inte_order+4.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Contact method
 !
     call getvtx(keywf, 'ALGO_CONT', iocc=i_zone, scal=s_algo_cont)
     if (s_algo_cont .eq. 'STANDARD') then
         call getvr8(keywf, 'COEF_CONT', iocc=i_zone, scal=coef_augm_cont)
-        algo_cont      = 1.d0
+        algo_cont = 1.d0
         coef_pena_cont = 0.d0
     else if (s_algo_cont .eq. 'PENALISATION') then
         call getvr8(keywf, 'COEF_PENA_CONT', iocc=i_zone, scal=coef_pena_cont)
-        algo_cont      = 2.d0
+        algo_cont = 2.d0
         coef_augm_cont = 0.d0
     else if (s_algo_cont .eq. 'CZM') then
         algo_cont = 3.d0
-        l_frot    = .false.
+        l_frot = .false.
     else
         ASSERT(.false.)
-    endif
-    v_sdcont_caraxf(zcmxf*(i_zone-1)+2)  = coef_augm_cont
+    end if
+    v_sdcont_caraxf(zcmxf*(i_zone-1)+2) = coef_augm_cont
     v_sdcont_caraxf(zcmxf*(i_zone-1)+12) = coef_pena_cont
     v_sdcont_caraxf(zcmxf*(i_zone-1)+11) = algo_cont
 !
@@ -156,21 +156,21 @@ implicit none
         call getvtx(keywf, 'ALGO_FROT', iocc=i_zone, scal=s_algo_frot)
         if (s_algo_frot .eq. 'STANDARD') then
             call getvr8(keywf, 'COEF_FROT', iocc=i_zone, scal=coef_augm_frot)
-            algo_frot      = 1.d0
+            algo_frot = 1.d0
             coef_pena_frot = 0.d0
         else if (s_algo_frot(1:14) .eq. 'PENALISATION') then
             call getvr8(keywf, 'COEF_PENA_FROT', iocc=i_zone, scal=coef_pena_frot)
-            algo_frot      = 2.d0
+            algo_frot = 2.d0
             coef_augm_frot = 0.d0
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         coef_augm_frot = 0.d0
         coef_pena_frot = 0.d0
-        algo_frot      = 0.d0
-    endif
-    v_sdcont_caraxf(zcmxf*(i_zone-1)+3)  = coef_augm_frot
+        algo_frot = 0.d0
+    end if
+    v_sdcont_caraxf(zcmxf*(i_zone-1)+3) = coef_augm_frot
     v_sdcont_caraxf(zcmxf*(i_zone-1)+14) = coef_pena_frot
     v_sdcont_caraxf(zcmxf*(i_zone-1)+13) = algo_frot
 !
@@ -184,7 +184,7 @@ implicit none
         v_sdcont_caraxf(zcmxf*(i_zone-1)+6) = seuil_init
     else
         v_sdcont_caraxf(zcmxf*(i_zone-1)+5) = 1.d0
-    endif
+    end if
 !
 ! - Parameters of contact
 !
@@ -199,7 +199,7 @@ implicit none
             v_sdcont_caraxf(zcmxf*(i_zone-1)+7) = 0.d0
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Bilateral contact
 !
@@ -210,38 +210,38 @@ implicit none
             v_sdcont_caraxf(zcmxf*(i_zone-1)+10) = 0.d0
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Parameters of Lagrange multipliers algorithm
 !
     call getvtx(keywf, 'ALGO_LAGR', iocc=1, scal=s_algo_lagr)
     if (s_algo_lagr .eq. 'NON') then
         v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 0.d0
-    else if (s_algo_lagr.eq.'VERSION1') then
+    else if (s_algo_lagr .eq. 'VERSION1') then
         v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 1.d0
-    else if (s_algo_lagr.eq.'VERSION2') then
+    else if (s_algo_lagr .eq. 'VERSION2') then
         v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 2.d0
-    else if (s_algo_lagr.eq.'VERSION3') then
+    else if (s_algo_lagr .eq. 'VERSION3') then
 !       Algorithme uniquement disponible pour des éléments quadratiques
-        if (v_xfem_cont(1).eq.1) call utmess('F', 'XFEM_90')
+        if (v_xfem_cont(1) .eq. 1) call utmess('F', 'XFEM_90')
 !       Algorithme uniquement disponible en petits glissements
         if (l_xfem_gg) call utmess('F', 'XFEM_91')
 
         v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 3.d0
-    else if (s_algo_lagr.eq.'AUTO') then
+    else if (s_algo_lagr .eq. 'AUTO') then
 !       cas 'AUTO' :
 !          - si quadratique et formulation petits glissements,
 !            on choisit l'algo P2/P1*
 !          - sinon, on choisit l'algo "version 2" (P1/P1 ou P2/P1-)
-        if (v_xfem_cont(1).eq.3.and..not.l_xfem_gg) then
+        if (v_xfem_cont(1) .eq. 3 .and. .not. l_xfem_gg) then
             v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 3.d0
         else
             v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 2.d0
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - TOLE_PROJ_EXT
 ! --- TOLE_PROJ_EXT <0: disallow projection outside element
@@ -252,7 +252,7 @@ implicit none
         v_sdcont_caraxf(zcmxf*(i_zone-1)+15) = -1.d0
     else
         v_sdcont_caraxf(zcmxf*(i_zone-1)+15) = tole_proj_ext
-    endif
+    end if
 !
 ! - CZM parameters
 !
@@ -260,26 +260,26 @@ implicit none
         call getvtx(keywf, 'RELATION', iocc=i_zone, scal=s_czm_rela)
         if (s_czm_rela .eq. 'CZM_EXP_REG') then
             v_sdcont_caraxf(zcmxf*(i_zone-1)+16) = 1.d0
-        else if (s_czm_rela.eq.'CZM_LIN_REG') then
+        else if (s_czm_rela .eq. 'CZM_LIN_REG') then
             v_sdcont_caraxf(zcmxf*(i_zone-1)+16) = 2.d0
         else if (s_czm_rela .eq. 'CZM_TAC_MIX') then
             v_sdcont_caraxf(zcmxf*(i_zone-1)+16) = 3.d0
-        else if (s_czm_rela.eq.'CZM_OUV_MIX') then
+        else if (s_czm_rela .eq. 'CZM_OUV_MIX') then
             v_sdcont_caraxf(zcmxf*(i_zone-1)+16) = 4.d0
-        else if (s_czm_rela.eq.'CZM_LIN_MIX') then
+        else if (s_czm_rela .eq. 'CZM_LIN_MIX') then
             v_sdcont_caraxf(zcmxf*(i_zone-1)+16) = 5.d0
         else
             v_sdcont_caraxf(zcmxf*(i_zone-1)+16) = 0.d0
-        endif
+        end if
 !
 ! ----- Check
 !
-        if( s_czm_rela.eq.'CZM_LIN_MIX'.and.v_xfem_cont(1).ne.2) then
+        if (s_czm_rela .eq. 'CZM_LIN_MIX' .and. v_xfem_cont(1) .ne. 2) then
             call utmess('F', 'XFEM_93', sk=model)
-        else if(s_czm_rela.ne.'CZM_LIN_MIX'.and.v_xfem_cont(1).ne.1.and.&
-                                                v_xfem_cont(1).ne.3) then
+        else if (s_czm_rela .ne. 'CZM_LIN_MIX' .and. v_xfem_cont(1) .ne. 1 .and. &
+                 v_xfem_cont(1) .ne. 3) then
             call utmess('F', 'XFEM_93', sk=model)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tstobj(ob, perm, resume, sommi, sommr,&
+subroutine tstobj(ob, perm, resume, sommi, sommr, &
                   lonuti, lonmax, type, iret, ni)
     implicit none
 !
@@ -75,18 +75,18 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     character(len=1) :: genr
 !
 !
-    ob1=ob
+    ob1 = ob
     call jemarq()
 !
 !     VALEURS PAR DEFAUT (SI ON SORT AVANT LA FIN) :
-    ni=0
-    iret=1
-    type='XXX'
-    lonmax=0
-    lonuti=0
-    sommi=0
-    sommr=0.d0
-    resume=0
+    ni = 0
+    iret = 1
+    type = 'XXX'
+    lonmax = 0
+    lonuti = 0
+    sommi = 0
+    sommr = 0.d0
+    resume = 0
 !
     call jeexin(ob1, iret0)
     if (iret0 .eq. 0) goto 999
@@ -95,19 +95,19 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     if (typ1 .eq. 'K') then
         call jelira(ob1, 'LTYP', ltyp)
         if (ltyp .eq. 8) then
-            type='K8'
-        else if (ltyp.eq.16) then
-            type='K16'
-        else if (ltyp.eq.24) then
-            type='K24'
-        else if (ltyp.eq.32) then
-            type='K32'
-        else if (ltyp.eq.80) then
-            type='K80'
-        endif
+            type = 'K8'
+        else if (ltyp .eq. 16) then
+            type = 'K16'
+        else if (ltyp .eq. 24) then
+            type = 'K24'
+        else if (ltyp .eq. 32) then
+            type = 'K32'
+        else if (ltyp .eq. 80) then
+            type = 'K80'
+        end if
     else
-        type=typ1
-    endif
+        type = typ1
+    end if
 !
 !
     call jelira(ob1, 'XOUS', cval=xous)
@@ -125,35 +125,35 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
         if (genr .ne. 'N') then
             call jelira(ob1, 'LONMAX', long)
             call jelira(ob1, 'LONUTI', lon2)
-            lonuti=lon2
-            lonmax=long
+            lonuti = lon2
+            lonmax = long
             call jeveuo(ob1, 'L', iad)
         else
             call jelira(ob1, 'NOMMAX', lon2)
             call jelira(ob1, 'NOMUTI', long)
-            lonuti=long
-            lonmax=lon2
+            lonuti = long
+            lonmax = lon2
             call wkvect('&&TSTOBJ.PTEUR_NOM', 'V V '//type, long, iad)
             if (type .eq. 'K8') then
                 do kk = 1, long
                     call jenuno(jexnum(ob1, kk), zk8(iad-1+kk))
                 end do
-            else if (type.eq.'K16') then
+            else if (type .eq. 'K16') then
                 do kk = 1, long
                     call jenuno(jexnum(ob1, kk), zk16(iad-1+kk))
                 end do
-            else if (type.eq.'K24') then
+            else if (type .eq. 'K24') then
                 do kk = 1, long
                     call jenuno(jexnum(ob1, kk), zk24(iad-1+kk))
                 end do
-            endif
-        endif
+            end if
+        end if
 !
-        call tstvec(perm, iad, long, type, sommi,&
+        call tstvec(perm, iad, long, type, sommi, &
                     sommr, nbign)
-        ni=ni+nbign
+        ni = ni+nbign
         if (genr .eq. 'N') call jedetr('&&TSTOBJ.PTEUR_NOM')
-    endif
+    end if
 !
 !
 !       - CAS DES COLLECTIONS :
@@ -161,12 +161,12 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     if (xous .eq. 'X') then
         call jelira(ob1, 'NMAXOC', nbob2)
         call jelira(ob1, 'STOCKAGE', cval=stock)
-        contig=stock.eq.'CONTIG'
-        itrou=0
-        lonuti=0
-        lonmax=0
-        sommi3=0
-        sommr=0.d0
+        contig = stock .eq. 'CONTIG'
+        itrou = 0
+        lonuti = 0
+        lonmax = 0
+        sommi3 = 0
+        sommr = 0.d0
         do iobj = 1, nbob2
             call jeexin(jexnum(ob1, iobj), iret0)
             if (iret0 .le. 0) goto 2
@@ -176,34 +176,34 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
             call jelira(jexnum(ob1, iobj), 'IADD', iadd)
             if (abs(iadm)+abs(iadd) .eq. 0) goto 2
 !
-            itrou=1
+            itrou = 1
 !
             call jelira(jexnum(ob1, iobj), 'LONUTI', lon2)
             call jelira(jexnum(ob1, iobj), 'LONMAX', long)
-            lonuti=lonuti+lon2
-            lonmax=lonmax+long
+            lonuti = lonuti+lon2
+            lonmax = lonmax+long
             call jeveuo(jexnum(ob1, iobj), 'L', iad)
 !
-            call tstvec(perm, iad, long, type, sommi2,&
+            call tstvec(perm, iad, long, type, sommi2, &
                         sommr2, nbign)
-            ni=ni+nbign
-            sommi3=sommi3+sommi2
-            sommr=sommr+sommr2
-            if (.not.contig) call jelibe(jexnum(ob1, iobj))
+            ni = ni+nbign
+            sommi3 = sommi3+sommi2
+            sommr = sommr+sommr2
+            if (.not. contig) call jelibe(jexnum(ob1, iobj))
 !
-  2         continue
+2           continue
         end do
         if (itrou .eq. 0) goto 999
-        write(k24,'(I24)') sommi3
-        read(k24(16:24),'(I9)') sommi
-    endif
+        write (k24, '(I24)') sommi3
+        read (k24(16:24), '(I9)') sommi
+    end if
 !
 !
 !     -- SORTIE NORMALE :
-    iret=0
+    iret = 0
 !
 !     -- POUR L'INSTANT : RESUME= SOMMI
-    resume=sommi
+    resume = sommi
 !
 999 continue
     call jedema()

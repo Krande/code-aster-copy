@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax,&
+subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax, &
                   cu1max, cv1max, cu2max, cv2max)
     implicit none
 #include "jeveux.h"
@@ -57,13 +57,13 @@ subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax,&
     dismax = 0.0d0
 !
     do i = 1, nbp1
-        cu1 = zr(jvec1 + (i-1)*2)
-        cv1 = zr(jvec1 + (i-1)*2 + 1)
+        cu1 = zr(jvec1+(i-1)*2)
+        cv1 = zr(jvec1+(i-1)*2+1)
 !
         do j = 1, nbp2
-            cu2 = zr(jvec2 + (j-1)*2)
-            cv2 = zr(jvec2 + (j-1)*2 + 1)
-            dist = sqrt((cu1 - cu2)**2 + (cv1 - cv2)**2)
+            cu2 = zr(jvec2+(j-1)*2)
+            cv2 = zr(jvec2+(j-1)*2+1)
+            dist = sqrt((cu1-cu2)**2+(cv1-cv2)**2)
 !
             if (dist .gt. dismax) then
                 dismax = dist
@@ -71,7 +71,7 @@ subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax,&
                 cv1max = cv1
                 cu2max = cu2
                 cv2max = cv2
-            endif
+            end if
 !
         end do
     end do

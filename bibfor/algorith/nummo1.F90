@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nummo1(nugene, modmec, nbmode, typrof)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/crsmos.h"
@@ -56,23 +56,23 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    prof_gene=nugene//'.NUME'
-    stomor=nugene//'.SMOS'
-    lili=prof_gene//'.LILI'
-    orig=prof_gene//'.ORIG'
-    prno=prof_gene//'.PRNO'
+    prof_gene = nugene//'.NUME'
+    stomor = nugene//'.SMOS'
+    lili = prof_gene//'.LILI'
+    orig = prof_gene//'.ORIG'
+    prno = prof_gene//'.PRNO'
 !
 ! - Create PROF_GENE
 !
-    call profgene_crsd(prof_gene, 'G', nbmode, nb_sstr = 1, nb_link = 1,&
-                       model_genez = modmec, gran_namez = 'DEPL_R')
+    call profgene_crsd(prof_gene, 'G', nbmode, nb_sstr=1, nb_link=1, &
+                       model_genez=modmec, gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !
     call jenonu(jexnom(lili, '&SOUSSTR'), i_ligr_sstr)
-    ASSERT(i_ligr_sstr.eq.1)
-    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi = prgene_prno)
-    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi = prgene_orig)
+    ASSERT(i_ligr_sstr .eq. 1)
+    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi=prgene_orig)
     prgene_prno(1) = 1
     prgene_prno(2) = nbmode
     prgene_orig(1) = 1
@@ -80,8 +80,8 @@ implicit none
 ! - Set links
 !
     call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
-    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_prno)
-    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_orig)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi=prgene_orig)
     prgene_prno(1) = 0
     prgene_orig(1) = 1
 !

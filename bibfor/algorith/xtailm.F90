@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
+subroutine xtailm(ndim, vecdir, numa, typma, jcoor, &
                   jconx1, jconx2, ipt, jtail)
     implicit none
 !
@@ -60,18 +60,18 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
 !     BOUCLE SUR LE NOMBRE D'ARETES DE LA MAILLE NUMA
     do iar = 1, nbar
 !
-        ino1 = ar(iar,1)
-        nno1 = zi(jconx1-1 + zi(jconx2+numa-1) +ino1-1)
-        ino2 = ar(iar,2)
-        nno2 = zi(jconx1-1 + zi(jconx2+numa-1) +ino2-1)
+        ino1 = ar(iar, 1)
+        nno1 = zi(jconx1-1+zi(jconx2+numa-1)+ino1-1)
+        ino2 = ar(iar, 2)
+        nno2 = zi(jconx1-1+zi(jconx2+numa-1)+ino2-1)
 !
 !       VECTEUR REPRESENTANT L'ARETE IAR
         do k = 1, ndim
-            arete(k)=zr(jcoor-1+(nno1-1)*3+k)-zr(jcoor-1+(nno2-1)*3+k)
+            arete(k) = zr(jcoor-1+(nno1-1)*3+k)-zr(jcoor-1+(nno2-1)*3+k)
         end do
 !
 !       PROJECTION DE L'ARETE IAR SUR LE VECTEUR TANGENT
-        p = ddot(ndim,arete,1,vecdir,1)
+        p = ddot(ndim, arete, 1, vecdir, 1)
         p = abs(p)
 !
         if (p .gt. zr(jtail-1+ipt)) zr(jtail-1+ipt) = p

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine te0206(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,18 +64,18 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ivarip=1
-    icoret=1
-    icontp=1
-    ivect=1
-    icoret=1
+    ivarip = 1
+    icoret = 1
+    icontp = 1
+    ivect = 1
+    icoret = 1
     imatr = 1
 !
 ! -  FONCTIONS DE FORMES ET POINTS DE GAUSS : ATTENTION CELA CORRESPOND
 !    ICI AUX FONCTIONS DE FORMES 2D DES FACES DES MAILLES JOINT 3D
 !    PAR EXEMPLE FONCTION DE FORME DU QUAD4 POUR LES HEXA8.
 !
-    call elrefe_info(fami='RIGI', nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
     nddl = 6*nno
@@ -95,19 +95,19 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS, POIDS=0
-    call gedisc(3, nno, npg, zr(ivf), zr(igeom),&
+    call gedisc(3, nno, npg, zr(ivf), zr(igeom), &
                 coopg)
 !
 !     RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icomp),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icomp), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -124,23 +124,23 @@ character(len=16), intent(in) :: option, nomte
             call jevech('PMATUUR', 'E', imatr)
         else
             call jevech('PMATUNS', 'E', imatr)
-        endif
-    endif
+        end if
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivect)
-    endif
+    end if
 !
-    call nmfi3d(nno, nddl, npg, lgpg, zr(ipoids),&
-                zr(ivf), zr(idfde), zi(imater), option, zr(igeom),&
-                zr(idepm), zr(iddep), zr(icontm), zr(icontp), zr(ivect),&
-                zr(imatr), zr(ivarim), zr(ivarip), zr(icarcr), zk16(icomp),&
-                matsym, coopg, zr(iinstm), zr(iinstp), lMatr, lVect, lSigm,&
+    call nmfi3d(nno, nddl, npg, lgpg, zr(ipoids), &
+                zr(ivf), zr(idfde), zi(imater), option, zr(igeom), &
+                zr(idepm), zr(iddep), zr(icontm), zr(icontp), zr(ivect), &
+                zr(imatr), zr(ivarim), zr(ivarip), zr(icarcr), zk16(icomp), &
+                matsym, coopg, zr(iinstm), zr(iinstp), lMatr, lVect, lSigm, &
                 codret)
 !
 ! - Save return code
@@ -148,6 +148,6 @@ character(len=16), intent(in) :: option, nomte
     if (lSigm) then
         call jevech('PCODRET', 'E', icoret)
         zi(icoret) = codret
-    endif
+    end if
 !
 end subroutine

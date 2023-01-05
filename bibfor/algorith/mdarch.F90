@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdarch(typcal, isto1, ipas, disc, nbmode,&
-                  iorsto, discst, dt, depger, vitger,&
-                  accger, depstr, vitstr, accstr, passto,&
-                  nbsym, nomsym, depgec, vitgec, accgec,&
+subroutine mdarch(typcal, isto1, ipas, disc, nbmode, &
+                  iorsto, discst, dt, depger, vitger, &
+                  accger, depstr, vitstr, accstr, passto, &
+                  nbsym, nomsym, depgec, vitgec, accgec, &
                   depstc, vitstc, accstc)
 
 ! aslint: disable=W1504
@@ -27,33 +27,33 @@ subroutine mdarch(typcal, isto1, ipas, disc, nbmode,&
 #include "asterfort/assert.h"
 !
 !   Obligatory arguments
-    character(len=4) , intent(in)  :: typcal
-    integer          , intent(in)  :: isto1
-    integer          , intent(in)  :: ipas
-    real(kind=8)     , intent(in)  :: disc
-    integer          , intent(in)  :: nbmode
+    character(len=4), intent(in)  :: typcal
+    integer, intent(in)  :: isto1
+    integer, intent(in)  :: ipas
+    real(kind=8), intent(in)  :: disc
+    integer, intent(in)  :: nbmode
     integer                        :: iorsto(*)
     real(kind=8)                   :: discst(*)
 !
 !   Optional arguments
 !     typcal = 'TRAN' case
-    real(kind=8)     , optional, intent(in)  :: dt
-    real(kind=8)     , optional, intent(in)  :: depger(nbmode)
-    real(kind=8)     , optional, intent(in)  :: vitger(nbmode)
-    real(kind=8)     , optional, intent(in)  :: accger(nbmode)
-    real(kind=8)     , optional              :: depstr(*)
-    real(kind=8)     , optional              :: vitstr(*)
-    real(kind=8)     , optional              :: accstr(*)
-    real(kind=8)     , optional              :: passto(*)
+    real(kind=8), optional, intent(in)  :: dt
+    real(kind=8), optional, intent(in)  :: depger(nbmode)
+    real(kind=8), optional, intent(in)  :: vitger(nbmode)
+    real(kind=8), optional, intent(in)  :: accger(nbmode)
+    real(kind=8), optional              :: depstr(*)
+    real(kind=8), optional              :: vitstr(*)
+    real(kind=8), optional              :: accstr(*)
+    real(kind=8), optional              :: passto(*)
 !     typcal = 'HARM' case
-    integer          , optional, intent(in)  :: nbsym
-    character(len=4) , optional, intent(in)  :: nomsym(*)
-    complex(kind=8)  , optional, intent(in)  :: depgec(nbmode)
-    complex(kind=8)  , optional, intent(in)  :: vitgec(nbmode)
-    complex(kind=8)  , optional, intent(in)  :: accgec(nbmode)
-    complex(kind=8)  , optional              :: depstc(*)
-    complex(kind=8)  , optional              :: vitstc(*)
-    complex(kind=8)  , optional              :: accstc(*)
+    integer, optional, intent(in)  :: nbsym
+    character(len=4), optional, intent(in)  :: nomsym(*)
+    complex(kind=8), optional, intent(in)  :: depgec(nbmode)
+    complex(kind=8), optional, intent(in)  :: vitgec(nbmode)
+    complex(kind=8), optional, intent(in)  :: accgec(nbmode)
+    complex(kind=8), optional              :: depstc(*)
+    complex(kind=8), optional              :: vitstc(*)
+    complex(kind=8), optional              :: accstc(*)
 !
 !-----------------------------------------------------------------------
 !
@@ -65,30 +65,30 @@ subroutine mdarch(typcal, isto1, ipas, disc, nbmode,&
 !-----------------------------------------------------------------------
 !
     nbsym2 = 3
-    nomsym2 = ['DEPL','VITE','ACCE']
-    ASSERT(ENSEMBLE2(nomsym,nbsym))
+    nomsym2 = ['DEPL', 'VITE', 'ACCE']
+    ASSERT(ENSEMBLE2(nomsym, nbsym))
     if (present(nbsym)) then
         nbsym2 = nbsym
         do inom = 1, nbsym2
             nomsym2(inom) = nomsym(inom)
         end do
-    endif
+    end if
 
-    ASSERT((typcal(1:4).eq.'TRAN').or.(typcal(1:4).eq.'HARM'))
-    if (typcal.eq.'TRAN') then
-        ASSERT(present(dt)    .and.present(depger).and.present(vitger))
-        ASSERT(present(accger).and.present(depstr).and.present(vitstr))
-        ASSERT(present(accstr).and.present(passto))
-        ASSERT(absent(nbsym).and.absent(nomsym))
+    ASSERT((typcal(1:4) .eq. 'TRAN') .or. (typcal(1:4) .eq. 'HARM'))
+    if (typcal .eq. 'TRAN') then
+        ASSERT(present(dt) .and. present(depger) .and. present(vitger))
+        ASSERT(present(accger) .and. present(depstr) .and. present(vitstr))
+        ASSERT(present(accstr) .and. present(passto))
+        ASSERT(absent(nbsym) .and. absent(nomsym))
     else
-        ASSERT(present(depgec).and.present(vitgec).and.present(accgec))
-        ASSERT(present(depstc).and.present(vitstc).and.present(accstc))
-        ASSERT(absent(dt).and.absent(passto))
-    endif
+        ASSERT(present(depgec) .and. present(vitgec) .and. present(accgec))
+        ASSERT(present(depstc) .and. present(vitstc) .and. present(accstc))
+        ASSERT(absent(dt) .and. absent(passto))
+    end if
 !
     iorsto(isto1+1) = ipas
     discst(isto1+1) = disc
-    ind = nbmode * isto1
+    ind = nbmode*isto1
 !
     if (typcal(1:4) .eq. 'TRAN') then
 !
@@ -97,24 +97,24 @@ subroutine mdarch(typcal, isto1, ipas, disc, nbmode,&
             depstr(ind+im) = depger(im)
             vitstr(ind+im) = vitger(im)
             accstr(ind+im) = accger(im)
-        enddo
+        end do
     else
         do ich = 1, nbsym
-            if (nomsym(ich)(1:4) .eq. 'DEPL') then
+            if (nomsym(ich) (1:4) .eq. 'DEPL') then
                 do im = 1, nbmode
                     depstc(ind+im) = depgec(im)
-                enddo
-            else if (nomsym(ich)(1:4).eq.'VITE') then
+                end do
+            else if (nomsym(ich) (1:4) .eq. 'VITE') then
                 do im = 1, nbmode
                     vitstc(ind+im) = vitgec(im)
-                enddo
+                end do
             else
                 do im = 1, nbmode
                     accstc(ind+im) = accgec(im)
-                enddo
-            endif
-        enddo
+                end do
+            end if
+        end do
 !
-    endif
+    end if
 !
 end subroutine

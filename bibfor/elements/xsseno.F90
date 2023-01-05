@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xsseno(nno, nbsig, nse, npg, jgano,&
+subroutine xsseno(nno, nbsig, nse, npg, jgano, &
                   jsigpg, siseno)
     implicit none
 !
@@ -32,7 +32,7 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 #include "jeveux.h"
 #include "asterfort/ppgan2.h"
     integer :: mxval
-    parameter (mxval=32*10*6)
+    parameter(mxval=32*10*6)
 !     EN 2D :
 !     MXVAL =  6 (NBSE MAX) * 6 (NBNOSE MAX) * 4 (NBCMP MAX)
 !     EN 3D :
@@ -60,7 +60,7 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
     do ise = 1, nse
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG  CORRESPONDANTE
-        idecpg=npg*(ise-1)
+        idecpg = npg*(ise-1)
 !
 !       BOUCLE NCMP DES CONTRAINTES
         do ic = 1, nbsig
@@ -72,7 +72,7 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
             call ppgan2(jgano, 1, 1, vpg, vno)
 !
             do in = 1, nno
-                siseno(nbsig*nno*(ise-1)+nbsig*(in-1)+ic)=vno(in)
+                siseno(nbsig*nno*(ise-1)+nbsig*(in-1)+ic) = vno(in)
             end do
 !
         end do

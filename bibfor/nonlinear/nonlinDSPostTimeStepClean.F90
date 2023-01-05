@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSPostTimeStepClean(ds_posttimestep)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/nonlinDSTableIOClean.h"
 #include "asterfort/selectListClean.h"
 !
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,8 +43,8 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    AS_DEALLOCATE(vk8 = ds_posttimestep%stab_para%list_dof_excl)
-    AS_DEALLOCATE(vk8 = ds_posttimestep%stab_para%list_dof_stab)
+    AS_DEALLOCATE(vk8=ds_posttimestep%stab_para%list_dof_excl)
+    AS_DEALLOCATE(vk8=ds_posttimestep%stab_para%list_dof_stab)
     call selectListClean(ds_posttimestep%crit_stab%selector)
     call selectListClean(ds_posttimestep%mode_vibr%selector)
     call nonlinDSTableIOClean(ds_posttimestep%table_io)

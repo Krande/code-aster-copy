@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
-                  kcha, tbgrca, resuco, resuc1, leres1,&
-                  noma, modele, ligrmo, mate, cara,&
+subroutine meca01(optio0, nbordr, jordr, nchar, jcha, &
+                  kcha, tbgrca, resuco, resuc1, leres1, &
+                  noma, modele, ligrmo, mate, cara, &
                   chvarc, codret)
 ! person_in_charge: josselin.delmas at edf.fr
 ! ----------------------------------------------------------------------
@@ -100,10 +100,10 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !     --- VARIABLES LOCALES ---
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'MECA01' )
+    parameter(nompro='MECA01')
 !
     integer :: npacri
-    parameter ( npacri = 2)
+    parameter(npacri=2)
 !
     integer :: iordr, jfin, jaux, tabido(5)
     integer :: np, nd, ncharp, nchard, jchap, jchad
@@ -140,8 +140,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! 1. PREALABLES
 !=======================================================================
 !
-    rbid=0.d0
-    cbid=(0.d0,0.d0)
+    rbid = 0.d0
+    cbid = (0.d0, 0.d0)
     codret = 0
     rundf = r8vide()
 !
@@ -155,7 +155,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
     else
         option = '                '
         option(1:iaux) = optio0(1:iaux)
-    endif
+    end if
 !
     do ii = 1, nchar
         ligrch = zk8(jcha+ii-1)//'.CHME.LIGRE'
@@ -193,7 +193,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         call exithm(modele, yathm, perman)
 ! --- EST-CE DU XFEM ?
         call exixfe(modele, irxfem)
-        if (irxfem .ne. 0) yaxfem=.true.
+        if (irxfem .ne. 0) yaxfem = .true.
 !
 ! --- POUR DE LA THM EN TRANSITOIRE, ON DEVRA RECUPERER LES INFORMATIONS
 !     DU PAS DE TEMPS PRECEDENT
@@ -201,8 +201,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         if (yathm) then
             if (.not. perman) then
                 jfin = 2
-            endif
-        endif
+            end if
+        end if
 !
 !--- INITIALISATIONS  : DEPLACEMENTS ET CONTRAINTES
 !
@@ -221,12 +221,12 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 2.2.1 ==> SAISIT ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
 !           RECUPERE LES CHARGES POUR LE NUMERO D'ORDRE IORDR
-            call medom1(modele, mate, mateco, cara, kcha,&
+            call medom1(modele, mate, mateco, cara, kcha, &
                         nchar, resuco, iordr)
             call jeveuo(kcha//'.LCHA', 'L', jcha)
             call mecara(cara, chcara)
 !
-            if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
+            if ((tysd .eq. 'EVOL_ELAS') .or. (tysd .eq. 'EVOL_NOLI')) then
 !--- RECUPERATION DES INSTANTS CORRESPONDANT A IORDR ET IORDR-1
                 do jaux = 1, jfin
 !
@@ -235,9 +235,9 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                     if (ibid .lt. 0) then
                         call utmess('I', 'INDICATEUR_3', sk=nompro)
                         goto 299
-                    endif
+                    end if
 !
-                    call rsadpa(resuco, 'L', 1, 'INST', ibid,&
+                    call rsadpa(resuco, 'L', 1, 'INST', ibid, &
                                 0, sjv=iainst, styp=k8b)
 !
                     if (jaux .eq. 1) then
@@ -245,7 +245,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                         deltat = rundf
                         theta = rundf
                     else
-                        deltat = time - zr(iainst)
+                        deltat = time-zr(iainst)
 !
 ! - --RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
                         call jenonu(jexnom(resuco//'           .NOVA', 'PARM_THETA'), iad)
@@ -253,21 +253,21 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                             theta = 0.57d0
                             call utmess('A', 'INDICATEUR_4', sk=resuco)
                         else
-                            call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr,&
+                            call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr, &
                                         0, sjv=iad, styp=k8b)
                             theta = zr(iad)
-                            if ((theta.gt.1.d0) .or. (theta.lt.0.d0)) then
+                            if ((theta .gt. 1.d0) .or. (theta .lt. 0.d0)) then
                                 call utmess('F', 'INDICATEUR_5', sk=resuco)
-                            endif
-                        endif
+                            end if
+                        end if
 ! - --
-                    endif
+                    end if
                 end do
             else
                 time = 0.d0
                 deltat = rundf
                 theta = rundf
-            endif
+            end if
 !--- CREATION DE LA CARTE DES INSTANTS
             call mechti(noma, time, deltat, theta, chtime)
 !
@@ -276,9 +276,9 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! VERIFIE L'EXISTENCE DU CHAMP
 ! S'IL EXISTE ON RECUPERE SON NOM SYMBOLIQUE
                 ibid = iordr+1-jaux
-                call rsexc2(1, 2, resuco, 'SIGM_ELNO', ibid,&
+                call rsexc2(1, 2, resuco, 'SIGM_ELNO', ibid, &
                             k24b, option, iret)
-                call rsexc2(2, 2, resuco, 'SIEF_ELNO', ibid,&
+                call rsexc2(2, 2, resuco, 'SIEF_ELNO', ibid, &
                             k24b, option, iret)
 !
 !--- SI AUCUN CHAMP N'EXISTE, ON SORT
@@ -292,22 +292,22 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                     valk(2) = k8b
                     call utmess('A', 'INDICATEUR_2', nk=2, valk=valk)
                     goto 299
-                endif
+                end if
 !--- ARCHIVAGE DU NOM DU CHAMP DE CONTRAINTES
                 if (jaux .eq. 1) then
                     chsigp = k24b
                 else
                     chsigm = k24b
-                endif
+                end if
             end do
 !
 !--- RECUPERATION DU CHAMP DE CONTRAINTES AUX NOEUDS PAR SOUS
 !    ELEMENT (OPTION 'SIEF_SENO_SEGA'), CAS X-FEM UNIQUEMENT
             if (yaxfem) then
-                call rsexc2(1, 1, resuco, 'SISE_ELNO', iordr,&
+                call rsexc2(1, 1, resuco, 'SISE_ELNO', iordr, &
                             chsigx, option, iret)
                 if (iret .gt. 0) goto 299
-            endif
+            end if
 ! ---------------------------------------------------------------------
 ! 2.2.4 ==> POUR DE LA THM : ON RECUPERE ...
 ! ---------------------------------------------------------------------
@@ -318,7 +318,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                 do jaux = 1, jfin
 !
                     ibid = iordr+1-jaux
-                    call rsexc2(1, 1, resuco, 'DEPL', ibid,&
+                    call rsexc2(1, 1, resuco, 'DEPL', ibid, &
                                 k24b, option, iret1)
                     if (iret1 .gt. 0) then
                         call codent(ibid, 'G', k8b)
@@ -326,12 +326,12 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                         valk(2) = k8b
                         call utmess('A', 'CALCULEL3_11', nk=2, valk=valk)
                         goto 299
-                    endif
+                    end if
                     if (jaux .eq. 1) then
                         chdepp = k24b
                     else
                         chdepm = k24b
-                    endif
+                    end if
                 end do
 ! ---------------------------------------
 ! 2.2.4.2. LES GRANDEURS CARACTERISTIQUES
@@ -341,7 +341,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                 presc = tbgrca(2)
                 if (longc .le. 0.d0 .or. presc .le. 0.d0) then
                     call utmess('F', 'INDICATEUR_28')
-                endif
+                end if
 ! -----------------------------
 ! 2.2.4.1. LE CHAMP D'ESTIMATEURS A L'INSTANT PRECEDENT
 ! -----------------------------
@@ -353,17 +353,17 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! INSTANT INITIAL : CREATION D'UN CHAM_ELEM NUL
 !                         12   345678   9012345678901234
                         cherrm = '&&'//nompro//'_ERREUR_M       '
-                        call alchml(ligrmo, option, 'PERREM', 'V', cherrm,&
+                        call alchml(ligrmo, option, 'PERREM', 'V', cherrm, &
                                     iret, ' ')
                         if (iret .ne. 0) then
                             call utmess('A', 'CALCULEL5_4')
                             goto 299
-                        endif
+                        end if
 !
                     else
 ! SINON, ON RECUPERE LE CHAMP DE L'INSTANT PRECEDENT
-                        ibid = iordr - 1
-                        call rsexc2(1, 1, resuco, 'ERME_ELEM', ibid,&
+                        ibid = iordr-1
+                        call rsexc2(1, 1, resuco, 'ERME_ELEM', ibid, &
                                     k24b, option, iret1)
                         if (iret1 .gt. 0) then
                             call codent(ibid, 'G', k8b)
@@ -371,13 +371,13 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                             valk(2) = k8b
                             call utmess('F', 'INDICATEUR_24', nk=2, valk=valk)
                             goto 299
-                        endif
+                        end if
                         cherrm = k24b
-                    endif
+                    end if
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
 ! 2.2.7. ==> RECUPERE LE NOM SYMBOLIQUE DU CHAMP DE L'OPTION CALCULEE
 !            POUR LE NUMERO D'ORDRE IORDR
@@ -385,9 +385,9 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 2.2.8. ==> CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
 !
-            call resloc(modele, ligrmo, yaxfem, yathm, tbgrca,&
-                        perman, chtime, mateco, chsigm, chsigp,&
-                        chsigx, chdepm, chdepp, cherrm, zk8(jcha),&
+            call resloc(modele, ligrmo, yaxfem, yathm, tbgrca, &
+                        perman, chtime, mateco, chsigm, chsigp, &
+                        chsigx, chdepm, chdepp, cherrm, zk8(jcha), &
                         nchar, tabido, chvois, cvoisx, chelem)
 !
 ! 2.2.9. ==> VERIFIE L'EXISTENCE DU CHAMP CHELEM
@@ -398,11 +398,11 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                 codret = 1
                 call jedema()
                 goto 999
-            endif
+            end if
 !
 ! 2.2.10. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 !             LOCAUX
-            call erglob(chelem, yathm, perman, option, iordr,&
+            call erglob(chelem, yathm, perman, option, iordr, &
                         resuco, leres1)
 !
 ! 2.2.11. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
@@ -418,336 +418,336 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! 3. OPTION "ERME_ELNO"
 !=======================================================================
 !
-    else if (option.eq.'ERME_ELNO') then
+    else if (option .eq. 'ERME_ELNO') then
 !
-        do 11 , iaux = 1 , nbordr
+        do 11, iaux = 1, nbordr
 !
-        call jemarq()
+            call jemarq()
 !
-        call jerecu('V')
-        iordr = zi(jordr+iaux-1)
-        if (iordr .eq. 0) then
+            call jerecu('V')
+            iordr = zi(jordr+iaux-1)
+            if (iordr .eq. 0) then
+                call jedema()
+                goto 11
+            end if
+!
+            call rsexc2(1, 1, resuco, 'ERME_ELEM', iordr, &
+                        cherre, option, iret1)
+!
+            if (iret1 .eq. 0) then
+                call rsexc1(leres1, option, iordr, cherrn)
+                call reslgn(ligrmo, option, cherre, cherrn)
+                call rsnoch(leres1, option, iordr)
+            end if
+!
             call jedema()
-            goto 11
-        endif
 !
-        call rsexc2(1, 1, resuco, 'ERME_ELEM', iordr,&
-                    cherre, option, iret1)
-!
-        if (iret1 .eq. 0) then
-            call rsexc1(leres1, option, iordr, cherrn)
-            call reslgn(ligrmo, option, cherre, cherrn)
-            call rsnoch(leres1, option, iordr)
-        endif
-!
-        call jedema()
-!
- 11     continue
+11          continue
 !
 !=======================================================================
 ! 4. OPTION "QIRE_ELEM"
 !=======================================================================
 !
-    else if (option.eq.'QIRE_ELEM') then
+            else if (option .eq. 'QIRE_ELEM') then
 !
 ! 4.1. ==> PREALABLES
 ! 4.1.1. ==> RECUPERE LES NOMS DES SD RESULTAT
-        call getvid(' ', 'RESULTAT', scal=resup, nbret=np)
-        call getvid(' ', 'RESU_DUAL', scal=resud, nbret=nd)
+            call getvid(' ', 'RESULTAT', scal=resup, nbret=np)
+            call getvid(' ', 'RESU_DUAL', scal=resud, nbret=nd)
 !
 ! 4.1.2. ==> RECHERCHE DES VOISINS
-        call reslo2(modele, ligrmo, chvois, cvoisx, tabido)
+            call reslo2(modele, ligrmo, chvois, cvoisx, tabido)
 ! 4.1.3. ==>  RECUPERE LES NOMS SYMBOLIQUES DES TABLES
-        tabp=' '
-        tabd=' '
-        call ltnotb(resup, 'ESTI_GLOB', tabp)
-        call ltnotb(resud, 'ESTI_GLOB', tabd)
+            tabp = ' '
+            tabd = ' '
+            call ltnotb(resup, 'ESTI_GLOB', tabp)
+            call ltnotb(resud, 'ESTI_GLOB', tabd)
 !
 ! 4.2. ==> BOUCLE SUR LES NUMEROS D'ORDRE
 !
-        do 12 , iaux = 1 , nbordr
+            do 12, iaux = 1, nbordr
 !
-        call jemarq()
-        iordr = zi(jordr+iaux-1)
+                call jemarq()
+                iordr = zi(jordr+iaux-1)
 !
 ! 4.2.1. ==> CALCULE LE COEFFICIENT S
 !----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE
-        lipacr(1)='NUME_ORDR'
-        lipacr(2)='OPTION'
+                lipacr(1) = 'NUME_ORDR'
+                lipacr(2) = 'OPTION'
 !
-        call tbliva(tabp, npacri, lipacr, [iordr], [rbid],&
-                    [cbid], 'ERME_ELEM', 'EGAL', [0.d0], 'ERRE_ABSO',&
-                    ctype, vali, erp, valc, valk(1),&
-                    iret)
-        call tbliva(tabd, npacri, lipacr, [iordr], [rbid],&
-                    [cbid], 'ERME_ELEM', 'EGAL', [0.d0], 'ERRE_ABSO',&
-                    ctype, vali, erd, valc, valk(1),&
-                    iret)
-        s=sqrt(erd/erp)
+                call tbliva(tabp, npacri, lipacr, [iordr], [rbid], &
+                            [cbid], 'ERME_ELEM', 'EGAL', [0.d0], 'ERRE_ABSO', &
+                            ctype, vali, erp, valc, valk(1), &
+                            iret)
+                call tbliva(tabd, npacri, lipacr, [iordr], [rbid], &
+                            [cbid], 'ERME_ELEM', 'EGAL', [0.d0], 'ERRE_ABSO', &
+                            ctype, vali, erd, valc, valk(1), &
+                            iret)
+                s = sqrt(erd/erp)
 !----- CREE UNE CARTE CONSTANTE
-        chs='&&OP0069.CH_NEUT_R'
-        call mecact('V', chs, 'MODELE', ligrmo, 'NEUT_R',&
-                    ncmp=1, nomcmp='X1', sr=s)
+                chs = '&&OP0069.CH_NEUT_R'
+                call mecact('V', chs, 'MODELE', ligrmo, 'NEUT_R', &
+                            ncmp=1, nomcmp='X1', sr=s)
 !
 ! 4.2.2. ==> SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
-        call medom1(modele, mate, mateco, cara, kchap,&
-                    ncharp, resup, iordr)
-        call medom1(modele, mate, mateco, cara, kchad,&
-                    nchard, resud, iordr)
-        call jeveuo(kchap//'.LCHA', 'L', jchap)
-        call jeveuo(kchad//'.LCHA', 'L', jchad)
+                call medom1(modele, mate, mateco, cara, kchap, &
+                            ncharp, resup, iordr)
+                call medom1(modele, mate, mateco, cara, kchad, &
+                            nchard, resud, iordr)
+                call jeveuo(kchap//'.LCHA', 'L', jchap)
+                call jeveuo(kchad//'.LCHA', 'L', jchad)
 !
 ! 4.2.3. ==> VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUPRIM
 !          S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
-        call rsexc2(1, 2, resup, 'SIGM_ELNO', iordr,&
-                    chsigp, option, iret)
-        call rsexc2(2, 2, resup, 'SIEF_ELNO', iordr,&
-                    chsigp, option, iret)
+                call rsexc2(1, 2, resup, 'SIGM_ELNO', iordr, &
+                            chsigp, option, iret)
+                call rsexc2(2, 2, resup, 'SIEF_ELNO', iordr, &
+                            chsigp, option, iret)
 !
 !         SI AUCUN CHAMP N'EXISTE, ON SORT
-        if (iret .gt. 0) goto 499
+                if (iret .gt. 0) goto 499
 !
 ! 4.2.4. ==> VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUDUAL
 !         S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
-        call rsexc2(1, 2, resud, 'SIGM_ELNO', iordr,&
-                    chsigd, option, iret)
-        call rsexc2(2, 2, resud, 'SIEF_ELNO', iordr,&
-                    chsigd, option, iret)
+                call rsexc2(1, 2, resud, 'SIGM_ELNO', iordr, &
+                            chsigd, option, iret)
+                call rsexc2(2, 2, resud, 'SIEF_ELNO', iordr, &
+                            chsigd, option, iret)
 !
 !         SI AUCUN CHAMP N'EXISTE, ON SORT
-        if (iret .gt. 0) goto 499
+                if (iret .gt. 0) goto 499
 !
 ! 4.2.5. ==> RECUPERE LE NOM DE L'OPTION CALCULEE POUR CHACUN DES CHAMPS
-        call dismoi('NOM_OPTION', chsigp, 'CHAM_ELEM', repk=optiop)
-        call dismoi('NOM_OPTION', chsigd, 'CHAM_ELEM', repk=optiod)
+                call dismoi('NOM_OPTION', chsigp, 'CHAM_ELEM', repk=optiop)
+                call dismoi('NOM_OPTION', chsigd, 'CHAM_ELEM', repk=optiod)
 !
 ! 4.2.6. ==> VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
-        call dismoi('NOM_LIGREL', chsigp, 'CHAM_ELEM', repk=ligrcp)
-        call dismoi('NOM_LIGREL', chsigd, 'CHAM_ELEM', repk=ligrcd)
-        if (ligrcp .ne. ligrmo .or. ligrcd .ne. ligrmo) then
-            call codent(iordr, 'G', k8b)
-            valk(1)=option
-            valk(2)=k8b
-            call utmess('A', 'INDICATEUR_2', nk=2, valk=valk)
-            goto 499
-        endif
+                call dismoi('NOM_LIGREL', chsigp, 'CHAM_ELEM', repk=ligrcp)
+                call dismoi('NOM_LIGREL', chsigd, 'CHAM_ELEM', repk=ligrcd)
+                if (ligrcp .ne. ligrmo .or. ligrcd .ne. ligrmo) then
+                    call codent(iordr, 'G', k8b)
+                    valk(1) = option
+                    valk(2) = k8b
+                    call utmess('A', 'INDICATEUR_2', nk=2, valk=valk)
+                    goto 499
+                end if
 !
 ! 4.2.7. ==> RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
 !          POUR LE NUMERO D'ORDRE IORDR
-        if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
-            call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                        0, sjv=iainst, styp=k8b)
-            time = zr(iainst)
-        else
-            time = 0.d0
-        endif
+                if ((tysd .eq. 'EVOL_ELAS') .or. (tysd .eq. 'EVOL_NOLI')) then
+                    call rsadpa(resuco, 'L', 1, 'INST', iordr, &
+                                0, sjv=iainst, styp=k8b)
+                    time = zr(iainst)
+                else
+                    time = 0.d0
+                end if
 !
 ! 4.2.8. ==> CREE UNE CARTE D'INSTANTS
-        call mechti(noma, time, rundf, rundf, chtime)
+                call mechti(noma, time, rundf, rundf, chtime)
 !
 ! 4.2.9. ==> RECUPERE LE NOM SYMBOLIQUE DU CHAMP DE L'OPTION CALCULEE
 !           POUR LE NUMERO D'ORDRE IORDR
-        call rsexc1(leres1, option, iordr, chelem)
+                call rsexc1(leres1, option, iordr, chelem)
 !
 ! 4.2.10. ==> CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
 !
-        call qires1(modele, ligrmo, chtime, chsigp, chsigd,&
-                    zk8(jchap), zk8(jchad), ncharp, nchard, chs,&
-                    mateco, chvois, tabido, chelem)
+                call qires1(modele, ligrmo, chtime, chsigp, chsigd, &
+                            zk8(jchap), zk8(jchad), ncharp, nchard, chs, &
+                            mateco, chvois, tabido, chelem)
 !
 ! 4.2.11. ==> VERIFIE L'EXISTENCE DU CHAMP CHELEM
-        call exisd('CHAMP_GD', chelem, iret)
+                call exisd('CHAMP_GD', chelem, iret)
 !
 !--- SI LE CHAMP N'EXISTE PAS, ON SORT
-        if (iret .eq. 0) then
-            codret = 1
-            call jedema()
-            goto 999
-        endif
+                if (iret .eq. 0) then
+                    codret = 1
+                    call jedema()
+                    goto 999
+                end if
 !
 ! 4.2.12. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 !             LOCAUX
-        call erglob(chelem, .false._1, .false._1, option, iordr,&
-                    resuco, leres1)
+                call erglob(chelem, .false._1, .false._1, option, iordr, &
+                            resuco, leres1)
 !
 ! 4.2.13. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
-        call rsnoch(leres1, option, iordr)
+                call rsnoch(leres1, option, iordr)
 !
-499     continue
+499             continue
 !
-        call jedema()
+                call jedema()
 !
- 12     continue
+12              continue
 !
 !=======================================================================
 ! 5. OPTION "QIRE_ELNO"
 !=======================================================================
 !
-    else if (option.eq.'QIRE_ELNO') then
+                else if (option .eq. 'QIRE_ELNO') then
 !
-        do 13 , iaux = 1 , nbordr
+                do 13, iaux = 1, nbordr
 !
-        call jemarq()
+                    call jemarq()
 !
-        iordr = zi(jordr+iaux-1)
-        call rsexc2(1, 1, resuco, 'QIRE_ELEM', iordr,&
-                    cherre, option, iret1)
+                    iordr = zi(jordr+iaux-1)
+                    call rsexc2(1, 1, resuco, 'QIRE_ELEM', iordr, &
+                                cherre, option, iret1)
 !
-        if (iret1 .eq. 0) then
-            call rsexc1(leres1, option, iordr, cherrn)
-            call reslgn(ligrmo, option, cherre, cherrn)
-            call rsnoch(leres1, option, iordr)
-        endif
+                    if (iret1 .eq. 0) then
+                        call rsexc1(leres1, option, iordr, cherrn)
+                        call reslgn(ligrmo, option, cherre, cherrn)
+                        call rsnoch(leres1, option, iordr)
+                    end if
 !
-        call jedema()
+                    call jedema()
 !
- 13     continue
+13                  continue
 !
 !=======================================================================
 ! 6. OPTIONS "QIZ1_ELEM" ET "QIZ2_ELEM"
 !=======================================================================
 !
-    else if (option.eq.'QIZ1_ELEM' .or. option.eq.'QIZ2_ELEM') then
+                    else if (option .eq. 'QIZ1_ELEM' .or. option .eq. 'QIZ2_ELEM') then
 !
 ! 6.1. ==> RECUPERE LES NOMS DES SD RESULTAT
-        call getvid(' ', 'RESULTAT', scal=resup, nbret=np)
-        call getvid(' ', 'RESU_DUAL', scal=resud, nbret=nd)
+                    call getvid(' ', 'RESULTAT', scal=resup, nbret=np)
+                    call getvid(' ', 'RESU_DUAL', scal=resud, nbret=nd)
 !
 ! 6.2. ==> BOUCLE SUR LES NUMEROS D'ORDRE
 !
-        do 14 , iaux = 1 , nbordr
+                    do 14, iaux = 1, nbordr
 !
-        call jemarq()
+                        call jemarq()
 !
-        iordr = zi(jordr+iaux-1)
+                        iordr = zi(jordr+iaux-1)
 !
 ! 6.2.1. ==> SAISIT ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
-        call medom1(modele, mate, mateco, cara, kchap,&
-                    ncharp, resup, iordr)
-        call medom1(modele, mate, mateco, cara, kchad,&
-                    nchard, resud, iordr)
-        call jeveuo(kchap//'.LCHA', 'L', jchap)
-        call jeveuo(kchad//'.LCHA', 'L', jchad)
+                        call medom1(modele, mate, mateco, cara, kchap, &
+                                    ncharp, resup, iordr)
+                        call medom1(modele, mate, mateco, cara, kchad, &
+                                    nchard, resud, iordr)
+                        call jeveuo(kchap//'.LCHA', 'L', jchap)
+                        call jeveuo(kchad//'.LCHA', 'L', jchad)
 !
 ! 6.2.2. ==> RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES LISSE
 !            DANS LE RESUPRIM
-        call rsexc2(1, 1, resup, 'SI'//option(3:4)//'_NOEU', iordr,&
-                    chsgpn, option, iret)
+                        call rsexc2(1, 1, resup, 'SI'//option(3:4)//'_NOEU', iordr, &
+                                    chsgpn, option, iret)
 !
 ! 6.2.3. ==>  RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES LISSE
 !             DANS LE RESUDUAL
-        call rsexc2(1, 1, resud, 'SI'//option(3:4)//'_NOEU', iordr,&
-                    chsgdn, option, iret)
+                        call rsexc2(1, 1, resud, 'SI'//option(3:4)//'_NOEU', iordr, &
+                                    chsgdn, option, iret)
 !
 ! 6.2.4. ==> RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES CALCULE
 !            DANS LE RESUPRIM
-        call rsexc2(1, 1, resup, 'SIEF_ELGA', iordr,&
-                    chsigp, option, iret)
-        if (iret .gt. 0) goto 699
+                        call rsexc2(1, 1, resup, 'SIEF_ELGA', iordr, &
+                                    chsigp, option, iret)
+                        if (iret .gt. 0) goto 699
 !
 ! 6.2.5 ==> RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES CALCULE
 !           DANS LE RESUDUAL
-        call rsexc2(1, 1, resud, 'SIEF_ELGA', iordr,&
-                    chsigd, option, iret)
-        if (iret .gt. 0) goto 699
+                        call rsexc2(1, 1, resud, 'SIEF_ELGA', iordr, &
+                                    chsigd, option, iret)
+                        if (iret .gt. 0) goto 699
 !
 ! 6.2.6 ==> CALCUL
-        call rsexc1(resuc1, option, iordr, chelem)
+                        call rsexc1(resuc1, option, iordr, chelem)
 !
-        call qintzz(modele, ligrmo, mateco, chsigp, chsigd,&
-                    chsgpn, chsgdn, chelem)
+                        call qintzz(modele, ligrmo, mateco, chsigp, chsigd, &
+                                    chsgpn, chsgdn, chelem)
 !
 ! 6.2.7.0. ==> RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
 !          POUR LE NUMERO D'ORDRE IORDR
-        if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
-            call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                        0, sjv=iainst, styp=k8b)
-            time = zr(iainst)
-        else
-            time = 0.d0
-        endif
+                        if ((tysd .eq. 'EVOL_ELAS') .or. (tysd .eq. 'EVOL_NOLI')) then
+                            call rsadpa(resuco, 'L', 1, 'INST', iordr, &
+                                        0, sjv=iainst, styp=k8b)
+                            time = zr(iainst)
+                        else
+                            time = 0.d0
+                        end if
 !
 ! 6.2.7.1. ==> RECUPERE LE CHAMP DE VARIABLE DE COMMANDE
-        call vrcins(modele, mate, cara, time, chvarc,&
-                    cret)
+                        call vrcins(modele, mate, cara, time, chvarc, &
+                                    cret)
 !
 ! 6.2.7.2. ==> CALCUL DE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS
 !             LOCAUX
-        call ernozz(modele, chsigp, mateco, chsgpn, chvarc,&
-                    option, ligrmo, iordr, resuco, leres1,&
-                    chelem)
+                        call ernozz(modele, chsigp, mateco, chsgpn, chvarc, &
+                                    option, ligrmo, iordr, resuco, leres1, &
+                                    chelem)
 !
 ! 6.2.8. ==> NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
-        call rsnoch(leres1, option, iordr)
+                        call rsnoch(leres1, option, iordr)
 !
-699     continue
+699                     continue
 !
-        call jedema()
+                        call jedema()
 !
- 14     continue
+14                      continue
 !
 !=======================================================================
 ! 7. OPTIONS "ERZ1_ELEM" ET "ERZ2_ELEM"
 !=======================================================================
 !
-    else if (option.eq.'ERZ1_ELEM' .or. option.eq.'ERZ2_ELEM') then
+                        else if (option .eq. 'ERZ1_ELEM' .or. option .eq. 'ERZ2_ELEM') then
 !
-        do 15 , iaux = 1 , nbordr
+                        do 15, iaux = 1, nbordr
 !
-        call jemarq()
-        call jerecu('V')
+                            call jemarq()
+                            call jerecu('V')
 !
-        iordr = zi(jordr+iaux-1)
-        call medom1(modele, mate, mateco, cara, kcha,&
-                    nchar, resuco, iordr)
-        call jeveuo(kcha//'.LCHA', 'L', jcha)
-        call mecara(cara, chcara)
-        call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&
-                    chsig, option, iret)
-        if (iret .gt. 0) then
-            call utmess('A', 'CALCULEL3_7', sk=option)
-            codret = 2
-            goto 999
-        endif
+                            iordr = zi(jordr+iaux-1)
+                            call medom1(modele, mate, mateco, cara, kcha, &
+                                        nchar, resuco, iordr)
+                            call jeveuo(kcha//'.LCHA', 'L', jcha)
+                            call mecara(cara, chcara)
+                            call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr, &
+                                        chsig, option, iret)
+                            if (iret .gt. 0) then
+                                call utmess('A', 'CALCULEL3_7', sk=option)
+                                codret = 2
+                                goto 999
+                            end if
 !
 !
-        call rsexc2(1, 1, resuco, 'SI'//option(3:4)//'_NOEU', iordr,&
-                    chsign, option, iret)
+                            call rsexc2(1, 1, resuco, 'SI'//option(3:4)//'_NOEU', iordr, &
+                                        chsign, option, iret)
 !
-        if (iret .eq. 0) then
-            if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
-                call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                            0, sjv=iainst, styp=k8b)
-                time = zr(iainst)
-            else
-                time = 0.d0
-            endif
-            call vrcins(modele, mate, cara, time, chvarc,&
-                        cret)
-            call rsexc1(leres1, option, iordr, chelem)
-            call ernozz(modele, chsig, mateco, chsign, chvarc,&
-                        option, ligrmo, iordr, resuco, leres1,&
-                        chelem)
-            call rsnoch(leres1, option, iordr)
-        endif
+                            if (iret .eq. 0) then
+                                if ((tysd .eq. 'EVOL_ELAS') .or. (tysd .eq. 'EVOL_NOLI')) then
+                                    call rsadpa(resuco, 'L', 1, 'INST', iordr, &
+                                                0, sjv=iainst, styp=k8b)
+                                    time = zr(iainst)
+                                else
+                                    time = 0.d0
+                                end if
+                                call vrcins(modele, mate, cara, time, chvarc, &
+                                            cret)
+                                call rsexc1(leres1, option, iordr, chelem)
+                                call ernozz(modele, chsig, mateco, chsign, chvarc, &
+                                            option, ligrmo, iordr, resuco, leres1, &
+                                            chelem)
+                                call rsnoch(leres1, option, iordr)
+                            end if
 !
-        call jedema()
+                            call jedema()
 !
- 15     continue
+15                          continue
 !
 !=======================================================================
 ! N. OPTION NE CORRESPONDANT PAS AUX INDICATEURS D'ERREUR
 !=======================================================================
 !
-    else
+                            else
 !
 !                 123456   890123456789
-        valk(1) = nompro//'            '
-        valk(2) = option// '   '
-        call utmess('F', 'INDICATEUR_99', nk=2, valk=valk)
+                            valk(1) = nompro//'            '
+                            valk(2) = option//'   '
+                            call utmess('F', 'INDICATEUR_99', nk=2, valk=valk)
 !
-    endif
+                            end if
 !
-999 continue
+999                         continue
 !
-end subroutine
+                            end subroutine

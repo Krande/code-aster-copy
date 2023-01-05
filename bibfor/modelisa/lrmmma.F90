@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
-                  typgeo, nomtyp, nnotyp, renumd, nmatyp,&
-                  nommai, connex, typmai, prefix, infmed,&
+subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp, &
+                  typgeo, nomtyp, nnotyp, renumd, nmatyp, &
+                  nommai, connex, typmai, prefix, infmed, &
                   modnum, numnoa)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -44,17 +44,17 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-med_idt :: fid
-integer :: nbmail, nbnoma
-integer :: nbtyp
-integer :: nmatyp(MT_NTYMAX), numnoa(MT_NTYMAX, *), modnum(MT_NTYMAX)
-integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
-integer :: renumd(*)
-integer :: infmed
-character(len=6) :: prefix
-character(len=8) :: nomtyp(*)
-character(len=24) :: connex, nommai, typmai
-character(len=*) :: nomamd
+    med_idt :: fid
+    integer :: nbmail, nbnoma
+    integer :: nbtyp
+    integer :: nmatyp(MT_NTYMAX), numnoa(MT_NTYMAX, *), modnum(MT_NTYMAX)
+    integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
+    integer :: renumd(*)
+    integer :: infmed
+    character(len=6) :: prefix
+    character(len=8) :: nomtyp(*)
+    character(len=24) :: connex, nommai, typmai
+    character(len=*) :: nomamd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ character(len=*) :: nomamd
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'LRMMMA'
-    integer, parameter :: edmail=0,edfuin=0,ednoda=0
+    integer, parameter :: edmail = 0, edfuin = 0, ednoda = 0
     integer :: codret
     integer :: ima, idec
     integer :: iaux, jaux
@@ -126,13 +126,13 @@ character(len=*) :: nomamd
     call wkvect('&&'//nompro//'.NOMMAI', 'V V K8', nbmail, jnomma)
     call wkvect('&&'//nompro//'.IMATYP', 'V V I', nbmail*2, jmatyp)
 !
-    do ityp = 1 , MT_NTYMAX
+    do ityp = 1, MT_NTYMAX
         if (nmatyp(ityp) .ne. 0) then
             call wkvect('&&'//nompro//'.NOM.'//nomtyp(ityp), 'V V K16', nmatyp(ityp), jnomty(ityp))
             call wkvect('&&'//prefix//'.NUM.'//nomtyp(ityp), 'V V I', nmatyp(ityp), jnumty(ityp))
-            iaux = nmatyp(ityp) * nnotyp(ityp)
+            iaux = nmatyp(ityp)*nnotyp(ityp)
             call wkvect('&&'//nompro//'.CNX.'//nomtyp(ityp), 'V V I', iaux, jcxtyp(ityp))
-        endif
+        end if
     end do
 !
 !====
@@ -148,16 +148,16 @@ character(len=*) :: nomamd
 !====
 !
     nromai = 1
-    do letype = 1 , nbtyp
+    do letype = 1, nbtyp
 !
 ! 2.0. ==> PASSAGE DU NUMERO DE TYPE MED AU NUMERO DE TYPE ASTER
 !
         ityp = renumd(letype)
 !
         if (infmed .ge. 3) then
-            write (ifm,201) nomtyp(ityp), nmatyp(ityp)
-        endif
-201     format('TYPE ',a8,' : ',i10,' MAILLES')
+            write (ifm, 201) nomtyp(ityp), nmatyp(ityp)
+        end if
+201     format('TYPE ', a8, ' : ', i10, ' MAILLES')
 !
         if (nmatyp(ityp) .ne. 0) then
 !
@@ -166,9 +166,9 @@ character(len=*) :: nomamd
 !          PRESENTE DANS LE FICHIER MED: ON NUMEROTE LES MAILLES
 !          SELON LEUR ORDRE D'APPARITION.
 !
-            do jaux = 1 , nmatyp(ityp)
+            do jaux = 1, nmatyp(ityp)
                 zi(jnumty(ityp)+jaux-1) = nromai
-                nromai = nromai + 1
+                nromai = nromai+1
             end do
 !
 !
@@ -182,7 +182,7 @@ character(len=*) :: nomamd
             if (codret .ne. 0) then
                 if (infmed .ge. 3) then
                     call utmess('I', 'MED_19', sk=nomtyp(ityp))
-                endif
+                end if
                 if (nbmail .ge. 10000000) then
 !           + DE 10 MILLIONS DE MAILLES (AU TOTAL), ON PASSE EN BASE 36
                     do iaux = 1, nmatyp(ityp)
@@ -197,30 +197,30 @@ character(len=*) :: nomamd
                         call codent(code, 'G', saux15)
                         zk16(jnomty(ityp)+iaux-1) = 'M'//saux15
                     end do
-                endif
+                end if
                 codret = 0
-            endif
+            end if
 !
 ! 2.3. ==> LES CONNECTIVITES
 !          LA CONNECTIVITE EST FOURNIE EN STOCKANT TOUS LES NOEUDS A
 !          LA SUITE POUR UNE MAILLE DONNEE.
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !
-            call as_mmhcyr(fid, nomamd, zi(jcxtyp(ityp)), nmatyp(ityp) * nnotyp(ityp), edfuin,&
+            call as_mmhcyr(fid, nomamd, zi(jcxtyp(ityp)), nmatyp(ityp)*nnotyp(ityp), edfuin, &
                            edmail, typgeo(ityp), ednoda, codret)
             if (codret .ne. 0) then
-                saux08='mmhcyr'
+                saux08 = 'mmhcyr'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
-            do imatyp = 1 , nmatyp(ityp)
+            end if
+            do imatyp = 1, nmatyp(ityp)
                 ima = zi(jnumty(ityp)+imatyp-1)
-                zk8(jnomma+ima-1) = zk16(jnomty(ityp)+imatyp-1)(1:8)
-                zi (jtypma+ima-1) = ityp
+                zk8(jnomma+ima-1) = zk16(jnomty(ityp)+imatyp-1) (1:8)
+                zi(jtypma+ima-1) = ityp
                 idec = (ima-1)*2
                 zi(jmatyp+idec) = ityp
                 zi(jmatyp+idec+1) = imatyp
             end do
-        endif
+        end if
     end do
 !
 !====
@@ -231,7 +231,7 @@ character(len=*) :: nomamd
     call jeecra(connex, 'LONT', nbnoma)
     call jeecra(connex, 'NUTIOC', nbmail)
 !
-    do ima = 1 , nbmail
+    do ima = 1, nbmail
         idec = (ima-1)*2
         ityp = zi(jmatyp+idec)
         call jeecra(jexnum(connex, ima), 'LONMAX', nnotyp(ityp))
@@ -242,16 +242,16 @@ character(len=*) :: nomamd
 !       POUR LES TYPES DE MAILLE DONT LA NUMEROTATION DES NOEUDS
 !       ENTRE ASTER ET MED EST IDENTIQUE:
         if (modnum(ityp) .eq. 0) then
-            do jaux = 1 , nnotyp(ityp)
+            do jaux = 1, nnotyp(ityp)
                 zi(jcnxma+jaux-1) = zi(jcxtyp(ityp)+jaux-1+idec)
             end do
 !       SINON (CF LRMTYP POUR CONNAITRE LA CORRESPONDANCE DES
 !       NOEUDS LOCAUX ENTRE ASTER ET MED)
         else
-            do jaux = 1 , nnotyp(ityp)
-                zi(jcnxma+jaux-1) = zi(jcxtyp(ityp)+numnoa(ityp,jaux)- 1+idec)
+            do jaux = 1, nnotyp(ityp)
+                zi(jcnxma+jaux-1) = zi(jcxtyp(ityp)+numnoa(ityp, jaux)-1+idec)
             end do
-        endif
+        end if
     end do
 !
 !====
@@ -261,7 +261,7 @@ character(len=*) :: nomamd
     call jecreo(nommai, 'G N K8')
     call jeecra(nommai, 'NOMMAX', nbmail)
 !
-    do iaux = 1 , nbmail
+    do iaux = 1, nbmail
         call jecroc(jexnom(nommai, zk8(jnomma+iaux-1)))
     end do
 !
@@ -271,11 +271,11 @@ character(len=*) :: nomamd
 !
     call jedetr('&&'//nompro//'.NOMMAI')
     call jedetr('&&'//nompro//'.IMATYP')
-    do ityp = 1 , MT_NTYMAX
+    do ityp = 1, MT_NTYMAX
         if (nmatyp(ityp) .ne. 0) then
             call jedetr('&&'//nompro//'.NOM.'//nomtyp(ityp))
             call jedetr('&&'//nompro//'.CNX.'//nomtyp(ityp))
-        endif
+        end if
     end do
 !
     call jedema()

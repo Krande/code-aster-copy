@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc1002(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, neps,&
-                  epsm, deps, nsig, sigm, vim,&
-                  option, sigp, vip, typmod, ndsde,&
+subroutine lc1002(fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, neps, &
+                  epsm, deps, nsig, sigm, vim, &
+                  option, sigp, vip, typmod, ndsde, &
                   dsidep, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/lcpivm.h"
 !
@@ -64,9 +64,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     rela_comp = compor(1)
-    call lcpivm(fami, kpg, ksp, imate, rela_comp,&
-                carcri, instam, instap, epsm, deps,&
-                vim, option, sigp, vip, dsidep,&
+    call lcpivm(fami, kpg, ksp, imate, rela_comp, &
+                carcri, instam, instap, epsm, deps, &
+                vim, option, sigp, vip, dsidep, &
                 codret)
 !
 end subroutine

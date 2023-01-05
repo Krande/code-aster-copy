@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmvas(ndim  , nne   , nnm   , nnl   , nbdm, nbcps,&
-                  vectce, vectcm, vectfe, vectfm,&
-                  vectcc, vectff,&
-                  vcont , vfric)
+subroutine mmmvas(ndim, nne, nnm, nnl, nbdm, nbcps, &
+                  vectce, vectcm, vectfe, vectfm, &
+                  vectcc, vectff, &
+                  vcont, vfric)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
-real(kind=8), intent(in) :: vectce(27), vectcm(27)
-real(kind=8), intent(in) :: vectfe(27), vectfm(27)
-real(kind=8), intent(in) :: vectcc(9), vectff(18)
-real(kind=8), intent(inout) :: vcont(81), vfric(81)
+    integer, intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
+    real(kind=8), intent(in) :: vectce(27), vectcm(27)
+    real(kind=8), intent(in) :: vectfe(27), vectfm(27)
+    real(kind=8), intent(in) :: vectcc(9), vectff(18)
+    real(kind=8), intent(inout) :: vcont(81), vfric(81)
 !
 ! --------------------------------------------------------------------------------------------------
 !

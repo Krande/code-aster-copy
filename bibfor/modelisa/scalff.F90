@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,15 +44,15 @@ subroutine scalff(nbfonc, nbp, disc, vale, a)
 !
         do ifo1 = ifo2, nbfonc
 !
-            a(ifo1,ifo2) = 0.d0
+            a(ifo1, ifo2) = 0.d0
             do ip = 1, nbp-1
-                dx = disc(ip+1) - disc(ip)
-                y1 = vale(ip,ifo1)*vale(ip,ifo2)
-                y2 = vale(ip+1,ifo1)*vale(ip+1,ifo2)
-                yy = y1 + y2
-                a(ifo1,ifo2) = a(ifo1,ifo2) + yy * dx
+                dx = disc(ip+1)-disc(ip)
+                y1 = vale(ip, ifo1)*vale(ip, ifo2)
+                y2 = vale(ip+1, ifo1)*vale(ip+1, ifo2)
+                yy = y1+y2
+                a(ifo1, ifo2) = a(ifo1, ifo2)+yy*dx
             end do
-            a(ifo1,ifo2) = a(ifo1,ifo2)/2.d0
+            a(ifo1, ifo2) = a(ifo1, ifo2)/2.d0
 !
         end do
 !
@@ -64,10 +64,10 @@ subroutine scalff(nbfonc, nbp, disc, vale, a)
 !
         do ifo2 = 2, nbfonc
             do ifo1 = 1, ifo2-1
-                a(ifo1,ifo2) = a(ifo2,ifo1)
+                a(ifo1, ifo2) = a(ifo2, ifo1)
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

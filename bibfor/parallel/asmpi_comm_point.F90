@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
-                            vi, vi4, vr, sci, sci4,&
+subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
+                            vi, vi4, vr, sci, sci4, &
                             scr)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -99,21 +99,21 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
 !
 !     -- SCALAIRE :
 !     -------------
-    typsc1=typsca
+    typsc1 = typsca
     scal = present(sci) .or. present(sci4) .or. present(scr)
     if (.not. scal) then
         ASSERT(present(nbval))
         nbv = nbval
     else
         nbv = 1
-    endif
-    ASSERT(typsc1.eq.'I' .or. typsc1.eq.'I4' .or. typsc1.eq.'R')
-    ASSERT(typsc1.ne.'I' .or. present(vi) .or. present(sci))
-    ASSERT(typsc1.ne.'I4' .or. present(vi4) .or. present(sci4))
-    ASSERT(typsc1.ne.'R' .or. present(vr) .or. present(scr))
-    nbv4=nbv
-    nudes4=nudest
-    numes4=numess
+    end if
+    ASSERT(typsc1 .eq. 'I' .or. typsc1 .eq. 'I4' .or. typsc1 .eq. 'R')
+    ASSERT(typsc1 .ne. 'I' .or. present(vi) .or. present(sci))
+    ASSERT(typsc1 .ne. 'I4' .or. present(vi4) .or. present(sci4))
+    ASSERT(typsc1 .ne. 'R' .or. present(vr) .or. present(scr))
+    nbv4 = nbv
+    nudes4 = nudest
+    numes4 = numess
 !
     if (optmpi .eq. 'MPI_SEND') then
 !     ---------------------------------
@@ -121,55 +121,55 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
             if (typsc1 .eq. 'R') then
                 wkr(1) = scr
                 call asmpi_send_r(wkr, nbv4, nudes4, numes4, mpicou)
-            else if (typsc1.eq.'I') then
+            else if (typsc1 .eq. 'I') then
                 wki(1) = sci
                 call asmpi_send_i(wki, nbv4, nudes4, numes4, mpicou)
-            else if (typsc1.eq.'I4') then
+            else if (typsc1 .eq. 'I4') then
                 wki4(1) = sci4
                 call asmpi_send_i4(wki4, nbv4, nudes4, numes4, mpicou)
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             if (typsc1 .eq. 'R') then
                 call asmpi_send_r(vr, nbv4, nudes4, numes4, mpicou)
-            else if (typsc1.eq.'I') then
+            else if (typsc1 .eq. 'I') then
                 call asmpi_send_i(vi, nbv4, nudes4, numes4, mpicou)
-            else if (typsc1.eq.'I4') then
+            else if (typsc1 .eq. 'I4') then
                 call asmpi_send_i4(vi4, nbv4, nudes4, numes4, mpicou)
             else
                 ASSERT(.false.)
-            endif
-        endif
-    else if (optmpi.eq.'MPI_RECV') then
+            end if
+        end if
+    else if (optmpi .eq. 'MPI_RECV') then
 !     ---------------------------------
         if (scal) then
             if (typsc1 .eq. 'R ') then
                 call asmpi_recv_r(wkr, nbv4, nudes4, numes4, mpicou)
                 scr = wkr(1)
-            else if (typsc1.eq.'I ') then
+            else if (typsc1 .eq. 'I ') then
                 call asmpi_recv_i(wki, nbv4, nudes4, numes4, mpicou)
                 sci = wki(1)
-            else if (typsc1.eq.'I4') then
+            else if (typsc1 .eq. 'I4') then
                 call asmpi_recv_i4(wki4, nbv4, nudes4, numes4, mpicou)
                 sci4 = wki4(1)
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             if (typsc1 .eq. 'R ') then
                 call asmpi_recv_r(vr, nbv4, nudes4, numes4, mpicou)
-            else if (typsc1.eq.'I ') then
+            else if (typsc1 .eq. 'I ') then
                 call asmpi_recv_i(vi, nbv4, nudes4, numes4, mpicou)
-            else if (typsc1.eq.'I4') then
+            else if (typsc1 .eq. 'I4') then
                 call asmpi_recv_i4(vi4, nbv4, nudes4, numes4, mpicou)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
 ! --- COMPTEUR
@@ -181,7 +181,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
     integer(kind=4) :: i4dummy
     real(kind=8) :: rdummy
 !
-    if (present(nbval) .and. present(vi) .and. present(vi4) .and. present(vr) .and.&
+    if (present(nbval) .and. present(vi) .and. present(vi4) .and. present(vr) .and. &
         present(sci) .and. present(sci4) .and. present(scr)) then
         kdummy = optmpi(1:1)
         kdummy = typsca(1:1)
@@ -194,6 +194,6 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
         idummy = sci
         i4dummy = sci4
         rdummy = scr
-    endif
+    end if
 #endif
 end subroutine

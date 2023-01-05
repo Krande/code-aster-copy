@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
+subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk, &
                   isl, nk, nl, n0)
     implicit none
 #include "asterf_types.h"
@@ -37,20 +37,20 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
     ligneb = .false.
 !
     if (i1a4 .eq. 1 .or. i1a4 .eq. 2) then
-        nocc(2*(isl-1)+1) = nl - n0
+        nocc(2*(isl-1)+1) = nl-n0
         if (nocc(2*(isl-1)+1) .eq. 0) colona = .true.
-    else if (i1a4.eq.3 .or. i1a4.eq.4) then
-        nocc(2*(isl-1)+2) = nl - n0
+    else if (i1a4 .eq. 3 .or. i1a4 .eq. 4) then
+        nocc(2*(isl-1)+2) = nl-n0
         if (nocc(2*(isl-1)+2) .eq. 0) colonb = .true.
-    endif
+    end if
 !
     if (i1a4 .eq. 1 .or. i1a4 .eq. 3) then
-        nocc(2*(isk-1)+1) = nk - n0
+        nocc(2*(isk-1)+1) = nk-n0
         if (nocc(2*(isk-1)+1) .eq. 0) lignea = .true.
-    else if (i1a4.eq.2 .or. i1a4.eq.4) then
-        nocc(2*(isk-1)+2) = nk - n0
+    else if (i1a4 .eq. 2 .or. i1a4 .eq. 4) then
+        nocc(2*(isk-1)+2) = nk-n0
         if (nocc(2*(isk-1)+2) .eq. 0) ligneb = .true.
-    endif
+    end if
 !
     if (colona) then
         do k = 1, nbsigr
@@ -63,7 +63,7 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
         end do
-    endif
+    end if
 !
     if (colonb) then
         do k = 1, nbsigr
@@ -76,7 +76,7 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
         end do
-    endif
+    end if
 !
     if (lignea) then
         do k = 1, nbsigr
@@ -89,7 +89,7 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             saltij(i1+4*(l-1)+1) = 0.d0
             saltij(i1+4*(l-1)+3) = 0.d0
         end do
-    endif
+    end if
 !
     if (ligneb) then
         do k = 1, nbsigr
@@ -102,6 +102,6 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
             saltij(i1+4*(l-1)+2) = 0.d0
             saltij(i1+4*(l-1)+4) = 0.d0
         end do
-    endif
+    end if
 !
 end subroutine

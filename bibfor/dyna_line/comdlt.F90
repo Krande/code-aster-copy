@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine comdlt()
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -113,8 +113,8 @@ implicit none
     aster_logical :: lamort, lcrea, lprem, exipou
     integer, pointer :: ordr(:) => null()
     character(len=8), pointer :: chexc(:) => null()
-    data modele   /'                        '/
-    data allschemes /'NEWMARK', 'WILSON', 'DIFF_CENTRE', 'ADAPT_ORDRE2'/
+    data modele/'                        '/
+    data allschemes/'NEWMARK', 'WILSON', 'DIFF_CENTRE', 'ADAPT_ORDRE2'/
     character(len=8) :: mesh
     aster_logical :: l_obsv
     integer, parameter :: zvalin = 28
@@ -127,18 +127,18 @@ implicit none
 !
     call titre()
     call infmaj()
-    call infniv(ifm,niv)
+    call infniv(ifm, niv)
 !
 ! - Initializations
 !
     rundf = r8vide()
-    epsi  = 1000.d0*r8prem()
+    epsi = 1000.d0*r8prem()
     lprem = .true.
     lamort = .true.
     amort = ' '
     criter = '&&RESGRA_GCPC'
     alpha = 0.d0
-    calpha = (0.d0 , 0.d0)
+    calpha = (0.d0, 0.d0)
     nfon = 0
     typcoe = ' '
     charep = ' '
@@ -147,25 +147,25 @@ implicit none
     nbpas = 0
     nbpas_min = 0
     nbpas_max = 0
-    dt        = 0.d0
-    dtmin     = 0.d0
-    dtmax     = 0.d0
+    dt = 0.d0
+    dtmin = 0.d0
+    dtmax = 0.d0
 !
 ! - Names of datastructures
 !
-    solveu   = '&&COMDLT.SOLVEUR   '
+    solveu = '&&COMDLT.SOLVEUR   '
     listLoad = '&&COMDLT.LISTLOAD'
-    charge   = listLoad(1:19)//'.LCHA'
-    infoch   = listLoad(1:19)//'.INFC'
-    chvarc   = '&&COMDLT.VARC'
-    chvref   = '&&COMDLT.VREF'
+    charge = listLoad(1:19)//'.LCHA'
+    infoch = listLoad(1:19)//'.INFC'
+    chvarc = '&&COMDLT.VARC'
+    chvref = '&&COMDLT.VREF'
 
 ! - Get parameters
-    call dltlec(result, modele, numedd, materi, mateco,&
-                carele, imat, masse, rigid,&
-                amort, lamort, nchar, nveca, listLoad,&
-                charge, infoch, fomult, iaadve, ialifo,&
-                nondp, iondp, solveu, iinteg, t0,&
+    call dltlec(result, modele, numedd, materi, mateco, &
+                carele, imat, masse, rigid, &
+                amort, lamort, nchar, nveca, listLoad, &
+                charge, infoch, fomult, iaadve, ialifo, &
+                nondp, iondp, solveu, iinteg, t0, &
                 nume, numrep, ds_inout)
 
 ! - Get kinematic loads
@@ -186,9 +186,9 @@ implicit none
     call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
     call nmchex(valinc, 'VALINC', 'ACCMOI', accmoi)
 
-    call vtcreb(depmoi, 'V', 'R', nume_ddlz = numedd)
-    call vtcreb(vitmoi, 'V', 'R', nume_ddlz = numedd)
-    call vtcreb(accmoi, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(depmoi, 'V', 'R', nume_ddlz=numedd)
+    call vtcreb(vitmoi, 'V', 'R', nume_ddlz=numedd)
+    call vtcreb(accmoi, 'V', 'R', nume_ddlz=numedd)
 
 !---lecture d adresse depl/vite/acce
 !
@@ -206,17 +206,17 @@ implicit none
         call wkvect('&&COMDLT.COEF_RRE', 'V V R  ', nbexre, lcrre)
         call wkvect('&&COMDLT.LISTRESU', 'V V K8 ', nbexre, lresu)
         do iresu = 1, nbexre
-            call getvid('EXCIT_RESU', 'RESULTAT', iocc=iresu, scal=zk8( lresu+iresu-1), nbret=l)
+            call getvid('EXCIT_RESU', 'RESULTAT', iocc=iresu, scal=zk8(lresu+iresu-1), nbret=l)
             call getvr8('EXCIT_RESU', 'COEF_MULT', iocc=iresu, scal=zr(lcrre+iresu-1), nbret=l)
         end do
-    endif
+    end if
 !
 !===
 ! 4. IMPRESSIONS RECAPITULATIVES POUR L'UTILISATEUR
 !===
 !
-    call utmess('I', 'DYNAMIQUE_55', nk=3, valk=['D Y N A _ V I B R A',&
-                                                 'TRANsitoire        ',&
+    call utmess('I', 'DYNAMIQUE_55', nk=3, valk=['D Y N A _ V I B R A', &
+                                                 'TRANsitoire        ', &
                                                  'PHYSique           '])
     call utmess('I', 'DYNAMIQUE_82', sk=modele, si=neq)
     call utmess('I', 'DYNAMIQUE_60')
@@ -229,51 +229,51 @@ implicit none
 
     schema = allschemes(iinteg)
     schtyp = 'explicite'
-    if ((iinteg.eq.1).or.(iinteg.eq.2))  schtyp = 'implicite'
+    if ((iinteg .eq. 1) .or. (iinteg .eq. 2)) schtyp = 'implicite'
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=linst, nbret=iret)
-    if (iret.eq.0) then
+    if (iret .eq. 0) then
         call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=tinit, nbret=iret)
-        if (iret.eq.0) tinit=0.d0
+        if (iret .eq. 0) tinit = 0.d0
         call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin)
         call getvr8('INCREMENT', 'PAS', iocc=1, scal=dt, nbret=iret)
     else
         call jeveuo(linst//'.VALE', 'L', jinst)
         call jelira(linst//'.VALE', 'LONMAX', nbpas)
         tinit = zr(jinst)
-        tfin  = zr(jinst+nbpas-1)
+        tfin = zr(jinst+nbpas-1)
         ASSERT(nbpas .gt. 1)
         dt = (tfin-tinit)/real(nbpas-1)
     end if
 !
 ! -- Check
 !
-    if(dt.le.0.0) then
+    if (dt .le. 0.0) then
         call utmess('F', 'DYNAMIQUE_42', sr=dt)
     end if
-    if(tfin.le.tinit) then
+    if (tfin .le. tinit) then
         call utmess('F', 'DYNAMIQUE_43', nr=2, valr=[tfin, tinit])
     end if
 !
-    if (iinteg.ne.4) then
+    if (iinteg .ne. 4) then
         nbpas = nint((tfin-tinit)/dt)
-        call utmess('I', 'DYNAMIQUE_70', nk=2, valk=[schema, schtyp],&
-                                         nr=1, valr=[dt],&
-                                         ni=1, vali=[nbpas])
+        call utmess('I', 'DYNAMIQUE_70', nk=2, valk=[schema, schtyp], &
+                    nr=1, valr=[dt], &
+                    ni=1, vali=[nbpas])
     else
         call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=dtmin, nbret=iret)
-        if (iret.eq.0) dtmin = dt*1.d-6
+        if (iret .eq. 0) dtmin = dt*1.d-6
         call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=dt, nbret=iret)
-        if (iret.eq.0) dtmax = dt*1.d6
-        call utmess('I', 'DYNAMIQUE_66', nk=1, valk=[schema],&
-                                         nr=3, valr=[dt, dtmin, dtmax])
+        if (iret .eq. 0) dtmax = dt*1.d6
+        call utmess('I', 'DYNAMIQUE_66', nk=1, valk=[schema], &
+                    nr=3, valr=[dt, dtmin, dtmax])
         call getvr8('SCHEMA_TEMPS', 'COEF_DIVI_PAS', iocc=1, scal=cdivi)
         call utmess('I', 'DYNAMIQUE_68', nr=1, valr=[cdivi])
 
         nbpas_min = nint((tfin-tinit)/dtmax)
         nbpas_max = 1000000000
-        if (dtmin.gt.epsi) then
-            nbpas_max_r = min(1.d0*nbpas_max,(tfin-tinit-epsi)/dtmin)
-            nbpas_max   = int(nbpas_max_r) + 1
+        if (dtmin .gt. epsi) then
+            nbpas_max_r = min(1.d0*nbpas_max, (tfin-tinit-epsi)/dtmin)
+            nbpas_max = int(nbpas_max_r)+1
         end if
         call utmess('I', 'DYNAMIQUE_69', ni=2, vali=[nbpas_min, nbpas_max])
     end if
@@ -285,22 +285,22 @@ implicit none
 !
     force0 = '&&COMDLT.FORCE0'
     force1 = '&&COMDLT.FORCE1'
-    call dltali(neq, result, imat, masse, rigid,&
-                zi(iaadve), zk24(ialifo), nchar, nveca, lcrea,&
-                lprem, lamort, t0, materi, mateco, carele,&
-                charge, infoch, fomult, modele, numedd,&
-                nume, solveu, criter, zr(idepl0), zr(ivite0),&
+    call dltali(neq, result, imat, masse, rigid, &
+                zi(iaadve), zk24(ialifo), nchar, nveca, lcrea, &
+                lprem, lamort, t0, materi, mateco, carele, &
+                charge, infoch, fomult, modele, numedd, &
+                nume, solveu, criter, zr(idepl0), zr(ivite0), &
                 zr(iacce0), zr(ifexte+neq), zr(ifamor+neq), zr(ifliai+neq), &
                 zr(iwk), force0, force1, ds_energy, kineLoad)
 
     call utmess('I', 'DYNAMIQUE_80', nr=2, valr=[tinit, tfin])
 
     call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=pasar, nbret=iret)
-    if (iret.ne.0) then
+    if (iret .ne. 0) then
         call utmess('I', 'DYNAMIQUE_85', si=pasar)
     else
         call getvid('ARCHIVAGE', 'LIST_INST', iocc=1, scal=linst, nbret=iret)
-        if (iret.ne.0) then
+        if (iret .ne. 0) then
             call jelira(linst//'.VALE', 'LONMAX', nbar)
         else
             call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=0, nbret=iret)
@@ -309,39 +309,38 @@ implicit none
         call utmess('I', 'DYNAMIQUE_86', si=nbar)
     end if
 
-
     call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=0, nbret=iret)
 
     nomsym = ' '
-    nomsym(1) ='DEPL'
-    nomsym(2) ='VITE'
-    nomsym(3) ='ACCE'
+    nomsym(1) = 'DEPL'
+    nomsym(2) = 'VITE'
+    nomsym(3) = 'ACCE'
     if (ds_energy%l_comp) then
-        nomsym(4) ='FORC_EXTE'
-        nomsym(5) ='FORC_AMOR'
-        nomsym(6) ='FORC_LIAI'
-    endif
+        nomsym(4) = 'FORC_EXTE'
+        nomsym(5) = 'FORC_AMOR'
+        nomsym(6) = 'FORC_LIAI'
+    end if
 
     if (iret .ne. 0) then
         nbexcl = -iret
-        AS_ALLOCATE(vk8 = chexc, size=nbexcl)
+        AS_ALLOCATE(vk8=chexc, size=nbexcl)
         call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=nbexcl, vect=chexc)
         do i = 1, nbexcl
-            if (chexc(i)(1:4).eq.'DEPL') nomsym(1) = ' '
-            if (chexc(i)(1:4).eq.'VITE') nomsym(2) = ' '
-            if (chexc(i)(1:4).eq.'ACCE') nomsym(3) = ' '
+            if (chexc(i) (1:4) .eq. 'DEPL') nomsym(1) = ' '
+            if (chexc(i) (1:4) .eq. 'VITE') nomsym(2) = ' '
+            if (chexc(i) (1:4) .eq. 'ACCE') nomsym(3) = ' '
         end do
-        AS_DEALLOCATE(vk8 = chexc)
-    endif
+        AS_DEALLOCATE(vk8=chexc)
+    end if
 
-    champs  = ' '
+    champs = ' '
     counter = 0
     do i = 1, 6
-        if (nomsym(i)(1:4).ne.'    ') then
+        if (nomsym(i) (1:4) .ne. '    ') then
             lsize = 9
-            if (nomsym(i)(5:5).eq.' ') lsize = 4
-            champs(counter+1:counter+lsize+1) = nomsym(i)(1:lsize)//' '
-            counter = counter + lsize + 1
+            if (nomsym(i) (5:5) .eq. ' ') lsize = 4
+            champs(counter+1:counter+lsize+1) = nomsym(i) (1:lsize)//' '
+            counter = counter+lsize+1
         end if
     end do
     call utmess('I', 'DYNAMIQUE_96', sk=champs)
@@ -355,18 +354,18 @@ implicit none
 ! -  routine in stat_non_line : nmcrob => dvcrob
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
-    call dvcrob(mesh , modele,  ds_inout , materi, sd_obsv)
+    call dvcrob(mesh, modele, ds_inout, materi, sd_obsv)
 
 ! - Make initial observation
 
     l_obsv = ASTER_FALSE
     call lobs(sd_obsv, nume, t0, l_obsv)
     if (l_obsv) then
-        call nmobse(mesh, sd_obsv  , t0)
-        if (nume.eq.0) then
-            call nmobsw(sd_obsv  ,   ds_inout )
-        endif
-    endif
+        call nmobse(mesh, sd_obsv, t0)
+        if (nume .eq. 0) then
+            call nmobsw(sd_obsv, ds_inout)
+        end if
+    end if
 !
 !====
 ! 6. INTEGRATION SELON LE TYPE SPECIFIE
@@ -374,47 +373,47 @@ implicit none
 !
     if (iinteg .eq. 1) then
 !
-        call dlnewi(result, force0, force1, lcrea, lamort,&
-                    iinteg, neq, imat, masse, rigid,&
-                    amort, zr(idepl0), zr(ivite0), zr(iacce0), zr( ifexte),&
-                    zr(ifamor), zr(ifliai), t0, nchar, nveca,&
-                    zi(iaadve), zk24(ialifo), modele, materi, mateco, carele,&
-                    charge, infoch, fomult, numedd, nume,&
-                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy,&
+        call dlnewi(result, force0, force1, lcrea, lamort, &
+                    iinteg, neq, imat, masse, rigid, &
+                    amort, zr(idepl0), zr(ivite0), zr(iacce0), zr(ifexte), &
+                    zr(ifamor), zr(ifliai), t0, nchar, nveca, &
+                    zi(iaadve), zk24(ialifo), modele, materi, mateco, carele, &
+                    charge, infoch, fomult, numedd, nume, &
+                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy, &
                     sd_obsv, mesh, kineLoad)
 !
-    else if (iinteg.eq.2) then
+    else if (iinteg .eq. 2) then
 !
-        call dlnewi(result, force0, force1, lcrea, lamort,&
-                    iinteg, neq, imat, masse, rigid,&
-                    amort, zr(idepl0), zr(ivite0), zr(iacce0), zr( ifexte),&
-                    zr(ifamor), zr(ifliai), t0, nchar, nveca,&
-                    zi(iaadve), zk24(ialifo), modele, materi, mateco, carele,&
-                    charge, infoch, fomult, numedd, nume,&
-                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy,&
+        call dlnewi(result, force0, force1, lcrea, lamort, &
+                    iinteg, neq, imat, masse, rigid, &
+                    amort, zr(idepl0), zr(ivite0), zr(iacce0), zr(ifexte), &
+                    zr(ifamor), zr(ifliai), t0, nchar, nveca, &
+                    zi(iaadve), zk24(ialifo), modele, materi, mateco, carele, &
+                    charge, infoch, fomult, numedd, nume, &
+                    solveu, criter, zk8(iondp), nondp, numrep, ds_energy, &
                     sd_obsv, mesh, kineLoad)
 !
-    else if (iinteg.eq.3) then
+    else if (iinteg .eq. 3) then
 !
-        call dldiff(result, force1, lcrea, lamort, neq,&
-                    imat, masse, rigid, amort, zr(idepl0),&
-                    zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai),&
-                    t0, nchar, nveca, zi(iaadve), zk24(ialifo),&
-                    modele, materi, mateco, carele, charge, infoch,&
-                    fomult, numedd, nume, numrep, ds_energy,&
+        call dldiff(result, force1, lcrea, lamort, neq, &
+                    imat, masse, rigid, amort, zr(idepl0), &
+                    zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai), &
+                    t0, nchar, nveca, zi(iaadve), zk24(ialifo), &
+                    modele, materi, mateco, carele, charge, infoch, &
+                    fomult, numedd, nume, numrep, ds_energy, &
                     sd_obsv, mesh)
 !
-    else if (iinteg.eq.4) then
+    else if (iinteg .eq. 4) then
 !
-        call dladap(result, t0, lcrea, lamort, neq,&
-                    imat, masse, rigid, amort, zr(idepl0),&
-                    zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai),&
-                    nchar, nveca, zi(iaadve), zk24(ialifo), modele,&
-                    materi, mateco, carele, charge, infoch, fomult,&
-                    numedd, nume, numrep, ds_energy,&
+        call dladap(result, t0, lcrea, lamort, neq, &
+                    imat, masse, rigid, amort, zr(idepl0), &
+                    zr(ivite0), zr(iacce0), zr(ifexte), zr(ifamor), zr(ifliai), &
+                    nchar, nveca, zi(iaadve), zk24(ialifo), modele, &
+                    materi, mateco, carele, charge, infoch, fomult, &
+                    numedd, nume, numrep, ds_energy, &
                     sd_obsv, mesh)
 !
-    endif
+    end if
 !
 !====
 ! 7. RESULTATS
@@ -425,17 +424,17 @@ implicit none
     call jelira(result//'           .ORDR', 'LONUTI', nbord)
     do iordr = 1, nbord
         call rsadpa(result, 'E', 1, 'MODELE', ordr(iordr), 0, sjv=ladpa)
-        zk8(ladpa)=modele(1:8)
+        zk8(ladpa) = modele(1:8)
         if (materi .ne. ' ') then
             call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr), 0, sjv=ladpa)
-            zk8(ladpa)=materi(1:8)
+            zk8(ladpa) = materi(1:8)
         else
             call utmess('A', 'CHAMPS_21')
-        endif
+        end if
 
-        call rsadpa(result, 'E', 1, 'CARAELEM', ordr(iordr),&
+        call rsadpa(result, 'E', 1, 'CARAELEM', ordr(iordr), &
                     0, sjv=ladpa)
-        zk8(ladpa)=carele(1:8)
+        zk8(ladpa) = carele(1:8)
     end do
 !
 ! --- ON CALCULE LE CHAMP DE STRUCTURE STRX_ELGA SI BESOIN
@@ -444,7 +443,7 @@ implicit none
     if (kstr(1:3) .eq. 'OUI') then
         compor = materi(1:8)//'.COMPOR'
         ligrel = modele(1:8)//'.MODELE'
-        exipou=.false.
+        exipou = .false.
 !
         call dismoi('EXI_POUX', modele, 'MODELE', repk=k8b)
         if (k8b(1:3) .eq. 'OUI') then
@@ -454,44 +453,44 @@ implicit none
                 call cochre(zk24(jchar), nchar, nbchre, iocc)
                 if (nbchre .gt. 1) then
                     call utmess('F', 'DYNAMIQUE_19')
-                endif
+                end if
                 if (iocc .gt. 0) then
                     call getvid('EXCIT', 'CHARGE', iocc=iocc, scal=charep, nbret=iret)
                     call getvid('EXCIT', 'FONC_MULT', iocc=iocc, scal=nomfon, nbret=nfon)
-                endif
-            endif
+                end if
+            end if
             typcoe = 'R'
             alpha = 1.d0
-        endif
-        do iordr = 0 , nbord
-            call rsexch(' ', result, 'DEPL', iordr, chamgd,&
+        end if
+        do iordr = 0, nbord
+            call rsexch(' ', result, 'DEPL', iordr, chamgd, &
                         iret)
             if (iret .gt. 0) cycle
-            call mecham('STRX_ELGA', modele, carele(1:8), 0, chgeom,&
+            call mecham('STRX_ELGA', modele, carele(1:8), 0, chgeom, &
                         chcara, chharm, iret)
             if (iret .ne. 0) cycle
-            call rsadpa(result, 'L', 1, 'INST', iordr,&
+            call rsadpa(result, 'L', 1, 'INST', iordr, &
                         0, sjv=ladpa)
             time = zr(ladpa)
             call mechti(chgeom(1:8), time, rundf, rundf, chtime)
-            call vrcins(modele, materi, carele(1:8), time, chvarc(1:19),&
+            call vrcins(modele, materi, carele(1:8), time, chvarc(1:19), &
                         codret)
-            call vrcref(modele(1:8), materi(1:8), carele(1:8), chvref(1: 19))
+            call vrcref(modele(1:8), materi(1:8), carele(1:8), chvref(1:19))
             if (exipou .and. nfon .ne. 0) then
-                call fointe('F ', nomfon, 1, ['INST'], [time],&
+                call fointe('F ', nomfon, 1, ['INST'], [time], &
                             alpha, iret)
-            endif
-            call rsexch(' ', result, 'STRX_ELGA', iordr, chstru,&
+            end if
+            call rsexch(' ', result, 'STRX_ELGA', iordr, chstru, &
                         iret)
             if (iret .ne. 0) cycle
-            call compStrx(modele, ligrel, compor,&
-                          chamgd, chgeom, mateco  , chcara ,&
+            call compStrx(modele, ligrel, compor, &
+                          chamgd, chgeom, mateco, chcara, &
                           chvarc, chvref, &
-                          base  , chstru, iret  ,&
+                          base, chstru, iret, &
                           exipou, charep, typcoe, alpha, calpha)
             call rsnoch(result, 'STRX_ELGA', iordr)
         end do
-    endif
+    end if
 !
     call nonlinDSEnergyClean(ds_energy)
     call nonlinDSInOutClean(ds_inout)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine thmCompNonLin(option, ds_thm)
 !
-use THM_type
-use Behaviour_module, only : behaviourOption
+    use THM_type
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,8 +33,8 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option
-type(THM_DS), intent(inout) :: ds_thm
+    character(len=16), intent(in) :: option
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,25 +64,25 @@ type(THM_DS), intent(inout) :: ds_thm
     integer :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2, jv_gano
     character(len=8) :: type_elem(2)
     integer:: lg_vi, lg_sig
-    real(kind=8),allocatable:: varip(:), sigp(:), deplp(:)
+    real(kind=8), allocatable:: varip(:), sigp(:), deplp(:)
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret    = 0
+    codret = 0
     lMatrPred = option(1:9) .eq. 'RIGI_MECA'
 !
 ! - Get all parameters for current element
 !
-    call thmGetElemPara(ds_thm   , l_axi    , l_steady ,&
-                        type_elem, inte_type, ndim     ,&
-                        mecani   , press1   , press2   , tempe  ,&
-                        dimdep   , dimdef   , dimcon   , dimuel ,&
-                        nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2,&
-                        nno      , nnos     ,&
-                        npi      , npg      ,&
-                        jv_poids , jv_func  , jv_dfunc ,&
-                        jv_poids2, jv_func2 , jv_dfunc2,&
+    call thmGetElemPara(ds_thm, l_axi, l_steady, &
+                        type_elem, inte_type, ndim, &
+                        mecani, press1, press2, tempe, &
+                        dimdep, dimdef, dimcon, dimuel, &
+                        nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                        nno, nnos, &
+                        npi, npg, &
+                        jv_poids, jv_func, jv_dfunc, &
+                        jv_poids2, jv_func2, jv_dfunc2, &
                         jv_gano)
 !
 ! - Input fields
@@ -100,82 +100,80 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(jv_compor),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(jv_compor), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Output fields
-!   
+!
     if (lMatr) then
         call jevech('PMATUNS', 'E', jv_matr)
     else
-        jv_matr  = ismaem()
-    endif
+        jv_matr = ismaem()
+    end if
 
     if (lVect) then
         call jevech('PVECTUR', 'E', jv_vect)
     else
-        jv_vect  = ismaem()
-    endif
-    
+        jv_vect = ismaem()
+    end if
+
 !
 ! - Get frame orientation for anisotropy
 !
     call thmGetParaOrientation(ndim, nno, jv_geom, angl_naut)
-    
+
 !
 ! - Number of (total) internal variables
 !
-    read (zk16(jv_compor-1+NVAR),'(I16)') nbvari
+    read (zk16(jv_compor-1+NVAR), '(I16)') nbvari
 
-    
 ! - Intermediate arrays to be safe when the addresses do not exist
     lg_sig = dimcon*npi
-    allocate(sigp(lg_sig))
+    allocate (sigp(lg_sig))
     if (lMatrPred) then
         sigp(1:lg_sig) = zr(jv_sigmm:jv_sigmm+lg_sig-1)
     else
         sigp(1:lg_sig) = 0
     end if
-    
+
     lg_vi = nbvari*npi
-    allocate(varip(lg_vi))
+    allocate (varip(lg_vi))
     if (lMatrPred) then
         varip(1:lg_vi) = zr(jv_varim:jv_varim+lg_vi-1)
     else
         varip(1:lg_vi) = 0
     end if
-   
+
 !
 ! - Prepare reference configuration
 !
-    allocate(deplp(dimuel))
-    deplp(1:dimuel) = zr(jv_dispm:jv_dispm+dimuel-1) + zr(jv_dispp:jv_dispp+dimuel-1)
-       
+    allocate (deplp(dimuel))
+    deplp(1:dimuel) = zr(jv_dispm:jv_dispm+dimuel-1)+zr(jv_dispp:jv_dispp+dimuel-1)
+
 !
 ! - Compute
 !
-    call assthm(ds_thm         , option       , zi(jv_mater),&
-                lMatr          , lSigm        , lVect       ,&
-                lVari          , lMatrPred    , l_axi       , l_steady,&
-                type_elem      , inte_type    , angl_naut   ,&
-                ndim           , nbvari       , nno         , nnos    ,&
-                npg            , npi          ,&
-                nddls          , nddlm        , nddl_meca   ,&
-                nddl_p1        , nddl_p2      ,&
-                dimdef         , dimcon       , dimuel      ,&
-                mecani         , press1       , press2      , tempe   ,&
-                zk16(jv_compor), zr(jv_carcri),&
-                jv_poids       , jv_poids2    ,&
-                jv_func        , jv_func2     ,&
-                jv_dfunc       , jv_dfunc2    ,&
-                zr(jv_geom)    , zr(jv_dispm) , deplp ,&
-                zr(jv_sigmm)   , sigp  ,&
-                zr(jv_varim)   , varip  ,&
-                zr(jv_instm)   , zr(jv_instp) ,&
-                zr(jv_matr)    , zr(jv_vect)  , codret)
-
+    call assthm(ds_thm, option, zi(jv_mater), &
+                lMatr, lSigm, lVect, &
+                lVari, lMatrPred, l_axi, l_steady, &
+                type_elem, inte_type, angl_naut, &
+                ndim, nbvari, nno, nnos, &
+                npg, npi, &
+                nddls, nddlm, nddl_meca, &
+                nddl_p1, nddl_p2, &
+                dimdef, dimcon, dimuel, &
+                mecani, press1, press2, tempe, &
+                zk16(jv_compor), zr(jv_carcri), &
+                jv_poids, jv_poids2, &
+                jv_func, jv_func2, &
+                jv_dfunc, jv_dfunc2, &
+                zr(jv_geom), zr(jv_dispm), deplp, &
+                zr(jv_sigmm), sigp, &
+                zr(jv_varim), varip, &
+                zr(jv_instm), zr(jv_instp), &
+                zr(jv_matr), zr(jv_vect), codret)
 
 ! Copy fields if required
     if (lSigm) then
@@ -184,18 +182,17 @@ type(THM_DS), intent(inout) :: ds_thm
 
         call jevech('PCODRET', 'E', jv_cret)
         zi(jv_cret) = codret
-    endif
+    end if
 
     if (lVari) then
         call jevech('PVARIPR', 'E', jv_varip)
         zr(jv_varip:jv_varip+lg_vi-1) = varip(1:lg_vi)
-    endif
-
+    end if
 
 ! Memory management
-    deallocate(deplp)
-    deallocate(sigp)
-    deallocate(varip)
-    
+    deallocate (deplp)
+    deallocate (sigp)
+    deallocate (varip)
+
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine verift(fami      , kpg       , ksp       , poum       , j_mater    ,&
-                  materi_   , iret_     , epsth_    , epsth_anis_, epsth_meta_,&
+subroutine verift(fami, kpg, ksp, poum, j_mater, &
+                  materi_, iret_, epsth_, epsth_anis_, epsth_meta_, &
                   temp_prev_, temp_curr_, temp_refe_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -33,19 +33,19 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-character(len=*), intent(in) :: poum
-integer, intent(in) :: j_mater
-character(len=8), optional, intent(in) :: materi_
-integer, optional, intent(out) :: iret_
-real(kind=8), optional, intent(out) :: epsth_
-real(kind=8), optional, intent(out) :: epsth_anis_(3)
-real(kind=8), optional, intent(out) :: epsth_meta_
-real(kind=8), optional, intent(out) :: temp_prev_
-real(kind=8), optional, intent(out) :: temp_curr_
-real(kind=8), optional, intent(out) :: temp_refe_
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: j_mater
+    character(len=8), optional, intent(in) :: materi_
+    integer, optional, intent(out) :: iret_
+    real(kind=8), optional, intent(out) :: epsth_
+    real(kind=8), optional, intent(out) :: epsth_anis_(3)
+    real(kind=8), optional, intent(out) :: epsth_meta_
+    real(kind=8), optional, intent(out) :: temp_prev_
+    real(kind=8), optional, intent(out) :: temp_curr_
+    real(kind=8), optional, intent(out) :: temp_refe_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,36 +92,36 @@ real(kind=8), optional, intent(out) :: temp_refe_
     materi = ' '
     if (present(materi_)) then
         materi = materi_
-    endif
+    end if
 !
-    iret_temp       = 0
-    iret_temp_prev  = 0
-    iret_temp_curr  = 0
-    iret_temp_refe  = 0
-    epsth           = 0.d0
+    iret_temp = 0
+    iret_temp_prev = 0
+    iret_temp_curr = 0
+    iret_temp_refe = 0
+    epsth = 0.d0
     epsth_anis(1:3) = 0.d0
-    epsth_meta      = 0.d0
-    temp_refe       = 0.d0
-    temp_curr       = 0.d0
-    temp_prev       = 0.d0
+    epsth_meta = 0.d0
+    temp_refe = 0.d0
+    temp_curr = 0.d0
+    temp_prev = 0.d0
 !
 ! - No temperature -> thermic strain is zero
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, temp_curr, iret_temp)
     if (iret_temp .ne. 0) then
         goto 999
-    endif
+    end if
 !
 ! - Get reference temperature
 !
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                 ksp, temp_refe, iret_temp_refe)
     if (iret_temp_refe .eq. 1) then
         call tecael(iadzi, iazk24)
         elem_name = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'COMPOR5_8', sk=elem_name)
-    endif
+    end if
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
@@ -129,174 +129,174 @@ real(kind=8), optional, intent(out) :: temp_refe_
 !
 ! - Get temperatures
 !
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                     ksp, temp_prev, iret_temp_prev)
-    endif
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    end if
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                     ksp, temp_curr, iret_temp_curr)
-    endif
+    end if
 !
 ! - Get elastic parameters for thermic dilatation
 !
-    if (poum.eq.'T'.or.poum.eq.'-') then
-        if (iret_temp_prev.eq.0) then
-            call get_elasth_para(fami     , j_mater     , '-', kpg    , ksp,&
-                                 elas_id,   elas_keyword, materi_ = materi,&
-                                 alpha   = alpha_p  ,&
-                                 alpha_l = alpha_l_p,&
-                                 alpha_t = alpha_t_p,&
-                                 alpha_n = alpha_n_p)
-        endif
-    endif
-    if (poum.eq.'T'.or.poum.eq.'+') then
-        if (iret_temp_curr.eq.0) then
-            call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
-                                 elas_id,   elas_keyword, materi_ = materi,&
-                                 alpha   = alpha_c  ,&
-                                 alpha_l = alpha_l_c,&
-                                 alpha_t = alpha_t_c,&
-                                 alpha_n = alpha_n_c)
-        endif
-    endif
+    if (poum .eq. 'T' .or. poum .eq. '-') then
+        if (iret_temp_prev .eq. 0) then
+            call get_elasth_para(fami, j_mater, '-', kpg, ksp, &
+                                 elas_id, elas_keyword, materi_=materi, &
+                                 alpha=alpha_p, &
+                                 alpha_l=alpha_l_p, &
+                                 alpha_t=alpha_t_p, &
+                                 alpha_n=alpha_n_p)
+        end if
+    end if
+    if (poum .eq. 'T' .or. poum .eq. '+') then
+        if (iret_temp_curr .eq. 0) then
+            call get_elasth_para(fami, j_mater, '+', kpg, ksp, &
+                                 elas_id, elas_keyword, materi_=materi, &
+                                 alpha=alpha_c, &
+                                 alpha_l=alpha_l_c, &
+                                 alpha_t=alpha_t_c, &
+                                 alpha_n=alpha_n_c)
+        end if
+    end if
 !
 ! - Check non-isotropic material
 !
-    if (elas_id.ne.1) then
-        if (.not.present(epsth_anis_)) then
+    if (elas_id .ne. 1) then
+        if (.not. present(epsth_anis_)) then
             call tecael(iadzi, iazk24)
             elem_name = zk24(iazk24-1+3) (1:8)
             call utmess('F', 'COMPOR5_9', sk=elem_name)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Check metallurgical material
 !
-    if (elas_keyword.eq.'ELAS_META') then
-        if (.not.present(epsth_meta_)) then
+    if (elas_keyword .eq. 'ELAS_META') then
+        if (.not. present(epsth_meta_)) then
             call tecael(iadzi, iazk24)
             elem_name = zk24(iazk24-1+3) (1:8)
             call utmess('F', 'COMPOR5_10', sk=elem_name)
-        endif
+        end if
 !
         call metaGetType(meta_type, nb_phasis)
 !
-        if (poum.eq.'T'.or.poum.eq.'-') then
-            if (iret_temp_prev.eq.0) then
-                call metaGetPhase(fami, '-', kpg ,ksp, meta_type, nb_phasis,&
-                                     zcold_ = zcold_p,&
-                                     zhot_  = zhot_p)
-            endif
-        endif
+        if (poum .eq. 'T' .or. poum .eq. '-') then
+            if (iret_temp_prev .eq. 0) then
+                call metaGetPhase(fami, '-', kpg, ksp, meta_type, nb_phasis, &
+                                  zcold_=zcold_p, &
+                                  zhot_=zhot_p)
+            end if
+        end if
 !
-        if (poum.eq.'T'.or.poum.eq.'+') then
-            if (iret_temp_prev.eq.0) then
-                call metaGetPhase(fami, '+', kpg, ksp, meta_type, nb_phasis,&
-                                     zcold_ = zcold_c,&
-                                     zhot_  = zhot_c)
-            endif
-        endif
+        if (poum .eq. 'T' .or. poum .eq. '+') then
+            if (iret_temp_prev .eq. 0) then
+                call metaGetPhase(fami, '+', kpg, ksp, meta_type, nb_phasis, &
+                                  zcold_=zcold_c, &
+                                  zhot_=zhot_c)
+            end if
+        end if
 !   - Check behavior name (used only in metallurgical case)
         call tecach('NNO', 'PCOMPOR', 'L', iret_cmp, iad=icompo)
-        if (iret_cmp.eq.0) then
-            rela_comp  = zk16(icompo)
+        if (iret_cmp .eq. 0) then
+            rela_comp = zk16(icompo)
         else
             rela_comp = 'Unknown'
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute thermic strain
 !
     if (poum .eq. 'T') then
-        if (iret_temp_prev+iret_temp_curr.eq.0) then
-            if (elas_id.eq.1) then
-                if (elas_keyword.eq.'ELAS_META') then
-                    epsth_meta_h = zhot_c*alpha_c(1)*(temp_curr-temp_refe)-&
+        if (iret_temp_prev+iret_temp_curr .eq. 0) then
+            if (elas_id .eq. 1) then
+                if (elas_keyword .eq. 'ELAS_META') then
+                    epsth_meta_h = zhot_c*alpha_c(1)*(temp_curr-temp_refe)- &
                                    zhot_p*alpha_p(1)*(temp_prev-temp_refe)
-                    epsth_meta_c = zcold_c*alpha_c(2)*(temp_curr-temp_refe)-&
+                    epsth_meta_c = zcold_c*alpha_c(2)*(temp_curr-temp_refe)- &
                                    zcold_p*alpha_p(2)*(temp_prev-temp_refe)
-                    if (rela_comp.ne.'META_LEMA_ANI') then
-                        call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
-                                             elas_id,   elas_keyword, materi_ = materi,&
-                                             z_h_r_ = z_h_r  , deps_ch_tref_ = deps_ch_tref)
-                        epsth_meta_h = epsth_meta_h + (1-z_h_r)*deps_ch_tref*(zhot_p-zhot_c)
-                        epsth_meta_c = epsth_meta_c + z_h_r*deps_ch_tref*(zcold_c-zcold_p)
-                    endif
-                    epsth_meta = epsth_meta_h + epsth_meta_c
+                    if (rela_comp .ne. 'META_LEMA_ANI') then
+                        call get_elasth_para(fami, j_mater, '+', kpg, ksp, &
+                                             elas_id, elas_keyword, materi_=materi, &
+                                             z_h_r_=z_h_r, deps_ch_tref_=deps_ch_tref)
+                        epsth_meta_h = epsth_meta_h+(1-z_h_r)*deps_ch_tref*(zhot_p-zhot_c)
+                        epsth_meta_c = epsth_meta_c+z_h_r*deps_ch_tref*(zcold_c-zcold_p)
+                    end if
+                    epsth_meta = epsth_meta_h+epsth_meta_c
                 else
                     epsth = alpha_c(1)*(temp_curr-temp_refe)-alpha_p(1)*(temp_prev-temp_refe)
-                endif
-            elseif (elas_id.eq.2) then
+                end if
+            elseif (elas_id .eq. 2) then
                 epsth_anis(1) = alpha_l_c*(temp_curr-temp_refe)-alpha_l_p*(temp_prev-temp_refe)
                 epsth_anis(2) = alpha_t_c*(temp_curr-temp_refe)-alpha_t_p*(temp_prev-temp_refe)
                 epsth_anis(3) = alpha_n_c*(temp_curr-temp_refe)-alpha_n_p*(temp_prev-temp_refe)
-            elseif (elas_id.eq.3) then
+            elseif (elas_id .eq. 3) then
                 epsth_anis(1) = alpha_l_c*(temp_curr-temp_refe)-alpha_l_p*(temp_prev-temp_refe)
                 epsth_anis(2) = alpha_n_c*(temp_curr-temp_refe)-alpha_n_p*(temp_prev-temp_refe)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else if (poum .eq. '-') then
-        if (iret_temp_prev.eq.0) then
-            if (elas_id.eq.1) then
-                if (elas_keyword.eq.'ELAS_META') then
+        if (iret_temp_prev .eq. 0) then
+            if (elas_id .eq. 1) then
+                if (elas_keyword .eq. 'ELAS_META') then
                     epsth_meta_h = zhot_p*alpha_p(1)*(temp_prev-temp_refe)
                     epsth_meta_c = zcold_p*alpha_p(2)*(temp_prev-temp_refe)
-                    if (rela_comp.ne.'META_LEMA_ANI') then
-                        call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
-                                             elas_id,   elas_keyword, materi_ = materi,&
-                                             z_h_r_ = z_h_r  , deps_ch_tref_ = deps_ch_tref)
-                        epsth_meta_h = epsth_meta_h - zhot_p*(1-z_h_r)*deps_ch_tref
-                        epsth_meta_c = epsth_meta_c + zcold_p*z_h_r*deps_ch_tref
-                    endif
-                    epsth_meta   = epsth_meta_h + epsth_meta_c
+                    if (rela_comp .ne. 'META_LEMA_ANI') then
+                        call get_elasth_para(fami, j_mater, '+', kpg, ksp, &
+                                             elas_id, elas_keyword, materi_=materi, &
+                                             z_h_r_=z_h_r, deps_ch_tref_=deps_ch_tref)
+                        epsth_meta_h = epsth_meta_h-zhot_p*(1-z_h_r)*deps_ch_tref
+                        epsth_meta_c = epsth_meta_c+zcold_p*z_h_r*deps_ch_tref
+                    end if
+                    epsth_meta = epsth_meta_h+epsth_meta_c
                 else
                     epsth = alpha_p(1)*(temp_prev-temp_refe)
-                endif
-            elseif (elas_id.eq.2) then
+                end if
+            elseif (elas_id .eq. 2) then
                 epsth_anis(1) = alpha_l_p*(temp_prev-temp_refe)
                 epsth_anis(2) = alpha_t_p*(temp_prev-temp_refe)
                 epsth_anis(3) = alpha_n_p*(temp_prev-temp_refe)
-            elseif (elas_id.eq.3) then
+            elseif (elas_id .eq. 3) then
                 epsth_anis(1) = alpha_l_p*(temp_prev-temp_refe)
                 epsth_anis(2) = alpha_n_p*(temp_prev-temp_refe)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else if (poum .eq. '+') then
-        if (iret_temp_curr.eq.0) then
-            if (elas_id.eq.1) then
-                if (elas_keyword.eq.'ELAS_META') then
+        if (iret_temp_curr .eq. 0) then
+            if (elas_id .eq. 1) then
+                if (elas_keyword .eq. 'ELAS_META') then
                     epsth_meta_h = zhot_c*alpha_c(1)*(temp_curr-temp_refe)
                     epsth_meta_c = zcold_c*alpha_c(2)*(temp_curr-temp_refe)
-                    if (rela_comp.ne.'META_LEMA_ANI') then
-                        call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
-                                             elas_id,   elas_keyword, materi_ = materi,&
-                                             z_h_r_ = z_h_r  , deps_ch_tref_ = deps_ch_tref)
-                        epsth_meta_h = epsth_meta_h - zhot_c*(1-z_h_r)*deps_ch_tref
-                        epsth_meta_c = epsth_meta_c + zcold_c*z_h_r*deps_ch_tref
-                    endif
-                    epsth_meta   = epsth_meta_h + epsth_meta_c
+                    if (rela_comp .ne. 'META_LEMA_ANI') then
+                        call get_elasth_para(fami, j_mater, '+', kpg, ksp, &
+                                             elas_id, elas_keyword, materi_=materi, &
+                                             z_h_r_=z_h_r, deps_ch_tref_=deps_ch_tref)
+                        epsth_meta_h = epsth_meta_h-zhot_c*(1-z_h_r)*deps_ch_tref
+                        epsth_meta_c = epsth_meta_c+zcold_c*z_h_r*deps_ch_tref
+                    end if
+                    epsth_meta = epsth_meta_h+epsth_meta_c
                 else
                     epsth = alpha_c(1)*(temp_curr-temp_refe)
-                endif
-            elseif (elas_id.eq.2) then
+                end if
+            elseif (elas_id .eq. 2) then
                 epsth_anis(1) = alpha_l_c*(temp_curr-temp_refe)
                 epsth_anis(2) = alpha_t_c*(temp_curr-temp_refe)
                 epsth_anis(3) = alpha_n_c*(temp_curr-temp_refe)
-            elseif (elas_id.eq.3) then
+            elseif (elas_id .eq. 3) then
                 epsth_anis(1) = alpha_l_c*(temp_curr-temp_refe)
                 epsth_anis(2) = alpha_n_c*(temp_curr-temp_refe)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
 !
@@ -304,25 +304,25 @@ real(kind=8), optional, intent(out) :: temp_refe_
 !
     if (present(temp_refe_)) then
         temp_refe_ = temp_refe
-    endif
+    end if
     if (present(temp_prev_)) then
         temp_prev_ = temp_prev
-    endif
+    end if
     if (present(temp_curr_)) then
         temp_curr_ = temp_curr
-    endif
+    end if
 !
 ! - Output strains
 !
     if (present(epsth_meta_)) then
         epsth_meta_ = epsth_meta
-    endif
+    end if
     if (present(epsth_anis_)) then
         epsth_anis_(1:3) = epsth_anis(1:3)
-    endif
+    end if
     if (present(epsth_)) then
         epsth_ = epsth
-    endif
+    end if
 !
 ! - Output error
 !
@@ -330,10 +330,10 @@ real(kind=8), optional, intent(out) :: temp_refe_
         iret_ = 0
         if ((iret_temp_prev+iret_temp_curr) .ne. 0) then
             iret_ = 1
-        endif
+        end if
         if (iret_temp .ne. 0) then
             iret_ = 1
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

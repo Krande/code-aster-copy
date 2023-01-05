@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
+subroutine preflx(graexc, mailla, chamat, celem, npdsc3, &
                   iadsc3, nindex, ilnoex, lifex2)
 !    C. DUVAL
 !-----------------------------------------------------------------------
@@ -81,7 +81,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
     call jemarq()
     if (graexc(1:5) .ne. 'SOUR_') goto 999
 !
-    pi=r8pi()
+    pi = r8pi()
 !
 !
 !----1----RECUPERATION DE RHO DX SECTFLUIDE POUR LES SOURCE FLUIDES
@@ -93,52 +93,52 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !
 !-----ON RECHERCHE LA PREMIERE MAILLE CONTENANT LE NOEUD:IMAI1
 !
-        if ((graexc.eq.'SOUR_PRESS') .or. (graexc.eq.'SOUR_FORCE')) then
-            inoe1=2*(iexc1-1)+1
+        if ((graexc .eq. 'SOUR_PRESS') .or. (graexc .eq. 'SOUR_FORCE')) then
+            inoe1 = 2*(iexc1-1)+1
         else
-            inoe1=iexc1
-        endif
-        nmnoe1=zk8(ilnoex-1+inoe1)
+            inoe1 = iexc1
+        end if
+        nmnoe1 = zk8(ilnoex-1+inoe1)
         call jenonu(jexnom(mailla//'.NOMNOE', nmnoe1), inuno1)
 !
 !----RECUPERATION DE DX DISTANCE ENTRE LES DEUX POINTS DE LA SOURCE
 !
-        if ((graexc.eq.'SOUR_PRESS') .or. (graexc.eq. 'SOUR_FORCE')) then
+        if ((graexc .eq. 'SOUR_PRESS') .or. (graexc .eq. 'SOUR_FORCE')) then
 !
-            nmnoe2=zk8(ilnoex-1+inoe1+1)
+            nmnoe2 = zk8(ilnoex-1+inoe1+1)
             call jenonu(jexnom(mailla//'.NOMNOE', nmnoe2), inuno2)
             call jeveuo(mailla//'.COORDO    .VALE', 'L', iad1)
-            x1=zr(iad1-1+(inuno1-1)*3+1)
-            y1=zr(iad1-1+(inuno1-1)*3+2)
-            z1=zr(iad1-1+(inuno1-1)*3+3)
-            x2=zr(iad1-1+(inuno2-1)*3+1)
-            y2=zr(iad1-1+(inuno2-1)*3+2)
-            z2=zr(iad1-1+(inuno2-1)*3+3)
-            dx=sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
-            zr(iaddx-1+iexc1)=dx
+            x1 = zr(iad1-1+(inuno1-1)*3+1)
+            y1 = zr(iad1-1+(inuno1-1)*3+2)
+            z1 = zr(iad1-1+(inuno1-1)*3+3)
+            x2 = zr(iad1-1+(inuno2-1)*3+1)
+            y2 = zr(iad1-1+(inuno2-1)*3+2)
+            z2 = zr(iad1-1+(inuno2-1)*3+3)
+            dx = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
+            zr(iaddx-1+iexc1) = dx
 !
-        endif
+        end if
 !------------
-        k24bd1=mailla//'.CONNEX'
+        k24bd1 = mailla//'.CONNEX'
         call jelira(k24bd1, 'NMAXOC', inbmai)
-        inoe1=1
-        inoe2=1
+        inoe1 = 1
+        inoe2 = 1
         do imai1 = 1, inbmai
             call jeveuo(jexnum(k24bd1, imai1), 'L', iad1)
             call jelira(jexnum(k24bd1, imai1), 'LONMAX', inbnoe)
             do inoe1 = 1, inbnoe
-                inuno3=zi(iad1-1+inoe1)
+                inuno3 = zi(iad1-1+inoe1)
                 if (inuno1 .eq. inuno3) then
-                    inoe2=100
-                    if ((graexc.eq.'SOUR_PRESS') .or. (graexc.eq. 'SOUR_FORCE')) then
+                    inoe2 = 100
+                    if ((graexc .eq. 'SOUR_PRESS') .or. (graexc .eq. 'SOUR_FORCE')) then
                         do inoe2 = 1, inbnoe
-                            inuno4=zi(iad1-1+inoe2)
+                            inuno4 = zi(iad1-1+inoe2)
                             if (inuno2 .eq. inuno4) goto 309
                         end do
                     else
                         goto 309
-                    endif
-                endif
+                    end if
+                end if
             end do
         end do
 309     continue
@@ -149,21 +149,21 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
             call reseci(celem, imai1, zr(iadsec-1+2*(iexc1-1)+1), zr(iadsec-1+2*(iexc1-1)+2))
         else
             call reseci(celem, imai1, zr(iadsec-1+2*(iexc1-1)+2), zr(iadsec-1+2*(iexc1-1)+1))
-        endif
+        end if
 !
 !
 !--------ON RECHERCHE LE MATERIAU CORRESPONDANT AU GROUPE DE MAILLES
 !        IL EST REPERE PAR SON NUMERO D ORDRE ILIEN1
 !
         call jeveuo(chamat//'.CHAMP_MAT .DESC', 'L', vi=desc)
-        inlien=desc(3)
+        inlien = desc(3)
         do ilien1 = 1, inlien
-            icode=desc(1+3-1+2*(ilien1-1)+1)
+            icode = desc(1+3-1+2*(ilien1-1)+1)
             if (icode .eq. 1) then
 !----- -----DANS CE CAS TOUTES LES MAILLES ONT LE MEME CHAMAT
-                ilien2=1
+                ilien2 = 1
                 goto 311
-            else if (icode.eq.2) then
+            else if (icode .eq. 2) then
 !
 !----- -----DANS CE CAS LA MAILLE A ETE DEFINIE LORS DU MAILLA
 !--------ON RECHERCHE LE PREMIER GROUP_MAI QUI CONTIENT LA MAILLE
@@ -174,30 +174,30 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
                     call jeveuo(jexnum(mailla//'.GROUPEMA', igrma1), 'L', iad1)
                     call jelira(jexnum(mailla//'.GROUPEMA', igrma1), 'LONUTI', inbmai)
                     do imai2 = 1, inbmai
-                        imai3=zi(iad1-1+imai2)
+                        imai3 = zi(iad1-1+imai2)
                         if (imai3 .eq. imai1) then
                             goto 314
-                        endif
+                        end if
                     end do
                 end do
 314             continue
-                igrma2=desc(1+3-1+2*ilien1)
+                igrma2 = desc(1+3-1+2*ilien1)
                 if (igrma1 .eq. igrma2) then
-                    ilien2=ilien1
+                    ilien2 = ilien1
                     goto 311
-                endif
-            else if (icode.eq.3) then
+                end if
+            else if (icode .eq. 3) then
 !----------DANS CE CAS LA MAILLE A ETE DEFINIE PAR AFFE_MATERIAU
-                ilima=desc(1+3-1+2*ilien1)
+                ilima = desc(1+3-1+2*ilien1)
                 call jeveuo(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'L', iadlma)
                 call jelira(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'LONMAX', nmalim)
                 do ima1 = 1, nmalim
                     if (zi(iadlma-1+ima1) .eq. imai1) then
-                        ilien2=ilien1
+                        ilien2 = ilien1
                         goto 311
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
 311     continue
 !
@@ -205,23 +205,23 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !        LA MASSE VOLUMIQUE
 !
         call jeveuo(chamat//'.CHAMP_MAT .VALE', 'L', iad1)
-        mater=zk8(iad1-1+ilien2)
+        mater = zk8(iad1-1+ilien2)
         call rccome(mater, 'FLUIDE', iret, k11_ind_nomrc=k11)
         k24bd1 = mater//k11//'.VALK'
         call jeveuo(k24bd1, 'L', iad1)
         call jelira(k24bd1, 'LONMAX', invalk)
         do ivalk1 = 1, invalk
-            kbid=zk16(iad1-1+ivalk1)
+            kbid = zk16(iad1-1+ivalk1)
             if (kbid(1:3) .eq. 'RHO') then
-                inurho=ivalk1
+                inurho = ivalk1
                 goto 318
-            endif
+            end if
         end do
 318     continue
-        k24bd1=mater//k11//'.VALR'
+        k24bd1 = mater//k11//'.VALR'
         call jeveuo(k24bd1, 'L', iad1)
-        rho=zr(iad1-1+inurho)
-        zr(iadrho-1+iexc1)=rho
+        rho = zr(iad1-1+inurho)
+        zr(iadrho-1+iexc1) = rho
     end do
 !
 !---2-----MULTIPLICATION PAR LE BON COEF :
@@ -234,37 +234,37 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
     call jeveuo(lifex2, 'L', ilfex2)
     do iapp1 = 1, nindex
         do iapp2 = iapp1, nindex
-            ij1=((iapp2-1)*iapp2)/2+iapp1
-            iadr=zi(ilfex2-1+ij1)
+            ij1 = ((iapp2-1)*iapp2)/2+iapp1
+            iadr = zi(ilfex2-1+ij1)
             do ifreq1 = 1, npdsc3
-                idec1=npdsc3+2*(ifreq1-1)+1
+                idec1 = npdsc3+2*(ifreq1-1)+1
                 if (graexc .eq. 'SOUR_DEBI_VOLU') then
-                    rho1=zr(iadrho-1+iapp1)
-                    rho2=zr(iadrho-1+iapp2)
-                    omega=zr(iadsc3-1+ifreq1)*2.d0*pi
-                    zr(iadr-1+idec1)=zr(iadr-1+idec1)*rho1*rho2*(&
-                    omega**2)
-                    zr(iadr-1+idec1+1)=zr(iadr-1+idec1+1)*rho1*rho2*(&
-                    omega**2)
-                else if (graexc.eq.'SOUR_DEBI_MASS') then
-                    omega=zr(iadsc3-1+ifreq1)*2.d0*pi
-                    zr(iadr-1+idec1)=zr(iadr-1+idec1)*(omega**2)
-                    zr(iadr-1+idec1+1)=zr(iadr-1+idec1+1)*(omega**2)
-                else if (graexc.eq.'SOUR_PRESS') then
-                    sect1=zr(iadsec-1+2*(iapp1-1)+1)
-                    sect2=zr(iadsec-1+2*(iapp2-1)+1)
-                    dx1=zr(iaddx-1+iapp1)
-                    dx2=zr(iaddx-1+iapp2)
-                    zr(iadr-1+idec1)=zr(iadr-1+idec1)*sect1*sect2/dx1/&
-                    dx2
-                    zr(iadr-1+idec1+1)=zr(iadr-1+idec1+1)*sect1*sect2/&
-                    dx1/dx2
-                else if (graexc.eq.'SOUR_FORCE') then
-                    dx1=zr(iaddx-1+iapp1)
-                    dx2=zr(iaddx-1+iapp2)
-                    zr(iadr-1+idec1)=zr(iadr-1+idec1)/dx1/dx2
-                    zr(iadr-1+idec1+1)=zr(iadr-1+idec1+1)/dx1/dx2
-                endif
+                    rho1 = zr(iadrho-1+iapp1)
+                    rho2 = zr(iadrho-1+iapp2)
+                    omega = zr(iadsc3-1+ifreq1)*2.d0*pi
+                    zr(iadr-1+idec1) = zr(iadr-1+idec1)*rho1*rho2*( &
+                                       omega**2)
+                    zr(iadr-1+idec1+1) = zr(iadr-1+idec1+1)*rho1*rho2*( &
+                                         omega**2)
+                else if (graexc .eq. 'SOUR_DEBI_MASS') then
+                    omega = zr(iadsc3-1+ifreq1)*2.d0*pi
+                    zr(iadr-1+idec1) = zr(iadr-1+idec1)*(omega**2)
+                    zr(iadr-1+idec1+1) = zr(iadr-1+idec1+1)*(omega**2)
+                else if (graexc .eq. 'SOUR_PRESS') then
+                    sect1 = zr(iadsec-1+2*(iapp1-1)+1)
+                    sect2 = zr(iadsec-1+2*(iapp2-1)+1)
+                    dx1 = zr(iaddx-1+iapp1)
+                    dx2 = zr(iaddx-1+iapp2)
+                    zr(iadr-1+idec1) = zr(iadr-1+idec1)*sect1*sect2/dx1/ &
+                                       dx2
+                    zr(iadr-1+idec1+1) = zr(iadr-1+idec1+1)*sect1*sect2/ &
+                                         dx1/dx2
+                else if (graexc .eq. 'SOUR_FORCE') then
+                    dx1 = zr(iaddx-1+iapp1)
+                    dx2 = zr(iaddx-1+iapp2)
+                    zr(iadr-1+idec1) = zr(iadr-1+idec1)/dx1/dx2
+                    zr(iadr-1+idec1+1) = zr(iadr-1+idec1+1)/dx1/dx2
+                end if
             end do
         end do
     end do
@@ -273,41 +273,41 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !---3-----DUPLICATION DE L INTERSPECTRE DANS LE CAS DE SOURCE DE
 !          PRESSION OU DE FORCE
 !
-    if ((graexc.eq.'SOUR_FORCE') .or. (graexc.eq.'SOUR_PRESS')) then
+    if ((graexc .eq. 'SOUR_FORCE') .or. (graexc .eq. 'SOUR_PRESS')) then
 !
 !
-        inbfx3=(2*nindex*(2*nindex+1))/2
+        inbfx3 = (2*nindex*(2*nindex+1))/2
         lifex3 = '&&OP0131.LIADFX3'
         call wkvect('&&OP0131.LIADFX3', 'V V I', inbfx3, ilfex3)
         do iapp1 = 1, 2*nindex
-            ipar1=mod(iapp1,2)
+            ipar1 = mod(iapp1, 2)
             do iapp2 = iapp1, 2*nindex
-                ipar2=mod(iapp2,2)
+                ipar2 = mod(iapp2, 2)
                 if (ipar1 .eq. ipar2) then
-                    sign=1.d0
+                    sign = 1.d0
                 else
-                    sign=-1.d0
-                endif
-                write(k24bd1,'(A8,A3,2I4.4,A5)')'&&OP0131','.F3',&
-                iapp1,iapp2, '.VALE'
-                ij1=(iapp2*(iapp2-1))/2+iapp1
+                    sign = -1.d0
+                end if
+                write (k24bd1, '(A8,A3,2I4.4,A5)') '&&OP0131', '.F3', &
+                    iapp1, iapp2, '.VALE'
+                ij1 = (iapp2*(iapp2-1))/2+iapp1
                 call jecreo(k24bd1, 'V V R8')
                 call jeecra(k24bd1, 'LONMAX', npdsc3*3)
                 call jeecra(k24bd1, 'LONUTI', npdsc3*3)
                 call jeveut(k24bd1, 'E', zi(ilfex3-1+ij1))
-                iadfx3=zi(ilfex3-1+ij1)
-                iapp1b=(iapp1+ipar1)/2
-                iapp2b=(iapp2+ipar2)/2
-                ij2=(iapp2b*(iapp2b-1))/2+iapp1b
-                iadfx2=zi(ilfex2-1+ij2)
+                iadfx3 = zi(ilfex3-1+ij1)
+                iapp1b = (iapp1+ipar1)/2
+                iapp2b = (iapp2+ipar2)/2
+                ij2 = (iapp2b*(iapp2b-1))/2+iapp1b
+                iadfx2 = zi(ilfex2-1+ij2)
                 do ifreq1 = npdsc3+1, 3*npdsc3
-                    zr(iadfx3-1+ifreq1)=zr(iadfx2-1+ifreq1)*sign
+                    zr(iadfx3-1+ifreq1) = zr(iadfx2-1+ifreq1)*sign
                 end do
             end do
         end do
-        lifex2=lifex3
+        lifex2 = lifex3
 !
-    endif
+    end if
 999 continue
     call jedema()
 end subroutine

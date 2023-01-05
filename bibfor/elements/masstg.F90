@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,21 +25,21 @@ subroutine masstg(matin, matout)
     real(kind=8), intent(in) :: matin(78)
     real(kind=8), intent(out) :: matout(105)
 !
-    matout(1:21)   = matin(1:21)
-    matout(22:28)  = 0.d0
-    matout(29:34)  = matin(22:27)
-    matout(35)     = 0.d0
-    matout(36:42)  = matin(28:34)
-    matout(43)     = 0.d0
-    matout(44:51)  = matin(35:42)
-    matout(52)     = 0.d0
-    matout(53:61)  = matin(43:51)
-    matout(62)     = 0.d0
-    matout(63:72)  = matin(52:61)
-    matout(73)     = 0.d0
-    matout(74:84)  = matin(62:72)
-    matout(85)     = 0.d0
-    matout(86:91)  = matin(73:78)
+    matout(1:21) = matin(1:21)
+    matout(22:28) = 0.d0
+    matout(29:34) = matin(22:27)
+    matout(35) = 0.d0
+    matout(36:42) = matin(28:34)
+    matout(43) = 0.d0
+    matout(44:51) = matin(35:42)
+    matout(52) = 0.d0
+    matout(53:61) = matin(43:51)
+    matout(62) = 0.d0
+    matout(63:72) = matin(52:61)
+    matout(73) = 0.d0
+    matout(74:84) = matin(62:72)
+    matout(85) = 0.d0
+    matout(86:91) = matin(73:78)
     matout(92:105) = 0.d0
 !
 end subroutine

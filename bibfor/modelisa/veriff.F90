@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,19 +86,19 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 !       --- VERIFICATION QUE LA TABLE DES FONCTIONS DE FORME EST
 !         - VALIDE
         vali(1) = ifo
-        if ((zi(itbnp).ne.1) .and. (zi(itbnp+1).ne.2)) then
+        if ((zi(itbnp) .ne. 1) .and. (zi(itbnp+1) .ne. 2)) then
             call utmess('F', 'MODELISA7_67', si=vali(1))
-        endif
+        end if
 !
         tblp = tbfonc//'.TBLP'
         call jeveuo(tblp, 'L', itblp)
-        if (zk24(itblp)(1:8) .ne. 'FONCTION') then
+        if (zk24(itblp) (1:8) .ne. 'FONCTION') then
             call utmess('F', 'MODELISA7_68', si=vali(1))
-        endif
+        end if
 !
         lstfon = zk24(itblp+2)
         call jeveuo(lstfon, 'L', ilfon)
-        fonc1 = zk8(ilfon) //'           '
+        fonc1 = zk8(ilfon)//'           '
         fonc2 = zk8(ilfon+1)//'           '
 !
         call jelibe(lstfon)
@@ -116,18 +116,18 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 !
 !-------ON VERIFIE QUE L'ON A AU MOINS 2 VALEURS DANS CHAQUE FONCTION
 !
-        if ((nbp1.lt.2) .or. (nbp2.lt.2)) then
+        if ((nbp1 .lt. 2) .or. (nbp2 .lt. 2)) then
             call utmess('F', 'MODELISA7_67', si=vali(1))
-        endif
+        end if
 !
         call jeveuo(vale1, 'L', ivale1)
         call jeveuo(vale2, 'L', ivale2)
 !
 !-------ON VERIFIE QUE LA PREMIERE VALEUR DU PARAMETRE EST 0
 !
-        if ((zr(ivale1).ne.0.d0) .or. (zr(ivale1).ne.0.d0)) then
+        if ((zr(ivale1) .ne. 0.d0) .or. (zr(ivale1) .ne. 0.d0)) then
             call utmess('F', 'MODELISA7_69', si=vali(1))
-        endif
+        end if
 !
 !       --- ON VERIFIE QUE LE PARAMETRE L EST LE MEME DS LES 2 FONCTIONS
         l1 = zr(ivale1+nbp1-1)
@@ -138,7 +138,7 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
             zi(inbp1+ifo-1) = nbp1
             zi(inbp2+ifo-1) = nbp2
             zr(ilexc+ifo-1) = l1
-        endif
+        end if
 !
         call jelibe(vale1)
         call jelibe(vale2)
@@ -154,12 +154,12 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
         do ifo = 1, nbfonc-1
             if (zr(ilexc+ifo-1) .ne. zr(ilexc+ifo)) then
                 call utmess('F', 'MODELISA7_71')
-            endif
+            end if
             if (zi(inbp1+ifo-1) .ne. zi(inbp1+ifo) .or. zi(inbp2+ifo-1) .ne. zi(inbp2+ifo)) then
                 call utmess('F', 'MODELISA7_72')
-            endif
+            end if
         end do
-    endif
+    end if
 !
 !-----ON RENVOIE LES GRANDEURS CARACTERISTIQUES COMMUNES AUX
 !-----DISCRETISATIONS DES FONCTIONS

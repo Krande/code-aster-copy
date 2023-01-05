@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 ! ====================== DEBUT DU CODE EXECUTABLE ======================
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid,   idligi
+    integer :: i, ibid, idligi
     integer ::   idnema, idphen
     integer :: ij, imodl, iret, j, jdnbno, jdpm, k
     integer :: k1, lonlie, nbapma, nbapno, nbmato, nbmaty, nbno
@@ -88,7 +88,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 ! --- S'ARRETE EN ERREUR FATALE :
 !     -------------------------
     call jeexin(ligret//'.LGRF', iret)
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
 !
 ! --- NUMERO DU TYPE ASSOCIE A DES MAILLES TARDIVES :
 !     ---------------------------------------------
@@ -150,20 +150,20 @@ subroutine lgtlgr(basez, ligrey, ligrez)
         nutype = lity(i)
         if (nutype .ne. nutyp1) then
             nutyp1 = nutype
-            k1 = k1 + 1
-        endif
+            k1 = k1+1
+        end if
     end do
 !
 ! --- ON CREE LE .LIEL SI LE NOMBRE DE MAILLES EST NON NUL :
 !     ----------------------------------------------------
     if (nbmato+nbnoto .gt. 0) then
 !
-        call jecrec(ligrel//'.LIEL', base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+        call jecrec(ligrel//'.LIEL', base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                     k1+nbnoto)
 !
 ! ---   LONGUEUR DU LIGREL.LIEL :
 !       -----------------------
-        lonlie = nbmato + k1 + nbnoto + nbapno
+        lonlie = nbmato+k1+nbnoto+nbapno
 !
 ! ---   AFFECTATION DE LA LONGUEUR :
 !       --------------------------
@@ -175,7 +175,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
         if (iret .eq. 0) then
             call wkvect(ligrel//'.NBNO', base//' V I', 1, jdnbno)
             zi(jdnbno) = nbnoto
-        endif
+        end if
 !
 ! ---   CREATION DE L'OBJET LIGREL.LGRF :
 !       -------------------------------
@@ -195,7 +195,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
             if (nutype .ne. nutyp1) then
 !
-                k = k + 1
+                k = k+1
 !
                 if (k .eq. k1) goto 32
 !
@@ -205,14 +205,14 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---       LONGUEUR DU IEME OBJET DE COLLECTION :
 !           ------------------------------------
-                call jeecra(jexnum(ligrel//'.LIEL', k), 'LONMAX', nbmaty+ 1)
+                call jeecra(jexnum(ligrel//'.LIEL', k), 'LONMAX', nbmaty+1)
 !
 ! ---       AFFECTATION DU IEME OBJET DE COLLECTION :
 !           ---------------------------------------
                 call jeveuo(jexnum(ligrel//'.LIEL', k), 'E', idligi)
 !
                 do j = 1, nbmaty
-                    ij = ij + 1
+                    ij = ij+1
                     zi(idligi+j-1) = lima(ij)
                 end do
 !
@@ -222,17 +222,17 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
             else
 !
-                nbmaty = nbmaty + 1
+                nbmaty = nbmaty+1
 !
-            endif
+            end if
 !
 !
- 32         continue
+32          continue
 !
         end do
 !
         if (nutyp1 .ne. 0) then
-            k = k + 1
+            k = k+1
 !
 ! ---       CREATION DU IEME OBJET DE COLLECTION :
 !           ------------------------------------
@@ -247,16 +247,16 @@ subroutine lgtlgr(basez, ligrey, ligrez)
             call jeveuo(jexnum(ligrel//'.LIEL', k), 'E', idligi)
 !
             do j = 1, nbmaty
-                ij = ij + 1
+                ij = ij+1
                 zi(idligi+j-1) = lima(ij)
             end do
 !
             zi(idligi+nbmaty) = nutyp1
-        endif
+        end if
 !
 ! --- RECHERCHE DU TYPE DES POI1 :
 !     --------------------------
-        call jenonu(jexnom('&CATA.'//zk16(idphen)(1:13)//'.MODL', mode(1)), imodl)
+        call jenonu(jexnom('&CATA.'//zk16(idphen) (1:13)//'.MODL', mode(1)), imodl)
         call jeveuo(jexnum('&CATA.'//zk16(idphen), imodl), 'L', jdpm)
 !
         nutype = zi(jdpm+ntypoi-1)
@@ -267,7 +267,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---     NOMBRE DE NOEUDS POUR LA IEME OCCURENCE :
 !         ---------------------------------------
-            nbno = pono(1+i) - pono(i)
+            nbno = pono(1+i)-pono(i)
 !
 ! ---     CREATION DU IEME OBJET DE COLLECTION :
 !         ------------------------------------
@@ -289,13 +289,13 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
         end do
 !
-    endif
+    end if
 !
 ! --- ON CREE LE .NEMA SI LE NOMBRE DE NOEUDS EST NON NUL :
 !     ---------------------------------------------------
     if (nbnoto .gt. 0) then
 !
-        call jecrec(ligrel//'.NEMA', base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+        call jecrec(ligrel//'.NEMA', base//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                     nbnoto)
 !
 ! ---   AFFECTATION DE LA LONGUEUR DU LIGREL.NEMA :
@@ -308,12 +308,12 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---     NOMBRE DE NOEUDS POUR LA IEME OCCURENCE :
 !         ---------------------------------------
-            nbno = pono(1+i) - pono(i)
+            nbno = pono(1+i)-pono(i)
             if (nbno .gt. 0) then
                 nbno2 = nbno
             else
                 nbno2 = -nbno
-            endif
+            end if
 !
 ! ---     CREATION DU IEME OBJET DE COLLECTION :
 !         ------------------------------------
@@ -332,7 +332,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
         end do
 !
-    endif
+    end if
 !
 ! --- RECUPERATION DU MODE LOCAL ASSOCIE AU PHENOMENE :
 !     -----------------------------------------------

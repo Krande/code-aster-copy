@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fetskp(mod,meth,nbpart)
+subroutine fetskp(mod, meth, nbpart)
 !
 !    - FONCTION REALISEE:
 !       - CREATION DU GRAPHE D'ENTREE DU PARTITIONNEUR
@@ -26,7 +26,7 @@ subroutine fetskp(mod,meth,nbpart)
 ! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
-    character(len=8), intent(in) :: mod,meth
+    character(len=8), intent(in) :: mod, meth
     integer, intent(in) :: nbpart
 !
 #include "asterf_types.h"
@@ -60,7 +60,7 @@ subroutine fetskp(mod,meth,nbpart)
 #include "asterfort/as_allocate.h"
 !
     integer :: nbmama, idco, nbmato, renum2, nbma, nomsdm, masd
-    integer :: nbmasd, id,  co, renum
+    integer :: nbmasd, id, co, renum
     integer :: numsdm, nmap, i, ima
     integer :: iocc, nocc, ifm, niv, nblien, renum3, idma
     integer :: rang, nbproc, versco, n1, n2, n3, ier, iaux, iaux2
@@ -78,8 +78,8 @@ subroutine fetskp(mod,meth,nbpart)
     call jemarq()
     call infniv(ifm, niv)
 !
-    nbproc=1
-    rang=0
+    nbproc = 1
+    rang = 0
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
@@ -90,35 +90,35 @@ subroutine fetskp(mod,meth,nbpart)
 ! ------- ON RECUPERE LES DONNEES DU MAILLAGE OU DU MODELE
 !
     call dismoi('NOM_MAILLA', mod, 'MODELE', repk=ma)
-    ASSERT(.not.isParallelMesh(ma))
+    ASSERT(.not. isParallelMesh(ma))
 
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     AS_ALLOCATE(vi=vrenum1, size=nbmato)
 
-    nbmato=0
+    nbmato = 0
     call jeexin(mod//'.MODELE    .LIEL', iexi)
-    if (iexi.eq.0) then
+    if (iexi .eq. 0) then
         call utmess('F', 'PARTITION_2')
-    endif
+    end if
     call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc)
     do iocc = 1, nocc
         call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
-        nbmato=nbmato+nbma-1
+        nbmato = nbmato+nbma-1
     end do
     call wkvect('&&FETSKP.RENUM', 'V V I', nbmato, renum)
-    id=1
+    id = 1
     do iocc = 1, nocc
         call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
         call jeveuo(jexnum(mod//'.MODELE    .LIEL', iocc), 'L', idma)
         do ima = 1, nbma-1
-            zi(renum-1+id)=zi(idma-1+ima)
+            zi(renum-1+id) = zi(idma-1+ima)
 ! ----- ON VERIFIE QUE LE MODELE NE CONTIENT PAS DE MAILLES TARDIVES
 ! ----- QUI SONT ESSENTIELLEMENT DES NOEUDS A CE STADE
             if (zi(idma-1+ima) .lt. 0) then
                 call utmess('F', 'PARTITION_3')
-            endif
-            vrenum1(zi(idma-1+ima))=id
-            id=id+1
+            end if
+            vrenum1(zi(idma-1+ima)) = id
+            id = id+1
         end do
     end do
 !
@@ -140,10 +140,10 @@ subroutine fetskp(mod,meth,nbpart)
     AS_ALLOCATE(vi4=vvelo, size=nbmato)
     AS_ALLOCATE(vi4=vedlo, size=nblien)
     do ima = 1, nbmato
-        vvelo(ima)=1
+        vvelo(ima) = 1
     end do
     do i = 1, nblien
-        vedlo(i)=1
+        vedlo(i) = 1
     end do
 !
 !!
@@ -158,47 +158,47 @@ subroutine fetskp(mod,meth,nbpart)
 !     ************** LANCEMENT DE SCOTCH
 !
     if (meth(1:6) .eq. 'SCOTCH') call wkvect('&&FETSKP.NMAP', 'V V S', nbmato, nmap)
-    if ((meth(1:6).eq.'SCOTCH') .and. (rang.eq.0)) then
+    if ((meth(1:6) .eq. 'SCOTCH') .and. (rang .eq. 0)) then
         if (niv .ge. 2) then
             call uttcpu('CPU.FETSKP', 'INIT', ' ')
             call uttcpu('CPU.FETSKP', 'DEBUT', ' ')
-        endif
-        write(ifm,*) ' '
-        write(ifm,*) '***************** SCOTCH *****************'
-        write(ifm,*) ' '
-        write(ifm,*) ' '
-        write(ifm,*) ' * LE NOMBRE DE MAILLES    :',nbmato
-        write(ifm,*) ' * LE NOMBRE DE CONNEXIONS :',nblien
-        write(ifm,*) ' '
-        call fetsco(nbmato, nblien, zi4(co), zi4(idco), nbpart,&
+        end if
+        write (ifm, *) ' '
+        write (ifm, *) '***************** SCOTCH *****************'
+        write (ifm, *) ' '
+        write (ifm, *) ' '
+        write (ifm, *) ' * LE NOMBRE DE MAILLES    :', nbmato
+        write (ifm, *) ' * LE NOMBRE DE CONNEXIONS :', nblien
+        write (ifm, *) ' '
+        call fetsco(nbmato, nblien, zi4(co), zi4(idco), nbpart, &
                     zi4(nmap), vedlo(1), vvelo(1), versco, ier)
-        n1=versco/10000
-        n2=(versco-n1*10000)/100
-        n3=versco-n1*10000-n2*100
-        kersco(1:8)='........'
-        write(kersco(1:2),'(I2)')n1
-        write(kersco(4:5),'(I2)')n2
-        write(kersco(7:8),'(I2)')n3
+        n1 = versco/10000
+        n2 = (versco-n1*10000)/100
+        n3 = versco-n1*10000-n2*100
+        kersco(1:8) = '........'
+        write (kersco(1:2), '(I2)') n1
+        write (kersco(4:5), '(I2)') n2
+        write (kersco(7:8), '(I2)') n3
         if (niv .ge. 2) then
             call uttcpu('CPU.FETSKP', 'FIN', ' ')
             call uttcpr('CPU.FETSKP', 7, tmps)
-            write(ifm,*) ' * TEMPS DE PARTITIONNEMENT  :',tmps(7)
-            write(ifm,*) ' '
-        endif
-        write(ifm,*) '********** FIN SCOTCH ',kersco,' *********'
+            write (ifm, *) ' * TEMPS DE PARTITIONNEMENT  :', tmps(7)
+            write (ifm, *) ' '
+        end if
+        write (ifm, *) '********** FIN SCOTCH ', kersco, ' *********'
         if (ier .ne. 0) then
             call utmess('F', 'UTILITAI_56', si=ier)
-        endif
-        write(ifm,*) ' '
+        end if
+        write (ifm, *) ' '
 !
 !     ************** LANCEMENT DE METIS
 !
-    else if (rang.eq.0) then
+    else if (rang .eq. 0) then
         call wkvect('&&FETSKP.TMPNUMSDM', 'V V I', nbmato, numsd0)
         if (meth .eq. 'METIS  ') then
-            call gpmetis_aster(nbmato, nblien, zi4(idco), zi4(co),  nbpart, zi(numsd0))
-        endif
-    endif
+            call gpmetis_aster(nbmato, nblien, zi4(idco), zi4(co), nbpart, zi(numsd0))
+        end if
+    end if
 !
     AS_DEALLOCATE(vi4=vedlo)
     AS_DEALLOCATE(vi4=vvelo)
@@ -219,36 +219,36 @@ subroutine fetskp(mod,meth,nbpart)
                 zi(numsdm-1+zi(renum2-1+ima)) = zi(numsd0-1+ima)
             end do
             call jedetr('&&FETSKP.TMPNUMSDM')
-        endif
-        k24b='&&FETSKP.NUMSDM'
+        end if
+        k24b = '&&FETSKP.NUMSDM'
         call asmpi_comm_jev('BCAST', k24b)
         do ima = 1, nbmato
-            iaux=zi(renum2-1+ima)
-            iaux2=zi(numsdm-1+iaux)
-            zi(nbmasd+iaux2)=zi(nbmasd+iaux2)+1
+            iaux = zi(renum2-1+ima)
+            iaux2 = zi(numsdm-1+iaux)
+            zi(nbmasd+iaux2) = zi(nbmasd+iaux2)+1
         end do
     else
-        k24b='&&FETSKP.NMAP'
+        k24b = '&&FETSKP.NMAP'
         call asmpi_comm_jev('BCAST', k24b)
         do ima = 1, nbmato
-            zi(numsdm-1+zi(renum2-1+ima))=zi4(nmap-1+ima)
-            zi(nbmasd+zi(numsdm-1+zi(renum2-1+ima)))= zi(nbmasd+zi(&
-            numsdm-1+zi(renum2-1+ima)))+1
+            zi(numsdm-1+zi(renum2-1+ima)) = zi4(nmap-1+ima)
+            zi(nbmasd+zi(numsdm-1+zi(renum2-1+ima))) = zi(nbmasd+zi( &
+                                                          numsdm-1+zi(renum2-1+ima)))+1
         end do
         call jedetr(k24b)
-    endif
+    end if
 !
 ! ------- CREATION DES GROUP_MA
 !
     call creagm(nbmato, nbpart, ma, masd)
 !
     call jeveuo('&&FETSKP.NOMSDM', 'L', nomsdm)
-    if (niv.gt.1) then
+    if (niv .gt. 1) then
         do i = 1, nbpart
-            write(ifm,*)'LE SOUS DOMAINE ',zk24(nomsdm-1+i),' CONTIENT '&
-                           ,zi(nbmasd-1+i),' MAILLES '
-        enddo
-    endif
+            write (ifm, *) 'LE SOUS DOMAINE ', zk24(nomsdm-1+i), ' CONTIENT ' &
+                , zi(nbmasd-1+i), ' MAILLES '
+        end do
+    end if
 
     call jedetr('&&FETSKP.TEMP')
     call jedetr('&&FETSKP.RENUM2')

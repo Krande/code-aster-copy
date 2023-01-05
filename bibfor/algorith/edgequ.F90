@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,12 @@ function edgequ(ndimsi, tens, ani)
     real(kind=8) :: equi, pdtsca(6)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data     pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/
+    data pdtsca/1.d0, 1.d0, 1.d0, 2.d0, 2.d0, 2.d0/
 !
     equi = 0.d0
     do i = 1, ndimsi
         do j = 1, ndimsi
-            equi=equi+pdtsca(i)*tens(i)*ani(i,j)*pdtsca(j)*tens(j)
+            equi = equi+pdtsca(i)*tens(i)*ani(i, j)*pdtsca(j)*tens(j)
         end do
     end do
 !
@@ -59,8 +59,8 @@ function edgequ(ndimsi, tens, ani)
             equi = 0.d0
         else
             call utmess('F', 'COMPOR1_71')
-        endif
-    endif
+        end if
+    end if
 !
     edgequ = equi
 !

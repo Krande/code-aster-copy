@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine resuReadCreateREFD(resultName, resultType, matrRigi, matrMass)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/idensd.h"
@@ -27,9 +27,9 @@ implicit none
 #include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: resultName
-character(len=16), intent(in) :: resultType
-character(len=8), intent(in) :: matrRigi, matrMass
+    character(len=8), intent(in) :: resultName
+    character(len=16), intent(in) :: resultType
+    character(len=8), intent(in) :: matrRigi, matrMass
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,14 +53,14 @@ character(len=8), intent(in) :: matrRigi, matrMass
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (resultType .eq. 'DYNA_TRANS' .or.&
-        resultType .eq. 'DYNA_HARMO' .or.&
+    if (resultType .eq. 'DYNA_TRANS' .or. &
+        resultType .eq. 'DYNA_HARMO' .or. &
         resultType(1:9) .eq. 'MODE_MECA') then
         call jeexin(resultName//'           .REFD', iret)
         if (iret .eq. 0) then
             call refdaj(' ', resultName, -1, ' ', 'INIT', ' ', iret)
-        endif
-    endif
+        end if
+    end if
 !
     if (resultType(1:9) .eq. 'MODE_MECA') then
         numeRigi = ' '
@@ -72,16 +72,16 @@ character(len=8), intent(in) :: matrRigi, matrMass
                 if (numeMass .ne. numeRigi) then
                     profRigi = (numeRigi//'.NUME')
                     profMass = (numeMass//'.NUME')
-                    if (.not.idensd('PROF_CHNO', profRigi, profMass)) then
+                    if (.not. idensd('PROF_CHNO', profRigi, profMass)) then
                         call utmess('F', 'RESULT2_15')
-                    endif
-                endif
-            endif
-        endif
+                    end if
+                end if
+            end if
+        end if
         matric(1) = matrRigi
         matric(2) = matrMass
         matric(3) = ' '
         call refdaj('F', resultName, -1, numeRigi, 'DYNAMIQUE', matric, iret)
-    endif
+    end if
 !
 end subroutine

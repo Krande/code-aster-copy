@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,8 +70,8 @@ subroutine cuimp1(deficu, resocu, ifm)
 !
 ! --- INFORMATIONS SUR LE NOMBRE DE LIAISONS
 !
-    nbliai = cudisi(deficu,'NNOCU' )
-    nbliac = cudisd(resocu,'NBLIAC')
+    nbliai = cudisi(deficu, 'NNOCU')
+    nbliac = cudisd(resocu, 'NBLIAC')
 !
 ! --- BOUCLE SUR LES LIAISONS
 !
@@ -93,7 +93,7 @@ subroutine cuimp1(deficu, resocu, ifm)
         do iliac = 1, nbliac
             if (zi(jliac-1+iliac) .eq. iliai) then
                 actif = 1
-            endif
+            end if
         end do
 !
 ! --- IMPRESSION
@@ -102,12 +102,12 @@ subroutine cuimp1(deficu, resocu, ifm)
             chaiac = ' ACTIVE (JEU : '
         else
             chaiac = ' LIBRE  (JEU : '
-        endif
-        write (ifm,1000) iliai,'(',noe,' - ',cmp,') :',&
-     &                   chaiac,jeu,')'
+        end if
+        write (ifm, 1000) iliai, '(', noe, ' - ', cmp, ') :',&
+     &                   chaiac, jeu, ')'
     end do
 !
-    1000 format (' <LIA_UNIL> <> LIAISON ',i5,a1,a8,a3,a8,a4,a15,e10.3,a1)
+1000 format(' <LIA_UNIL> <> LIAISON ', i5, a1, a8, a3, a8, a4, a15, e10.3, a1)
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
-                  itzsto, iprsto, iadirg, nbmo, max,&
+subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
+                  itzsto, iprsto, iadirg, nbmo, max, &
                   may, maz, nbloc)
     implicit none
 ! ROUTINE NOUVEAU MODELE OPTIMISEE
@@ -86,12 +86,12 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     if (repon(1:3) .eq. 'NON') call jeveuo('&&DELAT.INDIC', 'L', vi=indic)
 !
     call jeexin(stolci//'.SMHC', iret1)
-    ASSERT(iret1.gt.0)
+    ASSERT(iret1 .gt. 0)
     call jeveuo(stolci//'.SMHC', 'L', vi4=smhc)
     call jeveuo(stolci//'.SMDI', 'L', vi=smdi)
     call jeveuo(stolci//'.SMDE', 'L', vi=smde)
 !
-    call jelira(zk24(iprsto)(1:19)//'.VALE', 'LONMAX', nbpres)
+    call jelira(zk24(iprsto) (1:19)//'.VALE', 'LONMAX', nbpres)
     AS_ALLOCATE(vr=vectx, size=nbpres)
     AS_ALLOCATE(vr=vecty, size=nbpres)
 !
@@ -106,7 +106,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
         AS_ALLOCATE(vr=vectz, size=nbpres)
-    endif
+    end if
 !
 !     BOUCLE SUR LES BLOCS DE LA MATRICE ASSEMBLEE GENE
 !
@@ -118,36 +118,36 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
 !         BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc=1
-        n2bloc=smde(1)
+        n1bloc = 1
+        n2bloc = smde(1)
 !
 !
         do i = n1bloc, n2bloc
             if (i .gt. nbmo) goto 10
             if (repon(1:3) .eq. 'NON') then
                 if (indic(i) .ne. 1) goto 10
-            endif
-            call jeveuo(zk24(itxsto+i-1)(1:19)//'.VALE', 'L', vr=tpx)
-            call jeveuo(zk24(itysto+i-1)(1:19)//'.VALE', 'L', vr=tpy)
+            end if
+            call jeveuo(zk24(itxsto+i-1) (1:19)//'.VALE', 'L', vr=tpx)
+            call jeveuo(zk24(itysto+i-1) (1:19)//'.VALE', 'L', vr=tpy)
             if (model .eq. '3D') then
-                call jeveuo(zk24(itzsto+i-1)(1:19)//'.VALE', 'L', vr=tpz)
-                call mrmult('ZERO', imatz, tpz, vectz, 1,&
+                call jeveuo(zk24(itzsto+i-1) (1:19)//'.VALE', 'L', vr=tpz)
+                call mrmult('ZERO', imatz, tpz, vectz, 1, &
                             .true._1)
-            endif
+            end if
 !
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-            call mrmult('ZERO', imatx, tpx, vectx, 1,&
+            call mrmult('ZERO', imatx, tpx, vectx, 1, &
                         .true._1)
-            call mrmult('ZERO', imaty, tpy, vecty, 1,&
+            call mrmult('ZERO', imaty, tpy, vecty, 1, &
                         .true._1)
 !
 ! RANG GENERALISE DU TERME DE MASSE CALCULEE : LIGNE
 !
-            irang=zi(iadirg+i-1)
+            irang = zi(iadirg+i-1)
             hc = smdi(i)
-            if (i .gt. 1) hc = hc - smdi(i-1)
+            if (i .gt. 1) hc = hc-smdi(i-1)
 !
             do j = (i-hc+1), i
 !
@@ -158,27 +158,27 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
                 if (repon(1:3) .eq. 'NON') then
                     if (indic(j) .ne. 1) goto 50
-                endif
+                end if
 !
-                call jeveuo(zk24(iprsto+j-1)(1:19)//'.VALE', 'L', vr=pres)
+                call jeveuo(zk24(iprsto+j-1) (1:19)//'.VALE', 'L', vr=pres)
 !
-                rx= ddot(nbpres,pres, 1,vectx,1)
-                ry= ddot(nbpres,pres, 1,vecty,1)
+                rx = ddot(nbpres, pres, 1, vectx, 1)
+                ry = ddot(nbpres, pres, 1, vecty, 1)
 !
                 if (model .eq. '3D') then
-                    rz= ddot(nbpres,pres, 1,vectz,1)
+                    rz = ddot(nbpres, pres, 1, vectz, 1)
                     mij = rx+ry+rz
                 else
                     mij = rx+ry
-                endif
- 50             continue
+                end if
+50              continue
                 if (repon(1:3) .eq. 'NON') then
-                    if (indic(j) .ne. 1) mij=0.d0
-                endif
+                    if (indic(j) .ne. 1) mij = 0.d0
+                end if
 !
 ! RANG GENERALISE DU TERME DE MASSE: COLONNE
 !
-                jrang=zi(iadirg+j-1)
+                jrang = zi(iadirg+j-1)
                 iblodi = 1
 !
                 if (iblodi .ne. iblo) then
@@ -189,23 +189,23 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
                     call jeveuo(jexnum(nomres//'           .UALF', iblodi), 'E', ldblo)
                     zr(ldblo+smdi(irang)+jrang-irang-1) = mij
                     if (niv .eq. 2) then
-                        write(ifm,350) irang,jrang,mij
-                    endif
+                        write (ifm, 350) irang, jrang, mij
+                    end if
                     call jelibe(jexnum(nomres//'           .UALF', iblodi))
                     call jeveuo(jexnum(nomres//'           .UALF', iblo), 'E', ldblo)
 !
                 else
                     zr(ldblo+smdi(irang)+jrang-irang-1) = mij
                     if (niv .eq. 2) then
-                        write(ifm,350) irang,jrang,mij
-                    endif
-                endif
+                        write (ifm, 350) irang, jrang, mij
+                    end if
+                end if
             end do
- 10         continue
+10          continue
         end do
     end do
 !
-    350 format(18x,'M',2 i 4,1x,'=',1x, d 12.5)
+350 format(18x, 'M', 2 i 4, 1x, '=', 1x, d 12.5)
 !
 !
 !--MENAGE FINAL DES OBJETS DE TRAVAIL

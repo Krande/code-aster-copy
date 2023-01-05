@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine te0103(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
     integer :: ndimax, nbvar, kp, kq, nbddl, mzr
-    parameter (ndimax=27)
-    parameter (nbvar=4)
+    parameter(ndimax=27)
+    parameter(nbvar=4)
     character(len=8) :: nompar(nbvar)
     real(kind=8) :: b(3, 3), theta, zero, rigith(ndimax, ndimax)
     real(kind=8) :: coor2d(18), valpar(nbvar), cour, cosa, sina
@@ -49,14 +49,14 @@ subroutine te0103(option, nomte)
     integer :: idfde, igeom, itemps, ipoids, ivf, i, j, icoefh, ier, nbv, ind
 !
 !
-    if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and.&
+    if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and. &
         nomte .ne. 'THCOSE2 ') then
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     else
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    endif
+    end if
 !
 ! --- INITIALISATIONS :
 !     ---------------
@@ -65,7 +65,7 @@ subroutine te0103(option, nomte)
 !
     do i = 1, ndimax
         do j = 1, ndimax
-            rigith(i,j) = zero
+            rigith(i, j) = zero
         end do
     end do
 !
@@ -104,7 +104,7 @@ subroutine te0103(option, nomte)
 !
 ! --- CAS DES COQUES SURFACIQUES :
 !     --------------------------
-    if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and.&
+    if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and. &
         nomte .ne. 'THCOSE2') then
 !
 ! --- DETERMINATION DES COORDONNEES COOR2D DES NOEUDS DE L'ELEMENT
@@ -116,7 +116,7 @@ subroutine te0103(option, nomte)
 !     -----------------------------------
         do kp = 1, npg2
             k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+            call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                         poids, dfdx, dfdy)
 !
             xgau = zero
@@ -126,9 +126,9 @@ subroutine te0103(option, nomte)
 ! ---   COORDONNEES DES POINTS D'INTEGRATION :
 !       ------------------------------------
             do i = 1, nno
-                xgau = xgau + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
-                ygau = ygau + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
-                zgau = zgau + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
+                xgau = xgau+zr(igeom+3*(i-1))*zr(ivf+k+i-1)
+                ygau = ygau+zr(igeom+3*(i-1)+1)*zr(ivf+k+i-1)
+                zgau = zgau+zr(igeom+3*(i-1)+2)*zr(ivf+k+i-1)
             end do
 !
             valpar(1) = xgau
@@ -139,14 +139,14 @@ subroutine te0103(option, nomte)
 ! ---   COQUE AVEC L'EXTERIEUR AU POINT D'INTEGRATION COURANT
 ! ---   ET A L'INSTANT COURANT :
 !       ----------------------
-            call fointe('FM', zk8(icoefh), nbvar, nompar, valpar,&
+            call fointe('FM', zk8(icoefh), nbvar, nompar, valpar, &
                         hmoins, ier)
 !
 ! ---   CALCUL DU COEFFICIENT D'ECHANGE DU FEUILLET SUPERIEUR DE LA
 ! ---   COQUE AVEC L'EXTERIEUR AU POINT D'INTEGRATION COURANT
 ! ---   ET A L'INSTANT COURANT :
 !       ----------------------
-            call fointe('FM', zk8(icoefh+1), nbvar, nompar, valpar,&
+            call fointe('FM', zk8(icoefh+1), nbvar, nompar, valpar, &
                         hplus, ier)
 !
 ! ---   CONTRIBUTION AU TENSEUR DE CONDUCTIVITE TRANSVERSE B DES
@@ -155,12 +155,12 @@ subroutine te0103(option, nomte)
 ! ---       B =  (0 H- 0 )
 ! ---            (0 0  H+)
 !       -------------------
-            b(1,1) = zero
-            b(2,1) = zero
-            b(2,2) = hmoins
-            b(3,1) = zero
-            b(3,2) = zero
-            b(3,3) = hplus
+            b(1, 1) = zero
+            b(2, 1) = zero
+            b(2, 2) = hmoins
+            b(3, 1) = zero
+            b(3, 2) = zero
+            b(3, 3) = hplus
 !
 ! ---   CALCUL DE LA RIGIDITE THERMIQUE DUE AU TERME D'ECHANGE B :
 !       --------------------------------------------------------
@@ -168,23 +168,23 @@ subroutine te0103(option, nomte)
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                            pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids* theta
+                            pk = b(pi, pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj-1)*poids*theta
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
 !         -----------------------------
-                            if ((pi.ne.pj) .and. (gi.ne.gj)) then
-                                i = 3* (gi-1) + pj
-                                j = 3* (gj-1) + pi
-                                rigith(i,j) = rigith(i,j) + pk
-                            endif
+                            if ((pi .ne. pj) .and. (gi .ne. gj)) then
+                                i = 3*(gi-1)+pj
+                                j = 3*(gj-1)+pi
+                                rigith(i, j) = rigith(i, j)+pk
+                            end if
 !
 ! ---     AFFECTATION DES TERMES DE LA TRIANGULAIRE SUPERIEURE
 ! ---     DE LA SOUS-MATRICE :
 !         ------------------
-                            i = 3* (gi-1) + pi
-                            j = 3* (gj-1) + pj
-                            rigith(i,j) = rigith(i,j) + pk
+                            i = 3*(gi-1)+pi
+                            j = 3*(gj-1)+pj
+                            rigith(i, j) = rigith(i, j)+pk
                         end do
                     end do
                 end do
@@ -193,14 +193,14 @@ subroutine te0103(option, nomte)
 !
 ! --- CAS DES COQUES LINEIQUES (EN CONTRAINTES PLANES ET AXI) :
 !     -------------------------------------------------------
-        else if (nomte.eq.'THCPSE3' .or. nomte.eq.'THCASE3')&
-    then
+    else if (nomte .eq. 'THCPSE3' .or. nomte .eq. 'THCASE3') &
+        then
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------
         do kp = 1, npg2
             k = (kp-1)*nno
-            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
+            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx, &
                         cour, poids, cosa, sina)
             xgau = zero
             ygau = zero
@@ -208,8 +208,8 @@ subroutine te0103(option, nomte)
 ! ---   COORDONNEES DES POINTS D'INTEGRATION :
 !       ------------------------------------
             do i = 1, nno
-                xgau = xgau + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-                ygau = ygau + zr(igeom+2* (i-1)+1)*zr(ivf+k+i-1)
+                xgau = xgau+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                ygau = ygau+zr(igeom+2*(i-1)+1)*zr(ivf+k+i-1)
             end do
 !
             if (nomte .eq. 'THCASE3') poids = poids*xgau
@@ -223,14 +223,14 @@ subroutine te0103(option, nomte)
 ! ---   INFERIEUR DE LA COQUE AU POINT D'INTEGRATION COURANT
 ! ---   ET A L'INSTANT COURANT :
 !       ----------------------
-            call fointe('FM', zk8(icoefh), nbv, nompar, valpar,&
+            call fointe('FM', zk8(icoefh), nbv, nompar, valpar, &
                         hmoins, ier)
 !
 ! ---   CALCUL DU COEFFICIENT D'ECHANGE AVEC L'EXTERIEUR DU FEUILLET
 ! ---   SUPERIEUR DE LA COQUE AU POINT D'INTEGRATION COURANT
 ! ---   ET A L'INSTANT COURANT :
 !       ----------------------
-            call fointe('FM', zk8(icoefh+1), nbv, nompar, valpar,&
+            call fointe('FM', zk8(icoefh+1), nbv, nompar, valpar, &
                         hplus, ier)
 !
 ! ---   CONTRIBUTION AU TENSEUR DE CONDUCTIVITE TRANSVERSE B DES
@@ -239,12 +239,12 @@ subroutine te0103(option, nomte)
 ! ---       B =  (0 H- 0 )
 ! ---            (0 0  H+)
 !       -------------------
-            b(1,1) = zero
-            b(2,1) = zero
-            b(2,2) = hmoins
-            b(3,1) = zero
-            b(3,2) = zero
-            b(3,3) = hplus
+            b(1, 1) = zero
+            b(2, 1) = zero
+            b(2, 2) = hmoins
+            b(3, 1) = zero
+            b(3, 2) = zero
+            b(3, 3) = hplus
 !
 ! ---   CALCUL DE LA RIGIDITE THERMIQUE DUE AU TERME D'ECHANGE B :
 !       --------------------------------------------------------
@@ -252,23 +252,23 @@ subroutine te0103(option, nomte)
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                            pk = b(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids* theta
+                            pk = b(pi, pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj-1)*poids*theta
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
 !         -----------------------------
-                            if ((pi.ne.pj) .and. (gi.ne.gj)) then
-                                i = 3* (gi-1) + pj
-                                j = 3* (gj-1) + pi
-                                rigith(i,j) = rigith(i,j) + pk
-                            endif
+                            if ((pi .ne. pj) .and. (gi .ne. gj)) then
+                                i = 3*(gi-1)+pj
+                                j = 3*(gj-1)+pi
+                                rigith(i, j) = rigith(i, j)+pk
+                            end if
 !
 ! ---     AFFECTATION DES TERMES DE LA TRIANGULAIRE SUPERIEURE
 ! ---     DE LA SOUS-MATRICE :
 !         ------------------
-                            i = 3* (gi-1) + pi
-                            j = 3* (gj-1) + pj
-                            rigith(i,j) = rigith(i,j) + pk
+                            i = 3*(gi-1)+pi
+                            j = 3*(gj-1)+pj
+                            rigith(i, j) = rigith(i, j)+pk
                         end do
                     end do
                 end do
@@ -277,17 +277,17 @@ subroutine te0103(option, nomte)
 !
 ! --- CAS DES COQUES LINEIQUES (AUTRES QUE CONTRAINTES PLANES ET AXI) :
 !     --------------------------------------------------------------
-        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
-    then
+    else if (nomte .eq. 'THCOSE3' .or. nomte .eq. 'THCOSE2') &
+        then
 !
         call jevete('&INEL.'//nomte(1:8)//'.DEMR', ' ', mzr)
 !CC     CALL JEVECH('PCACOQU','L',ICACOQ)
 !
 !CC     EP=ZR(ICACOQ)
 !
-        long = (&
-               zr(igeom+3)-zr(igeom))**2 + (zr(igeom+3+1)-zr(igeom+1) )**2 + (zr(igeom+3+2)-zr(ig&
-               &eom+2)&
+        long = ( &
+               zr(igeom+3)-zr(igeom))**2+(zr(igeom+3+1)-zr(igeom+1))**2+(zr(igeom+3+2)-zr(ig&
+               &eom+2) &
                )**2
         long = sqrt(long)/2.d0
 !       EP  =EP/2.D0
@@ -323,15 +323,15 @@ subroutine te0103(option, nomte)
 !
             poi1 = zr(mzr-1+12+kp)
 !
-            matp(1,1) = matp(1,1) + poi1*zr(mzr-1+kq+1)**2
-            matp(1,2) = matp(1,2) + poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+2)
-            matp(1,3) = matp(1,3) + poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+3)
-            matp(2,1) = matp(1,2)
-            matp(2,2) = matp(2,2) + poi1*zr(mzr-1+kq+2)**2
-            matp(2,3) = matp(2,3) + poi1*zr(mzr-1+kq+2)*zr(mzr-1+kq+3)
-            matp(3,1) = matp(1,3)
-            matp(3,2) = matp(2,3)
-            matp(3,3) = matp(3,3) + poi1*zr(mzr-1+kq+3)**2
+            matp(1, 1) = matp(1, 1)+poi1*zr(mzr-1+kq+1)**2
+            matp(1, 2) = matp(1, 2)+poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+2)
+            matp(1, 3) = matp(1, 3)+poi1*zr(mzr-1+kq+1)*zr(mzr-1+kq+3)
+            matp(2, 1) = matp(1, 2)
+            matp(2, 2) = matp(2, 2)+poi1*zr(mzr-1+kq+2)**2
+            matp(2, 3) = matp(2, 3)+poi1*zr(mzr-1+kq+2)*zr(mzr-1+kq+3)
+            matp(3, 1) = matp(1, 3)
+            matp(3, 2) = matp(2, 3)
+            matp(3, 3) = matp(3, 3)+poi1*zr(mzr-1+kq+3)**2
         end do
 !
         nompar(1) = 'X'
@@ -348,16 +348,16 @@ subroutine te0103(option, nomte)
             y = zero
             z = zero
             do i = 1, nno
-                x = x + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
-                y = y + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
-                z = z + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
+                x = x+zr(igeom+3*(i-1))*zr(ivf+k+i-1)
+                y = y+zr(igeom+3*(i-1)+1)*zr(ivf+k+i-1)
+                z = z+zr(igeom+3*(i-1)+2)*zr(ivf+k+i-1)
             end do
 !
             valpar(1) = x
             valpar(2) = y
             valpar(3) = z
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(icoefh), 4, nompar, valpar,&
+            call fointe('FM', zk8(icoefh), 4, nompar, valpar, &
                         h, ier)
 !
 ! ---   DETERMINATION DE LA MATRICE MATN DONT LE TERME GENERIQUE
@@ -369,121 +369,121 @@ subroutine te0103(option, nomte)
 !         LAMB=LAMB*LONG*THETA*EP
             h = h*long*theta/2.d0
 !
-            matn(1,1) = poi2*h*zr(ivf-1+k+1)**2
-            matn(1,2) = poi2*h*zr(ivf-1+k+1)*zr(ivf-1+k+2)
-            matn(2,1) = matn(1,2)
-            matn(2,2) = poi2*h*zr(ivf-1+k+2)**2
+            matn(1, 1) = poi2*h*zr(ivf-1+k+1)**2
+            matn(1, 2) = poi2*h*zr(ivf-1+k+1)*zr(ivf-1+k+2)
+            matn(2, 1) = matn(1, 2)
+            matn(2, 2) = poi2*h*zr(ivf-1+k+2)**2
 !
             if (nomte .eq. 'THCOSE3') then
-                matn(1,3) = poi2*h*zr(ivf-1+k+1)*zr(ivf-1+k+3)
-                matn(2,3) = poi2*h*zr(ivf-1+k+2)*zr(ivf-1+k+3)
-                matn(3,1) = matn(1,3)
-                matn(3,2) = matn(2,3)
-                matn(3,3) = poi2*h*zr(ivf-1+k+3)**2
-            endif
+                matn(1, 3) = poi2*h*zr(ivf-1+k+1)*zr(ivf-1+k+3)
+                matn(2, 3) = poi2*h*zr(ivf-1+k+2)*zr(ivf-1+k+3)
+                matn(3, 1) = matn(1, 3)
+                matn(3, 2) = matn(2, 3)
+                matn(3, 3) = poi2*h*zr(ivf-1+k+3)**2
+            end if
 !
-            rigith(1,1) = rigith(1,1) + matn(1,1)*matp(1,1)
-            rigith(1,2) = rigith(1,2) + matn(1,1)*matp(1,2)
-            rigith(1,3) = rigith(1,3) + matn(1,1)*matp(1,3)
-            rigith(1,4) = rigith(1,4) + matn(1,2)*matp(1,1)
-            rigith(1,5) = rigith(1,5) + matn(1,2)*matp(1,2)
-            rigith(1,6) = rigith(1,6) + matn(1,2)*matp(1,3)
+            rigith(1, 1) = rigith(1, 1)+matn(1, 1)*matp(1, 1)
+            rigith(1, 2) = rigith(1, 2)+matn(1, 1)*matp(1, 2)
+            rigith(1, 3) = rigith(1, 3)+matn(1, 1)*matp(1, 3)
+            rigith(1, 4) = rigith(1, 4)+matn(1, 2)*matp(1, 1)
+            rigith(1, 5) = rigith(1, 5)+matn(1, 2)*matp(1, 2)
+            rigith(1, 6) = rigith(1, 6)+matn(1, 2)*matp(1, 3)
 !
-            rigith(2,1) = rigith(1,2)
-            rigith(2,2) = rigith(2,2) + matn(1,1)*matp(2,2)
-            rigith(2,3) = rigith(2,3) + matn(1,1)*matp(2,3)
-            rigith(2,4) = rigith(2,4) + matn(1,2)*matp(2,1)
-            rigith(2,5) = rigith(2,5) + matn(1,2)*matp(2,2)
-            rigith(2,6) = rigith(2,6) + matn(1,2)*matp(2,3)
+            rigith(2, 1) = rigith(1, 2)
+            rigith(2, 2) = rigith(2, 2)+matn(1, 1)*matp(2, 2)
+            rigith(2, 3) = rigith(2, 3)+matn(1, 1)*matp(2, 3)
+            rigith(2, 4) = rigith(2, 4)+matn(1, 2)*matp(2, 1)
+            rigith(2, 5) = rigith(2, 5)+matn(1, 2)*matp(2, 2)
+            rigith(2, 6) = rigith(2, 6)+matn(1, 2)*matp(2, 3)
 !
-            rigith(3,1) = rigith(1,3)
-            rigith(3,2) = rigith(2,3)
-            rigith(3,3) = rigith(3,3) + matn(1,1)*matp(3,3)
-            rigith(3,4) = rigith(3,4) + matn(1,2)*matp(3,1)
-            rigith(3,5) = rigith(3,5) + matn(1,2)*matp(3,2)
-            rigith(3,6) = rigith(3,6) + matn(1,2)*matp(3,3)
+            rigith(3, 1) = rigith(1, 3)
+            rigith(3, 2) = rigith(2, 3)
+            rigith(3, 3) = rigith(3, 3)+matn(1, 1)*matp(3, 3)
+            rigith(3, 4) = rigith(3, 4)+matn(1, 2)*matp(3, 1)
+            rigith(3, 5) = rigith(3, 5)+matn(1, 2)*matp(3, 2)
+            rigith(3, 6) = rigith(3, 6)+matn(1, 2)*matp(3, 3)
 !
-            rigith(4,1) = rigith(1,4)
-            rigith(4,2) = rigith(2,4)
-            rigith(4,3) = rigith(3,4)
-            rigith(4,4) = rigith(4,4) + matn(2,2)*matp(1,1)
-            rigith(4,5) = rigith(4,5) + matn(2,2)*matp(1,2)
-            rigith(4,6) = rigith(4,6) + matn(2,2)*matp(1,3)
+            rigith(4, 1) = rigith(1, 4)
+            rigith(4, 2) = rigith(2, 4)
+            rigith(4, 3) = rigith(3, 4)
+            rigith(4, 4) = rigith(4, 4)+matn(2, 2)*matp(1, 1)
+            rigith(4, 5) = rigith(4, 5)+matn(2, 2)*matp(1, 2)
+            rigith(4, 6) = rigith(4, 6)+matn(2, 2)*matp(1, 3)
 !
-            rigith(5,1) = rigith(1,5)
-            rigith(5,2) = rigith(2,5)
-            rigith(5,3) = rigith(3,5)
-            rigith(5,4) = rigith(4,5)
-            rigith(5,5) = rigith(5,5) + matn(2,2)*matp(2,2)
-            rigith(5,6) = rigith(5,6) + matn(2,2)*matp(2,3)
+            rigith(5, 1) = rigith(1, 5)
+            rigith(5, 2) = rigith(2, 5)
+            rigith(5, 3) = rigith(3, 5)
+            rigith(5, 4) = rigith(4, 5)
+            rigith(5, 5) = rigith(5, 5)+matn(2, 2)*matp(2, 2)
+            rigith(5, 6) = rigith(5, 6)+matn(2, 2)*matp(2, 3)
 !
-            rigith(6,1) = rigith(1,6)
-            rigith(6,2) = rigith(2,6)
-            rigith(6,3) = rigith(3,6)
-            rigith(6,4) = rigith(4,6)
-            rigith(6,5) = rigith(5,6)
-            rigith(6,6) = rigith(6,6) + matn(2,2)*matp(3,3)
+            rigith(6, 1) = rigith(1, 6)
+            rigith(6, 2) = rigith(2, 6)
+            rigith(6, 3) = rigith(3, 6)
+            rigith(6, 4) = rigith(4, 6)
+            rigith(6, 5) = rigith(5, 6)
+            rigith(6, 6) = rigith(6, 6)+matn(2, 2)*matp(3, 3)
 !
             if (nomte .eq. 'THCOSE3') then
 !
-                rigith(1,7) = rigith(1,7) + matn(1,3)*matp(1,1)
-                rigith(1,8) = rigith(1,8) + matn(1,3)*matp(1,2)
-                rigith(1,9) = rigith(1,9) + matn(1,3)*matp(1,3)
+                rigith(1, 7) = rigith(1, 7)+matn(1, 3)*matp(1, 1)
+                rigith(1, 8) = rigith(1, 8)+matn(1, 3)*matp(1, 2)
+                rigith(1, 9) = rigith(1, 9)+matn(1, 3)*matp(1, 3)
 !
-                rigith(2,7) = rigith(2,7) + matn(1,3)*matp(2,1)
-                rigith(2,8) = rigith(2,8) + matn(1,3)*matp(2,2)
-                rigith(2,9) = rigith(2,9) + matn(1,3)*matp(2,3)
+                rigith(2, 7) = rigith(2, 7)+matn(1, 3)*matp(2, 1)
+                rigith(2, 8) = rigith(2, 8)+matn(1, 3)*matp(2, 2)
+                rigith(2, 9) = rigith(2, 9)+matn(1, 3)*matp(2, 3)
 !
-                rigith(3,7) = rigith(3,7) + matn(1,3)*matp(3,1)
-                rigith(3,8) = rigith(3,8) + matn(1,3)*matp(3,2)
-                rigith(3,9) = rigith(3,9) + matn(1,3)*matp(3,3)
+                rigith(3, 7) = rigith(3, 7)+matn(1, 3)*matp(3, 1)
+                rigith(3, 8) = rigith(3, 8)+matn(1, 3)*matp(3, 2)
+                rigith(3, 9) = rigith(3, 9)+matn(1, 3)*matp(3, 3)
 !
-                rigith(4,7) = rigith(4,7) + matn(2,3)*matp(1,1)
-                rigith(4,8) = rigith(4,8) + matn(2,3)*matp(1,2)
-                rigith(4,9) = rigith(4,9) + matn(2,3)*matp(1,3)
+                rigith(4, 7) = rigith(4, 7)+matn(2, 3)*matp(1, 1)
+                rigith(4, 8) = rigith(4, 8)+matn(2, 3)*matp(1, 2)
+                rigith(4, 9) = rigith(4, 9)+matn(2, 3)*matp(1, 3)
 !
-                rigith(5,7) = rigith(5,7) + matn(2,3)*matp(2,1)
-                rigith(5,8) = rigith(5,8) + matn(2,3)*matp(2,2)
-                rigith(5,9) = rigith(5,9) + matn(2,3)*matp(2,3)
+                rigith(5, 7) = rigith(5, 7)+matn(2, 3)*matp(2, 1)
+                rigith(5, 8) = rigith(5, 8)+matn(2, 3)*matp(2, 2)
+                rigith(5, 9) = rigith(5, 9)+matn(2, 3)*matp(2, 3)
 !
-                rigith(6,7) = rigith(6,7) + matn(2,3)*matp(3,1)
-                rigith(6,8) = rigith(6,8) + matn(2,3)*matp(3,2)
-                rigith(6,9) = rigith(6,9) + matn(2,3)*matp(3,3)
+                rigith(6, 7) = rigith(6, 7)+matn(2, 3)*matp(3, 1)
+                rigith(6, 8) = rigith(6, 8)+matn(2, 3)*matp(3, 2)
+                rigith(6, 9) = rigith(6, 9)+matn(2, 3)*matp(3, 3)
 !
-                rigith(7,1) = rigith(1,7)
-                rigith(7,2) = rigith(2,7)
-                rigith(7,3) = rigith(3,7)
-                rigith(7,4) = rigith(4,7)
-                rigith(7,5) = rigith(5,7)
-                rigith(7,6) = rigith(6,7)
-                rigith(7,7) = rigith(7,7) + matn(3,3)*matp(1,1)
-                rigith(7,8) = rigith(7,8) + matn(3,3)*matp(1,2)
-                rigith(7,9) = rigith(7,9) + matn(3,3)*matp(1,3)
+                rigith(7, 1) = rigith(1, 7)
+                rigith(7, 2) = rigith(2, 7)
+                rigith(7, 3) = rigith(3, 7)
+                rigith(7, 4) = rigith(4, 7)
+                rigith(7, 5) = rigith(5, 7)
+                rigith(7, 6) = rigith(6, 7)
+                rigith(7, 7) = rigith(7, 7)+matn(3, 3)*matp(1, 1)
+                rigith(7, 8) = rigith(7, 8)+matn(3, 3)*matp(1, 2)
+                rigith(7, 9) = rigith(7, 9)+matn(3, 3)*matp(1, 3)
 !
-                rigith(8,1) = rigith(1,8)
-                rigith(8,2) = rigith(2,8)
-                rigith(8,3) = rigith(3,8)
-                rigith(8,4) = rigith(4,8)
-                rigith(8,5) = rigith(5,8)
-                rigith(8,6) = rigith(6,8)
-                rigith(8,7) = rigith(7,8)
-                rigith(8,8) = rigith(8,8) + matn(3,3)*matp(2,2)
-                rigith(8,9) = rigith(8,9) + matn(3,3)*matp(2,3)
+                rigith(8, 1) = rigith(1, 8)
+                rigith(8, 2) = rigith(2, 8)
+                rigith(8, 3) = rigith(3, 8)
+                rigith(8, 4) = rigith(4, 8)
+                rigith(8, 5) = rigith(5, 8)
+                rigith(8, 6) = rigith(6, 8)
+                rigith(8, 7) = rigith(7, 8)
+                rigith(8, 8) = rigith(8, 8)+matn(3, 3)*matp(2, 2)
+                rigith(8, 9) = rigith(8, 9)+matn(3, 3)*matp(2, 3)
 !
-                rigith(9,1) = rigith(1,9)
-                rigith(9,2) = rigith(2,9)
-                rigith(9,3) = rigith(3,9)
-                rigith(9,4) = rigith(4,9)
-                rigith(9,5) = rigith(5,9)
-                rigith(9,6) = rigith(6,9)
-                rigith(9,7) = rigith(7,9)
-                rigith(9,8) = rigith(8,9)
-                rigith(9,9) = rigith(9,9) + matn(3,3)*matp(3,3)
-            endif
+                rigith(9, 1) = rigith(1, 9)
+                rigith(9, 2) = rigith(2, 9)
+                rigith(9, 3) = rigith(3, 9)
+                rigith(9, 4) = rigith(4, 9)
+                rigith(9, 5) = rigith(5, 9)
+                rigith(9, 6) = rigith(6, 9)
+                rigith(9, 7) = rigith(7, 9)
+                rigith(9, 8) = rigith(8, 9)
+                rigith(9, 9) = rigith(9, 9)+matn(3, 3)*matp(3, 3)
+            end if
 !
         end do
 !
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA MATRICE DE RIGIDITE THERMIQUE EN SORTIE DU TE :
 !     ----------------------------------------------------------------
@@ -495,8 +495,8 @@ subroutine te0103(option, nomte)
     ind = 0
     do i = 1, nbddl
         do j = 1, i
-            ind = ind + 1
-            zr(imattt+ind-1) = rigith(i,j)
+            ind = ind+1
+            zr(imattt+ind-1) = rigith(i, j)
         end do
     end do
 !

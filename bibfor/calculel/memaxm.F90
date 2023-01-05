@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
+subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
                   vr, nbmail, numail)
 ! aslint: disable=W1306
     implicit none
@@ -92,23 +92,23 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 !
     call jemarq()
 !
-    cham19=champ
+    cham19 = champ
 !
 !     -- TRANSFORMATION DU CHAMP EN CHAMP SIMPLE :
 !     --------------------------------------------
-    chams='&&MEMAXM.CES'
+    chams = '&&MEMAXM.CES'
     call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych)
     if (tych(1:2) .eq. 'EL') then
         call celces(cham19, 'V', chams)
-    else if (tych.eq.'CART') then
-        call carces(cham19, 'ELEM', ' ', 'V', chams,&
+    else if (tych .eq. 'CART') then
+        call carces(cham19, 'ELEM', ' ', 'V', chams, &
                     ' ', iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
     else
         ASSERT(.false.)
-    endif
+    end if
     call jelira(chams//'.CESV', 'TYPE', cval=typ1)
-    ASSERT(typ1.eq.'R')
+    ASSERT(typ1 .eq. 'R')
 !
 !
 !
@@ -118,41 +118,41 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     call jeveuo(chams//'.CESK', 'L', vk8=cesk)
     call jeveuo(chams//'.CESV', 'L', jcesv)
 !
-    nomgd=cesk(2)
+    nomgd = cesk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-    ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
-    lreel=tsca.eq.'R'
+    ASSERT(tsca .eq. 'R' .or. tsca .eq. 'I')
+    lreel = tsca .eq. 'R'
 !
 !
 !
 !     -- INITIALISATION DE VMIMA :
-    ASSERT(typmx(1:3).eq.'MIN'.or.typmx(1:3).eq.'MAX')
-    lmax=typmx(1:3).eq.'MAX'
-    if (.not.lmax) vmima=+r8maem()
+    ASSERT(typmx(1:3) .eq. 'MIN' .or. typmx(1:3) .eq. 'MAX')
+    lmax = typmx(1:3) .eq. 'MAX'
+    if (.not. lmax) vmima = +r8maem()
     if (len(typmx) .gt. 3) then
-        ASSERT(len(typmx).eq.7)
-        ASSERT(typmx(4:7).eq.'_ABS')
-        labs=.true.
-        if (lmax) vmima=0.d0
+        ASSERT(len(typmx) .eq. 7)
+        ASSERT(typmx(4:7) .eq. '_ABS')
+        labs = .true.
+        if (lmax) vmima = 0.d0
     else
-        labs=.false.
-        if (lmax) vmima=-r8maem()
-    endif
+        labs = .false.
+        if (lmax) vmima = -r8maem()
+    end if
 !
 !
 !     INITIALISATION DE TNCOMP CONTENANT LES INDICES
 !     DES CMP
 !     ----------------------------------
     do icmp = 1, nbcmp
-        tncomp(icmp)=0
+        tncomp(icmp) = 0
     end do
 !
-    ncmp=zi(jcesd-1+2)
+    ncmp = zi(jcesd-1+2)
     do icmp = 1, ncmp
         do iicmp = 1, nbcmp
             if (lcmp(iicmp) .eq. cesc(icmp)) then
-                tncomp(iicmp)=icmp
-            endif
+                tncomp(iicmp) = icmp
+            end if
         end do
     end do
 !
@@ -160,64 +160,64 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 !     COMPARAISON NOCMP AVEC TTES LES
 !     AUTRES AFIN DE RECUPERER LE NUM DE LA COMPOSANTE
 !     RECUPERE L'INDEX DE LA COMPOSANTE A TESTER DANS LE CHAMP
-    ncp=0
+    ncp = 0
     do icmp = 1, ncmp
-        if (cesc(icmp) .eq. nocmp) ncp=icmp
+        if (cesc(icmp) .eq. nocmp) ncp = icmp
     end do
 !
 !     -- CAS : TOUTES LES MAILLES :
 !     -----------------------------
     if (nbmail .le. 0) then
 !       NOMBRE D'ELEMENTS DU MAILLAGE
-        nel=zi(jcesd-1+1)
+        nel = zi(jcesd-1+1)
 !     -- CAS : LISTE DE MAILLES :
 !     ---------------------------
     else
-        nel=nbmail
-    endif
+        nel = nbmail
+    end if
 !
 !
     do iel = 1, nel
 !
         if (nbmail .le. 0) then
-            iel1=iel
+            iel1 = iel
         else
-            iel1=numail(iel)
-        endif
+            iel1 = numail(iel)
+        end if
 !
 !       NOMBRE DE PTS ET SSPTS POUR CHAQUE ELEMENT
-        nbpt=zi(jcesd-1+5+4*(iel1-1)+1)
-        nbsspt=zi(jcesd-1+5+4*(iel1-1)+2)
-        ncmp=zi(jcesd-1+5+4*(iel1-1)+3)
+        nbpt = zi(jcesd-1+5+4*(iel1-1)+1)
+        nbsspt = zi(jcesd-1+5+4*(iel1-1)+2)
+        ncmp = zi(jcesd-1+5+4*(iel1-1)+3)
 !
 !
         do ipt = 1, nbpt
             do isp = 1, nbsspt
-                call cesexi('C', jcesd, jcesl, iel1, ipt,&
+                call cesexi('C', jcesd, jcesl, iel1, ipt, &
                             isp, ncp, iadr1)
                 if (iadr1 .gt. 0) then
                     if (lreel) then
-                        valr=zr(jcesv-1+iadr1)
+                        valr = zr(jcesv-1+iadr1)
                     else
-                        valr=zi(jcesv-1+iadr1)
-                    endif
-                    if (labs) valr=abs(valr)
-                    copi=.false.
-                    if ((lmax) .and. (valr.gt.vmima)) copi=.true.
-                    if ((.not.lmax) .and. (valr.lt.vmima)) copi=.true.
+                        valr = zi(jcesv-1+iadr1)
+                    end if
+                    if (labs) valr = abs(valr)
+                    copi = .false.
+                    if ((lmax) .and. (valr .gt. vmima)) copi = .true.
+                    if ((.not. lmax) .and. (valr .lt. vmima)) copi = .true.
                     if (copi) then
-                        vmima=valr
+                        vmima = valr
                         do iicmp = 1, nbcmp
-                            call cesexi('C', jcesd, jcesl, iel1, ipt,&
+                            call cesexi('C', jcesd, jcesl, iel1, ipt, &
                                         isp, tncomp(iicmp), iadr2)
                             if (iadr2 .eq. 0) then
-                                vr(iicmp)=r8nnem()
+                                vr(iicmp) = r8nnem()
                             else
-                                vr(iicmp)=zr(jcesv-1+iadr2)
-                            endif
+                                vr(iicmp) = zr(jcesv-1+iadr2)
+                            end if
                         end do
-                    endif
-                endif
+                    end if
+                end if
             end do
         end do
     end do
@@ -232,8 +232,8 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
             call asmpi_comm_vect('MPI_MAX', 'R', nbval=longt, vr=vr)
         else
             call asmpi_comm_vect('MPI_MIN', 'R', nbval=longt, vr=vr)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

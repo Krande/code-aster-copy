@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine interp(tabx, taby, necr, x, y,&
+subroutine interp(tabx, taby, necr, x, y, &
                   iseg)
 !     AUTEUR : C. DUVAL DEPT AMV
 !     ----------------------------------------------------------------
@@ -39,20 +39,20 @@ subroutine interp(tabx, taby, necr, x, y,&
     integer :: ipt, iseg, necr
     real(kind=8) :: x, x1, x2, y, y1, y2
 !-----------------------------------------------------------------------
-    do 1 ,ipt=2,necr
-    x1=tabx(ipt-1)
-    x2=tabx(ipt)
-    if (((x-x1)*(x-x2)) .le. 0.d0) then
-        iseg=ipt
-        y1=taby(ipt-1)
-        y2=taby(ipt)
-        if (x1 .eq. x2) then
-            y=y1
-        else
-            y=y1+(x-x1)*(y1-y2)/(x1-x2)
-        endif
-        goto 999
-    endif
-    1 end do
+    do 1, ipt = 2, necr
+        x1 = tabx(ipt-1)
+        x2 = tabx(ipt)
+        if (((x-x1)*(x-x2)) .le. 0.d0) then
+            iseg = ipt
+            y1 = taby(ipt-1)
+            y2 = taby(ipt)
+            if (x1 .eq. x2) then
+                y = y1
+            else
+                y = y1+(x-x1)*(y1-y2)/(x1-x2)
+            end if
+            goto 999
+        end if
+1   end do
 999 continue
 end subroutine

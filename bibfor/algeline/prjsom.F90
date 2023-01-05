@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function prjsom(nbmat, mater, invare, invars, b,&
+function prjsom(nbmat, mater, invare, invars, b, &
                 siie, type)
 !
     implicit none
@@ -46,16 +46,16 @@ function prjsom(nbmat, mater, invare, invars, b,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
-    parameter       ( zero   =  0.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(zero=0.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
 ! ======================================================================
-    mu = mater ( 4,1)
-    k = mater ( 5,1)
-    gamcjs = mater (12,2)
+    mu = mater(4, 1)
+    k = mater(5, 1)
+    gamcjs = mater(12, 2)
 ! ======================================================================
 ! --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 ! ======================================================================
@@ -65,27 +65,27 @@ function prjsom(nbmat, mater, invare, invars, b,&
             costyp = cosphi(b, gamcjs, 'MAX')
         else
             costyp = cosphi(b, gamcjs, 'MIN')
-        endif
+        end if
         test2 = mun*trois*k*b*siie*costyp/(deux*mu)
         if (test1 .lt. test2) then
             prjsom = .false.
         else
             prjsom = .true.
-        endif
-    else if (type.eq.'INFERIEUR') then
+        end if
+    else if (type .eq. 'INFERIEUR') then
         if (b .lt. zero) then
             costyp = cosphi(b, gamcjs, 'MIN')
         else
             costyp = cosphi(b, gamcjs, 'MAX')
-        endif
+        end if
         test2 = mun*trois*k*b*siie*costyp/(deux*mu)
         if (test1 .gt. test2) then
             prjsom = .false.
         else
             prjsom = .true.
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 ! ======================================================================
 end function

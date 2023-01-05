@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndpred(sddyna, valinc, solalg)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
 !
-character(len=19) :: sddyna
-character(len=19) :: solalg(*), valinc(*)
+    character(len=19) :: sddyna
+    character(len=19) :: solalg(*), valinc(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,8 +69,8 @@ character(len=19) :: solalg(*), valinc(*)
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CALCUL PREDICTEURS'
-    endif
+        write (ifm, *) '<MECANONLINE> ... CALCUL PREDICTEURS'
+    end if
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -85,21 +85,21 @@ character(len=19) :: solalg(*), valinc(*)
 !
 ! --- TYPE DE FORMULATION SCHEMA DYNAMIQUE GENERAL
 !
-    ldepl = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1
-    lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
-    lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
+    ldepl = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1
+    lvite = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 2
+    lacce = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3
 !
 ! --- COEFFICIENTS POUR PREDICTEURS
 !
-    coefd(1) = ndynre(sddyna,'COEF_DEPL_DEPL')
-    coefd(2) = ndynre(sddyna,'COEF_DEPL_VITE')
-    coefd(3) = ndynre(sddyna,'COEF_DEPL_ACCE')
-    coefv(1) = ndynre(sddyna,'COEF_VITE_DEPL')
-    coefv(2) = ndynre(sddyna,'COEF_VITE_VITE')
-    coefv(3) = ndynre(sddyna,'COEF_VITE_ACCE')
-    coefa(1) = ndynre(sddyna,'COEF_ACCE_DEPL')
-    coefa(2) = ndynre(sddyna,'COEF_ACCE_VITE')
-    coefa(3) = ndynre(sddyna,'COEF_ACCE_ACCE')
+    coefd(1) = ndynre(sddyna, 'COEF_DEPL_DEPL')
+    coefd(2) = ndynre(sddyna, 'COEF_DEPL_VITE')
+    coefd(3) = ndynre(sddyna, 'COEF_DEPL_ACCE')
+    coefv(1) = ndynre(sddyna, 'COEF_VITE_DEPL')
+    coefv(2) = ndynre(sddyna, 'COEF_VITE_VITE')
+    coefv(3) = ndynre(sddyna, 'COEF_VITE_ACCE')
+    coefa(1) = ndynre(sddyna, 'COEF_ACCE_DEPL')
+    coefa(2) = ndynre(sddyna, 'COEF_ACCE_VITE')
+    coefa(3) = ndynre(sddyna, 'COEF_ACCE_ACCE')
 !
 ! --- MISE A JOUR CHAMPS GRANDES ROTATIONS
 !
@@ -145,15 +145,15 @@ character(len=19) :: solalg(*), valinc(*)
         call copisd('CHAMP_GD', 'V', acckm1, accplu)
     else
         ASSERT(.false.)
-    endif
+    end if
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ...... PRED. DEPL. '
+        write (ifm, *) '<MECANONLINE> ...... PRED. DEPL. '
         call nmdebg('VECT', depplu, ifm)
-        write (ifm,*) '<MECANONLINE> ...... PRED. VITE. '
+        write (ifm, *) '<MECANONLINE> ...... PRED. VITE. '
         call nmdebg('VECT', vitplu, ifm)
-        write (ifm,*) '<MECANONLINE> ...... PRED. ACCE. '
+        write (ifm, *) '<MECANONLINE> ...... PRED. ACCE. '
         call nmdebg('VECT', accplu, ifm)
-    endif
+    end if
 !
 ! --- INITIALISATION DE L'INCREMENT DE DEPLACEMENT DEPDEL
 !
@@ -163,7 +163,7 @@ character(len=19) :: solalg(*), valinc(*)
             call vtaxpy(coefd(n), vect(n), depdel)
         end do
         call vtaxpy(-1.d0, depkm1, depdel)
-    endif
+    end if
 !
 ! --- INITIALISATION DE L'INCREMENT DE VITESSE/ACCELERATION
 !

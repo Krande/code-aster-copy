@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfliin(mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfecrd.h"
@@ -53,8 +53,8 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ......... DETECTION DES LIAISONS INITIALES'
-    endif
+        write (ifm, *) '<CONTACT> ......... DETECTION DES LIAISONS INITIALES'
+    end if
 !
 ! - Get total number of initial links
 !
@@ -72,6 +72,6 @@ implicit none
 !
     if (niv .ge. 2) then
         call cfimp1('INI', mesh, ds_contact%sdcont_defi, ds_contact%sdcont_solv, ifm)
-    endif
+    end if
 !
 end subroutine

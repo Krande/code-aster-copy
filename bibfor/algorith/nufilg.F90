@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,20 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine nufilg(ndim, nnod, nnop, npg, iw,&
-                  vffd, vffp, idffd,&
-                  vu, vp,&
-                  geomi, typmod, option, mate, compor,&
-                  lgpg, carcri, instm, instp, ddlm,&
-                  ddld, angmas, sigm, vim, sigp,&
-                  vip, vect, matr,&
-                  matsym, codret,&
+subroutine nufilg(ndim, nnod, nnop, npg, iw, &
+                  vffd, vffp, idffd, &
+                  vu, vp, &
+                  geomi, typmod, option, mate, compor, &
+                  lgpg, carcri, instm, instp, ddlm, &
+                  ddld, angmas, sigm, vim, sigp, &
+                  vip, vect, matr, &
+                  matsym, codret, &
                   lVect, lMatr)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -48,21 +48,21 @@ implicit none
 #include "blas/dscal.h"
 #include "asterfort/Behaviour_type.h"
 !
-aster_logical :: matsym
-integer :: ndim, nnod, nnop, npg, iw, idffd, lgpg
-integer :: mate
-integer :: vu(3, 27), vp(27)
-integer :: codret
-real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg)
-real(kind=8) :: instm, instp
-real(kind=8) :: geomi(ndim, nnod), ddlm(*), ddld(*), angmas(*)
-real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
-real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
-real(kind=8) :: vect(*), matr(*)
-real(kind=8) :: carcri(*)
-character(len=8) :: typmod(*)
-character(len=16) :: compor(*), option
-aster_logical, intent(in) :: lVect, lMatr
+    aster_logical :: matsym
+    integer :: ndim, nnod, nnop, npg, iw, idffd, lgpg
+    integer :: mate
+    integer :: vu(3, 27), vp(27)
+    integer :: codret
+    real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg)
+    real(kind=8) :: instm, instp
+    real(kind=8) :: geomi(ndim, nnod), ddlm(*), ddld(*), angmas(*)
+    real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
+    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
+    real(kind=8) :: vect(*), matr(*)
+    real(kind=8) :: carcri(*)
+    character(len=8) :: typmod(*)
+    character(len=16) :: compor(*), option
+    aster_logical, intent(in) :: lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,7 +107,7 @@ aster_logical, intent(in) :: lVect, lMatr
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical, parameter :: mini = ASTER_FALSE
-    aster_logical, parameter :: grand  = ASTER_TRUE
+    aster_logical, parameter :: grand = ASTER_TRUE
     aster_logical :: axi
     aster_logical :: lCorr, lSigm, lVari
     integer :: kpg, nddl, ndu
@@ -134,41 +134,41 @@ aster_logical, intent(in) :: lVect, lMatr
     real(kind=8) :: alpha, trepst
     real(kind=8) :: dsbdep(2*ndim, 2*ndim)
     type(Behaviour_Integ) :: BEHinteg
-    real(kind=8), parameter :: kr(6) = (/ 1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
-    real(kind=8), parameter :: id(3, 3) = reshape((/ 1.d0, 0.d0, 0.d0,&
-                                                     0.d0, 1.d0, 0.d0,&
-                                                     0.d0, 0.d0, 1.d0/),(/3,3/))
-    integer, parameter :: vij(3,3) = reshape((/1, 4, 5, 4, 2, 6, 5, 6, 3 /),(/3,3/))
-    real(kind=8), parameter :: idev(6,6) = reshape((/ 2.d0,-1.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-                                                     -1.d0, 2.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-                                                     -1.d0,-1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
-                                                      0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0,&
-                                                      0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0,&
-                                                      0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/),(/6,6/))
+    real(kind=8), parameter :: kr(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
+    real(kind=8), parameter :: id(3, 3) = reshape((/1.d0, 0.d0, 0.d0, &
+                                                    0.d0, 1.d0, 0.d0, &
+                                                    0.d0, 0.d0, 1.d0/), (/3, 3/))
+    integer, parameter :: vij(3, 3) = reshape((/1, 4, 5, 4, 2, 6, 5, 6, 3/), (/3, 3/))
+    real(kind=8), parameter :: idev(6, 6) = reshape((/2.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0, &
+                                                      -1.d0, 2.d0, -1.d0, 0.d0, 0.d0, 0.d0, &
+                                                      -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0, &
+                                                      0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0, &
+                                                      0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0, &
+                                                     0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/), (/6, 6/))
 !
 ! --------------------------------------------------------------------------------------------------
 !
     lSigm = L_SIGM(option)
     lVari = L_VARI(option)
     lCorr = L_CORR(option)
-    axi = typmod(1).eq.'AXIS'
-    nddl = nnod*ndim + nnop
+    axi = typmod(1) .eq. 'AXIS'
+    nddl = nnod*ndim+nnop
     ndu = ndim
     if (axi) then
         ndu = 3
-    endif
+    end if
     dsidep = 0.d0
     codret = 0
     if (lVect) then
         vect(1:nddl) = 0.d0
-    endif
+    end if
     if (lMatr) then
         if (matsym) then
             matr(1:nddl*(nddl+1)/2) = 0.d0
         else
             matr(1:nddl*nddl) = 0.d0
-        endif
-    endif
+        end if
+    end if
 
 ! - Initialisation of behaviour datastructure
     call behaviourInit(BEHinteg)
@@ -177,10 +177,10 @@ aster_logical, intent(in) :: lVect, lMatr
 ! - Extract for fields
     do na = 1, nnod
         do ia = 1, ndim
-            geomm(ia+ndim*(na-1)) = geomi(ia,na) + ddlm(vu(ia,na))
+            geomm(ia+ndim*(na-1)) = geomi(ia, na)+ddlm(vu(ia, na))
             geomp(ia+ndim*(na-1)) = geomm(ia+ndim*(na-1))+ddld(vu(ia, na))
-            deplm(ia+ndim*(na-1)) = ddlm(vu(ia,na))
-            deplp(ia+ndim*(na-1)) = ddlm(vu(ia,na))+ddld(vu(ia,na))
+            deplm(ia+ndim*(na-1)) = ddlm(vu(ia, na))
+            deplp(ia+ndim*(na-1)) = ddlm(vu(ia, na))+ddld(vu(ia, na))
         end do
     end do
     do sa = 1, nnop
@@ -191,36 +191,36 @@ aster_logical, intent(in) :: lVect, lMatr
 ! - Loop on Gauss points
     do kpg = 1, npg
 ! ----- Kinematic - Previous strains
-        call dfdmip(ndim, nnod, axi, geomi, kpg,&
-                    iw, vffd(1, kpg), idffd, r, w,&
+        call dfdmip(ndim, nnod, axi, geomi, kpg, &
+                    iw, vffd(1, kpg), idffd, r, w, &
                     dffd)
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dffd, deplm, fPrev)
 
 ! ----- Kinematic - Current strains
-        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
+        call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg), &
                     r, dffd, deplp, fCurr)
-        call dfdmip(ndim, nnod, axi, geomp, kpg,&
-                    iw, vffd(1, kpg), idffd, r, wp,&
+        call dfdmip(ndim, nnod, axi, geomp, kpg, &
+                    iw, vffd(1, kpg), idffd, r, wp, &
                     dffd)
         call nmmalu(nnod, axi, r, vffd(1, kpg), dffd, lij)
 
 ! ----- Gradient
-        jm = fPrev(1,1)*(fPrev(2,2)*fPrev(3,3)-fPrev(2,3)*fPrev(3,2)) -&
-             fPrev(2,1)*(fPrev(1,2)*fPrev(3,3)-fPrev(1,3)*fPrev(3,2)) +&
-             fPrev(3,1)*(fPrev(1,2)*fPrev(2,3)-fPrev(1,3)*fPrev(2,2))
-        jp = fCurr(1,1)*(fCurr(2,2)*fCurr(3,3)-fCurr(2,3)*fCurr(3,2)) -&
-             fCurr(2,1)*(fCurr(1,2)*fCurr(3,3)-fCurr(1,3)*fCurr(3,2)) +&
-             fCurr(3,1)*(fCurr(1,2)*fCurr(2,3)-fCurr(1,3)*fCurr(2,2))
+        jm = fPrev(1, 1)*(fPrev(2, 2)*fPrev(3, 3)-fPrev(2, 3)*fPrev(3, 2))- &
+             fPrev(2, 1)*(fPrev(1, 2)*fPrev(3, 3)-fPrev(1, 3)*fPrev(3, 2))+ &
+             fPrev(3, 1)*(fPrev(1, 2)*fPrev(2, 3)-fPrev(1, 3)*fPrev(2, 2))
+        jp = fCurr(1, 1)*(fCurr(2, 2)*fCurr(3, 3)-fCurr(2, 3)*fCurr(3, 2))- &
+             fCurr(2, 1)*(fCurr(1, 2)*fCurr(3, 3)-fCurr(1, 3)*fCurr(3, 2))+ &
+             fCurr(3, 1)*(fCurr(1, 2)*fCurr(2, 3)-fCurr(1, 3)*fCurr(2, 2))
         if (jp .le. 0.d0) then
             cod(kpg) = 1
             goto 999
-        endif
+        end if
 
 ! ----- Pressure
-        pm = ddot(nnop,vffp(1,kpg),1,presm,1)
-        pd = ddot(nnop,vffp(1,kpg),1,presd,1)
-        pp = pm + pd
+        pm = ddot(nnop, vffp(1, kpg), 1, presm, 1)
+        pd = ddot(nnop, vffp(1, kpg), 1, presd, 1)
+        pp = pm+pd
 
 ! ----- CALCUL DES DEFORMATIONS ENRICHIES
         corm = (1.d0/jm)**(1.d0/3.d0)
@@ -231,80 +231,80 @@ aster_logical, intent(in) :: lVect, lMatr
         call dscal(9, corp, ftp, 1)
 
 ! ----- Pre-treatment of kinematic quantities
-        call prelog(ndim, lgpg, vim(1, kpg), gn, lamb,&
-                    logl, ftm, ftp, epslPrev, epslIncr,&
+        call prelog(ndim, lgpg, vim(1, kpg), gn, lamb, &
+                    logl, ftm, ftp, epslPrev, epslIncr, &
                     tlogPrev, lCorr, cod(kpg))
         if (cod(kpg) .ne. 0) then
             goto 999
-        endif
+        end if
 
 ! ----- Compute behaviour
         cod(kpg) = 0
         dtde = 0.d0
         tlogCurr = 0.d0
         taup = 0.d0
-        call nmcomp(BEHinteg,&
-                    'RIGI', kpg, 1, ndim, typmod,&
-                    mate, compor, carcri, instm, instp,&
-                    6, epslPrev, epslIncr, 6, tlogPrev,&
+        call nmcomp(BEHinteg, &
+                    'RIGI', kpg, 1, ndim, typmod, &
+                    mate, compor, carcri, instm, instp, &
+                    6, epslPrev, epslIncr, 6, tlogPrev, &
                     vim(1, kpg), option, angmas, &
                     tlogCurr, vip(1, kpg), 36, dtde, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
-        endif
+        end if
 
 ! ----- Post-treatment of sthenic quantities
-        call poslog(lCorr, lMatr, lSigm, lVari,&
-                    tlogPrev, tlogCurr, ftm,&
-                    lgpg, vip(1, kpg), ndim, ftp, kpg,&
-                    dtde, sigm(1, kpg), .false._1, 'RIGI', mate,&
-                    instp, angmas, gn, lamb, logl,&
-                    sigp( 1, kpg), dsidep, pk2Prev, pk2Curr, iret)
+        call poslog(lCorr, lMatr, lSigm, lVari, &
+                    tlogPrev, tlogCurr, ftm, &
+                    lgpg, vip(1, kpg), ndim, ftp, kpg, &
+                    dtde, sigm(1, kpg), .false._1, 'RIGI', mate, &
+                    instp, angmas, gn, lamb, logl, &
+                    sigp(1, kpg), dsidep, pk2Prev, pk2Curr, iret)
         if (iret .eq. 1) then
             cod(kpg) = 1
             goto 999
         end if
 
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp,&
+        call tanbul(option, ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
 
 ! ----- Cauchy stresses
         if (lSigm) then
             call dcopy(2*ndim, sigp(1, kpg), 1, taup, 1)
             call dscal(2*ndim, 1.d0/jp, sigp(1, kpg), 1)
-            sigtr = sigp(1,kpg)+sigp(2,kpg)+sigp(3,kpg)
+            sigtr = sigp(1, kpg)+sigp(2, kpg)+sigp(3, kpg)
             do ia = 1, 3
-                sigp(ia,kpg) = sigp(ia,kpg) + ((pm+pd)/jp-sigtr/3.d0)
+                sigp(ia, kpg) = sigp(ia, kpg)+((pm+pd)/jp-sigtr/3.d0)
             end do
-            sigp(2*ndim+1,kpg) = sigtr/3.d0 - (pm+pd)/jp
+            sigp(2*ndim+1, kpg) = sigtr/3.d0-(pm+pd)/jp
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0
             do ia = 1, 6
-                taudv(ia) = taup(ia) - tauhy*kr(ia)
+                taudv(ia) = taup(ia)-tauhy*kr(ia)
             end do
-        endif
+        end if
 
 ! ----- Internal forces
         if (lVect) then
             ASSERT(lSigm)
             do na = 1, nnod
                 do ia = 1, ndu
-                    kk = vu(ia,na)
+                    kk = vu(ia, na)
                     t1 = 0.d0
                     do ja = 1, ndu
-                        t2 = taudv(vij(ia,ja)) + pp*id(ia,ja)
-                        t1 = t1 + t2*dffd(na,lij(ia,ja))
+                        t2 = taudv(vij(ia, ja))+pp*id(ia, ja)
+                        t1 = t1+t2*dffd(na, lij(ia, ja))
                     end do
-                    vect(kk) = vect(kk) + w*t1
+                    vect(kk) = vect(kk)+w*t1
                 end do
             end do
-            t2 = log(jp) - pp*alpha-trepst
+            t2 = log(jp)-pp*alpha-trepst
             do sa = 1, nnop
                 kk = vp(sa)
-                t1 = vffp(sa,kpg)*t2
-                vect(kk) = vect(kk) + w*t1
+                t1 = vffp(sa, kpg)*t2
+                vect(kk) = vect(kk)+w*t1
             end do
-        endif
+        end if
 
 ! ----- Rigidity matrix
         if (lMatr) then
@@ -315,13 +315,13 @@ aster_logical, intent(in) :: lVect, lMatr
                 call dcopy(2*ndim, sigm(1, kpg), 1, taup, 1)
                 call dscal(2*ndim, jm, taup, 1)
                 call dcopy(9, ftm, 1, ftr, 1)
-            endif
+            end if
 !
 ! - CALCUL DE L'OPERATEUR TANGENT SYMÉTRISÉ D
             call dsde2d(3, ftr, dsidep, d)
-            devd = matmul(idev/3.d0,d)
-            ddev = matmul(d,idev/3.d0)
-            dddev = matmul(devd,idev/3.d0)
+            devd = matmul(idev/3.d0, d)
+            ddev = matmul(d, idev/3.d0)
+            dddev = matmul(devd, idev/3.d0)
 !
 ! - CALCUL DU TENSEUR DE CONTRAINTE : TRACE ET PARTIE DEVIATORIQUE
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0
@@ -329,10 +329,10 @@ aster_logical, intent(in) :: lVect, lMatr
 ! - CALCUL DE D^DEV:ID ET ID:D^DEV ET ID:D:ID
             iddid = 0.d0
             do ia = 1, 6
-                taudv(ia) = taup(ia) - tauhy*kr(ia)
-                tauldc(ia) = taup(ia) + (pp-tauhy)*kr(ia)
+                taudv(ia) = taup(ia)-tauhy*kr(ia)
+                tauldc(ia) = taup(ia)+(pp-tauhy)*kr(ia)
                 do ja = 1, 3
-                    iddid = iddid+kr(ia)*d(ia,ja)
+                    iddid = iddid+kr(ia)*d(ia, ja)
                 end do
             end do
 !
@@ -341,49 +341,49 @@ aster_logical, intent(in) :: lVect, lMatr
 ! - TERME K:UX
                 do na = 1, nnod
                     do ia = 1, ndu
-                        vuiana = vu(ia,na)
+                        vuiana = vu(ia, na)
                         os = (vuiana-1)*vuiana/2
 !
 ! - TERME K:UU      KUU(NDIM,nnod,NDIM,nnod)
                         do nb = 1, nnod
                             do ib = 1, ndu
-                                if (vu(ib,nb) .le. vuiana) then
-                                    kk = os+vu(ib,nb)
+                                if (vu(ib, nb) .le. vuiana) then
+                                    kk = os+vu(ib, nb)
                                     t1 = 0.d0
 ! - RIGIDITE DE COMPORTEMENT
                                     do ja = 1, ndu
-                                        viaja=vij(ia,ja)
+                                        viaja = vij(ia, ja)
                                         do jb = 1, ndu
-                                            vibjb=vij(ib,jb)
-                                            t2 = dddev(viaja,vibjb)
-                                            t2 = t2 + taup(vij(ia,jb))*kr(vij(ib,ja))
-                                            t2 = t2 + taup(vij(jb,ja))*kr(vij(ia,ib))
-                                            t2 = t2 - 2.d0/3.d0*(&
+                                            vibjb = vij(ib, jb)
+                                            t2 = dddev(viaja, vibjb)
+                                            t2 = t2+taup(vij(ia, jb))*kr(vij(ib, ja))
+                                            t2 = t2+taup(vij(jb, ja))*kr(vij(ia, ib))
+                                            t2 = t2-2.d0/3.d0*( &
                                                  taup(viaja)*kr(vibjb)+taup(vibjb)*kr(viaja))
-                                            t2 = t2 + 2.d0/3.d0*tauhy*kr(viaja)*kr(vibjb)
-                                            t1 = t1+dffd(na,lij(ia,ja))*t2*dffd(nb,lij(ib,jb))
+                                            t2 = t2+2.d0/3.d0*tauhy*kr(viaja)*kr(vibjb)
+                                            t1 = t1+dffd(na, lij(ia, ja))*t2*dffd(nb, lij(ib, jb))
                                         end do
                                     end do
 !
 ! - RIGIDITE GEOMETRIQUE
                                     do jb = 1, ndu
-                                        t1 = t1 - dffd(&
-                                             na, lij(ia, ib))*dffd(nb,&
-                                             lij(ib, jb)) *tauldc(vij(ia, jb)&
-                                             )
+                                        t1 = t1-dffd( &
+                                             na, lij(ia, ib))*dffd(nb, &
+                                                                   lij(ib, jb))*tauldc(vij(ia, jb) &
+                                                                                       )
                                     end do
-                                    matr(kk) = matr(kk) + w*t1
-                                endif
+                                    matr(kk) = matr(kk)+w*t1
+                                end if
                             end do
                         end do
 !
 ! - TERME K:UP      KUP(NDIM,nnod,nnop)
                         do sb = 1, nnop
                             if (vp(sb) .lt. vuiana) then
-                                kk = os + vp(sb)
-                                t1 = dffd(na,lij(ia,ia))*vffp(sb,kpg)
-                                matr(kk) = matr(kk) + w*t1
-                            endif
+                                kk = os+vp(sb)
+                                t1 = dffd(na, lij(ia, ia))*vffp(sb, kpg)
+                                matr(kk) = matr(kk)+w*t1
+                            end if
                         end do
                     end do
                 end do
@@ -396,21 +396,21 @@ aster_logical, intent(in) :: lVect, lMatr
 ! - TERME K:PU      KPU(NDIM,nnop,nnod)
                     do nb = 1, nnod
                         do ib = 1, ndu
-                            if (vu(ib,nb) .lt. vpsa) then
-                                kk = os + vu(ib,nb)
-                                t1 = vffp(sa,kpg)*dffd(nb,lij(ib,ib))
-                                matr(kk) = matr(kk) + w*t1
-                            endif
+                            if (vu(ib, nb) .lt. vpsa) then
+                                kk = os+vu(ib, nb)
+                                t1 = vffp(sa, kpg)*dffd(nb, lij(ib, ib))
+                                matr(kk) = matr(kk)+w*t1
+                            end if
                         end do
                     end do
 !
 ! - TERME K:PP      KPP(nnop,nnop)
                     do rb = 1, nnop
                         if (vp(rb) .le. vpsa) then
-                            kk = os + vp(rb)
-                            t1 = - vffp(sa,kpg)*vffp(rb,kpg)*alpha
-                            matr(kk) = matr(kk) + w*t1
-                        endif
+                            kk = os+vp(rb)
+                            t1 = -vffp(sa, kpg)*vffp(rb, kpg)*alpha
+                            matr(kk) = matr(kk)+w*t1
+                        end if
                     end do
                 end do
 !
@@ -419,42 +419,42 @@ aster_logical, intent(in) :: lVect, lMatr
 ! - TERME K:UX
                 do na = 1, nnod
                     do ia = 1, ndu
-                        os = (vu(ia,na)-1)*nddl
+                        os = (vu(ia, na)-1)*nddl
 !
 ! - TERME K:UU      KUU(NDIM,nnod,NDIM,nnod)
                         do nb = 1, nnod
                             do ib = 1, ndu
-                                kk = os+vu(ib,nb)
+                                kk = os+vu(ib, nb)
                                 t1 = 0.d0
 ! - RIGIDITE DE COMPORTEMENT
                                 do ja = 1, ndu
-                                    viaja=vij(ia,ja)
+                                    viaja = vij(ia, ja)
                                     do jb = 1, ndu
-                                        vibjb=vij(ib,jb)
-                                        t2 = dddev(viaja,vibjb)
-                                        t2 = t2 + taup(vij(ia,jb))*kr(vij(ib,ja))
-                                        t2 = t2 + taup(vij(jb,ja))*kr(vij(ia,ib))
-                                        t2 = t2 - 2.d0/3.d0*(&
+                                        vibjb = vij(ib, jb)
+                                        t2 = dddev(viaja, vibjb)
+                                        t2 = t2+taup(vij(ia, jb))*kr(vij(ib, ja))
+                                        t2 = t2+taup(vij(jb, ja))*kr(vij(ia, ib))
+                                        t2 = t2-2.d0/3.d0*( &
                                              taup(viaja)*kr(vibjb)+kr(viaja)*taup(vibjb))
-                                        t2 = t2 + 2.d0*kr(viaja)*kr(vibjb)*tauhy/3.d0
-                                        t1 = t1+dffd(na,lij(ia,ja))*t2*dffd(nb,lij(ib,jb))
+                                        t2 = t2+2.d0*kr(viaja)*kr(vibjb)*tauhy/3.d0
+                                        t1 = t1+dffd(na, lij(ia, ja))*t2*dffd(nb, lij(ib, jb))
                                     end do
                                 end do
 !
 ! - RIGIDITE GEOMETRIQUE
                                 do jb = 1, ndu
-                                    t1 = t1 - dffd(&
-                                         na,lij(ia,ib))*dffd(nb,lij(ib,jb)) * tauldc(vij(ia,jb))
+                                    t1 = t1-dffd( &
+                                         na, lij(ia, ib))*dffd(nb, lij(ib, jb))*tauldc(vij(ia, jb))
                                 end do
-                                matr(kk) = matr(kk) + w*t1
+                                matr(kk) = matr(kk)+w*t1
                             end do
                         end do
 !
 ! - TERME K:UP      KUP(NDIM,nnod,nnop)
                         do sb = 1, nnop
-                            kk = os + vp(sb)
-                            t1 = dffd(na,lij(ia,ia))*vffp(sb,kpg)
-                            matr(kk) = matr(kk) + w*t1
+                            kk = os+vp(sb)
+                            t1 = dffd(na, lij(ia, ia))*vffp(sb, kpg)
+                            matr(kk) = matr(kk)+w*t1
                         end do
                     end do
                 end do
@@ -466,21 +466,21 @@ aster_logical, intent(in) :: lVect, lMatr
 ! - TERME K:PU      KPU(NDIM,nnop,nnod)
                     do nb = 1, nnod
                         do ib = 1, ndu
-                            kk = os + vu(ib,nb)
-                            t1 = vffp(sa,kpg)*dffd(nb,lij(ib,ib))
-                            matr(kk) = matr(kk) + w*t1
+                            kk = os+vu(ib, nb)
+                            t1 = vffp(sa, kpg)*dffd(nb, lij(ib, ib))
+                            matr(kk) = matr(kk)+w*t1
                         end do
                     end do
 !
 ! - TERME K:PP      KPP(nnop,nnop)
                     do rb = 1, nnop
-                        kk = os + vp(rb)
-                        t1 = - vffp(sa,kpg)*vffp(rb,kpg)*alpha
-                        matr(kk) = matr(kk) + w*t1
+                        kk = os+vp(rb)
+                        t1 = -vffp(sa, kpg)*vffp(rb, kpg)*alpha
+                        matr(kk) = matr(kk)+w*t1
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
 999 continue

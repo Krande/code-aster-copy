@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,8 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
     call dismoi('NUM_GD_SI', numeddl, 'NUME_DDL', repi=gd)
 !
     call jeveuo('&CATA.GD.DESCRIGD', 'L', idescr)
-    nec = nbec( gd)
-    ASSERT(nec.le.10)
+    nec = nbec(gd)
+    ASSERT(nec .le. 10)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     AS_ALLOCATE(vi=vicmp, size=ncmpmx)
@@ -73,56 +73,56 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
     call dismoi('PROF_CHNO', numeddl, 'NUME_DDL', repk=prno)
     ASSERT(prno .ne. ' ')
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-    if (allorone(1:3).eq."ALL") then
+    if (allorone(1:3) .eq. "ALL") then
         do ino = 1, nnoe
             do iec = 1, nec
-                tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
+                tabec(iec) = zi(jprno-1+(ino-1)*(nec+2)+2+iec)
             end do
             do icmp = 1, ncmpmx
-                if (exisdg(tabec,icmp)) then
+                if (exisdg(tabec, icmp)) then
                     do j = 1, ncmp
                         if (vicmp(j) .eq. icmp) goto 10
                     end do
-                    ncmp = ncmp + 1
+                    ncmp = ncmp+1
                     vicmp(ncmp) = icmp
-                endif
- 10         continue
+                end if
+10              continue
             end do
         end do
-    else if(allorone(1:3).eq."ONE") then
+    else if (allorone(1:3) .eq. "ONE") then
         do iec = 1, nec
-            tabec(iec)= zi(jprno-1+(nodeid-1)*(nec+2)+2+iec )
+            tabec(iec) = zi(jprno-1+(nodeid-1)*(nec+2)+2+iec)
         end do
         do icmp = 1, ncmpmx
-            if (exisdg(tabec,icmp)) then
+            if (exisdg(tabec, icmp)) then
                 do j = 1, ncmp
                     if (vicmp(j) .eq. icmp) goto 20
                 end do
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vicmp(ncmp) = icmp
-            endif
- 20         continue
+            end if
+20          continue
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 
     if (ncmp .eq. 0) then
         call utmess('F', 'UTILITAI5_53')
-    endif
-    ASSERT(ncmp.le.maxcmp)
+    end if
+    ASSERT(ncmp .le. maxcmp)
 !
     do icmp = 1, ncmp
         stringarray(icmp) = zk8(iad-1+vicmp(icmp))
     end do
 !   handle the case of Lagrange multipliers
-    if (allorone(1:3).eq."ALL") then
+    if (allorone(1:3) .eq. "ALL") then
         call dismoi('EXIS_LAGR', numeddl, 'NUME_DDL', repk=exilag)
-        if (exilag.eq.'OUI') then
-            ncmp = ncmp + 1
+        if (exilag .eq. 'OUI') then
+            ncmp = ncmp+1
             stringarray(ncmp) = 'LAGR'
-        endif
-    endif
+        end if
+    end if
 !
     AS_DEALLOCATE(vi=vicmp)
 !

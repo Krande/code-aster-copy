@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine ib1mai()
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 !
-    use parameters_module, only : ST_OK
+    use parameters_module, only: ST_OK
     implicit none
 #include "asterfort/ststat.h"
 !     INITIALISATION, COMME IB0MAI, POUR LA PARTIE FORTRAN 90

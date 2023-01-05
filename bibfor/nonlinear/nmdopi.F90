@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmdopi(modelz, numedd, ds_algopara, sdpilo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -52,10 +52,10 @@ implicit none
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: modelz
-character(len=24), intent(in) :: numedd
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=19), intent(in) :: sdpilo
+    character(len=*), intent(in) :: modelz
+    character(len=24), intent(in) :: numedd
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=19), intent(in) :: sdpilo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,14 +125,14 @@ character(len=19), intent(in) :: sdpilo
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','MECANONLINE13_17')
-    endif
+        call utmess('I', 'MECANONLINE13_17')
+    end if
 !
 ! --- INITIALISATIONS
 !
     modele = modelz
     call exixfe(modele, ierm)
-    isxfe=(ierm.eq.1)
+    isxfe = (ierm .eq. 1)
     call dismoi('NOM_MAILLA', numedd, 'NUME_DDL', repk=mesh)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
     call dismoi('DIM_GEOM', mesh, 'MAILLAGE', repi=ndim)
@@ -146,7 +146,7 @@ character(len=19), intent(in) :: sdpilo
 !
 ! --- LECTURE DU TYPE ET DE LA ZONE
 !
-    call wkvect(sdpilo(1:19)// '.PLTK', 'V V K24', 7, jpltk)
+    call wkvect(sdpilo(1:19)//'.PLTK', 'V V K24', 7, jpltk)
     call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=typpil, nbret=n1)
     zk24(jpltk) = typpil
     call getvtx('PILOTAGE', 'PROJ_BORNES', iocc=1, scal=projbo, nbret=n1)
@@ -158,13 +158,13 @@ character(len=19), intent(in) :: sdpilo
 !
 ! --- PARAMETRES COEF_MULT ET ETA_PILO_MAX
 !
-    call wkvect(sdpilo(1:19)// '.PLIR', 'V V R8', 6, jplir)
+    call wkvect(sdpilo(1:19)//'.PLIR', 'V V R8', 6, jplir)
     call getvr8('PILOTAGE', 'COEF_MULT', iocc=1, scal=coef, nbret=n1)
     zr(jplir) = coef
     zr(jplir+5) = coef
     if (abs(coef) .le. r8prem()) then
         call utmess('F', 'PILOTAGE_3')
-    endif
+    end if
 !
     call getvr8('PILOTAGE', 'ETA_PILO_R_MAX', iocc=1, scal=etrmax, nbret=n1)
     if (n1 .ne. 1) etrmax = r8gaem()
@@ -180,8 +180,8 @@ character(len=19), intent(in) :: sdpilo
     else
         if (etamax .gt. zr(jplir+3)) then
             call utmess('F', 'PILOTAGE_48')
-        endif
-    endif
+        end if
+    end if
     zr(jplir+1) = etamax
 !
     call getvr8('PILOTAGE', 'ETA_PILO_MIN', iocc=1, scal=etamin, nbret=n2)
@@ -190,30 +190,30 @@ character(len=19), intent(in) :: sdpilo
     else
         if (etamin .lt. zr(jplir+4)) then
             call utmess('F', 'PILOTAGE_49')
-        endif
-    endif
+        end if
+    end if
     zr(jplir+2) = etamin
 !
     if (typpil .eq. 'SAUT_IMPO' .or. typpil .eq. 'SAUT_LONG_ARC') then
-        if (.not.isxfe) then
+        if (.not. isxfe) then
             call utmess('F', 'PILOTAGE_60')
-        endif
+        end if
         call getvid('PILOTAGE', 'FISSURE', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call getvid('PILOTAGE', 'FISSURE', iocc=1, scal=fiss, nbret=n1)
         else
             call utmess('F', 'PILOTAGE_58')
-        endif
-    endif
+        end if
+    end if
 !
-    if (isxfe .and. (typsel.eq.'ANGL_INCR_DEPL' .or.typsel.eq.'NORM_INCR_DEPL')) then
+    if (isxfe .and. (typsel .eq. 'ANGL_INCR_DEPL' .or. typsel .eq. 'NORM_INCR_DEPL')) then
         call getvid('PILOTAGE', 'FISSURE', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call getvid('PILOTAGE', 'FISSURE', iocc=1, scal=fiss, nbret=n1)
         else
             call utmess('F', 'PILOTAGE_59')
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 !             PILOTAGE PAR PREDICTION ELASTIQUE : PRED_ELAS
 ! ======================================================================
@@ -225,8 +225,8 @@ character(len=19), intent(in) :: sdpilo
 !
 !
         cartyp = '&&NMDOPI.TYPEPILO'
-        ligrmo = modele // '.MODELE'
-        call mecact('V', cartyp, 'MODELE', ligrmo, 'PILO_K',&
+        ligrmo = modele//'.MODELE'
+        call mecact('V', cartyp, 'MODELE', ligrmo, 'PILO_K', &
                     ncmp=1, nomcmp='TYPE', sk=typpil)
         zk24(jpltk+2) = cartyp
 !
@@ -235,7 +235,7 @@ character(len=19), intent(in) :: sdpilo
         careta = '&&NMDOPI.BORNEPILO'
         lborn(1) = 'A0'
         lborn(2) = 'A1'
-        call mecact('V', careta, 'MODELE', ligrmo, 'PILO_R',&
+        call mecact('V', careta, 'MODELE', ligrmo, 'PILO_R', &
                     ncmp=2, lnomcmp=lborn, vr=lm)
         zk24(jpltk+3) = careta
 !
@@ -245,64 +245,64 @@ character(len=19), intent(in) :: sdpilo
 !              PILOTAGE PAR UN DEGRE DE LIBERTE : DDL_IMPO
 ! ======================================================================
 !
-    else if (typpil .eq. 'DDL_IMPO'.or.typpil .eq. 'SAUT_IMPO') then
+    else if (typpil .eq. 'DDL_IMPO' .or. typpil .eq. 'SAUT_IMPO') then
 !
-        call reliem(modele, mesh, 'NU_NOEUD', 'PILOTAGE', 1,&
+        call reliem(modele, mesh, 'NU_NOEUD', 'PILOTAGE', 1, &
                     nbmocl, limocl, tymocl, lisnoe, nbno)
         if (typpil .eq. 'DDL_IMPO') then
             if (nbno .ne. 1) then
                 call utmess('F', 'PILOTAGE_50')
-            endif
+            end if
             coef = 1.d0
-        endif
+        end if
 !
 !
 ! ======================================================================
 !      PILOTAGE PAR UNE METHODE DE TYPE LONGUEUR D'ARC : LONG_ARC
 ! ======================================================================
 !
-    else if (typpil.eq.'LONG_ARC'.or.typpil.eq.'SAUT_LONG_ARC') then
+    else if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
 !
-        call reliem(modele, mesh, 'NU_NOEUD', 'PILOTAGE', 1,&
+        call reliem(modele, mesh, 'NU_NOEUD', 'PILOTAGE', 1, &
                     nbmocl, limocl, tymocl, lisnoe, nbno)
         if (typpil .eq. 'LONG_ARC') then
             if (nbno .eq. 0) then
                 call utmess('F', 'PILOTAGE_57')
-            endif
-            coef = 1.d0 / nbno
-        endif
-    endif
+            end if
+            coef = 1.d0/nbno
+        end if
+    end if
 !
 ! --- CREATION SD SELECTION DES DDLS EN FEM ?
 !
-    selfem = ((typpil .eq. 'LONG_ARC' ).or.(typpil .eq. 'DDL_IMPO' ))
+    selfem = ((typpil .eq. 'LONG_ARC') .or. (typpil .eq. 'DDL_IMPO'))
 !
 ! --- CREATION SD SELECTION DES DDLS EN X-FEM ?
 !
-    selxfe = (&
-             (typpil.eq.'SAUT_LONG_ARC') .or. (typpil .eq. 'SAUT_IMPO') .or.&
-             (isxfe.and.typsel.ne.'RESIDU')&
+    selxfe = ( &
+             (typpil .eq. 'SAUT_LONG_ARC') .or. (typpil .eq. 'SAUT_IMPO') .or. &
+             (isxfe .and. typsel .ne. 'RESIDU') &
              )
 !
     if (selfem) then
         call getvtx('PILOTAGE', 'NOM_CMP', iocc=1, nbval=0, nbret=nddl)
         nddl = -nddl
         if (nddl .ne. 1 .and. typpil .eq. 'DDL_IMPO') then
-            txt(1)='NOM_CMP'
-            txt(2)=typpil
+            txt(1) = 'NOM_CMP'
+            txt(2) = typpil
             call utmess('F', 'PILOTAGE_56', nk=2, valk=txt)
-        else if (nddl.eq.0.and.typpil.eq.'LONG_ARC') then
-            txt(1)='NOM_CMP'
-            txt(2)=typpil
+        else if (nddl .eq. 0 .and. typpil .eq. 'LONG_ARC') then
+            txt(1) = 'NOM_CMP'
+            txt(2) = typpil
             call utmess('F', 'PILOTAGE_55', nk=2, valk=txt)
-        endif
+        end if
         if (nddl .gt. 0) then
             call wkvect(liscmp, 'V V K8', nddl, jlicmp)
-            call getvtx('PILOTAGE', 'NOM_CMP', iocc=1, nbval=nddl, vect=zk8(jlicmp),&
+            call getvtx('PILOTAGE', 'NOM_CMP', iocc=1, nbval=nddl, vect=zk8(jlicmp), &
                         nbret=ibid)
-        endif
+        end if
         call jeveuo(lisnoe, 'L', jlinoe)
-    endif
+    end if
 !
 !
 !
@@ -310,50 +310,50 @@ character(len=19), intent(in) :: sdpilo
         call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=0, nbret=nddl)
         nddl = -nddl
         if (nddl .ne. 1 .and. typpil .eq. 'SAUT_IMPO') then
-            txt(1)='DIRE_PILO'
-            txt(2)=typpil
+            txt(1) = 'DIRE_PILO'
+            txt(2) = typpil
             call utmess('F', 'PILOTAGE_56', nk=2, valk=txt)
-        else if (nddl.eq.0.and.typpil.eq.'SAUT_LONG_ARC') then
-            txt(1)='DIRE_PILO'
-            txt(2)=typpil
+        else if (nddl .eq. 0 .and. typpil .eq. 'SAUT_LONG_ARC') then
+            txt(1) = 'DIRE_PILO'
+            txt(2) = typpil
             call utmess('F', 'PILOTAGE_55', nk=2, valk=txt)
-        else if (nddl.eq.0) then
+        else if (nddl .eq. 0) then
             call utmess('F', 'PILOTAGE_64', sk=typsel)
-        endif
+        end if
         if (nddl .gt. 0) then
             call wkvect(liscmp, 'V V K8', nddl, jlicmp)
-            call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=nddl, vect=zk8( jlicmp),&
+            call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=nddl, vect=zk8(jlicmp), &
                         nbret=ibid)
-        endif
+        end if
 !
-        lisno1 ='&&NMDOPI.LISNO1'
-        lisno2 ='&&NMDOPI.LISNO2'
-        cnsln ='&&NMDOPI.CNSLN'
-        grln ='&&NMDOPI.GRLN'
-        grlt ='&&NMDOPI.GRLT'
+        lisno1 = '&&NMDOPI.LISNO1'
+        lisno2 = '&&NMDOPI.LISNO2'
+        cnsln = '&&NMDOPI.CNSLN'
+        grln = '&&NMDOPI.GRLN'
+        grlt = '&&NMDOPI.GRLT'
         call cnocns(fiss//'.LNNO', 'V', cnsln)
         call cnocns(fiss//'.GRLNNO', 'V', grln)
         call cnocns(fiss//'.GRLTNO', 'V', grlt)
 !
 ! ----- Select edges and component for continuation method in XFEM
 !
-        call nmmein(mesh        , modele, fiss  , ndim  , lisnoe,&
-                    nbno        , liscmp, lisno1, lisno2, compo ,&
+        call nmmein(mesh, modele, fiss, ndim, lisnoe, &
+                    nbno, liscmp, lisno1, lisno2, compo, &
                     nb_node_sele)
 
         call jeveuo(lisno1, 'L', jlino1)
         call jeveuo(lisno2, 'L', jlino2)
         nbno = nb_node_sele
-        liseq2='&&NMDOPI.LISEQ2'
+        liseq2 = '&&NMDOPI.LISEQ2'
         call wkvect(liseq2, 'V V I', nbno, jeq2)
         chapic = sdpilo(1:14)//'.PLCI'
-        call vtcreb(chapic, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+        call vtcreb(chapic, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
         call jeveuo(chapic(1:19)//'.VALE', 'E', vr=vale)
-    endif
+    end if
 !
     if (selfem .or. selxfe) then
         chapil = sdpilo(1:14)//'.PLCR'
-        call vtcreb(chapil, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+        call vtcreb(chapil, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
         call jeveuo(chapil(1:19)//'.VALE', 'E', jvale)
         call jeveuo(liscmp, 'L', jlicmp)
         call jelira(liscmp, 'LONMAX', ival=nddl)
@@ -369,15 +369,15 @@ character(len=19), intent(in) :: sdpilo
                 else if (selfem) then
                     nume_node = zi(jlinoe-1+ino)
                     call nueqch('F', chapil, nume_node, nomcmp, numequ)
-                endif
+                end if
 
                 if (selxfe) then
                     if (compo(1:4) .eq. 'DTAN' .or. compo .eq. 'DNOR') then
-                        call nmdire(nume_node_1, nume_node_2, ndim, cnsln, grln,&
+                        call nmdire(nume_node_1, nume_node_2, ndim, cnsln, grln, &
                                     grlt, compo, vect)
-                    endif
-                    call nmcoef(nume_node_1, nume_node_2, typpil, nbno, cnsln,&
-                                compo, vect, iddl, ino, coef1,&
+                    end if
+                    call nmcoef(nume_node_1, nume_node_2, typpil, nbno, cnsln, &
+                                compo, vect, iddl, ino, coef1, &
                                 coef2, coefi)
                     zr(jvale-1+numequ_1) = coef1
                     vale(numequ_1) = coefi
@@ -385,10 +385,10 @@ character(len=19), intent(in) :: sdpilo
                     vale(numequ_2) = coefi
                 else if (selfem) then
                     zr(jvale-1+numequ) = coef
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
     call jedetr(lisnoe)
     call jedetr(liscmp)
@@ -397,14 +397,14 @@ character(len=19), intent(in) :: sdpilo
         call jedetr(lisno2)
         call jedetr(cnsln)
         call jedetr(grln)
-    endif
+    end if
 !
 ! --- CREATION SD REPERAGE DES DX/DY/DZ
 !
     if (typpil .eq. 'LONG_ARC') then
         nb_dof_acti = 0
         selpil = sdpilo(1:14)//'.PLSL'
-        call vtcreb(selpil, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+        call vtcreb(selpil, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
         call jeveuo(selpil(1:19)//'.VALE', 'E', vr=plsl)
         nddl = 3
         call wkvect(liscmp, 'V V K8', nddl, jlicmp)
@@ -418,14 +418,14 @@ character(len=19), intent(in) :: sdpilo
                 call nueqch(' ', selpil, nume_node, nomcmp, numequ)
                 if (numequ .ne. 0) then
                     plsl(numequ) = 1.d0
-                    nb_dof_acti = nb_dof_acti + 1
-                endif
+                    nb_dof_acti = nb_dof_acti+1
+                end if
             end do
         end do
         if (nb_dof_acti .eq. 0) then
             call utmess('F', 'MECANONLINE5_52')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- GESTION RECHERCHE LINEAIRE
 !
@@ -434,9 +434,9 @@ character(len=19), intent(in) :: sdpilo
         if (typpil .ne. 'DDL_IMPO') then
             if (relmet .ne. 'PILOTAGE') then
                 call utmess('F', 'PILOTAGE_4')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jedetr(lisnoe)
     call jedetr(liscmp)

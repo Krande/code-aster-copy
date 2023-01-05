@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine ccchel(option, modele, resuin, resuou, numord,&
-                  nordm1, mater , mateco, carael, typesd, ligrel,&
-                  l_poux, exitim, lischa, nbchre, ioccur,&
+subroutine ccchel(option, modele, resuin, resuou, numord, &
+                  nordm1, mater, mateco, carael, typesd, ligrel, &
+                  l_poux, exitim, lischa, nbchre, ioccur, &
                   suropt, basopt, resout)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,13 +37,13 @@ implicit none
 #include "asterfort/meceuc.h"
 #include "asterfort/utmess.h"
 !
-aster_logical, intent(in) :: l_poux, exitim
-integer :: nbchre, ioccur, numord, nordm1
-character(len=1) :: basopt
-character(len=8) :: modele, resuin, resuou, carael
-character(len=16) :: option, typesd
-character(len=19) :: lischa
-character(len=24) :: mater, ligrel, resout, suropt, mateco
+    aster_logical, intent(in) :: l_poux, exitim
+    integer :: nbchre, ioccur, numord, nordm1
+    character(len=1) :: basopt
+    character(len=8) :: modele, resuin, resuou, carael
+    character(len=16) :: option, typesd
+    character(len=19) :: lischa
+    character(len=24) :: mater, ligrel, resout, suropt, mateco
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,54 +88,54 @@ character(len=24) :: mater, ligrel, resout, suropt, mateco
 !
 ! - Create generic input fields
 !
-    call ccpara(option, modele, resuin, resuou, numord,&
+    call ccpara(option, modele, resuin, resuou, numord, &
                 nordm1, exitim, mater(1:8), carael)
 !
 ! - Construct list of input fields
 !
-    call cclpci(option, modele, resuin, resuou, mater(1:8), mateco(1:8),&
-                carael, ligrel, numord, nbpain, lipain,&
+    call cclpci(option, modele, resuin, resuou, mater(1:8), mateco(1:8), &
+                carael, ligrel, numord, nbpain, lipain, &
                 lichin, iret)
     if (iret .ne. 0) then
         goto 999
-    endif
+    end if
 !
 ! - Construct list of output fields
 !
-    call cclpco(option, resuou, numord, nbpaou, lipaou,&
+    call cclpco(option, resuou, numord, nbpaou, lipaou, &
                 lichou)
 !
 ! - Special for POUX beams
 !
     if (l_poux) then
-        call ccpoux(resuin, typesd, numord, nbchre, ioccur,&
-                    lischa, modele, nbpain, lipain, lichin,&
+        call ccpoux(resuin, typesd, numord, nbchre, ioccur, &
+                    lischa, modele, nbpain, lipain, lichin, &
                     suropt, iret)
         if (iret .ne. 0) then
             goto 999
-        endif
+        end if
     else
         if ((getexm('EXCIT', 'COEF_MULT') .eq. 1) .and. (ioccur .ne. 0)) then
-            call getvr8('EXCIT', 'COEF_MULT', iocc=ioccur, nbval = 0, nbret=nbRet)
+            call getvr8('EXCIT', 'COEF_MULT', iocc=ioccur, nbval=0, nbret=nbRet)
             if (nbRet .ne. 0) then
                 call utmess('F', 'CALCCHAMP_3')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Special
 !
-    call ccaccl(option, modele, mater(1:8), carael, ligrel,&
-                typesd, nbpain, lipain, lichin, lichou,&
+    call ccaccl(option, modele, mater(1:8), carael, ligrel, &
+                typesd, nbpain, lipain, lichin, lichou, &
                 iret)
     if (iret .ne. 0) then
         goto 999
-    endif
+    end if
 !
 ! - Compute option with complex case
 !
-    call meceuc('C', option, carael, ligrel,&
-                nbpain, lichin, lipain, nbpaou, lichou,&
+    call meceuc('C', option, carael, ligrel, &
+                nbpain, lichin, lipain, nbpaou, lichou, &
                 lipaou, basopt)
     resout = lichou(1)
 !

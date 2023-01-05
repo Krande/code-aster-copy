@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine vecgme(model    , cara_elem   , matez          , matecoz, lload_namez, lload_infoz,&
-                  inst_curr, disp_prevz  , disp_cumu_instz, vect_elemz , inst_prev  ,&
-                  compor   , ligrel_calcz, vite_currz     , acce_currz , strx_prevz)
+subroutine vecgme(model, cara_elem, matez, matecoz, lload_namez, lload_infoz, &
+                  inst_curr, disp_prevz, disp_cumu_instz, vect_elemz, inst_prev, &
+                  compor, ligrel_calcz, vite_currz, acce_currz, strx_prevz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/detrsd.h"
@@ -35,21 +35,21 @@ implicit none
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: cara_elem
-character(len=*), intent(in) :: matez, matecoz
-real(kind=8), intent(in) :: inst_curr
-character(len=*), intent(in) :: disp_prevz
-character(len=*), intent(in) :: disp_cumu_instz
-character(len=*), intent(in) :: lload_namez
-character(len=*), intent(in) :: lload_infoz
-character(len=*), intent(inout) :: vect_elemz
-real(kind=8), intent(in) :: inst_prev
-character(len=24), intent(in) :: compor
-character(len=*), intent(in) :: ligrel_calcz
-character(len=*), intent(in) :: vite_currz
-character(len=*), intent(in) :: acce_currz
-character(len=*), intent(in) :: strx_prevz
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: cara_elem
+    character(len=*), intent(in) :: matez, matecoz
+    real(kind=8), intent(in) :: inst_curr
+    character(len=*), intent(in) :: disp_prevz
+    character(len=*), intent(in) :: disp_cumu_instz
+    character(len=*), intent(in) :: lload_namez
+    character(len=*), intent(in) :: lload_infoz
+    character(len=*), intent(inout) :: vect_elemz
+    real(kind=8), intent(in) :: inst_prev
+    character(len=24), intent(in) :: compor
+    character(len=*), intent(in) :: ligrel_calcz
+    character(len=*), intent(in) :: vite_currz
+    character(len=*), intent(in) :: acce_currz
+    character(len=*), intent(in) :: strx_prevz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,7 +78,7 @@ character(len=*), intent(in) :: strx_prevz
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_in_maxi, nbout
-    parameter (nb_in_maxi = 42, nbout = 1)
+    parameter(nb_in_maxi=42, nbout=1)
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
@@ -104,28 +104,28 @@ character(len=*), intent(in) :: strx_prevz
 !
 ! - Initializations
 !
-    stop           = 'S'
-    newnom         = '.0000000'
-    resu_elem      = '&&VECGME.0000000'
-    mate           = matez
-    mateco         = matecoz
-    lload_name     = lload_namez
-    lload_info     = lload_infoz
-    disp_prev      = disp_prevz
-    strx_prev      = strx_prevz
+    stop = 'S'
+    newnom = '.0000000'
+    resu_elem = '&&VECGME.0000000'
+    mate = matez
+    mateco = matecoz
+    lload_name = lload_namez
+    lload_info = lload_infoz
+    disp_prev = disp_prevz
+    strx_prev = strx_prevz
     disp_cumu_inst = disp_cumu_instz
-    vite_curr      = vite_currz
-    acce_curr      = acce_currz
-    ligrel_calc    = ligrel_calcz
-    inst_theta     = 0.d0
+    vite_curr = vite_currz
+    acce_curr = acce_currz
+    ligrel_calc = ligrel_calcz
+    inst_theta = 0.d0
     if (ligrel_calc .eq. ' ') then
         ligrel_calc = model(1:8)//'.MODELE'
-    endif
-    base           = 'V'
+    end if
+    base = 'V'
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! - Result name for vect_elem
@@ -133,53 +133,53 @@ character(len=*), intent(in) :: strx_prevz
     vect_elem = vect_elemz
     if (vect_elem .eq. ' ') then
         vect_elem = '&&VECGME'
-    endif
+    end if
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
                         lload_name, lload_info)
 !
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, mate, cara_elem,&
+    call memare(base, vect_elem, model, mate, cara_elem, &
                 'CHAR_MECA')
     call reajre(vect_elem, ' ', base)
     if (load_empty) then
         goto 99
-    endif
+    end if
 !
 ! - Preparing input fields
 !
-    call load_neum_prep(model    , cara_elem , mate      , mateco, 'Suiv'      , inst_prev,&
-                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep  , lchin    ,&
-                        lpain    , disp_prev = disp_prev, disp_cumu_inst = disp_cumu_inst,&
-                        compor = compor, strx_prev_=strx_prev, vite_curr_=vite_curr, &
+    call load_neum_prep(model, cara_elem, mate, mateco, 'Suiv', inst_prev, &
+                        inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+                        lpain, disp_prev=disp_prev, disp_cumu_inst=disp_cumu_inst, &
+                        compor=compor, strx_prev_=strx_prev, vite_curr_=vite_curr, &
                         acce_curr_=acce_curr)
 !
 ! - Computation
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
+        load_name = v_load_name(i_load) (1:8)
         load_nume = v_load_info(nb_load+i_load+1)
 !
 ! ----- Standard undead Neumann loads
 !
         if (load_nume .eq. 4) then
-            call load_neum_comp(stop       , i_load    , load_name , load_nume, 'Suiv',&
-                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
-                                base       , resu_elem , vect_elem )
-        endif
+            call load_neum_comp(stop, i_load, load_name, load_nume, 'Suiv', &
+                                ligrel_calc, nb_in_maxi, nb_in_prep, lpain, lchin, &
+                                base, resu_elem, vect_elem)
+        end if
 !
 ! ----- Composite undead Neumann loads (EVOL_CHAR)
 !
-        call load_neum_evcu(model    , ligrel_calc, cara_elem, load_name     , i_load,&
-                            inst_curr, disp_prev  , strx_prev, disp_cumu_inst, vite_curr,&
-                            base     , resu_elem  , vect_elem)
+        call load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
+                            inst_curr, disp_prev, strx_prev, disp_cumu_inst, vite_curr, &
+                            base, resu_elem, vect_elem)
     end do
 !
- 99 continue
+99  continue
 !
     vect_elemz = vect_elem//'.RELR'
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
 !     ------------------------------------------------------------------
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer ::  iad, kcmp, igr, mode, nnoe,  nbgrel, nbel
-    integer :: jmod, imodel, ilong, idescr,  nb, jcmp
+    integer ::  iad, kcmp, igr, mode, nnoe, nbgrel, nbel
+    integer :: jmod, imodel, ilong, idescr, nb, jcmp
     character(len=4) :: tych
     character(len=24) :: valk(2)
     character(len=8) :: noma
@@ -63,8 +63,8 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
     call dismoi('NUM_GD', ch19, 'CHAMP', repi=gd)
 !
     call jeveuo('&CATA.GD.DESCRIGD', 'L', idescr)
-    nec = nbec( gd)
-    ASSERT(nec.le.10)
+    nec = nbec(gd)
+    ASSERT(nec .le. 10)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     AS_ALLOCATE(vi=vicmp, size=ncmpmx)
@@ -78,39 +78,39 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
         if (prno .eq. ' ') then
 !AS OU LE CHAMP EST A PROFIL CONSTANT (CHAMP DE GEOMETRIE)
             call jeveuo(ch19//'.DESC', 'L', vi=desc)
-            ncmp = - desc(2)
+            ncmp = -desc(2)
             do iec = 1, nec
-                tabec(iec)= desc(1+1+iec)
+                tabec(iec) = desc(1+1+iec)
             end do
             nb = 0
             do icmp = 1, ncmpmx
-                if (exisdg(tabec,icmp)) then
+                if (exisdg(tabec, icmp)) then
                     do j = 1, ncmp
                         if (vicmp(j) .eq. icmp) goto 34
                     end do
-                    nb = nb + 1
+                    nb = nb+1
                     vicmp(nb) = icmp
-                endif
- 34             continue
+                end if
+34              continue
             end do
         else
             call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
             do ino = 1, nnoe
                 do iec = 1, nec
-                    tabec(iec)= zi(jprno-1+(ino-1)*(nec+2)+2+iec )
+                    tabec(iec) = zi(jprno-1+(ino-1)*(nec+2)+2+iec)
                 end do
                 do icmp = 1, ncmpmx
-                    if (exisdg(tabec,icmp)) then
+                    if (exisdg(tabec, icmp)) then
                         do j = 1, ncmp
                             if (vicmp(j) .eq. icmp) goto 14
                         end do
-                        ncmp = ncmp + 1
+                        ncmp = ncmp+1
                         vicmp(ncmp) = icmp
-                    endif
- 14                 continue
+                    end if
+14                  continue
                 end do
             end do
-        endif
+        end if
 !
 !     ==================================================================
 !                             C H A M _ E L E M
@@ -123,33 +123,33 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
         call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
         call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
         do igr = 1, nbgrel
-            mode=celd(celd(4+igr) +2)
+            mode = celd(celd(4+igr)+2)
             if (mode .eq. 0) goto 20
             jmod = imodel+zi(ilong-1+mode)-1
-            nec = nbec( zi(jmod-1+2))
+            nec = nbec(zi(jmod-1+2))
             call dgmode(mode, imodel, ilong, nec, tabec)
             do icmp = 1, ncmpmx
-                if (exisdg( tabec , icmp )) then
+                if (exisdg(tabec, icmp)) then
                     do j = 1, ncmp
                         if (vicmp(j) .eq. icmp) goto 22
                     end do
-                    ncmp = ncmp + 1
+                    ncmp = ncmp+1
                     vicmp(ncmp) = icmp
-                endif
- 22             continue
+                end if
+22              continue
             end do
- 20         continue
+20          continue
         end do
 !
     else
         valk(1) = tych
         valk(2) = ch19
         call utmess('F', 'ALGORITH9_69', nk=2, valk=valk)
-    endif
+    end if
 !
     if (ncmp .eq. 0) then
         call utmess('F', 'UTILITAI5_53')
-    endif
+    end if
 !
     call wkvect(list_name, 'V V K8', ncmp, kcmp)
     call wkvect(list_cmp, 'V V I', ncmp, jcmp)

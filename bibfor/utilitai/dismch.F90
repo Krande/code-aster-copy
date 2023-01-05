@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,80 +69,80 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
     call jeexin(nomob//'.TYPE', ier1)
     call jeexin(nom19//'.AFCK', ier2)
     if (ier1 .eq. 0 .and. ier2 .eq. 0 .or. ier1 .ne. 0 .and. ier2 .ne. 0) then
-        ierd=1
+        ierd = 1
         goto 9999
-    endif
+    end if
 !
     if (ier1 .gt. 0) then
         call jeveuo(nomob//'.TYPE', 'L', vk8=type)
-        ktyp=type(1)
-    else if (ier2.gt.0) then
+        ktyp = type(1)
+    else if (ier2 .gt. 0) then
         call jeveuo(nom19//'.AFCK', 'L', vk8=afck)
-        ktyp=afck(1)
-        modele=afck(2)
-    endif
+        ktyp = afck(1)
+        modele = afck(2)
+    end if
 !
     if (ktyp(1:5) .eq. 'MECA_') then
         iphen = 1
         suf = 'CHME'
-    else if (ktyp(1:5).eq.'THER_') then
+    else if (ktyp(1:5) .eq. 'THER_') then
         iphen = 2
         suf = 'CHTH'
-    else if (ktyp(1:5).eq.'ACOU_') then
+    else if (ktyp(1:5) .eq. 'ACOU_') then
         iphen = 3
         suf = 'CHAC'
-    else if (ktyp(1:5).eq.'CIME_') then
+    else if (ktyp(1:5) .eq. 'CIME_') then
         iphen = 1
         suf = 'CIME'
-    else if (ktyp(1:5).eq.'CITH_') then
+    else if (ktyp(1:5) .eq. 'CITH_') then
         iphen = 2
         suf = 'CITH'
-    else if (ktyp(1:5).eq.'CIAC_') then
+    else if (ktyp(1:5) .eq. 'CIAC_') then
         iphen = 3
         suf = 'CIAC'
 ! --- LIGREL ELEMENTS DE CONTACT
-    else if (ktyp(1:3).eq.'ME ') then
+    else if (ktyp(1:3) .eq. 'ME ') then
         iphen = 1
         suf = 'CHME'
     else
         call utmess('F', 'UTILITAI_52')
-    endif
+    end if
 !
-    if ((suf(1:2).eq.'CH') .and. (ktyp(1:3).ne.'ME ')) then
+    if ((suf(1:2) .eq. 'CH') .and. (ktyp(1:3) .ne. 'ME ')) then
         call jeveuo(nomob//'.'//suf//'.MODEL.NOMO', 'L', vk8=nomo)
         modele = nomo(1)
-    endif
+    end if
 !
 !
     if (questi .eq. 'PHENOMENE') then
         if (iphen .eq. 1) then
             repk = 'MECANIQUE'
-        else if (iphen.eq.2) then
+        else if (iphen .eq. 2) then
             repk = 'THERMIQUE'
-        else if (iphen.eq.3) then
+        else if (iphen .eq. 3) then
             repk = 'ACOUSTIQUE'
         else
             repk = ' '
-        endif
+        end if
 !
 !
-    else if (questi.eq.'NOM_MODELE') then
+    else if (questi .eq. 'NOM_MODELE') then
         repk = modele
 !
-    else if (questi.eq.'TYPE_CHARGE') then
+    else if (questi .eq. 'TYPE_CHARGE') then
         repk = ktyp
 !
-    else if (questi.eq.'NOM_MAILLA') then
+    else if (questi .eq. 'NOM_MAILLA') then
         call dismmo(questi, modele, repi, repk, ierd)
 !
-    else if (questi.eq.'NOM_LIGREL') then
+    else if (questi .eq. 'NOM_LIGREL') then
         repk = nomob//'.'//suf//'.LIGRE'
 !
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
-9999  continue
+9999 continue
     repkz = repk
     call jedema()
 end subroutine

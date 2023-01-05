@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lgldcm(nbmat, mater, sig, vin)
 !
-    implicit    none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/gdev.h"
@@ -53,15 +53,15 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter  ( mun    = -1.0d0  )
-    parameter  ( zero   =  0.0d0  )
-    parameter  ( un     =  1.0d0  )
-    parameter  ( deux   =  2.0d0  )
-    parameter  ( trois  =  3.0d0  )
-    parameter  ( quatre =  4.0d0  )
-    parameter  ( lgleps =  1.0d-8 )
+    parameter(mun=-1.0d0)
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(quatre=4.0d0)
+    parameter(lgleps=1.0d-8)
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =================================================================
     call jemarq()
 ! =================================================================
@@ -71,11 +71,11 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 ! =================================================================
     gamp = vin(1)
     posdom = 3
-    gamult = mater( 1,2)
-    gammae = mater( 2,2)
-    sigc = mater( 9,2)
-    gamcjs = mater(12,2)
-    pref = mater(15,2)
+    gamult = mater(1, 2)
+    gammae = mater(2, 2)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
+    pref = mater(15, 2)
     parecr = '&&LGLDCM.PARECR'
     call wkvect(parecr, 'V V R', 5, jpara)
 ! =================================================================
@@ -90,14 +90,14 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
         call lcdevi(sig, dev)
-        invar1 = trace (ndi, sig)
+        invar1 = trace(ndi, sig)
 ! =================================================================
 ! --- CALCUL DE G(S) ----------------------------------------------
 ! =================================================================
         sii = norm2(dev(1:ndt))
-        rcos3t = cos3t (dev, pref, lgleps)
-        rhlode = hlode (gamcjs, rcos3t)
-        rgdev = gdev (sii , rhlode)
+        rcos3t = cos3t(dev, pref, lgleps)
+        rhlode = hlode(gamcjs, rcos3t)
+        rgdev = gdev(sii, rhlode)
 ! =================================================================
 ! --- CALCUL DE U(SIG, GAMP) --------------------------------------
 ! =================================================================
@@ -112,14 +112,14 @@ subroutine lgldcm(nbmat, mater, sig, vin)
             vin(posdom) = zero
         else
             vin(posdom) = un
-        endif
-    else if (gamp.lt.gammae) then
+        end if
+    else if (gamp .lt. gammae) then
         vin(posdom) = deux
-    else if (gamp.lt.gamult) then
+    else if (gamp .lt. gamult) then
         vin(posdom) = trois
     else
         vin(posdom) = quatre
-    endif
+    end if
 ! =================================================================
 ! --- DESTRUCTION DES VECTEURS INUTILES ---------------------------
 ! =================================================================

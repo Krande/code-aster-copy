@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arlmod(nomo,mailar,modarl,tabcor)
-
+subroutine arlmod(nomo, mailar, modarl, tabcor)
 
     implicit none
 
@@ -31,7 +30,7 @@ subroutine arlmod(nomo,mailar,modarl,tabcor)
 
 !     ARGUMENTS:
 !     ----------
-    character(len=8) :: mailar,modarl,nomo
+    character(len=8) :: mailar, modarl, nomo
     character(len=24) :: tabcor
     integer :: iret
 
@@ -42,7 +41,6 @@ subroutine arlmod(nomo,mailar,modarl,tabcor)
 ! CREATION DU PSEUDO-MODELE
 
 ! ----------------------------------------------------------------------
-
 
 ! IN  MAIL   : NOM DU MAILLAGE
 ! IN  NOMO   : NOM DU MODELE
@@ -64,16 +62,16 @@ subroutine arlmod(nomo,mailar,modarl,tabcor)
 
     call exisd('MODELE', modarl, iret)
     if (iret .ne. 0) then
-       call detrsd('MODELE',modarl)
-    endif
+        call detrsd('MODELE', modarl)
+    end if
 
 ! --- CREATION DU LIGREL DU PSEUDO-MODELE
 
-    call arlmol(nomo,mailar,modarl,tabcor)
+    call arlmol(nomo, mailar, modarl, tabcor)
 
 ! --- CREATION DU PSEUDO-MODELE
 
-    call arlmom(mailar,modarl)
+    call arlmom(mailar, modarl)
 
     call jedema()
 

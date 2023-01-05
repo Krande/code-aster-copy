@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmsolu(sddyna, solalg)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,8 +34,8 @@ implicit none
 #include "asterfort/nmincr.h"
 #include "asterfort/utmess.h"
 !
-character(len=19) :: sddyna
-character(len=19) :: solalg(*)
+    character(len=19) :: sddyna
+    character(len=19) :: solalg(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,12 +66,12 @@ character(len=19) :: solalg(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_45')
-    endif
+    end if
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lstat = ndynlo(sddyna,'STATIQUE')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    lstat = ndynlo(sddyna, 'STATIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
 ! --- COEFFICIENTS POUR CHANGER INCREMENT
 !
@@ -80,12 +80,12 @@ character(len=19) :: solalg(*)
         coevit = 0.d0
         coeacc = 0.d0
     else if (ldyna) then
-        coedep = ndynre(sddyna,'COEF_DEPL')
-        coevit = ndynre(sddyna,'COEF_VITE')
-        coeacc = ndynre(sddyna,'COEF_ACCE')
+        coedep = ndynre(sddyna, 'COEF_DEPL')
+        coevit = ndynre(sddyna, 'COEF_VITE')
+        coeacc = ndynre(sddyna, 'COEF_ACCE')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- NOM DES INCREMENTS SOLUTIONS
 !
@@ -100,9 +100,9 @@ character(len=19) :: solalg(*)
 !
 ! --- CONVERSION DES INCREMENTS
 !
-    call nmincr(sddyna, depso1, coedep, coevit, coeacc,&
+    call nmincr(sddyna, depso1, coedep, coevit, coeacc, &
                 deppr1, vitpr1, accpr1)
-    call nmincr(sddyna, depso2, coedep, coevit, coeacc,&
+    call nmincr(sddyna, depso2, coedep, coevit, coeacc, &
                 deppr2, vitpr2, accpr2)
 !
 ! --- AFFICHAGE
@@ -118,8 +118,8 @@ character(len=19) :: solalg(*)
             call utmess('I', 'MECANONLINE13_48')
             call nmdebg('VECT', accpr1, ifm)
             call nmdebg('VECT', accpr2, ifm)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

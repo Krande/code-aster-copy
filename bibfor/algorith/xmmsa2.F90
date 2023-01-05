@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
-                  tau1, tau2, cohes, job, rela,&
-                  alpha, dsidep, sigma, pp, dnor,&
+subroutine xmmsa2(ndim, ipgf, imate, saut, nd, &
+                  tau1, tau2, cohes, job, rela, &
+                  alpha, dsidep, sigma, pp, dnor, &
                   dtang, p, am)
     implicit none
 #include "jeveux.h"
@@ -75,10 +75,10 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
     am(:) = 0.d0
     dam(:) = 0.d0
-    pp(:,:) = 0.d0
-    p(:,:) = 0.d0
-    dsidep(:,:) = 0.d0
-    dsid2d(:,:) = 0.d0
+    pp(:, :) = 0.d0
+    p(:, :) = 0.d0
+    dsidep(:, :) = 0.d0
+    dsid2d(:, :) = 0.d0
     sigma(:) = 0.d0
     vim(:) = 0.d0
     vip(:) = 0.d0
@@ -93,87 +93,87 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
         dtang(i) = 0.d0
         dnor(i) = 0.d0
         do k = 1, ndim
-            pp(i,k)=nd(i)*nd(k)
-            dtang(i)=dtang(i)+p(i,k)*saut(k)
-            dnor(i) = dnor(i) +pp(i,k)*saut(k)
+            pp(i, k) = nd(i)*nd(k)
+            dtang(i) = dtang(i)+p(i, k)*saut(k)
+            dnor(i) = dnor(i)+pp(i, k)*saut(k)
         end do
 !
 ! --- L'INTERPENETRATION CORRESPOND A SAUT<0 DANS LCEJEX
 !
-        am(1) = am(1) - dnor(i)*nd(i)
-        am(2) = am(2) - dtang(i)*tau1(i)
-        am(3) = am(3) - dtang(i)*tau2(i)
+        am(1) = am(1)-dnor(i)*nd(i)
+        am(2) = am(2)-dtang(i)*tau1(i)
+        am(3) = am(3)-dtang(i)*tau2(i)
     end do
 !
 ! --- CALCUL VECTEUR ET MATRICE TANGENTE EN BASE LOCALE
 !
     if (job .ne. 'SAUT_LOC') then
-        vim(1)=cohes(1)
+        vim(1) = cohes(1)
         if (cohes(2) .le. 0.d0) then
-            vim(2)=0.d0
+            vim(2) = 0.d0
         else
-            vim(2)=1.d0
-        endif
-        vim(3) = abs(cohes(2)) - 1.d0
+            vim(2) = 1.d0
+        end if
+        vim(3) = abs(cohes(2))-1.d0
 !
 ! PREDICTION: COHES(3)=1 ; CORRECTION: COHES(3)=2
 !
         if (cohes(3) .eq. 1.d0) then
-            option='RIGI_MECA_TANG'
+            option = 'RIGI_MECA_TANG'
         else if (cohes(3) .eq. 2.d0) then
-            option='FULL_MECA'
+            option = 'FULL_MECA'
         else
-            option='FULL_MECA'
-        endif
+            option = 'FULL_MECA'
+        end if
 !
 ! VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
 !.............VIM(1): SEUIL, PLUS GRANDE NORME DU SAUT
 !
         if (ndim .eq. 2) then
-            am2d(1)=am(1)
-            am2d(2)=am(2)
-            dam2d(1)=dam(1)
-            dam2d(2)=dam(2)
+            am2d(1) = am(1)
+            am2d(2) = am(2)
+            dam2d(1) = dam(1)
+            dam2d(2) = dam(2)
             if (rela .eq. 1.d0) then
-                call lcejex('RIGI', ipgf, 1, 2, imate,&
-                            option, am2d, dam2d, sigma, dsid2d,&
+                call lcejex('RIGI', ipgf, 1, 2, imate, &
+                            option, am2d, dam2d, sigma, dsid2d, &
                             vim, vip)
-            else if (rela.eq.2.d0) then
-                call lcejli('RIGI', ipgf, 1, 2, imate,&
-                            option, am2d, dam2d, sigma, dsid2d,&
+            else if (rela .eq. 2.d0) then
+                call lcejli('RIGI', ipgf, 1, 2, imate, &
+                            option, am2d, dam2d, sigma, dsid2d, &
                             vim, vip)
-            endif
-            dsidep(1,1)=dsid2d(1,1)
-            dsidep(1,2)=dsid2d(1,2)
-            dsidep(2,1)=dsid2d(2,1)
-            dsidep(2,2)=dsid2d(2,2)
-        else if (ndim.eq.3) then
+            end if
+            dsidep(1, 1) = dsid2d(1, 1)
+            dsidep(1, 2) = dsid2d(1, 2)
+            dsidep(2, 1) = dsid2d(2, 1)
+            dsidep(2, 2) = dsid2d(2, 2)
+        else if (ndim .eq. 3) then
             if (rela .eq. 1.d0) then
-                call lcejex('RIGI', ipgf, 1, ndim, imate,&
-                            option, am, dam, sigma, dsidep,&
+                call lcejex('RIGI', ipgf, 1, ndim, imate, &
+                            option, am, dam, sigma, dsidep, &
                             vim, vip)
-            else if (rela.eq.2.d0) then
-                call lcejli('RIGI', ipgf, 1, ndim, imate,&
-                            option, am, dam, sigma, dsidep,&
+            else if (rela .eq. 2.d0) then
+                call lcejli('RIGI', ipgf, 1, ndim, imate, &
+                            option, am, dam, sigma, dsidep, &
                             vim, vip)
-            endif
-        endif
+            end if
+        end if
 !
         alpha(1) = vip(1)
         if (vip(2) .eq. 0.d0) then
             alpha(2) = -vip(3)-1.d0
-        else if (vip(2).eq.1.d0) then
-            alpha(2) = vip(3) + 1.d0
+        else if (vip(2) .eq. 1.d0) then
+            alpha(2) = vip(3)+1.d0
         else
             ASSERT(.false.)
-        endif
+        end if
 ! ici on a enleve la securite numerique
 !
         if (job .eq. 'ACTU_VI') then
             alpha(3) = 1.d0
-        else if (job.eq.'MATRICE') then
+        else if (job .eq. 'MATRICE') then
             alpha(3) = 2.d0
-        endif
+        end if
 !
-    endif
+    end if
 end subroutine

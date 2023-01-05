@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmpred(mesh           , modele  , numedd     , numfix    , ds_material, carele  ,&
-                  ds_constitutive, lischa  , ds_algopara, solveu    , ds_system  ,&
-                  fonact         , ds_print, ds_measure , ds_algorom, sddisc     ,&
-                  sdnume         , sderro  , numins     , valinc    , solalg     , hhoField,&
-                  matass         , maprec  , ds_contact , sddyna    ,&
-                  meelem         , measse  , veelem     , veasse    , lerrit)
+subroutine nmpred(mesh, modele, numedd, numfix, ds_material, carele, &
+                  ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
+                  fonact, ds_print, ds_measure, ds_algorom, sddisc, &
+                  sdnume, sderro, numins, valinc, solalg, hhoField, &
+                  matass, maprec, ds_contact, sddyna, &
+                  meelem, measse, veelem, veasse, lerrit)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -41,27 +41,27 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-integer :: fonact(*)
-integer :: numins
-character(len=8), intent(in) :: mesh
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=19) :: matass, maprec
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-type(NL_DS_Print), intent(inout) :: ds_print
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
-character(len=24) :: modele, carele
-character(len=24) :: numedd, numfix
-type(HHO_Field), intent(in) :: hhoField
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_System), intent(in) :: ds_system
-character(len=24) :: sderro
-character(len=19) :: meelem(*), veelem(*)
-character(len=19) :: measse(*), veasse(*)
-character(len=19) :: solalg(*), valinc(*)
-aster_logical :: lerrit
+    integer :: fonact(*)
+    integer :: numins
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=19) :: matass, maprec
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    type(NL_DS_Print), intent(inout) :: ds_print
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
+    character(len=24) :: modele, carele
+    character(len=24) :: numedd, numfix
+    type(HHO_Field), intent(in) :: hhoField
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=24) :: sderro
+    character(len=19) :: meelem(*), veelem(*)
+    character(len=19) :: measse(*), veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
+    aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,7 +114,7 @@ aster_logical :: lerrit
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
         call utmess('I', 'MECANONLINE13_33')
-    endif
+    end if
 !
 ! --- INITIALISATION CODES RETOURS
 !
@@ -124,30 +124,30 @@ aster_logical :: lerrit
 !
 ! --- PREDICTION PAR LINEARISATION DU SYSTEME
 !
-    if ((ds_algopara%matrix_pred .eq. 'ELASTIQUE').or.&
+    if ((ds_algopara%matrix_pred .eq. 'ELASTIQUE') .or. &
         (ds_algopara%matrix_pred .eq. 'TANGENTE')) then
-        call nmprta(mesh      , modele    , numedd         , numfix     , ds_material, carele,&
-                    ds_constitutive, lischa    , ds_algopara, solveu, ds_system,&
-                    fonact         , ds_print       , ds_measure , ds_algorom , sddisc,&
-                    numins    , valinc         , solalg     , hhoField, matass     , maprec,&
-                    ds_contact, sddyna         , meelem     , measse     , veelem,&
-                    veasse    , sdnume         , ldccvg     , faccvg,&
-                    rescvg    , condcvg)
+        call nmprta(mesh, modele, numedd, numfix, ds_material, carele, &
+                    ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
+                    fonact, ds_print, ds_measure, ds_algorom, sddisc, &
+                    numins, valinc, solalg, hhoField, matass, maprec, &
+                    ds_contact, sddyna, meelem, measse, veelem, &
+                    veasse, sdnume, ldccvg, faccvg, &
+                    rescvg, condcvg)
 !
 ! --- PREDICTION PAR EXTRAPOLATION DU PAS PRECEDENT OU PAR DEPLACEMENT
 ! --- CALCULE
 !
-    elseif ((ds_algopara%matrix_pred .eq. 'EXTRAPOLE').or.&
-            (ds_algopara%matrix_pred .eq.'DEPL_CALCULE')) then
-        call nmprde(mesh, modele, numedd         , numfix    , ds_material, carele    ,&
-                    ds_constitutive, lischa    , ds_algopara, solveu    , ds_system,&
-                    fonact, ds_print       , ds_measure, ds_algorom, sddisc     , numins    ,&
-                    valinc, solalg         , matass    , maprec     , ds_contact,&
-                    sddyna, meelem         , measse    , veelem     , veasse    ,&
-                    ldccvg, faccvg         , rescvg    , condcvg)
+    elseif ((ds_algopara%matrix_pred .eq. 'EXTRAPOLE') .or. &
+            (ds_algopara%matrix_pred .eq. 'DEPL_CALCULE')) then
+        call nmprde(mesh, modele, numedd, numfix, ds_material, carele, &
+                    ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
+                    fonact, ds_print, ds_measure, ds_algorom, sddisc, numins, &
+                    valinc, solalg, matass, maprec, ds_contact, &
+                    sddyna, meelem, measse, veelem, veasse, &
+                    ldccvg, faccvg, rescvg, condcvg)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS
 !

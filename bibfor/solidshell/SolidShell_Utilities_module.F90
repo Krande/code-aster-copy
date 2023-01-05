@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@
 !
 module SolidShell_Utilities_module
 ! ==================================================================================================
-implicit none
+    implicit none
 ! ==================================================================================================
-public  :: prodBTDB
+    public  :: prodBTDB
 ! ==================================================================================================
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 ! ==================================================================================================
@@ -41,39 +41,39 @@ contains
 ! Compute product tBDB
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine prodBTDB(matrD, nls, ncb, matrB, tBDB)
+    subroutine prodBTDB(matrD, nls, ncb, matrB, tBDB)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    integer, intent(in) :: nls, ncb
-    real(kind=8), intent(in) :: matrD(nls, nls), matrB(nls, ncb)
-    real(kind=8), intent(out) :: tBDB(ncb, ncb)
+        integer, intent(in) :: nls, ncb
+        real(kind=8), intent(in) :: matrD(nls, nls), matrB(nls, ncb)
+        real(kind=8), intent(out) :: tBDB(ncb, ncb)
 ! - Local
-    integer :: i, j, k
-    real(kind=8) :: aux, DB(nls, ncb)
+        integer :: i, j, k
+        real(kind=8) :: aux, DB(nls, ncb)
 !   ------------------------------------------------------------------------------------------------
 !
-    tBDB = 0.d0
-    do i = 1, nls
-        do j = 1, ncb
-            aux = 0.d0
-            do k = 1, nls
-                aux     = aux + matrD(i,k)*matrB(k,j)
-                DB(i,j) = aux
+        tBDB = 0.d0
+        do i = 1, nls
+            do j = 1, ncb
+                aux = 0.d0
+                do k = 1, nls
+                    aux = aux+matrD(i, k)*matrB(k, j)
+                    DB(i, j) = aux
+                end do
             end do
         end do
-    end do
 !
-    do i = 1, ncb
-        do j = 1, ncb
-            aux = 0.d0
-            do k = 1, nls
-                aux       = aux + matrB(k,i)*DB(k,j)
-                tBDB(i,j) = aux
+        do i = 1, ncb
+            do j = 1, ncb
+                aux = 0.d0
+                do k = 1, nls
+                    aux = aux+matrB(k, i)*DB(k, j)
+                    tBDB(i, j) = aux
+                end do
             end do
         end do
-    end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 !
 end module SolidShell_Utilities_module

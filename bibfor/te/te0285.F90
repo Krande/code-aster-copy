@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0285(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8depi.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/lteatt.h"
 #include "asterfort/getDensity.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,21 +53,21 @@ character(len=16) :: option, nomte
 !
     depi = r8depi()
 !
-    call elrefe_info(fami='MASS',nno=nno,&
-                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
+    call elrefe_info(fami='MASS', nno=nno, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
     if (option .eq. 'MASS_INER') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PMASSINE', 'E', lcastr)
         call getDensity(zi(imate), rho)
 
-    else if (option.eq.'CARA_GEOM') then
+    else if (option .eq. 'CARA_GEOM') then
         rho = 1.d0
         call jevech('PCARAGE', 'E', lcastr)
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jevech('PGEOMER', 'L', igeom)
     do i = 1, nno
@@ -85,17 +85,17 @@ character(len=16) :: option, nomte
 !     --- BOUCLE SUR LES POINTS DE GAUSS ---
     volume = 0.d0
     do kp = 1, npg
-        k = (kp-1) * nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom-2+2*i)*zr(ivf+k+i-1)
+                r = r+zr(igeom-2+2*i)*zr(ivf+k+i-1)
             end do
             poids = poids*r
-        endif
-        volume = volume + poids
+        end if
+        volume = volume+poids
         do i = 1, nno
 !           --- CDG ---
             zr(lcastr+1) = zr(lcastr+1)+poids*x(i)*zr(ivf+k+i-1)
@@ -105,44 +105,44 @@ character(len=16) :: option, nomte
             xyi = 0.d0
             yyi = 0.d0
             do j = 1, nno
-                xxi = xxi + x(i)*zr(ivf+k+i-1)*x(j)*zr(ivf+k+j-1)
-                xyi = xyi + x(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
-                yyi = yyi + y(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
+                xxi = xxi+x(i)*zr(ivf+k+i-1)*x(j)*zr(ivf+k+j-1)
+                xyi = xyi+x(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
+                yyi = yyi+y(i)*zr(ivf+k+i-1)*y(j)*zr(ivf+k+j-1)
             end do
-            matine(1) = matine(1) + poids*yyi
-            matine(2) = matine(2) + poids*xyi
-            matine(3) = matine(3) + poids*xxi
+            matine(1) = matine(1)+poids*yyi
+            matine(2) = matine(2)+poids*xyi
+            matine(3) = matine(3)+poids*xxi
         end do
     end do
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         xg = 0.d0
-        yg = zr(lcastr+2) / volume
-        zr(lcastr) = depi * volume * rho
+        yg = zr(lcastr+2)/volume
+        zr(lcastr) = depi*volume*rho
         zr(lcastr+3) = yg
         zr(lcastr+1) = 0.d0
         zr(lcastr+2) = 0.d0
 !
 !        --- ON DONNE LES INERTIES AU CDG ---
-        matine(6) = matine(3) * rho * depi
-        matine(1) = matine(1) * rho * depi + matine(6)/2.d0 - zr( lcastr)*yg*yg
+        matine(6) = matine(3)*rho*depi
+        matine(1) = matine(1)*rho*depi+matine(6)/2.d0-zr(lcastr)*yg*yg
         matine(2) = 0.d0
         matine(3) = matine(1)
 !
     else
-        zr(lcastr) = volume * rho
-        zr(lcastr+1) = zr(lcastr+1) / volume
-        zr(lcastr+2) = zr(lcastr+2) / volume
+        zr(lcastr) = volume*rho
+        zr(lcastr+1) = zr(lcastr+1)/volume
+        zr(lcastr+2) = zr(lcastr+2)/volume
         zr(lcastr+3) = 0.d0
 !
 !        --- ON DONNE LES INERTIES AU CDG ---
         xg = zr(lcastr+1)
         yg = zr(lcastr+2)
-        matine(1) = matine(1)*rho - zr(lcastr)*yg*yg
-        matine(2) = matine(2)*rho - zr(lcastr)*xg*yg
-        matine(3) = matine(3)*rho - zr(lcastr)*xg*xg
-        matine(6) = matine(1) + matine(3)
-    endif
+        matine(1) = matine(1)*rho-zr(lcastr)*yg*yg
+        matine(2) = matine(2)*rho-zr(lcastr)*xg*yg
+        matine(3) = matine(3)*rho-zr(lcastr)*xg*xg
+        matine(6) = matine(1)+matine(3)
+    end if
     zr(lcastr+4) = matine(1)
     zr(lcastr+5) = matine(3)
     zr(lcastr+6) = matine(6)
@@ -156,33 +156,33 @@ character(len=16) :: option, nomte
 ! --- CALCUL DE IYRP2 = SOMME((X*(X**2 + Y**2).DS) :
 !     --------------------------------------------
         do i = 1, nno
-            xp(i) = x(i) - xg
-            yp(i) = y(i) - yg
+            xp(i) = x(i)-xg
+            yp(i) = y(i)-yg
         end do
 !
         ixrp2 = 0.d0
         iyrp2 = 0.d0
 !
         do kp = 1, npg
-            k = (kp-1) * nno
-            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                         poids, dfdx, dfdy)
 !
             xpg = 0.d0
             ypg = 0.d0
             do i = 1, nno
-                xpg = xpg + xp(i)*zr(ivf+k+i-1)
-                ypg = ypg + yp(i)*zr(ivf+k+i-1)
+                xpg = xpg+xp(i)*zr(ivf+k+i-1)
+                ypg = ypg+yp(i)*zr(ivf+k+i-1)
             end do
 !
-            ixrp2 = ixrp2 + xpg*(xpg*xpg + ypg*ypg)*poids
-            iyrp2 = iyrp2 + ypg*(xpg*xpg + ypg*ypg)*poids
+            ixrp2 = ixrp2+xpg*(xpg*xpg+ypg*ypg)*poids
+            iyrp2 = iyrp2+ypg*(xpg*xpg+ypg*ypg)*poids
 !
         end do
 !
         zr(lcastr+10) = ixrp2
         zr(lcastr+11) = iyrp2
 !
-    endif
+    end if
 !
 end subroutine

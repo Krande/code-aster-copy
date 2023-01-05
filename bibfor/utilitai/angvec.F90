@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,14 +35,14 @@ subroutine angvec(v1, v2, angle)
     call normev(v2, nv2)
     cosphi = 0.d0
     do i = 1, 3
-        cosphi = cosphi + v1(i)*v2(i)
+        cosphi = cosphi+v1(i)*v2(i)
     end do
     call provec(v1, v2, norm)
     call normev(norm, nv3)
     call provec(v1, v2, v1v2)
     sinphi = 0.d0
     do i = 1, 3
-        sinphi = sinphi + norm(i)*v1v2(i)
+        sinphi = sinphi+norm(i)*v1v2(i)
     end do
-    angle= atan2(sinphi,cosphi)
+    angle = atan2(sinphi, cosphi)
 end subroutine

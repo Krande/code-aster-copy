@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine te0395(option, nomte)
 !      ------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- PARAMETRES EN ENTREE
@@ -68,24 +68,24 @@ subroutine te0395(option, nomte)
 !      --------------------
 !         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
         call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
-        if ((iretd.eq.0) .and. (iretc.eq.0)) then
+        if ((iretd .eq. 0) .and. (iretc .eq. 0)) then
             if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
                 do i = 1, ndim*nno
-                    geo(i) = geo(i) + zr(idepl-1+i)
+                    geo(i) = geo(i)+zr(idepl-1+i)
                 end do
-            endif
-        endif
+            end if
+        end if
 ! ----     CONTRAINTES AUX POINTS D'INTEGRATION
         call jevech('PCONTMR', 'L', icontm)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 !      --------------------------------------------------
-        call nmasf3(nno, npg1, ipoids, ivf, idfde,&
-                    zi(imate), geo, zr( idepl), zr(icontm), zr(ivectu),&
+        call nmasf3(nno, npg1, ipoids, ivf, idfde, &
+                    zi(imate), geo, zr(idepl), zr(icontm), zr(ivectu), &
                     zk16(icomp))
 !
 !
-    else if (option.eq.'REFE_FORC_NODA') then
+    else if (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_ISO', sigref)
 !
         call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
@@ -95,23 +95,23 @@ subroutine te0395(option, nomte)
         do i = 1, 6*npg1
 !
             sigtmp(i) = sigref
-            call nmasf3(nno, npg1, ipoids, ivf, idfde,&
-                        zi(imate), geo, zr(idepl), sigtmp, bsigm,&
+            call nmasf3(nno, npg1, ipoids, ivf, idfde, &
+                        zi(imate), geo, zr(idepl), sigtmp, bsigm, &
                         zk16(icomp))
 !
             do j = 1, nno
                 ii = 3*(j-1)
                 do k = 1, 3
-                    ftemp(ii+k) = ftemp(ii+k) + abs(bsigm(k,j))
+                    ftemp(ii+k) = ftemp(ii+k)+abs(bsigm(k, j))
                 end do
             end do
 !
         end do
 !
-        call daxpy(ndim*nno, 1.d0/npg1, ftemp, 1, zr(ivectu),&
+        call daxpy(ndim*nno, 1.d0/npg1, ftemp, 1, zr(ivectu), &
                    1)
 !
-    endif
+    end if
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSEnergyCreate(ds_energy)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/ismaem.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/nonlinDSColumnVoid.h"
 !
-type(NL_DS_Energy), intent(out) :: ds_energy
+    type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,15 +48,15 @@ type(NL_DS_Energy), intent(out) :: ds_energy
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
 !
-    character(len=16), parameter :: cols_name(nb_col_defi) = (/&
-                    'NUME_REUSE','INST      ','TRAV_EXT  ',&
-                    'ENER_CIN  ','ENER_TOT  ','TRAV_AMOR ',&
-                    'TRAV_LIAI ','DISS_SCH  '/)
+    character(len=16), parameter :: cols_name(nb_col_defi) = (/ &
+                                    'NUME_REUSE', 'INST      ', 'TRAV_EXT  ', &
+                                    'ENER_CIN  ', 'ENER_TOT  ', 'TRAV_AMOR ', &
+                                    'TRAV_LIAI ', 'DISS_SCH  '/)
 !
-    character(len=8), parameter :: cols_type(nb_col_defi) = (/&
-                    'I  ','R  ','R  ',&
-                    'R  ','R  ','R  ',&
-                    'R  ','R  '/)
+    character(len=8), parameter :: cols_type(nb_col_defi) = (/ &
+                                   'I  ', 'R  ', 'R  ', &
+                                   'R  ', 'R  ', 'R  ', &
+                                   'R  ', 'R  '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,33 +64,33 @@ type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! - Create table
 !
-    table%nb_cols               = nb_col_defi
+    table%nb_cols = nb_col_defi
     ASSERT(table%nb_cols .le. table%nb_cols_maxi)
     do i_col = 1, nb_col_defi
         call nonlinDSColumnVoid(column)
-        column%name        = cols_name(i_col)
+        column%name = cols_name(i_col)
         column%l_vale_inte = ASTER_FALSE
         column%l_vale_real = ASTER_FALSE
-        column%vale_inte   = ismaem()
-        column%vale_real   = r8vide()
+        column%vale_inte = ismaem()
+        column%vale_real = r8vide()
         if (cols_type(i_col) .eq. 'I') then
             column%l_vale_inte = ASTER_TRUE
-            column%vale_inte   = 0
+            column%vale_inte = 0
         elseif (cols_type(i_col) .eq. 'R') then
             column%l_vale_real = ASTER_TRUE
-            column%vale_real   = 0.d0
+            column%vale_real = 0.d0
         else
             ASSERT(.false.)
-        endif
-        table%cols(i_col)        = column
+        end if
+        table%cols(i_col) = column
         table%l_cols_acti(i_col) = ASTER_FALSE
-        table%indx_vale(i_col)   = i_col
+        table%indx_vale(i_col) = i_col
     end do
 !
 ! - Set main parameters
 !
-    ds_energy%l_comp   = ASTER_FALSE
-    ds_energy%command  = ' '
-    ds_energy%table    = table
+    ds_energy%l_comp = ASTER_FALSE
+    ds_energy%command = ' '
+    ds_energy%table = table
 !
 end subroutine

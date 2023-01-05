@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 !
 subroutine nonlinDSVectCombAddHat(hval_veasse, vect_type, vect_coef, ds_vectcomb)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmchex.h"
 !
-character(len=19), intent(in) :: hval_veasse(*)
-character(len=6), intent(in) :: vect_type
-real(kind=8), intent(in) :: vect_coef
-type(NL_DS_VectComb), intent(inout) :: ds_vectcomb
+    character(len=19), intent(in) :: hval_veasse(*)
+    character(len=6), intent(in) :: vect_type
+    real(kind=8), intent(in) :: vect_coef
+    type(NL_DS_VectComb), intent(inout) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ type(NL_DS_VectComb), intent(inout) :: ds_vectcomb
 !
     ASSERT(ds_vectcomb%nb_vect .lt. 20)
     call nmchex(hval_veasse, 'VEASSE', vect_type, vect_name)
-    ds_vectcomb%nb_vect = ds_vectcomb%nb_vect + 1
+    ds_vectcomb%nb_vect = ds_vectcomb%nb_vect+1
     ds_vectcomb%vect_coef(ds_vectcomb%nb_vect) = vect_coef
     ds_vectcomb%vect_name(ds_vectcomb%nb_vect) = vect_name
 !

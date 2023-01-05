@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine te0102(option, nomte)
     integer :: nbv, nbvar, ndimax
     real(kind=8) :: rocp, un, undemi
 !-----------------------------------------------------------------------
-    parameter (ndimax=27)
-    parameter (nbres=6)
-    parameter (nbvar=2)
+    parameter(ndimax=27)
+    parameter(nbres=6)
+    parameter(nbvar=2)
     integer :: icodre(nbres)
     character(len=2) :: num
     character(len=8) :: nompar(nbvar), fami, poum
@@ -66,12 +66,12 @@ subroutine te0102(option, nomte)
 !
 !
     if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ') then
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     else
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    endif
+    end if
 !
 !
 ! --- INITIALISATIONS :
@@ -84,10 +84,10 @@ subroutine te0102(option, nomte)
     quatre = 4.0d0
     quinze = 15.0d0
     seize = 16.0d0
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
     tempe = zero
     instan = zero
@@ -98,13 +98,13 @@ subroutine te0102(option, nomte)
 !
     do i = 1, 3
         do j = 1, 3
-            m(i,j) = zero
+            m(i, j) = zero
         end do
     end do
 !
     do i = 1, ndimax
         do j = 1, ndimax
-            masse(i,j) = zero
+            masse(i, j) = zero
         end do
     end do
 !
@@ -150,22 +150,22 @@ subroutine te0102(option, nomte)
 ! ---   (L'INTERPOLATION EN FONCTION DE LA TEMPERATURE EST
 ! ---    INACTIVE POUR LE MOMENT) :
 !       -------------------------
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THER_COQMU', nbvar, nompar, valpar,&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THER_COQMU', nbvar, nompar, valpar, &
                     nbres, nomres, valres, icodre, 1)
 !
 ! ---   TENSEUR DE CAPACITE THERMIQUE :
 !       -----------------------------
-        m(1,1) = valres(1)
-        m(2,1) = valres(2)
-        m(3,1) = valres(3)
-        m(2,2) = valres(4)
-        m(3,2) = valres(5)
-        m(3,3) = valres(6)
+        m(1, 1) = valres(1)
+        m(2, 1) = valres(2)
+        m(3, 1) = valres(3)
+        m(2, 2) = valres(4)
+        m(3, 2) = valres(5)
+        m(3, 3) = valres(6)
 !
 ! --- CAS DES COQUES THERMIQUES ISOTROPES :
 !     ===================================
-    else if (phenom.eq.'THER') then
+    else if (phenom .eq. 'THER') then
 !
 ! ---   INTERPOLATION DE LA CAPACITE THERMIQUE EN FONCTION DU TEMPS
 ! ---   ET DE LA TEMPERATURE
@@ -174,8 +174,8 @@ subroutine te0102(option, nomte)
 !       -------------------------
         nbv = 1
         nomres(1) = 'RHO_CP'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THER', nbvar, nompar, valpar,&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', 'THER', nbvar, nompar, valpar, &
                     nbv, nomres, valres, icodre, 1)
 !
 ! ---   CAPACITE THERMIQUE :
@@ -188,16 +188,16 @@ subroutine te0102(option, nomte)
 !
 ! ---   TENSEUR DE CAPACITE THERMIQUE :
 !       -----------------------------
-        m(1,1) = seize*rocp*h/quinze
-        m(2,1) = deux*rocp*h/quinze
-        m(3,1) = deux*rocp*h/quinze
-        m(2,2) = quatre*rocp*h/quinze
-        m(3,2) = mun*rocp*h/quinze
-        m(3,3) = quatre*rocp*h/quinze
+        m(1, 1) = seize*rocp*h/quinze
+        m(2, 1) = deux*rocp*h/quinze
+        m(3, 1) = deux*rocp*h/quinze
+        m(2, 2) = quatre*rocp*h/quinze
+        m(3, 2) = mun*rocp*h/quinze
+        m(3, 3) = quatre*rocp*h/quinze
 !
 ! --- CAS DES COQUES THERMIQUES HETEROGENES :
 !     -------------------------------------
-    else if (phenom.eq.'THER_COQUE') then
+    else if (phenom .eq. 'THER_COQUE') then
 !
 ! ---   NOM DES COMPOSANTES DU TENSEUR DE CAPACITE
 ! ---   THERMIQUE HOMOGENEISE
@@ -229,23 +229,23 @@ subroutine te0102(option, nomte)
 ! ---    INACTIVE POUR LE MOMENT) :
 !       -------------------------
         nbv = 4
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, nbvar, nompar, valpar,&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, nbvar, nompar, valpar, &
                     nbv, nomres, valres, icodre, 1)
 !
-        m(1,1) = valres(1)
-        m(1,2) = valres(2)
-        m(1,3) = valres(2)
-        m(2,2) = valres(3)
-        m(2,3) = valres(4)
-        m(3,3) = valres(3)
-        m(2,1) = m(1,2)
-        m(3,1) = m(1,3)
-        m(3,2) = m(2,3)
+        m(1, 1) = valres(1)
+        m(1, 2) = valres(2)
+        m(1, 3) = valres(2)
+        m(2, 2) = valres(3)
+        m(2, 3) = valres(4)
+        m(3, 3) = valres(3)
+        m(2, 1) = m(1, 2)
+        m(3, 1) = m(1, 3)
+        m(3, 2) = m(2, 3)
 !
     else
         call utmess('F', 'ELEMENTS3_17', sk=phenom)
-    endif
+    end if
 !
 !
 !===================================
@@ -269,29 +269,29 @@ subroutine te0102(option, nomte)
 ! ---   DERIVEES DES FONCTIONS DE FORME ET PRODUIT JACOBIEN*POIDS
 ! ---   (DANS POIDS)  SUR L'ELEMENT :
 !       ---------------------------
-            call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+            call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                         poids, dfdx, dfdy)
             do gi = 1, nno
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                            pm = m(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids
+                            pm = m(pi, pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj-1)*poids
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
 !         -----------------------------
-                            if ((pi.ne.pj) .and. (gi.ne.gj)) then
-                                i = 3* (gi-1) + pj
-                                j = 3* (gj-1) + pi
-                                masse(i,j) = masse(i,j) + pm
-                            endif
+                            if ((pi .ne. pj) .and. (gi .ne. gj)) then
+                                i = 3*(gi-1)+pj
+                                j = 3*(gj-1)+pi
+                                masse(i, j) = masse(i, j)+pm
+                            end if
 !
 ! ---     AFFECTATION DES TERMES DE LA TRIANGULAIRE SUPERIEURE
 ! ---     DE LA SOUS-MATRICE :
 !         ------------------
-                            i = 3* (gi-1) + pi
-                            j = 3* (gj-1) + pj
-                            masse(i,j) = masse(i,j) + pm
+                            i = 3*(gi-1)+pi
+                            j = 3*(gj-1)+pj
+                            masse(i, j) = masse(i, j)+pm
                         end do
                     end do
                 end do
@@ -307,45 +307,45 @@ subroutine te0102(option, nomte)
 !      -----------------------------------
         do kp = 1, npg2
             k = (kp-1)*nno
-            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
+            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx, &
                         cour, poids, cosa, sina)
 !
             if (nomte .eq. 'THCASE3') then
                 r = zero
                 do i = 1, nno
-                    r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
+                    r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
                 end do
                 poids = poids*r
-            endif
+            end if
 !
             do gi = 1, nno
                 do gj = 1, gi
                     do pi = 1, 3
                         do pj = 1, pi
-                            pm = m(pi,pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj- 1)*poids
+                            pm = m(pi, pj)*zr(ivf+k+gi-1)*zr(ivf+k+gj-1)*poids
 !
 ! ---     AFFECTATION DES TERMES HORS DIAGONAUX DE LA TRIANGULAIRE
 ! ---     INFERIEURE DE LA SOUS-MATRICE :
 !         -----------------------------
-                            if ((pi.ne.pj) .and. (gi.ne.gj)) then
-                                i = 3* (gi-1) + pj
-                                j = 3* (gj-1) + pi
-                                masse(i,j) = masse(i,j) + pm
-                            endif
+                            if ((pi .ne. pj) .and. (gi .ne. gj)) then
+                                i = 3*(gi-1)+pj
+                                j = 3*(gj-1)+pi
+                                masse(i, j) = masse(i, j)+pm
+                            end if
 !
 ! ---     AFFECTATION DES TERMES DE LA TRIANGULAIRE SUPERIEURE
 ! ---     DE LA SOUS-MATRICE :
 !         ------------------
-                            i = 3* (gi-1) + pi
-                            j = 3* (gj-1) + pj
-                            masse(i,j) = masse(i,j) + pm
+                            i = 3*(gi-1)+pi
+                            j = 3*(gj-1)+pj
+                            masse(i, j) = masse(i, j)+pm
                         end do
                     end do
                 end do
             end do
         end do
 !
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA MATRICE DE MASSE THERMIQUE EN SORTIE DU TE :
 !     -------------------------------------------------------------
@@ -357,8 +357,8 @@ subroutine te0102(option, nomte)
     ind = 0
     do i = 1, nbddl
         do j = 1, i
-            ind = ind + 1
-            zr(imattt+ind-1) = masse(i,j)
+            ind = ind+1
+            zr(imattt+ind-1) = masse(i, j)
         end do
     end do
 !

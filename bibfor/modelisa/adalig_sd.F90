@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
+subroutine adalig_sd(ligr, partsd, ntliel, nbtype, clas, teut, nteut)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,7 +41,7 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
 #include "asterfort/as_allocate.h"
 !
     character(len=19), intent(in) :: ligr, partsd
-    character(len=24),intent(in) :: ntliel
+    character(len=24), intent(in) :: ntliel
     integer, intent(in) :: nbtype
     character(len=1), intent(in) :: clas
     integer, pointer :: nteut(:)
@@ -75,7 +75,7 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
     character(len=24) :: liel
     character(len=8) :: noma
     integer :: i, jliel
-    integer ::  igrel, itype, nbma,ksd, kproc
+    integer ::  igrel, itype, nbma, ksd, kproc
     integer :: nbel, nbgrel, kgre1, nbgre1
     integer :: nbelmx, npaq, nbelgr, nel1, nel2, nel3, decal
     integer :: ktype, lont, nbgrel_av, rang, nbproc
@@ -99,7 +99,7 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
 
     call jemarq()
 
-    liel=ligr//'.LIEL'
+    liel = ligr//'.LIEL'
     call dismoi('NOM_MAILLA', ligr, 'LIGREL', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jelira(ntliel, 'NMAXOC', nbgrel_av)
@@ -111,7 +111,6 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 
-
 !   -- Calcul du vecteur traite_par:
 !      traite_par(ima) = kproc
 !   -----------------------------------------------
@@ -120,24 +119,23 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
     call sdpart(nbsd, 0, sdloc)
 
     AS_ALLOCATE(vi=traite_par, size=nbma)
-    traite_par(:)=-99
-    do ksd=1,nbsd
+    traite_par(:) = -99
+    do ksd = 1, nbsd
         if (sdloc(ksd) .eq. 1) then
-            call jeveuo(jexnum(partsd//'.FETA',ksd), 'L', vi=feta)
-            if (rang.eq.0) then
-                do i =1, size(feta)
-                    traite_par(feta(i))=nbproc-1
-                enddo
+            call jeveuo(jexnum(partsd//'.FETA', ksd), 'L', vi=feta)
+            if (rang .eq. 0) then
+                do i = 1, size(feta)
+                    traite_par(feta(i)) = nbproc-1
+                end do
             else
-                do i =1, size(feta)
-                    traite_par(feta(i))=rang-1
-                enddo
-            endif
-        endif
-    enddo
+                do i = 1, size(feta)
+                    traite_par(feta(i)) = rang-1
+                end do
+            end if
+        end if
+    end do
     call asmpi_comm_vect('MPI_MAX', 'I', nbval=nbma, vi=traite_par)
     call jedetr('&&ADALIG_SD.PART.SD')
-
 
 !   -- Calcul du vecteur nbel1:
 !      nbel1((ktype-1)*nbproc+kproc+1) = nel
@@ -145,26 +143,25 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
 !      calcules par le proc kproc
 !   -----------------------------------------------
     AS_ALLOCATE(vi=nbel1, size=nbtype*nbproc)
-    nbel1(:)=0
-    do igr=1,nbgrel_av
-        nbelgr=lctliel(igr+1)-lctliel(igr) -1
-        ktyp1=tliel(lctliel(igr)-1+nbelgr+1)
-        ktype=0
-        do ktyp2=1,nbtype
-            if (ktyp1.eq.teut(ktyp2)) then
-                ktype=ktyp2
+    nbel1(:) = 0
+    do igr = 1, nbgrel_av
+        nbelgr = lctliel(igr+1)-lctliel(igr)-1
+        ktyp1 = tliel(lctliel(igr)-1+nbelgr+1)
+        ktype = 0
+        do ktyp2 = 1, nbtype
+            if (ktyp1 .eq. teut(ktyp2)) then
+                ktype = ktyp2
                 exit
-            endif
-        enddo
-        ASSERT(ktype.gt.0)
-        do iel =1, nbelgr
-           numa = numail(igr,iel)
-           kproc=traite_par(numa)
-           ASSERT(kproc.ge.0)
-           nbel1((ktype-1)*nbproc+kproc+1)=nbel1((ktype-1)*nbproc+kproc+1)+1
-        enddo
-    enddo
-
+            end if
+        end do
+        ASSERT(ktype .gt. 0)
+        do iel = 1, nbelgr
+            numa = numail(igr, iel)
+            kproc = traite_par(numa)
+            ASSERT(kproc .ge. 0)
+            nbel1((ktype-1)*nbproc+kproc+1) = nbel1((ktype-1)*nbproc+kproc+1)+1
+        end do
+    end do
 
 !   -- Calcul du nombre de grels du nouveau .LIEL
 !      et de la dimension totale de la collection
@@ -175,67 +172,64 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
     nbgrel = 0
     nbelmx = int(jevtbl('TAILLE_GROUP_ELEM'))
     do ktype = 1, nbtype
-        ngrmx=0
+        ngrmx = 0
         do kproc = 0, nbproc-1
-           nel1=nbel1((ktype-1)*nbproc+kproc+1)
-           ngr1=nel1/nbelmx
-           if (mod(nel1,nbelmx).gt.0) ngr1=ngr1+1
-           ngrmx=max(ngrmx,ngr1)
-        enddo
+            nel1 = nbel1((ktype-1)*nbproc+kproc+1)
+            ngr1 = nel1/nbelmx
+            if (mod(nel1, nbelmx) .gt. 0) ngr1 = ngr1+1
+            ngrmx = max(ngrmx, ngr1)
+        end do
         nbgre1 = nbproc*ngrmx
         gteut(ktype) = nbgre1
-        nbgrel = nbgrel + nbgre1
+        nbgrel = nbgrel+nbgre1
         nbel = nteut(ktype)
-        lont = lont + nbel + nbgre1
+        lont = lont+nbel+nbgre1
     end do
-
 
 !   -- Calcul du nombre d'elements des GRELS du nouveau .LIEL
 !   -------------------------------------------------------------
     AS_ALLOCATE(vi=nbelgrel, size=nbgrel)
-    igrel=0
+    igrel = 0
     do ktype = 1, nbtype
-        nbgre1=gteut(ktype)
-        npaq=nbgre1/nbproc
+        nbgre1 = gteut(ktype)
+        npaq = nbgre1/nbproc
         do ipaq = 1, npaq
             do kproc = 0, nbproc-1
-               igrel=igrel+1
-               nel1=nbel1((ktype-1)*nbproc+kproc+1)
-               nel2= ipaq*nbelmx
-               nel3= (ipaq-1)*nbelmx
-               if (nel2.le.nel1) then
-                   nbelgrel(igrel)=nbelmx
-               else
-                   if (nel3.gt.nel1) then
-                       nbelgrel(igrel)=0
-                   else
-                       nbelgrel(igrel)=nel1-nel3
-                   endif
-               endif
-            enddo
-        enddo
+                igrel = igrel+1
+                nel1 = nbel1((ktype-1)*nbproc+kproc+1)
+                nel2 = ipaq*nbelmx
+                nel3 = (ipaq-1)*nbelmx
+                if (nel2 .le. nel1) then
+                    nbelgrel(igrel) = nbelmx
+                else
+                    if (nel3 .gt. nel1) then
+                        nbelgrel(igrel) = 0
+                    else
+                        nbelgrel(igrel) = nel1-nel3
+                    end if
+                end if
+            end do
+        end do
     end do
-
 
 !   -- Allocation du nouveau .LIEL
 !   ------------------------------------
     call jecrec(liel, clas//' V I', 'NU', 'CONTIG', 'VARIABLE', nbgrel)
     call jeecra(liel, 'LONT', lont)
-    igrel=0
+    igrel = 0
     do ktype = 1, nbtype
         itype = teut(ktype)
         nbgre1 = gteut(ktype)
         do kgre1 = 1, nbgre1
-            igrel=igrel+1
-            nbelgr=nbelgrel(igrel)
+            igrel = igrel+1
+            nbelgr = nbelgrel(igrel)
             call jecroc(jexnum(liel, igrel))
             call jeecra(jexnum(liel, igrel), 'LONMAX', nbelgr+1)
             call jeveuo(jexnum(liel, igrel), 'E', jliel)
             zi(jliel+nbelgr) = itype
         end do
     end do
-    ASSERT(nbgrel.eq.igrel)
-
+    ASSERT(nbgrel .eq. igrel)
 
 !   -- Remplissage des nouveaux GREL
 !   ----------------------------------
@@ -243,58 +237,57 @@ subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
     AS_ALLOCATE(vi=utilise, size=nbproc)
     AS_ALLOCATE(vi=utilise_2, size=nbproc+1)
     AS_ALLOCATE(vi=utilise_1, size=nbproc)
-    igrel=0
+    igrel = 0
     do ktyp2 = 1, nbtype
         nbgre1 = gteut(ktyp2)
-        npaq=nbgre1/nbproc
+        npaq = nbgre1/nbproc
 
 !       -- on remplit des objets qui facilitent le remplissage des grels :
-        utilise(:)=0
-        do igr=1,nbgrel_av
-            nbelgr=lctliel(igr+1)-lctliel(igr) -1
-            ktyp1=tliel(lctliel(igr)-1+nbelgr+1)
-            if (ktyp1.ne.teut(ktyp2)) cycle
-            do iel=1,nbelgr
-                numa = numail(igr,iel)
-                kproc=traite_par(numa)
-                utilise(kproc+1)=utilise(kproc+1)+1
-            enddo
-        enddo
-        utilise_2(1)=0
-        do kproc=0,nbproc-1
-            utilise_2(kproc+2)=utilise_2(kproc+1)+utilise(kproc+1)
-        enddo
+        utilise(:) = 0
+        do igr = 1, nbgrel_av
+            nbelgr = lctliel(igr+1)-lctliel(igr)-1
+            ktyp1 = tliel(lctliel(igr)-1+nbelgr+1)
+            if (ktyp1 .ne. teut(ktyp2)) cycle
+            do iel = 1, nbelgr
+                numa = numail(igr, iel)
+                kproc = traite_par(numa)
+                utilise(kproc+1) = utilise(kproc+1)+1
+            end do
+        end do
+        utilise_2(1) = 0
+        do kproc = 0, nbproc-1
+            utilise_2(kproc+2) = utilise_2(kproc+1)+utilise(kproc+1)
+        end do
 
-        ordre_stockage(:)=0
-        utilise_1(:)=0
-        do igr=1,nbgrel_av
-            nbelgr=lctliel(igr+1)-lctliel(igr) -1
-            ktyp1=tliel(lctliel(igr)-1+nbelgr+1)
-            if (ktyp1.ne.teut(ktyp2)) cycle
-            do iel=1,nbelgr
-                numa = numail(igr,iel)
-                kproc=traite_par(numa)
-                utilise_1(kproc+1)=utilise_1(kproc+1)+1
-                ordre_stockage(utilise_2(kproc+1)+utilise_1(kproc+1))=numa
-            enddo
-        enddo
+        ordre_stockage(:) = 0
+        utilise_1(:) = 0
+        do igr = 1, nbgrel_av
+            nbelgr = lctliel(igr+1)-lctliel(igr)-1
+            ktyp1 = tliel(lctliel(igr)-1+nbelgr+1)
+            if (ktyp1 .ne. teut(ktyp2)) cycle
+            do iel = 1, nbelgr
+                numa = numail(igr, iel)
+                kproc = traite_par(numa)
+                utilise_1(kproc+1) = utilise_1(kproc+1)+1
+                ordre_stockage(utilise_2(kproc+1)+utilise_1(kproc+1)) = numa
+            end do
+        end do
 
         do ipaq = 1, npaq
             do kproc = 0, nbproc-1
-               igrel=igrel+1
-               call jeveuo(jexnum(liel, igrel), 'E', jliel)
+                igrel = igrel+1
+                call jeveuo(jexnum(liel, igrel), 'E', jliel)
 
-               nbelgr=nbelgrel(igrel)
-               decal=max(0,(ipaq-1)*nbelmx)
-               do iel=1, nbelgr
-                   numa=ordre_stockage(utilise_2(kproc+1)+decal+iel)
-                   zi(jliel-1+iel)=numa
-               enddo
-            enddo
-        enddo
-    enddo
-    ASSERT(nbgrel.eq.igrel)
-
+                nbelgr = nbelgrel(igrel)
+                decal = max(0, (ipaq-1)*nbelmx)
+                do iel = 1, nbelgr
+                    numa = ordre_stockage(utilise_2(kproc+1)+decal+iel)
+                    zi(jliel-1+iel) = numa
+                end do
+            end do
+        end do
+    end do
+    ASSERT(nbgrel .eq. igrel)
 
     AS_DEALLOCATE(vi=traite_par)
     AS_DEALLOCATE(vi=nbel1)

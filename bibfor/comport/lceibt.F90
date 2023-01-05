@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lceibt(ndimsi, eps, epsf, dep, invn,&
+subroutine lceibt(ndimsi, eps, epsf, dep, invn, &
                   cn, dsidep)
     implicit none
 #include "asterfort/r8inir.h"
@@ -36,11 +36,11 @@ subroutine lceibt(ndimsi, eps, epsf, dep, invn,&
     call r8inir(36, 0.d0, temp1, 1)
 !
     do i = 1, ndimsi
-        temp1(i,i)=temp1(i,i)+1.d0
+        temp1(i, i) = temp1(i, i)+1.d0
         do j = 1, ndimsi
             do k = 1, ndimsi
                 do l = 1, ndimsi
-                    temp1(i,j)=temp1(i,j)-dep(i,k)*invn(k,l)*cn(l,j)
+                    temp1(i, j) = temp1(i, j)-dep(i, k)*invn(k, l)*cn(l, j)
                 end do
             end do
         end do
@@ -48,15 +48,15 @@ subroutine lceibt(ndimsi, eps, epsf, dep, invn,&
 !
     do i = 1, ndimsi
         do j = 1, ndimsi
-            sigel(i) = sigel(i) + dep(i,j+6)*eps(j)
-            sigme(i) = sigme(i) + dep(i,j+6)*(eps(j)-epsf(j))
+            sigel(i) = sigel(i)+dep(i, j+6)*eps(j)
+            sigme(i) = sigme(i)+dep(i, j+6)*(eps(j)-epsf(j))
         end do
     end do
 !
     do i = 1, ndimsi
         do j = 1, ndimsi
             do k = 1, ndimsi
-                dsidep(i,j)=dsidep(i,j)-temp1(i,k)*sigme(k)*sigel(j)
+                dsidep(i, j) = dsidep(i, j)-temp1(i, k)*sigme(k)*sigel(j)
             end do
         end do
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,19 +38,19 @@ function trigom(fonc, x)
     real(kind=8) :: x, eps, x2
     eps = 1.d-12
 !
-    if ((x.gt.1.d0+eps) .or. (x.lt.-1.d0-eps)) then
+    if ((x .gt. 1.d0+eps) .or. (x .lt. -1.d0-eps)) then
         call utmess('F', 'UTILITAI5_50')
-    endif
+    end if
 !
     x2 = x
     if (x .gt. 1.d0) x2 = 1.d0
     if (x .lt. -1.d0) x2 = -1.d0
 !
-    ASSERT(fonc.eq.'ASIN' .or. fonc.eq.'ACOS')
+    ASSERT(fonc .eq. 'ASIN' .or. fonc .eq. 'ACOS')
     if (fonc .eq. 'ASIN') then
         trigom = asin(x2)
     else
         trigom = acos(x2)
-    endif
+    end if
 !
 end function

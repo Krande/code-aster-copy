@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,11 +103,11 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
     real(kind=8) :: alpha, tau
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    real(kind=8) :: x( * )
+    real(kind=8) :: x(*)
 !
 !     .. PARAMETERS ..
     real(kind=8) :: one, zero
-    parameter          ( one = 1.0d+0, zero = 0.0d+0 )
+    parameter(one=1.0d+0, zero=0.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     integer :: j, knt
@@ -122,9 +122,9 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
     if (n .le. 1) then
         tau = zero
         goto 1000
-    endif
+    end if
 !
-    xnorm = dnrm2( n-1, x, incx )
+    xnorm = dnrm2(n-1, x, incx)
 !
     if (xnorm .eq. zero) then
 !
@@ -135,27 +135,27 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
 !
 !        GENERAL CASE
 !
-        beta = -sign( dlapy2( alpha, xnorm ), alpha )
-        safmin = r8miem() / (r8prem()*0.5d0)
-        if (abs( beta ) .lt. safmin) then
+        beta = -sign(dlapy2(alpha, xnorm), alpha)
+        safmin = r8miem()/(r8prem()*0.5d0)
+        if (abs(beta) .lt. safmin) then
 !
 !           XNORM, BETA MAY BE INACCURATE, SCALE X AND RECOMPUTE THEM
 !
-            rsafmn = one / safmin
+            rsafmn = one/safmin
             knt = 0
- 10         continue
-            knt = knt + 1
+10          continue
+            knt = knt+1
             call dscal(n-1, rsafmn, x, incx)
             beta = beta*rsafmn
             alpha = alpha*rsafmn
-            if (abs( beta ) .lt. safmin) goto 10
+            if (abs(beta) .lt. safmin) goto 10
 !
 !           NEW BETA IS AT MOST 1, AT LEAST SAFMIN
 !
-            xnorm = dnrm2( n-1, x, incx )
-            beta = -sign( dlapy2( alpha, xnorm ), alpha )
-            tau = ( beta-alpha ) / beta
-            call dscal(n-1, one / ( alpha-beta ), x, incx)
+            xnorm = dnrm2(n-1, x, incx)
+            beta = -sign(dlapy2(alpha, xnorm), alpha)
+            tau = (beta-alpha)/beta
+            call dscal(n-1, one/(alpha-beta), x, incx)
 !
 !           IF ALPHA IS SUBNORMAL, IT MAY LOSE RELATIVE ACCURACY
 !
@@ -164,11 +164,11 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
                 alpha = alpha*safmin
             end do
         else
-            tau = ( beta-alpha ) / beta
-            call dscal(n-1, one / ( alpha-beta ), x, incx)
+            tau = (beta-alpha)/beta
+            call dscal(n-1, one/(alpha-beta), x, incx)
             alpha = beta
-        endif
-    endif
+        end if
+    end if
 !
 1000 continue
     call matfpe(1)

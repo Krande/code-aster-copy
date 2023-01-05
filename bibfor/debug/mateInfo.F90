@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine mateInfo(mate, mate_nb)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,8 +28,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !
-character(len=8), intent(in) :: mate
-integer, intent(in) :: mate_nb
+    character(len=8), intent(in) :: mate
+    integer, intent(in) :: mate_nb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,25 +56,25 @@ integer, intent(in) :: mate_nb
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
-    call jeveuo(mate//'.MATERIAU.NOMRC', 'L', vk32 = v_mate)
+    call jeveuo(mate//'.MATERIAU.NOMRC', 'L', vk32=v_mate)
     do i_mate = 1, mate_nb
         call codent(i_mate, 'D0', nom)
         noobrc = mate//'.CPT.'//nom
-        call jeveuo(noobrc//'.VALR', 'L', vr   = v_mate_valr)
-        call jeveuo(noobrc//'.VALC', 'L', vc   = v_mate_valc)
-        call jeveuo(noobrc//'.VALK', 'L', vk16 = v_mate_valk)
+        call jeveuo(noobrc//'.VALR', 'L', vr=v_mate_valr)
+        call jeveuo(noobrc//'.VALC', 'L', vc=v_mate_valc)
+        call jeveuo(noobrc//'.VALK', 'L', vk16=v_mate_valk)
         call jelira(noobrc//'.VALR', 'LONUTI', nbr)
         call jelira(noobrc//'.VALC', 'LONUTI', nbc)
         call jelira(noobrc//'.VALK', 'LONUTI', nbk2)
         nbk = (nbk2-nbr-nbc)/2
-        call utmess('I', 'MATERIAL2_4', sk = v_mate(i_mate))
-        write(ifm,'(5(3X,A16,5X))')     (v_mate_valk(i),i=1,nbr)
-        write(ifm,'(5(3X,G16.9,5X))')   (v_mate_valr(i),i=1,nbr)
-        write(ifm,'(5(3X,A16,16X,5X))') (v_mate_valk(i),i=nbr+1,nbr+nbc)
-        write(ifm,'(5(3X,2G16.9))')     (v_mate_valc(i),i=nbr+1,nbr+nbc)
-        write(ifm,'(5(3X,A16,5X))')     (v_mate_valk(i),i=nbr+nbc+1,nbr+nbc+nbk)
-        write(ifm,'(5(3X,A16,5X))')     (v_mate_valk(i),i=nbr+nbc+nbk+1,nbr+nbc+2*nbk)
-        write(ifm,'(1X)')
+        call utmess('I', 'MATERIAL2_4', sk=v_mate(i_mate))
+        write (ifm, '(5(3X,A16,5X))') (v_mate_valk(i), i=1, nbr)
+        write (ifm, '(5(3X,G16.9,5X))') (v_mate_valr(i), i=1, nbr)
+        write (ifm, '(5(3X,A16,16X,5X))') (v_mate_valk(i), i=nbr+1, nbr+nbc)
+        write (ifm, '(5(3X,2G16.9))') (v_mate_valc(i), i=nbr+1, nbr+nbc)
+        write (ifm, '(5(3X,A16,5X))') (v_mate_valk(i), i=nbr+nbc+1, nbr+nbc+nbk)
+        write (ifm, '(5(3X,A16,5X))') (v_mate_valk(i), i=nbr+nbc+nbk+1, nbr+nbc+2*nbk)
+        write (ifm, '(1X)')
     end do
 !
 end subroutine

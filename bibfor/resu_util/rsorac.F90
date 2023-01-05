@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rsorac(nomsd, acces, ival, rval, kval,&
-                  cval, epsi, crit, nutrou, ndim,&
+subroutine rsorac(nomsd, acces, ival, rval, kval, &
+                  cval, epsi, crit, nutrou, ndim, &
                   nbtrou)
     implicit none
 #include "jeveux.h"
@@ -85,20 +85,20 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
 !     --- CONCEPT CHAMP-GD
 !     ----------------------------
     call jelira(noms2//'.DESC', 'DOCU', cval=tysd)
-    if ((tysd.eq.'CHNO') .or. (tysd.eq.'CHML') .or. (tysd.eq.'CART')) then
-        if ((acce2.eq.'LONUTI') .or. (ival.eq.0) .or. (rval .eq. 0.d0) .or.&
-            (cval.eq. (0.d0,0.d0))) then
+    if ((tysd .eq. 'CHNO') .or. (tysd .eq. 'CHML') .or. (tysd .eq. 'CART')) then
+        if ((acce2 .eq. 'LONUTI') .or. (ival .eq. 0) .or. (rval .eq. 0.d0) .or. &
+            (cval .eq. (0.d0, 0.d0))) then
             if (ndim .gt. 0) then
                 nbtrou = 1
                 nutrou(1) = 1
             else
                 nbtrou = -1
-            endif
+            end if
         else
             call utmess('F', 'UTILITAI4_46')
-        endif
+        end if
         goto 20
-    endif
+    end if
 !
 !
 !     --- CONCEPT RESULTAT
@@ -109,19 +109,19 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
             call jelira(noms2//'.ORDR', 'LONUTI', nutrou(1))
         else
             nbtrou = -1
-        endif
+        end if
         goto 20
 !
-    else if (acce2.eq.'LONMAX') then
+    else if (acce2 .eq. 'LONMAX') then
         if (ndim .gt. 0) then
             nbtrou = 1
             call jelira(noms2//'.ORDR', 'LONMAX', nutrou(1))
         else
             nbtrou = -1
-        endif
+        end if
         goto 20
 !
-    else if (acce2.eq.'DERNIER') then
+    else if (acce2 .eq. 'DERNIER') then
         if (ndim .gt. 0) then
             nbtrou = 1
             call jelira(noms2//'.ORDR', 'LONUTI', numed)
@@ -130,23 +130,23 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
             else
                 call jeveuo(noms2//'.ORDR', 'L', jordr)
                 nutrou(1) = zi(jordr+numed-1)
-            endif
+            end if
         else
             nbtrou = -1
-        endif
+        end if
         goto 20
 !
-    else if (acce2.eq.'PREMIER') then
+    else if (acce2 .eq. 'PREMIER') then
         if (ndim .gt. 0) then
             nbtrou = 1
             call jeveuo(noms2//'.ORDR', 'L', jordr)
             nutrou(1) = zi(jordr-1+1)
         else
             nbtrou = -1
-        endif
+        end if
         goto 20
 !
-    else if (acce2.eq.'TOUT_ORDRE') then
+    else if (acce2 .eq. 'TOUT_ORDRE') then
         call jelira(noms2//'.ORDR', 'LONUTI', nordr)
         if (nordr .le. ndim) then
             nbtrou = nordr
@@ -160,15 +160,15 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
             do i = 1, ndim
                 nutrou(i) = zi(jordr+i-1)
             end do
-        endif
+        end if
         goto 20
 !
-    endif
+    end if
 !
     call jenonu(jexnom(noms2//'.NOVA', acce2), iacces)
     if (iacces .eq. 0) then
         call utmess('F', 'UTILITAI4_47', sk=acce2)
-    endif
+    end if
 !
     call jeveuo(jexnum(noms2//'.TAVA', iacces), 'L', iatava)
     nomobj = zk8(iatava-1+1)
@@ -176,8 +176,8 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     call lxliis(k8maxi, imaxi, ier2)
     k8debu = zk8(iatava-1+2)
     call lxliis(k8debu, idebu, ier1)
-    ASSERT(imaxi.gt.0)
-    ASSERT((idebu.gt.0).and.(idebu.le.imaxi))
+    ASSERT(imaxi .gt. 0)
+    ASSERT((idebu .gt. 0) .and. (idebu .le. imaxi))
 !
     call jeveuo(noms2//'.ORDR', 'L', jordr)
     call jeveuo(noms2//nomobj, 'L', iaobj)
@@ -187,10 +187,10 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     call codent(iloty, 'G', k8ent)
     tysca = type(1:1)//k8ent(1:3)
 !
-    call rsindi(tysca, iaobj-1+idebu, imaxi, jordr, ival,&
-                rval, kval, cval, epsi, crit,&
+    call rsindi(tysca, iaobj-1+idebu, imaxi, jordr, ival, &
+                rval, kval, cval, epsi, crit, &
                 nbordr, nbtrou, nutrou, ndim)
 !
- 20 continue
+20  continue
     call jedema()
 end subroutine

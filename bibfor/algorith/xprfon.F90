@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
 !     (UTILE POUR REORIENTER LES FONDS SUR LE MAILLAGE REEL, cf DOC???)
     call jeveuo(fiss//'.FONDFISG', 'L', vr=fondfisg)
     call jelira(fiss//'.FONDFISG', 'LONMAX', long)
-    nptfg=long/4
+    nptfg = long/4
 !
 !     RECUPERATION DU FOND DE FISSURE
     call jeveuo(fiss//'.FONDFISS', 'E', vr=fondfiss)
@@ -110,116 +110,116 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
     AS_ALLOCATE(vr=vjbetao, size=nbptff)
     do j = 1, nbptff
         do i = 1, 4
-            vjfono(4*(j-1)+i)=fondfiss(4*(j-1)+i)
+            vjfono(4*(j-1)+i) = fondfiss(4*(j-1)+i)
         end do
         do i = 1, 6
-            vjbaso(6*(j-1)+i)=basefond(6*(j-1)+i)
+            vjbaso(6*(j-1)+i) = basefond(6*(j-1)+i)
         end do
-        vjvito((j-1)+1)=zr(jvit-1+(j-1)+1)
-        vjbetao((j-1)+1)=zr(jbeta-1+(j-1)+1)
+        vjvito((j-1)+1) = zr(jvit-1+(j-1)+1)
+        vjbetao((j-1)+1) = zr(jbeta-1+(j-1)+1)
     end do
     do i = 1, numfon
-        vjfmulo(2*(i-1)+1)=fondmult(2*(i-1)+1)
-        vjfmulo(2*(i-1)+2)=fondmult(2*(i-1)+2)
+        vjfmulo(2*(i-1)+1) = fondmult(2*(i-1)+1)
+        vjfmulo(2*(i-1)+2) = fondmult(2*(i-1)+2)
     end do
-    mem(1)=1.d0/r8prem()
+    mem(1) = 1.d0/r8prem()
 !
 ! VERIFICATION DU BON ORDONNANCEMENT DES DIFFERENTS FONDS
     do i = 1, numfon
         do j = 1, nptfg-1
             do k = 1, 4
-                a1(k)=fondfisg(4*(j-1)+k)
-                b1(k)=fondfisg(4*(j+1-1)+k)
+                a1(k) = fondfisg(4*(j-1)+k)
+                b1(k) = fondfisg(4*(j+1-1)+k)
             end do
-            normab=(b1(1)-a1(1))**2+(b1(2)-a1(2))**2+ (b1(3)-a1(3))**&
-            2
+            normab = (b1(1)-a1(1))**2+(b1(2)-a1(2))**2+(b1(3)-a1(3))** &
+                     2
 !   ON EXTRAIT LES COORDONNEES DU PREMIER POINT DU FOND DE FISSURE
             if (i .eq. 1) then
-                npoin=vjfmulo(1)
-                m1(1)=fondfiss(4*(npoin-1)+1)
-                m1(2)=fondfiss(4*(npoin-1)+2)
-                m1(3)=fondfiss(4*(npoin-1)+3)
+                npoin = vjfmulo(1)
+                m1(1) = fondfiss(4*(npoin-1)+1)
+                m1(2) = fondfiss(4*(npoin-1)+2)
+                m1(3) = fondfiss(4*(npoin-1)+3)
             else
-                npoin=vjfmulo(2*(i-1)+1)
-                m1(1)=fondfiss(4*(npoin-1)+1)
-                m1(2)=fondfiss(4*(npoin-1)+2)
-                m1(3)=fondfiss(4*(npoin-1)+3)
-            endif
-            coeffk=((b1(1)-a1(1))*(m1(1)-a1(1))+(b1(2)-a1(2))*&
-            (m1(2)-a1(2))+(b1(3)-a1(3))*(m1(3)-a1(3)))/normab
+                npoin = vjfmulo(2*(i-1)+1)
+                m1(1) = fondfiss(4*(npoin-1)+1)
+                m1(2) = fondfiss(4*(npoin-1)+2)
+                m1(3) = fondfiss(4*(npoin-1)+3)
+            end if
+            coeffk = ((b1(1)-a1(1))*(m1(1)-a1(1))+(b1(2)-a1(2))* &
+                      (m1(2)-a1(2))+(b1(3)-a1(3))*(m1(3)-a1(3)))/normab
 !
             if (abs(coeffk) .gt. 1.d0) then
                 if (abs(coeffk) .lt. mem(1)) then
-                    mem(1)=abs(coeffk)
+                    mem(1) = abs(coeffk)
                     do k = 1, 4
-                        mem(k+1)=a1(k)
+                        mem(k+1) = a1(k)
                     end do
-                endif
+                end if
                 goto 505
             else
                 mem(:) = 0.d0
-                mem(1)=1.d0/r8prem()
+                mem(1) = 1.d0/r8prem()
                 goto 66
-            endif
+            end if
 505         continue
         end do
         do k = 1, 4
-            a1(k)=mem(k+1)
+            a1(k) = mem(k+1)
         end do
         mem(:) = 0.d0
-        mem(1)=1.d0/r8prem()
- 66     continue
+        mem(1) = 1.d0/r8prem()
+66      continue
         do j = 1, nptfg-1
             do k = 1, 4
-                a2(k)=fondfisg(4*(j-1)+k)
-                b2(k)=fondfisg(4*(j+1-1)+k)
+                a2(k) = fondfisg(4*(j-1)+k)
+                b2(k) = fondfisg(4*(j+1-1)+k)
             end do
-            normab=(b1(1)-a1(1))**2+(b1(2)-a1(2))**2+ (b1(3)-a1(3))**&
-            2
+            normab = (b1(1)-a1(1))**2+(b1(2)-a1(2))**2+(b1(3)-a1(3))** &
+                     2
 !  ON EXTRAIT LES COORDONNEES DU DERNIER POINT DU FOND DE FISSURE
             if (i .eq. 1) then
-                npoin=vjfmulo(2)
-                m2(1)=fondfiss(4*(npoin-1)+1)
-                m2(2)=fondfiss(4*(npoin-1)+2)
-                m2(3)=fondfiss(4*(npoin-1)+3)
-            else if (i.eq.numfon) then
-                m2(1)=fondfiss(4*(nbptff-1)+1)
-                m2(2)=fondfiss(4*(nbptff-1)+2)
-                m2(3)=fondfiss(4*(nbptff-1)+3)
+                npoin = vjfmulo(2)
+                m2(1) = fondfiss(4*(npoin-1)+1)
+                m2(2) = fondfiss(4*(npoin-1)+2)
+                m2(3) = fondfiss(4*(npoin-1)+3)
+            else if (i .eq. numfon) then
+                m2(1) = fondfiss(4*(nbptff-1)+1)
+                m2(2) = fondfiss(4*(nbptff-1)+2)
+                m2(3) = fondfiss(4*(nbptff-1)+3)
             else
-                npoin=vjfmulo(2*(i-1)+2)
-                m2(1)=fondfiss(4*(npoin-1)+1)
-                m2(2)=fondfiss(4*(npoin-1)+2)
-                m2(3)=fondfiss(4*(npoin-1)+3)
-            endif
-            coeffk=((b2(1)-a2(1))*(m2(1)-a2(1))+(b2(2)-a2(2))*&
-            (m2(2)-a2(2))+(b2(3)-a2(3))*(m2(3)-a2(3)))/normab
+                npoin = vjfmulo(2*(i-1)+2)
+                m2(1) = fondfiss(4*(npoin-1)+1)
+                m2(2) = fondfiss(4*(npoin-1)+2)
+                m2(3) = fondfiss(4*(npoin-1)+3)
+            end if
+            coeffk = ((b2(1)-a2(1))*(m2(1)-a2(1))+(b2(2)-a2(2))* &
+                      (m2(2)-a2(2))+(b2(3)-a2(3))*(m2(3)-a2(3)))/normab
 !
             if (abs(coeffk) .gt. 1.d0) then
                 if (abs(coeffk) .lt. mem(1)) then
-                    mem(1)=abs(coeffk)
+                    mem(1) = abs(coeffk)
                     do k = 1, 4
-                        mem(k+1)=b2(k)
+                        mem(k+1) = b2(k)
                     end do
-                endif
+                end if
                 goto 506
             else
                 goto 67
-            endif
+            end if
 506         continue
         end do
 !
         do k = 1, 4
-            b2(k)=mem(k+1)
+            b2(k) = mem(k+1)
         end do
- 67     continue
+67      continue
         mem(:) = 0.d0
-        mem(1)=1.d0/r8prem()
-        vmemo(5*(i-1)+1)= i
-        vmemo(5*(i-1)+2)= a1(4)
-        vmemo(5*(i-1)+3)= b2(4)
-        vmemo(5*(i-1)+4)= dble(vjfmulo((2*i-1)))
-        vmemo(5*(i-1)+5)= dble(vjfmulo((2*i)))
+        mem(1) = 1.d0/r8prem()
+        vmemo(5*(i-1)+1) = i
+        vmemo(5*(i-1)+2) = a1(4)
+        vmemo(5*(i-1)+3) = b2(4)
+        vmemo(5*(i-1)+4) = dble(vjfmulo((2*i-1)))
+        vmemo(5*(i-1)+5) = dble(vjfmulo((2*i)))
     end do
 !
 ! ON TRIE LE VECTEUR JMEMO
@@ -236,96 +236,96 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
                 do k = 1, 5
                     vmemo(5*(j-1)+k) = memo(k)
                 end do
-            endif
+            end if
         end do
     end do
 !
     do i = 1, numfon
-        vjfmulo(2*(i-1)+1)=nint(vmemo(5*(i-1)+4))
-        vjfmulo(2*(i-1)+2)=nint(vmemo(5*(i-1)+5))
+        vjfmulo(2*(i-1)+1) = nint(vmemo(5*(i-1)+4))
+        vjfmulo(2*(i-1)+2) = nint(vmemo(5*(i-1)+5))
     end do
 !
-    ivalue=0
+    ivalue = 0
 !
     do i = 1, numfon
-        npoino=vjfmulo(2*i)
-        nponop=vjfmulo(2*i-1)
+        npoino = vjfmulo(2*i)
+        nponop = vjfmulo(2*i-1)
 !
         if (fondmult(2*(i-1)+2) .ne. vjfmulo(2*(i-1)+2)) then
-            vjfmulo(2*(i-1)+1)=ivalue+1
-            vjfmulo(2*(i-1)+2)=ivalue+1+(npoino-nponop)
-            npoinp=fondmult(2*(nint(vmemo(5*(i-1)+1)))-1)
-            nval=vjfmulo(2*(i-1)+1)
+            vjfmulo(2*(i-1)+1) = ivalue+1
+            vjfmulo(2*(i-1)+2) = ivalue+1+(npoino-nponop)
+            npoinp = fondmult(2*(nint(vmemo(5*(i-1)+1)))-1)
+            nval = vjfmulo(2*(i-1)+1)
             do j = 1, (npoino-nponop)+1
                 do k = 1, 4
-                    vjfono(4*(nval+j-2)+k)= fondfiss(4*(npoinp+&
-                    j-2)+k)
+                    vjfono(4*(nval+j-2)+k) = fondfiss(4*(npoinp+ &
+                                                         j-2)+k)
                 end do
                 do k = 1, 6
-                    vjbaso(6*(nval+j-2)+k)= basefond(6*(npoinp+&
-                    j-2)+k)
+                    vjbaso(6*(nval+j-2)+k) = basefond(6*(npoinp+ &
+                                                         j-2)+k)
                 end do
-                vjvito((nval+j-2)+1)=zr(jvit-1+(npoinp+j-2)+1)
-                vjbetao((nval+j-2)+1)=zr(jbeta-1+(npoinp+j-2)+1)
+                vjvito((nval+j-2)+1) = zr(jvit-1+(npoinp+j-2)+1)
+                vjbetao((nval+j-2)+1) = zr(jbeta-1+(npoinp+j-2)+1)
             end do
-        endif
-        npoino=vjfmulo(2*i)
-        ivalue=npoino
+        end if
+        npoino = vjfmulo(2*i)
+        ivalue = npoino
     end do
 !
     do i = 1, numfon
-        fondmult(2*(i-1)+1)=vjfmulo(2*(i-1)+1)
-        fondmult(2*(i-1)+2)=vjfmulo(2*(i-1)+2)
+        fondmult(2*(i-1)+1) = vjfmulo(2*(i-1)+1)
+        fondmult(2*(i-1)+2) = vjfmulo(2*(i-1)+2)
     end do
     do j = 1, nbptff
         do i = 1, 4
-            fondfiss(4*(j-1)+i)=vjfono(4*(j-1)+i)
+            fondfiss(4*(j-1)+i) = vjfono(4*(j-1)+i)
         end do
         do i = 1, 6
-            basefond(6*(j-1)+i)=vjbaso(6*(j-1)+i)
+            basefond(6*(j-1)+i) = vjbaso(6*(j-1)+i)
         end do
-        zr(jvit-1+(j-1)+1)=vjvito((j-1)+1)
-        zr(jbeta-1+(j-1)+1)=vjbetao((j-1)+1)
+        zr(jvit-1+(j-1)+1) = vjvito((j-1)+1)
+        zr(jbeta-1+(j-1)+1) = vjbetao((j-1)+1)
     end do
 !
 !     ON VERIFIE QUE LA LECTURE DES POINTS DES FRONTS SE FAIT DANS
 !     LE MEME SENS. POUR CELA ON VERIFIE LA COHERENCE AVEC LE SENS
 !     DE PARCOURS DU FRONT DE FISSURE SUR LA GRILLE
 !
-    vect1=vmemo(3)-vmemo(2)
+    vect1 = vmemo(3)-vmemo(2)
 !
     do i = 2, numfon
-        vect2=vmemo(5*(i-1)+3)-vmemo(5*(i-1)+2)
-        prosca=vect1*vect2
+        vect2 = vmemo(5*(i-1)+3)-vmemo(5*(i-1)+2)
+        prosca = vect1*vect2
 !
         if (prosca .lt. 0.d0) then
 !     ON DOIT CHANGER LE SENS DE LECTURE
             nbnol = fondmult(1+2*i-1)-fondmult(1+2*i-2)
-            npoin=fondmult(2*(i-1))
+            npoin = fondmult(2*(i-1))
             do j = 1, nbnol+1
                 do k = 1, 4
-                    vjfono(4*(j-1)+k) = fondfiss(4*(npoin+j-1)+ k)
+                    vjfono(4*(j-1)+k) = fondfiss(4*(npoin+j-1)+k)
                 end do
                 do k = 1, 6
-                    vjbaso(6*(j-1)+k) = basefond(6*(npoin+j-1)+ k)
+                    vjbaso(6*(j-1)+k) = basefond(6*(npoin+j-1)+k)
                 end do
-                vjvito((j-1)+1)=zr(jvit-1+(npoin+j-1)+1)
-                vjbetao((j-1)+1)=zr(jbeta-1+(npoin+j-1)+1)
+                vjvito((j-1)+1) = zr(jvit-1+(npoin+j-1)+1)
+                vjbetao((j-1)+1) = zr(jbeta-1+(npoin+j-1)+1)
             end do
 !
             do j = 1, nbnol+1
                 do k = 1, 4
-                    fondfiss(4*(npoin+j-1)+k)= vjfono(4*(nbnol-&
-                    j+1)+k)
+                    fondfiss(4*(npoin+j-1)+k) = vjfono(4*(nbnol- &
+                                                          j+1)+k)
                 end do
                 do k = 1, 6
-                    basefond(6*(npoin+j-1)+k)= vjbaso(6*(nbnol-&
-                    j+1)+k)
+                    basefond(6*(npoin+j-1)+k) = vjbaso(6*(nbnol- &
+                                                          j+1)+k)
                 end do
-                zr(jvit-1+(npoin+j-1)+1)=vjvito((nbnol-j+1)+1)
-                zr(jbeta-1+(npoin-j-1)+1)=vjbetao((nbnol-j+1)+1)
+                zr(jvit-1+(npoin+j-1)+1) = vjvito((nbnol-j+1)+1)
+                zr(jbeta-1+(npoin-j-1)+1) = vjbetao((nbnol-j+1)+1)
             end do
-        endif
+        end if
     end do
 !
     AS_DEALLOCATE(vr=vmemo)

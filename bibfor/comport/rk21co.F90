@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rk21co(fami, kpg, ksp, rela_comp, mod,&
-                  imat, matcst, nbcomm, cpmono, nfs,&
-                  nsg, toutms, nvi, nmat, y,&
-                  kp, ee, a, h, pgl,&
-                  nbphas, cothe, coeff, dcothe, dcoeff,&
-                  coel, x, pas, neps, epsd,&
-                  detot, nhsr, numhsr, hsr, itmax,&
+subroutine rk21co(fami, kpg, ksp, rela_comp, mod, &
+                  imat, matcst, nbcomm, cpmono, nfs, &
+                  nsg, toutms, nvi, nmat, y, &
+                  kp, ee, a, h, pgl, &
+                  nbphas, cothe, coeff, dcothe, dcoeff, &
+                  coel, x, pas, neps, epsd, &
+                  detot, nhsr, numhsr, hsr, itmax, &
                   toler, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -72,45 +72,45 @@ subroutine rk21co(fami, kpg, ksp, rela_comp, mod,&
     real(kind=8) :: toutms(*)
 !
     do i = 1, nvi
-        ee(i)=0.d0
-        f(i)=0.d0
+        ee(i) = 0.d0
+        f(i) = 0.d0
     end do
 !
     if (kp .eq. 1) then
 !        INTEGRATION Y1=F(Y,T)
-        call rdif01(fami, kpg, ksp, rela_comp, mod,&
-                    imat, matcst, nbcomm, cpmono, nfs,&
-                    nsg, toutms, nvi, nmat, y,&
-                    cothe, coeff, dcothe, dcoeff, pgl,&
-                    nbphas, coel, x, pas, neps,&
-                    epsd, detot, f, nhsr, numhsr,&
+        call rdif01(fami, kpg, ksp, rela_comp, mod, &
+                    imat, matcst, nbcomm, cpmono, nfs, &
+                    nsg, toutms, nvi, nmat, y, &
+                    cothe, coeff, dcothe, dcoeff, pgl, &
+                    nbphas, coel, x, pas, neps, &
+                    epsd, detot, f, nhsr, numhsr, &
                     hsr, itmax, toler, iret)
         do i = 1, nvi
-            a(i)=f(i)
-            y(i)=y(i)+a(i)*h
+            a(i) = f(i)
+            y(i) = y(i)+a(i)*h
         end do
     else
         do i = 1, nvi
-            y(i)=y(i)+a(i)*h
+            y(i) = y(i)+a(i)*h
         end do
-    endif
+    end if
 !
-    x=x+h
+    x = x+h
 !     INTEGRATION Y2=F(Y1,T+H)
 !
-    call rdif01(fami, kpg, ksp, rela_comp, mod,&
-                imat, matcst, nbcomm, cpmono, nfs,&
-                nsg, toutms, nvi, nmat, y,&
-                cothe, coeff, dcothe, dcoeff, pgl,&
-                nbphas, coel, x, pas, neps,&
-                epsd, detot, f, nhsr, numhsr,&
+    call rdif01(fami, kpg, ksp, rela_comp, mod, &
+                imat, matcst, nbcomm, cpmono, nfs, &
+                nsg, toutms, nvi, nmat, y, &
+                cothe, coeff, dcothe, dcoeff, pgl, &
+                nbphas, coel, x, pas, neps, &
+                epsd, detot, f, nhsr, numhsr, &
                 hsr, itmax, toler, iret)
 !
-    hs2=0.5d0*h
+    hs2 = 0.5d0*h
 !
     do i = 1, nvi
-        ee(i)=(f(i)-a(i))*hs2
-        y(i)=y(i)+ee(i)
+        ee(i) = (f(i)-a(i))*hs2
+        y(i) = y(i)+ee(i)
     end do
 !
 end subroutine

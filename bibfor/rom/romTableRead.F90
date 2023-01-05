@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine romTableRead(tablReduCoor)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbexve.h"
 !
-type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
+    type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,12 +46,12 @@ type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
 ! --------------------------------------------------------------------------------------------------
 !
     if (tablReduCoor%lTablFromUser) then
-        call tbexve(tablReduCoor%tablUserName     ,&
+        call tbexve(tablReduCoor%tablUserName, &
                     tablReduCoor%tablResu%tablSymbName, coorReduObj)
     else
-        call tbexve(tablReduCoor%tablResu%tablName,&
+        call tbexve(tablReduCoor%tablResu%tablName, &
                     tablReduCoor%tablResu%tablSymbName, coorReduObj)
-    endif
-    call jeveuo(coorReduObj, 'L', vr = tablReduCoor%coorRedu)
+    end if
+    call jeveuo(coorReduObj, 'L', vr=tablReduCoor%coorRedu)
 !
 end subroutine

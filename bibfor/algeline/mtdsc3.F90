@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ subroutine mtdsc3(nommat)
     if (ier .eq. 0) then
         call jecreo(mat19//'.&INT', ' V V I')
         call jeecra(mat19//'.&INT', 'LONMAX', 19)
-    endif
+    end if
 !
     call jeveuo(mat19//'.&INT', 'E', lmat)
     do k = 1, 19
@@ -86,7 +86,7 @@ subroutine mtdsc3(nommat)
     call jeexin(mat19//'.&IN2', ier)
     if (ier .eq. 0) then
         call wkvect(mat19//'.&IN2', ' V V K24', 1, lnom)
-    endif
+    end if
 !
     call jeveut(mat19//'.&IN2', 'E', lnom)
     zk24(lnom) = mat19
@@ -111,7 +111,7 @@ subroutine mtdsc3(nommat)
 !     -- LMAT+3 :
 !     ------------
     call jelira(mat19//'.UALF', 'TYPE', cval=kbid)
-    ASSERT(kbid(1:1).eq.'R')
+    ASSERT(kbid(1:1) .eq. 'R')
     zi(lmat+3) = 1
 !
 !
@@ -128,7 +128,7 @@ subroutine mtdsc3(nommat)
 !     -- LMAT+7 ET LMAT+18  (SI CHARGES CINEMATIQUES) :
 !     -------------------------------------------------
     call jeexin(mat19//'.CCID', ier)
-    ASSERT(ier.eq.0)
+    ASSERT(ier .eq. 0)
     zi(lmat+7) = 0
     zi(lmat+18) = 0
 !

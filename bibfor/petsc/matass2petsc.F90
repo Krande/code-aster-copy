@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 #ifdef ASTER_HAVE_PETSC
 #include "asterf_petsc.h"
 #endif
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
 !
     implicit none
 !
@@ -71,7 +71,7 @@ use petsc_data_module
     integer ::  ibid
     real(kind=8) :: rbid
 !
-    character(len=24), dimension(:), pointer :: slvk  => null()
+    character(len=24), dimension(:), pointer :: slvk => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=19) :: solvbd, matas
 !
@@ -83,29 +83,29 @@ use petsc_data_module
     call jemarq()
 !
     matas = matasz
-    rbid=0.d0
+    rbid = 0.d0
 
 !   -- Creation d'un solveur bidon
-    solvbd='&&MAT2PET'
-    call crsvfm(solvbd, matas,'D', rank='L',pcpiv=50, usersmz='IN_CORE', blreps=rbid, renumz=' ',&
+    solvbd = '&&MAT2PET'
+   call crsvfm(solvbd, matas, 'D', rank='L', pcpiv=50, usersmz='IN_CORE', blreps=rbid, renumz=' ', &
                 redmpi=-9999)
     call jeveuo(solvbd//'.SLVK', 'L', vk24=slvk)
-    slvk(2)='SANS'
+    slvk(2) = 'SANS'
 
 !   -- Effacement si déjà factorisée
     call jeveuo(matas//'.REFA', 'E', vk24=refa)
     refa(8) = ' '
 
 !   -- Conversion de matass vers petsc
-    call apetsc('PRERES', solvbd, matas, [0.d0], ' ',&
-                0, ibid, ierror )
-    k = get_mat_id( matas )
+    call apetsc('PRERES', solvbd, matas, [0.d0], ' ', &
+                0, ibid, ierror)
+    k = get_mat_id(matas)
     call MatDuplicate(ap(k), MAT_COPY_VALUES, petscMatz, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
 !   -- Nettoyage
 !   Destruction des objets petsc
-    call apetsc('DETR_MAT', solvbd, matas, [0.d0], ' ',&
+    call apetsc('DETR_MAT', solvbd, matas, [0.d0], ' ', &
                 0, ibid, ierror)
 !   Destruction du solveur bidon
     call detrsd('SOLVEUR', solvbd)

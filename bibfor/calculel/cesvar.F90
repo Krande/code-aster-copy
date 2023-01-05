@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,24 +48,24 @@ subroutine cesvar(carele, compor, ligrel, dcel)
 !-----------------------------------------------------------------------
     carel2 = carele
 !
-    nbch=0
+    nbch = 0
     if (compor .ne. ' ') then
-        nbch=nbch+1
+        nbch = nbch+1
         lpain(nbch) = 'PCOMPOR'
         lchin(nbch) = compor
-    endif
+    end if
 !
 !
     call jeexin(carel2//'.CANBSP    .CELD', iret)
     if (iret .gt. 0) then
-        nbch=nbch+1
+        nbch = nbch+1
         lpain(nbch) = 'PNBSP_I'
         lchin(nbch) = carel2//'.CANBSP'
-    endif
+    end if
 !
 !
-    call calcul('S', 'NSPG_NBVA', ligrel, nbch, lchin,&
-                lpain, 1, '&&CESVAR.DCEL', 'PDCEL_I', 'V',&
+    call calcul('S', 'NSPG_NBVA', ligrel, nbch, lchin, &
+                lpain, 1, '&&CESVAR.DCEL', 'PDCEL_I', 'V', &
                 'NON')
 !
     call celces('&&CESVAR.DCEL', 'V', dcel)

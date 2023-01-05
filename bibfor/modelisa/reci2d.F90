@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
-                  cxma, normal, itria, xbar, iproj,&
+subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
+                  cxma, normal, itria, xbar, iproj, &
                   excent)
     implicit none
 !  DESCRIPTION : DETERMINATION DES RELATIONS CINEMATIQUES ENTRE LES DDLS
@@ -118,19 +118,19 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     nnomax = 9
-    nbtmax = 1 + 2*nnomax
+    nbtmax = 1+2*nnomax
     AS_ALLOCATE(vr=coemur, size=nbtmax)
     AS_ALLOCATE(vk8=nomddl, size=nbtmax)
     AS_ALLOCATE(vk8=nomnoe, size=nbtmax)
     AS_ALLOCATE(vi=dimens, size=nbtmax)
     AS_ALLOCATE(vr=direct, size=3*nbtmax)
 !
-    notlin = (nbcnx.gt.4)
-    if ((nbcnx.eq.3) .or. (nbcnx.eq.6)) then
+    notlin = (nbcnx .gt. 4)
+    if ((nbcnx .eq. 3) .or. (nbcnx .eq. 6)) then
         nbsom = 3
     else
         nbsom = 4
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   DETERMINATION DE L'ANTECEDENT DU POINT PROJETE DANS L'ELEMENT
@@ -166,60 +166,60 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
         nomddl(1+1) = 'DEPL'
         coemur(1+1) = -1.0d0
 !
-        if (l_excent)then
+        if (l_excent) then
             nbterm = 3
             nomnoe(1+2) = nomnoe(1+1)
             nomddl(1+2) = 'ROTA'
             coemur(1+2) = -excent
-        endif
+        end if
 !
     else
         if (nbcnx .eq. 3) then
-            ff(1) = 0.5d0* (1.0d0+ksi2)
-            ff(2) = -0.5d0* (ksi1+ksi2)
-            ff(3) = 0.5d0* (1.0d0+ksi1)
-        else if (nbcnx.eq.6) then
-            ff(1) = 0.5d0* (1.0d0+ksi2)*ksi2
-            ff(2) = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+ 1.0d0)
-            ff(3) = 0.5d0* (1.0d0+ksi1)*ksi1
-            ff(4) = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-            ff(5) = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-            ff(6) = (1.0d0+ksi1)* (1.0d0+ksi2)
+            ff(1) = 0.5d0*(1.0d0+ksi2)
+            ff(2) = -0.5d0*(ksi1+ksi2)
+            ff(3) = 0.5d0*(1.0d0+ksi1)
+        else if (nbcnx .eq. 6) then
+            ff(1) = 0.5d0*(1.0d0+ksi2)*ksi2
+            ff(2) = 0.5d0*(ksi1+ksi2)*(ksi1+ksi2+1.0d0)
+            ff(3) = 0.5d0*(1.0d0+ksi1)*ksi1
+            ff(4) = -1.0d0*(1.0d0+ksi2)*(ksi1+ksi2)
+            ff(5) = -1.0d0*(1.0d0+ksi1)*(ksi1+ksi2)
+            ff(6) = (1.0d0+ksi1)*(1.0d0+ksi2)
         else
             x(1) = ksi1
             x(2) = ksi2
-            if (nbcnx.eq.4) then
+            if (nbcnx .eq. 4) then
                 call elrfvf('QU4', x, ff)
-            else if (nbcnx.eq.8) then
+            else if (nbcnx .eq. 8) then
                 call elrfvf('QU8', x, ff)
-            else if (nbcnx.eq.9) then
+            else if (nbcnx .eq. 9) then
                 call elrfvf('QU9', x, ff)
-            endif
+            end if
             ffel2d = ff(1)
             ff(1) = ff(4)
             ff(4) = ff(3)
             ff(3) = ff(2)
             ff(2) = ffel2d
-            if (nbcnx.ge.8) then
+            if (nbcnx .ge. 8) then
                 ffel2d = ff(5)
                 ff(5) = ff(8)
                 ff(8) = ff(7)
                 ff(7) = ff(6)
                 ff(6) = ffel2d
-            endif
-        endif
+            end if
+        end if
 !
         if (iproj .gt. 10) then
 !
             nbterm = 3
-            i1 = iproj - 10
-            i2 = i1 + 1
+            i1 = iproj-10
+            i2 = i1+1
             if (i2 .gt. nbsom) i2 = 1
             if (l_excent) then
                 ind = 3
             else
                 ind = 2
-            endif
+            end if
             call jenuno(jexnum(nonoma, cxma(i1)), nomnoe(1+1))
             call jenuno(jexnum(nonoma, cxma(i2)), nomnoe(1+ind))
             nomddl(1+1) = 'DEPL'
@@ -228,7 +228,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
             coemur(1+1) = -ff(i1)
             coemur(1+ind) = -ff(i2)
 !
-            if (l_excent)then
+            if (l_excent) then
                 nbterm = 5
                 nomnoe(1+2) = nomnoe(1+1)
                 nomnoe(1+4) = nomnoe(1+ind)
@@ -236,46 +236,46 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
                 nomddl(1+4) = 'ROTA'
                 coemur(1+2) = excent*coemur(1+1)
                 coemur(1+4) = excent*coemur(1+ind)
-            endif
+            end if
 !
             if (notlin) then
-                nbterm = nbterm +1
-                i3 = i1 + nbsom
+                nbterm = nbterm+1
+                i3 = i1+nbsom
                 ind = 3
-                if(l_excent) ind = 5
+                if (l_excent) ind = 5
                 call jenuno(jexnum(nonoma, cxma(i3)), nomnoe(1+ind))
                 nomddl(1+ind) = 'DEPL'
 !
                 coemur(1+ind) = -ff(i3)
 !
-                if (l_excent)then
+                if (l_excent) then
                     nbterm = 7
                     nomnoe(1+6) = nomnoe(1+ind)
                     nomddl(1+6) = 'ROTA'
                     coemur(1+6) = excent*coemur(1+ind)
-                endif
-            endif
+                end if
+            end if
 !
         else
 !
-            nbterm = 1 + nbcnx
-            if (l_excent) nbterm = 1 + 2*nbcnx
+            nbterm = 1+nbcnx
+            if (l_excent) nbterm = 1+2*nbcnx
             do icnx = 1, nbcnx
                 ind = icnx
-                if (l_excent) ind = 2*icnx - 1
-                call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(1+ ind))
+                if (l_excent) ind = 2*icnx-1
+                call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(1+ind))
                 nomddl(1+ind) = 'DEPL'
                 coemur(1+ind) = -ff(icnx)
 !
-                if (l_excent)then
+                if (l_excent) then
                     nomnoe(1+ind+1) = nomnoe(1+ind)
                     nomddl(1+ind+1) = 'ROTA'
                     coemur(1+ind+1) = excent*coemur(1+ind)
-                endif
+                end if
             end do
 !
-        endif
-    endif
+        end if
+    end if
 !
 !....... UNE RELATION PAR DDL DE TRANSLATION DU NOEUD DU CABLE
 !        .....................................................
@@ -293,7 +293,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
     if (l_excent) then
         ind = 6
         nbbloc = (nbterm-1)/2
-    endif
+    end if
 !
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA PREMIERE RELATION (DDL DX)
 !....... PUIS AFFECTATION
@@ -302,18 +302,18 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
     direct(1+1) = 0.0d0
     direct(1+2) = 0.0d0
     do ibloc = 1, nbbloc
-        direct(1+3+ind* (ibloc-1)) = 1.0d0
-        direct(1+3+ind* (ibloc-1)+1) = 0.0d0
-        direct(1+3+ind* (ibloc-1)+2) = 0.0d0
+        direct(1+3+ind*(ibloc-1)) = 1.0d0
+        direct(1+3+ind*(ibloc-1)+1) = 0.0d0
+        direct(1+3+ind*(ibloc-1)+2) = 0.0d0
         if (l_excent) then
-            direct(1+3+6* (ibloc-1)+3) = 0.0d0
-            direct(1+3+6* (ibloc-1)+4) = normal(3)
-            direct(1+3+6* (ibloc-1)+5) = -normal(2)
-        endif
+            direct(1+3+6*(ibloc-1)+3) = 0.0d0
+            direct(1+3+6*(ibloc-1)+4) = normal(3)
+            direct(1+3+6*(ibloc-1)+5) = -normal(2)
+        end if
     end do
 !
-    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                direct, nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens, &
+                direct, nbterm, zero, cbid, k8b, &
                 'REEL', 'REEL', 0.d0, lirela)
 !
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
@@ -323,18 +323,18 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
     direct(1+1) = 1.0d0
     direct(1+2) = 0.0d0
     do ibloc = 1, nbbloc
-        direct(1+3+ind* (ibloc-1)) = 0.0d0
-        direct(1+3+ind* (ibloc-1)+1) = 1.0d0
-        direct(1+3+ind* (ibloc-1)+2) = 0.0d0
-        if (l_excent)then
-            direct(1+3+6* (ibloc-1)+3) = -normal(3)
-            direct(1+3+6* (ibloc-1)+4) = 0.0d0
-            direct(1+3+6* (ibloc-1)+5) = normal(1)
-        endif
+        direct(1+3+ind*(ibloc-1)) = 0.0d0
+        direct(1+3+ind*(ibloc-1)+1) = 1.0d0
+        direct(1+3+ind*(ibloc-1)+2) = 0.0d0
+        if (l_excent) then
+            direct(1+3+6*(ibloc-1)+3) = -normal(3)
+            direct(1+3+6*(ibloc-1)+4) = 0.0d0
+            direct(1+3+6*(ibloc-1)+5) = normal(1)
+        end if
     end do
 !
-    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                direct, nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens, &
+                direct, nbterm, zero, cbid, k8b, &
                 'REEL', 'REEL', 0.d0, lirela)
 !
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
@@ -344,18 +344,18 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
     direct(1+1) = 0.0d0
     direct(1+2) = 1.0d0
     do ibloc = 1, nbbloc
-        direct(1+3+ind* (ibloc-1)) = 0.0d0
-        direct(1+3+ind* (ibloc-1)+1) = 0.0d0
-        direct(1+3+ind* (ibloc-1)+2) = 1.0d0
+        direct(1+3+ind*(ibloc-1)) = 0.0d0
+        direct(1+3+ind*(ibloc-1)+1) = 0.0d0
+        direct(1+3+ind*(ibloc-1)+2) = 1.0d0
         if (l_excent) then
-            direct(1+3+6* (ibloc-1)+3) = normal(2)
-            direct(1+3+6* (ibloc-1)+4) = -normal(1)
-            direct(1+3+6* (ibloc-1)+5) = 0.0d0
-        endif
+            direct(1+3+6*(ibloc-1)+3) = normal(2)
+            direct(1+3+6*(ibloc-1)+4) = -normal(1)
+            direct(1+3+6*(ibloc-1)+5) = 0.0d0
+        end if
     end do
 !
-    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                direct, nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens, &
+                direct, nbterm, zero, cbid, k8b, &
                 'REEL', 'REEL', 0.d0, lirela)
 !
 110 continue

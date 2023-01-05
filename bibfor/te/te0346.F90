@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine te0346(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,7 +41,7 @@ implicit none
 #include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,17 +73,17 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 11
     real(kind=8) :: vale_cara(nb_cara)
-    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1   ','IY1  ','IZ1  ',&
-                                                          'AY1  ','AZ1  ','EY1  ',&
-                                                          'EZ1  ','JX1  ','JG1  ',&
-                                                          'IYR21','IZR21'/)
+    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1   ', 'IY1  ', 'IZ1  ', &
+                                                          'AY1  ', 'AZ1  ', 'EY1  ', &
+                                                          'EZ1  ', 'JX1  ', 'JG1  ', &
+                                                          'IYR21', 'IZR21'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     icontp = 1
-    imat   = 1
+    imat = 1
     ivectu = 1
-    jcret  = 1
+    jcret = 1
     fami = 'RIGI'
     call elrefe_info(fami=fami, nno=nno, npg=npg, jpoids=ipoids)
     nc = 7
@@ -116,30 +116,30 @@ character(len=16), intent(in) :: option, nomte
 !
     if (rela_comp .ne. 'ELAS') then
         call utmess('F', 'POUTRE0_17')
-    endif
-    if (defo_comp .ne. 'PETIT' .and.  defo_comp .ne. 'GROT_GDEP') then
-        call utmess('F', 'POUTRE0_40', sk = defo_comp)
-    endif
+    end if
+    if (defo_comp .ne. 'PETIT' .and. defo_comp .ne. 'GROT_GDEP') then
+        call utmess('F', 'POUTRE0_40', sk=defo_comp)
+    end if
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Get output fields
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imat)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
 !
     reactu = defo_comp .eq. 'GROT_GDEP'
     if (reactu) then
@@ -154,10 +154,10 @@ character(len=16), intent(in) :: option, nomte
             zr(istrxp+1-1) = angp(1)
             zr(istrxp+2-1) = angp(2)
             zr(istrxp+3-1) = angp(3)
-        endif
+        end if
     else
         call matrot(zr(iorien), pgl)
-    endif
+    end if
 !
 !   passage des déplacements dans le repère local:
     call utpvgl(nno, nc, pgl, zr(ideplp), du)
@@ -167,22 +167,22 @@ character(len=16), intent(in) :: option, nomte
     ey = vale_cara(6)
     ez = vale_cara(7)
     do i = 1, nno
-        j=nc*(i-1)
-        u(j+2) = u(j+2) - ez* u(j+4)
-        u(j+3) = u(j+3) + ey* u(j+4)
-        du(j+2) = du(j+2) - ez*du(j+4)
-        du(j+3) = du(j+3) + ey*du(j+4)
-    enddo
+        j = nc*(i-1)
+        u(j+2) = u(j+2)-ez*u(j+4)
+        u(j+3) = u(j+3)+ey*u(j+4)
+        du(j+2) = du(j+2)-ez*du(j+4)
+        du(j+3) = du(j+3)+ey*du(j+4)
+    end do
 !
-    call nmvmpo(fami, npg, nno, option, nc,&
-                xl, zr(ipoids), zi(imate), vale_cara, u,&
+    call nmvmpo(fami, npg, nno, option, nc, &
+                xl, zr(ipoids), zi(imate), vale_cara, u, &
                 du, zr(icontm), zr(icontp), fl, klv)
 !   FL dans le repère global
     if (lVect) then
-        fl( 4)=fl( 4)-ez*fl(2)+ey*fl( 3)
-        fl(11)=fl(11)-ez*fl(9)+ey*fl(10)
+        fl(4) = fl(4)-ez*fl(2)+ey*fl(3)
+        fl(11) = fl(11)-ez*fl(9)+ey*fl(10)
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-    endif
+    end if
 !
     if (lMatr) then
 !       calcul de la matrice de rigidité géométrique
@@ -191,30 +191,30 @@ character(len=16), intent(in) :: option, nomte
                 ldep = icontp
             else
                 ldep = icontm
-            endif
+            end if
             call jspgno(xl, zr(ldep), b)
             do i = 1, 7
                 b(i) = -b(i)
-            enddo
+            end do
             a = vale_cara(1)
             xiy = vale_cara(2)
             xiz = vale_cara(3)
-            iyr2= vale_cara(10)
-            izr2= vale_cara(11)
-            rgeom(:)=0.0d0
+            iyr2 = vale_cara(10)
+            izr2 = vale_cara(11)
+            rgeom(:) = 0.0d0
             call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, rgeom)
-            klv = klv + rgeom
-        endif
-    endif
+            klv = klv+rgeom
+        end if
+    end if
 !
 !   Matrice tangente
     if (lMatr) then
         call pouex7(klv, ey, ez)
         call utpslg(nno, nc, pgl, klv, zr(imat))
-    endif
+    end if
 !
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !
 end subroutine

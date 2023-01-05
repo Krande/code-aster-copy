@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine trvocz(ndim, nbvmas, livmas, jrepmo,&
+subroutine trvocz(ndim, nbvmas, livmas, jrepmo, &
                   jcelds, jcelvs, trxmoy)
     implicit none
     integer, intent(in) :: ndim, nbvmas, livmas(nbvmas)
@@ -64,7 +64,7 @@ subroutine trvocz(ndim, nbvmas, livmas, jrepmo,&
         nbsig = 6
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! -------------------------------------------------------------------
 !   boucle sur les mailles voisines
@@ -91,7 +91,7 @@ subroutine trvocz(ndim, nbvmas, livmas, jrepmo,&
 !       nombre de points de Gauss
         lgcat = zi(jcelds-1+iainfo+3)
         nlong = zi(jcelds-1+iainfo+4+4*(jelem-1)+3)
-        ASSERT(lgcat.eq.nlong)
+        ASSERT(lgcat .eq. nlong)
         nbpg = nlong/nbsig
 !
 ! -------------------------------------------------------------------
@@ -103,15 +103,15 @@ subroutine trvocz(ndim, nbvmas, livmas, jrepmo,&
 !           taux de triaxialite
             idecpg = jcelvs-1+iaval+nbsig*(kpg-1)
             call fgequi(zr(idecpg), 'SIGM_DIR', ndim, equi)
-            trxtmp = trxtmp + equi(17)
+            trxtmp = trxtmp+equi(17)
 !
-        enddo
+        end do
 !
 !       moyenne arithmetique (sur les PG) du taux de triaxialite
         trxtmp = trxtmp/nbpg
         trxmoy = trxmoy+trxtmp
 !
-    enddo
+    end do
 !
 !   moyenne arithmetique (sur EF voisins) du taux de triaxialite
     trxmoy = trxmoy/nbvmas

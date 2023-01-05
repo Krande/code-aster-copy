@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ subroutine titre(defTitle, lDefTitle)
     nomobj(20:24) = '.TITR'
     if (present(defTitle)) then
         ASSERT(present(lDefTitle))
-        call titrea('T', nomcon, nomcon, nomobj, 'C',&
-                    ' ', 0, 'G', '(1PE12.5)', defTitle=defTitle,&
+        call titrea('T', nomcon, nomcon, nomobj, 'C', &
+                    ' ', 0, 'G', '(1PE12.5)', defTitle=defTitle, &
                     lDefTitle=lDefTitle)
     else
-        call titrea('T', nomcon, nomcon, nomobj, 'C',&
+        call titrea('T', nomcon, nomcon, nomobj, 'C', &
                     ' ', 0, 'G', '(1PE12.5)')
-    endif
+    end if
 end subroutine

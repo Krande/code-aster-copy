@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
-                  ndim, typgeo, refcoo, gscoo, wg,&
-                  raux1, raux2, raux3, nolopg, nomasu,&
+subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
+                  ndim, typgeo, refcoo, gscoo, wg, &
+                  raux1, raux2, raux3, nolopg, nomasu, &
                   lfichUniq, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
@@ -83,12 +83,12 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'IRMPG1' )
+    parameter(nompro='IRMPG1')
 !
     integer :: edfuin
-    parameter (edfuin=0)
+    parameter(edfuin=0)
     integer :: edleaj
-    parameter (edleaj=1)
+    parameter(edleaj=1)
 !
     integer :: ifm, nivinf
     integer :: iaux, jaux, kaux
@@ -116,27 +116,27 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
     if (nivinf .gt. 1) then
         call cpu_time(start)
-        write (ifm,201) 'DEBUT DE '//nompro
-        write (ifm,202) nomfpg
-        202 format(/,'ECRITURE D''UNE LOCALISATION DES POINTS DE GAUSS',&
-     &       /,'==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ',a)
-    endif
-    201 format(/,4x,10('='),a,10('='),/)
+        write (ifm, 201) 'DEBUT DE '//nompro
+        write (ifm, 202) nomfpg
+202     format(/, 'ECRITURE D''UNE LOCALISATION DES POINTS DE GAUSS',&
+     &       /, '==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ', a)
+    end if
+201 format(/, 4x, 10('='), a, 10('='),/)
 !
 ! 1.3. ==> OUVERTURE FICHIER MED EN MODE 'LECTURE_AJOUT'
 !      CELA SIGNIFIE QUE LE FICHIER EST ENRICHI MAIS ON NE PEUT PAS
 !      Y ECRASER UNE DONNEE DEJA PRESENTE.
 !      REMARQUE : LE FICHIER EXISTE DEJA CAR IL CONTIENT LE MAILLAGE.
 !
-    inquire(file=nofimd,exist=ficexi)
+    inquire (file=nofimd, exist=ficexi)
     if (.not. ficexi) then
         call utmess('F', 'MED2_3')
-    endif
+    end if
     call as_med_open(idfimd, nofimd, edleaj, codret, lfichUniq)
     if (codret .ne. 0) then
-        saux08='mfiope'
+        saux08 = 'mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 ! 1.4. ==> CREATION DE LA PRMIERE MOITIE DU NOM DE LA LOCALISATION :
 !          ON L'IDENTIFIE AU NOM DE LA FAMILLE, EN REMPLACANT LES BLANCS
@@ -146,10 +146,10 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !             1234567890123456
     lgnofa = lxlgut(nomfpg)
     saux16(1:lgnofa) = nomfpg(1:lgnofa)
-    do iaux = 1 , lgnofa
+    do iaux = 1, lgnofa
         if (saux16(iaux:iaux) .eq. ' ') then
             saux16(iaux:iaux) = '_'
-        endif
+        end if
     end do
 !
 !====
@@ -162,26 +162,26 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     call as_mlcnlc(idfimd, nblopg, codret)
 !
     if (codret .ne. 0) then
-        saux08='mlcnlc'
+        saux08 = 'mlcnlc'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 !
     if (nivinf .gt. 1) then
         if (nblopg .eq. 0) then
-            write (ifm,203)
+            write (ifm, 203)
         else
-            write (ifm,204) nblopg
-        endif
-    endif
-    203 format(/,2x,'LE FICHIER NE CONTIENT PAS DE',&
+            write (ifm, 204) nblopg
+        end if
+    end if
+203 format(/, 2x, 'LE FICHIER NE CONTIENT PAS DE',&
      &' LOCALISATION DE POINTS DE GAUSS.')
-    204 format(/,2x,'LE FICHIER CONTIENT DEJA',i8,&
+204 format(/, 2x, 'LE FICHIER CONTIENT DEJA', i8,&
      &' LOCALISATION(S) DE POINTS DE GAUSS : ')
 !
 ! 2.2. ==> PARCOURS DES LOCALISATIONS DEJA ENREGISTREES
 !
-    do iaux = 1 , nblopg
+    do iaux = 1, nblopg
 !
 ! 2.2.1. ==> LECTURE DES CARACTERISTIQUES DE LA IAUX-EME LOCALISATION
 !              PRESENTE DANS LE FICHIER :
@@ -189,22 +189,22 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !              TYPGEL = TYPGEO
 !              NBREPL = NOMBRE DE POINTS DE GAUSS
 !
-        call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl,&
-                   ndim2, nomas2, codret)
+        call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl, &
+                       ndim2, nomas2, codret)
 !
         if (codret .ne. 0) then
-            saux08='mlclci'
+            saux08 = 'mlclci'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
         if (nivinf .gt. 1) then
-            write (ifm,205) iaux, saux64, typgel, nbrepl
-        endif
-        205 format(&
-        & /,2x,'. CARACTERISTIQUES DE LA LOCALISATION NUMERO',i4,' : ',&
-        & /,2x,'... NOM    : ',a,&
-        & /,2x,'... TYPGEO :',i4,&
-        & /,2x,'... NBREPG :',i4)
+            write (ifm, 205) iaux, saux64, typgel, nbrepl
+        end if
+205     format(&
+        & /, 2x, '. CARACTERISTIQUES DE LA LOCALISATION NUMERO', i4, ' : ',&
+        & /, 2x, '... NOM    : ', a,&
+        & /, 2x, '... TYPGEO :', i4,&
+        & /, 2x, '... NBREPG :', i4)
 !
 ! 2.2.2. ==> ON REPERE SI LA LOCALISATION EST BATIE SUR LA MEME
 !            FAMILLE D'ELEMENT FINI ASTER.
@@ -220,49 +220,49 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
             if (typgel .eq. typgeo .and. nbrepl .eq. nbrepg) then
 !
-                call as_mlclor(idfimd, raux1, raux2, raux3, edfuin,&
-                           saux64, codret)
+                call as_mlclor(idfimd, raux1, raux2, raux3, edfuin, &
+                               saux64, codret)
 !
                 if (codret .ne. 0) then
-                    saux08='mlclor'
+                    saux08 = 'mlclor'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
 !
                 kaux = nbnoto*ndim
-                do jaux = 1 , kaux
+                do jaux = 1, kaux
                     if (refcoo(jaux) .ne. raux1(jaux)) then
                         goto 22
-                    endif
+                    end if
                 end do
                 kaux = nbrepg*ndim
-                do jaux = 1 , kaux
+                do jaux = 1, kaux
                     if (gscoo(jaux) .ne. raux2(jaux)) then
                         goto 22
-                    endif
+                    end if
                 end do
-                do jaux = 1 , nbrepg
+                do jaux = 1, nbrepg
                     if (wg(jaux) .ne. raux3(jaux)) then
                         goto 22
-                    endif
+                    end if
                 end do
 !
 !           SI ON ARRIVE ICI, C'EST QUE LES LOCALISATIONS SONT
 !           IDENTIQUES ; ON LE NOTIFIE ET ON TERMINE LE PROGRAMME
 !
                 if (nivinf .gt. 1) then
-                    write (ifm,206) saux64
-                endif
-                206 format(/,2x,'LA LOCALISATION ',a,' EST LA BONNE.')
+                    write (ifm, 206) saux64
+                end if
+206             format(/, 2x, 'LA LOCALISATION ', a, ' EST LA BONNE.')
 !
                 nolopg = saux64
 !
                 goto 40
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
-22 continue
+22      continue
 !
     end do
 !
@@ -276,105 +276,105 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
     if (nivinf .gt. 1) then
 !
-        write (ifm,*) ' '
-        write (ifm,207) 'FAMILLE DE POINTS DE GAUSS', nomfpg
-        write (ifm,208) 'NOMBRE DE NOEUDS          ', nbnoto
-        write (ifm,208) 'NOMBRE DE POINTS DE GAUSS ', nbrepg
+        write (ifm, *) ' '
+        write (ifm, 207) 'FAMILLE DE POINTS DE GAUSS', nomfpg
+        write (ifm, 208) 'NOMBRE DE NOEUDS          ', nbnoto
+        write (ifm, 208) 'NOMBRE DE POINTS DE GAUSS ', nbrepg
 !
 !     6.1. DIMENSION 1
 !
         if (ndim .eq. 1) then
 !                            123456789012345
-            write (ifm,209) 'NOEUDS         '
-            do iaux = 1 , nbnoto
-                write (ifm,210) iaux,refcoo(iaux)
+            write (ifm, 209) 'NOEUDS         '
+            do iaux = 1, nbnoto
+                write (ifm, 210) iaux, refcoo(iaux)
             end do
-            write (ifm,211)
-            write (ifm,209) 'POINTS DE GAUSS'
-            do iaux = 1 , nbrepg
-                write (ifm,210) iaux,gscoo(iaux)
+            write (ifm, 211)
+            write (ifm, 209) 'POINTS DE GAUSS'
+            do iaux = 1, nbrepg
+                write (ifm, 210) iaux, gscoo(iaux)
             end do
-            write (ifm,211)
+            write (ifm, 211)
 !
 !     6.2. DIMENSION 2
 !
-        else if (ndim.eq.2) then
-            write (ifm,212) 'NOEUDS         '
-            do iaux = 1 , nbnoto
-                write (ifm,213) iaux, refcoo(ndim*(iaux-1)+1),&
-                refcoo(ndim*(iaux-1)+2)
+        else if (ndim .eq. 2) then
+            write (ifm, 212) 'NOEUDS         '
+            do iaux = 1, nbnoto
+                write (ifm, 213) iaux, refcoo(ndim*(iaux-1)+1), &
+                    refcoo(ndim*(iaux-1)+2)
             end do
-            write (ifm,214)
-            write (ifm,212) 'POINTS DE GAUSS'
-            do iaux = 1 , nbrepg
-                write (ifm,213) iaux, gscoo(ndim*(iaux-1)+1),&
-                gscoo(ndim*(iaux-1)+2)
+            write (ifm, 214)
+            write (ifm, 212) 'POINTS DE GAUSS'
+            do iaux = 1, nbrepg
+                write (ifm, 213) iaux, gscoo(ndim*(iaux-1)+1), &
+                    gscoo(ndim*(iaux-1)+2)
             end do
-            write (ifm,214)
+            write (ifm, 214)
 !
 !     6.3. DIMENSION 3
 !
         else
-            write (ifm,215) 'NOEUDS         '
-            do iaux = 1 , nbnoto
-                write (ifm,217) iaux, refcoo(ndim*(iaux-1)+1),&
-                refcoo(ndim*(iaux-1)+2), refcoo(ndim*(iaux-1)+3)
+            write (ifm, 215) 'NOEUDS         '
+            do iaux = 1, nbnoto
+                write (ifm, 217) iaux, refcoo(ndim*(iaux-1)+1), &
+                    refcoo(ndim*(iaux-1)+2), refcoo(ndim*(iaux-1)+3)
             end do
-            write (ifm,216)
-            write (ifm,215) 'POINTS DE GAUSS'
-            do iaux = 1 , nbrepg
-                write (ifm,217) iaux, gscoo(ndim*(iaux-1)+1),&
-                gscoo(ndim*(iaux-1)+2), gscoo(ndim*(iaux-1)+3)
+            write (ifm, 216)
+            write (ifm, 215) 'POINTS DE GAUSS'
+            do iaux = 1, nbrepg
+                write (ifm, 217) iaux, gscoo(ndim*(iaux-1)+1), &
+                    gscoo(ndim*(iaux-1)+2), gscoo(ndim*(iaux-1)+3)
             end do
-            write (ifm,216)
-        endif
+            write (ifm, 216)
+        end if
 !
-        write (ifm,218)
-        do iaux = 1 , nbrepg
-            write (ifm,210) iaux, wg(iaux)
+        write (ifm, 218)
+        do iaux = 1, nbrepg
+            write (ifm, 210) iaux, wg(iaux)
         end do
-        write (ifm,211)
+        write (ifm, 211)
 !
-    endif
+    end if
 !
-    209 format(&
-     &/,28('*'),&
-     &/,'*      COORDONNEES DES     *',&
-     &/,'*      ',a15        ,'     *',&
-     &/,28('*'),&
-     &/,'*  NUMERO  *       X       *',&
-     &/,28('*'))
-    212 format(&
-     &/,44('*'),&
-     &/,'*       COORDONNEES DES ',a15        ,'    *',&
-     &/,44('*'),&
-     &/,'*  NUMERO  *       X       *       Y       *',&
-     &/,44('*'))
-    215 format(&
-     &/,60('*'),&
-     &/,'*            COORDONNEES DES ',a15         ,&
+209 format(&
+     &/, 28('*'),&
+     &/, '*      COORDONNEES DES     *',&
+     &/, '*      ', a15, '     *',&
+     &/, 28('*'),&
+     &/, '*  NUMERO  *       X       *',&
+     &/, 28('*'))
+212 format(&
+     &/, 44('*'),&
+     &/, '*       COORDONNEES DES ', a15, '    *',&
+     &/, 44('*'),&
+     &/, '*  NUMERO  *       X       *       Y       *',&
+     &/, 44('*'))
+215 format(&
+     &/, 60('*'),&
+     &/, '*            COORDONNEES DES ', a15,&
      &'               *',&
-     &/,60('*'),&
-     &/,'*  NUMERO  *       X       *       Y       *',&
+     &/, 60('*'),&
+     &/, '*  NUMERO  *       X       *       Y       *',&
      &'       Z       *',&
-     &/,60('*'))
-    218 format(&
-     &/,28('*'),&
-     &/,'*      POINTS DE GAUSS     *',&
-     &/,'*  NUMERO  *     POIDS     *',&
-     &/,28('*'))
-    210 format('* ',i5,'    *',1pg12.5,'    *')
-    213 format('* ',i5,2('    *',1pg12.5),'    *')
-    217 format('* ',i5,3('    *',1pg12.5),'    *')
-    211 format(28('*'))
-    214 format(44('*'))
-    216 format(60('*'))
-    207 format(a,' : ',a)
-    208 format(a,' : ',i4)
+     &/, 60('*'))
+218 format(&
+     &/, 28('*'),&
+     &/, '*      POINTS DE GAUSS     *',&
+     &/, '*  NUMERO  *     POIDS     *',&
+     &/, 28('*'))
+210 format('* ', i5, '    *', 1pg12.5, '    *')
+213 format('* ', i5, 2('    *', 1pg12.5), '    *')
+217 format('* ', i5, 3('    *', 1pg12.5), '    *')
+211 format(28('*'))
+214 format(44('*'))
+216 format(60('*'))
+207 format(a, ' : ', a)
+208 format(a, ' : ', i4)
 !
     kaux = -1
 !
- 30 continue
+30  continue
 !
 ! 3.1. ==> CREATION D'UN NOM POUR LA LOCALISATION
 !      NOLOPG( 1:16) = NOM DE LA FAMILLE DES POINTS DE GAUSS
@@ -388,7 +388,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 3.1.1 ==> MISE A BLANC
 !
-    nolopg =' '
+    nolopg = ' '
 !      1234567890123456789012345678901234567890123456789012345678901234
 !
 ! 3.1.2 ==> INSERTION DU NOM DE LA FAMILLE
@@ -398,7 +398,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     do iaux = 1, lgnofa
         if (nolopg(iaux:iaux) .eq. ' ') then
             nolopg(iaux:iaux) = '_'
-        endif
+        end if
     end do
 !
 ! 3.1.3 ==> INSERTION DU NOMBRE DE SOUS-POINTS SI > 1
@@ -410,20 +410,20 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
         do iaux = 1, 40
             if (nolopg(iaux:iaux) .eq. ' ') then
                 nolopg(iaux:iaux) = '_'
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
 ! 3.1.4 ==> INSERTION DU COMPTEUR AU DELA DE 1
 !
-    kaux = kaux + 1
+    kaux = kaux+1
     if (kaux .gt. 0) then
         call codent(kaux, 'D', saux08)
-        nolopg (25:32) = saux08
+        nolopg(25:32) = saux08
         do iaux = 1, 32
             if (nolopg(iaux:iaux) .eq. ' ') then
                 nolopg(iaux:iaux) = '_'
-            endif
+            end if
         end do
     end if
 !
@@ -434,19 +434,19 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !              NBREPL = NOMBRE DE POINTS DE GAUSS
 !          SI ON EN TROUVE UNE QUI PORTE LE MEME NOM, ON RECOMMENCE
 !
-    do iaux = 1 , nblopg
+    do iaux = 1, nblopg
 !
-        call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl,&
-                   ndim2, nomas2, codret)
+        call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl, &
+                       ndim2, nomas2, codret)
 !
         if (codret .ne. 0) then
-            saux08='mlclci'
+            saux08 = 'mlclci'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
         if (saux64 .eq. nolopg) then
             goto 30
-        endif
+        end if
 !
     end do
 !
@@ -454,46 +454,46 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
     if (nivinf .gt. 1) then
 !
-        write (ifm,219) typgeo, nbnoto, nbrepg, nolopg
-        219 format(&
-        &/,'TYPE DE MAILLES MED :', i4,&
-        &/,'NOMBRE DE NOEUDS          :', i4&
-        &/,'NOMBRE DE POINTS DE GAUSS :', i4,&
-        &/,'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ',&
-        &  'NOMMEE : ',/,a,/)
+        write (ifm, 219) typgeo, nbnoto, nbrepg, nolopg
+219     format(&
+        &/, 'TYPE DE MAILLES MED :', i4,&
+        &/, 'NOMBRE DE NOEUDS          :', i4&
+        &/, 'NOMBRE DE POINTS DE GAUSS :', i4,&
+        &/, 'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ',&
+        &  'NOMMEE : ', /, a,/)
 !
-    endif
+    end if
 !
     if (nomasu .ne. ' ') then
-        nolopg(32:64)=nomasu(1:32)
-    endif
+        nolopg(32:64) = nomasu(1:32)
+    end if
 !
-    call as_mlclow(idfimd, typgeo, refcoo, edfuin, nbrepg,&
-                   gscoo, wg, nolopg, ndim, nomasu,&
+    call as_mlclow(idfimd, typgeo, refcoo, edfuin, nbrepg, &
+                   gscoo, wg, nolopg, ndim, nomasu, &
                    codret)
 !
     if (codret .ne. 0) then
-        saux08='mlclow'
+        saux08 = 'mlclow'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 !====
 ! 4. LA FIN
 !====
 !
-40 continue
+40  continue
 !
 ! 4.1. ==> FERMETURE DU FICHIER MED
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='mficlo'
+        saux08 = 'mficlo'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     if (nivinf .gt. 1) then
         call cpu_time(end)
-        write (ifm,*) '    ========== FIN DE '//nompro//' EN', end-start, 'sec ==========='
-    endif
+        write (ifm, *) '    ========== FIN DE '//nompro//' EN', end-start, 'sec ==========='
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ subroutine porigi(nomte, e, xnu, xl, klv)
     integer, parameter :: nb_cara = 18
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1','JG1',&
-                    'A2','IY2','IZ2','AY2','AZ2','EY2','EZ2','JX2','TVAR'/
+    data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', 'JX1', 'JG1', &
+        'A2', 'IY2', 'IZ2', 'AY2', 'AZ2', 'EY2', 'EZ2', 'JX2', 'TVAR'/
 !
     integer             :: retp(2), iret
     real(kind=8)        :: valr(2)
@@ -74,71 +74,71 @@ subroutine porigi(nomte, e, xnu, xl, klv)
 ! --------------------------------------------------------------------------------------------------
 !
     g = e/(2.0d0*(1.0d0+xnu))
-    euler=lteatt('EULER','OUI')
+    euler = lteatt('EULER', 'OUI')
 !
 !   recuperation des caracteristiques generales des sections
     xl_geom = lonele()
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
-    a      = vale_cara(1)
-    xiy    = vale_cara(2)
-    xiz    = vale_cara(3)
-    alfay  = vale_cara(4)
-    alfaz  = vale_cara(5)
-    xjx    = vale_cara(8)
-    xig    = vale_cara(9)
-    a2     = vale_cara(10)
-    xiy2   = vale_cara(11)
-    xiz2   = vale_cara(12)
+    a = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
+    alfay = vale_cara(4)
+    alfaz = vale_cara(5)
+    xjx = vale_cara(8)
+    xig = vale_cara(9)
+    a2 = vale_cara(10)
+    xiy2 = vale_cara(11)
+    xiz2 = vale_cara(12)
     alfay2 = vale_cara(13)
     alfaz2 = vale_cara(14)
-    xjx2   = vale_cara(17)
-    ey = (vale_cara(6) +vale_cara(15))/2.d0
-    ez = (vale_cara(7) +vale_cara(16))/2.d0
+    xjx2 = vale_cara(17)
+    ey = (vale_cara(6)+vale_cara(15))/2.d0
+    ez = (vale_cara(7)+vale_cara(16))/2.d0
     itype = nint(vale_cara(18))
 !
     if (xl .le. 0.0d0) then
         xl0 = xl_geom
     else
         xl0 = xl
-    endif
+    end if
 !
     if (euler) then
 !       poutre droite d'euler a 6 ddl
         istruc = 1
-        alfay  = 0.0d0
-        alfaz  = 0.0d0
+        alfay = 0.0d0
+        alfaz = 0.0d0
         alfay2 = 0.0d0
         alfaz2 = 0.0d0
-    else if (nomte.eq.'MECA_POU_D_T') then
-        valp(1:2)=['C_FLEX_Y', 'C_FLEX_Z']
+    else if (nomte .eq. 'MECA_POU_D_T') then
+        valp(1:2) = ['C_FLEX_Y', 'C_FLEX_Z']
         call get_value_mode_local('PCAARPO', valp, valr, iret, retpara_=retp)
         xfly = 1.0; xflz = 1.0
-        if ( retp(1).eq.0) xfly = valr(1)
-        if ( retp(2).eq.0) xflz = valr(2)
-        xiy  = xiy/xfly
-        xiz  = xiz/xflz
+        if (retp(1) .eq. 0) xfly = valr(1)
+        if (retp(2) .eq. 0) xflz = valr(2)
+        xiy = xiy/xfly
+        xiz = xiz/xflz
         xiy2 = xiy2/xfly
         xiz2 = xiz2/xflz
         istruc = 1
-    else if (nomte.eq.'MECA_POU_D_TG') then
+    else if (nomte .eq. 'MECA_POU_D_TG') then
         itype = 30
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !   calcul de la matrice de rigidite locale
     if (itype .eq. 0) then
 !       poutre droite a section constante
         call ptka01(klv, e, a, xl0, xiy, xiz, xjx, g, alfay, alfaz, ey, ez, istruc)
 !
-    else if (itype.eq.1 .or. itype.eq.2) then
+    else if (itype .eq. 1 .or. itype .eq. 2) then
 !       poutre droite a section variable (type 1 ou 2)
-        call ptka02(itype, klv, e, a, a2, xl0, xiy, xiy2, xiz, xiz2,&
+        call ptka02(itype, klv, e, a, a2, xl0, xiy, xiy2, xiz, xiz2, &
                     xjx, xjx2, g, alfay, alfay2, alfaz, alfaz2, ey, ez, istruc)
 !
-    else if (itype.eq.30) then
+    else if (itype .eq. 30) then
         call ptka21(klv, e, a, xl0, xiy, xiz, xjx, xig, g, alfay, alfaz, ey, ez)
-    endif
+    end if
 !
 end subroutine

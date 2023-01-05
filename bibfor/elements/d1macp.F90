@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine d1macp(fami, mater, instan, poum, kpg,&
+subroutine d1macp(fami, mater, instan, poum, kpg, &
                   ksp, repere, d1)
 !.======================================================================
     implicit none
@@ -55,7 +55,7 @@ subroutine d1macp(fami, mater, instan, poum, kpg,&
     integer :: i, irep, j, mater, nbres, nbv
     real(kind=8) :: deux, e, e1, e2, un, zero
 !-----------------------------------------------------------------------
-    parameter (nbres = 7)
+    parameter(nbres=7)
 !
     integer :: icodre(nbres)
     character(len=8) :: nompar
@@ -78,9 +78,9 @@ subroutine d1macp(fami, mater, instan, poum, kpg,&
 !
     do i = 1, 4
         do j = 1, 4
-            d1(i,j) = zero
-            d1orth(i,j) = zero
-            work(i,j) = zero
+            d1(i, j) = zero
+            d1orth(i, j) = zero
+            work(i, j) = zero
         end do
     end do
 !
@@ -99,36 +99,36 @@ subroutine d1macp(fami, mater, instan, poum, kpg,&
 !
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 !        -----------
-        call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, [valpar],&
+        call rcvalb(fami, kpg, ksp, poum, mater, &
+                    ' ', phenom, 1, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
 !
         e = valres(1)
         nu = valres(2)
 !
-        d1(1,1) = un/e
-        d1(1,2) = -nu/e
+        d1(1, 1) = un/e
+        d1(1, 2) = -nu/e
 !
-        d1(2,1) = d1(1,2)
-        d1(2,2) = d1(1,1)
+        d1(2, 1) = d1(1, 2)
+        d1(2, 2) = d1(1, 1)
 !
-        d1(4,4) = deux*(un + nu)/e
+        d1(4, 4) = deux*(un+nu)/e
 !
 !      --------------
 ! ---- CAS ORTHOTROPE
 !      --------------
-    else if (phenom.eq.'ELAS_ORTH') then
+    else if (phenom .eq. 'ELAS_ORTH') then
 !
-        nomres(1)='E_L'
-        nomres(2)='E_T'
-        nomres(3)='NU_LT'
-        nomres(4)='G_LT'
+        nomres(1) = 'E_L'
+        nomres(2) = 'E_T'
+        nomres(3) = 'NU_LT'
+        nomres(4) = 'G_LT'
         nbv = 4
 !
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 !        -----------
-        call rcvalb(fami, kpg, ksp, '+', mater,&
-                    ' ', phenom, 1, nompar, [valpar],&
+        call rcvalb(fami, kpg, ksp, '+', mater, &
+                    ' ', phenom, 1, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -136,12 +136,12 @@ subroutine d1macp(fami, mater, instan, poum, kpg,&
         nu12 = valres(3)
         nu21 = e2*nu12/e1
 !
-        d1orth(1,1) = un/e1
-        d1orth(1,2) = -nu21/e2
-        d1orth(2,2) = un/e2
-        d1orth(2,1) = d1orth(1,2)
+        d1orth(1, 1) = un/e1
+        d1orth(1, 2) = -nu21/e2
+        d1orth(2, 2) = un/e2
+        d1orth(2, 1) = d1orth(1, 2)
 !
-        d1orth(4,4) = un/valres(4)
+        d1orth(4, 4) = un/valres(4)
 !
 ! ----   CALCUL DE LA MATRICE DE PASSAGE DU REPERE D'ORTHOTROPIE AU
 ! ----   REPERE GLOBAL POUR L'INVERSE DE LA MATRICE DE HOOKE
@@ -153,44 +153,44 @@ subroutine d1macp(fami, mater, instan, poum, kpg,&
 ! ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 ! ----     DE PASSAGE N'EST PAS L'IDENTITE)
 !        ----------------------------------
-        ASSERT((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
-            call utbtab('ZERO', 4, 4, d1orth, passag,&
+            call utbtab('ZERO', 4, 4, d1orth, passag, &
                         work, d1)
-        else if (irep.eq.0) then
+        else if (irep .eq. 0) then
             do i = 1, 4
                 do j = 1, 4
-                    d1(i,j) = d1orth(i,j)
+                    d1(i, j) = d1orth(i, j)
                 end do
             end do
-        endif
+        end if
 !
 !      -----------------------
 ! ---- CAS ISOTROPE-TRANSVERSE
 !      -----------------------
-    else if (phenom.eq.'ELAS_ISTR') then
+    else if (phenom .eq. 'ELAS_ISTR') then
 !
-        nomres(1)='E_L'
-        nomres(2)='NU_LT'
+        nomres(1) = 'E_L'
+        nomres(2) = 'NU_LT'
         nbv = 2
 !
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 !        -----------
-        call rcvalb(fami, kpg, ksp, '+', mater,&
-                    ' ', phenom, 1, nompar, [valpar],&
+        call rcvalb(fami, kpg, ksp, '+', mater, &
+                    ' ', phenom, 1, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 1)
 !
         e = valres(1)
         nu = valres(2)
 !
-        d1(1,1) = un/e
-        d1(1,2) = -nu/e
-        d1(2,1) = d1(1,2)
-        d1(2,2) = d1(1,1)
-        d1(4,4) = deux*(un+nu)/e
+        d1(1, 1) = un/e
+        d1(1, 2) = -nu/e
+        d1(2, 1) = d1(1, 2)
+        d1(2, 2) = d1(1, 1)
+        d1(4, 4) = deux*(un+nu)/e
 !
     else
         call utmess('F', 'ELEMENTS_15', sk=phenom)
-    endif
+    end if
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

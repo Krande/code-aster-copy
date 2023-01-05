@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 ! DECLARATION PARAMETRES D'APPELS
-    integer :: nbsd, sdloc (nbsd), nbsdp0
+    integer :: nbsd, sdloc(nbsd), nbsdp0
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: nbproc, rang, i
@@ -50,13 +50,13 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 ! --- EN SEQUENTIEL ON GAGNE DU TEMPS
     if (nbproc .eq. 1) then
         do i = 1, nbsd
-            sdloc (i) = 1
+            sdloc(i) = 1
         end do
         goto 999
-    endif
+    end if
 !
     do i = 1, nbsd
-        sdloc (i) = 0
+        sdloc(i) = 0
     end do
 !
 ! --- PAS DE TRAITEMENT PARTICULIER DU PROC. 0
@@ -69,22 +69,22 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 ! --- DELESTAGE DU PROC. 0
         if (rang .eq. 0) then
             do i = 1, nbsdp0
-                sdloc (i) = 1
+                sdloc(i) = 1
             end do
-        endif
+        end if
 !
 ! ----- RESTE REPARTI ENTRE LES PROC. RESTANTS
         nbsdpp = (nbsd-nbsdp0)/(nbproc-1)
         sdrest = (nbsd-nbsdp0)-((nbproc-1)*nbsdpp)
         npdeb = 1
-    endif
+    end if
 !
     do iproc = npdeb, nbproc-1
         if (iproc .eq. rang) then
 ! --------- INDICE RELATIF DU PROCESSEUR A EQUILIBRER
             iproc1 = iproc-npdeb
 ! --------- BORNES DES SDS A LUI ATTRIBUER
-            nsddeb = 1+nbsdp0+ iproc1 *nbsdpp
+            nsddeb = 1+nbsdp0+iproc1*nbsdpp
             nsdfin = nbsdp0+(iproc1+1)*nbsdpp
 ! --------- REPARTITION DES SD RESTANTS (AU PLUS NBPROC-1 OU -2)
 ! --------- PARMI LES PROC. DE NUMERO (1 OU 2) A NBPROC-1
@@ -99,13 +99,13 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 ! ------------- LE PROC. IPROC1 RECOIT 1 SD SUPPLEMENTAIRE
                     decal = iproc1-1
                     nsdfin = nsdfin+1
-                endif
-            endif
+                end if
+            end if
 ! --------- ATTRIBUTION DES SD AUX PROC.
             do i = nsddeb, nsdfin
-                sdloc (decal+i) = 1
+                sdloc(decal+i) = 1
             end do
-        endif
+        end if
     end do
 !
 999 continue

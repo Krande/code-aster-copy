@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rs_get_model(result_, nume, model, codret)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -58,24 +58,24 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     result = result_
-    model  = ' '
-    nocc   = 0
+    model = ' '
+    nocc = 0
     codret = -1
 !
 ! - Get from command file
 !
     model_comm = ' '
-    if (getexm(' ','MODELE') .eq. 1) then
+    if (getexm(' ', 'MODELE') .eq. 1) then
         call getvid(' ', 'MODELE', scal=model_comm, nbret=nocc)
     else
         model_comm = ' '
-        nocc       = 0
-    endif
+        nocc = 0
+    end if
 !
 ! - Get from results datastructure
 !
     model_resu = ' '
-    call rsadpa(result, 'L', 1, 'MODELE', nume,&
+    call rsadpa(result, 'L', 1, 'MODELE', nume, &
                 0, sjv=jv_para)
     model_resu = zk8(jv_para)
 !
@@ -83,23 +83,23 @@ implicit none
 !
     if (model_resu .eq. ' ') then
         if (nocc .eq. 0) then
-            model  = ' '
+            model = ' '
             codret = -1
         else
-            model  = model_comm
+            model = model_comm
             codret = 1
-        endif
+        end if
     else
         if (nocc .eq. 0) then
-            model  = model_resu
+            model = model_resu
             codret = 2
         else if (model_resu .eq. model_comm) then
-            model  = model_comm
+            model = model_comm
             codret = 3
         else
-            model  = model_comm
+            model = model_comm
             codret = 4
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

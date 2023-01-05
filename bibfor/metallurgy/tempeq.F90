@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tempeq(zbeta,&
-                  tdeq , tfeq ,&
-                  k    , n    ,&
-                  teq  , dvteq)
+subroutine tempeq(zbeta, &
+                  tdeq, tfeq, &
+                  k, n, &
+                  teq, dvteq)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 !
-real(kind=8), intent(in) :: zbeta
-real(kind=8), intent(in) :: tdeq, tfeq
-real(kind=8), intent(in) :: k, n
-real(kind=8), intent(out) :: teq, dvteq
+    real(kind=8), intent(in) :: zbeta
+    real(kind=8), intent(in) :: tdeq, tfeq
+    real(kind=8), intent(in) :: k, n
+    real(kind=8), intent(out) :: teq, dvteq
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,14 +49,14 @@ real(kind=8), intent(out) :: teq, dvteq
 ! --------------------------------------------------------------------------------------------------
 !
     if (zbeta .le. r8prem()) then
-        teq   = tdeq
+        teq = tdeq
         dvteq = 1000.d0
     else if (zbeta .le. 0.99d0) then
-        teq   = tdeq+(log(1.d0/(1.d0-zbeta)))**(1.d0/n)/k
+        teq = tdeq+(log(1.d0/(1.d0-zbeta)))**(1.d0/n)/k
         dvteq = -(log(1.d0/(1.d0-zbeta)))**(1.d0/n)/(k*n*(1.d0-zbeta)*log(1.d0-zbeta))
     else
-        teq   = tfeq
+        teq = tfeq
         dvteq = -(log(100.d0))**(1.d0/n)/(k*n*(0.01d0)*log(0.01d0))
-    endif
+    end if
 !
 end subroutine

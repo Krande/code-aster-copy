@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmecev(sderro, acces, event_type, action_type)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=24) :: sderro
-character(len=1) :: acces
-integer, intent(inout) :: event_type
-integer, intent(inout) :: action_type
+    character(len=24) :: sderro
+    character(len=1) :: acces
+    integer, intent(inout) :: event_type
+    integer, intent(inout) :: action_type
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,15 +52,15 @@ integer, intent(inout) :: action_type
 ! ----------------------------------------------------------------------
 !
     sderro_eevt = sderro(1:19)//'.EEVT'
-    call jeveuo(sderro_eevt, 'E', vi = v_sderro_eevt)
+    call jeveuo(sderro_eevt, 'E', vi=v_sderro_eevt)
 !
     if (acces .eq. 'E') then
         v_sderro_eevt(1) = event_type
         v_sderro_eevt(2) = action_type
-    else if (acces.eq.'L') then
-        event_type  = v_sderro_eevt(1)
+    else if (acces .eq. 'L') then
+        event_type = v_sderro_eevt(1)
         action_type = v_sderro_eevt(2)
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

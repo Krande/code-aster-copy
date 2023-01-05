@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,23 +33,23 @@ subroutine cdnfo2(mater, kfonc, xx, dn, fxx, ier)
     ier = 0
     if (dn .eq. 0) then
 !
-        call rcvale(mater, phenom, 1, k8b, [xx],&
+        call rcvale(mater, phenom, 1, k8b, [xx], &
                     1, kfonc, wfxx, icodr2(1), 1)
     else if (dn .eq. 1) then
 !
-        write (kaux,'(A1,A7)') 'D',kfonc(1:7)
-        call rcvale(mater, phenom, 1, k8b, [xx],&
+        write (kaux, '(A1,A7)') 'D', kfonc(1:7)
+        call rcvale(mater, phenom, 1, k8b, [xx], &
                     1, kaux, wfxx, icodr2(1), 1)
     else if (dn .eq. 2) then
 !
-        write (kaux,'(A2,A6)') 'DD',kfonc(1:6)
-        call rcvale(mater, phenom, 1, k8b, [xx],&
+        write (kaux, '(A2,A6)') 'DD', kfonc(1:6)
+        call rcvale(mater, phenom, 1, k8b, [xx], &
                     1, kaux, wfxx, icodr2(1), 1)
     else
         ier = 3
-    endif
+    end if
     if (ier .eq. 0) then
         fxx = wfxx(1)
-    endif
+    end if
 !
 end subroutine

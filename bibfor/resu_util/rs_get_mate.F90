@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rs_get_mate(result_, nume, chmate, codret)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -59,18 +59,18 @@ implicit none
 !
     result = result_
     chmate = ' '
-    nocc   = 0
+    nocc = 0
     codret = -1
 !
 ! - Get from command file
 !
     chmate_comm = ' '
-    if (getexm(' ','CHAM_MATER') .eq. 1) then
+    if (getexm(' ', 'CHAM_MATER') .eq. 1) then
         call getvid(' ', 'CHAM_MATER', scal=chmate_comm, nbret=nocc)
     else
         chmate_comm = ' '
-        nocc        = 0
-    endif
+        nocc = 0
+    end if
 !
 ! - Get from results datastructure
 !
@@ -87,7 +87,7 @@ implicit none
         else
             chmate = chmate_comm
             codret = 1
-        endif
+        end if
     else
         if (nocc .eq. 0) then
             chmate = chmate_resu
@@ -98,7 +98,7 @@ implicit none
         else
             chmate = chmate_comm
             codret = 4
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

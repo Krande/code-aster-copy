@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out,&
+subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out, &
                   val_out, ichk)
 !
     implicit none
@@ -69,7 +69,7 @@ subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out,&
 !
     do i = 1, nb_cmp_out
         nomf = name_form(i)
-        call fointe(codmes, nomf, nb_val_in, cmp_in, val_in,&
+        call fointe(codmes, nomf, nb_val_in, cmp_in, val_in, &
                     val_out(i), ichk)
         if (ichk .ne. 0) goto 999
     end do

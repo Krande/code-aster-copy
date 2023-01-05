@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine op0072()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadesc,  iadvec, iamatr, iarefe
+    integer :: i, iadesc, iadvec, iamatr, iarefe
     integer :: iavale, ibid, icod, idbase, iddeeq, idvec1, idvec2
     integer :: idvec3, idvec4, idvect, iret, j
     integer :: n0, n1, n2, n3, n4, nbid, nbmode, tmod(1)
@@ -93,10 +93,10 @@ subroutine op0072()
 !
 ! --- RECUPERATION DU NB DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', tmod, 1,&
+    call rsorac(basemo, 'LONUTI', ibid, bid, k8bid, &
+                cbid, ebid, 'ABSOLU', tmod, 1, &
                 nbid)
-    nbmode=tmod(1)
+    nbmode = tmod(1)
 !
 !
     call jeveuo(numgen//'.SMOS.SMDE', 'L', vi=smde)
@@ -110,7 +110,7 @@ subroutine op0072()
     call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C')
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
-        proch1 = refe(2)(1:19)
+        proch1 = refe(2) (1:19)
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
@@ -118,39 +118,39 @@ subroutine op0072()
                 call dismoi('PROF_CHNO', matric, 'MATR_ASSE', repk=proch2)
             else
                 proch2 = proch1
-            endif
+            end if
         else
             call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nume2)
             proch2 = nume2(1:14)//'.NUME'
-        endif
+        end if
 !
-        if (.not. idensd('PROF_CHNO',proch1,proch2))then
+        if (.not. idensd('PROF_CHNO', proch1, proch2)) then
             call utmess('I', 'ALGORITH9_41')
-        endif
+        end if
 !
-    else if (typbas(1:9).eq.'MODE_GENE') then
-        numdd1=refe(2)(1:14)
+    else if (typbas(1:9) .eq. 'MODE_GENE') then
+        numdd1 = refe(2) (1:14)
         proch1 = numdd1//'.NUME'
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', vk24=refa)
-        numdd2=refa(2)(1:14)
+        numdd2 = refa(2) (1:14)
         if (numdd1 .ne. numdd2) then
             call utmess('I', 'ALGORITH9_41')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
 !
-    if ((typbas(1:9).eq.'MODE_MECA')) then
+    if ((typbas(1:9) .eq. 'MODE_MECA')) then
         call dismoi('NB_EQUA', vectas, 'CHAM_NO', repi=neq)
         deeq = proch1//'.DEEQ'
-    else if (typbas(1:9).eq.'MODE_GENE') then
+    else if (typbas(1:9) .eq. 'MODE_GENE') then
         call jeveuo(numdd1//'.NUME.NEQU', 'L', vi=nequ)
         neq = nequ(1)
         deeq = numdd1//'.NUME.DEEQ'
-    endif
+    end if
 !
     call jeveuo(deeq, 'L', iddeeq)
 !
@@ -161,7 +161,7 @@ subroutine op0072()
     else
         call wkvect(nomres//'           .VALE', 'G V C', nbmode, iavale)
         call wkvect('&&OP0072.VECTASC1', 'V V C', neq, idvec3)
-    endif
+    end if
     call wkvect(nomres//'           .REFE', 'G V K24', 2, iarefe)
     call wkvect(nomres//'           .DESC', 'G V I', 3, iadesc)
     call jeecra(nomres//'           .DESC', 'DOCU', cval='VGEN')
@@ -178,26 +178,26 @@ subroutine op0072()
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2
-    endif
+    end if
     call wkvect('&&OP0072.BASEMO', 'V V R', nbmode*neq, idbase)
 !
-    if ((typbas(1:9).eq.'MODE_MECA')) then
+    if ((typbas(1:9) .eq. 'MODE_MECA')) then
 !       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER
 !         - LES DEFORMEES MODALES SONT IDENTIQUES
 !         - 1. MAILLAGE DE REFERENCE POUR LA BASE
-        call rsexch('F', basemo, 'DEPL', 1, nomcha,&
+        call rsexch('F', basemo, 'DEPL', 1, nomcha, &
                     iret)
         call dismoi('NOM_MAILLA', nomcha, 'CHAM_NO', repk=maill1)
 !       - 2. MAILLAGE DE REFERENCE POUR LE CHAM_NO
         call dismoi('NOM_MAILLA', vectas, 'CHAM_NO', repk=maill2)
         if (maill1 .ne. maill2) then
-            valk (1) = proch2
-            valk (2) = maill2
-            valk (3) = proch1
-            valk (4) = maill1
+            valk(1) = proch2
+            valk(2) = maill2
+            valk(3) = proch1
+            valk(4) = maill1
             call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CONVERSION DE BASEMO A LA NUMEROTATION NU
     call copmod(basemo, numer=proch1, bmodr=zr(idbase))
@@ -216,13 +216,13 @@ subroutine op0072()
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
             if (typvec .eq. 'R') then
-                zr(iavale+i-1) = ddot(neq,zr(idvect),1,zr(iadvec),1)
+                zr(iavale+i-1) = ddot(neq, zr(idvect), 1, zr(iadvec), 1)
             else
                 do j = 1, neq
-                    zc(idvec3+j-1)=dcmplx(zr(idvect+j-1),zero)
+                    zc(idvec3+j-1) = dcmplx(zr(idvect+j-1), zero)
                 end do
-                zc(iavale+i-1) = zdotc(neq,zc(idvec3),1,zc(iadvec),1)
-            endif
+                zc(iavale+i-1) = zdotc(neq, zc(idvec3), 1, zc(iadvec), 1)
+            end if
         end do
     else
 !
@@ -232,7 +232,7 @@ subroutine op0072()
         call wkvect('&&OP0072.VECTASS2', 'V V R', neq, idvec2)
         if (typvec .eq. 'C') then
             call wkvect('&&OP0072.VECTASC2', 'V V R', neq, idvec4)
-        endif
+        end if
         call wkvect('&&OP0072.MATRNORM', 'V V R', nbmode*nbmode, iamatr)
 !
 ! ----- CALCUL DE TMODE*MODE
@@ -253,9 +253,9 @@ subroutine op0072()
 !
 ! --------- PRODUIT SCALAIRE MODE(I)*MODE(J)
 !
-                pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
-                zr(iamatr+i+ (j-1)*nbmode-1) = pij
-                zr(iamatr+j+ (i-1)*nbmode-1) = pij
+                pij = ddot(neq, zr(idvec1), 1, zr(idvec2), 1)
+                zr(iamatr+i+(j-1)*nbmode-1) = pij
+                zr(iamatr+j+(i-1)*nbmode-1) = pij
             end do
         end do
 !
@@ -270,13 +270,13 @@ subroutine op0072()
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
             if (typvec .eq. 'R') then
-                zr(idvec2+i-1) = ddot(neq,zr(idvec1),1,zr(iadvec),1)
+                zr(idvec2+i-1) = ddot(neq, zr(idvec1), 1, zr(iadvec), 1)
             else
                 do j = 1, neq
-                    zc(idvec3+j-1)=dcmplx(zr(idvec1+j-1),zero)
+                    zc(idvec3+j-1) = dcmplx(zr(idvec1+j-1), zero)
                 end do
-                zc(idvec4+i-1) = zdotc(neq,zc(idvec3),1,zc(iadvec),1)
-            endif
+                zc(idvec4+i-1) = zdotc(neq, zc(idvec3), 1, zc(iadvec), 1)
+            end if
         end do
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
@@ -284,14 +284,14 @@ subroutine op0072()
         call trlds(zr(iamatr), nbmode, nbmode, icod)
         if (icod .ne. 0) then
             call utmess('F', 'ALGORITH9_42')
-        endif
+        end if
         if (typvec .eq. 'R') then
             call rrlds(zr(iamatr), nbmode, nbmode, zr(idvec2), 1)
             call dcopy(nbmode, zr(idvec2), 1, zr(iavale), 1)
         else
             call utmess('F', 'ALGORITH9_1')
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

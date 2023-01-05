@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
+subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1, &
                   poinc2, elrefe, ndegre)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -68,12 +68,12 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
 !
     form = typmac(1:2)
 ! CALCUL NBRE ARETES
-    ASSERT(form.eq.'TR'.or.form.eq.'QU')
+    ASSERT(form .eq. 'TR' .or. form .eq. 'QU')
     if (form .eq. 'TR') then
         nbf = 3
-    else if (form.eq.'QU') then
+    else if (form .eq. 'QU') then
         nbf = 4
-    endif
+    end if
     noeu = typmac(5:5)
 ! CALCUL NBRE SOMMETS ARETES ET POIDS DE NEWTON-COTES DE L'ARETE
     if (noeu .eq. '6' .or. noeu .eq. '8' .or. noeu .eq. '9') then
@@ -83,7 +83,7 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
 ! INIT. POIDS DE NEWTON-COTES (POINTS EXTREMES 1/POINT CENTRAL 2)
         poinc1 = 1.d0/3.d0
         poinc2 = 4.d0/3.d0
-    else if (noeu.eq.'3' .or. noeu.eq.'4') then
+    else if (noeu .eq. '3' .or. noeu .eq. '4') then
         nsomf = 2
         ndegre = 1
         elrefe = 'SEG2  '
@@ -91,11 +91,11 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
         poinc2 = 0.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 ! MAUVAIS CALCUL EN P1 SI FORCE VOLUMIQUE NON NULLE
-    if ((ndegre.eq.1) .and. lmaj) then
+    if ((ndegre .eq. 1) .and. lmaj) then
         call utmess('A', 'CALCULEL5_34')
-    endif
+    end if
 end subroutine

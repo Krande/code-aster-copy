@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfgcpc(resoco, matass, solveu, neq, nbliai,&
+subroutine cfgcpc(resoco, matass, solveu, neq, nbliai, &
                   precon, tole, premax, epsi)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfpcdi.h"
@@ -95,14 +95,14 @@ subroutine cfgcpc(resoco, matass, solveu, neq, nbliai,&
 ! --- PRECONDITIONNEMENT (OU PAS)
 !
     if (precon .eq. 'DIRICHLET') then
-        call cfpcdi(resoco, neq, nbliai, tole, epsi,&
-                    zr(jmu), zr( japcoe), zi(japddl), zi(japptr), zi(jliac),&
+        call cfpcdi(resoco, neq, nbliai, tole, epsi, &
+                    zr(jmu), zr(japcoe), zi(japddl), zi(japptr), zi(jliac), &
                     matass, solveu, premax, zr(jsgrap), zr(jsgprp))
-    else if (precon.eq.'SANS') then
+    else if (precon .eq. 'SANS') then
         call dcopy(nbliai, zr(jsgrap), 1, zr(jsgprp), 1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comptv(nbpt, fn, offset, t, nbchoc,&
-                  tchmin, tchmax, tchoct, tchocm, nbrebo,&
+subroutine comptv(nbpt, fn, offset, t, nbchoc, &
+                  tchmin, tchmax, tchoct, tchocm, nbrebo, &
                   trebot, trebom)
 !        COMPTAGE DES CHOCS
 !        ALGORITHME TEMPOREL A PAS VARIABLE
@@ -63,28 +63,28 @@ subroutine comptv(nbpt, fn, offset, t, nbchoc,&
 !
             if (irebo .eq. 1) then
                 ifinr = i
-                trebo = t(ifinr) - t(idebur)
-                trebom = trebom + trebo
-                nbrebo = nbrebo + 1
-            endif
+                trebo = t(ifinr)-t(idebur)
+                trebom = trebom+trebo
+                nbrebo = nbrebo+1
+            end if
 !
             idech = 0
-            if (abs(fn(i+1)) .gt. offset) idech =1
+            if (abs(fn(i+1)) .gt. offset) idech = 1
 !
             if (idech .eq. 0 .and. ichoc .eq. 1) then
 !
                 ifin = i
-                tchoc = t(ifin) - t(idebut)
-                tchocm = tchocm + tchoc
+                tchoc = t(ifin)-t(idebut)
+                tchocm = tchocm+tchoc
 !
                 if (tchoc .gt. tchmax) tchmax = tchoc
 !
                 if (tchoc .lt. tchmin) tchmin = tchoc
 !
-                nbchoc = nbchoc + 1
+                nbchoc = nbchoc+1
                 ichoc = 0
 !
-            endif
+            end if
 !
             irebo = 0
 !
@@ -96,22 +96,22 @@ subroutine comptv(nbpt, fn, offset, t, nbchoc,&
             irebo = 1
             ichoc = 1
 !
-        endif
+        end if
 !
     end do
 !
     tchoct = tchocm
     if (nbchoc .ne. 0) then
-        tchocm=tchocm/nbchoc
+        tchocm = tchocm/nbchoc
     else
         tchocm = zero
-    endif
+    end if
 !
     trebot = trebom
     if (nbrebo .ne. 0) then
-        trebom = trebom / nbrebo
+        trebom = trebom/nbrebo
     else
         trebom = zero
-    endif
+    end if
 !
 end subroutine

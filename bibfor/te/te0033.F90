@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,26 +86,26 @@ subroutine te0033(option, nomte)
     character(len=32) :: phenom
 !     ------------------------------------------------------------------
 !
-    r8bid=0.d0
+    r8bid = 0.d0
 !
     if (option(6:9) .eq. 'ELNO') then
         fami = 'NOEU'
     else
         fami = 'RIGI'
-    endif
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    end if
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
-    if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. option .ne. 'DEGE_ELNO'&
+    if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. option .ne. 'DEGE_ELNO' &
         .and. option .ne. 'DEGE_ELGA') then
 ! OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 !
     dkg = .false.
-    if ((nomte.eq.'MEDKTG3') .or. (nomte.eq.'MEDKQG4')) then
+    if ((nomte .eq. 'MEDKTG3') .or. (nomte .eq. 'MEDKQG4')) then
         dkg = .true.
-    endif
+    end if
 !
     call r8inir(32, 0.d0, effgt, 1)
 !
@@ -125,55 +125,55 @@ subroutine te0033(option, nomte)
             epi(1) = 0.d0
             call jevech('PCACOQU', 'L', jcara)
             epais = zr(jcara)
-  5         continue
-            icou=icou+1
+5           continue
+            icou = icou+1
             call codent(icou, 'G', num)
             call codent(1, 'G', val)
             nomres = 'C'//num//'_V'//val
-            famil='FPG1'
-            kpg=1
-            spt=1
-            poum='+'
-            call rcvalb(famil, kpg, spt, poum, zi(jmate),&
-                        ' ', 'ELAS_COQMU', 0, ' ', [r8bid],&
+            famil = 'FPG1'
+            kpg = 1
+            spt = 1
+            poum = '+'
+            call rcvalb(famil, kpg, spt, poum, zi(jmate), &
+                        ' ', 'ELAS_COQMU', 0, ' ', [r8bid], &
                         1, nomres, epi, icodre(1), 0)
             if (icodre(1) .eq. 0) then
-                eptot=eptot+epi(1)
+                eptot = eptot+epi(1)
                 goto 5
-            endif
+            end if
             if (eptot .ne. 0.d0) then
                 if ((icou-1) .ne. nbcou) then
                     vali(1) = icou-1
                     vali(2) = nbcou
                     call utmess('F', 'ELEMENTS3_51', ni=2, vali=vali)
-                endif
+                end if
                 if (abs(epais-eptot)/epais .gt. 1.d-2) then
                     valr(1) = eptot
                     valr(2) = epais
                     call utmess('F', 'ELEMENTS3_52', nr=2, valr=valr)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
     if (option(8:9) .eq. 'GA') then
         np = npg
-    else if (option(8:9).eq.'NO') then
+    else if (option(8:9) .eq. 'NO') then
         np = nno
-    endif
+    end if
 !
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
-    else if (nno.eq.4) then
+    else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
-    endif
+    end if
 !
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
 !
     call jevech('PCACOQU', 'L', jcara)
-    alpha = zr(jcara+1) * r8dgrd()
-    beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    alpha = zr(jcara+1)*r8dgrd()
+    beta = zr(jcara+2)*r8dgrd()
+    call coqrep(pgl, alpha, beta, t2iu, t2ui, &
                 c, s)
 !
     call jevech('PDEPLAR', 'L', jdepg)
@@ -190,42 +190,42 @@ subroutine te0033(option, nomte)
             nbcou = zi(jnbspi)
             if (nbcou .le. 0) then
                 call utmess('F', 'ELEMENTS_46')
-            endif
-        endif
+            end if
+        end if
 !
         if (nomte .eq. 'MEDKTR3') then
-            call dktsie(option, fami, xyzl, pgl, depl,&
+            call dktsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDSTR3') then
-            call dstsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEDSTR3') then
+            call dstsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDKQU4') then
-            call dkqsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEDKQU4') then
+            call dkqsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDSQU4') then
-            call dsqsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEDSQU4') then
+            call dsqsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEQ4QU4') then
-            call q4gsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEQ4QU4') then
+            call q4gsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MET3TR3') then
-            call t3gsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MET3TR3') then
+            call t3gsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
         else
 ! TYPE D ELEMENT INVALIDE
             ASSERT(.false.)
-        endif
+        end if
 !
         call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
             call dxsith(nomte, zi(jmate), zr(jsigm))
-        else if (phenom.eq.'ELAS_COQMU') then
+        else if (phenom .eq. 'ELAS_COQMU') then
             call dxsit2(nomte, pgl, zr(jsigm))
-        elseif (phenom .eq. 'ELAS_COQUE')then
+        elseif (phenom .eq. 'ELAS_COQUE') then
             call dxsit3(nomte, zi(jmate), pgl, zr(jsigm))
         else
             call utmess('F', 'PLATE1_1', nk=2, valk=[option, phenom])
-        endif
+        end if
 !     ----------------------------
     else if (option(1:9) .eq. 'EPSI_ELGA') then
         call jevech('PDEFOPG', 'E', jsigm)
@@ -237,46 +237,46 @@ subroutine te0033(option, nomte)
             nbcou = zi(jnbspi)
             if (nbcou .le. 0) then
                 call utmess('F', 'ELEMENTS_46')
-            endif
-        endif
+            end if
+        end if
         if (nomte .eq. 'MEDKTR3') then
-            call dktsie(option, fami, xyzl, pgl, depl,&
+            call dktsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDSTR3') then
-            call dstsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEDSTR3') then
+            call dstsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDKQU4') then
-            call dkqsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEDKQU4') then
+            call dkqsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEDSQU4') then
-            call dsqsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEDSQU4') then
+            call dsqsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MEQ4QU4') then
-            call q4gsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MEQ4QU4') then
+            call q4gsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        else if (nomte.eq.'MET3TR3') then
-            call t3gsie(option, fami, xyzl, pgl, depl,&
+        else if (nomte .eq. 'MET3TR3') then
+            call t3gsie(option, fami, xyzl, pgl, depl, &
                         nbcou, zr(jsigm))
-        endif
+        end if
         call dxsiro(np*nbcou*3, t2iu, zr(jsigm), zr(jsigm))
 !     ----------------------------
     else if (option(1:9) .eq. 'DEGE_ELNO') then
         call jevech('PDEFOGR', 'E', jeffg)
 !
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, option, pgl, depl, effgt,&
+            call dktedg(xyzl, option, pgl, depl, effgt, &
                         multic)
-        else if (nomte.eq.'MEDSTR3') then
+        else if (nomte .eq. 'MEDSTR3') then
             call dstedg(xyzl, option, pgl, depl, effgt)
-        else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
+        else if (nomte .eq. 'MEDKQU4' .or. nomte .eq. 'MEDKQG4') then
             call dkqedg(xyzl, option, pgl, depl, effgt)
-        else if (nomte.eq.'MEDSQU4') then
+        else if (nomte .eq. 'MEDSQU4') then
             call dsqedg(xyzl, option, pgl, depl, effgt)
-        else if (nomte.eq.'MEQ4QU4'.or. nomte.eq.'MEQ4GG4') then
+        else if (nomte .eq. 'MEQ4QU4' .or. nomte .eq. 'MEQ4GG4') then
             call q4gedg(xyzl, option, pgl, depl, effgt)
-        else if (nomte.eq.'MET3TR3'.or. nomte.eq.'MET3GG3') then
+        else if (nomte .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
             call t3gedg(xyzl, option, pgl, depl, effgt)
-        endif
+        end if
 !
 ! ---    PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 ! ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
@@ -286,28 +286,28 @@ subroutine te0033(option, nomte)
         call jevech('PDEFOPG', 'E', jeffg)
 !
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, option, pgl, depl, effpg,&
+            call dktedg(xyzl, option, pgl, depl, effpg, &
                         multic)
-        else if (nomte.eq.'MEDSTR3') then
+        else if (nomte .eq. 'MEDSTR3') then
             call dstedg(xyzl, option, pgl, depl, effpg)
-        else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
+        else if (nomte .eq. 'MEDKQU4' .or. nomte .eq. 'MEDKQG4') then
             call dkqedg(xyzl, option, pgl, depl, effpg)
-        else if (nomte.eq.'MEDSQU4') then
+        else if (nomte .eq. 'MEDSQU4') then
             call dsqedg(xyzl, option, pgl, depl, effpg)
-        else if (nomte.eq.'MEQ4QU4'.or. nomte.eq.'MEQ4GG4') then
+        else if (nomte .eq. 'MEQ4QU4' .or. nomte .eq. 'MEQ4GG4') then
             call q4gedg(xyzl, option, pgl, depl, effpg)
-        else if (nomte.eq.'MET3TR3'.or. nomte.eq.'MET3GG3') then
+        else if (nomte .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
             call t3gedg(xyzl, option, pgl, depl, effpg)
-        endif
+        end if
 ! ---    PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 ! ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
         call dxefro(np, t2iu, effpg, zr(jeffg))
-    endif
+    end if
 !
     if (option .eq. 'SIEF_ELGA') then
 ! ---    PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
-        call cosiro(nomte, 'PCONTRR', 'E', 'IU', 'G',&
+        call cosiro(nomte, 'PCONTRR', 'E', 'IU', 'G', &
                     jsigm, 'S')
-    endif
+    end if
 !
 end subroutine

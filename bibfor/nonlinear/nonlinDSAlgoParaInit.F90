@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSAlgoParaInit(list_func_acti, ds_algopara, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -31,9 +31,9 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,24 +57,24 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_6')
-    endif
+    end if
 !
 ! - Active functionnalites
 !
-    l_cont_disc     = isfonc(list_func_acti,'CONT_DISCRET')
-    l_unil          = isfonc(list_func_acti,'LIAISON_UNILATER')
+    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
+    l_unil = isfonc(list_func_acti, 'LIAISON_UNILATER')
 !
 ! - Symmetric matrix for DISCRETE contact
 !
     if (l_cont_disc) then
         ds_algopara%l_matr_rigi_syme = .true._1
-    endif
-    if(l_unil) then
-        l_unil_pena     = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
-        if (.not.l_unil_pena) then
+    end if
+    if (l_unil) then
+        l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
+        if (.not. l_unil_pena) then
             ds_algopara%l_matr_rigi_syme = .true._1
-        endif
-    endif
+        end if
+    end if
 !
 ! - Update bounds for line search
 !
@@ -85,22 +85,22 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         if (reli_rho_mini .ge. -reli_rho_excl .and. reli_rho_mini .le. reli_rho_excl) then
             call utmess('A', 'MECANONLINE5_46')
             reli_rho_mini = +reli_rho_excl
-        endif
+        end if
         if (reli_rho_maxi .ge. -reli_rho_excl .and. reli_rho_maxi .le. reli_rho_excl) then
             call utmess('A', 'MECANONLINE5_47')
             reli_rho_maxi = -reli_rho_excl
-        endif
+        end if
         if (reli_rho_maxi .lt. reli_rho_mini) then
             call utmess('A', 'MECANONLINE5_44')
             swap = reli_rho_maxi
             reli_rho_maxi = reli_rho_mini
             reli_rho_mini = swap
-        endif
+        end if
         if (abs(reli_rho_maxi-reli_rho_mini) .le. r8prem()) then
             call utmess('F', 'MECANONLINE5_43')
-        endif
-        ds_algopara%line_search%rho_mini  = reli_rho_mini
-        ds_algopara%line_search%rho_maxi  = reli_rho_maxi
-    endif
+        end if
+        ds_algopara%line_search%rho_mini = reli_rho_mini
+        ds_algopara%line_search%rho_maxi = reli_rho_maxi
+    end if
 !
 end subroutine

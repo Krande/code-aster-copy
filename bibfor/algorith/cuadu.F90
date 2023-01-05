@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,10 +74,10 @@ subroutine cuadu(deficu, resocu, neq, nbliac)
     do iliac = 1, nbliac
         lliac = zi(jliac-1+iliac)
         jdecal = zi(jpoi+lliac-1)
-        nbddl = zi(jpoi+lliac) - zi(jpoi+lliac-1)
-        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr( jdelt0),&
+        nbddl = zi(jpoi+lliac)-zi(jpoi+lliac-1)
+        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jdelt0), &
                     val)
-        zr(jmu+iliac-1) = zr(japjeu+lliac-1) - val
+        zr(jmu+iliac-1) = zr(japjeu+lliac-1)-val
     end do
 ! ======================================================================
     call jedema()

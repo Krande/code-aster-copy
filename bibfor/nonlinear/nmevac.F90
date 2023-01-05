@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmevac(sddisc, sderro   , i_fail_acti, nume_inst   , iterat,&
+subroutine nmevac(sddisc, sderro, i_fail_acti, nume_inst, iterat, &
                   retact, ds_print_, ds_contact_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -38,14 +38,14 @@ implicit none
 #include "asterfort/nmitsp.h"
 #include "asterfort/utmess.h"
 !
-character(len=19), intent(in) :: sddisc
-character(len=24), intent(in) :: sderro
-integer, intent(in) :: i_fail_acti
-integer, intent(in) :: nume_inst
-integer, intent(in) :: iterat
-integer, intent(out) :: retact
-type(NL_DS_Print), optional, intent(in) :: ds_print_
-type(NL_DS_Contact), optional, intent(in) :: ds_contact_
+    character(len=19), intent(in) :: sddisc
+    character(len=24), intent(in) :: sderro
+    integer, intent(in) :: i_fail_acti
+    integer, intent(in) :: nume_inst
+    integer, intent(in) :: iterat
+    integer, intent(out) :: retact
+    type(NL_DS_Print), optional, intent(in) :: ds_print_
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,17 +75,17 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! ----------------------------------------------------------------------
 !
-    retact      = 3
+    retact = 3
     action_type = FAIL_ACT_STOP
-    trydec      = .false.
-    ASSERT(i_fail_acti.ne.0)
+    trydec = .false.
+    ASSERT(i_fail_acti .ne. 0)
 !
 ! --- RECUPERATION ERREURS PARTICULIERES
 !
     litmax = .false.
     if (sderro .ne. ' ') then
         call nmerge(sderro, 'ITER_MAXI', litmax)
-    endif
+    end if
 !
 ! - Get event and action
 !
@@ -99,20 +99,20 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
         retact = 3
         trydec = .false.
     else if (action_type .eq. FAIL_ACT_ITER) then
-        ASSERT(iterat.ge.0)
+        ASSERT(iterat .ge. 0)
         if (litmax) then
             call utmess('I', 'MECANONLINE10_32')
             call nmitsp(ds_print_, sddisc, iterat, retsup)
         else
             retsup = 0
-        endif
+        end if
         if (retsup .eq. 0) then
             trydec = .true.
-        else if (retsup.eq.1) then
+        else if (retsup .eq. 1) then
             retact = 2
         else
             ASSERT(.false.)
-        endif
+        end if
     else if (action_type .eq. FAIL_ACT_CUT) then
         trydec = .true.
     else if (action_type .eq. FAIL_ACT_PILOTAGE) then
@@ -121,30 +121,30 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
             call nmevdp(sddisc, retswa)
         else
             retswa = 0
-        endif
+        end if
         if (retswa .eq. 0) then
             trydec = .true.
-        else if (retswa.eq.1) then
+        else if (retswa .eq. 1) then
             retact = 1
         else
             ASSERT(.false.)
-        endif
+        end if
     else if (action_type .eq. FAIL_ACT_ADAPT_COEF) then
         call utmess('I', 'MECANONLINE10_35')
         call nmadcp(sddisc, ds_contact_, i_fail_acti, retpen)
         trydec = .false.
         if (retpen .eq. 0) then
             retact = 3
-        else if (retpen.eq.1) then
+        else if (retpen .eq. 1) then
             retact = 1
         else
             ASSERT(.false.)
-        endif
+        end if
     else if (action_type .eq. FAIL_ACT_CONTINUE) then
         retact = 0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CAS DE LA DECOUPE
 !
@@ -153,20 +153,20 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
         call nmdeco(sddisc, nume_inst, iterat, i_fail_acti, retdec)
         if (retdec .eq. 0) then
             retact = 3
-        else if (retdec.eq.1) then
+        else if (retdec .eq. 1) then
             retact = 1
-        else if (retdec.eq.2) then
+        else if (retdec .eq. 2) then
             retact = 0
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- ECHEC DE L'ACTION -> EVENEMENT ERREUR FATALE
 !
     if (retact .eq. 3) then
         call nmecev(sderro, 'E', event_type, action_type)
-    endif
+    end if
 !
 ! --- ON DESACTIVE LES EVENEMENTS
 !

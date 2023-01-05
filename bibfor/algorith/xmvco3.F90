@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
-                  nnos, pla, lact, nfh, ddls,&
-                  ddlm, nfiss, ifiss, jheafa, ifa,&
-                  ncomph, jheavn, ncompn, jac, ffc,&
+subroutine xmvco3(sigref, depref, ndim, nno, nnol, &
+                  nnos, pla, lact, nfh, ddls, &
+                  ddlm, nfiss, ifiss, jheafa, ifa, &
+                  ncomph, jheavn, ncompn, jac, ffc, &
                   ffp, singu, fk, vtmp)
 !
 ! aslint: disable=W1504
@@ -61,28 +61,28 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
 !
 ! ---------------------------------------------------------------------
 !
-    coefi = xcalc_saut(1,0,1)
-    lmultc = nfiss.gt.1
+    coefi = xcalc_saut(1, 0, 1)
+    lmultc = nfiss .gt. 1
     do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
         do ifh = 1, nfh
             if (lmultc) then
-                coefi = xcalc_saut(&
-                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1),&
-                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa)&
+                coefi = xcalc_saut( &
+                        zi(jheavn-1+ncompn*(i-1)+ifh), zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                        zi(jheafa-1+ncomph*(ifiss-1)+2*ifa) &
                         )
-            endif
+            end if
             do j = 1, ndim
-                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + abs(coefi* ffp(i)*sigref*jac)
+                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j)+abs(coefi*ffp(i)*sigref*jac)
             end do
         end do
         do alp = 1, singu*ndim
             do j = 1, ndim
-                vtmp(in+ndim*(1+nfh)+j) = vtmp(&
-                                          in+ndim*(1+nfh)+j) + abs(2.d0*ffp(i)* fk(i,alp,j)*sigre&
-                                          &f*jac&
+                vtmp(in+ndim*(1+nfh)+j) = vtmp( &
+                                          in+ndim*(1+nfh)+j)+abs(2.d0*ffp(i)*fk(i, alp, j)*sigre&
+                                          &f*jac &
                                           )
-            enddo
+            end do
         end do
     end do
 !
@@ -90,17 +90,17 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
 ! ATTENTION INVERSION DE CONVENTIONS
 !
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         do k = 1, ndim
 ! SI LAGRANGE ACTIF ON MET LA FORCE NODALE DE REF
             if (nli .ne. 0) then
-                vtmp(pli-1+k) = vtmp(pli-1+k) + abs(depref*ffi*jac)
+                vtmp(pli-1+k) = vtmp(pli-1+k)+abs(depref*ffi*jac)
 ! SINON ON MET SIGREF
-            else if (nli.eq.0) then
-                vtmp(pli-1+k) = vtmp(pli-1+k) + abs(sigref)
-            endif
+            else if (nli .eq. 0) then
+                vtmp(pli-1+k) = vtmp(pli-1+k)+abs(sigref)
+            end if
         end do
     end do
 !

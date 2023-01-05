@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,11 +48,11 @@ subroutine pha180(ifoi, ptf, phase)
     case (2)
         if (ptf .le. 60.d0) then
             phase = 0.d0
-        else if (ptf.gt.60.d0 .and. ptf.le.120.d0) then
+        else if (ptf .gt. 60.d0 .and. ptf .le. 120.d0) then
             phase = -pi/2.d0
         else
             phase = -pi/4.d0
-        endif
+        end if
 !
     case (3)
         phase = pi
@@ -62,14 +62,14 @@ subroutine pha180(ifoi, ptf, phase)
             phase = pi
         else
             phase = 2.d0*pi/3.d0
-        endif
+        end if
 !
     case (5)
         if (ptf .le. 55.d0) then
             phase = 0.d0
         else
             phase = -pi/6.d0
-        endif
+        end if
 !
     case (6)
         phase = pi
@@ -77,40 +77,40 @@ subroutine pha180(ifoi, ptf, phase)
     case (7)
         if (ptf .le. 15.d0) then
             phase = 0.d0
-        else if (ptf.gt.15.d0 .and. ptf.le.45.d0) then
+        else if (ptf .gt. 15.d0 .and. ptf .le. 45.d0) then
             phase = pi
-        else if (ptf.gt.45.d0 .and. ptf.le.55.d0) then
+        else if (ptf .gt. 45.d0 .and. ptf .le. 55.d0) then
             phase = 0.d0
         else
             phase = pi
-        endif
+        end if
 !
     case (8)
         if (ptf .le. 20.d0) then
             phase = pi
-        else if (ptf.gt.20.d0 .and. ptf.le.45.d0) then
+        else if (ptf .gt. 20.d0 .and. ptf .le. 45.d0) then
             phase = 0.d0
-        else if (ptf.gt.45.d0 .and. ptf.le.60.d0) then
+        else if (ptf .gt. 45.d0 .and. ptf .le. 60.d0) then
             phase = pi
-        else if (ptf.gt.60.d0 .and. ptf.le.110.d0) then
+        else if (ptf .gt. 60.d0 .and. ptf .le. 110.d0) then
             phase = pi/2.d0
         else
             phase = 0.d0
-        endif
+        end if
 !
     case (9)
         if (ptf .le. 125.d0) then
             phase = 0.d0
         else
             phase = pi
-        endif
+        end if
 !
     case (10)
         if (ptf .le. 45.d0) then
             phase = 0.d0
         else
             phase = pi
-        endif
+        end if
 !
     case (11)
         phase = pi
@@ -118,39 +118,39 @@ subroutine pha180(ifoi, ptf, phase)
     case (12)
         if (ptf .le. 65.d0) then
             phase = 0.d0
-        else if (ptf.gt.65.d0 .and. ptf.le.105.d0) then
+        else if (ptf .gt. 65.d0 .and. ptf .le. 105.d0) then
             phase = pi/6.d0
         else
             phase = 0.d0
-        endif
+        end if
 !
     case (13)
         if (ptf .le. 60.d0) then
             phase = pi
-        else if (ptf.gt.60.d0 .and. ptf.le.120.d0) then
+        else if (ptf .gt. 60.d0 .and. ptf .le. 120.d0) then
             phase = 0.d0
         else
             phase = pi
-        endif
+        end if
 !
     case (14)
         if (ptf .le. 15.d0) then
             phase = 5.d0*pi/6.d0
-        else if (ptf.gt.15.d0 .and. ptf.le.85.d0) then
+        else if (ptf .gt. 15.d0 .and. ptf .le. 85.d0) then
             phase = 0.d0
         else
             phase = 5.d0*pi/6.d0
-        endif
+        end if
     case (15)
         if (ptf .le. 15.d0) then
             phase = pi
-        else if (ptf.gt.15.d0 .and. ptf.le.45.d0) then
+        else if (ptf .gt. 15.d0 .and. ptf .le. 45.d0) then
             phase = 0.d0
-        else if (ptf.gt.45.d0 .and. ptf.le.55.d0) then
+        else if (ptf .gt. 45.d0 .and. ptf .le. 55.d0) then
             phase = pi
         else
             phase = 0.d0
-        endif
+        end if
 !
     end select
 end subroutine

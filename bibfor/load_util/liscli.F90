@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,24 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine liscli(list_load  , i_load      , nb_info_maxi, list_info_type, load_namez,&
-                  load_funcz , nb_info_type, i_neum_lapl)
+subroutine liscli(list_load, i_load, nb_info_maxi, list_info_type, load_namez, &
+                  load_funcz, nb_info_type, i_neum_lapl)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=19), intent(in) :: list_load
-integer, intent(in) :: i_load
-integer, intent(in) :: nb_info_maxi
-character(len=24), intent(inout) :: list_info_type(nb_info_maxi)
-character(len=*), intent(out) :: load_namez
-character(len=*), intent(out) :: load_funcz
-integer, intent(out) :: nb_info_type
-integer, intent(out) :: i_neum_lapl
+    character(len=19), intent(in) :: list_load
+    integer, intent(in) :: i_load
+    integer, intent(in) :: nb_info_maxi
+    character(len=24), intent(inout) :: list_info_type(nb_info_maxi)
+    character(len=*), intent(out) :: load_namez
+    character(len=*), intent(out) :: load_funcz
+    integer, intent(out) :: nb_info_type
+    integer, intent(out) :: i_neum_lapl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,137 +69,137 @@ integer, intent(out) :: i_neum_lapl
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
     lload_func = list_load(1:19)//'.FCHA'
-    call jeveuo(lload_name, 'L', vk24 = v_load_name)
-    call jeveuo(lload_info, 'L', vi   = v_load_info)
-    call jeveuo(lload_func, 'L', vk24 = v_load_func)
+    call jeveuo(lload_name, 'L', vk24=v_load_name)
+    call jeveuo(lload_info, 'L', vi=v_load_info)
+    call jeveuo(lload_func, 'L', vk24=v_load_func)
     nb_load = v_load_info(1)
-    ASSERT(i_load.gt.0)
-    ASSERT(i_load.le.nb_load)
+    ASSERT(i_load .gt. 0)
+    ASSERT(i_load .le. nb_load)
 !
-    load_namez   = v_load_name(i_load)(1:8)
-    load_funcz   = v_load_func(i_load)
+    load_namez = v_load_name(i_load) (1:8)
+    load_funcz = v_load_func(i_load)
     list_info_type(1:nb_info_maxi) = ' '
-    i_neum_lapl  = 0
+    i_neum_lapl = 0
     nb_info_type = 0
-    i_info_type  = 0
+    i_info_type = 0
 !
 ! - Get load name for undead Dirichlet loads
 !
     if (v_load_info(i_load+1) .eq. 4) then
-        load_namez = v_load_name(i_load)(9:16)
-    endif
+        load_namez = v_load_name(i_load) (9:16)
+    end if
 !
     if (v_load_info(i_load+1) .eq. 4) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'DIRI_SUIV'
-    endif
+    end if
 !
     if (v_load_info(i_load+1) .eq. -1) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'CINE_CSTE'
-    endif
+    end if
 !
     if (v_load_info(i_load+1) .eq. -2) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'CINE_FO'
-    endif
+    end if
 !
     if (v_load_info(i_load+1) .eq. -3) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'CINE_FT'
-    endif
+    end if
 !
     if (v_load_info(i_load+1) .eq. 5) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'DIRI_PILO'
-    endif
+    end if
 !
     if (v_load_info(i_load+1) .eq. 6) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'DIRI_PILO_F'
-    endif
+    end if
 !
     if (v_load_info(i_load+1) .eq. 1) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'DIRI_CSTE'
         if (v_load_info(3*nb_load+2+i_load+1) .eq. 1) then
             list_info_type(i_info_type) = 'DIRI_CSTE_DIDI'
-        endif
-    endif
+        end if
+    end if
 !
     if (v_load_info(i_load+1) .eq. 2) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'DIRI_FO'
         if (v_load_info(3*nb_load+2+i_load+1) .eq. 1) then
             list_info_type(i_info_type) = 'DIRI_FO_DIDI'
-        endif
-    endif
+        end if
+    end if
 !
     if (v_load_info(i_load+1) .eq. 3) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'DIRI_FT'
         if (v_load_info(3*nb_load+2+i_load+1) .eq. 1) then
             list_info_type(i_info_type) = 'DIRI_FT_DIDI'
-        endif
-    endif
+        end if
+    end if
 !
     if (v_load_info(nb_load+i_load+1) .eq. 6) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_ONDE'
-    endif
+    end if
 !
-    if ((v_load_info(nb_load+i_load+1) .eq. 55) .and. (v_load_info(4*nb_load+5) .eq. 99) ) then
+    if ((v_load_info(nb_load+i_load+1) .eq. 55) .and. (v_load_info(4*nb_load+5) .eq. 99)) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_SIGM_INT'
-    endif
+    end if
 !
     if (v_load_info(nb_load+i_load+1) .eq. 5) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_PILO'
-    endif
+    end if
 !
     if (v_load_info(nb_load+i_load+1) .eq. 4) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_SUIV'
-    endif
+    end if
 !
     if (v_load_info(nb_load+i_load+1) .eq. 2) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_FO'
-    endif
+    end if
 !
     if (v_load_info(nb_load+i_load+1) .eq. 3) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_FT'
-    endif
+    end if
 !
     if (v_load_info(nb_load+i_load+1) .eq. 1) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_CSTE'
-    endif
+    end if
 !
     if (v_load_info(2*nb_load+3) .ne. 0) then
         i_info_type = i_info_type+1
-        ASSERT(i_info_type.le.nb_info_maxi)
+        ASSERT(i_info_type .le. nb_info_maxi)
         list_info_type(i_info_type) = 'NEUM_LAPL'
         i_neum_lapl = v_load_info(2*nb_load+3)
-    endif
+    end if
 !
     nb_info_type = i_info_type
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSPrintSepLine()
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infdbg.h"
 #include "asterfort/nonlinDSColumnWriteValue.h"
@@ -41,11 +41,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECANONLINE', ifm, niv)
-    sep_line   = &
+    sep_line = &
 '=================================================================================================='
     line_width = 98
-    call nonlinDSColumnWriteValue(line_width,&
-                                  output_unit_ = ifm,&
-                                  value_k_     = sep_line)
+    call nonlinDSColumnWriteValue(line_width, &
+                                  output_unit_=ifm, &
+                                  value_k_=sep_line)
 !
 end subroutine

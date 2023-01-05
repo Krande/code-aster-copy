@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,26 +60,26 @@ subroutine mmelin(noma, numa, typint, nnint)
     if (typint .eq. 1) then
         if (alias(1:3) .eq. 'SE2') then
             nnint = 2
-        else if (alias(1:3).eq.'SE3') then
+        else if (alias(1:3) .eq. 'SE3') then
             nnint = 3
-        else if (alias(1:3).eq.'TR3') then
+        else if (alias(1:3) .eq. 'TR3') then
             nnint = 3
-        else if (alias(1:3).eq.'TR6') then
+        else if (alias(1:3) .eq. 'TR6') then
             nnint = 6
-        else if (alias(1:3).eq.'TR7') then
+        else if (alias(1:3) .eq. 'TR7') then
             nnint = 6
-        else if (alias(1:3).eq.'QU4') then
+        else if (alias(1:3) .eq. 'QU4') then
             nnint = 4
-        else if (alias(1:3).eq.'QU8') then
+        else if (alias(1:3) .eq. 'QU8') then
             nnint = 9
-        else if (alias(1:3).eq.'QU9') then
+        else if (alias(1:3) .eq. 'QU9') then
             nnint = 9
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !     'GAUSS'
-    else if (mod(typint,10) .eq. 2) then
+    else if (mod(typint, 10) .eq. 2) then
         param = typint/10
         if (alias(1:2) .eq. 'SE') then
             nnint = param
@@ -98,15 +98,15 @@ subroutine mmelin(noma, numa, typint, nnint)
                 nnint = 12
             else
                 ASSERT(.false.)
-            endif
+            end if
         else if (alias(1:2) .eq. 'QU') then
             nnint = param**2
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !     'SIMPSON'
-    else if (mod(typint,10) .eq. 3) then
+    else if (mod(typint, 10) .eq. 3) then
         param = typint/10
         if (alias(1:2) .eq. 'SE') then
             nnint = 2*param+1
@@ -116,10 +116,10 @@ subroutine mmelin(noma, numa, typint, nnint)
             nnint = (2*param+1)**2
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !     'NCOTES'
-    else if (mod(typint,10) .eq. 4) then
+    else if (mod(typint, 10) .eq. 4) then
         param = typint/10
         if (alias(1:2) .eq. 'SE') then
             nnint = param+1
@@ -129,9 +129,9 @@ subroutine mmelin(noma, numa, typint, nnint)
             nnint = (param+1)**2
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

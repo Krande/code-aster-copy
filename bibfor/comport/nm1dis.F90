@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nm1dis(fami, kpg, ksp, imate, em,&
-                  ep, sigm, deps, vim, option,&
+subroutine nm1dis(fami, kpg, ksp, imate, em, &
+                  ep, sigm, deps, vim, option, &
                   rela_comp, materi, sigp, vip, dsde)
 !
 !
@@ -58,9 +58,9 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
     integer :: jprolm, jvalem, nbvalm, nbvalp, jprolp, jvalep, iret
     integer :: icodre(2)
     real(kind=8) :: rprim, rm, sige, valpar, valres(2), airerp, sieleq, rp, dp, nu, asige
-    character(len=8) :: nompar,para_type
+    character(len=8) :: nompar, para_type
     character(len=16) :: nomecl(2)
-    data nomecl /'D_SIGM_EPSI','SY'/
+    data nomecl/'D_SIGM_EPSI', 'SY'/
 ! --------------------------------------------------------------------------------------------------
 !
     nompar = 'TEMP'
@@ -68,46 +68,46 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
 !
     et = 0.0d0
 !   caractéristiques écrouissage linéaire
-    if ((rela_comp.eq.'VMIS_ISOT_LINE') .or. (rela_comp.eq.'GRILLE_ISOT_LINE')) then
-        call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ECRO_LINE', 0, ' ', [0.d0],&
+    if ((rela_comp .eq. 'VMIS_ISOT_LINE') .or. (rela_comp .eq. 'GRILLE_ISOT_LINE')) then
+        call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ECRO_LINE', 0, ' ', [0.d0], &
                     1, nomecl, valres, icodre, 1)
-        call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ECRO_LINE', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ECRO_LINE', 0, ' ', [0.d0], &
                     1, nomecl(2), valres(2), icodre(2), 0)
         if (icodre(2) .ne. 0) valres(2) = 0.d0
         et = valres(1)
         sigy = valres(2)
-        rprim = ep*et/ (ep-et)
-        rm = rprim*vim(1) + sigy
+        rprim = ep*et/(ep-et)
+        rm = rprim*vim(1)+sigy
 !
 !   caractéristiques écrouissage donné par courbe de traction
-    else if (rela_comp.eq.'VMIS_ISOT_TRAC') then
+    else if (rela_comp .eq. 'VMIS_ISOT_TRAC') then
         call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, valpar, iret)
         call rctype(imate, 1, nompar, [valpar], para_vale, para_type, materi=materi)
-        if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
-            call utmess('F', 'COMPOR5_5', sk = para_type)
-        endif
+        if ((para_type .eq. 'TEMP') .and. (iret .eq. 1)) then
+            call utmess('F', 'COMPOR5_5', sk=para_type)
+        end if
         call rctrac(imate, 1, 'SIGM', para_vale, jprolm, jvalem, nbvalm, em, materi=materi)
         call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, valpar, iret)
-        call rctype(imate, 1, nompar, [valpar], para_vale, para_type,materi=materi)
-        if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
-            call utmess('F', 'COMPOR5_5', sk = para_type)
-        endif
+        call rctype(imate, 1, nompar, [valpar], para_vale, para_type, materi=materi)
+        if ((para_type .eq. 'TEMP') .and. (iret .eq. 1)) then
+            call utmess('F', 'COMPOR5_5', sk=para_type)
+        end if
         call rctrac(imate, 1, 'SIGM', para_vale, jprolp, jvalep, nbvalp, ep, materi=materi)
-        call rcfonc('S', 1, jprolp, jvalep, nbvalp, sigy = sigy)
+        call rcfonc('S', 1, jprolp, jvalep, nbvalp, sigy=sigy)
         call rcfonc('V', 1, jprolp, jvalep, nbvalp, p=vim(1), rp=rm, rprim=rprim, airerp=airerp)
-        et=rprim
+        et = rprim
     else
-        ASSERT( .FALSE. )
-    endif
+        ASSERT(.FALSE.)
+    end if
 !
 !   estimation élastique
-    sige = ep* (sigm/em+deps)
+    sige = ep*(sigm/em+deps)
     sieleq = abs(sige)
 !
 !   calcul epsp, p , sig
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         if (sieleq .le. rm) then
-            dp=0.d0
+            dp = 0.d0
             sigp = sige
             dsde = ep
             vip(2) = 0.d0
@@ -115,35 +115,35 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
             sigp = sige
         else
             vip(2) = 1.d0
-            if ((rela_comp.eq.'VMIS_ISOT_LINE') .or. (rela_comp.eq.'GRILLE_ISOT_LINE')) then
-                dp = abs(sige) - rm
-                dp = dp/ (rprim+ep)
-                rp = sigy + rprim* (pm+dp)
+            if ((rela_comp .eq. 'VMIS_ISOT_LINE') .or. (rela_comp .eq. 'GRILLE_ISOT_LINE')) then
+                dp = abs(sige)-rm
+                dp = dp/(rprim+ep)
+                rp = sigy+rprim*(pm+dp)
                 if (option .eq. 'FULL_MECA_ELAS') then
                     dsde = ep
                 else
                     dsde = et
-                endif
+                end if
             else
-                nu=0.5d0
-                asige=abs(sige)
-                call rcfonc('E', 1, jprolp, jvalep, nbvalp, e=ep, nu=nu, p=vim(1), rp=rp,&
+                nu = 0.5d0
+                asige = abs(sige)
+                call rcfonc('E', 1, jprolp, jvalep, nbvalp, e=ep, nu=nu, p=vim(1), rp=rp, &
                             rprim=rprim, airerp=airerp, sieleq=asige, dp=dp)
                 if (option .eq. 'FULL_MECA_ELAS') then
                     dsde = ep
                 else
-                    dsde = ep*rprim/ (ep+rprim)
-                endif
-            endif
-            vip(1) = vim(1) + dp
-            sigp = sige/ (1.d0+ep*dp/rp)
-        endif
-    endif
+                    dsde = ep*rprim/(ep+rprim)
+                end if
+            end if
+            vip(1) = vim(1)+dp
+            sigp = sige/(1.d0+ep*dp/rp)
+        end if
+    end if
     if (option(1:10) .eq. 'RIGI_MECA_') then
-        if ((vim(2).lt.0.5d0) .or. (option.eq.'RIGI_MECA_ELAS')) then
+        if ((vim(2) .lt. 0.5d0) .or. (option .eq. 'RIGI_MECA_ELAS')) then
             dsde = ep
         else
             dsde = et
-        endif
-    endif
+        end if
+    end if
 end subroutine

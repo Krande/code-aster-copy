@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ subroutine cjsqij(s, i1, x, q)
     integer :: ndt, ndi, i
     real(kind=8) :: s(6), i1, x(6), q(6)
 !
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     do i = 1, ndt
-        q(i) = s(i) - i1*x(i)
+        q(i) = s(i)-i1*x(i)
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,12 +47,12 @@ subroutine matrc(nno, kcis, matc, vectt)
     integer :: ndim, nnos, npg, ipoids, ivf, idfde, jgano, jcou
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     do i = 1, 5
         do j = 1, 5
-            matc(i,j) = 0.d0
+            matc(i, j) = 0.d0
         end do
     end do
 !
@@ -61,7 +61,7 @@ subroutine matrc(nno, kcis, matc, vectt)
 !
     nbpar = 1
     nompar = 'TEMP'
-    call moytem(fami, npg, 3*zi(jcou), '+', valpar(1),&
+    call moytem(fami, npg, 3*zi(jcou), '+', valpar(1), &
                 iret)
 !
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
@@ -73,8 +73,8 @@ subroutine matrc(nno, kcis, matc, vectt)
 !
 !        ------ MATERIAU ISOTROPE --------------------------------------
 !
-        call rcvala(zi(jmate), ' ', phenom, nbpar, nompar,&
-                    valpar(1), nbv, nomres, valres, icodre,&
+        call rcvala(zi(jmate), ' ', phenom, nbpar, nompar, &
+                    valpar(1), nbv, nomres, valres, icodre, &
                     1)
 !
         young = valres(1)
@@ -82,15 +82,15 @@ subroutine matrc(nno, kcis, matc, vectt)
 !
 ! ------ CONSTRUCTION DE LA MATRICE DE COMPORTEMENT MATC : (5,5)
 !
-        matc(1,1) = young/ (1.d0-nu*nu)
-        matc(1,2) = matc(1,1)*nu
-        matc(2,1) = matc(1,2)
-        matc(2,2) = matc(1,1)
-        matc(3,3) = young/2.d0/ (1.d0+nu)
-        matc(4,4) = matc(3,3)*kcis
-        matc(5,5) = matc(4,4)
+        matc(1, 1) = young/(1.d0-nu*nu)
+        matc(1, 2) = matc(1, 1)*nu
+        matc(2, 1) = matc(1, 2)
+        matc(2, 2) = matc(1, 1)
+        matc(3, 3) = young/2.d0/(1.d0+nu)
+        matc(4, 4) = matc(3, 3)*kcis
+        matc(5, 5) = matc(4, 4)
 !
-    else if (phenom.eq.'ELAS_ORTH') then
+    else if (phenom .eq. 'ELAS_ORTH') then
 !
         nomres(1) = 'E_L'
         nomres(2) = 'E_T'
@@ -102,8 +102,8 @@ subroutine matrc(nno, kcis, matc, vectt)
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 ! ----   ET DU TEMPS
 !        -----------
-        call rcvala(zi(jmate), ' ', phenom, nbpar, nompar,&
-                    valpar(1), nbv, nomres, valres, icodre,&
+        call rcvala(zi(jmate), ' ', phenom, nbpar, nompar, &
+                    valpar(1), nbv, nomres, valres, icodre, &
                     1)
 !
         el = valres(1)
@@ -112,16 +112,16 @@ subroutine matrc(nno, kcis, matc, vectt)
         glt = valres(4)
         gtn = valres(5)
         nutl = et*nult/el
-        delta = 1.d0 - nult*nutl
-        dorth(1,1) = el/delta
-        dorth(1,2) = nult*et/delta
-        dorth(1,3) = 0.d0
-        dorth(2,2) = et/delta
-        dorth(2,1) = dorth(1,2)
-        dorth(2,3) = 0.d0
-        dorth(3,1) = 0.d0
-        dorth(3,2) = 0.d0
-        dorth(3,3) = glt
+        delta = 1.d0-nult*nutl
+        dorth(1, 1) = el/delta
+        dorth(1, 2) = nult*et/delta
+        dorth(1, 3) = 0.d0
+        dorth(2, 2) = et/delta
+        dorth(2, 1) = dorth(1, 2)
+        dorth(2, 3) = 0.d0
+        dorth(3, 1) = 0.d0
+        dorth(3, 2) = 0.d0
+        dorth(3, 3) = glt
 !
 ! ---   DETERMINATION DES MATRICE DE PASSAGE DES REPERES INTRINSEQUES
 ! ---   AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
@@ -137,7 +137,7 @@ subroutine matrc(nno, kcis, matc, vectt)
 !
 !       CALCUL DU COSINUS ET DU SINUS DE L'ANGLE ENTRE LE REPERE
 !       INTRINSEQUE ET LE REPERE UTILISATEUR
-        call coqrep(vectt, alpha, beta, r8bid4, r8bid4,&
+        call coqrep(vectt, alpha, beta, r8bid4, r8bid4, &
                     c, s)
 !
 ! ----   TENSEUR D'ELASTICITE DANS LE REPERE INTRINSEQUE :
@@ -145,46 +145,46 @@ subroutine matrc(nno, kcis, matc, vectt)
 !
         do i = 1, 3
             do j = 1, 3
-                passag(i,j) = 0.d0
+                passag(i, j) = 0.d0
             end do
         end do
-        passag(1,1) = c*c
-        passag(2,2) = c*c
-        passag(1,2) = s*s
-        passag(2,1) = s*s
-        passag(1,3) = c*s
-        passag(3,1) = -2.d0*c*s
-        passag(2,3) = -c*s
-        passag(3,2) = 2.d0*c*s
-        passag(3,3) = c*c - s*s
-        call utbtab('ZERO', 3, 3, dorth, passag,&
+        passag(1, 1) = c*c
+        passag(2, 2) = c*c
+        passag(1, 2) = s*s
+        passag(2, 1) = s*s
+        passag(1, 3) = c*s
+        passag(3, 1) = -2.d0*c*s
+        passag(2, 3) = -c*s
+        passag(3, 2) = 2.d0*c*s
+        passag(3, 3) = c*c-s*s
+        call utbtab('ZERO', 3, 3, dorth, passag, &
                     work, d)
 !
         do i = 1, 3
             do j = 1, 3
-                matc(i,j) = d(i,j)
+                matc(i, j) = d(i, j)
             end do
         end do
 !
-        dcis(1,1) = glt
-        dcis(1,2) = 0.d0
-        dcis(2,1) = 0.d0
-        dcis(2,2) = gtn
-        pas2(1,1) = c
-        pas2(2,2) = c
-        pas2(1,2) = s
-        pas2(2,1) = -s
+        dcis(1, 1) = glt
+        dcis(1, 2) = 0.d0
+        dcis(2, 1) = 0.d0
+        dcis(2, 2) = gtn
+        pas2(1, 1) = c
+        pas2(2, 2) = c
+        pas2(1, 2) = s
+        pas2(2, 1) = -s
 !
-        call utbtab('ZERO', 2, 2, dcis, pas2,&
+        call utbtab('ZERO', 2, 2, dcis, pas2, &
                     work, d2)
         do i = 1, 2
             do j = 1, 2
-                matc(3+i,3+j) = d2(i,j)
+                matc(3+i, 3+j) = d2(i, j)
             end do
         end do
 !
     else
         call utmess('F', 'ELEMENTS_45', sk=phenom)
-    endif
+    end if
 !
 end subroutine

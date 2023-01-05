@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cgforc(ndim, nno1, nno2, npg, wref,&
-                  vff1, dffr1, geom, mat, pesa,&
+subroutine cgforc(ndim, nno1, nno2, npg, wref, &
+                  vff1, dffr1, geom, mat, pesa, &
                   iu, a, tang, vect)
 !
     implicit none
@@ -28,7 +28,7 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref,&
 !
     integer :: ndim, nno1, nno2, npg, mat, iu(3, 3)
     real(kind=8) :: vff1(nno1, npg), geom(ndim, nno1), wref(npg)
-    real(kind=8) :: vect(nno1*(ndim+1) + nno2)
+    real(kind=8) :: vect(nno1*(ndim+1)+nno2)
     real(kind=8) :: dffr1(nno1, npg)
     real(kind=8) :: a, tang(3, 3), pesa(4)
 ! ----------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref,&
 ! ----------------------------------------------------------------------
 !
 !
-    nddl = nno1*(ndim+1) + nno2
+    nddl = nno1*(ndim+1)+nno2
     call r8inir(nddl, 0.d0, vect, 1)
 !
 !
@@ -66,20 +66,20 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref,&
 !
 !      CALCUL DES ELEMENTS GEOM DE L'EF AU POINT DE GAUSS CONSIDERE
 !
-        call rcvalb('RIGI', g, 1, '+', mat,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb('RIGI', g, 1, '+', mat, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, 'RHO', rho, codres, 1)
 !
-        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g),&
-                    geom, tang, wg, l, b,&
+        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g), &
+                    geom, tang, wg, l, b, &
                     courb)
 !
 !        VECTEUR FINT:U ET UC
         do n = 1, nno1
             do i = 1, ndim
-                kk = iu(i,n)
-                t1 = vff1(n,g)*a*rho(1)*pesa(1)*pesa(i+1)
-                vect(kk) = vect(kk) + wg*t1
+                kk = iu(i, n)
+                t1 = vff1(n, g)*a*rho(1)*pesa(1)*pesa(i+1)
+                vect(kk) = vect(kk)+wg*t1
             end do
         end do
 !

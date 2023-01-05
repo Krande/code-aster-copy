@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
-                  toler, iter, r, rini, epstr,&
+subroutine lcmmcv(yd, dy, ddy, nr, itmax, &
+                  toler, iter, r, rini, epstr, &
                   irteti)
 ! person_in_charge: jean-michel.proix at edf.fr
 ! aslint: disable=W1306
@@ -45,7 +45,7 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
     integer :: itmax, iter, nr, irteti, ndt, ndi, i
     real(kind=8) :: toler, yd(nr), ddy(nr), dy(nr), r(nr), rini(nr), epstr(6)
 !       ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
     real(kind=8) :: errdy(nr), errr(nr), e1, e2, e1ini, e2ini
 !       ----------------------------------------------------------------
 !
@@ -57,20 +57,20 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
 !          2 = || DDYi / DYi ||     < EPS
 !      CALL LCVERR ( RINI, R, 6, 1, ERRR  )
 !
-    e1=0.d0
-    e2=0.d0
-    e1ini=0.d0
-    e2ini=0.d0
+    e1 = 0.d0
+    e2 = 0.d0
+    e1ini = 0.d0
+    e2ini = 0.d0
     do i = 1, 6
         e1 = max(e1, abs(r(i)))
 !         E1INI = MAX(E1INI, ABS(RINI(I)))
         e1ini = max(e1ini, abs(epstr(i)))
     end do
 !
-    errr(1)=e1
+    errr(1) = e1
     if (e1ini .gt. r8prem()) then
-        errr(1)=e1/e1ini
-    endif
+        errr(1) = e1/e1ini
+    end if
 !
     do i = 7, nr
         e2 = max(e2, abs(r(i)))
@@ -78,37 +78,37 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
         e2ini = max(e2ini, abs(yd(i)+dy(i)))
     end do
 !
-    errr(2)=e2
+    errr(2) = e2
     if (e2ini .gt. r8prem()) then
-        errr(2)=e2/e2ini
-    endif
+        errr(2) = e2/e2ini
+    end if
 !
 !     MAX DES 6 PREMIERS TERMES ET DES SUIVANTS
-    errr(1)=max(errr(1),errr(2))
+    errr(1) = max(errr(1), errr(2))
 !
 !     ERREUR SUR LA SOLUTION
 !
-    errdy(1)=0.d0
-    errdy(3)=0.d0
+    errdy(1) = 0.d0
+    errdy(3) = 0.d0
     do i = 1, 6
         errdy(1) = max(errdy(1), abs(ddy(i)))
         errdy(3) = max(errdy(3), abs(dy(i)))
     end do
     if (errdy(3) .gt. r8prem()) then
-        errdy(1)=errdy(1)/errdy(3)
-    endif
-    errdy(2)=0.d0
-    errdy(4)=0.d0
+        errdy(1) = errdy(1)/errdy(3)
+    end if
+    errdy(2) = 0.d0
+    errdy(4) = 0.d0
     do i = ndt+1, nr
         errdy(2) = max(errdy(2), abs(ddy(i)))
         errdy(4) = max(errdy(3), abs(dy(i)))
     end do
     if (errdy(4) .gt. r8prem()) then
-        errdy(2)=errdy(2)/errdy(4)
-    endif
+        errdy(2) = errdy(2)/errdy(4)
+    end if
 !
 !     MAX DES 6 PREMIERS TERMES ET DES SUIVANTS
-    errdy(1)=max(errdy(1),errdy(2))
+    errdy(1) = max(errdy(1), errdy(2))
 !
 !
 !
@@ -117,19 +117,19 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
         if (errr(1) .le. toler) then
             irteti = 0
             goto 999
-        endif
+        end if
         if (errdy(1) .le. toler) then
             irteti = 0
             goto 999
-        endif
+        end if
 !
 ! -     NON CONVERGENCE ITERATION SUIVANTE
         irteti = 1
         goto 999
     else
 ! -     NB ITERATION MAXIMUM ATTEINT SANS CONVERGENCE
-        irteti=3
-    endif
+        irteti = 3
+    end if
 !
 999 continue
 end subroutine

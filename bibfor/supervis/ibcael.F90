@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,18 +31,18 @@ subroutine ibcael(type)
     info = 1
     nomf = 'ELEMBASE'
     if (type .eq. 'ECRIRE') then
-        call jeinif('DEBUT', 'SAUVE', nomf, 'C', 300,&
+        call jeinif('DEBUT', 'SAUVE', nomf, 'C', 300, &
                     512, 100)
-        call jedupc('G', '&CATA', 1, 'C', '&BATA',&
+        call jedupc('G', '&CATA', 1, 'C', '&BATA', &
                     .false._1)
         call jelibf('SAUVE', 'C', info)
         call utmess('I', 'SUPERVIS_16')
     else
-        call jeinif('POURSUITE', 'LIBERE', nomf, 'C', 300,&
+        call jeinif('POURSUITE', 'LIBERE', nomf, 'C', 300, &
                     512, 100)
-        call jedupc('C', '&BATA', 1, 'G', '&CATA',&
+        call jedupc('C', '&BATA', 1, 'G', '&CATA', &
                     .false._1)
         call jelibf('LIBERE', 'C', info)
         call utmess('I', 'SUPERVIS_17')
-    endif
+    end if
 end subroutine

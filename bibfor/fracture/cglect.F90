@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cglect(resu, modele, ndim, option,&
-                  typfis, nomfis, fonoeu, chfond, basfon,&
+subroutine cglect(resu, modele, ndim, option, &
+                  typfis, nomfis, fonoeu, chfond, basfon, &
                   taillr, conf, lnoff, liss, ndeg, typdis)
     implicit none
 !
@@ -84,19 +84,19 @@ subroutine cglect(resu, modele, ndim, option,&
     call cgtyfi(typfis, nomfis, typdis)
 !
 !     LECTURE DES CHARGES ET VERIFICATION DE LA COMPATIBILITE AVEC RESU
-    if(typdis.ne.'COHESIF') then
+    if (typdis .ne. 'COHESIF') then
         call getfac('EXCIT', nexci)
         call cgverc(resu, nexci)
-    endif
+    end if
 !
 !     RECUPERATION DU MODELE PUIS DE LA DIMENSION DU MODELE
     call dismoi('MODELE', resu, 'RESULTAT', repk=modele)
     call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
 !
 !   CALCUL COHESIF OUVERT EN 3D UNIQUEMENT POUR L INSTANT
-    if(ndim .eq. 2 .and. typdis.eq.'COHESIF') then
+    if (ndim .eq. 2 .and. typdis .eq. 'COHESIF') then
         call utmess('F', 'RUPTURE2_5')
-    endif
+    end if
 !
 !     VERIFICATION DE LA COMPATIBILITE ENTRE LA SD ASSOCIEE AU FOND
 !     DE FISSURE ET LE MODELE
@@ -114,12 +114,12 @@ subroutine cglect(resu, modele, ndim, option,&
 !
 !     LECTURE DE LA DESCRIPTION DU FOND DE FISSURE
 !     ET RECUPERATION DES OBJETS FONOEU, CHFOND, BASFON + LNOFF
-    call cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
+    call cgleff(typfis, nomfis, fonoeu, chfond, basfon, &
                 taillr, conf, lnoff)
 !
 !     VERIFICATION DES DONNEES RELATIVES AU LISSAGE
 !     ET DETERMINATION DU LISSAGE (NOM UNIQUE CONTRACTE) : LISS ET NDEG
-    call cgveli(typfis, typdis, ndim, lnoff, liss,&
+    call cgveli(typfis, typdis, ndim, lnoff, liss, &
                 ndeg)
 !
     call jedema()

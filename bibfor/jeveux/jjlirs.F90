@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine jjlirs(jadm, iclas, idos, ius, ist)
 ! OUT IST    : STATUT DU SEGMENT DE VALEUR
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: icla2, idatoc, idos, is, ista1, ista2
@@ -45,22 +45,22 @@ subroutine jjlirs(jadm, iclas, idos, ius, ist)
     idatoc = iszon(jiszon+jadm-2)
     if (idatoc .ne. idos) then
         call utmess('F', 'JEVEUX1_54', si=jadm)
-    endif
+    end if
 !
     if (ista1 .ne. istat(1) .and. ista1 .ne. istat(2)) then
         call utmess('F', 'JEVEUX1_54', si=jadm)
-    endif
+    end if
 !
     is = jiszon+iszon(jiszon+jadm-4)
     ista2 = iszon(is-4)
     icla2 = iszon(is-2)
     if (icla2 .ne. iclas) then
         call utmess('F', 'JEVEUX1_55', si=jadm)
-    endif
+    end if
 !
     if (ista2 .ne. istat(3) .and. ista2 .ne. istat(4)) then
         call utmess('F', 'JEVEUX1_55', si=jadm)
-    endif
+    end if
 !
     ius = ista1
     ist = ista2

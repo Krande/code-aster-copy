@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sele,&
+subroutine nmaret(nbarvz, nb_node, nb_dim, sdline_crack, nb_node_sele, &
                   list_node, list_node_1, list_node_2)
 !
 ! aslint: disable=W1306
@@ -71,79 +71,79 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
 !
 ! ----------------------------------------------------------------------
 !
-    nbarvi=nbarvz
+    nbarvi = nbarvz
     call jeveuo(sdline_crack, 'L', jlis1)
     call jeexin(list_node, iret)
     if (nb_node .ge. 1 .and. iret .ne. 0) call jeveuo(list_node, 'L', jgro)
     do i = 1, nbarvi
-        tabnoz(1,i)=zi(jlis1-1+2*(i-1)+1)
-        tabnoz(2,i)=zi(jlis1-1+2*(i-1)+2)
-        tabnoz(3,i)=i
+        tabnoz(1, i) = zi(jlis1-1+2*(i-1)+1)
+        tabnoz(2, i) = zi(jlis1-1+2*(i-1)+2)
+        tabnoz(3, i) = i
         do j = 1, nb_dim
-            tabcoz(j,i)=0.d0
+            tabcoz(j, i) = 0.d0
         end do
-        tabcrz(i)=i
+        tabcrz(i) = i
     end do
 
 !
     if (nb_node .ge. 1 .and. iret .ne. 0) then
         do i = 1, nb_node
-            tabut(1,i)=zi(jgro-1+i)
+            tabut(1, i) = zi(jgro-1+i)
         end do
         if (nb_node .gt. nbarvi) then
             call utmess('F', 'PILOTAGE_62')
-        endif
+        end if
 
         do j = 1, nb_node
-            noeuad=.false.
+            noeuad = .false.
             do i = 1, nbarvi
 !
-                if (tabut(1,j) .eq. tabnoz(1,i)) then
+                if (tabut(1, j) .eq. tabnoz(1, i)) then
                     do l = 1, nb_node
-                        if ((l.ne.j) .and. (tabut(1,l).eq.tabnoz(2,i))) then
-                            vali(1)=tabut(1,j)
-                            vali(2)=tabut(1,l)
+                        if ((l .ne. j) .and. (tabut(1, l) .eq. tabnoz(2, i))) then
+                            vali(1) = tabut(1, j)
+                            vali(2) = tabut(1, l)
                             call utmess('F', 'PILOTAGE_63', ni=2, vali=vali)
-                        endif
+                        end if
                     end do
-                    tabut(2,j)=tabnoz(2,i)
-                    tabut(3,j)=tabnoz(3,i)
-                    noeuad=.true.
-                else if (tabut(1,j).eq.tabnoz(2,i)) then
+                    tabut(2, j) = tabnoz(2, i)
+                    tabut(3, j) = tabnoz(3, i)
+                    noeuad = .true.
+                else if (tabut(1, j) .eq. tabnoz(2, i)) then
                     do l = 1, nb_node
-                        if ((l.ne.j) .and. (tabut(1,l).eq.tabnoz(1,i))) then
-                            vali(1)=tabut(1,j)
-                            vali(2)=tabut(1,l)
+                        if ((l .ne. j) .and. (tabut(1, l) .eq. tabnoz(1, i))) then
+                            vali(1) = tabut(1, j)
+                            vali(2) = tabut(1, l)
                             call utmess('F', 'PILOTAGE_63', ni=2, vali=vali)
-                        endif
+                        end if
                     end do
-                    tabut(2,j)=tabnoz(1,i)
-                    tabut(3,j)=tabnoz(3,i)
-                    noeuad=.true.
-                endif
+                    tabut(2, j) = tabnoz(1, i)
+                    tabut(3, j) = tabnoz(3, i)
+                    noeuad = .true.
+                end if
             end do
-            if (.not.noeuad) then
+            if (.not. noeuad) then
                 call utmess('A', 'PILOTAGE_61', si=tabut(1, j))
-            endif
+            end if
         end do
         do i = 1, nb_node
             do j = 1, 3
-                tabnoz(j,i)=tabut(j,i)
+                tabnoz(j, i) = tabut(j, i)
             end do
         end do
-        nbarvi=nb_node
-    endif
+        nbarvi = nb_node
+    end if
 
 !
     l_create_group = .true.
     l_pilo = .true.
-    l_ainter=.false.
-    tabai='&&NMARET.TABAI'
+    l_ainter = .false.
+    tabai = '&&NMARET.TABAI'
     nlise2 = '&&NMARET.LISEQ'
-    call xrell2(tabnoz, nb_dim, nbarvi, tabcoz, tabcrz,&
+    call xrell2(tabnoz, nb_dim, nbarvi, tabcoz, tabcrz, &
                 l_create_group, nlise2, l_pilo, tabai, l_ainter)
     call jedetr(nlise2(1:8)//'.PILO')
-    nar=nbarvi
+    nar = nbarvi
     call jeexin(nlise2, iret)
     if (iret .ne. 0) then
         call jeveuo(nlise2, 'L', jlis1)
@@ -151,37 +151,37 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
         nreleq = nreleq/2
         if (nreleq .gt. 0) then
             do i = 1, nreleq
-                repere=0
-                effac=zi(jlis1-1+2*(i-1)+2)
+                repere = 0
+                effac = zi(jlis1-1+2*(i-1)+2)
                 do j = 1, nar
-                    if (effac .eq. tabnoz(3,j)) then
-                        repere=j
-                    endif
+                    if (effac .eq. tabnoz(3, j)) then
+                        repere = j
+                    end if
                 end do
                 if (repere .gt. 0) then
                     if (repere .lt. nar) then
                         narm = nar-1
                         do l = repere, narm
-                            tabnoz(1,l) = tabnoz(1,l+1)
-                            tabnoz(2,l) = tabnoz(2,l+1)
-                            tabnoz(3,l) = tabnoz(3,l+1)
+                            tabnoz(1, l) = tabnoz(1, l+1)
+                            tabnoz(2, l) = tabnoz(2, l+1)
+                            tabnoz(3, l) = tabnoz(3, l+1)
                         end do
-                    endif
-                    tabnoz(1,nar)=0
-                    tabnoz(2,nar)=0
-                    tabnoz(3,nar)=0
-                    nar=nar-1
-                endif
+                    end if
+                    tabnoz(1, nar) = 0
+                    tabnoz(2, nar) = 0
+                    tabnoz(3, nar) = 0
+                    nar = nar-1
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
     nb_node_sele = nar
     call wkvect(list_node_1, 'V V I', nb_node_sele, jgro1)
     call wkvect(list_node_2, 'V V I', nb_node_sele, jgro2)
 !
     do i = 1, nb_node_sele
-        zi(jgro1-1+i)=tabnoz(1,i)
-        zi(jgro2-1+i)=tabnoz(2,i)
+        zi(jgro1-1+i) = tabnoz(1, i)
+        zi(jgro2-1+i) = tabnoz(2, i)
     end do
     call jedetr(nlise2)
 end subroutine

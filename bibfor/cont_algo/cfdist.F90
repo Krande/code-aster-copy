@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfdist(ds_contact, i_zone         , elem_slav_indx, poin_coor, time_curr,&
-                  gap_user  , node_slav_indx_)
+subroutine cfdist(ds_contact, i_zone, elem_slav_indx, poin_coor, time_curr, &
+                  gap_user, node_slav_indx_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -75,9 +75,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    gap_user       = 0.d0
-    gap_user_mast  = 0.d0
-    gap_user_slav  = 0.d0
+    gap_user = 0.d0
+    gap_user_mast = 0.d0
+    gap_user_slav = 0.d0
     gap_structural = 0.d0
 !
 ! - Acces to contact objects
@@ -86,10 +86,10 @@ implicit none
     sdcont_jeupou = ds_contact%sdcont_defi(1:16)//'.JEUPOU'
     sdcont_jeufo1 = ds_contact%sdcont_defi(1:16)//'.JFO1CO'
     sdcont_jeufo2 = ds_contact%sdcont_defi(1:16)//'.JFO2CO'
-    call jeveuo(sdcont_jeucoq, 'L', vr  = v_sdcont_jeucoq)
-    call jeveuo(sdcont_jeupou, 'L', vr  = v_sdcont_jeupou)
-    call jeveuo(sdcont_jeufo1, 'L', vk8 = v_sdcont_jeufo1)
-    call jeveuo(sdcont_jeufo2, 'L', vk8 = v_sdcont_jeufo2)
+    call jeveuo(sdcont_jeucoq, 'L', vr=v_sdcont_jeucoq)
+    call jeveuo(sdcont_jeupou, 'L', vr=v_sdcont_jeupou)
+    call jeveuo(sdcont_jeufo1, 'L', vk8=v_sdcont_jeufo1)
+    call jeveuo(sdcont_jeufo2, 'L', vk8=v_sdcont_jeufo2)
 !
 ! - Set parameters for evaluate functions
 !
@@ -104,45 +104,45 @@ implicit none
 !
 ! - Supplementary gaps
 !
-    l_dist_beam  = mminfl(ds_contact%sdcont_defi, 'DIST_POUTRE', i_zone)
-    l_dist_shell = mminfl(ds_contact%sdcont_defi, 'DIST_COQUE' , i_zone)
-    l_dist_mast  = mminfl(ds_contact%sdcont_defi, 'DIST_MAIT'  , i_zone)
-    l_dist_slav  = mminfl(ds_contact%sdcont_defi, 'DIST_ESCL'  , i_zone)
+    l_dist_beam = mminfl(ds_contact%sdcont_defi, 'DIST_POUTRE', i_zone)
+    l_dist_shell = mminfl(ds_contact%sdcont_defi, 'DIST_COQUE', i_zone)
+    l_dist_mast = mminfl(ds_contact%sdcont_defi, 'DIST_MAIT', i_zone)
+    l_dist_slav = mminfl(ds_contact%sdcont_defi, 'DIST_ESCL', i_zone)
 !
 ! - Evaluate DIST_MAIT
 !
     if (l_dist_mast) then
         gap_mast_func = v_sdcont_jeufo1(i_zone)
-        call fointe('F', gap_mast_func, 4, para_name, para_vale,&
+        call fointe('F', gap_mast_func, 4, para_name, para_vale, &
                     gap_user_mast, ier)
-    endif
+    end if
 !
 ! - Evaluate DIST_ESCL
 !
     if (l_dist_slav) then
         gap_slav_func = v_sdcont_jeufo2(i_zone)
-        call fointe('F', gap_slav_func, 4, para_name, para_vale,&
+        call fointe('F', gap_slav_func, 4, para_name, para_vale, &
                     gap_user_slav, ier)
-    endif
+    end if
 !
 ! - Evaluate DIST_POUTRE/DIST_COQUE
 !
     if (l_dist_shell .or. l_dist_beam) then
         if (present(node_slav_indx_)) then
-            call cfdism(ds_contact    , l_dist_beam, l_dist_shell, node_slav_indx_,&
+            call cfdism(ds_contact, l_dist_beam, l_dist_shell, node_slav_indx_, &
                         gap_structural)
         else
             if (l_dist_beam) then
                 gap_structural = gap_structural+v_sdcont_jeupou(elem_slav_indx)
-            endif
+            end if
             if (l_dist_shell) then
                 gap_structural = gap_structural+v_sdcont_jeucoq(elem_slav_indx)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Total user gap
 !
-    gap_user = gap_user_mast + gap_user_slav + gap_structural
+    gap_user = gap_user_mast+gap_user_slav+gap_structural
 !
 end subroutine

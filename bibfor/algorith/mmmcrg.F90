@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterc/r8vide.h"
@@ -52,7 +52,7 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
 ! ----------------------------------------------------------------------
 !
     integer :: ncmp
-    parameter    (ncmp=3)
+    parameter(ncmp=3)
     character(len=8) :: liscmp(ncmp)
 !
     real(kind=8) :: vmax1, vmax2, vmaxi
@@ -60,7 +60,7 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
     character(len=8) :: nomnoe
     integer :: numno1, numno2, numnoe
 !
-    data liscmp  /'DX','DY','DZ'/
+    data liscmp/'DX', 'DY', 'DZ'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
         cridep = vmax1/vmax2
     else
         cridep = 1.d0
-    endif
+    end if
 !
 ! --- EMPLACEMENT DU RESIDU MAX
 !
@@ -95,7 +95,7 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
         nomnoe = ' '
     else
         call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
-    endif
+    end if
     ngeom = nomnoe//'        '
     vgeom = vmaxi
 !

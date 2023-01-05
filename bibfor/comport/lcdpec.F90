@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 
 subroutine lcdpec(BEHinteg, &
-                  vind, nbcomm, nmat, ndt, cpmono,&
-                  materf, iter, nvi, itmax, toler,&
-                  pgl, nfs, nsg, toutms, hsr,&
+                  vind, nbcomm, nmat, ndt, cpmono, &
+                  materf, iter, nvi, itmax, toler, &
+                  pgl, nfs, nsg, toutms, hsr, &
                   dt, dy, yd, vinf, &
-                  sigf, df, nr, mod,&
+                  sigf, df, nr, mod, &
                   codret)
 ! aslint: disable=W1306,W1504
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHinteg
 !     POST-TRAITEMENTS POUR LE MONOCRISTAL
 !     DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
 !     RECALCUL DES 3 VARIABLES INTERNES PAR SYSTEME
@@ -89,186 +89,186 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
-    data iden/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
-    data id6/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    common/polycr/irr, decirr, nbsyst, decal, gdef
+    data iden/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
+    data id6/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
-    codret=0
-    iret=0
-    sicl=-r8miem()
+    codret = 0
+    iret = 0
+    sicl = -r8miem()
 !     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES
     call r8inir(6, 0.d0, devi, 1)
     call r8inir(3, 0.d0, omp, 1)
 !
-    nbfsys=nbcomm(nmat,2)
+    nbfsys = nbcomm(nmat, 2)
 !
 !     NSFA : debut de la famille IFA dans DY et YD
-    nsfa=6
+    nsfa = 6
 !     NSFV : debut de la famille IFA dans les variables internes
-    nsfv=6
+    nsfv = 6
 !
-    if (nbcomm(nmat,1) .gt. 0) then
+    if (nbcomm(nmat, 1) .gt. 0) then
 !        ROTATION RESEAU
-        ir=1
+        ir = 1
         do i = 1, 3
             do j = 1, 3
-                qm(i,j)=vind(nvi-19+3*(i-1)+j)+iden(i,j)
+                qm(i, j) = vind(nvi-19+3*(i-1)+j)+iden(i, j)
             end do
         end do
     else
-        ir=0
-    endif
+        ir = 0
+    end if
 !
     if (gdef .eq. 1) then
         if (materf(nmat) .eq. 0) then
             call lcopil('ISOTROPE', mod, materf(1), fkooh)
-        else if (materf(nmat).eq.1) then
+        else if (materf(nmat) .eq. 1) then
             call lcopil('ORTHOTRO', mod, materf(1), fkooh)
-        endif
-        fetfe6(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
+        end if
+        fetfe6(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
         call dscal(6, 2.d0, fetfe6, 1)
-        call daxpy(6, 1.d0, id6, 1, fetfe6,&
+        call daxpy(6, 1.d0, id6, 1, fetfe6, &
                    1)
         call r8inir(9, 0.d0, gamsns, 1)
-    endif
-    indtau=0
+    end if
+    indtau = 0
     do ifa = 1, nbfsys
 !
-        ifl=nbcomm(ifa,1)
-        nuecou=nint(materf(nmat+ifl))
-        nomfam=cpmono(5*(ifa-1)+1)(1:16)
-        necoul=cpmono(5*(ifa-1)+3)(1:16)
+        ifl = nbcomm(ifa, 1)
+        nuecou = nint(materf(nmat+ifl))
+        nomfam = cpmono(5*(ifa-1)+1) (1:16)
+        necoul = cpmono(5*(ifa-1)+3) (1:16)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ng, lg, 0, qm)
 !
         if (necoul .eq. 'MONO_DD_CC_IRRA') then
             call dcopy(12, vind(nsfv+3*nbsys+1), 1, rhoirr, 1)
-            irr=1
-            xi=materf(nmat+ifl+23)
-        else if (necoul.eq.'MONO_DD_CFC_IRRA') then
+            irr = 1
+            xi = materf(nmat+ifl+23)
+        else if (necoul .eq. 'MONO_DD_CFC_IRRA') then
             call dcopy(12, vind(nsfv+3*nbsys+1), 1, roloop, 1)
             call dcopy(12, vind(nsfv+3*nbsys+13), 1, fivoid, 1)
-            irr=2
-            iei =nbcomm(ifa,3)
-            rhosat=materf(nmat+iei+8)
-            phisat=materf(nmat+iei+9)
+            irr = 2
+            iei = nbcomm(ifa, 3)
+            rhosat = materf(nmat+iei+8)
+            phisat = materf(nmat+iei+9)
             xi = materf(nmat+iei+10)
             dz = materf(nmat+iei+11)
         else
-            irr=0
-        endif
+            irr = 0
+        end if
 !
         do is = 1, nbsys
 !
-            call caltau(ifa, is, sigf, fkooh,&
-                        nfs, nsg, toutms, taus, mus,&
+            call caltau(ifa, is, sigf, fkooh, &
+                        nfs, nsg, toutms, taus, mus, &
                         msns)
 !
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
-                        hsr, nsfv, nsfa, ifa, nbsys,&
-                        is, dt, nvi, vind, yd,&
-                        dy, itmax, toler, materf, expbp,&
-                        taus, dalpha, dgamma, dp, crit,&
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
+                        hsr, nsfv, nsfa, ifa, nbsys, &
+                        is, dt, nvi, vind, yd, &
+                        dy, itmax, toler, materf, expbp, &
+                        taus, dalpha, dgamma, dp, crit, &
                         sgns, rp, iret)
 !
             if (iret .gt. 0) goto 999
 !
             if (gdef .eq. 0) then
                 do i = 1, 6
-                    devi(i)=devi(i)+mus(i)*dgamma
+                    devi(i) = devi(i)+mus(i)*dgamma
                 end do
             else
-                call daxpy(9, dgamma, msns, 1, gamsns,&
+                call daxpy(9, dgamma, msns, 1, gamsns, &
                            1)
-            endif
+            end if
 !
 ! STOCKAGE DES VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
 !
-            nuvi=nsfv+3*(is-1)+3
-            vinf(nuvi-2)=vind(nuvi-2)+dalpha
-            vinf(nuvi-1)=vind(nuvi-1)+dgamma
-            vinf(nuvi ) =vind(nuvi)+dp
-            dps(is)=dp
-            if ((nuecou.eq.4) .or. (nuecou.eq.5)) then
-                if (vinf(nuvi-2) .lt. 0.d0) codret=1
-            endif
+            nuvi = nsfv+3*(is-1)+3
+            vinf(nuvi-2) = vind(nuvi-2)+dalpha
+            vinf(nuvi-1) = vind(nuvi-1)+dgamma
+            vinf(nuvi) = vind(nuvi)+dp
+            dps(is) = dp
+            if ((nuecou .eq. 4) .or. (nuecou .eq. 5)) then
+                if (vinf(nuvi-2) .lt. 0.d0) codret = 1
+            end if
 !
 ! CONTRAINTE DE CLIVAGE
-            call lcmcli(nomfam, nbsys, is, pgl,&
+            call lcmcli(nomfam, nbsys, is, pgl, &
                         sigf, sicl)
 !
-            call lcmmsg(nomfam, nbsys, is, pgl, mus,&
+            call lcmmsg(nomfam, nbsys, is, pgl, mus, &
                         ng, lg, ir, qm)
             if (ir .eq. 1) then
 !              ROTATION RESEAU - CALCUL DE OMEGAP
-                omp(1)=omp(1)+dgamma*0.5d0*(ng(2)*lg(3)-ng(3)*lg(2))
-                omp(2)=omp(2)+dgamma*0.5d0*(ng(3)*lg(1)-ng(1)*lg(3))
-                omp(3)=omp(3)+dgamma*0.5d0*(ng(1)*lg(2)-ng(2)*lg(1))
-            endif
+                omp(1) = omp(1)+dgamma*0.5d0*(ng(2)*lg(3)-ng(3)*lg(2))
+                omp(2) = omp(2)+dgamma*0.5d0*(ng(3)*lg(1)-ng(1)*lg(3))
+                omp(3) = omp(3)+dgamma*0.5d0*(ng(1)*lg(2)-ng(2)*lg(1))
+            end if
 !
             if (irr .eq. 1) then
-                rhoirr(is)=rhoirr(is)*exp(-xi*dp)
-            endif
+                rhoirr(is) = rhoirr(is)*exp(-xi*dp)
+            end if
         end do
 !
         if (irr .eq. 1) then
             call dcopy(12, rhoirr, 1, vinf(nsfv+3*nbsys+1), 1)
-        endif
+        end if
 !
         if (irr .eq. 2) then
             do is = 1, nbsys
 !              SOMME SUR COPLA(S)
-                sdp=0.d0
+                sdp = 0.d0
                 do iv = 1, 12
-                    is3=(is-1)/3
-                    iv3=(iv-1)/3
+                    is3 = (is-1)/3
+                    iv3 = (iv-1)/3
 !                 PARTIE POSITIVE DE ALPHA
                     if (is3 .eq. iv3) then
-                        sdp=sdp+dps(iv)
-                    endif
+                        sdp = sdp+dps(iv)
+                    end if
                 end do
-                roloop(is)=rhosat+(roloop(is)-rhosat)*exp(-xi*sdp)
-                fivoid(is)=phisat+(fivoid(is)-phisat)*exp(-dz*sdp)
+                roloop(is) = rhosat+(roloop(is)-rhosat)*exp(-xi*sdp)
+                fivoid(is) = phisat+(fivoid(is)-phisat)*exp(-dz*sdp)
             end do
             call dcopy(12, roloop, 1, vinf(nsfv+3*nbsys+1), 1)
             call dcopy(12, fivoid, 1, vinf(nsfv+3*nbsys+13), 1)
-        endif
-        nsfa=nsfa+nbsys
-        nsfv=nsfv+nbsys*3
+        end if
+        nsfa = nsfa+nbsys
+        nsfv = nsfv+nbsys*3
     end do
 !
-    indtau=nsfv
-    if (irr .eq. 1) indtau=indtau+12
-    if (irr .eq. 2) indtau=indtau+24
+    indtau = nsfv
+    if (irr .eq. 1) indtau = indtau+12
+    if (irr .eq. 2) indtau = indtau+24
 !     CISSIONS TAU_S
-    ns=0
+    ns = 0
 !     NSFA : debut de la famille IFA dans DY et YD
-    nsfa=6
+    nsfa = 6
 !     NSFV : debut de la famille IFA dans les variables internes
-    nsfv=6
+    nsfv = 6
     do ifa = 1, nbfsys
-        ifl=nbcomm(ifa,1)
-        nomfam=cpmono(5*(ifa-1)+1)(1:16)
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+        ifl = nbcomm(ifa, 1)
+        nomfam = cpmono(5*(ifa-1)+1) (1:16)
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ng, lg, 0, qm)
         do is = 1, nbsys
 !           CALCUL DE LA SCISSION REDUITE =
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MUS
-            call caltau(ifa, is, sigf, fkooh,&
-                        nfs, nsg, toutms, tau(ns+is), mus,&
+            call caltau(ifa, is, sigf, fkooh, &
+                        nfs, nsg, toutms, tau(ns+is), mus, &
                         msns)
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
-                        hsr, nsfv, nsfa, ifa, nbsys,&
-                        is, dt, nvi, vind, yd,&
-                        dy, itmax, toler, materf, expbp,&
-                        tau(ns+is), dalpha, dgamma, dp, crit,&
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
+                        hsr, nsfv, nsfa, ifa, nbsys, &
+                        is, dt, nvi, vind, yd, &
+                        dy, itmax, toler, materf, expbp, &
+                        tau(ns+is), dalpha, dgamma, dp, crit, &
                         sgns, rp, iret)
         end do
-        ns=ns+nbsys
-        nsfa=nsfa+nbsys
-        nsfv=nsfv+nbsys*3
+        ns = ns+nbsys
+        nsfa = nsfa+nbsys
+        nsfv = nsfv+nbsys*3
     end do
 !
     call dcopy(ns, tau, 1, vinf(indtau+1), 1)
@@ -276,11 +276,11 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !     ROTATION RESEAU DEBUT
     if (ir .eq. 1) then
         call lcmmro(BEHinteg, omp, nvi, vind, vinf)
-    endif
+    end if
 ! ROTATION RESEAU FIN
 !
     if (gdef .eq. 1) then
-        call calcfe(nr, ndt, nvi, vind, df,&
+        call calcfe(nr, ndt, nvi, vind, df, &
                     gamsns, fe, fp, iret)
         if (iret .gt. 0) goto 999
 !
@@ -303,20 +303,20 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
         call dcopy(9, fp, 1, vinf(nvi-3-18+1), 1)
 !
         epseq = lcnrte(devi)
-        vinf (nvi-1) = epseq
+        vinf(nvi-1) = epseq
 !
     else
         do i = 1, 6
-            vinf(i)=vind(i)+devi(i)
+            vinf(i) = vind(i)+devi(i)
         end do
         epseq = lcnrte(devi)
-        vinf (nvi-1) = vind (nvi-1) + epseq
-    endif
+        vinf(nvi-1) = vind(nvi-1)+epseq
+    end if
 !
     vinf(nvi-2) = sicl
 !
-    vinf (nvi) = iter
+    vinf(nvi) = iter
 !
 999 continue
-    codret=max(codret,iret)
+    codret = max(codret, iret)
 end subroutine

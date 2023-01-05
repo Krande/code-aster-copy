@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
-                  cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
+subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
+                  cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry, &
                   cmp_index_drz, lisrel, nom_noeuds)
 !
     implicit none
@@ -103,16 +103,16 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
     vale_fonc = '&FOZERO'
     vale_real = 0.d0
-    vale_cplx = (0.d0,0.d0)
+    vale_cplx = (0.d0, 0.d0)
     un = 1.d0
     type_coef = 'REEL'
-    ASSERT(type_vale.ne.'COMP')
+    ASSERT(type_vale .ne. 'COMP')
 !
 ! - Information about <GRANDEUR>
 !
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Nodes coordinates
@@ -137,19 +137,19 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
     do i_no = 1, nb_node
         numnoe_m = zi(jlino+i_no-1)
-        if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drx) .and.&
-            exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dry) .and.&
-            exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drz)) then
+        if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_drx) .and. &
+            exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_dry) .and. &
+            exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_drz)) then
             numnoe_a = numnoe_m
             goto 30
-        endif
-    enddo
+        end if
+    end do
 !
 ! - No node with DRX/DRY/DRZ: IMPOSSIBLE !
 !
     ASSERT(.false.)
 !
- 30 continue
+30  continue
 !
     call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
     nom_noeuds(1) = nomnoe_a
@@ -164,15 +164,15 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! --------- Distances: x = DX(A) - DX(M) and y = DY(A) - DY(M) and z = DZ(A) - DZ(M)
 !
-            x = vale(3*(numnoe_m-1)+1) - vale(3*(numnoe_a-1)+1)
-            y = vale(3*(numnoe_m-1)+2) - vale(3*(numnoe_a-1)+2)
-            z = vale(3*(numnoe_m-1)+3) - vale(3*(numnoe_a-1)+3)
+            x = vale(3*(numnoe_m-1)+1)-vale(3*(numnoe_a-1)+1)
+            y = vale(3*(numnoe_m-1)+2)-vale(3*(numnoe_a-1)+2)
+            z = vale(3*(numnoe_m-1)+3)-vale(3*(numnoe_a-1)+3)
 !
 ! --------- Linear relations for translation dof
 !
-            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dx) .and.&
-                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dy) .and.&
-                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dz)) then
+            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_dx) .and. &
+                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_dy) .and. &
+                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_dz)) then
 !
                 nb_term = 4
                 lisno(1) = nomnoe_m
@@ -193,8 +193,8 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! ------------- Compute linear relation
 !
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                             type_coef, type_vale, 0.d0, lisrel)
 !
 ! ------------- Second relation: DY(M) - DY(A) - X*DRZ(A) + Z*DRX(A) =0
@@ -210,8 +210,8 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! ------------- Compute linear relation
 !
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                             type_coef, type_vale, 0.d0, lisrel)
 !
 ! ------------- Third relation: DZ(M) - DZ(A) - Y*DRX(A) + X*DRY(A) =0
@@ -227,16 +227,16 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! ------------- Compute linear relation
 !
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                             type_coef, type_vale, 0.d0, lisrel)
-            endif
+            end if
 !
 ! --------- Linear relations for rotation dof
 !
-            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drx) .and.&
-                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_dry) .and.&
-                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drz)) then
+            if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_drx) .and. &
+                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_dry) .and. &
+                exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1), cmp_index_drz)) then
 !
                 nb_term = 2
                 lisno(1) = nomnoe_m
@@ -251,8 +251,8 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! ------------- Compute linear relation
 !
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                             type_coef, type_vale, 0.d0, lisrel)
 !
 !
@@ -265,8 +265,8 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! ------------- Compute linear relation
 !
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                             type_coef, type_vale, 0.d0, lisrel)
 !
 ! ------------- Sixth relation: DRZ(M) - DRZ(A)  = 0
@@ -278,11 +278,11 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! ------------- Compute linear relation
 !
-                call afrela(coer, coec, lisddl, lisno, dime,&
-                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
+                call afrela(coer, coec, lisddl, lisno, dime, &
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc, &
                             type_coef, type_vale, 0.d0, lisrel)
-            endif
-        endif
+            end if
+        end if
     end do
 !
     AS_DEALLOCATE(vk8=lisno)

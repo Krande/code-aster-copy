@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine nmttch(result, inst, nume)
 ! --- RECHERCHE INSTANT
 !
     call utacli(inst, zr(jtemps), nbinst, tole, nume)
-    nbintv = nbinst - 1
+    nbintv = nbinst-1
 !
 ! --- SI INST NON PRESENT DANS LA LISTE D INSTANT
 ! --- ON CHERCHE L INSTANT LE PLUS PROCHE AVANT L'INSTANT CHERCHE
@@ -81,21 +81,21 @@ subroutine nmttch(result, inst, nume)
             dt = inst-zr(jtemps+i)
             if (dt .le. 0.d0) then
                 goto 45
-            endif
+            end if
             if (dt .lt. dtmin) then
                 dtmin = dt
                 ins = zr(jtemps+i)
-            endif
+            end if
         end do
- 45     continue
+45      continue
         inst = ins
         call utacli(inst, zr(jtemps), nbinst, tole, nume)
-        nume = nume + 1
-    endif
+        nume = nume+1
+    end if
 !
     if (nume .lt. 0) then
         call utmess('F', 'DISCRETISATION_89')
-    endif
+    end if
 !
     call jedetr(nomobj)
 !

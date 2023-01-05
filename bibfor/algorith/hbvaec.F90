@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine hbvaec(gamma, nbmat, materf, parame)
-    implicit      none
+    implicit none
     integer :: nbmat
     real(kind=8) :: gamma, materf(nbmat, 2), parame(4)
 ! ======================================================================
@@ -35,38 +35,38 @@ subroutine hbvaec(gamma, nbmat, materf, parame)
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES MATERIAU --------------------------------
 ! ======================================================================
-    grup = materf(1,2)
-    gres = materf(2,2)
-    mend = materf(5,2)
-    mrup = materf(6,2)
-    send = materf(3,2)
-    srup = materf(4,2)
-    bres = materf(10,2)
-    ap = materf(11,2)
-    dp = materf(12,2)
-    cp = materf(13,2)
-    pphi1 = materf(9,2)
-    pphi2 = materf(15,2)
-    pphi0 = materf(16,2)
+    grup = materf(1, 2)
+    gres = materf(2, 2)
+    mend = materf(5, 2)
+    mrup = materf(6, 2)
+    send = materf(3, 2)
+    srup = materf(4, 2)
+    bres = materf(10, 2)
+    ap = materf(11, 2)
+    dp = materf(12, 2)
+    cp = materf(13, 2)
+    pphi1 = materf(9, 2)
+    pphi2 = materf(15, 2)
+    pphi0 = materf(16, 2)
 ! ======================================================================
     if (gamma .lt. grup) then
-        aux2 = gamma*(srup-send)/grup + send
-        aux3 = gamma*(mrup-mend)/grup + mend
+        aux2 = gamma*(srup-send)/grup+send
+        aux3 = gamma*(mrup-mend)/grup+mend
         aux4 = 0.d0
-        aux5 = (pphi1-pphi0)*gamma/grup + pphi0
+        aux5 = (pphi1-pphi0)*gamma/grup+pphi0
 ! ======================================================================
-    else if (gamma.lt.gres) then
+    else if (gamma .lt. gres) then
         aux2 = srup
         aux3 = mrup
-        aux4 = ap*gamma**2 + dp*gamma + cp
-        aux5 = gamma*(pphi2-pphi1)/(gres-grup)+ (pphi1*gres-pphi2* grup)/(gres-grup)
+        aux4 = ap*gamma**2+dp*gamma+cp
+        aux5 = gamma*(pphi2-pphi1)/(gres-grup)+(pphi1*gres-pphi2*grup)/(gres-grup)
 ! ======================================================================
     else
         aux2 = srup
         aux3 = mrup
         aux4 = bres
         aux5 = pphi2
-    endif
+    end if
 ! ======================================================================
 ! --- STOCKAGE ---------------------------------------------------------
 ! ======================================================================

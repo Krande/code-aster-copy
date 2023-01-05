@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,18 +25,18 @@ subroutine inccat()
 !
 !     INCLUDE($CMOTELE)
     character(len=16) :: clele
-    common /cmelen/nclele
-    common /cmelec/clele(9)
+    common/cmelen/nclele
+    common/cmelec/clele(9)
 !     EXCLUDE($CMOTELE)
 !     INCLUDE($CMOTOPT)
     character(len=16) :: cleopt
-    common /cmtopn/nclopt
-    common /cmtopc/cleopt(6)
+    common/cmtopn/nclopt
+    common/cmtopc/cleopt(6)
 !     EXCLUDE($CMOTOPT)
 !     INCLUDE($CMOTPH)
     character(len=24) :: cleph
-    common /cmtphn/ncleph
-    common /cmtphc/cleph(5)
+    common/cmtphn/ncleph
+    common/cmtphc/cleph(5)
 !
 !     CLEPH(1) = 'PHENOMENES_MODELISATION '
 !     CLEPH(2) = 'PHENOMENE               '
@@ -49,10 +49,10 @@ subroutine inccat()
     character(len=8) :: cledbg
     character(len=24) :: objdmp
     integer :: pasdmp, tyobdm
-    common /cmodbg/cledbg
-    common /cdebug/iccdbg
-    common /cbdmpc/objdmp(30)
-    common /cbdmpn/ndmp,pasdmp(30),tyobdm(30)
+    common/cmodbg/cledbg
+    common/cdebug/iccdbg
+    common/cbdmpc/objdmp(30)
+    common/cbdmpn/ndmp, pasdmp(30), tyobdm(30)
 !
 !       NDMP : NOMBRE D OBJETS A DUMPER
 !       PASDMP(IDMP)  : PASSE OU ON DUMPE L OBJET IDMP
@@ -75,7 +75,7 @@ subroutine inccat()
 !                 !                     !             !                !
 !-----------------!---------------------!-------------!-----------------
     integer :: chmod
-    common /cocaco/chmod(2)
+    common/cocaco/chmod(2)
 !     EXCLUDE($OCATCO)
 !     INCLUDE($OCATEL)
 !
@@ -130,9 +130,9 @@ subroutine inccat()
     integer :: numini, plmolc, modelo, optte
     integer :: plopmd, optmod, plopno, plconv, conver, modfca, modfno
 !
-    common /cocate/typema(2),optnom(2),numini(2),plmolc(2),modelo(2),&
-     &       optte(2),plopmd(2),optmod(2),plopno(2),plconv(2),conver(2),&
-     &       modfca(2),modfno(2)
+    common/cocate/typema(2), optnom(2), numini(2), plmolc(2), modelo(2),&
+     &       optte(2), plopmd(2), optmod(2), plopno(2), plconv(2), conver(2),&
+     &       modfca(2), modfno(2)
 !     EXCLUDE($OCATEL)
 !     INCLUDE($OCATGD)
 !
@@ -166,7 +166,7 @@ subroutine inccat()
     integer :: dgd, lnocmp
     integer :: nomgd, nomcmp, typegd
 !
-    common /cocagd/dgd(2),lnocmp(2),nomgd(2),nomcmp(2),typegd(2)
+    common/cocagd/dgd(2), lnocmp(2), nomgd(2), nomcmp(2), typegd(2)
 !
 !     EXCLUDE($OCATGD)
 !     INCLUDE($OCATOPT)
@@ -195,7 +195,7 @@ subroutine inccat()
     integer :: optpar
     integer :: ldcopt, descop, lopara
 !
-    common /cocaop/nomopt(2),optpar(2),ldcopt(2),descop(2),lopara(2)
+    common/cocaop/nomopt(2), optpar(2), ldcopt(2), descop(2), lopara(2)
 !
 !     EXCLUDE($OCATOPT)
 !     INCLUDE($OCATTM)
@@ -213,7 +213,7 @@ subroutine inccat()
 !                 !     ( NOMS )        !             !                !
 !-----------------!---------------------!-------------!-----------------
     integer :: nbno
-    common /cocatm/nbno(2)
+    common/cocatm/nbno(2)
 !     EXCLUDE($OCATTM)
 !     INCLUDE($OCATPH)
 !
@@ -230,7 +230,7 @@ subroutine inccat()
 !                 !                !             !                     !
 !-----------------!----------------!-------------!----------------------
     integer :: phmote
-    common /cocaph/nphemx,phmote(2,10)
+    common/cocaph/nphemx, phmote(2, 10)
 !
 !  PHEMOM EST UN REPERTOIRE CONTENANT LES DIFFERENTS PHENOMENS
 !  RENCONTRES DANS LE  CATALOGIE DES   PHENOMENES-MODELISATION
@@ -338,8 +338,8 @@ subroutine inccat()
 !
     nphemx = 10
     do i = 1, 10
-        phmote(1,i) = 0
-        phmote(2,i) = 0
+        phmote(1, i) = 0
+        phmote(2, i) = 0
     end do
 !
     cledbg = 'DEBUG   '

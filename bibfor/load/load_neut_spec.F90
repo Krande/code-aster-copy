@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neut_spec(type_ther  , type_calc  , model      , time_curr    , time      ,&
-                          load_name  , load_nume  , i_type_neum, nb_type_neumz, nb_in_maxi,&
-                          nb_in_prep , lchin      , lpain      , nb_in_add    , lpaout    ,&
-                          load_ligrel, load_option,&
+subroutine load_neut_spec(type_ther, type_calc, model, time_curr, time, &
+                          load_name, load_nume, i_type_neum, nb_type_neumz, nb_in_maxi, &
+                          nb_in_prep, lchin, lpain, nb_in_add, lpaout, &
+                          load_ligrel, load_option, &
                           time_move_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/load_neut_data.h"
@@ -88,7 +88,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 11)
+    parameter(nb_type_neum=11)
     aster_logical :: list_load_keyw(nb_type_neum)
 !
     integer :: i_field_in
@@ -106,17 +106,17 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     ligrel_model = model(1:8)//'.MODELE'
-    ligrel_load  = load_name(1:8)//'.CHTH.LIGRE'
-    load_ligrel  = ' '
+    ligrel_load = load_name(1:8)//'.CHTH.LIGRE'
+    load_ligrel = ' '
     call exixfe(model, ier)
-    l_xfem       = ier.ne.0
-    load_option  = 'No_Load'
-    l_constant   = .false.
-    l_fonct_0    = .false.
-    l_fonct_t    = .false.
-    i_field_in   = nb_in_prep
-    ASSERT(i_type_neum.le.nb_type_neum)
-    ASSERT(nb_type_neumz.eq.nb_type_neum)
+    l_xfem = ier .ne. 0
+    load_option = 'No_Load'
+    l_constant = .false.
+    l_fonct_0 = .false.
+    l_fonct_t = .false.
+    i_field_in = nb_in_prep
+    ASSERT(i_type_neum .le. nb_type_neum)
+    ASSERT(nb_type_neumz .eq. nb_type_neum)
 !
 ! - Identify current load
 !
@@ -131,71 +131,71 @@ implicit none
         if (load_nume .eq. 1) then
             l_constant = .true.
         else if (load_nume .eq. 2) then
-            l_fonct_0  = .true.
+            l_fonct_0 = .true.
         else if (load_nume .eq. 3) then
-            l_fonct_t  = .true.
+            l_fonct_t = .true.
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Get information about load (Neumann)
 !
-        call load_neut_data(i_type_neum   , nb_type_neumz, type_calc  ,&
-                            load_type_ligr, load_opti_r  , load_opti_f, load_para_r,&
-                            load_para_f   , load_keyw    , load_obje  , nb_obje)
+        call load_neut_data(i_type_neum, nb_type_neumz, type_calc, &
+                            load_type_ligr, load_opti_r, load_opti_f, load_para_r, &
+                            load_para_f, load_keyw, load_obje, nb_obje)
 !
 ! ----- Input fields - All keyword except EVOL_CHAR
 !
-        if (load_keyw.ne.'EVOL_CHAR') then
+        if (load_keyw .ne. 'EVOL_CHAR') then
 !
 ! --------- Set name of option and input parameters
 !
             if (l_constant) then
-                load_option  = load_opti_r
+                load_option = load_opti_r
                 load_para(1) = load_para_r(1)
                 load_para(2) = load_para_r(2)
-            else if (l_fonct_0.or.l_fonct_t) then
-                load_option  = load_opti_f
+            else if (l_fonct_0 .or. l_fonct_t) then
+                load_option = load_opti_f
                 load_para(1) = load_para_f(1)
                 load_para(2) = load_para_f(2)
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! --------- Set name of input fields
 !
             do i_obje = 1, nb_obje
-                cart_name  = load_name(1:8)//'.CHTH'//load_obje(i_obje)
+                cart_name = load_name(1:8)//'.CHTH'//load_obje(i_obje)
                 i_field_in = i_field_in+1
                 lchin(i_field_in) = cart_name(1:19)
                 lpain(i_field_in) = load_para(i_obje)
             end do
-        endif
+        end if
 !
 ! ----- Input fields for EVOL_CHAR
 !
-        if (load_keyw.eq.'EVOL_CHAR') then
-            call load_neut_evol(nb_type_neumz, type_calc  , time_curr, load_name, load_type_ligr,&
-                                load_opti_r  , load_para_r, load_name_evol, nb_obje  )
+        if (load_keyw .eq. 'EVOL_CHAR') then
+            call load_neut_evol(nb_type_neumz, type_calc, time_curr, load_name, load_type_ligr, &
+                                load_opti_r, load_para_r, load_name_evol, nb_obje)
             ASSERT(l_constant)
 !
 ! --------- Set name of option and input parameters
 !
-            load_option  = load_opti_r
+            load_option = load_opti_r
             load_para(1) = load_para_r(1)
-            if (nb_obje.eq.2) load_para(2) = load_para_r(2)
+            if (nb_obje .eq. 2) load_para(2) = load_para_r(2)
 !
 ! --------- Set name of input fields
 !
             i_field_in = i_field_in+1
             lchin(i_field_in) = load_name_evol(1)
             lpain(i_field_in) = load_para_r(1)
-            if (nb_obje.eq.2) then
+            if (nb_obje .eq. 2) then
                 i_field_in = i_field_in+1
                 lchin(i_field_in) = load_name_evol(2)
                 lpain(i_field_in) = load_para_r(2)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Select time for ECHANGE_PAROI load
 !
@@ -203,53 +203,53 @@ implicit none
         lpain(i_field_in) = 'PTEMPSR'
         lchin(i_field_in) = time
         if (load_keyw .eq. 'ECHANGE_PAROI') then
-            if (type_ther.eq.'MOVE') then
+            if (type_ther .eq. 'MOVE') then
                 lchin(i_field_in) = time_move_
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- XFEM fields
 !
-        if (type_calc.eq.'2MBR'.or.type_calc.eq.'MRIG') then
+        if (type_calc .eq. '2MBR' .or. type_calc .eq. 'MRIG') then
             if (l_xfem) then
-                call xajcin(model     , load_option, nb_in_maxi, lchin, lpain,&
+                call xajcin(model, load_option, nb_in_maxi, lchin, lpain, &
                             i_field_in)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Select LIGREL
 !
         if (l_xfem) then
             load_ligrel = ligrel_model
         else
-            if (load_type_ligr.eq.'Load') then
+            if (load_type_ligr .eq. 'Load') then
                 load_ligrel = ligrel_load
-            elseif (load_type_ligr.eq.'Model') then
+            elseif (load_type_ligr .eq. 'Model') then
                 load_ligrel = ligrel_model
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Ouput parameter
 !
-        if (type_calc.eq.'2MBR') then
+        if (type_calc .eq. '2MBR') then
             lpaout = 'PVECTTR'
-        else if (type_calc.eq.'RESI') then
+        else if (type_calc .eq. 'RESI') then
             lpaout = 'PRESIDU'
-        else if (type_calc.eq.'MRIG') then
+        else if (type_calc .eq. 'MRIG') then
             lpaout = 'PMATTTR'
-        else if (type_calc.eq.'MTAN') then
+        else if (type_calc .eq. 'MTAN') then
             lpaout = 'PMATTTR'
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Number of input fields which been added
 !
-        nb_in_add = i_field_in - nb_in_prep
-        ASSERT(i_field_in.le.nb_in_maxi)
+        nb_in_add = i_field_in-nb_in_prep
+        ASSERT(i_field_in .le. nb_in_maxi)
 
-    endif
+    end if
 !
 end subroutine

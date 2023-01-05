@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,19 +60,19 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
     parameter(nrig=5)
     character(len=16) :: optrig(nrig)
     integer, pointer :: optte(:) => null()
-    data optrig/'RIGI_ACOU','RIGI_THER','RIGI_MECA','RIGI_MECA_TANG',&
+    data optrig/'RIGI_ACOU', 'RIGI_THER', 'RIGI_MECA', 'RIGI_MECA_TANG',&
      &     'FULL_MECA'/
 !
 !
 !
     call jemarq()
-    nomob=nomobz
-    repk=' '
-    ierd=0
+    nomob = nomobz
+    repk = ' '
+    ierd = 0
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', nomob), ite)
     call jeveuo('&CATA.TE.TYPEMA', 'L', ibid)
-    nomtm=zk8(ibid-1+ite)
+    nomtm = zk8(ibid-1+ite)
 !
 !
     if (questi .eq. 'PHENOMENE') then
@@ -80,141 +80,141 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
         call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
         call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
-        ico=0
+        ico = 0
         do iphen = 1, nbphen
             call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
             call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
             do imodl = 1, nbmodl
                 call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
-                ii=indiis(zi(iamodl),ite,1,nbtm)
+                ii = indiis(zi(iamodl), ite, 1, nbtm)
                 if (ii .gt. 0) then
-                    repk=nophen
+                    repk = nophen
                     goto 30
 !
-                endif
+                end if
             end do
         end do
-        ierd=1
- 30     continue
+        ierd = 1
+30      continue
 !
-    else if (questi.eq.'FORMULATION') then
+    else if (questi .eq. 'FORMULATION') then
 !
-        call teattr('C', 'FORMULATION', repk, ierd, typel = nomob)
+        call teattr('C', 'FORMULATION', repk, ierd, typel=nomob)
         if (ierd .eq. 1) then
             repk = ' '
             ierd = 0
-        endif
+        end if
 !
 !
 !
-    else if (questi.eq.'MODELISATION') then
+    else if (questi .eq. 'MODELISATION') then
 !     --------------------------------------
         call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
         call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
-        ico=0
+        ico = 0
         do iphen = 1, nbphen
             call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
             call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
             do imodl = 1, nbmodl
                 call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
-                ii=indiis(zi(iamodl),ite,1,nbtm)
+                ii = indiis(zi(iamodl), ite, 1, nbtm)
                 if (ii .gt. 0) then
-                    call jenuno(jexnum('&CATA.'//nophen(1:13)// '.MODL', imodl), nomodl)
-                    repk=nomodl
-                    ico=ico+1
-                endif
+                    call jenuno(jexnum('&CATA.'//nophen(1:13)//'.MODL', imodl), nomodl)
+                    repk = nomodl
+                    ico = ico+1
+                end if
             end do
             if (ico .gt. 0) then
                 if (ico .eq. 1) then
                     goto 60
 !
-                else if (ico.gt.1) then
-                    repk='#PLUSIEURS'
+                else if (ico .gt. 1) then
+                    repk = '#PLUSIEURS'
                     goto 60
 !
-                endif
-            endif
+                end if
+            end if
         end do
-        ierd=1
- 60     continue
+        ierd = 1
+60      continue
 !
 !
-    else if ((questi.eq.'PHEN_MODE')) then
+    else if ((questi .eq. 'PHEN_MODE')) then
 !     --------------------------------------
         call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
         call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
-        ico=0
+        ico = 0
         do iphen = 1, nbphen
             call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
             call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
             do imodl = 1, nbmodl
                 call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
-                ii=indiis(zi(iamodl),ite,1,nbtm)
+                ii = indiis(zi(iamodl), ite, 1, nbtm)
                 if (ii .gt. 0) then
-                    call jenuno(jexnum('&CATA.'//nophen(1:13)// '.MODL', imodl), nomodl)
-                    repk=nophen//nomodl
-                    ico=ico+1
-                endif
+                    call jenuno(jexnum('&CATA.'//nophen(1:13)//'.MODL', imodl), nomodl)
+                    repk = nophen//nomodl
+                    ico = ico+1
+                end if
             end do
         end do
         if (ico .gt. 1) then
-            repk='#PLUSIEURS'
-        else if (ico.eq.0) then
-            repk='#AUCUN'
-        endif
+            repk = '#PLUSIEURS'
+        else if (ico .eq. 0) then
+            repk = '#AUCUN'
+        end if
 !
 !
-    else if (questi.eq.'NOM_TYPMAIL') then
+    else if (questi .eq. 'NOM_TYPMAIL') then
 !     --------------------------------------
         call jeveuo('&CATA.TE.TYPEMA', 'L', ibid)
-        repk=zk8(ibid-1+ite)
+        repk = zk8(ibid-1+ite)
 !
 !
-    else if (questi.eq.'TYPE_TYPMAIL') then
+    else if (questi .eq. 'TYPE_TYPMAIL') then
 !     --------------------------------------
         call dismtm(questi, nomtm, repi, repk, ierd)
 !
 !
-    else if (questi.eq.'NBNO_TYPMAIL') then
+    else if (questi .eq. 'NBNO_TYPMAIL') then
 !     --------------------------------------
         call dismtm(questi, nomtm, repi, repk, ierd)
 !
 !
-    else if (questi.eq.'DIM_TOPO') then
+    else if (questi .eq. 'DIM_TOPO') then
 !     --------------------------------------
         call dismtm(questi, nomtm, repi, repk, ierd)
 !
 !
-    else if (questi.eq.'DIM_GEOM') then
+    else if (questi .eq. 'DIM_GEOM') then
 !     --------------------------------------
         call jeveuo('&CATA.TE.DIM_GEOM', 'L', ibid)
-        repi=zi(ibid-1+ite)
+        repi = zi(ibid-1+ite)
 !
 !
-    else if (questi.eq.'CALC_RIGI') then
+    else if (questi .eq. 'CALC_RIGI') then
 !     --------------------------------------
-        repk='NON'
+        repk = 'NON'
         call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
         call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
         do irig = 1, nrig
             call jenonu(jexnom('&CATA.OP.NOMOPT', optrig(irig)), iopt)
-            ASSERT(iopt.gt.0)
-            ioptte=optte((ite-1)*nbopt+iopt)
+            ASSERT(iopt .gt. 0)
+            ioptte = optte((ite-1)*nbopt+iopt)
             if (ioptte .eq. 0) goto 90
-            repk='OUI'
+            repk = 'OUI'
             goto 100
 !
- 90         continue
+90          continue
         end do
 100     continue
 !
 !
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
-    repkz=repk
+    repkz = repk
     call jedema()
 end subroutine

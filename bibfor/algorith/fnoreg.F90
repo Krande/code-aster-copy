@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
-                  ndim, npi, dimcon, geom, ipoids,&
-                  ipoid2, ivf, ivf2, idfde, idfde2,&
-                  nddls, nddlm, axi, regula, deplm,&
+subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom, &
+                  ndim, npi, dimcon, geom, ipoids, &
+                  ipoid2, ivf, ivf2, idfde, idfde2, &
+                  nddls, nddlm, axi, regula, deplm, &
                   contm, imate, vectu)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -42,7 +42,7 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
     real(kind=8) :: b(dimdef, dimuel), poids, poids2, defgem(dimdef), r(dimdef)
 ! ======================================================================
     do i = 1, dimuel
-        vectu(i)=0.0d0
+        vectu(i) = 0.0d0
     end do
 !
     do kpi = 1, npi
@@ -53,27 +53,27 @@ subroutine fnoreg(dimuel, dimdef, nno, nnos, nnom,&
             r(i) = 0.0d0
         end do
 ! ======================================================================
-        call cabr2g(kpi, ipoids, ipoid2, ivf, ivf2,&
-                    idfde, idfde2, geom, dimdef, dimuel,&
-                    ndim, nddls, nddlm, nno, nnos,&
-                    nnom, axi, regula, b, poids,&
+        call cabr2g(kpi, ipoids, ipoid2, ivf, ivf2, &
+                    idfde, idfde2, geom, dimdef, dimuel, &
+                    ndim, nddls, nddlm, nno, nnos, &
+                    nnom, axi, regula, b, poids, &
                     poids2)
 ! ======================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
 ! ======================================================================
         do i = 1, dimdef
-            defgem(i)=0.0d0
+            defgem(i) = 0.0d0
             do n = 1, dimuel
-                defgem(i)=defgem(i)+b(i,n)*deplm(n)
+                defgem(i) = defgem(i)+b(i, n)*deplm(n)
             end do
         end do
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES GENERALISEES FINALES ----------------------
 ! ======================================================================
-        call regcge(dimdef, dimcon, regula, ndim, defgem,&
-                    contm((kpi-1)* dimcon+1), r)
+        call regcge(dimdef, dimcon, regula, ndim, defgem, &
+                    contm((kpi-1)*dimcon+1), r)
 ! ======================================================================
-        call dilsga(dimdef, dimuel, poids, poids2, b,&
+        call dilsga(dimdef, dimuel, poids, poids2, b, &
                     r, vectu)
 ! ======================================================================
     end do

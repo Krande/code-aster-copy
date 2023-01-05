@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj6dap(ino2, geom2, geom1, seg2, cobary,&
-                  itr3, nbtrou, btdi, btvr, btnb,&
-                  btlc, btco, l_dmax, dmax, dala,&
+subroutine pj6dap(ino2, geom2, geom1, seg2, cobary, &
+                  itr3, nbtrou, btdi, btvr, btnb, &
+                  btlc, btco, l_dmax, dmax, dala, &
                   loin, dmin)
     implicit none
 #include "asterf_types.h"
@@ -69,44 +69,44 @@ subroutine pj6dap(ino2, geom2, geom1, seg2, cobary,&
     aster_logical :: l_dmax, loin
     real(kind=8) :: dmax, dala
 ! DEB ------------------------------------------------------------------
-    nbtrou=0
-    loin=.false.
-    dmin=0.d0
+    nbtrou = 0
+    loin = .false.
+    dmin = 0.d0
 !
-    nx=btdi(1)
-    ny=btdi(2)
+    nx = btdi(1)
+    ny = btdi(2)
 !
 !
 !     --  ON CHERCHE LE SEG2 ITR3 LE PLUS PROCHE DE INO2 :
 !     ------------------------------------------------------
     if (l_dmax) then
-        dmin=dmax
+        dmin = dmax
     else
-        dmin=r8maem()
-    endif
+        dmin = r8maem()
+    end if
 !
 !       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
-    call pj3dgb(ino2, geom2, geom1, seg2, 3,&
-                btdi, btvr, btnb, btlc, btco,&
-                p1, q1, r1, p2, q2,&
+    call pj3dgb(ino2, geom2, geom1, seg2, 3, &
+                btdi, btvr, btnb, btlc, btco, &
+                p1, q1, r1, p2, q2, &
                 r2)
     do p = p1, p2
         do q = q1, q2
             do r = r1, r2
-                ntrbt=btnb((r-1)*nx*ny+(q-1)*nx+p)
-                iposi=btlc((r-1)*nx*ny+(q-1)*nx+p)
+                ntrbt = btnb((r-1)*nx*ny+(q-1)*nx+p)
+                iposi = btlc((r-1)*nx*ny+(q-1)*nx+p)
                 do k = 1, ntrbt
-                    i=btco(iposi+k)
-                    call pj6da2(ino2, geom2, i, geom1, seg2,&
+                    i = btco(iposi+k)
+                    call pj6da2(ino2, geom2, i, geom1, seg2, &
                                 cobar2, d2, long)
                     if (sqrt(d2) .lt. dmin) then
-                        rtr3=long
-                        itr3=i
-                        dmin=sqrt(d2)
-                        nbtrou=1
-                        cobary(1)=cobar2(1)
-                        cobary(2)=cobar2(2)
-                    endif
+                        rtr3 = long
+                        itr3 = i
+                        dmin = sqrt(d2)
+                        nbtrou = 1
+                        cobary(1) = cobar2(1)
+                        cobary(2) = cobar2(2)
+                    end if
                 end do
             end do
         end do
@@ -116,17 +116,17 @@ subroutine pj6dap(ino2, geom2, geom1, seg2, cobary,&
 !   -- calcul de loin :
     if (nbtrou .eq. 1) then
         if (dala .ge. 0.d0) then
-            if (dmin .lt. dala) loin=.false.
+            if (dmin .lt. dala) loin = .false.
         else
             if (rtr3 .eq. 0) then
-                loin=.true.
+                loin = .true.
             else
-                if (dmin/rtr3 .gt. 1.d-1) loin=.true.
-            endif
-        endif
+                if (dmin/rtr3 .gt. 1.d-1) loin = .true.
+            end if
+        end if
     else
-        dmin=0.d0
-    endif
+        dmin = 0.d0
+    end if
 !
 !
 end subroutine

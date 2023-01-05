@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine nmmoam(sdammz, nbmoda, dampMode_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -44,9 +44,9 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 !
-character(len=*) :: sdammz
-integer :: nbmoda
-character(len=8), optional, intent(out) :: dampMode_
+    character(len=*) :: sdammz
+    integer :: nbmoda
+    character(len=8), optional, intent(out) :: dampMode_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ character(len=8), optional, intent(out) :: dampMode_
     integer :: na, nb, n, nm
     integer :: nbmd, neq, nbmax, nbamor
     integer :: iddeeq, lmat
-    integer :: jvalmo, jbasmo, jamor,  jamo2, jmasg, jfreq
+    integer :: jvalmo, jbasmo, jamor, jamo2, jmasg, jfreq
     integer :: exiam
     real(kind=8), pointer :: vect1(:) => null()
     real(kind=8), pointer :: mor(:) => null()
@@ -98,7 +98,7 @@ character(len=8), optional, intent(out) :: dampMode_
     call getvid('AMOR_MODAL', 'MODE_MECA', iocc=1, scal=dampMode, nbret=nbmd)
     if (nbmd .eq. 0) then
         call utmess('F', 'ALGORITH17_20')
-    endif
+    end if
 !
 ! --- INFORMATIONS SUR MATRICE DES MODES MECANIQUES
 !
@@ -118,15 +118,15 @@ character(len=8), optional, intent(out) :: dampMode_
 
     if (nm .eq. 0) then
         nbmax = nbmoda
-    endif
+    end if
 
     if (nbmax .ne. nbmoda) then
         vali(1) = nbmoda
         vali(2) = nbmax
-        vali(3) = min(nbmoda,nbmax)
+        vali(3) = min(nbmoda, nbmax)
         call utmess('I', 'MECANONLINE5_30', ni=3, vali=vali)
-        nbmoda = min(nbmoda,nbmax)
-    endif
+        nbmoda = min(nbmoda, nbmax)
+    end if
 !
 ! --- RECUPERATION DES AMORTISSEMENTS
 !
@@ -135,20 +135,20 @@ character(len=8), optional, intent(out) :: dampMode_
     na = 0
     nb = 0
     call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na)
-    exiam = getexm('AMOR_MODAL','LIST_AMOR')
+    exiam = getexm('AMOR_MODAL', 'LIST_AMOR')
     if (exiam .eq. 1) then
         call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=nb)
-    endif
+    end if
 !
 !     VERIFICATION QU'UNE LISTE D'AMORTISSEMENTS EST FOURNIE
     if (na .eq. 0 .and. nb .eq. 0) then
         call utmess('F', 'ALGORITH17_21')
-    endif
+    end if
 !
     if (na .ne. 0 .or. nb .ne. 0) then
         if (na .ne. 0) then
             nbamor = -na
-            call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamor),&
+            call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamor), &
                         nbret=na)
         else
             call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=listam, nbret=n)
@@ -157,11 +157,11 @@ character(len=8), optional, intent(out) :: dampMode_
             do iam = 1, nbmoda
                 zr(jamor+iam-1) = mor(iam)
             end do
-        endif
+        end if
 !
         if (nbamor .gt. nbmoda) then
             call utmess('A', 'MECANONLINE5_19')
-        endif
+        end if
         if (nbamor .lt. nbmoda) then
             call wkvect('&&NMMOAM.AMORTISSEMEN2', 'V V R', nbmoda, jamo2)
             do iam = 1, nbamor
@@ -172,8 +172,8 @@ character(len=8), optional, intent(out) :: dampMode_
             end do
             nbamor = nbmoda
             jamor = jamo2
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CREATION VALEURS MODALES
 ! ---  1/ MASSES GENERALISEES
@@ -182,10 +182,10 @@ character(len=8), optional, intent(out) :: dampMode_
 !
     call wkvect(sdammo(1:19)//'.VALM', 'V V R', 3*nbmoda, jvalmo)
     do imode = 1, nbmoda
-        call rsadpa(dampMode, 'L', 1, 'MASS_GENE', imode,&
+        call rsadpa(dampMode, 'L', 1, 'MASS_GENE', imode, &
                     0, sjv=jmasg, styp=k8bid)
         zr(jvalmo+3*(imode-1)+1-1) = zr(jmasg)
-        call rsadpa(dampMode, 'L', 1, 'FREQ', imode,&
+        call rsadpa(dampMode, 'L', 1, 'FREQ', imode, &
                     0, sjv=jfreq, styp=k8bid)
         zr(jvalmo+3*(imode-1)+2-1) = zr(jfreq)*2.d0*pi
         zr(jvalmo+3*(imode-1)+3-1) = zr(jamor+imode-1)
@@ -196,12 +196,12 @@ character(len=8), optional, intent(out) :: dampMode_
     call wkvect(sdammo(1:19)//'.BASM', 'V V R', nbmoda*neq, jbasmo)
     AS_ALLOCATE(vr=vect1, size=neq)
     do imode = 1, nbmoda
-        call rsexch('F', dampMode, 'DEPL', imode, nomcha,&
+        call rsexch('F', dampMode, 'DEPL', imode, nomcha, &
                     iret)
         call jeveuo(nomcha(1:19)//'.VALE', 'L', vr=val)
         call dcopy(neq, val, 1, vect1, 1)
         call zerlag(neq, zi(iddeeq), vectr=vect1)
-        call mrmult('ZERO', lmat, vect1, zr(jbasmo+(imode-1)*neq), 1,&
+        call mrmult('ZERO', lmat, vect1, zr(jbasmo+(imode-1)*neq), 1, &
                     .true._1)
         call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
     end do
@@ -214,7 +214,7 @@ character(len=8), optional, intent(out) :: dampMode_
 !
     if (present(dampMode_)) then
         dampMode_ = dampMode
-    endif
+    end if
 !
     call jedema()
 end subroutine

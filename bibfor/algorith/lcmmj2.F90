@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmj2(taur, materf, cpmono, ifa, nmat,&
-                  nbcomm, dt, nsfv, nsfa, ir,&
-                  is, nbsys, nfs, nsg, hsr,&
-                  vind, dy, dgsdts, dksdts, dgrdbs,&
+subroutine lcmmj2(taur, materf, cpmono, ifa, nmat, &
+                  nbcomm, dt, nsfv, nsfa, ir, &
+                  is, nbsys, nfs, nsg, hsr, &
+                  vind, dy, dgsdts, dksdts, dgrdbs, &
                   dksdbr, iret)
 ! aslint: disable=,W1504
     implicit none
@@ -62,45 +62,45 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat,&
     character(len=16) :: necoul
     character(len=24) :: cpmono(5*nmat+1)
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
 !
-    iret=0
+    iret = 0
 !
-    dgsdts=0.d0
-    dksdts=0.d0
-    dgrdbs=0.d0
-    dksdbr=0.d0
+    dgsdts = 0.d0
+    dksdts = 0.d0
+    dgrdbs = 0.d0
+    dksdbr = 0.d0
 !
-    nuvr=nsfa+ir
-    nuvi=nsfv+3*(ir-1)
-    necoul=cpmono(5*(ifa-1)+3)(1:16)
-    alpham=vind(nuvi+1)
-    gammap=vind(nuvi+2)
-    alphap=alpham+dy(nuvr)
-    decal=nsfv
-    call lcmmfe(taur, materf(nmat+1), materf(1), ifa, nmat,&
-                nbcomm, necoul, ir, nbsys, vind,&
-                dy(nsfa+1), rp, alphap, gammap, dt,&
-                dalpha, dgamma, dp, crit, sgns,&
+    nuvr = nsfa+ir
+    nuvi = nsfv+3*(ir-1)
+    necoul = cpmono(5*(ifa-1)+3) (1:16)
+    alpham = vind(nuvi+1)
+    gammap = vind(nuvi+2)
+    alphap = alpham+dy(nuvr)
+    decal = nsfv
+    call lcmmfe(taur, materf(nmat+1), materf(1), ifa, nmat, &
+                nbcomm, necoul, ir, nbsys, vind, &
+                dy(nsfa+1), rp, alphap, gammap, dt, &
+                dalpha, dgamma, dp, crit, sgns, &
                 nfs, nsg, hsr, iret)
     if (iret .gt. 0) goto 9999
     if (crit .gt. 0.d0) then
 !        CALCUL de dF/dtau
-        call lcmmjf(taur, materf(nmat+1), materf(1), ifa, nmat,&
-                    nbcomm, dt, necoul, ir, is,&
-                    nbsys, vind(nsfv+1), dy(nsfa+1), nfs, nsg,&
-                    hsr, rp, alphap, dalpha, gammap,&
-                    dgamma, sgnr, dgdtau, dgdalr, dfdrr,&
+        call lcmmjf(taur, materf(nmat+1), materf(1), ifa, nmat, &
+                    nbcomm, dt, necoul, ir, is, &
+                    nbsys, vind(nsfv+1), dy(nsfa+1), nfs, nsg, &
+                    hsr, rp, alphap, dalpha, gammap, &
+                    dgamma, sgnr, dgdtau, dgdalr, dfdrr, &
                     petith, iret)
         if (iret .gt. 0) goto 9999
-        dgsdts=dgdtau
-        dksdts=abs(dgdtau)*petith
-        dgrdbs=dgdalr*sgnr
-        dhdalr=dfdrr
-        hs=petith
-        dksdbr=dgdalr*hs+dp*dhdalr
-    endif
+        dgsdts = dgdtau
+        dksdts = abs(dgdtau)*petith
+        dgrdbs = dgdalr*sgnr
+        dhdalr = dfdrr
+        hs = petith
+        dksdbr = dgdalr*hs+dp*dhdalr
+    end if
 !
-9999  continue
+9999 continue
 end subroutine

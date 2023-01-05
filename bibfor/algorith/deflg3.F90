@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine deflg3(gn, feta, xi, me, t,&
+subroutine deflg3(gn, feta, xi, me, t, &
                   tl)
     implicit none
 !     CALCUL DES DEFORMATIONS LOGARITHMIQUES ET DES TERMES NECESSAIRES
@@ -48,7 +48,7 @@ subroutine deflg3(gn, feta, xi, me, t,&
         do j = 1, 3
             do a = 1, 3
                 do b = 1, 3
-                    dzeta(i,j)=dzeta(i,j)+t33(a,b)*gn(a,i)*gn(b,j)
+                    dzeta(i, j) = dzeta(i, j)+t33(a, b)*gn(a, i)*gn(b, j)
                 end do
             end do
         end do
@@ -59,8 +59,8 @@ subroutine deflg3(gn, feta, xi, me, t,&
             do b = 1, 3
                 do c = 1, 3
                     do d = 1, 3
-                        tl(a,b,c,d)=tl(a,b,c,d)+ 0.25d0*feta(i)*dzeta(&
-                        i,i)*me(a,b,i,i)*me(c,d,i,i)
+                        tl(a, b, c, d) = tl(a, b, c, d)+0.25d0*feta(i)*dzeta( &
+                                         i, i)*me(a, b, i, i)*me(c, d, i, i)
                     end do
                 end do
             end do
@@ -74,11 +74,11 @@ subroutine deflg3(gn, feta, xi, me, t,&
                     do b = 1, 3
                         do c = 1, 3
                             do d = 1, 3
-                                if ((j.ne.i) .and. (j.ne.k) .and. (k.ne.i)) then
-                                    tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*&
-                                    feta(4)*dzeta(i,j)*me(a,b,i,k)*me(&
-                                    c,d,j,k)
-                                endif
+                                if ((j .ne. i) .and. (j .ne. k) .and. (k .ne. i)) then
+                                    tl(a, b, c, d) = tl(a, b, c, d)+2.d0* &
+                                                     feta(4)*dzeta(i, j)*me(a, b, i, k)*me( &
+                                                     c, d, j, k)
+                                end if
                             end do
                         end do
                     end do
@@ -94,9 +94,9 @@ subroutine deflg3(gn, feta, xi, me, t,&
                     do c = 1, 3
                         do d = 1, 3
                             if (j .ne. i) then
-                                tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*xi(i,j)*&
-                                dzeta(i,j)*me(a,b,i,j)*me(c,d,j,j)
-                            endif
+                                tl(a, b, c, d) = tl(a, b, c, d)+2.d0*xi(i, j)* &
+                                                 dzeta(i, j)*me(a, b, i, j)*me(c, d, j, j)
+                            end if
                         end do
                     end do
                 end do
@@ -111,9 +111,9 @@ subroutine deflg3(gn, feta, xi, me, t,&
                     do c = 1, 3
                         do d = 1, 3
                             if (j .ne. i) then
-                                tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*xi(i,j)*&
-                                dzeta(i,j)*me(a,b,j,j)*me(c,d,i,j)
-                            endif
+                                tl(a, b, c, d) = tl(a, b, c, d)+2.d0*xi(i, j)* &
+                                                 dzeta(i, j)*me(a, b, j, j)*me(c, d, i, j)
+                            end if
                         end do
                     end do
                 end do
@@ -128,9 +128,9 @@ subroutine deflg3(gn, feta, xi, me, t,&
                     do c = 1, 3
                         do d = 1, 3
                             if (j .ne. i) then
-                                tl(a,b,c,d)=tl(a,b,c,d)+ 2.d0*xi(i,j)*&
-                                dzeta(j,j)*me(a,b,i,j)*me(c,d,i,j)
-                            endif
+                                tl(a, b, c, d) = tl(a, b, c, d)+2.d0*xi(i, j)* &
+                                                 dzeta(j, j)*me(a, b, i, j)*me(c, d, i, j)
+                            end if
                         end do
                     end do
                 end do

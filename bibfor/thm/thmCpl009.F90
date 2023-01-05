@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,26 @@
 ! aslint: disable=W1504
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine thmCpl009(ds_thm   ,&
-                     lMatr, lSigm, lVari, angl_naut,&
-                     j_mater  ,&
-                     ndim     , nbvari   ,&
-                     dimdef   , dimcon   ,&
-                     adcome   , adcote   , adcp11, adcp12, adcp21, adcp22,&
-                     addeme   , addete   , addep1, addep2,&
-                     temp     , p1       , p2    ,&
-                     dtemp    , dp1      , dp2   ,&
-                     deps     , epsv     , depsv ,&
-                     tbiot    ,&
-                     phi      , rho11    , satur ,&
-                     padp     , pvp      , h11   , h12   ,&
-                     congem   , congep   ,&
-                     vintm    , vintp    , dsde  ,&
+subroutine thmCpl009(ds_thm, &
+                     lMatr, lSigm, lVari, angl_naut, &
+                     j_mater, &
+                     ndim, nbvari, &
+                     dimdef, dimcon, &
+                     adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                     addeme, addete, addep1, addep2, &
+                     temp, p1, p2, &
+                     dtemp, dp1, dp2, &
+                     deps, epsv, depsv, &
+                     tbiot, &
+                     phi, rho11, satur, &
+                     padp, pvp, h11, h12, &
+                     congem, congep, &
+                     vintm, vintp, dsde, &
                      retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8maem.h"
@@ -90,24 +90,24 @@ implicit none
 #include "asterfort/viporol.h"
 #include "asterfort/appmasl.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-aster_logical, intent(in) :: lMatr, lSigm, lVari
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: j_mater, ndim, nbvari
-integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
-integer, intent(in) :: addeme, addete, addep1, addep2
-real(kind=8), intent(in) :: temp, p1, p2
-real(kind=8), intent(in) :: dtemp, dp1, dp2
-real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
-real(kind=8), intent(out) :: phi, rho11, satur
-real(kind=8), intent(out) :: padp, pvp, h11, h12
-real(kind=8), intent(in) :: congem(dimcon)
-real(kind=8), intent(inout) :: congep(dimcon)
-real(kind=8), intent(in) :: vintm(nbvari)
-real(kind=8), intent(inout) :: vintp(nbvari)
-real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-integer, intent(out)  :: retcom
+    type(THM_DS), intent(inout) :: ds_thm
+    aster_logical, intent(in) :: lMatr, lSigm, lVari
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: j_mater, ndim, nbvari
+    integer, intent(in) :: dimdef, dimcon
+    integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
+    integer, intent(in) :: addeme, addete, addep1, addep2
+    real(kind=8), intent(in) :: temp, p1, p2
+    real(kind=8), intent(in) :: dtemp, dp1, dp2
+    real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
+    real(kind=8), intent(out) :: phi, rho11, satur
+    real(kind=8), intent(out) :: padp, pvp, h11, h12
+    real(kind=8), intent(in) :: congem(dimcon)
+    real(kind=8), intent(inout) :: congep(dimcon)
+    real(kind=8), intent(in) :: vintm(nbvari)
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
+    integer, intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -187,43 +187,43 @@ integer, intent(out)  :: retcom
     real(kind=8) :: dp21t, dp21p1, dp21p2
     integer :: advihy, advico
     integer :: vihrho, vicphi, vicpvp, vicsat
-    real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi
-    real(kind=8) :: sbjhm,wbjhm,epm
+    real(kind=8) :: ep, surf, shut, sbjh, wbjh, dpi
+    real(kind=8) :: sbjhm, wbjhm, epm
 !
 ! --------------------------------------------------------------------------------------------------
 !
 
-    padp   = 0.d0
-    pvp    = 0.d0
-    h11    = 0.d0
-    h12    = 0.d0
-    rho12  = 0.d0
-    rho21  = 0.d0
-    rho22  = 0.d0
-    cp11   = 0.d0
-    cp12   = 0.d0
-    cp21   = 0.d0
-    cp22   = 0.d0
-    signe  = 1.d0
-    alp11  = 0.d0
-    alp12  = 0.d0
-    alp21  = 0.d0
+    padp = 0.d0
+    pvp = 0.d0
+    h11 = 0.d0
+    h12 = 0.d0
+    rho12 = 0.d0
+    rho21 = 0.d0
+    rho22 = 0.d0
+    cp11 = 0.d0
+    cp12 = 0.d0
+    cp21 = 0.d0
+    cp22 = 0.d0
+    signe = 1.d0
+    alp11 = 0.d0
+    alp12 = 0.d0
+    alp21 = 0.d0
     retcom = 0
-    dpi    = 0.d0
-    ep     = 0.d0
-    surf   = 0.d0
-    shut   = 0.d0
-    sbjh   = 0.d0
-    wbjh   = 0.d0
+    dpi = 0.d0
+    ep = 0.d0
+    surf = 0.d0
+    shut = 0.d0
+    sbjh = 0.d0
+    wbjh = 0.d0
 !
 ! - Get storage parameters for behaviours
 !
-    advico    = ds_thm%ds_behaviour%advico
-    advihy    = ds_thm%ds_behaviour%advihy
-    vihrho    = ds_thm%ds_behaviour%vihrho
-    vicphi    = ds_thm%ds_behaviour%vicphi
-    vicpvp    = ds_thm%ds_behaviour%vicpvp
-    vicsat    = ds_thm%ds_behaviour%vicsat
+    advico = ds_thm%ds_behaviour%advico
+    advihy = ds_thm%ds_behaviour%advihy
+    vihrho = ds_thm%ds_behaviour%vihrho
+    vicphi = ds_thm%ds_behaviour%vicphi
+    vicpvp = ds_thm%ds_behaviour%vicpvp
+    vicsat = ds_thm%ds_behaviour%vicsat
 !
 ! - Get initial parameters
 !
@@ -232,59 +232,59 @@ integer, intent(out)  :: retcom
 !
 ! - Compute steam pressure
 !
-    pvp    = vintm(advico+vicpvp) + pvp0
-    pvpm   = vintm(advico+vicpvp) + pvp0
-    p1m  = p1-dp1
+    pvp = vintm(advico+vicpvp)+pvp0
+    pvpm = vintm(advico+vicpvp)+pvp0
+    p1m = p1-dp1
 !
 ! - Get material parameters
 !
-    rgaz   = ds_thm%ds_material%solid%r_gaz
-    rho0   = ds_thm%ds_material%solid%rho
-    csigm  = ds_thm%ds_material%solid%cp
+    rgaz = ds_thm%ds_material%solid%r_gaz
+    rho0 = ds_thm%ds_material%solid%rho
+    csigm = ds_thm%ds_material%solid%cp
     rho110 = ds_thm%ds_material%liquid%rho
-    cliq   = ds_thm%ds_material%liquid%unsurk
+    cliq = ds_thm%ds_material%liquid%unsurk
     alpliq = ds_thm%ds_material%liquid%alpha
-    cp11   = ds_thm%ds_material%liquid%cp
+    cp11 = ds_thm%ds_material%liquid%cp
     mamolv = ds_thm%ds_material%steam%mass_mol
-    cp12   = ds_thm%ds_material%steam%cp
+    cp12 = ds_thm%ds_material%steam%cp
     mamolg = ds_thm%ds_material%gaz%mass_mol
-    cp21   = ds_thm%ds_material%gaz%cp
-    kh     = ds_thm%ds_material%ad%coef_henry
-    cp22   = ds_thm%ds_material%ad%cp
+    cp21 = ds_thm%ds_material%gaz%cp
+    kh = ds_thm%ds_material%ad%coef_henry
+    cp22 = ds_thm%ds_material%ad%cp
 !
 ! - Storage coefficient
 !
     l_emmag = ds_thm%ds_material%hydr%l_emmag
-    em      = ds_thm%ds_material%hydr%emmag
+    em = ds_thm%ds_material%hydr%emmag
 !
 ! - Evaluation of initial saturation
 !
-    call thmEvalSatuInit(ds_thm, j_mater, p1m   , p1  ,temp-dtemp,temp,&
-                         saturm, satur  , dsatur, retcom)
+    call thmEvalSatuInit(ds_thm, j_mater, p1m, p1, temp-dtemp, temp, &
+                         saturm, satur, dsatur, retcom)
 !
 ! - Evaluation of initial porosity
 !
-    phi    = vintm(advico+vicphi) + phi0
-    phim   = vintm(advico+vicphi) + phi0
+    phi = vintm(advico+vicphi)+phi0
+    phim = vintm(advico+vicphi)+phi0
 !
 ! - Evaluation of initial enthalpies/initial mass/volumic mass
 !
-    h11    = congem(adcp11+ndim+1)
-    h12    = congem(adcp12+ndim+1)
-    m11m   = congem(adcp11)
-    m12m   = congem(adcp12)
-    m21m   = congem(adcp21)
-    m22m   = congem(adcp22)
-    rho11m = vintm(advihy+vihrho) + rho110
-    rho11  = vintm(advihy+vihrho) + rho110
+    h11 = congem(adcp11+ndim+1)
+    h12 = congem(adcp12+ndim+1)
+    m11m = congem(adcp11)
+    m12m = congem(adcp12)
+    m21m = congem(adcp21)
+    m22m = congem(adcp22)
+    rho11m = vintm(advihy+vihrho)+rho110
+    rho11 = vintm(advihy+vihrho)+rho110
 !
 ! - Prepare initial parameters for coupling law
 !
-    call inithm(ds_thm   ,&
-                angl_naut, tbiot , phi0 ,&
-                epsv     , depsv ,&
-                epsvm    , cs    , mdal , dalal,&
-                alpha0   , alphfi, cbiot, unsks)
+    call inithm(ds_thm, &
+                angl_naut, tbiot, phi0, &
+                epsv, depsv, &
+                epsvm, cs, mdal, dalal, &
+                alpha0, alphfi, cbiot, unsks)
 !
 ! ==================================================================================================
 !
@@ -297,145 +297,139 @@ integer, intent(out)  :: retcom
     if (lVari) then
 ! ----- Compute standard porosity
         if (ds_thm%ds_elem%l_dof_meca) then
-            if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
+            if ((ds_thm%ds_behaviour%rela_hydr) .eq. 'HYDR_TABBAL') then
 !
 !--------------Get BJH parameters
 !
 
-                call thmGetParaBJH(ds_thm,j_mater,p1)
+                call thmGetParaBJH(ds_thm, j_mater, p1)
 
 !~                 write (6,*) 'thmgetBJH',ds_thm%ds_behaviour%rela_hydr
 
 !
 !--------------Evaluate the variation of hydraulic pressure
 !
-                ep   =  ds_thm%ds_material%bjh%epai
-                surf   =  ds_thm%ds_material%bjh%A0
-                shut   =  ds_thm%ds_material%bjh%shuttle
-                sbjh =  ds_thm%ds_material%bjh%SBJH
-                wbjh =  ds_thm%ds_material%bjh%WBJH
+                ep = ds_thm%ds_material%bjh%epai
+                surf = ds_thm%ds_material%bjh%A0
+                shut = ds_thm%ds_material%bjh%shuttle
+                sbjh = ds_thm%ds_material%bjh%SBJH
+                wbjh = ds_thm%ds_material%bjh%WBJH
 
-
-                call varpi (ds_thm,j_mater,p1 , p1m , dp1,dp2 ,&
-                             ep , surf, shut ,&
-                             phi0 , dpi,sbjhm,&
-                             wbjhm,epm,sbjh,wbjh)
+                call varpi(ds_thm, j_mater, p1, p1m, dp1, dp2, &
+                           ep, surf, shut, &
+                           phi0, dpi, sbjhm, &
+                           wbjhm, epm, sbjh, wbjh)
 !~                 write (6,*) 'varpi',ds_thm%ds_behaviour%rela_hydr
 
 !
 !--------------Evaluate the Lagrangian porosity
 !
-                call viporol(ds_thm,nbvari,&
-                            advico, vicphi,&
-                            dtemp , dpi   ,&
-                            deps  , depsv ,&
-                            signe , satur , unsks , phi0,&
-                            cs    , tbiot , cbiot ,&
-                            alpha0, alphfi,&
-                            vintm , vintp ,&
-                            phi   , phim  , retcom)
+                call viporol(ds_thm, nbvari, &
+                             advico, vicphi, &
+                             dtemp, dpi, &
+                             deps, depsv, &
+                             signe, satur, unsks, phi0, &
+                             cs, tbiot, cbiot, &
+                             alpha0, alphfi, &
+                             vintm, vintp, &
+                             phi, phim, retcom)
 !~                 write (6,*) 'viporol',ds_thm%ds_behaviour%rela_hydr
 
             else
-                call viporo(ds_thm,nbvari,&
-                            advico, vicphi,&
-                            dtemp , dp1   , dp2   ,&
-                            deps  , depsv ,&
-                            signe , satur , unsks , phi0,&
-                            cs    , tbiot , cbiot ,&
-                            alpha0, alphfi,&
-                            vintm , vintp ,&
-                            phi   , phim  , retcom)
-
-
-
+                call viporo(ds_thm, nbvari, &
+                            advico, vicphi, &
+                            dtemp, dp1, dp2, &
+                            deps, depsv, &
+                            signe, satur, unsks, phi0, &
+                            cs, tbiot, cbiot, &
+                            alpha0, alphfi, &
+                            vintm, vintp, &
+                            phi, phim, retcom)
 
             end if
-        endif
+        end if
 ! ----- Compute porosity with storage coefficient
         if (l_emmag) then
-            call viemma(nbvari, vintm, vintp,&
-                        advico, vicphi,&
-                        phi0  , dp1   , dp2 , signe, satur,&
-                        em    , phi   , phim)
-        endif
+            call viemma(nbvari, vintm, vintp, &
+                        advico, vicphi, &
+                        phi0, dp1, dp2, signe, satur, &
+                        em, phi, phim)
+        end if
 
 ! ----- Compute intermediary steam pressure (with dissolved air)
         pinf = r8maem()
-        call vipvpt(ds_thm, ndim  , nbvari, dimcon,&
-                    adcp11, adcp12,&
-                    advico, vicpvp,&
-                    congem,&
-                    cp11  , cp12  , kh    ,&
-                    mamolv, rgaz  , rho11m, signe ,&
-                    temp  , pinf  ,&
-                    dtemp , dp1   , dp2   ,&
-                    pvp0  , pvp1  ,&
-                    vintm , vintp ,&
+        call vipvpt(ds_thm, ndim, nbvari, dimcon, &
+                    adcp11, adcp12, &
+                    advico, vicpvp, &
+                    congem, &
+                    cp11, cp12, kh, &
+                    mamolv, rgaz, rho11m, signe, &
+                    temp, pinf, &
+                    dtemp, dp1, dp2, &
+                    pvp0, pvp1, &
+                    vintm, vintp, &
                     retcom)
-
 
         if (retcom .ne. 0) then
             goto 30
-        endif
+        end if
 ! ----- Compute steam pressure (with dissolved air)
-        call vipvp2(nbvari,&
-                    advico, vicpvp,&
-                    mamolv, rgaz  , rho11m, kh,&
-                    pvp1  ,&
-                    temp  , p2    ,&
-                    dtemp , dp2   ,&
-                    pvp0  , pvpm  , pvp   ,&
-                    vintm , vintp ,&
+        call vipvp2(nbvari, &
+                    advico, vicpvp, &
+                    mamolv, rgaz, rho11m, kh, &
+                    pvp1, &
+                    temp, p2, &
+                    dtemp, dp2, &
+                    pvp0, pvpm, pvp, &
+                    vintm, vintp, &
                     retcom)
 ! ----- Update "dissolved" air pressure
-        call majpad(rgaz , kh  ,&
-                    temp , p2  ,&
-                    dtemp, dp2 ,&
-                    pvpm , pvp ,&
-                    padm , padp, dpad)
+        call majpad(rgaz, kh, &
+                    temp, p2, &
+                    dtemp, dp2, &
+                    pvpm, pvp, &
+                    padm, padp, dpad)
 ! ----- Compute volumic mass for water
         if (ds_thm%ds_elem%l_dof_ther) then
-            call virhol(nbvari, vintm , vintp ,&
-                        advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,&
-                        cliq  , alpliq, signe ,&
-                        rho110, rho11 , rho11m,&
+            call virhol(nbvari, vintm, vintp, &
+                        advihy, vihrho, &
+                        dtemp, dp1, dp2, dpad, &
+                        cliq, alpliq, signe, &
+                        rho110, rho11, rho11m, &
                         retcom)
         else
-            call virhol(nbvari, vintm , vintp ,&
-                        advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,&
-                        cliq  , 0.d0  , signe ,&
-                        rho110, rho11 , rho11m,&
+            call virhol(nbvari, vintm, vintp, &
+                        advihy, vihrho, &
+                        dtemp, dp1, dp2, dpad, &
+                        cliq, 0.d0, signe, &
+                        rho110, rho11, rho11m, &
                         retcom)
-        endif
+        end if
 ! ----- Save saturation in internal state variables
         call visatu(nbvari, vintp, advico, vicsat, satur)
     else
 ! ----- Update "dissolved" air pressure
-        call majpad(rgaz , kh  ,&
-                    temp , p2  ,&
-                    dtemp, dp2 ,&
-                    pvpm , pvp ,&
-                    padm , padp, dpad)
-    endif
+        call majpad(rgaz, kh, &
+                    temp, p2, &
+                    dtemp, dp2, &
+                    pvpm, pvp, &
+                    padm, padp, dpad)
+    end if
     if (retcom .ne. 0) then
         goto 30
-    endif
+    end if
 !
 ! - Update differential thermal expansion ratio
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         call dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
-    endif
+    end if
 !
 ! - Update Biot modulus
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         call unsmfi(ds_thm, phi, tbiot, cs)
-    endif
-
+    end if
 
 !
 ! ==================================================================================================
@@ -448,127 +442,126 @@ integer, intent(out)  :: retcom
 ! - Compute volumic mass for steam
 !
     rho12m = masvol(mamolv, pvpm, rgaz, temp-dtemp)
-    rho12  = masvol(mamolv, pvp , rgaz, temp)
+    rho12 = masvol(mamolv, pvp, rgaz, temp)
 !
 ! - Compute volumic mass for dry air
 !
     rho21m = masvol(mamolg, p2-dp2-pvpm, rgaz, temp-dtemp)
-    rho21  = masvol(mamolg, p2-pvp     , rgaz, temp)
+    rho21 = masvol(mamolg, p2-pvp, rgaz, temp)
 !
 ! - Compute volumic mass for dissolved air
 !
     rho22m = masvol(mamolg, padm, rgaz, temp-dtemp)
-    rho22  = masvol(mamolg, padp, rgaz, temp)
+    rho22 = masvol(mamolg, padp, rgaz, temp)
 !
 ! - Compute dry air pressure
 !
-    pas = majpas(p2,pvp)
+    pas = majpas(p2, pvp)
 !
     if (ds_thm%ds_elem%l_dof_ther) then
 ! ----- Compute thermal expansion of liquid
-        alp11 = dileau(satur,phi,alphfi,alpliq)
+        alp11 = dileau(satur, phi, alphfi, alpliq)
 ! ----- Compute thermal expansion of steam
-        alp12 = dilgaz(satur,phi,alphfi,temp)
+        alp12 = dilgaz(satur, phi, alphfi, temp)
 ! ----- Compute thermal expansion of dry air
-        alp21 = dilgaz(satur,phi,alphfi,temp)
+        alp21 = dilgaz(satur, phi, alphfi, temp)
 ! ----- Compute specific heat capacity
-        call capaca(rho0, rho11, rho12, rho21, rho22,&
-                    satur, phi  , &
-                    csigm, cp11 , cp12 , cp21  , cp22 ,&
-                    dalal, temp , coeps, retcom)
+        call capaca(rho0, rho11, rho12, rho21, rho22, &
+                    satur, phi, &
+                    csigm, cp11, cp12, cp21, cp22, &
+                    dalal, temp, coeps, retcom)
         if (retcom .ne. 0) then
             goto 30
-        endif
+        end if
         if (lSigm) then
 ! --------- Update enthalpy of liquid
-            congep(adcp11+ndim+1) = congep(adcp11+ndim+1) +&
-                                    enteau(dtemp, alpliq, temp,&
-                                           rho11, dp2   , dp1 , dpad,&
+            congep(adcp11+ndim+1) = congep(adcp11+ndim+1)+ &
+                                    enteau(dtemp, alpliq, temp, &
+                                           rho11, dp2, dp1, dpad, &
                                            signe, cp11)
 ! --------- Update enthalpy of steam
-            congep(adcp12+ndim+1) = congep(adcp12+ndim+1) +&
+            congep(adcp12+ndim+1) = congep(adcp12+ndim+1)+ &
                                     entgaz(dtemp, cp12)
 ! --------- Update enthalpy of dry air
-            congep(adcp21+ndim+1) = congep(adcp21+ndim+1) +&
+            congep(adcp21+ndim+1) = congep(adcp21+ndim+1)+ &
                                     entgaz(dtemp, cp21)
 ! --------- Update enthalpy of dissolved air
-            congep(adcp22+ndim+1) = congep(adcp22+ndim+1) +&
+            congep(adcp22+ndim+1) = congep(adcp22+ndim+1)+ &
                                     entgaz(dtemp, cp22)
 ! --------- Get new enthalpy of liquid
             h11 = congep(adcp11+ndim+1)
 ! --------- Get new enthalpy of steam
             h12 = congep(adcp12+ndim+1)
 ! --------- Update "reduced" heat Q'
-            congep(adcote) = congep(adcote) +&
-                             calor(mdal , temp , dtemp, deps,&
-                                   dp1  , dp2  , signe, &
+            congep(adcote) = congep(adcote)+ &
+                             calor(mdal, temp, dtemp, deps, &
+                                   dp1, dp2, signe, &
                                    alp11, alp12, coeps, ndim)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Update mechanical stresses from pressures
 !
     if (lSigm) then
         if (ds_thm%ds_elem%l_dof_meca) then
-            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1,dpi,&
+            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1, dpi, &
                         sigmp)
             do i = 1, 3
-                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
+                congep(adcome+6+i-1) = congep(adcome+6+i-1)+sigmp(i)
             end do
             do i = 4, 6
-                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*rac2
+                congep(adcome+6+i-1) = congep(adcome+6+i-1)+sigmp(i)*rac2
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - Update quantity of mass
 !
     if (lSigm) then
-        if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
-            congep(adcp11) = appmasl(ds_thm,m11m ,&
-                                    phi  , phim  ,&
-                                    satur, saturm,&
-                                    rho11, rho11m)
-            congep(adcp12) = appmasl(ds_thm,m12m,&
-                                    phi       , phim,&
-                                    1.d0-satur, 1.d0-saturm,&
-                                    rho12     , rho12m)
+        if ((ds_thm%ds_behaviour%rela_hydr) .eq. 'HYDR_TABBAL') then
+            congep(adcp11) = appmasl(ds_thm, m11m, &
+                                     phi, phim, &
+                                     satur, saturm, &
+                                     rho11, rho11m)
+            congep(adcp12) = appmasl(ds_thm, m12m, &
+                                     phi, phim, &
+                                     1.d0-satur, 1.d0-saturm, &
+                                     rho12, rho12m)
 
-            congep(adcp21) = appmasl(ds_thm,m21m,&
-                                    phi       , phim,&
-                                    1.d0-satur, 1.d0-saturm,&
-                                    rho21     , rho21m)
+            congep(adcp21) = appmasl(ds_thm, m21m, &
+                                     phi, phim, &
+                                     1.d0-satur, 1.d0-saturm, &
+                                     rho21, rho21m)
 
-            congep(adcp22) = appmasl(ds_thm,m22m,&
-                                    phi  , phim  ,&
-                                    satur, saturm,&
-                                    rho22, rho22m)
+            congep(adcp22) = appmasl(ds_thm, m22m, &
+                                     phi, phim, &
+                                     satur, saturm, &
+                                     rho22, rho22m)
 
         else
-            congep(adcp11) = appmas(m11m ,&
-                                    phi  , phim  ,&
-                                    satur, saturm,&
-                                    rho11, rho11m,&
-                                    epsv , epsvm)
-            congep(adcp12) = appmas(m12m,&
-                                    phi       , phim,&
-                                    1.d0-satur, 1.d0-saturm,&
-                                    rho12     , rho12m,&
-                                    epsv      , epsvm)
-            congep(adcp21) = appmas(m21m,&
-                                    phi       , phim,&
-                                    1.d0-satur, 1.d0-saturm,&
-                                    rho21     , rho21m,&
-                                    epsv      , epsvm)
-            congep(adcp22) = appmas(m22m,&
-                                    phi  , phim  ,&
-                                    satur, saturm,&
-                                    rho22, rho22m,&
-                                    epsv , epsvm)
+            congep(adcp11) = appmas(m11m, &
+                                    phi, phim, &
+                                    satur, saturm, &
+                                    rho11, rho11m, &
+                                    epsv, epsvm)
+            congep(adcp12) = appmas(m12m, &
+                                    phi, phim, &
+                                    1.d0-satur, 1.d0-saturm, &
+                                    rho12, rho12m, &
+                                    epsv, epsvm)
+            congep(adcp21) = appmas(m21m, &
+                                    phi, phim, &
+                                    1.d0-satur, 1.d0-saturm, &
+                                    rho21, rho21m, &
+                                    epsv, epsvm)
+            congep(adcp22) = appmas(m22m, &
+                                    phi, phim, &
+                                    satur, saturm, &
+                                    rho22, rho22m, &
+                                    epsv, epsvm)
         end if
 
-
-    endif
+    end if
 !
 ! ==================================================================================================
 !
@@ -578,148 +571,148 @@ integer, intent(out)  :: retcom
 !
     if (lMatr) then
 ! ----- Compute partial derivatives
-        call dplvga(ds_thm, ndim  , dimcon,&
-                    rho11 , rho12 , rgaz  , kh,&
-                    congem, adcp11, adcp12,&
-                    temp  , padp  ,&
-                    dp11p1, dp11p2,&
-                    dp12p1, dp12p2,&
-                    dp21p1, dp21p2,&
-                    dp11t , dp12t , dp21t)
+        call dplvga(ds_thm, ndim, dimcon, &
+                    rho11, rho12, rgaz, kh, &
+                    congem, adcp11, adcp12, &
+                    temp, padp, &
+                    dp11p1, dp11p2, &
+                    dp12p1, dp12p2, &
+                    dp21p1, dp21p2, &
+                    dp11t, dp12t, dp21t)
 !
 ! ----- Mechanic
 !
         if (ds_thm%ds_elem%l_dof_meca) then
 ! --------- Derivative of _pressure part_ of stresses by capillary pressure
-            call dspdp1(ds_thm,signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
+            call dspdp1(ds_thm, signe, tbiot, satur, dsdp1, phi0, ep, surf, sbjh, wbjh)
 ! --------- Derivative of _pressure part_ of stress by total gaz pressure
             call dspdp2(ds_thm, tbiot, dsdp2)
             do i = 1, 3
-                dsde(adcome+6+i-1,addep1) = dsde(adcome+6+i-1,addep1) +&
-                                            dsdp1(i)
-                dsde(adcome+6+i-1,addep2) = dsde(adcome+6+i-1,addep2) +&
-                                            dsdp2(i)
+                dsde(adcome+6+i-1, addep1) = dsde(adcome+6+i-1, addep1)+ &
+                                             dsdp1(i)
+                dsde(adcome+6+i-1, addep2) = dsde(adcome+6+i-1, addep2)+ &
+                                             dsdp2(i)
             end do
             do i = 4, 6
-                dsde(adcome+6+i-1,addep1) = dsde(adcome+6+i-1,addep1) +&
-                                            dsdp1(i)*rac2
-                dsde(adcome+6+i-1,addep2) = dsde(adcome+6+i-1,addep2) +&
-                                            dsdp2(i)*rac2
+                dsde(adcome+6+i-1, addep1) = dsde(adcome+6+i-1, addep1)+ &
+                                             dsdp1(i)*rac2
+                dsde(adcome+6+i-1, addep2) = dsde(adcome+6+i-1, addep2)+ &
+                                             dsdp2(i)*rac2
             end do
 ! --------- Derivative of quantity of mass by capillary pressure
             call dmdepv(rho11, satur, tbiot, dmdeps)
             do i = 1, 6
-                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) +&
-                                               dmdeps(i)
+                dsde(adcp11, addeme+ndim-1+i) = dsde(adcp11, addeme+ndim-1+i)+ &
+                                                dmdeps(i)
             end do
 ! --------- Derivative of quantity of mass by steam pressure
             call dmdepv(rho12, 1.d0-satur, tbiot, dmdeps)
             do i = 1, 6
-                dsde(adcp12,addeme+ndim-1+i) = dsde(adcp12,addeme+ ndim-1+i) +&
-                                               dmdeps(i)
+                dsde(adcp12, addeme+ndim-1+i) = dsde(adcp12, addeme+ndim-1+i)+ &
+                                                dmdeps(i)
             end do
 ! --------- Derivative of quantity of mass by total gaz pressure
             call dmdepv(rho21, 1.d0-satur, tbiot, dmdeps)
             do i = 1, 6
-                dsde(adcp21,addeme+ndim-1+i) = dsde(adcp21,addeme+ ndim-1+i) +&
-                                               dmdeps(i)
+                dsde(adcp21, addeme+ndim-1+i) = dsde(adcp21, addeme+ndim-1+i)+ &
+                                                dmdeps(i)
             end do
 ! --------- Derivative of quantity of mass by dissolved air pressure
             call dmdepv(rho22, satur, tbiot, dmdeps)
             do i = 1, 6
-                dsde(adcp22,addeme+ndim-1+i) = dsde(adcp22,addeme+ ndim-1+i) +&
-                                               dmdeps(i)
+                dsde(adcp22, addeme+ndim-1+i) = dsde(adcp22, addeme+ndim-1+i)+ &
+                                                dmdeps(i)
             end do
-        endif
+        end if
 !
 ! ----- Thermic
 !
         if (ds_thm%ds_elem%l_dof_ther) then
 ! --------- Derivative of enthalpy of liquid by capillary pressure
-            dsde(adcp11+ndim+1,addep2) = dsde(adcp11+ndim+1,addep2) +&
-                                         dhw2p2(dp11p2,alpliq,temp,rho11)
+            dsde(adcp11+ndim+1, addep2) = dsde(adcp11+ndim+1, addep2)+ &
+                                          dhw2p2(dp11p2, alpliq, temp, rho11)
 ! --------- Derivative of enthalpy of liquid by gaz pressure
-            dsde(adcp11+ndim+1,addep1) = dsde(adcp11+ndim+1,addep1) +&
-                                         dhw2p1(signe,dp11p1,alpliq,temp,rho11)
-            dsde(adcp11+ndim+1,addete) = dsde(adcp11+ndim+1,addete) +&
-                                         dhw2dt(dp11t,alpliq,temp,rho11,cp11)
+            dsde(adcp11+ndim+1, addep1) = dsde(adcp11+ndim+1, addep1)+ &
+                                          dhw2p1(signe, dp11p1, alpliq, temp, rho11)
+            dsde(adcp11+ndim+1, addete) = dsde(adcp11+ndim+1, addete)+ &
+                                          dhw2dt(dp11t, alpliq, temp, rho11, cp11)
 ! --------- Derivative of enthalpy of steam by temperature
-            dsde(adcp12+ndim+1,addete) = dsde(adcp12+ndim+1,addete) +&
-                                         dhdt(cp12)
+            dsde(adcp12+ndim+1, addete) = dsde(adcp12+ndim+1, addete)+ &
+                                          dhdt(cp12)
 ! --------- Derivative of enthalpy of air by temperature
-            dsde(adcp21+ndim+1,addete) = dsde(adcp21+ndim+1,addete) +&
-                                         dhdt(cp21)
+            dsde(adcp21+ndim+1, addete) = dsde(adcp21+ndim+1, addete)+ &
+                                          dhdt(cp21)
 ! --------- Derivative of enthalpy of dissolved air by temperature
-            dsde(adcp22+ndim+1,addete) = dsde(adcp22+ndim+1,addete) +&
-                                         dhdt(cp22)
+            dsde(adcp22+ndim+1, addete) = dsde(adcp22+ndim+1, addete)+ &
+                                          dhdt(cp22)
 ! --------- Derivative of quantity of mass of liquid by temperature
-            dsde(adcp11,addete) = dsde(adcp11,addete) +&
-                                  dmwdt(rho11, phi,satur,cliq,dp11t,alp11)
+            dsde(adcp11, addete) = dsde(adcp11, addete)+ &
+                                   dmwdt(rho11, phi, satur, cliq, dp11t, alp11)
 ! --------- Derivative of quantity of mass of dissolved air by temperature
-            dsde(adcp22,addete) = dsde(adcp22,addete) +&
-                                  dmadt(rho22, satur,phi,mamolg,dp21t,kh,alphfi)
+            dsde(adcp22, addete) = dsde(adcp22, addete)+ &
+                                   dmadt(rho22, satur, phi, mamolg, dp21t, kh, alphfi)
 ! --------- Derivative of quantity of mass of steam by temperature
-            dsde(adcp12,addete) = dsde(adcp12,addete) +&
-                                  dmvpdt(rho12, alp12, h11, h12,&
-                                         satur, phi  ,&
-                                         pvp  , temp)
+            dsde(adcp12, addete) = dsde(adcp12, addete)+ &
+                                   dmvpdt(rho12, alp12, h11, h12, &
+                                          satur, phi, &
+                                          pvp, temp)
 ! --------- Derivative of quantity of mass of dry air by temperature
-            dsde(adcp21,addete) = dsde(adcp21,addete) +&
-                                  dmasdt(rho12, rho21, alp21, h11, h12, &
-                                         satur, phi  ,&
-                                         pas  , temp )
+            dsde(adcp21, addete) = dsde(adcp21, addete)+ &
+                                   dmasdt(rho12, rho21, alp21, h11, h12, &
+                                          satur, phi, &
+                                          pas, temp)
 ! --------- Derivative of "reduced" heat Q' of homogeneized medium by temperature
-            dsde(adcote,addete) = dsde(adcote,addete) +&
-                                  dqdt(coeps)
+            dsde(adcote, addete) = dsde(adcote, addete)+ &
+                                   dqdt(coeps)
 ! --------- Derivative of "reduced" heat Q' of liquid by capillary pressure
-            dsde(adcote,addep1) = dsde(adcote,addep1) +&
-                                  dqdp(signe, alp11      , temp)
+            dsde(adcote, addep1) = dsde(adcote, addep1)+ &
+                                   dqdp(signe, alp11, temp)
 ! --------- Derivative of "reduced" heat Q' of liquid+steam by gaz pressure
-            dsde(adcote,addep2) = dsde(adcote,addep2) -&
-                                  dqdp(signe, alp11+alp12, temp)
+            dsde(adcote, addep2) = dsde(adcote, addep2)- &
+                                   dqdp(signe, alp11+alp12, temp)
 ! --------- Derivative of "reduced" heat Q' by mechanical strains
             if (ds_thm%ds_elem%l_dof_meca) then
                 call dqdeps(mdal, temp, dqeps)
                 do i = 1, 6
-                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) +&
-                                                   dqeps(i)
+                    dsde(adcote, addeme+ndim-1+i) = dsde(adcote, addeme+ndim-1+i)+ &
+                                                    dqeps(i)
                 end do
-            endif
-        endif
+            end if
+        end if
 ! ----- Derivative of quantity of mass of homogeneized medium by capillary pressure
-        dsde(adcp11,addep1) = dsde(adcp11,addep1) +&
-                              dmwdp1(rho11  , signe, satur, dsatur, phi, cs, cliq, 1.d0,&
-                                     l_emmag, em)
+        dsde(adcp11, addep1) = dsde(adcp11, addep1)+ &
+                               dmwdp1(rho11, signe, satur, dsatur, phi, cs, cliq, 1.d0, &
+                                      l_emmag, em)
 ! ----- Derivative of quantity of mass of homogeneized medium by gaz pressure
-        dsde(adcp11,addep2) = dsde(adcp11,addep2) +&
-                              dmwdp2(rho11  , satur, phi, cs, cliq, dp11p2,&
-                                     l_emmag, em)
+        dsde(adcp11, addep2) = dsde(adcp11, addep2)+ &
+                               dmwdp2(rho11, satur, phi, cs, cliq, dp11p2, &
+                                      l_emmag, em)
 ! ----- Derivative of quantity of mass of steam by capillary pressure
-        dsde(adcp12,addep1) = dsde(adcp12,addep1) +&
-                              dmvdp1(rho11  , rho12, satur, dsatur, phi, cs, pvp,&
-                                     l_emmag, em)
+        dsde(adcp12, addep1) = dsde(adcp12, addep1)+ &
+                               dmvdp1(rho11, rho12, satur, dsatur, phi, cs, pvp, &
+                                      l_emmag, em)
 ! ----- Derivative of quantity of mass of steam by gaz pressure
-        dsde(adcp12,addep2) = dsde(adcp12,addep2) +&
-                              dmvdp2(rho11  , rho12, satur, phi, cs, pvp,&
-                                     l_emmag, em)
+        dsde(adcp12, addep2) = dsde(adcp12, addep2)+ &
+                               dmvdp2(rho11, rho12, satur, phi, cs, pvp, &
+                                      l_emmag, em)
 ! ----- Derivative of quantity of mass of "dry" air by capillary pressure
-        dsde(adcp21,addep1) = dsde(adcp21,addep1) +&
-                              dmasp1(rho11  , rho12, rho21, satur, dsatur, phi, cs, p2-pvp,&
-                                     l_emmag, em)
+        dsde(adcp21, addep1) = dsde(adcp21, addep1)+ &
+                               dmasp1(rho11, rho12, rho21, satur, dsatur, phi, cs, p2-pvp, &
+                                      l_emmag, em)
 ! ----- Derivative of quantity of mass of "dry" air by gaz pressure
-        dsde(adcp21,addep2) = dsde(adcp21,addep2) +&
-                              dmasp2(rho11  , rho12, rho21, satur, phi, cs, pas,&
-                                     l_emmag, em)
+        dsde(adcp21, addep2) = dsde(adcp21, addep2)+ &
+                               dmasp2(rho11, rho12, rho21, satur, phi, cs, pas, &
+                                      l_emmag, em)
 ! ----- Derivative of quantity of mass of "dissolved" air by capillary pressure
-        dsde(adcp22,addep1) = dsde(adcp22,addep1) +&
-                              dmadp1(rho22  , satur, dsatur, phi, cs, mamolg, kh, dp21p1,&
-                                     l_emmag, em)
+        dsde(adcp22, addep1) = dsde(adcp22, addep1)+ &
+                               dmadp1(rho22, satur, dsatur, phi, cs, mamolg, kh, dp21p1, &
+                                      l_emmag, em)
 ! ----- Derivative of quantity of mass of "dissolved" air by gaz pressure
-        dsde(adcp22,addep2) = dsde(adcp22,addep2) +&
-                              dmadp2(rho22  , satur, phi, cs, mamolg, kh, dp21p2,&
-                                     l_emmag, em)
-    endif
+        dsde(adcp22, addep2) = dsde(adcp22, addep2)+ &
+                               dmadp2(rho22, satur, phi, cs, mamolg, kh, dp21p2, &
+                                      l_emmag, em)
+    end if
 !
- 30 continue
+30  continue
 !
 end subroutine

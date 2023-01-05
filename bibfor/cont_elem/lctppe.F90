@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 
 !
-subroutine lctppe(side      , l_axis    , l_upda_jaco,&
-                  nb_node   , elem_dime , elem_code  ,&
-                  elem_init , elem_coor , &
+subroutine lctppe(side, l_axis, l_upda_jaco, &
+                  nb_node, elem_dime, elem_code, &
+                  elem_init, elem_coor, &
                   gauss_coor, shape_func, &
-                  jacobian  , norm_g)
+                  jacobian, norm_g)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,17 +35,17 @@ implicit none
 #include "asterfort/mmtang.h"
 #include "asterfort/assert.h"
 !
-character(len=*), intent(in) :: side
-integer, intent(in) :: elem_dime
-aster_logical, intent(in) :: l_axis, l_upda_jaco
-integer, intent(in) :: nb_node
-real(kind=8), intent(in) :: elem_init(nb_node, elem_dime)
-real(kind=8), intent(in) :: elem_coor(nb_node, elem_dime)
-character(len=8), intent(in) :: elem_code
-real(kind=8), intent(in) :: gauss_coor(2)
-real(kind=8), intent(out) :: shape_func(9)
-real(kind=8), intent(out) :: jacobian
-real(kind=8), intent(out) :: norm_g(3)
+    character(len=*), intent(in) :: side
+    integer, intent(in) :: elem_dime
+    aster_logical, intent(in) :: l_axis, l_upda_jaco
+    integer, intent(in) :: nb_node
+    real(kind=8), intent(in) :: elem_init(nb_node, elem_dime)
+    real(kind=8), intent(in) :: elem_coor(nb_node, elem_dime)
+    character(len=8), intent(in) :: elem_code
+    real(kind=8), intent(in) :: gauss_coor(2)
+    real(kind=8), intent(out) :: shape_func(9)
+    real(kind=8), intent(out) :: jacobian
+    real(kind=8), intent(out) :: norm_g(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,34 +71,34 @@ real(kind=8), intent(out) :: norm_g(3)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_dime, i_node
-    real(kind=8) :: elem_coot(3,9)
+    real(kind=8) :: elem_coot(3, 9)
     real(kind=8) :: tau1(3), tau2(3), shape_dfunc(2, 9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    shape_func(:)    = 0.d0
-    shape_dfunc(:,:) = 0.d0
-    norm_g(:)        = 0.d0
-    tau1(:)          = 0.d0
-    tau2(:)          = 0.d0
-    jacobian         = 0.d0
+    shape_func(:) = 0.d0
+    shape_dfunc(:, :) = 0.d0
+    norm_g(:) = 0.d0
+    tau1(:) = 0.d0
+    tau2(:) = 0.d0
+    jacobian = 0.d0
 !
 ! - Change shape of vector for coordinates of element
 !
     elem_coot = 0.d0
     do i_dime = 1, elem_dime
         do i_node = 1, nb_node
-            elem_coot(i_dime,i_node) = elem_coor(i_node,i_dime)
+            elem_coot(i_dime, i_node) = elem_coor(i_node, i_dime)
         end do
     end do
 !
 ! - Get shape functions and first derivative only (for perf)
 !
-    call mmnonf(elem_dime    , nb_node      , elem_code,&
-                gauss_coor(1), gauss_coor(2),&
-                shape_func )
-    call mmdonf(elem_dime    , nb_node      , elem_code,&
-                gauss_coor(1), gauss_coor(2),&
+    call mmnonf(elem_dime, nb_node, elem_code, &
+                gauss_coor(1), gauss_coor(2), &
+                shape_func)
+    call mmdonf(elem_dime, nb_node, elem_code, &
+                gauss_coor(1), gauss_coor(2), &
                 shape_dfunc)
 !
 ! - Compute normal at integration point
@@ -112,21 +112,21 @@ real(kind=8), intent(out) :: norm_g(3)
 ! - Compute updated surfacic jacobian of element
 !
     if (l_upda_jaco) then
-        call mmmjac(l_axis    , nb_node    , elem_dime,&
-                    elem_code , elem_coot  ,&
-                    shape_func, shape_dfunc,&
+        call mmmjac(l_axis, nb_node, elem_dime, &
+                    elem_code, elem_coot, &
+                    shape_func, shape_dfunc, &
                     jacobian)
     else
         elem_coot = 0.d0
         do i_dime = 1, elem_dime
             do i_node = 1, nb_node
-                elem_coot(i_dime,i_node) = elem_init(i_node,i_dime)
+                elem_coot(i_dime, i_node) = elem_init(i_node, i_dime)
             end do
         end do
-        call mmmjac(l_axis    , nb_node    , elem_dime,&
-                    elem_code , elem_coot  ,&
-                    shape_func, shape_dfunc,&
+        call mmmjac(l_axis, nb_node, elem_dime, &
+                    elem_code, elem_coot, &
+                    shape_func, shape_dfunc, &
                     jacobian)
-    endif
+    end if
 !
 end subroutine

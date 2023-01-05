@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine nmvcd2(name_varcz, matez, exis_varc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nmax,  i, iret
+    integer :: nmax, i, iret
     character(len=8) :: mate
     character(len=8) :: name_varc
     character(len=8), pointer :: cvrcvarc(:) => null()
@@ -55,22 +55,22 @@ subroutine nmvcd2(name_varcz, matez, exis_varc)
 !
     call jemarq()
 !
-    mate      = matez
+    mate = matez
     name_varc = name_varcz
     exis_varc = .false.
 !
-    call jeexin(mate// '.CVRCVARC', iret)
+    call jeexin(mate//'.CVRCVARC', iret)
     if (iret .ne. 0) then
-        call jelira(mate// '.CVRCVARC', 'LONMAX', ival=nmax)
-        call jeveuo(mate// '.CVRCVARC', 'L'     , vk8 =cvrcvarc)
+        call jelira(mate//'.CVRCVARC', 'LONMAX', ival=nmax)
+        call jeveuo(mate//'.CVRCVARC', 'L', vk8=cvrcvarc)
         do i = 1, nmax
             if (cvrcvarc(i) .eq. name_varc) then
-                exis_varc=.true.
+                exis_varc = .true.
                 goto 2
-            endif
+            end if
         end do
- 2      continue
-    endif
+2       continue
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,15 +68,15 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     mat = matas
     call jeveuo(mat//'.REFA', 'E', vk24=refa)
     nu = nomnu
-    ASSERT(refa(2).eq.nu)
+    ASSERT(refa(2) .eq. nu)
     if (nbchc .eq. 0) goto 40
 !
 !     -- IL N'Y A PEUT-ETRE AUCUN DDL A ELIMINER (CHAR_CINE VIDES) :
-    nimp=0
+    nimp = 0
     do ich = 1, nbchc
         nomch = lchci(ich)
         call jeveuo(nomch//'.AFCI', 'L', jafci)
-        nimp = nimp + zi(jafci)
+        nimp = nimp+zi(jafci)
     end do
     if (nimp .eq. 0) goto 40
 !
@@ -85,7 +85,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
     if (imatd .ne. 0) then
         call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
-    endif
+    end if
     neq = nequ(1)
     call dismoi('NOM_GD', nu, 'NUME_DDL', repk=gd)
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
@@ -96,39 +96,39 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     if (cumul .eq. 'ZERO') then
         call jedetr(mat//'.CCID')
         call wkvect(mat//'.CCID', base//' V I ', neq+1, jccid)
-    else if (cumul.eq.'CUMU') then
+    else if (cumul .eq. 'CUMU') then
         call jeveuo(mat//'.CCID', 'E', jccid)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     call jeveuo(jexnum(nu//'.NUME.PRNO', 1), 'L', idprno)
-    nelim=0
+    nelim = 0
     do ich = 1, nbchc
         nomch = lchci(ich)
         call jeveuo(nomch//'.AFCI', 'L', jafci)
         nimp = zi(jafci)
         do imp = 1, nimp
-            ino = zi(jafci+3* (imp-1)+1)
-            iddl = zi(jafci+3* (imp-1)+2)
-            ieq = zi(idprno-1+ (nec+2)* (ino-1)+1) + iddl - 1
+            ino = zi(jafci+3*(imp-1)+1)
+            iddl = zi(jafci+3*(imp-1)+2)
+            ieq = zi(idprno-1+(nec+2)*(ino-1)+1)+iddl-1
             zi(jccid-1+ieq) = 1
         end do
     end do
 !
-    nelim=0
+    nelim = 0
     do ieq = 1, neq
         if (imatd .ne. 0) then
             if (nugl(ieq) .eq. 0) goto 30
-        endif
-        if (zi(jccid-1+ieq) .eq. 1) nelim=nelim+1
- 30     continue
+        end if
+        if (zi(jccid-1+ieq) .eq. 1) nelim = nelim+1
+30      continue
     end do
     zi(jccid-1+neq+1) = nelim
-    if (nelim .gt. 0) refa(3)='ELIML'
+    if (nelim .gt. 0) refa(3) = 'ELIML'
 !
 !
- 40 continue
+40  continue
     call jedema()
 end subroutine

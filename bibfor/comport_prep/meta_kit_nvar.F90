@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine meta_kit_nvar(metaPhas, metaRela, metaGlob,&
+subroutine meta_kit_nvar(metaPhas, metaRela, metaGlob, &
                          nbMetaPhas, nbVariMetaRela, nbVariMetaGlob)
 !
-implicit none
+    implicit none
 !
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
 !
-character(len=16), intent(in) :: metaPhas, metaRela, metaGlob
-integer, intent(out) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
+    character(len=16), intent(in) :: metaPhas, metaRela, metaGlob
+    integer, intent(out) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
 !
 ! --------------------------------------------------------------------------------------------------
 !

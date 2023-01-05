@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine laMatr(parameters, geom, matr_cont, matr_fric)
 !
-use contact_type
-use contact_module
+    use contact_type
+    use contact_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,10 +31,10 @@ implicit none
 #include "blas/dger.h"
 #include "contact_module.h"
 !
-type(ContactParameters), intent(in) :: parameters
-type(ContactGeom), intent(in) :: geom
-real(kind=8), intent(inout) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
-real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    type(ContactParameters), intent(in) :: parameters
+    type(ContactGeom), intent(in) :: geom
+    real(kind=8), intent(inout) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,17 +75,17 @@ real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! - Slave node is not paired -> Special treatment
 !
-    if(geom%elem_slav_code == "PO1") then
-        if(geom%elem_mast_code == "LAGR") then
+    if (geom%elem_slav_code == "PO1") then
+        if (geom%elem_mast_code == "LAGR") then
             matr_cont(geom%elem_dime+1, geom%elem_dime+1) = 1.d0
-            if(parameters%l_fric) then
+            if (parameters%l_fric) then
                 matr_fric(geom%elem_dime+2, geom%elem_dime+2) = 1.d0
-                if(geom%elem_dime == 3) then
+                if (geom%elem_dime == 3) then
                     matr_fric(geom%elem_dime+3, geom%elem_dime+3) = 1.d0
                 end if
             end if
         else
-            if(geom%elem_mast_code .ne. "NOLAGR") then
+            if (geom%elem_mast_code .ne. "NOLAGR") then
                 ASSERT(ASTER_FALSE)
             end if
         end if
@@ -96,7 +96,7 @@ real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 ! - Get quadrature (slave side)
 !
     call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
-                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
+                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
 !
@@ -114,62 +114,62 @@ real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 ! ----- Compute contact quantities
 !
         call laElemCont(parameters, geom, coor_qp_sl, hF, &
-                    lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
-                    lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
-                    dGap=dGap, d2Gap=d2Gap, mu_c=mu_c, mu_f=mu_f)
+                        lagr_c, gap, gamma_c, projRmVal, l_cont_qp, &
+                        lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
+                        dGap=dGap, d2Gap=d2Gap, mu_c=mu_c, mu_f=mu_f)
 !
 ! ------ CONTACT PART (always computed)
 !
-        if(l_cont_qp) then
+        if (l_cont_qp) then
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (gamma_c*H*D(gap(u))[v], D(gap(u))[du])
 !
-            coeff = weight_sl_qp * gamma_c
+            coeff = weight_sl_qp*gamma_c
             call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, dGap, 1, &
-                        matr_cont, MAX_LAGA_DOFS)
+                      matr_cont, MAX_LAGA_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
 !
-            coeff = weight_sl_qp * projRmVal
+            coeff = weight_sl_qp*projRmVal
             matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs) = &
-                matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs) + &
-                coeff * d2Gap(1:geom%nb_dofs, 1:geom%nb_dofs)
+                matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs)+ &
+                coeff*d2Gap(1:geom%nb_dofs, 1:geom%nb_dofs)
 !
 ! ------ Compute displacement / Lagrange and Lagrange / displacement
 !        term: (H * D(gap(u))[v], dlagr_c) + (H * mu_c,  D(gap(u))[du])
 !
             coeff = weight_sl_qp
             call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, mu_c, 1, &
-                    matr_cont, MAX_LAGA_DOFS)
+                      matr_cont, MAX_LAGA_DOFS)
             call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, dGap, 1, &
-                    matr_cont, MAX_LAGA_DOFS)
+                      matr_cont, MAX_LAGA_DOFS)
         else
 !
 ! ------ Compute Lagrange / Lagrange (slave side)
 !        term: ((H-1) / gamma_c * mu_c, dlagr_c) = (- mu_c / gamma_c, dlagr_c) since H = 0
 !
-            coeff = -weight_sl_qp / gamma_c
+            coeff = -weight_sl_qp/gamma_c
             call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, mu_c, 1, &
-                matr_cont, MAX_LAGA_DOFS)
+                      matr_cont, MAX_LAGA_DOFS)
 !
         end if
 !
 ! ------ FRICTION PART (computed only if friction)
 !
-        if(parameters%l_fric) then
-            if(l_fric_qp) then
+        if (parameters%l_fric) then
+            if (l_fric_qp) then
                 ASSERT(ASTER_FALSE)
             else
 !
 ! ------ Compute Lagrange / Lagrange (slave side)
 !        term:  (-1/ gamma_f * mu_f, dlagr_f) - Without friction
 !
-                coeff = -weight_sl_qp / gamma_f
+                coeff = -weight_sl_qp/gamma_f
                 call dgemm('N', 'T', geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, coeff, &
-                            mu_f, MAX_LAGA_DOFS, mu_f, MAX_LAGA_DOFS, 1.d0, &
-                            matr_fric, MAX_LAGA_DOFS)
+                           mu_f, MAX_LAGA_DOFS, mu_f, MAX_LAGA_DOFS, 1.d0, &
+                           matr_fric, MAX_LAGA_DOFS)
             end if
         end if
     end do

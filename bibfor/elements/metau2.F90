@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine metau2(l_meta)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/verift.h"
 #include "asterfort/Metallurgy_type.h"
 !
-aster_logical, intent(out) :: l_meta
+    aster_logical, intent(out) :: l_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ aster_logical, intent(out) :: l_meta
     if (meta_type .eq. META_NONE) then
         l_meta = .false.
         goto 999
-    endif
+    end if
 !
 ! - Finite element informations
 !
@@ -95,21 +95,21 @@ aster_logical, intent(out) :: l_meta
 !
 ! ----- Shape functions derivatives
 !
-        call dfdm3d(nb_node, kp, ipoids, idfde, zr(j_geom),&
+        call dfdm3d(nb_node, kp, ipoids, idfde, zr(j_geom), &
                     poids, dfdx, dfdy, dfdz)
 !
 ! ----- Compute thermic strain
 !
-        call verift('RIGI', kp, 1, '+', j_mater,&
+        call verift('RIGI', kp, 1, '+', j_mater, &
                     epsth_meta_=epsth)
 !
 ! ----- Get elastic parameters
 !
         call get_elas_id(j_mater, elas_id, elas_keyword)
-        call get_elas_para('RIGI', j_mater, '+', kp, ispg,&
-                           elas_id  , elas_keyword,&
-                           e_ = young, nu_ = nu)
-        ASSERT(elas_id.eq.1)
+        call get_elas_para('RIGI', j_mater, '+', kp, ispg, &
+                           elas_id, elas_keyword, &
+                           e_=young, nu_=nu)
+        ASSERT(elas_id .eq. 1)
 !
 ! ----- Compute
 !
@@ -117,9 +117,9 @@ aster_logical, intent(out) :: l_meta
         poids = poids*coef*epsth
 !
         do i_node = 1, nb_node
-            zr(j_vect+3*i_node-3) = zr(j_vect+3*i_node-3) + poids*dfdx(i_node)
-            zr(j_vect+3*i_node-2) = zr(j_vect+3*i_node-2) + poids*dfdy(i_node)
-            zr(j_vect+3*i_node-1) = zr(j_vect+3*i_node-1) + poids*dfdz(i_node)
+            zr(j_vect+3*i_node-3) = zr(j_vect+3*i_node-3)+poids*dfdx(i_node)
+            zr(j_vect+3*i_node-2) = zr(j_vect+3*i_node-2)+poids*dfdy(i_node)
+            zr(j_vect+3*i_node-1) = zr(j_vect+3*i_node-1)+poids*dfdz(i_node)
         end do
     end do
 !

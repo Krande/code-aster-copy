@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
+subroutine cylrep(ndim, x, axe_z, orig, pgcyl, &
                   ipaxe)
 !
     implicit none
@@ -45,7 +45,7 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
     real(kind=8) :: xnorm
     real(kind=8), dimension(3) :: axe_r, axe_t
 !
-    pgcyl(:,:) = 0.d0
+    pgcyl(:, :) = 0.d0
 !
 !   Calcul du premier vecteur axe_r du repère cylindrique
 !
@@ -53,12 +53,12 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
 !   Pour être conforme à chrpel
     if (ndim == 2) then
         axe_r(3) = 0.0d0
-    endif
-    axe_r(:) = axe_r(:)-dot_product(axe_r,axe_z)*axe_z(:)
+    end if
+    axe_r(:) = axe_r(:)-dot_product(axe_r, axe_z)*axe_z(:)
 !   Pour être conforme à chrpel
     if (ndim == 2) then
         axe_r(3) = 0.0d0
-    endif
+    end if
     call normev(axe_r, xnorm)
 !
     if (xnorm .lt. r8prem()) then
@@ -75,19 +75,19 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
             axe_r(1) = 1.0d0
             axe_r(2) = 0.0d0
             axe_r(3) = 0.0d0
-        endif
+        end if
         if (present(ipaxe)) then
-            ipaxe = ipaxe + 1
-        endif
-    endif
+            ipaxe = ipaxe+1
+        end if
+    end if
 !  Calcul du second vecteur axe_t du repère cylindrique
 !  axe_t = axe_z x axe_r
     call provec(axe_z, axe_r, axe_t)
     call normev(axe_t, xnorm)
 !   pgcyl:  (e_r, e_z, e_{\theta})
-    pgcyl(:,1) = axe_r
-    pgcyl(:,2) = axe_z
-    pgcyl(:,3) = axe_t
+    pgcyl(:, 1) = axe_r
+    pgcyl(:, 2) = axe_z
+    pgcyl(:, 3) = axe_t
 !  pour tests
 ! pgcyl(:,1) = axe_z
 ! pgcyl(:,2) = axe_t

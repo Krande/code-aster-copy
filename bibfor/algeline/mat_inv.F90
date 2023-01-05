@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function mat_inv(ndim,m)
+function mat_inv(ndim, m)
 !
-      implicit none
+    implicit none
 !
-      integer, intent(in) :: ndim
-      real(kind=8), intent(in) :: m(ndim,ndim)
-      real(kind=8) :: mat_inv(ndim,ndim)
+    integer, intent(in) :: ndim
+    real(kind=8), intent(in) :: m(ndim, ndim)
+    real(kind=8) :: mat_inv(ndim, ndim)
 !
 !
 !     INVERSION MATRICE TRES PETITE TAILLE (COUT FACTORIELLE N!!)
@@ -32,7 +32,7 @@ function mat_inv(ndim,m)
 !
 #include "asterfort/mat_com.h"
 #include "asterfort/det_mat.h"
-    mat_inv = 1.d0/det_mat(ndim,m)*transpose(mat_com(ndim,m))
+    mat_inv = 1.d0/det_mat(ndim, m)*transpose(mat_com(ndim, m))
 !
 !
 end function

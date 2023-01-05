@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
+subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0, &
                   ddepl1, eta, pilcvg, nbeffe)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -79,8 +79,8 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<PILOTAGE> ...... PILOTAGE PAR DDL IMPOSE'
-    endif
+        write (ifm, *) '<PILOTAGE> ...... PILOTAGE PAR DDL IMPOSE'
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -97,22 +97,22 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
 !
 ! --- RESOLUTION DE L'EQUATION
 !
-    rn = ddot(neq,dep0,1,coef,1)
-    rd = ddot(neq,dep1,1,coef,1)
-    du = ddot(neq,depde,1,coef,1)
+    rn = ddot(neq, dep0, 1, coef, 1)
+    rd = ddot(neq, dep1, 1, coef, 1)
+    du = ddot(neq, depde, 1, coef, 1)
     if (rd .eq. 0.d0) then
         pilcvg = 1
     else
-        eta = (dtau - du - rn) / rd
+        eta = (dtau-du-rn)/rd
         nbeffe = 1
         pilcvg = 0
-    endif
+    end if
 !
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<PILOTAGE> ...... (RN,RD,DU) : ',rn,rd,du
-    endif
+        write (ifm, *) '<PILOTAGE> ...... (RN,RD,DU) : ', rn, rd, du
+    end if
 !
     call jedema()
 !

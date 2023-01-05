@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc,&
+subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc, &
                   noml)
     implicit none
 #include "jeveux.h"
@@ -51,24 +51,24 @@ subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc,&
     call jemarq()
     noma = nomaz
     mcf = mcfact
-    tymocl(1)='GROUP_NO'
-    limocl(1)= mcgrno
-    tymocl(2)='NOEUD'
-    limocl(2)= mcno
+    tymocl(1) = 'GROUP_NO'
+    limocl(1) = mcgrno
+    tymocl(2) = 'NOEUD'
+    limocl(2) = mcno
 !
-    liste1='&&PALINO.LISTE'
+    liste1 = '&&PALINO.LISTE'
 !
-    call reliem(' ', noma, 'NU_NOEUD', mcf, iocc,&
+    call reliem(' ', noma, 'NU_NOEUD', mcf, iocc, &
                 2, limocl, tymocl, liste1, n1)
     call jedetr(noml)
     call wkvect(noml, 'V V I', n1+1, j2)
-    zi(j2)=n1
+    zi(j2) = n1
     if (n1 .gt. 0) then
         call jeveuo(liste1, 'L', j1)
         do k = 1, n1
-            zi(j2+k)=zi(j1-1+k)
+            zi(j2+k) = zi(j1-1+k)
         end do
-    endif
+    end if
 !
 !
     call jedetr(liste1)

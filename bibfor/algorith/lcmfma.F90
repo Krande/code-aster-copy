@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 subroutine lcmfma(mat, fami, kpg, ksp, poum)
     implicit none
 #include "asterfort/rcvalb.h"
-    integer,intent(in) :: mat, kpg, ksp
-    character(len=1),intent(in):: poum
-    character(len=*),intent(in) :: fami
+    integer, intent(in) :: mat, kpg, ksp
+    character(len=1), intent(in):: poum
+    character(len=*), intent(in) :: fami
 ! --------------------------------------------------------------------------------------------------
 !   ENDOMMAGEMENT FRAGILE A GRADIENT DE VARIABLE INTERNE ENDO_SCALAIRE
 !            LECTURE DES PARAMETRES DU CRITERE EXPONENTIEL
@@ -32,26 +32,26 @@ subroutine lcmfma(mat, fami, kpg, ksp, poum)
 ! IN  KSP    NUMERO DU SOUS-POINT
 ! IN  POUM   LECTURE DES PARAMETRES EN DEBUT '-' OU FIN '+' DU PAS
 ! --------------------------------------------------------------------------------------------------
-    integer,parameter :: nber=9
+    integer, parameter :: nber = 9
 ! --------------------------------------------------------------------------------------------------
     integer :: iok(nber)
-    real(kind=8) :: valer(nber),rdum(1)
+    real(kind=8) :: valer(nber), rdum(1)
     character(len=8):: nomdum(1)
     character(len=16):: nomer(nber)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
+    common/lcee/lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp, pq
-    common /lces/ pk,pm,pp,pq
+    common/lces/pk, pm, pp, pq
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: tau, sig0, beta
-    common /lcmmf/ tau,sig0,beta
+    common/lcmmf/tau, sig0, beta
 ! --------------------------------------------------------------------------------------------------
-    data nomer /'K','M','P','Q','COEF_RIGI_MINI','TAU','SIG0','BETA','REST_RIGIDITE'/
+    data nomer/'K', 'M', 'P', 'Q', 'COEF_RIGI_MINI', 'TAU', 'SIG0', 'BETA', 'REST_RIGIDITE'/
 ! --------------------------------------------------------------------------------------------------
 !
-    call rcvalb(fami, kpg, ksp, poum, mat, ' ', 'ENDO_FISS_EXP', 0, nomdum(1), rdum(1),&
+    call rcvalb(fami, kpg, ksp, poum, mat, ' ', 'ENDO_FISS_EXP', 0, nomdum(1), rdum(1), &
                 nber, nomer, valer, iok, 2)
     pk = valer(1)
     pm = valer(2)

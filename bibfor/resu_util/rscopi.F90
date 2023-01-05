@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine rscopi(base, sd1, sd2)
 !
 !     --- LE .TACH ---
 !
-    call jecrec(sdr2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT',&
+    call jecrec(sdr2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT', &
                 nbcham)
     call jeecra(sdr2//'.TACH', 'LONMAX', nbordr)
 !
@@ -98,15 +98,15 @@ subroutine rscopi(base, sd1, sd2)
     do i = 1, nbcham
         call jenuno(jexnum(sdr1//'.DESC', i), nomsy)
         call jecroc(jexnum(sdr2//'.TACH', i))
-        do j = 0, nbordr - 1
-            call rsexch(' ', sd1, nomsy, ordr(1+j), ch1,&
+        do j = 0, nbordr-1
+            call rsexch(' ', sd1, nomsy, ordr(1+j), ch1, &
                         iret)
             if (iret .eq. 0) then
-                call rsexch(' ', sd2, nomsy, ordr(1+j), ch2,&
+                call rsexch(' ', sd2, nomsy, ordr(1+j), ch2, &
                             iret)
                 call copich(bas2, ch1, ch2)
                 call rsnoch(sd2, nomsy, ordr(1+j))
-            endif
+            end if
         end do
     end do
 !
@@ -114,7 +114,7 @@ subroutine rscopi(base, sd1, sd2)
 !
     nompar = '&&RSCOPI.NOMS_PARA '
     call rsnopa(sdr1, 2, nompar, nbac, nbpa)
-    nbpara = nbac + nbpa
+    nbpara = nbac+nbpa
     call jeveuo(nompar, 'L', jpa)
 !
     dejfai = .false.
@@ -131,10 +131,10 @@ subroutine rscopi(base, sd1, sd2)
             if (dejfai) goto 30
             dejfai = .true.
             nomobj = '.PARA'
-        endif
+        end if
         call jedupo(sdr1//nomobj, bas2, sdr2//nomobj, .false._1)
 !
- 30     continue
+30      continue
     end do
     call jedetr(nompar)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnvois(mesh      , list_elem ,  conx_inve , nb_elem, elem_indx_mini,&
+subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
                   elem_indx_maxi, elem_neigh)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jecrec.h"
@@ -60,7 +60,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_elem, i_neigh, aux(1) ,nb_find, lmail(1), jtypma
+    integer :: i_elem, i_neigh, aux(1), nb_find, lmail(1), jtypma
     integer :: elem_indx, elem_nume
     integer :: list_neigh(4), nb_neigh
     character(len=8) :: elem_code, elem_type
@@ -76,50 +76,50 @@ implicit none
 !
 ! - Acces to mesh
 !
-    call jeveuo(mesh//'.CONNEX', 'L', vi = v_connex)
-    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
+    call jeveuo(mesh//'.CONNEX', 'L', vi=v_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi=v_connex_lcum)
 
 !
 ! - Acces to conx_inve
 !
-    call jeveuo(conx_inve, 'L', vi = v_conx_inv)
-    call jeveuo(jexatr(conx_inve, 'LONCUM'), 'L', vi = v_inv_lcum)
+    call jeveuo(conx_inve, 'L', vi=v_conx_inv)
+    call jeveuo(jexatr(conx_inve, 'LONCUM'), 'L', vi=v_inv_lcum)
 
 !
 ! - Create object (collection)
 !
-    call jecrec(elem_neigh,'G V I', 'NU', 'CONTIG', 'VARIABLE', elem_indx_maxi+1-elem_indx_mini)
+    call jecrec(elem_neigh, 'G V I', 'NU', 'CONTIG', 'VARIABLE', elem_indx_maxi+1-elem_indx_mini)
     call jeecra(elem_neigh, 'LONT', nb_elem*4+(elem_indx_maxi+1-elem_indx_mini-nb_elem)*4)
     do i_elem = 1, elem_indx_maxi+1-elem_indx_mini
         elem_nume = i_elem-1+elem_indx_mini
-        nb_find   = 0
-        lmail(1)  = elem_nume
+        nb_find = 0
+        lmail(1) = elem_nume
         call utlisi('INTER', lmail, 1, list_elem, nb_elem, aux, 1, nb_find)
         if (nb_find .eq. 1) then
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+elem_nume-1)), elem_type)
             select case (elem_type)
-                case('SEG2')
-                    nb_neigh = 2
-                case('SEG3')
-                    nb_neigh = 2
-                case('TRIA3')
-                    nb_neigh = 3
-                case('TRIA6')
-                    nb_neigh = 3
-                case('QUAD4')
-                    nb_neigh = 4
-                case('QUAD8')
-                    nb_neigh = 4
-                case('QUAD9')
-                    nb_neigh = 4
-                case default
-                    ASSERT(.false.)
+            case ('SEG2')
+                nb_neigh = 2
+            case ('SEG3')
+                nb_neigh = 2
+            case ('TRIA3')
+                nb_neigh = 3
+            case ('TRIA6')
+                nb_neigh = 3
+            case ('QUAD4')
+                nb_neigh = 4
+            case ('QUAD8')
+                nb_neigh = 4
+            case ('QUAD9')
+                nb_neigh = 4
+            case default
+                ASSERT(.false.)
             end select
-            call jecroc(jexnum(elem_neigh,i_elem))
-            call jeecra(jexnum(elem_neigh,i_elem), 'LONMAX', ival=4)
+            call jecroc(jexnum(elem_neigh, i_elem))
+            call jeecra(jexnum(elem_neigh, i_elem), 'LONMAX', ival=4)
         elseif (nb_find .eq. 0) then
-            call jecroc(jexnum(elem_neigh,i_elem))
-            call jeecra(jexnum(elem_neigh,i_elem), 'LONMAX', ival=4)
+            call jecroc(jexnum(elem_neigh, i_elem))
+            call jeecra(jexnum(elem_neigh, i_elem), 'LONMAX', ival=4)
         else
             ASSERT(.false.)
         end if
@@ -132,34 +132,34 @@ implicit none
         elem_indx = elem_nume+1-elem_indx_mini
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+elem_nume-1)), elem_type)
         select case (elem_type)
-            case('SEG2')
-                nb_neigh  = 2
-                elem_code = 'SE2'
-            case('SEG3')
-                nb_neigh  = 2
-                elem_code = 'SE3'
-            case('TRIA3')
-                nb_neigh  = 3
-                elem_code = 'TR3'
-            case('TRIA6')
-                nb_neigh  = 3
-                elem_code = 'TR6'
-            case('QUAD4')
-                nb_neigh  = 4
-                elem_code = 'QU4'
-            case('QUAD8')
-                nb_neigh  = 4
-                elem_code = 'QU8'
-            case('QUAD9')
-                nb_neigh  = 4
-                elem_code = 'QU9'
-            case default
-                ASSERT(.false.)
+        case ('SEG2')
+            nb_neigh = 2
+            elem_code = 'SE2'
+        case ('SEG3')
+            nb_neigh = 2
+            elem_code = 'SE3'
+        case ('TRIA3')
+            nb_neigh = 3
+            elem_code = 'TR3'
+        case ('TRIA6')
+            nb_neigh = 3
+            elem_code = 'TR6'
+        case ('QUAD4')
+            nb_neigh = 4
+            elem_code = 'QU4'
+        case ('QUAD8')
+            nb_neigh = 4
+            elem_code = 'QU8'
+        case ('QUAD9')
+            nb_neigh = 4
+            elem_code = 'QU9'
+        case default
+            ASSERT(.false.)
         end select
-        call jeveuo(jexnum(elem_neigh, elem_indx), 'E', vi = v_elem_neigh)
-        call gtvois(v_connex  , v_connex_lcum, list_elem, nb_elem   , elem_nume, elem_code,&
-                    v_conx_inv, v_inv_lcum   , nb_neigh , list_neigh)
-        do i_neigh=1, 4
+        call jeveuo(jexnum(elem_neigh, elem_indx), 'E', vi=v_elem_neigh)
+        call gtvois(v_connex, v_connex_lcum, list_elem, nb_elem, elem_nume, elem_code, &
+                    v_conx_inv, v_inv_lcum, nb_neigh, list_neigh)
+        do i_neigh = 1, 4
             v_elem_neigh(i_neigh) = list_neigh(i_neigh)
         end do
     end do

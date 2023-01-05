@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cjsjis(mod, mater, deps, yd, yf,&
+subroutine cjsjis(mod, mater, deps, yd, yf, &
                   r, drdy)
     implicit none
 !     INTEGRATION PLASTIQUE (MECANISME ISOTROPE SEUL) DE LA LOI CJS
@@ -43,7 +43,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 #include "asterfort/lcicma.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod
-    parameter     (nmod = 8 )
+    parameter(nmod=8)
 !
     real(kind=8) :: deps(6)
     real(kind=8) :: yd(nmod), yf(nmod), r(nmod), drdy(nmod, nmod)
@@ -60,35 +60,35 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !
     real(kind=8) :: zero, un, d12, deux, trois, kron(6), iden6(6, 6)
 !
-    parameter     ( d12  = .5d0   )
-    parameter     ( un   = 1.d0   )
-    parameter     ( zero = 0.d0   )
-    parameter     ( deux = 2.d0   )
-    parameter     ( trois= 3.d0   )
+    parameter(d12=.5d0)
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
 !
 !
     character(len=8) :: mod
 !
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
-    data    iden6  /un     , zero  , zero  , zero  ,zero  ,zero,&
-         &                   zero   , un    , zero  , zero  ,zero  ,zero,&
-         &                   zero   , zero  , un    , zero  ,zero  ,zero,&
-         &                   zero   , zero  , zero  , un    ,zero  ,zero,&
-         &                   zero   , zero  , zero  , zero  ,un    ,zero,&
-         &                   zero   , zero  , zero  , zero  ,zero  ,un/
+    data iden6/un, zero, zero, zero, zero, zero,&
+         &                   zero, un, zero, zero, zero, zero,&
+         &                   zero, zero, un, zero, zero, zero,&
+         &                   zero, zero, zero, un, zero, zero,&
+         &                   zero, zero, zero, zero, un, zero,&
+         &                   zero, zero, zero, zero, zero, un/
 !
-    data          kron /un , un , un , zero ,zero ,zero/
+    data kron/un, un, un, zero, zero, zero/
 !
 !
 !-----------------------------------------------------------------------
 !->     PROPRIETES CJS MATERIAU
 !------------------------------
 !
-    n = mater(3,2)
-    kop = mater(4,2)
-    pa = mater(12,2)
-    qinit = mater(13,2)
+    n = mater(3, 2)
+    kop = mater(4, 2)
+    pa = mater(12, 2)
+    qinit = mater(13, 2)
 !
 !-----------------------------------------------------------------------
 !->     OPERATEURS DE RIGIDITE
@@ -98,33 +98,33 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !- OPERATEUR LINEAIRE
 !++++++++++++++++++++
 !
-    hook(:,:) = zero
+    hook(:, :) = zero
 !
-    e = mater(1,1)
-    nu = mater(2,1)
-    al = e * (un-nu) / (un+nu) / (un-deux*nu)
-    la = nu * e / (un+nu) / (un-deux*nu)
-    mu = e * d12 / (un+nu)
+    e = mater(1, 1)
+    nu = mater(2, 1)
+    al = e*(un-nu)/(un+nu)/(un-deux*nu)
+    la = nu*e/(un+nu)/(un-deux*nu)
+    mu = e*d12/(un+nu)
 !
 !
 ! - 3D/DP/AX
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-       do i = 1, ndi
-          do j = 1, ndi
-             if (i .eq. j) hook(i,j) = al
-             if (i .ne. j) hook(i,j) = la
-          end do
-       end do
-       do  i = ndi+1, ndt
-          do  j = ndi+1, ndt
-             if (i .eq. j) hook(i,j) = deux* mu
-          end do
-       end do
-   !
-   ! - CP/1D
+        do i = 1, ndi
+            do j = 1, ndi
+                if (i .eq. j) hook(i, j) = al
+                if (i .ne. j) hook(i, j) = la
+            end do
+        end do
+        do i = ndi+1, ndt
+            do j = ndi+1, ndt
+                if (i .eq. j) hook(i, j) = deux*mu
+            end do
+        end do
+        !
+        ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-       call utmess('F', 'ALGORITH2_15')
-    endif
+        call utmess('F', 'ALGORITH2_15')
+    end if
 !
 !
 !- OPERATEUR NON LINEAIRE
@@ -132,18 +132,18 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !
     i1f = zero
     do i = 1, ndi
-       i1f = i1f + yf(i)
+        i1f = i1f+yf(i)
     end do
-    if ((i1f +qinit) .eq. 0.d0) then
-       i1f = -qinit+1.d-12 * pa
-    endif
+    if ((i1f+qinit) .eq. 0.d0) then
+        i1f = -qinit+1.d-12*pa
+    end if
 !
-    coef1 = ((i1f +qinit)/trois/pa)**n
+    coef1 = ((i1f+qinit)/trois/pa)**n
 !
     do i = 1, ndt
-       do j = 1, ndt
-          hooknl(i,j) = coef1*hook(i,j)
-       end do
+        do j = 1, ndt
+            hooknl(i, j) = coef1*hook(i, j)
+        end do
     end do
 !
 !
@@ -159,39 +159,39 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !- LOI D ETAT
 !++++++++++++
 !
-    dlambi = yf(ndt+2) - yd(ndt+2)
+    dlambi = yf(ndt+2)-yd(ndt+2)
 !
     do i = 1, ndt
-       depse(i) = deps(i) + dlambi*kron(i)/trois
+        depse(i) = deps(i)+dlambi*kron(i)/trois
     end do
 !
-    dsignl(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
+    dsignl(1:ndt) = matmul(hooknl(1:ndt, 1:ndt), depse(1:ndt))
 !
-    do  i = 1, ndt
-       le(i) = yf(i) - yd(i) - dsignl(i)
+    do i = 1, ndt
+        le(i) = yf(i)-yd(i)-dsignl(i)
     end do
 !
 !
 !- DERIVEE DE LA LOI D ETAT
 !++++++++++++++++++++++++++
 !
-    coef2 = n/trois/pa * (trois*pa/(i1f +qinit))**(un-n)
-    dsigl(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
-    dleds(:,:) = zero
+    coef2 = n/trois/pa*(trois*pa/(i1f+qinit))**(un-n)
+    dsigl(1:ndt) = matmul(hook(1:ndt, 1:ndt), depse(1:ndt))
+    dleds(:, :) = zero
 !
-    do  i = 1, ndt
-   !
-       do  j = 1, ndt
-          dleds(i,j) = iden6(i,j) - coef2 * dsigl(i) * kron(j)
-       end do
-   !
-       dledq(i) = zero
-   !
-       dledl(i) = zero
-       do j = 1, ndt
-          dledl(i) = dledl(i) - hooknl(i,j)*kron(j)/trois
-       end do
-   !
+    do i = 1, ndt
+        !
+        do j = 1, ndt
+            dleds(i, j) = iden6(i, j)-coef2*dsigl(i)*kron(j)
+        end do
+        !
+        dledq(i) = zero
+        !
+        dledl(i) = zero
+        do j = 1, ndt
+            dledl(i) = dledl(i)-hooknl(i, j)*kron(j)/trois
+        end do
+        !
     end do
 !
 !
@@ -206,15 +206,15 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !
 !- LOI D ECROUISSAGE
 !+++++++++++++++++++
-    lq = yf(ndt+1) - yd(ndt+1) + dlambi * kop * (yf(ndt+1)/pa)**n
+    lq = yf(ndt+1)-yd(ndt+1)+dlambi*kop*(yf(ndt+1)/pa)**n
 !
 !
 !- DERIVEE DE LA LOI D ECROUISSAGE
 !+++++++++++++++++++++++++++++++++
 !
     dlqds(:) = zero
-    dlqdq = un + dlambi * kop * n / pa * (pa/yf(ndt+1))**(un-n)
-    dlqdl = kop * (yf(ndt+1)/pa)**n
+    dlqdq = un+dlambi*kop*n/pa*(pa/yf(ndt+1))**(un-n)
+    dlqdl = kop*(yf(ndt+1)/pa)**n
 !------------------------------------------------------------------
 !->     SEUIL ISOTROPE : FI
 !->  ET DERIVEE DE LA FONCTION SEUIL ISOTROPE : DFIDS, DFIDQ, DFIDL
@@ -224,14 +224,14 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !- SEUIL ISOTROPE
 !++++++++++++++++
 !
-    fi = -(i1f +qinit)/trois + yf(ndt+1)
+    fi = -(i1f+qinit)/trois+yf(ndt+1)
 !
 !
 !- DERIVEE DU SEUIL ISOTROPE
 !+++++++++++++++++++++++++++
 !
     do i = 1, ndt
-       dfids(i) = -kron(i)/trois
+        dfids(i) = -kron(i)/trois
     end do
 !
     dfidq = un
@@ -255,35 +255,35 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !+++++++++++++++++
 !
     do i = 1, ndt
-       r(i) = -le(i)
+        r(i) = -le(i)
     end do
 !
-    r(ndt+1) = - lq
-    r(ndt+2) = - fi
+    r(ndt+1) = -lq
+    r(ndt+2) = -fi
 !
 !
 !- ASSEMBLAGE DE DRDY
 !++++++++++++++++++++
 !
-    call lcicma(dleds, 6, 6, ndt, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         1, 1)
-    call lcicma(dledq, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         1, ndt+1)
-    call lcicma(dledl, 6, 1, ndt, 1,&
-         1, 1, drdy, nmod, nmod,&
-         1, ndt+2)
+    call lcicma(dleds, 6, 6, ndt, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                1, 1)
+    call lcicma(dledq, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                1, ndt+1)
+    call lcicma(dledl, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
+                1, ndt+2)
 !
-    call lcicma(dlqds, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+1, 1)
+    call lcicma(dlqds, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+1, 1)
     drdy(ndt+1, ndt+1) = dlqdq
     drdy(ndt+1, ndt+2) = dlqdl
 !
-    call lcicma(dfids, 1, 6, 1, ndt,&
-         1, 1, drdy, nmod, nmod,&
-         ndt+2, 1)
+    call lcicma(dfids, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
+                ndt+2, 1)
     drdy(ndt+2, ndt+1) = dfidq
     drdy(ndt+2, ndt+2) = dfidl
 !

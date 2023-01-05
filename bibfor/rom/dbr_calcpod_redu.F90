@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, v_gamma)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -31,11 +31,11 @@ implicit none
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer              , intent(in)  :: nb_snap
-    integer              , intent(in)  :: m
+    integer, intent(in)  :: nb_snap
+    integer, intent(in)  :: m
     real(kind=8), pointer  :: q(:)
     real(kind=8), pointer  :: v(:)
-    integer              , intent(in)  :: nb_mode
+    integer, intent(in)  :: nb_mode
     real(kind=8), pointer :: v_gamma(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ implicit none
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM7_12')
-    endif
+    end if
 !
 ! - Get parameters
 !
@@ -72,14 +72,14 @@ implicit none
 !
 ! - Compute reduced coordinates
 !
-    AS_ALLOCATE(vr = v_pod  , size = m*nb_mode)
-    AS_ALLOCATE(vr = v_gamma, size = nb_mode*nb_snap)
+    AS_ALLOCATE(vr=v_pod, size=m*nb_mode)
+    AS_ALLOCATE(vr=v_gamma, size=nb_mode*nb_snap)
     do i_mode = 1, nb_mode
         do ieq = 1, m
             v_pod(ieq+m*(i_mode-1)) = v(ieq+m*(i_mode-1))
-        enddo
-    enddo
+        end do
+    end do
     call dgemm('T', 'N', nb_mode, nb_snap, m, 1.d0, v_pod, m, q, m, 0.d0, v_gamma, nb_mode)
-    AS_DEALLOCATE(vr = v_pod)
+    AS_DEALLOCATE(vr=v_pod)
 !
 end subroutine

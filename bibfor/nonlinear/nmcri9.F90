@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ function nmcri9(dp)
 !     ------------------
     real(kind=8) :: rpp
 !
-    common /rconm9/acook,bcook,ccook,npuis,mpuis,&
-     &               epsp0,troom,tmelt,tp,dinst,sieleq,deuxmu,rprim,pm
+    common/rconm9/acook, bcook, ccook, npuis, mpuis,&
+     &               epsp0, troom, tmelt, tp, dinst, sieleq, deuxmu, rprim, pm
 !
     real(kind=8) :: acook, bcook, ccook, npuis, mpuis, epsp0, troom, tmelt
     real(kind=8) :: dinst
@@ -48,9 +48,9 @@ function nmcri9(dp)
 !
 ! DEB-------------------------------------------------------------------
 !
-    call eccook(acook, bcook, ccook, npuis, mpuis,&
-                epsp0, troom, tmelt, tp, dinst,&
+    call eccook(acook, bcook, ccook, npuis, mpuis, &
+                epsp0, troom, tmelt, tp, dinst, &
                 pm, dp, rpp, rprim)
-    nmcri9= rpp + 1.5d0*deuxmu*dp - sieleq
+    nmcri9 = rpp+1.5d0*deuxmu*dp-sieleq
 !
 end function

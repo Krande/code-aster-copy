@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nttcmv(model , mate  , mateco   , cara_elem, list_load, nume_dof,&
-                  solver, time  , tpsthe   , tpsnp1   , reasvt  ,&
-                  reasmt, creas , vtemp    , vtempm   , vec2nd  ,&
-                  matass, maprec, cndirp   , cnchci   , cnchtp)
+subroutine nttcmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
+                  solver, time, tpsthe, tpsnp1, reasvt, &
+                  reasmt, creas, vtemp, vtempm, vec2nd, &
+                  matass, maprec, cndirp, cnchci, cnchtp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,20 +43,20 @@ implicit none
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: mate, mateco
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: solver
-character(len=24), intent(in) :: time
-aster_logical :: reasvt, reasmt
-real(kind=8) :: tpsthe(6), tpsnp1
-character(len=1) :: creas
-character(len=19) :: maprec
-character(len=24) :: time_move
-character(len=24) :: vtemp, vtempm, vec2nd
-character(len=24) :: matass, cndirp, cnchci, cnchtp
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate, mateco
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: solver
+    character(len=24), intent(in) :: time
+    aster_logical :: reasvt, reasmt
+    real(kind=8) :: tpsthe(6), tpsnp1
+    character(len=1) :: creas
+    character(len=19) :: maprec
+    character(len=24) :: time_move
+    character(len=24) :: vtemp, vtempm, vec2nd
+    character(len=24) :: matass, cndirp, cnchci, cnchtp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,22 +84,22 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
     real(kind=8), pointer :: dirp(:) => null()
     character(len=24) :: lload_name, lload_info, lload_func
 !
-    data typres /'R'/
-    data nomcmp /'INST    ','DELTAT  ','THETA   ','KHI     ',&
-                 'R       ','RHO     '/
-    data mediri        /'&&MEDIRI           .RELR'/
-    data metrnl        /'&&METNTH           .RELR'/
-    data vediri        /'&&VETDIR           .RELR'/
-    data vechtp        /'&&VETCHA           .RELR'/
+    data typres/'R'/
+    data nomcmp/'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ', &
+        'R       ', 'RHO     '/
+    data mediri/'&&MEDIRI           .RELR'/
+    data metrnl/'&&METNTH           .RELR'/
+    data vediri/'&&VETDIR           .RELR'/
+    data vechtp/'&&VETCHA           .RELR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    vadirp    = '&&VATDIR'
-    vachtp    = '&&VATCHA'
+    vadirp = '&&VATDIR'
+    vachtp = '&&VATCHA'
     time_move = '&&NTTCMV.TIMEMO'
-    merigi    = '&&METRIG'
-    creas     = ' '
+    merigi = '&&METRIG'
+    creas = ' '
     time_curr = tpsthe(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
@@ -114,13 +114,13 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
 ! ----- Field for time
 !
         ligrmo = model(1:8)//'.MODELE'
-        call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
+        call mecact('V', time, 'MODELE', ligrmo, 'INST_R', &
                     ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
 ! ----- Field for shifted time with 1-THETA
 !
         tpsthe(3) = 1.d0
-        call mecact('V', time_move, 'MODELE', ligrmo, 'INST_R',&
+        call mecact('V', time_move, 'MODELE', ligrmo, 'INST_R', &
                     ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
         tpsthe(3) = 0.d0
 !
@@ -128,25 +128,25 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
 !
         call vedith(model, lload_name, lload_info, time, vediri)
         call asasve(vediri, nume_dof, typres, vadirp)
-        call ascova('D', vadirp, lload_func, 'INST', tpsthe(1),&
+        call ascova('D', vadirp, lload_func, 'INST', tpsthe(1), &
                     typres, cndirp)
         call jeveuo(cndirp(1:19)//'.VALE', 'E', vr=dirp)
 !
 ! --- CHARGES CINEMATIQUES                                   ---> CNCHCI
 !
         cnchci = ' '
-        call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsnp1,&
+        call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsnp1, &
                     cnchci, l_hho_=ASTER_FALSE)
 !
 ! --- CHARGEMENTS THERMIQUES                                 ---> CNCHTP
 !            RQ : POUR LE CALCUL THERMIQUE, LES ARGUMENTS VTEMPP,
 !                 VTEMPD ET THETA SONT INUTILISES.
 !
-        call vechth('MOVE' , model    , lload_name, lload_info, cara_elem,&
-                    mate, mateco   , time_curr, time      , vtemp     , vechtp   ,&
-                    time_move_ = time_move)
+        call vechth('MOVE', model, lload_name, lload_info, cara_elem, &
+                    mate, mateco, time_curr, time, vtemp, vechtp, &
+                    time_move_=time_move)
         call asasve(vechtp, nume_dof, typres, vachtp)
-        call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
+        call ascova('D', vachtp, lload_func, 'INST', tpsthe(1), &
                     typres, cnchtp)
         call jeveuo(cnchtp(1:19)//'.VALE', 'E', vr=chtp)
         call jelira(cnchtp(1:19)//'.VALE', 'LONMAX', lonch)
@@ -155,10 +155,10 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
 !
         call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
         do k = 1, lonch
-            zr(j2nd+k-1) = chtp(k) + dirp(k)
+            zr(j2nd+k-1) = chtp(k)+dirp(k)
         end do
 !
-    endif
+    end if
 !
 ! ======================================================================
 !              MATRICE ASSEMBLEE
@@ -173,39 +173,39 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
 ! ----- Elementary matrix for transport (volumic and surfacic terms)
 !
         creas = 'M'
-        call mertth(model, lload_name, lload_info, cara_elem, mate, mateco,&
+        call mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
                     time, time_move, vtemp, vtempm, merigi)
 !
 ! ----- Elementary matrix for boundary conditions
 !
-        call metnth(model, lload_name, cara_elem, mate, mateco, time,&
+        call metnth(model, lload_name, cara_elem, mate, mateco, time, &
                     vtempm, metrnl)
 !
         nbmat = 0
-        call jeveuo(merigi(1:19)//'.RELR', 'L', vk24 = v_resu_elem)
-        resu_elem = v_resu_elem(1)(1:19)
+        call jeveuo(merigi(1:19)//'.RELR', 'L', vk24=v_resu_elem)
+        resu_elem = v_resu_elem(1) (1:19)
         if (resu_elem .ne. ' ') then
-            nbmat = nbmat + 1
+            nbmat = nbmat+1
             tlimat(nbmat) = merigi(1:19)
-        endif
+        end if
 !
         call jeexin(metrnl, iret)
         if (iret .gt. 0) then
             call jeveuo(metrnl, 'L', jmet)
-            if (zk24(jmet)(1:8) .ne. '        ') then
-                nbmat = nbmat + 1
-                tlimat(nbmat) =metrnl(1:19)
-            endif
-        endif
+            if (zk24(jmet) (1:8) .ne. '        ') then
+                nbmat = nbmat+1
+                tlimat(nbmat) = metrnl(1:19)
+            end if
+        end if
 !
         call jeexin(mediri(1:8)//'           .RELR', iret)
         if (iret .gt. 0) then
-            call jeveuo(mediri(1:8)//'           .RELR', 'L', vk24 = v_resu_elem)
+            call jeveuo(mediri(1:8)//'           .RELR', 'L', vk24=v_resu_elem)
             if (v_resu_elem(1) .ne. ' ') then
-                nbmat = nbmat + 1
+                nbmat = nbmat+1
                 tlimat(nbmat) = mediri(1:19)
-            endif
-        endif
+            end if
+        end if
 !
 ! --- ASSEMBLAGE DE LA MATRICE
 !
@@ -214,10 +214,10 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
 !
 ! --- DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT
 !
-        call preres(solver, 'V', ierr, maprec, matass,&
+        call preres(solver, 'V', ierr, maprec, matass, &
                     ibid, -9999)
 !
-    endif
+    end if
 !-----------------------------------------------------------------------
     call jedema()
 end subroutine

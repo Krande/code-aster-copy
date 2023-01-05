@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gdclel(fami, kpg, ksp, poum, imate,&
+subroutine gdclel(fami, kpg, ksp, poum, imate, &
                   young, nu)
 !
 !
@@ -40,11 +40,11 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -55,7 +55,7 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
     mu = deuxmu/2
     troisk = young/(1-2*nu)
     unk = troisk/3
-    call verift(fami, kpg, ksp, poum, imate,&
+    call verift(fami, kpg, ksp, poum, imate, &
                 epsth_=epsth)
     cother = troisk*epsth
 !

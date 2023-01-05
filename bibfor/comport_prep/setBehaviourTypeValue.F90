@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,22 +17,22 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine setBehaviourTypeValue(behaviourPara, iFactorKeyword_,&
+subroutine setBehaviourTypeValue(behaviourPara, iFactorKeyword_, &
                                  comporList_, comporMap_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(Behaviour_Para), pointer :: behaviourPara(:)
-integer, optional, intent(in) :: iFactorKeyword_
-character(len=16), intent(out), optional :: comporList_(:)
-character(len=16), pointer, optional :: comporMap_(:)
+    type(Behaviour_Para), pointer :: behaviourPara(:)
+    integer, optional, intent(in) :: iFactorKeyword_
+    character(len=16), intent(out), optional :: comporList_(:)
+    character(len=16), pointer, optional :: comporMap_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,25 +57,25 @@ character(len=16), pointer, optional :: comporMap_(:)
     iFactorKeyword = 1
     if (present(iFactorKeyword_)) then
         iFactorKeyword = iFactorKeyword_
-    endif
+    end if
 !
-    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'PMF'     , l_pmf)
-    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'KIT_THM' , l_kit_thm)
-    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'KIT_DDI' , l_kit_ddi)
+    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'PMF', l_pmf)
+    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'KIT_THM', l_kit_thm)
+    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'KIT_DDI', l_kit_ddi)
     call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'KIT_META', l_kit_meta)
-    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'KIT_CG'  , l_kit_cg)
+    call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'KIT_CG', l_kit_cg)
     call comp_meca_l(behaviourPara(iFactorKeyword)%rela_comp, 'EXTE_COMP', l_exte_comp)
 !
     if (present(comporMap_)) then
         comporMap_(1:COMPOR_SIZE) = 'VIDE'
         comporMap_(RELA_NAME) = behaviourPara(iFactorKeyword)%rela_comp
-        write (comporMap_(NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVari
+        write (comporMap_(NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVari
         comporMap_(DEFO) = behaviourPara(iFactorKeyword)%defo_comp
         comporMap_(INCRELAS) = behaviourPara(iFactorKeyword)%type_comp
         comporMap_(PLANESTRESS) = behaviourPara(iFactorKeyword)%type_cpla
-        if (.not.l_pmf) then
-            write (comporMap_(NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLaw
-        endif
+        if (.not. l_pmf) then
+            write (comporMap_(NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLaw
+        end if
         comporMap_(MULTCOMP) = behaviourPara(iFactorKeyword)%mult_comp
         comporMap_(POSTITER) = behaviourPara(iFactorKeyword)%post_iter
         comporMap_(DEFO_LDC) = behaviourPara(iFactorKeyword)%defo_ldc
@@ -86,53 +86,53 @@ character(len=16), pointer, optional :: comporMap_(:)
             comporMap_(HYDR_NAME) = behaviourPara(iFactorKeyword)%kit_comp(2)
             comporMap_(THER_NAME) = behaviourPara(iFactorKeyword)%kit_comp(3)
             comporMap_(THMC_NAME) = behaviourPara(iFactorKeyword)%kit_comp(4)
-            write (comporMap_(THMC_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
-            write (comporMap_(THER_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(2)
-            write (comporMap_(HYDR_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(3)
-            write (comporMap_(MECA_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(4)
-            write (comporMap_(THMC_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
-            write (comporMap_(THER_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(2)
-            write (comporMap_(HYDR_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(3)
-            write (comporMap_(MECA_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(4)
-        endif
+            write (comporMap_(THMC_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
+            write (comporMap_(THER_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(2)
+            write (comporMap_(HYDR_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(3)
+            write (comporMap_(MECA_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(4)
+            write (comporMap_(THMC_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
+            write (comporMap_(THER_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(2)
+            write (comporMap_(HYDR_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(3)
+            write (comporMap_(MECA_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(4)
+        end if
         if (l_kit_ddi) then
             comporMap_(CREEP_NAME) = behaviourPara(iFactorKeyword)%kit_comp(1)
-            comporMap_(PLAS_NAME)  = behaviourPara(iFactorKeyword)%kit_comp(2)
+            comporMap_(PLAS_NAME) = behaviourPara(iFactorKeyword)%kit_comp(2)
             comporMap_(COUPL_NAME) = behaviourPara(iFactorKeyword)%kit_comp(3)
-            comporMap_(CPLA_NAME)  = behaviourPara(iFactorKeyword)%kit_comp(4)
-            write (comporMap_(CREEP_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
-            write (comporMap_(PLAS_NUME),'(I16)')  behaviourPara(iFactorKeyword)%numeLawKit(2)
-            write (comporMap_(CREEP_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
-            write (comporMap_(PLAS_NVAR),'(I16)')  behaviourPara(iFactorKeyword)%nbVariKit(2)
-        endif
+            comporMap_(CPLA_NAME) = behaviourPara(iFactorKeyword)%kit_comp(4)
+            write (comporMap_(CREEP_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
+            write (comporMap_(PLAS_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(2)
+            write (comporMap_(CREEP_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
+            write (comporMap_(PLAS_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(2)
+        end if
         comporMap_(KIT1_NAME) = behaviourPara(iFactorKeyword)%kit_comp(1)
         if (l_kit_meta) then
-            comporMap_(META_PHAS)  = behaviourPara(iFactorKeyword)%kit_comp(1)
-            comporMap_(META_RELA)  = behaviourPara(iFactorKeyword)%kit_comp(2)
-            comporMap_(META_GLOB)  = behaviourPara(iFactorKeyword)%kit_comp(3)
-        endif
+            comporMap_(META_PHAS) = behaviourPara(iFactorKeyword)%kit_comp(1)
+            comporMap_(META_RELA) = behaviourPara(iFactorKeyword)%kit_comp(2)
+            comporMap_(META_GLOB) = behaviourPara(iFactorKeyword)%kit_comp(3)
+        end if
         if (l_kit_cg) then
-            comporMap_(CABLE_NAME)   = behaviourPara(iFactorKeyword)%kit_comp(1)
-            comporMap_(SHEATH_NAME)  = behaviourPara(iFactorKeyword)%kit_comp(2)
-            write (comporMap_(CABLE_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
-            write (comporMap_(SHEATH_NUME),'(I16)')  behaviourPara(iFactorKeyword)%numeLawKit(2)
-            write (comporMap_(CABLE_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
-            write (comporMap_(SHEATH_NVAR),'(I16)')  behaviourPara(iFactorKeyword)%nbVariKit(2)
-        endif
+            comporMap_(CABLE_NAME) = behaviourPara(iFactorKeyword)%kit_comp(1)
+            comporMap_(SHEATH_NAME) = behaviourPara(iFactorKeyword)%kit_comp(2)
+            write (comporMap_(CABLE_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
+            write (comporMap_(SHEATH_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(2)
+            write (comporMap_(CABLE_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
+            write (comporMap_(SHEATH_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(2)
+        end if
         if (l_exte_comp) then
-            write (comporMap_(MECA_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(4)
-        endif
-    endif
+            write (comporMap_(MECA_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(4)
+        end if
+    end if
     if (present(comporList_)) then
         comporList_(1:COMPOR_SIZE) = 'VIDE'
         comporList_(RELA_NAME) = behaviourPara(iFactorKeyword)%rela_comp
-        write (comporList_(NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVari
+        write (comporList_(NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVari
         comporList_(DEFO) = behaviourPara(iFactorKeyword)%defo_comp
         comporList_(INCRELAS) = behaviourPara(iFactorKeyword)%type_comp
         comporList_(PLANESTRESS) = behaviourPara(iFactorKeyword)%type_cpla
-        if (.not.l_pmf) then
-            write (comporList_(NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLaw
-        endif
+        if (.not. l_pmf) then
+            write (comporList_(NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLaw
+        end if
         comporList_(MULTCOMP) = behaviourPara(iFactorKeyword)%mult_comp
         comporList_(POSTITER) = behaviourPara(iFactorKeyword)%post_iter
         comporList_(DEFO_LDC) = behaviourPara(iFactorKeyword)%defo_ldc
@@ -140,34 +140,34 @@ character(len=16), pointer, optional :: comporMap_(:)
         comporList_(REGUVISC) = behaviourPara(iFactorKeyword)%regu_visc
         if (l_kit_thm) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         if (l_kit_ddi) then
             comporList_(CREEP_NAME) = behaviourPara(iFactorKeyword)%kit_comp(1)
-            comporList_(PLAS_NAME)  = behaviourPara(iFactorKeyword)%kit_comp(2)
+            comporList_(PLAS_NAME) = behaviourPara(iFactorKeyword)%kit_comp(2)
             comporList_(COUPL_NAME) = behaviourPara(iFactorKeyword)%kit_comp(3)
-            comporList_(CPLA_NAME)  = behaviourPara(iFactorKeyword)%kit_comp(4)
-            write (comporList_(CREEP_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
-            write (comporList_(PLAS_NUME),'(I16)')  behaviourPara(iFactorKeyword)%numeLawKit(2)
-            write (comporList_(CREEP_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
-            write (comporList_(PLAS_NVAR),'(I16)')  behaviourPara(iFactorKeyword)%nbVariKit(2)
-        endif
+            comporList_(CPLA_NAME) = behaviourPara(iFactorKeyword)%kit_comp(4)
+            write (comporList_(CREEP_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
+            write (comporList_(PLAS_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(2)
+            write (comporList_(CREEP_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
+            write (comporList_(PLAS_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(2)
+        end if
         comporList_(KIT1_NAME) = behaviourPara(iFactorKeyword)%kit_comp(1)
         if (l_kit_meta) then
-            comporList_(META_PHAS)  = behaviourPara(iFactorKeyword)%kit_comp(1)
-            comporList_(META_RELA)  = behaviourPara(iFactorKeyword)%kit_comp(2)
-            comporList_(META_GLOB)  = behaviourPara(iFactorKeyword)%kit_comp(3)
-        endif
+            comporList_(META_PHAS) = behaviourPara(iFactorKeyword)%kit_comp(1)
+            comporList_(META_RELA) = behaviourPara(iFactorKeyword)%kit_comp(2)
+            comporList_(META_GLOB) = behaviourPara(iFactorKeyword)%kit_comp(3)
+        end if
         if (l_kit_cg) then
-            comporList_(CABLE_NAME)   = behaviourPara(iFactorKeyword)%kit_comp(1)
-            comporList_(SHEATH_NAME)  = behaviourPara(iFactorKeyword)%kit_comp(2)
-            write (comporList_(CABLE_NUME),'(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
-            write (comporList_(SHEATH_NUME),'(I16)')  behaviourPara(iFactorKeyword)%numeLawKit(2)
-            write (comporList_(CABLE_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
-            write (comporList_(SHEATH_NVAR),'(I16)')  behaviourPara(iFactorKeyword)%nbVariKit(2)
-        endif
+            comporList_(CABLE_NAME) = behaviourPara(iFactorKeyword)%kit_comp(1)
+            comporList_(SHEATH_NAME) = behaviourPara(iFactorKeyword)%kit_comp(2)
+            write (comporList_(CABLE_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(1)
+            write (comporList_(SHEATH_NUME), '(I16)') behaviourPara(iFactorKeyword)%numeLawKit(2)
+            write (comporList_(CABLE_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(1)
+            write (comporList_(SHEATH_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(2)
+        end if
         if (l_exte_comp) then
-            write (comporList_(MECA_NVAR),'(I16)') behaviourPara(iFactorKeyword)%nbVariKit(4)
-        endif
-    endif
+            write (comporList_(MECA_NVAR), '(I16)') behaviourPara(iFactorKeyword)%nbVariKit(4)
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
+subroutine rcadme(nommaz, phenom, nomres, valres, icodre, &
                   iarret)
     implicit none
 #include "jeveux.h"
@@ -62,7 +62,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
     if (iret .eq. 1) then
         icodre = 1
         goto 999
-    endif
+    end if
     noobrc = nommat//k11
     call jeexin(noobrc//'.VALR', iret)
     if (iret .eq. 0) then
@@ -70,7 +70,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
         goto 999
     else
         call jelira(noobrc//'.VALR', 'LONUTI', nbr)
-    endif
+    end if
 !
     call jeexin(noobrc//'.VALC', iret)
     if (iret .eq. 0) then
@@ -78,7 +78,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
         goto 999
     else
         call jelira(noobrc//'.VALC', 'LONUTI', nbc)
-    endif
+    end if
 !
     call jeexin(noobrc//'.VALK', iret)
     if (iret .eq. 0) then
@@ -87,9 +87,9 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
     else
         call jeveuo(noobrc//'.VALK', 'L', vk16=valk)
         call jelira(noobrc//'.VALK', 'LONUTI', nbk)
-    endif
+    end if
 !
-    nbco = ( nbk - nbr - nbc ) / 2
+    nbco = (nbk-nbr-nbc)/2
     do ik = 1, nbk
         if (nomres .eq. valk(ik)) then
             icodre = 0
@@ -97,11 +97,11 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
             listr = '&&RCADME.LR8'
             call tbexlr(ch19, listr, 'V')
             call jeveuo(listr//'.VALE', 'L', vr=vale)
-            nbcb1 = nint( vale(2) )
-            nbhist = nint( vale(3) )
-            nbcb2 = nint( vale(1+1+2+nbcb1*nbhist) )
-            nblb2 = nint( vale(1+1+2+nbcb1*nbhist+1) )
-            nbtrc =nint(vale(1+1+2+nbcb1*nbhist+2+nbcb2*nblb2+1))
+            nbcb1 = nint(vale(2))
+            nbhist = nint(vale(3))
+            nbcb2 = nint(vale(1+1+2+nbcb1*nbhist))
+            nblb2 = nint(vale(1+1+2+nbcb1*nbhist+1))
+            nbtrc = nint(vale(1+1+2+nbcb1*nbhist+2+nbcb2*nblb2+1))
 ! --- NBHIST
             valres(1) = nbhist
 ! --- NBTRC
@@ -110,7 +110,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
             call detrsd('LISTR8', listr)
 !
             goto 999
-        endif
+        end if
     end do
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
-                  pla, ffc, ffp, idepd, idepm,&
-                  nfh, nd, tau1, tau2, singu,&
-                  fk, lact, ddls, ddlm, coeffr,&
-                  coeffp, p, adher, knp, ptknp,&
+subroutine xmmsa1(algofr, ndim, nno, nnos, nnol, &
+                  pla, ffc, ffp, idepd, idepm, &
+                  nfh, nd, tau1, tau2, singu, &
+                  fk, lact, ddls, ddlm, coeffr, &
+                  coeffp, p, adher, knp, ptknp, &
                   ik)
 !
 ! aslint: disable=W1504
@@ -94,12 +94,12 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 ! --- INITIALISATION
     saut(:) = 0.d0
     lamb1(:) = 0.d0
-    ptknp(:,:) = 0.d0
-    p(:,:) = 0.d0
-    knp(:,:) = 0.d0
-    kn(:,:) = 0.d0
+    ptknp(:, :) = 0.d0
+    p(:, :) = 0.d0
+    knp(:, :) = 0.d0
+    kn(:, :) = 0.d0
 !
-    coefj=xcalc_saut(1,0,1)
+    coefj = xcalc_saut(1, 0, 1)
 !
     call xmafr1(ndim, nd, p)
 !
@@ -108,27 +108,27 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
         do j = 1, ndim
             do ig = 1, nfh
-                saut(j) = saut(j) - coefj * ffp(ino) * zr(idepd-1+in+ndim*(1+ig-1)+j)
-            enddo
+                saut(j) = saut(j)-coefj*ffp(ino)*zr(idepd-1+in+ndim*(1+ig-1)+j)
+            end do
         end do
         do j = 1, ndim*singu
             do alpi = 1, ndim
-                saut(j) = saut(j) - 2.d0 * fk(ino,alpi,j) * zr(idepd-1+in+ndim*(1+nfh)+alpi)
-            enddo
+                saut(j) = saut(j)-2.d0*fk(ino, alpi, j)*zr(idepd-1+in+ndim*(1+nfh)+alpi)
+            end do
         end do
     end do
 !
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) goto 158
 !
         do j = 1, ndim
-            lamb1(j)=lamb1(j) + ffi * tau1(j) * (zr(idepd-1+pli+1)+zr(&
-            idepm-1+pli+1))
+            lamb1(j) = lamb1(j)+ffi*tau1(j)*(zr(idepd-1+pli+1)+zr( &
+                                             idepm-1+pli+1))
 !
-            if (ndim .eq. 3) lamb1(j)=lamb1(j) + ffi * tau2(j) * (zr(idepd-1+pli+2) + zr(idepm-1+&
+            if (ndim .eq. 3) lamb1(j) = lamb1(j)+ffi*tau2(j)*(zr(idepd-1+pli+2)+zr(idepm-1+&
                              &pli+2))
         end do
 158     continue
@@ -137,11 +137,11 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
 ! --- TEST DE L'ADHERENCE ET CALCUL DES MATRICES DE FROTTEMENT UTILES
 !
-    call xadher(p, saut, lamb1, coeffr, coeffp,&
-                algofr, vitang, r3, kn, ptknp,&
+    call xadher(p, saut, lamb1, coeffr, coeffp, &
+                algofr, vitang, r3, kn, ptknp, &
                 ik, adher)
 !
-    call promat(kn, 3, ndim, ndim, p,&
+    call promat(kn, 3, ndim, ndim, p, &
                 3, ndim, ndim, knp)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
+subroutine ssvaro(l, sens, matrix, typnoe, nomacr, &
                   iadm1, iadm2)
     implicit none
 !
@@ -116,26 +116,26 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    sens2=sens
+    sens2 = sens
 !
 !
 !     -1 VERIFICATION DE LA GRANDEUR "DEPLACEMENT" ET CALCUL DE NULAG
 !     -------------------------------------------------------------
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'DEPL_R'), 'L', iacagd)
-    ier=0
-    if (indik8(zk8(iacagd),'DX',1,1) .ne. 1) ier=ier+1
-    if (indik8(zk8(iacagd),'DY',1,2) .ne. 2) ier=ier+1
-    if (indik8(zk8(iacagd),'DZ',1,3) .ne. 3) ier=ier+1
-    if (indik8(zk8(iacagd),'DRX',1,4) .ne. 4) ier=ier+1
-    if (indik8(zk8(iacagd),'DRY',1,5) .ne. 5) ier=ier+1
-    if (indik8(zk8(iacagd),'DRZ',1,6) .ne. 6) ier=ier+1
+    ier = 0
+    if (indik8(zk8(iacagd), 'DX', 1, 1) .ne. 1) ier = ier+1
+    if (indik8(zk8(iacagd), 'DY', 1, 2) .ne. 2) ier = ier+1
+    if (indik8(zk8(iacagd), 'DZ', 1, 3) .ne. 3) ier = ier+1
+    if (indik8(zk8(iacagd), 'DRX', 1, 4) .ne. 4) ier = ier+1
+    if (indik8(zk8(iacagd), 'DRY', 1, 5) .ne. 5) ier = ier+1
+    if (indik8(zk8(iacagd), 'DRZ', 1, 6) .ne. 6) ier = ier+1
     if (ier .gt. 0) then
         call utmess('F', 'SOUSTRUC_73')
-    endif
+    end if
     call dismoi('NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', repi=nulag)
     if (nulag .eq. 0) then
         call utmess('F', 'SOUSTRUC_74')
-    endif
+    end if
 !
 !
 !     -2 CALCUL DE L2 = L OU LT :
@@ -143,40 +143,40 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
     if (sens2 .eq. 'LG') then
         do i = 1, 6
             do j = 1, 6
-                l2(i,j)=l(i,j)
+                l2(i, j) = l(i, j)
             end do
         end do
-    else if (sens2.eq.'GL') then
+    else if (sens2 .eq. 'GL') then
         do i = 1, 6
             do j = 1, 6
-                l2(i,j)=l(j,i)
+                l2(i, j) = l(j, i)
             end do
         end do
     else
         call utmess('F', 'SOUSTRUC_75', sk=sens2)
-    endif
+    end if
 !
 !
 !     -3 2CALCUL DE NDDLI, NDDLE, NDDLT ET LONG :
 !     --------------------------------
     call jeveuo(nomacr//'.DESM', 'L', vi=desm)
     call jeveuo(nomacr//'      .NUME.DEEQ', 'L', vi=deeq)
-    nddle=desm(4)
-    nddli=desm(5)
-    nddlt= nddli+nddle
+    nddle = desm(4)
+    nddli = desm(5)
+    nddlt = nddli+nddle
     if (matrix) then
-        long= nddle*(nddle+1)/2
-        ieqdeb=nddli+1
+        long = nddle*(nddle+1)/2
+        ieqdeb = nddli+1
     else
-        ASSERT((typnoe.eq.'TOUS').or.(typnoe.eq.'EXTE'))
+        ASSERT((typnoe .eq. 'TOUS') .or. (typnoe .eq. 'EXTE'))
         if (typnoe .eq. 'TOUS') then
-            long= nddlt
-            ieqdeb=1
-        else if (typnoe.eq.'EXTE') then
-            long= nddle
-            ieqdeb=nddli+1
-        endif
-    endif
+            long = nddlt
+            ieqdeb = 1
+        else if (typnoe .eq. 'EXTE') then
+            long = nddle
+            ieqdeb = nddli+1
+        end if
+    end if
 !
 !
 !     -4 RECUPERATION DE L'OBJET .IINO :
@@ -198,89 +198,89 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
             call wkvect('&&SSVARO.IINO', 'V V I', 3*nddlt, iaiino)
         else
             call jeveuo('&&SSVARO.IINO', 'E', iaiino)
-        endif
+        end if
     else
         call wkvect('&&SSVARO.IINO', 'V V I', 3*nddlt, iaiino)
-    endif
+    end if
 !
 !
 !     -5 CALCUL DE .IINO :
 !     --------------------
-    nunold=0
-    ino=0
+    nunold = 0
+    ino = 0
     do ieq = ieqdeb, nddlt
-        nuno =deeq(2*(ieq-1)+1)
-        icmp=deeq(2*(ieq-1)+2)
-        if ((icmp.le.0) .or. (icmp.eq.nulag)) then
+        nuno = deeq(2*(ieq-1)+1)
+        icmp = deeq(2*(ieq-1)+2)
+        if ((icmp .le. 0) .or. (icmp .eq. nulag)) then
 !         --NOEUD DE LAGRANGE:
-            ino= ino+1
-            zi(iaiino-1+3*(ino-1)+1)=ieq-(ieqdeb-1)
-            zi(iaiino-1+3*(ino-1)+2)=1
-            zi(iaiino-1+3*(ino-1)+3)=0
+            ino = ino+1
+            zi(iaiino-1+3*(ino-1)+1) = ieq-(ieqdeb-1)
+            zi(iaiino-1+3*(ino-1)+2) = 1
+            zi(iaiino-1+3*(ino-1)+3) = 0
             goto 2
-        endif
+        end if
         if (nuno .eq. nunold) goto 2
-        nunold=nuno
-        ino= ino+1
-        zi(iaiino-1+3*(ino-1)+1)=ieq-(ieqdeb-1)
+        nunold = nuno
+        ino = ino+1
+        zi(iaiino-1+3*(ino-1)+1) = ieq-(ieqdeb-1)
         if (icmp .eq. 1) then
-            icumul=1
+            icumul = 1
 !       --ICUMUL COMPTE LA SOMME DES COMPOSANTES PRESENTES SUR LE NOEUD
         else
             call utmess('F', 'SOUSTRUC_76')
-        endif
+        end if
 !
-        dmi=0
+        dmi = 0
         do ieqp = ieq+1, nddlt
-            nunop =deeq(2*(ieqp-1)+1)
+            nunop = deeq(2*(ieqp-1)+1)
             if (nunop .ne. nuno) goto 22
-            icmpp=deeq(2*(ieqp-1)+2)
-            icumul=icumul+icmpp
+            icmpp = deeq(2*(ieqp-1)+2)
+            icumul = icumul+icmpp
 !
 !         -- CAS "2D"
 !             3 = DX + DY
             if (icmpp .eq. 2) then
-                dmi=2
+                dmi = 2
                 if (icumul .ne. 3) then
                     call utmess('F', 'SOUSTRUC_77')
-                endif
-            endif
+                end if
+            end if
 !
 !         -- CAS "3D"
 !             6 = DX + DY + DZ
             if (icmpp .eq. 3) then
-                dmi=3
+                dmi = 3
                 if (icumul .ne. 6) then
                     call utmess('F', 'SOUSTRUC_77')
-                endif
-            endif
+                end if
+            end if
 !
 !         -- CAS "POUTRE/COQUE 3D"
 !             21 = DX + DY + DZ + DRX + DRY + DRZ
             if (icmpp .eq. 6) then
                 if (icumul .eq. 21) then
-                    dmi=6
+                    dmi = 6
 !
 !           -- CAS "POUTRE/COQUE AXIS"
 !              9 = DX + DY + DRZ
-                else if (icumul.eq.9) then
-                    dmi=2
+                else if (icumul .eq. 9) then
+                    dmi = 2
                 else
                     call utmess('F', 'SOUSTRUC_77')
-                endif
-            endif
+                end if
+            end if
         end do
 !
- 22     continue
-        di= ieqp-ieq
+22      continue
+        di = ieqp-ieq
         if (di .gt. 10) then
             ASSERT(.false.)
-        endif
-        zi(iaiino-1+3*(ino-1)+2)= di
-        zi(iaiino-1+3*(ino-1)+3)= dmi
-  2     continue
+        end if
+        zi(iaiino-1+3*(ino-1)+2) = di
+        zi(iaiino-1+3*(ino-1)+3) = dmi
+2       continue
     end do
-    nbno=ino
+    nbno = ino
 !
 !
 !     -6 RECOPIE DE M1 DANS M2 (POUR LES TERMES QUI NE TOURNENT PAS )
@@ -288,13 +288,13 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     ----------------------------------------------------------------
     if (matrix) then
         do k = 1, long
-            zr(iadm2-1+k)=zr(iadm1-1+k)
+            zr(iadm2-1+k) = zr(iadm1-1+k)
         end do
     else
         do k = ieqdeb, nddlt
-            zr(iadm2-1+k)=zr(iadm1-1+k)
+            zr(iadm2-1+k) = zr(iadm1-1+k)
         end do
-    endif
+    end if
 !
 !
 !     -7 CALCUL DES TERMES QUI TOURNENT (POUR UNE MATRICE) :
@@ -305,44 +305,44 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !        (I ET J SONT DES NOEUDS !)
 !     -----------------------------------------
         do j = 1, nbno
-            j1= zi(iaiino-1+3*(j-1)+1)
-            dj= zi(iaiino-1+3*(j-1)+2)
-            dmj= zi(iaiino-1+3*(j-1)+3)
+            j1 = zi(iaiino-1+3*(j-1)+1)
+            dj = zi(iaiino-1+3*(j-1)+2)
+            dmj = zi(iaiino-1+3*(j-1)+3)
 !
 !       -7-2 CALCUL DE LJ :
 !       -----------------
             do ii = 1, dj
                 do jj = 1, dj
-                    lj(ii,jj)=0.0d0
+                    lj(ii, jj) = 0.0d0
                 end do
             end do
             do jj = 1, dj
-                lj(jj,jj)=1.0d0
+                lj(jj, jj) = 1.0d0
             end do
             do ii = 1, dmj
                 do jj = 1, dmj
-                    lj(ii,jj)=l2(ii,jj)
+                    lj(ii, jj) = l2(ii, jj)
                 end do
             end do
 !
             do i = 1, j
-                i1= zi(iaiino-1+3*(i-1)+1)
-                di= zi(iaiino-1+3*(i-1)+2)
-                dmi= zi(iaiino-1+3*(i-1)+3)
+                i1 = zi(iaiino-1+3*(i-1)+1)
+                di = zi(iaiino-1+3*(i-1)+2)
+                dmi = zi(iaiino-1+3*(i-1)+3)
 !
 !         -7-3 CALCUL DE LI :
 !         -----------------
                 do ii = 1, di
                     do jj = 1, di
-                        li(ii,jj)=0.0d0
+                        li(ii, jj) = 0.0d0
                     end do
                 end do
                 do jj = 1, di
-                    li(jj,jj)=1.0d0
+                    li(jj, jj) = 1.0d0
                 end do
                 do ii = 1, dmi
                     do jj = 1, dmi
-                        li(ii,jj)=l2(ii,jj)
+                        li(ii, jj) = l2(ii, jj)
                     end do
                 end do
 !
@@ -351,27 +351,27 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
                 if (i .lt. j) then
                     do jj = 1, dj
                         do ii = 1, di
-                            p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
+                            p1(ii, jj) = zr(m1(i1-1+ii, j1-1+jj))
                         end do
                     end do
                 else
                     do jj = 1, dj
                         do ii = 1, jj
-                            p1(ii,jj)=zr(m1(i1-1+ii,j1-1+jj))
+                            p1(ii, jj) = zr(m1(i1-1+ii, j1-1+jj))
                         end do
                         do ii = jj+1, di
-                            p1(ii,jj)=zr(m1t(i1-1+ii,j1-1+jj))
+                            p1(ii, jj) = zr(m1t(i1-1+ii, j1-1+jj))
                         end do
                     end do
-                endif
+                end if
 !
 !         -7-5 P2=P1*L2(J):
 !         --------------
                 do ii = 1, di
                     do jj = 1, dj
-                        p2(ii,jj)=0.0d0
+                        p2(ii, jj) = 0.0d0
                         do k = 1, dj
-                            p2(ii,jj)=p2(ii,jj)+p1(ii,k)*lj(k,jj)
+                            p2(ii, jj) = p2(ii, jj)+p1(ii, k)*lj(k, jj)
                         end do
                     end do
                 end do
@@ -380,9 +380,9 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !         ---------------
                 do ii = 1, di
                     do jj = 1, dj
-                        p1(ii,jj)=0.0d0
+                        p1(ii, jj) = 0.0d0
                         do k = 1, di
-                            p1(ii,jj)=p1(ii,jj)+li(k,ii)*p2(k,jj)
+                            p1(ii, jj) = p1(ii, jj)+li(k, ii)*p2(k, jj)
                         end do
                     end do
                 end do
@@ -392,43 +392,43 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
                 if (i .lt. j) then
                     do jj = 1, dj
                         do ii = 1, di
-                            zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
+                            zr(m2(i1-1+ii, j1-1+jj)) = p1(ii, jj)
                         end do
                     end do
                 else
                     do jj = 1, dj
                         do ii = 1, jj
-                            zr(m2(i1-1+ii,j1-1+jj))=p1(ii,jj)
+                            zr(m2(i1-1+ii, j1-1+jj)) = p1(ii, jj)
                         end do
                     end do
-                endif
+                end if
 !
 !
             end do
         end do
-    endif
+    end if
 !
 !
 !
 !     -8 CALCUL DES TERMES QUI TOURNENT (POUR UN VECTEUR) :
 !     ------------------------------------------------------
 !
-    if (.not.matrix) then
+    if (.not. matrix) then
 !
 !     -- CALCUL DE V2(I)= L2T(I)*V1(I)
 !        (I EST UN NOEUD !)
 !     -----------------------------------------
         do i = 1, nbno
-            i1= zi(iaiino-1+3*(i-1)+1) + (ieqdeb-1)
-            dmi= zi(iaiino-1+3*(i-1)+3)
+            i1 = zi(iaiino-1+3*(i-1)+1)+(ieqdeb-1)
+            dmi = zi(iaiino-1+3*(i-1)+3)
             do ii = 1, dmi
-                zr(v2(i1-1+ii))=0.0d0
+                zr(v2(i1-1+ii)) = 0.0d0
                 do k = 1, dmi
-                    zr(v2(i1-1+ii))=zr(v2(i1-1+ii))+l2(k,ii)*zr(v1(i1-1+k))
+                    zr(v2(i1-1+ii)) = zr(v2(i1-1+ii))+l2(k, ii)*zr(v1(i1-1+k))
                 end do
             end do
         end do
-    endif
+    end if
 !
 !
 !

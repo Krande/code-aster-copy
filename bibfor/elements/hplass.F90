@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hplass(nmnbn, nmplas, nmdpla, nmddpl, bend,&
+subroutine hplass(nmnbn, nmplas, nmdpla, nmddpl, bend, &
                   hplas)
 !
     implicit none
@@ -40,16 +40,16 @@ subroutine hplass(nmnbn, nmplas, nmdpla, nmddpl, bend,&
 !
     call r8inir(6*6, 0.d0, hplas, 1)
 !
-    hplas(1,1) = nmddpl(bend,1)*(nmnbn(5)-nmplas(bend,2))
-    hplas(2,2) = nmddpl(bend,2)*(nmnbn(4)-nmplas(bend,1))
-    hplas(2,1) = -nmdpla(bend,1)*nmdpla(bend,2)
-    hplas(1,2) = hplas(2,1)
-    hplas(5,1) = nmdpla(bend,1)
-    hplas(1,5) = nmdpla(bend,1)
-    hplas(4,2) = nmdpla(bend,2)
-    hplas(2,4) = nmdpla(bend,2)
-    hplas(4,5) = -1.d0
-    hplas(5,4) = -1.d0
-    hplas(6,6) = 2.d0
+    hplas(1, 1) = nmddpl(bend, 1)*(nmnbn(5)-nmplas(bend, 2))
+    hplas(2, 2) = nmddpl(bend, 2)*(nmnbn(4)-nmplas(bend, 1))
+    hplas(2, 1) = -nmdpla(bend, 1)*nmdpla(bend, 2)
+    hplas(1, 2) = hplas(2, 1)
+    hplas(5, 1) = nmdpla(bend, 1)
+    hplas(1, 5) = nmdpla(bend, 1)
+    hplas(4, 2) = nmdpla(bend, 2)
+    hplas(2, 4) = nmdpla(bend, 2)
+    hplas(4, 5) = -1.d0
+    hplas(5, 4) = -1.d0
+    hplas(6, 6) = 2.d0
 !
 end subroutine

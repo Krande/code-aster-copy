@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine dfplgl(nmnbn, nmplas, nmdpla, bend, dfpl)
 !
     real(kind=8) :: dfpl(*), nmnbn(6), nmplas(2, 3), nmdpla(2, 2)
 !
-    dfpl(4) = -(nmnbn(5)-nmplas(bend,2))
-    dfpl(5) = -(nmnbn(4)-nmplas(bend,1))
+    dfpl(4) = -(nmnbn(5)-nmplas(bend, 2))
+    dfpl(5) = -(nmnbn(4)-nmplas(bend, 1))
     dfpl(6) = 2.d0*nmnbn(6)
-    dfpl(1) = -nmdpla(bend,1)*dfpl(4)
-    dfpl(2) = -nmdpla(bend,2)*dfpl(5)
+    dfpl(1) = -nmdpla(bend, 1)*dfpl(4)
+    dfpl(2) = -nmdpla(bend, 2)*dfpl(5)
     dfpl(3) = 0.d0*nmnbn(6)
 !
 end subroutine

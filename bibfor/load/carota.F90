@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine carota(load, mesh, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -39,8 +39,8 @@ implicit none
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ character(len=4), intent(in) :: valeType
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType,&
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType, &
                         nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', vr=valv)
@@ -92,7 +92,7 @@ character(len=4), intent(in) :: valeType
     do iocc = 1, nrota
 
 ! ----- Get speed
-        call char_read_val(keywordfact, iocc, 'VITESSE', valeType, val_nb,&
+        call char_read_val(keywordfact, iocc, 'VITESSE', valeType, val_nb, &
                            rota_speed, k8dummy, c16dummy, k16dummy)
         ASSERT(val_nb .eq. 1)
 
@@ -101,7 +101,7 @@ character(len=4), intent(in) :: valeType
         call normev(rota_axis, norme)
         if (norme .le. r8miem()) then
             call utmess('F', 'CHARGES2_53')
-        endif
+        end if
 
 ! ----- Get center
         call char_read_vect(keywordfact, iocc, 'CENTRE', rota_cent)
@@ -121,9 +121,9 @@ character(len=4), intent(in) :: valeType
             call nocart(map(1), 1, nbCmp(1))
         else
             call jeveuo(listCell, 'L', jvCell)
-            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell,&
+            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell, &
                         limanu=zi(jvCell))
-        endif
+        end if
 !
         call jedetr(listCell)
     end do

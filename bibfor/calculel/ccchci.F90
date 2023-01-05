@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine ccchci(questz, type_comp, crit, norm, nb_form, &
 ! --------------------------------------------------------------------------------------------------
 !
     question = questz
-    repi     = 0
+    repi = 0
 !
     if (question .eq. 'NBCMP') then
         if (type_comp .eq. 'CRITERE') then
@@ -62,7 +62,7 @@ subroutine ccchci(questz, type_comp, crit, norm, nb_form, &
                 repi = 1
             else
                 ASSERT(.false.)
-            endif
+            end if
         elseif (type_comp .eq. 'NORME') then
             if (norm .eq. 'L2') then
                 repi = 1
@@ -70,14 +70,14 @@ subroutine ccchci(questz, type_comp, crit, norm, nb_form, &
                 repi = 1
             else
                 ASSERT(.false.)
-            endif
+            end if
         elseif (type_comp .eq. 'FORMULE') then
             repi = nb_form
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

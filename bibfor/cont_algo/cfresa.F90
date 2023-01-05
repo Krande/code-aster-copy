@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfresa(ndim, fctc, norm, rnx, rny,&
+subroutine cfresa(ndim, fctc, norm, rnx, rny, &
                   rnz, rn)
 !
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
     integer :: ndim
     real(kind=8) :: fctc(3)
@@ -53,19 +53,19 @@ subroutine cfresa(ndim, fctc, norm, rnx, rny,&
 !
 ! ----------------------------------------------------------------------
 !
-    proj = fctc(1) * norm(1) + fctc(2) * norm(2)
+    proj = fctc(1)*norm(1)+fctc(2)*norm(2)
 !
     if (ndim .eq. 3) then
-        proj = proj + fctc(3) * norm(3)
-    endif
+        proj = proj+fctc(3)*norm(3)
+    end if
 !
-    rnx = proj * norm(1)
-    rny = proj * norm(2)
+    rnx = proj*norm(1)
+    rny = proj*norm(2)
     rnz = 0.d0
 !
     if (ndim .eq. 3) then
-        rnz = proj * norm(3)
-    endif
+        rnz = proj*norm(3)
+    end if
 !
     rn = sqrt(rnx**2+rny**2+rnz**2)
 !

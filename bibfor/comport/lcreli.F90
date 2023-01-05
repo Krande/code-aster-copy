@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
+subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
                   imat, nmat, materd, materf, &
-                  nbcomm, cpmono, pgl, nfs, nsg,&
-                  toutms, hsr, nr, nvi, vind,&
-                  vinf, itmax, toler, timed, timef,&
-                  yd, yf, deps, epsd, dy,&
+                  nbcomm, cpmono, pgl, nfs, nsg, &
+                  toutms, hsr, nr, nvi, vind, &
+                  vinf, itmax, toler, timed, timef, &
+                  yd, yf, deps, epsd, dy, &
                   r, ddy, iret, crit, indi)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -77,9 +77,9 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
     real(kind=8) :: rhoddy(nr), dyp(nr), rp(nr), yfp(nr)
     real(kind=8) :: rho0, fp0, rho1, fp1, fp2, rho2, rho05, fsup
     real(kind=8) :: m(2, 2), s(2), a, b
-    parameter (w = 1.d-4)
-    parameter (rhomin = 0.1d0, rhomax=0.5d0)
-    parameter (imxrho = 2)
+    parameter(w=1.d-4)
+    parameter(rhomin=0.1d0, rhomax=0.5d0)
+    parameter(imxrho=2)
 !     ----------------------------------------------------------------
 !
 !     REMARQUE : ON POURRAIT METTRE DANS UNE ROUTINE UTILITAIRE LES 8
@@ -88,10 +88,10 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !
 !
 !     FONCTIONNELLE EN "MOINS" : F = 1/2 || R(DY) ||^2
-    f = 0.5d0 * ddot(nr,r,1,r,1)
+    f = 0.5d0*ddot(nr, r, 1, r, 1)
 !
 !     DERIVEE DE LA FONCTIONNELLE EN "MOINS" : DF=<GRAD(F).DDY>=<R.DDY>
-    df = -ddot(nr,r,1,r,1)
+    df = -ddot(nr, r, 1, r, 1)
 !
 !     ------------------------------------
 !     ESSAI AVEC LE PAS DE NEWTON RHO0 = 1
@@ -99,22 +99,22 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !
     rho0 = 1
 !     CALCUL DE DY "PLUS" : DYP
-    rhoddy = rho0 * ddy(1:nr)
-    dyp = rhoddy + dy(1:nr)
-    yfp = yd(1:nr) + dyp
+    rhoddy = rho0*ddy(1:nr)
+    dyp = rhoddy+dy(1:nr)
+    yfp = yd(1:nr)+dyp
 !     CALCUL DE R "PLUS" : RP
-    call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                imat, nmat, materd, materf,&
-                nbcomm, cpmono, pgl, nfs, nsg,&
-                toutms, hsr, nr, nvi, vind,&
-                vinf, itmax, toler, timed, timef,&
-                yd, yfp, deps, epsd, dyp,&
+    call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                imat, nmat, materd, materf, &
+                nbcomm, cpmono, pgl, nfs, nsg, &
+                toutms, hsr, nr, nvi, vind, &
+                vinf, itmax, toler, timed, timef, &
+                yd, yfp, deps, epsd, dyp, &
                 rp, iret, crit, indi)
 !
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-    fp0 = 0.5d0 * ddot(nr,rp,1,rp,1)
+    fp0 = 0.5d0*ddot(nr, rp, 1, rp, 1)
     if (fp0 .lt. r8prem()) goto 888
     if (fp0 .le. f+w*rho0*df) goto 888
 !
@@ -123,20 +123,20 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !     ------------------------------------
 !
     rho05 = 0.5d0
-    rhoddy = rho05 * ddy(1:nr)
-    dyp = rhoddy + dy(1:nr)
-    yfp = yd(1:nr) + dyp
-    call lcresi(fami, kpg, ksp, rela_comp, mod,&
+    rhoddy = rho05*ddy(1:nr)
+    dyp = rhoddy+dy(1:nr)
+    yfp = yd(1:nr)+dyp
+    call lcresi(fami, kpg, ksp, rela_comp, mod, &
                 imat, nmat, materd, materf, &
-                nbcomm, cpmono, pgl, nfs, nsg,&
-                toutms, hsr, nr, nvi, vind,&
-                vinf, itmax, toler, timed, timef,&
-                yd, yfp, deps, epsd, dyp,&
+                nbcomm, cpmono, pgl, nfs, nsg, &
+                toutms, hsr, nr, nvi, vind, &
+                vinf, itmax, toler, timed, timef, &
+                yd, yfp, deps, epsd, dyp, &
                 rp, iret, crit, indi)
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-    fsup = 0.5d0*ddot(nr,rp,1,rp,1)
+    fsup = 0.5d0*ddot(nr, rp, 1, rp, 1)
     if (fsup .lt. r8prem()) goto 888
     if (fsup .le. f+w*0.5d0*df) goto 888
 !
@@ -144,27 +144,27 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !     INTERPOLATION QUADRATIQUE (ENTRE 0 ET 1)
 !     ----------------------------------------
 !
-    ASSERT(abs(fp0-f-df).gt.r8prem())
-    rho1 = -0.5d0 * df /( fp0- f - df)
+    ASSERT(abs(fp0-f-df) .gt. r8prem())
+    rho1 = -0.5d0*df/(fp0-f-df)
 !
 !     PROJECTION SUR L'INTERVALLE [RHOMIN,RHOMAX]
     if (rho1 .lt. rhomin*rho0) rho1 = rhomin*rho0
     if (rho1 .gt. rhomax*rho0) rho1 = rhomax*rho0
 !
-    rhoddy = rho1 * ddy(1:nr)
-    dyp = rhoddy + dy(1:nr)
-    yfp = yd(1:nr) + dyp
-    call lcresi(fami, kpg, ksp, rela_comp, mod,&
+    rhoddy = rho1*ddy(1:nr)
+    dyp = rhoddy+dy(1:nr)
+    yfp = yd(1:nr)+dyp
+    call lcresi(fami, kpg, ksp, rela_comp, mod, &
                 imat, nmat, materd, materf, &
-                nbcomm, cpmono, pgl, nfs, nsg,&
-                toutms, hsr, nr, nvi, vind,&
-                vinf, itmax, toler, timed, timef,&
-                yd, yfp, deps, epsd, dyp,&
+                nbcomm, cpmono, pgl, nfs, nsg, &
+                toutms, hsr, nr, nvi, vind, &
+                vinf, itmax, toler, timed, timef, &
+                yd, yfp, deps, epsd, dyp, &
                 rp, iret, crit, indi)
     if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-    fp1 = 0.5d0 * ddot(nr,rp,1,rp,1)
+    fp1 = 0.5d0*ddot(nr, rp, 1, rp, 1)
     if (fp1 .lt. r8prem()) goto 888
     if (fp1 .le. f+w*rho1*df) goto 888
 !
@@ -173,36 +173,36 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !     ------------------------------------
 !
     do itrho = 1, imxrho
-        m(1,1) = 1.d0/(rho0**2)
-        m(1,2) = -1.d0/(rho1**2)
-        m(2,1) = -rho1/(rho0**2)
-        m(2,2) = rho0/(rho1**2)
-        s(1) = fp0 - f - df * rho0
-        s(2) = fp1 - f - df * rho1
-        ASSERT(abs(rho0-rho1).gt.r8prem())
-        a = 1.d0/(rho0 - rho1) * ( m(1,1)*s(1) + m(1,2)*s(2) )
-        b = 1.d0/(rho0 - rho1) * ( m(2,1)*s(2) + m(2,2)*s(2) )
+        m(1, 1) = 1.d0/(rho0**2)
+        m(1, 2) = -1.d0/(rho1**2)
+        m(2, 1) = -rho1/(rho0**2)
+        m(2, 2) = rho0/(rho1**2)
+        s(1) = fp0-f-df*rho0
+        s(2) = fp1-f-df*rho1
+        ASSERT(abs(rho0-rho1) .gt. r8prem())
+        a = 1.d0/(rho0-rho1)*(m(1, 1)*s(1)+m(1, 2)*s(2))
+        b = 1.d0/(rho0-rho1)*(m(2, 1)*s(2)+m(2, 2)*s(2))
         if (abs(3.d0*a) .le. r8prem()) goto 888
-        rho2 = (-b + sqrt(b**2-3.d0*a*df)) / (3.d0 * a)
+        rho2 = (-b+sqrt(b**2-3.d0*a*df))/(3.d0*a)
 !
 !       PROJECTION SUR L'INTERVALLE [RHOMIN,RHOMAX]
         if (rho2 .lt. rhomin*rho1) rho2 = rhomin*rho1
         if (rho2 .gt. rhomax*rho1) rho2 = rhomax*rho1
 !
-        rhoddy = rho2 * ddy(1:nr)
-        dyp = rhoddy + dy(1:nr)
-        yfp = yd(1:nr) + dyp
-        call lcresi(fami, kpg, ksp, rela_comp, mod,&
+        rhoddy = rho2*ddy(1:nr)
+        dyp = rhoddy+dy(1:nr)
+        yfp = yd(1:nr)+dyp
+        call lcresi(fami, kpg, ksp, rela_comp, mod, &
                     imat, nmat, materd, materf, &
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, nr, nvi, vind,&
-                    vinf, itmax, toler, timed, timef,&
-                    yd, yfp, deps, epsd, dyp,&
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, nr, nvi, vind, &
+                    vinf, itmax, toler, timed, timef, &
+                    yd, yfp, deps, epsd, dyp, &
                     rp, iret, crit, indi)
         if (iret .ne. 0) goto 999
 !
 !       TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
-        fp2 = 0.5d0 * ddot(nr,rp,1,rp,1)
+        fp2 = 0.5d0*ddot(nr, rp, 1, rp, 1)
         if (fp2 .lt. r8prem()) goto 888
         if (fp2 .le. f+w*rho2*df) goto 888
 !
@@ -224,5 +224,5 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
         dy(i) = dyp(i)
     end do
 !
-999  continue
+999 continue
 end subroutine

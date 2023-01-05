@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,15 +40,15 @@ function nmcri2(dp)
 !
 !----- COMMONS NECESSAIRES A VON_MISES ISOTROPE PUISSANCE :
 !      COMMONS COMMUNS A NMCRI2 ET NMISOT
-    common /rconm1/deuxmu,nu,e,sigy,rprim,pm,sigel,line
+    common/rconm1/deuxmu, nu, e, sigy, rprim, pm, sigel, line
     real(kind=8) :: deuxmu, nu, e, sigy, rprim, pm, sigel(6), line
-    common /rconm2/alfafa,unsurn,sieleq
+    common/rconm2/alfafa, unsurn, sieleq
     real(kind=8) :: alfafa, unsurn, sieleq
 !
 ! DEB-------------------------------------------------------------------
 !
-    call ecpuis(e, sigy, alfafa, unsurn, pm,&
+    call ecpuis(e, sigy, alfafa, unsurn, pm, &
                 dp, rpp, rprim)
-    nmcri2= rpp + 1.5d0*deuxmu*dp - sieleq
+    nmcri2 = rpp+1.5d0*deuxmu*dp-sieleq
 !
 end function

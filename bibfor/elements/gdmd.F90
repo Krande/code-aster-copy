@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,23 +43,23 @@ subroutine gdmd(x0pg, pn, pm, d)
     un = 1.d0
     do j = 1, 9
         do i = 1, 9
-            d(i,j) = zero
+            d(i, j) = zero
         end do
     end do
     call antisy(pn, un, pntild)
     call antisy(pm, un, pmtild)
     do i = 1, 3
         do j = 1, 3
-            d(i,6+j) = -pntild(i,j)
-            d(3+i,6+j) = -pmtild(i,j)
-            d(6+i, j) = pntild(i,j)
+            d(i, 6+j) = -pntild(i, j)
+            d(3+i, 6+j) = -pmtild(i, j)
+            d(6+i, j) = pntild(i, j)
         end do
     end do
-    scal=ddot(3,pn,1,x0pg,1)
+    scal = ddot(3, pn, 1, x0pg, 1)
     do j = 1, 3
         do i = 1, 3
-            d(6+i,6+j) = pn(i) * x0pg(j)
+            d(6+i, 6+j) = pn(i)*x0pg(j)
         end do
-        d(6+j,6+j) = d(6+j,6+j) - scal
+        d(6+j, 6+j) = d(6+j, 6+j)-scal
     end do
 end subroutine

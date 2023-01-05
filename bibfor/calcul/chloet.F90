@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine chloet(iparg, etendu, jceld)
-use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachoi_, ca_iachok_, &
-    ca_iawloc_, ca_nparin_, ca_iachid_
-implicit none
+    use calcul_module, only: ca_iachii_, ca_iachik_, ca_iachoi_, ca_iachok_, &
+                             ca_iawloc_, ca_nparin_, ca_iachid_
+    implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 !------------------------------------------------------------------
 !     But : determiner si le champ local associe a iparg
@@ -46,44 +46,40 @@ implicit none
     character(len=8) :: tych
 !------------------------------------------------------------------
 
-
 !   -- le champ local est-il un cham_elem etendu ?
 !      oui si champ global associe est 1 cham_elem etendu
 !   --------------------------------------------------
-    iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
-    if ((iachlo.eq.-1) .or. (iachlo.eq.-2)) goto 20
-    ich=zi(ca_iawloc_-1+3*(iparg-1)+3)
+    iachlo = zi(ca_iawloc_-1+3*(iparg-1)+1)
+    if ((iachlo .eq. -1) .or. (iachlo .eq. -2)) goto 20
+    ich = zi(ca_iawloc_-1+3*(iparg-1)+3)
     if (ich .eq. 0) goto 20
     if (iparg .le. ca_nparin_) then
-        tych = zk8(ca_iachik_-1+2* (ich-1)+1)
+        tych = zk8(ca_iachik_-1+2*(ich-1)+1)
         if (tych .ne. 'CHML') goto 20
         jceld = zi(ca_iachii_-1+ca_iachid_*(ich-1)+4)
     else
-        tych = zk8(ca_iachok_-1+2* (ich-1)+1)
+        tych = zk8(ca_iachok_-1+2*(ich-1)+1)
         if (tych .ne. 'CHML') goto 20
-        jceld = zi(ca_iachoi_-1+2* (ich-1)+1)
-    endif
-    if ((zi(jceld-1+4).eq.0) .and. (zi(jceld-1+3).le.1)) then
+        jceld = zi(ca_iachoi_-1+2*(ich-1)+1)
+    end if
+    if ((zi(jceld-1+4) .eq. 0) .and. (zi(jceld-1+3) .le. 1)) then
         goto 20
     else
         goto 10
-    endif
-
+    end if
 
 !   le champ local est etendu:
 !   --------------------------
- 10 continue
+10  continue
     etendu = .true.
     goto 30
 
-
 !   le champ local n'est pas etendu:
 !   --------------------------------
- 20 continue
+20  continue
     etendu = .false.
     goto 30
 
-
- 30 continue
+30  continue
 
 end subroutine

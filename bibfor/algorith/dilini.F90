@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dilini(ivf, ivf2, idfde,&
-                  idfde2, jgano, ndim, ipoids, ipoid2,&
-                  npi, dimdef, nddls, nddlm,&
-                  dimcon, typmod, dimuel, nno, nnom,&
+subroutine dilini(ivf, ivf2, idfde, &
+                  idfde2, jgano, ndim, ipoids, ipoid2, &
+                  npi, dimdef, nddls, nddlm, &
+                  dimcon, typmod, dimuel, nno, nnom, &
                   nnos, regula, axi, interp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,12 +36,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 !
-aster_logical :: axi
-integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
-integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
-integer :: regula(6), nddlc
-character(len=2) :: interp
-character(len=8) :: typmod(2)
+    aster_logical :: axi
+    integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
+    integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm
+    integer :: regula(6), nddlc
+    character(len=2) :: interp
+    character(len=8) :: typmod(2)
 !
 ! ======================================================================
 ! --- BUT : INITIALISATION DES GRANDEURS NECESSAIRES POUR LA GESTION ---
@@ -71,37 +71,37 @@ character(len=8) :: typmod(2)
         interp = 'P0'
         elrf1 = 'TR6'
         elrf2 = 'TR3'
-    else if (elrefe.eq.'QU9') then
+    else if (elrefe .eq. 'QU9') then
         interp = 'P0'
         elrf1 = 'QU8'
         elrf2 = 'QU4'
-    else if (elrefe.eq.'TR6') then
+    else if (elrefe .eq. 'TR6') then
         interp = 'SL'
         elrf1 = 'TR6'
         elrf2 = 'TR3'
-    else if (elrefe.eq.'QU8') then
+    else if (elrefe .eq. 'QU8') then
         interp = 'SL'
         elrf1 = 'QU8'
         elrf2 = 'QU4'
-    else if (elrefe.eq.'T10') then
+    else if (elrefe .eq. 'T10') then
         interp = 'P1'
         elrf1 = 'T10'
         elrf2 = 'TE4'
-    else if (elrefe.eq.'P15') then
+    else if (elrefe .eq. 'P15') then
         interp = 'P1'
         elrf1 = 'P15'
         elrf2 = 'PE6'
-    else if (elrefe.eq.'H20') then
+    else if (elrefe .eq. 'H20') then
         interp = 'P1'
         elrf1 = 'H20'
         elrf2 = 'HE8'
     else
         call utmess('F', 'DVP_4', sk=elrefe)
-    endif
+    end if
 ! ======================================================================
 ! --- FONCTIONS DE FORME P2 --------------------------------------------
 ! ======================================================================
-    call elrefe_info(elrefe=elrf1, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrf1, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! ======================================================================
 ! --- FONCTIONS DE FORME P1 --------------------------------------------
@@ -111,28 +111,28 @@ character(len=8) :: typmod(2)
 ! ======================================================================
 ! --- RECUPERATION DU TYPE DE LA MODELISATION --------------------------
 ! ======================================================================
-    if (lteatt('DIM_TOPO_MODELI','2')) then
+    if (lteatt('DIM_TOPO_MODELI', '2')) then
         typmod(1) = 'D_PLAN'
-    else if (lteatt('DIM_TOPO_MODELI','3')) then
+    else if (lteatt('DIM_TOPO_MODELI', '3')) then
         typmod(1) = '3D'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     if (interp .eq. 'P0') then
-        call dimp0(ndim, nno, nnos, dimdef, dimcon,&
-                   nnom, nnoc, nddls, nddlm, nddlc,&
+        call dimp0(ndim, nno, nnos, dimdef, dimcon, &
+                   nnom, nnoc, nddls, nddlm, nddlc, &
                    dimuel, regula)
-    else if (interp.eq.'SL') then
-        call dimsl(ndim, nno, nnos, dimdef, dimcon,&
-                   nnom, nnoc, nddls, nddlm, nddlc,&
+    else if (interp .eq. 'SL') then
+        call dimsl(ndim, nno, nnos, dimdef, dimcon, &
+                   nnom, nnoc, nddls, nddlm, nddlc, &
                    dimuel, regula)
-    else if (interp.eq.'P1') then
-        call dimp1(ndim, nno, nnos, dimdef, dimcon,&
-                   nnom, nnoc, nddls, nddlm, nddlc,&
+    else if (interp .eq. 'P1') then
+        call dimp1(ndim, nno, nnos, dimdef, dimcon, &
+                   nnom, nnoc, nddls, nddlm, nddlc, &
                    dimuel, regula)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
+subroutine mbhenh(imate, kpg, fami, aini, adef, jacini, jacdef, sigpk2, dsigpk2)
 !
     implicit none
 #include "asterf_types.h"
@@ -66,22 +66,22 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS') then
-        nbv=2
-        nomres(1)='E'
-        nomres(2)='NU'
+        nbv = 2
+        nomres(1) = 'E'
+        nomres(2) = 'NU'
 
-        call rcvalb(fami, kpg, 1, '+', zi(imate),' ', phenom, 0, '', &
-                    [0.d0],nbv, nomres, valres, icodre, 1)
+        call rcvalb(fami, kpg, 1, '+', zi(imate), ' ', phenom, 0, '', &
+                    [0.d0], nbv, nomres, valres, icodre, 1)
 
         young = valres(1)
         nu = valres(2)
     else
         call utmess('F', 'MEMBRANE_4')
-    endif
+    end if
 
 ! - COEFFICIENTS DE LAME
-    lambda=young*nu/((1+nu)*(1-2*nu))
-    mu=young/(2*(1+nu))
+    lambda = young*nu/((1+nu)*(1-2*nu))
+    mu = young/(2*(1+nu))
 !
 ! -----------------------------------------------------------------
 ! ---          CALCUL DES CONTRAINTES DE PIOLA KIRCHOFF II      ---
@@ -94,7 +94,7 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
 ! - FONCTION DE LAMBERT
 !
     xfctlam = (2*mu/(lambda*q))*exp(2*mu/lambda)
-    call fctlam(xfctlam,wfctlam)
+    call fctlam(xfctlam, wfctlam)
 
     c33 = lambda*wfctlam*0.5/mu
     detc = q*c33
@@ -102,8 +102,8 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
 
     do alpha = 1, 2
         do beta = 1, 2
-            sigpk2(alpha,beta) = mu*(aini(alpha,beta)-adef(alpha,beta)) &
-                                 + factor0*adef(alpha,beta)
+            sigpk2(alpha, beta) = mu*(aini(alpha, beta)-adef(alpha, beta)) &
+                                  +factor0*adef(alpha, beta)
         end do
     end do
 !
@@ -111,17 +111,17 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
 ! ---      CALCUL DU TENSEUR TANGENT MATERIEL d(sigPK2)/dE      ---
 ! -----------------------------------------------------------------
 !
-    factor1 = mu*c33/(1 + 2*mu*c33 / lambda)
-    factor2 = 0.5*(mu - factor0)
+    factor1 = mu*c33/(1+2*mu*c33/lambda)
+    factor2 = 0.5*(mu-factor0)
 
     do alpha = 1, 2
         do beta = 1, 2
             do gamma = 1, 2
                 do delta = 1, 2
-                    dsigpk2(alpha,beta,gamma,delta) = &
-                    2*(factor1*adef(alpha,beta)*adef(gamma,delta) + &
-                    factor2*(adef(alpha,delta)*adef(gamma,beta) + &
-                    adef(alpha,gamma)*adef(delta,beta)))
+                    dsigpk2(alpha, beta, gamma, delta) = &
+                        2*(factor1*adef(alpha, beta)*adef(gamma, delta)+ &
+                           factor2*(adef(alpha, delta)*adef(gamma, beta)+ &
+                                    adef(alpha, gamma)*adef(delta, beta)))
                 end do
             end do
         end do

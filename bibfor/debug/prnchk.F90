@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prnchk(nbsn, adress, global, fils, frere,&
+subroutine prnchk(nbsn, adress, global, fils, frere, &
                   lgsn, lfront, invsup, seq)
     implicit none
 #include "asterf_types.h"
@@ -27,27 +27,27 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
     integer :: sni, sn, sn0, vois, m, vali(2), i
     aster_logical :: trouv
     do i = 1, nbsn
-        sni=seq(i)
+        sni = seq(i)
         m = lfront(sni)
 !
         if (m .gt. 0) then
-            vois=global(adress(sni)+lgsn(sni))
-            sn0=invsup(vois)
-            trouv=.false.
+            vois = global(adress(sni)+lgsn(sni))
+            sn0 = invsup(vois)
+            trouv = .false.
             sn = fils(sn0)
 !
-  2         continue
+2           continue
             if (sn .ne. 0) then
-                if (sn .eq. sni) trouv=.true.
-                sn=frere(sn)
+                if (sn .eq. sni) trouv = .true.
+                sn = frere(sn)
                 goto 2
-            endif
+            end if
 !
-            if (.not.trouv) then
-                vali(1)=sni
-                vali(2)=sn0
+            if (.not. trouv) then
+                vali(1) = sni
+                vali(2) = sn0
                 call utmess('F', 'ALGELINE5_59', ni=2, vali=vali)
-            endif
-        endif
+            end if
+        end if
     end do
 end subroutine

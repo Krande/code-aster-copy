@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine xreacl(mesh, model, hval_incr, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -58,7 +58,7 @@ implicit none
 !
 !
     integer, parameter :: nbout = 1
-    integer, parameter :: nbin  = 10
+    integer, parameter :: nbin = 10
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -88,7 +88,7 @@ implicit none
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -98,13 +98,13 @@ implicit none
 !
     call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
     lcontx = xfem_cont(1) .ge. 1
-    if (.not.lcontx) then
+    if (.not. lcontx) then
         goto 999
-    endif
+    end if
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- RECUPERATION DES DONNEES XFEM
@@ -156,14 +156,14 @@ implicit none
 !
 ! --- APPEL A CALCUL
 !
-    call calcul('S', option, ligrmo, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
 ! --- ON COPIE CSEUIL DANS RESOCO.SE
 !

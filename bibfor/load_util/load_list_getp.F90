@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine load_list_getp(phenom     , l_load_user , v_llresu_info, v_llresu_name,&
-                          v_list_dble, load_keyword, i_load       , nb_load      ,&
-                          i_excit    , load_name   , load_type    , ligrch       ,&
+subroutine load_list_getp(phenom, l_load_user, v_llresu_info, v_llresu_name, &
+                          v_list_dble, load_keyword, i_load, nb_load, &
+                          i_excit, load_name, load_type, ligrch, &
                           load_apply_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
@@ -34,19 +34,19 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-character(len=4), intent(in) :: phenom
-aster_logical, intent(in) :: l_load_user
-character(len=8), pointer :: v_list_dble(:)
-integer, pointer :: v_llresu_info(:)
-character(len=24), pointer :: v_llresu_name(:)
-character(len=16), intent(in) :: load_keyword
-integer, intent(in) :: i_load
-integer, intent(in) :: nb_load
-integer, intent(inout) :: i_excit
-character(len=8), intent(out) :: load_name
-character(len=8), intent(out) :: load_type
-character(len=19), intent(out) :: ligrch
-character(len=16), optional, intent(out) :: load_apply_
+    character(len=4), intent(in) :: phenom
+    aster_logical, intent(in) :: l_load_user
+    character(len=8), pointer :: v_list_dble(:)
+    integer, pointer :: v_llresu_info(:)
+    character(len=24), pointer :: v_llresu_name(:)
+    character(len=16), intent(in) :: load_keyword
+    integer, intent(in) :: i_load
+    integer, intent(in) :: nb_load
+    integer, intent(inout) :: i_excit
+    character(len=8), intent(out) :: load_name
+    character(len=8), intent(out) :: load_type
+    character(len=19), intent(out) :: ligrch
+    character(len=16), optional, intent(out) :: load_apply_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,45 +80,45 @@ character(len=16), optional, intent(out) :: load_apply_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    load_name  = ' '
-    load_type  = ' '
+    load_name = ' '
+    load_type = ' '
     load_apply = 'FIXE_CSTE'
-    ligrch     = ' '
+    ligrch = ' '
     ASSERT(load_keyword .ne. 'None')
 !
 ! - Current index to read load
 !
     if (l_load_user) then
-        i_excit = i_excit + 1
+        i_excit = i_excit+1
 30      continue
-        call getvid(load_keyword, 'CHARGE', iocc = i_excit, nbval=0, nbret=nocc)
+        call getvid(load_keyword, 'CHARGE', iocc=i_excit, nbval=0, nbret=nocc)
         if (nocc .eq. 0) then
-            i_excit = i_excit + 1
+            i_excit = i_excit+1
             goto 30
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get name of current load
 !
     if (l_load_user) then
         if (load_keyword .eq. ' ') then
-            AS_ALLOCATE(vk8 = list_load, size = nb_load)
-            call getvid(load_keyword, 'CHARGE', nbval = nb_load, vect=list_load)
+            AS_ALLOCATE(vk8=list_load, size=nb_load)
+            call getvid(load_keyword, 'CHARGE', nbval=nb_load, vect=list_load)
             load_name = list_load(i_load)
-            AS_DEALLOCATE(vk8 = list_load)
+            AS_DEALLOCATE(vk8=list_load)
         else
-            call getvid(load_keyword, 'CHARGE', iocc = i_excit, scal=load_name)
-        endif
+            call getvid(load_keyword, 'CHARGE', iocc=i_excit, scal=load_name)
+        end if
     else
-        load_name = v_llresu_name(i_load)(1:8)
-    endif
+        load_name = v_llresu_name(i_load) (1:8)
+    end if
 !
 ! - Only one load in the list
 !
     do i_load_dble = 1, nb_load
         if (load_name .eq. v_list_dble(i_load_dble)) then
             call utmess('F', 'CHARGES_1', sk=load_name)
-        endif
+        end if
     end do
 !
 ! - Save load name
@@ -127,15 +127,15 @@ character(len=16), optional, intent(out) :: load_apply_
 !
 ! - Get LIGREL
 !
-    if (phenom.eq.'MECA') then
+    if (phenom .eq. 'MECA') then
         ligrch = load_name//'.CHME.LIGRE'
-    elseif (phenom.eq.'THER') then
+    elseif (phenom .eq. 'THER') then
         ligrch = load_name//'.CHTH.LIGRE'
-    elseif (phenom.eq.'ACOU') then
-            ligrch = load_name//'.CHAC.LIGRE'
+    elseif (phenom .eq. 'ACOU') then
+        ligrch = load_name//'.CHAC.LIGRE'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Type of load
 !
@@ -143,59 +143,59 @@ character(len=16), optional, intent(out) :: load_apply_
 !
 ! - Check phenomenon
 !
-    call dismoi('PHENOMENE'  , load_name, 'CHARGE', repk=load_pheno)
-    if (phenom.eq.'MECA') then
-        if (load_pheno.ne.'MECANIQUE') then
+    call dismoi('PHENOMENE', load_name, 'CHARGE', repk=load_pheno)
+    if (phenom .eq. 'MECA') then
+        if (load_pheno .ne. 'MECANIQUE') then
             call utmess('F', 'CHARGES_22', sk=load_name)
-        endif
-    elseif (phenom.eq.'THER') then
-        if (load_pheno.ne.'THERMIQUE') then
+        end if
+    elseif (phenom .eq. 'THER') then
+        if (load_pheno .ne. 'THERMIQUE') then
             call utmess('F', 'CHARGES_21', sk=load_name)
-        endif
-    elseif (phenom.eq.'ACOU') then
-        if (load_pheno.ne.'ACOUSTIQUE') then
+        end if
+    elseif (phenom .eq. 'ACOU') then
+        if (load_pheno .ne. 'ACOUSTIQUE') then
             call utmess('F', 'CHARGES_21', sk=load_name)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Type of applying load
 !
-    if (phenom.eq.'MECA') then
+    if (phenom .eq. 'MECA') then
         ASSERT(present(load_apply_))
         if (l_load_user) then
-            if (getexm(load_keyword,'TYPE_CHARGE') .eq. 1) then
+            if (getexm(load_keyword, 'TYPE_CHARGE') .eq. 1) then
                 call getvtx(load_keyword, 'TYPE_CHARGE', iocc=i_excit, scal=load_apply)
             else
                 load_apply = 'FIXE_CSTE'
-            endif
+            end if
         else
             if (load_keyword .eq. ' ') then
                 load_apply = 'FIXE_CSTE'
             else
-                if (v_llresu_info(i_load+1) .eq. 4 .or.&
+                if (v_llresu_info(i_load+1) .eq. 4 .or. &
                     v_llresu_info(1+nb_load+i_load) .eq. 4) then
                     load_apply = 'SUIV'
-                elseif (v_llresu_info(i_load+1) .eq. 5 .or.&
+                elseif (v_llresu_info(i_load+1) .eq. 5 .or. &
                         v_llresu_info(1+nb_load+i_load) .eq. 5) then
                     load_apply = 'FIXE_PILO'
                 else if (v_llresu_info(1+3*nb_load+2+i_load) .eq. 1) then
                     load_apply = 'DIDI'
                 else
                     load_apply = 'FIXE_CSTE'
-                endif
-            endif
-        endif
-    elseif (phenom.eq.'THER') then
-        ASSERT(.not.present(load_apply_))
-    elseif (phenom.eq.'ACOU') then
-        ASSERT(.not.present(load_apply_))
+                end if
+            end if
+        end if
+    elseif (phenom .eq. 'THER') then
+        ASSERT(.not. present(load_apply_))
+    elseif (phenom .eq. 'ACOU') then
+        ASSERT(.not. present(load_apply_))
     else
         ASSERT(.false.)
-    endif
+    end if
     if (present(load_apply_)) then
         load_apply_ = load_apply
-    endif
+    end if
 !
 end subroutine

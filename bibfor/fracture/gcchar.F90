@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcchar(ichar, iprec, time, carteo, lfchar,&
-                  lpchar, lformu, lfmult, lccomb, cartei,&
+subroutine gcchar(ichar, iprec, time, carteo, lfchar, &
+                  lpchar, lformu, lfmult, lccomb, cartei, &
                   nomfct, newfct, oldfon)
 !
     implicit none
@@ -88,24 +88,24 @@ subroutine gcchar(ichar, iprec, time, carteo, lfchar,&
 !
     if (lpchar) then
         call copisd('CHAMP_GD', 'V', cartei, carteo)
-        if (lfmult .and. (.not.lformu)) then
-            call gcharm(lfchar, cartei, nomfct, newfct, time,&
+        if (lfmult .and. (.not. lformu)) then
+            call gcharm(lfchar, cartei, nomfct, newfct, time, &
                         carteo)
-        endif
+        end if
     else
-        if (.not.lccomb) then
+        if (.not. lccomb) then
             call utmess('F', 'RUPTURE2_3')
-        endif
+        end if
         if (lformu) then
             call utmess('F', 'RUPTURE2_2')
-        endif
+        end if
         call copisd('CHAMP_GD', 'V', carteo, chtmp1)
         call copisd('CHAMP_GD', 'V', cartei, chtmp2)
         call detrsd('CHAMP_GD', carteo)
         if (lfmult) then
-            call gcharm(lfchar, cartei, nomfct, newfct, time,&
+            call gcharm(lfchar, cartei, nomfct, newfct, time, &
                         chtmp2)
-        endif
+        end if
         fonc1 = zl(jfonci+iprec-1)
         fonc2 = zl(jfonci+ichar-1)
         call tecart(chtmp1)
@@ -113,9 +113,9 @@ subroutine gcchar(ichar, iprec, time, carteo, lfchar,&
 !
 ! ----- EFFECTUE LA FUSION DE 2 CHARGES DE MEME TYPE
 !
-        call gcharf(ichar, fonc1, chtmp1, fonc2, chtmp2,&
+        call gcharf(ichar, fonc1, chtmp1, fonc2, chtmp2, &
                     carteo, oldfon)
-    endif
+    end if
     iprec = ichar
     call detrsd('CHAMP_GD', chtmp1)
     call detrsd('CHAMP_GD', chtmp2)

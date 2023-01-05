@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine copis2(typesd, base, sd1, sd2)
-implicit none
+    implicit none
 #include "asterfort/copisd.h"
     character(len=*) :: typesd, base, sd1, sd2
 !     ROUTINE SERVANT A MASQUER LA RECURSIVITE

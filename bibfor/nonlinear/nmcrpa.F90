@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
+subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst, &
                   dtmin)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -84,18 +84,18 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 !
 ! --- RECUPERATION DU NOMBRE D'INSTANTS
 !
-    if ((n2.ge.1) .and. (n3.ge.1)) then
+    if ((n2 .ge. 1) .and. (n3 .ge. 1)) then
         ASSERT(.false.)
-    endif
+    end if
 !
     if (n3 .ge. 1) then
         nbinst = n3
-    else if (n2.ge.1) then
+    else if (n2 .ge. 1) then
         call jelira(list//'.VALE', 'LONMAX', ival=nbinst)
     else
         nbinst = 0
         goto 99
-    endif
+    end if
 !
 ! --- CREATION DE LA LISTE
 !
@@ -104,20 +104,20 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 ! --- REMPLISSAGE DE LA LISTE
 !
     if (n3 .ge. 1) then
-        call getvr8(motfac, 'INST', iocc=iocc, nbval=nbinst, vect=zr(jslist),&
+        call getvr8(motfac, 'INST', iocc=iocc, nbval=nbinst, vect=zr(jslist), &
                     nbret=iret)
     else
         call jeveuo(list//'.VALE', 'L', vr=vale)
         do i = 1, nbinst
             zr(jslist+i-1) = vale(i)
         end do
-    endif
+    end if
 !
 ! --- CALCUL DU DELTA MINIMUM DE LA LISTE
 !
     call nmcrpm(zr(jslist), nbinst, dtmin)
 !
- 99 continue
+99  continue
 !
     call jedema()
 !

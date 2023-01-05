@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine te0223(option, nomte)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
 !
 !
@@ -59,43 +59,43 @@ subroutine te0223(option, nomte)
     nddl = 3
     global = abs(zr(iforc+5)) .lt. 1.d-3
 !
-    do  kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                     cour, poids, nx, ny)
         r = 0.d0
         fx = 0.d0
         fy = 0.d0
         mz = 0.d0
         do i = 1, nno
-            l = (kp-1)*nno + i
+            l = (kp-1)*nno+i
             if (global) then
-                fx = fx + zr(iforc-1+6* (i-1)+1)*zr(ivf+l-1)
-                fy = fy + zr(iforc-1+6* (i-1)+2)*zr(ivf+l-1)
-                mz = mz + zr(iforc-1+6* (i-1)+5)*zr(ivf+l-1)
+                fx = fx+zr(iforc-1+6*(i-1)+1)*zr(ivf+l-1)
+                fy = fy+zr(iforc-1+6*(i-1)+2)*zr(ivf+l-1)
+                mz = mz+zr(iforc-1+6*(i-1)+5)*zr(ivf+l-1)
             else
-                f1 = zr(iforc+6* (i-1))
+                f1 = zr(iforc+6*(i-1))
 !-----------------------------------------------------
 !  LE SIGNE AFFECTE A F3 A ETE CHANGE PAR AFFE_CHAR_MECA SI PRES
 !  POUR RESPECTER LA CONVENTION
 !      UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
 !-----------------------------------------------------
-                f3 = zr(iforc+6* (i-1)+2)
-                m2 = zr(iforc+6* (i-1)+3)
-                fx = fx + (nx*f3-ny*f1)*zr(ivf+l-1)
-                fy = fy + (ny*f3+nx*f1)*zr(ivf+l-1)
-                mz = mz + m2*zr(ivf+l-1)
-            endif
-            r = r + zr(igeom+2* (i-1))*zr(ivf+l-1)
+                f3 = zr(iforc+6*(i-1)+2)
+                m2 = zr(iforc+6*(i-1)+3)
+                fx = fx+(nx*f3-ny*f1)*zr(ivf+l-1)
+                fy = fy+(ny*f3+nx*f1)*zr(ivf+l-1)
+                mz = mz+m2*zr(ivf+l-1)
+            end if
+            r = r+zr(igeom+2*(i-1))*zr(ivf+l-1)
         end do
         if (nomte .eq. 'MECXSE3') then
             poids = poids*r
-        endif
-        do  i = 1, nno
-            l = (kp-1)*nno + i
-            zr(ivectu+nddl* (i-1)) = zr(ivectu+nddl* (i-1)) + fx*zr( ivf+l-1 )*poids
-            zr(ivectu+nddl* (i-1)+1) = zr(ivectu+nddl* (i-1)+1) + fy*zr(ivf+l-1 )*poids
-            zr(ivectu+nddl* (i-1)+2) = zr(ivectu+nddl* (i-1)+2) + mz*zr(ivf+l-1 )*poids
-      end do
-  end do
+        end if
+        do i = 1, nno
+            l = (kp-1)*nno+i
+            zr(ivectu+nddl*(i-1)) = zr(ivectu+nddl*(i-1))+fx*zr(ivf+l-1)*poids
+            zr(ivectu+nddl*(i-1)+1) = zr(ivectu+nddl*(i-1)+1)+fy*zr(ivf+l-1)*poids
+            zr(ivectu+nddl*(i-1)+2) = zr(ivectu+nddl*(i-1)+2)+mz*zr(ivf+l-1)*poids
+        end do
+    end do
 end subroutine

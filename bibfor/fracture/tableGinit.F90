@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tableGinit(table, option, ndim, nxpara,&
-                  lmoda, nbpara, linopa, litypa)
+subroutine tableGinit(table, option, ndim, nxpara, &
+                      lmoda, nbpara, linopa, litypa)
 !
     implicit none
 !
@@ -70,7 +70,7 @@ subroutine tableGinit(table, option, ndim, nxpara,&
     else
         call cgajpa('NUME_ORDRE', 'I', nbpara, linopa, litypa, nxpara)
         call cgajpa('INST', 'R', nbpara, linopa, litypa, nxpara)
-    endif
+    end if
 !
     call cgajpa('TEMP', 'R', nbpara, linopa, litypa, nxpara)
     call cgajpa('COMPORTEMENT', 'K8', nbpara, linopa, litypa, nxpara)
@@ -81,10 +81,10 @@ subroutine tableGinit(table, option, ndim, nxpara,&
 
     call cgajpa('COOR_X', 'R', nbpara, linopa, litypa, nxpara)
     call cgajpa('COOR_Y', 'R', nbpara, linopa, litypa, nxpara)
-    if (ndim.eq.3) then
+    if (ndim .eq. 3) then
         call cgajpa('COOR_Z', 'R', nbpara, linopa, litypa, nxpara)
         call cgajpa('ABSC_CURV_NORM', 'R', nbpara, linopa, litypa, nxpara)
-    endif
+    end if
 !
 !   --------------------
 !   2. OPTIONS DE CALCUL > a mettre au propre
@@ -94,21 +94,21 @@ subroutine tableGinit(table, option, ndim, nxpara,&
 !   ---------------------
     call cgajpa('G', 'R', nbpara, linopa, litypa, nxpara)
 
-    if (option.eq.'G_EPSI') then
+    if (option .eq. 'G_EPSI') then
         call cgajpa('G_EPSI', 'R', nbpara, linopa, litypa, nxpara)
-    endif
+    end if
 !   --------------------
 !   2.2 OPTION 'K'
 !   ---------------------
-    if (option.eq.'K') then
+    if (option .eq. 'K') then
         call cgajpa('K1', 'R', nbpara, linopa, litypa, nxpara)
         call cgajpa('K2', 'R', nbpara, linopa, litypa, nxpara)
 
-        if (ndim.eq.3) then
+        if (ndim .eq. 3) then
             call cgajpa('K3', 'R', nbpara, linopa, litypa, nxpara)
-        endif
+        end if
         call cgajpa('G_IRWIN', 'R', nbpara, linopa, litypa, nxpara)
-    endif
+    end if
 
 !   --------------------
 !   3. CREATION DE LA TABLE
@@ -120,12 +120,12 @@ subroutine tableGinit(table, option, ndim, nxpara,&
 !   4. DEBUG
 !   --------
     if (debug) then
-        write(6,*)'OPTION = ', option
-        write(6,*)'NOMBRE DE PARAMETRES DE LA TABLE = ', nbpara
-        write(6,*)'NO_PARA, NOM_PARA, TYP_PARA'
+        write (6, *) 'OPTION = ', option
+        write (6, *) 'NOMBRE DE PARAMETRES DE LA TABLE = ', nbpara
+        write (6, *) 'NO_PARA, NOM_PARA, TYP_PARA'
         do i = 1, nbpara
-            write(6,*)i, linopa(i), litypa(i)
-        enddo
-    endif
+            write (6, *) i, linopa(i), litypa(i)
+        end do
+    end if
 
 end subroutine

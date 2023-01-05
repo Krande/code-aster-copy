@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine cfcpma(resoco, neq, nbliai, numedd, matrcf)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cfmata.h"
 #include "asterfort/jedema.h"
@@ -63,7 +63,7 @@ subroutine cfcpma(resoco, neq, nbliai, numedd, matrcf)
 !
     numecf = '&&CFCPMA.NUFR'
     nmult = 1
-    call cfmata(resoco, neq, nbliai, nmult, numedd,&
+    call cfmata(resoco, neq, nbliai, nmult, numedd, &
                 enat, numecf, matrcf)
 !
     call jedema()

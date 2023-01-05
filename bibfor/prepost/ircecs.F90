@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
-                  vale, nomcmp, titr, nomel, loc,&
-                  celd, nbnoma, permut, maxnod, typma,&
-                  nomsd, nomsym, ir, nbmat, nummai,&
+subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx, &
+                  vale, nomcmp, titr, nomel, loc, &
+                  celd, nbnoma, permut, maxnod, typma, &
+                  nomsd, nomsym, ir, nbmat, nummai, &
                   lmasu, ncmpu, nucmp)
 ! aslint: disable=W1504
     implicit none
@@ -116,32 +116,32 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
     AS_ALLOCATE(vi=ipcmps, size=ncmpmx*ncmpmx)
     AS_ALLOCATE(vl=ltabl, size=ncmpmx)
 !
-    nomst= '&&IRECRI.SOUS_TITRE.TITR'
+    nomst = '&&IRECRI.SOUS_TITRE.TITR'
     call jeveuo(nomst, 'L', jtitr)
     call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
     titre = zk80(jtitr)
     do i = 1, ncmpmx
-        ltabl(i)=.false.
+        ltabl(i) = .false.
     end do
-    lnocen=.false.
+    lnocen = .false.
 !
 !  --- RECHERCHE DES GRANDEURS SUPERTAB ----
 !
-    call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
+    call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs, &
                 nbcmps, nomgds, ipcmps)
 ! --- DETERMINATION DU NOMBRE MAXIMUM DE SOUS-POINTS ---
     icomax = 0
     do igre = 1, nbgrel
-        icoef=max(1,celd(4))
-        if (icoef .gt. icomax) icomax=icoef
+        icoef = max(1, celd(4))
+        if (icoef .gt. icomax) icomax = icoef
     end do
     icomm = 6
     if (ncmpu .eq. 0) then
         icmax0 = icomax
     else
         icmax0 = ncmpu
-    endif
+    end if
 !
 ! -- ALLOCATION DES TABLEAUX DE TRAVAIL ---
 !
@@ -150,23 +150,23 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
         call wkvect('&&IRCECS.VRNOE', 'V V R', ncmpmx*icomm, irvn)
         call jedetr('&&IRCECS.VCNOE')
         call wkvect('&&IRCECS.VCNOE', 'V V R', ncmpmx*icomm, icvn)
-    else if (loc.eq.'ELGA') then
+    else if (loc .eq. 'ELGA') then
         call jedetr('&&IRCECS.VRGAU')
         call wkvect('&&IRCECS.VRGAU', 'V V R', ncmpmx*icomm, irvg)
         call jedetr('&&IRCECS.VCGAU')
         call wkvect('&&IRCECS.VCGAU', 'V V R', ncmpmx*icomm, icvg)
-    endif
+    end if
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
     do ichs = 1, nbchs
         if (ichs .gt. 1) then
             afaire = .false.
             do icp = 1, nbcmps(ichs)
-                afaire= (afaire.or.ltabl((ipcmps((ichs-1)*&
-                ncmpmx+icp))))
+                afaire = (afaire .or. ltabl((ipcmps((ichs-1)* &
+                                                    ncmpmx+icp))))
             end do
             if (.not. afaire) goto 10
-        endif
+        end if
 !
         call jedetr('&&IRCECS.SOUS_PT')
         call wkvect('&&IRCECS.SOUS_PT', 'V V I', icomax, jspt)
@@ -176,31 +176,31 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
         if (nbcmps(ichs) .eq. 1 .and. icomax .gt. 1) then
             do i = 1, icmax0
-                zi(jspt-1+i)=6
+                zi(jspt-1+i) = 6
             end do
-            ilig=icmax0/6
-            ires=icmax0-ilig*6
+            ilig = icmax0/6
+            ires = icmax0-ilig*6
             if (ires .eq. 0) then
-                nbdats=ilig
+                nbdats = ilig
             else
-                nbdats=ilig+1
-                zi(jspt-1+nbdats)=ires
-            endif
-            nbcmpt=6
-            nomgs='VARI'
+                nbdats = ilig+1
+                zi(jspt-1+nbdats) = ires
+            end if
+            nbcmpt = 6
+            nomgs = 'VARI'
         else
-            nbdats=icomax
+            nbdats = icomax
             do i = 1, nbdats
-                zi(jspt-1+i)=1
+                zi(jspt-1+i) = 1
             end do
-            nbcmpt=nbcmps(ichs)
-            nomgs=nomgds(ichs)
-        endif
+            nbcmpt = nbcmps(ichs)
+            nomgs = nomgds(ichs)
+        end if
 !
 ! --- ECRITURE DE L'ENTETE SUPERTAB ----
 !
-        lcmp=.false.
-        call ecrtes(nomsd, titr, nomgs, ir, loc,&
+        lcmp = .false.
+        call ecrtes(nomsd, titr, nomgs, ir, loc, &
                     nbcmpt, 5, entete, lcmp)
 !
 ! --- IMPRESSION DES DATASETS SUPERTAB ---
@@ -213,7 +213,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
 ! --- ECRITURE DANS L'ENTETE SUPERTAB DES NOMS DE COMPOSANTES---
 !
-            nbspt=zi(jspt-1+ida)
+            nbspt = zi(jspt-1+ida)
             idebu = 1
             entete(4) = ' '
             texte = ' '
@@ -222,77 +222,77 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 if (nbcmps(ichs) .eq. 1 .and. icomax .gt. 1) then
                     do ispt = 1, nbspt
                         if (ncmpu .eq. 0) then
-                            entier=(ida-1)*6+ispt
+                            entier = (ida-1)*6+ispt
                         else
-                            entier=nucmp((ida-1)*6+ispt)
-                        endif
-                        nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp) )
-                        iutil=lxlgut(nocmp)
+                            entier = nucmp((ida-1)*6+ispt)
+                        end if
+                        nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp))
+                        iutil = lxlgut(nocmp)
                         call codent(entier, 'G', toto)
                         ifin = idebu+iutil+2
-                        texte(idebu:ifin)=' '// nocmp(1:iutil) //'_'//&
-                        toto
-                        idebu = ifin + 1
+                        texte(idebu:ifin) = ' '//nocmp(1:iutil)//'_'// &
+                                            toto
+                        idebu = ifin+1
                     end do
                 else
                     nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp))
-                    iutil=lxlgut(nocmp)
+                    iutil = lxlgut(nocmp)
                     ifin = idebu+iutil
-                    texte(idebu:ifin)=' '//nocmp(1:iutil)
-                    idebu = ifin + 1
-                endif
+                    texte(idebu:ifin) = ' '//nocmp(1:iutil)
+                    idebu = ifin+1
+                end if
             end do
-            texte(ifin+2:ifin+7)= '('//loc
+            texte(ifin+2:ifin+7) = '('//loc
             idern = ifin+7
             if (nbcmps(ichs) .gt. 1 .and. icomax .gt. 1) then
                 call codent(ida, 'G', toto)
-                texte(ifin+8:ifin+14)= 'SPT_'//toto
-                idern = ifin + 14
-            endif
-            texte(idern:idern+1)= ')'
+                texte(ifin+8:ifin+14) = 'SPT_'//toto
+                idern = ifin+14
+            end if
+            texte(idern:idern+1) = ')'
             iutil = lxlgut(texte)
             jmax = lxlgut(titre)
-            jmax = min(jmax,(80-iutil-3))
-            entete(4)= titre(1:jmax)//' - '//texte(1:iutil)
+            jmax = min(jmax, (80-iutil-3))
+            entete(4) = titre(1:jmax)//' - '//texte(1:iutil)
             do igrel = 1, nbgrel
-                mode=celd(celd(4+igrel)+2)
-                ipoin1=longr(igrel)
-                ipoin2=longr(igrel+1)
-                nbelgr=ipoin2-ipoin1-1
+                mode = celd(celd(4+igrel)+2)
+                ipoin1 = longr(igrel)
+                ipoin2 = longr(igrel+1)
+                nbelgr = ipoin2-ipoin1-1
                 if (mode .eq. 0) goto 12
                 jmod = imodel+zi(ilong-1+mode)-1
-                nec = nbec (zi(jmod-1+2))
+                nec = nbec(zi(jmod-1+2))
                 call jedetr('&&IRCECS.ENT_COD')
                 call wkvect('&&IRCECS.ENT_COD', 'V V I', nec, iaec)
                 call dgmode(mode, imodel, ilong, nec, zi(iaec))
-                iad=celd(celd(4+igrel)+8)
+                iad = celd(celd(4+igrel)+8)
                 nscal = digdel(mode)
-                icoef=max(1,celd(4))
+                icoef = max(1, celd(4))
                 if (nbcmps(ichs) .eq. 1 .and. icomax .gt. 1) then
                     if (ncmpu .eq. 0) then
                         ico = (ida-1)*6+1
                     else
                         ico = 1
-                    endif
+                    end if
                 else
-                    ico=ida
-                endif
+                    ico = ida
+                end if
                 if (icoef .lt. ico) goto 12
                 nsca = nscal*icoef
-                ncmpp=0
+                ncmpp = 0
                 do i = 1, ncmpmx
-                    if (exisdg(zi(iaec),i)) then
-                        ncmpp=ncmpp+1
-                        if (ichs .eq. 1) ltabl(i)=.true.
-                    endif
+                    if (exisdg(zi(iaec), i)) then
+                        ncmpp = ncmpp+1
+                        if (ichs .eq. 1) ltabl(i) = .true.
+                    end if
                 end do
                 do i = 1, nbcmps(ichs)
-                    if (exisdg(zi(iaec),ipcmps((ichs-1)*ncmpmx+i) )) goto 62
+                    if (exisdg(zi(iaec), ipcmps((ichs-1)*ncmpmx+i))) goto 62
                 end do
                 goto 12
- 62             continue
+62              continue
                 do ielg = 1, nbelgr
-                    iel=ligrel(ipoin1+ielg-1)
+                    iel = ligrel(ipoin1+ielg-1)
                     if (iel .le. 0) goto 13
 !
 ! --- IMPRESSION DU CHAMELEM SUR UNE LISTE DE MAILLES ---
@@ -302,184 +302,184 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             if (iel .eq. nummai(imai)) goto 15
                         end do
                         goto 13
-                    endif
- 15                 continue
+                    end if
+15                  continue
                     impel = 1
 !
 !           RECHERCHE DE L'ADRESSE DANS VALE DU DEBUT DES VALEURS
 !
-                    iachml = iad + nsca * (ielg-1)
+                    iachml = iad+nsca*(ielg-1)
 !
 !    --- CHAMELEM AUX NOEUDS ---
 !
                     if (loc .eq. 'ELNO') then
-                        npcalc = nscal / ncmpp
+                        npcalc = nscal/ncmpp
                         nnoe = nbnoma(iel)
                         itype = typma(iel)
                         call jenuno(jexnum('&CATA.TM.NOMTM', itype), ktype)
                         if (ktype .eq. 'TRIA7') then
-                            nnoe = nnoe - 1
+                            nnoe = nnoe-1
                             lnocen = ASTER_TRUE
                         else if (ktype .eq. 'QUAD9') then
-                            nnoe = nnoe - 1
+                            nnoe = nnoe-1
                             lnocen = ASTER_TRUE
                         else if (ktype .eq. 'PENTA18') then
-                            nnoe = nnoe - 3
+                            nnoe = nnoe-3
                             lnocen = ASTER_TRUE
                         else if (ktype .eq. 'PENTA21') then
-                            nnoe = nnoe - 6
+                            nnoe = nnoe-6
                             lnocen = ASTER_TRUE
                         else if (ktype .eq. 'HEXA27') then
-                            nnoe = nnoe - 7
+                            nnoe = nnoe-7
                             lnocen = ASTER_TRUE
                         else if (ktype .eq. 'TETRA15') then
-                            nnoe = nnoe - 5
+                            nnoe = nnoe-5
                             lnocen = ASTER_TRUE
                         else if (ktype .eq. 'SEG4') then
-                            nnoe = nnoe - 2
+                            nnoe = nnoe-2
                             call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), itseg2)
-                            itype=itseg2
-                        endif
-                        nbcou = npcalc / nnoe
+                            itype = itseg2
+                        end if
+                        nbcou = npcalc/nnoe
                         do inos = 1, nnoe
-                            inoa=0
+                            inoa = 0
                             do iast = 1, nnoe
-                                isup=permut(iast,itype)
+                                isup = permut(iast, itype)
                                 if (inos .eq. isup) then
-                                    inoa=iast
+                                    inoa = iast
                                     goto 29
-                                endif
+                                end if
                             end do
- 29                         continue
-                            ASSERT(inoa.ne.0)
+29                          continue
+                            ASSERT(inoa .ne. 0)
                             do icou = 1, nbcou
-                                j=iachml-1+ncmpp*icoef*(inoa-1)+&
-                                (icou-1)*ncmpp*icoef*nnoe+ncmpp*(ico-&
-                                1)
+                                j = iachml-1+ncmpp*icoef*(inoa-1)+ &
+                                    (icou-1)*ncmpp*icoef*nnoe+ncmpp*(ico- &
+                                                                     1)
                                 do i = 1, nbcmpt
-                                    zr(irvn-1+i)=0.d0
-                                    zr(icvn-1+i)=0.d0
+                                    zr(irvn-1+i) = 0.d0
+                                    zr(icvn-1+i) = 0.d0
                                 end do
-                                ic=0
+                                ic = 0
                                 do icmp = 1, ncmpmx
-                                    if (exisdg(zi(iaec),icmp)) then
-                                        ic=ic+1
+                                    if (exisdg(zi(iaec), icmp)) then
+                                        ic = ic+1
                                         do icms = 1, nbcmps(ichs)
-                                            icmsup = ipcmps((ichs-1 )* ncmpmx+icms )
+                                            icmsup = ipcmps((ichs-1)*ncmpmx+icms)
                                             if (icmp .eq. icmsup) then
-                                                impre=1
+                                                impre = 1
                                                 do isp = 1, zi(jspt-1+ida)
-                                                    zr(irvn-1+icms-1+isp)=&
-                                        dble(vale(j+ic+ncmpp*(isp-1)))
-                                                    zr(icvn-1+icms-1+isp)=&
-                                        dimag(vale(j+ic+ncmpp*(isp-1))&
-                                        )
+                                                    zr(irvn-1+icms-1+isp) = &
+                                                        dble(vale(j+ic+ncmpp*(isp-1)))
+                                                    zr(icvn-1+icms-1+isp) = &
+                                                        dimag(vale(j+ic+ncmpp*(isp-1)) &
+                                                              )
                                                 end do
                                                 goto 22
-                                            endif
+                                            end if
                                         end do
-                                    endif
- 22                                 continue
+                                    end if
+22                                  continue
                                 end do
                                 if (impre .eq. 1) then
                                     if (iente .eq. 1) then
-                                        write(ifi,'(A80)') (entete(i),&
-                                        i=1,10)
-                                        iente=0
-                                    endif
+                                        write (ifi, '(A80)') (entete(i), &
+                                                              i=1, 10)
+                                        iente = 0
+                                    end if
                                     if (impel .eq. 1) then
                                         if (lmasu) then
-                                            call lxliis(nomel(iel)(2:8), ies, ier)
+                                            call lxliis(nomel(iel) (2:8), ies, ier)
                                         else
-                                            ies=iel
-                                        endif
-                                        write (ifi,'(4I10,5X,A,A)')&
-                                        ies,1,nnoe,nbcmpt,'% MAILLE ',&
-                                        nomel(iel)
-                                        impel=0
-                                    endif
-                                    write (ifi,'(6(1PE13.5))') (zr(&
-                                    irvn-1+i), zr(icvn-1+i),i=1,&
-                                    nbcmpt)
-                                endif
+                                            ies = iel
+                                        end if
+                                        write (ifi, '(4I10,5X,A,A)') &
+                                            ies, 1, nnoe, nbcmpt, '% MAILLE ', &
+                                            nomel(iel)
+                                        impel = 0
+                                    end if
+                                    write (ifi, '(6(1PE13.5))') (zr( &
+                                                                 irvn-1+i), zr(icvn-1+i), i=1, &
+                                                                 nbcmpt)
+                                end if
                             end do
                         end do
 !
 !  --- CHAMELEM AUX POINTS DE GAUSS---
 !
-                    else if (loc.eq.'ELGA') then
+                    else if (loc .eq. 'ELGA') then
                         npcalc = nscal/ncmpp
-                        nbpg=npcalc
+                        nbpg = npcalc
                         do i = 1, nbcmpt
-                            zr(irvg-1+i)=0.d0
-                            zr(icvg-1+i)=0.d0
+                            zr(irvg-1+i) = 0.d0
+                            zr(icvg-1+i) = 0.d0
                         end do
-                        ic=0
+                        ic = 0
                         do icmp = 1, ncmpmx
-                            if (exisdg(zi(iaec),icmp)) then
-                                ic=ic+1
+                            if (exisdg(zi(iaec), icmp)) then
+                                ic = ic+1
                                 do icms = 1, nbcmps(ichs)
-                                    icmsup = ipcmps((ichs-1)* ncmpmx+icms)
+                                    icmsup = ipcmps((ichs-1)*ncmpmx+icms)
                                     if (icmp .eq. icmsup) then
-                                        impre=1
+                                        impre = 1
                                         do isp = 1, zi(jspt-1+ida)
                                             if (ncmpu .eq. 0) then
                                                 is0 = isp
                                             else
                                                 is0 = nucmp((ida-1)*6+isp)
-                                            endif
+                                            end if
                                             do ipg = 1, nbpg
-                                                j=iachml-1+ncmpp*icoef*(ipg-1)&
-                                        +ncmpp*(ico-1)
-                                                zr(irvg-1+icms-1+isp)= zr(&
-                                        irvg-1+icms-1+isp)+ dble(vale(&
-                                        j+ic+ncmpp*(is0-1)))
-                                                zr(icvg-1+icms-1+isp)= zr(&
-                                        icvg-1+icms-1+isp)+ dimag(&
-                                        vale(j+ic+ncmpp*(is0-1)))
+                                                j = iachml-1+ncmpp*icoef*(ipg-1) &
+                                                    +ncmpp*(ico-1)
+                                                zr(irvg-1+icms-1+isp) = zr( &
+                                                                     irvg-1+icms-1+isp)+dble(vale( &
+                                                                                j+ic+ncmpp*(is0-1)))
+                                                zr(icvg-1+icms-1+isp) = zr( &
+                                                                        icvg-1+icms-1+isp)+dimag( &
+                                                                        vale(j+ic+ncmpp*(is0-1)))
                                             end do
-                                            zr(irvg-1+icms-1+isp)=zr(irvg-&
-                                        1+icms-1+isp) / nbpg
-                                            zr(icvg-1+icms-1+isp)=zr(icvg-&
-                                        1+icms-1+isp) / nbpg
+                                            zr(irvg-1+icms-1+isp) = zr(irvg- &
+                                                                       1+icms-1+isp)/nbpg
+                                            zr(icvg-1+icms-1+isp) = zr(icvg- &
+                                                                       1+icms-1+isp)/nbpg
                                         end do
                                         goto 19
-                                    endif
+                                    end if
                                 end do
-                            endif
- 19                         continue
+                            end if
+19                          continue
                         end do
                         if (impre .eq. 1) then
                             if (iente .eq. 1) then
-                                write(ifi,'(A80)') (entete(i),i=1,10)
-                                iente=0
-                            endif
+                                write (ifi, '(A80)') (entete(i), i=1, 10)
+                                iente = 0
+                            end if
                             if (impel .eq. 1) then
                                 if (lmasu) then
-                                    call lxliis(nomel(iel)(2:8), ies, ier)
+                                    call lxliis(nomel(iel) (2:8), ies, ier)
                                 else
-                                    ies=iel
-                                endif
-                                write(ifi,'(2I10,5X,2A)') ies,nbcmpt,&
-                                '% MAILLE ',nomel(iel)
-                                impel=0
-                            endif
-                            write (ifi,'(6(1PE13.5))') (zr(irvg-1+i),&
-                            zr(icvg-1+i),i=1,nbcmpt)
-                            impre=0
-                        endif
-                    endif
- 13                 continue
+                                    ies = iel
+                                end if
+                                write (ifi, '(2I10,5X,2A)') ies, nbcmpt, &
+                                    '% MAILLE ', nomel(iel)
+                                impel = 0
+                            end if
+                            write (ifi, '(6(1PE13.5))') (zr(irvg-1+i), &
+                                                         zr(icvg-1+i), i=1, nbcmpt)
+                            impre = 0
+                        end if
+                    end if
+13                  continue
                 end do
- 12             continue
+12              continue
             end do
-            if (iente .eq. 0) write (ifi,'(A)') '    -1'
+            if (iente .eq. 0) write (ifi, '(A)') '    -1'
         end do
- 10     continue
+10      continue
     end do
     if (lnocen) then
         call utmess('A', 'PREPOST_80')
-    endif
+    end if
 !
     call jedetr('&&IRCECS.VRNOE')
     call jedetr('&&IRCECS.VCNOE')

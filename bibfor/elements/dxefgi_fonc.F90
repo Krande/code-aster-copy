@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,21 +74,21 @@ subroutine dxefgi_fonc(nomte, pgl, epsinif, xyz, ni, sigt)
         npg = 3
         nno = 3
 !
-        else if (nomte.eq.'MEDKQU4 ' .or. nomte.eq.'MEDSQU4 ' .or.&
-             nomte.eq.'MEQ4QU4 ' .or. nomte.eq.'MEDKQG4 ') then
+    else if (nomte .eq. 'MEDKQU4 ' .or. nomte .eq. 'MEDSQU4 ' .or. &
+             nomte .eq. 'MEQ4QU4 ' .or. nomte .eq. 'MEDKQG4 ') then
         npg = 4
         nno = 4
 !
     else
         call utmess('F', 'ELEMENTS_14', sk=nomte)
-    endif
+    end if
 !
 ! --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 ! --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 !     ----------------------------------------------------
 !
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !
 ! --- CHOIX DE NOTATIONS PLUS EXPLICITES POUR LES DEFORMATIONS
@@ -110,10 +110,10 @@ subroutine dxefgi_fonc(nomte, pgl, epsinif, xyz, ni, sigt)
         zgau = zero
 !
         do i = 1, nno
-            xgau = xgau + ni(i+nno*(igau-1))*xyz(1+3*(i-1))
-            ygau = ygau + ni(i+nno*(igau-1))*xyz(2+3*(i-1))
-            zgau = zgau + ni(i+nno*(igau-1))*xyz(3+3*(i-1))
-        enddo
+            xgau = xgau+ni(i+nno*(igau-1))*xyz(1+3*(i-1))
+            ygau = ygau+ni(i+nno*(igau-1))*xyz(2+3*(i-1))
+            zgau = zgau+ni(i+nno*(igau-1))*xyz(3+3*(i-1))
+        end do
 !
         valpar(1) = xgau
         valpar(2) = ygau
@@ -128,16 +128,16 @@ subroutine dxefgi_fonc(nomte, pgl, epsinif, xyz, ni, sigt)
         call fointe('FM', epsinif(5), 4, nompar, valpar, kyy, ier)
         call fointe('FM', epsinif(6), 4, nompar, valpar, kxy, ier)
 
-        sigt(1+8* (igau-1)) = dm(1,1)*epxx + dm(1,2)*epyy + dm(1,3)* epxy
-        sigt(2+8* (igau-1)) = dm(2,1)*epxx + dm(2,2)*epyy + dm(2,3)* epxy
-        sigt(3+8* (igau-1)) = dm(3,1)*epxx + dm(3,2)*epyy + dm(3,3)* 2.d0*epxy
+        sigt(1+8*(igau-1)) = dm(1, 1)*epxx+dm(1, 2)*epyy+dm(1, 3)*epxy
+        sigt(2+8*(igau-1)) = dm(2, 1)*epxx+dm(2, 2)*epyy+dm(2, 3)*epxy
+        sigt(3+8*(igau-1)) = dm(3, 1)*epxx+dm(3, 2)*epyy+dm(3, 3)*2.d0*epxy
 !
-        sigt(4+8* (igau-1)) = df(1,1)*kxx + df(1,2)*kyy + df(1,3)* kxy
-        sigt(5+8* (igau-1)) = df(2,1)*kxx + df(2,2)*kyy + df(2,3)* kxy
-        sigt(6+8* (igau-1)) = df(3,1)*kxx + df(3,2)*kyy + df(3,3)* 2.d0*kxy
+        sigt(4+8*(igau-1)) = df(1, 1)*kxx+df(1, 2)*kyy+df(1, 3)*kxy
+        sigt(5+8*(igau-1)) = df(2, 1)*kxx+df(2, 2)*kyy+df(2, 3)*kxy
+        sigt(6+8*(igau-1)) = df(3, 1)*kxx+df(3, 2)*kyy+df(3, 3)*2.d0*kxy
 !
-        sigt(7+8* (igau-1)) = zero
-        sigt(8+8* (igau-1)) = zero
+        sigt(7+8*(igau-1)) = zero
+        sigt(8+8*(igau-1)) = zero
     end do
 !
 end subroutine

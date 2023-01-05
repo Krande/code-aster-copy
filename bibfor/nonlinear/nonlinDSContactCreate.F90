@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine nonlinDSContactCreate(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-type(NL_DS_Contact), intent(out) :: ds_contact
+    type(NL_DS_Contact), intent(out) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,7 +42,7 @@ type(NL_DS_Contact), intent(out) :: ds_contact
 !
     integer :: i_loop
     integer, parameter :: nb_loop_defi = 3
-    character(len=4), parameter :: loop_type(nb_loop_defi) = (/'Geom','Fric','Cont'/)
+    character(len=4), parameter :: loop_type(nb_loop_defi) = (/'Geom', 'Fric', 'Cont'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,14 +50,14 @@ type(NL_DS_Contact), intent(out) :: ds_contact
 !
 ! - Main parameters
 !
-    ds_contact%l_contact   = ASTER_FALSE
+    ds_contact%l_contact = ASTER_FALSE
     ds_contact%l_meca_cont = ASTER_FALSE
     ds_contact%l_meca_unil = ASTER_FALSE
-    ds_contact%sdcont      = ' '
+    ds_contact%sdcont = ' '
     ds_contact%l_form_cont = ASTER_FALSE
     ds_contact%l_form_disc = ASTER_FALSE
     ds_contact%l_form_xfem = ASTER_FALSE
-    ds_contact%l_form_lac  = ASTER_FALSE
+    ds_contact%l_form_lac = ASTER_FALSE
 !
 ! - Name of datastructures
 !
@@ -69,69 +69,69 @@ type(NL_DS_Contact), intent(out) :: ds_contact
 ! - Name of <LIGREL> - Slave and contact elements
 !
     ds_contact%ligrel_elem_slav = ' '
-    ds_contact%l_elem_slav      = ASTER_FALSE
+    ds_contact%l_elem_slav = ASTER_FALSE
     ds_contact%ligrel_elem_cont = ' '
-    ds_contact%l_elem_cont      = ASTER_FALSE
+    ds_contact%l_elem_cont = ASTER_FALSE
 !
 ! - Name of <CHELEM> - Input field
 !
-    ds_contact%field_input      = ' '
+    ds_contact%field_input = ' '
 !
 ! - Name of NUME_DOF for discrete friction methods
 !
-    ds_contact%nume_dof_frot    = ' '
+    ds_contact%nume_dof_frot = ' '
 !
 ! - Identity relations between dof
 !
     ds_contact%l_iden_rela = ASTER_FALSE
-    ds_contact%iden_rela   = ' '
+    ds_contact%iden_rela = ' '
 !
 ! - Relations between dof (QUAD8 in discrete methods or XFEM)
 !
-    ds_contact%l_dof_rela       = ASTER_FALSE
-    ds_contact%ligrel_dof_rela  = ' '
+    ds_contact%l_dof_rela = ASTER_FALSE
+    ds_contact%ligrel_dof_rela = ' '
 !
 ! - Management of loops
 !
     ds_contact%nb_loop = nb_loop_defi
-    ASSERT(ds_contact%nb_loop.le.ds_contact%nb_loop_maxi)
+    ASSERT(ds_contact%nb_loop .le. ds_contact%nb_loop_maxi)
     do i_loop = 1, nb_loop_defi
-        ds_contact%loop(i_loop)%type        = loop_type(i_loop)
-        ds_contact%loop(i_loop)%conv        = ASTER_FALSE
-        ds_contact%loop(i_loop)%error       = ASTER_FALSE
-        ds_contact%loop(i_loop)%counter     = 0
-        ds_contact%loop(i_loop)%vale_calc   = 0
-        ds_contact%loop(i_loop)%locus_calc  = ' '
+        ds_contact%loop(i_loop)%type = loop_type(i_loop)
+        ds_contact%loop(i_loop)%conv = ASTER_FALSE
+        ds_contact%loop(i_loop)%error = ASTER_FALSE
+        ds_contact%loop(i_loop)%counter = 0
+        ds_contact%loop(i_loop)%vale_calc = 0
+        ds_contact%loop(i_loop)%locus_calc = ' '
     end do
 !
 ! - Field for CONT_NODE
 !
-    ds_contact%field_cont_node  = ' '
+    ds_contact%field_cont_node = ' '
     ds_contact%fields_cont_node = ' '
-    ds_contact%field_cont_perc  = ' '
+    ds_contact%field_cont_perc = ' '
 !
 ! - Field for CONT_ELEM
 !
-    ds_contact%field_cont_elem  = ' '
+    ds_contact%field_cont_elem = ' '
 !
 ! - Flag for (re) numbering
 !
-    ds_contact%l_renumber   = ASTER_FALSE
+    ds_contact%l_renumber = ASTER_FALSE
 !
 ! - Geometric loop control
 !
-    ds_contact%geom_maxi    = -1.d0
+    ds_contact%geom_maxi = -1.d0
 !
 ! - Penalization loop control
 !
-    ds_contact%estimated_coefficient    = 100.d0
-    ds_contact%calculated_penetration   = 1.d0
-    ds_contact%update_init_coefficient  = 0.d0
-    ds_contact%continue_pene            = 0.d0
+    ds_contact%estimated_coefficient = 100.d0
+    ds_contact%calculated_penetration = 1.d0
+    ds_contact%update_init_coefficient = 0.d0
+    ds_contact%continue_pene = 0.d0
 !
 ! - Get-off indicator
 !
-    ds_contact%l_getoff     = ASTER_FALSE
+    ds_contact%l_getoff = ASTER_FALSE
 !
 ! - First geometric loop
 !
@@ -139,11 +139,11 @@ type(NL_DS_Contact), intent(out) :: ds_contact
 !
 ! - Flag for pairing
 !
-    ds_contact%l_pair       = ASTER_FALSE
+    ds_contact%l_pair = ASTER_FALSE
 !
 ! - Total number of patches (for LAC method)
 !
-    ds_contact%nt_patch     = 0
+    ds_contact%nt_patch = 0
 !
 ! - Total number of contact pairs
 !
@@ -151,17 +151,17 @@ type(NL_DS_Contact), intent(out) :: ds_contact
 !
 ! - Force for DISCRETE contact
 !
-    ds_contact%l_cnctdf     = ASTER_FALSE
-    ds_contact%cnctdf       = '&&OP0070.CNCTDF'
-    ds_contact%l_cnctdc     = ASTER_FALSE
-    ds_contact%cnctdc       = '&&OP0070.CNCTDC'
-    ds_contact%l_cnunil     = ASTER_FALSE
-    ds_contact%cnunil       = '&&OP0070.CNUNIL'
-    ds_contact%l_cneltc     = ASTER_FALSE
-    ds_contact%cneltc       = '&&OP0070.CNELTC'
-    ds_contact%veeltc       = '&&OP0070.VEELTC'
-    ds_contact%l_cneltf     = ASTER_FALSE
-    ds_contact%cneltf       = '&&OP0070.CNELTF'
-    ds_contact%veeltf       = '&&OP0070.VEELTF'
+    ds_contact%l_cnctdf = ASTER_FALSE
+    ds_contact%cnctdf = '&&OP0070.CNCTDF'
+    ds_contact%l_cnctdc = ASTER_FALSE
+    ds_contact%cnctdc = '&&OP0070.CNCTDC'
+    ds_contact%l_cnunil = ASTER_FALSE
+    ds_contact%cnunil = '&&OP0070.CNUNIL'
+    ds_contact%l_cneltc = ASTER_FALSE
+    ds_contact%cneltc = '&&OP0070.CNELTC'
+    ds_contact%veeltc = '&&OP0070.VEELTC'
+    ds_contact%l_cneltf = ASTER_FALSE
+    ds_contact%cneltf = '&&OP0070.CNELTF'
+    ds_contact%veeltf = '&&OP0070.VEELTF'
 !
 end subroutine

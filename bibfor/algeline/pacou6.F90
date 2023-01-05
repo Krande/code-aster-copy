@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pacou6(r, qt, n, i, a,&
+subroutine pacou6(r, qt, n, i, a, &
                   b)
     implicit none
 !
@@ -33,32 +33,32 @@ subroutine pacou6(r, qt, n, i, a,&
 !-----------------------------------------------------------------------
     if (abs(a) .le. 1.0d-30) then
         c = 0.0d0
-        s = sign(1.0d0,b)
+        s = sign(1.0d0, b)
 !
     else if (abs(a) .gt. abs(b)) then
         fact = b/a
-        c = sign ( 1.0d0/sqrt(1.0d0+fact*fact), a )
+        c = sign(1.0d0/sqrt(1.0d0+fact*fact), a)
         s = fact*c
 !
     else
         fact = a/b
-        s = sign ( 1.0d0/sqrt(1.0d0+fact*fact), b )
+        s = sign(1.0d0/sqrt(1.0d0+fact*fact), b)
         c = fact*s
 !
-    endif
+    end if
 !
     do j = 1, n
-        y = r(i,j)
-        w = r(i+1,j)
-        r(i,j) = c*y - s*w
-        r(i+1,j) = s*y + c*w
+        y = r(i, j)
+        w = r(i+1, j)
+        r(i, j) = c*y-s*w
+        r(i+1, j) = s*y+c*w
     end do
 !
     do j = 1, n
-        y = qt(i,j)
-        w = qt(i+1,j)
-        qt(i,j) = c*y - s*w
-        qt(i+1,j) = s*y + c*w
+        y = qt(i, j)
+        w = qt(i+1, j)
+        qt(i, j) = c*y-s*w
+        qt(i+1, j) = s*y+c*w
     end do
 !
 end subroutine

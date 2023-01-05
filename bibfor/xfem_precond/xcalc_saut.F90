@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ function xcalc_saut(id_no, id_escl, id_mait, iflag)
 !-----------------------------------------------------------------------
 !
     iflagg = -99
-    if ( present(iflag) ) iflagg=iflag
+    if (present(iflag)) iflagg = iflag
 !
-    xcalc_saut=xcalc_heav(id_no,id_mait,iflagg)-xcalc_heav(id_no,id_escl,iflagg)
+    xcalc_saut = xcalc_heav(id_no, id_mait, iflagg)-xcalc_heav(id_no, id_escl, iflagg)
 !
 end function

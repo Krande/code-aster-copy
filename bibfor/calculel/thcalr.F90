@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
-                  resuc1, nbordr, modele, mate, cara,&
+subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
+                  resuc1, nbordr, modele, mate, cara, &
                   nb_load)
     implicit none
 !
@@ -109,14 +109,14 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
     call jerecu('V')
 !
 !            '123456789012345678901234'
-    blan24='                        '
-    k8b='        '
-    nh=0
-    chgeom=blan24
-    chtemp=blan24
-    chharm=blan24
-    chelem=blan24
-    lesopt='&&'//nompro//'.LES_OPTION     '
+    blan24 = '                        '
+    k8b = '        '
+    nh = 0
+    chgeom = blan24
+    chtemp = blan24
+    chharm = blan24
+    chelem = blan24
+    lesopt = '&&'//nompro//'.LES_OPTION     '
 !
 !
     call infmaj()
@@ -133,14 +133,14 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
 !
 ! - EVOL_CHAR is prohibiden
 !
-    call load_neut_excl('CALC_ERREUR', lload_name_ = lload_name)
+    call load_neut_excl('CALC_ERREUR', lload_name_=lload_name)
 
     call jeveuo(knum, 'L', jordr)
 !
     if (newcal) then
         call rscrsd('G', resuc1, tysd, nbordr)
         call titre()
-    endif
+    end if
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
@@ -149,32 +149,32 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
     call exlima(' ', 0, 'V', modele, ligrel)
 !
 !
-    leres1=resuc1
+    leres1 = resuc1
 !
 !
     if (newcal) then
         call rscrsd('G', leres1, tysd, nbordr)
         call titre()
-    endif
+    end if
 !
 !
 !============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
     do iopt = 1, nbopt
-        option=zk16(jopt+iopt-1)
+        option = zk16(jopt+iopt-1)
 !
         call jeveuo(knum, 'L', jordr)
 !
-        call calcop(option, lesopt, resuco, resuc1, knum,&
+        call calcop(option, lesopt, resuco, resuc1, knum, &
                     nbordr, tysd, iret)
         if (iret .eq. 0) goto 120
 !
 !
-        nuord=zi(jordr)
-        call medom1(modele, mate, mateco, cara, lload_name, nb_load,&
+        nuord = zi(jordr)
+        call medom1(modele, mate, mateco, cara, lload_name, nb_load, &
                     resuco, nuord)
         call jeveuo(lload_name//'.LCHA', 'L', jcha)
 !
-        call mecham(option, modele, cara, nh, chgeom,&
+        call mecham(option, modele, cara, nh, chgeom, &
                     chcara, chharm, iret)
         if (iret .ne. 0) goto 190
 !
@@ -187,134 +187,134 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
 !
 ! PAR DECRET EDA DU 22/08/01 ON SUPPRIME LE PARAMETRE NIVEAU ET ON LE
 ! FIXE A 2 (15 VALEURS DE PARAMETRES).
-            niveau=2
+            niveau = 2
 !
 ! RECUPERATION NIVEAU AFFICHAGE
             call infniv(ifm, niv)
 !
 ! BOUCLE SUR LES INSTANTS CHOISIS PAR LE USER
-            insold=zero
-            chtemm=' '
-            chtemp=' '
-            chflum=' '
-            chflup=' '
+            insold = zero
+            chtemm = ' '
+            chtemp = ' '
+            chflum = ' '
+            chflup = ' '
 !
 ! PREPARATION DES CALCULS D'INDICATEUR (CONNECTIVITE INVERSE, CHARGE)
             call jeveuo(lload_name//'.LCHA', 'L', jcha)
-            call resth2(modele, ligrmo, zk8(jcha), nb_load, ma,&
-                        cartef, nomgdf, carteh, nomgdh, cartet,&
-                        nomgdt, cartes, nomgds, chgeom, chsour,&
+            call resth2(modele, ligrmo, zk8(jcha), nb_load, ma, &
+                        cartef, nomgdf, carteh, nomgdh, cartet, &
+                        nomgdt, cartes, nomgds, chgeom, chsour, &
                         psourc)
 !
             if (niv .ge. 1) then
-                write (ifm,*)
-                write (ifm,*)&
+                write (ifm, *)
+                write (ifm, *)&
      &       '*********************************************'
-                write (ifm,*)'  CALCUL DE CARTES D''ERREURS EN RESIDU'
-                write (ifm,*)'       POUR LE PROBLEME THERMIQUE'
-                write (ifm,*)
-                write (ifm,*)'  OPTION DE CALCUL   ERTH_ELEM'
-                write (ifm,*)'  MODELE                ',modele
-                write (ifm,*)'  SD EVOL_THER DONNEE   ',resuco
-                write (ifm,*)'             RESULTAT   ',resuc1
-                write (ifm,*)
-                write (ifm,*)&
+                write (ifm, *) '  CALCUL DE CARTES D''ERREURS EN RESIDU'
+                write (ifm, *) '       POUR LE PROBLEME THERMIQUE'
+                write (ifm, *)
+                write (ifm, *) '  OPTION DE CALCUL   ERTH_ELEM'
+                write (ifm, *) '  MODELE                ', modele
+                write (ifm, *) '  SD EVOL_THER DONNEE   ', resuco
+                write (ifm, *) '             RESULTAT   ', resuc1
+                write (ifm, *)
+                write (ifm, *)&
      &        '* CONTRAIREMENT AUX CALCULS THERMIQUES, POUR *'
-                write (ifm,*)&
+                write (ifm, *)&
      &        '* UN TYPE DE CHARGEMENT DONNE, ON NE RETIENT *'
-                write (ifm,*)&
+                write (ifm, *)&
      &        '* QUE LA DERNIERE OCCURENCE DE AFFE_CHAR_THER*'
-                write (ifm,*)'  LISTE DES CHARGEMENTS :'
+                write (ifm, *) '  LISTE DES CHARGEMENTS :'
                 do bufin1 = 1, nb_load
-                    write (ifm,*)'                        ',zk8(jcha+bufin1-1)
+                    write (ifm, *) '                        ', zk8(jcha+bufin1-1)
                 end do
-                write (ifm,*)'  CL DE FLUX RETENUE      ',nomgdf
-                write (ifm,*)'  CL D''ECHANGE RETENUE    ',nomgdh
-                write (ifm,*)'  SOURCE RETENUE          ',nomgds
-                write (ifm,*)'  MATERIAU PRIS EN COMPTE ',mate(1:8)
-                write (ifm,*)'  NOMBRE DE NUMERO D''ORDRE ',nbordr
-            endif
+                write (ifm, *) '  CL DE FLUX RETENUE      ', nomgdf
+                write (ifm, *) '  CL D''ECHANGE RETENUE    ', nomgdh
+                write (ifm, *) '  SOURCE RETENUE          ', nomgds
+                write (ifm, *) '  MATERIAU PRIS EN COMPTE ', mate(1:8)
+                write (ifm, *) '  NOMBRE DE NUMERO D''ORDRE ', nbordr
+            end if
 !
 ! BOUCLE SUR LES PAS DE TEMPS
             do iaux = 1, nbordr
                 call jemarq()
                 call jerecu('V')
-                iordr=zi(jordr+iaux-1)
-                call medom1(modele, mate, mateco, cara, lload_name, nb_load,&
+                iordr = zi(jordr+iaux-1)
+                call medom1(modele, mate, mateco, cara, lload_name, nb_load, &
                             resuco, iordr)
                 call mecara(cara, chcara)
 ! RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
                 call jenonu(jexnom(resuco//'           .NOVA', 'PARM_THETA'), iad)
                 if (iad .eq. 0) then
-                    valthe=0.57d0
+                    valthe = 0.57d0
                     call utmess('A', 'CALCULEL4_98', sk=resuco)
                 else
-                    call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr,&
+                    call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr, &
                                 0, sjv=iad, styp=k8b)
-                    valthe=zr(iad)
-                    if ((valthe.gt.1.d0) .or. (valthe.lt.0.d0)) then
+                    valthe = zr(iad)
+                    if ((valthe .gt. 1.d0) .or. (valthe .lt. 0.d0)) then
                         call utmess('F', 'INDICATEUR_5', sk=resuco)
-                    endif
-                endif
+                    end if
+                end if
                 if (niv .ge. 1) then
-                    write (ifm,*)'   PARAM-THETA/IORDR ',valthe,iordr
+                    write (ifm, *) '   PARAM-THETA/IORDR ', valthe, iordr
                     if (iaux .eq. nbordr) then
-                        write (ifm,*)&
-                        '*************************************'//&
-                        '*********'
-                        write (ifm,*)
-                    endif
-                endif
+                        write (ifm, *) &
+                            '*************************************'// &
+                            '*********'
+                        write (ifm, *)
+                    end if
+                end if
 !
 ! CALCUL DU CRITERE D'EVOLUTION LEVOL (TRUE=TRANSITOIRE)
 ! CAS PARTICULIER DE L'INSTANT INITIAL D'UN CALCUL TRANSITOIRE
 ! ON ESTIME SON ERREUR COMME EN STATIONNAIRE
                 if (iaux .eq. 1) then
-                    evol=.false.
+                    evol = .false.
                 else
-                    evol=.true.
-                endif
+                    evol = .true.
+                end if
 !
 ! RECUPERATION DU NOM DES CHAMP_GD = RESUCO('FLUX_ELNO',I)
 ! ET RESUCO('TEMP',I) POUR I=IORDR. POUR IORDR-1 ILS SONT STOCKES
 ! DANS CHFLUM/CHTEMM DEPUIS LA DERNIERE ITERATION.
 ! RESUCO = NOM USER DE LA SD DESIGNEE PAR LE MOT-CLE RESULTAT
-                call rsexc2(1, 1, resuco, 'TEMP', iordr,&
+                call rsexc2(1, 1, resuco, 'TEMP', iordr, &
                             chtemp, option, iret)
                 if (iret .gt. 0) then
-                    vali=iordr
+                    vali = iordr
                     call utmess('F', 'CALCULEL6_46', si=vali)
-                endif
-                call rsexc2(1, 1, resuco, 'FLUX_ELNO', iordr,&
+                end if
+                call rsexc2(1, 1, resuco, 'FLUX_ELNO', iordr, &
                             chflup, option, iret)
                 if (iret .gt. 0) then
-                    vali=iordr
+                    vali = iordr
                     call utmess('F', 'CALCULEL6_47', si=vali)
-                endif
+                end if
 !
 ! RECUPERATION DE L'INSTANT CORRESPONDANT A IORDR
-                call rsadpa(resuco, 'L', 1, 'INST', iordr,&
+                call rsadpa(resuco, 'L', 1, 'INST', iordr, &
                             0, sjv=linst, styp=k8b)
-                inst=zr(linst)
+                inst = zr(linst)
 !
 ! IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC...
                 if (niv .eq. 2) then
-                    write (ifm,*)nompro,' **********'
-                    write (ifm,*)'EVOL/I/IORDR',evol,iaux,iordr
-                    write (ifm,*)'INST/INSOLD',inst,insold
-                    write (ifm,*)'CHTEMM/CHTEMP',chtemm,' / ',chtemp
-                    write (ifm,*)'CHFLUM/CHFLUP',chflum,' / ',chflup
-                endif
+                    write (ifm, *) nompro, ' **********'
+                    write (ifm, *) 'EVOL/I/IORDR', evol, iaux, iordr
+                    write (ifm, *) 'INST/INSOLD', inst, insold
+                    write (ifm, *) 'CHTEMM/CHTEMP', chtemm, ' / ', chtemp
+                    write (ifm, *) 'CHFLUM/CHFLUP', chflum, ' / ', chflup
+                end if
 !
 ! RECUPERATION DU NOM DU CHAMP_GD = RESUC1('ERTH_ELEM',IORDR)
 ! RESUC1 = NOM USER DE LA SD CORRESPONDANT AU RESULTAT DE CALC_ERREUR
                 call rsexc1(leres1, option, iordr, chelem)
 ! PREPARATION DES DONNEES/LANCEMENT DU CALCUL DES INDICATEURS
-                call resthe(ligrmo, evol, chtemm, chtemp, chflum,&
-                            chflup, mateco, valthe, insold, inst,&
-                            chelem, niveau, ifm, niv, ma,&
-                            cartef, nomgdf, carteh, nomgdh, cartet,&
-                            nomgdt, cartes, nomgds, chgeom, chsour,&
+                call resthe(ligrmo, evol, chtemm, chtemp, chflum, &
+                            chflup, mateco, valthe, insold, inst, &
+                            chelem, niveau, ifm, niv, ma, &
+                            cartef, nomgdf, carteh, nomgdh, cartet, &
+                            nomgdt, cartes, nomgds, chgeom, chsour, &
                             psourc, iaux)
 ! CALCUL DE L'ESTIMATEUR GLOBAL
                 call erglth(chelem, inst, niveau, iordr, resuco)
@@ -323,10 +323,10 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
 !
 ! INIT. POUR LE NUMERO D'ORDRE SUIVANT
                 if (nbordr .ne. 1 .and. iaux .ne. nbordr) then
-                    chtemm=chtemp
-                    chflum=chflup
-                    insold=inst
-                endif
+                    chtemm = chtemp
+                    chflum = chflup
+                    insold = inst
+                end if
                 call jedema()
             end do
 ! DESTRUCTION DES OBJETS JEVEUX VOLATILES
@@ -341,14 +341,14 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
 !    -- OPTION "ERTH_ELNO"
 !    ------------------------------------------------------------------
 !
-        else if (option.eq.'ERTH_ELNO') then
+        else if (option .eq. 'ERTH_ELNO') then
 !
             do iaux = 1, nbordr
                 call jemarq()
                 call jerecu('V')
-                iordr=zi(jordr+iaux-1)
+                iordr = zi(jordr+iaux-1)
 ! RECUPERATION DU NOM DU CHAMP_GD = RESUCO('ERTH_ELEM',IORDR)
-                call rsexc2(1, 1, resuco, 'ERTH_ELEM', iordr,&
+                call rsexc2(1, 1, resuco, 'ERTH_ELEM', iordr, &
                             cherre, option, iret1)
                 if (iret1 .gt. 0) goto 40
 ! RECUPERATION DU NOM DU CHAMP_GD = RESUC1('ERTH_ELNO',IORDR)
@@ -357,51 +357,51 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
                 call reslgn(ligrmo, option, cherre, cherrn)
 ! NOTATION DE LA SD RESULTAT LERES1
                 call rsnoch(leres1, option, iordr)
- 40             continue
+40              continue
                 call jedema()
             end do
 !
 !    ------------------------------------------------------------------
         else
             call utmess('A', 'CALCULEL3_22', sk=option)
-        endif
+        end if
 !
 120     continue
     end do
 !       ====== FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =======
 !
     if (newcal) then
-        nompar='&&'//nompro//'.NOMS_PARA '
+        nompar = '&&'//nompro//'.NOMS_PARA '
         call rsnopa(resuco, 2, nompar, nbac, nbpa)
-        nbpara=nbac+nbpa
+        nbpara = nbac+nbpa
         call jeveuo(nompar, 'L', jpa)
         do iaux = 1, nbordr
-            iordr=zi(jordr+iaux-1)
+            iordr = zi(jordr+iaux-1)
             do j = 1, nbpara
-                call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr,&
+                call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr, &
                             1, sjv=iadin, styp=type)
-                call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr,&
+                call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr, &
                             1, sjv=iadou, styp=type)
                 if (type(1:1) .eq. 'I') then
-                    zi(iadou)=zi(iadin)
-                else if (type(1:1).eq.'R') then
-                    zr(iadou)=zr(iadin)
-                else if (type(1:1).eq.'C') then
-                    zc(iadou)=zc(iadin)
-                else if (type(1:3).eq.'K80') then
-                    zk80(iadou)=zk80(iadin)
-                else if (type(1:3).eq.'K32') then
-                    zk32(iadou)=zk32(iadin)
-                else if (type(1:3).eq.'K24') then
-                    zk24(iadou)=zk24(iadin)
-                else if (type(1:3).eq.'K16') then
-                    zk16(iadou)=zk16(iadin)
-                else if (type(1:2).eq.'K8') then
-                    zk8(iadou)=zk8(iadin)
-                endif
+                    zi(iadou) = zi(iadin)
+                else if (type(1:1) .eq. 'R') then
+                    zr(iadou) = zr(iadin)
+                else if (type(1:1) .eq. 'C') then
+                    zc(iadou) = zc(iadin)
+                else if (type(1:3) .eq. 'K80') then
+                    zk80(iadou) = zk80(iadin)
+                else if (type(1:3) .eq. 'K32') then
+                    zk32(iadou) = zk32(iadin)
+                else if (type(1:3) .eq. 'K24') then
+                    zk24(iadou) = zk24(iadin)
+                else if (type(1:3) .eq. 'K16') then
+                    zk16(iadou) = zk16(iadin)
+                else if (type(1:2) .eq. 'K8') then
+                    zk8(iadou) = zk8(iadin)
+                end if
             end do
         end do
-    endif
+    end if
 !
 !
 190 continue

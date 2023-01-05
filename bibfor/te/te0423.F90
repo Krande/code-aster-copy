@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine te0423(option, nomte)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dxbsig.h"
 #include "asterfort/dxefg2.h"
@@ -44,8 +44,8 @@ subroutine te0423(option, nomte)
     character(len=16) :: optio2
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcaco)
@@ -58,7 +58,7 @@ subroutine te0423(option, nomte)
         call dxtpgl(zr(jgeom), pgl)
     else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
-    endif
+    end if
 !
 ! --- DETERMINATION DES COORDONNEES DES CONNECTIVITES DE L'ELEMENT
 ! --- DANS SON REPERE LOCAL
@@ -75,7 +75,7 @@ subroutine te0423(option, nomte)
 ! --- (I.E. SOMME_VOL(BT_SIG))
 !     ------------------------
     optio2 = 'FORC_NODA'
-    call dxbsig(nomte, xyzl, pgl, sigt, bsigma,&
+    call dxbsig(nomte, xyzl, pgl, sigt, bsigma, &
                 optio2)
 !
 ! --- AFFECTATION DU VECTEUR DES FORCES ELEMENTAIRES EN SORTIE DU TE

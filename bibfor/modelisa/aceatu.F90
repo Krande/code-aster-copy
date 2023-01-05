@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,10 +65,10 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 ! ----------------------------------------------------------------------
 !
     integer :: iext1, iext2, ima, inn, ioc, jcozk, jdco, jdgn, jdno, jdme
-    integer ::   jma,     jnozk
+    integer ::   jma, jnozk
     integer :: nbext2, nbpart, nbtuy, ncar, ni1, ni2, nj, nj1, nj2, nn, nng
-    integer :: numnoe, nutyel, nval,  ixma, j
-    integer ::  nno, nbtuy4, nbext1, jzkpar,  ibid
+    integer :: numnoe, nutyel, nval, ixma, j
+    integer ::  nno, nbtuy4, nbext1, jzkpar, ibid
     integer :: ier, nbmail
     real(kind=8) :: val(3), epsi
     character(len=8) :: nomu, car, crit
@@ -104,77 +104,77 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
 !   Comptage des MET3SEG3
-    nbtuy=0
+    nbtuy = 0
     do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
         do j = 1, nbepo
             if (nutyel .eq. ntyele(j)) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
-                if ((nunoel.eq.'MET3SEG3') .or. ( nunoel.eq.'MET6SEG3') .or.&
-                    (nunoel.eq.'MET3SEG4')) then
-                    nbtuy=nbtuy+1
-                endif
-            endif
-        enddo
-    enddo
+                if ((nunoel .eq. 'MET3SEG3') .or. (nunoel .eq. 'MET6SEG3') .or. &
+                    (nunoel .eq. 'MET3SEG4')) then
+                    nbtuy = nbtuy+1
+                end if
+            end if
+        end do
+    end do
 !
 !   Stockage des éléments MET3SEG3 et des noeuds
     AS_ALLOCATE(vi=notuy, size=nbtuy*4)
     AS_ALLOCATE(vi=eltuy, size=nbtuy)
-    nno=0
-    nbtuy=0
+    nno = 0
+    nbtuy = 0
     do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
         do j = 1, nbepo
             if (nutyel .eq. ntyele(j)) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
-                if ((nunoel.eq.'MET3SEG3') .or. ( nunoel.eq.'MET6SEG3')) then
-                    nno=3
-                    nbtuy=nbtuy+1
-                    eltuy(nbtuy)=ima
+                if ((nunoel .eq. 'MET3SEG3') .or. (nunoel .eq. 'MET6SEG3')) then
+                    nno = 3
+                    nbtuy = nbtuy+1
+                    eltuy(nbtuy) = ima
                     call jeveuo(jexnum(mlgcnx, ima), 'L', jdno)
-                    notuy(3*nbtuy-2)=zi(jdno)
-                    notuy(3*nbtuy-1)=zi(jdno+1)
-                    notuy(3*nbtuy )=zi(jdno+2)
-                endif
-            endif
-        enddo
-    enddo
+                    notuy(3*nbtuy-2) = zi(jdno)
+                    notuy(3*nbtuy-1) = zi(jdno+1)
+                    notuy(3*nbtuy) = zi(jdno+2)
+                end if
+            end if
+        end do
+    end do
 !
-    nbtuy4=0
+    nbtuy4 = 0
     do ima = 1, nbmail
         nutyel = zi(jdme+ima-1)
         do j = 1, nbepo
             if (nutyel .eq. ntyele(j)) then
                 call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
                 if (nunoel .eq. 'MET3SEG4') then
-                    nno=4
-                    nbtuy4=nbtuy4+1
-                    eltuy(nbtuy4)=ima
+                    nno = 4
+                    nbtuy4 = nbtuy4+1
+                    eltuy(nbtuy4) = ima
                     call jeveuo(jexnum(mlgcnx, ima), 'L', jdno)
-                    notuy(4*nbtuy4-3)=zi(jdno)
-                    notuy(4*nbtuy4-2)=zi(jdno+1)
-                    notuy(4*nbtuy4-1)=zi(jdno+2)
-                    notuy(4*nbtuy4 )=zi(jdno+3)
-                endif
-            endif
-        enddo
-    enddo
+                    notuy(4*nbtuy4-3) = zi(jdno)
+                    notuy(4*nbtuy4-2) = zi(jdno+1)
+                    notuy(4*nbtuy4-1) = zi(jdno+2)
+                    notuy(4*nbtuy4) = zi(jdno+3)
+                end if
+            end if
+        end do
+    end do
 !
     if (nbtuy4 .ne. 0) then
         if (nbtuy .ne. 0) then
             call utmess('F', 'MODELISA_27')
         else
             nbtuy = nbtuy4
-        endif
-    endif
+        end if
+    end if
 !
 !   Comptage des parties connexes. HYPOTHESE : LES MAILLES SONT TOUTES ORIENTÉES DANS LE MÊME SENS
-    nbext1=0
-    nbext2=0
+    nbext1 = 0
+    nbext2 = 0
     do ima = 1, nbtuy
-        iext1=0
-        iext2=0
+        iext1 = 0
+        iext2 = 0
         ni1 = notuy(nno*(ima-1)+1)
         ni2 = notuy(nno*(ima-1)+2)
         do jma = 1, nbtuy
@@ -182,28 +182,28 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
                 nj1 = notuy(nno*(jma-1)+1)
                 nj2 = notuy(nno*(jma-1)+2)
                 if (ni1 .eq. nj2) then
-                    iext1=1
-                endif
+                    iext1 = 1
+                end if
                 if (ni2 .eq. nj1) then
-                    iext2=1
-                endif
-            endif
-        enddo
+                    iext2 = 1
+                end if
+            end if
+        end do
         if (iext1 .eq. 0) then
-            nbext1=nbext1+1
-        endif
+            nbext1 = nbext1+1
+        end if
         if (iext2 .eq. 0) then
-            nbext2=nbext2+1
-        endif
-    enddo
+            nbext2 = nbext2+1
+        end if
+    end do
     if (nbext1 .ne. nbext2) then
         call utmess('F', 'MODELISA10_4')
-    endif
-    nbpart=nbext1
+    end if
+    nbpart = nbext1
     ifm = ivr(4)
     if (ivr(3) .eq. 2) then
-        write(ifm,*) 'NOMBRE DE PARTIES CONNEXES DE TUYAU : ',nbpart
-    endif
+        write (ifm, *) 'NOMBRE DE PARTIES CONNEXES DE TUYAU : ', nbpart
+    end if
 !
 !   Vérification et stockage des parties connexes.
     AS_ALLOCATE(vi=sens, size=nbpart)
@@ -217,13 +217,13 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 !
 !   Lecture de MODI_METRIQUE
     AS_ALLOCATE(vi=mmt, size=nbmail)
-    call acemmt(noma,mmt)
+    call acemmt(noma, mmt)
 !
 !   Lecture du mot-clef GENE_TUYAU
-    inn=0
+    inn = 0
 !   Valeurs par défaut cohérentes avec le catalogue
-    epsi=1.d-4
-    crit='RELATIF'
+    epsi = 1.d-4
+    crit = 'RELATIF'
 !   Pour ne pas passer des variables non-initialisées en argument
     jnozk = 1
     jcozk = 1
@@ -238,9 +238,9 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
             call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=3, vect=val, nbret=nval)
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=epsi, nbret=ibid)
             if (ibid .eq. 0) then
-                epsi=1.d-4
-                crit='RELATIF'
-            endif
+                epsi = 1.d-4
+                crit = 'RELATIF'
+            end if
             call getvtx('ORIENTATION', 'CRITERE', iocc=ioc, scal=crit, nbret=ibid)
             if (car .eq. 'GENE_TUY') then
                 if (nj .gt. 0) then
@@ -248,46 +248,46 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
                         call jeveuo(jexnom(mlggno, nomlu), 'L', jdgn)
                         call jelira(jexnom(mlggno, nomlu), 'LONUTI', nng)
                         if (nng .eq. 1) then
-                            inn=inn+1
+                            inn = inn+1
                             zi(jnozk-1+inn) = zi(jdgn)
-                            zr(jcozk-1+3*inn-2)=val(1)
-                            zr(jcozk-1+3*inn-1)=val(2)
-                            zr(jcozk-1+3*inn )=val(3)
+                            zr(jcozk-1+3*inn-2) = val(1)
+                            zr(jcozk-1+3*inn-1) = val(2)
+                            zr(jcozk-1+3*inn) = val(3)
                         else
-                            ier=1
+                            ier = 1
                             goto 999
-                        endif
+                        end if
                     else
-                        ier=1
+                        ier = 1
                         goto 999
-                    endif
-                endif
+                    end if
+                end if
                 if (nn .gt. 0) then
                     if (nn .eq. 1) then
                         nomnoe = nomlu
                         call jenonu(jexnom(mlgnno, nomnoe), numnoe)
-                        inn=inn+1
+                        inn = inn+1
                         zi(jnozk-1+inn) = numnoe
-                        zr(jcozk-1+3*inn-2)=val(1)
-                        zr(jcozk-1+3*inn-1)=val(2)
-                        zr(jcozk-1+3*inn )=val(3)
+                        zr(jcozk-1+3*inn-2) = val(1)
+                        zr(jcozk-1+3*inn-1) = val(2)
+                        zr(jcozk-1+3*inn) = val(3)
                     else
-                        ier=1
+                        ier = 1
                         goto 999
-                    endif
-                endif
-            endif
-        enddo
-    endif
-    call aceat3(noma, nomu, nbtuy, nbpart, nbmapart,&
-                lismapart, lisnopart, ivr, inn,&
-                zi(jnozk), zr(jcozk), sens, zr(jdco), epsi,&
-                crit, nno,mmt)
+                    end if
+                end if
+            end if
+        end do
+    end if
+    call aceat3(noma, nomu, nbtuy, nbpart, nbmapart, &
+                lismapart, lisnopart, ivr, inn, &
+                zi(jnozk), zr(jcozk), sens, zr(jdco), epsi, &
+                crit, nno, mmt)
 !
 999 continue
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA_28')
-    endif
+    end if
 !
 !   Ménage
     AS_DEALLOCATE(vi=notuy)

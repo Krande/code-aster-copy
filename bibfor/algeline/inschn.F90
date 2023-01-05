@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine inschn(andi, ndi, xadj, adjncy, chaine,&
+subroutine inschn(andi, ndi, xadj, adjncy, chaine, &
                   nouv, place, debut)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -28,23 +28,23 @@ subroutine inschn(andi, ndi, xadj, adjncy, chaine,&
     integer :: j, suiv, cour, ndj
     integer :: debut
 !
-    do j = xadj(andi), xadj(andi+1) - 1
+    do j = xadj(andi), xadj(andi+1)-1
         ndj = nouv(adjncy(j))
         if (ndj .gt. ndi) then
             if (place(ndj) .eq. 0) then
-                suiv= debut
+                suiv = debut
 145             continue
                 if (suiv .lt. ndj) then
                     cour = suiv
                     suiv = chaine(cour)
                     goto 145
-                endif
+                end if
                 if (suiv .gt. ndj) then
                     chaine(cour) = ndj
                     chaine(ndj) = suiv
-                    place(ndj)=1
-                endif
-            endif
-        endif
+                    place(ndj) = 1
+                end if
+            end if
+        end if
     end do
 end subroutine

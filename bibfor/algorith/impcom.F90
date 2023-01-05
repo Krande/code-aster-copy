@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine impcom(inoda, nomddl, chaine)
     character(len=8) :: chnod
     integer :: i, k
     integer :: nchain
-    parameter    (nchain = 7)
+    parameter(nchain=7)
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,21 +54,21 @@ subroutine impcom(inoda, nomddl, chaine)
     chnod = '  '
     if (inoda .eq. 0) goto 99
 !
-    write(chnod(1:nchain),'(I7.7)') inoda
+    write (chnod(1:nchain), '(I7.7)') inoda
     k = 1
 !
     do i = 1, nchain
         if (chnod(i:i) .eq. '0') then
-            k=k+1
+            k = k+1
         else
             chaine(1:1) = 'N'
             goto 20
-        endif
+        end if
     end do
- 20 continue
+20  continue
 !
     chaine(2:nchain-k+2) = chnod(k:nchain)
 !
     chaine(9:16) = nomddl
- 99 continue
+99  continue
 end subroutine

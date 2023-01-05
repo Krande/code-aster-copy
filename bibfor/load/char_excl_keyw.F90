@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_suffix)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -26,11 +26,11 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
-character(len=16), intent(in) :: keywordfact
-character(len=24), intent(in) :: keywordexcl
-integer, intent(out) :: n_keyexcl
-integer, intent(in), optional :: n_suffix
-character(len=8), optional, intent(in) :: list_suffix(*)
+    character(len=16), intent(in) :: keywordfact
+    character(len=24), intent(in) :: keywordexcl
+    integer, intent(out) :: n_keyexcl
+    integer, intent(in), optional :: n_suffix
+    character(len=8), optional, intent(in) :: list_suffix(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ character(len=8), optional, intent(in) :: list_suffix(*)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: n_keyexcl_affe
-    parameter (n_keyexcl_affe = 8)
+    parameter(n_keyexcl_affe=8)
     character(len=24) :: excl_affe(n_keyexcl_affe)
     integer :: leng_affe(n_keyexcl_affe)
 !
@@ -58,10 +58,10 @@ character(len=8), optional, intent(in) :: list_suffix(*)
     character(len=8) :: suffix
     character(len=24), pointer :: p_keywordexcl(:) => null()
 !
-    data excl_affe  /'GROUP_MA'     , 'MAILLE'      , 'GROUP_NO'    , 'NOEUD', &
-                     'SANS_GROUP_MA', 'SANS_MAILLE' , 'SANS_GROUP_NO', 'SANS_NOEUD'  /
-    data leng_affe  /8, 6, 8, 5, &
-                     13, 11 , 13, 10 /
+    data excl_affe/'GROUP_MA', 'MAILLE', 'GROUP_NO', 'NOEUD', &
+        'SANS_GROUP_MA', 'SANS_MAILLE', 'SANS_GROUP_NO', 'SANS_NOEUD'/
+    data leng_affe/8, 6, 8, 5, &
+        13, 11, 13, 10/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,53 +74,53 @@ character(len=8), optional, intent(in) :: list_suffix(*)
         do i_suffix = 1, n_suffix
             suffix = list_suffix(i_suffix)
             do i_keyw = 1, n_keyexcl_affe
-                keyword = excl_affe(i_keyw)(1:leng_affe(i_keyw))//suffix
-                n_keyexcl = n_keyexcl + 1
+                keyword = excl_affe(i_keyw) (1:leng_affe(i_keyw))//suffix
+                n_keyexcl = n_keyexcl+1
             end do
         end do
     else
         do i_keyw = 1, n_keyexcl_affe
             keyword = excl_affe(i_keyw)
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
         end do
-    endif
+    end if
 
 ! - Other keywords - Count
     if (keywordfact .eq. 'FACE_IMPO') then
-        n_keyexcl = n_keyexcl + 2
-    else if (keywordfact.eq.'ARETE_IMPO') then
-        n_keyexcl = n_keyexcl + 1
-    else if (keywordfact.eq.'LIAISON_OBLIQUE') then
-        n_keyexcl = n_keyexcl + 1
-    else if (keywordfact.eq.'DDL_IMPO') then
-        n_keyexcl = n_keyexcl + 1
-    else if (keywordfact.eq.'TEMP_IMPO') then
+        n_keyexcl = n_keyexcl+2
+    else if (keywordfact .eq. 'ARETE_IMPO') then
+        n_keyexcl = n_keyexcl+1
+    else if (keywordfact .eq. 'LIAISON_OBLIQUE') then
+        n_keyexcl = n_keyexcl+1
+    else if (keywordfact .eq. 'DDL_IMPO') then
+        n_keyexcl = n_keyexcl+1
+    else if (keywordfact .eq. 'TEMP_IMPO') then
 ! ----- Nothing else components
-    else if (keywordfact.eq.'PRES_IMPO') then
+    else if (keywordfact .eq. 'PRES_IMPO') then
 ! ----- Nothing else components
-    else if (keywordfact.eq.'DDL_POUTRE') then
-        n_keyexcl = n_keyexcl + 4
-    else if (keywordfact.eq.'LIAISON_SOLIDE') then
-        n_keyexcl = n_keyexcl + 3
+    else if (keywordfact .eq. 'DDL_POUTRE') then
+        n_keyexcl = n_keyexcl+4
+    else if (keywordfact .eq. 'LIAISON_SOLIDE') then
+        n_keyexcl = n_keyexcl+3
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - Create excluded keyword object
     if (n_keyexcl .ne. 0) then
 !
 ! ----- Allocate keyword object
 !
-        call wkvect(keywordexcl, 'V V K24', n_keyexcl, vk24 = p_keywordexcl)
+        call wkvect(keywordexcl, 'V V K24', n_keyexcl, vk24=p_keywordexcl)
 !
 ! ----- Global affectation keywords - Affect
 !
         n_keyexcl = 1
         p_keywordexcl(n_keyexcl) = 'TOUT'
-        if (.not.present(n_suffix)) then
+        if (.not. present(n_suffix)) then
             do i_keyw = 1, n_keyexcl_affe
                 keyword = excl_affe(i_keyw)
-                n_keyexcl = n_keyexcl + 1
+                n_keyexcl = n_keyexcl+1
                 p_keywordexcl(n_keyexcl) = keyword
             end do
         else
@@ -128,55 +128,55 @@ character(len=8), optional, intent(in) :: list_suffix(*)
             do i_suffix = 1, n_suffix
                 suffix = list_suffix(i_suffix)
                 do i_keyw = 1, n_keyexcl_affe
-                    keyword = excl_affe(i_keyw)(1:leng_affe(i_keyw))//suffix
-                    n_keyexcl = n_keyexcl + 1
+                    keyword = excl_affe(i_keyw) (1:leng_affe(i_keyw))//suffix
+                    n_keyexcl = n_keyexcl+1
                     p_keywordexcl(n_keyexcl) = keyword
                 end do
             end do
-        endif
+        end if
 !
 ! ----- Other keywords - Affect
 !
         if (keywordfact .eq. 'FACE_IMPO') then
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'DNOR'
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'DTAN'
-        else if (keywordfact.eq.'ARETE_IMPO') then
-            n_keyexcl = n_keyexcl + 1
+        else if (keywordfact .eq. 'ARETE_IMPO') then
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'DTAN'
-        else if (keywordfact.eq.'ARETE_IMPO') then
-            n_keyexcl = n_keyexcl + 1
+        else if (keywordfact .eq. 'ARETE_IMPO') then
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'DTAN'
-        else if (keywordfact.eq.'LIAISON_OBLIQUE') then
-            n_keyexcl = n_keyexcl + 1
+        else if (keywordfact .eq. 'LIAISON_OBLIQUE') then
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'ANGL_NAUT'
-        else if (keywordfact.eq.'DDL_IMPO') then
-            n_keyexcl = n_keyexcl + 1
+        else if (keywordfact .eq. 'DDL_IMPO') then
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'BLOCAGE'
-        else if (keywordfact.eq.'TEMP_IMPO') then
+        else if (keywordfact .eq. 'TEMP_IMPO') then
 ! ----- Nothing else components
-        else if (keywordfact.eq.'PRES_IMPO') then
+        else if (keywordfact .eq. 'PRES_IMPO') then
 ! ----- Nothing else components
-        else if (keywordfact.eq.'DDL_POUTRE') then
-            n_keyexcl = n_keyexcl + 1
+        else if (keywordfact .eq. 'DDL_POUTRE') then
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'ANGL_VRIL'
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'VECT_Y'
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'MAILLE_REPE'
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'GROUP_MA_REPE'
-        else if (keywordfact.eq.'LIAISON_SOLIDE') then
-            n_keyexcl = n_keyexcl + 1
+        else if (keywordfact .eq. 'LIAISON_SOLIDE') then
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'TRAN'
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'DIST_MIN'
-            n_keyexcl = n_keyexcl + 1
+            n_keyexcl = n_keyexcl+1
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

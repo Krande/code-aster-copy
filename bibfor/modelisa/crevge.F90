@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine crevge(ligrel, bas1)
 !
 !
     integer :: nvoima, nscoma
-    parameter(nvoima=200,nscoma=4)
+    parameter(nvoima=200, nscoma=4)
     integer :: touvoi(1:nvoima, 1:nscoma+2)
     integer :: iv, nbma, dim, dimma, iatyma, m0, is, adcom0, nbsom0
     integer :: nbmr, admar, ir, numar, nvtot, iad, dimvlo, jnvge
@@ -80,57 +80,57 @@ subroutine crevge(ligrel, bas1)
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
-    typmai=ma//'.TYPMAIL'
-    connex=ma//'.CONNEX'
-    nommai=ma//'.NOMMAI'
+    typmai = ma//'.TYPMAIL'
+    connex = ma//'.CONNEX'
+    nommai = ma//'.NOMMAI'
     call jeveuo(connex, 'L', jconnex0)
     call jeveuo(jexatr(connex, 'LONCUM'), 'L', jconnexc)
 !
 ! --------- RECHERCHE DES EVENTUELLES MAILLES 3D DANS LE MODELE --------
 !     SI ON EN TROUVE DIM=3 SINON DIM=2 (CE QUI EXCLUE DIM=1 !!!)
 !
-    troisd=.false.
+    troisd = .false.
     call jeveuo(typmai, 'L', iatyma)
     do m0 = 1, nbma
-        iad=iatyma-1+m0
+        iad = iatyma-1+m0
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typem0)
         call dimmai(typem0, dimma)
         if (dimma .eq. 3) then
-            troisd=.true.
+            troisd = .true.
             goto 20
 !
-        endif
+        end if
     end do
- 20 continue
+20  continue
     if (troisd) then
-        dim=3
+        dim = 3
     else
-        dim=2
-    endif
+        dim = 2
+    end if
     if (nbma .lt. 1) then
         call utmess('F', 'VOLUFINI_5', si=nbma)
-    endif
+    end if
 !
 ! --------- CREATION DU POINTEUR DE LONGUEUR DE CONINV ----------------
 !
-    coninv='&&CREVGE.CONINV'
+    coninv = '&&CREVGE.CONINV'
     call cncinv(ma, [0], 0, 'G', coninv)
     call jeveuo(coninv, 'L', jconinv0)
     call jeveuo(jexatr(coninv, 'LONCUM'), 'L', jconinvc)
 !
-    typmai=ma//'.TYPMAIL'
+    typmai = ma//'.TYPMAIL'
 !
     call wkvect(ligrel//'.NVGE', bas1//' V K16', 1, jnvge)
     call gcncon('_', vge(1:8))
-    vge(9:12)='.VGE'
-    zk16(jnvge-1+1)=vge
+    vge(9:12) = '.VGE'
+    zk16(jnvge-1+1) = vge
 !
-    ptvois=vge//'.PTVOIS'
-    elvois=vge//'.ELVOIS'
+    ptvois = vge//'.PTVOIS'
+    elvois = vge//'.ELVOIS'
 !
 !
     call wkvect(ptvois, bas1//' V I', nbma+1, iaddvo)
-    zi(iaddvo)=0
+    zi(iaddvo) = 0
 !
 !
 !
@@ -148,13 +148,13 @@ subroutine crevge(ligrel, bas1)
 !
         if (dimma .eq. dim) then
 ! --------- REMISE ZERO TOUVOI
-            nvtot=0
+            nvtot = 0
             do iv = 1, nvoima
                 do is = 1, nscoma+2
-                    touvoi(iv,is)=0
+                    touvoi(iv, is) = 0
                 end do
             end do
-            adcom0=jconnex0-1+zi(jconnexc-1+m0)
+            adcom0 = jconnex0-1+zi(jconnexc-1+m0)
             call nbsomm(typem0, nbsom0)
 !
 !      REMPLISSAGE DU TABLEAU DE POINTEURS
@@ -163,25 +163,25 @@ subroutine crevge(ligrel, bas1)
 !
             do is = 1, nbsom0
 !               -- NBMR NOMBRE DE MAILLES RELIEES AU SOMMET
-                admar=jconinv0-1+zi(jconinvc-1+zi(adcom0-1+is))
-                nbmr=zi(jconinvc-1+zi(adcom0-1+is)+1) - zi(jconinvc-1+zi(adcom0-1+is))
+                admar = jconinv0-1+zi(jconinvc-1+zi(adcom0-1+is))
+                nbmr = zi(jconinvc-1+zi(adcom0-1+is)+1)-zi(jconinvc-1+zi(adcom0-1+is))
                 if (nbmr .gt. 1) then
                     do ir = 1, nbmr
 !                       -- NUMAR NUMERO DE LA MAILLE RELIEE AU SOMMET
-                        numar=zi(admar-1+ir)
-                        call jenuno(jexnum( '&CATA.TM.NOMTM', zi(iatyma- 1+numar)), typemr)
+                        numar = zi(admar-1+ir)
+                        call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+numar)), typemr)
                         call dimmai(typemr, dimma)
 !
 !                       ON NE STOQUE QUE LES VOISINS DE MEME DIMENTION
 !
 !
-                        if (numar .ne. m0 .and. (dimma.eq.dim)) then
+                        if (numar .ne. m0 .and. (dimma .eq. dim)) then
 !                           -- AJOUT DE NUMAR A TOUVOI POUR M0
-                            call adlivo(numar, is, nvtot, nvoima, nscoma,&
+                            call adlivo(numar, is, nvtot, nvoima, nscoma, &
                                         touvoi, noma)
-                        endif
+                        end if
                     end do
-                endif
+                end if
             end do
             call dimvoi(nvtot, nvoima, nscoma, touvoi, dimvlo)
         else
@@ -189,9 +189,9 @@ subroutine crevge(ligrel, bas1)
 !      POUR LES ELEMENTS NON TARITES ON ECRIT QUAND MEME
 !      QUE LE NOMBRE DE VOISINS EST NUL
 !
-            dimvlo=1
-        endif
-        zi(iaddvo+m0)=zi(iaddvo+m0-1)+dimvlo
+            dimvlo = 1
+        end if
+        zi(iaddvo+m0) = zi(iaddvo+m0-1)+dimvlo
     end do
 !
 !  ON PEUT MAINTENANT ALLOUER ET REMPLIR CET OBJET
@@ -208,45 +208,45 @@ subroutine crevge(ligrel, bas1)
 !
         if (dimma .eq. dim) then
 ! --------- REMISE ZERO TOUVOI
-            nvtot=0
+            nvtot = 0
             do iv = 1, nvoima
                 do is = 1, nscoma+2
-                    touvoi(iv,is)=0
+                    touvoi(iv, is) = 0
                 end do
             end do
-            adcom0=jconnex0-1+zi(jconnexc-1+m0)
+            adcom0 = jconnex0-1+zi(jconnexc-1+m0)
             call nbsomm(typem0, nbsom0)
 !
 ! --------- BOUCLE SUR LES SOMMETS  ----------------
 !
             do is = 1, nbsom0
 !               -- NBMR NOMBRE DE MAILLES RELIEES AU SOMMET
-                admar=jconinv0-1+zi(jconinvc-1+zi(adcom0-1+is))
-                nbmr=zi(jconinvc-1+zi(adcom0-1+is)+1) - zi(jconinvc-1+zi(adcom0-1+is))
+                admar = jconinv0-1+zi(jconinvc-1+zi(adcom0-1+is))
+                nbmr = zi(jconinvc-1+zi(adcom0-1+is)+1)-zi(jconinvc-1+zi(adcom0-1+is))
                 if (nbmr .gt. 1) then
                     do ir = 1, nbmr
 !                       NUMAR NUMERO DE LA MAILLE RELIEE AU SOMMET
-                        numar=zi(admar-1+ir)
-                        call jenuno(jexnum( '&CATA.TM.NOMTM', zi(iatyma- 1+numar)), typemr)
+                        numar = zi(admar-1+ir)
+                        call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+numar)), typemr)
                         call dimmai(typemr, dimma)
-                        if (numar .ne. m0 .and. (dimma.eq.dim)) then
+                        if (numar .ne. m0 .and. (dimma .eq. dim)) then
 !                           -- AJOUT DE NUMAR A TOUVOI POUR M0
-                            call adlivo(numar, is, nvtot, nvoima, nscoma,&
+                            call adlivo(numar, is, nvtot, nvoima, nscoma, &
                                         touvoi, noma)
-                        endif
+                        end if
                     end do
-                endif
+                end if
             end do
-            iad=iadvoi+zi(iaddvo+m0-1)
-            call crvloc(dim, adcom0, iatyma, jconnex0, jconnexc,&
+            iad = iadvoi+zi(iaddvo+m0-1)
+            call crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, &
                         zi(iad), nvtot, nvoima, nscoma, touvoi)
         else
 !
 !           POUR LES ELEMENTS NON TARITES ON ECRIT QUAND MEME
 !           QUE LE NOMBRE DE VOISINS EST NUL
 !
-            zi(iadvoi+zi(iaddvo+m0-1))=0
-        endif
+            zi(iadvoi+zi(iaddvo+m0-1)) = 0
+        end if
     end do
 !
 !

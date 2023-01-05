@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
-                  valpar, nbres, nomres, valres, icodre,&
-                  iarret,nan)
-use calcul_module, only : ca_iactif_
+subroutine rcvala(jmat, nomat, phenom, nbpar, nompar, &
+                  valpar, nbres, nomres, valres, icodre, &
+                  iarret, nan)
+    use calcul_module, only: ca_iactif_
     implicit none
 #include "jeveux.h"
 #include "asterfort/fointa.h"
@@ -69,7 +69,7 @@ use calcul_module, only : ca_iactif_
 ! ----------------------------------------------------------------------
 !   -- parameters associes au materiau code :
     integer :: lmat, lfct, lsup
-    parameter  ( lmat = 9 , lfct = 10 , lsup = 2 )
+    parameter(lmat=9, lfct=10, lsup=2)
 
     integer :: ires, icomp, ipi, iadzi, iazk24, nbobj, nbr, nbc, nbf, ivalk
     integer :: ivalr, ir, ipif, ik, nbmat, imat, kmat, inom
@@ -82,57 +82,54 @@ use calcul_module, only : ca_iactif_
 
 !   -- On est oblige de recopier phenom car il faut le tronquer
 !      parfois a 10 avant de le comparer
-    nomphe=phenom
-
+    nomphe = phenom
 
 !   -- initialisation de icodre(*) et valres(*) :
 !   ---------------------------------------------
-    rundf=r8nnem()
-    lnan=.true.
+    rundf = r8nnem()
+    lnan = .true.
     if (present(nan)) then
-        ASSERT(nan.eq.'OUI' .or. nan.eq.'NON')
-        if (nan.eq.'NON') lnan=.false.
-    endif
+        ASSERT(nan .eq. 'OUI' .or. nan .eq. 'NON')
+        if (nan .eq. 'NON') lnan = .false.
+    end if
     do ires = 1, nbres
         icodre(ires) = 1
         if (lnan) valres(ires) = rundf
-    enddo
-
+    end do
 
 !   -- Calcul de imat
 !      Si nomat est fourni , on explore l'entete de la sd mater_code pour
 !      trouver le "bon" materiau de la la liste
 !   ----------------------------------------------------------------------
-    nbmat=zi(jmat)
+    nbmat = zi(jmat)
     if (nomat(1:1) .ne. ' ') then
         do kmat = 1, nbmat
-            inom=zi(jmat+kmat)
-            nomi=zk8(inom)
+            inom = zi(jmat+kmat)
+            nomi = zk8(inom)
             if (nomi .eq. nomat) then
                 imat = jmat+zi(jmat+nbmat+kmat)
                 goto 9
-            endif
-        enddo
+            end if
+        end do
         call utmess('F', 'CALCUL_45', sk=nomat)
     else
-        if (nbmat.gt.1) then
-            if ( ca_iactif_.eq.2 ) then
+        if (nbmat .gt. 1) then
+            if (ca_iactif_ .eq. 2) then
                 valk(1) = nomres(1)
                 call utmess('A', 'MODELISA9_4', nk=1, valk=valk)
-            elseif( ca_iactif_.eq.1.or.ca_iactif_.eq.3 ) then
+            elseif (ca_iactif_ .eq. 1 .or. ca_iactif_ .eq. 3) then
                 call tecael(iadzi, iazk24)
-                nomail = zk24(iazk24-1+3)(1:8)
+                nomail = zk24(iazk24-1+3) (1:8)
                 valk(1) = nomail
                 valk(2) = nomres(1)
                 call utmess('A', 'MODELISA9_3', nk=2, valk=valk)
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
         imat = jmat+zi(jmat+nbmat+1)
-    endif
- 9  continue
-
+    end if
+9   continue
 
 !   -- calcul de ipi (pour nomphe):
 !   -------------------------------
@@ -140,33 +137,31 @@ use calcul_module, only : ca_iactif_
         if (nomphe .eq. zk32(zi(imat)+icomp-1)) then
             ipi = zi(imat+2+icomp-1)
             goto 22
-        endif
-    enddo
-
+        end if
+    end do
 
 !   -- selon la valeur de iarret on arrete ou non :
 !   ----------------------------------------------
     if (iarret .ge. 1) then
-        valk(1)=nomphe
+        valk(1) = nomphe
         if (iarret .eq. 1) then
-            if ( ca_iactif_.eq.2 ) then
+            if (ca_iactif_ .eq. 2) then
                 call utmess('F', 'MODELISA9_73', nk=1, valk=valk)
-            elseif( ca_iactif_.eq.1.or.ca_iactif_.eq.3 ) then
+            elseif (ca_iactif_ .eq. 1 .or. ca_iactif_ .eq. 3) then
                 call tecael(iadzi, iazk24)
-                nomail = zk24(iazk24-1+3)(1:8)
+                nomail = zk24(iazk24-1+3) (1:8)
                 valk(2) = nomail
                 call utmess('F', 'MODELISA9_75', nk=2, valk=valk)
             else
                 ASSERT(.false.)
-            endif
+            end if
         elseif (iarret .eq. 2) then
             call utmess('F', 'MODELISA9_74', sk=valk(1))
         elseif (iarret .eq. 3) then
             goto 888
-        endif
-    endif
+        end if
+    end if
     goto 999
-
 
 !   -- calcul de valres(*) :
 !   -------------------------
@@ -182,33 +177,33 @@ use calcul_module, only : ca_iactif_
             if (nomres(ires) .eq. zk16(ivalk+ir-1)) then
                 valres(ires) = zr(ivalr-1+ir)
                 icodre(ires) = 0
-                nbobj = nbobj + 1
+                nbobj = nbobj+1
                 goto 32
-            endif
-        enddo
+            end if
+        end do
 32      continue
-    enddo
+    end do
 
     if (nbobj .ne. nbres) then
         do ires = 1, nbres
             ipif = ipi+lmat-1
             do ik = 1, nbf
                 if (nomres(ires) .eq. zk16(ivalk+nbr+nbc+ik-1)) then
-                    ASSERT(zi(ipif+9).eq.1)
+                    ASSERT(zi(ipif+9) .eq. 1)
                     call fointa(ipif, nbpar, nompar, valpar, valres(ires))
                     icodre(ires) = 0
-                endif
-                ipif = ipif + lfct
+                end if
+                ipif = ipif+lfct
                 if (nomphe .eq. 'TRACTION') then
-                    ipif = ipif + lsup
-                else if (nomphe.eq. 'META_TRACT') then
-                    ipif = ipif + lsup
-                endif
-            enddo
-        enddo
-    endif
+                    ipif = ipif+lsup
+                else if (nomphe .eq. 'META_TRACT') then
+                    ipif = ipif+lsup
+                end if
+            end do
+        end do
+    end if
 
-999  continue
+999 continue
 
     call rcvals(iarret, icodre, nbres, nomres)
 

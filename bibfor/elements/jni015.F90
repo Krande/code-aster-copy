@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 !.......................................................................
     character(len=24) :: carac, ff
     character(len=6) :: flui, pou, geom, alias
-    parameter     (flui = 'FLUIDE',pou='POUTRE',geom='HEXA8 ')
+    parameter(flui='FLUIDE', pou='POUTRE', geom='HEXA8 ')
     integer :: npg1(2, 2), npg2(2, 2), lcarac, nno1, nno2, iret, icarac, npg
     integer :: lff, lfft, n, npgi(3)
     integer :: iff, ifft, ipoids, ivf1, ivf12, ivf2, idpdx1, idpdy1, idpdz1
@@ -47,12 +47,12 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 ! DEB ------------------------------------------------------------------
 !
 !
-    carac='&INEL.'//elrefe//'.CARAC'
-    ff   ='&INEL.'//elrefe//'.FF'
+    carac = '&INEL.'//elrefe//'.CARAC'
+    ff = '&INEL.'//elrefe//'.FF'
 !
 !
     nbobj = 2
-    ASSERT(nmaxob.gt.nbobj)
+    ASSERT(nmaxob .gt. nbobj)
     liobj(1) = carac
     liobj(2) = ff
 !
@@ -68,72 +68,72 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
         alias = 'HEXA20'
 !       --- NOMBRE DE POINTS DE GAUSS ASSOCIES A LA PREMIERE FAMILLE
 !       --->       MATRICE DE RAIDEUR : INTEGRATION SELON X ET Y
-        npg1(1,1) = 2
+        npg1(1, 1) = 2
 !       --->       MATRICE DE RAIDEUR : INTEGRATION SELON Z
-        npg1(1,2) = 2
+        npg1(1, 2) = 2
 !       --->       MATRICE DE MASSE : INTEGRATION SELON X ET Y
-        npg1(2,1) = 2
+        npg1(2, 1) = 2
 !       --->       MATRICE DE MASSE : INTEGRATION SELON Z
-        npg1(2,2) = 4
+        npg1(2, 2) = 4
 !       --- NOMBRE DE POINTS DE GAUSS ASSOCIES A LA DEUXIEME FAMILLE
 !       ---        MATRICE DE MASSE : CONTRIBUTION DE P (MATRICE A)
 !       --->       INTEGRATION SELON X ET Y
-        npg2(1,1) = 3
+        npg2(1, 1) = 3
 !       --->       INTEGRATION SELON Z
-        npg2(1,2) = 3
+        npg2(1, 2) = 3
 !       ---        MATRICE DE MASSE : COUPLAGE FLUIDE-STRUCTURE
 !       --->       INTEGRATION SELON X ET Y
-        npg2(2,1) = 2
+        npg2(2, 1) = 2
 !       --->       INTEGRATION SELON Z
-        npg2(2,2) = 3
+        npg2(2, 2) = 3
 !
-    else if (elrefe.eq.'POHOH8') then
+    else if (elrefe .eq. 'POHOH8') then
         nno1 = 8
         nno2 = 8
         alias = 'HEXA8'
-        npg1(1,1) = 2
-        npg1(1,2) = 2
-        npg1(2,1) = 2
-        npg1(2,2) = 4
-        npg2(1,1) = 2
-        npg2(1,2) = 2
-        npg2(2,1) = 2
-        npg2(2,2) = 3
+        npg1(1, 1) = 2
+        npg1(1, 2) = 2
+        npg1(2, 1) = 2
+        npg1(2, 2) = 4
+        npg2(1, 1) = 2
+        npg2(1, 2) = 2
+        npg2(2, 1) = 2
+        npg2(2, 2) = 3
 !
     else
         call utmess('F', 'ELEMENTS2_29')
-    endif
+    end if
 !
     call jeexin(carac, iret)
     if (iret .ne. 0) goto 9998
 !
     call wkvect(carac, 'V V I', lcarac, icarac)
-    zi(icarac ) = nno1
+    zi(icarac) = nno1
     zi(icarac+1) = nno2
     n = 1
     do i = 1, 2
         do j = 1, 2
             n = n+1
-            zi(icarac+n)= npg1(i,j)
-            zi(icarac+n+4) = npg2(i,j)
+            zi(icarac+n) = npg1(i, j)
+            zi(icarac+n+4) = npg2(i, j)
         end do
     end do
 ! --- PLACE MEMOIRE POUR VALEURS DES FONCTIONS DE FORME ET DE LEURS ---
 ! ---              DERIVEES AU DIFFERENTS POINTS DE GAUSS           ---
-    npg = npg1(1,1)*npg1(1,1)*npg1(1,2)
-    lff = npg + 10 * ( npg * 2*nno1 ) + 10 * npg * nno1
-    npg = npg1(2,1)*npg1(2,1)*npg1(2,2)
-    lff = lff + npg + npg * 2*nno1 + 4 * npg * nno1
-    npg = npg2(1,1)*npg2(1,1)*npg2(1,2)
-    lff = lff + npg + 4 * npg * nno2 + 4 * npg * nno1
-    npg = npg2(2,1)*npg2(2,1)*npg2(2,2)
-    lff = lff + npg + npg * 2*nno1 + 4 * npg * nno2 + 4 * npg * nno1
+    npg = npg1(1, 1)*npg1(1, 1)*npg1(1, 2)
+    lff = npg+10*(npg*2*nno1)+10*npg*nno1
+    npg = npg1(2, 1)*npg1(2, 1)*npg1(2, 2)
+    lff = lff+npg+npg*2*nno1+4*npg*nno1
+    npg = npg2(1, 1)*npg2(1, 1)*npg2(1, 2)
+    lff = lff+npg+4*npg*nno2+4*npg*nno1
+    npg = npg2(2, 1)*npg2(2, 1)*npg2(2, 2)
+    lff = lff+npg+npg*2*nno1+4*npg*nno2+4*npg*nno1
 !
     call wkvect(ff, 'V V R', lff, iff)
 ! --- PLACE MEMOIRE POUR COORDONNEES DES DIFFERENTS POINTS DE GAUSS ---
-    lfft = 3*(&
-           npg1(1,1)*npg1(1,1)*npg1(1,2) + npg1(2,1)*npg1(2,1)*npg1(2,2) + npg2(1,1)*npg2(1,1)*np&
-           &g2(1,2) + npg2(2,1)*npg2(2,1)*npg2(2,2)&
+    lfft = 3*( &
+         npg1(1, 1)*npg1(1, 1)*npg1(1, 2)+npg1(2, 1)*npg1(2, 1)*npg1(2, 2)+npg2(1, 1)*npg2(1, 1)*np&
+           &g2(1, 2)+npg2(2, 1)*npg2(2, 1)*npg2(2, 2) &
            )
     call wkvect('&&JNI014.FFT', 'V V R', lfft, ifft)
 !     --------------------------------------------
@@ -191,33 +191,33 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 !     --- PREMIERE FAMILLE DE POINTS DE GAUSS ----
 !     --- MATRICE DE RAIDEUR : POUTRE         ----
 !     --------------------------------------------
-    npg = npg1(1,1) * npg1(1,1) * npg1(1,2)
+    npg = npg1(1, 1)*npg1(1, 1)*npg1(1, 2)
     ipoids = iff
-    ivf1 = ipoids + npg
-    idpdx1 = ivf1 + npg * 2 * nno1
-    idpdy1 = idpdx1 + npg * 2 * nno1
-    idpdz1 = idpdy1 + npg * 2 * nno1
-    idsdx1 = idpdz1 + npg * 2 * nno1
-    idsdy1 = idsdx1 + npg * 2 * nno1
-    idsdz1 = idsdy1 + npg * 2 * nno1
-    idsxy1 = idsdz1 + npg * 2 * nno1
-    idsxz1 = idsxy1 + npg * 2 * nno1
-    idsyz1 = idsxz1 + npg * 2 * nno1
-    ivf2 = idsyz1 + npg * 2 * nno1
-    idpdx2 = ivf2 + npg * nno1
-    idpdy2 = idpdx2 + npg * nno1
-    idpdz2 = idpdy2 + npg * nno1
-    idsdx2 = idpdz2 + npg * nno1
-    idsdy2 = idsdx2 + npg * nno1
-    idsdz2 = idsdy2 + npg * nno1
-    idsxy2 = idsdz2 + npg * nno1
-    idsxz2 = idsxy2 + npg * nno1
-    idsyz2 = idsxz2 + npg * nno1
+    ivf1 = ipoids+npg
+    idpdx1 = ivf1+npg*2*nno1
+    idpdy1 = idpdx1+npg*2*nno1
+    idpdz1 = idpdy1+npg*2*nno1
+    idsdx1 = idpdz1+npg*2*nno1
+    idsdy1 = idsdx1+npg*2*nno1
+    idsdz1 = idsdy1+npg*2*nno1
+    idsxy1 = idsdz1+npg*2*nno1
+    idsxz1 = idsxy1+npg*2*nno1
+    idsyz1 = idsxz1+npg*2*nno1
+    ivf2 = idsyz1+npg*2*nno1
+    idpdx2 = ivf2+npg*nno1
+    idpdy2 = idpdx2+npg*nno1
+    idpdz2 = idpdy2+npg*nno1
+    idsdx2 = idpdz2+npg*nno1
+    idsdy2 = idsdx2+npg*nno1
+    idsdz2 = idsdy2+npg*nno1
+    idsxy2 = idsdz2+npg*nno1
+    idsxz2 = idsxy2+npg*nno1
+    idsyz2 = idsxz2+npg*nno1
     icopg = ifft
 ! --- POIDS ET COORDONNEES DES POINTS DE GAUSS
-    npgi(1) = npg1(1,1)
-    npgi(2) = npg1(1,1)
-    npgi(3) = npg1(1,2)
+    npgi(1) = npg1(1, 1)
+    npgi(2) = npg1(1, 1)
+    npgi(3) = npg1(1, 2)
     call gausch(npgi, zr(icopg), zr(icopg+npg), zr(icopg+npg+npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES ET SECONDES
 !                 AU POINT DE GAUSS
@@ -227,38 +227,38 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
         zg = zr(icopg+i-1+npg+npg)
 ! --- POUR LES POUTRES
         ider = 2
-        call clffch(alias, pou, nno1, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf1 +(i-1)*2*nno1),&
-                    zr(idpdx1+(i-1)*2*nno1), zr(idpdy1+(i- 1)*2*nno1), zr(idpdz1+(i-1)*2*nno1),&
-                    zr(idsdx1+(i-1)*2*nno1), zr(idsdy1+(i-1)*2*nno1), zr(idsdz1+(i-1)*2*nno1),&
-                    zr(idsxy1+( i-1)*2*nno1), zr(idsxz1+(i-1)*2*nno1), zr(idsyz1+(i-1)*2*nno1),&
+        call clffch(alias, pou, nno1, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf1+(i-1)*2*nno1), &
+                    zr(idpdx1+(i-1)*2*nno1), zr(idpdy1+(i-1)*2*nno1), zr(idpdz1+(i-1)*2*nno1), &
+                    zr(idsdx1+(i-1)*2*nno1), zr(idsdy1+(i-1)*2*nno1), zr(idsdz1+(i-1)*2*nno1), &
+                    zr(idsxy1+(i-1)*2*nno1), zr(idsxz1+(i-1)*2*nno1), zr(idsyz1+(i-1)*2*nno1), &
                     ider)
 ! --- POUR LA GEOMETRIE
         ider = 2
-        call clffch(geom, flui, nno1, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf2 +(i-1)*nno1),&
-                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)* nno1), zr(idpdz2+(i-1)*nno1),&
-                    zr(idsdx2+(i-1)*nno1), zr( idsdy2+(i-1)*nno1), zr(idsdz2+(i-1)*nno1),&
-                    zr(idsxy2+(i-1)* nno1), zr(idsxz2+(i-1)*nno1), zr(idsyz2+(i-1)*nno1), ider)
+        call clffch(geom, flui, nno1, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf2+(i-1)*nno1), &
+                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)*nno1), zr(idpdz2+(i-1)*nno1), &
+                    zr(idsdx2+(i-1)*nno1), zr(idsdy2+(i-1)*nno1), zr(idsdz2+(i-1)*nno1), &
+                    zr(idsxy2+(i-1)*nno1), zr(idsxz2+(i-1)*nno1), zr(idsyz2+(i-1)*nno1), ider)
 !
     end do
 !     --------------------------------------------
 !     --- DEUXIEME FAMILLE DE POINTS DE GAUSS ----
 !     --- MATRICE DE MASSE : POUTRE           ----
 !     --------------------------------------------
-    icopg = icopg + 3*npg
-    ipoids = idsyz2 + npg * nno1
-    npg = npg1(2,1) * npg1(2,1) * npg1(2,2)
-    ivf1 = ipoids + npg
-    ivf2 = ivf1 + npg * 2 * nno1
-    idpdx2 = ivf2 + npg * nno1
-    idpdy2 = idpdx2 + npg * nno1
-    idpdz2 = idpdy2 + npg * nno1
+    icopg = icopg+3*npg
+    ipoids = idsyz2+npg*nno1
+    npg = npg1(2, 1)*npg1(2, 1)*npg1(2, 2)
+    ivf1 = ipoids+npg
+    ivf2 = ivf1+npg*2*nno1
+    idpdx2 = ivf2+npg*nno1
+    idpdy2 = idpdx2+npg*nno1
+    idpdz2 = idpdy2+npg*nno1
 ! --- POIDS ET COORDONNEES DES POINTS DE GAUSS
-    npgi(1) = npg1(2,1)
-    npgi(2) = npg1(2,1)
-    npgi(3) = npg1(2,2)
-    call gausch(npgi, zr(icopg), zr(icopg + npg), zr(icopg + npg + npg), zr(ipoids))
+    npgi(1) = npg1(2, 1)
+    npgi(2) = npg1(2, 1)
+    npgi(3) = npg1(2, 2)
+    call gausch(npgi, zr(icopg), zr(icopg+npg), zr(icopg+npg+npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
     do i = 1, npg
         xg = zr(icopg+i-1)
@@ -266,16 +266,16 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
         zg = zr(icopg+i-1+npg+npg)
 ! --- POUR LES POUTRES
         ider = 0
-        call clffch(alias, pou, nno1, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf1+(i-1)*2*nno1),&
-                    bid, bid, bid, bid, bid,&
+        call clffch(alias, pou, nno1, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf1+(i-1)*2*nno1), &
+                    bid, bid, bid, bid, bid, &
                     bid, bid, bid, bid, ider)
 ! --- POUR LA GEOMETRIE
         ider = 1
-        call clffch(geom, flui, nno1, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf2 +(i-1)*nno1),&
-                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)* nno1), zr(idpdz2+(i-1)*nno1), bid,&
-                    bid, bid, bid, bid, bid,&
+        call clffch(geom, flui, nno1, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf2+(i-1)*nno1), &
+                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)*nno1), zr(idpdz2+(i-1)*nno1), bid, &
+                    bid, bid, bid, bid, bid, &
                     ider)
 !
     end do
@@ -283,22 +283,22 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 !     --- TROISIEME FAMILLE DE POINTS DE GAUSS ---
 !     --- MATRICE DE MASSE : FLUIDE / FLUIDE   ---
 !     --------------------------------------------
-    icopg = icopg + 3*npg
-    ipoids = idpdz2 + npg * nno1
-    npg = npg2(1,1) * npg2(1,1) * npg2(1,2)
-    ivf1 = ipoids + npg
-    idpdx1 = ivf1 + npg * nno2
-    idpdy1 = idpdx1 + npg * nno2
-    idpdz1 = idpdy1 + npg * nno2
-    ivf2 = idpdz1 + npg * nno2
-    idpdx2 = ivf2 + npg * nno1
-    idpdy2 = idpdx2 + npg * nno1
-    idpdz2 = idpdy2 + npg * nno1
+    icopg = icopg+3*npg
+    ipoids = idpdz2+npg*nno1
+    npg = npg2(1, 1)*npg2(1, 1)*npg2(1, 2)
+    ivf1 = ipoids+npg
+    idpdx1 = ivf1+npg*nno2
+    idpdy1 = idpdx1+npg*nno2
+    idpdz1 = idpdy1+npg*nno2
+    ivf2 = idpdz1+npg*nno2
+    idpdx2 = ivf2+npg*nno1
+    idpdy2 = idpdx2+npg*nno1
+    idpdz2 = idpdy2+npg*nno1
 ! --- POIDS ET COORDONNEES DES POINTS DE GAUSS
-    npgi(1) = npg2(1,1)
-    npgi(2) = npg2(1,1)
-    npgi(3) = npg2(1,2)
-    call gausch(npgi, zr(icopg), zr(icopg + npg), zr(icopg + npg + npg), zr(ipoids))
+    npgi(1) = npg2(1, 1)
+    npgi(2) = npg2(1, 1)
+    npgi(3) = npg2(1, 2)
+    call gausch(npgi, zr(icopg), zr(icopg+npg), zr(icopg+npg+npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
     do i = 1, npg
         xg = zr(icopg+i-1)
@@ -306,17 +306,17 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
         zg = zr(icopg+i-1+npg+npg)
 ! --- POUR LE FLUIDE
         ider = 1
-        call clffch(alias, flui, nno2, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf1 +(i-1)*nno2),&
-                    zr(idpdx1+(i-1)*nno2), zr(idpdy1+(i-1)* nno2), zr(idpdz1+(i-1)*nno2), bid,&
-                    bid, bid, bid, bid, bid,&
+        call clffch(alias, flui, nno2, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf1+(i-1)*nno2), &
+                    zr(idpdx1+(i-1)*nno2), zr(idpdy1+(i-1)*nno2), zr(idpdz1+(i-1)*nno2), bid, &
+                    bid, bid, bid, bid, bid, &
                     ider)
 ! --- POUR LA GEOMETRIE
         ider = 1
-        call clffch(geom, flui, nno1, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf2 +(i-1)*nno1),&
-                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)* nno1), zr(idpdz2+(i-1)*nno1), bid,&
-                    bid, bid, bid, bid, bid,&
+        call clffch(geom, flui, nno1, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf2+(i-1)*nno1), &
+                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)*nno1), zr(idpdz2+(i-1)*nno1), bid, &
+                    bid, bid, bid, bid, bid, &
                     ider)
 !
     end do
@@ -324,23 +324,23 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 !     --- QUATRIEME FAMILLE DE POINTS DE GAUSS ---
 !     --- MATRICE DE MASSE : SOLIDE / FLUIDE  ----
 !     --------------------------------------------
-    icopg = icopg + 3*npg
-    ipoids = idpdz2 + npg * nno1
-    npg = npg2(2,1) * npg2(2,1) * npg2(2,2)
-    ivf1 = ipoids + npg
-    ivf12 = ivf1 + npg * 2 * nno1
-    idpdx1 = ivf12 + npg * nno2
-    idpdy1 = idpdx1 + npg * nno2
-    idpdz1 = idpdy1 + npg * nno2
-    ivf2 = idpdz1 + npg * nno2
-    idpdx2 = ivf2 + npg * nno1
-    idpdy2 = idpdx2 + npg * nno1
-    idpdz2 = idpdy2 + npg * nno1
+    icopg = icopg+3*npg
+    ipoids = idpdz2+npg*nno1
+    npg = npg2(2, 1)*npg2(2, 1)*npg2(2, 2)
+    ivf1 = ipoids+npg
+    ivf12 = ivf1+npg*2*nno1
+    idpdx1 = ivf12+npg*nno2
+    idpdy1 = idpdx1+npg*nno2
+    idpdz1 = idpdy1+npg*nno2
+    ivf2 = idpdz1+npg*nno2
+    idpdx2 = ivf2+npg*nno1
+    idpdy2 = idpdx2+npg*nno1
+    idpdz2 = idpdy2+npg*nno1
 ! --- POIDS ET COORDONNEES DES POINTS DE GAUSS
-    npgi(1) = npg2(2,1)
-    npgi(2) = npg2(2,1)
-    npgi(3) = npg2(2,2)
-    call gausch(npgi, zr(icopg), zr(icopg + npg), zr(icopg + npg + npg), zr(ipoids))
+    npgi(1) = npg2(2, 1)
+    npgi(2) = npg2(2, 1)
+    npgi(3) = npg2(2, 2)
+    call gausch(npgi, zr(icopg), zr(icopg+npg), zr(icopg+npg+npg), zr(ipoids))
 ! --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
     do i = 1, npg
         xg = zr(icopg+i-1)
@@ -348,23 +348,23 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
         zg = zr(icopg+i-1+npg+npg)
 ! --- POUR LES POUTRES
         ider = 0
-        call clffch(alias, pou, nno1, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf1+(i-1)*2*nno1),&
-                    bid, bid, bid, bid, bid,&
+        call clffch(alias, pou, nno1, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf1+(i-1)*2*nno1), &
+                    bid, bid, bid, bid, bid, &
                     bid, bid, bid, bid, ider)
 ! --- POUR LE FLUIDE
         ider = 1
-        call clffch(alias, flui, nno2, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf12 +(i-1)*nno2),&
-                    zr(idpdx1+(i-1)*nno2), zr(idpdy1+(i-1)* nno2), zr(idpdz1+(i-1)*nno2), bid,&
-                    bid, bid, bid, bid, bid,&
+        call clffch(alias, flui, nno2, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf12+(i-1)*nno2), &
+                    zr(idpdx1+(i-1)*nno2), zr(idpdy1+(i-1)*nno2), zr(idpdz1+(i-1)*nno2), bid, &
+                    bid, bid, bid, bid, bid, &
                     ider)
 ! --- POUR LA GEOMETRIE
         ider = 1
-        call clffch(geom, flui, nno1, xg, yg,&
-                    zg, xin, yin, zin, zr(ivf2 +(i-1)*nno1),&
-                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)* nno1), zr(idpdz2+(i-1)*nno1), bid,&
-                    bid, bid, bid, bid, bid,&
+        call clffch(geom, flui, nno1, xg, yg, &
+                    zg, xin, yin, zin, zr(ivf2+(i-1)*nno1), &
+                    zr(idpdx2+(i-1)*nno1), zr(idpdy2+(i-1)*nno1), zr(idpdz2+(i-1)*nno1), bid, &
+                    bid, bid, bid, bid, bid, &
                     ider)
 !
     end do

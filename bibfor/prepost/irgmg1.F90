@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
-                  tabv, partie, jtype, nbno, icmp,&
+subroutine irgmg1(numold, ima, nbord2, tabd, tabl, &
+                  tabv, partie, jtype, nbno, icmp, &
                   ifi, iwri, iadmax)
     implicit none
 #include "asterf_types.h"
@@ -73,49 +73,49 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
         nbsp = zi(jcesd-1+5+4*(imaold-1)+2)
         if (nbsp .ne. 1) then
             call utmess('F', 'PREPOST2_57')
-        endif
+        end if
         vale = 0.d0
         if (zk8(jtype-1+ior) .eq. 'R') then
             do ipt = 1, nbpt
-                call cesexi('C', jcesd, jcesl, imaold, ipt,&
+                call cesexi('C', jcesd, jcesl, imaold, ipt, &
                             isp, icmp, iad)
                 if (iad .gt. 0) then
                     iadmax = iad
-                    vale = vale + zr(jcesv-1+iad)
-                endif
+                    vale = vale+zr(jcesv-1+iad)
+                end if
             end do
-        else if (zk8(jtype-1+ior).eq.'C') then
+        else if (zk8(jtype-1+ior) .eq. 'C') then
             if (partie .eq. 'REEL') then
                 do ipt = 1, nbpt
-                    call cesexi('C', jcesd, jcesl, imaold, ipt,&
+                    call cesexi('C', jcesd, jcesl, imaold, ipt, &
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
                         iadmax = iad
-                        vale = vale + dble(zc(jcesv-1+iad))
-                    endif
+                        vale = vale+dble(zc(jcesv-1+iad))
+                    end if
                 end do
-            else if (partie.eq.'IMAG') then
+            else if (partie .eq. 'IMAG') then
                 do ipt = 1, nbpt
-                    call cesexi('C', jcesd, jcesl, imaold, ipt,&
+                    call cesexi('C', jcesd, jcesl, imaold, ipt, &
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
                         iadmax = iad
-                        vale = vale + dimag(zc(jcesv-1+iad))
-                    endif
+                        vale = vale+dimag(zc(jcesv-1+iad))
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
         if (abs(vale) .le. 1.d-99) vale = 0.d0
-        if (nbpt .ne. 0) vale = vale / nbpt
+        if (nbpt .ne. 0) vale = vale/nbpt
         if (iwri) then
             do ino = 1, nbno
-                write(ifi,1000) vale
+                write (ifi, 1000) vale
             end do
-        endif
+        end if
     end do
 !
     call jedema()
 !
-    1000 format(1p,e15.7e3)
+1000 format(1p, e15.7e3)
 !
 end subroutine

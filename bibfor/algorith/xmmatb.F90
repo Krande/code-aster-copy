@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmatb(ndim, nnops, ddls, ddlm, ffc,&
-                  pla, dt, ta, jac, ffp2, mmat,&
-                  jheavn, ncompn, ifiss,&
+subroutine xmmatb(ndim, nnops, ddls, ddlm, ffc, &
+                  pla, dt, ta, jac, ffp2, mmat, &
+                  jheavn, ncompn, ifiss, &
                   nfiss, nfh, ifa, jheafa, ncomph)
 
     implicit none
@@ -40,43 +40,43 @@ subroutine xmmatb(ndim, nnops, ddls, ddlm, ffc,&
     integer :: plj, pla(27), jheavn, heavn(nnops, ncompn), nfiss, hea_fa(2)
     integer :: ifa, jheafa, ncomph, dec
     real(kind=8) :: ffj, ffc(16), dt, ta
-    real(kind=8) :: jac, ffp2(27), mmat(560,560)
+    real(kind=8) :: jac, ffp2(27), mmat(560, 560)
     aster_logical :: lmultc
 !
-    lmultc = nfiss.gt.1
-    if (.not.lmultc) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    lmultc = nfiss .gt. 1
+    if (.not. lmultc) then
+        hea_fa(1) = xcalc_code(1, he_inte=[-1])
+        hea_fa(2) = xcalc_code(1, he_inte=[+1])
     else
-      hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
-      hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
-    endif
+        hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
+        hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
+    end if
 !
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
     do in = 1, nnops
-      do i = 1 , ncompn
-        heavn(in,i) = zi(jheavn-1+ncompn*(in-1)+i)
-      enddo
-    enddo
+        do i = 1, ncompn
+            heavn(in, i) = zi(jheavn-1+ncompn*(in-1)+i)
+        end do
+    end do
 !
     do i = 1, nnops
-       call hmdeca(i, ddls, ddlm, nnops, in, dec)
+        call hmdeca(i, ddls, ddlm, nnops, in, dec)
 !
-       do j = 1, nnops
-          ffj = ffc(j)
-          plj = pla(j)
+        do j = 1, nnops
+            ffj = ffc(j)
+            plj = pla(j)
 !
-          mmat(in+ndim+1, plj+1) = mmat(in+ndim+1, plj+1) + ffp2(i)*ffj*dt*ta*jac
+            mmat(in+ndim+1, plj+1) = mmat(in+ndim+1, plj+1)+ffp2(i)*ffj*dt*ta*jac
 !
-          mmat(in+ndim+1, plj+2) = mmat(in+ndim+1, plj+2) + ffp2(i)*ffj*dt*ta*jac
+            mmat(in+ndim+1, plj+2) = mmat(in+ndim+1, plj+2)+ffp2(i)*ffj*dt*ta*jac
 !
-          do ifh = 1, nfh
-             mmat(in+(ndim+1)*(ifh+1), plj+1) = mmat(in+(ndim+1)*(ifh+1), plj+1) + ffp2(i)*&
-                                      xcalc_heav(heavn(i,ifh),hea_fa(2),heavn(i,5))*ffj*dt*ta*jac
+            do ifh = 1, nfh
+                mmat(in+(ndim+1)*(ifh+1), plj+1) = mmat(in+(ndim+1)*(ifh+1), plj+1)+ffp2(i)* &
+                                     xcalc_heav(heavn(i, ifh), hea_fa(2), heavn(i, 5))*ffj*dt*ta*jac
 !
-             mmat(in+(ndim+1)*(ifh+1), plj+2) = mmat(in+(ndim+1)*(ifh+1), plj+2) + ffp2(i)*&
-                                      xcalc_heav(heavn(i,ifh),hea_fa(1),heavn(i,5))*ffj*dt*ta*jac
-          end do
-       end do
+                mmat(in+(ndim+1)*(ifh+1), plj+2) = mmat(in+(ndim+1)*(ifh+1), plj+2)+ffp2(i)* &
+                                     xcalc_heav(heavn(i, ifh), hea_fa(1), heavn(i, 5))*ffj*dt*ta*jac
+            end do
+        end do
     end do
 end subroutine

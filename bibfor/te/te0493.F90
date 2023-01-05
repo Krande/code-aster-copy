@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,45 +51,45 @@ subroutine te0493(option, nomte)
     tria = .false.
 !  CALCUL DU NBRE DE CMP CALCULEES DU FLUX
     if (nomte .eq. 'HM_FACE8' .or. nomte .eq. 'THM_FACE8' .or. nomte .eq. 'H_FACE8') then
-        nbflux=1
-        elseif(nomte.eq.'HM_FACE6'.or.nomte.eq.'THM_FACE6'.or.&
-     & nomte.eq.'H_FACE6') then
-        nbflux=1
+        nbflux = 1
+    elseif (nomte .eq. 'HM_FACE6' .or. nomte .eq. 'THM_FACE6' .or.&
+ & nomte .eq. 'H_FACE6') then
+        nbflux = 1
         tria = .true.
-    else if (nomte.eq.'THV_FACE8') then
-        nbflux=2
-    else if (nomte.eq.'THV_FACE6') then
-        nbflux=2
+    else if (nomte .eq. 'THV_FACE8') then
+        nbflux = 2
+    else if (nomte .eq. 'THV_FACE6') then
+        nbflux = 2
         tria = .true.
-        elseif(nomte.eq.'HHM_FACE8'.or.nomte.eq.'THH_FACE8'&
-     &.or.nomte.eq.'THHM_FACE8'.or.nomte.eq.'HH_FACE8') then
-        nbflux=3
-        elseif(nomte.eq.'HHM_FACE6'.or.nomte.eq.'THH_FACE6'&
-     &.or.nomte.eq.'THHM_FACE6'.or.nomte.eq.'HH_FACE6') then
-        nbflux=3
+    elseif (nomte .eq. 'HHM_FACE8' .or. nomte .eq. 'THH_FACE8'&
+ &.or. nomte .eq. 'THHM_FACE8' .or. nomte .eq. 'HH_FACE8') then
+        nbflux = 3
+    elseif (nomte .eq. 'HHM_FACE6' .or. nomte .eq. 'THH_FACE6'&
+ &.or. nomte .eq. 'THHM_FACE6' .or. nomte .eq. 'HH_FACE6') then
+        nbflux = 3
         tria = .true.
-        elseif(nomte.eq.'HH2M_FACE8'.or.nomte.eq.'THH2_FACE8' .or.nomte&
-    .eq.'THH2M_FACE8'.or.nomte.eq.'HH2_FACE8') then
-        nbflux=4
-        elseif(nomte.eq.'HH2M_FACE6'.or.nomte.eq.'THH2_FACE6' .or.nomte&
-    .eq.'THH2M_FACE6'.or.nomte.eq.'HH2_FACE6') then
-        nbflux=4
+    elseif (nomte .eq. 'HH2M_FACE8' .or. nomte .eq. 'THH2_FACE8' .or. nomte &
+            .eq. 'THH2M_FACE8' .or. nomte .eq. 'HH2_FACE8') then
+        nbflux = 4
+    elseif (nomte .eq. 'HH2M_FACE6' .or. nomte .eq. 'THH2_FACE6' .or. nomte &
+            .eq. 'THH2M_FACE6' .or. nomte .eq. 'HH2_FACE6') then
+        nbflux = 4
         tria = .true.
     else
-        valkm(1)=option
-        valkm(2)=nomte
-        valkm(3)='TE0493'
+        valkm(1) = option
+        valkm(2) = nomte
+        valkm(3) = 'TE0493'
         call utmess('F', 'CALCULEL7_2', nk=3, valk=valkm)
-    endif
+    end if
 !
     if (tria) then
-        call elrefe_info(elrefe='TR3', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+        call elrefe_info(elrefe='TR3', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                          npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     else
-        call elrefe_info(elrefe='QU4', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+        call elrefe_info(elrefe='QU4', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                          npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    endif
-    idfdy=idfdx+1
+    end if
+    idfdy = idfdx+1
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCONTR', 'L', iflux)
     call jevech('PFLHN', 'E', ivectu)
@@ -97,12 +97,12 @@ subroutine te0493(option, nomte)
 ! --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ ---
 !
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -118,9 +118,9 @@ subroutine te0493(option, nomte)
             u = 0.d0
             do i = 1, nno
                 iad = iflux+3*(ifl-1)+3*nbflux*(i-1)
-                s = s + zr(iad )*zr(ivf+k+i-1)
-                t = t + zr(iad+1)*zr(ivf+k+i-1)
-                u = u + zr(iad+2)*zr(ivf+k+i-1)
+                s = s+zr(iad)*zr(ivf+k+i-1)
+                t = t+zr(iad+1)*zr(ivf+k+i-1)
+                u = u+zr(iad+2)*zr(ivf+k+i-1)
             end do
             flx = s
             fly = t
@@ -134,13 +134,13 @@ subroutine te0493(option, nomte)
                 idec = (i-1)*ndim
                 do j = 1, nno
                     jdec = (j-1)*ndim
-                    nx = nx + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sx(i,j)
-                    ny = ny + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sy(i,j)
-                    nz = nz + zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)* sz(i,j)
+                    nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                    ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                    nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
                 end do
             end do
             jac = sqrt(nx*nx+ny*ny+nz*nz)
-            flun = (nx*flx + ny*fly + nz*flz)/jac
+            flun = (nx*flx+ny*fly+nz*flz)/jac
             zr(ivectu+nbflux*(kp-1)+ifl-1) = flun
         end do
     end do

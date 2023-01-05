@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine te0517(option, nomte)
     integer, parameter :: nb_cara = 4
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'AY1','AZ1','EY1','EZ1'/
+    data noms_cara/'AY1', 'AZ1', 'EY1', 'EZ1'/
 ! --------------------------------------------------------------------------------------------------
 !
     nno = 2
@@ -78,14 +78,14 @@ subroutine te0517(option, nomte)
     if (nomte .eq. 'MECA_POU_D_EM') then
         nc = 6
         npg = 2
-    else if (nomte.eq.'MECA_POU_D_SQUE') then
+    else if (nomte .eq. 'MECA_POU_D_SQUE') then
         nc = 9
         npg = 2
         ncomp = 21
-    else if (nomte.eq.'MECA_POU_D_TGM') then
+    else if (nomte .eq. 'MECA_POU_D_TGM') then
         nc = 7
         npg = 3
-    endif
+    end if
 !
     if (option .eq. 'REFE_FORC_NODA  ') then
         call jevech('PVECTUR', 'E', ivectu)
@@ -93,32 +93,32 @@ subroutine te0517(option, nomte)
         call terefe('MOMENT_REFE', 'MECA_POUTRE', momref)
         do ino = 1, nno
             do i = 1, 3
-                zr(ivectu+(ino-1)*nc+i-1)=forref
-            enddo
+                zr(ivectu+(ino-1)*nc+i-1) = forref
+            end do
             do i = 4, nc
-                zr(ivectu+(ino-1)*nc+i-1)=momref
-            enddo
-        enddo
+                zr(ivectu+(ino-1)*nc+i-1) = momref
+            end do
+        end do
     else if (option .eq. 'FORC_NODA') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !
         call jevech('PCAORIE', 'L', iorien)
         call jevech('PGEOMER', 'L', igeom)
         call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
-        nbsp=jtab(7)
+        nbsp = jtab(7)
         if (nbsp .ne. nbfibr) then
             call utmess('F', 'ELEMENTS_4')
-        endif
+        end if
         call jevech('PSTRXMR', 'L', istrxm)
 !
         reactu = .false.
         rigige = .false.
         call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icompo)
         if (iretc .eq. 0) then
-           reactu = (zk16(icompo+2).eq.'GROT_GDEP')
-           rigige = (zk16(icompo-1+RIGI_GEOM).eq.'OUI')
-        endif
+            reactu = (zk16(icompo+2) .eq. 'GROT_GDEP')
+            rigige = (zk16(icompo-1+RIGI_GEOM) .eq. 'OUI')
+        end if
 
         call jevech('PVECTUR', 'E', ivectu)
         call r8inir(2*nc, 0.d0, fl, 1)
@@ -132,29 +132,29 @@ subroutine te0517(option, nomte)
         else
             xl = lonele()
             call matrot(zr(iorien), pgl)
-        endif
+        end if
 !
         if (nomte .eq. 'MECA_POU_D_EM') then
             do kp = 1, npg
                 do k = 1, nc
                     fl(nc*(kp-1)+k) = zr(istrxm-1+ncomp*(kp-1)+k)
-                enddo
-            enddo
-        else if (nomte.eq.'MECA_POU_D_SQUE') then
+                end do
+            end do
+        else if (nomte .eq. 'MECA_POU_D_SQUE') then
             do kp = 1, npg
                 do k = 1, 6
                     fl(nc*(kp-1)+k) = zr(istrxm-1+ncomp*(kp-1)+k)
-                enddo
+                end do
                 do k = 7, nc
                     fl(nc*(kp-1)+k) = zr(istrxm-1+ncomp*(kp-1)+12+k)
-                enddo
-            enddo
-        else if (nomte.eq.'MECA_POU_D_TGM') then
+                end do
+            end do
+        else if (nomte .eq. 'MECA_POU_D_TGM') then
 !           Caractéristiques de la section
             call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
-            aa    = carsec(1)
-            xiy   = carsec(5)
-            xiz   = carsec(4)
+            aa = carsec(1)
+            xiy = carsec(5)
+            xiz = carsec(4)
 
             call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
             alfay = vale_cara(1)
@@ -166,36 +166,36 @@ subroutine te0517(option, nomte)
             call jevech('PMATERC', 'L', imate)
             call moytem('RIGI', npg, 1, '+', temp, iret)
 !
-            call pmfmats(imate,mator)
-            ASSERT( mator.ne.' ')
+            call pmfmats(imate, mator)
+            ASSERT(mator .ne. ' ')
             call matela(zi(imate), mator, 1, temp, e, nu)
-            g = e / (2.d0*(1.d0+nu))
-            phiy = e*xiz*12.d0*alfay/ (xl*xl*g*aa)
-            phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*aa)
-            xls2 = 0.5d0 * xl
+            g = e/(2.d0*(1.d0+nu))
+            phiy = e*xiz*12.d0*alfay/(xl*xl*g*aa)
+            phiz = e*xiy*12.d0*alfaz/(xl*xl*g*aa)
+            xls2 = 0.5d0*xl
 !           Poids des points de gauss
             co(1) = 5.d0/9.d0
             co(2) = 8.d0/9.d0
             co(3) = 5.d0/9.d0
             do kp = 1, 3
                 call jsd1ff(kp, xl, phiy, phiz, d1b)
-                ifgm=ncomp*(kp-1)-1
+                ifgm = ncomp*(kp-1)-1
                 do k = 1, 2*nc
                     do i = 1, nc
-                        fl(k)=fl(k) + xls2*zr(istrxm+ifgm+i)*d1b(i,k)*co(kp)
-                    enddo
-                enddo
-            enddo
+                        fl(k) = fl(k)+xls2*zr(istrxm+ifgm+i)*d1b(i, k)*co(kp)
+                    end do
+                end do
+            end do
             do i = 1, 2
-                fl(7*(i-1)+4) = fl( 7*(i-1)+4) - ez*fl(7*(i-1)+2) + ey* fl(7*(i-1)+3 )
-            enddo
+                fl(7*(i-1)+4) = fl(7*(i-1)+4)-ez*fl(7*(i-1)+2)+ey*fl(7*(i-1)+3)
+            end do
         else
             ASSERT(.false.)
-        endif
+        end if
 !       Passage du repère local au repère global
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

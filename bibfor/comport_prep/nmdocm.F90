@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmdocm(model, mult_comp, base)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/alcart.h"
@@ -40,8 +40,8 @@ implicit none
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !
-character(len=*), intent(in) :: model, mult_comp
-character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: model, mult_comp
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,15 +68,15 @@ character(len=1), intent(in) :: base
     integer :: nume_gd
     character(len=8) :: name_gd
     character(len=16), pointer :: p_mcomp_valv(:) => null()
-    character(len=8) , pointer :: p_cata_nomcmp(:) => null()
-    character(len=8) , pointer :: p_mcomp_ncmp(:) => null()
+    character(len=8), pointer :: p_cata_nomcmp(:) => null()
+    character(len=8), pointer :: p_mcomp_ncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_cmp         = 0
-    name_gd        = 'MULTCOMP'
-    nbocc_compor   = 0
-    keywordfact    = 'COMPORTEMENT'
+    nb_cmp = 0
+    name_gd = 'MULTCOMP'
+    nbocc_compor = 0
+    keywordfact = 'COMPORTEMENT'
     list_elem_affe = '&&COMPMECASAVE.LIST'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call getfac(keywordfact, nbocc_compor)
@@ -84,7 +84,7 @@ character(len=1), intent(in) :: base
 ! - Read catalog
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', name_gd), nume_gd)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', vk8 = p_cata_nomcmp)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', vk8=p_cata_nomcmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', nume_gd), 'LONMAX', nb_cmp_max)
 !
 ! - Allocate <CARTE>
@@ -94,15 +94,15 @@ character(len=1), intent(in) :: base
 !
 ! - Acces to <CARTE>
 !
-    call jeveuo(mult_comp(1:19)//'.NCMP', 'E', vk8  = p_mcomp_ncmp)
-    call jeveuo(mult_comp(1:19)//'.VALV', 'E', vk16 = p_mcomp_valv)
+    call jeveuo(mult_comp(1:19)//'.NCMP', 'E', vk8=p_mcomp_ncmp)
+    call jeveuo(mult_comp(1:19)//'.VALV', 'E', vk16=p_mcomp_valv)
 !
 ! - Init <CARTE>
 !
     do icmp = 1, nb_cmp_max
         p_mcomp_ncmp(icmp) = p_cata_nomcmp(icmp)
         p_mcomp_valv(icmp) = ' '
-    enddo
+    end do
 !
     nb_cmp = nb_cmp_max
 !
@@ -119,7 +119,7 @@ character(len=1), intent(in) :: base
 !
 ! ----- Get RELATION from command file
 !
-        call getvtx(keywordfact, 'RELATION', iocc = i_comp, scal = rela_comp)
+        call getvtx(keywordfact, 'RELATION', iocc=i_comp, scal=rela_comp)
 !
 ! ----- Detection of specific cases
 !
@@ -128,13 +128,13 @@ character(len=1), intent(in) :: base
 ! ----- Get multi-comportment *CRISTAL
 !
         if (l_cristal) then
-            call getvid(keywordfact, 'COMPOR', iocc = i_comp, scal = comp_cris)
-        endif
+            call getvid(keywordfact, 'COMPOR', iocc=i_comp, scal=comp_cris)
+        end if
 !
 ! ----- Get elements
 !
-        call comp_read_mesh(mesh          , keywordfact, i_comp        ,&
-                            list_elem_affe, l_affe_all , nb_elem_affe)
+        call comp_read_mesh(mesh, keywordfact, i_comp, &
+                            list_elem_affe, l_affe_all, nb_elem_affe)
 !
 ! ----- Set in <CARTE>
 !
@@ -145,11 +145,11 @@ character(len=1), intent(in) :: base
         if (l_affe_all) then
             call nocart(mult_comp, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
-            call nocart(mult_comp, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = v_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+            call nocart(mult_comp, 3, nb_cmp, mode='NUM', nma=nb_elem_affe, &
+                        limanu=v_elem_affe)
             call jedetr(list_elem_affe)
-        endif
+        end if
     end do
 !
 ! - Cleaning

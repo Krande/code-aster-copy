@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apverl(sdappa, mesh, sdcont_defi)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -93,8 +93,8 @@ implicit none
 !
     sdappa_verk = sdappa(1:19)//'.VERK'
     sdappa_vera = sdappa(1:19)//'.VERA'
-    call jeveuo(sdappa_verk, 'E', vk8 = v_sdappa_verk)
-    call jeveuo(sdappa_vera, 'E', vr  = v_sdappa_vera)
+    call jeveuo(sdappa_verk, 'E', vk8=v_sdappa_verk)
+    call jeveuo(sdappa_vera, 'E', vr=v_sdappa_vera)
     call jelira(sdappa_verk, 'LONUTI', inoeu)
     if (inoeu .ne. 0) goto 999
     angmax = 5.d0
@@ -103,12 +103,12 @@ implicit none
 !
     sdappa_tgel = sdappa(1:19)//'.TGEL'
     sdappa_tgno = sdappa(1:19)//'.TGNO'
-    call jeveuo(sdappa_tgno, 'L', vr = v_sdappa_tgno)
+    call jeveuo(sdappa_tgno, 'L', vr=v_sdappa_tgno)
 !
 ! - Get parameters
 !
-    model_ndim   = cfdisi(sdcont_defi,'NDIM'  )
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    model_ndim = cfdisi(sdcont_defi, 'NDIM')
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
 !
 ! - Loop on contact zones
 !
@@ -117,9 +117,9 @@ implicit none
 !
 ! ----- Parameters on current zone - Master
 !
-        nb_node_mast = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
-        jdecnm       = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
-        apcald       = cfcald(sdcont_defi, i_zone, 'MAIT')
+        nb_node_mast = mminfi(sdcont_defi, 'NBNOM', i_zone)
+        jdecnm = mminfi(sdcont_defi, 'JDECNM', i_zone)
+        apcald = cfcald(sdcont_defi, i_zone, 'MAIT')
         if (apcald) then
 !
 ! --------- Loop on nodes
@@ -162,7 +162,7 @@ implicit none
 !
 ! ----------------- Access to connectivity
 !
-                    call jeveuo(jexnum(mesh//'.CONNEX', elem_mast_nume), 'L', vi = v_mesh_connex)
+                    call jeveuo(jexnum(mesh//'.CONNEX', elem_mast_nume), 'L', vi=v_mesh_connex)
 !
 ! ----------------- Get current index of node
 !
@@ -170,13 +170,13 @@ implicit none
                     do i_elem_node = 1, elem_nbnode
                         if (v_mesh_connex(i_elem_node) .eq. node_mast_nume(1)) then
                             i_node_curr = i_elem_node
-                        endif
+                        end if
                     end do
-                    ASSERT(i_node_curr.ne.0)
+                    ASSERT(i_node_curr .ne. 0)
 !
 ! ----------------- Access to current tangent
 !
-                    call jeveuo(jexnum(sdappa_tgel, elem_mast_indx), 'L', vr = v_sdappa_tgel)
+                    call jeveuo(jexnum(sdappa_tgel, elem_mast_indx), 'L', vr=v_sdappa_tgel)
                     tau1(1) = v_sdappa_tgel(6*(i_node_curr-1)+1)
                     tau1(2) = v_sdappa_tgel(6*(i_node_curr-1)+2)
                     tau1(3) = v_sdappa_tgel(6*(i_node_curr-1)+3)
@@ -190,15 +190,15 @@ implicit none
 !
 ! ----------------- Compute angle
 !
-                    prosca = ddot(3,norm,1,normnd,1)
+                    prosca = ddot(3, norm, 1, normnd, 1)
                     if (abs(noor1*noor2) .gt. r8prem()) then
                         val = prosca/(noor1*noor2)
                         if (val .gt. 1.d0) then
                             val = 1.d0
-                        endif
+                        end if
                         if (val .lt. -1.d0) then
                             val = -1.d0
-                        endif
+                        end if
                         angle = acos(val)
                         angle = angle*r8rddg()
                         angl_old = v_sdappa_vera(node_mast_nume(1))
@@ -207,15 +207,15 @@ implicit none
                             if (node_old .eq. ' ') then
                                 inoeu = inoeu+1
                                 if (angl_old .lt. angle) then
-                                   v_sdappa_verk(node_mast_nume(1)) = node_mast_name
-                                   v_sdappa_vera(node_mast_nume(1)) = angle
-                                endif
-                            endif
-                        endif
-                    endif
+                                    v_sdappa_verk(node_mast_nume(1)) = node_mast_name
+                                    v_sdappa_vera(node_mast_nume(1)) = angle
+                                end if
+                            end if
+                        end if
+                    end if
                 end do
             end do
-        endif
+        end if
     end do
 !
     call jeecra(sdappa_verk, 'LONUTI', inoeu)

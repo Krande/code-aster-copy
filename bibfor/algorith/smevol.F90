@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine smevol(temper, modelz, chmat, mateco, compor, option,&
+subroutine smevol(temper, modelz, chmat, mateco, compor, option, &
                   phasin, numpha)
     implicit none
 #include "jeveux.h"
@@ -61,7 +61,7 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option,&
 !
 !
     integer :: nbhist, iadtrc(2), long, jordr, nbordr(1), i, iret, vali(2), iad
-    integer :: ifm,  ibid, num0, num1, num2, num3, iord, iainst, numphi
+    integer :: ifm, ibid, num0, num1, num2, num3, iord, iainst, numphi
     real(kind=8) :: r8b, time(6), inst0, inst1, inst2, dt3
     real(kind=8) :: valr(2)
     integer :: valii
@@ -74,17 +74,17 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option,&
     character(len=24) :: chmate, tempi, chftrc
     character(len=8), pointer :: vale(:) => null()
 !
-    data timcmp/ 'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ',&
+    data timcmp/'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ',&
      &             'R       ', 'RHO     '/
-    data time   / 6*0.d0 /
-    data nomcm2 / 'I1  ', 'I2  ' /
+    data time/6*0.d0/
+    data nomcm2/'I1  ', 'I2  '/
 !     ------------------------------------------------------------------
 !
     call jemarq()
     modele = modelz
     ifm = iunifi('MESSAGE')
 !
-    call inical(8, lpain, lchin, 2, lpaout,&
+    call inical(8, lpain, lchin, 2, lpaout, &
                 lchout)
 !
 !
@@ -97,40 +97,40 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option,&
     call exlima(' ', 0, 'V', modele, ligrmo)
 !
     nbhist = 0
-    test =1
+    test = 1
     iadtrc(1) = 0
     iadtrc(2) = 0
 !
     do i = 1, long
         mater = vale(i)
         if (mater .ne. '        ') then
-            call rcadme(mater, 'META_ACIER', 'TRC', iadtrc, icodre,&
+            call rcadme(mater, 'META_ACIER', 'TRC', iadtrc, icodre, &
                         0)
             if (icodre .eq. 0) test = 0
-            nbhist = max(nbhist,iadtrc(1))
-        endif
+            nbhist = max(nbhist, iadtrc(1))
+        end if
     end do
 !
     if (test .eq. 0) then
         call wkvect('&&SMEVOL_FTRC', 'V V R', 9*nbhist, vali(1))
         call wkvect('&&SMEVOL_TRC', 'V V R', 15*nbhist, vali(2))
         chftrc = '&&SMEVOL.ADRESSES'
-        call mecact('V', chftrc, 'LIGREL', ligrmo, 'ADRSJEVN',&
+        call mecact('V', chftrc, 'LIGREL', ligrmo, 'ADRSJEVN', &
                     ncmp=2, lnomcmp=nomcm2, vi=vali)
     else
         chftrc = ' '
-    endif
+    end if
 !
 ! --- RECUPERATION DES PAS DE TEMPS DE LA STRUCTURE DE DONNEES EVOL_THER
 !
     sdtemp = temper
     kordre = '&&SMEVOL.NUMEORDR'
-    call rsorac(sdtemp, 'LONUTI', 0, r8b, k8b,&
-                cbid, r8b, k8b, nbordr, 1,&
+    call rsorac(sdtemp, 'LONUTI', 0, r8b, k8b, &
+                cbid, r8b, k8b, nbordr, 1, &
                 ibid)
     call wkvect(kordre, 'V V I', nbordr(1), jordr)
-    call rsorac(sdtemp, 'TOUT_ORDRE', 0, r8b, k8b,&
-                cbid, r8b, k8b, zi(jordr), nbordr(1),&
+    call rsorac(sdtemp, 'TOUT_ORDRE', 0, r8b, k8b, &
+                cbid, r8b, k8b, zi(jordr), nbordr(1), &
                 ibid)
 !
 ! CREATION CHAM_ELEM COMPOR DONNANT NOMBRE DE VARIABLE INTERNE ET
@@ -146,75 +146,75 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option,&
 !
     if (numpha .eq. 0) then
 !
-        numphi=1
+        numphi = 1
         num0 = zi(jordr)
-        call calc_meta_init(temper, num0, ligrmo, compor, phasin,&
+        call calc_meta_init(temper, num0, ligrmo, compor, phasin, &
                             chmate)
         num1 = zi(jordr+1)
-        call calc_meta_init(temper, num1, ligrmo, compor, phasin,&
+        call calc_meta_init(temper, num1, ligrmo, compor, phasin, &
                             chmate)
 !
     else
-        numphi=0
+        numphi = 0
         do iord = 2, nbordr(1)
-            if (zi(jordr+iord-1) .eq. numpha) numphi=iord-1
-        enddo
-    endif
+            if (zi(jordr+iord-1) .eq. numpha) numphi = iord-1
+        end do
+    end if
 !
 ! --- BOUCLE SUR LES PAS DE TEMPS DU CHAMP DE TEMPERATURE
 !
-    do iord = 1, nbordr(1) - 2
+    do iord = 1, nbordr(1)-2
 !
         if (zi(jordr+iord-1) .lt. zi(jordr+numphi-1)) goto 19
 !
         num1 = zi(jordr+iord-1)
-        num2 = zi(jordr+iord )
+        num2 = zi(jordr+iord)
         num3 = zi(jordr+iord+1)
 !
-        call rsexch('F', temper, 'TEMP', num1, tempa,&
+        call rsexch('F', temper, 'TEMP', num1, tempa, &
                     iret)
-        call rsexch('F', temper, 'TEMP', num2, tempe,&
+        call rsexch('F', temper, 'TEMP', num2, tempe, &
                     iret)
-        call rsexch('F', temper, 'META_ELNO', num2, phasin,&
+        call rsexch('F', temper, 'META_ELNO', num2, phasin, &
                     iret)
-        call rsexch('F', temper, 'TEMP', num3, tempi,&
+        call rsexch('F', temper, 'TEMP', num3, tempi, &
                     iret)
 !
 ! --- RECUPERATION DE L'INSTANT DE CALCUL ET DES DELTAT -> CHAMP(INST_R)
 !
-        call rsadpa(sdtemp, 'L', 1, 'INST', num1,&
+        call rsadpa(sdtemp, 'L', 1, 'INST', num1, &
                     0, sjv=iainst, styp=k8b)
         inst0 = zr(iainst)
 !
-        call rsadpa(sdtemp, 'L', 1, 'INST', num2,&
+        call rsadpa(sdtemp, 'L', 1, 'INST', num2, &
                     0, sjv=iainst, styp=k8b)
         inst1 = zr(iainst)
 !
-        call rsadpa(sdtemp, 'L', 1, 'INST', num3,&
+        call rsadpa(sdtemp, 'L', 1, 'INST', num3, &
                     0, sjv=iainst, styp=k8b)
         inst2 = zr(iainst)
 !
         time(1) = inst1
-        time(2) = inst1 - inst0
-        time(3) = inst2 - inst1
+        time(2) = inst1-inst0
+        time(3) = inst2-inst1
 !
         call jenonu(jexnom(sdtemp//'.NOVA', 'DELTAT'), iad)
         if (iad .ne. 0) then
-            call rsadpa(sdtemp, 'L', 1, 'DELTAT', num3,&
+            call rsadpa(sdtemp, 'L', 1, 'DELTAT', num3, &
                         0, sjv=iad, styp=k8b, istop=0)
             dt3 = zr(iad)
             if (dt3 .ne. r8vide()) then
                 if (abs(dt3-time(3)) .gt. r8prem()) then
                     valii = num3
-                    valr (1) = dt3
-                    valr (2) = time(3)
+                    valr(1) = dt3
+                    valr(2) = time(3)
                     call utmess('A', 'ALGORITH14_61', si=valii, nr=2, valr=valr)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         chtime = '&&SMEVOL.CH_INST_R'
-        call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
+        call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
                     ncmp=6, lnomcmp=timcmp, vr=time)
 !
 ! CALCUL DE META_ELNO
@@ -241,20 +241,20 @@ subroutine smevol(temper, modelz, chmat, mateco, compor, option,&
         lchin(8) = chftrc(1:19)
 !
         call copisd('CHAM_ELEM_S', 'V', compor, lchout(1))
-        call calcul('S', option, ligrmo, 8, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, 8, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
 !
 ! ----- STOCKAGE DU CHAMP DANS LA S D EVOL_THER
 !
-        call rsexch(' ', temper, 'META_ELNO', num3, nomch,&
+        call rsexch(' ', temper, 'META_ELNO', num3, nomch, &
                     iret)
         call copisd('CHAMP_GD', 'G', '&&SMEVOL.PHAS_META3', nomch(1:19))
         call rsnoch(temper, 'META_ELNO', num3)
 !        write(ifm,1010) 'META_ELNO', num3, inst2
         call utmess('I', 'ARCHIVAGE_6', sk='META_ELNO', si=num3, sr=inst2)
 
-        call rsexch(' ', temper, 'COMPORMETA', num3, nomch,&
+        call rsexch(' ', temper, 'COMPORMETA', num3, nomch, &
                     iret)
         call copisd('CHAMP_GD', 'G', compor, nomch(1:19))
         call rsnoch(temper, 'COMPORMETA', num3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-implicit none
+    implicit none
 !
     character(len=4) :: quest
     character(len=*) :: kvale
@@ -74,7 +74,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: nbelem, ii, jdc, jj, kk, iadzi, iazk24, icoord
-    parameter  (nbelem=8)
+    parameter(nbelem=8)
     integer :: lenmnd(nbelem), lenmdd(nbelem)
     character(len=13) :: elemnd(nbelem), elemdd(nbelem)
     character(len=20) :: caracz
@@ -82,13 +82,13 @@ implicit none
     character(len=8) :: nommai, mailla
     integer :: nbnoeu
 ! --------------------------------------------------------------------------------------------------
-    data elemnd /'_DIS_T_N     ', '_DIS_TR_N    ', '_DIS_T_L     ', '_DIS_TR_L    ',&
-                 '2D_DIS_T_N   ', '2D_DIS_TR_N  ', '2D_DIS_T_L   ', '2D_DIS_TR_L  ' /
-    data lenmnd /8, 9, 8, 9,10,11,10,11/
+    data elemnd/'_DIS_T_N     ', '_DIS_TR_N    ', '_DIS_T_L     ', '_DIS_TR_L    ', &
+        '2D_DIS_T_N   ', '2D_DIS_TR_N  ', '2D_DIS_T_L   ', '2D_DIS_TR_L  '/
+    data lenmnd/8, 9, 8, 9, 10, 11, 10, 11/
 !
-    data elemdd /'_DIS_T_D_N   ', '_DIS_TR_D_N  ', '_DIS_T_D_L   ', '_DIS_TR_D_L  ', &
-                 '2D_DIS_T_D_N ', '2D_DIS_TR_D_N', '2D_DIS_T_D_L ', '2D_DIS_TR_D_L'/
-    data lenmdd /10,11,10,11,12,13,12,13/
+    data elemdd/'_DIS_T_D_N   ', '_DIS_TR_D_N  ', '_DIS_T_D_L   ', '_DIS_TR_D_L  ', &
+        '2D_DIS_T_D_N ', '2D_DIS_TR_D_N', '2D_DIS_T_D_L ', '2D_DIS_TR_D_L'/
+    data lenmdd/10, 11, 10, 11, 12, 13, 12, 13/
 ! --------------------------------------------------------------------------------------------------
 !     Ordre de stockage dans la carte : CINFDI
 !     0     1     2     3     4     5     6     7     8     9     10
@@ -105,56 +105,56 @@ implicit none
         goto 999
     else if (quest .eq. 'DUMP') then
         call tecael(iadzi, iazk24)
-        nommai = zk24(iazk24-1+3)(1:8)
+        nommai = zk24(iazk24-1+3) (1:8)
         nbnoeu = zi(iadzi+1)
         call utmess(kvale(1:1)//'+', 'DISCRETS_30', sk=nommai, si=nbnoeu)
-        mailla = zk24(iazk24)(1:8)
+        mailla = zk24(iazk24) (1:8)
         call jeveuo(mailla//'.COORDO    .VALE', 'L', icoord)
         do jj = 1, nbnoeu
             ii = zi(iadzi+1+jj)
             if (jj .eq. nbnoeu) then
-                call utmess(kvale(1:1), 'DISCRETS_31', sk=zk24(iazk24-1+ 3+jj), nr=3,&
+                call utmess(kvale(1:1), 'DISCRETS_31', sk=zk24(iazk24-1+3+jj), nr=3, &
                             valr=zr(icoord+3*(ii-1)))
             else
-                call utmess(kvale(1:1)//'+', 'DISCRETS_31', sk=zk24( iazk24-1+3+jj), nr=3,&
+                call utmess(kvale(1:1)//'+', 'DISCRETS_31', sk=zk24(iazk24-1+3+jj), nr=3, &
                             valr=zr(icoord+3*(ii-1)))
-            endif
-        enddo
+            end if
+        end do
         goto 999
     else if (quest .eq. 'CODE') then
         caracz = kvale
-        kk=len( caracz )
+        kk = len(caracz)
         do ii = kk, 1, -1
             if (caracz(ii:ii) .ne. ' ') then
-                kk=ii
+                kk = ii
                 goto 995
-            endif
-        enddo
+            end if
+        end do
         ASSERT(.false.)
 995     continue
         ivale = 0
         rvale = 0.0d0
         do ii = 1, nbelem
-            jj=lenmnd(ii)
+            jj = lenmnd(ii)
             if (kk .ge. jj) then
                 if (caracz(kk-jj+1:kk) .eq. elemnd(ii)) then
                     ivale = ii
                     rvale = ivale
                     goto 999
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
         do ii = 1, nbelem
-            jj=lenmdd(ii)
+            jj = lenmdd(ii)
             if (kk .ge. jj) then
                 if (caracz(kk-jj+1:kk) .eq. elemdd(ii)) then
                     ivale = ii
                     rvale = ivale
                     goto 999
-                endif
-            endif
-        enddo
-        ASSERT(ivale.ne.0)
+                end if
+            end if
+        end do
+        ASSERT(ivale .ne. 0)
     else if (quest .eq. 'INIT') then
         caracz = kvale
         if (caracz(1:3) .eq. 'REP') then
@@ -169,10 +169,10 @@ implicit none
             ivale = 0
         else
             ASSERT(.false.)
-        endif
+        end if
         rvale = ivale
         goto 999
-    endif
+    end if
 !
     rvale = 0.0d0
     ivale = 0
@@ -209,7 +209,7 @@ implicit none
         rvale = zr(jdc+3)+zr(jdc+4)+zr(jdc+5)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     ivale = nint(rvale)
 999 continue

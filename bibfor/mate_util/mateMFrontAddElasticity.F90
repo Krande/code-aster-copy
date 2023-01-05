@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mateMFrontAddElasticity(l_mfront_func, l_mfront_anis,&
-                                   mate         , i_mate_add   ,&
-                                   mfront_nbvale, mfront_prop  ,&
-                                   mfront_valr  , mfront_valk)
+subroutine mateMFrontAddElasticity(l_mfront_func, l_mfront_anis, &
+                                   mate, i_mate_add, &
+                                   mfront_nbvale, mfront_prop, &
+                                   mfront_valr, mfront_valk)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,13 +34,13 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/mateMFrontToAsterProperties.h"
 !
-aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
-character(len=8), intent(in) :: mate
-integer, intent(in) :: i_mate_add
-integer, intent(in) :: mfront_nbvale
-character(len=16), intent(in) :: mfront_prop(16)
-real(kind=8), intent(in) :: mfront_valr(16)
-character(len=16), intent(in) :: mfront_valk(16)
+    aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
+    character(len=8), intent(in) :: mate
+    integer, intent(in) :: i_mate_add
+    integer, intent(in) :: mfront_nbvale
+    character(len=16), intent(in) :: mfront_prop(16)
+    real(kind=8), intent(in) :: mfront_valr(16)
+    character(len=16), intent(in) :: mfront_valk(16)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ character(len=16), intent(in) :: mfront_valk(16)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_prop  = 0
+    i_prop = 0
 !
 ! - Not elasticity: MassDensity and ThermalExpansion
 !
@@ -86,14 +86,14 @@ character(len=16), intent(in) :: mfront_valk(16)
         mf_prop_name = mfront_prop(i_mfront)
         call mateMFrontToAsterProperties(mf_prop_name, cv_prop_name)
         if (cv_prop_name .eq. 'ALPHA') then
-            nb_prop = nb_prop + 1
+            nb_prop = nb_prop+1
             if (l_mfront_anis) then
                 call utmess('F', 'MATERIAL2_16')
-            endif
-        endif
+            end if
+        end if
         if (cv_prop_name .eq. 'RHO') then
-            nb_prop = nb_prop + 1
-        endif
+            nb_prop = nb_prop+1
+        end if
     end do
     ASSERT(nb_prop .le. 2)
 !
@@ -102,31 +102,31 @@ character(len=16), intent(in) :: mfront_valk(16)
     if (l_mfront_func) then
         if (l_mfront_anis) then
             nomrc_mfront = 'ELAS_ORTH_FO'
-            nb_prop      = nb_prop + 9
+            nb_prop = nb_prop+9
         else
             nomrc_mfront = 'ELAS_FO'
-            nb_prop      = nb_prop + 2
-        endif
+            nb_prop = nb_prop+2
+        end if
     else
         if (l_mfront_anis) then
             nomrc_mfront = 'ELAS_ORTH'
-            nb_prop      = nb_prop + 9
+            nb_prop = nb_prop+9
         else
             nomrc_mfront = 'ELAS'
-            nb_prop      = nb_prop + 2
-        endif
-    endif
+            nb_prop = nb_prop+2
+        end if
+    end if
 !
 ! - Add new material
 !
-    call jeveuo(mate//'.MATERIAU.NOMRC', 'E', vk32 = v_mate)
+    call jeveuo(mate//'.MATERIAU.NOMRC', 'E', vk32=v_mate)
     v_mate(i_mate_add) = nomrc_mfront
 !
 ! - Prepare working vectors
 !
-    AS_ALLOCATE(vk16 = v_prop_name, size = nb_prop)
-    AS_ALLOCATE(vk16 = v_prop_func, size = nb_prop)
-    AS_ALLOCATE(vr   = v_prop_valr, size = nb_prop)
+    AS_ALLOCATE(vk16=v_prop_name, size=nb_prop)
+    AS_ALLOCATE(vk16=v_prop_func, size=nb_prop)
+    AS_ALLOCATE(vr=v_prop_valr, size=nb_prop)
 !
 ! - Get properties
 !
@@ -135,7 +135,7 @@ character(len=16), intent(in) :: mfront_valk(16)
         mf_prop_name = mfront_prop(i_mfront)
         call mateMFrontToAsterProperties(mf_prop_name, cv_prop_name)
 ! ----- Add property
-        i_prop = i_prop + 1
+        i_prop = i_prop+1
         ASSERT(i_prop .le. nb_prop)
         v_prop_name(i_prop) = cv_prop_name
         v_prop_func(i_prop) = mfront_valk(i_mfront)
@@ -146,9 +146,9 @@ character(len=16), intent(in) :: mfront_valk(16)
 !
     call codent(i_mate_add, 'D0', nom)
     noobrc_add = mate//'.CPT.'//nom
-    call wkvect(noobrc_add//'.VALR', 'G V R', nb_prop, vr = v_mate_valr)
-    call wkvect(noobrc_add//'.VALC', 'G V C', nb_prop, vc = v_mate_valc)
-    call wkvect(noobrc_add//'.VALK', 'G V K16', 2*nb_prop, vk16 = v_mate_valk)
+    call wkvect(noobrc_add//'.VALR', 'G V R', nb_prop, vr=v_mate_valr)
+    call wkvect(noobrc_add//'.VALC', 'G V C', nb_prop, vc=v_mate_valc)
+    call wkvect(noobrc_add//'.VALK', 'G V K16', 2*nb_prop, vk16=v_mate_valk)
 !
 ! - Create properties
 !
@@ -159,12 +159,12 @@ character(len=16), intent(in) :: mfront_valk(16)
 ! ----- Set properties
         v_mate_valk(i_prop) = v_prop_name(i_prop)
         if (l_mfront_func) then
-            nb_prop_k = nb_prop_k + 1
+            nb_prop_k = nb_prop_k+1
             v_mate_valk(nb_prop+nb_prop_k) = v_prop_func(i_prop)
         else
-            nb_prop_r = nb_prop_r + 1
+            nb_prop_r = nb_prop_r+1
             v_mate_valr(nb_prop_r) = v_prop_valr(i_prop)
-        endif
+        end if
 ! ----- Update length for one material factor keyword
         call jeecra(noobrc_add//'.VALR', 'LONUTI', nb_prop_r)
         call jeecra(noobrc_add//'.VALC', 'LONUTI', nb_prop_c)
@@ -173,8 +173,8 @@ character(len=16), intent(in) :: mfront_valk(16)
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vk16 = v_prop_name)
-    AS_DEALLOCATE(vk16 = v_prop_func)
-    AS_DEALLOCATE(vr   = v_prop_valr)
+    AS_DEALLOCATE(vk16=v_prop_name)
+    AS_DEALLOCATE(vk16=v_prop_func)
+    AS_DEALLOCATE(vr=v_prop_valr)
 !
 end subroutine

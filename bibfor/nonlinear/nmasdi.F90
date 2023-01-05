@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmasdi(list_func_acti, hval_veasse, cndfdo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/isfonc.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: hval_veasse(*), cndfdo
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: hval_veasse(*), cndfdo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ character(len=19), intent(in) :: hval_veasse(*), cndfdo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_didi = isfonc(list_func_acti,'DIDI')
+    l_didi = isfonc(list_func_acti, 'DIDI')
 !
 ! - Initializations
 !
@@ -62,7 +62,7 @@ character(len=19), intent(in) :: hval_veasse(*), cndfdo
     call nonlinDSVectCombAddHat(hval_veasse, 'CNDIDO', 1.d0, ds_vectcomb)
     if (l_didi) then
         call nonlinDSVectCombAddHat(hval_veasse, 'CNDIDI', 1.d0, ds_vectcomb)
-    endif
+    end if
 !
 ! - Dirichlet (given displacements) - AFFE_CHAR_CINE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
-                  icabl, nbnoca, xnoca, ynoca, znoca,&
+subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
+                  icabl, nbnoca, xnoca, ynoca, znoca, &
                   ncncin, nmabet)
     implicit none
 !  DESCRIPTION : IMMERSION DES NOEUDS D'UN CABLE DANS LE MAILLAGE BETON
@@ -97,7 +97,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: nselec
-    parameter     (nselec=5)
+    parameter(nselec=5)
     integer :: ideca, immer, inob1, inob2, inobe, inoca, ipara, itetra, jcoor
     integer :: jnoca, jnunob, jxca
     integer :: jyca, jzca, nbcnx, nblign, nbno, nbpara, nnomax, noe
@@ -121,10 +121,10 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     real(kind=8), pointer :: xyz_noemai(:) => null()
     integer, pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
-    data          param /'MAILLE_BETON_VOISINE    ',&
+    data param/'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&
      &                     'INDICE_IMMERSION        '/
-    data          parcr /'NOEUD_CABLE             '/
+    data parcr/'NOEUD_CABLE             '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -132,8 +132,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     call jemarq()
     call infniv(ifm, niv)
 !
-    cbid=(0.d0,0.d0)
-    rbid=0.d0
+    cbid = (0.d0, 0.d0)
+    rbid = 0.d0
     zero = 0.0d0
     longcy = zero
     longca = zero
@@ -160,49 +160,49 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     call getvr8('CONE', 'LONGUEUR', iocc=1, scal=long, nbret=nbval2)
     if (nbval .eq. 0) then
         rayon = zero
-    endif
+    end if
     if (nbval2 .eq. 0) then
         long = zero
-    endif
+    end if
     presen(1) = k8vide
     presen(2) = k8vide
-    call getvtx('CONE', 'PRESENT', iocc=1, nbval=2, vect=presen,&
+    call getvtx('CONE', 'PRESENT', iocc=1, nbval=2, vect=presen, &
                 nbret=n1)
 !
 !
 !     TRAITEMENT DU MOT-CLE 'NOEUD_ANCRAGE'
     noancr(1) = k8vide
     noancr(2) = k8vide
-    call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', iocc=icabl, nbval=2, vect=noancr,&
+    call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', iocc=icabl, nbval=2, vect=noancr, &
                 nbret=n1)
 !
 !     TRAITEMENT DU MOT-CLE 'GROUP_NO_ANCRAGE'
     if (n1 .eq. 0) then
-        call getvem(mailla, 'GROUP_NO', 'DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl,&
+        call getvem(mailla, 'GROUP_NO', 'DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl, &
                     2, nogrna(1), ibid)
 !
-        call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b,&
+        call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogrna(1))
-        else if (iret.eq.1) then
+        else if (iret .eq. 1) then
             valk(1) = nogrna(1)
             valk(2) = k8b
             call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-        endif
+        end if
         noancr(1) = k8b
 !
-        call utnono(' ', mailla, 'NOEUD', nogrna(2), k8b,&
+        call utnono(' ', mailla, 'NOEUD', nogrna(2), k8b, &
                     iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nogrna(2))
-        else if (iret.eq.1) then
+        else if (iret .eq. 1) then
             valk(1) = nogrna(2)
             valk(2) = k8b
             call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
-        endif
+        end if
         noancr(2) = k8b
-    endif
+    end if
 !
 !
 ! 1.2 DONNEES RELATIVES AU CABLE
@@ -216,16 +216,16 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
     nbpara = tbnp(1)
     nblign = tbnp(2)
-    ideca = nblign - nbno
+    ideca = nblign-nbno
     call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
     do ipara = 1, nbpara
         if (tblp(1+4*(ipara-1)) .eq. parcr) then
             nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 11
-        endif
+        end if
     end do
- 11 continue
+11  continue
 !
 !.... COORDONNEES DES NOEUDS
 !
@@ -269,8 +269,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                 k8b = presen(2)
                 presen(2) = presen(1)
                 presen(1) = k8b
-            endif
-        endif
+            end if
+        end if
 !
         x3dca(1) = zr(jxca+ideca+inoca-1)
         x3dca(2) = zr(jyca+ideca+inoca-1)
@@ -281,32 +281,32 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         x3dca2(2) = zr(jyca+ideca+inoca-1+1)
         x3dca2(3) = zr(jzca+ideca+inoca-1+1)
 !
-        axe(1) = (x3dca2(1) - x3dca(1))
-        axe(2) = (x3dca2(2) - x3dca(2))
-        axe(3) = (x3dca2(3) - x3dca(3))
-        xnorm2 = axe(1)*axe(1) + axe(2)*axe(2) + axe(3)*axe(3)
+        axe(1) = (x3dca2(1)-x3dca(1))
+        axe(2) = (x3dca2(2)-x3dca(2))
+        axe(3) = (x3dca2(3)-x3dca(3))
+        xnorm2 = axe(1)*axe(1)+axe(2)*axe(2)+axe(3)*axe(3)
 !
         if (xnorm2 .eq. zero) then
             call utmess('F', 'MODELISA4_70')
-        endif
+        end if
 !
         xnorm = sqrt(xnorm2)
-        longca = longca + xnorm
+        longca = longca+xnorm
 !
     end do
 !
     if (niv .eq. 2) then
-        write(ifm,*) '------------------------------------------'
-        write(ifm,*) ' DEFINITION DES RELATIONS CINEMATIQUES'
+        write (ifm, *) '------------------------------------------'
+        write (ifm, *) ' DEFINITION DES RELATIONS CINEMATIQUES'
         if (rayon .eq. zero) then
-            write(ifm,*) '  CONE : PAS DE CONE'
+            write (ifm, *) '  CONE : PAS DE CONE'
         else
-            write(ifm,*) '  RAYON DU CONE : ',rayon
-            write(ifm,*) '  LONGUEUR DU CONE : ',long
-        endif
-        write(ifm,*) '  LONGUEUR DU CABLE : ',longca
-        write(ifm,*) ' '
-    endif
+            write (ifm, *) '  RAYON DU CONE : ', rayon
+            write (ifm, *) '  LONGUEUR DU CONE : ', long
+        end if
+        write (ifm, *) '  LONGUEUR DU CABLE : ', longca
+        write (ifm, *) ' '
+    end if
 !
 !
 !
@@ -326,42 +326,42 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         x3dca2(3) = zr(jzca+ideca+inoca-1+1)
 !
         if (niv .eq. 2) then
-            write(ifm,*) ' '
-            write(ifm,*) ' '
+            write (ifm, *) ' '
+            write (ifm, *) ' '
             if (inoca .lt. nbno) then
-                write(ifm,*) 'NOEUDS CABLE : ',nnoeca,' - ',nnoec2
+                write (ifm, *) 'NOEUDS CABLE : ', nnoeca, ' - ', nnoec2
             else
-                write(ifm,*) 'NOEUD CABLE : ',nnoeca
-            endif
-        endif
+                write (ifm, *) 'NOEUD CABLE : ', nnoeca
+            end if
+        end if
 !
 !
 ! 2.2.0  CREATION DU VECTEUR AXE, RELIANT DEUX NOEUDS CABLES CONSECUTIFS
 ! .....  POUR LE CALCUL DES DISTANCES AU CYLINDRE
 !
         if (inoca .ne. nbno) then
-            axe(1) = (x3dca2(1) - x3dca(1))
-            axe(2) = (x3dca2(2) - x3dca(2))
-            axe(3) = (x3dca2(3) - x3dca(3))
-            xnorm2 = axe(1)*axe(1) + axe(2)*axe(2) + axe(3)*axe(3)
+            axe(1) = (x3dca2(1)-x3dca(1))
+            axe(2) = (x3dca2(2)-x3dca(2))
+            axe(3) = (x3dca2(3)-x3dca(3))
+            xnorm2 = axe(1)*axe(1)+axe(2)*axe(2)+axe(3)*axe(3)
             xnorm = sqrt(xnorm2)
         else
             xnorm = 0.d0
-        endif
+        end if
 !
 ! ... CHOIX DU TRAITEMENT :
 !
 !  SI LA LONGUEUR (OU LE RAYON) DU CONE EST NULLE (PAS DE CONE)
-        if ((long.eq.zero) .or. (rayon.eq.zero)) goto 112
+        if ((long .eq. zero) .or. (rayon .eq. zero)) goto 112
 !
 !  TESTE SI ON EST EN DEHORS DES ZONES DE DEFINITIONS DES TUNNELS
-        if ((longcy.gt.long) .and. (longcy.lt.(longca-long))) goto 112
+        if ((longcy .gt. long) .and. (longcy .lt. (longca-long))) goto 112
 !
 !  SINON TESTE SI ON A DEMANDE DES TUNNELS
 !
-        if ((longcy.lt.long) .and. (presen(1)(1:3).eq.'NON')) goto 112
+        if ((longcy .lt. long) .and. (presen(1) (1:3) .eq. 'NON')) goto 112
 !
-        if ((longcy.gt.(longca-long)) .and. (presen(2)(1:3).eq.'NON')) goto 112
+        if ((longcy .gt. (longca-long)) .and. (presen(2) (1:3) .eq. 'NON')) goto 112
 !
 !  SINON ON DEFINI LE CONE
 !
@@ -373,11 +373,11 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
 !
         if (niv .eq. 2) then
-            write(ifm,*) '-> ON DEFINIT LE CYLINDRE D''AXE ', nnoeca,&
-            ' - ',nnoec2
-        endif
+            write (ifm, *) '-> ON DEFINIT LE CYLINDRE D''AXE ', nnoeca, &
+                ' - ', nnoec2
+        end if
 !
-        longcy = longcy + xnorm
+        longcy = longcy+xnorm
         goto 100
 !
 !
@@ -387,11 +387,11 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
 112     continue
         if (niv .eq. 2) then
-            write(ifm,*) '-> ON ATTACHE LE NOEUD OU LA MAILLE BETON '//&
+            write (ifm, *) '-> ON ATTACHE LE NOEUD OU LA MAILLE BETON '//&
      &             'LA PLUS PROCHE'
-        endif
+        end if
 !
-        longcy = longcy + xnorm
+        longcy = longcy+xnorm
 !
 !
 ! 2.2.1  DETERMINATION DU NOEUD DE LA STRUCTURE BETON LE PLUS PROCHE
@@ -404,23 +404,23 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
             noebe(ibe) = 0
         end do
 !
-        noebec=0
+        noebec = 0
         do inobe = 1, nbnobe
             noe = zi(jnunob+inobe-1)
-            dx = x3dca(1) - zr(jcoor+3*(noe-1) )
-            dy = x3dca(2) - zr(jcoor+3*(noe-1)+1)
-            dz = x3dca(3) - zr(jcoor+3*(noe-1)+2)
-            d2 = dx * dx + dy * dy + dz * dz
+            dx = x3dca(1)-zr(jcoor+3*(noe-1))
+            dy = x3dca(2)-zr(jcoor+3*(noe-1)+1)
+            dz = x3dca(3)-zr(jcoor+3*(noe-1)+2)
+            d2 = dx*dx+dy*dy+dz*dz
             do ibe = 1, nselec
                 if (d2 .lt. d2min(ibe)) then
                     do jbe = 0, nselec-ibe-1
-                        d2min(nselec-jbe)=d2min(nselec-jbe-1)
-                        noebe(nselec-jbe)=noebe(nselec-jbe-1)
+                        d2min(nselec-jbe) = d2min(nselec-jbe-1)
+                        noebe(nselec-jbe) = noebe(nselec-jbe-1)
                     end do
-                    d2min(ibe)=d2
-                    noebe(ibe)=noe
+                    d2min(ibe) = d2
+                    noebe(ibe) = noe
                     goto 113
-                endif
+                end if
             end do
 113         continue
             d2_min_max(inobe) = d2
@@ -428,8 +428,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         end do
 !
         if (niv .eq. 2) then
-            write(ifm,*) '   INFOS : DISTANCE MINIMALE : ',sqrt(d2min(1))
-        endif
+            write (ifm, *) '   INFOS : DISTANCE MINIMALE : ', sqrt(d2min(1))
+        end if
 !
 ! 2.2.2  TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 ! .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
@@ -439,13 +439,13 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !          DE BETON
             if (noebe(ibe) .eq. 0) goto 116
 !
-            call immeno(ncncin, nmabet, mailla, x3dca(1), noebe(ibe),&
-                        numail, nbcnx, cnx_maille, xyz_noemai, itetra,&
+            call immeno(ncncin, nmabet, mailla, x3dca(1), noebe(ibe), &
+                        numail, nbcnx, cnx_maille, xyz_noemai, itetra, &
                         xbar(1), immer)
             if (immer .ge. 0) then
                 noebec = noebe(ibe)
                 goto 116
-            endif
+            end if
         end do
 116     continue
 !
@@ -453,7 +453,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
         if (immer > 0 .and. sqrt(d2min(1)) < 1d2*r8prem()*xnorm) then
             immer = 2
-        endif
+        end if
 !
 ! 2.2.3  EN CAS D'ECHEC DE LA TENTATIVE PRECEDENTE
 ! .....
@@ -471,7 +471,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                         d2minc = d2_min_max(inob2)
                         noebec = no_min_max(inob2)
                         inobe = inob2
-                    endif
+                    end if
                 end do
                 if (inobe .gt. inob1) then
                     d2 = d2_min_max(inob1)
@@ -480,12 +480,12 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                     no_min_max(inob1) = noebec
                     d2_min_max(inobe) = d2
                     no_min_max(inobe) = noe
-                endif
+                end if
             end do
 !
             if (niv .eq. 2) then
-                write(ifm,*) '   INFOS : DISTANCE MINIMALE : ',sqrt(d2)
-            endif
+                write (ifm, *) '   INFOS : DISTANCE MINIMALE : ', sqrt(d2)
+            end if
 !
 !
 !.......... LA TENTATIVE D'IMMERSION DANS LES MAILLES AUXQUELLES
@@ -498,39 +498,39 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                 noebec = no_min_max(inobe)
 !............. TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 !............. AUXQUELLES APPARTIENT LE NOEUD BETON COURANT
-                call immeno(ncncin, nmabet, mailla, x3dca(1), noebec,&
-                            numail, nbcnx, cnx_maille, xyz_noemai, itetra,&
+                call immeno(ncncin, nmabet, mailla, x3dca(1), noebec, &
+                            numail, nbcnx, cnx_maille, xyz_noemai, itetra, &
                             xbar(1), immer)
 !............. SORTIE DU BLOC REPETER EN CAS DE SUCCES
                 if (immer .ge. 0) goto 131
             end do
 131         continue
 !
-        endif
+        end if
 !
 !
 !
 ! 2.2.4  SORTIE EN ERREUR FATALE SI ECHEC PERSISTANT
 ! .....
         if (immer .lt. 0) then
-            write(k3b,'(I3)') icabl
+            write (k3b, '(I3)') icabl
             valk(1) = k3b
             valk(2) = nnoeca
             call utmess('F', 'MODELISA4_71', nk=2, valk=valk)
-        endif
+        end if
 !
 ! 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES
 ! .....
-        call reci3d(lirela, mailla, nnoeca, noebec, nbcnx,&
+        call reci3d(lirela, mailla, nnoeca, noebec, nbcnx, &
                     cnx_maille, itetra, xbar(1), immer)
 !
 ! 2.2.6  MISE A JOUR DE LA SD TABLE
 ! .....
         call jenuno(jexnum(nomama, numail), voisin(1))
-        ASSERT(noebec.ne.0)
+        ASSERT(noebec .ne. 0)
         call jenuno(jexnum(nonoma, noebec), voisin(2))
-        call tbajli(tablca, 3, param, [immer], [rbid],&
-                    [cbid], voisin(1), ideca+ inoca)
+        call tbajli(tablca, 3, param, [immer], [rbid], &
+                    [cbid], voisin(1), ideca+inoca)
 !
 100     continue
     end do

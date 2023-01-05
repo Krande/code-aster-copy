@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmdoin(ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -60,13 +60,13 @@ implicit none
 !
 ! - Get parameters
 !
-    criterion   = ds_inout%criterion
-    precision   = ds_inout%precision
-    user_time   = ds_inout%user_time
+    criterion = ds_inout%criterion
+    precision = ds_inout%precision
+    user_time = ds_inout%user_time
     l_user_time = ds_inout%l_user_time
-    user_nume   = ds_inout%user_nume
+    user_nume = ds_inout%user_nume
     l_user_nume = ds_inout%l_user_nume
-    stin_time   = ds_inout%stin_time
+    stin_time = ds_inout%stin_time
     l_stin_time = ds_inout%l_stin_time
 !
 ! - Initial time search
@@ -75,11 +75,11 @@ implicit none
 !
 ! ----- No storing index/time by user => last one in results datastructure
 !
-        if ((.not.l_user_time) .and. (.not.l_user_nume)) then
+        if ((.not. l_user_time) .and. (.not. l_user_nume)) then
             call rs_getlast(ds_inout%stin_evol, last_nume, last_time)
             init_nume = last_nume
             init_time = last_time
-        endif
+        end if
 !
 ! ----- Time by user => get storing index
 !
@@ -88,26 +88,26 @@ implicit none
             call rs_getnume(ds_inout%stin_evol, init_time, criterion, precision, init_nume, iret)
             if (iret .eq. 0) then
                 call utmess('F', 'ETATINIT_3', sk=ds_inout%stin_evol)
-            endif
+            end if
             if (iret .eq. 2) then
                 call utmess('F', 'ETATINIT_4', sk=ds_inout%stin_evol)
-            endif
-            ASSERT(iret.eq.1)
-        endif
+            end if
+            ASSERT(iret .eq. 1)
+        end if
 !
 ! ----- Storing index by user => get time
 !
         if (l_user_nume) then
             init_nume = user_nume
             call rs_gettime(ds_inout%stin_evol, init_nume, init_time)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Initial time defined by user
 !
     if (l_stin_time) then
         init_time = stin_time
-    endif
+    end if
 !
 ! - Set parameters
 !

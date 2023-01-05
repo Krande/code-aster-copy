@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,23 +44,23 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
     call gtria3(xyzl, carat3)
 !
     call jevech('PCACOQU', 'L', jcara)
-    alpha = zr(jcara+1) * r8dgrd()
-    beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    alpha = zr(jcara+1)*r8dgrd()
+    beta = zr(jcara+2)*r8dgrd()
+    call coqrep(pgl, alpha, beta, t2iu, t2ui, &
                 c, s)
 !
-    if (.not.global) then
+    if (.not. global) then
         do i = 1, nno
-            fx = for(1,i)
-            fy = for(2,i)
-            for(1,i) = t2iu(1)*fx + t2iu(3)*fy
-            for(2,i) = t2iu(2)*fx + t2iu(4)*fy
-            fx = for(4,i)
-            fy = for(5,i)
-            for(4,i) = t2iu(1)*fx + t2iu(3)*fy
-            for(5,i) = t2iu(2)*fx + t2iu(4)*fy
+            fx = for(1, i)
+            fy = for(2, i)
+            for(1, i) = t2iu(1)*fx+t2iu(3)*fy
+            for(2, i) = t2iu(2)*fx+t2iu(4)*fy
+            fx = for(4, i)
+            fy = for(5, i)
+            for(4, i) = t2iu(1)*fx+t2iu(3)*fy
+            for(5, i) = t2iu(2)*fx+t2iu(4)*fy
         end do
-    endif
+    end if
 !
     aire = carat3(8)
 !
@@ -69,9 +69,9 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
     end do
 !
     do i = 1, 6
-        vecl(i ) = for(i,1)*aire/3.d0
-        vecl(i+6 ) = for(i,2)*aire/3.d0
-        vecl(i+12) = for(i,3)*aire/3.d0
+        vecl(i) = for(i, 1)*aire/3.d0
+        vecl(i+6) = for(i, 2)*aire/3.d0
+        vecl(i+12) = for(i, 3)*aire/3.d0
     end do
 !
 end subroutine

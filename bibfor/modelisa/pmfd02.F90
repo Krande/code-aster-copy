@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine pmfd02(noma, cesdec)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbocc, iocc, iret, nbma, nbcou, nbv, nbsec
-    integer :: nbap, k, i,   jma
+    integer :: nbap, k, i, jma
 !
     character(len=16) :: mocles(2), typmcl(2), moclef(3)
     character(len=19) :: carte
@@ -61,9 +61,9 @@ subroutine pmfd02(noma, cesdec)
     integer, pointer          :: valv(:) => null()
     character(len=8), pointer :: ncmp(:) => null()
 !
-    data mocles/'MAILLE','GROUP_MA'/
-    data typmcl/'MAILLE','GROUP_MA'/
-    data moclef/'COQUE','POUTRE','GRILLE'/
+    data mocles/'MAILLE', 'GROUP_MA'/
+    data typmcl/'MAILLE', 'GROUP_MA'/
+    data moclef/'COQUE', 'POUTRE', 'GRILLE'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,21 +73,21 @@ subroutine pmfd02(noma, cesdec)
     nbap = 0
     do i = 1, 3
         call getfac(moclef(i), nbocc)
-        nbap = nbap + nbocc
+        nbap = nbap+nbocc
         do k = 1, nbocc
-            call reliem(' ', noma, 'NU_MAILLE', moclef(i), k,&
+            call reliem(' ', noma, 'NU_MAILLE', moclef(i), k, &
                         2, mocles, typmcl, mesmai, nbma)
             if (nbma .ne. 0) call jedetr(mesmai)
-        enddo
-    enddo
+        end do
+    end do
 !
     if (nbap .eq. 0) then
-        call cescre('V', cesdec, 'ELEM', noma, 'NBSP_I',&
+        call cescre('V', cesdec, 'ELEM', noma, 'NBSP_I', &
                     1, 'COQ_NCOU', [-1], [-1], [-1])
         goto 999
-    endif
+    end if
 !
-    carte='&&PMFD02.NBSP_I'
+    carte = '&&PMFD02.NBSP_I'
     call alcart('V', carte, noma, 'NBSP_I')
     call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(carte//'.VALV', 'E', vi=valv)
@@ -95,9 +95,9 @@ subroutine pmfd02(noma, cesdec)
 !   MOT CLE "COQUE" :
     call getfac('COQUE', nbocc)
     do iocc = 1, nbocc
-        call reliem(' ', noma, 'NU_MAILLE', 'COQUE', iocc,&
+        call reliem(' ', noma, 'NU_MAILLE', 'COQUE', iocc, &
                     2, mocles, typmcl, mesmai, nbma)
-        if( nbma > 0) then
+        if (nbma > 0) then
             call getvis('COQUE', 'COQUE_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
             ncmp(1) = 'COQ_NCOU'
             valv(1) = nbcou
@@ -105,14 +105,14 @@ subroutine pmfd02(noma, cesdec)
             call nocart(carte, 3, 1, mode='NUM', nma=nbma, limanu=zi(jma))
             call jedetr(mesmai)
         end if
-    enddo
+    end do
 !
 !   MOT CLE "POUTRE" :
     call getfac('POUTRE', nbocc)
     do iocc = 1, nbocc
-        call reliem(' ', noma, 'NU_MAILLE', 'POUTRE', iocc,&
+        call reliem(' ', noma, 'NU_MAILLE', 'POUTRE', iocc, &
                     2, mocles, typmcl, mesmai, nbma)
-        if( nbma > 0 ) then
+        if (nbma > 0) then
             call getvis('POUTRE', 'TUYAU_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
             call getvis('POUTRE', 'TUYAU_NSEC', iocc=iocc, scal=nbsec, nbret=nbv)
             ncmp(1) = 'TUY_NCOU'
@@ -123,21 +123,21 @@ subroutine pmfd02(noma, cesdec)
             call nocart(carte, 3, 2, mode='NUM', nma=nbma, limanu=zi(jma))
             call jedetr(mesmai)
         end if
-    enddo
+    end do
 !
 !   MOT CLE "GRILLE" :
     call getfac('GRILLE', nbocc)
     do iocc = 1, nbocc
-        call reliem(' ', noma, 'NU_MAILLE', 'GRILLE', iocc,&
+        call reliem(' ', noma, 'NU_MAILLE', 'GRILLE', iocc, &
                     2, mocles, typmcl, mesmai, nbma)
-        if( nbma > 0 ) then
+        if (nbma > 0) then
             ncmp(1) = 'COQ_NCOU'
             valv(1) = 1
             call jeveuo(mesmai, 'L', jma)
             call nocart(carte, 3, 1, mode='NUM', nma=nbma, limanu=zi(jma))
             call jedetr(mesmai)
         end if
-    enddo
+    end do
 !
 !   TRANSFORME LA CARTE EN CHAM_ELEM_S
     call carces(carte, 'ELEM', ' ', 'V', cesdec, 'A', iret)

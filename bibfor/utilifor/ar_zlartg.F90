@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,9 +82,9 @@ subroutine ar_zlartg(f, g, cs, sn, r)
 !     ..
 !     .. PARAMETERS ..
     real(kind=8) :: one, zero
-    parameter          ( one = 1.0d+0, zero = 0.0d+0 )
+    parameter(one=1.0d+0, zero=0.0d+0)
     complex(kind=8) :: czero
-    parameter          ( czero = ( 0.0d+0, 0.0d+0 ) )
+    parameter(czero=(0.0d+0, 0.0d+0))
 !     ..
 !     .. LOCAL SCALARS ..
     real(kind=8) :: d, di, f1, f2, fa, g1, g2, ga
@@ -104,42 +104,42 @@ subroutine ar_zlartg(f, g, cs, sn, r)
         cs = one
         sn = zero
         r = f
-    else if (f.eq.czero) then
+    else if (f .eq. czero) then
         cs = zero
 !
-        sn = dconjg( g ) / abs( g )
-        r = abs( g )
+        sn = dconjg(g)/abs(g)
+        r = abs(g)
 !
 !         SN = ONE
 !         R = G
 !
     else
-        f1 = abs1( f )
-        g1 = abs1( g )
+        f1 = abs1(f)
+        g1 = abs1(g)
         if (f1 .ge. g1) then
-            gs = g / f1
-            g2 = abssq( gs )
-            fs = f / f1
-            f2 = abssq( fs )
-            d = sqrt( one+g2 / f2 )
-            cs = one / d
-            sn = dconjg( gs )*fs*( cs / f2 )
+            gs = g/f1
+            g2 = abssq(gs)
+            fs = f/f1
+            f2 = abssq(fs)
+            d = sqrt(one+g2/f2)
+            cs = one/d
+            sn = dconjg(gs)*fs*(cs/f2)
             r = f*d
         else
-            fs = f / g1
-            f2 = abssq( fs )
-            fa = sqrt( f2 )
-            gs = g / g1
-            g2 = abssq( gs )
-            ga = sqrt( g2 )
-            d = sqrt( one+f2 / g2 )
-            di = one / d
-            cs = ( fa / ga )*di
-            ss = ( dconjg( gs )*fs ) / ( fa*ga )
+            fs = f/g1
+            f2 = abssq(fs)
+            fa = sqrt(f2)
+            gs = g/g1
+            g2 = abssq(gs)
+            ga = sqrt(g2)
+            d = sqrt(one+f2/g2)
+            di = one/d
+            cs = (fa/ga)*di
+            ss = (dconjg(gs)*fs)/(fa*ga)
             sn = ss*di
             r = g*ss*d
-        endif
-    endif
+        end if
+    end if
 !
 !     END OF ZLARTG
 !

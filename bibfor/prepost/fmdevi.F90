@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine fmdevi(nbfonc, nbptot, sigm, dev)
         do j = 1, nbfonc
             dev(idec+j) = sigm(idec+j)
             if (j .le. 3) then
-                dev(idec+j)=dev(idec+j)-ph
-            endif
+                dev(idec+j) = dev(idec+j)-ph
+            end if
         end do
     end do
 !

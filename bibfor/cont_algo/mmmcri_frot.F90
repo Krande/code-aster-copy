@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -59,7 +59,7 @@ implicit none
     integer, parameter :: nb_cmp_lagc = 1
     character(len=8), parameter :: list_cmp_lagc(nb_cmp_lagc) = (/'LAGS_C'/)
     real(kind=8) :: frot_diff_maxi, disp_curr_maxi
-    real(kind=8) :: loop_fric_vale, alpha,  frot_epsi_maxi
+    real(kind=8) :: loop_fric_vale, alpha, frot_epsi_maxi
     character(len=24) :: frot_diff
     character(len=16) :: loop_fric_node
     character(len=8) :: node_name
@@ -72,12 +72,12 @@ implicit none
     loop_fric_vale = 0.d0
     loop_fric_node = ' '
     loop_fric_vale = r8vide()
-    alpha          = -1.d0
+    alpha = -1.d0
     loop_fric_conv = .false.
 !
 ! - Get parameters
 !
-    frot_epsi_maxi = cfdisr(ds_contact%sdcont_defi,'RESI_FROT' )
+    frot_epsi_maxi = cfdisr(ds_contact%sdcont_defi, 'RESI_FROT')
 !
 ! - Compute difference disp_curr - loop_fric_disp
 !
@@ -96,7 +96,7 @@ implicit none
         loop_fric_vale = frot_diff_maxi/disp_curr_maxi
     else
         loop_fric_vale = 0.d0
-    endif
+    end if
 !
 ! - Criterion test
 !
@@ -104,7 +104,7 @@ implicit none
         loop_fric_conv = .true.
     else
         loop_fric_conv = .false.
-    endif
+    end if
 !
 ! - Get name of node
 !
@@ -112,18 +112,18 @@ implicit none
         node_name = ' '
     else
         call jenuno(jexnum(mesh//'.NOMNOE', frot_diff_node), node_name)
-    endif
+    end if
     loop_fric_node = node_name
 !
 ! - Save values
 !
-    call mmbouc(ds_contact, 'Fric', 'Set_Locus', loop_locus_ = loop_fric_node)
-    call mmbouc(ds_contact, 'Fric', 'Set_Vale' , loop_vale_  = loop_fric_vale)
+    call mmbouc(ds_contact, 'Fric', 'Set_Locus', loop_locus_=loop_fric_node)
+    call mmbouc(ds_contact, 'Fric', 'Set_Vale', loop_vale_=loop_fric_vale)
     if (loop_fric_conv) then
         call mmbouc(ds_contact, 'Fric', 'Set_Convergence')
     else
         call mmbouc(ds_contact, 'Fric', 'Set_Divergence')
-    endif
+    end if
 !
     call detrsd('CHAMP_GD', frot_diff)
 !

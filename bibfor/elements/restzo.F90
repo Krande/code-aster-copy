@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,29 +41,29 @@ function restzo(zimat, nmnbn, bend, normm, normn)
 !
     restzo = 0
 !
-    nomres(1)='MPCST'
+    nomres(1) = 'MPCST'
 !
-    call rcvalb('FPG1', 1, 1, '+', zimat,&
-                ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zimat, &
+                ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0], &
                 1, nomres, valres, icodre, 1)
 !
     if (valres(1) .eq. 0.d0) then
-        nomres(1)='MAXMP1'
-        nomres(2)='MAXMP2'
-        nomres(3)='MINMP1'
-        nomres(4)='MINMP2'
+        nomres(1) = 'MAXMP1'
+        nomres(2) = 'MAXMP2'
+        nomres(3) = 'MINMP1'
+        nomres(4) = 'MINMP2'
 !
-        call rcvalb('FPG1', 1, 1, '+', zimat,&
-                    ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
+        call rcvalb('FPG1', 1, 1, '+', zimat, &
+                    ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0], &
                     4, nomres, valres, icodre, 1)
 !
         if (bend .eq. 1) then
-            mpcste(1)=valres(1)
-            mpcste(2)=valres(2)
+            mpcste(1) = valres(1)
+            mpcste(2) = valres(2)
         else
-            mpcste(1)=valres(3)
-            mpcste(2)=valres(4)
-        endif
+            mpcste(1) = valres(3)
+            mpcste(2) = valres(4)
+        end if
 !
         dx = abs(nmnbn(4)-mpcste(1))/normm
         dy = abs(nmnbn(5)-mpcste(2))/normm
@@ -81,14 +81,14 @@ function restzo(zimat, nmnbn, bend, normm, normn)
             do i = 1, 2
                 kpfonc(i) = nomres(2*i)
             end do
-        endif
+        end if
 !
-        dx = distfo(zimat,kpfonc(1),nmnbn(1),nmnbn(4),normn,normm)
-        dy = distfo(zimat,kpfonc(2),nmnbn(2),nmnbn(5),normn,normm)
-    endif
+        dx = distfo(zimat, kpfonc(1), nmnbn(1), nmnbn(4), normn, normm)
+        dy = distfo(zimat, kpfonc(2), nmnbn(2), nmnbn(5), normn, normm)
+    end if
 !
     if (sqrt(dx**2+dy**2) .lt. 5.0d-2) then
         restzo = 1
-    endif
+    end if
 !
 end function

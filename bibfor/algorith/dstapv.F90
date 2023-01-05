@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dstapv(nbpt, d, t, dmin, dmax,&
-                  dmoy, detyp, drms, sd, sde,&
+subroutine dstapv(nbpt, d, t, dmin, dmax, &
+                  dmoy, detyp, drms, sd, sde, &
                   sd2)
 !
 !       MOYENNAGE STATISTIQUE DES DEPLACEMENTS
@@ -63,44 +63,44 @@ subroutine dstapv(nbpt, d, t, dmin, dmax,&
 !
     call wkvect('&&DSTAPV.TEMP.FCNT', 'V V R', nbpt, ift)
 !
-    sd=0.d0
-    sd2=0.d0
+    sd = 0.d0
+    sd2 = 0.d0
     dmoy = 0.d0
     drms = 0.d0
     detyp = 0.d0
-    dmax=-10.d20
-    dmin=-dmax
+    dmax = -10.d20
+    dmin = -dmax
 !
 ! --- RECHERCHE DES EXTREMAS ABSOLUS
 !
     do i = 1, nbpt
-        if (d(i) .gt. dmax) dmax=d(i)
-        if (d(i) .lt. dmin) dmin=d(i)
+        if (d(i) .gt. dmax) dmax = d(i)
+        if (d(i) .lt. dmin) dmin = d(i)
     end do
 !
 ! --- DEPLACEMENT MOYEN
 !
     do i = 1, nbpt
-        zr(ift + i-1) = d(i)
+        zr(ift+i-1) = d(i)
     end do
     call trapez(t, zr(ift), nbpt, sd)
-    dmoy = sd / (t(nbpt) - t(1))
+    dmoy = sd/(t(nbpt)-t(1))
 !
 ! --- DEPLACEMENT QUADRATIQUE MOYEN
 !
     do i = 1, nbpt
-        zr(ift + i-1) = d(i)*d(i)
+        zr(ift+i-1) = d(i)*d(i)
     end do
     call trapez(t, zr(ift), nbpt, sd2)
-    drms = sqrt(sd2 / (t(nbpt) - t(1)))
+    drms = sqrt(sd2/(t(nbpt)-t(1)))
 !
 ! --- DEPLACEMENT QUADRATIQUE MOYEN (MOYENNE NULLE)
 !
     do i = 1, nbpt
-        zr(ift + i-1) = (d(i)-dmoy)*(d(i)-dmoy)
+        zr(ift+i-1) = (d(i)-dmoy)*(d(i)-dmoy)
     end do
     call trapez(t, zr(ift), nbpt, sde)
-    detyp = sqrt(sde / (t(nbpt) - t(1)))
+    detyp = sqrt(sde/(t(nbpt)-t(1)))
 !
 !
     call jedetr('&&DSTAPV.TEMP.FCNT')

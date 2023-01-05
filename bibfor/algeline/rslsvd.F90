@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rslsvd(nm, m, n, a, w,&
-                  u, v, nb, b, eps,&
+subroutine rslsvd(nm, m, n, a, w, &
+                  u, v, nb, b, eps, &
                   ierr, rvnm)
     implicit none
 !
@@ -91,7 +91,7 @@ subroutine rslsvd(nm, m, n, a, w,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     matuv = .true.
-    call calsvd(nm, m, n, a, w,&
+    call calsvd(nm, m, n, a, w, &
                 matuv, u, matuv, v, ierr)
     if (ierr .ne. 0) goto 999
 !
@@ -104,13 +104,13 @@ subroutine rslsvd(nm, m, n, a, w,&
 !     DETERMINATION DU RANG DE LA MATRICE A
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call possvd(nm, m, n, w, matuv,&
-                u, matuv, v, eps, rg,&
+    call possvd(nm, m, n, w, matuv, &
+                u, matuv, v, eps, rg, &
                 rvnm)
     if (rg .eq. 0) then
         ierr = -1
         goto 999
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 3   CALCUL DES SOLUTIONS DU SYSTEME
@@ -119,8 +119,8 @@ subroutine rslsvd(nm, m, n, a, w,&
     do ib = 1, nb
         call r8inir(n, 0.0d0, rvnm(1), 1)
         do j = 1, rg
-            alphaj = ddot(m,u(1,j),1,b(1,ib),1) / w(j)
-            call daxpy(n, alphaj, v(1, j), 1, rvnm(1),&
+            alphaj = ddot(m, u(1, j), 1, b(1, ib), 1)/w(j)
+            call daxpy(n, alphaj, v(1, j), 1, rvnm(1), &
                        1)
         end do
         call dcopy(n, rvnm(1), 1, b(1, ib), 1)

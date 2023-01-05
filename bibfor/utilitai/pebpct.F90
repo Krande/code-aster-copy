@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pebpct(ligrel, nbma, lma, cham, nomcmp,&
-                  dim, bfix, borne, norme, seuil,&
+subroutine pebpct(ligrel, nbma, lma, cham, nomcmp, &
+                  dim, bfix, borne, norme, seuil, &
                   lseuil, borpct, voltot, carele, cespoi)
     implicit none
 #include "asterf_types.h"
@@ -41,7 +41,7 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp,&
     real(kind=8) :: borpct(dim), borne(2), seuil, voltot
     character(len=*) :: ligrel
     character(len=8) :: nomcmp, norme, carele
-    character(len=19) :: cham,cespoi
+    character(len=19) :: cham, cespoi
     character(len=24) :: lma
     aster_logical :: lseuil
 !
@@ -106,11 +106,10 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp,&
 !
 ! --- CALCULS DES VALEURS ET VOLUMES POUR CHAQUE POINT DE CHAQUE MAILLE
 !     ----------------------------------------------------------------
-    tabval='&&PEBPCT_VAL_CMP_MAIL'
-    tabvol='&&PEBPCT_VOLUME_MAIL'
-    cesout='&&PEBPCT_CHAMS_POND'
-    chams='&&PEBPCT.CHAM_EL_S'
-
+    tabval = '&&PEBPCT_VAL_CMP_MAIL'
+    tabvol = '&&PEBPCT_VOLUME_MAIL'
+    cesout = '&&PEBPCT_CHAMS_POND'
+    chams = '&&PEBPCT.CHAM_EL_S'
 
 !   -- passage au champ simple
 !   ----------------------------
@@ -120,15 +119,14 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp,&
     call jeveuo(chams//'.CESD', 'L', jcesd)
     call jeveuo(chams//'.CESC', 'L', vk8=cesc)
     call jeveuo(chams//'.CESK', 'L', jcesk)
-    nbptmx=zi(jcesd+2)
-    nbpspt=zi(jcesd+3)
-
+    nbptmx = zi(jcesd+2)
+    nbpspt = zi(jcesd+3)
 
 !   -- determination des poids des points de gauss
 !   -----------------------------------------------
-    non='NON'
+    non = 'NON'
     call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
-    call chpond(tych, non, cham, cesout, cespoi,&
+    call chpond(tych, non, cham, cesout, cespoi, &
                 ligrel, carele)
     call jeveuo(cespoi//'.CESV', 'L', vr=poiv)
     call jeveuo(cespoi//'.CESL', 'L', jpoil)
@@ -141,100 +139,99 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp,&
     call wkvect(tabvol, 'V V R', nbma*nbptmx*nbpspt, jvol)
 !
     call jelira(chams//'.CESC', 'LONMAX', ncmpm)
-    nucmp=indik8(cesc,nomcmp,1,ncmpm)
+    nucmp = indik8(cesc, nomcmp, 1, ncmpm)
 
-    if (nucmp.le.0) then
+    if (nucmp .le. 0) then
         call utmess('F', 'CHAMPS_3', sk=nomcmp)
-    endif
+    end if
 !
 !   -- mailles a considerer :
     call jeveuo(lma, 'L', jnuma)
 !
-    voltot=0.d0
-    first=.true.
-    k=0
-
+    voltot = 0.d0
+    first = .true.
+    k = 0
 
 !   -- on remplit les tableaux val et vol
 !   --------------------------------------
     do i = 1, nbma
 !
-        ima=zi(jnuma+i-1)
-        nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-        nbsp=zi(jcesd-1+5+4*(ima-1)+2)
+        ima = zi(jnuma+i-1)
+        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+        nbsp = zi(jcesd-1+5+4*(ima-1)+2)
 !
         do ipt = 1, nbpt
-          do ispt = 1, nbsp
+            do ispt = 1, nbsp
 !
-            call cesexi('C', jcesd, jcesl, ima, ipt,&
-                        ispt, nucmp, iad)
+                call cesexi('C', jcesd, jcesl, ima, ipt, &
+                            ispt, nucmp, iad)
 !
-            if ((iad.gt.0) .and. (bfix.eq.0)) then
+                if ((iad .gt. 0) .and. (bfix .eq. 0)) then
 !
-                k=k+1
-                zr(jval+k-1)=cesv(iad)
-!
-                if (tych .eq. 'ELGA') then
-                    call cesexi('C', jpoid, jpoil, ima, ipt,&
-                                ispt, 1, iad)
-                    ASSERT(iad.gt.0)
-                    volpt=poiv(iad)
-                else if (tych.eq.'ELEM') then
-                    ASSERT(nbpt.eq.1)
-                    volpt=pdsm(ima)
-                else if (tych.eq.'ELNO') then
-                    ASSERT(nbpt.ge.1)
-                    volpt=pdsm((ima-1)*nbsp+ispt)/nbpt
-                endif
-!
-                zr(jvol+k-1)=volpt
-                voltot=voltot+volpt
-!
-                if (first) then
-                    valmin=zr(jval+k-1)
-                    valmax=zr(jval+k-1)
-                    first=.false.
-                else
-                    if (zr(jval+k-1) .le. valmin) valmin=zr(jval+k-1)
-                    if (zr(jval+k-1) .ge. valmax) valmax=zr(jval+k-1)
-                endif
-!
-            else if ((iad.gt.0).and.(bfix.eq.1)) then
-!
-                if ((cesv(iad).ge.borne(1)) .and. (cesv(iad).le.borne(2))) then
-                    k=k+1
-                    zr(jval+k-1)=cesv(iad)
+                    k = k+1
+                    zr(jval+k-1) = cesv(iad)
 !
                     if (tych .eq. 'ELGA') then
-                        call cesexi('C', jpoid, jpoil, ima, ipt,&
+                        call cesexi('C', jpoid, jpoil, ima, ipt, &
                                     ispt, 1, iad)
-                        ASSERT(iad.gt.0)
-                        volpt=poiv(iad)
-                    else if (tych.eq.'ELEM') then
-                        ASSERT(nbpt.eq.1)
-                        volpt=pdsm(ima)
-                    else if (tych.eq.'ELNO') then
-                        ASSERT(nbpt.ge.1)
-                        volpt=pdsm((ima-1)*nbsp+ispt)/nbpt
-                    endif
+                        ASSERT(iad .gt. 0)
+                        volpt = poiv(iad)
+                    else if (tych .eq. 'ELEM') then
+                        ASSERT(nbpt .eq. 1)
+                        volpt = pdsm(ima)
+                    else if (tych .eq. 'ELNO') then
+                        ASSERT(nbpt .ge. 1)
+                        volpt = pdsm((ima-1)*nbsp+ispt)/nbpt
+                    end if
 !
-                    zr(jvol+k-1)=volpt
-                    voltot=voltot+volpt
+                    zr(jvol+k-1) = volpt
+                    voltot = voltot+volpt
 !
-                endif
+                    if (first) then
+                        valmin = zr(jval+k-1)
+                        valmax = zr(jval+k-1)
+                        first = .false.
+                    else
+                        if (zr(jval+k-1) .le. valmin) valmin = zr(jval+k-1)
+                        if (zr(jval+k-1) .ge. valmax) valmax = zr(jval+k-1)
+                    end if
 !
-            endif
+                else if ((iad .gt. 0) .and. (bfix .eq. 1)) then
 !
-          end do
+                    if ((cesv(iad) .ge. borne(1)) .and. (cesv(iad) .le. borne(2))) then
+                        k = k+1
+                        zr(jval+k-1) = cesv(iad)
+!
+                        if (tych .eq. 'ELGA') then
+                            call cesexi('C', jpoid, jpoil, ima, ipt, &
+                                        ispt, 1, iad)
+                            ASSERT(iad .gt. 0)
+                            volpt = poiv(iad)
+                        else if (tych .eq. 'ELEM') then
+                            ASSERT(nbpt .eq. 1)
+                            volpt = pdsm(ima)
+                        else if (tych .eq. 'ELNO') then
+                            ASSERT(nbpt .ge. 1)
+                            volpt = pdsm((ima-1)*nbsp+ispt)/nbpt
+                        end if
+!
+                        zr(jvol+k-1) = volpt
+                        voltot = voltot+volpt
+!
+                    end if
+!
+                end if
+!
+            end do
         end do
 !
     end do
 !
 !     NOMBRE DE VALEURS STOCKEES
-    nbval=k
+    nbval = k
 !
 !     NOMBRE D'INTERVALLES
-    nbintv=dim/3
+    nbintv = dim/3
 !
 !
 ! --- DETERMINATION DES INTERVALLES
@@ -243,64 +240,64 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp,&
 !     ON REMPLACE LES EXTREMA CALCULES VALMIN-VALMAX
 !     PAR LES BORNES FOURNIES BORNE(1)-BORNE(2)
     if (bfix .eq. 1) then
-        valmin=borne(1)
-        valmax=borne(2)
+        valmin = borne(1)
+        valmax = borne(2)
 !     CAS OU AUCUNE VALEUR N'A ETE TROUVEE
-    else if (abs(valmin-valmax).le.r8miem()) then
+    else if (abs(valmin-valmax) .le. r8miem()) then
         do i = 1, nbintv
-            borpct(3*(i-1)+3)=100.d0/nbintv
+            borpct(3*(i-1)+3) = 100.d0/nbintv
         end do
         goto 100
-    endif
+    end if
 !
-    p0=valmin
+    p0 = valmin
     if (lseuil) then
         ASSERT(nbintv .eq. 2)
         pas = seuil
         do i = 1, nbintv
-            borpct(3*(i-1)+1)=p0
-            borpct(3*(i-1)+2)=pas
-            p0=seuil
-            pas=valmax
+            borpct(3*(i-1)+1) = p0
+            borpct(3*(i-1)+2) = pas
+            p0 = seuil
+            pas = valmax
         end do
     else
-        pas=(valmax-valmin)/nbintv
+        pas = (valmax-valmin)/nbintv
         do i = 1, nbintv
-            borpct(3*(i-1)+1)=p0
-            borpct(3*(i-1)+2)=p0+pas
-            p0=p0+pas
+            borpct(3*(i-1)+1) = p0
+            borpct(3*(i-1)+2) = p0+pas
+            p0 = p0+pas
         end do
-    endif
+    end if
 !
 ! --- AJOUT DES VOLUMES DANS 'BORPCT' EN FONCTION DES VALEURS
 !     DE LA COMPOSANTE
     do j = 1, nbval
         if (zr(jval+j-1) .lt. borpct(2)) then
-            borpct(3)=borpct(3)+zr(jvol+j-1)
-        endif
+            borpct(3) = borpct(3)+zr(jvol+j-1)
+        end if
     end do
     do i = 2, nbintv-1
         do j = 1, nbval
-            if (zr(jval+j-1) .lt. borpct(3*(i-1)+2) .and. zr(jval+j-1) .ge.&
+            if (zr(jval+j-1) .lt. borpct(3*(i-1)+2) .and. zr(jval+j-1) .ge. &
                 borpct(3*(i-1)+1)) then
-                borpct(3*(i-1)+3)=borpct(3*(i-1)+3)+zr(jvol+j-1)
-            endif
+                borpct(3*(i-1)+3) = borpct(3*(i-1)+3)+zr(jvol+j-1)
+            end if
         end do
     end do
     do j = 1, nbval
         if (zr(jval+j-1) .ge. borpct(3*(nbintv-1)+1)) then
-            borpct(3*(nbintv-1)+3)=borpct(3*(nbintv-1)+3)+zr(jvol+j-1)
-        endif
+            borpct(3*(nbintv-1)+3) = borpct(3*(nbintv-1)+3)+zr(jvol+j-1)
+        end if
     end do
 !
     if (norme(1:7) .eq. 'RELATIF') then
-        pdiv=voltot
+        pdiv = voltot
     else
-        pdiv=1.d2
-    endif
+        pdiv = 1.d2
+    end if
 !
     do i = 1, nbintv
-        borpct(3*(i-1)+3)=100*borpct(3*(i-1)+3)/pdiv
+        borpct(3*(i-1)+3) = 100*borpct(3*(i-1)+3)/pdiv
     end do
 !
 100 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_name(nbVari     , nbVariMeca,&
-                          l_excl     , vari_excl,&
-                          l_kit_meta , l_mfront_offi, l_mfront_proto, l_umat,&
-                          rela_comp  , defo_comp    , kit_comp      ,&
-                          type_cpla  , post_iter    , regu_visc     ,&
-                          libr_name  , subr_name    , model_mfront, model_dim,&
+subroutine comp_meca_name(nbVari, nbVariMeca, &
+                          l_excl, vari_excl, &
+                          l_kit_meta, l_mfront_offi, l_mfront_proto, l_umat, &
+                          rela_comp, defo_comp, kit_comp, &
+                          type_cpla, post_iter, regu_visc, &
+                          libr_name, subr_name, model_mfront, model_dim, &
                           infoVari)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lccree.h"
@@ -36,16 +36,16 @@ implicit none
 #include "asterfort/comp_mfront_vname.h"
 #include "asterfort/comp_meca_code.h"
 !
-integer, intent(in) :: nbVari, nbVariMeca
-aster_logical, intent(in) :: l_excl
-character(len=16), intent(in) :: vari_excl
-aster_logical, intent(in) :: l_kit_meta, l_mfront_offi, l_mfront_proto, l_umat
-character(len=16), intent(in) :: rela_comp, defo_comp, kit_comp(4)
-character(len=16), intent(in) :: type_cpla, post_iter, regu_visc
-character(len=255), intent(in) :: libr_name, subr_name
-character(len=16), intent(in) :: model_mfront
-integer, intent(in) :: model_dim
-character(len=16), pointer :: infoVari(:)
+    integer, intent(in) :: nbVari, nbVariMeca
+    aster_logical, intent(in) :: l_excl
+    character(len=16), intent(in) :: vari_excl
+    aster_logical, intent(in) :: l_kit_meta, l_mfront_offi, l_mfront_proto, l_umat
+    character(len=16), intent(in) :: rela_comp, defo_comp, kit_comp(4)
+    character(len=16), intent(in) :: type_cpla, post_iter, regu_visc
+    character(len=255), intent(in) :: libr_name, subr_name
+    character(len=16), intent(in) :: model_mfront
+    integer, intent(in) :: model_dim
+    character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,47 +94,47 @@ character(len=16), pointer :: infoVari(:)
     else
 ! ----- Name of internal state variables
         if (l_umat) then
-            call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                post_iter, regu_visc,&
+            call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
+                                post_iter, regu_visc, &
                                 compCodePy)
-            nbVariOther = nbVari - nbVariMeca
+            nbVariOther = nbVari-nbVariMeca
             do iVariMeca = 1, nbVariMeca
                 infoVari(iVariMeca) = 'NoName'
             end do
             if (nbVariOther .ne. 0) then
                 call lcvari(compCodePy, nbVariOther, infoVari(nbVariMeca+1:nbVari))
-            endif
+            end if
             call lcdiscard(compCodePy)
 
         else if (l_mfront_proto) then
-            call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
+            call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
                                 post_iter, regu_visc, compCodePy)
-            nbVariOther = nbVari - nbVariMeca
-            if (len_trim(libr_name)>0 .and. len_trim(subr_name)>0) then
+            nbVariOther = nbVari-nbVariMeca
+            if (len_trim(libr_name) > 0 .and. len_trim(subr_name) > 0) then
                 call comp_mfront_vname(nbVariMeca, &
-                                       libr_name , subr_name, model_mfront,&
+                                       libr_name, subr_name, model_mfront, &
                                        model_dim, infoVari)
             else
                 do iVariMeca = 1, nbVariMeca
                     infoVari(iVariMeca) = 'NoName'
                 end do
-            endif
+            end if
             if (nbVariOther .ne. 0) then
                 call lcvari(compCodePy, nbVariOther, infoVari(nbVariMeca+1:nbVari))
-            endif
+            end if
             call lcdiscard(compCodePy)
 
         else if (l_mfront_offi) then
-            call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                post_iter, regu_visc,&
+            call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
+                                post_iter, regu_visc, &
                                 compCodePy)
-            nbVariOther = nbVari - nbVariMeca
+            nbVariOther = nbVari-nbVariMeca
             call comp_mfront_vname(nbVariMeca, &
-                                   libr_name , subr_name, model_mfront, model_dim,&
+                                   libr_name, subr_name, model_mfront, model_dim, &
                                    infoVari)
             if (nbVariOther .ne. 0) then
                 call lcvari(compCodePy, nbVariOther, infoVari(nbVariMeca+1:nbVari))
-            endif
+            end if
             call lcdiscard(compCodePy)
 
         else
@@ -157,37 +157,37 @@ character(len=16), pointer :: infoVari(:)
                 iVari = 0
                 do iMetaPhas = 1, nbMetaPhas
                     do iVariMetaRela = 1, nbVariMetaRela
-                        iVari = iVari + 1
+                        iVari = iVari+1
                         infoVari(iVari) = metaPhasName(iMetaPhas)//'##'//metaRelaName(iVariMetaRela)
-                    enddo
-                enddo
+                    end do
+                end do
                 do iVariMetaRela = 1, nbVariMetaRela
-                    iVari = iVari + 1
+                    iVari = iVari+1
                     infoVari(iVari) = metaRelaName(iVariMetaRela)
-                enddo
+                end do
                 do iVariMetaGlob = 1, nbVariMetaGlob
-                    iVari = iVari + 1
+                    iVari = iVari+1
                     infoVari(iVari) = metaGlobName(iVariMetaGlob)
-                enddo
+                end do
                 call lcdiscard(metaPhasPy)
                 call lcdiscard(metaRelaPy)
                 call lcdiscard(metaGlobPy)
-                nbVariOther = nbVari - iVari
+                nbVariOther = nbVari-iVari
                 if (nbVariOther .ne. 0) then
-                    call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                        post_iter, regu_visc,&
+                    call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
+                                        post_iter, regu_visc, &
                                         compCodePy)
                     call lcvari(compCodePy, nbVariOther, infoVari(iVari+1:nbVari))
                     call lcdiscard(compCodePy)
-                endif
+                end if
             else
-                call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                    post_iter, regu_visc,&
+                call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
+                                    post_iter, regu_visc, &
                                     compCodePy)
                 call lcvari(compCodePy, nbVari, infoVari)
                 call lcdiscard(compCodePy)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

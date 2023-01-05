@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lchbr2(typmod, option, imate, carcri, sigm,&
-                  epsm, depsm,&
-                  vim, vip, dspdp1, dspdp2, sipp,&
+subroutine lchbr2(typmod, option, imate, carcri, sigm, &
+                  epsm, depsm, &
+                  vim, vip, dspdp1, dspdp2, sipp, &
                   sigp, dsidep, dsidp1, dsidp2, iret)
 !
 !
@@ -107,13 +107,13 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
     aster_logical :: resi, rigi
     integer :: nvi
 ! ======================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
-    parameter       ( neuf   =  9.0d0  )
-    parameter       ( zero   =  0.0d0  )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(neuf=9.0d0)
+    parameter(zero=0.0d0)
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
 ! --- INITIALISATION DES PARAMETRES DE CONVERGENCE ---------------------
 ! ======================================================================
@@ -126,13 +126,13 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 !
 ! - Get temperatures
 !
-    call get_varc('RIGI' , 1  , 1 , 'T',&
+    call get_varc('RIGI', 1, 1, 'T', &
                   td, tf, tr)
 ! ======================================================================
 ! --- RECUPERATION DES PARAMETRES DE LA LOI ----------------------------
 ! ======================================================================
-    call hbrmat(mod, imate, nbmat, zero, materd,&
-                materf, matcst, ndt, ndi, nr,&
+    call hbrmat(mod, imate, nbmat, zero, materd, &
+                materf, matcst, ndt, ndi, nr, &
                 nvi)
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
@@ -140,18 +140,18 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
     gm = vim(1)
     if (gm .lt. 0.0d0) then
         call utmess('F', 'ALGORITH3_88')
-    endif
+    end if
     iret = 0
     iteri = 0
-    hookf(:,:) = 0.0d0
-    dsidep(:,:) = 0.0d0
+    hookf(:, :) = 0.0d0
+    dsidep(:, :) = 0.0d0
 ! =====================================================================
 ! --- CALCUL DES PARAMETRES D ECROUISSAGE -----------------------------
 ! =====================================================================
     call hbvaec(gm, nbmat, materf, parame)
     etam = deux*sin(parame(4)*pi)/(trois+sin(parame(4)*pi))
-    resi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RAPH_MECA'
-    rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA'
+    rigi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
     ASSERT(resi .or. rigi)
 ! =====================================================================
 ! --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
@@ -160,14 +160,14 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 ! ======================================================================
 ! --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ----------
 ! ======================================================================
-    call lcdedi('RIGI', 1, 1, nbmat, materd,&
-                materf, td, tf, tr, depsm,&
+    call lcdedi('RIGI', 1, 1, nbmat, materd, &
+                materf, td, tf, tr, depsm, &
                 epsm, deps, epsp)
 ! =====================================================================
 ! --- INTEGRATION ELASTIQUE : SIGE = HOOKF EPSP + SIP -----------------
 ! =====================================================================
-    sigeb(1:ndt) = matmul(hookf(1:ndt,1:ndt), deps(1:ndt))
-    sige(1:ndt) = sigeb(1:ndt) + sigm(1:ndt)
+    sigeb(1:ndt) = matmul(hookf(1:ndt, 1:ndt), deps(1:ndt))
+    sige(1:ndt) = sigeb(1:ndt)+sigm(1:ndt)
     do ii = 1, ndi
         sige(ii) = sige(ii)+sipp
     end do
@@ -175,7 +175,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 !      CALL PSCAL(NDT,SE,SE,SEQ)
     seq = dot_product(se(1:ndt), se(1:ndt))
     sigeqe = sqrt(trois*seq/deux)
-    i1e = trace(ndi,sige)
+    i1e = trace(ndi, sige)
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES -------------------------------------------
 ! ======================================================================
@@ -183,7 +183,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 ! ======================================================================
 ! --- CALCUL DU CRITERE ELASTIQUE --------------------------------------
 ! ======================================================================
-        call hbrcvx(sige, vim, nbmat, materf, seuil,&
+        call hbrcvx(sige, vim, nbmat, materf, seuil, &
                     vp, vecp)
 ! ======================================================================
 ! --- CALCUL DE DELTA GAMMA --------------------------------------------
@@ -191,7 +191,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
         if (seuil .gt. toler) then
             plas = 1.0d0
             dg = 0.0d0
-            call hbcrel(vp, gm, dg, nbmat, materf,&
+            call hbcrel(vp, gm, dg, nbmat, materf, &
                         sigeqe, i1e, etam, parame, seuil)
             fmoins = seuil
 ! ======================================================================
@@ -204,19 +204,19 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
             dgnp = dg
             gnp = gm
             etanp = etam
-            call calcvh(nbmat, materf, etanp, vp, sigeqe,&
+            call calcvh(nbmat, materf, etanp, vp, sigeqe, &
                         vh, vg)
-            call hbderi(gnp, nbmat, materf, vg, etanp,&
+            call hbderi(gnp, nbmat, materf, vg, etanp, &
                         parame, derive)
 ! ======================================================================
 ! --------- PREMIERE ITERATION -----------------------------------------
 ! ======================================================================
-            call hbcalc(seuil, gnp, dgnp, nbmat, materf,&
-                        i1e, sigeqe, vp, etanp, vh,&
+            call hbcalc(seuil, gnp, dgnp, nbmat, materf, &
+                        i1e, sigeqe, vp, etanp, vh, &
                         vg, parame, derive, incrg)
-  2         continue
-            gnp = gnp + incrg
-            dgnp = dgnp + incrg
+2           continue
+            gnp = gnp+incrg
+            dgnp = dgnp+incrg
 ! ======================================================================
 ! -- ON OBTIENT DGAMMA_P NEGATIF : ON ESSAIE DE DECOUPER LE PAS DE TEMPS
 ! ======================================================================
@@ -224,38 +224,38 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
                 call utmess('I', 'ALGORITH4_57')
                 iteri = 1
                 goto 100
-            endif
+            end if
             call hbvaec(gnp, nbmat, materf, parame)
             etanp = deux*sin(parame(4)*pi)/(trois+sin(parame(4)*pi))
-            call hbcrel(vp, gnp, dgnp, nbmat, materf,&
+            call hbcrel(vp, gnp, dgnp, nbmat, materf, &
                         sigeqe, i1e, etanp, parame, seuil)
 ! ======================================================================
 ! ---------- IL Y A CONVERGENCE ----------------------------------------
 ! ======================================================================
-            if ((abs(seuil).lt.toler) .or. (abs(seuil/fmoins).lt.toler)) then
+            if ((abs(seuil) .lt. toler) .or. (abs(seuil/fmoins) .lt. toler)) then
 ! ======================================================================
 ! --------- ON DETECTE LES SOLUTIONS NON ADMISSIBLES -------------------
 ! ======================================================================
-                aux = sigeqe*(etanp+un)/(trois*materf(4,1))
+                aux = sigeqe*(etanp+un)/(trois*materf(4, 1))
                 if (dgnp .gt. aux) then
                     call utmess('I', 'ALGORITH4_58')
                     iteri = 1
                     goto 100
-                endif
+                end if
                 dg = dgnp
                 iteri = 0
 ! ======================================================================
 ! --------- LE NOMBRE MAX D ITERATIONS N A PAS ETE ATTEINT -------------
 ! ======================================================================
-            else if (iter.lt.itmax) then
-                iter = iter + 1
+            else if (iter .lt. itmax) then
+                iter = iter+1
                 iteri = 0
-                call calcvh(nbmat, materf, etanp, vp, sigeqe,&
+                call calcvh(nbmat, materf, etanp, vp, sigeqe, &
                             vh, vg)
-                call hbderi(gnp, nbmat, materf, vg, etanp,&
+                call hbderi(gnp, nbmat, materf, vg, etanp, &
                             parame, derive)
-                call hbcalc(seuil, gnp, dgnp, nbmat, materf,&
-                            i1e, sigeqe, vp, etanp, vh,&
+                call hbcalc(seuil, gnp, dgnp, nbmat, materf, &
+                            i1e, sigeqe, vp, etanp, vh, &
                             vg, parame, derive, incrg)
                 goto 2
 ! ======================================================================
@@ -268,27 +268,27 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
                 call utmess('I', 'ALGORITH4_59')
                 iteri = 1
                 goto 100
-            endif
+            end if
 100         continue
             if (iteri .eq. 1) goto 1
 ! ======================================================================
             gp = gnp
             etap = etanp
-            call hbmajs(dg, nbmat, materf, se, i1e,&
+            call hbmajs(dg, nbmat, materf, se, i1e, &
                         sigeqe, etap, sigp)
 ! ---------- IL FAUT RENVOYER LES CONTRAINTES EFFECTIVES ---------------
             do ii = 1, ndi
                 sigp(ii) = sigp(ii)-sipp
             end do
-            vip(1) = vim(1) + dg
-            vip(2) = vim(2) + trois*etap*dg/(etap+un)
+            vip(1) = vim(1)+dg
+            vip(2) = vim(2)+trois*etap*dg/(etap+un)
             vip(3) = plas
             if (rigi) then
-                mu = materf(4,1)
-                k = materf(5,1)
-                sig3 = vp(3)*(un - trois*mu*dg/(sigeqe*(etap+un))) + (i1e - neuf*k*etap*dg/(etap+&
+                mu = materf(4, 1)
+                k = materf(5, 1)
+                sig3 = vp(3)*(un-trois*mu*dg/(sigeqe*(etap+un)))+(i1e-neuf*k*etap*dg/(etap+&
                        &un))/trois
-            endif
+            end if
         else
             plas = 0.0d0
             do ii = 1, ndt
@@ -296,24 +296,24 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
             end do
 ! ---------- IL FAUT RENVOYER LES CONTRAINTES EFFECTIVES ---------------
             do ii = 1, ndi
-                sigp(ii) = sigp(ii) - sipp
+                sigp(ii) = sigp(ii)-sipp
             end do
             gp = gm
             etap = etam
             vip(1) = vim(1)
             vip(2) = vim(2)
             vip(3) = plas
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! --- CALCUL DE LA MATRICE TANGENTE ------------------------------------
 ! ======================================================================
     if (rigi) then
-        grup = materf(1,2)
-        gres = materf(2,2)
-        pphi1 = materf(9,2)
-        pphi2 = materf(15,2)
-        pphi0 = materf(16,2)
+        grup = materf(1, 2)
+        gres = materf(2, 2)
+        pphi1 = materf(9, 2)
+        pphi2 = materf(15, 2)
+        pphi0 = materf(16, 2)
         if (option(1:9) .eq. 'RIGI_MECA') then
             vi = vim(3)
             dg = 0.0d0
@@ -325,9 +325,9 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
             vi = vip(3)
             eta = etap
             gam = gp
-        endif
+        end if
         if (vi .eq. 0) then
-            dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
+            dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
             do ii = 1, ndi
                 dsdsip(ii) = 1.0d0
             end do
@@ -336,24 +336,24 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
             end do
         else
             if (gam .lt. grup) then
-                detadg = 6.0d0*(pphi1-pphi0)*pi*cos(parame(4)*pi) / (grup*(trois+sin(parame(4)*pi&
+                detadg = 6.0d0*(pphi1-pphi0)*pi*cos(parame(4)*pi)/(grup*(trois+sin(parame(4)*pi&
                          &))**2)
-            else if (gam.lt.gres) then
-                detadg = 6.0d0*(pphi2-pphi1)*pi*cos(parame(4)*pi) / ((gres-grup)*(trois+sin(param&
+            else if (gam .lt. gres) then
+                detadg = 6.0d0*(pphi2-pphi1)*pi*cos(parame(4)*pi)/((gres-grup)*(trois+sin(param&
                          &e(4)*pi))**2)
             else
                 detadg = 0.d0
-            endif
+            end if
             dgdl = eta+un
-            call hbderi(gam, nbmat, materf, zero, eta,&
+            call hbderi(gam, nbmat, materf, zero, eta, &
                         parame, derive)
-            call hbmata(se, dg, eta, i1e, sigeqe,&
-                        vp, vecp, parame, derive, sig3,&
+            call hbmata(se, dg, eta, i1e, sigeqe, &
+                        vp, vecp, parame, derive, sig3, &
                         detadg, dgdl, nbmat, materf, dsidep)
-            call hbdsdp(se, dg, eta, sigeqe, vp,&
-                        parame, derive, nbmat, materf, sig3,&
+            call hbdsdp(se, dg, eta, sigeqe, vp, &
+                        parame, derive, nbmat, materf, sig3, &
                         detadg, dgdl, dsdsip)
-        endif
+        end if
 ! ======================================================================
 ! --- ON A CALCULE LA DERIVEE DES CONTRAINTES TOTALES, ET ON RENVOIE ---
 ! --- CELLE DES CONTRRAINTES EFFECTIVES --------------------------------
@@ -368,11 +368,11 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
             dsidp1(ii) = dsdsip(ii)*dspdp1
             dsidp2(ii) = dsdsip(ii)*dspdp2
         end do
-    endif
+    end if
 ! ======================================================================
     iret = 0
     goto 999
-  1 continue
+1   continue
     iret = 1
 999 continue
 ! ======================================================================

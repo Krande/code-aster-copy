@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg, numeCompCG)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
 !
-character(len=16), intent(in) :: rela_comp_cg(2)
-integer, intent(out) :: nb_vari_cg(2)
-integer, intent(out) :: numeCompCG(2)
+    character(len=16), intent(in) :: rela_comp_cg(2)
+    integer, intent(out) :: nb_vari_cg(2)
+    integer, intent(out) :: numeCompCG(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine lac_crsd(nume_dof, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
@@ -32,8 +32,8 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/vtcreb.h"
 !
-character(len=24), intent(in) :: nume_dof
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,19 +57,19 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I','CONTACT5_6')
-    endif
+        call utmess('I', 'CONTACT5_6')
+    end if
 !
 ! - Get parameters
 !
-    nt_patch     = ds_contact%nt_patch
-    nt_elem_slav = cfdisi(ds_contact%sdcont_defi,'NTMAE')
+    nt_patch = ds_contact%nt_patch
+    nt_elem_slav = cfdisi(ds_contact%sdcont_defi, 'NTMAE')
 !
 ! - Print
 !
     vali(1) = nt_patch
     vali(2) = nt_elem_slav
-    call utmess('I', 'CONTACT5_7', ni = 2, vali = vali)
+    call utmess('I', 'CONTACT5_7', ni=2, vali=vali)
 !
 ! - Create objects
 !
@@ -90,7 +90,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! - Forces to solve
 !
-    call vtcreb(ds_contact%cneltc, 'V', 'R', nume_ddlz = nume_dof)
+    call vtcreb(ds_contact%cneltc, 'V', 'R', nume_ddlz=nume_dof)
     ds_contact%l_cneltc = ASTER_TRUE
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine dglrda()
 !-----------------------------------------------------------------------
 !
     integer :: na
-    parameter (na=10)
+    parameter(na=10)
     integer :: nnap, nprec, nliner, ibid, ii, ilit, nlit, jlm, jmelk
     integer :: jmelr, jmelc, lonobj, ifon0, longf, ifon1, lonuti
     real(kind=8) :: eb, nub, ft, fc, gamma, num, em
@@ -81,17 +81,17 @@ subroutine dglrda()
     call getfac('CABLE_PREC', nprec)
     call getfac('LINER', nliner)
 !
-    nlit = nnap + nprec + nliner
+    nlit = nnap+nprec+nliner
 !
     if (nlit .eq. 0) then
         nlit = 1
-        ea(1)  = 0.0d0
+        ea(1) = 0.0d0
         nua(1) = 0.0d0
         omx(1) = 0.0d0
         omy(1) = 0.0d0
-        rx(1)  = 0.0d0
-        ry(1)  = 0.0d0
-    endif
+        rx(1) = 0.0d0
+        ry(1) = 0.0d0
+    end if
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infmaj()
@@ -121,19 +121,19 @@ subroutine dglrda()
         amora = 0.0d0
     else
         amora = valres(1)
-    endif
+    end if
 !
     if (icodr2(2) .ne. 0) then
         amorb = 0.0d0
     else
         amorb = valres(2)
-    endif
+    end if
 !
     if (icodr2(3) .ne. 0) then
         amorh = 0.0d0
     else
         amorh = valres(3)
-    endif
+    end if
 !
     nomres(1) = 'SYT'
     nomres(2) = 'SYC'
@@ -149,13 +149,13 @@ subroutine dglrda()
         pflua = valres(1)
     else
         pflua = 0.d0
-    endif
+    end if
 !
     if (icodr2(2) .eq. 0) then
         pretr = valres(2)
     else
         pretr = 0.d0
-    endif
+    end if
 !
     call getvr8('BETON', 'EPAIS', iocc=1, scal=hh, nbret=ibid)
     call getvr8('BETON', 'GAMMA', iocc=1, scal=gamma, nbret=ibid)
@@ -191,11 +191,11 @@ subroutine dglrda()
             liner(ilit) = 0.0d0
         end do
         ilit = nnap
-    endif
+    end if
 !
     if (nprec .gt. 0) then
         do ii = 1, nprec
-            ilit = ilit + 1
+            ilit = ilit+1
             call getvid('CABLE_PREC', 'MATER', iocc=ii, scal=mater, nbret=ibid)
             nomres(1) = 'E'
             call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1), 1, nomres, valres, icodr2, 1)
@@ -215,11 +215,11 @@ subroutine dglrda()
     else
         prex = 0.0d0
         prey = 0.0d0
-    endif
+    end if
 !
     if (nliner .gt. 0) then
         do ii = 1, nliner
-            ilit = ilit + 1
+            ilit = ilit+1
             call getvid('LINER', 'MATER', iocc=ii, scal=mater, nbret=ibid)
             nomres(1) = 'E'
             nomres(2) = 'NU'
@@ -237,32 +237,32 @@ subroutine dglrda()
             omy(ilit) = oml(ii)
             liner(ilit) = 1.d0
         end do
-    endif
+    end if
 !
 ! CALCUL DES COEFFICIENTS DE LA MATRICE ELASTIQUE
     call getres(mater, type, nomcmd)
     elb(1) = eb
     elb(2) = nub
-    call parglr(nlit, elb, ea, nua, liner, omx, omy, rx, ry, hh,&
+    call parglr(nlit, elb, ea, nua, liner, omx, omy, rx, ry, hh, &
                 bn11, bn12, bn22, bn33, bm11, bm12, bm22, bc11, bc22)
 !
 ! E ET NU EQUIVALENTS EN FLEXION
     num = 2.d0*bn12/(bn11+bn22)
     em = (bn11+bn22)/(2.d0*hh)*(1.d0-num**2)
     nueq = 2.d0*bm12/(bm11+bm22)
-    eeq = (bm11+bm22)*6.d0/hh**3 *(1.d0-nueq**2)
-    par1 = eeq*hh / (1.d0 - nueq*nueq)
+    eeq = (bm11+bm22)*6.d0/hh**3*(1.d0-nueq**2)
+    par1 = eeq*hh/(1.d0-nueq*nueq)
     par2 = par1*hh*hh/12.d0
     bm11 = par2
     bm12 = par2*nueq
     bm22 = par2
-    bm33 = par2*(1.d0 - nueq)/2.d0
+    bm33 = par2*(1.d0-nueq)/2.d0
 !
 ! MOMENT DE FISSURATION
-    mf1x=((bn11*ft/eb-prex)*bm11+(prex*hh/2.d0-ft/eb*bc11)*bc11) / ( bn11*hh/2.d0-bc11)
-    mf1y=((bn22*ft/eb-prey)*bm22+(prey*hh/2.d0-ft/eb*bc22)*bc22) / ( bn22*hh/2.d0-bc22)
-    mf2x=((bn11*ft/eb-prex)*bm11+(-prex*hh/2.d0-ft/eb*bc11)*bc11)/ (-bn11*hh/2.d0-bc11)
-    mf2y=((bn22*ft/eb-prey)*bm22+(-prey*hh/2.d0-ft/eb*bc22)*bc22)/ (-bn22*hh/2.d0-bc22)
+    mf1x = ((bn11*ft/eb-prex)*bm11+(prex*hh/2.d0-ft/eb*bc11)*bc11)/(bn11*hh/2.d0-bc11)
+    mf1y = ((bn22*ft/eb-prey)*bm22+(prey*hh/2.d0-ft/eb*bc22)*bc22)/(bn22*hh/2.d0-bc22)
+    mf2x = ((bn11*ft/eb-prex)*bm11+(-prex*hh/2.d0-ft/eb*bc11)*bc11)/(-bn11*hh/2.d0-bc11)
+    mf2y = ((bn22*ft/eb-prey)*bm22+(-prey*hh/2.d0-ft/eb*bc22)*bc22)/(-bn22*hh/2.d0-bc22)
 !
 ! MOYENNE DANS CHAQUE DIRECTION
     mf1 = (mf1x+mf1y)/2.d0
@@ -278,25 +278,25 @@ subroutine dglrda()
             bt1 = 5.d0/6.d0*hh/2.d0*(eb/(1.d0+nub)+eat*omt)
         else
             bt1 = 5.d0/6.d0*hh/2.d0*eb/(1.d0+nub)
-        endif
+        end if
         bt2 = bt1
-    endif
+    end if
 !
 !-----REMPLISSAGE DU MATERIAU
     call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K32', 3, jlm)
-    zk32(jlm ) =  'GLRC_DAMAGE'
+    zk32(jlm) = 'GLRC_DAMAGE'
     zk32(jlm+1) = 'ELAS_GLRC'
     zk32(jlm+2) = 'BPEL_BETON'
 
 !---------ELASTIQUE---------------
     lonobj = 11
-    call codent(2,'D0',K6)
+    call codent(2, 'D0', K6)
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
-    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R', lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C', lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI', 0)
     zk16(jmelk) = 'E_M'
     zr(jmelr) = em
     zk16(jmelk+1) = 'NU_M'
@@ -314,41 +314,40 @@ subroutine dglrda()
     if (amora .gt. 0.0d0) then
         zk16(jmelk+7) = 'AMOR_ALPHA'
         zr(jmelr+7) = amora
-    endif
+    end if
     if (amorb .gt. 0.0d0) then
         zk16(jmelk+8) = 'AMOR_BETA'
         zr(jmelr+8) = amorb
-    endif
+    end if
     if (amorh .gt. 0.0d0) then
         zk16(jmelk+9) = 'AMOR_HYST'
-        zr(jmelr+9 ) = amorh
-    endif
+        zr(jmelr+9) = amorh
+    end if
 
 !   -- alphat : coef. dilatation thermique :
     call getvr8(' ', 'ALPHA', iocc=1, scal=alphat, nbret=nalphat)
     if (nalphat .eq. 1) then
         zk16(jmelk+10) = 'ALPHA'
-        zr(jmelr+10 ) = alphat
-    endif
-
+        zr(jmelr+10) = alphat
+    end if
 
 !---------BPEL_BETON--------------
     lonobj = 2
-    call codent(3,'D0',K6)
+    call codent(3, 'D0', K6)
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
-    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
-    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
-    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
-    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk16(jmelk )  = 'PERT_RETR'
-    zr(jmelr )   = pretr
+    call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R', lonobj, jmelr)
+    call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI', lonobj)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C', lonobj, jmelc)
+    call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI', 0)
+    zk16(jmelk) = 'PERT_RETR'
+    zr(jmelr) = pretr
     zk16(jmelk+1) = 'PERT_FLUA'
-    zr(jmelr+1 ) = pflua
+    zr(jmelr+1) = pflua
 !---------GLRC_DAMAGE---------------
     lonobj = 48
     lonuti = 35
-    call codent(1,'D0',K6)
+    call codent(1, 'D0', K6)
 !
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
 !
@@ -358,101 +357,101 @@ subroutine dglrda()
         call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', 59)
     else
         call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI', lonuti)
-    endif
+    end if
 !
-    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',  lonobj, jmelr)
+    call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R', lonobj, jmelr)
     call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI', lonuti)
-    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',  lonobj, jmelc)
+    call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C', lonobj, jmelc)
     call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI', 0)
-    ifon0 = jmelk + lonuti
+    ifon0 = jmelk+lonuti
     longf = 12
-    ifon1 = ifon0 + longf
-    zk16(jmelk )  = 'BN11    '
-    zr(jmelr )   = bn11
+    ifon1 = ifon0+longf
+    zk16(jmelk) = 'BN11    '
+    zr(jmelr) = bn11
     zk16(jmelk+1) = 'BN12    '
-    zr(jmelr+1 ) = bn12
+    zr(jmelr+1) = bn12
     zk16(jmelk+2) = 'BN22    '
-    zr(jmelr+2 ) = bn22
+    zr(jmelr+2) = bn22
     zk16(jmelk+3) = 'BN33    '
-    zr(jmelr+3 ) = bn33
+    zr(jmelr+3) = bn33
     zk16(jmelk+4) = 'MF1     '
-    zr(jmelr+4 ) = mf1
+    zr(jmelr+4) = mf1
     zk16(jmelk+5) = 'MF2     '
-    zr(jmelr+5 ) = mf2
+    zr(jmelr+5) = mf2
     zk16(jmelk+6) = 'QP1     '
-    zr(jmelr+6 ) = qp1
+    zr(jmelr+6) = qp1
     zk16(jmelk+7) = 'QP2     '
-    zr(jmelr+7 ) = qp2
+    zr(jmelr+7) = qp2
     zk16(jmelk+8) = 'GAMMA   '
-    zr(jmelr+8 ) = gamma
+    zr(jmelr+8) = gamma
     zk16(jmelk+9) = 'BT1     '
-    zr(jmelr+9 ) = bt1
+    zr(jmelr+9) = bt1
     zk16(jmelk+10) = 'BT2     '
-    zr(jmelr+10 ) = bt2
+    zr(jmelr+10) = bt2
     zk16(jmelk+11) = 'C1N1    '
-    zr(jmelr+11 ) = cn(1,1)
+    zr(jmelr+11) = cn(1, 1)
     zk16(jmelk+12) = 'C1N2    '
-    zr(jmelr+12 ) = cn(1,2)
+    zr(jmelr+12) = cn(1, 2)
     zk16(jmelk+13) = 'C1N3    '
-    zr(jmelr+13 ) = cn(1,3)
+    zr(jmelr+13) = cn(1, 3)
     zk16(jmelk+14) = 'C2N1    '
-    zr(jmelr+14 ) = cn(2,1)
+    zr(jmelr+14) = cn(2, 1)
     zk16(jmelk+15) = 'C2N2    '
-    zr(jmelr+15 ) = cn(2,2)
+    zr(jmelr+15) = cn(2, 2)
     zk16(jmelk+16) = 'C2N3    '
-    zr(jmelr+16 ) = cn(2,3)
+    zr(jmelr+16) = cn(2, 3)
     zk16(jmelk+17) = 'C1M1    '
-    zr(jmelr+17 ) = cm(1,1)
+    zr(jmelr+17) = cm(1, 1)
     zk16(jmelk+18) = 'C1M2    '
-    zr(jmelr+18 ) = cm(1,2)
+    zr(jmelr+18) = cm(1, 2)
     zk16(jmelk+19) = 'C1M3    '
-    zr(jmelr+19 ) = cm(1,3)
+    zr(jmelr+19) = cm(1, 3)
     zk16(jmelk+20) = 'C2M1    '
-    zr(jmelr+20 ) = cm(2,1)
+    zr(jmelr+20) = cm(2, 1)
     zk16(jmelk+21) = 'C2M2    '
-    zr(jmelr+21 ) = cm(2,2)
+    zr(jmelr+21) = cm(2, 2)
     zk16(jmelk+22) = 'C2M3    '
-    zr(jmelr+22 ) = cm(2,3)
+    zr(jmelr+22) = cm(2, 3)
     zk16(jmelk+23) = 'MAXMP1  '
-    zr(jmelr+23 ) = 0.0d0
+    zr(jmelr+23) = 0.0d0
     zk16(jmelk+24) = 'MAXMP2  '
-    zr(jmelr+24 ) = 0.0d0
+    zr(jmelr+24) = 0.0d0
     zk16(jmelk+25) = 'MINMP1  '
-    zr(jmelr+25 ) = 0.0d0
+    zr(jmelr+25) = 0.0d0
     zk16(jmelk+26) = 'MINMP2  '
-    zr(jmelr+26 ) = 0.0d0
+    zr(jmelr+26) = 0.0d0
     zk16(jmelk+27) = 'NORMM  '
-    zr(jmelr+27 ) = 1.0d0
+    zr(jmelr+27) = 1.0d0
     zk16(jmelk+27) = 'NORMN  '
-    zr(jmelr+27 ) = 1.0d0
+    zr(jmelr+27) = 1.0d0
 !---------IMPRESSION-------------
     if (niv .gt. 0) then
-        write (ifm,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DAMAGE'
-        write (ifm,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN MEMBRANE:'
-        write (ifm,*) 'E_M =  :',em
-        write (ifm,*) 'NU_M =  :',num
-        write (ifm,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN FLEXION:'
-        write (ifm,*) 'E_F =  :',eeq
-        write (ifm,*) 'NU_F =  :',nueq
-        write (ifm,*) 'MATRICE DE D ELASTICITE EN MEMBRANE:'
-        write (ifm,*) 'BN11, BN12, BN22, BN33 =   :', bn11, ' ', bn12, ' ', bn22,' ', bn33
-        write (ifm,*) 'MATRICE DE D ELASTICITE EN FLEXION:'
-        write (ifm,*) 'BM11, BM12, BM22, BM33 =   :', bm11, ' ', bm12, ' ', bm22,' ', bm33
+        write (ifm, *) 'PARAMETRES HOMOGENEISES POUR GLRC_DAMAGE'
+        write (ifm, *) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN MEMBRANE:'
+        write (ifm, *) 'E_M =  :', em
+        write (ifm, *) 'NU_M =  :', num
+        write (ifm, *) 'MODULE D YOUNG ET COEFFICIENT DE POISSON EFFECTIFS EN FLEXION:'
+        write (ifm, *) 'E_F =  :', eeq
+        write (ifm, *) 'NU_F =  :', nueq
+        write (ifm, *) 'MATRICE DE D ELASTICITE EN MEMBRANE:'
+        write (ifm, *) 'BN11, BN12, BN22, BN33 =   :', bn11, ' ', bn12, ' ', bn22, ' ', bn33
+        write (ifm, *) 'MATRICE DE D ELASTICITE EN FLEXION:'
+        write (ifm, *) 'BM11, BM12, BM22, BM33 =   :', bm11, ' ', bm12, ' ', bm22, ' ', bm33
         if (icis .eq. 0) then
-            write (ifm,*) 'MATRICE DE D ELASTICITE EN CISAILLEMENT TRANSVERSE:'
-            write (ifm,*) 'BT1, BT2 =   :', bt1, ' ', bt2
-        endif
-        write (ifm,*) 'MOMENTS DE FISSURATION:'
-        write (ifm,*) 'MF1, MF2 =   :', mf1, ' ', mf2
-        write (ifm,*) 'RAPPORT DE PENTE:'
-        write (ifm,*) 'GAMMA, QP1, QP2 =   :', gamma, ' ', qp1, ' ', qp2
-        write (ifm,*) 'COEFFICIENT DE PRAGER EN MEMBRANE:'
-        write (ifm,*) 'C1N1, C1N2, C1N3 =   :', cn(1,1), ' ', cn(1,2), ' ', cn(1,3)
-        write (ifm,*) 'C2N1, C2N2, C2N3 =   :', cn(2,1), ' ', cn(2,2), ' ', cn(2,3)
-        write (ifm,*) 'COEFFICIENT DE PRAGER EN FLEXION:'
-        write (ifm,*) 'C1M1, C1M2, C1M3 =   :', cm(1,1), ' ', cm(1,2), ' ', cm(1,3)
-        write (ifm,*) 'C2M1, C2M2, C2M3 =   :', cm(2,1), ' ', cm(2,2), ' ', cm(2,3)
-    endif
+            write (ifm, *) 'MATRICE DE D ELASTICITE EN CISAILLEMENT TRANSVERSE:'
+            write (ifm, *) 'BT1, BT2 =   :', bt1, ' ', bt2
+        end if
+        write (ifm, *) 'MOMENTS DE FISSURATION:'
+        write (ifm, *) 'MF1, MF2 =   :', mf1, ' ', mf2
+        write (ifm, *) 'RAPPORT DE PENTE:'
+        write (ifm, *) 'GAMMA, QP1, QP2 =   :', gamma, ' ', qp1, ' ', qp2
+        write (ifm, *) 'COEFFICIENT DE PRAGER EN MEMBRANE:'
+        write (ifm, *) 'C1N1, C1N2, C1N3 =   :', cn(1, 1), ' ', cn(1, 2), ' ', cn(1, 3)
+        write (ifm, *) 'C2N1, C2N2, C2N3 =   :', cn(2, 1), ' ', cn(2, 2), ' ', cn(2, 3)
+        write (ifm, *) 'COEFFICIENT DE PRAGER EN FLEXION:'
+        write (ifm, *) 'C1M1, C1M2, C1M3 =   :', cm(1, 1), ' ', cm(1, 2), ' ', cm(1, 3)
+        write (ifm, *) 'C2M1, C2M2, C2M3 =   :', cm(2, 1), ' ', cm(2, 2), ' ', cm(2, 3)
+    end if
 !--------CREER LES FONCTIONS SEUILS---------
 !
 !--------L UTILISATEUR A ENTRE DES CONSTANTES
@@ -479,10 +478,10 @@ subroutine dglrda()
             call gcncon('_', ficxd2)
             call gcncon('_', ficyd2)
 !-----Mx/Nx -------------
-            call mocon2('X', fc, sy, hh, nlit, omx, rx, fsncx, fincx, fscxd,&
+            call mocon2('X', fc, sy, hh, nlit, omx, rx, fsncx, fincx, fscxd, &
                         ficxd, fscxd2, ficxd2, prex)
 !-----My/Ny -------------
-            call mocon2('Y', fc, sy, hh, nlit, omy, ry, fsncy, fincy, fscyd,&
+            call mocon2('Y', fc, sy, hh, nlit, omy, ry, fsncy, fincy, fscyd, &
                         ficyd, fscyd2, ficyd2, prey)
         else
 !--------L UTILISATEUR N A RIEN RENSEIGNE
@@ -500,15 +499,15 @@ subroutine dglrda()
             call gcncon('_', ficxd2)
             call gcncon('_', ficyd2)
 !-----Mx/Nx -------------
-            call moconm('X', fc, sy, hh, nlit, omx, rx, fsncx, fincx, fscxd,&
+            call moconm('X', fc, sy, hh, nlit, omx, rx, fsncx, fincx, fscxd, &
                         ficxd, fscxd2, ficxd2, prex)
 !-----My/Ny -------------
-            call moconm('Y', fc, sy, hh, nlit, omy, ry, fsncy, fincy, fscyd,&
+            call moconm('Y', fc, sy, hh, nlit, omy, ry, fsncy, fincy, fscyd, &
                         ficyd, fscyd2, ficyd2, prey)
-        endif
+        end if
 !
-        zk16(ifon0 ) = 'FMEX1   '
-        zk16(ifon1 ) = fsncx
+        zk16(ifon0) = 'FMEX1   '
+        zk16(ifon1) = fsncx
         zk16(ifon0+1) = 'FMEY1   '
         zk16(ifon1+1) = fsncy
         zk16(ifon0+2) = 'DFMEX1  '
@@ -534,24 +533,24 @@ subroutine dglrda()
 !
 !---------IMPRESSION-------------
         if (niv .gt. 0) then
-            write (ifm,*) 'FONCTIONS SEUIL POUR GLRC:'
+            write (ifm, *) 'FONCTIONS SEUIL POUR GLRC:'
             call foimpr(fsncx, 3, ifm, 0, k8b)
             call foimpr(fsncy, 3, ifm, 0, k8b)
             call foimpr(fincx, 3, ifm, 0, k8b)
             call foimpr(fincy, 3, ifm, 0, k8b)
 !
-            write (ifm,*) 'DERIVEES PREMIERES :'
+            write (ifm, *) 'DERIVEES PREMIERES :'
             call foimpr(fscxd, 3, ifm, 0, k8b)
             call foimpr(fscyd, 3, ifm, 0, k8b)
             call foimpr(ficxd, 3, ifm, 0, k8b)
             call foimpr(ficyd, 3, ifm, 0, k8b)
 !
-            write (ifm,*) 'DERIVEES SECONDES :'
+            write (ifm, *) 'DERIVEES SECONDES :'
             call foimpr(fscxd2, 3, ifm, 0, k8b)
             call foimpr(fscyd2, 3, ifm, 0, k8b)
             call foimpr(ficxd2, 3, ifm, 0, k8b)
             call foimpr(ficyd2, 3, ifm, 0, k8b)
-        endif
+        end if
 !
         nomres(1) = 'FMEX1'
         fon(1) = fsncx
@@ -561,27 +560,27 @@ subroutine dglrda()
         fon(3) = fsncy
         nomres(4) = 'FMEY2'
         fon(4) = fincy
-    endif
+    end if
 !
 !------CALCULER MAXMP,MINMP,NORMM,NORMN-----------------
     do ii = 1, 2
         if (icst .eq. 0) then
             k8b = 'X '
             call fointe('F', fon(2*(ii-1)+1), 1, ['X '], [0.0d0], mp1n0, ibid)
-            call fointe('F', fon(2*ii ), 1, ['X '], [0.0d0], mp2n0, ibid)
+            call fointe('F', fon(2*ii), 1, ['X '], [0.0d0], mp2n0, ibid)
             call mmfonc(fon(2*(ii-1)+1), aux, maxmp(ii))
             call mmfonc(fon(2*ii), minmp(ii), aux)
-            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or.&
-                (maxmp(ii) -minmp(ii) .le. 0.d0)) then
+            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or. &
+                (maxmp(ii)-minmp(ii) .le. 0.d0)) then
                 call utmess('F', 'ELEMENTS_87')
-            endif
+            end if
         else
-            maxmp(ii)=mp1cst(ii)
-            minmp(ii)=mp2cst(ii)
-        endif
+            maxmp(ii) = mp1cst(ii)
+            minmp(ii) = mp2cst(ii)
+        end if
     end do
 !
-    normm=0.5d0*max(maxmp(1)-minmp(1),maxmp(2)-minmp(2))
+    normm = 0.5d0*max(maxmp(1)-minmp(1), maxmp(2)-minmp(2))
 !
     do ii = 1, 2
         if (icst .eq. 0) then
@@ -590,41 +589,41 @@ subroutine dglrda()
             call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm, nmin0, nmin(ii))
             call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm, nmax0, nmax(ii))
         else
-            nmax(ii)=0.d0
-            nmin(ii)=0.d0
-        endif
+            nmax(ii) = 0.d0
+            nmin(ii) = 0.d0
+        end if
     end do
 !
-    normn=0.5d0*max(abs(nmax(1)-nmin(1)),abs(nmax(2)-nmin(2)))
+    normn = 0.5d0*max(abs(nmax(1)-nmin(1)), abs(nmax(2)-nmin(2)))
 !
     zk16(jmelk+23) = 'MAXMP1  '
-    zr(jmelr+23 ) = maxmp(1)
+    zr(jmelr+23) = maxmp(1)
     zk16(jmelk+24) = 'MAXMP2  '
-    zr(jmelr+24 ) = maxmp(2)
+    zr(jmelr+24) = maxmp(2)
     zk16(jmelk+25) = 'MINMP1  '
-    zr(jmelr+25 ) = minmp(1)
+    zr(jmelr+25) = minmp(1)
     zk16(jmelk+26) = 'MINMP2  '
-    zr(jmelr+26 ) = minmp(2)
+    zr(jmelr+26) = minmp(2)
     zk16(jmelk+27) = 'NORMM  '
-    zr(jmelr+27 ) = normm
+    zr(jmelr+27) = normm
     zk16(jmelk+28) = 'NORMN  '
-    zr(jmelr+28 ) = normn
+    zr(jmelr+28) = normn
     zk16(jmelk+29) = 'EPAIS  '
-    zr(jmelr+29 ) = hh
+    zr(jmelr+29) = hh
     zk16(jmelk+30) = 'BM11    '
-    zr(jmelr+30 ) = bm11
+    zr(jmelr+30) = bm11
     zk16(jmelk+31) = 'BM12    '
-    zr(jmelr+31 ) = bm12
+    zr(jmelr+31) = bm12
     zk16(jmelk+32) = 'BM22    '
-    zr(jmelr+32 ) = bm22
+    zr(jmelr+32) = bm22
     zk16(jmelk+33) = 'BM33    '
-    zr(jmelr+33 ) = bm33
+    zr(jmelr+33) = bm33
     zk16(jmelk+34) = 'MPCST   '
     if (icst .ne. 0) then
-        zr(jmelr+34 ) = 0.d0
+        zr(jmelr+34) = 0.d0
     else
-        zr(jmelr+34 ) = 1.d0
-    endif
+        zr(jmelr+34) = 1.d0
+    end if
 !
     call jedema()
 end subroutine

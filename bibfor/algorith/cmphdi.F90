@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
-                  xcrit, ceigen, cmod, ndimax, cmat1,&
-                  cmat2, cvect, cvect1, alpha, beta,&
+subroutine cmphdi(ck, cm, ndim, nbmod, niter, &
+                  xcrit, ceigen, cmod, ndimax, cmat1, &
+                  cmat2, cvect, cvect1, alpha, beta, &
                   lambd1, lambd2, interv)
 ! aslint: disable=W1306
     implicit none
@@ -92,7 +92,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !        SEPARATION DES VALEURS PROPRES
 !
-    call sepavp(ck, cm, cmat1, ndim, alpha,&
+    call sepavp(ck, cm, cmat1, ndim, alpha, &
                 beta, nbmod, lambd1, lambd2, interv)
 !
     call utmess('I', 'ALGELINE7_3')
@@ -100,9 +100,9 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !        INITIALISATION DES VECTEURS POUR LES ITERATIONS
 !
     do iv = 1, ndim
-        cvect(iv)=dcmplx(0.d0,0.d0)
-        cvec0(iv)=dcmplx(0.d0,0.d0)
-        cmod0(iv)=dcmplx(0.d0,0.d0)
+        cvect(iv) = dcmplx(0.d0, 0.d0)
+        cvec0(iv) = dcmplx(0.d0, 0.d0)
+        cmod0(iv) = dcmplx(0.d0, 0.d0)
     end do
 !
     call cvalea(ndim, cmod, ndimax, nbmod)
@@ -114,9 +114,9 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !        INITIALISATION DE LA MATRICE SHIFTEE, ET COPIE DANS LES
 !        MATRICES DE TRAVAIL
 !
-        cshift=dcmplx((alpha(j)+beta(j))/2.d0,0.d0)
+        cshift = dcmplx((alpha(j)+beta(j))/2.d0, 0.d0)
         do i = 1, ndim*(ndim+1)/2
-            cmat1(i)=ck(i)-cshift*cm(i)
+            cmat1(i) = ck(i)-cshift*cm(i)
         end do
 !
 !        CALCUL DE LA MATRICE CM*(CK-SHIFT*CM)**-1
@@ -125,7 +125,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         if (ipivo .ne. 0) then
             vali(1) = ipivo
             call utmess('F', 'ALGORITH12_53', si=vali(1))
-        endif
+        end if
 !
 !
 !   CALCUL DE LA MATRICE INVERSE DU PROBLEME
@@ -134,55 +134,55 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
             ivdiag = iv*(iv-1)/2+1
             do i = 1, ndim
                 if (i .le. iv) then
-                    cmat2(i,iv)=cm(ivdiag+iv-i)
+                    cmat2(i, iv) = cm(ivdiag+iv-i)
                 else
                     idiag = i*(i-1)/2+1
-                    cmat2(i,iv)=dconjg(cm(idiag+i-iv))
-                endif
+                    cmat2(i, iv) = dconjg(cm(idiag+i-iv))
+                end if
             end do
         end do
         call rrldc(cmat1, ndim, cmat2, ndim)
 !
 !        INITIALISATION DES VARIABLES DE LA BOUCLE
 !
-        sortie=.false.
+        sortie = .false.
         call cvnorm(cm, cmod(1, j), ndim, iretou)
         if (iretou .eq. 1) then
             call utmess('F', 'ALGORITH2_22')
-        endif
+        end if
 !
-        ct=0
+        ct = 0
 !
 !         ITERATION INVERSE PROPREMENT DITE
 !
- 30     continue
+30      continue
         if (sortie) goto 40
 !      RECOPIE DU VECTEUR DE L'ITERATION PRECEDENTE
-        ct=ct+1
+        ct = ct+1
         call cmatve(cmat2, cmod(1, j), cvect1, ndim)
         call cvnorm(cm, cvect1, ndim, iretou)
         if (iretou .eq. 1) then
             call utmess('F', 'ALGORITH2_22')
-        endif
-        call ctescv(cvect1, cmod(1, j), cvec0, cmod0, ndim,&
+        end if
+        call ctescv(cvect1, cmod(1, j), cvec0, cmod0, ndim, &
                     ecart)
         call zcopy(ndim, cmod(1, j), 1, cmod0, 1)
         call zcopy(ndim, cvect1, 1, cvec0, 1)
-        if (ecart .le. xcrit) sortie=.true.
-        if (ct .ge. niter) sortie=.true.
+        if (ecart .le. xcrit) sortie = .true.
+        if (ct .ge. niter) sortie = .true.
         goto 30
- 40     continue
+40      continue
 !
 !         CALCUL DE LA VALEUR PROPRE PAR LE COEFFICIENT DE RAYLEIGH
 !
         call sesqui(ck, cmod(1, j), ndim, ceigen(j))
 !
-        vali(1)=j
-        vali(2)=ct
-        valr(1)=ecart
-        valr(2)=dble(ceigen(j))
-        valr(3)=dimag(ceigen(j))
-        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
+        vali(1) = j
+        vali(2) = ct
+        valr(1) = ecart
+        valr(2) = dble(ceigen(j))
+        valr(3) = dimag(ceigen(j))
+        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3, &
                     valr=valr)
     end do
 !

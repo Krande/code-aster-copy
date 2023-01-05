@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmrvai(ds_measure, device_type_, phasis, input_count, output_count)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -66,71 +66,71 @@ implicit none
 ! - Which type of operation ?
 !
     if (present(input_count)) then
-        ASSERT(.not.present(output_count))
+        ASSERT(.not. present(output_count))
         operation = 'Write'
     elseif (present(output_count)) then
-        ASSERT(.not.present(input_count))
+        ASSERT(.not. present(input_count))
         operation = 'Read'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Write
 !
     if (operation .eq. 'Write') then
         l_count_add = device%l_count_add
         if (present(phasis)) then
-            if (phasis.eq.'N') then
+            if (phasis .eq. 'N') then
                 if (l_count_add) then
-                    device%count_iter = device%count_iter + input_count
+                    device%count_iter = device%count_iter+input_count
                 else
                     device%count_iter = input_count
-                endif
-            elseif (phasis.eq.'P') then
+                end if
+            elseif (phasis .eq. 'P') then
                 if (l_count_add) then
-                    device%count_step = device%count_step + input_count
+                    device%count_step = device%count_step+input_count
                 else
                     device%count_step = input_count
-                endif
-            elseif (phasis.eq.'T') then
+                end if
+            elseif (phasis .eq. 'T') then
                 if (l_count_add) then
-                    device%count_comp = device%count_comp + input_count
+                    device%count_comp = device%count_comp+input_count
                 else
                     device%count_comp = input_count
-                endif
+                end if
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             if (l_count_add) then
-                device%count_iter = device%count_iter + input_count
+                device%count_iter = device%count_iter+input_count
             else
                 device%count_iter = input_count
-            endif
+            end if
             if (l_count_add) then
-                device%count_step = device%count_step + input_count
+                device%count_step = device%count_step+input_count
             else
                 device%count_step = input_count
-            endif
+            end if
             if (l_count_add) then
-                device%count_comp = device%count_comp + input_count
+                device%count_comp = device%count_comp+input_count
             else
                 device%count_comp = input_count
-            endif
-        endif
+            end if
+        end if
         ds_measure%device(device_indx) = device
     elseif (operation .eq. 'Read') then
-        if (phasis.eq.'N') then
+        if (phasis .eq. 'N') then
             output_count = device%count_iter
-        elseif (phasis.eq.'P') then
+        elseif (phasis .eq. 'P') then
             output_count = device%count_step
-        elseif (phasis.eq.'T') then
+        elseif (phasis .eq. 'T') then
             output_count = device%count_comp
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

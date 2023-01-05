@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !
-    parameter  ( indfct = 7 )
+    parameter(indfct=7)
 ! ----------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
@@ -72,9 +72,9 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
     jpro = zi(ipif+1)
     jpar = zi(ipif+2)
     resu = r8vide()
-    ier=0
+    ier = 0
 !
-    epsi = sqrt ( r8prem() )
+    epsi = sqrt(r8prem())
 !
 ! --- FONCTION "CONSTANT"
 !
@@ -86,51 +86,51 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 !
 ! --- FONCTION "INTERPRE" : FORMULE
 !
-    else if (zk24(jpro).eq.'INTERPRE') then
+    else if (zk24(jpro) .eq. 'INTERPRE') then
 !             ------------------------
-        nomf = zk24(jpro+5)(1:19)
-        call fiintf(nomf, nbpu, nompu, valpu, iret,&
+        nomf = zk24(jpro+5) (1:19)
+        call fiintf(nomf, nbpu, nompu, valpu, iret, &
                     'E', tresu)
         resu = tresu(1)
         if (iret .ne. 0) then
             call tecael(iadzi, iazk24)
             call utmess('F+', 'FONCT0_9', sk=nomf)
             call utmess('F', 'FONCT0_10', sk=zk24(iazk24-1+3))
-        endif
+        end if
         goto 999
 !
 ! --- AUTRES TYPES DE FONCTION
 !
-    else if (zk24(jpro).eq.'FONCTION') then
+    else if (zk24(jpro) .eq. 'FONCTION') then
         nbpara = 1
         nompf(1) = zk24(jpro+2)
-        nomf = zk24(jpro+5)(1:19)
+        nomf = zk24(jpro+5) (1:19)
 !
-    else if (zk24(jpro).eq.'NAPPE') then
+    else if (zk24(jpro) .eq. 'NAPPE') then
         nbpara = 2
         nompf(1) = zk24(jpro+2)
         nompf(2) = zk24(jpro+6)
-        nomf = zk24(jpro+5)(1:19)
+        nomf = zk24(jpro+5) (1:19)
 !
     else
         call utmess('F', 'CALCULEL6_61', sk=zk24(jpro))
-    endif
+    end if
 !
     do i = 1, nbpara
         do nupar = 1, nbpu
             if (nompu(nupar) .eq. nompf(i)) then
 !           -- SI UN PARAMETRE EST FOURNI PLUSIEURS FOIS
 !              ON PREND LE DERNIER (VOIR RCVALB)
-                npar(i)=nupar
-            endif
+                npar(i) = nupar
+            end if
         end do
         if (npar(i) .eq. 0) then
-            valk(1)=nomf
-            valk(2)=nompf(i)
+            valk(1) = nomf
+            valk(2) = nompf(i)
             call tecael(iadzi, iazk24)
             valk(3) = zk24(iazk24-1+3)
             call utmess('F', 'CALCULEL6_62', nk=3, valk=valk)
-        endif
+        end if
     end do
 !
 ! =====================================================================
@@ -139,12 +139,12 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 !
     if (zk24(jpro) .eq. 'FONCTION') then
         nbpt = zi(ipif)
-        jval = jpar + nbpt
+        jval = jpar+nbpt
         rvar = valpu(npar(1))
-        call folocx(zr(jpar), nbpt, rvar, zk24(jpro+4), zi(ipif+ indfct),&
+        call folocx(zr(jpar), nbpt, rvar, zk24(jpro+4), zi(ipif+indfct), &
                     epsi, coli, ier)
         if (ier .ne. 0) goto 999
-        call focoli(zi(ipif+indfct), coli, zk24(jpro+1), zr(jpar), zr(jval),&
+        call focoli(zi(ipif+indfct), coli, zk24(jpro+1), zr(jpar), zr(jval), &
                     rvar, resu, ier)
         if (ier .ne. 0) goto 999
 !
@@ -157,61 +157,61 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
         rvar = valpu(npar(2))
         lpara = zi(ipif+4)
         nbvn = zi(ipif+5)
-        call folocx(zr(lpara), nbvn, rpar, zk24(jpro+4), zi(ipif+ indfct),&
+        call folocx(zr(lpara), nbvn, rpar, zk24(jpro+4), zi(ipif+indfct), &
                     epsi, coli, ier)
         if (ier .ne. 0) goto 999
         inume = zi(ipif+indfct)
 !
         if (coli .eq. 'C') then
-            call fointn(ipif, nomf, rvar, inume, epsi,&
+            call fointn(ipif, nomf, rvar, inume, epsi, &
                         resu, ier)
             if (ier .ne. 0) goto 999
 !
-        else if (coli.eq.'I') then
-            call fointn(ipif, nomf, rvar, inume, epsi,&
+        else if (coli .eq. 'I') then
+            call fointn(ipif, nomf, rvar, inume, epsi, &
                         tab(3), ier)
             if (ier .ne. 0) goto 999
-            call fointn(ipif, nomf, rvar, inume+1, epsi,&
+            call fointn(ipif, nomf, rvar, inume+1, epsi, &
                         tab(4), ier)
             if (ier .ne. 0) goto 999
 !
 ! ------- INTERPOLATION FINALE SUR LES PARAMETRES
 !
             tab(1) = zr(lpara+inume-1)
-            tab(2) = zr(lpara+inume )
+            tab(2) = zr(lpara+inume)
             if (zk24(jpro+1) .eq. 'LIN LIN ') then
-                resu = linlin(rpar,tab(1),tab(3),tab(2),tab(4))
-            else if (zk24(jpro+1).eq.'LIN LOG ') then
-                resu = linlog(rpar,tab(1),tab(3),tab(2),tab(4))
-            else if (zk24(jpro+1).eq.'LOG LOG ') then
-                resu = loglog(rpar,tab(1),tab(3),tab(2),tab(4))
-            else if (zk24(jpro+1).eq.'LOG LIN ') then
-                resu = loglin(rpar,tab(1),tab(3),tab(2),tab(4))
-            endif
+                resu = linlin(rpar, tab(1), tab(3), tab(2), tab(4))
+            else if (zk24(jpro+1) .eq. 'LIN LOG ') then
+                resu = linlog(rpar, tab(1), tab(3), tab(2), tab(4))
+            else if (zk24(jpro+1) .eq. 'LOG LOG ') then
+                resu = loglog(rpar, tab(1), tab(3), tab(2), tab(4))
+            else if (zk24(jpro+1) .eq. 'LOG LIN ') then
+                resu = loglin(rpar, tab(1), tab(3), tab(2), tab(4))
+            end if
 !
-        else if (coli.eq.'E') then
-            call fointn(ipif, nomf, rvar, inume, epsi,&
+        else if (coli .eq. 'E') then
+            call fointn(ipif, nomf, rvar, inume, epsi, &
                         tab(3), ier)
             if (ier .ne. 0) goto 999
-            call fointn(ipif, nomf, rvar, inume+1, epsi,&
+            call fointn(ipif, nomf, rvar, inume+1, epsi, &
                         tab(4), ier)
             if (ier .ne. 0) goto 999
             tab(1) = zr(lpara+inume-1)
-            tab(2) = zr(lpara+inume )
-            resu = linlin(rpar,tab(1),tab(3),tab(2),tab(4))
+            tab(2) = zr(lpara+inume)
+            resu = linlin(rpar, tab(1), tab(3), tab(2), tab(4))
 !
         else
             call utmess('F', 'UTILITAI2_13', sk=coli)
-        endif
+        end if
 !
     else
         call utmess('F', 'UTILITAI2_14', sk=zk24(jpro))
-    endif
+    end if
 !
 999 continue
     if (ier .ne. 0) then
         call utmess('F', 'CALCULEL6_63', sk=nomf, si=ier)
-    endif
+    end if
 !
 !
 end subroutine

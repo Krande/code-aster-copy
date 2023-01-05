@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 
 subroutine alchlo(nin, lpain, nout, lpaout)
-use calcul_module, only : ca_iaobtr_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_,&
-                          ca_iawtyp_, ca_igr_, ca_nbgr_, ca_nbobtr_,&
-                          ca_npario_, ca_ligrel_, ca_nuop_
-implicit none
+    use calcul_module, only: ca_iaobtr_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_, &
+                             ca_iawtyp_, ca_igr_, ca_nbgr_, ca_nbobtr_, &
+                             ca_npario_, ca_ligrel_, ca_nuop_
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 !     arguments:
@@ -55,33 +55,31 @@ implicit none
     call wkvect('&&CALCUL.IA_CHLOC', 'V V I', 3*ca_npario_, ca_iawloc_)
     call wkvect('&&CALCUL.IA_CHLO2', 'V V I', 5*ca_npario_*ca_nbgr_, ca_iawlo2_)
     call wkvect('&&CALCUL.TYPE_SCA', 'V V K8', ca_npario_, ca_iawtyp_)
-    ca_nbobtr_ = ca_nbobtr_ + 1
+    ca_nbobtr_ = ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.IA_CHLOC'
-    ca_nbobtr_ = ca_nbobtr_ + 1
+    ca_nbobtr_ = ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.IA_CHLO2'
-    ca_nbobtr_ = ca_nbobtr_ + 1
+    ca_nbobtr_ = ca_nbobtr_+1
     zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.TYPE_SCA'
-
 
 !   -- initialisation de '&&CALCUL.IA_CHLO2':
     do ca_igr_ = 1, ca_nbgr_
-        nute=typele(ca_ligrel_,ca_igr_,1)
+        nute = typele(ca_ligrel_, ca_igr_, 1)
         call mecoe1(ca_nuop_, nute)
-    enddo
-
+    end do
 
     do iparg = 1, ca_npario_
         nompar = zk8(ca_iaoppa_-1+iparg)
         nochl = '&&CALCUL.'//nompar
-        nochl2= '&&CALCUL.'//nompar//'.EXIS'
-        zi(ca_iawloc_-1+3*(iparg-1)+1)=-1
-        zi(ca_iawloc_-1+3*(iparg-1)+2)=-1
+        nochl2 = '&&CALCUL.'//nompar//'.EXIS'
+        zi(ca_iawloc_-1+3*(iparg-1)+1) = -1
+        zi(ca_iawloc_-1+3*(iparg-1)+2) = -1
 
 !       Si le parametre n'est associe a aucun champ, on passe :
 !       --------------------------------------------------------
-        iparin = indik8(lpain,nompar,1,nin)
-        iparou = indik8(lpaout,nompar,1,nout)
-        zi(ca_iawloc_-1+3*(iparg-1)+3)=iparin+iparou
+        iparin = indik8(lpain, nompar, 1, nin)
+        iparou = indik8(lpaout, nompar, 1, nout)
+        zi(ca_iawloc_-1+3*(iparg-1)+3) = iparin+iparou
         if ((iparin+iparou) .eq. 0) cycle
 
         gd = grdeur(nompar)
@@ -89,17 +87,17 @@ implicit none
         zk8(ca_iawtyp_-1+iparg) = scal
         call dchlmx(iparg, nin, lpain, nout, lpaout, taille)
         if (taille .ne. 0) then
-            call wkvect(nochl, 'V V '//scal(1:4), taille, zi(ca_iawloc_-1+3* (iparg-1)+1))
-            ca_nbobtr_ = ca_nbobtr_ + 1
+            call wkvect(nochl, 'V V '//scal(1:4), taille, zi(ca_iawloc_-1+3*(iparg-1)+1))
+            ca_nbobtr_ = ca_nbobtr_+1
             zk24(ca_iaobtr_-1+ca_nbobtr_) = nochl
             if (iparin .gt. 0) then
-                call wkvect(nochl2, 'V V L', taille, zi(ca_iawloc_-1+3*( iparg-1)+2))
-                ca_nbobtr_ = ca_nbobtr_ + 1
+                call wkvect(nochl2, 'V V L', taille, zi(ca_iawloc_-1+3*(iparg-1)+2))
+                ca_nbobtr_ = ca_nbobtr_+1
                 zk24(ca_iaobtr_-1+ca_nbobtr_) = nochl2
-            endif
+            end if
         else
-            zi(ca_iawloc_-1+3*(iparg-1)+1)=-2
-        endif
+            zi(ca_iawloc_-1+3*(iparg-1)+1) = -2
+        end if
     end do
 
 end subroutine

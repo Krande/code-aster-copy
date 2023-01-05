@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,12 +39,12 @@ subroutine clcopt(fcttab, atab, ax, ay)
     real(kind=8) :: ay
 !
     real(kind=8) :: precis
-    parameter (precis = 1d-10)
+    parameter(precis=1d-10)
 !
 !       DIMENSIONNEMENT DES TABLEAUX DE POINTS DU POLYGONE
 !       BORDANT LE DOMAINE DE VALIDITE
     integer :: plgnnb
-    parameter (plgnnb = 72)
+    parameter(plgnnb=72)
 !
 !         ******   POLYGONE BORDANT LE DOMAINE DE VALIDITE  ******
 !           TABLEAUX DES POSITIONS (SURDIMENSIONNES)
@@ -87,7 +87,7 @@ subroutine clcopt(fcttab, atab, ax, ay)
 !
 !       INITIALISATION DES SUIVANTS
     do icur1 = 1, plgnnb
-        inext(icur1) = icur1 + 1
+        inext(icur1) = icur1+1
         xp(icur1) = 1d+6
         yp(icur1) = 1d+6
     end do
@@ -126,7 +126,7 @@ subroutine clcopt(fcttab, atab, ax, ay)
             inew2 = 0
             do j = 1, plgnnb
                 icur2 = inext(icur1)
-                phinew = fcttab(i,1) * xp(icur2) + fcttab(i,2) * yp( icur2) - atab(i)
+                phinew = fcttab(i, 1)*xp(icur2)+fcttab(i, 2)*yp(icur2)-atab(i)
                 if (phinew .lt. -precis) then
                     if (phicur .lt. -precis) then
                         inext(icur1) = ifree
@@ -135,42 +135,42 @@ subroutine clcopt(fcttab, atab, ax, ay)
                         inew1 = ifree
                         ifree = inext(ifree)
                         ii = ap(icur2)
-                        tmp0 = 1d0 / ( fcttab(i,1)*fcttab(ii,2)-fcttab( ii,1)*fcttab(i,2) )
-                        xp(inew1) = (atab(i)*fcttab(ii,2)-atab(ii)* fcttab(i,2) )*tmp0
-                        yp(inew1) = (atab(ii)*fcttab(i,1)-atab(i)* fcttab(ii,1) )*tmp0
+                        tmp0 = 1d0/(fcttab(i, 1)*fcttab(ii, 2)-fcttab(ii, 1)*fcttab(i, 2))
+                        xp(inew1) = (atab(i)*fcttab(ii, 2)-atab(ii)*fcttab(i, 2))*tmp0
+                        yp(inew1) = (atab(ii)*fcttab(i, 1)-atab(i)*fcttab(ii, 1))*tmp0
                         ap(inew1) = ii
                         inext(icur1) = inew1
-                    endif
+                    end if
                 else
                     if (phicur .lt. -precis) then
                         inew2 = ifree
                         ifree = inext(ifree)
                         ii = ap(icur2)
-                        tmp0 = 1d0 / ( fcttab(i,1)*fcttab(ii,2)-fcttab( ii,1)*fcttab(i,2) )
-                        xp(inew2) = (atab(i)*fcttab(ii,2)-atab(ii)* fcttab(i,2) )*tmp0
-                        yp(inew2) = (atab(ii)*fcttab(i,1)-atab(i)* fcttab(ii,1) )*tmp0
+                        tmp0 = 1d0/(fcttab(i, 1)*fcttab(ii, 2)-fcttab(ii, 1)*fcttab(i, 2))
+                        xp(inew2) = (atab(i)*fcttab(ii, 2)-atab(ii)*fcttab(i, 2))*tmp0
+                        yp(inew2) = (atab(ii)*fcttab(i, 1)-atab(i)*fcttab(ii, 1))*tmp0
                         ap(inew2) = i
                         inext(inew1) = inew2
                         inext(inew2) = icur2
                         inext(icur1) = ifree
                         ifree = icur1
-                    endif
-                endif
+                    end if
+                end if
                 if ((inext(icur2) .lt. 1) .or. (inew2 .ge. 1)) then
                     goto 401
-                endif
+                end if
                 icur1 = icur2
                 phicur = phinew
             end do
 401         continue
-        endif
+        end if
     end do
 !
 !       RECHERCHE DU MINIMUM DE XP(*)+YP(*)
     icur1 = 1
     tmp0 = 1d99
- 50 continue
-    tmp1 = xp(icur1) + yp(icur1)
+50  continue
+    tmp1 = xp(icur1)+yp(icur1)
 !         -- LORSQUE 2 FACETTES DONNENT QUASIMENT LE MEME XP+YP,
 !            ON VEUT QUE L'ALGORITHME TROUVE TOUJOURS LA MEME FACETTE
 !            QUELQUE SOIENT LES OPTIONS DE COMPILATION.
@@ -179,11 +179,11 @@ subroutine clcopt(fcttab, atab, ax, ay)
     if (tmp1 .le. 0.9999d0*tmp0) then
         tmp0 = tmp1
         icur2 = icur1
-    endif
+    end if
     icur1 = inext(icur1)
     if (icur1 .gt. 0) then
         goto 50
-    endif
+    end if
 !
     ax = xp(icur2)
     ay = yp(icur2)

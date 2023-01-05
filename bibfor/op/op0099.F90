@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine op0099()
 !
 !
 !     -- CREATION DU SOLVEUR :
-    solveu='&&OP0099.SOLVEUR'
+    solveu = '&&OP0099.SOLVEUR'
     call cresol(solveu)
 !
 !
@@ -99,20 +99,20 @@ subroutine op0099()
 !
 ! --- CAS D'UNE BASE MODALE DE RITZ
 !
-    else if (ioc3.gt.0) then
+    else if (ioc3 .gt. 0) then
         call ritz99(nomres)
         call orth99(nomres, 1)
 !
 ! --- CAS D'UNE DIAGONALISATION DE LA MASSE
 !
-    else if (ioc4.gt.0) then
+    else if (ioc4 .gt. 0) then
 !
         call diag99(nomres)
 !
-    else if (ioc5.gt.0) then
+    else if (ioc5 .gt. 0) then
 !
         call orth99(nomres, 0)
-    endif
+    end if
 !
 !
 ! --- IMPRESSION SUR FICHIER

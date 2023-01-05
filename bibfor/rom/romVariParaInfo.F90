@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romVariParaInfo(ds_varipara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
@@ -41,8 +41,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utmess('I', 'ROM3_50', sk = ds_varipara%para_name)
-    call utmess('I', 'ROM3_51', si = ds_varipara%nb_vale_para)
-    call utmess('I', 'ROM3_52', sr = ds_varipara%para_init)
+    call utmess('I', 'ROM3_50', sk=ds_varipara%para_name)
+    call utmess('I', 'ROM3_51', si=ds_varipara%nb_vale_para)
+    call utmess('I', 'ROM3_52', sr=ds_varipara%para_init)
 !
 end subroutine

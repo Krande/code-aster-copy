@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
-                  iaddvo, iadvoi, nbvois, livois, tyvois,&
+subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe, &
+                  iaddvo, iadvoi, nbvois, livois, tyvois, &
                   nbnovo, nbsoco, lisoco)
     implicit none
 !   IN  NUMA     : NUMERO DE MAILLE DU MAILLAGE
@@ -120,59 +120,59 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !     NUMERO LOCAL DANS IV
 #define zzloc2(numa,iv,is) zi(zzadve(numa,iv)-1+4+1+2*(is-1)+1)
 !-----------FIN FONCTIONS  D ACCES A VGE -------------------------------
-    data tybase/'F3','F2','A3','A2','A1','S3','S2','S1','S0'/
+    data tybase/'F3', 'F2', 'A3', 'A2', 'A1', 'S3', 'S2', 'S1', 'S0'/
 !
 !  1 CETTE MAILLE EST ELLE AFFECTEE DANS LE MODELE ?
 !
-    iel=zi(iarepe-1+2*(numa-1)+2)
+    iel = zi(iarepe-1+2*(numa-1)+2)
     if (iel .eq. 0) then
-        nbvois=0
+        nbvois = 0
         goto 80
 !
-    endif
+    end if
 !
 !
 !  1 RECHERCHE DES TYPES DES VOISINAGE ATTENDUS
 !
-    ntyvo=0
-    lcod=lxlgut(codvoi)
+    ntyvo = 0
+    lcod = lxlgut(codvoi)
     if (lcod .gt. 2*ntymax) then
         call utmess('F', 'VOLUFINI_7', sk=codvoi, si=lcod)
-    endif
+    end if
     do icode = 1, lcod/2
-        ideb=2*(icode-1)+1
-        ifin=2*icode
+        ideb = 2*(icode-1)+1
+        ifin = 2*icode
         do jcode = 1, 9
             if (codvoi(ideb:ifin) .eq. tybase(jcode)) then
-                ntyvo=ntyvo+1
-                lityvo(ntyvo)=jcode
+                ntyvo = ntyvo+1
+                lityvo(ntyvo) = jcode
                 goto 20
 !
-            endif
+            end if
         end do
         call utmess('F', 'VOLUFINI_6', sk=codvoi(ideb:ifin))
- 20     continue
+20      continue
     end do
     if (ntyvo .eq. 0) then
-        nbvois=0
+        nbvois = 0
         goto 80
 !
-    endif
+    end if
 !
 !      REMPLISSAGE DES TABLEAUX
 !
-    nbvois=0
+    nbvois = 0
     do iv = 1, zznbvo(numa)
-        numav=zzmavo(numa,iv)
-        ielv=zi(iarepe-1+2*(numav-1)+2)
+        numav = zzmavo(numa, iv)
+        ielv = zi(iarepe-1+2*(numav-1)+2)
 !
 !  LE VOISIN EST IL UNE MAILLE AFFECTEE DANS LE MODELE
 !
         if (ielv .eq. 0) then
             goto 70
 !
-        endif
-        typev=zztyvo(numa,iv)
+        end if
+        typev = zztyvo(numa, iv)
 !
 !  LE VOISIN EST IL D UN TYPE ATTENDU
 !
@@ -180,22 +180,22 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
             if (typev .eq. lityvo(ityvo)) then
                 goto 50
 !
-            endif
+            end if
         end do
         goto 70
 !
- 50     continue
-        nbvois=nbvois+1
-        livois(nbvois)=numav
-        tyvois(nbvois)=typev
-        nbnovo(nbvois)=zznbno(numa,iv)
-        nbsoco(nbvois)=zznbsc(numa,iv)
+50      continue
+        nbvois = nbvois+1
+        livois(nbvois) = numav
+        tyvois(nbvois) = typev
+        nbnovo(nbvois) = zznbno(numa, iv)
+        nbsoco(nbvois) = zznbsc(numa, iv)
         do is = 1, zznbsc(numa, iv)
-            lisoco(nbvois,is,1)=zzloc1(numa,iv,is)
-            lisoco(nbvois,is,2)=zzloc2(numa,iv,is)
+            lisoco(nbvois, is, 1) = zzloc1(numa, iv, is)
+            lisoco(nbvois, is, 2) = zzloc2(numa, iv, is)
         end do
- 70     continue
+70      continue
     end do
- 80 continue
+80  continue
 !
 end subroutine

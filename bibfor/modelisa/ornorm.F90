@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ornorm(noma, listma, nbmail, reorie, norien,&
+subroutine ornorm(noma, listma, nbmail, reorie, norien, &
                   command)
     implicit none
 #include "asterf_types.h"
@@ -126,33 +126,33 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien,&
 !
         if (typel(1:4) .eq. 'QUAD') then
             dime2 = .true.
-        else if (typel(1:4).eq.'TRIA') then
+        else if (typel(1:4) .eq. 'TRIA') then
             dime2 = .true.
-        else if (typel(1:3).eq.'SEG') then
+        else if (typel(1:3) .eq. 'SEG') then
             dime1 = .true.
         else
             call jenuno(jexnum(mailma, numa), nomail)
             valk(1) = nomail
             valk(2) = typel
             call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
-        endif
+        end if
         if (dime1 .and. dime2) then
             call utmess('F', 'MODELISA5_98')
-        endif
+        end if
     end do
 !
     if (dime2 .and. cmd(1:10) .eq. 'ORIE_LIGNE') then
         call utmess('F', 'MODELISA5_92')
-    endif
+    end if
 !
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
-    kdim ='  '
-    if (dime1) kdim ='1D'
-    if (dime2) kdim ='2D'
+    kdim = '  '
+    if (dime1) kdim = '1D'
+    if (dime2) kdim = '2D'
     nomavo = '&&ORNORM.MAILLE_VOISINE '
-    call utmavo(noma, kdim, listma, nbmail, 'V',&
+    call utmavo(noma, kdim, listma, nbmail, 'V', &
                 nomavo, zero, ibid)
     call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
     call jeveuo(nomavo, 'L', p3)
@@ -168,17 +168,17 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien,&
         if (pasori(ima)) then
             if (niv .eq. 2) then
                 call jenuno(jexnum(mailma, numail), nomail)
-                write (ifm,*) 'LA MAILLE ',nomail,&
+                write (ifm, *) 'LA MAILLE ', nomail,&
      &                    ' SERT A ORIENTER UN NOUVEAU GROUPE CONNEXE'
-            endif
-            nconex = nconex + 1
+            end if
+            nconex = nconex+1
             if (nconex .gt. 1) then
                 if (cmd .ne. ' ') then
                     call utmess('F', 'MODELISA6_2')
                 else
                     call utmess('F', 'MODELISA5_99')
-                endif
-            endif
+                end if
+            end if
             ori1(ima) = 1
             lliste = 0
             iliste = 0
@@ -194,44 +194,44 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien,&
             nbmavo = zi(p4+im1)-zi(p4-1+im1)
             do im3 = 1, nbmavo
                 indi = zi(p3+zi(p4+im1-1)-1+im3-1)
-                im2 = indiis ( listma, indi, 1, nbmail )
+                im2 = indiis(listma, indi, 1, nbmail)
                 if (im2 .eq. 0) goto 210
                 numail = listma(im2)
                 if (pasori(im2)) then
                     jdesm2 = ori4(im2)
 !             VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
-                    if (dime1) ico = iorim1 ( zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
-                    if (dime2) ico = iorim2 (&
-                                     zi(p1+jdesm1-1), ori3(im1), zi(p1+jdesm2-1), ori3(im2),&
-                                     reorie&
+                    if (dime1) ico = iorim1(zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
+                    if (dime2) ico = iorim2( &
+                                     zi(p1+jdesm1-1), ori3(im1), zi(p1+jdesm2-1), ori3(im2), &
+                                     reorie &
                                      )
 !             SI MAILLES CONNEXES
                     if (ico .ne. 0) then
                         ori1(im2) = 1
-                        lliste = lliste + 1
+                        lliste = lliste+1
                         ori2(lliste+1) = im2
                         if (reorie .and. niv .eq. 2) then
                             call jenuno(jexnum(mailma, numail), nomail)
                             if (ico .lt. 0) then
-                                write (ifm,*) 'LA MAILLE ',nomail,' A ETE REORIENTEE'
+                                write (ifm, *) 'LA MAILLE ', nomail, ' A ETE REORIENTEE'
                             else
-                                write (ifm,*) 'LA MAILLE ',nomail,' EST ORIENTEE'
-                            endif
-                        endif
-                    endif
+                                write (ifm, *) 'LA MAILLE ', nomail, ' EST ORIENTEE'
+                            end if
+                        end if
+                    end if
 !
 !             SI ORIENTATIONS CONTRAIRES
-                    if (ico .lt. 0) norieg = norieg + 1
+                    if (ico .lt. 0) norieg = norieg+1
 !
-                endif
+                end if
 210             continue
             end do
-            iliste = iliste + 1
+            iliste = iliste+1
             if (iliste .le. lliste) goto 200
-        endif
+        end if
     end do
 !
-    norien = norien + norieg
+    norien = norien+norieg
 !
     AS_DEALLOCATE(vi=ori1)
     AS_DEALLOCATE(vi=ori2)

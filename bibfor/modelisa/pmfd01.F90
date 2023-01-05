@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,16 +84,16 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
 !
     call getfac('MULTIFIBRE', nb1)
 !
-    exipmf = (nb1.gt.0)
+    exipmf = (nb1 .gt. 0)
 ! --------------------------------------------------------------------------------------------------
 !   il n'existe pas d'éléments PMF
-    if (.not.exipmf) then
+    if (.not. exipmf) then
         cel = carele//'.CANBSP'
-        call cescel(cesdec, ligrmo, 'TOU_INI_ELEM', ' ', 'NON',&
+        call cescel(cesdec, ligrmo, 'TOU_INI_ELEM', ' ', 'NON', &
                     nncp, 'G', cel, 'A', iret)
         if (iret .eq. 0) goto 999
         call utmess('F', 'CALCULEL_6', sk=modele)
-    endif
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   il existe des éléments PMF
     call jeveuo(vmailfib, 'L', jmailfib)
@@ -111,30 +111,30 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
 !
 ! --------------------------------------------------------------------------------------------------
 !   création du champ carele//'.CANBSP'
-    nbcp=4+ngmxel
-    ASSERT( nbcp .le. nbcmpmax )
+    nbcp = 4+ngmxel
+    ASSERT(nbcp .le. nbcmpmax)
 !
     ces1 = '&&PMFD01.CES1'
-    licmp(1)='NBFIBR'
-    licmp(2)='NBGRFI'
-    licmp(3)='TYGRFI'
-    licmp(4)='NBCARMAX'
+    licmp(1) = 'NBFIBR'
+    licmp(2) = 'NBGRFI'
+    licmp(3) = 'TYGRFI'
+    licmp(4) = 'NBCARMAX'
 !
     if (ngmxel .le. 9) then
         do ig = 1, ngmxel
             call codent(ig, 'G', ki1)
-            licmp(4+ig)='NUG'//ki1
-        enddo
-    else if (ngmxel.le.99) then
+            licmp(4+ig) = 'NUG'//ki1
+        end do
+    else if (ngmxel .le. 99) then
         do ig = 1, 9
             call codent(ig, 'G', ki1)
-            licmp(4+ig)='NUG'//ki1
-        enddo
+            licmp(4+ig) = 'NUG'//ki1
+        end do
         do ig = 10, ngmxel
             call codent(ig, 'G', ki2)
-            licmp(4+ig)='NUG'//ki2
-        enddo
-    endif
+            licmp(4+ig) = 'NUG'//ki2
+        end do
+    end if
     call cescre('V', ces1, 'ELEM', noma, 'NBSP_I', nbcp, licmp, [-1], [-1], [-nbcp])
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
@@ -142,15 +142,15 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
     do ima = 1, nbma
         do icmp = 1, nbcp
             call cesexi('C', jces1d, jces1l, ima, 1, 1, icmp, iad)
-            ASSERT(iad.lt.0)
+            ASSERT(iad .lt. 0)
             zl(jces1l-1-iad) = .true.
             zi(jces1v-1-iad) = zi(jmailfib-1+(ima-1)*nbcp+icmp)
-        enddo
-    enddo
+        end do
+    end do
 ! --------------------------------------------------------------------------------------------------
 !   fusion de ces1 avec cesdec
-    lichs(1)  = ces1
-    lichs(2)  = cesdec
+    lichs(1) = ces1
+    lichs(2) = cesdec
     lcumul(1) = .true.
     lcumul(2) = .true.
     lcoefr(1) = 1.d0
@@ -165,20 +165,20 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Création du champ carele//'.CAFIBR'
-    ncarfimax=max(zi(jsdfig+1),zi(jsdfig+2))
+    ncarfimax = max(zi(jsdfig+1), zi(jsdfig+2))
 !   Vecteur uniquement avec les nb de fibres
     call wkvect('&&PMFD01.NBSP', 'V V I', nbma, jsp)
     do ima = 1, nbma
-        zi(jsp-1+ima)=zi(jmailfib+(ima-1)*nbcp)
-    enddo
+        zi(jsp-1+ima) = zi(jmailfib+(ima-1)*nbcp)
+    end do
 !
-    licmp(1)='YG'
-    licmp(2)='ZG'
-    licmp(3)='AIRE'
-    licmp(4)='YP'
-    licmp(5)='ZP'
-    licmp(6)='GX'
-    licmp(7)='NUMGR'
+    licmp(1) = 'YG'
+    licmp(2) = 'ZG'
+    licmp(3) = 'AIRE'
+    licmp(4) = 'YP'
+    licmp(5) = 'ZP'
+    licmp(6) = 'GX'
+    licmp(7) = 'NUMGR'
     call cescre('V', ces1, 'ELEM', noma, 'CAFI_R', ncarfimax, licmp, [-1], zi(jsp), [-ncarfimax])
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESL', 'E', jces1l)
@@ -189,24 +189,24 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
     do ima = 1, nbma
         ipos = jmailfib+(ima-1)*nbcp
         nbgf = zi(ipos+1)
-        ispt=0
+        ispt = 0
         do ig = 1, nbgf
-            nug    = zi(ipos+3+ig)
-            nbfig  = zi(jnbfig-1+nug)
-            point  = zi(jpofig-1+nug)
-            tyfib  = zi(jtyfig-1+nug)
+            nug = zi(ipos+3+ig)
+            nbfig = zi(jnbfig-1+nug)
+            point = zi(jpofig-1+nug)
+            tyfib = zi(jtyfig-1+nug)
             ncarfi = zi(jsdfig+tyfib)
             do ifib = 1, nbfig
-                ispt=ispt+1
+                ispt = ispt+1
                 do icmp = 1, ncarfi
                     call cesexi('C', jces1d, jces1l, ima, 1, ispt, icmp, iad)
 !                   ASSERT(iad.lt.0)
                     zl(jces1l-1-iad) = .true.
-                    zr(jces1v-1-iad)=zr(jcafig-1+point-1+(ifib-1)*ncarfi+icmp)
-                enddo
-            enddo
-        enddo
-    enddo
+                    zr(jces1v-1-iad) = zr(jcafig-1+point-1+(ifib-1)*ncarfi+icmp)
+                end do
+            end do
+        end do
+    end do
 !
     cel = carele//'.CAFIBR'
     call cescel(ces1, ligrmo, 'TOU_INI_ELEM', ' ', 'NAN', nncp, 'G', cel, 'F', ibid)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,17 +58,17 @@ subroutine nmpcin(matass)
     call jeexin(matass(1:19)//'.REFA', jrefa)
     if (jrefa .eq. 0) then
         call utmess('F', 'ALGELINE2_88', sk=matass)
-    endif
+    end if
 !
 ! --- ACCES POINTEUR
 !
     call jeexin(matass(1:19)//'.CCID', jccid)
-    lvcine = (jccid.gt.0)
+    lvcine = (jccid .gt. 0)
     if (lvcine) then
         call jeveuo(matass(1:19)//'.CCID', 'L', jccid)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

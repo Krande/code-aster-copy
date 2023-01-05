@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine umatPrepareStrain(neps , epsm , deps ,&
-                             stran , dstran, dfgrd0, dfgrd1)
+subroutine umatPrepareStrain(neps, epsm, deps, &
+                             stran, dstran, dfgrd0, dfgrd1)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -27,10 +27,10 @@ implicit none
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-integer, intent(in) :: neps
-real(kind=8), intent(in) :: epsm(neps), deps(neps)
-real(kind=8), intent(out) :: stran(neps), dstran(neps)
-real(kind=8), intent(out) :: dfgrd0(3, 3), dfgrd1(3, 3)
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps), deps(neps)
+    real(kind=8), intent(out) :: stran(neps), dstran(neps)
+    real(kind=8), intent(out) :: dfgrd0(3, 3), dfgrd1(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ real(kind=8), intent(out) :: dfgrd0(3, 3), dfgrd1(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (neps.eq.6) then
+    if (neps .eq. 6) then
         call dcopy(neps, deps, 1, dstran, 1)
         call dcopy(neps, epsm, 1, stran, 1)
 ! TRAITEMENT DES COMPOSANTES 4,5,6 : DANS UMAT, GAMMAXY,XZ,YZ
@@ -65,6 +65,6 @@ real(kind=8), intent(out) :: dfgrd0(3, 3), dfgrd1(3, 3)
         call r8inir(9, 0.d0, dfgrd1, 1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

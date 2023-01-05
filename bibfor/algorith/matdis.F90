@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matdis(matd, verbose )
+subroutine matdis(matd, verbose)
     implicit none
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -39,10 +39,10 @@ subroutine matdis(matd, verbose )
     character(len=19) :: ligrmo, partit
 
 !   -- MATR_DISTRIBUEE ?
-    verbose_loc=.true.
-    if ( present(verbose)  ) then
+    verbose_loc = .true.
+    if (present(verbose)) then
         verbose_loc = verbose
-    endif
+    end if
     matd = 'NON'
     eximc = getexm('SOLVEUR', 'MATR_DISTRIBUEE')
     eximo = getexm(' ', 'MODELE')
@@ -50,16 +50,16 @@ subroutine matdis(matd, verbose )
         call getvtx('SOLVEUR', 'MATR_DISTRIBUEE', iocc=1, scal=matd, nbret=ibid)
         if (ibid .eq. 0) then
             matd = 'NON'
-        endif
+        end if
         call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
         ASSERT(ibid .eq. 1)
         ligrmo = modele//'.MODELE'
         call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
-        if (partit.eq.' ' .and. matd.eq.'OUI') then
+        if (partit .eq. ' ' .and. matd .eq. 'OUI') then
             matd = 'NON'
-            if ( verbose_loc ) then
-               call utmess('I', 'ASSEMBLA_3')
-            endif
-        endif
-    endif
+            if (verbose_loc) then
+                call utmess('I', 'ASSEMBLA_3')
+            end if
+        end if
+    end if
 end subroutine

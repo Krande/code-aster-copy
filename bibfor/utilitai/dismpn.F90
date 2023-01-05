@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i,  nbddlb, nbnos, nequ, nlili
+    integer :: i, nbddlb, nbnos, nequ, nlili
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -67,21 +67,21 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------
         call jelira(nomob//'.NUEQ', 'LONMAX', nequ)
         call jelira(nomob//'.LILI', 'NUTIOC', nlili)
-        nbddlb=0
+        nbddlb = 0
         do i = 2, nlili
             call jenuno(jexnum(nomob//'.LILI', i), noligr)
             call dismlg('NB_NO_SUP', noligr, nbnos, repk, ierd)
-            nbddlb=nbddlb+ nbnos
+            nbddlb = nbddlb+nbnos
         end do
-        repi=nequ-3*(nbddlb/2)
+        repi = nequ-3*(nbddlb/2)
 !
 !
-    else if (questi.eq.'NB_EQUA') then
+    else if (questi .eq. 'NB_EQUA') then
 !     --------------------------------
         call jelira(nomob//'.NUEQ', 'LONMAX', repi)
 !
 !
-    else if (questi.eq.'NOM_GD') then
+    else if (questi .eq. 'NOM_GD') then
 !     --------------------------------
 !       QUESTION POURRIE !! (VALABLE SUR NUME_EQUA)
 !       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
@@ -89,7 +89,7 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
         repk = refn(2) (1:8)
 !
 !
-    else if (questi.eq.'NOM_MODELE') then
+    else if (questi .eq. 'NOM_MODELE') then
 !     --------------------------------
 !       QUESTION POURRIE !!
 !       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
@@ -102,15 +102,15 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
         call dismlg(questi, noligr, repi, repk, ierd)
         goto 99
 !
- 98     continue
-        repk= ' '
-        ierd=1
- 99     continue
+98      continue
+        repk = ' '
+        ierd = 1
+99      continue
 !
 !
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
     repkz = repk
     call jedema()

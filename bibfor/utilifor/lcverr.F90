@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,26 +33,26 @@ subroutine lcverr(dy, ddy, nr, typ, err)
 !-----------------------------------------------------------------------
     integer :: i
 !-----------------------------------------------------------------------
-    parameter       ( zero = 0.d0   )
+    parameter(zero=0.d0)
     integer :: n, nd, nr, typ
     real(kind=8) :: dy(*), ddy(*)
     real(kind=8) :: err(*), e(50)
 !       ----------------------------------------------------------------
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !       ----------------------------------------------------------------
 !
 !       ERREUR(I) =  !DDYI/DYI! < EPS
 !
     if (typ .eq. 0) then
-        err(1)=0.d0
+        err(1) = 0.d0
         do i = 1, nr
 !                IF(DY(I).EQ.ZERO) THEN
             if (abs(dy(i)) .lt. r8prem()) then
                 err(i) = abs(ddy(i))
             else
-                err(i) = abs(ddy(i) / dy(i))
-            endif
-            err(1)=max(err(1),err(i))
+                err(i) = abs(ddy(i)/dy(i))
+            end if
+            err(1) = max(err(1), err(i))
         end do
 !
 !       ERREUR = !!DDY!!/!!DY!! < EPS
@@ -63,8 +63,8 @@ subroutine lcverr(dy, ddy, nr, typ, err)
         if (e(2) .eq. zero) then
             err(1) = e(1)
         else
-            err(1) = e(1) / e(2)
-        endif
+            err(1) = e(1)/e(2)
+        end if
 !
 !       ERREUR = !!DDYI/DYI!! < EPS
 !
@@ -73,11 +73,11 @@ subroutine lcverr(dy, ddy, nr, typ, err)
             if (abs(dy(i)) .lt. r8prem()) then
                 e(i) = ddy(i)
             else
-                e(i) = ddy(i) / dy(i)
-            endif
+                e(i) = ddy(i)/dy(i)
+            end if
         end do
         err(1) = norm2(e(1:nr))
 !
-    endif
+    end if
 !
 end subroutine

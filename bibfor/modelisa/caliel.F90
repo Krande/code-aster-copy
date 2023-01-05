@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ subroutine caliel(fonrez, chargz)
 ! --- DU MODELE
 !     -----------------------------------------------------
     nb_ligr = 1
-    call wkvect('&&CALIEL.LIGRMO', 'V V K24', 1, vk24 = list_ligr)
+    call wkvect('&&CALIEL.LIGRMO', 'V V K24', 1, vk24=list_ligr)
     list_ligr(1) = ligrmo
 
     numddl = '&&CALIEL.NUMED'
@@ -107,17 +107,17 @@ subroutine caliel(fonrez, chargz)
             call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
         else if (option .eq. '3D_POU_ARLEQUIN') then
             call caarle(numddl, iocc, lisrel, chargz)
-        else if (option.eq.'2D_POU') then
+        else if (option .eq. '2D_POU') then
             call rapo2d(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option.eq.'3D_TUYAU') then
+        else if (option .eq. '3D_TUYAU') then
             call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option.eq.'PLAQ_POUT_ORTH') then
+        else if (option .eq. 'PLAQ_POUT_ORTH') then
             call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option.eq.'COQ_POU') then
+        else if (option .eq. 'COQ_POU') then
             call rapoco(numddl, iocc, fonrez, lisrel, chargz)
-        else if (option.eq.'COQ_TUYAU') then
+        else if (option .eq. 'COQ_TUYAU') then
             call rapoco(numddl, iocc, fonrez, lisrel, chargz)
-        endif
+        end if
     end do
 !
 !     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :

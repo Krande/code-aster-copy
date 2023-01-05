@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine crelgt(basez, ligrez)
     integer :: idpano, idphen, idpoma, idpono, iret, jlgrf, nbajel
     integer :: nbmail
 !-----------------------------------------------------------------------
-    parameter (nbajel = 1000 )
-    parameter (nbmail = 10000)
+    parameter(nbajel=1000)
+    parameter(nbmail=10000)
     character(len=1) :: base
     character(len=19) :: ligret
 ! ====================== DEBUT DU CODE EXECUTABLE ======================
@@ -84,7 +84,7 @@ subroutine crelgt(basez, ligrez)
         call jedetr(ligret//'.APMA')
         call jedetr(ligret//'.APNO')
         call jedetr(ligret//'.NBMA')
-    endif
+    end if
 !
 ! ---  CREATION DU VECTEUR DE LA LISTE DES MAILLES CUMULEES DU LIGRET :
 !      --------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine rcmate(chmat, nomail, nomode)
 !  IN : NOMAIL : NOM DU MAILLAGE
 ! ----------------------------------------------------------------------
 !
-    integer :: nocc, i, nm, nt,  jvalv, nbma, jmail, nbcmp
+    integer :: nocc, i, nm, nt, jvalv, nbma, jmail, nbcmp
     integer :: jad
     character(len=4) :: oui
     character(len=8) :: nommat, typmcl(2)
@@ -55,7 +55,7 @@ subroutine rcmate(chmat, nomail, nomode)
     call jeveuo(chamat(1:19)//'.VALV', 'E', jvalv)
 !
     call dismoi('NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', repi=nbcmp)
-    ASSERT(nbcmp.eq.30)
+    ASSERT(nbcmp .eq. 30)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'L', jad)
     do i = 1, nbcmp
         ncmp(i) = zk8(jad-1+i)
@@ -73,21 +73,21 @@ subroutine rcmate(chmat, nomail, nomode)
     do i = 1, nocc
         call getvid('AFFE', 'MATER', iocc=i, scal=nommat, nbret=nm)
         if (nm .lt. -1) nm = -nm
-        ASSERT(nm.le.nbcmp)
+        ASSERT(nm .le. nbcmp)
         call getvid('AFFE', 'MATER', iocc=i, nbval=nm, vect=zk8(jvalv))
         call getvtx('AFFE', 'TOUT', iocc=i, scal=oui, nbret=nt)
         if (nt .ne. 0) then
             call nocart(chamat, 1, nm)
         else
-            call reliem(nomode, nomail, 'NU_MAILLE', 'AFFE', i,&
+            call reliem(nomode, nomail, 'NU_MAILLE', 'AFFE', i, &
                         2, motcle(1), typmcl(1), mesmai, nbma)
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jmail)
-                call nocart(chamat, 3, nm, mode='NUM', nma=nbma,&
+                call nocart(chamat, 3, nm, mode='NUM', nma=nbma, &
                             limanu=zi(jmail))
                 call jedetr(mesmai)
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedetr(chamat(1:19)//'.VALV')

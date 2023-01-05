@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apsvnl(sdcont_defi, sdappa, model_ndim, nt_node)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/cfnumn.h"
@@ -56,10 +56,10 @@ implicit none
 !
     sdappa_psno = sdappa(1:14)//'.PSNO'
     sdappa_norl = sdappa(1:19)//'.NORL'
-    call jeveuo(sdappa_psno//'.VALE', 'E', vr = v_sdappa_psno)
-    call jeveuo(sdappa_norl         , 'L', vr = v_sdappa_norl)
+    call jeveuo(sdappa_psno//'.VALE', 'E', vr=v_sdappa_psno)
+    call jeveuo(sdappa_norl, 'L', vr=v_sdappa_norl)
 !
-    do i_node = 1,nt_node
+    do i_node = 1, nt_node
         node_indx(i_node) = i_node
     end do
 !
@@ -67,7 +67,7 @@ implicit none
 !
     do i_node = 1, nt_node
         node_curr = node_nume(i_node)
-        do i_dime=1,model_ndim
+        do i_dime = 1, model_ndim
             v_sdappa_psno(3*(node_curr-1)+i_dime) = &
                 v_sdappa_norl(3*(i_node-1)+i_dime)
         end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
+subroutine lkcnvx(sigd, sigf, nvi, vind, nmat, &
                   mater, seuil, vinf)
     implicit none
 ! person_in_charge: alexandre.foucault at edf.fr
@@ -48,10 +48,10 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
     real(kind=8) :: i1, devsig(6), ubid, sigt(6), sigu(6)
     real(kind=8) :: xit, seuilp, seuilv, zero, un, somme
 !
-    parameter       (zero  =  0.d0 )
-    parameter       (un    =  1.d0 )
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
 !       --------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !       --------------------------------------------------------------
 ! --------------------------------------------------------------------
 ! --- PASSAGE EN CONVENTION MECANIQUE DES SOLS
@@ -66,17 +66,17 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
 ! --------------------------------------------------------------------
     somme = zero
     do i = 1, nvi
-        somme = somme + vind(i)
+        somme = somme+vind(i)
     end do
     if (abs(somme) .lt. r8prem()) then
         i1 = sigu(1)+sigu(2)+sigu(3)
         call lcdevi(sigu, devsig)
-        call lkcrip(i1, devsig, vind, nmat, mater,&
+        call lkcrip(i1, devsig, vind, nmat, mater, &
                     ubid, seuilp)
-        if (seuilp/mater(4,1) .gt. 1.0d-6) then
+        if (seuilp/mater(4, 1) .gt. 1.0d-6) then
             call utmess('F', 'ALGORITH2_2')
-        endif
-    endif
+        end if
+    end if
 !
 ! --------------------------------------------------------------------
 ! --- CONSTRUCTION TENSEUR DEVIATOIRE DES CONTRAINTES ET 1ER INVARIANT
@@ -87,24 +87,24 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
 ! ----------------------------------------------------------------------
 ! --- CALCUL FONCTION SEUIL PLASTIQUE EN SIGF
 ! ----------------------------------------------------------------------
-    call lkcrip(i1, devsig, vind, nmat, mater,&
+    call lkcrip(i1, devsig, vind, nmat, mater, &
                 ubid, seuilp)
     if (seuilp .ge. zero) then
         vinf(7) = un
     else
         vinf(7) = zero
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- CALCUL FONCTION SEUIL VISQUEUX EN SIGF
 ! ----------------------------------------------------------------------
     xit = vind(3)
-    call lkcriv(xit, i1, devsig, vind, nmat,&
+    call lkcriv(xit, i1, devsig, vind, nmat, &
                 mater, ubid, seuilv)
 !
-    if ((seuilv.ge.zero) .or. (seuilp.ge.zero)) then
+    if ((seuilv .ge. zero) .or. (seuilp .ge. zero)) then
         seuil = 1.d0
     else
         seuil = -1.d0
-    endif
+    end if
 !
 end subroutine

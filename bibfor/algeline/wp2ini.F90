@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
-                  lmtpsc, sigma, xh, xb, optiof,&
-                  prorto, nborto, nbvect, neq, lbloq,&
-                  lddl, alpha, beta, signe, yh,&
+subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra, &
+                  lmtpsc, sigma, xh, xb, optiof, &
+                  prorto, nborto, nbvect, neq, lbloq, &
+                  lddl, alpha, beta, signe, yh, &
                   yb, solveu)
 ! aslint: disable=W1504
     implicit none
@@ -111,13 +111,13 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     si2 = si*si
     sr = dble(sigma)
     deuxsr = 2.0d0*sr
-    mods2 = si2 + sr*sr
+    mods2 = si2+sr*sr
 !
     if (optiof .eq. 'CENTRE') then
         invsi = 1.d0/si
     else
         invsi = 0.d0
-    endif
+    end if
 !
 !     ---- ALLOCATION DES ZONES DE TRAVAIL ---
     call wkvect('&&WP2INI.VECTEUR.AUX.U1R', 'V V R', neq, au1)
@@ -128,7 +128,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
         call wkvect('&&WP2INI.VECTEUR.AUX.VC ', 'V V C', neq, av)
     else
         av = 0
-    endif
+    end if
     call wkvect('&&WP2INI.B_A.VECT.LANC.H', 'V V R', neq, abayh)
     call wkvect('&&WP2INI.B_A.VECT.LANC.B', 'V V R', neq, abayb)
 !
@@ -140,11 +140,11 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
         call jecreo('&&WP2INI.BYH'//strg, 'V V R')
         call jeecra('&&WP2INI.BYH'//strg, 'LONMAX', neq)
         call jeecra('&&WP2INI.BYH'//strg, 'LONUTI', neq)
-        call jeveut('&&WP2INI.BYH'//strg, 'E', zi(aptbyh + i-1))
+        call jeveut('&&WP2INI.BYH'//strg, 'E', zi(aptbyh+i-1))
         call jecreo('&&WP2INI.BYB'//strg, 'V V R')
         call jeecra('&&WP2INI.BYB'//strg, 'LONMAX', neq)
         call jeecra('&&WP2INI.BYB'//strg, 'LONUTI', neq)
-        call jeveut('&&WP2INI.BYB'//strg, 'E', zi(aptbyb + i-1))
+        call jeveut('&&WP2INI.BYB'//strg, 'E', zi(aptbyb+i-1))
     end do
 !
     dseed = 773218.d0
@@ -157,20 +157,20 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 !     1 - GENERATION DU PREMIER VECTEUR
 !
 !     --- 1.1. DIRECTION
-    call wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
-                lbloq, xh, xb, yh(1, 1), yb(1, 1),&
-                zr(au1), zr(au2), zr(au3), zr(au4), zc(av),&
+    call wp2ayl(appr, lmatra, lmasse, lamor, sigma, &
+                lbloq, xh, xb, yh(1, 1), yb(1, 1), &
+                zr(au1), zr(au2), zr(au3), zr(au4), zc(av), &
                 neq, solveu)
 !
     do i = 1, neq
-        zr(abayh + i-1) = -zr(au1 + i-1) - zr(au2 + i-1)
-        zr(abayb + i-1) = -zr(au3 + i-1)
+        zr(abayh+i-1) = -zr(au1+i-1)-zr(au2+i-1)
+        zr(abayb+i-1) = -zr(au3+i-1)
     end do
 !
 !     --- 1.2. B_NORMALISATION
     c = 0.d0
     do ips = 1, neq
-        c = c + zr(abayh+ips-1)*yh(ips,1) + zr(abayb+ips-1)*yb(ips,1)
+        c = c+zr(abayh+ips-1)*yh(ips, 1)+zr(abayb+ips-1)*yb(ips, 1)
     end do
     a = 1.d0/sqrt(abs(c))
     if (c .gt. 0.d0) then
@@ -178,28 +178,28 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     else
         signe(1) = -1.d0
         a = -a
-    endif
+    end if
 !
-    abyh = zi(aptbyh + 1-1)
-    abyb = zi(aptbyb + 1-1)
+    abyh = zi(aptbyh+1-1)
+    abyb = zi(aptbyb+1-1)
     do i = 1, neq
-        yh(i,1) = a*yh(i,1)
-        yb(i,1) = a*yb(i,1)
-        zr(abyh + i-1) = a*zr(abayh + i-1)
-        zr(abyb + i-1) = a*zr(abayb + i-1)
+        yh(i, 1) = a*yh(i, 1)
+        yb(i, 1) = a*yb(i, 1)
+        zr(abyh+i-1) = a*zr(abayh+i-1)
+        zr(abyb+i-1) = a*zr(abayb+i-1)
     end do
 !
 !     --- 1.3. COEFFICIENT DE LA TRIDIAGONALE
-    call mrmult('ZERO', lamor, yh(1, 1), zr(au1), 1,&
+    call mrmult('ZERO', lamor, yh(1, 1), zr(au1), 1, &
                 .false._1)
-    call mrmult('ZERO', lmasse, yb(1, 1), zr(au2), 1,&
+    call mrmult('ZERO', lmasse, yb(1, 1), zr(au2), 1, &
                 .false._1)
-    call mrmult('ZERO', lmasse, yh(1, 1), zr(au3), 1,&
+    call mrmult('ZERO', lmasse, yh(1, 1), zr(au3), 1, &
                 .false._1)
 !
     a = 0.d0
     do i = 1, neq
-        a = a - yh(i,1)*(zr(au1 + i-1) + zr(au2 + i-1)) - yb(i,1)* zr( au3 + i-1)
+        a = a-yh(i, 1)*(zr(au1+i-1)+zr(au2+i-1))-yb(i, 1)*zr(au3+i-1)
     end do
     alpha(1) = a
     beta(1) = 0.d0
@@ -208,19 +208,19 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     do j = 2, nbvect
 !
 !        --- 2.1. DIRECTION
-        call wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
-                    lbloq, yh(1, j-1), yb(1, j-1), yh(1, j), yb(1, j),&
-                    zr(au1), zr(au2), zr(au3), zr(au4), zc(av),&
+        call wp2ayl(appr, lmatra, lmasse, lamor, sigma, &
+                    lbloq, yh(1, j-1), yb(1, j-1), yh(1, j), yb(1, j), &
+                    zr(au1), zr(au2), zr(au3), zr(au4), zc(av), &
                     neq, solveu)
 !
         do i = 1, neq
-            zr(abayh + i-1) = -zr(au1 + i-1) - zr(au2 + i-1)
-            zr(abayb + i-1) = -zr(au3 + i-1)
+            zr(abayh+i-1) = -zr(au1+i-1)-zr(au2+i-1)
+            zr(abayb+i-1) = -zr(au3+i-1)
         end do
 !
         a = 0.d0
         do ips = 1, neq
-            a = a + zr(abayh+ips-1)*yh(ips,j-1) + zr(abayb+ips-1)*yb( ips,j-1)
+            a = a+zr(abayh+ips-1)*yh(ips, j-1)+zr(abayb+ips-1)*yb(ips, j-1)
         end do
 !
         d1 = signe(j-1)
@@ -228,40 +228,40 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 !
         if (j .eq. 2) then
             do i = 1, neq
-                yh(i,j) = yh(i,j) - a*yh(i,j-1)
-                yb(i,j) = yb(i,j) - a*yb(i,j-1)
+                yh(i, j) = yh(i, j)-a*yh(i, j-1)
+                yb(i, j) = yb(i, j)-a*yb(i, j-1)
             end do
         else
             k = j-2
             b = 0.d0
             do ips = 1, neq
-                b = b + zr(abayh+ips-1)*yh(ips,k) + zr(abayb+ips-1)* yb(ips,k)
+                b = b+zr(abayh+ips-1)*yh(ips, k)+zr(abayb+ips-1)*yb(ips, k)
             end do
             d2 = signe(k)
             b = d2*b
             do i = 1, neq
-                yh(i,j) = yh(i,j) - a*yh(i,j-1) - b*yh(i,k)
-                yb(i,j) = yb(i,j) - a*yb(i,j-1) - b*yb(i,k)
+                yh(i, j) = yh(i, j)-a*yh(i, j-1)-b*yh(i, k)
+                yb(i, j) = yb(i, j)-a*yb(i, j-1)-b*yb(i, k)
             end do
-        endif
+        end if
 !
 !        --- 2.2. NORMALISATION
-        abyh = zi(aptbyh + j-1)
-        abyb = zi(aptbyb + j-1)
+        abyh = zi(aptbyh+j-1)
+        abyb = zi(aptbyb+j-1)
         if (appr .eq. 'R') then
-            call wp2bry(lmtpsc, lmasse, lamor, lraide, sr,&
-                        si2, yh(1, j), yb( 1, j), zr(abyh), zr(abyb),&
-                        zr(au1), zr(au2), zr(au3), zr(au4), neq,&
+            call wp2bry(lmtpsc, lmasse, lamor, lraide, sr, &
+                        si2, yh(1, j), yb(1, j), zr(abyh), zr(abyb), &
+                        zr(au1), zr(au2), zr(au3), zr(au4), neq, &
                         solveu)
         else
-            call wp2biy(lmasse, lamor, lraide, mods2, deuxsr,&
-                        invsi, yh(1, j), yb(1, j), zr(abyh), zr(abyb),&
-                        lbloq, zr(au1), zr(au2), zr(au3), zr(au4),&
+            call wp2biy(lmasse, lamor, lraide, mods2, deuxsr, &
+                        invsi, yh(1, j), yb(1, j), zr(abyh), zr(abyb), &
+                        lbloq, zr(au1), zr(au2), zr(au3), zr(au4), &
                         neq)
-        endif
+        end if
         c = 0.d0
         do ips = 1, neq
-            c = c + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb(ips, j)
+            c = c+zr(abyh+ips-1)*yh(ips, j)+zr(abyb+ips-1)*yb(ips, j)
         end do
 !
         a = 1.d0/sqrt(abs(c))
@@ -270,25 +270,25 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
         else
             signe(j) = -1.d0
             a = -a
-        endif
+        end if
 !
         do i = 1, neq
-            zr(abyh + i-1) = a*zr(abyh + i-1)
-            zr(abyb + i-1) = a*zr(abyb + i-1)
-            yh(i,j) = a*yh(i,j)
-            yb(i,j) = a*yb(i,j)
+            zr(abyh+i-1) = a*zr(abyh+i-1)
+            zr(abyb+i-1) = a*zr(abyb+i-1)
+            yh(i, j) = a*yh(i, j)
+            yb(i, j) = a*yb(i, j)
         end do
 !
 !        --- 2.3. REORTHOGONALISTION
         ro = .false.
         do i = 1, j-1
-            abyh = zi(aptbyh + i-1)
-            abyb = zi(aptbyb + i-1)
+            abyh = zi(aptbyh+i-1)
+            abyb = zi(aptbyb+i-1)
             a = 0.d0
             do ips = 1, neq
-                a = a + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb( ips,j)
+                a = a+zr(abyh+ips-1)*yh(ips, j)+zr(abyb+ips-1)*yb(ips, j)
             end do
-            oc = ( abs(a) .lt. prorto )
+            oc = (abs(a) .lt. prorto)
             ro = (.not. oc) .or. ro
 !
             io = 1
@@ -296,48 +296,48 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
             if ((.not. oc) .and. (io .le. nborto)) then
                 a = a*signe(i)
                 do k = 1, neq
-                    yh(k,j) = yh(k,j) - a*yh(k,i)
-                    yb(k,j) = yb(k,j) - a*yb(k,i)
+                    yh(k, j) = yh(k, j)-a*yh(k, i)
+                    yb(k, j) = yb(k, j)-a*yb(k, i)
                 end do
                 b = 0.d0
                 do ips = 1, neq
-                    b = b + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)* yb(ips,j)
+                    b = b+zr(abyh+ips-1)*yh(ips, j)+zr(abyb+ips-1)*yb(ips, j)
                 end do
                 if (abs(b) .gt. abs(a)) then
-                    vali (1) = io
-                    vali (2) = io
-                    vali (3) = j
-                    vali (4) = i
+                    vali(1) = io
+                    vali(2) = io
+                    vali(3) = j
+                    vali(4) = i
                     valk = '"ENNUI" POSSIBLE'
                     call utmess('I', 'ALGELINE4_86', sk=valk, ni=4, vali=vali)
                     oc = .true.
                 else
                     a = b
-                    io = io + 1
-                    oc = ( abs(b) .lt. prorto )
-                endif
+                    io = io+1
+                    oc = (abs(b) .lt. prorto)
+                end if
                 goto 600
-            endif
+            end if
         end do
 !
 !        --- 2.4. REACTUALISATION
         if (ro) then
-            abyh = zi(aptbyh + j-1)
-            abyb = zi(aptbyb + j-1)
+            abyh = zi(aptbyh+j-1)
+            abyb = zi(aptbyb+j-1)
             if (appr .eq. 'R') then
-                call wp2bry(lmtpsc, lmasse, lamor, lraide, sr,&
-                            si2, yh(1, j), yb(1, j), zr(abyh), zr(abyb),&
-                            zr(au1), zr(au2), zr( au3), zr(au4), neq,&
+                call wp2bry(lmtpsc, lmasse, lamor, lraide, sr, &
+                            si2, yh(1, j), yb(1, j), zr(abyh), zr(abyb), &
+                            zr(au1), zr(au2), zr(au3), zr(au4), neq, &
                             solveu)
             else
-                call wp2biy(lmasse, lamor, lraide, mods2, deuxsr,&
-                            invsi, yh(1, j), yb(1, j), zr(abyh), zr(abyb),&
-                            lbloq, zr(au1), zr( au2), zr(au3), zr(au4),&
+                call wp2biy(lmasse, lamor, lraide, mods2, deuxsr, &
+                            invsi, yh(1, j), yb(1, j), zr(abyh), zr(abyb), &
+                            lbloq, zr(au1), zr(au2), zr(au3), zr(au4), &
                             neq)
-            endif
+            end if
             c = 0.d0
             do ips = 1, neq
-                c = c + zr(abyh+ips-1)*yh(ips,j) + zr(abyb+ips-1)*yb( ips,j)
+                c = c+zr(abyh+ips-1)*yh(ips, j)+zr(abyb+ips-1)*yb(ips, j)
             end do
             a = 1.d0/sqrt(abs(c))
             if (c .gt. 0.d0) then
@@ -345,32 +345,32 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
             else
                 signe(j) = -1.d0
                 a = -a
-            endif
+            end if
 !
             do i = 1, neq
-                zr(abyh + i-1) = a*zr(abyh + i-1)
-                zr(abyb + i-1) = a*zr(abyb + i-1)
-                yh(i,j) = a*yh(i,j)
-                yb(i,j) = a*yb(i,j)
+                zr(abyh+i-1) = a*zr(abyh+i-1)
+                zr(abyb+i-1) = a*zr(abyb+i-1)
+                yh(i, j) = a*yh(i, j)
+                yb(i, j) = a*yb(i, j)
             end do
-        endif
+        end if
 !
 !        --- 2.5. COEFFICIENTS DE LA TRIDIAGONALE
-        call mrmult('ZERO', lamor, yh(1, j), zr(au1), 1,&
+        call mrmult('ZERO', lamor, yh(1, j), zr(au1), 1, &
                     .false._1)
-        call mrmult('ZERO', lmasse, yb(1, j), zr(au2), 1,&
+        call mrmult('ZERO', lmasse, yb(1, j), zr(au2), 1, &
                     .false._1)
-        call mrmult('ZERO', lmasse, yh(1, j), zr(au3), 1,&
+        call mrmult('ZERO', lmasse, yh(1, j), zr(au3), 1, &
                     .false._1)
 !
         a = 0.d0
         b = 0.d0
         do i = 1, neq, 1
-            a = a - yh(i,j)*(zr(au1+ i-1) + zr(au2 + i-1)) - yb(i,j)* zr(au3 + i-1)
-            b = b - yh(i,j-1)*(zr(au1 + i-1) + zr(au2 + i-1)) - yb(i, j-1)* zr(au3 + i-1)
+            a = a-yh(i, j)*(zr(au1+i-1)+zr(au2+i-1))-yb(i, j)*zr(au3+i-1)
+            b = b-yh(i, j-1)*(zr(au1+i-1)+zr(au2+i-1))-yb(i, j-1)*zr(au3+i-1)
         end do
         alpha(j) = a
-        beta (j) = b
+        beta(j) = b
     end do
 !
 !     --- DESTRUCTION DES OJB TEMPORAIRES

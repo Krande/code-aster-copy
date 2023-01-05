@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xtmafi(ndim, fiss, nfiss, lismai,&
+subroutine xtmafi(ndim, fiss, nfiss, lismai, &
                   mesmai, nbma, mesh, model, typ_enr)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -75,8 +75,8 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
 ! - si typ_enr present (parmi 'HEAV', 'CTIP', 'HECT'), on ne garde que
 !   les mailles de types typ_enr
 !
-    integer :: ifiss, kk, jgrp, nmaenr, i, ima,  cpt, iret
-    integer ::   ndime, jmad,  mxstac
+    integer :: ifiss, kk, jgrp, nmaenr, i, ima, cpt, iret
+    integer ::   ndime, jmad, mxstac
     character(len=8) :: noma, nomafi, nomail, k8_typ_enr, vk8_typ_enr(3)
     character(len=8) :: k8_test
     character(len=24) :: nommai, grp(nfiss, 3)
@@ -87,7 +87,7 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
     integer, pointer :: p_mail_affe(:) => null()
     aster_logical :: lmesh, lmodel, l_mail_affe, l_group_ok
 !
-    parameter (mxstac=100)
+    parameter(mxstac=100)
 !
     data vk8_typ_enr/'HEAV', 'CTIP', 'HECT'/
 !
@@ -97,7 +97,7 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
 !
 !   VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !   (VOIR CRS 1404)
-    ASSERT(nfiss.le.mxstac)
+    ASSERT(nfiss .le. mxstac)
 !
     lmesh = .false.
     lmodel = .false.
@@ -107,28 +107,28 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
     ASSERT(present(mesh) .or. present(model))
     if (present(mesh)) then
         lmesh = .true.
-        ASSERT(.not.present(model))
-    endif
+        ASSERT(.not. present(model))
+    end if
     if (present(model)) then
         lmodel = .true.
-        ASSERT(.not.present(mesh))
-    endif
+        ASSERT(.not. present(mesh))
+    end if
 !
 ! - Verification sur argument optionnel typ_enr (3 valeurs aurorisees)
 !
     k8_typ_enr = ''
     if (present(typ_enr)) then
         k8_typ_enr = typ_enr
-        ASSERT( indik8(vk8_typ_enr, k8_typ_enr, 1, 3) .gt. 0 )
-    endif
+        ASSERT(indik8(vk8_typ_enr, k8_typ_enr, 1, 3) .gt. 0)
+    end if
 !
 ! - Recuperation de l'objet '.TYPMAIL' pour filtrer sur ndim
 !
-    if ( present(mesh) ) then
+    if (present(mesh)) then
         noma = mesh
     else
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma)
-    endif
+    end if
     nommai = noma//'.NOMMAI'
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
@@ -136,9 +136,9 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
 ! - Si model present, recuperation de l'objet '.MAILLE' pour filtrer
 !   sur les mailles affectees
 !
-    if ( present(model) ) then
+    if (present(model)) then
         call jeveuo(model//'.MAILLE', 'L', vi=p_mail_affe)
-    endif
+    end if
 !
 ! - Dimensionnement grossier de la liste
 !
@@ -149,24 +149,24 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
         call dismoi('NOM_MAILLA', fiss(ifiss), 'FISS_XFEM', repk=nomafi)
         ASSERT(nomafi .eq. noma)
 !
-        grp(ifiss,1) = fiss(ifiss)//'.MAILFISS.HEAV'
-        grp(ifiss,2) = fiss(ifiss)//'.MAILFISS.CTIP'
-        grp(ifiss,3) = fiss(ifiss)//'.MAILFISS.HECT'
+        grp(ifiss, 1) = fiss(ifiss)//'.MAILFISS.HEAV'
+        grp(ifiss, 2) = fiss(ifiss)//'.MAILFISS.CTIP'
+        grp(ifiss, 3) = fiss(ifiss)//'.MAILFISS.HECT'
 !
         do kk = 1, 3
-            k8_test = grp(ifiss,kk)(19:22)
+            k8_test = grp(ifiss, kk) (19:22)
             call jeexin(grp(ifiss, kk), iret)
-            l_group_ok = .not.(present(typ_enr))
+            l_group_ok = .not. (present(typ_enr))
             l_group_ok = l_group_ok .or. (k8_typ_enr .eq. k8_test)
             l_group_ok = l_group_ok .and. (iret .ne. 0)
             if (l_group_ok) then
                 call jelira(grp(ifiss, kk), 'LONMAX', nmaenr)
-                cpt = cpt + nmaenr
-            endif
-        enddo
+                cpt = cpt+nmaenr
+            end if
+        end do
 !
     end do
-    ASSERT(cpt.gt.0)
+    ASSERT(cpt .gt. 0)
 !
 ! - Creation des listes temporaires
 !
@@ -183,9 +183,9 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
 !       boucle sur les 3 groupes HEAV, CTIP et HECT
         do kk = 1, 3
 !
-            k8_test = grp(ifiss,kk)(19:22)
+            k8_test = grp(ifiss, kk) (19:22)
             call jeexin(grp(ifiss, kk), iret)
-            l_group_ok = .not.(present(typ_enr))
+            l_group_ok = .not. (present(typ_enr))
             l_group_ok = l_group_ok .or. (k8_typ_enr .eq. k8_test)
             l_group_ok = l_group_ok .and. (iret .ne. 0)
 !
@@ -200,50 +200,50 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
 !
                     ima = zi(jgrp-1+i)
 !                   ndime : dimension topologique de la maille
-                    ndime= tmdim(typmail(ima))
-                    if ((ndim.eq.ndime) .or. (ndim.eq.0)) then
+                    ndime = tmdim(typmail(ima))
+                    if ((ndim .eq. ndime) .or. (ndim .eq. 0)) then
 !
 !                       on retient la maille si mesh present
 !                       ou si model present et maille affectee
                         l_mail_affe = .false.
                         if (lmodel) then
                             l_mail_affe = p_mail_affe(ima) .ne. 0
-                        endif
+                        end if
                         if (lmesh .or. l_mail_affe) then
                             call jenuno(jexnum(nommai, ima), nomail)
-                            nbma =nbma + 1
+                            nbma = nbma+1
                             temp(nbma) = nomail
                             temi(nbma) = ima
-                        endif
+                        end if
 !
-                    endif
+                    end if
 !
 !               fin boucle sur les mailles de chaque groupe
-                enddo
+                end do
 !
-            endif
+            end if
 !
 !       fin boucle sur les 3 groupes HEAV, CTIP et HECT
-        enddo
+        end do
 
 !   fin boucle sur les fissures
-    enddo
+    end do
 !
 ! - Verification
 !
-    ASSERT(nbma.le.cpt)
-    ASSERT(nbma.ge.1)
+    ASSERT(nbma .le. cpt)
+    ASSERT(nbma .ge. 1)
 !
 ! - Creation des listes definitives
 !
     call wkvect(mesmai, 'V V K8', nbma, jmad)
     do i = 1, nbma
         zk8(jmad-1+i) = temp(i)
-    enddo
+    end do
     call wkvect(lismai, 'V V I', nbma, jmad)
     do i = 1, nbma
         zi(jmad-1+i) = temi(i)
-    enddo
+    end do
 !
 ! - Menage
 !

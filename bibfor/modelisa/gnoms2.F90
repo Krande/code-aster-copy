@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,17 +37,17 @@ subroutine gnoms2(noojb, k1, k2)
     integer :: inum, iret, k1, k2, nessai, ndigit, iessai
     character(len=24) :: noojb, noojb1
 !     -----------------------------------------------------------------
-    ASSERT(k2.gt.k1)
-    ASSERT(k1.gt.8)
-    ASSERT(k2.le.24)
+    ASSERT(k2 .gt. k1)
+    ASSERT(k1 .gt. 8)
+    ASSERT(k2 .le. 24)
 !
-    ndigit=min(k2-k1+1,4)
-    nessai=int(10**ndigit)
+    ndigit = min(k2-k1+1, 4)
+    nessai = int(10**ndigit)
 !
     noojb1 = noojb
     inum = -1
     do iessai = 1, nessai
-        inum = inum + 1
+        inum = inum+1
 !        ASSERT(INUM.LE.9998)
         call codent(inum, 'D0', noojb1(k1:k2))
         call jeexin(noojb1, iret)
@@ -55,8 +55,8 @@ subroutine gnoms2(noojb, k1, k2)
     end do
     call utmess('F', 'MODELISA4_69')
 !
- 20 continue
-    noojb=noojb1
+20  continue
+    noojb = noojb1
 !
 !
 end subroutine

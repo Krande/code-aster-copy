@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmGetGene(ds_thm, l_steady, l_vf  , ndim,&
-                      mecani, press1  , press2, tempe)
+subroutine thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+                      mecani, press1, press2, tempe)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical, intent(in) :: l_steady, l_vf
-integer, intent(in)  :: ndim
-integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical, intent(in) :: l_steady, l_vf
+    integer, intent(in)  :: ndim
+    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,98 +77,98 @@ integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
     mecani(:) = 0
     press1(:) = 0
     press2(:) = 0
-    tempe(:)  = 0
+    tempe(:) = 0
 !
 ! - Main parameters: mechanic, thermic, hydraulic
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         mecani(1) = 1
-    endif
+    end if
     if (ds_thm%ds_elem%l_dof_ther) then
-        tempe(1)  = 1
-    endif
+        tempe(1) = 1
+    end if
     if (ds_thm%ds_elem%l_dof_pre1) then
         press1(1) = 1
-    endif
+    end if
     if (ds_thm%ds_elem%l_dof_pre2) then
         press2(1) = 1
-    endif
+    end if
     press1(2) = ds_thm%ds_elem%nb_phase(1)
     press2(2) = ds_thm%ds_elem%nb_phase(2)
 !
 ! - Number of (generalized) stress/strain components - Mechanic
 !
     if (mecani(1) .eq. 1) then
-        mecani(4) = ndim + 6
-        mecani(5) = 6 + 6
-    endif
+        mecani(4) = ndim+6
+        mecani(5) = 6+6
+    end if
 !
 ! - Number of (generalized) stress/strain components - Thermic
 !
     if (tempe(1) .eq. 1) then
-        tempe(4) = 1 + ndim
-        tempe(5) = 1 + ndim
-    endif
+        tempe(4) = 1+ndim
+        tempe(5) = 1+ndim
+    end if
 !
 ! - Number of (generalized) stress/strain components - Hydraulic
 !
     if (press1(1) .eq. 1) then
-        press1(6) = 1 + ndim
+        press1(6) = 1+ndim
         if (l_steady) then
             press1(7) = ndim
         else
-            press1(7) = ndim + 1
-        endif
+            press1(7) = ndim+1
+        end if
         if (tempe(1) .eq. 1) then
-            press1(7) = press1(7) + 1
-        endif
-    endif
+            press1(7) = press1(7)+1
+        end if
+    end if
     if (press2(1) .eq. 1) then
-        press2(6) = 1 + ndim
+        press2(6) = 1+ndim
         if (l_steady) then
             press2(7) = ndim
         else
-            press2(7) = ndim + 1
-        endif
+            press2(7) = ndim+1
+        end if
         if (tempe(1) .eq. 1) then
-            press2(7) = press2(7) + 1
-        endif
-    endif
+            press2(7) = press2(7)+1
+        end if
+    end if
     if (l_vf) then
         press1(7) = 2
         press2(7) = 2
-    endif
+    end if
 !
 ! - Index for adress in (generalized) vectors - Mechanic
 !
     if (mecani(1) .eq. 1) then
         mecani(2) = 1
         mecani(3) = 1
-    endif
+    end if
 !
 ! - Index for adress in (generalized) vectors - Hydraulic
 !
     if (press1(1) .eq. 1) then
-        press1(3) = mecani(4) + 1
-        press1(4) = mecani(5) + 1
+        press1(3) = mecani(4)+1
+        press1(4) = mecani(5)+1
         if (press1(2) .eq. 2) then
-            press1(5) = press1(4) + press1(7)
-        endif
-    endif
+            press1(5) = press1(4)+press1(7)
+        end if
+    end if
 !
     if (press2(1) .eq. 1) then
-        press2(3) = press1(3) + press1(6)
-        press2(4) = press1(4) + press1(2)*press1(7)
+        press2(3) = press1(3)+press1(6)
+        press2(4) = press1(4)+press1(2)*press1(7)
         if (press2(2) .eq. 2) then
-            press2(5) = press2(4) + press2(7)
-        endif
-    endif
+            press2(5) = press2(4)+press2(7)
+        end if
+    end if
 !
 ! - Index for adress in (generalized) vectors - Thermic
 !
     if (tempe(1) .eq. 1) then
-        tempe(2) = mecani(4) + press1(6) + press2(6) + 1
-        tempe(3) = mecani(5) + press1(2)*press1(7) + press2(2)* press2(7) + 1
-    endif
+        tempe(2) = mecani(4)+press1(6)+press2(6)+1
+        tempe(3) = mecani(5)+press1(2)*press1(7)+press2(2)*press2(7)+1
+    end if
 !
 end subroutine

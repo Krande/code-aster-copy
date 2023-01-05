@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,15 +39,15 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
     integer :: i, j, k, ii, nj
     real(kind=8) :: mt(nno*nnc, nno*nnc), matg(nno*nnc, nno*nnc)
 ! .....................................................................
-    ASSERT( nnc.eq.3 )
-    nj=nno*nnc
+    ASSERT(nnc .eq. 3)
+    nj = nno*nnc
 ! --- MATRICE DE TRANSFERT
     call r8inir(nno*nno*nnc*nnc, 0.d0, mt, 1)
     do i = 1, 3
         do j = 1, 3
             do k = 0, nno-1
-                mt(i ,j ) = pgl(i,j)
-                mt(i+k*3,j+k*3) = pgl(i,j)
+                mt(i, j) = pgl(i, j)
+                mt(i+k*3, j+k*3) = pgl(i, j)
             end do
         end do
     end do
@@ -55,20 +55,20 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
 ! --- ON EFFECTUE : MATG() = MATE() * MT()
     do k = 1, nno*nnc
         do i = 1, nno*nnc
-            matg(i,k) = 0.d0
+            matg(i, k) = 0.d0
             do j = 1, nj
-                matg(i,k) = matg(i,k) + matl(i,j) * mt(j,k)
+                matg(i, k) = matg(i, k)+matl(i, j)*mt(j, k)
             end do
         end do
     end do
 ! --- MULTIPLICATION PAR LA MATRICE TRANSPOSEE DE "MT" LORSQUE
 !           "MATE" EST RECTANGULAIRE DE DIMENSIONS 7X7
     do i = 1, nno*nnc
-        ii = nj * (i-1)
+        ii = nj*(i-1)
         do k = 1, nno*nnc
             mate(ii+k) = 0.d0
             do j = 1, nj
-                mate(ii+k) = mate(ii+k) + mt(j,i)*matg(j,k)
+                mate(ii+k) = mate(ii+k)+mt(j, i)*matg(j, k)
             end do
         end do
     end do

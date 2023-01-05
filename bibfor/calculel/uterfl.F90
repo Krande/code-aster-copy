@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine uterfl(ndim, iflup, iflum, ino, mno,&
-                  jno, nsomm, jac, term22, aux,&
-                  ltheta, valthe, valunt, niv, ifm,&
-                  xn, yn, zn, valfp, valfm,&
+subroutine uterfl(ndim, iflup, iflum, ino, mno, &
+                  jno, nsomm, jac, term22, aux, &
+                  ltheta, valthe, valunt, niv, ifm, &
+                  xn, yn, zn, valfp, valfm, &
                   ityp, noe)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -78,16 +78,16 @@ subroutine uterfl(ndim, iflup, iflum, ino, mno,&
         ij = iflup+(ino-1)*ndim
         aux1 = valthe*valfp(1)
         aux2 = valthe*(zr(ij)*xn(1)+zr(ij+1)*yn(1))
-        term23 = aux1 + aux2
-        if (niv .eq. 2) write(ifm,*)' ZR INO P',aux1,aux2
+        term23 = aux1+aux2
+        if (niv .eq. 2) write (ifm, *) ' ZR INO P', aux1, aux2
         if (ltheta) then
             ij = ij+iflum-iflup
             aux3 = valunt*valfm(1)
             aux4 = valunt*(zr(ij)*xn(1)+zr(ij+1)*yn(1))
-            aux1 = aux1 + aux3
-            term23 = term23 + aux3 + aux4
-            if (niv .eq. 2) write(ifm,*)' ZR INO M',aux3,aux4
-        endif
+            aux1 = aux1+aux3
+            term23 = term23+aux3+aux4
+            if (niv .eq. 2) write (ifm, *) ' ZR INO M', aux3, aux4
+        end if
         term22 = jac(1)*term23*term23
         aux = jac(1)*aux1*aux1
 !
@@ -95,59 +95,59 @@ subroutine uterfl(ndim, iflup, iflum, ino, mno,&
         ij = iflup+(jno-1)*ndim
         aux1 = valthe*valfp(2)
         aux2 = valthe*(zr(ij)*xn(2)+zr(ij+1)*yn(2))
-        term23 = aux1 + aux2
-        if (niv .eq. 2) write(ifm,*)' ZR JNO P',aux1,aux2
+        term23 = aux1+aux2
+        if (niv .eq. 2) write (ifm, *) ' ZR JNO P', aux1, aux2
         if (ltheta) then
             ij = ij+iflum-iflup
             aux3 = valunt*valfm(2)
             aux4 = valunt*(zr(ij)*xn(2)+zr(ij+1)*yn(2))
-            aux1 = aux1 + aux3
-            term23 = term23 + aux3 + aux4
-            if (niv .eq. 2) write(ifm,*)' ZR JNO M',aux3,aux4
-        endif
-        term22 = term22 + jac(2)*term23*term23
-        aux = aux + jac(2)*aux1*aux1
+            aux1 = aux1+aux3
+            term23 = term23+aux3+aux4
+            if (niv .eq. 2) write (ifm, *) ' ZR JNO M', aux3, aux4
+        end if
+        term22 = term22+jac(2)*term23*term23
+        aux = aux+jac(2)*aux1*aux1
 !
 ! POINT MILIEU SI NECESSAIRE: MNO
         if (nsomm .eq. 3) then
             ij = iflup+(mno-1)*ndim
             aux1 = valthe*valfp(3)
             aux2 = valthe*(zr(ij)*xn(3)+zr(ij+1)*yn(3))
-            term23 = aux1 + aux2
-            if (niv .eq. 2) write(ifm,*)' ZR MNO P',aux1,aux2
+            term23 = aux1+aux2
+            if (niv .eq. 2) write (ifm, *) ' ZR MNO P', aux1, aux2
             if (ltheta) then
                 ij = ij+iflum-iflup
                 aux3 = valunt*valfm(3)
                 aux4 = valunt*(zr(ij)*xn(3)+zr(ij+1)*yn(3))
-                aux1 = aux1 + aux3
-                term23 = term23 + aux3 + aux4
-                if (niv .eq. 2) write(ifm,*)' ZR MNO M',aux3,aux4
-            endif
-            term22 = term22 + jac(3)*term23*term23
-            aux = aux + jac(3)*aux1*aux1
-        endif
+                aux1 = aux1+aux3
+                term23 = term23+aux3+aux4
+                if (niv .eq. 2) write (ifm, *) ' ZR MNO M', aux3, aux4
+            end if
+            term22 = term22+jac(3)*term23*term23
+            aux = aux+jac(3)*aux1*aux1
+        end if
     else
 !
 ! CAS 3D
         do in = 1, nsomm
-            iino = noe(in,ino,ityp)
+            iino = noe(in, ino, ityp)
             ij = iflup+(iino-1)*ndim
             aux1 = valthe*valfp(in)
-            aux2 = valthe*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+ zr(ij+2)*zn( in))
-            term23 = aux1 + aux2
-            if (niv .eq. 2) write(ifm,*)' ZR IINO P/IN ',aux1,aux2,in
+            aux2 = valthe*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+zr(ij+2)*zn(in))
+            term23 = aux1+aux2
+            if (niv .eq. 2) write (ifm, *) ' ZR IINO P/IN ', aux1, aux2, in
             if (ltheta) then
                 ij = ij+iflum-iflup
                 aux3 = valunt*valfm(in)
-                aux4 = valunt*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+ zr(ij+2) *zn(in))
-                aux1 = aux1 + aux3
-                term23 = term23 + aux3 + aux4
-                if (niv .eq. 2) write(ifm,*)' ZR JNO M    ',aux3,aux4
-            endif
-            term22 = term22 + term23*term23*jac(in)
-            aux = aux + aux1*aux1*jac(in)
+                aux4 = valunt*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+zr(ij+2)*zn(in))
+                aux1 = aux1+aux3
+                term23 = term23+aux3+aux4
+                if (niv .eq. 2) write (ifm, *) ' ZR JNO M    ', aux3, aux4
+            end if
+            term22 = term22+term23*term23*jac(in)
+            aux = aux+aux1*aux1*jac(in)
         end do
 !
-    endif
+    end if
 !
 end subroutine

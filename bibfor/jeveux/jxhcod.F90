@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ function jxhcod(chain, lrep)
     character(len=*) :: chain
     integer :: i1, j(4)
     integer(kind=4) :: i(8)
-    equivalence (i(1), j(1))
+    equivalence(i(1), j(1))
 !
 !   ATTENTION, IL FAUT IMPERATIVEMENT UTILISER UN TABLEAU I AYANT
 !   POUR LONGUEUR TOTALE 32 OCTETS (ICI 4*8) POUR S'ALIGNER SUR LA
@@ -35,8 +35,8 @@ function jxhcod(chain, lrep)
 !-----------------------------------------------------------------------
     call strmov(chain, 1, 32, j, 1)
     do k = 2, 8
-        i(1) = ieor( i(1) , i(k) )
+        i(1) = ieor(i(1), i(k))
     end do
-    i1=i(1)
-    jxhcod = 1 + mod(i1,lrep)
+    i1 = i(1)
+    jxhcod = 1+mod(i1, lrep)
 end function

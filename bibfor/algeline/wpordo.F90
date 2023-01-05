@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine wpordo(type, shift, vpr, vpi, x,&
+subroutine wpordo(type, shift, vpr, vpi, x, &
                   m, neq)
     implicit none
 #include "asterfort/utmess.h"
@@ -49,12 +49,12 @@ subroutine wpordo(type, shift, vpr, vpi, x,&
     if (type .eq. 0) then
         do i = 1, m, 1
             k = i
-            p = vpi(i) - om
+            p = vpi(i)-om
             do j = i+1, m
                 if ((vpi(j)-om) .lt. p) then
-                    p = vpi(j) - om
+                    p = vpi(j)-om
                     k = j
-                endif
+                end if
             end do
             if (k .ne. i) then
                 p = vpi(i)
@@ -64,21 +64,21 @@ subroutine wpordo(type, shift, vpr, vpi, x,&
                 vpr(i) = vpr(k)
                 vpr(k) = p
                 do j = 1, neq, 1
-                    c = x(j,i)
-                    x(j,i) = x(j,k)
-                    x(j,k) = c
+                    c = x(j, i)
+                    x(j, i) = x(j, k)
+                    x(j, k) = c
                 end do
-            endif
+            end if
         end do
     else if (type .eq. 1) then
         do i = 1, m, 1
             k = i
-            p = abs(dcmplx(vpr(i),vpi(i)) - shift)
+            p = abs(dcmplx(vpr(i), vpi(i))-shift)
             do j = i+1, m
-                if ((abs(dcmplx(vpr(j),vpi(j))-shift)) .lt. p) then
-                    p = abs(dcmplx(vpr(j),vpi(j)) - shift)
+                if ((abs(dcmplx(vpr(j), vpi(j))-shift)) .lt. p) then
+                    p = abs(dcmplx(vpr(j), vpi(j))-shift)
                     k = j
-                endif
+                end if
             end do
             if (k .ne. i) then
                 p = vpi(i)
@@ -88,13 +88,13 @@ subroutine wpordo(type, shift, vpr, vpi, x,&
                 vpr(i) = vpr(k)
                 vpr(k) = p
                 do j = 1, neq, 1
-                    c = x(j,i)
-                    x(j,i) = x(j,k)
-                    x(j,k) = c
+                    c = x(j, i)
+                    x(j, i) = x(j, k)
+                    x(j, k) = c
                 end do
-            endif
+            end if
         end do
     else
         call utmess('F', 'ALGELINE3_97')
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine drudrg(parame, derpar, h0, sigc, rgdev,&
+subroutine drudrg(parame, derpar, h0, sigc, rgdev, &
                   invar1, dudg)
 !
-    implicit  none
+    implicit none
 #include "asterfort/derpro.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -42,9 +42,9 @@ subroutine drudrg(parame, derpar, h0, sigc, rgdev,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    =  -1.0d0  )
-    parameter       ( trois  =   3.0d0  )
-    parameter       ( six    =   6.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(trois=3.0d0)
+    parameter(six=6.0d0)
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -66,7 +66,7 @@ subroutine drudrg(parame, derpar, h0, sigc, rgdev,&
 ! ======================================================================
 ! --- CALCUL FINAL -----------------------------------------------------
 ! ======================================================================
-    dudg = (fact1+fact2)*dkm + dks
+    dudg = (fact1+fact2)*dkm+dks
 ! ======================================================================
     call jedema()
 ! ======================================================================

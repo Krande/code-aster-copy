@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine comp_read_mesh(mesh          , keywordfact, iocc        ,&
-                          list_elem_affe, l_affe_all , nb_elem_affe)
+subroutine comp_read_mesh(mesh, keywordfact, iocc, &
+                          list_elem_affe, l_affe_all, nb_elem_affe)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/getvtx.h"
@@ -58,21 +58,21 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_affe_all   = .false._1
+    l_affe_all = .false._1
     nb_elem_affe = 0
 !
 ! - Get list of elements
 !
-    call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
+    call getvtx(keywordfact, 'TOUT', iocc=iocc, nbret=nt)
     if (nt .ne. 0) then
         l_affe_all = .true.
     else
         l_affe_all = .false.
-        call reliem(' ', mesh     , 'NU_MAILLE', keywordfact   , iocc,&
-                    2  , keyw_name, keyw_type  , list_elem_affe, nb_elem_affe)
+        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
+                    2, keyw_name, keyw_type, list_elem_affe, nb_elem_affe)
         if (nb_elem_affe .eq. 0) then
             l_affe_all = .true.
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

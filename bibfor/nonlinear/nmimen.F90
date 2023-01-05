@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine nmimen(ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nonlinDSColumnWriteValue.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/ComputeTableHead.h"
 !
-type(NL_DS_Print), intent(in) :: ds_print
+    type(NL_DS_Print), intent(in) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,18 +49,18 @@ type(NL_DS_Print), intent(in) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mesg_unit       = iunifi('MESSAGE')
+    mesg_unit = iunifi('MESSAGE')
 !
 ! - Get convergence table
 !
-    table_cvg       = ds_print%table_cvg
+    table_cvg = ds_print%table_cvg
 !
 ! - Get parameters
 !
-    sep_line        = ds_print%table_cvg%sep_line
-    tcvg_unit       = ds_print%tcvg_unit
-    line_width      = ds_print%table_cvg%width
-    l_tcvg_csv      = ds_print%l_tcvg_csv
+    sep_line = ds_print%table_cvg%sep_line
+    tcvg_unit = ds_print%tcvg_unit
+    line_width = ds_print%table_cvg%width
+    l_tcvg_csv = ds_print%l_tcvg_csv
 !
 ! - Compute table head
 !
@@ -68,35 +68,35 @@ type(NL_DS_Print), intent(in) :: ds_print
 !
 ! - Print in message unit
 !
-    call nonlinDSColumnWriteValue(line_width,&
-                                  output_unit_ = mesg_unit,&
-                                  value_k_     = sep_line)
-    call nonlinDSColumnWriteValue(line_width,&
-                                  output_unit_ = mesg_unit,&
-                                  value_k_     = table_head(1) )
-    call nonlinDSColumnWriteValue(line_width,&
-                                  output_unit_ = mesg_unit,&
-                                  value_k_     = table_head(2) )
-    call nonlinDSColumnWriteValue(line_width,&
-                                  output_unit_ = mesg_unit,&
-                                  value_k_     = table_head(3) )
-    call nonlinDSColumnWriteValue(line_width,&
-                                  output_unit_ = mesg_unit,&
-                                  value_k_     = sep_line)
+    call nonlinDSColumnWriteValue(line_width, &
+                                  output_unit_=mesg_unit, &
+                                  value_k_=sep_line)
+    call nonlinDSColumnWriteValue(line_width, &
+                                  output_unit_=mesg_unit, &
+                                  value_k_=table_head(1))
+    call nonlinDSColumnWriteValue(line_width, &
+                                  output_unit_=mesg_unit, &
+                                  value_k_=table_head(2))
+    call nonlinDSColumnWriteValue(line_width, &
+                                  output_unit_=mesg_unit, &
+                                  value_k_=table_head(3))
+    call nonlinDSColumnWriteValue(line_width, &
+                                  output_unit_=mesg_unit, &
+                                  value_k_=sep_line)
 !
 ! - Print in file
 !
     if (l_tcvg_csv) then
         call ComputeTableHead(table_cvg, ',', table_head)
-        call nonlinDSColumnWriteValue(line_width,&
-                                      output_unit_ = tcvg_unit,&
-                                      value_k_     = table_head(1) )
-        call nonlinDSColumnWriteValue(line_width,&
-                                      output_unit_ = tcvg_unit,&
-                                      value_k_     = table_head(2) )
-        call nonlinDSColumnWriteValue(line_width,&
-                                      output_unit_ = tcvg_unit,&
-                                      value_k_     = table_head(3) )
-    endif
+        call nonlinDSColumnWriteValue(line_width, &
+                                      output_unit_=tcvg_unit, &
+                                      value_k_=table_head(1))
+        call nonlinDSColumnWriteValue(line_width, &
+                                      output_unit_=tcvg_unit, &
+                                      value_k_=table_head(2))
+        call nonlinDSColumnWriteValue(line_width, &
+                                      output_unit_=tcvg_unit, &
+                                      value_k_=table_head(3))
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmlagm(nbdm  , ndim  , nnl, jdepde, ffl,&
+subroutine mmlagm(nbdm, ndim, nnl, jdepde, ffl, &
                   dlagrc, dlagrf)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 !
-integer, intent(in) :: nbdm, ndim, nnl
-integer, intent(in) :: jdepde
-real(kind=8), intent(in) :: ffl(9)
-real(kind=8), intent(out) :: dlagrc, dlagrf(2)
+    integer, intent(in) :: nbdm, ndim, nnl
+    integer, intent(in) :: jdepde
+    real(kind=8), intent(in) :: ffl(9)
+    real(kind=8), intent(out) :: dlagrc, dlagrf(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,22 +51,22 @@ real(kind=8), intent(out) :: dlagrc, dlagrf(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dlagrc    = 0.d0
+    dlagrc = 0.d0
     dlagrf(:) = 0.d0
 !
 ! - Increment of contact Lagrange from beginning of time step
 !
     do inoc = 1, nnl
-        dlagrc = dlagrc + ffl(inoc)*zr(jdepde+(inoc-1)*nbdm+(ndim+1)- 1)
+        dlagrc = dlagrc+ffl(inoc)*zr(jdepde+(inoc-1)*nbdm+(ndim+1)-1)
     end do
 !
 ! - Increment of friction Lagrange from beginning of time step
 !
     do inof = 1, nnl
-        dlagrf(1) = dlagrf(1) + ffl(inof)*zr(jdepde+(inof-1)*nbdm+(ndim+2)-1)
+        dlagrf(1) = dlagrf(1)+ffl(inof)*zr(jdepde+(inof-1)*nbdm+(ndim+2)-1)
         if (ndim .eq. 3) then
-            dlagrf(2) = dlagrf(2) + ffl(inof)*zr(jdepde+(inof-1)* nbdm+(ndim+3)-1)
-        endif
+            dlagrf(2) = dlagrf(2)+ffl(inof)*zr(jdepde+(inof-1)*nbdm+(ndim+3)-1)
+        end if
     end do
 !
 end subroutine

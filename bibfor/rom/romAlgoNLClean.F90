@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romAlgoNLClean(paraAlgo)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/romBaseClean.h"
 #include "asterfort/nonlinDSTableIOClean.h"
 !
-type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
+    type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,10 +43,10 @@ type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    AS_DEALLOCATE(vi = paraAlgo%v_equa_int)
+    AS_DEALLOCATE(vi=paraAlgo%v_equa_int)
     if (paraAlgo%l_hrom_corref) then
-        AS_DEALLOCATE(vi = paraAlgo%v_equa_sub)
-    endif
+        AS_DEALLOCATE(vi=paraAlgo%v_equa_sub)
+    end if
     call romBaseClean(paraAlgo%ds_empi)
     call nonlinDSTableIOClean(paraAlgo%tablResu)
 !

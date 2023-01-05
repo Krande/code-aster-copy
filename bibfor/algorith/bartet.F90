@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 4
                 n3 = 8
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.2 .and. i2.eq.0) then
+    else if (i1 .eq. 2 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 2
@@ -62,10 +62,10 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 4
                 n3 = 9
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.3 .and. i2.eq.0) then
+    else if (i1 .eq. 3 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 3
@@ -79,10 +79,10 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 3
                 n2 = 4
                 n3 = 10
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
-    else if (i1.eq.4 .and. i2.eq.0) then
+    else if (i1 .eq. 4 .and. i2 .eq. 0) then
         do i = 1, 3
             if (i .eq. 1) then
                 n1 = 4
@@ -96,7 +96,7 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 4
                 n2 = 3
                 n3 = 10
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -121,7 +121,7 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 3
                 n3 = 7
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -143,11 +143,11 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 2
                 n3 = 5
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
-    else if ((i1+i2.eq.5) .and. (i1.eq.2 .or. i2.eq.2)) then
+    else if ((i1+i2 .eq. 5) .and. (i1 .eq. 2 .or. i2 .eq. 2)) then
         do i = 1, 4
             if (i .eq. 1) then
                 n1 = 3
@@ -165,11 +165,11 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 1
                 n3 = 5
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
-    else if ((i1+i2.eq.5) .and. (i1.eq.4 .or. i2.eq.4)) then
+    else if ((i1+i2 .eq. 5) .and. (i1 .eq. 4 .or. i2 .eq. 4)) then
         do i = 1, 4
             if (i .eq. 1) then
                 n1 = 4
@@ -187,7 +187,7 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 1
                 n2 = 3
                 n3 = 7
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -209,7 +209,7 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 2
                 n2 = 3
                 n3 = 6
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
@@ -231,13 +231,13 @@ subroutine bartet(i1, i2, coor, poin)
                 n1 = 3
                 n2 = 2
                 n3 = 6
-            endif
+            end if
             call barso1(n1, n2, n3, coor, poin)
         end do
 !
     else
         call utmess('F', 'ALGORITH_36', sk='TETRA')
 !
-    endif
+    end if
 !
 end subroutine

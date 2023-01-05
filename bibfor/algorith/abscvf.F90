@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,61 +55,61 @@ subroutine abscvf(ndim, tabar, xe, s)
 !     XE2 XENT LE POINT D'ORIGINE
 !
 !     CALCUL DE COEF1, COEF2, COEF3, D
-    coef1=0.d0
-    coef2=0.d0
-    coef3=0.d0
+    coef1 = 0.d0
+    coef2 = 0.d0
+    coef3 = 0.d0
     pt1(:) = 0.d0
     pt2(:) = 0.d0
     pt3(:) = 0.d0
-    eps=1.d-7
+    eps = 1.d-7
 !
     do i = 1, ndim
-        pt1(i)=tabar(i)
-        pt2(i)=tabar(ndim+i)
-        pt3(i)=tabar(2*ndim+i)
+        pt1(i) = tabar(i)
+        pt2(i) = tabar(ndim+i)
+        pt3(i) = tabar(2*ndim+i)
     end do
 !
     do i = 1, ndim
-        coef1 = coef1 + (pt1(i)-2*pt3(i)+pt2(i))* (pt1(i)-2*pt3(i)+ pt2(i))
+        coef1 = coef1+(pt1(i)-2*pt3(i)+pt2(i))*(pt1(i)-2*pt3(i)+pt2(i))
     end do
 !
     do i = 1, ndim
-        coef2 = coef2 + (pt2(i)-pt1(i))*(pt1(i)-2*pt3(i)+pt2(i))
+        coef2 = coef2+(pt2(i)-pt1(i))*(pt1(i)-2*pt3(i)+pt2(i))
     end do
 !
     do i = 1, ndim
-        coef3 = coef3 + (pt2(i)-pt1(i))*(pt2(i)-pt1(i))/4
+        coef3 = coef3+(pt2(i)-pt1(i))*(pt2(i)-pt1(i))/4
     end do
 !
-    d = coef2*coef2 - 4*coef1*coef3
+    d = coef2*coef2-4*coef1*coef3
 !
 !     CALCUL ABSCISSE CURVILIGNE DU POINT
 !
     if (abs(coef1) .le. eps) then
         s = (xe+1)*sqrt(coef3)
-    else if (abs(coef1).gt.r8prem()) then
+    else if (abs(coef1) .gt. r8prem()) then
         if (abs(d) .le. r8prem()) then
-            s = (coef1*xe*xe + coef2*xe + coef2 - coef1) /(2*sqrt( coef1))
-        else if (d.gt.eps) then
+            s = (coef1*xe*xe+coef2*xe+coef2-coef1)/(2*sqrt(coef1))
+        else if (d .gt. eps) then
             mu = sqrt(d/(4*coef1*coef1))
             coef4 = mu*mu*sqrt(coef1)/4
             typfct = 'ACOSH'
             call fcthyp(typfct, (2*coef1*xe+coef2)/(2*coef1*mu), borsup)
             call fcthyp(typfct, (coef2-2*coef1)/(2*coef1*mu), borinf)
-            s = coef4*( sinh(2*borsup)-2*borsup) - coef4*(sinh(2* borinf)-2*borinf)
-        else if (d.lt.eps) then
+            s = coef4*(sinh(2*borsup)-2*borsup)-coef4*(sinh(2*borinf)-2*borinf)
+        else if (d .lt. eps) then
             mu = sqrt(-d/(4*coef1*coef1))
             coef4 = mu*mu*sqrt(coef1)/4
             typfct = 'ASINH'
             call fcthyp(typfct, (2*coef1*xe+coef2)/(2*coef1*mu), borsup)
             call fcthyp(typfct, (coef2-2*coef1)/(2*coef1*mu), borinf)
-            s = coef4*( sinh(2*borsup)+2*borsup) - coef4*(sinh(2* borinf)+2*borinf)
+            s = coef4*(sinh(2*borsup)+2*borsup)-coef4*(sinh(2*borinf)+2*borinf)
 !
-        endif
-    endif
+        end if
+    end if
 !
     if (s .lt. 0.d0) then
-        ASSERT(2.eq.3)
-    endif
+        ASSERT(2 .eq. 3)
+    end if
 !
 end subroutine

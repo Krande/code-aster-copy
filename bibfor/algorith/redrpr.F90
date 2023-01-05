@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine redrpr(mod, imate, sigp, vip, dsde,&
+subroutine redrpr(mod, imate, sigp, vip, dsde, &
                   icode)
-    implicit      none
+    implicit none
 #include "asterfort/dplitg.h"
 #include "asterfort/dpmata.h"
 #include "asterfort/dpmate.h"
@@ -39,20 +39,20 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
     real(kind=8) :: se(6), seq, plas, alpha, phi
     real(kind=8) :: siie, deux, trois
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! =====================================================================
 ! --- INITIALISATION --------------------------------------------------
 ! =====================================================================
-    parameter  ( deux  = 2.0d0 )
-    parameter  ( trois = 3.0d0 )
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! =====================================================================
     se(:) = 0.0d0
-    dsde(:,:) = 0.0d0
-    hookf(:,:) = 0.0d0
+    dsde(:, :) = 0.0d0
+    hookf(:, :) = 0.0d0
 ! =====================================================================
 ! --- RECUPERATION DES DONNEES MATERIAUX ------------------------------
 ! =====================================================================
-    call dpmate(mod, imate, materf, ndt, ndi,&
+    call dpmate(mod, imate, materf, ndt, ndi, &
                 nvi, typedp)
     pplus = vip(1)
     dp = 0.0d0
@@ -63,16 +63,16 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
 ! =====================================================================
 ! --- RECUPERATION DE R' POUR UNE LOI DP DE TYPE LINEAIRE -------------
 ! =====================================================================
-        alpha = materf(3,2)
-        dpdeno = dplitg( materf, pplus, plas )
-    else if (typedp.eq.2) then
+        alpha = materf(3, 2)
+        dpdeno = dplitg(materf, pplus, plas)
+    else if (typedp .eq. 2) then
 ! =====================================================================
 ! --- RECUPERATION DE R' POUR UNE LOI DP DE TYPE PARABOLIQUE ----------
 ! =====================================================================
-        phi = materf(2,2)
-        alpha = deux * sin(phi) / (trois - sin(phi))
-        dpdeno = dppatg( materf, pplus, plas )
-    endif
+        phi = materf(2, 2)
+        alpha = deux*sin(phi)/(trois-sin(phi))
+        dpdeno = dppatg(materf, pplus, plas)
+    end if
     if (plas .eq. 0.0d0) then
         icode = 0
     else
@@ -81,12 +81,12 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
 ! --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 ! =====================================================================
             call lcdevi(sigp, se)
-            siie=ddot(ndt,se,1,se,1)
-            seq = sqrt (trois*siie/deux)
-        endif
-        call dpmata(mod, materf, alpha, dp, dpdeno,&
+            siie = ddot(ndt, se, 1, se, 1)
+            seq = sqrt(trois*siie/deux)
+        end if
+        call dpmata(mod, materf, alpha, dp, dpdeno, &
                     pplus, se, seq, plas, dsde)
-    endif
+    end if
 ! =====================================================================
 ! =====================================================================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
-                  nmzef, nmzeg, nmief, nmprox, depsp,&
-                  ddissi, dc1, dc2, dtg, bbok,&
+subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
+                  nmzef, nmzeg, nmief, nmprox, depsp, &
+                  ddissi, dc1, dc2, dtg, bbok, &
                   normm, normn)
 !
     implicit none
@@ -78,7 +78,7 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !     CELA SIGNIFIE QUE (M-BACKM) N EST PAS
 !     DANS LE CRITERE DE PLASTICITE
 !      NCRIT = CRITNU(ZIMAT,NMNBN,NMDPLA,DEPSLO,DTG,NORMM)
-    ncrit = critnu(zimat,nmnbn,depslo,dtg,normm)
+    ncrit = critnu(zimat, nmnbn, depslo, dtg, normm)
 !
     do nbb = 1, nbbmax
 !
@@ -91,9 +91,9 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 !     CALCUL DU NOUVEAU MOMENT
 !     DE L INCREMENT DE COURBURE PLASTIQUE ET DE LA DISSIPATION
-        call dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
-                    nmprox, depslo, newnbn, newpla, newdpl,&
-                    newddp, newzfg, depsbb, ddisbb, dc1,&
+        call dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl, &
+                    nmprox, depslo, newnbn, newpla, newdpl, &
+                    newddp, newzfg, depsbb, ddisbb, dc1, &
                     dc2, dtg, normm, normn)
 !
         zimat = ipara(1)
@@ -112,14 +112,14 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !
         do j = 1, 3
             do i = 1, 2
-                nmplas(i,j) = newpla(i,j)
+                nmplas(i, j) = newpla(i, j)
             end do
         end do
 !
         do j = 1, 2
             do i = 1, 2
-                nmdpla(i,j) = newdpl(i,j)
-                nmddpl(i,j) = newddp(i,j)
+                nmdpla(i, j) = newdpl(i, j)
+                nmddpl(i, j) = newddp(i, j)
             end do
         end do
 !
@@ -132,25 +132,25 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 ! 170    CONTINUE
 !
         do j = 1, 6
-            depsp(j) = depsp(j) + depsbb(j)
+            depsp(j) = depsp(j)+depsbb(j)
         end do
 !
-        ddissi = ddissi + ddisbb
+        ddissi = ddissi+ddisbb
 !
 !     CALCUL DES CRITERES DE PLASTICITE F
-        f1 = fplass(nmnbn,nmplas,1)
-        f2 = fplass(nmnbn,nmplas,2)
+        f1 = fplass(nmnbn, nmplas, 1)
+        f2 = fplass(nmnbn, nmplas, 2)
 !
         if (f1 .lt. nmzef .and. f2 .lt. nmzef .and. (f1 .gt. -nmzef .or. f2 .gt. -nmzef)) then
 !
 !     NMNBN PROCHE DE LA SURFACE DE PLASTICITE
             bbok = .true.
             goto 200
-        endif
+        end if
 !
 !     CALCUL DU PREDICTEUR ELASTIQUE ET DU NOMBRE DE CRITERES ACTIVES
 !        NCRNEW = CRITNU(ZIMAT,NMNBN,NMDPLA,DEPSLO,DTG,NORMM)
-        ncrnew = critnu(zimat,nmnbn,depslo,dtg,normm)
+        ncrnew = critnu(zimat, nmnbn, depslo, dtg, normm)
 !
 !     SI NCRNEW = 0 CELA VEUT DIRE QUE MBACKM EST DANS LE VOLUME ELAST
 !     ON UTILISE LE CRITERE DU PAS PRECEDENT
@@ -158,7 +158,7 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !     C EST POURQUOI NCRIT N EST PAS MIS A JOUR
         if (ncrnew .gt. 0) then
             ncrit = ncrnew
-        endif
+        end if
     end do
 !
 200 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
+subroutine pcinfe(n, icpl, icpc, icpd, icplp, &
                   icpcp, ind, lca, ier)
 !       S.P. PCINFE IDEM S-P PCFULL
 !                    SAUF NON CREATION COEFS SUR U
@@ -99,7 +99,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !
 !     RECHERCHE DANS LA LIGNE J DES U(J,JJ) NON NULS
 !
-            do l = icpd(j) + 1, icpl(j)
+            do l = icpd(j)+1, icpl(j)
                 jj = icpc(l)
 !
 !     LE COEFFICIENT L(I,JJ) EXISTE-T-IL ?
@@ -111,7 +111,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !
 !     NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
 !
-                    ic1 = ic1 + 1
+                    ic1 = ic1+1
 !
 !     TEST DE DEPASSEMENT DE DIMENSION (PROTECTION DES TABLEAUX)
 !
@@ -119,7 +119,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !               WRITE (6,107) NIV,LCA,I
                         istop = i
                         goto 100
-                    endif
+                    end if
 !
 !     STOCKAGE DE L'INDICE DE COLONNE DU COEFFICIENT LU(I,JJ)
 !
@@ -128,8 +128,8 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !     MISE A JOUR DU TABLEAU IND
 !
                     ind(jj) = i
-                endif
- 30             continue
+                end if
+30              continue
             end do
         end do
 !
@@ -141,7 +141,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !
         icplp(i) = ic1
         ic2 = ic1
-        k1 = k2 + 1
+        k1 = k2+1
     end do
     icplp(0) = 0
 !
@@ -150,12 +150,12 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !
     k1 = icpl(n)
     kp1 = icplp(n)
-    nzero = k1 + kp1
+    nzero = k1+kp1
     if (nzero .gt. lca) then
 !       WRITE (6,200) NIV,LCA,NZERO
         ier = nzero
         goto 150
-    endif
+    end if
 !
 !     CREATION DES TABLEAUX ICPL ET ICPC
 !     POUR LA MATRICE FACTORISEE : REUNION DES TABLEAUX ICPC ET ICPCP
@@ -166,39 +166,39 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
         icpl(i) = k
         kp2 = icplp(i-1)
         k2 = icpl(i-1)
- 60     continue
+60      continue
         if (k1 .gt. k2) then
             if (kp1 .gt. kp2) then
 !       -------------------
                 if (icpc(k1) .lt. icpcp(kp1)) then
                     icpc(k) = int(icpcp(kp1), 4)
-                    k = k - 1
-                    kp1 = kp1 - 1
+                    k = k-1
+                    kp1 = kp1-1
                 else
                     icpc(k) = icpc(k1)
-                    k = k - 1
-                    k1 = k1 - 1
-                endif
+                    k = k-1
+                    k1 = k1-1
+                end if
             else
                 icpc(k) = icpc(k1)
-                k = k - 1
-                k1 = k1 - 1
-            endif
+                k = k-1
+                k1 = k1-1
+            end if
         else
 !     ---- LIGNE DE L EPUISEE ------
- 70         continue
+70          continue
             if (kp1 .gt. kp2) then
                 icpc(k) = int(icpcp(kp1), 4)
-                k = k - 1
-                kp1 = kp1 - 1
+                k = k-1
+                kp1 = kp1-1
             else
                 goto 80
-            endif
+            end if
             goto 70
-        endif
+        end if
 !     ------
         goto 60
- 80     continue
+80      continue
     end do
 !
 !     LE NOMBRE DE COEFFICIENTS DE LA MATRICE FACTORISEE
@@ -220,22 +220,22 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
         ind(i) = i
         do k = k1, icpd(i)
             j = icpc(k)
-            do l = icpd(j) + 1, icpl(j)
+            do l = icpd(j)+1, icpl(j)
                 jj = icpc(l)
                 if (jj .ge. i) goto 120
 !
                 if (ind(jj) .ne. i) then
 !     NON ==> CREATION D'UN COEFFICIENT DE REMPLISSAGE
-                    ic1 = ic1 + 1
+                    ic1 = ic1+1
                     ind(jj) = i
-                endif
+                end if
 120             continue
             end do
         end do
-        k1 = k2 + 1
+        k1 = k2+1
     end do
 ! NZERO=TAILLE MAT INI.+TAILLE MAT REMPLIE
-    nzero = icpl(n) + ic1
+    nzero = icpl(n)+ic1
 !     WRITE (6,200) NIV,LCA,NZERO
     ier = nzero
 150 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dmat3d(fami, mater , time, poum, ipg,&
+subroutine dmat3d(fami, mater, time, poum, ipg, &
                   ispg, repere, xyzgau, dr_, di_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/get_elas_para.h"
@@ -65,7 +65,7 @@ implicit none
     real(kind=8) :: e1r, e2r, e3r, e1i, e2i, e3i, er, ei
     real(kind=8) :: g1r, g2r, g3r, g1i, g2i, g3i, gr, gi
     character(len=16) :: elas_keyword
-    real(kind=8) :: di(6, 6), dr(6,6), hr(6), hi(6)
+    real(kind=8) :: di(6, 6), dr(6, 6), hr(6), hi(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,41 +76,41 @@ implicit none
 !
 ! - Get elastic parameters
 !
-    call get_elas_para(fami, mater    , poum, ipg, ispg, &
-                       elas_id  , elas_keyword,&
-                       time = time,&
-                       e_ = er    , nu_ = nur  , g_ = gr,&
-                       e1_ = e1r    , e2_ = e2r    , e3_ = e3r,&
-                       nu12_ = nu12r, nu13_ = nu13r, nu23_ = nu23r,&
-                       g1_ = g1r    , g2_ = g2r    , g3_ = g3r,&
-                       xyzgau_ = xyzgau,&
-                       ei_ = ei    , nui_ = nui  , gi_ = gi,&
-                       e1i_ = e1i    , e2i_ = e2i    , e3i_ = e3i,&
-                       nu12i_ = nu12i, nu13i_ = nu13i, nu23i_ = nu23i,&
-                       g1i_ = g1i    , g2i_ = g2i    , g3i_ = g3i)
+    call get_elas_para(fami, mater, poum, ipg, ispg, &
+                       elas_id, elas_keyword, &
+                       time=time, &
+                       e_=er, nu_=nur, g_=gr, &
+                       e1_=e1r, e2_=e2r, e3_=e3r, &
+                       nu12_=nu12r, nu13_=nu13r, nu23_=nu23r, &
+                       g1_=g1r, g2_=g2r, g3_=g3r, &
+                       xyzgau_=xyzgau, &
+                       ei_=ei, nui_=nui, gi_=gi, &
+                       e1i_=e1i, e2i_=e2i, e3i_=e3i, &
+                       nu12i_=nu12i, nu13i_=nu13i, nu23i_=nu23i, &
+                       g1i_=g1i, g2i_=g2i, g3i_=g3i)
 !
 ! - Prepare Hook matrix coefficient
 !
-    call separ_RI_elas_3D(elas_id ,nur , gr, nui ,gi, &
-                          e1r     , e2r  , e3r  ,&
-                          nu12r   , nu13r, nu23r,&
-                          e1i     , e2i  , e3i  ,&
-                          nu12i   , nu13i, nu23i,&
+    call separ_RI_elas_3D(elas_id, nur, gr, nui, gi, &
+                          e1r, e2r, e3r, &
+                          nu12r, nu13r, nu23r, &
+                          e1i, e2i, e3i, &
+                          nu12i, nu13i, nu23i, &
                           hr, hi)
 !
 ! - Compute Hooke matrix
 !
     if (present(di_)) then
-        call matrHooke3d(elas_id, repere,&
-                         hi, gi, g1i, g2i, g3i,&
-                         di , xyzgau)
+        call matrHooke3d(elas_id, repere, &
+                         hi, gi, g1i, g2i, g3i, &
+                         di, xyzgau)
         di_ = di
-    endif
+    end if
     if (present(dr_)) then
-        call matrHooke3d(elas_id, repere,&
-                         hr, gr, g1r, g2r, g3r,&
-                         dr , xyzgau)
+        call matrHooke3d(elas_id, repere, &
+                         hr, gr, g1r, g2r, g3r, &
+                         dr, xyzgau)
         dr_ = dr
-    endif
+    end if
 !
 end subroutine

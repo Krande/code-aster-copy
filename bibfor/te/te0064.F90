@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0064(option, nomte)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/nzcomp_prep.h"
 #include "asterfort/nzcomp.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,10 +72,10 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PPHASNOU', 'E', jv_phase_out)
 !
     phase_type = zk16(icompo-1+1)
-    jv_mater   = zi(imate)
-    read (zk16(icompo-1+4),'(I16)') nume_comp
-    read (zk16(icompo-1+5),'(I16)') nb_phase
-    read (zk16(icompo-1+2),'(I16)') nb_vari
+    jv_mater = zi(imate)
+    read (zk16(icompo-1+4), '(I16)') nume_comp
+    read (zk16(icompo-1+5), '(I16)') nb_phase
+    read (zk16(icompo-1+2), '(I16)') nb_vari
 !
 ! - Preparation
 !
@@ -83,8 +83,8 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Time parameters: 0 - 1 - 2
 !
-    dt10  = zr(jv_time+1)
-    dt21  = zr(jv_time+2)
+    dt10 = zr(jv_time+1)
+    dt21 = zr(jv_time+2)
     inst2 = zr(jv_time)+dt21
 !
 ! - Loop on nodes
@@ -95,10 +95,10 @@ character(len=16), intent(in) :: option, nomte
         tno0 = zr(itempa+i_node-1)
         tno2 = zr(itempi+i_node-1)
 ! ----- General switch
-        call nzcomp(jv_mater , metaPara , nume_comp, nb_phase,&
-                    dt10     , dt21     , inst2    ,&
-                    tno0     , tno1     , tno2     ,&
-                    zr(jv_phase_in+nb_vari*(i_node-1)),&
+        call nzcomp(jv_mater, metaPara, nume_comp, nb_phase, &
+                    dt10, dt21, inst2, &
+                    tno0, tno1, tno2, &
+                    zr(jv_phase_in+nb_vari*(i_node-1)), &
                     zr(jv_phase_out+nb_vari*(i_node-1)))
     end do
 !

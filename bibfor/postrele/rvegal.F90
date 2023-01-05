@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rvegal(epsi, criter, x, y, ok,&
+subroutine rvegal(epsi, criter, x, y, ok, &
                   eccart)
     implicit none
 #include "asterf_types.h"
@@ -39,7 +39,7 @@ subroutine rvegal(epsi, criter, x, y, ok,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    eccart = x - y
+    eccart = x-y
     seuil = epsi
     z = abs(x)
 !
@@ -47,8 +47,8 @@ subroutine rvegal(epsi, criter, x, y, ok,&
 !
         seuil = seuil*z
 !
-    endif
+    end if
 !
-    ok = ( abs(eccart) .lt. seuil)
+    ok = (abs(eccart) .lt. seuil)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
-                  ligrel, mod, cara, numddl,&
+subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
+                  ligrel, mod, cara, numddl, &
                   lisrel, coorig)
     implicit none
 #include "jeveux.h"
@@ -46,7 +46,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !     RACCORD COQUE_TUYAU PAR DES RELATIONS LINEAIRES
 !
     integer :: nbcmp, nbmode, numno1
-    parameter (nbmode=3,nbcmp=6* (nbmode-1))
+    parameter(nbmode=3, nbcmp=6*(nbmode-1))
     character(len=8) :: nocmp(nbcmp), lpain(6), lpaout(3), nomddl(4)
     character(len=24) :: lchin(6), lchout(3), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3)
@@ -62,15 +62,15 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call jenonu(jexnom(noma//'.NOMNOE', klisno(1)), numno1)
-    coori1(1) = vale(3* (numno1-1)+1)
-    coori1(2) = vale(3* (numno1-1)+2)
-    coori1(3) = vale(3* (numno1-1)+3)
-    gp1 = coorig - coori1
+    coori1(1) = vale(3*(numno1-1)+1)
+    coori1(2) = vale(3*(numno1-1)+2)
+    coori1(3) = vale(3*(numno1-1)+3)
+    gp1 = coorig-coori1
     call normev(gp1, rayon)
 !
 !     CREATION D'UNE CARTE CONTENANT LE POINT P ORIGINE DE PHI
 !
-    call raorfi(noma, ligrel, noepou, cara, coorig,&
+    call raorfi(noma, ligrel, noepou, cara, coorig, &
                 eg1, eg2, eg3, '&&RACOTU', rayon)
 !
 ! --- DETERMINATION DE 3 LISTES  DE VECTEURS PAR ELEMENT PRENANT
@@ -108,7 +108,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     lchout(3) = '&&RAPOTU.COEF_WM'
 !
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
-    call memare('V', '&&RAPOTU', mod, ' ', ' ',&
+    call memare('V', '&&RAPOTU', mod, ' ', ' ', &
                 'CHAR_MECA')
 !
 ! --- CREATION DU .RELR
@@ -118,10 +118,10 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !     RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WO
 !
     imod = 0
-    call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD',&
+    call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD', &
                 ncmp=1, nomcmp='NUM', si=imod)
-    call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin,&
-                lpain, 3, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin, &
+                lpain, 3, lchout, lpaout, 'V', &
                 'OUI')
     call jedetr('&&RAPOTU           .RELR')
     call reajre('&&RAPOTU', lchout(3), 'V')
@@ -131,8 +131,8 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     idec = 0
     nomddl(1) = 'WO'
     coef(1) = -2.d0
-    call afretu(iprno, lonlis, klisno, noepou, noma,&
-                valech, nbcoef, idec, coef, nomddl,&
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
                 lisrel)
 !
 !   RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE
@@ -153,12 +153,12 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
     imod = 1
     if (info .eq. 2) then
-        write (ifm,*) 'RELATIONS SUR LE MODE ',imod
-    endif
-    call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD',&
+        write (ifm, *) 'RELATIONS SUR LE MODE ', imod
+    end if
+    call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD', &
                 ncmp=1, nomcmp='NUM', si=imod)
-    call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin,&
-                lpain, 3, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin, &
+                lpain, 3, lchout, lpaout, 'V', &
                 'OUI')
 !
 !    RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
@@ -181,8 +181,8 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     coef(3) = eg3(3)
     coef(4) = -1.d0
 !
-    call afretu(iprno, lonlis, klisno, noepou, noma,&
-                valech, nbcoef, idec, coef, nomddl,&
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
                 lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WOM
@@ -201,18 +201,18 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     coef(3) = eg2(3)
     coef(4) = -1.d0
 !
-    call afretu(iprno, lonlis, klisno, noepou, noma,&
-                valech, nbcoef, idec, coef, nomddl,&
+    call afretu(iprno, lonlis, klisno, noepou, noma, &
+                valech, nbcoef, idec, coef, nomddl, &
                 lisrel)
 !
     do imod = 2, nbmode
         if (info .eq. 2) then
-            write (ifm,*) 'RELATIONS SUR LE MODE ',imod
-        endif
-        call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD',&
+            write (ifm, *) 'RELATIONS SUR LE MODE ', imod
+        end if
+        call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD', &
                     ncmp=1, nomcmp='NUM', si=imod)
-        call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin,&
-                    lpain, 3, lchout, lpaout, 'V',&
+        call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin, &
+                    lpain, 3, lchout, lpaout, 'V', &
                     'OUI')
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(1), 'V')
@@ -223,20 +223,20 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
         idec = 0
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+1)
+        nomddl(1) = nocmp(6*(imod-2)+1)
         coef(1) = -1.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL UOM
 !
         idec = 3
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+4)
+        nomddl(1) = nocmp(6*(imod-2)+4)
         coef(1) = -1.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
@@ -246,10 +246,10 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+5)
+        nomddl(1) = nocmp(6*(imod-2)+5)
         coef(1) = -1.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VIM
@@ -257,10 +257,10 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
         idec = 3
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+2)
+        nomddl(1) = nocmp(6*(imod-2)+2)
         coef(1) = -1.d0
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
@@ -274,11 +274,11 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
         idec = 0
 !
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+3)
+        nomddl(1) = nocmp(6*(imod-2)+3)
         coef(1) = -1.d0
 !
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WOM
@@ -287,11 +287,11 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
         idec = 3
         nbcoef = 1
-        nomddl(1) = nocmp(6* (imod-2)+6)
+        nomddl(1) = nocmp(6*(imod-2)+6)
         coef(1) = -1.d0
 !
-        call afretu(iprno, lonlis, klisno, noepou, noma,&
-                    valech, nbcoef, idec, coef, nomddl,&
+        call afretu(iprno, lonlis, klisno, noepou, noma, &
+                    valech, nbcoef, idec, coef, nomddl, &
                     lisrel)
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
+subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw, &
                   tspaq, i, jvphyd)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -61,15 +61,15 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
     decal = 18
 !
     do iordr = 1, nbordr
-        adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
-        sixx = vwork(adrs + 1)
-        siyy = vwork(adrs + 2)
-        sizz = vwork(adrs + 3)
+        adrs = (iordr-1)*tspaq+kwork*sommw*decal+(i-1)*decal
+        sixx = vwork(adrs+1)
+        siyy = vwork(adrs+2)
+        sizz = vwork(adrs+3)
 !
 ! CALCUL DE LA PRESSION HYDROSTATIQUE = 1/3 Tr[SIG] A TOUS
 ! LES INSTANTS
 !
-        zr(jvphyd+iordr) = (sixx + siyy + sizz)/3.0d0
+        zr(jvphyd+iordr) = (sixx+siyy+sizz)/3.0d0
     end do
 !
     call jedema()

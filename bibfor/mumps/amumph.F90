@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumph(action, solvez, matasz, rsolu, csolu,&
+subroutine amumph(action, solvez, matasz, rsolu, csolu, &
                   vcinez, nbsol, iret, prepos)
 !
 !
@@ -119,17 +119,17 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     integer, pointer :: nequ(:) => null()
 !----------------------------------------------------------------
     save iprem
-    data  iprem /0/
+    data iprem/0/
 !----------------------------------------------------------------
     call jemarq()
 !
-    iretz=0
+    iretz = 0
     call infdbg('SOLVEUR', ifm, niv)
-    if ((action(1:6).ne.'PRERES') .and. (action(1:6).ne.'RESOUD') .and.&
-        (action(1:8).ne.'DETR_OCC') .and. (action(1:8).ne.'DETR_MAT') .and.&
-        (action(1:7).ne.'VERSION')) then
+    if ((action(1:6) .ne. 'PRERES') .and. (action(1:6) .ne. 'RESOUD') .and. &
+        (action(1:8) .ne. 'DETR_OCC') .and. (action(1:8) .ne. 'DETR_MAT') .and. &
+        (action(1:7) .ne. 'VERSION')) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- ATTENTION: PARAMETRE DEVELOPPEUR
 ! --- IMPR : PARAMETRE POUR IMPRIMER LA MATRICE + RHS + EVENTUELLEMENT
@@ -148,13 +148,13 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !              FIN D'ECRITURE DU RHS. ON N'ECRIT PAS DE SOLUTION
 !    impr='OUI_SOLVE'
 !    impr='OUI_NOSOLVE'
-    impr='NON'
-    ifmump=17
+    impr = 'NON'
+    ifmump = 17
 ! --- FIN BLOC PARAMETRE DEVELOPPEUR
 !
-    solveu= solvez
-    matas=matasz
-    vcine=vcinez
+    solveu = solvez
+    matas = matasz
+    vcine = vcinez
 !
 !
 !      0. PHASE D'INITIALISATION
@@ -164,32 +164,32 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         if (impr(1:3) .ne. 'NON') then
             if (impr(1:9) .eq. 'OUI_SOLVE') then
                 call utmess('A', 'FACTOR_70', si=ifmump)
-            else if (impr(1:11).eq.'OUI_NOSOLVE') then
+            else if (impr(1:11) .eq. 'OUI_NOSOLVE') then
                 call utmess('A', 'FACTOR_71', si=ifmump)
             else
 ! --- OPTION NON PREVUE
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
 !
 ! INITIALISE LES NMXINS INSTANCES MUMPS POTENTIELLES
 ! NOMATS (NOM DE LA MATR_ASSE GLOBALE), NONUS (NUM_DDL),
 ! NOSOLS (SD_SOLVEUR), ETAMS (?), ROUCS (R OU C)
         do k = 1, nmxins
-            nomats(k)=' '
-            nonus(k)=' '
-            nosols(k)=' '
-            etams(k)=' '
-            roucs(k)=' '
-            precs(k)=' '
-        enddo
-        iprem=1
-    endif
+            nomats(k) = ' '
+            nonus(k) = ' '
+            nosols(k) = ' '
+            etams(k) = ' '
+            roucs(k) = ' '
+            precs(k) = ' '
+        end do
+        iprem = 1
+    end if
 !
 !      1. RECHERCHE DE KXMPS (NUMERO DE L'INSTANCE XMUMPS) +
 !           ROUC (R OU C) :
 !      -----------------------------------------------------
-    ASSERT(matas.ne.' ')
+    ASSERT(matas .ne. ' ')
 !
 !        Y-A-T-IL DEJA UNE INSTANCE EN MEMOIRE POUR MATAS ?
 !
@@ -199,22 +199,22 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jelira(matas//'.VALM', 'TYPE', cval=rouc)
     nsmdi = 0
-    call jeexin(nu//'.SMOS.SMDI', ibid )
-    if ( ibid /= 0 ) then
-       call jelira(nu//'.SMOS.SMDI', 'LONMAX', nsmdi)
-    endif
+    call jeexin(nu//'.SMOS.SMDI', ibid)
+    if (ibid /= 0) then
+        call jelira(nu//'.SMOS.SMDI', 'LONMAX', nsmdi)
+    end if
     call dismoi('MATR_HPC', matas, 'MATR_ASSE', repk=mathpc)
-    if(mathpc.eq.'OUI') then
+    if (mathpc .eq. 'OUI') then
         call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
-        nsmdi=nequ(2)
-    endif
+        nsmdi = nequ(2)
+    end if
 !
     call jeveuo(matas//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
-        imd=1
+        imd = 1
     else
-        imd=0
-    endif
+        imd = 0
+    end if
 !
 !
 ! ---  TESTS DE COMPATIBILITE DE SD_SOLVEUR EN FONCTION DE ACTION
@@ -222,154 +222,154 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !    -- ON NE CONNAIT PAS LA SD SOLVEUR. ON VIENT SANS DOUTE VIA TLDLGG.
 !       ON PREND CELUI ASSOCIE A LA MATRICE
         call dismoi('SOLVEUR', matas, 'MATR_ASSE', repk=solveu)
-    endif
+    end if
 !
-    prec=' '
-    lpreco=.false.
+    prec = ' '
+    lpreco = .false.
     if (action(1:8) .eq. 'DETR_OCC') then
-        ASSERT(solveu.ne.' ')
-    endif
+        ASSERT(solveu .ne. ' ')
+    end if
     call jeexin(solveu//'.SLVK', ibid)
     if (ibid .ne. 0) then
         call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
-        if (slvk(1)(1:5) .eq. 'MUMPS') then
+        if (slvk(1) (1:5) .eq. 'MUMPS') then
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)
-            lpreco = slvk(8)(1:3).eq.'OUI'
+            lpreco = slvk(8) (1:3) .eq. 'OUI'
 ! --- ON RECUPERE UNIQUEMENT UN NUMERO DE VERSION LICITE
             if (action(1:7) .eq. 'VERSION') then
                 goto 999
-            endif
-            if (slvk(7)(1:3) .eq. 'OUI') then
-                prec='S'
-            else if (slvk(7)(1:3).eq.'NON') then
-                prec='D'
+            end if
+            if (slvk(7) (1:3) .eq. 'OUI') then
+                prec = 'S'
+            else if (slvk(7) (1:3) .eq. 'NON') then
+                prec = 'D'
             else
 ! --- ON A OUBLIE UNE INITIALISATION AMONT DE MIXPRE DS .SLVK
 !     SAUF POUR CMDE ECLATEE
                 if (action(1:5) .ne. 'DETR_') then
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
         else
 !
 ! --- A PRECISER POUR GCPC AVEC IC SIMPLE PRECISION AVEC MUMPS
             ASSERT(.false.)
-        endif
+        end if
     else
 ! --- ON DOIT AVOIR UNE SD_SOLVEUR.SLVK POUR CETTE OPTION
-        if ((action(1:8).eq.'DETR_OCC') .or. (action(1:7).eq.'VERSION')) then
+        if ((action(1:8) .eq. 'DETR_OCC') .or. (action(1:7) .eq. 'VERSION')) then
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
-    kxmps=1
+    kxmps = 1
     do k = 1, nmxins
 ! ----- ASTUCE POUR DETRUIRE TOUTES LES OCCURENCES (QQES SOIT LEUR
 !       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
-        if (action(1:8) .eq. 'DETR_MAT') prec=precs(k)
-        if ((nomats(k).eq.matas) .and. ((nonus(k).eq.nu).or.(lpreco)) .and.&
-             (roucs(k) .eq.rouc) .and. (precs(k).eq.prec)) then
+        if (action(1:8) .eq. 'DETR_MAT') prec = precs(k)
+        if ((nomats(k) .eq. matas) .and. ((nonus(k) .eq. nu) .or. (lpreco)) .and. &
+            (roucs(k) .eq. rouc) .and. (precs(k) .eq. prec)) then
             if (rouc .eq. 'R') then
                 if (prec .eq. 'S') then
-                    smpsk=>smps(k)
-                    n=smpsk%n
-                else if (prec.eq.'D') then
-                    dmpsk=>dmps(k)
-                    n=dmpsk%n
+                    smpsk => smps(k)
+                    n = smpsk%n
+                else if (prec .eq. 'D') then
+                    dmpsk => dmps(k)
+                    n = dmpsk%n
                 else
                     ASSERT(.false.)
-                endif
-            else if (rouc.eq.'C') then
+                end if
+            else if (rouc .eq. 'C') then
                 if (prec .eq. 'S') then
-                    cmpsk=>cmps(k)
-                    n=cmpsk%n
-                else if (prec.eq.'D') then
-                    zmpsk=>zmps(k)
-                    n=zmpsk%n
+                    cmpsk => cmps(k)
+                    n = cmpsk%n
+                else if (prec .eq. 'D') then
+                    zmpsk => zmps(k)
+                    n = zmpsk%n
                 else
                     ASSERT(.false.)
-                endif
+                end if
             else
                 ASSERT(.false.)
-            endif
-            if (((nsmdi.eq.n).and.(imd.eq.0)) .or. (imd.eq.1)) then
-                kxmps=k
-                rouc=roucs(k)
-                prec=precs(k)
+            end if
+            if (((nsmdi .eq. n) .and. (imd .eq. 0)) .or. (imd .eq. 1)) then
+                kxmps = k
+                rouc = roucs(k)
+                prec = precs(k)
                 goto 2
-            endif
-        endif
+            end if
+        end if
     end do
     if (action(1:5) .eq. 'DETR_') goto 999
 !
 !        Y-A-T-IL ENCORE UNE PLACE LIBRE ?
     do k = 1, nmxins
         if (nomats(k) .eq. ' ') then
-            kxmps=k
+            kxmps = k
             call jelira(matas//'.VALM', 'TYPE', cval=rouc)
             goto 2
-        endif
+        end if
     end do
     call utmess('F', 'FACTOR_60')
-  2 continue
+2   continue
 !
 !
 !     2. QUELQUES VERIFICATIONS ET PETITES ACTIONS :
 !     ----------------------------------------------
     if (action(1:6) .eq. 'PRERES') then
         call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
-        ASSERT(solveu.ne.' ')
-        ASSERT(nomats(kxmps).eq.' ')
-        ASSERT(nosols(kxmps).eq.' ')
-        ASSERT(nonus(kxmps).eq.' ')
-        ASSERT(etams(kxmps).eq.' ')
-        ASSERT(roucs(kxmps).eq.' ')
-        ASSERT(precs(kxmps).eq.' ')
-        etam='FNUM'
-        nomat=matas
-        nosolv=solveu
-        nonu=nu
-        nomats(kxmps)=nomat
-        nosols(kxmps)=nosolv
-        etams(kxmps)=etam
-        nonus(kxmps)=nonu
-        roucs(kxmps)=rouc
-        precs(kxmps)=prec
+        ASSERT(solveu .ne. ' ')
+        ASSERT(nomats(kxmps) .eq. ' ')
+        ASSERT(nosols(kxmps) .eq. ' ')
+        ASSERT(nonus(kxmps) .eq. ' ')
+        ASSERT(etams(kxmps) .eq. ' ')
+        ASSERT(roucs(kxmps) .eq. ' ')
+        ASSERT(precs(kxmps) .eq. ' ')
+        etam = 'FNUM'
+        nomat = matas
+        nosolv = solveu
+        nonu = nu
+        nomats(kxmps) = nomat
+        nosols(kxmps) = nosolv
+        etams(kxmps) = etam
+        nonus(kxmps) = nonu
+        roucs(kxmps) = rouc
+        precs(kxmps) = prec
 
         call jeveuo(nomat//'.REFA', 'E', jrefa)
-        zk24(jrefa-1+8)='DECT'
+        zk24(jrefa-1+8) = 'DECT'
 
 !        --- PARAMETRE NPREC
         call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
-        nprec=slvi(1)
+        nprec = slvi(1)
 !
-    else if (action(1:6).eq.'RESOUD') then
-        ASSERT(nbsol.ge.1)
-        nomat=nomats(kxmps)
-        nosolv=nosols(kxmps)
-        etam=etams(kxmps)
-        nonu=nonus(kxmps)
-        rouc=roucs(kxmps)
-        prec=precs(kxmps)
+    else if (action(1:6) .eq. 'RESOUD') then
+        ASSERT(nbsol .ge. 1)
+        nomat = nomats(kxmps)
+        nosolv = nosols(kxmps)
+        etam = etams(kxmps)
+        nonu = nonus(kxmps)
+        rouc = roucs(kxmps)
+        prec = precs(kxmps)
 !
-        ASSERT(solveu.ne.' ')
+        ASSERT(solveu .ne. ' ')
         if (imd .eq. 0) then
-            ASSERT(solveu.eq.nosolv)
-            ASSERT(etam.eq.'FNUM')
-        endif
-        if (.not.lpreco) then
-          call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
-          ASSERT(nonu.eq.nu)
-        endif
+            ASSERT(solveu .eq. nosolv)
+            ASSERT(etam .eq. 'FNUM')
+        end if
+        if (.not. lpreco) then
+            call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
+            ASSERT(nonu .eq. nu)
+        end if
 !
-    else if (action(1:5).eq.'DETR_') then
-        nomat=nomats(kxmps)
-        ASSERT(matas.ne.' ')
+    else if (action(1:5) .eq. 'DETR_') then
+        nomat = nomats(kxmps)
+        ASSERT(matas .ne. ' ')
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !        --- SI GESTION_MEMOIRE='AUTO'
 !        --- PARAMETRES POUR LA GESTION DE PCENT_PIVOT/ELIM_LAGR='LAGR2'
@@ -377,87 +377,87 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !        --- PCENTP(2) --> TERME MULTIPLICATIF DE PCENT_PIVOT ENTRE DEUX
 !            TENTATIVES DE FACTO.:
 !                    PCENT_PIVOT_NEW=PCENT_PIVOT_OLD*PCENTP(2)
-    pcentp(1)=5
-    pcentp(2)=2
+    pcentp(1) = 5
+    pcentp(2) = 2
     if (rouc .eq. 'R') then
         if (prec .eq. 'S') then
-            call amumps(action, kxmps, rsolu, vcine, nbsol,&
+            call amumps(action, kxmps, rsolu, vcine, nbsol, &
                         iretz, impr, ifmump, prepos, pcentp)
-        else if (prec.eq.'D') then
-            call amumpd(action, kxmps, rsolu, vcine, nbsol,&
+        else if (prec .eq. 'D') then
+            call amumpd(action, kxmps, rsolu, vcine, nbsol, &
                         iretz, impr, ifmump, prepos, pcentp)
         else
             ASSERT(.false.)
-        endif
-    else if (rouc.eq.'C') then
+        end if
+    else if (rouc .eq. 'C') then
         if (prec .eq. 'S') then
-            call amumpc(action, kxmps, csolu, vcine, nbsol,&
+            call amumpc(action, kxmps, csolu, vcine, nbsol, &
                         iretz, impr, ifmump, prepos, pcentp)
-        else if (prec.eq.'D') then
-            call amumpz(action, kxmps, csolu, vcine, nbsol,&
+        else if (prec .eq. 'D') then
+            call amumpz(action, kxmps, csolu, vcine, nbsol, &
                         iretz, impr, ifmump, prepos, pcentp)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- NETTOYAGE DES OCCURENCES MUMPS EN MODE GESTION_MEMOIRE='EVAL' POUR
 ! --- PAR EXEMPLE NE PAS DEPASSER 5 OCCURENCES SIMULTANNEES EN CAS
 ! --- D'USAGE DU MECANISME TRY_EXCEPT PYTHON
-    if ((action(1:6).eq.'PRERES') .and. (slvk(9)(1:4).eq.'EVAL')) then
+    if ((action(1:6) .eq. 'PRERES') .and. (slvk(9) (1:4) .eq. 'EVAL')) then
         if (rouc .eq. 'R') then
             if (prec .eq. 'S') then
-                call amumps('DETR_OCC', kxmps, rsolu, vcine, nbsol,&
+                call amumps('DETR_OCC', kxmps, rsolu, vcine, nbsol, &
                             iretz, impr, ifmump, prepos, pcentp)
-            else if (prec.eq.'D') then
-                call amumpd('DETR_OCC', kxmps, rsolu, vcine, nbsol,&
+            else if (prec .eq. 'D') then
+                call amumpd('DETR_OCC', kxmps, rsolu, vcine, nbsol, &
                             iretz, impr, ifmump, prepos, pcentp)
-            endif
-        else if (rouc.eq.'C') then
+            end if
+        else if (rouc .eq. 'C') then
             if (prec .eq. 'S') then
-                call amumpc('DETR_OCC', kxmps, csolu, vcine, nbsol,&
+                call amumpc('DETR_OCC', kxmps, csolu, vcine, nbsol, &
                             iretz, impr, ifmump, prepos, pcentp)
-            else if (prec.eq.'D') then
-                call amumpz('DETR_OCC', kxmps, csolu, vcine, nbsol,&
+            else if (prec .eq. 'D') then
+                call amumpz('DETR_OCC', kxmps, csolu, vcine, nbsol, &
                             iretz, impr, ifmump, prepos, pcentp)
-            endif
-        endif
+            end if
+        end if
         call utmess('F', 'FACTOR_77')
-    endif
+    end if
 !
 ! --- GESTION DES CODES RETOUR EN CAS DE DETECTION DE SINGULARITES
     if (action(1:6) .eq. 'PRERES') then
-        ASSERT((iretz.eq.0).or.(iretz.eq.1).or.(iretz.eq.2))
+        ASSERT((iretz .eq. 0) .or. (iretz .eq. 1) .or. (iretz .eq. 2))
 ! --- ATTENTION: PARAMETRE DEVELOPPEUR A DECOMMENTER POUR SORTIR LA MATRICE ET LE RHS
 ! --- NON PAS SUR LE PREMIER SYSTEME RENCONTRE (CF. DEBUT DU FICHIER) MAIS SUR LE DERNIER
 ! --- AVANT UN UTMESS_F DU FAIT D'UNE MATRICE SINGULIERE
 !        limpr_matsing=.true.
-        limpr_matsing=.false.
+        limpr_matsing = .false.
         if (limpr_matsing) then
-            kpiv='&&AMUMP.PIVNUL'
-            iretp=0
+            kpiv = '&&AMUMP.PIVNUL'
+            iretp = 0
             call jeexin(kpiv, iretp)
             if (iretp .ne. 0) then
                 call jeveuo(kpiv, 'L', ipiv)
             else
                 ASSERT(.false.)
-            endif
-            if (zi(ipiv).gt.0) then
-                dmpsk=>dmps(kxmps)
-                deallocate(dmpsk%a,stat=ibid)
-                deallocate(dmpsk%irn,stat=ibid)
-                deallocate(dmpsk%jcn,stat=ibid)
+            end if
+            if (zi(ipiv) .gt. 0) then
+                dmpsk => dmps(kxmps)
+                deallocate (dmpsk%a, stat=ibid)
+                deallocate (dmpsk%irn, stat=ibid)
+                deallocate (dmpsk%jcn, stat=ibid)
                 dmpsk%job = -2
                 call dmumps(dmpsk)
                 call jedetr(kpiv)
-                impr='OUI_NOSOLVE'
-                call amumpd(action, kxmps, rsolu, vcine, nbsol,&
+                impr = 'OUI_NOSOLVE'
+                call amumpd(action, kxmps, rsolu, vcine, nbsol, &
                             iretz, impr, ifmump, prepos, pcentp)
                 call utmess('F', 'FACTOR_71', si=ifmump)
-            endif
-        endif
+            end if
+        end if
         if (iretz .eq. 2) then
             if (nprec .lt. 0) then
 ! --- FONCTIONNALITE DE DETECTION DE SINGULARITE NON ACTIVEE:
@@ -466,21 +466,21 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             else
 ! --- FONCTIONNALITE DE DETECTION DE SINGULARITE ACTIVEE:
 !                                    ALARME + GESTION DU PB VIA TLDLG3
-                if (.not.lpreco) then
+                if (.not. lpreco) then
                     call utmess('A', 'FACTOR_42')
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 999 continue
-    if ((iretz.ne.0) .and. (iretz.ne.1) .and. (iretz.ne.2)) then
+    if ((iretz .ne. 0) .and. (iretz .ne. 1) .and. (iretz .ne. 2)) then
 ! --- VALEUR ILLICITE
         ASSERT(.false.)
     else
 ! --- ON PEUT FOURNIR L'OUTPUT
-        iret=iretz
-    endif
+        iret = iretz
+    end if
     call jedema()
 !
 #else

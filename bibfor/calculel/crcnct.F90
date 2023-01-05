@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
+subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
                   licmp, rcmp)
     implicit none
 !
@@ -75,10 +75,10 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     integer :: nec
 !-----------------------------------------------------------------------
     call jemarq()
-    gd2= gd
-    maill2=mailla
-    ch19=nomch
-    bas2=base
+    gd2 = gd
+    maill2 = mailla
+    ch19 = nomch
+    bas2 = base
 !
 !
 !     VERIFICATION DES ARGUMENTS D'APPEL :
@@ -86,23 +86,23 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     call jenonu(jexnom('&CATA.GD.NOMGD', gd2), igd)
     if (igd .eq. 0) then
         call utmess('F', 'CALCULEL2_21', sk=gd2)
-    endif
+    end if
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iancmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', nbcmp2)
     do icmp = 1, nbcmp
-        nocmp=licmp(icmp)
-        itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
+        nocmp = licmp(icmp)
+        itrou = indik8(zk8(iancmp), nocmp, 1, nbcmp2)
         if (itrou .eq. 0) then
             valk(1) = nocmp
             valk(2) = gd2
             call utmess('F', 'CALCULEL2_22', nk=2, valk=valk)
-        endif
+        end if
     end do
     call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec)
     call dismoi('TYPE_SCA', gd2, 'GRANDEUR', repk=tysca)
     if (tysca(1:1) .ne. 'R') then
         call utmess('F', 'CALCULEL2_23', sk=gd2)
-    endif
+    end if
 !
 !
 !     ALLOCATION DU CHAM_NO :
@@ -114,26 +114,26 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
 !
 !     OBJET: .REFE
 !     ------------
-    zk24(iarefe-1+1)=maill2
+    zk24(iarefe-1+1) = maill2
 !
 !     OBJET: .DESC
 !     ------------
     call jeecra(ch19//'.DESC', 'DOCU', cval='CHNO')
-    zi(iadesc-1+1)=igd
-    zi(iadesc-1+2)=-nbcmp
+    zi(iadesc-1+1) = igd
+    zi(iadesc-1+2) = -nbcmp
     do icmp = 1, nbcmp
-        nocmp=licmp(icmp)
-        itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
-        iec=(itrou-1)/30 +1
-        iiec=itrou-(iec-1)*30
-        zi(iadesc-1+2+iec)=ior(zi(iadesc-1+2+iec),2**iiec)
+        nocmp = licmp(icmp)
+        itrou = indik8(zk8(iancmp), nocmp, 1, nbcmp2)
+        iec = (itrou-1)/30+1
+        iiec = itrou-(iec-1)*30
+        zi(iadesc-1+2+iec) = ior(zi(iadesc-1+2+iec), 2**iiec)
     end do
 !
 !     OBJET: .VALE
 !     ------------
     do icmp = 1, nbcmp
         do ino = 1, nbno
-            zr(iavale-1+(ino-1)*nbcmp+icmp)=rcmp(icmp)
+            zr(iavale-1+(ino-1)*nbcmp+icmp) = rcmp(icmp)
         end do
     end do
 !

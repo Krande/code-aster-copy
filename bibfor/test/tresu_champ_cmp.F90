@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
-                           refi, refr, refc, epsi, lign1,&
-                           lign2, crit, ific, nbcmp, nocmp,&
+subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt, &
+                           refi, refr, refc, epsi, lign1, &
+                           lign2, crit, ific, nbcmp, nocmp, &
                            llab, ssigne, ignore, compare)
     implicit none
 #include "asterf_types.h"
@@ -98,12 +98,12 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     skip = .false.
     if (present(ignore)) then
         skip = ignore
-    endif
+    end if
 !
     ordgrd = 1.d0
     if (present(compare)) then
         ordgrd = compare
-    endif
+    end if
 !
     call jemarq()
 !
@@ -113,8 +113,8 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
     l_parallel_mesh = isParallelMesh(mesh)
 !
-    if(l_parallel_mesh) then
-        call asmpi_info(rank = irank)
+    if (l_parallel_mesh) then
+        call asmpi_info(rank=irank)
         rank = to_aster_int(irank)
         call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
         call jeveuo(mesh//'.MAEX', 'L', vi=v_maex)
@@ -124,11 +124,10 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 !
 !     -- LE CHAMP EXISTE-T-IL ?
 !     =========================
-    call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych, arret='C',&
+    call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych, arret='C', &
                 ier=iret1)
 
-    ASSERT(nbcmp.eq.1)
-
+    ASSERT(nbcmp .eq. 1)
 
     if (tych(1:4) .eq. 'NOEU') then
 !   --------------------------------
@@ -137,10 +136,10 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbno)
         call wkvect('&&TRESU_CH.LST', 'V V I', nbno, vi=v_list)
         nbno_list = 0
-        if(l_parallel_mesh) then
+        if (l_parallel_mesh) then
             do i = 1, nbno
-                if(v_noex(i) == rank) then
-                    nbno_list = nbno_list + 1
+                if (v_noex(i) == rank) then
+                    nbno_list = nbno_list+1
                     v_list(nbno_list) = i
                 end if
             end do
@@ -151,8 +150,8 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
             nbno_list = nbno
         end if
         call cnocns(cham19, 'V', cnsin1)
-        call cnsred(cnsin1, nbno_list, v_list, 0, ['XXX'],&
-                  'V', cnsinr)
+        call cnsred(cnsin1, nbno_list, v_list, 0, ['XXX'], &
+                    'V', cnsinr)
         call detrsd('CHAM_NO_S', cnsin1)
         call jedetr('&&TRESU_CH.LST')
 
@@ -167,34 +166,34 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                 if (zk8(jcsc-1+j) .eq. noddl) then
                     zi(jcmp-1+i) = j
                     goto 10
-                endif
+                end if
             end do
             call utmess('F', 'CHAMPS_3', sk=noddl)
- 10         continue
+10          continue
         end do
         call jelira(cnsinr//'.CNSV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CNSV', 'LONMAX', neq)
-        neq = neq / ncmp
+        neq = neq/ncmp
         if (type(1:1) .ne. typrez) then
             valk(1) = cham19
             valk(2) = type
             valk(3) = typrez
             call utmess('F', 'TEST0_9', nk=3, valk=valk)
             goto 999
-        endif
+        end if
 
 !
-    else if (tych(1:2).eq.'EL') then
+    else if (tych(1:2) .eq. 'EL') then
 !   -----------------------------------
         cnsin1 = '&&TRESU_CH.CNSIN1'
         cnsinr = '&&TRESU_CH.CNSINR'
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
         call wkvect('&&TRESU_CH.LST', 'V V I', nbma, vi=v_list)
         nbma_list = 0
-        if(l_parallel_mesh) then
+        if (l_parallel_mesh) then
             do i = 1, nbma
-                if(v_maex(i) == rank) then
-                    nbma_list = nbma_list + 1
+                if (v_maex(i) == rank) then
+                    nbma_list = nbma_list+1
                     v_list(nbma_list) = i
                 end if
             end do
@@ -206,8 +205,8 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         end if
         call celces(cham19, 'V', cnsin1)
 !       -- tres important : cesred avec nbcmp permet la division neq=neq/ncmp
-        call cesred(cnsin1, nbma_list, v_list, 1, nocmp(1),&
-                  'V', cnsinr)
+        call cesred(cnsin1, nbma_list, v_list, 1, nocmp(1), &
+                    'V', cnsinr)
         call detrsd('CHAM_ELEM_S', cnsin1)
         call jedetr('&&TRESU_CH.LST')
 
@@ -216,38 +215,35 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         call jeveuo(cnsinr//'.CESL', 'L', jcsl)
         call jeveuo(cnsinr//'.CESD', 'L', jcsd)
         ncmp = zi(jcsd-1+2)
-        ASSERT(ncmp.eq.1)
+        ASSERT(ncmp .eq. 1)
         do i = 1, nbcmp
             noddl = nocmp(i)
             do j = 1, ncmp
                 if (zk8(jcsc-1+j) .eq. noddl) then
                     zi(jcmp-1+i) = j
                     goto 20
-                endif
+                end if
             end do
             call utmess('F', 'CHAMPS_3', sk=noddl)
- 20         continue
+20          continue
         end do
         call jelira(cnsinr//'.CESV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CESV', 'LONMAX', neq)
-        neq = neq / ncmp
+        neq = neq/ncmp
         if (type(1:1) .ne. typrez) then
             valk(1) = cham19
             valk(2) = type
             valk(3) = typrez
             call utmess('F', 'TEST0_9', nk=3, valk=valk)
             goto 999
-        endif
+        end if
     else
         call utmess('F', 'TEST0_10', sk=cham19)
-    endif
-
-
+    end if
 
     nl1 = lxlgut(lign1)
-    lign1(1:nl1+16)=lign1(1:nl1-1)//' NOM_CMP'
-    lign1(nl1+17:nl1+17)='.'
-
+    lign1(1:nl1+16) = lign1(1:nl1-1)//' NOM_CMP'
+    lign1(nl1+17:nl1+17) = '.'
 
 !    ================================================================================
     if (type .eq. 'I') then
@@ -258,16 +254,16 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                 do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        vali = vali + abs( zi(jcsv-1+ind) )
-                    endif
+                        vali = vali+abs(zi(jcsv-1+ind))
+                    end if
                 end do
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_SUM', 'I', sci=vali)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp))
+            lign2(nl2+17:nl2+17) = '.'
 !
         else if (typtes .eq. 'SOMM') then
             vali = 0
@@ -276,16 +272,16 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                 do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        vali = vali + zi(jcsv-1+ind)
-                    endif
+                        vali = vali+zi(jcsv-1+ind)
+                    end if
                 end do
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_SUM', 'I', sci=vali)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp))
+            lign2(nl2+17:nl2+17) = '.'
 !
         else if (typtes .eq. 'MAX') then
             do i = 1, nbcmp
@@ -295,32 +291,32 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         valii = zi(jcsv-1+ind)
                         goto 124
-                    endif
+                    end if
                 end do
 124             continue
                 do k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valii = max( valii , zi(jcsv-1+ind) )
-                    endif
+                        valii = max(valii, zi(jcsv-1+ind))
+                    end if
                 end do
                 if (i .eq. 1) then
-                    vali=valii
-                    icmp=1
+                    vali = valii
+                    icmp = 1
                 else
                     if (valii .gt. vali) then
-                        vali=valii
-                        icmp=i
-                    endif
-                endif
+                        vali = valii
+                        icmp = i
+                    end if
+                end if
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_MAX', 'I', sci=vali)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
-            1+icmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp- &
+                                                                 1+icmp))
+            lign2(nl2+17:nl2+17) = '.'
 !
         else if (typtes .eq. 'MIN') then
             do i = 1, nbcmp
@@ -330,37 +326,37 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     if (zl(jcsl-1+ind)) then
                         valii = zi(jcsv-1+ind)
                         goto 134
-                    endif
+                    end if
                 end do
 134             continue
                 do k = j+1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valii = min( valii , zi(jcsv-1+ind) )
-                        icmp=vnocmp
-                    endif
+                        valii = min(valii, zi(jcsv-1+ind))
+                        icmp = vnocmp
+                    end if
                 end do
                 if (i .eq. 1) then
-                    vali=valii
-                    icmp=1
+                    vali = valii
+                    icmp = 1
                 else
                     if (valii .lt. vali) then
-                        vali=valii
-                        icmp=i
-                    endif
-                endif
+                        vali = valii
+                        icmp = i
+                    end if
+                end if
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_MIN', 'I', sci=vali)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
-            1+icmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp- &
+                                                                 1+icmp))
+            lign2(nl2+17:nl2+17) = '.'
         else
             call utmess('F', 'TEST0_8', sk=typtes)
             goto 999
-        endif
+        end if
 !
 
 !    ================================================================================
@@ -372,16 +368,16 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                 do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valr = valr + abs( zr(jcsv-1+ind) )
-                    endif
+                        valr = valr+abs(zr(jcsv-1+ind))
+                    end if
                 end do
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp))
+            lign2(nl2+17:nl2+17) = '.'
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
             do i = 1, nbcmp
@@ -389,82 +385,82 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                 do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valr = valr + zr(jcsv-1+ind)
-                    endif
+                        valr = valr+zr(jcsv-1+ind)
+                    end if
                 end do
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp))
+            lign2(nl2+17:nl2+17) = '.'
 
         else if (typtes .eq. 'MAX') then
-            valrr=-1.d+300
+            valrr = -1.d+300
             do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
                 do k = 1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valrr = max( valrr , zr(jcsv-1+ind) )
-                    endif
+                        valrr = max(valrr, zr(jcsv-1+ind))
+                    end if
                 end do
                 if (i .eq. 1) then
-                    valr=valrr
-                    icmp=1
+                    valr = valrr
+                    icmp = 1
                 else
                     if (valrr .gt. valr) then
-                        valr=valrr
-                        icmp=i
-                    endif
-                endif
+                        valr = valrr
+                        icmp = i
+                    end if
+                end if
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_MAX', 'R', scr=valr)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-1+icmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp-1+icmp))
+            lign2(nl2+17:nl2+17) = '.'
 
         else if (typtes .eq. 'MIN') then
-            valrr=1.d+300
+            valrr = 1.d+300
             do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
                 do k = 1, neq
                     ind = ncmp*(k-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valrr = min( valrr , zr(jcsv-1+ind) )
-                    endif
+                        valrr = min(valrr, zr(jcsv-1+ind))
+                    end if
                 end do
                 if (i .eq. 1) then
-                    valr=valrr
-                    icmp=1
+                    valr = valrr
+                    icmp = 1
                 else
                     if (valrr .lt. valr) then
-                        valr=valrr
-                        icmp=i
-                    endif
-                endif
+                        valr = valrr
+                        icmp = i
+                    end if
+                end if
             end do
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call asmpi_comm_vect('MPI_MIN', 'R', scr=valr)
             end if
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
-            1+icmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp- &
+                                                                 1+icmp))
+            lign2(nl2+17:nl2+17) = '.'
         else
             call utmess('F', 'TEST0_8', sk=typtes)
             goto 999
-        endif
+        end if
 !
 
 !    ================================================================================
     else if (type .eq. 'C') then
         if (l_parallel_mesh) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
             do i = 1, nbcmp
@@ -472,34 +468,32 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                 do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valr = valr + abs( zc(jcsv-1+ind) )
-                    endif
+                        valr = valr+abs(zc(jcsv-1+ind))
+                    end if
                 end do
             end do
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp))
+            lign2(nl2+17:nl2+17) = '.'
         else if (typtes .eq. 'SOMM') then
-            valc = dcmplx(0.d0,0.d0)
+            valc = dcmplx(0.d0, 0.d0)
             do i = 1, nbcmp
                 vnocmp = zi(jcmp+i-1)
                 do j = 1, neq
                     ind = ncmp*(j-1)+(vnocmp-1)+1
                     if (zl(jcsl-1+ind)) then
-                        valc = valc + zc(jcsv-1+ind)
-                    endif
+                        valc = valc+zc(jcsv-1+ind)
+                    end if
                 end do
             end do
             nl2 = lxlgut(lign2)
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
-            lign2(nl2+17:nl2+17)='.'
+            lign2(1:nl2+16) = lign2(1:nl2-1)//' '//zk8(jcsc-1+zi(jcmp))
+            lign2(nl2+17:nl2+17) = '.'
         else
             call utmess('F', 'TEST0_8', sk=typtes)
             goto 999
-        endif
-    endif
-
-
+        end if
+    end if
 
     nl1 = lxlgut(lign1)
     nl11 = lxlgut(lign1(1:nl1-1))
@@ -508,40 +502,40 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 
     if (llab) then
         if (nl11 .lt. 80) then
-            write (ific,*) lign1(1:nl11)
-        else if (nl11.lt.160) then
-            write (ific,160) lign1(1:80),lign1(81:nl11)
+            write (ific, *) lign1(1:nl11)
+        else if (nl11 .lt. 160) then
+            write (ific, 160) lign1(1:80), lign1(81:nl11)
         else
-            write (ific,120) lign1(1:80),lign1(81:160),lign1(161:&
-            nl11)
-        endif
+            write (ific, 120) lign1(1:80), lign1(81:160), lign1(161: &
+                                                                nl11)
+        end if
 !
         if (nl22 .lt. 80) then
-            write (ific,*) lign2(1:nl22)
-        else if (nl22.lt.160) then
-            write (ific,160) lign2(1:80),lign2(81:nl22)
+            write (ific, *) lign2(1:nl22)
+        else if (nl22 .lt. 160) then
+            write (ific, 160) lign2(1:80), lign2(81:nl22)
         else
-            write (ific,120) lign2(1:80),lign2(81:160),lign2(161:&
-            nl22)
-        endif
-    endif
+            write (ific, 120) lign2(1:80), lign2(81:160), lign2(161: &
+                                                                nl22)
+        end if
+    end if
 !
-    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
-                         crit, epsi, ssigne, refr, valr,&
-                         refi, vali, refc, valc, ignore=skip,&
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
+                         crit, epsi, ssigne, refr, valr, &
+                         refi, vali, refc, valc, ignore=skip, &
                          compare=ordgrd)
 !
-    if (tych(1:4).eq.'NOEU') then
+    if (tych(1:4) .eq. 'NOEU') then
         call detrsd('CHAM_NO_S', cnsinr)
-    else if (tych(1:2).eq.'EL') then
+    else if (tych(1:2) .eq. 'EL') then
         call detrsd('CHAM_ELEM_S', cnsinr)
-    endif
+    end if
 
 999 continue
     call jedetr('&&TRESU_CH.CMP')
 !
-    160 format(1x,a80,a)
-    120 format(1x,2(a80),a)
+160 format(1x, a80, a)
+120 format(1x, 2(a80), a)
 !
     call jedema()
 end subroutine

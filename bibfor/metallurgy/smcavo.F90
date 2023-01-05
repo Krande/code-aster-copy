@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 subroutine smcavo(x, nb_hist, trc, ind)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: x(5)
-integer, intent(in) :: nb_hist
-real(kind=8), intent(in) :: trc((3*nb_hist), 5)
-integer, intent(out) :: ind(6)
+    real(kind=8), intent(in) :: x(5)
+    integer, intent(in) :: nb_hist
+    real(kind=8), intent(in) :: trc((3*nb_hist), 5)
+    integer, intent(out) :: ind(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,15 +46,15 @@ integer, intent(out) :: ind(6)
 ! --------------------------------------------------------------------------------------------------
 !
     ind(:) = 0
-    d(:)   = 10.d25
+    d(:) = 10.d25
 
     do i_hist = 1, 3*nb_hist
 ! ----- Compute distances
         do i = 1, 3
-            dx(i) = (x(i)-trc(i_hist,i))**2
+            dx(i) = (x(i)-trc(i_hist, i))**2
         end do
         do i = 4, 5
-            dx(i) = ((x(i)-trc(i_hist,i))/x(i))**2
+            dx(i) = ((x(i)-trc(i_hist, i))/x(i))**2
         end do
 ! ----- Total distance
         sdx = 0.d0
@@ -68,19 +68,19 @@ integer, intent(out) :: ind(6)
             do i = 6, 1, -1
                 if (sdx .lt. d(i)) then
                     invois = i
-                endif
+                end if
             end do
             if (invois .eq. 6) then
-                d(6)   = sdx
+                d(6) = sdx
                 ind(6) = i_hist
             else
                 do j = 6, invois+1, -1
-                    d(j)   = d(j-1)
+                    d(j) = d(j-1)
                     ind(j) = ind(j-1)
                 end do
-                d(invois)   = sdx
+                d(invois) = sdx
                 ind(invois) = i_hist
-            endif
-        endif
+            end if
+        end if
     end do
 end subroutine

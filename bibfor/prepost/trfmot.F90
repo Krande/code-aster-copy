@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,28 +45,28 @@ subroutine trfmot(mot, field, ifield)
 !
     do i = 1, 80
         if (mot(i:i) .ne. ' ') then
-            nbcar = nbcar + 1
+            nbcar = nbcar+1
             if (nbcar .eq. 1) ideb = i
         else
             if (nbcar .ne. 0) then
-                nbmot = nbmot + 1
+                nbmot = nbmot+1
                 if (nbmot .eq. ifield) goto 30
                 nbcar = 0
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !-TRANSFERT DU CHAMP IFIELD A TRAITER
 !
- 30 continue
+30  continue
     do i = 1, nbcar
-        j = ideb - 1 + i
+        j = ideb-1+i
         if (mot(j:j) .ne. ' ') then
             field(i:i) = mot(j:j)
         else
             goto 50
-        endif
+        end if
     end do
- 50 continue
+50  continue
 !
 end subroutine

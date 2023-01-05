@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,17 +46,17 @@ function knindi(long, kn, lkn, nbkn)
 ! DEB-------------------------------------------------------------------
 !
 !
-    ASSERT((long.eq.8).or.(long.eq.16).or.(long.eq.24))
+    ASSERT((long .eq. 8) .or. (long .eq. 16) .or. (long .eq. 24))
 !
     if (long .eq. 8) then
         k8 = kn
-        knindi = indik8(lkn,k8,1,nbkn)
-    else if (long.eq.16) then
+        knindi = indik8(lkn, k8, 1, nbkn)
+    else if (long .eq. 16) then
         k16 = kn
-        knindi = indk16(lkn,k16,1,nbkn)
-    else if (long.eq.24) then
+        knindi = indk16(lkn, k16, 1, nbkn)
+    else if (long .eq. 24) then
         k24 = kn
-        knindi = indk24(lkn,k24,1,nbkn)
-    endif
+        knindi = indk24(lkn, k24, 1, nbkn)
+    end if
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apcoma(mesh, newgeo, elem_nume, elem_nbnode, elem_coor)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -56,12 +56,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     elem_coor(1:27) = 0.d0
-    ASSERT(elem_nbnode.gt.0)
-    ASSERT(elem_nbnode.le.nbnmax)
+    ASSERT(elem_nbnode .gt. 0)
+    ASSERT(elem_nbnode .le. nbnmax)
 !
 ! - Get absolute index of nodes
 !
-    call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+    call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi=v_mesh_connex)
     do i_node = 1, elem_nbnode
         node_nume(i_node) = v_mesh_connex(i_node)
     end do

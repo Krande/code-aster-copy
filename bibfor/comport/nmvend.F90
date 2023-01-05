@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmvend(fami, kpg, ksp, materd, materf,&
+subroutine nmvend(fami, kpg, ksp, materd, materf, &
                   nmat, dt1, deps, sigm, vim, &
                   ndim, crit, dammax, etatf, p, &
                   np, beta, nb, iter, ier)
@@ -73,11 +73,11 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
     real(kind=8) :: dammax, prec, precr, val0, devse(6)
 !
     real(kind=8) :: e, nu, alphap, alpham, dd, dr
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
     real(kind=8) :: xap, epsef(6)
     real(kind=8) :: seq1md, seqe, troisk, troikm, sigmmo
     real(kind=8) :: tp, tm, tref
-    common /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,unsurn,unsurm
+    common/fvendo/mu, syvp, kvp, rm, dm, seqe, ad, dt, rd, unsurn, unsurm
     real(kind=8) :: mu, syvp, kvp, seq, ad, dt, unsurn, unsurm, rm, dm, rd, nvp
     real(kind=8) :: em, num, devsig(6), depsmo, coef, sigpmo, df, val1, devsm(6)
     real(kind=8) :: mum
@@ -89,72 +89,72 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
     niter = int(crit(1))
     prec = crit(3)
     ier = 0
-    dt=dt1
-    it2=0
-    iter=0
+    dt = dt1
+    it2 = 0
+    iter = 0
 !
-    rm=vim(nb+2)
-    dm=vim(nb+3)
-    e =materf(1,1)
-    nu =materf(2,1)
-    mu=e/2.d0/(1.d0+nu)
+    rm = vim(nb+2)
+    dm = vim(nb+3)
+    e = materf(1, 1)
+    nu = materf(2, 1)
+    mu = e/2.d0/(1.d0+nu)
     troisk = e/(1.d0-2.d0*nu)
-    em =materd(1,1)
-    num =materd(2,1)
+    em = materd(1, 1)
+    num = materd(2, 1)
     troikm = em/(1.d0-2.d0*num)
-    mum=em/2.d0/(1.d0+num)
+    mum = em/2.d0/(1.d0+num)
 !
     if (ndim .eq. 2) then
-        sigm(5)=0.d0
-        sigm(6)=0.d0
-        deps(5)=0.d0
-        deps(6)=0.d0
-    endif
+        sigm(5) = 0.d0
+        sigm(6) = 0.d0
+        deps(5) = 0.d0
+        deps(6) = 0.d0
+    end if
 !
-    alphap=materf(3,1)
-    alpham=materd(3,1)
-    nvp = materf(1,2)
-    unsurn=1.d0/nvp
-    unsurm=materf(2,2)
-    kvp = 1.d0/materf(3,2)
-    syvp = materf(4,2)
-    rd = materf(5,2)
-    ad = materf(6,2)
+    alphap = materf(3, 1)
+    alpham = materd(3, 1)
+    nvp = materf(1, 2)
+    unsurn = 1.d0/nvp
+    unsurm = materf(2, 2)
+    kvp = 1.d0/materf(3, 2)
+    syvp = materf(4, 2)
+    rd = materf(5, 2)
+    ad = materf(6, 2)
 !
     call lcdevi(sigm, devsm)
     call lcdevi(deps, devep)
 !
     if (ndim .eq. 2) then
-        devsm(5)=0.d0
-        devsm(6)=0.d0
-        devep(5)=0.d0
-        devep(6)=0.d0
-    endif
+        devsm(5) = 0.d0
+        devsm(6) = 0.d0
+        devep(5) = 0.d0
+        devep(6) = 0.d0
+    end if
 !
-    if (dm .ge. 1.d0) dm=dammax
+    if (dm .ge. 1.d0) dm = dammax
     do i = 1, 6
-        epsef(i)=devsm(i)/(1.d0-dm)/2.d0/mum+devep(i)
+        epsef(i) = devsm(i)/(1.d0-dm)/2.d0/mum+devep(i)
     end do
-    devse(1:ndt) = (2.d0*mu) * epsef(1:ndt)
+    devse(1:ndt) = (2.d0*mu)*epsef(1:ndt)
 !
 ! -- TEMPERATURE
 !
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                 ksp, tref, iret1)
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tm, iret2)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tp, iret3)
-    iret=iret1+iret2+iret3
-    if ((iret.eq.0) .and. ((alphap+alpham).eq.0.d0)) then
+    iret = iret1+iret2+iret3
+    if ((iret .eq. 0) .and. ((alphap+alpham) .eq. 0.d0)) then
         call utmess('F', 'COMPOR5_44')
-    else if (((alphap+alpham).eq.0.d0).or.(iret.ge.1)) then
+    else if (((alphap+alpham) .eq. 0.d0) .or. (iret .ge. 1)) then
         coef = 0.d0
     else
-        coef = alphap*(tp-tref)- alpham*(tm-tref)
-    endif
+        coef = alphap*(tp-tref)-alpham*(tm-tref)
+    end if
 !
-    seqe= lcnrts(devse)
+    seqe = lcnrts(devse)
 !
     if (seqe .gt. syvp) then
 !
@@ -162,12 +162,12 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 !
         val0 = nmfend(0.d0)
         if (val0 .gt. 0.d0) then
-            ier=21
+            ier = 21
             goto 999
-        endif
+        end if
 !
 !        PRECISION RELATIVE DE RESOLUTION : F(X) < PREC
-        precr = prec * abs(val0)
+        precr = prec*abs(val0)
 !
 !        APPROXIMATION INITIALE  DE LA BORNE SUPERIEURE
         xap = seqe/mu/3.d0
@@ -176,22 +176,22 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 !        RECHERCHE DE LA BORNE SUPERIEURE
         val1 = nmfend(xap)
         if (abs(val1) .lt. precr) then
-            dr=xap
+            dr = xap
             goto 50
-        else if (val1.gt.0.d0) then
+        else if (val1 .gt. 0.d0) then
 !           LA SOLUTION EST DANS L INTERVALLE (0,XAP)
             goto 21
         else
 !           LA BORNE SUPERIEURE DOIT VERIFIER F(XAP) >0
 !           ICI F(XAP) <0. SI F'(XAP) >0, XAP EST A AUGMENTER
-            valp1=nmfedd(xap)
+            valp1 = nmfedd(xap)
             if (valp1 .gt. 0.d0) then
-                xap=xap*10.d0
-                it2=it2+1
+                xap = xap*10.d0
+                it2 = it2+1
                 if (it2 .gt. niter) then
-                    ier=22
+                    ier = 22
                     goto 999
-                endif
+                end if
                 goto 30
             else
 !              RECHERCHE DE XAP TEL QUE F(XAP) >0
@@ -199,16 +199,16 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
                 do i = 1, niter
                     xap = xap/2.d0
                     if (abs(xap) .lt. r8miem()) then
-                        dr=0.d0
+                        dr = 0.d0
                         goto 50
-                    endif
+                    end if
                     val1 = nmfend(xap)
                     if (val1 .gt. 0.d0) goto 21
                 end do
-                ier=23
+                ier = 23
                 goto 999
-            endif
-        endif
+            end if
+        end if
 !
 21      continue
 !
@@ -216,60 +216,60 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
         call utlcal('VALE_NOM', meth, crit(6))
 !
 !        RESOLUTION 1D
-        call zerofr(0, meth, nmfend, 0.d0, xap,&
+        call zerofr(0, meth, nmfend, 0.d0, xap, &
                     precr, niter, dr, ier, iter)
         if (ier .ne. 0) goto 999
 !
 50      continue
 !
-        seq1md=kvp*((dr/dt)**unsurn)*((rm+dr)**unsurm)+syvp
-        dd=dt*(seq1md/ad)**rd
-        df=dm+dd
+        seq1md = kvp*((dr/dt)**unsurn)*((rm+dr)**unsurm)+syvp
+        dd = dt*(seq1md/ad)**rd
+        df = dm+dd
 !
         if (df .ge. dammax) then
             dd = 0.d0
             df = dammax
-            dr=0.d0
-            etatf(3)='DAMMAXO'
-        endif
+            dr = 0.d0
+            etatf(3) = 'DAMMAXO'
+        end if
 !
-        seq=(1.d0-df)*seqe-3.d0*mu*dr
-        deno=1.d0+3.d0*mu*dr/seq
+        seq = (1.d0-df)*seqe-3.d0*mu*dr
+        deno = 1.d0+3.d0*mu*dr/seq
         do i = 1, 6
-            devsig(i)=(1.d0-df)*devse(i)/deno
+            devsig(i) = (1.d0-df)*devse(i)/deno
         end do
 !
     else
 !
-        dr=0.d0
-        dd=0.d0
-        seq1md=syvp
-        df=dm
+        dr = 0.d0
+        dd = 0.d0
+        seq1md = syvp
+        df = dm
         call r8inir(6, 0.d0, devsig, 1)
 !
-    endif
+    end if
 !
     depsmo = 0.d0
     do i = 1, 3
-        depsmo = depsmo + deps(i) -coef
+        depsmo = depsmo+deps(i)-coef
     end do
     depsmo = depsmo/3.d0
 !
     sigmmo = 0.d0
     do i = 1, 3
-        sigmmo = sigmmo + sigm(i)
+        sigmmo = sigmmo+sigm(i)
     end do
-    sigmmo = sigmmo /3.d0
-    sigpmo=(sigmmo/troikm/(1.d0-dm)+depsmo)*(1.d0-df)*troisk
+    sigmmo = sigmmo/3.d0
+    sigpmo = (sigmmo/troikm/(1.d0-dm)+depsmo)*(1.d0-df)*troisk
     do i = 1, 3
-        beta(i)=devsig(i)+sigpmo
+        beta(i) = devsig(i)+sigpmo
     end do
     do i = 4, 6
-        beta(i)=devsig(i)
+        beta(i) = devsig(i)
     end do
 !
-    p(1)=dr/dt
-    p(2)=dd/dt
+    p(1) = dr/dt
+    p(2) = dd/dt
 !
 999 continue
 end subroutine

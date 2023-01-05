@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xmvco5(ndim, nno, nnol, pla, nd,&
-                  tau1, tau2, mu, ddls, jac,&
-                  ffc, ffp, nnos, ddlm, wsaut,&
+subroutine xmvco5(ndim, nno, nnol, pla, nd, &
+                  tau1, tau2, mu, ddls, jac, &
+                  ffc, ffp, nnos, ddlm, wsaut, &
                   saut, vtmp)
 !
 !
@@ -71,30 +71,30 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
 !
 ! ---------------------------------------------------------------------
 ! on va commencer par construire une matrice de passage
-    p(:,:) = 0.d0
-    ptr(:,:) = 0.d0
+    p(:, :) = 0.d0
+    ptr(:, :) = 0.d0
     mug(:) = 0.d0
     am(:) = 0.d0
-    coefi=xcalc_saut(1,0,1)
+    coefi = xcalc_saut(1, 0, 1)
 !
     do i = 1, ndim
-        p(1,i) = nd(i)
+        p(1, i) = nd(i)
     end do
     do i = 1, ndim
-        p(2,i) = tau1(i)
+        p(2, i) = tau1(i)
     end do
     if (ndim .eq. 3) then
         do i = 1, ndim
-            p(3,i) = tau2(i)
+            p(3, i) = tau2(i)
         end do
-    endif
+    end if
 ! calcul du saut de deplacement am en base locale
-    call prmave(0, p, 3, ndim, ndim,&
+    call prmave(0, p, 3, ndim, ndim, &
                 saut, ndim, am, ndim, ier)
 ! calcul de la contrainte MUG en base globale
-    call transp(p, 3, ndim, ndim, ptr,&
+    call transp(p, 3, ndim, ndim, ptr, &
                 3)
-    call prmave(0, ptr, 3, ndim, ndim,&
+    call prmave(0, ptr, 3, ndim, ndim, &
                 mu, ndim, mug, ndim, ier)
 ! on reecrit tout
 ! on suppose qu on a acces à LAMB(3):
@@ -105,28 +105,28 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
     do i = 1, nno
         call indent(i, ddls, ddlm, nnos, iin)
         do j = 1, ndim
-            vtmp(iin+ndim+j) = vtmp(iin+ndim+j)+ coefi*mug(j)*ffp(i)* jac
+            vtmp(iin+ndim+j) = vtmp(iin+ndim+j)+coefi*mug(j)*ffp(i)*jac
         end do
     end do
 ! remplissage L1u
     do i = 1, nnol
-        pli=pla(i)
+        pli = pla(i)
         do j = 1, ndim
-            vtmp(pli+2*ndim-1+j) = vtmp(pli+2*ndim-1+j) - am(j)*ffc(i)*jac
+            vtmp(pli+2*ndim-1+j) = vtmp(pli+2*ndim-1+j)-am(j)*ffc(i)*jac
         end do
     end do
 ! remplissage L1w
     do i = 1, nnol
-        pli=pla(i)
+        pli = pla(i)
         do j = 1, ndim
-            vtmp(pli+2*ndim-1+j) = vtmp(pli+2*ndim-1+j) - wsaut(j)*ffc(i)*jac
+            vtmp(pli+2*ndim-1+j) = vtmp(pli+2*ndim-1+j)-wsaut(j)*ffc(i)*jac
         end do
     end do
 ! remplissage L2mu
     do i = 1, nnol
-        pli=pla(i)
+        pli = pla(i)
         do j = 1, ndim
-            vtmp(pli-1+ndim+j) = vtmp(pli-1+ndim+j) - mu(j)*ffc(i)* jac
+            vtmp(pli-1+ndim+j) = vtmp(pli-1+ndim+j)-mu(j)*ffc(i)*jac
         end do
     end do
 ! le remplissage de L2w a été enlevé

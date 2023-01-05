@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
-                  nume, iddl, coef, neq, nbmode,&
+subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
+                  nume, iddl, coef, neq, nbmode, &
                   zrmod)
     implicit none
 #include "jeveux.h"
@@ -70,12 +70,12 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ic, ie, ila1, ila2, im, imod, in
-    integer :: in2, ind,  jddr
+    integer :: in2, ind, jddr
     integer :: iret
     integer, pointer :: position_ddl(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
-    data  nomcmp / 'DX' , 'DY' , 'DZ' /
+    data nomcmp/'DX', 'DY', 'DZ'/
 !     ------------------------------------------------------------------
     call jemarq()
     un = 1.d0
@@ -83,19 +83,19 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
 !
     if (motcle(1:4) .eq. 'ACCE') then
         AS_ALLOCATE(vi=position_ddl, size=3*neq)
-        call pteddl('NUME_DDL', nume, 3, nomcmp, neq,&
-                    tabl_equa = position_ddl)
+        call pteddl('NUME_DDL', nume, 3, nomcmp, neq, &
+                    tabl_equa=position_ddl)
         do im = 1, nbmode
-            imod = imod + 1
-            in2 = 3 * ( im - 1 )
+            imod = imod+1
+            in2 = 3*(im-1)
             call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq, jddr)
             do ic = 1, 3
-                ind = neq * ( ic - 1 )
+                ind = neq*(ic-1)
                 do in = 0, neq-1
-                    zr(jddr+in) = zr(jddr+in) + position_ddl(1+ind+in) * coef(in2+ic)
+                    zr(jddr+in) = zr(jddr+in)+position_ddl(1+ind+in)*coef(in2+ic)
                 end do
             end do
-            call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1,&
+            call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1, &
                         .true._1)
             call jedetr('&&MODSTA.POSITION_DDR')
 !
@@ -104,40 +104,40 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
     else
         do ie = 1, neq
             if (iddl(ie) .eq. 1) then
-                imod = imod + 1
+                imod = imod+1
                 if (motcle(1:4) .eq. 'DEPL') then
                     call ddllag(nume, ie, neq, ila1, ila2)
                     if (ila1 .eq. 0 .or. ila2 .eq. 0) then
                         call utmess('F', 'ALGELINE2_4')
-                    endif
-                    zrmod(ila1,imod) = un
-                    zrmod(ila2,imod) = un
+                    end if
+                    zrmod(ila1, imod) = un
+                    zrmod(ila2, imod) = un
                 else if (motcle(1:4) .eq. 'FORC') then
-                    zrmod(ie,imod) = un
+                    zrmod(ie, imod) = un
                 else
                     call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq, jddr)
                     call ddllag(nume, ie, neq, ila1, ila2)
                     if (ila1 .eq. 0 .or. ila2 .eq. 0) then
                         call utmess('F', 'ALGELINE2_4')
-                    endif
+                    end if
                     zr(jddr+ila1-1) = un
                     zr(jddr+ila2-1) = un
-                    call resoud(matfac, matpre, solveu, ' ', 1,&
-                                ' ', ' ', ' ', zr(jddr), [cbid],&
+                    call resoud(matfac, matpre, solveu, ' ', 1, &
+                                ' ', ' ', ' ', zr(jddr), [cbid], &
                                 ' ', .true._1, 0, iret)
-                    call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1,&
+                    call mrmult('ZERO', lmatm, zr(jddr), zrmod(1, imod), 1, &
                                 .true._1)
                     call jedetr('&&MODSTA.POSITION_DDR')
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 !     --- RESOLUTION ---
     if (imod .gt. 0) then
-        call resoud(matfac, matpre, solveu, ' ', imod,&
-                    ' ', ' ', ' ', zrmod, [cbid],&
+        call resoud(matfac, matpre, solveu, ' ', imod, &
+                    ' ', ' ', ' ', zrmod, [cbid], &
                     ' ', .true._1, 0, iret)
-    endif
+    end if
     call jedema()
 end subroutine

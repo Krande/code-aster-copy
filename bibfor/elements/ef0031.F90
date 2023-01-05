@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine ef0031(nomte)
 !
 ! DEB ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                     jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids, &
+                     jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
     call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', ibid, 'S')
@@ -56,21 +56,21 @@ subroutine ef0031(nomte)
     call jevech('PGEOMER', 'L', jgeom)
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
-    else if (nno.eq.4) then
+    else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
-    endif
+    end if
     call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
 !
 !
 !
     call tecach('NNO', 'PCOMPOR', 'L', iret, iad=icompo)
     call jevech('PCONTRR', 'L', icontp)
-    ind=8
+    ind = 8
     call dxeffi('EFGE_ELNO', nomte, pgl, zr(icontp), ind, effint)
 !
     call jevech('PCACOQU', 'L', jcara)
-    alpha = zr(jcara+1) * r8dgrd()
-    beta  = zr(jcara+2) * r8dgrd()
+    alpha = zr(jcara+1)*r8dgrd()
+    beta = zr(jcara+2)*r8dgrd()
     call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
     call dxefro(npg, t2iu, effint, effgt)

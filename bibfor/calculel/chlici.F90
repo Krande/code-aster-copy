@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ subroutine chlici(chaine, long)
     aster_logical :: bool
 !-----------------------------------------------------------------------
 !
-    do i = 1,long
+    do i = 1, long
         k = ichar(chaine(i:i))
-        bool = (k.eq.32) .or. (k.eq.46) .or. (k.eq.38) .or. (k.eq.95) .or. &
-               ((k.ge.48).and. (k.le.57)) .or.&
-               ((k.ge.65).and. ( k.le.90)) .or. ((k.ge.97).and. (k.le.122))
+        bool = (k .eq. 32) .or. (k .eq. 46) .or. (k .eq. 38) .or. (k .eq. 95) .or. &
+               ((k .ge. 48) .and. (k .le. 57)) .or. &
+               ((k .ge. 65) .and. (k .le. 90)) .or. ((k .ge. 97) .and. (k .le. 122))
         ASSERT(bool)
     end do
 end subroutine

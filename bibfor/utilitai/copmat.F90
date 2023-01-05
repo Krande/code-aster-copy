@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine copmat(mat_in, mat_out)
     character(len=8), intent(in) :: mat_in
     real(kind=8), intent(out) :: mat_out(*)
 
-
     aster_logical :: lsym
     integer :: neq, jsmhc, nbnonz, nvale, jvale
     integer :: nlong, jval2, kterm, jcoll, iligl
@@ -60,7 +59,7 @@ subroutine copmat(mat_in, mat_out)
     mat19 = mat_in
 
     call jeveuo(mat19//'.REFA', 'L', vk24=refa)
-    nonu=refa(2)(1:14)
+    nonu = refa(2) (1:14)
 
     call jeveuo(nonu//'.SMOS.SMDE', 'L', vi=smde)
     neq = smde(1)
@@ -73,27 +72,27 @@ subroutine copmat(mat_in, mat_out)
 
     call jelira(mat19//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
-        lsym=.true.
-    else if (nvale.eq.2) then
-        lsym=.false.
+        lsym = .true.
+    else if (nvale .eq. 2) then
+        lsym = .false.
     else
         ASSERT(.false.)
-    endif
+    end if
 
     call jeveuo(jexnum(mat19//'.VALM', 1), 'L', jvale)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
-    ASSERT(nlong.eq.nbnonz)
-    if (.not.lsym) then
+    ASSERT(nlong .eq. nbnonz)
+    if (.not. lsym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'L', jval2)
         call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong)
-        ASSERT(nlong.eq.nbnonz)
-    endif
+        ASSERT(nlong .eq. nbnonz)
+    end if
 
     call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=ktyp)
-    ASSERT(ktyp.eq.'R')
+    ASSERT(ktyp .eq. 'R')
 
-    jcoll=1
-    do  kterm = 1, nbnonz
+    jcoll = 1
+    do kterm = 1, nbnonz
 
         if (smdi(jcoll) .lt. kterm) jcoll = jcoll+1
         iligl = zi4(jsmhc-1+kterm)
@@ -101,15 +100,15 @@ subroutine copmat(mat_in, mat_out)
         i = iligl
         j = jcoll
 
-        m_out(i,j) = zr(jvale-1+kterm)
+        m_out(i, j) = zr(jvale-1+kterm)
         if (lsym) then
-            m_out(j,i) = zr(jvale-1+kterm)
+            m_out(j, i) = zr(jvale-1+kterm)
         else
-            if (i.ne.j) then
-                m_out(j,i) = zr(jval2-1+kterm)
-            endif
-        endif
-      end do
+            if (i .ne. j) then
+                m_out(j, i) = zr(jval2-1+kterm)
+            end if
+        end if
+    end do
 
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmextd(field_type, ds_inout, field_algo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmetnc.h"
 #include "asterfort/nmetob.h"
@@ -57,9 +57,9 @@ implicit none
 !
 ! - Get name of datastructure for field
 !
-    if (i_field_obsv.ne.0) then
-        algo_name  = ds_inout%field(i_field_obsv)%algo_name
+    if (i_field_obsv .ne. 0) then
+        algo_name = ds_inout%field(i_field_obsv)%algo_name
         call nmetnc(algo_name, field_algo)
-    endif
+    end if
 !
 end subroutine

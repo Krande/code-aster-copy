@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
 !-----------------------------------------------------------------------
     integer :: ibid, iret, nbmcal
 !-----------------------------------------------------------------------
-    data pgc /'EXCYGL'/
+    data pgc/'EXCYGL'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -71,7 +71,7 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
     typsd = typsdz
     mailla = maillz
 !
-    indirf='&&'//pgc//'.INDIR.SECT'
+    indirf = '&&'//pgc//'.INDIR.SECT'
 !
 !-----------------ECRITURE DU TITRE-------------------------------------
 !
@@ -82,7 +82,7 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
     call jeexin(mailla//'.INV.SKELETON', iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGORITH13_8')
-    endif
+    end if
 !
 !-----RECUPERATION DU NOMBRE DE SECTEURS--------------------------------
     call getvis('CYCLIQUE', 'NB_SECTEUR', iocc=1, scal=nbsec, nbret=ibid)
@@ -90,7 +90,7 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
     call getvis('CYCLIQUE', 'NUME_DIAMETRE', iocc=1, scal=numdia, nbret=ibid)
 !
 !-----RECUPERATION NOMBRE NUMERO D'ORDRE UTILISES POUR CALCUL CYCLIQUE--
-    call rsutnu(modcyc, ' ', 0, '&&EXCYGL.NUME', nbmcal,&
+    call rsutnu(modcyc, ' ', 0, '&&EXCYGL.NUME', nbmcal, &
                 0.d0, 'ABSO', iret)
 !
 !--------------ALLOCATION DU CONCEPT MODE_MECA RESULTAT-----------------
@@ -103,7 +103,7 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
 !
 !------------------------------RESTITUTION -----------------------------
 !
-    call exphgl(nomres, typsd, modcyc, profno, indirf,&
+    call exphgl(nomres, typsd, modcyc, profno, indirf, &
                 mailla, nbsec, numdia, nbmcal)
 !
     call jedetr('&&'//pgc//'.INDIR.SECT')

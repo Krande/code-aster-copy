@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ subroutine refe99(nomres)
 ! --- CAS CLASSIQUE
 !
     if (ioc1 .gt. 0) then
-        numbis =' '
+        numbis = ' '
         call getvid('CLASSIQUE', 'INTERF_DYNA', iocc=1, scal=intf, nbret=ier)
         call dismoi('NOM_NUME_DDL', intf, 'INTERF_DYNA', repk=numddl)
         call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=0, nbret=nbmome)
@@ -95,7 +95,7 @@ subroutine refe99(nomres)
         call wkvect('&&REFE99.LIST.NBMOD', 'V V I', nbmome, ltnbmo)
         call wkvect('&&REFE99.LIST.NBMODMAX', 'V V I', nbmome, ltnbmax)
 !
-        call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=nbmome, vect=zk8(ltmome),&
+        call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=nbmome, vect=zk8(ltmome), &
                     nbret=ibid)
 !
         call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=0, nbret=nbli)
@@ -104,14 +104,14 @@ subroutine refe99(nomres)
         if (nbli .ge. 1) then
             if (nbli .eq. 1) then
 !               Apply the single NMAX_MODE criterion to all of the modal base
-                nbmax=0
+                nbmax = 0
                 call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nbmax, nbret=ier)
                 do i = 1, nbmome
                     zi(ltnbmax+i-1) = nbmax
                 end do
             else if (nbli .eq. nbmome) then
 !               Use the NMAX_MODE criteria, defined for each modal base separately
-                call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmax),&
+                call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmax), &
                             nbret=ier)
             else
 !               Incoherence in the input data
@@ -119,8 +119,8 @@ subroutine refe99(nomres)
                 vali(2) = nbli
                 call utmess('F+', 'DEFIBASEMODALE1_31', ni=2, vali=vali)
                 call utmess('F', 'ALGORITH14_32')
-            endif
-        endif
+            end if
+        end if
 !
         do i = 1, nbmome
             momeca = zk8(ltmome-1+i)
@@ -130,15 +130,15 @@ subroutine refe99(nomres)
             call dismoi('NUME_DDL', momeca, 'RESU_DYNA', repk=numbis)
 !           Check for nume_ddl coherence of each mode_meca with that of interf_dyna
             if (numbis(1:14) .ne. numddl(1:14)) then
-                valk (1) = momeca
-                valk (2) = numbis(1:8)
-                valk (3) = intf
-                valk (4) = numddl(1:8)
+                valk(1) = momeca
+                valk(2) = numbis(1:8)
+                valk(3) = intf
+                valk(4) = numddl(1:8)
                 call utmess('F', 'ALGORITH14_24', nk=4, valk=valk)
-            endif
+            end if
 !           Determine the real number of modes to recuperate from each base
-            call rsorac(momeca, 'LONUTI', 0, rbid, kbid,&
-                        cbid, rbid, 'ABSOLU', nbmodo, 1,&
+            call rsorac(momeca, 'LONUTI', 0, rbid, kbid, &
+                        cbid, rbid, 'ABSOLU', nbmodo, 1, &
                         ibid)
             if (nbli .ge. 1) then
                 nbmout = zi(ltnbmax+i-1)
@@ -149,70 +149,70 @@ subroutine refe99(nomres)
                     call utmess('I', 'ALGORITH15_92', sk=valk(1), ni=2, vali=vali)
                 else
                     nbmodo(1) = nbmout
-                endif
-            endif
+                end if
+            end if
             zi(ltnbmo+i-1) = nbmodo(1)
 !           Add a reference in the dynamic result data structure
             concep(1) = raid
             concep(2) = mass
             concep(3) = amor
-            call refdaj('F', nomres, nbmodo(1), numddl, 'DYNAMIQUE',&
+            call refdaj('F', nomres, nbmodo(1), numddl, 'DYNAMIQUE', &
                         concep, ier)
             concep(1) = intf
-            call refdaj('F', nomres, 0, numddl, 'INTERF_DYNA',&
+            call refdaj('F', nomres, 0, numddl, 'INTERF_DYNA', &
                         concep, ier)
         end do
 !
-    endif
+    end if
 !
 ! --- CAS RITZ
 !
     if (ioc3 .gt. 0) then
 !
         ASSERT(ioc3 .le. 2)
-        nbg      = 0
-        ioccmi   = 1
+        nbg = 0
+        ioccmi = 1
         ioccbase = 1
         do i = 1, ioc3
-            call getvid('RITZ', 'MODE_MECA'  , iocc=i, nbval=0, nbret=nbmm)
+            call getvid('RITZ', 'MODE_MECA', iocc=i, nbval=0, nbret=nbmm)
             call getvid('RITZ', 'BASE_MODALE', iocc=i, nbval=0, nbret=nbbm)
-            call getvid('RITZ', 'MODE_INTF'  , iocc=i, nbval=0, nbret=nbmi)
-            nbg = nbg - nbmi
+            call getvid('RITZ', 'MODE_INTF', iocc=i, nbval=0, nbret=nbmi)
+            nbg = nbg-nbmi
             if (nbmi .ne. 0) then
-                ioccmi   = i
-            endif
+                ioccmi = i
+            end if
             if ((nbmm .ne. 0) .or. (nbbm .ne. 0)) then
                 ioccbase = i
-            endif
+            end if
         end do
 !
         if (ioc3 .eq. 2) then
             if (nbg .ne. 1) then
-                 call utmess('F', 'DEFIBASEMODALE1_51')
-            endif
+                call utmess('F', 'DEFIBASEMODALE1_51')
+            end if
         else
             if (nbmm .eq. 0) then
-                 call utmess('F', 'DEFIBASEMODALE1_1')
-            endif
-        endif
+                call utmess('F', 'DEFIBASEMODALE1_1')
+            end if
+        end if
 !
-        noseul=.false.
+        noseul = .false.
         call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=0, nbret=nbg)
         nbg = -nbg
         call getvid('RITZ', 'MODE_INTF', iocc=ioccmi, nbval=0, nbret=ier)
-        if ((ier.gt.0) .or. (nbg.gt.1)) noseul=.true.
+        if ((ier .gt. 0) .or. (nbg .gt. 1)) noseul = .true.
 !
 !       Reference numbering is required in case more than one modal base is given
         call getvid('    ', 'NUME_REF', iocc=1, scal=numddl, nbret=ier)
-        if ((ier.eq.0) .and. noseul) then
+        if ((ier .eq. 0) .and. noseul) then
             call utmess('F', 'DEFIBASEMODALE1_9')
-        endif
+        end if
 !
         intf = ' '
         call getvid('  ', 'INTERF_DYNA', iocc=1, nbval=0, nbret=ier)
         if (ier .lt. 0) then
             call getvid('  ', 'INTERF_DYNA', iocc=1, scal=intf, nbret=ier)
-        endif
+        end if
 !
         call getvid('RITZ', 'BASE_MODALE', iocc=ioccbase, scal=resul1, nbret=ibmo)
         call getvid('RITZ', 'MODE_INTF', iocc=ioccmi, scal=resul2, nbret=imint)
@@ -230,7 +230,7 @@ subroutine refe99(nomres)
             call wkvect('&&REFE99.LIST.NBMOD', 'V V I', nbmome, ltnbmo)
             call wkvect('&&REFE99.LIST.NBMODMAX', 'V V I', nbmome, ltnbmax)
 !
-            call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=nbmome, vect=zk8(ltmome),&
+            call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=nbmome, vect=zk8(ltmome), &
                         nbret=ibid)
 !
             call getvis('RITZ', 'NMAX_MODE', iocc=ioccbase, nbval=0, nbret=nbli)
@@ -248,26 +248,26 @@ subroutine refe99(nomres)
                 end do
             else if (nbli .eq. nbmome) then
 !               Use the NMAX_MODE criteria, defined for each modal base separately
-                call getvis('RITZ', 'NMAX_MODE', iocc=ioccbase, nbval=nbmome, vect=zi(ltnbmax),&
+                call getvis('RITZ', 'NMAX_MODE', iocc=ioccbase, nbval=nbmome, vect=zi(ltnbmax), &
                             nbret=ibid)
             else
 !               Incoherence in the input data
                 vali(1) = nbmome
                 vali(2) = nbli
                 call utmess('F', 'DEFIBASEMODALE1_31', ni=2, vali=vali)
-            endif
+            end if
 !
             nbmod1 = 0
             do i = 1, nbmome
                 momeca = zk8(ltmome-1+i)
-                call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid,arret='C')
-                call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass,arret='C')
-                call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor,arret='C')
+                call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid, arret='C')
+                call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass, arret='C')
+                call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor, arret='C')
                 call dismoi('NUME_DDL', momeca, 'RESU_DYNA', repk=numbis)
                 if (numddl .eq. ' ') numddl = numbis
 !               Determine the real number of modes to recuperate from each base
-                call rsorac(momeca, 'LONUTI', 0, rbid, kbid,&
-                            cbid, rbid, 'ABSOLU', nbmodo, 1,&
+                call rsorac(momeca, 'LONUTI', 0, rbid, kbid, &
+                            cbid, rbid, 'ABSOLU', nbmodo, 1, &
                             ibid)
                 nbmout = zi(ltnbmax+i-1)
                 if (nbmodo(1) .lt. nbmout) then
@@ -277,51 +277,51 @@ subroutine refe99(nomres)
                     call utmess('I', 'ALGORITH15_92', sk=valk(1), ni=2, vali=vali)
                 else
                     nbmodo(1) = nbmout
-                endif
+                end if
                 zi(ltnbmo+i-1) = nbmodo(1)
-                nbmod1 = nbmod1 + nbmodo(1)
+                nbmod1 = nbmod1+nbmodo(1)
 !               Add a reference in the dynamic result data structure
                 concep(1) = raid
                 concep(2) = mass
                 concep(3) = amor
-                call refdaj('F', nomres, nbmodo(1), numddl, 'DYNAMIQUE',&
+                call refdaj('F', nomres, nbmodo(1), numddl, 'DYNAMIQUE', &
                             concep, ier)
             end do
-        endif
+        end if
         if (imint .gt. 0) then
 !           Treating the MODE_INTF kw (2nd RITZ entry) for the static modes
 !           Maximum number of static modes to extract : nbmod2
             call getvis('RITZ', 'NMAX_MODE', iocc=ioccmi, scal=nbmod2, nbret=inmax)
 !           Number of modes that actually exist in the static base : nbold
-            call rsorac(resul2, 'LONUTI', 0, rbid, k8b,&
-                        cbid, rbid, 'ABSOLU', nbold, 1,&
+            call rsorac(resul2, 'LONUTI', 0, rbid, k8b, &
+                        cbid, rbid, 'ABSOLU', nbold, 1, &
                         ibid)
             if (inmax .eq. 0) then
                 nbmod2 = nbold(1)
             else
-                nbmod2 = min(nbmod2,nbold(1))
-            endif
+                nbmod2 = min(nbmod2, nbold(1))
+            end if
 !
             concep(1) = resul2
-            call refdaj('F', nomres, nbmod2, numddl, 'INTERF_STAT',&
+            call refdaj('F', nomres, nbmod2, numddl, 'INTERF_STAT', &
                         concep, ier)
         else
             nbmod2 = 0
-        endif
+        end if
 !
-        nbtot = nbmod1 + nbmod2
+        nbtot = nbmod1+nbmod2
         if (nbtot .le. 0) then
             call utmess('F', 'DEFIBASEMODALE1_50')
-        endif
+        end if
 !
-        call dismoi('REF_INTD_DERN', nomres, 'RESU_DYNA', repk=intfb, arret='C',&
+        call dismoi('REF_INTD_DERN', nomres, 'RESU_DYNA', repk=intfb, arret='C', &
                     ier=ier)
         if ((intf .ne. ' ') .and. (intf .ne. intfb)) then
             concep(1) = intf
-            call refdaj('F', nomres, 0, numddl, 'INTERF_DYNA',&
+            call refdaj('F', nomres, 0, numddl, 'INTERF_DYNA', &
                         concep, ier)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- DIAGONALISATION DE LA MATRICE DE MASSE
 !
@@ -337,7 +337,7 @@ subroutine refe99(nomres)
         concep(1) = raid
         concep(2) = mass
         concep(3) = amor
-        call refdaj('F', nomres, nbmod1, numddl, 'DYNAMIQUE',&
+        call refdaj('F', nomres, nbmod1, numddl, 'DYNAMIQUE', &
                     concep, ier)
 !
         call getvid('DIAG_MASS', 'MODE_STAT', iocc=1, scal=mostat, nbret=ibid)
@@ -345,16 +345,16 @@ subroutine refe99(nomres)
         concep(1) = mostat
 !       Note that it is volontary to save the numbering associated to the dynamic modes
 !       because later on we call copmod upon the static modes, modifying their nume_ddl
-        call refdaj('F', nomres, nbmod2, numddl, 'INTERF_STAT',&
+        call refdaj('F', nomres, nbmod2, numddl, 'INTERF_STAT', &
                     concep, ier)
-    endif
+    end if
 !
 ! --- CAS ORTHO_BASE
 !
     if (ioc5 .gt. 0) then
         call getvid('ORTHO_BASE', 'BASE', iocc=1, scal=resul1, nbret=ibid)
         call refdcp(resul1, nomres)
-    endif
+    end if
 !
     call jedema()
 !

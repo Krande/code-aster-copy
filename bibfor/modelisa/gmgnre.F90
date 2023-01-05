@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
+subroutine gmgnre(noma, nbnoto, litrav, listma, nbma, &
                   listno, nbno, selez)
     implicit none
 !
@@ -63,19 +63,19 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
     integer :: i, iacnex, ima, ino, nbnoma, numno
     integer, pointer :: typmail(:) => null()
 !-----------------------------------------------------------------------
-    data notyma / 'POI1'  ,&
-     &              'SEG2'  , 'SEG3'   ,&
-     &              'TRIA3' , 'TRIA6'  , 'TRIA7',&
-     &              'QUAD4' , 'QUAD8'  , 'QUAD9',&
+    data notyma/'POI1',&
+     &              'SEG2', 'SEG3',&
+     &              'TRIA3', 'TRIA6', 'TRIA7',&
+     &              'QUAD4', 'QUAD8', 'QUAD9',&
      &              'TETRA4', 'TETRA10',&
-     &              'PENTA6', 'PENTA15','PENTA18',&
+     &              'PENTA6', 'PENTA15', 'PENTA18',&
      &              'PYRAM5', 'PYRAM13',&
-     &              'HEXA8' , 'HEXA20' , 'HEXA27' /
+     &              'HEXA8', 'HEXA20', 'HEXA27'/
 !
 !
 !
 !
-    data pini / 1, 0, 0,&
+    data pini/1, 0, 0,&
      &            1, 0, 0,&
      &            1, 3, 0,&
      &            1, 0, 0,&
@@ -93,9 +93,9 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
      &            1, 6, 0,&
      &            1, 0, 0,&
      &            1, 9, 0,&
-     &            1, 9, 21 /
+     &            1, 9, 21/
 !
-    data pfin / 1, 0, 0,&
+    data pfin/1, 0, 0,&
      &            2, 0, 0,&
      &            2, 3, 0,&
      &            3, 0, 0,&
@@ -105,15 +105,15 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
      &            4, 8, 0,&
      &            4, 8, 9,&
      &            4, 0, 0,&
-     &            4, 10,0,&
+     &            4, 10, 0,&
      &            6, 0, 0,&
-     &            6, 15,0,&
-     &            6, 15,18,&
+     &            6, 15, 0,&
+     &            6, 15, 18,&
      &            5, 0, 0,&
-     &            5, 13,0,&
+     &            5, 13, 0,&
      &            8, 0, 0,&
-     &            8, 20,0,&
-     &            8, 20,27 /
+     &            8, 20, 0,&
+     &            8, 20, 27/
 !
 !
 !
@@ -122,19 +122,19 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
 !
     call jemarq()
     selec = selez
-    call jeveuo(noma // '.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-    if (selec .eq. 'TOUS') sel=0
-    if (selec .eq. 'SOMMET') sel=1
-    if (selec .eq. 'MILIEU') sel=2
-    if (selec .eq. 'CENTRE') sel=3
+    if (selec .eq. 'TOUS') sel = 0
+    if (selec .eq. 'SOMMET') sel = 1
+    if (selec .eq. 'MILIEU') sel = 2
+    if (selec .eq. 'CENTRE') sel = 3
 !
     do i = 1, nbnoto
-        litrav(i) =0
+        litrav(i) = 0
     end do
 !
     do i = 1, nbma
-        ima=listma(i)
+        ima = listma(i)
         call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iacnex)
         call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
 !
@@ -145,31 +145,31 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
             call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typm)
             do nutyma = 1, 18
                 if (typm .eq. notyma(nutyma)) then
-                    posini = pini(sel,nutyma)
-                    posfin = pfin(sel,nutyma)
+                    posini = pini(sel, nutyma)
+                    posfin = pfin(sel, nutyma)
                     goto 20
-                endif
+                end if
             end do
             call utmess('F', 'MODELISA4_68', sk=typm)
- 20         continue
+20          continue
             if (posfin .eq. 0) goto 2
-        endif
+        end if
 !
         do ino = posini, posfin
-            numno=zi(iacnex-1+ino)
-            litrav(numno)= litrav(numno) +1
+            numno = zi(iacnex-1+ino)
+            litrav(numno) = litrav(numno)+1
         end do
-  2     continue
+2       continue
     end do
 !
 !     -- ON COMPTE LES NOEUDS COCHES ET ON LES RECOPIE DANS LISTNO:
 !
-    nbno=0
+    nbno = 0
     do i = 1, nbnoto
         if (litrav(i) .gt. 0) then
-            nbno=nbno+1
-            listno(nbno)=i
-        endif
+            nbno = nbno+1
+            listno(nbno) = i
+        end if
     end do
 !
     call jedema()

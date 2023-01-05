@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
-                   sn, instsn, snet, sigmoypres, snther,&
+subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, &
+                   sn, instsn, snet, sigmoypres, snther, &
                    sp3, spmeca3)
     implicit none
 #include "asterf_types.h"
@@ -121,7 +121,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
     ntherp = zi(jinfoi+27*(iocc1-1)+26)
 !
 !---- Mot clé pour accélerer les calculs si aucun chargement en unitaire
-    unitaire =.false.
+    unitaire = .false.
     if (npresp .eq. 1 .or. nmecap .eq. 1) unitaire = .true.
 !
     presap = zr(jinfor+4*(iocc1-1))
@@ -153,13 +153,13 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
             mbp(k) = zr(jcharb-1+k)
         end do
 !
-    endif
+    end if
 !-- On récupère les contraintes unitaires
     if (.not. ze200) then
         if (nmecap .eq. 1 .or. nmecap .eq. 3 .or. npresp .eq. 1) then
             call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
-        endif
-    endif
+        end if
+    end if
 !
 !-- SA partie unitaire (moments et/ou pression)
     do j = 1, 6
@@ -171,12 +171,12 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                 sa(j) = sa(j)+(map(k)-mbp(k))*zr(jsigu-1+78+6*(k-1)+j)
             end do
         end do
-    endif
+    end if
     if (.not. ze200 .and. npresp .eq. 1) then
         do j = 1, 6
             sa(j) = sa(j)+(presap-presbp)*zr(jsigu-1+78+72+j)
         end do
-    endif
+    end if
 !
 !-- SB partie transitoire
     do j = 1, 6
@@ -186,16 +186,16 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
         stet(j) = 0.d0
         smoypr1(j) = 0.d0
         smoypr2(j) = 0.d0
-        sipr1(j) =0.d0
-        simec1(j) =0.d0
+        sipr1(j) = 0.d0
+        simec1(j) = 0.d0
     end do
     if (nmecap .eq. 2 .or. npresp .eq. 2 .or. ntherp .eq. 1) then
         tranp = .true.
         call jeveuo(jexnum('&&RC3200.TRANSIT.'//lieu, iocc1), 'L', jtranp)
         do j = 1, 6
-            sb(j) = zr(jtranp+18+j-1) -zr(jtranp+12+j-1)
-            sbet(j) = (zr(jtranp+18+j-1)-zr(jtranp+98+j-1)) -(zr(jtranp+12+j-1)-zr(jtranp+92+j-1)&
-                      )
+            sb(j) = zr(jtranp+18+j-1)-zr(jtranp+12+j-1)
+            sbet(j) = (zr(jtranp+18+j-1)-zr(jtranp+98+j-1))-(zr(jtranp+12+j-1)-zr(jtranp+92+j-1) &
+                                                             )
             smoypr1(j) = zr(jtranp+24+j-1)
             smoypr2(j) = zr(jtranp+30+j-1)
         end do
@@ -204,7 +204,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
     else
         instpmin = -1.0
         instpmax = -1.0
-    endif
+    end if
 !
 !-- SC partie unitaire avec interpolation des moments
     do j = 1, 6
@@ -224,7 +224,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                 A1(k) = (mbp(k)-map(k))/(tempb-tempa)
                 B1(k) = (map(k)*tempb-mbp(k)*tempa)/(tempb-tempa)
             end do
-        endif
+        end if
 !
         if (tranp) then
             tempmin = zr(jtranp+88)
@@ -232,7 +232,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
             do k = 1, 12
                 mominp(k) = A1(k)*tempmin+B1(k)
                 momaxp(k) = A1(k)*tempmax+B1(k)
-                mij(k)=momaxp(k)-mominp(k)
+                mij(k) = momaxp(k)-mominp(k)
             end do
         else
             call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp)
@@ -243,16 +243,16 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                 else
                     mominp(k) = A1(k)*zr(jtemp+1)+B1(k)
                     momaxp(k) = A1(k)*zr(jtemp+1)+B1(k)
-                endif
-                mij(k)=mominp(k)
+                end if
+                mij(k) = mominp(k)
             end do
-        endif
+        end if
         do j = 1, 6
             do k = 1, 12
-                sc(j) = sc(j) + mij(k)*zr(jsigu-1+78+6*(k-1)+j)
+                sc(j) = sc(j)+mij(k)*zr(jsigu-1+78+6*(k-1)+j)
             end do
         end do
-    endif
+    end if
 !--------------------------------------------------------------------
 !                  DANS LE CAS D'UNE SITUATION SEULE
 !                          CALCUL DE SN(P,P)
@@ -266,7 +266,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
 !
         if (ze200) then
 ! ----- si on est en ZE200
-            call rcZ2s0('SN', map, mbp, presap, presbp,&
+            call rcZ2s0('SN', map, mbp, presap, presbp, &
                         ns, s2pp)
             call rctres(sb, tresca)
             sn = s2pp+tresca
@@ -289,15 +289,15 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     sn = max(sn, tresca)
                     call rc32s0b(zr(jsnseis), stet, tresca)
                     snet = max(snet, tresca)
-                endif
+                end if
                 if (.not. unitaire) exit
             end do
-        endif
+        end if
 !
-        instsn(1)=instpmin
-        instsn(2)=instpmax
-        instsn(3)=instpmin
-        instsn(4)=instpmax
+        instsn(1) = instpmin
+        instsn(2) = instpmax
+        instsn(3) = instpmin
+        instsn(4) = instpmax
 !
 !-- Pour le calcul du rochet thermique
         do j = 1, 6
@@ -308,18 +308,18 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                 call rc32rt(presap, presbp, sigmoypres)
             else
                 do j = 1, 6
-                    pij = max(abs(presap),abs(presbp))
+                    pij = max(abs(presap), abs(presbp))
                     sipr(j) = pij*zr(jsigu-1+156+72+j)
                 end do
                 call rctres(sipr, sigmoypres)
-            endif
+            end if
         else if (npresp .eq. 2) then
-            sigmoypres =0.d0
+            sigmoypres = 0.d0
             call rctres(smoypr1, tresca)
             sigmoypres = max(tresca, sigmoypres)
             call rctres(smoypr2, tresca)
             sigmoypres = max(tresca, sigmoypres)
-        endif
+        end if
 !
 !-- Pour le calcul de snther, snpres
 !
@@ -333,13 +333,13 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
             call rctres(sipr1, snpres)
             if (ns .eq. 0 .and. .not. ze200) call rctres(simec1, snmec)
             if (ns .ne. 0 .and. .not. ze200) call rc32s0b(zr(jsnseis), simec1, snmec)
-        endif
+        end if
 !
     else
 !--------------------------------------------------------------------
 !                  DANS LE CAS D'UNE COMBINAISON DE SITUATIONS
 !--------------------------------------------------------------------
-        choix =1
+        choix = 1
 !-- on regarde si la pression est sous forme unitaire ou transitoire
 !-- on regarde si la méca est sous forme unitaire ou transitoire
         nmecaq = zi(jinfoi+27*(iocc2-1)+23)
@@ -353,8 +353,8 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
         if (.not. ze200) then
             if (nmecaq .eq. 1 .or. nmecaq .eq. 3 .or. npresq .eq. 1) then
                 call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
-            endif
-        endif
+            end if
+        end if
 !
         do k = 1, 12
             maq(k) = 0.d0
@@ -380,7 +380,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                 maq(k) = zr(jchara-1+k)
                 mbq(k) = zr(jcharb-1+k)
             end do
-        endif
+        end if
 !
 !-- SA partie unitaire (moments et/ou pression)
         do j = 1, 6
@@ -399,7 +399,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                         sa4(j) = sa4(j)+mbp(k)*zr(jsigu-1+78+6*(k-1)+j)
                     end do
                 end do
-            endif
+            end if
 !
             if (nmecaq .eq. 1) then
                 do j = 1, 6
@@ -410,7 +410,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                         sa4(j) = sa4(j)-maq(k)*zr(jsigu-1+78+6*(k-1)+j)
                     end do
                 end do
-            endif
+            end if
 !
             if (npresp .eq. 1 .or. npresq .eq. 1) then
                 do j = 1, 6
@@ -419,8 +419,8 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     sa3(j) = sa3(j)+(presbp-presbq)*zr(jsigu-1+78+72+j)
                     sa4(j) = sa4(j)+(presbp-presaq)*zr(jsigu-1+78+72+j)
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !-- SB partie transitoire
         do j = 1, 6
@@ -459,20 +459,20 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
         else
             instqmin = -1.0
             instqmax = -1.0
-        endif
+        end if
 !
         if (tranp) then
             if (tranq) then
                 do j = 1, 6
-                    sb1(j) = zr(jtranp+18+j-1) -zr(jtranq+12+j-1)
-                    sb2(j) = zr(jtranq+18+j-1) -zr(jtranp+12+j-1)
-                    sbet1(j) = (&
-                               zr(jtranp+18+j-1)-zr(jtranp+98+j-1)) -(zr(jtranq+12+j-1)-zr(jtranq&
-                               &+92+j-1)&
+                    sb1(j) = zr(jtranp+18+j-1)-zr(jtranq+12+j-1)
+                    sb2(j) = zr(jtranq+18+j-1)-zr(jtranp+12+j-1)
+                    sbet1(j) = ( &
+                               zr(jtranp+18+j-1)-zr(jtranp+98+j-1))-(zr(jtranq+12+j-1)-zr(jtranq&
+                               &+92+j-1) &
                                )
-                    sbet2(j) = (&
-                               zr(jtranq+18+j-1)-zr(jtranq+98+j-1)) -(zr(jtranp+12+j-1)-zr(jtranp&
-                               &+92+j-1)&
+                    sbet2(j) = ( &
+                               zr(jtranq+18+j-1)-zr(jtranq+98+j-1))-(zr(jtranp+12+j-1)-zr(jtranp&
+                               &+92+j-1) &
                                )
                     sith1(j) = zr(jtranp+42+j-1)-zr(jtranq+36+j-1)
                     sith2(j) = zr(jtranq+42+j-1)-zr(jtranp+36+j-1)
@@ -490,11 +490,11 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     sith1(j) = zr(jtranp+42+j-1)
                     sith2(j) = -zr(jtranp+36+j-1)
                     sipr1(j) = zr(jtranp+54+j-1)
-                    sipr2(j) =-zr(jtranp+48+j-1)
+                    sipr2(j) = -zr(jtranp+48+j-1)
                     simec1(j) = zr(jtranp+66+j-1)
                     simec2(j) = -zr(jtranp+60+j-1)
                 end do
-            endif
+            end if
         else
             if (tranq) then
                 do j = 1, 6
@@ -509,8 +509,8 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     simec1(j) = -zr(jtranq+60+j-1)
                     simec2(j) = zr(jtranq+66+j-1)
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !-- SC partie unitaire avec interpolation des moments
         do j = 1, 6
@@ -531,7 +531,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     A1(k) = (mbq(k)-maq(k))/(tempb-tempa)
                     B1(k) = (maq(k)*tempb-mbq(k)*tempa)/(tempb-tempa)
                 end do
-            endif
+            end if
 !
             if (tranq) then
                 tempmin = zr(jtranq+88)
@@ -549,19 +549,19 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     else
                         mominq(k) = A1(k)*zr(jtemp+1)+B1(k)
                         momaxq(k) = A1(k)*zr(jtemp+1)+B1(k)
-                    endif
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
 !
         if (nmecaq .eq. 3 .or. nmecap .eq. 3) then
             do j = 1, 6
                 do k = 1, 12
-                    sc1(j) = sc1(j) + (momaxp(k)-mominq(k))*zr(jsigu-1+78+6*(k-1)+j)
-                    sc2(j) = sc2(j) + (momaxq(k)-mominp(k))*zr(jsigu-1+78+6*(k-1)+j)
+                    sc1(j) = sc1(j)+(momaxp(k)-mominq(k))*zr(jsigu-1+78+6*(k-1)+j)
+                    sc2(j) = sc2(j)+(momaxq(k)-mominp(k))*zr(jsigu-1+78+6*(k-1)+j)
                 end do
             end do
-        endif
+        end if
 !
 ! --------------------------------------------------------------
 !                          CALCUL DE SN(P,Q)
@@ -574,17 +574,17 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
 !
         if (ze200) then
 ! ----- si on est en ZE200
-            tresca= -1.d0
-            call rcZ2s0('SN', map, mbq, presap, presbq,&
+            tresca = -1.d0
+            call rcZ2s0('SN', map, mbq, presap, presbq, &
                         ns, s2pp)
             s2 = max(s2, s2pp)
-            call rcZ2s0('SN', map, maq, presap, presaq,&
+            call rcZ2s0('SN', map, maq, presap, presaq, &
                         ns, s2pp)
             s2 = max(s2, s2pp)
-            call rcZ2s0('SN', mbp, maq, presbp, presaq,&
+            call rcZ2s0('SN', mbp, maq, presbp, presaq, &
                         ns, s2pp)
             s2 = max(s2, s2pp)
-            call rcZ2s0('SN', mbp, mbq, presbp, presbq,&
+            call rcZ2s0('SN', mbp, mbq, presbp, presbq, &
                         ns, s2pp)
             s2 = max(s2, s2pp)
             call rctres(sb1, tresca1)
@@ -594,7 +594,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                 call rctres(sipr1, snpres)
                 instsn(1) = instpmax
                 instsn(2) = instqmin
-            endif
+            end if
             call rctres(sb2, tresca2)
             if (tresca2 .gt. tresca) then
                 tresca = tresca2
@@ -602,22 +602,22 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                 call rctres(sipr2, snpres)
                 instsn(1) = instqmax
                 instsn(2) = instpmin
-            endif
+            end if
             sn = s2+tresca
 !
-            tresca= -1.d0
+            tresca = -1.d0
             call rctres(sbet1, tresca1)
             if (tresca1 .gt. tresca) then
                 tresca = tresca1
                 instsn(3) = instpmax
                 instsn(4) = instqmin
-            endif
+            end if
             call rctres(sbet2, tresca2)
             if (tresca2 .gt. tresca) then
                 tresca = tresca2
                 instsn(3) = instqmax
                 instsn(4) = instpmin
-            endif
+            end if
             snet = s2+tresca
         else
 ! ----- si on est en B3200
@@ -641,7 +641,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                         stet22(j) = sbet2(j)+sc2(j)+e0(i0)*sa2(j)
                         stet23(j) = sbet2(j)+sc2(j)+e0(i0)*sa3(j)
                         stet24(j) = sbet2(j)+sc2(j)+e0(i0)*sa4(j)
-                    endif
+                    end if
                 end do
 !
 !-------- Calcul du SN sans séisme
@@ -651,45 +651,45 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     if (tresca .gt. sn) then
                         sn = tresca
                         choix = 1
-                    endif
+                    end if
                     call rctres(st21, tresca)
                     if (tresca .gt. sn) then
                         sn = tresca
                         choix = 2
-                    endif
+                    end if
 !
                     if (unitaire) then
                         call rctres(st12, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rctres(st13, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rctres(st14, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rctres(st22, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rctres(st23, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rctres(st24, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=2
-                        endif
-                    endif
+                            choix = 2
+                        end if
+                    end if
 !
                     if (choix .eq. 1) then
                         instsn(1) = instpmax
@@ -703,54 +703,54 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                         call rctres(sith2, snther)
                         call rctres(sipr2, snpres)
                         call rctres(simec2, snmec)
-                    endif
-                endif
+                    end if
+                end if
 !
 !-------- Calcul du SN avec séisme
                 if (ns .ne. 0) then
                     call rc32s0b(zr(jsnseis), st11, tresca)
                     if (tresca .gt. sn) then
                         sn = tresca
-                        choix=1
-                    endif
+                        choix = 1
+                    end if
                     call rc32s0b(zr(jsnseis), st21, tresca)
                     if (tresca .gt. sn) then
                         sn = tresca
-                        choix=2
-                    endif
+                        choix = 2
+                    end if
 !
                     if (unitaire) then
                         call rc32s0b(zr(jsnseis), st12, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rc32s0b(zr(jsnseis), st13, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rc32s0b(zr(jsnseis), st14, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rc32s0b(zr(jsnseis), st22, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rc32s0b(zr(jsnseis), st23, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rc32s0b(zr(jsnseis), st24, tresca)
                         if (tresca .gt. sn) then
                             sn = tresca
-                            choix=2
-                        endif
-                    endif
+                            choix = 2
+                        end if
+                    end if
 !
                     if (choix .eq. 1) then
                         instsn(1) = instpmax
@@ -764,8 +764,8 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                         call rctres(sith2, snther)
                         call rctres(sipr2, snpres)
                         call rc32s0b(zr(jsnseis), simec2, snmec)
-                    endif
-                endif
+                    end if
+                end if
 !
 !-------- Calcul du SN* sans séisme
                 if (ns .eq. 0) then
@@ -774,45 +774,45 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     if (tresca .gt. snet) then
                         snet = tresca
                         choix = 1
-                    endif
+                    end if
                     call rctres(stet21, tresca)
                     if (tresca .gt. snet) then
                         snet = tresca
                         choix = 2
-                    endif
+                    end if
 !
                     if (unitaire) then
                         call rctres(stet12, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rctres(stet13, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rctres(stet14, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rctres(stet22, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rctres(stet23, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rctres(stet24, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=2
-                        endif
-                    endif
+                            choix = 2
+                        end if
+                    end if
 !
                     if (choix .eq. 1) then
                         instsn(3) = instpmax
@@ -820,8 +820,8 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     else
                         instsn(3) = instqmax
                         instsn(4) = instpmin
-                    endif
-                endif
+                    end if
+                end if
 !
 !-------- Calcul du SN* avec séisme
                 if (ns .ne. 0) then
@@ -830,45 +830,45 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     if (tresca .gt. snet) then
                         snet = tresca
                         choix = 1
-                    endif
+                    end if
                     call rc32s0b(zr(jsnseis), stet21, tresca)
                     if (tresca .gt. snet) then
                         snet = tresca
                         choix = 2
-                    endif
+                    end if
 !
                     if (unitaire) then
                         call rc32s0b(zr(jsnseis), stet12, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rc32s0b(zr(jsnseis), stet13, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rc32s0b(zr(jsnseis), stet14, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=1
-                        endif
+                            choix = 1
+                        end if
                         call rc32s0b(zr(jsnseis), stet22, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rc32s0b(zr(jsnseis), stet23, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=2
-                        endif
+                            choix = 2
+                        end if
                         call rc32s0b(zr(jsnseis), stet24, tresca)
                         if (tresca .gt. snet) then
                             snet = tresca
-                            choix=2
-                        endif
-                    endif
+                            choix = 2
+                        end if
+                    end if
 !
                     if (choix .eq. 1) then
                         instsn(3) = instpmax
@@ -876,14 +876,14 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns,&
                     else
                         instsn(3) = instqmax
                         instsn(4) = instpmin
-                    endif
-                endif
+                    end if
+                end if
 !
                 if (.not. unitaire) exit
 !
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !-----------------------------------------------------------
 !   CALCUL DE LA PARTIE SP3 (QUI DEPEND DES INSTANTS DE SN)

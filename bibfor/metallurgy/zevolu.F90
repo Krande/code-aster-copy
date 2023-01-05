@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,27 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zevolu(kine_type,&
-                  zbeta    , zbetam,&
-                  dinst    , tp    ,&
-                  k        , n     ,&
-                  tdeq     , tfeq  ,&
-                  coeffc   ,&
-                  m        , ar    , br,&
-                  g        , dg)
+subroutine zevolu(kine_type, &
+                  zbeta, zbetam, &
+                  dinst, tp, &
+                  k, n, &
+                  tdeq, tfeq, &
+                  coeffc, &
+                  m, ar, br, &
+                  g, dg)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/tempeq.h"
 #include "asterfort/Metallurgy_type.h"
 !
-integer, intent(in) :: kine_type
-real(kind=8), intent(in) :: zbeta, zbetam
-real(kind=8), intent(in) :: tdeq, tfeq
-real(kind=8), intent(in) :: k, n
-real(kind=8), intent(in) :: dinst, tp
-real(kind=8), intent(in) :: coeffc, m, ar, br
-real(kind=8), intent(out) :: g, dg
+    integer, intent(in) :: kine_type
+    real(kind=8), intent(in) :: zbeta, zbetam
+    real(kind=8), intent(in) :: tdeq, tfeq
+    real(kind=8), intent(in) :: k, n
+    real(kind=8), intent(in) :: dinst, tp
+    real(kind=8), intent(in) :: coeffc, m, ar, br
+    real(kind=8), intent(out) :: g, dg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,26 +68,26 @@ real(kind=8), intent(out) :: g, dg
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    g  = 0.d0
+    g = 0.d0
     dg = 0.d0
 !
 ! - Evaluate equivalent temperature
 !
-    call tempeq(zbeta,&
-                tdeq , tfeq ,&
-                k    , n    ,&
-                teq  , dvteq)
+    call tempeq(zbeta, &
+                tdeq, tfeq, &
+                k, n, &
+                teq, dvteq)
 !
 ! - Compute G function
 !
     if (kine_type .eq. HEATING) then
-        g  = zbeta-zbetam-dinst*coeffc*((abs(tp-teq))**m)
+        g = zbeta-zbetam-dinst*coeffc*((abs(tp-teq))**m)
         dg = 1.d0+m*dinst*coeffc*((abs(tp-teq))**(m-1.d0))*dvteq
     else
-        g  = dinst*exp(ar+br*abs(tp-teq))
+        g = dinst*exp(ar+br*abs(tp-teq))
         dg = 1.d0+abs(tp-teq)*g*(1.d0-2.d0*zbeta)
         dg = dg+dvteq*g*zbeta*(1.d0-zbeta)*(1.d0+br*abs(tp-teq))
-        g  = zbeta-zbetam+abs(tp-teq)*g*zbeta*(1.d0-zbeta)
-    endif
+        g = zbeta-zbetam+abs(tp-teq)*g*zbeta*(1.d0-zbeta)
+    end if
 !
 end subroutine

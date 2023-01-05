@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 !
 subroutine resuReadGetParameters(mesh, model, caraElem, fieldMate)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=8), intent(out) :: mesh, model, caraElem, fieldMate
+    character(len=8), intent(out) :: mesh, model, caraElem, fieldMate
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,17 +47,17 @@ character(len=8), intent(out) :: mesh, model, caraElem, fieldMate
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model     = ' '
-    mesh      = ' '
+    model = ' '
+    mesh = ' '
     fieldMate = ' '
-    caraElem  = ' '
+    caraElem = ' '
 !
 ! - Get model
 !
     call getvid(' ', 'MODELE', scal=model, nbret=nbOcc)
     if (nbOcc .eq. 0) then
         call getvid(' ', 'MODELE', scal=model, nbret=iret)
-    endif
+    end if
 !
 ! - Get mesh
 !
@@ -66,20 +66,20 @@ character(len=8), intent(out) :: mesh, model, caraElem, fieldMate
         ligrel = model//'.MODELE'
         call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
         mesh = lgrf(1)
-    endif
+    end if
 !
 ! - Get material
 !
     call getvid(' ', 'CHAM_MATER', nbval=0, nbret=nbOcc)
     if (nbOcc .ne. 0) then
         call getvid(' ', 'CHAM_MATER', scal=fieldMate, nbret=iret)
-    endif
+    end if
 !
 ! - Get elementary characteristics
 !
     call getvid(' ', 'CARA_ELEM', nbval=0, nbret=nbOcc)
     if (nbOcc .ne. 0) then
         call getvid(' ', 'CARA_ELEM', scal=caraElem, nbret=iret)
-    endif
+    end if
 !
 end subroutine

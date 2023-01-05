@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine asmpi_comm_logical(op, nbval, scl, vl)
 !
-implicit none
+    implicit none
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -47,22 +47,22 @@ implicit none
     integer(kind=4) :: i
     integer(kind=4), pointer :: vi4(:) => null()
 !
-    if( present(scl) ) then
-        if(scl) then
+    if (present(scl)) then
+        if (scl) then
             i = 1
         else
             i = 0
         end if
 !
-        if( op == "MPI_LAND" ) then
+        if (op == "MPI_LAND") then
             call asmpi_comm_vect('MPI_MIN', 'S', sci4=i)
-        elseif( op == "MPI_LOR" ) then
+        elseif (op == "MPI_LOR") then
             call asmpi_comm_vect('MPI_MAX', 'S', sci4=i)
         else
             ASSERT(ASTER_FALSE)
         end if
 !
-        if(i == 0) then
+        if (i == 0) then
             scl = ASTER_FALSE
         else
             scl = ASTER_TRUE
@@ -72,23 +72,23 @@ implicit none
         ASSERT(present(nbval))
         AS_ALLOCATE(vi4=vi4, size=nbval)
         do i = 1, nbval
-            if(vl(i)) then
+            if (vl(i)) then
                 vi4(i) = 1
             else
                 vi4(i) = 0
             end if
         end do
 !
-        if( op == "MPI_LAND" ) then
+        if (op == "MPI_LAND") then
             call asmpi_comm_vect('MPI_MIN', 'S', nbval=nbval, vi4=vi4)
-        elseif( op == "MPI_LOR" ) then
+        elseif (op == "MPI_LOR") then
             call asmpi_comm_vect('MPI_MAX', 'S', nbval=nbval, vi4=vi4)
         else
             ASSERT(ASTER_FALSE)
         end if
 !
         do i = 1, nbval
-            if(vi4(i) == 0) then
+            if (vi4(i) == 0) then
                 vl(i) = ASTER_FALSE
             else
                 vl(i) = ASTER_TRUE

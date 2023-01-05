@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
+subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar, &
                   immer)
     implicit none
 !  DESCRIPTION : TENTATIVE D'IMMERSION D'UN NOEUD CABLE X3DCA(3) DANS
@@ -73,65 +73,65 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
-    facnp1=.false.
+    facnp1 = .false.
 !
 !CCC    ORIENTATION FACE QUADRANGULAIRE NOEUDS 1-2-3-4
 !
-    f1(1)=1
-    f1(2)=2
-    f1(3)=3
-    f1(4)=4
+    f1(1) = 1
+    f1(2) = 2
+    f1(3) = 3
+    f1(4) = 4
 !
-    call cotfac(xyzma, f1(1), f1(2), f1(3), 5,&
+    call cotfac(xyzma, f1(1), f1(2), f1(3), 5, &
                 xyzma(1, f1(4)), idc)
     if (idc .lt. 0) then
-        ii =f1(4)
-        f1(4)=f1(1)
-        f1(1)=f1(2)
-        f1(2)=f1(3)
-        f1(3)=ii
-        facnp1=.true.
-    endif
+        ii = f1(4)
+        f1(4) = f1(1)
+        f1(1) = f1(2)
+        f1(2) = f1(3)
+        f1(3) = ii
+        facnp1 = .true.
+    end if
 !
 !
-    ii=0
+    ii = 0
 !CCC    POSITION COTE INTERNE PREMIERE FACE (2 PLANS)
-    call cotfac(xyzma, f1(1), f1(2), f1(3), 5,&
+    call cotfac(xyzma, f1(1), f1(2), f1(3), 5, &
                 x3dca(1), id(1))
     if (id(1) .ge. 0) then
-        ii=ii+1
-        call cotfac(xyzma, f1(3), f1(4), f1(1), 5,&
+        ii = ii+1
+        call cotfac(xyzma, f1(3), f1(4), f1(1), 5, &
                     x3dca(1), id(2))
 !
 !CCC    POSITION COTE INTERNE DEUXIEME FACE (1 PLAN)
         if (id(2) .ge. 0) then
-            ii=ii+1
-            call cotfac(xyzma, 1, 2, 5, 3,&
+            ii = ii+1
+            call cotfac(xyzma, 1, 2, 5, 3, &
                         x3dca(1), id(3))
 !
 !CCC    POSITION COTE INTERNE TROISIEME FACE (1 PLAN)
             if (id(3) .ge. 0) then
-                ii=ii+1
-                call cotfac(xyzma, 2, 3, 5, 4,&
+                ii = ii+1
+                call cotfac(xyzma, 2, 3, 5, 4, &
                             x3dca(1), id(4))
 !
 !CCC    POSITION COTE INTERNE QUATRIEME FACE (1 PLAN)
                 if (id(4) .ge. 0) then
-                    ii=ii+1
-                    call cotfac(xyzma, 3, 4, 5, 1,&
+                    ii = ii+1
+                    call cotfac(xyzma, 3, 4, 5, 1, &
                                 x3dca(1), id(5))
 !
 !CCC    POSITION COTE INTERNE CINQUIEME FACE (1 PLAN)
                     if (id(5) .ge. 0) then
-                        ii=ii+1
-                        call cotfac(xyzma, 4, 1, 5, 2,&
+                        ii = ii+1
+                        call cotfac(xyzma, 4, 1, 5, 2, &
                                     x3dca(1), id(6))
-                        if (id(6) .ge. 0) ii=ii+1
-                    endif
-                endif
-            endif
-        endif
-    endif
+                        if (id(6) .ge. 0) ii = ii+1
+                    end if
+                end if
+            end if
+        end if
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD A L EXTERIEUR DU VOLUME DE LA MAILLE
@@ -140,14 +140,14 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
     if (ii .lt. 6) then
 !
-        immer=-1
+        immer = -1
         goto 999
 !
     else
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        ktest=0
+        ktest = 0
         do j = 1, 6
-            ktest=ktest+id(j)
+            ktest = ktest+id(j)
         end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,16 +159,16 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
             if (nbcnx .eq. 13) then
                 do j = 6, 13, 1
-                    dx = xyzma(1,j) - x3dca(1)
-                    dy = xyzma(2,j) - x3dca(2)
-                    dz = xyzma(3,j) - x3dca(3)
-                    d = dx*dx + dy*dy + dz*dz
+                    dx = xyzma(1, j)-x3dca(1)
+                    dy = xyzma(2, j)-x3dca(2)
+                    dz = xyzma(3, j)-x3dca(3)
+                    d = dx*dx+dy*dy+dz*dz
                     if (d .lt. r8prem()) then
-                        immer=2
+                        immer = 2
                         goto 999
-                    endif
+                    end if
                 end do
-            endif
+            end if
 !
 !     TEST D'APPARTENANCE A UN SOUS-DOMAINE TETRAEDRE, PAR DETERMINATION
 !     DES COORDONNEES BARYCENTRIQUES (DECOUPAGE DU PYRA EN DEUX TETRAS)
@@ -176,14 +176,14 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 !.....TETRAEDRE 1-2-3-5
 !
             itetra = 1
-            call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 5),&
+            call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 5), &
                         x3dca(1), xbar(1), immer)
             if (immer .ge. 0) goto 999
 !
 !.... TETRAEDRE 1-3-4-5
 !
             itetra = 2
-            call tstbar(4, xyzma(1, 1), xyzma(1, 3), xyzma(1, 4), xyzma(1, 5),&
+            call tstbar(4, xyzma(1, 1), xyzma(1, 3), xyzma(1, 4), xyzma(1, 5), &
                         x3dca(1), xbar(1), immer)
             if (immer .ge. 0) goto 999
 !
@@ -194,14 +194,14 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
             if (facnp1) then
                 itetra = 3
-                call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 4),&
+                call tstbar(4, xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), xyzma(1, 4), &
                             x3dca(1), xbar(1), immer)
                 if (immer .ge. 0) goto 999
-            endif
+            end if
 !
             if (immer .lt. 0) then
                 call utmess('F', 'MODELISA4_72')
-            endif
+            end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !      NOEUD COINCIDANT AVEC UN NOEUD SOMMET -APPARTIENT A + DE 3 PLANS
@@ -210,11 +210,11 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
         else
 !
-            immer=2
+            immer = 2
             goto 999
 !
-        endif
-    endif
+        end if
+    end if
 !
 999 continue
 !

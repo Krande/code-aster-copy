@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,40 +58,40 @@ subroutine dismqu(questi, nomobz, repi, repkz, ierd)
     call jemarq()
     nomob = nomobz
     repk = ' '
-    repi=0
+    repi = 0
     ierd = 0
 !
     if (questi .eq. 'ELEM_VOLU_QUAD') then
-        nboui=0
-        nbnon=0
+        nboui = 0
+        nbnon = 0
         call jeexin(nomob//'.LIEL', iret)
-        ierd=1
+        ierd = 1
         if (iret .gt. 0) then
             call jelira(nomob//'.LIEL', 'NUTIOC', nbgr)
             do igr = 1, nbgr
                 call jeveuo(jexnum(nomob//'.LIEL', igr), 'L', iagrel)
                 call jelira(jexnum(nomob//'.LIEL', igr), 'LONMAX', n1)
-                ite=zi(iagrel-1+n1)
+                ite = zi(iagrel-1+n1)
                 call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
-                if (nomte .eq. 'MECA_HEXA20' .or. nomte .eq. 'MECA_HEXA27' .or. nomte .eq.&
-                    'MECA_PENTA15' .or. nomte .eq. 'MECA_TETRA10' .or. nomte .eq.&
-                    'MECA_PYRAM13' .or. nomte .eq. 'MECA_HEXS20' .or. nomte .eq.&
+                if (nomte .eq. 'MECA_HEXA20' .or. nomte .eq. 'MECA_HEXA27' .or. nomte .eq. &
+                    'MECA_PENTA15' .or. nomte .eq. 'MECA_TETRA10' .or. nomte .eq. &
+                    'MECA_PYRAM13' .or. nomte .eq. 'MECA_HEXS20' .or. nomte .eq. &
                     'MECA_PENTA18') then
                     repk = 'OUI'
-                    nboui=nboui+1
-                    else if(nomte.eq.'MECA_HEXA8' .or.&
-     &          nomte.eq.'MECA_PENTA6'.or.nomte.eq.'MECA_TETRA4'.or.&
-     &          nomte.eq.'MECA_PYRAM5') then
+                    nboui = nboui+1
+                else if (nomte .eq. 'MECA_HEXA8' .or.&
+ &          nomte .eq. 'MECA_PENTA6' .or. nomte .eq. 'MECA_TETRA4' .or.&
+ &          nomte .eq. 'MECA_PYRAM5') then
                     repk = 'NON'
-                    nbnon=nbnon+1
-                endif
-                ierd=0
+                    nbnon = nbnon+1
+                end if
+                ierd = 0
             end do
-        endif
-        if (nboui .ne. 0 .and. nbnon .ne. 0) repk='MEL'
+        end if
+        if (nboui .ne. 0 .and. nbnon .ne. 0) repk = 'MEL'
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
 !
     repkz = repk

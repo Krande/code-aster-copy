@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine nmcrpo(nomsd, nume, inst, lselec)
         tolr = abs(inst)*tole
     else
         tolr = abs(tole)
-    endif
+    end if
 !
 ! --- TYPE DE SELECTION (INSTANT OU FREQUENCE)
 !
@@ -88,11 +88,11 @@ subroutine nmcrpo(nomsd, nume, inst, lselec)
         typsel = 'INST'
     else
         typsel = 'FREQ'
-    endif
+    end if
 !
 ! --- RECHERCHE
 !
-    call nmcrit(nomsd, nbinst, typsel, nume, inst,&
+    call nmcrit(nomsd, nbinst, typsel, nume, inst, &
                 freq, tolr, lselec)
 !
 !

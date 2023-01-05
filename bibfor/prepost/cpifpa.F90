@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine cpifpa(main, maout)
 ! -------------------------------------------------------------------------------------------------
     integer :: nbpatch, nbinfo, odcnpa, odcmpa
     integer :: nwpath, odpath, jcnnpa, jcnmpa
-    integer :: inc1, inc2, nbma ,nbno,info, lonpat
+    integer :: inc1, inc2, nbma, nbno, info, lonpat
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !
@@ -48,34 +48,34 @@ subroutine cpifpa(main, maout)
     nbno = zi(info-1+1)
     nbma = zi(info-1+3)
 ! ------ RECOPIE .PATCH
-    call jelira(main//'.PATCH','NUTIOC',nbpatch)
-    call jelira(main//'.PATCH','LONT',lonpat)
+    call jelira(main//'.PATCH', 'NUTIOC', nbpatch)
+    call jelira(main//'.PATCH', 'LONT', lonpat)
     call jedetr(maout//'.PATCH')
-    call jecrec(maout//'.PATCH','G V I', 'NU', 'CONTIG', 'VARIABLE', nbpatch)
-    call jeecra(maout//'.PATCH', 'LONT',lonpat)
-    do inc1=1, nbpatch
+    call jecrec(maout//'.PATCH', 'G V I', 'NU', 'CONTIG', 'VARIABLE', nbpatch)
+    call jeecra(maout//'.PATCH', 'LONT', lonpat)
+    do inc1 = 1, nbpatch
         call jeveuo(jexnum(main//'.PATCH', inc1), 'L', odpath)
         call jelira(jexnum(main//'.PATCH', inc1), 'LONUTI', nbinfo)
-        call jecroc(jexnum(maout//'.PATCH',inc1))
-        call jeecra(jexnum(maout//'.PATCH',inc1), 'LONMAX',nbinfo)
-        call jeecra(jexnum(maout//'.PATCH',inc1), 'LONUTI',nbinfo)
-        call jeveuo(jexnum(maout//'.PATCH',inc1), 'E', nwpath)
-        do inc2=1, nbinfo
+        call jecroc(jexnum(maout//'.PATCH', inc1))
+        call jeecra(jexnum(maout//'.PATCH', inc1), 'LONMAX', nbinfo)
+        call jeecra(jexnum(maout//'.PATCH', inc1), 'LONUTI', nbinfo)
+        call jeveuo(jexnum(maout//'.PATCH', inc1), 'E', nwpath)
+        do inc2 = 1, nbinfo
             zi(nwpath+inc2-1) = zi(odpath+inc2-1)
         end do
     end do
 ! ------ RECOPIE .CONOPA
     call jedetr(maout//'.CONOPA')
-    call wkvect(maout//'.CONOPA', 'G V I',nbno, jcnnpa)
+    call wkvect(maout//'.CONOPA', 'G V I', nbno, jcnnpa)
     call jeveuo(main//'.CONOPA', 'L', odcnpa)
-    do inc1=1,nbno
+    do inc1 = 1, nbno
         zi(jcnnpa+inc1-1) = zi(odcnpa+inc1-1)
     end do
 ! ------ RECOPIE .COMAPA
     call jedetr(maout//'.COMAPA')
     call wkvect(maout//'.COMAPA', 'G V I', nbma, jcnmpa)
     call jeveuo(main//'.COMAPA', 'L', odcmpa)
-    do inc1=1,nbma
+    do inc1 = 1, nbma
         zi(jcnmpa+inc1-1) = zi(odcmpa+inc1-1)
     end do
 !

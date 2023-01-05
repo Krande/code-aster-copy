@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W1306
 !
-subroutine ngfint(option, typmod, ndim, nddl, neps,&
-                  npg, w, b, compor, fami,&
-                  mat, angmas, lgpg, crit, instam,&
-                  instap, ddlm, ddld, ni2ldc, sigmam,&
-                  vim, sigmap, vip, fint, matr,&
-                  lMatr, lVect, lSigm,&
+subroutine ngfint(option, typmod, ndim, nddl, neps, &
+                  npg, w, b, compor, fami, &
+                  mat, angmas, lgpg, crit, instam, &
+                  instap, ddlm, ddld, ni2ldc, sigmam, &
+                  vim, sigmap, vip, fint, matr, &
+                  lMatr, lVect, lSigm, &
                   codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,17 +37,17 @@ implicit none
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 !
-character(len=8) :: typmod(*)
-character(len=*) :: fami
-character(len=16) :: option, compor(*)
-integer :: ndim, nddl, neps, npg, mat, lgpg
-real(kind=8) :: w(neps,npg), ni2ldc(neps,npg), b(neps,npg,nddl)
-real(kind=8) :: angmas(3), crit(*), instam, instap
-real(kind=8) :: ddlm(nddl), ddld(nddl)
-real(kind=8) :: sigmam(neps,npg), sigmap(neps,npg)
-real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(nddl, nddl), fint(nddl)
-aster_logical,intent(in)       :: lMatr, lVect, lSigm
-integer,intent(out)            :: codret
+    character(len=8) :: typmod(*)
+    character(len=*) :: fami
+    character(len=16) :: option, compor(*)
+    integer :: ndim, nddl, neps, npg, mat, lgpg
+    real(kind=8) :: w(neps, npg), ni2ldc(neps, npg), b(neps, npg, nddl)
+    real(kind=8) :: angmas(3), crit(*), instam, instap
+    real(kind=8) :: ddlm(nddl), ddld(nddl)
+    real(kind=8) :: sigmam(neps, npg), sigmap(neps, npg)
+    real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(nddl, nddl), fint(nddl)
+    aster_logical, intent(in)       :: lMatr, lVect, lSigm
+    integer, intent(out)            :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,9 +84,9 @@ integer,intent(out)            :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nepg, g, i, cod(npg)
-    real(kind=8) :: sigm(neps,npg), sigp(neps,npg)
-    real(kind=8) :: epsm(neps,npg), epsd(neps,npg)
-    real(kind=8) :: dsidep(neps,neps,npg)
+    real(kind=8) :: sigm(neps, npg), sigp(neps, npg)
+    real(kind=8) :: epsm(neps, npg), epsd(neps, npg)
+    real(kind=8) :: dsidep(neps, neps, npg)
     real(kind=8) :: ktgb(0:neps*npg*nddl-1)
     type(Behaviour_Integ) :: BEHinteg
 !
@@ -104,26 +104,26 @@ integer,intent(out)            :: codret
 !
 ! - CALCUL DES DEFORMATIONS GENERALISEES
 !
-    call dgemv('N', nepg, nddl, 1.d0, b,&
-               nepg, ddlm, 1, 0.d0, epsm,&
+    call dgemv('N', nepg, nddl, 1.d0, b, &
+               nepg, ddlm, 1, 0.d0, epsm, &
                1)
-    call dgemv('N', nepg, nddl, 1.d0, b,&
-               nepg, ddld, 1, 0.d0, epsd,&
+    call dgemv('N', nepg, nddl, 1.d0, b, &
+               nepg, ddld, 1, 0.d0, epsd, &
                1)
 !
 ! - CALCUL DE LA LOI DE COMPORTEMENT
 !
 !    FORMAT LDC DES CONTRAINTES (AVEC RAC2)
-     sigm = sigmam*ni2ldc
+    sigm = sigmam*ni2ldc
 !
 !    LOI DE COMPORTEMENT EN CHAQUE POINT DE GAUSS
     do g = 1, npg
-        call nmcomp(BEHinteg,&
-                    fami, g, 1, ndim, typmod,&
-                    mat, compor, crit, instam, instap,&
-                    neps, epsm(:,g), epsd(:,g), neps, sigm(:,g),&
+        call nmcomp(BEHinteg, &
+                    fami, g, 1, ndim, typmod, &
+                    mat, compor, crit, instam, instap, &
+                    neps, epsm(:, g), epsd(:, g), neps, sigm(:, g), &
                     vim(1, g), option, angmas, &
-                    sigp(:,g), vip(1, g), neps*neps, dsidep(:,:,g), cod(g))
+                    sigp(:, g), vip(1, g), neps*neps, dsidep(:, :, g), cod(g))
         if (cod(g) .eq. 1) goto 900
     end do
 !
@@ -136,29 +136,29 @@ integer,intent(out)            :: codret
 !      PRISE EN CHARGE DU POIDS DU POINT DE GAUSS
         sigp = sigp*w
 !      FINT = SOMME(G) WG.BT.SIGMA
-        call dgemv('T', nepg, nddl, 1.d0, b,&
-                   nepg, sigp, 1, 0.d0, fint,&
+        call dgemv('T', nepg, nddl, 1.d0, b, &
+                   nepg, sigp, 1, 0.d0, fint, &
                    1)
-    endif
+    end if
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE (STOCKAGE PAR LIGNES SUCCESSIVES)
 !
     if (lMatr) then
 !      PRISE EN CHARGE DU POIDS DU POINT DE GAUSS  WG.DSIDEP
-        do i = 1,neps
-            dsidep(:,i,:) = dsidep(:,i,:)*w
+        do i = 1, neps
+            dsidep(:, i, :) = dsidep(:, i, :)*w
         end do
 !      CALCUL DES PRODUITS INTERMEDIAIRES (WG.DSIDEP).B POUR CHAQUE G
         do g = 1, npg
-            call dgemm('N', 'N', neps, nddl, neps,&
-                       1.d0, dsidep(1,1,g), neps, b(1, g, 1), nepg,&
+            call dgemm('N', 'N', neps, nddl, neps, &
+                       1.d0, dsidep(1, 1, g), neps, b(1, g, 1), nepg, &
                        0.d0, ktgb((g-1)*neps), nepg)
         end do
 !      CALCUL DU PRODUIT FINAL SOMME(G) BT. ((WG.DSIDEP).B)  TRANSPOSE
-        call dgemm('T', 'N', nddl, nddl, nepg,&
-                   1.d0, ktgb, nepg, b, nepg,&
+        call dgemm('T', 'N', nddl, nddl, nepg, &
+                   1.d0, ktgb, nepg, b, nepg, &
                    0.d0, matr, nddl)
-    endif
+    end if
 !
 ! - SYNTHESE DU CODE RETOUR
 900 continue

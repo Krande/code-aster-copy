@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! ----------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=3)
+    parameter(nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -102,7 +102,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- NOMBRE DE CHARGES
@@ -112,12 +112,12 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- PRESENCE DE CE GENRE DE CHARGEMENT
 !
-    nbdual = lisnbg(lischa,'DIRI_DUAL')
+    nbdual = lisnbg(lischa, 'DIRI_DUAL')
     if (nbdual .eq. 0) goto 99
 !
 ! --- ALLOCATION DU VECT_ELEM RESULTAT
 !
-    call memare('V', vecele, nomo, ' ', ' ',&
+    call memare('V', vecele, nomo, ' ', ' ', &
                 'CHAR_MECA')
     call reajre(vecele, ' ', 'V')
 !
@@ -128,7 +128,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! --- CARTE DE L'INSTANT
 !
     chtime = '&&VEDIMD.CH_INST_R'
-    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
+    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=instan)
 !
 ! --- CHAMPS D'ENTREES STANDARDS
@@ -141,7 +141,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! --- LISTE DES INDEX DES CHARGES
 !
     call lisnol(lischa, 'DIRI_DUAL', nomlis, nbch)
-    ASSERT(nbch.eq.1)
+    ASSERT(nbch .eq. 1)
     call jeveuo(nomlis, 'L', jlisci)
     indxch = zi(jlisci-1+1)
 !
@@ -149,7 +149,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
     do ichar = 1, nbchar
         call lislco(lischa, ichar, genrec)
-        ldual = lisico('DIRI_DUAL',genrec)
+        ldual = lisico('DIRI_DUAL', genrec)
         if (ldual) then
 !
 ! ------- PREFIXE DE L'OBJET DE LA CHARGE
@@ -166,7 +166,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! ------- CALCUL SI CHARGE EXISTANTE
 !
-            call lisopt(prefob, nomo, typech, indxch, option,&
+            call lisopt(prefob, nomo, typech, indxch, option, &
                         parain, paraou, carte, ligcal)
 !
 ! ------- CARTE D'ENTREE
@@ -179,23 +179,23 @@ subroutine vedimd(nomo, lischa, instan, vecele)
             lpaout(1) = paraou
             call gcnco2(newnom)
             lchout(1) = '&&VEDIMD.'//newnom(2:8)
-            call corich('E', lchout(1), ichin_ = ichar)
+            call corich('E', lchout(1), ichin_=ichar)
 !
 ! ------- CALCUL
 !
-            call calcul('S', option, ligcal, nbin, lchin,&
-                        lpain, nbout, lchout, lpaout, 'V',&
+            call calcul('S', option, ligcal, nbin, lchin, &
+                        lpain, nbout, lchout, lpaout, 'V', &
                         'OUI')
 !
 ! ------- RESU_ELEM DANS LE VECT_ELEM
 !
             call exisd('CHAMP_GD', lchout(1), iret)
-            ASSERT(iret.gt.0)
+            ASSERT(iret .gt. 0)
             call reajre(vecele, lchout(1), 'V')
-        endif
+        end if
     end do
 !
- 99 continue
+99  continue
 !
     call jedetr(nomlis)
 !

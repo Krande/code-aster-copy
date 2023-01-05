@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pcfalu(n, inc, ipc, inx, ipx,&
+subroutine pcfalu(n, inc, ipc, inx, ipx, &
                   index, imp)
     implicit none
     integer :: n
@@ -38,15 +38,15 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
 !  DEMI-LIGNE
     index(1) = 0
     do i = 2, n
-        index(i) = inc(i) - inc(i-1) - 1
+        index(i) = inc(i)-inc(i-1)-1
     end do
 !  SYMETRIQUES
     do i = 2, n
-        ii1 = inc(i-1) + 1
+        ii1 = inc(i-1)+1
         ii2 = inc(i)
-        do ii = ii1, ii2 - 1
+        do ii = ii1, ii2-1
             j = ipc(ii)
-            index(j) = index(j) + 1
+            index(j) = index(j)+1
         end do
     end do
 !
@@ -54,10 +54,10 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
         ii1 = index(1)
         ii2 = index(1)
         do i = 2, n
-            ii1 = min(ii1,index(i))
-            ii2 = max(ii2,index(i))
+            ii1 = min(ii1, index(i))
+            ii2 = max(ii2, index(i))
         end do
-    endif
+    end if
 !
 ! CALCUL NOUVEAU INX POINTEUR DEBUT DE LIGNE
 !                             QUI SE DECALE ENSUITE
@@ -66,7 +66,7 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
     inx(0) = 0
     inx(1) = 1
     do i = 2, n
-        inx(i) = inx(i-1) + index(i-1)
+        inx(i) = inx(i-1)+index(i-1)
     end do
 !
 !
@@ -77,14 +77,14 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
 !
     index(1) = 0
     do i = 2, n
-        ii1 = inc(i-1) + 1
+        ii1 = inc(i-1)+1
         ii2 = inc(i)
-        kkk = inx(i) - 1
-        do ii = ii1, ii2 - 1
-            kkk = kkk + 1
+        kkk = inx(i)-1
+        do ii = ii1, ii2-1
+            kkk = kkk+1
             ipx(kkk) = ipc(ii)
             j = ipc(ii)
-            index(j) = index(j) + 1
+            index(j) = index(j)+1
             ipx(index(j)) = int(i, 4)
         end do
         index(i) = kkk
@@ -94,15 +94,15 @@ subroutine pcfalu(n, inc, ipc, inx, ipx,&
 !  TRANSFORMATION DE INX DE DEBUT EN FIN DE LIGNE DE LU
 !  ----------------------------------------------------
     inx(0) = 0
-    do i = 1, n - 1
-        inx(i) = inx(i+1) - 1
+    do i = 1, n-1
+        inx(i) = inx(i+1)-1
     end do
     inx(n) = index(n)
 !
     if (imp .eq. 1) then
         do i = 1, 5
-            ii1 = inx(i-1) + 1
+            ii1 = inx(i-1)+1
             ii2 = inx(i)
         end do
-    endif
+    end if
 end subroutine

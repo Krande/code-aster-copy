@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,10 +68,10 @@ subroutine te0363(option, nomte)
     real(kind=8) :: ffc(9), ffe(20), ffm(20), dffc(3, 9)
     real(kind=8) :: prec, noor
     real(kind=8) :: rre, rrm, ffec(8)
-    parameter    (prec=1.d-16)
+    parameter(prec=1.d-16)
     integer :: contac, ddle(2), ddlm(2), ibid, ndeple
     integer :: imate, jbaslo, jlsn, jstno
-    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3), ka, mu
+    real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3), ka, mu
     aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
@@ -79,23 +79,23 @@ subroutine te0363(option, nomte)
 !
 ! --- INFOS SUR LA MAILLE DE CONTACT
 !
-    call xmelet(nomte, typmai, elrees, elrema, elreco,&
-                ndim, nddl, nne, nnm, nnc,&
-                ddle, ddlm, contac, ndeple, nsinge,&
+    call xmelet(nomte, typmai, elrees, elrema, elreco, &
+                ndim, nddl, nne, nnm, nnc, &
+                ddle, ddlm, contac, ndeple, nsinge, &
                 nsingm, nfhe, nfhm)
 !
-    ASSERT(nddl.le.336)
+    ASSERT(nddl .le. 336)
     lmulti = .false.
     if (nfhe .gt. 1 .or. nfhm .gt. 1) lmulti = .true.
 !
 ! --- INITIALISATIONS
 !
     dlagrc = 0.d0
-    fk_escl(:,:,:) = 0.d0
-    fk_mait(:,:,:) = 0.d0
+    fk_escl(:, :, :) = 0.d0
+    fk_mait(:, :, :) = 0.d0
 ! --- INITIALISATION DE LA VARIABLE DE TRAVAIL
     incoca = 0
-    ASSERT(option.eq.'XCVBCA')
+    ASSERT(option .eq. 'XCVBCA')
 !
 ! --- RECUPERATION DES DONNEES DE LA CARTE CONTACT 'POINT' (VOIR XMCART)
 !
@@ -138,11 +138,11 @@ subroutine te0363(option, nomte)
     call jevech('PDEPL_P', 'L', jdepde)
 !
     if (nfhe .gt. 0 .or. nfhm .gt. 0) then
-      call jevech('PHEA_NO', 'L', jheavn)
-      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
-                itab=jtab)
-      ncompn = jtab(2)/jtab(3)
-    endif
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7, &
+                    itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+    end if
 !
     if (lmulti) then
 !
@@ -154,9 +154,9 @@ subroutine te0363(option, nomte)
 !
         call jevech('PHEAVNO', 'L', jheano)
     else
-        jheafa=1
-        jheano=1
-    endif
+        jheafa = 1
+        jheano = 1
+    end if
 !
 ! --- RECUPERATION DES CHAMPS DE SORTIE
 !
@@ -164,34 +164,34 @@ subroutine te0363(option, nomte)
 !
 ! --- FONCTIONS DE FORMES
 !
-    call xtform(elrees, elrema, elreco,&
-                nnm(1),coore, coorm, coorc,&
+    call xtform(elrees, elrema, elreco, &
+                nnm(1), coore, coorm, coorc, &
                 ffe, ffm, dffc)
 !
 ! --- CALCUL DES FCTS SINGULIERES
 !
     call jevech('PSTANO', 'L', jstno)
-    if (nsinge.eq.1 .and. nne(1).gt. 0) then
-      call jevech('PLSNGG', 'L', jlsn)
-      call jevech('PBASLOC', 'L', jbaslo)
-      call jevech('PMATERC', 'L', imate)
-      call xkamat(zi(imate), ndim, .false._1, ka, mu)
-      call xcalfev_wrap(ndim, nne(1), zr(jbaslo), zi(jstno), -1.d0,&
-                   zr(jlsn), zr(jlsn), zr(jgeom), ka, mu, ffe, fk_escl, face='ESCL')
-    endif
+    if (nsinge .eq. 1 .and. nne(1) .gt. 0) then
+        call jevech('PLSNGG', 'L', jlsn)
+        call jevech('PBASLOC', 'L', jbaslo)
+        call jevech('PMATERC', 'L', imate)
+        call xkamat(zi(imate), ndim, .false._1, ka, mu)
+        call xcalfev_wrap(ndim, nne(1), zr(jbaslo), zi(jstno), -1.d0, &
+                          zr(jlsn), zr(jlsn), zr(jgeom), ka, mu, ffe, fk_escl, face='ESCL')
+    end if
 !
 ! --- BRICOLAGES POUR RESPECTER LES ANCIENNES CONVENTIONS DE SIGNE
-    fk_escl=-1.d0*fk_escl
-    if (nnm(1) .eq. 0) fk_escl=2.d0*fk_escl
-    if (nsingm.eq.1 .and. nnm(1).gt.0) then
-      call jevech('PLSNGG', 'L', jlsn)
-      call jevech('PBASLOC', 'L', jbaslo)
-      call jevech('PMATERC', 'L', imate)
-      call xkamat(zi(imate), ndim, .false._1, ka, mu)
-      call xcalfev_wrap(ndim, nnm(1), zr(jbaslo+nne(1)*3*ndim), zi(jstno+nne(1)), +1.d0,&
-                   zr(jlsn+nne(1)), zr(jlsn+nne(1)),zr(jgeom+nne(1)*ndim), &
-                   ka, mu, ffm, fk_mait, face='MAIT')
-    endif
+    fk_escl = -1.d0*fk_escl
+    if (nnm(1) .eq. 0) fk_escl = 2.d0*fk_escl
+    if (nsingm .eq. 1 .and. nnm(1) .gt. 0) then
+        call jevech('PLSNGG', 'L', jlsn)
+        call jevech('PBASLOC', 'L', jbaslo)
+        call jevech('PMATERC', 'L', imate)
+        call xkamat(zi(imate), ndim, .false._1, ka, mu)
+        call xcalfev_wrap(ndim, nnm(1), zr(jbaslo+nne(1)*3*ndim), zi(jstno+nne(1)), +1.d0, &
+                          zr(jlsn+nne(1)), zr(jlsn+nne(1)), zr(jgeom+nne(1)*ndim), &
+                          ka, mu, ffm, fk_mait, face='MAIT')
+    end if
 !
 ! --- FONCTION DE FORMES POUR LES LAGRANGIENS
 ! --- SI ON EST EN LINEAIRE, ON IMPOSE QUE LE NB DE NOEUDS DE CONTACTS
@@ -202,67 +202,67 @@ subroutine te0363(option, nomte)
         nnc = nne(2)
         call xlacti(typmai, ninter, jpcai, lact, nlact)
         call xmoffc(lact, nlact, nnc, ffe, ffc)
-    else if (contac.eq.3) then
+    else if (contac .eq. 3) then
         nnc = nne(2)
         call elelin(contac, elrees, typmec, ibid, ibid)
         call elrfvf(typmec, coore, ffec)
         call xlacti(typmai, ninter, jpcai, lact, nlact)
         call xmoffc(lact, nlact, nnc, ffec, ffc)
     else
-        ASSERT(contac.eq.0)
-    endif
+        ASSERT(contac .eq. 0)
+    end if
 !
 ! --- CALCUL DE LA NORMALE
 !
     if (ndim .eq. 2) then
         call mmnorm(ndim, tau1, tau2, norm, noor)
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         call provec(tau1, tau2, norm)
         call normev(norm, noor)
-    endif
+    end if
     if (noor .le. r8prem()) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CALCUL DE L'INCREMENT DE REACTION DE CONTACT
 !
-    call xtlagc(ndim, nnc, nne, ddle(1),&
-                jdepde, ffc,&
+    call xtlagc(ndim, nnc, nne, ddle(1), &
+                jdepde, ffc, &
                 nfhe, lmulti, zi(jheano), dlagrc)
 !
 ! --- EVALUATION DES JEUX - CAS DU CONTACT
 !
-    call xmmjec(ndim, nnm, nne, ndeple, nsinge,&
-                nsingm, ffe, ffm, norm, jgeom,&
-                jdepde, fk_escl, fk_mait, ddle, ddlm,&
+    call xmmjec(ndim, nnm, nne, ndeple, nsinge, &
+                nsingm, ffe, ffm, norm, jgeom, &
+                jdepde, fk_escl, fk_mait, ddle, ddlm, &
                 nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa), jeuca)
 !
 !
 ! --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE
 !
     if (indnor .eq. 1) then
-        if ((igliss.eq.0) .or. (memco.eq.0)) then
+        if ((igliss .eq. 0) .or. (memco .eq. 0)) then
             zi(jout-1+2) = 0
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 ! --- SI LE CONTACT A ETE POSTULE, ON TESTE LA VALEUR DE LA PRESSION
 ! --- DE CONTACT
 !
     if (indco .eq. 1) then
         if ((dlagrc-rhon*jeuca) .gt. r8prem()) then
-            if ((igliss.eq.1) .and. (memco.eq.1)) then
+            if ((igliss .eq. 1) .and. (memco .eq. 1)) then
                 zi(jout-1+2) = 1
                 zi(jout-1+3) = 1
-            else if (igliss.eq.0) then
+            else if (igliss .eq. 0) then
                 zi(jout-1+2) = 0
                 incoca = 1
-            endif
+            end if
         else
             zi(jout-1+2) = 1
             zi(jout-1+3) = 1
-        endif
+        end if
 !
 ! --- SI LE NON-CONTACT A ETE POSTULÉ, ON TESTE LA VALEUR DU JEU
 !
@@ -273,16 +273,16 @@ subroutine te0363(option, nomte)
             incoca = 1
         else
             zi(jout-1+2) = 0
-        endif
+        end if
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
 !
 ! --- ENREGISTREMENT DU CHAMP DE SORTIE
 !
-    zi(jout-1+1)=incoca
+    zi(jout-1+1) = incoca
 !
 end subroutine

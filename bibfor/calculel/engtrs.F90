@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,24 +63,24 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 !
     call jemarq()
 !
-    lg1 = lxlgut( formr )
-    lg2 = lxlgut( typtes )
+    lg1 = lxlgut(formr)
+    lg2 = lxlgut(typtes)
     form1 = '(&
-            '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC= '', ' //formr(1:lg1)//',&
-            '' ), ''&
-            )'
-    form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' ), '' )'
+&            '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC= '', '//formr(1:lg1)//',&
+&            '' ), ''&
+&            )'
+    form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)//''''', VALE_CALC_I = '', I9, '' ), '' )'
 !
-    write(ific,1000)
+    write (ific, 1000)
 !
 ! --- NUMEROS D'ORDRE
 !
-    call rsorac(nomsd, 'LONUTI', 0, r8b, k8b,&
-                c16b, r8b, k8b, nbordt, 1,&
+    call rsorac(nomsd, 'LONUTI', 0, r8b, k8b, &
+                c16b, r8b, k8b, nbordt, 1, &
                 ibid)
     call wkvect('&&ENGTRS.NUME_ORDRE', 'V V I', nbordt(1), jordr)
-    call rsorac(nomsd, 'TOUT_ORDRE', 0, r8b, k8b,&
-                c16b, r8b, k8b, zi(jordr), nbordt(1),&
+    call rsorac(nomsd, 'TOUT_ORDRE', 0, r8b, k8b, &
+                c16b, r8b, k8b, zi(jordr), nbordt(1), &
                 ibid)
 !
 ! --- NOMS SYMBOLIQUES
@@ -90,17 +90,17 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
         call jenuno(jexnum(nomsd//'.DESC', isy), nomsym)
         call jenonu(jexnom(nomsd//'.DESC', nomsym), ibid)
         call jeveuo(jexnum(nomsd//'.TACH', ibid), 'L', iatach)
-        lg = lxlgut( nomsym )
+        lg = lxlgut(nomsym)
 !
         form3 = '(&
-                '' _F(RESULTAT= '',A8,'', NOM_CHAM= '''''// nomsym(1:lg&
-                ) //''''', NUME_ORDRE= '',I6,'',''&
-                )'
+&                '' _F(RESULTAT= '',A8,'', NOM_CHAM= '''''//nomsym(1:lg &
+                )//''''', NUME_ORDRE= '',I6,'',''&
+&                )'
 !
         do j = 1, nbordt(1)
             iord = zi(jordr+j-1)
-            if (zk24(iatach-1+j)(1:1) .ne. ' ') then
-                call rsexch(' ', nomsd, nomsym, iord, chextr,&
+            if (zk24(iatach-1+j) (1:1) .ne. ' ') then
+                call rsexch(' ', nomsd, nomsym, iord, chextr, &
                             ibid)
 !
                 call jeexin(chextr//'.VALE', iret)
@@ -110,7 +110,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
                     if (long .eq. 0) goto 110
                     call jelira(chextr//'.VALE', 'TYPE', cval=type)
                     goto 120
-                endif
+                end if
                 call jeexin(chextr//'.CELV', iret)
                 if (iret .ne. 0) then
                     call jeveuo(chextr//'.CELV', 'L', jvale)
@@ -118,78 +118,78 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
                     if (long .eq. 0) goto 110
                     call jelira(chextr//'.CELV', 'TYPE', cval=type)
                     goto 120
-                endif
+                end if
                 goto 110
 120             continue
 !
-                write(ific,form3) nomsd(1:8), iord
-                write(ific,1020) preci
+                write (ific, form3) nomsd(1:8), iord
+                write (ific, 1020) preci
 !
                 if (type .eq. 'I') then
                     if (typtes .eq. 'SOMM_ABS') then
                         vali = 0
                         do i = 1, long
-                            vali = vali + abs(zi(jvale+i-1))
+                            vali = vali+abs(zi(jvale+i-1))
                         end do
                     else if (typtes .eq. 'SOMM') then
                         vali = 0
                         do i = 1, long
-                            vali = vali + zi(jvale+i-1)
+                            vali = vali+zi(jvale+i-1)
                         end do
                     else if (typtes .eq. 'MAX') then
                         vali = -ismaem()
                         do i = 1, long
-                            vali = max( vali , zi(jvale+i-1) )
+                            vali = max(vali, zi(jvale+i-1))
                         end do
                     else if (typtes .eq. 'MIN') then
                         vali = ismaem()
                         do i = 1, long
-                            vali = min( vali , zi(jvale+i-1) )
+                            vali = min(vali, zi(jvale+i-1))
                         end do
-                    endif
-                    if (vali .eq. 0) write(ific,1010)
-                    write(ific,form2) vali
+                    end if
+                    if (vali .eq. 0) write (ific, 1010)
+                    write (ific, form2) vali
 !
                 else if (type .eq. 'R') then
                     if (typtes .eq. 'SOMM_ABS') then
                         valr = 0.d0
                         do i = 1, long
-                            valr = valr + abs(zr(jvale+i-1))
+                            valr = valr+abs(zr(jvale+i-1))
                         end do
                     else if (typtes .eq. 'SOMM') then
                         valr = 0.d0
                         do i = 1, long
-                            valr = valr + zr(jvale+i-1)
+                            valr = valr+zr(jvale+i-1)
                         end do
                     else if (typtes .eq. 'MAX') then
                         valr = -r8maem()
                         do i = 1, long
-                            valr = max( valr , zr(jvale+i-1) )
+                            valr = max(valr, zr(jvale+i-1))
                         end do
                     else if (typtes .eq. 'MIN') then
                         valr = r8maem()
                         do i = 1, long
-                            valr = min( valr , zr(jvale+i-1) )
+                            valr = min(valr, zr(jvale+i-1))
                         end do
-                    endif
-                    if (abs(valr) .le. r8prem()) write(ific,1010)
-                    write(ific,form1) valr
-                endif
+                    end if
+                    if (abs(valr) .le. r8prem()) write (ific, 1010)
+                    write (ific, form1) valr
+                end if
 !
-            endif
+            end if
 110         continue
         end do
     end do
 !
-    write(ific,1030)
+    write (ific, 1030)
 !
     call jedetr('&&ENGTRS.NUME_ORDRE')
 !
     call jedema()
 !
-    1000 format ( 'TEST_RESU(RESU=( ' )
-    1010 format ('              CRITERE= ''ABSOLU'', ')
-    1020 format ('              TOLE_MACHINE= ',a10,',')
-    1030 format ( '          ),)' )
+1000 format('TEST_RESU(RESU=( ')
+1010 format('              CRITERE= ''ABSOLU'', ')
+1020 format('              TOLE_MACHINE= ', a10, ',')
+1030 format('          ),)')
 !
 end subroutine

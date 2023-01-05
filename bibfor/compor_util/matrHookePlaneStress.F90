@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine matrHookePlaneStress(elas_type, repere,&
-                                h, g, g1,&
+subroutine matrHookePlaneStress(elas_type, repere, &
+                                h, g, g1, &
                                 matr_elas)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dpao2d.h"
@@ -72,9 +72,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    matr_elas(:,:) = 0.d0
-    dorth(:,:)     = 0.d0
-    work(:,:)      = 0.d0
+    matr_elas(:, :) = 0.d0
+    dorth(:, :) = 0.d0
+    work(:, :) = 0.d0
 !
 ! - Compute Hooke matrix
 !
@@ -82,21 +82,21 @@ implicit none
 !
 ! ----- Isotropic matrix
 !
-        matr_elas(1,1) = h(1)
-        matr_elas(1,2) = h(2)
-        matr_elas(2,1) = h(2)
-        matr_elas(2,2) = h(1)
-        matr_elas(4,4) = g
+        matr_elas(1, 1) = h(1)
+        matr_elas(1, 2) = h(2)
+        matr_elas(2, 1) = h(2)
+        matr_elas(2, 2) = h(1)
+        matr_elas(4, 4) = g
 !
     else if (elas_type .eq. 2 .or. elas_type .eq. 5) then
 !
 ! ----- Orthotropic matrix
 !
-        dorth(1,1) = h(1)
-        dorth(1,2) = h(2)
-        dorth(2,2) = h(3)
-        dorth(2,1) = dorth(1,2)
-        dorth(4,4) = g1
+        dorth(1, 1) = h(1)
+        dorth(1, 2) = h(2)
+        dorth(2, 2) = h(3)
+        dorth(2, 1) = dorth(1, 2)
+        dorth(4, 4) = g1
 !
 ! ----- Matrix from orthotropic basis to global 3D basis
 !
@@ -104,27 +104,27 @@ implicit none
 !
 ! ----- Hooke matrix in global 3D basis
 !
-        ASSERT((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 4, 4, dorth, matr_tran, work, matr_elas)
-        else if (irep.eq.0) then
+        else if (irep .eq. 0) then
             do i = 1, 4
                 do j = 1, 4
-                    matr_elas(i,j) = dorth(i,j)
+                    matr_elas(i, j) = dorth(i, j)
                 end do
             end do
-        endif
+        end if
     else if (elas_type .eq. 3) then
 !
 ! ----- Transverse isotropic matrix
 !
-        matr_elas(1,1) = h(1)
-        matr_elas(1,2) = h(2)
-        matr_elas(2,1) = matr_elas(1,2)
-        matr_elas(2,2) = matr_elas(1,1)
-        matr_elas(4,4) = h(3)
+        matr_elas(1, 1) = h(1)
+        matr_elas(1, 2) = h(2)
+        matr_elas(2, 1) = matr_elas(1, 2)
+        matr_elas(2, 2) = matr_elas(1, 1)
+        matr_elas(4, 4) = h(3)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

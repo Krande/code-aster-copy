@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,9 +37,9 @@ subroutine te0416(option, nomte)
 !
     if (option .eq. 'FORC_NODA') then
 !        -- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-        call cosiro(nomte, 'PCONTMR', 'L', 'UI', 'G',&
+        call cosiro(nomte, 'PCONTMR', 'L', 'UI', 'G', &
                     ibid, 'S')
-    endif
+    end if
 !
 !
     call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
@@ -50,7 +50,7 @@ subroutine te0416(option, nomte)
 
         call jevech('PCOMPOR', 'L', icompo)
 
-        if (zk16 ( icompo + 2 ) .eq. 'GROT_GDEP') then
+        if (zk16(icompo+2) .eq. 'GROT_GDEP') then
 
 !           DEFORMATION DE GREEN
 
@@ -58,7 +58,7 @@ subroutine te0416(option, nomte)
 !
             goto 9999
 !
-        else if (zk16(icompo + 2 ) (1:5) .eq. 'PETIT') then
+        else if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
 
             call fornpd(option, nomte)
         else
@@ -67,11 +67,11 @@ subroutine te0416(option, nomte)
 !
             call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
 !
-        endif
-    endif
+        end if
+    end if
 !
 !
-9999  continue
+9999 continue
 !
 !
 !

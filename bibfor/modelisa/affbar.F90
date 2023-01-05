@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
-                  car, val, exp, ncar, kioc,&
+subroutine affbar(tmp, tmpf, fcx, nommai, isec, &
+                  car, val, exp, ncar, kioc, &
                   ier)
     implicit none
 #include "asterf_types.h"
@@ -77,22 +77,22 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
             valk(1) = kioc
             valk(2) = nommai
             call utmess('A', 'MODELISA_69', nk=2, valk=valk)
-            ier = ier + 1
+            ier = ier+1
             goto 999
-        endif
+        end if
     else
         call jecroc(jexnom(tmp, nommai))
         call jeveuo(jexnom(tmp, nommai), 'E', jdge)
         do i = 1, ncar
             zr(jdge+i-1) = tst
         end do
-    endif
+    end if
 !
 !     --- NOM DE LA FONCTION DU CX
     call jenonu(jexnom(tmpf, nommai), num)
     if (num .eq. 0) then
         call jecroc(jexnom(tmpf, nommai))
-    endif
+    end if
     call jeveuo(jexnom(tmpf, nommai), 'E', jdgef)
     zk8(jdgef) = fcx
 !
@@ -100,37 +100,37 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
         do j = 1, ncar
             if (car(j) .eq. 'A       ') zr(jdge) = val(j)
         end do
-    else if (isec.eq.1) then
+    else if (isec .eq. 1) then
         do j = 1, ncar
             if (car(j) .eq. 'HY      ') then
                 zr(jdge+1) = val(j)
-            else if (car(j).eq.'HZ      ') then
+            else if (car(j) .eq. 'HZ      ') then
                 zr(jdge+2) = val(j)
-            else if (car(j).eq.'EPY     ') then
+            else if (car(j) .eq. 'EPY     ') then
                 zr(jdge+3) = val(j)
                 secple = .false.
-            else if (car(j).eq.'EPZ     ') then
+            else if (car(j) .eq. 'EPZ     ') then
                 zr(jdge+4) = val(j)
                 secple = .false.
-            else if (car(j).eq.'H       ') then
+            else if (car(j) .eq. 'H       ') then
                 zr(jdge+1) = val(j)
                 zr(jdge+2) = val(j)
-            else if (car(j).eq.'EP      ') then
+            else if (car(j) .eq. 'EP      ') then
                 zr(jdge+3) = val(j)
                 zr(jdge+4) = val(j)
                 secple = .false.
-            endif
+            end if
         end do
-    else if (isec.eq.2) then
+    else if (isec .eq. 2) then
         do j = 1, ncar
             if (car(j) .eq. 'R       ') then
                 zr(jdge+5) = val(j)
-            else if (car(j).eq.'EP      ') then
+            else if (car(j) .eq. 'EP      ') then
                 zr(jdge+6) = val(j)
                 secple = .false.
-            endif
+            end if
         end do
-    endif
+    end if
     zr(jdge+7) = isec
 !
 ! --- COMPLETUDE DES DONNES GENERALES
@@ -139,30 +139,30 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
             valk(1) = nommai
             valk(2) = exp(1)
             call utmess('A', 'MODELISA_70', nk=2, valk=valk)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
         if (zr(jdge) .le. zero) then
             valk(1) = nommai
             valk(2) = exp(1)
             call utmess('A', 'MODELISA_71', nk=2, valk=valk)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
 !
 ! --- COMPLETUDE DES DONNES GEOMETRIQUES RECTANGLE
-    else if (isec.eq.1) then
+    else if (isec .eq. 1) then
         do j = 1, 2
             if (zr(jdge+j) .eq. tst) then
                 valk(1) = nommai
                 valk(2) = exp(1+j)
                 call utmess('A', 'MODELISA_72', nk=2, valk=valk)
-                ier = ier + 1
-            endif
+                ier = ier+1
+            end if
             if (zr(jdge+j) .le. zero) then
                 valk(1) = nommai
                 valk(2) = exp(1+j)
                 call utmess('A', 'MODELISA_73', nk=2, valk=valk)
-                ier = ier + 1
-            endif
+                ier = ier+1
+            end if
         end do
         if (.not. secple) then
             do j = 3, 4
@@ -170,40 +170,40 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
                     valk(1) = nommai
                     valk(2) = exp(1+j)
                     call utmess('A', 'MODELISA_72', nk=2, valk=valk)
-                    ier = ier + 1
-                endif
+                    ier = ier+1
+                end if
                 if (zr(jdge+j) .le. zero) then
                     valk(1) = nommai
                     valk(2) = exp(1+j)
                     call utmess('A', 'MODELISA_73', nk=2, valk=valk)
-                    ier = ier + 1
-                endif
+                    ier = ier+1
+                end if
             end do
-        endif
+        end if
 !
 ! --- COMPLETUDE DES DONNES GEOMETRIQUES CERCLE
-    else if (isec.eq.2) then
+    else if (isec .eq. 2) then
         if (zr(jdge+5) .eq. tst) then
             valk(1) = nommai
             valk(2) = exp(5)
             call utmess('A', 'MODELISA_74', nk=2, valk=valk)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
         if (zr(jdge+5) .le. zero) then
             valk(1) = nommai
             valk(2) = exp(5)
             call utmess('A', 'MODELISA_75', nk=2, valk=valk)
-            ier = ier + 1
-        endif
+            ier = ier+1
+        end if
         if (.not. secple) then
             if (zr(jdge+6) .le. zero) then
                 valk(1) = nommai
                 valk(2) = exp(6)
                 call utmess('A', 'MODELISA_76', nk=2, valk=valk)
-                ier = ier + 1
-            endif
-        endif
-    endif
+                ier = ier+1
+            end if
+        end if
+    end if
 !
 !
     if (ier .ne. 0) goto 999
@@ -213,29 +213,29 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
         hy = zr(jdge+1)
         hz = zr(jdge+2)
         if (secple) then
-            zr(jdge) = hy * hz
+            zr(jdge) = hy*hz
         else
             epy = zr(jdge+3)
             epz = zr(jdge+4)
-            hyi = hy - 2.d0*epy
-            hzi = hz - 2.d0*epz
-            zr(jdge) = hy * hz - hyi * hzi
-        endif
+            hyi = hy-2.d0*epy
+            hzi = hz-2.d0*epz
+            zr(jdge) = hy*hz-hyi*hzi
+        end if
         if (zr(jdge+3) .eq. tst) zr(jdge+3) = zr(jdge+1)
         if (zr(jdge+4) .eq. tst) zr(jdge+4) = zr(jdge+2)
 !
 ! --- AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES CERCLE
-    else if (isec.eq.2) then
+    else if (isec .eq. 2) then
         re = zr(jdge+5)
         if (secple) then
-            zr(jdge) = pi * re * re
+            zr(jdge) = pi*re*re
         else
             e = zr(jdge+6)
-            ri = re - e
-            zr(jdge) = pi * ( re*re - ri*ri )
-        endif
+            ri = re-e
+            zr(jdge) = pi*(re*re-ri*ri)
+        end if
         if (zr(jdge+6) .eq. tst) zr(jdge+6) = zr(jdge+5)
-    endif
+    end if
     do i = 1, ncar
         if (zr(jdge+i-1) .eq. tst) zr(jdge+i-1) = zero
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zzcalb(igr, iel, npg, nno, wi,&
-                  desc, sig, x, y, xmin,&
+subroutine zzcalb(igr, iel, npg, nno, wi, &
+                  desc, sig, x, y, xmin, &
                   xmax, ymin, ymax, f)
     implicit none
 !-----------------------------------------------------------------------
@@ -44,8 +44,8 @@ subroutine zzcalb(igr, iel, npg, nno, wi,&
         xx = 0.d0
         yy = 0.d0
         do ino = 1, nno
-            xx = xx + wi(nno*(ipg-1)+ino)*x(ino)
-            yy = yy + wi(nno*(ipg-1)+ino)*y(ino)
+            xx = xx+wi(nno*(ipg-1)+ino)*x(ino)
+            yy = yy+wi(nno*(ipg-1)+ino)*y(ino)
         end do
         xx = -1.d0+2.d0*(xx-xmin)/(xmax-xmin)
         yy = -1.d0+2.d0*(yy-ymin)/(ymax-ymin)
@@ -61,10 +61,10 @@ subroutine zzcalb(igr, iel, npg, nno, wi,&
 !
         ideb = desc(4+igr)
         iadiel = desc(ideb+8+4*(iel-1))
-        iad = iadiel + 4*(ipg-1) - 1
+        iad = iadiel+4*(ipg-1)-1
         do i = 1, nno
             do j = 1, 4
-                f(i,j) = f(i,j) + b(i) * sig(iad+j)
+                f(i, j) = f(i, j)+b(i)*sig(iad+j)
             end do
         end do
     end do

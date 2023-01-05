@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-subroutine xmmbca(mesh, model, ds_material, hval_incr, ds_contact,&
+subroutine xmmbca(mesh, model, ds_material, hval_incr, ds_contact, &
                   ds_constitutive, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,13 +40,13 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/xmchex.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=8), intent(in) :: model
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=19), intent(in) :: hval_incr(*)
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-integer, intent(in) :: list_func_acti(*)
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=19), intent(in) :: hval_incr(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +67,7 @@ integer, intent(in) :: list_func_acti(*)
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 4
-    integer, parameter :: nbin  = 25
+    integer, parameter :: nbin = 25
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -118,23 +118,23 @@ integer, intent(in) :: list_func_acti(*)
 !
     call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
     lcontx = xfem_cont(1) .ge. 1
-    if (.not.lcontx) then
+    if (.not. lcontx) then
         loop_cont_conv = .true.
         goto 999
-    endif
+    end if
 !
 ! --- DETERMINATION DE L OPTION
 !
-    if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) option='XCVBCA'
-    if(xfem_cont(1).eq.2) option='XCVBCA_MORTAR'
+    if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) option = 'XCVBCA'
+    if (xfem_cont(1) .eq. 2) option = 'XCVBCA_MORTAR'
 !
 ! --- MODELE HM-XFEM ?
 !
-    lxthm = isfonc(list_func_acti,'THM')
+    lxthm = isfonc(list_func_acti, 'THM')
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- ACCES A LA SD FISS_XFEM
@@ -161,14 +161,14 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE  INDIC. CONTACT ET MEMOIRE CONTACT
 !
-    if (lxthm .and. xfem_cont(1).eq.3) then
-       call xmchex(mesh, xcoheo, ccohes)
-    else if (.not.lxthm) then
-       call xmchex(mesh, xindco, cindoo)
-       call xmchex(mesh, xmemco, cmemco)
-       if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3)&
-           call xmchex(mesh, xcohes, ccohes)
-    endif
+    if (lxthm .and. xfem_cont(1) .eq. 3) then
+        call xmchex(mesh, xcoheo, ccohes)
+    else if (.not. lxthm) then
+        call xmchex(mesh, xindco, cindoo)
+        call xmchex(mesh, xmemco, cmemco)
+        if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) &
+            call xmchex(mesh, xcohes, ccohes)
+    end if
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
 !
@@ -236,14 +236,14 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! --- APPEL A CALCUL
 !
-    call calcul('S', option, ligrmo, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
 ! --- ON FAIT sinco(1) = SOMME DES CICOCA SUR LES ÉLTS DU LIGRMO
 !
@@ -256,7 +256,7 @@ integer, intent(in) :: list_func_acti(*)
         loop_cont_conv = .false.
     else
         loop_cont_conv = .true.
-    endif
+    end if
 !
 ! --- ON COPIE CINDO DANS RESOCO.XFIN
 !
@@ -275,7 +275,7 @@ integer, intent(in) :: list_func_acti(*)
         call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
     else
         call mmbouc(ds_contact, 'Cont', 'Set_Divergence')
-    endif
+    end if
 !
     call jedema()
 end subroutine

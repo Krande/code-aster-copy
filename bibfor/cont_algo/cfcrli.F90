@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfcrli(mesh, nume_dof, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -81,8 +81,8 @@ implicit none
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... CREATION DE LA SD POUR LES LIAISONS LINEAIRES'
-    endif
+        write (ifm, *) '<CONTACT> ...... CREATION DE LA SD POUR LES LIAISONS LINEAIRES'
+    end if
 !
 ! - Number of equations
 !
@@ -90,38 +90,38 @@ implicit none
 !
 ! - Get contact parameters
 !
-    zcoco        = cfmmvd('ZCOCO')
-    l_frot       = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
-    nb_cont_node = cfdisi(ds_contact%sdcont_defi,'NNOCO' )
-    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM' )
-    nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    zcoco = cfmmvd('ZCOCO')
+    l_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
+    nb_cont_node = cfdisi(ds_contact%sdcont_defi, 'NNOCO')
+    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     nt_slav_nmax = nt_cont_poin
 !
 ! - Check model dimension
 !
     if (model_ndim .eq. 2) then
         call cfverd(mesh, nume_dof, ds_contact%sdcont_defi)
-    endif
+    end if
 !
 ! - Datastructure for number of dof by node
 !
     sdcont_nbddl = ds_contact%sdcont_solv(1:14)//'.NBDDL'
-    call wkvect(sdcont_nbddl, 'V V I', nb_cont_node+1, vi = v_sdcont_nbddl)
+    call wkvect(sdcont_nbddl, 'V V I', nb_cont_node+1, vi=v_sdcont_nbddl)
     v_sdcont_nbddl(1) = 0
-    nb_dof            = 0
+    nb_dof = 0
     do i_node = 1, nb_cont_node
-        nb_dof = nb_dof + model_ndim
+        nb_dof = nb_dof+model_ndim
         v_sdcont_nbddl(i_node+1) = nb_dof
     end do
 !
 ! - Datastructure for index of dof
 !
     sdcont_ddlco = ds_contact%sdcont_solv(1:14)//'.DDLCO'
-    call wkvect(sdcont_ddlco, 'V V I', nb_dof, vi = v_sdcont_ddlco)
+    call wkvect(sdcont_ddlco, 'V V I', nb_dof, vi=v_sdcont_ddlco)
     do i_node = 1, nb_cont_node
         node_indx = i_node
         call cfnomm(mesh, ds_contact%sdcont_defi, 'NOEU', node_indx, node_name)
-        i_dof = v_sdcont_nbddl(i_node) + 1
+        i_dof = v_sdcont_nbddl(i_node)+1
         call posddl('NUME_DDL', nume_dof, node_name, 'DX', node_nume, dof_nume)
         ASSERT(dof_nume .gt. 0)
         v_sdcont_ddlco(i_dof) = dof_nume
@@ -132,7 +132,7 @@ implicit none
             call posddl('NUME_DDL', nume_dof, node_name, 'DZ', node_nume, dof_nume)
             ASSERT(dof_nume .gt. 0)
             v_sdcont_ddlco(i_dof+2) = dof_nume
-        endif
+        end if
     end do
 !
 ! - Pointer for dof
@@ -154,8 +154,8 @@ implicit none
 !
     sdcont_coco = ds_contact%sdcont_solv(1:14)//'.COCO'
     call wkvect(sdcont_coco, 'V V I', zcoco, jv_sdcont_coco)
-    call cfecrd(ds_contact%sdcont_solv, 'NDIM'  , model_ndim)
-    call cfecrd(ds_contact%sdcont_solv, 'NEQ'   , nb_equa)
+    call cfecrd(ds_contact%sdcont_solv, 'NDIM', model_ndim)
+    call cfecrd(ds_contact%sdcont_solv, 'NEQ', nb_equa)
     call cfecrd(ds_contact%sdcont_solv, 'NESMAX', nt_slav_nmax)
 !
 ! - PIVOT NULS
@@ -175,7 +175,7 @@ implicit none
     if (l_frot) then
         sdcont_apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
         call wkvect(sdcont_apcofr, 'V V R', 60*nt_cont_poin, jv_sdcont_apcofr)
-    endif
+    end if
 !
 ! - Projection coordinates
 !

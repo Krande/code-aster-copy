@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine liritm(ifl, icl, iv, rv, cv,&
+subroutine liritm(ifl, icl, iv, rv, cv, &
                   cnl, deblig, ilec)
     implicit none
 !       LECTURE DE L ITEM SUIVANT
@@ -50,7 +50,7 @@ subroutine liritm(ifl, icl, iv, rv, cv,&
     character(len=*) :: cv
     character(len=80) :: lig
     character(len=14) :: cnl
-    save            lig , ideb
+    save lig, ideb
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -60,22 +60,22 @@ subroutine liritm(ifl, icl, iv, rv, cv,&
         deblig = 1
     else
         deblig = 0
-    endif
+    end if
 !
 ! - LECTURE ITEM SUIVANT
 !
- 1  continue
-    call lxscan(lig, ideb, icl, iv, rv,&
+1   continue
+    call lxscan(lig, ideb, icl, iv, rv, &
                 cv)
 !
 ! - FIN DE LIGNE OU COMMENTAIRE
 !
-    if (icl .eq. -1 .or. (icl.eq.5.and.cv(1:1).eq.'%')) then
+    if (icl .eq. -1 .or. (icl .eq. 5 .and. cv(1:1) .eq. '%')) then
         call lirlig(ifl, cnl, lig, ilec)
         ideb = 1
         deblig = 1
         goto 1
-    endif
+    end if
 !
 ! - SEPARATEUR SAUF %
 !

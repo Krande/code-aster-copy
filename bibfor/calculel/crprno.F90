@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
@@ -52,11 +52,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call profchno_crsd(prof_chnoz, base, nb_equa, meshz = meshz, &
-                       gran_namez = gran_namez)
+    call profchno_crsd(prof_chnoz, base, nb_equa, meshz=meshz, &
+                       gran_namez=gran_namez)
 
     lili = prof_chnoz(1:19)//'.LILI'
     call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)
-    ASSERT(i_ligr_mesh.eq.1)
+    ASSERT(i_ligr_mesh .eq. 1)
 
 end subroutine

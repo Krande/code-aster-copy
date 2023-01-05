@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cppy13_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
-                    limane, nomnoe, nbno  , jmacou, jmacsu, macou ,&
-                    macsu , ind   , ind1)
+subroutine cppy13_2(main, maout, inc, jcoor, jcnnpa, conloc, &
+                    limane, nomnoe, nbno, jmacou, jmacsu, macou, &
+                    macsu, ind, ind1)
 !
     implicit none
 #include "jeveux.h"
@@ -63,68 +63,68 @@ subroutine cppy13_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !
-    call jecroc(jexnum(maout//'.PATCH',inc+1))
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONMAX', ival=2)
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONUTI', ival=2)
-    call jeveuo(jexnum(maout//'.PATCH',inc+1), 'E', patch)
+    call jecroc(jexnum(maout//'.PATCH', inc+1))
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONMAX', ival=2)
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONUTI', ival=2)
+    call jeveuo(jexnum(maout//'.PATCH', inc+1), 'E', patch)
 ! --- TYPE DE MAILLE PATCH
     zi(patch-1+1) = 19
 ! --- DDL INTERNE
-    zi(patch-1+2)=nbno+ind1+3
+    zi(patch-1+2) = nbno+ind1+3
     zi(jcnnpa+nbno+ind1+3-1) = inc
 ! --- CREATION DU NOEUD DDL INTERNE
-    call cpnoq(main,macou,zr(jcoor),nbno+ind1,nomnoe)
+    call cpnoq(main, macou, zr(jcoor), nbno+ind1, nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
-    call jeecra(jexnum(conloc,ind), 'LONMAX', ival=6)
-    call jeecra(jexnum(conloc,ind), 'LONUTI', ival=6)
-    call jeveuo(jexnum(conloc,ind), 'E', jconloc)
-    zi(jconloc+1-1)=zi(jmacou+1-1)
-    zi(jconloc+2-1)=zi(jmacou+2-1)
-    zi(jconloc+3-1)=nbno+ind1+3
-    zi(jconloc+4-1)=zi(jmacou+4-1)
-    zi(jconloc+5-1)=nbno+ind1+1
-    zi(jconloc+6-1)=nbno+ind1
-    call jeecra(jexnum(conloc,ind+1), 'LONMAX', ival=6)
-    call jeecra(jexnum(conloc,ind+1), 'LONUTI', ival=6)
-    call jeveuo(jexnum(conloc,ind+1), 'E', jconloc)
-    zi(jconloc+1-1)=zi(jmacou+2-1)
-    zi(jconloc+2-1)=zi(jmacou+3-1)
-    zi(jconloc+3-1)=nbno+ind1+3
-    zi(jconloc+4-1)=zi(jmacou+5-1)
-    zi(jconloc+5-1)=nbno+ind1+2
-    zi(jconloc+6-1)=nbno+ind1+1
-    call jeecra(jexnum(conloc,ind+2), 'LONMAX', ival=6)
-    call jeecra(jexnum(conloc,ind+2), 'LONUTI', ival=6)
-    call jeveuo(jexnum(conloc,ind+2), 'E', jconloc)
-    zi(jconloc+1-1)=zi(jmacou+3-1)
-    zi(jconloc+2-1)=zi(jmacou+1-1)
-    zi(jconloc+3-1)=nbno+ind1+3
-    zi(jconloc+4-1)=zi(jmacou+6-1)
-    zi(jconloc+5-1)=nbno+ind1
-    zi(jconloc+6-1)=nbno+ind1+2
+    call jeecra(jexnum(conloc, ind), 'LONMAX', ival=6)
+    call jeecra(jexnum(conloc, ind), 'LONUTI', ival=6)
+    call jeveuo(jexnum(conloc, ind), 'E', jconloc)
+    zi(jconloc+1-1) = zi(jmacou+1-1)
+    zi(jconloc+2-1) = zi(jmacou+2-1)
+    zi(jconloc+3-1) = nbno+ind1+3
+    zi(jconloc+4-1) = zi(jmacou+4-1)
+    zi(jconloc+5-1) = nbno+ind1+1
+    zi(jconloc+6-1) = nbno+ind1
+    call jeecra(jexnum(conloc, ind+1), 'LONMAX', ival=6)
+    call jeecra(jexnum(conloc, ind+1), 'LONUTI', ival=6)
+    call jeveuo(jexnum(conloc, ind+1), 'E', jconloc)
+    zi(jconloc+1-1) = zi(jmacou+2-1)
+    zi(jconloc+2-1) = zi(jmacou+3-1)
+    zi(jconloc+3-1) = nbno+ind1+3
+    zi(jconloc+4-1) = zi(jmacou+5-1)
+    zi(jconloc+5-1) = nbno+ind1+2
+    zi(jconloc+6-1) = nbno+ind1+1
+    call jeecra(jexnum(conloc, ind+2), 'LONMAX', ival=6)
+    call jeecra(jexnum(conloc, ind+2), 'LONUTI', ival=6)
+    call jeveuo(jexnum(conloc, ind+2), 'E', jconloc)
+    zi(jconloc+1-1) = zi(jmacou+3-1)
+    zi(jconloc+2-1) = zi(jmacou+1-1)
+    zi(jconloc+3-1) = nbno+ind1+3
+    zi(jconloc+4-1) = zi(jmacou+6-1)
+    zi(jconloc+5-1) = nbno+ind1
+    zi(jconloc+6-1) = nbno+ind1+2
 ! --- CREATION DES NOEUDS DDL DANS LE VOLUME
-    conneo='&&PT151.CNORD'
+    conneo = '&&PT151.CNORD'
     call cnpc(main, macou, macsu, conneo)
-    call jeveuo(conneo,'L',jconneo)
+    call jeveuo(conneo, 'L', jconneo)
     call cpncpy13(main, macsu, zr(jcoor), nbno+ind1+4, nomnoe, zi(jconneo))
 ! --- NOUVEAUX ELEMENTS DE CORPS
     call cpmcpy13_2(conloc, jmacsu, nbno+ind1, ind+3, zi(jconneo))
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Peau)??
     call jeveuo(jexnum(limane, macou), 'E', jlimane)
-    zi(jlimane+1-1)=ind
-    zi(jlimane+2-1)=ind+1
-    zi(jlimane+3-1)=ind+2
+    zi(jlimane+1-1) = ind
+    zi(jlimane+2-1) = ind+1
+    zi(jlimane+3-1) = ind+2
 ! --- INFO PATCH LIE
-    zi(jlimane+4-1)=inc
+    zi(jlimane+4-1) = inc
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Volume)??
     call jeveuo(jexnum(limane, macsu), 'E', jlimane)
-    zi(jlimane+1-1)=ind+3
-    zi(jlimane+2-1)=ind+4
-    zi(jlimane+3-1)=ind+5
-    zi(jlimane+4-1)=ind+6
+    zi(jlimane+1-1) = ind+3
+    zi(jlimane+2-1) = ind+4
+    zi(jlimane+3-1) = ind+5
+    zi(jlimane+4-1) = ind+6
 ! --- Nettoyage / mis à jour
-    ind=ind+7
-    ind1=ind1+6
+    ind = ind+7
+    ind1 = ind1+6
     call jedetr(conneo)
 !
     call jedema()

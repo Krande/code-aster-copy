@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine compute_ineq_conditions_vector(jsecmb, nbliai, neq   ,&
-                                          japptr, japddl, japcoe,&
-                                          jjeux , jtacf , jmu   ,&
-                                          njeux , ztacf , iliac )
+subroutine compute_ineq_conditions_vector(jsecmb, nbliai, neq, &
+                                          japptr, japddl, japcoe, &
+                                          jjeux, jtacf, jmu, &
+                                          njeux, ztacf, iliac)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/calatm.h"
@@ -43,7 +43,7 @@ subroutine compute_ineq_conditions_vector(jsecmb, nbliai, neq   ,&
 ! --- INITIALISATION DES MU
 !
     do iliai = 1, nbliai
-        zr(jmu +iliai-1) = 0.d0
+        zr(jmu+iliai-1) = 0.d0
         zr(jmu+3*nbliai+iliai-1) = 0.d0
     end do
 !
@@ -55,13 +55,13 @@ subroutine compute_ineq_conditions_vector(jsecmb, nbliai, neq   ,&
         coefpn = zr(jtacf+ztacf*(iliai-1)+1)
         if (jeuini .lt. r8prem()) then
             jdecal = zi(japptr+iliai-1)
-            nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
+            nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
             lambdc = -jeuini*coefpn
             zr(jmu+iliac-1) = lambdc
-            call calatm(neq, nbddl, lambdc, zr(japcoe+jdecal), zi(japddl+ jdecal),&
+            call calatm(neq, nbddl, lambdc, zr(japcoe+jdecal), zi(japddl+jdecal), &
                         zr(jsecmb))
-            iliac = iliac + 1
-        endif
+            iliac = iliac+1
+        end if
     end do
 !
 end subroutine

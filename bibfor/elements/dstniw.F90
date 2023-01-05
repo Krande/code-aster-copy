@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dstniw(qsi, eta, carat3, dci, bca,&
+subroutine dstniw(qsi, eta, carat3, dci, bca, &
                   an, am, wst, wmest)
     implicit none
     real(kind=8) :: qsi, eta, carat3(*), dci(2, 2), bca(2, 3), an(3, 9)
@@ -86,21 +86,21 @@ subroutine dstniw(qsi, eta, carat3, dci, bca,&
         wmest(i) = zero
     end do
 !
-    lbd = 1.d0 - qsi - eta
+    lbd = 1.d0-qsi-eta
 !
 ! --- FONCTIONS DE FORME RELATIVES A LA FLECHE CORRESPONDANTES
 ! --- A L'INTERPOLATION DE TYPE HERMITE :
 ! ---     W = NI*WI + NQSII*(D WI)/(D QSI) + NETAI*(D WI)/(D ETA) :
 !     -----------------------------------------------------------
-    n(1) = lbd*lbd * (3.d0 - 2.d0*lbd) + qsi*eta*lbd * 2.d0
-    n(2) = lbd*lbd * qsi + qsi*eta*lbd / 2.d0
-    n(3) = lbd*lbd * eta + qsi*eta*lbd / 2.d0
-    n(4) = qsi*qsi * (3.d0 - 2.d0*qsi) + qsi*eta*lbd * 2.d0
-    n(5) = qsi*qsi * (-1.d0 + qsi) - qsi*eta*lbd
-    n(6) = qsi*qsi * eta + qsi*eta*lbd / 2.d0
-    n(7) = eta*eta * (3.d0 - 2.d0*eta) + qsi*eta*lbd * 2.d0
-    n(8) = eta*eta * qsi + qsi*eta*lbd / 2.d0
-    n(9) = eta*eta * (-1.d0 + eta) - qsi*eta*lbd
+    n(1) = lbd*lbd*(3.d0-2.d0*lbd)+qsi*eta*lbd*2.d0
+    n(2) = lbd*lbd*qsi+qsi*eta*lbd/2.d0
+    n(3) = lbd*lbd*eta+qsi*eta*lbd/2.d0
+    n(4) = qsi*qsi*(3.d0-2.d0*qsi)+qsi*eta*lbd*2.d0
+    n(5) = qsi*qsi*(-1.d0+qsi)-qsi*eta*lbd
+    n(6) = qsi*qsi*eta+qsi*eta*lbd/2.d0
+    n(7) = eta*eta*(3.d0-2.d0*eta)+qsi*eta*lbd*2.d0
+    n(8) = eta*eta*qsi+qsi*eta*lbd/2.d0
+    n(9) = eta*eta*(-1.d0+eta)-qsi*eta*lbd
 !
 ! --- CALCUL DE (GAMMA) = [DCI]*(T)
 ! --- SOIT      (GAMMA) = [DCI]*[BCA]*[AN]*(UN) S'IL N'Y A PAS
@@ -113,48 +113,48 @@ subroutine dstniw(qsi, eta, carat3, dci, bca,&
 ! ---   CALCUL DE  [DCI]*[BCA]*[AN] :
 !       ---------------------------
     do j = 1, 3
-        db(1,j) = dci(1,1)*bca(1,j) + dci(1,2)*bca(2,j)
-        db(2,j) = dci(2,1)*bca(1,j) + dci(2,2)*bca(2,j)
+        db(1, j) = dci(1, 1)*bca(1, j)+dci(1, 2)*bca(2, j)
+        db(2, j) = dci(2, 1)*bca(1, j)+dci(2, 2)*bca(2, j)
     end do
     do j = 1, 9
-        dba(1,j) = db(1,1)*an(1,j) + db(1,2)*an(2,j) + db(1,3)*an(3,j)
-        dba(2,j) = db(2,1)*an(1,j) + db(2,2)*an(2,j) + db(2,3)*an(3,j)
+        dba(1, j) = db(1, 1)*an(1, j)+db(1, 2)*an(2, j)+db(1, 3)*an(3, j)
+        dba(2, j) = db(2, 1)*an(1, j)+db(2, 2)*an(2, j)+db(2, 3)*an(3, j)
     end do
 !
 ! ---   CALCUL DE  [DCI]*[BCA]*[AM] :
 !       ---------------------------
     do j = 1, 6
-        dbam(1,j) = db(1,1)*am(1,j) + db(1,2)*am(2,j) + db(1,3)*am(3, j)
-        dbam(2,j) = db(2,1)*am(1,j) + db(2,2)*am(2,j) + db(2,3)*am(3, j)
+        dbam(1, j) = db(1, 1)*am(1, j)+db(1, 2)*am(2, j)+db(1, 3)*am(3, j)
+        dbam(2, j) = db(2, 1)*am(1, j)+db(2, 2)*am(2, j)+db(2, 3)*am(3, j)
     end do
 !
 ! ---   FONCTIONS D'INTERPOLATION WST RELATIVES AUX DDLS DE FLEXION
 ! ---   W, BETA_X ET BETA_Y :
 !       -------------------
     do j = 1, 9
-        wst(j) = (&
-                 dba(1,j)*x4 + dba(2,j)*y4) * (n(2) + n(5) + n(8)) - (dba(1,j)*x6 + dba(2,j)*y6) &
-                 &* (n(3) + n(6) + n(9)&
-                 )
+        wst(j) = ( &
+                 dba(1, j)*x4+dba(2, j)*y4)*(n(2)+n(5)+n(8))-(dba(1, j)*x6+dba(2, j)*y6) &
+                &*(n(3)+n(6)+n(9) &
+                   )
     end do
 !
-    wst(1) = wst(1) + n(1)
-    wst(2) = wst(2) - n(2)*x4 + n(3)*x6
-    wst(3) = wst(3) - n(2)*y4 + n(3)*y6
-    wst(4) = wst(4) + n(4)
-    wst(5) = wst(5) - n(5)*x4 + n(6)*x6
-    wst(6) = wst(6) - n(5)*y4 + n(6)*y6
-    wst(7) = wst(7) + n(7)
-    wst(8) = wst(8) - n(8)*x4 + n(9)*x6
-    wst(9) = wst(9) - n(8)*y4 + n(9)*y6
+    wst(1) = wst(1)+n(1)
+    wst(2) = wst(2)-n(2)*x4+n(3)*x6
+    wst(3) = wst(3)-n(2)*y4+n(3)*y6
+    wst(4) = wst(4)+n(4)
+    wst(5) = wst(5)-n(5)*x4+n(6)*x6
+    wst(6) = wst(6)-n(5)*y4+n(6)*y6
+    wst(7) = wst(7)+n(7)
+    wst(8) = wst(8)-n(8)*x4+n(9)*x6
+    wst(9) = wst(9)-n(8)*y4+n(9)*y6
 !
 ! ---   FONCTIONS D'INTERPOLATION WMEST RELATIVES AUX DDLS DE
 ! ---   MEMBRANE U ET V :
 !       ---------------
     do j = 1, 6
-        wmest(j) = (&
-                   dbam(1,j)*x4 + dbam(2,j)*y4) * (n(2) + n(5) + n(8) ) - (dbam(1,j)*x6 + dbam(2,&
-                   &j)*y6) * (n(3) + n(6) + n(9)&
+        wmest(j) = ( &
+                   dbam(1, j)*x4+dbam(2, j)*y4)*(n(2)+n(5)+n(8))-(dbam(1, j)*x6+dbam(2,&
+                   &j)*y6)*(n(3)+n(6)+n(9) &
                    )
     end do
 !

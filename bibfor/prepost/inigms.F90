@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine inigms(nomail, nbnoma, nuconn)
 !    PAR DEFAUT LES NUMEROTATIONS COINCIDENT
     do i = 1, 19
         do j = 1, 32
-            nuconn(i,j) = j
+            nuconn(i, j) = j
         end do
     end do
 !
@@ -89,80 +89,80 @@ subroutine inigms(nomail, nbnoma, nuconn)
 !
 !    TETRA 10
     nuconn(11, 9) = 10
-    nuconn(11,10) = 9
+    nuconn(11, 10) = 9
 !
 !    HEXA 27
-    nuconn(12,10) = 12
-    nuconn(12,11) = 14
-    nuconn(12,12) = 10
-    nuconn(12,13) = 11
-    nuconn(12,14) = 13
-    nuconn(12,15) = 15
-    nuconn(12,16) = 16
-    nuconn(12,17) = 17
-    nuconn(12,18) = 19
-    nuconn(12,19) = 20
-    nuconn(12,20) = 18
-    nuconn(12,23) = 24
-    nuconn(12,24) = 25
-    nuconn(12,25) = 23
+    nuconn(12, 10) = 12
+    nuconn(12, 11) = 14
+    nuconn(12, 12) = 10
+    nuconn(12, 13) = 11
+    nuconn(12, 14) = 13
+    nuconn(12, 15) = 15
+    nuconn(12, 16) = 16
+    nuconn(12, 17) = 17
+    nuconn(12, 18) = 19
+    nuconn(12, 19) = 20
+    nuconn(12, 20) = 18
+    nuconn(12, 23) = 24
+    nuconn(12, 24) = 25
+    nuconn(12, 25) = 23
 !
 !    PENTA 18
     nuconn(13, 7) = 7
     nuconn(13, 8) = 10
     nuconn(13, 9) = 8
-    nuconn(13,10) = 9
-    nuconn(13,11) = 11
-    nuconn(13,12) = 12
-    nuconn(13,13) = 13
-    nuconn(13,14) = 15
-    nuconn(13,15) = 14
-    nuconn(13,17) = 18
-    nuconn(13,18) = 17
+    nuconn(13, 10) = 9
+    nuconn(13, 11) = 11
+    nuconn(13, 12) = 12
+    nuconn(13, 13) = 13
+    nuconn(13, 14) = 15
+    nuconn(13, 15) = 14
+    nuconn(13, 17) = 18
+    nuconn(13, 18) = 17
 !
 !    PYRAM 13
     nuconn(14, 6) = 6
     nuconn(14, 7) = 9
     nuconn(14, 8) = 11
     nuconn(14, 9) = 7
-    nuconn(14,10) = 8
-    nuconn(14,11) = 10
-    nuconn(14,12) = 12
-    nuconn(14,13) = 13
+    nuconn(14, 10) = 8
+    nuconn(14, 11) = 10
+    nuconn(14, 12) = 12
+    nuconn(14, 13) = 13
 !
 !    HEXA 20
-    nuconn(17,10) = 12
-    nuconn(17,11) = 14
-    nuconn(17,12) = 10
-    nuconn(17,13) = 11
-    nuconn(17,14) = 13
-    nuconn(17,15) = 15
-    nuconn(17,16) = 16
-    nuconn(17,17) = 17
-    nuconn(17,18) = 19
-    nuconn(17,19) = 20
-    nuconn(17,20) = 18
+    nuconn(17, 10) = 12
+    nuconn(17, 11) = 14
+    nuconn(17, 12) = 10
+    nuconn(17, 13) = 11
+    nuconn(17, 14) = 13
+    nuconn(17, 15) = 15
+    nuconn(17, 16) = 16
+    nuconn(17, 17) = 17
+    nuconn(17, 18) = 19
+    nuconn(17, 19) = 20
+    nuconn(17, 20) = 18
 !
 !    PENTA 15
     nuconn(18, 7) = 7
     nuconn(18, 8) = 10
     nuconn(18, 9) = 8
-    nuconn(18,10) = 9
-    nuconn(18,11) = 11
-    nuconn(18,12) = 12
-    nuconn(18,13) = 13
-    nuconn(18,14) = 15
-    nuconn(18,15) = 14
+    nuconn(18, 10) = 9
+    nuconn(18, 11) = 11
+    nuconn(18, 12) = 12
+    nuconn(18, 13) = 13
+    nuconn(18, 14) = 15
+    nuconn(18, 15) = 14
 !
 !    PYRAM 13
     nuconn(19, 6) = 6
     nuconn(19, 7) = 9
     nuconn(19, 8) = 11
     nuconn(19, 9) = 7
-    nuconn(19,10) = 8
-    nuconn(19,11) = 10
-    nuconn(19,12) = 12
-    nuconn(19,13) = 13
+    nuconn(19, 10) = 8
+    nuconn(19, 11) = 10
+    nuconn(19, 12) = 12
+    nuconn(19, 13) = 13
 !
 !
 !

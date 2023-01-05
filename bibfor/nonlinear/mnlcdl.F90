@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
 ! --- VERIFICATION SI CONDITION CINEMATIQUE OU MECANIQUE
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION NOM DE LA MATRICE
-    matk=zk24(zi(imat(1)+1))(1:19)
+    matk = zk24(zi(imat(1)+1)) (1:19)
 ! --- EXISTENCE DU CHAMP CCID (CDL CINE) DANS LA MATRICE
     call jeexin(matk//'.CCID', lccid)
 ! --- CREATION DU VECTEUR INDIQUANT SI ACTIF (0) OU NON(1)
@@ -74,9 +74,9 @@ subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
 ! --- CAS AFFE_CHAR_CINE
         call jeveuo(matk//'.CCID', 'L', vi=ccid)
         do k = 1, neq
-            zi(iind-1+k)=ccid(k)
+            zi(iind-1+k) = ccid(k)
         end do
-        nd=neq-ccid(neq+1)
+        nd = neq-ccid(neq+1)
         lcine = .true.
     else
 ! --- CAS AFFE_CHAR_MECA
@@ -84,27 +84,27 @@ subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
         call jeveuo(numedd//'.NUME.DEEQ', 'L', vi=deeq)
         do k = 1, neq
             if (deeq(2*(k-1)+2) .gt. 0) then
-                zi(iind-1+k)=0
-            else if (deeq(2*(k-1)+2).lt.0) then
-                zi(iind-1+k)=1
-                j=1
-                tcmp=-deeq(2*(k-1)+2)
- 21             continue
+                zi(iind-1+k) = 0
+            else if (deeq(2*(k-1)+2) .lt. 0) then
+                zi(iind-1+k) = 1
+                j = 1
+                tcmp = -deeq(2*(k-1)+2)
+21              continue
                 if (deeq(2*(j-1)+1) .ne. deeq(2*(k-1)+1) .or. deeq(2*(j-1)+2) .ne. tcmp) then
-                    j=j+1
+                    j = j+1
                     goto 21
-                endif
-                zi(iind-1+j)=1
-            endif
+                end if
+                zi(iind-1+j) = 1
+            end if
         end do
-        ndlag=0
+        ndlag = 0
         do k = 1, neq
             if (zi(iind-1+k) .eq. 1) then
-                ndlag=ndlag+1
-            endif
+                ndlag = ndlag+1
+            end if
         end do
-        nd=neq-ndlag
-    endif
+        nd = neq-ndlag
+    end if
 !
     call jedema()
 !

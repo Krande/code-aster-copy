@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
+subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
                   sigi, dvin, iret)
     implicit none
 !      MODELE VISCOPLASTIQUE A ECROUISSAGE ISOTROPE COUPLE A DE
@@ -57,24 +57,24 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
     parameter(ze=0.0d0)
     parameter(td=1.5d0)
 !
-    common /tdim/   ndt,    ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
 !
 ! -- TEMPERATURE
 !
 !      IF (MOD(1:2).EQ.'3D')THEN
     if (ndt .eq. 6) then
-        ndim=3
-    else if (ndt.eq.4) then
-        ndim=2
-        smx(5)=0.d0
-        smx(6)=0.d0
-        devi(5)=0.d0
-        devi(6)=0.d0
-    endif
-    iret=0
-    rmin=r8miem()
-    shmax=50.d0
+        ndim = 3
+    else if (ndt .eq. 4) then
+        ndim = 2
+        smx(5) = 0.d0
+        smx(6) = 0.d0
+        devi(5) = 0.d0
+        devi(6) = 0.d0
+    end if
+    iret = 0
+    rmin = r8miem()
+    shmax = 50.d0
 !
 ! --    COEFFICIENTS MATERIAU INELASTIQUES
 !
@@ -92,7 +92,7 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
     alphad = coeft(12)
     sequid = coeft(13)
 !
-    epsi=r8prem()*pk
+    epsi = r8prem()*pk
 !
 ! --  VARIABLES INTERNES
 !
@@ -102,7 +102,7 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
 !
     dmg = vini(11)
     dmgmi = vini(10)
-    h=ecrou(1)+ecrou(2)
+    h = ecrou(1)+ecrou(2)
 !
 !----------------------------------------------------------------
     call dcopy(ndt, sigi, 1, smx, 1)
@@ -113,79 +113,79 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
     call fgequi(smx, 'SIGM_DIR', ndim, equi)
 !     on retablit le tenseur
     call dscal(3, sqrt(2.d0), smx(4), 1)
-    trsig=equi(16)
-    grj0=max(equi(3),equi(4))
-    grj0=max(grj0,equi(5))
-    grj1= trsig
-    grj2v=equi(1)
+    trsig = equi(16)
+    grj0 = max(equi(3), equi(4))
+    grj0 = max(grj0, equi(5))
+    grj1 = trsig
+    grj2v = equi(1)
     if (sequid .eq. 0.d0) then
-        sequi=grj0
+        sequi = grj0
     else
-        sequi=grj1
-    endif
+        sequi = grj1
+    end if
 !------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
     do itens = 1, ndt
-        if (itens .le. 3) smx(itens)=smx(itens)-grj1/3.d0
+        if (itens .le. 3) smx(itens) = smx(itens)-grj1/3.d0
     end do
 !
 !----- EQUATION DONNANT LA DERIVEE DU MICROENDOMMAG
-    ddmgmi=(pkc/3)*((1-dmgmi)**4)
+    ddmgmi = (pkc/3)*((1-dmgmi)**4)
 !
 !----- EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 !----- CUMULEE
 !
-    terme1=(grj2v*(1-h))/(pk*(1-dmgmi)*(1-dmg))
+    terme1 = (grj2v*(1-h))/(pk*(1-dmgmi)*(1-dmg))
     if (grj2v .le. epsi) then
-        devcum=ze
-    else if (abs(terme1).lt.shmax) then
-        devcum=eps0*(sinh(terme1))
+        devcum = ze
+    else if (abs(terme1) .lt. shmax) then
+        devcum = eps0*(sinh(terme1))
     else
-        iret=1
+        iret = 1
         goto 999
-    endif
+    end if
 !
 !----- EQUATION DONNANT LA DERIVEE DE H
 !
     if (grj2v .le. epsi) then
 !       DIVISION PAR ZERO EVITEE
-        decrou(1)=ze
-        decrou(2)=ze
+        decrou(1) = ze
+        decrou(2) = ze
     else
         if (ecrou(1) .le. (h1st-rmin)) then
-            decrou(1)=(h1/grj2v)*(h1st-(delta1*ecrou(1)))*devcum
-            decrou(2)=(h2/grj2v)*(h2st-(delta2*ecrou(2)))*devcum
+            decrou(1) = (h1/grj2v)*(h1st-(delta1*ecrou(1)))*devcum
+            decrou(2) = (h2/grj2v)*(h2st-(delta2*ecrou(2)))*devcum
         else
-            iret=1
+            iret = 1
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 !
 !----- EQUATION DONNANT LA DERIVEE DE L ENDOMMAGEMENT
 !
     if (sequi .ge. ze) then
-        sinn=alphad*sequi+((1.d0-alphad)*grj2v)
+        sinn = alphad*sequi+((1.d0-alphad)*grj2v)
     else
-        sinn=(1.d0-alphad)*grj2v
-    endif
+        sinn = (1.d0-alphad)*grj2v
+    end if
     if ((sinn/sig0) .lt. shmax) then
-        ddmg=biga*sinh(sinn/sig0)
+        ddmg = biga*sinh(sinn/sig0)
     else
-        iret=1
+        iret = 1
         goto 999
-    endif
+    end if
 !
 !------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
 !
     if (grj2v .le. epsi) then
         do itens = 1, ndt
-            devi(itens)=ze
+            devi(itens) = ze
         end do
     else
         do itens = 1, ndt
-            devi(itens)=td*devcum*smx(itens)/grj2v
+            devi(itens) = td*devcum*smx(itens)/grj2v
         end do
-    endif
+    end if
 !
 ! --    DERIVEES DES VARIABLES INTERNES
 !

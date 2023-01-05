@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine pcldlt(matf, mat, niremp, base)
     character(len=1) :: bas1
     integer :: iret, nequ, ncoef, nblc
     integer :: jvalm, i, nzmax, niremp
-    integer :: ier, k,jvalf
+    integer :: ier, k, jvalf
     real(kind=8) :: dnorm, epsi
     character(len=19) :: matfac, matas, matas1
     character(len=1) :: tysca
@@ -96,39 +96,35 @@ subroutine pcldlt(matf, mat, niremp, base)
     matfac = matf
     bas1 = base
 
-
 !   -- Pour que la factorisation LDLT (incomplete) soit plus efficace,
 !      il faut souvent renumeroter la matrice :
 !      matas1 -> matas
 !   ------------------------------------------------------------------
-    nperm=matfac//'.PERM'
-    matas='&&PCLDLT.MATR'
+    nperm = matfac//'.PERM'
+    matas = '&&PCLDLT.MATR'
     call jedetr(nperm)
-    call ldlt_matr(matas1,matas,nperm,bas1)
-
+    call ldlt_matr(matas1, matas, nperm, bas1)
 
 !   -- Prise en compte des ddls elimines (pour matas) :
 !   ---------------------------------------------------
     call jeveuo(matas//'.REFA', 'L', vk24=refa)
-    if (refa(3).ne.' ') then
-        ASSERT(refa(3).ne.'ELIMF')
+    if (refa(3) .ne. ' ') then
+        ASSERT(refa(3) .ne. 'ELIMF')
         if (refa(3) .eq. 'ELIML') call mtmchc(matas, 'ELIMF')
-        ASSERT(refa(3).ne.'ELIML')
-    endif
-
-
+        ASSERT(refa(3) .ne. 'ELIML')
+    end if
 
 !   1. CALCUL DE : MA,NU,SMDI,SMHC,SMDE
 !       NEQU,NCOEF
 !       + QQUES VERIFS
 !   ------------------------------------------
-    ma = refa(1)(1:8)
-    nu = refa(2)(1:14)
+    ma = refa(1) (1:8)
+    nu = refa(2) (1:14)
 
     call jeexin(nu//'.SMOS.SMDI', iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE3_21', sk=matas)
-    endif
+    end if
 
     call jeveuo(nu//'.SMOS.SMDI', 'L', vi=smdi)
     call jeveuo(nu//'.SMOS.SMHC', 'L', vi4=smhc)
@@ -139,25 +135,22 @@ subroutine pcldlt(matf, mat, niremp, base)
     nblc = smde(3)
     if (nblc .ne. 1) then
         call utmess('F', 'ALGELINE3_22')
-    endif
+    end if
 
     call jelira(jexnum(matas//'.VALM', 1), 'TYPE', cval=tysca)
     if (tysca .eq. 'C') then
         call utmess('F', 'ALGELINE3_23')
-    endif
-
-
+    end if
 
 !   1. CREATION DU NUME_DDL ASSOCIE A MATFAC :
 !   ------------------------------------------
 
 !   -- DETERMINATION DU NOM DE LA SD CACHEE NUME_DDL
-    noobj ='12345678.NU000.NUME.PRNO'
+    noobj = '12345678.NU000.NUME.PRNO'
     call gnomsd(' ', noobj, 12, 14)
     noobj(1:8) = matfac(1:8)
-    nuf=noobj(1:14)
+    nuf = noobj(1:14)
     call copisd('NUME_DDL', bas1, nu, nuf)
-
 
 !   2. CREATION DE MATFAC.REFA
 !   ---------------------------
@@ -167,8 +160,7 @@ subroutine pcldlt(matf, mat, niremp, base)
     refaf(2) = nuf
     refaf(9) = 'MS'
     refaf(10) = 'NOEU'
-    refaf(11)='MPI_COMPLET'
-
+    refaf(11) = 'MPI_COMPLET'
 
 !   2. CALCUL DE EPSI POUR PCFACT ET ALLOCATION DE .VTRAVAIL:
 !   ---------------------------------------------------------
@@ -176,11 +168,10 @@ subroutine pcldlt(matf, mat, niremp, base)
     AS_ALLOCATE(vr=vtravail, size=nequ)
     dnorm = 0.d0
     do i = 1, nequ
-        dnorm = max(abs(zr(jvalm-1+smdi(i))),dnorm)
+        dnorm = max(abs(zr(jvalm-1+smdi(i))), dnorm)
     end do
     epsi = 1.d-16*dnorm
     call jelibe(jexnum(matas//'.VALM', 1))
-
 
 !   3. ON BOUCLE SUR PCSTRU JUSQU'A TROUVER LA TAILLE DE LA
 !      FUTURE FACTORISEE :
@@ -195,61 +186,55 @@ subroutine pcldlt(matf, mat, niremp, base)
         call wkvect('&&PCLDLT.SMHCF', 'V V S', 2*nzmax, vi4=smhc1)
         AS_ALLOCATE(vi=icpcx, size=nzmax)
 
-        call pcstru(nequ, smdi, smhc, smdi2, smhc1,&
-                    icpd, icpcx, icplx, niremp, complt,&
+        call pcstru(nequ, smdi, smhc, smdi2, smhc1, &
+                    icpd, icpcx, icplx, niremp, complt, &
                     nzmax, 0, ier)
 
         AS_DEALLOCATE(vi=icplx)
         AS_DEALLOCATE(vi=icpcx)
         AS_DEALLOCATE(vi=icpd)
         if (ier .eq. 0) goto 777
-        nzmax=ier
+        nzmax = ier
     end do
     call utmess('F', 'ALGELINE3_24')
 777 continue
 
-
 !     -- ON MET A JOUR NUF.SMDI ET NUF.SMHC  :
 !   ------------------------------------------------
     call jeveuo(nuf//'.SMOS.SMDI', 'E', vi=smdif)
-    do k=1,nequ
+    do k = 1, nequ
         smdif(k) = smdi2(k)
-    enddo
+    end do
     AS_DEALLOCATE(vi=smdi2)
 
     call jedetr(nuf//'.SMOS.SMHC')
     call wkvect(nuf//'.SMOS.SMHC', bas1//' V S', nzmax, vi4=smhcf)
-    do k=1,nzmax
+    do k = 1, nzmax
         smhcf(k) = smhc1(k)
-    enddo
+    end do
     call jedetr('&&PCLDLT.SMHCF')
-
-
 
 !   -- ON ALLOUE MATFAC.VALM :
 !   ------------------------------------------------
     call jedetr(matfac//'.VALM')
-    call jecrec(matfac//'.VALM', bas1//' V '//tysca, 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(matfac//'.VALM', bas1//' V '//tysca, 'NU', 'DISPERSE', 'CONSTANT', &
                 1)
     call jeecra(matfac//'.VALM', 'LONMAX', nzmax)
     call jecroc(jexnum(matfac//'.VALM', 1))
-
 
 !   -- ON INJECTE MATAS.VALM DANS MATFAC.VALM :
 !   ------------------------------------------------
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', jvalm)
     call jeveuo(jexnum(matfac//'.VALM', 1), 'E', jvalf)
-    call pccoef(nequ, smdi, smhc, zr(jvalm), smdif,&
+    call pccoef(nequ, smdi, smhc, zr(jvalm), smdif, &
                 smhcf, zr(jvalf), vtravail)
     call jelibe(jexnum(matas//'.VALM', 1))
-
 
 !   -- ON FACTORISE MATFAC.VALM :
 !   ------------------------------------------------
     AS_ALLOCATE(vr=vect, size=nequ)
-    call pcfact(matas, nequ, smdif, smhcf, zr(jvalf),&
+    call pcfact(matas, nequ, smdif, smhcf, zr(jvalf), &
                 zr(jvalf), vect, epsi)
-
 
 !   -- menage :
 !   -------------
@@ -260,15 +245,12 @@ subroutine pcldlt(matf, mat, niremp, base)
     AS_DEALLOCATE(vr=vect)
     AS_DEALLOCATE(vr=vtravail)
 
-
 !   -- Prise en compte des ddls elimines (pour matas1) :
 !   -----------------------------------------------------
     call jeveuo(matas1//'.REFA', 'L', vk24=refa)
-    ASSERT(refa(3).ne.'ELIMF')
+    ASSERT(refa(3) .ne. 'ELIMF')
     if (refa(3) .eq. 'ELIML') call mtmchc(matas1, 'ELIMF')
-    ASSERT(refa(3).ne.'ELIML')
-
-
+    ASSERT(refa(3) .ne. 'ELIML')
 
     call jedema()
 end subroutine

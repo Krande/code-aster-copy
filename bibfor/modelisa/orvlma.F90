@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine orvlma(noma, listma, nbmail, norien, vect,&
+subroutine orvlma(noma, listma, nbmail, norien, vect, &
                   noeud)
     implicit none
 #include "asterf_types.h"
@@ -120,28 +120,28 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !
         if (typel(1:4) .eq. 'QUAD') then
             dime2 = .true.
-        else if (typel(1:4).eq.'TRIA') then
+        else if (typel(1:4) .eq. 'TRIA') then
             dime2 = .true.
-        else if (typel(1:3).eq.'SEG') then
+        else if (typel(1:3) .eq. 'SEG') then
             dime1 = .true.
         else
             call jenuno(jexnum(mailma, numa), nomail)
             valk(1) = nomail
             valk(2) = typel
             call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
-        endif
+        end if
         if (dime1 .and. dime2) then
             call utmess('F', 'MODELISA5_98')
-        endif
+        end if
     end do
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------
-    kdim ='  '
-    if (dime1) kdim ='1D'
-    if (dime2) kdim ='2D'
+    kdim = '  '
+    if (dime1) kdim = '1D'
+    if (dime2) kdim = '2D'
     nomavo = '&&ORVLMA.MAILLE_VOISINE '
-    call utmavo(noma, kdim, listma, nbmail, 'V',&
+    call utmavo(noma, kdim, listma, nbmail, 'V', &
                 nomavo, zero, ibid)
     call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
     call jeveuo(nomavo, 'L', p3)
@@ -158,40 +158,40 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
         jdesm1 = zi(kori-1+ima)
 !
 ! ------ VERIFICATION QUE LE NOEUD EST DANS LA MAILLE
-        if (dime1) ico = ioriv1( zi(p1+jdesm1-1), noeud, vect, zr( jcoor) )
-        if (dime2) ico = ioriv2( zi(p1+jdesm1-1),nbnmai, noeud,vect, zr(jcoor))
+        if (dime1) ico = ioriv1(zi(p1+jdesm1-1), noeud, vect, zr(jcoor))
+        if (dime2) ico = ioriv2(zi(p1+jdesm1-1), nbnmai, noeud, vect, zr(jcoor))
 !
 ! ------ LA MAILLE NE CONTIENT PAS LE NOEUD
         if (ico .eq. 0) then
 !
 ! ------ LA MAILLE A ETE REORIENTEE
         else if (ico .lt. 0) then
-            nbmaor = nbmaor + 1
+            nbmaor = nbmaor+1
             zi(kdeb+nbmaor-1) = ima
             zi(lori-1+ima) = 1
             if (niv .eq. 2) then
                 call jenuno(jexnum(mailma, numa), nomail)
-                write(ifm,*) 'LA MAILLE '//nomail//&
+                write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' A ETE ORIENTEE PAR RAPPORT AU VECTEUR'
-            endif
-            norieg = norieg + 1
+            end if
+            norieg = norieg+1
 !
 ! ------ LA MAILLE A LA BONNE ORIENTATION
         else
-            nbmaor = nbmaor + 1
+            nbmaor = nbmaor+1
             zi(kdeb+nbmaor-1) = ima
             zi(lori-1+ima) = 1
             if (niv .eq. 2) then
                 call jenuno(jexnum(mailma, numa), nomail)
-                write(ifm,*) 'LA MAILLE '//nomail//&
+                write (ifm, *) 'LA MAILLE '//nomail//&
      &                       ' EST ORIENTEE PAR RAPPORT AU VECTEUR'
-            endif
-        endif
+            end if
+        end if
 !
     end do
     if (nbmaor .eq. 0) then
         call utmess('F', 'MODELISA6_1')
-    endif
+    end if
 !
     do ii = 1, nbmaor
         lliste = 0
@@ -208,39 +208,39 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
         nbmavo = zi(p4+im1)-zi(p4-1+im1)
         do im3 = 1, nbmavo
             indi = zi(p3+zi(p4+im1-1)-1+im3-1)
-            im2 = indiis ( listma, indi, 1, nbmail )
+            im2 = indiis(listma, indi, 1, nbmail)
             if (im2 .eq. 0) goto 210
             numail = listma(im2)
             if (pasori(im2)) then
                 jdesm2 = zi(kori-1+im2)
 !           VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
-                if (dime1) ico = iorim1 ( zi(p1+jdesm1-1), zi(p1+ jdesm2-1), reorie)
-                if (dime2) ico = iorim2 (&
-                                 zi(p1+jdesm1-1), zi(nori-1+ im1), zi(p1+jdesm2-1),&
-                                 zi(nori-1+im2), reorie&
+                if (dime1) ico = iorim1(zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
+                if (dime2) ico = iorim2( &
+                                 zi(p1+jdesm1-1), zi(nori-1+im1), zi(p1+jdesm2-1), &
+                                 zi(nori-1+im2), reorie &
                                  )
 !           SI MAILLES CONNEXES
                 if (ico .ne. 0) then
                     zi(lori-1+im2) = 1
-                    lliste = lliste + 1
+                    lliste = lliste+1
                     zi(jori+lliste) = im2
                     if (reorie .and. niv .eq. 2) then
                         call jenuno(jexnum(mailma, numail), nomail)
                         if (ico .lt. 0) then
-                            write (ifm,*) 'LA MAILLE ',nomail,' A ETE REORIENTEE'
+                            write (ifm, *) 'LA MAILLE ', nomail, ' A ETE REORIENTEE'
                         else
-                            write (ifm,*) 'LA MAILLE ',nomail,' EST ORIENTEE'
-                        endif
-                    endif
-                endif
+                            write (ifm, *) 'LA MAILLE ', nomail, ' EST ORIENTEE'
+                        end if
+                    end if
+                end if
 !
 !           SI ORIENTATIONS CONTRAIRES
-                if (ico .lt. 0) norieg = norieg + 1
+                if (ico .lt. 0) norieg = norieg+1
 !
-            endif
+            end if
 210         continue
         end do
-        iliste = iliste + 1
+        iliste = iliste+1
         if (iliste .le. lliste) goto 200
     end do
 !
@@ -249,10 +249,10 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
     do ima = 1, nbmail
         if (pasori(ima)) then
             call utmess('F', 'MODELISA6_2')
-        endif
+        end if
     end do
 !
-    norien = norien + norieg
+    norien = norien+norieg
 !
     call jedetr('&&ORVLMA.ORI1')
     call jedetr('&&ORVLMA.ORI2')

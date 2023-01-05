@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,28 +38,28 @@ subroutine subaco(nno, dff, geom, cova)
 !
 !
     do i = 1, 3
-        cova(i,1) = 0.d0
-        cova(i,2) = 0.d0
+        cova(i, 1) = 0.d0
+        cova(i, 2) = 0.d0
     end do
 !
 !
 !    CALCUL DES VECTEURS TANGENTS
     do n = 1, nno
         do i = 1, 3
-            cova(i,1) = cova(i,1) + dff(1,n)*geom(i,n)
-            cova(i,2) = cova(i,2) + dff(2,n)*geom(i,n)
+            cova(i, 1) = cova(i, 1)+dff(1, n)*geom(i, n)
+            cova(i, 2) = cova(i, 2)+dff(2, n)*geom(i, n)
         end do
     end do
 !
 !
 !    CALCUL DE LA NORMALE (PRODUIT VECTORIEL DES VECTEURS TANGENTS)
-    cova(1,3) = cova(2,1)*cova(3,2) - cova(3,1)*cova(2,2)
-    cova(2,3) = cova(3,1)*cova(1,2) - cova(1,1)*cova(3,2)
-    cova(3,3) = cova(1,1)*cova(2,2) - cova(2,1)*cova(1,2)
+    cova(1, 3) = cova(2, 1)*cova(3, 2)-cova(3, 1)*cova(2, 2)
+    cova(2, 3) = cova(3, 1)*cova(1, 2)-cova(1, 1)*cova(3, 2)
+    cova(3, 3) = cova(1, 1)*cova(2, 2)-cova(2, 1)*cova(1, 2)
 !
-    norme = sqrt(cova(1,3)**2 + cova(2,3)**2 + cova(3,3)**2)
-    cova(1,3) = cova(1,3) / norme
-    cova(2,3) = cova(2,3) / norme
-    cova(3,3) = cova(3,3) / norme
+    norme = sqrt(cova(1, 3)**2+cova(2, 3)**2+cova(3, 3)**2)
+    cova(1, 3) = cova(1, 3)/norme
+    cova(2, 3) = cova(2, 3)/norme
+    cova(3, 3) = cova(3, 3)/norme
 !
 end subroutine

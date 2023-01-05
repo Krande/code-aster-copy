@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,15 +34,15 @@ function blimax(n, dx, incx)
 !          NOT EQUAL TO 1
 !
         ix = 1
-        if(incx.lt.0)ix = (-n+1)*incx + 1
+        if (incx .lt. 0) ix = (-n+1)*incx+1
         imax = ix
         max = dx(ix)
         do i = 1, n
             if (dx(ix) .gt. max) then
                 imax = ix
                 max = dx(ix)
-            endif
-            ix = ix + incx
+            end if
+            ix = ix+incx
         end do
         blimax = imax
     else
@@ -55,9 +55,9 @@ function blimax(n, dx, incx)
             if (dx(i) .gt. max) then
                 imax = i
                 max = dx(i)
-            endif
+            end if
         end do
         blimax = imax
-    endif
+    end if
 999 continue
 end function

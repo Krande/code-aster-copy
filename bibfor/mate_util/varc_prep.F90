@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine varc_prep(chmate, l_thm)
 !
-use calcul_module, only : ca_jvcnom_, ca_nbcvrc_, ca_ctempr_, ca_ctempm_, ca_ctempp_
+    use calcul_module, only: ca_jvcnom_, ca_nbcvrc_, ca_ctempr_, ca_ctempm_, ca_ctempp_
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -67,7 +67,7 @@ implicit none
     else
         ca_nbcvrc_ = 0
         ca_jvcnom_ = ismaem()
-    endif
+    end if
 !
 ! - For coupled problems (THM)
 !
@@ -80,12 +80,12 @@ implicit none
             varc_indx = indik8(zk8(ca_jvcnom_), varc_name, 1, ca_nbcvrc_)
             if (varc_indx .ne. 0) then
                 call utmess('F', 'MATERIAL2_51')
-            endif
+            end if
             ca_ctempr_ = r8nnem()
             ca_ctempm_ = r8nnem()
             ca_ctempp_ = r8nnem()
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

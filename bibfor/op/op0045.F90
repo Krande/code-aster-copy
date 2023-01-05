@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine op0045()
 !
     mpi_int :: mpicou, mpicow
     integer :: nbpari, nbparr, nbpark
-    parameter           ( nbpari=8 , nbparr=16 , nbpark=3)
+    parameter(nbpari=8, nbparr=16, nbpark=3)
     integer :: iret, ibid, npivot, neqact, mxresf, nblagr, nstoc, nconv, nbvecg, nfreqg
     integer :: rangl, icom1, icom2
     real(kind=8) :: omemin, omemax, omeshi, vpinf, vpmax, rbid
@@ -81,16 +81,16 @@ subroutine op0045()
 ! --- ETAPE 0: INITS. ET LECTURE/VERIFICATION DES DONNEES
 ! --------------------------------------------------------------------------------------------------
     call infmaj()
-    mod45='OP45'
-    mod45b=mod45
+    mod45 = 'OP45'
+    mod45b = mod45
 !
 ! --  ETAPE 0.0: INITIALISATIONS PROPRES A CET OPERATEUR
-    call vpini0(compex, modes, typcon, solveu, eigsol,&
-                matpsc, matopa, veclag, vecblo, vecrig,&
+    call vpini0(compex, modes, typcon, solveu, eigsol, &
+                matpsc, matopa, veclag, vecblo, vecrig, &
                 vecrer, vecrei, vecrek, vecvp)
 !
 ! --  ETAPE 0.1: PARALLELISME MULTI-NIVEAUX STEP 1
-    call vpmpi(1, icom1_=icom1, icom2_=icom2, lcomod_=lcomod,&
+    call vpmpi(1, icom1_=icom1, icom2_=icom2, lcomod_=lcomod, &
                mpicou_=mpicou, mpicow_=mpicow, rangl_=rangl)
 !
 ! --  ETAPE 0.2: LECTURE DES PARAMETRES SOLVEUR LINEAIRE ET CREATION DE LA SD SOLVEUR ASSOCIEE
@@ -108,9 +108,9 @@ subroutine op0045()
 ! --  ETAPE 1.1: TRAITEMENTS NUMERIQUES (SOLVEUR LINEAIRE, LAGRANGE, MODES RIGIDES,
 ! --             BORNES DE TRAVAIL EFFECTIVES, CALCUL DU NOMBRE DE MODES, FACTO. MATRICE SHIFTEE
 ! --             DETERMINATION TAILLE DE L'ESPACE DE PROJECTION)
-    call vpini1(eigsol, modes, solveu, typcon, vecblo,&
-                veclag, vecrig, matpsc, matopa, iret,&
-                nblagr, neqact, npivot, nstoc, omemax,&
+    call vpini1(eigsol, modes, solveu, typcon, vecblo, &
+                veclag, vecrig, matpsc, matopa, iret, &
+                nblagr, neqact, npivot, nstoc, omemax, &
                 omemin, omeshi, sigma, mod45)
     if (iret .ne. 0) goto 999
 !
@@ -119,38 +119,38 @@ subroutine op0045()
                nbvecg_=nbvecg, nfreqg_=nfreqg, rangl_=rangl)
 !
 ! --  ETAPE 1.3: CREATION ET INITIALISATION DES SDS RESULTATS
-    call vpini2(eigsol, lcomod, nbvecg, nfreqg, nbpark,&
-                nbpari, nbparr, vecrer, vecrei, vecrek,&
+    call vpini2(eigsol, lcomod, nbvecg, nfreqg, nbpark, &
+                nbpari, nbparr, vecrer, vecrei, vecrek, &
                 vecvp, mxresf)
 !
 ! --------------------------------------------------------------------------------------------------
 ! --- ETAPE 2: CALCUL MODAL PROPREMENT DIT SUIVANT LA METHODE CHOISIE
 ! --------------------------------------------------------------------------------------------------
     call vpleci(eigsol, 'K', 6, k24bid, rbid, ibid)
-    method=''
-    method=trim(k24bid)
+    method = ''
+    method = trim(k24bid)
     select case (method)
-    case('SORENSEN')
-        call vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                    matopa, mxresf, neqact, nblagr, omemax,&
-                    omemin, omeshi, solveu, vecblo, veclag,&
-                    sigma, npivot, flage, nconv, vpinf, vpmax, mod45b,&
+    case ('SORENSEN')
+        call vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                    matopa, mxresf, neqact, nblagr, omemax, &
+                    omemin, omeshi, solveu, vecblo, veclag, &
+                    sigma, npivot, flage, nconv, vpinf, vpmax, mod45b, &
                     k24bid, k24bid, ibid, K24bid, ibid, rbid)
-    case('TRI_DIAG')
-        call vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                    matopa, matpsc, mxresf, nblagr, nstoc,&
-                    omemax, omemin, omeshi, solveu, vecblo,&
-                    veclag, vecrig, sigma, npivot, flage,&
+    case ('TRI_DIAG')
+        call vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                    matopa, matpsc, mxresf, nblagr, nstoc, &
+                    omemax, omemin, omeshi, solveu, vecblo, &
+                    veclag, vecrig, sigma, npivot, flage, &
                     nconv, vpinf, vpmax)
-    case('JACOBI')
-        call vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                    matopa, matpsc, mxresf, nblagr, omemax,&
-                    omemin, omeshi, solveu, vecblo, npivot,&
+    case ('JACOBI')
+        call vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                    matopa, matpsc, mxresf, nblagr, omemax, &
+                    omemin, omeshi, solveu, vecblo, npivot, &
                     flage, nconv, vpinf, vpmax)
-    case('QZ')
-        call vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                    mxresf, neqact, nblagr, omemax, omemin,&
-                    omeshi, vecblo, sigma, npivot, flage,&
+    case ('QZ')
+        call vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                    mxresf, neqact, nblagr, omemax, omemin, &
+                    omeshi, vecblo, sigma, npivot, flage, &
                     nconv, vpinf, vpmax)
     case default
         ASSERT(.false.)
@@ -161,18 +161,18 @@ subroutine op0045()
 ! ---         + PARALLELISME MULTI-NIVEAUX STEP 3 ET 4
 ! ---         + NETTOYAGE EXPLICITE DES OBJETS JEVEUX GLOBAUX A L'OPERATEUR (BASE VOLATILE)
 ! --------------------------------------------------------------------------------------------------
-    call vppost(vecrer, vecrei, vecrek, vecvp, nbpark,&
-                nbpari, nbparr, mxresf, nconv, nblagr,&
-                nfreqg, modes, typcon, compex, eigsol,&
-                matopa, matpsc, solveu, vecblo, veclag,&
-                flage, icom1, icom2, mpicou, mpicow,&
+    call vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
+                nbpari, nbparr, mxresf, nconv, nblagr, &
+                nfreqg, modes, typcon, compex, eigsol, &
+                matopa, matpsc, solveu, vecblo, veclag, &
+                flage, icom1, icom2, mpicou, mpicow, &
                 omemax, omemin, vpinf, vpmax, lcomod, mod45)
 999 continue
 !
 ! --------------------------------------------------------------------------------------------------
 ! --- ETAPE 4: NETTOYAGE DES COMMUNICATEURS, PARALLELISME MULTI-NIVEAUX STEP 5
 ! --------------------------------------------------------------------------------------------------
-    call vpmpi(5, lcomod_=lcomod,&
+    call vpmpi(5, lcomod_=lcomod, &
                mpicou_=mpicou, mpicow_=mpicow)
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,11 +48,11 @@ subroutine iner81(nomres, classe, basmod, nommat)
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !-----------------------------------------------------------------------
-    integer :: i, ia, iad, idbase,  ieq
+    integer :: i, ia, iad, idbase, ieq
     integer :: ier, if, ldref, ldres, lmat, ltvec1
     integer :: ltvec2, ltvec3, mxddl, nbdef, neq
 !-----------------------------------------------------------------------
-    parameter     (mxddl=6)
+    parameter(mxddl=6)
     character(len=8) :: nomddl(mxddl)
     character(len=1) :: classe
     character(len=6) :: pgc
@@ -66,17 +66,17 @@ subroutine iner81(nomres, classe, basmod, nommat)
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
-    data pgc /'INER81'/
-    data nomddl/'DX      ','DY      ','DZ      ',&
-     &            'DRX     ','DRY     ','DRZ     '/
+    data pgc/'INER81'/
+    data nomddl/'DX      ', 'DY      ', 'DZ      ',&
+     &            'DRX     ', 'DRY     ', 'DRZ     '/
 !-----------------------------------------------------------------------
 !
 ! --- CREATION DU .REFE
 !
     call jemarq()
     call wkvect(nomres(1:18)//'_REFE', 'G V K24', 2, ldref)
-    zk24(ldref)=basmod
-    zk24(ldref+1)=nommat
+    zk24(ldref) = basmod
+    zk24(ldref+1) = nommat
 !
 ! --- NOMBRE TOTAL DE MODES ET DEFORMEES
 !
@@ -93,7 +93,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
     if (ier .eq. 0) then
         valk = nommat(1:8)
         call utmess('F', 'ALGORITH12_39', sk=valk)
-    endif
+    end if
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE
 !
@@ -110,8 +110,8 @@ subroutine iner81(nomres, classe, basmod, nommat)
     call wkvect('&&'//pgc//'.VECT1', 'V V R', neq, ltvec1)
     call wkvect('&&'//pgc//'.VECT2', 'V V R', neq, ltvec2)
     call wkvect('&&'//pgc//'.VECT3', 'V V I', mxddl*neq, ltvec3)
-    call pteddl('NUME_DDL', num, mxddl, nomddl, neq,&
-                tabl_equa = zi(ltvec3))
+    call pteddl('NUME_DDL', num, mxddl, nomddl, neq, &
+                tabl_equa=zi(ltvec3))
 !
     call jeveuo(num//'.NUME.DEEQ', 'L', vi=deeq)
     call wkvect('&&'//pgc//'.BASEMO', 'V V R', nbdef*neq, idbase)
@@ -130,7 +130,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !
 !     --- MULTIPLICATION DU MODE RIGIDE PAR LA MATRICE MASSE
 !
-        call mrmult('ZERO', lmat, zr(ltvec1), zr(ltvec2), 1,&
+        call mrmult('ZERO', lmat, zr(ltvec1), zr(ltvec2), 1, &
                     .true._1)
 !
 !     --- PROJECTION SUR LES MODES PROPRES ET LES DEFORMEES NON MODALES
@@ -139,7 +139,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
         do i = 1, nbdef
             call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(ltvec1), 1)
             call zerlag(neq, deeq, vectr=zr(ltvec1))
-            zr(ldres+iad+i-1) = ddot(neq,zr(ltvec1),1,zr(ltvec2),1)
+            zr(ldres+iad+i-1) = ddot(neq, zr(ltvec1), 1, zr(ltvec2), 1)
         end do
 !
     end do

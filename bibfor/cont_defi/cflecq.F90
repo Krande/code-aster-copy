@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cflecq(mesh       , model      , sdcont_defi , nb_cont_surf , nb_cont_node0,&
+subroutine cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
                   v_list_node, v_poin_node, nb_cont_node, nb_node_coq3d)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -85,8 +85,8 @@ implicit none
 !
     sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
-    call jeveuo(sdcont_noeuco, 'L', vi = v_sdcont_noeuco)
-    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_noeuco, 'L', vi=v_sdcont_noeuco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Temporary vectors
 !
@@ -95,7 +95,7 @@ implicit none
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi=v_mesh_typmail)
 !
 ! - Identify middle nodes
 !
@@ -110,36 +110,36 @@ implicit none
             if (type_name(1:5) .eq. 'QUAD9') then
                 call iscoqu(model, elem_nume, l_coq3d)
                 node_middle_nume = 9
-            else if (type_name(1:5).eq.'TRIA7') then
+            else if (type_name(1:5) .eq. 'TRIA7') then
                 call iscoqu(model, elem_nume, l_coq3d)
                 node_middle_nume = 7
             else
                 l_coq3d = .false.
-            endif
+            end if
             if (l_coq3d) then
-                call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+                call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi=v_mesh_connex)
                 node_nume = v_mesh_connex(node_middle_nume)
                 call jenuno(jexnum(mesh//'.NOMNOE', node_nume), node_name)
-            endif
+            end if
             if (l_coq3d) then
                 call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node, jdecno)
                 do i_node = 1, nb_node
                     nume_node_2 = v_sdcont_noeuco(jdecno+i_node)
                     if (nume_node_2 .eq. node_nume) then
                         v_node_indx(jdecno+i_node) = 1
-                        v_poin_node(i_surf+1) = v_poin_node(i_surf+1) + 1
-                        nb_node_coq3d = nb_node_coq3d + 1
+                        v_poin_node(i_surf+1) = v_poin_node(i_surf+1)+1
+                        nb_node_coq3d = nb_node_coq3d+1
                         goto 90
-                    endif
+                    end if
                 end do
-            endif
- 90     continue
+            end if
+90          continue
         end do
     end do
 !
 ! - Non-suppressed nodes vector
 !
-    nb_cont_node = nb_cont_node0 - nb_node_coq3d
+    nb_cont_node = nb_cont_node0-nb_node_coq3d
     AS_ALLOCATE(vi=v_list_node, size=nb_cont_node)
 !
 ! - Copy list of non-suppressed nodes
@@ -147,11 +147,11 @@ implicit none
     k = 0
     do i_node = 1, nb_cont_node0
         if (v_node_indx(i_node) .eq. 0) then
-            k = k + 1
+            k = k+1
             v_list_node(k) = v_sdcont_noeuco(i_node)
-        endif
+        end if
     end do
-    ASSERT(k.eq.nb_cont_node)
+    ASSERT(k .eq. nb_cont_node)
 !
 ! - Clean
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
+subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
                   lonlis)
     implicit none
 #include "jeveux.h"
@@ -68,7 +68,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !-----------------------------------------------------------------------
     integer :: ibid, idim1, idim2, idimax, igr, ima
     integer :: in1, indlis, indmot, indnoe, ino, iocc, jdes
-    integer :: jgro,    jlist, lonlis, m
+    integer :: jgro, jlist, lonlis, m
     integer :: n1, n2, nbma, nbmail, ng, ngr, nliai
     integer :: nmai, numail
     character(len=24), pointer :: trav1(:) => null()
@@ -83,13 +83,13 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     if (indmot .eq. 0) then
         momail = 'MAILLE'
         mogrma = 'GROUP_MA'
-    else if (indmot.eq.1) then
+    else if (indmot .eq. 1) then
         momail = 'MAILLE_1'
         mogrma = 'GROUP_MA_1'
-    else if (indmot.eq.2) then
+    else if (indmot .eq. 2) then
         momail = 'MAILLE_2'
         mogrma = 'GROUP_MA_2'
-    endif
+    end if
 !
     call getfac(motfac, nliai)
     if (nliai .eq. 0) goto 999
@@ -112,7 +112,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     if (ng .ne. 0) then
         ng = -ng
         AS_ALLOCATE(vk24=trav1, size=ng)
-        call getvem(noma, 'GROUP_MA', motfac, mogrma, iocc,&
+        call getvem(noma, 'GROUP_MA', motfac, mogrma, iocc, &
                     ng, trav1, ngr)
         do igr = 1, ngr
             call jeveuo(jexnom(grmama, trav1(igr)), 'L', jgro)
@@ -122,10 +122,10 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                 call jenuno(jexnum(mailma, numail), nomail)
                 call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
                 call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
-                idim1 = idim1 + n1
+                idim1 = idim1+n1
             end do
         end do
-    endif
+    end if
 !
 !     -- CALCUL DE IDIM2=NB_NOEUD/MAILLE*NB_MAILLE DE LISTE DE MAILLES
 !        ET VERIFICATION DE L'APPARTENANCE DES MAILLES
@@ -135,18 +135,18 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     if (nbma .ne. 0) then
         nbma = -nbma
         AS_ALLOCATE(vk8=trav2, size=nbma)
-        call getvem(noma, 'MAILLE', motfac, momail, iocc,&
+        call getvem(noma, 'MAILLE', motfac, momail, iocc, &
                     nbma, trav2, nmai)
         do ima = 1, nmai
             call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
-            idim2 = idim2 + n2
+            idim2 = idim2+n2
         end do
-    endif
+    end if
 !
 !     -- IDIMAX = MAJORANT DE LA LONGUEUR DE LA LISTE DE NOEUDS
 !    ----------------------------------------------------------
-    idimax = idim1 + idim2
+    idimax = idim1+idim2
 !
 !     -- ALLOCATION DU TABLEAU DES NOMS DE NOEUDS
 !    ----------------------------------------------
@@ -157,7 +157,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     call getvtx(motfac, mogrma, iocc=iocc, nbval=0, nbret=ng)
     if (ng .ne. 0) then
         ng = -ng
-        call getvtx(motfac, mogrma, iocc=iocc, nbval=ng, vect=trav1,&
+        call getvtx(motfac, mogrma, iocc=iocc, nbval=ng, vect=trav1, &
                     nbret=ngr)
         do igr = 1, ngr
             call jeveuo(jexnom(grmama, trav1(igr)), 'L', jgro)
@@ -170,17 +170,17 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                 call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                 do ino = 1, n1
                     call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
-                    indnoe = indnoe + 1
+                    indnoe = indnoe+1
                     zk8(jlist+indnoe-1) = nomnoe
                 end do
             end do
         end do
-    endif
+    end if
 !
     call getvtx(motfac, momail, iocc=iocc, nbval=0, nbret=nbma)
     if (nbma .ne. 0) then
         nbma = -nbma
-        call getvtx(motfac, momail, iocc=iocc, nbval=nbma, vect=trav2,&
+        call getvtx(motfac, momail, iocc=iocc, nbval=nbma, vect=trav2, &
                     nbret=nmai)
         do ima = 1, nmai
             call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
@@ -189,11 +189,11 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             do ino = 1, n2
                 call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
-                indnoe = indnoe + 1
+                indnoe = indnoe+1
                 zk8(jlist+indnoe-1) = nomnoe
             end do
         end do
-    endif
+    end if
 !
 !     -- ELIMINATION DES REDONDANCES EVENTUELLES DES NOEUDS
 !        DE LA LISTE
@@ -204,7 +204,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
         do in1 = ino+1, idimax
             if (zk8(jlist+in1-1) .eq. zk8(jlist+ino-1)) then
                 trav3(in1) = 1
-            endif
+            end if
         end do
     end do
 !
@@ -212,9 +212,9 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !
     do ino = 1, idimax
         if (trav3(ino) .eq. 0) then
-            indlis = indlis + 1
+            indlis = indlis+1
             zk8(jlist+indlis-1) = zk8(jlist+ino-1)
-        endif
+        end if
     end do
 !
     lonlis = indlis

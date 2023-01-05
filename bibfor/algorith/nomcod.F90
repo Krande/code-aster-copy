@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,21 +43,21 @@ subroutine nomcod(nom, num, ic, nc)
 !-----------------------------------------------------------------------
     integer :: i
 !-----------------------------------------------------------------------
-    format='(IX)'
+    format = '(IX)'
     do i = ic, nc
-        nom(i:i)=' '
+        nom(i:i) = ' '
     end do
 !
     do i = 1, nc-ic+1
         if (num .ge. 10**(i-1) .and. num .lt. 10**i) then
-            write (format(3:3),'(I1)') i
+            write (format(3:3), '(I1)') i
             goto 21
-        endif
+        end if
     end do
 !
     ASSERT(.false.)
 !
- 21 continue
-    write (nom(ic:ic+i-1),format) num
+21  continue
+    write (nom(ic:ic+i-1), format) num
 !
 end subroutine

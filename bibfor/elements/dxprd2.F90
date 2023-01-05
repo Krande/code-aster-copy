@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dxprd2(dfpla1, dca, dfpla2, dfpla3, dcb,&
+subroutine dxprd2(dfpla1, dca, dfpla2, dfpla3, dcb, &
                   dfpla4, scal)
 !     REALISE LE CALCUL DES TERMES DU NUMERATEUR INTERVENANT DANS LE
 !     CALCUL DE TANGENTE DANS LE CAS DE LA LOI DE COMPORTEMENT GLRC
 ! ----------------------------------------------------------------------
     implicit none
 #include "asterfort/pmavec.h"
-    common /tdim/ n, nd
+    common/tdim/n, nd
     real(kind=8) :: dfpla1(6), dfpla2(6), dfpla3(6), dfpla4(4)
     real(kind=8) :: vecta(6), vectb(6), dca(6, 6), dcb(6, 6)
     real(kind=8) :: scal1, scal2, scal

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine modelNodeEF(modelz, nb_node, v_list_node_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -26,9 +26,9 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=*), intent(in) :: modelz
-integer, intent(out) :: nb_node
-integer, pointer, optional :: v_list_node_(:)
+    character(len=*), intent(in) :: modelz
+    integer, intent(out) :: nb_node
+    integer, pointer, optional :: v_list_node_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,12 +54,12 @@ integer, pointer, optional :: v_list_node_(:)
 ! --------------------------------------------------------------------------------------------------
 !
     model = modelz
-    call dismoi('PHENOMENE'   , model , 'MODELE'   , repk=phenom)
-    call dismoi('NOM_GD'      , phenom, 'PHENOMENE', repk=nomgd)
-    call dismoi('NB_EC'       , nomgd , 'GRANDEUR' , repi=nbenc)
-    call dismoi('NOM_LIGREL'  , model , 'MODELE'   , repk=ligrmo)
-    call dismoi('NOM_MAILLA'  , model , 'MODELE'   , repk=mesh)
-    call dismoi('NB_NO_MAILLA', mesh  , 'MAILLAGE' , repi=nb_node_mesh)
+    call dismoi('PHENOMENE', model, 'MODELE', repk=phenom)
+    call dismoi('NOM_GD', phenom, 'PHENOMENE', repk=nomgd)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbenc)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
     call jeveuo(ligrmo//'.PRNM', 'L', vi=v_prnm)
 !
 ! - Detect nodes with dof
@@ -71,7 +71,7 @@ integer, pointer, optional :: v_list_node_(:)
             if (v_prnm(nbenc*(i_node-1)+ient) .ne. 0) then
                 idx_node(i_node) = 1
                 nb_node = nb_node+1
-            endif
+            end if
         end do
     end do
 !
@@ -79,16 +79,16 @@ integer, pointer, optional :: v_list_node_(:)
 !
     if (present(v_list_node_)) then
         idx = 0
-        allocate(v_list_node_(nb_node))
+        allocate (v_list_node_(nb_node))
         v_list_node_(1:nb_node) = 0
         do i_node = 1, nb_node_mesh
             if (idx_node(i_node) .ne. 0) then
-                idx = idx + 1
+                idx = idx+1
                 ASSERT(idx .le. nb_node)
                 v_list_node_(idx) = i_node
-            endif
+            end if
         end do
-    endif
+    end if
 !
     AS_DEALLOCATE(vi=idx_node)
 !

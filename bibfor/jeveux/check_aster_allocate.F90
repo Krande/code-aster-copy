@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine check_aster_allocate(init)
-use allocate_module
+    use allocate_module
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
     integer, optional, intent(in) :: init
@@ -36,19 +36,19 @@ use allocate_module
     integer, save :: icode = -1
 !
     if (present(init)) then
-        ASSERT (init.eq.0)
-        cuvtrav=0.d0
-    endif
+        ASSERT(init .eq. 0)
+        cuvtrav = 0.d0
+    end if
 !
     if (abs(cuvtrav) > r8prem()) then
         call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
         if (icode < 0) then
             icode = jdcget('TestMode')
-        endif
+        end if
         if (icode .ne. 0) then
             ASSERT(abs(cuvtrav) < r8prem())
-        endif
+        end if
         call deallocate_all_slvec()
-    endif
+    end if
 !
 end subroutine

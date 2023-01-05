@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefist(melflu, ndim, som, alpha, ru,&
-                  promas, provis, matma, numgrp, nuor,&
-                  freq, masg, fact, facpar, vite,&
-                  xint, yint, rint, z, phix,&
-                  phiy, defm, itypg, zg, hg,&
-                  dg, tg, cdg, cpg, rugg,&
+subroutine mefist(melflu, ndim, som, alpha, ru, &
+                  promas, provis, matma, numgrp, nuor, &
+                  freq, masg, fact, facpar, vite, &
+                  xint, yint, rint, z, phix, &
+                  phiy, defm, itypg, zg, hg, &
+                  dg, tg, cdg, cpg, rugg, &
                   base)
 ! aslint: disable=,W1504
     implicit none
@@ -137,7 +137,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     integer :: nima2, nn, ntypg, nv, nv0
     real(kind=8) :: dh, vit0
 !-----------------------------------------------------------------------
-    parameter    ( nbpara = 5 )
+    parameter(nbpara=5)
     complex(kind=8) :: c16b
     character(len=8) :: typara(nbpara)
     character(len=14) :: nugene
@@ -147,12 +147,12 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     character(len=19) :: nomt19
     character(len=24) :: nomcha
 !
-    data nopara / 'NUME_VITE', 'VITE_FLUI',&
-     &              'MATR_MASS', 'MATR_AMOR', 'MATR_RIGI' /
-    data typara / 'I', 'R', 'K24', 'K24', 'K24' /
+    data nopara/'NUME_VITE', 'VITE_FLUI',&
+     &              'MATR_MASS', 'MATR_AMOR', 'MATR_RIGI'/
+    data typara/'I', 'R', 'K24', 'K24', 'K24'/
 ! ----------------------------------------------------------------------
     call jemarq()
-    c16b=(0.d0,0.d0)
+    c16b = (0.d0, 0.d0)
 !
 ! --- LECTURE DES DIMENSIONS
     nbz = ndim(1)
@@ -165,7 +165,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
     nbv = ndim(9)
     nbnoe = ndim(11)
     nbtot = nbcyl*(2*nima+1)*(2*nima+1)
-    nbfin = nbtot + 4*(nima2)*(nima2+2*nima+1)
+    nbfin = nbtot+4*(nima2)*(nima2+2*nima+1)
     ntypg = ndim(13)
     nbgtot = ndim(14)
 !
@@ -173,15 +173,15 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !
 !
 !     DETERMINATION DU NOM DE LA SD CACHEE NUME_DDL_GENE
-    noobj ='12345678.NU000.NUME.PRNO'
+    noobj = '12345678.NU000.NUME.PRNO'
     call gnomsd(' ', noobj, 12, 14)
-    nugene=noobj(1:14)
+    nugene = noobj(1:14)
 !
 !     -- FABRICATION DU STOCKAGE MORSE :
     call nummo1(nugene, base, nbmod, 'PLEIN')
 !
 !     -- FABRICATION DU STOCKAGE LIGN_CIEL :
-    rtbloc=jevtbl('TAILLE_BLOC')
+    rtbloc = jevtbl('TAILLE_BLOC')
     call smosli(nugene//'.SMOS', nugene//'.SLCS', 'G', rtbloc)
 !
 !     -- SOLVEUR PAR DEFAUT :
@@ -196,7 +196,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         call detrsd('TABLE', nomt19)
     else
         call ltcrsd(melflu, 'G')
-    endif
+    end if
     call ltnotb(melflu, 'MATR_GENE', nomt19)
 !
     call jeexin(nomt19//'.TBBA', iret)
@@ -207,64 +207,64 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !
 ! --- TABLEAUX DE TRAVAIL - ALLOCATION MEMOIRE
     call wkvect('&&MEFIST.TMP.PST', 'V V R', nbz*5, ipst)
-    idpst = ipst + nbz
-    icp = idpst + nbz
-    icf = icp + nbz
-    ire = icf + nbz
+    idpst = ipst+nbz
+    icp = idpst+nbz
+    icf = icp+nbz
+    ire = icf+nbz
 !
-    nn = nbcyl*(2+2*nbcyl+8*nbgrp) + 4*nbgrp
+    nn = nbcyl*(2+2*nbcyl+8*nbgrp)+4*nbgrp
     call wkvect('&&MEFIST.TMP.DIV', 'V V R', nn, idcent)
-    ificen = idcent + nbcyl
-    id = ificen + nbcyl
-    ifi = id + nbcyl*nbcyl
-    ippxx = ifi + nbcyl*nbcyl
-    ippxy = ippxx + nbcyl*nbgrp
-    ippyx = ippxy + nbcyl*nbgrp
-    ippyy = ippyx + nbcyl*nbgrp
-    ivnxx = ippyy + nbcyl*nbgrp
-    ivnxy = ivnxx + nbcyl*nbgrp
-    ivnyx = ivnxy + nbcyl*nbgrp
-    ivnyy = ivnyx + nbcyl*nbgrp
-    itmp = ivnyy + nbcyl*nbgrp
+    ificen = idcent+nbcyl
+    id = ificen+nbcyl
+    ifi = id+nbcyl*nbcyl
+    ippxx = ifi+nbcyl*nbcyl
+    ippxy = ippxx+nbcyl*nbgrp
+    ippyx = ippxy+nbcyl*nbgrp
+    ippyy = ippyx+nbcyl*nbgrp
+    ivnxx = ippyy+nbcyl*nbgrp
+    ivnxy = ivnxx+nbcyl*nbgrp
+    ivnyx = ivnxy+nbcyl*nbgrp
+    ivnyy = ivnyx+nbcyl*nbgrp
+    itmp = ivnyy+nbcyl*nbgrp
 !
     call wkvect('&&MEFIST.TMP.BET', 'V V R', nbfin, ibeta)
     call wkvect('&&MEFIST.TMP.SGN', 'V V I', nbfin*2, isgn)
-    iorig = isgn + nbfin
+    iorig = isgn+nbfin
 !
     call wkvect('&&MEFIST.TMP.VIT', 'V V R', (nbz+1)*4, ivit)
-    irho = ivit + nbz + 1
-    ivisc = irho + nbz + 1
-    idvit = ivisc + nbz + 1
+    irho = ivit+nbz+1
+    ivisc = irho+nbz+1
+    idvit = ivisc+nbz+1
 !
     call wkvect('&&MEFIST.TMP.VVV', 'V V R', nbmod, ivec)
     call wkvect('&&MEFIST.TMP.MAT', 'V V R', 3*nbmod*nbmod, imatm)
-    imatr = imatm + nbmod*nbmod
-    imata = imatr + nbmod*nbmod
+    imatr = imatm+nbmod*nbmod
+    imata = imatr+nbmod*nbmod
 !
     nn = 2*nbmod*(7+5*2*nbmod)
     call wkvect('&&MEFIST.TMP.VEC', 'V V R', nn, ireel)
-    iimag = ireel + 2*nbmod
-    ialfr = iimag + 2*nbmod
-    ialfi = ialfr + 2*nbmod
-    iwct = ialfi + 2*nbmod
-    imat1 = iwct + 4*nbmod
-    imat2 = imat1 + 2*nbmod*2*nbmod
-    imatv = imat2 + 2*nbmod*2*nbmod
-    imatc = imatv + 2*nbmod*2*nbmod
+    iimag = ireel+2*nbmod
+    ialfr = iimag+2*nbmod
+    ialfi = ialfr+2*nbmod
+    iwct = ialfi+2*nbmod
+    imat1 = iwct+4*nbmod
+    imat2 = imat1+2*nbmod*2*nbmod
+    imatv = imat2+2*nbmod*2*nbmod
+    imatc = imatv+2*nbmod*2*nbmod
 !
     call wkvect('&&MEFIST.TMP.IND', 'V V I', nbmod*2, iind)
     call wkvect('&&MEFIST.TMP.FRE', 'V V R', nbmod*2, ifre)
-    iksi = ifre + nbmod
+    iksi = ifre+nbmod
 !
     if (ntypg .ne. 0) then
         call wkvect('&&MEFIST.TMP.COEFG', 'V V R', 4*nbgtot, icfg)
-        irhog = icfg + nbgtot
-        iviscg = irhog + nbgtot
-        ivitg = iviscg + nbgtot
+        irhog = icfg+nbgtot
+        iviscg = irhog+nbgtot
+        ivitg = iviscg+nbgtot
         call wkvect('&&MEFIST.TMP.SECTG', 'V V R', 2*ntypg+2, iaxg)
-        ixig = iaxg + ntypg
-        iaflu = ixig + ntypg
-        ipm = iaflu + 1
+        ixig = iaxg+ntypg
+        iaflu = ixig+ntypg
+        ipm = iaflu+1
     else
         icfg = 1
         irhog = 1
@@ -274,7 +274,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         ixig = 1
         iaflu = 1
         ipm = 1
-    endif
+    end if
 !
 !
 ! --- ENCEINTE CIRCULAIRE
@@ -283,38 +283,38 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 ! --- L ENCEINTE
     if (iencei .eq. 1) then
         call mefver(ndim, som, xint, yint, rint)
-        call mefgec(ndim, nbcyl, som, xint, yint,&
-                    rint, zr(idcent), zr( ificen), zr(id), zr(ifi))
+        call mefgec(ndim, nbcyl, som, xint, yint, &
+                    rint, zr(idcent), zr(ificen), zr(id), zr(ifi))
 !
 ! --- ENCEINTE RECTANGULAIRE
 ! --- VERIFICATION DE L'ORDRE ET DE LA BONNE DISPOSITION DES SOMMETS DE
 ! --- L ENCEINTE, ET MISE EN FORME DES DONNEES POUR LA PRISE EN COMPTE
 ! --- DES CONDITIONS AUX LIMITES PAR UNE METHODE DERIVEE DE LA METHODE
 ! --- DES IMAGES
-    else if (iencei.eq.2) then
+    else if (iencei .eq. 2) then
         call mefver(ndim, som, xint, yint, rint)
-        call mefger(ndim, som, xint, yint, rint,&
+        call mefger(ndim, som, xint, yint, rint, &
                     zi(isgn), zi(iorig), zr(ibeta))
 ! ---
     else
         call utmess('F', 'ALGELINE_85')
-    endif
+    end if
 !
 ! --- CALCUL DES COEFFICIENTS INTERVENANT DANS L EXPRESSION DES
 ! --- FORCES DE PRESSION PERTURBEE, ET DES FORCES NORMALES DE
 ! --- FROTTEMENTS SUR CHAQUE CYLINDRES
 !
     if (iencei .eq. 1) then
-        call mefcir(ndim, nbcyl, nbgrp, numgrp, som,&
-                    rint, zr(idcent), zr(ificen), zr(id), zr(ifi),&
-                    zr(ippxx), zr(ippxy), zr(ippyx), zr( ippyy), zr(ivnxx),&
+        call mefcir(ndim, nbcyl, nbgrp, numgrp, som, &
+                    rint, zr(idcent), zr(ificen), zr(id), zr(ifi), &
+                    zr(ippxx), zr(ippxy), zr(ippyx), zr(ippyy), zr(ivnxx), &
                     zr(ivnxy), zr(ivnyx), zr(ivnyy), zr(itmp))
-    else if (iencei.eq.2.or.iencei.eq.0) then
-        call mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
-                    yint, rint, zi(isgn), zi(iorig), zr(ibeta),&
-                    zr(ippxx), zr(ippxy), zr(ippyx), zr(ippyy), zr(ivnxx),&
+    else if (iencei .eq. 2 .or. iencei .eq. 0) then
+        call mefrec(ndim, nbcyl, nbgrp, numgrp, xint, &
+                    yint, rint, zi(isgn), zi(iorig), zr(ibeta), &
+                    zr(ippxx), zr(ippxy), zr(ippyx), zr(ippyy), zr(ivnxx), &
                     zr(ivnxy), zr(ivnyx), zr(ivnyy), zr(itmp))
-    endif
+    end if
 !
 !
     ifm = iunifi('MESSAGE')
@@ -327,58 +327,58 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         if (vite(nv) .eq. 0.0d0) then
             nv0 = nv
             goto 11
-        endif
+        end if
     end do
- 11 continue
+11  continue
 !
     vit0 = 0.0d0
-    write (ifm,6001) '<MEFIST> TRAITEMENT DE LA VITESSE D '&
-     &   ,'ECOULEMENT: VIT0 = ',vit0,' M/S'
+    write (ifm, 6001) '<MEFIST> TRAITEMENT DE LA VITESSE D '&
+     &   , 'ECOULEMENT: VIT0 = ', vit0, ' M/S'
 !
 !.....CALCUL DU DIAMETRE HYDRAULIQUE, ET DES NOMBRES DE REYNOLDS
-    call mefrot(ndim, som, vit0, promas, provis,&
-                z, ru, rint, zr(ire), zr(icp),&
-                zr(icf), dh, zr(ivit), zr(irho), zr(ivisc),&
-                itypg, zg, tg, dg, rugg,&
-                zr(iaxg), zr(ixig), zr(iaflu), zr(ipm), zr(icfg),&
+    call mefrot(ndim, som, vit0, promas, provis, &
+                z, ru, rint, zr(ire), zr(icp), &
+                zr(icf), dh, zr(ivit), zr(irho), zr(ivisc), &
+                itypg, zg, tg, dg, rugg, &
+                zr(iaxg), zr(ixig), zr(iaflu), zr(ipm), zr(icfg), &
                 zr(ivitg), zr(irhog), zr(iviscg))
     som(9) = dh
 !
 !.....CALCUL DE LA PRESSION ET DU GRADIENT DE PRESSION STATIONNAIRE
-    call mefpre(ndim, alpha, z, zr(icf), dh,&
-                zr(ivit+1), zr(irho+1), zr(ipst), zr(idpst), zr(idvit),&
-                itypg, zg, hg, zr(iaxg), zr(ipm),&
-                zr(ixig), zr(iaflu), cdg, zr(icfg), zr(ivitg),&
+    call mefpre(ndim, alpha, z, zr(icf), dh, &
+                zr(ivit+1), zr(irho+1), zr(ipst), zr(idpst), zr(idvit), &
+                itypg, zg, hg, zr(iaxg), zr(ipm), &
+                zr(ixig), zr(iaflu), cdg, zr(icfg), zr(ivitg), &
                 zr(irhog))
 !
 !.....CALCUL DES MATRICES DE MASSE, DE RAIDEUR, D AMORTISSEMENT SOUS
 !.....ECOULEMENT (PROJECTION DES EFFORTS FLUIDES SUR BASE MODALE EN
 !.....AIR)
-    call mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
-                matma, zr(idcent), zr(icp), zr(icf), zr(ivit),&
-                zr(irho), zr(ipst), zr(idpst), rint, phix,&
-                phiy, z, zr(imatm), zr(imatr), zr(imata),&
-                itypg, zr(iaxg), zg, zr(irhog), zr(ivitg),&
+    call mefmat(ndim, numgrp, nbz, nbgrp, nbmod, &
+                matma, zr(idcent), zr(icp), zr(icf), zr(ivit), &
+                zr(irho), zr(ipst), zr(idpst), rint, phix, &
+                phiy, z, zr(imatm), zr(imatr), zr(imata), &
+                itypg, zr(iaxg), zg, zr(irhog), zr(ivitg), &
                 cdg, cpg)
 !
 !.....RESOLUTION DU PROBLEME GENERALISE SOUS ECOULEMENT - CALCUL DES
 !.....VALEURS ET VECTEURS PROPRES
-    call mefeig(ndim, nbmod, zr(imatm), zr(imatr), zr(imata),&
-                zr(ifre), zr(iksi), zr(imatv), zr(ialfr), zr(ialfi),&
+    call mefeig(ndim, nbmod, zr(imatm), zr(imatr), zr(imata), &
+                zr(ifre), zr(iksi), zr(imatv), zr(ialfr), zr(ialfi), &
                 zr(imat1), zr(imat2), zr(iwct), zr(imatc), zi(iind))
 !
 !.....PRISE EN COMPTE DE L'AMORTISSEMENT FLUIDE AU REPOS
-    call mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
-                z, zr(ifre), zr(irho+1), zr(ivisc), rint,&
+    call mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp, &
+                z, zr(ifre), zr(irho+1), zr(ivisc), rint, &
                 phix, phiy, zr(idcent), matma)
-    call mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
-                matma, zr(idcent), zr(icp), zr(icf), zr(ivit),&
-                zr(irho), zr(ipst), zr(idpst), rint, phix,&
-                phiy, z, zr(imatm), zr(imatr), zr(imata),&
-                itypg, zr(iaxg), zg, zr(irhog), zr(ivitg),&
+    call mefmat(ndim, numgrp, nbz, nbgrp, nbmod, &
+                matma, zr(idcent), zr(icp), zr(icf), zr(ivit), &
+                zr(irho), zr(ipst), zr(idpst), rint, phix, &
+                phiy, z, zr(imatm), zr(imatr), zr(imata), &
+                itypg, zr(iaxg), zg, zr(irhog), zr(ivitg), &
                 cdg, cpg)
-    call mefeig(ndim, nbmod, zr(imatm), zr(imatr), zr(imata),&
-                zr(ifre), zr(iksi), zr(imatv), zr(ialfr), zr(ialfi),&
+    call mefeig(ndim, nbmod, zr(imatm), zr(imatr), zr(imata), &
+                zr(ifre), zr(iksi), zr(imatv), zr(ialfr), zr(ialfi), &
                 zr(imat1), zr(imat2), zr(iwct), zr(imatc), zi(iind))
 !
 !.....STOCKAGE DES RESULTATS EN FLUIDE AU REPOS LE CAS ECHEANT
@@ -388,17 +388,17 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         do n = 1, nbmod
             nn = zi(iind+n-1)
             ii = (nn-1)*2*nbmod
-            jj = n + nbmod*(nv0-1)
-            kk = 3*(n-1) + nbmod*(nv0-1)
+            jj = n+nbmod*(nv0-1)
+            kk = 3*(n-1)+nbmod*(nv0-1)
             call pmavec('ZERO', nbmod, zr(imatm), zr(imatv+ii), zr(ivec))
-            masg(jj) = ddot(nbmod,zr(imatv+ii),1,zr(ivec),1)
-            fact(kk+1) = ddot(nbmod,zr(ivec),1,facpar,1)
-            fact(kk+2) = ddot(nbmod,zr(ivec),1,facpar(nbmod+1),1)
-            fact(kk+3) = ddot(nbmod,zr(ivec),1,facpar(2*nbmod+1),1)
+            masg(jj) = ddot(nbmod, zr(imatv+ii), 1, zr(ivec), 1)
+            fact(kk+1) = ddot(nbmod, zr(ivec), 1, facpar, 1)
+            fact(kk+2) = ddot(nbmod, zr(ivec), 1, facpar(nbmod+1), 1)
+            fact(kk+3) = ddot(nbmod, zr(ivec), 1, facpar(2*nbmod+1), 1)
         end do
 !
         do j = 1, nbmod
-            ind = 2*nbmod*(nv0-1) + 2*(j-1) +1
+            ind = 2*nbmod*(nv0-1)+2*(j-1)+1
             freq(ind) = zr(ifre+j-1)
             freq(ind+1) = zr(iksi+j-1)
         end do
@@ -409,14 +409,14 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         nomcha(20:24) = '.VALE'
         do k = 1, nbmod
             kk = zi(iind+k-1)
-            write(nomcha(14:16),'(I3.3)') nuor(k)
-            write(nomcha(17:19),'(I3.3)') nv0
+            write (nomcha(14:16), '(I3.3)') nuor(k)
+            write (nomcha(17:19), '(I3.3)') nv0
             call jeveuo(nomcha, 'E', icham)
             do j = 1, nbnoe*6
                 ind = icham+j-1
                 zr(ind) = 0.d0
                 do m = 1, nbmod
-                    zr(ind) = zr(ind) + defm(j+(m-1)*nbnoe*6) * zr( imatv+m-1+(kk-1)*2*nbmod)
+                    zr(ind) = zr(ind)+defm(j+(m-1)*nbnoe*6)*zr(imatv+m-1+(kk-1)*2*nbmod)
                 end do
             end do
             call jelibe(nomcha)
@@ -424,28 +424,28 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !
 !........IMPRESSIONS
 !
-        write (ifm,*)
-        write (ifm,*) '         RESULTAT MODULE COUPLAGE FLUIDE-STRUCTURE'
-        write (ifm,7001) '         VITESSE GAP(M/S) : ',vit0
-        write (ifm,*) ' ************************************************'&
-     &        ,'*******************'
-        write (ifm,*) ' *                   *      FREQUENCES      *    '&
-     &     ,'                  *'
-        write (ifm,*) ' *        MODE       *         SOUS         *    '&
-     &     ,'AMORTISSEMENT     *'
-        write (ifm,*) ' *                   *    ECOULEMENT(HZ)    *    '&
-     &     ,'     ( % )        *'
-        write (ifm,*) ' ************************************************'&
-     &     ,'*******************'
+        write (ifm, *)
+        write (ifm, *) '         RESULTAT MODULE COUPLAGE FLUIDE-STRUCTURE'
+        write (ifm, 7001) '         VITESSE GAP(M/S) : ', vit0
+        write (ifm, *) ' ************************************************'&
+     &        , '*******************'
+        write (ifm, *) ' *                   *      FREQUENCES      *    '&
+     &     , '                  *'
+        write (ifm, *) ' *        MODE       *         SOUS         *    '&
+     &     , 'AMORTISSEMENT     *'
+        write (ifm, *) ' *                   *    ECOULEMENT(HZ)    *    '&
+     &     , '     ( % )        *'
+        write (ifm, *) ' ************************************************'&
+     &     , '*******************'
         do i = 1, nbmod
-            write (ifm,7002) ' *      ',nuor(i),'         *    ',&
-     &           zr(ifre+i-1),'     *    ',100.d0*zr(iksi+i-1),'     *'
+            write (ifm, 7002) ' *      ', nuor(i), '         *    ',&
+     &           zr(ifre+i-1), '     *    ', 100.d0*zr(iksi+i-1), '     *'
         end do
-        write (ifm,*) ' ************************************************'&
-     &     ,'*******************'
-        write (ifm,*)
+        write (ifm, *) ' ************************************************'&
+     &     , '*******************'
+        write (ifm, *)
 !
-    endif
+    end if
 !
 ! --- FIN DU CALCUL DES CARACTERISTIQUES EN FLUIDE AU REPOS
 !
@@ -456,39 +456,39 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         if (nv .eq. nv0) goto 100
 !
         vit0 = vite(nv)
-        write (ifm,6001) '<MEFIST> TRAITEMENT DE LA VITESSE D '&
-        ,'ECOULEMENT: VIT0 = ',vit0,' M/S'
+        write (ifm, 6001) '<MEFIST> TRAITEMENT DE LA VITESSE D ' &
+            , 'ECOULEMENT: VIT0 = ', vit0, ' M/S'
 !
 !........CALCUL DU DIAMETRE HYDRAULIQUE, ET DES NOMBRES DE REYNOLDS
-        call mefrot(ndim, som, vit0, promas, provis,&
-                    z, ru, rint, zr(ire), zr(icp),&
-                    zr(icf), dh, zr(ivit), zr(irho), zr(ivisc),&
-                    itypg, zg, tg, dg, rugg,&
-                    zr(iaxg), zr(ixig), zr(iaflu), zr(ipm), zr(icfg),&
-                    zr( ivitg), zr(irhog), zr(iviscg))
+        call mefrot(ndim, som, vit0, promas, provis, &
+                    z, ru, rint, zr(ire), zr(icp), &
+                    zr(icf), dh, zr(ivit), zr(irho), zr(ivisc), &
+                    itypg, zg, tg, dg, rugg, &
+                    zr(iaxg), zr(ixig), zr(iaflu), zr(ipm), zr(icfg), &
+                    zr(ivitg), zr(irhog), zr(iviscg))
         som(9) = dh
 !
 !........CALCUL DE LA PRESSION ET DU GRADIENT DE PRESSION STATIONNAIRE
-        call mefpre(ndim, alpha, z, zr(icf), dh,&
-                    zr(ivit+1), zr(irho+1), zr(ipst), zr(idpst), zr(idvit),&
-                    itypg, zg, hg, zr(iaxg), zr(ipm),&
-                    zr( ixig), zr(iaflu), cdg, zr(icfg), zr(ivitg),&
+        call mefpre(ndim, alpha, z, zr(icf), dh, &
+                    zr(ivit+1), zr(irho+1), zr(ipst), zr(idpst), zr(idvit), &
+                    itypg, zg, hg, zr(iaxg), zr(ipm), &
+                    zr(ixig), zr(iaflu), cdg, zr(icfg), zr(ivitg), &
                     zr(irhog))
 !
 !........CALCUL DES MATRICES DE MASSE, DE RAIDEUR, D AMORTISSEMENT SOUS
 !........ECOULEMENT (PROJECTION DES EFFORTS FLUIDES SUR BASE MODALE EN
 !........AIR)
-        call mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
-                    matma, zr(idcent), zr(icp), zr(icf), zr(ivit),&
-                    zr(irho), zr(ipst), zr(idpst), rint, phix,&
-                    phiy, z, zr(imatm), zr(imatr), zr(imata),&
-                    itypg, zr(iaxg), zg, zr(irhog), zr(ivitg),&
+        call mefmat(ndim, numgrp, nbz, nbgrp, nbmod, &
+                    matma, zr(idcent), zr(icp), zr(icf), zr(ivit), &
+                    zr(irho), zr(ipst), zr(idpst), rint, phix, &
+                    phiy, z, zr(imatm), zr(imatr), zr(imata), &
+                    itypg, zr(iaxg), zg, zr(irhog), zr(ivitg), &
                     cdg, cpg)
 !
 !........RESOLUTION DU PROBLEME GENERALISE SOUS ECOULEMENT - CALCUL DES
 !........VALEURS ET VECTEURS PROPRES
-        call mefeig(ndim, nbmod, zr(imatm), zr(imatr), zr(imata),&
-                    zr(ifre), zr(iksi), zr(imatv), zr(ialfr), zr(ialfi),&
+        call mefeig(ndim, nbmod, zr(imatm), zr(imatr), zr(imata), &
+                    zr(ifre), zr(iksi), zr(imatv), zr(ialfr), zr(ialfi), &
                     zr(imat1), zr(imat2), zr(iwct), zr(imatc), zi(iind))
 !
 !........STOCKAGE DES RESULTATS POUR LA VITESSE D'ECOULEMENT COURANTE
@@ -496,17 +496,17 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         do n = 1, nbmod
             nn = zi(iind+n-1)
             ii = (nn-1)*2*nbmod
-            jj = n + nbmod*(nv-1)
-            kk = 3*(n-1) + nbmod*(nv-1)
+            jj = n+nbmod*(nv-1)
+            kk = 3*(n-1)+nbmod*(nv-1)
             call pmavec('ZERO', nbmod, zr(imatm), zr(imatv+ii), zr(ivec))
-            masg(jj) = ddot(nbmod,zr(imatv+ii),1,zr(ivec),1)
-            fact(kk+1) = ddot(nbmod,zr(ivec),1,facpar,1)
-            fact(kk+2) = ddot(nbmod,zr(ivec),1,facpar(nbmod+1),1)
-            fact(kk+3) = ddot(nbmod,zr(ivec),1,facpar(2*nbmod+1),1)
+            masg(jj) = ddot(nbmod, zr(imatv+ii), 1, zr(ivec), 1)
+            fact(kk+1) = ddot(nbmod, zr(ivec), 1, facpar, 1)
+            fact(kk+2) = ddot(nbmod, zr(ivec), 1, facpar(nbmod+1), 1)
+            fact(kk+3) = ddot(nbmod, zr(ivec), 1, facpar(2*nbmod+1), 1)
         end do
 !
         do j = 1, nbmod
-            ind = 2*nbmod*(nv-1) + 2*(j-1) +1
+            ind = 2*nbmod*(nv-1)+2*(j-1)+1
             freq(ind) = zr(ifre+j-1)
             freq(ind+1) = zr(iksi+j-1)
         end do
@@ -517,14 +517,14 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
         nomcha(20:24) = '.VALE'
         do k = 1, nbmod
             kk = zi(iind+k-1)
-            write(nomcha(14:16),'(I3.3)') nuor(k)
-            write(nomcha(17:19),'(I3.3)') nv
+            write (nomcha(14:16), '(I3.3)') nuor(k)
+            write (nomcha(17:19), '(I3.3)') nv
             call jeveuo(nomcha, 'E', icham)
             do j = 1, nbnoe*6
                 ind = icham+j-1
                 zr(ind) = 0.d0
                 do m = 1, nbmod
-                    zr(ind) = zr(ind) + defm(j+(m-1)*nbnoe*6) * zr( imatv+m-1+(kk-1)*2*nbmod)
+                    zr(ind) = zr(ind)+defm(j+(m-1)*nbnoe*6)*zr(imatv+m-1+(kk-1)*2*nbmod)
                 end do
             end do
             call jelibe(nomcha)
@@ -532,50 +532,50 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !
 !........IMPRESSIONS
 !
-        write (ifm,*)
-        write (ifm,*) '         RESULTAT MODULE COUPLAGE FLUIDE-STRUCTURE'
-        write (ifm,7001) '         VITESSE GAP(M/S) : ',vit0
-        write (ifm,*) ' ************************************************'&
-     &        ,'*******************'
-        write (ifm,*) ' *                   *      FREQUENCES      *    '&
-     &     ,'                  *'
-        write (ifm,*) ' *        MODE       *         SOUS         *    '&
-     &     ,'AMORTISSEMENT     *'
-        write (ifm,*) ' *                   *    ECOULEMENT(HZ)    *    '&
-     &     ,'     ( % )        *'
-        write (ifm,*) ' ************************************************'&
-     &     ,'*******************'
+        write (ifm, *)
+        write (ifm, *) '         RESULTAT MODULE COUPLAGE FLUIDE-STRUCTURE'
+        write (ifm, 7001) '         VITESSE GAP(M/S) : ', vit0
+        write (ifm, *) ' ************************************************'&
+     &        , '*******************'
+        write (ifm, *) ' *                   *      FREQUENCES      *    '&
+     &     , '                  *'
+        write (ifm, *) ' *        MODE       *         SOUS         *    '&
+     &     , 'AMORTISSEMENT     *'
+        write (ifm, *) ' *                   *    ECOULEMENT(HZ)    *    '&
+     &     , '     ( % )        *'
+        write (ifm, *) ' ************************************************'&
+     &     , '*******************'
         do i = 1, nbmod
-            write (ifm,7002) ' *      ',nuor(i),'         *    ',&
-     &           zr(ifre+i-1),'     *    ',100.d0*zr(iksi+i-1),'     *'
+            write (ifm, 7002) ' *      ', nuor(i), '         *    ',&
+     &           zr(ifre+i-1), '     *    ', 100.d0*zr(iksi+i-1), '     *'
         end do
-        write (ifm,*) ' ************************************************'&
-     &     ,'*******************'
-        write (ifm,*)
+        write (ifm, *) ' ************************************************'&
+     &     , '*******************'
+        write (ifm, *)
 !
 ! ------ ON STOCKE LES MATRICES  ZR(IMATM), ZR(IMATA), ZR(IMATR)
 !
 !        DETERMINATION DU NOM DES SD CACHEES MATR_ASSE_GENE
-        noobj ='12345678.RIGGEN0000.REFA'
+        noobj = '12345678.RIGGEN0000.REFA'
         call gnomsd(' ', noobj, 16, 19)
-        riggen=noobj(1:19)
+        riggen = noobj(1:19)
 !
-        noobj ='12345678.MASGEN0000.REFA'
+        noobj = '12345678.MASGEN0000.REFA'
         call gnomsd(' ', noobj, 16, 19)
-        masgen=noobj(1:19)
+        masgen = noobj(1:19)
 !
-        noobj ='12345678.AMOGEN0000.REFA'
+        noobj = '12345678.AMOGEN0000.REFA'
         call gnomsd(' ', noobj, 16, 19)
-        amogen=noobj(1:19)
+        amogen = noobj(1:19)
 !
         valek(1) = masgen
         valek(2) = amogen
         valek(3) = riggen
 !
-        call mefsma(zr(imatm), zr(imata), zr(imatr), nugene, masgen,&
+        call mefsma(zr(imatm), zr(imata), zr(imatr), nugene, masgen, &
                     amogen, riggen)
 !
-        call tbajli(nomt19, nbpara, nopara, [nv], [vit0],&
+        call tbajli(nomt19, nbpara, nopara, [nv], [vit0], &
                     [c16b], valek, 0)
 !
 ! --- FIN DE BOUCLE SUR LES VITESSES D ECOULEMENT
@@ -584,9 +584,9 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 !
 ! --- FORMATS D'IMPRESSION
 !
-    6001 format (1p,1x,a,a,d13.6,a)
-    7001 format (1p,1x,a,d13.6)
-    7002 format (1p,1x,a,i4,a,d13.6,a,d13.6,a)
+6001 format(1p, 1x, a, a, d13.6, a)
+7001 format(1p, 1x, a, d13.6)
+7002 format(1p, 1x, a, i4, a, d13.6, a, d13.6, a)
 !
 ! --- MENAGE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,12 +40,12 @@ subroutine coesp1(ren, phi0, eps, frc, beta)
     if (ren .le. 1.5d+4) then
         phi0 = 2.1808d0
     else if (ren .le. 5.0d+4) then
-        phi0 = 20.42d0 - 14.00d-4 * ren - 9.81d-8 * ren*ren + 11.97d-12 * ren*ren*ren - 35.95d-17&
-               & * ren*ren*ren*ren + 34.69d-22 * ren*ren*ren*ren*ren
+        phi0 = 20.42d0-14.00d-4*ren-9.81d-8*ren*ren+11.97d-12*ren*ren*ren-35.95d-17&
+              & *ren*ren*ren*ren+34.69d-22*ren*ren*ren*ren*ren
     else
         phi0 = 38.6075d0
-    endif
-    phi0 = phi0 * 1.3d-4
+    end if
+    phi0 = phi0*1.3d-4
 !
     if (ren .le. 3.5d+4) then
         eps = 0.7d0
@@ -56,7 +56,7 @@ subroutine coesp1(ren, phi0, eps, frc, beta)
     else
         eps = 0.3d0
         beta = 4.0d0
-    endif
+    end if
 !
     frc = 0.2d0
 !

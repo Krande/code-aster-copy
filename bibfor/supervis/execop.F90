@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine execop(num)
-use superv_module, only: superv_before, superv_after
+    use superv_module, only: superv_before, superv_after
     implicit none
 !     EXECUTION DE LA COMMANDE
 !     ------------------------------------------------------------------
@@ -36,7 +36,7 @@ use superv_module, only: superv_before, superv_after
     integer, intent(in), optional :: num
 !
     integer :: nivuti, nivpgm, unite
-    common /inf001/ nivuti,nivpgm,unite
+    common/inf001/nivuti, nivpgm, unite
 !
     integer :: nuoper, nuop2, imaav, imaap
     real(kind=8) :: tpres
@@ -46,7 +46,7 @@ use superv_module, only: superv_before, superv_after
         nuoper = num
     else
         call gcecdu(nuoper)
-    endif
+    end if
 !
 !     -- ON NOTE LA MARQUE AVANT D'APPELER LA PROCHAINE COMMANDE :
     call jevema(imaav)
@@ -70,24 +70,24 @@ use superv_module, only: superv_before, superv_after
 !       special operator number: does nothing, just to pass after/before steps
     else
         call utmess('E', 'SUPERVIS_61', si=nuoper)
-    endif
+    end if
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
     if (etausr() .eq. 1) then
         call sigusr()
-    endif
+    end if
 !
     call uttrst(tpres)
     if (tpres .lt. 0.d0) then
         call utmess('Z', 'SUPERVIS_63', sr=-tpres, num_except=ASTER_TIMELIMIT_ERROR)
-    endif
+    end if
 !
 !     -- CONTROLE DE L'APPARIEMMENT DES JEMARQ/JEDEMA
     call jevema(imaap)
     if (imaav .ne. imaap) then
         call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
-    endif
+    end if
 !
 !     -- ON IMPRIME LES COMPTEURS DE TEMPS :
 !        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)

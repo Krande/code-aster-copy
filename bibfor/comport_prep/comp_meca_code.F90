@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,18 +17,18 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
+subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
                           post_iter, regu_visc, &
                           comp_code_py)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lccree.h"
 !
-character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla, kit_comp(4)
-character(len=16), intent(in) :: post_iter, regu_visc
-character(len=16), intent(out) :: comp_code_py
+    character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla, kit_comp(4)
+    character(len=16), intent(in) :: post_iter, regu_visc
+    character(len=16), intent(out) :: comp_code_py
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,39 +49,39 @@ character(len=16), intent(out) :: comp_code_py
 ! --------------------------------------------------------------------------------------------------
 !
 ! - Empty kit_comp for KIT_META
-    character(len=16), parameter :: NoKitComp(4) = (/'VIDE','VIDE','VIDE','VIDE'/)
+    character(len=16), parameter :: NoKitComp(4) = (/'VIDE', 'VIDE', 'VIDE', 'VIDE'/)
     integer :: nb_comp_elem, ikit
     character(len=16) :: comp_elem(20)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_comp_elem    = 0
+    nb_comp_elem = 0
     comp_elem(1:20) = 'VIDE'
 
 ! - Create composite behaviour
-    nb_comp_elem = nb_comp_elem + 1
+    nb_comp_elem = nb_comp_elem+1
     comp_elem(nb_comp_elem) = rela_comp
-    nb_comp_elem = nb_comp_elem + 1
+    nb_comp_elem = nb_comp_elem+1
     comp_elem(nb_comp_elem) = regu_visc
-    nb_comp_elem = nb_comp_elem + 1
+    nb_comp_elem = nb_comp_elem+1
     comp_elem(nb_comp_elem) = defo_comp
-    nb_comp_elem = nb_comp_elem + 1
+    nb_comp_elem = nb_comp_elem+1
     comp_elem(nb_comp_elem) = type_cpla
     if (rela_comp .eq. 'KIT_META') then
         do ikit = 1, 4
-            nb_comp_elem = nb_comp_elem + 1
+            nb_comp_elem = nb_comp_elem+1
             comp_elem(nb_comp_elem) = NoKitComp(ikit)
-        enddo
+        end do
     else
         do ikit = 1, 4
-            nb_comp_elem = nb_comp_elem + 1
+            nb_comp_elem = nb_comp_elem+1
             comp_elem(nb_comp_elem) = kit_comp(ikit)
-        enddo
-    endif
+        end do
+    end if
     if (post_iter .ne. ' ') then
-        nb_comp_elem = nb_comp_elem + 1
+        nb_comp_elem = nb_comp_elem+1
         comp_elem(nb_comp_elem) = post_iter
-    endif
+    end if
 
 ! - Coding composite comportment (Python)
     call lccree(nb_comp_elem, comp_elem, comp_code_py)

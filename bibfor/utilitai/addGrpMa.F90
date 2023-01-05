@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,8 +69,8 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
     character(len=24), pointer :: v_grpp(:) => null()
 !-----------------------------------------------------------------------
 !
-    grmama         = mesh//'.GROUPEMA'
-    grmamap        = mesh//'.PAR_GRPMAI'
+    grmama = mesh//'.GROUPEMA'
+    grmamap = mesh//'.PAR_GRPMAI'
 !
     call jemarq()
 !
@@ -80,15 +80,15 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
 ! --- The group already exists - do nothing
 !
-    if(l_exi_in_grp ) then
+    if (l_exi_in_grp) then
         l_added = ASTER_FALSE
         call utmess('A', 'SOUSTRUC_88', sk=group_ma)
-    elseif( nbCells <= 0) then
+    elseif (nbCells <= 0) then
         l_added = ASTER_FALSE
         call utmess('A', 'SOUSTRUC_36', sk=group_ma)
     else
         l_added = ASTER_TRUE
-        ASSERT(.not.l_exi_in_grp)
+        ASSERT(.not. l_exi_in_grp)
 !
 ! --- Add group_ma
 !
@@ -103,29 +103,29 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
 ! --- For a ParallelMesh, add new group_ma to global group_ma
 !
-        if(l_parallel_mesh) then
-            if(.not.l_exi_in_grp_p) then
+        if (l_parallel_mesh) then
+            if (.not. l_exi_in_grp_p) then
                 call jeexin(grmamap, iret)
-                if( iret .ne. 0) then
+                if (iret .ne. 0) then
                     call jelira(grmamap, 'NOMMAX', nbGrp)
                     nbGrp = abs(nbGrp)
                 else
                     nbGrp = 0
                 end if
                 call wkvect('&&TMP', 'V V K24', nbGrp+1, vk24=v_grpp)
-                if( iret .ne. 0) then
+                if (iret .ne. 0) then
                     do iaux = 1, nbGrp
                         call jenuno(jexnum(grmamap, iaux), nomgrp)
                         v_grpp(iaux) = nomgrp
-                    enddo
-                endif
+                    end do
+                end if
                 v_grpp(nbGrp+1) = group_ma
                 call jedetr(grmamap)
                 call jecreo(grmamap, 'G N K24')
                 call jeecra(grmamap, 'NOMMAX', nbGrp+1)
                 do iaux = 1, nbGrp+1
                     call jecroc(jexnom(grmamap, v_grpp(iaux)))
-                enddo
+                end do
                 call jedetr('&&TMP')
 !
 ! --- Becarefull, there are not yet shared by all meshes
@@ -134,7 +134,7 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
         end if
     end if
 !
-    if(present(l_added_grpma)) then
+    if (present(l_added_grpma)) then
         l_added_grpma = l_added
     end if
 !

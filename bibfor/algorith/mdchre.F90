@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
+subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum, &
                   repere, lnoue2)
     implicit none
 #include "asterf_types.h"
@@ -63,9 +63,9 @@ subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
     real(kind=8) :: tempo(3), dircho(3), coord(3), txno
     character(len=16) :: motfac, obstyp
     character(len=24) :: mdssno
-    real(kind=8)          , pointer :: coor_no1(:) => null()
-    real(kind=8)          , pointer :: coor_no2(:) => null()
-    real(kind=8)          , pointer :: ob_orig (:) => null()
+    real(kind=8), pointer :: coor_no1(:) => null()
+    real(kind=8), pointer :: coor_no2(:) => null()
+    real(kind=8), pointer :: ob_orig(:) => null()
 !     ------------------------------------------------------------------
 !
     sd_nl = '&&OP29NL'
@@ -80,13 +80,13 @@ subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
             repere = 'GLOBAL'
         else
             call getvtx('COMPORTEMENT', 'REPERE', iocc=ioc, scal=repere, nbret=n1)
-        endif
+        end if
         call getvr8('COMPORTEMENT', 'ORIG_OBST', iocc=ioc, scal=tempo(1), nbret=n1)
-    endif
+    end if
 !
     n1 = -n1
     if (n1 .eq. 3) then
-        call getvr8('COMPORTEMENT', 'ORIG_OBST', iocc=ioc, nbval=3, vect=tempo,&
+        call getvr8('COMPORTEMENT', 'ORIG_OBST', iocc=ioc, nbval=3, vect=tempo, &
                     nbret=n1)
         if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
             call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, rvect=tempo)
@@ -98,33 +98,33 @@ subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
                 call jenonu(jexnom(mdssno, repere), iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'ALGORITH5_39')
-                endif
+                end if
                 call wkvect('&&MDCHOC.COORDO', 'V V R', 3, jcoord)
                 zr(jcoord) = tempo(1)
                 zr(jcoord+1) = tempo(2)
                 zr(jcoord+2) = tempo(3)
-                call orient(mdgene, repere, jcoord, 1, coord,&
+                call orient(mdgene, repere, jcoord, 1, coord, &
                             1)
                 call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, rvect=coord)
                 call jedetr('&&MDCHOC.COORDO')
-            endif
-        endif
+            end if
+        end if
     else
         call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
         call nlget(sd_nl, _OBST_TYP, iocc=iliai, kscal=obstyp)
-        if (obstyp(1:2).eq.'BI') then
+        if (obstyp(1:2) .eq. 'BI') then
             call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
             call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, &
-                       rvect=[(coor_no1(1)+coor_no2(1))/2.d0,&
-                              (coor_no1(2)+coor_no2(2))/2.d0,&
+                       rvect=[(coor_no1(1)+coor_no2(1))/2.d0, &
+                              (coor_no1(2)+coor_no2(2))/2.d0, &
                               (coor_no1(3)+coor_no2(3))/2.d0])
         else
             call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, &
-                       rvect=[(coor_no1(1))/2.d0,&
-                              (coor_no1(2))/2.d0,&
+                       rvect=[(coor_no1(1))/2.d0, &
+                              (coor_no1(2))/2.d0, &
                               (coor_no1(3))/2.d0])
         end if
-    endif
+    end if
 !
     if (lnoue2) then
         call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
@@ -138,7 +138,7 @@ subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
         dircho(1) = coor_no1(1)-ob_orig(1)
         dircho(2) = coor_no1(2)-ob_orig(2)
         dircho(3) = coor_no1(3)-ob_orig(3)
-    endif
+    end if
 !
     txno = sqrt(dircho(1)**2+dircho(2)**2+dircho(3)**2)
     if (txno .lt. r8prem()) txno = 1.d0

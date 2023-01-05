@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 !
 subroutine op0070()
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
-use HHO_Meca_module, only : hhoPreCalcMeca
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
+    use HHO_Meca_module, only: hhoPreCalcMeca
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -102,10 +102,10 @@ implicit none
 !
 ! --- STRUCTURES DE DONNEES
 !
-    character(len=24), parameter :: sderro='&&OP0070.ERRE.'
+    character(len=24), parameter :: sderro = '&&OP0070.ERRE.'
     character(len=24) :: sd_suiv
-    character(len=19), parameter :: sdpilo='&&OP0070.PILO.', sdnume='&&OP0070.NUME.ROTAT'
-    character(len=19), parameter :: sddisc='&&OP0070.DISC.', sdcrit='&&OP0070.CRIT.'
+    character(len=19), parameter :: sdpilo = '&&OP0070.PILO.', sdnume = '&&OP0070.NUME.ROTAT'
+    character(len=19), parameter :: sddisc = '&&OP0070.DISC.', sdcrit = '&&OP0070.CRIT.'
     character(len=19) :: sddyna
     character(len=19) :: sd_obsv
     type(NL_DS_Print)        :: ds_print
@@ -140,10 +140,10 @@ implicit none
     call inidbg()
 !
     fonact(:) = 0
-    l_hho     = ASTER_FALSE
-    solver    ='&&OP0070.SOLVEUR'
+    l_hho = ASTER_FALSE
+    solver = '&&OP0070.SOLVEUR'
     list_load = '&&OP0070.LISCHA'
-    maprec    ='&&OP0070.MAPREC'
+    maprec = '&&OP0070.MAPREC'
 !
 ! ======================================================================
 !     RECUPERATION DES OPERANDES ET INITIALISATION
@@ -157,30 +157,30 @@ implicit none
 !
 ! - Creation of datastructures
 !
-    call nmini0(eta      , numins     , matass     ,&
-                zmeelm   , zmeass     , zveelm     ,&
-                zveass   , zsolal     , zvalin     ,&
-                ds_print , ds_conv    , ds_algopara,&
-                ds_inout , ds_contact , ds_measure ,&
+    call nmini0(eta, numins, matass, &
+                zmeelm, zmeass, zveelm, &
+                zveass, zsolal, zvalin, &
+                ds_print, ds_conv, ds_algopara, &
+                ds_inout, ds_contact, ds_measure, &
                 ds_energy, ds_material, sderro)
 !
 ! - Read parameters
 !
-    call nmdata(model    , mesh         , mater     , mateco     , cara_elem  , ds_constitutive,&
-                list_load, solver       , ds_conv   , sddyna     , ds_posttimestep,&
-                ds_energy, ds_errorindic, ds_print  , ds_algopara,&
-                ds_inout , ds_contact   , ds_measure, ds_algorom)
+    call nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
+                list_load, solver, ds_conv, sddyna, ds_posttimestep, &
+                ds_energy, ds_errorindic, ds_print, ds_algopara, &
+                ds_inout, ds_contact, ds_measure, ds_algorom)
 !
 ! - Initializations of datastructures
 !
-    call nminit(mesh       , model     , mater        , mateco         , cara_elem , list_load ,&
-                numedd     , numfix    , ds_algopara  , ds_constitutive, maprec    ,&
-                solver     , numins    , sddisc       , sdnume         , sdcrit    ,&
-                ds_material, fonact    , sdpilo       , sddyna         , ds_print  ,&
-                sd_suiv    , sd_obsv   , sderro       , ds_posttimestep, ds_inout  ,&
-                ds_energy  , ds_conv   , ds_errorindic, valinc         , solalg    ,&
-                measse     , veelem    , meelem       , veasse         , ds_contact,&
-                ds_measure , ds_algorom, ds_system    , hhoField)
+    call nminit(mesh, model, mater, mateco, cara_elem, list_load, &
+                numedd, numfix, ds_algopara, ds_constitutive, maprec, &
+                solver, numins, sddisc, sdnume, sdcrit, &
+                ds_material, fonact, sdpilo, sddyna, ds_print, &
+                sd_suiv, sd_obsv, sderro, ds_posttimestep, ds_inout, &
+                ds_energy, ds_conv, ds_errorindic, valinc, solalg, &
+                measse, veelem, meelem, veasse, ds_contact, &
+                ds_measure, ds_algorom, ds_system, hhoField)
 !
 ! - Launch timer for total time
 !
@@ -192,14 +192,14 @@ implicit none
 !
 ! --- QUELQUES FONCTIONNALITES ACTIVEES
 !
-    limpl = ndynlo(sddyna,'IMPLICITE')
-    lexpl = ndynlo(sddyna,'EXPLICITE')
-    lstat = ndynlo(sddyna,'STATIQUE' )
+    limpl = ndynlo(sddyna, 'IMPLICITE')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
+    lstat = ndynlo(sddyna, 'STATIQUE')
 !
 ! --- Si formulation HHO: On precalcule des opérateurs
 !
     l_hho = isfonc(fonact, 'HHO')
-    if(l_hho .and. ds_algopara%l_precalc_hho ) then
+    if (l_hho .and. ds_algopara%l_precalc_hho) then
         call hhoPreCalcMeca(model, hhoField, ds_constitutive, ds_measure)
     end if
 !
@@ -225,25 +225,25 @@ implicit none
 ! --- REALISATION DU PAS DE TEMPS
 !
     if (lexpl) then
-        call ndexpl(model          , numedd    , numfix     , ds_material, cara_elem,&
-                    ds_constitutive, list_load , ds_algopara, fonact     , ds_system,&
-                    ds_print       , ds_measure, sdnume     , sddyna     , sddisc   ,&
-                    sderro         , valinc    , numins     , solalg     , solver   ,&
-                    matass         , maprec    , ds_inout   , meelem     , measse   ,&
-                    veelem         , veasse    , nbiter)
-    else if (lstat.or.limpl) then
-        call nmnewt(mesh       , model    , numins         , numedd    , numfix   ,&
-                    ds_material, cara_elem, ds_constitutive, list_load , ds_system,&
+        call ndexpl(model, numedd, numfix, ds_material, cara_elem, &
+                    ds_constitutive, list_load, ds_algopara, fonact, ds_system, &
+                    ds_print, ds_measure, sdnume, sddyna, sddisc, &
+                    sderro, valinc, numins, solalg, solver, &
+                    matass, maprec, ds_inout, meelem, measse, &
+                    veelem, veasse, nbiter)
+    else if (lstat .or. limpl) then
+        call nmnewt(mesh, model, numins, numedd, numfix, &
+                    ds_material, cara_elem, ds_constitutive, list_load, ds_system, &
                     hhoField, &
-                    ds_algopara, fonact   , ds_measure     , sderro    , ds_print ,&
-                    sdnume     , sddyna   , sddisc         , sdcrit    , sd_suiv  ,&
-                    sdpilo     , ds_conv  , solver         , maprec    , matass   ,&
-                    ds_inout   , valinc   , solalg         , meelem    , measse   ,&
-                    veelem     , veasse   , ds_contact     , ds_algorom, eta      ,&
+                    ds_algopara, fonact, ds_measure, sderro, ds_print, &
+                    sdnume, sddyna, sddisc, sdcrit, sd_suiv, &
+                    sdpilo, ds_conv, solver, maprec, matass, &
+                    ds_inout, valinc, solalg, meelem, measse, &
+                    veelem, veasse, ds_contact, ds_algorom, eta, &
                     nbiter)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - End of timer for current step time
 !
@@ -260,50 +260,50 @@ implicit none
     call nmleeb(sderro, 'FIXE', etfixe)
     if (etfixe .eq. 'ERRE') then
         call nmlost(ds_measure)
-    endif
+    end if
 !
 ! - Post-treatment
 !
-    call nmpost(model          , mesh         , cara_elem, list_load,&
-                numedd         , numfix       , ds_system,&
-                ds_constitutive, ds_material  ,&
-                ds_contact     , ds_algopara  , fonact   ,&
-                ds_measure     , sddisc       , numins   , eta      ,&
-                sd_obsv        , sderro       , sddyna   ,&
-                valinc         , solalg       ,&
-                meelem         , measse       , veasse   ,&
-                ds_energy      , ds_errorindic,&
+    call nmpost(model, mesh, cara_elem, list_load, &
+                numedd, numfix, ds_system, &
+                ds_constitutive, ds_material, &
+                ds_contact, ds_algopara, fonact, &
+                ds_measure, sddisc, numins, eta, &
+                sd_obsv, sderro, sddyna, &
+                valinc, solalg, &
+                meelem, measse, veasse, &
+                ds_energy, ds_errorindic, &
                 ds_posttimestep)
 !
 ! --- ETAT DE LA CONVERGENCE DU PAS DE TEMPS
 !
-    call nmcvgp(sddisc, numins, sderro, valinc, fonact,&
+    call nmcvgp(sddisc, numins, sderro, valinc, fonact, &
                 ds_contact)
 !
 ! --- AFFICHAGES PENDANT LA BOUCLE DES PAS DE TEMPS
 !
-    call nmaffi(fonact, ds_conv, ds_print, sderro, sddisc,&
+    call nmaffi(fonact, ds_conv, ds_print, sderro, sddisc, &
                 'INST')
 !
 ! --- STATISTIQUES SUR PAS DE TEMPS
 !
-    if (.not.lexpl) then
+    if (.not. lexpl) then
         call nmstat('P', ds_measure, ds_print, sddisc, numins, sderro)
-    endif
+    end if
 !
 ! --- GESTION DES ACTIONS A LA FIN D'UN PAS DE TEMPS
 !
-    call nmactp(ds_print, sddisc, sderro, ds_contact,&
-                ds_conv , nbiter, numins)
+    call nmactp(ds_print, sddisc, sderro, ds_contact, &
+                ds_conv, nbiter, numins)
 !
 ! --- INSTANT SUIVANT
 !
     call nmleeb(sderro, 'INST', etinst)
     if (etinst .eq. 'ERRE') then
         goto 200
-    else if (etinst.eq.'STOP') then
+    else if (etinst .eq. 'STOP') then
         goto 800
-    endif
+    end if
 !
 ! --- VERIFICATION DU DECLENCHEMENT DES ERREURS FATALES
 !
@@ -316,28 +316,28 @@ implicit none
 ! --- ARCHIVAGE DES RESULTATS
 !
     call onerrf(compex, k16bid, ibid)
-    call nmarch(numins    , model        , ds_material, cara_elem, fonact   ,&
-                ds_print  , sddisc       , sdcrit     ,&
-                ds_measure, sderro       , sddyna     , sdpilo   , ds_energy,&
-                ds_inout  , ds_errorindic, ds_algorom)
+    call nmarch(numins, model, ds_material, cara_elem, fonact, &
+                ds_print, sddisc, sdcrit, &
+                ds_measure, sderro, sddyna, sdpilo, ds_energy, &
+                ds_inout, ds_errorindic, ds_algorom)
     call onerrf('EXCEPTION+VALID', k16bid, ibid)
 !
 ! --- ETAT DU CALCUL
 !
     call nmleeb(sderro, 'CALC', etcalc)
-    if ((etcalc.eq.'ERRE') .or. (etcalc.eq.'STOP')) then
+    if ((etcalc .eq. 'ERRE') .or. (etcalc .eq. 'STOP')) then
         goto 800
-    else if (etcalc.eq.'CONV') then
+    else if (etcalc .eq. 'CONV') then
         goto 900
-    endif
+    end if
 !
 ! --- MISE A JOUR DES INFORMATIONS POUR UN NOUVEAU PAS DE TEMPS
 !
-    ASSERT(etcalc.eq.'CONT')
-    call nmfpas(fonact    , sddyna, sdpilo, sddisc, nbiter,&
-                numins    , eta   , valinc, solalg, veasse, ds_system,&
+    ASSERT(etcalc .eq. 'CONT')
+    call nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter, &
+                numins, eta, valinc, solalg, veasse, ds_system, &
                 ds_contact)
-    numins = numins + 1
+    numins = numins+1
 !
     goto 200
 !
@@ -350,11 +350,11 @@ implicit none
 ! --- ON COMMENCE PAR ARCHIVER LE PAS DE TEMPS PRECEDENT
 !
     if (numins .ne. 1) then
-        call nmarch(numins-1  , model        , ds_material, cara_elem, fonact   ,&
-                    ds_print  , sddisc       , sdcrit     ,&
-                    ds_measure, sderro       , sddyna     , sdpilo   , ds_energy,&
-                    ds_inout  , ds_errorindic, ds_algorom)
-    endif
+        call nmarch(numins-1, model, ds_material, cara_elem, fonact, &
+                    ds_print, sddisc, sdcrit, &
+                    ds_measure, sderro, sddyna, sdpilo, ds_energy, &
+                    ds_inout, ds_errorindic, ds_algorom)
+    end if
 !
 ! - Write messages for errors
 !
@@ -368,7 +368,7 @@ implicit none
 !
 ! - Progress bar
 !
-    call setTimeListProgressBar(sddisc, numins, final_ = ASTER_TRUE)
+    call setTimeListProgressBar(sddisc, numins, final_=ASTER_TRUE)
 !
 ! - End of timer for total time
 !
@@ -376,9 +376,9 @@ implicit none
 !
 ! --- IMPRESSION STATISTIQUES FINALES
 !
-    if (.not.lexpl) then
+    if (.not. lexpl) then
         call nmstat('T', ds_measure, ds_print, sddisc, numins, sderro)
-    endif
+    end if
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
 !
@@ -386,8 +386,8 @@ implicit none
 !
 ! - Cleaning datastructures
 !
-    call nmmeng(fonact,&
-                ds_algorom, ds_print, ds_measure     , ds_material, &
-                ds_energy , ds_inout, ds_posttimestep, hhoField)
+    call nmmeng(fonact, &
+                ds_algorom, ds_print, ds_measure, ds_material, &
+                ds_energy, ds_inout, ds_posttimestep, hhoField)
 !
 end subroutine

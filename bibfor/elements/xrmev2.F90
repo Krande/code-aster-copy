@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
+subroutine xrmev2(cpt, npg, ndim, igeom, jsigse, &
                   coorse, tvolse)
     implicit none
 #include "jeveux.h"
@@ -69,20 +69,20 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
 !
 ! ----------------------------------------------------------------------
 !
-    call elrefe_info(elrefe='TR3', fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
-                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
+    call elrefe_info(elrefe='TR3', fami='XINT', ndim=ndimb, nno=nno, nnos=nnos, &
+                     npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde, &
                      jdfd2=jdfd2, jgano=jgano)
-    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg .eq. npgbis .and. ndim .eq. ndimb)
 !
-    tvolse=0.d0
+    tvolse = 0.d0
 !
 ! --- ECRITURE POUR LE SOUS-ELEMENT COURANT D'UN TABLEAU DE CONTRAINTES
 ! --- AUX NOEUDS UTILISABLE PAR LA ROUTINE ERMEV2
 !
     do n = 1, nno
         do icmp = 1, nbcmp
-            signse(nbcmp*(n-1)+icmp)= zr(jsigse-1+nbcmp*nno*(cpt-1)+&
-            nbcmp*(n-1)+icmp)
+            signse(nbcmp*(n-1)+icmp) = zr(jsigse-1+nbcmp*nno*(cpt-1)+ &
+                                          nbcmp*(n-1)+icmp)
         end do
     end do
 !
@@ -95,20 +95,20 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
 ! --- CALCUL DES DERIVEES DES FONCTIONS DE FORME DU SOUS-ELEMENT -------
 ! --- AU POINT DE GAUSS COURANT DANS LE REPERE REEL -------------------
 !
-        call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+        call dfdm2d(nno, kpg, ipoids, idfde, coorse, &
                     poijac, dfdx, dfdy)
 !
 ! --- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA ------------------
 !
-        iadpg=ivf+(kpg-1)*nno
+        iadpg = ivf+(kpg-1)*nno
         ibid = 1
-        call ermev2(nno, igeom, zr(iadpg), signse, nbcmp,&
-                    dfdx, dfdy, poijac, ibid, dsx,&
+        call ermev2(nno, igeom, zr(iadpg), signse, nbcmp, &
+                    dfdx, dfdy, poijac, ibid, dsx, &
                     dsy, norme)
 !
 ! --- CALCUL DU TERME VOLUMIQUE AVEC INTEGRATION DE GAUSS --------------
 !
-        tvolse=tvolse+(dsx**2+dsy**2)*poijac
+        tvolse = tvolse+(dsx**2+dsy**2)*poijac
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,11 +40,11 @@ subroutine gdclci(fm, df, em)
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -56,15 +56,15 @@ subroutine gdclci(fm, df, em)
 !  CALCUL DES JACOBIENS
 ! ----------------------
 !
-    jm=fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
-     &  -fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
-     &  +fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+    jm = fm(1, 1)*(fm(2, 2)*fm(3, 3)-fm(2, 3)*fm(3, 2))&
+     &  -fm(2, 1)*(fm(1, 2)*fm(3, 3)-fm(1, 3)*fm(3, 2))&
+     &  +fm(3, 1)*(fm(1, 2)*fm(2, 3)-fm(1, 3)*fm(2, 2))
 !
-    dj=df(1,1)*(df(2,2)*df(3,3)-df(2,3)*df(3,2))&
-     &  -df(2,1)*(df(1,2)*df(3,3)-df(1,3)*df(3,2))&
-     &  +df(3,1)*(df(1,2)*df(2,3)-df(1,3)*df(2,2))
+    dj = df(1, 1)*(df(2, 2)*df(3, 3)-df(2, 3)*df(3, 2))&
+     &  -df(2, 1)*(df(1, 2)*df(3, 3)-df(1, 3)*df(3, 2))&
+     &  +df(3, 1)*(df(1, 2)*df(2, 3)-df(1, 3)*df(2, 2))
 !
-    jp=jm*dj
+    jp = jm*dj
 !
 !
 !  CALCUL DE ETR
@@ -72,7 +72,7 @@ subroutine gdclci(fm, df, em)
 !
 !    CALCUL DE BE EN T-
     do ij = 1, 6
-        bem(ij) = kr(ij) - 2*em(ij)
+        bem(ij) = kr(ij)-2*em(ij)
     end do
 !
 !
@@ -83,15 +83,15 @@ subroutine gdclci(fm, df, em)
         do kl = 1, 6
             k = ind1(kl)
             l = ind2(kl)
-            pdf(ij,kl)=rc(ij)*rc(kl)*(df(i,k)*df(j,l)+df(j,k)*df(i,l))&
-            /2
+            pdf(ij, kl) = rc(ij)*rc(kl)*(df(i, k)*df(j, l)+df(j, k)*df(i, l)) &
+                          /2
         end do
     end do
 !
 !
 !    CALCUL DE BE TRIAL : BETR(AB) = PDF(AB,IJ):BEM(IJ)  ET  E TRIAL
     do ij = 1, 6
-        betr(ij) = ddot(6, pdf(ij,1),6, bem,1)
+        betr(ij) = ddot(6, pdf(ij, 1), 6, bem, 1)
         etr(ij) = (kr(ij)-betr(ij))/2
     end do
 !
@@ -99,8 +99,8 @@ subroutine gdclci(fm, df, em)
 !    CALCUL DES INVARIANTS DE E TRIAL
     tretr = etr(1)+etr(2)+etr(3)
     do ij = 1, 6
-        dvetr(ij) = etr(ij) - tretr/3.d0*kr(ij)
+        dvetr(ij) = etr(ij)-tretr/3.d0*kr(ij)
     end do
-    eqetr = sqrt(1.5d0 * ddot(6,dvetr,1,dvetr,1))
+    eqetr = sqrt(1.5d0*ddot(6, dvetr, 1, dvetr, 1))
 !
 end subroutine

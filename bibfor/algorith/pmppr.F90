@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmppr(amat, na1, na2, ka, bmat,&
-                 nb1, nb2, kb, cmat, nc1,&
+subroutine pmppr(amat, na1, na2, ka, bmat, &
+                 nb1, nb2, kb, cmat, nc1, &
                  nc2)
 !
     implicit none
@@ -65,69 +65,69 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
     if (ka .eq. 1 .and. kb .eq. 1) then
         if (na2 .ne. nb1) then
             ASSERT(.false.)
-        endif
+        end if
         if (nc1 .ne. na1 .or. nc2 .ne. nb2) then
             ASSERT(.false.)
-        endif
+        end if
         do i = 1, na1
             do j = 1, nb2
-                cmat(i,j)=0.d0
+                cmat(i, j) = 0.d0
                 do k = 1, nb1
-                    cmat(i,j)=cmat(i,j)+amat(i,k)*bmat(k,j)
-                enddo
-            enddo
-        enddo
-    endif
+                    cmat(i, j) = cmat(i, j)+amat(i, k)*bmat(k, j)
+                end do
+            end do
+        end do
+    end if
 !
     if (ka .eq. -1 .and. kb .eq. 1) then
         if (na1 .ne. nb1) then
             ASSERT(.false.)
-        endif
+        end if
         if (nc1 .ne. na2 .or. nc2 .ne. nb2) then
             ASSERT(.false.)
-        endif
+        end if
         do i = 1, na2
             do j = 1, nb2
-                cmat(i,j)=0.d0
+                cmat(i, j) = 0.d0
                 do k = 1, nb1
-                    cmat(i,j)=cmat(i,j)+amat(k,i)*bmat(k,j)
-                enddo
-            enddo
-        enddo
-    endif
+                    cmat(i, j) = cmat(i, j)+amat(k, i)*bmat(k, j)
+                end do
+            end do
+        end do
+    end if
 !
     if (ka .eq. 1 .and. kb .eq. -1) then
         if (na2 .ne. nb2) then
             ASSERT(.false.)
-        endif
+        end if
         if (nc1 .ne. na1 .or. nc2 .ne. nb1) then
             ASSERT(.false.)
-        endif
+        end if
         do i = 1, na1
             do j = 1, nb1
-                cmat(i,j)=0.d0
+                cmat(i, j) = 0.d0
                 do k = 1, na2
-                    cmat(i,j)=cmat(i,j)+amat(i,k)*bmat(j,k)
-                enddo
-            enddo
-        enddo
-    endif
+                    cmat(i, j) = cmat(i, j)+amat(i, k)*bmat(j, k)
+                end do
+            end do
+        end do
+    end if
 !
     if (ka .eq. -1 .and. kb .eq. -1) then
         if (na1 .ne. nb2) then
             ASSERT(.false.)
-        endif
+        end if
         if (nc1 .ne. na2 .or. nc2 .ne. nb1) then
             ASSERT(.false.)
-        endif
+        end if
         do i = 1, na2
             do j = 1, nb1
-                cmat(i,j)=0.d0
+                cmat(i, j) = 0.d0
                 do k = 1, nb2
-                    cmat(i,j)=cmat(i,j)+amat(k,i)*bmat(j,k)
-                enddo
-            enddo
-        enddo
-    endif
+                    cmat(i, j) = cmat(i, j)+amat(k, i)*bmat(j, k)
+                end do
+            end do
+        end do
+    end if
 !
 end subroutine

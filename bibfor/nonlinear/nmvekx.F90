@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,11 +44,11 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
 !
     real(kind=8) :: vpar(2), tp, wrk(1)
     real(kind=8) :: zero
-    parameter    (zero = 0.d0)
+    parameter(zero=0.d0)
     integer :: ok(1)
     character(len=8) :: nompar(2), nom
 !
-    data nom / 'K_D' /
+    data nom/'K_D'/
 !
 ! ----------------------------------------------------------------------
 !-- 1. INITIALISATION
@@ -64,7 +64,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
     vpar(1) = tp
     vpar(2) = xhi
 !
-    call rcvala(imate, ' ', 'VENDOCHAB', 2, nompar,&
-                vpar, 1, nom, wrk, ok,2)
+    call rcvala(imate, ' ', 'VENDOCHAB', 2, nompar, &
+                vpar, 1, nom, wrk, ok, 2)
     kxhi = wrk(1)
 end subroutine

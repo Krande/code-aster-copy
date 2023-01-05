@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine cfmmve(mesh, ds_contact, hval_incr, time_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/apcalc.h"
@@ -38,10 +38,10 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/mreacg.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=19), intent(in) :: hval_incr(*)
-real(kind=8), intent(in) :: time_curr
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=19), intent(in) :: hval_incr(*)
+    real(kind=8), intent(in) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,9 +68,9 @@ real(kind=8), intent(in) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
-    l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
 ! - Get fields
 !
@@ -80,7 +80,7 @@ real(kind=8), intent(in) :: time_curr
 !
     if (l_cont_allv) then
         call mreacg(mesh, ds_contact, disp_curr)
-    endif
+    end if
 !
 ! - Create pairing datastructure
 !
@@ -91,26 +91,26 @@ real(kind=8), intent(in) :: time_curr
             call cfpoin(mesh, ds_contact)
         else
             ASSERT(.false.)
-        endif
+        end if
         call apcalc('N_To_S', mesh, ds_contact)
-    endif
+    end if
 !
 ! - Prepare datastructures
 !
-    call cfmmvc(ds_contact   , v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone,&
+    call cfmmvc(ds_contact, v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, &
                 nt_ncomp_poin)
 !
 ! - Evaluate
 !
     if (l_cont_cont) then
-        call mmveri(mesh        , ds_contact  , time_curr    , nt_ncomp_poin,&
-                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti , v_ncomp_zone)
+        call mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
+                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone)
     else if (l_cont_disc) then
-        call cfveri(mesh        , ds_contact  , time_curr    , nt_ncomp_poin,&
-                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti , v_ncomp_zone)
+        call cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
+                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - To print interpenetrations
 !
@@ -122,9 +122,9 @@ real(kind=8), intent(in) :: time_curr
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr   = v_ncomp_jeux)
-    AS_DEALLOCATE(vi   = v_ncomp_loca)
-    AS_DEALLOCATE(vk16 = v_ncomp_enti)
-    AS_DEALLOCATE(vi   = v_ncomp_zone)
+    AS_DEALLOCATE(vr=v_ncomp_jeux)
+    AS_DEALLOCATE(vi=v_ncomp_loca)
+    AS_DEALLOCATE(vk16=v_ncomp_enti)
+    AS_DEALLOCATE(vi=v_ncomp_zone)
 !
 end subroutine

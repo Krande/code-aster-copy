@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
 !
 !
-    integer :: ncmp1, ncmp2, ino1, ino2,    jcn1v, jcn1l
-    integer :: icmp1,    jcn2v, jcn2l, icmp2
+    integer :: ncmp1, ncmp2, ino1, ino2, jcn1v, jcn1l
+    integer :: icmp1, jcn2v, jcn2l, icmp2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
     character(len=19) :: cns1, cns2
@@ -70,7 +70,7 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
     nomgd2 = cn2k(2)
     ncmp2 = cn2d(2)
 !
-    ASSERT(nomgd2.eq.nomgd)
+    ASSERT(nomgd2 .eq. nomgd)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
@@ -83,30 +83,30 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
             nocmp = cn2c(icmp2)
 !
-            icmp1 = indik8( cn1c, nocmp, 1, ncmp1 )
+            icmp1 = indik8(cn1c, nocmp, 1, ncmp1)
             if (icmp1 .eq. 0) goto 20
             if (.not. zl(jcn1l-1+(ino1-1)*ncmp1+icmp1)) goto 20
 !
             zl(jcn2l-1+(ino2-1)*ncmp2+icmp2) = .true.
 !
             if (tsca .eq. 'R') then
-                zr(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zr( jcn1v-1+(ino1-1 ) *ncmp1+icmp1 )
-            else if (tsca.eq.'C') then
-                zc(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zc( jcn1v-1+(ino1-1 ) *ncmp1+icmp1 )
-            else if (tsca.eq.'I') then
-                zi(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zi( jcn1v-1+(ino1-1 ) *ncmp1+icmp1 )
-            else if (tsca.eq.'L') then
-                zl(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zl( jcn1v-1+(ino1-1 ) *ncmp1+icmp1 )
-            else if (tsca.eq.'K8') then
-                zk8(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zk8( jcn1v-1+(ino1- 1 )*ncmp1+icmp1 )
+                zr(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zr(jcn1v-1+(ino1-1)*ncmp1+icmp1)
+            else if (tsca .eq. 'C') then
+                zc(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zc(jcn1v-1+(ino1-1)*ncmp1+icmp1)
+            else if (tsca .eq. 'I') then
+                zi(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zi(jcn1v-1+(ino1-1)*ncmp1+icmp1)
+            else if (tsca .eq. 'L') then
+                zl(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zl(jcn1v-1+(ino1-1)*ncmp1+icmp1)
+            else if (tsca .eq. 'K8') then
+                zk8(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zk8(jcn1v-1+(ino1-1)*ncmp1+icmp1)
             else
                 ASSERT(.false.)
-            endif
+            end if
 !
- 20         continue
+20          continue
         end do
 !
- 10     continue
+10      continue
     end do
 !
     call jedema()

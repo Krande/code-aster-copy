@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
-                    p_g, invp_g, rg, tg, l_not_zero,&
+subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
+                    p_g, invp_g, rg, tg, l_not_zero, &
                     courb, dfdi, lcourb)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -33,10 +33,10 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !
     integer :: ndim, nnop
     real(kind=8) :: basloc(*), ff(*), geom(*)
-    real(kind=8) :: p_g(3,3), invp_g(3,3), rg, tg
+    real(kind=8) :: p_g(3, 3), invp_g(3, 3), rg, tg
     aster_logical :: l_not_zero
     aster_logical, optional :: lcourb
-    real(kind=8), optional :: courb(3,3,3), dfdi(:,:)
+    real(kind=8), optional :: courb(3, 3, 3), dfdi(:, :)
 !
 !
 !     BUT:  CALCUL DES COORDONNEES CYLINDRIQUES EN FOND DE FISSURE
@@ -61,13 +61,13 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !
 !----------------------------------------------------------------
 !
-    baslog(1:(3*ndim))=0.
-    p_g(:,:)=0.d0
-    invp_g(:,:)=0.d0
+    baslog(1:(3*ndim)) = 0.
+    p_g(:, :) = 0.d0
+    invp_g(:, :) = 0.d0
     do i = 1, ndim*3
-      do ino = 1, nnop
-        baslog(i) = baslog(i) + basloc(3*ndim*(ino-1)+i) * ff(ino)
-      end do
+        do ino = 1, nnop
+            baslog(i) = baslog(i)+basloc(3*ndim*(ino-1)+i)*ff(ino)
+        end do
     end do
 !
     call xbasgl(ndim, baslog, 1, p_g, invp_g)
@@ -76,20 +76,20 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !   * SI ON DISPOSAIT DU PROJETE DU POINT DE GAUSS SUR LE FOND
 !       LE CALCUL SERAIT TRIVIAL / ON BRICOLE POUR LE MOMENT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    pt(:)= 0.d0
+    pt(:) = 0.d0
     do ino = 1, nnop
-       do i =1,ndim
-         pt(i)=pt(i)+ff(ino)*geom(ndim*(ino-1)+i)
-       enddo
+        do i = 1, ndim
+            pt(i) = pt(i)+ff(ino)*geom(ndim*(ino-1)+i)
+        end do
     end do
     call xcoocy(ndim, pt, baslog(1:ndim), p_g, rg, tg, l_not_zero)
 !
     if (present(lcourb)) then
-       if (lcourb) then
+        if (lcourb) then
 !          maintien de ce bloc conditionnel suite à la suppression
 !          d'une routine pour couverture (issue25665)
-           ASSERT(.false.)
-       endif
-    endif
+            ASSERT(.false.)
+        end if
+    end if
 !
 end subroutine

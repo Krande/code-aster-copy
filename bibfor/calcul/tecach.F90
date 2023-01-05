@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tecach(stopz, nmparz, louez, iret, nval,&
+subroutine tecach(stopz, nmparz, louez, iret, nval, &
                   itab, iad, numa)
 !
-    use calcul_module, only : ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_iel_, ca_igr_, &
-        ca_jrepe_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
+    use calcul_module, only: ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_iel_, ca_igr_, &
+                             ca_jrepe_, ca_nbgr_, ca_nomte_, ca_nparin_, ca_npario_, ca_option_
 !
     implicit none
 !
@@ -122,10 +122,10 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
 !-------------------------------------------------------------------
     if (present(numa)) then
         inuma = numa
-        ASSERT(inuma.ge.0)
+        ASSERT(inuma .ge. 0)
     else
         inuma = 0
-    endif
+    end if
     if (present(nval)) then
         inval = nval
         ASSERT(.not. present(iad))
@@ -133,25 +133,25 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
     else
         inval = 1
         ASSERT(present(iad))
-    endif
+    end if
     if (inuma .eq. 0) then
-        igr2=ca_igr_
-        iel2=ca_iel_
+        igr2 = ca_igr_
+        iel2 = ca_iel_
     else
-        igr2=zi(ca_jrepe_-1+2*(inuma-1)+1)
-        iel2=zi(ca_jrepe_-1+2*(inuma-1)+2)
-    endif
+        igr2 = zi(ca_jrepe_-1+2*(inuma-1)+1)
+        iel2 = zi(ca_jrepe_-1+2*(inuma-1)+2)
+    end if
 !
     nompar = nmparz
     stop8 = stopz
     loue = louez
 !
-    stpcat = (stop8(1:1).eq.'O')
-    stpexi = (stop8(2:2).eq.'O')
-    stpinc = (stop8(3:3).eq.'O')
+    stpcat = (stop8(1:1) .eq. 'O')
+    stpexi = (stop8(2:2) .eq. 'O')
+    stpinc = (stop8(3:3) .eq. 'O')
 !
-    ASSERT(loue.eq.'L' .or. loue.eq.'E')
-    ASSERT(1.le.inval .and. inval.le.8)
+    ASSERT(loue .eq. 'L' .or. loue .eq. 'E')
+    ASSERT(1 .le. inval .and. inval .le. 8)
     iret = 0
     jtab(1) = 0
 !
@@ -160,17 +160,17 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
 !   -------------------------------------------------
     exichl = .false.
 !
-    iparg = indik8(zk8(ca_iaoppa_),nompar,1,ca_npario_)
+    iparg = indik8(zk8(ca_iaoppa_), nompar, 1, ca_npario_)
     if (iparg .eq. 0) then
         if (stpcat) then
             valk(1) = nompar
             valk(2) = ca_option_
             call utmess('E', 'CALCUL_15', nk=2, valk=valk)
             call contex_param(ca_option_, ' ')
-        endif
+        end if
         iret = 1
         goto 20
-    endif
+    end if
 !
 !
 !   2- si le parametre appartient a l'option :
@@ -179,17 +179,17 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
 !   -- on verifie que les parametre in sont en lecture
 !      et que les parametres out sont en ecriture
     if (iparg .gt. ca_nparin_ .and. loue .eq. 'L') then
-        write(6,*)'PARAMETRE OUT EN LECTURE : ',nompar
+        write (6, *) 'PARAMETRE OUT EN LECTURE : ', nompar
         ASSERT(.false.)
-    else if (iparg.le.ca_nparin_ .and. loue.eq.'E') then
-        write(6,*)'PARAMETRE IN EN ECRITURE : ',nompar
+    else if (iparg .le. ca_nparin_ .and. loue .eq. 'E') then
+        write (6, *) 'PARAMETRE IN EN ECRITURE : ', nompar
         ASSERT(.false.)
-    endif
+    end if
 !
-    iachlo=zi(ca_iawloc_-1+3*(iparg-1)+1)
-    ilchlo=zi(ca_iawloc_-1+3*(iparg-1)+2)
-    lgcata=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+igr2-1)+2)
-    debugr=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+igr2-1)+5)
+    iachlo = zi(ca_iawloc_-1+3*(iparg-1)+1)
+    ilchlo = zi(ca_iawloc_-1+3*(iparg-1)+2)
+    lgcata = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+igr2-1)+2)
+    debugr = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+igr2-1)+5)
 !
 !
     if (iachlo .eq. -1) iret = 2
@@ -209,9 +209,9 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
             else
                 call utmess('E', 'CALCUL_29', nk=3, valk=valk)
                 call contex_param(ca_option_, nompar)
-            endif
+            end if
 !
-        endif
+        end if
 !
         if (lgcata .eq. -1) then
             if (stpcat) then
@@ -220,8 +220,8 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
                 valk(3) = ca_nomte_
                 call utmess('E', 'CALCUL_16', nk=3, valk=valk)
                 call contex_param(ca_option_, nompar)
-            endif
-        endif
+            end if
+        end if
     else
         if (lgcata .eq. -1) then
             if (stpcat) then
@@ -230,15 +230,15 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
                 valk(3) = ca_nomte_
                 call utmess('E', 'CALCUL_16', nk=3, valk=valk)
                 call contex_param(ca_option_, nompar)
-            endif
+            end if
         else
             exichl = .true.
-        endif
-    endif
+        end if
+    end if
 !
-    if (.not.exichl) then
+    if (.not. exichl) then
         goto 20
-    endif
+    end if
 !
 !
 !   itab(1) : adresse du champ local pour l'element iel2 :
@@ -248,19 +248,19 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
 !   -------------------------------------------------
     call chloet(iparg, etendu, jceld)
     if (etendu) then
-        adiel = zi(jceld-1+zi(jceld-1+4+igr2)+4+4* (iel2-1)+4)
+        adiel = zi(jceld-1+zi(jceld-1+4+igr2)+4+4*(iel2-1)+4)
         debgr2 = zi(jceld-1+zi(jceld-1+4+igr2)+8)
-        nbspt = zi(jceld-1+zi(jceld-1+4+igr2)+4+4* (iel2-1)+1)
-        ncdyn = zi(jceld-1+zi(jceld-1+4+igr2)+4+4* (iel2-1)+2)
-        ASSERT(lgcata.eq.zi(jceld-1+zi(jceld-1+4+igr2)+3))
+        nbspt = zi(jceld-1+zi(jceld-1+4+igr2)+4+4*(iel2-1)+1)
+        ncdyn = zi(jceld-1+zi(jceld-1+4+igr2)+4+4*(iel2-1)+2)
+        ASSERT(lgcata .eq. zi(jceld-1+zi(jceld-1+4+igr2)+3))
         decael = (adiel-debgr2)
-        lonchl = zi(jceld-1+zi(jceld-1+4+igr2)+4+4* (iel2-1)+3)
+        lonchl = zi(jceld-1+zi(jceld-1+4+igr2)+4+4*(iel2-1)+3)
     else
         ncdyn = 0
         nbspt = 1
         decael = (iel2-1)*lgcata
         lonchl = lgcata
-    endif
+    end if
     jtab(1) = iachlo+debugr-1+decael
 !
 !
@@ -269,7 +269,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
 !   ----------------------------------------------------------
     if (ilchlo .ne. -1) then
         do k = 1, lonchl
-            if (.not.zl(ilchlo+debugr-1+decael-1+k)) then
+            if (.not. zl(ilchlo+debugr-1+decael-1+k)) then
                 if (stpinc) then
                     valk(1) = nompar
                     valk(2) = ca_option_
@@ -278,14 +278,14 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
                     call contex_param(ca_option_, nompar)
                 else
                     iret = 3
-                    if(inval < 8) then
-                        jtab(1)=0
+                    if (inval < 8) then
+                        jtab(1) = 0
                     end if
                     exit
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
     if (inval .lt. 2) goto 20
 !
@@ -298,7 +298,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
 !
 !   itab(3) : nombre de points (catalogue) :
 !   ----------------------------------------
-    jtab(3)=zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+igr2-1)+3)
+    jtab(3) = zi(ca_iawlo2_-1+5*(ca_nbgr_*(iparg-1)+igr2-1)+3)
     if (inval .lt. 4) goto 20
     jtab(4) = 9999
     if (inval .lt. 5) goto 20
@@ -310,19 +310,19 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
 !   ----------------------------------
     if (zk8(ca_iawtyp_-1+iparg) (1:1) .eq. 'R') then
         jtab(5) = 1
-    else if (zk8(ca_iawtyp_-1+iparg) (1:1).eq.'C') then
+    else if (zk8(ca_iawtyp_-1+iparg) (1:1) .eq. 'C') then
         jtab(5) = 2
-    else if (zk8(ca_iawtyp_-1+iparg) (1:1).eq.'I') then
+    else if (zk8(ca_iawtyp_-1+iparg) (1:1) .eq. 'I') then
         jtab(5) = 3
-    else if (zk8(ca_iawtyp_-1+iparg) (1:3).eq.'K8 ') then
+    else if (zk8(ca_iawtyp_-1+iparg) (1:3) .eq. 'K8 ') then
         jtab(5) = 4
-    else if (zk8(ca_iawtyp_-1+iparg) (1:3).eq.'K16') then
+    else if (zk8(ca_iawtyp_-1+iparg) (1:3) .eq. 'K16') then
         jtab(5) = 5
-    else if (zk8(ca_iawtyp_-1+iparg) (1:3).eq.'K24') then
+    else if (zk8(ca_iawtyp_-1+iparg) (1:3) .eq. 'K24') then
         jtab(5) = 6
     else
         ASSERT(.false.)
-    endif
+    end if
     if (inval .lt. 6) goto 20
 !
 !
@@ -343,13 +343,13 @@ subroutine tecach(stopz, nmparz, louez, iret, nval,&
     jtab(8) = ilchlo+debugr-1+decael
     if (inval .lt. 9) goto 20
 !
- 20 continue
+20  continue
     if (present(iad)) then
         iad = jtab(1)
     else
         do k = 1, inval
             itab(k) = jtab(k)
         end do
-    endif
+    end if
 !
 end subroutine

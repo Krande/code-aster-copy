@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
+subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve, &
                   ntncmp, ntucmp, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
@@ -64,7 +64,7 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
 !
 !
     integer :: edfl64
-    parameter (edfl64=6)
+    parameter(edfl64=6)
 !
     integer :: adncmp, aducmp
     integer :: ifm, nivinf
@@ -78,14 +78,14 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
 !====
 !
     call infniv(ifm, nivinf)
-    if(nivinf > 1) then
+    if (nivinf > 1) then
         call cpu_time(start)
-        write(ifm,*) "    ========== DEBUT DE IRCMCC =========="
+        write (ifm, *) "    ========== DEBUT DE IRCMCC =========="
     end if
 !
     if (existc .eq. 1) then
         call utmess('F', 'MED_31', sk=nochmd)
-    endif
+    end if
 !
 !====
 ! 2. CREATION DU CHAMP
@@ -94,9 +94,9 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
     if (existc .eq. 0) then
 !
         if (nivinf .gt. 1) then
-            write (ifm,2100) nochmd
-        endif
-        2100  format(2x,'DEMANDE DE CREATION DU CHAMP MED : ',a)
+            write (ifm, 2100) nochmd
+        end if
+2100    format(2x, 'DEMANDE DE CREATION DU CHAMP MED : ', a)
 !
 ! 2.1. ==> ADRESSES DE LA DESCRIPTION DES COMPOSANTES
 !
@@ -105,33 +105,33 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
 !
 ! 2.2. ==> APPEL DE LA ROUTINE MED
 !
-        call as_mfdcre(idfimd, nochmd, nomamd, edfl64, zk16(adncmp),&
+        call as_mfdcre(idfimd, nochmd, nomamd, edfl64, zk16(adncmp), &
                        zk16(aducmp), ncmpve, codret)
 !
         if (codret .ne. 0) then
-            saux08='mfdcre'
+            saux08 = 'mfdcre'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
 ! 2.3. ==> IMPRESSION D'INFORMATION
 !
         if (nivinf .gt. 1) then
             if (ncmpve .eq. 1) then
-                write (ifm,2301) zk16(adncmp)(1:8)
+                write (ifm, 2301) zk16(adncmp) (1:8)
             else
-                write (ifm,2302) ncmpve
-                write (ifm,2303) (zk16(adncmp-1+iaux)(1:8),iaux=1,&
-                ncmpve)
-            endif
-        endif
-        2301  format(2x,'LE CHAMP MED EST CREE AVEC LA COMPOSANTE : ',a8)
-        2302  format(2x,'LE CHAMP MED EST CREE AVEC ',i3,' COMPOSANTES :')
-        2303  format(5(a8:,', '),:)
+                write (ifm, 2302) ncmpve
+                write (ifm, 2303) (zk16(adncmp-1+iaux) (1:8), iaux=1, &
+                                   ncmpve)
+            end if
+        end if
+2301    format(2x, 'LE CHAMP MED EST CREE AVEC LA COMPOSANTE : ', a8)
+2302    format(2x, 'LE CHAMP MED EST CREE AVEC ', i3, ' COMPOSANTES :')
+2303    format(5(a8:, ', '), :)
 !
-    endif
-    if(nivinf > 1) then
+    end if
+    if (nivinf > 1) then
         call cpu_time(end)
-        write(ifm,*) "    ========== FIN DE IRCMCC EN ", end - start, "sec ============"
+        write (ifm, *) "    ========== FIN DE IRCMCC EN ", end-start, "sec ============"
     end if
 !
 end subroutine

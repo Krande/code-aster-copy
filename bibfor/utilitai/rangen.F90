@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,8 +56,8 @@ subroutine rangen(prgene, isst, inumod, irang)
     call jeveuo(jexnum(prgene//'.PRNO', ibid), 'L', iaprno)
     iddl = zi(iaprno+2*isst-2)
     if (iddl .eq. 0) goto 9999
-    irang = inumod + iddl - 1
+    irang = inumod+iddl-1
 !
-9999  continue
+9999 continue
     call jedema()
 end subroutine

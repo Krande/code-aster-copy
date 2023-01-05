@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,24 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine elrefv(fami    , ndim    ,&
-                  nnoL    , nnoQ    , nnos,&
-                  npg     , jv_poids,&
-                  jv_vfL  , jv_vfQ  ,&
-                  jv_dfdeL, jv_dfdeQ,&
+subroutine elrefv(fami, ndim, &
+                  nnoL, nnoQ, nnos, &
+                  npg, jv_poids, &
+                  jv_vfL, jv_vfQ, &
+                  jv_dfdeL, jv_dfdeQ, &
                   jv_ganoL, jv_ganoQ)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/elref1.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 !
-character(len=4), intent(in) :: fami
-integer, intent(out) :: ndim, nnos
-integer, intent(out) :: npg, jv_poids
-integer, intent(out) :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
-integer, intent(out) :: nnoQ, jv_vfQ, jv_dfdeQ, jv_ganoQ
+    character(len=4), intent(in) :: fami
+    integer, intent(out) :: ndim, nnos
+    integer, intent(out) :: npg, jv_poids
+    integer, intent(out) :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
+    integer, intent(out) :: nnoQ, jv_vfQ, jv_dfdeQ, jv_ganoQ
 !
 ! ---------------------------------------------------------------------
 ! BUT: RECUPERER DANS UNE ROUTINE TE00IJ LES ADRESSES DANS ZR
@@ -74,10 +74,10 @@ integer, intent(out) :: nnoQ, jv_vfQ, jv_dfdeQ, jv_ganoQ
 !
 ! - Get pointer for quadratic elrefe
 !
-    call elrefe_info(elrefe = elrefeQ, fami   = fami    , &
-                     ndim   = ndim   , nno    = nnoQ    , nnos  = nnos    ,&
-                     npg    = npg    , jpoids = jv_poids,&
-                     jvf    = jv_vfQ , jdfde  = jv_dfdeQ, jgano = jv_ganoQ)
+    call elrefe_info(elrefe=elrefeQ, fami=fami, &
+                     ndim=ndim, nno=nnoQ, nnos=nnos, &
+                     npg=npg, jpoids=jv_poids, &
+                     jvf=jv_vfQ, jdfde=jv_dfdeQ, jgano=jv_ganoQ)
 !
 ! - Get ELREFE (linear)
 !
@@ -99,16 +99,16 @@ integer, intent(out) :: nnoQ, jv_vfQ, jv_dfdeQ, jv_ganoQ
         else if (elrefeQ .eq. 'P13') then
             elrefeL = 'PY5'
         else
-            WRITE(6,*) 'No linear reference: ',elrefeQ
+            WRITE (6, *) 'No linear reference: ', elrefeQ
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get pointers for linear elrefe
 !
-    call elrefe_info(elrefe = elrefeL, fami   = fami    , &
-                     ndim   = ndim   , nno    = nnoL    , nnos  = nnos    ,&
-                     npg    = npg    , jpoids = jv_poids,&
-                     jvf    = jv_vfL , jdfde  = jv_dfdeL, jgano = jv_ganoL)
+    call elrefe_info(elrefe=elrefeL, fami=fami, &
+                     ndim=ndim, nno=nnoL, nnos=nnos, &
+                     npg=npg, jpoids=jv_poids, &
+                     jvf=jv_vfL, jdfde=jv_dfdeL, jgano=jv_ganoL)
 !
 end subroutine

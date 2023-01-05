@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,48 +53,48 @@ subroutine te0219(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
-        if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
-    endif
+        if (alias8(6:8) .eq. 'QU9') elrefe = 'QU4'
+        if (alias8(6:8) .eq. 'TR6') elrefe = 'TR3'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
     if (option .eq. 'CHAR_THER_GRAI_R') then
-        fonc=.false.
+        fonc = .false.
         call jevech('PGRAINR', 'L', igrai)
-        grx=zr(igrai)
-        gry=zr(igrai+1)
-    else if (option.eq.'CHAR_THER_GRAI_F') then
-        fonc=.true.
+        grx = zr(igrai)
+        gry = zr(igrai+1)
+    else if (option .eq. 'CHAR_THER_GRAI_F') then
+        fonc = .true.
         call jevech('PTEMPSR', 'L', itemps)
         call jevech('PGRAINF', 'L', igrai)
-        grxf=zk8(igrai)
-        gryf=zk8(igrai+1)
-        nompar(1)='X'
-        nompar(2)='Y'
-        nompar(3)='INST'
+        grxf = zk8(igrai)
+        gryf = zk8(igrai+1)
+        nompar(1) = 'X'
+        nompar(2) = 'Y'
+        nompar(3) = 'INST'
         valpar(3) = zr(itemps)
-    endif
+    end if
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PVECTTR', 'E', ivectt)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THER', 0, ' ', [0.d0], &
                 1, 'LAMBDA', valres, icodre, 1)
 !
     call connec(nomte, nse, nnop2, c)
 !
     do i = 1, nnop2
-        vectt(i)=0.d0
+        vectt(i) = 0.d0
     end do
 !
 !     BOUCLE SUR LES SOUS-ELEMENTS
@@ -102,41 +102,41 @@ subroutine te0219(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
         do kp = 1, npg
-            k=(kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coorse,&
+            k = (kp-1)*nno
+            call dfdm2d(nno, kp, ipoids, idfde, coorse, &
                         poids, dfdx, dfdy)
             x = 0.d0
             y = 0.d0
             do i = 1, nno
-                x = x + coorse(2*(i-1)+1) * zr(ivf+k+i-1)
-                y = y + coorse(2*(i-1)+2) * zr(ivf+k+i-1)
+                x = x+coorse(2*(i-1)+1)*zr(ivf+k+i-1)
+                y = y+coorse(2*(i-1)+2)*zr(ivf+k+i-1)
             end do
 !
             if (fonc) then
                 valpar(1) = x
                 valpar(2) = y
-                call fointe('FM', grxf, 3, nompar, valpar,&
+                call fointe('FM', grxf, 3, nompar, valpar, &
                             grx, ier)
-                call fointe('FM', gryf, 3, nompar, valpar,&
+                call fointe('FM', gryf, 3, nompar, valpar, &
                             gry, ier)
-            endif
+            end if
 !
-            if (lteatt('AXIS','OUI')) poids = poids*x
+            if (lteatt('AXIS', 'OUI')) poids = poids*x
             poids = poids*valres(1)
 !
             do i = 1, nno
-                vectt(c(ise,i)) = vectt( c(ise,i)) + poids*( dfdx(i)* grx+dfdy(i)*gry)
+                vectt(c(ise, i)) = vectt(c(ise, i))+poids*(dfdx(i)*grx+dfdy(i)*gry)
             end do
         end do
     end do
 !
     do i = 1, nnop2
-        zr(ivectt-1+i)=vectt(i)
+        zr(ivectt-1+i) = vectt(i)
     end do
 !
 end subroutine

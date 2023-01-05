@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmmass(lischa, sddyna, numedd,&
+subroutine nmmass(lischa, sddyna, numedd, &
                   numfix, meelem, masse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/asmama.h"
 !
-character(len=19) :: lischa, sddyna
-character(len=24) :: numedd, numfix
-character(len=19) :: meelem(*)
+    character(len=19) :: lischa, sddyna
+    character(len=24) :: numedd, numfix
+    character(len=19) :: meelem(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,9 +67,9 @@ character(len=19) :: meelem(*)
 !
 ! --- INITIALISATIONS
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lexpl = ndynlo(sddyna,'EXPLICITE')
-    limpl = ndynlo(sddyna,'IMPLICITE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
+    limpl = ndynlo(sddyna, 'IMPLICITE')
     call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
     call nmchex(meelem, 'MEELEM', 'MEDIRI', mediri)
 !
@@ -82,15 +82,15 @@ character(len=19) :: meelem(*)
             optass = 'AVEC_DIRICHLET'
         else
             ASSERT(.false.)
-        endif
+        end if
         masse = '&&NMMASS.MASSENER'
         if (optass .eq. ' ') then
             call asmama(memass, ' ', numfix, lischa, masse)
-        else if (optass.eq.'AVEC_DIRICHLET') then
+        else if (optass .eq. 'AVEC_DIRICHLET') then
             call asmama(memass, mediri, numedd, lischa, masse)
-        endif
+        end if
         call mtdscr(masse)
-    endif
+    end if
 !
     call jedema()
 end subroutine

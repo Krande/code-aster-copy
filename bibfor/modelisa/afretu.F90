@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
-                  vale1, nbcoef, idec, coef, nomddl,&
+subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
+                  vale1, nbcoef, idec, coef, nomddl, &
                   lisrel)
     implicit none
 #include "jeveux.h"
@@ -59,19 +59,19 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
     motfac = 'LIAISON_ELEM'
     betaf = '&FOZERO'
     beta = 0.0d0
-    betac = (0.0d0,0.0d0)
+    betac = (0.0d0, 0.0d0)
     noeuma = noma//'.NOMNOE'
     motfac = 'LIAISON_ELEM'
     call jeveuo(vale1, 'L', idch1)
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
 ! --- CREATION DES TABLEAUX DE TRAVAIL NECESSAIRES A L'AFFECTATION
 ! --- NBTERM : MAJORANT DU NOMBRE DE TERMES DANS UNE RELATION
 !
-    nbterm = 3*lonlis + nbcoef
+    nbterm = 3*lonlis+nbcoef
 ! ---     VECTEUR DU NOM DES NOEUDS
     AS_ALLOCATE(vk8=lisno, size=nbterm)
 ! ---     VECTEUR DU NOM DES DDLS
@@ -91,22 +91,22 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
     do i = 1, lonlis
         call jenonu(jexnom(noeuma, klisno(i)), ino)
 !           ADRESSE DE LA PREMIERE CMP DU NOEUD INO DANS LES CHAMNO
-        ival = iprno((ino-1)* (nbec+2)+1)
+        ival = iprno((ino-1)*(nbec+2)+1)
 !
-        lisno(1+3* (i-1)+1-1) = klisno(i)
-        lisno(1+3* (i-1)+2-1) = klisno(i)
-        lisno(1+3* (i-1)+3-1) = klisno(i)
+        lisno(1+3*(i-1)+1-1) = klisno(i)
+        lisno(1+3*(i-1)+2-1) = klisno(i)
+        lisno(1+3*(i-1)+3-1) = klisno(i)
 !
-        lisddl(1+3* (i-1)+1-1) = 'DX'
-        lisddl(1+3* (i-1)+2-1) = 'DY'
-        lisddl(1+3* (i-1)+3-1) = 'DZ'
+        lisddl(1+3*(i-1)+1-1) = 'DX'
+        lisddl(1+3*(i-1)+2-1) = 'DY'
+        lisddl(1+3*(i-1)+3-1) = 'DZ'
 !
 ! RACCORD  3D_TUYAU : IDEC=0 DANS TOUS LES APPELS A AFRETU
 ! RACCORD COQ_TUYAU : IDEC=0 OU 3 DANS LES APPELS A AFRETU
 !
-        coer(1+3* (i-1)+1-1) = zr(idch1+ival-1+idec+0)
-        coer(1+3* (i-1)+2-1) = zr(idch1+ival-1+idec+1)
-        coer(1+3* (i-1)+3-1) = zr(idch1+ival-1+idec+2)
+        coer(1+3*(i-1)+1-1) = zr(idch1+ival-1+idec+0)
+        coer(1+3*(i-1)+2-1) = zr(idch1+ival-1+idec+1)
+        coer(1+3*(i-1)+3-1) = zr(idch1+ival-1+idec+2)
     end do
 !
     do i = 1, nbcoef
@@ -115,10 +115,10 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
         coer(1+3*lonlis+i-1) = coef(i)
     end do
 !
-    call afrela(coer, coec, lisddl, lisno, dime,&
-                direct, nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime, &
+                direct, nbterm, beta, betac, betaf, &
                 'REEL', 'REEL', 0.d0, lisrel)
-    call imprel(motfac, nbterm, coer, lisddl, lisno,&
+    call imprel(motfac, nbterm, coer, lisddl, lisno, &
                 beta)
 !
 !

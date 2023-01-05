@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,27 +18,27 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmmtec(phase , l_pena_cont, l_pena_fric,&
-                  ndim  , nnl        , nne        ,&
-                  norm  , tau1       , tau2       , mprojt,&
-                  wpg   , ffl        , ffe        , jacobi,&
-                  coefff, coefaf     ,&
-                  dlagrf, djeut      ,&
-                  rese  , nrese      , matrec)
+subroutine mmmtec(phase, l_pena_cont, l_pena_fric, &
+                  ndim, nnl, nne, &
+                  norm, tau1, tau2, mprojt, &
+                  wpg, ffl, ffe, jacobi, &
+                  coefff, coefaf, &
+                  dlagrf, djeut, &
+                  rese, nrese, matrec)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont, l_pena_fric
-integer, intent(in) :: ndim, nne, nnl
-real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), jacobi
-real(kind=8), intent(in) :: coefff, coefaf
-real(kind=8), intent(in) :: dlagrf(2), djeut(3)
-real(kind=8), intent(in) :: rese(3), nrese
-real(kind=8), intent(out) :: matrec(27, 9)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont, l_pena_fric
+    integer, intent(in) :: ndim, nne, nnl
+    real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), jacobi
+    real(kind=8), intent(in) :: coefff, coefaf
+    real(kind=8), intent(in) :: dlagrf(2), djeut(3)
+    real(kind=8), intent(in) :: rese(3), nrese
+    real(kind=8), intent(out) :: matrec(27, 9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,43 +83,43 @@ real(kind=8), intent(out) :: matrec(27, 9)
     dlagft(:) = 0.d0
     pdlaft(:) = 0.d0
     pdjeut(:) = 0.d0
-    prese(:)  = 0.d0
+    prese(:) = 0.d0
 !
 ! - PROJECTION DU LAGRANGE DE FROTTEMENT SUR LE PLAN TANGENT
 !
     if (phase .eq. 'ADHE') then
         dlagft(:) = dlagrf(1)*tau1(:)+dlagrf(2)*tau2(:)
-    endif
+    end if
 !
 ! - PRODUIT LAGR. FROTTEMENT PAR MATRICE [Pt]
 !
     if (phase .eq. 'ADHE') then
         do i = 1, ndim
             do j = 1, ndim
-                pdlaft(i) = mprojt(i,j)*dlagft(j)+pdlaft(i)
+                pdlaft(i) = mprojt(i, j)*dlagft(j)+pdlaft(i)
             end do
         end do
-    endif
+    end if
 !
 ! - PRODUIT INCREMENT DEPDEL DU JEU TANGENT PAR MATRICE [Pt]
 !
     if (phase .eq. 'ADHE') then
         do i = 1, ndim
             do j = 1, ndim
-                pdjeut(i) = mprojt(i,j)*djeut(j)+pdjeut(i)
+                pdjeut(i) = mprojt(i, j)*djeut(j)+pdjeut(i)
             end do
         end do
-    endif
+    end if
 !
 ! - PRODUIT SEMI MULT. LAGR. FROTTEMENT. PAR MATRICE P
 !
     if (phase .eq. 'GLIS') then
         do i = 1, ndim
             do j = 1, ndim
-                prese(i) = mprojt(i,j)*(rese(j)/nrese)+prese(i)
+                prese(i) = mprojt(i, j)*(rese(j)/nrese)+prese(i)
             end do
         end do
-    endif
+    end if
 !
 ! - Part for contact
 !
@@ -128,12 +128,12 @@ real(kind=8), intent(out) :: matrec(27, 9)
             do inoe = 1, nne
                 do idim = 1, ndim
                     jj = ndim*(inoe-1)+idim
-                    matrec(jj,inoc) = matrec(jj,inoc) -&
-                                      wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
+                    matrec(jj, inoc) = matrec(jj, inoc)- &
+                                       wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - Part for friction
 !
@@ -143,25 +143,25 @@ real(kind=8), intent(out) :: matrec(27, 9)
                 do inoe = 1, nne
                     do idim = 1, ndim
                         jj = ndim*(inoe-1)+idim
-                        matrec(jj,inoc) = matrec(jj,inoc) -&
-                                          coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi*&
-                                          (pdlaft(idim)+coefaf*pdjeut(idim))
+                        matrec(jj, inoc) = matrec(jj, inoc)- &
+                                           coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi* &
+                                           (pdlaft(idim)+coefaf*pdjeut(idim))
                     end do
                 end do
             end do
-        endif
+        end if
     else if (phase .eq. 'GLIS') then
         if (.not. l_pena_fric) then
             do inoc = 1, nnl
                 do inoe = 1, nne
                     do idim = 1, ndim
                         jj = ndim*(inoe-1)+idim
-                        matrec(jj,inoc) = matrec(jj,inoc) -&
-                                          coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi*prese(idim)
+                        matrec(jj, inoc) = matrec(jj, inoc)- &
+                                           coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi*prese(idim)
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,27 +69,27 @@ subroutine lect82(iunv, node, nbnode, inum)
 !
 !     ---------- FIN DECLARATIONS -----------
 !
-    read (iunv,'(8I10)') (nodlu(j),j=1,nbnode)
-    idro=1
-    inum=1
+    read (iunv, '(8I10)') (nodlu(j), j=1, nbnode)
+    idro = 1
+    inum = 1
     do i = 1, nbnode
-        if ((nodlu(i).ne.0) .and. (i.lt.nbnode)) then
-            node(idro)=nodlu(i)
-            node(idro+1)=nodlu(i+1)
-            idro=idro+2
-            inum = inum + 1
+        if ((nodlu(i) .ne. 0) .and. (i .lt. nbnode)) then
+            node(idro) = nodlu(i)
+            node(idro+1) = nodlu(i+1)
+            idro = idro+2
+            inum = inum+1
 ! cas ou on commence par un 0
-        else if ((nodlu(i).eq.0).and.(i.eq.1)) then
-            idro=idro
+        else if ((nodlu(i) .eq. 0) .and. (i .eq. 1)) then
+            idro = idro
             inum = inum
-        else if ((nodlu(i).eq.0).and.(i.lt.nbnode)) then
-            idro=idro-2
-            inum = inum - 1
-        else if ((nodlu(i).eq.0).and.(i.ge.nbnode)) then
-            idro=idro-2
-            inum = inum - 1
+        else if ((nodlu(i) .eq. 0) .and. (i .lt. nbnode)) then
+            idro = idro-2
+            inum = inum-1
+        else if ((nodlu(i) .eq. 0) .and. (i .ge. nbnode)) then
+            idro = idro-2
+            inum = inum-1
             goto 669
-        endif
+        end if
 669     continue
     end do
 end subroutine

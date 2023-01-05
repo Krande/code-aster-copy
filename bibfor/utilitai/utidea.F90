@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,42 +39,42 @@ subroutine utidea(nom, itype, versio)
         itype = 21
     else if (nommai .eq. 'TRIA3') then
         if (versio .eq. 5) then
-            itype= 91
+            itype = 91
         else
             itype = 74
-        endif
+        end if
     else if (nommai .eq. 'TRIA6') then
         if (versio .eq. 5) then
-            itype= 92
+            itype = 92
         else
             itype = 72
-        endif
+        end if
     else if (nommai .eq. 'TRIA7') then
         if (versio .eq. 5) then
-            itype= 92
+            itype = 92
         else
             itype = 72
-        endif
+        end if
     else if (nommai .eq. 'TRIA9') then
         itype = 73
     else if (nommai .eq. 'QUAD4') then
         if (versio .eq. 5) then
-            itype= 94
+            itype = 94
         else
             itype = 71
-        endif
+        end if
     else if (nommai .eq. 'QUAD8') then
         if (versio .eq. 5) then
-            itype= 95
+            itype = 95
         else
             itype = 75
-        endif
+        end if
     else if (nommai .eq. 'QUAD9') then
         if (versio .eq. 5) then
-            itype= 95
+            itype = 95
         else
             itype = 75
-        endif
+        end if
     else if (nommai .eq. 'QUAD12') then
         itype = 76
     else if (nommai .eq. 'TETRA4') then
@@ -97,6 +97,6 @@ subroutine utidea(nom, itype, versio)
         itype = 6000
     else if (nommai .eq. 'PYRAM13') then
         itype = 6001
-    endif
+    end if
 !
 end subroutine

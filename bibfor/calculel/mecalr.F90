@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
-                  resuc1, nbordr, modele, mate, cara,&
+subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
+                  resuc1, nbordr, modele, mate, cara, &
                   nchar)
     implicit none
 ! ----------------------------------------------------------------------
@@ -139,18 +139,18 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     call jerecu('V')
 !               123456789012345678901234
     blan24 = '                        '
-    lesopt='&&'//nompro//'.LES_OPTION'
-    nh=0
-    chamgd=blan24
-    chgeom=blan24
-    chharm=blan24
-    chsig=blan24
-    chelem=blan24
-    chvarc='&&'//nompro//'.CHVARC'
+    lesopt = '&&'//nompro//'.LES_OPTION'
+    nh = 0
+    chamgd = blan24
+    chgeom = blan24
+    chharm = blan24
+    chsig = blan24
+    chelem = blan24
+    chvarc = '&&'//nompro//'.CHVARC'
 !
     call infmaj()
     call infniv(ifm, niv)
-    carele=' '
+    carele = ' '
     call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n1)
 !
     call getvtx(' ', 'OPTION', nbval=0, nbret=n2)
@@ -162,17 +162,17 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 !     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE
     if (tysd .eq. 'MODE_MECA') then
-        call rsadpa(resuco, 'L', 1, 'TYPE_MODE', 1,&
+        call rsadpa(resuco, 'L', 1, 'TYPE_MODE', 1, &
                     0, sjv=ltymo, styp=k8b)
-    endif
+    end if
 !
     call jeveuo(knum, 'L', jordr)
-    nuord=zi(jordr)
+    nuord = zi(jordr)
     call jeveuo(kcha//'.LCHA', 'L', jcha)
     if (newcal) then
         call rscrsd('G', resuc1, tysd, nbordr)
         call titre()
-    endif
+    end if
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call jenonu(jexnom(resuco//'           .NOVA', 'INST'), iret)
     call exlima(' ', 0, 'V', modele, ligrel)
@@ -185,44 +185,44 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !=======================================================================
 !
 !
-    leres1=resuc1
+    leres1 = resuc1
 !
 !    ------------------------------------------------------------------
 !    -- RECOPIE DES PARAMETRES DANS LA NOUVELLE SD RESULTAT
 !    ------------------------------------------------------------------
 !
     if (newcal) then
-        nompar='&&'//nompro//'.NOMS_PARA '
+        nompar = '&&'//nompro//'.NOMS_PARA '
         call rsnopa(resuco, 2, nompar, nbac, nbpa)
-        nbpara=nbac+nbpa
+        nbpara = nbac+nbpa
         call jeveuo(nompar, 'L', jpa)
         do iaux = 1, nbordr
-            iordr=zi(jordr+iaux-1)
+            iordr = zi(jordr+iaux-1)
             do j = 1, nbpara
-                call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr,&
+                call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr, &
                             1, sjv=iadin, styp=type, istop=0)
-                call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr,&
+                call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr, &
                             1, sjv=iadou, styp=type)
                 if (type(1:1) .eq. 'I') then
-                    zi(iadou)=zi(iadin)
-                else if (type(1:1).eq.'R') then
-                    zr(iadou)=zr(iadin)
-                else if (type(1:1).eq.'C') then
-                    zc(iadou)=zc(iadin)
-                else if (type(1:3).eq.'K80') then
-                    zk80(iadou)=zk80(iadin)
-                else if (type(1:3).eq.'K32') then
-                    zk32(iadou)=zk32(iadin)
-                else if (type(1:3).eq.'K24') then
-                    zk24(iadou)=zk24(iadin)
-                else if (type(1:3).eq.'K16') then
-                    zk16(iadou)=zk16(iadin)
-                else if (type(1:2).eq.'K8') then
-                    zk8(iadou)=zk8(iadin)
-                endif
+                    zi(iadou) = zi(iadin)
+                else if (type(1:1) .eq. 'R') then
+                    zr(iadou) = zr(iadin)
+                else if (type(1:1) .eq. 'C') then
+                    zc(iadou) = zc(iadin)
+                else if (type(1:3) .eq. 'K80') then
+                    zk80(iadou) = zk80(iadin)
+                else if (type(1:3) .eq. 'K32') then
+                    zk32(iadou) = zk32(iadin)
+                else if (type(1:3) .eq. 'K24') then
+                    zk24(iadou) = zk24(iadin)
+                else if (type(1:3) .eq. 'K16') then
+                    zk16(iadou) = zk16(iadin)
+                else if (type(1:2) .eq. 'K8') then
+                    zk8(iadou) = zk8(iadin)
+                end if
             end do
         end do
-    endif
+    end if
 !
 !    ------------------------------------------------------------------
 !    -- FIN RECOPIE DES PARAMETRES DANS LA NOUVELLE SD RESULTAT
@@ -232,22 +232,22 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 !============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
     do iopt = 1, nbopt
-        option=zk16(jopt+iopt-1)
+        option = zk16(jopt+iopt-1)
         if (option .eq. ' ') goto 660
 !
         call jeveuo(knum, 'L', jordr)
 !
 !         PASSAGE CALC_CHAMP
-        call calcop(option, lesopt, resuco, resuc1, knum,&
+        call calcop(option, lesopt, resuco, resuc1, knum, &
                     nbordr, tysd, iret)
         if (iret .eq. 0) goto 660
 !
-        nuord=zi(jordr)
-        call medom1(modele, mate, mateco, cara, kcha, nchar,&
+        nuord = zi(jordr)
+        call medom1(modele, mate, mateco, cara, kcha, nchar, &
                     resuco, nuord)
         call jeveuo(kcha//'.LCHA', 'L', jcha)
 !
-        call mecham(option, modele, cara, nh, chgeom,&
+        call mecham(option, modele, cara, nh, chgeom, &
                     chcara, chharm, iret)
         if (iret .ne. 0) goto 690
 !
@@ -260,29 +260,29 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
             do iaux = 1, nbordr
                 call jemarq()
                 call jerecu('V')
-                iordr=zi(jordr+iaux-1)
-                call medom1(modele, mate, mateco, cara, kcha, nchar,&
+                iordr = zi(jordr+iaux-1)
+                call medom1(modele, mate, mateco, cara, kcha, nchar, &
                             resuco, iordr)
                 call jeveuo(kcha//'.LCHA', 'L', jcha)
                 call mecara(cara, chcara)
-                call rsexc2(1, 1, resuco, 'DEPL', iordr,&
+                call rsexc2(1, 1, resuco, 'DEPL', iordr, &
                             chamgd, option, iret)
                 if (iret .gt. 0) goto 150
-                call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&
+                call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr, &
                             chsig, option, iret)
                 if (iret .gt. 0) then
                     call utmess('A', 'CALCULEL3_7', sk=option)
                     call jedema()
                     goto 660
 !
-                endif
+                end if
                 call rsexc1(leres1, option, iordr, chsign)
                 if (option .eq. 'SIZ1_NOEU') then
                     call sinoz1(modele, chsig, chsign)
-                else if (option.eq.'SIZ2_NOEU') then
+                else if (option .eq. 'SIZ2_NOEU') then
                     call dismoi('PROF_CHNO', chamgd, 'CHAM_NO', repk=pfchno)
                     call sinoz2(modele, pfchno, chsig, chsign)
-                endif
+                end if
                 call rsnoch(leres1, option, iordr)
 150             continue
                 call jedema()
@@ -291,31 +291,31 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !    ------------------------------------------------------------------
 !    -- OPTIONS DES INDICATEURS D'ERREURS
 !    ------------------------------------------------------------------
-            elseif (option.eq.'ERZ1_ELEM' .or.&
-     &          option.eq.'ERZ2_ELEM' .or.&
-     &          option.eq.'ERME_ELEM' .or. option.eq.'ERME_ELNO' .or.&
-     &          option.eq.'QIRE_ELEM' .or.&
-     &          option.eq.'QIRE_ELNO' .or.&
-     &          option.eq.'QIZ1_ELEM' .or.&
-     &          option.eq.'QIZ2_ELEM') then
+        elseif (option .eq. 'ERZ1_ELEM' .or.&
+ &          option .eq. 'ERZ2_ELEM' .or.&
+ &          option .eq. 'ERME_ELEM' .or. option .eq. 'ERME_ELNO' .or.&
+ &          option .eq. 'QIRE_ELEM' .or.&
+ &          option .eq. 'QIRE_ELNO' .or.&
+ &          option .eq. 'QIZ1_ELEM' .or.&
+ &          option .eq. 'QIZ2_ELEM') then
 !
-            call meca01(option, nbordr, jordr, nchar, jcha,&
-                        kcha, tbgrca, resuco, resuc1,&
-                        leres1, noma, modele, ligrmo, mate,&
+            call meca01(option, nbordr, jordr, nchar, jcha, &
+                        kcha, tbgrca, resuco, resuc1, &
+                        leres1, noma, modele, ligrmo, mate, &
                         cara, chvarc, iret)
 !
             if (iret .eq. 1) then
                 goto 690
 !
-            else if (iret.eq.2) then
+            else if (iret .eq. 2) then
                 goto 660
 !
-            endif
+            end if
 !
 !    ------------------------------------------------------------------
 !    -- OPTION "SING_ELEM"
 !    ------------------------------------------------------------------
-        else if (option.eq.'SING_ELEM') then
+        else if (option .eq. 'SING_ELEM') then
 !
             call getvr8(' ', 'PREC_ERR', scal=prec, nbret=iret1)
             if (iret1 .ne. 1) then
@@ -323,14 +323,14 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
             else
                 if (prec .le. 0.d0) then
                     call utmess('F', 'CALCULEL3_13')
-                endif
-            endif
+                end if
+            end if
 !
-            types=' '
+            types = ' '
             call getvtx(' ', 'TYPE_ESTI', scal=types, nbret=ireter)
             if (ireter .gt. 0) then
                 call utmess('I', 'CALCULEL3_24', sk=types)
-            endif
+            end if
 !
 ! 1 - RECUPERATION DE :
 !  NNOEM : NOMBRE DE NOEUDS
@@ -345,9 +345,9 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
             call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
             call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-            nnoem=dime(1)
-            nelem=dime(3)
-            ndim=dime(6)
+            nnoem = dime(1)
+            nelem = dime(3)
+            ndim = dime(6)
 !
 ! 2 - CREATION D OBJETS TEMPORAIRES UTILES POUR LA SUITE
 ! '&&SINGUM.DIME' (DIM=3) CONTIENT
@@ -368,25 +368,25 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !                 EF UTILE = EF SURF EN 2D ET VOL EN 3D
 !   CONNECTIVITE INVERSE NOEUD N
 !
-            call singum(noma, ndim, nnoem, nelem, typmail,&
+            call singum(noma, ndim, nnoem, nelem, typmail, &
                         zr(jcoor))
 !
 ! 3 - BOUCLE SUR LES INSTANTS DEMANDES
 !
             do iaux = 1, nbordr
                 call jemarq()
-                iordr=zi(jordr+iaux-1)
+                iordr = zi(jordr+iaux-1)
 !
                 if (ireter .gt. 0) then
-                    call rsexch(' ', resuco, types, iordr, cherr4,&
+                    call rsexch(' ', resuco, types, iordr, cherr4, &
                                 iret5)
 !
                     if (iret5 .gt. 0) then
-                        valkm(1)=types
-                        valkm(2)=resuco
+                        valkm(1) = types
+                        valkm(2) = resuco
                         call utmess('A', 'CALCULEL3_26', nk=2, valk=valkm)
-                        iret=1
-                    endif
+                        iret = 1
+                    end if
 !
 ! 3.1 - RECUPERATION DE LA CARTE D ERREUR ET D ENERGIE
 !       SI PLUSIEURS INDICATEURS ON PREND PAR DEFAUT
@@ -395,60 +395,60 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
                 else
 !
-                    iret5=1
-                    call rsexch(' ', resuco, 'ERME_ELEM', iordr, cherr1,&
+                    iret5 = 1
+                    call rsexch(' ', resuco, 'ERME_ELEM', iordr, cherr1, &
                                 iret1)
-                    call rsexch(' ', resuco, 'ERZ1_ELEM', iordr, cherr2,&
+                    call rsexch(' ', resuco, 'ERZ1_ELEM', iordr, cherr2, &
                                 iret2)
-                    call rsexch(' ', resuco, 'ERZ2_ELEM', iordr, cherr3,&
+                    call rsexch(' ', resuco, 'ERZ2_ELEM', iordr, cherr3, &
                                 iret3)
 !
                     if (iret1 .gt. 0 .and. iret2 .gt. 0 .and. iret3 .gt. 0) then
                         call utmess('A', 'CALCULEL3_14')
-                        iret=1
-                    endif
+                        iret = 1
+                    end if
 !
-                endif
+                end if
 !
                 if (tysd .eq. 'EVOL_NOLI') then
-                    call rsexch(' ', resuco, 'ETOT_ELEM', iordr, cheneg,&
+                    call rsexch(' ', resuco, 'ETOT_ELEM', iordr, cheneg, &
                                 iret4)
                 else
-                    call rsexch(' ', resuco, 'EPOT_ELEM', iordr, cheneg,&
+                    call rsexch(' ', resuco, 'EPOT_ELEM', iordr, cheneg, &
                                 iret4)
-                endif
+                end if
                 if (iret4 .gt. 0) then
                     call utmess('A', 'CALCULEL3_29')
-                endif
+                end if
 !
                 if ((iret+iret4) .gt. 0) then
                     call utmess('A', 'CALCULEL3_36')
                     goto 250
 !
-                endif
+                end if
 ! 3.2 - TRANSFORMATION DE CES DEUX CARTES EN CHAM_ELEM_S
 !
-                cherrs='&&'//nompro//'.ERRE'
+                cherrs = '&&'//nompro//'.ERRE'
 !
                 if (iret5 .eq. 0) then
                     call celces(cherr4(1:19), 'V', cherrs)
-                else if (iret1.eq.0) then
+                else if (iret1 .eq. 0) then
                     call celces(cherr1(1:19), 'V', cherrs)
-                    if ((iret2.eq.0) .or. (iret3.eq.0)) then
+                    if ((iret2 .eq. 0) .or. (iret3 .eq. 0)) then
                         call utmess('A', 'CALCULEL3_15')
-                    endif
-                else if (iret3.eq.0) then
+                    end if
+                else if (iret3 .eq. 0) then
                     call celces(cherr3(1:19), 'V', cherrs)
                     if (iret2 .eq. 0) then
                         call utmess('A', 'CALCULEL3_16')
-                    endif
-                else if (iret2.eq.0) then
+                    end if
+                else if (iret2 .eq. 0) then
                     call celces(cherr2(1:19), 'V', cherrs)
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !
-                chenes='&&'//nompro//'.ENER'
+                chenes = '&&'//nompro//'.ENER'
                 call celces(cheneg(1:19), 'V', chenes)
 !
 ! 3.3 - ROUTINE PRINCIPALE QUI CALCULE DANS CHAQUE EF :
@@ -460,8 +460,8 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
                 call rsexc1(leres1, option, iordr, chelem)
 !
-                call singue(cherrs, chenes, noma, ndim, nnoem,&
-                            nelem, zr( jcoor), prec, ligrmo, chelem,&
+                call singue(cherrs, chenes, noma, ndim, nnoem, &
+                            nelem, zr(jcoor), prec, ligrmo, chelem, &
                             types)
 !
                 call rsnoch(leres1, option, iordr)
@@ -484,34 +484,34 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !    ------------------------------------------------------------------
 !    -- OPTION "SING_ELNO"
 !    ------------------------------------------------------------------
-        else if (option.eq.'SING_ELNO') then
+        else if (option .eq. 'SING_ELNO') then
             do iaux = 1, nbordr
                 call jemarq()
-                iordr=zi(jordr+iaux-1)
+                iordr = zi(jordr+iaux-1)
 !
 ! 1 - RECUPERATION DE LA CARTE DE SINGULARITE
 !
-                call rsexc2(1, 1, resuco, 'SING_ELEM', iordr,&
+                call rsexc2(1, 1, resuco, 'SING_ELEM', iordr, &
                             chsing, option, iret1)
 !
                 if (iret1 .gt. 0) goto 270
 !
 ! 2 - TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
 !
-                chsins='&&'//nompro//'.SING'
+                chsins = '&&'//nompro//'.SING'
                 call celces(chsing(1:19), 'V', chsins)
 !
 ! 3 - TRANSFOMATION DU CHAMP CHSINS ELEM EN ELNO
 !
-                chsinn='&&'//nompro//'.SINN'
-                call cesces(chsins, 'ELNO', ' ', ' ', ' ',&
+                chsinn = '&&'//nompro//'.SINN'
+                call cesces(chsins, 'ELNO', ' ', ' ', ' ', &
                             'V', chsinn)
 !
 ! 4 - STOCKAGE
 !
                 call rsexc1(leres1, option, iordr, chelem)
 !
-                call cescel(chsinn, ligrmo(1:19), 'SING_ELNO', 'PSINGNO', 'NON',&
+                call cescel(chsinn, ligrmo(1:19), 'SING_ELNO', 'PSINGNO', 'NON', &
                             nncp, 'G', chelem(1:19), 'F', ibid)
 !
                 call rsnoch(leres1, option, iordr)
@@ -529,7 +529,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
         else
             call utmess('A', 'CALCULEL3_22', sk=option)
-        endif
+        end if
 !
 660     continue
     end do

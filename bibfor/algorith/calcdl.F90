@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
-                  parame, derive, sig3, vecp, eta,&
+subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
+                  parame, derive, sig3, vecp, eta, &
                   dg, se, detadg, dgdl, ddlde)
     implicit none
     integer :: nbmat
@@ -45,22 +45,22 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
     real(kind=8) :: a2, a3, a4, c5, a6, aux1, aux2, aux3, denom, aux4
     integer :: ii, ndt, ndi, jj
 ! =================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
-    dsdde(:,:) = 0.0d0
-    mu = materf(4,1)
-    k = materf(5,1)
+    dsdde(:, :) = 0.0d0
+    mu = materf(4, 1)
+    k = materf(5, 1)
 ! ======================================================================
     a2 = vp(3)-vp(1)
     a3 = trois*mu/sigeqe
     a4 = trois*k*eta
-    c5 = un/materf(14,2)
+    c5 = un/materf(14, 2)
     a6 = a3*vp(3)
     dl = dg/(eta+un)
 ! ======================================================================
@@ -68,91 +68,91 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
 ! ======================================================================
     do ii = 1, ndi
         do jj = 1, ndi
-            dsdde(ii,jj) = deux*mu*vecp(ii,jj)*vecp(ii,jj) -deux*mu*( vecp(1,ii)**2+vecp(2,ii)**2&
-                           &+vecp(3,ii)**2)/trois
+           dsdde(ii, jj) = deux*mu*vecp(ii, jj)*vecp(ii, jj)-deux*mu*(vecp(1, ii)**2+vecp(2, ii)**2&
+                            &+vecp(3, ii)**2)/trois
         end do
-        dsdde(ii,4) = deux*mu*vecp(ii,1)*vecp(ii,2) -deux*mu*(vecp(1, 1)*vecp(1,2)+vecp(2,1)*vecp&
-                      &(2,2) +vecp(3,1)*vecp(3,2))/trois
+      dsdde(ii, 4) = deux*mu*vecp(ii, 1)*vecp(ii, 2)-deux*mu*(vecp(1, 1)*vecp(1, 2)+vecp(2, 1)*vecp&
+                        &(2, 2)+vecp(3, 1)*vecp(3, 2))/trois
         if (ndt .eq. 6) then
-            dsdde(ii,5) = deux*mu*vecp(ii,1)*vecp(ii,3) -deux*mu*( vecp(1,1)*vecp(1,3)+vecp(2,1)*&
-                          &vecp(2,3) +vecp(3,1)*vecp(3, 3))/trois
-            dsdde(ii,6) = deux*mu*vecp(ii,2)*vecp(ii,3) -deux*mu*( vecp(1,3)*vecp(1,2)+vecp(2,3)*&
-                          &vecp(2,2) +vecp(3,3)*vecp(3, 2))/trois
-        endif
+          dsdde(ii, 5) = deux*mu*vecp(ii, 1)*vecp(ii, 3)-deux*mu*(vecp(1, 1)*vecp(1, 3)+vecp(2, 1)*&
+                            &vecp(2, 3)+vecp(3, 1)*vecp(3, 3))/trois
+          dsdde(ii, 6) = deux*mu*vecp(ii, 2)*vecp(ii, 3)-deux*mu*(vecp(1, 3)*vecp(1, 2)+vecp(2, 3)*&
+                            &vecp(2, 2)+vecp(3, 3)*vecp(3, 2))/trois
+        end if
     end do
     do jj = 1, ndi
-        dsdde(4,jj) = deux*mu*vecp(1,jj)*vecp(2,jj)
+        dsdde(4, jj) = deux*mu*vecp(1, jj)*vecp(2, jj)
     end do
-    dsdde(4,4) = deux*mu*vecp(1,1)*vecp(2,2)
+    dsdde(4, 4) = deux*mu*vecp(1, 1)*vecp(2, 2)
     if (ndt .eq. 6) then
         do jj = 1, ndi
-            dsdde(5,jj) = deux*mu*vecp(1,jj)*vecp(3,jj)
-            dsdde(6,jj) = deux*mu*vecp(2,jj)*vecp(3,jj)
+            dsdde(5, jj) = deux*mu*vecp(1, jj)*vecp(3, jj)
+            dsdde(6, jj) = deux*mu*vecp(2, jj)*vecp(3, jj)
         end do
-        dsdde(4,5) = deux*mu*vecp(1,1)*vecp(2,3)
-        dsdde(4,6) = deux*mu*vecp(1,2)*vecp(2,3)
-        dsdde(5,4) = deux*mu*vecp(1,1)*vecp(3,2)
-        dsdde(5,5) = deux*mu*vecp(1,1)*vecp(3,3)
-        dsdde(5,6) = deux*mu*vecp(1,2)*vecp(3,3)
-        dsdde(6,4) = deux*mu*vecp(2,1)*vecp(3,2)
-        dsdde(6,5) = deux*mu*vecp(2,1)*vecp(3,3)
-        dsdde(6,6) = deux*mu*vecp(2,2)*vecp(3,3)
-    endif
+        dsdde(4, 5) = deux*mu*vecp(1, 1)*vecp(2, 3)
+        dsdde(4, 6) = deux*mu*vecp(1, 2)*vecp(2, 3)
+        dsdde(5, 4) = deux*mu*vecp(1, 1)*vecp(3, 2)
+        dsdde(5, 5) = deux*mu*vecp(1, 1)*vecp(3, 3)
+        dsdde(5, 6) = deux*mu*vecp(1, 2)*vecp(3, 3)
+        dsdde(6, 4) = deux*mu*vecp(2, 1)*vecp(3, 2)
+        dsdde(6, 5) = deux*mu*vecp(2, 1)*vecp(3, 3)
+        dsdde(6, 6) = deux*mu*vecp(2, 2)*vecp(3, 3)
+    end if
 ! ====================================================================
 ! --- ON TRAITE LE CAS DE DEUX VALEURS PROPRES EGALES ----------------
 ! ====================================================================
-    if ((abs(vp(3)-vp(2)).lt.1.d-8) .or. (abs(vp(3)-vp(2)).lt.(max(vp(3),vp(2))*1.d-8))) then
+    if ((abs(vp(3)-vp(2)) .lt. 1.d-8) .or. (abs(vp(3)-vp(2)) .lt. (max(vp(3), vp(2))*1.d-8))) then
         do ii = 1, 3
-            aux1 = dsdde(ii,2)+dsdde(ii,3)
-            dsdde(ii,2) = 0.5d0*aux1
-            dsdde(ii,3) = 0.5d0*aux1
+            aux1 = dsdde(ii, 2)+dsdde(ii, 3)
+            dsdde(ii, 2) = 0.5d0*aux1
+            dsdde(ii, 3) = 0.5d0*aux1
         end do
-    endif
-    if ((abs(vp(1)-vp(2)).lt.1.d-8) .or. (abs(vp(1)-vp(2)).lt.(max(vp(1),vp(2))*1.d-8))) then
+    end if
+    if ((abs(vp(1)-vp(2)) .lt. 1.d-8) .or. (abs(vp(1)-vp(2)) .lt. (max(vp(1), vp(2))*1.d-8))) then
         do ii = 1, 3
-            aux1 = dsdde(ii,2)+dsdde(ii,1)
-            dsdde(ii,2) = 0.5d0*aux1
-            dsdde(ii,1) = 0.5d0*aux1
+            aux1 = dsdde(ii, 2)+dsdde(ii, 1)
+            dsdde(ii, 2) = 0.5d0*aux1
+            dsdde(ii, 1) = 0.5d0*aux1
         end do
-    endif
+    end if
 ! =====================================================================
     do ii = 1, ndt
-        da1de(ii) = dsdde(ii,3)
+        da1de(ii) = dsdde(ii, 3)
     end do
     do ii = 1, ndi
-        da1de(ii) = da1de(ii) + k
+        da1de(ii) = da1de(ii)+k
     end do
     do ii = 1, ndt
-        da2de(ii) = dsdde(ii,3)-dsdde(ii,1)
+        da2de(ii) = dsdde(ii, 3)-dsdde(ii, 1)
     end do
     do ii = 1, ndt
         da3de(ii) = -9.0d0*mu*mu*se(ii)/(sigeqe**3)
     end do
     do ii = 1, ndt
-        da6de(ii) = vp(3)*da3de(ii)+a3*dsdde(ii,3)
+        da6de(ii) = vp(3)*da3de(ii)+a3*dsdde(ii, 3)
     end do
 ! ======================================================================
 ! --- CALCUL DU DENOMINATEUR -------------------------------------------
 ! ======================================================================
     aux1 = parame(1)-parame(2)*sig3
     aux2 = dl*trois*k*detadg*dgdl+a6+a4
-    aux3 = dgdl*(derive(1) -sig3*derive(2)) + parame(2)*aux2
-    denom = -a2*a3 -derive(3)*dgdl*(un+c5*sig3)+parame(3)*c5*aux2 - aux3/(sqrt(aux1)*deux)
+    aux3 = dgdl*(derive(1)-sig3*derive(2))+parame(2)*aux2
+    denom = -a2*a3-derive(3)*dgdl*(un+c5*sig3)+parame(3)*c5*aux2-aux3/(sqrt(aux1)*deux)
 ! ======================================================================
 ! --- CALCUL DE DDL/DEPS -----------------------------------------------
 ! ======================================================================
     do ii = 1, ndi
         aux4 = da1de(ii)-da6de(ii)*dl
-        ddlde(ii) = (&
-                    -(un-a3*dl)*da2de(ii)+a2*da3de(ii)*dl +parame(3)* c5*aux4 -parame(2)*aux4/(de&
-                    &ux*sqrt(aux1))&
+        ddlde(ii) = ( &
+                    -(un-a3*dl)*da2de(ii)+a2*da3de(ii)*dl+parame(3)*c5*aux4-parame(2)*aux4/(de&
+                    &ux*sqrt(aux1)) &
                     )/denom
     end do
     do ii = ndi+1, ndt
         aux4 = da1de(ii)-da6de(ii)*dl
-        ddlde(ii) = (&
-                    -(un-a3*dl)*da2de(ii) +a2*da3de(ii)*dl+parame(3)* c5*aux4 -parame(2)*aux4/(de&
-                    &ux*sqrt(aux1))&
+        ddlde(ii) = ( &
+                    -(un-a3*dl)*da2de(ii)+a2*da3de(ii)*dl+parame(3)*c5*aux4-parame(2)*aux4/(de&
+                    &ux*sqrt(aux1)) &
                     )/denom
     end do
     do ii = ndt+1, 6

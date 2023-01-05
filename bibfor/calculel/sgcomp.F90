@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
         stop_erre = type_stop
     else
         stop_erre = 'E'
-    endif
+    end if
 !
 ! - Acces to reduced CARTE DCEL_I (see CESVAR) on current comportement
 !
@@ -118,11 +118,11 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
     call dismoi('NOM_MAILLA', sigm, 'CHAMP', repk=mesh_2)
     if (mesh_1 .ne. mesh_2) then
         call utmess('F', 'COMPOR2_24')
-    endif
+    end if
 !
 ! - Create reduced field for stress
 !
-    sigm_r        = '&&SGCOMP.SIGM_R'
+    sigm_r = '&&SGCOMP.SIGM_R'
 
     ! TRANSFORMER UN CHAM_ELEM (CELZ) EN CHAM_ELEM_S (CESZ)
     call celces(sigm, 'V', sigm_r)
@@ -143,19 +143,19 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
     call jeveuo(dcel//'.CESL', 'L', jdcell)
 
     do i_elem = 1, nb_elem
-        elem_in_prev = repm(2*(i_elem-1)+1).gt.0
-        elem_in_curr = repp(2*(i_elem-1)+1).gt.0
-        call cesexi('C', jdceld, jdcell, i_elem, 1,&
+        elem_in_prev = repm(2*(i_elem-1)+1) .gt. 0
+        elem_in_curr = repp(2*(i_elem-1)+1) .gt. 0
+        call cesexi('C', jdceld, jdcell, i_elem, 1, &
                     1, 1, iad1)
-        call cesexi('C', jdceld, jdcell, i_elem, 1,&
+        call cesexi('C', jdceld, jdcell, i_elem, 1, &
                     1, 2, iad2)
         if (iad1 .le. 0) then
             goto 40
-        endif
+        end if
 !
 ! ----- Number of Gauss points/components
 !
-        ASSERT(iad2.gt.0)
+        ASSERT(iad2 .gt. 0)
         nb_spg_curr = dcelv(iad1)
         nb_spg_prev = zi(jce2d-1+5+4*(i_elem-1)+2)
 !
@@ -169,15 +169,15 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
                 call utmess('I', 'COMPOR2_52', sk=name_elem, ni=2, vali=vali)
                 no_same_spg = .true.
                 goto 40
-            endif
-        endif
- 40     continue
+            end if
+        end if
+40      continue
     end do
 !
     if (no_same_spg) then
         iret = 1
         call utmess(stop_erre, 'COMPOR2_54')
-    endif
+    end if
 
 !
 ! - Clean

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmctcc(mesh      , model_    , ds_material, nume_inst, &
-                  sderro    ,  sddisc, hval_incr, hval_algo,&
-                  ds_contact, ds_constitutive   , list_func_acti)
+subroutine nmctcc(mesh, model_, ds_material, nume_inst, &
+                  sderro, sddisc, hval_incr, hval_algo, &
+                  ds_contact, ds_constitutive, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -39,17 +39,17 @@ implicit none
 #include "asterfort/xmtbca.h"
 #include "asterfort/nmchex.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model_
-type(NL_DS_Material), intent(in) :: ds_material
-integer, intent(in) :: nume_inst
-character(len=24), intent(in) :: sderro
-character(len=19), intent(in) :: sddisc
-character(len=19), intent(in) :: hval_incr(*)
-character(len=19), intent(in) :: hval_algo(*)
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-integer, intent(in) :: list_func_acti(*)
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model_
+    type(NL_DS_Material), intent(in) :: ds_material
+    integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sderro
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,24 +89,24 @@ integer, intent(in) :: list_func_acti(*)
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ALGORITHME DES CONTRAINTES ACTIVES'
-    endif
+        write (ifm, *) '<MECANONLINE> ALGORITHME DES CONTRAINTES ACTIVES'
+    end if
 !
 ! - Initializations
 !
-    model          = model_(1:8)
+    model = model_(1:8)
     loop_cont_conv = ASTER_FALSE
     loop_cont_vale = 0.d0
-    l_erro_cont    = ASTER_FALSE
-    iter_newt      = -1
+    l_erro_cont = ASTER_FALSE
+    iter_newt = -1
 !
 ! - Get contact parameters
 !
-    l_cont_cont    = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_xfem    = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
-    l_frot         = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
+    l_frot = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
     l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
-    nb_cont_poin   = cfdisi(ds_contact%sdcont_defi, 'NTPC')
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     iter_cont_mult = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MULT')
 !
 ! - Get hat variables
@@ -122,58 +122,58 @@ integer, intent(in) :: list_func_acti(*)
             iter_cont_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MAXI')
         else
             iter_cont_maxi = iter_cont_mult*nb_cont_poin
-        endif
+        end if
     else
         iter_cont_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MAXI')
-    endif
+    end if
 !
 ! - Management of contact loop
 !
-    call mmbouc(ds_contact, 'Cont', 'Set_Vale' , loop_vale_ = loop_cont_vale)
+    call mmbouc(ds_contact, 'Cont', 'Set_Vale', loop_vale_=loop_cont_vale)
     if (l_cont_xfem) then
         if (l_cont_xfem_gg) then
             call xmtbca(mesh, hval_incr, ds_material, ds_contact)
         else
-            call xmmbca(mesh, model, ds_material, hval_incr, ds_contact, ds_constitutive,&
+            call xmmbca(mesh, model, ds_material, hval_incr, ds_contact, ds_constitutive, &
                         list_func_acti)
-        endif
+        end if
     else if (l_cont_cont) then
-        call mmstat(mesh  , iter_newt, nume_inst     , &
+        call mmstat(mesh, iter_newt, nume_inst, &
                     sddisc, disp_curr, disp_cumu_inst, ds_contact)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - State of contact loop
 !
-    call mmbouc(ds_contact, 'Cont', 'Read_Counter'  , loop_cont_count)
-    call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
-    call mmbouc(ds_contact, 'Cont', 'Get_Vale' , loop_vale_ = loop_cont_vale)
+    call mmbouc(ds_contact, 'Cont', 'Read_Counter', loop_cont_count)
+    call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_=loop_cont_conv)
+    call mmbouc(ds_contact, 'Cont', 'Get_Vale', loop_vale_=loop_cont_vale)
 !
 ! - Flip-flop: forced convergence
 !
     if (l_cont_cont) then
         call mm_cycl_flip(ds_contact, cycl_flip)
         if (cycl_flip) then
-            if ((ds_contact%resi_pressure .lt. 1.d-4*ds_contact%cont_pressure&
-                 .and. loop_cont_count .ge. 2) .and. .not. loop_cont_conv)  &
-            call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
-        endif
-    endif
-    call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
+            if ((ds_contact%resi_pressure .lt. 1.d-4*ds_contact%cont_pressure &
+                 .and. loop_cont_count .ge. 2) .and. .not. loop_cont_conv) &
+                call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
+        end if
+    end if
+    call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_=loop_cont_conv)
 !
 ! - Convergence of contact loop
 !
-    if ((.not.loop_cont_conv) .and. (loop_cont_count .eq. iter_cont_maxi)) then
+    if ((.not. loop_cont_conv) .and. (loop_cont_count .eq. iter_cont_maxi)) then
         if (l_frot .and. l_cont_xfem) then
 ! --------- XFEM+friction: forced convergence
             call utmess('A', 'CONTACT3_86')
             call mmbouc(ds_contact, 'Cont', 'Set_Convergence')
         else
-            l_erro_cont    = .true.
+            l_erro_cont = .true.
             loop_cont_conv = .false.
-        endif
-    endif
+        end if
+    end if
 !
 ! - Error management
 !
@@ -182,6 +182,6 @@ integer, intent(in) :: list_func_acti(*)
         call nmcrel(sderro, 'DIVE_FIXC', .false._1)
     else
         call nmcrel(sderro, 'DIVE_FIXC', .true._1)
-    endif
+    end if
 !
 end subroutine

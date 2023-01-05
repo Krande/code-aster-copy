@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine thmGetElemPara_vf(ds_thm   , l_axi , l_steady , l_vf   ,&
-                             type_elem, ndim  ,&
-                             mecani   , press1, press2   , tempe  ,&
-                             dimdef   , dimcon, dimuel   ,&
-                             nno      , nnos  , nface    )
+subroutine thmGetElemPara_vf(ds_thm, l_axi, l_steady, l_vf, &
+                             type_elem, ndim, &
+                             mecani, press1, press2, tempe, &
+                             dimdef, dimcon, dimuel, &
+                             nno, nnos, nface)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -35,13 +35,13 @@ implicit none
 #include "asterfort/thmGetElemRefe.h"
 #include "asterfort/elrefe_info.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-aster_logical, intent(out) :: l_axi, l_steady, l_vf
-character(len=8), intent(out) :: type_elem(2)
-integer, intent(out) :: ndim
-integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
-integer, intent(out) :: dimdef, dimcon, dimuel
-integer, intent(out) :: nno, nnos, nface
+    type(THM_DS), intent(inout) :: ds_thm
+    aster_logical, intent(out) :: l_axi, l_steady, l_vf
+    character(len=8), intent(out) :: type_elem(2)
+    integer, intent(out) :: ndim
+    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(out) :: dimdef, dimcon, dimuel
+    integer, intent(out) :: nno, nnos, nface
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,13 +108,13 @@ integer, intent(out) :: nno, nnos, nface
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf, ndim,&
+    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
                     mecani, press1, press2, tempe)
 !
 ! - Get dimensions of generalized vectors
 !
-    call thmGetGeneDime(ndim  ,&
-                        mecani, press1, press2, tempe,&
+    call thmGetGeneDime(ndim, &
+                        mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon)
 !
 ! - Get reference elements
@@ -133,15 +133,15 @@ integer, intent(out) :: nno, nnos, nface
             nface = 4
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Count dof
 !
-    nddlk  = press1(1) + press2(1) + tempe(1)
-    nddlfa = press1(1) + press2(1) + tempe(1)
-    dimuel = nface*nddlfa + nddlk
+    nddlk = press1(1)+press2(1)+tempe(1)
+    nddlfa = press1(1)+press2(1)+tempe(1)
+    dimuel = nface*nddlfa+nddlk
 !
 end subroutine

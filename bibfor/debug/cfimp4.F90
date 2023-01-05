@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfimp4(ds_contact, mesh, ifm)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -97,8 +97,8 @@ implicit none
 !
 ! --- INFOS SUR LA CHARGE DE CONTACT
 !
-    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
-    lfrot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
+    lctfd = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
+    lfrot = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
 !
     apcoef = ds_contact%sdcont_solv(1:14)//'.APCOEF'
     jeusup = ds_contact%sdcont_solv(1:14)//'.JSUPCO'
@@ -114,7 +114,7 @@ implicit none
     if (lctfd) then
         apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
         call jeveuo(apcofr, 'L', japcof)
-    endif
+    end if
     call jeveuo(jeusup, 'L', jjeusu)
     call jeveuo(tacfin, 'L', jtacf)
     call jeveuo(tangco, 'L', jtango)
@@ -132,33 +132,33 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM')
-    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO')
-    ntnoe = cfdisi(ds_contact%sdcont_defi,'NTNOE')
-    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
-    nnoco = cfdisi(ds_contact%sdcont_defi,'NNOCO')
+    ndimg = cfdisi(ds_contact%sdcont_defi, 'NDIM')
+    nzoco = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    ntnoe = cfdisi(ds_contact%sdcont_defi, 'NTNOE')
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
+    nnoco = cfdisi(ds_contact%sdcont_defi, 'NNOCO')
 !
-    write(ifm,*) '<CONTACT><APPA> RESULTATS DE L''APPARIEMENT'
+    write (ifm, *) '<CONTACT><APPA> RESULTATS DE L''APPARIEMENT'
 !
 ! ----------------------------------------------------------------------
 ! --- INFOS SUR LES ZONES DE CONTACT
 ! ----------------------------------------------------------------------
 !
-    write(ifm,*) '<CONTACT><APPA> ------ ZONES ------ '
+    write (ifm, *) '<CONTACT><APPA> ------ ZONES ------ '
 !
-    write(ifm,100) nzoco
-    write(ifm,101) ntnoe
-    write(ifm,102) nbliai
+    write (ifm, 100) nzoco
+    write (ifm, 101) ntnoe
+    write (ifm, 102) nbliai
 !
-100 format (' <CONTACT><APPA> NOMBRE DE ZONES DE CONTACT        : ', i6)
-101 format (' <CONTACT><APPA> NOMBRE MAXIMAL DE NOEUDS ESCLAVES : ', i6)
-102 format (' <CONTACT><APPA> NOMBRE EFFECTIF DE LIAISONS       : ', i6)
+100 format(' <CONTACT><APPA> NOMBRE DE ZONES DE CONTACT        : ', i6)
+101 format(' <CONTACT><APPA> NOMBRE MAXIMAL DE NOEUDS ESCLAVES : ', i6)
+102 format(' <CONTACT><APPA> NOMBRE EFFECTIF DE LIAISONS       : ', i6)
 !
 ! ----------------------------------------------------------------------
 ! --- INFOS SUR TOUS LES NOEUDS
 ! ----------------------------------------------------------------------
 !
-    write(ifm,*) '<CONTACT><APPA> ------ NOEUDS DE CONTACT ------ '
+    write (ifm, *) '<CONTACT><APPA> ------ NOEUDS DE CONTACT ------ '
 !
     do ino = 1, nnoco
 !
@@ -171,7 +171,7 @@ implicit none
 !
         call cfnomm(mesh, ds_contact%sdcont_defi, 'NOEU', posno, nomno)
 !
-        write(ifm,300) ino,nomno,typno
+        write (ifm, 300) ino, nomno, typno
 !
 ! ----- ZONE
 !
@@ -185,35 +185,35 @@ implicit none
 ! ----- NORMALE
 !
         if (typno .eq. 'MAIT') then
-            if (cfcald(ds_contact%sdcont_defi,izone ,'MAIT')) then
-                write(ifm,303) (tau1(k),k=1,3)
+            if (cfcald(ds_contact%sdcont_defi, izone, 'MAIT')) then
+                write (ifm, 303) (tau1(k), k=1, 3)
                 if (ndimg .eq. 3) then
-                    write(ifm,305) (tau2(k),k=1,3)
-                endif
+                    write (ifm, 305) (tau2(k), k=1, 3)
+                end if
                 call mmnorm(ndimg, tau1, tau2, norm)
-                write(ifm,306) (norm(k),k=1,3)
+                write (ifm, 306) (norm(k), k=1, 3)
             else
-                write(ifm,307)
-            endif
+                write (ifm, 307)
+            end if
         else
-            if (cfcald(ds_contact%sdcont_defi,izone ,'ESCL')) then
-                write(ifm,303) (tau1(k),k=1,3)
+            if (cfcald(ds_contact%sdcont_defi, izone, 'ESCL')) then
+                write (ifm, 303) (tau1(k), k=1, 3)
                 if (ndimg .eq. 3) then
-                    write(ifm,305) (tau2(k),k=1,3)
-                endif
+                    write (ifm, 305) (tau2(k), k=1, 3)
+                end if
                 call mmnorm(ndimg, tau1, tau2, norm)
-                write(ifm,306) (norm(k),k=1,3)
+                write (ifm, 306) (norm(k), k=1, 3)
             else
-                write(ifm,307)
-            endif
-        endif
+                write (ifm, 307)
+            end if
+        end if
 !
 !
-300 format (' <CONTACT><APPA> NOEUD NUMERO ',i6,' (',a8,') -> NOEUD ',a4)
-303 format (' <CONTACT><APPA>  * TANGENTE 1  : ',3(1pe15.8,2x))
-305 format (' <CONTACT><APPA>  * TANGENTE 2  : ',3(1pe15.8,2x))
-306 format (' <CONTACT><APPA>  * NORMALE     : ',3(1pe15.8,2x))
-307 format (' <CONTACT><APPA>  * TANGENTE ET NORMALE NON CALCULEES')
+300     format(' <CONTACT><APPA> NOEUD NUMERO ', i6, ' (', a8, ') -> NOEUD ', a4)
+303     format(' <CONTACT><APPA>  * TANGENTE 1  : ', 3(1pe15.8, 2x))
+305     format(' <CONTACT><APPA>  * TANGENTE 2  : ', 3(1pe15.8, 2x))
+306     format(' <CONTACT><APPA>  * NORMALE     : ', 3(1pe15.8, 2x))
+307     format(' <CONTACT><APPA>  * TANGENTE ET NORMALE NON CALCULEES')
 !
 !
     end do
@@ -222,7 +222,7 @@ implicit none
 ! --- INFOS SUR LES NOEUDS ESCLAVES
 ! ----------------------------------------------------------------------
 !
-    write(ifm,*) '<CONTACT><APPA> ----- NOEUDS ESCLAVES ----- '
+    write (ifm, *) '<CONTACT><APPA> ----- NOEUDS ESCLAVES ----- '
 !
     do iliai = 1, nbliai
 !
@@ -244,35 +244,35 @@ implicit none
 !
         call apnomp(sdappa, ip, nompt)
         nomnoe = nompt(9:16)
-        write(ifm,400) iliai,nompt
+        write (ifm, 400) iliai, nompt
 !
 ! ----- NOM ET TYPE DU MAITRE
 !
-        call cfnoap(mesh, ds_contact%sdcont_defi, typapp, entapp, nomapp,&
+        call cfnoap(mesh, ds_contact%sdcont_defi, typapp, entapp, nomapp, &
                     type2)
         if (typapp .lt. 0) then
-            write(ifm,403)
+            write (ifm, 403)
             lnodal = .false.
-        else if (typapp.eq.1) then
-            write(ifm,401) nomapp
+        else if (typapp .eq. 1) then
+            write (ifm, 401) nomapp
             nomnom = nomapp
             lnodal = .true.
-        else if (typapp.eq.2) then
-            write(ifm,402) nomapp
+        else if (typapp .eq. 2) then
+            write (ifm, 402) nomapp
             nommam = nomapp
             lnodal = .false.
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! --- NOMBRE DE DDLS TOTAL: NBDDLT
 !
-        nbddlt = zi(japptr+iliai) - zi(japptr+iliai-1)
-        nbddle = zi(jnbddl+posnoe) - zi(jnbddl+posnoe-1)
+        nbddlt = zi(japptr+iliai)-zi(japptr+iliai-1)
+        nbddle = zi(jnbddl+posnoe)-zi(jnbddl+posnoe-1)
 !
 ! --- AFFICHAGES
 !
-        write(ifm,404) nbddlt,nbddle
+        write (ifm, 404) nbddlt, nbddle
 !
 ! ----- TANGENTES ET NORMALE
 !
@@ -283,92 +283,92 @@ implicit none
         tau2(2) = zr(jtango+6*(iliai-1)+5-1)
         tau2(3) = zr(jtango+6*(iliai-1)+6-1)
         call mmnorm(ndimg, tau1, tau2, norm)
-        write(ifm,407) (norm(k),k=1,3)
-        write(ifm,408) (tau1(k),k=1,3)
+        write (ifm, 407) (norm(k), k=1, 3)
+        write (ifm, 408) (tau1(k), k=1, 3)
         if (ndimg .eq. 3) then
-            write(ifm,508) (tau2(k),k=1,3)
-        endif
+            write (ifm, 508) (tau2(k), k=1, 3)
+        end if
 !
 ! ----- JEUX
 !
         jeuold = zr(jjeuit+3*(iliai-1)+1-1)
         dissup = zr(jjeusu+iliai-1)
-        write(ifm,406) jeuold,dissup
+        write (ifm, 406) jeuold, dissup
 !
 ! ----- PARAMETRES PENALISATION ET FROTTEMENT
 !
         coefff = zr(jtacf+ztacf*(iliai-1)+0)
         coefpn = zr(jtacf+ztacf*(iliai-1)+1)
         coefpt = zr(jtacf+ztacf*(iliai-1)+2)
-        write(ifm,700) coefpn
-        write(ifm,701) coefpt
-        write(ifm,703) coefff
+        write (ifm, 700) coefpn
+        write (ifm, 701) coefpt
+        write (ifm, 703) coefff
 !
 ! ----- DDL ET COEF CONTACT POUR NOEUD ESCLAVE
 !
         jdece = zi(japptr+iliai-1)
         if (ndimg .eq. 3) then
-            write (ifm,415) nomnoe, (zi(japddl+jdece+iddle-1),iddle= 1,nbddle),&
-                                    (zr(japcoe+jdece+iddle-1),iddle= 1,nbddle)
+            write (ifm, 415) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1, nbddle), &
+                (zr(japcoe+jdece+iddle-1), iddle=1, nbddle)
         else
-            write (ifm,418) nomnoe, (zi(japddl+jdece+iddle-1),iddle= 1,nbddle),&
-                                    (zr(japcoe+jdece+iddle-1),iddle= 1,nbddle)
-        endif
+            write (ifm, 418) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1, nbddle), &
+                (zr(japcoe+jdece+iddle-1), iddle=1, nbddle)
+        end if
 !
 ! ----- DDL ET COEF FROTTEMENT POUR NOEUD ESCLAVE
 !
         jdece = zi(japptr+iliai-1)
         if (lfrot) then
             if (ndimg .eq. 3) then
-                write (ifm,416) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1,nbddle),&
-                                        (zr(japcof+jdece+iddle-1), iddle=1,nbddle)
-                write (ifm,417) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1,nbddle),&
-                                        (zr(japcof+30*ntnoe+jdece+iddle-1), iddle=1,nbddle)
+                write (ifm, 416) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1, nbddle), &
+                    (zr(japcof+jdece+iddle-1), iddle=1, nbddle)
+                write (ifm, 417) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1, nbddle), &
+                    (zr(japcof+30*ntnoe+jdece+iddle-1), iddle=1, nbddle)
             else
-                write (ifm,419) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1,nbddle),&
-                                        (zr(japcof+jdece+iddle-1), iddle=1, nbddle)
-            endif
-        endif
+                write (ifm, 419) nomnoe, (zi(japddl+jdece+iddle-1), iddle=1, nbddle), &
+                    (zr(japcof+jdece+iddle-1), iddle=1, nbddle)
+            end if
+        end if
 !
 ! ----------------------------------------------------------------------
 ! --- DDL ET COEF POUR NOEUDS MAITRES
 ! ----------------------------------------------------------------------
 !
-        jdecm = jdece + nbddle
+        jdecm = jdece+nbddle
 !
 ! ----- APPARIEMENT NODAL
 !
         if (lnodal) then
             nbnom = 1
             inom = 1
-            nbddlm = nbddlt - nbddle
+            nbddlm = nbddlt-nbddle
 !
 ! ------- COEFFICIENTS POUR CONTACT
 !
             if (ndimg .eq. 3) then
-                write (ifm,511) nomnom, (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
+             write (ifm, 511) nomnom, (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                    (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
             else
-                write (ifm,611) nomnom, (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
-            endif
+             write (ifm, 611) nomnom, (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                    (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
+            end if
 !
 ! ------- COEFFICIENTS POUR FROTTEMENT
 !
             if (lfrot) then
                 if (ndimg .eq. 3) then
-                    write (ifm,512) nomnom,&
-                      (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                      (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
-                    write (ifm,513) nomnom,&
-                      (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                      (zr(japcof+30*ntnoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
+                    write (ifm, 512) nomnom, &
+                        (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
+                    write (ifm, 513) nomnom, &
+                        (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                        (zr(japcof+30*ntnoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
                 else
-                    write (ifm,612) nomnom,&
-                     (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                     (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
-                endif
-            endif
+                    write (ifm, 612) nomnom, &
+                        (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
+                end if
+            end if
 !
 ! ----- APPARIEMENT MAITRE/ESCLAVE
 !
@@ -377,93 +377,93 @@ implicit none
             call cfnben(ds_contact%sdcont_defi, posmam, 'CONNEX', nbnom, jdecno)
             do inom = 1, nbnom
                 call cfconn(ds_contact%sdcont_defi, jdecno, inom, posno2)
-                nbddlm = zi(jnbddl+posno2) - zi(jnbddl+posno2-1)
+                nbddlm = zi(jnbddl+posno2)-zi(jnbddl+posno2-1)
 !
                 call cfnomm(mesh, ds_contact%sdcont_defi, 'NOEU', posno2, nomno2)
 !
 ! --- COEFFICIENTS POUR CONTACT
 !
                 if (ndimg .eq. 3) then
-                    write (ifm,501) nommam,nomno2,&
-                        (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
+                    write (ifm, 501) nommam, nomno2, &
+                        (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
                 else
-                    write (ifm,601) nommam,nomno2,&
-                        (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
-                endif
+                    write (ifm, 601) nommam, nomno2, &
+                        (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                        (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
+                end if
 !
 ! --- COEFFICIENTS POUR FROTTEMENT
 !
                 if (lfrot) then
                     if (ndimg .eq. 3) then
-                        write (ifm,502) nommam,nomno2,&
-                            (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                            (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
-                        write (ifm,503) nommam,nomno2,&
-                            (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm),&
-                            (zr(japcof+30*ntnoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
+                        write (ifm, 502) nommam, nomno2, &
+                            (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                            (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
+                        write (ifm, 503) nommam, nomno2, &
+                            (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                            (zr(japcof+30*ntnoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
                     else
-                        write (ifm,602) nommam,nomno2,&
-                            (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm),&
-                            (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1,nbddlm)
-                    endif
-                endif
+                        write (ifm, 602) nommam, nomno2, &
+                            (zi(japddl+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm), &
+                            (zr(japcoe+jdecm+(inom-1)*nbddlm+iddlm-1), iddlm=1, nbddlm)
+                    end if
+                end if
             end do
-        endif
+        end if
     end do
 !
-400 format (' <CONTACT><APPA> LIAISON NUMERO ',i6,' (',a16,')')
-401 format (' <CONTACT><APPA>  * APPARIEMENT AVEC NOEUD  ',a8)
-402 format (' <CONTACT><APPA>  * APPARIEMENT AVEC MAILLE ',a8)
-403 format (' <CONTACT><APPA>  * NON APPARIE')
-404 format (' <CONTACT><APPA>  * NOMBRE DE DDLS : ',i6,' DONT ',i6,' POUR NOEUD ESCLAVE',i6)
-406 format (' <CONTACT><APPA>  * JEU: ',1pe15.8,' DONT :',1pe15.8, ' VENANT DE DIST_*')
-407 format (' <CONTACT><APPA>  * NORMALE LISSEE/MOYENNEE: ', 3(1pe15.8,2x))
-408 format (' <CONTACT><APPA>  * TANGENTE DIRECTION 1   : ', 3(1pe15.8,2x))
-508 format (' <CONTACT><APPA>  * TANGENTE DIRECTION 2   : ', 3(1pe15.8,2x))
+400 format(' <CONTACT><APPA> LIAISON NUMERO ', i6, ' (', a16, ')')
+401 format(' <CONTACT><APPA>  * APPARIEMENT AVEC NOEUD  ', a8)
+402 format(' <CONTACT><APPA>  * APPARIEMENT AVEC MAILLE ', a8)
+403 format(' <CONTACT><APPA>  * NON APPARIE')
+404 format(' <CONTACT><APPA>  * NOMBRE DE DDLS : ', i6, ' DONT ', i6, ' POUR NOEUD ESCLAVE', i6)
+406 format(' <CONTACT><APPA>  * JEU: ', 1pe15.8, ' DONT :', 1pe15.8, ' VENANT DE DIST_*')
+407 format(' <CONTACT><APPA>  * NORMALE LISSEE/MOYENNEE: ', 3(1pe15.8, 2x))
+408 format(' <CONTACT><APPA>  * TANGENTE DIRECTION 1   : ', 3(1pe15.8, 2x))
+508 format(' <CONTACT><APPA>  * TANGENTE DIRECTION 2   : ', 3(1pe15.8, 2x))
 !
 ! --- 3D - ESCLAVE
 !
-415 format ((' <CONTACT><APPA>  * DDL ESCL. CONTACT ( ',a8,'):', 3(i8,2x),' / ', 3(1pe15.8,2x)))
-416 format ((' <CONTACT><APPA>  * DDL ESCL. FROT1   ( ',a8,'):', 3(i8,2x),' / ', 3(1pe15.8,2x)))
-417 format ((' <CONTACT><APPA>  * DDL ESCL. FROT2   ( ',a8,'):', 3(i8,2x),' / ', 3(1pe15.8,2x)))
+415 format((' <CONTACT><APPA>  * DDL ESCL. CONTACT ( ', a8, '):', 3(i8, 2x), ' / ', 3(1pe15.8, 2x)))
+416 format((' <CONTACT><APPA>  * DDL ESCL. FROT1   ( ', a8, '):', 3(i8, 2x), ' / ', 3(1pe15.8, 2x)))
+417 format((' <CONTACT><APPA>  * DDL ESCL. FROT2   ( ', a8, '):', 3(i8, 2x), ' / ', 3(1pe15.8, 2x)))
 !
 ! --- 2D - ESCLAVE
 !
-418 format ((' <CONTACT><APPA>  * DDL ESCL. CONTACT ( ',a8,'):', 2(i8,2x),' / ', 2(1pe15.8,2x)))
-419 format ((' <CONTACT><APPA>  * DDL ESCL. FROT1   ( ',a8,'):', 2(i8,2x),' / ', 2(1pe15.8,2x)))
+418 format((' <CONTACT><APPA>  * DDL ESCL. CONTACT ( ', a8, '):', 2(i8, 2x), ' / ', 2(1pe15.8, 2x)))
+419 format((' <CONTACT><APPA>  * DDL ESCL. FROT1   ( ', a8, '):', 2(i8, 2x), ' / ', 2(1pe15.8, 2x)))
 !
 ! --- 3D MAITRE/ESCL - MAITRE
 !
-501 format ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',a8, '/',a8,'):', 3(i8,2x),' / ',&
-             3(1pe15.8,2x)))
-502 format ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',a8, '/',a8,'):', 3(i8,2x),' / ',&
-             3(1pe15.8,2x)))
-503 format ((' <CONTACT><APPA>  * DDL MAIT. FROT2   ( ',a8, '/',a8,'):', 3(i8,2x),' / ',&
-             3(1pe15.8,2x)))
+501 format((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ', a8, '/', a8, '):', 3(i8, 2x), ' / ', &
+            3(1pe15.8, 2x)))
+502 format((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ', a8, '/', a8, '):', 3(i8, 2x), ' / ', &
+            3(1pe15.8, 2x)))
+503 format((' <CONTACT><APPA>  * DDL MAIT. FROT2   ( ', a8, '/', a8, '):', 3(i8, 2x), ' / ', &
+            3(1pe15.8, 2x)))
 !
 ! --- 3D NODAL - MAITRE
 !
-511 format ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',a8,'):', 3(i8,2x),' / ', 3(1pe15.8,2x)))
-512 format ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',a8,'):', 3(i8,2x),' / ', 3(1pe15.8,2x)))
-513 format ((' <CONTACT><APPA>  * DDL MAIT. FROT2   ( ',a8,'):', 3(i8,2x),' / ', 3(1pe15.8,2x)))
+511 format((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ', a8, '):', 3(i8, 2x), ' / ', 3(1pe15.8, 2x)))
+512 format((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ', a8, '):', 3(i8, 2x), ' / ', 3(1pe15.8, 2x)))
+513 format((' <CONTACT><APPA>  * DDL MAIT. FROT2   ( ', a8, '):', 3(i8, 2x), ' / ', 3(1pe15.8, 2x)))
 !
 ! --- 2D MAITRE/ESCL - MAITRE
 !
-601 format ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',a8, '/',a8,'):', 2(i8,2x),' / ',&
-           2(1pe15.8,2x)))
-602 format ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',a8, '/',a8,'):', 2(i8,2x),' / ',&
-            2(1pe15.8,2x)))
+601 format((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ', a8, '/', a8, '):', 2(i8, 2x), ' / ', &
+            2(1pe15.8, 2x)))
+602 format((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ', a8, '/', a8, '):', 2(i8, 2x), ' / ', &
+            2(1pe15.8, 2x)))
 !
 ! --- 2D NODAL - MAITRE
 !
-611 format ((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ',a8,'):', 2(i8,2x),' / ', 2(1pe15.8,2x)))
-612 format ((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ',a8,'):', 2(i8,2x),' / ', 2(1pe15.8,2x)))
+611 format((' <CONTACT><APPA>  * DDL MAIT. CONTACT ( ', a8, '):', 2(i8, 2x), ' / ', 2(1pe15.8, 2x)))
+612 format((' <CONTACT><APPA>  * DDL MAIT. FROT1   ( ', a8, '):', 2(i8, 2x), ' / ', 2(1pe15.8, 2x)))
 !
-700 format (' <CONTACT><APPA>  * E_N              :',1pe15.8)
-701 format (' <CONTACT><APPA>  * E_T              :',1pe15.8)
-703 format (' <CONTACT><APPA>  * COULOMB          :',1pe15.8)
+700 format(' <CONTACT><APPA>  * E_N              :', 1pe15.8)
+701 format(' <CONTACT><APPA>  * E_T              :', 1pe15.8)
+703 format(' <CONTACT><APPA>  * COULOMB          :', 1pe15.8)
 !
     call jedema()
 !

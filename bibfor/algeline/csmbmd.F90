@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine csmbmd(nommat, neq, vsmb)
 !
     call jeveuo(mat//'.REFA', 'L', vk24=refa)
     if (refa(11) .eq. 'MATR_DISTR') then
-        nu = refa(2)(1:14)
+        nu = refa(2) (1:14)
         call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
 !
         call jeexin(mat//'.CCID', iccid)
@@ -61,12 +61,12 @@ subroutine csmbmd(nommat, neq, vsmb)
 !         UNE CHARGE CINEMATIQUE DESSUS, ON MET LE SECOND MEMBRE A ZERO
 !         SUR LE PROC COURANT POUR EVITER DES INTERFERENCES AVEC
 !         LE PROC QUI POSSEDE EFFECTIVEMENT LE DDL BLOQUE
-                if ((nugl(ieq).eq.0) .and. (ccid(ieq).eq.1)) then
+                if ((nugl(ieq) .eq. 0) .and. (ccid(ieq) .eq. 1)) then
                     vsmb(ieq) = 0.d0
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

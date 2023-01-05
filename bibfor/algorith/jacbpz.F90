@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,31 +36,31 @@ subroutine jacbpz(kn, cn, jacobc, jacobk)
 !
 !  1. MATRICE JACOBIENNE DE RAIDEUR
 !     -----------------------------
-    jacobk(1,1) = 0.0d0
-    jacobk(1,2) = 0.0d0
-    jacobk(1,3) = 0.0d0
+    jacobk(1, 1) = 0.0d0
+    jacobk(1, 2) = 0.0d0
+    jacobk(1, 3) = 0.0d0
 !
-    jacobk(3,1) = 0.0d0
-    jacobk(3,2) = 0.0d0
-    jacobk(3,3) = - kn
+    jacobk(3, 1) = 0.0d0
+    jacobk(3, 2) = 0.0d0
+    jacobk(3, 3) = -kn
 !
-    jacobk(2,1) = 0.0d0
-    jacobk(2,2) = 0.0d0
-    jacobk(2,3) = 0.0d0
+    jacobk(2, 1) = 0.0d0
+    jacobk(2, 2) = 0.0d0
+    jacobk(2, 3) = 0.0d0
 !
 !  2. MATRICE JACOBIENNE D'AMORTISSEMENT
 !     ----------------------------------
-    jacobc(1,1) = 0.0d0
-    jacobc(1,2) = 0.0d0
-    jacobc(1,3) = 0.0d0
+    jacobc(1, 1) = 0.0d0
+    jacobc(1, 2) = 0.0d0
+    jacobc(1, 3) = 0.0d0
 !
-    jacobc(3,1) = 0.0d0
-    jacobc(3,2) = 0.0d0
-    jacobc(3,3) = - cn
+    jacobc(3, 1) = 0.0d0
+    jacobc(3, 2) = 0.0d0
+    jacobc(3, 3) = -cn
 !
-    jacobc(2,1) = 0.0d0
-    jacobc(2,2) = 0.0d0
-    jacobc(2,3) = 0.0d0
+    jacobc(2, 1) = 0.0d0
+    jacobc(2, 2) = 0.0d0
+    jacobc(2, 3) = 0.0d0
 !
 ! --- FIN DE JACBPZ.
 end subroutine

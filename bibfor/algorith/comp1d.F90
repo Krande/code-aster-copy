@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,25 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine comp1d(fami, kpg, ksp, option, sigx,&
-                  epsx, depx, angmas, vim, vip,&
+subroutine comp1d(fami, kpg, ksp, option, sigx, &
+                  epsx, depx, angmas, vim, vip, &
                   sigxp, etan, codret)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/r8inir.h"
 !
-character(len=*) :: fami
-character(len=16) :: option
-integer :: codret, kpg, ksp
-real(kind=8) :: angmas(3)
-real(kind=8) :: vim(*), vip(*), sigx, sigxp, epsx, depx, etan
+    character(len=*) :: fami
+    character(len=16) :: option
+    integer :: codret, kpg, ksp
+    real(kind=8) :: angmas(3)
+    real(kind=8) :: vim(*), vip(*), sigx, sigxp, epsx, depx, etan
 !
 !     INTEGRATION DE LOIS DE COMPORTEMENT NON LINEAIRES
 !     POUR DES ELEMENTS 1D PAR UNE METHODE INSPIREE DE CELLE DE DEBORST
@@ -91,9 +91,9 @@ real(kind=8) :: vim(*), vip(*), sigx, sigxp, epsx, depx, etan
     call r8inir(6, zero, sigp, 1)
     call r8inir(6, zero, deps, 1)
     call r8inir(36, zero, dsidep, 1)
-    eps(1)=epsx
-    deps(1)=depx
-    sigm(1)=sigx
+    eps(1) = epsx
+    deps(1) = depx
+    sigm(1) = sigx
     typmod(1) = 'COMP1D '
     typmod(2) = '        '
 !
@@ -113,15 +113,15 @@ real(kind=8) :: vim(*), vip(*), sigx, sigxp, epsx, depx, etan
 !
 ! -    APPEL A LA LOI DE COMPORTEMENT
     sigp = 0.d0
-    call nmcomp(BEHinteg,&
-                fami, kpg, ksp, 2, typmod,&
-                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp),&
-                6, eps, deps, 6, sigm,&
+    call nmcomp(BEHinteg, &
+                fami, kpg, ksp, 2, typmod, &
+                zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), &
+                6, eps, deps, 6, sigm, &
                 vim, option, angmas, &
                 sigp, vip, 36, dsidep, codret)
 !
-    sigxp=sigp(1)
-    etan=dsidep(1,1)
+    sigxp = sigp(1)
+    etan = dsidep(1, 1)
 !
 !
 end subroutine

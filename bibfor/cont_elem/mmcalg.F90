@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,40 +18,40 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmcalg(ndim     , l_large_slip,&
-                  nnm      , dffm        , ddffm ,&
-                  elem_mast_coor, ddepmam     ,&
-                  tau1     , tau2        , norm  ,&
-                  jeu      , djeu        ,&
-                  gene11   , gene21      , gene22,&
-                  kappa    , h           ,&
-                  vech1    , vech2       ,&
-                  a        , ha          , hah   ,&
-                  mprt11   , mprt12      , mprt21, mprt22,&
-                  mprt1n   , mprt2n      , mprnt1, mprnt2,&
-                  taujeu1  , taujeu2  ,&
+subroutine mmcalg(ndim, l_large_slip, &
+                  nnm, dffm, ddffm, &
+                  elem_mast_coor, ddepmam, &
+                  tau1, tau2, norm, &
+                  jeu, djeu, &
+                  gene11, gene21, gene22, &
+                  kappa, h, &
+                  vech1, vech2, &
+                  a, ha, hah, &
+                  mprt11, mprt12, mprt21, mprt22, &
+                  mprt1n, mprt2n, mprnt1, mprnt2, &
+                  taujeu1, taujeu2, &
                   dnepmait1, dnepmait2)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/matinv.h"
 !
-integer, intent(in) :: ndim, nnm
-aster_logical, intent(in) :: l_large_slip
-real(kind=8), intent(in) :: dffm(2, 9), ddffm(3,9)
-real(kind=8), intent(in) :: elem_mast_coor(9, 3), ddepmam(9, 3)
-real(kind=8), intent(in) :: tau1(3), tau2(3), norm(3)
-real(kind=8), intent(in) :: jeu, djeu(3)
-real(kind=8), intent(out) :: gene11(3, 3), gene21(3, 3), gene22(3,3)
-real(kind=8), intent(out) :: kappa(2,2), h(2,2)
-real(kind=8), intent(out) :: vech1(3), vech2(3)
-real(kind=8), intent(out) :: a(2,2), ha(2,2), hah(2,2)
-real(kind=8), intent(out) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
-real(kind=8), intent(out) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)
-real(kind=8), intent(out) :: taujeu1, taujeu2
-real(kind=8), intent(out) :: dnepmait1, dnepmait2
+    integer, intent(in) :: ndim, nnm
+    aster_logical, intent(in) :: l_large_slip
+    real(kind=8), intent(in) :: dffm(2, 9), ddffm(3, 9)
+    real(kind=8), intent(in) :: elem_mast_coor(9, 3), ddepmam(9, 3)
+    real(kind=8), intent(in) :: tau1(3), tau2(3), norm(3)
+    real(kind=8), intent(in) :: jeu, djeu(3)
+    real(kind=8), intent(out) :: gene11(3, 3), gene21(3, 3), gene22(3, 3)
+    real(kind=8), intent(out) :: kappa(2, 2), h(2, 2)
+    real(kind=8), intent(out) :: vech1(3), vech2(3)
+    real(kind=8), intent(out) :: a(2, 2), ha(2, 2), hah(2, 2)
+    real(kind=8), intent(out) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(out) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)
+    real(kind=8), intent(out) :: taujeu1, taujeu2
+    real(kind=8), intent(out) :: dnepmait1, dnepmait2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,38 +105,38 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2
 !
     integer :: i, j, inom, idim
     real(kind=8) :: ddgeo1(3), ddgeo2(3), ddgeo3(3), detkap, ddepmait1(3), ddepmait2(3)
-    real(kind=8) :: long_mmait(24), valmoy, kappa_in(2,2)
+    real(kind=8) :: long_mmait(24), valmoy, kappa_in(2, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dnepmait1     = 0.d0
-    dnepmait2     = 0.d0
-    taujeu1       = 0.d0
-    taujeu2       = 0.d0
-    mprt1n(:,:)   = 0.d0
-    mprt2n(:,:)   = 0.d0
-    mprnt1(:,:)   = 0.d0
-    mprnt2(:,:)   = 0.d0
-    mprt11(:,:)   = 0.d0
-    mprt12(:,:)   = 0.d0
-    mprt21(:,:)   = 0.d0
-    mprt22(:,:)   = 0.d0
-    a(:,:)        = 0.d0
-    h(:,:)        = 0.d0
-    ha(:,:)       = 0.d0
-    hah(:,:)      = 0.d0
-    gene11(:,:)   = 0.d0
-    gene21(:,:)   = 0.d0
-    gene22(:,:)   = 0.d0
-    kappa (:,:)   = 0.d0
-    kappa_in(:,:) = 0.d0
-    vech1(:)      = 0.d0
-    vech2(:)      = 0.d0
-    ddgeo1(:)     = 0.d0
-    ddgeo2(:)     = 0.d0
-    ddgeo3(:)     = 0.d0
-    ddepmait1(:)  = 0.d0
-    ddepmait2(:)  = 0.d0
+    dnepmait1 = 0.d0
+    dnepmait2 = 0.d0
+    taujeu1 = 0.d0
+    taujeu2 = 0.d0
+    mprt1n(:, :) = 0.d0
+    mprt2n(:, :) = 0.d0
+    mprnt1(:, :) = 0.d0
+    mprnt2(:, :) = 0.d0
+    mprt11(:, :) = 0.d0
+    mprt12(:, :) = 0.d0
+    mprt21(:, :) = 0.d0
+    mprt22(:, :) = 0.d0
+    a(:, :) = 0.d0
+    h(:, :) = 0.d0
+    ha(:, :) = 0.d0
+    hah(:, :) = 0.d0
+    gene11(:, :) = 0.d0
+    gene21(:, :) = 0.d0
+    gene22(:, :) = 0.d0
+    kappa(:, :) = 0.d0
+    kappa_in(:, :) = 0.d0
+    vech1(:) = 0.d0
+    vech2(:) = 0.d0
+    ddgeo1(:) = 0.d0
+    ddgeo2(:) = 0.d0
+    ddgeo3(:) = 0.d0
+    ddepmait1(:) = 0.d0
+    ddepmait2(:) = 0.d0
     long_mmait(:) = 0.d0
 
     if (l_large_slip .and. .false.) then
@@ -145,199 +145,199 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2
         ! we then to shut it down until further investigations:  ".and. .false." in the if
         do idim = 1, ndim
             do inom = 1, nnm
-                ddepmait1(idim) = ddepmait1(idim) + dffm(1,inom)*ddepmam(inom,idim)
-                ddepmait2(idim) = ddepmait2(idim) + dffm(2,inom)*ddepmam(inom,idim)
+                ddepmait1(idim) = ddepmait1(idim)+dffm(1, inom)*ddepmam(inom, idim)
+                ddepmait2(idim) = ddepmait2(idim)+dffm(2, inom)*ddepmam(inom, idim)
             end do
         end do
 !
-    ! Sur la géométrie courante de l'élément esclave on calcule la
-    ! distance du Noeud I=2,9 par rapport à au noeud 1
-    ! Puis on calcule la moyenne
-    !       write (6,*) "elem_mast_coor",elem_mast_coor(1,1)
-        long_mmait(1) = sqrt(abs(elem_mast_coor(1,1) - elem_mast_coor(2,1)))**2
-        long_mmait(2) = sqrt(abs(elem_mast_coor(1,2) - elem_mast_coor(2,2)))**2
-        long_mmait(3) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(2,3)))**2
-        long_mmait(4) = sqrt(abs(elem_mast_coor(1,1) - elem_mast_coor(3,1)))**2
-        long_mmait(5) = sqrt(abs(elem_mast_coor(1,2) - elem_mast_coor(3,2)))**2
-        long_mmait(6) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(3,3)))**2
-        long_mmait(7) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(4,1)))**2
-        long_mmait(8) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(4,2)))**2
-        long_mmait(9) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(4,3)))**2
-        long_mmait(10) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(5,1)))**2
-        long_mmait(11) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(5,2)))**2
-        long_mmait(12) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(5,3)))**2
-        long_mmait(13) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(6,1)))**2
-        long_mmait(14) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(6,2)))**2
-        long_mmait(15) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(6,3)))**2
-        long_mmait(16) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(7,1)))**2
-        long_mmait(17) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(7,2)))**2
-        long_mmait(18) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(7,3)))**2
-        long_mmait(19) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(8,1)))**2
-        long_mmait(20) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(8,2)))**2
-        long_mmait(21) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(8,3)))**2
-        long_mmait(22) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(9,1)))**2
-        long_mmait(23) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(9,2)))**2
-        long_mmait(24) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(9,3)))**2
-        valmoy =  0.
-        do i = 1,24
-            valmoy = valmoy + long_mmait(i)
+        ! Sur la géométrie courante de l'élément esclave on calcule la
+        ! distance du Noeud I=2,9 par rapport à au noeud 1
+        ! Puis on calcule la moyenne
+        !       write (6,*) "elem_mast_coor",elem_mast_coor(1,1)
+        long_mmait(1) = sqrt(abs(elem_mast_coor(1, 1)-elem_mast_coor(2, 1)))**2
+        long_mmait(2) = sqrt(abs(elem_mast_coor(1, 2)-elem_mast_coor(2, 2)))**2
+        long_mmait(3) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(2, 3)))**2
+        long_mmait(4) = sqrt(abs(elem_mast_coor(1, 1)-elem_mast_coor(3, 1)))**2
+        long_mmait(5) = sqrt(abs(elem_mast_coor(1, 2)-elem_mast_coor(3, 2)))**2
+        long_mmait(6) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(3, 3)))**2
+        long_mmait(7) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(4, 1)))**2
+        long_mmait(8) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(4, 2)))**2
+        long_mmait(9) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(4, 3)))**2
+        long_mmait(10) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(5, 1)))**2
+        long_mmait(11) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(5, 2)))**2
+        long_mmait(12) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(5, 3)))**2
+        long_mmait(13) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(6, 1)))**2
+        long_mmait(14) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(6, 2)))**2
+        long_mmait(15) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(6, 3)))**2
+        long_mmait(16) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(7, 1)))**2
+        long_mmait(17) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(7, 2)))**2
+        long_mmait(18) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(7, 3)))**2
+        long_mmait(19) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(8, 1)))**2
+        long_mmait(20) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(8, 2)))**2
+        long_mmait(21) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(8, 3)))**2
+        long_mmait(22) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(9, 1)))**2
+        long_mmait(23) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(9, 2)))**2
+        long_mmait(24) = sqrt(abs(elem_mast_coor(1, 3)-elem_mast_coor(9, 3)))**2
+        valmoy = 0.
+        do i = 1, 24
+            valmoy = valmoy+long_mmait(i)
         end do
-        valmoy=valmoy/24
+        valmoy = valmoy/24
 
-        do  idim = 1, ndim
-           if ((abs(jeu) .lt. 1.d-10*valmoy) .and. (norm2(ddepmait1) .lt. 1.d-10*valmoy) .and.&
-               (norm2(ddepmait2) .lt. 1.d-10*valmoy)) then
-          ! On rajoute ce terme au grand glissement seulement si on est sur
-          ! d'avoir converge en DEPDEL
-          ! increment de deplacement
-          ! Test : ssnp154d, ssnv128r, ssnv128p --> Débrancher la condition if et tester ces 2 cas.
-          ! Ici on implante une strategie qui consiste a dire que ce terme n'est rajoute que
-          ! si le depdel est < 1.d-1*la logueur de la maille maître courante
-                dnepmait1 = dnepmait1 + ddepmait1(idim)*norm(idim)*jeu
-                dnepmait2 = dnepmait2 + ddepmait2(idim)*norm(idim)*jeu
-            endif
-            taujeu1 = taujeu1 + tau1(idim)*djeu(idim) + dnepmait1
-            taujeu2 = taujeu2 + tau2(idim)*djeu(idim) + dnepmait2
+        do idim = 1, ndim
+            if ((abs(jeu) .lt. 1.d-10*valmoy) .and. (norm2(ddepmait1) .lt. 1.d-10*valmoy) .and. &
+                (norm2(ddepmait2) .lt. 1.d-10*valmoy)) then
+                ! On rajoute ce terme au grand glissement seulement si on est sur
+                ! d'avoir converge en DEPDEL
+                ! increment de deplacement
+                ! Test : ssnp154d, ssnv128r, ssnv128p --> Débrancher la condition if et tester ces 2 cas.
+                ! Ici on implante une strategie qui consiste a dire que ce terme n'est rajoute que
+                ! si le depdel est < 1.d-1*la logueur de la maille maître courante
+                dnepmait1 = dnepmait1+ddepmait1(idim)*norm(idim)*jeu
+                dnepmait2 = dnepmait2+ddepmait2(idim)*norm(idim)*jeu
+            end if
+            taujeu1 = taujeu1+tau1(idim)*djeu(idim)+dnepmait1
+            taujeu2 = taujeu2+tau2(idim)*djeu(idim)+dnepmait2
         end do
-    endif
+    end if
 !
 ! - CALCUL DE DDGEOMM
 !
-    do  idim = 1, ndim
-        do  inom = 1, nnm
-            ddgeo1(idim) = ddgeo1(idim) + ddffm(1,inom)*elem_mast_coor(inom,idim)
-            ddgeo2(idim) = ddgeo2(idim) + ddffm(2,inom)*elem_mast_coor(inom,idim)
-            ddgeo3(idim) = ddgeo3(idim) + ddffm(3,inom)*elem_mast_coor(inom,idim)
-        enddo
+    do idim = 1, ndim
+        do inom = 1, nnm
+            ddgeo1(idim) = ddgeo1(idim)+ddffm(1, inom)*elem_mast_coor(inom, idim)
+            ddgeo2(idim) = ddgeo2(idim)+ddffm(2, inom)*elem_mast_coor(inom, idim)
+            ddgeo3(idim) = ddgeo3(idim)+ddffm(3, inom)*elem_mast_coor(inom, idim)
+        end do
     end do
 !
 ! - Projection matrix first tangent/normal
 !
-    do  i = 1, ndim
-        do  j = 1, ndim
-            mprt1n(i,j) = 1.d0*tau1(i)*norm(j)
-        enddo
+    do i = 1, ndim
+        do j = 1, ndim
+            mprt1n(i, j) = 1.d0*tau1(i)*norm(j)
+        end do
     end do
 !
 ! - Projection matrix second tangent/normal
 !
-    do  i = 1, ndim
-        do  j = 1, ndim
-            mprt2n(i,j) = 1.d0*tau2(i)*norm(j)
-        enddo
+    do i = 1, ndim
+        do j = 1, ndim
+            mprt2n(i, j) = 1.d0*tau2(i)*norm(j)
+        end do
     end do
 !
 ! - Projection matrix normal/first tangent
 !
-    mprnt1(1,1) = mprt1n(1,1)
-    mprnt1(2,2) = mprt1n(2,2)
-    mprnt1(3,3) = mprt1n(3,3)
-    mprnt1(1,2) = mprt1n(2,1)
-    mprnt1(1,3) = mprt1n(3,1)
-    mprnt1(2,1) = mprt1n(1,2)
-    mprnt1(2,3) = mprt1n(3,2)
-    mprnt1(3,1) = mprt1n(1,3)
-    mprnt1(3,2) = mprt1n(2,3)
+    mprnt1(1, 1) = mprt1n(1, 1)
+    mprnt1(2, 2) = mprt1n(2, 2)
+    mprnt1(3, 3) = mprt1n(3, 3)
+    mprnt1(1, 2) = mprt1n(2, 1)
+    mprnt1(1, 3) = mprt1n(3, 1)
+    mprnt1(2, 1) = mprt1n(1, 2)
+    mprnt1(2, 3) = mprt1n(3, 2)
+    mprnt1(3, 1) = mprt1n(1, 3)
+    mprnt1(3, 2) = mprt1n(2, 3)
 !
 ! - Projection matrix normal/second tangent
 !
-    mprnt2(1,1) = mprt2n(1,1)
-    mprnt2(2,2) = mprt2n(2,2)
-    mprnt2(3,3) = mprt2n(3,3)
-    mprnt2(1,2) = mprt2n(2,1)
-    mprnt2(1,3) = mprt2n(3,1)
-    mprnt2(2,1) = mprt2n(1,2)
-    mprnt2(2,3) = mprt2n(3,2)
-    mprnt2(3,1) = mprt2n(1,3)
-    mprnt2(3,2) = mprt2n(2,3)
+    mprnt2(1, 1) = mprt2n(1, 1)
+    mprnt2(2, 2) = mprt2n(2, 2)
+    mprnt2(3, 3) = mprt2n(3, 3)
+    mprnt2(1, 2) = mprt2n(2, 1)
+    mprnt2(1, 3) = mprt2n(3, 1)
+    mprnt2(2, 1) = mprt2n(1, 2)
+    mprnt2(2, 3) = mprt2n(3, 2)
+    mprnt2(3, 1) = mprt2n(1, 3)
+    mprnt2(3, 2) = mprt2n(2, 3)
 !
 ! - Projection matrix first tangent/first tangent
 !
-    do  i = 1, ndim
-        do  j = 1, ndim
-            mprt11(i,j) = 1.d0*tau1(i)*tau1(j)
-        enddo
+    do i = 1, ndim
+        do j = 1, ndim
+            mprt11(i, j) = 1.d0*tau1(i)*tau1(j)
+        end do
     end do
 !
 ! - Projection matrix second tangent/first tangent
 !
     do i = 1, ndim
-        do  j = 1, ndim
-            mprt21(i,j) = 1.d0*tau2(i)*tau1(j)
-        enddo
+        do j = 1, ndim
+            mprt21(i, j) = 1.d0*tau2(i)*tau1(j)
+        end do
     end do
 !
 ! - Projection matrix first tangent/second tangent
 !
     do i = 1, ndim
-        do  j = 1, ndim
-            mprt12(i,j) = 1.d0*tau1(i)*tau2(j)
-        enddo
+        do j = 1, ndim
+            mprt12(i, j) = 1.d0*tau1(i)*tau2(j)
+        end do
     end do
 !
 ! - Projection matrix second tangent/second tangent
 !
-    do  i = 1, ndim
-        do  j = 1, ndim
-            mprt22(i,j) = 1.d0*tau2(i)*tau2(j)
-        enddo
+    do i = 1, ndim
+        do j = 1, ndim
+            mprt22(i, j) = 1.d0*tau2(i)*tau2(j)
+        end do
     end do
 !
 ! - MATRICE GENE11,GENE21,GENE22
 !
-    do  i = 1, ndim
-        do  j = 1, ndim
-            do  inom = 1, nnm
-                gene11(i,j) = gene11(i,j)+ ddffm(1,inom)*elem_mast_coor(inom, i)*norm(j)
-                gene22(i,j) = gene11(i,j)+ ddffm(2,inom)*elem_mast_coor(inom, i)*norm(j)
-                gene21(i,j) = gene21(i,j)+ ddffm(3,inom)*elem_mast_coor(inom, i)*norm(j)
-            enddo
-        enddo
+    do i = 1, ndim
+        do j = 1, ndim
+            do inom = 1, nnm
+                gene11(i, j) = gene11(i, j)+ddffm(1, inom)*elem_mast_coor(inom, i)*norm(j)
+                gene22(i, j) = gene11(i, j)+ddffm(2, inom)*elem_mast_coor(inom, i)*norm(j)
+                gene21(i, j) = gene21(i, j)+ddffm(3, inom)*elem_mast_coor(inom, i)*norm(j)
+            end do
+        end do
     end do
 !
 ! - MATRICES A
 !
-    a(1,1) = tau1(1)*tau1(1)+tau1(2)*tau1(2)+tau1(3)*tau1(3)
-    a(1,2) = tau1(1)*tau2(1)+tau1(2)*tau2(2)+tau1(3)*tau2(3)
-    a(2,1) = a(1,2)
-    a(2,2) = tau2(1)*tau2(1)+tau2(2)*tau2(2)+tau2(3)*tau2(3)
+    a(1, 1) = tau1(1)*tau1(1)+tau1(2)*tau1(2)+tau1(3)*tau1(3)
+    a(1, 2) = tau1(1)*tau2(1)+tau1(2)*tau2(2)+tau1(3)*tau2(3)
+    a(2, 1) = a(1, 2)
+    a(2, 2) = tau2(1)*tau2(1)+tau2(2)*tau2(2)+tau2(3)*tau2(3)
 !
 ! - MATRICES H
 !
-    h(1,1) = jeu*(ddgeo1(1)*norm(1)+ddgeo1(2)*norm(2)+ddgeo1(3)*norm(3))
-    h(1,2) = jeu*(ddgeo3(1)*norm(1)+ddgeo3(2)*norm(2)+ddgeo3(3)*norm(3))
-    h(2,1) =      h(1,2)
-    h(2,2) = jeu*(ddgeo2(1)*norm(1)+ddgeo2(2)*norm(2)+ddgeo2(3)*norm(3))
+    h(1, 1) = jeu*(ddgeo1(1)*norm(1)+ddgeo1(2)*norm(2)+ddgeo1(3)*norm(3))
+    h(1, 2) = jeu*(ddgeo3(1)*norm(1)+ddgeo3(2)*norm(2)+ddgeo3(3)*norm(3))
+    h(2, 1) = h(1, 2)
+    h(2, 2) = jeu*(ddgeo2(1)*norm(1)+ddgeo2(2)*norm(2)+ddgeo2(3)*norm(3))
 !
 ! - MATRICES HA
 !
-    ha(1,1) = h(1,1)*a(1,1)+h(1,2)*a(2,1)
-    ha(1,2) = h(1,1)*a(1,2)+h(1,2)*a(2,2)
-    ha(2,1) = h(2,1)*a(1,1)+h(2,2)*a(2,1)
-    ha(2,2) = h(2,1)*a(1,2)+h(2,2)*a(2,2)
+    ha(1, 1) = h(1, 1)*a(1, 1)+h(1, 2)*a(2, 1)
+    ha(1, 2) = h(1, 1)*a(1, 2)+h(1, 2)*a(2, 2)
+    ha(2, 1) = h(2, 1)*a(1, 1)+h(2, 2)*a(2, 1)
+    ha(2, 2) = h(2, 1)*a(1, 2)+h(2, 2)*a(2, 2)
 !
 ! - MATRICES HAH
 !
-    hah(1,1) = ha(1,1)*h(1,1)+ha(1,2)*h(2,1)
-    hah(1,2) = ha(1,1)*h(1,2)+ha(1,2)*h(2,2)
-    hah(2,1) = ha(2,1)*h(1,1)+ha(2,2)*h(2,1)
-    hah(2,2) = ha(2,1)*h(1,2)+ha(2,2)*h(2,2)
+    hah(1, 1) = ha(1, 1)*h(1, 1)+ha(1, 2)*h(2, 1)
+    hah(1, 2) = ha(1, 1)*h(1, 2)+ha(1, 2)*h(2, 2)
+    hah(2, 1) = ha(2, 1)*h(1, 1)+ha(2, 2)*h(2, 1)
+    hah(2, 2) = ha(2, 1)*h(1, 2)+ha(2, 2)*h(2, 2)
 !
 ! - MATRICES KAPPA
 !
-    kappa_in = a - h
+    kappa_in = a-h
     call matinv('C', 2, kappa_in, kappa, detkap)
 !
 ! - VECTEUR VECH1
 !
-    vech1(1) = kappa(1,1)*tau1(1)+kappa(1,2)*tau2(1)
-    vech1(2) = kappa(1,1)*tau1(2)+kappa(1,2)*tau2(2)
-    vech1(3) = kappa(1,1)*tau1(3)+kappa(1,2)*tau2(3)
+    vech1(1) = kappa(1, 1)*tau1(1)+kappa(1, 2)*tau2(1)
+    vech1(2) = kappa(1, 1)*tau1(2)+kappa(1, 2)*tau2(2)
+    vech1(3) = kappa(1, 1)*tau1(3)+kappa(1, 2)*tau2(3)
 !
 ! - VECTEUR VECH2
 !
-    vech2(1) = kappa(2,1)*tau1(1)+kappa(1,2)*tau2(1)
-    vech2(2) = kappa(2,1)*tau1(2)+kappa(1,2)*tau2(2)
-    vech2(3) = kappa(2,1)*tau1(3)+kappa(1,2)*tau2(3)
+    vech2(1) = kappa(2, 1)*tau1(1)+kappa(1, 2)*tau2(1)
+    vech2(2) = kappa(2, 1)*tau1(2)+kappa(1, 2)*tau2(2)
+    vech2(3) = kappa(2, 1)*tau1(3)+kappa(1, 2)*tau2(3)
 !
 end subroutine

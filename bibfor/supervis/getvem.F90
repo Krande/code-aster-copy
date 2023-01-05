@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine getvem(noma, typent, motfac, motcle, iocc,&
+subroutine getvem(noma, typent, motfac, motcle, iocc, &
                   mxval, vk, nbval)
     implicit none
 #include "asterfort/getvtx.h"
@@ -43,11 +43,11 @@ subroutine getvem(noma, typent, motfac, motcle, iocc,&
 !-----------------------------------------------------------------------
     integer :: mm
 !-----------------------------------------------------------------------
-    call getvtx(motfac, motcle, iocc=iocc, nbval=mxval, vect=vk,&
+    call getvtx(motfac, motcle, iocc=iocc, nbval=mxval, vect=vk, &
                 nbret=nbval)
     if (mxval .ne. 0) then
-        mm=min(mxval,abs(nbval))
+        mm = min(mxval, abs(nbval))
         call verima(noma, vk, mm, typent)
         nbval = mm
-    endif
+    end if
 end subroutine

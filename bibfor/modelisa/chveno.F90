@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine chveno(valeType, meshZ, modelZ)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -46,8 +46,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=4), intent(in) :: valeType
-character(len=*), intent(in) :: meshZ, modelZ
+    character(len=4), intent(in) :: valeType
+    character(len=*), intent(in) :: meshZ, modelZ
 !
 !      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
 !                                      ET AFFE_CHAR_MECA_F
@@ -60,7 +60,7 @@ character(len=*), intent(in) :: meshZ, modelZ
 !
 !-----------------------------------------------------------------------
     integer :: nbt
-    parameter    (nbt = 5 )
+    parameter(nbt=5)
     integer :: ier, iret, zero
     integer :: imfac, nbmfac, n, geomDime, ndim1, vali
     integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
@@ -78,19 +78,19 @@ character(len=*), intent(in) :: meshZ, modelZ
     integer, pointer :: nume_maille(:) => null()
     character(len=24), pointer :: objet(:) => null()
 !
-    data mcft / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  ,&
-     &            'EFFE_FOND'  , 'ZONE'  /
+    data mcft/'FACE_IMPO', 'PRES_REP', 'FORCE_COQUE',&
+     &            'EFFE_FOND', 'ZONE'/
 !
 !     LA NORMALE DOIT ETRE SORTANTE:
-    data mcfl / .true.       , .true.     , .false.        ,&
-     &            .true.       , .true.     /
+    data mcfl/.true., .true., .false.,&
+     &            .true., .true./
 !     ------------------------------------------------------------------
 !
 !     INITIALISATIONS
-    ier    = 0
-    zero   = 0
+    ier = 0
+    zero = 0
     reorie = .false.
-    algo   = ''
+    algo = ''
 !
 !     NOMBRE DE MOTS-CLES FACTEUR A VERIFIER
     nbmfac = nbt
@@ -110,7 +110,7 @@ character(len=*), intent(in) :: meshZ, modelZ
     call jeexin(mesh//'.TYPMAIL        ', iret)
     if (iret .ne. 0) then
         call jeveuo(mesh//'.TYPMAIL        ', 'L', jtyma)
-    endif
+    end if
     call jeveuo(mesh//'.COORDO    .VALE', 'L', jcoor)
 !
     do imfac = 1, nbmfac
@@ -120,26 +120,26 @@ character(len=*), intent(in) :: meshZ, modelZ
 !         POUR CERTAINS MOTS-CLES, IL NE FAUT TESTER QUE
 !         POUR CERTAINS CHARGEMENTS
             if (motfac .eq. 'FACE_IMPO') then
-                ipres = utmotp(valeType,motfac,iocc,'PRES')
-                idnor = utmotp(valeType,motfac,iocc,'DNOR')
-                idtan = utmotp(valeType,motfac,iocc,'DTAN')
+                ipres = utmotp(valeType, motfac, iocc, 'PRES')
+                idnor = utmotp(valeType, motfac, iocc, 'DNOR')
+                idtan = utmotp(valeType, motfac, iocc, 'DTAN')
                 if (ipres .eq. 0 .and. idnor .eq. 0 .and. idtan .eq. 0) goto 200
                 if (idnor .ne. 0) then
                     if (valeType .eq. 'REEL') then
                         call getvr8(motfac, 'DNOR', iocc=iocc, scal=dnor, nbret=n)
                         if (abs(dnor) .le. r8prem()) goto 200
-                    endif
-                endif
-            else if (motfac.eq.'FORCE_COQUE') then
-                ipres = utmotp(valeType,motfac,iocc,'PRES')
-                if1 = utmotp(valeType,motfac,iocc,'F1  ')
-                if2 = utmotp(valeType,motfac,iocc,'F2  ')
-                if3 = utmotp(valeType,motfac,iocc,'F3  ')
-                imf1 = utmotp(valeType,motfac,iocc,'MF1 ')
-                imf2 = utmotp(valeType,motfac,iocc,'MF2 ')
-                if (ipres .eq. 0 .and. if1 .eq. 0 .and. if2 .eq. 0 .and. if3 .eq. 0 .and. imf1&
+                    end if
+                end if
+            else if (motfac .eq. 'FORCE_COQUE') then
+                ipres = utmotp(valeType, motfac, iocc, 'PRES')
+                if1 = utmotp(valeType, motfac, iocc, 'F1  ')
+                if2 = utmotp(valeType, motfac, iocc, 'F2  ')
+                if3 = utmotp(valeType, motfac, iocc, 'F3  ')
+                imf1 = utmotp(valeType, motfac, iocc, 'MF1 ')
+                imf2 = utmotp(valeType, motfac, iocc, 'MF2 ')
+                if (ipres .eq. 0 .and. if1 .eq. 0 .and. if2 .eq. 0 .and. if3 .eq. 0 .and. imf1 &
                     .eq. 0 .and. imf2 .eq. 0) goto 200
-            endif
+            end if
 !
             if (motfac .eq. 'ZONE') then
                 nbmc = 4
@@ -157,7 +157,7 @@ character(len=*), intent(in) :: meshZ, modelZ
                 valmc(2) = 'MAILLE'
                 typmc(1) = 'GROUP_MA'
                 typmc(2) = 'MAILLE'
-            endif
+            end if
 !
 ! ---     RECUPERATION DE LA DIMENSION DU PROBLEME
 !
@@ -167,7 +167,7 @@ character(len=*), intent(in) :: meshZ, modelZ
 !
                 nbobj = -nbobj
                 AS_ALLOCATE(vk24=objet, size=nbobj)
-                call getvem(meshZ, typmc(ic), motfac, valmc(ic), iocc,&
+                call getvem(meshZ, typmc(ic), motfac, valmc(ic), iocc, &
                             nbobj, objet, nbobj)
                 if (typmc(ic) .eq. 'GROUP_MA') then
                     do iobj = 1, nbobj
@@ -208,44 +208,44 @@ character(len=*), intent(in) :: meshZ, modelZ
                                     if (geomDime .ne. ndim1) then
 !                       ON SAUTE
                                         goto 211
-                                    endif
+                                    end if
 !
-                                endif
+                                end if
                             end do
 !
 ! ---           FIN DE BOUCLE SUR LES MAILLES DU GROUP_MA
 !
-                        endif
+                        end if
                         norie1 = 0
                         norie2 = 0
                         call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
                         call jeveuo(jexnom(grmama, nogr), 'L', jgro)
 !
-                        if (mcfl(ic) .and. (nbmail.gt.0)) then
+                        if (mcfl(ic) .and. (nbmail .gt. 0)) then
 !
                             call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbmail, jmab)
-                            call chbord(modelZ, nbmail, zi(jgro), zi( jmab), nbmapr,&
+                            call chbord(modelZ, nbmail, zi(jgro), zi(jmab), nbmapr, &
                                         nbmabo)
                             if (nbmapr .eq. nbmail .and. nbmabo .eq. 0) then
                                 call ornorm(mesh, zi(jgro), nbmail, reorie, norie1)
-                                elseif ( (nbmapr.eq.0 .and.&
-                            nbmabo.eq.nbmail) .or. (motfac .eq.&
-                            'ZONE') ) then
+                            elseif ((nbmapr .eq. 0 .and. &
+                                     nbmabo .eq. nbmail) .or. (motfac .eq. &
+                                                               'ZONE')) then
                                 if (motfac .eq. 'ZONE') then
                                     nbmamo = 0
                                     jlima = 1
                                 else
                                     call utmamo(model, nbmamo, limamo)
                                     call jeveuo(limamo, 'L', jlima)
-                                endif
-                                call orilma(mesh, geomDime, zi(jgro), nbmail, norie1,&
-                                            ntrait, reorie, nbmamo, zi(jlima ))
-                                if ((algo.eq.'LAC' ).and.(ntrait .ne. 0)) then
+                                end if
+                                call orilma(mesh, geomDime, zi(jgro), nbmail, norie1, &
+                                            ntrait, reorie, nbmamo, zi(jlima))
+                                if ((algo .eq. 'LAC') .and. (ntrait .ne. 0)) then
                                     call utmess('A', 'CONTACT2_20')
-                                endif
+                                end if
                                 call jedetr(limamo)
-                                elseif ( nbmapr.eq.0 .and. nbmabo.eq.0 )&
-                            then
+                            elseif (nbmapr .eq. 0 .and. nbmabo .eq. 0) &
+                                then
                                 call ornorm(mesh, zi(jgro), nbmail, reorie, norie1)
                             else
                                 call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, jpri)
@@ -254,30 +254,30 @@ character(len=*), intent(in) :: meshZ, modelZ
                                 nbmabo = 0
                                 do impb = 1, nbmail
                                     if (zi(jmab+impb-1) .eq. 0) then
-                                        nbmapr = nbmapr + 1
-                                        zi(jpri+nbmapr-1) = zi(jgro+ impb-1)
+                                        nbmapr = nbmapr+1
+                                        zi(jpri+nbmapr-1) = zi(jgro+impb-1)
                                     else
-                                        nbmabo = nbmabo + 1
-                                        zi(jbor+nbmabo-1) = zi(jgro+ impb-1)
-                                    endif
+                                        nbmabo = nbmabo+1
+                                        zi(jbor+nbmabo-1) = zi(jgro+impb-1)
+                                    end if
                                 end do
                                 call ornorm(mesh, zi(jpri), nbmapr, reorie, norie1)
-                                call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1,&
+                                call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1, &
                                             ntrait, reorie, 0, [0])
                                 call jedetr('&&CHVENO.PRIN')
                                 call jedetr('&&CHVENO.BORD')
-                            endif
+                            end if
                             call jedetr('&&CHVENO.MAILLE_BORD')
                         else
                             call ornorm(mesh, zi(jgro), nbmail, reorie, norie2)
-                        endif
-                        norien = norie1 + norie2
+                        end if
+                        norien = norie1+norie2
                         if (norien .ne. 0) then
-                            ier = ier + 1
+                            ier = ier+1
                             valk(1) = nogr
                             vali = norien
                             call utmess('E', 'MODELISA8_56', sk=valk(1), si=vali)
-                        endif
+                        end if
                     end do
 !
 ! ----------CAS DES MAILLES :
@@ -306,32 +306,32 @@ character(len=*), intent(in) :: meshZ, modelZ
                                 if (geomDime .ne. ndim1) then
 !                     ON SAUTE
                                     goto 211
-                                endif
-                            endif
+                                end if
+                            end if
 !
-                        endif
+                        end if
                     end do
                     norie1 = 0
                     norie2 = 0
                     if (mcfl(ic)) then
                         call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbobj, jmab)
-                        call chbord(modelZ, nbobj, nume_maille, zi(jmab), nbmapr,&
+                        call chbord(modelZ, nbobj, nume_maille, zi(jmab), nbmapr, &
                                     nbmabo)
                         if (nbmapr .eq. nbobj .and. nbmabo .eq. 0) then
                             call ornorm(mesh, nume_maille, nbobj, reorie, norie1)
-                            elseif ( (nbmapr.eq.0 .and. nbmabo.eq.nbobj)&
-                        .or. (motfac .eq. 'ZONE') ) then
+                        elseif ((nbmapr .eq. 0 .and. nbmabo .eq. nbobj) &
+                                .or. (motfac .eq. 'ZONE')) then
                             if (motfac .eq. 'ZONE') then
                                 nbmamo = 0
                                 jlima = 1
                             else
                                 call utmamo(model, nbmamo, limamo)
                                 call jeveuo(limamo, 'L', jlima)
-                            endif
-                            call orilma(mesh, geomDime, nume_maille, nbobj, norie1,&
-                                        ntrait, reorie, nbmamo, zi( jlima))
+                            end if
+                            call orilma(mesh, geomDime, nume_maille, nbobj, norie1, &
+                                        ntrait, reorie, nbmamo, zi(jlima))
                             call jedetr(limamo)
-                        else if (nbmapr.eq.0 .and. nbmabo.eq.0) then
+                        else if (nbmapr .eq. 0 .and. nbmabo .eq. 0) then
                             call ornorm(mesh, nume_maille, nbobj, reorie, norie1)
                         else
                             call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, jpri)
@@ -340,30 +340,30 @@ character(len=*), intent(in) :: meshZ, modelZ
                             nbmabo = 0
                             do impb = 1, nbobj
                                 if (zi(jmab+impb-1) .eq. 0) then
-                                    nbmapr = nbmapr + 1
+                                    nbmapr = nbmapr+1
                                     zi(jpri+nbmapr-1) = nume_maille(impb)
                                 else
-                                    nbmabo = nbmabo + 1
+                                    nbmabo = nbmabo+1
                                     zi(jbor+nbmabo-1) = nume_maille(impb)
-                                endif
+                                end if
                             end do
                             call ornorm(mesh, zi(jpri), nbmapr, reorie, norie1)
-                            call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1,&
+                            call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1, &
                                         ntrait, reorie, 0, [0])
                             call jedetr('&&CHVENO.PRIN')
                             call jedetr('&&CHVENO.BORD')
-                        endif
+                        end if
                         call jedetr('&&CHVENO.MAILLE_BORD')
                     else
                         call ornorm(mesh, nume_maille, nbobj, reorie, norie2)
-                    endif
-                    norien = norie1 + norie2
+                    end if
+                    norien = norie1+norie2
                     if (norien .ne. 0) then
-                        ier = ier + 1
+                        ier = ier+1
                         valk(1) = nomail
                         call utmess('E', 'MODELISA8_57', sk=valk(1))
-                    endif
-                endif
+                    end if
+                end if
 211             continue
                 AS_DEALLOCATE(vi=nume_maille)
                 AS_DEALLOCATE(vk24=objet)
@@ -375,6 +375,6 @@ character(len=*), intent(in) :: meshZ, modelZ
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA4_24')
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujpic(kk, k, tin, vin, mater,&
+subroutine hujpic(kk, k, tin, vin, mater, &
                   yf, pc)
     implicit none
 !  LOI DE HUJEUX: CALCUL DE LA PRESSION ISOTROPE CYCLIQUE
@@ -31,16 +31,16 @@ subroutine hujpic(kk, k, tin, vin, mater,&
 !      PC     :  PRESSION ISOTROPE CYCLIQUE
 !  -----------------------------------------------------------
     integer :: ndt, ndi, i, k, kk, nmod
-    parameter     (nmod = 15)
+    parameter(nmod=15)
 !
     real(kind=8) :: vin(*), d, x4
     real(kind=8) :: tin(ndt), pc, d13, zero
     real(kind=8) :: epsvp, beta, pcref, pcr
     real(kind=8) :: i1, mater(22, 2), yf(nmod)
 !
-    common /tdim/ ndt  , ndi
+    common/tdim/ndt, ndi
 !
-    data   d13, zero /0.333333333334d0, 0.d0/
+    data d13, zero/0.333333333334d0, 0.d0/
 !
 ! ==================================================================
 ! --- VARIABLES INTERNES -------------------------------------------
@@ -64,8 +64,8 @@ subroutine hujpic(kk, k, tin, vin, mater,&
 !
     i1 = zero
     do i = 1, ndi
-        i1=i1+d13*tin(i)
-    enddo
+        i1 = i1+d13*tin(i)
+    end do
 !
 ! ======================================================================
 ! ------------ CONSTRUCTION PRESSION ISOTROPE CYCLIQUE -----------------

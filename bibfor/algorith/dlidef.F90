@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,56 +52,56 @@ subroutine dlidef()
         call wkvect('&&DLIDEF.BORNE', 'V V I', nbocc+1, jbor)
         zi(jbor) = idebut
         do iocc = 1, nbocc
-            call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+ iocc), nbret=n1)
-            iii = zi(jbor+iocc) - zi(jbor-1+iocc)
+            call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+iocc), nbret=n1)
+            iii = zi(jbor+iocc)-zi(jbor-1+iocc)
             if (iii .le. 0) then
                 vali(1) = zi(jbor+iocc-1)
                 vali(2) = zi(jbor+iocc)
                 call utmess('F', 'ALGORITH13_78', ni=2, vali=vali)
-            endif
+            end if
             call getvis('INTERVALLE', 'PAS', iocc=iocc, nbval=0, nbret=np)
             if (np .ne. 0) then
                 call getvis('INTERVALLE', 'PAS', iocc=iocc, scal=jpas, nbret=n1)
                 jnbp = int(iii/jpas)
-                irest = iii - jnbp*jpas
+                irest = iii-jnbp*jpas
                 if (irest .ne. 0) then
                     vali(1) = jpas
                     vali(2) = iocc
                     call utmess('F', 'ALGORITH13_79', ni=2, vali=vali)
-                endif
+                end if
 !
             else
                 call getvis('INTERVALLE', 'NOMBRE', iocc=iocc, scal=jnbp, nbret=n1)
                 if (jnbp .gt. 0) then
                     ipdt = int(iii/jnbp)
-                    irest = iii - jnbp*ipdt
+                    irest = iii-jnbp*ipdt
                     if (irest .ne. 0) then
                         vali(1) = jnbp
                         vali(2) = iocc
                         call utmess('F', 'ALGORITH13_80', ni=2, vali=vali)
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
-    endif
+    end if
 !
 !
     if (nv .ne. 0) then
         nbvale = -nv
-        ndim = max(1,nbvale-1)
+        ndim = max(1, nbvale-1)
         call wkvect(resu//'           .LPAS', 'G V I', ndim, jpas)
         call wkvect(resu//'           .NBPA', 'G V I', ndim, jnbp)
         call wkvect(resu//'           .BINT', 'G V I', nbvale, jbor)
         call wkvect(resu//'           .VALE', 'G V I', nbvale, jval)
         call wkvect('&&DLIDEF.VALE', 'V V I', nbvale, kval)
         call getvis(' ', 'VALE', nbval=nbvale, vect=zi(kval), nbret=nv)
-        do i = 1, nbvale - 1
+        do i = 1, nbvale-1
             if (zi(kval+i-1) .ge. zi(kval+i)) then
                 vali(1) = zi(kval+i-1)
                 vali(2) = zi(kval+i)
                 call utmess('F', 'ALGORITH13_81', ni=2, vali=vali)
-            endif
-            zi(jpas+i-1) = zi(kval+i) - zi(kval+i-1)
+            end if
+            zi(jpas+i-1) = zi(kval+i)-zi(kval+i-1)
             zi(jnbp+i-1) = 1
             zi(jbor+i-1) = zi(kval+i-1)
             zi(jval+i-1) = zi(kval+i-1)
@@ -117,18 +117,18 @@ subroutine dlidef()
 !
         zi(jbor) = idebut
         do iocc = 1, nbocc
-            call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+ iocc), nbret=n1)
-            iii = zi(jbor+iocc) - zi(jbor-1+iocc)
+            call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+iocc), nbret=n1)
+            iii = zi(jbor+iocc)-zi(jbor-1+iocc)
             call getvis('INTERVALLE', 'PAS', iocc=iocc, nbval=0, nbret=np)
             if (np .ne. 0) then
-                call getvis('INTERVALLE', 'PAS', iocc=iocc, scal=zi(jpas+ iocc-1), nbret=n1)
+                call getvis('INTERVALLE', 'PAS', iocc=iocc, scal=zi(jpas+iocc-1), nbret=n1)
                 zi(jnbp+iocc-1) = iii/zi(jpas+iocc-1)
 !
             else
                 call getvis('INTERVALLE', 'NOMBRE', iocc=iocc, scal=zi(jnbp+iocc-1), nbret=n1)
                 zi(jpas+iocc-1) = iii/zi(jnbp+iocc-1)
-            endif
-            nbval = nbval + zi(jnbp+iocc-1)
+            end if
+            nbval = nbval+zi(jnbp+iocc-1)
         end do
 !
 !        --- ALLOCATION DE .VALE ET REMPLISSAGE DE CE DERNIER ---
@@ -137,14 +137,14 @@ subroutine dlidef()
         ico = 0
         do i = 1, nbocc
             ipdt = zi(jpas-1+i)
-            do j = 1, zi(jnbp-1+i) - 1
-                ico = ico + 1
-                zi(jval+ico) = zi(jval+ico-1) + ipdt
+            do j = 1, zi(jnbp-1+i)-1
+                ico = ico+1
+                zi(jval+ico) = zi(jval+ico-1)+ipdt
             end do
-            ico = ico + 1
+            ico = ico+1
             zi(jval+ico) = zi(jbor+i)
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine sepavp(ck, cm, cmat, ndim, alpha,&
+subroutine sepavp(ck, cm, cmat, ndim, alpha, &
                   beta, nbmod, lambd1, lambd2, interv)
 !  BUT:  < SEPARATION DES VALEURS PROPRES >
     implicit none
@@ -59,84 +59,84 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     do i = 1, nbmod
-        alpha(i)=-1
-        beta(i) =-1
+        alpha(i) = -1
+        beta(i) = -1
     end do
-    alpha(1)=lambd1
-    call nbval(ck, cm, cmat, ndim, lambd1,&
+    alpha(1) = lambd1
+    call nbval(ck, cm, cmat, ndim, lambd1, &
                n1)
-    call nbval(ck, cm, cmat, ndim, lambd2,&
+    call nbval(ck, cm, cmat, ndim, lambd2, &
                n2)
-    nbmod=min(n2-n1,nbmod)
-    beta(nbmod)=lambd2
-    valr(1)=lambd1
-    valr(2)=lambd2
+    nbmod = min(n2-n1, nbmod)
+    beta(nbmod) = lambd2
+    valr(1) = lambd1
+    valr(2) = lambd2
     call utmess('I', 'ALGELINE6_9', si=nbmod, nr=2, valr=valr)
     do i = 1, nbmod
         if (alpha(i) .ge. 0.d0) then
-            a=alpha(i)
+            a = alpha(i)
         else
-            sortie=.false.
-            ct=i
- 70         continue
-            ct=ct-1
+            sortie = .false.
+            ct = i
+70          continue
+            ct = ct-1
             if (ct .le. 1) then
-                sortie=.true.
-                a=lambd1
-            endif
+                sortie = .true.
+                a = lambd1
+            end if
             if (beta(ct) .ge. 0.d0) then
-                sortie=.true.
-                a=beta(ct)
-            endif
+                sortie = .true.
+                a = beta(ct)
+            end if
             if (sortie) goto 80
             goto 70
- 80         continue
-        endif
+80          continue
+        end if
         if (beta(i) .ge. 0.d0) then
-            b=beta(i)
+            b = beta(i)
         else
-            sortie=.false.
-            ct=i
- 50         continue
-            ct=ct+1
+            sortie = .false.
+            ct = i
+50          continue
+            ct = ct+1
             if (ct .ge. nbmod) then
-                sortie=.true.
-                b=lambd2
-            endif
+                sortie = .true.
+                b = lambd2
+            end if
             if (alpha(ct) .ge. 0.d0) then
-                sortie=.true.
-                b=alpha(ct)
-            endif
+                sortie = .true.
+                b = alpha(ct)
+            end if
             if (sortie) goto 60
             goto 50
- 60         continue
-        endif
- 30     continue
+60          continue
+        end if
+30      continue
         if (beta(i) .ge. 0.d0) then
             if (alpha(i) .ge. 0.d0) then
                 if ((beta(i)-alpha(i)) .le. interv) goto 40
-            endif
-        endif
-        c=(a+b)/2
-        call nbval(ck, cm, cmat, ndim, c,&
+            end if
+        end if
+        c = (a+b)/2
+        call nbval(ck, cm, cmat, ndim, c, &
                    nb)
-        nb=nb-n1
-        ASSERT(nb.ge.0 .and.nb.le.nbmod)
+        nb = nb-n1
+        ASSERT(nb .ge. 0 .and. nb .le. nbmod)
         if (nb .gt. 0) then
             if (beta(nb) .lt. 0.d0) then
-                beta(nb)=c
+                beta(nb) = c
             else
-                beta(nb)=min(c,beta(nb))
-            endif
-        endif
+                beta(nb) = min(c, beta(nb))
+            end if
+        end if
         if (alpha(nb+1) .lt. 0.d0) then
-            alpha(nb+1)=c
+            alpha(nb+1) = c
         else
-            alpha(nb+1)=max(c,alpha(nb+1))
-        endif
-        if (nb .lt. i) a=c
-        if (nb .ge. i) b=c
+            alpha(nb+1) = max(c, alpha(nb+1))
+        end if
+        if (nb .lt. i) a = c
+        if (nb .ge. i) b = c
         goto 30
- 40     continue
+40      continue
     end do
 end subroutine

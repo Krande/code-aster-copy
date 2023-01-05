@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,8 +68,8 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     character(len=19) :: ces, cel
     real(kind=8), pointer :: vale(:) => null()
 !
-    data limocl/'TOUT','MAILLE','GROUP_MA'/
-    data tymocl/'TOUT','MAILLE','GROUP_MA'/
+    data limocl/'TOUT', 'MAILLE', 'GROUP_MA'/
+    data tymocl/'TOUT', 'MAILLE', 'GROUP_MA'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,33 +89,33 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !   -- on scrute les mot-clé :
 !   ------------------------
     if (n1+n2+n3 .ne. 0) then
-        call reliem(mo, ma, 'NU_MAILLE', ' ', 0,&
+        call reliem(mo, ma, 'NU_MAILLE', ' ', 0, &
                     3, limocl, tymocl, mesmai, nbma)
     else
 !   -- mais s'il n'y en a aucun on fait comme si TOUT='OUI' :
 !   -------------------------------------------------------
         call utmamo(mo, nbma, mesmai)
-    endif
+    end if
 !
 !   -- on ne garde que les mailles surfaciques :
 !   ---------------------------------------------
     ndim2 = ndim-1
-    call utflmd(ma, mesmai, nbma, ndim2, ' ',&
+    call utflmd(ma, mesmai, nbma, ndim2, ' ', &
                 nbma2d, mail2d)
     if (nbma2d .gt. 0) then
         call jeveuo(mail2d, 'L', jma2d)
     else
         call utmess('F', 'CALCULEL5_54')
-    endif
+    end if
 !
 !   -- on recherche les mailles 3d qui bordent les mailles de peau :
 !   -- il faut se limiter aux mailles du modele qui savent calculer SIGM_ELNO :
 !   ----------------------------------------------------------------------------
-    cel='&&SRLIMA.CEL_ELNO'
-    ces='&&SRLIMA.CES_ELNO'
-    call alchml(mo//'.MODELE', 'SIGM_ELNO', 'PSIEFNOR', 'V', cel,&
+    cel = '&&SRLIMA.CEL_ELNO'
+    ces = '&&SRLIMA.CES_ELNO'
+    call alchml(mo//'.MODELE', 'SIGM_ELNO', 'PSIEFNOR', 'V', cel, &
                 iret, ' ')
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
     call celces(cel, 'V', ces)
     call detrsd('CHAMP', cel)
     call jeveuo(ces//'.CESD', 'L', jcesd)
@@ -123,15 +123,15 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     nbma = zi(jcesd-1+1)
     limamo = '&&SRLIMA.LIMAIL'
     call wkvect(limamo, 'V V I', nbma, jlima)
-    nbmamo=0
+    nbmamo = 0
     do ima = 1, nbma
-        call cesexi('C', jcesd, jcesl, ima, 1,&
+        call cesexi('C', jcesd, jcesl, ima, 1, &
                     1, 1, iad1)
         if (iad1 .gt. 0) then
-            nbmamo=nbmamo+1
-            zi(jlima-1+nbmamo)=ima
-        endif
-    enddo
+            nbmamo = nbmamo+1
+            zi(jlima-1+nbmamo) = ima
+        end if
+    end do
     call detrsd('CHAM_ELEM_S', ces)
 !
 !
@@ -139,13 +139,13 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !   ---------------------------------------------------------------
     call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
     if (ndim .eq. 3) then
-        call utmasu(ma, '3D', nbma2d, zi(jma2d), mail3d,&
+        call utmasu(ma, '3D', nbma2d, zi(jma2d), mail3d, &
                     vale, nbmamo, zi(jlima), .true._1)
-    endif
+    end if
     if (ndim .eq. 2) then
-        call utmasu(ma, '2D', nbma2d, zi(jma2d), mail3d,&
+        call utmasu(ma, '2D', nbma2d, zi(jma2d), mail3d, &
                     vale, nbmamo, zi(jlima), .true._1)
-    endif
+    end if
     call jeveuo(mail3d, 'L', jma3d)
 !
     call wkvect(mailto, 'V V I', nbma2d*2, jmato)
@@ -158,12 +158,12 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !       -- si la maille 3d n'est pas du cote "-", on la met a zero (issue22570) :
         if (ndim .eq. 3) then
             call oriem1(ma, '3D', numa2d, numa3d)
-        endif
+        end if
 !
         zi(jmato-1+ima) = numa2d
         zi(jmato-1+nbma2d+ima) = numa3d
         zi(jma3d-1+ima) = numa3d
-  1     continue
+1       continue
     end do
 !
     call jedetr(mesmai)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ function tstk2i(nlong, chaine)
 ! IN: CHAINE  K* : CHAINE A CONVERTIR EN ENTIER
 ! ----------------------------------------------------------------------
     integer :: ival, k
-    ival=0
+    ival = 0
     do k = 1, nlong
         ival = ival+ichar(chaine(k:k))
     end do
-    tstk2i=ival
+    tstk2i = ival
 end function

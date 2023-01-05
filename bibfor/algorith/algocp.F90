@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ subroutine algocp(ds_measure, resoco, numedd, matass)
 ! person_in_charge: mickael.abbas at edf.fr
 !
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/cfcpem.h"
@@ -92,9 +92,9 @@ implicit none
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : PENALISATION'
-        write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: SANS'
-    endif
+        write (ifm, *) '<CONTACT><CALC> ALGO_CONTACT   : PENALISATION'
+        write (ifm, *) '<CONTACT><CALC> ALGO_FROTTEMENT: SANS'
+    end if
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
@@ -108,9 +108,9 @@ implicit none
 !
 ! --- INITIALISATION DES VARIABLES
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
-    neq = cfdisd(resoco,'NEQ' )
-    nbliac = cfdisd(resoco,'NBLIAC')
+    nbliai = cfdisd(resoco, 'NBLIAI')
+    neq = cfdisd(resoco, 'NEQ')
+    nbliac = cfdisd(resoco, 'NBLIAC')
     iter = 1
 !
 ! --- CREATION DU SECOND MEMBRE AFMU = -E_N*AT*JEU
@@ -119,7 +119,7 @@ implicit none
 !
     if (nbliac .eq. 0) then
         goto 999
-    endif
+    end if
 !
 ! --- CALCUL DE LA MATRICE DE CONTACT PENALISEE ELEMENTAIRE [E_N*AT]
 !
@@ -129,7 +129,7 @@ implicit none
 !
     call cfcpma(resoco, neq, nbliai, numedd, matrcf)
 !
-999  continue
+999 continue
 !
 ! --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 !
@@ -137,8 +137,8 @@ implicit none
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(ds_measure, 'Cont_Algo ', input_count = iter)
-    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_Algo ', input_count=iter)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count=nbliac)
 !
     call jedema()
 !

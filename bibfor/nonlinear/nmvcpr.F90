@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmvcpr(modelz     , cara_elemz     , hval_incr,&
-                  ds_material, ds_constitutive,&
+subroutine nmvcpr(modelz, cara_elemz, hval_incr, &
+                  ds_material, ds_constitutive, &
                   base)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,11 +31,11 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: modelz, cara_elemz
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19), intent(in) :: hval_incr(*)
-character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: modelz, cara_elemz
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ character(len=1), intent(in) :: base
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_14')
-    endif
+    end if
 
 ! - Initializations
     nume_harm = 0
@@ -77,15 +77,15 @@ character(len=1), intent(in) :: base
     vevcprCurr = ds_material%vevcprCurr
 
 ! - Compute elementary vectors - Previous
-    call nmvcpr_elem(modelz    , mate      , mateco    , cara_elemz,&
-                     nume_harm , '-'       , hval_incr ,&
-                     varc_refe , compor    ,&
-                     base      , vevcprPrev)
+    call nmvcpr_elem(modelz, mate, mateco, cara_elemz, &
+                     nume_harm, '-', hval_incr, &
+                     varc_refe, compor, &
+                     base, vevcprPrev)
 
 ! - Compute elementary vectors - Current
-    call nmvcpr_elem(modelz    , mate      , mateco    , cara_elemz,&
-                     nume_harm , '+'       , hval_incr ,&
-                     varc_refe , compor    ,&
-                     base      , vevcprCurr)
+    call nmvcpr_elem(modelz, mate, mateco, cara_elemz, &
+                     nume_harm, '+', hval_incr, &
+                     varc_refe, compor, &
+                     base, vevcprCurr)
 !
 end subroutine

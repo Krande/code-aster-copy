@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,11 +55,11 @@ subroutine dtmconc(sd_dtm_)
     character(len=4)  :: intk
     character(len=8)  :: sd_dtm, result, sd_nl
 
-    integer         , pointer :: vindx(:)  => null()
-    integer         , pointer :: isto(:)   => null()
-    integer         , pointer :: allocs(:) => null()
+    integer, pointer :: vindx(:) => null()
+    integer, pointer :: isto(:) => null()
+    integer, pointer :: allocs(:) => null()
     character(len=8), pointer :: nomres(:) => null()
-    integer         , pointer :: sizres(:) => null()
+    integer, pointer :: sizres(:) => null()
 !
 !   0 - Initializations
     call jemarq()
@@ -74,34 +74,33 @@ subroutine dtmconc(sd_dtm_)
 !       different &&ADXXXX dyna_gene structures
 
     AS_ALLOCATE(vk8=nomres, size=iarch_sd)
-    AS_ALLOCATE(vi =sizres, size=iarch_sd)
+    AS_ALLOCATE(vi=sizres, size=iarch_sd)
 
     nbsauv = 0
     do i = 1, iarch_sd
         call codent(i, 'D0', intk)
         nomres(i) = '&&AD'//intk
-        call jelira(nomres(i)//'           .ORDR','LONMAX', sizres(i))
-        nbsauv = nbsauv + sizres(i)
-        if (i.eq.iarch_sd) nbsauv = nbsauv + isto(1) - sizres(i)
+        call jelira(nomres(i)//'           .ORDR', 'LONMAX', sizres(i))
+        nbsauv = nbsauv+sizres(i)
+        if (i .eq. iarch_sd) nbsauv = nbsauv+isto(1)-sizres(i)
     end do
 
 !   2 - Free up the memory used by the last temporary result structure
-    call dtmget(sd_dtm, _NB_NONLI,iscal=nbnoli)
-    if (nbnoli.gt.0) then
-        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl)
+    call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
+    if (nbnoli .gt. 0) then
+        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
         call mdlibe(nomres(iarch_sd), nbnoli)
     end if
 
-    call dtmget(sd_dtm, _CALC_SD ,kscal=result)
+    call dtmget(sd_dtm, _CALC_SD, kscal=result)
 
 !   3 - Allocate the final result using dtmallo, set the iarch_sd flag to 0 and the size
 !       of the allocation vectors to the cumulated value
     call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=0)
-    call dtmsav(sd_dtm, _ARCH_NB , 1, iscal=nbsauv)
+    call dtmsav(sd_dtm, _ARCH_NB, 1, iscal=nbsauv)
     call dtmallo(sd_dtm)
 
     call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
-
 
 !   ----------------------------------
 !   decal : Array index-sliders
@@ -119,8 +118,8 @@ subroutine dtmconc(sd_dtm_)
 
 !       --- Special care is needed for the last data structure
         copysize = sizres(i)
-        if (i.eq.iarch_sd) copysize = nbsauv - decal(1)
-        nbstoc=nbmode*copysize
+        if (i .eq. iarch_sd) copysize = nbsauv-decal(1)
+        nbstoc = nbmode*copysize
 !
         call jeveuo(nomres(i)//'           .ORDR', 'L', jordr)
         call jacopo(copysize, 'I', jordr, allocs(1)+decal(1))
@@ -152,20 +151,20 @@ subroutine dtmconc(sd_dtm_)
             nbvint = vindx(nbnoli+1)-1
 
             call jeveuo(nomres(i)//'        .NL.VINT', 'L', jvint)
-            call dcopy (nbvint*copysize, zr(jvint), 1, zr(allocs(7)+decal(3)), 1)
+            call dcopy(nbvint*copysize, zr(jvint), 1, zr(allocs(7)+decal(3)), 1)
             call jedetr(nomres(i)//'        .NL.VINT')
 !
-        endif
+        end if
 
-        decal(1) = decal(1) + copysize
-        decal(2) = decal(2) + nbmode*copysize
-        decal(3) = decal(3) + nbvint*copysize
+        decal(1) = decal(1)+copysize
+        decal(2) = decal(2)+nbmode*copysize
+        decal(3) = decal(3)+nbvint*copysize
 
         call jedetc('V', nomres(i), 1)
-    enddo
+    end do
 
     AS_DEALLOCATE(vk8=nomres)
-    AS_DEALLOCATE(vi =sizres)
+    AS_DEALLOCATE(vi=sizres)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,12 +54,12 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
     aster_logical, parameter :: l_stop = ASTER_TRUE
 ! ----------------------------------------------------------------------
 !
-    mesh     = meshz
+    mesh = meshz
     type_obj = typez_objet
 !
-    if ( list_size .lt. 1 ) then
+    if (list_size .lt. 1) then
         goto 999
-    endif
+    end if
 !
     noeuma = mesh//'.NOMNOE'
     grnoma = mesh//'.GROUPENO'
@@ -74,9 +74,9 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 !        AUX GROUP_NO DU MAILLAGE
 !        -------------------------------------------------------
 !
-        if(.not.l_parallel_mesh) then
+        if (.not. l_parallel_mesh) then
             call jeexin(grnoma, iret)
-            if ((list_size.ne.0) .and. (iret.eq.0)) then
+            if ((list_size .ne. 0) .and. (iret .eq. 0)) then
                 valk(1) = type_obj
                 valk(2) = mesh
                 call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
@@ -85,25 +85,25 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 !
         call cleanListOfGrpNo(mesh, list_obj, list_size, l_stop, iret)
 !
-        if(.not.l_parallel_mesh) then
+        if (.not. l_parallel_mesh) then
             ASSERT(iret == 1)
         end if
 !
-    else if (type_obj.eq.'NOEUD') then
+    else if (type_obj .eq. 'NOEUD') then
 !
 !      --VERIFICATION DE L'APPARTENANCE DES NOEUDS
 !        AUX NOEUDS DU MAILLAGE
 !        -------------------------------------------------------
-        if (l_parallel_mesh.and.list_size.ne.0) then
+        if (l_parallel_mesh .and. list_size .ne. 0) then
             call utmess('F', 'MODELISA7_86')
-        endif
+        end if
 !
         call jeexin(noeuma, iret)
-        if ((list_size.ne.0) .and. (iret.eq.0)) then
+        if ((list_size .ne. 0) .and. (iret .eq. 0)) then
             valk(1) = type_obj
             valk(2) = mesh
             call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
-        endif
+        end if
 !
         do ino = 1, list_size
             object = list_obj(ino)
@@ -112,17 +112,17 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
                 valk(1) = object
                 valk(2) = mesh
                 call utmess('F', 'MODELISA7_76', nk=2, valk=valk)
-            endif
+            end if
         end do
 !
-    else if (type_obj.eq.'GROUP_MA') then
+    else if (type_obj .eq. 'GROUP_MA') then
 !
 !      --VERIFICATION DE L'APPARTENANCE DES GROUP_MA
 !        AUX GROUP_MA DU MAILLAGE
 !        -------------------------------------------------------
-        if(.not.l_parallel_mesh) then
+        if (.not. l_parallel_mesh) then
             call jeexin(grmama, iret)
-            if ((list_size.ne.0) .and. (iret.eq.0)) then
+            if ((list_size .ne. 0) .and. (iret .eq. 0)) then
                 valk(1) = type_obj
                 valk(2) = mesh
                 call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
@@ -131,25 +131,25 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 !
         call cleanListOfGrpMa(mesh, list_obj, list_size, l_stop, iret)
 !
-        if(.not.l_parallel_mesh) then
+        if (.not. l_parallel_mesh) then
             ASSERT(iret == 1)
         end if
 !
-    else if (type_obj.eq.'MAILLE') then
+    else if (type_obj .eq. 'MAILLE') then
 !
 !      --VERIFICATION DE L'APPARTENANCE DES MAILLES
 !        AUX MAILLES DU MAILLAGE
 !        -------------------------------------------------------
-        if (l_parallel_mesh.and.list_size.ne.0) then
+        if (l_parallel_mesh .and. list_size .ne. 0) then
             call utmess('F', 'MODELISA7_86')
-        endif
+        end if
 !
         call jeexin(mailma, iret)
-        if ((list_size.ne.0) .and. (iret.eq.0)) then
+        if ((list_size .ne. 0) .and. (iret .eq. 0)) then
             valk(1) = type_obj
             valk(2) = mesh
             call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
-        endif
+        end if
 !
         do ima = 1, list_size
             object = list_obj(ima)
@@ -158,11 +158,11 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
                 valk(1) = object
                 valk(2) = mesh
                 call utmess('F', 'MODELISA6_10', nk=2, valk=valk)
-            endif
+            end if
         end do
 !
     else
         call utmess('F', 'MODELISA7_79', sk=type_obj)
-    endif
+    end if
 999 continue
 end subroutine

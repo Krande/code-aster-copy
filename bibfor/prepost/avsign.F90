@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
+subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp, &
                   kwork, sommw, tspaq, i, jvsign)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -76,28 +76,28 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
 !       ENDIF
     decal = 18
     do ivect = 1, nbvec
-        nx = vectn((ivect-1)*3 + 1)
-        ny = vectn((ivect-1)*3 + 2)
-        nz = vectn((ivect-1)*3 + 3)
+        nx = vectn((ivect-1)*3+1)
+        ny = vectn((ivect-1)*3+2)
+        nz = vectn((ivect-1)*3+3)
 !
         do iordr = 1, nbordr
-            adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
-            sixx = vwork(adrs + 1)
-            siyy = vwork(adrs + 2)
-            sizz = vwork(adrs + 3)
-            sixy = vwork(adrs + 4)
-            sixz = vwork(adrs + 5)
-            siyz = vwork(adrs + 6)
+            adrs = (iordr-1)*tspaq+kwork*sommw*decal+(i-1)*decal
+            sixx = vwork(adrs+1)
+            siyy = vwork(adrs+2)
+            sizz = vwork(adrs+3)
+            sixy = vwork(adrs+4)
+            sixz = vwork(adrs+5)
+            siyz = vwork(adrs+6)
 !
 ! CALCUL DE vect_F = [SIG].vect_n
-            fx = sixx*nx + sixy*ny + sixz*nz
-            fy = sixy*nx + siyy*ny + siyz*nz
-            fz = sixz*nx + siyz*ny + sizz*nz
+            fx = sixx*nx+sixy*ny+sixz*nz
+            fy = sixy*nx+siyy*ny+siyz*nz
+            fz = sixz*nx+siyz*ny+sizz*nz
 !
 ! CALCUL DE NORM = vect_F.vect_n
-            norm = fx*nx + fy*ny + fz*nz
+            norm = fx*nx+fy*ny+fz*nz
             zr(jvsign+n) = norm
-            n = n + 1
+            n = n+1
         end do
     end do
 !

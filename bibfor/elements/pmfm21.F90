@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 
 subroutine pmfm21(kanl, m, casrho, casece, a, &
-                  xl, xiy, xiz, g, alfay,&
-                  alfaz, ey, ez )
+                  xl, xiy, xiz, g, alfay, &
+                  alfaz, ey, ez)
     implicit none
 #include "asterc/r8gaem.h"
 #include "asterfort/utmess.h"
     integer :: kanl
-    real(kind=8) :: casece(6),  a, xl, xiy, xiz, g
-    real(kind=8) :: m(*), alfay, alfaz,  ey, ez, casrho(6)
+    real(kind=8) :: casece(6), a, xl, xiy, xiz, g
+    real(kind=8) :: m(*), alfay, alfaz, ey, ez, casrho(6)
 !     CALCUL DE LA MATRICE DE MASSE DES ELEMENTS POU_D_TGM
 !          - DROIT A SECTION CONSTANTE
 !     PAR LA METHODE
@@ -63,7 +63,7 @@ subroutine pmfm21(kanl, m, casrho, casece, a, &
     integer :: ip(12), i
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data    ip/0,1,3,6,10,15,21,28,36,45,55,66/
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/
 !
 !     INITIALISATION
     zero = 0.0d0
@@ -77,8 +77,8 @@ subroutine pmfm21(kanl, m, casrho, casece, a, &
             g = 1.0d0
         else
             call utmess('F', 'ELEMENTS2_54')
-        endif
-    endif
+        end if
+    end if
 !
     c001 = 1.0d0
     c002 = 2.0d0
@@ -116,160 +116,160 @@ subroutine pmfm21(kanl, m, casrho, casece, a, &
         zinex = (casrho(4)+casrho(5))*xl/c002
 
         c = zaire*xl
-        c = min(c*xl/c105,c/c048)
-        m(ip( 1)+ 1) = zaire/c002
-        m(ip( 2)+ 2) = zaire/c002
-        m(ip( 3)+ 3) = zaire/c002
-        m(ip( 4)+ 4) = zinex
-        m(ip( 5)+ 5) = c + (casrho(4)+casrho(5))*xl/c015
-        m(ip( 6)+ 6) = c + (casrho(4)+casrho(5))*xl/c015
-        m(ip( 7)+ 7) = zaire/c002
-        m(ip( 8)+ 8) = zaire/c002
-        m(ip( 9)+ 9) = zaire/c002
+        c = min(c*xl/c105, c/c048)
+        m(ip(1)+1) = zaire/c002
+        m(ip(2)+2) = zaire/c002
+        m(ip(3)+3) = zaire/c002
+        m(ip(4)+4) = zinex
+        m(ip(5)+5) = c+(casrho(4)+casrho(5))*xl/c015
+        m(ip(6)+6) = c+(casrho(4)+casrho(5))*xl/c015
+        m(ip(7)+7) = zaire/c002
+        m(ip(8)+8) = zaire/c002
+        m(ip(9)+9) = zaire/c002
         m(ip(10)+10) = zinex
-        m(ip(11)+11) = m(ip( 5)+ 5)
-        m(ip(12)+12) = m(ip( 6)+ 6)
+        m(ip(11)+11) = m(ip(5)+5)
+        m(ip(12)+12) = m(ip(6)+6)
     else
 !     ------------------------------------------------------------------
 !                       MASSES COHERENTES   KANL = 1
 !     ------------------------------------------------------------------
         zaire = a
-        zcont = casrho(1) * xl
-        m(ip(1)+ 1) = zcont / c003
-        m(ip(7)+ 1) = m(ip(1)+ 1) / c002
-        m(ip(7)+ 7) = m(ip(1)+ 1)
+        zcont = casrho(1)*xl
+        m(ip(1)+1) = zcont/c003
+        m(ip(7)+1) = m(ip(1)+1)/c002
+        m(ip(7)+7) = m(ip(1)+1)
 !
-        xl2 = xl * xl
-        xjx = xiy + xiz
+        xl2 = xl*xl
+        xjx = xiy+xiz
 !
 !       CALCUL DES COEFFICIENTS INDUIT PAR LE CISAILLEMENT
 !       1/ AIRE REDUITE EN Y
-        asy = a / alfaz
+        asy = a/alfaz
 !       2/ AIRE REDUITE EN Z
-        asz = a / alfay
-        phiy = ( c012 * casece(4) ) / (g * asz * xl2 )
-        phiz = ( c012 * casece(5) ) / (g * asy * xl2 )
+        asz = a/alfay
+        phiy = (c012*casece(4))/(g*asz*xl2)
+        phiz = (c012*casece(5))/(g*asy*xl2)
 !
-        phiy2 = phiy * phiy
-        phiz2 = phiz * phiz
+        phiy2 = phiy*phiy
+        phiz2 = phiz*phiz
 !
-        c = zcont / ( c001 + phiy )**2
-        zial = xiz / ( zaire * xl2 )
-        m(ip( 2)+ 2) = c * (&
-                        c013 / c035 + phiy * c007 / c010 + phiy2 / c003 + zial * c006 / c005)
-        m(ip( 6)+ 2) = c * xl *(&
-                        c011 / c210 + phiy * c011 / c120 + phiy2 / c024 + zial / c010 - phiy *&
-                        & zial / c002&
+        c = zcont/(c001+phiy)**2
+        zial = xiz/(zaire*xl2)
+        m(ip(2)+2) = c*( &
+                     c013/c035+phiy*c007/c010+phiy2/c003+zial*c006/c005)
+        m(ip(6)+2) = c*xl*( &
+                        c011/c210+phiy*c011/c120+phiy2/c024+zial/c010-phiy*&
+                        & zial/c002 &
                         )
-        m(ip( 8)+ 2) = c * (&
-                        c009 / c070 + phiy * c003 / c010 + phiy2 / c006 - zial * c006 / c005)
-        m(ip(12)+ 2) = c * xl *(&
-                        - c013 / c420 - phiy*c003 / c040 - phiy2 / c024 + zial / c010 - phiy *&
-                        & zial / c002&
+        m(ip(8)+2) = c*( &
+                     c009/c070+phiy*c003/c010+phiy2/c006-zial*c006/c005)
+        m(ip(12)+2) = c*xl*( &
+                        -c013/c420-phiy*c003/c040-phiy2/c024+zial/c010-phiy*&
+                        & zial/c002 &
                         )
-        m(ip( 6)+ 6) = c * xl2 * (&
-                        c001 / c105 + phiy / c060 + phiy2 / c120 + zial * (&
-                        c002 / c015 + phiy / c006 + phiy2 / c003)&
-                        )
-        m(ip( 8)+ 6) = - m(ip(12)+ 2)
-        m(ip(12)+ 6) = c * xl2 * (&
-                        - c001 / c140 - phiy / c060 - phiy2 / c120 - zial * (&
-                        c001 / c030 + phiy / c006 - phiy2 / c006)&
-                        )
-        m(ip( 8)+ 8) = m(ip(2)+ 2)
-        m(ip(12)+ 8) = - m(ip(6)+ 2)
-        m(ip(12)+12) = m(ip(6)+ 6)
+        m(ip(6)+6) = c*xl2*( &
+                     c001/c105+phiy/c060+phiy2/c120+zial*( &
+                     c002/c015+phiy/c006+phiy2/c003) &
+                     )
+        m(ip(8)+6) = -m(ip(12)+2)
+        m(ip(12)+6) = c*xl2*( &
+                      -c001/c140-phiy/c060-phiy2/c120-zial*( &
+                      c001/c030+phiy/c006-phiy2/c006) &
+                      )
+        m(ip(8)+8) = m(ip(2)+2)
+        m(ip(12)+8) = -m(ip(6)+2)
+        m(ip(12)+12) = m(ip(6)+6)
 !
-        c = zcont / ( c001 + phiz )**2
-        yial = xiy / ( zaire * xl2 )
-        m(ip( 3)+ 3) = c * (&
-                        c013 / c035 + phiz * c007 / c010 + phiz2 / c003 + yial * c006 / c0&
-                        &05&
+        c = zcont/(c001+phiz)**2
+        yial = xiy/(zaire*xl2)
+        m(ip(3)+3) = c*( &
+                        c013/c035+phiz*c007/c010+phiz2/c003+yial*c006/c0&
+                        &05 &
                         )
-        m(ip( 5)+ 3) = - c * xl * (&
-                        c011 / c210 + phiz * c011 / c120 + phiz2 / c024 + yial / c010 - ph&
-                        &iz * yial / c002&
+        m(ip(5)+3) = -c*xl*( &
+                        c011/c210+phiz*c011/c120+phiz2/c024+yial/c010-ph&
+                        &iz*yial/c002 &
                         )
-        m(ip( 9)+ 3) = c * (&
-                        c009 / c070 + phiz * c003 / c010 + phiz2 / c006 - yial * c006 / c0&
-                        &05&
+        m(ip(9)+3) = c*( &
+                        c009/c070+phiz*c003/c010+phiz2/c006-yial*c006/c0&
+                        &05 &
                         )
-        m(ip(11)+ 3) = - c * xl * (&
-                        - c013 / c420 - phiz * c003 / c040 - phiz2 / c024 + yial / c010 - &
-                        &phiz * yial / c002&
+        m(ip(11)+3) = -c*xl*( &
+                        -c013/c420-phiz*c003/c040-phiz2/c024+yial/c010- &
+                        &phiz*yial/c002 &
                         )
-        m(ip( 4)+ 4) = zcont * xjx / ( c003 * zaire)
-        m(ip(10)+ 4) = m(ip(4)+ 4) / c002
-        m(ip( 5)+ 5) = c * xl2 * (&
-                        c001 / c105 + phiz / c060 + phiz2 / c120 + yial * (&
-                        c002 / c015 + phiz / c006 + phiz2 / c003)&
-                        )
-        m(ip( 9)+ 5) = - m(ip(11)+ 3)
-        m(ip(11)+ 5) = c * xl2 * (&
-                        - c001 / c140 - phiz / c060 - phiz2 / c120 - yial * (&
-                        c001 / c030 + phiz / c006 - phiz2 / c006)&
-                        )
-        m(ip( 9)+ 9) = m(ip(3)+ 3)
-        m(ip(11)+ 9) = - m(ip(5)+ 3)
-        m(ip(10)+10) = m(ip(4)+ 4)
-        m(ip(11)+11) = m(ip(5)+ 5)
+        m(ip(4)+4) = zcont*xjx/(c003*zaire)
+        m(ip(10)+4) = m(ip(4)+4)/c002
+        m(ip(5)+5) = c*xl2*( &
+                     c001/c105+phiz/c060+phiz2/c120+yial*( &
+                     c002/c015+phiz/c006+phiz2/c003) &
+                     )
+        m(ip(9)+5) = -m(ip(11)+3)
+        m(ip(11)+5) = c*xl2*( &
+                      -c001/c140-phiz/c060-phiz2/c120-yial*( &
+                      c001/c030+phiz/c006-phiz2/c006) &
+                      )
+        m(ip(9)+9) = m(ip(3)+3)
+        m(ip(11)+9) = -m(ip(5)+3)
+        m(ip(10)+10) = m(ip(4)+4)
+        m(ip(11)+11) = m(ip(5)+5)
 !
         if (ez .ne. zero .or. ey .ne. zero) then
 !       --- DANS LE REPERE LIE AU C D TORSION ---
-            m(ip( 4)+ 4) = m(ip( 4)+ 4) + (ez*ez+ey*ey)*zcont/ c003
-            m(ip(10)+10) = m(ip( 4)+ 4)
-            m(ip(10)+ 4) = m(ip(10)+ 4) + (ez*ez+ey*ey)*zcont/ c006
+            m(ip(4)+4) = m(ip(4)+4)+(ez*ez+ey*ey)*zcont/c003
+            m(ip(10)+10) = m(ip(4)+4)
+            m(ip(10)+4) = m(ip(10)+4)+(ez*ez+ey*ey)*zcont/c006
 ! V TX
-            m(ip( 4)+ 2) = - ez * zcont * c007/c020
-            m(ip(10)+ 8) = m(ip( 4)+ 2)
-            m(ip(10)+ 2) = - ez * zcont * c003/c020
-            m(ip( 8)+ 4) = m(ip(10)+ 2)
+            m(ip(4)+2) = -ez*zcont*c007/c020
+            m(ip(10)+8) = m(ip(4)+2)
+            m(ip(10)+2) = -ez*zcont*c003/c020
+            m(ip(8)+4) = m(ip(10)+2)
 ! TX TZ
-            m(ip( 6)+ 4) = - ez * zcont *xl/c020
-            m(ip(12)+10) = - m(ip( 6)+ 4)
-            m(ip(12)+ 4) = + ez * zcont *xl/c030
-            m(ip(10)+ 6) = - m(ip(12)+ 4)
+            m(ip(6)+4) = -ez*zcont*xl/c020
+            m(ip(12)+10) = -m(ip(6)+4)
+            m(ip(12)+4) = +ez*zcont*xl/c030
+            m(ip(10)+6) = -m(ip(12)+4)
 ! W TX
-            m(ip( 4)+ 3) = - ey * zcont * c007/c020
-            m(ip(10)+ 9) = m(ip( 4)+ 3)
-            m(ip(10)+ 3) = - ey * zcont * c003/c020
-            m(ip( 9)+ 4) = m(ip(10)+ 3)
+            m(ip(4)+3) = -ey*zcont*c007/c020
+            m(ip(10)+9) = m(ip(4)+3)
+            m(ip(10)+3) = -ey*zcont*c003/c020
+            m(ip(9)+4) = m(ip(10)+3)
 ! TX TY
-            m(ip( 5)+ 4) = + ey * zcont *xl/c020
-            m(ip(11)+10) = - m(ip( 5)+ 4)
-            m(ip(11)+ 4) = - ey * zcont *xl/c030
-            m(ip(10)+ 5) = - m(ip(11)+ 4)
+            m(ip(5)+4) = +ey*zcont*xl/c020
+            m(ip(11)+10) = -m(ip(5)+4)
+            m(ip(11)+4) = -ey*zcont*xl/c030
+            m(ip(10)+5) = -m(ip(11)+4)
 !
 !                 --- REPASSAGE DANS LE REPERE LIE AU CDG ---
-            m(ip( 4)+ 4) = m(&
-                            ip( 4)+ 4) + ez * ez * m(ip( 2)+ 2) + ey * ey * m(ip( 3)+ 3) -&
-                            &2 * ez * m(ip( 4)+ 2) +2 * ey * m(ip( 4)+ 3&
+            m(ip(4)+4) = m( &
+                            ip(4)+4)+ez*ez*m(ip(2)+2)+ey*ey*m(ip(3)+3)-&
+                            &2*ez*m(ip(4)+2)+2*ey*m(ip(4)+3 &
                             )
-            m(ip(10)+ 4) = m(&
-                            ip(10)+ 4) + ez * ez * m(ip( 8)+ 2) + ey * ey * m(ip( 9)+ 3) -&
-                            & ez * m(ip(10)+ 2) + ey * m(ip(10)+ 3) - ez * m(ip( 8)+ 4) + &
-                            &ey * m( ip( 9)+ 4&
+            m(ip(10)+4) = m( &
+                            ip(10)+4)+ez*ez*m(ip(8)+2)+ey*ey*m(ip(9)+3)-&
+                            & ez*m(ip(10)+2)+ey*m(ip(10)+3)-ez*m(ip(8)+4)+ &
+                            &ey*m(ip(9)+4 &
                             )
-            m(ip(10)+10) = m(&
-                            ip(10)+10) + ez * ez * m(ip( 8)+ 8) + ey * ey * m(ip( 9)+ 9) -&
-                            &2 * ez * m(ip(10)+ 8) +2 * ey * m(ip(10)+ 9&
+            m(ip(10)+10) = m( &
+                            ip(10)+10)+ez*ez*m(ip(8)+8)+ey*ey*m(ip(9)+9)-&
+                            &2*ez*m(ip(10)+8)+2*ey*m(ip(10)+9 &
                             )
-            m(ip( 4)+ 2) = - ez * m(ip( 2)+ 2) + m(ip( 4)+ 2)
-            m(ip(10)+ 2) = - ez * m(ip( 8)+ 2) + m(ip(10)+ 2)
-            m(ip( 4)+ 3) = ey * m(ip( 3)+ 3) + m(ip( 4)+ 3)
-            m(ip(10)+ 3) = ey * m(ip( 9)+ 3) + m(ip(10)+ 3)
-            m(ip( 5)+ 4) = ey * m(ip( 5)+ 3) + m(ip( 5)+ 4)
-            m(ip( 6)+ 4) = - ez * m(ip( 6)+ 2) + m(ip( 6)+ 4)
-            m(ip( 8)+ 4) = - ez * m(ip( 8)+ 2) + m(ip( 8)+ 4)
-            m(ip( 9)+ 4) = ey * m(ip( 9)+ 3) + m(ip( 9)+ 4)
-            m(ip(11)+ 4) = ey * m(ip(11)+ 3) + m(ip(11)+ 4)
-            m(ip(12)+ 4) = - ez * m(ip(12)+ 2) + m(ip(12)+ 4)
-            m(ip(10)+ 5) = ey * m(ip( 9)+ 5) + m(ip(10)+ 5)
-            m(ip(10)+ 6) = - ez * m(ip( 8)+ 6) + m(ip(10)+ 6)
-            m(ip(10)+ 8) = - ez * m(ip( 8)+ 8) + m(ip(10)+ 8)
-            m(ip(10)+ 9) = ey * m(ip( 9)+ 9) + m(ip(10)+ 9)
-            m(ip(11)+10) = ey * m(ip(11)+ 9) + m(ip(11)+10)
-            m(ip(12)+10) = - ez * m(ip(12)+ 8) + m(ip(12)+10)
-        endif
-    endif
+            m(ip(4)+2) = -ez*m(ip(2)+2)+m(ip(4)+2)
+            m(ip(10)+2) = -ez*m(ip(8)+2)+m(ip(10)+2)
+            m(ip(4)+3) = ey*m(ip(3)+3)+m(ip(4)+3)
+            m(ip(10)+3) = ey*m(ip(9)+3)+m(ip(10)+3)
+            m(ip(5)+4) = ey*m(ip(5)+3)+m(ip(5)+4)
+            m(ip(6)+4) = -ez*m(ip(6)+2)+m(ip(6)+4)
+            m(ip(8)+4) = -ez*m(ip(8)+2)+m(ip(8)+4)
+            m(ip(9)+4) = ey*m(ip(9)+3)+m(ip(9)+4)
+            m(ip(11)+4) = ey*m(ip(11)+3)+m(ip(11)+4)
+            m(ip(12)+4) = -ez*m(ip(12)+2)+m(ip(12)+4)
+            m(ip(10)+5) = ey*m(ip(9)+5)+m(ip(10)+5)
+            m(ip(10)+6) = -ez*m(ip(8)+6)+m(ip(10)+6)
+            m(ip(10)+8) = -ez*m(ip(8)+8)+m(ip(10)+8)
+            m(ip(10)+9) = ey*m(ip(9)+9)+m(ip(10)+9)
+            m(ip(11)+10) = ey*m(ip(11)+9)+m(ip(11)+10)
+            m(ip(12)+10) = -ez*m(ip(12)+8)+m(ip(12)+10)
+        end if
+    end if
 end subroutine

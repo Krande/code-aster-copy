@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
     character(len=24) :: grp(3), elfis_heav, elfis_ctip, elfis_hect
     character(len=8) :: typma
     character(len=6) :: nompro
-    parameter (nompro = 'XBARVI')
+    parameter(nompro='XBARVI')
     integer :: zxain, ier
     aster_logical :: lmulti
     integer :: igrp, jgrp, ienr, nmaenr, iar
@@ -95,18 +95,18 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
     else
         lmulti = .true.
         call jeveuo('&&XCONTA.NBSP', 'L', vi=nbsp)
-    endif
+    end if
 !
 ! --- Le tableau tabai a été créé par xlagsp ?
 !
     call jeexin(tabai, ier)
-    if(ier.ne.0) then
+    if (ier .ne. 0) then
         call jeveuo(tabai, 'L', vi=vtabai)
         call jelira(tabai, 'LONMAX', dimai)
-        nbedge=dimai/3
+        nbedge = dimai/3
     else
-        nbedge=0
-    endif
+        nbedge = 0
+    end if
 !
 ! --- ON RECUPERE DES INFOS GLOBALES SUR LE MAILLAGE
 !
@@ -125,14 +125,14 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
 !
 ! --- RECUPERATION DES GROUPES
 !
-    elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
-    elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
-    elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
-    call xelfis_lists(fiss, nomo, elfis_heav,&
-                          elfis_ctip, elfis_hect)
-    grp(1)=elfis_heav
-    grp(2)=elfis_ctip
-    grp(3)=elfis_hect
+    elfis_heav = '&&'//nompro//'.ELEMFISS.HEAV'
+    elfis_ctip = '&&'//nompro//'.ELEMFISS.CTIP'
+    elfis_hect = '&&'//nompro//'.ELEMFISS.HECT'
+    call xelfis_lists(fiss, nomo, elfis_heav, &
+                      elfis_ctip, elfis_hect)
+    grp(1) = elfis_heav
+    grp(2) = elfis_ctip
+    grp(3) = elfis_hect
 !
 ! --- Boucle sur les groupes de mailles
 !
@@ -150,24 +150,24 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
             if (ifiss .eq. 0) cycle
             call cesexi('C', jcsd1, jcsl1, ima, 1, ifiss, 1, iad)
             if (iad .eq. 0) cycle
-            ASSERT(iad.gt.0)
+            ASSERT(iad .gt. 0)
             ninter = csv1(iad)
             if (ninter .eq. 0) cycle
-            ASSERT(ninter.gt.0)
+            ASSERT(ninter .gt. 0)
             call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typma)
             call conare(typma, ar, nbar)
 !
 ! --- Boucle sur les arêtes intersectées
 !
             do pin = 1, ninter
-                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+ 1, iad)
-                ASSERT(iad.gt.0)
-                ia=nint(csv2(iad))
-                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+ 2, iad)
-                ASSERT(iad.gt.0)
-                no=nint(csv2(iad))
-                ASSERT(no.ge.0)
-                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+ 5, iad)
+                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+1, iad)
+                ASSERT(iad .gt. 0)
+                ia = nint(csv2(iad))
+                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+2, iad)
+                ASSERT(iad .gt. 0)
+                no = nint(csv2(iad))
+                ASSERT(no .ge. 0)
+                call cesexi('S', jcsd2, jcsl2, ima, 1, ifiss, zxain*(pin-1)+5, iad)
                 if (iad .le. 0) iad = -iad
 !
 ! --- S IL S'AGIT D'UN NOEUD, ALORS IL EST VITAL
@@ -175,15 +175,15 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
                 if (no .gt. 0) then
                     csv2(iad) = 1
                     zl(jcsl2-1+iad) = .true.
-                endif
+                end if
 !
 ! --- S IL S'AGIT D'UNE ARRETE, RECUP DES NUM GLOBAUX DE SES NOEUDS
 !
                 if (ia .gt. 0) then
                     do i = 1, 2
-                        nloc(i) = ar(ia,i)
+                        nloc(i) = ar(ia, i)
                         nglo(i) = connex(zi(jconx2+ima-1)+nloc(i)-1)
-                    enddo
+                    end do
 !
 ! --- Initialisation: on écrit 0 par défaut
 !
@@ -193,26 +193,26 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
 ! --- Recherche de l'arête pour récupérer son statut stocké dans tabai
 !
                     do iar = 1, nbedge
-                        if ((vtabai(3*(iar-1) + 1).eq.nglo(1) .and. &
-                             vtabai(3*(iar-1) + 2).eq.nglo(2)) .or.&
-                            (vtabai(3*(iar-1) + 1).eq.nglo(2) .and. &
-                             vtabai(3*(iar-1) + 2).eq.nglo(1))) then
+                        if ((vtabai(3*(iar-1)+1) .eq. nglo(1) .and. &
+                             vtabai(3*(iar-1)+2) .eq. nglo(2)) .or. &
+                            (vtabai(3*(iar-1)+1) .eq. nglo(2) .and. &
+                             vtabai(3*(iar-1)+2) .eq. nglo(1))) then
 !                           'iar' est l'indice de l'arête recherchée. On copie les informations
-                            csv2(iad) = vtabai(3*(iar-1) + 3)
-                        endif
-                    enddo
+                            csv2(iad) = vtabai(3*(iar-1)+3)
+                        end if
+                    end do
 !
-                endif
-            enddo
-        enddo
-    enddo
+                end if
+            end do
+        end do
+    end do
 !
 !   menage
 !
     do igrp = 1, 3
         call jeexin(grp(igrp), iret)
         if (iret .ne. 0) call jedetr(grp(igrp))
-    enddo
+    end do
 !
     call jedetr(tabai)
     call jedetr(fiss(1:8)//'.PILO')

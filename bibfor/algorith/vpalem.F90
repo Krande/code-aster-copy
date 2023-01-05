@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ function vpalem(x)
 !---------------------------------------------------------------
 !FIN
 !     COMMON POUR LES PARAMETRES DES LOIS VISCOPLASTIQUES
-    common / nmpavp / dpc,sieleq,deuxmu,deltat,tschem,prec,theta,niter
+    common/nmpavp/dpc, sieleq, deuxmu, deltat, tschem, prec, theta, niter
     real(kind=8) :: dpc, sieleq, deuxmu, deltat, tschem, prec, theta, niter
 !
 !     COMMON POUR LES PARAMETRES DE LA LOI DE LEMAITRE (NON IRRADIEE)
-    common / nmpale / unsurk,unsurm,valden
+    common/nmpale/unsurk, unsurm, valden
     real(kind=8) :: unsurk, unsurm, valden
 !
     real(kind=8) :: g
@@ -54,10 +54,10 @@ function vpalem(x)
             g = exp(valden*g)
             g = g*theta
         else
-            g = log(x*unsurk)-unsurm*log(dpc+(sieleq-x)/(1.5d0*deuxmu) )
+            g = log(x*unsurk)-unsurm*log(dpc+(sieleq-x)/(1.5d0*deuxmu))
             g = exp(valden*g)
             g = g*theta
-        endif
-    endif
-    vpalem = 1.5d0*deuxmu*deltat*g + x - sieleq
+        end if
+    end if
+    vpalem = 1.5d0*deuxmu*deltat*g+x-sieleq
 end function

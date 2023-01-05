@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,32 +36,32 @@ subroutine irrfss(sig, ddfdds)
 !                     D      = SIG - 1/3 TR(SIG) I
 !       ----------------------------------------------------------------
     real(kind=8) :: id(6, 6), d23, d13, zero, un, s
-    parameter       ( d23  =  .66666666666666d0 )
-    parameter       ( d13  = -.33333333333333d0 )
-    parameter       ( zero =  0.d0              )
-    parameter       ( un   =  1.d0              )
+    parameter(d23=.66666666666666d0)
+    parameter(d13=-.33333333333333d0)
+    parameter(zero=0.d0)
+    parameter(un=1.d0)
     real(kind=8) :: dev(6), dfds(6), dfds2(6, 6)
     integer :: ndt, ndi
-    common /tdim/ ndt, ndi
-    data id         / d23   , d13   , d13   , zero , zero , zero ,&
-     &                  d13   , d23   , d13   , zero , zero , zero ,&
-     &                  d13   , d13   , d23   , zero , zero , zero ,&
-     &                  zero  , zero  , zero  , un   , zero , zero ,&
-     &                  zero  , zero  , zero  , zero , un   , zero ,&
-     &                  zero  , zero  , zero  , zero , zero , un /
+    common/tdim/ndt, ndi
+    data id/d23, d13, d13, zero, zero, zero,&
+     &                  d13, d23, d13, zero, zero, zero,&
+     &                  d13, d13, d23, zero, zero, zero,&
+     &                  zero, zero, zero, un, zero, zero,&
+     &                  zero, zero, zero, zero, un, zero,&
+     &                  zero, zero, zero, zero, zero, un/
 !
 !
 !
     call lcdevi(sig, dev)
-    s = lcnrts ( dev )
+    s = lcnrts(dev)
     if (s .eq. 0.d0) then
-        ddfdds(:,:) = 0.d0
+        ddfdds(:, :) = 0.d0
     else
-        dfds(1:ndt) = (1.5d0/s) * dev(1:ndt)
+        dfds(1:ndt) = (1.5d0/s)*dev(1:ndt)
         call lcprte(dfds, dfds, dfds2)
-        ddfdds(1:ndt,1:ndt) = 1.5d0 * id(1:ndt,1:ndt)
-        ddfdds(1:ndt,1:ndt) = ddfdds(1:ndt,1:ndt) - dfds2(1:ndt,1:ndt)
-        ddfdds(1:ndt,1:ndt) = (1.d0/s) * ddfdds(1:ndt,1:ndt)
-    endif
+        ddfdds(1:ndt, 1:ndt) = 1.5d0*id(1:ndt, 1:ndt)
+        ddfdds(1:ndt, 1:ndt) = ddfdds(1:ndt, 1:ndt)-dfds2(1:ndt, 1:ndt)
+        ddfdds(1:ndt, 1:ndt) = (1.d0/s)*ddfdds(1:ndt, 1:ndt)
+    end if
 !
 end subroutine

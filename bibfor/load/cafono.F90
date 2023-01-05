@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cafono(load, loadLigrel, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -51,9 +51,9 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=19), intent(in) :: loadLigrel
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=19), intent(in) :: loadLigrel
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,9 +115,9 @@ character(len=4), intent(in) :: valeType
 !
     call char_crea_ligf(mesh, loadLigrel, nb_elem_late, nb_noel_maxi)
 !
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_2DDL' ), n2dl)
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_3DDL' ), n3dl)
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_6DDL' ), n6dl)
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_2DDL'), n2dl)
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_3DDL'), n3dl)
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_6DDL'), n6dl)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_COQ2D'), ncoq2d)
     ntypel(1) = n2dl
     ntypel(2) = n2dl
@@ -152,12 +152,12 @@ character(len=4), intent(in) :: valeType
     else
         call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
         call jeveuo(modelLigrel//'.PRNM', 'L', jprnm)
-    endif
+    end if
 !
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
     call jeveuo(loadLigrel//'.NBNO', 'E', jnbno)
     nomnoe = mesh//'.NOMNOE'
@@ -184,7 +184,7 @@ character(len=4), intent(in) :: valeType
         call wkvect('&&CAFONO.VALDDLR', 'V V R', nbcomp*nbnoeu, jval)
     else
         call wkvect('&&CAFONO.VALDDLF', 'V V K8', nbcomp*nbnoeu, jval)
-    endif
+    end if
     AS_ALLOCATE(vi=desgi, size=nbnoeu)
 !
     dgrd = r8dgrd()
@@ -192,7 +192,7 @@ character(len=4), intent(in) :: valeType
         do i = 1, nbcomp*nbnoeu
             zk8(jval-1+i) = '&FOZERO'
         end do
-    endif
+    end if
     nsurch = 0
 !
 ! --------------------------------------------------------------
@@ -209,7 +209,7 @@ character(len=4), intent(in) :: valeType
                 call getvr8(keywordFact, motcle(j), iocc=i, scal=valfor(j), nbret=forimp(j))
             end do
 !
-            call getvr8(keywordFact, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfor(8),&
+            call getvr8(keywordFact, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfor(8), &
                         nbret=nangl)
             if (nangl .ne. 0) then
 !              --- REPERE UTILISATEUR ---
@@ -222,9 +222,9 @@ character(len=4), intent(in) :: valeType
             else
 !              --- REPERE GLOBAL ---
                 valfor(7) = 0.d0
-            endif
+            end if
 !
-        else if (valeType.eq.'FONC') then
+        else if (valeType .eq. 'FONC') then
             do ii = 1, nbcomp
                 valfof(ii) = '&FOZERO'
             end do
@@ -232,7 +232,7 @@ character(len=4), intent(in) :: valeType
                 call getvid(keywordFact, motcle(j), iocc=i, scal=valfof(j), nbret=forimp(j))
             end do
 !
-            call getvid(keywordFact, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfof(8),&
+            call getvid(keywordFact, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfof(8), &
                         nbret=nangl)
             if (nangl .ne. 0) then
 !              --- REPERE UTILISATEUR ---
@@ -244,17 +244,17 @@ character(len=4), intent(in) :: valeType
             else
 !              --- REPERE GLOBAL ---
                 valfof(7) = 'GLOBAL'
-            endif
-        endif
+            end if
+        end if
         if (nangl .lt. 0) then
             call utmess('A', 'MODELISA2_66')
-        endif
+        end if
 !
 !       ---------------------------
 !       CAS DE GROUP_NO ET DE NOEUD
 !       ---------------------------
 !
-        call reliem(' ', mesh, 'NO_NOEUD', keywordFact, i,&
+        call reliem(' ', mesh, 'NO_NOEUD', keywordFact, i, &
                     2, motcls, typmcl, mesnoe, nbno)
         if (nbno .eq. 0) goto 110
         call jeveuo(mesnoe, 'L', jno)
@@ -263,20 +263,20 @@ character(len=4), intent(in) :: valeType
         do jj = 1, nbno
             call jenonu(jexnom(nomnoe, zk8(jno-1+jj)), ino)
             noms_noeuds(ino) = zk8(jno-1+jj)
-            call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm- 1+(ino-1)*nbec+1), nbcomp,&
-                        valeType, zk8(jno-1+jj), ino, nsurch, forimp,&
+            call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm-1+(ino-1)*nbec+1), nbcomp, &
+                        valeType, zk8(jno-1+jj), ino, nsurch, forimp, &
                         valfor, valfof, motcle, verif, nbec)
 
             if (desgi(ino) .ne. 0) l_occu_void = .false.
         end do
 
         if (l_occu_void) then
-            do ii =1, 6
+            do ii = 1, 6
                 if (forimp(ii) .ne. 0) then
                     call utmess('F', 'CHARGES2_46', sk=motcle(ii))
-                endif
-            enddo
-        endif
+                end if
+            end do
+        end if
 !
         call jedetr(mesnoe)
 110     continue
@@ -295,12 +295,12 @@ character(len=4), intent(in) :: valeType
     if (iret .eq. 0) then
         if (valeType .eq. 'REEL') then
             call alcart('G', carte, mesh, 'FORC_R')
-        else if (valeType.eq.'FONC') then
+        else if (valeType .eq. 'FONC') then
             call alcart('G', carte, mesh, 'FORC_F')
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
@@ -321,8 +321,8 @@ character(len=4), intent(in) :: valeType
     if (iexi .gt. 0) then
         call jeveuo(loadLigrel//'.LGNS', 'E', jlgns)
     else
-        jlgns=1
-    endif
+        jlgns = 1
+    end if
 !
 !     -----------------------------------------------
 !     BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
@@ -334,40 +334,40 @@ character(len=4), intent(in) :: valeType
 !
             nomn = noms_noeuds(ino)
             call jenonu(jexnom(nomnoe, nomn), in)
-            idgex = jprnm - 1 + (in-1)*nbec + 1
+            idgex = jprnm-1+(in-1)*nbec+1
 !
             do i = 1, 6
-                if (exisdg(zi(idgex),i)) then
+                if (exisdg(zi(idgex), i)) then
                     numel = ntypel(i)
-                endif
+                end if
             end do
-            if ((exisdg(zi(idgex),6)) .and. (.not. (exisdg(zi(idgex), 4)))) then
+            if ((exisdg(zi(idgex), 6)) .and. (.not. (exisdg(zi(idgex), 4)))) then
                 numel = ncoq2d
-            endif
+            end if
 !
-            igrel = igrel + 1
+            igrel = igrel+1
             call jenuno(jexnum('&CATA.TE.NOMTE', numel), nomele)
-            call noligr(loadLigrel, igrel, numel, in,&
+            call noligr(loadLigrel, igrel, numel, in, &
                         1, inema, zi(jnbno), jlgns)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
             if (valeType .eq. 'REEL') then
                 do i = 1, nbcomp
-                    zr(jvalv-1+i) = zr(jval-1+nbcomp* (ino-1)+i)
+                    zr(jvalv-1+i) = zr(jval-1+nbcomp*(ino-1)+i)
                 end do
             else
                 do i = 1, nbcomp
-                    zk8(jvalv-1+i) = zk8(jval-1+nbcomp* (ino-1)+i)
+                    zk8(jvalv-1+i) = zk8(jval-1+nbcomp*(ino-1)+i)
                 end do
-            endif
+            end if
 !
 !   ON CREE UNE CARTE POUR CHAQUE NOEUD AFFECTE ET ON NOTE TOUTES
 !   LES COMPOSANTES (NBCOMP)
 !
-            call nocart(carte, -3, nbcomp, ligrel=liel, nma=1,&
+            call nocart(carte, -3, nbcomp, ligrel=liel, nma=1, &
                         limanu=[zi(jl)])
 !
-        endif
+        end if
 !
     end do
 !
@@ -375,9 +375,9 @@ character(len=4), intent(in) :: valeType
     AS_DEALLOCATE(vi=desgi)
     if (valeType .eq. 'REEL') then
         call jedetr('&&CAFONO.VALDDLR')
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         call jedetr('&&CAFONO.VALDDLF')
-    endif
+    end if
 999 continue
     call jedema()
 end subroutine

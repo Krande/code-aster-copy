@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
+subroutine rcadma(jmat, phenom, nomres, valres, icodre, &
                   iarret)
     implicit none
 #include "jeveux.h"
@@ -45,7 +45,7 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
 !
     integer :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, ik, nbr, nbc
     integer :: lfct, imate, nbmat
-    parameter  ( lmat = 9 , lfct = 10)
+    parameter(lmat=9, lfct=10)
     character(len=24) :: valk
     character(len=8) :: nomail
     character(len=32) :: nomphe
@@ -54,15 +54,15 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
     icodre = 1
     nomphe = phenom
 !
-    nbmat=zi(jmat)
-    ASSERT(nbmat.eq.1)
+    nbmat = zi(jmat)
+    ASSERT(nbmat .eq. 1)
     imate = jmat+zi(jmat+nbmat+1)
 !
     do icomp = 1, zi(imate+1)
         if (nomphe .eq. zk32(zi(imate)+icomp-1)) then
             ipi = zi(imate+2+icomp-1)
             goto 11
-        endif
+        end if
     end do
 !
 !     -- SELON LA VALEUR DE IARRET ON ARRETE OU NON :
@@ -71,15 +71,15 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
         call utmess('F+', 'CALCUL_46', sk=valk)
         if (iarret .eq. 1) then
             call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3)(1:8)
+            nomail = zk24(iazk24-1+3) (1:8)
             valk = nomail
             call utmess('F+', 'CALCUL_47', sk=valk)
-        endif
+        end if
         call utmess('F', 'VIDE_1')
-    endif
+    end if
     goto 999
 !
- 11 continue
+11  continue
 !
     nbr = zi(ipi)
     nbc = zi(ipi+1)
@@ -88,11 +88,11 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
     do ik = 1, nbk
         if (nomres .eq. zk16(ivalk+nbr+nbc+ik-1)) then
             icodre = 0
-            ipif = ipi + lmat + (ik-1)*lfct -1
-            ASSERT(zi(ipif+9).eq.2)
-            valres = zi(ipif )
+            ipif = ipi+lmat+(ik-1)*lfct-1
+            ASSERT(zi(ipif+9) .eq. 2)
+            valres = zi(ipif)
             goto 999
-        endif
+        end if
     end do
 !
     call rcvals(iarret, [icodre], 1, nomres)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine regup1(x0, y0, y0p,&
-                  a , b)
+subroutine regup1(x0, y0, y0p, &
+                  a, b)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: x0, y0, y0p
-real(kind=8), intent(out) :: a, b
+    real(kind=8), intent(in) :: x0, y0, y0p
+    real(kind=8), intent(out) :: a, b
 !
 ! --------------------------------------------------------------------------------------------------
 !

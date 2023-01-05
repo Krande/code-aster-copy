@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nxnpas(sddisc, solver    , nume_inst, ds_print,&
-                  lnkry , l_evol    , l_stat   ,&
-                  l_dry , result_dry, dry_prev , dry_curr,&
-                  para  , time_curr , deltat   , reasma  ,&
+subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
+                  lnkry, l_evol, l_stat, &
+                  l_dry, result_dry, dry_prev, dry_curr, &
+                  para, time_curr, deltat, reasma, &
                   tpsthe)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -39,17 +39,17 @@ implicit none
 #include "asterfort/nonlinDSPrintInitTimeStep.h"
 #include "asterfort/nonlinDSPrintHeadTimeStep.h"
 !
-character(len=19), intent(in) :: sddisc, solver
-type(NL_DS_Print), intent(inout) :: ds_print
-integer, intent(in) :: nume_inst
-aster_logical, intent(in) :: lnkry, l_evol, l_stat
-aster_logical, intent(in) :: l_dry
-character(len=8), intent(in) :: result_dry
-character(len=24), intent(in) :: dry_prev, dry_curr
-real(kind=8), intent(inout) :: para(2)
-real(kind=8), intent(out) :: time_curr, deltat
-aster_logical, intent(out) :: reasma
-real(kind=8), intent(out) :: tpsthe(6)
+    character(len=19), intent(in) :: sddisc, solver
+    type(NL_DS_Print), intent(inout) :: ds_print
+    integer, intent(in) :: nume_inst
+    aster_logical, intent(in) :: lnkry, l_evol, l_stat
+    aster_logical, intent(in) :: l_dry
+    character(len=8), intent(in) :: result_dry
+    character(len=24), intent(in) :: dry_prev, dry_curr
+    real(kind=8), intent(inout) :: para(2)
+    real(kind=8), intent(out) :: time_curr, deltat
+    aster_logical, intent(out) :: reasma
+    real(kind=8), intent(out) :: tpsthe(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,29 +93,29 @@ real(kind=8), intent(out) :: tpsthe(6)
     if (l_stat) then
         if (l_evol) then
             time_curr = diinst(sddisc, nume_inst)
-            deltat    = -1.d150
-            theta     = 1.d0
-            khi       = 0.d0
+            deltat = -1.d150
+            theta = 1.d0
+            khi = 0.d0
         else
             time_curr = 0.d0
-            deltat    = -1.d150
-            theta     = 1.d0
-            khi       = 0.d0
-        endif
+            deltat = -1.d150
+            theta = 1.d0
+            khi = 0.d0
+        end if
     else
         time_curr = diinst(sddisc, nume_inst)
         time_prev = diinst(sddisc, nume_inst-1)
-        deltat    = time_curr - time_prev
-        theta     = theta_read
-        khi       = 1.d0
-    endif
+        deltat = time_curr-time_prev
+        theta = theta_read
+        khi = 1.d0
+    end if
     para(2) = deltat
 !
 ! - NEWTON-KRYLOV : COPIE DANS LA SD SOLVEUR DE LA PRECISION DE LA
 !                     RESOLUTION POUR LA PREDICTION (FORCING-TERM)
     if (lnkry) then
         call nmnkft(solver, sddisc)
-    endif
+    end if
 !
 ! - MATRICE TANGENTE REACTUALISEE POUR UN NOUVEAU DT
 !
@@ -135,27 +135,27 @@ real(kind=8), intent(out) :: tpsthe(6)
     if (l_dry) then
         call dismoi('NB_CHAMP_UTI', result_dry, 'RESULTAT', repi=nbcham)
         if (nbcham .gt. 0) then
-            timet  = time_curr
-            timtdt = time_curr + deltat
-            base   = 'V'
-            call rsinch(result_dry, 'TEMP', 'INST', timet, dry_prev,&
+            timet = time_curr
+            timtdt = time_curr+deltat
+            base = 'V'
+            call rsinch(result_dry, 'TEMP', 'INST', timet, dry_prev, &
                         'CONSTANT', 'CONSTANT', 1, base, icoret)
             if (icoret .ge. 10) then
                 call utmess('F', 'THERNONLINE4_94', sk=result_dry, si=icoret, sr=timet)
-            endif
-            call rsinch(result_dry, 'TEMP', 'INST', timtdt, dry_curr,&
+            end if
+            call rsinch(result_dry, 'TEMP', 'INST', timtdt, dry_curr, &
                         'CONSTANT', 'CONSTANT', 1, base, icoret)
             if (icoret .ge. 10) then
                 call utmess('F', 'THERNONLINE4_94', sk=result_dry, si=icoret, sr=timtdt)
-            endif
+            end if
         else
             call utmess('F', 'THERNONLINE4_99', sk=result_dry)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Print management - Initializations for convergence table
 !
-    call SetTableColumn(ds_print%table_cvg, flag_acti_ = ASTER_TRUE)
+    call SetTableColumn(ds_print%table_cvg, flag_acti_=ASTER_TRUE)
     call nonlinDSPrintInitTimeStep(ds_print)
 !
 ! - Print management - Print head for new step time

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine te0051(option, nomte)
     integer :: nnos, nuno
     real(kind=8) :: alpha, beta
 !-----------------------------------------------------------------------
-    parameter (nbres=3)
+    parameter(nbres=3)
     integer :: icodre(nbres)
     character(len=8) :: fami, poum
     character(len=16) :: nomres(nbres), nomte, option
@@ -62,7 +62,7 @@ subroutine te0051(option, nomte)
     integer :: jgano, nno, kp, npg1, i, j, imattt, itemps
     aster_logical :: aniso, global
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -72,26 +72,26 @@ subroutine te0051(option, nomte)
 !
     valpar(1) = zr(itemps)
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    fami= 'FPG1'
+    fami = 'FPG1'
     kpg = 1
     spt = 1
-    poum= '+'
+    poum = '+'
 !====
 ! --- EVALUATION DE LA CONDUCTIVITE LAMBDA
 !====
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', [valpar],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, 'INST', [valpar], &
                     1, nomres, valres, icodre, 1)
         lambda = valres(1)
         aniso = .false.
-    else if (phenom.eq.'THER_ORTH') then
+    else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
         nomres(3) = 'LAMBDA_N'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', [valpar],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, 'INST', [valpar], &
                     3, nomres, valres, icodre, 1)
         lambor(1) = valres(1)
         lambor(2) = valres(2)
@@ -99,7 +99,7 @@ subroutine te0051(option, nomte)
         aniso = .true.
     else
         call utmess('F', 'ELEMENTS2_63')
-    endif
+    end if
 !====
 ! --- TRAITEMENT DE L ANISOTROPIE
 !====
@@ -121,31 +121,31 @@ subroutine te0051(option, nomte)
             orig(1) = zr(icamas+4)
             orig(2) = zr(icamas+5)
             orig(3) = zr(icamas+6)
-        endif
-    endif
+        end if
+    end if
 !====
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !====
     do kp = 1, npg1
 !
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy, dfdz)
 !
-        if (.not.global .and. aniso) then
+        if (.not. global .and. aniso) then
             point(1) = 0.d0
             point(2) = 0.d0
             point(3) = 0.d0
             do nuno = 1, nno
-                point(1) = point(1) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-3)
-                point(2) = point(2) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-2)
-                point(3) = point(3) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-1)
+                point(1) = point(1)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-3)
+                point(2) = point(2)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-2)
+                point(3) = point(3)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-1)
             end do
             call utrcyl(point, dire, orig, p)
-        endif
+        end if
 !
         do i = 1, nno
-            if (.not.aniso) then
+            if (.not. aniso) then
                 fluglo(1) = lambda*dfdx(i)
                 fluglo(2) = lambda*dfdy(i)
                 fluglo(3) = lambda*dfdz(i)
@@ -162,12 +162,12 @@ subroutine te0051(option, nomte)
                 n1 = 1
                 n2 = 3
                 call utpvlg(n1, n2, p, fluloc, fluglo)
-            endif
+            end if
 !
             do j = 1, i
-                ij = (i-1)*i/2 + j
-                zr(imattt+ij-1) = zr(imattt+ij-1) + poids*&
-                                  &( fluglo(1)*dfdx(j)+ fluglo(2)*dfdy(j)+fluglo(3)*dfdz(j) )
+                ij = (i-1)*i/2+j
+                zr(imattt+ij-1) = zr(imattt+ij-1)+poids*&
+                                  &(fluglo(1)*dfdx(j)+fluglo(2)*dfdy(j)+fluglo(3)*dfdz(j))
             end do
         end do
 !

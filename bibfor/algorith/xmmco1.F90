@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmco1(ndim, nno, dsidep, pp, p,&
-                  nd, nfh, ddls, jac, ffp,&
+subroutine xmmco1(ndim, nno, dsidep, pp, p, &
+                  nd, nfh, ddls, jac, ffp, &
                   singu, fk, tau1, tau2, mmat)
     implicit none
 #include "jeveux.h"
@@ -26,7 +26,7 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
     real(kind=8) :: mmat(216, 216), dsidep(6, 6)
     real(kind=8) :: ffp(27), jac, nd(3)
     real(kind=8) :: pp(3, 3), p(3, 3)
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
 !
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 !
@@ -59,38 +59,38 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
 ! ----------------------------------------------------------------------
 !
 !     INITIALISATION
-    ddt1(:,:) = 0.d0
-    ddt2(:,:) = 0.d0
-    ddt3(:,:) = 0.d0
-    ddt4(:,:) = 0.d0
+    ddt1(:, :) = 0.d0
+    ddt2(:, :) = 0.d0
+    ddt3(:, :) = 0.d0
+    ddt4(:, :) = 0.d0
 !
 !           II.2.3. CALCUL DES MATRICES DE COHESION
 !        ..............................
 !
     do i = 1, ndim
         do j = 1, ndim
-            ddt1(i,j)=dsidep(1,1)*nd(i)*nd(j)
+            ddt1(i, j) = dsidep(1, 1)*nd(i)*nd(j)
             if (ndim .eq. 2) then
-                ddt2(i,j)=dsidep(1,2)*nd(i)*tau1(j) +dsidep(2,1)*tau1(&
-                i)*nd(j)
-            else if (ndim.eq.3) then
-                ddt2(i,j)=dsidep(1,2)*nd(i)*tau1(j) +dsidep(1,3)*nd(i)&
-                *tau2(j) +dsidep(2,1)*tau1(i)*nd(j) +dsidep(3,1)*tau2(&
-                i)*nd(j)
-            endif
-            ddt3(i,j)=ddt2(i,j)
+                ddt2(i, j) = dsidep(1, 2)*nd(i)*tau1(j)+dsidep(2, 1)*tau1( &
+                             i)*nd(j)
+            else if (ndim .eq. 3) then
+                ddt2(i, j) = dsidep(1, 2)*nd(i)*tau1(j)+dsidep(1, 3)*nd(i) &
+                             *tau2(j)+dsidep(2, 1)*tau1(i)*nd(j)+dsidep(3, 1)*tau2( &
+                             i)*nd(j)
+            end if
+            ddt3(i, j) = ddt2(i, j)
             if (ndim .eq. 2) then
-                ddt4(i,j)=dsidep(2,2)*tau1(i)*tau1(j)
-            else if (ndim.eq.3) then
-                ddt4(i,j)=dsidep(2,2)*tau1(i)*tau1(j) +dsidep(2,3)*&
-                tau1(i)*tau2(j) +dsidep(3,2)*tau2(i)*tau1(j) +dsidep(&
-                3,3)*tau2(i)*tau2(j)
-            endif
+                ddt4(i, j) = dsidep(2, 2)*tau1(i)*tau1(j)
+            else if (ndim .eq. 3) then
+                ddt4(i, j) = dsidep(2, 2)*tau1(i)*tau1(j)+dsidep(2, 3)* &
+                             tau1(i)*tau2(j)+dsidep(3, 2)*tau2(i)*tau1(j)+dsidep( &
+                             3, 3)*tau2(i)*tau2(j)
+            end if
         end do
     end do
 !
-    call matcox(ndim, pp, ddt1, ddt2, ddt3,&
-                ddt4, p, nno, nfh*ndim, ddls,&
+    call matcox(ndim, pp, ddt1, ddt2, ddt3, &
+                ddt4, p, nno, nfh*ndim, ddls, &
                 jac, ffp, singu, fk, mmat)
 !
 end subroutine

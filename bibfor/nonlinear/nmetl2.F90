@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmetl2(model, i_field, ds_inout)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/vtcopy.h"
 #include "asterfort/xetco.h"
 !
-integer, intent(in) :: i_field
-character(len=8), intent(in) :: model
-type(NL_DS_InOut), intent(inout) :: ds_inout
+    integer, intent(in) :: i_field
+    character(len=8), intent(in) :: model
+    type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,33 +65,33 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! - Field to read ?
 !
-    if (ds_inout%l_field_acti(i_field).and.ds_inout%field(i_field)%l_read_init) then
+    if (ds_inout%l_field_acti(i_field) .and. ds_inout%field(i_field)%l_read_init) then
 !
 ! ----- Name of field (type) in results datastructure
 !
-        field_type     = ds_inout%field(i_field)%type
+        field_type = ds_inout%field(i_field)%type
 !
 ! ----- Name of field for initial state
 !
-        init_name      = ds_inout%field(i_field)%init_name
+        init_name = ds_inout%field(i_field)%init_name
 !
 ! ----- Spatial discretization of field
 !
-        disc_type      = ds_inout%field(i_field)%disc_type
+        disc_type = ds_inout%field(i_field)%disc_type
 !
 ! ----- Name of field in algorithm
 !
-        algo_name      = ds_inout%field(i_field)%algo_name
+        algo_name = ds_inout%field(i_field)%algo_name
         call nmetnc(algo_name, field_algo)
 !
 ! ----- Actual state of field
 !
-        init_type     = ds_inout%field(i_field)%init_type
+        init_type = ds_inout%field(i_field)%init_type
 !
 ! ----- Informations about field read in ETAT_INIT
 !
-        field_read    = ds_inout%field(i_field)%field_read
-        l_field_read  = ds_inout%l_field_read(i_field)
+        field_read = ds_inout%field(i_field)%field_read
+        l_field_read = ds_inout%l_field_read(i_field)
 !
 ! ----- Read initial field
 !
@@ -102,11 +102,11 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
             call dismoi('TYPE_CHAMP', field_read, 'CHAMP', repk=field_disc_in, arret='C', ier=iret)
             if (iret .eq. 1) then
                 call utmess('F', 'ETATINIT_50', sk=field_read)
-            endif
+            end if
 !
 ! --------- Try to convert field (discretization) if necessary and copy it
 !
-            if (field_type.eq.'COHE_ELEM') then
+            if (field_type .eq. 'COHE_ELEM') then
                 call xetco(field_read, field_algo, init_name)
             else
                 call nmetcv(model, init_name, field_read, field_disc_in, field_read_cv, disc_type)
@@ -116,30 +116,30 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
                         valk(1) = field_read_cv
                         valk(2) = field_algo
                         call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
-                    endif
-                else if ((disc_type.eq.'ELGA').or.(disc_type.eq.'ELEM').or.&
-                         (disc_type.eq.'ELNO')) then
+                    end if
+                else if ((disc_type .eq. 'ELGA') .or. (disc_type .eq. 'ELEM') .or. &
+                         (disc_type .eq. 'ELNO')) then
                     call copisd('CHAMP_GD', 'V', field_read_cv, field_algo)
                 else
-                    write(6,*) 'DISCRETISATION NON TRAITEE: ',field_disc_in
+                    write (6, *) 'DISCRETISATION NON TRAITEE: ', field_disc_in
                     ASSERT(.false.)
-                endif
-            endif
+                end if
+            end if
 !
 ! --------- New state of field
 !
             ds_inout%field(i_field)%init_type = 'READ'
-        endif
+        end if
 !
 ! ----- Copy initial field
 !
-        if (.not.l_field_read) then
-            if (init_name .ne. ' '.and.ds_inout%field(i_field)%init_type.eq.' ') then
+        if (.not. l_field_read) then
+            if (init_name .ne. ' ' .and. ds_inout%field(i_field)%init_type .eq. ' ') then
                 call copisd('CHAMP', 'V', init_name, field_algo)
                 ds_inout%field(i_field)%init_type = 'ZERO'
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call detrsd('CHAMP', field_read_cv)
 !

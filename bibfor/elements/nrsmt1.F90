@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,6 @@ subroutine nrsmt1(k, j, u)
 ! -----------------------------------------------------------------
     real(kind=8) :: k, j, u
 !
-    u=k/2.d0* (j*j/2.d0-1.d0/2.d0-log(j))
+    u = k/2.d0*(j*j/2.d0-1.d0/2.d0-log(j))
 !
 end subroutine

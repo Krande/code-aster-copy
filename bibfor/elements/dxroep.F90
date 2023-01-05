@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,14 @@ subroutine dxroep(rho, epais)
         rho = valres(2)
         if (rho .eq. r8maem()) then
             call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3)(1:8)
-            valk (1) = 'RHO'
-            valk (2) = nomail
+            nomail = zk24(iazk24-1+3) (1:8)
+            valk(1) = 'RHO'
+            valk(2) = nomail
             call utmess('F', 'ELEMENTS4_81', nk=2, valk=valk)
-        endif
+        end if
 !
-    elseif (phenom .eq. 'ELAS'      .or. phenom .eq. 'ELAS_COQUE' .or.&
-            phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH'  .or.&
+    elseif (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_COQUE' .or. &
+            phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH' .or. &
             phenom .eq. 'ELAS_GLRC' .or. phenom .eq. 'ELAS_DHRC') then
         nomres(1) = 'RHO'
         nbv = 1
@@ -70,6 +70,6 @@ subroutine dxroep(rho, epais)
 !
     else
         call utmess('F', 'ELEMENTS_50')
-    endif
+    end if
 !
 end subroutine

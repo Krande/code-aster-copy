@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
+subroutine vddege(nomte, nb2, npgsn, xr, deggtg, &
                   deggt)
     implicit none
 !
@@ -30,7 +30,7 @@ subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
 !
     do i = 1, nb2
         do j = 1, 8
-            deggt(j,i)=0.d0
+            deggt(j, i) = 0.d0
         end do
     end do
 !
@@ -40,21 +40,21 @@ subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
         do icmp = 1, 8
             do ino = 1, nb2
                 do ipg = 1, npgsn
-                    deggt(icmp,ino)=deggt(icmp,ino)&
-                    +deggtg(8*(ipg-1)+icmp)*mat(ino,ipg)
+                    deggt(icmp, ino) = deggt(icmp, ino) &
+                                       +deggtg(8*(ipg-1)+icmp)*mat(ino, ipg)
                 end do
             end do
         end do
 !
-    else if (nomte.eq.'MEC3TR7H') then
+    else if (nomte .eq. 'MEC3TR7H') then
 !
-        l1 =1600
+        l1 = 1600
 !
         do i = 1, nb2
-            i1=l1+7*(i-1)
+            i1 = l1+7*(i-1)
             do k = 1, npgsn
                 do j = 1, 8
-                    deggt(j,i)=deggt(j,i)+deggtg(8*(k-1)+j)*xr(i1+k)
+                    deggt(j, i) = deggt(j, i)+deggtg(8*(k-1)+j)*xr(i1+k)
                 end do
             end do
         end do
@@ -70,6 +70,6 @@ subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
 !        deggt(7,7)=(deggt(7,1)+deggt(7,2)+deggt(7,3))/3.d0
 !        deggt(8,7)=(deggt(8,1)+deggt(8,2)+deggt(8,3))/3.d0
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine romLineicDSCopy(lineicNumeIn, lineicNumeOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 !
-type(ROM_DS_LineicNumb), intent(in) :: lineicNumeIn
-type(ROM_DS_LineicNumb), intent(out) :: lineicNumeOut
+    type(ROM_DS_LineicNumb), intent(in) :: lineicNumeIn
+    type(ROM_DS_LineicNumb), intent(out) :: lineicNumeOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,20 +47,20 @@ type(ROM_DS_LineicNumb), intent(out) :: lineicNumeOut
 ! --------------------------------------------------------------------------------------------------
 !
 
-    nbSlice                = lineicNumeIn%nbSlice
-    lineicNumeOut%nbSlice  = lineicNumeIn%nbSlice
+    nbSlice = lineicNumeIn%nbSlice
+    lineicNumeOut%nbSlice = lineicNumeIn%nbSlice
     lineicNumeOut%toleNode = lineicNumeIn%toleNode
-    lineicNumeOut%nbCmp    = lineicNumeIn%nbCmp
+    lineicNumeOut%nbCmp = lineicNumeIn%nbCmp
 !
 ! - Copy pointers
 !
     if (nbSlice .gt. 0) then
-        AS_ALLOCATE(vi = lineicNumeOut%numeSlice, size = nbSlice)
-        AS_ALLOCATE(vi = lineicNumeOut%numeSection, size = nbSlice)
+        AS_ALLOCATE(vi=lineicNumeOut%numeSlice, size=nbSlice)
+        AS_ALLOCATE(vi=lineicNumeOut%numeSection, size=nbSlice)
         do iSlice = 1, nbSlice
             lineicNumeOut%numeSlice(iSlice) = lineicNumeIn%numeSlice(iSlice)
             lineicNumeOut%numeSection(iSlice) = lineicNumeIn%numeSection(iSlice)
         end do
-    endif
+    end if
 !
 end subroutine

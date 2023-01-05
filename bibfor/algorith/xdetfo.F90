@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
+subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
                   noma, nomfis, resuco)
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -134,7 +134,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
 !
 ! --- RECUP CHAMP VARIABLES INTERNES COHESIVES
 !
-    call rsexch('F', resuco, 'COHE_ELEM', nume_last, cohee,&
+    call rsexch('F', resuco, 'COHE_ELEM', nume_last, cohee, &
                 iret)
 !
 !   TRANSFO CHAM_ELNO --> CHAM_ELEM_S (EXEMPLE XGRALS)
@@ -148,7 +148,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
 !   POUR CHAQUE NOEUD MOYENNE DES VALEURS QUI EXISTENT
 !   NORMALEMENT CE SONT LES MEMES
     cnsco = '&&XDETFO.CNSCO'
-    call cescns(cesco, ' ', 'V', cnsco, ' ',&
+    call cescns(cesco, ' ', 'V', cnsco, ' ', &
                 ibid)
 !
 !   RECUP PREMIER NUMERO ORDRE
@@ -156,7 +156,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
     call rs_getfirst(resuco, nume_first)
 !
 !   RECUP DU MATERIAU
-    call rslesd(resuco, nume_first, materi_ = mater)
+    call rslesd(resuco, nume_first, materi_=mater)
 !
 !   RECUP CONTRAINTE CRITIQUE ET TENACITE
 !
@@ -167,13 +167,13 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
     call jeveuo(nommat//'.MATERIAU.NOMRC', 'L', ianorc)
     call jelira(nommat//'.MATERIAU.NOMRC', 'LONUTI', nbrc)
     do irc = 1, nbrc
-        nomrc=zk32(ianorc-1+irc)
+        nomrc = zk32(ianorc-1+irc)
         if (nomrc .eq. 'RUPT_FRAG') then
             call codent(irc, 'D0', k6)
         else
             goto 1
-        endif
-  1     continue
+        end if
+1       continue
     end do
     call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', jvalk)
     call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONMAX', ncmpa)
@@ -187,7 +187,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
     rr = rr*sc*sc/gc
 !
 !   REDUCTION CHAMP VARIABLES INTERNES
-    call cnsred(cnsco, 0, [0], 1, 'X1',&
+    call cnsred(cnsco, 0, [0], 1, 'X1', &
                 'V', cnsco)
 !
 !   ON ENLEVE LES NOEUDS QUI N ONT PAS DE VARIABLE INTERNE
@@ -199,9 +199,9 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
     ils = 0
     do ino = 1, nbno
         if (zl(jcnsl-1+ino)) then
-            ils = ils + 1
-            zi(jlisno-1+ils)=ino
-        endif
+            ils = ils+1
+            zi(jlisno-1+ils) = ino
+        end if
     end do
     nbls = ils
 !
@@ -220,8 +220,8 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
     do i = 1, nbls
         ino = zi(jlisno-1+i)
         zl(jnsdl-1+ino) = .true.
-        zr(jnsdv-1+ino) =&
-        min(zr(jnscov-1+ino)-sc,0.d0)+(sc*sc/gc)/rr*max(zr(jnscov-1+ino)-sc,0.d0)
+        zr(jnsdv-1+ino) = &
+            min(zr(jnscov-1+ino)-sc, 0.d0)+(sc*sc/gc)/rr*max(zr(jnscov-1+ino)-sc, 0.d0)
     end do
 !
 !   ON REPREND UNE PARTIE DE LA STRUCTURE DE XENRCH
@@ -230,7 +230,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
     mafis = '&&XDETFO.MAFIS'
     call wkvect(mafis, 'V V I', nbma, jmafis)
     lismae = nomfis//'.GROUP_MA_ENRI'
-    call xmafis(noma, cnsln, nbma, mafis, nmafis,&
+    call xmafis(noma, cnsln, nbma, mafis, nmafis, &
                 lismae)
 !
     call wkvect('&&XDETFO.MAFOND', 'V V I', nmaco, jmafon)
@@ -246,7 +246,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
 !
 !       RECUP NUMERO DE MAILLE + SA CONNECTIVITE
         ima = zi(jmaco-1+j)
-        itypma=zi(jma-1+ima)
+        itypma = zi(jma-1+ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         call conare(typma, ar, nbar)
 !
@@ -254,77 +254,77 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
 !       COPIE XSTANO
         do ia = 1, nbar
 !
-            na=ar(ia,1)
-            nb=ar(ia,2)
+            na = ar(ia, 1)
+            nb = ar(ia, 2)
 !
-            nunoa=zi(jconx1-1+zi(jconx2+ima-1)+na-1)
-            nunob=zi(jconx1-1+zi(jconx2+ima-1)+nb-1)
+            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+na-1)
+            nunob = zi(jconx1-1+zi(jconx2+ima-1)+nb-1)
 !
-            lsna=zr(jlnsv-1+(nunoa-1)+1)
-            lsnb=zr(jlnsv-1+(nunob-1)+1)
-            lsta=zr(jltsv-1+(nunoa-1)+1)
-            lstb=zr(jltsv-1+(nunob-1)+1)
+            lsna = zr(jlnsv-1+(nunoa-1)+1)
+            lsnb = zr(jlnsv-1+(nunob-1)+1)
+            lsta = zr(jltsv-1+(nunoa-1)+1)
+            lstb = zr(jltsv-1+(nunob-1)+1)
 !
 !           SI FONCTION DETECTION PAS ATTRIBUEE, ON SORT
 !           NE DOIT PAS ARRIVER NORMALEMENT (BOUCLE ELMTS CONTACT)
-            if (.not.zl(jnsdl-1+nunoa) .or. (.not.zl(jnsdl-1+nunob))) then
+            if (.not. zl(jnsdl-1+nunoa) .or. (.not. zl(jnsdl-1+nunob))) then
 !               Il faudrait un message à l'utilisateur ici
                 goto 153
-            endif
-            deta=zr(jnsdv-1+(nunoa-1)+1)
-            detb=zr(jnsdv-1+(nunob-1)+1)
+            end if
+            deta = zr(jnsdv-1+(nunoa-1)+1)
+            detb = zr(jnsdv-1+(nunob-1)+1)
 !           SI LST TROP GRANDES, ON CORRIGE
-            if (lsta .ge. 0.d0) deta=-1.e-4*sc
-            if (lstb .ge. 0.d0) detb=-1.e-4*sc
+            if (lsta .ge. 0.d0) deta = -1.e-4*sc
+            if (lstb .ge. 0.d0) detb = -1.e-4*sc
 !
 !           SI NOEUD PAS ENRICHI, ON CORRIGE
 !           SINON, LA VALEUR VA NOUS INDUIRE EN ERREUR
-            if (zi(jcnto-1+nunoa) .eq. 0) deta=-1.e-4*sc
-            if (zi(jcnto-1+nunob) .eq. 0) detb=-1.e-4*sc
+            if (zi(jcnto-1+nunoa) .eq. 0) deta = -1.e-4*sc
+            if (zi(jcnto-1+nunob) .eq. 0) detb = -1.e-4*sc
 !
 ! --- REAJUSTEMENT FONCTION DETECTION SI NECESSAIRE (VOIR XAJULS)
 !
             if (abs(deta-detb) .gt. r8prem()) then
-                d1=deta/(deta-detb)
+                d1 = deta/(deta-detb)
                 if (abs(d1) .le. crilst) then
-                    zr(jnsdv-1+(nunoa-1)+1)=0.d0
-                    deta=0.d0
-                endif
+                    zr(jnsdv-1+(nunoa-1)+1) = 0.d0
+                    deta = 0.d0
+                end if
                 if (abs(d1-1.d0) .le. (crilst)) then
-                    zr(jnsdv-1+(nunob-1)+1)=0.d0
+                    zr(jnsdv-1+(nunob-1)+1) = 0.d0
                     detb = 0.d0
-                endif
-            endif
+                end if
+            end if
 !
 !           MIN ET MAX DE LA FONCTION DE DETECTION
 !
 !           CAS ARETE CONFORME
             if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0) then
-                if (deta .lt. mindet) mindet=deta
-                if (deta .gt. maxdet) maxdet=deta
-                if (detb .lt. mindet) mindet=detb
-                if (detb .gt. maxdet) maxdet=detb
+                if (deta .lt. mindet) mindet = deta
+                if (deta .gt. maxdet) maxdet = deta
+                if (detb .lt. mindet) mindet = detb
+                if (detb .gt. maxdet) maxdet = detb
 !           CAS ARETE NON CONFORME
-            else if ((lsna*lsnb).le.0.d0) then
+            else if ((lsna*lsnb) .le. 0.d0) then
                 do k = 1, ndim
-                    a(k)=zr(jcoor-1+3*(nunoa-1)+k)
-                    b(k)=zr(jcoor-1+3*(nunob-1)+k)
-                    ab(k)=b(k)-a(k)
+                    a(k) = zr(jcoor-1+3*(nunoa-1)+k)
+                    b(k) = zr(jcoor-1+3*(nunob-1)+k)
+                    ab(k) = b(k)-a(k)
 !                   COORDONNEE PT INTERSECTION
-                    c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
-                    ac(k)=c(k)-a(k)
+                    c(k) = a(k)-lsna/(lsnb-lsna)*ab(k)
+                    ac(k) = c(k)-a(k)
                 end do
-                ASSERT(ddot(ndim, ab, 1, ab, 1).gt.0.d0)
+                ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. 0.d0)
 !
 !               FONCTION DE DETECTION AU POINT D INTERSECTION
-                detc = deta + (detb-deta) * ddot(ndim,ab,1,ac,1) / ddot(ndim,ab,1,ab,1)
+                detc = deta+(detb-deta)*ddot(ndim, ab, 1, ac, 1)/ddot(ndim, ab, 1, ab, 1)
 !
 !               ACTUALISATION MIN ET MAX DE LA FONCTION DE DETECTION
-                if (detc .lt. mindet) mindet=detc
-                if (detc .gt. maxdet) maxdet=detc
+                if (detc .lt. mindet) mindet = detc
+                if (detc .gt. maxdet) maxdet = detc
 !
 !               VERIF STANO A REPORTER?
-            endif
+            end if
 !
 153         continue
         end do
@@ -335,14 +335,14 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon,&
                 if (zi(jmaco-1+j) .eq. zi(jmaifo-1+i)) then
 !
                     call utmess('A', 'XFEM_94')
-                endif
+                end if
             end do
-            imafon = imafon + 1
+            imafon = imafon+1
             zi(jmafon-1+imafon) = ima
-        endif
+        end if
 !
     end do
     nmafon = imafon
-    ASSERT(nmafon.le.nmaco)
+    ASSERT(nmafon .le. nmaco)
     call jedema()
 end subroutine

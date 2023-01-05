@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrInitAlgoPod(base, paraPod)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
+    type(ROM_DS_Empi), intent(in) :: base
+    type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_30')
-    endif
+    end if
 !
 ! - Prepare reference to read (high fidelity)
 !
@@ -74,29 +74,29 @@ type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
 !
     if (paraPod%nbVariToFilter .ne. 0) then
         nbVari = paraPod%nbVariToFilter
-        model  = paraPod%resultDom%modelRefe
+        model = paraPod%resultDom%modelRefe
         compor = paraPod%resultDom%comporRefe
-        call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi = nbCell)
-        AS_ALLOCATE(vi = listCell, size = nbCell)
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
+        AS_ALLOCATE(vi=listCell, size=nbCell)
         do iCell = 1, nbCell
             listCell(iCell) = iCell
         end do
-        call wkvect(listVariNume, 'V V K8', nbCell*nbVari, vk8 = variNume)
-        call varinonu(model , compor      ,&
-                      nbCell, listCell    ,&
+        call wkvect(listVariNume, 'V V K8', nbCell*nbVari, vk8=variNume)
+        call varinonu(model, compor, &
+                      nbCell, listCell, &
                       nbVari, paraPod%variToFilter, variNume)
         ASSERT(paraPod%nbCmpToFilter .eq. nbVari)
         do iCmp = 1, nbVari
             paraPod%cmpToFilter(iCmp) = variNume(iCmp)
         end do
-        AS_DEALLOCATE(vi = listCell)
+        AS_DEALLOCATE(vi=listCell)
         call jedetr(listVariNume)
-    endif
+    end if
 !
 ! - Prepare filter for components
 !
-    call romFieldPrepFilter(paraPod%nbCmpToFilter, paraPod%cmpToFilter ,&
+    call romFieldPrepFilter(paraPod%nbCmpToFilter, paraPod%cmpToFilter, &
                             paraPod%field)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmassm(lischa, numedd, numfix, typmat, optasz,&
+subroutine nmassm(lischa, numedd, numfix, typmat, optasz, &
                   meelem, matass)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/asmaam.h"
@@ -37,12 +37,12 @@ implicit none
 #include "asterfort/nmdebg.h"
 #include "asterfort/utmess.h"
 !
-character(len=19) :: lischa
-character(len=24) :: numedd, numfix
-character(len=6) :: typmat
-character(len=*) :: optasz
-character(len=19) :: meelem(8)
-character(len=19) :: matass
+    character(len=19) :: lischa
+    character(len=24) :: numedd, numfix
+    character(len=6) :: typmat
+    character(len=*) :: optasz
+    character(len=19) :: meelem(8)
+    character(len=19) :: matass
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,51 +76,51 @@ character(len=19) :: matass
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    if (meelem(1)(1:1) .ne. ' ') then
+    if (meelem(1) (1:1) .ne. ' ') then
         call nmchex(meelem, 'MEELEM', 'MEDIRI', mediri)
         call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
         call nmchex(meelem, 'MEELEM', 'MEAMOR', meamor)
         call nmchex(meelem, 'MEELEM', 'MESSTR', messtr)
-    endif
+    end if
 !
 ! --- ASSEMBLAGE MATRICES ELEMENTAIRES
 !
-    if (typmat.eq.'MEAMOR') then
+    if (typmat .eq. 'MEAMOR') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_71')
-        endif
+        end if
         call asmaam(meamor, numedd, lischa, matass)
         call mtdscr(matass)
-    else if (typmat.eq.'MEMASS') then
+    else if (typmat .eq. 'MEMASS') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_72')
-        endif
+        end if
         if (optass .eq. ' ') then
-            call asmama(memass, ' ', numfix, lischa,&
+            call asmama(memass, ' ', numfix, lischa, &
                         matass)
-        else if (optass.eq.'AVEC_DIRICHLET') then
-            call asmama(memass, mediri, numedd, lischa,&
+        else if (optass .eq. 'AVEC_DIRICHLET') then
+            call asmama(memass, mediri, numedd, lischa, &
                         matass)
-        endif
-    else if (typmat.eq.'MESSTR') then
+        end if
+    else if (typmat .eq. 'MESSTR') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_73')
-        endif
+        end if
         call asmatr(1, messtr, ' ', numfix, &
                     lischa, 'ZERO', 'V', 1, matass)
         call mtdscr(matass)
-    else if (typmat.eq.'MERIGI') then
+    else if (typmat .eq. 'MERIGI') then
 ! ----- Direct with asmari
         ASSERT(ASTER_FALSE)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - DEBUG
 !
     if (niv .eq. 2) then
         call nmdebg('MATA', matass, ifm)
-    endif
+    end if
 !
     call jedema()
 !

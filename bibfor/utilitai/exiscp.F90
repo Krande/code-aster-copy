@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
+subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
                   nomnd, numnd, resu)
 !
 !
@@ -68,10 +68,10 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 !
 !
-    integer :: jnom,  jprnm, jexis
+    integer :: jnom, jprnm, jexis
     integer :: i, icmp, ino
     integer :: nbcmp, nmocl, nbec
-    parameter    (nmocl=300)
+    parameter(nmocl=300)
     character(len=8) :: nomddl(nmocl), noma, mod
     character(len=16) :: pheno
     character(len=19) :: ligrmo
@@ -91,24 +91,24 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 ! --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR
 !
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.10)
+    ASSERT(nbec .le. 10)
 !
 ! --- RECUPERATION DES NOMS DES DDLS DISPONIBLES POUR UNE GRANDEUR
 !
     call jeexin(jexnom('&CATA.GD.NOMCMP', nomgd), jexis)
     if (jexis .eq. 0) then
         call utmess('F', 'UTILITAI_73')
-    endif
+    end if
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
 !
 ! --- NOMBRE DE DDL POUR CETTE GRANDEUR
 !
-    nbcmp = nbcmp - 1
+    nbcmp = nbcmp-1
 !
 ! --- TROP DE DDLS POUR CETTE GRANDEUR
 !
-    ASSERT(nbcmp.le.nmocl)
+    ASSERT(nbcmp .le. nmocl)
 !
 ! --- NOM DES DDLS POUR CETTE GRANDEUR
 !
@@ -118,13 +118,13 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 ! --- INDICE DU DDL DANS LE TABLEAU NOMCMP
 !
-    icmp = indik8(nomddl,nomcmp(1:8),1,nbcmp)
+    icmp = indik8(nomddl, nomcmp(1:8), 1, nbcmp)
 !
 ! --- DDL INEXISTANT POUR CETTE GRANDEUR
 !
     if (icmp .eq. 0) then
         call utmess('F', 'UTILITAI_74')
-    endif
+    end if
 !
 ! --- NOM DU MODELE
 !
@@ -132,7 +132,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
         mod = modele
     else
         call dismoi('NOM_MODELE', char(1:8), 'CHARGE', repk=mod)
-    endif
+    end if
 !
 ! --- LIGREL DU MODELE
 !
@@ -150,18 +150,18 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
     do i = 1, nbnd
         if (typend .eq. 'NUM') then
             ino = numnd(i)
-        else if (typend.eq.'NOM') then
+        else if (typend .eq. 'NOM') then
             call jenonu(jexnom(nomnoe, nomnd(i)), ino)
         else
             ASSERT(.false.)
-        endif
+        end if
         if (ino .ne. 0) then
-            if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp)) then
+            if (exisdg(zi(jprnm-1+(ino-1)*nbec+1), icmp)) then
                 resu(i) = 1
             else
                 resu(i) = 0
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

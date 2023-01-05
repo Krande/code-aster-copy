@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine op0059()
     call getres(sdcomp, k24bid, k24bid)
     call getfac('MONOCRISTAL', nboccm)
     call getfac('POLYCRISTAL', nboccp)
-    call getfac('MULTIFIBRE' , nbocci)
+    call getfac('MULTIFIBRE', nbocci)
 !
     if (nboccm .gt. 0) then
 !
@@ -55,18 +55,18 @@ subroutine op0059()
 !
         call dc_monocristal(nboccm, sdcomp)
 !
-    else if (nboccp.gt.0) then
+    else if (nboccp .gt. 0) then
 !
 !        POLYCRISTAL
 !
         call dc_polycristal(nboccp, sdcomp)
 !
-    else if (nbocci.gt.0) then
+    else if (nbocci .gt. 0) then
 !
 !        MULTIFIBRE
 !
         call dc_multifibre(nbocci, sdcomp)
 !
-    endif
+    end if
 !
 end subroutine

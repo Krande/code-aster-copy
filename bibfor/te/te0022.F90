@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine te0022(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -91,8 +91,8 @@ subroutine te0022(option, nomte)
 !      --------------------------------------------------
     call jevech('PDEPLAR', 'L', idepl)
 !
-    call sigvmc('RIGI', nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+    call sigvmc('RIGI', nno, ndim, nbsig, npg, &
+                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
                 instan, repere, zi(imate), nharm, sigma)
 !
 !

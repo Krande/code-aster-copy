@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vectgt(ind, nb1, xi, ksi3s2, intsx,&
+subroutine vectgt(ind, nb1, xi, ksi3s2, intsx, &
                   zr, epais, vectn, vectg, vectt)
 !
     implicit none
@@ -34,58 +34,58 @@ subroutine vectgt(ind, nb1, xi, ksi3s2, intsx,&
 !
 !     CALCULS AUX PTS D'INTEGRATION REDUITE
 !
-        l1= 12
-        l2= 44
-        l3= 76
-    else if (ind.eq.1) then
+        l1 = 12
+        l2 = 44
+        l3 = 76
+    else if (ind .eq. 1) then
 !
 !     CALCULS AUX PTS D'INTEGRATION NORMALE
 !
-        l1=135
-        l2=207
-        l3=279
+        l1 = 135
+        l2 = 207
+        l3 = 279
 !
-    endif
+    end if
 !
 !     CONSTRUCTION DU VECTEUR N AUX X PTS DE GAUSS. X = REDUIT OU NORMAL
 !     (STOCKE DANS VECTT)
 !
-    intsx1=8*(intsx-1)
-    i1=l1+intsx1
+    intsx1 = 8*(intsx-1)
+    i1 = l1+intsx1
     do k = 1, 3
-        vectt(3,k)=0
+        vectt(3, k) = 0
         do j = 1, nb1
-            vectt(3,k)=vectt(3,k)+zr(i1+j)*vectn(j,k)
+            vectt(3, k) = vectt(3, k)+zr(i1+j)*vectn(j, k)
         end do
     end do
 !
 !     CONSTRUCTION DES VECTEURS GA AUX X PTS DE GAUSS
 !
-    i1=l2+intsx1
-    i2=l3+intsx1
+    i1 = l2+intsx1
+    i2 = l3+intsx1
     do k = 1, 3
-        vectg(1,k)=0.d0
-        vectg(2,k)=0.d0
+        vectg(1, k) = 0.d0
+        vectg(2, k) = 0.d0
         do j = 1, nb1
-            vectg(1,k)= vectg(1,k) +zr(i1+j)*(xi(k,j)+ksi3s2*epais*&
-            vectn(j,k))
-            vectg(2,k)= vectg(2,k) +zr(i2+j)*(xi(k,j)+ksi3s2*epais*&
-            vectn(j,k))
+            vectg(1, k) = vectg(1, k)+zr(i1+j)*(xi(k, j)+ksi3s2*epais* &
+                                                vectn(j, k))
+            vectg(2, k) = vectg(2, k)+zr(i2+j)*(xi(k, j)+ksi3s2*epais* &
+                                                vectn(j, k))
         end do
     end do
 !
 !     CONSTRUCTION DES VECTEURS TA AUX X PTS DE GAUSS (T3=N)
 !
-    rnorm=sqrt(vectg(1,1)*vectg(1,1)&
-     &             +vectg(1,2)*vectg(1,2)&
-     &             +vectg(1,3)*vectg(1,3))
+    rnorm = sqrt(vectg(1, 1)*vectg(1, 1)&
+     &             +vectg(1, 2)*vectg(1, 2)&
+     &             +vectg(1, 3)*vectg(1, 3))
 !
     do k = 1, 3
-        vectt(1,k)=vectg(1,k)/rnorm
+        vectt(1, k) = vectg(1, k)/rnorm
     end do
 !
-    vectt(2,1)= vectt(3,2)*vectt(1,3)-vectt(3,3)*vectt(1,2)
-    vectt(2,2)= vectt(3,3)*vectt(1,1)-vectt(3,1)*vectt(1,3)
-    vectt(2,3)= vectt(3,1)*vectt(1,2)-vectt(3,2)*vectt(1,1)
+    vectt(2, 1) = vectt(3, 2)*vectt(1, 3)-vectt(3, 3)*vectt(1, 2)
+    vectt(2, 2) = vectt(3, 3)*vectt(1, 1)-vectt(3, 1)*vectt(1, 3)
+    vectt(2, 3) = vectt(3, 1)*vectt(1, 2)-vectt(3, 2)*vectt(1, 1)
 !
 end subroutine

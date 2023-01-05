@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,8 +55,8 @@ subroutine dchapg(sig1, sig2, npg, nbsig, decha)
     do igau = 1, npg
 !      CALCUL DU SECOND INVARIANT DU TENSEUR DES CONTRAINTES :
 !
-        norm1 = norsig(sig1(1+ (igau-1)*nbsig),nbsig)
-        norm2 = norsig(sig2(1+ (igau-1)*nbsig),nbsig)
+        norm1 = norsig(sig1(1+(igau-1)*nbsig), nbsig)
+        norm2 = norsig(sig2(1+(igau-1)*nbsig), nbsig)
 !
 !     DANS LE CAS OU NORME(SIG2) = 0 :
 !     SI NORME(SIG1) = 0, ON MET L'INDICATEUR A 0
@@ -67,10 +67,10 @@ subroutine dchapg(sig1, sig2, npg, nbsig, decha)
                 decha(igau) = zero
             else
                 decha(igau) = -un
-            endif
+            end if
         else
             decha(igau) = (norm2-norm1)/norm2
-        endif
+        end if
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xinils(noma, maiaux, grille, ndim, meth,&
-                  nfonf, nfong, geofis, a, b,&
-                  r, noeud, cote, vect1, vect2,&
+subroutine xinils(noma, maiaux, grille, ndim, meth, &
+                  nfonf, nfong, geofis, a, b, &
+                  r, noeud, cote, vect1, vect2, &
                   cnslt, cnsln)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -100,13 +100,13 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
-    if (niv .ge. 3) write(ifm,*)'CALCUL DES LEVEL-SETS'
+    if (niv .ge. 3) write (ifm, *) 'CALCUL DES LEVEL-SETS'
 !
     call getres(fiss, k16bid, k16bid)
 !
-    nompu(1)='X'
-    nompu(2)='Y'
-    nompu(3)='Z'
+    nompu(1) = 'X'
+    nompu(2) = 'Y'
+    nompu(3) = 'Z'
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
@@ -128,7 +128,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         call jeveuo(maiaux//'.COORDO    .VALE', 'L', jcoorg)
         call jeveuo(maiaux//'.CONNEX', 'L', jcong1)
         call jeveuo(jexatr(maiaux//'.CONNEX', 'LONCUM'), 'L', jcong2)
-    endif
+    end if
 !
     call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
     if (typdis .eq. 'INTERFACE') callst = .false.
@@ -147,85 +147,85 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         else
             nbnoc = nbno
             jcoorc = jcoor
-        endif
+        end if
 !
         do ino = 1, nbnoc
             do dimno = 1, ndim
-                valpu(dimno)=zr(jcoorc-1+3*(ino-1)+dimno)
+                valpu(dimno) = zr(jcoorc-1+3*(ino-1)+dimno)
             end do
-            call fointe('F ', nfong, ndim, nompu, valpu,&
+            call fointe('F ', nfong, ndim, nompu, valpu, &
                         xln, ibid)
             if (callst) then
-                call fointe('F ', nfonf, ndim, nompu, valpu,&
+                call fointe('F ', nfonf, ndim, nompu, valpu, &
                             xlt, ibid)
             else
                 xlt = -1.d0
-            endif
-            zr(jlnsv-1+(ino-1)+1)=xln
-            zr(jltsv-1+(ino-1)+1)=xlt
-            zl(jltsl-1+(ino-1)+1)=.true.
-            zl(jlnsl-1+(ino-1)+1)=.true.
+            end if
+            zr(jlnsv-1+(ino-1)+1) = xln
+            zr(jltsv-1+(ino-1)+1) = xlt
+            zl(jltsl-1+(ino-1)+1) = .true.
+            zl(jlnsl-1+(ino-1)+1) = .true.
         end do
 !
-    else if (meth.eq.'GROUP_MA') then
+    else if (meth .eq. 'GROUP_MA') then
 !
 !-----------------------------------------------------------------------
 !       DANS LE CAS OU ON DONNE GROUP_MA_FISS ET GROUP_MA_FOND
 !-----------------------------------------------------------------------
 !
         lisma = '&&XINILS.LISTE_MA_FISSUR'
-        call reliem(' ', noma, 'NU_MAILLE', 'DEFI_FISS', 1,&
+        call reliem(' ', noma, 'NU_MAILLE', 'DEFI_FISS', 1, &
                     1, 'GROUP_MA_FISS', 'GROUP_MA', lisma, nbmaf)
         call jeveuo(lisma, 'L', jdlima)
 !
         if (callst) then
             lisse = '&&XINILS.LISTE_MA_FONFIS'
-            call reliem(' ', noma, 'NU_MAILLE', 'DEFI_FISS', 1,&
+            call reliem(' ', noma, 'NU_MAILLE', 'DEFI_FISS', 1, &
                         1, 'GROUP_MA_FOND', 'GROUP_MA', lisse, nbsef)
             call jeveuo(lisse, 'L', jdlise)
-        endif
+        end if
 !
         if (ndim .eq. 3) then
             if (grille) then
-                call xls3d(callst, grille, jltsv, jltsl, jlnsv,&
-                           jlnsl, nbnogr, jcoor, jcoorg, nbmaf,&
-                           jdlima, nbsef, jdlise, jconx1, jconx2,&
+                call xls3d(callst, grille, jltsv, jltsl, jlnsv, &
+                           jlnsl, nbnogr, jcoor, jcoorg, nbmaf, &
+                           jdlima, nbsef, jdlise, jconx1, jconx2, &
                            noma)
             else
-                call xls3d(callst, grille, jltsv, jltsl, jlnsv,&
-                           jlnsl, nbno, jcoor, jcoorg, nbmaf,&
-                           jdlima, nbsef, jdlise, jconx1, jconx2,&
+                call xls3d(callst, grille, jltsv, jltsl, jlnsv, &
+                           jlnsl, nbno, jcoor, jcoorg, nbmaf, &
+                           jdlima, nbsef, jdlise, jconx1, jconx2, &
                            noma)
-            endif
+            end if
         else
             if (grille) then
-                call xls2d(callst, grille, jltsv, jltsl, jlnsv,&
-                           jlnsl, nbnogr, jcoor, jcoorg, nbmaf,&
+                call xls2d(callst, grille, jltsv, jltsl, jlnsv, &
+                           jlnsl, nbnogr, jcoor, jcoorg, nbmaf, &
                            jdlima, nbsef, jdlise, jconx1, jconx2)
             else
-                call xls2d(callst, grille, jltsv, jltsl, jlnsv,&
-                           jlnsl, nbno, jcoor, jcoorg, nbmaf,&
+                call xls2d(callst, grille, jltsv, jltsl, jlnsv, &
+                           jlnsl, nbno, jcoor, jcoorg, nbmaf, &
                            jdlima, nbsef, jdlise, jconx1, jconx2)
-            endif
-        endif
+            end if
+        end if
 !
-    else if (meth.eq.'GEOMETRI') then
+    else if (meth .eq. 'GEOMETRI') then
 !
 !-----------------------------------------------------------------------
 !       DANS LE CAS OU ON DONNE LA GEOMETRIE DE LA FISSURE
 !-----------------------------------------------------------------------
 !
         if (grille) then
-            call xcatls(ndim, geofis, callst, jltsv, jltsl,&
-                        jlnsv, jlnsl, maiaux, vect1, vect2,&
+            call xcatls(ndim, geofis, callst, jltsv, jltsl, &
+                        jlnsv, jlnsl, maiaux, vect1, vect2, &
                         noeud, a, b, r, cote)
         else
-            call xcatls(ndim, geofis, callst, jltsv, jltsl,&
-                        jlnsv, jlnsl, noma, vect1, vect2,&
+            call xcatls(ndim, geofis, callst, jltsv, jltsl, &
+                        jlnsv, jlnsl, noma, vect1, vect2, &
                         noeud, a, b, r, cote)
-        endif
+        end if
 !
-    else if (meth.eq.'CHAMP') then
+    else if (meth .eq. 'CHAMP') then
 !
 !-----------------------------------------------------------------------
 !       DANS LE CAS OU ON DONNE UN CHAMP DE LEVEL SET
@@ -234,18 +234,18 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         call getvid('DEFI_FISS', 'CHAM_NO_LSN', iocc=1, scal=nchamn, nbret=me4)
         call getvid('DEFI_FISS', 'CHAM_NO_LST', iocc=1, scal=nchamt, nbret=ibid)
 !
-        chslsn='&&XINILS.CHAM_S_LSN'
-        chslst='&&XINILS.CHAM_S_LST'
+        chslsn = '&&XINILS.CHAM_S_LSN'
+        chslst = '&&XINILS.CHAM_S_LST'
         call cnocns(nchamn, 'V', chslsn)
         if (callst) call cnocns(nchamt, 'V', chslst)
 !
 !       ON VERIFIE LE NOMBRE DE COMPOSANTES = 1  (LSN OU LST)
         call jeveuo(chslsn//'.CNSD', 'L', vi=cnd)
-        ASSERT(cnd(2).eq.1)
+        ASSERT(cnd(2) .eq. 1)
         if (callst) call jeveuo(chslst//'.CNSD', 'L', vi=ctd)
         if (callst) then
-            ASSERT(ctd(2).eq.1)
-        endif
+            ASSERT(ctd(2) .eq. 1)
+        end if
 !
         call jeveuo(chslsn//'.CNSV', 'L', vr=cnv)
         call jeveuo(chslsn//'.CNSL', 'L', jcnl)
@@ -257,12 +257,12 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
             ASSERT(zl(jcnl+ino-1))
             if (callst) then
                 ASSERT(zl(jctl+ino-1))
-            endif
-            zr(jlnsv-1+(ino-1)+1)=cnv(ino)
-            zl(jlnsl-1+(ino-1)+1)=.true.
-            if (callst) zr(jltsv-1+(ino-1)+1)=ctv(ino)
-            if (.not.callst) zr(jltsv-1+(ino-1)+1)= -1.d0
-            zl(jltsl-1+(ino-1)+1)=.true.
+            end if
+            zr(jlnsv-1+(ino-1)+1) = cnv(ino)
+            zl(jlnsl-1+(ino-1)+1) = .true.
+            if (callst) zr(jltsv-1+(ino-1)+1) = ctv(ino)
+            if (.not. callst) zr(jltsv-1+(ino-1)+1) = -1.d0
+            zl(jltsl-1+(ino-1)+1) = .true.
         end do
 !
         call jedetr(chslsn)
@@ -273,23 +273,23 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         call wkvect(fiss//'.CHAMPS.LVS', 'G V L', 1, ibid)
         zl(ibid) = .true.
 !
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     REAJUSTEMENT DE LSN (BOOK III 06/02/04) ET LST
 !-----------------------------------------------------------------------
 !
     if (grille) then
-        call xajuls(maiaux, nbmagr, cnslt, cnsln, jcong1,&
+        call xajuls(maiaux, nbmagr, cnslt, cnsln, jcong1, &
                     jcong2, clsm, typdis)
     else
-        call xajuls(noma, nbma, cnslt, cnsln, jconx1,&
+        call xajuls(noma, nbma, cnslt, cnsln, jconx1, &
                     jconx2, clsm, typdis)
-    endif
+    end if
 !
     if (niv .ge. 2) then
         call utmess('I', 'XFEM_37', si=clsm)
-    endif
+    end if
 !
 !-----------------------------------------------------------------------
 !     FIN

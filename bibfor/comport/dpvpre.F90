@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dpvpre(mod, nvi, option, crit, instam,&
-                  instap, nbmat, materf, sigm, deps,&
-                  vim, vip, sig, nbre, dsidep,&
+subroutine dpvpre(mod, nvi, option, crit, instam, &
+                  instap, nbmat, materf, sigm, deps, &
+                  vim, vip, sig, nbre, dsidep, &
                   iret)
 ! =====================================================================
     implicit none
@@ -56,31 +56,31 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
     real(kind=8) :: sige(6), se(6), sm(6)
     real(kind=8) :: inte(6)
 ! =====================================================================
-    parameter ( deux    = 2.0d0 )
-    parameter ( trois   = 3.0d0 )
-    common /tdim/   ndt  , ndi
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    common/tdim/ndt, ndi
 ! =====================================================================
 ! --- RECUPERATION DES MATERIAUX --------------------------------------
 ! =====================================================================
-    ppic = materf(4,2)
-    pult = materf(5,2)
+    ppic = materf(4, 2)
+    pult = materf(5, 2)
 ! =====================================================================
 ! --- INITIALISATION --------------------------------------------------
 ! =====================================================================
-    hookf(:,:) = 0.0d0
-    dkooh(:,:) = 0.0d0
+    hookf(:, :) = 0.0d0
+    dkooh(:, :) = 0.0d0
     sig(:) = 0.0d0
     sige(:) = 0.0d0
 !
     iret = 0
-    dt = instap - instam
+    dt = instap-instam
     plas = 0.d0
     dp = 0.d0
 !
 ! =====================================================================
 ! =====================================================================
-    resi = option(1:9).eq.'FULL_MECA' .or. option .eq.'RAPH_MECA'
-    ASSERT((option(1:9).eq.'RIGI_MECA') .or. resi)
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
+    ASSERT((option(1:9) .eq. 'RIGI_MECA') .or. resi)
 ! =====================================================================
 ! --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 ! =====================================================================
@@ -89,21 +89,21 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 !
     call lcdevi(sigm, sm)
     siim = dot_product(sm(1:ndt), sm(1:ndt))
-    seqm = sqrt (trois*siim/deux)
-    i1m = trace(ndi,sigm)
+    seqm = sqrt(trois*siim/deux)
+    i1m = trace(ndi, sigm)
 !
 ! =====================================================================
 ! --- PREDICTION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 ! =====================================================================
 !
 !
-    inte(1:ndt) = matmul(hookf(1:ndt,1:ndt), deps(1:ndt))
-    sige(1:ndt) = sigm(1:ndt) + inte(1:ndt)
+    inte(1:ndt) = matmul(hookf(1:ndt, 1:ndt), deps(1:ndt))
+    sige(1:ndt) = sigm(1:ndt)+inte(1:ndt)
 !
     call lcdevi(sige, se)
     siie = dot_product(se(1:ndt), se(1:ndt))
-    seqe = sqrt (trois*siie/deux)
-    i1e = trace(ndi,sige)
+    seqe = sqrt(trois*siie/deux)
+    i1e = trace(ndi, sige)
 ! =====================================================================
 ! --- CALCUL DU CRITERE -----------------------------------------------
 ! =====================================================================
@@ -120,14 +120,14 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 ! =====================================================================
 ! ---------------------RESOLUTION EQ NON LINEAIRE EN DP----------------
 ! =====================================================================
-            call dpvpdb(nbmat, materf, crit, dt, vim,&
-                        vip, nvi, seqe, i1e, seqm,&
+            call dpvpdb(nbmat, materf, crit, dt, vim, &
+                        vip, nvi, seqe, i1e, seqm, &
                         i1m, dp, nbre, iret)
         else
             plas = 0.0d0
             dp = 0.0d0
             nbre = 0
-        endif
+        end if
 ! =====================================================================
 ! --- MISE A JOUR DES CONTRAINTES TENANT COMPTE DE DP SI VISCOPLASTICIT
 ! =====================================================================
@@ -140,12 +140,12 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
             vip(3) = vim(3)
             vip(4) = vim(4)
         else
-            vip(1) = vim(1) + dp
+            vip(1) = vim(1)+dp
 !
             call dpvpva(vip(1), nbmat, materf, fonecp)
-            call dpvpsi(nbmat, materf, se, seqe, i1e,&
+            call dpvpsi(nbmat, materf, se, seqe, i1e, &
                         fonecp, dp, sig)
-        endif
+        end if
 ! =====================================================================
 ! --- STOCKAGE DES VARIABLES INTERNES ---------------------------------
 ! =====================================================================
@@ -159,27 +159,27 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
             pos = 2
         else
             pos = 3
-        endif
+        end if
 !
         vip(3) = pos
-    endif
+    end if
 ! =====================================================================
 ! --- TERMES DE L OPERATEUR TANGENT -----------------------------------
 ! =====================================================================
     if (option(10:14) .eq. '_ELAS') then
-        dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
-    endif
+        dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
+    end if
 !
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-        dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
-    endif
+        dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
+    end if
     if (option(1:9) .eq. 'FULL_MECA') then
         if (vip(2) .eq. 1.d0) then
-            call dpvpot(mod, vim(1), vip(1), nbmat, materf,&
+            call dpvpot(mod, vim(1), vip(1), nbmat, materf, &
                         sige, dt, dp, plas, dsidep)
-        else if (vip(2).eq.0.d0) then
-            dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
-        endif
-    endif
+        else if (vip(2) .eq. 0.d0) then
+            dsidep(1:ndt, 1:ndt) = hookf(1:ndt, 1:ndt)
+        end if
+    end if
 ! =====================================================================
 end subroutine

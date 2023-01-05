@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine romAlgoNLTableSave(nume_store, time_curr, paraAlgo)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/romTableSave.h"
 !
-integer, intent(in) :: nume_store
-real(kind=8), intent(in) :: time_curr
-type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
+    integer, intent(in) :: nume_store
+    real(kind=8), intent(in) :: time_curr
+    type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,16 +51,16 @@ type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    gamma  = paraAlgo%gamma
+    gamma = paraAlgo%gamma
     nbMode = paraAlgo%ds_empi%nbMode
 !
 ! - Access to reduced coordinates
 !
-    call jeveuo(gamma, 'L', vr = v_gamma)
+    call jeveuo(gamma, 'L', vr=v_gamma)
 !
 ! - Save in table
 !
-    call romTableSave(paraAlgo%tablResu, nbMode   , v_gamma,&
-                      nume_store       , time_curr)
+    call romTableSave(paraAlgo%tablResu, nbMode, v_gamma, &
+                      nume_store, time_curr)
 !
 end subroutine

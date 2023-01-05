@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine nmch1p(valinc)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterfort/nmcha0.h"
     character(len=19) :: valinc(*)
 !
@@ -44,21 +44,21 @@ subroutine nmch1p(valinc)
     character(len=19) :: fexmoi, fammoi, flimoi, fnomoi
     character(len=19) :: fexplu, famplu, fliplu, fnoplu
 !
-    data depmoi,depplu    /'&&NMCH1P.DEPMOI','&&NMCH1P.DEPPLU'/
-    data sigmoi,sigplu    /'&&NMCH1P.SIGMOI','&&NMCH1P.SIGPLU'/
-    data varmoi,varplu    /'&&NMCH1P.VARMOI','&&NMCH1P.VARPLU'/
-    data vitmoi,vitplu    /'&&NMCH1P.VITMOI','&&NMCH1P.VITPLU'/
-    data accmoi,accplu    /'&&NMCH1P.ACCMOI','&&NMCH1P.ACCPLU'/
-    data commoi,complu    /'&&NMCH1P.COMMOI','&&NMCH1P.COMPLU'/
-    data strmoi,strplu    /'&&NMCH1P.STRMOI','&&NMCH1P.STRPLU'/
-    data sigext           /'&&NMCH1P.SIGEXT'/
-    data fexmoi,fexplu    /'&&NMCH1P.FEXMOI','&&NMCH1P.FEXPLU'/
-    data fammoi,famplu    /'&&NMCH1P.FAMMOI','&&NMCH1P.FAMPLU'/
-    data flimoi,fliplu    /'&&NMCH1P.FLIMOI','&&NMCH1P.FLIPLU'/
-    data fnomoi,fnoplu    /'&&NMCH1P.FNOMOI','&&NMCH1P.FNOPLU'/
-    data depkm1,vitkm1    /'&&NMCH1P.DEPKM1','&&NMCH1P.VITKM1'/
-    data acckm1           /'&&NMCH1P.ACCKM1'/
-    data romkm1,romk      /'&&NMCH1P.ROMKM1','&&NMCH1P.ROMK  '/
+    data depmoi, depplu/'&&NMCH1P.DEPMOI', '&&NMCH1P.DEPPLU'/
+    data sigmoi, sigplu/'&&NMCH1P.SIGMOI', '&&NMCH1P.SIGPLU'/
+    data varmoi, varplu/'&&NMCH1P.VARMOI', '&&NMCH1P.VARPLU'/
+    data vitmoi, vitplu/'&&NMCH1P.VITMOI', '&&NMCH1P.VITPLU'/
+    data accmoi, accplu/'&&NMCH1P.ACCMOI', '&&NMCH1P.ACCPLU'/
+    data commoi, complu/'&&NMCH1P.COMMOI', '&&NMCH1P.COMPLU'/
+    data strmoi, strplu/'&&NMCH1P.STRMOI', '&&NMCH1P.STRPLU'/
+    data sigext/'&&NMCH1P.SIGEXT'/
+    data fexmoi, fexplu/'&&NMCH1P.FEXMOI', '&&NMCH1P.FEXPLU'/
+    data fammoi, famplu/'&&NMCH1P.FAMMOI', '&&NMCH1P.FAMPLU'/
+    data flimoi, fliplu/'&&NMCH1P.FLIMOI', '&&NMCH1P.FLIPLU'/
+    data fnomoi, fnoplu/'&&NMCH1P.FNOMOI', '&&NMCH1P.FNOPLU'/
+    data depkm1, vitkm1/'&&NMCH1P.DEPKM1', '&&NMCH1P.VITKM1'/
+    data acckm1/'&&NMCH1P.ACCKM1'/
+    data romkm1, romk/'&&NMCH1P.ROMKM1', '&&NMCH1P.ROMK  '/
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfatmu(neq, nbliac, sdcont_solv)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -75,11 +75,11 @@ implicit none
         zr(jatmu+kk-1) = 0.0d0
     end do
     do iliac = 1, nbliac
-        lliac = zi(jliac +iliac-1)
+        lliac = zi(jliac+iliac-1)
         jdecal = zi(japptr+lliac-1)
-        nbddl = zi(japptr+lliac ) - zi(japptr+lliac-1)
-        compts = compts + 1
-        call calatm(neq, nbddl, zr(jmu-1+compts), zr(japcoe+jdecal), zi( japddl+jdecal),&
+        nbddl = zi(japptr+lliac)-zi(japptr+lliac-1)
+        compts = compts+1
+        call calatm(neq, nbddl, zr(jmu-1+compts), zr(japcoe+jdecal), zi(japddl+jdecal), &
                     zr(jatmu))
     end do
 !

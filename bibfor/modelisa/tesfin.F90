@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,18 +38,18 @@ subroutine tesfin(icl, iv, cv, irteti)
     irteti = 0
 !
     if (icl .eq. 3 .and. iv .le. 8) then
-        mcl='        '
-        mcl(1:iv)=cv(1:iv)
+        mcl = '        '
+        mcl(1:iv) = cv(1:iv)
         if (mcl .eq. 'FIN     ') then
             irteti = 1
             goto 9999
-        endif
+        end if
         if (mcl .eq. 'FINSF   ') then
             irteti = 2
             goto 9999
-        endif
-    endif
+        end if
+    end if
 !
     irteti = 0
-9999  continue
+9999 continue
 end subroutine

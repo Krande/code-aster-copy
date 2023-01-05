@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dinonc(nomte, icodre, valre, klv, raide,&
+subroutine dinonc(nomte, icodre, valre, klv, raide, &
                   nbpar, param, okdire)
     implicit none
 #include "asterf_types.h"
@@ -63,90 +63,90 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
     integer :: ii, jj
 !
     do ii = 1, 6
-        okdire(ii)= .false.
-    enddo
+        okdire(ii) = .false.
+    end do
 !
     if ((nomte .eq. 'MECA_DIS_TR_N') .or. (nomte .eq. 'MECA_DIS_TR_L')) then
         do ii = 0, 5
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nbpar*ii+jj)
+                    param(ii+1, jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
-                endif
-            enddo
-        enddo
-        raide(1)= klv(1)
-        raide(2)= klv(3)
-        raide(3)= klv(6)
-        raide(4)= klv(10)
-        raide(5)= klv(15)
-        raide(6)= klv(21)
-    endif
+                end if
+            end do
+        end do
+        raide(1) = klv(1)
+        raide(2) = klv(3)
+        raide(3) = klv(6)
+        raide(4) = klv(10)
+        raide(5) = klv(15)
+        raide(6) = klv(21)
+    end if
     if ((nomte .eq. 'MECA_DIS_T_N') .or. (nomte .eq. 'MECA_DIS_T_L')) then
         do ii = 0, 2
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nbpar*ii+jj)
+                    param(ii+1, jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
-                endif
-            enddo
-        enddo
+                end if
+            end do
+        end do
         do ii = 3, 5
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
                     call utmess('F', 'DISCRETS_1', sk=nomte)
-                endif
-            enddo
-        enddo
-        raide(1)= klv(1)
-        raide(2)= klv(3)
-        raide(3)= klv(6)
-    endif
+                end if
+            end do
+        end do
+        raide(1) = klv(1)
+        raide(2) = klv(3)
+        raide(3) = klv(6)
+    end if
     if ((nomte .eq. 'MECA_2D_DIS_TR_N') .or. (nomte .eq. 'MECA_2D_DIS_TR_L')) then
         do ii = 0, 1
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nbpar*ii+jj)
+                    param(ii+1, jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
-                endif
-            enddo
-        enddo
-        ii= 5
+                end if
+            end do
+        end do
+        ii = 5
         do jj = 1, nbpar
             if (icodre(nbpar*ii+jj) .eq. 0) then
-                param(3,jj) = valre(nbpar*ii+jj)
+                param(3, jj) = valre(nbpar*ii+jj)
                 okdire(3) = .true.
-            endif
-        enddo
+            end if
+        end do
         do ii = 2, 4
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
                     call utmess('F', 'DISCRETS_2', sk=nomte)
-                endif
-            enddo
-        enddo
-        raide(1)= klv(1)
-        raide(2)= klv(3)
-        raide(3)= klv(6)
-    endif
+                end if
+            end do
+        end do
+        raide(1) = klv(1)
+        raide(2) = klv(3)
+        raide(3) = klv(6)
+    end if
     if ((nomte .eq. 'MECA_2D_DIS_T_N') .or. (nomte .eq. 'MECA_2D_DIS_T_L')) then
         do ii = 0, 1
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nbpar*ii+jj)
+                    param(ii+1, jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
-                endif
-            enddo
-        enddo
+                end if
+            end do
+        end do
         do ii = 2, 5
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
                     call utmess('F', 'DISCRETS_3', sk=nomte)
-                endif
-            enddo
-        enddo
-        raide(1)= klv(1)
-        raide(2)= klv(3)
-    endif
+                end if
+            end do
+        end do
+        raide(1) = klv(1)
+        raide(2) = klv(3)
+    end if
 !
 end subroutine

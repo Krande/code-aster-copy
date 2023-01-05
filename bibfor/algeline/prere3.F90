@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prere3(solveu, base, iret, matpre, matass,&
-                      npvneg, istop)
+subroutine prere3(solveu, base, iret, matpre, matass, &
+                  npvneg, istop)
 ! BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT/MUMPS)
 !       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC)
 !
@@ -74,33 +74,33 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
 !----------------------------------------------------------------------
     call jemarq()
 !
-    matas1=matass
+    matas1 = matass
 !
-    solvez=solveu
+    solvez = solveu
     if (solvez .eq. ' ') call dismoi('SOLVEUR', matass, 'MATR_ASSE', repk=solvez)
     call jeveuo(solvez//'.SLVK', 'L', islvk)
 !
-    metres  = zk24(islvk-1+1)
-    kprecond= zk24(islvk-1+14)
+    metres = zk24(islvk-1+1)
+    kprecond = zk24(islvk-1+14)
     ASSERT(kprecond(1:3) .eq. 'OUI')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   CALCUL DU PRE CONDITIONNEUR XFEM ::
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if (kprecond.eq.'OUI_DPB') then
+    if (kprecond .eq. 'OUI_DPB') then
 !
-      call xfem_precond('PRE_COND_DPB', matas1, base)
+        call xfem_precond('PRE_COND_DPB', matas1, base)
 !
     else
 !
-      call xfem_precond('PRE_COND', matas1, base)
+        call xfem_precond('PRE_COND', matas1, base)
 !
-    endif
+    end if
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   POURSUITE DE LA FACTORISATION ASTER ::
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    call prere2(solveu, base, iret, matpre, matass,&
+    call prere2(solveu, base, iret, matpre, matass, &
                 npvneg, istop)
 !
     call jedema()

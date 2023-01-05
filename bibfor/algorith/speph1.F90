@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine speph1(intphy, intmod, nomu, cham, specmr,&
-                  specmi, nnoe, nomcmp, nbmode, nbn,&
+subroutine speph1(intphy, intmod, nomu, cham, specmr, &
+                  specmi, nnoe, nomcmp, nbmode, nbn, &
                   nbpf)
     implicit none
 #include "asterf_types.h"
@@ -61,7 +61,7 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
 !
     integer :: nbpar, inj, idebn, ini, il, im2, idebm, im1, ism
     integer :: nbabs, ispec, mxval, lnoei, lnoej, lcmpi, lcmpj, ij
-    parameter   ( nbpar = 5 )
+    parameter(nbpar=5)
     real(kind=8) :: specr, speci
     character(len=24) :: kval(nbpar)
     character(len=24) :: chnoei, chnoej, chcmpi, chcmpj, chvals
@@ -81,13 +81,13 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
         mxval = nbn*(nbn+1)/2
     else
         mxval = nbn
-    endif
+    end if
 !
     call wkvect(chnoei, 'G V K8', mxval, lnoei)
     call wkvect(chnoej, 'G V K8', mxval, lnoej)
     call wkvect(chcmpi, 'G V K8', mxval, lcmpi)
     call wkvect(chcmpj, 'G V K8', mxval, lcmpj)
-    call jecrec(chvals, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(chvals, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 mxval)
 !
     ij = 0
@@ -105,16 +105,16 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
             kval(1) = nnoe(ini)
             kval(2) = nomcmp(ini)
 !
-            zk8(lnoei-1+ij) = kval(1)(1:8)
-            zk8(lnoej-1+ij) = kval(3)(1:8)
-            zk8(lcmpi-1+ij) = kval(2)(1:8)
-            zk8(lcmpj-1+ij) = kval(4)(1:8)
+            zk8(lnoei-1+ij) = kval(1) (1:8)
+            zk8(lnoej-1+ij) = kval(3) (1:8)
+            zk8(lcmpi-1+ij) = kval(2) (1:8)
+            zk8(lcmpj-1+ij) = kval(4) (1:8)
 !
             if ((kval(1) .eq. kval(3)) .and. (kval(2) .eq. kval(4))) then
                 nbabs = nbpf
             else
                 nbabs = 2*nbpf
-            endif
+            end if
 !
             call jecroc(jexnum(chvals, ij))
             call jeecra(jexnum(chvals, ij), 'LONMAX', nbabs)
@@ -132,34 +132,34 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                     if (intmod) idebm = 1
 !
                     do im1 = idebm, im2
-                        ism = (im2* (im2-1))/2 + im1
+                        ism = (im2*(im2-1))/2+im1
 !
                         if (im1 .eq. im2) then
 !                 --------------------
 !
-                            specr = specr + cham(ini,im1)*cham(inj, im2)* specmr(il,ism)
+                            specr = specr+cham(ini, im1)*cham(inj, im2)*specmr(il, ism)
 !
 !
                         else
 !                 ----
 !
-                            specr = specr + cham(ini,im1)*cham(inj, im2)* specmr(il,ism) + cham(i&
-                                    &ni,im2)* cham(inj,im1)*specmr(il,ism)
-                            speci = speci + cham(ini,im1)*cham(inj, im2)* specmi(il,ism) - cham(i&
-                                    &ni,im2)* cham(inj,im1)*specmi(il,ism)
+                            specr = specr+cham(ini, im1)*cham(inj, im2)*specmr(il, ism)+cham(i&
+                                    &ni, im2)*cham(inj, im1)*specmr(il, ism)
+                            speci = speci+cham(ini, im1)*cham(inj, im2)*specmi(il, ism)-cham(i&
+                                    &ni, im2)*cham(inj, im1)*specmi(il, ism)
 !
-                        endif
+                        end if
 !                 -----
 !
                     end do
                 end do
 !
-                if ((kval(1) .eq. kval(3)) .and. (kval(2) .eq. kval(4) )) then
+                if ((kval(1) .eq. kval(3)) .and. (kval(2) .eq. kval(4))) then
                     zr(ispec-1+il) = specr
                 else
-                    zr(ispec+2*(il-1) ) = specr
+                    zr(ispec+2*(il-1)) = specr
                     zr(ispec+2*(il-1)+1) = speci
-                endif
+                end if
             end do
 !
         end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! aslint: disable=W1306,W1504
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-subroutine xxnmel(elrefp, elrese, ndim, coorse,&
-                  igeom, he, nfh, ddlc, ddlm,&
-                  nnops, nfe, basloc, nnop, npg,&
-                  typmod, option, imate, compor, lgpg,&
-                  carcri, instam, instap, idepl, lsn, lst, idecpg,&
-                  sig, vi, matuu, ivectu, codret,&
-                  nfiss, heavn, jstno,&
+subroutine xxnmel(elrefp, elrese, ndim, coorse, &
+                  igeom, he, nfh, ddlc, ddlm, &
+                  nnops, nfe, basloc, nnop, npg, &
+                  typmod, option, imate, compor, lgpg, &
+                  carcri, instam, instap, idepl, lsn, lst, idecpg, &
+                  sig, vi, matuu, ivectu, codret, &
+                  nfiss, heavn, jstno, &
                   l_line, l_nonlin, lMatr, lVect, lSigm)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -55,16 +55,16 @@ implicit none
 #include "asterfort/xnbddl.h"
 #include "asterfort/Behaviour_type.h"
 !
-integer :: nnop, nfiss, codret, ddlc, ddlm
-integer :: idecpg, idepl, igeom, imate, ivectu, nnops
-integer :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
-integer :: jstno
-real(kind=8) :: basloc(3*ndim*nnop), coorse(*), carcri(*), he(nfiss)
-real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg), instam, instap
-real(kind=8) :: matuu(*), vi(lgpg, npg)
-character(len=8) :: elrefp, elrese, typmod(*), fami_se
-character(len=16) :: option, compor(*)
-aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
+    integer :: nnop, nfiss, codret, ddlc, ddlm
+    integer :: idecpg, idepl, igeom, imate, ivectu, nnops
+    integer :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
+    integer :: jstno
+    real(kind=8) :: basloc(3*ndim*nnop), coorse(*), carcri(*), he(nfiss)
+    real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg), instam, instap
+    real(kind=8) :: matuu(*), vi(lgpg, npg)
+    character(len=8) :: elrefp, elrese, typmod(*), fami_se
+    character(len=16) :: option, compor(*)
+    aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,7 +107,7 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg
-    integer :: ddld, ddls, nno,npgbis, cpt, ndimb, dec(nnop)
+    integer :: ddld, ddls, nno, npgbis, cpt, ndimb, dec(nnop)
     integer :: idfde, ipoids, ivf, hea_se
     integer :: singu, alp, ii, jj
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
@@ -117,20 +117,20 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
     real(kind=8) :: pff(6, nnop, nnop)
     real(kind=8) :: def(6, ndim*(1+nfh+ndim), nnop)
     real(kind=8) :: r
-    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3), ka, mu
+    real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
     integer :: nbsig
     real(kind=8) :: bary(3), repere(7), d(36), instan
     aster_logical :: grdepl, axi, cplan
     type(Behaviour_Integ) :: BEHinteg
     real(kind=8) :: angmas(3)
     real(kind=8):: vim(lgpg), zero6(6)
-    integer, parameter :: indi(6) = (/ 1 , 2 , 3 , 1 , 1 , 2 /)
-    integer, parameter :: indj(6) = (/ 1 , 2 , 3 , 2 , 3 , 3 /)
+    integer, parameter :: indi(6) = (/1, 2, 3, 1, 1, 2/)
+    integer, parameter :: indj(6) = (/1, 2, 3, 2, 3, 3/)
     real(kind=8), parameter :: rac2 = 1.4142135623731d0
-    real(kind=8), parameter :: rind(6) = (/ 0.5d0, 0.5d0,&
-                                            0.5d0, 0.70710678118655d0,&
-                                            0.70710678118655d0, 0.70710678118655d0 /)
-                                            
+    real(kind=8), parameter :: rind(6) = (/0.5d0, 0.5d0, &
+                                           0.5d0, 0.70710678118655d0, &
+                                           0.70710678118655d0, 0.70710678118655d0/)
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -151,28 +151,28 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 ! - Type of finite element
 !
     grdepl = compor(DEFO) .eq. 'GROT_GDEP'
-    axi    = typmod(1) .eq. 'AXIS'
-    cplan  = typmod(1) .eq. 'C_PLAN'
+    axi = typmod(1) .eq. 'AXIS'
+    cplan = typmod(1) .eq. 'C_PLAN'
 !
     if (grdepl) then
         call utmess('F', 'XFEM2_2')
-    endif
+    end if
 !
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
     fami_se = 'XINT'
-    if (nfe.gt.0) then
-        if (ndim.eq.3 .and. &
-            (count(zi((jstno-1+1):(jstno-1+nnop)).eq.2)+&
-             count(zi((jstno-1+1):(jstno-1+nnop)).eq.0)).eq.nnop) then
-            fami_se='XGEO'
-        endif
-    endif
+    if (nfe .gt. 0) then
+        if (ndim .eq. 3 .and. &
+            (count(zi((jstno-1+1):(jstno-1+nnop)) .eq. 2)+ &
+             count(zi((jstno-1+1):(jstno-1+nnop)) .eq. 0)) .eq. nnop) then
+            fami_se = 'XGEO'
+        end if
+    end if
 !
 ! - Get element parameters
 !
-    call elrefe_info(elrefe=elrese, fami=fami_se, ndim=ndimb, nno=nno,&
+    call elrefe_info(elrefe=elrese, fami=fami_se, ndim=ndimb, nno=nno, &
                      npg=npgbis, jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg .eq. npgbis .and. ndim .eq. ndimb)
 !
 ! - DECALAGES CALCULES EN AMONT: PERF
 !
@@ -182,20 +182,20 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !
 ! - CALCUL DE L IDENTIFIANT DU SS ELEMENT
 !
-    hea_se=xcalc_code(nfiss, he_real=[he])
+    hea_se = xcalc_code(nfiss, he_real=[he])
 !
 !   calcul du repère d'othotropie, pour calculer la matrice de Hooke
 !   dans le cas de l'option RIGI_MECA
-    bary   = 0.d0
+    bary = 0.d0
     repere = 0.d0
     if (l_line) then
-       do n = 1, nnop
-           do i = 1, ndim
-               bary(i) = bary(i)+zr(igeom-1+ndim*(n-1)+i)/nnop
-           end do
-       end do
-       call ortrep(ndim, bary, repere)
-    endif
+        do n = 1, nnop
+            do i = 1, ndim
+                bary(i) = bary(i)+zr(igeom-1+ndim*(n-1)+i)/nnop
+            end do
+        end do
+        call ortrep(ndim, bary, repere)
+    end if
 !
 !  - Loop on Gauss points
 !
@@ -205,221 +205,221 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
         xg = 0.d0
         do i = 1, ndim
             do n = 1, nno
-                xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*( n-1)+i)
+                xg(i) = xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+i)
             end do
         end do
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF ET DFDI
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
                     xe, ff, dfdi=dfdi)
 !
 !       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
         if (singu .gt. 0) then
-            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
-                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl,&
-                         elref=elrefp, kstop='C')
-        endif
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1), &
+                              lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl, &
+                              elref=elrefp, kstop='C')
+        end if
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
         if (axi) then
             r = 0.d0
             do n = 1, nnop
-                r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
+                r = r+ff(n)*zr(igeom-1+2*(n-1)+1)
             end do
 !
-            ASSERT(r.gt.0d0)
+            ASSERT(r .gt. 0d0)
 !           ATTENTION : LE POIDS N'EST PAS X R
 !           CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
-        endif
+        end if
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
         if (l_nonlin) then
-            call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he,&
-                        nfiss, nfh, singu, ddls, ddlm,&
+            call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he, &
+                        nfiss, nfh, singu, ddls, ddlm, &
                         fk, dkdgl, ff, dfdi, f, eps, rbid33, heavn)
         else if (l_line) then
-            f   = 0.d0
+            f = 0.d0
             eps = 0.d0
             do i = 1, 3
-                f(i,i) = 1.d0
+                f(i, i) = 1.d0
             end do
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,
-        def(:,:,:)=0.d0
+        def(:, :, :) = 0.d0
         do n = 1, nnop
             cpt = 0
 !         FONCTIONS DE FORME CLASSIQUES
             do i = 1, ndim
                 cpt = cpt+1
-                def(1,i,n) = f(i,1)*dfdi(n,1)
-                def(2,i,n) = f(i,2)*dfdi(n,2)
-                def(3,i,n) = 0.d0
-                def(4,i,n) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
+                def(1, i, n) = f(i, 1)*dfdi(n, 1)
+                def(2, i, n) = f(i, 2)*dfdi(n, 2)
+                def(3, i, n) = 0.d0
+                def(4, i, n) = (f(i, 1)*dfdi(n, 2)+f(i, 2)*dfdi(n, 1))/rac2
                 if (ndim .eq. 3) then
-                    def(3,i,n) = f(i,3)*dfdi(n,3)
-                    def(5,i,n) = (f(i,1)*dfdi(n,3) + f(i,3)*dfdi(n,1)) /rac2
-                    def(6,i,n) = (f(i,2)*dfdi(n,3) + f(i,3)*dfdi(n,2)) /rac2
-                endif
+                    def(3, i, n) = f(i, 3)*dfdi(n, 3)
+                    def(5, i, n) = (f(i, 1)*dfdi(n, 3)+f(i, 3)*dfdi(n, 1))/rac2
+                    def(6, i, n) = (f(i, 2)*dfdi(n, 3)+f(i, 3)*dfdi(n, 2))/rac2
+                end if
             end do
 !         TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
             if (axi) then
-                def(3,1,n) = f(3,3) * ff(n)/r
-            endif
+                def(3, 1, n) = f(3, 3)*ff(n)/r
+            end if
 !         ENRICHISSEMENT PAR HEAVISIDE
             do ig = 1, nfh
                 do i = 1, ndim
                     cpt = cpt+1
                     do m = 1, 2*ndim
-                        def(m,cpt,n) = def(m,i,n) * xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
+                        def(m, cpt, n) = def(m, i, n)*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
                     end do
                     if (ndim .eq. 2) then
-                        def(3,cpt,n) = 0.d0
-                    endif
+                        def(3, cpt, n) = 0.d0
+                    end if
                 end do
 !               TERME DE CORRECTION (3,3) A PORTER SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3,1+ndim*ig,n) = f(3,3)*ff(n)/r*xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
-                endif
+                def(3, 1+ndim*ig, n) = f(3, 3)*ff(n)/r*xcalc_heav(heavn(n, ig), hea_se, heavn(n, 5))
+                end if
 !
             end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
             do alp = 1, ndim*nfe
                 do i = 1, ndim
-                    cpt=cpt+1
-                    def(1,cpt,n) = f(i,1)* dkdgl(n,alp,i,1)
-                    def(2,cpt,n) = f(i,2)* dkdgl(n,alp,i,2)
-                    def(3,cpt,n) = 0.d0
-                    def(4,cpt,n) = (f(i,1)* dkdgl(n,alp,i,2) +&
-                                    f(i,2)* dkdgl(n,alp,i,1))/rac2
+                    cpt = cpt+1
+                    def(1, cpt, n) = f(i, 1)*dkdgl(n, alp, i, 1)
+                    def(2, cpt, n) = f(i, 2)*dkdgl(n, alp, i, 2)
+                    def(3, cpt, n) = 0.d0
+                    def(4, cpt, n) = (f(i, 1)*dkdgl(n, alp, i, 2)+ &
+                                      f(i, 2)*dkdgl(n, alp, i, 1))/rac2
                     if (ndim .eq. 3) then
-                        def(3,cpt,n) = f(i,3)* dkdgl(n,alp,i,3)
-                        def(5,cpt,n) = (f(i,1)* dkdgl(n,alp,i,3) +&
-                                        f(i,3)* dkdgl(n,alp,i,1))/rac2
-                        def(6,cpt,n) = (f(i,3)* dkdgl(n,alp,i,2) +&
-                                        f(i,2)* dkdgl(n,alp,i,3))/rac2
-                    endif
-                enddo
-            enddo
+                        def(3, cpt, n) = f(i, 3)*dkdgl(n, alp, i, 3)
+                        def(5, cpt, n) = (f(i, 1)*dkdgl(n, alp, i, 3)+ &
+                                          f(i, 3)*dkdgl(n, alp, i, 1))/rac2
+                        def(6, cpt, n) = (f(i, 3)*dkdgl(n, alp, i, 2)+ &
+                                          f(i, 2)*dkdgl(n, alp, i, 3))/rac2
+                    end if
+                end do
+            end do
 !   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+ALP)
 !      EN AXI: ON PROJETTE L ENRICHISSEMENT VECTORIEL SUIVANT X
             if (axi) then
                 do alp = 1, ndim*nfe
-                    def(3,1+ndim*(nfh+alp),n) = f(3,3)* fk(n,alp,1)/r
+                    def(3, 1+ndim*(nfh+alp), n) = f(3, 3)*fk(n, alp, 1)/r
                 end do
-            endif
+            end if
 !
-            ASSERT(cpt.eq.ddld)
+            ASSERT(cpt .eq. ddld)
 !
         end do
 !       CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       AVEC LES COORDONNEES DU SOUS-ELEMENT
         if (ndim .eq. 2) then
-            call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
+            call dfdm2d(nno, kpg, ipoids, idfde, coorse, &
                         jac)
-        else if (ndim.eq.3) then
-            call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
+        else if (ndim .eq. 3) then
+            call dfdm3d(nno, kpg, ipoids, idfde, coorse, &
                         jac)
-        endif
+        end if
         if (axi) then
-            jac = jac * r
-        endif
+            jac = jac*r
+        end if
 !       CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
         if (l_nonlin .and. grdepl) then
             do n = 1, nnop
                 do m = 1, n
-                    pff(1,m,n) = dfdi(n,1)*dfdi(m,1)
-                    pff(2,m,n) = dfdi(n,2)*dfdi(m,2)
-                    pff(3,m,n) = 0.d0
-                    pff(4,m,n) =(dfdi(n,1)*dfdi(m,2)+dfdi(n,2)*dfdi(m,&
-                    1))/rac2
+                    pff(1, m, n) = dfdi(n, 1)*dfdi(m, 1)
+                    pff(2, m, n) = dfdi(n, 2)*dfdi(m, 2)
+                    pff(3, m, n) = 0.d0
+                    pff(4, m, n) = (dfdi(n, 1)*dfdi(m, 2)+dfdi(n, 2)*dfdi(m, &
+                                                                          1))/rac2
                     if (ndim .eq. 3) then
-                        pff(3,m,n)= dfdi(n,3)*dfdi(m,3)
-                        pff(5,m,n)=(dfdi(n,1)*dfdi(m,3)+dfdi(n,3)*&
-                        dfdi(m,1))/rac2
-                        pff(6,m,n)=(dfdi(n,2)*dfdi(m,3)+dfdi(n,3)*&
-                        dfdi(m,2))/rac2
-                    endif
+                        pff(3, m, n) = dfdi(n, 3)*dfdi(m, 3)
+                        pff(5, m, n) = (dfdi(n, 1)*dfdi(m, 3)+dfdi(n, 3)* &
+                                        dfdi(m, 1))/rac2
+                        pff(6, m, n) = (dfdi(n, 2)*dfdi(m, 3)+dfdi(n, 3)* &
+                                        dfdi(m, 2))/rac2
+                    end if
                 end do
             end do
-        endif
+        end if
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE POUR L'OPTION RIGI_MECA
 !
         if (l_line) then
 !           Calcul du tenseur de Hooke [D]
 !              {sxx, syy, szz, sxy, sxz, syz}^T = [Ð]{exx, eyy, ezz, 2*exy, 2*exz, 2*eyz}^T
-            ipg= idecpg + kpg
+            ipg = idecpg+kpg
             instan = r8vide()
             nbsig = 2*ndim
 !
-            call dmatmc('XFEM', imate, instan, '+',&
+            call dmatmc('XFEM', imate, instan, '+', &
                         ipg, 1, repere, xg, nbsig, d)
 !
 !           Calcul du tenseur de comportement tangent [D']
 !              {sxx, syy, szz, sqrt(2)*sxy, sqrt(2)*sxz, sqrt(2)*syz}^T =
 !                  [D']{exx, eyy, ezz, sqrt(2)*exy, sqrt(2)*exz, sqrt(2)*eyz}^T
-            do j=1, nbsig
-               do i=1, nbsig
-                  dsidep(i, j) = d((j-1)*nbsig + i)
-               enddo
-            enddo
-            do j=4, nbsig
-               do i=4, nbsig
-                  dsidep(i, j) = 2.d0*d((j-1)*nbsig + i)
-               enddo
-            enddo
+            do j = 1, nbsig
+                do i = 1, nbsig
+                    dsidep(i, j) = d((j-1)*nbsig+i)
+                end do
+            end do
+            do j = 4, nbsig
+                do i = 4, nbsig
+                    dsidep(i, j) = 2.d0*d((j-1)*nbsig+i)
+                end do
+            end do
 !
 !           Calcul de la matrice de rigidité : [K] = [B]^T[D'][B]
 !
             do n = 1, nnop
-                nn=dec(n)
+                nn = dec(n)
                 do i = 1, ddld
                     do kl = 1, 2*ndim
-                        sigp(kl,i) = 0.d0
+                        sigp(kl, i) = 0.d0
                         do l = 1, 2*ndim
-                            sigp(kl,i) = sigp(kl,i) + def(l,i,n)* dsidep(l,kl)
+                            sigp(kl, i) = sigp(kl, i)+def(l, i, n)*dsidep(l, kl)
                         end do
                     end do
                 end do
 !
                 do m = 1, n
-                    mn=dec(m)
+                    mn = dec(m)
                     do i = 1, ddld
-                        ii=iimatu(i,ndim,nfh,nfe)
-                        kkd = (nn+ii-1) * (nn+ii) /2
+                        ii = iimatu(i, ndim, nfh, nfe)
+                        kkd = (nn+ii-1)*(nn+ii)/2
                         if (m .eq. n) then
                             j1 = ii
                         else
                             j1 = ddld
-                        endif
+                        end if
 !
                         do j = 1, ddld
 !
-                            jj=iimatu(j,ndim,nfh,nfe)
+                            jj = iimatu(j, ndim, nfh, nfe)
 !
 !                 RIGIDITE ELASTIQUE
                             tmp2 = 0.d0
                             do l = 1, 2*ndim
-                                tmp2 = tmp2 + sigp(l,i)*def(l,j,m)
+                                tmp2 = tmp2+sigp(l, i)*def(l, j, m)
                             end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (jj .le. j1) then
-                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj) + tmp2*jac
-                            endif
+                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj)+tmp2*jac
+                            end if
 !
                         end do
                     end do
                 end do
             end do
             goto 999
-        endif
+        end if
 !
 ! - LOI DE COMPORTEMENT : CALCUL DE S(E) ET DS/DE À PARTIR DE EPS
 !                       {XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ}
@@ -427,18 +427,17 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !       POUR LES VARIABLES DE COMMANDES (TEMP...), IL EST NECESSSAIRE
 !       DE DONNER LA POSITION DU POINT DE GAUSS COURRANT DANS LA
 !       FAMILLE 'XFEM'
-        ipg = idecpg + kpg
-        
-        ! Aooel aux routines de comportement hyperelastiques (on pourrait refondre avec xxnmpl)
-        zero6  = 0
-        vim    = 0
-        call nmcomp(BEHinteg   ,&
-            'XFEM'     , ipg        , 1       , ndim  , typmod  ,&
-            imate      , compor     , carcri  , instam, instap  ,&
-            6          , eps        , zero6   , 6     , zero6   ,&
-            vim        , option     , angmas  , sigma , vi (1, kpg), &
-            36         , dsidep     , codret)
+        ipg = idecpg+kpg
 
+        ! Aooel aux routines de comportement hyperelastiques (on pourrait refondre avec xxnmpl)
+        zero6 = 0
+        vim = 0
+        call nmcomp(BEHinteg, &
+                    'XFEM', ipg, 1, ndim, typmod, &
+                    imate, compor, carcri, instam, instap, &
+                    6, eps, zero6, 6, zero6, &
+                    vim, option, angmas, sigma, vi(1, kpg), &
+                    36, dsidep, codret)
 
 !
 !
@@ -447,94 +446,94 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !
         if (lMatr) then
             do n = 1, nnop
-                nn=dec(n)
+                nn = dec(n)
                 do i = 1, ddld
-                    ii=iimatu(i,ndim,nfh,nfe)
-                    kkd = (nn+ii-1) * (nn+ii) /2
+                    ii = iimatu(i, ndim, nfh, nfe)
+                    kkd = (nn+ii-1)*(nn+ii)/2
                     do kl = 1, 2*ndim
-                        sigp(kl,i) = 0.d0
+                        sigp(kl, i) = 0.d0
                         do l = 1, 2*ndim
-                            sigp(kl,i) = sigp(kl,i) + def(l,i,n)*dsidep(l,kl)
+                            sigp(kl, i) = sigp(kl, i)+def(l, i, n)*dsidep(l, kl)
                         end do
                     end do
                     do j = 1, ddld
-                        jj=iimatu(j,ndim,nfh,nfe)
+                        jj = iimatu(j, ndim, nfh, nfe)
                         do m = 1, n
-                            mn=dec(m)
+                            mn = dec(m)
 !
                             if (m .eq. n) then
                                 j1 = ii
                             else
                                 j1 = ddld
-                            endif
+                            end if
 !
 !                 RIGIDITE GEOMETRIQUE
                             tmp1 = 0.d0
                             if (grdepl .and. i .eq. j) then
                                 tmp1 = 0.d0
                                 do l = 1, 2*ndim
-                                    tmp1 = tmp1 + pff(l,m,n)*sigma(l)
+                                    tmp1 = tmp1+pff(l, m, n)*sigma(l)
                                 end do
-                            endif
+                            end if
 !
 !                 RIGIDITE ELASTIQUE
                             tmp2 = 0.d0
                             do l = 1, 2*ndim
-                                tmp2 = tmp2 + sigp(l,i)*def(l,j,m)
+                                tmp2 = tmp2+sigp(l, i)*def(l, j, m)
                             end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (jj .le. j1) then
-                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj) + ( tmp1+tmp2)*jac
-                            endif
+                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj)+(tmp1+tmp2)*jac
+                            end if
 !
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
 ! ----- Internal forces
         if (lVect) then
             do n = 1, nnop
-                nn=dec(n)
+                nn = dec(n)
                 do i = 1, ddld
-                    ii=iimatu(i,ndim,nfh,nfe)
+                    ii = iimatu(i, ndim, nfh, nfe)
                     do m = 1, 2*ndim
-                        zr(ivectu-1+nn+ii) = zr(ivectu-1+nn+ii) + def(m,i,n)*sigma(m)*jac
+                        zr(ivectu-1+nn+ii) = zr(ivectu-1+nn+ii)+def(m, i, n)*sigma(m)*jac
                     end do
                 end do
             end do
-        endif
+        end if
 ! ----- Stress
         if (lSigm) then
             if (grdepl) then
 !               CONVERSION LAGRANGE -> CAUCHY
-                if (cplan) f(3,3) = sqrt(abs(2.d0*eps(3)+1.d0))
-                detf = f(3,3) * (f(1,1)*f(2,2)-f(1,2)*f(2,1))
+                if (cplan) f(3, 3) = sqrt(abs(2.d0*eps(3)+1.d0))
+                detf = f(3, 3)*(f(1, 1)*f(2, 2)-f(1, 2)*f(2, 1))
                 if (ndim .eq. 3) then
-                    detf = detf - f(2,3)*(f(1,1)*f(3,2)-f(3,1)*f(1,2)) +&
-                                  f(1,3)*(f(2,1)*f(3,2)-f(3,1)*f(2,2))
-                endif
+                    detf = detf-f(2, 3)*(f(1, 1)*f(3, 2)-f(3, 1)*f(1, 2))+ &
+                           f(1, 3)*(f(2, 1)*f(3, 2)-f(3, 1)*f(2, 2))
+                end if
                 do i = 1, 2*ndim
-                    sig(i,kpg) = 0.d0
+                    sig(i, kpg) = 0.d0
                     do l = 1, 2*ndim
-                        ftf = (f(indi(i), indi(l))*f(indj(i), indj(l)) +&
+                        ftf = (f(indi(i), indi(l))*f(indj(i), indj(l))+ &
                                f(indi(i), indj(l))*f(indj(i), indi(l)))*rind(l)
-                        sig(i,kpg) = sig(i,kpg) + ftf*sigma(l)
+                        sig(i, kpg) = sig(i, kpg)+ftf*sigma(l)
                     end do
-                    sig(i,kpg) = sig(i,kpg)/detf
+                    sig(i, kpg) = sig(i, kpg)/detf
                 end do
             else
                 do l = 1, 3
-                    sig(l,kpg) = sigma(l)
+                    sig(l, kpg) = sigma(l)
                 end do
-                sig(4,kpg) = sigma(4)/rac2
+                sig(4, kpg) = sigma(4)/rac2
                 if (ndim .eq. 3) then
-                    sig(5,kpg) = sigma(5)/rac2
-                    sig(6,kpg) = sigma(6)/rac2
-                endif
-            endif
-        endif
+                    sig(5, kpg) = sigma(5)/rac2
+                    sig(6, kpg) = sigma(6)/rac2
+                end if
+            end if
+        end if
 999     continue
     end do
 !

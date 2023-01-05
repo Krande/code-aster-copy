@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,10 +65,10 @@ subroutine op0104()
     call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
     if (n1 .eq. 0) then
         call getvid(' ', 'GRILLE', scal=ma, nbret=n1)
-    endif
+    end if
     if (ma .ne. ma2) then
         call utmess('F', 'SOUSTRUC_15')
-    endif
+    end if
     grpmai = ma//'.GROUPEMA'
     grpnoe = ma//'.GROUPENO'
     gpptnm = ma//'.PTRNOMMAI'
@@ -83,7 +83,7 @@ subroutine op0104()
     call getfac('DETR_GROUP_NO', n2)
     if (n1 .ne. 0 .or. n2 .ne. 0) then
         call detgnm(ma)
-    endif
+    end if
 !
 !
 !
@@ -97,10 +97,10 @@ subroutine op0104()
     call addGroupElem(ma, nbgrma)
     nbgmin = 0
     call jeexin(grpmai, iret)
-    if(iret > 0) then
+    if (iret > 0) then
         call jelira(grpmai, 'NOMUTI', nbgmin)
     end if
-107  continue
+107 continue
 !
 !
 !     3. CREA_GROUP_NO :
@@ -112,28 +112,28 @@ subroutine op0104()
         call getvtx('CREA_GROUP_NO', 'TOUT_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call jelira(grpmai, 'NMAXOC', nbgma)
-            nbgrno = nbgrno + nbgma
+            nbgrno = nbgrno+nbgma
             goto 10
-        endif
-        call getvem(ma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
+        end if
+        call getvem(ma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc, &
                     0, k8b, n2)
         if (n2 .ne. 0) then
-            nbgrno = nbgrno - n2
+            nbgrno = nbgrno-n2
             goto 10
-        endif
+        end if
         call getvtx('CREA_GROUP_NO', 'OPTION', iocc=iocc, nbval=0, nbret=n3)
         if (n3 .ne. 0) then
             call getvtx('CREA_GROUP_NO', 'OPTION', iocc=iocc, scal=option, nbret=n3)
-            if (option.eq.'RELA_CINE_BP')then
+            if (option .eq. 'RELA_CINE_BP') then
                 l_write = .false.
                 call cgrcbp('CREA_GROUP_NO', iocc, ma, l_write, nbgma)
-                nbgrno = nbgrno + nbgma
+                nbgrno = nbgrno+nbgma
                 goto 10
-            endif
-        endif
+            end if
+        end if
 !        -- ON CREE UN GROUP_NO PAR MOT CLE FACTEUR --
-        nbgrno = nbgrno + 1
-10 continue
+        nbgrno = nbgrno+1
+10      continue
     end do
     if (nbgrno .eq. 0) goto 207
 !
@@ -142,10 +142,10 @@ subroutine op0104()
     call addGroupNode(ma, nbgrno)
     nbgnin = 0
     call jeexin(grpnoe, iret)
-    if(iret > 0) then
+    if (iret > 0) then
         call jelira(grpnoe, 'NOMUTI', nbgnin)
     end if
-207  continue
+207 continue
 !
 !     --- TRAITEMENT DU MOT CLEF CREA_GROUP_MA :
     if (nbgrma .gt. 0) call sscgma(ma, nbgrma, nbgmin)

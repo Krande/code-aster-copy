@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrReadTrunc(paraTrunc)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
+    type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,25 +52,25 @@ type(ROM_DS_ParaDBR_Trunc), intent(inout) :: paraTrunc
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_3')
-    endif
+    end if
 !
 ! - Initializations
 !
-    modelRom     = ' '
+    modelRom = ' '
     baseInitName = ' '
 !
 ! - Get parameters
 !
-    call getvid(' ', 'MODELE_REDUIT', scal = modelRom, nbret = nocc)
+    call getvid(' ', 'MODELE_REDUIT', scal=modelRom, nbret=nocc)
     ASSERT(nocc .eq. 1)
-    call getvid(' ', 'BASE', scal = baseInitName, nbret = nocc)
+    call getvid(' ', 'BASE', scal=baseInitName, nbret=nocc)
     if (nocc .eq. 0) then
         baseInitName = ' '
-    endif
+    end if
 !
 ! - Save parameters in datastructure
 !
-    paraTrunc%modelRom     = modelRom
+    paraTrunc%modelRom = modelRom
     paraTrunc%baseInitName = baseInitName
 !
 end subroutine

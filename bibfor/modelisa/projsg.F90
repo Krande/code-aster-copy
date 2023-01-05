@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
+subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
                   xbar, iproj, excent)
     implicit none
 !  DESCRIPTION : PROJECTION DU NOEUD CABLE X3DCA(3) SUR UN SEGMENT
@@ -88,20 +88,20 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
 !     NOEUDS EXTREMITES DU SEGMENT
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    epsg = 1.0d+08 * r8prem()
+    epsg = 1.0d+08*r8prem()
 !
-    nrm2 = dble(max(dnrm2(3,x3d1(1),1),dnrm2(3,x3d2(1),1)))
+    nrm2 = dble(max(dnrm2(3, x3d1(1), 1), dnrm2(3, x3d2(1), 1)))
     if (nrm2 .eq. 0.0d0) then
         iproj = -1
         goto 9999
-    endif
+    end if
 !
 ! 1.1 DETERMINATION DES DEUX PLANS DONT L'INTERSECTION DEFINIT LA DROITE
 ! --- PASSANT PAR LES DEUX NOEUDS EXTREMITES DU SEGMENT
 !
-    dx12 = x3d2(1) - x3d1(1)
-    dy12 = x3d2(2) - x3d1(2)
-    dz12 = x3d2(3) - x3d1(3)
+    dx12 = x3d2(1)-x3d1(1)
+    dy12 = x3d2(2)-x3d1(2)
+    dz12 = x3d2(3)-x3d1(3)
 !
 !.... CAS OU LE PREMIER PLAN A POUR EQUATION X = CSTE
 !
@@ -123,7 +123,7 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
 !
 !....... CAS OU LE SECOND PLAN A POUR EQUATION Z = CSTE
 !
-        else if (dble(abs(dz12))/nrm2.lt.epsg) then
+        else if (dble(abs(dz12))/nrm2 .lt. epsg) then
 !
             plan2(1) = 0.0d0
             plan2(2) = 0.0d0
@@ -139,11 +139,11 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
             plan2(3) = -dy12
             plan2(4) = -x3d1(2)*dz12+x3d1(3)*dy12
 !
-        endif
+        end if
 !
 !.... CAS OU LE PREMIER PLAN A POUR EQUATION Y = CSTE
 !
-    else if (dble(abs(dy12))/nrm2.lt.epsg) then
+    else if (dble(abs(dy12))/nrm2 .lt. epsg) then
 !
         plan1(1) = 0.0d0
         plan1(2) = 1.0d0
@@ -168,11 +168,11 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
             plan2(3) = dx12
             plan2(4) = x3d1(1)*dz12-x3d1(3)*dx12
 !
-        endif
+        end if
 !
 !.... CAS OU LE PREMIER PLAN A POUR EQUATION Z = CSTE
 !
-    else if (dble(abs(dz12))/nrm2.lt.epsg) then
+    else if (dble(abs(dz12))/nrm2 .lt. epsg) then
 !
         plan1(1) = 0.0d0
         plan1(2) = 0.0d0
@@ -198,61 +198,61 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
         plan2(3) = dx12
         plan2(4) = x3d1(1)*dz12-x3d1(3)*dx12
 !
-    endif
+    end if
 !
 ! 1.2 EXCENTRICITE ET COORDONNEES DU POINT PROJETE
 ! ---
-    n1n1 = ddot(3,plan1(1),1,plan1(1),1)
-    n1n2 = ddot(3,plan1(1),1,plan2(1),1)
-    n2n2 = ddot(3,plan2(1),1,plan2(1),1)
+    n1n1 = ddot(3, plan1(1), 1, plan1(1), 1)
+    n1n2 = ddot(3, plan1(1), 1, plan2(1), 1)
+    n2n2 = ddot(3, plan2(1), 1, plan2(1), 1)
 !
-    alpha1 = ddot(3,plan1(1),1,x3dca(1),1) + plan1(4)
-    alpha2 = ddot(3,plan2(1),1,x3dca(1),1) + plan2(4)
+    alpha1 = ddot(3, plan1(1), 1, x3dca(1), 1)+plan1(4)
+    alpha2 = ddot(3, plan2(1), 1, x3dca(1), 1)+plan2(4)
 !
-    beta1 = -n2n2 * alpha1 + n1n2 * alpha2
-    beta2 = n1n2 * alpha1 - n1n1 * alpha2
+    beta1 = -n2n2*alpha1+n1n2*alpha2
+    beta2 = n1n2*alpha1-n1n1*alpha2
 !
-    excent = (&
-             plan1(1) * beta1 + plan2(1) * beta2 ) * ( plan1(1) * beta1 + plan2(1) * beta2 ) + ( &
-             &plan1(2) * beta1 + plan2(2) * beta2 ) * ( plan1(2) * beta1 + plan2(2) * beta2 ) + (&
-             & plan1(3) * beta1 + plan2(3) * beta2 ) * ( plan1(3) * beta1 + plan2(3) * beta2&
+    excent = ( &
+             plan1(1)*beta1+plan2(1)*beta2)*(plan1(1)*beta1+plan2(1)*beta2)+( &
+             &plan1(2)*beta1+plan2(2)*beta2)*(plan1(2)*beta1+plan2(2)*beta2)+(&
+             & plan1(3)*beta1+plan2(3)*beta2)*(plan1(3)*beta1+plan2(3)*beta2 &
              )
-    excent = dble ( sqrt ( excent ) ) / ( n1n1 * n2n2 - n1n2 * n1n2 )
-    dx3d(1) = x3dca(1) - x3d1(1)
-    dx3d(2) = x3dca(2) - x3d1(2)
-    dx3d(3) = x3dca(3) - x3d1(3)
-    nrm2 = dnrm2(3,dx3d(1),1)
-    dx3d(1) = x3dca(1) - x3d2(1)
-    dx3d(2) = x3dca(2) - x3d2(2)
-    dx3d(3) = x3dca(3) - x3d2(3)
-    nrm2 = dble(max(nrm2,dnrm2(3,dx3d(1),1)))
+    excent = dble(sqrt(excent))/(n1n1*n2n2-n1n2*n1n2)
+    dx3d(1) = x3dca(1)-x3d1(1)
+    dx3d(2) = x3dca(2)-x3d1(2)
+    dx3d(3) = x3dca(3)-x3d1(3)
+    nrm2 = dnrm2(3, dx3d(1), 1)
+    dx3d(1) = x3dca(1)-x3d2(1)
+    dx3d(2) = x3dca(2)-x3d2(2)
+    dx3d(3) = x3dca(3)-x3d2(3)
+    nrm2 = dble(max(nrm2, dnrm2(3, dx3d(1), 1)))
     if (nrm2 .eq. 0.0d0) then
         iproj = -1
         goto 9999
-    endif
+    end if
     if (dble(abs(excent))/nrm2 .lt. epsg) excent = 0.0d0
 !
     call dcopy(3, x3dca(1), 1, x3dp(1), 1)
     if (excent .gt. 0.0d0) then
-        normal(1) = ( plan1(1) * beta1 + plan2(1) * beta2 ) / ( n1n1 * n2n2 - n1n2 * n1n2 )
-        normal(2) = ( plan1(2) * beta1 + plan2(2) * beta2 ) / ( n1n1 * n2n2 - n1n2 * n1n2 )
-        normal(3) = ( plan1(3) * beta1 + plan2(3) * beta2 ) / ( n1n1 * n2n2 - n1n2 * n1n2 )
-        call daxpy(3, 1.0d0, normal(1), 1, x3dp(1),&
+        normal(1) = (plan1(1)*beta1+plan2(1)*beta2)/(n1n1*n2n2-n1n2*n1n2)
+        normal(2) = (plan1(2)*beta1+plan2(2)*beta2)/(n1n1*n2n2-n1n2*n1n2)
+        normal(3) = (plan1(3)*beta1+plan2(3)*beta2)/(n1n1*n2n2-n1n2*n1n2)
+        call daxpy(3, 1.0d0, normal(1), 1, x3dp(1), &
                    1)
         call dscal(3, -1.0d0/excent, normal(1), 1)
     else
         call r8inir(3, 0.0d0, normal(1), 1)
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   TEST D'APPARTENANCE DU POINT PROJETE AU SEGMENT, PAR DETERMINATION
 !     DES COORDONNEES BARYCENTRIQUES
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call tstbar(2, x3d1(1), x3d2(1), x3d2(1), x3d2(1),&
+    call tstbar(2, x3d1(1), x3d2(1), x3d2(1), x3d2(1), &
                 x3dp(1), xbar(1), iproj)
 !
-9999  continue
+9999 continue
 !
 ! --- FIN DE PROJSG.
     call matfpe(1)

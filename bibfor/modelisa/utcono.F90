@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
+subroutine utcono(mcfac, mocle, iocc, nomail, ndim, &
                   coor, iret)
     implicit none
 #include "jeveux.h"
@@ -51,26 +51,26 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
 !
     call getvr8(mcfac, mocle(1), iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvr8(mcfac, mocle(1), iocc=iocc, nbval=ndim, vect=coor,&
+        call getvr8(mcfac, mocle(1), iocc=iocc, nbval=ndim, vect=coor, &
                     nbret=n1)
         if (n1 .lt. ndim) then
             call getres(k8b, concep, cmd)
-            valk (1) = mcfac
-            vali (1) = iocc
+            valk(1) = mcfac
+            vali(1) = iocc
             call utmess('F+', 'MODELISA9_23', sk=valk(1), si=vali(1))
             if (ndim .eq. 2) then
                 call utmess('F+', 'MODELISA9_24')
             else
                 call utmess('F+', 'MODELISA9_25')
-            endif
-            vali (1) = abs(n1)
-            vali (2) = ndim
-            valk (1) = mocle(1)
+            end if
+            vali(1) = abs(n1)
+            vali(2) = ndim
+            valk(1) = mocle(1)
             call utmess('F', 'MODELISA9_26', sk=valk(1), ni=2, vali=vali)
-        endif
+        end if
         iret = 1
         goto 999
-    endif
+    end if
 !
     coord = nomail//'.COORDO    .VALE'
     nomnoe = nomail//'.NOMNOE         '
@@ -82,45 +82,45 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
         call jenonu(jexnom(nomnoe, noeud), numno)
         if (numno .eq. 0) then
             call getres(k8b, concep, cmd)
-            valk (1) = mcfac
-            valk (2) = mocle(2)
-            valk (3) = noeud
-            vali (1) = iocc
+            valk(1) = mcfac
+            valk(2) = mocle(2)
+            valk(3) = noeud
+            vali(1) = iocc
             call utmess('F', 'MODELISA9_27', nk=3, valk=valk, si=vali(1))
-        endif
+        end if
         do i = 1, ndim
             coor(i) = zr(jcoor+3*(numno-1)+i-1)
         end do
         iret = 1
         goto 999
-    endif
+    end if
 !
     call getvtx(mcfac, mocle(3), iocc=iocc, scal=k8b, nbret=n3)
     if (n3 .ne. 0) then
         call getvtx(mcfac, mocle(3), iocc=iocc, scal=nomgrn, nbret=n3)
-        call utnono(' ', nomail, 'NOEUD', nomgrn, k8b,&
+        call utnono(' ', nomail, 'NOEUD', nomgrn, k8b, &
                     ier)
         if (ier .eq. 10) then
             call getres(k8b, concep, cmd)
-            valk (1) = mcfac
-            valk (2) = mocle(3)
-            valk (3) = nomgrn
-            vali (1) = iocc
+            valk(1) = mcfac
+            valk(2) = mocle(3)
+            valk(3) = nomgrn
+            vali(1) = iocc
             call utmess('F', 'MODELISA9_28', nk=3, valk=valk, si=vali(1))
         else if (ier .eq. 1) then
             call getres(k8b, concep, cmd)
-            valk (1) = mcfac
-            valk (2) = k8b
-            vali (1) = iocc
+            valk(1) = mcfac
+            valk(2) = k8b
+            vali(1) = iocc
             call utmess('A', 'MODELISA9_29', nk=2, valk=valk, si=vali(1))
-        endif
+        end if
         call jenonu(jexnom(nomnoe, k8b), numno)
         do i = 1, ndim
             coor(i) = zr(jcoor+3*(numno-1)+i-1)
         end do
         iret = 1
         goto 999
-    endif
+    end if
 !
 999 continue
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,30 +95,30 @@ subroutine vtcop1(chin, chout, kstop, codret)
                         zr(jvale2+ieq1) = 0.d0
                     else
                         zr(jvale2+ieq1) = zr(jvale1+ieq1)
-                    endif
+                    end if
                 end do
             else if (typ1 .eq. 'C') then
                 do ieq1 = 0, neq1-1
                     if (deeq(2*ieq1+2) .le. 0) then
-                        zc(jvale2+ieq1) = dcmplx(0.d0,0.d0)
+                        zc(jvale2+ieq1) = dcmplx(0.d0, 0.d0)
                     else
                         zc(jvale2+ieq1) = zc(jvale1+ieq1)
-                    endif
+                    end if
                 end do
             else
                 valk(1) = ch1
                 valk(2) = ch2
                 valk(3) = typ1
                 call utmess('F', 'ALGELINE3_93', nk=3, valk=valk)
-            endif
+            end if
         else
             if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
                 do ieq1 = 0, neq1-1
                     if (deeq(2*ieq1+2) .le. 0) then
-                        zc(jvale2+ieq1) = dcmplx(0.d0,0.d0)
+                        zc(jvale2+ieq1) = dcmplx(0.d0, 0.d0)
                     else
                         zc(jvale2+ieq1) = zr(jvale1+ieq1)
-                    endif
+                    end if
                 end do
             else
                 valk(1) = ch1
@@ -126,10 +126,10 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 valk(3) = ch2
                 valk(4) = typ2
                 call utmess('F', 'ALGELINE3_94', nk=4, valk=valk)
-            endif
-        endif
+            end if
+        end if
         goto 999
-    endif
+    end if
 !
 !
 !     2. SI LES 2 CHAMPS N'ONT PAS LES MEMES NUMEROTATIONS :
@@ -143,32 +143,32 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
     call jeveuo(ch1//'.DESC', 'L', vi=desc1)
     call jeveuo(ch2//'.DESC', 'L', vi=desc2)
-    if ((desc1(2).lt.0) .or. (desc2(2).lt.0)) then
+    if ((desc1(2) .lt. 0) .or. (desc2(2) .lt. 0)) then
         call utmess('F', 'ALGELINE3_95')
-    endif
+    end if
 !
     call jeveuo(ch1//'.REFE', 'L', vk24=refe1)
     call jeveuo(ch2//'.REFE', 'L', vk24=refe2)
-    if (refe1(1)(1:8) .ne. refe2(1)(1:8)) then
+    if (refe1(1) (1:8) .ne. refe2(1) (1:8)) then
         valk(1) = ch1
         valk(2) = ch2
-        valk(3) = refe1(1)(1:8)
-        valk(4) = refe2(1)(1:8)
+        valk(3) = refe1(1) (1:8)
+        valk(4) = refe2(1) (1:8)
         call utmess('F', 'CALCULEL2_1', nk=4, valk=valk)
-    endif
-    call jeveuo(refe1(2)(1:19)//'.DEEQ', 'L', vi=deeq1)
-    call jeveuo(refe2(2)(1:19)//'.DEEQ', 'L', vi=deeq2)
+    end if
+    call jeveuo(refe1(2) (1:19)//'.DEEQ', 'L', vi=deeq1)
+    call jeveuo(refe2(2) (1:19)//'.DEEQ', 'L', vi=deeq2)
 !
 !
 !     2.1 ON CHERCHE LE NUMERO DE CMP LE PLUS GRAND ET
 !     LE NUMERO DE NOEUD LE PLUS GRAND DANS CH2->.DEEQ2 :
 !     ---------------------------------------------------------------
 !
-    nnomx=0
-    ncpmx=0
+    nnomx = 0
+    ncpmx = 0
     do ieq2 = 1, neq2
-        nnomx= max(nnomx,deeq2(2*(ieq2-1)+1))
-        ncpmx= max(ncpmx,deeq2(2*(ieq2-1)+2))
+        nnomx = max(nnomx, deeq2(2*(ieq2-1)+1))
+        ncpmx = max(ncpmx, deeq2(2*(ieq2-1)+2))
     end do
 !
 !
@@ -177,10 +177,10 @@ subroutine vtcop1(chin, chout, kstop, codret)
     AS_ALLOCATE(vi=trav1, size=nnomx*ncpmx)
     AS_ALLOCATE(vl=trav2, size=neq2)
     do ieq2 = 1, neq2
-        nuno2=deeq2(2*(ieq2-1)+1)
-        nucp2=deeq2(2*(ieq2-1)+2)
-        if (nucp2 .gt. 0) trav1((nuno2-1)*ncpmx+nucp2)=ieq2
-        trav2(ieq2)=.false.
+        nuno2 = deeq2(2*(ieq2-1)+1)
+        nucp2 = deeq2(2*(ieq2-1)+2)
+        if (nucp2 .gt. 0) trav1((nuno2-1)*ncpmx+nucp2) = ieq2
+        trav2(ieq2) = .false.
     end do
 !
 !
@@ -189,46 +189,46 @@ subroutine vtcop1(chin, chout, kstop, codret)
     if (typ1 .eq. typ2) then
         if (typ1 .eq. 'R') then
             do ieq1 = 1, neq1
-                nuno1=deeq1(2*(ieq1-1)+1)
-                nucp1=deeq1(2*(ieq1-1)+2)
-                if ((nucp1.gt.0) .and. (nuno1.le.nnomx) .and. ( nucp1.le.ncpmx)) then
-                    ieq2=trav1((nuno1-1)*ncpmx+nucp1)
+                nuno1 = deeq1(2*(ieq1-1)+1)
+                nucp1 = deeq1(2*(ieq1-1)+2)
+                if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx) .and. (nucp1 .le. ncpmx)) then
+                    ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
                     if (ieq2 .gt. 0) then
-                        trav2(ieq2)=.true.
-                        zr(jvale2-1+ieq2)=zr(jvale1-1+ieq1)
-                    endif
-                endif
+                        trav2(ieq2) = .true.
+                        zr(jvale2-1+ieq2) = zr(jvale1-1+ieq1)
+                    end if
+                end if
             end do
         else if (typ1 .eq. 'C') then
             do ieq1 = 1, neq1
-                nuno1=deeq1(2*(ieq1-1)+1)
-                nucp1=deeq1(2*(ieq1-1)+2)
-                if ((nucp1.gt.0) .and. (nuno1.le.nnomx)) then
-                    ieq2=trav1((nuno1-1)*ncpmx+nucp1)
+                nuno1 = deeq1(2*(ieq1-1)+1)
+                nucp1 = deeq1(2*(ieq1-1)+2)
+                if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx)) then
+                    ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
                     if (ieq2 .gt. 0) then
-                        trav2(ieq2)=.true.
-                        zc(jvale2-1+ieq2)=zc(jvale1-1+ieq1)
-                    endif
-                endif
+                        trav2(ieq2) = .true.
+                        zc(jvale2-1+ieq2) = zc(jvale1-1+ieq1)
+                    end if
+                end if
             end do
         else
             valk(1) = ch1
             valk(2) = ch2
             valk(3) = typ1
             call utmess('F', 'ALGELINE3_93', nk=3, valk=valk)
-        endif
+        end if
 !
     else if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
         do ieq1 = 1, neq1
-            nuno1=deeq1(2*(ieq1-1)+1)
-            nucp1=deeq1(2*(ieq1-1)+2)
-            if ((nucp1.gt.0) .and. (nuno1.le.nnomx)) then
-                ieq2=trav1((nuno1-1)*ncpmx+nucp1)
+            nuno1 = deeq1(2*(ieq1-1)+1)
+            nucp1 = deeq1(2*(ieq1-1)+2)
+            if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx)) then
+                ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
                 if (ieq2 .gt. 0) then
-                    trav2(ieq2)=.true.
-                    zc(jvale2-1+ieq2)=zr(jvale1-1+ieq1)
-                endif
-            endif
+                    trav2(ieq2) = .true.
+                    zc(jvale2-1+ieq2) = zr(jvale1-1+ieq1)
+                end if
+            end if
         end do
 !
     else
@@ -237,21 +237,21 @@ subroutine vtcop1(chin, chout, kstop, codret)
         valk(3) = ch2
         valk(4) = typ2
         call utmess('F', 'ALGELINE3_94', nk=4, valk=valk)
-    endif
+    end if
 !
 !     A CAUSE DE LA SOUS-STRUCTURATION STATIQUE, ON DOIT AJOUTER
 !     UNE GLUTE POUR OUBLIER LA COMPOSANTE 'LAGR' POUR LA VERIF
     call dismoi('NOM_GD', ch2, 'CHAM_NO', repk=nomgd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
-    icmp=-200
-    icmp=indik8(zk8(jcmpgd),'LAGR',1,ncmpmx)
+    icmp = -200
+    icmp = indik8(zk8(jcmpgd), 'LAGR', 1, ncmpmx)
 !
     do ieq2 = 1, neq2
-        nuno2=deeq2(2*(ieq2-1)+1)
-        nucp2=deeq2(2*(ieq2-1)+2)
+        nuno2 = deeq2(2*(ieq2-1)+1)
+        nucp2 = deeq2(2*(ieq2-1)+2)
 !       NUCP2.NE.ICMP == GLUTE POUR LA SOUS-STRUCTURATION STATIQUE
-        if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not.trav2(ieq2)) then
+        if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not. trav2(ieq2)) then
             if (kstop .eq. 'F') then
                 ASSERT(.false.)
             else
@@ -262,8 +262,8 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
                 codret = 1
                 exit
-            endif
-        endif
+            end if
+        end if
     end do
     AS_DEALLOCATE(vi=trav1)
     AS_DEALLOCATE(vl=trav2)

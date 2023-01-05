@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine lobs(sd_obsv, nume_time, time, l_obsv)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmcrpo.h"
 !
-character(len=19), intent(in) :: sd_obsv
-integer, intent(in) :: nume_time
-real(kind=8), intent(in) :: time
-aster_logical, intent(out) :: l_obsv
+    character(len=19), intent(in) :: sd_obsv
+    integer, intent(in) :: nume_time
+    real(kind=8), intent(in) :: time
+    aster_logical, intent(out) :: l_obsv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,8 +66,8 @@ aster_logical, intent(out) :: l_obsv
 !
 ! - Get information vector
 !
-    extr_info    = sdextr_obsv(1:14)//'     .INFO'
-    call jeveuo(extr_info, 'L', vi = v_extr_info)
+    extr_info = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'L', vi=v_extr_info)
     nb_keyw_fact = v_extr_info(1)
 !
     if (nb_keyw_fact .ne. 0) then
@@ -75,38 +75,38 @@ aster_logical, intent(out) :: l_obsv
 ! ----- Initial observation
 !
         obsv_init = sd_obsv(1:14)//'     .INIT'
-        call jeveuo(obsv_init, 'L', vk8 = v_obsv_init)
+        call jeveuo(obsv_init, 'L', vk8=v_obsv_init)
 !
 ! ----- Access to extraction flag vector
 !
         extr_flag = sdextr_obsv(1:14)//'     .ACTI'
-        call jeveuo(extr_flag, 'E', vl = v_extr_flag)
+        call jeveuo(extr_flag, 'E', vl=v_extr_flag)
 !
 ! ----- Initial time: always !
 !
         if (nume_time .eq. 0) then
             do i_keyw_fact = 1, nb_keyw_fact
-                l_obse_init = v_obsv_init(i_keyw_fact).eq.'OUI'
+                l_obse_init = v_obsv_init(i_keyw_fact) .eq. 'OUI'
                 if (l_obse_init) then
                     v_extr_flag(i_keyw_fact) = .true.
                 else
                     v_extr_flag(i_keyw_fact) = .false.
-                endif
-                l_obsv = l_obsv.or.l_obse_init
+                end if
+                l_obsv = l_obsv .or. l_obse_init
             end do
             goto 99
-        endif
+        end if
 !
 ! ----- Other times ?
 !
         do i_keyw_fact = 1, nb_keyw_fact
-            write(chaine,'(I2)') i_keyw_fact
+            write (chaine, '(I2)') i_keyw_fact
             list_inst_obsv = sd_obsv(1:14)//chaine(1:2)//'.LI'
             call nmcrpo(list_inst_obsv, nume_time, time, l_select)
             v_extr_flag(i_keyw_fact) = l_select
-            l_obsv = l_select.or.l_obsv
+            l_obsv = l_select .or. l_obsv
         end do
- 99     continue
-    endif
+99      continue
+    end if
 !
 end subroutine

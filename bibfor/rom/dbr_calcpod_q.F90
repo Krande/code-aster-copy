@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbr_calcpod_q(paraPod, base, m, n, q)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
@@ -29,10 +29,10 @@ implicit none
 #include "asterfort/romFieldRead.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
-type(ROM_DS_Empi), intent(in) :: base
-integer, intent(in) :: m, n
-real(kind=8), pointer :: q(:)
+    type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
+    type(ROM_DS_Empi), intent(in) :: base
+    integer, intent(in) :: m, n
+    real(kind=8), pointer :: q(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,32 +67,32 @@ real(kind=8), pointer :: q(:)
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_1')
-    endif
+    end if
 !
 ! - Get parameters for results datastructure
 !
     resultName = paraPod%resultDom%resultName
     resultType = paraPod%resultDom%resultType
     ASSERT(resultType .eq. 'EVOL_THER' .or. resultType .eq. 'EVOL_NOLI')
-    nbSnap     = paraPod%snap%nbSnap
+    nbSnap = paraPod%snap%nbSnap
     ASSERT(nbSnap .gt. 0)
 !
 ! - Get properties of base
 !
-    baseType    = base%baseType
-    lineicNume  = base%lineicNume
-    nbSlice     = lineicNume%nbSlice
-    nbCmp       = lineicNume%nbCmp
+    baseType = base%baseType
+    lineicNume = base%lineicNume
+    nbSlice = lineicNume%nbSlice
+    nbCmp = lineicNume%nbCmp
 !
 ! - Get properties of field to read
 !
-    field       = paraPod%field
-    nbEqua      = field%nbEqua
+    field = paraPod%field
+    nbEqua = field%nbEqua
     ASSERT(nbEqua .gt. 0)
 !
 ! - Prepare snapshots matrix
 !
-    AS_ALLOCATE(vr = q, size = m * n)
+    AS_ALLOCATE(vr=q, size=m*n)
 !
 ! - Cosntruct the [Q] matrix from high-fidelity results
 !
@@ -100,30 +100,30 @@ real(kind=8), pointer :: q(:)
         numeSnap = paraPod%snap%listSnap(iSnap)
 
 ! ----- Read field from results datastructure
-        call romFieldRead('Read'   , field     , fieldObject,&
+        call romFieldRead('Read', field, fieldObject, &
                           fieldVale, resultName, numeSnap)
 
 ! ----- Construct snapshots matrix [Q]
         if (baseType .eq. 'LINEIQUE') then
             ASSERT(nbCmp .gt. 0)
             do iEqua = 1, nbEqua
-                nodeNume = (iEqua - 1)/nbCmp + 1
-                cmpNume  = iEqua - (nodeNume - 1)*nbCmp
-                iSlice   = lineicNume%numeSlice(nodeNume)
-                n_2d     = lineicNume%numeSection(nodeNume)
-                i_2d     = (n_2d - 1)*nbCmp + cmpNume
-                q(i_2d + nbEqua*(iSlice - 1)/nbSlice + nbEqua*(iSnap - 1)) = fieldVale(iEqua)
-            enddo
+                nodeNume = (iEqua-1)/nbCmp+1
+                cmpNume = iEqua-(nodeNume-1)*nbCmp
+                iSlice = lineicNume%numeSlice(nodeNume)
+                n_2d = lineicNume%numeSection(nodeNume)
+                i_2d = (n_2d-1)*nbCmp+cmpNume
+                q(i_2d+nbEqua*(iSlice-1)/nbSlice+nbEqua*(iSnap-1)) = fieldVale(iEqua)
+            end do
         elseif (baseType .eq. '3D') then
             do iEqua = 1, nbEqua
-                q(iEqua + nbEqua*(iSnap - 1)) = fieldVale(iEqua)
+                q(iEqua+nbEqua*(iSnap-1)) = fieldVale(iEqua)
             end do
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
 ! ----- Free memory from field
         call romFieldRead('Free', field, fieldObject)
-    enddo
+    end do
 !
 end subroutine

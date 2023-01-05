@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine refe81(nomres, basmod, raid, mass, amor,&
+subroutine refe81(nomres, basmod, raid, mass, amor, &
                   mailla)
     implicit none
 !  P. RICHARD     DATE 13/07/90
@@ -60,7 +60,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     integer, pointer :: idc_desc(:) => null()
     character(len=24), pointer :: idc_refe(:) => null()
 !-----------------------------------------------------------------------
-    data bl8         /'        '/
+    data bl8/'        '/
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -74,13 +74,13 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     call getvid(' ', 'MATR_RIGI', nbval=0, nbret=ioc)
     ioc = -ioc
     if (ioc .eq. 0) then
-        call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=raid, arret='C',&
+        call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=raid, arret='C', &
                     ier=iret)
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_RIGI', scal=raid, nbret=iret)
     else
         call utmess('F', 'ALGORITH14_14')
-    endif
+    end if
 !
 ! --- RECUPERATION MATRICE MASSE EN ARGUMENT
 !
@@ -88,13 +88,13 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     call getvid(' ', 'MATR_MASS', nbval=0, nbret=ioc)
     ioc = -ioc
     if (ioc .eq. 0) then
-        call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass, arret='C',&
+        call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass, arret='C', &
                     ier=iret)
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_MASS', scal=mass, nbret=iret)
     else
         call utmess('F', 'ALGORITH14_15')
-    endif
+    end if
 !
 ! --- RECUPERATION MATRICE AMORTISSEMENT EN ARGUMENT
 !
@@ -102,19 +102,19 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     call getvid(' ', 'MATR_AMOR', nbval=0, nbret=ioc)
     ioc = -ioc
     if (ioc .eq. 0) then
-        call dismoi('REF_AMOR_PREM', basmod, 'RESU_DYNA', repk=amor, arret='C',&
+        call dismoi('REF_AMOR_PREM', basmod, 'RESU_DYNA', repk=amor, arret='C', &
                     ier=iret)
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_AMOR', scal=amor, nbret=iret)
     else
         call utmess('F', 'ALGORITH14_16')
-    endif
+    end if
 !
-    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl, arret='C',&
+    call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl, arret='C', &
                 ier=iret)
-    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf, arret='C',&
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf, arret='C', &
                 ier=iret)
-    call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=typbas, arret='C',&
+    call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=typbas, arret='C', &
                 ier=iret)
 !
 !
@@ -125,7 +125,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
         mailla = idc_refe(1)
     else
         call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
-    endif
+    end if
 !
 ! --- TRAITEMENT COHERENCE MATRICE ASSEMBLEES
 !     SI MASSF ET RAIDF NON BL8
@@ -138,7 +138,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 !
     if (amor .ne. bl8) then
         call dismoi('NOM_NUME_DDL', amor, 'MATR_ASSE', repk=numter)
-    endif
+    end if
 !
 ! --- CONTROLE DE LA COHERENCE DES MATRICES ASSEMBLEES
 !
@@ -146,23 +146,23 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
         valk(1) = mass
         valk(2) = raid
         call utmess('F', 'ALGORITH14_21', nk=2, valk=valk)
-    endif
+    end if
 !
     if (amor .ne. bl8) then
         if (numddl .ne. numter) then
             valk(1) = amor
             valk(2) = raid
             call utmess('F', 'ALGORITH14_22', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     if (mailla .ne. maillb) then
         valk(1) = maillb
         valk(2) = mailla
         call utmess('F', 'ALGORITH14_23', nk=2, valk=valk)
-    endif
+    end if
 !
- 10 continue
+10  continue
 !
 ! --- REMPLISSAGE DU .REFE
 !
@@ -178,7 +178,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
         zi(lddesc) = idc_desc(2)
         zi(lddesc+1) = idc_desc(3)
         zi(lddesc+2) = idc_desc(4)
-    endif
+    end if
 !
     call jedema()
 end subroutine

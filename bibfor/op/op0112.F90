@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine op0112()
 !
     integer :: nbval, icmp, ibid, idecal, ino2
     integer :: ino1, ii, jj, icmpg, iocc, ima, nbnog1, nbmag1
-    integer ::  jchnsk, jchnsd, jchnsc,  jchnsl
-    integer :: jacono,     ialin2
+    integer ::  jchnsk, jchnsd, jchnsc, jchnsl
+    integer :: jacono, ialin2
     integer ::   jligr, jalim1, jcxma1
     integer ::  ilengt
     integer :: nbcmpg, nbno2, nbno1, nbocc
@@ -68,9 +68,9 @@ subroutine op0112()
 ! ======================================================================
 !     COUPLAGE =>
     integer(kind=4) :: lenvar, cpiter, numpa4, nbno4, taille, ibid4
-    parameter (lenvar = 144)
+    parameter(lenvar=144)
     character(len=lenvar) :: nomvar
-    parameter (cpiter= 41)
+    parameter(cpiter=41)
     integer :: icompo, numpas, iadr, ifm, niv
     real(kind=8) :: ti, tf, dt
     character(len=24) :: ayacs
@@ -91,12 +91,12 @@ subroutine op0112()
 !
 !     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 !     ------------------------------------------------------------
-    ayacs='&ADR_YACS'
+    ayacs = '&ADR_YACS'
 !
 !     RECUPERATION DE L'ADRESSE YACS
 !     ------------------------------
     call jeveuo(ayacs, 'L', iadr)
-    icompo=zi(iadr)
+    icompo = zi(iadr)
 !
 !     ! ========================== !
 !     ! RECUPERATION DES MOTS-CLES !
@@ -111,7 +111,7 @@ subroutine op0112()
     call getfac('VIS_A_VIS', nbocc)
     if (nbocc .lt. 1) then
         call utmess('F', 'COUPLAGEIFS_5')
-    endif
+    end if
     ncmpgd(1) = 'FX'
     ncmpgd(2) = 'FY'
     ncmpgd(3) = 'FZ'
@@ -134,8 +134,8 @@ subroutine op0112()
 !      ! ========================= !
 !      ! CREATION D'UN CHAMPS_NO_S !
 !      ! ========================= !
-    chnos='&&OP0112.CHNOS'
-    call cnscre(ma, 'FORC_R', nbcmpg, ncmpgd, 'V',&
+    chnos = '&&OP0112.CHNOS'
+    call cnscre(ma, 'FORC_R', nbcmpg, ncmpgd, 'V', &
                 chnos)
     call jeveuo(chnos//'.CNSK', 'L', jchnsk)
     call jeveuo(chnos//'.CNSD', 'L', jchnsd)
@@ -154,15 +154,15 @@ subroutine op0112()
 !     ! ================= !
 !     ! NOM DES MAILLAGES !
 !     ! ================= !
-    ma1 = zk24(jacono-1+1)(1:8)
-    ma2 = zk24(jacono-1+2)(1:8)
+    ma1 = zk24(jacono-1+1) (1:8)
+    ma2 = zk24(jacono-1+2) (1:8)
 !
 !     ! ======================== !
 !     ! VERIFICATION ELEMENTAIRE !
 !     ! ======================== !
     if (ma .ne. ma1) then
         call utmess('F', 'COUPLAGEIFS_6')
-    endif
+    end if
 !
 !     ! ======================================= !
 !     ! RECUPERATIONS DES DONNEES DU MAILLAGE 1 !
@@ -189,7 +189,7 @@ subroutine op0112()
     AS_ALLOCATE(vr=force2, size=3*nbno2)
     nomvar = 'FORAST'
     ti = tf
-    call cpldb(icompo, cpiter, ti, tf, numpa4,&
+    call cpldb(icompo, cpiter, ti, tf, numpa4, &
                nomvar, int(3*nbno4, 4), taille, force2, ibid4)
 !
 !     ! ====================================== !
@@ -237,14 +237,14 @@ subroutine op0112()
                 do icmp = 1, 3
                     if (ddlfor(icmp) .eq. 1) then
                         icmpg = nbcmpg*(ino1-1)+icmp
-                        cnsv(icmpg) = cnsv(icmpg) + force2(3*(ino2-1)+icmp) * &
+                        cnsv(icmpg) = cnsv(icmpg)+force2(3*(ino2-1)+icmp)* &
                                              &pjef_cf(idecal+ii)
-                    endif
+                    end if
                 end do
             end do
-            idecal = idecal + pjef_nb(ilengt+jj)
+            idecal = idecal+pjef_nb(ilengt+jj)
         end do
-        ilengt = ilengt + nbno2
+        ilengt = ilengt+nbno2
     end do
 !
 !
@@ -256,19 +256,19 @@ subroutine op0112()
     call jelira(liel, 'NUTIOC', nbval)
     if (nbval .ne. 1) then
         call utmess('F', 'COUPLAGEIFS_7')
-    endif
+    end if
     call detrsd('CARTE', carte)
     call alcart('G', carte, ma, 'FORC_R')
     call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(carte//'.VALV', 'E', vr=valv)
     call jeveuo(jexnum(liel, 1), 'L', jligr)
     do icmp = 1, nbcmpg
-        ncmp(icmp) = ncmpgd(icmp)(1:8)
+        ncmp(icmp) = ncmpgd(icmp) (1:8)
     end do
     idecal = 0
     do ino1 = 1, nbno1
         if (flagn1(ino1) .eq. 1) then
-            idecal = idecal + 1
+            idecal = idecal+1
             do icmp = 1, 3
                 valv(icmp) = cnsv(nbcmpg*(ino1-1)+icmp)
             end do
@@ -276,9 +276,9 @@ subroutine op0112()
                 valv(icmp) = 0.d0
             end do
             ii = zi(jligr-1+idecal)
-            call nocart(carte, -3, nbcmpg, ligrel=liel, nma=1,&
+            call nocart(carte, -3, nbcmpg, ligrel=liel, nma=1, &
                         limanu=[ii])
-        endif
+        end if
     end do
 !
 !     ! ======================== !

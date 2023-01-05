@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine dbr_calcpod_rate(s, nb_sing, rate)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/utmess.h"
 #include "asterc/r8prem.h"
 !
-real(kind=8), pointer, intent(in) :: s(:)
-integer, intent(in) :: nb_sing
-real(kind=8), intent(out) :: rate
+    real(kind=8), pointer, intent(in) :: s(:)
+    integer, intent(in) :: nb_sing
+    real(kind=8), intent(out) :: rate
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,30 +42,30 @@ real(kind=8), intent(out) :: rate
 !
 ! --------------------------------------------------------------------------------------------------
 !
-real(kind=8) :: N(nb_sing), Y(nb_sing)
-integer :: i, nb_pos
+    real(kind=8) :: N(nb_sing), Y(nb_sing)
+    integer :: i, nb_pos
 !
 !
 !
 
-i = 1
-do while ( i<=nb_sing .and. s(i)> r8prem())
-    N(i) = log(real(i))
-    Y(i) = log(s(i))
-    i = i + 1
-end do
-nb_pos = i - 1
+    i = 1
+    do while (i <= nb_sing .and. s(i) > r8prem())
+        N(i) = log(real(i))
+        Y(i) = log(s(i))
+        i = i+1
+    end do
+    nb_pos = i-1
 
 !
 
-if (abs(nb_sing * dot_product(N(1:nb_pos),N(1:nb_pos)) - sum(N(1:nb_pos))**2) > r8prem()) then
-    rate=(nb_sing * dot_product(Y(1:nb_pos),N(1:nb_pos))-sum(Y(1:nb_pos))*sum(N(1:nb_pos)))/&
-    (nb_sing * dot_product(N(1:nb_pos),N(1:nb_pos)) - sum(N(1:nb_pos))**2 )
-    call utmess('I', 'ROM7_33' , sr = rate)
-else
-    call utmess('I', 'ROM7_37' , sr =  nb_sing * dot_product(N(1:nb_pos),N(1:nb_pos))&
-                                       -sum(N(1:nb_pos))**2 )
-endif
+    if (abs(nb_sing*dot_product(N(1:nb_pos), N(1:nb_pos))-sum(N(1:nb_pos))**2) > r8prem()) then
+        rate = (nb_sing*dot_product(Y(1:nb_pos), N(1:nb_pos))-sum(Y(1:nb_pos))*sum(N(1:nb_pos)))/ &
+               (nb_sing*dot_product(N(1:nb_pos), N(1:nb_pos))-sum(N(1:nb_pos))**2)
+        call utmess('I', 'ROM7_33', sr=rate)
+    else
+        call utmess('I', 'ROM7_37', sr=nb_sing*dot_product(N(1:nb_pos), N(1:nb_pos)) &
+                    -sum(N(1:nb_pos))**2)
+    end if
 
 !
 end subroutine

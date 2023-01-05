@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cmcovo(main, maout, nbma, lima, prefno,&
+subroutine cmcovo(main, maout, nbma, lima, prefno, &
                   prefma, inima, epais, plan, trans)
     implicit none
 #include "asterf_types.h"
@@ -126,7 +126,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     nbmin = zi(jdime+3-1)
 !
 !
-    eps2 = epais / 2.0d0
+    eps2 = epais/2.0d0
 !
 ! --- RECUPERATION DU TABLEAU DES COORDONNEES :
 !     ---------------------------------------
@@ -141,10 +141,10 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         numa = lima(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm+numa-1)), typm)
         if (typm .eq. 'QUAD4') then
-        else if (typm.eq.'TRIA3') then
+        else if (typm .eq. 'TRIA3') then
         else
             call utmess('F', 'ALGELINE_14', sk=typm)
-        endif
+        end if
         call jelira(jexnum(connev, numa), 'LONMAX', nbno)
         call jeveuo(jexnum(connev, numa), 'L', jopt)
         do ino = 1, nbno
@@ -184,18 +184,18 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         n3 = zi(jopt+3-1)
         if (nbno .eq. 4) n4 = zi(jopt+4-1)
         do ic = 1, 3
-            coon1(ic)=zr(jcoor+3*(n1-1)+ic-1)
-            coon2(ic)=zr(jcoor+3*(n2-1)+ic-1)
-            coon3(ic)=zr(jcoor+3*(n3-1)+ic-1)
+            coon1(ic) = zr(jcoor+3*(n1-1)+ic-1)
+            coon2(ic) = zr(jcoor+3*(n2-1)+ic-1)
+            coon3(ic) = zr(jcoor+3*(n3-1)+ic-1)
             if (nbno .eq. 4) then
-                coon4(ic)=zr(jcoor+3*(n4-1)+ic-1)
+                coon4(ic) = zr(jcoor+3*(n4-1)+ic-1)
             else
-                coon4(ic)=0.0d0
-            endif
+                coon4(ic) = 0.0d0
+            end if
 !
         end do
-        n1n3 = coon3 - coon1
-        n1n2 = coon2 - coon1
+        n1n3 = coon3-coon1
+        n1n2 = coon2-coon1
         call provec(n1n2, n1n3, nt)
 !
         call normev(nt, norme)
@@ -204,8 +204,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 ! --- ELEMENT QUAD: ON VERIFIE QUE LE NOEUD 4 N'EST PAS GAUCHE
 ! --- ON CALCULE LE PDV ET ON MOYENNE AVEC CELUI CALCULER PRECEDEMMENT
 !
-            n4n2 = coon2 - coon4
-            n4n3 = coon3 - coon4
+            n4n2 = coon2-coon4
+            n4n3 = coon3-coon4
 !
             call provec(n4n2, n4n3, nq)
 !
@@ -218,7 +218,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             zr(jnorn+3*(numa-1)+1-1) = nt(1)
             zr(jnorn+3*(numa-1)+2-1) = nt(2)
             zr(jnorn+3*(numa-1)+3-1) = nt(3)
-        endif
+        end if
     end do
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES ET DE LA
@@ -230,7 +230,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         call jeveuo(jexnum(connev, numa), 'L', jopt)
         do ij = 1, nbno
             ino = zi(jopt+ij-1)
-            zi(jnbnum+ino-1) = zi(jnbnum+ino-1) + 1
+            zi(jnbnum+ino-1) = zi(jnbnum+ino-1)+1
             zi(jlisma-1+27*(ino-1)+zi(jnbnum+ino-1)) = numa
         end do
     end do
@@ -243,7 +243,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         nbnuma = zi(jnbnum+ino-1)
         numa = zi(jlisma-1+27*(ino-1)+1)
         call jenuno(jexnum(nommav, numa), ma1)
-        zr(jnorm+3*(ino-1) ) = zr(jnorn+3*(numa-1) )
+        zr(jnorm+3*(ino-1)) = zr(jnorn+3*(numa-1))
         zr(jnorm+3*(ino-1)+1) = zr(jnorn+3*(numa-1)+1)
         zr(jnorm+3*(ino-1)+2) = zr(jnorn+3*(numa-1)+2)
 !
@@ -251,14 +251,14 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
         do ima = 2, nbnuma
             numa = zi(jlisma-1+27*(ino-1)+ima)
-            cosvec = zr(&
-                     jnorm+3*(ino-1) )*zr(jnorn+3*(numa-1) ) + zr(jnorm+3*(ino-1)+1)*zr(jnorn+3*(&
-                     &numa-1)+1) + zr(jnorm+ 3*(ino-1)+2)*zr(jnorn+3*(numa-1)+2&
+            cosvec = zr( &
+                     jnorm+3*(ino-1))*zr(jnorn+3*(numa-1))+zr(jnorm+3*(ino-1)+1)*zr(jnorn+3*(&
+                     &numa-1)+1)+zr(jnorm+3*(ino-1)+2)*zr(jnorn+3*(numa-1)+2 &
                      )
             call provec(zr(jnorm+3*(ino-1)), zr(jnorn+3*(numa-1)), nt)
-            sinvec = nt(1)*nt(1) + nt(2)*nt(2) + nt(3)*nt(3)
+            sinvec = nt(1)*nt(1)+nt(2)*nt(2)+nt(3)*nt(3)
             sinvec = sqrt(sinvec)
-            angl = r8rddg()*atan2(sinvec,cosvec)
+            angl = r8rddg()*atan2(sinvec, cosvec)
             if (abs(angl) .gt. 90.0d0) then
                 call jenuno(jexnum(nomnov, ino), nomg)
                 call jenuno(jexnum(nommav, numa), ma2)
@@ -268,25 +268,25 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 valk(3) = ma2
                 valk(4) = kangl
                 call utmess('A', 'ALGELINE_15', nk=4, valk=valk)
-            endif
+            end if
         end do
 !
         do ima = 2, nbnuma
             numa = zi(jlisma-1+27*(ino-1)+ima)
-            zr(jnorm+3*(ino-1) ) = zr(jnorm+3* (ino-1) ) + zr(jnorn+3* (numa-1) )
-            zr(jnorm+3*(ino-1)+1) = zr( jnorm+3* (ino-1)+1) + zr(jnorn+ 3*(numa-1)+1 )
-            zr(jnorm+3*(ino-1)+2) = zr( jnorm+3* (ino-1)+2) + zr(jnorn+ 3*(numa-1)+2 )
+            zr(jnorm+3*(ino-1)) = zr(jnorm+3*(ino-1))+zr(jnorn+3*(numa-1))
+            zr(jnorm+3*(ino-1)+1) = zr(jnorm+3*(ino-1)+1)+zr(jnorn+3*(numa-1)+1)
+            zr(jnorm+3*(ino-1)+2) = zr(jnorm+3*(ino-1)+2)+zr(jnorn+3*(numa-1)+2)
         end do
 !
-        zr(jnorm+3*(ino-1) ) =zr(jnorm+3*(ino-1) ) / nbnuma
-        zr(jnorm+3*(ino-1)+1) =zr(jnorm+3*(ino-1)+1) / nbnuma
-        zr(jnorm+3*(ino-1)+2) =zr(jnorm+3*(ino-1)+2) / nbnuma
+        zr(jnorm+3*(ino-1)) = zr(jnorm+3*(ino-1))/nbnuma
+        zr(jnorm+3*(ino-1)+1) = zr(jnorm+3*(ino-1)+1)/nbnuma
+        zr(jnorm+3*(ino-1)+2) = zr(jnorm+3*(ino-1)+2)/nbnuma
         call normev(zr(jnorm+3*(ino-1)), norme)
     end do
 !
 !
-    nbmat = nbmin + nbma
-    nbnot = nbnin + nnoaj
+    nbmat = nbmin+nbma
+    nbnot = nbnin+nnoaj
 !
 ! ----------------------------------------------------------------------
 !          ON AGRANDIT LE '.NOMNOE' ET LE '.COORDO    .VALE'
@@ -294,7 +294,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
     call jedupo(nodimv, 'G', nodime, logic)
     call jeveuo(nodime, 'E', jdimo)
-    zi(jdimo ) = nbnot
+    zi(jdimo) = nbnot
     zi(jdimo+2) = nbmat
     zi(jdimo+5) = 3
 !
@@ -311,22 +311,22 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         else
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_5', sk=valk(1))
-        endif
+        end if
     end do
 !
 ! --- TRAITEMENT DES NOEUDS AJOUTES
 !
     lgno = lxlgut(prefno)
-    inov = inima - 1
+    inov = inima-1
     do ino = 1, nbnin
         if (noeuds(ino) .eq. 0) cycle
-        inov = inov + 1
+        inov = inov+1
         call codent(inov, 'G', knume)
         lgnu = lxlgut(knume)
 !
         if (lgnu+lgno .gt. 8) then
             call utmess('F', 'ALGELINE_16')
-        endif
+        end if
         nomg = prefno(1:lgno)//knume
         call jeexin(jexnom(nomnoe, nomg), iret)
         if (iret .eq. 0) then
@@ -335,7 +335,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         else
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_5', sk=valk(1))
-        endif
+        end if
     end do
 !
 ! --- RECUPERATION DES COORDONNES DU MAIN ET CREATION
@@ -365,7 +365,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     jno = nbnin
     do ino = 1, nbnin
         if (noeuds(ino) .eq. 0) cycle
-        jno = jno + 1
+        jno = jno+1
 !
         nx = zr(jnorm+3*(ino-1))
         ny = zr(jnorm+3*(ino-1)+1)
@@ -373,45 +373,45 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
         if (plan .eq. 'SUP') then
 !
-            zr(kvale+3*(jno-1) ) = zr(kvale+3*(ino-1) ) - nx*epais
-            zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1) - ny*epais
-            zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2) - nz*epais
+            zr(kvale+3*(jno-1)) = zr(kvale+3*(ino-1))-nx*epais
+            zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1)-ny*epais
+            zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2)-nz*epais
 !
-        else if (plan.eq.'INF') then
+        else if (plan .eq. 'INF') then
 !
-            zr(kvale+3*(jno-1) ) = zr(kvale+3*(ino-1) ) + nx*epais
-            zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1) + ny*epais
-            zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2) + nz*epais
+            zr(kvale+3*(jno-1)) = zr(kvale+3*(ino-1))+nx*epais
+            zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1)+ny*epais
+            zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2)+nz*epais
 !
-        else if (plan.eq.'MOY') then
+        else if (plan .eq. 'MOY') then
 !
             if (trans .eq. 'INF') then
-                zr(kvale+3*(ino-1) ) = zr(kvale+3*(ino-1) ) - nx*eps2
-                zr(kvale+3*(ino-1)+1) = zr(kvale+3*(ino-1)+1) - ny* eps2
-                zr(kvale+3*(ino-1)+2) = zr(kvale+3*(ino-1)+2) - nz* eps2
+                zr(kvale+3*(ino-1)) = zr(kvale+3*(ino-1))-nx*eps2
+                zr(kvale+3*(ino-1)+1) = zr(kvale+3*(ino-1)+1)-ny*eps2
+                zr(kvale+3*(ino-1)+2) = zr(kvale+3*(ino-1)+2)-nz*eps2
 !
-                zr(kvale+3*(jno-1) ) = zr(kvale+3*(ino-1) ) + nx* epais
-                zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1) + ny* epais
-                zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2) + nz* epais
+                zr(kvale+3*(jno-1)) = zr(kvale+3*(ino-1))+nx*epais
+                zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1)+ny*epais
+                zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2)+nz*epais
 !
-            else if (trans.eq.'SUP') then
-                zr(kvale+3*(ino-1) ) = zr(kvale+3*(ino-1) ) + nx*eps2
-                zr(kvale+3*(ino-1)+1) = zr(kvale+3*(ino-1)+1) + ny* eps2
-                zr(kvale+3*(ino-1)+2) = zr(kvale+3*(ino-1)+2) + nz* eps2
+            else if (trans .eq. 'SUP') then
+                zr(kvale+3*(ino-1)) = zr(kvale+3*(ino-1))+nx*eps2
+                zr(kvale+3*(ino-1)+1) = zr(kvale+3*(ino-1)+1)+ny*eps2
+                zr(kvale+3*(ino-1)+2) = zr(kvale+3*(ino-1)+2)+nz*eps2
 !
-                zr(kvale+3*(jno-1) ) = zr(kvale+3*(ino-1) ) - nx* epais
-                zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1) - ny* epais
-                zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2) - nz* epais
+                zr(kvale+3*(jno-1)) = zr(kvale+3*(ino-1))-nx*epais
+                zr(kvale+3*(jno-1)+1) = zr(kvale+3*(ino-1)+1)-ny*epais
+                zr(kvale+3*(jno-1)+2) = zr(kvale+3*(ino-1)+2)-nz*epais
 !
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! ----------------------------------------------------------------------
 !     LE '.NOMMAI' ET LE '.CONNEX'
 ! ----------------------------------------------------------------------
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8' ), typhex)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6' ), typpen)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), typhex)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), typpen)
 !
     call jecreo(nommai, 'G N K8')
     call jeecra(nommai, 'NOMMAX', nbmat)
@@ -421,7 +421,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
     call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
-    call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmat)
     call jeecra(connex, 'LONT', ival=nbnomx*nbmat)
 !
@@ -436,7 +436,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         else
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_7', sk=valk(1))
-        endif
+        end if
 !
         zi(iatyma-1+ima) = zi(jtypm+ima-1)
 !
@@ -456,17 +456,17 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     iq4 = 0
     it3 = 0
     lgpref = lxlgut(prefma)
-    imav = inima - 1
+    imav = inima-1
     do ima = 1, nbma
         numa = lima(ima)
         call jeveuo(jexnum(connev, numa), 'L', jopt)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm+numa-1)), typm)
-        imav = imav + 1
+        imav = imav+1
         call codent(imav, 'G', knume)
         lgnd = lxlgut(knume)
         if (lgnd+lgpref .gt. 8) then
             call utmess('F', 'ALGELINE_17')
-        endif
+        end if
         nomg = prefma(1:lgpref)//knume
 !
         call jeexin(jexnom(nommai, nomg), iret)
@@ -475,7 +475,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         else
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_7', sk=valk(1))
-        endif
+        end if
 !
         call jenonu(jexnom(nommai, nomg), ima2)
         zi(jnewm+ima-1) = ima2
@@ -492,9 +492,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
             end do
             do ino = 5, 8
-                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-4) -1)), zi(jnpt-1+ino))
+                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-4)-1)), zi(jnpt-1+ino))
             end do
-            iq4 = iq4 + 1
+            iq4 = iq4+1
 !
 !
         else if (typm .eq. 'TRIA3') then
@@ -509,12 +509,12 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
             end do
             do ino = 4, 6
-                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-3) -1)), zi(jnpt-1+ino))
+                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-3)-1)), zi(jnpt-1+ino))
 !
             end do
-            it3 = it3 + 1
+            it3 = it3+1
 !
-        endif
+        end if
 !
     end do
 !  -------------------------------------------------------------
@@ -525,12 +525,12 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         nbgrmv = 0
     else
         call jelira(grpmav, 'NOMUTI', nbgrmv)
-    endif
-    nbgrmn = nbgrmv + 1
+    end if
+    nbgrmn = nbgrmv+1
     if (nbgrmn .ne. 0) then
         call jecreo(grpnma, 'G N K24')
         call jeecra(grpnma, 'NOMMAX', nbgrmn)
-        call jecrec(grpmai, 'G V I', 'NO '//grpnma, 'DISPERSE', 'VARIABLE',&
+        call jecrec(grpmai, 'G V I', 'NO '//grpnma, 'DISPERSE', 'VARIABLE', &
                     nbgrmn)
         do i = 1, nbgrmv
             call jenuno(jexnum(grpmav, i), nomg)
@@ -540,13 +540,13 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             else
                 valk(1) = nomg
                 call utmess('F', 'ALGELINE4_9', sk=valk(1))
-            endif
+            end if
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
             call jelira(jexnum(grpmav, i), 'LONUTI', nbmai)
             call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbmai))
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbmai)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
-            do j = 0, nbmai - 1
+            do j = 0, nbmai-1
                 zi(jgg+j) = zi(jvg+j)
             end do
         end do
@@ -558,14 +558,14 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         else
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_9', sk=valk(1))
-        endif
+        end if
         call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma))
         call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
         call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
         do j = 1, nbma
             zi(jgg+j-1) = zi(jnewm+j-1)
         end do
-    endif
+    end if
 !  -------------------------------------------------------------
 !                       CREATION DES GROUP_NO
 !  -------------------------------------------------------------
@@ -574,7 +574,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         call jelira(grpnov, 'NOMUTI', nbgrno)
         call jecreo(grpnno, 'G N K24')
         call jeecra(grpnno, 'NOMMAX', nbgrno)
-        call jecrec(grpnoe, 'G V I', 'NO '//grpnno, 'DISPERSE', 'VARIABLE',&
+        call jecrec(grpnoe, 'G V I', 'NO '//grpnno, 'DISPERSE', 'VARIABLE', &
                     nbgrno)
         do i = 1, nbgrno
             call jenuno(jexnum(grpnov, i), nomg)
@@ -586,15 +586,15 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             else
                 valk(1) = nomg
                 call utmess('F', 'ALGELINE4_11', sk=valk(1))
-            endif
+            end if
             call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
-            do j = 0, nbno - 1
+            do j = 0, nbno-1
                 zi(jgg+j) = zi(jvg+j)
             end do
         end do
-    endif
+    end if
 !
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :
     call jeccta(connex)
@@ -602,10 +602,10 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 ! ----------------------------------------------------------------------
 !
     if (niv .ge. 1) then
-        write(ifm,100) 1
-        if (iq4 .ne. 0) write(ifm,102) iq4
-        if (it3 .ne. 0) write(ifm,104) it3
-    endif
+        write (ifm, 100) 1
+        if (iq4 .ne. 0) write (ifm, 102) iq4
+        if (it3 .ne. 0) write (ifm, 104) it3
+    end if
 !
     AS_DEALLOCATE(vk24=new_noeuds)
     AS_DEALLOCATE(vi=noeuds)
@@ -617,9 +617,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     call jedetr(nonuma)
     call jedetr(newma)
 !
-100 format('MOT CLE FACTEUR "COQU_VOLU", OCCURRENCE ',i4)
-102 format('  EXTRUSION DE ',i6,' MAILLES "QUAD4" EN "HEXA8"')
-104 format('  EXTRUSION DE ',i6,' MAILLES "TRIA3" EN "PENTA6"')
+100 format('MOT CLE FACTEUR "COQU_VOLU", OCCURRENCE ', i4)
+102 format('  EXTRUSION DE ', i6, ' MAILLES "QUAD4" EN "HEXA8"')
+104 format('  EXTRUSION DE ', i6, ' MAILLES "TRIA3" EN "PENTA6"')
 !
     call jedema()
 !

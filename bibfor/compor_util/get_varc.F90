@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine get_varc(fami     , kpg      , ksp      , poum   ,&
+subroutine get_varc(fami, kpg, ksp, poum, &
                     temp_prev, temp_curr, temp_refe, l_temp_)
 !
-use calcul_module, only : ca_iactif_
+    use calcul_module, only: ca_iactif_
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -68,21 +68,21 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_temp          = .false.
-    iret_temp_prev  = 1
-    iret_temp_curr  = 1
-    iret_temp_refe  = 1
-    temp_prev       = r8nnem()
-    temp_curr       = r8nnem()
-    temp_refe       = r8nnem()
+    l_temp = .false.
+    iret_temp_prev = 1
+    iret_temp_curr = 1
+    iret_temp_refe = 1
+    temp_prev = r8nnem()
+    temp_curr = r8nnem()
+    temp_refe = r8nnem()
 !
 ! - Get temperature
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, temp_curr, iret_temp_curr)
     if (iret_temp_curr .eq. 0) then
 ! ----- Get reference temperature
-        call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+        call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                     ksp, temp_refe, iret_temp_refe)
         if (iret_temp_refe .eq. 1) then
             if (ca_iactif_ .ne. 2) then
@@ -90,19 +90,19 @@ implicit none
                 elem_name = zk24(iazk24-1+3) (1:8)
             else
                 elem_name = 'Point'
-            endif
+            end if
             call utmess('F', 'COMPOR5_8', sk=elem_name)
-        endif
+        end if
 ! ----- Get temperatures
-        if (poum.eq.'T' .or. poum.eq.'-') then
-            call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+        if (poum .eq. 'T' .or. poum .eq. '-') then
+            call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                         ksp, temp_prev, iret_temp_prev)
-        endif
-    endif
+        end if
+    end if
 !
-    l_temp = iret_temp_curr.eq.0 .or. iret_temp_prev.eq.0
+    l_temp = iret_temp_curr .eq. 0 .or. iret_temp_prev .eq. 0
     if (present(l_temp_)) then
         l_temp_ = l_temp
-    endif
+    end if
 !
 end subroutine

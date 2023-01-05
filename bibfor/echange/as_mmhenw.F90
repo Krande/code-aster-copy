@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhenw(fid, maa, num, n, typent,&
+subroutine as_mmhenw(fid, maa, num, n, typent, &
                      typgeo, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -43,7 +43,7 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
     med_int :: n4, mdnon4, mdnoi4
     mdnont = -1
     mdnoit = -1
-    allocate ( num4(n) )
+    allocate (num4(n))
     call conv_int('ast->med', n, vi_ast=num, vi_med=num4)
     fidm = to_med_idt(fid)
     typen4 = typent
@@ -51,14 +51,14 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
     n4 = n
     mdnon4 = mdnont
     mdnoi4 = mdnoit
-    call mmhenw(fidm, maa, mdnon4, mdnoi4, typen4,&
+    call mmhenw(fidm, maa, mdnon4, mdnoi4, typen4, &
                 typge4, n4, num4, cret4)
     cret = cret4
     deallocate (num4)
 #else
     mdnont = -1
     mdnoit = -1
-    call mmhenw(fid, maa, mdnont, mdnoit, typent,&
+    call mmhenw(fid, maa, mdnont, mdnoit, typent, &
                 typgeo, n, num, cret)
 #endif
 !

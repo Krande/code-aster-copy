@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0354(option, nomte)
 ! ......................................................................
 !
     integer :: nnomax
-    parameter (nnomax=27)
+    parameter(nnomax=27)
 !
     aster_logical :: axi, resi
 !      INTEGER NDIM,NNO,NPG,NNOS,G,I,OS,OSM,M,N,IW,IVF,IDFDE,IRET,JGANO
@@ -65,7 +65,7 @@ subroutine te0354(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PSOURNL', 'L', isour)
-    if (zk8(isour)(1:7) .eq. '&FOZERO') goto 999
+    if (zk8(isour) (1:7) .eq. '&FOZERO') goto 999
     theta = zr(itemps+2)
 !
 !    LECTURE DES PARAMETRES SPECIFIQUES A CHAQUE OPTION
@@ -74,7 +74,7 @@ subroutine te0354(option, nomte)
         coefop = 1-theta
         call jevech('PTEMPER', 'L', ither)
         call jevech('PVECTTR', 'E', ivect)
-    else if (option(1:4).eq.'RESI') then
+    else if (option(1:4) .eq. 'RESI') then
         resi = .true.
         coefop = -theta
         call jevech('PTEMPEI', 'L', ither)
@@ -84,43 +84,43 @@ subroutine te0354(option, nomte)
         coefop = -theta
         call jevech('PTEMPEI', 'L', ither)
         call jevech('PMATTTR', 'E', imatr)
-    endif
+    end if
 !
 !    ACCES AUX CARACTERISTIQUES DE L'ELEMENT FINI
     call elref1(elrefe)
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf, jdfde=idfde, jgano=jgano)
-    axi = lteatt('AXIS','OUI')
+    axi = lteatt('AXIS', 'OUI')
 !
     do g = 1, npg
         os = (g-1)*nno
 !
 !      CALCUL DU POIDS DU POINT DE GAUSS
         if (ndim .eq. 2) then
-            call dfdm2d(nno, g, iw, idfde, zr(igeom),&
+            call dfdm2d(nno, g, iw, idfde, zr(igeom), &
                         w, dfdx, dfdy)
             if (axi) then
-                rg = ddot(nno,zr(igeom),2,zr(ivf+os),1)
+                rg = ddot(nno, zr(igeom), 2, zr(ivf+os), 1)
                 w = w*rg
-            endif
+            end if
         else
-            call dfdm3d(nno, g, iw, idfde, zr(igeom),&
+            call dfdm3d(nno, g, iw, idfde, zr(igeom), &
                         w, dfdx, dfdy, dfdz)
-        endif
+        end if
 !
 !      CALCUL DE LA TEMPERATURE AU POINT DE GAUSS
-        tg = ddot(nno,zr(ither),1,zr(ivf+os),1)
+        tg = ddot(nno, zr(ither), 1, zr(ivf+os), 1)
 !
 !      CALCUL DU RESIDU
         if (resi) then
 !
 !        CALCUL DE LA SOURCE
-            call fointe('FM', zk8(isour), 1, ['TEMP'], [tg],&
+            call fointe('FM', zk8(isour), 1, ['TEMP'], [tg], &
                         sour, iret)
             coef = w*sour*coefop
 !
 !        CONTRIBUTION AU RESIDU
-            call daxpy(nno, coef, zr(ivf+os), 1, zr(ivect),&
+            call daxpy(nno, coef, zr(ivf+os), 1, zr(ivect), &
                        1)
 !
 !      CALCUL DE LA MATRICE TANGENTE (STOCKAGE SYMETRIQUE)
@@ -134,12 +134,12 @@ subroutine te0354(option, nomte)
             osm = 0
             do n = 0, nno-1
                 do m = 0, n
-                    zr(imatr+osm)=zr(imatr+osm)+coef*zr(ivf+os+n)*zr(&
-                    ivf+os+m)
-                    osm = osm + 1
+                    zr(imatr+osm) = zr(imatr+osm)+coef*zr(ivf+os+n)*zr( &
+                                    ivf+os+m)
+                    osm = osm+1
                 end do
             end do
-        endif
+        end if
     end do
 !
 999 continue

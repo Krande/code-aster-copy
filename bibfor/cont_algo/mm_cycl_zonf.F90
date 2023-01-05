@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mm_cycl_zonf(lagr_frot_norm, tole_stick, tole_slide, zone_frot)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -50,18 +50,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (lagr_frot_norm.lt.tole_stick) then
+    if (lagr_frot_norm .lt. tole_stick) then
         zone_frot = -2
-    elseif ((lagr_frot_norm.ge.tole_stick).and.(lagr_frot_norm.le.1.d0)) then
+    elseif ((lagr_frot_norm .ge. tole_stick) .and. (lagr_frot_norm .le. 1.d0)) then
         zone_frot = -1
-    elseif ((lagr_frot_norm.gt.tole_stick).and.(lagr_frot_norm.lt.tole_slide)) then
+    elseif ((lagr_frot_norm .gt. tole_stick) .and. (lagr_frot_norm .lt. tole_slide)) then
         zone_frot = 0
-    elseif ((lagr_frot_norm.ge.1.d0).and.(lagr_frot_norm.le.tole_slide)) then
+    elseif ((lagr_frot_norm .ge. 1.d0) .and. (lagr_frot_norm .le. tole_slide)) then
         zone_frot = +1
-    elseif (lagr_frot_norm.gt.tole_slide) then
+    elseif (lagr_frot_norm .gt. tole_slide) then
         zone_frot = +2
     else
         ASSERT(.false.)
-    endif
+    end if
 
 end subroutine

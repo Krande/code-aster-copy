@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,83 +66,83 @@ subroutine ualfva(mataz, basz)
 !
 !
     call jemarq()
-    matas=mataz
-    base=basz
+    matas = mataz
+    base = basz
     if (base .eq. ' ') call jelira(matas//'.UALF', 'CLAS', cval=base)
 !
 !   -- .VALM ne doit pas exister :
     call jeexin(matas//'.VALM', iret)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
     call jeveuo(matas//'.REFA', 'L', vk24=refa)
-    nu=refa(2)(1:14)
-    stomor=nu//'.SMOS'
+    nu = refa(2) (1:14)
+    stomor = nu//'.SMOS'
 !
 !   -- On ne sait traiter que les matrices generalisees :
-    ASSERT(refa(10).eq.'GENE')
+    ASSERT(refa(10) .eq. 'GENE')
 !
     call jeveuo(stomor//'.SMDE', 'L', vi=smde)
-    neq=smde(1)
-    nbloc= smde(3)
+    neq = smde(1)
+    nbloc = smde(3)
     call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
     call jeveuo(stomor//'.SMHC', 'L', jsmhc)
-    itbloc= smde(2)
+    itbloc = smde(2)
 !
     call jelira(matas//'.UALF', 'NMAXOC', nblocl)
-    ASSERT(nblocl.eq.nbloc .or. nblocl.eq.2*nbloc)
-    nblocm=1
-    if (nblocl .eq. 2*nbloc) nblocm=2
+    ASSERT(nblocl .eq. nbloc .or. nblocl .eq. 2*nbloc)
+    nblocm = 1
+    if (nblocl .eq. 2*nbloc) nblocm = 2
 !
 !   -- reel ou complexe ?
     call jelira(matas//'.UALF', 'TYPE', cval=tyrc)
-    ASSERT(tyrc.eq.'R' .or. tyrc.eq.'C')
+    ASSERT(tyrc .eq. 'R' .or. tyrc .eq. 'C')
 !
 !
 !     1. Allocation de .VALM :
 !     ----------------------------------------
-    call jecrec(matas//'.VALM', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(matas//'.VALM', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT', &
                 nblocm)
     call jeecra(matas//'.VALM', 'LONMAX', itbloc)
     do kblocm = 1, nblocm
         call jecroc(jexnum(matas//'.VALM', kblocm))
-    enddo
+    end do
 !
 !
 !     2. Remplissage de .VALM :
 !     ----------------------------------------
     do kblocm = 1, nblocm
         call jeveuo(jexnum(matas//'.VALM', kblocm), 'E', jvale)
-        ibloav=0+nbloc*(kblocm-1)
-        ismdi0=0
+        ibloav = 0+nbloc*(kblocm-1)
+        ismdi0 = 0
         do ieq = 1, neq
-            iscdi=smdi(ieq)
-            ibloc=1+nbloc*(kblocm-1)
+            iscdi = smdi(ieq)
+            ibloc = 1+nbloc*(kblocm-1)
 !
 !          -- on ramene le bloc en memoire si necessaire:
             if (ibloc .ne. ibloav) then
                 call jeveuo(jexnum(matas//'.UALF', ibloc), 'L', jualf)
                 if (ibloav .ne. 0) then
                     call jelibe(jexnum(matas//'.UALF', ibloav))
-                endif
-                ibloav=ibloc
-            endif
+                end if
+                ibloav = ibloc
+            end if
 !
-            ismdi=smdi(ieq)
-            nbterm=ismdi-ismdi0
+            ismdi = smdi(ieq)
+            nbterm = ismdi-ismdi0
 !
             do kterm = 1, nbterm
-                ilig=zi4(jsmhc-1+ismdi0+kterm)
+                ilig = zi4(jsmhc-1+ismdi0+kterm)
                 if (tyrc .eq. 'R') then
-                    zr(jvale-1+ismdi0+kterm)=zr(jualf-1+ iscdi +ilig-&
-                    ieq)
+                    zr(jvale-1+ismdi0+kterm) = zr(jualf-1+iscdi+ilig- &
+                                                  ieq)
                 else
-                    zc(jvale-1+ismdi0+kterm)=zc(jualf-1+ iscdi +ilig-&
-                    ieq)
-                endif
+                    zc(jvale-1+ismdi0+kterm) = zc(jualf-1+iscdi+ilig- &
+                                                  ieq)
+                end if
             end do
-            ASSERT(ilig.eq.ieq)
+            ASSERT(ilig .eq. ieq)
 !
-            ismdi0=ismdi
+            ismdi0 = ismdi
         end do
     end do
 !

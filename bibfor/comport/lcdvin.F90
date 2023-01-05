@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcdvin(fami, kpg, ksp, rela_comp, mod,&
-                  imat, matcst, nvi, nmat, vini,&
-                  coeft, x, dtime, sigi, dvin,&
+subroutine lcdvin(fami, kpg, ksp, rela_comp, mod, &
+                  imat, matcst, nvi, nmat, vini, &
+                  coeft, x, dtime, sigi, dvin, &
                   iret)
     implicit none
 !     ROUTINE D AIGUILLAGE
@@ -55,21 +55,21 @@ subroutine lcdvin(fami, kpg, ksp, rela_comp, mod,&
     real(kind=8) :: x, dtime, sigi(6), coeft(nmat), vini(nvi), dvin(nvi)
 !
     if (rela_comp .eq. 'VISCOCHAB') then
-        call rkdcha(nvi, vini, coeft, nmat, sigi,&
+        call rkdcha(nvi, vini, coeft, nmat, sigi, &
                     dvin)
 !
-    else if (rela_comp.eq.'VENDOCHAB') then
-        call rkdvec(fami, kpg, ksp, imat, matcst,&
-                    nvi, vini, coeft, x, dtime,&
+    else if (rela_comp .eq. 'VENDOCHAB') then
+        call rkdvec(fami, kpg, ksp, imat, matcst, &
+                    nvi, vini, coeft, x, dtime, &
                     nmat, sigi, dvin)
 !
-    else if (rela_comp.eq.'HAYHURST') then
-        call rkdhay(mod, nvi, vini, coeft, nmat,&
+    else if (rela_comp .eq. 'HAYHURST') then
+        call rkdhay(mod, nvi, vini, coeft, nmat, &
                     sigi, dvin, iret)
 !
-    else if (rela_comp.eq.'NORTON') then
-        call norton(nvi, vini, coeft, nmat, sigi,&
+    else if (rela_comp .eq. 'NORTON') then
+        call norton(nvi, vini, coeft, nmat, sigi, &
                     dvin, iret)
 !
-    endif
+    end if
 end subroutine

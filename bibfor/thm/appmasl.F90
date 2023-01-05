@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,23 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function appmasl(ds_thm,appmasm,&
-                phi    , phim  ,&
-                satur  , saturm,&
-                rho    , rhom  )
+function appmasl(ds_thm, appmasm, &
+                 phi, phim, &
+                 satur, saturm, &
+                 rho, rhom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: appmasm
-real(kind=8), intent(in) :: phi, phim
-real(kind=8), intent(in) :: satur, saturm
-real(kind=8), intent(in) :: rho, rhom
-real(kind=8) :: appmasl
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: appmasm
+    real(kind=8), intent(in) :: phi, phim
+    real(kind=8), intent(in) :: satur, saturm
+    real(kind=8), intent(in) :: rho, rhom
+    real(kind=8) :: appmasl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,6 +53,6 @@ real(kind=8) :: appmasl
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    appmasl = appmasm + phi*satur*rho - phim*saturm*rhom
+    appmasl = appmasm+phi*satur*rho-phim*saturm*rhom
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,18 +28,18 @@ subroutine genere(r, dim, v, x)
     real(kind=8) :: u, pi
     complex(kind=8) :: r(dim, dim), v(dim), phi, x(dim)
 !     -----------------------------------------------------------------
-    pi =r8pi()
+    pi = r8pi()
     do i = 1, dim
 !
         call getran(u)
-        u = u * 2.d0 * pi
-        phi = dcmplx(0.d0,u)
+        u = u*2.d0*pi
+        phi = dcmplx(0.d0, u)
         x(i) = exp(phi)
-        v(i) = dcmplx(0.d0,0.d0)
+        v(i) = dcmplx(0.d0, 0.d0)
     end do
     do i = 1, dim
         do j = 1, dim
-            v(i) = v(i) + r(i,j)*x(j)
+            v(i) = v(i)+r(i, j)*x(j)
         end do
     end do
 end subroutine

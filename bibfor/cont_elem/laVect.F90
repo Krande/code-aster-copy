@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
-use contact_module
-use contact_type
+    use contact_module
+    use contact_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,9 +31,9 @@ implicit none
 #include "blas/dgemv.h"
 #include "contact_module.h"
 !
-type(ContactParameters), intent(in) :: parameters
-type(ContactGeom), intent(in) :: geom
-real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
+    type(ContactParameters), intent(in) :: parameters
+    type(ContactGeom), intent(in) :: geom
+    real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,17 +75,17 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
 !
 ! - Slave node is not paired -> Special treatment
 !
-    if(geom%elem_slav_code == "PO1") then
-        if(geom%elem_mast_code == "LAGR") then
+    if (geom%elem_slav_code == "PO1") then
+        if (geom%elem_mast_code == "LAGR") then
             vect_cont(geom%elem_dime+1) = -geom%lagc_slav_curr(1)
-            if(parameters%l_fric) then
-                vect_fric(geom%elem_dime+2) = -geom%lagf_slav_curr(1,1)
-                if(geom%elem_dime == 3) then
-                    vect_fric(geom%elem_dime+3) = -geom%lagf_slav_curr(2,1)
+            if (parameters%l_fric) then
+                vect_fric(geom%elem_dime+2) = -geom%lagf_slav_curr(1, 1)
+                if (geom%elem_dime == 3) then
+                    vect_fric(geom%elem_dime+3) = -geom%lagf_slav_curr(2, 1)
                 end if
             end if
         else
-            if(geom%elem_mast_code .ne. "NOLAGR") then
+            if (geom%elem_mast_code .ne. "NOLAGR") then
                 ASSERT(ASTER_FALSE)
             end if
         end if
@@ -96,7 +96,7 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
 ! - Get quadrature (slave side)
 !
     call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
-                    geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
+                     geom%coor_slav_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp)
 !
 ! - Diameter of slave side
 !
@@ -114,48 +114,48 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
 ! ----- Compute contact quantities
 !
         call laElemCont(parameters, geom, coor_qp_sl, hF, &
-                    lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
-                    lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
-                    dGap=dGap, mu_c=mu_c, mu_f=mu_f, jump_t=jump_t)
+                        lagr_c, gap, gamma_c, projRmVal, l_cont_qp, &
+                        lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
+                        dGap=dGap, mu_c=mu_c, mu_f=mu_f, jump_t=jump_t)
 !
 ! ------ CONTACT PART (always computed)
 !
-        if(l_cont_qp) then
+        if (l_cont_qp) then
 !
 ! ------ Compute displacement (slave and master side)
 !        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D(gap(u))[v])
 !
-            coeff = weight_sl_qp * projRmVal
+            coeff = weight_sl_qp*projRmVal
             call daxpy(geom%nb_dofs, coeff, dGap, 1, vect_cont, 1)
         end if
 !
 ! ------ Compute Lagrange (slave side)
 !        term: (([lagr_c + gamma_c * gap(u)]_R- - lagr_c) / gamma_c, mu_c)
 !
-        coeff = weight_sl_qp * (projRmVal - lagr_c) / gamma_c
+        coeff = weight_sl_qp*(projRmVal-lagr_c)/gamma_c
         call daxpy(geom%nb_dofs, coeff, mu_c, 1, vect_cont, 1)
 
 !
 ! ------ FRICTION PART (computed only if friction)
 !
-        if(parameters%l_fric) then
+        if (parameters%l_fric) then
 !
 ! ------ Compute displacement (slave and master side)
 !        term: ([lagr_f - gamma_f * vT(u)]_Bs, (v^s-v^m)_tang)
 !
-            if(l_fric_qp) then
+            if (l_fric_qp) then
                 coeff = weight_sl_qp
                 call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, jump_t, MAX_LAGA_DOFS, &
-                            projBsVal, 1, 1.d0, vect_fric, 1)
+                           projBsVal, 1, 1.d0, vect_fric, 1)
             end if
 !
 ! ------ Compute Lagrange (slave side)
 !        term: (([lagr_f - gamma_f * vT(u)]_R- - lagr_f) / gamma_f, mu_f)
 !
             coeff = weight_sl_qp
-            term_f = (projBsVal - lagr_f) / gamma_f
+            term_f = (projBsVal-lagr_f)/gamma_f
             call dgemv('N', geom%nb_dofs, geom%elem_dime-1, coeff, mu_f, MAX_LAGA_DOFS, &
-                            term_f, 1, 1.d0, vect_fric, 1)
+                       term_f, 1, 1.d0, vect_fric, 1)
         end if
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,70 +38,70 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
 !
     real(kind=8) :: corr, l1, l2, d1(3), d2(3), prec
     integer :: i
-    parameter (prec = 1.d-5)
+    parameter(prec=1.d-5)
 ! ----------------------------------------------------------------------
     call matfpe(-1)
 !
     if (nno2 .eq. 4) then
 !
         do i = 1, ndim
-            d1(i) = (coor(i,2)+coor(i,3)-coor(i,1)-coor(i,4))/2
-            d2(i) = (coor(i,3)+coor(i,4)-coor(i,1)-coor(i,2))/2
+            d1(i) = (coor(i, 2)+coor(i, 3)-coor(i, 1)-coor(i, 4))/2
+            d2(i) = (coor(i, 3)+coor(i, 4)-coor(i, 1)-coor(i, 2))/2
         end do
 !
-        l1 = dnrm2(ndim,d1,1)
-        l2 = dnrm2(ndim,d2,1)
+        l1 = dnrm2(ndim, d1, 1)
+        l2 = dnrm2(ndim, d2, 1)
 !
 !      ELEMENTS PLATS
-        if (min(l1,l2)/max(l1,l2) .lt. prec) then
+        if (min(l1, l2)/max(l1, l2) .lt. prec) then
             if (l1 .lt. l2) then
                 call r8inir(ndim, 0.d0, d1, 1)
                 d1(1) = d2(2)
                 d1(2) = -d2(1)
-                corr = lonmin/2.d0/dnrm2(ndim,d1,1)
+                corr = lonmin/2.d0/dnrm2(ndim, d1, 1)
                 do i = 1, ndim
-                    coor(i,1) = coor(i,1) - corr*d1(i)
-                    coor(i,2) = coor(i,2) + corr*d1(i)
-                    coor(i,3) = coor(i,3) + corr*d1(i)
-                    coor(i,4) = coor(i,4) - corr*d1(i)
+                    coor(i, 1) = coor(i, 1)-corr*d1(i)
+                    coor(i, 2) = coor(i, 2)+corr*d1(i)
+                    coor(i, 3) = coor(i, 3)+corr*d1(i)
+                    coor(i, 4) = coor(i, 4)-corr*d1(i)
                 end do
             else
                 call r8inir(ndim, 0.d0, d2, 1)
                 d2(1) = -d1(2)
                 d2(2) = d1(1)
-                corr = lonmin/2.d0/dnrm2(ndim,d2,1)
+                corr = lonmin/2.d0/dnrm2(ndim, d2, 1)
                 do i = 1, ndim
-                    coor(i,1) = coor(i,1) - corr*d2(i)
-                    coor(i,2) = coor(i,2) - corr*d2(i)
-                    coor(i,3) = coor(i,3) + corr*d2(i)
-                    coor(i,4) = coor(i,4) + corr*d2(i)
+                    coor(i, 1) = coor(i, 1)-corr*d2(i)
+                    coor(i, 2) = coor(i, 2)-corr*d2(i)
+                    coor(i, 3) = coor(i, 3)+corr*d2(i)
+                    coor(i, 4) = coor(i, 4)+corr*d2(i)
                 end do
-            endif
+            end if
             goto 999
-        endif
+        end if
 !
 !      ELEMENTS EPAIS
         if (l1 .lt. lonmin) then
             corr = lonmin/l1
             do i = 1, ndim
-                coor(i,1) = corr*coor(i,1)+(1-corr)/2*(coor(i,1)+coor( i,2))
-                coor(i,2) = corr*coor(i,2)+(1-corr)/2*(coor(i,1)+coor( i,2))
-                coor(i,3) = corr*coor(i,3)+(1-corr)/2*(coor(i,3)+coor( i,4))
-                coor(i,4) = corr*coor(i,4)+(1-corr)/2*(coor(i,3)+coor( i,4))
+                coor(i, 1) = corr*coor(i, 1)+(1-corr)/2*(coor(i, 1)+coor(i, 2))
+                coor(i, 2) = corr*coor(i, 2)+(1-corr)/2*(coor(i, 1)+coor(i, 2))
+                coor(i, 3) = corr*coor(i, 3)+(1-corr)/2*(coor(i, 3)+coor(i, 4))
+                coor(i, 4) = corr*coor(i, 4)+(1-corr)/2*(coor(i, 3)+coor(i, 4))
             end do
-        endif
+        end if
 !
         if (l2 .lt. lonmin) then
             corr = lonmin/l2
             do i = 1, ndim
-                coor(i,1) = corr*coor(i,1)+(1-corr)/2*(coor(i,1)+coor( i,4))
-                coor(i,2) = corr*coor(i,2)+(1-corr)/2*(coor(i,2)+coor( i,3))
-                coor(i,3) = corr*coor(i,3)+(1-corr)/2*(coor(i,2)+coor( i,3))
-                coor(i,4) = corr*coor(i,4)+(1-corr)/2*(coor(i,1)+coor( i,4))
+                coor(i, 1) = corr*coor(i, 1)+(1-corr)/2*(coor(i, 1)+coor(i, 4))
+                coor(i, 2) = corr*coor(i, 2)+(1-corr)/2*(coor(i, 2)+coor(i, 3))
+                coor(i, 3) = corr*coor(i, 3)+(1-corr)/2*(coor(i, 2)+coor(i, 3))
+                coor(i, 4) = corr*coor(i, 4)+(1-corr)/2*(coor(i, 1)+coor(i, 4))
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 999 continue
 !

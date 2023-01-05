@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 ! OUT : G : G=df/dsig-(df/dsig*n)*n -------------------------------
 !      DEVGII : SECOND INVARIANT DE G -----------------------------
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: ndi, ndt, i
     real(kind=8) :: devg(6), fact1
 !
@@ -43,7 +43,7 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
     fact1 = dot_product(dfdsig(1:ndt), vecn(1:ndt))
 !
     do i = 1, ndt
-        g(i) = dfdsig(i) - fact1 * vecn(i)
+        g(i) = dfdsig(i)-fact1*vecn(i)
     end do
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR DE G ET DE SA NORME ---------------------

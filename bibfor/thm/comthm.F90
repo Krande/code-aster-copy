@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,26 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504, W1306
 !
-subroutine comthm(ds_thm   , l_steady ,&
-                  lMatr    , lSigm    ,&
-                  lVari    , lMatrPred,&
-                  option   , j_mater  ,&
-                  type_elem, angl_naut,&
-                  ndim     , nbvari   ,&
-                  dimdef   , dimcon   ,&
-                  adcome   , adcote   , adcp11  , adcp12, adcp21, adcp22,&
-                  addeme   , addete   , addep1  , addep2,&
-                  kpi      , npg      ,&
-                  carcri   ,&
-                  defgem   , defgep   ,&
-                  congem   , congep   ,&
-                  vintm    , vintp    ,&
-                  time_prev, time_curr,&
-                  dsde     , gravity  , retcom)
+subroutine comthm(ds_thm, l_steady, &
+                  lMatr, lSigm, &
+                  lVari, lMatrPred, &
+                  option, j_mater, &
+                  type_elem, angl_naut, &
+                  ndim, nbvari, &
+                  dimdef, dimcon, &
+                  adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                  addeme, addete, addep1, addep2, &
+                  kpi, npg, &
+                  carcri, &
+                  defgem, defgep, &
+                  congem, congep, &
+                  vintm, vintp, &
+                  time_prev, time_curr, &
+                  dsde, gravity, retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcco.h"
@@ -57,28 +57,28 @@ implicit none
 #include "asterfort/thmEvalConductivity.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
-aster_logical, intent(in) :: l_steady
-character(len=16), intent(in) :: option
-integer, intent(in) :: j_mater
-character(len=8), intent(in) :: type_elem(2)
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: ndim, nbvari
-integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
-integer, intent(in) :: addeme, addete, addep1, addep2
-integer, intent(in) :: kpi, npg
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)
-real(kind=8), intent(in) :: congem(1:dimcon)
-real(kind=8), intent(inout) :: congep(1:dimcon)
-real(kind=8), intent(in) :: vintm(1:nbvari)
-real(kind=8), intent(inout) :: vintp(nbvari)
-real(kind=8), intent(in) :: time_prev, time_curr
-real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
-real(kind=8), intent(out) :: gravity(3)
-integer, intent(out) :: retcom
+    type(THM_DS), intent(inout) :: ds_thm
+    aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
+    aster_logical, intent(in) :: l_steady
+    character(len=16), intent(in) :: option
+    integer, intent(in) :: j_mater
+    character(len=8), intent(in) :: type_elem(2)
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: ndim, nbvari
+    integer, intent(in) :: dimdef, dimcon
+    integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
+    integer, intent(in) :: addeme, addete, addep1, addep2
+    integer, intent(in) :: kpi, npg
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)
+    real(kind=8), intent(in) :: congem(1:dimcon)
+    real(kind=8), intent(inout) :: congep(1:dimcon)
+    real(kind=8), intent(in) :: vintm(1:nbvari)
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    real(kind=8), intent(in) :: time_prev, time_curr
+    real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
+    real(kind=8), intent(out) :: gravity(3)
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,7 +126,7 @@ integer, intent(out) :: retcom
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: p1, dp1, grad_p1(3), p2, dp2, grad_p2(3), temp, dtemp, grad_temp(3)
-    real(kind=8) :: phi, pvp, pad, h11, h12, rho11, epsv, deps(6), depsv,nl
+    real(kind=8) :: phi, pvp, pad, h11, h12, rho11, epsv, deps(6), depsv, nl
     real(kind=8) :: tbiot(6), satur, dsatur
     real(kind=8) :: tperm(ndim, ndim)
     real(kind=8) :: lambp, dlambp, lambs, dlambs
@@ -135,23 +135,22 @@ integer, intent(out) :: retcom
 ! --------------------------------------------------------------------------------------------------
 !
 
-
     retcom = 0
 !
 ! - Update unknowns
 !
-    call calcva(ds_thm, kpi   , ndim  ,&
-                defgem, defgep,&
-                addeme, addep1 , addep2   , addete,&
-                depsv , epsv   , deps     ,&
-                temp  , dtemp  , grad_temp,&
-                p1    , dp1    , grad_p1  ,&
-                p2    , dp2    , grad_p2  ,&
+    call calcva(ds_thm, kpi, ndim, &
+                defgem, defgep, &
+                addeme, addep1, addep2, addete, &
+                depsv, epsv, deps, &
+                temp, dtemp, grad_temp, &
+                p1, dp1, grad_p1, &
+                p2, dp2, grad_p2, &
                 retcom)
 
     if (retcom .ne. 0) then
         goto 99
-    endif
+    end if
 !
 ! - Get hydraulic parameters
 !
@@ -170,7 +169,7 @@ integer, intent(out) :: retcom
     if (ds_thm%ds_elem%l_dof_meca .or. ds_thm%ds_elem%l_weak_coupling) then
         call thmGetParaElas(j_mater, kpi, temp, ndim, ds_thm)
         call thmMatrHooke(ds_thm, angl_naut)
-    endif
+    end if
 !
 ! - Get thermic parameters
 !
@@ -178,68 +177,66 @@ integer, intent(out) :: retcom
 !
 ! - Compute generalized stresses and matrix for coupled quantities
 !
-    call calcco(ds_thm   , l_steady ,&
-                lMatr    , lSigm    , lVari,&
-                lMatrPred, angl_naut,&
-                j_mater  ,&
-                ndim     , nbvari   ,&
-                dimdef   , dimcon   ,&
-                adcome   , adcote   , adcp11, adcp12, adcp21, adcp22,&
-                addeme   , addete   , addep1, addep2,&
-                temp     , p1       , p2    ,&
-                dtemp    , dp1      , dp2   ,&
-                deps     , epsv     , depsv ,&
-                tbiot    ,&
-                phi      , rho11    , satur , nl,&
-                pad      , pvp      , h11   , h12   ,&
-                congem   , congep   ,&
-                vintm    , vintp    , dsde  ,&
+    call calcco(ds_thm, l_steady, &
+                lMatr, lSigm, lVari, &
+                lMatrPred, angl_naut, &
+                j_mater, &
+                ndim, nbvari, &
+                dimdef, dimcon, &
+                adcome, adcote, adcp11, adcp12, adcp21, adcp22, &
+                addeme, addete, addep1, addep2, &
+                temp, p1, p2, &
+                dtemp, dp1, dp2, &
+                deps, epsv, depsv, &
+                tbiot, &
+                phi, rho11, satur, nl, &
+                pad, pvp, h11, h12, &
+                congem, congep, &
+                vintm, vintp, dsde, &
                 retcom)
-
 
     if (retcom .ne. 0) then
         goto 99
-    endif
+    end if
 !
 ! - Main select subroutine to integrate mechanical behaviour
 !
     if (ds_thm%ds_elem%l_dof_meca .and. kpi .le. npg) then
-        call thmSelectMeca(ds_thm   ,&
-                           p1       , dp1      ,&
-                           p2       , dp2      ,&
-                           satur    , tbiot    ,nl,&
-                           option   , j_mater  , ndim  , type_elem, angl_naut,&
-                           carcri   ,&
-                           time_prev, time_curr, dtemp ,&
-                           addeme   , addete   , adcome, addep1, addep2   ,&
-                           dimdef   , dimcon   ,&
-                           defgem   , deps     ,&
-                           congem   , vintm    ,&
-                           congep   , vintp    ,&
-                           dsde     , retcom)
+        call thmSelectMeca(ds_thm, &
+                           p1, dp1, &
+                           p2, dp2, &
+                           satur, tbiot, nl, &
+                           option, j_mater, ndim, type_elem, angl_naut, &
+                           carcri, &
+                           time_prev, time_curr, dtemp, &
+                           addeme, addete, adcome, addep1, addep2, &
+                           dimdef, dimcon, &
+                           defgem, deps, &
+                           congem, vintm, &
+                           congep, vintp, &
+                           dsde, retcom)
         if (retcom .ne. 0) then
             goto 99
-        endif
-    endif
+        end if
+    end if
 !
 ! - Evaluation of final saturation
 !
-    call thmEvalSatuFinal(ds_thm, j_mater, p1    ,temp, &
-                          satur , dsatur , retcom)
+    call thmEvalSatuFinal(ds_thm, j_mater, p1, temp, &
+                          satur, dsatur, retcom)
 !
 ! - Evaluate thermal conductivity
 !
-    call thmEvalConductivity(ds_thm   ,&
-                             angl_naut, ndim  , j_mater, &
-                             satur    , phi   , &
-                             lambs    , dlambs, lambp , dlambp,&
-                             tlambt   , tlamct, tdlamt)
+    call thmEvalConductivity(ds_thm, &
+                             angl_naut, ndim, j_mater, &
+                             satur, phi, &
+                             lambs, dlambs, lambp, dlambp, &
+                             tlambt, tlamct, tdlamt)
 !
 ! - Get permeability tensor
 !
 
-
-    call thmGetPermeabilityTensor(ds_thm, ndim , angl_naut, j_mater, phi, vintp(1),&
+    call thmGetPermeabilityTensor(ds_thm, ndim, angl_naut, j_mater, phi, vintp(1), &
                                   tperm)
 !
 ! - Compute gravity
@@ -249,38 +246,38 @@ integer, intent(out) :: retcom
 ! - Compute flux and stress for hydraulic
 !
     if (ds_thm%ds_elem%l_dof_pre1) then
-        call calcfh(ds_thm   ,&
-                    lMatr    , lSigm   , l_steady, ndim  , j_mater,&
-                    dimdef   , dimcon  ,&
-                    addep1   , addep2  ,&
-                    adcp11   , adcp12  , adcp21 , adcp22,&
-                    addeme   , addete  , &
-                    temp     , p1      , p2     , pvp   , pad,&
-                    grad_temp, grad_p1 , grad_p2  ,&
-                    rho11    , h11     , h12    ,&
-                    satur    , dsatur  , gravity, tperm,&
-                    congep   , dsde)
+        call calcfh(ds_thm, &
+                    lMatr, lSigm, l_steady, ndim, j_mater, &
+                    dimdef, dimcon, &
+                    addep1, addep2, &
+                    adcp11, adcp12, adcp21, adcp22, &
+                    addeme, addete, &
+                    temp, p1, p2, pvp, pad, &
+                    grad_temp, grad_p1, grad_p2, &
+                    rho11, h11, h12, &
+                    satur, dsatur, gravity, tperm, &
+                    congep, dsde)
         if (retcom .ne. 0) then
             goto 99
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute flux and stress for thermic
 !
     if (ds_thm%ds_elem%l_dof_ther) then
-        call calcft(ds_thm,&
-                    lMatr , lSigm    , angl_naut,&
-                    ndim  , dimdef   , dimcon,&
+        call calcft(ds_thm, &
+                    lMatr, lSigm, angl_naut, &
+                    ndim, dimdef, dimcon, &
                     adcote, &
-                    addeme, addete   , addep1, addep2,&
-                    temp  , grad_temp,&
-                    tbiot ,&
-                    phi   , rho11    , satur, dsatur,&
-                    pvp   , h11      , h12   ,&
-                    lambs , dlambs   , lambp , dlambp,&
-                    tlambt, tlamct   , tdlamt,&
+                    addeme, addete, addep1, addep2, &
+                    temp, grad_temp, &
+                    tbiot, &
+                    phi, rho11, satur, dsatur, &
+                    pvp, h11, h12, &
+                    lambs, dlambs, lambp, dlambp, &
+                    tlambt, tlamct, tdlamt, &
                     congep, dsde)
-    endif
+    end if
 !
 99  continue
 !

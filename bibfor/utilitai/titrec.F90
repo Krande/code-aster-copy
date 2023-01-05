@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
+subroutine titrec(donnee, iligd, icold, nbtitr, mxpara, &
                   para, nbpara)
     implicit none
 #include "asterc/getres.h"
@@ -40,54 +40,54 @@ subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
     nbpara = 0
     ilig = iligd
     icol = icold
-  1 continue
-    call lxscan(donnee(ilig), icol, iclass, ival, rval,&
+1   continue
+    call lxscan(donnee(ilig), icol, iclass, ival, rval, &
                 cval)
     if (iclass .eq. -1) then
 !-DEL                WRITE(6,*) ' TITREC EOF '
         icol = 1
-        ilig = ilig + 1
+        ilig = ilig+1
         if (ilig .le. nbtitr) goto 1
     else if (iclass .eq. 5 .and. cval(1:1) .eq. '(') then
 !-DEL                WRITE(6,*) ' TITREC "(" '
         icold = icol
         iligd = ilig
- 11     continue
-        call lxscan(donnee(iligd), icold, iclass, ival, rval,&
+11      continue
+        call lxscan(donnee(iligd), icold, iclass, ival, rval, &
                     cval)
- 12     continue
+12      continue
         if (iclass .eq. -1) then
             icold = 1
-            iligd = iligd + 1
+            iligd = iligd+1
             if (iligd .gt. nbtitr) then
 !CC  EXPRESSION INCORRECTE
                 nbpara = 0
                 goto 20
-            endif
+            end if
             goto 11
-        else if (iclass .eq. 3 .or. iclass .eq.4) then
-            nbpara = nbpara + 1
+        else if (iclass .eq. 3 .or. iclass .eq. 4) then
+            nbpara = nbpara+1
             para(nbpara) = cval(1:ival)
 !CC            CALL LXCAPS(PARA(NBPARA))
-            call lxscan(donnee(iligd), icold, iclass, ival, rval,&
+            call lxscan(donnee(iligd), icold, iclass, ival, rval, &
                         cval)
             if (iclass .eq. 5 .and. cval(1:1) .eq. ',') goto 11
             goto 12
         else if (iclass .eq. 5 .and. cval(1:1) .eq. ')') then
             if (nbpara .ne. mxpara) then
                 nbpara = 0
-            endif
+            end if
             goto 20
         else
 !CC  PARAMETRE INCORRECT
             nbpara = 0
-        endif
- 20     continue
-    endif
+        end if
+20      continue
+    end if
     if (nbpara .eq. 0) then
         do ipara = 1, mxpara
             call getres(para(ipara), k8bid, k8bid)
-            nbpara = nbpara + 1
+            nbpara = nbpara+1
         end do
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dylema(matr_rigi   , matr_mass, matr_damp, matr_impe,&
-                  l_damp_modal, l_damp   , l_impe   ,&
-                  nb_matr     , matr_list, coef_type, coef_vale,&
-                  matr_resu   , numddl   , nb_equa)
+subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
+                  l_damp_modal, l_damp, l_impe, &
+                  nb_matr, matr_list, coef_type, coef_vale, &
+                  matr_resu, numddl, nb_equa)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/gettco.h"
@@ -39,15 +39,15 @@ implicit none
 #include "asterfort/dl_CreateDampMatrix.h"
 #include "asterfort/dl_MatrixPrepare.h"
 !
-character(len=19), intent(out) :: matr_mass, matr_rigi, matr_damp, matr_impe
-aster_logical, intent(out) :: l_damp_modal, l_damp, l_impe
-integer, intent(out) :: nb_matr
-character(len=24), intent(out) :: matr_list(*)
-character(len=1), intent(out) :: coef_type(*)
-real(kind=8), intent(out) :: coef_vale(*)
-character(len=19), intent(out) :: matr_resu
-character(len=14), intent(out) :: numddl
-integer, intent(out) :: nb_equa
+    character(len=19), intent(out) :: matr_mass, matr_rigi, matr_damp, matr_impe
+    aster_logical, intent(out) :: l_damp_modal, l_damp, l_impe
+    integer, intent(out) :: nb_matr
+    character(len=24), intent(out) :: matr_list(*)
+    character(len=1), intent(out) :: coef_type(*)
+    real(kind=8), intent(out) :: coef_vale(*)
+    character(len=19), intent(out) :: matr_resu
+    character(len=14), intent(out) :: numddl
+    integer, intent(out) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,20 +91,20 @@ integer, intent(out) :: nb_equa
 !
 ! - Initializations
 !
-    resu_type    = 'C'
-    nb_equa      = 0
-    nb_matr      = 0
-    matr_rigi    = ' '
-    matr_mass    = ' '
-    matr_damp    = ' '
-    matr_impe    = ' '
-    matr_resu    = ' '
-    numddl       = ' '
-    l_cplx       = ASTER_FALSE
+    resu_type = 'C'
+    nb_equa = 0
+    nb_matr = 0
+    matr_rigi = ' '
+    matr_mass = ' '
+    matr_damp = ' '
+    matr_impe = ' '
+    matr_resu = ' '
+    numddl = ' '
+    l_cplx = ASTER_FALSE
     l_damp_modal = ASTER_FALSE
-    l_damp       = ASTER_FALSE
-    l_impe       = ASTER_FALSE
-    l_harm       = ASTER_TRUE
+    l_damp = ASTER_FALSE
+    l_impe = ASTER_FALSE
+    l_harm = ASTER_TRUE
 !
 ! - Get matrixes
 !
@@ -121,8 +121,8 @@ integer, intent(out) :: nb_equa
     call jelira(matr_rigi//'.VALM', 'TYPE', cval=ktyp)
     if (ktyp .eq. 'C') then
         l_cplx = ASTER_TRUE
-    endif
-    call jeveuo(matr_rigi(1:19)//'.&INT', 'L', vi = v_matr_desc)
+    end if
+    call jeveuo(matr_rigi(1:19)//'.&INT', 'L', vi=v_matr_desc)
     nb_equa = v_matr_desc(3)
 !
 ! - Add mass matrix
@@ -133,7 +133,7 @@ integer, intent(out) :: nb_equa
 !
     if (l_damp) then
         call mtdscr(matr_damp)
-    endif
+    end if
 !
 ! --- TEST: LES MATRICES SONT TOUTES BASEES SUR LA MEME NUMEROTATION ?
 !
@@ -143,62 +143,62 @@ integer, intent(out) :: nb_equa
         call dismoi('NOM_NUME_DDL', matr_damp, 'MATR_ASSE', repk=numdl3)
     else
         numdl3 = numdl2
-    endif
+    end if
 !
-    if ((numdl1.ne.numdl2) .or. (numdl1.ne.numdl3) .or. (numdl2.ne.numdl3)) then
+    if ((numdl1 .ne. numdl2) .or. (numdl1 .ne. numdl3) .or. (numdl2 .ne. numdl3)) then
         call utmess('F', 'DYNALINE1_34')
     else
         numddl = numdl2
-    endif
+    end if
 !
 ! - Create damping matrix from reduced modal damping
 !
     call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
-    call getvid('AMOR_MODAL', 'LIST_AMOR'  , iocc=1, nbval=0, nbret=n2)
+    call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
     if (n1 .ne. 0 .or. n2 .ne. 0) then
         l_damp_modal = ASTER_TRUE
         call gettco(matr_rigi, typobj)
         if (typobj(1:14) .ne. 'MATR_ASSE_GENE') then
             call utmess('F', 'DYNALINE1_95')
-        endif
+        end if
 ! ----- Number of reduced damping coefficients
         if (n1 .eq. 0) then
             call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=list_damp, nbret=n)
             call jelira(list_damp//'           .VALE', 'LONMAX', nb_damp_read)
         else
             nb_damp_read = -n1
-        endif
+        end if
 ! ----- Get list of reduced damping coefficients
-        AS_ALLOCATE(vr = l_damp_read, size = nb_damp_read)
+        AS_ALLOCATE(vr=l_damp_read, size=nb_damp_read)
         if (n1 .eq. 0) then
-            call jeveuo(list_damp//'           .VALE', 'L', vr = v_list)
+            call jeveuo(list_damp//'           .VALE', 'L', vr=v_list)
         else
-            call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nb_damp_read, vect=l_damp_read,&
+            call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nb_damp_read, vect=l_damp_read, &
                         nbret=n)
-        endif
+        end if
 ! ----- Create damping matrix from reduced modal damping
-        call dl_CreateDampMatrix(matr_rigi   , matr_mass  , l_cplx,&
-                                 nb_damp_read, l_damp_read,&
+        call dl_CreateDampMatrix(matr_rigi, matr_mass, l_cplx, &
+                                 nb_damp_read, l_damp_read, &
                                  matr_damp)
-        AS_DEALLOCATE(vr = l_damp_read)
-    endif
+        AS_DEALLOCATE(vr=l_damp_read)
+    end if
 !
 ! - Impedance
 !
     if (l_impe) then
         call mtdscr(matr_impe)
-    endif
+    end if
 !
 ! - Linear combiantion
 !
     l_harm = ASTER_TRUE
-    call dl_MatrixPrepare(l_harm   , l_damp   , l_damp_modal, l_impe   , resu_type,&
-                          matr_mass, matr_rigi, matr_damp   , matr_impe,&
-                          nb_matr  , matr_list, coef_type   , coef_vale,&
+    call dl_MatrixPrepare(l_harm, l_damp, l_damp_modal, l_impe, resu_type, &
+                          matr_mass, matr_rigi, matr_damp, matr_impe, &
+                          nb_matr, matr_list, coef_type, coef_vale, &
                           matr_res8)
     if (l_damp_modal) then
         matr_damp = ' '
-    endif
+    end if
 !
     matr_resu = matr_res8
 !

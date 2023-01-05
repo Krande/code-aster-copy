@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0038()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -63,7 +63,7 @@ implicit none
     character(len=24) :: chtemp, chtime, chflug, chpres, chvarc
     character(len=24) :: lchin(8), lchout(1)
     aster_logical :: exitim, l_ther
-    parameter   (chvarc = '&&OP0038.CHVARC')
+    parameter(chvarc='&&OP0038.CHVARC')
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,152 +77,151 @@ implicit none
     call getres(chelem, type, oper)
 
 ! - Get main parameters
-    model    = ' '
-    mateco   = ' '
+    model = ' '
+    mateco = ' '
     caraElem = ' '
-    chmate   = ' '
-    chtemp   = ' '
-    chpres   = ' '
-    call getvid(' ', 'MODELE', scal = model, nbret = nbRet)
+    chmate = ' '
+    chtemp = ' '
+    chpres = ' '
+    call getvid(' ', 'MODELE', scal=model, nbret=nbRet)
     ASSERT(nbRet .eq. 1)
-    call dismoi('PHENOMENE', model, 'MODELE', repk = phenom)
+    call dismoi('PHENOMENE', model, 'MODELE', repk=phenom)
     l_ther = phenom .eq. 'THERMIQUE'
-    call getvid(' ', 'CARA_ELEM', scal = caraElem, nbret = nbRet)
-    call getvid(' ', 'CHAM_MATER', scal = chmate, nbret = nbRet)
+    call getvid(' ', 'CARA_ELEM', scal=caraElem, nbret=nbRet)
+    call getvid(' ', 'CHAM_MATER', scal=chmate, nbret=nbRet)
     mateco = ' '
     if (nbRet .ne. 0) then
-        call rcmfmc(chmate, mateco, l_ther_ = l_ther)
-    endif
+        call rcmfmc(chmate, mateco, l_ther_=l_ther)
+    end if
     call getvtx(' ', 'OPTION', scal=option, nbret=nbRet)
     temp = ' '
     call getvid(' ', 'TEMP', scal=temp, nbret=nbRet)
     if (nbRet .ne. 0) then
         chtemp = temp
         call chpver('F', chtemp, 'NOEU', 'TEMP_R', ierd)
-    endif
+    end if
     press = ' '
     call getvid(' ', 'PRES', scal=press, nbret=nbRet)
     if (nbRet .ne. 0) then
         chpres = press
         call chpver('F', chpres, 'NOEU', 'PRES_C', ierd)
-    endif
+    end if
     call getvr8(' ', 'INST', scal=time, nbret=nbRet)
     exitim = nbRet .ne. 0
     call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=nbRet)
     if (nbRet .eq. 0) then
         nh = 0
-    endif
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
+    end if
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - List of cells for computation: all model
     call exlima(' ', 0, 'G', model, ligrel)
 
 ! - Prepare input field
-    call mecham(option, model, caraElem, nh, chgeom,&
+    call mecham(option, model, caraElem, nh, chgeom, &
                 chcara, chharm, iret)
     chtime = ' '
     if (exitim) then
         call mechti(mesh, time, rundf, rundf, chtime)
-    endif
+    end if
 
     if (iret .ne. 0) goto 10
 
 ! - Compute
     if (option(1:7) .eq. 'FLUX_EL') then
-        chflug='&&OP0038.FLUXGAUSS'
-        lchin(1)=chgeom
-        lpain(1)='PGEOMER'
-        lchin(2)=mateco
-        lpain(2)='PMATERC'
-        lchin(3)=chcara(7)
-        lpain(3)='PCACOQU'
-        lchin(4)=chcara(12)
-        lpain(4)='PCAMASS'
-        lchin(5)=chtemp
-        lpain(5)='PTEMPER'
-        lchin(6)=chtime
-        lpain(6)='PTEMPSR'
-        lchin(7)=chharm
-        lpain(7)='PHARMON'
-        lchin(8)= ' '
-        lpain(8)='PVARCPR'
-        lchout(1)=chflug
-        lpaout(1)='PFLUXPG'
-        call calcul('S', 'FLUX_ELGA', ligrel, 8, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        chflug = '&&OP0038.FLUXGAUSS'
+        lchin(1) = chgeom
+        lpain(1) = 'PGEOMER'
+        lchin(2) = mateco
+        lpain(2) = 'PMATERC'
+        lchin(3) = chcara(7)
+        lpain(3) = 'PCACOQU'
+        lchin(4) = chcara(12)
+        lpain(4) = 'PCAMASS'
+        lchin(5) = chtemp
+        lpain(5) = 'PTEMPER'
+        lchin(6) = chtime
+        lpain(6) = 'PTEMPSR'
+        lchin(7) = chharm
+        lpain(7) = 'PHARMON'
+        lchin(8) = ' '
+        lpain(8) = 'PVARCPR'
+        lchout(1) = chflug
+        lpaout(1) = 'PFLUXPG'
+        call calcul('S', 'FLUX_ELGA', ligrel, 8, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
         if (option .eq. 'FLUX_ELNO') then
-            lchin(1)=chflug
-            lpain(1)='PFLUXPG'
-            lchout(1)=chelem
-            lpaout(1)='PFLUXNO'
-            call calcul('S', option, ligrel, 1, lchin,&
-                        lpain, 1, lchout, lpaout, base,&
+            lchin(1) = chflug
+            lpain(1) = 'PFLUXPG'
+            lchout(1) = chelem
+            lpaout(1) = 'PFLUXNO'
+            call calcul('S', option, ligrel, 1, lchin, &
+                        lpain, 1, lchout, lpaout, base, &
                         'OUI')
 
-        else if (option.eq.'FLUX_ELGA') then
+        else if (option .eq. 'FLUX_ELGA') then
             call copisd('CHAMP', 'G', chflug, chelem)
 
         else
             ASSERT(ASTER_FALSE)
 
-        endif
+        end if
 
     else if (option .eq. 'COOR_ELGA') then
-        lchin(1)=chgeom
-        lpain(1)='PGEOMER'
-        lchin(2)=chcara(1)
-        lpain(2)='PCAORIE'
-        lchin(3)=chcara(17)
-        lpain(3)='PFIBRES'
-        lchin(4)=chcara(16)
-        lpain(4)='PNBSP_I'
-        lchin(5)=chcara(7)
-        lpain(5)='PCACOQU'
-        lchin(6)=chcara(5)
-        lpain(6)='PCAGEPO'
-        lchout(1)=chelem
-        lpaout(1)='PCOORPG'
+        lchin(1) = chgeom
+        lpain(1) = 'PGEOMER'
+        lchin(2) = chcara(1)
+        lpain(2) = 'PCAORIE'
+        lchin(3) = chcara(17)
+        lpain(3) = 'PFIBRES'
+        lchin(4) = chcara(16)
+        lpain(4) = 'PNBSP_I'
+        lchin(5) = chcara(7)
+        lpain(5) = 'PCACOQU'
+        lchin(6) = chcara(5)
+        lpain(6) = 'PCAGEPO'
+        lchout(1) = chelem
+        lpaout(1) = 'PCOORPG'
         call cesvar(caraElem, ' ', ligrel, lchout(1))
-        call calcul('S', option, ligrel, 6, lchin,&
-                    lpain, 1, lchout, lpaout, base,&
+        call calcul('S', option, ligrel, 6, lchin, &
+                    lpain, 1, lchout, lpaout, base, &
                     'OUI')
 
     else if (option .eq. 'ROCH_ELNO') then
-        call vrcins(model, chmate , caraElem, time, chvarc(1:19),&
-                chdret)
+        call vrcins(model, chmate, caraElem, time, chvarc(1:19), &
+                    chdret)
 
-
-        lchin(1)=mateco
-        lpain(1)='PMATERC'
-        lchin(2)=chcara(6)
-        lpain(2)='PCAGNPO'
-        lchin(3)=chcara(5)
-        lpain(3)='PCAGEPO'
-        lchin(4)= chvarc(1:19)
-        lpain(4)='PVARCPR'
-        lchout(1)=chelem
-        lpaout(1)='PROCHRR'
-        call calcul('S', option, ligrel, 4, lchin,&
-                    lpain, 1, lchout, lpaout, base,&
+        lchin(1) = mateco
+        lpain(1) = 'PMATERC'
+        lchin(2) = chcara(6)
+        lpain(2) = 'PCAGNPO'
+        lchin(3) = chcara(5)
+        lpain(3) = 'PCAGEPO'
+        lchin(4) = chvarc(1:19)
+        lpain(4) = 'PVARCPR'
+        lchout(1) = chelem
+        lpaout(1) = 'PROCHRR'
+        call calcul('S', option, ligrel, 4, lchin, &
+                    lpain, 1, lchout, lpaout, base, &
                     'OUI')
         call detrsd('CHAMP_GD', chvarc)
 
     else if (option .eq. 'PRAC_ELNO') then
-        lpain(1)='PPRESSC'
-        lchin(1)=chpres
-        lchout(1)=chelem
-        lpaout(1)='PPRAC_R'
-        call calcul('S', option, ligrel, 1, lchin,&
-                    lpain, 1, lchout, lpaout, 'G',&
+        lpain(1) = 'PPRESSC'
+        lchin(1) = chpres
+        lchout(1) = chelem
+        lpaout(1) = 'PPRAC_R'
+        call calcul('S', option, ligrel, 1, lchin, &
+                    lpain, 1, lchout, lpaout, 'G', &
                     'OUI')
 
     else
         ASSERT(ASTER_FALSE)
 
-    endif
+    end if
 !
- 10 continue
+10  continue
 !
 !     -- SI CHELEM N'EST PAS MPI_COMPLET, ON LE COMPLETE :
     call dismoi('MPI_COMPLET', chelem, 'CHAM_ELEM', repk=kmpic)

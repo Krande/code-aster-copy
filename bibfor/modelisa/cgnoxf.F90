@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     call getvid(motfac, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
     nfiss = -nfiss
     AS_ALLOCATE(vk8=vfiss, size=nfiss)
-    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=vfiss,&
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=vfiss, &
                 nbret=ibid)
 !
 ! --- TYPE DE NOEUD = 'HEAVISIDE'
@@ -115,16 +115,16 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 1) then
-                    nbno = nbno + 1
+                    nbno = nbno+1
                     noeu(nbno) = ino
-                endif
+                end if
             end do
             call jedetr(stno)
         end do
 !
 ! --- TYPE DE NOEUD = 'CRACKTIP'
 !     ============================
-    else if (typgrp.eq.'CRACKTIP') then
+    else if (typgrp .eq. 'CRACKTIP') then
         do ifiss = 1, nfiss
             fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
@@ -132,16 +132,16 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             do ino = 1, nbnot
                 valeno = abs(zi(jstno+ino-1))
                 if (valeno .eq. 2) then
-                    nbno = nbno + 1
+                    nbno = nbno+1
                     noeu(nbno) = ino
-                endif
+                end if
             end do
             call jedetr(stno)
         end do
 !
 ! --- TYPE DE NOEUD = 'MIXTE'
 !     ============================
-    else if (typgrp.eq.'MIXTE') then
+    else if (typgrp .eq. 'MIXTE') then
         do ifiss = 1, nfiss
             fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
@@ -149,15 +149,15 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 3) then
-                    nbno = nbno + 1
+                    nbno = nbno+1
                     noeu(nbno) = ino
-                endif
+                end if
             end do
         end do
 !
 ! --- TYPE DE NOEUD = 'XFEM'
 !     ============================
-    else if (typgrp.eq.'XFEM') then
+    else if (typgrp .eq. 'XFEM') then
         do ifiss = 1, nfiss
             fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
@@ -165,9 +165,9 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .ne. 0) then
-                    nbno = nbno + 1
+                    nbno = nbno+1
                     noeu(nbno) = ino
-                endif
+                end if
             end do
             call jedetr(stno)
         end do
@@ -175,7 +175,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- TYPE DE NOEUD = 'TORE'
 !     ============================
-    else if ((typgrp.eq.'TORE').or.(typgrp.eq.'ZONE_MAJ')) then
+    else if ((typgrp .eq. 'TORE') .or. (typgrp .eq. 'ZONE_MAJ')) then
 !
         cnslt = '&&CGNOXF.CNSLT'
         cnsln = '&&CGNOXF.CNSLN'
@@ -186,10 +186,10 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !           CHECK IF THE LOCALISATION HAS BEEN USED
             stnot = fiss//'.PRO.RAYON_TORE'
             call jeexin(stnot, ibid)
-            if ((ibid.gt.0) .and. (typgrp.eq.'TORE')) then
-                typgrp='ZONE_MAJ'
+            if ((ibid .gt. 0) .and. (typgrp .eq. 'TORE')) then
+                typgrp = 'ZONE_MAJ'
                 call utmess('A', 'XFEM2_92', sk=fiss)
-            endif
+            end if
 !
             if (typgrp .eq. 'TORE') then
 !
@@ -212,34 +212,34 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                         nomagr = zk8(ibid)
                         if (nomagr .ne. ma) then
                             call utmess('F', 'XFEM2_86')
-                        endif
+                        end if
                     else
                         call utmess('F', 'XFEM2_86')
-                    endif
+                    end if
                     call cnocns(fiss//'.GRI.LTNO', 'V', cnslt)
                     call cnocns(fiss//'.GRI.LNNO', 'V', cnsln)
                 else
                     if (nomafi .ne. ma) then
                         call utmess('F', 'XFEM2_86')
-                    endif
+                    end if
                     call cnocns(fiss//'.LTNO', 'V', cnslt)
                     call cnocns(fiss//'.LNNO', 'V', cnsln)
-                endif
+                end if
                 call jeveuo(cnslt//'.CNSV', 'L', vr=lst)
                 call jeveuo(cnsln//'.CNSV', 'L', vr=lsn)
 !
                 do ino = 1, nbnot
-                    dist=lst(ino)**2+lsn(ino)**2
+                    dist = lst(ino)**2+lsn(ino)**2
                     if (dist .le. rayon) then
-                        nbno = nbno + 1
+                        nbno = nbno+1
                         noeu(nbno) = ino
-                    endif
+                    end if
                 end do
 !
                 call jedetr(cnslt)
                 call jedetr(cnsln)
 !
-            endif
+            end if
 !
 !
 ! --- TYPE DE NOEUD = 'ZONE_MAJ'
@@ -259,15 +259,15 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     nomagr = zk8(ibid)
                 else
                     grille = .false.
-                endif
+                end if
 !
                 if (noma .eq. nomafi) then
                     if (grille) then
                         stnot = fiss//'.PRO.NOEUD_PROJ'
                     else
                         stnot = fiss//'.PRO.NOEUD_TORE'
-                    endif
-                else if (grille.and.(noma.eq.nomagr)) then
+                    end if
+                else if (grille .and. (noma .eq. nomagr)) then
                     stnot = fiss//'.PRO.NOEUD_TORE'
                 else
                     valk(1) = nomafi
@@ -275,43 +275,43 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                         valk(2) = nomagr
                     else
                         valk(2) = 'AUCUN'
-                    endif
+                    end if
                     call utmess('F', 'XFEM2_96', nk=2, valk=valk)
-                endif
+                end if
 !
                 call jeexin(stnot, ibid)
                 if (ibid .gt. 0) then
                     call jeveuo(stnot, 'L', jstno)
                     do ino = 1, nbnot
                         if (zl(jstno+ino-1)) then
-                            nbno = nbno + 1
+                            nbno = nbno+1
                             noeu(nbno) = ino
-                        endif
+                        end if
                     end do
                 else
 !                THE LOCALISATION HAS NOT BEEN USED. ZONE_MAJ IS
 !                COINCIDENT WITH THE WHOLE MODEL.
                     do ino = 1, nbnot
-                        nbno = nbno + 1
+                        nbno = nbno+1
                         noeu(nbno) = ino
                     end do
-                endif
-            endif
+                end if
+            end if
 !
         end do
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (nbno .ne. 0) then
         call wkvect(lisnoe, 'V V I', nbno, idlist)
 !
         do ino = 1, nbno
-            zi(idlist+ino-1)=noeu(ino)
+            zi(idlist+ino-1) = noeu(ino)
             call jenuno(jexnum(noma//'.NOMNOE', zi(idlist+ino-1)), nomnoe)
         end do
-    endif
+    end if
 !
 ! --- FIN
 !     ===

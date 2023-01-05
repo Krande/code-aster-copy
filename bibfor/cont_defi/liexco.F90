@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine liexco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+subroutine liexco(sdcont, keywf, mesh, model, nb_cont_zone, &
                   nb_cont_elem, nb_cont_node)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
@@ -75,7 +75,7 @@ implicit none
 !
     call jemarq()
 
-    i_surf      = 1
+    i_surf = 1
 !
 ! - Temporary datastructures
 !
@@ -86,14 +86,14 @@ implicit none
 !
 ! - Datastructure for contact definition
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
     sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
 !
 ! - Create datastructure for nodes and elements
 !
-    call wkvect(sdcont_mailco, 'G V I', nb_cont_elem, vi = v_sdcont_mailco)
-    call wkvect(sdcont_noeuco, 'G V I', nb_cont_node, vi = v_sdcont_noeuco)
+    call wkvect(sdcont_mailco, 'G V I', nb_cont_elem, vi=v_sdcont_mailco)
+    call wkvect(sdcont_noeuco, 'G V I', nb_cont_node, vi=v_sdcont_noeuco)
 !
 ! - Loop on zones
 !
@@ -101,14 +101,14 @@ implicit none
 !
 ! ----- Read
 !
-        call lireco(keywf         , mesh          , model         , i_zone      , list_elem_slav,&
-                    list_elem_mast, list_node_slav, list_node_mast, nb_elem_slav, nb_node_slav  ,&
-                    nb_elem_mast  , nb_node_mast)
+        call lireco(keywf, mesh, model, i_zone, list_elem_slav, &
+                    list_elem_mast, list_node_slav, list_node_mast, nb_elem_slav, nb_node_slav, &
+                    nb_elem_mast, nb_node_mast)
 !
 ! ----- Master elements
 !
         call cfnbsf(sdcont_defi, i_surf, 'MAIL', nb_elem_mast, jdecma)
-        call jeveuo(list_elem_mast, 'L', vi = v_list)
+        call jeveuo(list_elem_mast, 'L', vi=v_list)
         do i_elem = 1, nb_elem_mast
             v_sdcont_mailco(jdecma+i_elem) = v_list(i_elem)
         end do
@@ -116,17 +116,17 @@ implicit none
 ! ----- Master nodes
 !
         call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node_mast, jdecno)
-        call jeveuo(list_node_mast, 'L', vi = v_list)
+        call jeveuo(list_node_mast, 'L', vi=v_list)
         do i_node = 1, nb_node_mast
             v_sdcont_noeuco(jdecno+i_node) = v_list(i_node)
         end do
 !
-        i_surf = i_surf + 1
+        i_surf = i_surf+1
 !
 ! ----- Slave elements
 !
         call cfnbsf(sdcont_defi, i_surf, 'MAIL', nb_elem_slav, jdecma)
-        call jeveuo(list_elem_slav, 'L', vi = v_list)
+        call jeveuo(list_elem_slav, 'L', vi=v_list)
         do i_elem = 1, nb_elem_slav
             v_sdcont_mailco(jdecma+i_elem) = v_list(i_elem)
         end do
@@ -134,12 +134,12 @@ implicit none
 ! ----- Slave nodes
 !
         call cfnbsf(sdcont_defi, i_surf, 'NOEU', nb_node_slav, jdecno)
-        call jeveuo(list_node_slav, 'L', vi = v_list)
+        call jeveuo(list_node_slav, 'L', vi=v_list)
         do i_node = 1, nb_node_slav
             v_sdcont_noeuco(jdecno+i_node) = v_list(i_node)
         end do
 !
-        i_surf = i_surf + 1
+        i_surf = i_surf+1
     end do
 !
     call jedetr(list_elem_slav)

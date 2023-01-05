@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,27 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmGetElemInfo(l_vf      , elrefe  , elref2   ,&
-                          nno       , nnos    , nnom     ,&
-                          jv_gano   , jv_poids, jv_poids2,&
-                          jv_func   , jv_func2, jv_dfunc , jv_dfunc2,&
-                          inte_type_, npi_    , npi2_    , npg_)
+subroutine thmGetElemInfo(l_vf, elrefe, elref2, &
+                          nno, nnos, nnom, &
+                          jv_gano, jv_poids, jv_poids2, &
+                          jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                          inte_type_, npi_, npi2_, npg_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 !
-aster_logical, intent(in) :: l_vf
-character(len=8), intent(in) :: elrefe
-character(len=8), intent(in) :: elref2
-integer, intent(out) :: nno, nnos, nnom
-integer, intent(out) :: jv_gano
-integer, intent(out) :: jv_poids, jv_poids2
-integer, intent(out) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
-character(len=3), optional, intent(in) :: inte_type_
-integer, optional, intent(out):: npi_, npi2_, npg_
+    aster_logical, intent(in) :: l_vf
+    character(len=8), intent(in) :: elrefe
+    character(len=8), intent(in) :: elref2
+    integer, intent(out) :: nno, nnos, nnom
+    integer, intent(out) :: jv_gano
+    integer, intent(out) :: jv_poids, jv_poids2
+    integer, intent(out) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
+    character(len=3), optional, intent(in) :: inte_type_
+    integer, optional, intent(out):: npi_, npi2_, npg_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,48 +71,48 @@ integer, optional, intent(out):: npi_, npi2_, npg_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nno  = 0
+    nno = 0
     nnos = 0
     nnom = 0
-    npi  = 0
+    npi = 0
     npi2 = 0
-    npg  = 0
+    npg = 0
 !
 ! - Quadratic (mechanic)
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', nno=nno, nnos=nnos, &
                      npg=npi, jpoids=jv_poids, jvf=jv_func, jdfde=jv_dfunc, jgano=jv_gano)
 !
 ! - Linear (hydraulic, thermic)
 !
-    call elrefe_info(elrefe=elref2, fami='RIGI', nno=nno2, nnos=nnos2,&
+    call elrefe_info(elrefe=elref2, fami='RIGI', nno=nno2, nnos=nnos2, &
                      npg=npi2, jpoids=jv_poids2, jvf=jv_func2, jdfde=jv_dfunc2)
 !
     ASSERT(nnos .eq. nno2)
     if (.not. l_vf) then
-        nnom = nno - nnos
-    endif
+        nnom = nno-nnos
+    end if
 !
 ! - Number of Gauss points
 !
     npg = npi
     if (present(inte_type_)) then
         if (inte_type_ .eq. 'RED') then
-            npg = npi - nnos
-        endif
-    endif
+            npg = npi-nnos
+        end if
+    end if
 !
 ! - Output
 !
     if (present(npi_)) then
-        npi_  = npi
-    endif
+        npi_ = npi
+    end if
     if (present(npi2_)) then
         npi2_ = npi2
-    endif
+    end if
     if (present(npg_)) then
-        npg_  = npg
-    endif
+        npg_ = npg
+    end if
 
 !
 end subroutine

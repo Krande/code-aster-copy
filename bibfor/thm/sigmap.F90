@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine sigmap(ds_thm,&
-                  satur , signe, tbiot, dp2, dp1,dpi,&
-                  sigmp )
+subroutine sigmap(ds_thm, &
+                  satur, signe, tbiot, dp2, dp1, dpi, &
+                  sigmp)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: signe, tbiot(6), satur, dp1, dp2,dpi
-real(kind=8), intent(out) :: sigmp(6)
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in) :: signe, tbiot(6), satur, dp1, dp2, dpi
+    real(kind=8), intent(out) :: sigmp(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,15 +55,15 @@ real(kind=8), intent(out) :: sigmp(6)
 !
     do i = 1, 6
         if (ds_thm%ds_behaviour%l_stress_bishop) then
-            if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
+            if ((ds_thm%ds_behaviour%rela_hydr) .eq. 'HYDR_TABBAL') then
                 sigmp(i) = -tbiot(i)*dpi
 
             else
-                sigmp(i) = tbiot(i)*satur*signe*dp1 - tbiot(i)*dp2
+                sigmp(i) = tbiot(i)*satur*signe*dp1-tbiot(i)*dp2
             end if
         else
-            sigmp(i) = - tbiot(i)*dp2
-        endif
+            sigmp(i) = -tbiot(i)*dp2
+        end if
     end do
 !
 end subroutine

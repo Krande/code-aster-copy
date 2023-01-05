@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     call jemarq()
 !
 !
-    cns1=cns1z
-    cns2=cns2z
+    cns1 = cns1z
+    cns2 = cns2z
 !
     call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk1)
     call jeveuo(cns1//'.CNSD', 'L', vi=cnsd1)
@@ -74,10 +74,10 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     call jeveuo(cns1//'.CNSV', 'L', vr=cnsv1)
     call jeveuo(cns1//'.CNSL', 'L', jcnsl1)
 !
-    ma1=cnsk1(1)
-    nomgd1=cnsk1(2)
-    nbno1=cnsd1(1)
-    ncmp1=cnsd1(2)
+    ma1 = cnsk1(1)
+    nomgd1 = cnsk1(2)
+    nbno1 = cnsd1(1)
+    ncmp1 = cnsd1(2)
 !
 !
     call jeveuo(cns2//'.CNSK', 'L', vk8=cnsk2)
@@ -86,54 +86,54 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     call jeveuo(cns2//'.CNSV', 'L', vr=cnsv2)
     call jeveuo(cns2//'.CNSL', 'L', jcnsl2)
 !
-    ma2=cnsk2(1)
-    nomgd2=cnsk2(2)
-    nbno2=cnsd2(1)
-    ncmp2=cnsd2(2)
+    ma2 = cnsk2(1)
+    nomgd2 = cnsk2(2)
+    nbno2 = cnsd2(1)
+    ncmp2 = cnsd2(2)
 !
 !     -- COHERENCE DES 2 CHAMPS :
-    ASSERT(ma1.eq.ma2)
-    ASSERT(nomgd1.eq.nomgd2)
-    ASSERT(nbno1.eq.nbno2)
-    ASSERT(ncmp1.eq.ncmp2)
-    nbno=nbno1
-    ncmp=ncmp1
+    ASSERT(ma1 .eq. ma2)
+    ASSERT(nomgd1 .eq. nomgd2)
+    ASSERT(nbno1 .eq. nbno2)
+    ASSERT(ncmp1 .eq. ncmp2)
+    nbno = nbno1
+    ncmp = ncmp1
 !
 !
 !
     call dismoi('TYPE_SCA', nomgd1, 'GRANDEUR', repk=tsca1)
-    ASSERT(tsca1.eq.'R')
+    ASSERT(tsca1 .eq. 'R')
 !
     do k = 1, ncmp
-        ASSERT(cnsc1(k).eq.cnsc2(k))
+        ASSERT(cnsc1(k) .eq. cnsc2(k))
     end do
 !
 !
 !     CALCUL DE LA SOMME DES PRODUITS DES CMPS :
 !     -------------------------------------------
-    pscal=0.d0
-    ier=0
+    pscal = 0.d0
+    ier = 0
     do ino = 1, nbno
         do k = 1, ncmp
             if (zl(jcnsl1-1+(ino-1)*ncmp+k)) then
-                if (.not.zl(jcnsl2-1+(ino-1)*ncmp+k)) then
-                    ier=1
+                if (.not. zl(jcnsl2-1+(ino-1)*ncmp+k)) then
+                    ier = 1
                     goto 40
 !
-                endif
-                x1=cnsv1((ino-1)*ncmp+k)
-                x2=cnsv2((ino-1)*ncmp+k)
-                pscal=pscal+x1*x2
+                end if
+                x1 = cnsv1((ino-1)*ncmp+k)
+                x2 = cnsv2((ino-1)*ncmp+k)
+                pscal = pscal+x1*x2
             else
                 if (zl(jcnsl2-1+(ino-1)*ncmp+k)) then
-                    ier=1
+                    ier = 1
                     goto 40
 !
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !
- 40 continue
+40  continue
     call jedema()
 end subroutine

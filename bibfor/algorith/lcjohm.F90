@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lcjohm(imate, lSigm, lMatr, lVari, kpi, npg,&
-                  nomail, addeme, advico, ndim, dimdef,&
-                  dimcon, nbvari, defgem, defgep, varim,&
-                  varip, sigm, sigp, drde, ouvh,&
+subroutine lcjohm(imate, lSigm, lMatr, lVari, kpi, npg, &
+                  nomail, addeme, advico, ndim, dimdef, &
+                  dimcon, nbvari, defgem, defgep, varim, &
+                  varip, sigm, sigp, drde, ouvh, &
                   retcom)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
 !
-integer :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
-real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)
-character(len=8) :: nomail
-aster_logical, intent(in) :: lSigm, lMatr, lVari
-integer :: retcom
-real(kind=8) :: defgep(dimdef), varip(nbvari), sigp(dimcon)
-real(kind=8) :: drde(dimdef, dimdef), ouvh
+    integer :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
+    real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)
+    character(len=8) :: nomail
+    aster_logical, intent(in) :: lSigm, lMatr, lVari
+    integer :: retcom
+    real(kind=8) :: defgep(dimdef), varip(nbvari), sigp(dimcon)
+    real(kind=8) :: drde(dimdef, dimdef), ouvh
 !
 ! - VARIABLES LOCALES
 !
@@ -44,16 +44,16 @@ real(kind=8) :: drde(dimdef, dimdef), ouvh
     real(kind=8) :: kni, umc, gamma, kt, clo, para(4), valr(2), tmecn, tmecs
     character(len=8) :: fami, poum
     integer :: icodre(18)
-    character(len=8), parameter :: ncra1(4) = (/ 'K    ','DMAX ','GAMMA','KT   ' /)
+    character(len=8), parameter :: ncra1(4) = (/'K    ', 'DMAX ', 'GAMMA', 'KT   '/)
 !
 ! - RECUPERATION DES PARAMETRES MATERIAU
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'JOINT_BANDIS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'JOINT_BANDIS', 0, ' ', [0.d0], &
                 4, ncra1, para, icodre, 1)
     kni = para(1)
     umc = para(2)
@@ -63,34 +63,34 @@ real(kind=8) :: drde(dimdef, dimdef), ouvh
 ! - MISE A JOUR FERMETURE
     clo = 0.d0
     ouvh = varim(advico)
-    clo = umc - ouvh
-    clo = clo - defgep(addeme) + defgem(addeme)
+    clo = umc-ouvh
+    clo = clo-defgep(addeme)+defgem(addeme)
 !
 ! - Internal state variable
 !
     if (lVari) then
         ouvh = umc-clo
         varip(advico) = ouvh
-    endif
+    end if
 !
 ! - Stresses
 !
     if (lSigm) then
-        if ((clo.gt.umc) .or. (clo.lt.-1.d-3)) then
+        if ((clo .gt. umc) .or. (clo .lt. -1.d-3)) then
             valr(1) = clo
             valr(2) = umc
             call utmess('A', 'ALGORITH17_11', sk=nomail, nr=2, valr=valr)
             retcom = 1
             goto 999
-        endif
+        end if
         do i = 1, dimcon
-            sigp(i)=0.d0
+            sigp(i) = 0.d0
         end do
-        sigp(1)=sigm(1) -kni/(1-clo/umc)**gamma*(varim(advico)-varip(advico))
+        sigp(1) = sigm(1)-kni/(1-clo/umc)**gamma*(varim(advico)-varip(advico))
         do i = 2, ndim
-            sigp(i)=sigm(i)+kt*(defgep(addeme+1)-defgem(addeme+1))
+            sigp(i) = sigm(i)+kt*(defgep(addeme+1)-defgem(addeme+1))
         end do
-    endif
+    end if
 
 !
 ! - CALCUP OPERATEUR TANGENT
@@ -98,11 +98,11 @@ real(kind=8) :: drde(dimdef, dimdef), ouvh
     if (lMatr .and. (kpi .le. npg)) then
         tmecn = kni/(1-clo/umc)**gamma
         tmecs = kt
-        drde(addeme,addeme)= tmecn
+        drde(addeme, addeme) = tmecn
         do i = 2, ndim
-            drde(addeme+i-1,addeme+i-1)= tmecs
+            drde(addeme+i-1, addeme+i-1) = tmecs
         end do
-    endif
+    end if
 !
 999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vppara(modes, typcon, knega, lraide, lmasse,&
-                  lamor, mxresf, neq, nfreq, omecor,&
-                  dlagr, dbloq, vectr, vectc, nbpari,&
-                  nbparr, nbpark, nopara, mod45, resui,&
-                  resur, resuk, ktyp, lcomod, icom1,&
+subroutine vppara(modes, typcon, knega, lraide, lmasse, &
+                  lamor, mxresf, neq, nfreq, omecor, &
+                  dlagr, dbloq, vectr, vectc, nbpari, &
+                  nbparr, nbpark, nopara, mod45, resui, &
+                  resur, resuk, ktyp, lcomod, icom1, &
                   icom2, typres, nfreqg)
 !
 ! aslint: disable=W1504
@@ -89,8 +89,8 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    zbid=(0.d0,0.d0)
-    rbid=0.d0
+    zbid = (0.d0, 0.d0)
+    rbid = 0.d0
 !
 !     --- PRISE EN COMPTE DES MODES NEGATIFS ?
     ineg = +1
@@ -98,29 +98,29 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 !     --- PREPARATION AU STOCKAGE DANS LA STRUCTURE DE DONNEES ---
     ilgcon = lxlgut(typcon)
-    if (typcon(ilgcon-1:ilgcon) .eq. '_C') ilgcon = ilgcon -2
+    if (typcon(ilgcon-1:ilgcon) .eq. '_C') ilgcon = ilgcon-2
     call rsexis(modes, iret)
 !
     if (lcomod) then
-        nrscr=nfreqg
+        nrscr = nfreqg
     else
-        nrscr=nfreq
-    endif
+        nrscr = nfreq
+    end if
     if (iret .eq. 0) call rscrsd('G', modes, typcon(:ilgcon), nrscr)
     iprec = 0
 !
 !     --- MATRICE K ET/OU M NON SYMETRIQUE(S)
     if (zi(lraide+4)*zi(lmasse+4) .eq. 0) then
-        lns=.true.
+        lns = .true.
     else
-        lns=.false.
-    endif
+        lns = .false.
+    end if
 !
 !
 !     --- NORMALISATION ET CALCUL DES PARAMETRES MODAUX ---
 !     -----------------------------------------------------
 !
-    if (( lamor .eq. 0 ) .and. ((ktyp.eq.'R').and.(.not.lns))) then
+    if ((lamor .eq. 0) .and. ((ktyp .eq. 'R') .and. (.not. lns))) then
 !
 ! --- GENERALISE MODES REELS
 !
@@ -131,42 +131,42 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 !
 !        - CALCUL DES PARAMETRES GENERALISES ---
-            call vppgen(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6*mxresf+1),&
+            call vppgen(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6*mxresf+1), &
                         resur(5*mxresf+1), vectr, neq, nfreq, dbloq)
 !
 !
 !        CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
-            call vppfac(lmasse, resur(4*mxresf+1), vectr, neq, nfreq,&
+            call vppfac(lmasse, resur(4*mxresf+1), vectr, neq, nfreq, &
                         mxresf, resur(7*mxresf+1), resur(10*mxresf+1))
 !
 !
 !        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
-            call vpermo(lmasse, lraide, nfreq, vectr, resur(mxresf+1),&
+            call vpermo(lmasse, lraide, nfreq, vectr, resur(mxresf+1), &
                         dbloq, omecor, resur(3*mxresf+1))
 !
-        endif
+        end if
 !        - SI PARALLELISME CALC_MODES SUR PLUSIEURS SOUS-BANDES, COM DES DONNEES:
 !        - VECTEURS PROPRES ET DES RESUI/R/K
-        call vppcom(lcomod, icom1, icom2, resui, resur,&
-                    resuk, nbpari, nbparr, nbpark, mxresf,&
+        call vppcom(lcomod, icom1, icom2, resui, resur, &
+                    resuk, nbpari, nbparr, nbpark, mxresf, &
                     vectr, nfreq, neq, typres)
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
-        call vpstor(ineg, 'R', modes, nfreq, neq,&
-                    vectr, [zbid], mxresf, nbpari, nbparr,&
-                    nbpark, nopara, mod45, resui, resur,&
+        call vpstor(ineg, 'R', modes, nfreq, neq, &
+                    vectr, [zbid], mxresf, nbpari, nbparr, &
+                    nbpark, nopara, mod45, resui, resur, &
                     resuk, iprec)
 !
-    else if (( lamor .eq. 0 ).and.((ktyp.eq.'C').or.lns)) then
+    else if ((lamor .eq. 0) .and. ((ktyp .eq. 'C') .or. lns)) then
         if (lcomod) then
             ASSERT(.false.)
-        endif
+        end if
 ! --- GENERALISE MODES COMPLEXES
 !        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
         call wpnorx(nfreq, neq, dlagr, vectc, resuk)
 !
 !        - CALCUL DES PARAMETRES GENERALISES ---
-        call vppgec(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6* mxresf+1),&
+        call vppgec(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6*mxresf+1), &
                     resur(5*mxresf+1), vectc, neq, nfreq, dbloq)
 !
 !        CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
@@ -174,61 +174,61 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !     &               RESUR(7*MXRESF+1),RESUR(10*MXRESF+1))
 !
 !        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
-        call vpermc(lmasse, lraide, nfreq, vectc, resur(mxresf+1),&
-                    resur( 2*mxresf+1), dbloq, omecor, resur(3*mxresf+1))
+        call vpermc(lmasse, lraide, nfreq, vectc, resur(mxresf+1), &
+                    resur(2*mxresf+1), dbloq, omecor, resur(3*mxresf+1))
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
-        call vpstor(ineg, 'C', modes, nfreq, neq,&
-                    [rbid], vectc, mxresf, nbpari, nbparr,&
-                    nbpark, nopara, '    ', resui, resur,&
+        call vpstor(ineg, 'C', modes, nfreq, neq, &
+                    [rbid], vectc, mxresf, nbpari, nbparr, &
+                    nbpark, nopara, '    ', resui, resur, &
                     resuk, iprec)
 !
-    else if (( lamor .ne. 0 ).and.(ktyp.eq.'R')) then
+    else if ((lamor .ne. 0) .and. (ktyp .eq. 'R')) then
         if (lcomod) then
             ASSERT(.false.)
-        endif
+        end if
 ! --- QUADRATIQUE MODES COMPLEXES AVEC K REELLE
 !        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
         call wpnorx(nfreq, neq, dlagr, vectc, resuk)
 !
 !        - CALCUL DES PARAMETRES GENERALISES ---
-        call wppgen(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6* mxresf+1),&
+        call wppgen(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6*mxresf+1), &
                     resur(5*mxresf+1), vectc, neq, nfreq, dbloq)
 !
 !        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
-        call wpermo(lmasse, lraide, lamor, nfreq, vectc,&
+        call wpermo(lmasse, lraide, lamor, nfreq, vectc, &
                     resur(mxresf+1), resur(2*mxresf+1), dbloq, omecor, resur(3*mxresf+1))
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
-        call vpstor(ineg, 'C', modes, nfreq, neq,&
-                    [rbid], vectc, mxresf, nbpari, nbparr,&
-                    nbpark, nopara, '    ', resui, resur,&
+        call vpstor(ineg, 'C', modes, nfreq, neq, &
+                    [rbid], vectc, mxresf, nbpari, nbparr, &
+                    nbpark, nopara, '    ', resui, resur, &
                     resuk, iprec)
-    else if (( lamor .ne. 0 ).and.(ktyp.eq.'C')) then
+    else if ((lamor .ne. 0) .and. (ktyp .eq. 'C')) then
         if (lcomod) then
             ASSERT(.false.)
-        endif
+        end if
         if (lns) then
             ASSERT(.false.)
-        endif
+        end if
 ! --- QUADRATIQUE MODES COMPLEXES AVEC K COMPLEXE
 !        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
         call wpnorx(nfreq, neq, dlagr, vectc, resuk)
 !
 !        - CALCUL DES PARAMETRES GENERALISES ---
-        call wppgen(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6* mxresf+1),&
+        call wppgen(lmasse, lamor, lraide, resur(4*mxresf+1), resur(6*mxresf+1), &
                     resur(5*mxresf+1), vectc, neq, nfreq, dbloq)
 !
 !        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---
-        call wpermo(lmasse, lraide, lamor, nfreq, vectc,&
+        call wpermo(lmasse, lraide, lamor, nfreq, vectc, &
                     resur(mxresf+1), resur(2*mxresf+1), dbloq, omecor, resur(3*mxresf+1))
 !
 !        - STOCKAGE DES VECTEURS PROPRES ---
-        call vpstor(ineg, 'C', modes, nfreq, neq,&
-                    [rbid], vectc, mxresf, nbpari, nbparr,&
-                    nbpark, nopara, '    ', resui, resur,&
+        call vpstor(ineg, 'C', modes, nfreq, neq, &
+                    [rbid], vectc, mxresf, nbpari, nbparr, &
+                    nbpark, nopara, '    ', resui, resur, &
                     resuk, iprec)
-    endif
+    end if
 !     ------------------------------------------------------------------
     call jedema()
 end subroutine

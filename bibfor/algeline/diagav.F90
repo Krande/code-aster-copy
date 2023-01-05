@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     character(len=4) :: kmpic
     real(kind=8) :: eps, diamax, diamin, vabs
     integer :: neq, ilfin, typvar, ifm, niv, iret, iadigs
-    integer :: jsxdi,   nbbloc, ibloc, iavale, idern, iprem, i
+    integer :: jsxdi, nbbloc, ibloc, iavale, idern, iprem, i
     integer, pointer :: scbl(:) => null()
     integer, pointer :: scib(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -64,10 +64,10 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     call dismoi('MPI_COMPLET', noma19, 'MATR_ASSE', repk=kmpic)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
-    endif
+    end if
     call jeveuo(noma19//'.REFA', 'L', vk24=refa)
     call jelira(noma19//'.REFA', 'CLAS', cval=base)
-    ASSERT(refa(3).ne.'ELIML')
+    ASSERT(refa(3) .ne. 'ELIML')
 !
 !
 !     -- ALLOCATION ET CALCUL DE L'OBJET .DIGS :
@@ -80,7 +80,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
         call wkvect(noma19//'.DIGS', base//' V R', 2*neq, iadigs)
     else
         call wkvect(noma19//'.DIGS', base//' V C', 2*neq, iadigs)
-    endif
+    end if
     call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
 !
 !
@@ -94,20 +94,20 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
             do i = 1, neq
                 zr(iadigs-1+i) = zr(iavale-1+zi(jsxdi+i-1))
             end do
-        else if (typvar.eq.2) then
+        else if (typvar .eq. 2) then
             do i = 1, neq
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
             end do
         else
             ASSERT(.false.)
-        endif
+        end if
         goto 9998
-    endif
+    end if
 !
 !
 !     CAS STOCKAGE MORSE INDISPONIBLE (OBJET .VALM):
 !     ---------------------------------------------
-    ASSERT((noma19.eq.'&&OP0070.RESOC.MATC') .or. (noma19.eq.'&&OP0070.RESUC.MATC'))
+    ASSERT((noma19 .eq. '&&OP0070.RESOC.MATC') .or. (noma19 .eq. '&&OP0070.RESUC.MATC'))
     call jeveuo(nu//'.SLCS.SCDI', 'L', jsxdi)
     call jeveuo(nu//'.SLCS.SCBL', 'L', vi=scbl)
     call jeveuo(nu//'.SLCS.SCIB', 'L', vi=scib)
@@ -115,19 +115,19 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     do ibloc = 1, nbbloc
         call jeveuo(jexnum(noma19//'.UALF', ibloc), 'L', iavale)
         idern = scbl(ibloc+1)
-        ASSERT(idern.le.neq)
-        iprem = scbl(ibloc) + 1
+        ASSERT(idern .le. neq)
+        iprem = scbl(ibloc)+1
         if (typvar .eq. 1) then
             do i = iprem, idern
                 zr(iadigs-1+i) = zr(iavale-1+zi(jsxdi+i-1))
             end do
-        else if (typvar.eq.2) then
+        else if (typvar .eq. 2) then
             do i = iprem, idern
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
             end do
         else
             ASSERT(.false.)
-        endif
+        end if
         call jelibe(jexnum(noma19//'.UALF', ibloc))
     end do
 !
@@ -148,22 +148,22 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
         diamin = r8maem()
         do i = 1, neq
             if (typvar .eq. 1) then
-                vabs=abs(zr(iadigs-1+i))
+                vabs = abs(zr(iadigs-1+i))
             else
-                vabs=abs(zc(iadigs-1+i))
-            endif
-            diamax = max(diamax,vabs)
-            if (vabs .ne. 0.d0) diamin = min(diamin,vabs)
+                vabs = abs(zc(iadigs-1+i))
+            end if
+            diamax = max(diamax, vabs)
+            if (vabs .ne. 0.d0) diamin = min(diamin, vabs)
 !
 !
         end do
-        write (ifm,*) '<FACTOR> AVANT FACTORISATION :'
-        write (ifm,*) '<FACTOR>   NB EQUATIONS : ',neq
-        write (ifm,*) '<FACTOR>   TERME DIAGONAL MAXIMUM :  ',diamax
-        write (ifm,*) '<FACTOR>   TERME DIAGONAL (NON NUL) MINIMUM : ',&
+        write (ifm, *) '<FACTOR> AVANT FACTORISATION :'
+        write (ifm, *) '<FACTOR>   NB EQUATIONS : ', neq
+        write (ifm, *) '<FACTOR>   TERME DIAGONAL MAXIMUM :  ', diamax
+        write (ifm, *) '<FACTOR>   TERME DIAGONAL (NON NUL) MINIMUM : ',&
      &                 diamin
-        write (ifm,*) '<FACTOR>   EPSILON CHOISI  : ',eps
-    endif
+        write (ifm, *) '<FACTOR>   EPSILON CHOISI  : ', eps
+    end if
 !
     call jedema()
 end subroutine

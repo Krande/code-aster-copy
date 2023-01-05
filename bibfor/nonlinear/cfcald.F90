@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,11 +64,11 @@ function cfcald(defico, izone, typnoe)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lliss = cfdisl(defico,'LISSAGE')
-    lmait = mminfl(defico,'MAIT' ,izone)
-    lescl = mminfl(defico,'ESCL' ,izone)
-    lmaes = mminfl(defico,'MAIT_ESCL' ,izone)
-    iappa = mminfi(defico,'APPARIEMENT' ,izone)
+    lliss = cfdisl(defico, 'LISSAGE')
+    lmait = mminfl(defico, 'MAIT', izone)
+    lescl = mminfl(defico, 'ESCL', izone)
+    lmaes = mminfl(defico, 'MAIT_ESCL', izone)
+    iappa = mminfi(defico, 'APPARIEMENT', izone)
 !
 ! --- CALCUL OU NON ?
 !
@@ -76,20 +76,20 @@ function cfcald(defico, izone, typnoe)
         if (lliss) then
             if (lmait .or. lmaes) then
                 cfcald = .true.
-            endif
-        endif
+            end if
+        end if
         if (iappa .eq. 0) then
             if (lmait .or. lmaes) then
                 cfcald = .true.
-            endif
-        endif
-    else if (typnoe.eq.'ESCL') then
+            end if
+        end if
+    else if (typnoe .eq. 'ESCL') then
         if (lescl .or. lmaes) then
             cfcald = .true.
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end function

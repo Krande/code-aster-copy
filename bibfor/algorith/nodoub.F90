@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nodoub(nbl, nbb, nol, nob, typl,&
+subroutine nodoub(nbl, nbb, nol, nob, typl, &
                   typb, mailla, double)
 !    P. RICHARD     DATE 16/07/90
 !-----------------------------------------------------------------------
@@ -55,12 +55,12 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
     double = .false.
     jf = 1
     do i = 1, nbl
-        jf = jf - 1
+        jf = jf-1
         lcou = nol(i)
         lp = 0
- 20     continue
+20      continue
         if (lp .lt. lcou .and. jf .lt. nbb) then
-            jf = jf + 1
+            jf = jf+1
             lp = nob(jf)
             if (lp .eq. lcou) then
                 double = .true.
@@ -69,16 +69,16 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
                 valk(2) = typl
                 valk(3) = typb
                 call utmess('E', 'ALGORITH13_69', nk=3, valk=valk)
-            endif
+            end if
 !
             goto 20
 !
         else
             goto 10
 !
-        endif
+        end if
 !
- 10     continue
+10      continue
     end do
 !
     goto 999

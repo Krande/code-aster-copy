@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,8 +87,8 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
     if (iret .gt. 0) then
         call jedetr(vectElem//'.RERR')
         call jedetr(vectElem//'.RELR')
-    endif
-    call memare('G', vectElem, modele, mate, ' ',&
+    end if
+    call memare('G', vectElem, modele, mate, ' ', &
                 'CHAR_ACOU')
 !
     lpaout(1) = 'PVECTTC'
@@ -106,14 +106,14 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
         else
             call jeveuo(lchar(1)//'.CHAC      .NOMO', 'L', vk8=nomo)
             ligrmo = nomo(1)//'.MODELE'
-        endif
+        end if
         do icha = 1, nchar
             call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=k8bid)
             if (k8bid(5:7) .eq. '_FO') then
                 lfonc = .true.
             else
                 lfonc = .false.
-            endif
+            end if
 !
             ligrch = lchar(icha)//'.CHAC.LIGRE'
 
@@ -126,15 +126,15 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
                 else
                     option = 'CHAR_ACOU_VFAC_C'
                     lpain(3) = 'PVITEFC'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.VFACE'
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrmo, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vectElem, lchout(1), 'G')
-            endif
+            end if
 
 ! --------- Dirichlet
             call exisd('CHAMP_GD', ligrch(1:13)//'.CIMPO', iret)
@@ -145,17 +145,17 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
                 else
                     option = 'ACOU_DDLI_C'
                     lpain(3) = 'PDDLIMC'
-                endif
+                end if
                 lchin(3) = ligrch(1:13)//'.CIMPO     '
-                ilires = ilires + 1
+                ilires = ilires+1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrch, 3, lchin,&
-                            lpain, 1, lchout, lpaout, 'G',&
+                call calcul('S', option, ligrch, 3, lchin, &
+                            lpain, 1, lchout, lpaout, 'G', &
                             'OUI')
                 call reajre(vectElem, lchout(1), 'G')
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

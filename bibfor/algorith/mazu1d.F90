@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
+subroutine mazu1d(ee, mazars, sigm, varm, epsm, &
                   deps, esout, sigp, varp, option)
 ! person_in_charge: jean-luc.flejou at edf.fr
 ! ----------------------------------------------------------------------
@@ -61,15 +61,15 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
 ! --- ------------------------------------------------------------------
 !     INDEX DES VARIABLES INTERNES
     integer :: icels, icelu
-    parameter (icels=1,icelu=2)
+    parameter(icels=1, icelu=2)
     integer :: idomm, iepsqt, iepsqc, irsigm, idissd
-    parameter (idomm=3,iepsqt=4,iepsqc=5,irsigm=6,idissd=8)
+    parameter(idomm=3, iepsqt=4, iepsqc=5, irsigm=6, idissd=8)
 ! --- ------------------------------------------------------------------
     aster_logical :: rigi, resi
 !
     integer :: indxvp
     real(kind=8) :: grdexp, rac2
-    parameter (grdexp=200.0d0,rac2=1.4142135623731d+00)
+    parameter(grdexp=200.0d0, rac2=1.4142135623731d+00)
 !
     real(kind=8) :: epsela, dommag, ddmdeq, dommt, dommc, dommtc
     real(kind=8) :: epsd0, ac, bc, at, bt, nu, sgels, epelu, xx1
@@ -79,8 +79,8 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
 !     RIGI_MECA_TANG ->       DSIDEP       -->  RIGI
 !     FULL_MECA      ->  SIG  DSIDEP  VIP  -->  RIGI  RESI
 !     RAPH_MECA      ->  SIG          VIP  -->        RESI
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
+    rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
     rigi = .true.
 !
 ! --- ------------------------------------------------------------------
@@ -99,29 +99,29 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
     epsqt = varm(iepsqt)
     if (epsqt .gt. epsd0) then
 !        CALCUL DE L'ENDOMMAGEMENT
-        dommag = 1.0d0 - (epsd0*(1.0d0-at)/epsqt)
+        dommag = 1.0d0-(epsd0*(1.0d0-at)/epsqt)
 !        IL FAUT EVITER QUE LE CALCUL PLANTE DANS EXP(RTEMP)
         rtemp = bt*(epsqt-epsd0)
-        if (rtemp .le. grdexp) dommag = dommag - at*exp(-rtemp)
-        dommt = min(max(dommag,0.0d0),0.99999d0 )
+        if (rtemp .le. grdexp) dommag = dommag-at*exp(-rtemp)
+        dommt = min(max(dommag, 0.0d0), 0.99999d0)
     else
         dommt = 0.0d0
-    endif
+    end if
     epsqc = varm(iepsqc)
     if (epsqc .gt. epsd0) then
 !        CALCUL DE L'ENDOMMAGEMENT
-        dommag = 1.0d0 - (epsd0*(1.0d0-ac)/epsqc)
+        dommag = 1.0d0-(epsd0*(1.0d0-ac)/epsqc)
 !        IL FAUT EVITER QUE LE CALCUL PLANTE DANS EXP(RTEMP)
         rtemp = bc*(epsqc-epsd0)
-        if (rtemp .le. grdexp) dommag = dommag - ac*exp(-rtemp)
-        dommc = min(max(dommag,0.0d0),0.99999d0 )
+        if (rtemp .le. grdexp) dommag = dommag-ac*exp(-rtemp)
+        dommc = min(max(dommag, 0.0d0), 0.99999d0)
     else
         dommc = 0.0d0
-    endif
+    end if
 ! --- ------------------------------------------------------------------
 !     CALCUL DE LA DEFORMATION ELASTIQUE
 !     C'EST LA SEULE QUI CONTRIBUE A FAIRE EVOLUER L'ENDOMMAGEMENT
-    epsela = epsm + deps
+    epsela = epsm+deps
 !     DEFORMATION EQUIVALENTE
 !     ENDOMMAGEMENT ET DEFORMATION EQUIVALENTE PRECEDENTS
     if (epsela .ge. 0.0d0) then
@@ -142,7 +142,7 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
         indxvp = iepsqc
         aa = ac
         bb = bc
-    endif
+    end if
 ! --- ------------------------------------------------------------------
 !     ENDOMMAGEMENT PRECEDENT
     dommag = dommtc
@@ -157,43 +157,43 @@ subroutine mazu1d(ee, mazars, sigm, varm, epsm,&
         varp(iepsqt) = epsqt
         varp(iepsqc) = epsqc
 !        PROGRESSION DE L'ENDOMMAGEMENT
-        if ((epseq.gt.epsd0) .and. (epseq.gt.epsqtc)) then
+        if ((epseq .gt. epsd0) .and. (epseq .gt. epsqtc)) then
 !           CALCUL DE L'ENDOMMAGEMENT
-            dommag = 1.0d0 - (epsd0*(1.0d0-aa)/epseq)
+            dommag = 1.0d0-(epsd0*(1.0d0-aa)/epseq)
             ddmdeq = epsd0*(1.0d0-aa)/epseq**2
 !           IL FAUT EVITER QUE LE CALCUL PLANTE DANS EXP(RTEMP)
             rtemp = bb*(epseq-epsd0)
             if (rtemp .le. grdexp) then
-                dommag = dommag - aa*exp(-rtemp)
-                ddmdeq = ddmdeq + aa*bb*exp(-rtemp)
-            endif
+                dommag = dommag-aa*exp(-rtemp)
+                ddmdeq = ddmdeq+aa*bb*exp(-rtemp)
+            end if
             ddmdeq = ddmdeq*deqtep
             if (dommag .le. dommtc) then
                 dommag = dommtc
                 ddmdeq = 0.0d0
-            endif
+            end if
             if (dommag .gt. 0.99999d0) then
                 dommag = 0.99999d0
                 ddmdeq = 0.0d0
-            endif
-        endif
+            end if
+        end if
 !        CALCUL DES CONTRAINTES
         sigp = ee*epsela*(1.0d0-dommag)
 !        CORRESPOND AUX CRITERES ELS, ELU DANS LE CAS NON-LINEAIRE
         varp(icels) = sigp/sgels
-        varp(icelu) = epsela*sqrt(1.0d0 + 2.0d0*nu*nu)/epelu
+        varp(icelu) = epsela*sqrt(1.0d0+2.0d0*nu*nu)/epelu
 !        MISE A JOUR DES VARIABLES INTERNES
         varp(idomm) = dommag
-        varp(indxvp) = max( epseq, epsqtc )
+        varp(indxvp) = max(epseq, epsqtc)
         varp(irsigm) = rr
 !        DISSIPATION IRREVERSIBLE
         xx1 = ee*(1.0d0-dommag)*deps
-        varp(idissd) = varm(idissd) + (xx1-(sigp-sigm))*deps/2.0d0
-    endif
+        varp(idissd) = varm(idissd)+(xx1-(sigp-sigm))*deps/2.0d0
+    end if
 !
 ! --- ------------------------------------------------------------------
 !     MATRICE TANGENTE
     if (rigi) then
-        esout = ee*(1.0d0-dommag) - ee*epsela*ddmdeq
-    endif
+        esout = ee*(1.0d0-dommag)-ee*epsela*ddmdeq
+    end if
 end subroutine

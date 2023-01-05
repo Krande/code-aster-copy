@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pidefo(ndim, npg, kpg, compor, fm,&
+subroutine pidefo(ndim, npg, kpg, compor, fm, &
                   epsm, epsp, epsd, copilo)
 !
 !
@@ -64,9 +64,9 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
     real(kind=8) :: em(6), epsmno
     integer :: ij, kl, i, j, k, l
 !
-    data indi /1,2,3,2,3,3/
-    data indj /1,2,3,1,1,2/
-    data prac /0,0,0,1,1,1/
+    data indi/1, 2, 3, 2, 3, 3/
+    data indj/1, 2, 3, 1, 1, 2/
+    data prac/0, 0, 0, 1, 1, 1/
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,18 +90,18 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
                 j = indj(ij)
                 k = indi(kl)
                 l = indj(kl)
-                ff = (fm(i,k)*fm(j,l) + fm(i,l)*fm(j,k)) / 2
-                ff = ff * rac2**prac(ij) * rac2**prac(kl)
-                epsm(ij) = epsm(ij) + ff*em(kl)
+                ff = (fm(i, k)*fm(j, l)+fm(i, l)*fm(j, k))/2
+                ff = ff*rac2**prac(ij)*rac2**prac(kl)
+                epsm(ij) = epsm(ij)+ff*em(kl)
             end do
         end do
-    endif
+    end if
 !
 ! --- INCREMENT DE DEFORMATION PROJETE
 !
-    epsmno = dnrm2(ndimsi,epsm ,1)
-    copilo(1,kpg) = ddot(ndimsi, epsm,1, epsp,1)/epsmno
-    copilo(2,kpg) = ddot(ndimsi, epsm,1, epsd,1)/epsmno
+    epsmno = dnrm2(ndimsi, epsm, 1)
+    copilo(1, kpg) = ddot(ndimsi, epsm, 1, epsp, 1)/epsmno
+    copilo(2, kpg) = ddot(ndimsi, epsm, 1, epsd, 1)/epsmno
 !
 !
 end subroutine

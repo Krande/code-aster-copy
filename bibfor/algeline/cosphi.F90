@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,34 +43,34 @@ function cosphi(coefb, gamcjs, type)
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( trois  =  3.0d0  )
-    parameter       ( quatre =  4.0d0  )
-    parameter       ( neuf   =  9.0d0  )
+    parameter(un=1.0d0)
+    parameter(trois=3.0d0)
+    parameter(quatre=4.0d0)
+    parameter(neuf=9.0d0)
 ! ----------------------------------------------------------------------
     epstol = r8prem()
     if (type .eq. 'MAX') then
         cosphi = un
-    else if (type.eq.'MIN') then
+    else if (type .eq. 'MIN') then
 ! ======================================================================
 ! --- CALCUL DE FACT1 = 1/(2*(1+LAMBDA*GAMCJS)) ------------------------
 ! ======================================================================
         if ((un-gamcjs*gamcjs) .lt. epstol) then
             call utmess('F', 'ALGELINE_4')
-        endif
+        end if
         fact1 = (gamcjs*gamcjs)/(quatre*(un-gamcjs*gamcjs))
 ! ======================================================================
 ! --- CALCUL DE FACT4 = (3/(COEFB**2+3))**2 - 1/2 ----------------------
 ! ======================================================================
-        fact3 = coefb*coefb + trois
+        fact3 = coefb*coefb+trois
         fact4 = neuf/(fact3*fact3)
 ! ======================================================================
 ! --- CALCUL FINAL DE COSPHI -------------------------------------------
 ! ======================================================================
-        racine = sqrt(fact4 + fact1)
+        racine = sqrt(fact4+fact1)
         cosphi = trois/(fact3*racine)
     else
         ASSERT(.false.)
-    endif
+    end if
 ! ======================================================================
 end function

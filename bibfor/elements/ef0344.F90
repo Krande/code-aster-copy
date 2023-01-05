@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,18 +58,18 @@ subroutine ef0344(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbres=2
+    integer, parameter :: nbres = 2
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
     character(len=16) :: nomres(nbres)
-    data nomres/'E','NU'/
+    data nomres/'E', 'NU'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_cara = 2
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','TVAR'/
+    data noms_cara/'A1', 'TVAR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,39 +77,39 @@ subroutine ef0344(nomte)
     call jevech('PMATERC', 'L', lmater)
 !
 !   option valide avec un seul phenomene : elas
-    jmat=zi(lmater)
-    nbmat=zi(jmat)
+    jmat = zi(lmater)
+    nbmat = zi(jmat)
 !   un seul materiau
     if (nbmat .ne. 1) then
-        messk(1)='EFGE_ELNO'
+        messk(1) = 'EFGE_ELNO'
         call utmess('F', 'ELEMENTS4_59', sk=messk(1))
-    endif
+    end if
 !   le 1er materiau
-    imat=jmat+zi(jmat+nbmat+1)
+    imat = jmat+zi(jmat+nbmat+1)
 !   seul ELAS est autorisé
     do icomp = 1, zi(imat+1)
         if (zk32(zi(imat)+icomp-1) .ne. 'ELAS') then
-            messk(2)=zk32(zi(imat)+icomp-1)
+            messk(2) = zk32(zi(imat)+icomp-1)
             call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
-        endif
-    enddo
+        end if
+    end do
 !
-    nbpar=0
-    nompar='  '
-    valpar=0.d0
-    valres(:)=0.0d0
+    nbpar = 0
+    nompar = '  '
+    valpar = 0.d0
+    valres(:) = 0.0d0
 !
-    npg=3
+    npg = 3
     call moytem('RIGI', npg, 1, '+', valpar, iret)
-    nbpar=1
-    nompar='TEMP'
+    nbpar = 1
+    nompar = 'TEMP'
 !
-    call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar], &
                 2, nomres, valres, codres, 1)
 !
-    e=valres(1)
-    nu=valres(2)
-    g=e/(2.d0*(1.d0+nu))
+    e = valres(1)
+    nu = valres(2)
+    g = e/(2.d0*(1.d0+nu))
 !
 !   recuperation des carac des sections utiles, longueur et pgl
     nno = 2
@@ -129,8 +129,8 @@ subroutine ef0344(nomte)
 !
     call jevech('PDEPLAR', 'L', jdepl)
     do i = 1, 14
-        ugr(i)=zr(jdepl+i-1)
-    enddo
+        ugr(i) = zr(jdepl+i-1)
+    end do
 !   vecteur deplacement local  ULR = PGL * UGR
     call utpvgl(nno, nc, pgl, ugr, ulr)
 !   vecteur effort local  FLR = KLC * ULR
@@ -138,38 +138,38 @@ subroutine ef0344(nomte)
 !
 !   tenir compte des efforts dus a la dilatation
     call verift('RIGI', npg, 1, '+', zi(lmater), epsth_=epsith)
-    ugr(:)=0.d0
-    ugr(1)=-epsith*xl
-    ugr(8)=-ugr(1)
+    ugr(:) = 0.d0
+    ugr(1) = -epsith*xl
+    ugr(8) = -ugr(1)
 !   calcul des forces induites
     do i = 1, 7
-        flr(i)   = flr(i)   - klc(i,1)*ugr(1)
-        flr(i+7) = flr(i+7) - klc(i+7,1+7)*ugr(1+7)
-    enddo
+        flr(i) = flr(i)-klc(i, 1)*ugr(1)
+        flr(i+7) = flr(i+7)-klc(i+7, 1+7)*ugr(1+7)
+    end do
 !   prise en compte des efforts repartis
     call tecach('ONO', 'PFR1D1D', 'L', iret, iad=lforcr)
     if (lforcr .ne. 0) then
         call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a, xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
-            flr(i)   = flr(i)   - fe(i)
-            flr(i+7) = flr(i+7) - fe(i+6)
-        enddo
-    endif
+            flr(i) = flr(i)-fe(i)
+            flr(i+7) = flr(i+7)-fe(i+6)
+        end do
+    end if
 !   prise en compte des efforts repartis (sous forme de fonction)
     call tecach('ONO', 'PFF1D1D', 'L', iret, iad=lforcf)
     if (lforcf .ne. 0) then
         call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a, xl, 1, nno, ncc, pgl, fe, fi)
         do i = 1, 6
-            flr(i)   = flr(i)-fe(i)
+            flr(i) = flr(i)-fe(i)
             flr(i+7) = flr(i+7)-fe(i+6)
-        enddo
-    endif
+        end do
+    end if
 !
 !   Inversion du signe des efforts sur le premier noeud
     call jevech('PEFFORR', 'E', jeffo)
     do i = 1, 7
-        zr(jeffo-1+i)   = -flr(i)
-        zr(jeffo-1+i+7) =  flr(i+7)
-    enddo
+        zr(jeffo-1+i) = -flr(i)
+        zr(jeffo-1+i+7) = flr(i+7)
+    end do
 !
 end subroutine

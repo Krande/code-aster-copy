@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmdomt_ls(ds_algopara)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,35 +57,35 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 !
     call infniv(ifm, niv)
 !
-    keywf          = 'RECH_LINEAIRE'
-    reli_meth      = 'CORDE'
+    keywf = 'RECH_LINEAIRE'
+    reli_meth = 'CORDE'
     iter_line_maxi = 0
     resi_line_rela = 1.d-3
-    reli_rho_mini  = 0.d0
-    reli_rho_maxi  = 1.d0
-    reli_rho_excl  = 0.d0
+    reli_rho_mini = 0.d0
+    reli_rho_maxi = 1.d0
+    reli_rho_excl = 0.d0
 !
 ! - Get parameters (line search)
 !
     call getfac(keywf, nocc)
     if (nocc .ne. 0) then
         ds_algopara%l_line_search = .true._1
-        call getvtx(keywf, 'METHODE'       , iocc=1, scal=reli_meth)
+        call getvtx(keywf, 'METHODE', iocc=1, scal=reli_meth)
         call getvr8(keywf, 'RESI_LINE_RELA', iocc=1, scal=resi_line_rela)
         call getvis(keywf, 'ITER_LINE_MAXI', iocc=1, scal=iter_line_maxi)
-        call getvr8(keywf, 'RHO_MIN'       , iocc=1, scal=reli_rho_mini)
-        call getvr8(keywf, 'RHO_MAX'       , iocc=1, scal=reli_rho_maxi)
-        call getvr8(keywf, 'RHO_EXCL'      , iocc=1, scal=reli_rho_excl)
+        call getvr8(keywf, 'RHO_MIN', iocc=1, scal=reli_rho_mini)
+        call getvr8(keywf, 'RHO_MAX', iocc=1, scal=reli_rho_maxi)
+        call getvr8(keywf, 'RHO_EXCL', iocc=1, scal=reli_rho_excl)
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE12_7')
-        endif
-    endif
+        end if
+    end if
 !
-    ds_algopara%line_search%method    = reli_meth
+    ds_algopara%line_search%method = reli_meth
     ds_algopara%line_search%resi_rela = resi_line_rela
     ds_algopara%line_search%iter_maxi = iter_line_maxi
-    ds_algopara%line_search%rho_mini  = reli_rho_mini
-    ds_algopara%line_search%rho_maxi  = reli_rho_maxi
-    ds_algopara%line_search%rho_excl  = reli_rho_excl
+    ds_algopara%line_search%rho_mini = reli_rho_mini
+    ds_algopara%line_search%rho_maxi = reli_rho_maxi
+    ds_algopara%line_search%rho_excl = reli_rho_excl
 !
 end subroutine

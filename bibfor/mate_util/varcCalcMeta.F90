@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine varcCalcMeta(modelz,&
-                        nbin  , nbout     ,&
-                        lpain , lchin     ,&
-                        lpaout, lchout    ,&
-                        base  , vect_elemz)
+subroutine varcCalcMeta(modelz, &
+                        nbin, nbout, &
+                        lpain, lchin, &
+                        lpaout, lchout, &
+                        base, vect_elemz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -33,13 +33,13 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=*), intent(in) :: modelz
-integer, intent(in) :: nbin, nbout
-character(len=8), intent(in) :: lpain(*), lpaout(*)
-character(len=19), intent(in) :: lchin(*)
-character(len=19), intent(inout) :: lchout(*)
-character(len=1), intent(in) :: base
-character(len=*), intent(in) :: vect_elemz
+    character(len=*), intent(in) :: modelz
+    integer, intent(in) :: nbin, nbout
+    character(len=8), intent(in) :: lpain(*), lpaout(*)
+    character(len=19), intent(in) :: lchin(*)
+    character(len=19), intent(inout) :: lchout(*)
+    character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: vect_elemz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,22 +75,22 @@ character(len=*), intent(in) :: vect_elemz
 ! - Get last resu_elem
 !
     call jelira(vect_elemz(1:8)//'           .RELR', 'LONUTI', nb_resu)
-    call jeveuo(vect_elemz(1:8)//'           .RELR', 'L', vk24 = p_relr)
-    resu_elem = p_relr(nb_resu)(1:19)
-    newnom    = resu_elem(10:16)
+    call jeveuo(vect_elemz(1:8)//'           .RELR', 'L', vk24=p_relr)
+    resu_elem = p_relr(nb_resu) (1:19)
+    newnom = resu_elem(10:16)
 !
 ! - Generate new resu_elem
 !
     call gcnco2(newnom)
     resu_elem(10:16) = newnom(2:8)
-    call corich('E', resu_elem, ichin_ = -1)
+    call corich('E', resu_elem, ichin_=-1)
     lchout(1) = resu_elem
 
 !
 ! - Compute
 !
-    call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                lpain, nbout , lchout, lpaout, base ,&
+    call calcul('C', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, base, &
                 'OUI')
     call reajre(vect_elemz, resu_elem, base)
 !

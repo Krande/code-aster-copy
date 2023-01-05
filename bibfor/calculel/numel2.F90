@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ subroutine numel2(cham, ima, igrel, iel)
     integer :: nbgrel, nel
 !-----------------------------------------------------------------------
     call jemarq()
-    igrel=0
-    iel=0
+    igrel = 0
+    iel = 0
     cham19 = cham
     call jeveuo(cham19//'.CELK', 'L', iacelk)
-    noligr = zk24(iacelk)(1:19)
+    noligr = zk24(iacelk) (1:19)
 !
     call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel)
     do igr = 1, nbgrel
@@ -57,7 +57,7 @@ subroutine numel2(cham, ima, igrel, iel)
                 igrel = igr
                 iel = i
                 goto 999
-            endif
+            end if
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
+subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
                   materf, mod, nr, dsde)
     implicit none
 !
@@ -34,20 +34,20 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
     real(kind=8) :: fet(3, 3), fetfe(3, 3), eel(6), hooke(6, 6), s6(6), s(3, 3)
     real(kind=8) :: dtaudf(3, 3, 3, 3), materf(*), sfet(3, 3)
     integer :: nr, ndt, ndi, i, j, k, l, m, n, nmat, ind(3, 3), nvi
-    common /tdim/ ndt,ndi
+    common/tdim/ndt, ndi
     character(len=8) :: mod
 !     ------------------------------------------------------------------
-    data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
+    data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !
     do i = 1, 3
-       ind(i,i)=i
+        ind(i, i) = i
     end do
-    ind(1,2)=4
-    ind(2,1)=4
-    ind(1,3)=5
-    ind(3,1)=5
-    ind(2,3)=6
-    ind(3,2)=6
+    ind(1, 2) = 4
+    ind(2, 1) = 4
+    ind(1, 3) = 5
+    ind(3, 1) = 5
+    ind(2, 3) = 6
+    ind(3, 2) = 6
 !
     call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
     call daxpy(9, 1.d0, id, 1, fem, 1)
@@ -62,131 +62,131 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
 !
     call r8inir(81, 0.d0, dfedf, 1)
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                do m = 1, 3
-                   dfedf(i,j,k,l)=dfedf(i,j,k,l)+id(i,k)*fem(l,m)*fppinv(m,j)
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
+                        dfedf(i, j, k, l) = dfedf(i, j, k, l)+id(i, k)*fem(l, m)*fppinv(m, j)
+                    end do
                 end do
-             end do
-          end do
-       end do
+            end do
+        end do
     end do
 !
 ! CALCUL DE DR1/DF
     call r8inir(81, 0.d0, dr1df, 1)
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                do m = 1, 3
-                   dr1df(i,j,k,l)=dr1df(i,j,k,l) +dfedf(m,i,k,l)*fep(m,j)
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
+                        dr1df(i, j, k, l) = dr1df(i, j, k, l)+dfedf(m, i, k, l)*fep(m, j)
+                    end do
                 end do
-             end do
-          end do
-       end do
+            end do
+        end do
     end do
 
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                do m = 1, 3
-                   dr1df(i,j,k,l)=dr1df(i,j,k,l) +fep(m,i)*dfedf(m,j,k,l)
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
+                        dr1df(i, j, k, l) = dr1df(i, j, k, l)+fep(m, i)*dfedf(m, j, k, l)
+                    end do
                 end do
-             end do
-          end do
-       end do
+            end do
+        end do
     end do
     call dscal(81, -0.5d0, dr1df, 1)
 !
 ! CALCUL DE DS/DF EN UTILISANT LES SYMETRIES
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                dr1df6(ind(i,j),k,l)=dr1df(i,j,k,l)
-             end do
-          end do
-       end do
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    dr1df6(ind(i, j), k, l) = dr1df(i, j, k, l)
+                end do
+            end do
+        end do
     end do
 !
     call r8inir(54, 0.d0, dsdf, 1)
     do i = 1, 6
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 6
-                dsdf(i,j,k)=dsdf(i,j,k)-zinv(i,l)*dr1df6(l,j,k)
-             end do
-          end do
-       end do
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 6
+                    dsdf(i, j, k) = dsdf(i, j, k)-zinv(i, l)*dr1df6(l, j, k)
+                end do
+            end do
+        end do
     end do
 !
 ! RECALCUL DU PK2 S
     if (materf(nmat) .eq. 0) then
-       call lcopli('ISOTROPE', mod, materf(1), hooke)
-    else if (materf(nmat).eq.1) then
-       call lcopli('ORTHOTRO', mod, materf(1), hooke)
-    endif
+        call lcopli('ISOTROPE', mod, materf(1), hooke)
+    else if (materf(nmat) .eq. 1) then
+        call lcopli('ORTHOTRO', mod, materf(1), hooke)
+    end if
     fet = transpose(fep)
-    fetfe = matmul(fet,fep)
-    call daxpy(9, -1.d0, id, 1, fetfe,1)
+    fetfe = matmul(fet, fep)
+    call daxpy(9, -1.d0, id, 1, fetfe, 1)
     call dscal(9, 0.5d0, fetfe, 1)
 !
 !      CONTRAINTES PK2
     call tnsvec(3, 3, fetfe, eel, 1.d0)
-    s6(1:ndt) = matmul(hooke(1:ndt,1:ndt), eel(1:ndt))
+    s6(1:ndt) = matmul(hooke(1:ndt, 1:ndt), eel(1:ndt))
     call tnsvec(6, 3, s, s6, 1.d0)
 !
 ! CALCUL DE DTAU/DF EN UTILISANT LES SYMETRIES
     call r8inir(81, 0.d0, dtaudf, 1)
-    sfet = matmul(s,fet)
+    sfet = matmul(s, fet)
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                do m = 1, 3
-                   dtaudf(i,j,k,l)=dtaudf(i,j,k,l)+dfedf(i,m,k,l)*sfet(m,j)
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
+                        dtaudf(i, j, k, l) = dtaudf(i, j, k, l)+dfedf(i, m, k, l)*sfet(m, j)
+                    end do
                 end do
-             end do
-          end do
-       end do
+            end do
+        end do
     end do
 !
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                do m = 1, 3
-                   dtaudf(i,j,k,l)=dtaudf(i,j,k,l)+sfet(m,i)*dfedf(j,m,k,l)
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
+                        dtaudf(i, j, k, l) = dtaudf(i, j, k, l)+sfet(m, i)*dfedf(j, m, k, l)
+                    end do
                 end do
-             end do
-          end do
-       end do
+            end do
+        end do
     end do
 !
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                do m = 1, 3
-                   do n = 1, 3
-                      dtaudf(i,j,k,l)=dtaudf(i,j,k,l)+ fep(i,m)*dsdf(ind(m,n),k,l)*fep(j,n)
-                   end do
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    do m = 1, 3
+                        do n = 1, 3
+                   dtaudf(i, j, k, l) = dtaudf(i, j, k, l)+fep(i, m)*dsdf(ind(m, n), k, l)*fep(j, n)
+                        end do
+                    end do
                 end do
-             end do
-          end do
-       end do
+            end do
+        end do
     end do
 !
     do i = 1, 3
-       do j = 1, 3
-          do k = 1, 3
-             do l = 1, 3
-                dsde(ind(i,j),k,l)=dtaudf(i,j,k,l)
-             end do
-          end do
-       end do
+        do j = 1, 3
+            do k = 1, 3
+                do l = 1, 3
+                    dsde(ind(i, j), k, l) = dtaudf(i, j, k, l)
+                end do
+            end do
+        end do
     end do
 !
 ! LES RACINE(2) ATTENDUES PAR NMCOMP  !!!

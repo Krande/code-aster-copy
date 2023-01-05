@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuReadDebug(resultName,&
-                         fieldNb   , fieldList, fieldStoreNb,&
-                         storePara , storeEpsi, storeCrit)
+subroutine resuReadDebug(resultName, &
+                         fieldNb, fieldList, fieldStoreNb, &
+                         storePara, storeEpsi, storeCrit)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -30,13 +30,13 @@ implicit none
 #include "asterfort/rsorac.h"
 #include "asterfort/rsadpa.h"
 !
-character(len=8), intent(in) :: resultName
-integer, intent(in) :: fieldNb
-character(len=16), intent(in) :: fieldList(100)
-integer, intent(in) :: fieldStoreNb(100)
-character(len=4), intent(in) :: storePara
-real(kind=8), intent(in) :: storeEpsi
-character(len=8), intent(in) :: storeCrit
+    character(len=8), intent(in) :: resultName
+    integer, intent(in) :: fieldNb
+    character(len=16), intent(in) :: fieldList(100)
+    integer, intent(in) :: fieldStoreNb(100)
+    character(len=4), intent(in) :: storePara
+    real(kind=8), intent(in) :: storeEpsi
+    character(len=8), intent(in) :: storeCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,19 +68,19 @@ character(len=8), intent(in) :: storeCrit
     call utmess('I', 'RESULT2_1')
     do iField = 1, fieldNb
         fieldType = fieldList(iField)
-        storeNb   = fieldStoreNb(iField)
-        call utmess('I', 'RESULT2_2', sk = fieldType)
-        AS_ALLOCATE(vi = storeNume, size = storeNb)
-        call rsorac(resultName, 'TOUT_ORDRE', ibid, rbid, k8bid,&
-                    cbid      , storeEpsi, storeCrit, storeNume, storeNb,&
+        storeNb = fieldStoreNb(iField)
+        call utmess('I', 'RESULT2_2', sk=fieldType)
+        AS_ALLOCATE(vi=storeNume, size=storeNb)
+        call rsorac(resultName, 'TOUT_ORDRE', ibid, rbid, k8bid, &
+                    cbid, storeEpsi, storeCrit, storeNume, storeNb, &
                     nbtrou)
         do iStore = 1, storeNb
             call rsadpa(resultName, 'L', 1, storePara, storeNume(iStore), 0, sjv=jvPara)
-            call utmess('I', 'RESULT2_3', si = storeNume(iStore),&
-                                          sk = storePara,&
-                                          sr = zr(jvPara))
+            call utmess('I', 'RESULT2_3', si=storeNume(iStore), &
+                        sk=storePara, &
+                        sr=zr(jvPara))
         end do
-        AS_DEALLOCATE(vi = storeNume)
+        AS_DEALLOCATE(vi=storeNume)
     end do
 !
 end subroutine

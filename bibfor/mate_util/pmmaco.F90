@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine pmmaco(nommat, nbmat, codi)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/matcod.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8) :: nommat(*)
-integer :: nbmat
-character(len=19) :: codi
+    character(len=8) :: nommat(*)
+    integer :: nbmat
+    character(len=19) :: codi
 
 !-----------------------------------------------------------------------
 ! OPERATEUR CALC_POINT_MAT : MATERIAU CODE COMME RCMACO MAIS SANS MODELE
@@ -62,19 +62,19 @@ character(len=19) :: codi
     call jedetr(nommats//'.MATE_CODE .NGRP')
     call wkvect(nommats//'.MATE_CODE .GRP', 'V V K8', nbmat, igrp)
     call wkvect(nommats//'.MATE_CODE .NGRP', 'V V I', 1, ingrp)
-    do i=1,nbmat
-        zk8(igrp-1+i)=nommat(i)
-    enddo
-    zi(ingrp)=1
+    do i = 1, nbmat
+        zk8(igrp-1+i) = nommat(i)
+    end do
+    zi(ingrp) = 1
 !
     call jeveut(nommats//'.MATE_CODE .GRP', 'L', igrp)
 !
-    codi=' '
-    indmat=0
+    codi = ' '
+    indmat = 0
 !   imate : numero de groupe ?
-    imate=1
-    matercod='&&PMMACO'
-    call matcod(nommats, indmat, nbmat, imate, igrp,&
+    imate = 1
+    matercod = '&&PMMACO'
+    call matcod(nommats, indmat, nbmat, imate, igrp, &
                 matercod, codi, l_ther)
     call jedema()
 !

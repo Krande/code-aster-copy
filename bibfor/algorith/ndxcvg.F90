@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndxcvg(sddisc, sderro, valinc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
@@ -28,8 +28,8 @@ implicit none
 #include "asterfort/nmevel.h"
 #include "asterfort/nmltev.h"
 !
-character(len=19) :: sddisc, valinc(*)
-character(len=24) :: sderro
+    character(len=19) :: sddisc, valinc(*)
+    character(len=24) :: sderro
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,8 +56,8 @@ character(len=24) :: sderro
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> EVALUATION DE LA CONVERGENCE'
-    endif
+        write (ifm, *) '<MECANONLINE> EVALUATION DE LA CONVERGENCE'
+    end if
 !
 ! --- PAR DEFINITION LES RESIDUS ET NEWTON SONT TOUJOURS CONVERGES
 !
@@ -79,18 +79,18 @@ character(len=24) :: sderro
 !
     if (lerrst) then
         call nmeceb(sderro, 'NEWT', 'STOP')
-    endif
+    end if
 !
 ! --- ERREUR NON FATALE
 !
     if (lerrne) then
         call nmeceb(sderro, 'NEWT', 'ERRE')
-    endif
+    end if
 !
 ! --- VERIFICATION DU DECLENCHEMENT DES EVENT-DRIVEN
 !
-    call nmevel(sddisc, numins, valinc,&
-                'NEWT', lsvimx, ldvres, lresmx, linsta, lcritl,&
+    call nmevel(sddisc, numins, valinc, &
+                'NEWT', lsvimx, ldvres, lresmx, linsta, lcritl, &
                 lerrne, conver)
 !
 ! --- UN EVENEMENT SE DECLENCHE

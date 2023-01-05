@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apcpoi(sdcont_defi, model_ndim, i_zone, elem_name,&
-                  zone_type  , tau1      , tau2)
+subroutine apcpoi(sdcont_defi, model_ndim, i_zone, elem_name, &
+                  zone_type, tau1, tau2)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/mminfi.h"
@@ -71,20 +71,20 @@ implicit none
 !
     if (zone_type .eq. 'MAIT') then
         call utmess('F', 'APPARIEMENT_75')
-    endif
+    end if
     itype = mminfi(sdcont_defi, 'VECT_ESCL', i_zone)
     if (itype .ne. 0) then
         normal(1) = mminfr(sdcont_defi, 'VECT_ESCL_DIRX', i_zone)
         normal(2) = mminfr(sdcont_defi, 'VECT_ESCL_DIRY', i_zone)
         normal(3) = mminfr(sdcont_defi, 'VECT_ESCL_DIRZ', i_zone)
         call normev(normal, norme)
-    endif
+    end if
 !
 ! - Construct local basis
 !
     if (itype .eq. 0) then
         call utmess('F', 'APPARIEMENT_62', sk=elem_name)
-    else if (itype.eq.1) then
+    else if (itype .eq. 1) then
         if (norme .le. r8prem()) then
             call utmess('F', 'APPARIEMENT_63', sk=elem_name)
         else
@@ -92,11 +92,11 @@ implicit none
             normal(2) = -normal(2)
             normal(3) = -normal(3)
             call mmmron(model_ndim, normal, tau1, tau2)
-        endif
-    else if (itype.eq.2) then
+        end if
+    else if (itype .eq. 2) then
         call utmess('F', 'APPARIEMENT_62', sk=elem_name)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

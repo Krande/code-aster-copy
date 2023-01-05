@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine te0105(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
     integer :: nbres
-    parameter (nbres=4)
+    parameter(nbres=4)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: pc(3), valpar(nbres), zero, un
     real(kind=8) :: coor2d(18), x, y, z, theta, fplnp1, fpln, fmonp1, fmon
@@ -46,7 +46,7 @@ subroutine te0105(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, ndim, jgano, i, k, ier
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     zero = 0.d0
@@ -58,7 +58,7 @@ subroutine te0105(option, nomte)
 !
     theta = zr(itemps+2)
 !
-    if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ' .and. nomte .ne. 'THCOSE3 ' .and.&
+    if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ' .and. nomte .ne. 'THCOSE3 ' .and. &
         nomte .ne. 'THCOSE2 ') then
 !
         nompar(1) = 'X'
@@ -70,42 +70,42 @@ subroutine te0105(option, nomte)
 !
         do kp = 1, npg1
             k = (kp-1)*nno
-            call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
+            call dfdm2d(nno, kp, ipoids, idfde, coor2d, &
                         poids, dfdx, dfdy)
             x = zero
             y = zero
             z = zero
             do i = 1, nno
-                x = x + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
-                y = y + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
-                z = z + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
+                x = x+zr(igeom+3*(i-1))*zr(ivf+k+i-1)
+                y = y+zr(igeom+3*(i-1)+1)*zr(ivf+k+i-1)
+                z = z+zr(igeom+3*(i-1)+2)*zr(ivf+k+i-1)
             end do
             valpar(1) = x
             valpar(2) = y
             valpar(3) = z
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(iflux), 4, nompar, valpar,&
+            call fointe('FM', zk8(iflux), 4, nompar, valpar, &
                         fmonp1, ier)
-            call fointe('FM', zk8(iflux+1), 4, nompar, valpar,&
+            call fointe('FM', zk8(iflux+1), 4, nompar, valpar, &
                         fplnp1, ier)
-            valpar(4) = zr(itemps) - zr(itemps+1)
-            call fointe('FM', zk8(iflux), 4, nompar, valpar,&
+            valpar(4) = zr(itemps)-zr(itemps+1)
+            call fointe('FM', zk8(iflux), 4, nompar, valpar, &
                         fmon, ier)
-            call fointe('FM', zk8(iflux+1), 4, nompar, valpar,&
+            call fointe('FM', zk8(iflux+1), 4, nompar, valpar, &
                         fpln, ier)
             pc(1) = zero
-            pc(2) = theta* (fmonp1) + (un-theta)* (fmon)
-            pc(3) = theta* (fplnp1) + (un-theta)* (fpln)
+            pc(2) = theta*(fmonp1)+(un-theta)*(fmon)
+            pc(3) = theta*(fplnp1)+(un-theta)*(fpln)
             do gi = 1, nno
                 do pi = 1, 3
-                    i = 3* (gi-1) + pi - 1 + ivectt
-                    zr(i) = zr(i) + pc(pi)*zr(ivf+k+gi-1)*poids
+                    i = 3*(gi-1)+pi-1+ivectt
+                    zr(i) = zr(i)+pc(pi)*zr(ivf+k+gi-1)*poids
                 end do
             end do
         end do
 !
-        else if (nomte.eq.'THCPSE3' .or. nomte.eq.'THCASE3')&
-    then
+    else if (nomte .eq. 'THCPSE3' .or. nomte .eq. 'THCASE3') &
+        then
 !
         nompar(1) = 'X'
         nompar(2) = 'Y'
@@ -113,13 +113,13 @@ subroutine te0105(option, nomte)
 !
         do kp = 1, npg1
             k = (kp-1)*nno
-            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx,&
+            call dfdm1d(nno, zr(ipoids+kp-1), zr(idfde+k), zr(igeom), dfdx, &
                         cour, poids, cosa, sina)
             x = zero
             y = zero
             do i = 1, nno
-                x = x + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-                y = y + zr(igeom+2* (i-1)+1)*zr(ivf+k+i-1)
+                x = x+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                y = y+zr(igeom+2*(i-1)+1)*zr(ivf+k+i-1)
             end do
 !
             if (nomte .eq. 'THCASE3') poids = poids*x
@@ -127,32 +127,32 @@ subroutine te0105(option, nomte)
             valpar(1) = x
             valpar(2) = y
             valpar(3) = zr(itemps)
-            call fointe('FM', zk8(iflux), 3, nompar, valpar,&
+            call fointe('FM', zk8(iflux), 3, nompar, valpar, &
                         fmonp1, ier)
-            call fointe('FM', zk8(iflux+1), 3, nompar, valpar,&
+            call fointe('FM', zk8(iflux+1), 3, nompar, valpar, &
                         fplnp1, ier)
-            valpar(3) = zr(itemps) - zr(itemps+1)
-            call fointe('FM', zk8(iflux), 3, nompar, valpar,&
+            valpar(3) = zr(itemps)-zr(itemps+1)
+            call fointe('FM', zk8(iflux), 3, nompar, valpar, &
                         fmon, ier)
-            call fointe('FM', zk8(iflux+1), 3, nompar, valpar,&
+            call fointe('FM', zk8(iflux+1), 3, nompar, valpar, &
                         fpln, ier)
             pc(1) = zero
-            pc(2) = theta* (fmonp1) + (un-theta)* (fmon)
-            pc(3) = theta* (fplnp1) + (un-theta)* (fpln)
+            pc(2) = theta*(fmonp1)+(un-theta)*(fmon)
+            pc(3) = theta*(fplnp1)+(un-theta)*(fpln)
             do gi = 1, nno
                 do pi = 1, 3
-                    i = 3* (gi-1) + pi - 1 + ivectt
-                    zr(i) = zr(i) + pc(pi)*zr(ivf+k+gi-1)*poids
+                    i = 3*(gi-1)+pi-1+ivectt
+                    zr(i) = zr(i)+pc(pi)*zr(ivf+k+gi-1)*poids
                 end do
             end do
         end do
 !
-        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
-    then
+    else if (nomte .eq. 'THCOSE3' .or. nomte .eq. 'THCOSE2') &
+        then
 !
-        long = (&
-               zr(igeom+3)-zr(igeom))**2 + (zr(igeom+3+1)-zr(igeom+1) )**2 + (zr(igeom+3+2)-zr(ig&
-               &eom+2)&
+        long = ( &
+               zr(igeom+3)-zr(igeom))**2+(zr(igeom+3+1)-zr(igeom+1))**2+(zr(igeom+3+2)-zr(ig&
+               &eom+2) &
                )**2
         long = sqrt(long)/2.d0
 !       EP  =EP/2.d0
@@ -173,9 +173,9 @@ subroutine te0105(option, nomte)
             y = zero
             z = zero
             do i = 1, nno
-                x = x + zr(igeom+3* (i-1))*zr(ivf+k+i-1)
-                y = y + zr(igeom+3* (i-1)+1)*zr(ivf+k+i-1)
-                z = y + zr(igeom+3* (i-1)+2)*zr(ivf+k+i-1)
+                x = x+zr(igeom+3*(i-1))*zr(ivf+k+i-1)
+                y = y+zr(igeom+3*(i-1)+1)*zr(ivf+k+i-1)
+                z = y+zr(igeom+3*(i-1)+2)*zr(ivf+k+i-1)
             end do
 !
             valpar(1) = x
@@ -183,15 +183,15 @@ subroutine te0105(option, nomte)
             valpar(3) = z
 !
             valpar(4) = zr(itemps)
-            call fointe('FM', zk8(iflux), 4, nompar, valpar,&
+            call fointe('FM', zk8(iflux), 4, nompar, valpar, &
                         fluxp1, ier)
-            valpar(4) = zr(itemps) - zr(itemps+1)
-            call fointe('FM', zk8(iflux), 4, nompar, valpar,&
+            valpar(4) = zr(itemps)-zr(itemps+1)
+            call fointe('FM', zk8(iflux), 4, nompar, valpar, &
                         flux, ier)
 !
 !      IMPORTANT: FLUXP1 OU FLUX = FLUX * EPAISSEUR
 !
-            coef = (theta*fluxp1+ (un-theta)*flux)/2.d0
+            coef = (theta*fluxp1+(un-theta)*flux)/2.d0
 !
             poid = zr(ipoids-1+kp)
 !
@@ -207,13 +207,13 @@ subroutine te0105(option, nomte)
                 matnp(7) = rp1*poid*zr(ivf-1+k+3)
                 matnp(8) = rp2*poid*zr(ivf-1+k+3)
                 matnp(9) = rp3*poid*zr(ivf-1+k+3)
-            endif
+            end if
 !
             do i = 1, 3*nno
-                zr(ivectt-1+i) = zr(ivectt-1+i) + coef*long*matnp(i)
+                zr(ivectt-1+i) = zr(ivectt-1+i)+coef*long*matnp(i)
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

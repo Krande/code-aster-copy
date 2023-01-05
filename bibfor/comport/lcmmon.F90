@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
-                  cpmono, nmat, nvi, vini, x,&
-                  dtime, pgl, mod, coeft, neps,&
-                  epsd, detot, coel, dvin, nfs,&
-                  nsg, toutms, hsr, itmax, toler,&
+subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
+                  cpmono, nmat, nvi, vini, x, &
+                  dtime, pgl, mod, coeft, neps, &
+                  epsd, detot, coel, dvin, nfs, &
+                  nsg, toutms, hsr, itmax, toler, &
                   iret)
 ! aslint: disable=W1306,W1504,W1504
     implicit none
@@ -76,9 +76,9 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
     real(kind=8) :: fkooh(6, 6), materf(nmat*2), msns(3, 3), gamsns(3, 3), lg(3)
     real(kind=8) :: toutms(nfs, nsg, 6), fp(3, 3), fp1(3, 3), deps(6), depsdt
     integer :: itens, nbfsys, i, nuvi, ifa, nbsys, is, nsfa, nsfv
-    common /deps6/depsdt
+    common/deps6/depsdt
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ------------------------------------------------------------------
 ! --  VARIABLES INTERNES
 !
@@ -93,61 +93,61 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
     call dcopy(nmat, coel, 1, materf(1), 1)
 !
 !     CALCUL DU NOMBRE TOTAL DE SYSTEMES DE GLISSEMENT
-    nbfsys=nbcomm(nmat,2)
-    nbsyst=0
+    nbfsys = nbcomm(nmat, 2)
+    nbsyst = 0
     do ifa = 1, nbfsys
-        nomfam=cpmono(5*(ifa-1)+1)(1:16)
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+        nomfam = cpmono(5*(ifa-1)+1) (1:16)
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ng, lg, 0, q)
-        nbsyst=nbsyst+nbsys
+        nbsyst = nbsyst+nbsys
     end do
 !
-    if (coeft(nbcomm(1,1)) .ge. 4) then
+    if (coeft(nbcomm(1, 1)) .ge. 4) then
 !         KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
-        ASSERT(nbcomm(nmat, 2).eq.1)
+        ASSERT(nbcomm(nmat, 2) .eq. 1)
         do i = 1, nbsyst
-            yd(6+i)=vini(6+3*(i-1)+1)
+            yd(6+i) = vini(6+3*(i-1)+1)
         end do
     else
 !        AUTRES COMPORTEMENTS MONOCRISTALLINS
         do i = 1, nbsyst
-            yd(6+i)=vini(6+3*(i-1)+2)
+            yd(6+i) = vini(6+3*(i-1)+2)
         end do
-    endif
+    end if
 !
 !
 !     INVERSE DE L'OPERATEUR D'ELASTICITE DE HOOKE
     if (coel(nmat) .eq. 0) then
         call lcopil('ISOTROPE', mod, coel, fkooh)
-    else if (coel(nmat).eq.1) then
+    else if (coel(nmat) .eq. 1) then
         call lcopil('ORTHOTRO', mod, coel, fkooh)
-    endif
+    end if
 !
     if (gdef .eq. 1) then
-        call lcrksg(rela_comp, nvi, vini, epsd, detot,&
+        call lcrksg(rela_comp, nvi, vini, epsd, detot, &
                     nmat, coel, sigi)
         call lcgrla(detot, deps)
         call dscal(3, sqrt(2.d0), deps(4), 1)
     else
-        call calsig(fami, kpg, ksp, evi, mod,&
-                    rela_comp, vini, x, dtime, epsd,&
+        call calsig(fami, kpg, ksp, evi, mod, &
+                    rela_comp, vini, x, dtime, epsd, &
                     detot, nmat, coel, sigi)
         call dcopy(6, detot, 1, deps, 1)
-    endif
-    depsdt=sqrt(ddot(6,deps,1,deps,1)/1.5d0)/dtime
-    nbfsys=nbcomm(nmat,2)
+    end if
+    depsdt = sqrt(ddot(6, deps, 1, deps, 1)/1.5d0)/dtime
+    nbfsys = nbcomm(nmat, 2)
 !
-    nuvi=6
+    nuvi = 6
 !     NSFV : debut de la famille IFA dans les variables internes
-    nsfv=6
+    nsfv = 6
 !     NSFA : debut de la famille IFA dans DY et YD, YF
-    nsfa=6
+    nsfa = 6
 !
     do ifa = 1, nbfsys
 !
-        nomfam=cpmono(5*(ifa-1)+1)(1:16)
+        nomfam = cpmono(5*(ifa-1)+1) (1:16)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ng, lg, 0, q)
 !
         do is = 1, nbsys
@@ -156,8 +156,8 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MUS
 !
-            call caltau(ifa, is, sigi, fkooh,&
-                        nfs, nsg, toutms, taus, mus,&
+            call caltau(ifa, is, sigi, fkooh, &
+                        nfs, nsg, toutms, taus, mus, &
                         msns)
 !
 !           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
@@ -167,49 +167,49 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
 !           CAS IMPLICITE : IL FAUT PRENDRE EN COMPTE DTIME
 !           CAS EXPLICITE : IL NE LE FAUT PAS (ON CALCULE DES VITESSES)
 !           D'OU :
-            dt=-1.d0
+            dt = -1.d0
 !
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
-                        hsr, nsfv, nsfa, ifa, nbsys,&
-                        is, dt, nvi, vini, yd,&
-                        dy, itmax, toler, materf, expbp,&
-                        taus, dalpha, dgamma, dp, crit,&
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
+                        hsr, nsfv, nsfa, ifa, nbsys, &
+                        is, dt, nvi, vini, yd, &
+                        dy, itmax, toler, materf, expbp, &
+                        taus, dalpha, dgamma, dp, crit, &
                         sgns, rp, iret)
 !
             if (iret .gt. 0) then
                 goto 999
-            endif
+            end if
 !
-            nuvi=nuvi+3
+            nuvi = nuvi+3
 !
-            dvin(nuvi-2)=dalpha
-            dvin(nuvi-1)=dgamma
-            dvin(nuvi )=dp
+            dvin(nuvi-2) = dalpha
+            dvin(nuvi-1) = dgamma
+            dvin(nuvi) = dp
 !
             if (gdef .eq. 0) then
-                call daxpy(6, dgamma, mus, 1, devi,&
+                call daxpy(6, dgamma, mus, 1, devi, &
                            1)
             else
-                call daxpy(9, dgamma, msns, 1, gamsns,&
+                call daxpy(9, dgamma, msns, 1, gamsns, &
                            1)
-            endif
+            end if
         end do
 !
-        nsfa=nsfa+nbsys
-        nsfv=nsfv+nbsys*3
+        nsfa = nsfa+nbsys
+        nsfv = nsfv+nbsys*3
 !
     end do
 !
 ! --    DERIVEES DES VARIABLES INTERNES
 !
     do itens = 1, 6
-        dvin(itens)= devi(itens)
+        dvin(itens) = devi(itens)
     end do
     if (gdef .eq. 1) then
-        call dcopy(9, vini(nvi-3-18+1 ), 1, fp, 1)
-        fp1 = matmul(gamsns,fp)
-        call dcopy(9, fp1, 1, dvin(nvi-3-18+1 ), 1)
-    endif
+        call dcopy(9, vini(nvi-3-18+1), 1, fp, 1)
+        fp1 = matmul(gamsns, fp)
+        call dcopy(9, fp1, 1, dvin(nvi-3-18+1), 1)
+    end if
 !
 999 continue
 end subroutine

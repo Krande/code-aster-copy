@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xselno(nno, nnop, nbsig, nse, ndim,&
+subroutine xselno(nno, nnop, nbsig, nse, ndim, &
                   jcnset, siseno, jout2)
     implicit none
 !
@@ -40,7 +40,7 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
     integer :: mxval
-    parameter (mxval=32*10*6)
+    parameter(mxval=32*10*6)
 !     EN 2D :
 !     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)-> en lineaire
 !     MXVAL =  6 (NBSE MAX) * 6 (NBNOSE MAX) * 4 (NBCMP MAX)-> en quadratique
@@ -65,13 +65,13 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 !     TABLEAUX DE LA SOMME DES CONTRAINTES
     do i = 1, nnop
         do j = 1, nbsig
-            somsig(i,j)=0
+            somsig(i, j) = 0
         end do
     end do
 !
 !     TABLEAUX DU NOMBRE DE SOUS-ELEMENTS CONNECTES AUX NOEUDS
     do i = 1, nnop
-        nbseco(i)=0
+        nbseco(i) = 0
     end do
 !
 !       BOUCLE SUR LES NSE SOUS-ÉLÉMENTS
@@ -79,23 +79,23 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
         do in = 1, nno
-            ino=zi(jcnset-1+(ndim+1)*(ise-1)+in)
+            ino = zi(jcnset-1+(ndim+1)*(ise-1)+in)
             if (ino .lt. 1000) then
-                nbseco(ino)=nbseco(ino)+1
+                nbseco(ino) = nbseco(ino)+1
                 do ic = 1, nbsig
                     tmp = siseno(nbsig*nno*(ise-1)+nbsig*(in-1)+ic)
-                    somsig(ino,ic)=somsig(ino,ic)+tmp
+                    somsig(ino, ic) = somsig(ino, ic)+tmp
                 end do
-            endif
+            end if
         end do
 !
     end do
 !
 !     MOYENNES DES CONTRAINTES AUX NOEUDS DE L'ELEMENT PARENT
     do ino = 1, nnop
-        ASSERT(nbseco(ino).gt.0)
+        ASSERT(nbseco(ino) .gt. 0)
         do ic = 1, nbsig
-            zr(jout2-1+nbsig*(ino-1)+ic) = somsig(ino,ic) / nbseco( ino)
+            zr(jout2-1+nbsig*(ino-1)+ic) = somsig(ino, ic)/nbseco(ino)
         end do
     end do
 !

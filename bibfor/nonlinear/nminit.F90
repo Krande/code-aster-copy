@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,22 +18,22 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nminit(mesh       , model         , mater        ,mateco          , cara_elem , &
-                  list_load                                                              ,&
-                  numedd     , numfix        , ds_algopara  , ds_constitutive, maprec    ,&
-                  solver     , numins        , sddisc       , sdnume         , sdcrit    ,&
-                  ds_material, list_func_acti, sdpilo       , sddyna         , ds_print  ,&
-                  sd_suiv    , sd_obsv       , sderro       , ds_posttimestep, ds_inout  ,&
-                  ds_energy  , ds_conv       , ds_errorindic, valinc         , solalg    ,&
-                  measse     , veelem        , meelem       , veasse         , ds_contact,&
-                  ds_measure , ds_algorom    , ds_system    , hhoField)
+subroutine nminit(mesh, model, mater, mateco, cara_elem, &
+                  list_load, &
+                  numedd, numfix, ds_algopara, ds_constitutive, maprec, &
+                  solver, numins, sddisc, sdnume, sdcrit, &
+                  ds_material, list_func_acti, sdpilo, sddyna, ds_print, &
+                  sd_suiv, sd_obsv, sderro, ds_posttimestep, ds_inout, &
+                  ds_energy, ds_conv, ds_errorindic, valinc, solalg, &
+                  measse, veelem, meelem, veasse, ds_contact, &
+                  ds_measure, ds_algorom, ds_system, hhoField)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_type
-use HHO_Meca_module, only : hhoMecaInit
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_type
+    use HHO_Meca_module, only: hhoMecaInit
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/accel0.h"
@@ -91,46 +91,46 @@ implicit none
 #include "asterfort/nonlinDSErrorIndicInit.h"
 #include "asterfort/verins.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: mater
-character(len=24), intent(in) :: mateco
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
-character(len=24) :: numedd
-character(len=24) :: numfix
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
-character(len=19) :: maprec
-character(len=19), intent(in) :: solver
-integer :: numins
-character(len=19) :: sddisc
-character(len=19) :: sdnume
-character(len=19) :: sdcrit
-type(NL_DS_Material), intent(inout) :: ds_material
-integer, intent(inout) :: list_func_acti(*)
-character(len=19) :: sdpilo
-character(len=19) :: sddyna
-type(NL_DS_Print), intent(inout) :: ds_print
-character(len=24), intent(out) :: sd_suiv
-character(len=19), intent(out) :: sd_obsv
-character(len=24) :: sderro
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
-type(NL_DS_InOut), intent(inout) :: ds_inout
-type(NL_DS_Energy), intent(inout) :: ds_energy
-type(NL_DS_Conv), intent(inout) :: ds_conv
-type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
-character(len=19) :: valinc(*)
-character(len=19) :: solalg(*)
-character(len=19) :: measse(*)
-character(len=19) :: veelem(*)
-character(len=19) :: meelem(*)
-character(len=19) :: veasse(*)
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
-type(NL_DS_System), intent(inout) :: ds_system
-type(HHO_Field), intent(inout) :: hhoField
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mater
+    character(len=24), intent(in) :: mateco
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24) :: numedd
+    character(len=24) :: numfix
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+    character(len=19) :: maprec
+    character(len=19), intent(in) :: solver
+    integer :: numins
+    character(len=19) :: sddisc
+    character(len=19) :: sdnume
+    character(len=19) :: sdcrit
+    type(NL_DS_Material), intent(inout) :: ds_material
+    integer, intent(inout) :: list_func_acti(*)
+    character(len=19) :: sdpilo
+    character(len=19) :: sddyna
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=24), intent(out) :: sd_suiv
+    character(len=19), intent(out) :: sd_obsv
+    character(len=24) :: sderro
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    type(NL_DS_Energy), intent(inout) :: ds_energy
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
+    character(len=19) :: valinc(*)
+    character(len=19) :: solalg(*)
+    character(len=19) :: measse(*)
+    character(len=19) :: veelem(*)
+    character(len=19) :: meelem(*)
+    character(len=19) :: veasse(*)
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    type(NL_DS_System), intent(inout) :: ds_system
+    type(HHO_Field), intent(inout) :: hhoField
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -180,11 +180,11 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('MECANONLINE',ifm, niv)
+    call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
         call utmess('I', 'MECANONLINE13_1')
-    endif
+    end if
 !
 ! - Initialisations
 !
@@ -200,8 +200,8 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! - Initializations for post-treatment at each time step
 !
-    call nonlinDSPostTimeStepInit(ds_inout%result, model          ,&
-                                  ds_algopara    , ds_constitutive, ds_posttimestep)
+    call nonlinDSPostTimeStepInit(ds_inout%result, model, &
+                                  ds_algopara, ds_constitutive, ds_posttimestep)
 !
 ! - Prepare list of loads (and late elements) for contact
 !
@@ -209,7 +209,7 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! - Create information about numbering
 !
-    call nmnume(model     , mesh  , ds_inout%result, ds_constitutive%compor, list_load,&
+    call nmnume(model, mesh, ds_inout%result, ds_constitutive%compor, list_load, &
                 ds_contact, numedd, sdnume)
 !
 ! - Create "hat" variables
@@ -218,49 +218,49 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! - Prepare active functionnalities information
 !
-    call nmfonc(ds_conv       , ds_algopara    , solver   , model        , ds_contact     ,&
-                list_load     , sdnume         , sddyna   , ds_errorindic, mater          ,&
-                ds_inout      , ds_constitutive, ds_energy, ds_algorom   , ds_posttimestep,&
+    call nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
+                list_load, sdnume, sddyna, ds_errorindic, mater, &
+                ds_inout, ds_constitutive, ds_energy, ds_algorom, ds_posttimestep, &
                 list_func_acti)
 !
 ! - Check compatibility of some functionnalities
 !
-    call exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna,&
-                mater         , model)
-    lpilo      = isfonc(list_func_acti,'PILOTAGE' )
-    lmpas      = ndynlo(sddyna,'MULTI_PAS' )
-    lsstf      = isfonc(list_func_acti,'SOUS_STRUC')
-    l_erre_thm = isfonc(list_func_acti,'ERRE_TEMPS_THM')
-    lviss      = ndynlo(sddyna,'VECT_ISS' )
-    lrefe      = isfonc(list_func_acti,'RESI_REFE')
-    ldidi      = isfonc(list_func_acti,'DIDI')
-    l_ener     = isfonc(list_func_acti,'ENERGIE')
-    l_dyna     = ndynlo(sddyna,'DYNAMIQUE')
-    l_hho      = isfonc(list_func_acti,'HHO')
+    call exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
+                mater, model)
+    lpilo = isfonc(list_func_acti, 'PILOTAGE')
+    lmpas = ndynlo(sddyna, 'MULTI_PAS')
+    lsstf = isfonc(list_func_acti, 'SOUS_STRUC')
+    l_erre_thm = isfonc(list_func_acti, 'ERRE_TEMPS_THM')
+    lviss = ndynlo(sddyna, 'VECT_ISS')
+    lrefe = isfonc(list_func_acti, 'RESI_REFE')
+    ldidi = isfonc(list_func_acti, 'DIDI')
+    l_ener = isfonc(list_func_acti, 'ENERGIE')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
+    l_hho = isfonc(list_func_acti, 'HHO')
 !
 ! - Initializations for HHO
 !
     if (l_hho) then
         call hhoMecaInit(model, list_load, list_func_acti, hhoField)
-    endif
+    end if
 !
 ! - Initialization for reduced method
 !
     if (ds_algorom%l_rom) then
         call romAlgoNLInit('MECA', model, mesh, numedd, ds_inout%result, ds_algorom)
-    endif
+    end if
 !
 ! - Prepare contact solving datastructure
 !
     if (ds_contact%l_meca_cont) then
         call cfmxsd(mesh, model, numedd, list_func_acti, sddyna, ds_contact)
-    endif
+    end if
 !
 ! --- CREATION DE LA STRUCTURE DE LIAISON_UNILATERALE
 !
     if (ds_contact%l_meca_unil) then
         call cucrsd(mesh, numedd, ds_contact)
-    endif
+    end if
 !
 ! - Initializations for measure and statistic management
 !
@@ -278,7 +278,7 @@ type(HHO_Field), intent(inout) :: hhoField
 !
     if (l_ener) then
         call nonlinDSEnergyInit(ds_inout%result, ds_energy)
-    endif
+    end if
 !
 ! - Initializations for input/output management
 !
@@ -288,11 +288,11 @@ type(HHO_Field), intent(inout) :: hhoField
 !
     if (l_erre_thm) then
         call nonlinDSErrorIndicInit(model, ds_constitutive, ds_errorindic)
-    endif
+    end if
 !
 ! --- CREATION DES VECTEURS D'INCONNUS
 !
-    call nmcrch(numedd, list_func_acti, sddyna, ds_contact, valinc,&
+    call nmcrch(numedd, list_func_acti, sddyna, ds_contact, valinc, &
                 solalg, veasse)
 !
 ! - Initializations for dynamic
@@ -303,7 +303,7 @@ type(HHO_Field), intent(inout) :: hhoField
 !
     if (lpilo) then
         call nmdopi(model, numedd, ds_algopara, sdpilo)
-    endif
+    end if
 !
 ! --- DUPLICATION NUME_DDL POUR CREER UN DUME_DDL FIXE
 !
@@ -311,19 +311,19 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! - Create input/output datastructure
 !
-    call nmetcr(ds_inout  , model    , ds_constitutive%compor, list_func_acti, sddyna,&
+    call nmetcr(ds_inout, model, ds_constitutive%compor, list_func_acti, sddyna, &
                 ds_contact, cara_elem, list_load)
 !
 ! - Read initial state
 !
-    call nmdoet(model , ds_constitutive%compor, list_func_acti, numedd, sdpilo,&
-                sddyna, ds_errorindic         , solalg        , lacc0 , ds_inout)
+    call nmdoet(model, ds_constitutive%compor, list_func_acti, numedd, sdpilo, &
+                sddyna, ds_errorindic, solalg, lacc0, ds_inout)
 !
 ! - Create time discretization and storing datastructures
 !
-    call diinit(mesh          , model , ds_inout, mater      , mateco, cara_elem,&
-                list_func_acti, sddyna, ds_conv , ds_algopara, solver,&
-                ds_contact    , sddisc)
+    call diinit(mesh, model, ds_inout, mater, mateco, cara_elem, &
+                list_func_acti, sddyna, ds_conv, ds_algopara, solver, &
+                ds_contact, sddisc)
 
 !! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
     call verins(sddisc, ds_posttimestep)
@@ -331,14 +331,14 @@ type(HHO_Field), intent(inout) :: hhoField
 ! - Initial time
 !
     numins = 0
-    instin = diinst(sddisc,numins)
+    instin = diinst(sddisc, numins)
 
 !
 ! - Initializations for material parameters management
 !
-    call nonlinDSMaterialInit(model      , mater, mateco     , cara_elem,&
-                              ds_constitutive%compor, valinc,&
-                              numedd     , instin   , &
+    call nonlinDSMaterialInit(model, mater, mateco, cara_elem, &
+                              ds_constitutive%compor, valinc, &
+                              numedd, instin, &
                               ds_material)
 !
 ! - Initializations for non-linear system
@@ -347,24 +347,24 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! --- PRE-CALCUL DES MATR_ELEM CONSTANTES AU COURS DU CALCUL
 !
-    call nminmc(list_func_acti, list_load  , sddyna   , model , ds_constitutive,&
-                numedd        , numfix     , solalg   ,&
-                valinc        , ds_material, cara_elem, sddisc, ds_measure     ,&
-                meelem        , measse     , ds_system)
+    call nminmc(list_func_acti, list_load, sddyna, model, ds_constitutive, &
+                numedd, numfix, solalg, &
+                valinc, ds_material, cara_elem, sddisc, ds_measure, &
+                meelem, measse, ds_system)
 !
 ! - Compute reference vector for RESI_REFE_RELA
 !
     if (lrefe) then
-        call nmrefe(model  , ds_constitutive%compor, mateco  , cara_elem, numedd,&
-                    ds_conv, valinc                , veelem, veasse)
-    endif
+        call nmrefe(model, ds_constitutive%compor, mateco, cara_elem, numedd, &
+                    ds_conv, valinc, veelem, veasse)
+    end if
 !
 ! - Compute vector for DIDI loads
 !
     if (ldidi) then
-        call nmdidi(ds_inout, model , list_load, numedd, valinc,&
-                    veelem  , veasse)
-    endif
+        call nmdidi(ds_inout, model, list_load, numedd, valinc, &
+                    veelem, veasse)
+    end if
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
 !
@@ -374,33 +374,33 @@ type(HHO_Field), intent(inout) :: hhoField
 !
     if (lsstf) then
         call nmlssv(list_load)
-    endif
+    end if
 !
 ! --- CREATION DE LA SD EXCIT_SOL
 !
     if (lviss) then
         call nmexso(mesh, ds_inout, sddyna, numedd)
-    endif
+    end if
 !
 ! --- CALCUL DE L'ACCELERATION INITIALE
 !
     if (lacc0) then
 ! ----- Compute forces for second member for initial acceleration
-        call nmforc_acci(list_func_acti,&
-                         model         , cara_elem      , numedd   ,&
-                         list_load     , sddyna         ,&
-                         ds_material   , ds_constitutive, ds_system,&
-                         ds_measure    , ds_inout       ,&
-                         sddisc        , numins         ,&
-                         valinc        , solalg         ,&
-                         veelem        , veasse         ,&
+        call nmforc_acci(list_func_acti, &
+                         model, cara_elem, numedd, &
+                         list_load, sddyna, &
+                         ds_material, ds_constitutive, ds_system, &
+                         ds_measure, ds_inout, &
+                         sddisc, numins, &
+                         valinc, solalg, &
+                         veelem, veasse, &
                          measse)
 ! ----- Compute initial acceleration
-        call accel0(model     , numedd   , list_func_acti, list_load,&
-                    ds_contact, maprec   , solver        , valinc   , sddyna,&
-                    ds_measure, ds_system, meelem        , measse   ,&
-                    veelem    , veasse   , solalg)
-    endif
+        call accel0(model, numedd, list_func_acti, list_load, &
+                    ds_contact, maprec, solver, valinc, sddyna, &
+                    ds_measure, ds_system, meelem, measse, &
+                    veelem, veasse, solalg)
+    end if
 !
 ! - Extract variables
 !
@@ -413,14 +413,14 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! - Create observation datastructure
 !
-    call nmcrob(mesh       , model          , sddisc   , ds_inout , cara_elem,&
-                ds_material, ds_constitutive, disp_prev, strx_prev, varc_prev,&
-                instin     , sd_obsv  )
+    call nmcrob(mesh, model, sddisc, ds_inout, cara_elem, &
+                ds_material, ds_constitutive, disp_prev, strx_prev, varc_prev, &
+                instin, sd_obsv)
 !
 ! - Create dof monitoring datastructure
 !
-    call nmcrdd(mesh           , model    , ds_inout , cara_elem, ds_material,&
-                ds_constitutive, disp_prev, strx_prev, varc_prev, instin     ,&
+    call nmcrdd(mesh, model, ds_inout, cara_elem, ds_material, &
+                ds_constitutive, disp_prev, strx_prev, varc_prev, instin, &
                 sd_suiv)
 !
 ! - Initializations for printing
@@ -429,14 +429,14 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! --- PRE-CALCUL DES MATR_ASSE CONSTANTES AU COURS DU CALCUL
 !
-    call nminma(list_load, sddyna, numedd,&
-                numfix   , meelem, measse)
+    call nminma(list_load, sddyna, numedd, &
+                numfix, meelem, measse)
 !
 ! - Prepare storing
 !
-    call nmnoli(sddisc        , sderro, ds_print   , sdcrit     ,&
-                list_func_acti, sddyna, model      , ds_material,&
-                cara_elem     , sdpilo, ds_measure , ds_energy  , ds_inout,&
+    call nmnoli(sddisc, sderro, ds_print, sdcrit, &
+                list_func_acti, sddyna, model, ds_material, &
+                cara_elem, sdpilo, ds_measure, ds_energy, ds_inout, &
                 ds_errorindic)
 !
 ! - Make initial observation
@@ -444,13 +444,13 @@ type(HHO_Field), intent(inout) :: hhoField
     l_obsv = ASTER_FALSE
     call lobs(sd_obsv, numins, instin, l_obsv)
     if (l_obsv) then
-        call nmobse(mesh     , sd_obsv  , instin,&
-                    cara_elem, model    , ds_material, ds_constitutive, disp_curr,&
+        call nmobse(mesh, sd_obsv, instin, &
+                    cara_elem, model, ds_material, ds_constitutive, disp_curr, &
                     strx_curr, varc_curr)
-        if (numins.eq.0) then
+        if (numins .eq. 0) then
             call nmobsw(sd_obsv, ds_inout)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Update name of fields
 !
@@ -459,11 +459,11 @@ type(HHO_Field), intent(inout) :: hhoField
 ! --- CALCUL DU SECOND MEMBRE INITIAL POUR MULTI-PAS
 !
     if (lmpas) then
-        call nmihht(model    , numedd   , ds_material   , ds_constitutive,&
-                    cara_elem, list_load, list_func_acti, ds_measure     ,&
-                    sddyna   , sdnume   , valinc        , &
-                    sddisc   , solalg   , measse        , ds_inout)
-    endif
+        call nmihht(model, numedd, ds_material, ds_constitutive, &
+                    cara_elem, list_load, list_func_acti, ds_measure, &
+                    sddyna, sdnume, valinc, &
+                    sddisc, solalg, measse, ds_inout)
+    end if
 !
 ! - Reset times and counters
 !

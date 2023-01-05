@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romSolveROMSystSolve(ds_solve, size_to_solve_)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/zgauss.h"
 !
-type(ROM_DS_Solve), intent(in) :: ds_solve
-integer, optional, intent(in) :: size_to_solve_
+    type(ROM_DS_Solve), intent(in) :: ds_solve
+    integer, optional, intent(in) :: size_to_solve_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,35 +59,35 @@ integer, optional, intent(in) :: size_to_solve_
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_44')
-    endif
+    end if
 !
 ! - Initializations
 !
-    nhrs    = 1
+    nhrs = 1
 !
 ! - Get parameters
 !
-    syst_solu      = ds_solve%syst_solu
-    syst_matr      = ds_solve%syst_matr
-    syst_2mbr      = ds_solve%syst_2mbr
-    syst_size      = ds_solve%syst_size
-    syst_type      = ds_solve%syst_matr_type
+    syst_solu = ds_solve%syst_solu
+    syst_matr = ds_solve%syst_matr
+    syst_2mbr = ds_solve%syst_2mbr
+    syst_size = ds_solve%syst_size
+    syst_type = ds_solve%syst_matr_type
     if (present(size_to_solve_)) then
         size_to_solve = size_to_solve_
     else
         size_to_solve = syst_size
-    endif
+    end if
     ASSERT(size_to_solve .le. syst_size)
 !
 ! - Access to objects
 !
     if (syst_type .eq. 'C') then
-        call jeveuo(syst_matr, 'L', vc = v_syst_matr)
-        call jeveuo(syst_2mbr, 'L', vc = v_syst_2mbr)
-        call jeveuo(syst_solu, 'E', vc = v_syst_solu)
+        call jeveuo(syst_matr, 'L', vc=v_syst_matr)
+        call jeveuo(syst_2mbr, 'L', vc=v_syst_2mbr)
+        call jeveuo(syst_solu, 'E', vc=v_syst_solu)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Solve system
 !
@@ -95,6 +95,6 @@ integer, optional, intent(in) :: size_to_solve_
         call zgauss(v_syst_matr, v_syst_2mbr, size_to_solve, nhrs, v_syst_solu)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

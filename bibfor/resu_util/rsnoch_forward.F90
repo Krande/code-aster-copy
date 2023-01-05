@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine rsnoch_forward(nomsd, nomsy, iordr)
     character(len=16) :: noms2
     character(len=19) :: nomd2, chnote
     character(len=24) :: valk(2)
-    integer :: normax, iretou, nordr, irang,  iret, ibid, jtach
+    integer :: normax, iretou, nordr, irang, iret, ibid, jtach
     integer, pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
 !
@@ -66,23 +66,23 @@ subroutine rsnoch_forward(nomsd, nomsy, iordr)
     call jelira(nomd2//'.ORDR', 'LONMAX', normax)
     call rsutrg(nomd2, iordr, iretou, nordr)
     if (iretou .eq. 0) then
-        irang = nordr + 1
+        irang = nordr+1
         if (irang .gt. normax) then
             call utmess('F', 'UTILITAI4_42')
-        endif
+        end if
         call jeecra(nomd2//'.ORDR', 'LONUTI', irang)
         call jeveuo(nomd2//'.ORDR', 'E', vi=ordr)
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST SUPERIEUR
 !          AU DERNIER IORDR DEJA STOCKE (IORDR CROISSANTS) :
         if (irang .gt. 1) then
-            if(ordr(irang-1)>=iordr) then
+            if (ordr(irang-1) >= iordr) then
                 call utmess('F', 'UTILITAI6_81', sk=nomsd, ni=2, vali=[iordr, nordr])
             end if
-        endif
+        end if
         ordr(irang) = iordr
     else
         irang = iretou
-    endif
+    end if
 !
 !
 !     -- ON VERIFIE LE NOM SYMBOLIQUE :
@@ -92,13 +92,13 @@ subroutine rsnoch_forward(nomsd, nomsy, iordr)
         valk(1) = noms2
         valk(2) = nomd2
         call utmess('F', 'UTILITAI4_43', nk=2, valk=valk)
-    endif
+    end if
 !
 !
 !     -- CHNOTE : NOM QUE DOIT AVOIR LE CHAMP A NOTER :
 !        (REGLE DE NOMMAGE DE RSUTCH.F)
 !     -------------------------------------------------
-    call rsexch(' ', nomd2, noms2, iordr, chnote,&
+    call rsexch(' ', nomd2, noms2, iordr, chnote, &
                 iret)
 !
 !     --- ON STOCKE LE NOM DU CHAMP :
@@ -106,7 +106,7 @@ subroutine rsnoch_forward(nomsd, nomsy, iordr)
     call jenonu(jexnom(nomd2//'.DESC', noms2), ibid)
     call jeveuo(jexnum(nomd2//'.TACH', ibid), 'E', jtach)
 !
-    zk24(jtach+irang-1)(1:19) = chnote
+    zk24(jtach+irang-1) (1:19) = chnote
 !
     call jedema()
 end subroutine

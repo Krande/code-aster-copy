@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine w155mx(resultOut, resultIn, nbStore, listStore)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -47,8 +47,8 @@ implicit none
 #include "asterfort/w155m2.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: resultOut, resultIn
-integer, intent(in) :: nbStore, listStore(nbStore)
+    character(len=8), intent(in) :: resultOut, resultIn
+    integer, intent(in) :: nbStore, listStore(nbStore)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,99 +86,99 @@ integer, intent(in) :: nbStore, listStore(nbStore)
         call getvtx(keywFact, 'NOM_CHAM', iocc=iocc, scal=fieldName, nbret=ibid)
         call getvtx(keywFact, 'TYPE_MAXI', iocc=iocc, scal=tymaxi, nbret=ibid)
         fieldSupp = fieldName(6:9)
-        ASSERT(fieldSupp.eq.'ELNO' .or. fieldSupp.eq.'ELGA')
+        ASSERT(fieldSupp .eq. 'ELNO' .or. fieldSupp .eq. 'ELGA')
         call getvtx(keywFact, 'NOM_CMP', iocc=iocc, scal=cmpName, nbret=n1)
         if (n1 .eq. 0) then
-            ASSERT(fieldName(1:7).eq.'VARI_EL')
+            ASSERT(fieldName(1:7) .eq. 'VARI_EL')
             call getvtx(keywFact, 'NOM_VARI', iocc=iocc, scal=variName, nbret=nbVari)
             ASSERT(nbVari .eq. 1)
 
 ! --------- Get list of cells
-            call dismoi('NOM_MAILLA', resultIn, 'RESULTAT', repk = mesh)
+            call dismoi('NOM_MAILLA', resultIn, 'RESULTAT', repk=mesh)
 
             call getvtx(' ', 'TOUT', iocc=iocc, scal=cmpName, nbret=n1)
             call getvtx(' ', 'GROUP_MA', iocc=iocc, scal=cmpName, nbret=n2)
             call getvtx(' ', 'MAILLE', iocc=iocc, scal=cmpName, nbret=n3)
-            if ( (n1 .eq. 0) .and. (n2 .eq. 0) .and. (n3 .eq. 0) ) then
+            if ((n1 .eq. 0) .and. (n2 .eq. 0) .and. (n3 .eq. 0)) then
                 ! si pas d'option, on force comme TOUT='OUI'
-                call getelem(mesh, ' ', iocc, 'F', listCell,&
-                            nbCell, l_allz=ASTER_TRUE )
+                call getelem(mesh, ' ', iocc, 'F', listCell, &
+                             nbCell, l_allz=ASTER_TRUE)
             else
-                call getelem(mesh, ' ', iocc, 'F', listCell,&
-                            nbCell )
-            endif
+                call getelem(mesh, ' ', iocc, 'F', listCell, &
+                             nbCell)
+            end if
 
-            call jeveuo(listCell, 'L', vi = cellNume)
+            call jeveuo(listCell, 'L', vi=cellNume)
             call wkvect(listVariNume, 'V V K8', nbCell*nbVari, jcmp)
 
 ! --------- Get behaviour (only one !)
             call rsGetOneBehaviourFromResult(resultIn, nbStore, listStore, compor)
             if (compor .eq. '#SANS') then
                 call utmess('F', 'RESULT1_5')
-            endif
+            end if
             if (compor .eq. '#PLUSIEURS') then
                 call utmess('F', 'RESULT1_6')
-            endif
+            end if
 
 ! --------- Get model (only one !)
             call rsGetOneModelFromResult(resultIn, nbStore, listStore, model)
             if (model .eq. '#PLUSIEURS') then
                 call utmess('F', 'RESULT1_4')
-            endif
+            end if
 
 ! --------- Get name of internal state variables
-            call varinonu(model , compor  ,&
-                          nbCell, cellNume,&
+            call varinonu(model, compor, &
+                          nbCell, cellNume, &
                           nbVari, variName, zk8(jcmp))
 
             cmpName = zk8(jcmp)
 
             call jedetr(listVariNume)
             call jedetr(listCell)
-        endif
+        end if
 !
 !
 !     -- 3. : BOUCLE SUR LES NUME_ORDRE
 !     --------------------------------------------------
         modelPrev = ' '
-        ico    = 0
-        do iStore = 1 , nbStore
+        ico = 0
+        do iStore = 1, nbStore
             numeStore = listStore(iStore)
             call rsexch(' ', resultIn, fieldName, numeStore, chin, iret)
             if (iret .eq. 0) then
 !
 !         -- 3.1 : MODELE, CARELE, LIGREL :
-                call rslesd(resultIn, numeStore, model_ = model, cara_elem_ = caraElem)
+                call rslesd(resultIn, numeStore, model_=model, cara_elem_=caraElem)
                 if (model .ne. modelPrev) then
                     call exlima(' ', 1, 'G', model, ligrel)
                     modelPrev = model
-                endif
+                end if
 !
-                nomsy2='UTXX_'//fieldSupp
+                nomsy2 = 'UTXX_'//fieldSupp
                 call getvis(keywFact, 'NUME_CHAM_RESU', iocc=iocc, scal=nchout, nbret=ibid)
-                ASSERT(nchout.ge.1 .and. nchout.le.20)
+                ASSERT(nchout .ge. 1 .and. nchout .le. 20)
                 call codent(nchout, 'D0', nomsy2(3:4))
                 if (fieldSupp .eq. 'ELGA') then
-                    nompar='PGAMIMA'
-                else if (fieldSupp.eq.'ELNO') then
-                    nompar='PNOMIMA'
+                    nompar = 'PGAMIMA'
+                else if (fieldSupp .eq. 'ELNO') then
+                    nompar = 'PNOMIMA'
                 else
                     ASSERT(ASTER_FALSE)
-                endif
+                end if
 !
                 call rsexch(' ', resultOut, nomsy2, numeStore, chextr, iret)
                 ASSERT(iret .eq. 100)
                 call alchml(ligrel, 'MINMAX_SP', nompar, 'G', chextr, iret, ' ')
                 ASSERT(iret .eq. 0)
-                call w155m2(chin, caraElem, ligrel, chextr, fieldName,&
+                call w155m2(chin, caraElem, ligrel, chextr, fieldName, &
                             cmpName, tymaxi)
-                ico=ico+1
+                ico = ico+1
                 call rsnoch(resultOut, nomsy2, numeStore)
-            endif
+            end if
         end do
         if (ico .eq. 0) then
             call utmess('F', 'CALCULEL2_62', sk=fieldName)
-        endif
+        end if
     end do
 !
 30  continue

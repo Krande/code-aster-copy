@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine calcGetData(table_new, table_old  ,&
-                       nb_option, list_option,&
-                       nume_inst, list_inst  ,&
+subroutine calcGetData(table_new, table_old, &
+                       nb_option, list_option, &
+                       nume_inst, list_inst, &
                        phenom, l_pred)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -33,14 +33,14 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/diinst.h"
 !
-character(len=8), intent(out) :: table_new
-character(len=8), intent(out) :: table_old
-integer, intent(out) :: nb_option
-character(len=16), intent(out) :: list_option(:)
-integer, intent(out) :: nume_inst
-character(len=19), intent(out) :: list_inst
-character(len=16), intent(out) :: phenom
-aster_logical, intent(out) :: l_pred
+    character(len=8), intent(out) :: table_new
+    character(len=8), intent(out) :: table_old
+    integer, intent(out) :: nb_option
+    character(len=16), intent(out) :: list_option(:)
+    integer, intent(out) :: nume_inst
+    character(len=19), intent(out) :: list_inst
+    character(len=16), intent(out) :: phenom
+    aster_logical, intent(out) :: l_pred
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,13 +66,13 @@ aster_logical, intent(out) :: l_pred
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    table_new      = ' '
-    table_old      = ' '
-    nb_option      = 0
+    table_new = ' '
+    table_old = ' '
+    nb_option = 0
     list_option(:) = ' '
-    nume_inst      = 0
-    list_inst      = ' '
-    phenom         = ' '
+    nume_inst = 0
+    list_inst = ' '
+    phenom = ' '
 !
 ! - Name of created table
 !
@@ -84,32 +84,32 @@ aster_logical, intent(out) :: l_pred
     if (nocc .eq. 0) then
         table_old = ' '
     else
-        call getvid(' ', 'TABLE', nbval=1, scal = table_old)
+        call getvid(' ', 'TABLE', nbval=1, scal=table_old)
         if (table_old .ne. table_new) then
             call utmess('F', 'CALCUL1_3')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Options
 !
     call getvtx(' ', 'OPTION', nbval=6, vect=list_option, nbret=nb_option)
 
-    call getvtx(' ', 'PHASE', scal = pred, nbret=nocc)
+    call getvtx(' ', 'PHASE', scal=pred, nbret=nocc)
 
     if (nocc .eq. 1 .and. pred .eq. 'PREDICTION') then
-        l_pred=ASTER_TRUE
+        l_pred = ASTER_TRUE
     else
-        l_pred=ASTER_FALSE
-    endif
+        l_pred = ASTER_FALSE
+    end if
 !
 ! - Phenomen
 !
-    call getvtx(' ', 'PHENOMENE', scal = phenom, nbret=nocc)
+    call getvtx(' ', 'PHENOMENE', scal=phenom, nbret=nocc)
     ASSERT(nocc .eq. 1)
 !
 ! - Get current time
 !
     call getvis('INCREMENT', 'NUME_ORDRE', iocc=1, scal=nume_inst)
-    call getvid('INCREMENT', 'LIST_INST' , iocc=1, scal=list_inst)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=list_inst)
 !
 end subroutine

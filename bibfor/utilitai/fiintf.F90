@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 !>          utmess) or ' ' to silently exist.
 !>      resu (real(*)), out: Array to return the result.
 
-subroutine fiintf(nomfon, nbpu, param, val, iret,&
+subroutine fiintf(nomfon, nbpu, param, val, iret, &
                   coderr, resu)
     implicit none
 #include "jeveux.h"
@@ -65,16 +65,16 @@ subroutine fiintf(nomfon, nbpu, param, val, iret,&
 
     nbres = size(resu)
     call eval_formula(iaddr(1), iaddr(2), param, val, nbpu, iret, nbres, resu)
-    if ( cod .ne. ' ' .and. iret .ne. 0 ) then
+    if (cod .ne. ' ' .and. iret .ne. 0) then
         codS = cod//'+'
         call utmess(codS, 'FONCT0_9', sk=nomfon)
-        if ( iret .eq. 1 ) then
+        if (iret .eq. 1) then
             call utmess(codS, 'FONCT0_67')
-        elseif ( iret .eq. 4 ) then
+        elseif (iret .eq. 4) then
             call utmess(codS, 'FONCT0_70')
-        endif
+        end if
         call utmess(cod, 'FONCT0_52', sk='See previous traceback.')
-    endif
+    end if
 
     call jedema()
 end subroutine fiintf

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine precou(imod, typema)
 ! -----  VARIABLES LOCALES
 !      PARAMETER (MAXNOD=32, NBTYMA=15)
     integer :: maxnod, nbtyma, i, nbnode, nbmail
-    parameter    (maxnod=32,nbtyma=19)
+    parameter(maxnod=32, nbtyma=19)
     integer :: nbnoma(nbtyma), nuconn(nbtyma, maxnod), imes
     character(len=4) :: ct(3)
     character(len=8) :: nomail(nbtyma), rquoi
@@ -72,17 +72,17 @@ subroutine precou(imod, typema)
 !
 ! --- ECRITURE DU TITRE DANS LE FICHIER .MAIL :
 !     ---------------------------------------
-    write(imod,'(A)') 'TITRE'
+    write (imod, '(A)') 'TITRE'
 !
 ! --- ECRITURE DE LA DATE DU JOUR :
 !     ---------------------------
     call jjmmaa(ct, aut)
     aut1 = 'INTERFACE_YACS'
-    write(imod,'(9X,2A,17X,A,A2,A,A2,A,A4)')'AUTEUR=',aut1,'DATE=',&
-     &  ct(1)(1:2),'/',ct(2)(1:2),'/',ct(3)
-    write(imod,'(A)') 'FINSF'
-    write(imod,'(A)') '%'
-    write(imes,*) 'ECRITURE DU TITRE'
+    write (imod, '(9X,2A,17X,A,A2,A,A2,A,A4)') 'AUTEUR=', aut1, 'DATE=',&
+     &  ct(1) (1:2), '/', ct(2) (1:2), '/', ct(3)
+    write (imod, '(A)') 'FINSF'
+    write (imod, '(A)') '%'
+    write (imes, *) 'ECRITURE DU TITRE'
 !
 ! --- LECTURE DES NOEUDS ET DE LEURS COORDONNEES PAR RECEPTION MEMOIRE :
 !     ------------------------------------------------------------------
@@ -93,7 +93,7 @@ subroutine precou(imod, typema)
 !FH
 !=>
 !      CALL COLELT(NBNODE, JGROMA, MAXNOD,NBTYMA,NBMAIL,NBNOMA,NUCONN)
-    call colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
+    call colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma, &
                 nuconn)
 !<=
 !FH
@@ -104,7 +104,7 @@ subroutine precou(imod, typema)
 !
 ! --- ECRITURE DES MAILLES ET DES GROUP_MA DANS LE FICHIER .MAIL :
 !     ----------------------------------------------------------
-    call coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
+    call coeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
                 nbmail)
 !
 ! --- MENAGE :

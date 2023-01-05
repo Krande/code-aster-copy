@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmphii(ck, cm, ndim, nbmod, niter,&
-                  xcrit, ceigen, cmod, ndimax, cmat1,&
+subroutine cmphii(ck, cm, ndim, nbmod, niter, &
+                  xcrit, ceigen, cmod, ndimax, cmat1, &
                   cmat2, cvec, ific)
 ! aslint: disable=W1306
     implicit none
@@ -87,7 +87,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
     if (ipivo .ne. 0) then
         vali(1) = ipivo
         call utmess('F', 'ALGORITH12_53', si=vali(1))
-    endif
+    end if
 !
 !
 !   CALCUL DE L'INVERSE DE LA MATRICE DE MASSE
@@ -95,19 +95,19 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         ivdiag = iv*(iv-1)/2+1
         do i = 1, ndim
             if (i .le. iv) then
-                cmat2(i,iv)=cm(ivdiag+iv-i)
+                cmat2(i, iv) = cm(ivdiag+iv-i)
             else
                 idiag = i*(i-1)/2+1
-                cmat2(i,iv)=dconjg(cm(idiag+i-iv))
-            endif
+                cmat2(i, iv) = dconjg(cm(idiag+i-iv))
+            end if
         end do
     end do
     call rrldc(cmat1, ndim, cmat2, ndim)
 !
     do iv = 1, ndim
-        cvec(iv)=dcmplx(0.d0,0.d0)
-        cvec0(iv)=dcmplx(0.d0,0.d0)
-        cmod0(iv)=dcmplx(0.d0,0.d0)
+        cvec(iv) = dcmplx(0.d0, 0.d0)
+        cvec0(iv) = dcmplx(0.d0, 0.d0)
+        cmod0(iv) = dcmplx(0.d0, 0.d0)
     end do
 !
 !
@@ -120,20 +120,20 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
     do j = 1, nbmod
 !
 !       INITIALISATION DES CRITERES D'ARRET
-        k=0
-        convok=.true.
+        k = 0
+        convok = .true.
 !
 !   BOUCLE D'ITERATION SUR CHAQUE MODES
 100     continue
 !
-        k=k+1
+        k = k+1
 !
 !    PRODUIT MATRICIEL INV(M)*VECTEUR
         call cmatve(cmat2, cmod(1, j), cvec, ndim)
 !
 !    CALCUL DE L'ERREUR COLINEARITE ET REECOPIE
 !    DE CVEC DANS CMOD
-        call ctescv(cvec, cmod(1, j), cvec0, cmod0, ndim,&
+        call ctescv(cvec, cmod(1, j), cvec0, cmod0, ndim, &
                     xer)
 !
 !      RECOPIE DU VECTEUR DE L'ITERATION PRECEDENTE
@@ -141,7 +141,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         call zcopy(ndim, cvec, 1, cvec0, 1)
 !
 !   ORTHORMALISATION PAR RAPPORT MATRICE DE MASSE
-        call cschmi(cm, ndim, cmod(1, j), cmod, ndimax,&
+        call cschmi(cm, ndim, cmod(1, j), cmod, ndimax, &
                     j-1)
 !
 !
@@ -149,26 +149,26 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !    En fait on calcul explicitement CMOD*inv(M)*K*CMOD
         call sesqui(ck, cmod(1, j), ndim, ceigen(j))
         call sesqui(cm, cmod(1, j), ndim, cprod)
-        ceigen(j)=ceigen(j)/cprod
+        ceigen(j) = ceigen(j)/cprod
 !
 !         TEST SUR LA PRECISION
-        if (xer .le. xcrit) convok=.false.
+        if (xer .le. xcrit) convok = .false.
 !
         if (k .lt. niter .and. convok) goto 100
 !
 !
 !     IMPRESSION DES FREQUENCES PROPRES
-        vali(1)=j
-        vali(2)=k
-        valr(1)=xer
-        valr(2)=dble(ceigen(j))
-        valr(3)=dimag(ceigen(j))
-        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
+        vali(1) = j
+        vali(2) = k
+        valr(1) = xer
+        valr(2) = dble(ceigen(j))
+        valr(3) = dimag(ceigen(j))
+        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3, &
                     valr=valr)
 !
     end do
 !
-    write(ific,*)'     '
-    write(ific,*)'     '
+    write (ific, *) '     '
+    write (ific, *) '     '
 !
 end subroutine

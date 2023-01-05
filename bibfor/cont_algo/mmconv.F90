@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmconv(noma , ds_contact, valinc, solalg, vfrot,&
-                  nfrot, vgeom     , ngeom, vpene)
+subroutine mmconv(noma, ds_contact, valinc, solalg, vfrot, &
+                  nfrot, vgeom, ngeom, vpene)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -67,9 +67,9 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: depplu, depmoi, ddepla,depdel
-    aster_logical :: loop_cont_divec,loop_cont_diveg,l_cont_cont
-    aster_logical :: lnewtf, lnewtg,lnewtc,l_exis_pena
+    character(len=19) :: depplu, depmoi, ddepla, depdel
+    aster_logical :: loop_cont_divec, loop_cont_diveg, l_cont_cont
+    aster_logical :: lnewtf, lnewtg, lnewtc, l_exis_pena
     real(kind=8) :: time_curr
 
 !
@@ -93,18 +93,18 @@ implicit none
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lnewtf = cfdisl(ds_contact%sdcont_defi,'FROT_NEWTON')
-    lnewtg = cfdisl(ds_contact%sdcont_defi,'GEOM_NEWTON')
-    lnewtc = cfdisl(ds_contact%sdcont_defi,'CONT_NEWTON')
-    l_exis_pena       = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
-    l_cont_cont       = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
+    lnewtf = cfdisl(ds_contact%sdcont_defi, 'FROT_NEWTON')
+    lnewtg = cfdisl(ds_contact%sdcont_defi, 'GEOM_NEWTON')
+    lnewtc = cfdisl(ds_contact%sdcont_defi, 'CONT_NEWTON')
+    l_exis_pena = cfdisl(ds_contact%sdcont_defi, 'EXIS_PENA')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     time_curr = ds_contact%time_curr
 !
 ! - Print
 !
-    if ((niv.ge.2) .and. (lnewtg.or.lnewtf)) then
-        write (ifm,*) '<CONTACT> ... CALCUL DES RESIDUS POUR NEWTON GENERALISE'
-    endif
+    if ((niv .ge. 2) .and. (lnewtg .or. lnewtf)) then
+        write (ifm, *) '<CONTACT> ... CALCUL DES RESIDUS POUR NEWTON GENERALISE'
+    end if
 !
 ! --- EVALUATION RESIDU SEUIL FROTTEMENT
 !
@@ -117,7 +117,7 @@ implicit none
 ! ----- CALCUL RESIDU DE FROTTEMENT
 !
         call mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
-    endif
+    end if
 !
 ! --- EVALUATION RESIDU SEUIL GEOMETRIE
 !
@@ -133,42 +133,41 @@ implicit none
         if (l_cont_cont) then
             ngeom = ds_contact%crit_geom_noeu
             vgeom = ds_contact%critere_geom
-        endif
-    endif
+        end if
+    end if
 
     if (l_exis_pena) then
         call mm_pene_loop(ds_contact)
         vpene = ds_contact%calculated_penetration
         if (lnewtc) then
-        !   Cas de newton generalise pour le contact
-        !   Cas de point fixe pour la géométrie
-        !   on remet a jour vpene a chaque iteration mais Pas de verif de conv pene
+            !   Cas de newton generalise pour le contact
+            !   Cas de point fixe pour la géométrie
+            !   on remet a jour vpene a chaque iteration mais Pas de verif de conv pene
             if (.not. lnewtg) then
-                call mmbouc(ds_contact, 'Geom', 'Is_Divergence',loop_state_=loop_cont_diveg)
+                call mmbouc(ds_contact, 'Geom', 'Is_Divergence', loop_state_=loop_cont_diveg)
                 if (loop_cont_diveg) then
                     ds_contact%continue_pene = 4.0
-                endif
+                end if
             else
                 ds_contact%continue_pene = 0.0
-            endif
+            end if
         else
-        !   Cas de point fixe pour le contact
-        !   on remet a jour vpene a chaque iteration mais Pas de verif de conv pene
-            call mmbouc(ds_contact, 'Cont', 'Is_Divergence',loop_state_=loop_cont_divec)
+            !   Cas de point fixe pour le contact
+            !   on remet a jour vpene a chaque iteration mais Pas de verif de conv pene
+            call mmbouc(ds_contact, 'Cont', 'Is_Divergence', loop_state_=loop_cont_divec)
             if (loop_cont_divec) then
                 ds_contact%continue_pene = 3.0
             else
-                call mmbouc(ds_contact, 'Geom', 'Is_Divergence',loop_state_=loop_cont_diveg)
+                call mmbouc(ds_contact, 'Geom', 'Is_Divergence', loop_state_=loop_cont_diveg)
                 if (loop_cont_diveg) then
                     ds_contact%continue_pene = 4.0
                 else
                     ds_contact%continue_pene = 0.0
-                endif
-            endif
+                end if
+            end if
 
-        endif
-    endif
-
+        end if
+    end if
 
 !
 end subroutine

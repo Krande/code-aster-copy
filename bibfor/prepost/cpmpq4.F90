@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,21 +49,21 @@ subroutine cpmpq4(conloc, numa, indno, indma)
 ! ----------------------------------------------------------------------
     call jemarq()
 ! ----------------------------------------------------------------------
-    call jeecra(jexnum(conloc,indma), 'LONMAX', ival=2)
-    call jeecra(jexnum(conloc,indma), 'LONUTI', ival=2)
-    call jeveuo(jexnum(conloc,indma), 'E', jconloc)
-    zi(jconloc+1-1)=zi(numa+1-1)
-    zi(jconloc+2-1)=indno
-    call jeecra(jexnum(conloc,indma+1), 'LONMAX', ival=2)
-    call jeecra(jexnum(conloc,indma+1), 'LONUTI', ival=2)
-    call jeveuo(jexnum(conloc,indma+1), 'E', jconloc)
-    zi(jconloc+1-1)=indno
-    zi(jconloc+2-1)=indno+1
-    call jeecra(jexnum(conloc,indma+2), 'LONMAX', ival=2)
-    call jeecra(jexnum(conloc,indma+2), 'LONUTI', ival=2)
-    call jeveuo(jexnum(conloc,indma+2), 'E', jconloc)
-    zi(jconloc+1-1)=indno+1
-    zi(jconloc+2-1)=zi(numa+2-1)
+    call jeecra(jexnum(conloc, indma), 'LONMAX', ival=2)
+    call jeecra(jexnum(conloc, indma), 'LONUTI', ival=2)
+    call jeveuo(jexnum(conloc, indma), 'E', jconloc)
+    zi(jconloc+1-1) = zi(numa+1-1)
+    zi(jconloc+2-1) = indno
+    call jeecra(jexnum(conloc, indma+1), 'LONMAX', ival=2)
+    call jeecra(jexnum(conloc, indma+1), 'LONUTI', ival=2)
+    call jeveuo(jexnum(conloc, indma+1), 'E', jconloc)
+    zi(jconloc+1-1) = indno
+    zi(jconloc+2-1) = indno+1
+    call jeecra(jexnum(conloc, indma+2), 'LONMAX', ival=2)
+    call jeecra(jexnum(conloc, indma+2), 'LONUTI', ival=2)
+    call jeveuo(jexnum(conloc, indma+2), 'E', jconloc)
+    zi(jconloc+1-1) = indno+1
+    zi(jconloc+2-1) = zi(numa+2-1)
 ! ----------------------------------------------------------------------
     call jedema()
 end subroutine

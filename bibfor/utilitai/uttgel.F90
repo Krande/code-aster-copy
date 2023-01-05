@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,24 +41,23 @@ subroutine uttgel(nomte, typgeo)
     character(len=8) :: alias8
     character(len=3) :: codtma
 
-
     call teattr('S', 'ALIAS8', alias8, ibid, typel=nomte)
-    codtma=alias8(6:8)
+    codtma = alias8(6:8)
 
-    if (codtma(1:2).eq.'TR') then
-        typgeo='TR'
-    elseif (codtma(1:2).eq.'QU') then
-        typgeo='QU'
-    elseif (codtma.eq.'HE8' .or. codtma.eq.'H20' .or. codtma.eq.'H27') then
-        typgeo='HE'
-    elseif (codtma.eq.'PE6' .or. codtma.eq.'P15' .or. codtma.eq.'P18') then
-        typgeo='PE'
-    elseif (codtma.eq.'TE4' .or. codtma.eq.'T10') then
-        typgeo='TE'
-    elseif (codtma.eq.'PY5' .or. codtma.eq.'P13') then
-        typgeo='PY'
+    if (codtma(1:2) .eq. 'TR') then
+        typgeo = 'TR'
+    elseif (codtma(1:2) .eq. 'QU') then
+        typgeo = 'QU'
+    elseif (codtma .eq. 'HE8' .or. codtma .eq. 'H20' .or. codtma .eq. 'H27') then
+        typgeo = 'HE'
+    elseif (codtma .eq. 'PE6' .or. codtma .eq. 'P15' .or. codtma .eq. 'P18') then
+        typgeo = 'PE'
+    elseif (codtma .eq. 'TE4' .or. codtma .eq. 'T10') then
+        typgeo = 'TE'
+    elseif (codtma .eq. 'PY5' .or. codtma .eq. 'P13') then
+        typgeo = 'PY'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
-                  nfiss, he, nnn, inn, inntot,&
+subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno, &
+                  nfiss, he, nnn, inn, inntot, &
                   nbnoc, nbnofi, inofi, co, iacoo2)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -77,9 +77,9 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     character(len=2) :: nm
     character(len=6) :: chn
     character(len=8) :: valk(2)
-    parameter     (crilsn = 1.d-4)
+    parameter(crilsn=1.d-4)
     aster_logical :: lpint
-    data          valk /'NOEUDS','XPOAJN'/
+    data valk/'NOEUDS', 'XPOAJN'/
 !
 !     ------------------------------------------------------------------
 !
@@ -92,14 +92,14 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
         do ifiss = 1, nfiss
             if (lsn(ifiss) .eq. 0.d0) lpint = .true.
         end do
-    else if (ino.gt.1000.and.ino.lt.2000) then
+    else if (ino .gt. 1000 .and. ino .lt. 2000) then
         lpint = .true.
-    else if (ino.gt.2000) then
+    else if (ino .gt. 2000) then
         lpint = .false.
         do ifiss = 1, nfiss
             if (abs(lsn(ifiss)) .lt. crilsn) lpint = .true.
         end do
-    endif
+    end if
 !
     if (lpint) then
         minlsn = r8maem()
@@ -109,27 +109,27 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
             if (abs(lsn(ifiss)) .lt. minlsn .and. he(ifiss) .ne. 0) then
                 minlsn = abs(lsn(ifiss))
                 fiss = ifiss
-            endif
+            end if
         end do
         if (he(fiss) .eq. -1) then
-            nm=prefno(2)
+            nm = prefno(2)
         else
-            nm=prefno(3)
-        endif
+            nm = prefno(3)
+        end if
     else
-        nm=prefno(1)
-    endif
+        nm = prefno(1)
+    end if
 !
 !     COMPTEUR DES NOMS DES NOEUDS
     if (inntot .ge. 1291467968) then
         call utmess('F', 'XFEM_8', sk=valk(1))
-    endif
-    inn = inn + 1
-    inntot= inntot +1
-    ASSERT(inn.le.nnn)
+    end if
+    inn = inn+1
+    inntot = inntot+1
+    ASSERT(inn .le. nnn)
 !
     zi(jdirno-1+(2+nfiss)*(inn-1)+1) = ino
-    zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc + inntot
+    zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc+inntot
     do ifiss = 1, nfiss
         zi(jdirno-1+(2+nfiss)*(inn-1)+2+ifiss) = he(ifiss)
     end do
@@ -137,19 +137,19 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
 !
     call jecroc(jexnom(maxfem//'.NOMNOE', nm//chn))
     do j = 1, 3
-        zr(iacoo2-1+3*(nbnoc+inntot-1)+j)=co(j)
+        zr(iacoo2-1+3*(nbnoc+inntot-1)+j) = co(j)
     end do
 !       LISTE DES NOEUDS SUR LA FISSURE
     if (lpint) then
-        nbnofi=nbnofi+1
-        zi(inofi-1+nbnofi)=nbnoc+inntot
+        nbnofi = nbnofi+1
+        zi(inofi-1+nbnofi) = nbnoc+inntot
 !        IF (HE(FISS).EQ.-1.AND.DDLC.GT.0) THEN
 !        ATTENTION, IL FAUDRA RÉCUPÉRER DDLC AVEC XPOCMP DS XPOMAX
 !       LISTE DES NOEUDS PORTANT DDLS DE CONTACT (COTÉ ESCLAVE)
 !          NBNOLA=NBNOLA+1
 !          ZI(INOLA-1+NBNOLA)=NBNOC+INNTOT
 !        ENDIF
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine thmCompSiefElno(ds_thm)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/thmGetGene.h"
 #include "asterfort/thmGetElemIntegration.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,9 +71,9 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf  , ndim  ,&
-                    mecani, press1  , press2, tempe)
-    nvim   = mecani(5)
+    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+                    mecani, press1, press2, tempe)
+    nvim = mecani(5)
 !
 ! - Get reference elements
 !
@@ -82,15 +82,15 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Get dimensions of generalized vectors
 !
-    call thmGetGeneDime(ndim  ,&
-                        mecani, press1, press2, tempe,&
+    call thmGetGeneDime(ndim, &
+                        mecani, press1, press2, tempe, &
                         dimdep, dimdef, dimcon)
 !
 ! - Compute
 !
     call jevech('PCONTRR', 'L', jv_sigm)
     call jevech('PSIEFNOR', 'E', jv_sigmelno)
-    call posthm(option, inte_type, jv_gano, dimcon, nvim,&
+    call posthm(option, inte_type, jv_gano, dimcon, nvim, &
                 zr(jv_sigm), zr(jv_sigmelno))
 !
 end subroutine

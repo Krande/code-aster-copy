@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ subroutine nmpro2(fonact, numedd, numfix)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lmacr = isfonc(fonact,'MACR_ELEM_STAT')
-    leltc = isfonc(fonact,'ELT_CONTACT')
+    lmacr = isfonc(fonact, 'MACR_ELEM_STAT')
+    leltc = isfonc(fonact, 'ELT_CONTACT')
 !
 ! --- DUPLICATION (OU PAS !)
 !
@@ -63,7 +63,7 @@ subroutine nmpro2(fonact, numedd, numfix)
         call copisd('NUME_DDL', 'V', numedd, numfix)
     else
         numfix = numedd
-    endif
+    end if
 !
     call jedema()
 !

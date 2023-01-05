@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine profgene_crsd(prof_genez , base      , nb_equa, nb_sstr, nb_link,&
+subroutine profgene_crsd(prof_genez, base, nb_equa, nb_sstr, nb_link, &
                          model_genez, gran_namez)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -72,21 +72,21 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    prof_gene  = prof_genez
+    prof_gene = prof_genez
     model_gene = ' '
     if (present(model_genez)) then
         model_gene = model_genez
-    endif
-    gran_name  = ' '
+    end if
+    gran_name = ' '
     if (present(gran_namez)) then
         gran_name = gran_namez
-    endif
+    end if
 !
-    call detrsd('PROF_GENE',prof_gene)
+    call detrsd('PROF_GENE', prof_gene)
 !
 ! - Create object NUEQ
 !
-    call wkvect(prof_gene//'.NUEQ', base//' V I', nb_equa, vi = prgene_nueq)
+    call wkvect(prof_gene//'.NUEQ', base//' V I', nb_equa, vi=prgene_nueq)
 !
 ! - Set to identity
 !
@@ -96,7 +96,7 @@ implicit none
 !
 ! - Create object DEEQ
 !
-    call wkvect(prof_gene//'.DEEQ', base//' V I', 2*nb_equa, vi = prgene_deeq)
+    call wkvect(prof_gene//'.DEEQ', base//' V I', 2*nb_equa, vi=prgene_deeq)
 !
 ! - Set
 !
@@ -107,16 +107,16 @@ implicit none
 !
 ! - Number of LIGREL
 !
-    l_ligr_sstr = nb_sstr.gt.0
-    l_ligr_link = nb_link.gt.0
+    l_ligr_sstr = nb_sstr .gt. 0
+    l_ligr_link = nb_link .gt. 0
     nb_ligr = 0
     if (l_ligr_sstr) then
         nb_ligr = nb_ligr+1
-    endif
+    end if
     if (l_ligr_link) then
         nb_ligr = nb_ligr+1
-    endif
-    ASSERT(nb_ligr.le.2)
+    end if
+    ASSERT(nb_ligr .le. 2)
 !
 ! - Create object LILI
 !
@@ -125,51 +125,51 @@ implicit none
     if (l_ligr_sstr) then
         call jecroc(jexnom(prof_gene//'.LILI', '&SOUSSTR'))
         call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_sstr)
-        ASSERT(i_ligr_sstr.eq.1)
-    endif
+        ASSERT(i_ligr_sstr .eq. 1)
+    end if
     if (l_ligr_link) then
         call jecroc(jexnom(prof_gene//'.LILI', 'LIAISONS'))
         call jenonu(jexnom(prof_gene//'.LILI', 'LIAISONS'), i_ligr_link)
-    endif
+    end if
 !
 ! - Create object PRNO
 !
     call jecrec(prof_gene//'.PRNO', base//' V I', 'NU', 'DISPERSE', 'VARIABLE', nb_ligr)
     if (l_ligr_sstr) then
         call jeecra(jexnum(prof_gene//'.PRNO', i_ligr_sstr), 'LONMAX', 2*nb_sstr)
-    endif
+    end if
     if (l_ligr_link) then
         call jeecra(jexnum(prof_gene//'.PRNO', i_ligr_link), 'LONMAX', 2*nb_link)
-    endif
+    end if
 !
 ! - Create object ORIG
 !
     call jecrec(prof_gene//'.ORIG', base//' V I', 'NU', 'DISPERSE', 'VARIABLE', 2)
     if (l_ligr_sstr) then
         call jeecra(jexnum(prof_gene//'.ORIG', i_ligr_sstr), 'LONMAX', nb_sstr)
-    endif
+    end if
     if (l_ligr_link) then
         call jeecra(jexnum(prof_gene//'.ORIG', i_ligr_link), 'LONMAX', nb_link)
-    endif
+    end if
 !
 ! - Create object NEQU
 !
-    call wkvect(prof_gene//'.NEQU', base//' V I', 1, vi = prgene_nequ)
+    call wkvect(prof_gene//'.NEQU', base//' V I', 1, vi=prgene_nequ)
     prgene_nequ(1) = nb_equa
 !
 ! - Create object DESC
 !
-    call wkvect(prof_gene//'.DESC', base//' V I', 1, vi = prgene_desc)
+    call wkvect(prof_gene//'.DESC', base//' V I', 1, vi=prgene_desc)
     prgene_desc(1) = 2
 !
 ! - Create object REFN
 !
-    call wkvect(prof_gene//'.REFN', base//' V K24', 4, vk24 = prgene_refn)
+    call wkvect(prof_gene//'.REFN', base//' V K24', 4, vk24=prgene_refn)
     prgene_refn(1) = model_gene
     prgene_refn(2) = gran_name
 !
 ! - Create object DELG
 !
-    call wkvect(prof_gene//'.DELG', base//' V I', nb_equa, vi = prgene_delg)
+    call wkvect(prof_gene//'.DELG', base//' V I', nb_equa, vi=prgene_delg)
 
 end subroutine

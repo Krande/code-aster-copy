@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine prstoc(vecsol, vestoc, j, k, iad,&
+subroutine prstoc(vecsol, vestoc, j, k, iad, &
                   nbvale, nbrefe, nbdesc)
     implicit none
 !
@@ -60,9 +60,9 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
     call codent(j, 'D0', chaine(1:5))
     zk24(iad+k-1) = vestoc(1:14)//chaine(1:5)
 !
-    call wkvect(zk24(iad+k-1)(1:19)//'.VALE', 'V V R', nbvale, ivalp)
-    call wkvect(zk24(iad+k-1)(1:19)//'.REFE', 'V V K24', nbrefe, irefp)
-    call wkvect(zk24(iad+k-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
+    call wkvect(zk24(iad+k-1) (1:19)//'.VALE', 'V V R', nbvale, ivalp)
+    call wkvect(zk24(iad+k-1) (1:19)//'.REFE', 'V V K24', nbrefe, irefp)
+    call wkvect(zk24(iad+k-1) (1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
     call jeveuo(vecsol//'.VALE', 'L', vr=vale)
     call jelira(vecsol//'.VALE', 'LONMAX', nbvec)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine comdlh()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -131,7 +131,7 @@ implicit none
     integer, pointer :: nequ(:) => null()
     real(kind=8), pointer :: mass_dia(:) => null()
     real(kind=8), pointer :: rigi_dia(:) => null()
-    real(kind=8), pointer :: puls(:)     => null()
+    real(kind=8), pointer :: puls(:) => null()
     real(kind=8), pointer :: kineRealVale(:) => null()
     complex(kind=8), pointer :: kineVale(:) => null()
 !
@@ -141,14 +141,14 @@ implicit none
 !
     call titre()
     call infmaj()
-    call infniv(ifm,niv)
+    call infniv(ifm, niv)
 !
 ! - Initializations
 !
-    depi   = r8depi()
-    epsi   = r8prem()
+    depi = r8depi()
+    epsi = r8prem()
     typres = 'C'
-    czero  = dcmplx(0.d0,0.d0)
+    czero = dcmplx(0.d0, 0.d0)
 !
 ! - Names of datastructures
 !
@@ -159,7 +159,7 @@ implicit none
     veneum = '&&VENEUM'
     vevoch = '&&VEVOCH'
     vassec = '&&VASSEC'
-    crgc   = '&&COMDLH_GCPC'
+    crgc = '&&COMDLH_GCPC'
 !
 ! --- NOM UTILISATEUR DU CONCEPT RESULTAT CREE PAR LA COMMANDE
 !
@@ -179,25 +179,25 @@ implicit none
                 newcal = .false.
                 if (result .ne. resuco) then
                     call utmess('F', 'DYNALINE1_28')
-                endif
+                end if
             else
                 call utmess('F', 'DYNALINE1_29')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- CALGEN : FLAG POUR LES CALCULS SUR BASE GENERALISEE
-    calgen=.false.
+    calgen = .false.
     if (typcon(1:9) .eq. 'HARM_GENE') then
-        calgen=.true.
-        typcal='HARM'
-        isto1=0
+        calgen = .true.
+        typcal = 'HARM'
+        isto1 = 0
 !       --- CAS DE REPRISE DE CALCUL
-        if (.not.newcal) then
+        if (.not. newcal) then
             resu1 = result
-            result='&&COMDLH'
-        endif
-    endif
+            result = '&&COMDLH'
+        end if
+    end if
 !
 ! --- LISTE DES FREQUENCES POUR LE CALCUL
 !
@@ -207,16 +207,16 @@ implicit none
         call jelira(lifreq//'.VALE', 'LONMAX', nbfreq)
     else
         call getvr8(' ', 'FREQ', nbval=0, nbret=nbfreq)
-        nbfreq = - nbfreq
+        nbfreq = -nbfreq
         call wkvect('&&COMDLH.LISTE.FREQ', 'V V R', nbfreq, lfreq)
         call getvr8(' ', 'FREQ', nbval=nbfreq, vect=zr(lfreq))
-    endif
+    end if
 !
 ! --- NOM DES CHAMPS CALCULES
 !
     nomsym(:) = ' '
     call getvtx(' ', 'NOM_CHAM', nbval=3, nbret=nbsym)
-    ASSERT(nbsym.le.3)
+    ASSERT(nbsym .le. 3)
     if (typcon .eq. 'ACOU_HARMO') then
         nbsym = 1
         nomsym(1) = 'PRES'
@@ -227,16 +227,16 @@ implicit none
             nomsym(1) = 'DEPL'
             nomsym(2) = 'VITE'
             nomsym(3) = 'ACCE'
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DES DESCRIPTEURS DES MATRICES ET DES MATRICES
 !
-    call dylema(raide       , masse    , amor  , impe,&
-                l_damp_modal, l_damp   , l_impe   ,&
-                nb_matr     , matr_list, coef_type, coef_vale,&
-                dynam       , numddl   , nb_equa)
-    ASSERT(nb_matr.le.4)
+    call dylema(raide, masse, amor, impe, &
+                l_damp_modal, l_damp, l_impe, &
+                nb_matr, matr_list, coef_type, coef_vale, &
+                dynam, numddl, nb_equa)
+    ASSERT(nb_matr .le. 4)
 !
 ! --- LECTURE INFORMATIONS MECANIQUES
 !
@@ -252,21 +252,21 @@ implicit none
     kineLoad = ' '
     if (kineLoadReal .ne. ' ') then
         kineLoad = '&&COMDLH.KINE'
-        call dismoi('NB_EQUA', kineLoadReal, 'CHAM_NO', repi = nbEqua)
+        call dismoi('NB_EQUA', kineLoadReal, 'CHAM_NO', repi=nbEqua)
         call vtcrec(kineLoad, kineLoadReal, 'V', 'C', nbEqua)
-        call jeveuo(kineLoadReal(1:19)//'.VALE', 'L', vr = kineRealVale)
-        call jeveuo(kineLoad(1:19)//'.VALE', 'E', vc = kineVale)
+        call jeveuo(kineLoadReal(1:19)//'.VALE', 'L', vr=kineRealVale)
+        call jeveuo(kineLoad(1:19)//'.VALE', 'E', vc=kineVale)
         kineVale(1:nbEqua) = kineRealVale(1:nbEqua)
-    endif
+    end if
 
     if (kineLoad .ne. ' ') then
         if (calgen) then
             call utmess('F', 'DYNALINE2_12')
-        endif
-    endif
+        end if
+    end if
 
 ! - CALCUL ET PRE-ASSEMBLAGE DU CHARGEMENT
-    call dylach(nomo, mate, mateco, carele, listLoad, numddl,&
+    call dylach(nomo, mate, mateco, carele, listLoad, numddl, &
                 vediri, veneum, vevoch, vassec)
 !
 !============================================
@@ -290,34 +290,34 @@ implicit none
             nomsym(1) = 'DEPL'
             nomsym(2) = 'VITE'
             nomsym(3) = 'ACCE'
-        endif
+        end if
 !
-        call mdallo(result, 'HARM', nbfreq, sauve='GLOB', base=basemo,&
-                    mass=masse, rigi=raide, amor=amor, nbmodes=nb_equa, jordr=jordr,&
-                    jdisc=jfreq, jdepl=jdepl, jvite=jvite, jacce=jacce, nbsym=nbsym,&
+        call mdallo(result, 'HARM', nbfreq, sauve='GLOB', base=basemo, &
+                    mass=masse, rigi=raide, amor=amor, nbmodes=nb_equa, jordr=jordr, &
+                    jdisc=jfreq, jdepl=jdepl, jvite=jvite, jacce=jacce, nbsym=nbsym, &
                     nomsym=nomsym)
 !
 !
     else if (newcal) then
 !     --- SI NOUVEAU CALCUL SUR BASE PHYSIQUE
         call utcrre(result, nbfreq)
-        nbold=0
+        nbold = 0
 !
     else
 !     --- SI REPRISE DE CALCUL SUR BASE PHYSIQUE
 !       - AGRANDIR LA SD_RESULTAT DE NBOLD A NBOLD+NBFREQ
-        call rsorac(result, 'LONUTI', 0, r8bid, k8bid,&
-                    c16bid, r8bid, 'ABSOLU', tmod, 1,&
+        call rsorac(result, 'LONUTI', 0, r8bid, k8bid, &
+                    c16bid, r8bid, 'ABSOLU', tmod, 1, &
                     ibid)
-        nbold=tmod(1)
+        nbold = tmod(1)
         call rsagsd(result, nbfreq+nbold)
-    endif
+    end if
 !
-    if (.not.calgen) then
+    if (.not. calgen) then
 !       --- SAUVEGARDE DE LA COLLECTION .REFD POUR LES CALCULS SUR BASE PHYS
-        call refdaj('F', result, nbfreq, numddl, 'DYNAMIQUE',&
+        call refdaj('F', result, nbfreq, numddl, 'DYNAMIQUE', &
                     [raide, masse, amor], iret)
-    endif
+    end if
 !
 !
 !
@@ -345,19 +345,19 @@ implicit none
 ! --- EXTRA INFORMATION FOR REDUCED MODAL CALCULATIONS
 
     if (calgen) then
-        call gettco(basemo,typco)
+        call gettco(basemo, typco)
         sstruct = 0
         if (typco(1:9) .eq. 'MODE_MECA') then
             call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nddlphys)
             call dismoi('NB_EQUA', nddlphys, 'NUME_DDL', repi=nbpheq)
-        else if (typco(1:9).eq.'MODE_GENE') then
+        else if (typco(1:9) .eq. 'MODE_GENE') then
             call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matass)
             call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=nddlphys)
             call jeveuo(nddlphys(1:14)//'.NUME.NEQU', 'L', vi=nequ)
             nbpheq = nequ(1)
         else
             sstruct = 1
-        endif
+        end if
 
         nbmode = nb_equa
         nume24 = numddl
@@ -367,9 +367,9 @@ implicit none
         call extdia(masse, nume24, sstruct, mass_dia)
         call extdia(raide, nume24, sstruct, rigi_dia)
 
-        if (sstruct.eq.1) then
+        if (sstruct .eq. 1) then
             call jeveuo(numddl(1:14)//'.NUME.REFN', 'L', jrefe)
-            modgen = zk24(jrefe)(1:8)
+            modgen = zk24(jrefe) (1:8)
             call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
 
             nbmodi = 0
@@ -379,32 +379,32 @@ implicit none
                 call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbbas)
                 do j = 1, nbbas
                     omeg2 = 0.d0
-                    if (mass_dia(nbmodi+j).gt.epsi) then
+                    if (mass_dia(nbmodi+j) .gt. epsi) then
                         omeg2 = abs(rigi_dia(nbmodi+j)/mass_dia(nbmodi+j))
                     end if
-                    puls (nbmodi+j) = sqrt(omeg2)
+                    puls(nbmodi+j) = sqrt(omeg2)
                 end do
-                nbmody = nbmody + nbbas
+                nbmody = nbmody+nbbas
                 call dismoi('NB_MODES_TOT', basemo, 'RESULTAT', repi=nbbas)
-                nbmodi = nbmodi + nbbas
+                nbmodi = nbmodi+nbbas
             end do
         else
             do i = 1, nbmode
                 omeg2 = 0.d0
-                if (mass_dia(i).gt.epsi) then
+                if (mass_dia(i) .gt. epsi) then
                     omeg2 = abs(rigi_dia(i)/mass_dia(i))
                 end if
-                puls (i) = sqrt(omeg2)
-            enddo
+                puls(i) = sqrt(omeg2)
+            end do
         end if
 
-        fmin =  1.d25
+        fmin = 1.d25
         fmax = -1.d25
         do i = 1, nbmode
             freq = puls(i)/depi
-            if (freq.lt.fmin) fmin = freq
-            if (freq.gt.fmax) fmax = freq
-        enddo
+            if (freq .lt. fmin) fmin = freq
+            if (freq .gt. fmax) fmax = freq
+        end do
 
         AS_DEALLOCATE(vr=mass_dia)
         AS_DEALLOCATE(vr=rigi_dia)
@@ -413,34 +413,34 @@ implicit none
         call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=nomo)
     end if
 
-    fcal_min =  1.d25
+    fcal_min = 1.d25
     fcal_max = -1.d25
     do i = 1, nbfreq
         freq = zr(lfreq-1+i)
-        if (freq.lt.fcal_min) fcal_min = freq
-        if (freq.gt.fcal_max) fcal_max = freq
-    enddo
+        if (freq .lt. fcal_min) fcal_min = freq
+        if (freq .gt. fcal_max) fcal_max = freq
+    end do
 
     last_freq = zr(lfreq-1+nbfreq)
 !
 ! --- IMPRESSIONS RECAPITULATIVES POUR L'UTILISATEUR
-    print_type             = 'PHYSique'
+    print_type = 'PHYSique'
     if (calgen) print_type = 'GENEralisee'
-    call utmess('I', 'DYNAMIQUE_55', nk=3, valk=['D Y N A _ V I B R A',&
-                                                 'HARMonique         ',&
+    call utmess('I', 'DYNAMIQUE_55', nk=3, valk=['D Y N A _ V I B R A', &
+                                                 'HARMonique         ', &
                                                  print_type])
 
     if (calgen) then
 !       1 - Calculation type : standard, substructuring
-        if (sstruct.eq.0) then
-            call utmess('I', 'DYNAMIQUE_56', nk=1, valk=[basemo],&
-                                             ni=1, vali=[nbpheq])
+        if (sstruct .eq. 0) then
+            call utmess('I', 'DYNAMIQUE_56', nk=1, valk=[basemo], &
+                        ni=1, vali=[nbpheq])
         else
             call utmess('I', 'DYNAMIQUE_57', nk=2, valk=[basemo, numddl])
         end if
 !       2 - Minimum and max frequencies
-        call utmess('I', 'DYNAMIQUE_59', ni=1, vali=[nbmode],&
-                                         nr=2, valr=[fmin, fmax])
+        call utmess('I', 'DYNAMIQUE_59', ni=1, vali=[nbmode], &
+                    nr=2, valr=[fmin, fmax])
     else
         call utmess('I', 'DYNAMIQUE_82', sk=nomo, si=nb_equa)
     end if
@@ -457,16 +457,16 @@ implicit none
     end if
     if (l_impe) then
         call utmess('I', 'DYNAMIQUE_87', sk=impe)
-    endif
+    end if
 
 !   4 - Calculation and saving parameters
     champs = ' '
     do i = 1, nbsym
         dec = 5*(i-1)
-        champs(dec+i:dec+i+3) = nomsym(i)(1:4)
+        champs(dec+i:dec+i+3) = nomsym(i) (1:4)
     end do
-    call utmess('I', 'DYNAMIQUE_88', nr=2, valr= [fcal_min, fcal_max],&
-                                     si=nbfreq, sk=champs)
+    call utmess('I', 'DYNAMIQUE_88', nr=2, valr=[fcal_min, fcal_max], &
+                si=nbfreq, sk=champs)
 
 !
 !====
@@ -476,7 +476,7 @@ implicit none
 
 !   NIVEAU D'IMPRESSION DE L'AVANCEMENT DE CALCUL
     freqpr = 5
-    if (niv.eq.2) freqpr = 1
+    if (niv .eq. 2) freqpr = 1
     last_prperc = 999
 
     do ifreq = 1, nbfreq
@@ -486,33 +486,33 @@ implicit none
 !
         freq = zr(lfreq-1+ifreq)
         omega = depi*freq
-        coef_vale(2) = - omega2(freq)
+        coef_vale(2) = -omega2(freq)
         icoef = 2
         if ((l_damp) .or. (l_damp_modal)) then
             coef_vale(3) = 0.d0
             coef_vale(4) = omega
             icoef = 4
-        endif
+        end if
         if (l_impe) then
             coef_vale(icoef+1) = 0.d0
-            coef_vale(icoef+2) = coef_vale(2) * depi * freq
-        endif
+            coef_vale(icoef+2) = coef_vale(2)*depi*freq
+        end if
 !
 ! ----- CALCUL DU SECOND MEMBRE
 !
-        call dy2mbr(numddl, nb_equa, listLoad, freq, vediri,&
+        call dy2mbr(numddl, nb_equa, listLoad, freq, vediri, &
                     veneum, vevoch, vassec, lsecmb)
 !
 ! ----- APPLICATION EVENTUELLE EXCIT_RESU
 !
         if (nbexre .ne. 0) then
-            call dyexre(numddl, freq, nbexre, exreco, exresu,&
+            call dyexre(numddl, freq, nbexre, exreco, exresu, &
                         lsecmb)
-        endif
+        end if
 !
 ! ----- CALCUL DE LA MATRICE DYNAMIQUE
 !
-        call mtcmbl(nb_matr, coef_type, coef_vale, matr_list, dynam,&
+        call mtcmbl(nb_matr, coef_type, coef_vale, matr_list, dynam, &
                     ' ', ' ', 'ELIM=')
         call jeveuo(dynam(1:19)//'.REFA', 'E', vk24=refa)
         refa(7) = solveu
@@ -520,17 +520,17 @@ implicit none
 !
 ! ----- FACTORISATION DE LA MATRICE DYNAMIQUE
 !
-        call preres(solveu, 'V', icode, maprec, dynam,&
+        call preres(solveu, 'V', icode, maprec, dynam, &
                     ibid, -9999)
-        if ((icode.eq.1) .or. (icode.eq.2)) then
+        if ((icode .eq. 1) .or. (icode .eq. 2)) then
             call utmess('I', 'DYNAMIQUE_14', sr=freq)
-        endif
+        end if
 !
 ! ----- RESOLUTION DU SYSTEME, CELUI DU CHARGEMENT STANDARD
 !
         call zcopy(nb_equa, zc(lsecmb), 1, secmb, 1)
-        call resoud(dynam, maprec, solveu, kineLoad, 0,&
-                    secmbr, soluti, 'V', [0.d0], [c16bid],&
+        call resoud(dynam, maprec, solveu, kineLoad, 0, &
+                    secmbr, soluti, 'V', [0.d0], [c16bid], &
                     crgc, .true._1, 0, iret)
         call jeveuo(soluti(1:19)//'.VALE', 'L', vc=solut)
         call zcopy(nb_equa, solut, 1, zc(lsecmb), 1)
@@ -539,9 +539,9 @@ implicit none
 ! ----- IMPRESSION DE L'ETAT D'AVANCEMENT DU CALCUL FREQUENTIEL
 !
         perc = int(100.d0*(real(ifreq)/real(nbfreq)))
-        if ((perc.ne.last_prperc).or.(ifreq.eq.1) )then
-            if ((mod(perc,freqpr).eq.0).or.(ifreq.eq.1)) then
-                call utmess('I', 'PROGRESS_2', ni=2, vali=[perc, ifreq], nr=2,&
+        if ((perc .ne. last_prperc) .or. (ifreq .eq. 1)) then
+            if ((mod(perc, freqpr) .eq. 0) .or. (ifreq .eq. 1)) then
+                call utmess('I', 'PROGRESS_2', ni=2, vali=[perc, ifreq], nr=2, &
                             valr=[freq, last_freq])
                 last_prperc = perc
             end if
@@ -553,12 +553,12 @@ implicit none
 ! ----------------------------------------------------------------
 !
 
-        if (.not.calgen) then
+        if (.not. calgen) then
 !       --- SI CALCUL SUR BASE PHYSIQUE
 !         - CREER UN CHAM_NO DANS LA SD_RESULTAT
             do inom = 1, nbsym
 !         --- BOUCLE SUR LES CHAMPS A STOCKER (DEPL,VITE,ACCE)
-                call rsexch(' ', result, nomsym(inom), ifreq+nbold, chamno,&
+                call rsexch(' ', result, nomsym(inom), ifreq+nbold, chamno, &
                             ier)
 !
 !           --- RECHERCHE SI IL EST "POSSIBLE" D'ECRIRE LE CHAMP DANS
@@ -576,32 +576,32 @@ implicit none
 !
                 else
                     ASSERT(ASTER_FALSE)
-                endif
+                end if
 !
 !           --- RECOPIE DANS L'OBJET RESULTAT
                 call jeveuo(chamno//'.VALE', 'E', vc=nlvale)
-                if ((nomsym(inom) .eq. 'DEPL' ) .or. ( nomsym(inom) .eq. 'PRES' )) then
+                if ((nomsym(inom) .eq. 'DEPL') .or. (nomsym(inom) .eq. 'PRES')) then
                     do ieq = 0, nb_equa-1
                         nlvale(ieq+1) = zc(lsecmb+ieq)
                     end do
                 else if (nomsym(inom) .eq. 'VITE') then
-                    cval = dcmplx(0.d0,depi*freq)
+                    cval = dcmplx(0.d0, depi*freq)
                     do ieq = 0, nb_equa-1
-                        nlvale(ieq+1) = cval * zc(lsecmb+ieq)
+                        nlvale(ieq+1) = cval*zc(lsecmb+ieq)
                     end do
                 else if (nomsym(inom) .eq. 'ACCE') then
                     rval = coef_vale(2)
                     do ieq = 0, nb_equa-1
-                        nlvale(ieq+1) = rval * zc(lsecmb+ieq)
+                        nlvale(ieq+1) = rval*zc(lsecmb+ieq)
                     end do
-                endif
+                end if
                 call rsnoch(result, nomsym(inom), ifreq+nbold)
                 call jelibe(chamno//'.VALE')
             end do
 !         --- FIN DE LA BOUCLE 130 SUR LES CHAMPS A STOCKER
 !
 !         --- RECOPIE DE LA FREQUENCE DE STOCKAGE
-            call rsadpa(result, 'E', 1, 'FREQ', ifreq+nbold,&
+            call rsadpa(result, 'E', 1, 'FREQ', ifreq+nbold, &
                         0, sjv=linst, styp=k8bid)
             zr(linst) = freq
 !
@@ -614,31 +614,31 @@ implicit none
                         zc(ldgec+ieq) = zc(lsecmb+ieq)
                     end do
                 else if (nomsym(inom) .eq. 'VITE') then
-                    cval = dcmplx(0.d0,depi*freq)
+                    cval = dcmplx(0.d0, depi*freq)
                     do ieq = 0, nb_equa-1
-                        zc(lvgec+ieq) = cval * zc(lsecmb+ieq)
+                        zc(lvgec+ieq) = cval*zc(lsecmb+ieq)
                     end do
                 else if (nomsym(inom) .eq. 'ACCE') then
                     rval = coef_vale(2)
                     do ieq = 0, nb_equa-1
-                        zc(lagec+ieq) = rval * zc(lsecmb+ieq)
+                        zc(lagec+ieq) = rval*zc(lsecmb+ieq)
                     end do
-                endif
+                end if
 !
             end do
-            call mdarch('HARM', isto1, ifreq-1, freq, nb_equa,&
-                        zi(jordr), zr(jfreq), nbsym=nbsym, nomsym=nomsym, depgec=zc(ldgec),&
-                        vitgec=zc(lvgec), accgec=zc(lagec), depstc=zc(jdepl), vitstc=zc(jvite),&
+            call mdarch('HARM', isto1, ifreq-1, freq, nb_equa, &
+                        zi(jordr), zr(jfreq), nbsym=nbsym, nomsym=nomsym, depgec=zc(ldgec), &
+                        vitgec=zc(lvgec), accgec=zc(lagec), depstc=zc(jdepl), vitstc=zc(jvite), &
                         accstc=zc(jacce))
-            isto1=isto1+1
-        endif
+            isto1 = isto1+1
+        end if
 !
 !
 ! ----- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
         if (etausr() .eq. 1) then
             call sigusr()
-        endif
+        end if
 !
 ! ----- MESURE CPU
 !
@@ -647,9 +647,9 @@ implicit none
         if (tps1(4) .gt. .90d0*tps1(1) .and. i .ne. nbfreq) then
             rtab(1) = tps1(4)
             rtab(2) = tps1(1)
-            call utmess('Z', 'DYNAMIQUE_13', si=ifreq, nr=2, valr=rtab,&
+            call utmess('Z', 'DYNAMIQUE_13', si=ifreq, nr=2, valr=rtab, &
                         num_except=ASTER_TIMELIMIT_ERROR)
-        endif
+        end if
     end do
 
 !
@@ -658,40 +658,40 @@ implicit none
         call jedetr('&&COMDLH.DEPGEC')
         call jedetr('&&COMDLH.VITGEC')
         call jedetr('&&COMDLH.ACCGEC')
-    endif
+    end if
 !
 ! --- STOCKAGE : MODELE,CARA_ELEM,CHAM_MATER, CALCUL PHYSIQUE
 !
-    if (.not.calgen) then
+    if (.not. calgen) then
         call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=nomo)
-        call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate, arret = 'C', ier = ierc)
+        call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate, arret='C', ier=ierc)
         ! call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate)
         call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carele)
         call jeveuo(result//'           .ORDR', 'L', vi=ordr)
         call jelira(result//'           .ORDR', 'LONUTI', nbord)
         do i = 1, nbord
-            call rsadpa(result, 'E', 1, 'MODELE', ordr(i),&
+            call rsadpa(result, 'E', 1, 'MODELE', ordr(i), &
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = nomo
-            if (ierc.ne.0) then
+            if (ierc .ne. 0) then
                 call utmess('A', 'CHAMPS_21')
             else
-                call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(i),&
-                        0, sjv=ladpa, styp=k8bid)
+                call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(i), &
+                            0, sjv=ladpa, styp=k8bid)
                 zk8(ladpa) = mate(1:8)
-            endif
+            end if
 
-            call rsadpa(result, 'E', 1, 'CARAELEM', ordr(i),&
+            call rsadpa(result, 'E', 1, 'CARAELEM', ordr(i), &
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = carele(1:8)
         end do
-    endif
+    end if
 !
 ! --- CAS DE REPRISE AVEC CALCUL SUR BASE GENERALISE
 !
-    if (calgen .and. (.not.newcal)) then
+    if (calgen .and. (.not. newcal)) then
         call resu60(resu1, result)
-    endif
+    end if
 !
     call jedema()
 end subroutine

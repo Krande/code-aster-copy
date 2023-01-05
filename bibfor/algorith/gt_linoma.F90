@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gt_linoma(mesh,list_elem,nb_elem,list_node,nb_node)
+subroutine gt_linoma(mesh, list_elem, nb_elem, list_node, nb_node)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -52,47 +52,47 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-  integer, pointer :: list_node_aux(:) => null()
-  integer, pointer :: litrav(:) => null()
-  integer, pointer :: list_elem_aux(:) => null()
-  integer          :: aux(nb_elem), nb_elem_aux, nbno, j_info
-  integer          :: i_elem, indx_mini, elem_nume, elem_indx
-  character(len =24)::klitrav, klist_elem_aux, klist_node_aux
+    integer, pointer :: list_node_aux(:) => null()
+    integer, pointer :: litrav(:) => null()
+    integer, pointer :: list_elem_aux(:) => null()
+    integer          :: aux(nb_elem), nb_elem_aux, nbno, j_info
+    integer          :: i_elem, indx_mini, elem_nume, elem_indx
+    character(len=24)::klitrav, klist_elem_aux, klist_node_aux
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! - Initialisation
 !
-    klitrav        = '&&OP070_klitrav'
+    klitrav = '&&OP070_klitrav'
     klist_elem_aux = '&&OP070_klist_elem_aux'
     klist_node_aux = '&&OP070_klist_node_aux'
-    nb_elem_aux    = 0
-    nb_node        = 0
+    nb_elem_aux = 0
+    nb_node = 0
     indx_mini = minval(list_elem)
     call jeveuo(mesh//'.DIME', 'L', j_info)
     nbno = zi(j_info-1+1)
-    AS_ALLOCATE(vi=litrav, size=nbno )
+    AS_ALLOCATE(vi=litrav, size=nbno)
 !
 ! - Get untracked elements
 !
-   do i_elem=1,nb_elem
+    do i_elem = 1, nb_elem
         elem_nume = list_elem(i_elem)
-        elem_indx = elem_nume + 1 - indx_mini
-        nb_elem_aux      = nb_elem_aux + 1
+        elem_indx = elem_nume+1-indx_mini
+        nb_elem_aux = nb_elem_aux+1
         aux(nb_elem_aux) = elem_nume
     end do
-    AS_ALLOCATE(vi=list_elem_aux, size=nb_elem_aux )
-    list_elem_aux(:)=aux(1:nb_elem_aux)
+    AS_ALLOCATE(vi=list_elem_aux, size=nb_elem_aux)
+    list_elem_aux(:) = aux(1:nb_elem_aux)
 
     if (nb_elem_aux .gt. 0) then
 !
 ! ----- Get list of nodes frome untracked elements
 !
-        AS_ALLOCATE(vi=list_node_aux, size=9*nb_elem_aux )
-        call gmgnre(mesh, nbno , litrav, list_elem_aux, nb_elem_aux,&
-                   list_node_aux, nb_node, 'TOUS')
-        AS_ALLOCATE(vi=list_node, size=nb_node )
-        list_node(:)=list_node_aux(1:nb_node)
+        AS_ALLOCATE(vi=list_node_aux, size=9*nb_elem_aux)
+        call gmgnre(mesh, nbno, litrav, list_elem_aux, nb_elem_aux, &
+                    list_node_aux, nb_node, 'TOUS')
+        AS_ALLOCATE(vi=list_node, size=nb_node)
+        list_node(:) = list_node_aux(1:nb_node)
 !
 ! ----- Print check
 !

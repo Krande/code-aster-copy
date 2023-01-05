@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine listco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+subroutine listco(sdcont, keywf, mesh, model, nb_cont_zone, &
                   nb_cont_elem, nb_cont_node)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/liexco.h"
 #include "asterfort/nbsuco.h"
@@ -56,12 +56,12 @@ implicit none
 !
 ! - Count elements/nodes of contact
 !
-    call nbsuco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+    call nbsuco(sdcont, keywf, mesh, model, nb_cont_zone, &
                 nb_cont_elem, nb_cont_node)
 !
 ! - Save elements/nodes of contact
 !
-    call liexco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
+    call liexco(sdcont, keywf, mesh, model, nb_cont_zone, &
                 nb_cont_elem, nb_cont_node)
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine decod2(rec, irec, ifield, itype, ilu,&
+subroutine decod2(rec, irec, ifield, itype, ilu, &
                   rlu, trouve)
     implicit none
 #include "asterf_types.h"
@@ -51,14 +51,14 @@ subroutine decod2(rec, irec, ifield, itype, ilu,&
 !
 !- INITIALISATION
     trouve = .true.
-    ilu=ismaem()
-    rlu=r8vide()
+    ilu = ismaem()
+    rlu = r8vide()
 !
 !- SI IREC OU IFIELD INVALIDE : ON RETOURNE DES VALEURS VIDES :
-    if ((irec.le.0) .or. (ifield.le.0)) then
-        trouve=.false.
+    if ((irec .le. 0) .or. (ifield .le. 0)) then
+        trouve = .false.
         goto 9999
-    endif
+    end if
 !
 !- RECHERCHE DU CHAMP A TRAITER
 !
@@ -78,6 +78,6 @@ subroutine decod2(rec, irec, ifield, itype, ilu,&
         call lxlir8(field, rlu, ier)
         if (ier .eq. 1) trouve = .false.
 !
-    endif
+    end if
 9999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,38 +37,38 @@ subroutine marota(tetag, drot)
     real(kind=8) :: teta2, un, zero
 !-----------------------------------------------------------------------
     zero = 0.d0
-    epsil = r8prem( )**4
+    epsil = r8prem()**4
     un = 1.d0
-    teta2=ddot(3,tetag,1,tetag,1)
+    teta2 = ddot(3, tetag, 1, tetag, 1)
     if (abs(teta2) .lt. epsil) goto 30
-    teta1 = sqrt (teta2)
-    coef = un / teta1
+    teta1 = sqrt(teta2)
+    coef = un/teta1
     call antisy(tetag, coef, amat1)
-    coef = un / teta2
+    coef = un/teta2
     do j = 1, 3
         do i = 1, 3
-            amat2(i,j) = coef * tetag(i) * tetag(j)
+            amat2(i, j) = coef*tetag(i)*tetag(j)
         end do
-        amat2(j,j) = amat2(j,j) - un
+        amat2(j, j) = amat2(j, j)-un
     end do
     coef1 = sin(teta1)
-    coef2 = un - cos(teta1)
+    coef2 = un-cos(teta1)
     do j = 1, 3
         do i = 1, 3
-            drot(i,j) = coef1*amat1(i,j) + coef2*amat2(i,j)
+            drot(i, j) = coef1*amat1(i, j)+coef2*amat2(i, j)
         end do
-        drot(j,j) = drot(j,j) + un
+        drot(j, j) = drot(j, j)+un
     end do
     goto 40
 !*** TETAG EST TRES PETIT ET LA MATRICE DROT EST PRATIQUEMENT L'UNITE
- 30 continue
+30  continue
     do j = 1, 3
         do i = 1, 3
-            drot(i,j) = zero
+            drot(i, j) = zero
         end do
-        drot(j,j) = un
+        drot(j, j) = un
     end do
- 40 continue
+40  continue
     goto 999
 999 continue
 end subroutine

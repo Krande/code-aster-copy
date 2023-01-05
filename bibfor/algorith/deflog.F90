@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
 #include "asterfort/tnsvec.h"
 !
     integer, intent(in) :: ndim
-    real(kind=8), intent(in) :: f(3,3)
+    real(kind=8), intent(in) :: f(3, 3)
     real(kind=8), intent(out) :: epsl(6)
     real(kind=8), intent(out) :: gn(3, 3)
     real(kind=8), intent(out) :: lamb(3)
@@ -56,7 +56,7 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
     gn = 0.d0
     lamb = 0.d0
     logl = 0.d0
-    iret  = 0
+    iret = 0
 !
 !     LE CALCUL DES VALEURS PROPRES N'A PAS ENCORE ETE FAIT: On calcule C
     C = matmul(transpose(f), f)
@@ -72,15 +72,15 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
 !     pour gagner du temps
 !     --------------------------------
 ! --- MATRICE TR = (XX XY XZ YY YZ ZZ) (POUR DIAGP3)
-        tr(1) = C(1,1)
-        tr(2) = C(1,2)
-        tr(3) = C(1,3)
-        tr(4) = C(2,2)
-        tr(5) = C(2,3)
-        tr(6) = C(3,3)
+        tr(1) = C(1, 1)
+        tr(2) = C(1, 2)
+        tr(3) = C(1, 3)
+        tr(4) = C(2, 2)
+        tr(5) = C(2, 3)
+        tr(6) = C(3, 3)
         call diagp3(tr, gn, lamb)
 !
-    else if (ndim.eq.2) then
+    else if (ndim .eq. 2) then
 !
         tr2(1) = tr(1)
         tr2(2) = tr(2)
@@ -90,19 +90,19 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
 !
         do i = 1, 2
             do j = 1, 2
-                gn(i,j)=gn2(i,j)
+                gn(i, j) = gn2(i, j)
             end do
         end do
-        gn(3,3)=1.d0
+        gn(3, 3) = 1.d0
 !
-    endif
+    end if
 !
     do i = 1, nbvec
         if (lamb(i) .le. r8prem()) then
-            iret=1
+            iret = 1
             goto 999
-        endif
-        logl(i)=log(lamb(i))*0.5d0
+        end if
+        logl(i) = log(lamb(i))*0.5d0
     end do
 !
 !     EPSL = DEFORMATION LOGARITHMIQUE
@@ -113,7 +113,7 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
         do j = 1, 3
             do k = 1, nbvec
 !              Calcul de EPSL dans le repere general
-                epsl33(i,j)=epsl33(i,j)+logl(k)*gn(i,k)*gn(j,k)
+                epsl33(i, j) = epsl33(i, j)+logl(k)*gn(i, k)*gn(j, k)
             end do
         end do
     end do

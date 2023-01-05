@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmevin(sddisc, ds_contact, i_echec, i_echec_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
 !
-character(len=19), intent(in) :: sddisc
-type(NL_DS_Contact), intent(in) :: ds_contact
-integer, intent(in) :: i_echec
-integer, intent(out) :: i_echec_acti
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    integer, intent(in) :: i_echec
+    integer, intent(out) :: i_echec_acti
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,20 +67,20 @@ integer, intent(out) :: i_echec_acti
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... INTERPENETRATION'
-    endif
+        write (ifm, *) '<MECANONLINE> ... INTERPENETRATION'
+    end if
 !
 ! --- INITIALISATIONS
 !
-    call utdidt('L', sddisc, 'ECHE', 'PENE_MAXI', index_ = i_echec,&
-                valr_ = pene_maxi)
+    call utdidt('L', sddisc, 'ECHE', 'PENE_MAXI', index_=i_echec, &
+                valr_=pene_maxi)
     i_echec_acti = 0
     levent = .false.
     pnmaxi = 0.d0
 !
 ! - Get parameters of contact
 !
-    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
 !
 ! - Access to contact datastructures
 !
@@ -95,17 +95,17 @@ integer, intent(out) :: i_echec_acti
             if (abs(jeufin) .gt. pene_maxi) then
                 if (abs(jeufin) .gt. pnmaxi) then
                     pnmaxi = abs(jeufin)
-                endif
+                end if
                 levent = .true.
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! --- ACTIVATION EVENEMENT
 !
     if (levent) then
         i_echec_acti = i_echec
-    endif
+    end if
 !
     call jedema()
 end subroutine

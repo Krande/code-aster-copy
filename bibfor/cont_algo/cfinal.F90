@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfinal(ds_contact, nbliac)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -90,9 +90,9 @@ implicit none
 !
 ! --- PARAMETRES
 !
-    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI' )
-    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
-    lgliss = cfdisl(ds_contact%sdcont_defi,'CONT_DISC_GLIS')
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
+    lgcp = cfdisl(ds_contact%sdcont_defi, 'CONT_GCP')
+    lgliss = cfdisl(ds_contact%sdcont_defi, 'CONT_DISC_GLIS')
 !
 ! --- DETECTION DES COUPLES DE NOEUDS INTERPENETRES
 !
@@ -112,14 +112,14 @@ implicit none
                 liaact = .true.
             else
                 liaact = .false.
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- LIAISON GLISSIERE -> TOUTES LES LIAISONS SONT ACTIVEES
 !
         if (lgliss) then
             liaact = .true.
-        endif
+        end if
 !
 ! ----- LA LIAISON EXISTE-T-ELLE DEJA ?
 !
@@ -127,7 +127,7 @@ implicit none
         do iliac = 1, nbliac_init
             if (zi(jliac-1+iliac) .eq. iliai) then
                 liaexi = .true.
-            endif
+            end if
         end do
 !
 ! ----- INDICE DE LA NOUVELLE LIAISON ACTIVE
@@ -136,17 +136,17 @@ implicit none
             if (lgcp) then
                 posit = iliai
             else
-                posit = nbliac + 1
-            endif
-        endif
+                posit = nbliac+1
+            end if
+        end if
 !
 ! ----- ACTIVATION DE LA LIAISON DE CONTACT
 !
         if (liaact) then
             call cftabl(indic, nbliac, ajliai, spliai, &
-                        ds_contact%sdcont_solv, typeaj, posit,&
+                        ds_contact%sdcont_solv, typeaj, posit, &
                         iliai)
-        endif
+        end if
 !
     end do
 !

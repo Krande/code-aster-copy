@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    character(len= 8) :: ngrand
+    character(len=8) :: ngrand
     character(len=24) :: k24bid
     integer :: igrand, iasmax, iasedi, nbcmp, inomcp, nbec, irep
     integer :: iasbon, ii, icode, izone, ilnuma, nbmaza
@@ -77,8 +77,8 @@ subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
     call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
     call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
-    irep = indik8( zk8(inomcp), cara , 1, nbcmp )
-    ASSERT(irep .ne. 0 )
+    irep = indik8(zk8(inomcp), cara, 1, nbcmp)
+    ASSERT(irep .ne. 0)
 !
 !   RECHERCHE DE LA ZONE COMTENANT NUMA
     iasbon = 0
@@ -91,30 +91,30 @@ subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
             call jeveuo(jexnum(k24bid, izone), 'L', ilnuma)
             call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !       SI C'EST UN GROUPE DE MAILLE
-        else if (icode.eq.2) then
+        else if (icode .eq. 2) then
             k24bid = mailla//'.GROUPEMA'
             call jeveuo(jexnum(k24bid, izone), 'L', ilnuma)
             call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !       SI C'EST TOUT LE MAILLAGE
-        else if (icode.eq.1) then
+        else if (icode .eq. 1) then
             iasbon = ii
             goto 160
         else
             ASSERT(.false.)
-        endif
+        end if
 !       MAILLE DANS LISTE OU GROUPE DE MAILLE DE CETTE ZONE
         do jj = 1, nbmaza
             if (numa .eq. zi(ilnuma+jj-1)) then
                 iasbon = ii
                 goto 160
-            endif
+            end if
         end do
     end do
 160 continue
     icode = desc(1+3+2*iasmax+nbec*(iasbon-1))
-    irvep = rgcmpg(icode,irep)
+    irvep = rgcmpg(icode, irep)
     ASSERT(irvep .ne. 0)
-    vale = v_vale(1+(iasbon-1)*nbcmp + irvep - 1)
+    vale = v_vale(1+(iasbon-1)*nbcmp+irvep-1)
 !
     call jedema()
 end subroutine

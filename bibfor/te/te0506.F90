@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,10 +47,10 @@ subroutine te0506(option, nomte)
 !
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPER', 'L', itemp)
@@ -64,22 +64,22 @@ subroutine te0506(option, nomte)
 !
     do kp = 1, npg
         k = (kp-1)*nno
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         tpg = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-            tpg = tpg + zr(itempi+i-1)*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+            tpg = tpg+zr(itempi+i-1)*zr(ivf+k+i-1)
         end do
         call foderi(coef, tpg, alpha, alphap)
         if (laxi) poids = poids*r
 !
 !
         do i = 1, nno
-            zr(iveres+i-1) = zr(iveres+i-1) + poids*zr(ivf+k+i-1)* ( alpha-alphap*tpg)
+            zr(iveres+i-1) = zr(iveres+i-1)+poids*zr(ivf+k+i-1)*(alpha-alphap*tpg)
         end do
     end do
- 40 continue
+40  continue
 ! FIN ------------------------------------------------------------------
 end subroutine

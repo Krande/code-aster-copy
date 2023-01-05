@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,11 +71,11 @@ subroutine lisimp(lischa, ifm)
 !
     call lisnnb(lischa, nbchar)
     if (nbchar .eq. 0) then
-        write(ifm,*) '<LISCHA> PAS DE CHARGES'
+        write (ifm, *) '<LISCHA> PAS DE CHARGES'
         goto 99
     else
-        write(ifm,*) '<LISCHA> NOMBRE DE CHARGES: ',nbchar
-    endif
+        write (ifm, *) '<LISCHA> NOMBRE DE CHARGES: ', nbchar
+    end if
 !
 ! --- LISTE DES GENRES DISPONIBLES
 !
@@ -95,31 +95,31 @@ subroutine lisimp(lischa, ifm)
         call lislco(lischa, ichar, genrec(1))
         call lisltf(lischa, ichar, typfct)
         call lisllc(lischa, ichar, prefob)
-        write(6,*) 'CHARGE NUMERO : ',ichar
-        write(6,*) '  * NOM DE LA CHARGE                  : ',charge
-        write(6,*) '  * TYPE DE LA CHARGE                 : ',typech
-        write(6,*) '  * TYPE D APPLICATION                : ',typapp
-        write(6,*) '  * CODE DE LA CHARGE                 : ',genrec(1)
-        write(6,*) '  * PREFIXE DE L''OBJET DE LA CHARGE   : ',prefob
-        write(6,*) '  * FONCTION MULTIPLICATRICE:'
-        write(6,*) '  ** TYPE                : ',typfct
+        write (6, *) 'CHARGE NUMERO : ', ichar
+        write (6, *) '  * NOM DE LA CHARGE                  : ', charge
+        write (6, *) '  * TYPE DE LA CHARGE                 : ', typech
+        write (6, *) '  * TYPE D APPLICATION                : ', typapp
+        write (6, *) '  * CODE DE LA CHARGE                 : ', genrec(1)
+        write (6, *) '  * PREFIXE DE L''OBJET DE LA CHARGE   : ', prefob
+        write (6, *) '  * FONCTION MULTIPLICATRICE:'
+        write (6, *) '  ** TYPE                : ', typfct
         if (typfct(1:5) .eq. 'FONCT') then
             call lislnf(lischa, ichar, nomfct)
-            write(6,*) '  ** NOM (DEFI_FONCTION) : ',nomfct
+            write (6, *) '  ** NOM (DEFI_FONCTION) : ', nomfct
         else
             call lislnf(lischa, ichar, nomfct)
-            write(6,*) '  ** NOM (INTERNE)       : ',nomfct
-        endif
+            write (6, *) '  ** NOM (INTERNE)       : ', nomfct
+        end if
 !
         if (typfct(7:10) .eq. 'COMP') then
             call liscpp(lischa, ichar, phase, npuis)
-            write(6,*) '  ** PHASE               : ',phase
-            write(6,*) '  ** PUISSANCE           : ',npuis
-        endif
+            write (6, *) '  ** PHASE               : ', phase
+            write (6, *) '  ** PUISSANCE           : ', npuis
+        end if
 !
 ! ----- BOUCLE SUR LES GENRES
 !
-        write(6,*) '  * GENRES DE LA CHARGE:'
+        write (6, *) '  * GENRES DE LA CHARGE:'
         do igenr = 1, nbgenr(1)
             gencha = zk24(jlisg-1+igenr)
             nomlis = '&&LISIMP.NOMLIS'
@@ -132,14 +132,14 @@ subroutine lisimp(lischa, ifm)
 !
 ! --------- GENRE PRESENT DANS CETTE CHARGE
 !
-                write(6,*) '  ** GENRE        : ',gencha
-            endif
+                write (6, *) '  ** GENRE        : ', gencha
+            end if
         end do
     end do
 !
     call jedetr(lisgen)
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

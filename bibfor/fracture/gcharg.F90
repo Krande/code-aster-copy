@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
-                  chpres, chepsi, chpesa, chrota, lfonc,&
+subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
+                  chpres, chepsi, chpesa, chrota, lfonc, &
                   time, iord)
     implicit none
 #include "asterf_types.h"
@@ -83,7 +83,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 ! ----------------------------------------------------------------------
 !
     integer :: znbenc
-    parameter (znbenc=60)
+    parameter(znbenc=60)
     integer :: tabaut(znbenc)
 !
     character(len=24) :: k24bid
@@ -118,7 +118,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     nomcmd = 'CALC_G'
     phenom = 'MECANIQUE'
     cepsi = '&&GCHARG.CEPSI'
-    epselno= '&&GCHARG.EPSELNO'
+    epselno = '&&GCHARG.EPSELNO'
     lvolu = .false.
     l1d2d = .false.
     l2d3d = .false.
@@ -158,8 +158,8 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
         if (typech(1:4) .eq. 'FONC') then
             lfonc = .true.
             goto 20
-        endif
- 20     continue
+        end if
+20      continue
     end do
 !
 ! ----- BOUCLE SUR LES CHARGES
@@ -181,7 +181,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
             lfchar = .true.
         else
             lfchar = .false.
-        endif
+        end if
 !
 ! ----- CE CHARGEMENT EST FONCTION
 !
@@ -194,7 +194,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
         lfmult = .false.
         if (typfct(1:5) .eq. 'FONCT') then
             lfmult = .true.
-        endif
+        end if
 !
 ! ----- CHARGEMENTS UTILISES OU NON DANS CALC_G
 !
@@ -223,7 +223,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 ! ----------------- CARTE D'ENTREE
 !
                     call lisdef('CART', motcle, ibid, nomobj, itypob)
-                    ASSERT(itypob(1).eq.1)
+                    ASSERT(itypob(1) .eq. 1)
                     cartei = prefob(1:13)//nomobj(1:6)
 !
 ! ----------------- Si le champ PRE_EPSI est de type CHAM_NO ou CARTE, il faut récupérer
@@ -237,31 +237,31 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                         if (ng .eq. 'NEUT_K8') then
                             call jeveuo(prefob(1:13)//'.EPSIN.VALE', 'L', vk8=p_vale_epsi)
                             cartei = p_vale_epsi(1)
-                        endif
+                        end if
 ! ----------------- transformation si champ ELGA -> ELNO
                         call chpver('C', cartei(1:19), 'ELGA', 'EPSI_R', inga)
 !
                         if (inga == 0) then
-                            occur = occur + 1
+                            occur = occur+1
                             ASSERT(occur <= 1)
 !               traitement du champ pour les elements finis classiques
                             call detrsd('CHAMP', cepsi)
-                            call alchml(modelLigrel, 'CALC_G', 'PEPSINR', 'V', cepsi,&
+                            call alchml(modelLigrel, 'CALC_G', 'PEPSINR', 'V', cepsi, &
                                         iret, ' ')
-                            call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V',&
+                            call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V', &
                                         epselno, modele)
                             call chpver('F', epselno(1:19), 'ELNO', 'EPSI_R', iret)
                             cartei(1:19) = epselno(1:19)
                         end if
-                    endif
+                    end if
 !
 ! ----------------- SELECTION SUIVANT TYPE
 !
-                    call gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
-                                chepsi, chpesa, chrota, lvolu, l1d2d,&
-                                l2d3d, lpres, lepsi, lpesa, lrota,&
-                                lfchar, lfvolu, lf1d2d, lf2d3d, lfpres,&
-                                lfepsi, lfpesa, lfrota, carteo, lpchar,&
+                    call gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres, &
+                                chepsi, chpesa, chrota, lvolu, l1d2d, &
+                                l2d3d, lpres, lepsi, lpesa, lrota, &
+                                lfchar, lfvolu, lf1d2d, lf2d3d, lfpres, &
+                                lfepsi, lfpesa, lfrota, carteo, lpchar, &
                                 lccomb)
 !
 !
@@ -274,13 +274,13 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                             call getvtx(' ', 'OPTION', scal=list_option(1))
                             if (list_option(1) .eq. 'G') then
                                 call utmess('F', 'RUPTURE0_91')
-                            endif
+                            end if
                         else
                             call getvtx(' ', 'OPTION', nbval=-ier, vect=list_option)
                             do i = 1, -ier
                                 if (list_option(i) .eq. 'G') then
                                     call utmess('F', 'RUPTURE0_91')
-                                endif
+                                end if
                             end do
                         end if
                     end if
@@ -289,7 +289,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 !
 ! ----------------- PREPARATION NOM DE LA FONCTION RESULTANTE
 !
-                    call gcfonc(ichar, iord, cartei, lfchar, lfmult,&
+                    call gcfonc(ichar, iord, cartei, lfchar, lfmult, &
                                 newfct, lformu)
 !
 ! ----------------- CAS PARTICULIER (CARACTERE GENERIQUE A D'AUTRE CAS A DETERMINER):
@@ -297,41 +297,41 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 ! ----------------- AUTRE CAHRGEMENT FONCTION
 ! ----------------- DANS LE CAS CONTRAIRE, ON CREE UN CHAMPS FONCTION UNIFORME
                     if (motcle .eq. 'PRES_REP') then
-                        if (lfonc .and. (.not.lfpres)) then
+                        if (lfonc .and. (.not. lfpres)) then
                             call jeveuo(cartei//'.VALE', 'L', iret)
                             call mepres(modele, cartei, lfonc, zr(iret), 0.d0)
-                            lfpres=.true.
-                            lfchar=.true.
-                        endif
-                    endif
+                            lfpres = .true.
+                            lfchar = .true.
+                        end if
+                    end if
 !
 ! ----------------- CONSTRUIT LA CARTE A PARTIR DU CHARGEMENT
 !
-                    call gcchar(ichar, iprec, time, carteo, lfchar,&
-                                lpchar, lformu, lfmult, lccomb, cartei,&
+                    call gcchar(ichar, iprec, time, carteo, lfchar, &
+                                lpchar, lformu, lfmult, lccomb, cartei, &
                                 nomfct, newfct, oldfon)
 !
 !
- 12                 continue
-                endif
+12                  continue
+                end if
             end do
-        endif
+        end if
     end do
 !
 ! - SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL
 !
-    if (.not.lvolu) then
+    if (.not. lvolu) then
         call mefor0(modele, chvolu, lfonc)
-    endif
-    if (.not.l1d2d) then
+    end if
+    if (.not. l1d2d) then
         call mefor0(modele, ch1d2d, lfonc)
-    endif
-    if (.not.l2d3d) then
+    end if
+    if (.not. l2d3d) then
         call mefor0(modele, ch2d3d, lfonc)
-    endif
-    if (.not.lpres) then
+    end if
+    if (.not. lpres) then
         call mepres(modele, chpres, lfonc, 0.d0, 0.d0)
-    endif
+    end if
 !
 !
     call jedetr(oldfon)

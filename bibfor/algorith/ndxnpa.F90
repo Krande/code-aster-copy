@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndxnpa(model         , cara_elem,&
-                  list_func_acti, ds_print,&
-                  ds_material   , ds_constitutive,&
-                  sddisc, sddyna, sdnume, nume_dof, nume_inst  ,&
-                  hval_incr     , hval_algo)
+subroutine ndxnpa(model, cara_elem, &
+                  list_func_acti, ds_print, &
+                  ds_material, ds_constitutive, &
+                  sddisc, sddyna, sdnume, nume_dof, nume_inst, &
+                  hval_incr, hval_algo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,15 +42,15 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/nonlinDSMaterialTimeStep.h"
 !
-character(len=24), intent(in) :: model, cara_elem
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19), intent(in) :: sddyna, sdnume, sddisc
-type(NL_DS_Print), intent(inout) :: ds_print
-integer, intent(in) :: nume_inst
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+    character(len=24), intent(in) :: model, cara_elem
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19), intent(in) :: sddyna, sdnume, sddisc
+    type(NL_DS_Print), intent(inout) :: ds_print
+    integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lgrot = isfonc(list_func_acti,'GD_ROTA')
+    lgrot = isfonc(list_func_acti, 'GD_ROTA')
 !
 ! --- ELEMENTS DE STRUCTURES EN GRANDES ROTATIONS
 !
@@ -99,7 +99,7 @@ character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
         call jeveuo(sdnume(1:19)//'.NDRO', 'L', indro)
     else
         indro = isnnem()
-    endif
+    end if
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -127,18 +127,18 @@ character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! --- INITIALISATIONS EN DYNAMIQUE
 !
-    call ndnpas(list_func_acti, nume_dof, nume_inst, sddisc, sddyna,&
+    call ndnpas(list_func_acti, nume_dof, nume_inst, sddisc, sddyna, &
                 hval_incr, hval_algo)
 !
 ! - Print or not ?
 !
-    ds_print%l_print = mod(nume_inst+1,ds_print%reac_print) .eq. 0
+    ds_print%l_print = mod(nume_inst+1, ds_print%reac_print) .eq. 0
 !
 ! - Update material parameters for new time step
 !
-    call nonlinDSMaterialTimeStep(model          , ds_material, cara_elem,&
-                                  ds_constitutive, hval_incr  ,&
-                                  nume_dof       , sddisc     , nume_inst)
+    call nonlinDSMaterialTimeStep(model, ds_material, cara_elem, &
+                                  ds_constitutive, hval_incr, &
+                                  nume_dof, sddisc, nume_inst)
 !
     call jedema()
 !

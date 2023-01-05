@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
-                     gscoo, wg, locname, ndim, nomasu,&
+subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss, &
+                     gscoo, wg, locname, ndim, nomasu, &
                      cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -43,13 +43,13 @@ subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
     mode_4 = modeco
     ngaus4 = ngauss
     ndim4 = ndim
-    call mlclow(fidm, locname, typge4, ndim4, refcoo,&
-                mode_4, ngaus4, gscoo, wg, '',&
+    call mlclow(fidm, locname, typge4, ndim4, refcoo, &
+                mode_4, ngaus4, gscoo, wg, '', &
                 nomasu, cret4)
     cret = cret4
 #else
-    call mlclow(fid, locname, typgeo, ndim, refcoo,&
-                modeco, ngauss, gscoo, wg, '',&
+    call mlclow(fid, locname, typgeo, ndim, refcoo, &
+                modeco, ngauss, gscoo, wg, '', &
                 nomasu, cret)
 #endif
 !

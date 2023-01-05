@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,19 +56,19 @@ subroutine op0006()
     nomode = ' '
     nomai2 = ' '
     call getvid(' ', 'MODELE', scal=nomode, nbret=n1)
-    if (n1.eq.1) then
+    if (n1 .eq. 1) then
         call dismoi('NOM_MAILLA', nomode, 'MODELE', repk=nomail)
         call getvid(' ', 'MAILLAGE', scal=nomai2, nbret=n1)
-        if (n1.eq.1 .and. nomail.ne.nomai2) then
-            valk(1)=nomode
-            valk(2)=nomai2
-            valk(3)=nomail
+        if (n1 .eq. 1 .and. nomail .ne. nomai2) then
+            valk(1) = nomode
+            valk(2) = nomai2
+            valk(3) = nomail
             call utmess('F', 'MODELISA2_11', nk=3, valk=valk)
-        endif
+        end if
     else
         call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n1)
-        ASSERT(n1.eq.1)
-    endif
+        ASSERT(n1 .eq. 1)
+    end if
 !
 !
 !     1- TRAITEMENT DU MOT-CLE AFFE :
@@ -97,7 +97,7 @@ subroutine op0006()
 !     ------------------------------------------
     if (niv .gt. 1) then
         call imprsd('CHAMP', chmat//'.CHAMP_MAT', ifm, 'CHAM_MATER:')
-    endif
+    end if
 !
 !
     call jedema()

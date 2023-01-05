@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,18 +67,18 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 !
     tpsdit = sddisc(1:19)//'.DITR'
     call jelira(tpsdit, 'LONMAX', ival=nummax)
-    instam = diinst(sddisc,numins)
+    instam = diinst(sddisc, numins)
     if (numins .eq. nummax) then
         instap = instam+deltac
     else
-        instap = diinst(sddisc,numins+1)
-    endif
+        instap = diinst(sddisc, numins+1)
+    end if
 !
 ! --- VALEURS STOCKEES
 !
     tpsext = sddisc(1:19)//'.AEXT'
     call jeveuo(tpsext, 'E', jtpsex)
-    ASSERT(durdec.gt.0.d0)
+    ASSERT(durdec .gt. 0.d0)
     oldref = zr(jtpsex-1+1)
 !
 ! --- PREMIERE EXTENSION
@@ -90,18 +90,18 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 ! ----- RECHERCHE DE LA "VRAIE FIN"
 !
 11      continue
-        inst = insref + nbrpas*deltac
+        inst = insref+nbrpas*deltac
         if (inst .gt. insfin) then
-            nbrpas = nbrpas - 1
+            nbrpas = nbrpas-1
             goto 12
         else
-            nbrpas = nbrpas + 1
-        endif
+            nbrpas = nbrpas+1
+        end if
         goto 11
 !
 12      continue
         insfin = insref+deltac*nbrpas
-    endif
+    end if
 !
 ! --- EXTENSION
 !
@@ -109,8 +109,8 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
         insfin = zr(jtpsex-1+3)
         if (instap .le. insfin) then
             insref = instap
-        endif
-    endif
+        end if
+    end if
 !
 ! --- SAUVEGARDE
 !

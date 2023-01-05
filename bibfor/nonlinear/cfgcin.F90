@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 ! --- INITIALISATION A PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL MU
 ! --- S'IL EST NON-NUL
 !
-    norme2 = ddot(nbliai,zr(jmu),1,zr(jmu),1)
+    norme2 = ddot(nbliai, zr(jmu), 1, zr(jmu), 1)
 !
     if (norme2 .ne. 0.d0) then
 !
@@ -106,23 +106,23 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
         call r8inir(neq, 0.d0, zr(jsecmb), 1)
         do iliai = 1, nbliai
             jdecal = zi(japptr+iliai-1)
-            nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-            call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal),&
+            nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
+            call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal), &
                         zr(jsecmb))
         end do
 !
 ! ----- RESOLUTION
 !
-        call resoud(matass, k19bla, solveu, cncin0, 0,&
-                    secmbr, ddelt, 'V', [0.d0], [c16bid],&
+        call resoud(matass, k19bla, solveu, cncin0, 0, &
+                    secmbr, ddelt, 'V', [0.d0], [c16bid], &
                     k19bla, .true._1, 0, iret)
 !
 ! ----- U = U + (-DELTA)
 !
-        call jeveuo(ddelt(1:19) //'.VALE', 'L', vr=vddelt)
-        call daxpy(neq, -1.d0, vddelt, 1, ddepc,&
+        call jeveuo(ddelt(1:19)//'.VALE', 'L', vr=vddelt)
+        call daxpy(neq, -1.d0, vddelt, 1, ddepc, &
                    1)
-    endif
+    end if
 !
     call jedema()
 !

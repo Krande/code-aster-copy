@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
-                  cpmono, nmat, mod, nvi, sigd,&
+subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
+                  cpmono, nmat, mod, nvi, sigd, &
                   sigf, vind, vinf, nbphas, iret)
     implicit none
 !     INITIALISATIONS POUR RUNGE-KUTTA
@@ -51,21 +51,21 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
     character(len=16) :: rela_comp, opt, necoul
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
-    common/tdim/ ndt,ndi
+    common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
-    parameter (maxdom=0.99d0)
-    data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
+    common/polycr/irr, decirr, nbsyst, decal, gdef
+    parameter(maxdom=0.99d0)
+    data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------
 !
-    iret=0
-    dsde(:,:) = 0.d0
+    iret = 0
+    dsde(:, :) = 0.d0
 !
-    if (materf(nmat,1) .eq. 0) then
+    if (materf(nmat, 1) .eq. 0) then
         call lcopli('ISOTROPE', mod, materf(1, 1), dsde)
-    else if (materf(nmat,1).eq.1) then
+    else if (materf(nmat, 1) .eq. 1) then
         call lcopli('ORTHOTRO', mod, materf(1, 1), dsde)
-    endif
+    end if
 !
 ! --    DEBUT TRAITEMENT DE VENDOCHAB --
 !     ROUTINE DE DECROISSANCE DES CONTRAINTES QUAND D>MAXDOM
@@ -73,32 +73,32 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 !
         if (opt .eq. 'RIGI_MECA_TANG') then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         if (vind(9) .ge. maxdom) then
 !
             if (vind(9) .eq. 1.0d0) then
                 do icp = 1, 2*ndim
-                    sigf(icp)=sigd(icp)*(0.01d0)
+                    sigf(icp) = sigd(icp)*(0.01d0)
                 end do
-                materf(1,1)=0.01d0*materf(1,1)
+                materf(1, 1) = 0.01d0*materf(1, 1)
                 call lcopli('ISOTROPE', mod, materf(1, 1), dsde)
             else
                 do icp = 1, 2*ndim
-                    sigf(icp)=sigd(icp)*(0.1d0)
+                    sigf(icp) = sigd(icp)*(0.1d0)
                 end do
-                endoc=(1.0d0-max(maxdom,vind(9)))*0.1d0
-                materf(1,1)=endoc*materf(1,1)
+                endoc = (1.0d0-max(maxdom, vind(9)))*0.1d0
+                materf(1, 1) = endoc*materf(1, 1)
                 call lcopli('ISOTROPE', mod, materf(1, 1), dsde)
-                materf(1,1)=materf(1,1)/endoc
-            endif
+                materf(1, 1) = materf(1, 1)/endoc
+            end if
             do icp = 1, nvi
-                vinf(icp)=vind(icp)
+                vinf(icp) = vind(icp)
             end do
-            vinf(9)=1.0d0
-            iret=9
+            vinf(9) = 1.0d0
+            iret = 9
             goto 999
-        endif
-    endif
+        end if
+    end if
 ! --  FIN   TRAITEMENT DE VENDOCHAB --
 !
     call dcopy(nvi, vind, 1, vinf, 1)
@@ -107,64 +107,64 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 !        INITIALISATION DE VINF(8) A UNE VALEUR NON NULLE
 !        POUR EVITER LES 1/0 DANS RKDVEC
         if (vinf(8) .le. (1.0d-8)) then
-            vinf(8)=1.0d-8
-        endif
-    endif
+            vinf(8) = 1.0d-8
+        end if
+    end if
 !
 !     COMPTAGE
 !     irr=0
-    decirr=0
-    nbsyst=0
-    decal=0
+    decirr = 0
+    nbsyst = 0
+    decal = 0
     if (rela_comp .eq. 'MONOCRISTAL') then
         if (gdef .eq. 1) then
             if (opt .ne. 'RAPH_MECA') then
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
             call dcopy(9, vind(nvi-3-18+1), 1, fp, 1)
-            call daxpy(9, 1.d0, id, 1, fp,&
+            call daxpy(9, 1.d0, id, 1, fp, &
                        1)
             call dcopy(9, fp, 1, vinf(nvi-3-18+1), 1)
-            nvi=nvi-9
-        endif
-        if (materf(nbcomm(1,1),2) .ge. 4) then
+            nvi = nvi-9
+        end if
+        if (materf(nbcomm(1, 1), 2) .ge. 4) then
 !           UNE SEULE FAMILLE
-            ASSERT(nbcomm(nmat, 2).eq.1)
-            necoul=cpmono(3)(1:16)
-            irr=0
+            ASSERT(nbcomm(nmat, 2) .eq. 1)
+            necoul = cpmono(3) (1:16)
+            irr = 0
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
-                irr=1
-                decirr=6+3*12
-            endif
+                irr = 1
+                decirr = 6+3*12
+            end if
             if (necoul .eq. 'MONO_DD_CFC_IRRA') then
-                irr=1
-                decirr=6+3*12
-            endif
-        endif
+                irr = 1
+                decirr = 6+3*12
+            end if
+        end if
         nvi = nvi-3
 !        NE PAS DIMINUER NVI DAVANTAGE A CAUSE DES GDEF
-    endif
+    end if
 !      POUR POLYCRISTAL
 !     INITIALISATION DE NBPHAS
-    nbphas=nbcomm(1,1)
+    nbphas = nbcomm(1, 1)
     if (rela_comp .eq. 'POLYCRISTAL') then
 !        RECUPERATION DU NOMBRE DE PHASES
-        nbphas=nbcomm(1,1)
-        nsfv=7+6*nbphas
+        nbphas = nbcomm(1, 1)
+        nsfv = 7+6*nbphas
         do iphas = 1, nbphas
-            indpha=nbcomm(1+iphas,1)
-            nbfsys=nbcomm(indpha,1)
+            indpha = nbcomm(1+iphas, 1)
+            nbfsys = nbcomm(indpha, 1)
             do ifa = 1, nbfsys
 !              indice de la famille IFA
-                indfa=indpha+ifa
-                ifl=nbcomm(indfa,1)
-                nuecou=nint(materf(ifl,2))
-                nbsys=12
-                nsfv=nsfv+nbsys*3
+                indfa = indpha+ifa
+                ifl = nbcomm(indfa, 1)
+                nuecou = nint(materf(ifl, 2))
+                nbsys = 12
+                nsfv = nsfv+nbsys*3
             end do
         end do
-        decirr=nsfv
-    endif
+        decirr = nsfv
+    end if
 !
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apnomp(sdappa, i_poin, poin_name)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -49,7 +49,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     sdappa_noms = sdappa(1:19)//'.NOMS'
-    call jeveuo(sdappa_noms, 'L', vk16 = v_sdappa_noms)
+    call jeveuo(sdappa_noms, 'L', vk16=v_sdappa_noms)
     poin_name = v_sdappa_noms(i_poin)
 !
 end subroutine

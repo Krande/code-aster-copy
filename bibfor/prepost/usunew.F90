@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine usunew(type, para, crit, epsi, x1,&
+subroutine usunew(type, para, crit, epsi, x1, &
                   x2, resu, iret)
     implicit none
 #include "asterfort/usufon.h"
@@ -28,7 +28,7 @@ subroutine usunew(type, para, crit, epsi, x1,&
     real(kind=8) :: resu, temp, x1, x2, xh, xl, zero
 !
 !-----------------------------------------------------------------------
-    parameter     ( maxit = 100 )
+    parameter(maxit=100)
 !     ------------------------------------------------------------------
 !
     iret = 0
@@ -37,50 +37,50 @@ subroutine usunew(type, para, crit, epsi, x1,&
     if (type(1:8) .eq. 'TUBE_BAV') then
         dl = para(2)
         da = para(3)
-    endif
+    end if
     xl = x1
     xh = x2
-    resu = ( x1 + x2 ) * 0.5d0
-    dxold = abs( x2 - x1 )
+    resu = (x1+x2)*0.5d0
+    dxold = abs(x2-x1)
     dx = dxold
     call usufon(type, para, resu, fr, dfr)
     do i = 1, maxit
         dxold = dx
-        if (((resu-xh)*dfr-fr)*((resu-xl)*dfr-fr) .ge. zero .or. abs( fr*2.d0) .gt.&
+        if (((resu-xh)*dfr-fr)*((resu-xl)*dfr-fr) .ge. zero .or. abs(fr*2.d0) .gt. &
             abs(dxold*dfr)) then
-            dx = ( xh - xl ) * 0.5d0
-            resu = dx * xl
+            dx = (xh-xl)*0.5d0
+            resu = dx*xl
 !            IF ( XL .EQ. RESU ) GOTO 9999
             if (crit(1:4) .eq. 'RELA') then
-                if (abs(xl-resu) .le. epsi * abs(resu)) goto 999
+                if (abs(xl-resu) .le. epsi*abs(resu)) goto 999
             else
-                if (abs(xl - resu) .le. epsi) goto 999
-            endif
+                if (abs(xl-resu) .le. epsi) goto 999
+            end if
         else
-            dx = fr / dfr
+            dx = fr/dfr
             temp = resu
-            resu = resu - dx
+            resu = resu-dx
 !            IF ( TEMP .EQ. RESU ) GOTO 9999
             if (crit(1:4) .eq. 'RELA') then
-                if (abs(temp-resu) .le. epsi * abs(resu)) goto 999
+                if (abs(temp-resu) .le. epsi*abs(resu)) goto 999
             else
-                if (abs(temp - resu) .le. epsi) goto 999
-            endif
-        endif
+                if (abs(temp-resu) .le. epsi) goto 999
+            end if
+        end if
         if (abs(dx) .lt. epsi) goto 999
         if (type(1:8) .eq. 'TUBE_BAV') then
-            if (( resu - dl*da ) .lt. 0.d0) then
+            if ((resu-dl*da) .lt. 0.d0) then
 !            WRITE(8,*)'--->> USUNEW, NOMBRE NEGATIF ',( RESU - DL*DA )
 !            WRITE(8,*)'              ON AJUSTE'
                 resu = dl*da
-            endif
-        endif
+            end if
+        end if
         call usufon(type, para, resu, fr, dfr)
         if (fr .lt. zero) then
             xl = resu
         else
             xh = resu
-        endif
+        end if
     end do
     iret = 10
     goto 999

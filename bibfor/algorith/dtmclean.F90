@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,34 +37,28 @@ subroutine dtmclean(sd_dtm_)
 #include "asterfort/dtmclean_noli_lub.h"
 #include "asterfort/dtmclean_noli_yacs.h"
 
-
 !     1. Input / output arguments
-      character(len=*)      , intent(in)  :: sd_dtm_
-      character(len=8)                    :: sd_dtm, sd_nl
+    character(len=*), intent(in)  :: sd_dtm_
+    character(len=8)                    :: sd_dtm, sd_nl
 
-      integer                             :: nbnli
+    integer                             :: nbnli
 
+    call jemarq()
 
-      call jemarq()
+    sd_dtm = sd_dtm_
 
-      sd_dtm = sd_dtm_
+    call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
 
-      call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
+    if (nbnli .gt. 0) then
 
-      if(nbnli.gt.0) then
-
-        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl)
+        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
 
         call dtmclean_noli_lub(sd_dtm, sd_nl)
 
         call dtmclean_noli_yacs(sd_dtm, sd_nl)
 
+    end if
 
-      endif
-
-
-      call jedema()
-
-
+    call jedema()
 
 end subroutine

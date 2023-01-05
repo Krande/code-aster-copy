@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine elagon(ndim, imate, biot,&
-                  alpha, deps, e,&
-                  nu, snetm, option, snetp, dsidep,&
+subroutine elagon(ndim, imate, biot, &
+                  alpha, deps, e, &
+                  nu, snetm, option, snetp, dsidep, &
                   p1, dp1, dsidp1, dsidp2)
 !
 ! ROUTINE ELAGON
@@ -56,8 +56,8 @@ subroutine elagon(ndim, imate, biot,&
 !
 ! ======================================================================
     integer :: ndt, ndi
-    common /tdim/   ndt  , ndi
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    common/tdim/ndt, ndi
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 ! ======================================================================
 !
 !
@@ -65,34 +65,34 @@ subroutine elagon(ndim, imate, biot,&
 !     ----------------------
     ndimsi = 2*ndim
 !
-    pref= 1.d6
-    p1m=p1-dp1
+    pref = 1.d6
+    p1m = p1-dp1
 !
 ! - Get temperatures
 !
-    call get_varc('RIGI' , 1  , 1 , 'T',&
+    call get_varc('RIGI', 1, 1, 'T', &
                   tm, tp, tref)
 !
 !
 !     --  RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------
-    nomres(1)='BETAM'
-    nomres(2)='PREF'
+    nomres(1) = 'BETAM'
+    nomres(2) = 'PREF'
 !
     nprefr(1) = 'TEMP'
     valpam(1) = tm
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'GONF_ELAS ', 1, nprefr, [valpam],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'GONF_ELAS ', 1, nprefr, [valpam], &
                 1, nomres(1), valres(1), icodre(1), 2)
-    betam=valres(1)
+    betam = valres(1)
 !
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'GONF_ELAS ', 1, nprefr, [valpam],&
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'GONF_ELAS ', 1, nprefr, [valpam], &
                 1, nomres(2), valres(2), icodre(2), 2)
     pref = valres(2)
 !
@@ -105,18 +105,18 @@ subroutine elagon(ndim, imate, biot,&
 ! --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ----------
 ! ======================================================================
     do k = 1, ndi
-        deps(k) = deps(k) - alpha*(tp-tm)
+        deps(k) = deps(k)-alpha*(tp-tm)
     end do
 !
 !     --  CALCUL DE DEPSMO ET DEPSDV :
 !     --------------------------------
     depsmo = 0.d0
     do k = 1, 3
-        depsmo = depsmo + deps(k)
+        depsmo = depsmo+deps(k)
     end do
 !
     do k = 1, ndimsi
-        depsdv(k) = deps(k) - depsmo/3.d0 * kron(k)
+        depsdv(k) = deps(k)-depsmo/3.d0*kron(k)
     end do
 !
 !     --  CALCUL DES CONTRAINTES
@@ -124,11 +124,11 @@ subroutine elagon(ndim, imate, biot,&
 ! Contraintes moyenne (1/3 trace(sig) )
     sigmmo = 0.d0
     do k = 1, 3
-        sigmmo = sigmmo + snetm(k)/3.d0
+        sigmmo = sigmmo+snetm(k)/3.d0
     end do
 !
     do k = 1, ndimsi
-        sigmdv(k) = snetm(k) - sigmmo * kron(k)
+        sigmdv(k) = snetm(k)-sigmmo*kron(k)
     end do
     sigpmo = 0.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -140,12 +140,12 @@ subroutine elagon(ndim, imate, biot,&
 ! ON N APPLIQUE PAS LA NON LINEARITE DEMANDANT LES PARAMETRES R ET BETA
 ! CE QUI POURRAIT ETRE ENVISAGE DANS UN SECOND TEMPS
 !
-        sigpmo = sigmmo+k0*depsmo +prgonf(biot,betam,pref,p1)-prgonf( biot,betam,pref,p1m)
-    endif
+        sigpmo = sigmmo+k0*depsmo+prgonf(biot, betam, pref, p1)-prgonf(biot, betam, pref, p1m)
+    end if
 !
     do k = 1, ndimsi
-        sigpdv(k) = sigmdv(k) + deuxmu * depsdv(k)
-        snetp(k) = sigpdv(k) + sigpmo*kron(k)
+        sigpdv(k) = sigmdv(k)+deuxmu*depsdv(k)
+        snetp(k) = sigpdv(k)+sigpmo*kron(k)
     end do
 !
 !
@@ -159,26 +159,26 @@ subroutine elagon(ndim, imate, biot,&
             dsidp1(k) = 0.d0
             dsidp2(k) = 0.d0
             do l = 1, 6
-                dsidep(k,l) = 0.d0
+                dsidep(k, l) = 0.d0
             end do
         end do
 !
         do k = 1, 3
             do l = 1, 3
-                dsidep(k,l) = k0-deuxmu/3.d0
+                dsidep(k, l) = k0-deuxmu/3.d0
             end do
         end do
         do k = 1, ndimsi
-            dsidep(k,k) = dsidep(k,k)+deuxmu
+            dsidep(k, k) = dsidep(k, k)+deuxmu
         end do
 !
-    endif
+    end if
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
 !
         do k = 1, ndimsi
-            dsidp1(k) = dpgfp1(biot,betam,pref,p1)
+            dsidp1(k) = dpgfp1(biot, betam, pref, p1)
         end do
 !
-    endif
+    end if
 end subroutine

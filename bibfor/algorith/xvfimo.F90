@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ function xvfimo(modele, fiss)
     call jemarq()
 !
     call jeexin(modele//'.FISS', ier)
-    ASSERT(ier.ne.0)
+    ASSERT(ier .ne. 0)
 !
 !     RECUPERATION DU NOMBRE DE FISSURES ASSOCIEES AU MODELE
     call dismoi('NB_FISS_XFEM', modele, 'MODELE', repi=nfiss)
@@ -55,10 +55,10 @@ function xvfimo(modele, fiss)
 !     RECUPERATION DE LA LISTE DES FISSURES ASSOCIEES AU MODELE
     call jeveuo(modele//'.FISS', 'L', vk8=vfiss)
 !
-    xvfimo=.false.
+    xvfimo = .false.
 !
     do i = 1, nfiss
-        if (fiss .eq. vfiss(i)) xvfimo=.true.
+        if (fiss .eq. vfiss(i)) xvfimo = .true.
     end do
 !
     call jedema()

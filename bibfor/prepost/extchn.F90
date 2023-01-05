@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
+subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
                   nbc, indic, nsschn, mcf, iocc)
     implicit none
 #include "asterf_types.h"
@@ -195,14 +195,14 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     epsi = 1.0d-6
 !
     call jelira(nvalch, 'TYPE', cval=type)
-    ASSERT((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
+    ASSERT((type(1:1) .eq. 'R') .or. (type(1:1) .eq. 'C'))
     if (type(1:1) .eq. 'R') then
         call jeveuo(nvalch, 'L', avalch)
     else if (type(1:1) .eq. 'C') then
         nomvec = 'EXTCHN.VECTEUR'
         call rvrecu(mcf, iocc, nchmno, nomvec)
         call jeveuo(nomvec, 'L', avalch)
-    endif
+    end if
     call jeveuo(ndesch, 'L', adesch)
     call jeveuo(nrefch, 'L', arefch)
 !
@@ -215,37 +215,37 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
         if (repere .eq. 'UTILISAT') then
             utili = .true.
             nomjv = '&&EXTCHN.NEW_CHAMP'
-            call getvr8(mcf, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl,&
+            call getvr8(mcf, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl, &
                         nbret=n1)
-            angl(1) = angl(1) * r8dgrd()
-            angl(2) = angl(2) * r8dgrd()
-            angl(3) = angl(3) * r8dgrd()
+            angl(1) = angl(1)*r8dgrd()
+            angl(2) = angl(2)*r8dgrd()
+            angl(3) = angl(3)*r8dgrd()
             call matrot(angl, pgl)
             call rvchn1(nchmno, nomjv, nbn, numnd, pgl)
             call jeveuo(nomjv, 'L', avalch)
         else if (repere .eq. 'CYLINDRI') then
             utili = .true.
             nomjv = '&&EXTCHN.NEW_CHAMP'
-            call getvr8(mcf, 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
+            call getvr8(mcf, 'ORIGINE', iocc=iocc, nbval=3, vect=orig, &
                         nbret=n1)
-            call getvr8(mcf, 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
+            call getvr8(mcf, 'AXE_Z', iocc=iocc, nbval=3, vect=axez, &
                         nbret=n1)
             xnormz = zero
             do i = 1, 3
-                xnormz = xnormz + axez(i)*axez(i)
+                xnormz = xnormz+axez(i)*axez(i)
             end do
             if (xnormz .lt. epsi) then
                 call utmess('F', 'PREPOST_38')
-            endif
-            xnormz = 1.0d0 / sqrt( xnormz )
+            end if
+            xnormz = 1.0d0/sqrt(xnormz)
             do i = 1, 3
-                axez(i) = axez(i) * xnormz
+                axez(i) = axez(i)*xnormz
             end do
-            call rvchn2(nchmno, nomjv, nbn, numnd, orig,&
+            call rvchn2(nchmno, nomjv, nbn, numnd, orig, &
                         axez)
             call jeveuo(nomjv, 'L', avalch)
-        endif
-    endif
+        end if
+    end if
 !
 !   RECUPERATION DE L' INFORMATION
 !   ------------------------------
@@ -292,7 +292,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !
         end do
 !
-    endif
+    end if
 !
     call jecreo('&&EXTRCHNNUMCP', 'V V I')
     call jeecra('&&EXTRCHNNUMCP', 'LONMAX', nbc)
@@ -327,7 +327,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     call jeecra(npval, 'DOCU', cval='CHNO')
     call jeveuo(npval, 'E', apval)
 !
-    call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbn)
 !
 !   REMPLISSAGE DU POINTEUR D' ADRESSES
@@ -342,7 +342,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !
     do i = 1, nbn, 1
 !
-        zi(apadr+numnd(i)-1) = nbc* (i-1) + 1
+        zi(apadr+numnd(i)-1) = nbc*(i-1)+1
 !
     end do
 !
@@ -377,8 +377,8 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !
             ind = numnd(i)
 !
-            call exchnn(zi(adesch+1-1), ind, zi(anumcp), nbc, zr(avalch),&
-                        [ibid], .false._1, zr(apval+nbc* (i-1)+1-1), zi(aperr))
+            call exchnn(zi(adesch+1-1), ind, zi(anumcp), nbc, zr(avalch), &
+                        [ibid], .false._1, zr(apval+nbc*(i-1)+1-1), zi(aperr))
 !
         end do
 !
@@ -414,12 +414,12 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !
             ind = numnd(i)
 !
-            call exchnn(zi(aprno+ (ind-1)* (2+nbec)+1-1), 0, zi(anumcp), nbc, zr(avalch),&
-                        zi(anueq), .true._1, zr(apval+nbc* (i-1)+1-1), zi(aperr))
+            call exchnn(zi(aprno+(ind-1)*(2+nbec)+1-1), 0, zi(anumcp), nbc, zr(avalch), &
+                        zi(anueq), .true._1, zr(apval+nbc*(i-1)+1-1), zi(aperr))
 !
         end do
 !
-    endif
+    end if
 !
 !   DESTRUCTION DES OJB TEMPORAIRES
 !   -------------------------------

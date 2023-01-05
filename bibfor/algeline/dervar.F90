@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine dervar(gamp, nbmat, mater, parame, derpar)
 !
-    implicit      none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbmat
@@ -40,26 +40,26 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    =  -1.0d0   )
-    parameter       ( zero   =   0.0d0   )
-    parameter       ( un     =   1.0d0   )
-    parameter       ( deux   =   2.0d0   )
-    parameter       ( trois  =   3.0d0   )
+    parameter(mun=-1.0d0)
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- RECUPERATION DES PARAMETRES DU MODELE ----------------------------
 ! ======================================================================
-    gamult = mater( 1,2)
-    gammae = mater( 2,2)
-    me = mater( 4,2)
-    ae = mater( 5,2)
-    mpic = mater( 6,2)
-    apic = mater( 7,2)
-    eta = mater( 8,2)
-    sigc = mater( 9,2)
-    sigp1 = mater(13,2)
-    sigp2 = mater(14,2)
+    gamult = mater(1, 2)
+    gammae = mater(2, 2)
+    me = mater(4, 2)
+    ae = mater(5, 2)
+    mpic = mater(6, 2)
+    apic = mater(7, 2)
+    eta = mater(8, 2)
+    sigc = mater(9, 2)
+    sigp1 = mater(13, 2)
+    sigp2 = mater(14, 2)
 ! ======================================================================
 ! --- RECUPERATION DES PARAMETRES DU MODELE ----------------------------
 ! ======================================================================
@@ -85,7 +85,7 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
             ds = mun/gammae
         else
             ds = zero
-        endif
+        end if
 ! ======================================================================
 ! --- CALCUL DE DOMEGA/DGAMP = -----------------------------------------
 ! ------- (GAMULT-GAMMAE)/(GAMMAE)**ETA*((AE-APIC)/(1-AE))* ------------
@@ -103,13 +103,13 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
 ! ======================================================================
 ! --- CALCUL DE DA/DGAMP = DA/DOMEGA * DOMEGA/DGAMP --------------------
 ! ======================================================================
-        da = dado * domega
+        da = dado*domega
 ! ======================================================================
 ! --- CALCUL DE DK/DGAMP = -(2/3)**(1/(2*A(GAMP)))* --------------------
 ! ------------------------  LOG(2/3)/(2*A(GAMP)*A(GAMP))*DA/DGAMP ------
 ! ======================================================================
         puis1 = un/(deux*agamp)
-        dk = mun*((deux/trois)**puis1)* log(deux/trois)*da/(deux* agamp*agamp)
+        dk = mun*((deux/trois)**puis1)*log(deux/trois)*da/(deux*agamp*agamp)
 ! ======================================================================
 ! --- CALCUL DE DM/DGAMP = ---------------------------------------------
 ! --- SI GAMP  <  GAMMAE : DM/DA*DA/DGAMP+DM/DS*DS/DGAMP ---------------
@@ -124,15 +124,15 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
             dmds = mun*sigc/sigp1
             fact1 = mpic*sigp1/sigc+un
             fact2 = apic/agamp
-            dmda = mun*sigc*log(fact1)*fact2* (fact1**fact2)/(sigp1* agamp)
-            dm = dmda*da + dmds*ds
+            dmda = mun*sigc*log(fact1)*fact2*(fact1**fact2)/(sigp1*agamp)
+            dm = dmda*da+dmds*ds
         else
             fact1 = me*sigp2/sigc
             fact2 = ae/agamp
-            dmda = mun*sigc*log(fact1)*fact2* (fact1**fact2)/(sigp2* agamp)
+            dmda = mun*sigc*log(fact1)*fact2*(fact1**fact2)/(sigp2*agamp)
             dm = dmda*da
-        endif
-    endif
+        end if
+    end if
 ! ======================================================================
 ! --- STOCKAGE ---------------------------------------------------------
 ! ======================================================================

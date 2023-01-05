@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=C1509
 
-subroutine lc0001(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
+subroutine lc0001(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
                   compor, carcri, instam, instap, neps, epsm, &
                   deps, nsig, sigm, nvi, vim, option, angmas, &
-                  sigp, vip, typmod, icomp, ndsde,&
+                  sigp, vip, typmod, icomp, ndsde, &
                   dsidep, codret)
-                  
+
     use Behaviour_type
     implicit none
 
@@ -35,31 +35,31 @@ subroutine lc0001(BEHinteg,&
 #include "asterfort/rccoma.h"
 
     type(Behaviour_Integ)        :: BEHinteg
-    character(len=*) ,intent(in) :: fami
-    integer          ,intent(in) :: kpg
-    integer          ,intent(in) :: ksp
-    integer          ,intent(in) :: ndim
-    integer          ,intent(in) :: imate
-    character(len=16),intent(in) :: compor(*)
-    real(kind=8)     ,intent(in) :: carcri(*)
-    real(kind=8)     ,intent(in) :: instam
-    real(kind=8)     ,intent(in) :: instap
-    integer          ,intent(in) :: neps
-    real(kind=8)     ,intent(in) :: epsm(neps)
-    real(kind=8)     ,intent(in) :: deps(neps)
-    integer          ,intent(in) :: nsig
-    real(kind=8)     ,intent(in) :: sigm(nsig)
-    integer          ,intent(in) :: nvi
-    real(kind=8)     ,intent(in) :: vim(nvi)
-    character(len=16),intent(in) :: option
-    real(kind=8)     ,intent(in) :: angmas(*)
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps)
+    real(kind=8), intent(in) :: deps(neps)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(nsig)
+    integer, intent(in) :: nvi
+    real(kind=8), intent(in) :: vim(nvi)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
-    character(len=8) ,intent(in) :: typmod(*)
-    integer          ,intent(in) :: icomp
-    integer          ,intent(in) :: ndsde
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: ndsde
     real(kind=8)                 :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde), merge(neps,6,nsig*neps.eq.ndsde))
-    integer          ,intent(out):: codret
+    integer, intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATION='ELAS': COMPORTEMENT ELASTIQUE INCREMENTAL (ISOTROPE, ISOTROPE TRANSVERSE, ORTHOTROPE)
 ! --------------------------------------------------------------------------------------------------
@@ -85,18 +85,18 @@ subroutine lc0001(BEHinteg,&
     character(len=16) :: mcmate
     aster_logical     :: lMatr, lSigm, lVari
     integer           :: icodre, ndimsi
-    real(kind=8)      :: sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi), zero(2*ndim), eps(2*ndim)
+    real(kind=8)      :: sig(2*ndim), dsde(2*ndim, 2*ndim), vi(nvi), zero(2*ndim), eps(2*ndim)
 ! --------------------------------------------------------------------------------------------------
-    ASSERT (neps .eq. nsig)
-    ASSERT (neps .ge. 2*ndim)
+    ASSERT(neps .eq. nsig)
+    ASSERT(neps .ge. 2*ndim)
 
     ndimsi = 2*ndim
     codret = 0
-    sig    = 0
-    vi     = 0
-    dsde   = 0
-    zero   = 0
-    eps    = epsm(1:ndimsi) + deps(1:ndimsi)
+    sig = 0
+    vi = 0
+    dsde = 0
+    zero = 0
+    eps = epsm(1:ndimsi)+deps(1:ndimsi)
 
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
@@ -104,56 +104,50 @@ subroutine lc0001(BEHinteg,&
 
     if (lVari) vip = 0
 
-
     call rccoma(imate, 'ELAS', 1, mcmate, icodre)
-    ASSERT(icodre.eq.0)
-
-
+    ASSERT(icodre .eq. 0)
 
 ! --------------------------------------------------------------------------------------------------
 !  Elasticite isotrope
 ! --------------------------------------------------------------------------------------------------
 
     if (mcmate .eq. 'ELAS') then
-    
+
         if (compor(INCRELAS) .eq. 'COMP_INCR') then
-            call nmelas_incr(BEHinteg,&
-                          fami, kpg, ksp, typmod,&
-                          imate, deps(1:ndimsi), sigm(1:ndimsi), option, &
-                          sig, vi, dsde)
+            call nmelas_incr(BEHinteg, &
+                             fami, kpg, ksp, typmod, &
+                             imate, deps(1:ndimsi), sigm(1:ndimsi), option, &
+                             sig, vi, dsde)
 
         else if (compor(INCRELAS) .eq. 'COMP_ELAS') then
-            call nmelas_elas(BEHinteg,&
-                          fami, kpg, ksp, typmod,&
-                          imate, eps, option, &
-                          sig, vi, dsde)
+            call nmelas_elas(BEHinteg, &
+                             fami, kpg, ksp, typmod, &
+                             imate, eps, option, &
+                             sig, vi, dsde)
         else
             ASSERT(ASTER_FALSE)
         end if
-        
-                    
-                    
-                    
+
 ! --------------------------------------------------------------------------------------------------
 !  Elasticite isotrope transverse et orthotrope
 ! --------------------------------------------------------------------------------------------------
 
-    else if (mcmate.eq.'ELAS_ORTH'.or.mcmate.eq.'ELAS_ISTR') then
+    else if (mcmate .eq. 'ELAS_ORTH' .or. mcmate .eq. 'ELAS_ISTR') then
 
         if (compor(INCRELAS) .eq. 'COMP_INCR') then
-        
-            call nmorth(fami, kpg, ksp, ndim, mcmate,&
-                        imate, 'T', deps, sigm, option,&
+
+            call nmorth(fami, kpg, ksp, ndim, mcmate, &
+                        imate, 'T', deps, sigm, option, &
                         angmas, sig, dsde)
             vi(1) = 0
-                          
+
         else if (compor(INCRELAS) .eq. 'COMP_ELAS') then
 
-            poum = merge('-','+',option(1:9).eq.'RIGI_MECA')
-        
-            call nmorth(fami, kpg, ksp, ndim, mcmate,&
-                imate, poum, eps, zero, option,&
-                angmas, sig, dsde)
+            poum = merge('-', '+', option(1:9) .eq. 'RIGI_MECA')
+
+            call nmorth(fami, kpg, ksp, ndim, mcmate, &
+                        imate, poum, eps, zero, option, &
+                        angmas, sig, dsde)
             vi(1) = 0
 
         else
@@ -162,16 +156,14 @@ subroutine lc0001(BEHinteg,&
 
         if (lSigm) sigp(1:ndimsi) = sig
         if (lVari) vip(1:nvi) = vi
-        if (lMatr) dsidep(1:ndimsi,1:ndimsi) = dsde
+        if (lMatr) dsidep(1:ndimsi, 1:ndimsi) = dsde
 
-    
     else
         ASSERT(ASTER_FALSE)
-    endif
-
+    end if
 
     if (lSigm) sigp(1:ndimsi) = sig
     if (lVari) vip(1:nvi) = vi
-    if (lMatr) dsidep(1:ndimsi,1:ndimsi) = dsde
+    if (lMatr) dsidep(1:ndimsi, 1:ndimsi) = dsde
 
 end subroutine

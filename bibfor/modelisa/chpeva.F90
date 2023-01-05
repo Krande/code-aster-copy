@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine chpeva(chou)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: n1, ib,  npara,  k, nncp, ibid
+    integer :: n1, ib, npara, k, nncp, ibid
     character(len=4) :: typ1, typ2, knum
     character(len=8) :: chin, chou, nomgd
     character(len=19) :: ligrel, chs1, chs2, chins
@@ -70,7 +70,7 @@ subroutine chpeva(chou)
     call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
     if (nomgd .ne. 'NEUT_F') then
         call utmess('F', 'MODELISA4_13')
-    endif
+    end if
 !
     call getvid(' ', 'CHAM_PARA', nbval=0, nbret=n1)
     npara = -n1
@@ -88,45 +88,45 @@ subroutine chpeva(chou)
         call dismoi('TYPE_CHAMP', lpara1(k), 'CHAMP', repk=typ2)
         if (typ1 .ne. typ2) then
             call utmess('F', 'MODELISA4_14')
-        endif
+        end if
 !
         call codent(k, 'G', knum)
         chs1 = '&&CHPEVA.'//knum
         if (typ1 .eq. 'NOEU') then
             call cnocns(lpara1(k), 'V', chs1)
 !
-        else if (typ1.eq.'CART') then
-            call carces(lpara1(k), 'ELEM', ' ', 'V', chs1,&
+        else if (typ1 .eq. 'CART') then
+            call carces(lpara1(k), 'ELEM', ' ', 'V', chs1, &
                         'A', ib)
 !
-        else if (typ1(1:2).eq.'EL') then
+        else if (typ1(1:2) .eq. 'EL') then
             call celces(lpara1(k), 'V', chs1)
-        endif
+        end if
         lpara2(k) = chs1
     end do
 !
 !
 ! 3.  -- ON APPELLE LA ROUTINE D'EVAL APPROPRIEE :
 ! ------------------------------------------------------------
-    ASSERT((typ1.eq.'NOEU').or.(typ1(1:2).eq.'EL'))
+    ASSERT((typ1 .eq. 'NOEU') .or. (typ1(1:2) .eq. 'EL'))
     if (typ1 .eq. 'NOEU') then
         call cnocns(chin, 'V', chins)
         call cnseva(chins, npara, lpara2, chs2)
-        call cnscno(chs2, ' ', 'NON', 'G', chou,&
+        call cnscno(chs2, ' ', 'NON', 'G', chou, &
                     'F', ibid)
         call detrsd('CHAM_NO_S', chins)
         call detrsd('CHAM_NO_S', chs2)
 !
-    else if (typ1(1:2).eq.'EL') then
+    else if (typ1(1:2) .eq. 'EL') then
         call celces(chin, 'V', chins)
         call ceseva(chins, npara, lpara2, chs2)
         call dismoi('NOM_LIGREL', chin, 'CHAMP', repk=ligrel)
-        call cescel(chs2, ligrel, ' ', ' ', 'NON',&
+        call cescel(chs2, ligrel, ' ', ' ', 'NON', &
                     nncp, 'G', chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chins)
         call detrsd('CHAM_ELEM_S', chs2)
 !
-    endif
+    end if
 !
 !
 ! 7. MENAGE :
@@ -138,7 +138,7 @@ subroutine chpeva(chou)
 !
         else
             call detrsd('CHAM_ELEM_S', lpara2(k))
-        endif
+        end if
     end do
     AS_DEALLOCATE(vk24=lpara2)
 !

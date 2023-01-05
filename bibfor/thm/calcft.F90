@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,43 +18,43 @@
 ! aslint: disable=W1504,W1306
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine calcft(ds_thm, lMatr    , lSigm , angl_naut,&
-                  ndim  , dimdef   , dimcon,&
+subroutine calcft(ds_thm, lMatr, lSigm, angl_naut, &
+                  ndim, dimdef, dimcon, &
                   adcote, &
-                  addeme, addete   , addep1, addep2,&
-                  temp  , grad_temp,&
-                  tbiot ,&
-                  phi   , rho11    , satur_, dsatur_,&
-                  pvp   , h11      , h12   ,&
-                  lambs , dlambs   , lambp , dlambp,&
-                  tlambt, tlamct   , tdlamt,&
+                  addeme, addete, addep1, addep2, &
+                  temp, grad_temp, &
+                  tbiot, &
+                  phi, rho11, satur_, dsatur_, &
+                  pvp, h11, h12, &
+                  lambs, dlambs, lambp, dlambp, &
+                  tlambt, tlamct, tdlamt, &
                   congep, dsde)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dilata.h"
 #include "asterfort/unsmfi.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical, intent(in) :: lMatr, lSigm
-real(kind=8), intent(in) :: angl_naut(3)
-integer, intent(in) :: ndim, dimdef, dimcon
-integer, intent(in) :: adcote
-integer, intent(in) :: addeme, addete, addep1, addep2
-real(kind=8), intent(in) :: temp, grad_temp(3)
-real(kind=8), intent(in) :: tbiot(6)
-real(kind=8), intent(in) :: phi, rho11, satur_, dsatur_
-real(kind=8), intent(in) :: pvp, h11, h12
-real(kind=8), intent(in) :: lambs, dlambs
-real(kind=8), intent(in) :: lambp, dlambp
-real(kind=8), intent(in) :: tlambt(ndim, ndim)
-real(kind=8), intent(in) :: tlamct(ndim, ndim)
-real(kind=8), intent(in) :: tdlamt(ndim, ndim)
-real(kind=8), intent(inout) :: congep(1:dimcon), dsde(1:dimcon, 1:dimdef)
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical, intent(in) :: lMatr, lSigm
+    real(kind=8), intent(in) :: angl_naut(3)
+    integer, intent(in) :: ndim, dimdef, dimcon
+    integer, intent(in) :: adcote
+    integer, intent(in) :: addeme, addete, addep1, addep2
+    real(kind=8), intent(in) :: temp, grad_temp(3)
+    real(kind=8), intent(in) :: tbiot(6)
+    real(kind=8), intent(in) :: phi, rho11, satur_, dsatur_
+    real(kind=8), intent(in) :: pvp, h11, h12
+    real(kind=8), intent(in) :: lambs, dlambs
+    real(kind=8), intent(in) :: lambp, dlambp
+    real(kind=8), intent(in) :: tlambt(ndim, ndim)
+    real(kind=8), intent(in) :: tlamct(ndim, ndim)
+    real(kind=8), intent(in) :: tdlamt(ndim, ndim)
+    real(kind=8), intent(inout) :: congep(1:dimcon), dsde(1:dimcon, 1:dimdef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,9 +108,9 @@ real(kind=8), intent(inout) :: congep(1:dimcon), dsde(1:dimcon, 1:dimdef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    kron(1:ndim,1:ndim) = 0.d0
+    kron(1:ndim, 1:ndim) = 0.d0
     do i = 1, ndim
-        kron(i,i) = 1.d0
+        kron(i, i) = 1.d0
     end do
     lamdt1(1:ndim, 1:ndim) = 0.d0
     lamdt2(1:ndim, 1:ndim) = 0.d0
@@ -124,20 +124,20 @@ real(kind=8), intent(inout) :: congep(1:dimcon), dsde(1:dimcon, 1:dimdef)
 !
 ! - Get parameters
 !
-    rgaz   = ds_thm%ds_material%solid%r_gaz
+    rgaz = ds_thm%ds_material%solid%r_gaz
     mamolv = ds_thm%ds_material%steam%mass_mol
 !
 ! - Change biot tensor with thermic
 !
-    biot(1,1) = tbiot(1)
-    biot(2,2) = tbiot(2)
-    biot(3,3) = tbiot(3)
-    biot(1,2) = tbiot(4)
-    biot(1,3) = tbiot(5)
-    biot(2,3) = tbiot(6)
-    biot(2,1) = biot(1,2)
-    biot(3,1) = biot(1,3)
-    biot(3,2) = biot(2,3)
+    biot(1, 1) = tbiot(1)
+    biot(2, 2) = tbiot(2)
+    biot(3, 3) = tbiot(3)
+    biot(1, 2) = tbiot(4)
+    biot(1, 3) = tbiot(5)
+    biot(2, 3) = tbiot(6)
+    biot(2, 1) = biot(1, 2)
+    biot(3, 1) = biot(1, 3)
+    biot(3, 2) = biot(2, 3)
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         call dilata(ds_thm, angl_naut, phi, tbiot, alphfi)
@@ -145,93 +145,93 @@ real(kind=8), intent(inout) :: congep(1:dimcon), dsde(1:dimcon, 1:dimdef)
     else
         alphfi = 0.d0
         cs = 0.d0
-    endif
+    end if
 !
 ! - Set saturation
 !
     if (nume_thmc .eq. GAZ) then
-        satur  = 0.d0
+        satur = 0.d0
         dsatur = 0.d0
     else if (nume_thmc .eq. LIQU_SATU) then
-        satur  = 1.d0
+        satur = 1.d0
         dsatur = 0.d0
     else
-        satur  = satur_
+        satur = satur_
         dsatur = dsatur_
-    endif
+    end if
 !
 ! - Compute tensor of thermic conductivity
 !
     if (nume_thmc .eq. LIQU_VAPE) then
-        rho12  = mamolv*pvp/rgaz/temp
+        rho12 = mamolv*pvp/rgaz/temp
         do i = 1, ndim
             do j = 1, ndim
-                lamdt1(i,j) = lamdt1(i,j)+&
-                              lambs*lambp*tlambt(i,j)+&
-                              tlamct(i,j)
-                lamdt2(i,j) = lamdt2(i,j)+&
-                              (biot(i,j)-phi*kron(i,j))*tlambt(j,i)*dlambp*lambs
-                lamdt3(i,j) = lamdt3(i,j)+&
-                              (rho12/rho11-1.d0)*lambp*dlambs*tlambt(i,j)*dsatur +&
-                              cs*(satur+(1.d0-satur)*rho12/rho11)*dlambp*lambs*tlambt(i,j)
-                lamdt4(i,j) = 0.d0
-                lamdt5(i,j) = lamdt5(i,j)+&
-                              lambs*lambp*tdlamt(i,j)+&
-                              (-3.d0*alphfi+cs*(1.d0-satur)*rho12*(h12-h11)/temp)*&
-                               dlambp*lambs*tlambt(i,j) +&
-                              lambp*dlambs*tlambt(i,j)*dsatur*rho12*(h12-h11)/temp
+                lamdt1(i, j) = lamdt1(i, j)+ &
+                               lambs*lambp*tlambt(i, j)+ &
+                               tlamct(i, j)
+                lamdt2(i, j) = lamdt2(i, j)+ &
+                               (biot(i, j)-phi*kron(i, j))*tlambt(j, i)*dlambp*lambs
+                lamdt3(i, j) = lamdt3(i, j)+ &
+                               (rho12/rho11-1.d0)*lambp*dlambs*tlambt(i, j)*dsatur+ &
+                               cs*(satur+(1.d0-satur)*rho12/rho11)*dlambp*lambs*tlambt(i, j)
+                lamdt4(i, j) = 0.d0
+                lamdt5(i, j) = lamdt5(i, j)+ &
+                               lambs*lambp*tdlamt(i, j)+ &
+                               (-3.d0*alphfi+cs*(1.d0-satur)*rho12*(h12-h11)/temp)* &
+                               dlambp*lambs*tlambt(i, j)+ &
+                               lambp*dlambs*tlambt(i, j)*dsatur*rho12*(h12-h11)/temp
             end do
         end do
     else
         do i = 1, ndim
             do j = 1, ndim
-                lamdt1(i,j) = lamdt1(i,j)+&
-                              lambs*lambp*tlambt(i,j)+&
-                              tlamct(i,j)
-                lamdt2(i,j) = lamdt2(i,j)+&
-                              (biot(i,j)-phi*kron(i,j))*tlambt(j,i)*dlambp*lambs
-                lamdt3(i,j) = lamdt3(i,j)+&
-                              lambp*dlambs*tlambt(i,j)*dsatur-&
-                              satur*cs*dlambp*lambs*tlambt(i,j)
-                lamdt4(i,j) = lamdt4(i,j)+&
-                              cs*dlambp*lambs*tlambt(i,j)
-                lamdt5(i,j) = lamdt5(i,j)+&
-                              lambs*lambp*tdlamt(i,j)-&
-                              3.d0*alphfi*dlambp*lambs*tlambt(i,j)
+                lamdt1(i, j) = lamdt1(i, j)+ &
+                               lambs*lambp*tlambt(i, j)+ &
+                               tlamct(i, j)
+                lamdt2(i, j) = lamdt2(i, j)+ &
+                               (biot(i, j)-phi*kron(i, j))*tlambt(j, i)*dlambp*lambs
+                lamdt3(i, j) = lamdt3(i, j)+ &
+                               lambp*dlambs*tlambt(i, j)*dsatur- &
+                               satur*cs*dlambp*lambs*tlambt(i, j)
+                lamdt4(i, j) = lamdt4(i, j)+ &
+                               cs*dlambp*lambs*tlambt(i, j)
+                lamdt5(i, j) = lamdt5(i, j)+ &
+                               lambs*lambp*tdlamt(i, j)- &
+                               3.d0*alphfi*dlambp*lambs*tlambt(i, j)
             end do
         end do
-    endif
+    end if
 !
 ! - Compute matrix
 !
     if (lMatr) then
         do i = 1, ndim
             do j = 1, ndim
-                dsde(adcote+i,addete+j) = dsde(adcote+i,addete+j)-lamdt1(i,j)
-                dsde(adcote+i,addete)   = dsde(adcote+i,addete)- lamdt5(i,j)*grad_temp(j)
+                dsde(adcote+i, addete+j) = dsde(adcote+i, addete+j)-lamdt1(i, j)
+                dsde(adcote+i, addete) = dsde(adcote+i, addete)-lamdt5(i, j)*grad_temp(j)
             end do
             if (ds_thm%ds_elem%l_dof_meca) then
                 do j = 1, 6
                     do k = 1, ndim
-                        dsde(adcote+i,addeme+ndim-1+j) = dsde(adcote+i,addeme+ndim-1+j)-&
-                                                         lamdt2(i,k)*grad_temp(k)
+                        dsde(adcote+i, addeme+ndim-1+j) = dsde(adcote+i, addeme+ndim-1+j)- &
+                                                          lamdt2(i, k)*grad_temp(k)
                     end do
                 end do
-            endif
+            end if
             if (ds_thm%ds_elem%l_dof_pre1) then
                 do j = 1, ndim
-                    dsde(adcote+i,addep1) = dsde(adcote+i,addep1)-&
-                                            lamdt3(i,j)*grad_temp(j)
+                    dsde(adcote+i, addep1) = dsde(adcote+i, addep1)- &
+                                             lamdt3(i, j)*grad_temp(j)
                 end do
                 if (ds_thm%ds_elem%l_dof_pre2) then
                     do j = 1, ndim
-                        dsde(adcote+i,addep2) = dsde(adcote+i,addep2)-&
-                                                lamdt4(i,j)*grad_temp(j)
+                        dsde(adcote+i, addep2) = dsde(adcote+i, addep2)- &
+                                                 lamdt4(i, j)*grad_temp(j)
                     end do
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 ! - Compute generalized stress
 !
@@ -239,9 +239,9 @@ real(kind=8), intent(inout) :: congep(1:dimcon), dsde(1:dimcon, 1:dimdef)
         do i = 1, ndim
             congep(adcote+i) = 0.d0
             do j = 1, ndim
-                congep(adcote+i) = congep(adcote+i)-lamdt1(i,j)*grad_temp(j)
+                congep(adcote+i) = congep(adcote+i)-lamdt1(i, j)*grad_temp(j)
             end do
         end do
-    endif
+    end if
 !
 end subroutine

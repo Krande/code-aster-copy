@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptktuf(sk, e, rof, c, a,&
-                  ai, xl, xiy, xiz, xjx,&
+subroutine ptktuf(sk, e, rof, c, a, &
+                  ai, xl, xiy, xiz, xjx, &
                   g, alfay, alfaz, ey, ez)
     implicit none
 #include "asterc/r8gaem.h"
@@ -78,7 +78,7 @@ subroutine ptktuf(sk, e, rof, c, a,&
     real(kind=8) :: c1, c2, c3, c4, c6, c12
     real(kind=8) :: xl2, xl3, phiy, phiz, eiy, eiz, asy, asz
 !-----------------------------------------------------------------------
-    data ip/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120/
 ! ---------------------------------------------------------------------
 !
     zero = 0.d0
@@ -87,102 +87,102 @@ subroutine ptktuf(sk, e, rof, c, a,&
     c3 = 3.d0
     c4 = 4.d0
     c6 = 6.d0
-    c12  =12.d0
+    c12 = 12.d0
     do i = 1, 136
-        sk(i) =zero
+        sk(i) = zero
     end do
 !
 !     -- SI G  ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
         if (abs(e) .lt. 1.d0/r8gaem()) goto 999
         call utmess('F', 'ELEMENTS2_54')
-    endif
+    end if
 !
 !     1/ TRACTION - COMPRESSION
-    sk(ip( 1)+ 1) = e * a / xl
-    sk(ip( 9)+ 1) = -sk(ip( 1)+ 1)
-    sk(ip( 9)+ 9) = sk(ip( 1)+ 1)
+    sk(ip(1)+1) = e*a/xl
+    sk(ip(9)+1) = -sk(ip(1)+1)
+    sk(ip(9)+9) = sk(ip(1)+1)
 !
 !     2/ FLEXION
 !     2.1) CALCUL DES CONSTANTES
-    xl2 = xl * xl
-    xl3 = xl * xl2
-    eiy = e * xiy
-    eiz = e * xiz
+    xl2 = xl*xl
+    xl3 = xl*xl2
+    eiy = e*xiy
+    eiz = e*xiz
     if (alfay .ne. zero) then
-        asz = a / alfay
-        phiy = (c12 * eiz) / (g * asz * xl2)
+        asz = a/alfay
+        phiy = (c12*eiz)/(g*asz*xl2)
     else
         phiy = zero
-    endif
+    end if
     if (alfaz .ne. zero) then
-        asy = a / alfaz
-        phiz = (c12 * eiy) / (g * asy * xl2)
+        asy = a/alfaz
+        phiz = (c12*eiy)/(g*asy*xl2)
     else
         phiz = zero
-    endif
+    end if
 !
 !     2.2) REMPLISSAGE DE LA MATRICE
 !     2/ FLEXION
 !
 !     FLEXION DANS LE PLAN XOY
-    sk(ip( 2)+ 2) = c12 * eiz / ((c1 + phiy) * xl3)
-    sk(ip( 6)+ 2) = c6 * eiz / ((c1 + phiy) * xl2)
-    sk(ip(10)+ 2) = -sk(ip( 2)+ 2)
-    sk(ip(14)+ 2) = sk(ip( 6)+ 2)
-    sk(ip( 6)+ 6) = (c4 + phiy) * eiz / ((c1 + phiy) * xl)
-    sk(ip(10)+ 6) = -sk(ip( 6)+ 2)
-    sk(ip(14)+ 6) = (c2 - phiy) * eiz / ((c1 + phiy) * xl)
-    sk(ip(10)+10) = sk(ip( 2)+ 2)
-    sk(ip(14)+10) = -sk(ip( 6)+ 2)
-    sk(ip(14)+14) = sk(ip( 6)+ 6)
+    sk(ip(2)+2) = c12*eiz/((c1+phiy)*xl3)
+    sk(ip(6)+2) = c6*eiz/((c1+phiy)*xl2)
+    sk(ip(10)+2) = -sk(ip(2)+2)
+    sk(ip(14)+2) = sk(ip(6)+2)
+    sk(ip(6)+6) = (c4+phiy)*eiz/((c1+phiy)*xl)
+    sk(ip(10)+6) = -sk(ip(6)+2)
+    sk(ip(14)+6) = (c2-phiy)*eiz/((c1+phiy)*xl)
+    sk(ip(10)+10) = sk(ip(2)+2)
+    sk(ip(14)+10) = -sk(ip(6)+2)
+    sk(ip(14)+14) = sk(ip(6)+6)
 !
 !     FLEXION DANS LE PLAN XOZ
-    sk(ip( 3)+ 3) = c12 * eiy / ((c1 + phiz) * xl3)
-    sk(ip( 5)+ 3) = -c6 * eiy / ((c1 + phiz) * xl2)
-    sk(ip(11)+ 3) = -sk(ip( 3)+ 3)
-    sk(ip(13)+ 3) = sk(ip( 5)+ 3)
-    sk(ip( 5)+ 5) = (c4 + phiz) * eiy / ((c1 + phiz) * xl)
-    sk(ip(11)+ 5) = -sk(ip( 5)+ 3)
-    sk(ip(13)+ 5) = (c2 - phiz) * eiy / ((c1 + phiz) * xl)
-    sk(ip(11)+11) = sk(ip( 3)+ 3)
-    sk(ip(13)+11) = -sk(ip( 5)+ 3)
-    sk(ip(13)+13) = sk(ip( 5)+ 5)
+    sk(ip(3)+3) = c12*eiy/((c1+phiz)*xl3)
+    sk(ip(5)+3) = -c6*eiy/((c1+phiz)*xl2)
+    sk(ip(11)+3) = -sk(ip(3)+3)
+    sk(ip(13)+3) = sk(ip(5)+3)
+    sk(ip(5)+5) = (c4+phiz)*eiy/((c1+phiz)*xl)
+    sk(ip(11)+5) = -sk(ip(5)+3)
+    sk(ip(13)+5) = (c2-phiz)*eiy/((c1+phiz)*xl)
+    sk(ip(11)+11) = sk(ip(3)+3)
+    sk(ip(13)+11) = -sk(ip(5)+3)
+    sk(ip(13)+13) = sk(ip(5)+5)
 !
 !  3/ TORSION
-    sk(ip(4) + 4)= g * xjx / xl
-    sk(ip(12)+ 4)=-sk(ip( 4)+ 4)
-    sk(ip(12)+12)= sk(ip( 4)+ 4)
+    sk(ip(4)+4) = g*xjx/xl
+    sk(ip(12)+4) = -sk(ip(4)+4)
+    sk(ip(12)+12) = sk(ip(4)+4)
 !
 !  4/ CAS OU IL EXISTE UNE EXCENTRICITE
     if (ez .ne. zero .or. ey .ne. zero) then
 !        RECTIFICATION DES TERMES DE TORSION
-        sk(ip(4) + 4) = sk( ip(4)+4) + ez * ez * sk(ip( 2)+ 2) + ey * ey * sk(ip( 3)+ 3 )
-        sk(ip(12)+ 4) = -sk(ip(4)+ 4)
-        sk(ip(12)+12) = sk(ip(4)+ 4)
+        sk(ip(4)+4) = sk(ip(4)+4)+ez*ez*sk(ip(2)+2)+ey*ey*sk(ip(3)+3)
+        sk(ip(12)+4) = -sk(ip(4)+4)
+        sk(ip(12)+12) = sk(ip(4)+4)
 !
 !        TERMES INDUITS PAR L'EXCENTRICITE
-        sk(ip( 4)+ 2) = -ez * sk(ip(2)+ 2)
-        sk(ip(12)+ 2) = -sk(ip(4)+ 2)
-        sk(ip( 4)+ 3) = ey * sk(ip(3)+ 3)
-        sk(ip(12)+ 3) = -sk(ip( 4)+ 3)
-        sk(ip( 5)+ 4) = ey * sk(ip( 5)+ 3)
-        sk(ip( 6)+ 4) = -ez * sk(ip( 6)+ 2)
-        sk(ip(10)+ 4) = sk(ip(12)+ 2)
-        sk(ip(11)+ 4) = sk(ip(12)+ 3)
-        sk(ip(13)+ 4) = sk(ip( 5)+ 4)
-        sk(ip(14)+ 4) = sk(ip( 6)+ 4)
-        sk(ip(12)+ 5) = -sk(ip( 5)+ 4)
-        sk(ip(12)+ 6) = -sk(ip( 6)+ 4)
-        sk(ip(12)+10) = sk(ip( 4)+ 2)
-        sk(ip(12)+11) = sk(ip( 4)+ 3)
-        sk(ip(13)+12) = sk(ip(12)+ 5)
-        sk(ip(14)+12) = sk(ip(12)+ 6)
-    endif
+        sk(ip(4)+2) = -ez*sk(ip(2)+2)
+        sk(ip(12)+2) = -sk(ip(4)+2)
+        sk(ip(4)+3) = ey*sk(ip(3)+3)
+        sk(ip(12)+3) = -sk(ip(4)+3)
+        sk(ip(5)+4) = ey*sk(ip(5)+3)
+        sk(ip(6)+4) = -ez*sk(ip(6)+2)
+        sk(ip(10)+4) = sk(ip(12)+2)
+        sk(ip(11)+4) = sk(ip(12)+3)
+        sk(ip(13)+4) = sk(ip(5)+4)
+        sk(ip(14)+4) = sk(ip(6)+4)
+        sk(ip(12)+5) = -sk(ip(5)+4)
+        sk(ip(12)+6) = -sk(ip(6)+4)
+        sk(ip(12)+10) = sk(ip(4)+2)
+        sk(ip(12)+11) = sk(ip(4)+3)
+        sk(ip(13)+12) = sk(ip(12)+5)
+        sk(ip(14)+12) = sk(ip(12)+6)
+    end if
 !
 !     5/ CONTRIBUTION DU FLUIDE
-    sk(ip( 7)+ 7) = xl * ai / (rof * c * c * c3)
-    sk(ip(15)+15) = sk(ip(7)+ 7)
-    sk(ip(15)+ 7) = sk(ip(7)+ 7) / c2
+    sk(ip(7)+7) = xl*ai/(rof*c*c*c3)
+    sk(ip(15)+15) = sk(ip(7)+7)
+    sk(ip(15)+7) = sk(ip(7)+7)/c2
 999 continue
 end subroutine

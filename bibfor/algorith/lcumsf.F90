@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
-                  cmat, nmat, isph, tdt, hini,&
+subroutine lcumsf(sigi, sigf, nstrs, vari, nvari, &
+                  cmat, nmat, isph, tdt, hini, &
                   hfin, varf)
 !
 !
@@ -123,8 +123,8 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
         afd(i) = 0.d0
         sigfi(i) = 0.d0
         do j = 1, 6
-            bfd(i,j) = 0d0
-            cfd(i,j) = 0d0
+            bfd(i, j) = 0d0
+            cfd(i, j) = 0d0
         end do
     end do
     do i = 1, 6
@@ -142,35 +142,35 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
         do i = 1, nstrs
             sigfi(i) = sigf(i)
         end do
-    endif
+    end if
 !
 ! CALCUL DES CONTRAINTES SPHERIQUES INI ET FIN
 !
 !  => EQUATION (3.11-1)
 !
-    sigisp = (sigi(1) + sigi(2)) / 3.d0
-    sigfsp = (sigfi(1) + sigfi(2)) / 3.d0
+    sigisp = (sigi(1)+sigi(2))/3.d0
+    sigfsp = (sigfi(1)+sigfi(2))/3.d0
 !
     if (ifou .ne. -2) then
-        sigisp = sigi(3) / 3.d0 + sigisp
-        sigfsp = sigfi(3) / 3.d0 + sigfsp
-    endif
+        sigisp = sigi(3)/3.d0+sigisp
+        sigfsp = sigfi(3)/3.d0+sigfsp
+    end if
 !
 ! CALCUL DES CONTRAINTES DEVIATOIRES INI ET FIN
 !
 !  => EQUATION (3.11-2)
 !
-    sigidv(1) = sigi(1) - sigisp
-    sigidv(2) = sigi(2) - sigisp
+    sigidv(1) = sigi(1)-sigisp
+    sigidv(2) = sigi(2)-sigisp
 !
-    sigfdv(1) = sigfi(1) - sigfsp
-    sigfdv(2) = sigfi(2) - sigfsp
+    sigfdv(1) = sigfi(1)-sigfsp
+    sigfdv(2) = sigfi(2)-sigfsp
 !
     if (ifou .ne. -2) then
-        sigidv(3) = sigi(3) - sigisp
+        sigidv(3) = sigi(3)-sigisp
         sigidv(4) = sigi(4)
 !
-        sigfdv(3) = sigfi(3) - sigfsp
+        sigfdv(3) = sigfi(3)-sigfsp
         sigfdv(4) = sigfi(4)
 !
         if (ifou .eq. 2) then
@@ -179,12 +179,12 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
 !
             sigfdv(5) = sigfi(5)
             sigfdv(6) = sigfi(6)
-        endif
+        end if
     else
         sigidv(3) = sigi(3)
 !
         sigfdv(3) = sigfi(3)
-    endif
+    end if
 !_______________________________________________________________________
 !
 !  FLUAGE DE DESSICCATION : CALCUL DES MATRICES
@@ -193,17 +193,17 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
 ! --> REBRANCHE le 25 aout 2004 - ylp.
 !_______________________________________________________________________
 !
-    if ((ides.eq.1) .or. (ides.eq.2)) then
-        call lcumfb(sigi, nstrs, vari, nvari, cmat,&
-                    nmat, tdt, hini, hfin, afd,&
+    if ((ides .eq. 1) .or. (ides .eq. 2)) then
+        call lcumfb(sigi, nstrs, vari, nvari, cmat, &
+                    nmat, tdt, hini, hfin, afd, &
                     bfd, cfd)
-    endif
+    end if
 !  CALCUL DES DEFORMATIONS FINALES FLUAGE DE DESSICCATION
 !
 !  => EQUATION (3.11-3)
 !
     do i = 1, nstrs
-        efde(i) = afd(i) + efde(i) + bfd(i,i) * sigi(i) + cfd(i,i) * sigfi(i)
+        efde(i) = afd(i)+efde(i)+bfd(i, i)*sigi(i)+cfd(i, i)*sigfi(i)
     end do
 !
 !  FLUAGE PROPRE
@@ -214,15 +214,15 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
 !
 !  => EQUATION (3.11-4)
 !
-        call lcumfs(vari, nvari, cmat, nmat, 1,&
-                    isph, tdt, hini, hfin, afps,&
+        call lcumfs(vari, nvari, cmat, nmat, 1, &
+                    isph, tdt, hini, hfin, afps, &
                     bfps, cfps)
-        ersp = ersp + afps + bfps*sigisp + cfps*sigfsp
+        ersp = ersp+afps+bfps*sigisp+cfps*sigfsp
 !
-        call lcumfs(vari, nvari, cmat, nmat, 2,&
-                    isph, tdt, hini, hfin, afps,&
+        call lcumfs(vari, nvari, cmat, nmat, 2, &
+                    isph, tdt, hini, hfin, afps, &
                     bfps, cfps)
-        deisp = afps + bfps*sigisp + cfps*sigfsp
+        deisp = afps+bfps*sigisp+cfps*sigfsp
 !
 !     TEST SUR LA CROISSANCE DE LA DEFORMATION DE FLUAGE
 !          PROPRE SPHERIQUE
@@ -231,32 +231,32 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
             if (deisp .gt. 0.d0) then
                 isph = 2
                 goto 60
-            endif
-            if ((sigfsp/visp.gt.-r8prem()) .and. (sigisp/visp.gt.- r8prem())) then
+            end if
+            if ((sigfsp/visp .gt. -r8prem()) .and. (sigisp/visp .gt. -r8prem())) then
                 isph = 2
                 goto 60
-            endif
-        endif
+            end if
+        end if
 !
-        eisp = eisp + deisp
+        eisp = eisp+deisp
 !
 !   FLUAGE PROPRE DEVIATORIQUE REVERSIBLE ET IRREVERSIBLE
 !
 !  => EQUATION (3.11-5)
 !
-        call lcumfd(vari, nvari, nstrs, cmat, nmat,&
-                    1, tdt, hini, hfin, afpd,&
+        call lcumfd(vari, nvari, nstrs, cmat, nmat, &
+                    1, tdt, hini, hfin, afpd, &
                     bfpd, cfpd)
         do i = 1, nstrs
-            epsdvr(i) = epsdvr(i) + afpd(i)+ bfpd*sigidv(i) + cfpd* sigfdv(i)
+            epsdvr(i) = epsdvr(i)+afpd(i)+bfpd*sigidv(i)+cfpd*sigfdv(i)
         end do
-        call lcumfd(vari, nvari, nstrs, cmat, nmat,&
-                    2, tdt, hini, hfin, afpd,&
+        call lcumfd(vari, nvari, nstrs, cmat, nmat, &
+                    2, tdt, hini, hfin, afpd, &
                     bfpd, cfpd)
         do i = 1, nstrs
-            epsdvi(i) = epsdvi(i) + afpd(i) + bfpd*sigidv(i) + cfpd* sigfdv(i)
+            epsdvi(i) = epsdvi(i)+afpd(i)+bfpd*sigidv(i)+cfpd*sigfdv(i)
         end do
-    endif
+    end if
 !
 !  SAUVEGARDE DES DEFORMATIONS DE FLUAGE
 !
@@ -291,6 +291,6 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
     varf(19) = efde(5)
     varf(20) = efde(6)
 !
- 60 continue
+60  continue
 !
 end subroutine

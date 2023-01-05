@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 function digde2(modelo)
-use calcul_module, only : ca_iamloc_, ca_ilmloc_
-implicit none
+    use calcul_module, only: ca_iamloc_, ca_ilmloc_
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -39,6 +39,6 @@ implicit none
 !-----------------------------------------------------------------------
     integer :: modloc
 !-----------------------------------------------------------------------
-    modloc = ca_iamloc_ - 1 + zi(ca_ilmloc_-1+modelo)
+    modloc = ca_iamloc_-1+zi(ca_ilmloc_-1+modelo)
     digde2 = zi(modloc-1+3)
 end function

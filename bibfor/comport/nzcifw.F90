@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, sigp,&
+subroutine nzcifw(fami, kpg, ksp, ndim, imat, &
+                  compor, carcri, instam, instap, epsm, &
+                  deps, sigm, vim, option, sigp, &
                   vip, dsidep, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -40,24 +40,24 @@ implicit none
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-integer, intent(in) :: ndim
-integer, intent(in) :: imat
-character(len=16), intent(in) :: compor(COMPOR_SIZE)
-real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-real(kind=8), intent(in) :: instam
-real(kind=8), intent(in) :: instap
-real(kind=8), intent(in) :: epsm(*)
-real(kind=8), intent(in) :: deps(*)
-real(kind=8), intent(in) :: sigm(*)
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(out) :: sigp(*)
-real(kind=8), intent(out) :: vip(*)
-real(kind=8), intent(out) :: dsidep(6, 6)
-integer, intent(out) :: iret
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imat
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(in) :: epsm(*)
+    real(kind=8), intent(in) :: deps(*)
+    real(kind=8), intent(in) :: sigm(*)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(out) :: sigp(*)
+    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,17 +111,17 @@ integer, intent(out) :: iret
     character(len=1) :: poum
     aster_logical :: resi, rigi
     aster_logical :: l_visc, l_plas, l_anneal, l_plas_tran, l_hard_isotline, l_hard_isotnlin
-    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     character(len=16) :: metaRela, metaGlob
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ndimsi             = 2*ndim
-    iret               = 0
-    resi               = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi               = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-    dt                 = instap-instam
+    ndimsi = 2*ndim
+    iret = 0
+    resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
+    rigi = option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL'
+    dt = instap-instam
 
 ! - Behaviour in kit
     metaRela = compor(META_RELA)
@@ -136,119 +136,119 @@ integer, intent(out) :: iret
 !
     if (resi) then
         poum = '+'
-        call metaGetPhase(fami     , '+'  , kpg   , ksp , meta_type,&
-                             nb_phase, phase, zcold_ = zalpha)
-        call metaGetPhase(fami     , '-'  , kpg   , ksp , meta_type,&
-                             nb_phase, phasm)
+        call metaGetPhase(fami, '+', kpg, ksp, meta_type, &
+                          nb_phase, phase, zcold_=zalpha)
+        call metaGetPhase(fami, '-', kpg, ksp, meta_type, &
+                          nb_phase, phasm)
     else
         poum = '-'
-        call metaGetPhase(fami     , '-'  , kpg   , ksp , meta_type,&
-                             nb_phase, phase, zcold_ = zalpha)
-    endif
+        call metaGetPhase(fami, '-', kpg, ksp, meta_type, &
+                          nb_phase, phase, zcold_=zalpha)
+    end if
     do k = 1, nb_phase-1
-        deltaz(k) = phase(k) - phasm(k)
+        deltaz(k) = phase(k)-phasm(k)
     end do
 !
 ! - Compute thermic strain
 !
-    call verift(fami, kpg, ksp, poum, imat,&
+    call verift(fami, kpg, ksp, poum, imat, &
                 epsth_meta_=epsth)
 !
 ! - Mechanisms of comportment law
 !
-    call metaGetMechanism(metaRela, metaGlob,&
-                          l_plas          = l_plas,&
-                          l_visc          = l_visc,&
-                          l_anneal        = l_anneal,&
-                          l_plas_tran     = l_plas_tran,&
-                          l_hard_isotline = l_hard_isotline,&
-                          l_hard_isotnlin = l_hard_isotnlin)
+    call metaGetMechanism(metaRela, metaGlob, &
+                          l_plas=l_plas, &
+                          l_visc=l_visc, &
+                          l_anneal=l_anneal, &
+                          l_plas_tran=l_plas_tran, &
+                          l_hard_isotline=l_hard_isotline, &
+                          l_hard_isotnlin=l_hard_isotnlin)
 !
 ! - Get elastic parameters
 !
-    call metaGetParaElas(poum, fami    , kpg     , ksp, imat,&
-                         e_  = e, deuxmu_  = deuxmu, troisk_ = troisk,&
-                         deuxmum_ = deumum)
+    call metaGetParaElas(poum, fami, kpg, ksp, imat, &
+                         e_=e, deuxmu_=deuxmu, troisk_=troisk, &
+                         deuxmum_=deumum)
     plasti = vim(IDX_C_IPLAS)
 !
 ! - Mixture law (yield limit)
 !
-    call metaGetParaMixture(poum  , fami     , kpg     , ksp   , imat,&
-                            l_visc, meta_type, nb_phase, zalpha, fmel,&
+    call metaGetParaMixture(poum, fami, kpg, ksp, imat, &
+                            l_visc, meta_type, nb_phase, zalpha, fmel, &
                             sy)
 !
 ! - Get hardening slope (linear)
 !
     coef_hard = (2.d0/3.d0)
-    call metaGetParaHardLine(poum     , fami     , kpg, ksp, imat,&
-                             meta_type, nb_phase ,&
-                             e        , coef_hard, h)
+    call metaGetParaHardLine(poum, fami, kpg, ksp, imat, &
+                             meta_type, nb_phase, &
+                             e, coef_hard, h)
     hmoy = 0.d0
     do k = 1, nb_phase
-        hmoy = hmoy + phase(k)*h(k)
+        hmoy = hmoy+phase(k)*h(k)
     end do
 !
     if (resi) then
 ! ----- Parameters for annealing
         if (l_anneal) then
-            call metaGetParaAnneal(poum     , fami    , kpg, ksp, imat,&
-                                   meta_type, nb_phase,&
+            call metaGetParaAnneal(poum, fami, kpg, ksp, imat, &
+                                   meta_type, nb_phase, &
                                    theta)
         else
             do i = 1, 8
-                theta(i)=1.d0
+                theta(i) = 1.d0
             end do
-        endif
+        end if
 ! ----- Parameters for viscosity
         if (l_visc) then
-            call metaGetParaVisc(poum     , fami     , kpg, ksp, imat  ,&
-                                 meta_type, nb_phase, eta, n  , unsurn,&
-                                 c        , m)
+            call metaGetParaVisc(poum, fami, kpg, ksp, imat, &
+                                 meta_type, nb_phase, eta, n, unsurn, &
+                                 c, m)
         else
-            eta(:)    = 0.d0
-            n(:)      = 20.d0
+            eta(:) = 0.d0
+            n(:) = 20.d0
             unsurn(:) = 1.d0
-            c(:)      = 0.d0
-            m(:)      = 20.d0
-        endif
+            c(:) = 0.d0
+            m(:) = 20.d0
+        end if
 !
 ! 2.7 - CALCUL DE VIM+DG
 !
         do k = 1, nb_phase-1
             dz(k) = phase(k)-phasm(k)
             if (dz(k) .ge. 0.d0) then
-                dz1(k)=dz(k)
-                dz2(k)=0.d0
+                dz1(k) = dz(k)
+                dz2(k) = 0.d0
             else
-                dz1(k)=0.d0
-                dz2(k)=-dz(k)
-            endif
+                dz1(k) = 0.d0
+                dz2(k) = -dz(k)
+            end if
         end do
         if (phase(nb_phase) .gt. 0.d0) then
             do i = 1, ndimsi
-                dvin=0.d0
+                dvin = 0.d0
                 do k = 1, nb_phase-1
-                    l=i+(k-1)*6
-                    dvin = dvin + dz2(k)*(theta(4+k)*vim(l)-vim(24+i))/phase(nb_phase)
+                    l = i+(k-1)*6
+                    dvin = dvin+dz2(k)*(theta(4+k)*vim(l)-vim(24+i))/phase(nb_phase)
                 end do
                 vi(24+i) = vim(24+i)+dvin
-                if ((vi(24+i)*vim(24+i)) .lt. 0.d0) vi(24+i)=0.d0
+                if ((vi(24+i)*vim(24+i)) .lt. 0.d0) vi(24+i) = 0.d0
             end do
         else
             do i = 1, ndimsi
-                vi(24+i)=0.d0
+                vi(24+i) = 0.d0
             end do
-        endif
+        end if
         do k = 1, nb_phase-1
             do i = 1, ndimsi
-                l=i+(k-1)*6
+                l = i+(k-1)*6
                 if (phase(k) .gt. 0.d0) then
-                    dvin = dz1(k)*(theta(k)*vim(24+i)-vim(l))/ phase(k)
+                    dvin = dz1(k)*(theta(k)*vim(24+i)-vim(l))/phase(k)
                     vi(l) = vim(l)+dvin
-                    if ((vi(l)*vim(l)) .lt. 0.d0) vi(l)=0.d0
+                    if ((vi(l)*vim(l)) .lt. 0.d0) vi(l) = 0.d0
                 else
                     vi(l) = 0.d0
-                endif
+                end if
             end do
         end do
 !
@@ -256,94 +256,94 @@ integer, intent(out) :: iret
 !
         do i = 4, ndimsi
             do k = 1, nb_phase
-                l=i+(k-1)*6
-                vi(l)=vi(l)*rac2
+                l = i+(k-1)*6
+                vi(l) = vi(l)*rac2
             end do
         end do
 !
 ! 2.8 - RESTAURATION D ORIGINE VISQUEUSE
 !
         do i = 1, ndimsi
-            xmoy(i)=0.d0
+            xmoy(i) = 0.d0
             do k = 1, nb_phase
-                l=i+(k-1)*6
-                xmoy(i)=xmoy(i)+phase(k)*h(k)*vi(l)
+                l = i+(k-1)*6
+                xmoy(i) = xmoy(i)+phase(k)*h(k)*vi(l)
             end do
         end do
         xmoyeq = 0.d0
         do i = 1, ndimsi
-            xmoyeq=xmoyeq+xmoy(i)**2.d0
+            xmoyeq = xmoyeq+xmoy(i)**2.d0
         end do
-        xmoyeq= sqrt(1.5d0*xmoyeq)
-        cmoy=0.d0
-        mmoy=0.d0
+        xmoyeq = sqrt(1.5d0*xmoyeq)
+        cmoy = 0.d0
+        mmoy = 0.d0
         do k = 1, nb_phase
-            cmoy=cmoy+phase(k)*c(k)
-            mmoy=mmoy+phase(k)*m(k)
+            cmoy = cmoy+phase(k)*c(k)
+            mmoy = mmoy+phase(k)*m(k)
         end do
-        cr=cmoy*xmoyeq
+        cr = cmoy*xmoyeq
         if (xmoyeq .gt. 0.d0) then
             do i = 1, ndimsi
-                ds(i)= 3.d0*dt*(cr**mmoy)*xmoy(i)/(2.d0*xmoyeq)
+                ds(i) = 3.d0*dt*(cr**mmoy)*xmoy(i)/(2.d0*xmoyeq)
             end do
         else
             do i = 1, ndimsi
-                ds(i)= 0.d0
+                ds(i) = 0.d0
             end do
-        endif
+        end if
         do k = 1, nb_phase
             do i = 1, ndimsi
-                l=i+(k-1)*6
+                l = i+(k-1)*6
                 if (phase(k) .gt. 0.d0) then
-                    vimt(l)=vi(l)
-                    vi(l)=vi(l)-ds(i)
-                    if ((vi(l)*vimt(l)) .lt. 0.d0) vi(l)=0.d0
-                endif
+                    vimt(l) = vi(l)
+                    vi(l) = vi(l)-ds(i)
+                    if ((vi(l)*vimt(l)) .lt. 0.d0) vi(l) = 0.d0
+                end if
             end do
         end do
 ! ----- Parameters for plasticity of tranformation
         trans = 0.d0
         if (l_plas_tran) then
-            call metaGetParaPlasTransf('+'      , fami     , 1     , 1     , imat,&
-                                       meta_type, nb_phase, deltaz, zalpha,&
-                                       kpt      , fpt)
+            call metaGetParaPlasTransf('+', fami, 1, 1, imat, &
+                                       meta_type, nb_phase, deltaz, zalpha, &
+                                       kpt, fpt)
             do k = 1, nb_phase-1
                 if (deltaz(k) .gt. 0.d0) then
-                    trans = trans + kpt(k)*fpt(k)*deltaz(k)
-                endif
+                    trans = trans+kpt(k)*fpt(k)*deltaz(k)
+                end if
             end do
-        endif
+        end if
     else
 !
 !           MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 !
         do k = 1, nb_phase
             do i = 1, ndimsi
-                l=i+(k-1)*6
-                vi(l)=vim(l)
+                l = i+(k-1)*6
+                vi(l) = vim(l)
                 if (i .gt. 3) then
-                    vi(l)=vi(l)*rac2
+                    vi(l) = vi(l)*rac2
                 end if
             end do
         end do
-        trans=0.d0
+        trans = 0.d0
         do i = 1, ndimsi
-            xmoy(i)=0.d0
+            xmoy(i) = 0.d0
             do k = 1, nb_phase
-                l=i+(k-1)*6
-                xmoy(i)=xmoy(i)+phase(k)*h(k)*vi(l)
+                l = i+(k-1)*6
+                xmoy(i) = xmoy(i)+phase(k)*h(k)*vi(l)
             end do
         end do
-    endif
+    end if
 !
 ! 2.10 - CALCUL DE SYMOY
 !
     if (zalpha .gt. 0.d0) then
-        symoy = phase(1)*sy(1)+phase(2)*sy(2)+phase(3)*sy(3) + phase(4)*sy(4)
+        symoy = phase(1)*sy(1)+phase(2)*sy(2)+phase(3)*sy(3)+phase(4)*sy(4)
         symoy = symoy/zalpha
     else
         symoy = 0.d0
-    endif
+    end if
     symoy = (1.d0-fmel)*sy(nb_phase)+fmel*symoy
 !
 ! ********************************
@@ -355,15 +355,15 @@ integer, intent(out) :: iret
     trsigm = (sigm(1)+sigm(2)+sigm(3))/3.d0
     trsigp = troisk*(trepsm+trdeps)-troisk*epsth
     do i = 1, ndimsi
-        dvdeps(i) = deps(i) - trdeps * kron(i)
-        dvsigm(i) = sigm(i) - trsigm * kron(i)
+        dvdeps(i) = deps(i)-trdeps*kron(i)
+        dvsigm(i) = sigm(i)-trsigm*kron(i)
     end do
 !
     sieleq = 0.d0
     do i = 1, ndimsi
-        sigel(i) = deuxmu*dvsigm(i)/deumum + deuxmu*dvdeps(i)
-        sigel2(i)= sigel(i)-(1.5d0*deuxmu*trans+1.d0)*xmoy(i)
-        sieleq = sieleq + sigel2(i)**2
+        sigel(i) = deuxmu*dvsigm(i)/deumum+deuxmu*dvdeps(i)
+        sigel2(i) = sigel(i)-(1.5d0*deuxmu*trans+1.d0)*xmoy(i)
+        sieleq = sieleq+sigel2(i)**2
     end do
     sieleq = sqrt(1.5d0*sieleq)
     if (sieleq .gt. 0.d0) then
@@ -374,7 +374,7 @@ integer, intent(out) :: iret
         do i = 1, ndimsi
             sig0(i) = 0.d0
         end do
-    endif
+    end if
 !
 ! ************************
 ! 4 - RESOLUTION
@@ -385,24 +385,24 @@ integer, intent(out) :: iret
 ! 4.2.1 - CALCUL DE DP
 !
         vip(1:IDX_C_IPLAS) = 0.d0
-        seuil= sieleq-(1.5d0*deuxmu*trans+1.d0)*symoy
+        seuil = sieleq-(1.5d0*deuxmu*trans+1.d0)*symoy
 !
         if (seuil .lt. 0.d0) then
             vip(IDX_C_IPLAS) = 0.d0
             dp = 0.d0
         else
             vip(IDX_C_IPLAS) = 1.d0
-            rprim=3.d0*hmoy/2.d0
+            rprim = 3.d0*hmoy/2.d0
             if (l_plas) then
-                dp=seuil/(1.5d0*deuxmu+(1.5d0*deuxmu*trans+1.d0)*rprim)
+                dp = seuil/(1.5d0*deuxmu+(1.5d0*deuxmu*trans+1.d0)*rprim)
             else
-                call nzcalc(carcri, nb_phase, phase, zalpha,&
-                            fmel  , seuil   , dt   , trans ,&
-                            rprim , deuxmu  , eta  , unsurn,&
-                            dp    , iret)
+                call nzcalc(carcri, nb_phase, phase, zalpha, &
+                            fmel, seuil, dt, trans, &
+                            rprim, deuxmu, eta, unsurn, &
+                            dp, iret)
                 if (iret .eq. 1) goto 999
-            endif
-        endif
+            end if
+        end if
 !
 ! 4.2.2 - CALCUL DE SIGMA
 !
@@ -410,16 +410,16 @@ integer, intent(out) :: iret
         sigp(1:2*ndim) = 0.d0
 !
         do i = 1, ndimsi
-            dvsigp(i) = sigel(i) - 1.5d0*deuxmu*dp*sig0(i)
-            dvsigp(i) = dvsigp(i)/(1.5d0*deuxmu*trans + 1.d0)
-            sigp(i) = dvsigp(i) + trsigp*kron(i)
+            dvsigp(i) = sigel(i)-1.5d0*deuxmu*dp*sig0(i)
+            dvsigp(i) = dvsigp(i)/(1.5d0*deuxmu*trans+1.d0)
+            sigp(i) = dvsigp(i)+trsigp*kron(i)
         end do
 !
 ! 4.2.3 - CALCUL DE VIP ET XMOY
 !
         do k = 1, nb_phase
             do i = 1, ndimsi
-                l=i+(k-1)*6
+                l = i+(k-1)*6
                 if (phase(k) .gt. 0.d0) then
                     vip(l) = vi(l)+3.d0*dp*sig0(i)/2.d0
                     if (i .gt. 3) then
@@ -427,102 +427,102 @@ integer, intent(out) :: iret
                     end if
                 else
                     vip(l) = 0.d0
-                endif
+                end if
             end do
         end do
         do i = 1, ndimsi
-            vip(30+i)= xmoy(i)+3.d0*hmoy*dp*sig0(i)/2.d0
+            vip(30+i) = xmoy(i)+3.d0*hmoy*dp*sig0(i)/2.d0
             if (i .gt. 3) then
                 vip(30+i) = vip(30+i)/rac2
             end if
         end do
-    endif
+    end if
 !
 ! *******************************
 ! 5 - MATRICE TANGENTE DSIGDF
 ! *******************************
 !
     if (rigi) then
-        mode=2
-        if (l_visc) mode=1
-        dsidep(1:6,1:6)    = 0.d0
+        mode = 2
+        if (l_visc) mode = 1
+        dsidep(1:6, 1:6) = 0.d0
         do i = 1, ndimsi
-            dsidep(i,i) = 1.d0
+            dsidep(i, i) = 1.d0
         end do
         do i = 1, 3
             do j = 1, 3
-                dsidep(i,j) = dsidep(i,j)-1.d0/3.d0
+                dsidep(i, j) = dsidep(i, j)-1.d0/3.d0
             end do
         end do
         if (option(1:9) .eq. 'FULL_MECA') then
             coef1 = (1.5d0*deuxmu*trans+1.d0)
         else
             coef1 = 1.d0
-        endif
+        end if
         do i = 1, ndimsi
             do j = 1, ndimsi
-                dsidep(i,j) = dsidep(i,j)*deuxmu/coef1
+                dsidep(i, j) = dsidep(i, j)*deuxmu/coef1
             end do
         end do
 !
 ! 5.2 - PARTIE PLASTIQUE
 !
-        b=1.d0
-        coef2 =0.d0
-        coef3=0.d0
+        b = 1.d0
+        coef2 = 0.d0
+        coef3 = 0.d0
         if (plasti .ge. 0.5d0) then
             if (option(1:9) .eq. 'FULL_MECA') then
                 sigeps = 0.d0
                 do i = 1, ndimsi
-                    dvsigp(i)=dvsigp(i)-xmoy(i)
-                    sigeps = sigeps + dvsigp(i)*dvdeps(i)
+                    dvsigp(i) = dvsigp(i)-xmoy(i)
+                    sigeps = sigeps+dvsigp(i)*dvdeps(i)
                 end do
-                if ((mode .eq.1) .or. ((mode .eq. 2) .and. (sigeps.ge.0.d0))) then
+                if ((mode .eq. 1) .or. ((mode .eq. 2) .and. (sigeps .ge. 0.d0))) then
                     b = 1.d0-(1.5d0*deuxmu*dp/sieleq)
                     dv = 0.d0
                     if (mode .eq. 1) then
                         do k = 1, nb_phase
                             n0(k) = (1-n(k))/n(k)
                         end do
-                        dv = (1-fmel)*phase(nb_phase)*(eta(nb_phase)/n(nb_phase)/dt) *&
+                        dv = (1-fmel)*phase(nb_phase)*(eta(nb_phase)/n(nb_phase)/dt)* &
                              ((dp/dt)**n0(nb_phase))
                         if (zalpha .gt. 0.d0) then
                             do k = 1, nb_phase-1
                                 if (phase(k) .gt. 0.d0) then
-                                    dv = dv +&
-                                         fmel*(phase(k)/zalpha) * (eta(k)/ n(k)/dt)*((dp/dt)**n0(k))
-                                endif
+                                    dv = dv+ &
+                                         fmel*(phase(k)/zalpha)*(eta(k)/n(k)/dt)*((dp/dt)**n0(k))
+                                end if
                             end do
-                        endif
-                    endif
-                    coef2 = 3.d0*hmoy/2.d0 + dv
+                        end if
+                    end if
+                    coef2 = 3.d0*hmoy/2.d0+dv
                     coef2 = (1.5d0*deuxmu*trans+1.d0)*coef2
                     coef2 = (1.5d0*deuxmu)+coef2
-                    coef2 = 1/coef2 - dp/sieleq
-                    coef2 =((1.5d0*deuxmu)**2)*coef2
-                endif
-            endif
+                    coef2 = 1/coef2-dp/sieleq
+                    coef2 = ((1.5d0*deuxmu)**2)*coef2
+                end if
+            end if
             if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-                if (mode .eq. 2) coef2 = ( (1.5d0*deuxmu)**2 )/( 1.5d0*deuxmu+1.5d0*hmoy )
-            endif
+                if (mode .eq. 2) coef2 = ((1.5d0*deuxmu)**2)/(1.5d0*deuxmu+1.5d0*hmoy)
+            end if
             coef3 = coef2/coef1
-        endif
+        end if
         do i = 1, ndimsi
             do j = 1, ndimsi
-                dsidep(i,j) = dsidep(i,j)*b
+                dsidep(i, j) = dsidep(i, j)*b
             end do
         end do
         do i = 1, 3
             do j = 1, 3
-                dsidep(i,j) = dsidep(i,j)+troisk/3.d0
+                dsidep(i, j) = dsidep(i, j)+troisk/3.d0
             end do
         end do
         do i = 1, ndimsi
             do j = 1, ndimsi
-                dsidep(i,j) = dsidep(i,j)- coef3*sig0(i)*sig0(j)
+                dsidep(i, j) = dsidep(i, j)-coef3*sig0(i)*sig0(j)
             end do
         end do
-    endif
+    end if
 !
 999 continue
 !

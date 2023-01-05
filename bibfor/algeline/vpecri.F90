@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpecri(eigsol, ktype, indice,&
+subroutine vpecri(eigsol, ktype, indice, &
                   valk, valr, vali)
 
 ! ROUTINE UTILITAIRE ECRIVANT UNE VALEUR DE LA SD_EIGENSOLVER POUR UN INDICE ET UN TYPE DONNE.
@@ -34,11 +34,11 @@ subroutine vpecri(eigsol, ktype, indice,&
 !
 ! --- INPUT
 !
-    integer           , intent(in) :: indice, vali
-    real(kind=8)      , intent(in) :: valr
-    character(len=1)  , intent(in) :: ktype
-    character(len=19) , intent(in) :: eigsol
-    character(len=24) , intent(in) :: valk
+    integer, intent(in) :: indice, vali
+    real(kind=8), intent(in) :: valr
+    character(len=1), intent(in) :: ktype
+    character(len=19), intent(in) :: eigsol
+    character(len=24), intent(in) :: valk
 !
 ! --- OUTPUT
 ! None
@@ -58,24 +58,24 @@ subroutine vpecri(eigsol, ktype, indice,&
     call jemarq()
 
 ! --   TEST DES PARAMETRES
-    ASSERT((ktype.eq.'K').or.(ktype.eq.'R').or.(ktype.eq.'I'))
-    ASSERT((indice.ge.1).and.(indice.le.20))
+    ASSERT((ktype .eq. 'K') .or. (ktype .eq. 'R') .or. (ktype .eq. 'I'))
+    ASSERT((indice .ge. 1) .and. (indice .le. 20))
 
 ! --  LECTURE PARAMETRES SOLVEURS MODAUX
-    select case(ktype)
-    case('K')
-        ASSERT(indice.le.20)
+    select case (ktype)
+    case ('K')
+        ASSERT(indice .le. 20)
         call jeveuo(eigsol//'.ESVK', 'E', eislvk)
-        zk24(eislvk-1+indice)=''
-        zk24(eislvk-1+indice)=trim(valk)
-    case('I')
-        ASSERT(indice.le.15)
+        zk24(eislvk-1+indice) = ''
+        zk24(eislvk-1+indice) = trim(valk)
+    case ('I')
+        ASSERT(indice .le. 15)
         call jeveuo(eigsol//'.ESVI', 'E', eislvi)
-        zi(eislvi-1+indice)=vali
-    case('R')
-        ASSERT(indice.le.15)
+        zi(eislvi-1+indice) = vali
+    case ('R')
+        ASSERT(indice .le. 15)
         call jeveuo(eigsol//'.ESVR', 'E', eislvr)
-        zr(eislvr-1+indice)=valr
+        zr(eislvr-1+indice) = valr
     case default
         ASSERT(.false.)
     end select

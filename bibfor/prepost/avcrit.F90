@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
-                  kwork, sommw, tspaq, i, vala,&
-                  coefpa, ncycl, jvmin, jvmax, jomin,&
+subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp, &
+                  kwork, sommw, tspaq, i, vala, &
+                  coefpa, ncycl, jvmin, jvmax, jomin, &
                   jomax, nomcri, nomfor, jgdreq)
 !
 ! person_in_charge: van-xuan.tran at edf.fr
@@ -91,14 +91,14 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !                     TOUS LES INSTANTS, ON UTILISE VPHYDR
 !                     UNIQUEMENT DANS LE CRITERE DE DANG VAN.
 !     ------------------------------------------------------------------
-    data  nompar /   'TAUPR_1','TAUPR_2','SIGN_1',  'SIGN_2',&
-     &                 'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2',&
-     &                 'SIPR1_1','SIPR1_2','EPSN1_1', 'EPSN1_2',&
-     &                 'ETPR1_1','ETPR1_2','SITN1_1', 'SITN1_2',&
-     &                 'EPPR1_1','EPPR1_2','SIPN1_1', 'SIPN1_2',&
-     &                 'SIGEQ_1','SIGEQ_2', 'ETEQ_1', 'ETEQ_2',&
-     &                 'EPEQ_1', 'EPEQ_2',  'INVJ2_1','INVJ2_2',&
-     &                 'SITRE_1','SITRE_2'     /
+    data nompar/'TAUPR_1', 'TAUPR_2', 'SIGN_1', 'SIGN_2',&
+     &                 'PHYDR_1', 'PHYDR_2', 'EPSPR_1', 'EPSPR_2',&
+     &                 'SIPR1_1', 'SIPR1_2', 'EPSN1_1', 'EPSN1_2',&
+     &                 'ETPR1_1', 'ETPR1_2', 'SITN1_1', 'SITN1_2',&
+     &                 'EPPR1_1', 'EPPR1_2', 'SIPN1_1', 'SIPN1_2',&
+     &                 'SIGEQ_1', 'SIGEQ_2', 'ETEQ_1', 'ETEQ_2',&
+     &                 'EPEQ_1', 'EPEQ_2', 'INVJ2_1', 'INVJ2_2',&
+     &                 'SITRE_1', 'SITRE_2'/
 !-----------------------------------------------------------------------
 !
 !234567                                                              012
@@ -121,65 +121,65 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !
     typcha = 'NON_PERIODIQUE'
 !
-    call anacri(nomcri, nomfor, typcha, 'NON', paract,&
+    call anacri(nomcri, nomfor, typcha, 'NON', paract, &
                 lbid, lbid, lbid, lbid, lbid)
 !
 !-----------------------------------------------------------------------
 ! CALCULER LES GRANDEURS
 !----------------------------------------------------------------------
 ! 1.1 CALCUL DE LA CONTRAINTE NORMALE
-    if ((paract(3) .eq. 1 ) .or. (paract(4) .eq. 1 )) then
-        call avsign(nbvec, nbordr, vectn, vwork, tdisp,&
+    if ((paract(3) .eq. 1) .or. (paract(4) .eq. 1)) then
+        call avsign(nbvec, nbordr, vectn, vwork, tdisp, &
                     kwork, sommw, tspaq, i, jvsign)
 !
-    endif
+    end if
 !
 ! 1.2 CALCUL DE LA PRESSION HYDROSTATIQUE
-    if ((paract(5) .eq. 1 ) .or. (paract(6) .eq. 1 )) then
+    if ((paract(5) .eq. 1) .or. (paract(6) .eq. 1)) then
 !
-        call avphyd(nbordr, vwork, tdisp, kwork, sommw,&
+        call avphyd(nbordr, vwork, tdisp, kwork, sommw, &
                     tspaq, i, jvphyd)
 !
-    endif
+    end if
 !
-    if ((paract(9) .eq. 1 ) .or. (paract(10) .eq. 1 ) .or. (paract(11) .eq. 1 ) .or.&
-        (paract(12) .eq. 1 )) then
+    if ((paract(9) .eq. 1) .or. (paract(10) .eq. 1) .or. (paract(11) .eq. 1) .or. &
+        (paract(12) .eq. 1)) then
 !
-        call avsipr(nbordr, vwork, tdisp, kwork, sommw,&
+        call avsipr(nbordr, vwork, tdisp, kwork, sommw, &
                     tspaq, i, jvsipr, jvepsn)
 !
-    endif
+    end if
 !
 !
-    if ((paract(13) .eq. 1 ) .or. (paract(14) .eq. 1 ) .or. (paract(15) .eq. 1 ) .or.&
-        (paract(16) .eq. 1 )) then
+    if ((paract(13) .eq. 1) .or. (paract(14) .eq. 1) .or. (paract(15) .eq. 1) .or. &
+        (paract(16) .eq. 1)) then
 !
-        call avetpr(nbordr, vwork, tdisp, kwork, sommw,&
+        call avetpr(nbordr, vwork, tdisp, kwork, sommw, &
                     tspaq, i, jvetpr, jvsitn)
 !
-    endif
+    end if
 !
-    if ((paract(17) .eq. 1 ) .or. (paract(18) .eq. 1 ) .or. (paract(19) .eq. 1 ) .or.&
-        (paract(20) .eq. 1 )) then
+    if ((paract(17) .eq. 1) .or. (paract(18) .eq. 1) .or. (paract(19) .eq. 1) .or. &
+        (paract(20) .eq. 1)) then
 !
-        call aveppr(nbordr, vwork, tdisp, kwork, sommw,&
+        call aveppr(nbordr, vwork, tdisp, kwork, sommw, &
                     tspaq, i, jveppr, jvsipn)
 !
-    endif
+    end if
 !
-    if ((paract(21) .eq. 1 ) .or. (paract(22) .eq. 1 )) then
+    if ((paract(21) .eq. 1) .or. (paract(22) .eq. 1)) then
 !
-        call avsieq(nbordr, vwork, tdisp, kwork, sommw,&
+        call avsieq(nbordr, vwork, tdisp, kwork, sommw, &
                     tspaq, i, jvsieq)
 !
-    endif
+    end if
 !
-    if ((paract(23) .eq. 1 ) .or. (paract(24) .eq. 1 )) then
+    if ((paract(23) .eq. 1) .or. (paract(24) .eq. 1)) then
 !
-        call aveteq(nbordr, vwork, tdisp, kwork, sommw,&
+        call aveteq(nbordr, vwork, tdisp, kwork, sommw, &
                     tspaq, i, jveteq)
 !
-    endif
+    end if
 !----------------------------------------------------------------------
 ! EVALUER LES GRANDEURS
 !----------------------------------------------------------------------
@@ -196,41 +196,41 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
         chnom(1:19) = nomfor
 !
         call jeveuo(chnom, 'L', jprof)
-        call fonbpa(nomfor, zk24(jprof), cbid, nparma, np,&
+        call fonbpa(nomfor, zk24(jprof), cbid, nparma, np, &
                     nompf)
-    endif
+    end if
 !
     do ivect = 1, nbvec
         ad0 = (ivect-1)*nbordr
         do icycl = 1, ncycl(ivect)
-            ad1 = (ivect-1)*nbordr + icycl
-            ad2 = (ivect-1)*(nbordr+2) + icycl
+            ad1 = (ivect-1)*nbordr+icycl
+            ad2 = (ivect-1)*(nbordr+2)+icycl
 !
             if (nomcri(1:14) .eq. 'MATAKE_MODI_AV') then
-                zr(jgdreq+ad1)= coepre*abs((zr(jvmax+ad2) - zr(jvmin+ad2))/2.0d0)&
-                + vala*max(zr(jvsign+ad0+zi(jomax+ad2)), &
-                zr(jvsign+ad0+zi(jomin+ad2)), 0.0d0)
-                zr(jgdreq+ad1)= zr(jgdreq+ad1)*coefpa
+                zr(jgdreq+ad1) = coepre*abs((zr(jvmax+ad2)-zr(jvmin+ad2))/2.0d0) &
+                                 +vala*max(zr(jvsign+ad0+zi(jomax+ad2)), &
+                                           zr(jvsign+ad0+zi(jomin+ad2)), 0.0d0)
+                zr(jgdreq+ad1) = zr(jgdreq+ad1)*coefpa
 !
-            endif
+            end if
 !
             if (nomcri(1:16) .eq. 'DANG_VAN_MODI_AV') then
-                zr(jgdreq+ad1)= coepre*abs((zr(jvmax+ad2) - zr(jvmin+ad2))/2.0d0)&
-                + vala*max(zr(jvphyd+zi(jomax+ad2)), &
-                zr(jvphyd+zi(jomin+ad2)),0.0d0)
+                zr(jgdreq+ad1) = coepre*abs((zr(jvmax+ad2)-zr(jvmin+ad2))/2.0d0) &
+                                 +vala*max(zr(jvphyd+zi(jomax+ad2)), &
+                                           zr(jvphyd+zi(jomin+ad2)), 0.0d0)
 !
-                zr(jgdreq+ad1)= zr(jgdreq+ad1)*coefpa
-            endif
+                zr(jgdreq+ad1) = zr(jgdreq+ad1)*coefpa
+            end if
 !
 !  Pour le critère de FATEMI_SOCIE? il faut utiliser le tenseur de déformation du
 !  type d'ingéneire gamma_ij = 2*eps_ij avec i #j
 !
             if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
-                zr(jgdreq+ad1)= coepre*abs((zr(jvmax+ad2) - zr(jvmin+ad2))/2.0d0*2.0d0)&
-                *(1.0d0 + vala*max(zr(jvsign+ad0+zi(jomax+ad2)), &
-                zr(jvsign+ad0+zi(jomin+ad2)), 0.0d0))
-                zr(jgdreq+ad1)= zr(jgdreq+ad1)*coefpa
-            endif
+                zr(jgdreq+ad1) = coepre*abs((zr(jvmax+ad2)-zr(jvmin+ad2))/2.0d0*2.0d0) &
+                                 *(1.0d0+vala*max(zr(jvsign+ad0+zi(jomax+ad2)), &
+                                                  zr(jvsign+ad0+zi(jomin+ad2)), 0.0d0))
+                zr(jgdreq+ad1) = zr(jgdreq+ad1)*coefpa
+            end if
 !
             if (nomcri(1:7) .eq. 'FORMULE') then
                 valpar(1) = zr(jvmax+ad2)
@@ -269,15 +269,15 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                         if (nompf(j) .eq. nompar(ipar)) then
                             valpu(j) = valpar(ipar)
                             goto 75
-                        endif
+                        end if
                     end do
- 75                 continue
+75                  continue
                 end do
 !
-                call fointe('F', nomfor, np, nompf, valpu,&
+                call fointe('F', nomfor, np, nompf, valpu, &
                             zr(jgdreq+ad1), ibid)
 !
-            endif
+            end if
 !
         end do
 !

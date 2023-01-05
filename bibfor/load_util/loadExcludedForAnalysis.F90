@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine loadExcludedForAnalysis(list_load)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/lisnch.h"
 #include "asterfort/utmess.h"
 !
-character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: list_load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,8 +42,8 @@ character(len=19), intent(in) :: list_load
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_excl_load = 1
-    character(len=6), parameter :: ligr_excl_char(nb_excl_load) = (/&
-         '.VFACE'/)
+    character(len=6), parameter :: ligr_excl_char(nb_excl_load) = (/ &
+                                   '.VFACE'/)
     character(len=24) :: lload_name, lload_info
     integer, pointer :: v_load_info(:) => null()
     character(len=24), pointer :: v_load_name(:) => null()
@@ -55,8 +55,8 @@ character(len=19), intent(in) :: list_load
 !
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
-    call jeveuo(lload_name, 'L', vk24 = v_load_name)
-    call jeveuo(lload_info, 'L', vi   = v_load_info)
+    call jeveuo(lload_name, 'L', vk24=v_load_name)
+    call jeveuo(lload_info, 'L', vi=v_load_info)
 !
 ! - Number of loads
 !
@@ -65,15 +65,15 @@ character(len=19), intent(in) :: list_load
 ! - Loop on loads
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
+        load_name = v_load_name(i_load) (1:8)
         load_nume = v_load_info(nb_load+i_load+1)
         do i_excl_load = 1, nb_excl_load
             lchin = load_name(1:8)//'.CHME'//ligr_excl_char(i_excl_load)//'.DESC'
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
                 call utmess('F', 'CHARGES_58', sk=load_name)
-            endif
-        enddo
+            end if
+        end do
     end do
 !
 end subroutine

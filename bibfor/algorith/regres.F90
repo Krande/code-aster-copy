@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     character(len=19) :: chexin, chexou, chamno
     integer :: i, iadnew, iadold, ieq, igd
     integer :: iold, iord, iret, j, k, ldeeq
-    integer :: lnunew,  lprnew, lprold
+    integer :: lnunew, lprnew, lprold
     integer :: lvnew, nbord, ncmp, nddl, ndeeq
     integer :: ndi, nec, nnodes
     character(len=24) :: nequ
@@ -65,7 +65,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call rsexch('F', result, 'DEPL', 1, chamno,&
+    call rsexch('F', result, 'DEPL', 1, chamno, &
                 iret)
     call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchn1)
     call nueq_chck(pfchn1)
@@ -85,18 +85,18 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call dismoi('NUM_GD', chamno, 'CHAM_NO', repi=igd)
 !
     nec = nbec(igd)
-    ndi = nec + 2
+    ndi = nec+2
 !
 ! --- CALCUL DU NOMBRE DE DDL ---
     nddl = 0
     do i = 1, nnodes
         iold = corres(i)
-        nddl = nddl + zi(lprold+(iold-1)*ndi+1)
+        nddl = nddl+zi(lprold+(iold-1)*ndi+1)
     end do
 !
 ! - Create prof_chno
 !
-    call profchno_crsd(pfchn2 , 'G', nddl, prno_lengthz = nnodes*ndi)
+    call profchno_crsd(pfchn2, 'G', nddl, prno_lengthz=nnodes*ndi)
     call jeveuo(pfchn2//'.DEEQ', 'E', ldeeq)
     call jeveuo(pfchn2//'.NUEQ', 'E', lnunew)
     call jeveuo(jexnum(pfchn2//'.PRNO', 1), 'E', lprnew)
@@ -104,15 +104,15 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
 ! - THis is a NUME_EQUA object, not PROF_CHNO one
 !
-    nequ      = pfchn2(1:19)//'.NEQU'
-    call wkvect(nequ, 'V V I', 2, vi = p_nequ)
+    nequ = pfchn2(1:19)//'.NEQU'
+    call wkvect(nequ, 'V V I', 2, vi=p_nequ)
     p_nequ(1) = nddl
 
 !
     do iord = 1, nbord
-        call rsexch('F', result, 'DEPL', ordr(iord), chexin,&
+        call rsexch('F', result, 'DEPL', ordr(iord), chexin, &
                     iret)
-        call rsexch('F', nomres, 'DEPL', ordr(iord), chexou,&
+        call rsexch('F', nomres, 'DEPL', ordr(iord), chexou, &
                     iret)
 !
 !     --- MISE A JOUR DU .REFE
@@ -130,7 +130,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
             zi(lprnew+(i-1)*ndi+2) = zi(lprold+(iold-1)*ndi+2)
             do k = 1, ncmp
                 zi(lnunew-1+ieq) = ieq
-                ieq = ieq + 1
+                ieq = ieq+1
             end do
         end do
 !
@@ -146,10 +146,10 @@ subroutine regres(nomres, mailsk, result, pfchn2)
                 iadold = nueq(zi(lprold+(iold-1)*ndi))
                 iadnew = zi(lnunew-1+zi(lprnew+(i-1)*ndi))
                 do j = 1, ncmp
-                    zr(lvnew-1+iadnew+j-1)=vale(iadold+j-1)
+                    zr(lvnew-1+iadnew+j-1) = vale(iadold+j-1)
                 end do
             end do
-        endif
+        end if
     end do
 !
 
@@ -157,9 +157,9 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     do i = 1, nnodes
         ncmp = zi(lprnew-1+(i-1)*ndi+2)
         do j = 1, ncmp
-            ndeeq = ndeeq + 1
+            ndeeq = ndeeq+1
             zi(ldeeq-1+ndeeq) = i
-            ndeeq = ndeeq + 1
+            ndeeq = ndeeq+1
             zi(ldeeq-1+ndeeq) = j
         end do
     end do

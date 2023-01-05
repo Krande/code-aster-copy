@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,12 +34,12 @@ subroutine i2rdli(n, t, adr)
     trouve = .false.
     fini = .false.
 !
- 10 continue
+10  continue
     if ((.not. fini) .and. (i .lt. adr)) then
 !
         if (t(i) .lt. n) then
 !
-            i = i + 1
+            i = i+1
 !
         else if (t(i) .eq. n) then
 !
@@ -50,11 +50,11 @@ subroutine i2rdli(n, t, adr)
 !
             fini = .true.
 !
-        endif
+        end if
 !
         goto 10
 !
-    endif
+    end if
 !
     if (.not. trouve) then
 !
@@ -65,8 +65,8 @@ subroutine i2rdli(n, t, adr)
         end do
 !
         t(i) = n
-        adr = adr + 1
+        adr = adr+1
 !
-    endif
+    end if
 !
 end subroutine

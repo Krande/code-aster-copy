@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
 !
 !
     integer :: ndlmax
-    parameter   (ndlmax = 30)
+    parameter(ndlmax=30)
     integer :: jdecal, nbddl
     real(kind=8) :: jeuini, glis
     real(kind=8) :: coefpt, coefff, coefte, beta
@@ -116,7 +116,7 @@ subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
 ! ------- REPERAGE DE LA LIAISON
 !
             jdecal = zi(japptr+iliai-1)
-            nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
+            nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
 !
 ! ------- CALCUL DU JEU TANGENT
 !
@@ -138,8 +138,8 @@ subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
                         lambdf = coefff*lambdc
                     else
                         lambdf = 0.d0
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
 ! ------- ACTIVATION GLISSEMENT/ADHERENCE
@@ -152,19 +152,19 @@ subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
                         beta = 0.d0
                     else
                         beta = sqrt(1.d0/(lambdf*glis))
-                    endif
+                    end if
                 else
                     beta = 0.d0
-                endif
+                end if
                 if (resigr .ge. 1.d-03) then
-                    beta = sqrt(coefte) * beta
-                endif
+                    beta = sqrt(coefte)*beta
+                end if
                 call calapr(nbddl, beta, zr(jafmu), zi(japddl+jdecal), zr(jfro2))
                 zr(jmu+2*nbliai+iliai-1) = 1.d0
-            endif
+            end if
         else
             zr(jmu+2*nbliai+iliai-1) = 0.d0
-        endif
+        end if
         call jelibe(jexnum(fro2, iliai))
     end do
 !

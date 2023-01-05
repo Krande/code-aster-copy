@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmstat(mesh  , iter_newt, nume_inst     , &
+subroutine mmstat(mesh, iter_newt, nume_inst, &
                   sddisc, disp_curr, disp_cumu_inst, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -65,16 +65,16 @@ implicit none
 !
 ! - Get parameters
 !
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
     if (l_cont_cont) then
-        call mmmbca(mesh  , iter_newt, nume_inst     , &
+        call mmmbca(mesh, iter_newt, nume_inst, &
                     sddisc, disp_curr, disp_cumu_inst, ds_contact)
     elseif (l_cont_lac) then
         call mmmbca_lac(mesh, disp_curr, ds_contact)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

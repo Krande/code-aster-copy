@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine medomm(model, mater, mateco, cara_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -27,10 +27,10 @@ implicit none
 #include "asterfort/rcmfmc.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(out) :: model
-character(len=*), intent(out) :: mater
-character(len=*), intent(out) :: mateco
-character(len=*), intent(out) :: cara_elem
+    character(len=*), intent(out) :: model
+    character(len=*), intent(out) :: mater
+    character(len=*), intent(out) :: mateco
+    character(len=*), intent(out) :: cara_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,10 +53,10 @@ character(len=*), intent(out) :: cara_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model     = ' '
-    mateco    = ' '
+    model = ' '
+    mateco = ' '
     cara_elem = ' '
-    mater     = ' '
+    mater = ' '
 !
 ! - Get model
 !
@@ -72,25 +72,25 @@ character(len=*), intent(out) :: cara_elem
     concept = ' '
     call getvid(' ', 'CHAM_MATER', scal=concept, nbret=nocc)
     call dismoi('BESOIN_MATER', model, 'MODELE', repk=answer)
-    if ((nocc.eq.0) .and. (answer .eq. 'OUI')) then
+    if ((nocc .eq. 0) .and. (answer .eq. 'OUI')) then
         call utmess('A', 'MECHANICS1_40')
-    endif
+    end if
     if (nocc .ne. 0) then
         mater = concept
-        call rcmfmc(mater, mateco, l_thm_ = l_thm, l_ther_ = ASTER_FALSE)
+        call rcmfmc(mater, mateco, l_thm_=l_thm, l_ther_=ASTER_FALSE)
     else
-        mater  = ' '
+        mater = ' '
         mateco = ' '
-    endif
+    end if
 !
 ! - Get elementary characteristics
 !
     concept = ' '
     call getvid(' ', 'CARA_ELEM', scal=concept, nbret=nocc)
     call dismoi('EXI_RDM', model, 'MODELE', repk=answer)
-    if ((nocc.eq.0) .and. (answer .eq. 'OUI')) then
+    if ((nocc .eq. 0) .and. (answer .eq. 'OUI')) then
         call utmess('A', 'MECHANICS1_39')
-    endif
+    end if
     cara_elem = concept
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,12 +87,12 @@ subroutine ssmau2(nomu, option)
     if (optio2(1:9) .eq. 'MASS_MECA') then
         matas = nomu//'.MASSMECA'
 !
-    else if (optio2(1:9).eq.'AMOR_MECA') then
+    else if (optio2(1:9) .eq. 'AMOR_MECA') then
         matas = nomu//'.AMORMECA'
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !     -- MOSTRU=.TRUE. : CAS MODIFICATION STRUCTURALE
     mostru = .true.
@@ -109,9 +109,9 @@ subroutine ssmau2(nomu, option)
 !     -------------------------------------------------------
     call jelira(nomu//'.PHI_IE', 'LONMAX', lgblph)
     call jelira(nomu//'.PHI_IE', 'NMAXOC', nblph)
-    nlblph=lgblph/nddli
+    nlblph = lgblph/nddli
 !
-    call jecrec(nomu//'.TMP_IE', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(nomu//'.TMP_IE', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 nblph)
     call jeecra(nomu//'.TMP_IE', 'LONMAX', lgblph)
     do j = 1, nblph
@@ -122,21 +122,21 @@ subroutine ssmau2(nomu, option)
 !
     if (optio2(1:9) .eq. 'MASS_MECA') then
         call jecrec(nomu//'.MAEL_MASS_VALE', 'G V R', 'NU', 'DISPERSE', &
-                   'CONSTANT',1)
+                    'CONSTANT', 1)
         call jeecra(nomu//'.MAEL_MASS_VALE', 'LONMAX', (nddle*(nddle+1)/2))
         call jecroc(jexnum(nomu//'.MAEL_MASS_VALE', 1))
         call jeveuo(jexnum(nomu//'.MAEL_MASS_VALE', 1), 'E', iampee)
 !       call wkvect(nomu//'.MAEL_MASS_VALE', 'G V R', (nddle*(nddle+1)/ 2), iampee)
-    else if ((optio2(1:9).eq.'AMOR_MECA').and.(mostru)) then
+    else if ((optio2(1:9) .eq. 'AMOR_MECA') .and. (mostru)) then
         call jecrec(nomu//'.MAEL_AMOR_VALE', 'G V R', 'NU', 'DISPERSE', &
-                   'CONSTANT',1)
+                    'CONSTANT', 1)
         call jeecra(nomu//'.MAEL_AMOR_VALE', 'LONMAX', (nddle*(nddle+1)/2))
         call jecroc(jexnum(nomu//'.MAEL_AMOR_VALE', 1))
         call jeveuo(jexnum(nomu//'.MAEL_AMOR_VALE', 1), 'E', iampee)
 !       call wkvect(nomu//'.MAEL_AMOR_VALE', 'G V R', (nddle*(nddle+1)/ 2), iampee)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (mostru) then
 !       CREATION DE LA MATRICE POUR MODIFICATION STRUCTURALE
@@ -163,10 +163,10 @@ subroutine ssmau2(nomu, option)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-            endif
+            end if
             iblold = iblo
             do i = max(1, j+1-schc), j
-                ii = (j-1)*j/2 + i
+                ii = (j-1)*j/2+i
                 zr(iampee-1+ii) = zr(jualf-1+scdi+i-j)
             end do
 !
@@ -183,59 +183,59 @@ subroutine ssmau2(nomu, option)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-            endif
+            end if
             iblold = iblo
 !
             i = 0
             do iblph = 1, nblph
                 call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
                 do iiblph = 1, nlblph
-                    i = i + 1
+                    i = i+1
                     if (i .gt. j) then
                         call jelibe(jexnum(nomu//'.PHI_IE', iblph))
                         goto 70
 !
-                    endif
-                    iaphie = iaphi0 + (iiblph-1)*nddli
-                    ii = (j-1)*j/2 + i
+                    end if
+                    iaphie = iaphi0+(iiblph-1)*nddli
+                    ii = (j-1)*j/2+i
                     kk = 0
-                    do k = nddli + j + 1 - schc, nddli
-                        kk = kk + 1
-                        zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
+                    do k = nddli+j+1-schc, nddli
+                        kk = kk+1
+                        zr(iampee-1+ii) = zr(iampee-1+ii)-zr(iaphie-1+k)*zr(jualf-1+scdi-schc+&
                                           & kk)
                     end do
                 end do
                 call jelibe(jexnum(nomu//'.PHI_IE', iblph))
             end do
- 70         continue
+70          continue
 !
 !
 !        SYMETRIE:
             i = 0
             do iblph = 1, nblph
                 if (i+nlblph .lt. j) then
-                    i = i + nlblph
+                    i = i+nlblph
                     goto 100
 !
-                endif
+                end if
                 call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
                 do iiblph = 1, nlblph
-                    i = i + 1
+                    i = i+1
                     if (i .lt. j) goto 90
                     if (i .gt. nddle) then
                         call jelibe(jexnum(nomu//'.PHI_IE', iblph))
                         goto 110
 !
-                    endif
-                    iaphie = iaphi0 + (iiblph-1)*nddli
-                    ii = (i* (i-1)/2) + j
+                    end if
+                    iaphie = iaphi0+(iiblph-1)*nddli
+                    ii = (i*(i-1)/2)+j
                     kk = 0
-                    do k = nddli + j + 1 - schc, nddli
-                        kk = kk + 1
-                        zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
+                    do k = nddli+j+1-schc, nddli
+                        kk = kk+1
+                        zr(iampee-1+ii) = zr(iampee-1+ii)-zr(iaphie-1+k)*zr(jualf-1+scdi-schc+&
                                           & kk)
                     end do
- 90                 continue
+90                  continue
                 end do
                 call jelibe(jexnum(nomu//'.PHI_IE', iblph))
 100             continue
@@ -255,10 +255,10 @@ subroutine ssmau2(nomu, option)
             call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
             call jeveuo(jexnum(nomu//'.TMP_IE', iblph), 'E', iatmi0)
             do iiblph = 1, nlblph
-                i = i + 1
+                i = i+1
                 if (i .gt. nddle) goto 170
-                iaphie = iaphi0 + (iiblph-1)*nddli
-                iatmie = iatmi0 + (iiblph-1)*nddli
+                iaphie = iaphi0+(iiblph-1)*nddli
+                iatmie = iatmi0+(iiblph-1)*nddli
 !
                 iblold = 0
                 do j = 1, nddli
@@ -266,21 +266,21 @@ subroutine ssmau2(nomu, option)
                     scdi = zi(iascdi-1+j)
                     schc = vschc(j)
                     if (iblo .ne. iblold) then
-                        if (iblold .gt. 0) call jelibe(jexnum(matas// '.UALF', iblold))
+                        if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                         call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
-                    endif
+                    end if
                     iblold = iblo
 !
                     kk = 0
-                    do k = j + 1 - schc, j
-                        kk = kk + 1
-                        zr(iatmie-1+j) = zr(iatmie-1+j) - zr(iaphie-1+ k)*zr(jualf-1+scdi-schc+kk&
+                    do k = j+1-schc, j
+                        kk = kk+1
+                        zr(iatmie-1+j) = zr(iatmie-1+j)-zr(iaphie-1+k)*zr(jualf-1+scdi-schc+kk&
                                          &)
                     end do
                     kk = 0
-                    do k = j + 1 - schc, j - 1
-                        kk = kk + 1
-                        zr(iatmie-1+k) = zr(iatmie-1+k) - zr(iaphie-1+ j)*zr(jualf-1+scdi-schc+kk&
+                    do k = j+1-schc, j-1
+                        kk = kk+1
+                        zr(iatmie-1+k) = zr(iatmie-1+k)-zr(iaphie-1+j)*zr(jualf-1+scdi-schc+kk&
                                          &)
                     end do
                 end do
@@ -300,19 +300,19 @@ subroutine ssmau2(nomu, option)
         do iblph = 1, nblph
             call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'L', iaphi0)
             do iiblph = 1, nlblph
-                i = i + 1
+                i = i+1
                 if (i .gt. nddle) goto 240
-                iaphie = iaphi0 + (iiblph-1)*nddli
+                iaphie = iaphi0+(iiblph-1)*nddli
                 j = 0
                 do jblph = 1, nblph
                     call jeveuo(jexnum(nomu//'.TMP_IE', jblph), 'L', iatmi0)
                     do jjblph = 1, nlblph
-                        j = j + 1
+                        j = j+1
                         if (j .gt. i) goto 210
-                        iatmie = iatmi0 + (jjblph-1)*nddli
-                        ii = (i-1)*i/2 + j
+                        iatmie = iatmi0+(jjblph-1)*nddli
+                        ii = (i-1)*i/2+j
                         do k = 1, nddli
-                            zr(iampee-1+ii) = zr(iampee-1+ii) - zr(iaphie-1+k)*zr(iatmie-1+k)
+                            zr(iampee-1+ii) = zr(iampee-1+ii)-zr(iaphie-1+k)*zr(iatmie-1+k)
                         end do
                     end do
 210                 continue
@@ -323,7 +323,7 @@ subroutine ssmau2(nomu, option)
             call jelibe(jexnum(nomu//'.PHI_IE', iblph))
         end do
 !
-    endif
+    end if
 !
     call jedetr(nomu//'.TMP_IE')
     call jedema()

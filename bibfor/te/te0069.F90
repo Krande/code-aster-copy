@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,14 +63,14 @@ subroutine te0069(option, nomte)
 !====
     call elref1(elrefe)
     elref2 = elrefe
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     nbcmp = 2
 !
 !
-    call elrefe_info(elrefe=elref2, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elref2, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !====
@@ -90,8 +90,8 @@ subroutine te0069(option, nomte)
     lambda(1) = 0.d0
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemp)],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemp)], &
                     1, nomres, valres, icodre, 1)
         lambda(1) = valres(1)
         aniso = .false.
@@ -99,8 +99,8 @@ subroutine te0069(option, nomte)
     else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
-        call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemp)],&
+        call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemp)], &
                     2, nomres, valres, icodre, 1)
         lambor(1) = valres(1)
         lambor(2) = valres(2)
@@ -111,7 +111,7 @@ subroutine te0069(option, nomte)
         aniso = .true.
     else
         call utmess('F', 'ELEMENTS2_63')
-    endif
+    end if
 !
 !====
 ! 1.4 PREALABLES LIES A L'ANISOTROPIE
@@ -124,78 +124,78 @@ subroutine te0069(option, nomte)
         if (zr(icamas) .gt. 0.d0) then
             global = .true.
             alpha = zr(icamas+1)*r8dgrd()
-            p(1,1) = cos(alpha)
-            p(2,1) = sin(alpha)
-            p(1,2) = -sin(alpha)
-            p(2,2) = cos(alpha)
+            p(1, 1) = cos(alpha)
+            p(2, 1) = sin(alpha)
+            p(1, 2) = -sin(alpha)
+            p(2, 2) = cos(alpha)
         else
             orig(1) = zr(icamas+4)
             orig(2) = zr(icamas+5)
-        endif
-    endif
+        end if
+    end if
 !
 !====
 ! 2. CALCULS TERMES DE FLUX
 !====
     do kp = 1, npg
-        k=(kp-1)*nno
-        ifpg=(kp-1)*2
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        k = (kp-1)*nno
+        ifpg = (kp-1)*2
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy)
         tpg = 0.0d0
         fluxx = 0.0d0
         fluxy = 0.0d0
-        if (.not.global .and. aniso) then
-            point(1)=0.d0
-            point(2)=0.d0
+        if (.not. global .and. aniso) then
+            point(1) = 0.d0
+            point(2) = 0.d0
             do nuno = 1, nno
-                point(1) = point(1) + zr(ivf+k+nuno-1)*zr(igeom+2* nuno-2)
-                point(2) = point(2) + zr(ivf+k+nuno-1)*zr(igeom+2* nuno-1)
+                point(1) = point(1)+zr(ivf+k+nuno-1)*zr(igeom+2*nuno-2)
+                point(2) = point(2)+zr(ivf+k+nuno-1)*zr(igeom+2*nuno-1)
             end do
-            xu = orig(1) - point(1)
-            yu = orig(2) - point(2)
-            xnorm = sqrt( xu**2 + yu**2 )
-            xu = xu / xnorm
-            yu = yu / xnorm
-            p(1,1) = xu
-            p(2,1) = yu
-            p(1,2) = -yu
-            p(2,2) = xu
-        endif
+            xu = orig(1)-point(1)
+            yu = orig(2)-point(2)
+            xnorm = sqrt(xu**2+yu**2)
+            xu = xu/xnorm
+            yu = yu/xnorm
+            p(1, 1) = xu
+            p(2, 1) = yu
+            p(1, 2) = -yu
+            p(2, 2) = xu
+        end if
 !
 !     CALCUL DE T ET DE GRAD(T) AUX POINTS DE GAUSS
         do j = 1, nno
-            tpg = tpg + zr(itempe+j-1)*zr(ivf+k+j-1)
-            fluxx = fluxx + zr(itempe+j-1)*dfdx(j)
-            fluxy = fluxy + zr(itempe+j-1)*dfdy(j)
+            tpg = tpg+zr(itempe+j-1)*zr(ivf+k+j-1)
+            fluxx = fluxx+zr(itempe+j-1)*dfdx(j)
+            fluxy = fluxy+zr(itempe+j-1)*dfdy(j)
         end do
 !
         if (phenom .eq. 'THER_NL') then
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA', lambda, icodre, 1)
-        endif
+        end if
 !
         if (phenom .eq. 'THER_NL_ORTH') then
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA_L', lambor(1), icodre, 1)
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA_T', lambor(2), icodre, 1)
-        endif
+        end if
 !
-        if (.not.aniso) then
+        if (.not. aniso) then
             fluglo(1) = lambda(1)*fluxx
             fluglo(2) = lambda(1)*fluxy
         else
-            fluloc(1) = p(1,1)*fluxx + p(2,1)*fluxy
-            fluloc(2) = p(1,2)*fluxx + p(2,2)*fluxy
+            fluloc(1) = p(1, 1)*fluxx+p(2, 1)*fluxy
+            fluloc(2) = p(1, 2)*fluxx+p(2, 2)*fluxy
             fluloc(1) = lambor(1)*fluloc(1)
             fluloc(2) = lambor(2)*fluloc(2)
-            fluglo(1) = p(1,1)*fluloc(1) + p(1,2)*fluloc(2)
-            fluglo(2) = p(2,1)*fluloc(1) + p(2,2)*fluloc(2)
-        endif
+            fluglo(1) = p(1, 1)*fluloc(1)+p(1, 2)*fluloc(2)
+            fluglo(2) = p(2, 1)*fluloc(1)+p(2, 2)*fluloc(2)
+        end if
 !
         fpg(ifpg+1) = -fluglo(1)
         fpg(ifpg+2) = -fluglo(2)

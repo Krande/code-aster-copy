@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=
-use aster_petsc_module
-use petsc_data_module
-use saddle_point_module, only : convert_rhs_to_saddle_point
+    use aster_petsc_module
+    use petsc_data_module
+    use saddle_point_module, only: convert_rhs_to_saddle_point
 
     implicit none
 
@@ -84,7 +84,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     nomat = nomat_courant
     nonu = nonu_courant
     bs = tblocs(kptsc)
-    ASSERT(bs.ge.1)
+    ASSERT(bs .ge. 1)
     nosolv = nosols(kptsc)
 
 !
@@ -103,79 +103,78 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         nloc = zi(jnequl)
         nglo = zi(jnequ)
 !       Nombre de ddls m'appartenant (pour PETSc)
-        ndprop = count( pddl(1:nloc) == rang )
+        ndprop = count(pddl(1:nloc) == rang)
 !
         call VecCreate(mpicomm, b, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecSetBlockSize(b, to_petsc_int(bs), ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecSetSizes(b, to_petsc_int(ndprop), to_petsc_int(nglo), ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecSetType(b, VECMPI, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
 #if ASTER_PETSC_INT_SIZE == 4
-        AS_ALLOCATE( vi4=ig_petsc_c, size=nloc )
+        AS_ALLOCATE(vi4=ig_petsc_c, size=nloc)
 #else
-        AS_ALLOCATE( vi=ig_petsc_c, size=nloc )
+        AS_ALLOCATE(vi=ig_petsc_c, size=nloc)
 #endif
-        AS_ALLOCATE( vr=val, size=nloc )
+        AS_ALLOCATE(vr=val, size=nloc)
         do iloc = 1, nloc
             ! Indice global PETSc (convention C)
-            ig_petsc_c( iloc ) = to_petsc_int(nlgp( iloc ) - 1)
+            ig_petsc_c(iloc) = to_petsc_int(nlgp(iloc)-1)
             ! Indice global Aster (convention F)
-            iglo               = nulg( iloc )
-            val( iloc )        = rsolu( iglo )
+            iglo = nulg(iloc)
+            val(iloc) = rsolu(iglo)
         end do
         call VecSetValues(b, to_petsc_int(nloc), ig_petsc_c, val, ADD_VALUES, ierr)
         call VecAssemblyBegin(b, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecAssemblyEnd(b, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         !
 #if ASTER_PETSC_INT_SIZE == 4
-        AS_DEALLOCATE( vi4=ig_petsc_c )
+        AS_DEALLOCATE(vi4=ig_petsc_c)
 #else
-        AS_DEALLOCATE( vi=ig_petsc_c )
+        AS_DEALLOCATE(vi=ig_petsc_c)
 #endif
-        AS_DEALLOCATE( vr=val )
+        AS_DEALLOCATE(vr=val)
 !
     else
         call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
-        neq=nsmdi
-        ASSERT(mod(neq,bs).eq.0)
+        neq = nsmdi
+        ASSERT(mod(neq, bs) .eq. 0)
 !
 !       -- allocation de b :
         call VecCreate(mpicomm, b, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecSetBlockSize(b, to_petsc_int(bs), ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecSetSizes(b, PETSC_DECIDE, to_petsc_int(neq), ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecSetType(b, VECMPI, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call VecSet(b, 0.d0, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
 !
 !       -- calcul de b=RSOLU :
 !       ------------------------------------------------
         call VecGetOwnershipRange(b, low2, high2, ierr)
         call VecGetArray(b, xx, xidx, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
         do i = 1, high2-low2
-            ieq=low2+i
-            if (ieq.gt.0) xx(xidx+i)=rsolu(ieq)
+            ieq = low2+i
+            if (ieq .gt. 0) xx(xidx+i) = rsolu(ieq)
         end do
         call VecRestoreArray(b, xx, xidx, ierr)
-        ASSERT(ierr.eq.0)
-    endif
+        ASSERT(ierr .eq. 0)
+    end if
 
-    if ( precon == 'BLOC_LAGR' ) then
-        call convert_rhs_to_saddle_point( b )
-    endif
-
+    if (precon == 'BLOC_LAGR') then
+        call convert_rhs_to_saddle_point(b)
+    end if
 
     call jedema()
 !

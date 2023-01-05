@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,23 +17,23 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getExternalBehaviourPntr(paraExte,&
-                                    cptr_fct_ldc ,&
-                                    cptr_nbvarext, cptr_namevarext,&
-                                    cptr_nbprop  , cptr_nameprop)
+subroutine getExternalBehaviourPntr(paraExte, &
+                                    cptr_fct_ldc, &
+                                    cptr_nbvarext, cptr_namevarext, &
+                                    cptr_nbprop, cptr_nameprop)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/umat_get_function.h"
 #include "asterc/mfront_get_pointers.h"
 #include "asterfort/assert.h"
 !
-type(Behaviour_ParaExte), intent(in) :: paraExte
-integer, intent(out) :: cptr_fct_ldc, cptr_nbvarext
-integer, intent(out) :: cptr_namevarext, cptr_nbprop, cptr_nameprop
+    type(Behaviour_ParaExte), intent(in) :: paraExte
+    integer, intent(out) :: cptr_fct_ldc, cptr_nbvarext
+    integer, intent(out) :: cptr_namevarext, cptr_nbprop, cptr_nameprop
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,32 +58,32 @@ integer, intent(out) :: cptr_namevarext, cptr_nbprop, cptr_nameprop
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cptr_fct_ldc    = 0
-    cptr_nbvarext   = 0
+    cptr_fct_ldc = 0
+    cptr_nbvarext = 0
     cptr_namevarext = 0
-    cptr_nbprop     = 0
-    cptr_nameprop   = 0
+    cptr_nbprop = 0
+    cptr_nameprop = 0
 !
 ! - Get parameters
 !
-    l_mfront_offi   = paraExte%l_mfront_offi
-    l_mfront_proto  = paraExte%l_mfront_proto
-    l_umat          = paraExte%l_umat
-    libr_name       = paraExte%libr_name
-    subr_name       = paraExte%subr_name
-    model_mfront    = paraExte%model_mfront
+    l_mfront_offi = paraExte%l_mfront_offi
+    l_mfront_proto = paraExte%l_mfront_proto
+    l_umat = paraExte%l_umat
+    libr_name = paraExte%libr_name
+    subr_name = paraExte%subr_name
+    model_mfront = paraExte%model_mfront
 !
 ! - Get pointers
 !
-    if ( l_mfront_offi .or. l_mfront_proto) then
-        call mfront_get_pointers(libr_name, subr_name, model_mfront,&
-                                 cptr_nbvarext, cptr_namevarext,&
-                                 cptr_fct_ldc  ,&
+    if (l_mfront_offi .or. l_mfront_proto) then
+        call mfront_get_pointers(libr_name, subr_name, model_mfront, &
+                                 cptr_nbvarext, cptr_namevarext, &
+                                 cptr_fct_ldc, &
                                  cptr_nameprop, cptr_nbprop)
-    elseif ( l_umat ) then
+    elseif (l_umat) then
         call umat_get_function(libr_name, subr_name, cptr_fct_ldc)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

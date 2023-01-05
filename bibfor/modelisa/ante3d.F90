@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
+subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2, &
                   ksi3)
     implicit none
 !  DESCRIPTION : DETERMINATION DE L'ANTECEDENT DANS L'ELEMENT DE
@@ -64,27 +64,27 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
     real(kind=8) :: xtet(4), ytet(4), ztet(4), xpyr(5), ypyr(5), zpyr(5)
     real(kind=8) :: xpen(6), ypen(6), zpen(6), xhex(8), yhex(8), zhex(8)
 !
-    data          xtet /  0.0d0 ,  0.0d0 ,  0.0d0 ,  1.0d0 /
-    data          ytet /  1.0d0 ,  0.0d0 ,  0.0d0 ,  0.0d0 /
-    data          ztet /  0.0d0 ,  1.0d0 ,  0.0d0 ,  0.0d0 /
+    data xtet/0.0d0, 0.0d0, 0.0d0, 1.0d0/
+    data ytet/1.0d0, 0.0d0, 0.0d0, 0.0d0/
+    data ztet/0.0d0, 1.0d0, 0.0d0, 0.0d0/
 !
-    data          xpyr /  1.0d0 ,  0.0d0 , -1.0d0 ,  0.0d0 ,  0.0d0 /
-    data          ypyr /  0.0d0 ,  1.0d0 ,  0.0d0 , -1.0d0 ,  0.0d0 /
-    data          zpyr /  0.0d0 ,  0.0d0 ,  0.0d0 ,  0.0d0 ,  1.0d0 /
+    data xpyr/1.0d0, 0.0d0, -1.0d0, 0.0d0, 0.0d0/
+    data ypyr/0.0d0, 1.0d0, 0.0d0, -1.0d0, 0.0d0/
+    data zpyr/0.0d0, 0.0d0, 0.0d0, 0.0d0, 1.0d0/
 !
-    data          xpen / -1.0d0 , -1.0d0 , -1.0d0 ,  1.0d0 ,  1.0d0 ,&
-     &                      1.0d0 /
-    data          ypen /  1.0d0 ,  0.0d0 ,  0.0d0 ,  1.0d0 ,  0.0d0 ,&
-     &                      0.0d0 /
-    data          zpen /  0.0d0 ,  1.0d0 ,  0.0d0 ,  0.0d0 ,  1.0d0 ,&
-     &                      0.0d0 /
+    data xpen/-1.0d0, -1.0d0, -1.0d0, 1.0d0, 1.0d0,&
+     &                      1.0d0/
+    data ypen/1.0d0, 0.0d0, 0.0d0, 1.0d0, 0.0d0,&
+     &                      0.0d0/
+    data zpen/0.0d0, 1.0d0, 0.0d0, 0.0d0, 1.0d0,&
+     &                      0.0d0/
 !
-    data          xhex / -1.0d0 ,  1.0d0 ,  1.0d0 , -1.0d0 , -1.0d0 ,&
-     &                      1.0d0 ,  1.0d0 , -1.0d0 /
-    data          yhex / -1.0d0 , -1.0d0 ,  1.0d0 ,  1.0d0 , -1.0d0 ,&
-     &                     -1.0d0 ,  1.0d0 ,  1.0d0 /
-    data          zhex / -1.0d0 , -1.0d0 , -1.0d0 , -1.0d0 ,  1.0d0 ,&
-     &                      1.0d0 ,  1.0d0 ,  1.0d0 /
+    data xhex/-1.0d0, 1.0d0, 1.0d0, -1.0d0, -1.0d0,&
+     &                      1.0d0, 1.0d0, -1.0d0/
+    data yhex/-1.0d0, -1.0d0, 1.0d0, 1.0d0, -1.0d0,&
+     &                     -1.0d0, 1.0d0, 1.0d0/
+    data zhex/-1.0d0, -1.0d0, -1.0d0, -1.0d0, 1.0d0,&
+     &                      1.0d0, 1.0d0, 1.0d0/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -102,16 +102,16 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
         do i = 1, 4
-            ksi1 = ksi1 + xbar(i) * xtet(i)
-            ksi2 = ksi2 + xbar(i) * ytet(i)
-            ksi3 = ksi3 + xbar(i) * ztet(i)
+            ksi1 = ksi1+xbar(i)*xtet(i)
+            ksi2 = ksi2+xbar(i)*ytet(i)
+            ksi3 = ksi3+xbar(i)*ztet(i)
         end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   CAS D'UN ELEMENT REEL PYRAMIDE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    else if (nbsom.eq.5) then
+    else if (nbsom .eq. 5) then
 !
 ! 2.1    AFFECTATION DES NUMEROS DES SOMMETS
 ! ---
@@ -120,7 +120,7 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
             isom(2) = 2
             isom(3) = 3
             isom(4) = 5
-        else if (itetra.eq.2) then
+        else if (itetra .eq. 2) then
             isom(1) = 3
             isom(2) = 4
             isom(3) = 1
@@ -130,23 +130,23 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
             isom(2) = 2
             isom(3) = 3
             isom(4) = 4
-        endif
+        end if
 !
 ! 2.2    CALCUL DES COORDONNEES DE L'ANTECEDENT
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
         do i = 1, 4
             j = isom(i)
-            ksi1 = ksi1 + xbar(i) * xpyr(j)
-            ksi2 = ksi2 + xbar(i) * ypyr(j)
-            ksi3 = ksi3 + xbar(i) * zpyr(j)
+            ksi1 = ksi1+xbar(i)*xpyr(j)
+            ksi2 = ksi2+xbar(i)*ypyr(j)
+            ksi3 = ksi3+xbar(i)*zpyr(j)
         end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 3   CAS D'UN ELEMENT REEL PENTAEDRE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    else if (nbsom.eq.6) then
+    else if (nbsom .eq. 6) then
 !
 ! 3.1    AFFECTATION DES NUMEROS DES SOMMETS
 ! ---
@@ -155,41 +155,41 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
             isom(2) = 3
             isom(3) = 4
             isom(4) = 5
-        else if (itetra.eq.2) then
+        else if (itetra .eq. 2) then
             isom(1) = 3
             isom(2) = 4
             isom(3) = 5
             isom(4) = 6
-        else if (itetra.eq.3) then
+        else if (itetra .eq. 3) then
             isom(1) = 1
             isom(2) = 2
             isom(3) = 3
             isom(4) = 4
-        else if (itetra.eq.4) then
+        else if (itetra .eq. 4) then
             isom(1) = 4
             isom(2) = 1
             isom(3) = 2
             isom(4) = 5
-        else if (itetra.eq.5) then
+        else if (itetra .eq. 5) then
             isom(1) = 5
             isom(2) = 2
             isom(3) = 3
             isom(4) = 6
-        else if (itetra.eq.6) then
+        else if (itetra .eq. 6) then
             isom(1) = 3
             isom(2) = 1
             isom(3) = 4
             isom(4) = 6
-        endif
+        end if
 !
 ! 3.2    CALCUL DES COORDONNEES DE L'ANTECEDENT
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
         do i = 1, 4
             j = isom(i)
-            ksi1 = ksi1 + xbar(i) * xpen(j)
-            ksi2 = ksi2 + xbar(i) * ypen(j)
-            ksi3 = ksi3 + xbar(i) * zpen(j)
+            ksi1 = ksi1+xbar(i)*xpen(j)
+            ksi2 = ksi2+xbar(i)*ypen(j)
+            ksi3 = ksi3+xbar(i)*zpen(j)
         end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,69 +205,69 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
             isom(2) = 3
             isom(3) = 8
             isom(4) = 1
-        else if (itetra.eq.2) then
+        else if (itetra .eq. 2) then
             isom(1) = 1
             isom(2) = 3
             isom(3) = 8
             isom(4) = 4
-        else if (itetra.eq.3) then
+        else if (itetra .eq. 3) then
             isom(1) = 6
             isom(2) = 8
             isom(3) = 1
             isom(4) = 5
-        else if (itetra.eq.4) then
+        else if (itetra .eq. 4) then
             isom(1) = 1
             isom(2) = 3
             isom(3) = 6
             isom(4) = 2
-        else if (itetra.eq.5) then
+        else if (itetra .eq. 5) then
             isom(1) = 6
             isom(2) = 8
             isom(3) = 3
             isom(4) = 7
-        else if (itetra.eq.6) then
+        else if (itetra .eq. 6) then
             isom(1) = 1
             isom(2) = 2
             isom(3) = 3
             isom(4) = 4
-        else if (itetra.eq.7) then
+        else if (itetra .eq. 7) then
             isom(1) = 3
             isom(2) = 4
             isom(3) = 8
             isom(4) = 7
-        else if (itetra.eq.8) then
+        else if (itetra .eq. 8) then
             isom(1) = 6
             isom(2) = 7
             isom(3) = 8
             isom(4) = 5
-        else if (itetra.eq.9) then
+        else if (itetra .eq. 9) then
             isom(1) = 6
             isom(2) = 5
             isom(3) = 1
             isom(4) = 2
-        else if (itetra.eq.10) then
+        else if (itetra .eq. 10) then
             isom(1) = 6
             isom(2) = 2
             isom(3) = 3
             isom(4) = 7
-        else if (itetra.eq.11) then
+        else if (itetra .eq. 11) then
             isom(1) = 1
             isom(2) = 5
             isom(3) = 8
             isom(4) = 4
-        endif
+        end if
 !
 ! 4.2    CALCUL DES COORDONNEES DE L'ANTECEDENT
 ! ---    DANS L'ELEMENT DE REFERENCE
 !
         do i = 1, 4
             j = isom(i)
-            ksi1 = ksi1 + xbar(i) * xhex(j)
-            ksi2 = ksi2 + xbar(i) * yhex(j)
-            ksi3 = ksi3 + xbar(i) * zhex(j)
+            ksi1 = ksi1+xbar(i)*xhex(j)
+            ksi2 = ksi2+xbar(i)*yhex(j)
+            ksi3 = ksi3+xbar(i)*zhex(j)
         end do
 !
-    endif
+    end if
 !
 ! --- FIN DE ANTE3D.
 end subroutine

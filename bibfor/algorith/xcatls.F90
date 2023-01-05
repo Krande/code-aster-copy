@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
-                  jlnsv, jlnsl, noma, vect1, vect2,&
+subroutine xcatls(ndim, geofis, callst, jltsv, jltsl, &
+                  jlnsv, jlnsl, noma, vect1, vect2, &
                   noeud, a, b, r, cote)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -79,27 +79,27 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
-    if (.not.callst) then
-        if (geofis .eq. 'CYLINDRE' .or. geofis .eq. 'DEMI_PLAN' .or. geofis .eq. 'SEGMENT'&
+    if (.not. callst) then
+        if (geofis .eq. 'CYLINDRE' .or. geofis .eq. 'DEMI_PLAN' .or. geofis .eq. 'SEGMENT' &
             .or. geofis .eq. 'DEMI_DROITE') then
             valk(1) = 'INTERFACE'
             valk(2) = geofis
             valk(3) = 'FISSURE'
             call utmess('F', 'XFEM_23', nk=3, valk=valk)
-        endif
+        end if
     else if (callst) then
         if (geofis .eq. 'DROITE' .or. geofis .eq. 'ENTAILLE') then
             valk(1) = 'FISSURE'
             valk(2) = geofis
             valk(3) = 'INTERFACE'
             call utmess('F', 'XFEM_23', nk=3, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 !     CAS ENTAILLE : ON SE RAMENE AU CAS D'UN RECTANGLE A BORDS ARONDIS
-    if (geofis .eq. 'ENTAILLE') b=r
+    if (geofis .eq. 'ENTAILLE') b = r
 !
-    if (geofis .eq. 'ELLIPSE' .or. geofis .eq. 'RECTANGLE' .or. geofis .eq. 'CYLINDRE' .or.&
+    if (geofis .eq. 'ELLIPSE' .or. geofis .eq. 'RECTANGLE' .or. geofis .eq. 'CYLINDRE' .or. &
         geofis .eq. 'ENTAILLE') then
 !
 !       ----------------------------------------------------------------
@@ -118,7 +118,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p3d(i)=vale(3*(ino-1)+i)
+                p3d(i) = vale(3*(ino-1)+i)
             end do
 !
 !         BASE LOCALE : (VECT1,VECT2,VECT3)
@@ -128,68 +128,68 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         MATRICE DE PASSAGE LOC-GLOB
             do i = 1, ndim
-                mat(1,i)=vect1(i)
-                mat(2,i)=vect2(i)
-                mat(3,i)=vect3(i)
+                mat(1, i) = vect1(i)
+                mat(2, i) = vect2(i)
+                mat(3, i) = vect3(i)
             end do
 !
 !         PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
             do i = 1, ndim
-                ploc(i)=0.d0
+                ploc(i) = 0.d0
                 do j = 1, ndim
-                    ploc(i) = ploc(i) + mat(i,j) * (p3d(j)-noeud(j))
+                    ploc(i) = ploc(i)+mat(i, j)*(p3d(j)-noeud(j))
                 end do
             end do
 !
 !         DISTANCE DU POINT A L'ELLIPSE / RECTANGLE
             if (geofis .eq. 'ELLIPSE' .or. geofis .eq. 'CYLINDRE') then
                 call disell(ploc, a, b, h)
-                elseif (geofis.eq.'RECTANGLE'.or.geofis.eq.'ENTAILLE')&
-            then
+            elseif (geofis .eq. 'RECTANGLE' .or. geofis .eq. 'ENTAILLE') &
+                then
                 call disrec(ploc, a, b, r, h)
-            endif
+            end if
 !
 !         STOCKAGE DES LEVEL SETS
-            if (typdis .eq. 'FISSURE'.or.typdis.eq.'COHESIF') then
+            if (typdis .eq. 'FISSURE' .or. typdis .eq. 'COHESIF') then
 !
-                zl(jlnsl-1+(ino-1)+1)=.true.
-                zl(jltsl-1+(ino-1)+1)=.true.
+                zl(jlnsl-1+(ino-1)+1) = .true.
+                zl(jltsl-1+(ino-1)+1) = .true.
 !
                 if (geofis .eq. 'ELLIPSE' .or. geofis .eq. 'RECTANGLE') then
 !
 !             LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
-                    zr(jlnsv-1+(ino-1)+1)=ploc(3)
+                    zr(jlnsv-1+(ino-1)+1) = ploc(3)
 !
 !             SI LA FISSURE EST A L'EXTERIEUR DE L'ELLIPSE, ON PREND
 !             L'OPPOSEE DE H (PAR DEFAUT, LA FISSURE EST A L'INTERIEUR)
-                    if (cote .eq. 'OUT') h = -1.d0 * h
+                    if (cote .eq. 'OUT') h = -1.d0*h
 !
 !             LEVEL SET TANGENTE CORRESPOND A LA DISTANCE DU POINT
 !             A L'ELLIPSE / RECTANGLE DANS LE PLAN (VECT1,VECT2)
-                    zr(jltsv-1+(ino-1)+1)=h
+                    zr(jltsv-1+(ino-1)+1) = h
 !
-                else if (geofis.eq.'CYLINDRE') then
+                else if (geofis .eq. 'CYLINDRE') then
 !
                     zr(jltsv-1+(ino-1)+1) = ploc(3)
                     zr(jlnsv-1+(ino-1)+1) = h
 !
-                endif
+                end if
 !
-            else if (typdis.eq.'INTERFACE') then
+            else if (typdis .eq. 'INTERFACE') then
 !
-                zr(jlnsv-1+(ino-1)+1)= h
-                zl(jlnsl-1+(ino-1)+1)=.true.
+                zr(jlnsv-1+(ino-1)+1) = h
+                zl(jlnsl-1+(ino-1)+1) = .true.
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                ASSERT(.not.callst)
-                zr(jltsv-1+(ino-1)+1)= -1.d0
-                zl(jltsl-1+(ino-1)+1)=.true.
+                ASSERT(.not. callst)
+                zr(jltsv-1+(ino-1)+1) = -1.d0
+                zl(jltsl-1+(ino-1)+1) = .true.
 !
-            endif
+            end if
 !
         end do
 !
-    else if (geofis.eq.'DEMI_PLAN') then
+    else if (geofis .eq. 'DEMI_PLAN') then
 !
 !       ----------------------------------------------------------------
 !                  TRAITEMENT DU CAS DEMI-PLAN
@@ -204,7 +204,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p3d(i)=vale(3*(ino-1)+i)
+                p3d(i) = vale(3*(ino-1)+i)
             end do
 !
 !         BASE LOCALE : (VECT2,VECT3,VECT1)
@@ -214,30 +214,30 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         MATRICE DE PASSAGE LOC-GLOB
             do i = 1, 3
-                mat(1,i)=vect2(i)
-                mat(2,i)=vect3(i)
-                mat(3,i)=vect1(i)
+                mat(1, i) = vect2(i)
+                mat(2, i) = vect3(i)
+                mat(3, i) = vect1(i)
             end do
 !
 !         PROJECTION DU POINT 3D DANS LE REPERE LOCAL
             do i = 1, 3
-                ploc(i)=0.d0
+                ploc(i) = 0.d0
                 do j = 1, 3
-                    ploc(i) = ploc(i) + mat(i,j) * (p3d(j)-noeud(j))
+                    ploc(i) = ploc(i)+mat(i, j)*(p3d(j)-noeud(j))
                 end do
             end do
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
-            zr(jlnsv-1+(ino-1)+1)= ploc(3)
-            zl(jlnsl-1+(ino-1)+1)=.true.
+            zr(jlnsv-1+(ino-1)+1) = ploc(3)
+            zl(jlnsl-1+(ino-1)+1) = .true.
 !
 !         LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
-            zr(jltsv-1+(ino-1)+1)= ploc(1)
-            zl(jltsl-1+(ino-1)+1)=.true.
+            zr(jltsv-1+(ino-1)+1) = ploc(1)
+            zl(jltsl-1+(ino-1)+1) = .true.
 !
         end do
 !
-    else if (geofis.eq.'SEGMENT') then
+    else if (geofis .eq. 'SEGMENT') then
 !
 !       ----------------------------------------------------------------
 !                  TRAITEMENT DU CAS SEGMENT
@@ -249,17 +249,17 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
         do i = 1, 3
             nori(i) = vect1(i)
             next(i) = vect2(i)
-            nmil(i) = (nori(i) + next(i))/2
+            nmil(i) = (nori(i)+next(i))/2
             vseg(i) = next(i)-nori(i)
         end do
 !
-        nseg = sqrt(vseg(1)**2 + vseg(2)**2 + vseg(3)**2)
+        nseg = sqrt(vseg(1)**2+vseg(2)**2+vseg(3)**2)
 !
         do ino = 1, nbno
 !
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p2d(i)=vale(3*(ino-1)+i)
+                p2d(i) = vale(3*(ino-1)+i)
             end do
 !
             vect3(1) = 0.d0
@@ -272,31 +272,31 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         MATRICE DE PASSAGE LOC-GLOB
             do i = 1, 2
-                mat(1,i)=vseg(i)
-                mat(2,i)=vect2(i)
+                mat(1, i) = vseg(i)
+                mat(2, i) = vect2(i)
             end do
 !
 !         PROJECTION DU POINT 2D DANS LE REPERE LOCAL
 !         POSITIONNE AU CENTRE DU SEGEMENT
             do i = 1, 2
-                ploc(i)=0.d0
+                ploc(i) = 0.d0
                 do j = 1, 2
-                    ploc(i) = ploc(i) + mat(i,j) * (p2d(j)-nmil(j))
+                    ploc(i) = ploc(i)+mat(i, j)*(p2d(j)-nmil(j))
                 end do
             end do
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
-            zr(jlnsv-1+(ino-1)+1)= ploc(2)
-            zl(jlnsl-1+(ino-1)+1)=.true.
+            zr(jlnsv-1+(ino-1)+1) = ploc(2)
+            zl(jlnsl-1+(ino-1)+1) = .true.
 !
 !         LEVEL SET TANGENTE EST DEFINIE PAR :
-            zr(jltsv-1+(ino-1)+1)= abs(ploc(1)) - nseg/2.d0
-            zl(jltsl-1+(ino-1)+1)=.true.
+            zr(jltsv-1+(ino-1)+1) = abs(ploc(1))-nseg/2.d0
+            zl(jltsl-1+(ino-1)+1) = .true.
 !
         end do
 !
 !
-    else if (geofis.eq.'DEMI_DROITE'.or. geofis.eq.'DROITE') then
+    else if (geofis .eq. 'DEMI_DROITE' .or. geofis .eq. 'DROITE') then
 !
 !       ----------------------------------------------------------------
 !                   TRAITEMENT DES CAS DEMI_DROITE ET DROITE
@@ -315,7 +315,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p2d(i)=vale(3*(ino-1)+i)
+                p2d(i) = vale(3*(ino-1)+i)
             end do
 !
             vect3(1) = 0.d0
@@ -328,40 +328,40 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         MATRICE DE PASSAGE LOC-GLOB
             do i = 1, 2
-                mat(1,i)=vect1(i)
-                mat(2,i)=vect2(i)
+                mat(1, i) = vect1(i)
+                mat(2, i) = vect2(i)
             end do
 !
 !         PROJECTION DU POINT 2D DANS LE REPERE LOCAL
             do i = 1, 2
-                ploc(i)=0.d0
+                ploc(i) = 0.d0
                 do j = 1, 2
-                    ploc(i) = ploc(i) + mat(i,j) * (p2d(j)-noeud(j))
+                    ploc(i) = ploc(i)+mat(i, j)*(p2d(j)-noeud(j))
                 end do
             end do
 !
 !         LEVEL SET NORMALE CORRESPOND A LA 2EME COORDONNEE LOCALE
-            zr(jlnsv-1+(ino-1)+1)= ploc(2)
-            zl(jlnsl-1+(ino-1)+1)=.true.
+            zr(jlnsv-1+(ino-1)+1) = ploc(2)
+            zl(jlnsl-1+(ino-1)+1) = .true.
 !
             if (geofis .eq. 'DEMI_DROITE') then
 !
 !           LEVEL SET TANGENTE CORRESPOND A LA 1ERE COORDONNEE LOCALE
-                zr(jltsv-1+(ino-1)+1)= ploc(1)
-                zl(jltsl-1+(ino-1)+1)=.true.
+                zr(jltsv-1+(ino-1)+1) = ploc(1)
+                zl(jltsl-1+(ino-1)+1) = .true.
 !
-            else if (geofis.eq.'DROITE') then
+            else if (geofis .eq. 'DROITE') then
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                ASSERT(.not.callst)
-                zr(jltsv-1+(ino-1)+1)= -1.d0
-                zl(jltsl-1+(ino-1)+1)=.true.
+                ASSERT(.not. callst)
+                zr(jltsv-1+(ino-1)+1) = -1.d0
+                zl(jltsl-1+(ino-1)+1) = .true.
 !
-            endif
+            end if
 !
         end do
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

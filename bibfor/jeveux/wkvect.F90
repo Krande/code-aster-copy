@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine wkvect(nom, carac, dim, jadr, vl,&
-                  vi, vi4, vr, vc, vk8,&
+subroutine wkvect(nom, carac, dim, jadr, vl, &
+                  vi, vi4, vr, vc, vk8, &
                   vk16, vk24, vk32, vk80)
 ! person_in_charge: jacques.pellet at edf.fr
     use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
@@ -78,66 +78,66 @@ subroutine wkvect(nom, carac, dim, jadr, vl,&
 !
 !     -- cas : on veut l'adresse
     if (present(jadr)) then
-        jadr=jad
+        jadr = jad
         goto 999
-    endif
+    end if
 !
 !
 !     -- cas : on veut un pointeur
     call jelira(nom, 'TYPELONG', cval=ktyp)
     if (present(vl)) then
-        ASSERT(ktyp.eq.'L')
+        ASSERT(ktyp .eq. 'L')
         call jgetptc(jad, pc, vl=zl(1))
         call c_f_pointer(pc, vl, [dim])
 !
     else if (present(vi)) then
-        ASSERT(ktyp.eq.'I')
+        ASSERT(ktyp .eq. 'I')
         call jgetptc(jad, pc, vi=zi(1))
         call c_f_pointer(pc, vi, [dim])
 !
     else if (present(vi4)) then
-        ASSERT(ktyp.eq.'S')
+        ASSERT(ktyp .eq. 'S')
         call jgetptc(jad, pc, vi4=zi4(1))
         call c_f_pointer(pc, vi4, [dim])
 !
     else if (present(vr)) then
-        ASSERT(ktyp.eq.'R')
+        ASSERT(ktyp .eq. 'R')
         call jgetptc(jad, pc, vr=zr(1))
         call c_f_pointer(pc, vr, [dim])
 !
     else if (present(vc)) then
-        ASSERT(ktyp.eq.'C')
+        ASSERT(ktyp .eq. 'C')
         call jgetptc(jad, pc, vc=zc(1))
         call c_f_pointer(pc, vc, [dim])
 !
     else if (present(vk8)) then
-        ASSERT(ktyp.eq.'K8')
+        ASSERT(ktyp .eq. 'K8')
         call jgetptc(jad, pc, vk8=zk8(1))
         call c_f_pointer(pc, vk8, [dim])
 !
     else if (present(vk16)) then
-        ASSERT(ktyp.eq.'K16')
+        ASSERT(ktyp .eq. 'K16')
         call jgetptc(jad, pc, vk16=zk16(1))
         call c_f_pointer(pc, vk16, [dim])
 !
     else if (present(vk24)) then
-        ASSERT(ktyp.eq.'K24')
+        ASSERT(ktyp .eq. 'K24')
         call jgetptc(jad, pc, vk24=zk24(1))
         call c_f_pointer(pc, vk24, [dim])
 !
     else if (present(vk32)) then
-        ASSERT(ktyp.eq.'K32')
+        ASSERT(ktyp .eq. 'K32')
         call jgetptc(jad, pc, vk32=zk32(1))
         call c_f_pointer(pc, vk32, [dim])
 !
     else if (present(vk80)) then
-        ASSERT(ktyp.eq.'K80')
+        ASSERT(ktyp .eq. 'K80')
         call jgetptc(jad, pc, vk80=zk80(1))
         call c_f_pointer(pc, vk80, [dim])
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
 !

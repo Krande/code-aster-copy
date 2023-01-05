@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
+subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc, &
                   impr)
     implicit none
 #include "jeveux.h"
@@ -54,15 +54,15 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
     integer :: lvar, n0, ndom, nf1, nf2, nn, npas
 !
 !-----------------------------------------------------------------------
-    data tprol/'CONSTANT','LINEAIRE','EXCLU'/
+    data tprol/'CONSTANT', 'LINEAIRE', 'EXCLU'/
 !
     call jemarq()
     nompaf = vecpro(7)
     nompan = vecpro(3)
     nomres = vecpro(4)
-    n1 = min( 1,nbfonc)
-    n2 = min(10,nbfonc)
-    if (impr .ge. 3) n2=nbfonc
+    n1 = min(1, nbfonc)
+    n2 = min(10, nbfonc)
+    if (impr .ge. 3) n2 = nbfonc
 !
 !     --- NAPPE DONT LES FONCTIONS SONT DEFINIES AUX MEME INSTANTS ? ---
     ndom = 1
@@ -71,65 +71,65 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
     do i = n1+1, n2
         call jelira(jexnum(chval, i), 'LONMAX', n)
         if (n0 .ne. n) then
-            ndom = ndom + 1
+            ndom = ndom+1
             goto 12
         else
             call jeveuo(jexnum(chval, i), 'L', lf)
-            do j = 0, n/2 - 1
+            do j = 0, n/2-1
                 if (zr(lf+j) .ne. zr(lr+j)) then
-                    ndom = ndom + 1
+                    ndom = ndom+1
                     goto 12
-                endif
+                end if
             end do
-        endif
+        end if
     end do
- 12 continue
+12  continue
 !
 !
     if (ndom .eq. 1 .and. n1 .ne. n2) then
         n = n/2
         nf1 = 1
-        nf2 = min(10,n)
-        if (impr .ge. 3) nf2=n
+        nf2 = min(10, n)
+        if (impr .ge. 3) nf2 = n
         npas = 5
         call jeveuo(jexnum(chval, 1), 'L', lvar)
-        lfon = lvar + n
+        lfon = lvar+n
         do i = n1, n2, npas
-            nn = min(i+npas-1,n2)
-            write( iuni,'(/,1X,A8,4X,9(1X,1PE12.5),1X)' ) nompan,&
-            ( valpar(k) , k=i,nn )
-            write( iuni,'(1X,A)' ) nompaf
+            nn = min(i+npas-1, n2)
+            write (iuni, '(/,1X,A8,4X,9(1X,1PE12.5),1X)') nompan, &
+                (valpar(k), k=i, nn)
+            write (iuni, '(1X,A)') nompaf
             do ik = nf1, nf2
-                write(iuni,'(1X,1PE12.5,9(1X,1PE12.5))') zr(lvar+ik-1)&
-                , ( zr(lfon+(j-1)*2*n+ik-1) , j=i,nn )
+                write (iuni, '(1X,1PE12.5,9(1X,1PE12.5))') zr(lvar+ik-1) &
+                    , (zr(lfon+(j-1)*2*n+ik-1), j=i, nn)
             end do
         end do
 !
     else
 !
         do i = n1, n2
-            write(iuni,'(///)' )
-            write(iuni,*) ' FONCTION NUMERO: ',i
-            write(iuni,*) '    PARAMETRE : ',nompan,' = ',valpar(i)
+            write (iuni, '(///)')
+            write (iuni, *) ' FONCTION NUMERO: ', i
+            write (iuni, *) '    PARAMETRE : ', nompan, ' = ', valpar(i)
             call fopro1(vecpro, i, prolgd, interp)
-            write(iuni,*) '    INTERPOLATION         : ',interp
+            write (iuni, *) '    INTERPOLATION         : ', interp
             do j = 1, 3
-                if (prolgd(1:1) .eq. tprol(j)(1:1)) then
-                    write(iuni,*) '    PROLONGEMENT A GAUCHE : ',tprol(j)
-                endif
-                if (prolgd(2:2) .eq. tprol(j)(1:1)) then
-                    write(iuni,*) '    PROLONGEMENT A DROITE : ',tprol(j)
-                endif
+                if (prolgd(1:1) .eq. tprol(j) (1:1)) then
+                    write (iuni, *) '    PROLONGEMENT A GAUCHE : ', tprol(j)
+                end if
+                if (prolgd(2:2) .eq. tprol(j) (1:1)) then
+                    write (iuni, *) '    PROLONGEMENT A DROITE : ', tprol(j)
+                end if
             end do
             call jeveuo(jexnum(chval, i), 'L', jv)
             call jelira(jexnum(chval, i), 'LONMAX', n)
             n = n/2
             nf1 = 1
-            nf2 = min(10,n)
-            if (impr .ge. 3) nf2=n
-            call foec2f(iuni, zr(jv), n, nf1, nf2,&
+            nf2 = min(10, n)
+            if (impr .ge. 3) nf2 = n
+            call foec2f(iuni, zr(jv), n, nf1, nf2, &
                         nompaf, nomres)
         end do
-    endif
+    end if
     call jedema()
 end subroutine

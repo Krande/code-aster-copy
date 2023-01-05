@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
+subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai, &
                   sdcarm, nomase)
     use as_med_module, only: as_med_open
     implicit none
@@ -63,9 +63,9 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     integer :: edfuin, ndim, nbmasu, imasup, edcar2, jcesl
     integer :: nbcmp, isp, icmp, iad
 !
-    parameter    (edleaj = 1)
-    parameter    (edcart = 0)
-    parameter    (edfuin = 0)
+    parameter(edleaj=1)
+    parameter(edcart=0)
+    parameter(edfuin=0)
 !
     character(len=8)   :: saux08
     character(len=16)  :: nocoor(3), uncoor(3), nocoo2(3), uncoo2(3)
@@ -75,68 +75,68 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     real(kind=8) :: delta, theta, dtheta, rayon
 !
     aster_logical :: lmstro
-    real(kind=8),     pointer :: cesv(:)     => null()
-    character(len=8), pointer :: cesc(:)     => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !
-    data nocoor  /'X               ', 'Y               ', 'Z               '/
-    data uncoor  /'INCONNU         ', 'INCONNU         ', 'INCONNU         '/
+    data nocoor/'X               ', 'Y               ', 'Z               '/
+    data uncoor/'INCONNU         ', 'INCONNU         ', 'INCONNU         '/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if ((typsec.ne.'COQUE').and.(typsec.ne.'GRILLE').and. &
-        (typsec.ne.'TUYAU').and.(typsec.ne.'PMF')) goto 9999
+    if ((typsec .ne. 'COQUE') .and. (typsec .ne. 'GRILLE') .and. &
+        (typsec .ne. 'TUYAU') .and. (typsec .ne. 'PMF')) goto 9999
 !
     desmed = ' '
     call as_med_open(idfimd, nofimd, edleaj, codret)
     if (codret .ne. 0) then
-        saux08='mfiope'
+        saux08 = 'mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
 !   RELECTURE DES ELEMENTS DE STRUCTURES DEJA PRESENTS
     nbmasu = 0
     call as_msmnsm(idfimd, nbmasu, codret)
     if (codret .ne. 0) then
-        saux08='msmnsm'
+        saux08 = 'msmnsm'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
     lmstro = .false.
     if (nbmasu .ne. 0) then
         call wkvect('&&IRMASE.MAIL_SUPP', 'V V K80', nbmasu, jmasup)
         do imasup = 1, nbmasu
-            call as_msmsmi(idfimd, imasup, nomasu, ndim, desmed,&
+            call as_msmsmi(idfimd, imasup, nomasu, ndim, desmed, &
                            edcar2, nocoo2, uncoo2, codret)
             if (codret .ne. 0) then
-                saux08='msmsmi'
+                saux08 = 'msmsmi'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
+            end if
             if (nomasu .eq. nomase) lmstro = .true.
-        enddo
+        end do
         call jedetr('&&IRMASE.MAIL_SUPP')
         if (lmstro) goto 9999
-    endif
+    end if
 !
     ndim = 0
     if (typsec .eq. 'COQUE') then
-        ndim   = 1
+        ndim = 1
         nbpoin = 3*nbrcou
         call wkvect('&&IRMASE.COOR_PTS', 'V V R', nbpoin, jcoopt)
         delta = 2.d0/nbrcou
         do icouch = 1, nbrcou
             ibid = jcoopt+(icouch-1)*3
-            zr(ibid+2) = -1.0d0 + icouch*delta
-            zr(ibid)   = zr(ibid+2) - delta
+            zr(ibid+2) = -1.0d0+icouch*delta
+            zr(ibid) = zr(ibid+2)-delta
             zr(ibid+1) = 0.5d0*(zr(ibid+2)+zr(ibid))
             !
-            if ( icouch .ne. 1) then
-                zr(ibid)   = zr(ibid)   + 0.10*delta
-            endif
-            if ( icouch .ne. nbrcou ) then
-                zr(ibid+2) = zr(ibid+2) - 0.10*delta
-            endif
-        enddo
+            if (icouch .ne. 1) then
+                zr(ibid) = zr(ibid)+0.10*delta
+            end if
+            if (icouch .ne. nbrcou) then
+                zr(ibid+2) = zr(ibid+2)-0.10*delta
+            end if
+        end do
     else if (typsec .eq. 'GRILLE') then
-        ndim   = 1
+        ndim = 1
         nbpoin = 1
         call wkvect('&&IRMASE.COOR_PTS', 'V V R', nbpoin, jcoopt)
         zr(jcoopt) = 0.0d0
@@ -150,38 +150,38 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 !
 !       A FAIRE DANS : te0478  irmase
 !
-        ndim   = 2
+        ndim = 2
         nbpoin = (2*nbsect+1)*(2*nbrcou+1)
         call wkvect('&&IRMASE.COOR_PTS', 'V V R', 2*nbpoin, jcoopt)
         postmp = 0
         dtheta = r8pi()/nbsect
-        do icouch = 1 , 2*nbrcou+1
-            rayon = 0.5d0 + 0.25d0*(icouch-1)/nbrcou
-            do irayon = 1 , 2*nbsect+1
-                theta = -(irayon-1)*dtheta - 0.50*r8pi()
-                zr(jcoopt+postmp)   = rayon*cos(theta)
+        do icouch = 1, 2*nbrcou+1
+            rayon = 0.5d0+0.25d0*(icouch-1)/nbrcou
+            do irayon = 1, 2*nbsect+1
+                theta = -(irayon-1)*dtheta-0.50*r8pi()
+                zr(jcoopt+postmp) = rayon*cos(theta)
                 zr(jcoopt+postmp+1) = rayon*sin(theta)
                 postmp = postmp+2
-            enddo
-        enddo
+            end do
+        end do
 !
-    else if (typsec.eq.'PMF') then
+    else if (typsec .eq. 'PMF') then
         ndim = 2
         call jeveuo(sdcarm//'.CAFIBR    .CESC', 'L', vk8=cesc)
         call jeveuo(sdcarm//'.CAFIBR    .CESD', 'L', jcesd)
         call jeveuo(sdcarm//'.CAFIBR    .CESV', 'L', vr=cesv)
         call jeveuo(sdcarm//'.CAFIBR    .CESL', 'L', jcesl)
 !
-        ASSERT(zi(jcesd+5+4*(nummai-1)).eq.1)
+        ASSERT(zi(jcesd+5+4*(nummai-1)) .eq. 1)
         nbpoin = zi(jcesd+5+4*(nummai-1)+1)
         call wkvect('&&IRMASE.COOR_PTS', 'V V R', 2*nbpoin, jcoopt)
         nbcmp = zi(jcesd+5+4*(nummai-1)+2)
 !       YG       ZG       AIRE     YP       ZP       GX       NUMGR
-        ASSERT(nbcmp.eq.7)
-        ASSERT(cesc(1).eq.'YG      '.and. cesc(2).eq.'ZG      ')
-        ASSERT(cesc(3).eq.'AIRE    '.and. cesc(4).eq.'YP      ')
-        ASSERT(cesc(5).eq.'ZP      '.and. cesc(6).eq.'GX      ')
-        ASSERT(cesc(7).eq.'NUMGR   ')
+        ASSERT(nbcmp .eq. 7)
+        ASSERT(cesc(1) .eq. 'YG      ' .and. cesc(2) .eq. 'ZG      ')
+        ASSERT(cesc(3) .eq. 'AIRE    ' .and. cesc(4) .eq. 'YP      ')
+        ASSERT(cesc(5) .eq. 'ZP      ' .and. cesc(6) .eq. 'GX      ')
+        ASSERT(cesc(7) .eq. 'NUMGR   ')
 !
         postmp = 0
         do isp = 1, nbpoin
@@ -189,29 +189,29 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
                 call cesexi('S', jcesd, jcesl, nummai, 1, isp, icmp, iad)
                 zr(jcoopt+postmp) = cesv(iad)
                 postmp = postmp+1
-            enddo
-        enddo
+            end do
+        end do
 !
-    endif
+    end if
 !
 !   Définition du maillage support MED
     call as_msmcre(idfimd, nomase, ndim, desmed, edcart, nocoor, uncoor, codret)
     if (codret .ne. 0) then
-        saux08='msmcre'
+        saux08 = 'msmcre'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !   Définition des noeuds du maillage support MED
     call as_mmhcow(idfimd, nomase, zr(jcoopt), edfuin, nbpoin, codret)
     if (codret .ne. 0) then
-        saux08='mmhcow'
+        saux08 = 'mmhcow'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='mficlo'
+        saux08 = 'mficlo'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     call jedetr('&&IRMASE.COOR_PTS')
 !

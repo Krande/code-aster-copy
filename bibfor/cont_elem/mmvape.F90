@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,31 +18,31 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmvape(phase , leltf , l_pena_cont, l_pena_fric,&
-                  ndim  , nnl   , nbcps      ,&
-                  ffl   ,&
-                  wpg   , jacobi, jeu   , djeu, lambda,&
+subroutine mmvape(phase, leltf, l_pena_cont, l_pena_fric, &
+                  ndim, nnl, nbcps, &
+                  ffl, &
+                  wpg, jacobi, jeu, djeu, lambda, &
                   coefac, coefaf, coefff, &
-                  tau1  , tau2  , mprojt, &
-                  dlagrc, dlagrf, rese,&
+                  tau1, tau2, mprojt, &
+                  dlagrc, dlagrf, rese, &
                   vectcc, vectff)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmmvcc.h"
 #include "asterfort/mmmvff.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: leltf, l_pena_cont, l_pena_fric
-integer, intent(in) :: ndim, nnl, nbcps
-real(kind=8), intent(in) :: ffl(9)
-real(kind=8), intent(in) :: coefac, coefaf, coefff
-real(kind=8), intent(in) :: wpg, jacobi, jeu, lambda
-real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: dlagrc, dlagrf(2), djeu(3), rese(3)
-real(kind=8), intent(out) :: vectcc(9), vectff(18)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: leltf, l_pena_cont, l_pena_fric
+    integer, intent(in) :: ndim, nnl, nbcps
+    real(kind=8), intent(in) :: ffl(9)
+    real(kind=8), intent(in) :: coefac, coefaf, coefff
+    real(kind=8), intent(in) :: wpg, jacobi, jeu, lambda
+    real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: dlagrc, dlagrf(2), djeu(3), rese(3)
+    real(kind=8), intent(out) :: vectcc(9), vectff(18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,66 +83,66 @@ real(kind=8), intent(out) :: vectcc(9), vectff(18)
 ! --------------------------------------------------------------------------------------------------
 !
     if (phase .eq. 'SANS') then
-        call mmmvcc(phase , l_pena_cont, &
-                    nnl   , wpg        , ffl   , jacobi,&
-                    jeu   , coefac     , dlagrc,&
+        call mmmvcc(phase, l_pena_cont, &
+                    nnl, wpg, ffl, jacobi, &
+                    jeu, coefac, dlagrc, &
                     vectcc)
         if (leltf) then
-            call mmmvff(phase , l_pena_cont, l_pena_fric,&
-                        ndim  , nnl        , nbcps      ,&
-                        ffl   ,&
-                        wpg   , jacobi     , djeu       , lambda,&
-                        coefaf, coefff     , &
-                        tau1  , tau2       , mprojt     , &
-                        dlagrf, rese       , &
+            call mmmvff(phase, l_pena_cont, l_pena_fric, &
+                        ndim, nnl, nbcps, &
+                        ffl, &
+                        wpg, jacobi, djeu, lambda, &
+                        coefaf, coefff, &
+                        tau1, tau2, mprojt, &
+                        dlagrf, rese, &
                         vectff)
-        endif
+        end if
     else
         if (phase .eq. 'CONT') then
-            call mmmvcc(phase , l_pena_cont, &
-                        nnl   , wpg        , ffl   , jacobi,&
-                        jeu   , coefac     , dlagrc,&
+            call mmmvcc(phase, l_pena_cont, &
+                        nnl, wpg, ffl, jacobi, &
+                        jeu, coefac, dlagrc, &
                         vectcc)
         elseif (phase .eq. 'ADHE') then
-            call mmmvcc(phase , l_pena_cont, &
-                        nnl   , wpg        , ffl   , jacobi,&
-                        jeu   , coefac     , dlagrc,&
+            call mmmvcc(phase, l_pena_cont, &
+                        nnl, wpg, ffl, jacobi, &
+                        jeu, coefac, dlagrc, &
                         vectcc)
-            call mmmvff(phase , l_pena_cont, l_pena_fric,&
-                        ndim  , nnl        , nbcps      ,&
-                        ffl   ,&
-                        wpg   , jacobi     , djeu       , lambda,&
-                        coefaf, coefff     , &
-                        tau1  , tau2       , mprojt     , &
-                        dlagrf, rese       , &
+            call mmmvff(phase, l_pena_cont, l_pena_fric, &
+                        ndim, nnl, nbcps, &
+                        ffl, &
+                        wpg, jacobi, djeu, lambda, &
+                        coefaf, coefff, &
+                        tau1, tau2, mprojt, &
+                        dlagrf, rese, &
                         vectff)
         elseif (phase .eq. 'GLIS') then
-            call mmmvcc(phase , l_pena_cont, &
-                        nnl   , wpg        , ffl   , jacobi,&
-                        jeu   , coefac     , dlagrc,&
+            call mmmvcc(phase, l_pena_cont, &
+                        nnl, wpg, ffl, jacobi, &
+                        jeu, coefac, dlagrc, &
                         vectcc)
-            call mmmvff(phase , l_pena_cont, l_pena_fric,&
-                        ndim  , nnl        , nbcps      ,&
-                        ffl   ,&
-                        wpg   , jacobi     , djeu       , lambda,&
-                        coefaf, coefff     , &
-                        tau1  , tau2       , mprojt     , &
-                        dlagrf, rese       , &
+            call mmmvff(phase, l_pena_cont, l_pena_fric, &
+                        ndim, nnl, nbcps, &
+                        ffl, &
+                        wpg, jacobi, djeu, lambda, &
+                        coefaf, coefff, &
+                        tau1, tau2, mprojt, &
+                        dlagrf, rese, &
                         vectff)
         elseif (phase .eq. 'NCON') then
-            call mmmvcc(phase , l_pena_cont, &
-                        nnl   , wpg        , ffl   , jacobi,&
-                        jeu   , coefac     , dlagrc,&
+            call mmmvcc(phase, l_pena_cont, &
+                        nnl, wpg, ffl, jacobi, &
+                        jeu, coefac, dlagrc, &
                         vectcc)
-            call mmmvff(phase , l_pena_cont, l_pena_fric,&
-                        ndim  , nnl        , nbcps      ,&
-                        ffl   ,&
-                        wpg   , jacobi     , djeu       , lambda,&
-                        coefaf, coefff     , &
-                        tau1  , tau2       , mprojt     , &
-                        dlagrf, rese       , &
+            call mmmvff(phase, l_pena_cont, l_pena_fric, &
+                        ndim, nnl, nbcps, &
+                        ffl, &
+                        wpg, jacobi, djeu, lambda, &
+                        coefaf, coefff, &
+                        tau1, tau2, mprojt, &
+                        dlagrf, rese, &
                         vectff)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

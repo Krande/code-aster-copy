@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine melima(chin, ma, icode, ient, lima,&
+subroutine melima(chin, ma, icode, ient, lima, &
                   nb)
 !
     implicit none
@@ -70,12 +70,12 @@ subroutine melima(chin, ma, icode, ient, lima,&
 !        GROUPE DE MAILLES DU MAILLAGE:
         call jelira(jexnum(ma//'.GROUPEMA', ient), 'LONUTI', nb)
         call jeveuo(jexnum(ma//'.GROUPEMA', ient), 'L', lima)
-    else if (abs(icode).eq.3) then
+    else if (abs(icode) .eq. 3) then
 !
 !        GROUPE TARDIF :
         call jelira(jexnum(chin(1:19)//'.LIMA', ient), 'LONMAX', nb)
         call jeveuo(jexnum(chin(1:19)//'.LIMA', ient), 'L', lima)
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

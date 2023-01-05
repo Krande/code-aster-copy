@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ subroutine sumetr(cova, metr, jac)
 !    CALCUL DE LA METRIQUE
     do i = 1, 2
         do j = 1, 2
-            metr(i,j) = ddot(3,cova(1,i),1,cova(1,j),1)
+            metr(i, j) = ddot(3, cova(1, i), 1, cova(1, j), 1)
         end do
     end do
 !
 !
 !    CALCUL DU JACOBIEN
-    jac = sqrt(abs( metr(1,1)*metr(2,2) - metr(1,2)*metr(2,1) ))
+    jac = sqrt(abs(metr(1, 1)*metr(2, 2)-metr(1, 2)*metr(2, 1)))
 !
 end subroutine

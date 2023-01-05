@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nulili(nb_ligr, list_ligr, lili, base , gran_name,&
-                  igds   , mesh     , nec , nlili, modelocz)
+subroutine nulili(nb_ligr, list_ligr, lili, base, gran_name, &
+                  igds, mesh, nec, nlili, modelocz)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -115,15 +115,15 @@ implicit none
 !    call jemarq() FORBIDDEN !
 !
     prefix = lili(1:14)
-    nlili  = nb_ligr+1
-    ASSERT(nlili.gt.1)
+    nlili = nb_ligr+1
+    ASSERT(nlili .gt. 1)
 !
 ! - Local mode
 !
     modeloc = ' '
     if (present(modelocz)) then
         modeloc = modelocz
-    endif
+    end if
 !
 ! - Create main LILI repertory object
 !
@@ -152,8 +152,8 @@ implicit none
         if (i_list_ligr .eq. 1) then
             phenom = new_phenom
         else
-            ASSERT(phenom.eq.new_phenom)
-        endif
+            ASSERT(phenom .eq. new_phenom)
+        end if
 !
 ! ----- Only one mesh
 !
@@ -162,8 +162,8 @@ implicit none
         if (i_list_ligr .eq. 1) then
             mesh = new_mesh
         else
-            ASSERT(mesh.eq.new_mesh)
-        endif
+            ASSERT(mesh .eq. new_mesh)
+        end if
 !
 ! ----- Create object in collection
 !
@@ -185,20 +185,20 @@ implicit none
                 call jeveut(jexatr(ligr_name(1:19)//'.NEMA', 'LONCUM'), 'L', iad)
                 adne(1+3*(i_list_ligr)+2) = iad
             else
-                adne(1+3* (i_list_ligr)) = 0
-                adne(1+3* (i_list_ligr)+1) = 2**30
-                adne(1+3* (i_list_ligr)+2) = 2**30
-            endif
+                adne(1+3*(i_list_ligr)) = 0
+                adne(1+3*(i_list_ligr)+1) = 2**30
+                adne(1+3*(i_list_ligr)+2) = 2**30
+            end if
 !
 !---- ADLI(3*(i_list_ligr)+1)=NBRE DE MAILLES DU LIGREL NOMLI
 !
             call jelira(ligr_name(1:19)//'.LIEL', 'NUTIOC', nbgr)
-            adli(1+3* (i_list_ligr)) = nbgr
+            adli(1+3*(i_list_ligr)) = nbgr
             call jeveut(ligr_name(1:19)//'.LIEL', 'L', iad)
-            adli(1+3* (i_list_ligr)+1) = iad
+            adli(1+3*(i_list_ligr)+1) = iad
             call jeveut(jexatr(ligr_name(1:19)//'.LIEL', 'LONCUM'), 'L', iad)
-            adli(1+3* (i_list_ligr)+2) = iad
-        endif
+            adli(1+3*(i_list_ligr)+2) = iad
+        end if
     end do
     call dismoi('NB_MA_MAILLA', mesh(1:8), 'MAILLAGE', repi=nb_elem)
     adne(1) = nb_elem
@@ -208,39 +208,39 @@ implicit none
     if (modeloc .eq. ' ') then
         call dismoi('NOM_GD', phenom, 'PHENOMENE', repk=gran_name)
     else
-        ligr_name = list_ligr(1)(1:19)
+        ligr_name = list_ligr(1) (1:19)
         do i_grel = 1, nbgrel(ligr_name)
-            i_type_elem = typele(ligr_name,i_grel)
+            i_type_elem = typele(ligr_name, i_grel)
             call jenuno(jexnum('&CATA.TE.NOMTE', i_type_elem), nomte)
             call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//modeloc), imode)
             if (imode .gt. 0) then
                 call jeveuo(jexnum('&CATA.TE.MODELOC', imode), 'L', jmoloc)
                 call jenuno(jexnum('&CATA.GD.NOMGD', zi(jmoloc-1+2)), gran_name)
                 goto 30
-            endif
+            end if
         end do
         ASSERT(.false.)
- 30     continue
+30      continue
 ! --- Pour certains RESU_ELEM, il faut changer le nom
 ! Il en manque sûrement (voir creprn.F90)
-        if(gran_name(1:4) == "MDEP" .or. gran_name(1:4) == "VDEP" &
-            .or. gran_name(1:4) == "MDNS" ) then
+        if (gran_name(1:4) == "MDEP" .or. gran_name(1:4) == "VDEP" &
+            .or. gran_name(1:4) == "MDNS") then
             gran_name = "DEPL_"//gran_name(6:6)
-        elseif(gran_name(1:4) == "MTEM" .or. gran_name(1:4) == "VTEM" &
-            .or. gran_name(1:4) == "MTNS" ) then
+        elseif (gran_name(1:4) == "MTEM" .or. gran_name(1:4) == "VTEM" &
+                .or. gran_name(1:4) == "MTNS") then
             gran_name = "TEMP_"//gran_name(6:6)
-        elseif(gran_name(1:4) == "MPRE" .or. gran_name(1:4) == "VPRE") then
+        elseif (gran_name(1:4) == "MPRE" .or. gran_name(1:4) == "VPRE") then
             gran_name = "PRES_"//gran_name(6:6)
-        elseif(gran_name(1:4) == "MSIZ" .or. gran_name(1:4) == "VSIZ") then
+        elseif (gran_name(1:4) == "MSIZ" .or. gran_name(1:4) == "VSIZ") then
             gran_name = "SIZZ_"//gran_name(6:6)
-        elseif(gran_name(1:4) == "MZNS" .or. gran_name(1:4) == "VNEU") then
+        elseif (gran_name(1:4) == "MZNS" .or. gran_name(1:4) == "VNEU") then
             gran_name = "NEUT_"//gran_name(6:6)
         end if
-    endif
+    end if
     call jenonu(jexnom('&CATA.GD.NOMGD', gran_name), igds)
-    ASSERT(igds.ne.0)
+    ASSERT(igds .ne. 0)
 !
-    nec  = nbec(igds)
+    nec = nbec(igds)
 !
 !    call jedema() FORBIDDEN !
 !

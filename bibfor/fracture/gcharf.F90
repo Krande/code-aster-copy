@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
+subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
                   charg, oldfon)
     implicit none
 #include "asterf_types.h"
@@ -72,8 +72,8 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     call jemarq()
 !
-    nomfct='&&FF0000'
-    noms2f='&&SF0000'
+    nomfct = '&&FF0000'
+    noms2f = '&&SF0000'
     call codent(ichar, 'D0', nomfct(5:6))
     call codent(ichar, 'D0', noms2f(5:6))
 !
@@ -82,35 +82,35 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !     -----------------------------------------------------
 !
     call jeveuo(char1//'.NOMA', 'L', jma)
-    ma=zk8(jma)
+    ma = zk8(jma)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
 ! --  1.1 LORS D'UNE COMBINAISON DE CHARGEMENT 'SCALAIRE'/'FONCTION'
 !         LE CHARGEMENT 'SCALAIRE' EST TRANSFORME EN CHARGEMENT
 !         'FONCTION' (CONSTANT)
     call jeveuo(oldfon, 'E', jfonci)
-    s2f=.false.
-    if (fonc1 .and. .not.fonc2) then
-        charg1=char1
-        charg2=noms2f
+    s2f = .false.
+    if (fonc1 .and. .not. fonc2) then
+        charg1 = char1
+        charg2 = noms2f
         call gchs2f(char2, char1, charg2)
-        fonc2=.true.
-        s2f=.true.
-        zl(jfonci+ichar-1)=.true.
-    else if (.not.fonc1 .and. fonc2) then
-        charg1=noms2f
-        charg2=char2
+        fonc2 = .true.
+        s2f = .true.
+        zl(jfonci+ichar-1) = .true.
+    else if (.not. fonc1 .and. fonc2) then
+        charg1 = noms2f
+        charg2 = char2
         call gchs2f(char1, char2, charg1)
-        fonc1=.true.
-        s2f=.true.
+        fonc1 = .true.
+        s2f = .true.
     else
-        charg1=char1
-        charg2=char2
-    endif
+        charg1 = char1
+        charg2 = char2
+    end if
 !
     call jeveuo(charg1//'.DESC', 'L', vi=des1)
     call jeveuo(charg2//'.DESC', 'L', vi=des2)
-    ASSERT(des1(1).eq.des2(1))
+    ASSERT(des1(1) .eq. des2(1))
 !
 ! --  1.2 TABLEAUX : MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_1)
 !                    MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_2)
@@ -118,21 +118,21 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     call wkvect('&&GCHARF_ZONE.CART2', 'V V I', nbma, jzcar2)
 !
     do ima = 1, nbma
-        zi(jzcar1+ima-1)=0
-        zi(jzcar2+ima-1)=0
+        zi(jzcar1+ima-1) = 0
+        zi(jzcar2+ima-1) = 0
     end do
 !
     call jeveuo(jexatr(charg1//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg1//'.LIMA', 'L', p1)
     call jelira(charg1//'.LIMA', 'ACCES', cval=acces)
-    ASSERT(acces(1:2).eq.'NU')
+    ASSERT(acces(1:2) .eq. 'NU')
 !
-    nbzo1=des1(3)
+    nbzo1 = des1(3)
     do izo = 1, nbzo1
-        nmazo=zi(p2+izo)-zi(p2+izo-1)
+        nmazo = zi(p2+izo)-zi(p2+izo-1)
         do ima = 1, nmazo
-            numa=zi(p1+zi(p2+izo-1)-1+ima-1)
-            zi(jzcar1+numa-1)=izo
+            numa = zi(p1+zi(p2+izo-1)-1+ima-1)
+            zi(jzcar1+numa-1) = izo
             call jenuno(jexnum(ma//'.NOMMAI', numa), k8b)
         end do
     end do
@@ -140,14 +140,14 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     call jeveuo(jexatr(charg2//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg2//'.LIMA', 'L', p1)
     call jelira(charg2//'.LIMA', 'ACCES', cval=acces)
-    ASSERT(acces(1:2).eq.'NU')
+    ASSERT(acces(1:2) .eq. 'NU')
 !
-    nbzo2=des2(3)
+    nbzo2 = des2(3)
     do izo = 1, nbzo2
-        nmazo=zi(p2+izo)-zi(p2+izo-1)
+        nmazo = zi(p2+izo)-zi(p2+izo-1)
         do ima = 1, nmazo
-            numa=zi(p1+zi(p2+izo-1)-1+ima-1)
-            zi(jzcar2+numa-1)=izo
+            numa = zi(p1+zi(p2+izo-1)-1+ima-1)
+            zi(jzcar2+numa-1) = izo
             call jenuno(jexnum(ma//'.NOMMAI', numa), k8b)
         end do
     end do
@@ -159,35 +159,35 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     do izo2 = 1, nbzo2
         do izo1 = 1, nbzo1
-            zi(jmazo+nbzo1*(izo2-1)+izo1-1)=0
+            zi(jmazo+nbzo1*(izo2-1)+izo1-1) = 0
         end do
     end do
 !
     do ima = 1, nbma
-        nuzo1=zi(jzcar1+ima-1)
-        nuzo2=zi(jzcar2+ima-1)
-        ii=nbzo1*(nuzo2-1)+nuzo1
-        zi(jmazo+ii-1)=zi(jmazo+ii-1)+1
+        nuzo1 = zi(jzcar1+ima-1)
+        nuzo2 = zi(jzcar2+ima-1)
+        ii = nbzo1*(nuzo2-1)+nuzo1
+        zi(jmazo+ii-1) = zi(jmazo+ii-1)+1
     end do
 !
 !     NOMBRE DE ZONES AFFECTEES POUR LA NOUVELLE CARTE:
-    nbzo=0
+    nbzo = 0
     do izo = 1, nbzo1*nbzo2
-        zi(jnumz+izo-1)=0
+        zi(jnumz+izo-1) = 0
         if (zi(jmazo+izo-1) .ne. 0) then
-            nbzo=nbzo+1
-            zi(jnumz+izo-1)=nbzo
-        endif
+            nbzo = nbzo+1
+            zi(jnumz+izo-1) = nbzo
+        end if
     end do
 !
 ! --  1.4 TABLEAU: MAILLES -> NUM_ZONE D'AFFECTATION (NOUVELLE CARTE)
     call wkvect('&&GCHARF_ZONE.CARTE', 'V V I', nbma, jzcar)
 !
     do ima = 1, nbma
-        nuzo1=zi(jzcar1+ima-1)
-        nuzo2=zi(jzcar2+ima-1)
-        ii=nbzo1*(nuzo2-1)+nuzo1
-        zi(jzcar+ima-1)=zi(jnumz+ii-1)
+        nuzo1 = zi(jzcar1+ima-1)
+        nuzo2 = zi(jzcar2+ima-1)
+        ii = nbzo1*(nuzo2-1)+nuzo1
+        zi(jzcar+ima-1) = zi(jnumz+ii-1)
     end do
 !
 !
@@ -208,24 +208,24 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     zi(jdes-1+2) = nbzo
     zi(jdes-1+3) = nbzo
     do izo = 1, nbzo
-        zi(jdes-1+3+2*izo-1)= 3
+        zi(jdes-1+3+2*izo-1) = 3
         zi(jdes-1+3+2*izo) = izo
-        zi(jdes-1+3+2*nbzo+izo)= des1(3+2*nbzo1+1)
+        zi(jdes-1+3+2*nbzo+izo) = des1(3+2*nbzo1+1)
     end do
 !
 !     ALLOCATION DE VALE:
     call jelira(jexnum('&CATA.GD.NOMCMP', des1(1)), 'LONMAX', ncmpmx)
-    if (.not.fonc1 .and. .not.fonc2) then
+    if (.not. fonc1 .and. .not. fonc2) then
         call wkvect(charg//'.VALE', 'V V R', nbzo*ncmpmx, jval)
     else if (fonc1) then
         call wkvect(charg//'.VALE', 'V V K8', nbzo*ncmpmx, jval)
     else if (fonc2) then
         call jelira(jexnum('&CATA.GD.NOMCMP', des2(1)), 'LONMAX', ncmpmx)
         call wkvect(charg//'.VALE', 'V V K8', nbzo*ncmpmx, jval)
-    endif
+    end if
 !
 !     ALLOCATION DE LIMA :
-    call jecrec(charg//'.LIMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(charg//'.LIMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbzo)
     call jeecra(charg//'.LIMA', 'LONT', nbma, ' ')
 !
@@ -237,39 +237,39 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     do izo = 1, nbzo1*nbzo2
         if (zi(jmazo+izo-1) .ne. 0) then
-            nuzo=zi(jnumz+izo-1)
+            nuzo = zi(jnumz+izo-1)
             call jecroc(jexnum(charg//'.LIMA', nuzo))
-            call jeecra(jexnum(charg//'.LIMA', nuzo), 'LONMAX', zi( jmazo+izo-1))
+            call jeecra(jexnum(charg//'.LIMA', nuzo), 'LONMAX', zi(jmazo+izo-1))
             call jeveuo(jexnum(charg//'.LIMA', nuzo), 'E', ilim)
-            k=0
+            k = 0
             do ima = 1, nbma
                 if (zi(jzcar+ima-1) .eq. nuzo) then
-                    k=k+1
-                    zi(ilim+k-1)=ima
-                endif
+                    k = k+1
+                    zi(ilim+k-1) = ima
+                end if
             end do
-        endif
+        end if
     end do
 !
 !
 ! --  3.2 VALE
 !
 !     3.2.1 CHARGEMENTS 'SCALAIRES'
-    if (.not.fonc1 .and. .not.fonc2) then
+    if (.not. fonc1 .and. .not. fonc2) then
 !
         call jeveuo(charg1//'.VALE', 'L', jval1)
         call jeveuo(charg2//'.VALE', 'L', jval2)
-        k=0
+        k = 0
         do izo2 = 1, nbzo2
             do izo1 = 1, nbzo1
-                ii=nbzo1*(izo2-1)+izo1
+                ii = nbzo1*(izo2-1)+izo1
                 if (zi(jmazo+ii-1) .ne. 0) then
                     do icmp = 1, ncmpmx
-                        k=k+1
-                        zr(jval+k-1)= zr(jval1+ncmpmx*(izo1-1)+icmp-1)&
-                        + zr(jval2+ncmpmx*(izo2-1)+icmp-1)
+                        k = k+1
+                        zr(jval+k-1) = zr(jval1+ncmpmx*(izo1-1)+icmp-1) &
+                                       +zr(jval2+ncmpmx*(izo2-1)+icmp-1)
                     end do
-                endif
+                end if
             end do
         end do
 !
@@ -277,40 +277,40 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     else if (fonc1 .and. fonc2) then
         call jeveuo(charg1//'.VALE', 'L', jval1)
         call jeveuo(charg2//'.VALE', 'L', jval2)
-        k=0
-        kk=0
+        k = 0
+        kk = 0
         do izo2 = 1, nbzo2
             do izo1 = 1, nbzo1
-                ii=nbzo1*(izo2-1)+izo1
+                ii = nbzo1*(izo2-1)+izo1
                 if (zi(jmazo+ii-1) .ne. 0) then
                     do icmp = 1, ncmpmx
-                        k=k+1
-                        val1=zk8(jval1+ncmpmx*(izo1-1)+icmp-1)
-                        val2=zk8(jval2+ncmpmx*(izo2-1)+icmp-1)
+                        k = k+1
+                        val1 = zk8(jval1+ncmpmx*(izo1-1)+icmp-1)
+                        val2 = zk8(jval2+ncmpmx*(izo2-1)+icmp-1)
                         if (val1(1:7) .eq. '&FOZERO' .and. val2(1:7) .eq. '&FOZERO') then
-                            zk8(jval+k-1)='&FOZERO'
-                            elseif( val1(1:6).eq.'GLOBAL' .or. val2(1:6)&
-                        .eq.'GLOBAL' )then
-                            zk8(jval+k-1)='GLOBAL'
-                        else if (val1(1:7).eq.'&FOZERO') then
-                            zk8(jval+k-1)=val2
-                        else if (val2(1:7).eq.'&FOZERO') then
-                            zk8(jval+k-1)=val1
-                            elseif( val1(1:1).eq.' ' .or.&
-     &              val2(1:1).eq.' '  )then
-                            zk8(jval+k-1)='        '
+                            zk8(jval+k-1) = '&FOZERO'
+                        elseif (val1(1:6) .eq. 'GLOBAL' .or. val2(1:6) &
+                                .eq. 'GLOBAL') then
+                            zk8(jval+k-1) = 'GLOBAL'
+                        else if (val1(1:7) .eq. '&FOZERO') then
+                            zk8(jval+k-1) = val2
+                        else if (val2(1:7) .eq. '&FOZERO') then
+                            zk8(jval+k-1) = val1
+                        elseif (val1(1:1) .eq. ' ' .or.&
+ &              val2(1:1) .eq. ' ') then
+                            zk8(jval+k-1) = '        '
                         else
-                            kk=kk+1
+                            kk = kk+1
                             call codent(kk, 'D0', nomfct(7:8))
                             call gchfus(val1, val2, nomfct)
-                            zk8(jval+k-1)=nomfct
-                        endif
+                            zk8(jval+k-1) = nomfct
+                        end if
                     end do
-                endif
+                end if
             end do
         end do
 !
-    endif
+    end if
 !
     if (s2f) call detrsd('CARTE', noms2f)
     call jedetr('&&GCHARF_NUM_ZONE_CARTE')

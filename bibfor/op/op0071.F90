@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,19 +59,19 @@ subroutine op0071()
     call getvid(' ', 'MATR_ASSE_GENE', scal=matras, nbret=n3)
     call getvid(' ', 'BASE', scal=basemo, nbret=n4)
     call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n2)
-    nugene=numgen
+    nugene = numgen
 !
     call gettco(basemo, typbas)
-    typmat= typres(16:16)
+    typmat = typres(16:16)
 !
     if (n2 .ne. 0) then
-    endif
+    end if
 !
 !
 !==================================================
 !
-    call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
-                cbid, rbid, 'ABSOLU', nbmode, 1,&
+    call rsorac(basemo, 'LONUTI', 0, rbid, k8b, &
+                cbid, rbid, 'ABSOLU', nbmode, 1, &
                 ibid)
 !
 ! RECUPERATION DU NOMBRE DE MODES REDUIT,
@@ -86,22 +86,22 @@ subroutine op0071()
         call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numdd2)
     else
         call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numdd2)
-    endif
+    end if
     if (numdd1 .ne. numdd2) then
         call utmess('I', 'ALGORITH9_39')
-    endif
+    end if
     nu = numdd1(1:14)
     call dismoi('NB_EQUA', matras, 'MATR_ASSE', repi=neq)
 !
     if (typmat .eq. 'R') then
-        call projmr(matras, nomres, basemo, nugene, nu,&
+        call projmr(matras, nomres, basemo, nugene, nu, &
                     neq, nbmode(1))
-    else if (typmat.eq.'C') then
-        call projmc(matras, nomres, basemo, nugene, nu,&
+    else if (typmat .eq. 'C') then
+        call projmc(matras, nomres, basemo, nugene, nu, &
                     neq, nbmode(1))
     else
         call utmess('F', 'ALGORITH9_40', sk=typmat)
-    endif
+    end if
 !
 !
     call jedema()

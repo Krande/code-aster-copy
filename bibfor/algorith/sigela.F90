@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine sigela(typmod, ndim, e, nu, epse,&
+subroutine sigela(typmod, ndim, e, nu, epse, &
                   sigel)
 !
     implicit none
@@ -52,15 +52,15 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
 !--------------------------------------------------------
 !
     ndimsi = 2*ndim
-    rac2=sqrt(2.d0)
+    rac2 = sqrt(2.d0)
 !
-    lambda = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)
+    lambda = e*nu/(1.d0+nu)/(1.d0-2.d0*nu)
     deuxmu = e/(1.d0+nu)
 !
     if (typmod(1) .eq. 'C_PLAN  ') then
-        coplan = - nu/(1.d0-nu)
-        epse(3) = coplan * (epse(1)+epse(2))
-    endif
+        coplan = -nu/(1.d0-nu)
+        epse(3) = coplan*(epse(1)+epse(2))
+    end if
 !
     do k = 4, ndimsi
         epse(k) = epse(k)/rac2
@@ -90,8 +90,8 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
     trij = 2
     ordrej = 2
 !
-    call jacobi(3, nperm, tol, toldyn, tr,&
-                tu, vecpe, epsep, jacaux, nitjac,&
+    call jacobi(3, nperm, tol, toldyn, tr, &
+                tu, vecpe, epsep, jacaux, nitjac, &
                 trij, ordrej)
 !
 !
@@ -102,7 +102,7 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
         sigelp(k) = lambda*(epsep(1)+epsep(2)+epsep(3))
     end do
     do k = 1, 3
-        sigelp(k) = sigelp(k) + deuxmu*epsep(k)
+        sigelp(k) = sigelp(k)+deuxmu*epsep(k)
     end do
 !
 !------------------------------------------------------------------
@@ -117,6 +117,6 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
     tr(6) = 0.d0
     call bptobg(tr, sigel, vecpe)
     do k = 4, ndimsi
-        sigel(k)=rac2*sigel(k)
+        sigel(k) = rac2*sigel(k)
     end do
 end subroutine

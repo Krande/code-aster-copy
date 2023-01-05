@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 !
 subroutine corichwrite(fieldZ, ichin)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/corich.h"
 !
-character(len=*), intent(in) :: fieldZ
-integer, intent(in) :: ichin
+    character(len=*), intent(in) :: fieldZ
+    integer, intent(in) :: ichin
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call corich('E', fieldZ, ichin_ = ichin)
+    call corich('E', fieldZ, ichin_=ichin)
 end subroutine

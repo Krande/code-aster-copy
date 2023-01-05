@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
+subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr, &
                   icode)
     implicit none
 #include "jeveux.h"
@@ -69,15 +69,15 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
     noms2 = nomsy
     nomd2 = nomsd
     chextr = '???'
-    ASSERT(kstop.eq.' '.or.kstop.eq.'F')
+    ASSERT(kstop .eq. ' ' .or. kstop .eq. 'F')
 !
 !
 !     --- NOM SYMBOLIQUE PERMIS ?
     call jenonu(jexnom(nomd2//'.DESC', noms2), isymb)
     if (isymb .eq. 0) then
-        icode=101
+        icode = 101
         goto 10
-    endif
+    end if
 !
 !
 !     --- RECUPERATION DU NUMERO DE RANGEMENT ---
@@ -88,13 +88,13 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
 !     -----------------------------------------
     if (irang .gt. 0) then
         call jeveuo(jexnum(nomd2//'.TACH', isymb), 'L', jtach)
-        chext2 = zk24(jtach+irang-1)(1:19)
+        chext2 = zk24(jtach+irang-1) (1:19)
         if (chext2 .eq. ' ') then
             call rsutch(nomsd, noms2, iordr, chext2, .true._1)
         else
             call rsutch(nomsd, noms2, iordr, chext3, .true._1)
-            ASSERT(chext2.eq.chext3)
-        endif
+            ASSERT(chext2 .eq. chext3)
+        end if
 !
 !
 !     --- LE NUMERO DE RANGEMENT N'EXISTE PAS :
@@ -104,39 +104,39 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
         if (nbordr .ge. nbormx) then
             icode = 110
             goto 10
-        endif
+        end if
 !
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST PLUS GRAND
 !          QUE L'ANCIEN PLUS GRAND :
         if (nbordr .ge. 1) then
             call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
             if (iordr .le. ordr(nbordr)) then
-                icode=102
+                icode = 102
                 goto 10
-            endif
-        endif
+            end if
+        end if
 !
         call rsutch(nomsd, noms2, iordr, chext2, .true._1)
-    endif
+    end if
 !
 !
 !     --- LA SD CHEXTR EXISTE-T-ELLE ? :
 !     -----------------------------------------
     chextr = chext2
-    ASSERT(chextr.ne.' ')
+    ASSERT(chextr .ne. ' ')
     call exisd('CHAMP_GD', chextr, iexi)
     if (iexi .gt. 0) then
         icode = 0
     else
         icode = 100
-    endif
+    end if
 !
 10  continue
     if (kstop .eq. 'F' .and. icode .ne. 0) then
-        valk(1)=nomsd
-        valk(2)=nomsy
+        valk(1) = nomsd
+        valk(2) = nomsy
         call utmess('F', 'CALCULEL_29', nk=2, valk=valk, si=iordr)
-    endif
+    end if
 !
 !
     call jedema()

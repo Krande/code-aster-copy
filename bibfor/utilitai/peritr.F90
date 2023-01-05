@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     integer :: iord, iainst, lvale, nbin, iocc, nt, nm, nc
     integer :: ng, kk, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, nume, ier
     integer :: numord, numomu, nbordr
-    parameter (mxvale=5,nbparr=6,nbpard=4)
+    parameter(mxvale=5, nbparr=6, nbpard=4)
     real(kind=8) :: prec, inst, rsr0, volu, numema, triax, lnrsr0
     real(kind=8) :: vr(5), rtval(2), valer(3)
     character(len=8) :: k8b, noma, resul, crit, nomail, nommai, lpain(7), lpaout(2)
@@ -78,18 +78,18 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     character(len=24) :: lchout(2), contg, varipg, varimg, depla, ssoup
     complex(kind=8) :: c16b
 !
-    data noparr/'NUME_ORDRE','INST','LIEU','ENTITE',&
-     &     'TX_CROIS_CAVITES','VOLUME_CONCERNE'/
-    data typarr/'I','R','K24','K8','R','R'/
-    data nopard/'LIEU','ENTITE','TX_CROIS_CAVITES','VOLUME_CONCERNE'/
-    data typard/'K8','K8','R','R'/
+    data noparr/'NUME_ORDRE', 'INST', 'LIEU', 'ENTITE',&
+     &     'TX_CROIS_CAVITES', 'VOLUME_CONCERNE'/
+    data typarr/'I', 'R', 'K24', 'K8', 'R', 'R'/
+    data nopard/'LIEU', 'ENTITE', 'TX_CROIS_CAVITES', 'VOLUME_CONCERNE'/
+    data typard/'K8', 'K8', 'R', 'R'/
 !      DATA VARIMG /'&&PERITR.VARIMR'/
     data varnul/'&&PERITR.VARNUL'/
-    data tabtyp/'NOEU#DEPL_R','NOEU#TEMP_R','ELEM#ENER_R'/
-    data tabcmp/'TRIAX','RSR0','VOLU','NUMEMA','DEPSEQ'/
+    data tabtyp/'NOEU#DEPL_R', 'NOEU#TEMP_R', 'ELEM#ENER_R'/
+    data tabcmp/'TRIAX', 'RSR0', 'VOLU', 'NUMEMA', 'DEPSEQ'/
 !     ------------------------------------------------------------------
     call jemarq()
-    c16b=(0.d0,0.d0)
+    c16b = (0.d0, 0.d0)
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
@@ -98,7 +98,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     call getvid(' ', 'CHAM_GD', scal=contg, nbret=nd)
     if (nd .ne. 0) then
         call chpve2(contg, 3, tabtyp, ier)
-    endif
+    end if
     call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
     call getvr8(' ', 'INST', scal=inst, nbret=ni)
     call getvtx('RICE_TRACEY', 'OPTION', iocc=1, scal=optcal(1), nbret=np)
@@ -107,14 +107,14 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         do i = 2, nbocc
             call getvtx('RICE_TRACEY', 'OPTION', iocc=i, scal=toptca(1), nbret=n1)
             call getvtx('RICE_TRACEY', 'LOCAL', iocc=i, scal=toptca(2), nbret=n2)
-            if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
+            if ((toptca(1) .ne. optcal(1)) .or. (toptca(2) .ne. optcal(2))) then
                 call utmess('F', 'UTILITAI3_83')
-            endif
+            end if
         end do
-    endif
+    end if
 !
     option = 'RICE_TRACEY'
-    call mecham(option, modele, cara, nh, chgeom,&
+    call mecham(option, modele, cara, nh, chgeom, &
                 chcara, chharm, iret)
     if (iret .ne. 0) goto 110
     noma = chgeom(1:8)
@@ -141,10 +141,10 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         call gettco(resul, typres)
         if (typres(1:9) .ne. 'EVOL_NOLI') then
             call utmess('F', 'UTILITAI3_84')
-        endif
+        end if
         call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
-        call rsutnu(resul, ' ', 0, knum, nbordr,&
+        call rsutnu(resul, ' ', 0, knum, nbordr, &
                     prec, crit, iret)
         if (iret .ne. 0) goto 100
         call jeveuo(knum, 'L', jord)
@@ -154,20 +154,20 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         if (iret .ne. 0) then
             do iord = 1, nbordr
                 numord = zi(jord+iord-1)
-                call rsadpa(resul, 'L', 1, 'INST', numord,&
+                call rsadpa(resul, 'L', 1, 'INST', numord, &
                             0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
             end do
-        endif
+        end if
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbparr, noparr, typarr)
-    endif
+    end if
 !
 !     --- INITIALISATIONS DES CHAMPS ---
 !
     lnrsr0 = 0.d0
 !      VARIPG = '&&PERITR.VARIPG'
-    call mecact('V', '&&PERITR.SDRMR', 'MAILLA', noma, 'NEUT_R',&
+    call mecact('V', '&&PERITR.SDRMR', 'MAILLA', noma, 'NEUT_R', &
                 ncmp=1, nomcmp='X1', sr=0.d0)
 !
     call wkvect('&&PERITR.TRAV1', 'V V R', mxvale, lvale)
@@ -178,31 +178,31 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         inst = zr(jins+iord-1)
         valer(1) = inst
 !
-        call rsexch(' ', resul, 'COMPORTEMENT', numord, compor,&
+        call rsexch(' ', resul, 'COMPORTEMENT', numord, compor, &
                     iret)
         if (nr .ne. 0) then
-            call rsexch('F', resul, 'SIEF_ELGA', numord, contg,&
+            call rsexch('F', resul, 'SIEF_ELGA', numord, contg, &
                         iret)
-            call rsexch('F', resul, 'VARI_ELGA', numord, varipg,&
+            call rsexch('F', resul, 'VARI_ELGA', numord, varipg, &
                         iret)
             if (iord .ge. 2) then
                 numomu = zi(jord+iord-2)
-                call rsexch('F', resul, 'VARI_ELGA', numomu, varimg,&
+                call rsexch('F', resul, 'VARI_ELGA', numomu, varimg, &
                             iret)
             else
                 call copisd('CHAMP_GD', 'V', varipg, varnul)
                 call jelira(varnul//'.CELV', 'LONUTI', long)
                 call jerazo(varnul//'.CELV', long, 1)
-            endif
-            call rsexch('F', resul, 'DEPL', numord, depla,&
+            end if
+            call rsexch('F', resul, 'DEPL', numord, depla, &
                         iret)
-        endif
+        end if
 !
 !        --- AFFECTATION D'UNE CARTE CONSTANTE SUR LE MAILLAGE :
 !            OPTION DE CALCUL RICE_TRACEY ---
 !
-        ssoup = optcal(1)//optcal(2)(1:8)
-        call mecact('V', '&&PERITR.CH.SOUSOP', 'MAILLA', noma, 'NEUT_K24',&
+        ssoup = optcal(1)//optcal(2) (1:8)
+        call mecact('V', '&&PERITR.CH.SOUSOP', 'MAILLA', noma, 'NEUT_K24', &
                     ncmp=1, nomcmp='Z1', sk=ssoup)
 !
         optio2 = 'RICE_TRACEY'
@@ -216,7 +216,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
             lchin(3) = varimg
         else
             lchin(3) = varnul
-        endif
+        end if
         lpain(3) = 'PVARIMR'
         lchin(4) = varipg
         lpain(4) = 'PVARIPR'
@@ -230,37 +230,37 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         lpaout(1) = 'PRICTRA'
         lchout(2) = '&&PERITR.SDRPR'
         lpaout(2) = 'PSDRPR'
-        call calcul('S', optio2, ligrel, nbin, lchin,&
-                    lpain, 2, lchout, lpaout, 'V',&
+        call calcul('S', optio2, ligrel, nbin, lchin, &
+                    lpain, 2, lchout, lpaout, 'V', &
                     'OUI')
 !
         do iocc = 1, nbocc
             call getvtx(option(1:11), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
-            call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc,&
+            call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc, &
                         0, k8b, nm)
-            call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc,&
+            call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc, &
                         0, k8b, ng)
 !
             if (nt .ne. 0) then
                 if (optcal(2) .eq. 'OUI') then
-                    call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
+                    call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp, &
                                 vr, 0, [0])
                     do kk = 1, mxvale
                         zr(lvale+kk-1) = vr(kk)
                     end do
-                else if (optcal(2).eq.'NON') then
-                    call memoy(chelem, 1, chelem, 3, vr,&
+                else if (optcal(2) .eq. 'NON') then
+                    call memoy(chelem, 1, chelem, 3, vr, &
                                0, [0])
                     zr(lvale) = vr(1)
                     zr(lvale+2) = vr(2)
                     triax = zr(lvale)
-                    call memoy(chelem, 5, chelem, 3, vr,&
+                    call memoy(chelem, 5, chelem, 3, vr, &
                                0, [0])
                     zr(lvale+4) = vr(1)
-                    lnrsr0 = lnrsr0 + 0.283d0*sign(1.d0,triax)* exp(1.5d0*abs(triax))*zr(lvale+4)
+                    lnrsr0 = lnrsr0+0.283d0*sign(1.d0, triax)*exp(1.5d0*abs(triax))*zr(lvale+4)
                     zr(lvale+1) = exp(lnrsr0)
                     zr(lvale+3) = 0.d0
-                endif
+                end if
                 rsr0 = zr(lvale+1)
                 volu = zr(lvale+2)
                 numema = zr(lvale+3)
@@ -272,24 +272,24 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 else
                     valek(1) = noma
                     valek(2) = 'TOUT'
-                endif
+                end if
                 rtval(1) = rsr0
                 rtval(2) = volu
                 if (nr .ne. 0) then
                     valer(2) = rtval(1)
                     valer(3) = rtval(2)
-                    call tbajli(resu, nbparr, noparr, [numord], valer,&
+                    call tbajli(resu, nbparr, noparr, [numord], valer, &
                                 [c16b], valek, 0)
                 else
-                    call tbajli(resu, nbpard, nopard, [numord], rtval,&
+                    call tbajli(resu, nbpard, nopard, [numord], rtval, &
                                 [c16b], valek, 0)
-                endif
-            endif
+                end if
+            end if
 !
             if (ng .ne. 0) then
                 nbgrma = -ng
                 call wkvect('&&PERITR_GROUPM', 'V V K24', nbgrma, jgr)
-                call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc,&
+                call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc, &
                             nbgrma, zk24(jgr), ng)
                 do ig = 1, nbgrma
                     nomma2 = zk24(jgr+ig-1)
@@ -297,33 +297,33 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     if (iret .eq. 0) then
                         call utmess('A', 'UTILITAI3_46', sk=nomma2)
                         goto 50
-                    endif
+                    end if
                     call jelira(jexnom(mlggma, nomma2), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
                         call utmess('A', 'UTILITAI3_47', sk=nomma2)
                         goto 50
-                    endif
+                    end if
                     call jeveuo(jexnom(mlggma, nomma2), 'L', jad)
                     if (optcal(2) .eq. 'OUI') then
-                        call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
+                        call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp, &
                                     vr, nbma, zi(jad))
                         do kk = 1, mxvale
                             zr(lvale+kk-1) = vr(kk)
                         end do
-                    else if (optcal(2).eq.'NON') then
-                        call memoy(chelem, 1, chelem, 3, vr,&
+                    else if (optcal(2) .eq. 'NON') then
+                        call memoy(chelem, 1, chelem, 3, vr, &
                                    nbma, zi(jad))
                         zr(lvale) = vr(1)
                         zr(lvale+2) = vr(2)
                         triax = zr(lvale)
-                        call memoy(chelem, 5, chelem, 3, vr,&
+                        call memoy(chelem, 5, chelem, 3, vr, &
                                    nbma, zi(jad))
                         zr(lvale+4) = vr(1)
-                        lnrsr0 = lnrsr0 + 0.283d0*sign(1.d0,triax)* exp(1.5d0*abs(triax))*zr(lval&
+                        lnrsr0 = lnrsr0+0.283d0*sign(1.d0, triax)*exp(1.5d0*abs(triax))*zr(lval&
                                  &e+4)
                         zr(lvale+1) = exp(lnrsr0)
                         zr(lvale+3) = 0.d0
-                    endif
+                    end if
                     rsr0 = zr(lvale+1)
                     volu = zr(lvale+2)
                     numema = zr(lvale+3)
@@ -335,27 +335,27 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     else
                         valek(1) = noma
                         valek(2) = 'TOUT'
-                    endif
+                    end if
                     rtval(1) = rsr0
                     rtval(2) = volu
                     if (nr .ne. 0) then
                         valer(2) = rtval(1)
                         valer(3) = rtval(2)
-                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                        call tbajli(resu, nbparr, noparr, [numord], valer, &
                                     [c16b], valek, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, [numord], rtval,&
+                        call tbajli(resu, nbpard, nopard, [numord], rtval, &
                                     [c16b], valek, 0)
-                    endif
- 50                 continue
+                    end if
+50                  continue
                 end do
                 call jedetr('&&PERITR_GROUPM')
-            endif
+            end if
 !
             if (nm .ne. 0) then
                 nbmail = -nm
                 call wkvect('&&PERITR_MAILLE', 'V V K8', nbmail, jma)
-                call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc,&
+                call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc, &
                             nbmail, zk8(jma), nm)
                 do im = 1, nbmail
                     nommai = zk8(jma+im-1)
@@ -363,28 +363,28 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     if (iret .eq. 0) then
                         call utmess('A', 'UTILITAI3_49', sk=nommai)
                         goto 70
-                    endif
+                    end if
                     call jenonu(jexnom(mlgnma, nommai), nume)
                     if (optcal(2) .eq. 'OUI') then
-                        call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp,&
+                        call memaxm('MAX', chelem, 'RSR0', mxvale, tabcmp, &
                                     vr, 1, [nume])
                         do kk = 1, mxvale
                             zr(lvale+kk-1) = vr(kk)
                         end do
-                    else if (optcal(2).eq.'NON') then
-                        call memoy(chelem, 1, chelem, 3, vr,&
+                    else if (optcal(2) .eq. 'NON') then
+                        call memoy(chelem, 1, chelem, 3, vr, &
                                    1, [nume])
                         zr(lvale) = vr(1)
                         zr(lvale+2) = vr(2)
                         triax = zr(lvale)
-                        call memoy(chelem, 5, chelem, 3, vr,&
+                        call memoy(chelem, 5, chelem, 3, vr, &
                                    1, [nume])
                         zr(lvale+4) = vr(1)
-                        lnrsr0 = lnrsr0 + 0.283d0*sign(1.d0,triax)* exp(1.5d0*abs(triax))*zr(lval&
+                        lnrsr0 = lnrsr0+0.283d0*sign(1.d0, triax)*exp(1.5d0*abs(triax))*zr(lval&
                                  &e+4)
                         zr(lvale+1) = exp(lnrsr0)
                         zr(lvale+3) = 0.d0
-                    endif
+                    end if
                     rsr0 = zr(lvale+1)
                     volu = zr(lvale+2)
                     numema = zr(lvale+3)
@@ -396,22 +396,22 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     else
                         valek(1) = noma
                         valek(2) = 'TOUT'
-                    endif
+                    end if
                     rtval(1) = rsr0
                     rtval(2) = volu
                     if (nr .ne. 0) then
                         valer(2) = rtval(1)
                         valer(3) = rtval(2)
-                        call tbajli(resu, nbparr, noparr, [numord], valer,&
+                        call tbajli(resu, nbparr, noparr, [numord], valer, &
                                     [c16b], valek, 0)
                     else
-                        call tbajli(resu, nbpard, nopard, [numord], rtval,&
+                        call tbajli(resu, nbpard, nopard, [numord], rtval, &
                                     [c16b], valek, 0)
-                    endif
- 70                 continue
+                    end if
+70                  continue
                 end do
                 call jedetr('&&PERITR_MAILLE')
-            endif
+            end if
         end do
         call copisd('CHAMP_GD', 'V', '&&PERITR.SDRPR', '&&PERITR.SDRMR')
         call detrsd('CARTE', '&&PERITR.CH.SOUSOP')

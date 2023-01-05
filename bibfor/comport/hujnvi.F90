@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,25 +47,25 @@ subroutine hujnvi(mod, ndt, ndi, nvi)
 !
 !
 ! - D_PLAN AXIS
-    else if (mod(1:6).eq.'D_PLAN'.or.mod(1:4).eq.'AXIS') then
+    else if (mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
         ndtloc = 4
         ndiloc = 3
 !
 !
 ! - C_PLAN
-    else if (mod(1:6).eq.'C_PLAN') then
+    else if (mod(1:6) .eq. 'C_PLAN') then
         call utmess('F', 'COMPOR1_4')
 !
 !
 ! - 1D
-    else if (mod(1:2).eq.'1D') then
+    else if (mod(1:2) .eq. '1D') then
         call utmess('F', 'COMPOR1_4')
 ! - 1D
     else
         call utmess('F', 'COMPOR1_11')
-    endif
+    end if
 !af 02/05/07 debut
-    nvi=50
+    nvi = 50
 !af 02/05/07 fin
     ndt = ndtloc
     ndi = ndiloc

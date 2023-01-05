@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine matrot(angl_naut, pgl)
 !
-implicit none
+    implicit none
 !
 !
     real(kind=8), intent(in) :: angl_naut(*)
@@ -49,21 +49,21 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cosa = cos( angl_naut(1) )
-    sina = sin( angl_naut(1) )
-    cosb = cos( angl_naut(2) )
-    sinb = sin( angl_naut(2) )
-    cosg = cos( angl_naut(3) )
-    sing = sin( angl_naut(3) )
+    cosa = cos(angl_naut(1))
+    sina = sin(angl_naut(1))
+    cosb = cos(angl_naut(2))
+    sinb = sin(angl_naut(2))
+    cosg = cos(angl_naut(3))
+    sing = sin(angl_naut(3))
 !
-    pgl(1,1) = cosb*cosa
-    pgl(2,1) = sing*sinb*cosa - cosg*sina
-    pgl(3,1) = sing*sina + cosg*sinb*cosa
-    pgl(1,2) = cosb*sina
-    pgl(2,2) = cosg*cosa + sing*sinb*sina
-    pgl(3,2) = cosg*sinb*sina - cosa*sing
-    pgl(1,3) = -sinb
-    pgl(2,3) = sing*cosb
-    pgl(3,3) = cosg*cosb
+    pgl(1, 1) = cosb*cosa
+    pgl(2, 1) = sing*sinb*cosa-cosg*sina
+    pgl(3, 1) = sing*sina+cosg*sinb*cosa
+    pgl(1, 2) = cosb*sina
+    pgl(2, 2) = cosg*cosa+sing*sinb*sina
+    pgl(3, 2) = cosg*sinb*sina-cosa*sing
+    pgl(1, 3) = -sinb
+    pgl(2, 3) = sing*cosb
+    pgl(3, 3) = cosg*cosb
 !
 end subroutine

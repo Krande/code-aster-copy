@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
+subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
                   vecpr8, vecpc8, zcmplx)
 !
 !     ALLOCATION DES VECTEURS DE SORTIE (DONNEEES MODALES REELLES)
@@ -56,7 +56,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
     complex(kind=8) :: vecpc8(nbmode, *)
 !
     integer :: nbmax, ipar, ipar1, ipar2
-    parameter        (nbmax=50)
+    parameter(nbmax=50)
     character(len=24) :: kpar(nbmax)
 !
     call jemarq()
@@ -70,20 +70,20 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 !
 ! CREATION DE LA MATRICE GENERALISE SUPPORT
     call wkvect(matgen//'           .REFA', 'V V K24', 20, jrefa)
-    zk24(jrefa-1+11)='MPI_COMPLET'
-    zk24(jrefa-1+1)=basemo
-    zk24(jrefa-1+2)=nugene
+    zk24(jrefa-1+11) = 'MPI_COMPLET'
+    zk24(jrefa-1+1) = basemo
+    zk24(jrefa-1+2) = nugene
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'GENE'
     call wkvect(matgen//'           .LIME', 'V V K24', 1, ldlim)
-    zk24(ldlim)=nugene
+    zk24(ldlim) = nugene
 !
 ! recuperation des parametres a garder dans le modele gene
     call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
 !
     do imode = 1, nbsauv
 !        --- VECTEUR PROPRE ---
-        call rsexch(' ', resu2, 'DEPL', imode, chamge,&
+        call rsexch(' ', resu2, 'DEPL', imode, chamge, &
                     ier)
         if (ier .eq. 0) then
         else if (ier .eq. 100 .and. lrefe) then
@@ -91,28 +91,28 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
                 call vtcrem(chamge, matgen, 'G', 'R')
             else
                 call vtcrem(chamge, matgen, 'G', 'C')
-            endif
+            end if
 ! GLUTE CAR ON A UTILISE VTCRE[ABM] POUR UN CHAM_GENE QUI A UN .REFE
 ! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
             call juveca(chamge//'.REFE', 2)
         else
             ASSERT(.false.)
-        endif
+        end if
         call jeecra(chamge//'.DESC', 'DOCU', cval='VGEN')
         call jeveuo(chamge//'.VALE', 'E', lvale)
         do ier = 1, nbmode
             if (.not. zcmplx) then
-                zr(lvale+ier-1) = vecpr8(ier,imode)
+                zr(lvale+ier-1) = vecpr8(ier, imode)
             else
-                zc(lvale+ier-1) = vecpc8(ier,imode)
-            endif
+                zc(lvale+ier-1) = vecpc8(ier, imode)
+            end if
         end do
         call rsnoch(resu2, 'DEPL', imode)
 !
         do i = 1, ipar
-            call rsadpa(resu1, 'L', 1, kpar(i), imode,&
+            call rsadpa(resu1, 'L', 1, kpar(i), imode, &
                         1, sjv=ipar1, styp=typ, istop=0)
-            call rsadpa(resu2, 'E', 1, kpar(i), imode,&
+            call rsadpa(resu2, 'E', 1, kpar(i), imode, &
                         0, sjv=ipar2, styp=k8b)
             if (typ(1:1) .eq. 'I') then
                 zi(ipar2) = zi(ipar1)
@@ -124,11 +124,11 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
                 zk16(ipar2) = zk16(ipar1)
             else if (typ(1:3) .eq. 'K32') then
                 zk32(ipar2) = zk32(ipar1)
-            endif
+            end if
         end do
     end do
 !
-    call vpcrea(0, resu2, ' ', ' ', ' ',&
+    call vpcrea(0, resu2, ' ', ' ', ' ', &
                 ' ', ier)
 !
 ! --- MENAGE

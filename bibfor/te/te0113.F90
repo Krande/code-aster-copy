@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0113(option, nomte)
 ! ----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno)
-    ASSERT(nno.eq.2)
+    ASSERT(nno .eq. 2)
 
     call jevech('PMATERC', 'L', imate)
     call jevech('PROCHRR', 'E', ival)
@@ -59,8 +59,8 @@ subroutine te0113(option, nomte)
 
 !   parametres elastique
     nomres(1) = 'E'
-    call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                ' ', 'ELAS', 0, '', [0.d0], &
                 1, nomres, valres, icodre, 1)
     young = valres(1)
 
@@ -71,54 +71,54 @@ subroutine te0113(option, nomte)
     nomres(4) = 'RM_MIN'
     nomres(5) = 'RP02_MOY'
     nomres(6) = 'COEF'
-    call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', 'POST_ROCHE', 0, '', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                ' ', 'POST_ROCHE', 0, '', [0.d0], &
                 nbparaPR, nomres, valres, icodre, 0)
-    if (icodre(1).ne.0) call utmess('F','POSTROCHE_16')
+    if (icodre(1) .ne. 0) call utmess('F', 'POSTROCHE_16')
     k = valres(1)
-    if (k.lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(1), sr=k)
+    if (k .lt. 0.d0) call utmess('F', 'POSTROCHE_19', sk=nomres(1), sr=k)
     nexpo = valres(2)
-    if (nexpo.lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(2), sr=nexpo)
+    if (nexpo .lt. 0.d0) call utmess('F', 'POSTROCHE_19', sk=nomres(2), sr=nexpo)
 
 !   pour les paramètres facultatifs, on les mets à une valeur négative si absent
 !   afin d'émettre les messages d'erreur dans POST_ROCHE s'ils étaient nécessaires
 !   voir issue30703
-    if (icodre(3).ne.0)then
+    if (icodre(3) .ne. 0) then
         rp02_min = -1d0
     else
-        if (valres(3).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(3), sr=valres(3))
+        if (valres(3) .lt. 0.d0) call utmess('F', 'POSTROCHE_19', sk=nomres(3), sr=valres(3))
         rp02_min = valres(3)
-    endif
-    if (icodre(4).ne.0)then
+    end if
+    if (icodre(4) .ne. 0) then
         rm_min = -1d0
     else
-        if (valres(4).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(4), sr=valres(4))
+        if (valres(4) .lt. 0.d0) call utmess('F', 'POSTROCHE_19', sk=nomres(4), sr=valres(4))
         rm_min = valres(4)
-    endif
+    end if
 
-    if (icodre(3).eq.0 .and. icodre(5).ne.0)then
+    if (icodre(3) .eq. 0 .and. icodre(5) .ne. 0) then
         rp02_moy = 1.25d0*rp02_min
-    elseif (icodre(5).ne.0)then
+    elseif (icodre(5) .ne. 0) then
         rp02_moy = -1d0
     else
-        if (valres(5).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(5), sr=valres(5))
+        if (valres(5) .lt. 0.d0) call utmess('F', 'POSTROCHE_19', sk=nomres(5), sr=valres(5))
         rp02_moy = valres(5)
-    endif
+    end if
 
     coef = valres(6)
 
 !   caractéristiques de poutre
-    valp = ['A1 ','IY1','A2 ','IY2']
+    valp = ['A1 ', 'IY1', 'A2 ', 'IY2']
     call get_value_mode_local('PCAGNPO', valp, caragene, iret)
-    valp = ['R1 ','EP1','R2 ','EP2']
+    valp = ['R1 ', 'EP1', 'R2 ', 'EP2']
     call get_value_mode_local('PCAGEPO', valp, carageo, iret)
 
     do ino = 1, nno
-        if (ino.eq.1) then
+        if (ino .eq. 1) then
             ino2 = 2
         else
             ino2 = 1
-        endif
+        end if
         zr(ival+(ino-1)*nbcmp-1+1) = young
         zr(ival+(ino-1)*nbcmp-1+2) = k
         zr(ival+(ino-1)*nbcmp-1+3) = nexpo
@@ -141,6 +141,6 @@ subroutine te0113(option, nomte)
         zr(ival+(ino-1)*nbcmp-1+nbparaPR+7) = carageo(2*(ino2-1)+1)
 !       EP
         zr(ival+(ino-1)*nbcmp-1+nbparaPR+8) = carageo(2*(ino2-1)+2)
-    enddo
+    end do
 ! ----------------------------------------------------------------------
 end subroutine

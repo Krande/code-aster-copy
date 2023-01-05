@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,18 +30,17 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 
-character(len=*), intent(in) :: matasz
-real(kind=8), intent(in) :: lvect(*), rvect(*)
+    character(len=*), intent(in) :: matasz
+    real(kind=8), intent(in) :: lvect(*), rvect(*)
 !-----------------------------------------------------------------------
-! Goal : scale the assembly matrix by right and left multiplication by 
+! Goal : scale the assembly matrix by right and left multiplication by
 !        diagonal matrices stored as vectors.
 !
 !  matas : name of the assembly matrix
-!  lvect : left array 
-!  rvect : right array 
+!  lvect : left array
+!  rvect : right array
 !
 !-----------------------------------------------------------------------
-
 
     aster_logical :: lmhpc, lmd, lsym
     character(len=1) :: ktyp
@@ -58,19 +57,19 @@ real(kind=8), intent(in) :: lvect(*), rvect(*)
     matass = matasz
 !
     call jeveuo(matass//'.REFA', 'L', vk24=refa)
-    nonu=refa(2)(1:14)
+    nonu = refa(2) (1:14)
 !
     ! storage of the matrix
-    kstoc=nonu//'.SMOS'
+    kstoc = nonu//'.SMOS'
     call jeexin(kstoc//'.SMDI', ier)
     if (ier .eq. 0) then
         call utmess('F', 'ALGELINE3_8', sk=matass)
-    endif
+    end if
 !
-    lmd= (refa(11) .eq. 'MATR_DISTR')
+    lmd = (refa(11) .eq. 'MATR_DISTR')
 !
     call dismoi('MATR_HPC', matass, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc.eq.'OUI'
+    lmhpc = mathpc .eq. 'OUI'
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
@@ -81,67 +80,66 @@ real(kind=8), intent(in) :: lvect(*), rvect(*)
         call jeveuo(nonu//'.NUML.NULG', 'L', jnlogl)
     else
         call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
-        jnlogl=0
+        jnlogl = 0
         if (lmhpc) then
             call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
-        endif
-    endif
-    ASSERT(n1.eq.nsmdi)
+        end if
+    end if
+    ASSERT(n1 .eq. nsmdi)
 !     --- CALCUL DE N
-    n=nsmdi
+    n = nsmdi
 !     --- CALCUL DE NZ
-    nz=smdi(n)
+    nz = smdi(n)
 !
-    ASSERT(nz.le.nsmhc)
+    ASSERT(nz .le. nsmhc)
     call jelira(matass//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
-        lsym=.true.
-    else if (nvale.eq.2) then
-        lsym=.false.
+        lsym = .true.
+    else if (nvale .eq. 2) then
+        lsym = .false.
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jeveuo(jexnum(matass//'.VALM', 1), 'L', jvale)
     call jelira(jexnum(matass//'.VALM', 1), 'LONMAX', nlong)
-    ASSERT(nlong.eq.nz)
-    if (.not.lsym) then
+    ASSERT(nlong .eq. nz)
+    if (.not. lsym) then
         call jeveuo(jexnum(matass//'.VALM', 2), 'L', jval2)
         call jelira(jexnum(matass//'.VALM', 2), 'LONMAX', nlong)
-        ASSERT(nlong.eq.nz)
-    endif
+        ASSERT(nlong .eq. nz)
+    end if
 !
     call jelira(jexnum(matass//'.VALM', 1), 'TYPE', cval=ktyp)
-    if (ktyp.ne.'R') call utmess('F', 'ALGELINE_9')
-
+    if (ktyp .ne. 'R') call utmess('F', 'ALGELINE_9')
 
     ! scale the matrix
-    jcoll=1
+    jcoll = 1
     do 1 kterm = 1, nz
 !
 !       --- PARTIE TRIANGULAIRE SUPERIEURE
-        if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
-        iligl=zi4(jsmhc-1+kterm)
+        if (smdi(jcoll) .lt. kterm) jcoll = jcoll+1
+        iligl = zi4(jsmhc-1+kterm)
         if (lmd) then
-            iligg=zi(jnlogl+iligl-1)
-            jcolg=zi(jnlogl+jcoll-1)
+            iligg = zi(jnlogl+iligl-1)
+            jcolg = zi(jnlogl+jcoll-1)
         else
-            iligg=iligl
-            jcolg=jcoll
-        endif
-        if ((.not.lsym) .and. (iligg.ge.jcolg)) then
-            coltmp=jcolg
-            jcolg=iligg
-            iligg=coltmp
-        endif
-        zr(jvale-1+kterm) = zr(jvale-1+kterm) * rvect(jcoll) * lvect(iligl)
+            iligg = iligl
+            jcolg = jcoll
+        end if
+        if ((.not. lsym) .and. (iligg .ge. jcolg)) then
+            coltmp = jcolg
+            jcolg = iligg
+            iligg = coltmp
+        end if
+        zr(jvale-1+kterm) = zr(jvale-1+kterm)*rvect(jcoll)*lvect(iligl)
 !
 !        --- PARTIE TRIANGULAIRE INFERIEURE
-        if ((.not.lsym) .and. (iligg.ne.jcolg)) then
-            zr(jval2-1+kterm) = zr(jval2-1+kterm) * rvect(iligl) * lvect(jcoll)
-        endif
+        if ((.not. lsym) .and. (iligg .ne. jcolg)) then
+            zr(jval2-1+kterm) = zr(jval2-1+kterm)*rvect(iligl)*lvect(jcoll)
+        end if
 !
-  1 end do
+1   end do
 !
 !
     call jedema()

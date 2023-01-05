@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcZ2s0(typ, ma, mb, presa, presb,&
+subroutine rcZ2s0(typ, ma, mb, presa, presb, &
                   ns, s2)
     implicit none
 #include "asterf_types.h"
@@ -85,27 +85,27 @@ subroutine rcZ2s0(typ, ma, mb, presa, presb,&
         coefm = k2*c2
         coefcor = k2cor*c2cor
         coeftub = k2tub*c2tub
-    endif
+    end if
 !-----------------------------------------------------
 ! --- CALCUL DE LA PARTIE DUE A LA PRESSION S2P
 !-----------------------------------------------------
-    pij = presa - presb
+    pij = presa-presb
     s2p = coefp*rayon*abs(pij)/ep
 !---------------------------------------------------------
 ! --- CALCUL DE LA PARTIE DUE AUX MOMENTS S2M SANS SEISME
 !---------------------------------------------------------
     do i = 1, 3
-        mij(i) = ma(i+3) - mb(i+3)
-        racine = racine + mij(i)**2
-        mijcor(i) = ma(9+i) - mb(9+i)
-        racicor = racicor + mijcor(i)**2
+        mij(i) = ma(i+3)-mb(i+3)
+        racine = racine+mij(i)**2
+        mijcor(i) = ma(9+i)-mb(9+i)
+        racicor = racicor+mijcor(i)**2
     end do
 !
     if (rcor+rtub .lt. 1e-8) then
         s2m = coefm*rayon*sqrt(racine)/inertie
     else
-        s2m = coefcor*rcor*sqrt(racicor)/icor+ coeftub*rtub*sqrt(racine)/itub
-    endif
+        s2m = coefcor*rcor*sqrt(racicor)/icor+coeftub*rtub*sqrt(racine)/itub
+    end if
 !---------------------------------------------------------
 ! --- CALCUL DE LA PARTIE DUE AUX MOMENTS S2M AVEC SEISME
 !---------------------------------------------------------
@@ -129,12 +129,12 @@ subroutine rcZ2s0(typ, ma, mb, presa, presb,&
     fact = 2
     do i0 = 1, 2
         i1 = 2*(i0-2)+1
-        e1(i0) = i1 * fact
-        e2(i0) = i1 * fact
-        e3(i0) = i1 * fact
-        e4(i0) = i1 * fact
-        e5(i0) = i1 * fact
-        e6(i0) = i1 * fact
+        e1(i0) = i1*fact
+        e2(i0) = i1*fact
+        e3(i0) = i1*fact
+        e4(i0) = i1*fact
+        e5(i0) = i1*fact
+        e6(i0) = i1*fact
     end do
 !
     do i1 = 1, 2
@@ -143,22 +143,22 @@ subroutine rcZ2s0(typ, ma, mb, presa, presb,&
                 do i4 = 1, 2
                     do i5 = 1, 2
                         do i6 = 1, 2
-                            mijs(1) = ma(4) - mb(4)+ mse(4)*e1(i1)
-                            mijs(2) = ma(5) - mb(5)+ mse(5)*e2(i2)
-                            mijs(3) = ma(6) - mb(6)+ mse(6)*e3(i3)
+                            mijs(1) = ma(4)-mb(4)+mse(4)*e1(i1)
+                            mijs(2) = ma(5)-mb(5)+mse(5)*e2(i2)
+                            mijs(3) = ma(6)-mb(6)+mse(6)*e3(i3)
                             racines = mijs(1)**2+mijs(2)**2+mijs(3)**2
-                            mijcors(1) = ma(10) - mb(10)+ mse(10)*e4(i4)
-                            mijcors(2) = ma(11) - mb(11)+ mse(11)*e5(i5)
-                            mijcors(3) = ma(12) - mb(12)+ mse(12)*e6(i6)
+                            mijcors(1) = ma(10)-mb(10)+mse(10)*e4(i4)
+                            mijcors(2) = ma(11)-mb(11)+mse(11)*e5(i5)
+                            mijcors(3) = ma(12)-mb(12)+mse(12)*e6(i6)
                             racicors = mijcors(1)**2+mijcors(2)**2+mijcors(3)**2
 !
                             if (rcor+rtub .lt. 1e-8) then
                                 s2ms = coefm*rayon*sqrt(racines)/inertie
                             else
-                                s2ms = coefcor*rcor*sqrt(racicors)/icor+ coeftub*rtub*sqrt(racine&
+                                s2ms = coefcor*rcor*sqrt(racicors)/icor+coeftub*rtub*sqrt(racine&
                                        &s)/itub
-                            endif
-                            s2m = max(s2m,s2ms)
+                            end if
+                            s2m = max(s2m, s2ms)
                         end do
                     end do
                 end do

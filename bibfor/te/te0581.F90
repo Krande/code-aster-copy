@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,53 +46,53 @@ subroutine te0581(option, nomte)
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
-    call tecach('ONO', 'PEPCON1', 'L', iret, nval=7,&
+    call tecach('ONO', 'PEPCON1', 'L', iret, nval=7, &
                 itab=jtab1)
-    call tecach('ONO', 'PEPCON2', 'L', iret, nval=7,&
+    call tecach('ONO', 'PEPCON2', 'L', iret, nval=7, &
                 itab=jtab2)
-    call tecach('ONO', 'PEPCON3', 'E', iret, nval=7,&
+    call tecach('ONO', 'PEPCON3', 'E', iret, nval=7, &
                 itab=jtab3)
 !
-    if ((jtab1(1).eq.0) .or. (jtab2(1).eq.0) .or. (jtab3(1).eq.0)) then
+    if ((jtab1(1) .eq. 0) .or. (jtab2(1) .eq. 0) .or. (jtab3(1) .eq. 0)) then
         valk(1) = option
         valk(2) = nomte
         call utmess('F', 'ELEMENTS4_38', nk=2, valk=valk)
-    endif
+    end if
 !
-    if (( jtab1(2).ne.jtab2(2) ) .or. ( jtab1(3).ne.jtab2(3) )) then
+    if ((jtab1(2) .ne. jtab2(2)) .or. (jtab1(3) .ne. jtab2(3))) then
         call utmess('F', 'ELEMENTS4_39', sk=option)
-    endif
+    end if
 !
 !
-    nbpt=jtab3(3)
-    ASSERT(nbpt.eq.jtab1(3))
+    nbpt = jtab3(3)
+    ASSERT(nbpt .eq. jtab1(3))
 !
-    nbsp=jtab3(7)
-    nbsp1=jtab1(7)
-    nbsp2=jtab2(7)
-    ASSERT(nbsp.eq.nbsp1)
-    ASSERT((nbsp2.eq.nbsp).or.(nbsp2.eq.1))
+    nbsp = jtab3(7)
+    nbsp1 = jtab1(7)
+    nbsp2 = jtab2(7)
+    ASSERT(nbsp .eq. nbsp1)
+    ASSERT((nbsp2 .eq. nbsp) .or. (nbsp2 .eq. 1))
 !
-    nbcmp=jtab3(2)/nbpt
-    ASSERT(jtab3(2).eq.nbcmp*nbpt)
+    nbcmp = jtab3(2)/nbpt
+    ASSERT(jtab3(2) .eq. nbcmp*nbpt)
 !
     do j1 = 1, nbpt
         do j2 = 1, nbsp
             do j3 = 1, nbcmp
-                v1= zr(jtab1(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)
+                v1 = zr(jtab1(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)
                 if (nbsp .eq. nbsp2) then
-                    v2= zr(jtab2(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)
+                    v2 = zr(jtab2(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)
                 else
-                    ASSERT(nbsp2.eq.1)
-                    v2= zr(jtab2(1)+(j1-1)*nbcmp+j3-1)
-                endif
+                    ASSERT(nbsp2 .eq. 1)
+                    v2 = zr(jtab2(1)+(j1-1)*nbcmp+j3-1)
+                end if
 !              -- LA PRECONTRAINTE != 0 N'EST AUTORISEE QUE POUR
 !              LES ELEMENTS DE BARRE ET LES ELEMENTS CABLE_GAINE
 !              (CABLES DE PRECONTRAINTE) :
                 if (v2 .ne. 0.d0) then
-                    ASSERT(nomte.eq.'MECA_BARRE'.or. nomte.eq.'MECGSEG3')
-                endif
-                zr(jtab3(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)=v1+v2
+                    ASSERT(nomte .eq. 'MECA_BARRE' .or. nomte .eq. 'MECGSEG3')
+                end if
+                zr(jtab3(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1) = v1+v2
             end do
         end do
     end do

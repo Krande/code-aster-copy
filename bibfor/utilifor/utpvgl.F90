@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,35 +34,35 @@ subroutine utpvgl(nn, nc, p, vg, vl)
 !-----------------------------------------------------------------------
     integer :: i, nc, nn
 !-----------------------------------------------------------------------
-    if (mod(nc,3) .eq. 0) then
-        do i = 1, nn * nc, 3
-            vl(i ) = p(1,1)*vg(i) + p(1,2)*vg(i+1) + p(1,3)*vg(i+2)
-            vl(i+1) = p(2,1)*vg(i) + p(2,2)*vg(i+1) + p(2,3)*vg(i+2)
-            vl(i+2) = p(3,1)*vg(i) + p(3,2)*vg(i+1) + p(3,3)*vg(i+2)
+    if (mod(nc, 3) .eq. 0) then
+        do i = 1, nn*nc, 3
+            vl(i) = p(1, 1)*vg(i)+p(1, 2)*vg(i+1)+p(1, 3)*vg(i+2)
+            vl(i+1) = p(2, 1)*vg(i)+p(2, 2)*vg(i+1)+p(2, 3)*vg(i+2)
+            vl(i+2) = p(3, 1)*vg(i)+p(3, 2)*vg(i+1)+p(3, 3)*vg(i+2)
         end do
 !
-    else if (mod(nc,3) .eq. 1) then
-        do i = 1, nn * nc, 7
-            vl(i ) = p(1,1)*vg(i) + p(1,2)*vg(i+1) + p(1,3)*vg(i+2)
-            vl(i+1) = p(2,1)*vg(i) + p(2,2)*vg(i+1) + p(2,3)*vg(i+2)
-            vl(i+2) = p(3,1)*vg(i) + p(3,2)*vg(i+1) + p(3,3)*vg(i+2)
-            vl(i+3) = p(1,1)*vg(i+3) + p(1,2)*vg(i+4) + p(1,3)*vg(i+5)
-            vl(i+4) = p(2,1)*vg(i+3) + p(2,2)*vg(i+4) + p(2,3)*vg(i+5)
-            vl(i+5) = p(3,1)*vg(i+3) + p(3,2)*vg(i+4) + p(3,3)*vg(i+5)
+    else if (mod(nc, 3) .eq. 1) then
+        do i = 1, nn*nc, 7
+            vl(i) = p(1, 1)*vg(i)+p(1, 2)*vg(i+1)+p(1, 3)*vg(i+2)
+            vl(i+1) = p(2, 1)*vg(i)+p(2, 2)*vg(i+1)+p(2, 3)*vg(i+2)
+            vl(i+2) = p(3, 1)*vg(i)+p(3, 2)*vg(i+1)+p(3, 3)*vg(i+2)
+            vl(i+3) = p(1, 1)*vg(i+3)+p(1, 2)*vg(i+4)+p(1, 3)*vg(i+5)
+            vl(i+4) = p(2, 1)*vg(i+3)+p(2, 2)*vg(i+4)+p(2, 3)*vg(i+5)
+            vl(i+5) = p(3, 1)*vg(i+3)+p(3, 2)*vg(i+4)+p(3, 3)*vg(i+5)
             vl(i+6) = vg(i+6)
         end do
 !
-    else if (mod(nc,3) .eq. 2) then
-        do i = 1, nn * nc, 8
-            vl(i ) = p(1,1)*vg(i) + p(1,2)*vg(i+1) + p(1,3)*vg(i+2)
-            vl(i+1) = p(2,1)*vg(i) + p(2,2)*vg(i+1) + p(2,3)*vg(i+2)
-            vl(i+2) = p(3,1)*vg(i) + p(3,2)*vg(i+1) + p(3,3)*vg(i+2)
-            vl(i+3) = p(1,1)*vg(i+3) + p(1,2)*vg(i+4) + p(1,3)*vg(i+5)
-            vl(i+4) = p(2,1)*vg(i+3) + p(2,2)*vg(i+4) + p(2,3)*vg(i+5)
-            vl(i+5) = p(3,1)*vg(i+3) + p(3,2)*vg(i+4) + p(3,3)*vg(i+5)
+    else if (mod(nc, 3) .eq. 2) then
+        do i = 1, nn*nc, 8
+            vl(i) = p(1, 1)*vg(i)+p(1, 2)*vg(i+1)+p(1, 3)*vg(i+2)
+            vl(i+1) = p(2, 1)*vg(i)+p(2, 2)*vg(i+1)+p(2, 3)*vg(i+2)
+            vl(i+2) = p(3, 1)*vg(i)+p(3, 2)*vg(i+1)+p(3, 3)*vg(i+2)
+            vl(i+3) = p(1, 1)*vg(i+3)+p(1, 2)*vg(i+4)+p(1, 3)*vg(i+5)
+            vl(i+4) = p(2, 1)*vg(i+3)+p(2, 2)*vg(i+4)+p(2, 3)*vg(i+5)
+            vl(i+5) = p(3, 1)*vg(i+3)+p(3, 2)*vg(i+4)+p(3, 3)*vg(i+5)
             vl(i+6) = vg(i+6)
             vl(i+7) = vg(i+7)
         end do
-    endif
+    end if
 !
 end subroutine

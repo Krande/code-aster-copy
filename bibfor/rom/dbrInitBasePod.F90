@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrInitBasePod(baseName, paraPod, lReuse, base)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
@@ -34,10 +34,10 @@ implicit none
 #include "asterfort/romTableCreate.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: baseName
-type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
-aster_logical, intent(in) :: lReuse
-type(ROM_DS_Empi), intent(inout) :: base
+    character(len=8), intent(in) :: baseName
+    type(ROM_DS_ParaDBR_POD), intent(inout) :: paraPod
+    aster_logical, intent(in) :: lReuse
+    type(ROM_DS_Empi), intent(inout) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,14 +64,14 @@ type(ROM_DS_Empi), intent(inout) :: base
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_10')
-    endif
+    end if
 !
 ! - Create base
 !
     if (.not. lReuse) then
         base%resultName = baseName
         call romBaseCreate(base, paraPod%nbModeMaxi)
-    endif
+    end if
 !
 ! - Create datastructure of table in results datastructure for the reduced coordinates
 !
@@ -85,35 +85,35 @@ type(ROM_DS_Empi), intent(inout) :: base
 !
     if (lReuse) then
         call romBaseGetInfo(baseName, base)
-    endif
+    end if
 !
 ! - Create mode datastructure from representative field in high-fidelity result
 !
     if (.not. lReuse) then
         call romResultCreateMode(paraPod%resultDom, paraPod%fieldName, mode)
-    endif
+    end if
 !
 ! - Create datastructure for base
 !
     if (.not. lReuse) then
         base%resultName = baseName
-        base%mode       = mode
-        base%baseType   = paraPod%baseType
+        base%mode = mode
+        base%baseType = paraPod%baseType
         base%lineicAxis = paraPod%lineicAxis
         base%lineicSect = paraPod%lineicSect
-        base%nbMode     = 0
-        base%nbSnap     = 0
-    endif
+        base%nbMode = 0
+        base%nbSnap = 0
+    end if
 !
 ! - Create numbering of nodes for the lineic model
 !
     if (base%baseType .eq. 'LINEIQUE') then
         if (niv .ge. 2) then
             call utmess('I', 'ROM18_11')
-        endif
+        end if
         model = base%mode%model
         call modelNodeEF(model, nbNodeWithDof)
         call romLineicPrepNume(base, nbNodeWithDof)
-    endif
+    end if
 !
 end subroutine

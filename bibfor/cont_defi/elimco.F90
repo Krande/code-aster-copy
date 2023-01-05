@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine elimco(sdcont      , mesh        , model       , nb_cont_surf,&
+subroutine elimco(sdcont, mesh, model, nb_cont_surf, &
                   nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -70,58 +70,58 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     nb_cont_elem0 = nb_cont_elem
     nb_cont_node0 = nb_cont_node
     nb_node_coq3d = 0
 !
 ! - Detection of double elements
 !
-    call cflema(sdcont_defi , nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
+    call cflema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem, &
                 nb_cont_elem)
 !
 ! - Suppress double elements
 !
     if (nb_cont_elem0 .ne. nb_cont_elem) then
-        call cfmema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
+        call cfmema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem, &
                     nb_cont_elem)
-    endif
+    end if
     AS_DEALLOCATE(vi=v_poin_elem)
     AS_DEALLOCATE(vi=v_list_elem)
 !
 ! - Detection of double nodes
 !
-    call cfleno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+    call cfleno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node, &
                 nb_cont_node)
 !
 ! - Suppress double nodes
 !
     if (nb_cont_node0 .ne. nb_cont_node) then
-        call cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+        call cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node, &
                     nb_cont_node)
-    endif
+    end if
     AS_DEALLOCATE(vi=v_poin_node)
     AS_DEALLOCATE(vi=v_list_node)
 !
 ! - List of nodes for COQUE_3D
 !
     nb_cont_node0 = nb_cont_node
-    call cflecq(mesh       , model      , sdcont_defi , nb_cont_surf , nb_cont_node0,&
+    call cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
                 v_list_node, v_poin_node, nb_cont_node, nb_node_coq3d)
 !
 ! - Suppress nodes for COQUE_3D
 !
     if (l_elim_coq3d) then
         if (nb_cont_node0 .ne. nb_cont_node) then
-            call cfmeno(sdcont_defi , nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node,&
+            call cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_node, &
                         nb_cont_node)
-        endif
-    endif
+        end if
+    end if
     AS_DEALLOCATE(vi=v_poin_node)
     AS_DEALLOCATE(vi=v_list_node)
 !
     if (present(nb_node_coq3d_)) then
         nb_node_coq3d_ = nb_node_coq3d
-    endif
+    end if
 !
 end subroutine

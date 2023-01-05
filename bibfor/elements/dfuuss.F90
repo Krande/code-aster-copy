@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend,&
+subroutine dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend, &
                   dfuu)
 !
     implicit none
@@ -39,16 +39,16 @@ subroutine dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend,&
 !
     if (nmprox(bend) .gt. 0) then
         if (bend .eq. 1) then
-            dfuu(1) = -nmdpla(bend,1)
-            dfuu(2) = -nmdpla(bend,2)
+            dfuu(1) = -nmdpla(bend, 1)
+            dfuu(2) = -nmdpla(bend, 2)
             dfuu(4) = 1.d0
             dfuu(5) = 1.d0
         else
-            dfuu(1) = nmdpla(bend,1)
-            dfuu(2) = nmdpla(bend,2)
+            dfuu(1) = nmdpla(bend, 1)
+            dfuu(2) = nmdpla(bend, 2)
             dfuu(4) = -1.d0
             dfuu(5) = -1.d0
-        endif
+        end if
 !
         dfuu(3) = 0.d0
         dfuu(6) = 0.d0
@@ -57,6 +57,6 @@ subroutine dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend,&
 !     CALCUL LE GRADIENT DU CRITERE DE PLASICITE
         call dfplgl(nmnbn, nmplas, nmdpla, bend, dfuu)
 !
-    endif
+    end if
 !
 end subroutine

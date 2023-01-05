@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine arlted(ndim, nns, jcoors, npgs, ivfs,&
-                  idfdes, ipoids, elref1, ndml1, jcoor1,&
+subroutine arlted(ndim, nns, jcoors, npgs, ivfs, &
+                  idfdes, ipoids, elref1, ndml1, jcoor1, &
                   fcpig1, poijcs, dfdx1, dfdy1, dfdz1)
 !
 !
@@ -78,15 +78,15 @@ subroutine arlted(ndim, nns, jcoors, npgs, ivfs,&
 !
 ! --- CALCUL DES DERIVEES DE FCT FORMES DES MAILLES COURANTES
 !
-    call arltds(nns, npgs, ipoids, jcoor1, ivfs,&
-                idfdes, poijcs, fctfs, dfdxs, dfdys,&
+    call arltds(nns, npgs, ipoids, jcoor1, ivfs, &
+                idfdes, poijcs, fctfs, dfdxs, dfdys, &
                 dfdzs)
 !
     do kpgs = 1, npgs
 !
         mtl1 = ndim*ndim*ndml1*(kpgs-1)+1
-        call arltep(ndim, zr(jcoor1), npgs, kpgs, nns,&
-                    zr(ivfs), elref1, ndml1, zr(jcoor1), fcpig1(mtl1),&
+        call arltep(ndim, zr(jcoor1), npgs, kpgs, nns, &
+                    zr(ivfs), elref1, ndml1, zr(jcoor1), fcpig1(mtl1), &
                     dfdx1(mtl1), dfdy1(mtl1), dfdz1(mtl1))
 !
     end do

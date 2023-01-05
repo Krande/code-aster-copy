@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0545(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -39,7 +39,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "blas/dgemv.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,13 +67,13 @@ character(len=16), intent(in) :: option, nomte
     integer :: iret, nnos, jv_ganoQ, jv_ganoL, itab(7)
     integer :: i, codret
     real(kind=8) :: xyz(3), angmas(7)
-    real(kind=8),allocatable:: b(:,:,:), w(:,:),ni2ldc(:,:)
+    real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
     aster_logical :: lMatr, lVect, lSigm, lVari
 !
 ! --------------------------------------------------------------------------------------------------
 !
     matsym = ASTER_FALSE
-    xyz    = 0.d0
+    xyz = 0.d0
     ivectu = 1
     icontp = 1
     ivarip = 1
@@ -82,17 +82,17 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Type of modelling
 !
-    call teattr('S', 'TYPMOD' , typmod(1))
+    call teattr('S', 'TYPMOD', typmod(1))
     call teattr('S', 'TYPMOD2', typmod(2))
-    axi       = typmod(1).eq.'AXIS'
+    axi = typmod(1) .eq. 'AXIS'
 !
 ! - Get parameters of element
 !
-    call elrefv('RIGI'  , ndim    ,&
-                nnoL    , nnoQ    , nnos,&
-                npg     , jv_poids,&
-                jv_vfL  , jv_vfQ  ,&
-                jv_dfdeL, jv_dfdeQ,&
+    call elrefv('RIGI', ndim, &
+                nnoL, nnoQ, nnos, &
+                npg, jv_poids, &
+                jv_vfL, jv_vfQ, &
+                jv_dfdeL, jv_dfdeQ, &
                 jv_ganoL, jv_ganoQ)
 !
 ! - PARAMETRES EN ENTREE ET DIMENSION
@@ -116,36 +116,36 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 !    NOMBRE DE VARIABLES INTERNES
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=itab)
-    lgpg = max(itab(6),1)*itab(7)
+    lgpg = max(itab(6), 1)*itab(7)
 !
 ! - PARAMETRES EN SORTIE
 !
     if (lMatr) then
         matsym = .false.
         call jevech('PMATUNS', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', icoret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         zr(ivarip:ivarip-1+npg*lgpg) = zr(ivarix:ivarix-1+npg*lgpg)
-    endif
+    end if
 !
 !    BARYCENTRE ET ORIENTATION DU MASSIF
-    do i = 1,ndim
+    do i = 1, ndim
         xyz(i) = sum(zr(igeom-1+i:igeom-1+(nnoQ-1)*ndim+i:ndim))/nnoQ
     end do
     call rcangm(ndim, xyz, angmas)
@@ -153,45 +153,45 @@ character(len=16), intent(in) :: option, nomte
 ! - CALCUL DES FORCES INTERIEURES ET MATRICES TANGENTES
 !
     if (defo_comp .eq. 'GDEF_LOG') then
-        if (lteatt('INCO','C5GV')) then
-            call nglgic('RIGI', option, typmod, ndim, nnoQ,nnoL,&
-                       npg,nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL),jv_dfdeQ,jv_dfdeL,&
-                       zr(igeom),zk16(icompo), zi(imate), lgpg,&
-                       zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym,&
-                       zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp),&
-                       zr(ivarip), zr(ivectu), zr(imatuu),&
-                       lMatr, lVect, lSigm, lVari,&
-                       codret)
+        if (lteatt('INCO', 'C5GV')) then
+            call nglgic('RIGI', option, typmod, ndim, nnoQ, nnoL, &
+                        npg, nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
+                        zr(igeom), zk16(icompo), zi(imate), lgpg, &
+                        zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym, &
+                        zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
+                        zr(ivarip), zr(ivectu), zr(imatuu), &
+                        lMatr, lVect, lSigm, lVari, &
+                        codret)
         else
-            call ngvlog('RIGI', option, typmod, ndim, nnoQ,nnoL,&
-                       npg,nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL),jv_dfdeQ,jv_dfdeL,&
-                       zr(igeom),zk16(icompo), zi(imate), lgpg,&
-                       zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym,&
-                       zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp),&
-                       zr(ivarip), zr(ivectu), zr(imatuu),&
-                       lMatr, lVect, lSigm, lVari,&
-                       codret)
-        endif
+            call ngvlog('RIGI', option, typmod, ndim, nnoQ, nnoL, &
+                        npg, nddl, jv_poids, zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
+                        zr(igeom), zk16(icompo), zi(imate), lgpg, &
+                        zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym, &
+                        zr(ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp), &
+                        zr(ivarip), zr(ivectu), zr(imatuu), &
+                        lMatr, lVect, lSigm, lVari, &
+                        codret)
+        end if
     else if (defo_comp(1:5) .eq. 'PETIT') then
-        call nmgvmb(ndim, nnoQ, nnoL, npg, axi,&
-                    zr(igeom), zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL,&
-                    jv_poids, nddl, neps, b, w,&
+        call nmgvmb(ndim, nnoQ, nnoL, npg, axi, &
+                    zr(igeom), zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, &
+                    jv_poids, nddl, neps, b, w, &
                     ni2ldc)
-        call ngfint(option, typmod, ndim, nddl, neps,&
-                    npg, w, b, zk16(icompo), 'RIGI',&
-                    zi(imate), angmas, lgpg, zr(icarcr), zr(iinstm),&
-                    zr(iinstp), zr(ideplm), zr(ideplp), ni2ldc, zr(icontm),&
-                    zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu),&
-                    lMatr, lVect, lSigm,&
+        call ngfint(option, typmod, ndim, nddl, neps, &
+                    npg, w, b, zk16(icompo), 'RIGI', &
+                    zi(imate), angmas, lgpg, zr(icarcr), zr(iinstm), &
+                    zr(iinstp), zr(ideplm), zr(ideplp), ni2ldc, zr(icontm), &
+                    zr(ivarim), zr(icontp), zr(ivarip), zr(ivectu), zr(imatuu), &
+                    lMatr, lVect, lSigm, &
                     codret)
-        deallocate(b)
-        deallocate(w)
-        deallocate(ni2ldc)
+        deallocate (b)
+        deallocate (w)
+        deallocate (ni2ldc)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
-    if(lSigm) then
+    if (lSigm) then
         zi(icoret) = codret
     end if
 !

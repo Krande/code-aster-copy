@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine vpinis(eigsol)
 !
 ! --- INPUT
 !
-    character(len=19) , intent(in) :: eigsol
+    character(len=19), intent(in) :: eigsol
 !
 ! --- OUTPUT
 ! None
@@ -68,194 +68,193 @@ subroutine vpinis(eigsol)
 
 ! --- INITS.
     call jemarq()
-    undf=r8vide()
-
+    undf = r8vide()
 
 ! --- LECTURE DES PARAMETRES COMMUNS A TOUS LES SOLVEURS MODAUX
 
 ! --  TYPE_RESU
-    typres=''
+    typres = ''
     call getvtx(' ', 'TYPE_RESU', iocc=1, scal=typres, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
 ! --  CATALOGUE DE COMMANDE, DIFFERENT SELON LE TYPE_RESU
 !     -> ON STOCKE DANS DES VARIABLES POUR EVITER DE FAIRE DES GETXXX
 !     POUR CHAQUE TYPE_RESU.
 !     POUR L'INSTANT TYPE_RESU='GENERAL' REVIENT A 'MODE_FLAMB' SAUF LE NOM DES MATRICES
-    select case(typres)
-    case('DYNAMIQUE')
-        matra ='MATR_RIGI'
-        matrb ='MATR_MASS'
-        matrc ='MATR_AMOR'
-        typevp='FREQ'
-    case('MODE_FLAMB')
-        matra ='MATR_RIGI'
-        matrb ='MATR_RIGI_GEOM'
-        typevp='CHAR_CRIT'
-    case('GENERAL')
-        matra ='MATR_A'
-        matrb ='MATR_B'
-        matrc ='MATR_C'
-        typevp='CHAR_CRIT'
-        typres='MODE_FLAMB'
+    select case (typres)
+    case ('DYNAMIQUE')
+        matra = 'MATR_RIGI'
+        matrb = 'MATR_MASS'
+        matrc = 'MATR_AMOR'
+        typevp = 'FREQ'
+    case ('MODE_FLAMB')
+        matra = 'MATR_RIGI'
+        matrb = 'MATR_RIGI_GEOM'
+        typevp = 'CHAR_CRIT'
+    case ('GENERAL')
+        matra = 'MATR_A'
+        matrb = 'MATR_B'
+        matrc = 'MATR_C'
+        typevp = 'CHAR_CRIT'
+        typres = 'MODE_FLAMB'
     case default
         ASSERT(.false.)
     end select
 
 ! --  CALC_FREQ/CHAR_CRIT
-    optiof=''
+    optiof = ''
     call getvtx('CALC_'//typevp, 'OPTION', iocc=1, scal=optiof, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
 
 ! --  MATRA/MATRB/MATRC
-    raide=''
+    raide = ''
     call getvid(' ', matra, iocc=1, scal=raide, nbret=iret)
-    ASSERT(iret.eq.1)
-    masse=''
+    ASSERT(iret .eq. 1)
+    masse = ''
     call getvid(' ', matrb, iocc=1, scal=masse, nbret=iret)
-    ASSERT(iret.eq.1)
-    if (typres(1:10).ne.'MODE_FLAMB') then
-        k19b=''
+    ASSERT(iret .eq. 1)
+    if (typres(1:10) .ne. 'MODE_FLAMB') then
+        k19b = ''
         call getvid(' ', matrc, iocc=1, scal=k19b, nbret=iret)
-        if (iret.eq.1) then
-           amor=trim(k19b)
+        if (iret .eq. 1) then
+            amor = trim(k19b)
         else
-           amor=''
-        endif
+            amor = ''
+        end if
     else
-        amor=''
-    endif
+        amor = ''
+    end if
 
 ! --  METHODE
-    method=''
+    method = ''
     call getvtx(' ', 'METHODE', iocc=1, scal=method, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
 
 ! --  DETECTION DES MODES DE CORPS RIGIDE
-    modrig=''
+    modrig = ''
     call getvtx(' ', 'OPTION', iocc=1, scal=modrig, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
 
 ! -- NOMBRE DE MODES DEMANDES
     call getvis('CALC_'//typevp, 'NMAX_'//typevp, iocc=1, scal=ibuff, nbret=iret)
-    if (iret.eq.1) then
-        nfreq=ibuff
+    if (iret .eq. 1) then
+        nfreq = ibuff
     else
-        nfreq=0
-    endif
+        nfreq = 0
+    end if
 
 ! -- LISTES DES FREQUENCES/CHARGES CRITIQUES OU TABLE_ASTER
-    vectf(1)=undf
-    vectf(2)=undf
+    vectf(1) = undf
+    vectf(2) = undf
     call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=iret)
-    if (iret.lt.0) then
-        nbborn=-iret
-        ASSERT((nbborn.eq.1).or.(nbborn.eq.2))
+    if (iret .lt. 0) then
+        nbborn = -iret
+        ASSERT((nbborn .eq. 1) .or. (nbborn .eq. 2))
         call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nbborn, vect=vectf, nbret=iret)
-        ASSERT(iret.eq.nbborn)
+        ASSERT(iret .eq. nbborn)
     else
-        nbborn=0
-    endif
+        nbborn = 0
+    end if
 
     call getvid('CALC_'//typevp, 'TABLE_'//typevp, iocc=1, scal=k19b, nbret=iret)
-    if (iret.eq.1) then
-        tabmod=trim(k19b)
+    if (iret .eq. 1) then
+        tabmod = trim(k19b)
     else
-        tabmod=''
-    endif
+        tabmod = ''
+    end if
 
 ! --  PARAMETRES ESPACE REDUIT
     call getvis('CALC_'//typevp, 'DIM_SOUS_ESPACE', iocc=1, scal=ibuff, nbret=iret)
-    if (iret.eq.1) then
-        nbvect=ibuff
+    if (iret .eq. 1) then
+        nbvect = ibuff
     else
-        nbvect=0
-    endif
+        nbvect = 0
+    end if
     call getvis('CALC_'//typevp, 'COEF_DIM_ESPACE', iocc=1, scal=ibuff, nbret=iret)
-    if (iret.eq.1) then
-        nbvec2=ibuff
+    if (iret .eq. 1) then
+        nbvec2 = ibuff
     else
-        nbvec2=0
-    endif
+        nbvec2 = 0
+    end if
 
 ! --  PARAMETRES SHIFT PRETRAITEMENTS
     call getvis('CALC_'//typevp, 'NMAX_ITER_SHIFT', iocc=1, scal=nbrss, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvr8('CALC_'//typevp, 'PREC_SHIFT', iocc=1, scal=precsh, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvr8('CALC_'//typevp, 'SEUIL_'//typevp, iocc=1, scal=fcorig, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     if (typres(1:9) .eq. 'DYNAMIQUE') then
         omecor = omega2(fcorig)
     else
         omecor = fcorig
-    endif
+    end if
 
 ! --  PARAMETRES DES SOLVEURS MODAUX
-    appr=''
+    appr = ''
     call getvtx('CALC_'//typevp, 'APPROCHE', iocc=1, scal=appr, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
 
 ! --  PARAM LANCZOS
-    select case(method)
-    case('TRI_DIAG')
+    select case (method)
+    case ('TRI_DIAG')
         call getvis(' ', 'NMAX_ITER_ORTHO', iocc=1, scal=nborto, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvr8(' ', 'PREC_ORTHO', iocc=1, scal=prorto, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvr8(' ', 'PREC_LANCZOS', iocc=1, scal=prsudg, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvis(' ', 'NMAX_ITER_QR', iocc=1, scal=nitv, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
 ! --  PARAM JACOBI
     case ('JACOBI')
         call getvis(' ', 'NMAX_ITER_BATHE ', iocc=1, scal=itemax, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvr8(' ', 'PREC_BATHE', iocc=1, scal=tol, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvis(' ', 'NMAX_ITER_JACOBI', iocc=1, scal=nperm, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvr8(' ', 'PREC_JACOBI', iocc=1, scal=toldyn, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
 ! --  PARAM SORENSEN
     case ('SORENSEN')
         call getvr8(' ', 'PREC_SOREN', iocc=1, scal=tolsor, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvis(' ', 'NMAX_ITER_SOREN', iocc=1, scal=maxitr, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
         call getvr8(' ', 'PARA_ORTHO_SOREN', iocc=1, scal=alpha, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
 ! --  PARAM QZ
     case ('QZ')
-        typeqz=''
+        typeqz = ''
         call getvtx(' ', 'TYPE_QZ', scal=typeqz, nbret=iret)
-        ASSERT(iret.eq.1)
+        ASSERT(iret .eq. 1)
     case default
         ASSERT(.false.)
     end select
 
 ! --  PARAMETRES POST-TRAITEMENTS
     call getvr8('VERI_MODE', 'PREC_SHIFT', iocc=1, scal=precdc, nbret=iret)
-    ASSERT(iret.eq.1)
-    stoper=''
+    ASSERT(iret .eq. 1)
+    stoper = ''
     call getvtx('VERI_MODE', 'STOP_ERREUR', iocc=1, scal=stoper, nbret=iret)
-    ASSERT(iret.eq.1)
-    sturm=''
+    ASSERT(iret .eq. 1)
+    sturm = ''
     call getvtx('VERI_MODE', 'STURM', iocc=1, scal=sturm, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
     call getvr8('VERI_MODE', 'SEUIL', iocc=1, scal=seuil, nbret=iret)
-    ASSERT(iret.eq.1)
+    ASSERT(iret .eq. 1)
 
 ! -- DIVERS
-    arret=''
+    arret = ''
     call getvtx(' ', 'STOP_BANDE_VIDE', scal=arret, nbret=iret)
-    ASSERT(iret.eq.1)
-    typcal='TOUT'
+    ASSERT(iret .eq. 1)
+    typcal = 'TOUT'
 
 ! --- CREATION ET REMPLISSAGE DE LA SD
-    call vpcres(eigsol, typres, raide, masse, amor, optiof, method, modrig, arret, tabmod,&
-                  stoper, sturm, typcal, appr, typeqz, nfreq, nbvect, nbvec2, nbrss, nbborn,&
-                  nborto, nitv, itemax, nperm, maxitr, vectf, precsh, omecor, precdc, seuil,&
-                  prorto, prsudg, tol, toldyn, tolsor, alpha)
+    call vpcres(eigsol, typres, raide, masse, amor, optiof, method, modrig, arret, tabmod, &
+                stoper, sturm, typcal, appr, typeqz, nfreq, nbvect, nbvec2, nbrss, nbborn, &
+                nborto, nitv, itemax, nperm, maxitr, vectf, precsh, omecor, precdc, seuil, &
+                prorto, prsudg, tol, toldyn, tolsor, alpha)
     call jedema()
 !
 !     FIN DE VPINIS

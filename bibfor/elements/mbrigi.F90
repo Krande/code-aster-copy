@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine mbrigi(fami, kpg, imate, rig)
     call rccoma(zi(imate), 'ELAS', 1, phenom, codret)
     if (phenom .ne. 'ELAS_MEMBRANE') then
         call utmess('F', 'MEMBRANE_5')
-    endif
+    end if
 !
 ! - RECUPERATION DES COMPOSANTES
 !
@@ -59,8 +59,8 @@ subroutine mbrigi(fami, kpg, imate, rig)
     nomres(5) = 'M_TTLT'
     nomres(6) = 'M_LTLT'
 !
-    call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, 1, '+', zi(imate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 6, nomres, valres, codres, 1)
 !
 ! -  EN CAS DE PROBLEME AVEC LES VARIABLES DE COMMANDES
@@ -72,14 +72,14 @@ subroutine mbrigi(fami, kpg, imate, rig)
 ! - CONSTRUCTION DE LA MATRICE DE RIGIDITE
 !
     call r8inir(3*3, 0.d0, rig, 1)
-    rig(1,1) = valres(1)
-    rig(2,1) = valres(2)
-    rig(3,1) = valres(3)
-    rig(1,2) = valres(2)
-    rig(2,2) = valres(4)
-    rig(3,2) = valres(5)
-    rig(1,3) = valres(3)
-    rig(2,3) = valres(5)
-    rig(3,3) = valres(6)
+    rig(1, 1) = valres(1)
+    rig(2, 1) = valres(2)
+    rig(3, 1) = valres(3)
+    rig(1, 2) = valres(2)
+    rig(2, 2) = valres(4)
+    rig(3, 2) = valres(5)
+    rig(1, 3) = valres(3)
+    rig(2, 3) = valres(5)
+    rig(3, 3) = valres(6)
 !
 end subroutine

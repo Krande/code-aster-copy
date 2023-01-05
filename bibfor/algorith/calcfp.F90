@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calcfp(mutrbe, rprim, seuil, dt, dp,&
-                  sigm0, epsi0, coefm, fplas, fprim,&
+subroutine calcfp(mutrbe, rprim, seuil, dt, dp, &
+                  sigm0, epsi0, coefm, fplas, fprim, &
                   dfprim)
     implicit none
     real(kind=8) :: mutrbe, rprim, seuil, dt, dp, sigm0, epsi0, coefm
@@ -41,17 +41,17 @@ subroutine calcfp(mutrbe, rprim, seuil, dt, dp,&
     real(kind=8) :: r0, arg, asinh
 !
 !
-    r0 = mutrbe + rprim
-    fplas = seuil - r0*dp
+    r0 = mutrbe+rprim
+    fplas = seuil-r0*dp
     arg = (dp/dt/epsi0)**(1.d0/coefm)
     asinh = log(arg+sqrt(arg**2+1))
-    fprim = fplas - sigm0 * asinh
+    fprim = fplas-sigm0*asinh
 !
 !    CALCUL DE LA DERIVEE DE FPRIM
 !
     if (dp .gt. 0.d0) then
-        dfprim = - r0 + sigm0 / sqrt(arg**2+1.d0) / coefm / (dt*epsi0) **(1.d0/coefm) * dp**(1.d0&
-                 &/coefm - 1)
-    endif
+        dfprim = -r0+sigm0/sqrt(arg**2+1.d0)/coefm/(dt*epsi0)**(1.d0/coefm)*dp**(1.d0&
+                 &/coefm-1)
+    end if
 !
 end subroutine

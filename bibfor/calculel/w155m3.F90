@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine w155m3(numa, jce2d, jce2l, jce2v, isp,&
+subroutine w155m3(numa, jce2d, jce2l, jce2v, isp, &
                   nucou, nusec, nufib, posic, posis)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -48,59 +48,59 @@ subroutine w155m3(numa, jce2d, jce2l, jce2v, isp,&
     call cesexi('C', jce2d, jce2l, numa, 1, 1, 4, iad4)
 !
     if (iad4 .gt. 0) then
-        typma='PMF'
-        nbfib=zi(jce2v-1+iad4)
-    else if (iad2.gt.0) then
-        typma='TUY'
-        ASSERT(iad3.gt.0)
-        nbcou=zi(jce2v-1+iad2)
-        nbsec=zi(jce2v-1+iad3)
-    else if (iad1.gt.0) then
-        typma='COQ'
-        nbcou=zi(jce2v-1+iad1)
+        typma = 'PMF'
+        nbfib = zi(jce2v-1+iad4)
+    else if (iad2 .gt. 0) then
+        typma = 'TUY'
+        ASSERT(iad3 .gt. 0)
+        nbcou = zi(jce2v-1+iad2)
+        nbsec = zi(jce2v-1+iad3)
+    else if (iad1 .gt. 0) then
+        typma = 'COQ'
+        nbcou = zi(jce2v-1+iad1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    nucou=-999
-    nusec=-999
-    nufib=-999
-    posic=-999
-    posis=-999
+    nucou = -999
+    nusec = -999
+    nufib = -999
+    posic = -999
+    posis = -999
 !
-    if (typma.eq.'PMF') then
+    if (typma .eq. 'PMF') then
 !       -------------------------
-        ASSERT(isp.le.nbfib)
-        nufib=isp
+        ASSERT(isp .le. nbfib)
+        nufib = isp
 !
-    else if (typma.eq.'COQ') then
+    else if (typma .eq. 'COQ') then
 !       -------------------------
-        ASSERT(isp.le.nbcou*3)
-        nucou=(isp+2)/3
-        posic=mod(isp+2,3)-1
+        ASSERT(isp .le. nbcou*3)
+        nucou = (isp+2)/3
+        posic = mod(isp+2, 3)-1
 !
-    else if (typma.eq.'TUY') then
+    else if (typma .eq. 'TUY') then
 !       -------------------------
-        ASSERT(isp.le.(2*nbcou+1)*(2*nbsec+1))
-        icou=(isp-1)/(2*nbsec+1)+1
-        isec=isp-(icou-1)*(2*nbsec+1)
+        ASSERT(isp .le. (2*nbcou+1)*(2*nbsec+1))
+        icou = (isp-1)/(2*nbsec+1)+1
+        isec = isp-(icou-1)*(2*nbsec+1)
         if (icou .eq. 1) then
-            nucou=1
-            posic=-1
+            nucou = 1
+            posic = -1
         else
-            nucou=icou/2
-            posic=icou-2*nucou
-        endif
+            nucou = icou/2
+            posic = icou-2*nucou
+        end if
         if (isec .eq. 1) then
-            nusec=1
-            posis=-1
+            nusec = 1
+            posis = -1
         else
-            nusec=isec/2
-            posis=isec-2*nusec
-        endif
+            nusec = isec/2
+            posis = isec-2*nusec
+        end if
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

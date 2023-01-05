@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cavini(ndim, nno, geom, vim, npg,&
+subroutine cavini(ndim, nno, geom, vim, npg, &
                   lgpg, imate)
 !
 ! CAVINI :
@@ -43,7 +43,7 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
     nitert = 0
 567 continue
 !
-    nono=0
+    nono = 0
 ! RMQ NICO : INITIALISATION DE LA CONTRAINTE D AMORCAGE
 ! SI NON PRECISEE
 !
@@ -53,15 +53,15 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
     nomres(3) = 'KI'
     nomres(4) = 'EPAI'
     nomres(5) = 'GR'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ENDO_HETEROGENE', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'ENDO_HETEROGENE', 0, ' ', [0.d0], &
                 5, nomres, valres, icodre, 1)
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                 1, 'LONG_CARA', lc, k2, 1)
 !  FACTEUR D ECHELLE
     echp = valres(1)
@@ -78,55 +78,55 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
 !
 ! GRAINE NON NULLE : TIRAGE UNIQUE
 ! ON NE VERIFIE LE SEUIL QU'UNE SEULE FOIS
-        ntirmx=1
+        ntirmx = 1
     else
-        ntirmx=25
-    endif
+        ntirmx = 25
+    end if
 !
-    if (vim(3,1) .lt. 0.0001d0) then
+    if (vim(3, 1) .lt. 0.0001d0) then
         call getran(randd)
-        ct1=0.d0
-        ct1=0.d0-log(1.d0-randd)
-        sa=0.d0
-        sa=echp*((lc(1)**3.d0)**(1.d0/mm))/ ((surff*epai)**(1.d0/mm))*(&
-        ct1**(1.d0/mm))
+        ct1 = 0.d0
+        ct1 = 0.d0-log(1.d0-randd)
+        sa = 0.d0
+        sa = echp*((lc(1)**3.d0)**(1.d0/mm))/((surff*epai)**(1.d0/mm))*( &
+             ct1**(1.d0/mm))
         do zz = 1, npg
-            vim(3,zz)=sa
+            vim(3, zz) = sa
         end do
-    endif
+    end if
 !  INITIALISATION DE LA CONTRAINTE DE PROPAGATION
 ! SI NON PRECISEE
-    if (vim(4,1) .lt. 0.0001d0) then
+    if (vim(4, 1) .lt. 0.0001d0) then
 !
 ! TENACITE
 !
-        ct2=0.d0
-        ct2=0.5736d0
-        sp=0.d0
-        sp=ct2*((ki**2.d0/(3.1416d0*lc(1)))**(0.5d0))
+        ct2 = 0.d0
+        ct2 = 0.5736d0
+        sp = 0.d0
+        sp = ct2*((ki**2.d0/(3.1416d0*lc(1)))**(0.5d0))
         do zzz = 1, npg
-            vim(4,zzz)=sp
+            vim(4, zzz) = sp
         end do
-    endif
+    end if
 !
 !  VERIFICATION DE LA COHERENCE DES DEUX SEUILS
-    sc = ((2.d0)**(0.5d0))*vim(4,1)
-    if (sc .gt. vim(3,1)) then
+    sc = ((2.d0)**(0.5d0))*vim(4, 1)
+    if (sc .gt. vim(3, 1)) then
         do zzzz = 1, npg
-            vim(3,zzzz)=0.d0
-            vim(4,zzzz)=0.d0
+            vim(3, zzzz) = 0.d0
+            vim(4, zzzz) = 0.d0
         end do
-        nono=1
-        nitert=nitert+1
-    endif
+        nono = 1
+        nitert = nitert+1
+    end if
 !
 !
 ! ON N AUTORISE NTIRMX TIRAGES SINON L'UTILISATEUR DOIT
 ! REVOIR L'INITIALISATION DE SES SEUILS
-    if ((nono .eq. 1) .and. (nitert.lt.ntirmx)) then
+    if ((nono .eq. 1) .and. (nitert .lt. ntirmx)) then
         goto 567
-    else if ((nono .eq. 1).and.(nitert.ge.ntirmx)) then
+    else if ((nono .eq. 1) .and. (nitert .ge. ntirmx)) then
         call utmess('F', 'COMPOR2_14')
-    endif
+    end if
 !
 end subroutine

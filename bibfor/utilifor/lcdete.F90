@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,19 +26,19 @@ subroutine lcdete(a, deta)
 !       ----------------------------------------------------------------
     integer :: n, nd
     real(kind=8) :: a(6), deta, invrc2
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    invrc2 = 1.d0 / sqrt(2.d0)
+    invrc2 = 1.d0/sqrt(2.d0)
 !
     if (n .eq. 6) then
-        deta = a(1)*a(2)*a(3) + invrc2*a(4)*a(5)*a(6) - ( a(3)*a(4)*a( 4)+a(2)*a(5)*a(5)+a(1)*a(6&
-               &)*a(6) )/2.d0
-    endif
+        deta = a(1)*a(2)*a(3)+invrc2*a(4)*a(5)*a(6)-(a(3)*a(4)*a(4)+a(2)*a(5)*a(5)+a(1)*a(6&
+               &)*a(6))/2.d0
+    end if
 !
     if (n .eq. 4) then
-        deta = a(1)*a(2)*a(3) - a(3)*a(4)*a(4)/2.d0
-    endif
+        deta = a(1)*a(2)*a(3)-a(3)*a(4)*a(4)/2.d0
+    end if
 !
 end subroutine

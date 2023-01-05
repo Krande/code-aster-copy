@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine cestas(cesz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  jcesd, jcesv, jcesl,  nbma
+    integer ::  jcesd, jcesv, jcesl, nbma
     integer :: jce2d, jce2v, jce2l
     integer ::    icmp
     integer :: ima, ipt, isp, nbpt, nbsp, iad, iad2
@@ -91,9 +91,9 @@ subroutine cestas(cesz)
     AS_ALLOCATE(vi=vnbcmp, size=nbma)
 !
     do ima = 1, nbma
-        nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-        nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-        nbcmp = zi(jcesd-1+5+4* (ima-1)+3)
+        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+        nbsp = zi(jcesd-1+5+4*(ima-1)+2)
+        nbcmp = zi(jcesd-1+5+4*(ima-1)+3)
         nbpt2 = 0
         nbsp2 = 0
         nbcmp2 = 0
@@ -101,13 +101,13 @@ subroutine cestas(cesz)
         do ipt = 1, nbpt
             do isp = 1, nbsp
                 do icmp = 1, nbcmp
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
                         nbpt2 = ipt
                         nbsp2 = isp
                         nbcmp2 = icmp
-                    endif
+                    end if
                 end do
             end do
         end do
@@ -121,8 +121,8 @@ subroutine cestas(cesz)
 !     2- ALLOCATION DE CES2 :
 !     --------------------------
     ces2 = '&&CESTAS.CES2'
-    call cescre(base, ces2, typces, ma, nomgd,&
-                ncmp, cesc, vnbpt, vnbsp,vnbcmp)
+    call cescre(base, ces2, typces, ma, nomgd, &
+                ncmp, cesc, vnbpt, vnbsp, vnbcmp)
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESV', 'E', jce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
@@ -133,44 +133,44 @@ subroutine cestas(cesz)
 !     3- RECOPIE DES VALEURS DE CES DANS CES2 :
 !     -----------------------------------------------------------
     do ima = 1, nbma
-        nbpt = zi(jce2d-1+5+4* (ima-1)+1)
-        nbsp = zi(jce2d-1+5+4* (ima-1)+2)
-        nbcmp = zi(jce2d-1+5+4* (ima-1)+3)
+        nbpt = zi(jce2d-1+5+4*(ima-1)+1)
+        nbsp = zi(jce2d-1+5+4*(ima-1)+2)
+        nbcmp = zi(jce2d-1+5+4*(ima-1)+3)
 !
         do ipt = 1, nbpt
             do isp = 1, nbsp
                 do icmp = 1, nbcmp
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, icmp, iad)
-                    call cesexi('C', jce2d, jce2l, ima, ipt,&
+                    call cesexi('C', jce2d, jce2l, ima, ipt, &
                                 isp, icmp, iad2)
                     if (iad .gt. 0) then
-                        ASSERT(iad2.lt.0)
+                        ASSERT(iad2 .lt. 0)
                         iad2 = -iad2
                         zl(jce2l-1+iad2) = .true.
 !
                         if (tsca .eq. 'R') then
                             zr(jce2v-1+iad2) = zr(jcesv-1+iad)
-                        else if (tsca.eq.'I') then
+                        else if (tsca .eq. 'I') then
                             zi(jce2v-1+iad2) = zi(jcesv-1+iad)
-                        else if (tsca.eq.'C') then
+                        else if (tsca .eq. 'C') then
                             zc(jce2v-1+iad2) = zc(jcesv-1+iad)
-                        else if (tsca.eq.'L') then
+                        else if (tsca .eq. 'L') then
                             zl(jce2v-1+iad2) = zl(jcesv-1+iad)
-                        else if (tsca.eq.'K8') then
+                        else if (tsca .eq. 'K8') then
                             zk8(jce2v-1+iad2) = zk8(jcesv-1+iad)
-                        else if (tsca.eq.'K16') then
+                        else if (tsca .eq. 'K16') then
                             zk16(jce2v-1+iad2) = zk16(jcesv-1+iad)
-                        else if (tsca.eq.'K24') then
+                        else if (tsca .eq. 'K24') then
                             zk24(jce2v-1+iad2) = zk24(jcesv-1+iad)
-                        else if (tsca.eq.'K32') then
+                        else if (tsca .eq. 'K32') then
                             zk32(jce2v-1+iad2) = zk32(jcesv-1+iad)
-                        else if (tsca.eq.'K80') then
+                        else if (tsca .eq. 'K80') then
                             zk80(jce2v-1+iad2) = zk80(jcesv-1+iad)
                         else
                             ASSERT(.false.)
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
             end do
         end do

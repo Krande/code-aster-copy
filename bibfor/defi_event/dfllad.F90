@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dfllad(sdlist)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -35,7 +35,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: sdlist
+    character(len=8), intent(in) :: sdlist
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,13 +72,13 @@ character(len=8), intent(in) :: sdlist
 !
 ! - Initializations
 !
-    keywf    = 'ADAPTATION'
+    keywf = 'ADAPTATION'
     nb_adapt = 0
 !
 ! - Access to datastructures
 !
     sdlist_linfor = sdlist(1:8)//'.LIST.INFOR'
-    call jeveuo(sdlist_linfor, 'E', vr = v_sdlist_linfor)
+    call jeveuo(sdlist_linfor, 'E', vr=v_sdlist_linfor)
 !
 ! - Get number of adaptation keywords
 !
@@ -86,20 +86,20 @@ character(len=8), intent(in) :: sdlist
 !
 ! - For IMPLEX: only one MODE_CALCUL_TPLUS
 !
-    call getvtx('ADAPTATION', 'MODE_CALCUL_TPLUS', iocc=nb_adapt, scal=action_typek,&
-                                                   nbret=nbret)
+    call getvtx('ADAPTATION', 'MODE_CALCUL_TPLUS', iocc=nb_adapt, scal=action_typek, &
+                nbret=nbret)
     if (nb_adapt .ne. 1 .and. action_typek .eq. adapActionKeyword(ADAP_ACT_IMPLEX)) then
         call utmess('F', 'DISCRETISATION_15')
-    endif
+    end if
 !
 ! - Create datastructure
 !
     sdlist_aevenr = sdlist(1:8)//'.ADAP.EVENR'
     sdlist_atplur = sdlist(1:8)//'.ADAP.TPLUR'
     sdlist_atpluk = sdlist(1:8)//'.ADAP.TPLUK'
-    call wkvect(sdlist_aevenr, 'G V R'  , nb_adapt*SIZE_LAEVR, vr   = v_sdlist_aevenr)
-    call wkvect(sdlist_atplur, 'G V R'  , nb_adapt*SIZE_LATPR, vr   = v_sdlist_atplur)
-    call wkvect(sdlist_atpluk, 'G V K16', nb_adapt*SIZE_LATPK, vk16 = v_sdlist_atpluk)
+    call wkvect(sdlist_aevenr, 'G V R', nb_adapt*SIZE_LAEVR, vr=v_sdlist_aevenr)
+    call wkvect(sdlist_atplur, 'G V R', nb_adapt*SIZE_LATPR, vr=v_sdlist_atplur)
+    call wkvect(sdlist_atpluk, 'G V K16', nb_adapt*SIZE_LATPK, vk16=v_sdlist_atpluk)
     v_sdlist_linfor(10) = nb_adapt
 !
 ! - Read parameters
@@ -118,7 +118,7 @@ character(len=8), intent(in) :: sdlist
             v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+1) = ADAP_EVT_TRIGGER
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Options for 'SEUIL'
 !
@@ -133,21 +133,21 @@ character(len=8), intent(in) :: sdlist
                 valer = valei
             else
                 ASSERT(.false.)
-            endif
+            end if
             v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+5) = valer
             call getvtx(keywf, 'CRIT_COMP', iocc=i_adap, scal=crit_comp, nbret=nbret)
             if (crit_comp .eq. 'LT') then
                 v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+4) = 1.d0
-            else if (crit_comp.eq.'GT') then
+            else if (crit_comp .eq. 'GT') then
                 v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+4) = 2.d0
-            else if (crit_comp.eq.'LE') then
+            else if (crit_comp .eq. 'LE') then
                 v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+4) = 3.d0
-            else if (crit_comp.eq.'GE') then
+            else if (crit_comp .eq. 'GE') then
                 v_sdlist_aevenr(SIZE_LAEVR*(i_adap-1)+4) = 4.d0
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Options for 'MODE_CALCUL_TPLUS'
 !
@@ -162,17 +162,17 @@ character(len=8), intent(in) :: sdlist
             v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+1) = ADAP_ACT_IMPLEX
             if (event_typek .ne. adapEventKeyword(ADAP_EVT_ALLSTEPS)) then
                 call utmess('F', 'DISCRETISATION_14')
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Options for MODE_CALCUL_TPLUS/FIXE
 !
         if (action_typek .eq. adapActionKeyword(ADAP_ACT_FIXE)) then
             call getvr8(keywf, 'PCENT_AUGM', iocc=i_adap, scal=pcent_augm, nbret=nbret)
             v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+2) = pcent_augm
-        endif
+        end if
 !
 ! ----- Options for MODE_CALCUL_TPLUS/DELTA_GRANDEUR
 !
@@ -183,21 +183,21 @@ character(len=8), intent(in) :: sdlist
             call getvtx(keywf, 'NOM_CHAM', iocc=i_adap, scal=nom_cham, nbret=nbret)
             call getvtx(keywf, 'NOM_CMP', iocc=i_adap, scal=nom_cmp, nbret=nbret)
             nomgd = dinogd(nom_cham)
-            call utcmp2(nomgd, keywf, i_adap, 1, nom_cmp,&
+            call utcmp2(nomgd, keywf, i_adap, 1, nom_cmp, &
                         nucmp, ibid)
             v_sdlist_atpluk(SIZE_LATPK*(i_adap-1)+1) = nom_para
             v_sdlist_atpluk(SIZE_LATPK*(i_adap-1)+2) = nom_cham
             v_sdlist_atpluk(SIZE_LATPK*(i_adap-1)+3) = nom_cmp
             v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+4) = nucmp(1)
-        endif
+        end if
 !
 ! ----- Options for MODE_CALCUL_TPLUS/ITER_NEWTON
 !
         if (action_typek .eq. adapActionKeyword(ADAP_ACT_ITER)) then
-            call getvis(keywf, 'NB_ITER_NEWTON_REF', iocc=i_adap, scal=nb_iter_newton_ref,&
+            call getvis(keywf, 'NB_ITER_NEWTON_REF', iocc=i_adap, scal=nb_iter_newton_ref, &
                         nbret=nbret)
             v_sdlist_atplur(SIZE_LATPR*(i_adap-1)+5) = nb_iter_newton_ref
-        endif
+        end if
     end do
 !
     call jedema()

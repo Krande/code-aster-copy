@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
+subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno, &
                   iocc)
     implicit none
 #include "jeveux.h"
@@ -68,17 +68,17 @@ subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
     mcn = mcno
     if (motf .ne. 'LIAISON_GROUP') then
         ASSERT(.false.)
-    endif
+    end if
     if (iocc .le. 0) then
         ASSERT(.false.)
-    endif
+    end if
     call getfac(motf, nlino)
-    if ((nlino.eq.0) .or. (iocc.gt.nlino)) goto 999
+    if ((nlino .eq. 0) .or. (iocc .gt. nlino)) goto 999
 !
 ! --- LECTURE DE LA LISTE DES NOEUDS EXCLUS
 !
     listex = '&&CAEXNO.LISTENOEUD'
-    call palino(noma, motfac, mcgr, mcn, iocc,&
+    call palino(noma, motfac, mcgr, mcn, iocc, &
                 listex)
 !
 ! --- ELIMINATION
@@ -92,15 +92,15 @@ subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
     do i = 1, nbcpl
         l = l+1
         do j = 1, nbex
-            if ((zi(idlvav+2*(i-1)+1).eq.zi(idlex+j)) .or.&
-                (zi(idlvav+ 2*(i-1)+2).eq.zi(idlex+j))) then
+            if ((zi(idlvav+2*(i-1)+1) .eq. zi(idlex+j)) .or. &
+                (zi(idlvav+2*(i-1)+2) .eq. zi(idlex+j))) then
                 l = l-1
                 goto 2
-            endif
+            end if
         end do
         zi(idlvav+2*(l-1)+1) = zi(idlvav+2*(i-1)+1)
         zi(idlvav+2*(l-1)+2) = zi(idlvav+2*(i-1)+2)
-  2     continue
+2       continue
     end do
     zi(idlvav) = l
 998 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
+subroutine tldlr8(nommat, hcol, adia, ablo, npivot, &
                   neq, nbbloc, ildeb, ilfin, eps)
     implicit none
 ! multi-threading optimization for MULT_FRONT
@@ -144,7 +144,7 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
 !     ------- BOUCLE SUR LES BLOCS A TRANSFORMER -----------------------
     do ibloc = 1, nbbloc
 !
-        il1 = ablo(ibloc) + 1
+        il1 = ablo(ibloc)+1
         il2 = ablo(ibloc+1)
 !
         if (il2 .lt. ildeb) then
@@ -155,30 +155,30 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
             end do
             call jelibe(jexnum(ualf, ibloc))
             goto 160
-        else if (il1.gt.ilfin) then
+        else if (il1 .gt. ilfin) then
 !        --- C'EST FINI ------------------------------------------------
             goto 170
         else
             call jeveuo(jexnum(ualf, ibloc), 'E', iaa)
             if (il1 .lt. ildeb) then
                 kl1 = ildeb
-                do il = il1, kl1 - 1
+                do il = il1, kl1-1
                     zr(ldiag+il-1) = zr(iaa+adia(il)-1)
                 end do
             else
                 kl1 = il1
-            endif
+            end if
             if (il2 .gt. ilfin) il2 = ilfin
-        endif
+        end if
 !
 !     --- RECHERCHE DE LA PLUS PETITE EQUATION EN RELATION AVEC --------
 !     --- UNE EQUATION DES LIGNES EFFECTIVES DU BLOC COURANT -----------
 !
-        imini = il2 - 1
+        imini = il2-1
         do iequa = kl1, il2
-            imini = min(iequa-hcol(iequa),imini)
+            imini = min(iequa-hcol(iequa), imini)
         end do
-        imini = imini + 1
+        imini = imini+1
 !
 !     --- RECHERCHE DU BLOC D'APPARTENANCE DE L'EQUATION IMINI ---------
 !
@@ -186,13 +186,13 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
             jblmin = i
             if (ablo(1+i) .ge. imini) goto 50
         end do
- 50     continue
+50      continue
 !
 !     --- BOUCLE  SUR  LES  BLOCS  DEJA  TRANSFORMES -------------------
 !
-        do jbloc = jblmin, ibloc - 1
+        do jbloc = jblmin, ibloc-1
 !
-            jl1 = max(imini,ablo(jbloc)+1)
+            jl1 = max(imini, ablo(jbloc)+1)
             jl2 = ablo(jbloc+1)
             call jeveuo(jexnum(ualf, jbloc), 'L', iab)
 !
@@ -206,26 +206,26 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
 !
 !           --- RECUPERATION DE L'ADRESSE ET LA LONGUEUR DE LA LIGNE ---
 !
-                ilong = hcol(iequa) - 1
-                iadia = iaa + adia(iequa) - 1
-                ide = iadia - ilong
-                idl = iequa - ilong
+                ilong = hcol(iequa)-1
+                iadia = iaa+adia(iequa)-1
+                ide = iadia-ilong
+                idl = iequa-ilong
 !
 !           --- UTILISATION DES LIGNES (IDL+1) A (JL2) -----------------
 !
-                jnmini = max(idl,jl1)
+                jnmini = max(idl, jl1)
                 do jequa = jnmini, jl2
-                    jlong = hcol(jequa) - 1
-                    jadia = iab + adia(jequa) - 1
-                    jde = jadia - jlong
-                    jdl = jequa - jlong
-                    ibcl1 = max(idl,jdl)
-                    lm = jequa - ibcl1
-                    ica = ide + ibcl1 - idl
-                    icb = jde + ibcl1 - jdl
+                    jlong = hcol(jequa)-1
+                    jadia = iab+adia(jequa)-1
+                    jde = jadia-jlong
+                    jdl = jequa-jlong
+                    ibcl1 = max(idl, jdl)
+                    lm = jequa-ibcl1
+                    ica = ide+ibcl1-idl
+                    icb = jde+ibcl1-jdl
                     val = zr(ica+lm)
-                    do i = 0, lm - 1
-                        val = val - zr(ica+i)*zr(icb+i)
+                    do i = 0, lm-1
+                        val = val-zr(ica+i)*zr(icb+i)
                     end do
                     zr(ica+lm) = val
                 end do
@@ -235,7 +235,7 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
 !
 !     --- UTILISATION DU BLOC EN COURS DE TRANSFORMATION ---------------
 !
-        jl1 = max(imini,il1)
+        jl1 = max(imini, il1)
         do iequa = kl1, il2
 !
 !        --- RECUPERATION DE L ADRESSE ET LA LONGUEUR DE LA LIGNE ------
@@ -243,38 +243,38 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
 !           IDE   : ADRESSE DU DEBUT DE LA LIGNE COURANTE
 !           IDL   : 1-ER DDL A VALEUR NON NULLE DANS LA LIGNE
 !
-            ilong = hcol(iequa) - 1
-            iadia = iaa + adia(iequa) - 1
-            ide = iadia - ilong
-            idl = iequa - ilong
+            ilong = hcol(iequa)-1
+            iadia = iaa+adia(iequa)-1
+            ide = iadia-ilong
+            idl = iequa-ilong
 !
 !        --- UTILISATION DES LIGNES (IDL+1) A (IEQUA-1) ---
 !
-            jnmini = max(iequa-ilong,jl1)
-            do jequa = jnmini, iequa - 1
-                jlong = hcol(jequa) - 1
-                jadia = iaa + adia(jequa) - 1
-                jde = jadia - jlong
-                jdl = jequa - jlong
-                ibcl1 = max(idl,jdl)
-                lm = jequa - ibcl1
-                ica = ide + ibcl1 - idl
-                icb = jde + ibcl1 - jdl
+            jnmini = max(iequa-ilong, jl1)
+            do jequa = jnmini, iequa-1
+                jlong = hcol(jequa)-1
+                jadia = iaa+adia(jequa)-1
+                jde = jadia-jlong
+                jdl = jequa-jlong
+                ibcl1 = max(idl, jdl)
+                lm = jequa-ibcl1
+                ica = ide+ibcl1-idl
+                icb = jde+ibcl1-jdl
                 val = zr(ica+lm)
-                do i = 0, lm - 1
-                    val = val - zr(ica+i)*zr(icb+i)
+                do i = 0, lm-1
+                    val = val-zr(ica+i)*zr(icb+i)
                 end do
                 zr(ica+lm) = val
             end do
 !
 !        --- UTILISATION DE LA LIGNE IEQUA (CALCUL DU PIVOT) -----------
 !
-            lm = ilong - 1
-            ica = iadia - ilong
+            lm = ilong-1
+            ica = iadia-ilong
 !
 !        --- SAUVEGARDE DE LA COLONNE ET NORMALISATION DE LA LIGNE -----
 !
-            icd = ldiag + iequa - ilong - 1
+            icd = ldiag+iequa-ilong-1
             do i = 0, lm
                 zr(ltrav+i) = zr(ica+i)
                 zr(ica+i) = zr(ica+i)/zr(icd+i)
@@ -285,7 +285,7 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
 !
             val = zr(iadia)
             do i = 0, lm
-                val = val - zr(ica+i)*zr(ltrav+i)
+                val = val-zr(ica+i)*zr(ltrav+i)
             end do
             zr(iadia) = val
             digs(neq+iequa) = zr(iadia)
@@ -295,20 +295,20 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
             if (abs(val) .le. eps) then
                 npivot = iequa
                 goto 999
-            endif
+            end if
 !
 !           --- ON COMPTE LES PIVOTS NEGATIFS --------------------------
             if (val .lt. 0.d0) then
-                npivot = npivot - 1
-            endif
+                npivot = npivot-1
+            end if
 !
         end do
         call jelibe(jexnum(ualf, ibloc))
         if (niv .eq. 2) then
-            write (ifm,*) '>>> FACTORISATION (LDLT_R8):',' FIN DU BLOC ',&
-     &      ibloc,' SUR ',nbbloc,' SOIT DU DDL ',il1,' AU  DDL ',il2,&
+            write (ifm, *) '>>> FACTORISATION (LDLT_R8):', ' FIN DU BLOC ',&
+     &      ibloc, ' SUR ', nbbloc, ' SOIT DU DDL ', il1, ' AU  DDL ', il2,&
      &      ' INCLUS'
-        endif
+        end if
 160     continue
     end do
 170 continue
@@ -316,10 +316,10 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
 !
     call jeveuo(noma19//'.REFA', 'E', vk24=refa)
     if (ilfin .eq. neq) then
-        refa(8)='DECT'
+        refa(8) = 'DECT'
     else
-        refa(8)='DECP'
-    endif
+        refa(8) = 'DECP'
+    end if
     call jedetr(nomdia)
     call jedetr(nomtra)
 !

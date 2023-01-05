@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSEnergyInit(resultName, ds_energy)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/nonlinDSTableIOSetPara.h"
 #include "asterfort/nonlinDSTableIOGetName.h"
 !
-character(len=8), intent(in) :: resultName
-type(NL_DS_Energy), intent(inout) :: ds_energy
+    character(len=8), intent(in) :: resultName
+    type(NL_DS_Energy), intent(inout) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@ type(NL_DS_Energy), intent(inout) :: ds_energy
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_86')
-    endif
+    end if
 !
 ! - Get table
 !
@@ -67,15 +67,15 @@ type(NL_DS_Energy), intent(inout) :: ds_energy
 !
     do i_col = 1, table%nb_cols
         col_name = table%cols(i_col)%name
-        if (col_name.eq.'NUME_REUSE') then
+        if (col_name .eq. 'NUME_REUSE') then
             table%l_cols_acti(i_col) = ASTER_TRUE
-        elseif (col_name.eq.'INST      ') then
+        elseif (col_name .eq. 'INST      ') then
             table%l_cols_acti(i_col) = ASTER_TRUE
         else
             if (ds_energy%l_comp) then
                 table%l_cols_acti(i_col) = ASTER_TRUE
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - Create list of parameters
@@ -84,7 +84,7 @@ type(NL_DS_Energy), intent(inout) :: ds_energy
 !
 ! - Set other parameters
 !
-    table%table_io%resultName   = resultName
+    table%table_io%resultName = resultName
     table%table_io%tablSymbName = 'PARA_CALC'
 !
 ! - Get name of table in results datastructure
@@ -97,6 +97,6 @@ type(NL_DS_Energy), intent(inout) :: ds_energy
 !
 ! - Save table
 !
-    ds_energy%table  = table
+    ds_energy%table = table
 !
 end subroutine

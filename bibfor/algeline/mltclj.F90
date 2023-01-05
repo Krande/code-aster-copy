@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltclj(nb, n, ll, m, it,&
-                  p, front, frn, adper, trav,&
+subroutine mltclj(nb, n, ll, m, it, &
+                  p, front, frn, adper, trav, &
                   c)
     use superv_module
     implicit none
@@ -31,33 +31,33 @@ subroutine mltclj(nb, n, ll, m, it,&
     integer :: nproc, numpro
     complex(kind=8) :: s, trav(p, nb, *)
     complex(kind=8) :: c(nb, nb, *), alpha, beta
-    tra='N'
-    trb='N'
-    alpha=dcmplx(-1.d0,0.d0)
-    beta =dcmplx( 0.d0,0.d0)
+    tra = 'N'
+    trb = 'N'
+    alpha = dcmplx(-1.d0, 0.d0)
+    beta = dcmplx(0.d0, 0.d0)
     nbl = p-it+1
-    nmb=m/nb
+    nmb = m/nb
     nlb = ll/nb
-    restm = m -(nb*nmb)
+    restm = m-(nb*nmb)
     restl = ll-(nb*nlb)
-    decal = adper(p+1) -1
+    decal = adper(p+1)-1
     nproc = asthread_getmax()
     if (nmb .ge. nproc) then
         !$OMP PARALLEL DO DEFAULT(PRIVATE) &
-    !$OMP SHARED(N,M,P,NMB,NBL,NLB,NB,RESTM,RESTL) &
-    !$OMP SHARED(FRONT,ADPER,DECAL,FRN,TRAV,IT,C) &
-    !$OMP SHARED(TRA,TRB,ALPHA,BETA) &
-    !$OMP SCHEDULE(STATIC,1)
+        !$OMP SHARED(N,M,P,NMB,NBL,NLB,NB,RESTM,RESTL) &
+        !$OMP SHARED(FRONT,ADPER,DECAL,FRN,TRAV,IT,C) &
+        !$OMP SHARED(TRA,TRB,ALPHA,BETA) &
+        !$OMP SCHEDULE(STATIC,1)
         do kb = 1, nmb
-            numpro = asthread_getnum() + 1
+            numpro = asthread_getnum()+1
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
-            k = nb*(kb-1) + 1 +p
+            k = nb*(kb-1)+1+p
             do i = it, p
                 s = front(adper(i))
-                add= n*(i-1) + k
+                add = n*(i-1)+k
                 do j = 1, nb
-                    trav(i,j,numpro) = front(add)*s
-                    add = add + 1
+                    trav(i, j, numpro) = front(add)*s
+                    add = add+1
                 end do
             end do
 !     BLOC DIAGONAL
@@ -67,59 +67,59 @@ subroutine mltclj(nb, n, ll, m, it,&
 !
 !
             do ib = kb, nlb
-                ia = n*(it-1) + k + nb*(ib-kb)
-                call zgemm(tra, trb, nb, nb, nbl,&
-                           alpha, front(ia), n, trav(it, 1, numpro), p,&
+                ia = n*(it-1)+k+nb*(ib-kb)
+                call zgemm(tra, trb, nb, nb, nbl, &
+                           alpha, front(ia), n, trav(it, 1, numpro), p, &
                            beta, c(1, 1, numpro), nb)
 !     RECOPIE
 !
 !
                 do i = 1, nb
-                    i1=i-1
+                    i1 = i-1
 !              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                     if (ib .eq. kb) then
-                        j1= i
-                        ind = adper(k + i1) - decal
+                        j1 = i
+                        ind = adper(k+i1)-decal
                     else
-                        j1=1
-                        ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                    endif
+                        j1 = 1
+                        ind = adper(k+i1)-decal+nb*(ib-kb)-i1
+                    end if
                     do j = j1, nb
-                        frn(ind) = frn(ind) +c(j,i,numpro)
-                        ind = ind +1
+                        frn(ind) = frn(ind)+c(j, i, numpro)
+                        ind = ind+1
                     end do
                 end do
             end do
             if (restl .gt. 0) then
-                ib = nlb + 1
-                ia = n*(it-1) +k + nb*(ib-kb)
-                call zgemm(tra, trb, restl, nb, nbl,&
-                           alpha, front(ia), n, trav(it, 1, numpro), p,&
+                ib = nlb+1
+                ia = n*(it-1)+k+nb*(ib-kb)
+                call zgemm(tra, trb, restl, nb, nbl, &
+                           alpha, front(ia), n, trav(it, 1, numpro), p, &
                            beta, c(1, 1, numpro), nb)
 !           RECOPIE
 !
 !
                 do i = 1, nb
-                    i1=i-1
-                    j1=1
-                    ind = adper(k + i1) - decal + nb*(ib-kb) - i1
+                    i1 = i-1
+                    j1 = 1
+                    ind = adper(k+i1)-decal+nb*(ib-kb)-i1
                     do j = j1, restl
-                        frn(ind) = frn(ind) +c(j,i,numpro)
-                        ind = ind +1
+                        frn(ind) = frn(ind)+c(j, i, numpro)
+                        ind = ind+1
                     end do
                 end do
-            endif
+            end if
         end do
     else
         do kb = 1, nmb
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
-            k = nb*(kb-1) + 1 +p
+            k = nb*(kb-1)+1+p
             do i = it, p
                 s = front(adper(i))
-                add= n*(i-1) + k
+                add = n*(i-1)+k
                 do j = 1, nb
-                    trav(i,j,1) = front(add)*s
-                    add = add + 1
+                    trav(i, j, 1) = front(add)*s
+                    add = add+1
                 end do
             end do
 !     BLOC DIAGONAL
@@ -128,60 +128,60 @@ subroutine mltclj(nb, n, ll, m, it,&
 !     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 !
             do ib = kb, nlb
-                ia = n*(it-1) + k + nb*(ib-kb)
-                call zgemm(tra, trb, nb, nb, nbl,&
-                           alpha, front(ia), n, trav(it, 1, 1), p,&
+                ia = n*(it-1)+k+nb*(ib-kb)
+                call zgemm(tra, trb, nb, nb, nbl, &
+                           alpha, front(ia), n, trav(it, 1, 1), p, &
                            beta, c(1, 1, 1), nb)
 !     RECOPIE
 !
 !
                 do i = 1, nb
-                    i1=i-1
+                    i1 = i-1
                     if (ib .eq. kb) then
-                        j1= i
-                        ind = adper(k + i1) - decal
+                        j1 = i
+                        ind = adper(k+i1)-decal
                     else
-                        j1=1
-                        ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                    endif
+                        j1 = 1
+                        ind = adper(k+i1)-decal+nb*(ib-kb)-i1
+                    end if
                     do j = j1, nb
-                        frn(ind) = frn(ind) +c(j,i,1)
-                        ind = ind +1
+                        frn(ind) = frn(ind)+c(j, i, 1)
+                        ind = ind+1
                     end do
                 end do
             end do
             if (restl .gt. 0) then
-                ib = nlb + 1
-                ia = n*(it-1) +k + nb*(ib-kb)
-                call zgemm(tra, trb, restl, nb, nbl,&
-                           alpha, front(ia), n, trav(it, 1, 1), p,&
+                ib = nlb+1
+                ia = n*(it-1)+k+nb*(ib-kb)
+                call zgemm(tra, trb, restl, nb, nbl, &
+                           alpha, front(ia), n, trav(it, 1, 1), p, &
                            beta, c(1, 1, 1), nb)
 !           RECOPIE
 !
 !
                 do i = 1, nb
-                    i1=i-1
+                    i1 = i-1
 !              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
-                    j1=1
-                    ind = adper(k + i1) - decal + nb*(ib-kb) - i1
+                    j1 = 1
+                    ind = adper(k+i1)-decal+nb*(ib-kb)-i1
                     do j = j1, restl
-                        frn(ind) = frn(ind) +c(j,i,1)
-                        ind = ind +1
+                        frn(ind) = frn(ind)+c(j, i, 1)
+                        ind = ind+1
                     end do
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
     if (restm .gt. 0) then
         kb = 1+nmb
 !     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
-        k = nb*(kb-1) + 1 +p
+        k = nb*(kb-1)+1+p
         do i = it, p
             s = front(adper(i))
-            add= n*(i-1) + k
+            add = n*(i-1)+k
             do j = 1, restm
-                trav(i,j,1) = front(add)*s
-                add = add + 1
+                trav(i, j, 1) = front(add)*s
+                add = add+1
             end do
         end do
 !     BLOC DIAGONAL
@@ -190,48 +190,48 @@ subroutine mltclj(nb, n, ll, m, it,&
 !     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 !
         do ib = kb, nlb
-            ia = n*(it-1 ) + k + nb*(ib-kb)
-            call zgemm(tra, trb, nb, restm, nbl,&
-                       alpha, front(ia), n, trav(it, 1, 1), p,&
+            ia = n*(it-1)+k+nb*(ib-kb)
+            call zgemm(tra, trb, nb, restm, nbl, &
+                       alpha, front(ia), n, trav(it, 1, 1), p, &
                        beta, c(1, 1, 1), nb)
 !     RECOPIE
 !
 !
             do i = 1, restm
-                i1=i-1
+                i1 = i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                 if (ib .eq. kb) then
-                    j1= i
-                    ind = adper(k + i1) - decal
+                    j1 = i
+                    ind = adper(k+i1)-decal
                 else
-                    j1=1
-                    ind = adper(k + i1) - decal + nb*(ib-kb) - i1
-                endif
+                    j1 = 1
+                    ind = adper(k+i1)-decal+nb*(ib-kb)-i1
+                end if
                 do j = j1, nb
-                    frn(ind) = frn(ind) +c(j,i,1)
-                    ind = ind +1
+                    frn(ind) = frn(ind)+c(j, i, 1)
+                    ind = ind+1
                 end do
             end do
         end do
         if (restl .gt. 0) then
-            ib = nlb + 1
-            ia = n*(it-1) + k + nb*(ib-kb)
-            call zgemm(tra, trb, restl, restm, nbl,&
-                       alpha, front(ia), n, trav(it, 1, 1), p,&
+            ib = nlb+1
+            ia = n*(it-1)+k+nb*(ib-kb)
+            call zgemm(tra, trb, restl, restm, nbl, &
+                       alpha, front(ia), n, trav(it, 1, 1), p, &
                        beta, c(1, 1, 1), nb)
 !     RECOPIE
 !
 !
             do i = 1, restm
-                i1=i-1
+                i1 = i-1
 !     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
-                j1=1
-                ind = adper(k + i1) - decal + nb*(ib-kb) - i1
+                j1 = 1
+                ind = adper(k+i1)-decal+nb*(ib-kb)-i1
                 do j = j1, restl
-                    frn(ind) = frn(ind) +c(j,i,1)
-                    ind = ind +1
+                    frn(ind) = frn(ind)+c(j, i, 1)
+                    ind = ind+1
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 end subroutine

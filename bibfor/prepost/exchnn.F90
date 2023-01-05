@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
+subroutine exchnn(descn, numn, tcmp, nbc, tvale, &
                   tnueq, b, valcmp, taber)
     implicit none
 !
@@ -78,23 +78,23 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
     nbcn = -descn(2)
 !
     if (numn .gt. 0) then
-        adr = 1 + nbcn* (numn-1)
-    endif
+        adr = 1+nbcn*(numn-1)
+    end if
 !
-    do i = 1,nbc,1
-        poscmp = iposdg(descn(3),tcmp(i))
+    do i = 1, nbc, 1
+        poscmp = iposdg(descn(3), tcmp(i))
         if (poscmp .gt. 0) then
             if (b) then
                 iiad = tnueq(adr+poscmp-1)
             else
-                iiad = adr + poscmp - 1
-            endif
+                iiad = adr+poscmp-1
+            end if
             valcmp(i) = tvale(iiad)
             taber(i) = 1
         else
             valcmp(i) = r8vide()
             taber(i) = 0
-        endif
+        end if
     end do
 !
 end subroutine

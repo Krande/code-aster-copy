@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine forngr(option, nomte)
 !
 !---- DECLARATIONS BIDONS
 !
-    real(kind=8) :: bid33 ( 3 , 3 )
+    real(kind=8) :: bid33(3, 3)
 !
 !---- DECLARATIONS LOCALES
 !
@@ -63,7 +63,7 @@ subroutine forngr(option, nomte)
 !
 !---- DECLARATIONS RIGIDITE GEOMETRIQUE
 !
-    real(kind=8) :: stild ( 5 )
+    real(kind=8) :: stild(5)
 !
 !---- DECLARATIONS STANDARDS
 !
@@ -76,16 +76,16 @@ subroutine forngr(option, nomte)
     integer :: inte, intsr, intsn
     real(kind=8) :: eptot
     integer :: npge, npgsr, npgsn
-    parameter ( npge = 3 )
-    real(kind=8) :: vecta ( 9 , 2 , 3 )
-    real(kind=8) :: vectn ( 9 , 3 ), vectpt ( 9 , 2 , 3 )
-    real(kind=8) :: vecnph ( 9 , 3 )
-    real(kind=8) :: vectg ( 2 , 3 ), vectt ( 3 , 3 )
-    real(kind=8) :: jm1 ( 3 , 3 ), detj
-    real(kind=8) :: jdn1ri ( 9 , 51 ), jdn1rc ( 9 , 51 )
-    real(kind=8) :: jdn1ni ( 9 , 51 ), jdn1nc ( 9 , 51 )
-    real(kind=8) :: jdn2rc ( 9 , 51 )
-    real(kind=8) :: jdn2nc ( 9 , 51 )
+    parameter(npge=3)
+    real(kind=8) :: vecta(9, 2, 3)
+    real(kind=8) :: vectn(9, 3), vectpt(9, 2, 3)
+    real(kind=8) :: vecnph(9, 3)
+    real(kind=8) :: vectg(2, 3), vectt(3, 3)
+    real(kind=8) :: jm1(3, 3), detj
+    real(kind=8) :: jdn1ri(9, 51), jdn1rc(9, 51)
+    real(kind=8) :: jdn1ni(9, 51), jdn1nc(9, 51)
+    real(kind=8) :: jdn2rc(9, 51)
+    real(kind=8) :: jdn2nc(9, 51)
     real(kind=8) :: ksi3s2
 !
 !---- DECLARATIONS COUCHES
@@ -99,17 +99,17 @@ subroutine forngr(option, nomte)
 !---- DECLARATIONS COQUE NON LINEAIRE
 !
     integer :: ium
-    real(kind=8) :: b1su ( 5 , 51 ), b2su ( 5 , 51 )
-    real(kind=8) :: b1src ( 2 , 51 , 4 )
-    real(kind=8) :: b2src ( 2 , 51 , 4 )
-    real(kind=8) :: b1mnc ( 3 , 51 ), b1mni ( 3 , 51 )
-    real(kind=8) :: b2mnc ( 3 , 51 ), b2mni ( 3 , 51 )
-    real(kind=8) :: b1mri ( 3 , 51 , 4 )
-    real(kind=8) :: b2mri ( 3 , 51 , 4 )
-    real(kind=8) :: dudxri ( 9 ), dudxni ( 9 )
-    real(kind=8) :: dudxrc ( 9 ), dudxnc ( 9 )
-    real(kind=8) :: vecu ( 8 , 3 ), vecthe ( 9 , 3 )
-    real(kind=8) :: vecpe ( 51 )
+    real(kind=8) :: b1su(5, 51), b2su(5, 51)
+    real(kind=8) :: b1src(2, 51, 4)
+    real(kind=8) :: b2src(2, 51, 4)
+    real(kind=8) :: b1mnc(3, 51), b1mni(3, 51)
+    real(kind=8) :: b2mnc(3, 51), b2mni(3, 51)
+    real(kind=8) :: b1mri(3, 51, 4)
+    real(kind=8) :: b2mri(3, 51, 4)
+    real(kind=8) :: dudxri(9), dudxni(9)
+    real(kind=8) :: dudxrc(9), dudxnc(9)
+    real(kind=8) :: vecu(8, 3), vecthe(9, 3)
+    real(kind=8) :: vecpe(51)
 !    POUR_RESI_REFE_RELA
     real(kind=8) :: sigtmp(5), ftemp(51), effint(51)
     character(len=16) :: kmess(2)
@@ -118,7 +118,7 @@ subroutine forngr(option, nomte)
 !
     integer :: jnbspi
 !
-    real(kind=8) :: blam ( 9 , 3 , 3 )
+    real(kind=8) :: blam(9, 3, 3)
 !
 !
 ! DEB
@@ -126,11 +126,11 @@ subroutine forngr(option, nomte)
 !---- LE NOMBRE DE COUCHES
 !
     call jevech('PNBSP_I', 'L', jnbspi)
-    nbcou=zi(jnbspi-1+1)
+    nbcou = zi(jnbspi-1+1)
 !
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
-    endif
+    end if
 !
 !______________________________________________________________________
 !
@@ -149,13 +149,13 @@ subroutine forngr(option, nomte)
 !
 !------- NOMBRE DE NOEUDS ( NB1 : SERENDIP , NB2 : LAGRANGE )
 !
-    nb1 = zi ( lzi - 1 + 1 )
-    nb2 = zi ( lzi - 1 + 2 )
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
 !
 !------- NBRE POINTS INTEGRATIONS ( NPGSR : REDUITE , NPGSN : NORMALE )
 !
-    npgsr = zi ( lzi - 1 + 3 )
-    npgsn = zi ( lzi - 1 + 4 )
+    npgsr = zi(lzi-1+3)
+    npgsn = zi(lzi-1+4)
 !
 !....... LES REELS ( FONCTIONS DE FORMES, DERIVEES ET POIDS )
 !
@@ -165,19 +165,19 @@ subroutine forngr(option, nomte)
 !
     if (option .eq. 'FORC_NODA') then
 !
-        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
+        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, &
                     itab=itab)
-        icontm=itab(1)
-        nbsp=itab(7)
+        icontm = itab(1)
+        nbsp = itab(7)
         if (nbsp .ne. npge*nbcou) then
             call utmess('F', 'ELEMENTS_4')
-        endif
+        end if
 !
-    else if (option.eq.'REFE_FORC_NODA') then
+    else if (option .eq. 'REFE_FORC_NODA') then
 !
         call terefe('SIGM_REFE', 'MECA_COQUE3D', sigref)
 !
-    endif
+    end if
 !
 !______________________________________________________________________
 !
@@ -196,15 +196,15 @@ subroutine forngr(option, nomte)
 !
 !---- EPAISSEUR TOTALE
 !
-    eptot = zr ( jcara )
+    eptot = zr(jcara)
 !
 !---- COORDONNEE MINIMALE SUIVANT L EPAISSEUR
 !
-    zmin = - eptot / 2.d0
+    zmin = -eptot/2.d0
 !
 !---- EPAISSEUR D UNE COUCHE
 !
-    epais = eptot / nbcou
+    epais = eptot/nbcou
 !
 !______________________________________________________________________
 !
@@ -218,25 +218,25 @@ subroutine forngr(option, nomte)
 !
 !---- REPERE LOCAUX AUX NOEUDS SUR LA CONFIGURATION INITIALE
 !
-    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta,&
+    call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
 !---- DEPLACEMENT TOTAL AUX NOEUDS DE SERENDIP
 !
-    call r8inir(8 * 3, 0.d0, vecu, 1)
+    call r8inir(8*3, 0.d0, vecu, 1)
 !
     do in = 1, nb1
         do ii = 1, 3
 !
-            vecu ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) + ii&
-            )
+            vecu(in, ii) = zr(ium-1+6*(in-1)+ii &
+                              )
 !
         end do
     end do
 !
 !---- ROTATION TOTALE AUX NOEUDS
 !
-    call r8inir(9 * 3, 0.d0, vecthe, 1)
+    call r8inir(9*3, 0.d0, vecthe, 1)
 !
 !
 !------- EN ACCORD AVEC LA MISE A JOUR DES GRANDES ROTATIONS AUFAURE
@@ -245,26 +245,26 @@ subroutine forngr(option, nomte)
 !
     do in = 1, nb1
         do ii = 1, 3
-            vecthe ( in , ii ) = zr ( ium - 1 + 6 * ( in - 1 ) + ii +&
-  3         )
+            vecthe(in, ii) = zr(ium-1+6*(in-1)+ii+ &
+                                3)
         end do
     end do
 !
 !--------- SUPERNOEUD
 !
     do ii = 1, 3
-        vecthe ( nb2, ii ) = zr ( ium - 1 + 6 * nb1 + ii )
+        vecthe(nb2, ii) = zr(ium-1+6*nb1+ii)
     end do
 !
 !
 !---- TRANSFORMEES NORMALES ET MATRICES DE ROTATION AUX NOEUDS
 !
-    call vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
+    call vectrn(nb2, vectpt, vectn, vecthe, vecnph, &
                 blam)
 !
 !---- VECTEUR PE DES VARIABLES NODALES TOTALES GENERALISEES
 !
-    call vectpe(nb1, nb2, vecu, vectn, vecnph,&
+    call vectpe(nb1, nb2, vecu, vectn, vecnph, &
                 vecpe)
 !
 !______________________________________________________________________
@@ -273,15 +273,15 @@ subroutine forngr(option, nomte)
 !
 !---- MEMBRANE REDUIT INCOMPLET
 !
-    call r8inir(3 * 51 * 4, 0.d0, b1mri, 1)
+    call r8inir(3*51*4, 0.d0, b1mri, 1)
 !
-    call r8inir(3 * 51 * 4, 0.d0, b2mri, 1)
+    call r8inir(3*51*4, 0.d0, b2mri, 1)
 !
 !---- SHEAR    REDUIT   COMPLET
 !
-    call r8inir(2 * 51 * 4, 0.d0, b1src, 1)
+    call r8inir(2*51*4, 0.d0, b1src, 1)
 !
-    call r8inir(2 * 51 * 4, 0.d0, b2src, 1)
+    call r8inir(2*51*4, 0.d0, b2src, 1)
 !
 ! POUR RESI_REFE_RELA
 !
@@ -289,7 +289,7 @@ subroutine forngr(option, nomte)
 !
         call r8inir(51, 0.d0, ftemp, 1)
 !
-    endif
+    end if
 !
 !
 !==== BOUCLE SUR LES COUCHES
@@ -303,68 +303,68 @@ subroutine forngr(option, nomte)
 !---------- POSITION SUR L EPAISSEUR ET POIDS D INTEGRATION
 !
             if (inte .eq. 1) then
-                zic = zmin + ( icou - 1 ) * epais
-                coef = 1.d0 / 3.d0
+                zic = zmin+(icou-1)*epais
+                coef = 1.d0/3.d0
             else if (inte .eq. 2) then
-                zic = zmin + epais / 2.d0 + ( icou - 1 ) * epais
-                coef = 4.d0 / 3.d0
+                zic = zmin+epais/2.d0+(icou-1)*epais
+                coef = 4.d0/3.d0
             else
-                zic = zmin + epais + ( icou - 1 ) * epais
-                coef = 1.d0 / 3.d0
-            endif
+                zic = zmin+epais+(icou-1)*epais
+                coef = 1.d0/3.d0
+            end if
 !
 !---------- COORDONNEE ISOP.  SUR L EPAISSEUR  DIVISEE PAR DEUX
 !
-            ksi3s2 = zic / epais
+            ksi3s2 = zic/epais
 !
 !========== 1 ERE BOUCLE SUR POINTS INTEGRATION REDUITE SURFACE MOYENNE
 !
             do intsr = 1, npgsr
 !
-                call vectgt(0, nb1, zr ( igeom ), ksi3s2, intsr,&
-                            zr ( lzr ), epais, vectn, vectg, vectt)
+                call vectgt(0, nb1, zr(igeom), ksi3s2, intsr, &
+                            zr(lzr), epais, vectn, vectg, vectt)
 !
-                call jacbm1(epais, vectg, vectt, bid33, jm1,&
+                call jacbm1(epais, vectg, vectt, bid33, jm1, &
                             detj)
 !
 !------------- J1DN1RI ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 0 INCOMPLET
-                call jm1dn1(0, 0, nb1, nb2, zr ( lzr ),&
+                call jm1dn1(0, 0, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsr, jm1, jdn1ri)
 !
 !------------- CALCUL DE    DUDXRI ( 9 ) REDUIT INCOMPLET
 !
-                call promat(jdn1ri, 9, 9, 6 * nb1 + 3, vecpe,&
-                            6 * nb1 + 3, 6 * nb1 + 3, 1, dudxri)
+                call promat(jdn1ri, 9, 9, 6*nb1+3, vecpe, &
+                            6*nb1+3, 6*nb1+3, 1, dudxri)
 !
 !+++++++++++++ B1MRI ( 3 , 51 , 4 ) MEMBRANE REDUIT INCOMPLET
 !              B2MRI ( 3 , 51 , 4 )
 !
-                call matbmr(nb1, vectt, dudxri, intsr, jdn1ri,&
+                call matbmr(nb1, vectt, dudxri, intsr, jdn1ri, &
                             b1mri, b2mri)
 !
 !------------- J1DN1RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn1(0, 1, nb1, nb2, zr ( lzr ),&
+                call jm1dn1(0, 1, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsr, jm1, jdn1rc)
 !
 !------------- CALCUL DE    DUDXRC ( 9 ) REDUIT COMPLET
 !
-                call promat(jdn1rc, 9, 9, 6 * nb1 + 3, vecpe,&
-                            6 * nb1 + 3, 6 * nb1 + 3, 1, dudxrc)
+                call promat(jdn1rc, 9, 9, 6*nb1+3, vecpe, &
+                            6*nb1+3, 6*nb1+3, 1, dudxrc)
 !
 !------------- J1DN2RC ( 9 , 6 * NB1 + 3 ) INDN = 0 REDUIT
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn2(0, 1, nb1, nb2, zr ( lzr ),&
-                            epais, ksi3s2, intsr, vecnph, jm1,&
+                call jm1dn2(0, 1, nb1, nb2, zr(lzr), &
+                            epais, ksi3s2, intsr, vecnph, jm1, &
                             jdn2rc)
 !
 !+++++++++++++ B1SRC ( 2 , 51 , 4 ) SHEAR REDUIT COMPLET
 !              B2SRC ( 2 , 51 , 4 )
 !
-                call matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
+                call matbsr(nb1, vectt, dudxrc, intsr, jdn1rc, &
                             jdn2rc, b1src, b2src)
 !
 !========== FIN 1 ERE BOUCLE NPGSR
@@ -376,84 +376,84 @@ subroutine forngr(option, nomte)
             do intsn = 1, npgsn
 !
 !
-                call vectgt(1, nb1, zr ( igeom ), ksi3s2, intsn,&
-                            zr ( lzr ), epais, vectn, vectg, vectt)
+                call vectgt(1, nb1, zr(igeom), ksi3s2, intsn, &
+                            zr(lzr), epais, vectn, vectg, vectt)
 !
-                call jacbm1(epais, vectg, vectt, bid33, jm1,&
+                call jacbm1(epais, vectg, vectt, bid33, jm1, &
                             detj)
 !
 !------------- J1DN1NC ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn1(1, 1, nb1, nb2, zr ( lzr ),&
+                call jm1dn1(1, 1, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsn, jm1, jdn1nc)
 !
 !------------- CALCUL DE     DUDXNC ( 9 ) NORMAL COMPLET
 !
-                call promat(jdn1nc, 9, 9, 6 * nb1 + 3, vecpe,&
-                            6 * nb1 + 3, 6 * nb1 + 3, 1, dudxnc)
+                call promat(jdn1nc, 9, 9, 6*nb1+3, vecpe, &
+                            6*nb1+3, 6*nb1+3, 1, dudxnc)
 !
 !------------- J1DN2NC ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 1 COMPLET
 !
-                call jm1dn2(1, 1, nb1, nb2, zr ( lzr ),&
-                            epais, ksi3s2, intsn, vecnph, jm1,&
+                call jm1dn2(1, 1, nb1, nb2, zr(lzr), &
+                            epais, ksi3s2, intsn, vecnph, jm1, &
                             jdn2nc)
 !
 !+++++++++++++ B1MNC ( 3 , 51 ) MEMBRANE NORMAL COMPLET
 !              B2MNC ( 3 , 51 )
 !
-                call matbmn(nb1, vectt, dudxnc, jdn1nc, jdn2nc,&
+                call matbmn(nb1, vectt, dudxnc, jdn1nc, jdn2nc, &
                             b1mnc, b2mnc)
 !
 !------------- J1DN1NI ( 9 , 6 * NB1 + 3 ) INDN = 1 NORMAL
 !                                          INDC = 0 INCOMPLET
 !
-                call jm1dn1(1, 0, nb1, nb2, zr ( lzr ),&
+                call jm1dn1(1, 0, nb1, nb2, zr(lzr), &
                             epais, ksi3s2, intsn, jm1, jdn1ni)
 !
 !------------- CALCUL DE     DUDXNI ( 9 ) NORMAL INCOMPLET
 !
-                call promat(jdn1ni, 9, 9, 6 * nb1 + 3, vecpe,&
-                            6 * nb1 + 3, 6 * nb1 + 3, 1, dudxni)
+                call promat(jdn1ni, 9, 9, 6*nb1+3, vecpe, &
+                            6*nb1+3, 6*nb1+3, 1, dudxni)
 !
 !+++++++++++++ B1MNI ( 3 , 51 ) MEMBRANE NORMAL INCOMPLET
 !              B2MNI ( 3 , 51 )
 !
-                call matbmn(nb1, vectt, dudxni, jdn1ni, jdn1ni,&
+                call matbmn(nb1, vectt, dudxni, jdn1ni, jdn1ni, &
                             b1mni, b2mni)
 !
 !============= B1SU ( 5 , 51 ) SUBSTITUTION TOTAL
 !              B2SU ( 5 , 51 ) SUBSTITUTION DIFFERENTIEL
 !
-                call matbsu(nb1, zr ( lzr ), npgsr, intsn, b1mnc,&
-                            b2mnc, b1mni, b2mni, b1mri, b2mri,&
+                call matbsu(nb1, zr(lzr), npgsr, intsn, b1mnc, &
+                            b2mnc, b1mni, b2mni, b1mri, b2mri, &
                             b1src, b2src, b1su, b2su)
 !
                 if (option .eq. 'FORC_NODA') then
 !
 !------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 !
-                    k1=6*((intsn-1)*npge*nbcou + (icou-1)*npge +inte -&
-                    1)
-                    stild(1) = zr ( icontm - 1 + k1 + 1 )
-                    stild(2) = zr ( icontm - 1 + k1 + 2 )
-                    stild(3) = zr ( icontm - 1 + k1 + 4 )
-                    stild(4) = zr ( icontm - 1 + k1 + 5 )
-                    stild(5) = zr ( icontm - 1 + k1 + 6 )
+                    k1 = 6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte- &
+                            1)
+                    stild(1) = zr(icontm-1+k1+1)
+                    stild(2) = zr(icontm-1+k1+2)
+                    stild(3) = zr(icontm-1+k1+4)
+                    stild(4) = zr(icontm-1+k1+5)
+                    stild(5) = zr(icontm-1+k1+6)
 !
 !------------- FINT ( 6 * NB1 + 3 )  =     INTEGRALE  DE
 !              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
 !              POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 !
-                    call btsig(6 * nb1 + 3, 5, zr (lzr - 1 + 127 + intsn - 1) * detj * coef,&
-                               b2su, stild, zr ( ivectu ))
+                    call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
+                               b2su, stild, zr(ivectu))
 !
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 !------------- VARIABLES INTERNES INACTIVES COMPORTEMENT NON PLASTIQUE
 !
-                else if (option.eq.'REFE_FORC_NODA') then
+                else if (option .eq. 'REFE_FORC_NODA') then
 !
 !            CALCUL DES FORCES NODALES DE REFERENCE EN AFFECTANT
 !            LA VALEUR SIGM_REFE A CHAQUE CMP SUCCESSIVEMENT
@@ -463,15 +463,15 @@ subroutine forngr(option, nomte)
                     call r8inir(51, 0.d0, effint, 1)
 !
                     do i = 1, 5
-                        sigtmp(i)=sigref
-                        call btsig(6 * nb1 + 3, 5, zr (lzr - 1 +127 + intsn - 1) * detj * coef,&
+                        sigtmp(i) = sigref
+                        call btsig(6*nb1+3, 5, zr(lzr-1+127+intsn-1)*detj*coef, &
                                    b2su, sigtmp, effint)
-                        sigtmp(i)=0.d0
+                        sigtmp(i) = 0.d0
                         do j = 1, 51
                             ftemp(j) = ftemp(j)+abs(effint(j))
                         end do
                     end do
-                endif
+                end if
 !
 !========== FIN BOUCLE NPGSN
 !
@@ -489,16 +489,16 @@ subroutine forngr(option, nomte)
 !      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
 !
     if (option .eq. 'REFE_FORC_NODA') then
-        nval=nbcou*npge*npgsn*5
-        call daxpy(51, 1.d0/nval, ftemp, 1, zr ( ivectu ),&
+        nval = nbcou*npge*npgsn*5
+        call daxpy(51, 1.d0/nval, ftemp, 1, zr(ivectu), &
                    1)
         do j = 1, 51
-            if (zr ( ivectu + j -1) .eq. 0.) then
+            if (zr(ivectu+j-1) .eq. 0.) then
                 kmess(1) = 'COQUE3D'
                 kmess(2) = 'SIGM_REFE'
                 call utmess('F', 'MECANONLINE5_59', nk=2, valk=kmess)
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ subroutine op0140()
 !
     call getvtx(' ', 'METHODE', scal=method, nbret=iopt)
 !
-    elim=0
-    seliai=numeg(1:8)//'      .ELIM.BASE'
+    elim = 0
+    seliai = numeg(1:8)//'      .ELIM.BASE'
     call jeexin(seliai, elim)
 !
 !
@@ -76,7 +76,7 @@ subroutine op0140()
         call vecgen(nomres, numeg)
     else
         call vecgcy(nomres, numeg)
-    endif
+    end if
     call jeecra(nomres//'           .DESC', 'DOCU', cval='VGEN')
 !
     call jedema()

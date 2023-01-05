@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cftanr(noma, ndimg, ds_contact, izone,&
-                  posnoe, typenm, posenm, numenm, ksipr1,&
+subroutine cftanr(noma, ndimg, ds_contact, izone, &
+                  posnoe, typenm, posenm, numenm, ksipr1, &
                   ksipr2, tau1m, tau2m, tau1, tau2)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/apvect.h"
@@ -117,32 +117,32 @@ implicit none
 !
 ! --- LISSAGE OU PAS ?
 !
-    lliss = cfdisl(ds_contact%sdcont_defi,'LISSAGE')
+    lliss = cfdisl(ds_contact%sdcont_defi, 'LISSAGE')
 !
 ! --- NORMALES A MODIFIER
 !
-    if (mminfl(ds_contact%sdcont_defi,'MAIT',izone)) then
+    if (mminfl(ds_contact%sdcont_defi, 'MAIT', izone)) then
         lmait = .true.
         lescl = .false.
-    else if (mminfl(ds_contact%sdcont_defi,'MAIT_ESCL',izone)) then
+    else if (mminfl(ds_contact%sdcont_defi, 'MAIT_ESCL', izone)) then
         lmait = .true.
         lescl = .true.
-    else if (mminfl(ds_contact%sdcont_defi,'ESCL',izone)) then
+    else if (mminfl(ds_contact%sdcont_defi, 'ESCL', izone)) then
         lmait = .false.
         lescl = .true.
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- INCOMPATIBILITE SCHEMA INTEGRATION GAUSS AVEC OPTION ESCLAVE
 !
     if (lescl) then
         if (posnoe .eq. 0) then
             call utmess('F', 'CONTACT_98')
-        else if (posnoe.eq.-1) then
+        else if (posnoe .eq. -1) then
             call utmess('F', 'CONTACT_99')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- DIMENSION MAILLE ESCLAVE: ON PREND LA PREMIERE MAILLE ATTACHEE
 ! --- AU NOEUD ESCLAVE
@@ -154,7 +154,7 @@ implicit none
         call cfnumm(ds_contact%sdcont_defi, posmae, nummae)
         call cfnomm(noma, ds_contact%sdcont_defi, 'MAIL', posmae, nommae)
         call mmelty(noma, nummae, aliase)
-    endif
+    end if
 !
 ! --- DIMENSION MAILLE MAITRE
 !
@@ -168,67 +168,67 @@ implicit none
             call cfinvm(ds_contact%sdcont_defi, jdeciv, ima, posmam)
         else
             posmam = posenm
-        endif
+        end if
         call cfnumm(ds_contact%sdcont_defi, posmam, nummam)
         call cfnomm(noma, ds_contact%sdcont_defi, 'MAIL', posmam, nommam)
         call mmelty(noma, nummam, aliasm)
-    endif
+    end if
 !
 ! --- RECUPERATION TANGENTES ESCLAVES SI NECESSSAIRE
 !
     if (lescl) then
         call apvect(sdappa, 'APPARI_NOEUD_TAU1', posnoe, tau1e)
         call apvect(sdappa, 'APPARI_NOEUD_TAU2', posnoe, tau2e)
-    endif
+    end if
 !
 ! --- MODIFICATIONS DES NORMALES MAITRES
 !
     if (lmait) then
-        itypem = mminfi(ds_contact%sdcont_defi,'VECT_MAIT',izone)
+        itypem = mminfi(ds_contact%sdcont_defi, 'VECT_MAIT', izone)
         if (itypem .ne. 0) then
-            vector(1) = mminfr(ds_contact%sdcont_defi,'VECT_MAIT_DIRX',izone)
-            vector(2) = mminfr(ds_contact%sdcont_defi,'VECT_MAIT_DIRY',izone)
-            vector(3) = mminfr(ds_contact%sdcont_defi,'VECT_MAIT_DIRZ',izone)
-        endif
-        if ((ndimg.eq.2) .and. (itypem.eq.2)) then
+            vector(1) = mminfr(ds_contact%sdcont_defi, 'VECT_MAIT_DIRX', izone)
+            vector(2) = mminfr(ds_contact%sdcont_defi, 'VECT_MAIT_DIRY', izone)
+            vector(3) = mminfr(ds_contact%sdcont_defi, 'VECT_MAIT_DIRZ', izone)
+        end if
+        if ((ndimg .eq. 2) .and. (itypem .eq. 2)) then
             call utmess('F', 'CONTACT3_43', sk=nommam)
-        endif
-        lpoutr = (ndimg.eq.3).and.(aliasm(1:2).eq.'SE')
-        lpoint = aliasm.eq.'POI1'
+        end if
+        lpoutr = (ndimg .eq. 3) .and. (aliasm(1:2) .eq. 'SE')
+        lpoint = aliasm .eq. 'POI1'
         if (lpoint) then
             call utmess('F', 'CONTACT3_75', sk=nommam)
-        endif
-        call cfnors(noma, ds_contact, posmam, typenm,&
-                    numenm, lpoutr, lpoint, ksipr1, ksipr2,&
-                    lliss, itypem, vector, tau1m, tau2m,&
+        end if
+        call cfnors(noma, ds_contact, posmam, typenm, &
+                    numenm, lpoutr, lpoint, ksipr1, ksipr2, &
+                    lliss, itypem, vector, tau1m, tau2m, &
                     lmfixe)
-    endif
+    end if
 !
 ! --- MODIFICATIONS DES NORMALES ESCLAVES
 !
     if (lescl) then
-        itypee = mminfi(ds_contact%sdcont_defi,'VECT_ESCL',izone)
+        itypee = mminfi(ds_contact%sdcont_defi, 'VECT_ESCL', izone)
         if (itypee .ne. 0) then
-            vector(1) = mminfr(ds_contact%sdcont_defi,'VECT_ESCL_DIRX',izone)
-            vector(2) = mminfr(ds_contact%sdcont_defi,'VECT_ESCL_DIRY',izone)
-            vector(3) = mminfr(ds_contact%sdcont_defi,'VECT_ESCL_DIRZ',izone)
-        endif
-        if ((ndimg.eq.2) .and. (itypee.eq.2)) then
+            vector(1) = mminfr(ds_contact%sdcont_defi, 'VECT_ESCL_DIRX', izone)
+            vector(2) = mminfr(ds_contact%sdcont_defi, 'VECT_ESCL_DIRY', izone)
+            vector(3) = mminfr(ds_contact%sdcont_defi, 'VECT_ESCL_DIRZ', izone)
+        end if
+        if ((ndimg .eq. 2) .and. (itypee .eq. 2)) then
             call utmess('F', 'CONTACT3_43', sk=nommae)
-        endif
-        lpoutr = (ndimg.eq.3).and.(aliase(1:2).eq.'SE')
-        lpoint = aliase.eq.'POI1'
-        call cfnors(noma, ds_contact, posmae, typenm,&
-                    numenm, lpoutr, lpoint, r8bid, r8bid,&
-                    .false._1, itypee, vector, tau1e, tau2e,&
+        end if
+        lpoutr = (ndimg .eq. 3) .and. (aliase(1:2) .eq. 'SE')
+        lpoint = aliase .eq. 'POI1'
+        call cfnors(noma, ds_contact, posmae, typenm, &
+                    numenm, lpoutr, lpoint, r8bid, r8bid, &
+                    .false._1, itypee, vector, tau1e, tau2e, &
                     lefixe)
-    endif
+    end if
 !
 ! --- CHOIX DE LA NORMALE -> CALCUL DES TANGENTES
 !
-    call cfchno(noma, ds_contact, ndimg, posnoe, typenm,&
-                numenm, lmait, lescl, lmfixe, lefixe,&
-                tau1m, tau2m, tau1e, tau2e, tau1,&
+    call cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
+                numenm, lmait, lescl, lmfixe, lefixe, &
+                tau1m, tau2m, tau1e, tau2e, tau1, &
                 tau2)
 !
 end subroutine

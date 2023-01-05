@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,8 @@ subroutine cmcrea(main, maout, nbocc)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-integer :: nbocc
-character(len=8) :: main, maout
+    integer :: nbocc
+    character(len=8) :: main, maout
 !
 ! ----------------------------------------------------------------------
 !  CREATION DE NOUVEAU MAILLAGE
@@ -75,11 +75,11 @@ character(len=8) :: main, maout
     character(len=24) :: conout
     character(len=24) :: gmain, gmaout, nomgma, gmaptr
 !
-    data linoma /'&&CMCREA.LINOMA'/
-    data liconn /'&&CMCREA.LICONN'/
-    data lityma /'&&CMCREA.LITYMA'/
-    data lingma /'&&CMCREA.LINGMA'/
-    data ligpma /'&&CMCREA.LIGPMA'/
+    data linoma/'&&CMCREA.LINOMA'/
+    data liconn/'&&CMCREA.LICONN'/
+    data lityma/'&&CMCREA.LITYMA'/
+    data lingma/'&&CMCREA.LINGMA'/
+    data ligpma/'&&CMCREA.LIGPMA'/
 !
 ! NOMA  NOMS DES MAILLES CREEES (VECTEUR DE K8)
 ! CONN  CONNECTIVITE DES MAILLES CREEES (LISTE)
@@ -93,7 +93,7 @@ character(len=8) :: main, maout
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    false=.false.
+    false = .false.
 !
 ! ----------------------------------------------------------------------
 !                          INITIALISATION
@@ -104,7 +104,7 @@ character(len=8) :: main, maout
 !
 !    NOMBRE DE MAILLES, DE GROUP_MA
     call jeveuo(main//'.DIME', 'L', jadin)
-    nbmain = zi(jadin-1 + 3)
+    nbmain = zi(jadin-1+3)
     call jelira(main//'.GROUPEMA', 'NOMUTI', nbgmin)
 !
 !
@@ -116,11 +116,11 @@ character(len=8) :: main, maout
     call wkvect(ligpma, 'V V K24', nbocc, jlgpma)
     do iOcc = 1, nbocc
         call codent(iOcc, 'D0', knum8)
-        zk24(jlnoma-1 + iOcc) = linoma(1:15) // '.' // knum8
-        zk24(jlconn-1 + iOcc) = liconn(1:15) // '.' // knum8
-        zk24(jltyma-1 + iOcc) = lityma(1:15) // '.' // knum8
-        zk24(jlngma-1 + iOcc) = lingma(1:15) // '.' // knum8
-        zk24(jlgpma-1 + iOcc) = ligpma(1:15) // '.' // knum8
+        zk24(jlnoma-1+iOcc) = linoma(1:15)//'.'//knum8
+        zk24(jlconn-1+iOcc) = liconn(1:15)//'.'//knum8
+        zk24(jltyma-1+iOcc) = lityma(1:15)//'.'//knum8
+        zk24(jlngma-1+iOcc) = lingma(1:15)//'.'//knum8
+        zk24(jlgpma-1+iOcc) = ligpma(1:15)//'.'//knum8
     end do
 !
 !
@@ -136,9 +136,9 @@ character(len=8) :: main, maout
         call getvtx(keywfact, 'GROUP_NO_2', iocc=iOcc, scal=gno2, nbret=ib)
         call getvtx(keywfact, 'NOM', iocc=iOcc, scal=nomgma, nbret=ib)
 !
-        call cmfiss(main, gno1, gno2, prefix, numare,&
-                    nomgma, zk24(jlnoma-1+iOcc), zk24(jlconn-1 + iOcc), zk24(jltyma-1 + iOcc),&
-                    zk24(jlngma-1 + iOcc), zk24(jlgpma-1 + iOcc))
+        call cmfiss(main, gno1, gno2, prefix, numare, &
+                    nomgma, zk24(jlnoma-1+iOcc), zk24(jlconn-1+iOcc), zk24(jltyma-1+iOcc), &
+                    zk24(jlngma-1+iOcc), zk24(jlgpma-1+iOcc))
     end do
 !
 !
@@ -154,20 +154,20 @@ character(len=8) :: main, maout
         call jeexin(zk24(jlnoma-1+iOcc), iret)
         if (iret .ne. 0) then
             call jelira(zk24(jlnoma-1+iOcc), 'LONMAX', nbma)
-            nbmaaj = nbmaaj + nbma
-        endif
+            nbmaaj = nbmaaj+nbma
+        end if
 !
 !      NOMBRE DE GROUP_MA AJOUTES
         call jeexin(zk24(jlngma-1+iOcc), iret)
         if (iret .ne. 0) then
             call jelira(zk24(jlngma-1+iOcc), 'LONMAX', nbgm)
-            nbgmaj = nbgmaj + nbgm
-        endif
+            nbgmaj = nbgmaj+nbgm
+        end if
 !
     end do
 !
-    nbmato = nbmain + nbmaaj
-    nbgmto = nbgmin + nbgmaj
+    nbmato = nbmain+nbmaaj
+    nbgmto = nbgmin+nbgmaj
 !
 !
 !
@@ -178,14 +178,14 @@ character(len=8) :: main, maout
 ! - CREATION DES OBJETS ET DUPLICATION DE LA PARTIE COMMUNE
 !
 !    OBJET .DIME
-    dimin = main //'.DIME'
+    dimin = main//'.DIME'
     dimout = maout//'.DIME'
     call jedupo(dimin, 'G', dimout, false)
     call jeveuo(dimout, 'E', jdim)
-    zi(jdim-1 + 3) = nbmato
+    zi(jdim-1+3) = nbmato
 !
 !    OBJET .NOMMAI
-    nmain = main //'.NOMMAI'
+    nmain = main//'.NOMMAI'
     nmaout = maout//'.NOMMAI'
     call jecreo(nmaout, 'G N K8')
     call jeecra(nmaout, 'NOMMAX', nbmato)
@@ -195,7 +195,7 @@ character(len=8) :: main, maout
     end do
 !
 !    OBJET .TYPMAIL
-    tmain = main //'.TYPMAIL'
+    tmain = main//'.TYPMAIL'
     tmaout = maout//'.TYPMAIL'
     call wkvect(tmaout, 'G V I', nbmato, ityout)
     call jeveuo(tmain, 'L', ityin)
@@ -204,15 +204,15 @@ character(len=8) :: main, maout
     end do
 !
 !    OBJET .CONNEX
-    conin = main //'.CONNEX'
+    conin = main//'.CONNEX'
     conout = maout//'.CONNEX'
-    call jecrec(conout, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(conout, 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmato)
     call jeecra(conout, 'LONT', nbnomx*nbmato, ' ')
     do ma = 1, nbmain
-        call jelira(jexnum(conin , ma), 'LONMAX', nbno)
+        call jelira(jexnum(conin, ma), 'LONMAX', nbno)
         call jeecra(jexnum(conout, ma), 'LONMAX', nbno)
-        call jeveuo(jexnum(conin , ma), 'L', jadin)
+        call jeveuo(jexnum(conin, ma), 'L', jadin)
         call jeveuo(jexnum(conout, ma), 'E', jadout)
         do no = 0, nbno-1
             zi(jadout+no) = zi(jadin+no)
@@ -220,22 +220,22 @@ character(len=8) :: main, maout
     end do
 !
 !    OBJET .GROUPMA
-    gmain = main //'.GROUPEMA'
+    gmain = main//'.GROUPEMA'
     gmaout = maout//'.GROUPEMA'
     gmaptr = maout//'.PTRNOMMAI'
     call jecreo(gmaptr, 'G N K24')
     call jeecra(gmaptr, 'NOMMAX', nbgmto)
-    call jecrec(gmaout, 'G V I', 'NO '//gmaptr, 'DISPERSE', 'VARIABLE',&
+    call jecrec(gmaout, 'G V I', 'NO '//gmaptr, 'DISPERSE', 'VARIABLE', &
                 nbgmto)
     do gm = 1, nbgmin
-        call jenuno(jexnum(gmain , gm), nomgma)
+        call jenuno(jexnum(gmain, gm), nomgma)
         call jecroc(jexnom(gmaout, nomgma))
-        call jelira(jexnum(gmain , gm), 'LONUTI', nbma)
+        call jelira(jexnum(gmain, gm), 'LONUTI', nbma)
         call jeecra(jexnom(gmaout, nomgma), 'LONMAX', nbma)
         call jeecra(jexnom(gmaout, nomgma), 'LONUTI', nbma)
-        call jeveuo(jexnum(gmain , gm), 'L', jadin)
+        call jeveuo(jexnum(gmain, gm), 'L', jadin)
         call jeveuo(jexnom(gmaout, nomgma), 'E', jadout)
-        do ma = 0, nbma - 1
+        do ma = 0, nbma-1
             zi(jadout+ma) = zi(jadin+ma)
         end do
     end do
@@ -272,17 +272,17 @@ character(len=8) :: main, maout
             do ma = 1, nbma
 !
 !          INSERTION DANS LE .NOMMAI
-                nomma = zk8(jnoma-1 + ma)
+                nomma = zk8(jnoma-1+ma)
                 call jeexin(jexnom(nmaout, nomma), iret)
                 if (iret .eq. 0) then
                     call jecroc(jexnom(nmaout, nomma))
                 else
                     valk = nomma
                     call utmess('F', 'ALGELINE4_7', sk=valk)
-                endif
+                end if
 !
 !          INSERTION DANS LE .TYPMAIL
-                zi(ityout-1 + numaco + ma) = zi(jtyma-1 + ma)
+                zi(ityout-1+numaco+ma) = zi(jtyma-1+ma)
 !
 !          INSERTION DANS LE .CONNEX
                 nbno = zi(jconn)
@@ -291,9 +291,9 @@ character(len=8) :: main, maout
                 do no = 1, nbno
                     zi(jadout-1+no) = zi(jconn+no)
                 end do
-                jconn = jconn + 1 + nbno
+                jconn = jconn+1+nbno
             end do
-        endif
+        end if
 !
 !
 !   -   AJOUT DE NOUVEAUX GROUP_MA
@@ -305,14 +305,14 @@ character(len=8) :: main, maout
             do gm = 1, nbgm
 !
 !          INSERTION DANS LE .GROUPEMA
-                nomgma = zk24(jngma-1 + gm)
+                nomgma = zk24(jngma-1+gm)
                 call jeexin(jexnom(gmaout, nomgma), iret)
                 if (iret .eq. 0) then
                     call jecroc(jexnom(gmaout, nomgma))
                 else
                     valk = nomgma
                     call utmess('F', 'ALGELINE4_9', sk=valk)
-                endif
+                end if
 !
                 nbma = zi(jgpma)
                 call jeecra(jexnom(gmaout, nomgma), 'LONMAX', nbma)
@@ -321,15 +321,15 @@ character(len=8) :: main, maout
 !
                 do ma = 1, nbma
                     numa = zi(jgpma+ma)
-                    if (numa .le. 0) numa = -numa + numaco
+                    if (numa .le. 0) numa = -numa+numaco
                     zi(jadout-1+ma) = numa
                 end do
-                jgpma = jgpma + 1 + nbma
+                jgpma = jgpma+1+nbma
 !
             end do
-        endif
+        end if
 !
-        numaco = numaco + nbma
+        numaco = numaco+nbma
     end do
 !
 !     -- RETASSAGE  DE CONOUT (QUI A ETE ALLOUEE TROP GRANDE) :

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine newvit(neq, c1, c2, v0, a0,&
+subroutine newvit(neq, c1, c2, v0, a0, &
                   v1, a1)
     implicit none
 !
@@ -46,8 +46,8 @@ subroutine newvit(neq, c1, c2, v0, a0,&
     integer :: neq
 !-----------------------------------------------------------------------
     call dcopy(neq, v0, 1, v1, 1)
-    call daxpy(neq, c1, a0, 1, v1,&
+    call daxpy(neq, c1, a0, 1, v1, &
                1)
-    call daxpy(neq, c2, a1, 1, v1,&
+    call daxpy(neq, c2, a1, 1, v1, &
                1)
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine btdbmc(b, d, jacob, ndim, nno,&
+subroutine btdbmc(b, d, jacob, ndim, nno, &
                   nbsig, elas_type, btdb)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/btdbpr.h"
@@ -66,137 +66,137 @@ implicit none
 !
     nbinco = nno*ndim
 !
-    if (elas_type.eq.1 .or. elas_type.eq.4) then
+    if (elas_type .eq. 1 .or. elas_type .eq. 4) then
 !
 ! ----- Isotropic elasticity
 !
-        if (lteatt('C_PLAN','OUI') .or. lteatt('D_PLAN','OUI')) then
+        if (lteatt('C_PLAN', 'OUI') .or. lteatt('D_PLAN', 'OUI')) then
 !
 ! --------- Plane stress/plane strain
 !
-            l1 = nbinco - 1
-            d1 = d(1,1)*jacob
-            d2 = d(1,2)*jacob
-            d3 = d(4,4)*jacob
+            l1 = nbinco-1
+            d1 = d(1, 1)*jacob
+            d2 = d(1, 2)*jacob
+            d3 = d(4, 4)*jacob
             do i1 = 1, l1, 2
                 do i2 = 1, l1, 2
-                    r11 = b(1,i1) *b(1,i2)
-                    r21 = b(2,i1+1)*b(1,i2)
-                    r12 = b(1,i1) *b(2,i2+1)
-                    r22 = b(2,i1+1)*b(2,i2+1)
-                    btdb(i1,i2) = btdb(i1,i2) + d1*r11 + d3*r22
-                    btdb(i1+1,i2) = btdb(i1+1,i2) + d2*r21 + d3*r12
-                    btdb(i1, i2+1) = btdb(i1, i2+1) + d2*r12 + d3*r21
-                    btdb(i1+1,i2+1) = btdb(i1+1,i2+1) + d1*r22 + d3* r11
+                    r11 = b(1, i1)*b(1, i2)
+                    r21 = b(2, i1+1)*b(1, i2)
+                    r12 = b(1, i1)*b(2, i2+1)
+                    r22 = b(2, i1+1)*b(2, i2+1)
+                    btdb(i1, i2) = btdb(i1, i2)+d1*r11+d3*r22
+                    btdb(i1+1, i2) = btdb(i1+1, i2)+d2*r21+d3*r12
+                    btdb(i1, i2+1) = btdb(i1, i2+1)+d2*r12+d3*r21
+                    btdb(i1+1, i2+1) = btdb(i1+1, i2+1)+d1*r22+d3*r11
                 end do
             end do
 !
-        elseif (lteatt('AXIS','OUI').and. (.not.lteatt('FOURIER','OUI'))) then
+        elseif (lteatt('AXIS', 'OUI') .and. (.not. lteatt('FOURIER', 'OUI'))) then
 !
 ! --------- Axi-symmetric
 !
-            l1 = nbinco - 1
-            d1 = d(1,1)*jacob
-            d2 = d(1,2)*jacob
-            d3 = d(4,4)*jacob
+            l1 = nbinco-1
+            d1 = d(1, 1)*jacob
+            d2 = d(1, 2)*jacob
+            d3 = d(4, 4)*jacob
             do i1 = 1, l1, 2
                 do i2 = 1, l1, 2
-                    r11 = b(1,i1) *b(1,i2)
-                    r21 = b(2,i1+1)*b(1,i2)
-                    r31 = b(3,i1) *b(1,i2)
-                    r12 = b(1,i1) *b(2,i2+1)
-                    r22 = b(2,i1+1)*b(2,i2+1)
-                    r32 = b(3,i1) *b(2,i2+1)
-                    r13 = b(1,i1) *b(3,i2)
-                    r23 = b(2,i1+1)*b(3,i2)
-                    r33 = b(3,i1) *b(3,i2)
-                    btdb(i1,i2) = btdb(i1,i2) + d1*(r11+r33) + d2*( r31+r13) + d3*r22
-                    btdb(i1+1,i2) = btdb(i1+1,i2) + d2*(r21+r23) + d3*r12
-                    btdb(i1, i2+1) = btdb(i1, i2+1) + d2*(r12+r32) + d3*r21
-                    btdb(i1+1,i2+1) = btdb(i1+1,i2+1) + d1*r22 + d3* r11
+                    r11 = b(1, i1)*b(1, i2)
+                    r21 = b(2, i1+1)*b(1, i2)
+                    r31 = b(3, i1)*b(1, i2)
+                    r12 = b(1, i1)*b(2, i2+1)
+                    r22 = b(2, i1+1)*b(2, i2+1)
+                    r32 = b(3, i1)*b(2, i2+1)
+                    r13 = b(1, i1)*b(3, i2)
+                    r23 = b(2, i1+1)*b(3, i2)
+                    r33 = b(3, i1)*b(3, i2)
+                    btdb(i1, i2) = btdb(i1, i2)+d1*(r11+r33)+d2*(r31+r13)+d3*r22
+                    btdb(i1+1, i2) = btdb(i1+1, i2)+d2*(r21+r23)+d3*r12
+                    btdb(i1, i2+1) = btdb(i1, i2+1)+d2*(r12+r32)+d3*r21
+                    btdb(i1+1, i2+1) = btdb(i1+1, i2+1)+d1*r22+d3*r11
                 end do
             end do
 !
-        else if (lteatt('DIM_TOPO_MAILLE','3')) then
+        else if (lteatt('DIM_TOPO_MAILLE', '3')) then
 !
 ! --------- 3D
 !
-            l2 = nbinco - 2
-            d1 = d(1,1)*jacob
-            d2 = d(1,2)*jacob
-            d3 = d(4,4)*jacob
+            l2 = nbinco-2
+            d1 = d(1, 1)*jacob
+            d2 = d(1, 2)*jacob
+            d3 = d(4, 4)*jacob
             do i1 = 1, l2, 3
                 do i2 = 1, l2, 3
-                    r11 = b(1,i1)*b(1,i2)
-                    r12 = b(1,i1)*b(2,i2+1)
-                    r13 = b(1,i1)*b(3,i2+2)
-                    r21 = b(2,i1+1)*b(1,i2)
-                    r22 = b(2,i1+1)*b(2,i2+1)
-                    r23 = b(2,i1+1)*b(3,i2+2)
-                    r31 = b(3,i1+2)*b(1,i2)
-                    r32 = b(3,i1+2)*b(2,i2+1)
-                    r33 = b(3,i1+2)*b(3,i2+2)
-                    btdb(i1,i2) = btdb(i1,i2) + d1*r11 + d3*(r22+r33)
-                    btdb(i1+1,i2) = btdb(i1+1,i2) + d2*r21 + d3*r12
-                    btdb(i1+2,i2) = btdb(i1+2,i2) + d2*r31 + d3*r13
-                    btdb(i1, i2+1) = btdb(i1, i2+1) + d2*r12 + d3*r21
-                    btdb(i1+1,i2+1) = btdb(i1+1,i2+1) + d1*r22 + d3*( r11+r33)
-                    btdb(i1+2,i2+1) = btdb(i1+2,i2+1) + d2*r32 + d3* r23
-                    btdb(i1, i2+2) = btdb(i1, i2+2) + d2*r13 + d3*r31
-                    btdb(i1+1,i2+2) = btdb(i1+1,i2+2) + d2*r23 + d3* r32
-                    btdb(i1+2,i2+2) = btdb(i1+2,i2+2) + d1*r33 + d3*( r11+r22)
+                    r11 = b(1, i1)*b(1, i2)
+                    r12 = b(1, i1)*b(2, i2+1)
+                    r13 = b(1, i1)*b(3, i2+2)
+                    r21 = b(2, i1+1)*b(1, i2)
+                    r22 = b(2, i1+1)*b(2, i2+1)
+                    r23 = b(2, i1+1)*b(3, i2+2)
+                    r31 = b(3, i1+2)*b(1, i2)
+                    r32 = b(3, i1+2)*b(2, i2+1)
+                    r33 = b(3, i1+2)*b(3, i2+2)
+                    btdb(i1, i2) = btdb(i1, i2)+d1*r11+d3*(r22+r33)
+                    btdb(i1+1, i2) = btdb(i1+1, i2)+d2*r21+d3*r12
+                    btdb(i1+2, i2) = btdb(i1+2, i2)+d2*r31+d3*r13
+                    btdb(i1, i2+1) = btdb(i1, i2+1)+d2*r12+d3*r21
+                    btdb(i1+1, i2+1) = btdb(i1+1, i2+1)+d1*r22+d3*(r11+r33)
+                    btdb(i1+2, i2+1) = btdb(i1+2, i2+1)+d2*r32+d3*r23
+                    btdb(i1, i2+2) = btdb(i1, i2+2)+d2*r13+d3*r31
+                    btdb(i1+1, i2+2) = btdb(i1+1, i2+2)+d2*r23+d3*r32
+                    btdb(i1+2, i2+2) = btdb(i1+2, i2+2)+d1*r33+d3*(r11+r22)
                 end do
             end do
 !
-        else if (lteatt('FOURIER','OUI')) then
+        else if (lteatt('FOURIER', 'OUI')) then
 !
 ! --------- Fourier
 !
-            l2 = nbinco - 2
-            d1 = d(1,1)*jacob
-            d2 = d(1,2)*jacob
-            d3 = d(4,4)*jacob
+            l2 = nbinco-2
+            d1 = d(1, 1)*jacob
+            d2 = d(1, 2)*jacob
+            d3 = d(4, 4)*jacob
             do i1 = 1, l2, 3
                 do i2 = 1, l2, 3
-                    r11 = b(1,i1)*b(1,i2)
-                    r12 = b(1,i1)*b(2,i2+1)
-                    r13 = b(1,i1)*b(3,i2+2)
-                    r21 = b(2,i1+1)*b(1,i2)
-                    r22 = b(2,i1+1)*b(2,i2+1)
-                    r23 = b(2,i1+1)*b(3,i2+2)
-                    r31 = b(3,i1+2)*b(1,i2)
-                    r32 = b(3,i1+2)*b(2,i2+1)
-                    r33 = b(3,i1+2)*b(3,i2+2)
-                    rs13 = b(1,i1) *b(3,i2)
-                    rs23 = b(2,i1+1)*b(3,i2)
-                    sr31 = b(3,i1) *b(1,i2)
-                    sr32 = b(3,i1) *b(2,i2+1)
-                    sr33 = b(3,i1) *b(3,i2+2)
-                    rs33 = b(3,i1+2)*b(3,i2)
-                    s33 = b(3,i1) *b(3,i2)
-                    btdb(i1,i2) = btdb(i1,i2) + d1*(r11+s33) + d2*( rs13+sr31) + d3*(r22+r33)
-                    btdb(i1+1,i2) = btdb(i1+1,i2) + d2*(r21+rs23) + d3*r12
-                    btdb(i1+2,i2) = btdb(i1+2,i2) + d1*rs33+ d2*r31 + d3*(-r13+sr33)
-                    btdb(i1, i2+1) = btdb(i1, i2+1) + d2*(r12+sr32) + d3*r21
-                    btdb(i1+1,i2+1) = btdb(i1+1,i2+1) + d1*r22 + d3*( r11+r33)
-                    btdb(i1+2,i2+1) = btdb(i1+2,i2+1) + d2*r32 - d3* r23
-                    btdb(i1, i2+2) = btdb(i1, i2+2) + d1*sr33 + d2* r13 + d3*(-r31+rs33)
-                    btdb(i1+1,i2+2) = btdb(i1+1,i2+2) + d2*r23 - d3* r32
-                    btdb(i1+2,i2+2) = btdb(i1+2,i2+2) + d1*r33 + d3*(r11+r22+s33-sr31-rs13)
+                    r11 = b(1, i1)*b(1, i2)
+                    r12 = b(1, i1)*b(2, i2+1)
+                    r13 = b(1, i1)*b(3, i2+2)
+                    r21 = b(2, i1+1)*b(1, i2)
+                    r22 = b(2, i1+1)*b(2, i2+1)
+                    r23 = b(2, i1+1)*b(3, i2+2)
+                    r31 = b(3, i1+2)*b(1, i2)
+                    r32 = b(3, i1+2)*b(2, i2+1)
+                    r33 = b(3, i1+2)*b(3, i2+2)
+                    rs13 = b(1, i1)*b(3, i2)
+                    rs23 = b(2, i1+1)*b(3, i2)
+                    sr31 = b(3, i1)*b(1, i2)
+                    sr32 = b(3, i1)*b(2, i2+1)
+                    sr33 = b(3, i1)*b(3, i2+2)
+                    rs33 = b(3, i1+2)*b(3, i2)
+                    s33 = b(3, i1)*b(3, i2)
+                    btdb(i1, i2) = btdb(i1, i2)+d1*(r11+s33)+d2*(rs13+sr31)+d3*(r22+r33)
+                    btdb(i1+1, i2) = btdb(i1+1, i2)+d2*(r21+rs23)+d3*r12
+                    btdb(i1+2, i2) = btdb(i1+2, i2)+d1*rs33+d2*r31+d3*(-r13+sr33)
+                    btdb(i1, i2+1) = btdb(i1, i2+1)+d2*(r12+sr32)+d3*r21
+                    btdb(i1+1, i2+1) = btdb(i1+1, i2+1)+d1*r22+d3*(r11+r33)
+                    btdb(i1+2, i2+1) = btdb(i1+2, i2+1)+d2*r32-d3*r23
+                    btdb(i1, i2+2) = btdb(i1, i2+2)+d1*sr33+d2*r13+d3*(-r31+rs33)
+                    btdb(i1+1, i2+2) = btdb(i1+1, i2+2)+d2*r23-d3*r32
+                    btdb(i1+2, i2+2) = btdb(i1+2, i2+2)+d1*r33+d3*(r11+r22+s33-sr31-rs13)
                 end do
             end do
         else
             ASSERT(.false.)
-        endif
-    elseif ((elas_type.eq.2).or.(elas_type.eq.3).or.&
-            (elas_type.eq.5).or.(elas_type.eq.6)) then
+        end if
+    elseif ((elas_type .eq. 2) .or. (elas_type .eq. 3) .or. &
+            (elas_type .eq. 5) .or. (elas_type .eq. 6)) then
 !
 ! ----- Orthotropic/Transverse isotropic elasticity
 !
-        call btdbpr(b, d, jacob, nbsig, nbinco,&
+        call btdbpr(b, d, jacob, nbsig, nbinco, &
                     btdb)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

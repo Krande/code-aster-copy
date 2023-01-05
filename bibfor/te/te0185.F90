@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,72 +56,72 @@ subroutine te0185(option, nomte)
 !
 !     -- CALCUL DE LINE :
     call jevech('PNONLIN', 'L', j1)
-    inlin=zi(j1-1+1)
-    line=(inlin.eq.0)
+    inlin = zi(j1-1+1)
+    line = (inlin .eq. 0)
 !
 !     -- CALCUL DE CMOD (CODE DE LA MODELISATION) :
     call teattr('S', 'ALIAS8', alias8, ibid)
-    cmod=alias8(3:5)
+    cmod = alias8(3:5)
 !
     if (line) then
 !       -- QUAND LE CALCUL EST LINEAIRE :
         if (cmod .eq. '2DB') then
 !         -- 2D_BARRE
             call ef0154(nomte)
-        else if (cmod.eq.'2DT'.or.cmod.eq.'2TR') then
+        else if (cmod .eq. '2DT' .or. cmod .eq. '2TR') then
 !         -- 2D_DIS_T , 2D_DIS_TR
             call ef0042(nomte)
-        else if (cmod.eq.'BAR') then
+        else if (cmod .eq. 'BAR') then
 !         -- BARRE
             call ef0154(nomte)
-        else if (cmod.eq.'CAB'.or.cmod.eq.'CAP') then
+        else if (cmod .eq. 'CAB' .or. cmod .eq. 'CAP') then
 !         -- CABLE, CABLE_POULIE
             ASSERT(.false.)
-        else if (cmod.eq.'CQ3') then
+        else if (cmod .eq. 'CQ3') then
 !         -- COQUE_3D
             call ef0410(nomte)
-        else if (cmod.eq.'CQA') then
+        else if (cmod .eq. 'CQA') then
 !         -- COQUE_AXIS
             call ef0231(nomte)
-        else if (cmod.eq.'DIT') then
+        else if (cmod .eq. 'DIT') then
 !         -- DIS_T
             call ef0042(nomte)
-        else if (cmod.eq.'DTG'.or.cmod.eq.'Q4S') then
+        else if (cmod .eq. 'DTG' .or. cmod .eq. 'Q4S') then
 !         -- DKTG, Q4GG
             call ef0033(nomte)
-        else if (cmod.eq.'DKT'.or.cmod.eq.'DST'.or.cmod.eq.'Q4G') then
+        else if (cmod .eq. 'DKT' .or. cmod .eq. 'DST' .or. cmod .eq. 'Q4G') then
 !         -- DKT, DST, Q4G
             call ef0033(nomte)
-        else if (cmod.eq.'DTR') then
+        else if (cmod .eq. 'DTR') then
 !         -- DIS_TR
             call ef0042(nomte)
-        else if (cmod.eq.'PDE') then
+        else if (cmod .eq. 'PDE') then
 !         -- POU_D_E
             call ef0142(nomte)
-        else if (cmod.eq.'PDG') then
+        else if (cmod .eq. 'PDG') then
 !         -- POU_D_TG
             call ef0344(nomte)
-        else if (cmod.eq.'PDT') then
+        else if (cmod .eq. 'PDT') then
 !         -- POU_D_T
             call ef0142(nomte)
-        else if (cmod.eq.'PGD') then
+        else if (cmod .eq. 'PGD') then
 !         -- POU_D_T_GD
             ASSERT(.false.)
-        else if (cmod.eq.'PFM') then
+        else if (cmod .eq. 'PFM') then
 !         -- POU_D_EM
             call ef0142(nomte)
-        else if (cmod.eq.'PGM') then
+        else if (cmod .eq. 'PGM') then
 !         -- POU_D_TGM
             ASSERT(.false.)
-        else if (cmod.eq.'TU3'.or.cmod.eq.'TU6') then
+        else if (cmod .eq. 'TU3' .or. cmod .eq. 'TU6') then
 !         -- TUYAU_3M, TUYAU_6M
             call ef0585(nomte)
-        else if (cmod.eq.'MMB') then
+        else if (cmod .eq. 'MMB') then
 !         -- MEMBRANE
             call ef0436(nomte)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !
 !
@@ -130,63 +130,63 @@ subroutine te0185(option, nomte)
         if (cmod .eq. '2DB') then
 !         -- 2D_BARRE
             call ef0156(nomte)
-        else if (cmod.eq.'2DT'.or.cmod.eq.'2TR') then
+        else if (cmod .eq. '2DT' .or. cmod .eq. '2TR') then
 !         -- 2D_DIS_T , 2D_DIS_TR
             call ef0039(nomte)
-        else if (cmod.eq.'BAR'.or.cmod.eq.'CAB') then
+        else if (cmod .eq. 'BAR' .or. cmod .eq. 'CAB') then
 !         -- BARRE, CABLE
             call ef0156(nomte)
-        else if (cmod.eq.'CAP') then
+        else if (cmod .eq. 'CAP') then
 !         -- CABLE_POULIE
             ASSERT(.false.)
-        else if (cmod.eq.'CQ3') then
+        else if (cmod .eq. 'CQ3') then
 !         -- COQUE_3D
             call ef0415(nomte)
-        else if (cmod.eq.'CQA') then
+        else if (cmod .eq. 'CQA') then
 !         -- COQUE_AXIS
             ASSERT(.false.)
-        else if (cmod.eq.'DIT') then
+        else if (cmod .eq. 'DIT') then
 !         -- DIS_T
             call ef0039(nomte)
-        else if (cmod.eq.'DTG'.or.cmod.eq.'Q4S') then
+        else if (cmod .eq. 'DTG' .or. cmod .eq. 'Q4S') then
 !         -- DKTG, Q4GG
             call ef0409(nomte)
-        else if (cmod.eq.'DKT') then
+        else if (cmod .eq. 'DKT') then
 !         -- DKT
             call ef0031(nomte)
-        else if (cmod.eq.'DTR') then
+        else if (cmod .eq. 'DTR') then
 !         -- DIS_TR
             call ef0039(nomte)
-        else if (cmod.eq.'PDE') then
+        else if (cmod .eq. 'PDE') then
 !         -- POU_D_E
             call ef0347(nomte)
-        else if (cmod.eq.'PDG') then
+        else if (cmod .eq. 'PDG') then
 !         -- POU_D_TG
             call ef0347(nomte)
-        else if (cmod.eq.'PDT') then
+        else if (cmod .eq. 'PDT') then
 !         -- POU_D_T
             call ef0347(nomte)
-        else if (cmod.eq.'PGD') then
+        else if (cmod .eq. 'PGD') then
 !         -- POU_D_T_GD
             ASSERT(.false.)
-        else if (cmod.eq.'PFM') then
+        else if (cmod .eq. 'PFM') then
 !         -- POU_D_EM
             call ef0517(nomte)
-        else if (cmod.eq.'PGS') then
+        else if (cmod .eq. 'PGS') then
 !         -- POU_D_SQUE
             call ef0517(nomte)
-        else if (cmod.eq.'PGM') then
+        else if (cmod .eq. 'PGM') then
 !         -- POU_D_TGM
             call ef0517(nomte)
-        else if (cmod.eq.'TU3'.or.cmod.eq.'TU6') then
+        else if (cmod .eq. 'TU3' .or. cmod .eq. 'TU6') then
 !         -- TUYAU_3M, TUYAU_6M
             call ef0587(nomte)
-        else if (cmod.eq.'MMB') then
+        else if (cmod .eq. 'MMB') then
 !         -- MEMBRANE
             call ef0156(nomte)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

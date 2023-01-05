@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine alresl(opt, ligrel, nochou, nompar, base)
-implicit none
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 !     arguments:
@@ -77,21 +77,18 @@ implicit none
     gd = grdeur(nompar)
     scal = scalai(gd)
 
-
 !   -- le resuelem doit-il etre cree ?
 !   ----------------------------------
     iparmx = 0
     do igr = 1, ngrel
-        te = typele(ligrel,igr,1)
-        ipar = inpara(opt,te,'OUT',nompar)
-        iparmx = max(iparmx,ipar)
+        te = typele(ligrel, igr, 1)
+        ipar = inpara(opt, te, 'OUT', nompar)
+        iparmx = max(iparmx, ipar)
     end do
     if (iparmx .eq. 0) goto 30
 
-
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     call dismoi('TYPE_MATRICE', nomgd, 'GRANDEUR', repk=tymat)
-
 
 !   -- creation de l'objet .NOLI :
     call wkvect(nochou//'.NOLI', bas1//' V K24', 4, jnoli)
@@ -104,9 +101,8 @@ implicit none
     call jeecra(nochou//'.DESC', 'DOCU', cval='RESL')
 
 !   -- creation de la collection dipersee .RESL  :
-    call jecrec(nochou//'.RESL', bas1//' V '//scal(1:4), 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(nochou//'.RESL', bas1//' V '//scal(1:4), 'NU', 'DISPERSE', 'VARIABLE', &
                 ngrel)
-
 
 !   -- remplissage de desc et allocation de .RESL:
 !   ----------------------------------------------
@@ -114,23 +110,23 @@ implicit none
     zi(desc-1+1) = gd
     zi(desc-1+2) = ngrel
     do igr = 1, ngrel
-        nel = nbelem(ligrel,igr,1)
-        te = typele(ligrel,igr,1)
-        ipar = inpara(opt,te,'OUT',nompar)
+        nel = nbelem(ligrel, igr, 1)
+        te = typele(ligrel, igr, 1)
+        ipar = inpara(opt, te, 'OUT', nompar)
 
 !        -- si le type_element ne connait pas le parametre:
         if (ipar .eq. 0) then
             zi(desc-1+2+igr) = 0
         else
-            mode = modatt(opt,te,'OUT',ipar)
-            ASSERT(mode.gt.0)
+            mode = modatt(opt, te, 'OUT', ipar)
+            ASSERT(mode .gt. 0)
             zi(desc-1+2+igr) = mode
             call jecroc(jexnum(nochou//'.RESL', igr))
 
             ncmpel = digde2(mode)
             call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', ncmpel*nel)
-        endif
+        end if
     end do
- 30 continue
+30  continue
     call jedema()
 end subroutine

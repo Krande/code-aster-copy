@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srvacv(nbmat,mater,paravi,varvi)
+subroutine srvacv(nbmat, mater, paravi, varvi)
 
 !
 
@@ -34,7 +34,7 @@ subroutine srvacv(nbmat,mater,paravi,varvi)
 ! OUT : VARVI(4)       : (AVXIV, BVXIV, DVXIV, KXIV)
 ! ===================================================================================
 
-    implicit      none
+    implicit none
 
 #include "asterc/r8pi.h"
 
@@ -43,42 +43,42 @@ subroutine srvacv(nbmat,mater,paravi,varvi)
     !!!
 
     integer :: nbmat
-    real(kind=8) :: mater(nbmat,2),paravi(3),varvi(4)
+    real(kind=8) :: mater(nbmat, 2), paravi(3), varvi(4)
 
     !!!
     !!! Variables locales
     !!!
 
-    real(kind=8) :: sigc,gamma,beta,r0c,avxiv,bvxiv,kvxiv,dvxiv
+    real(kind=8) :: sigc, gamma, beta, r0c, avxiv, bvxiv, kvxiv, dvxiv
     real(kind=8) :: pi
 
     !!!
     !!! Recuperation des parametres du modele
     !!!
 
-    sigc=mater(3,2)
-    beta=mater(4,2)
-    gamma=mater(5,2)
-    pi=r8pi()
+    sigc = mater(3, 2)
+    beta = mater(4, 2)
+    gamma = mater(5, 2)
+    pi = r8pi()
 
     !!!
     !!! Calcul de k, a, b et d
     !!!
 
-    r0c=cos(beta*pi/6.d0-1.d0/3.d0*acos(gamma))
+    r0c = cos(beta*pi/6.d0-1.d0/3.d0*acos(gamma))
 
-    kvxiv=(2.d0/3.d0)**(1.d0/2.d0/paravi(1))
-    avxiv=-paravi(3)*kvxiv/sqrt(6.d0)/sigc/r0c
-    bvxiv=paravi(3)*kvxiv/3.d0/sigc
-    dvxiv=paravi(2)*kvxiv
+    kvxiv = (2.d0/3.d0)**(1.d0/2.d0/paravi(1))
+    avxiv = -paravi(3)*kvxiv/sqrt(6.d0)/sigc/r0c
+    bvxiv = paravi(3)*kvxiv/3.d0/sigc
+    dvxiv = paravi(2)*kvxiv
 
     !!!
     !!! Stockage
     !!!
 
-    varvi(1)=avxiv
-    varvi(2)=bvxiv
-    varvi(3)=dvxiv
-    varvi(4)=kvxiv
+    varvi(1) = avxiv
+    varvi(2) = bvxiv
+    varvi(3) = dvxiv
+    varvi(4) = kvxiv
 
 end subroutine

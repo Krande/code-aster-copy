@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vlggl(nno, nbrddl, pgl, v, code,&
+subroutine vlggl(nno, nbrddl, pgl, v, code, &
                  p, vtemp)
     implicit none
 #include "asterfort/utmess.h"
@@ -41,10 +41,10 @@ subroutine vlggl(nno, nbrddl, pgl, v, code,&
     do i = 1, nbrddl
         do j = 1, nbrddl
             if (i .eq. j) then
-                p(i,j)=1.d0
+                p(i, j) = 1.d0
             else
-                p(i,j)=0.d0
-            endif
+                p(i, j) = 0.d0
+            end if
         end do
     end do
 !
@@ -53,11 +53,11 @@ subroutine vlggl(nno, nbrddl, pgl, v, code,&
 !  DE PASSAGE (3*3) PGL.
 !
     do l = 1, nno
-        m=(l-1)*nbrddl/nno
+        m = (l-1)*nbrddl/nno
         do i = 1, 3
             do j = 1, 3
-                p(m+i,m+j)=pgl(i,j)
-                p(m+3+i,m+3+j)=pgl(i,j)
+                p(m+i, m+j) = pgl(i, j)
+                p(m+3+i, m+3+j) = pgl(i, j)
             end do
         end do
     end do
@@ -76,23 +76,23 @@ subroutine vlggl(nno, nbrddl, pgl, v, code,&
 !
         do i = 1, nbrddl
             do l = 1, nbrddl
-                vtemp(i)=vtemp(i)+p(l,i)*v(l)
+                vtemp(i) = vtemp(i)+p(l, i)*v(l)
             end do
         end do
 !
-    else if (code.eq.'GL') then
+    else if (code .eq. 'GL') then
 !
 ! CALCUL DE VTEMP = P * V
 !
         do i = 1, nbrddl
             do l = 1, nbrddl
-                vtemp(i)=vtemp(i)+p(i,l)*v(l)
+                vtemp(i) = vtemp(i)+p(i, l)*v(l)
             end do
         end do
 !
     else
         call utmess('F', 'ELEMENTS4_58', sk=code)
-    endif
+    end if
 !
 ! STOCKAGE DE VTEMP DANS V
 !

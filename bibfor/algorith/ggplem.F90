@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ggplem(s, dpc, valden, unsurk, unsurm,&
+subroutine ggplem(s, dpc, valden, unsurk, unsurm, &
                   theta, deuxmu, g, dgdst, dgdev)
     implicit none
 !
@@ -65,9 +65,9 @@ subroutine ggplem(s, dpc, valden, unsurk, unsurm,&
         else
             g = exp(valden*(log(s*unsurk)-unsurm*log(dpc)))
             dgdst = valden*(1.d0/s+unsurm/(1.5d0*deuxmu*dpc))*g
-            dgdev = - valden*g*unsurm/dpc
-        endif
-    endif
+            dgdev = -valden*g*unsurm/dpc
+        end if
+    end if
     g = g*theta
     dgdst = dgdst*theta
     dgdev = dgdev*theta

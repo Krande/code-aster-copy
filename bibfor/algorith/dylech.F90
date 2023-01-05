@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,10 +83,10 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
         call wkvect(exreco, 'V V C  ', nbexre, jlccre)
         call wkvect(exresu, 'V V K8 ', nbexre, jlresu)
         do iresu = 1, nbexre
-            call getvid('EXCIT_RESU', 'RESULTAT', iocc=iresu, scal=zk8( jlresu+iresu-1), nbret=n)
-            call getvc8('EXCIT_RESU', 'COEF_MULT_C', iocc=iresu, scal=zc (jlccre+iresu-1),&
+            call getvid('EXCIT_RESU', 'RESULTAT', iocc=iresu, scal=zk8(jlresu+iresu-1), nbret=n)
+            call getvc8('EXCIT_RESU', 'COEF_MULT_C', iocc=iresu, scal=zc(jlccre+iresu-1), &
                         nbret=n)
         end do
-    endif
+    end if
 !
 end subroutine

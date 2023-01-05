@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine genecy(cmod1, cmod2, neq, lmat, para,&
+subroutine genecy(cmod1, cmod2, neq, lmat, para, &
                   nbsec, beta1, beta2, ctrav)
 !    C. VARE     DATE 20/01/94
 !-----------------------------------------------------------------------
@@ -45,18 +45,18 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
     real(kind=8) :: para(2), zero
     complex(kind=8) :: cmod1(neq), cmod2(neq), ctrav(neq), cfact1, cfact2
 !-----------------------------------------------------------------------
-    data zero /0.d+00/
+    data zero/0.d+00/
 !-----------------------------------------------------------------------
 !
-    para(1)=zero
-    para(2)=zero
+    para(1) = zero
+    para(2) = zero
     do i = 1, neq
-        ctrav(i) = dcmplx(0.d0,0.d0)
+        ctrav(i) = dcmplx(0.d0, 0.d0)
     end do
 !
 !------CALCUL DU PRODUIT MATRICE ASSEMBLEE REELLE-MODE COMPLEXE---------
 !
-    call mcmult('ZERO', lmat, cmod2, ctrav, 1,&
+    call mcmult('ZERO', lmat, cmod2, ctrav, 1, &
                 .true._1)
 !
 !-------------------BOUCLE SUR LES SECTEURS-----------------------------
@@ -65,21 +65,21 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
 !
 !  CALCUL DU DEPHASAGE DU SECTEUR COURANT (ET DU CONJUGUE)
 !
-        cfact1=dcmplx(cos((i-1)*beta1),sin((i-1)*beta1))
-        cfact2=dcmplx(cos((i-1)*beta2),sin((i-1)*beta2))
+        cfact1 = dcmplx(cos((i-1)*beta1), sin((i-1)*beta1))
+        cfact2 = dcmplx(cos((i-1)*beta2), sin((i-1)*beta2))
 !
-        xrea=zero
-        xima=zero
+        xrea = zero
+        xima = zero
 !
 !  BOUCLE SUR LES DDL ASSEMBLES POUR PRODUITS SCALAIRES
 !
         do j = 1, neq
-            xrea=xrea+dble(cfact1*cmod1(j))*dble(cfact2*ctrav(j))
-            xima=xima+dimag(cfact1*cmod1(j))*dimag(cfact2*ctrav(j))
+            xrea = xrea+dble(cfact1*cmod1(j))*dble(cfact2*ctrav(j))
+            xima = xima+dimag(cfact1*cmod1(j))*dimag(cfact2*ctrav(j))
         end do
 !
-        para(1)=para(1)+xrea
-        para(2)=para(2)+xima
+        para(1) = para(1)+xrea
+        para(2) = para(2)+xima
 !
     end do
 !

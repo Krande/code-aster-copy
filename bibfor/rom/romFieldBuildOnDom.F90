@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romFieldBuildOnDom(resultRom, fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
@@ -29,8 +29,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/dgemm.h"
 !
-type(ROM_DS_Result), intent(in) :: resultRom
-type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
+    type(ROM_DS_Result), intent(in) :: resultRom
+    type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,23 +55,23 @@ type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM17_6')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    base    = fieldBuild%base
-    nbMode  = base%nbMode
-    nbEqua  = base%mode%nbEqua
+    base = fieldBuild%base
+    nbMode = base%nbMode
+    nbEqua = base%mode%nbEqua
     nbStore = resultRom%nbStore
 !
 ! - Allocate object
 !
-    AS_ALLOCATE(vr = fieldBuild%fieldTransientVale, size = nbEqua*(nbStore-1))
+    AS_ALLOCATE(vr=fieldBuild%fieldTransientVale, size=nbEqua*(nbStore-1))
 !
 ! - Construct object
 !
-    call dgemm('N', 'N', nbEqua, nbStore-1, nbMode, 1.d0,&
-                fieldBuild%matrPhi, nbEqua, fieldBuild%reduMatr, &
-                nbMode, 0.d0, fieldBuild%fieldTransientVale, nbEqua)
+    call dgemm('N', 'N', nbEqua, nbStore-1, nbMode, 1.d0, &
+               fieldBuild%matrPhi, nbEqua, fieldBuild%reduMatr, &
+               nbMode, 0.d0, fieldBuild%fieldTransientVale, nbEqua)
 !
 end subroutine

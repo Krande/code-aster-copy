@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xlagsc(nb_dim, nb_node_mesh, nb_edge, nb_edge_max, algo_lagr,&
-                  jtabno, jtabin      , jtabcr , crack      , sdline_crack,&
+subroutine xlagsc(nb_dim, nb_node_mesh, nb_edge, nb_edge_max, algo_lagr, &
+                  jtabno, jtabin, jtabcr, crack, sdline_crack, &
                   l_pilo, tabai, l_ainter)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -90,29 +90,29 @@ implicit none
 !
 ! ----- Selection of edges
 !
-        call xsella(crack       , nb_node_mesh, nb_edge, zi(jtabno), zi(jpino),&
+        call xsella(crack, nb_node_mesh, nb_edge, zi(jtabno), zi(jpino), &
                     nb_node_sele)
 !
 ! ----- Create list of linear relations (algorithm 1)
 !
-        call xrell1(zi(jtabno)  , nb_edge, zi(jpino), nb_node_sele, sdline_crack,&
-                       tabai, l_ainter)
+        call xrell1(zi(jtabno), nb_edge, zi(jpino), nb_node_sele, sdline_crack, &
+                    tabai, l_ainter)
 
-    else if (algo_lagr.eq.2) then
+    else if (algo_lagr .eq. 2) then
 !
 ! ----- Create list of linear relations (algorithm 2)
 !
-        call xrell2(zi(jtabno)    , nb_dim      , nb_edge, zr(jtabin), zr(jtabcr),&
+        call xrell2(zi(jtabno), nb_dim, nb_edge, zr(jtabin), zr(jtabcr), &
                     l_create_group, sdline_crack, l_pilo, tabai, l_ainter)
 
-    else if (algo_lagr.eq.3) then
+    else if (algo_lagr .eq. 3) then
 !
 ! ----- Create list of linear relations (algorithm 3)
 !
-        call xrell3(zi(jtabno), nb_edge, crack, sdline_crack,&
+        call xrell3(zi(jtabno), nb_edge, crack, sdline_crack, &
                     zr(jtabcr), tabai, l_ainter)
 
-    endif
+    end if
 !
     call jedetr('&&XLAGSP.PICKNO')
 

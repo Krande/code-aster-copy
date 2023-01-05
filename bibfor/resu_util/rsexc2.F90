@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
+subroutine rsexc2(i1, i2, nomsd, nomsy, iordr, &
                   chextr, option, iret)
 !
-implicit none
+    implicit none
 !
 !-----------------------------------------------------------------------
 #include "asterf_types.h"
@@ -29,11 +29,11 @@ implicit none
 #include "asterfort/utmess.h"
     integer :: i1, i2, icode, iret, j, nmax
 !-----------------------------------------------------------------------
-    parameter (nmax=10)
+    parameter(nmax=10)
     character(len=15) :: noms(nmax)
     integer :: nb, iprec, iretg
     aster_logical :: alarme
-    save noms,nb,iprec,alarme,iretg
+    save noms, nb, iprec, alarme, iretg
     integer :: iordr
     character(len=*) :: nomsd, nomsy
     character(len=24) :: chextr
@@ -77,17 +77,17 @@ implicit none
     if (i1 .eq. 1) then
         iprec = 0
         iretg = 10000
-    endif
+    end if
 !
-    ASSERT((iprec.eq.0.or.nb.eq.i2).and.(iprec+1.eq.i1))
-    ASSERT(i2.le.nmax)
+    ASSERT((iprec .eq. 0 .or. nb .eq. i2) .and. (iprec+1 .eq. i1))
+    ASSERT(i2 .le. nmax)
     iprec = i1
     if (iretg .gt. 0) then
-        noms(i1)=nomsy
-        if (i1 .eq. 1) alarme=.true.
+        noms(i1) = nomsy
+        if (i1 .eq. 1) alarme = .true.
         nb = i2
         call rsexch(' ', nomsd, nomsy, iordr, chextr, icode)
-        alarme=alarme.and.icode.gt.0
+        alarme = alarme .and. icode .gt. 0
         if (alarme .and. i1 .eq. i2) then
             call getres(concep, typcon, nomcmd)
             valk(1) = nomsd
@@ -102,8 +102,8 @@ implicit none
             valk(1) = option
             valk(2) = nomsd
             call utmess('A', 'UTILITAI8_16', nk=2, valk=valk, si=vali)
-        endif
-        iretg=min(icode,iretg)
-    endif
-    iret=iretg
+        end if
+        iretg = min(icode, iretg)
+    end if
+    iret = iretg
 end subroutine

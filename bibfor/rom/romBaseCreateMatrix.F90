@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romBaseCreateMatrix(base, matrPhi)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,8 +32,8 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/jeveuo.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
-real(kind=8), pointer :: matrPhi(:)
+    type(ROM_DS_Empi), intent(in) :: base
+    real(kind=8), pointer :: matrPhi(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,30 +62,30 @@ real(kind=8), pointer :: matrPhi(:)
 !
 ! - Get parameters
 !
-    nbMode     = base%nbMode
+    nbMode = base%nbMode
     resultName = base%resultName
-    nbEqua     = base%mode%nbEqua
-    fieldName  = base%mode%fieldName
+    nbEqua = base%mode%nbEqua
+    fieldName = base%mode%fieldName
     if (niv .ge. 2) then
-        call utmess('I', 'ROM12_1', ni = 2, vali = [nbEqua, nbMode])
-    endif
+        call utmess('I', 'ROM12_1', ni=2, vali=[nbEqua, nbMode])
+    end if
 !
 ! - Create [PHI] matrix
 !
-    AS_ALLOCATE(vr = matrPhi, size = nbEqua*nbMode)
+    AS_ALLOCATE(vr=matrPhi, size=nbEqua*nbMode)
     do iMode = 1, nbMode
         numeMode = iMode
-        call rsexch(' '     , resultName , fieldName,&
+        call rsexch(' ', resultName, fieldName, &
                     numeMode, resultField, iret)
         ASSERT(iret .eq. 0)
-        call dismoi('TYPE_CHAMP', resultField, 'CHAMP', repk = fieldSupp)
+        call dismoi('TYPE_CHAMP', resultField, 'CHAMP', repk=fieldSupp)
         if (fieldSupp == 'NOEU') then
-            call jeveuo(resultField(1:19)//'.VALE', 'L', vr = fieldVale)
+            call jeveuo(resultField(1:19)//'.VALE', 'L', vr=fieldVale)
         else if (fieldSupp == 'ELGA') then
-            call jeveuo(resultField(1:19)//'.CELV', 'L', vr = fieldVale)
+            call jeveuo(resultField(1:19)//'.CELV', 'L', vr=fieldVale)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         do iEqua = 1, nbEqua
             matrPhi(iEqua+nbEqua*(iMode-1)) = fieldVale(iEqua)
         end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,46 +45,46 @@ subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
     else
         nbnom = 8
         nbnum = 10
-    endif
+    end if
     nbobo = nboblu
     if (nbobo .gt. 99999) then
         call utmess('F', 'PREPOST_57')
-    endif
+    end if
 !
 !     --- ON LIT LES OBJETS NOMMES:
 !
     call wkvect('&&GILIRE.OBJET_NOM', 'V V K8', nbobno, iaobno)
     call wkvect('&&GILIRE.OBJET_NUM', 'V V I', nbobno, iaobnu)
 !
-    nbfois = nbobno / nbnom
-    nbrest = nbobno - nbnom*nbfois
+    nbfois = nbobno/nbnom
+    nbrest = nbobno-nbnom*nbfois
     icoj = 0
     do i = 1, nbfois
-        read(nfic,1007) (zk8(iaobno-1+j),j=icoj+1,icoj+nbnom)
-        icoj = icoj + nbnom
+        read (nfic, 1007) (zk8(iaobno-1+j), j=icoj+1, icoj+nbnom)
+        icoj = icoj+nbnom
     end do
     if (nbrest .gt. 0) then
-        read(nfic,1007) (zk8(iaobno-1+j),j=icoj+1,icoj+nbrest)
-    endif
+        read (nfic, 1007) (zk8(iaobno-1+j), j=icoj+1, icoj+nbrest)
+    end if
 !
-    nbfois = nbobno / nbnum
-    nbrest = nbobno - nbnum*nbfois
+    nbfois = nbobno/nbnum
+    nbrest = nbobno-nbnum*nbfois
     icoj = 0
     do i = 1, nbfois
         if (niv .eq. 3) then
-            read(nfic,1009) (zi(iaobnu-1+j),j=icoj+1,icoj+nbnum)
+            read (nfic, 1009) (zi(iaobnu-1+j), j=icoj+1, icoj+nbnum)
         else
-            read(nfic,1008) (zi(iaobnu-1+j),j=icoj+1,icoj+nbnum)
-        endif
-        icoj = icoj + nbnum
+            read (nfic, 1008) (zi(iaobnu-1+j), j=icoj+1, icoj+nbnum)
+        end if
+        icoj = icoj+nbnum
     end do
     if (nbrest .gt. 0) then
         if (niv .eq. 3) then
-            read(nfic,1009) (zi(iaobnu-1+j),j=icoj+1,icoj+nbrest)
+            read (nfic, 1009) (zi(iaobnu-1+j), j=icoj+1, icoj+nbrest)
         else
-            read(nfic,1008) (zi(iaobnu-1+j),j=icoj+1,icoj+nbrest)
-        endif
-    endif
+            read (nfic, 1008) (zi(iaobnu-1+j), j=icoj+1, icoj+nbrest)
+        end if
+    end if
 !
 !     -- ON CREE L'OBJET .NOMOBJ QUI CONTIENDRA 2 K8 POUR CHAQUE OBJET:
 !        1--> 'OBJNPQ' : SUFFIXE POUR LES OBJETS JEVEUX CREES DS GILIOB
@@ -112,12 +112,12 @@ subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
     zi(iacuel-1+1) = 0
     do i = 1, nbobo
         call gilio2(nfic, i, nbele, niv)
-        zi(iacuel-1+i+1) = zi(iacuel-1+i) + nbele
+        zi(iacuel-1+i+1) = zi(iacuel-1+i)+nbele
     end do
 !
-    1007 format ( 8(1x,a8) )
-    1008 format ( 1x,10(i7,1x) )
-    1009 format ( 16(1x,i4) )
+1007 format(8(1x, a8))
+1008 format(1x, 10(i7, 1x))
+1009 format(16(1x, i4))
 !
     call jedema()
 !

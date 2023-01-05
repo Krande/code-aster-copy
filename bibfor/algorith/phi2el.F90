@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine phi2el(modele, carele, mate, mateco, accel, phibar,&
+subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
                   instap, ve)
     implicit none
 !
@@ -66,27 +66,27 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar,&
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    vecel=ve
+    vecel = ve
     ve2 = vecel//'.RELR'
     call jeexin(ve2, iret)
 !
     if (iret .eq. 0) then
         prem = .true.
-        call memare('V', vecel, modele(1:8), mate, carele,&
+        call memare('V', vecel, modele(1:8), mate, carele, &
                     'CHAR_THER')
         call wkvect(ve2, 'V V K24', 1, jlve)
         if (accel(9:14) .eq. '.BIDON') then
             call jeecra(ve2, 'LONUTI', 0)
             goto 10
-        endif
+        end if
     else
         prem = .false.
         call jelira(ve2, 'LONUTI', nbchte)
         if (nbchte .eq. 0) then
             goto 10
-        endif
+        end if
         call jeveuo(ve2, 'E', jlve)
-    endif
+    end if
 !
     ligrmo = modele(1:8)//'.MODELE'
 !
@@ -98,9 +98,9 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar,&
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     chtime = '&&VECHME.CH_INST_R'
-    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
+    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
                 ncmp=1, nomcmp='INST   ', sr=instap)
-    call mecact('V', '&PHI2M.VEC', 'MODELE', ligrmo, 'TEMP_R  ',&
+    call mecact('V', '&PHI2M.VEC', 'MODELE', ligrmo, 'TEMP_R  ', &
                 ncmp=1, nomcmp='TEMP   ', sr=0.d0)
     lpain(2) = 'PTEMPSR'
     lchin(2) = chtime
@@ -120,8 +120,8 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar,&
 !
         lchout(1) = vecel(1:8)//'.VE'
         call codent(1, 'D0', lchout(1) (7:8))
-        call calcul('S', option, ligrmo, 5, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, 5, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
         zk24(jlve) = lchout(1)
         call jeecra(ve2, 'LONUTI', 1)
@@ -130,11 +130,11 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar,&
 ! ----- LE VECT_ELEM EXISTE DEJA
 !
         lchout(1) = zk24(jlve)
-        call calcul('S', option, ligrmo, 5, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrmo, 5, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
-    endif
- 10 continue
+    end if
+10  continue
 !
 ! FIN ---------------------------------------------------------------
     call jedema()

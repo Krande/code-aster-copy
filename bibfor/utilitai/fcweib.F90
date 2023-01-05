@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fcweib(nrupt, cals, sk, sigw, nur,&
-                  nt, nbres, indtp, nbtp, m,&
+subroutine fcweib(nrupt, cals, sk, sigw, nur, &
+                  nt, nbres, indtp, nbtp, m, &
                   fc, dfc)
     implicit none
 #include "asterf_types.h"
@@ -63,15 +63,15 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
     slw = 0.d0
     sl2bwm = 0.d0
     maxr = r8maem()
-    maxm = log (maxr) / log ( nrupt*sigw(nrupt) )
+    maxm = log(maxr)/log(nrupt*sigw(nrupt))
     if (m .ge. maxm) then
         valr = maxm
         call utmess('F', 'UTILITAI8_22', sr=valr)
-    endif
+    end if
     if (m .le. 0.d0) then
         valr = m
         call utmess('F', 'UTILITAI8_23', sr=valr)
-    endif
+    end if
 !
     do i = 1, nrupt
 !
@@ -79,14 +79,14 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
             vali = i
             valk = 'SIGW'
             call utmess('F', 'UTILITAI8_25', si=vali, sk=valk)
-        endif
+        end if
         if (cals) then
-            slw = slw + (log ( sigw(i)/sk(1) ) ) * ( 1.d0-(sigw(i)/ sk(1))**m)
-            sl2bwm = sl2bwm + (&
-                     ( sigw(i)/sk(1)) ** m ) * ( log (sigw( i)/sk(1)) * log (sigw(i)/sk(1) ))
+            slw = slw+(log(sigw(i)/sk(1)))*(1.d0-(sigw(i)/sk(1))**m)
+            sl2bwm = sl2bwm+( &
+                     (sigw(i)/sk(1))**m)*(log(sigw(i)/sk(1))*log(sigw(i)/sk(1)))
         else
-            slw = slw + log ( sigw(i) )
-        endif
+            slw = slw+log(sigw(i))
+        end if
 !
     end do
 !
@@ -98,7 +98,7 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
 !
         do ir = 1, nbres
 !
-            if (indtp(ir) .eq. itp) snt = snt + nt(ir)
+            if (indtp(ir) .eq. itp) snt = snt+nt(ir)
 !
         end do
 !
@@ -108,29 +108,29 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
         do i = 1, nrupt
 !
             if (indtp(nur(i)) .eq. itp) then
-                swm = swm + sigw(i) ** m
-                slwm = slwm + (sigw(i) ** m )* ( log ( sigw(i) ) )
-                sl2wm = sl2wm + ( sigw(i) ** m )* ( log ( sigw(i) ) * log ( sigw(i) ))
-            endif
+                swm = swm+sigw(i)**m
+                slwm = slwm+(sigw(i)**m)*(log(sigw(i)))
+                sl2wm = sl2wm+(sigw(i)**m)*(log(sigw(i))*log(sigw(i)))
+            end if
 !
         end do
 !
-        s1 = s1 + snt * slwm/swm
-        s2 = s2 + snt * ( (sl2wm/swm)*swm - (slwm/swm)*slwm ) /swm
+        s1 = s1+snt*slwm/swm
+        s2 = s2+snt*((sl2wm/swm)*swm-(slwm/swm)*slwm)/swm
 !
     end do
 !
     if (cals) then
         fc = nrupt
-        fc = fc / m + slw
+        fc = fc/m+slw
         dfc = nrupt
-        dfc = - dfc * ( 1.d0/(m*m) ) - sl2bwm
+        dfc = -dfc*(1.d0/(m*m))-sl2bwm
     else
         fc = nrupt
-        fc = fc / m + slw - s1
+        fc = fc/m+slw-s1
         dfc = nrupt
-        dfc = - dfc * ( 1.d0/(m*m) ) - s2
-    endif
+        dfc = -dfc*(1.d0/(m*m))-s2
+    end if
 !
 !
 end subroutine

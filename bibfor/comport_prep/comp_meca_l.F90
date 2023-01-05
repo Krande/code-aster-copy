@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, post_iter)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -27,10 +27,10 @@ implicit none
 #include "asterc/lctype.h"
 #include "asterc/lcdiscard.h"
 !
-character(len=16), intent(in) :: rela_comp
-character(len=*), intent(in) :: whatz
-aster_logical, intent(out) :: l_detec
-character(len=16), optional, intent(in) :: post_iter
+    character(len=16), intent(in) :: rela_comp
+    character(len=*), intent(in) :: whatz
+    aster_logical, intent(out) :: l_detec
+    character(len=16), optional, intent(in) :: post_iter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,17 +54,17 @@ character(len=16), optional, intent(in) :: post_iter
     what = whatz
     l_detec = .false.
     if (what .eq. 'CRISTAL') then
-        l_detec = (rela_comp .eq. 'MONOCRISTAL') .or. (rela_comp .eq.'POLYCRISTAL')
+        l_detec = (rela_comp .eq. 'MONOCRISTAL') .or. (rela_comp .eq. 'POLYCRISTAL')
     else if (what .eq. 'KIT_META') then
-        l_detec = (rela_comp.eq.'KIT_META')
+        l_detec = (rela_comp .eq. 'KIT_META')
     else if (what .eq. 'KIT_THM') then
-        l_detec = ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH'))
+        l_detec = ((rela_comp(1:5) .eq. 'KIT_H') .or. (rela_comp(1:6) .eq. 'KIT_TH'))
     else if (what .eq. 'KIT_DDI') then
-        l_detec = (rela_comp.eq.'KIT_DDI')
+        l_detec = (rela_comp .eq. 'KIT_DDI')
     else if (what .eq. 'KIT_CG') then
-        l_detec = (rela_comp.eq.'KIT_CG')
+        l_detec = (rela_comp .eq. 'KIT_CG')
     else if (what .eq. 'KIT') then
-        l_detec = (rela_comp(1:4).eq.'KIT_')
+        l_detec = (rela_comp(1:4) .eq. 'KIT_')
     else if (what .eq. 'UMAT') then
         l_detec = (rela_comp .eq. 'UMAT')
     else if (what .eq. 'MFRONT_OFFI') then
@@ -78,20 +78,20 @@ character(len=16), optional, intent(in) :: post_iter
         call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_detec)
         if (.not. l_detec) then
             call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_detec)
-        endif
+        end if
     else if (what .eq. 'EXTE_COMP') then
         call comp_meca_l(rela_comp, 'MFRONT', l_detec)
         if (.not. l_detec) then
             call comp_meca_l(rela_comp, 'UMAT', l_detec)
-        endif
+        end if
     else if (what .eq. 'PMF') then
         l_detec = (rela_comp .eq. 'MULTIFIBRE')
     else if (what .eq. 'CRIT_RUPT') then
         ASSERT(present(post_iter))
         l_detec = post_iter .eq. 'CRIT_RUPT'
     else
-        write(6,*) 'What: ',rela_comp,what,whatz
+        write (6, *) 'What: ', rela_comp, what, whatz
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

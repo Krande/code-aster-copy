@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dfdm1b(nno, poids, dfrdk, coor, dfdx,&
+subroutine dfdm1b(nno, poids, dfrdk, coor, dfdx, &
                   jacp)
     implicit none
 #include "jeveux.h"
@@ -50,20 +50,20 @@ subroutine dfdm1b(nno, poids, dfrdk, coor, dfdx,&
     dydk = 0.d0
     dzdk = 0.d0
     do i = 1, nno
-        dxdk = dxdk + coor( 3*i-2 ) * dfrdk(i)
-        dydk = dydk + coor( 3*i-1 ) * dfrdk(i)
-        dzdk = dzdk + coor( 3*i ) * dfrdk(i)
+        dxdk = dxdk+coor(3*i-2)*dfrdk(i)
+        dydk = dydk+coor(3*i-1)*dfrdk(i)
+        dzdk = dzdk+coor(3*i)*dfrdk(i)
     end do
-    jac = sqrt ( dxdk**2 + dydk**2 +dzdk**2)
+    jac = sqrt(dxdk**2+dydk**2+dzdk**2)
 !
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
-        nomail= zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
-    endif
+    end if
 !
     do i = 1, nno
-        dfdx(i) = dfrdk(i) / jac
+        dfdx(i) = dfrdk(i)/jac
     end do
-    jacp = jac * poids
+    jacp = jac*poids
 end subroutine

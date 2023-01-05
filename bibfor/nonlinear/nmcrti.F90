@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 subroutine nmcrti(list_func_acti, resultName, ds_contact, ds_measure)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
@@ -40,10 +40,10 @@ implicit none
 #include "asterfort/ComputeTableHead.h"
 #include "asterfort/ComputeTableWidth.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=8), intent(in) :: resultName
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Measure), intent(inout) :: ds_measure
+    integer, intent(in) :: list_func_acti(*)
+    character(len=8), intent(in) :: resultName
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: cpu_name
     character(len=512) :: table_head(3)
     aster_logical :: l_line_search
-    aster_logical :: l_cont, l_fric, l_cont_disc, l_cont_cont,l_cont_lac
+    aster_logical :: l_cont, l_fric, l_cont_disc, l_cont_cont, l_cont_lac
     aster_logical :: l_loop_cont, l_loop_fric, l_loop_geom, l_newt_geom
     aster_logical :: l_all_verif, l_device_acti, l_hho
 !
@@ -74,26 +74,26 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_5')
-    endif
+    end if
 !
 ! - Get active functionnalities
 !
-    l_all_verif   = .false.
-    l_fric        = .false.
-    l_line_search = isfonc(list_func_acti,'RECH_LINE')
-    l_cont        = isfonc(list_func_acti, 'CONTACT' )
-    l_cont_disc   = isfonc(list_func_acti, 'CONT_DISCRET')
-    l_cont_cont   = isfonc(list_func_acti, 'CONT_CONTINU')
-    l_cont_lac    = isfonc(list_func_acti, 'CONT_LAC')
-    l_loop_cont   = isfonc(list_func_acti, 'BOUCLE_EXT_CONT')
-    l_loop_fric   = isfonc(list_func_acti, 'BOUCLE_EXT_FROT')
-    l_loop_geom   = isfonc(list_func_acti, 'BOUCLE_EXT_GEOM')
-    l_newt_geom   = isfonc(list_func_acti, 'GEOM_NEWTON')
-    l_hho         = isfonc(list_func_acti, 'HHO' )
+    l_all_verif = .false.
+    l_fric = .false.
+    l_line_search = isfonc(list_func_acti, 'RECH_LINE')
+    l_cont = isfonc(list_func_acti, 'CONTACT')
+    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
+    l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
+    l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
+    l_loop_cont = isfonc(list_func_acti, 'BOUCLE_EXT_CONT')
+    l_loop_fric = isfonc(list_func_acti, 'BOUCLE_EXT_FROT')
+    l_loop_geom = isfonc(list_func_acti, 'BOUCLE_EXT_GEOM')
+    l_newt_geom = isfonc(list_func_acti, 'GEOM_NEWTON')
+    l_hho = isfonc(list_func_acti, 'HHO')
     if (l_cont) then
         l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-        l_fric      = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
-    endif
+        l_fric = cfdisl(ds_contact%sdcont_defi, 'FROTTEMENT')
+    end if
 !
 ! - Activate devices (standard)
 !
@@ -111,24 +111,24 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
     call ActivateDevice(ds_measure, 'Other')
     if (l_line_search) then
         call ActivateDevice(ds_measure, 'LineSearch')
-    endif
+    end if
     if (l_hho) then
         call ActivateDevice(ds_measure, 'HHO_Prep')
     end if
 !
 ! - Activate devices for contact (10)
 !
-    if (l_cont .and. (.not.l_all_verif)) then
+    if (l_cont .and. (.not. l_all_verif)) then
         call ActivateDevice(ds_measure, 'Cont_NCont')
         if (l_fric) then
             call ActivateDevice(ds_measure, 'Cont_NFric')
-        endif
+        end if
         if (l_loop_geom .or. l_newt_geom) then
             call ActivateDevice(ds_measure, 'Cont_Geom')
-        endif
+        end if
         if (l_cont_disc) then
             call ActivateDevice(ds_measure, 'Cont_Algo')
-        endif
+        end if
         if (l_cont_cont .or. l_cont_lac) then
             call ActivateDevice(ds_measure, 'Cont_Prep')
             call ActivateDevice(ds_measure, 'Cont_Elem')
@@ -136,14 +136,14 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
             call ActivateDevice(ds_measure, 'Cont_Cycl2')
             call ActivateDevice(ds_measure, 'Cont_Cycl3')
             call ActivateDevice(ds_measure, 'Cont_Cycl4')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Reset all timers
 !
-    nb_timer  = ds_measure%nb_timer
+    nb_timer = ds_measure%nb_timer
     do i_timer = 1, nb_timer
-        cpu_name  = ds_measure%timer(i_timer)%cpu_name
+        cpu_name = ds_measure%timer(i_timer)%cpu_name
         call uttcpu(cpu_name, 'INIT', ' ')
         ds_measure%timer(i_timer)%time_init = 0.d0
     end do
@@ -165,26 +165,26 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
                 if (i_col .ne. 0) then
                     ds_measure%table%l_cols_acti(i_col) = .true._1
                     ASSERT(ds_measure%table%cols(i_col)%name(1:5) .eq. 'Time_')
-                endif
+                end if
                 i_col = ds_measure%indx_cols(2*(i_device-1)+2)
                 if (i_col .ne. 0) then
                     ds_measure%table%l_cols_acti(i_col) = .true._1
                     ASSERT(ds_measure%table%cols(i_col)%name(1:6) .eq. 'Count_')
-                endif
-            endif
+                end if
+            end if
         end do
 
 ! ----- Activate state and memory
         if (ds_measure%table%l_csv) then
-            call SetTableColumn(ds_measure%table, 'State' , flag_acti_ = .true._1)
-            call SetTableColumn(ds_measure%table, 'Memory' , flag_acti_ = .true._1)
-        endif
+            call SetTableColumn(ds_measure%table, 'State', flag_acti_=.true._1)
+            call SetTableColumn(ds_measure%table, 'Memory', flag_acti_=.true._1)
+        end if
 
 ! ----- Create list of parameters
         call nonlinDSTableIOSetPara(ds_measure%table)
 
 ! ----- Set other parameters
-        ds_measure%table%table_io%resultName   = resultName
+        ds_measure%table%table_io%resultName = resultName
         ds_measure%table%table_io%tablSymbName = 'STAT'
 
 ! ----- Get name of table in results datastructure
@@ -201,14 +201,14 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
         if (ds_measure%table%l_csv) then
             call ulopen(ds_measure%table%unit_csv, ' ', ' ', 'NEW', 'O')
             call ComputeTableHead(ds_measure%table, ',', table_head)
-            call nonlinDSColumnWriteValue(ds_measure%table%width,&
-                                          output_unit_ = ds_measure%table%unit_csv,&
-                                          value_k_     = table_head(1) )
-            call nonlinDSColumnWriteValue(ds_measure%table%width,&
-                                          output_unit_ = ds_measure%table%unit_csv,&
-                                          value_k_     = table_head(2) )
-        endif
+            call nonlinDSColumnWriteValue(ds_measure%table%width, &
+                                          output_unit_=ds_measure%table%unit_csv, &
+                                          value_k_=table_head(1))
+            call nonlinDSColumnWriteValue(ds_measure%table%width, &
+                                          output_unit_=ds_measure%table%unit_csv, &
+                                          value_k_=table_head(2))
+        end if
 
-    endif
+    end if
 !
 end subroutine

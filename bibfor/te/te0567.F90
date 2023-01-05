@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine te0567(nomopt, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -35,7 +35,7 @@ implicit none
 #include "asterfort/mmmtdb.h"
 #include "asterfort/lcmatr.h"
 !
-character(len=16), intent(in) :: nomopt, nomte
+    character(len=16), intent(in) :: nomopt, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,70 +70,70 @@ character(len=16), intent(in) :: nomopt, nomte
 !
 ! - Initializations
 !
-    mmat(1:55,1:55)      = 0.d0
+    mmat(1:55, 1:55) = 0.d0
     elem_mast_coor(1:27) = 0.d0
     elem_mast_coop(1:27) = 0.d0
     elem_slav_coor(1:27) = 0.d0
     elem_slav_coop(1:27) = 0.d0
-    debug                = ASTER_FALSE
-    ASSERT(nomopt.eq.'RIGI_CONT')
+    debug = ASTER_FALSE
+    ASSERT(nomopt .eq. 'RIGI_CONT')
 !
 ! - Get informations about contact element
 !
-    call lcelem(nomte         , elem_dime     , l_axis      ,&
-                nb_dof        , nb_lagr       , indi_lagc   ,&
-                elem_slav_code, elga_fami_slav, nb_node_slav,&
+    call lcelem(nomte, elem_dime, l_axis, &
+                nb_dof, nb_lagr, indi_lagc, &
+                elem_slav_code, elga_fami_slav, nb_node_slav, &
                 elem_mast_code, elga_fami_mast, nb_node_mast)
     ASSERT(nb_dof .le. 55)
     ASSERT(elga_fami_slav .eq. elga_fami_mast)
 !
 ! - Get indicators
 !
-    call lcstco(l_upda_jaco , l_norm_smooth, i_reso_geom ,&
-                lagrc_curr  , gap_curr     ,&
-                indi_cont   , &
-                gapi        , nmcp         ,&
-                nb_poin_inte, poin_inte_sl , poin_inte_ma)
+    call lcstco(l_upda_jaco, l_norm_smooth, i_reso_geom, &
+                lagrc_curr, gap_curr, &
+                indi_cont, &
+                gapi, nmcp, &
+                nb_poin_inte, poin_inte_sl, poin_inte_ma)
 !
 ! - Get initial coordinates
 !
-    call lcgeominit(elem_dime     ,&
-                    nb_node_slav  , nb_node_mast  ,&
+    call lcgeominit(elem_dime, &
+                    nb_node_slav, nb_node_mast, &
                     elem_mast_init, elem_slav_init)
 !
 ! - Compute updated geometry
 !
-    call lcgeog(elem_dime     , i_reso_geom   ,&
-                nb_lagr       , indi_lagc     ,&
-                nb_node_slav  , nb_node_mast  ,&
-                elem_mast_init, elem_slav_init,&
+    call lcgeog(elem_dime, i_reso_geom, &
+                nb_lagr, indi_lagc, &
+                nb_node_slav, nb_node_mast, &
+                elem_mast_init, elem_slav_init, &
                 elem_mast_coor, elem_slav_coor)
 !
 ! - Compute matrix
 !
     if (indi_cont .eq. 1) then
-        call lcmatr(elem_dime     , l_axis        , l_upda_jaco   , l_norm_smooth ,&
-                    nb_lagr       , indi_lagc     , elga_fami_slav,&
-                    nb_node_slav  , elem_slav_code, elem_slav_init, elem_slav_coor,&
-                    nb_node_mast  , elem_mast_code, elem_mast_init, elem_mast_coor,&
-                    nb_poin_inte  , poin_inte_sl  , poin_inte_ma  ,&
+        call lcmatr(elem_dime, l_axis, l_upda_jaco, l_norm_smooth, &
+                    nb_lagr, indi_lagc, elga_fami_slav, &
+                    nb_node_slav, elem_slav_code, elem_slav_init, elem_slav_coor, &
+                    nb_node_mast, elem_mast_code, elem_mast_init, elem_mast_coor, &
+                    nb_poin_inte, poin_inte_sl, poin_inte_ma, &
                     mmat)
     elseif (indi_cont .eq. 0) then
         call lclaze(elem_dime, nb_lagr, nb_node_slav, indi_lagc, mmat)
     else
 !
-    endif
+    end if
 !
 ! - Write (symmetric matrix)
 !
     call jevech('PMATUUR', 'E', jmatt)
     do j = 1, nb_dof
         do i = 1, j
-            ij = (j-1)*j/2 + i
-            zr(jmatt+ij-1) = mmat(i,j)
+            ij = (j-1)*j/2+i
+            zr(jmatt+ij-1) = mmat(i, j)
             if (debug) then
                 call mmmtdb(mmat(i, j), 'IJ', i, j)
-            endif
+            end if
         end do
     end do
 !

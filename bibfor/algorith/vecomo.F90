@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
+subroutine vecomo(modgen, sst1, sst2, intf1, intf2, &
                   nliais, option)
     implicit none
 !  C. VARE     DATE 18/09/94
@@ -78,7 +78,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     integer :: ibid, nbno1, nbno2, llint1, llint2
     integer :: llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
     integer :: nuno, ldac2
-    parameter   (nbcmpm=10)
+    parameter(nbcmpm=10)
     character(len=4) :: nliai
     character(len=8) :: modgen, lint1, lint2, criter, temp
     character(len=8) :: sst1, sst2, intf1, intf2, mail1, mail2, nomnoi
@@ -97,37 +97,37 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     integer, pointer :: nldesc2(:) => null()
 !
 !-----------------------------------------------------------------------
-    data zero /0.0d+00/
+    data zero/0.0d+00/
 !-----------------------------------------------------------------------
 !
 !-----SEUIL DE TOLERANCE ET CRITERE DE PRECISION
 !
     call jemarq()
-    difmax=1.d-3
+    difmax = 1.d-3
     call getvr8('VERIF', 'PRECISION', iocc=1, scal=seuil, nbret=ival)
-    if (ival .ne. 0) difmax=seuil
-    icrit=1
+    if (ival .ne. 0) difmax = seuil
+    icrit = 1
     call getvtx('VERIF', 'CRITERE', iocc=1, scal=criter, nbret=ival)
     if (ival .ne. 0) then
-        if (criter .eq. 'ABSOLU') icrit=2
-    endif
+        if (criter .eq. 'ABSOLU') icrit = 2
+    end if
 !
 !-----RECUPERATION DES ROTATIONS ET DES TRANSLATIONS
 !
-    repnom=modgen//'      .MODG.SSNO'
+    repnom = modgen//'      .MODG.SSNO'
     call jenonu(jexnom(repnom, sst1), nusst1)
     call jenonu(jexnom(repnom, sst2), nusst2)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst1), 'L', llrot1)
     call jeveuo(jexnum(modgen//'      .MODG.SSOR', nusst2), 'L', llrot2)
     do i = 1, 3
-        rot1(i)=zr(llrot1+i-1)
-        rot2(i)=zr(llrot2+i-1)
+        rot1(i) = zr(llrot1+i-1)
+        rot2(i) = zr(llrot2+i-1)
     end do
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst1), 'L', lltra1)
     call jeveuo(jexnum(modgen//'      .MODG.SSTR', nusst2), 'L', lltra2)
     do i = 1, 3
-        tra1(i)=zr(lltra1+i-1)
-        tra2(i)=zr(lltra2+i-1)
+        tra1(i) = zr(lltra1+i-1)
+        tra2(i) = zr(lltra2+i-1)
     end do
 !
 !-----CALCUL DES MATRICES DE ROTATION
@@ -136,69 +136,69 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     call intet0(rot1(2), mat2, 2)
     call intet0(rot1(3), mat3, 1)
     call r8inir(nbcmpm*nbcmpm, zero, mattmp, 1)
-    call pmppr(mat1, nbcmpm, nbcmpm, 1, mat2,&
-               nbcmpm, nbcmpm, 1, mattmp, nbcmpm,&
+    call pmppr(mat1, nbcmpm, nbcmpm, 1, mat2, &
+               nbcmpm, nbcmpm, 1, mattmp, nbcmpm, &
                nbcmpm)
     call r8inir(nbcmpm*nbcmpm, zero, matro1, 1)
-    call pmppr(mattmp, nbcmpm, nbcmpm, 1, mat3,&
-               nbcmpm, nbcmpm, 1, matro1, nbcmpm,&
+    call pmppr(mattmp, nbcmpm, nbcmpm, 1, mat3, &
+               nbcmpm, nbcmpm, 1, matro1, nbcmpm, &
                nbcmpm)
 !
     call intet0(rot2(1), mat1, 3)
     call intet0(rot2(2), mat2, 2)
     call intet0(rot2(3), mat3, 1)
     call r8inir(nbcmpm*nbcmpm, zero, mattmp, 1)
-    call pmppr(mat1, nbcmpm, nbcmpm, 1, mat2,&
-               nbcmpm, nbcmpm, 1, mattmp, nbcmpm,&
+    call pmppr(mat1, nbcmpm, nbcmpm, 1, mat2, &
+               nbcmpm, nbcmpm, 1, mattmp, nbcmpm, &
                nbcmpm)
     call r8inir(nbcmpm*nbcmpm, zero, matro2, 1)
-    call pmppr(mattmp, nbcmpm, nbcmpm, 1, mat3,&
-               nbcmpm, nbcmpm, 1, matro2, nbcmpm,&
+    call pmppr(mattmp, nbcmpm, nbcmpm, 1, mat3, &
+               nbcmpm, nbcmpm, 1, matro2, nbcmpm, &
                nbcmpm)
 !
 !
 !-----RECUPERATION MAILLAGE ET INTERFACE AMONT DES SOUS-STRUCTURES
 !
-    call mgutdm(modgen, sst1, ibid, 'NOM_MAILLAGE', ibid,&
+    call mgutdm(modgen, sst1, ibid, 'NOM_MAILLAGE', ibid, &
                 mail1)
-    call mgutdm(modgen, sst1, ibid, 'NOM_LIST_INTERF', ibid,&
+    call mgutdm(modgen, sst1, ibid, 'NOM_LIST_INTERF', ibid, &
                 lint1)
 !
-    call mgutdm(modgen, sst2, ibid, 'NOM_MAILLAGE', ibid,&
+    call mgutdm(modgen, sst2, ibid, 'NOM_MAILLAGE', ibid, &
                 mail2)
-    call mgutdm(modgen, sst2, ibid, 'NOM_LIST_INTERF', ibid,&
+    call mgutdm(modgen, sst2, ibid, 'NOM_LIST_INTERF', ibid, &
                 lint2)
 !
 !-----RECUPERATION DU NOMBRE DES NOEUDS DE L'INTERFACE
 !
-    int1=lint1//'.IDC_LINO'
+    int1 = lint1//'.IDC_LINO'
     call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
     call jelira(jexnum(int1(1:17), ibid), 'LONMAX', nbno1)
 !
-    int2=lint2//'.IDC_LINO'
+    int2 = lint2//'.IDC_LINO'
     call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
     call jelira(jexnum(int2(1:17), ibid), 'LONMAX', nbno2)
 !
     if (nbno1 .ne. nbno2) then
-        valk (1) = sst1
-        valk (2) = intf1
-        valk (3) = sst2
-        valk (4) = intf2
+        valk(1) = sst1
+        valk(2) = intf1
+        valk(3) = sst2
+        valk(4) = intf2
         if (option(1:6) .eq. 'REDUIT') then
-            nliais=0
+            nliais = 0
         else
             call utmess('F', 'ALGORITH16_44', nk=4, valk=valk)
-        endif
+        end if
         goto 999
-    endif
-    nbno=nbno1
+    end if
+    nbno = nbno1
 !
 !C
 !CC---ON VERIFIE LA COINCIDENCE DE CHAQUE COUPLE DE NOEUDS
 !C
 !
-    call jenonu(jexnom(lint1 //'.IDC_NOMS', intf1), ibid)
-    call jeveuo(jexnum(lint1 //'.IDC_LINO', ibid), 'L', llint1)
+    call jenonu(jexnom(lint1//'.IDC_NOMS', intf1), ibid)
+    call jeveuo(jexnum(lint1//'.IDC_LINO', ibid), 'L', llint1)
     call jeveuo(lint1//'.IDC_DEFO', 'L', vi=nldesc1)
     call jeveuo(mail1//'.COORDO    .VALE', 'L', vr=nllcoo1)
 !
@@ -215,44 +215,44 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !         L'INTERFACE DROITE.
     AS_ALLOCATE(vi=lista, size=nbno)
     call wkvect('&&VECOMO.LISTB', 'V V I', nbno, llistb)
-    dxrm=0.d0
-    lcaram=0.d0
+    dxrm = 0.d0
+    lcaram = 0.d0
     ordre = .true.
 !
     do i = 1, nbno
 !     ---RECUPERATION DES COORDONNEES DES NOEUDS DE L'INTERFACE DROITE
 !
-        inu1=zi(llint1-1+i)
-        nuno1=nldesc1(inu1)
+        inu1 = zi(llint1-1+i)
+        nuno1 = nldesc1(inu1)
 !
         do k = 1, 3
-            x1(k)=nllcoo1(1+(nuno1-1)*3+k-1)
+            x1(k) = nllcoo1(1+(nuno1-1)*3+k-1)
         end do
         do k = 1, 3
-            xr1(k)=0.d0
+            xr1(k) = 0.d0
             do l = 1, 3
-                xr1(k)=xr1(k)+matro1(k,l)*x1(l)
+                xr1(k) = xr1(k)+matro1(k, l)*x1(l)
             end do
-            xr1(k)=xr1(k)+tra1(k)
+            xr1(k) = xr1(k)+tra1(k)
         end do
 !
         dxr = 0.d0
         do j = 1, nbno
 !       ---RECUPERATION DES COORDONNEES DES NOEUDS DE L'INTERFACE GAUCHE
 !
-            inu2=zi(llint2-1+j)
-            nuno2=nldesc2(inu2)
+            inu2 = zi(llint2-1+j)
+            nuno2 = nldesc2(inu2)
 !
             saut = .false.
             do k = 1, 3
-                x2(k)=nllcoo2(1+(nuno2-1)*3+k-1)
+                x2(k) = nllcoo2(1+(nuno2-1)*3+k-1)
             end do
             do k = 1, 3
-                xr2(k)=0.d0
+                xr2(k) = 0.d0
                 do l = 1, 3
-                    xr2(k)=xr2(k)+matro2(k,l)*x2(l)
+                    xr2(k) = xr2(k)+matro2(k, l)*x2(l)
                 end do
-                xr2(k)=xr2(k)+tra2(k)
+                xr2(k) = xr2(k)+tra2(k)
                 if (j .ne. 1 .and. abs(xr2(k)-xr1(k)) .gt. dxr) then
 !               --- COMPARAISON COMPOSANTE AVEC DISTANCE --
 !                   (SI COMPOSANTE > DISTANCE MIN ALORS
@@ -261,45 +261,45 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                         saut = .true.
                     else
                         goto 120
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
 !          ---CALCUL DE LA DIFFERENCE DES DISTANCES NOEUD A NOEUD
 !
-            if (.not.saut) then
-                dxrij=0.d0
+            if (.not. saut) then
+                dxrij = 0.d0
                 do k = 1, 3
-                    dxrij=dxrij+(xr1(k)-xr2(k))**2
+                    dxrij = dxrij+(xr1(k)-xr2(k))**2
                 end do
-                dxrij=sqrt(dxrij)
+                dxrij = sqrt(dxrij)
                 if (j .eq. 1 .or. dxrij .lt. dxr) then
 !             --- CRITERE SUR DISTANCE (RECHERCHE DU MINIMUM)
                     dxr = dxrij
                     jnode = j
-                endif
-            endif
+                end if
+            end if
 !
 !          ---CALCUL D'UNE LONGUEUR CARACTERISTIQUE SI CRITERE RELATIF
 !
             if (icrit .eq. 1 .and. j .eq. i) then
-                lcara1=0.d0
-                lcara2=0.d0
+                lcara1 = 0.d0
+                lcara2 = 0.d0
                 do k = 1, 3
-                    lcara1=lcara1+xr1(k)**2
-                    lcara2=lcara2+xr2(k)**2
+                    lcara1 = lcara1+xr1(k)**2
+                    lcara2 = lcara2+xr2(k)**2
                 end do
-                lcara1=sqrt(lcara1)
-                lcara2=sqrt(lcara2)
-                if (lcaram .lt. lcara1) lcaram=lcara1
-                if (lcaram .lt. lcara2) lcaram=lcara2
-            endif
+                lcara1 = sqrt(lcara1)
+                lcara2 = sqrt(lcara2)
+                if (lcaram .lt. lcara1) lcaram = lcara1
+                if (lcaram .lt. lcara2) lcaram = lcara2
+            end if
 !
 120         continue
         end do
 !
 !
-        if (dxrm .lt. dxr) dxrm=dxr
+        if (dxrm .lt. dxr) dxrm = dxr
         lista(i) = jnode
         if (zi(llistb-1+jnode) .ne. 0) then
 !        --- CAS OU JNODE EST DEJA UN VIS-A-VIS ---
@@ -313,13 +313,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             inu = zi(llint1-1+ip)
             nuno = nldesc1(inu)
             call jenuno(jexnum(mail1//'.NOMNOE', nuno), nomnop)
-            valk (1) = nomnoj
-            valk (2) = nomnop
-            valk (3) = nomnoi
+            valk(1) = nomnoj
+            valk(2) = nomnop
+            valk(3) = nomnoi
 !
             call utmess('F', 'ALGORITH16_45', nk=3, valk=valk)
             goto 999
-        endif
+        end if
         zi(llistb-1+jnode) = i
 !
 !        SI JNODE EST DIFFERENT DE I, C'EST QUE LES NOEUDS D'INTERFACE
@@ -333,57 +333,57 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
     if (icrit .eq. 1) then
         if (lcaram .eq. 0.d0) then
-            valk (1) = sst1
-            valk (2) = intf1
-            valk (3) = sst2
-            valk (4) = intf2
+            valk(1) = sst1
+            valk(2) = intf1
+            valk(3) = sst2
+            valk(4) = intf2
             call utmess('F', 'ALGORITH16_46', nk=4, valk=valk)
             goto 999
-        endif
-        dxrm=dxrm/lcaram
-    endif
+        end if
+        dxrm = dxrm/lcaram
+    end if
     if (dxrm .gt. difmax) then
-        valk (1) = sst1
-        valk (2) = intf1
-        valk (3) = sst2
-        valk (4) = intf2
+        valk(1) = sst1
+        valk(2) = intf1
+        valk(3) = sst2
+        valk(4) = intf2
         if (option(1:6) .eq. 'REDUIT') then
-            nliais=0
+            nliais = 0
         else
             call utmess('F', 'ALGORITH16_47', nk=4, valk=valk)
-        endif
+        end if
         goto 999
-    endif
+    end if
 !
-    if (.not.ordre) then
+    if (.not. ordre) then
 !
 !       --- LES NOEUDS NE SONT PAS EN VIS-A-VIS ---
 !           ON REGARDE D'ABORD SI LE TRI EST PLAUSIBLE
         do i = 1, nbno
             if (zi(llistb-1+lista(i)) .ne. i) then
-                valk (1) = sst1
-                valk (2) = intf1
-                valk (3) = sst2
-                valk (4) = intf2
+                valk(1) = sst1
+                valk(2) = intf1
+                valk(3) = sst2
+                valk(4) = intf2
                 if (option(1:6) .eq. 'REDUIT') then
-                    nliais=0
+                    nliais = 0
                 else
                     call utmess('F', 'ALGORITH16_48', nk=4, valk=valk)
-                endif
+                end if
                 goto 999
-            endif
+            end if
         end do
 !
 !        ON RECUPERE LE DESCRIPTEUR DE LA LIAISON COURANTE
-        famli=modgen//'      .MODG.LIDF'
+        famli = modgen//'      .MODG.LIDF'
         call jeveuo(jexnum(famli, nliais), 'E', ldlid)
 !        ON DIT OUI AU REORDONANCEMENT DES NOEUDS
-        zk8(ldlid+4)='OUI'
+        zk8(ldlid+4) = 'OUI'
         call codent(nliais, 'D', nliai)
 !
-        temp='&&OP0126'
-        ordol=temp//'      .LINO.'//nliai
-        ordod=temp//'      .LDAC.'//nliai
+        temp = '&&OP0126'
+        ordol = temp//'      .LINO.'//nliai
+        ordod = temp//'      .LDAC.'//nliai
         call jeexin(ordol, iret)
         if (iret .eq. 0) then
             call jecreo(ordol, 'V V I')
@@ -391,7 +391,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             call dismoi('NB_EC', lint2, 'INTERF_DYNA', repi=nbec)
             call jecreo(ordod, 'V V I')
             call jeecra(ordod, 'LONMAX', nbno*nbec)
-        endif
+        end if
 !
         call jeveuo(ordol, 'E', llint3)
 !
@@ -419,8 +419,8 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             zi(llint4+(i-1)*nbec) = zi(llistb+(lista(i)-1)*nbec)
         end do
 !
-    endif
-    nliais=1
+    end if
+    nliais = 1
 !
 999 continue
 !

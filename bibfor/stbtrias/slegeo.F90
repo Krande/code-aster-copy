@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,72 +74,72 @@ subroutine slegeo(iunv, imod)
 !-----------------------------------------------------------------------
     integer :: idiv, ilong, imod, irest
 !-----------------------------------------------------------------------
-    imes=iunifi('MESSAGE')
+    imes = iunifi('MESSAGE')
 !
 !  --> COMPTEUR :NBRE DE CURVES,NBRE DE M.AREA,NBRE DE M.VOLUME
 !
-    icompc=0
-    icompa=0
-    icompv=0
+    icompc = 0
+    icompa = 0
+    icompv = 0
 !
-    prfnoe='N'
-    prfmai='M'
-    chfogn='%FORMAT=(1*NOM_DE_NOEUD)'
-    chfogm='%FORMAT=(1*NOM_DE_MAILLE)'
-    chnode='        '
-    chmail='        '
-    chenti='NBOBJ=      '
-    chlign='NBLIGT=      '
-    chlige='NBLIGE=      '
+    prfnoe = 'N'
+    prfmai = 'M'
+    chfogn = '%FORMAT=(1*NOM_DE_NOEUD)'
+    chfogm = '%FORMAT=(1*NOM_DE_MAILLE)'
+    chnode = '        '
+    chmail = '        '
+    chenti = 'NBOBJ=      '
+    chlign = 'NBLIGT=      '
+    chlige = 'NBLIGE=      '
 !
-  1 continue
-    read(iunv,'(A)')cbuf
-    read(cbuf,'(4X,I2)') ind
-    nblign=0
-    itest=0
+1   continue
+    read (iunv, '(A)') cbuf
+    read (cbuf, '(4X,I2)') ind
+    nblign = 0
+    itest = 0
     if (ind .eq. -1) goto 1000
-    read(cbuf,'(4I10)') indic,inum,ityp,nbenti
+    read (cbuf, '(4I10)') indic, inum, ityp, nbenti
     if (indic .eq. 3 .or. indic .eq. 5 .or. indic .eq. 6) then
 !
         if (indic .eq. 3 .and. ityp .eq. 7) then
 !         --> ON TROUVE UNE CURVE DECRITE PAR SES NOEUDS
-            icompc=icompc+1
-            nomc(1:5)='CURVE'
+            icompc = icompc+1
+            nomc(1:5) = 'CURVE'
             call codent(inum, 'G', nomc(6:10))
 !
-        else if (indic.eq.3.and.ityp.eq.8) then
+        else if (indic .eq. 3 .and. ityp .eq. 8) then
 !         --> ON TROUVE UNE CURVE DECRITE PAR SES ELEMENTS
 !
-        else if (indic.eq.5.and.ityp.eq.7) then
+        else if (indic .eq. 5 .and. ityp .eq. 7) then
 !         --> ON TROUVE UNE MESH AREA DECRITE PAR SES NOEUDS
-            icompa=icompa+1
-            noma(1:6)='M_AREA'
+            icompa = icompa+1
+            noma(1:6) = 'M_AREA'
             call codent(inum, 'G', noma(7:10))
 !
-        else if (indic.eq.5.and.ityp.eq.8) then
+        else if (indic .eq. 5 .and. ityp .eq. 8) then
 !         --> ON TROUVE UNE MESH AREA DECRITE PAR SES ELEMENTS
 !
-        else if (indic.eq.6.and.ityp.eq.7) then
+        else if (indic .eq. 6 .and. ityp .eq. 7) then
 !         --> ON TROUVE UN MESH VOLUME DECRIT PAR SES POINTS
-            icompv=icompv+1
-            nomv(1:6)='M_VOLU'
+            icompv = icompv+1
+            nomv(1:6) = 'M_VOLU'
             call codent(inum, 'G', nomv(7:10))
 !
         else
 !         --> ON TROUVE UN MESH VOLUME DECRIT PAR SES ELEMENTS
-        endif
+        end if
 !
-        idiv=int(nbenti/8)
-        irest=mod(nbenti,8)
+        idiv = int(nbenti/8)
+        irest = mod(nbenti, 8)
 !
         if (irest .ne. 0) then
-            itest=1
-        endif
+            itest = 1
+        end if
 !
-        nblign=idiv+itest
-        nblie=2
-        nblif=1
-        nblit=nblign+nblie+nblif+1
+        nblign = idiv+itest
+        nblie = 2
+        nblif = 1
+        nblit = nblign+nblie+nblif+1
 !
         call codent(nbenti, 'G', chenti(7:12))
         call codent(nblit, 'G', chlign(8:13))
@@ -152,140 +152,140 @@ subroutine slegeo(iunv, imod)
 !
 !    ---> ON TROUVE UNE CURVE DECRITE PAR SES NOEUDS
 !
-            ilong=lxlgut(nomc)
+            ilong = lxlgut(nomc)
             if (ilong .gt. 8) then
                 call utmess('A', 'STBTRIAS_5', sk=nomc)
-            endif
-            write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO','NOM=',&
-            nomc(1:8),chenti,chlige,chlign
-            write(imod,'(12X,2A,10X,A,A2,A,A2,A,A4)')'AUTEUR=',aut,&
-            'DATE=',ct(1)(1:2),'/',ct(2)(1:2),'/',ct(3)
-            write(imod,'(A)') chfogn
-        else if (indic.eq.5.and.ityp.eq.7) then
+            end if
+            write (imod, '(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO', 'NOM=', &
+                nomc(1:8), chenti, chlige, chlign
+            write (imod, '(12X,2A,10X,A,A2,A,A2,A,A4)') 'AUTEUR=', aut, &
+                'DATE=', ct(1) (1:2), '/', ct(2) (1:2), '/', ct(3)
+            write (imod, '(A)') chfogn
+        else if (indic .eq. 5 .and. ityp .eq. 7) then
 !
 !    ---> ON TROUVE UNE MESH AREA DECRITE PAR SES NOEUDS
 !
-            ilong=lxlgut(noma)
+            ilong = lxlgut(noma)
             if (ilong .gt. 8) then
                 call utmess('A', 'STBTRIAS_5', sk=noma)
-            endif
-            write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO','NOM=',&
-            noma(1:8),chenti,chlige,chlign
-            write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
-            'DATE=',ct(1),'/',ct(2),'/',ct(3)
-            write(imod,'(A)') chfogn
-        else if (indic.eq.6.and.ityp.eq.7) then
+            end if
+            write (imod, '(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO', 'NOM=', &
+                noma(1:8), chenti, chlige, chlign
+            write (imod, '(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=', aut, &
+                'DATE=', ct(1), '/', ct(2), '/', ct(3)
+            write (imod, '(A)') chfogn
+        else if (indic .eq. 6 .and. ityp .eq. 7) then
 !
 !    ---> ON TROUVE UN MESH VOLUME DECRIT PAR SES NOEUDS
 !
-            ilong=lxlgut(nomv)
+            ilong = lxlgut(nomv)
             if (ilong .gt. 8) then
                 call utmess('A', 'STBTRIAS_5', sk=nomv)
-            endif
-            write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO','NOM=',&
-            nomv(1:8),chenti,chlige,chlign
-            write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
-            'DATE=',ct(1),'/',ct(2),'/',ct(3)
-            write(imod,'(A)') chfogn
-        else if (indic.eq.3.and.ityp.eq.8) then
+            end if
+            write (imod, '(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO', 'NOM=', &
+                nomv(1:8), chenti, chlige, chlign
+            write (imod, '(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=', aut, &
+                'DATE=', ct(1), '/', ct(2), '/', ct(3)
+            write (imod, '(A)') chfogn
+        else if (indic .eq. 3 .and. ityp .eq. 8) then
 !
 !    ---> ON TROUVE UNE CURVE DECRITE PAR SES ELEMENTS
 !
-            ilong=lxlgut(nomc)
+            ilong = lxlgut(nomc)
             if (ilong .gt. 8) then
                 call utmess('A', 'STBTRIAS_5', sk=nomc)
-            endif
-            write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)')'GROUP_MA','NOM=',&
-            nomc(1:8),chenti,chlige,chlign
-            write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
-            'DATE=',ct(1),'/',ct(2),'/',ct(3)
-            write(imod,'(A)') chfogm
-        else if (indic.eq.5.and.ityp.eq.8) then
+            end if
+            write (imod, '(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_MA', 'NOM=', &
+                nomc(1:8), chenti, chlige, chlign
+            write (imod, '(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=', aut, &
+                'DATE=', ct(1), '/', ct(2), '/', ct(3)
+            write (imod, '(A)') chfogm
+        else if (indic .eq. 5 .and. ityp .eq. 8) then
 !
 !    ---> ON TROUVE UNE MESH AREA DECRITE PAR SES ELEMENTS
 !
-            ilong=lxlgut(noma)
+            ilong = lxlgut(noma)
             if (ilong .gt. 8) then
                 call utmess('A', 'STBTRIAS_5', sk=nomc)
-            endif
-            write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)')'GROUP_MA','NOM=',&
-            noma(1:8),chenti,chlige,chlign
-            write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
-            'DATE:',ct(1),'/',ct(2),'/',ct(3)
-            write(imod,'(A)') chfogm
+            end if
+            write (imod, '(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_MA', 'NOM=', &
+                noma(1:8), chenti, chlige, chlign
+            write (imod, '(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=', aut, &
+                'DATE:', ct(1), '/', ct(2), '/', ct(3)
+            write (imod, '(A)') chfogm
         else
 !
 !    ---> ON TROUVE UN MESH VOLUME DECRIT PAR DES ELEMENTS
 !
-            ilong=lxlgut(nomv)
+            ilong = lxlgut(nomv)
             if (ilong .gt. 8) then
                 call utmess('A', 'STBTRIAS_5', sk=nomv)
-            endif
-            write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_MA','NOM=',&
-            nomv(1:8),chenti,chlige,chlign
-            write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
-            'DATE=',ct(1),'/',ct(2),'/',ct(3)
-            write(imod,'(A)') chfogm
-        endif
+            end if
+            write (imod, '(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_MA', 'NOM=', &
+                nomv(1:8), chenti, chlige, chlign
+            write (imod, '(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=', aut, &
+                'DATE=', ct(1), '/', ct(2), '/', ct(3)
+            write (imod, '(A)') chfogm
+        end if
         if (ityp .eq. 7) then
             if (idiv .ne. 0) then
                 do i = 1, idiv
-                    read(iunv,'(8I10)') (nument(k),k=1,8)
+                    read (iunv, '(8I10)') (nument(k), k=1, 8)
                     do k = 1, 8
                         call codnop(chnode, prfnoe, 1, 1)
                         call codent(nument(k), 'G', chnode(2:8))
-                        nuobj(k)=chnode
+                        nuobj(k) = chnode
                     end do
-                    write(imod,'(8(2X,A))') (nuobj(j),j=1,8)
+                    write (imod, '(8(2X,A))') (nuobj(j), j=1, 8)
                 end do
-            endif
+            end if
 !
             if (irest .ne. 0) then
-                read (iunv,'(8I10)') (nument(i),i=1,8)
+                read (iunv, '(8I10)') (nument(i), i=1, 8)
                 do k = 1, irest
                     call codnop(chnode, prfnoe, 1, 1)
                     call codent(nument(k), 'G', chnode(2:8))
-                    nuobj(k)=chnode
+                    nuobj(k) = chnode
                 end do
-                write(imod,'(8(2X,A))') (nuobj(j),j=1,irest)
-            endif
-            write(imod,'(A)') 'FINSF'
-            write(imod,'(A)') '%'
+                write (imod, '(8(2X,A))') (nuobj(j), j=1, irest)
+            end if
+            write (imod, '(A)') 'FINSF'
+            write (imod, '(A)') '%'
 !
         else
 !
             if (idiv .ne. 0) then
                 do i = 1, idiv
-                    read(iunv,'(8I10)') (nument(k),k=1,8)
+                    read (iunv, '(8I10)') (nument(k), k=1, 8)
                     do k = 1, 8
                         call codnop(chmail, prfmai, 1, 1)
                         call codent(nument(k), 'G', chmail(2:8))
-                        nuobj(k)=chmail
+                        nuobj(k) = chmail
                     end do
-                    write(imod,'(8(2X,A))') (nuobj(j),j=1,8)
+                    write (imod, '(8(2X,A))') (nuobj(j), j=1, 8)
                 end do
-            endif
+            end if
 !
             if (irest .ne. 0) then
-                read (iunv,'(8I10)') (nument(i),i=1,8)
+                read (iunv, '(8I10)') (nument(i), i=1, 8)
                 do k = 1, irest
                     call codnop(chmail, prfmai, 1, 1)
                     call codent(nument(k), 'G', chmail(2:8))
-                    nuobj(k)=chmail
+                    nuobj(k) = chmail
                 end do
-                write(imod,'(8(2X,A))') (nuobj(j),j=1,irest)
-            endif
-            write(imod,'(A)') 'FINSF'
-            write(imod,'(A)') '%'
-        endif
+                write (imod, '(8(2X,A))') (nuobj(j), j=1, irest)
+            end if
+            write (imod, '(A)') 'FINSF'
+            write (imod, '(A)') '%'
+        end if
     else
-        write(imes,*) 'ON EST DANS 1 AUBERGE ESPAGNOLE'
-        write(imes,*) 'JE N''Y COMPRENDS PLUS RIEN'
-    endif
+        write (imes, *) 'ON EST DANS 1 AUBERGE ESPAGNOLE'
+        write (imes, *) 'JE N''Y COMPRENDS PLUS RIEN'
+    end if
     goto 1
 1000 continue
-    write(imes,*) 'NOMBRE DE CURVES :',icompc
-    write(imes,*) 'NOMBRE DE M. AREAS:',icompa
-    write(imes,*) 'NOMBRE DE M. VOLUMES:',icompv
+    write (imes, *) 'NOMBRE DE CURVES :', icompc
+    write (imes, *) 'NOMBRE DE M. AREAS:', icompa
+    write (imes, *) 'NOMBRE DE M. VOLUMES:', icompv
 !
 end subroutine

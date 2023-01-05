@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
+subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar, &
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit none
 #include "jeveux.h"
@@ -61,10 +61,10 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    rundf=r8vide()
-    iundf=isnnem()
+    rundf = r8vide()
+    iundf = isnnem()
 !
-    nomsdr=resu0
+    nomsdr = resu0
 !
 !
 !     1. -- ON COMPACTE LES CHAMPS ARCHIVES :
@@ -75,113 +75,113 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
         do j = 1, nbexcl
             if (chexcl(j) .eq. nomsym) then
                 do k = 1, nbrang
-                    if (zk24(jtach+k-1)(1:1) .eq. ' ') goto 10
-                    call rsexch('F', nomsdr, nomsym, nuordr(k), chamin,&
+                    if (zk24(jtach+k-1) (1:1) .eq. ' ') goto 10
+                    call rsexch('F', nomsdr, nomsym, nuordr(k), chamin, &
                                 ire1)
                     call detrsd('CHAMP_GD', chamin)
-                    zk24(jtach+k-1)=' '
- 10                 continue
+                    zk24(jtach+k-1) = ' '
+10                  continue
                 end do
                 goto 50
 !
-            endif
+            end if
         end do
 !
-        irang=0
+        irang = 0
         do j = 1, nbrang
-            if (zk24(jtach+j-1)(1:1) .eq. ' ') goto 30
-            call rsexch('F', nomsdr, nomsym, nuordr(j), chamin,&
+            if (zk24(jtach+j-1) (1:1) .eq. ' ') goto 30
+            call rsexch('F', nomsdr, nomsym, nuordr(j), chamin, &
                         ire1)
             if (nuarch(j) .eq. 0) then
                 call detrsd('CHAMP_GD', chamin)
             else
-                irang=irang+1
-                zk24(jtach+irang-1)=chamin
-            endif
- 30         continue
+                irang = irang+1
+                zk24(jtach+irang-1) = chamin
+            end if
+30          continue
         end do
 !
         do k = irang+1, nbrang
-            zk24(jtach+k-1)=' '
+            zk24(jtach+k-1) = ' '
         end do
- 50     continue
+50      continue
     end do
 !
 !
 !     2. -- ON COMPACTE LES PARAMETRES ARCHIVES :
 !     -------------------------------------------
-    irang=0
+    irang = 0
     do i = 1, nbrang
         if (nuarch(i) .eq. 0) goto 70
-        irang=irang+1
+        irang = irang+1
         do j = 1, nbpara
-            nopara=nompar(j)
-            call rsadpa(nomsdr, 'L', 1, nopara, nuordr(i),&
+            nopara = nompar(j)
+            call rsadpa(nomsdr, 'L', 1, nopara, nuordr(i), &
                         1, sjv=iadin, styp=type, istop=0)
-            call extrs3(nomsdr, nopara, irang, 'E', 1,&
+            call extrs3(nomsdr, nopara, irang, 'E', 1, &
                         type, iadou)
             if (type(1:1) .eq. 'I') then
-                zi(iadou)=zi(iadin)
-            else if (type(1:1).eq.'R') then
-                zr(iadou)=zr(iadin)
-            else if (type(1:1).eq.'C') then
-                zc(iadou)=zc(iadin)
-            else if (type(1:3).eq.'K80') then
-                zk80(iadou)=zk80(iadin)
-            else if (type(1:3).eq.'K32') then
-                zk32(iadou)=zk32(iadin)
-            else if (type(1:3).eq.'K24') then
-                zk24(iadou)=zk24(iadin)
-            else if (type(1:3).eq.'K16') then
-                zk16(iadou)=zk16(iadin)
-            else if (type(1:2).eq.'K8') then
-                zk8(iadou)=zk8(iadin)
-            endif
+                zi(iadou) = zi(iadin)
+            else if (type(1:1) .eq. 'R') then
+                zr(iadou) = zr(iadin)
+            else if (type(1:1) .eq. 'C') then
+                zc(iadou) = zc(iadin)
+            else if (type(1:3) .eq. 'K80') then
+                zk80(iadou) = zk80(iadin)
+            else if (type(1:3) .eq. 'K32') then
+                zk32(iadou) = zk32(iadin)
+            else if (type(1:3) .eq. 'K24') then
+                zk24(iadou) = zk24(iadin)
+            else if (type(1:3) .eq. 'K16') then
+                zk16(iadou) = zk16(iadin)
+            else if (type(1:2) .eq. 'K8') then
+                zk8(iadou) = zk8(iadin)
+            end if
         end do
- 70     continue
+70      continue
     end do
-    ASSERT(irang.eq.nbarch)
+    ASSERT(irang .eq. nbarch)
 !
 !
 !     3. -- ON COMPACTE LES NUME_ORDRE ARCHIVES :
 !     -------------------------------------------
     call jeecra(nomsdr//'.ORDR', 'LONUTI', nbarch)
     call jeveuo(nomsdr//'.ORDR', 'E', vi=ordr)
-    irang=0
+    irang = 0
     do i = 1, nbrang
         if (nuarch(i) .eq. 0) goto 80
-        irang=irang+1
-        ordr(irang)=nuordr(i)
- 80     continue
+        irang = irang+1
+        ordr(irang) = nuordr(i)
+80      continue
     end do
-    ASSERT(irang.eq.nbarch)
+    ASSERT(irang .eq. nbarch)
 !
 !
 !     4. -- ON MET A "ZERO" LES IRANG INUTILISES :
 !     -------------------------------------------------
     do irang = nbarch+1, nbrang
-        ordr(irang)=iundf
+        ordr(irang) = iundf
         do j = 1, nbpara
-            nopara=nompar(j)
-            call extrs3(nomsdr, nopara, irang, 'E', 1,&
+            nopara = nompar(j)
+            call extrs3(nomsdr, nopara, irang, 'E', 1, &
                         type, iadou)
             if (type(1:1) .eq. 'I') then
-                zi(iadou)=iundf
-            else if (type(1:1).eq.'R') then
-                zr(iadou)=rundf
-            else if (type(1:1).eq.'C') then
-                zc(iadou)=dcmplx(rundf,rundf)
-            else if (type(1:3).eq.'K80') then
-                zk80(iadou)=' '
-            else if (type(1:3).eq.'K32') then
-                zk32(iadou)=' '
-            else if (type(1:3).eq.'K24') then
-                zk24(iadou)=' '
-            else if (type(1:3).eq.'K16') then
-                zk16(iadou)=' '
-            else if (type(1:2).eq.'K8') then
-                zk8(iadou)=' '
-            endif
+                zi(iadou) = iundf
+            else if (type(1:1) .eq. 'R') then
+                zr(iadou) = rundf
+            else if (type(1:1) .eq. 'C') then
+                zc(iadou) = dcmplx(rundf, rundf)
+            else if (type(1:3) .eq. 'K80') then
+                zk80(iadou) = ' '
+            else if (type(1:3) .eq. 'K32') then
+                zk32(iadou) = ' '
+            else if (type(1:3) .eq. 'K24') then
+                zk24(iadou) = ' '
+            else if (type(1:3) .eq. 'K16') then
+                zk16(iadou) = ' '
+            else if (type(1:2) .eq. 'K8') then
+                zk8(iadou) = ' '
+            end if
         end do
     end do
 !
@@ -193,16 +193,16 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
         call jenuno(jexnum(nomsdr//'.DESC', i), nomsym)
         call jeveuo(jexnum(nomsdr//'.TACH', i), 'E', jtach)
         do j = 1, nbarch
-            iordr=ordr(j)
-            nomch1=zk24(jtach-1+j)
+            iordr = ordr(j)
+            nomch1 = zk24(jtach-1+j)
             if (nomch1 .eq. ' ') goto 41
             call rsutch(nomsdr, nomsym, iordr, nomch2, .false._1)
             if (nomch1 .ne. nomch2) then
                 call copisd('CHAMP', 'G', nomch1, nomch2)
                 call detrsd('CHAMP', nomch1)
-                zk24(jtach-1+j)=nomch2
-            endif
- 41         continue
+                zk24(jtach-1+j) = nomch2
+            end if
+41          continue
         end do
     end do
 !

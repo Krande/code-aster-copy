@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,15 +53,15 @@ subroutine ssdmge(geo1, geo2, para, dimgeo)
 !
 !     -- ON RETRANCHE LE VECTEUR OP (CENTRE DE LA ROTATION):
     do i = 1, dimgeo
-        geo2(i)=geo1(i)-para(6+i)
+        geo2(i) = geo1(i)-para(6+i)
     end do
 !
 !     -- ON TOURNE LE VECTEUR PM AUTOUR DE P :
     call matrot(para(4), lambda)
     do i = 1, dimgeo
-        geop(i)=0.0d0
+        geop(i) = 0.0d0
         do j = 1, dimgeo
-            geop(i)=geop(i)+lambda(j,i)*geo2(j)
+            geop(i) = geop(i)+lambda(j, i)*geo2(j)
         end do
     end do
 !
@@ -69,7 +69,7 @@ subroutine ssdmge(geo1, geo2, para, dimgeo)
 !     -- TRANSLATION PAR LE VECTEUR T (ET LE VECTEUR OP QUE L'ON A OTE):
 !     -----------------------------------------------------------------
     do i = 1, dimgeo
-        geo2(i)=geop(i)+para(i)+para(6+i)
+        geo2(i) = geop(i)+para(i)+para(6+i)
     end do
 !
 end subroutine

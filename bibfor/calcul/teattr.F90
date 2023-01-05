@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine teattr(kstop, noattr, vattr, iret_, typel)
 
-use calcul_module, only : calcul_status, ca_jcteat_, ca_lcteat_, ca_nomte_
+    use calcul_module, only: calcul_status, ca_jcteat_, ca_lcteat_, ca_nomte_
 
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,11 +32,11 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 
-character(len=1), intent(in) :: kstop
-character(len=*), intent(in) :: noattr
-character(len=*), intent(out) :: vattr
-integer, optional, intent(out) :: iret_
-character(len=*), intent(in), optional :: typel
+    character(len=1), intent(in) :: kstop
+    character(len=*), intent(in) :: noattr
+    character(len=*), intent(out) :: vattr
+    integer, optional, intent(out) :: iret_
+    character(len=*), intent(in), optional :: typel
 
 !---------------------------------------------------------------------
 ! but : Recuperer la valeur d'un attribut d'un type_element
@@ -63,24 +63,23 @@ character(len=*), intent(in), optional :: typel
     aster_logical :: apelje
 !----------------------------------------------------------------------
     if (present(typel)) then
-        nomt2=typel
+        nomt2 = typel
         ASSERT(nomt2 .ne. ' ')
     else
-        nomt2=' '
-    endif
+        nomt2 = ' '
+    end if
 
-    noatt2=noattr
+    noatt2 = noattr
 
     if (nomt2 .eq. ' ') then
-        ASSERT(calcul_status().eq.3)
-        nomt2=ca_nomte_
-    endif
+        ASSERT(calcul_status() .eq. 3)
+        nomt2 = ca_nomte_
+    end if
 
-    apelje=.true.
+    apelje = .true.
     if (calcul_status() .eq. 3) then
-        if (nomt2 .eq. ca_nomte_) apelje=.false.
-    endif
-
+        if (nomt2 .eq. ca_nomte_) apelje = .false.
+    end if
 
     if (apelje) then
         call jenonu(jexnom('&CATA.TE.NOMTE', nomt2), ite)
@@ -88,41 +87,41 @@ character(len=*), intent(in), optional :: typel
         if (n1 .gt. 0) then
             call jeveuo(jexnum('&CATA.TE.CTE_ATTR', ite), 'L', jcte)
         else
-            jcte=0
-        endif
+            jcte = 0
+        end if
     else
-        jcte=ca_jcteat_
-        n1=ca_lcteat_
-    endif
+        jcte = ca_jcteat_
+        n1 = ca_lcteat_
+    end if
 
-    nbattr=n1/2
+    nbattr = n1/2
     do k = 1, nbattr
         if (zk16(jcte-1+2*(k-1)+1) .eq. noatt2) then
-            vattr2=zk16(jcte-1+2*(k-1)+2)
+            vattr2 = zk16(jcte-1+2*(k-1)+2)
             goto 2
-        endif
-    enddo
+        end if
+    end do
 
-    iret=1
-    vattr='NON_DEFINI'
+    iret = 1
+    vattr = 'NON_DEFINI'
     if (kstop .eq. 'S') then
         valk(1) = noatt2
         valk(2) = nomt2
         call utmess('F', 'CALCUL_28', nk=2, valk=valk)
     else
         ASSERT(present(iret_))
-    endif
-    ASSERT(kstop.eq.'C')
+    end if
+    ASSERT(kstop .eq. 'C')
     goto 3
 
-  2 continue
-    iret=0
-    vattr=vattr2
+2   continue
+    iret = 0
+    vattr = vattr2
 
-  3 continue
+3   continue
 
     if (present(iret_)) then
         iret_ = iret
-    endif
+    end if
 
 end subroutine

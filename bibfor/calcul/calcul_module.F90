@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 module calcul_module
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 
@@ -86,7 +86,7 @@ implicit none
 !     ca_illiel_  : adresse du pointeur de longueur de '.liel'.
 
 !======================================================================
-    integer,parameter :: ca_iachid_ = 12
+    integer, parameter :: ca_iachid_ = 12
     integer :: ca_iachii_, ca_iachik_, ca_iachix_
 !     ca_iachii_ : adresse de '&&CALCUL.LCHIN_I'
 !     ca_iachik_ : adresse de '&&CALCUL.LCHIN_K8'
@@ -132,7 +132,6 @@ implicit none
     integer :: ca_nbgr_, ca_igr_, ca_nbelgr_, ca_nbelmx_, ca_jcteat_
     integer :: ca_lcteat_, ca_iawloc_, ca_iawlo2_, ca_iawtyp_
 
-
 !     ca_nbgr_   : nombre de grel du ligrel
 !     ca_igr_    : numero du grel courant
 !     ca_nbelgr_ : nombre d'elements dans le grel ca_igr_
@@ -162,7 +161,6 @@ implicit none
 !   v(3*(ipar-1)+3) : ich : numero du champ associe au parametre.
 !      i.e : indice dans lchin (ou lchout selon le cas)
 !      ich = 0 s'il n'y a pas de champ associe a ipar
-
 
 !  ca_iawlo2_ : adresse dans zi de '&&CALCUL.IA_CHLO2' v(i)
 !           cet objet contient des informations sur les champs locaux
@@ -272,7 +270,7 @@ implicit none
 !     ca_ctempp_ : for end temperature when coupled variable (non external state variable)
 !======================================================================
     integer :: ca_nfpgmx_
-    parameter (ca_nfpgmx_=10)
+    parameter(ca_nfpgmx_=10)
     integer :: ca_nfpg_, ca_jfpgl_, ca_decala_(ca_nfpgmx_), ca_km_, ca_kp_, ca_kr_, ca_iredec_
 !     ca_nfpg_   : nombre de familles de la famille liste "mater"
 !     ca_jfpgl_  : adresse dans zk8 de la liste des noms des familles

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irrjpl(model, nmat, mater, sigf, vind,&
+subroutine irrjpl(model, nmat, mater, sigf, vind, &
                   vinf, dsde)
 !
     implicit none
@@ -51,7 +51,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 !       ----------------------------------------------------------------
     integer :: ndt, ndi
 !     ------------------------------------------------------------------
-    common /tdim/ ndt,ndi
+    common/tdim/ndt, ndi
 !
     real(kind=8) :: det, mat(6, 6), i4(6, 6)
     real(kind=8) :: fkooh(6, 6), dphi, pf, etaif, dp, detai, dpi
@@ -63,12 +63,12 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     integer :: iret
     aster_logical :: ldrpdp
 !     ------------------------------------------------------------------
-    data  i4    /1.0d0   , 0.0d0  , 0.0d0  , 0.0d0  ,0.0d0  ,0.0d0,&
-     &             0.0d0   , 1.0d0  , 0.0d0  , 0.0d0  ,0.0d0  ,0.0d0,&
-     &             0.0d0   , 0.0d0  , 1.0d0  , 0.0d0  ,0.0d0  ,0.0d0,&
-     &             0.0d0   , 0.0d0  , 0.0d0  , 1.0d0  ,0.0d0  ,0.0d0,&
-     &             0.0d0   , 0.0d0  , 0.0d0  , 0.0d0  ,1.0d0  ,0.0d0,&
-     &             0.0d0   , 0.0d0  , 0.0d0  , 0.0d0  ,0.0d0  ,1.0d0/
+    data i4/1.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0,&
+     &             0.0d0, 1.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0,&
+     &             0.0d0, 0.0d0, 1.0d0, 0.0d0, 0.0d0, 0.0d0,&
+     &             0.0d0, 0.0d0, 0.0d0, 1.0d0, 0.0d0, 0.0d0,&
+     &             0.0d0, 0.0d0, 0.0d0, 0.0d0, 1.0d0, 0.0d0,&
+     &             0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0, 1.0d0/
 !     ------------------------------------------------------------------
 !
 !     CALCUL DE LA MATRICE JACOBIENNE ==> methode b (plus sure)
@@ -85,55 +85,55 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     pf = vinf(1)
     etaif = vinf(2)
 !     RECUPERATION DES INCREMENTS DES VARIABLES INTERNES
-    dp = vinf(1) - vind(1)
-    detai = vinf(2) - vind(2)
-    dpi = vinf(3) - vind(3)
+    dp = vinf(1)-vind(1)
+    detai = vinf(2)-vind(2)
+    dpi = vinf(3)-vind(3)
 !
 !     CARACTERISTIQUES MATERIAUX
-    ai0 = mater(4,2)
-    etais = mater(5,2)
-    k = mater(7,2)
-    n = mater(8,2)
-    p0 = mater(9,2)
-    kappa = mater(10,2)
-    r02 = mater(11,2)
-    zetaf = mater(12,2)
-    penpe = mater(13,2)
-    pk = mater(14,2)
-    pe = mater(15,2)
-    spe = mater(16,2)
+    ai0 = mater(4, 2)
+    etais = mater(5, 2)
+    k = mater(7, 2)
+    n = mater(8, 2)
+    p0 = mater(9, 2)
+    kappa = mater(10, 2)
+    r02 = mater(11, 2)
+    zetaf = mater(12, 2)
+    penpe = mater(13, 2)
+    pk = mater(14, 2)
+    pe = mater(15, 2)
+    spe = mater(16, 2)
 !     INCREMENT D'IRRADIATION
-    dphi = mater(23,2)
+    dphi = mater(23, 2)
 !
 !     Calcul de DRSDS : (6,6)
     call irrfss(sigf, ddfdds)
-    drsds(1:ndt,1:ndt) = (dp+dpi) * ddfdds(1:ndt,1:ndt)
-    drsds(1:ndt,1:ndt) = fkooh(1:ndt,1:ndt) + drsds(1:ndt,1:ndt)
+    drsds(1:ndt, 1:ndt) = (dp+dpi)*ddfdds(1:ndt, 1:ndt)
+    drsds(1:ndt, 1:ndt) = fkooh(1:ndt, 1:ndt)+drsds(1:ndt, 1:ndt)
 !
 !     Calcul de DRPDP : scalaire
 !     loi de comportement : Calcul du seuil
     if (pf .lt. pk) then
         sr = kappa*r02
     else if (pf .lt. pe) then
-        sr = penpe*(pf - pe) + spe
+        sr = penpe*(pf-pe)+spe
     else
-        sr = k*((pf + p0)**n)
-    endif
+        sr = k*((pf+p0)**n)
+    end if
 !     Calcul de Sigma equivalent
     call lcdevi(sigf, dev)
     sequiv = lcnrts(dev)
     ldrpdp = .true.
-    if (((sequiv.ge.sr).and.(dp.ge.0.d0)) .or. (dp.gt.r8prem())) then
+    if (((sequiv .ge. sr) .and. (dp .ge. 0.d0)) .or. (dp .gt. r8prem())) then
         if (pf .lt. pk) then
             ldrpdp = .false.
         else if (pf .lt. pe) then
             drpdp = penpe
         else
             drpdp = n*k*((pf+p0)**(n-1.d0))
-        endif
+        end if
     else
         ldrpdp = .false.
-    endif
+    end if
 !     Calcul de DRIDS : scalaire
     if ((etaif-detai) .gt. etais) then
         drids = ai0*dphi*zetaf
@@ -143,26 +143,26 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
         drids = ai0*dphi*zetaf*(etaif-etais)/detai
     else
         drids = 0.0d0
-    endif
+    end if
     if (sequiv .eq. 0.0d0) then
-        ddfdds(:,:) = 0.0d0
+        ddfdds(:, :) = 0.0d0
     else
-        dfds(1:ndt) = (1.5d0/sequiv) * dev(1:ndt)
+        dfds(1:ndt) = (1.5d0/sequiv)*dev(1:ndt)
         call lcprte(dfds, dfds, ddfdds)
-    endif
+    end if
 !
     if (ldrpdp) then
-        ddfdds = (1.0d0/drpdp+drids) * ddfdds
+        ddfdds = (1.0d0/drpdp+drids)*ddfdds
     else
-        ddfdds = drids * ddfdds
-    endif
+        ddfdds = drids*ddfdds
+    end if
 !
 !     Assemblage de DRSDS et DDFDDS : (6,6)
-    mat(1:ndt,1:ndt) = drsds(1:ndt,1:ndt) + ddfdds(1:ndt,1:ndt)
+    mat(1:ndt, 1:ndt) = drsds(1:ndt, 1:ndt)+ddfdds(1:ndt, 1:ndt)
 !
 !     Inversion de MAT : DSDE(6,6)
-    dsde(1:ndt,1:ndt) =i4(1:ndt,1:ndt)
-    call mgauss('NFVP', mat, dsde, 6, ndt,&
+    dsde(1:ndt, 1:ndt) = i4(1:ndt, 1:ndt)
+    call mgauss('NFVP', mat, dsde, 6, ndt, &
                 ndt, det, iret)
 !
 end subroutine

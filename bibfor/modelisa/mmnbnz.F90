@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mmnbnz(mesh, sdcont_defi, i_zone, nb_cont_poin)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -55,24 +55,24 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     nb_cont_poin = 0
-    cont_form    = cfdisi(sdcont_defi, 'FORMULATION')
+    cont_form = cfdisi(sdcont_defi, 'FORMULATION')
 !
 ! - Count
 !
     if (cont_form .eq. 1) then
-        nb_cont_poin = mminfi(sdcont_defi, 'NBNOE' , i_zone)
-    else if (cont_form.eq.2 .or. cont_form.eq.5) then
+        nb_cont_poin = mminfi(sdcont_defi, 'NBNOE', i_zone)
+    else if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         nb_elem_slav = mminfi(sdcont_defi, 'NBMAE', i_zone)
-        jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
-        type_inte    = mminfi(sdcont_defi, 'INTEGRATION', i_zone)
+        jdecme = mminfi(sdcont_defi, 'JDECME', i_zone)
+        type_inte = mminfi(sdcont_defi, 'INTEGRATION', i_zone)
         do i_elem_slav = 1, nb_elem_slav
-            elem_slav_indx = i_elem_slav + jdecme
+            elem_slav_indx = i_elem_slav+jdecme
             call cfnumm(sdcont_defi, elem_slav_indx, elem_slav_nume)
             call mmelin(mesh, elem_slav_nume, type_inte, nb_poin_elem)
-            nb_cont_poin = nb_cont_poin + nb_poin_elem
+            nb_cont_poin = nb_cont_poin+nb_poin_elem
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

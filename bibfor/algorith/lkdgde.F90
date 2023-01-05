@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
-                  im, sm, vinm, nbmat, mater,&
+subroutine lkdgde(val, vintr, dt, seuive, ucrim, &
+                  im, sm, vinm, nbmat, mater, &
                   depsv, dgamv, retcom)
 !
     implicit none
@@ -55,7 +55,7 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
 !     : DGAMV : PARAMETRE D ECROUISSAGE VISQUEUX ------------------
 ! --- : RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS-------
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: i, ndi, ndt
     real(kind=8) :: a, n, pa
     real(kind=8) :: bidon, deux, trois, zero
@@ -66,30 +66,30 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( zero    =  0.0d0   )
-    parameter       ( deux    =  2.0d0   )
-    parameter       ( trois   =  3.0d0   )
+    parameter(zero=0.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! =================================================================
 ! --- RECUPERATION DES DONNEES MATERIAUX --------------------------
 ! =================================================================
-    pa = mater(1,2)
-    a = mater(21,2)
-    n = mater(22,2)
+    pa = mater(1, 2)
+    a = mater(21, 2)
+    n = mater(22, 2)
 ! =================================================================
 ! --- CALCUL DE DF/DSIG ------------------------------------
 ! =================================================================
 !
-    call lkdhds(nbmat, mater, im, sm, dhds,&
+    call lkdhds(nbmat, mater, im, sm, dhds, &
                 retcom)
-    call lkds2h(nbmat, mater, im, sm, dhds,&
+    call lkds2h(nbmat, mater, im, sm, dhds, &
                 ds2hds, retcom)
     call lkvarv(vintr, nbmat, mater, paravi)
 !
     call lkvacv(nbmat, mater, paravi, varvi)
-    call lkdfds(nbmat, mater, sm, paravi, varvi,&
+    call lkdfds(nbmat, mater, sm, paravi, varvi, &
                 ds2hds, ucrim, dfdsv)
 !
-    bprime = lkbpri (val,vinm,nbmat,mater,paravi,im,sm)
+    bprime = lkbpri(val, vinm, nbmat, mater, paravi, im, sm)
 !
     call lkcaln(sm, bprime, vecnv, retcom)
 ! =================================================================
@@ -103,8 +103,8 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
         if (seuive .le. zero) then
             depsv(i) = zero
         else
-            depsv(i) = a * (seuive/pa)**n*gv(i)*dt
-        endif
+            depsv(i) = a*(seuive/pa)**n*gv(i)*dt
+        end if
     end do
 !
 ! =================================================================
@@ -119,8 +119,8 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
     dgamv = 0.d0
 !
     do i = 1, ndt
-        dgamv = dgamv + ddepsv(i)**2
+        dgamv = dgamv+ddepsv(i)**2
     end do
-    dgamv = sqrt(deux/trois * dgamv)
+    dgamv = sqrt(deux/trois*dgamv)
 ! =================================================================
 end subroutine

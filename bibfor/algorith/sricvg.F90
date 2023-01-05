@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sricvg(nr,itmax,toler,iter,r,nvi,vinf,dy,irtet)
+subroutine sricvg(nr, itmax, toler, iter, r, nvi, vinf, dy, irtet)
 
 !
 
@@ -49,8 +49,8 @@ subroutine sricvg(nr,itmax,toler,iter,r,nvi,vinf,dy,irtet)
     !!! Variables globales
     !!!
 
-    integer :: nr,itmax,iter,irtet,ndt,ndi,nvi
-    real(kind=8) :: toler,r(nr),vinf(nvi),dy(nr)
+    integer :: nr, itmax, iter, irtet, ndt, ndi, nvi
+    real(kind=8) :: toler, r(nr), vinf(nvi), dy(nr)
 
     !!!
     !!! Variables locales
@@ -58,49 +58,49 @@ subroutine sricvg(nr,itmax,toler,iter,r,nvi,vinf,dy,irtet)
 
     integer :: i
     real(kind=8) :: er
-    common /tdim/ ndt,ndi
+    common/tdim/ndt, ndi
 
     !!!
     !!! Calcul de la norme de rini et dy
     !!!
 
-    er=0.d0
+    er = 0.d0
 
-    do i=1,nr
-        er=er+r(i)*r(i)
+    do i = 1, nr
+        er = er+r(i)*r(i)
     end do
 
-    er=sqrt(er)
+    er = sqrt(er)
 
     !!!
     !!! Tets de la convergence par rapport a toler
     !!!
 
-    if (er.lt.toler) then
-        if ((dy(ndt+1).ge.0.d0).and.(vinf(7).gt.0.d0)) then
-            irtet=0
-        else if (vinf(7).le.0.d0) then
-            irtet=0
+    if (er .lt. toler) then
+        if ((dy(ndt+1) .ge. 0.d0) .and. (vinf(7) .gt. 0.d0)) then
+            irtet = 0
+        else if (vinf(7) .le. 0.d0) then
+            irtet = 0
         else
-            irtet=2
-            vinf(7)=0.d0
-            do i=1,nr
-                dy(i)=0.d0
+            irtet = 2
+            vinf(7) = 0.d0
+            do i = 1, nr
+                dy(i) = 0.d0
             end do
-        endif
+        end if
         goto 9999
-    endif
+    end if
 
     !!!
     !!! Si non convergence, test du num. d'iteration
     !!!
 
-    if (iter.lt.itmax) then
-        irtet=1
+    if (iter .lt. itmax) then
+        irtet = 1
     else
-        irtet=3
-    endif
+        irtet = 3
+    end if
 
-9999  continue
+9999 continue
 
 end subroutine

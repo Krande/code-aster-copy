@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,38 +61,38 @@ subroutine arg126(nomres)
     real(kind=8) :: pi
 !
 !-----------------------------------------------------------------------
-    data clesst,clenom /'SOUS_STRUC','NOM'/
-    data clerot,clemcl /'ANGL_NAUT','MACR_ELEM_DYNA'/
-    data clelia,cletra /'LIAISON','TRANS'/
-    data clel          /'SOUS_STRUC_1','SOUS_STRUC_2','INTERFACE_1',&
+    data clesst, clenom/'SOUS_STRUC', 'NOM'/
+    data clerot, clemcl/'ANGL_NAUT', 'MACR_ELEM_DYNA'/
+    data clelia, cletra/'LIAISON', 'TRANS'/
+    data clel/'SOUS_STRUC_1', 'SOUS_STRUC_2', 'INTERFACE_1',&
      &                    'INTERFACE_2'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    pi=4.d+00*atan2(1.d+00,1.d+00)
+    pi = 4.d+00*atan2(1.d+00, 1.d+00)
 !
 !-----TRAITEMENT DEFINITION SOUS-STRUCTURES-----------------------------
 !
     call getfac(clesst, nbsst)
 !
     if (nbsst .lt. 2) then
-        vali (1) = 2
-        vali (2) = nbsst
+        vali(1) = 2
+        vali(2) = nbsst
         call utmess('F', 'ALGORITH11_92', ni=2, vali=vali)
-    endif
+    end if
 !
-    repsst=nomres//'      .MODG.SSNO'
-    nommcl=nomres//'      .MODG.SSME'
-    rotsst=nomres//'      .MODG.SSOR'
-    trasst=nomres//'      .MODG.SSTR'
+    repsst = nomres//'      .MODG.SSNO'
+    nommcl = nomres//'      .MODG.SSME'
+    rotsst = nomres//'      .MODG.SSOR'
+    trasst = nomres//'      .MODG.SSTR'
 !
     call jecreo(repsst, 'G N K8')
     call jeecra(repsst, 'NOMMAX', nbsst)
-    call jecrec(nommcl, 'G V K8', 'NU', 'CONTIG', 'CONSTANT',&
+    call jecrec(nommcl, 'G V K8', 'NU', 'CONTIG', 'CONSTANT', &
                 nbsst)
-    call jecrec(rotsst, 'G V R', 'NU', 'CONTIG', 'CONSTANT',&
+    call jecrec(rotsst, 'G V R', 'NU', 'CONTIG', 'CONSTANT', &
                 nbsst)
-    call jecrec(trasst, 'G V R', 'NU', 'CONTIG', 'CONSTANT',&
+    call jecrec(trasst, 'G V R', 'NU', 'CONTIG', 'CONSTANT', &
                 nbsst)
     do i = 1, nbsst
         call jecroc(jexnum(nommcl, i))
@@ -108,52 +108,52 @@ subroutine arg126(nomres)
 !
     do i = 1, nbsst
         call getvtx(clesst, clenom, iocc=i, nbval=0, nbret=ioc)
-        ioc=-ioc
+        ioc = -ioc
         if (ioc .ne. 1) then
-            vali (1) = 1
-            vali (2) = ioc
+            vali(1) = 1
+            vali(2) = ioc
             call utmess('F', 'ALGORITH11_93', ni=2, vali=vali)
         else
             call getvtx(clesst, clenom, iocc=i, scal=nomsst, nbret=ibid)
-        endif
+        end if
         call jecroc(jexnom(repsst, nomsst))
 !
         call getvid(clesst, clemcl, iocc=i, nbval=0, nbret=ioc)
-        ioc=-ioc
+        ioc = -ioc
         if (ioc .ne. 1) then
-            valk (1) = nomsst
-            vali (1) = ioc
-            vali (2) = 1
+            valk(1) = nomsst
+            vali(1) = ioc
+            vali(2) = 1
             call utmess('F', 'ALGORITH11_94', sk=valk(1), ni=2, vali=vali)
         else
             call getvid(clesst, clemcl, iocc=i, scal=mclcou, nbret=ibid)
-        endif
+        end if
         call jenonu(jexnom(repsst, nomsst), ibid)
         call jeveuo(jexnum(nommcl, ibid), 'E', ldnmcl)
-        zk8(ldnmcl)=mclcou
+        zk8(ldnmcl) = mclcou
 !
 !  TRAITEMENT DES ROTATIONS
 !
         call jenonu(jexnom(repsst, nomsst), ibid)
         call jeveuo(jexnum(rotsst, ibid), 'E', ldrot)
         call getvr8(clesst, clerot, iocc=i, nbval=0, nbret=ioc)
-        ioc=-ioc
+        ioc = -ioc
         if (ioc .eq. 0) then
             do j = 1, 3
-                zr(ldrot+j-1)=0.d+00
+                zr(ldrot+j-1) = 0.d+00
             end do
-        else if (ioc.eq.3) then
-            call getvr8(clesst, clerot, iocc=i, nbval=3, vect=zr(ldrot),&
+        else if (ioc .eq. 3) then
+            call getvr8(clesst, clerot, iocc=i, nbval=3, vect=zr(ldrot), &
                         nbret=ibid)
             do j = 1, 3
-                zr(ldrot+j-1)=zr(ldrot+j-1)*pi/180.d+00
+                zr(ldrot+j-1) = zr(ldrot+j-1)*pi/180.d+00
             end do
         else
-            valk (1) = nomsst
-            vali (1) = ioc
-            vali (2) = 3
+            valk(1) = nomsst
+            vali(1) = ioc
+            vali(2) = 3
             call utmess('F', 'ALGORITH11_95', sk=valk(1), ni=2, vali=vali)
-        endif
+        end if
 !
 !  TRAITEMENT DES TRANSLATIONS SI INTRODUIT PAR L'UTILISATEUR
 !
@@ -161,20 +161,20 @@ subroutine arg126(nomres)
         call jenonu(jexnom(repsst, nomsst), ibid)
         call jeveuo(jexnum(trasst, ibid), 'E', ldtra)
         call getvr8(clesst, cletra, iocc=i, nbval=0, nbret=ioc)
-        ioc=-ioc
+        ioc = -ioc
         if (ioc .eq. 0) then
             do j = 1, 3
-                zr(ldtra+j-1)=0.d+00
+                zr(ldtra+j-1) = 0.d+00
             end do
-        else if (ioc.eq.3) then
-            call getvr8(clesst, cletra, iocc=i, nbval=3, vect=zr(ldtra),&
+        else if (ioc .eq. 3) then
+            call getvr8(clesst, cletra, iocc=i, nbval=3, vect=zr(ldtra), &
                         nbret=ibid)
         else
-            valk (1) = nomsst
-            vali (1) = ioc
-            vali (2) = 3
+            valk(1) = nomsst
+            vali(1) = ioc
+            vali(2) = 3
             call utmess('F', 'ALGORITH11_96', sk=valk(1), ni=2, vali=vali)
-        endif
+        end if
 !
 !
     end do
@@ -183,13 +183,13 @@ subroutine arg126(nomres)
 !
     call getfac(clelia, nblia)
     if (nblia .eq. 0) then
-        vali (1) = nblia
-        vali (2) = 1
+        vali(1) = nblia
+        vali(2) = 1
         call utmess('F', 'ALGORITH11_97', ni=2, vali=vali)
-    endif
+    end if
 !
-    famli=nomres//'      .MODG.LIDF'
-    call jecrec(famli, 'G V K8', 'NU', 'DISPERSE', 'CONSTANT',&
+    famli = nomres//'      .MODG.LIDF'
+    call jecrec(famli, 'G V K8', 'NU', 'DISPERSE', 'CONSTANT', &
                 nblia)
     call jeecra(famli, 'LONMAX', 5)
 !
@@ -203,12 +203,12 @@ subroutine arg126(nomres)
 !
         do j = 1, 2
             call getvtx(clelia, clel(j), iocc=i, nbval=0, nbret=ioc)
-            ioc=-ioc
+            ioc = -ioc
             if (ioc .ne. 1) then
-                vali (1) = i
-                vali (2) = ioc
-                vali (3) = 1
-                valk (1) = clel(j)
+                vali(1) = i
+                vali(2) = ioc
+                vali(3) = 1
+                valk(1) = clel(j)
                 call utmess('F', 'ALGORITH11_98', sk=valk(1), ni=3, vali=vali)
             else
                 call getvtx(clelia, clel(j), iocc=i, scal=nomcou, nbret=ibid)
@@ -217,49 +217,49 @@ subroutine arg126(nomres)
 !
                 call jenonu(jexnom(repsst, nomcou), iret)
                 if (iret .eq. 0) then
-                    vali (1) = i
-                    valk (1) = nomcou
+                    vali(1) = i
+                    valk(1) = nomcou
                     call utmess('F', 'ALGORITH11_99', sk=valk(1), si=vali(1))
-                endif
-                zk8(ldlid+(j-1)*2)=nomcou
-            endif
+                end if
+                zk8(ldlid+(j-1)*2) = nomcou
+            end if
         end do
 !
 !  BOUCLE SUR LES INTERFACES
 !
         do j = 3, 4
             call getvtx(clelia, clel(j), iocc=i, nbval=0, nbret=ioc)
-            ioc=-ioc
+            ioc = -ioc
             if (ioc .ne. 1) then
-                vali (1) = i
-                vali (2) = ioc
-                vali (3) = 1
-                valk (1) = clel(j)
+                vali(1) = i
+                vali(2) = ioc
+                vali(3) = 1
+                valk(1) = clel(j)
                 call utmess('F', 'ALGORITH11_98', sk=valk(1), ni=3, vali=vali)
             else
                 call getvtx(clelia, clel(j), iocc=i, scal=nomcou, nbret=ibid)
-            endif
+            end if
 !
 !  VERIFICATION DE L'EXISTANCE DE L'INTERFACE
 !
-            nomsst=zk8(ldlid+(j-3)*2)
-            call mgutdm(nomres, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
+            nomsst = zk8(ldlid+(j-3)*2)
+            call mgutdm(nomres, nomsst, ibid, 'NOM_LIST_INTERF', ibid, &
                         lintf)
             if (lintf(1:2) .eq. ' ') then
                 call utmess('F', 'ALGORITH12_3', sk=nomsst)
-            endif
+            end if
             call jenonu(jexnom(lintf//'.IDC_NOMS', nomcou), iret)
             if (iret .eq. 0) then
-                vali (1) = i
-                valk (1) = nomsst
-                valk (2) = '   '
-                valk (3) = nomcou
+                vali(1) = i
+                valk(1) = nomsst
+                valk(2) = '   '
+                valk(3) = nomcou
                 call utmess('F', 'ALGORITH12_2', nk=3, valk=valk, si=vali(1))
-            endif
-            zk8(ldlid+(j-3)*2+1)=nomcou
+            end if
+            zk8(ldlid+(j-3)*2+1) = nomcou
         end do
 !  ON INITIALISE L'ORDONANCEMENT A NON
-        zk8(ldlid+4)='NON'
+        zk8(ldlid+4) = 'NON'
     end do
 !
 !

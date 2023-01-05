@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,16 +53,16 @@ subroutine ef0042(nomte)
     if (infodi .ne. ibid) then
         call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
-    endif
+    end if
 !     DISCRET DE TYPE RAIDEUR
     call infdis('DISK', infodi, r8bid, k8bid)
     if (infodi .eq. 0) then
         call utmess('A+', 'DISCRETS_27', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
-    endif
+    end if
 !
 !     MATRICE DE RAIDEUR SYMETRIQUE OU PAS
-    infodi=1
+    infodi = 1
     call infdis('SYMK', infodi, r8bid, k8bid)
 ! --- INFORMATIONS SUR LES DISCRETS :
 !        NBTERM  = NOMBRE DE COEFFICIENTS DANS K
@@ -70,9 +70,9 @@ subroutine ef0042(nomte)
 !        NC      = NOMBRE DE COMPOSANTE PAR NOEUD
 !        NDIM    = DIMENSION DE L'ELEMENT
 !        ITYPE = TYPE DE L'ELEMENT
-    call infted(nomte, infodi, nbterm, nno, nc,&
+    call infted(nomte, infodi, nbterm, nno, nc, &
                 ndim, itype)
-    neq=nno*nc
+    neq = nno*nc
 !
 !     --- MATRICE DE RIGIDITE LOCALE ---
     call jevech('PCADISK', 'L', ldis)
@@ -86,28 +86,28 @@ subroutine ef0042(nomte)
         if (ndim .eq. 3) then
             if (infodi .eq. 1) then
                 call utpsgl(nno, nc, pgl, zr(ldis), mat)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 call utppgl(nno, nc, pgl, zr(ldis), mat)
-            endif
-        else if (ndim.eq.2) then
+            end if
+        else if (ndim .eq. 2) then
             if (infodi .eq. 1) then
                 call ut2mgl(nno, nc, pgl, zr(ldis), mat)
-            else if (infodi.eq.2) then
+            else if (infodi .eq. 2) then
                 call ut2pgl(nno, nc, pgl, zr(ldis), mat)
-            endif
-        endif
+            end if
+        end if
     else
         do i = 1, nbterm
-            mat(i)=zr(ldis+i-1)
+            mat(i) = zr(ldis+i-1)
         end do
-    endif
+    end if
 !
 !     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
     if (infodi .eq. 1) then
         call vecma(mat, nbterm, klc, neq)
-    else if (infodi.eq.2) then
+    else if (infodi .eq. 2) then
         call vecmap(mat, nbterm, klc, neq)
-    endif
+    end if
 !
 !     --- CALCUL DES VECTEURS ELEMENTAIRES ----
 !
@@ -117,9 +117,9 @@ subroutine ef0042(nomte)
 !        --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UG  ---
     if (ndim .eq. 3) then
         call utpvgl(nno, nc, pgl, zr(jdepl), ulr)
-    else if (ndim.eq.2) then
+    else if (ndim .eq. 2) then
         call ut2vgl(nno, nc, pgl, zr(jdepl), ulr)
-    endif
+    end if
 !
 !        --- VECTEUR EFFORT      LOCAL  FLR = KLC * ULR  ---
     call pmavec('ZERO', neq, klc, ulr, flr)
@@ -128,12 +128,12 @@ subroutine ef0042(nomte)
 !     ELEMENTS A 2 NOEUDS
     if (nno .eq. 1) then
         do i = 1, neq
-            zr(jeffo+i-1)=flr(i)
+            zr(jeffo+i-1) = flr(i)
         end do
     else
         do i = 1, nc
-            zr(jeffo+i-1)=-flr(i)
-            zr(jeffo+i+nc-1)=flr(i+nc)
+            zr(jeffo+i-1) = -flr(i)
+            zr(jeffo+i+nc-1) = flr(i+nc)
         end do
-    endif
+    end if
 end subroutine

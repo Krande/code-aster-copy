@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,25 +40,25 @@ function xcalc_code(nfiss, he_inte, he_real)
     real(kind=8), optional :: he_real(*)
 !-----------------------------------------------------------------------
     integer :: base_codage
-    parameter (base_codage=4)
+    parameter(base_codage=4)
     integer :: ifiss
 !-----------------------------------------------------------------------
 !
-    ASSERT(nfiss.le.4)
+    ASSERT(nfiss .le. 4)
 !
-    ASSERT(.not.(present(he_inte).and.present(he_real)))
+    ASSERT(.not. (present(he_inte) .and. present(he_real)))
 !
-    xcalc_code=0
-    if ( present(he_inte) ) then
-      do ifiss=1, nfiss
-        xcalc_code=xcalc_code + (he_inte(ifiss)+2)*base_codage**(nfiss-ifiss)
-      enddo
-    elseif (present(he_real) ) then
-      do ifiss=1, nfiss
-        xcalc_code=xcalc_code + (int(he_real(ifiss))+2)*base_codage**(nfiss-ifiss)
-      enddo
+    xcalc_code = 0
+    if (present(he_inte)) then
+        do ifiss = 1, nfiss
+            xcalc_code = xcalc_code+(he_inte(ifiss)+2)*base_codage**(nfiss-ifiss)
+        end do
+    elseif (present(he_real)) then
+        do ifiss = 1, nfiss
+            xcalc_code = xcalc_code+(int(he_real(ifiss))+2)*base_codage**(nfiss-ifiss)
+        end do
     else
-      ASSERT(.false.)
-    endif
+        ASSERT(.false.)
+    end if
 !
 end function

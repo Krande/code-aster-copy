@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,12 +56,12 @@ subroutine nminer(masse, accplu, cniner)
 ! --- ACCES OBJETS JEVEUX
 !
     call jeveuo(accplu(1:19)//'.VALE', 'L', vr=accp)
-    call jeveuo(masse(1:19) //'.&INT', 'L', jmass)
+    call jeveuo(masse(1:19)//'.&INT', 'L', jmass)
     call jeveuo(cniner(1:19)//'.VALE', 'E', vr=iner)
 !
 ! --- CALCUL FORCES INERTIE
 !
-    call mrmult('ZERO', jmass, accp, iner, 1,&
+    call mrmult('ZERO', jmass, accp, iner, 1, &
                 .true._1)
 !
     call jedema()

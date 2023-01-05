@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cjsnor(mater, sig, x, nor, devnul,&
+subroutine cjsnor(mater, sig, x, nor, devnul, &
                   trac)
 !
 !
@@ -45,14 +45,14 @@ subroutine cjsnor(mater, sig, x, nor, devnul,&
     real(kind=8) :: mater(14, 2), sig(6), x(6), nor(7)
     aster_logical :: devnul, trac
     real(kind=8) :: zero, deux, six
-    parameter     ( zero   = 0.d0   )
-    parameter     ( deux   = 2.d0   )
-    parameter     ( six    = 6.d0   )
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(six=6.d0)
 !
     real(kind=8) :: g, pa, qinit, q(6), tq(6), coef, qii, cos3tq, trav, trav2
     integer :: i
     integer :: ndt, ndi
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
 !
 !
@@ -60,14 +60,14 @@ subroutine cjsnor(mater, sig, x, nor, devnul,&
 !-----------------------------------------------------------------------
 !->     PROPRIETES CJS MATERIAU
 !------------------------------
-    g = mater(9,2)
-    pa = mater(12,2)
-    qinit = mater(13,2)
+    g = mater(9, 2)
+    pa = mater(12, 2)
+    qinit = mater(13, 2)
 !-----------------------------------------------------------------------
 !->    Q QII ET COS3TQ
 !-----------------------------------------------------------------------
 !
-    call cjsc3q(sig, x, pa, qinit, q,&
+    call cjsc3q(sig, x, pa, qinit, q, &
                 qii, cos3tq, devnul, trac)
 !-----------------------------------------------------------------------
 !->    TQ = DET(Q)*INV(Q)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmactp(ds_print, sddisc, sderro, ds_contact,&
-                  ds_conv , nbiter, numins)
+subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
+                  ds_conv, nbiter, numins)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -35,13 +35,13 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 !
-type(NL_DS_Print), intent(in) :: ds_print
-character(len=24), intent(in) :: sderro
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19), intent(in) :: sddisc
-type(NL_DS_Conv), intent(in) :: ds_conv
-integer, intent(in) :: nbiter
-integer, intent(in) :: numins
+    type(NL_DS_Print), intent(in) :: ds_print
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_Conv), intent(in) :: ds_conv
+    integer, intent(in) :: nbiter
+    integer, intent(in) :: numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ integer, intent(in) :: numins
 !
     retact = 4
     actpas = 3
-    iterat = nbiter - 1
+    iterat = nbiter-1
 !
 ! --- ETAT DE LA BOUCLE EN TEMPS ?
 !
@@ -80,17 +80,17 @@ integer, intent(in) :: numins
 !
     if (etinst .eq. 'CONV') then
         retact = 0
-    else if (etinst.eq.'EVEN') then
+    else if (etinst .eq. 'EVEN') then
         call nmacto(sddisc, i_echec_acti)
-        call nmevac(sddisc, sderro  , i_echec_acti  , numins, iterat, &
+        call nmevac(sddisc, sderro, i_echec_acti, numins, iterat, &
                     retact, ds_print, ds_contact)
-    else if (etinst.eq.'ERRE') then
+    else if (etinst .eq. 'ERRE') then
         retact = 1
-    else if (etinst.eq.'STOP') then
+    else if (etinst .eq. 'STOP') then
         retact = 4
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- TRAITEMENT DE L'ACTION
 !
@@ -100,23 +100,23 @@ integer, intent(in) :: numins
 !
         actpas = 0
 !
-    else if (retact.eq.1) then
+    else if (retact .eq. 1) then
 !
 ! ----- ON REFAIT LE PAS DE TEMPS
 !
         actpas = 1
 !
-    else if (retact.eq.2) then
+    else if (retact .eq. 2) then
 !
 ! ----- PAS D'ITERATION EN PLUS ICI
 !
         ASSERT(.false.)
 !
-    else if (retact.eq.3) then
+    else if (retact .eq. 3) then
 !
 ! ----- ECHEC DE L'ACTION
 !
-        if (.not.ds_conv%l_stop) then
+        if (.not. ds_conv%l_stop) then
 !
 ! ------- CONVERGENCE FORCEE -> ON PASSE A LA SUITE
 !
@@ -127,28 +127,28 @@ integer, intent(in) :: numins
 ! ------- ARRET DU CALCUL
 !
             actpas = 3
-        endif
+        end if
 !
-    else if (retact.eq.4) then
+    else if (retact .eq. 4) then
 !
 ! ----- ARRET DU CALCUL
 !
         actpas = 3
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
 !
     if (actpas .eq. 0) then
         call nmeceb(sderro, 'INST', 'CONV')
-    else if (actpas.eq.1) then
+    else if (actpas .eq. 1) then
         call nmeceb(sderro, 'INST', 'ERRE')
-    else if (actpas.eq.3) then
+    else if (actpas .eq. 3) then
         call nmeceb(sderro, 'INST', 'STOP')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- PROCHAIN INSTANT: ON REINITIALISE
 !
@@ -160,9 +160,9 @@ integer, intent(in) :: numins
         if (i_action .ne. 0) then
             piless = 1
             pilcho = 'NATUREL'
-            call utdidt('E', sddisc, 'ECHE', 'ESSAI_ITER_PILO', vali_ = piless)
-            call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', valk_ = pilcho)
-        endif
-    endif
+            call utdidt('E', sddisc, 'ECHE', 'ESSAI_ITER_PILO', vali_=piless)
+            call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO', valk_=pilcho)
+        end if
+    end if
 !
 end subroutine

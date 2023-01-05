@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdvds(dt, nbmat, mater, gv, dfdsv,&
+subroutine lkdvds(dt, nbmat, mater, gv, dfdsv, &
                   seuilv, dvds)
 !
     implicit none
@@ -41,20 +41,20 @@ subroutine lkdvds(dt, nbmat, mater, gv, dfdsv,&
 !-----: SEUILV:  SEUIL VISCOPLASTIQUE -----------------------------
 ! OUT : DVDS  :  DERIVEE DE DEPSV/ DSIG  --------------------------
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: i, k, ndi, ndt
     real(kind=8) :: pa, aa(6, 6), a, n, un, zero
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( un  = 1.0d0 )
-    parameter       ( zero = 0.0d0)
+    parameter(un=1.0d0)
+    parameter(zero=0.0d0)
 ! =================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 ! =================================================================
-    pa = mater(1,2)
-    a = mater(21,2)
-    n = mater(22,2)
+    pa = mater(1, 2)
+    a = mater(21, 2)
+    n = mater(22, 2)
 ! =================================================================
 ! --- MATRICE INTERMEDIAIRE ---------------------------------------
 ! =================================================================
@@ -68,10 +68,10 @@ subroutine lkdvds(dt, nbmat, mater, gv, dfdsv,&
     do i = 1, ndt
         do k = 1, ndt
             if (seuilv .le. zero) then
-                dvds(i,k) = zero
+                dvds(i, k) = zero
             else
-                dvds(i,k) = a * n /pa * (seuilv/pa)**(n-un)* aa(i,k)* dt
-            endif
+                dvds(i, k) = a*n/pa*(seuilv/pa)**(n-un)*aa(i, k)*dt
+            end if
         end do
     end do
 ! =================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
+subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno, &
                   nomfpg)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -96,7 +96,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !              AU PLUS LES 8 SOMMETS D'UN HEXA8
     parameter(mxnbte=8)
 !     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
-    parameter (mxnbse=27)
+    parameter(mxnbse=27)
 !
     integer :: corsel(mxnbse), nse1
     integer :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
@@ -110,7 +110,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     integer :: ibid, nbpg, ino, nbgr, inogl, kse
     integer :: iamol1, jcnsv2, mxcmp
     integer :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
-    integer :: iipg, jceld1,  moloc1, nb_cmp_mx, jcmpgd
+    integer :: iipg, jceld1, moloc1, nb_cmp_mx, jcmpgd
     parameter(mxcmp=200)
     integer :: nuddl(mxcmp), mxvari, iel, nb_cmp
     character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg
@@ -136,14 +136,14 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jemarq()
 !
 !
-    ch1b=ch1
+    ch1b = ch1
     call dismoi('NOM_GD', ch1b, 'CHAMP', repk=nomg1)
     if (nomg1(5:6) .ne. '_R') then
         call utmess('F', 'CALCULEL2_39')
-    endif
-    nomg2=nomg1
-    lvari=(nomg1.eq.'VARI_R')
-    if (lvari) nomg2='VAR2_R'
+    end if
+    nomg2 = nomg1
+    lvari = (nomg1 .eq. 'VARI_R')
+    if (lvari) nomg2 = 'VAR2_R'
 !
 !
 !
@@ -152,21 +152,21 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     if (kk .eq. 1) then
         call utmess('I', 'PREPOST_36', sk=nomg1)
         call celcel('PAS_DE_SP', ch1b, 'V', '&&ECLPGC.CH1B1')
-        ch1b='&&ECLPGC.CH1B1'
-    endif
+        ch1b = '&&ECLPGC.CH1B1'
+    end if
 !
 !     -- PROJECTION SUR LE LIGREL REDUIT SI NECESSAIRE :
     call jeveuo(ch1b//'.CELK', 'L', vk24=celk)
-    if (celk(3)(1:4) .ne. 'ELGA') then
+    if (celk(3) (1:4) .ne. 'ELGA') then
         call utmess('F', 'CALCULEL2_41')
-    endif
-    if (celk(1)(1:19) .ne. ligrel) then
-        optio=celk(2)(1:16)
-        param=celk(6)(1:16)
-        call chligr(ch1b, ligrel, optio, param, 'V',&
+    end if
+    if (celk(1) (1:19) .ne. ligrel) then
+        optio = celk(2) (1:16)
+        param = celk(6) (1:16)
+        call chligr(ch1b, ligrel, optio, param, 'V', &
                     '&&ECLPGC.CH1B2')
-        ch1b='&&ECLPGC.CH1B2'
-    endif
+        ch1b = '&&ECLPGC.CH1B2'
+    end if
 !
     call jeexin(ch1b//'.CELD', ibid)
     if (ibid .eq. 0) goto 90
@@ -175,7 +175,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jeveuo(ch1b//'.CELD', 'L', jceld1)
     call jeveuo(ch1b//'.CELD', 'L', jceld1)
 !     -- MXVARI : NOMBRE MAXI DE VXX SI VARI_R
-    mxvari=max(1,zi(jceld1-1+4))
+    mxvari = max(1, zi(jceld1-1+4))
 !
 !
 !     -- ON CHERCHE LES CMPS PRESENTES DANS LE CHAM_ELEM CH1B :
@@ -185,35 +185,35 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !                           NUMERO D'1 CMP DU CHAM_ELEM_S
 !         '&&ECLPGC.NOM_CMP': CONTIENT LES NOMS DES CMPS DU CHAM_ELEM_S
 !     -----------------------------------------------------------------
-    if (.not.lvari) then
+    if (.not. lvari) then
 !
 ! ----- Create objects for global components (catalog) <=> local components (field)
 !
-        call cmpcha(ch1b     , cmp_name, cata_to_field, field_to_cata, nb_cmp,&
+        call cmpcha(ch1b, cmp_name, cata_to_field, field_to_cata, nb_cmp, &
                     nb_cmp_mx)
     else
 !       -- POUR VARI_R :
-        ASSERT(nomg2.eq.'VAR2_R')
+        ASSERT(nomg2 .eq. 'VAR2_R')
         call dismoi('NB_CMP_MAX', nomg2, 'GRANDEUR', repi=nb_cmp_mx)
-        ASSERT(mxvari.le.nb_cmp_mx)
-        nb_cmp=mxvari
+        ASSERT(mxvari .le. nb_cmp_mx)
+        nb_cmp = mxvari
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg2), 'L', jcmpgd)
-        AS_ALLOCATE(vk8 = cmp_name, size = nb_cmp)
-        AS_ALLOCATE(vi = cata_to_field, size = nb_cmp)
+        AS_ALLOCATE(vk8=cmp_name, size=nb_cmp)
+        AS_ALLOCATE(vi=cata_to_field, size=nb_cmp)
         do k = 1, nb_cmp
-            cata_to_field(k)=k
+            cata_to_field(k) = k
             cmp_name(k) = zk8(jcmpgd-1+k)
         end do
-    endif
-    if (nb_cmp.gt.mxcmp) call utmess('F','CALCULEL2_51', ni=2, vali=[mxcmp,nb_cmp])
+    end if
+    if (nb_cmp .gt. mxcmp) call utmess('F', 'CALCULEL2_51', ni=2, vali=[mxcmp, nb_cmp])
 !
 !
 !
 !
 !       -- CREATION D'UN CHAM_NO_S : CH2S
 !       -----------------------------------------------------
-    ch2s='&&ECLPGC.CH2S'
-    call cnscre(ma2, nomg2, nb_cmp, cmp_name, 'V',&
+    ch2s = '&&ECLPGC.CH2S'
+    call cnscre(ma2, nomg2, nb_cmp, cmp_name, 'V', &
                 ch2s)
     call jeveuo(ch2s//'.CNSV', 'E', jcnsv2)
     call jeveuo(ch2s//'.CNSL', 'E', jcnsl2)
@@ -228,102 +228,102 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jeveuo(ma2//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', jcmaco)
 
-    ima=0
-    nbgr=nbgrel(ligrel)
+    ima = 0
+    nbgr = nbgrel(ligrel)
     do igr = 1, nbgr
-        nbelgr=nbelem(ligrel,igr)
-        if (nbelgr.eq.0) cycle
-        moloc1=zi(jceld1-1+zi(jceld1-1+4+igr)+2)
+        nbelgr = nbelem(ligrel, igr)
+        if (nbelgr .eq. 0) cycle
+        moloc1 = zi(jceld1-1+zi(jceld1-1+4+igr)+2)
         if (moloc1 .eq. 0) goto 80
 !
-        if (.not.lvari) then
-            ASSERT(mxvari.eq.1)
-        endif
+        if (.not. lvari) then
+            ASSERT(mxvari .eq. 1)
+        end if
 !
         call jeveuo(jexnum('&CATA.TE.MODELOC', moloc1), 'L', iamol1)
-        ASSERT(zi(iamol1-1+1).eq.3)
-        nbpg=zi(iamol1-1+4)
+        ASSERT(zi(iamol1-1+1) .eq. 3)
+        nbpg = zi(iamol1-1+4)
 !
-        numa=numail(igr,1)
-        elrefa=zk16(jnofpg-1+numa)(1:8)
-        fapg=zk16(jnofpg-1+numa)(9:16)
+        numa = numail(igr, 1)
+        elrefa = zk16(jnofpg-1+numa) (1:8)
+        fapg = zk16(jnofpg-1+numa) (9:16)
         if (fapg .eq. ' ') goto 80
 !
 !           -- ON VERIFIE QUE C'EST UN CHAMP "ELGA/IDEN" :
 !           ----------------------------------------------
-        ASSERT(.not.((nbpg.lt.0).or.(nbpg.gt.10000)))
+        ASSERT(.not. ((nbpg .lt. 0) .or. (nbpg .gt. 10000)))
 !
 !           -- ON ECLATE LE TYPE_ELEM :
 !           ---------------------------
-        te=typele(ligrel,igr)
+        te = typele(ligrel, igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-        call eclaty(nomte, elrefa, fapg, npg1, npoini,&
-                    nterm1, nsomm1, csomm1, tyma, nbno2,&
-                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+        call eclaty(nomte, elrefa, fapg, npg1, npoini, &
+                    nterm1, nsomm1, csomm1, tyma, nbno2, &
+                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
                     nse1, corsel, iret)
         if (iret .ne. 0) then
             call utmess('A', 'CALCULEL2_25', sk=nomte, si=nbelgr)
-        endif
+        end if
         if (npg1 .ne. 0) then
             if (nbpg .ne. npg1) then
-                valk(1)=nomte
+                valk(1) = nomte
                 call utmess('F', 'CALCULEL2_42', sk=valk(1))
-            endif
+            end if
         else
 !            -- ON IGNORE LES AUTRES ELEMENTS :
-            ASSERT(nse1.eq.0)
+            ASSERT(nse1 .eq. 0)
             goto 80
 !
-        endif
+        end if
 !
 !            -- QUELLES SONT LES CMPS PORTEES PAR LES POINTS DE GAUSS ?
 !            ----------------------------------------------------------
         if (lvari) then
-            nddl=mxvari
+            nddl = mxvari
             do k = 1, nddl
-                nuddl(k)=k
+                nuddl(k) = k
             end do
         else
-            nddl=0
+            nddl = 0
             do k = 1, nb_cmp_mx
-                if (exisdg(zi(iamol1-1+4+1),k)) then
-                    nddl=nddl+1
-                    nuddl(nddl)=cata_to_field(k)
-                endif
+                if (exisdg(zi(iamol1-1+4+1), k)) then
+                    nddl = nddl+1
+                    nuddl(nddl) = cata_to_field(k)
+                end if
             end do
-        endif
+        end if
 !
 !
 !          -- BOUCLE SUR TOUS LES POINTS DE GAUSS DU GREL :
 !          ------------------------------------------------
         do iel = 1, nbelgr
-            if (lvari) nddl=zi(jceld1-1+zi(jceld1-1+4+igr)+4+ 4*(iel- 1)+2)
+            if (lvari) nddl = zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel-1)+2)
 !
             do kse = 1, nse1
 !            -- AU POINT DE GAUSS IIPG CORRESPOND LA MAILLE NUMERO IMA
 !               DANS MA2.
-                iipg=corsel(kse)
-                ima=ima+1
+                iipg = corsel(kse)
+                ima = ima+1
 !
-                nbno=nbnoma(ima)
+                nbno = nbnoma(ima)
                 if (nbno .gt. 27) then
                     call utmess('F', 'CALCULEL2_43')
-                endif
+                end if
                 do ino = 1, nbno
-                    inogl=numglm(ima,ino)
+                    inogl = numglm(ima, ino)
                     do iddl = 1, nddl
-                        ideca2=nb_cmp*(inogl-1)+nuddl(iddl)
-                        jval2=jcnsv2-1+ideca2
-                        zl(jcnsl2-1+ideca2)=.true.
-                        adiel=zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel-&
-                        1)+4)
-                        zr(jval2)=celv(adiel-1+nddl*(iipg-1)+&
-                        iddl)
+                        ideca2 = nb_cmp*(inogl-1)+nuddl(iddl)
+                        jval2 = jcnsv2-1+ideca2
+                        zl(jcnsl2-1+ideca2) = .true.
+                        adiel = zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel- &
+                                                                    1)+4)
+                        zr(jval2) = celv(adiel-1+nddl*(iipg-1)+ &
+                                         iddl)
                     end do
                 end do
             end do
         end do
- 80     continue
+80      continue
     end do
 !
 !     -- ON ESSAYE DE FAIRE UN PEU DE PLACE EN MEMOIRE :
@@ -339,16 +339,16 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !     -- 2 JELIBE POUR ECONOMISER LA MEMOIRE EN DESSOUS (MARQUE):
     call jelibe(ch2s//'.CNSL')
     call jelibe(ch2s//'.CNSV')
-    call cnscno(ch2s, prchno, 'NON', 'G', ch2,&
+    call cnscno(ch2s, prchno, 'NON', 'G', ch2, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', ch2s)
 !
-    AS_DEALLOCATE(vi = cata_to_field)
-    AS_DEALLOCATE(vi = field_to_cata)
-    AS_DEALLOCATE(vk8 = cmp_name)
+    AS_DEALLOCATE(vi=cata_to_field)
+    AS_DEALLOCATE(vi=field_to_cata)
+    AS_DEALLOCATE(vk8=cmp_name)
 !
 !
- 90 continue
+90  continue
     call detrsd('CHAMP_GD', '&&ECLPGC.CH1B1')
     call detrsd('CHAMP_GD', '&&ECLPGC.CH1B2')
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 !   ====================================================================
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in)  :: sd_dtm
+    character(len=*), intent(in)  :: sd_dtm
     integer, pointer :: addrs(:)
     integer, optional, intent(in)  :: level
 !
@@ -64,7 +64,7 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 !
 !   Copying the input strings, in order to allow in-command truncated input
     sd_dtm_ = sd_dtm
-    nullify(addrs)
+    nullify (addrs)
 !
 !   Variable lvl defines the maximum buffer level in the case of per occurence items
     lvl = 1
@@ -74,19 +74,19 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
-    if (nbnoli.gt.0) then
-        call dtmget(sd_dtm_, _SD_NONL  , kscal=sd_nl)
-        call nlget (sd_nl  , _MAX_LEVEL, iscal=mxlevel)
-        call nlbuff(sd_nl  ,  buffnl   , level=mxlevel)
+    if (nbnoli .gt. 0) then
+        call dtmget(sd_dtm_, _SD_NONL, kscal=sd_nl)
+        call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
+        call nlbuff(sd_nl, buffnl, level=mxlevel)
         call dtmsav(sd_dtm_, _NL_BUFFER, size(buffnl), ivect=buffnl)
     end if
 
-    call jeexin(sd_dtm_//'.BUFFER.        ',iret)
-    if (iret.gt.0) then
+    call jeexin(sd_dtm_//'.BUFFER.        ', iret)
+    if (iret .gt. 0) then
         call jelibe(sd_dtm_//'.BUFFER.        ')
         call jedetr(sd_dtm_//'.BUFFER.        ')
     end if
-    call crevec(sd_dtm_//'.BUFFER.        ','V V I',2*lvl*_DTM_NBPAR,jbuff)
+    call crevec(sd_dtm_//'.BUFFER.        ', 'V V I', 2*lvl*_DTM_NBPAR, jbuff)
 
     call jgetptc(jbuff, pc, vi=zi(1))
     call c_f_pointer(pc, addrs, [2*lvl*_DTM_NBPAR])
@@ -99,21 +99,21 @@ subroutine dtmbuff(sd_dtm, addrs, level)
         do ip = 1, _DTM_NBPAR
             savename = '                        '
             savename(1:8) = sd_dtm_
-            if(parind(ip).gt.0) then
+            if (parind(ip) .gt. 0) then
                 call codent(ilev, 'G', k_iocc)
                 savename(9:15) = '.'//k_iocc(1:6)
-            else if (ilev.gt.1) then
+            else if (ilev .gt. 1) then
                 goto 10
             end if
-            savename(16:24)='.'//params(ip)
+            savename(16:24) = '.'//params(ip)
             call jeexin(savename, iret)
-            if (iret.gt.0) then
+            if (iret .gt. 0) then
                 call jeveut(savename, 'E', addr)
                 call jelira(savename, 'LONMAX', long)
                 addrs(dec+ip) = addr
                 addrs(dec+_DTM_NBPAR+ip) = long
-            else if (abs(parind(ip)).eq.1) then
-                call crevec(savename, 'V V '//partyp(ip),1, addr)
+            else if (abs(parind(ip)) .eq. 1) then
+                call crevec(savename, 'V V '//partyp(ip), 1, addr)
                 addrs(dec+ip) = addr
                 addrs(dec+_DTM_NBPAR+ip) = 1
             end if

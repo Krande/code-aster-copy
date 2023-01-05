@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,19 +19,19 @@
 !
 subroutine dbr_calcpod_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: nb_mode_maxi
-real(kind=8), intent(in) :: tole_svd
-real(kind=8), pointer :: s(:)
-integer, intent(in) :: nb_sing
-integer, intent(out) :: nb_mode
+    integer, intent(in) :: nb_mode_maxi
+    real(kind=8), intent(in) :: tole_svd
+    real(kind=8), pointer :: s(:)
+    integer, intent(in) :: nb_sing
+    integer, intent(out) :: nb_mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,11 +58,11 @@ integer, intent(out) :: nb_mode
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_4')
-    endif
+    end if
 !
 ! - Init
 !
-    nb_mode   = 0
+    nb_mode = 0
 !
 ! - Get parameters
 !
@@ -75,24 +75,24 @@ integer, intent(out) :: nb_mode
     if (nb_mode_maxi .eq. 0) then
         do i_sing = 1, nb_sing
             if (s(i_sing) .ge. vale_tole) then
-                nb_mode = nb_mode + 1
-            endif
+                nb_mode = nb_mode+1
+            end if
         end do
     else
         if (nb_sing .le. nb_mode_maxi) then
             nb_mode = nb_sing
         else
             nb_mode = nb_mode_maxi
-        endif
-    endif
+        end if
+    end if
     valr(1) = vale_mini
     valr(2) = vale_maxi
     vali(1) = nb_sing
     vali(2) = nb_mode
-    call utmess('I', 'ROM5_5', ni = 2, vali = vali, nr = 2, valr = valr)
+    call utmess('I', 'ROM5_5', ni=2, vali=vali, nr=2, valr=valr)
 !
     if (nb_mode .lt. 1) then
         call utmess('F', 'ROM5_6')
-    endif
+    end if
 !
 end subroutine

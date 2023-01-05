@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
     call jemarq()
     zero = 0.0d0
     lnumnd = '&&RVLIEU.LISTE.NUM.NOEUD'
-    ASSERT(typco.ne.'CHEMIN')
+    ASSERT(typco .ne. 'CHEMIN')
 !
 !
     call jelira(nlsnac, 'LONMAX', nbpt)
@@ -86,7 +86,7 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
     do isd = 1, nbsd, 1
         call codent(isd, 'G', iden)
         sdcour = '&&RVLIEU.'//iden
-        zk24(ansdl + isd-1)(1:19) = sdcour
+        zk24(ansdl+isd-1) (1:19) = sdcour
         nrefe = sdcour//'.REFE'
         nabsc = sdcour//'.ABSC'
         ndesc = sdcour//'.DESC'
@@ -102,15 +102,15 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
         call jeveuo(nlsnac, 'L', anumnd)
         call wkvect(ndesc, 'V V K8', nbpt, adesc)
         do ipt = 1, nbpt, 1
-            call jenuno(jexnum(mailla//'.NOMNOE', zi(anumnd+ ipt-1)), zk8(adesc + ipt-1))
+            call jenuno(jexnum(mailla//'.NOMNOE', zi(anumnd+ipt-1)), zk8(adesc+ipt-1))
         end do
 !
-        call jecrec(nabsc, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec(nabsc, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                     1)
         call jecroc(jexnum(nabsc, 1))
         call jeecra(jexnum(nabsc, 1), 'LONMAX', nbpt)
         call jeveuo(jexnum(nabsc, 1), 'E', aabsc)
-        call jecrec(ncoor, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+        call jecrec(ncoor, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                     1)
         call jecroc(jexnum(ncoor, 1))
         call jeecra(jexnum(ncoor, 1), 'LONMAX', 3*nbpt)
@@ -119,7 +119,7 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
         call jeexin(lnumnd, adr)
         if (adr .ne. 0) then
             call jedetr(lnumnd)
-        endif
+        end if
 !
         call jeecra(nrefe, 'DOCU', cval=docu)
     end do

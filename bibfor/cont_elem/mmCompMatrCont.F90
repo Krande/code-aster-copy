@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,39 +18,39 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmCompMatrCont(phase    , l_pena_cont, i_reso_geom, &
-                          nbdm     , &
-                          ndim     , nne        , nnm   , nnl   ,&
-                          wpg      , jacobi     , coefac,&
-                          jeu      , dlagrc     ,&
-                          ffe      , ffm        , ffl   , dffm  ,&
-                          norm     , mprojn     ,&
-                          mprt1n   , mprt2n     , mprnt1, mprnt2,&
-                          mprt11   , mprt12     , mprt21, mprt22,&
-                          kappa    , vech1      , vech2 ,&
-                          h        , hah        , &
+subroutine mmCompMatrCont(phase, l_pena_cont, i_reso_geom, &
+                          nbdm, &
+                          ndim, nne, nnm, nnl, &
+                          wpg, jacobi, coefac, &
+                          jeu, dlagrc, &
+                          ffe, ffm, ffl, dffm, &
+                          norm, mprojn, &
+                          mprt1n, mprt2n, mprnt1, mprnt2, &
+                          mprt11, mprt12, mprt21, mprt22, &
+                          kappa, vech1, vech2, &
+                          h, hah, &
                           matr_cont)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmmtas.h"
 #include "asterfort/mmgnuu.h"
 #include "Contact_type.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont
-integer, intent(in) :: i_reso_geom
-integer, intent(in) :: nbdm
-integer, intent(in) :: ndim, nne, nnm, nnl
-real(kind=8), intent(in) :: wpg, jacobi, coefac
-real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2, 9)
-real(kind=8), intent(in) :: norm(3), mprojn(3, 3)
-real(kind=8), intent(in) :: jeu, dlagrc
-real(kind=8), intent(in) :: mprt1n(3,3), mprt2n(3,3), mprnt1(3,3), mprnt2(3,3)
-real(kind=8), intent(in) :: mprt11(3,3), mprt12(3,3), mprt21(3,3), mprt22(3,3)
-real(kind=8), intent(in) :: kappa(2,2), vech1(3), vech2(3), h(2,2), hah(2,2)
-real(kind=8), intent(inout) :: matr_cont(81, 81)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont
+    integer, intent(in) :: i_reso_geom
+    integer, intent(in) :: nbdm
+    integer, intent(in) :: ndim, nne, nnm, nnl
+    real(kind=8), intent(in) :: wpg, jacobi, coefac
+    real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2, 9)
+    real(kind=8), intent(in) :: norm(3), mprojn(3, 3)
+    real(kind=8), intent(in) :: jeu, dlagrc
+    real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(in) :: kappa(2, 2), vech1(3), vech2(3), h(2, 2), hah(2, 2)
+    real(kind=8), intent(inout) :: matr_cont(81, 81)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,7 +126,7 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
     phase_cont = phase
     if (phase .eq. 'ADHE' .or. phase .eq. 'GLIS') then
         phase_cont = 'CONT'
-    endif
+    end if
 !
 ! - MATR_UU
 !
@@ -137,8 +137,8 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matree(ii,jj) = matree(ii,jj) +&
-                                        coefac*wpg*jacobi*ffe(i)*mprojn(l,k)*ffe(j)
+                        matree(ii, jj) = matree(ii, jj)+ &
+                                         coefac*wpg*jacobi*ffe(i)*mprojn(l, k)*ffe(j)
                     end do
                 end do
             end do
@@ -149,8 +149,8 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrmm(ii,jj) = matrmm(ii,jj) +&
-                                        coefac*wpg*jacobi*ffm(i)*mprojn(l,k)*ffm(j)
+                        matrmm(ii, jj) = matrmm(ii, jj)+ &
+                                         coefac*wpg*jacobi*ffm(i)*mprojn(l, k)*ffm(j)
                     end do
                 end do
             end do
@@ -161,8 +161,8 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrme(ii,jj) = matrme(ii,jj) -&
-                                        coefac*wpg*jacobi*ffm(i)*mprojn(l,k)*ffe(j)
+                        matrme(ii, jj) = matrme(ii, jj)- &
+                                         coefac*wpg*jacobi*ffm(i)*mprojn(l, k)*ffe(j)
                     end do
                 end do
             end do
@@ -173,29 +173,29 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrem(ii,jj) = matrem(ii,jj) -&
-                                        coefac*wpg*jacobi*ffe(i)*mprojn(l,k)*ffm(j)
+                        matrem(ii, jj) = matrem(ii, jj)- &
+                                         coefac*wpg*jacobi*ffe(i)*mprojn(l, k)*ffm(j)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - Non-linear geometric contribution
 !
     if (phase_cont .eq. 'CONT') then
         if (i_reso_geom .eq. ALGO_NEWT) then
-            call mmgnuu(ndim  , nne   , nnm   ,&
-                        wpg   , ffe   , ffm   , dffm  ,&
-                        jacobi, coefac, jeu   , dlagrc,&
-                        mprojn,&
-                        mprt1n, mprt2n, mprnt1, mprnt2,&
-                        mprt11, mprt12, mprt21, mprt22,&
-                        kappa , vech1 , vech2 ,&
-                        h     , hah   , &
+            call mmgnuu(ndim, nne, nnm, &
+                        wpg, ffe, ffm, dffm, &
+                        jacobi, coefac, jeu, dlagrc, &
+                        mprojn, &
+                        mprt1n, mprt2n, mprnt1, mprnt2, &
+                        mprt11, mprt12, mprt21, mprt22, &
+                        kappa, vech1, vech2, &
+                        h, hah, &
                         matree, matrmm, matrem, matrme)
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_EC and MATR_MC
 !
@@ -205,8 +205,8 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
                 do inoe = 1, nne
                     do idim = 1, ndim
                         jj = ndim*(inoe-1)+idim
-                        matrec(jj,inoc) = matrec(jj,inoc) -&
-                                          wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
+                        matrec(jj, inoc) = matrec(jj, inoc)- &
+                                           wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
                     end do
                 end do
             end do
@@ -214,32 +214,32 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
                 do inom = 1, nnm
                     do idim = 1, ndim
                         jj = ndim*(inom-1)+idim
-                        matrmc(jj,inoc) = matrmc(jj,inoc) +&
-                                          wpg*ffl(inoc)*ffm(inom)*jacobi*norm(idim)
+                        matrmc(jj, inoc) = matrmc(jj, inoc)+ &
+                                           wpg*ffl(inoc)*ffm(inom)*jacobi*norm(idim)
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_CC
 !
     if (phase_cont .eq. 'SANS') then
         do inoc1 = 1, nnl
             do inoc2 = 1, nnl
-                matrcc(inoc1,inoc2) = matrcc(inoc1,inoc2)-&
-                                      wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
+                matrcc(inoc1, inoc2) = matrcc(inoc1, inoc2)- &
+                                       wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
             end do
         end do
-    endif
+    end if
     if (phase_cont .eq. 'NCON' .and. l_pena_cont) then
         do inoc1 = 1, nnl
             do inoc2 = 1, nnl
-                matrcc(inoc1,inoc2) = matrcc(inoc1,inoc2)-&
-                                      wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
+                matrcc(inoc1, inoc2) = matrcc(inoc1, inoc2)- &
+                                       wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
             end do
         end do
-    endif
+    end if
 !
 ! - MATR_CC
 !
@@ -247,22 +247,22 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
         if (l_pena_cont) then
             do inoc1 = 1, nnl
                 do inoc2 = 1, nnl
-                    matrcc(inoc1,inoc2) = matrcc(inoc1,inoc2)-&
-                                          wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
+                    matrcc(inoc1, inoc2) = matrcc(inoc1, inoc2)- &
+                                           wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_CE and MATR_CM
 !
-    if (phase_cont .eq. 'CONT'.or. phase_cont .eq. 'NCON') then
+    if (phase_cont .eq. 'CONT' .or. phase_cont .eq. 'NCON') then
         do inoc = 1, nnl
             do inoe = 1, nne
                 do idim = 1, ndim
                     jj = ndim*(inoe-1)+idim
-                    matrce(inoc,jj) = matrce(inoc,jj) -&
-                                      wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
+                    matrce(inoc, jj) = matrce(inoc, jj)- &
+                                       wpg*ffl(inoc)*ffe(inoe)*jacobi*norm(idim)
                 end do
             end do
         end do
@@ -270,19 +270,19 @@ real(kind=8), intent(inout) :: matr_cont(81, 81)
             do inom = 1, nnm
                 do idim = 1, ndim
                     jj = ndim*(inom-1)+idim
-                    matrcm(inoc,jj) = matrcm(inoc,jj) +&
-                                      wpg*ffl(inoc)*ffm(inom)*jacobi*norm(idim)
+                    matrcm(inoc, jj) = matrcm(inoc, jj)+ &
+                                       wpg*ffl(inoc)*ffm(inom)*jacobi*norm(idim)
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - Assembling (no friction here => nbcps = 0)
 !
     nbcps = 0
-    call mmmtas(nbdm     , ndim  , nnl   , nne   , nnm   , nbcps,&
-                matrcc   , matree, matrmm, matrem,&
-                matrme   , matrce, matrcm, matrmc, matrec,&
+    call mmmtas(nbdm, ndim, nnl, nne, nnm, nbcps, &
+                matrcc, matree, matrmm, matrem, &
+                matrme, matrce, matrcm, matrmc, matrec, &
                 matr_cont)
 !
 end subroutine

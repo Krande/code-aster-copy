@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmedpi(spg, sdg, qg, d, npg,&
-                  typmod, mate, up, ud, geom,&
+subroutine nmedpi(spg, sdg, qg, d, npg, &
+                  typmod, mate, up, ud, geom, &
                   nno, def)
 !
 !
@@ -57,31 +57,31 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
 ! SOIT A ET B LES MILIEUX DES COTES [14] ET [23]
 ! t TANGENT AU COTE [AB]
 !
-    xa = ( geom(1,1) + geom(1,4) ) / 2
-    ya = ( geom(2,1) + geom(2,4) ) / 2
+    xa = (geom(1, 1)+geom(1, 4))/2
+    ya = (geom(2, 1)+geom(2, 4))/2
 !
-    xb = ( geom(1,2) + geom(1,3) ) / 2
-    yb = ( geom(2,2) + geom(2,3) ) / 2
+    xb = (geom(1, 2)+geom(1, 3))/2
+    yb = (geom(2, 2)+geom(2, 3))/2
 !
 !     LONGUEUR DE L'ELEMENT : NORME DU COTE [AB]
-    long = sqrt( (xa-xb)*(xa-xb) + (ya-yb)*(ya-yb) )
+    long = sqrt((xa-xb)*(xa-xb)+(ya-yb)*(ya-yb))
     if (axi) then
-        long = long * (xa + xb)/2.d0
-    endif
+        long = long*(xa+xb)/2.d0
+    end if
 !
 ! CALCUL DE SG ET QG :
 ! --------------------
 !
 ! RECUPERATION DES CARACTERISTIQUES
-    nomres(1)='E'
-    nomres(2)='NU'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 2, nomres(1), valres(1), icodre(1), 2)
     e = valres(1)
     nu = valres(2)
@@ -94,22 +94,22 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
     call r8inir(36, 0.d0, dsidep, 1)
     do k = 1, 3
         do j = 1, 3
-            dsidep(k,j) = troisk/3.d0 - deuxmu/(3.d0)
+            dsidep(k, j) = troisk/3.d0-deuxmu/(3.d0)
         end do
     end do
     do k = 1, 4
-        dsidep(k,k) = dsidep(k,k) + deuxmu
+        dsidep(k, k) = dsidep(k, k)+deuxmu
     end do
 !
 ! CALCUL DE MATS = Dt E B = Dt*DSIDEP*DEF
     call r8inir(8, 0.d0, mtemp, 1)
     do i = 1, 2
         do j = 1, 4
-            val=0.d0
+            val = 0.d0
             do k = 1, 4
-                val = val + d(k,i)*dsidep(k,j)
+                val = val+d(k, i)*dsidep(k, j)
             end do
-            mtemp(i,j)=val
+            mtemp(i, j) = val
         end do
     end do
 !
@@ -117,9 +117,9 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
     do k = 1, 2
         do n = 1, nno
             do i = 1, 2
-                kl=2*(n-1)+i
+                kl = 2*(n-1)+i
                 do j = 1, 4
-                    mats(k,kl) = mats(k,kl) + mtemp(k,j)*def(j,n,i)
+                    mats(k, kl) = mats(k, kl)+mtemp(k, j)*def(j, n, i)
                 end do
             end do
         end do
@@ -130,8 +130,8 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
 !
     do i = 1, 2
         do kl = 1, 8
-            spg(i) = spg(i) - mats(i,kl)*up(kl)/long
-            sdg(i) = sdg(i) - mats(i,kl)*ud(kl)/long
+            spg(i) = spg(i)-mats(i, kl)*up(kl)/long
+            sdg(i) = sdg(i)-mats(i, kl)*ud(kl)/long
         end do
     end do
 !
@@ -140,11 +140,11 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
 !
     do i = 1, 2
         do j = 1, 2
-            val=0.d0
+            val = 0.d0
             do k = 1, 4
-                val = val - mtemp(i,k)*d(k,j)/long
+                val = val-mtemp(i, k)*d(k, j)/long
             end do
-            qg(i,j)=val
+            qg(i, j) = val
         end do
     end do
 !

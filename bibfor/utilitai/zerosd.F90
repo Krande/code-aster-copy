@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,35 +41,35 @@ function zerosd(typesd, sd)
 !
 ! -DEB------------------------------------------------------------------
 !
-    typ2sd=typesd
+    typ2sd = typesd
 !
 !
 !
     if (typ2sd .eq. 'RESUELEM') then
 !     --------------------------------
-        k19=sd
-        zerosd=zerobj(k19//'.RESL')
+        k19 = sd
+        zerosd = zerobj(k19//'.RESL')
 !
 !
-    else if (typ2sd.eq.'CHAM_NO') then
+    else if (typ2sd .eq. 'CHAM_NO') then
 !     --------------------------------
-        k19=sd
-        zerosd=zerobj(k19//'.VALE')
+        k19 = sd
+        zerosd = zerobj(k19//'.VALE')
 !
 !
-    else if (typ2sd.eq.'CARTE') then
+    else if (typ2sd .eq. 'CARTE') then
 !     --------------------------------
-        k19=sd
-        zerosd=zerobj(k19//'.VALE')
+        k19 = sd
+        zerosd = zerobj(k19//'.VALE')
 !
 !
-    else if (typ2sd.eq.'CHAM_ELEM') then
+    else if (typ2sd .eq. 'CHAM_ELEM') then
 !     --------------------------------
-        k19=sd
-        zerosd=zerobj(k19//'.CELV')
+        k19 = sd
+        zerosd = zerobj(k19//'.CELV')
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
-    endif
+    end if
 !
 end function

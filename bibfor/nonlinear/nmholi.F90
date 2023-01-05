@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmholi(ndim, axi, nno, npg, ipoids,&
-                  ivf, idfde, imate, inst, geom,&
+subroutine nmholi(ndim, axi, nno, npg, ipoids, &
+                  ivf, idfde, imate, inst, geom, &
                   depl, chlim)
     implicit none
 #include "asterf_types.h"
@@ -71,35 +71,35 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
 !
 !
 ! -- CARACTERISTIQUES
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, imate, &
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                 1, 'SY', val, cod, 2)
-    sy=val(1)
-    m = 1 + 10**(1-inst)
-    am = sy * rac23**m
+    sy = val(1)
+    m = 1+10**(1-inst)
+    am = sy*rac23**m
 !
     do kpg = 1, npg
 !
 ! -- DEFORMATION
 !
-        call nmgeom(ndim, nno, axi, .false._1, geom,&
-                    kpg, ipoids, ivf, idfde, depl,&
-                    .true._1, poids, dfdi, fbid, eps,&
+        call nmgeom(ndim, nno, axi, .false._1, geom, &
+                    kpg, ipoids, ivf, idfde, depl, &
+                    .true._1, poids, dfdi, fbid, eps, &
                     r)
         epsh = (eps(1)+eps(2)+eps(3))/3
-        eps(1)=eps(1)-epsh
-        eps(2)=eps(2)-epsh
-        eps(3)=eps(3)-epsh
-        epsno = dnrm2(ndimsi, eps,1)
+        eps(1) = eps(1)-epsh
+        eps(2) = eps(2)-epsh
+        eps(3) = eps(3)-epsh
+        epsno = dnrm2(ndimsi, eps, 1)
 !
 ! - CALCUL DES TERME ELEMENTAIRES
 !
-        chlim(1) = chlim(1) + poids * sy*rac23*epsno
-        chlim(2) = chlim(2) + poids * am/m * epsno**m
+        chlim(1) = chlim(1)+poids*sy*rac23*epsno
+        chlim(2) = chlim(2)+poids*am/m*epsno**m
         chlim(3) = max(chlim(3), (rac23*epsno)**(m-1))
 !
     end do

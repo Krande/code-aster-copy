@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine dortvp(ndim, nomrc, d, modeli)
     integer :: nperm
     real(kind=8) :: tol, toldyn, un, zero
 !-----------------------------------------------------------------------
-    data   nperm ,tol,toldyn    /12,1.d-10,1.d-2/
+    data nperm, tol, toldyn/12, 1.d-10, 1.d-2/
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
@@ -80,32 +80,32 @@ subroutine dortvp(ndim, nomrc, d, modeli)
 !
 ! ---   TABLEAU TR :
 !       ----------
-        tr(1) = d(1,1)
-        tr(2) = d(2,1)
-        tr(3) = d(3,1)
-        tr(4) = d(4,1)
-        tr(5) = d(5,1)
-        tr(6) = d(6,1)
+        tr(1) = d(1, 1)
+        tr(2) = d(2, 1)
+        tr(3) = d(3, 1)
+        tr(4) = d(4, 1)
+        tr(5) = d(5, 1)
+        tr(6) = d(6, 1)
 !
-        tr(7) = d(2,2)
-        tr(8) = d(3,2)
-        tr(9) = d(4,2)
-        tr(10) = d(5,2)
-        tr(11) = d(6,2)
+        tr(7) = d(2, 2)
+        tr(8) = d(3, 2)
+        tr(9) = d(4, 2)
+        tr(10) = d(5, 2)
+        tr(11) = d(6, 2)
 !
-        tr(12) = d(3,3)
-        tr(13) = d(4,3)
-        tr(14) = d(5,3)
-        tr(15) = d(6,3)
+        tr(12) = d(3, 3)
+        tr(13) = d(4, 3)
+        tr(14) = d(5, 3)
+        tr(15) = d(6, 3)
 !
-        tr(16) = d(4,4)
-        tr(17) = d(5,4)
-        tr(18) = d(6,4)
+        tr(16) = d(4, 4)
+        tr(17) = d(5, 4)
+        tr(18) = d(6, 4)
 !
-        tr(19) = d(5,5)
-        tr(20) = d(6,5)
+        tr(19) = d(5, 5)
+        tr(20) = d(6, 5)
 !
-        tr(21) = d(6,6)
+        tr(21) = d(6, 6)
 !
 ! ---   TABLEAU TU :
 !       ----------
@@ -121,25 +121,25 @@ subroutine dortvp(ndim, nomrc, d, modeli)
 !
 ! --- CAS 2D :
 !     ------
-    else if (ndim.eq.2) then
+    else if (ndim .eq. 2) then
 !
         nbvec = 4
 !
 ! ---   TABLEAU TR :
 !       ----------
-        tr(1) = d(1,1)
-        tr(2) = d(2,1)
-        tr(3) = d(3,1)
-        tr(4) = d(4,1)
+        tr(1) = d(1, 1)
+        tr(2) = d(2, 1)
+        tr(3) = d(3, 1)
+        tr(4) = d(4, 1)
 !
-        tr(5) = d(2,2)
-        tr(6) = d(3,2)
-        tr(7) = d(4,2)
+        tr(5) = d(2, 2)
+        tr(6) = d(3, 2)
+        tr(7) = d(4, 2)
 !
-        tr(8) = d(3,3)
-        tr(9) = d(4,3)
+        tr(8) = d(3, 3)
+        tr(9) = d(4, 3)
 !
-        tr(10) = d(4,4)
+        tr(10) = d(4, 4)
 !
 ! ---   TABLEAU TU :
 !       ----------
@@ -153,19 +153,19 @@ subroutine dortvp(ndim, nomrc, d, modeli)
             k = k+5-i
         end do
 !
-    endif
+    end if
 !
 ! --- RECHERCHE DES VALEURS PROPRES DE D :
 !     ==================================
     if (ndim .eq. 3) then
-        call jacobi(nbvec, nperm, tol, toldyn, tr,&
-                    tu, vecp3, valp, jacaux, nitjac,&
+        call jacobi(nbvec, nperm, tol, toldyn, tr, &
+                    tu, vecp3, valp, jacaux, nitjac, &
                     type, iordre)
-    else if (ndim.eq.2) then
-        call jacobi(nbvec, nperm, tol, toldyn, tr,&
-                    tu, vecp2, valp, jacaux, nitjac,&
+    else if (ndim .eq. 2) then
+        call jacobi(nbvec, nperm, tol, toldyn, tr, &
+                    tu, vecp2, valp, jacaux, nitjac, &
                     type, iordre)
-    endif
+    end if
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION :
 !     -----------------------------------
@@ -174,65 +174,65 @@ subroutine dortvp(ndim, nomrc, d, modeli)
     ineg = 0
     do i = 1, nbvec
         if (valp(i) .lt. zero) then
-            ineg = ineg + 1
-        endif
+            ineg = ineg+1
+        end if
     end do
 !
     if (ineg .gt. 1) then
 !
         if (modeli .eq. 'CP') then
-            write(ifm,1080)
-            write(ifm,1100)
-        else if (modeli.eq.'DP') then
-            write(ifm,1090)
-            write(ifm,1110)
-        endif
+            write (ifm, 1080)
+            write (ifm, 1100)
+        else if (modeli .eq. 'DP') then
+            write (ifm, 1090)
+            write (ifm, 1110)
+        end if
 !
-        write(ifm,1010)
-        write(ifm,1020) nomrc
+        write (ifm, 1010)
+        write (ifm, 1020) nomrc
         call utmess('A', 'MATERIAL2_20')
 !
-    else if (ineg.eq.1) then
+    else if (ineg .eq. 1) then
 !
         if (modeli .eq. 'CP') then
-            write(ifm,1080)
-            write(ifm,1100)
-        else if (modeli.eq.'DP') then
-            write(ifm,1090)
-            write(ifm,1110)
-        endif
+            write (ifm, 1080)
+            write (ifm, 1100)
+        else if (modeli .eq. 'DP') then
+            write (ifm, 1090)
+            write (ifm, 1110)
+        end if
 !
-        write(ifm,1030)
-        write(ifm,1020) nomrc
+        write (ifm, 1030)
+        write (ifm, 1020) nomrc
         call utmess('A', 'MATERIAL2_20')
-    endif
+    end if
 !
     if (ineg .gt. 0) then
-        write(ifm,1050)
-        write(ifm,1060)
+        write (ifm, 1050)
+        write (ifm, 1060)
 !
         do i = 1, nbvec
-            write(ifm,1070) i,valp(i)
+            write (ifm, 1070) i, valp(i)
         end do
 !
-        write(ifm,1060)
-        write(ifm,1040)
+        write (ifm, 1060)
+        write (ifm, 1040)
 !
-    endif
+    end if
 !
 ! 1000 FORMAT(7X,'VALEUR PROPRE NUMERO ',I1,' DE LA MATRICE DE HOOKE ',
 !     +        E12.5)
-    1010 format(7x,'LA MATRICE DE HOOKE A DES VALEURS PROPRES NEGATIVES ')
-    1020 format(7x,'POUR LA RELATION DE COMPORTEMENT : ',a16,/)
-    1030 format(7x,'LA MATRICE DE HOOKE A UNE VALEUR PROPRE NEGATIVE ')
-    1040 format(/)
-    1050 format(7x,'VALEURS PROPRES DE LA MATRICE DE HOOKE : ',/)
-    1060 format(7x,'************************')
-    1070 format(7x,'!  ',i1,'  !  ',e12.5,'  !')
-    1080 format(7x,'TRAITEMENT DU CAS DES CONTRAINTES PLANES :')
-    1100 format(7x,'---------------------------------------- ')
-    1090 format(7x,'TRAITEMENT DES CAS DEFORMATIONS PLANES ET AXI :')
-    1110 format(7x,'--------------------------------------------- ')
+1010 format(7x, 'LA MATRICE DE HOOKE A DES VALEURS PROPRES NEGATIVES ')
+1020 format(7x, 'POUR LA RELATION DE COMPORTEMENT : ', a16,/)
+1030 format(7x, 'LA MATRICE DE HOOKE A UNE VALEUR PROPRE NEGATIVE ')
+1040 format(/)
+1050 format(7x, 'VALEURS PROPRES DE LA MATRICE DE HOOKE : ',/)
+1060 format(7x, '************************')
+1070 format(7x, '!  ', i1, '  !  ', e12.5, '  !')
+1080 format(7x, 'TRAITEMENT DU CAS DES CONTRAINTES PLANES :')
+1100 format(7x, '---------------------------------------- ')
+1090 format(7x, 'TRAITEMENT DES CAS DEFORMATIONS PLANES ET AXI :')
+1110 format(7x, '--------------------------------------------- ')
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

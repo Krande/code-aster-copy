@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine manopx(model, ligrel, option, param, chsgeo, exixfm,&
+subroutine manopx(model, ligrel, option, param, chsgeo, exixfm, &
                   kecono)
 ! person_in_charge: samuel.geniaut at edf.fr
     implicit none
@@ -40,7 +40,7 @@ subroutine manopx(model, ligrel, option, param, chsgeo, exixfm,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: model
     character(len=19) :: ligrel, chsgeo
     character(len=16) :: option
     character(len=8) :: param
@@ -75,13 +75,13 @@ character(len=8), intent(in) :: model
 !     ------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter   (nbout=1, nbin=6)
+    parameter(nbout=1, nbin=6)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: iopt, iopt1, nute, numc, igr, nbgrel
     integer :: jecono, imolo, jmolo, nec, kfpg
-    integer :: igd,  nblfpg,  nbfam, jfpgl
+    integer :: igd, nblfpg, nbfam, jfpgl
     integer :: k, nuflpg, nufgpg
     character(len=8) :: nomgd, elrefe, ma
     character(len=16) :: nofpg, nomte
@@ -102,22 +102,22 @@ character(len=8), intent(in) :: model
 !
 !     1. CALCUL DE KECONO ET EXIXFM :
 !     ------------------------------------------------------------------
-    exixfm='NON'
+    exixfm = 'NON'
     call wkvect(kecono, 'V V I', nbgrel, jecono)
     do igr = 1, nbgrel
-        zi(jecono-1+igr)=1
+        zi(jecono-1+igr) = 1
     end do
     call jenonu(jexnom('&CATA.OP.NOMOPT', 'XFEM_XPG'), iopt1)
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
     do igr = 1, nbgrel
-        nute = typele(ligrel,igr)
+        nute = typele(ligrel, igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
 !
 !       L'ELEMENT SAIT-IL CALCULER XFEM_XPG ?
-        numc = nucalc(iopt1,nute,1)
+        numc = nucalc(iopt1, nute, 1)
         if (numc .lt. 0) goto 2
 !
-        imolo = modat2(iopt,nute,param)
+        imolo = modat2(iopt, nute, param)
         if (imolo .eq. 0) goto 2
 !
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
@@ -130,40 +130,40 @@ character(len=8), intent(in) :: model
         if (kfpg .lt. 0) then
 !          FAMILLE "LISTE" :
             call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
-            nbfam=nbfam-1
+            nbfam = nbfam-1
             call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
-            elrefe=zk8(jfpgl-1+nbfam+1)
+            elrefe = zk8(jfpgl-1+nbfam+1)
             do k = 1, nbfam
                 noflpg = nomte//elrefe//zk8(jfpgl-1+k)
-                nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
+                nuflpg = indk32(pnlocfpg, noflpg, 1, nblfpg)
                 nufgpg = nolocfpg(nuflpg)
                 call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
                 if (nofpg(9:12) .eq. 'XFEM') then
-                    exixfm='OUI'
-                    zi(jecono-1+igr)=0
-                endif
+                    exixfm = 'OUI'
+                    zi(jecono-1+igr) = 0
+                end if
             end do
 !
 !       -- FAMILLE "ORDINAIRE"
         else
             call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
             if (nofpg(9:12) .eq. 'XFEM') then
-                exixfm='OUI'
-                zi(jecono-1+igr)=0
-            endif
-        endif
+                exixfm = 'OUI'
+                zi(jecono-1+igr) = 0
+            end if
+        end if
 !
-  2     continue
+2       continue
     end do
     if (exixfm .eq. 'NON') goto 999
     if (model .eq. ' ') then
         call utmess('F', 'CALCULEL2_27')
-    endif
+    end if
 !
 !
 !     2. CALCUL DE CHSGEO :
 !     ------------------------------------------------------------------
-    chgeom='&&MANOPX.CHGEOM'
+    chgeom = '&&MANOPX.CHGEOM'
     lpain(1) = 'PGEOMER'
     lchin(1) = ma//'.COORDO'
     lpain(2) = 'PPINTTO'
@@ -179,8 +179,8 @@ character(len=8), intent(in) :: model
     lpaout(1) = 'PXFGEOM'
     lchout(1) = chgeom
 !
-    call calcul('S', 'XFEM_XPG', ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', 'XFEM_XPG', ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
     call celces(chgeom, 'V', chsgeo)
     call detrsd('CHAMP', chgeom)

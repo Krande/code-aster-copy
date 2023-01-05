@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
+subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
                   chpost, nbcmp, nomcmp, nuord, inst, nbmail, numemail)
 !
     implicit none
@@ -86,7 +86,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     real(kind=8), pointer :: cnsv(:) => null()
 !
     call jemarq()
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
@@ -108,24 +108,24 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
         list_no(:) = 1
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     nomnoe = noma//'.NOMNOE         '
-    nompar(1)='CHAMP_GD'
-    nompar(2)='NUME_ORDRE'
-    nompar(3)='INST'
-    nompar(4)=lieu
-    mima(1)=inst
-    nomax(1)=nomcha
-    nomax(2)=nomlie
+    nompar(1) = 'CHAMP_GD'
+    nompar(2) = 'NUME_ORDRE'
+    nompar(3) = 'INST'
+    nompar(4) = lieu
+    mima(1) = inst
+    nomax(1) = nomcha
+    nomax(2) = nomlie
 !
     call tbexip(resu, lieu, exist, k8b)
-    if (.not.exist) then
+    if (.not. exist) then
         call tbajpa(resu, 1, nompar(4), 'K24')
-    endif
+    end if
 !
 ! --- CALCULS DES CHAMPS SIMPLES:
-    cesout='&&PEMAXC_CESOUT'
+    cesout = '&&PEMAXC_CESOUT'
     call cnocns(chpost, 'V', cesout)
     call jeveuo(cesout//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cesout//'.CNSL', 'L', jcesl)
@@ -146,55 +146,55 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
             call codent(i, 'G', nomva(2:8))
             zk8(jcmpgd-1+i) = nomva
         end do
-    endif
+    end if
 !
-    npara=4*nbcmp
-    nbcmpm=cnsd(2)
+    npara = 4*nbcmp
+    nbcmpm = cnsd(2)
 !
     do i = 1, nbcmp
-        vmin=r8maem()
-        vmax=-r8maem()
-        icmp=indik8(cesc,nomcmp(i),1,nbcmpm)
-        ASSERT(icmp.gt.0)
+        vmin = r8maem()
+        vmax = -r8maem()
+        icmp = indik8(cesc, nomcmp(i), 1, nbcmpm)
+        ASSERT(icmp .gt. 0)
         do ino = 1, nbno
             if (list_no(ino) == 1 .and. zl(jcesl+(ino-1)*nbcmpm+icmp-1)) then
                 if (vmax .lt. cnsv(1+(ino-1)*nbcmpm+icmp-1)) then
-                    vmax=cnsv(1+(ino-1)*nbcmpm+icmp-1)
-                    nmax=ino
-                endif
+                    vmax = cnsv(1+(ino-1)*nbcmpm+icmp-1)
+                    nmax = ino
+                end if
                 if (vmin .gt. cnsv(1+(ino-1)*nbcmpm+icmp-1)) then
-                    vmin=cnsv(1+(ino-1)*nbcmpm+icmp-1)
-                    nmin=ino
-                endif
-            endif
+                    vmin = cnsv(1+(ino-1)*nbcmpm+icmp-1)
+                    nmin = ino
+                end if
+            end if
         end do
-        mima(1+2*(i-1)+1)=vmax
-        mima(1+2*(i-1)+2)=vmin
+        mima(1+2*(i-1)+1) = vmax
+        mima(1+2*(i-1)+2) = vmin
         call jenuno(jexnum(nomnoe, nmin), knmin)
         call jenuno(jexnum(nomnoe, nmax), knmax)
-        nomax(2+2*(i-1)+1)=knmax
-        nomax(2+2*(i-1)+2)=knmin
+        nomax(2+2*(i-1)+1) = knmax
+        nomax(2+2*(i-1)+2) = knmin
 !
-        nompar(4+4*(i-1)+1)='MAX_'//nomcmp(i)
-        nompar(4+4*(i-1)+2)='NO_MAX_'//nomcmp(i)
-        nompar(4+4*(i-1)+3)='MIN_'//nomcmp(i)
-        nompar(4+4*(i-1)+4)='NO_MIN_'//nomcmp(i)
+        nompar(4+4*(i-1)+1) = 'MAX_'//nomcmp(i)
+        nompar(4+4*(i-1)+2) = 'NO_MAX_'//nomcmp(i)
+        nompar(4+4*(i-1)+3) = 'MIN_'//nomcmp(i)
+        nompar(4+4*(i-1)+4) = 'NO_MIN_'//nomcmp(i)
 !
 ! ---    ON AJOUTE LES PARAMETRES MANQUANTS DANS LA TABLE:
         call tbexip(resu, nompar(4+4*(i-1)+1), exist, k8b)
-        if (.not.exist) then
+        if (.not. exist) then
             call tbajpa(resu, 1, nompar(4+4*(i-1)+1), 'R')
             call tbajpa(resu, 1, nompar(4+4*(i-1)+2), 'K16')
             call tbajpa(resu, 1, nompar(4+4*(i-1)+3), 'R')
             call tbajpa(resu, 1, nompar(4+4*(i-1)+4), 'K16')
-        endif
+        end if
 !
 !
     end do
 !
 ! --- ON REMPLIT LA TABLE
-    nbpara=4+npara
-    call tbajli(resu, nbpara, nompar, [nuord], mima,&
+    nbpara = 4+npara
+    call tbajli(resu, nbpara, nompar, [nuord], mima, &
                 [cbid], nomax, 0)
 !
     call jedetr('&&PEMAXC_CESOUT')

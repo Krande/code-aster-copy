@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -232,7 +232,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 ! pour monitoring bloc
                 do k = 1, n
                     write (ifm, *) 'k=', k, ' deeq=', &
-                    zi(jdeeq + 2*(k - 1)), zi(jdeeq + 2*(k - 1) + 1)
+                        zi(jdeeq+2*(k-1)), zi(jdeeq+2*(k-1)+1)
                 end do
             end if
             kblock = '&&AMUMPM.BLOCKS'
@@ -240,55 +240,55 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             call vecint(n, -1, zi(iblock))
             nblk = 1
 ! premier bloc
-            zi(iblock + nblk - 1) = 1
+            zi(iblock+nblk-1) = 1
             do k = 2, n
-            if (zi(jdeeq + 2*(k - 1)) .gt. 0) then
-            if (zi(jdeeq + 2*(k - 1)) .eq. zi(jdeeq + 2*(k - 2))) then
+            if (zi(jdeeq+2*(k-1)) .gt. 0) then
+            if (zi(jdeeq+2*(k-1)) .eq. zi(jdeeq+2*(k-2))) then
 ! on ne fait rien, element du meme bloc, ddl physique ou Lagrange
             else
 ! nouveau bloc
-                nblk = nblk + 1
-                zi(iblock + nblk - 1) = k
+                nblk = nblk+1
+                zi(iblock+nblk-1) = k
             end if
             else
 ! nouveau bloc: lagrange pour CL egalite
-            nblk = nblk + 1
-            zi(iblock + nblk - 1) = k
+            nblk = nblk+1
+            zi(iblock+nblk-1) = k
             end if
             end do
 ! pour marquer la fin des blocs
-            zi(iblock + nblk) = n + 1
+            zi(iblock+nblk) = n+1
 
             if (lvbloc) then
 ! pour monitoring bloc
                 write (ifm, *) 'n/nblock=', n, nblk
-                do k = 1, nblk + 1
-                    write (ifm, *) 'block=', k, ' valeur=', zi(iblock + k - 1)
+                do k = 1, nblk+1
+                    write (ifm, *) 'block=', k, ' valeur=', zi(iblock+k-1)
                 end do
             end if
             if (type .eq. 'S') then
-                allocate (smpsk%blkptr(nblk + 1))
+                allocate (smpsk%blkptr(nblk+1))
                 smpsk%nblk = to_mumps_int(nblk)
-                do k = 1, nblk + 1
-                    smpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
+                do k = 1, nblk+1
+                    smpsk%blkptr(k) = to_mumps_int(zi(iblock+k-1))
                 end do
             else if (type .eq. 'C') then
-                allocate (cmpsk%blkptr(nblk + 1))
+                allocate (cmpsk%blkptr(nblk+1))
                 cmpsk%nblk = to_mumps_int(nblk)
-                do k = 1, nblk + 1
-                    cmpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
+                do k = 1, nblk+1
+                    cmpsk%blkptr(k) = to_mumps_int(zi(iblock+k-1))
                 end do
             else if (type .eq. 'D') then
-                allocate (dmpsk%blkptr(nblk + 1))
+                allocate (dmpsk%blkptr(nblk+1))
                 dmpsk%nblk = to_mumps_int(nblk)
-                do k = 1, nblk + 1
-                    dmpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
+                do k = 1, nblk+1
+                    dmpsk%blkptr(k) = to_mumps_int(zi(iblock+k-1))
                 end do
             else if (type .eq. 'Z') then
-                allocate (zmpsk%blkptr(nblk + 1))
+                allocate (zmpsk%blkptr(nblk+1))
                 zmpsk%nblk = to_mumps_int(nblk)
-                do k = 1, nblk + 1
-                    zmpsk%blkptr(k) = to_mumps_int(zi(iblock + k - 1))
+                do k = 1, nblk+1
+                    zmpsk%blkptr(k) = to_mumps_int(zi(iblock+k-1))
                 end do
             end if
             call jedetr(kblock)
@@ -313,7 +313,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         nz = smdi(n)
         ASSERT(nz .le. nsmhc)
         nz2 = to_mumps_int(nz)
-        if (sym .eq. 0) nz2 = to_mumps_int(2*nz - n)
+        if (sym .eq. 0) nz2 = to_mumps_int(2*nz-n)
 !
         call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvale)
         call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
@@ -340,18 +340,18 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             call wkvect(kfiltr, 'V V R', n, ifiltr)
             if (ltypr) then
                 do k = 1, n
-                    zr(ifiltr - 1 + k) = epsmat*abs(zr(jvale - 1 + smdi(k)))
+                    zr(ifiltr-1+k) = epsmat*abs(zr(jvale-1+smdi(k)))
                 end do
             else
                 do k = 1, n
-                    zr(ifiltr - 1 + k) = epsmat*abs(zc(jvale - 1 + smdi(k)))
+                    zr(ifiltr-1+k) = epsmat*abs(zc(jvale-1+smdi(k)))
                 end do
             end if
 ! --- SEUILLAGE DES TERMES DE FILTRAGE POUR EVITER LES VALEURS ABBERANTE
             do k = 1, n
-                rtest = zr(ifiltr - 1 + k)
-                if (rtest .lt. rmin) zr(ifiltr - 1 + k) = 0.d0
-                if (rtest .gt. rmax) zr(ifiltr - 1 + k) = rmax
+                rtest = zr(ifiltr-1+k)
+                if (rtest .lt. rmin) zr(ifiltr-1+k) = 0.d0
+                if (rtest .gt. rmax) zr(ifiltr-1+k) = rmax
             end do
         else
             lfiltr = .false.
@@ -380,7 +380,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         else
             call wkvect(kpiv, 'V V S', nz, iok)
             do k = 1, nz
-                zi4(iok + k - 1) = 0
+                zi4(iok+k-1) = 0
             end do
         end if
         if (sym .eq. 0) then
@@ -390,7 +390,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             else
                 call wkvect(kpiv2, 'V V S', nz, iok2)
                 do k = 1, nz
-                    zi4(iok2 + k - 1) = 0
+                    zi4(iok2+k-1) = 0
                 end do
             end if
         end if
@@ -400,10 +400,10 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         do kterm = 1, nz
 !
 ! --- PREPARATION DES DONNES (NUM DE COLONNE, TERME DE FILTRAGE...)
-            if (smdi(jcoll) .lt. kterm) jcoll = jcoll + 1
-            iligl = zi4(jsmhc - 1 + kterm)
+            if (smdi(jcoll) .lt. kterm) jcoll = jcoll+1
+            iligl = zi4(jsmhc-1+kterm)
             if (lfiltr) then
-                rfiltr = zr(ifiltr - 1 + iligl) + zr(ifiltr - 1 + jcoll)
+                rfiltr = zr(ifiltr-1+iligl)+zr(ifiltr-1+jcoll)
             else
                 rfiltr = -1.d0
             end if
@@ -411,47 +411,47 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 !
 ! --- PARTIE TRIANGULAIRE INF. SI REEL
             if (ltypr) then
-                raux = zr(jvale - 1 + kterm)
+                raux = zr(jvale-1+kterm)
                 if (raux .ne. 0.d0) then
                     rtest = abs(raux)
                     if (rtest .gt. rfiltr) then
                         if (rtest .lt. rmin) then
-                            nfilt3 = nfilt3 + 1
-                            zi4(iok + kterm - 1) = -2
+                            nfilt3 = nfilt3+1
+                            zi4(iok+kterm-1) = -2
                         else if (rtest .gt. rmax) then
-                            nfilt2 = nfilt2 + 1
-                            zi4(iok + kterm - 1) = -1
+                            nfilt2 = nfilt2+1
+                            zi4(iok+kterm-1) = -1
                         else
-                            zi4(iok + kterm - 1) = 1
+                            zi4(iok+kterm-1) = 1
                         end if
-                        nzloc = nzloc + 1
+                        nzloc = nzloc+1
                     end if
                 else
 ! ---   TERME RIGOUREUSEMENT NUL
-                    nfilt1 = nfilt1 + 1
+                    nfilt1 = nfilt1+1
                 end if
 !
             else
 !
 ! --- PARTIE TRIANGULAIRE INF. SI COMPLEXE
-                caux = zc(jvale - 1 + kterm)
+                caux = zc(jvale-1+kterm)
                 if (caux .ne. (0.d0, 0.d0)) then
                     rtest = abs(caux)
                     if (rtest .gt. rfiltr) then
                         if (rtest .lt. rmin) then
-                            nfilt3 = nfilt3 + 1
-                            zi4(iok + kterm - 1) = -2
+                            nfilt3 = nfilt3+1
+                            zi4(iok+kterm-1) = -2
                         else if (rtest .gt. rmax) then
-                            nfilt2 = nfilt2 + 1
-                            zi4(iok + kterm - 1) = -1
+                            nfilt2 = nfilt2+1
+                            zi4(iok+kterm-1) = -1
                         else
-                            zi4(iok + kterm - 1) = 1
+                            zi4(iok+kterm-1) = 1
                         end if
-                        nzloc = nzloc + 1
+                        nzloc = nzloc+1
                     end if
                 else
 ! ---   TERME RIGOUREUSEMENT NUL
-                    nfilt1 = nfilt1 + 1
+                    nfilt1 = nfilt1+1
                 end if
             end if
 
@@ -460,47 +460,47 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             if ((sym .eq. 0) .and. (iligl .ne. jcoll)) then
 !
                 if (ltypr) then
-                    if (lmnsy) raux = zr(jvale2 - 1 + kterm)
+                    if (lmnsy) raux = zr(jvale2-1+kterm)
                     if (raux .ne. 0.d0) then
                         rtest = abs(raux)
                         if (rtest .gt. rfiltr) then
                             if (rtest .lt. rmin) then
-                                nfilt3 = nfilt3 + 1
-                                zi4(iok2 + kterm - 1) = -2
+                                nfilt3 = nfilt3+1
+                                zi4(iok2+kterm-1) = -2
                             else if (rtest .gt. rmax) then
-                                nfilt2 = nfilt2 + 1
-                                zi4(iok2 + kterm - 1) = -1
+                                nfilt2 = nfilt2+1
+                                zi4(iok2+kterm-1) = -1
                             else
-                                zi4(iok2 + kterm - 1) = 1
+                                zi4(iok2+kterm-1) = 1
                             end if
-                            nzloc = nzloc + 1
+                            nzloc = nzloc+1
                         end if
                     else
 ! ---   TERME RIGOUREUSEMENT NUL
-                        nfilt1 = nfilt1 + 1
+                        nfilt1 = nfilt1+1
                     end if
 !
                 else
 !
 ! --- PARTIE TRIANGULAIRE SUP. SI COMPLEXE
-                    if (lmnsy) caux = zc(jvale2 - 1 + kterm)
+                    if (lmnsy) caux = zc(jvale2-1+kterm)
                     if (caux .ne. (0.d0, 0.d0)) then
                         rtest = abs(caux)
                         if (rtest .gt. rfiltr) then
                             if (rtest .lt. rmin) then
-                                nfilt3 = nfilt3 + 1
-                                zi4(iok2 + kterm - 1) = -2
+                                nfilt3 = nfilt3+1
+                                zi4(iok2+kterm-1) = -2
                             else if (rtest .gt. rmax) then
-                                nfilt2 = nfilt2 + 1
-                                zi4(iok2 + kterm - 1) = -1
+                                nfilt2 = nfilt2+1
+                                zi4(iok2+kterm-1) = -1
                             else
-                                zi4(iok2 + kterm - 1) = 1
+                                zi4(iok2+kterm-1) = 1
                             end if
-                            nzloc = nzloc + 1
+                            nzloc = nzloc+1
                         end if
                     else
 ! ---   TERME RIGOUREUSEMENT NUL
-                        nfilt1 = nfilt1 + 1
+                        nfilt1 = nfilt1+1
                     end if
 !
                 end if
@@ -510,20 +510,20 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 
 !
 ! --- GARDE-FOU POUR NE PAS TRANSMETTRE A MUMPS DES SYSTEMES VIDES
-        maxnz2=nzloc
+        maxnz2 = nzloc
         if (ldist) then
-          call asmpi_comm_vect('MPI_MAX','I',nbval=1,sci=maxnz2)
-        endif
-        if ((maxnz2.le.0).or.(n.le.0)) then
-          call utmess('F', 'FACTOR_41')
-        endif
+            call asmpi_comm_vect('MPI_MAX', 'I', nbval=1, sci=maxnz2)
+        end if
+        if ((maxnz2 .le. 0) .or. (n .le. 0)) then
+            call utmess('F', 'FACTOR_41')
+        end if
         if (niv .ge. 2) then
             write (ifm, *) '<AMUMPM>     NZLOC: ', nzloc
             write (ifm, *) '       TERMES NULS: ', nfilt1
             write (ifm, *) '   UNDER/OVERFLOWS: ', nfilt3, '/', nfilt2
-        endif
+        end if
 ! if (ldist...
-    endif
+    end if
 !
 !       ------------------------------------------------
 !       ALLOCATION DES OBJETS MUMPS F90
@@ -541,7 +541,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         call jeveuo(ksizemu, 'E', isizemu)
     end if
     do k = 1, nbproc
-        zi(isizemu + k - 1) = 0
+        zi(isizemu+k-1) = 0
     end do
     nsizemu = 0
     if (((rang .eq. 0) .and. (.not. ldist)) .or. (ldist)) then
@@ -582,9 +582,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         ASSERT(.false.)
     end if
     if (lmd) then
-        nsizemu = nz2*(4 + 4 + esizemu) + esizemu*nbeq
+        nsizemu = nz2*(4+4+esizemu)+esizemu*nbeq
     else
-        nsizemu = nz2*(4 + 4 + esizemu) + esizemu*n
+        nsizemu = nz2*(4+4+esizemu)+esizemu*n
     end if
     else
     if (type .eq. 'S') then
@@ -614,9 +614,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     else
         ASSERT(.false.)
     end if
-    nsizemu = nz2*(4 + 4 + esizemu) + esizemu*n
+    nsizemu = nz2*(4+4+esizemu)+esizemu*n
     end if
-    zi(isizemu + rang) = 1 + (nsizemu/(1024*1024))
+    zi(isizemu+rang) = 1+(nsizemu/(1024*1024))
 !
 !       ------------------------------------------------
 !       INTERPRETATION DES PBS RENCONTRES LORS DU FILTRAGE
@@ -632,13 +632,13 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         vali(1) = nfilt3
         vali(2) = nfilt2
         do kterm = 1, nz
-            if (zi4(iok + kterm - 1) .eq. -1) then
+            if (zi4(iok+kterm-1) .eq. -1) then
                 call utmess('F', 'FACTOR_78', ni=2, vali=vali)
             end if
         end do
         if (sym .eq. 0) then
             do kterm = 1, nz
-                if (zi4(iok2 + kterm - 1) .eq. -1) then
+                if (zi4(iok2+kterm-1) .eq. -1) then
                     call utmess('F', 'FACTOR_78', ni=2, vali=vali)
                 end if
             end do
@@ -650,33 +650,33 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     iterm = 0
     do kterm = 1, nz
 !
-        if (smdi(jcoll) .lt. kterm) jcoll = jcoll + 1
-        iligl = zi4(jsmhc - 1 + kterm)
+        if (smdi(jcoll) .lt. kterm) jcoll = jcoll+1
+        iligl = zi4(jsmhc-1+kterm)
         lnn = .false.
 ! --- PARTIE TRIANGULAIRE INF. SI REEL
         if (ltypr) then
-            if (zi4(iok + kterm - 1) .eq. 1) then
+            if (zi4(iok+kterm-1) .eq. 1) then
                 lnn = .true.
-                raux = zr(jvale - 1 + kterm)
-            else if (zi4(iok + kterm - 1) .eq. -1) then
+                raux = zr(jvale-1+kterm)
+            else if (zi4(iok+kterm-1) .eq. -1) then
                 lnn = .true.
-                raux = zr(jvale - 1 + kterm)
+                raux = zr(jvale-1+kterm)
                 raux = rmax*sign(1.d0, raux)
             end if
         else
 ! --- PARTIE TRIANGULAIRE INF. SI COMPLEXE
-            if (zi4(iok + kterm - 1) .eq. 1) then
+            if (zi4(iok+kterm-1) .eq. 1) then
                 lnn = .true.
-                caux = zc(jvale - 1 + kterm)
-            else if (zi4(iok + kterm - 1) .eq. -1) then
+                caux = zc(jvale-1+kterm)
+            else if (zi4(iok+kterm-1) .eq. -1) then
                 lnn = .true.
-                caux = zc(jvale - 1 + kterm)
+                caux = zc(jvale-1+kterm)
                 caux = rmax*dcmplx(1.d0*sign(1.d0, dble(caux)), 1.d0*sign(1.d0, imag(caux)))
             end if
         end if
         if (lmd) then
-            iligg = to_mumps_int(zi(jnulogl + iligl - 1))
-            jcolg = to_mumps_int(zi(jnulogl + jcoll - 1))
+            iligg = to_mumps_int(zi(jnulogl+iligl-1))
+            jcolg = to_mumps_int(zi(jnulogl+jcoll-1))
         else
             iligg = to_mumps_int(iligl)
             jcolg = to_mumps_int(jcoll)
@@ -689,7 +689,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 !
 ! ---- PARTIE TRIANGULAIRE INF. TERME NON NUL
         if (lnn) then
-            iterm = iterm + 1
+            iterm = iterm+1
             if (ldist) then
                 if (type .eq. 'S') then
                     smpsk%irn_loc(iterm) = iligg
@@ -734,17 +734,17 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             kzero = 0
             if (eli2lg) then
 ! ------      ON ELIMINE LE DERNIER TERME DE A/A_loc SI LAG2
-                if (zi(jdelg - 1 + iligl) .eq. -1) then
+                if (zi(jdelg-1+iligl) .eq. -1) then
                     if (jcoll .eq. iligl) kzero = 1
-                    if (zi(jdelg - 1 + jcoll) .eq. -2) kzero = 1
+                    if (zi(jdelg-1+jcoll) .eq. -2) kzero = 1
                 end if
-                if (zi(jdelg - 1 + iligl) .eq. -2) then
+                if (zi(jdelg-1+iligl) .eq. -2) then
                     if (jcoll .ne. iligl) kzero = 1
                 end if
-                if (zi(jdelg - 1 + jcoll) .eq. -2) then
+                if (zi(jdelg-1+jcoll) .eq. -2) then
                     if (jcoll .ne. iligl) kzero = 1
                 end if
-                if (kzero .eq. 1) iterm = iterm - 1
+                if (kzero .eq. 1) iterm = iterm-1
             end if
 ! --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
             if ((lspd) .and. (kzero .eq. 0)) then
@@ -760,32 +760,32 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 !
             lnn = .false.
             if (ltypr) then
-                if (zi4(iok2 + kterm - 1) .eq. 1) then
+                if (zi4(iok2+kterm-1) .eq. 1) then
                     lnn = .true.
-                    if (lmnsy) raux = zr(jvale2 - 1 + kterm)
-                else if (zi4(iok2 + kterm - 1) .eq. -1) then
+                    if (lmnsy) raux = zr(jvale2-1+kterm)
+                else if (zi4(iok2+kterm-1) .eq. -1) then
                     lnn = .true.
-                    raux = zr(jvale - 1 + kterm)
+                    raux = zr(jvale-1+kterm)
                     raux = rmax*sign(1.d0, raux)
                 end if
             else
 ! --- PARTIE TRIANGULAIRE SUP. SI COMPLEXE
-                if (zi4(iok2 + kterm - 1) .eq. 1) then
+                if (zi4(iok2+kterm-1) .eq. 1) then
                     lnn = .true.
-                    if (lmnsy) caux = zc(jvale2 - 1 + kterm)
-                else if (zi4(iok2 + kterm - 1) .eq. -1) then
+                    if (lmnsy) caux = zc(jvale2-1+kterm)
+                else if (zi4(iok2+kterm-1) .eq. -1) then
                     lnn = .true.
-                    caux = zc(jvale - 1 + kterm)
+                    caux = zc(jvale-1+kterm)
                     caux = rmax*dcmplx(1.d0*sign(1.d0, dble(caux)), 1.d0*sign(1.d0, imag(caux)))
                 end if
             end if
 !
 ! ---- PARTIE TRIANGULAIRE SUP. TERME NON NUL
             if (lnn) then
-                iterm = iterm + 1
+                iterm = iterm+1
                 if (lmd) then
-                    iligg = to_mumps_int(zi(jnulogl + iligl - 1))
-                    jcolg = to_mumps_int(zi(jnulogl + jcoll - 1))
+                    iligg = to_mumps_int(zi(jnulogl+iligl-1))
+                    jcolg = to_mumps_int(zi(jnulogl+jcoll-1))
                 else
                     iligg = to_mumps_int(iligl)
                     jcolg = to_mumps_int(jcoll)
@@ -832,7 +832,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
                     end if
                 end if
                 if (eli2lg) then
-                    if (kzero .eq. 1) iterm = iterm - 1
+                    if (kzero .eq. 1) iterm = iterm-1
                 end if
 ! --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
                 if ((lspd) .and. (kzero .eq. 0)) then
@@ -899,7 +899,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             if (iret .ne. 0) then
 ! --- CAS CMDE STD AVEC MUMPS SOLVEUR DIRECT
                 call jeveuo(kmonit(1), 'E', ibid)
-                zi(ibid + rang) = nz2
+                zi(ibid+rang) = nz2
             else
 ! --- L'OBJET KMONIT(1) DEVRAIT EXISTER
                 ASSERT(.false.)
@@ -922,7 +922,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         if (type .eq. 'S') then
             do k = 1, nz2
                 if (ldist) then
-                    write (ifmump, *) smpsk%irn_loc(k), smpsk%jcn_loc(k),smpsk%a_loc(k)
+                    write (ifmump, *) smpsk%irn_loc(k), smpsk%jcn_loc(k), smpsk%a_loc(k)
                 else
                     write (ifmump, *) smpsk%irn(k), smpsk%jcn(k), smpsk%a(k)
                 end if
@@ -938,7 +938,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         else if (type .eq. 'D') then
             do k = 1, nz2
                 if (ldist) then
-                    write (ifmump + rang, *) dmpsk%irn_loc(k), dmpsk%jcn_loc(k),dmpsk%a_loc(k)
+                    write (ifmump+rang, *) dmpsk%irn_loc(k), dmpsk%jcn_loc(k), dmpsk%a_loc(k)
                 else
                     write (ifmump, *) dmpsk%irn(k), dmpsk%jcn(k), dmpsk%a(k)
                 end if
@@ -946,7 +946,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         else if (type .eq. 'Z') then
             do k = 1, nz2
                 if (ldist) then
-                    write (ifmump, *) zmpsk%irn_loc(k), zmpsk%jcn_loc(k),zmpsk%a_loc(k)
+                    write (ifmump, *) zmpsk%irn_loc(k), zmpsk%jcn_loc(k), zmpsk%a_loc(k)
                 else
                     write (ifmump, *) zmpsk%irn(k), zmpsk%jcn(k), zmpsk%a(k)
                 end if
@@ -961,7 +961,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
         end if
 
 !  -------   VIDANGE DES BUFFERS D'IMPRESSION
-        flush (ifmump + rang)
+        flush (ifmump+rang)
 
     end if
 ! FIN DU IF LDIST

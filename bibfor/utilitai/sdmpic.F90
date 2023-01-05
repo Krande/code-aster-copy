@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ subroutine sdmpic(typesd, nomsd)
     types2 = typesd
 !
 !
-    k19=noms2(1:19)
-    k24=noms2(1:24)
+    k19 = noms2(1:19)
+    k24 = noms2(1:24)
     if (types2 .eq. 'CHAM_ELEM') then
 !     ----------------------------------
         call dismoi('MPI_COMPLET', k19, 'CHAM_ELEM', repk=kmpic)
@@ -74,9 +74,9 @@ subroutine sdmpic(typesd, nomsd)
         ASSERT(.not. isParallelMesh(mesh))
         call asmpi_comm_jev('MPI_SUM', k19//'.CELV')
         call jeveuo(k19//'.CELK', 'E', vk24=celk)
-        celk(7)='MPI_COMPLET'
+        celk(7) = 'MPI_COMPLET'
 !
-    else if (types2.eq.'RESUELEM') then
+    else if (types2 .eq. 'RESUELEM') then
 !     ----------------------------------
         call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
         if (kmpic .eq. 'OUI') goto 999
@@ -84,44 +84,44 @@ subroutine sdmpic(typesd, nomsd)
         ASSERT(.not. isParallelMesh(mesh))
         call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
         call jeveuo(k19//'.NOLI', 'E', vk24=noli)
-        noli(3)='MPI_COMPLET'
+        noli(3) = 'MPI_COMPLET'
 !
-    else if (types2.eq.'MATR_ELEM') then
+    else if (types2 .eq. 'MATR_ELEM') then
 !     ----------------------------------
         call dismoi('NOM_MAILLA', k19, 'MATR_ELEM', repk=mesh)
-        if(.not. isParallelMesh(mesh)) then
+        if (.not. isParallelMesh(mesh)) then
             call jeveuo(k19//'.RELR', 'L', vk24=relr)
             call jelira(k19//'.RELR', 'LONMAX', nbrel, kbid)
             do i = 1, nbrel
-                if( relr(i).ne.' ' ) then
-                    k19=relr(i)(1:19)
+                if (relr(i) .ne. ' ') then
+                    k19 = relr(i) (1:19)
                     call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
                     if (kmpic .eq. 'OUI') cycle
                     call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
                     call jeveuo(k19//'.NOLI', 'E', vk24=noli)
-                    noli(3)='MPI_COMPLET'
-                endif
-            enddo
-        endif
-    else if (types2.eq.'VECT_ELEM') then
+                    noli(3) = 'MPI_COMPLET'
+                end if
+            end do
+        end if
+    else if (types2 .eq. 'VECT_ELEM') then
 !     ----------------------------------
         call dismoi('NOM_MAILLA', k19, 'VECT_ELEM', repk=mesh)
-        if(.not. isParallelMesh(mesh)) then
+        if (.not. isParallelMesh(mesh)) then
             call jeveuo(k19//'.RELR', 'L', vk24=relr)
             call jelira(k19//'.RELR', 'LONMAX', nbrel, kbid)
             do i = 1, nbrel
-                if( relr(i).ne.' ' ) then
-                    k19=relr(i)(1:19)
+                if (relr(i) .ne. ' ') then
+                    k19 = relr(i) (1:19)
                     call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
                     if (kmpic .eq. 'OUI') cycle
                     call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
                     call jeveuo(k19//'.NOLI', 'E', vk24=noli)
-                    noli(3)='MPI_COMPLET'
-                endif
-            enddo
-        endif
+                    noli(3) = 'MPI_COMPLET'
+                end if
+            end do
+        end if
 !
-    else if (types2.eq.'MATR_ASSE') then
+    else if (types2 .eq. 'MATR_ASSE') then
 !     ----------------------------------
         call dismoi('MPI_COMPLET', k19, 'MATR_ASSE', repk=kmpic)
         if (kmpic .eq. 'OUI') goto 999
@@ -133,7 +133,7 @@ subroutine sdmpic(typesd, nomsd)
         if (iexi .gt. 0) call asmpi_comm_jev('MPI_SUM', k19//'.CCVA')
 !
         call jeveuo(k19//'.REFA', 'E', vk24=refa)
-        refa(11)='MPI_COMPLET'
+        refa(11) = 'MPI_COMPLET'
 !
     else if (types2 .eq. 'SD_APPA') then
 !     ----------------------------------
@@ -144,21 +144,21 @@ subroutine sdmpic(typesd, nomsd)
         call asmpi_comm_jev('MPI_SUM', k19//'.TAU1')
         call asmpi_comm_jev('MPI_SUM', k19//'.TAU2')
         call asmpi_comm_jev('MPI_SUM', k19//'.PROJ')
-        valk(1)='MPI_COMPLET'
+        valk(1) = 'MPI_COMPLET'
 !
     else if (types2 .eq. 'SD_APPA_TGEL') then
 !     ----------------------------------
         call jeveuo(k19//'.MPIB', 'E', vk16=valk)
         if (valk(1) .eq. 'MPI_COMPLET') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.TGEL')
-        valk(1)='MPI_COMPLET'
+        valk(1) = 'MPI_COMPLET'
 !
     else if (types2 .eq. 'SD_APPA_TGNO') then
 !     ----------------------------------
         call jeveuo(k19//'.MPIC', 'E', vk16=valk)
         if (valk(1) .eq. 'MPI_COMPLET') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.TGNO')
-        valk(1)='MPI_COMPLET'
+        valk(1) = 'MPI_COMPLET'
 !
     else if (types2 .eq. 'SD_APPA_LAC1') then
 !     ----------------------------------
@@ -166,7 +166,7 @@ subroutine sdmpic(typesd, nomsd)
         if (valk(1) .eq. 'MPI_COMPLET') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.PWT ')
         call asmpi_comm_jev('MPI_SUM', k19//'.NAPP')
-        valk(1)='MPI_COMPLET'
+        valk(1) = 'MPI_COMPLET'
 !
 !
 !
@@ -179,20 +179,19 @@ subroutine sdmpic(typesd, nomsd)
         call asmpi_comm_jev('MPI_SUM', k19//'.AUX3')
         call asmpi_comm_jev('MPI_SUM', k19//'.AUX4')
         call asmpi_comm_jev('MPI_SUM', k19//'.AUX5')
-        valk(1)='MPI_COMPLET'
-
+        valk(1) = 'MPI_COMPLET'
 
     else if (types2 .eq. '&&OP29NL') then
 !     ----------------------------------
         call jeveuo(k24(1:20)//'.MPI', 'E', vk16=valk)
         if (valk(1) .eq. 'MPI_COMPLET') goto 999
         call asmpi_comm_jev('MPI_SUM', k24)
-        valk(1)='MPI_COMPLET'
+        valk(1) = 'MPI_COMPLET'
 !
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 999 continue
     call jedema()

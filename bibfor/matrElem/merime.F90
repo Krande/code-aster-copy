@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine merime(modelz, nbLoad       , listLoadK24     ,&
-                  matez , matecoz      , caraElemz       ,&
-                  time  , comporMultz  , matrElemz       , modeFourier,&
-                  basez , listElemCalcz, hasExteStatVari_, onlyDirichlet_)
+subroutine merime(modelz, nbLoad, listLoadK24, &
+                  matez, matecoz, caraElemz, &
+                  time, comporMultz, matrElemz, modeFourier, &
+                  basez, listElemCalcz, hasExteStatVari_, onlyDirichlet_)
 !
 !                          DE MERIME...  PROSPER YOUP-LA-BOUM!
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -48,15 +48,15 @@ implicit none
 #include "asterfort/vrcins.h"
 #include "asterfort/xajcin.h"
 !
-character(len=*), intent(in) :: modelz
-integer, intent(in) :: nbLoad
-character(len=24), pointer :: listLoadK24(:)
-character(len=*), intent(in) :: matez, matecoz, caraElemz
-real(kind=8), intent(in) :: time
-character(len=*), intent(in) :: comporMultz, matrElemz
-integer, intent(in) :: modeFourier
-character(len=*), intent(in) :: basez, listElemCalcz
-aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
+    character(len=*), intent(in) :: modelz
+    integer, intent(in) :: nbLoad
+    character(len=24), pointer :: listLoadK24(:)
+    character(len=*), intent(in) :: matez, matecoz, caraElemz
+    real(kind=8), intent(in) :: time
+    character(len=*), intent(in) :: comporMultz, matrElemz
+    integer, intent(in) :: modeFourier
+    character(len=*), intent(in) :: basez, listElemCalcz
+    aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,54 +113,54 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     call jemarq()
 
 ! - Initializations
-    option       = 'RIGI_MECA'
-    model        = modelz
-    caraElem     = caraElemz
-    mate         = matez
-    mateco       = matecoz
-    matrElem     = matrElemz
-    comporMult   = comporMultz
-    base         = basez
+    option = 'RIGI_MECA'
+    model = modelz
+    caraElem = caraElemz
+    mate = matez
+    mateco = matecoz
+    matrElem = matrElemz
+    comporMult = comporMultz
+    base = basez
     listElemCalc = listElemCalcz
-    lpain  = ' '
-    lchin  = ' '
+    lpain = ' '
+    lchin = ' '
     lpaout = ' '
     lchout = ' '
 
 ! - Prepare flags
     call exixfe(model, iret)
-    lxfem  = iret.ne.0
+    lxfem = iret .ne. 0
     onlyDirichlet = ASTER_FALSE
     if (present(onlyDirichlet_)) then
         onlyDirichlet = onlyDirichlet_
-    endif
+    end if
     hasExteStatVari = ASTER_FALSE
     if (present(hasExteStatVari_)) then
         hasExteStatVari = hasExteStatVari_
-    endif
-    call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
+    end if
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nbSubstruct)
 
 ! - Preparation of input fields
-    call mecham(option, model, caraElem, modeFourier, chgeom,&
+    call mecham(option, model, caraElem, modeFourier, chgeom, &
                 chcara, chharm, iret)
     hasFiniteElement = iret .eq. 0
 
 ! - Field for time
-    call mecact('V', chtime, 'MODELE', model, 'INST_R',&
+    call mecact('V', chtime, 'MODELE', model, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=time)
 
 ! - Field for external state variables
     if (hasExteStatVari) then
         call vrcins(model, mate, caraElem, time, chvarc, codret)
-    endif
+    end if
 
 ! - Prepare RESU_ELEM objects
     call memare(base, matrElem, model, mate, caraElem, option)
-    call jeveuo(matrElem//'.RERR', 'E', vk24 = rerr)
+    call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
     call jedetr(matrElem//'.RELR')
     if (nbSubstruct .gt. 0) then
         rerr(3) = 'OUI_SOUS_STRUC'
-    endif
+    end if
 
 ! - Input fields
     lpain(1) = 'PGEOMER'
@@ -168,19 +168,19 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     lpain(2) = 'PMATERC'
     lchin(2) = mateco(1:19)
     lpain(3) = 'PCAORIE'
-    lchin(3) = chcara(1)(1:19)
+    lchin(3) = chcara(1) (1:19)
     lpain(4) = 'PCADISK'
-    lchin(4) = chcara(2)(1:19)
+    lchin(4) = chcara(2) (1:19)
     lpain(5) = 'PCAGNPO'
-    lchin(5) = chcara(6)(1:19)
+    lchin(5) = chcara(6) (1:19)
     lpain(6) = 'PCACOQU'
-    lchin(6) = chcara(7)(1:19)
+    lchin(6) = chcara(7) (1:19)
     lpain(7) = 'PCASECT'
-    lchin(7) = chcara(8)(1:19)
+    lchin(7) = chcara(8) (1:19)
     lpain(8) = 'PCAARPO'
-    lchin(8) = chcara(9)(1:19)
+    lchin(8) = chcara(9) (1:19)
     lpain(9) = 'PNBSP_I'
-    lchin(9) = chcara(16)(1:19)
+    lchin(9) = chcara(16) (1:19)
     lpain(10) = 'PCOMPOR'
     lchin(10) = comporMult(1:19)
     lpain(11) = 'PHARMON'
@@ -188,62 +188,62 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     lpain(12) = 'PVARCPR'
     lchin(12) = chvarc(1:19)
     lpain(13) = 'PFIBRES'
-    lchin(13) = chcara(17)(1:19)
+    lchin(13) = chcara(17) (1:19)
     lpain(14) = 'PCAGNBA'
-    lchin(14) = chcara(11)(1:19)
+    lchin(14) = chcara(11) (1:19)
     lpain(15) = 'PCAMASS'
-    lchin(15) = chcara(12)(1:19)
+    lchin(15) = chcara(12) (1:19)
     lpain(16) = 'PCAPOUF'
-    lchin(16) = chcara(13)(1:19)
+    lchin(16) = chcara(13) (1:19)
     lpain(17) = 'PCAGEPO'
-    lchin(17) = chcara(5)(1:19)
+    lchin(17) = chcara(5) (1:19)
     lpain(18) = 'PTEMPSR'
     lchin(18) = chtime(1:19)
     lpain(19) = 'PCINFDI'
-    lchin(19) = chcara(15)(1:19)
+    lchin(19) = chcara(15) (1:19)
     nbFieldIn = 19
 
 ! - Add input XFEM fields if required
     if (lxfem) then
         call xajcin(model, option, nbFieldInMax, lchin, lpain, nbFieldIn)
-    endif
+    end if
 
 ! - Output fields
-    lpaout(1)  = 'PMATUUR'
-    lchout(1)  = matrElem(1:8)//'.ME001'
-    lpaout(2)  = 'PMATUNS'
-    lchout(2)  = matrElem(1:8)//'.ME002'
+    lpaout(1) = 'PMATUUR'
+    lchout(1) = matrElem(1:8)//'.ME001'
+    lpaout(2) = 'PMATUNS'
+    lchout(2) = matrElem(1:8)//'.ME002'
     nbFieldOut = 2
 
 ! - Rigidity
     if (.not. onlyDirichlet) then
-        if ((lxfem) .or. ((.not.lxfem).and. hasFiniteElement )) then
+        if ((lxfem) .or. ((.not. lxfem) .and. hasFiniteElement)) then
 ! --------- Compute
-            call calcul('S',&
-                        option, listElemCalc,&
-                        nbFieldIn, lchin, lpain,&
-                        nbFieldOut, lchout, lpaout,&
+            call calcul('S', &
+                        option, listElemCalc, &
+                        nbFieldIn, lchin, lpain, &
+                        nbFieldOut, lchout, lpaout, &
                         base, 'OUI')
 
 ! --------- Save RESU_ELEM
             call reajre(matrElem, lchout(1), base)
             call reajre(matrElem, lchout(2), base)
 
-        endif
-    endif
+        end if
+    end if
 
 ! - Dirichlet
-    option       = 'MECA_DDLM_R'
-    nbFieldIn    = 1
-    nbFieldOut   = 1
-    resuElem     = matrElem(1:8)//'.XXXXXXX'
+    option = 'MECA_DDLM_R'
+    nbFieldIn = 1
+    nbFieldOut = 1
+    resuElem = matrElem(1:8)//'.XXXXXXX'
     indxResuElem = 0
     do iLoad = 1, nbLoad
 ! ----- Current load
-        loadName    = listLoadK24(iLoad)(1:8)
+        loadName = listLoadK24(iLoad) (1:8)
         call lisnnl(phenom, loadName, loadDescBase)
         loadMapName = loadDescBase//'.CMULT'
-        loadLigrel  = loadDescBase//'.LIGRE'
+        loadLigrel = loadDescBase//'.LIGRE'
 
 ! ----- Detect if current load is OK
         call jeexin(loadLigrel(1:19)//'.LIEL', iret)
@@ -263,18 +263,18 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
         lchout(1) = resuElem
 
 ! ----- Compute
-        call calcul('S',&
-                    option, loadLigrel,&
-                    nbFieldIn, lchin, lpain,&
-                    nbFieldOut, lchout, lpaout,&
+        call calcul('S', &
+                    option, loadLigrel, &
+                    nbFieldIn, lchin, lpain, &
+                    nbFieldOut, lchout, lpaout, &
                     base, 'OUI')
 
 ! ----- Save RESU_ELEM
         call reajre(matrElem, resuElem, base)
-        indxResuElem = indxResuElem + 1
+        indxResuElem = indxResuElem+1
         if (indxResuElem .eq. 9999999) then
-            call utmess('F', 'CHARGES6_82', sk = 'RIGI_MECA')
-        endif
+            call utmess('F', 'CHARGES6_82', sk='RIGI_MECA')
+        end if
 
     end do
 

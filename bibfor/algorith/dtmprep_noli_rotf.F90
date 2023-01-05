@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
 
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in) :: sd_dtm_
-    character(len=*) , intent(in) :: sd_nl_
-    integer          , intent(in) :: icomp
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_nl_
+    integer, intent(in) :: icomp
 !
 !   -0.2- Local variables
     aster_logical     :: lnoeu2, memail
@@ -83,11 +83,11 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     character(len=16) :: typnum, valk(2), motfac
     character(len=24) :: nomgr1, nomgr2, nl_title
 !
-    integer     , pointer       :: ddlcho(:)         => null()
-    real(kind=8), pointer       :: vale(:)           => null()
-    real(kind=8), pointer       :: defmod1(:)        => null()
-    real(kind=8), pointer       :: defmod2(:)        => null()
-    real(kind=8), pointer       :: bmodal_v(:)       => null()
+    integer, pointer       :: ddlcho(:) => null()
+    real(kind=8), pointer       :: vale(:) => null()
+    real(kind=8), pointer       :: defmod1(:) => null()
+    real(kind=8), pointer       :: defmod2(:) => null()
+    real(kind=8), pointer       :: bmodal_v(:) => null()
 !
 #define bmodal(m,n) bmodal_v((n-1)*neq+m)
 !
@@ -95,11 +95,11 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     call jemarq()
 
     sd_dtm = sd_dtm_
-    sd_nl  = sd_nl_
+    sd_nl = sd_nl_
 
     motfac = 'COMPORTEMENT'
     call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
-    i = mxlevel + 1
+    i = mxlevel+1
 
     lnoeu2 = .true.
     rad = r8dgrd()
@@ -114,7 +114,7 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
 !
 !   Case with a simple modal projection (direct calculation)
     if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
-        call dismoi('NOM_MAILLA' , nume , 'NUME_DDL' , repk=mesh)
+        call dismoi('NOM_MAILLA', nume, 'NUME_DDL', repk=mesh)
         mesh1 = mesh
         nume1 = nume
         mesh2 = mesh
@@ -133,24 +133,23 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     call getvtx(motfac, 'NOEUD_G', iocc=icomp, scal=noeu2, nbret=inog)
     call getvtx(motfac, 'GROUP_NO_G', iocc=icomp, scal=grno2, nbret=gnog)
     call getvr8(motfac, 'ANGL_INIT', iocc=icomp, scal=angini)
-    call getvid(motfac, 'ANGL_ROTA', iocc=icomp, scal=foncp,nbret=iret)
+    call getvid(motfac, 'ANGL_ROTA', iocc=icomp, scal=foncp, nbret=iret)
     call getvid(motfac, 'K_PHI', iocc=icomp, scal=fk)
     call getvid(motfac, 'DK_DPHI', iocc=icomp, scal=dfk)
 
-    angini=angini*rad
+    angini = angini*rad
     call nlsav(sd_nl, _ANG_INIT, 1, iocc=i, rscal=angini)
     if (iret .ne. 0) then
         call nlsav(sd_nl, _ANG_ROTA, 1, iocc=i, kscal=foncp)
-    endif
+    end if
     call nlsav(sd_nl, _ROTR_FK, 1, iocc=i, kscal=fk)
     call nlsav(sd_nl, _ROTR_DFK, 1, iocc=i, kscal=dfk)
 
-
     AS_ALLOCATE(vi=ddlcho, size=6)
     call jeveuo(mesh1//'.COORDO    .VALE', 'L', vr=vale)
-    comp(1)='DRX'
-    comp(2)='DRY'
-    comp(3)='DRZ'
+    comp(1) = 'DRX'
+    comp(2) = 'DRY'
+    comp(3) = 'DRZ'
 
     call getvem(mesh1, 'NOEUD', motfac, 'NOEUD_D', icomp, 1, nomno1, ibid)
     call getvem(mesh1, 'NOEUD', motfac, 'NOEUD_G', icomp, 1, nomno2, ibid)
@@ -160,12 +159,12 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
         call utnono(' ', mesh1, 'NOEUD', nomgr1, nomno1, iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nomgr1)
-        else if (iret.eq.1) then
-            valk (1) = nomgr1(1:16)
-            valk (2) = nomno1
+        else if (iret .eq. 1) then
+            valk(1) = nomgr1(1:16)
+            valk(2) = nomno1
             call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=nomno1)
 
@@ -174,12 +173,12 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
         call utnono(' ', mesh1, 'NOEUD', nomgr2, nomno2, iret)
         if (iret .eq. 10) then
             call utmess('F', 'ELEMENTS_67', sk=nomgr2)
-        else if (iret.eq.1) then
-            valk (1) = nomgr2(1:16)
-            valk (2) = nomno2
+        else if (iret .eq. 1) then
+            valk(1) = nomgr2(1:16)
+            valk(2) = nomno2
             call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     call nlsav(sd_nl, _NO2_NAME, 1, iocc=i, kscal=nomno2)
 
@@ -188,48 +187,48 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
         call posddl('NUME_DDL', nume, nomno2, comp(ipat), nn2, nddl2)
         ddlcho(ipat) = nddl1
         ddlcho(ipat+3) = nddl2
-    enddo
+    end do
 !
 !   Determine the direction and orientation of the rotor
-    compt1=0; compt2=0
-    bono1=0; bono2=0
+    compt1 = 0; compt2 = 0
+    bono1 = 0; bono2 = 0
     call jelira(mesh1//'.CONNEX', 'NMAXOC', nbmail)
     do numai = 1, nbmail
         call jelira(jexnum(mesh1//'.CONNEX', numai), 'LONMAX', nbno)
-        if ((nbno.gt.1) .and. (nbno.lt.4)) then
+        if ((nbno .gt. 1) .and. (nbno .lt. 4)) then
             call jeveuo(jexnum(mesh1//'.CONNEX', numai), 'L', ibid)
             do j1 = 1, nbno
                 if (zi(ibid+j1-1) .eq. nn1) then
-                    memail=.false.
+                    memail = .false.
                     do j2 = 1, nbno
-                        if (zi(ibid+j2-1) .eq. nn2) memail= .true.
-                    enddo
-                    if (.not.memail) then
-                        compt1=compt1+1
-                        if (j1 .eq. 1) bono1=zi(ibid+1)
-                        if (j1 .eq. 2) bono1=zi(ibid)
-                    endif
-                endif
+                        if (zi(ibid+j2-1) .eq. nn2) memail = .true.
+                    end do
+                    if (.not. memail) then
+                        compt1 = compt1+1
+                        if (j1 .eq. 1) bono1 = zi(ibid+1)
+                        if (j1 .eq. 2) bono1 = zi(ibid)
+                    end if
+                end if
                 if (zi(ibid+j1-1) .eq. nn2) then
-                    memail=.false.
+                    memail = .false.
                     do j2 = 1, nbno
-                        if (zi(ibid+j2-1) .eq. nn1) memail= .true.
-                    enddo
-                    if (.not.memail) then
-                        compt2=compt2+1
-                        if (j1 .eq. 1) bono2=zi(ibid+1)
-                        if (j1 .eq. 2) bono2=zi(ibid)
-                    endif
-                endif
-            enddo
-        endif
-    enddo
+                        if (zi(ibid+j2-1) .eq. nn1) memail = .true.
+                    end do
+                    if (.not. memail) then
+                        compt2 = compt2+1
+                        if (j1 .eq. 1) bono2 = zi(ibid+1)
+                        if (j1 .eq. 2) bono2 = zi(ibid)
+                    end if
+                end if
+            end do
+        end if
+    end do
     ASSERT(compt1 .ge. 1)
     ASSERT(compt2 .ge. 1)
 !
     do j = 1, 3
-        axe(j)=vale(1+3*(bono1-1)+j-1) - vale(1+3*(bono2-1)+j-1)
-    enddo
+        axe(j) = vale(1+3*(bono1-1)+j-1)-vale(1+3*(bono2-1)+j-1)
+    end do
 !
 !   Rotor orientation
     call angvx(axe, alpha, beta)
@@ -237,9 +236,9 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=i, rvect=[sin(beta), cos(beta)])
 !
 
-    call nlget(sd_nl, _NB_R_FIS, iscal = nbrfis)
-    nbrfis = nbrfis + 1
-    call nlsav(sd_nl, _NL_TYPE , 1, iocc=i, iscal=NL_CRACKED_ROTOR)
+    call nlget(sd_nl, _NB_R_FIS, iscal=nbrfis)
+    nbrfis = nbrfis+1
+    call nlsav(sd_nl, _NL_TYPE, 1, iocc=i, iscal=NL_CRACKED_ROTOR)
 !
 !   DOF numbering localisation index for the concerned nodes
     call mdchdl(lnoeu2, nbrfis, ddlcho, ier)
@@ -268,14 +267,14 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     call nlinivec(sd_nl, _MODAL_DEPL_NO2, 3*nbmode, iocc=i, vr=defmod2)
 
     do j = 1, nbmode
-        defmod1(3*(j-1)+1) = bmodal(ddlcho(1)+3,j)
-        defmod1(3*(j-1)+2) = bmodal(ddlcho(2)+3,j)
-        defmod1(3*(j-1)+3) = bmodal(ddlcho(3)+3,j)
+        defmod1(3*(j-1)+1) = bmodal(ddlcho(1)+3, j)
+        defmod1(3*(j-1)+2) = bmodal(ddlcho(2)+3, j)
+        defmod1(3*(j-1)+3) = bmodal(ddlcho(3)+3, j)
 
-        defmod2(3*(j-1)+1) = bmodal(ddlcho(4)+3,j)
-        defmod2(3*(j-1)+2) = bmodal(ddlcho(5)+3,j)
-        defmod2(3*(j-1)+3) = bmodal(ddlcho(6)+3,j)
-    enddo
+        defmod2(3*(j-1)+1) = bmodal(ddlcho(4)+3, j)
+        defmod2(3*(j-1)+2) = bmodal(ddlcho(5)+3, j)
+        defmod2(3*(j-1)+3) = bmodal(ddlcho(6)+3, j)
+    end do
 
     call codent(i, 'D0', intk)
     nl_title = nltype(NL_CRACKED_ROTOR)//intk
@@ -283,12 +282,12 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
 
 !
 !   --- 4 - Updating indices for sd_nl and sd_dtm
-    call nlget(sd_nl, _MAX_LEVEL, iscal = mxlevel)
-    mxlevel = mxlevel + 1
+    call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
+    mxlevel = mxlevel+1
     call nlsav(sd_nl, _MAX_LEVEL, 1, iscal=mxlevel)
     call dtmsav(sd_dtm, _NB_NONLI, 1, iscal=mxlevel)
 !
-    call nlsav(sd_nl, _NB_R_FIS, 1, iscal = nbrfis)
+    call nlsav(sd_nl, _NB_R_FIS, 1, iscal=nbrfis)
 !
     AS_DEALLOCATE(vi=ddlcho)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irrjac(fami, kpg, ksp, mod, nmat,&
+subroutine irrjac(fami, kpg, ksp, mod, nmat, &
                   mater, yf, dy, nmod, drdy)
 !
     implicit none
@@ -71,22 +71,22 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     real(kind=8) :: pk, kappa, r02, pe, penpe, spe
     integer :: ndt, ndi, iret
 !     ----------------------------------------------------------------
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
-    data dede3   / 0.0d0,  0.0d0, -1.0d0,  0.0d0,  0.0d0,  0.0d0/
+    data dede3/0.0d0, 0.0d0, -1.0d0, 0.0d0, 0.0d0, 0.0d0/
 !
     call lcopil('ISOTROPE', mod, mater(1, 1), fkooh)
     call lcopli('ISOTROPE', mod, mater(1, 1), hookf)
-    call rcvarc('F', 'IRRA', '-', fami, kpg,&
+    call rcvarc('F', 'IRRA', '-', fami, kpg, &
                 ksp, irrad, iret)
-    call rcvarc('F', 'IRRA', '+', fami, kpg,&
+    call rcvarc('F', 'IRRA', '+', fami, kpg, &
                 ksp, irraf, iret)
 !     ARRET DANS IRRMAT SI  IRRAD .GT. IRRAF*1.00001
     if (irrad .gt. irraf) then
         dphi = 0.0d0
     else
-        dphi = irraf - irrad
-    endif
+        dphi = irraf-irrad
+    end if
 !
 !     RECUPERATION DES INCREMENTS DES VARIABLES INTERNES
     dp = dy(ndt+1)
@@ -99,31 +99,31 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     etaif = yf(ndt+2)
 !
 !     CARACTERISTIQUES MATERIAUX
-    ai0 = mater(4,2)
-    etais = mater(5,2)
-    k = mater(7,2)
-    n = mater(8,2)
-    p0 = mater(9,2)
-    kappa = mater(10,2)
-    r02 = mater(11,2)
-    zetaf = mater(12,2)
-    penpe = mater(13,2)
-    pk = mater(14,2)
-    pe = mater(15,2)
-    spe = mater(16,2)
+    ai0 = mater(4, 2)
+    etais = mater(5, 2)
+    k = mater(7, 2)
+    n = mater(8, 2)
+    p0 = mater(9, 2)
+    kappa = mater(10, 2)
+    r02 = mater(11, 2)
+    zetaf = mater(12, 2)
+    penpe = mater(13, 2)
+    pk = mater(14, 2)
+    pe = mater(15, 2)
+    spe = mater(16, 2)
 !
     call lcdevi(sigf, dev)
     seqf = lcnrts(dev)
     if (seqf .eq. 0.0d0) then
         dfds(:) = 0.0d0
     else
-        dfds(1:ndt) = (1.5d0/seqf) * dev(1:ndt)
-    endif
+        dfds(1:ndt) = (1.5d0/seqf)*dev(1:ndt)
+    end if
 !
 ! - DRSDS
     call irrfss(sigf, ddfdds)
-    drsds(1:ndt,1:ndt) = (dp+dpi) * ddfdds(1:ndt,1:ndt)
-    drsds(1:ndt,1:ndt) = fkooh(1:ndt,1:ndt) + drsds(1:ndt,1:ndt)
+    drsds(1:ndt, 1:ndt) = (dp+dpi)*ddfdds(1:ndt, 1:ndt)
+    drsds(1:ndt, 1:ndt) = fkooh(1:ndt, 1:ndt)+drsds(1:ndt, 1:ndt)
 ! - DRSDP
     drsdp(1:ndt) = dfds(1:ndt)
 ! - DRSDE
@@ -138,122 +138,122 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     if (pf .lt. pk) then
         sr = kappa*r02
     else if (pf .lt. pe) then
-        sr = penpe*(pf - pe) + spe
+        sr = penpe*(pf-pe)+spe
     else
-        sr = k*((pf + p0)**n)
-    endif
+        sr = k*((pf+p0)**n)
+    end if
 ! - DRPDS
-    if (((seqf.ge.sr).and.(dp.ge.0.0d0)) .or. (dp.gt.r8prem())) then
+    if (((seqf .ge. sr) .and. (dp .ge. 0.0d0)) .or. (dp .gt. r8prem())) then
         drpds(1:ndt) = dfds(1:ndt)
-        drpds(1:ndt) = (1.0d0/hookf(1, 1)) * drpds(1:ndt)
+        drpds(1:ndt) = (1.0d0/hookf(1, 1))*drpds(1:ndt)
     else
         drpds(:) = 0.0d0
-    endif
+    end if
 ! - DRPDP
-    if (((seqf.ge.sr).and.(dp.ge.0.0d0)) .or. (dp.gt.r8prem())) then
+    if (((seqf .ge. sr) .and. (dp .ge. 0.0d0)) .or. (dp .gt. r8prem())) then
         if (pf .lt. pk) then
             drpdp = 0.0d0
         else if (pf .lt. pe) then
-            drpdp = -penpe/hookf(1,1)
+            drpdp = -penpe/hookf(1, 1)
         else
-            drpdp = (-n*k*((pf+p0)**(n-1.0d0)))/hookf(1,1)
-        endif
+            drpdp = (-n*k*((pf+p0)**(n-1.0d0)))/hookf(1, 1)
+        end if
     else
         drpdp = 1.0d0
-    endif
+    end if
 ! - DRPDE
-    drpde=0.0d0
+    drpde = 0.0d0
 ! - DRPDI
-    drpdi=0.0d0
+    drpdi = 0.0d0
 ! - DRPDG
-    drpdg=0.0d0
+    drpdg = 0.0d0
 !
 ! - DREDS
-    dreds(1:ndt) = (-dphi*zetaf*0.50d0/hookf(1, 1)) * dfds(1:ndt)
+    dreds(1:ndt) = (-dphi*zetaf*0.50d0/hookf(1, 1))*dfds(1:ndt)
 ! - DREDP
-    dredp=0.0d0
+    dredp = 0.0d0
 ! - DREDE
-    drede=1.0d0/hookf(1,1)
+    drede = 1.0d0/hookf(1, 1)
 ! - DREDI
-    dredi=0.0d0
+    dredi = 0.0d0
 ! - DREDG
-    dredg=0.0d0
+    dredg = 0.0d0
 !
 ! - DRIDS
     drids(:) = 0.0d0
 ! - DRIDP
-    dridp=0.0d0
+    dridp = 0.0d0
 ! - DRIDE
     if ((etaif-detai) .gt. etais) then
-        dride=-ai0
+        dride = -ai0
     else if (etaif .le. etais) then
-        dride=0.0d0
+        dride = 0.0d0
     else
-        dride=-ai0
-    endif
+        dride = -ai0
+    end if
 !
 ! - DRIDI
-    dridi=1.0d0
+    dridi = 1.0d0
 ! - DRIDG
-    dridg=0.0d0
+    dridg = 0.0d0
 !
 !
 ! - DRGDS
     drgds(:) = 0.0d0
 ! - DRGDP
-    drgdp=0.0d0
+    drgdp = 0.0d0
 ! - DRGDE
-    drgde=0.0d0
+    drgde = 0.0d0
 ! - DRGDI
-    drgdi=0.0d0
+    drgdi = 0.0d0
 ! - DRGDG
-    drgdg=1.0d0
+    drgdg = 1.0d0
 !
 ! - CONTRAINTES PLANES
     if (mod(1:6) .eq. 'C_PLAN') then
 ! - DRSDE3
         drsde3(1:ndt) = dede3(1:ndt)
 ! - DRPDE3
-        drpde3=0.0d0
+        drpde3 = 0.0d0
 ! - DREDE3
-        drede3=0.0d0
+        drede3 = 0.0d0
 ! - DRIDE3
-        dride3=0.0d0
+        dride3 = 0.0d0
 ! - DRGDE3
-        drgde3=0.0d0
+        drgde3 = 0.0d0
 ! - DQDS
-        dqds(1)= (-(dp+dpi)*(hookf(3,3)*ddfdds(3,1) + hookf(3,1)*&
-        ddfdds(1,1) + hookf(3,2)*ddfdds(2,1) + hookf(3,4)*ddfdds(4,1))&
-        )/hookf(1,1)
-        dqds(2)= (-(dp+dpi)*(hookf(3,3)*ddfdds(3,2) + hookf(3,1)*&
-        ddfdds(1,2) + hookf(3,2)*ddfdds(2,2) + hookf(3,4)*ddfdds(4,2))&
-        )/hookf(1,1)
-        dqds(3)= (-(dp+dpi)*(hookf(3,3)*ddfdds(3,3) + hookf(3,1)*&
-        ddfdds(1,3) + hookf(3,2)*ddfdds(2,3) + hookf(3,4)*ddfdds(4,3))&
-        )/hookf(1,1)
-        dqds(4)= (-(dp+dpi)*(hookf(3,3)*ddfdds(3,4) + hookf(3,1)*&
-        ddfdds(1,4) + hookf(3,2)*ddfdds(2,4) + hookf(3,4)*ddfdds(4,4))&
-        )/hookf(1,1)
+        dqds(1) = (-(dp+dpi)*(hookf(3, 3)*ddfdds(3, 1)+hookf(3, 1)* &
+                              ddfdds(1, 1)+hookf(3, 2)*ddfdds(2, 1)+hookf(3, 4)*ddfdds(4, 1)) &
+                   )/hookf(1, 1)
+        dqds(2) = (-(dp+dpi)*(hookf(3, 3)*ddfdds(3, 2)+hookf(3, 1)* &
+                              ddfdds(1, 2)+hookf(3, 2)*ddfdds(2, 2)+hookf(3, 4)*ddfdds(4, 2)) &
+                   )/hookf(1, 1)
+        dqds(3) = (-(dp+dpi)*(hookf(3, 3)*ddfdds(3, 3)+hookf(3, 1)* &
+                              ddfdds(1, 3)+hookf(3, 2)*ddfdds(2, 3)+hookf(3, 4)*ddfdds(4, 3)) &
+                   )/hookf(1, 1)
+        dqds(4) = (-(dp+dpi)*(hookf(3, 3)*ddfdds(3, 4)+hookf(3, 1)* &
+                              ddfdds(1, 4)+hookf(3, 2)*ddfdds(2, 4)+hookf(3, 4)*ddfdds(4, 4)) &
+                   )/hookf(1, 1)
 ! - DQDP
-        dqdp = (&
-               - hookf(3, 1)*dfds(1) - hookf(3, 2)*dfds(2) - hookf(3, 3) *dfds(3) - hookf(3, 4)*d&
-               &fds(4))/hookf(1,&
-               1&
+        dqdp = ( &
+               -hookf(3, 1)*dfds(1)-hookf(3, 2)*dfds(2)-hookf(3, 3)*dfds(3)-hookf(3, 4)*d&
+               &fds(4))/hookf(1, &
+               1 &
                )
 ! - DQDE
-        dqde=0.0d0
+        dqde = 0.0d0
 ! - DQDI
-        dqdi = (&
-               - hookf(3, 1)*dfds(1) - hookf(3, 2)*dfds(2) - hookf(3, 3) *dfds(3) - hookf(3, 4)*d&
-               &fds(4))/hookf(1,&
-               1&
+        dqdi = ( &
+               -hookf(3, 1)*dfds(1)-hookf(3, 2)*dfds(2)-hookf(3, 3)*dfds(3)-hookf(3, 4)*d&
+               &fds(4))/hookf(1, &
+               1 &
                )
 ! - DQDG
 !        DQDG=-HOOKF(3,3)/HOOKF(1,1)
-        dqdg=0.0d0
+        dqdg = 0.0d0
 ! - DQDE3
-        dqde3=hookf(3,3)/hookf(1,1)
-    endif
+        dqde3 = hookf(3, 3)/hookf(1, 1)
+    end if
 !
 ! - ASSEMBLAGE
 !
@@ -265,72 +265,72 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 !                 (DQDS) (DQDP) (DQDE) (DQDI) (DQDG) (DQDE3)
 !
 !
-    call lcicma(drsds, 6, 6, ndt, ndt,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drsds, 6, 6, ndt, ndt, &
+                1, 1, drdy, nmod, nmod, &
                 1, 1)
-    call lcicma(drsdp, 6, 1, ndt, 1,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drsdp, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
                 1, ndt+1)
-    call lcicma(drsde, 6, 1, ndt, 1,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drsde, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
                 1, ndt+2)
-    call lcicma(drsdi, 6, 1, ndt, 1,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drsdi, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
                 1, ndt+3)
-    call lcicma(drsdg, 6, 1, ndt, 1,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drsdg, 6, 1, ndt, 1, &
+                1, 1, drdy, nmod, nmod, &
                 1, ndt+4)
 !
-    call lcicma(drpds, 1, 6, 1, ndt,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drpds, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
                 ndt+1, 1)
-    call lcicma(dreds, 1, 6, 1, ndt,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(dreds, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
                 ndt+2, 1)
-    call lcicma(drids, 1, 6, 1, ndt,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drids, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
                 ndt+3, 1)
-    call lcicma(drgds, 1, 6, 1, ndt,&
-                1, 1, drdy, nmod, nmod,&
+    call lcicma(drgds, 1, 6, 1, ndt, &
+                1, 1, drdy, nmod, nmod, &
                 ndt+4, 1)
 !
-    drdy(ndt+1,ndt+1)=drpdp
-    drdy(ndt+1,ndt+2)=drpde
-    drdy(ndt+1,ndt+3)=drpdi
-    drdy(ndt+1,ndt+4)=drpdg
+    drdy(ndt+1, ndt+1) = drpdp
+    drdy(ndt+1, ndt+2) = drpde
+    drdy(ndt+1, ndt+3) = drpdi
+    drdy(ndt+1, ndt+4) = drpdg
 !
-    drdy(ndt+2,ndt+1)=dredp
-    drdy(ndt+2,ndt+2)=drede
-    drdy(ndt+2,ndt+3)=dredi
-    drdy(ndt+2,ndt+4)=dredg
+    drdy(ndt+2, ndt+1) = dredp
+    drdy(ndt+2, ndt+2) = drede
+    drdy(ndt+2, ndt+3) = dredi
+    drdy(ndt+2, ndt+4) = dredg
 !
-    drdy(ndt+3,ndt+1)=dridp
-    drdy(ndt+3,ndt+2)=dride
-    drdy(ndt+3,ndt+3)=dridi
-    drdy(ndt+3,ndt+4)=dridg
+    drdy(ndt+3, ndt+1) = dridp
+    drdy(ndt+3, ndt+2) = dride
+    drdy(ndt+3, ndt+3) = dridi
+    drdy(ndt+3, ndt+4) = dridg
 !
-    drdy(ndt+4,ndt+1)=drgdp
-    drdy(ndt+4,ndt+2)=drgde
-    drdy(ndt+4,ndt+3)=drgdi
-    drdy(ndt+4,ndt+4)=drgdg
+    drdy(ndt+4, ndt+1) = drgdp
+    drdy(ndt+4, ndt+2) = drgde
+    drdy(ndt+4, ndt+3) = drgdi
+    drdy(ndt+4, ndt+4) = drgdg
 !
     if (mod(1:6) .eq. 'C_PLAN') then
 !
-        call lcicma(drsde3, 6, 1, ndt, 1,&
-                    1, 1, drdy, nmod, nmod,&
+        call lcicma(drsde3, 6, 1, ndt, 1, &
+                    1, 1, drdy, nmod, nmod, &
                     1, ndt+5)
-        call lcicma(dqds, 1, 6, 1, ndt,&
-                    1, 1, drdy, nmod, nmod,&
+        call lcicma(dqds, 1, 6, 1, ndt, &
+                    1, 1, drdy, nmod, nmod, &
                     ndt+5, 1)
-        drdy(ndt+1,ndt+5)=drpde3
-        drdy(ndt+2,ndt+5)=drede3
-        drdy(ndt+3,ndt+5)=dride3
-        drdy(ndt+4,ndt+5)=drgde3
-        drdy(ndt+5,ndt+1)=dqdp
-        drdy(ndt+5,ndt+2)=dqde
-        drdy(ndt+5,ndt+3)=dqdi
-        drdy(ndt+5,ndt+4)=dqdg
-        drdy(ndt+5,ndt+5)=dqde3
+        drdy(ndt+1, ndt+5) = drpde3
+        drdy(ndt+2, ndt+5) = drede3
+        drdy(ndt+3, ndt+5) = dride3
+        drdy(ndt+4, ndt+5) = drgde3
+        drdy(ndt+5, ndt+1) = dqdp
+        drdy(ndt+5, ndt+2) = dqde
+        drdy(ndt+5, ndt+3) = dqdi
+        drdy(ndt+5, ndt+4) = dqdg
+        drdy(ndt+5, ndt+5) = dqde3
 !
-    endif
+    end if
 end subroutine

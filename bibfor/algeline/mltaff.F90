@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltaff(n, ncol, adper, matper, matfi,&
+subroutine mltaff(n, ncol, adper, matper, matfi, &
                   local, p)
 ! person_in_charge: olivier.boiteau at edf.fr
 ! ASSEMBLAGE DES MATRICES FRONTALES VERSION SIMPLIFIEE
@@ -31,18 +31,18 @@ subroutine mltaff(n, ncol, adper, matper, matfi,&
     integer :: decp0
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    decf1 = 1 + (n+ (n-ncol+1))*ncol/2
-    decp0 = adper(p+1) - 1
-    do i = ncol + 1, n, 1
-        decp1 = adper(local(i)) - decp0
-        matper(decp1) = matper(decp1) + matfi(decf1)
-        decf1= decf1+1
-        decp1 = decp1 - local(i)
-        ni = n - i
+    decf1 = 1+(n+(n-ncol+1))*ncol/2
+    decp0 = adper(p+1)-1
+    do i = ncol+1, n, 1
+        decp1 = adper(local(i))-decp0
+        matper(decp1) = matper(decp1)+matfi(decf1)
+        decf1 = decf1+1
+        decp1 = decp1-local(i)
+        ni = n-i
         do j = 1, ni
-            id1 = decp1 + local(j+i)
-            matper(id1) = matper(id1) + matfi(decf1)
-            decf1 = decf1 + 1
+            id1 = decp1+local(j+i)
+            matper(id1) = matper(id1)+matfi(decf1)
+            decf1 = decf1+1
         end do
     end do
 end subroutine

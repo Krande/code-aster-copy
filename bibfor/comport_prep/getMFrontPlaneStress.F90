@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine getMFrontPlaneStress(keywf, i_comp, rela_comp, l_mfront_cp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lccree.h"
@@ -28,10 +28,10 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 !
-character(len=16), intent(in) :: keywf
-integer, intent(in) :: i_comp
-character(len=16), intent(in) :: rela_comp
-aster_logical, intent(out) :: l_mfront_cp
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_comp
+    character(len=16), intent(in) :: rela_comp
+    aster_logical, intent(out) :: l_mfront_cp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,13 +56,13 @@ aster_logical, intent(out) :: l_mfront_cp
     l_mfront_cp = .false.
 !
     if (rela_comp .eq. 'MFRONT') then
-        call getvtx(keywf, 'ALGO_CPLAN', iocc = i_comp, scal = answer)
+        call getvtx(keywf, 'ALGO_CPLAN', iocc=i_comp, scal=answer)
         l_mfront_cp = answer .eq. 'ANALYTIQUE'
     else
         call lccree(1, rela_comp, rela_comp_py)
         call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', iret)
         l_mfront_cp = iret .ne. 0
         call lcdiscard(rela_comp_py)
-    endif
+    end if
 !
 end subroutine

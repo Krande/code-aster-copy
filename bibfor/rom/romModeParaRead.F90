@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,24 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romModeParaRead(resultName, numeMode     ,&
-                           model_    , modeSymbName_,&
-                           modeSing_ , numeSlice_   ,&
+subroutine romModeParaRead(resultName, numeMode, &
+                           model_, modeSymbName_, &
+                           modeSing_, numeSlice_, &
                            nbSnap_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/rsadpa.h"
 !
-character(len=8), intent(in) :: resultName
-integer, intent(in) :: numeMode
-character(len=8), optional, intent(out)  :: model_
-character(len=24), optional, intent(out) :: modeSymbName_
-integer, optional, intent(out)           :: numeSlice_
-real(kind=8), optional, intent(out)      :: modeSing_
-integer, optional, intent(out)           :: nbSnap_
+    character(len=8), intent(in) :: resultName
+    integer, intent(in) :: numeMode
+    character(len=8), optional, intent(out)  :: model_
+    character(len=24), optional, intent(out) :: modeSymbName_
+    integer, optional, intent(out)           :: numeSlice_
+    real(kind=8), optional, intent(out)      :: modeSing_
+    integer, optional, intent(out)           :: nbSnap_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,30 +63,30 @@ integer, optional, intent(out)           :: nbSnap_
 ! --------------------------------------------------------------------------------------------------
 !
     call rsadpa(resultName, 'L', 1, 'NUME_PLAN', numeMode, 0, sjv=jvPara)
-    numeSlice    = zi(jvPara)
-    call rsadpa(resultName, 'L', 1, 'FREQ'     , numeMode, 0, sjv=jvPara)
-    modeSing     = zr(jvPara)
-    call rsadpa(resultName, 'L', 1, 'NB_SNAP'  , numeMode, 0, sjv=jvPara)
-    nbSnap       = zi(jvPara)
-    call rsadpa(resultName, 'L', 1, 'MODELE'   , numeMode, 0, sjv=jvPara)
-    model        = zk8(jvPara)
-    call rsadpa(resultName, 'L', 1, 'NOM_CHAM' , numeMode, 0, sjv=jvPara)
+    numeSlice = zi(jvPara)
+    call rsadpa(resultName, 'L', 1, 'FREQ', numeMode, 0, sjv=jvPara)
+    modeSing = zr(jvPara)
+    call rsadpa(resultName, 'L', 1, 'NB_SNAP', numeMode, 0, sjv=jvPara)
+    nbSnap = zi(jvPara)
+    call rsadpa(resultName, 'L', 1, 'MODELE', numeMode, 0, sjv=jvPara)
+    model = zk8(jvPara)
+    call rsadpa(resultName, 'L', 1, 'NOM_CHAM', numeMode, 0, sjv=jvPara)
     modeSymbName = zk24(jvPara)
 !
     if (present(numeSlice_)) then
         numeSlice_ = numeSlice
-    endif
+    end if
     if (present(modeSing_)) then
         modeSing_ = modeSing
-    endif
+    end if
     if (present(nbSnap_)) then
         nbSnap_ = nbSnap
-    endif
+    end if
     if (present(model_)) then
         model_ = model
-    endif
+    end if
     if (present(modeSymbName_)) then
         modeSymbName_ = modeSymbName
-    endif
+    end if
 !
 end subroutine

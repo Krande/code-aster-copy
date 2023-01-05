@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
+subroutine dfdm3d(nno, ipg, ipoids, idfde, coor, &
                   jac, dfdx, dfdy, dfdz)
     implicit none
 #include "jeveux.h"
@@ -54,7 +54,7 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
 !
     poids = zr(ipoids+ipg-1)
 !
-    g(:,:) = 0.d0
+    g(:, :) = 0.d0
 !
     do i = 1, nno
         k = 3*nno*(ipg-1)
@@ -63,29 +63,29 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
         dn = zr(idfde-1+k+ii+2)
         dk = zr(idfde-1+k+ii+3)
         do j = 1, 3
-            g(1,j) = g(1,j) + coor(ii+j) * de
-            g(2,j) = g(2,j) + coor(ii+j) * dn
-            g(3,j) = g(3,j) + coor(ii+j) * dk
+            g(1, j) = g(1, j)+coor(ii+j)*de
+            g(2, j) = g(2, j)+coor(ii+j)*dn
+            g(3, j) = g(3, j)+coor(ii+j)*dk
         end do
     end do
 !
-    j11 = g(2,2) * g(3,3) - g(2,3) * g(3,2)
-    j21 = g(3,1) * g(2,3) - g(2,1) * g(3,3)
-    j31 = g(2,1) * g(3,2) - g(3,1) * g(2,2)
-    j12 = g(1,3) * g(3,2) - g(1,2) * g(3,3)
-    j22 = g(1,1) * g(3,3) - g(1,3) * g(3,1)
-    j32 = g(1,2) * g(3,1) - g(3,2) * g(1,1)
-    j13 = g(1,2) * g(2,3) - g(1,3) * g(2,2)
-    j23 = g(2,1) * g(1,3) - g(2,3) * g(1,1)
-    j33 = g(1,1) * g(2,2) - g(1,2) * g(2,1)
+    j11 = g(2, 2)*g(3, 3)-g(2, 3)*g(3, 2)
+    j21 = g(3, 1)*g(2, 3)-g(2, 1)*g(3, 3)
+    j31 = g(2, 1)*g(3, 2)-g(3, 1)*g(2, 2)
+    j12 = g(1, 3)*g(3, 2)-g(1, 2)*g(3, 3)
+    j22 = g(1, 1)*g(3, 3)-g(1, 3)*g(3, 1)
+    j32 = g(1, 2)*g(3, 1)-g(3, 2)*g(1, 1)
+    j13 = g(1, 2)*g(2, 3)-g(1, 3)*g(2, 2)
+    j23 = g(2, 1)*g(1, 3)-g(2, 3)*g(1, 1)
+    j33 = g(1, 1)*g(2, 2)-g(1, 2)*g(2, 1)
 !
-    jac = g(1,1) * j11 + g(1,2) * j21 + g(1,3) * j31
+    jac = g(1, 1)*j11+g(1, 2)*j21+g(1, 3)*j31
 !
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
-        nomail= zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
-    endif
+    end if
 !
     if (present(dfdx)) then
         ASSERT(present(dfdy))
@@ -96,14 +96,14 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
             de = zr(idfde-1+k+ii+1)
             dn = zr(idfde-1+k+ii+2)
             dk = zr(idfde-1+k+ii+3)
-            dfdx(i) = ( j11*de + j12*dn + j13*dk ) / jac
-            dfdy(i) = ( j21*de + j22*dn + j23*dk ) / jac
-            dfdz(i) = ( j31*de + j32*dn + j33*dk ) / jac
-        enddo
+            dfdx(i) = (j11*de+j12*dn+j13*dk)/jac
+            dfdy(i) = (j21*de+j22*dn+j23*dk)/jac
+            dfdz(i) = (j31*de+j32*dn+j33*dk)/jac
+        end do
     else
-        ASSERT(.not.present(dfdy))
-        ASSERT(.not.present(dfdz))
-    endif
+        ASSERT(.not. present(dfdy))
+        ASSERT(.not. present(dfdz))
+    end if
 !
     jac = abs(jac)*poids
 !

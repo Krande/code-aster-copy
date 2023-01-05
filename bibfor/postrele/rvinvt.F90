@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine rvinvt(tensor, vonm, tres, trac, detr)
             t(i) = 0.d0
         else
             t(i) = tensor(i)
-        endif
+        end if
     end do
 !
     unsur3 = 1.0d0/3.0d0
@@ -78,11 +78,11 @@ subroutine rvinvt(tensor, vonm, tres, trac, detr)
     call rvdet3(t, detr)
 !
     do i = 1, 3, 1
-        trac = trac + t(i)
+        trac = trac+t(i)
     end do
 !
     do i = 1, 3, 1
-        t(i) = t(i) - trac*unsur3
+        t(i) = t(i)-trac*unsur3
     end do
 !
     call rsvnmi(t, vonm)

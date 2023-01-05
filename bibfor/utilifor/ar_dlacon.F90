@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_dlacon(n, v, x, isgn, est,&
-                  kase)
+subroutine ar_dlacon(n, v, x, isgn, est, &
+                     kase)
 !
 !     SUBROUTINE LAPACK CALCULANT LA NORME L1 D'UNE MATRICE CARREE.
 !-----------------------------------------------------------------------
@@ -99,14 +99,14 @@ subroutine ar_dlacon(n, v, x, isgn, est,&
     real(kind=8) :: est
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    integer :: isgn( * )
-    real(kind=8) :: v( * ), x( * )
+    integer :: isgn(*)
+    real(kind=8) :: v(*), x(*)
 !     ..
 !     .. PARAMETERS ..
     integer :: itmax
-    parameter          ( itmax = 5 )
+    parameter(itmax=5)
     real(kind=8) :: zero, one, two
-    parameter          ( zero = 0.0d+0, one = 1.0d+0, two = 2.0d+0 )
+    parameter(zero=0.0d+0, one=1.0d+0, two=2.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
     integer :: i, iter, j, jlast, jump
@@ -121,12 +121,12 @@ subroutine ar_dlacon(n, v, x, isgn, est,&
 !
     if (kase .eq. 0) then
         do i = 1, n
-            x( i ) = one / dble( n )
+            x(i) = one/dble(n)
         end do
         kase = 1
         jump = 1
         goto 1000
-    endif
+    end if
 !
     if (jump .eq. 1) then
         goto 20
@@ -138,23 +138,23 @@ subroutine ar_dlacon(n, v, x, isgn, est,&
         goto 110
     else if (jump .eq. 5) then
         goto 140
-    endif
+    end if
 !
 !     ................ ENTRY   (JUMP = 1)
 !     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY A*X.
 !
- 20 continue
+20  continue
     if (n .eq. 1) then
-        v( 1 ) = x( 1 )
-        est = abs( v( 1 ) )
+        v(1) = x(1)
+        est = abs(v(1))
 !        ... QUIT
         goto 150
-    endif
-    est = ldasum( n, x, 1 )
+    end if
+    est = ldasum(n, x, 1)
 !
     do i = 1, n
-        x( i ) = sign( one, x( i ) )
-        isgn( i ) = nint( x( i ) )
+        x(i) = sign(one, x(i))
+        isgn(i) = nint(x(i))
     end do
     kase = 2
     jump = 2
@@ -163,17 +163,17 @@ subroutine ar_dlacon(n, v, x, isgn, est,&
 !     ................ ENTRY   (JUMP = 2)
 !     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANDPOSE(A)*X.
 !
- 40 continue
-    j = idamax( n, x, 1 )
+40  continue
+    j = idamax(n, x, 1)
     iter = 2
 !
 !     MAIN LOOP - ITERATIONS 2,3,...,ITMAX.
 !
- 50 continue
+50  continue
     do i = 1, n
-        x( i ) = zero
+        x(i) = zero
     end do
-    x( j ) = one
+    x(j) = one
     kase = 1
     jump = 3
     goto 1000
@@ -181,23 +181,23 @@ subroutine ar_dlacon(n, v, x, isgn, est,&
 !     ................ ENTRY   (JUMP = 3)
 !     X HAS BEEN OVERWRITTEN BY A*X.
 !
- 70 continue
+70  continue
     call dcopy(n, x, 1, v, 1)
     estold = est
-    est = ldasum( n, v, 1 )
+    est = ldasum(n, v, 1)
     do i = 1, n
-        if (nint( sign( one, x( i ) ) ) .ne. isgn( i )) goto 90
+        if (nint(sign(one, x(i))) .ne. isgn(i)) goto 90
     end do
 !     REPEATED SIGN VECTOR DETECTED, HENCE ALGORITHM HAS CONVERGED.
     goto 120
 !
- 90 continue
+90  continue
 !     TEST FOR CYCLING.
     if (est .le. estold) goto 120
 !
     do i = 1, n
-        x( i ) = sign( one, x( i ) )
-        isgn( i ) = nint( x( i ) )
+        x(i) = sign(one, x(i))
+        isgn(i) = nint(x(i))
     end do
     kase = 2
     jump = 4
@@ -208,18 +208,18 @@ subroutine ar_dlacon(n, v, x, isgn, est,&
 !
 110 continue
     jlast = j
-    j = idamax( n, x, 1 )
-    if (( x( jlast ).ne.abs( x( j ) ) ) .and. ( iter.lt.itmax )) then
-        iter = iter + 1
+    j = idamax(n, x, 1)
+    if ((x(jlast) .ne. abs(x(j))) .and. (iter .lt. itmax)) then
+        iter = iter+1
         goto 50
-    endif
+    end if
 !
 !     ITERATION COMPLETE.  FINAL STAGE.
 !
 120 continue
     altsgn = one
     do i = 1, n
-        x( i ) = altsgn*( one+dble( i-1 ) / dble( n-1 ) )
+        x(i) = altsgn*(one+dble(i-1)/dble(n-1))
         altsgn = -altsgn
     end do
     kase = 1
@@ -230,11 +230,11 @@ subroutine ar_dlacon(n, v, x, isgn, est,&
 !     X HAS BEEN OVERWRITTEN BY A*X.
 !
 140 continue
-    temp = two*( ldasum( n, x, 1 ) / dble( 3*n ) )
+    temp = two*(ldasum(n, x, 1)/dble(3*n))
     if (temp .gt. est) then
         call dcopy(n, x, 1, v, 1)
         est = temp
-    endif
+    end if
 !
 150 continue
     kase = 0

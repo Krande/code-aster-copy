@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romFieldGetComponents(field)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/indik8.h"
@@ -40,7 +40,7 @@ implicit none
 #include "asterfort/utchdl.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(inout) :: field
+    type(ROM_DS_Field), intent(inout) :: field
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,61 +75,61 @@ type(ROM_DS_Field), intent(inout) :: field
 !
 ! - Initializations
 !
-    field%lLagr     = ASTER_FALSE
+    field%lLagr = ASTER_FALSE
     field%nbCmpName = 0
 !
 ! - Get parameters from field
 !
     fieldRefe = field%fieldRefe
     fieldSupp = field%fieldSupp
-    nbEqua    = field%nbEqua
-    mesh      = field%mesh
-    call dismoi('NOM_GD', fieldRefe, 'CHAMP', repk = physName)
+    nbEqua = field%nbEqua
+    mesh = field%mesh
+    call dismoi('NOM_GD', fieldRefe, 'CHAMP', repk=physName)
 !
 ! - Get list of components on physical_quantities
 !
     call jelira(jexnom('&CATA.GD.NOMCMP', physName), 'LONMAX', nbCmpMaxi)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', physName), 'L', vk8 = physCmpName)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', physName), 'L', vk8=physCmpName)
 !
 ! - Allocate object for type of equation
 !
-    AS_ALLOCATE(vi = field%equaCmpName, size = nbEqua)
+    AS_ALLOCATE(vi=field%equaCmpName, size=nbEqua)
 !
 ! - Get name of components and type of components (-1 if Lagrangian)
 !
     if (fieldSupp == 'NOEU') then
 ! ----- Access to numbering
-        call dismoi('PROF_CHNO' , fieldRefe, 'CHAM_NO', repk = pfchno)
-        call jeveuo(pfchno//'.DEEQ', 'L', vi = deeq)
+        call dismoi('PROF_CHNO', fieldRefe, 'CHAM_NO', repk=pfchno)
+        call jeveuo(pfchno//'.DEEQ', 'L', vi=deeq)
 
 ! ----- Detect equation
-        AS_ALLOCATE(vk8 = field%listCmpName, size = nbCmpMaxi)
-        nbLagr           = 0
-        field%nbCmpName  = 0
+        AS_ALLOCATE(vk8=field%listCmpName, size=nbCmpMaxi)
+        nbLagr = 0
+        field%nbCmpName = 0
         do iEqua = 1, nbEqua
             cmpNume = deeq(2*(iEqua-1)+2)
             if (cmpNume .gt. 0) then
                 cmpIndx = indik8(field%listCmpName, physCmpName(cmpNume), 1, field%nbCmpName)
                 if (cmpIndx .eq. 0) then
 ! ----------------- Add this name in the list
-                    field%nbCmpName                    = field%nbCmpName + 1
+                    field%nbCmpName = field%nbCmpName+1
                     field%listCmpName(field%nbCmpName) = physCmpName(cmpNume)
-                    cmpIndx                            = field%nbCmpName
-                endif
+                    cmpIndx = field%nbCmpName
+                end if
                 field%equaCmpName(iEqua) = cmpIndx
             else
-                nbLagr                   = nbLagr + 1
+                nbLagr = nbLagr+1
                 field%equaCmpName(iEqua) = -1
-            endif
+            end if
         end do
         field%lLagr = nbLagr .gt. 0
 
     else if (fieldSupp == 'ELGA') then
 ! ----- Access to field
-        call dismoi('NOM_LIGREL', fieldRefe, 'CHAMP', repk = ligrName)
-        call dismoi('NB_GREL', ligrName, 'LIGREL', repi = nbGrel)
-        call jeveuo(fieldRefe(1:19)//'.CELD', 'L', vi = celd)
-        call jeveuo(fieldRefe(1:19)//'.CELV', 'L', vr = celv)
+        call dismoi('NOM_LIGREL', fieldRefe, 'CHAMP', repk=ligrName)
+        call dismoi('NB_GREL', ligrName, 'LIGREL', repi=nbGrel)
+        call jeveuo(fieldRefe(1:19)//'.CELD', 'L', vi=celd)
+        call jeveuo(fieldRefe(1:19)//'.CELV', 'L', vr=celv)
 
 ! ----- Allocate object for name of components => in cmpcha
 ! ----- Allocate object for type of equation => in cmpcha
@@ -137,16 +137,16 @@ type(ROM_DS_Field), intent(inout) :: field
         if (physName .eq. 'VARI_R') then
             nbCmpMaxi = celd(4)
             field%nbCmpName = nbCmpMaxi
-            AS_ALLOCATE(vk8 = field%listCmpName, size = field%nbCmpName)
+            AS_ALLOCATE(vk8=field%listCmpName, size=field%nbCmpName)
             do iCmpName = 1, field%nbCmpName
                 field%listCmpName(iCmpName) = 'V'
-                call codent(iCmpName, 'G', field%listCmpName(iCmpName)(2:8))
+                call codent(iCmpName, 'G', field%listCmpName(iCmpName) (2:8))
             end do
         else
             call cmpcha(fieldRefe, field%listCmpName, cataToField, fieldToCata, field%nbCmpName)
-            AS_DEALLOCATE(vi = cataToField)
-            AS_DEALLOCATE(vi = fieldToCata)
-        endif
+            AS_DEALLOCATE(vi=cataToField)
+            AS_DEALLOCATE(vi=fieldToCata)
+        end if
 
 ! ----- Detect equation
         do iGrel = 1, nbGrel
@@ -158,7 +158,7 @@ type(ROM_DS_Field), intent(inout) :: field
             nbElem = celd(celd(4+iGrel)+1)
 
 ! --------- Get number of points (Gauss points) for each such element
-            call jeveuo(jexnum('&CATA.TE.MODELOC', locaNume), 'L', vi = modloc)
+            call jeveuo(jexnum('&CATA.TE.MODELOC', locaNume), 'L', vi=modloc)
 
 ! --------- Check: ELGA field only with constant number of components on each point
             ASSERT(modloc(1) == 3)
@@ -167,7 +167,7 @@ type(ROM_DS_Field), intent(inout) :: field
             nbPt = modloc(4)
 
 ! --------- Get list of elements
-            call jeveuo(jexnum(ligrName(1:19)//'.LIEL', iGrel), 'L', vi = liel)
+            call jeveuo(jexnum(ligrName(1:19)//'.LIEL', iGrel), 'L', vi=liel)
 
             do iElem = 1, nbElem
 ! ------------- Current element
@@ -175,7 +175,7 @@ type(ROM_DS_Field), intent(inout) :: field
                 call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elemNume), elemName)
 
 ! ------------- Adress in .CELV of the first field value for the element
-                addr     = celd(celd(4+iGrel)+4+4*(iElem-1)+4)
+                addr = celd(celd(4+iGrel)+4+4*(iElem-1)+4)
 
                 do iPt = 1, nbPt
                     do iCmpName = 1, field%nbCmpName
@@ -183,8 +183,8 @@ type(ROM_DS_Field), intent(inout) :: field
                         cmpName = field%listCmpName(iCmpName)
 
 ! --------------------- Get the equation number for this component in field
-                        call utchdl(fieldRefe, mesh, elemName, ' ', iPt,&
-                                    1, iCmpName, cmpName, equaNume, nogranz = ASTER_TRUE)
+                        call utchdl(fieldRefe, mesh, elemName, ' ', iPt, &
+                                    1, iCmpName, cmpName, equaNume, nogranz=ASTER_TRUE)
 
 ! --------------------- Set equation
                         ASSERT(equaNume .gt. 0)
@@ -200,21 +200,21 @@ type(ROM_DS_Field), intent(inout) :: field
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Decompte
 !
     do iCmpName = 1, field%nbCmpName
         nbEquaCmp = 0
-        cmpName   = field%listCmpName(iCmpName)
+        cmpName = field%listCmpName(iCmpName)
         do iEqua = 1, nbEqua
             if (field%equaCmpName(iEqua) .eq. iCmpName) then
-                nbEquaCmp = nbEquaCmp + 1
-            endif
+                nbEquaCmp = nbEquaCmp+1
+            end if
         end do
         if (niv .ge. 2) then
-            call utmess('I', 'ROM11_3', si = nbEquaCmp, sk = cmpName)
-        endif
+            call utmess('I', 'ROM11_3', si=nbEquaCmp, sk=cmpName)
+        end if
     end do
 !
 end subroutine

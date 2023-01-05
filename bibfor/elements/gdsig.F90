@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
-                 rot0, rotk, granc, imate, gn,&
+subroutine gdsig(fami, kpg, ksp, x0pg, petik, &
+                 rot0, rotk, granc, imate, gn, &
                  gm, pn, pm)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE LE
@@ -52,32 +52,32 @@ subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
     real(kind=8) :: epsthe, un
 !-----------------------------------------------------------------------
     un = 1.d0
-    call verift(fami, kpg, ksp, '+', imate,&
+    call verift(fami, kpg, ksp, '+', imate, &
                 epsth_=epsthe)
 !
 !
-    call promat(rotk, 3, 3, 3, rot0,&
+    call promat(rotk, 3, 3, 3, rot0, &
                 3, 3, 3, rotabs)
-    call transp(rotabs, 3, 3, 3, rotabt,&
+    call transp(rotabs, 3, 3, 3, rotabt, &
                 3)
-    call promat(rotabt, 3, 3, 3, x0pg,&
+    call promat(rotabt, 3, 3, 3, x0pg, &
                 3, 3, 1, granga)
-    call promat(rotabt, 3, 3, 3, petik,&
+    call promat(rotabt, 3, 3, 3, petik, &
                 3, 3, 1, grank)
 !
-    granga(1) = granga(1) - un
+    granga(1) = granga(1)-un
     do i = 1, 3
-        gn(i) = granc(i) * granga(i)
-        gm(i) = granc(3+i) * grank(i)
+        gn(i) = granc(i)*granga(i)
+        gm(i) = granc(3+i)*grank(i)
     end do
 !
 !     DILATATION THERMIQUE : -E*A*ALPHA*(T-TREF)
 !
-    gn(1) = gn(1) - granc(1)*epsthe
+    gn(1) = gn(1)-granc(1)*epsthe
 !
-    call promat(rotabs, 3, 3, 3, gn,&
+    call promat(rotabs, 3, 3, 3, gn, &
                 3, 3, 1, pn)
-    call promat(rotabs, 3, 3, 3, gm,&
+    call promat(rotabs, 3, 3, 3, gm, &
                 3, 3, 1, pm)
 !
 end subroutine

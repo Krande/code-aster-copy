@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,28 +56,28 @@ subroutine pmfdef(typfib, nf, ncarf, vf, dege, deff)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i
-    real(kind=8) :: yy,zz,yp,zp
+    real(kind=8) :: yy, zz, yp, zp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if ( typfib.eq.1 ) then
+    if (typfib .eq. 1) then
 !       3 caractéristiques utiles par fibre : y z aire
         do i = 1, nf
-            yy   = vf(1,i)
-            zz   = vf(2,i)
-            deff(i) = dege(1) - yy*dege(6) + zz*dege(5)
-        enddo
-    else if ( typfib.eq.2 ) then
+            yy = vf(1, i)
+            zz = vf(2, i)
+            deff(i) = dege(1)-yy*dege(6)+zz*dege(5)
+        end do
+    else if (typfib .eq. 2) then
 !       6 caractéristiques utiles par fibre : y z aire yp zp numgr
-        do  i = 1, nf
-            yy   = vf(1,i)
-            zz   = vf(2,i)
-            yp   = vf(4,i)
-            zp   = vf(5,i)
-            deff(i) = dege(1) - (yy-yp)*dege(6) + (zz-zp)*dege(5)
+        do i = 1, nf
+            yy = vf(1, i)
+            zz = vf(2, i)
+            yp = vf(4, i)
+            zp = vf(5, i)
+            deff(i) = dege(1)-(yy-yp)*dege(6)+(zz-zp)*dege(5)
         end do
     else
         call utmess('F', 'ELEMENTS2_40', si=typfib)
-    endif
+    end if
 
 end subroutine

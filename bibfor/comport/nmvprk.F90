@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmvprk(BEHinteg    ,&
-                  fami, kpg, ksp, ndim, typmod,&
-                  imat, comp, crit, timed, timef,&
-                  neps, epsdt, depst, sigd, vind,&
-                  opt, angmas, sigf, vinf, dsde,&
+subroutine nmvprk(BEHinteg, &
+                  fami, kpg, ksp, ndim, typmod, &
+                  imat, comp, crit, timed, timef, &
+                  neps, epsdt, depst, sigd, vind, &
+                  opt, angmas, sigf, vinf, dsde, &
                   iret, mult_comp_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/calsig.h"
@@ -131,13 +131,13 @@ implicit none
     integer :: irr, decirr, nbsyst, decal, gdef
     character(len=16), optional, intent(in) :: mult_comp_
 !     POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
-    parameter (nmat =6000)
+    parameter(nmat=6000)
 !     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
 !        NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
 !        NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
-    parameter (nsg=30)
-    parameter (nfs=5)
-    parameter (nhsr=5)
+    parameter(nsg=30)
+    parameter(nfs=5)
+    parameter(nhsr=5)
     integer :: nbcomm(nmat, 3), numhsr(nmat), iret
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsdt(neps), depst(neps)
     real(kind=8) :: rbid
@@ -152,10 +152,10 @@ implicit none
     character(len=11) :: meting
     character(len=16) :: comp(*), opt, rela_comp, defo_comp, mult_comp
     character(len=24) :: cpmono(5*nmat+1)
-    common /tdim/   ndt,    ndi
-    common /opti/   ioptio, idnr
-    common /meti/   meting
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/tdim/ndt, ndi
+    common/opti/ioptio, idnr
+    common/meti/meting
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -168,9 +168,9 @@ implicit none
     mult_comp = ' '
     if (present(mult_comp_)) then
         mult_comp = mult_comp_
-    endif
+    end if
     gdef = 0
-    if (defo_comp .eq. 'SIMO_MIEHE') gdef=1
+    if (defo_comp .eq. 'SIMO_MIEHE') gdef = 1
 !
 !     YMFS EST UTILISE LORS DU CALCUL D ERREUR COMME MINIMUM DE
 !     CHAQUE COMPOSANTE DE VINT. L IDEAL SERAIT DE RENTRER CE
@@ -181,13 +181,13 @@ implicit none
 ! --  RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 !                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 !
-    call lcmate(BEHinteg,&
-                fami, kpg, ksp, comp, mod,&
-                imat, nmat, rbid, rbid, rbid, 1,&
-                typma, hsr, materd, materf, matcst,&
-                nbcomm, cpmono, angmas, pgl, 0,&
-                toler, ndt, ndi, nr, crit,&
-                nvi, vind, nfs, nsg, toutms,&
+    call lcmate(BEHinteg, &
+                fami, kpg, ksp, comp, mod, &
+                imat, nmat, rbid, rbid, rbid, 1, &
+                typma, hsr, materd, materf, matcst, &
+                nbcomm, cpmono, angmas, pgl, 0, &
+                toler, ndt, ndi, nr, crit, &
+                nvi, vind, nfs, nsg, toutms, &
                 nhsr, numhsr, sigd, mult_comp)
 !
     if (opt(1:9) .eq. 'RIGI_MECA') goto 900
@@ -195,72 +195,72 @@ implicit none
     call dcopy(neps, depst, 1, detot, 1)
     call dcopy(neps, epsdt, 1, epsd, 1)
 !
-    dtime=timef-timed
+    dtime = timef-timed
 !
 ! --  INITIALISATION DES VARIABLES INTERNES A T
 !
     do i = 1, nmat
-        cothe(i)=materd(i,1)
-        dcothe(i)=-cothe(i)+materf(i,1)
+        cothe(i) = materd(i, 1)
+        dcothe(i) = -cothe(i)+materf(i, 1)
     end do
 !
     do i = 1, nmat
-        coeff(i)=materd(i,2)
-        dcoeff(i)=-coeff(i)+materf(i,2)
+        coeff(i) = materd(i, 2)
+        dcoeff(i) = -coeff(i)+materf(i, 2)
     end do
 !
 !     INITIALISATIONS PARTICULIERES POUR CERTAINES LOIS
 !
-    call lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
-                cpmono, nmat, mod, nvi, sigd,&
+    call lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
+                cpmono, nmat, mod, nvi, sigd, &
                 sigf, vind, vinf, nbphas, iret)
     if (iret .eq. 9) then
 !        ENDOMMAGEMENT MAXI AU POINT DE GAUSS
-        iret=0
+        iret = 0
         goto 999
-    endif
+    end if
 !
-    call gerpas(fami, kpg, ksp, rela_comp, mod,&
-                imat, matcst, nbcomm, cpmono, nbphas,&
-                nvi, nmat, vinf, dtime, itmax,&
-                toler, ymfs, cothe, coeff, dcothe,&
-                dcoeff, coel, pgl, angmas, neps,&
-                epsd, detot, x, nfs, nsg,&
+    call gerpas(fami, kpg, ksp, rela_comp, mod, &
+                imat, matcst, nbcomm, cpmono, nbphas, &
+                nvi, nmat, vinf, dtime, itmax, &
+                toler, ymfs, cothe, coeff, dcothe, &
+                dcoeff, coel, pgl, angmas, neps, &
+                epsd, detot, x, nfs, nsg, &
                 nhsr, numhsr, hsr, iret)
     if (iret .ne. 0) then
         goto 999
-    endif
+    end if
 !
 ! --  CALCUL DES CONTRAINTES
 !
-    if ((rela_comp.eq.'MONOCRISTAL') .and. (gdef.eq.1)) then
-        call lcrksg(rela_comp, nvi, vinf, epsd, detot,&
+    if ((rela_comp .eq. 'MONOCRISTAL') .and. (gdef .eq. 1)) then
+        call lcrksg(rela_comp, nvi, vinf, epsd, detot, &
                     nmat, coel, sigf)
     else
-        call calsig(fami, kpg, ksp, vinf, mod,&
-                    rela_comp, vinf, x, dtime, epsd,&
+        call calsig(fami, kpg, ksp, vinf, mod, &
+                    rela_comp, vinf, x, dtime, epsd, &
                     detot, nmat, coel, sigf)
-    endif
+    end if
 !
-    call lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
-                nmat, nvi, sigf, detot, epsd,&
+    call lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
+                nmat, nvi, sigf, detot, epsd, &
                 materf, pgl)
 !
 900 continue
 !
     if (opt(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONOCRISTAL') then
-        call lcsmelas(epsdt, depst, dsde,&
-                      nmat = nmat, materd_ = materd)
+        call lcsmelas(epsdt, depst, dsde, &
+                      nmat=nmat, materd_=materd)
         iret = 0
         goto 999
-    endif
+    end if
 !
 !     OPERATEUR TANGENT = ELASTIQUE OU SECANT (ENDOMMAGEMENT)
-    if (materf(nmat,1) .eq. 0) then
+    if (materf(nmat, 1) .eq. 0) then
         call lcopli('ISOTROPE', mod, materf(1, 1), dsde)
-    else if (materf(nmat,1) .eq. 1) then
+    else if (materf(nmat, 1) .eq. 1) then
         call lcopli('ORTHOTRO', mod, materf(1, 1), dsde)
-    endif
+    end if
 !
 999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine rc32cm()
 !
     if (nbchar .eq. 0) goto 999
 !
-    call jecrec('&&RC3200.VALE_CHAR', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
+    call jecrec('&&RC3200.VALE_CHAR', 'V V R', 'NO', 'DISPERSE', 'VARIABLE', &
                 nbchar)
 !
     do iocc = 1, nbchar, 1
@@ -61,7 +61,7 @@ subroutine rc32cm()
 !
 !-- cas simple ou cas corps/tubulure ?
         do i = 1, 12
-            zr(jchar-1+i)=0.d0
+            zr(jchar-1+i) = 0.d0
         end do
 !
         call getvr8('CHAR_MECA', 'MX', iocc=iocc, nbval=0, nbret=n2)
@@ -88,7 +88,7 @@ subroutine rc32cm()
             call getvr8('CHAR_MECA', 'MX_CORP', iocc=iocc, scal=zr(jchar-1+10), nbret=n1)
             call getvr8('CHAR_MECA', 'MY_CORP', iocc=iocc, scal=zr(jchar-1+11), nbret=n1)
             call getvr8('CHAR_MECA', 'MZ_CORP', iocc=iocc, scal=zr(jchar-1+12), nbret=n1)
-        endif
+        end if
 !
     end do
 !

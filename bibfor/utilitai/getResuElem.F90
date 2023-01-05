@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 function getResuElem(matr_elem_, vect_elem_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
@@ -52,34 +52,34 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     getResuElem = ' '
-    resu_elem   = ' '
-    enti_elem   = ' '
+    resu_elem = ' '
+    enti_elem = ' '
 !
     if (present(vect_elem_)) then
-        ASSERT(.not.present(matr_elem_))
+        ASSERT(.not. present(matr_elem_))
         enti_elem = vect_elem_
     elseif (present(matr_elem_)) then
-        ASSERT(.not.present(vect_elem_))
+        ASSERT(.not. present(vect_elem_))
         enti_elem = matr_elem_
-    endif
+    end if
 !
     if (enti_elem .ne. ' ') then
         call jeexin(enti_elem(1:19)//'.RELR', iret)
         if (iret .gt. 0) then
-            call jeveuo(enti_elem(1:19)//'.RELR', 'L', vk24 = v_resu_elem)
+            call jeveuo(enti_elem(1:19)//'.RELR', 'L', vk24=v_resu_elem)
             call jelira(enti_elem(1:19)//'.RELR', 'LONUTI', nb_resu)
             if (nb_resu .eq. 1) then
-                resu_elem = v_resu_elem(1)(1:19)
+                resu_elem = v_resu_elem(1) (1:19)
             elseif (nb_resu .eq. 2) then
-                resu_elem = v_resu_elem(1)(1:19)
+                resu_elem = v_resu_elem(1) (1:19)
                 if (zerosd('RESUELEM', resu_elem)) then
-                    resu_elem = v_resu_elem(2)(1:19)
-                endif
+                    resu_elem = v_resu_elem(2) (1:19)
+                end if
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     getResuElem = resu_elem
 !

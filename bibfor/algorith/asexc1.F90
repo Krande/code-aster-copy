@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
-                  corfre, ndir, valspe, asyspe, nopara,&
+subroutine asexc1(motfac, nbocc, nbmode, momec, amort, &
+                  corfre, ndir, valspe, asyspe, nopara, &
                   nordr)
     implicit none
 #include "asterf_types.h"
@@ -63,8 +63,8 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
     character(len=9) :: niveau
     real(kind=8) :: correc
 !     ------------------------------------------------------------------
-    data  nompu / 'AMOR' , 'FREQ'    /
-    data   dir  / 'X' , 'Y' , 'Z' /
+    data nompu/'AMOR', 'FREQ'/
+    data dir/'X', 'Y', 'Z'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -73,19 +73,19 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
     zero = 0.d0
     un = 1.d0
     deuxpi = r8depi()
-    uns2pi = un / deuxpi
+    uns2pi = un/deuxpi
 !
 !     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 !
     call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
-    if (nimpr .eq. 0) niveau='TOUT     '
+    if (nimpr .eq. 0) niveau = 'TOUT     '
 !
     call getvr8(' ', 'FREQ_COUP', iocc=1, scal=fcoup, nbret=n1)
     if (n1 .eq. 0) then
-        call rsadpa(momec, 'L', 1, nopara(2), nordr(nbmode),&
+        call rsadpa(momec, 'L', 1, nopara(2), nordr(nbmode), &
                     0, sjv=ival, istop=0)
-        fcoup = uns2pi * sqrt(zr(ival))
-    endif
+        fcoup = uns2pi*sqrt(zr(ival))
+    end if
 !
 !
     do ioc = 1, nbocc
@@ -101,18 +101,18 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
 !        --- RECUPERATION DE LA DIRECTION DU SPECTRE ---
         call getvr8(motfac, 'AXE', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvr8(motfac, 'AXE', iocc=ioc, nbval=3, vect=dirspe,&
+            call getvr8(motfac, 'AXE', iocc=ioc, nbval=3, vect=dirspe, &
                         nbret=n1)
             xnorm = zero
             do id = 1, 3
-                xnorm = xnorm + dirspe(id) * dirspe(id)
+                xnorm = xnorm+dirspe(id)*dirspe(id)
             end do
             if (xnorm .lt. epsi) then
-                ier = ier + 1
+                ier = ier+1
                 call utmess('E', 'SEISME_4')
                 goto 10
-            endif
-            xnorm = un / sqrt(xnorm)
+            end if
+            xnorm = un/sqrt(xnorm)
             call getvid(motfac, 'SPEC_OSCI', iocc=ioc, scal=spect, nbret=n1)
             nomspe(1) = spect
             nomspe(2) = spect
@@ -122,12 +122,12 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
                 echspe(1) = echel
                 echspe(2) = echel
                 echspe(3) = echel
-            endif
+            end if
 !
         else
             call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=3, vect=dirspe,&
+                call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=3, vect=dirspe, &
                             nbret=n1)
                 call getvid(motfac, 'SPEC_OSCI', iocc=ioc, scal=spect, nbret=n1)
                 nomspe(1) = spect
@@ -138,16 +138,16 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
                     echspe(1) = echel
                     echspe(2) = echel
                     echspe(3) = echel
-                endif
+                end if
 !
             else
 !
-                call getvid(motfac, 'SPEC_OSCI', iocc=ioc, nbval=3, vect=nomspe,&
+                call getvid(motfac, 'SPEC_OSCI', iocc=ioc, nbval=3, vect=nomspe, &
                             nbret=n1)
-                call getvr8(motfac, 'ECHELLE', iocc=ioc, nbval=3, vect=echspe,&
+                call getvr8(motfac, 'ECHELLE', iocc=ioc, nbval=3, vect=echspe, &
                             nbret=n1)
-            endif
-        endif
+            end if
+        end if
 !
         call getvtx(motfac, 'NATURE', iocc=ioc, scal=knat, nbret=n1)
         if (knat .eq. 'ACCE') inat = 1
@@ -155,99 +155,99 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
         if (knat .eq. 'DEPL') inat = 3
 !
         do id = 1, 3
-            dirspe(id) = xnorm * dirspe(id)
+            dirspe(id) = xnorm*dirspe(id)
             if (abs(dirspe(id)) .gt. epsi) then
                 if (ndir(id) .ne. 0) then
-                    ier = ier + 1
+                    ier = ier+1
                     call utmess('E', 'SEISME_5')
                     goto 10
                 else
                     ndir(id) = 1
-                endif
+                end if
                 nature(id) = inat
-            endif
+            end if
         end do
 !
- 10     continue
+10      continue
     end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
-    endif
+    end if
 !
 !     --- INTERPOLATION DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
         call utmess('I', 'SEISME_53')
-    endif
+    end if
     do im = 1, nbmode
         ii = 0
         amor = amort(im)
-        call rsadpa(momec, 'L', 1, nopara(2), nordr(im),&
+        call rsadpa(momec, 'L', 1, nopara(2), nordr(im), &
                     0, sjv=ival, istop=0)
         omega2 = zr(ival)
-        omega = sqrt( omega2 )
-        freq = uns2pi * omega
+        omega = sqrt(omega2)
+        freq = uns2pi*omega
         valpu(1) = amor
         valpu(2) = freq
         if (corfre) then
-            correc = sqrt( un - amor*amor )
+            correc = sqrt(un-amor*amor)
         else
             correc = 1.
-        endif
+        end if
         do id = 1, 3
             if (ndir(id) .eq. 1) then
-                call fointe('F ', nomspe(id), 2, nompu, valpu,&
+                call fointe('F ', nomspe(id), 2, nompu, valpu, &
                             resu, ier)
                 coef = dirspe(id)*echspe(id)
                 if (nature(id) .eq. 1) then
-                    valspe(id,im) = resu * coef * correc
-                else if (nature(id).eq.2) then
-                    valspe(id,im) = resu * coef * omega * correc
+                    valspe(id, im) = resu*coef*correc
+                else if (nature(id) .eq. 2) then
+                    valspe(id, im) = resu*coef*omega*correc
                 else
-                    valspe(id,im) = resu * coef * omega2 * correc
-                endif
+                    valspe(id, im) = resu*coef*omega2*correc
+                end if
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (ii .eq. 0) then
                         ii = 1
-                        call utmess('I', 'SEISME_54', si=im, sk=dir(id), nr=3,&
+                        call utmess('I', 'SEISME_54', si=im, sk=dir(id), nr=3, &
                                     valr=[freq, amor, valspe(id, im)])
                     else
                         call utmess('I', 'SEISME_55', sk=dir(id), sr=valspe(id, im))
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
         end do
     end do
 !
 !     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
         call utmess('I', 'SEISME_56')
-    endif
+    end if
     do id = 1, 3
         if (ndir(id) .eq. 1) then
-            amor=amort(nbmode)
+            amor = amort(nbmode)
             valpu(1) = amor
             valpu(2) = fcoup
-            omega = deuxpi * fcoup
+            omega = deuxpi*fcoup
             if (corfre) then
-                correc = sqrt( un - amor*amor )
+                correc = sqrt(un-amor*amor)
             else
                 correc = 1.
-            endif
-            call fointe('F ', nomspe(id), 2, nompu, valpu,&
+            end if
+            call fointe('F ', nomspe(id), 2, nompu, valpu, &
                         resu, ier)
             coef = dirspe(id)*echspe(id)
             if (nature(id) .eq. 1) then
-                asyspe(id) = resu * coef * correc
-            else if (nature(id).eq.2) then
-                asyspe(id) = resu * coef * omega * correc
+                asyspe(id) = resu*coef*correc
+            else if (nature(id) .eq. 2) then
+                asyspe(id) = resu*coef*omega*correc
             else
-                asyspe(id) = resu * coef * omega * omega * correc
-            endif
+                asyspe(id) = resu*coef*omega*omega*correc
+            end if
             if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                 call utmess('I', 'SEISME_57', sk=dir(id), sr=asyspe(id))
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

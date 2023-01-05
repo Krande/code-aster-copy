@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine hujmed(k, mater, vin, sig)
     aster_logical :: debug
 !
 ! ----------------------------------------------------------------------
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 ! ----------------------------------------------------------------------
-    parameter     (degr = 0.0174532925199d0)
-    parameter     (d12  = 0.5d0  )
-    parameter     (zero = 0.0d0  )
-    parameter     (un   = 1.0d0  )
-    parameter     (deux = 2.0d0  )
+    parameter(degr=0.0174532925199d0)
+    parameter(d12=0.5d0)
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
 !
 !
 ! ==================================================================
@@ -57,7 +57,7 @@ subroutine hujmed(k, mater, vin, sig)
         rc = vin(k)
     else
         rc = vin(k+4)
-    endif
+    end if
 !
 !
 ! ==================================================================
@@ -68,7 +68,7 @@ subroutine hujmed(k, mater, vin, sig)
     phi = mater(5, 2)
     pcref = mater(7, 2)
     pcr = pcref*exp(-beta*epsvp)
-    ptrac = mater(21,2)
+    ptrac = mater(21, 2)
     m = sin(degr*phi)
 !
 !
@@ -79,8 +79,8 @@ subroutine hujmed(k, mater, vin, sig)
     if (k .gt. 4) then
         kp = k-4
     else
-        kp=k
-    endif
+        kp = k
+    end if
 !
 !
 ! ==================================================================
@@ -100,13 +100,13 @@ subroutine hujmed(k, mater, vin, sig)
         if (i .ne. kp) then
             tou(j) = sig(i)
             j = j+1
-        endif
-    enddo
+        end if
+    end do
     tou(3) = sig(ndt+1-kp)
 !
-    dd= d12*( tou(1)-tou(2) )
-    p = d12*( tou(1)+tou(2) )
-    p = p -ptrac
+    dd = d12*(tou(1)-tou(2))
+    p = d12*(tou(1)+tou(2))
+    p = p-ptrac
 !
 !
 ! ==================================================================
@@ -126,14 +126,14 @@ subroutine hujmed(k, mater, vin, sig)
     qsc = sqrt(sc(1)**deux+d12*sc(2)**deux)
 !
     if (abs(qsc) .gt. r8prem()) then
-        vin(4*kp+7)=-sc(1)/qsc
-        vin(4*kp+8)=-sc(2)/qsc
+        vin(4*kp+7) = -sc(1)/qsc
+        vin(4*kp+8) = -sc(2)/qsc
     else
-        vin(4*kp+7)=zero
-        vin(4*kp+8)=zero
-    endif
+        vin(4*kp+7) = zero
+        vin(4*kp+8) = zero
+    end if
 ! --- ENREGISTREMENT DU TENSEUR DEVIATOIRE MEMOIRE
-    vin(4*kp+5)=dd/(m*p*(un-b*log(p/pcr)))
-    vin(4*kp+6)=tou(3)/(m*p*(un-b*log(p/pcr)))
+    vin(4*kp+5) = dd/(m*p*(un-b*log(p/pcr)))
+    vin(4*kp+6) = tou(3)/(m*p*(un-b*log(p/pcr)))
 !
 end subroutine

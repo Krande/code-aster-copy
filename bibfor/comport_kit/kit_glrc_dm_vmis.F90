@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
-                            option, sigm, sig, vip, dsidep,&
+subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
+                            option, sigm, sig, vip, dsidep, &
                             crit, iret, t2iu)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -74,15 +74,15 @@ implicit none
 !
     rac2 = sqrt(2.d0)
 !
-    call r8inir(13,0.d0,crbid,1)
+    call r8inir(13, 0.d0, crbid, 1)
 !
 ! ---EPAISSEUR TOTALE :
     call jevech('PCACOQU', 'L', icara)
     ep = zr(icara)
 !
 ! -- OPTION
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
+    rigi = (option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL')
+    resi = (option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL')
 !
 !-----NOMBRE DE VARIABLES INTERNES DU MODELE, SANS CELLE POUR
 !-----LA CONTRAINTE PLANE
@@ -90,7 +90,7 @@ implicit none
         nvv = 31
     else if (compor(1:10) .eq. 'VMIS_ISOT_') then
         nvv = 26
-    endif
+    end if
 !
 !-----TOLERANCE POUR LA CONTRAINTE HORS PLAN
 !
@@ -101,7 +101,7 @@ implicit none
 !
     if (ncpmax .le. 1) then
         ncpmax = 15
-    endif
+    end if
 !
     prec = crit(8)
 !
@@ -109,14 +109,14 @@ implicit none
         nsgmax = nint(crit(1))
     else
         nsgmax = 1
-    endif
+    end if
 !
 !-----LECTURE DES PARAMETRES D ENDOMMAGEMENT
     call glrc_recup_mate(imate, 'GLRC_DM         ', .false._1, ep, lambda=lambda, &
                          deuxmu=deuxmu, lamf=lamf, deumuf=deumuf, &
-                         gt=gt, gc=gc, gf=gf, seuil=seuil,&
-                         alpha=alpha, alfmc=alfmc, epsic=epsi_c,&
-                         epsiels=epsi_els, epsilim=epsi_lim,&
+                         gt=gt, gc=gc, gf=gf, seuil=seuil, &
+                         alpha=alpha, alfmc=alfmc, epsic=epsi_c, &
+                         epsiels=epsi_els, epsilim=epsi_lim, &
                          is_param_opt_=is_param_opt, val_param_opt_=val_param_opt)
 
 !
@@ -124,27 +124,27 @@ implicit none
     call r8inir(6, 0.d0, demp, 1)
     call r8inir(18, 0.d0, vip, 1)
 !
-    call glrc_lc(demp, demp, vip, 'RIGI_MECA_TANG  ', demp,&
-                 vip, cel, lambda, deuxmu, lamf,&
-                 deumuf, gt, gc, gf, seuil,&
-                 alpha, alfmc, crit,&
-                 epsi_c, epsi_els, epsi_lim, iret,&
+    call glrc_lc(demp, demp, vip, 'RIGI_MECA_TANG  ', demp, &
+                 vip, cel, lambda, deuxmu, lamf, &
+                 deumuf, gt, gc, gf, seuil, &
+                 alpha, alfmc, crit, &
+                 epsi_c, epsi_els, epsi_lim, iret, &
                  ep, is_param_opt, val_param_opt, t2iu)
 !
     do j = 1, 6
         do i = 1, 6
-            celdam(i,j) = cel(i,j)
+            celdam(i, j) = cel(i, j)
         end do
     end do
 !
 !-----TRIANGULATION DU MODULE ELASTIQUE
     call trlds(celdam, 6, 6, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
 !-----INVERSION DU MODULE ELASTIQUE
     call r8inir(36, 0.d0, celinv, 1)
     do j = 1, 6
-        celinv(j,j) = 1.0d0
+        celinv(j, j) = 1.0d0
     end do
 !
     call rrlds(celdam, 6, 6, celinv, 6)
@@ -153,7 +153,7 @@ implicit none
     call r8inir(6, 0.d0, emel, 1)
     do j = 1, 6
         do i = 1, 6
-            emel(i) = emel(i) + celinv(i,j)*sigm(j)
+            emel(i) = emel(i)+celinv(i, j)*sigm(j)
         end do
     end do
 !
@@ -161,9 +161,9 @@ implicit none
     call r8inir(6, 0.d0, demp, 1)
     do i = 1, 6
         ddemp(i) = deps(i)
-        emmp(i) = vim(nvv-6 + i)
-        emda(i) = emmp(i) - emel(i)
-        empl(i) = epsm(i) - emda(i)
+        emmp(i) = vim(nvv-6+i)
+        emda(i) = emmp(i)-emel(i)
+        empl(i) = epsm(i)-emda(i)
     end do
 !
 !-------DEBUT BOUCLE INTERNE
@@ -171,16 +171,16 @@ implicit none
 !
 !       CORRECTION DE LA VARIABLE PRINCIPALE
         do i = 1, 6
-            demp(i) = demp(i) + ddemp(i)
+            demp(i) = demp(i)+ddemp(i)
         end do
 !
 !-------CALCUL DE L ENDOMMAGEMENT
         call r8inir(6, 0.d0, sigpd, 1)
-        call glrc_lc(emmp, demp, vim, 'FULL_MECA       ', sigpd,&
-                     vip, tandam, lambda, deuxmu, lamf,&
-                     deumuf, gt, gc, gf, seuil,&
-                     alpha, alfmc, crit,&
-                     epsi_c, epsi_els, epsi_lim, iret,&
+        call glrc_lc(emmp, demp, vim, 'FULL_MECA       ', sigpd, &
+                     vip, tandam, lambda, deuxmu, lamf, &
+                     deumuf, gt, gc, gf, seuil, &
+                     alpha, alfmc, crit, &
+                     epsi_c, epsi_els, epsi_lim, iret, &
                      ep, is_param_opt, val_param_opt, t2iu)
 !
 !-------CALCUL DE L INCREMENT DE LA DEFORMATION ELASTIQUE
@@ -188,18 +188,18 @@ implicit none
         call r8inir(6, 0.d0, deda, 1)
         do j = 1, 6
             do i = 1, 6
-                deda(i) = deda(i) + celinv(i,j)*sigpd(j)
+                deda(i) = deda(i)+celinv(i, j)*sigpd(j)
             end do
         end do
         do i = 1, 6
-            deda(i) = deps(i) - (demp(i) - (deda(i)- emel(i)))
+            deda(i) = deps(i)-(demp(i)-(deda(i)-emel(i)))
         end do
 !
 !-------CALCUL DE LA PLASTICITE
 !
 !-------BOUCLE POUR SATISFAIRE LA CONDITION DE CONTRAINTES PLANES
 !
-        depzz=vip(nvv+1) -vip(nvv+2)*deps(1)-vip(nvv+3)*deps(2)-vip(nvv+4)*deps(4)/rac2
+        depzz = vip(nvv+1)-vip(nvv+2)*deps(1)-vip(nvv+3)*deps(2)-vip(nvv+4)*deps(4)/rac2
 !
         do icp = 1, ncpmax
             eps2d(1) = empl(1)
@@ -225,9 +225,9 @@ implicit none
 !---------VMIS_CINE_LINE--------------------
             call r8inir(6, 0.d0, sig2dp, 1)
             if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
-                call nmcine('RIGI', 1, 1, 3, imate,&
-                            compor, crbid(1:10), inbid, inbid, eps2d,&
-                            deps2d, sig2dm, vim(19), 'FULL_MECA       ', sig2dp,&
+                call nmcine('RIGI', 1, 1, 3, imate, &
+                            compor, crbid(1:10), inbid, inbid, eps2d, &
+                            deps2d, sig2dm, vim(19), 'FULL_MECA       ', sig2dp, &
                             vip(19), tan3d, iret)
 !
 !---------VMIS_ISOT_LINE--------------------
@@ -235,32 +235,32 @@ implicit none
 !     --    POUR POUVOIR UTILISER NMISOT
                 typmod(1) = '3D  '
                 typmod(2) = '        '
-                call nmisot('RIGI', 1, 1, 3, typmod, ASTER_TRUE,&
-                            imate, 'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm,&
-                            vim(19), 'FULL_MECA       ', sig2dp, vip(19), tan3d,&
+                call nmisot('RIGI', 1, 1, 3, typmod, ASTER_TRUE, &
+                            imate, 'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm, &
+                            vim(19), 'FULL_MECA       ', sig2dp, vip(19), tan3d, &
                             iret)
-            endif
+            end if
 !
-            d22 = tan3d(3,3)
+            d22 = tan3d(3, 3)
 !
             if (prec .gt. 0d0) then
-                sigpeq=0.d0
+                sigpeq = 0.d0
                 do j = 1, 4
-                    sigpeq = sigpeq + sig2dp(j)**2
+                    sigpeq = sigpeq+sig2dp(j)**2
                 end do
                 sigpeq = sqrt(sigpeq)
                 if (sigpeq .lt. signul) then
                     precr = critcp
                 else
                     precr = critcp*sigpeq
-                endif
+                end if
             else
                 precr = abs(prec)
-            endif
+            end if
 !
-            if ((icp.ge.ncpmax .or. abs(sig2dp(3)).lt.precr)) goto 100
+            if ((icp .ge. ncpmax .or. abs(sig2dp(3)) .lt. precr)) goto 100
 !
-            depzz = depzz - sig2dp(3)/d22
+            depzz = depzz-sig2dp(3)/d22
 !
         end do
 100     continue
@@ -269,32 +269,32 @@ implicit none
             iret = 1
         else
             iret = 0
-        endif
+        end if
 !
-        d21eps = tan3d(3,1)*deda(1)+tan3d(3,2)*deda(2) + tan3d(3,4)* deda(4)/rac2
+        d21eps = tan3d(3, 1)*deda(1)+tan3d(3, 2)*deda(2)+tan3d(3, 4)*deda(4)/rac2
 !
-        vip(nvv+1)=depzz+d21eps/d22-sig2dp(3)/d22
-        vip(nvv+2)=tan3d(3,1)/d22
-        vip(nvv+3)=tan3d(3,2)/d22
-        vip(nvv+4)=tan3d(3,4)/d22
+        vip(nvv+1) = depzz+d21eps/d22-sig2dp(3)/d22
+        vip(nvv+2) = tan3d(3, 1)/d22
+        vip(nvv+3) = tan3d(3, 2)/d22
+        vip(nvv+4) = tan3d(3, 4)/d22
 !
-        scm(1) = -tan3d(1,3)*sig2dp(3)/d22
-        scm(2) = -tan3d(2,3)*sig2dp(3)/d22
+        scm(1) = -tan3d(1, 3)*sig2dp(3)/d22
+        scm(2) = -tan3d(2, 3)*sig2dp(3)/d22
         scm(3) = 0.d0
-        scm(4) = -tan3d(4,3)*sig2dp(3)/d22*rac2
+        scm(4) = -tan3d(4, 3)*sig2dp(3)/d22*rac2
 !
         do j = 1, 4
-            sig2dp(j)=sig2dp(j)+scm(j)
+            sig2dp(j) = sig2dp(j)+scm(j)
         end do
 !
         do j = 1, 6
             if (j .ne. 3) then
                 do i = 1, 6
                     if (i .ne. 3) then
-                        tan3d(j,i) = tan3d(j,i) - 1.d0/tan3d(3,3)*tan3d(j,3)* tan3d(3,i)
-                    endif
+                        tan3d(j, i) = tan3d(j, i)-1.d0/tan3d(3, 3)*tan3d(j, 3)*tan3d(3, i)
+                    end if
                 end do
-            endif
+            end if
         end do
 !
 !-------COPIE DES CONTRAINTES ET
@@ -304,17 +304,17 @@ implicit none
         call r8inir(36, 0.d0, tanepl, 1)
         do j = 1, 2
             do i = 1, 2
-                tanepl(i,j) = tan3d(i,j)*ep
+                tanepl(i, j) = tan3d(i, j)*ep
             end do
-            tanepl(3,j) = tan3d(4,j)*ep/rac2
-            tanepl(j,3) = tan3d(j,4)*ep/rac2
+            tanepl(3, j) = tan3d(4, j)*ep/rac2
+            tanepl(j, 3) = tan3d(j, 4)*ep/rac2
         end do
-        tanepl(3,3) = tan3d(4,4)*ep/2.0d0
+        tanepl(3, 3) = tan3d(4, 4)*ep/2.0d0
 !
 !       PARTIE FLEXION (ELASTIQUE)
         do j = 4, 6
             do i = 4, 6
-                tanepl(i,j) = cel(i,j)
+                tanepl(i, j) = cel(i, j)
             end do
         end do
 !
@@ -327,17 +327,17 @@ implicit none
         call r8inir(3, 0.d0, sigpp(4), 1)
         do i = 4, 6
             do j = 4, 6
-                sigpp(j) = sigpp(j) + tanepl(j,i)*deda(i)
+                sigpp(j) = sigpp(j)+tanepl(j, i)*deda(i)
             end do
-            sigpp(i) = sigpp(i) + sigm(i)
+            sigpp(i) = sigpp(i)+sigm(i)
         end do
 !
 !
 !-------CALCUL DU RESIDU
         residu = 0.0d0
         do i = 1, 6
-            sigpp(i) = sigpp(i) - sigpd(i)
-            residu = residu + sigpp(i)*ddemp(i)
+            sigpp(i) = sigpp(i)-sigpd(i)
+            residu = residu+sigpp(i)*ddemp(i)
             ddemp(i) = sigpp(i)
         end do
 !
@@ -352,7 +352,7 @@ implicit none
         do i = 1, 6
             do j = 1, 6
                 do k = 1, 6
-                    tanloc(i,j) = tanloc(i,j) + celinv(k,i)*tandam(k, j)
+                    tanloc(i, j) = tanloc(i, j)+celinv(k, i)*tandam(k, j)
                 end do
             end do
         end do
@@ -360,7 +360,7 @@ implicit none
         do i = 1, 6
             do j = 1, 6
                 do k = 1, 6
-                    tanpom(i,j) = tanpom(i,j) + tanepl(i,k)*tanloc(k, j)
+                    tanpom(i, j) = tanpom(i, j)+tanepl(i, k)*tanloc(k, j)
                 end do
             end do
         end do
@@ -368,13 +368,13 @@ implicit none
 !-------Cd + Cp - Cp*Ce^(-1)*Cd
         do i = 1, 6
             do j = 1, 6
-                tanloc(i,j) = tanepl(i,j) + tandam(i,j) - tanpom(i,j)
+                tanloc(i, j) = tanepl(i, j)+tandam(i, j)-tanpom(i, j)
             end do
         end do
 !
 !-------TRIANGULATION DE (Cd + Cp - Cp*Ce^(-1)*Cd)
         call trlds(tanloc, 6, 6, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
 !-------RESOLUTION DU DDEMP
         call rrlds(tanloc, 6, 6, ddemp, 1)
@@ -388,11 +388,11 @@ implicit none
         iret = 0
     else
         iret = 1
-    endif
+    end if
 !
     do j = 1, 6
         sig(j) = sigpd(j)
-        vip(nvv-6 + j) = emmp(j) + demp(j)
+        vip(nvv-6+j) = emmp(j)+demp(j)
     end do
 !
 !-----CALCUL DE LA MATRICE TANGENTE
@@ -402,11 +402,11 @@ implicit none
 !
 !-------TRIANGULATION
         call trlds(tanepl, 6, 6, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
         call r8inir(36, 0.d0, tanpom, 1)
         do j = 1, 6
-            tanpom(j,j) = 1.0d0
+            tanpom(j, j) = 1.0d0
         end do
 !
         call rrlds(tanepl, 6, 6, tanpom, 6)
@@ -414,7 +414,7 @@ implicit none
 !       Cp^(-1) - Ce^(-1)
         do j = 1, 6
             do i = 1, 6
-                tanpom(i,j) = tanpom(i,j) - celinv(i,j)
+                tanpom(i, j) = tanpom(i, j)-celinv(i, j)
             end do
         end do
 !
@@ -422,11 +422,11 @@ implicit none
 !
 !-------TRIANGULATION
         call trlds(tandam, 6, 6, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
         call r8inir(36, 0.d0, tanepl, 1)
         do j = 1, 6
-            tanepl(j,j) = 1.0d0
+            tanepl(j, j) = 1.0d0
         end do
 !
         call rrlds(tandam, 6, 6, tanepl, 6)
@@ -434,7 +434,7 @@ implicit none
 !       Cd^(-1) + Cp^(-1) - Ce^(-1)
         do j = 1, 6
             do i = 1, 6
-                tanpom(i,j) = tanpom(i,j) + tanepl(i,j)
+                tanpom(i, j) = tanpom(i, j)+tanepl(i, j)
             end do
         end do
 !
@@ -442,16 +442,16 @@ implicit none
 !
 !-------TRIANGULATION
         call trlds(tanpom, 6, 6, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
 !
         call r8inir(36, 0.d0, dsidep, 1)
         do j = 1, 6
-            dsidep(j,j) = 1.0d0
+            dsidep(j, j) = 1.0d0
         end do
 !
         call rrlds(tanpom, 6, 6, dsidep, 6)
 !
-    endif
+    end if
 !-----FIN RIGI
 !
 end subroutine

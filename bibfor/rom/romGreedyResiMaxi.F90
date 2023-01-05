@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine romGreedyResiMaxi(ds_multipara, ds_algoGreedy, i_coef_maxi)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 !
-type(ROM_DS_MultiPara), intent(in) :: ds_multipara
-type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
-integer, intent(out) :: i_coef_maxi
+    type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+    type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
+    integer, intent(out) :: i_coef_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ integer, intent(out) :: i_coef_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    vale_maxi   = -r8gaem()
+    vale_maxi = -r8gaem()
     i_coef_maxi = 0
 !
 ! - Get parameters
@@ -61,9 +61,9 @@ integer, intent(out) :: i_coef_maxi
 !
     do i_coef = 1, nb_coef
         if (ds_algoGreedy%resi_norm(i_coef) .ge. vale_maxi) then
-            vale_maxi   = ds_algoGreedy%resi_norm(i_coef)
+            vale_maxi = ds_algoGreedy%resi_norm(i_coef)
             i_coef_maxi = i_coef
-        endif
+        end if
     end do
 !
 end subroutine

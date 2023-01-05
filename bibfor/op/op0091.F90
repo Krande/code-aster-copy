@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine op0091()
     integer :: lnusst, isst1, nl, nc, nbddl1, tach1, nbexp, lomeg, lmod1, lmass
     integer :: lbid, ltrsst, nbsla, lraid, leff1, leff2, ltrain, lintf, nbint
     integer :: lcopy1, lsecme, limped, unit, lmasst, nbmas, lslast, nindep, jadr
-    integer :: ltramo,   kk1, ll1
+    integer :: ltramo, kk1, ll1
     real(kind=8) :: trvint, rbid, vr(2), temp
     complex(kind=8) :: cbid
     character(len=24) :: lisint, modet
@@ -99,7 +99,7 @@ subroutine op0091()
     integer, pointer :: lipr(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
     call getres(nomres, typres, nomcmd)
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=lmodge)
@@ -108,14 +108,14 @@ subroutine op0091()
 !-- INITIALISATION DE LA TABLE_CONTAINER
     call detrsd('TABLE_CONTAINER', nomres)
     call tbcrsd(nomres, 'G')
-    nompar(1)='NOM_OBJET'
-    typpar(1)='K16'
-    nompar(2)='INTERF'
-    typpar(2)='K8'
-    nompar(3)='NOM_SD'
-    typpar(3)='K8'
-    nompar(4)='TYPE_OBJET'
-    typpar(4)='K16'
+    nompar(1) = 'NOM_OBJET'
+    typpar(1) = 'K16'
+    nompar(2) = 'INTERF'
+    typpar(2) = 'K8'
+    nompar(3) = 'NOM_SD'
+    typpar(3) = 'K8'
+    nompar(4) = 'TYPE_OBJET'
+    typpar(4) = 'K16'
     call tbajpa(nomres, 4, nompar, typpar)
 !
 !-- RECUPERATION DES INFOS
@@ -124,15 +124,14 @@ subroutine op0091()
     call jelira(resgen//'           .ORDR', 'LONMAX', nbmod)
     call wkvect('&&OP0091.PULSA_PROPRES', 'V V R', nbmod, lomeg)
     do i1 = 1, nbmod
-        call rsadpa(resgen, 'L', 1, 'FREQ', i1,&
+        call rsadpa(resgen, 'L', 1, 'FREQ', i1, &
                     0, sjv=jadr, styp=kb)
-        zr(lomeg+i1-1)=2*r8pi()*zr(jadr)
+        zr(lomeg+i1-1) = 2*r8pi()*zr(jadr)
     end do
 
 !   -- creation d'un solveur pour la resolution des systemes lineaires :
     solveu = '&&OP0091.SOLVEUR'
     call cresol(solveu)
-
 
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     call wkvect('&&OP0091.NOM_SST', 'V V K8', nbsst, lnosst)
@@ -152,37 +151,37 @@ subroutine op0091()
     do i1 = 1, nblia
 !-- RECUPERATION DES INFOS DE LA LIAISON
         call jeveuo(jexnum(modgen//'      .MODG.LIDF', i1), 'L', lllia)
-        sst1=zk8(lllia)
-        intf1=zk8(lllia+1)
-        sst2=zk8(lllia+2)
-        intf2=zk8(lllia+3)
-        write(unit,*)' LIAISON',i1,' : ',sst1,'/',sst2
-        write(unit,*)'     ->',intf1,'/',intf2
+        sst1 = zk8(lllia)
+        intf1 = zk8(lllia+1)
+        sst2 = zk8(lllia+2)
+        intf2 = zk8(lllia+3)
+        write (unit, *) ' LIAISON', i1, ' : ', sst1, '/', sst2
+        write (unit, *) '     ->', intf1, '/', intf2
 !-- GESTION DE L'INCOMPATIBILITE
-        iret=i1
-        call vecomo(modgen, sst1, sst2, intf1, intf2,&
+        iret = i1
+        call vecomo(modgen, sst1, sst2, intf1, intf2, &
                     iret, 'REDUIT  ')
 !-- SOUS STRUCTURE 1
-        lino1='&&VECT_NOEUD_INTERF1'
-        indin1='&&VEC_DDL_INTF_'//intf1
-        tramo1='&&MATR_TRACE_MODE_INT1'
-        nbeq1=lipr(1+(i1-1)*9+1)
+        lino1 = '&&VECT_NOEUD_INTERF1'
+        indin1 = '&&VEC_DDL_INTF_'//intf1
+        tramo1 = '&&MATR_TRACE_MODE_INT1'
+        nbeq1 = lipr(1+(i1-1)*9+1)
 !-- SOUS STRUCTURE 2
-        lino2='&&VECT_NOEUD_INTERF2'
-        indin2='&&VEC_DDL_INTF_'//intf2
-        tramo2='&&MATR_TRACE_MODE_INT2'
-        nbeq2=lipr(1+(i1-1)*9+4)
+        lino2 = '&&VECT_NOEUD_INTERF2'
+        indin2 = '&&VEC_DDL_INTF_'//intf2
+        tramo2 = '&&MATR_TRACE_MODE_INT2'
+        nbeq2 = lipr(1+(i1-1)*9+4)
 !-- RECHERCHE DE LA SOUS STRUCTURE ESCLAVE DE LA LIAISON EN CHERCHANT LE
 !-- FACTEUR MULTIPLICATEUR DANS LA MATRICE DE LIAISON LAGRANGE/LAGRANGE
         call jeveuo(jexnum(modgen//'      .MODG.LIMA', lipr(1+(i1-1)*9+8)), 'L', ibid)
 !-- L'INTERFACE MAITRE EST CELLE DONT LE NUMERO EST NEGATIF
         if (int(zr(ibid)) .eq. -2) then
-            imast1=1
-            imast2=-2
+            imast1 = 1
+            imast2 = -2
         else
-            imast2=2
-            imast1=-1
-        endif
+            imast2 = 2
+            imast1 = -1
+        end if
 !--
 !-- CONSTRUCTION DES MATRICES D'OBSERVATION DE L'INTERFACE
 !--
@@ -191,51 +190,51 @@ subroutine op0091()
 !-- POUR CONSTRUIRE C, IL FAUT D'ABORD CONSTRUIRE LA MATRICE
 !--   D'OBSERVATION A PARTIR D'UNE IDENTITE ET ENSUITE APPLIQUER
 !--   LA ROTATION
-        call rotlir(modgen, sst1, intf1, lino1, 0,&
-                    indin1, tramo1, ddla1, nbeq1, min(imast1, 0),&
+        call rotlir(modgen, sst1, intf1, lino1, 0, &
+                    indin1, tramo1, ddla1, nbeq1, min(imast1, 0), &
                     i1)
-        call rotlir(modgen, sst2, intf2, lino2, iret,&
-                    indin2, tramo2, ddla2, nbeq2, min(imast2, 0),&
+        call rotlir(modgen, sst2, intf2, lino2, iret, &
+                    indin2, tramo2, ddla2, nbeq2, min(imast2, 0), &
                     i1)
-        kb='        '
+        kb = '        '
         if (imast1 .eq. -1) then
             if (iret .eq. 0) then
-                nbeq1=ddla1
-                nc=ddla1
-                nl=ddla2
-                call lipsrb(modgen, sst1, sst2, intf1,&
-                            intf2, lino1, lino2, indin1, indin2,&
-                            ddla1, ddla2, nbeq1, -imast1,&
+                nbeq1 = ddla1
+                nc = ddla1
+                nl = ddla2
+                call lipsrb(modgen, sst1, sst2, intf1, &
+                            intf2, lino1, lino2, indin1, indin2, &
+                            ddla1, ddla2, nbeq1, -imast1, &
                             tramo1)
                 call jeveuo(tramo1, 'E', ltramo)
-            endif
+            end if
         else
             if (iret .eq. 0) then
-                nbeq2=ddla2
-                nc=ddla2
-                nl=ddla1
-                call lipsrb(modgen, sst1, sst2, intf1,&
-                            intf2, lino1, lino2, indin1, indin2,&
-                            ddla2, ddla1, nbeq2, -imast2,&
+                nbeq2 = ddla2
+                nc = ddla2
+                nl = ddla1
+                call lipsrb(modgen, sst1, sst2, intf1, &
+                            intf2, lino1, lino2, indin1, indin2, &
+                            ddla2, ddla1, nbeq2, -imast2, &
                             tramo2)
                 call jeveuo(tramo2, 'E', ltramo)
-            endif
-        endif
+            end if
+        end if
 !
         AS_ALLOCATE(vr=vec_obs_temp_ro, size=nl*nc)
         call jeveuo('&&ROTLIR.MATR_ROTATION', 'L', vr=matr_rotation)
         do j1 = 1, nc
             do k1 = 1, nl
-                temp=zr(ltramo+(j1-1)*nl + k1-1 )
+                temp = zr(ltramo+(j1-1)*nl+k1-1)
                 do l1 = 1, nl
-                    kk1=(k1-1)/3
-                    ll1=(l1-1)/3
+                    kk1 = (k1-1)/3
+                    ll1 = (l1-1)/3
                     if (kk1 .eq. ll1) then
-                        rbid=matr_rotation(1+ (k1-kk1*3 -1)*3+ (l1-ll1*3 -1)&
-                        )
-                        vec_obs_temp_ro(1+(j1-1)*nl+ l1-1 )= vec_obs_temp_ro(1+(j1-1)*&
-                        nl+ l1-1 )+temp*rbid
-                    endif
+                        rbid = matr_rotation(1+(k1-kk1*3-1)*3+(l1-ll1*3-1) &
+                                             )
+                        vec_obs_temp_ro(1+(j1-1)*nl+l1-1) = vec_obs_temp_ro(1+(j1-1)* &
+                                                                            nl+l1-1)+temp*rbid
+                    end if
                 end do
             end do
         end do
@@ -243,19 +242,19 @@ subroutine op0091()
         AS_DEALLOCATE(vr=vec_obs_temp_ro)
         call jedetr('&&ROTLIR.MATR_ROTATION')
 !-- CALCUL DES TRAV. D'INTERF. ET DES EFFORTS POUR CORRECTION ULTERIEURE
-        call traint(resgen, modgen, i1, sst1, sst2,&
+        call traint(resgen, modgen, i1, sst1, sst2, &
                     intf1, intf2, nbmod, nl, nc)
 !-- EXPANSION DES MODES ESCLAVES SUR L'INTERFACE MAITRE
         call codent(i1, 'D0', k4bid)
         if (imast1 .eq. -1) then
-            modet='&&OP0091.MET'//k4bid//sst1
-            call modexp(modgen, sst1, indin1, lino1, nbmod,&
+            modet = '&&OP0091.MET'//k4bid//sst1
+            call modexp(modgen, sst1, indin1, lino1, nbmod, &
                         i1, tramo1, modet, solveu)
         else
-            modet='&&OP0091.MET'//k4bid//sst2
-            call modexp(modgen, sst2, indin2, lino2, nbmod,&
+            modet = '&&OP0091.MET'//k4bid//sst2
+            call modexp(modgen, sst2, indin2, lino2, nbmod, &
                         i1, tramo2, modet, solveu)
-        endif
+        end if
 !-- DESTRUCTION DES CONCEPTS TEMPORAIRES
         call jedetr(lino1)
         call jedetr(tramo1)
@@ -273,7 +272,7 @@ subroutine op0091()
         call jedetr('&&OP0091.OBS_02')
         call jedetr('&&OP0091.LAGRANGES_1')
         call jedetr('&&OP0091.LAGRANGES_2')
-        write(unit,*)'  '
+        write (unit, *) '  '
 !-- FIN DE LA BOUCLE SUR LES LIAISONS
     end do
 !
@@ -284,66 +283,66 @@ subroutine op0091()
 !-------------------------------------------------------------C
     call wkvect('&&OP0091.INTERFACES', 'V V K8', 2*nblia, lintf)
     do i1 = 1, nbsst
-        nbint=0
-        sst1=zk8(lnosst+i1-1)
+        nbint = 0
+        sst1 = zk8(lnosst+i1-1)
         call jenonu(jexnom(modgen//'      .MODG.SSNO', sst1), isst1)
-        write(unit,*)' '
-        write(unit,*)' SOUS STRUCTURE : ',sst1
+        write (unit, *) ' '
+        write (unit, *) ' SOUS STRUCTURE : ', sst1
 !-- RECHERCHE DES INTERFACES ASSOCIEES A CETTE SST
         do j1 = 1, nblia
             call jeveuo(jexnum(modgen//'      .MODG.LIDF', j1), 'L', lllia)
             if (zk8(lllia) .eq. sst1) then
-                zk8(lintf+nbint)=zk8(lllia+1)
-                write(unit,*)'   ->',zk8(lintf+nbint)
-                nbint=nbint+1
-            endif
+                zk8(lintf+nbint) = zk8(lllia+1)
+                write (unit, *) '   ->', zk8(lintf+nbint)
+                nbint = nbint+1
+            end if
             if (zk8(lllia+2) .eq. sst1) then
-                zk8(lintf+nbint)=zk8(lllia+3)
-                write(unit,*)'   ->',zk8(lintf+nbint)
-                nbint=nbint+1
-            endif
+                zk8(lintf+nbint) = zk8(lllia+3)
+                write (unit, *) '   ->', zk8(lintf+nbint)
+                nbint = nbint+1
+            end if
         end do
 !-- RECUPERATION DES MODES
         call jelira('&&VEC_DDL_INTF_'//zk8(lintf), 'LONMAX', nbddl1)
         call codent(i1, 'D0', k4bid)
-        rest1='&&91'//k4bid
+        rest1 = '&&91'//k4bid
         call jeveuo(jexnum(rest1//'           .TACH', 1), 'L', tach1)
 !-- CONSTRUCTION DES OBJETS TEMPORAIRES
-        call jelira(zk24(tach1)(1:19)//'.VALE', 'LONMAX', nbeq1)
+        call jelira(zk24(tach1) (1:19)//'.VALE', 'LONMAX', nbeq1)
         call wkvect('&&OP0091.MODE_SST1', 'V V R', nbeq1, lmod1)
         call wkvect('&&OP0091.MODE_SST1_EFF1', 'V V R', nbeq1, leff1)
         call wkvect('&&OP0091.MODE_SST1_EFF2', 'V V R', nbeq1, leff2)
         call wkvect('&&OP0091.MODE_SST1_COPY', 'V V R', nbeq1, lcopy1)
 !-- ALLOCATION POUR PERMETTRE L'ACHIVAGE
-        nbsla=0
-        nbmas=0
+        nbsla = 0
+        nbmas = 0
         call wkvect('&&OP0091.ESCLAVE_LIASON', 'V V I', nblia, lbid)
         call wkvect('&&OP0091.MAITRE_LIASON', 'V V I', nblia, ibid)
         do j1 = 1, nblia
             if (zi(lslast+j1-1) .eq. i1) then
-                nbsla=nbsla+1
-                zi(lbid+nbsla-1)=j1
-            endif
+                nbsla = nbsla+1
+                zi(lbid+nbsla-1) = j1
+            end if
             if (zi(lmasst+j1-1) .eq. i1) then
-                nbmas=nbmas+1
-                zi(ibid+nbmas-1)=j1
-            endif
+                nbmas = nbmas+1
+                zi(ibid+nbmas-1) = j1
+            end if
         end do
-        call wkvect('&&OP0091.MODE_INTF_DEPL', 'V V R', (2+nbsla+nbmas) *nbeq1*nbmod, lsecme)
+        call wkvect('&&OP0091.MODE_INTF_DEPL', 'V V R', (2+nbsla+nbmas)*nbeq1*nbmod, lsecme)
 !-- RECOPIE DES DEPLACEMENTS IMPOSES
         do j1 = 1, nbsla
             call codent(zi(lbid+j1-1), 'D0', num4l)
             call jeveuo('&&OP0091.DEPL_IMPO_'//num4l, 'L', ibid)
             do k1 = 1, nbmod
-                call lceqvn(nbeq1, zr(ibid+(k1-1)*nbeq1),&
-                            zr(lsecme + ( 2+j1-1)*nbmod*nbeq1 + (k1-1)*nbeq1))
+                call lceqvn(nbeq1, zr(ibid+(k1-1)*nbeq1), &
+                            zr(lsecme+(2+j1-1)*nbmod*nbeq1+(k1-1)*nbeq1))
             end do
         end do
         call jedetr('&&OP0091.ESCLAVE_LIASON')
         call jedetr('&&OP0091.MAITRE_LIASON')
 !-- CALCUL DES TRAVAUX POUR L'INTERIEUR DES SST ET EFFORTS ASSOCIES
-        lisint='&&OP0091.INTERFACES'
-        call trasst(modgen, i1, isst1, lisint, nbeq1,&
+        lisint = '&&OP0091.INTERFACES'
+        call trasst(modgen, i1, isst1, lisint, nbeq1, &
                     nbmod, nbint, solveu)
         call jedetr('&&OP0091.MODE_SST1')
         call jedetr('&&OP0091.MODE_SST1_EFF1')
@@ -351,20 +350,20 @@ subroutine op0091()
         call jedetr('&&OP0091.MODE_SST1_COPY')
 !-- CALCUL DES LA REPONSE AUX EFFORTS "INTERIEURS"
         call codent(i1, 'D0', k4bid)
-        imped='&&OP0091.IMPED'//k4bid
+        imped = '&&OP0091.IMPED'//k4bid
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
         call jeveuo(zk8(ibid)//'.MAEL_MASS_REFE', 'L', lbid)
-        mmass=zk24(lbid+1)(1:8)
+        mmass = zk24(lbid+1) (1:8)
         call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
-        mraid=zk24(lbid+1)(1:8)
-        call resoud(imped, ' ', solveu, ' ', nbmod,&
-                    ' ', ' ', ' ', zr(lsecme), [cbid],&
+        mraid = zk24(lbid+1) (1:8)
+        call resoud(imped, ' ', solveu, ' ', nbmod, &
+                    ' ', ' ', ' ', zr(lsecme), [cbid], &
                     ' ', .true._1, 0, iret)
 !-- CALCUL DE LA REPONSE AUX DEPLACEMENTS D'INTERFACE
         do k1 = 1, nbsla
-            lbid=lsecme+2*nbeq1*nbmod
-            call resoud(imped, ' ', solveu, ' ', nbmod,&
-                        ' ', ' ', ' ', zr(lbid+nbeq1*nbmod*(k1-1)), [cbid],&
+            lbid = lsecme+2*nbeq1*nbmod
+            call resoud(imped, ' ', solveu, ' ', nbmod, &
+                        ' ', ' ', ' ', zr(lbid+nbeq1*nbmod*(k1-1)), [cbid], &
                         ' ', .true._1, 0, iret)
         end do
 !-- "DEBLOQUAGE" DES DDL DE LAGRANGE ASSOCIES AUX INTERFACES DE LISINT
@@ -374,26 +373,26 @@ subroutine op0091()
 !-- FACTORISATION DE LA MATRICE INTERFACE LIBRE
         call mtdscr(imped)
         call jeveuo(imped(1:19)//'.&INT', 'E', limped)
-        call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
+        call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped, &
                     ibid, -9999)
         if (iret .eq. 2) then
             call utmess('F', 'ALGELINE4_37', sk=imped)
-        endif
+        end if
 !-- CALCUL DE LA REPONSE AUX EFFORTS D'INTERFACE
-        call resoud(imped, ' ', solveu, ' ', nbmod,&
-                    ' ', ' ', ' ', zr(lsecme+nbeq1*nbmod), [cbid],&
+        call resoud(imped, ' ', solveu, ' ', nbmod, &
+                    ' ', ' ', ' ', zr(lsecme+nbeq1*nbmod), [cbid], &
                     ' ', .true._1, 0, iret)
 !-- RECOPIE DES MODES ETENDUS A LA SUITE DES CORRECTIONS A INTERF. LIBRE
         call jedetc('V', imped, 1)
-        nbexp=0
+        nbexp = 0
         do j1 = 1, nblia
             call codent(j1, 'D0', k4bid)
             call jeexin('&&OP0091.MET'//k4bid//sst1, iret)
             if (iret .gt. 0) then
                 call jeveuo('&&OP0091.MET'//k4bid//sst1, 'L', lbid)
-                call lceqvn(nbeq1*nbmod, zr(lbid), zr(lsecme+(2+nbsla+ nbexp)*nbeq1*nbmod))
-                nbexp=nbexp+1
-            endif
+                call lceqvn(nbeq1*nbmod, zr(lbid), zr(lsecme+(2+nbsla+nbexp)*nbeq1*nbmod))
+                nbexp = nbexp+1
+            end if
         end do
 !---------------C
 !--           --C
@@ -405,36 +404,36 @@ subroutine op0091()
 !--
 !-- ORTHONORMALISATION DES MODES A INTERFACE FIXE
         call mtdscr(mmass)
-        call vecind(mmass//'           ', lsecme, nbeq1, nbmod, 1,&
+        call vecind(mmass//'           ', lsecme, nbeq1, nbmod, 1, &
                     nindep)
 !-- RECOPIE DANS LA MATICE POUR ARCHIVAGE
         call wkvect('&&MOIN93.MODE_INTF_DEPL', 'V V R', nbeq1*nindep, lbid)
         call lceqvn(nbeq1*nindep, zr(lsecme), zr(lbid))
         call wkvect('&&MOIN93.FREQ_INTF_DEPL', 'V V R', nindep, lbid)
         do j1 = 1, nindep
-            zr(lbid+j1-1)=j1
+            zr(lbid+j1-1) = j1
         end do
 !  NOMMAGE AUTOMATIQUE DU CONCEPT RESULTAT
-        vk(1)=sst1
-        vk(2)='ENCAS'
+        vk(1) = sst1
+        vk(2) = 'ENCAS'
         call gcncon('_', vk(3))
         vk(4) = 'MODE_MECA'
-        call vpcrea(0, vk(3), mmass, ' ', mraid,&
+        call vpcrea(0, vk(3), mmass, ' ', mraid, &
                     nume91, ibid)
-        nume14=nume91(1:14)
-        call arch93(vk(3), 'MODE_MECA       ', nume14, mraid//'           ', 0,&
+        nume14 = nume91(1:14)
+        call arch93(vk(3), 'MODE_MECA       ', nume14, mraid//'           ', 0, &
                     0, 0, 0, nindep, 0)
         call jedetr('&&MOIN93.MODE_INTF_DEPL')
         call jedetr('&&MOIN93.FREQ_INTF_DEPL')
 !
-        call tbajli(nomres, 4, nompar, [ibid], [rbid],&
+        call tbajli(nomres, 4, nompar, [ibid], [rbid], &
                     [cbid], vk, 0)
 !--
 !-- VECTEURS A INTERFACE LIBRE
 !--
 !-- ORTHONORMALISATION DES MODES A INTERFACE LIBRE
-        ibid=nbmod*(1+nbsla+nbmas)
-        call vecind(mmass//'           ', lsecme+nbeq1*nbmod, nbeq1, ibid, 1,&
+        ibid = nbmod*(1+nbsla+nbmas)
+        call vecind(mmass//'           ', lsecme+nbeq1*nbmod, nbeq1, ibid, 1, &
                     nindep)
 !-- RECOPIE DANS LA MATICE POUR ARCHIVAGE
         call wkvect('&&MOIN93.MODE_INTF_DEPL', 'V V R', nbeq1*nindep, lbid)
@@ -442,18 +441,18 @@ subroutine op0091()
 !
         call wkvect('&&MOIN93.FREQ_INTF_DEPL', 'V V R', nindep, lbid)
         do j1 = 1, nindep
-            zr(lbid+j1-1)=j1
+            zr(lbid+j1-1) = j1
         end do
 !--  NOMMAGE AUTOMATIQUE DU CONCEPT RESULTAT
-        vk(1)=sst1
-        vk(2)='LIBRE'
+        vk(1) = sst1
+        vk(2) = 'LIBRE'
         call gcncon('_', vk(3))
         vk(4) = 'MODE_MECA'
-        call vpcrea(0, vk(3), mmass, ' ', mraid,&
+        call vpcrea(0, vk(3), mmass, ' ', mraid, &
                     nume91, ibid)
-        call arch93(vk(3), 'MODE_MECA       ', nume14, mraid//'           ', 0,&
+        call arch93(vk(3), 'MODE_MECA       ', nume14, mraid//'           ', 0, &
                     0, 0, 0, nindep, 0)
-        call tbajli(nomres, 4, nompar, [ibid], [rbid],&
+        call tbajli(nomres, 4, nompar, [ibid], [rbid], &
                     [cbid], vk, 0)
 !-- PETIT MENAGE
         call jedetr('&&MOIN93.MODE_INTF_DEPL')
@@ -462,57 +461,57 @@ subroutine op0091()
 !-- FIN DE LA BOUCLE SUR LES SOUS STRUCTURES
     end do
 !-- VERIFICATION D'UN TRAVAIL TOTAL NUL
-    nompar(1)='TRAV_TOTAL'
-    typpar(1)='R'
-    nompar(2)='NUM_MODE'
-    typpar(2)='I'
+    nompar(1) = 'TRAV_TOTAL'
+    typpar(1) = 'R'
+    nompar(2) = 'NUM_MODE'
+    typpar(2) = 'I'
     call tbajpa(nomres, 2, nompar, typpar)
-    write(unit,*)' '
+    write (unit, *) ' '
     do i1 = 1, nbmod
-        trvint=0
+        trvint = 0
         do j1 = 1, nbsst
-            trvint=trvint+zr(ltrsst+nbmod*(j1-1)+i1-1)
+            trvint = trvint+zr(ltrsst+nbmod*(j1-1)+i1-1)
         end do
         do j1 = 1, nblia
-            trvint=trvint+zr(ltrain+nbmod*(j1-1)+i1-1)
+            trvint = trvint+zr(ltrain+nbmod*(j1-1)+i1-1)
         end do
-        write(unit,*)'MODE ',i1,' - TRAVAIL TOTAL :',trvint
-        call tbajli(nomres, 2, nompar, [i1], [trvint],&
+        write (unit, *) 'MODE ', i1, ' - TRAVAIL TOTAL :', trvint
+        call tbajli(nomres, 2, nompar, [i1], [trvint], &
                     [cbid], kb, 0)
     end do
 !-- ARCHIVAGE DES TRAVAUX INTERFACES
-    nompar(1)='TRAV_INTERF'
-    typpar(1)='R'
-    nompar(2)='NOM_INTERF'
-    typpar(2)='K8'
-    nompar(3)='NUM_MODE'
-    typpar(3)='I'
+    nompar(1) = 'TRAV_INTERF'
+    typpar(1) = 'R'
+    nompar(2) = 'NOM_INTERF'
+    typpar(2) = 'K8'
+    nompar(3) = 'NUM_MODE'
+    typpar(3) = 'I'
     call tbajpa(nomres, 3, nompar, typpar)
     do j1 = 1, nbmod
         do i1 = 1, nblia
             call jeveuo(jexnum(modgen//'      .MODG.LIDF', i1), 'L', lllia)
-            intf1=zk8(lllia+1)
-            intf2=zk8(lllia+3)
-            vr(1)=zr(ltrain+nbmod*(i1-1)+j1-1)
-            call tbajli(nomres, 3, nompar, [j1], vr,&
+            intf1 = zk8(lllia+1)
+            intf2 = zk8(lllia+3)
+            vr(1) = zr(ltrain+nbmod*(i1-1)+j1-1)
+            call tbajli(nomres, 3, nompar, [j1], vr, &
                         [cbid], intf1, 0)
-            call tbajli(nomres, 3, nompar, [j1], vr,&
+            call tbajli(nomres, 3, nompar, [j1], vr, &
                         [cbid], intf2, 0)
         end do
     end do
 !-- ARCHIVAGE DES TRAVAUX SOUS STRUCTURES
-    nompar(1)='TRAV_SST'
-    typpar(1)='R'
-    nompar(2)='NOM_OBJET'
-    typpar(2)='K16'
-    nompar(3)='NUM_MODE'
-    typpar(3)='I'
+    nompar(1) = 'TRAV_SST'
+    typpar(1) = 'R'
+    nompar(2) = 'NOM_OBJET'
+    typpar(2) = 'K16'
+    nompar(3) = 'NUM_MODE'
+    typpar(3) = 'I'
     call tbajpa(nomres, 3, nompar, typpar)
     do j1 = 1, nbmod
         do i1 = 1, nbsst
-            valk=zk8(lnosst+i1-1)
-            vr(1)=zr(ltrsst+nbmod*(i1-1)+j1-1)
-            call tbajli(nomres, 3, nompar, [j1], vr,&
+            valk = zk8(lnosst+i1-1)
+            vr(1) = zr(ltrsst+nbmod*(i1-1)+j1-1)
+            call tbajli(nomres, 3, nompar, [j1], vr, &
                         [cbid], valk, 0)
         end do
     end do

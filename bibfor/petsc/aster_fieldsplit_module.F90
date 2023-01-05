@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ contains
 !  ---------------------
         call infniv(ifm, niv)
         debug = .false.
-        if (niv .ge. 2) debug=.true.
+        if (niv .ge. 2) debug = .true.
 !
 !  Get parallel context:
 !  ---------------------
@@ -116,14 +116,14 @@ contains
 ! Read fieldsplit information
 ! list of cmp
         call getvtx('SOLVEUR', 'NOM_CMP', iocc=1, nbval=0, nbret=nb_cmp_global)
-        nb_cmp_global=-nb_cmp_global
-        allocate(cmp_global(nb_cmp_global), stat=ierr)
+        nb_cmp_global = -nb_cmp_global
+        allocate (cmp_global(nb_cmp_global), stat=ierr)
         call getvtx('SOLVEUR', 'NOM_CMP', iocc=1, nbval=nb_cmp_global, &
-                     vect=cmp_global,nbret=jerr)
+                    vect=cmp_global, nbret=jerr)
 ! number of cmp in each fieldsplit
         call getvis('SOLVEUR', 'PARTITION_CMP', iocc=1, nbval=0, nbret=nb_fields)
-        nb_fields=-nb_fields
-        allocate(fields_size(nb_fields), stat=ierr)
+        nb_fields = -nb_fields
+        allocate (fields_size(nb_fields), stat=ierr)
         call getvis('SOLVEUR', 'PARTITION_CMP', iocc=1, nbval=nb_fields, &
                     vect=fields_size, nbret=jerr)
 !
@@ -140,128 +140,128 @@ contains
 !    For instance, subis_list(1) subis_list(2) are embedded in is_list(1)
 !    and subis_list(3) subis_list(4) are embedded in is_list(3)
 !
-        allocate(is_list(2*(nb_fields-1)), stat=ierr)
+        allocate (is_list(2*(nb_fields-1)), stat=ierr)
 ! First, we build is_list, based on the user information
 ! We treat them by pair, one pair per level
         do idx = 1, nb_fields-1
 ! the block size of fields - if the fields are mixed, no bs possible
-            bs=1
+            bs = 1
 ! exception for the last iteration wich concerns a single field where we need the real bs
 ! is_list(5) in the above example
-            if (idx==nb_fields-1) bs=to_petsc_int(fields_size(nb_fields-idx))
-            start=1
-            end=sum(fields_size(1:nb_fields-idx))
+            if (idx == nb_fields-1) bs = to_petsc_int(fields_size(nb_fields-idx))
+            start = 1
+            end = sum(fields_size(1:nb_fields-idx))
             call get_is_of_field(is_list(2*idx-1), nonu, ap(kptsc), cmp_global(start:end), bs)
-            if (debug) write(ifm, *) "Treating field nb ", 2*idx-1, ": ", cmp_global(start:end),&
-                       " with bs=", bs
+            if (debug) write (ifm, *) "Treating field nb ", 2*idx-1, ": ", cmp_global(start:end), &
+                " with bs=", bs
 ! the single block
-            bs=to_petsc_int(fields_size(nb_fields-idx+1))
-            start=sum(fields_size(1:nb_fields-idx))+1
-            end=sum(fields_size(1:nb_fields-idx+1))
+            bs = to_petsc_int(fields_size(nb_fields-idx+1))
+            start = sum(fields_size(1:nb_fields-idx))+1
+            end = sum(fields_size(1:nb_fields-idx+1))
             call get_is_of_field(is_list(2*idx), nonu, ap(kptsc), cmp_global(start:end), bs)
-            if (debug) write(ifm, *) "Treating field nb ", 2*idx, ": ", cmp_global(start:end),&
-                       " with bs=", bs
-        enddo
+            if (debug) write (ifm, *) "Treating field nb ", 2*idx, ": ", cmp_global(start:end), &
+                " with bs=", bs
+        end do
 !
 !  Check IS dimensions
-        ntot=0
+        ntot = 0
         do idx = 2, size(is_list), 2
             call ISGetSize(is_list(idx), nu, ierr)
             ASSERT(ierr == 0)
-            ntot=ntot+nu
-        enddo
+            ntot = ntot+nu
+        end do
         call ISGetSize(is_list(size(is_list)-1), nu, ierr)
         ASSERT(ierr == 0)
-        ntot=ntot+nu
+        ntot = ntot+nu
 !
         call MatGetSize(ap(kptsc), mg, ng, ierr)
         ASSERT(ierr == 0)
-        ASSERT( mg == ng )
-        ASSERT( ng == ntot )
+        ASSERT(mg == ng)
+        ASSERT(ng == ntot)
 !
 !  Build PC and KSP
 !  ----------------
 !
 ! Allocation of the PC, KSP and sub-IS, which define how fields are embeded in each other
-        allocate(pc_list(nb_fields-1), stat=ierr)
+        allocate (pc_list(nb_fields-1), stat=ierr)
         ASSERT(ierr == 0)
-        allocate(subksp(2*(nb_fields-1)), stat=ierr)
+        allocate (subksp(2*(nb_fields-1)), stat=ierr)
         ASSERT(ierr == 0)
-        allocate(subis_list(nb_fields), stat=ierr)
+        allocate (subis_list(nb_fields), stat=ierr)
         ASSERT(ierr == 0)
 ! loop over the different levels to assign them PC and KSP.
 ! for each level we define 1 PC, specify the 2 IS of components that it deals with
 ! and we define the 2 sub-KSP to treat the 2 IS
         do idx = 1, nb_fields-1
             ! build the name of the field1 of the current level
-            start=1
-            end=sum(fields_size(1:nb_fields-idx))
-            field_name1=''
-            length1=len_trim(field_name1)
+            start = 1
+            end = sum(fields_size(1:nb_fields-idx))
+            field_name1 = ''
+            length1 = len_trim(field_name1)
             do i = start, end
-                field_name1=field_name1(1:length1)//cmp_global(i)
-                length1=length1+len_trim(cmp_global(i))
-            enddo
+                field_name1 = field_name1(1:length1)//cmp_global(i)
+                length1 = length1+len_trim(cmp_global(i))
+            end do
             ! Get the current PC
-            if (idx==1) then
+            if (idx == 1) then
                 call KSPGetPC(kp(kptsc), pc_list(idx), ierr)
             else
                 call KSPGetPC(subksp(2*(idx-1)-1), pc_list(idx), ierr)
-            endif
-            ASSERT( ierr == 0 )
+            end if
+            ASSERT(ierr == 0)
             ! Set the PC as a fieldsplit PC
             call PCSetType(pc_list(idx), PCFIELDSPLIT, ierr)
             ASSERT(ierr == 0)
             ! Define how the first field is preconditioned
-            if (idx==1) then
+            if (idx == 1) then
                 current_is = is_list(2*idx-1)
             else
-                call is_embed_global(is_list(2*idx-1), is_list(2*idx-3), subis_list(idx-1),&
+                call is_embed_global(is_list(2*idx-1), is_list(2*idx-3), subis_list(idx-1), &
                                      subis_list(idx))
                 current_is = subis_list(idx-1)
-            endif
+            end if
             call PCFieldSplitSetIS(pc_list(idx), field_name1(1:length1), current_is, ierr)
-            if (field_name1(1:length1)=='DXDYDZ') then
+            if (field_name1(1:length1) == 'DXDYDZ') then
                 call ISSetBlockSize(current_is, to_petsc_int(3), ierr)
                 ASSERT(ierr == 0)
-                is_with_bs_3=current_is
-            endif
+                is_with_bs_3 = current_is
+            end if
             ASSERT(ierr == 0)
 !
             ! build the name of the field1 of the current level
-            start=sum(fields_size(1:nb_fields-idx))+1
-            end=sum(fields_size(1:nb_fields-idx+1))
-            field_name2=''
-            length2=len_trim(field_name2)
+            start = sum(fields_size(1:nb_fields-idx))+1
+            end = sum(fields_size(1:nb_fields-idx+1))
+            field_name2 = ''
+            length2 = len_trim(field_name2)
             do i = start, end
-                field_name2=field_name2(1:length2)//cmp_global(i)
-                length2=length2+len_trim(cmp_global(i))
-            enddo
+                field_name2 = field_name2(1:length2)//cmp_global(i)
+                length2 = length2+len_trim(cmp_global(i))
+            end do
             ! Define how the second field is preconditioned
-            if (idx==1) then
+            if (idx == 1) then
                 current_is = is_list(2*idx)
             else
                 current_is = subis_list(idx)
-            endif
+            end if
             call PCFieldSplitSetIS(pc_list(idx), field_name2(1:length2), current_is, ierr)
-            if (field_name2(1:length2)=='DXDYDZ') then
+            if (field_name2(1:length2) == 'DXDYDZ') then
                 call ISSetBlockSize(current_is, to_petsc_int(3), ierr)
                 ASSERT(ierr == 0)
                 ! Force the field to share the common communicator
                 call ISOnComm(current_is, mpicomm, PETSC_COPY_VALUES, is_with_bs_3, ierr)
                 ASSERT(ierr == 0)
-            endif
+            end if
             ASSERT(ierr == 0)
 !
 !  Use runtime configuration
             call PCSetFromOptions(pc_list(idx), ierr)
-            ASSERT( ierr == 0 )
+            ASSERT(ierr == 0)
 !  Need to call PCSetUp before configuring the second level
             call PCSetup(pc_list(idx), ierr)
-            ASSERT( ierr == 0 )
-            nsplit=2
+            ASSERT(ierr == 0)
+            nsplit = 2
             call PCFieldSplitGetSubKSP(pc_list(idx), nsplit, subksp(2*idx-1:2*idx), ierr)
-            ASSERT( ierr == 0 )
+            ASSERT(ierr == 0)
             call PetscObjectSetName(subksp(2*idx-1), ' KSP  '//field_name1(1:length1), ierr)
             ASSERT(ierr == 0)
             call PetscObjectSetName(subksp(2*idx), ' KSP  '//field_name2(1:length2), ierr)
@@ -270,44 +270,44 @@ contains
 !  Configure the subksp, compute and join the near null space to the submatrix
 !
             call KSPSetFromOptions(subksp(2*idx-1), ierr)
-            ASSERT( ierr == 0 )
+            ASSERT(ierr == 0)
             call KSPGetOperators(subksp(2*idx-1), PETSC_NULL_MAT, Mat_temp, ierr)
-            ASSERT( ierr == 0 )
+            ASSERT(ierr == 0)
             call MatGetBlockSize(Mat_temp, bs, ierr)
-            ASSERT( ierr == 0 )
-            if (bs==3) then
+            ASSERT(ierr == 0)
+            if (bs == 3) then
                 call setNearNullSpace(Mat_temp, is_with_bs_3, nonu)
-                if (debug) write(ifm, *)&
-                           "Attaching a Null Space to the submatrix related to field ",&
-                           field_name1(1:length1)
-            endif
+                if (debug) write (ifm, *) &
+                    "Attaching a Null Space to the submatrix related to field ", &
+                    field_name1(1:length1)
+            end if
             call KSPSetFromOptions(subksp(2*idx), ierr)
-            ASSERT( ierr == 0 )
+            ASSERT(ierr == 0)
             call KSPGetOperators(subksp(2*idx), PETSC_NULL_MAT, Mat_temp, ierr)
-            ASSERT( ierr == 0 )
+            ASSERT(ierr == 0)
             call MatGetBlockSize(Mat_temp, bs, ierr)
-            ASSERT( ierr == 0 )
-            if (bs==3) then
+            ASSERT(ierr == 0)
+            if (bs == 3) then
                 call setNearNullSpace(Mat_temp, is_with_bs_3, nonu)
-                if (debug) write(ifm, *)&
-                           "Attaching a Null Space to the submatrix related to field ",&
-                           field_name2(1:length2)
-            endif
+                if (debug) write (ifm, *) &
+                    "Attaching a Null Space to the submatrix related to field ", &
+                    field_name2(1:length2)
+            end if
             !
 !
-        enddo
+        end do
 !
 ! Free the local objects
-        deallocate(cmp_global)
-        deallocate(fields_size)
-        deallocate(is_list)
-        deallocate(pc_list)
-        deallocate(subksp)
-        deallocate(subis_list)
+        deallocate (cmp_global)
+        deallocate (fields_size)
+        deallocate (is_list)
+        deallocate (pc_list)
+        deallocate (subksp)
+        deallocate (subis_list)
         call ISDestroy(current_is, ierr)
-        ASSERT( ierr == 0 )
-        if (bs==3) call ISDestroy(is_with_bs_3, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
+        if (bs == 3) call ISDestroy(is_with_bs_3, ierr)
+        ASSERT(ierr == 0)
 !
     end subroutine mfield_setup
 !
@@ -354,18 +354,18 @@ contains
 !   Distribution style
         nomat = nomat_courant
         call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
-        lmd = ( matd == 'OUI' )
+        lmd = (matd == 'OUI')
         call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=matd)
         lmhpc = (matd == 'OUI')
-        ASSERT(.not.(lmd .and. lmhpc))
+        ASSERT(.not. (lmd .and. lmhpc))
 !
 !
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
-        neqg=zi(jnequ)
+        neqg = zi(jnequ)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
         call jeveuo(nomail//'.COORDO    .VALE', 'L', vr=coordo)
 !
-        bs=1
+        bs = 1
 !
         call VecCreate(mpicomm, coords, ierr)
         ASSERT(ierr == 0)
@@ -375,24 +375,24 @@ contains
             if (lmd) then
                 call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
                 call jeveuo(nonu//'.NUML.PDDL', 'L', vi=prddl)
-                nloc=zi(jnequl)
+                nloc = zi(jnequl)
             else
                 call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
                 call jeveuo(nonu//'.NUME.PDDL', 'L', vi=prddl)
                 nloc = zi(jnequ)
                 neqg = zi(jnequ+1)
-            endif
+            end if
 ! Nb de ddls dont le proc courant est propriétaire (pour PETSc)
             ndprop = 0
             do il = 1, nloc
                 if (prddl(il) == rang) then
-                    ndprop = ndprop + 1
-                endif
+                    ndprop = ndprop+1
+                end if
             end do
             call VecSetSizes(coords, to_petsc_int(ndprop), to_petsc_int(neqg), ierr)
         else
             call VecSetSizes(coords, PETSC_DECIDE, to_petsc_int(neqg), ierr)
-        endif
+        end if
         call VecSetType(coords, VECMPI, ierr)
 !           * REMPLISSAGE DU VECTEUR
 !             coords: vecteur PETSc des coordonnées des noeuds du maillage,
@@ -403,73 +403,73 @@ contains
                 call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
                 do il = 1, nloc
 ! Indice global PETSc (F) correspondant à l'indice local il
-                    igp_f = nlgp( il )
+                    igp_f = nlgp(il)
 ! Indice global Aster (F) correspondant à l'indice local il
-                    iga_f = nulg( il )
+                    iga_f = nulg(il)
 ! Noeud auquel est associé le ddl global Aster iga_f
-                    numno = deeq( (iga_f -1)* 2 +1 )
+                    numno = deeq((iga_f-1)*2+1)
 ! Composante (X, Y ou Z) à laquelle est associé
 ! le ddl global Aster iga_f
-                    icmp = deeq( (iga_f -1)* 2 +2 )
+                    icmp = deeq((iga_f-1)*2+2)
                     ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
 ! Valeur de la coordonnée (X,Y ou Z) icmp du noeud numno
-                    val = coordo( dimgeo_b*(numno-1)+icmp )
+                    val = coordo(dimgeo_b*(numno-1)+icmp)
 ! On met à jour le vecteur PETSc des coordonnées
-                    nterm=1
-                    call VecSetValues(coords, to_petsc_int(nterm), [to_petsc_int(igp_f - 1)],&
+                    nterm = 1
+                    call VecSetValues(coords, to_petsc_int(nterm), [to_petsc_int(igp_f-1)], &
                                       [val], INSERT_VALUES, ierr)
-                    ASSERT( ierr == 0 )
-                enddo
+                    ASSERT(ierr == 0)
+                end do
             else
                 call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
                 do il = 1, nloc
 ! Indice global PETSc (F) correspondant à l'indice local il
-                    igp_f = nulg ( il ) + 1
+                    igp_f = nulg(il)+1
 ! Indice global Aster (F) correspondant à l'indice local il
                     iga_f = il
 ! Noeud auquel est associé le ddl global Aster iga_f
-                    numno = deeq( (iga_f -1)* 2 +1 )
+                    numno = deeq((iga_f-1)*2+1)
 ! Composante (X, Y ou Z) à laquelle est associé
 ! le ddl global Aster iga_f
-                    icmp = deeq( (iga_f -1)* 2 +2 )
+                    icmp = deeq((iga_f-1)*2+2)
                     ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
 ! Valeur de la coordonnée (X,Y ou Z) icmp du noeud numno
-                    val = coordo( dimgeo_b*(numno-1)+icmp )
+                    val = coordo(dimgeo_b*(numno-1)+icmp)
 ! On met à jour le vecteur PETSc des coordonnées
-                    nterm=1
-                    call VecSetValues(coords, to_petsc_int(nterm), [to_petsc_int(igp_f - 1)],&
+                    nterm = 1
+                    call VecSetValues(coords, to_petsc_int(nterm), [to_petsc_int(igp_f-1)], &
                                       [val], INSERT_VALUES, ierr)
-                    ASSERT( ierr == 0 )
-                enddo
-            endif
+                    ASSERT(ierr == 0)
+                end do
+            end if
             call VecAssemblyBegin(coords, ierr)
             call VecAssemblyEnd(coords, ierr)
-            ASSERT( ierr == 0 )
+            ASSERT(ierr == 0)
 ! la matrice est centralisée
         else
             call VecGetOwnershipRange(coords, low, high, ierr)
             call VecGetArray(coords, xx_v, xx_i, ierr)
-            ix=0
+            ix = 0
             do ieq = low+1, high
 ! Noeud auquel est associé le ddl Aster ieq
-                numno = deeq( (ieq -1)* 2 +1 )
+                numno = deeq((ieq-1)*2+1)
 ! Composante (X, Y ou Z) à laquelle est associé
 ! le ddl Aster ieq
-                icmp = deeq( (ieq -1)* 2 +2 )
+                icmp = deeq((ieq-1)*2+2)
                 ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
-                ix=ix+1
-                xx_v(xx_i+ ix) = coordo( dimgeo*(numno-1)+icmp )
+                ix = ix+1
+                xx_v(xx_i+ix) = coordo(dimgeo*(numno-1)+icmp)
             end do
             !
             call VecRestoreArray(coords, xx_v, xx_i, ierr)
-            ASSERT(ierr==0)
-        endif
+            ASSERT(ierr == 0)
+        end if
         !
         !
 !           * CALCUL DES MODES A PARTIR DES COORDONNEES
         ! extract the sub-vector with corresponding dof for the submatrix of the current IS
         call VecGetSubVector(coords, is_with_bs_3, displ_coords, ierr)
-        ASSERT(ierr==0)
+        ASSERT(ierr == 0)
         call MatNullSpaceCreateRigidBody(displ_coords, sp, ierr)
         ASSERT(ierr == 0)
         call MatSetNearNullSpace(myMat, sp, ierr)
@@ -513,7 +513,7 @@ contains
         mpi_int :: rang, nbproc, mpicomm
         PetscInt :: nab_local(1), high_ab(1), low_ab, n_ab
         PetscErrorCode :: ierr
-        PetscInt, parameter :: izero = 0, ione=1
+        PetscInt, parameter :: izero = 0, ione = 1
         IS :: is_ind_ab, is_a_in_ab_local
         ISLocalToGlobalMapping :: mapping
 !
@@ -528,7 +528,7 @@ contains
 !   -----------------------------------------------------
 !   Chaque processeur possède nab_local entrées de is_ab
         call ISGetLocalSize(is_ab, nab_local(1), ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
 !   Chaque processeur possède la section d'indice global C
 !   [low_ab:high_ab-1] de is_ab
         high_ab(1) = izero
@@ -538,16 +538,16 @@ contains
         call asmpi_scan_i(nab_local, high_ab, to_mpi_int(ione), MPI_SUM, mpicomm)
 #endif
         ASSERT(ierr == 0)
-        low_ab = high_ab(1) - nab_local(1)
+        low_ab = high_ab(1)-nab_local(1)
 !   Vérification de cohérence
         call ISGetSize(is_ab, n_ab, ierr)
-        ASSERT( ierr == 0 )
-        if (rang == nbproc - 1) then
-            ASSERT( high_ab(1) == n_ab )
-        endif
+        ASSERT(ierr == 0)
+        if (rang == nbproc-1) then
+            ASSERT(high_ab(1) == n_ab)
+        end if
 !   Index Set représentant les indices de is_ab, c'est à
 !   dire la section [low_ab:high_ab-1] sur chaque processeur
-        call ISCreateStride(mpicomm, nab_local(1), low_ab, ione, is_ind_ab,&
+        call ISCreateStride(mpicomm, nab_local(1), low_ab, ione, is_ind_ab, &
                             ierr)
         ASSERT(ierr == 0)
 !   is_ind_ab est utilisé pour construire le mapping qui permettra
@@ -557,30 +557,30 @@ contains
 !   (de 0 à n sur chaque processeur) en un IS global (de O à nup_total
 !   distribué sur tous les processeurs)
         call ISLocalToGlobalMappingCreateIS(is_ind_ab, mapping, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
 !   ----------------------------------------------------------
 !   Construction de l'index set local is_a_in_ab_local
 !   ----------------------------------------------------------
         call ISEmbed(is_a, is_ab, PETSC_FALSE, is_a_in_ab_local, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
 !   ---------------------------------------------------------------------
 !   Traduction en un index set global, conforme à la répartion parallèle
 !   de is_ab
 !   ---------------------------------------------------------------------
         call ISLocalToGlobalMappingApplyIS(mapping, is_a_in_ab_local, is_a_in_ab, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
 !
-        if (present( is_b_in_ab )) then
+        if (present(is_b_in_ab)) then
             call ISComplement(is_a_in_ab, low_ab, high_ab(1), is_b_in_ab, ierr)
-            ASSERT( ierr == 0 )
-        endif
+            ASSERT(ierr == 0)
+        end if
 !
         call ISDestroy(is_ind_ab, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
         call ISDestroy(is_a_in_ab_local, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
         call ISLocalToGlobalMappingDestroy(mapping, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
 !
     end subroutine is_embed_global
 !
@@ -625,17 +625,17 @@ contains
         call asmpi_comm('GET', mpicomm)
         call asmpi_info(rank=rang, size=nbproc)
 !  neqg : nombre global de degrés de liberté
-        call dismoi('NB_EQUA', nonu, 'NUME_DDL', repi = neqg)
+        call dismoi('NB_EQUA', nonu, 'NUME_DDL', repi=neqg)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
 !  nomgd : nom de la grandeur associée au nume_ddl
-        call dismoi('NOM_GD ', nonu, 'NUME_DDL', repk = nomgd)
+        call dismoi('NOM_GD ', nonu, 'NUME_DDL', repk=nomgd)
 !  on vérifie qu'il s'agit bien de la grandeur DEPL_R
-        ASSERT( nomgd == 'DEPL_R' )
+        ASSERT(nomgd == 'DEPL_R')
 !  accès au catalogue de nomgd
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
 !  Est-ce que la matrice est distribuée ?
-        call dismoi('MATR_DISTRIBUEE', nonu, 'NUME_DDL', repk= kmatd)
-        lmatd = ( kmatd == 'OUI' )
+        call dismoi('MATR_DISTRIBUEE', nonu, 'NUME_DDL', repk=kmatd)
+        lmatd = (kmatd == 'OUI')
 !  Est-ce que la matrice est distribuée dans asterxx?
         nomat = nomat_courant
         call dismoi('MATR_HPC', nomat, 'MATR_ASSE', repk=kmatd)
@@ -646,7 +646,7 @@ contains
             call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
             call jeveuo(nonu//'.NUML.PDDL', 'L', vi=pddl)
             call jeveuo(nonu//'.NUML.NEQU', 'L', vi=nequl)
-            neql=nequl(1)
+            neql = nequl(1)
         else if (lmhpc) then
             call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
             call jeveuo(nonu//'.NUME.PDDL', 'L', vi=pddl)
@@ -654,12 +654,12 @@ contains
             neql = nequl(1)
             neqg = nequl(2)
         else
-            neql=neqg
-        endif
+            neql = neqg
+        end if
 ! on récupère aussi les indices PETSc de la première et de la dernière+1
 ! ligne de la matrice PETSc
         call MatGetOwnershipRange(amat, low, high, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
 ! On effectue deux passes :
 !      passe 1 : on compte
 !      passe 2 : on stocke les indices globaux PETSc dans un vecteur
@@ -669,64 +669,64 @@ contains
             do ieql = 1, neql
 ! Indice global Aster du dl local ieql
                 if (lmatd) then
-                    ieqg = nulg( ieql )
+                    ieqg = nulg(ieql)
                 else
                     ieqg = ieql
-                endif
+                end if
 ! A quel processeur (pour PETSc) appartient le dl ?
 ! si la matrice est distribuée, c'est pddl qui contient l'info, sinon
 ! on se réfère au résultat de MatGetOwnerShipRange.
 ! lproc : est-ce que le processeur rang est propriétaire de ce dl ?
                 if (lmatd .or. lmhpc) then
-                    lproc = ( rang == pddl(ieql) )
+                    lproc = (rang == pddl(ieql))
                 else
-                    lproc = ( ieqg - 1 >= low ).and.(ieqg -1 <= high -1 )
-                endif
+                    lproc = (ieqg-1 >= low) .and. (ieqg-1 <= high-1)
+                end if
                 if (lproc) then
 ! A quelle composante de grandeur correspond ce dl ?
-                    nuno=deeq(2*(ieqg-1)+1)
-                    nucmp=deeq(2*(ieqg-1)+2)
+                    nuno = deeq(2*(ieqg-1)+1)
+                    nucmp = deeq(2*(ieqg-1)+2)
 ! Vérification qu'il ne s'agit pas d'un Lagrange
-                    ASSERT( nuno > 0 )
-                    ASSERT( nucmp > 0 )
+                    ASSERT(nuno > 0)
+                    ASSERT(nucmp > 0)
 ! On convertit nucmp en nocmp
-                    nocmp=zk8(jcmp-1+nucmp)
+                    nocmp = zk8(jcmp-1+nucmp)
 ! Indice global PETSc du dl local ieql
                     if (lmatd) then
-                        ieqgp = nlgp ( ieql )
+                        ieqgp = nlgp(ieql)
                     else if (lmhpc) then
 ! attention numerotation C, donc on ajoute "+1"
-                        ieqgp = nulg ( ieql ) + 1
+                        ieqgp = nulg(ieql)+1
                     else
                         ieqgp = ieqg
-                    endif
-                    if (any(kcmp == nocmp )) then
-                        ndl = ndl + to_petsc_int(1)
+                    end if
+                    if (any(kcmp == nocmp)) then
+                        ndl = ndl+to_petsc_int(1)
                         if (passe == 2) then
-                            idl( ndl ) = to_petsc_int(ieqgp - 1)
-                        endif
-                    endif
-                endif
-            enddo
+                            idl(ndl) = to_petsc_int(ieqgp-1)
+                        end if
+                    end if
+                end if
+            end do
             if (passe == 1) then
                 if (ndl > 0) then
-                    allocate ( idl( ndl ), STAT = ierr )
-                endif
-            endif
-        enddo
+                    allocate (idl(ndl), STAT=ierr)
+                end if
+            end if
+        end do
 !
-        call ISCreateGeneral(mpicomm, ndl, idl, PETSC_COPY_VALUES, is_of_field,&
+        call ISCreateGeneral(mpicomm, ndl, idl, PETSC_COPY_VALUES, is_of_field, &
                              ierr)
         ASSERT(ierr == 0)
 !
         call ISSetBlockSize(is_of_field, blocksize, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
         call ISSort(is_of_field, ierr)
-        ASSERT( ierr == 0 )
+        ASSERT(ierr == 0)
 !
-        if (allocated( idl )) then
-            deallocate ( idl )
-        endif
+        if (allocated(idl)) then
+            deallocate (idl)
+        end if
 !
         call jedema()
 !
@@ -735,18 +735,18 @@ contains
 !#IFDEF ASTER_HAVE_PETSC
 #else
 !
-  public :: mfield_setup
-  !
-  contains
-      subroutine mfield_setup(kptsc, nonu)
-      integer, intent(in) :: kptsc
-      character(len=14), intent(in) :: nonu
+    public :: mfield_setup
+    !
+contains
+    subroutine mfield_setup(kptsc, nonu)
+        integer, intent(in) :: kptsc
+        character(len=14), intent(in) :: nonu
 !     Local variables
-      integer :: ivoid
-      character(len=14) :: svoid
+        integer :: ivoid
+        character(len=14) :: svoid
 !     Dummy assignation to avoid warnings
-      ivoid = kptsc
-      svoid = nonu
+        ivoid = kptsc
+        svoid = nonu
     end subroutine mfield_setup
 #endif
     !

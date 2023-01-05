@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,33 +47,33 @@ subroutine xcgfvo(option, ndim, nnop, fno)
 !
     integer :: igeom, imate, iforc, iforf, itemps, ipesa, irota
     integer :: iret, ino, j, kk
-    integer, parameter :: mxstac=1000
+    integer, parameter :: mxstac = 1000
     aster_logical :: fonc
     real(kind=8) :: valpar(4), rbid, om, omo, val(1), rhocst
     integer :: icodre(1)
     character(len=8) :: nompar(4)
     character(len=16) :: phenom
 !
-    rbid=0.d0
+    rbid = 0.d0
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    ASSERT(ndim*nnop.le.mxstac)
+    ASSERT(ndim*nnop .le. mxstac)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
 !
 !     PARAMETRES DES FORCES VOLUMIQUES
     if (option .eq. 'CALC_G_XFEM' .or. option .eq. 'CALC_K_G_XFEM') then
-        fonc=.false.
+        fonc = .false.
         call jevech('PFRVOLU', 'L', iforc)
-    else if (option.eq.'CALC_G_XFEM_F'.or. option.eq.'CALC_K_G_XFEM_F') then
-        fonc=.true.
+    else if (option .eq. 'CALC_G_XFEM_F' .or. option .eq. 'CALC_K_G_XFEM_F') then
+        fonc = .true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
@@ -93,10 +93,10 @@ subroutine xcgfvo(option, ndim, nnop, fno)
         valpar(ndim+1) = zr(itemps)
         if (ndim .eq. 2) then
             nompar(3) = 'INST'
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             nompar(3) = 'Z'
             nompar(4) = 'INST'
-        endif
+        end if
 !
 !       INTERPOLATION DE LA FORCE (FONCTION PAR ELEMENT) AUX NOEUDS
         do ino = 1, nnop
@@ -105,7 +105,7 @@ subroutine xcgfvo(option, ndim, nnop, fno)
             end do
             do j = 1, ndim
                 kk = ndim*(ino-1)+j
-                call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar,&
+                call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar, &
                             fno(kk), iret)
             end do
         end do
@@ -119,46 +119,46 @@ subroutine xcgfvo(option, ndim, nnop, fno)
             end do
         end do
 !
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !            TRAITEMENT DES FORCES DE PESANTEUR OU DE ROTATION
 !     ------------------------------------------------------------------
 !
-    if ((ipesa.ne.0) .or. (irota.ne.0)) then
+    if ((ipesa .ne. 0) .or. (irota .ne. 0)) then
 !
 !       on est sur de la presence de RHO suite a l'appel a cgverho
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-        call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, ' ', [rbid],&
+        call rcvalb('RIGI', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, ' ', [rbid], &
                     1, 'RHO', val, icodre(1), 1)
-        rhocst=val(1)
+        rhocst = val(1)
 !
         if (ipesa .ne. 0) then
             do ino = 1, nnop
                 do j = 1, ndim
                     kk = ndim*(ino-1)+j
-                    fno(kk) = fno(kk) + rhocst*zr(ipesa)*zr(ipesa+j)
+                    fno(kk) = fno(kk)+rhocst*zr(ipesa)*zr(ipesa+j)
                 end do
             end do
-        endif
+        end if
 !
         if (irota .ne. 0) then
             om = zr(irota)
             do ino = 1, nnop
                 omo = 0.d0
                 do j = 1, ndim
-                    omo = omo + zr(irota+j)* zr(igeom+ndim*(ino-1)+j- 1)
+                    omo = omo+zr(irota+j)*zr(igeom+ndim*(ino-1)+j-1)
                 end do
                 do j = 1, ndim
                     kk = ndim*(ino-1)+j
-                    fno(kk)=fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr(&
-                    irota+j))
+                    fno(kk) = fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr( &
+                                                    irota+j))
                 end do
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !

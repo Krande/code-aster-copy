@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,63 +71,63 @@ subroutine te0149(option, nomte)
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 ! --------------------------------------------------------------------------------------------------
     integer :: nbres
-    parameter  (nbres=6)
+    parameter(nbres=6)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
-    data nomres / 'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
+    data nomres/'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara1 = 3
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'R1','EP1','TSEC'/
+    data noms_cara1/'R1', 'EP1', 'TSEC'/
 ! --------------------------------------------------------------------------------------------------
 !
-    okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
+    okopt = (option .eq. 'SIPM_ELNO') .or. (option .eq. 'SIPO_ELNO')
     ASSERT(okopt)
 !
 !   SIPM_ELNO pour les PMF
-    if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM')then
+    if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
+        call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug)
         call jevech('PSIEFNOR', 'L', isief)
-        call jevech('PSIMXRR',  'E', jeffo)
-        do ino = 1,2
+        call jevech('PSIMXRR', 'E', jeffo)
+        do ino = 1, 2
             simax = zr(isief-1+nbfibr*(ino-1)+1)
             simin = zr(isief-1+nbfibr*(ino-1)+1)
             do i = 2, nbfibr
                 sixx = zr(isief-1+nbfibr*(ino-1)+i)
                 if (sixx .gt. simax) then
                     simax = sixx
-                else if (sixx .lt. simin)then
+                else if (sixx .lt. simin) then
                     simin = sixx
-                endif
-            enddo
+                end if
+            end do
             zr(jeffo-1+2*(ino-1)+1) = simin
             zr(jeffo-1+2*(ino-1)+2) = simax
-        enddo
+        end do
     else
 ! --------------------------------------------------------------------------------------------------
 !       Recuperation des caracteristiques materiaux
         call jevech('PMATERC', 'L', lmater)
 !       Blindage : option valide avec un seul phenomene : elas
         jmat = zi(lmater)
-        nbmat= zi(jmat)
+        nbmat = zi(jmat)
 !       UN SEUL MATERIAU
         if (nbmat .ne. 1) then
             messk(1) = option
             call utmess('F', 'ELEMENTS4_59', sk=messk(1))
-        endif
+        end if
 !       LE 1ER MATERIAU
         imat = jmat+zi(jmat+nbmat+1)
 !       SEUL ELAS EST AUTORISE
         do icomp = 1, zi(imat+1)
-            if (zk32(zi(imat)+icomp-1)(1:4) .ne. 'ELAS') then
+            if (zk32(zi(imat)+icomp-1) (1:4) .ne. 'ELAS') then
                 messk(1) = option
-                messk(2) = zk32(zi(imat)+icomp-1)(1:24)
+                messk(2) = zk32(zi(imat)+icomp-1) (1:24)
                 call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
-            endif
-        enddo
+            end if
+        end do
 !
         npg = 3
         call moytem('RIGI', npg, 1, '+', valpar, iret)
@@ -139,40 +139,40 @@ subroutine te0149(option, nomte)
         if (suropt .eq. 'MASS_FLUI_STRU') then
             call poutre_modloc('CAGEPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
             itsec = nint(vale_cara1(3))
-            r1=0.0; ep1=0.0
+            r1 = 0.0; ep1 = 0.0
             if (itsec .eq. 2) then
 !               section circulaire sections initiale et finale
-                r1  = vale_cara1(1)
+                r1 = vale_cara1(1)
                 ep1 = vale_cara1(2)
             else
                 call utmess('F', 'ELEMENTS3_30')
-            endif
+            end if
             call jevech('PABSCUR', 'L', labsc)
-            absmoy = ( zr(labsc-1+1) + zr(labsc-1+2) ) /2.d0
-            call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS_FLUI', 1, 'ABSC', [absmoy],&
+            absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/2.d0
+            call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS_FLUI', 1, 'ABSC', [absmoy], &
                         6, nomres, valres, codres, 1)
-            e     = valres(1)
-            nu    = valres(2)
-            rhos  = valres(3)
+            e = valres(1)
+            nu = valres(2)
+            rhos = valres(3)
             rhofi = valres(4)
             rhofe = valres(5)
-            cm    = valres(6)
-            phie  = r1*2.d0
-            if ( phie .le. r8prem() ) then
+            cm = valres(6)
+            phie = r1*2.d0
+            if (phie .le. r8prem()) then
                 call utmess('F', 'ELEMENTS3_26')
-            endif
-            phii = ( phie - 2.d0*ep1 )
+            end if
+            phii = (phie-2.d0*ep1)
             call rhoequ(rho, rhos, rhofi, rhofe, cm, phii, phie)
         else
-            call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
+            call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar], &
                         2, nomres, valres, codres, 1)
-            call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
+            call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar], &
                         1, nomres(3), valres(3), codres(3), 0)
             if (codres(3) .ne. 0) valres(3) = 0.0d+0
-            e   = valres(1)
-            nu  = valres(2)
+            e = valres(1)
+            nu = valres(2)
             rho = valres(3)
-        endif
+        end if
 !
 !       Calcul de la matrice de rigidite locale
         call porigi(nomte, e, nu, -1.d0, klv)
@@ -197,6 +197,6 @@ subroutine te0149(option, nomte)
 !                    EFGE(10) = MT  EFGE(11) = MFY  EFGE(12) = MFZ
             call jevech('PCONTPO', 'E', jeffo)
             call posipr(nomte, efge, zr(jeffo))
-        endif
-    endif
+        end if
+    end if
 end subroutine

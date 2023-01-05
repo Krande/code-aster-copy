@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,12 +77,12 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
 !
     integer :: ii, iadobj, idep, ifin, itype, nbmail, nno, nbnoma
     character(len=7)  :: k7bid
-    character(len=24) :: objdime,   objtitre,  objnomnoe, objcooval, objcoodsc, objcooref
+    character(len=24) :: objdime, objtitre, objnomnoe, objcooval, objcoodsc, objcooref
     character(len=24) :: objnommai, objtypmai, objconnex, objgrpmai, objgpptnm
     character(len=24) :: nomgrf
 !
-    integer, pointer            :: dime(:)  => null()
-    real(kind=8), pointer       :: xyz(:)   => null()
+    integer, pointer            :: dime(:) => null()
+    real(kind=8), pointer       :: xyz(:) => null()
     character(len=80), pointer  :: titre(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,32 +90,32 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
     call jemarq()
 !   Construction des noms pour l'objet maillage
 !                 123456789012345678901234
-    objdime   = nogfma// '.DIME           '
-    objtitre  = nogfma// '           .TITR'
-    objnomnoe = nogfma// '.NOMNOE         '
-    objcooval = nogfma// '.COORDO    .VALE'
-    objcoodsc = nogfma// '.COORDO    .DESC'
-    objcooref = nogfma// '.COORDO    .REFE'
-    objnommai = nogfma// '.NOMMAI         '
-    objtypmai = nogfma// '.TYPMAIL        '
-    objconnex = nogfma// '.CONNEX         '
-    objgrpmai = nogfma// '.GROUPEMA       '
-    objgpptnm = nogfma// '.PTRNOMMAI      '
+    objdime = nogfma//'.DIME           '
+    objtitre = nogfma//'           .TITR'
+    objnomnoe = nogfma//'.NOMNOE         '
+    objcooval = nogfma//'.COORDO    .VALE'
+    objcoodsc = nogfma//'.COORDO    .DESC'
+    objcooref = nogfma//'.COORDO    .REFE'
+    objnommai = nogfma//'.NOMMAI         '
+    objtypmai = nogfma//'.TYPMAIL        '
+    objconnex = nogfma//'.CONNEX         '
+    objgrpmai = nogfma//'.GROUPEMA       '
+    objgpptnm = nogfma//'.PTRNOMMAI      '
 !
 ! --------------------------------------------------------------------------------------------------
 !   Création de l'objet .dime
     call wkvect(objdime, 'G V I', 6, vi=dime)
-    dime(1)= nbnoeuds
-    dime(3)= ulnbmailles
-    dime(6)= 2
+    dime(1) = nbnoeuds
+    dime(3) = ulnbmailles
+    dime(6) = 2
 !
 ! --------------------------------------------------------------------------------------------------
 !   Création de l'objet .titr
     call wkvect(objtitre, 'G V K80', 4, vk80=titre)
-    write(titre(1),'(A)')    ' Maillage des fibres'
-    write(titre(2),'(A,I8)') '   Nb Noeuds  ',nbnoeuds
-    write(titre(3),'(A,I8)') '   Nb Mailles ',ulnbmailles
-    write(titre(4),'(A,I8)') '   Nb Groupes ',nbgf
+    write (titre(1), '(A)') ' Maillage des fibres'
+    write (titre(2), '(A,I8)') '   Nb Noeuds  ', nbnoeuds
+    write (titre(3), '(A,I8)') '   Nb Mailles ', ulnbmailles
+    write (titre(4), '(A,I8)') '   Nb Groupes ', nbgf
 !
 ! --------------------------------------------------------------------------------------------------
 !   Pour les NOEUDS
@@ -142,11 +142,11 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
 !
 !   Remplissage du répertoire des noms des noeuds et des coordonnées
     do ii = 1, nbnoeuds
-        call codent(ii, 'G', k7bid )
+        call codent(ii, 'G', k7bid)
         call jecroc(jexnom(objnomnoe, 'N'//k7bid))
         xyz(3*ii-2) = vcoord(2*ii-1)
         xyz(3*ii-1) = vcoord(2*ii)
-    enddo
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   Pour les MAILLES
@@ -163,20 +163,20 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
 !   Connectivité
     call jecrec(objconnex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', ulnbmailles)
     nbnoma = 0
-    do ii=1, ulnbmailles
-        nbnoma = nbnoma + vimailles( (ii-1)*ncarma+2 )
-    enddo
+    do ii = 1, ulnbmailles
+        nbnoma = nbnoma+vimailles((ii-1)*ncarma+2)
+    end do
     call jeecra(objconnex, 'LONT', nbnoma)
 !
-    do ii=1, ulnbmailles
-        call codent(ii,'G',k7bid)
-        call jecroc(jexnom(objnommai,'M'//k7bid))
-        nno = vimailles( (ii-1)*ncarma+2 )
-        call jeecra(jexnum(objconnex,ii), 'LONMAX', nno)
-        call jeveuo(jexnum(objconnex,ii), 'E', iadobj)
-        zi(itype+ii-1) = vimailles( (ii-1)*ncarma+1 )
-        zi(iadobj:iadobj+nno-1) = vimailles( (ii-1)*ncarma+3:(ii-1)*ncarma+2+nno )
-    enddo
+    do ii = 1, ulnbmailles
+        call codent(ii, 'G', k7bid)
+        call jecroc(jexnom(objnommai, 'M'//k7bid))
+        nno = vimailles((ii-1)*ncarma+2)
+        call jeecra(jexnum(objconnex, ii), 'LONMAX', nno)
+        call jeveuo(jexnum(objconnex, ii), 'E', iadobj)
+        zi(itype+ii-1) = vimailles((ii-1)*ncarma+1)
+        zi(iadobj:iadobj+nno-1) = vimailles((ii-1)*ncarma+3:(ii-1)*ncarma+2+nno)
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   Pour les GROUPES DE MAILLES
@@ -185,10 +185,10 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
     call jecreo(objgpptnm, 'G N K24')
     call jeecra(objgpptnm, 'NOMMAX', nbgf)
 !   Groupe de maille
-    call jecrec(objgrpmai, 'G V I', 'NO '//objgpptnm, 'DISPERSE', 'VARIABLE',nbgf)
+    call jecrec(objgrpmai, 'G V I', 'NO '//objgpptnm, 'DISPERSE', 'VARIABLE', nbgf)
 !
 !   Les groupes de mailles
-    do ii = 1 , nbgf
+    do ii = 1, nbgf
         nbmail = vmailgrp(ii)
         idep = (ii-1)*maxmailgrp+1
         ifin = (ii-1)*maxmailgrp+nbmail
@@ -198,8 +198,8 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
         call jeecra(jexnom(objgrpmai, nomgrf), 'LONUTI', nbmail)
 !       Les mailles du groupes
         call jeveuo(jexnom(objgrpmai, nomgrf), 'E', iadobj)
-        zi(iadobj:iadobj+nbmail-1) = vigroup(idep:ifin )
-    enddo
+        zi(iadobj:iadobj+nbmail-1) = vigroup(idep:ifin)
+    end do
 !   Caractéristiques géométriques
     call cargeo(nogfma)
 !

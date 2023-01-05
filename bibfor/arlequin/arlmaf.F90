@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine arlmaf(mail, mailar, dime, ngrma, ima,&
+subroutine arlmaf(mail, mailar, dime, ngrma, ima, &
                   connex, loncum, imail, nummai, cxcumu)
 !
 !
@@ -84,14 +84,14 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima,&
 !
     if (imail > 99999) then
         ASSERT(.false.)
-    endif
+    end if
     nomel(1:8) = 'm       '
     call codent(imail, 'D0', nomel(2:8))
 !
 ! --- RECUPERATION INFOS
 !
-    call arlgrm(mail, ngrma, dime, ima, connex,&
-                loncum, nummai, nommai, itypma, nbno,&
+    call arlgrm(mail, ngrma, dime, ima, connex, &
+                loncum, nummai, nommai, itypma, nbno, &
                 cxno)
 !
 ! --- RECOPIE DU TYPE
@@ -107,15 +107,15 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima,&
         call jecroc(jexnom(mnomm, nomel))
     else
         call utmess('F', 'MODELISA7_10', 1, nomel)
-    endif
+    end if
 !
 ! --- RECOPIE DE LA CONNECTIVITE
 !
-    cxcumu = cxcumu + nbno
+    cxcumu = cxcumu+nbno
     call jelira(mconn, 'LONT', cxmax, k8bid)
     if (cxcumu > cxmax) then
         ASSERT(.false.)
-    endif
+    end if
     call jeecra(jexnum(mconn, imail), 'LONMAX', nbno, ' ')
     call jeveuo(jexnum(mconn, imail), 'E', jgcnx)
     do ino = 1, nbno

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,12 +38,12 @@ subroutine dcspri(coorp, coori, sprim)
 !
     xc = coorp(1)
     yc = coorp(2)
-    xi = coori(1,1)
-    yi = coori(2,1)
-    xj = coori(1,2)
-    yj = coori(2,2)
+    xi = coori(1, 1)
+    yi = coori(2, 1)
+    xj = coori(1, 2)
+    yj = coori(2, 2)
 !
-    sprim=abs((xj-xi)*(yc-yi)-(yj-yi)*(xc-xi))
-    sprim=sprim/2.d+0
+    sprim = abs((xj-xi)*(yc-yi)-(yj-yi)*(xc-xi))
+    sprim = sprim/2.d+0
 !
 end subroutine

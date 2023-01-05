@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !   NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
     ddls = ddld+ddlc
     if (present(singu)) then
-      singu=min(1,nfe)
-      ddld = ndim*(1+nfh+ndim*singu)
-    endif
+        singu = min(1, nfe)
+        ddld = ndim*(1+nfh+ndim*singu)
+    end if
 !
 end subroutine

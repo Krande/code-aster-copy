@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine matr_asse_set_values(matasz, dim, idx, jdx, values)
 ! person_in_charge: nicolas.tardieu at edf.fr
-use sort_module
+    use sort_module
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -56,11 +56,10 @@ use sort_module
 !
 !-----------------------------------------------------------------------
 
-
     character(len=19) :: matass, kstoc
     character(len=1) :: bas1
     character(len=3) :: tysca
-    integer :: i,k,n1,ier, neq, nterms, ierr, n_smdi
+    integer :: i, k, n1, ier, neq, nterms, ierr, n_smdi
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: smde(:) => null()
     integer, pointer :: smdi(:) => null()
@@ -76,24 +75,24 @@ use sort_module
     integer, dimension(:), allocatable, target :: ibuffer
     !-------------------------------------------------------------------
     call jemarq()
-    matass=matasz
+    matass = matasz
     call jelira(matass//'.VALM', 'NUTIOC', n1)
-    ASSERT(n1.eq.1 .or. n1.eq.2)
+    ASSERT(n1 .eq. 1 .or. n1 .eq. 2)
 
     call jeveuo(matass//'.REFA', 'E', vk24=refa)
     call jelira(matass//'.VALM', 'CLAS', cval=bas1)
     call jelira(matass//'.VALM', 'TYPE', cval=tysca)
-    ASSERT(tysca=='R')
+    ASSERT(tysca == 'R')
 
     ! storage of the matrix
-    kstoc=refa(2)(1:14)//'.SMOS'
+    kstoc = refa(2) (1:14)//'.SMOS'
     call jeexin(kstoc//'.SMDI', ier)
     if (ier .eq. 0) then
         call utmess('F', 'ALGELINE3_8', sk=matass)
-    endif
+    end if
     ! information on storage
     call jeveuo(kstoc//'.SMDE', 'L', vi=smde)
-    neq=smde(1)
+    neq = smde(1)
 
     ! Add diagonal terms
     ! ------------------
@@ -102,14 +101,13 @@ use sort_module
     AS_ALLOCATE(vr=v_up, size=dim+neq)
     AS_ALLOCATE(vr=v_low, size=dim+neq)
 
-
     ! Symmetrize profile
     ! ------------------
     ! 1. Since all diagonal terms must be stored, we extend all the arrays by neq terms to
     !    set them to 0
     ! 2. We duplicate the values array in order to store the upper and lower diagonal terms
     !    since, in code_aster, sparse matrices are stored this way with *symmetric profile*
-    do i=1,dim
+    do i = 1, dim
         if (idx(i) < jdx(i)) then
             idx_new(i) = idx(i)
             jdx_new(i) = jdx(i)
@@ -125,59 +123,58 @@ use sort_module
             jdx_new(i) = idx(i)
             v_up(i) = values(i)
             v_low(i) = values(i)
-        endif
-    enddo
+        end if
+    end do
     ! here diagonal terms are if needed set to 0 (i-1 because 0-based index is used)
-    do i=1,neq
+    do i = 1, neq
         idx_new(dim+i) = i-1
         jdx_new(dim+i) = i-1
         v_up(dim+i) = 0.D0
         v_low(dim+i) = 0.D0
-    enddo
+    end do
 
     ! Sum duplicates
     ! --------------
     ! Super hack : to sort the row (idx) first and then the column (jdx) in a single process,
     !              we define a new index array containing 10*max(row)*row + col and we sort it
-    AS_ALLOCATE(vi=sum_ij,size=dim+neq)
-    sum_ij=10*maxval(jdx_new(1:dim+neq))*jdx_new(1:dim+neq) + idx_new(1:dim+neq)
-    allocate(ibuffer(dim+neq), stat = ierr )
-    pv=>ibuffer(1:dim+neq)
+    AS_ALLOCATE(vi=sum_ij, size=dim+neq)
+    sum_ij = 10*maxval(jdx_new(1:dim+neq))*jdx_new(1:dim+neq)+idx_new(1:dim+neq)
+    allocate (ibuffer(dim+neq), stat=ierr)
+    pv => ibuffer(1:dim+neq)
     call qsort(sum_ij, pv)
 
     ! reorder the arrays
-    idx_new(1:dim+neq)=idx_new(pv)
-    jdx_new(1:dim+neq)=jdx_new(pv)
-    v_up(1:dim+neq)=v_up(pv)
-    v_low(1:dim+neq)=v_low(pv)
+    idx_new(1:dim+neq) = idx_new(pv)
+    jdx_new(1:dim+neq) = jdx_new(pv)
+    v_up(1:dim+neq) = v_up(pv)
+    v_low(1:dim+neq) = v_low(pv)
 
     ! sum the duplicates
-    k=1
-    do i=2, dim+neq
-        if ( (idx_new(k) .ne. idx_new(i)) .or. (jdx_new(k)) .ne. jdx_new(i)) then
-            k=k+1
+    k = 1
+    do i = 2, dim+neq
+        if ((idx_new(k) .ne. idx_new(i)) .or. (jdx_new(k)) .ne. jdx_new(i)) then
+            k = k+1
             idx_new(k) = idx_new(i)
             jdx_new(k) = jdx_new(i)
             v_up(k) = v_up(i)
             v_low(k) = v_low(i)
         else
-            v_up(k) = v_up(k) + v_up(i)
-            v_low(k) = v_low(k) + v_low(i)
-        endif
-    enddo
+            v_up(k) = v_up(k)+v_up(i)
+            v_low(k) = v_low(k)+v_low(i)
+        end if
+    end do
     nterms = k
 
     ! Compute profile
     ! ---------------
-    k=1
-    do i=1, nterms
-        if (idx_new(i)==jdx_new(i)) then
-            jdx_new(k)=i
-            k=k+1
-        endif
-    enddo
+    k = 1
+    do i = 1, nterms
+        if (idx_new(i) == jdx_new(i)) then
+            jdx_new(k) = i
+            k = k+1
+        end if
+    end do
     n_smdi = k-1
-
 
     ! Copy matrix to aster
     ! ---------------------
@@ -187,46 +184,46 @@ use sort_module
     call jedetr(matass//'.VALM')
 
     ! Rebuild the storage
-    call wkvect(kstoc//'.SMDI',bas1//' V I', n_smdi, vi=smdi)
-    call wkvect(kstoc//'.SMHC',bas1//' V S', nterms, vi4=smhc)
+    call wkvect(kstoc//'.SMDI', bas1//' V I', n_smdi, vi=smdi)
+    call wkvect(kstoc//'.SMHC', bas1//' V S', nterms, vi4=smhc)
     call jeveuo(kstoc//'.SMDE', 'L', vi=smde)
-    smde(2)=n_smdi
+    smde(2) = n_smdi
 
     ! Rebuild the values
-    call jecrec(matass//'.VALM', bas1//' V '//tysca, 'NU', 'DISPERSE',&
+    call jecrec(matass//'.VALM', bas1//' V '//tysca, 'NU', 'DISPERSE', &
                 'CONSTANT', 2)
     call jeecra(matass//'.VALM', 'LONMAX', nterms)
     call jecroc(jexnum(matass//'.VALM', 1))
-    call jeveuo(jexnum(matass//'.VALM', 1),'E',vr=valm1)
+    call jeveuo(jexnum(matass//'.VALM', 1), 'E', vr=valm1)
     call jecroc(jexnum(matass//'.VALM', 2))
-    call jeveuo(jexnum(matass//'.VALM', 2),'E',vr=valm2)
+    call jeveuo(jexnum(matass//'.VALM', 2), 'E', vr=valm2)
 
     ! Copy the values (switch from 0 to 1-based index)
-    do i=1, nterms
-        smhc(i)=int(idx_new(i)+1, 4)
+    do i = 1, nterms
+        smhc(i) = int(idx_new(i)+1, 4)
         valm1(i) = v_up(i)
         valm2(i) = v_low(i)
-    enddo
-    do i=1, n_smdi
-        smdi(i)=int(jdx_new(i),4)
-    enddo
+    end do
+    do i = 1, n_smdi
+        smdi(i) = int(jdx_new(i), 4)
+    end do
 
     ! Set the matrix as non-symmetric
-    refa(9)='MR'
+    refa(9) = 'MR'
 
     ! if kinematic load, they are not taken into account in the new matrix
-    if (refa(3).ne.' ') then
-        refa(3)='ELIML'
+    if (refa(3) .ne. ' ') then
+        refa(3) = 'ELIML'
         call jedetr(matass//'.CCVA')
-    endif
+    end if
 
     ! Clear allocation
-    AS_DEALLOCATE( vi=idx_new )
-    AS_DEALLOCATE( vi=jdx_new )
-    AS_DEALLOCATE( vr=v_up )
-    AS_DEALLOCATE( vr=v_low )
-    AS_DEALLOCATE( vi=sum_ij )
-    deallocate( ibuffer )
+    AS_DEALLOCATE(vi=idx_new)
+    AS_DEALLOCATE(vi=jdx_new)
+    AS_DEALLOCATE(vr=v_up)
+    AS_DEALLOCATE(vr=v_low)
+    AS_DEALLOCATE(vi=sum_ij)
+    deallocate (ibuffer)
 
     call jedema()
 end subroutine

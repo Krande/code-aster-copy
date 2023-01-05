@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine ndexpl(modele         , numedd    , numfix     , ds_material, carele   ,&
-                  ds_constitutive, lischa    , ds_algopara, fonact     , ds_system,&
-                  ds_print       , ds_measure, sdnume     , sddyna     , sddisc   ,&
-                  sderro         , valinc    , numins     , solalg     , solveu   ,&
-                  matass         , maprec    , ds_inout   , meelem     , measse   ,&
-                  veelem         , veasse    , nbiter  )
+subroutine ndexpl(modele, numedd, numfix, ds_material, carele, &
+                  ds_constitutive, lischa, ds_algopara, fonact, ds_system, &
+                  ds_print, ds_measure, sdnume, sddyna, sddisc, &
+                  sderro, valinc, numins, solalg, solveu, &
+                  matass, maprec, ds_inout, meelem, measse, &
+                  veelem, veasse, nbiter)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ndxcvg.h"
@@ -37,25 +37,25 @@ implicit none
 #include "asterfort/ndxpre.h"
 #include "asterfort/ndxforc_step.h"
 !
-integer :: numins
-integer :: fonact(*)
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=24) :: sderro
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sdnume, sddyna, sddisc
-type(NL_DS_InOut), intent(in) :: ds_inout
-type(NL_DS_Print), intent(inout) :: ds_print
-character(len=19) :: valinc(*), solalg(*)
-character(len=19) :: meelem(*), veelem(*)
-character(len=19) :: measse(*), veasse(*)
-character(len=19) :: lischa
-character(len=19) :: solveu, maprec, matass
-character(len=24) :: modele, numedd, numfix
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24) :: carele
-integer :: nbiter
+    integer :: numins
+    integer :: fonact(*)
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=24) :: sderro
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sdnume, sddyna, sddisc
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=19) :: valinc(*), solalg(*)
+    character(len=19) :: meelem(*), veelem(*)
+    character(len=19) :: measse(*), veasse(*)
+    character(len=19) :: lischa
+    character(len=19) :: solveu, maprec, matass
+    character(len=24) :: modele, numedd, numfix
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24) :: carele
+    integer :: nbiter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,38 +102,38 @@ integer :: nbiter
 !
 ! - Update for new time step
 !
-    call ndxnpa(modele        , carele,&
-                fonact, ds_print,&
-                ds_material   , ds_constitutive,&
-                sddisc, sddyna, sdnume, numedd, numins  ,&
+    call ndxnpa(modele, carele, &
+                fonact, ds_print, &
+                ds_material, ds_constitutive, &
+                sddisc, sddyna, sdnume, numedd, numins, &
                 valinc, solalg)
 !
 ! - Compute forces for second member when constant in time step
 !
-    call ndxforc_step(fonact     ,&
-                      modele     , carele         , numedd,&
-                      lischa     , sddyna         ,&
-                      ds_material, ds_constitutive,&
-                      ds_measure , ds_inout       ,&
-                      sddisc     , numins         ,&
-                      valinc     , solalg         ,&
-                      veelem     , veasse)
+    call ndxforc_step(fonact, &
+                      modele, carele, numedd, &
+                      lischa, sddyna, &
+                      ds_material, ds_constitutive, &
+                      ds_measure, ds_inout, &
+                      sddisc, numins, &
+                      valinc, solalg, &
+                      veelem, veasse)
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call ndxpre(modele         , numedd, numfix     , ds_material, carele,&
-                ds_constitutive, lischa, ds_algopara, solveu     , ds_system,&
-                fonact         , sddisc, ds_measure , numins     , valinc,&
-                solalg         , matass, maprec     , sddyna     , sderro,&
-                sdnume         , meelem, measse     , veelem     , veasse,&
+    call ndxpre(modele, numedd, numfix, ds_material, carele, &
+                ds_constitutive, lischa, ds_algopara, solveu, ds_system, &
+                fonact, sddisc, ds_measure, numins, valinc, &
+                solalg, matass, maprec, sddyna, sderro, &
+                sdnume, meelem, measse, veelem, veasse, &
                 lerrit)
 !
 ! - Update displacements
 !
     if (.not. lerrit) then
-        call ndxdep(numedd, fonact, numins, sddisc, sddyna,&
+        call ndxdep(numedd, fonact, numins, sddisc, sddyna, &
                     sdnume, valinc, solalg, veasse)
-    endif
+    end if
 !
 ! --- ESTIMATION DE LA CONVERGENCE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmrtim(ds_measure, device_type_, time)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -59,9 +59,9 @@ implicit none
 !
 ! - Set time for current device
 !
-    device%time_iter = device%time_iter + time
-    device%time_step = device%time_step + time
-    device%time_comp = device%time_comp + time
+    device%time_iter = device%time_iter+time
+    device%time_step = device%time_step+time
+    device%time_comp = device%time_comp+time
 !
 ! - Set current device
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lceob2(intmax, tole, eps, bm, dm,&
-                  lambda, mu, alpha, ecrob, ecrod,&
-                  seuil, bdim, b, d, mult,&
+subroutine lceob2(intmax, tole, eps, bm, dm, &
+                  lambda, mu, alpha, ecrob, ecrod, &
+                  seuil, bdim, b, d, mult, &
                   elas, dbloq, iret)
 !
 !
@@ -81,266 +81,266 @@ subroutine lceob2(intmax, tole, eps, bm, dm,&
     real(kind=8) :: inter1, inter2, inter3, inter4
     real(kind=8) :: deux, un
 !
-    deux=2.d0
-    rac2=sqrt(deux)
-    tolc= seuil*tole
-    un=1.d0
-    compte=0
-    mult=0.d0
+    deux = 2.d0
+    rac2 = sqrt(deux)
+    tolc = seuil*tole
+    un = 1.d0
+    compte = 0
+    mult = 0.d0
 !
     do i = 1, 6
-        b(i)=bm(i)
+        b(i) = bm(i)
     end do
-    d=dm
+    d = dm
 !
 !-------------------------------------------------------
 !-------------------------------------------------------
 !----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 !-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 !
-    call ceobfb(b, eps, lambda, mu, ecrob,&
+    call ceobfb(b, eps, lambda, mu, ecrob, &
                 bdim, fb, rtemp, fbsm)
 !
-    fbs(1)=fb(1)
-    fbs(2)=fb(2)
-    fbs(3)=fb(4)
+    fbs(1) = fb(1)
+    fbs(2) = fb(2)
+    fbs(3) = fb(4)
 !
-    bs(1)=b(1)
-    bs(2)=b(2)
-    bs(3)=b(4)
+    bs(1) = b(1)
+    bs(2) = b(2)
+    bs(3) = b(4)
 !
-    bms(1)=bm(1)
-    bms(2)=bm(2)
-    bms(3)=bm(4)
+    bms(1) = bm(1)
+    bms(2) = bm(2)
+    bms(3) = bm(4)
 !
 !----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 !-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 !
     if (dbloq) then
-        fd=0.d0
+        fd = 0.d0
     else
-        call ceobfd(d, eps, lambda, mu, ecrod,&
+        call ceobfd(d, eps, lambda, mu, ecrod, &
                     fd)
-    endif
+    end if
 !
 !----CALCUL DU CRITERE-------------------------------------
-    coupl=sqrt(alpha*rtemp+(un-alpha)*fd**2)
-    crit=coupl-seuil
+    coupl = sqrt(alpha*rtemp+(un-alpha)*fd**2)
+    crit = coupl-seuil
 !
 !
-    elas=.false.
+    elas = .false.
 !
     if (crit .le. tolc) then
-        elas=.true.
+        elas = .true.
         goto 999
 !
     else
 !
         do i = 1, 3
-            resb(i)=-bs(i)+bms(i)+alpha*mult*fbsm(i)
+            resb(i) = -bs(i)+bms(i)+alpha*mult*fbsm(i)
         end do
-        resd=-d+dm+(un-alpha)*mult*fd
-        resb(3)=rac2*resb(3)
+        resd = -d+dm+(un-alpha)*mult*fd
+        resb(3) = rac2*resb(3)
 !
-        tata=0.d0
+        tata = 0.d0
         do i = 1, 3
-            tata=tata+resb(i)*resb(i)
+            tata = tata+resb(i)*resb(i)
         end do
 !
-        normrb=sqrt(tata)
+        normrb = sqrt(tata)
 !
-        ddg=0.d0
+        ddg = 0.d0
 !
 !--------------------------------------------------------
 !--BOUCLE DU NEWTON SUR LES VARIABLES INTERNES-----------
 !--------------------------------------------------------
 !
 !
- 38     continue
-        if (((crit.gt.tolc).or.(normrb.gt.tole).or.(abs(resd).gt.tole))) then
-            if ((compte.lt.intmax) .and. (coupl.ne.0.d0)) then
+38      continue
+        if (((crit .gt. tolc) .or. (normrb .gt. tole) .or. (abs(resd) .gt. tole))) then
+            if ((compte .lt. intmax) .and. (coupl .ne. 0.d0)) then
 ! Rajout du test sur COUPL (fiche 15020) : lorsque c'est le cas,
 ! la derivee du residu est une matrice singuliere et le systeme ne
 ! peut etre resolu. On sort pour enclencher la decoupe du pas de temps
 !
                 call dfmdf(3, fbs, mte1)
 !
-                call dfbdb(3, b, eps, deux*mu, lambda,&
+                call dfbdb(3, b, eps, deux*mu, lambda, &
                            ecrob, mte2)
 !
-                mte2s(1,1)=mte2(1,1)
-                mte2s(1,2)=mte2(1,2)
-                mte2s(1,3)=mte2(1,4)
-                mte2s(2,1)=mte2(2,1)
-                mte2s(2,2)=mte2(2,2)
-                mte2s(2,3)=mte2(2,4)
-                mte2s(3,1)=mte2(4,1)
-                mte2s(3,2)=mte2(4,2)
-                mte2s(3,3)=mte2(4,4)
+                mte2s(1, 1) = mte2(1, 1)
+                mte2s(1, 2) = mte2(1, 2)
+                mte2s(1, 3) = mte2(1, 4)
+                mte2s(2, 1) = mte2(2, 1)
+                mte2s(2, 2) = mte2(2, 2)
+                mte2s(2, 3) = mte2(2, 4)
+                mte2s(3, 1) = mte2(4, 1)
+                mte2s(3, 2) = mte2(4, 2)
+                mte2s(3, 3) = mte2(4, 4)
 !
-                dfddd=0.d0
+                dfddd = 0.d0
 !
-                if ((.not.dbloq) .and. (fd.ne.0.d0)) then
-                    dfddd=-(fd+deux*ecrod)/(un-d)
-                endif
+                if ((.not. dbloq) .and. (fd .ne. 0.d0)) then
+                    dfddd = -(fd+deux*ecrod)/(un-d)
+                end if
 !
                 call r8inir(9, 0.d0, ksi, 1)
                 do i = 1, 3
                     do j = 1, 3
                         do k = 1, 3
-                            ksi(i,j)=ksi(i,j)-mult*alpha*mte1(i,k)*&
-                            mte2s(k,j)
+                            ksi(i, j) = ksi(i, j)-mult*alpha*mte1(i, k)* &
+                                        mte2s(k, j)
                         end do
                     end do
                 end do
 !
                 do i = 1, 3
-                    ksi(i,i)=ksi(i,i)+un
+                    ksi(i, i) = ksi(i, i)+un
                 end do
 !
                 do i = 1, 3
                     do j = 1, 3
-                        toti(i,j)=ksi(i,j)
+                        toti(i, j) = ksi(i, j)
                     end do
                 end do
 !
                 do i = 1, 3
                     do j = 1, 3
                         if (i .eq. j) then
-                            ide(i,j)=1.d0
+                            ide(i, j) = 1.d0
                         else
-                            ide(i,j)=0.d0
-                        endif
+                            ide(i, j) = 0.d0
+                        end if
                     end do
                 end do
                 call r8inir(9, 0.d0, teme, 1)
                 do i = 1, 3
                     do j = 1, 3
-                        teme(i,j)=ide(i,j)
+                        teme(i, j) = ide(i, j)
                     end do
                 end do
-                call mgauss('NFVP', toti, teme, 3, 3,&
+                call mgauss('NFVP', toti, teme, 3, 3, &
                             3, det, iret1)
                 call r8inir(9, 0.d0, iksi, 1)
                 do i = 1, 3
                     do j = 1, 3
-                        iksi(i,j)=teme(i,j)
+                        iksi(i, j) = teme(i, j)
                     end do
                 end do
 !
-                psi=un-mult*(un-alpha)*dfddd
+                psi = un-mult*(un-alpha)*dfddd
 !
                 call r8inir(3, 0.d0, delta1, 1)
                 do i = 1, 3
                     do j = 1, 3
                         if (j .eq. 3) then
-                            rtemp2=rac2
+                            rtemp2 = rac2
                         else
-                            rtemp2=1.d0
-                        endif
-                        delta1(i)=delta1(i)+alpha/coupl*rtemp2*fbsm(j)&
-                        *mte2s(j,i)
+                            rtemp2 = 1.d0
+                        end if
+                        delta1(i) = delta1(i)+alpha/coupl*rtemp2*fbsm(j) &
+                                    *mte2s(j, i)
                     end do
                 end do
 !
-                delta2=(un-alpha)/coupl*fd*dfddd
+                delta2 = (un-alpha)/coupl*fd*dfddd
 !
-                inter1=0.d0
-                inter3=0.d0
+                inter1 = 0.d0
+                inter3 = 0.d0
                 do i = 1, 3
                     do j = 1, 3
                         if (j .eq. 3) then
-                            rtemp2=rac2
+                            rtemp2 = rac2
                         else
-                            rtemp2=1.d0
-                        endif
-                        inter1=inter1+delta1(i)*iksi(i,j)*resb(j)
-                        inter3=inter3+alpha*rtemp2*delta1(i) *iksi(i,&
-                        j)*fbsm(j)
+                            rtemp2 = 1.d0
+                        end if
+                        inter1 = inter1+delta1(i)*iksi(i, j)*resb(j)
+                        inter3 = inter3+alpha*rtemp2*delta1(i)*iksi(i, &
+                                                                    j)*fbsm(j)
                     end do
                 end do
 !
-                inter2=delta2/psi*resd
-                inter4=delta2/psi*(un-alpha)*fd
+                inter2 = delta2/psi*resd
+                inter4 = delta2/psi*(un-alpha)*fd
 !
                 ddg = -(crit+inter1+inter2)/(inter3+inter4)
 !
-                dd=resd/psi+ddg*(un-alpha)*fd/psi
+                dd = resd/psi+ddg*(un-alpha)*fd/psi
                 call r8inir(3, 0.d0, dbs, 1)
                 do i = 1, 3
                     do j = 1, 3
                         if (i .eq. 3) then
-                            rtemp2=1/rac2
+                            rtemp2 = 1/rac2
                         else
-                            rtemp2=1.d0
-                        endif
+                            rtemp2 = 1.d0
+                        end if
                         if (j .eq. 3) then
-                            rtemp3=rac2
+                            rtemp3 = rac2
                         else
-                            rtemp3=1.d0
-                        endif
-                        dbs(i)=dbs(i)+rtemp2*iksi(i,j)* (resb(j)+ddg*&
-                        alpha*fbsm(j)*rtemp3)
+                            rtemp3 = 1.d0
+                        end if
+                        dbs(i) = dbs(i)+rtemp2*iksi(i, j)*(resb(j)+ddg* &
+                                                           alpha*fbsm(j)*rtemp3)
                     end do
                 end do
 !
                 do i = 1, 3
-                    bs(i)=bs(i)+dbs(i)
+                    bs(i) = bs(i)+dbs(i)
                 end do
-                d=d+dd
-                compte=compte+1
-                mult=mult+ddg
+                d = d+dd
+                compte = compte+1
+                mult = mult+ddg
 !
 !----CALCUL DE FB DANS NEWTON---------------------------
 !
                 call r8inir(6, 0.d0, b, 1)
 !
-                b(1)=bs(1)
-                b(2)=bs(2)
-                b(4)=bs(3)
+                b(1) = bs(1)
+                b(2) = bs(2)
+                b(4) = bs(3)
 !
-                call ceobfb(b, eps, lambda, mu, ecrob,&
+                call ceobfb(b, eps, lambda, mu, ecrob, &
                             bdim, fb, rtemp, fbsm)
 !
-                fbs(1)=fb(1)
-                fbs(2)=fb(2)
-                fbs(3)=fb(4)
+                fbs(1) = fb(1)
+                fbs(2) = fb(2)
+                fbs(3) = fb(4)
 !
 !----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 !-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 !
                 if (dbloq) then
-                    fd=0.d0
+                    fd = 0.d0
                 else
-                    call ceobfd(d, eps, lambda, mu, ecrod,&
+                    call ceobfd(d, eps, lambda, mu, ecrod, &
                                 fd)
-                endif
+                end if
 !
 !----CALCUL DU CRITERE-------------------------------------
-                coupl=sqrt(alpha*rtemp+(un-alpha)*fd**deux)
-                crit=coupl-seuil
+                coupl = sqrt(alpha*rtemp+(un-alpha)*fd**deux)
+                crit = coupl-seuil
 !
                 do i = 1, 3
-                    resb(i)=-bs(i)+bms(i)+alpha*mult*fbsm(i)
+                    resb(i) = -bs(i)+bms(i)+alpha*mult*fbsm(i)
                 end do
-                resd=-d+dm+(un-alpha)*mult*fd
-                resb(3)=rac2*resb(3)
+                resd = -d+dm+(un-alpha)*mult*fd
+                resb(3) = rac2*resb(3)
 !
-                tata=0.d0
+                tata = 0.d0
                 do i = 1, 3
-                    tata=tata+resb(i)*resb(i)
+                    tata = tata+resb(i)*resb(i)
                 end do
 !
-                normrb=sqrt(tata)
+                normrb = sqrt(tata)
 !
                 goto 38
             else
-                iret=1
+                iret = 1
                 goto 999
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 999 continue
 !
 !

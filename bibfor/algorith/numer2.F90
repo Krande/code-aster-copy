@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine numer2(nb_ligr , list_ligr, base, nume_ddlz,&
-                  nume_ddl_oldz, modelocz , sd_iden_relaz)
+subroutine numer2(nb_ligr, list_ligr, base, nume_ddlz, &
+                  nume_ddl_oldz, modelocz, sd_iden_relaz)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterc/cheksd.h"
@@ -69,7 +69,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: prof_chno, prof_chno_old
-    character(len=14) :: nume_ddl , nume_ddl_old, moloc
+    character(len=14) :: nume_ddl, nume_ddl_old, moloc
     character(len=24) :: sd_iden_rela
     character(len=3) :: matd
     aster_logical :: l_matr_dist, printt
@@ -80,10 +80,10 @@ implicit none
 !
     call jemarq()
 !
-    nume_ddl      = nume_ddlz
-    moloc         = modelocz
-    nume_ddl_old  = nume_ddl_oldz
-    prof_chno     = nume_ddl//'.NUME'
+    nume_ddl = nume_ddlz
+    moloc = modelocz
+    nume_ddl_old = nume_ddl_oldz
+    prof_chno = nume_ddl//'.NUME'
     prof_chno_old = nume_ddl_old//'.NUME'
 !
     call detrsd('NUME_DDL', nume_ddl)
@@ -93,30 +93,30 @@ implicit none
     sd_iden_rela = ' '
     if (present(sd_iden_relaz)) then
         sd_iden_rela = sd_iden_relaz
-    endif
+    end if
 !
     call matdis(matd, verbose)
-    ASSERT(matd.eq.'OUI' .or. matd.eq.'NON')
-    if (matd.eq.'OUI') then
+    ASSERT(matd .eq. 'OUI' .or. matd .eq. 'NON')
+    if (matd .eq. 'OUI') then
         l_matr_dist = .true.
     else
         l_matr_dist = .false.
-    endif
+    end if
 !
 ! - Create NUME_EQUA objects
 !
-    call nueffe(nb_ligr, list_ligr, base, nume_ddl, 'SANS',&
-                modelocz = moloc, sd_iden_relaz = sd_iden_rela)
+    call nueffe(nb_ligr, list_ligr, base, nume_ddl, 'SANS', &
+                modelocz=moloc, sd_iden_relaz=sd_iden_rela)
 !
 ! - Create NUML_EQUA objects
 !
     if (l_matr_dist) then
         call nugllo(nume_ddlz, base)
-    endif
+    end if
 !
 ! - Trying to reuse old nume_ddl
 !
-    if (nume_ddl_old.ne.' ') then
+    if (nume_ddl_old .ne. ' ') then
         if (idensd('PROF_CHNO', prof_chno, prof_chno_old)) then
             call detrsd('NUME_DDL', nume_ddl)
             call jedupo(nume_ddl//'     .ADNE', 'V', nume_ddl_old//'     .ADNE', .false._1)
@@ -124,12 +124,12 @@ implicit none
             call jedetr(nume_ddl//'     .ADLI')
             call jedetr(nume_ddl//'     .ADNE')
             nume_ddl = nume_ddl_old
-        endif
-    endif
+        end if
+    end if
 !
 ! - Create matrix topology
 !
-    printt = moloc.eq.' '
+    printt = moloc .eq. ' '
     call promor(nume_ddl, base(1:1), printt)
 !
 ! - Cleaning
@@ -139,7 +139,7 @@ implicit none
 !
     nume_ddlz = nume_ddl
 !
-    if(debug) call cheksd(nume_ddlz, 'SD_NUME_DDL', iret)
+    if (debug) call cheksd(nume_ddlz, 'SD_NUME_DDL', iret)
 !
     call jedema()
 end subroutine

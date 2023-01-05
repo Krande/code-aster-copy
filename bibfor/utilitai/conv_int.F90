@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,17 +34,17 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
     med_int :: vi_med(nb)
     integer :: i
 
-    if (sens.eq.'ast->med') then
-        do  i = 1, nb
+    if (sens .eq. 'ast->med') then
+        do i = 1, nb
             vi_med(i) = to_med_int(vi_ast(i))
-        enddo
+        end do
 
-    elseif (sens.eq.'med->ast') then
-        do  i = 1, nb
+    elseif (sens .eq. 'med->ast') then
+        do i = 1, nb
             vi_ast(i) = to_aster_int(vi_med(i))
-        enddo
+        end do
 
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

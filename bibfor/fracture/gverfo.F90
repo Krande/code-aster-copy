@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,18 +47,18 @@ subroutine gverfo(cartei, ier)
     call jeveuo(cartei//'.VALE', 'L', vk8=vale)
     call jelira(cartei//'.VALE', 'LONMAX', nbvale)
 !
-    ier=0
+    ier = 0
     do in = 1, nbvale
-        if (vale(in)(1:7) .ne. '&FOZERO' .and. vale(in)(1:7) .ne. '       ' .and.&
-            vale(in)(1:6) .ne. 'GLOBAL') then
-            nch19=vale(in)
+        if (vale(in) (1:7) .ne. '&FOZERO' .and. vale(in) (1:7) .ne. '       ' .and. &
+            vale(in) (1:6) .ne. 'GLOBAL') then
+            nch19 = vale(in)
 !
             call jeveuo(nch19//'.PROL', 'L', vk24=prol)
-            if (prol(1)(1:8) .eq. 'INTERPRE') then
-                ier=1
+            if (prol(1) (1:8) .eq. 'INTERPRE') then
+                ier = 1
                 goto 999
-            endif
-        endif
+            end if
+        end if
     end do
 !
 999 continue

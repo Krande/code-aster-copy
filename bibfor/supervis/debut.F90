@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ subroutine debut()
     character(len=8) :: k8b
     character(len=16) :: nomcmd, k16b
     integer :: icode, ier, n, dummy
-    integer, save :: ipass=0
+    integer, save :: ipass = 0
 !
     if (ipass .ne. 0) then
         call utmess('F', 'SUPERVIS_2')
-    endif
+    end if
     ipass = 1
 !   to be set by 'ExecutionParameter().enable(Options.Debug)' or similar
     dummy = jvinfo(0)
@@ -50,7 +50,7 @@ subroutine debut()
     icode = jdcget('TestMode')
     if (icode .ne. 0) then
         call uldefi(15, ' ', 'CODE', 'A', 'A', 'O')
-    endif
+    end if
 
 ! --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
     call ibdbgs()
@@ -67,7 +67,7 @@ subroutine debut()
 !           ET DU COMMON FOSAV
         call fozero('&FOZERO')
         call foint0()
-    endif
+    end if
 !
 ! --- POUR EVITER QUE LA CREATION DE '&&_NUM_CONCEPT_UNIQUE'
 !        NE SOIT REPROCHE A UNE COMMANDE CREANT UNE SD
@@ -83,6 +83,6 @@ subroutine debut()
     if (n .eq. 1) then
         ! message et debug_jeveux forcé dans ibdbgs
         call dbg_base()
-    endif
+    end if
 !
 end subroutine

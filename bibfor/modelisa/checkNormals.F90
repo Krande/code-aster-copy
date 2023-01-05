@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine checkNormals(model, slave, master)
     integer :: ndim, ndim1, vali
     integer :: iobj, ima, nbmail
     integer :: numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
-    integer :: jgro, jmab, norien,  jlima, nbmamo
+    integer :: jgro, jmab, norien, jlima, nbmamo
     aster_logical, parameter :: reorie = ASTER_FALSE
     aster_logical :: l_exi, l_exi_p
     character(len=8) ::  typel, mesh
@@ -65,7 +65,7 @@ subroutine checkNormals(model, slave, master)
     character(len=24) :: objet(nbobj)
 !
 !     INITIALISATIONS
-    ier    = 0
+    ier = 0
 !
     ndim = 0
     mesh = ' '
@@ -89,7 +89,7 @@ subroutine checkNormals(model, slave, master)
 
         if ((.not. l_exi) .and. (l_exi_p)) then
             goto 211
-        endif
+        end if
 
         call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmama, nogr), 'L', jgro)
@@ -113,44 +113,44 @@ subroutine checkNormals(model, slave, master)
                 ndim1 = 2
                 if (ndim .ne. ndim1) then
                     goto 211
-                endif
+                end if
 !
-            endif
+            end if
         end do
 !
 ! ---   FIN DE BOUCLE SUR LES MAILLES DU GROUP_MA
 !
         norien = 0
 !
-        if (nbmail.gt.0) then
+        if (nbmail .gt. 0) then
 !
             call wkvect('&&CHCKNO.MAILLE_BORD', 'V V I', nbmail, jmab)
-            call chbord(model, nbmail, zi(jgro), zi( jmab), nbmapr, nbmabo)
+            call chbord(model, nbmail, zi(jgro), zi(jmab), nbmapr, nbmabo)
             if (nbmapr .eq. nbmail .and. nbmabo .eq. 0) then
                 call ornorm(mesh, zi(jgro), nbmail, reorie, norien)
             else
                 nbmamo = 0
                 jlima = 1
-                call orilma(mesh, ndim, zi(jgro), nbmail, norien,&
-                            ntrait, reorie, nbmamo, zi(jlima ))
+                call orilma(mesh, ndim, zi(jgro), nbmail, norien, &
+                            ntrait, reorie, nbmamo, zi(jlima))
                 if ((ntrait .ne. 0)) then
                     call utmess('A', 'CONTACT2_20')
-                endif
-            endif
+                end if
+            end if
             call jedetr('&&CHCKNO.MAILLE_BORD')
 
             if (norien .ne. 0) then
-                ier = ier + 1
+                ier = ier+1
                 valk(1) = nogr
                 vali = norien
                 call utmess('E', 'MODELISA8_56', sk=valk(1), si=vali)
-            endif
+            end if
         end if
-211 continue
+211     continue
     end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA4_24')
-    endif
+    end if
 !
 end subroutine

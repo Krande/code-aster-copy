@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine char_impo_bloc(nomg, istype_bloc, cmp_nb, cmp_name, cmp_index,  &
+subroutine char_impo_bloc(nomg, istype_bloc, cmp_nb, cmp_name, cmp_index, &
                           vale_real, vale_cplx, vale_fonc)
 !
     implicit none
@@ -65,13 +65,13 @@ subroutine char_impo_bloc(nomg, istype_bloc, cmp_nb, cmp_name, cmp_index,  &
     character(len=8) :: look_name_fourier(33)
     integer :: i_exis, i_cmp, jnom
 !
-    data look_name_depla /'DX','DY','DZ'/
-    data look_name_rota /'DRX','DRY','DRZ'/
-    data look_name_fourier /'UI2','UI3','VI2','VI3','WI2','WI3','UO2',&
-                            'UO3','VO2','VO3','WO2','WO3','UI4','UI5',&
-                            'VI4','VI5','WI4','WI5','UO4','UO5','VO4',&
-                            'VO5','WO4','WO5','UI6','UO6','VI6',&
-                            'VO6','WI6','WO6','WO','WI1','WO1'/
+    data look_name_depla/'DX', 'DY', 'DZ'/
+    data look_name_rota/'DRX', 'DRY', 'DRZ'/
+    data look_name_fourier/'UI2', 'UI3', 'VI2', 'VI3', 'WI2', 'WI3', 'UO2', &
+        'UO3', 'VO2', 'VO3', 'WO2', 'WO3', 'UI4', 'UI5', &
+        'VI4', 'VI5', 'WI4', 'WI5', 'UO4', 'UO5', 'VO4', &
+        'VO5', 'WO4', 'WO5', 'UI6', 'UO6', 'VI6', &
+        'VO6', 'WI6', 'WO6', 'WO', 'WI1', 'WO1'/
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -80,9 +80,9 @@ subroutine char_impo_bloc(nomg, istype_bloc, cmp_nb, cmp_name, cmp_index,  &
 !
     ASSERT(istype_bloc(1) .or. istype_bloc(2) .or. istype_bloc(3))
     vale_real = 0.d0
-    vale_cplx = (0.d0,0.d0)
+    vale_cplx = (0.d0, 0.d0)
     vale_fonc = '&FOZERO'
-    cmp_nb    = 0
+    cmp_nb = 0
 !
 ! - Information about <GRANDEUR>
 !
@@ -92,40 +92,40 @@ subroutine char_impo_bloc(nomg, istype_bloc, cmp_nb, cmp_name, cmp_index,  &
 
 !!  --TYPE DEPLACEMENT
     if (istype_bloc(1)) then
-        do i_cmp = 1,3
-            i_exis = indik8(zk8(jnom),look_name_depla(i_cmp),1,3)
-            if (i_exis.ne.0) then
-                cmp_nb = cmp_nb + 1
+        do i_cmp = 1, 3
+            i_exis = indik8(zk8(jnom), look_name_depla(i_cmp), 1, 3)
+            if (i_exis .ne. 0) then
+                cmp_nb = cmp_nb+1
                 cmp_index(cmp_nb) = i_exis
                 cmp_name(cmp_nb) = look_name_depla(i_cmp)
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 
 !!  --TYPE ROTATION
     if (istype_bloc(2)) then
-        do i_cmp = 1,3
-            i_exis = indik8(zk8(jnom),look_name_rota(i_cmp),1,6)
-            if (i_exis.ne.0) then
-                cmp_nb = cmp_nb + 1
+        do i_cmp = 1, 3
+            i_exis = indik8(zk8(jnom), look_name_rota(i_cmp), 1, 6)
+            if (i_exis .ne. 0) then
+                cmp_nb = cmp_nb+1
                 cmp_index(cmp_nb) = i_exis
                 cmp_name(cmp_nb) = look_name_rota(i_cmp)
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 
 !!  --TYPE FOURIER
     if (istype_bloc(3)) then
 
-        do i_cmp = 1,33
-            i_exis = indik8(zk8(jnom),look_name_fourier(i_cmp),1,120)
-            if (i_exis.ne.0) then
-                cmp_nb = cmp_nb + 1
+        do i_cmp = 1, 33
+            i_exis = indik8(zk8(jnom), look_name_fourier(i_cmp), 1, 120)
+            if (i_exis .ne. 0) then
+                cmp_nb = cmp_nb+1
                 cmp_index(cmp_nb) = i_exis
                 cmp_name(cmp_nb) = look_name_fourier(i_cmp)
-            endif
-        enddo
-    endif
+            end if
+        end do
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
+subroutine arlapl(ndim, nns, ndml1, ndml2, nomte, &
                   npgs, ipoids, ivfs, idfdes)
 !
 !
@@ -53,7 +53,7 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
 ! IN  IDFDES : POINTEUR VERS DER. FONCTIONS DE FORME DE LA MAILLE S
 !
     integer :: nliai, nddl
-    parameter    (nliai=12,nddl=nliai*nliai)
+    parameter(nliai=12, nddl=nliai*nliai)
     integer :: jrefe1, jrefe2, jcoor1, jcoor2, jinfor, jcoors
     real(kind=8) :: mcplc1(2*ndim*ndml2, ndim*ndml1)
     real(kind=8) :: mcplc2(2*ndim*ndml2, 2*ndim*ndml2)
@@ -75,9 +75,9 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
 !
 ! --- CALCUL DES TERMES COMPOSANT LES MATRICES DE COUPLAGE
 !
-    call arltem(ndim, nomte, nns, jcoors, npgs,&
-                ivfs, idfdes, ipoids, elrf1, ndml1,&
-                jcoor1, elrf2, ndml2, jcoor2, mcplc1,&
+    call arltem(ndim, nomte, nns, jcoors, npgs, &
+                ivfs, idfdes, ipoids, elrf1, ndml1, &
+                jcoor1, elrf2, ndml2, jcoor2, mcplc1, &
                 mcplc2)
 !
 ! --- RECOPIE DES TERMES DES MATRICES DE COUPLAGE
@@ -89,14 +89,14 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
     if (elrf1 == 'H20' .and. elrf2 == 'SE2') then
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, ndim*ndml1
-                ijkl1 = ijkl1 + 1
-                zr(imatu1-1+ijkl1) = mcplc1(iaux,jaux)
+                ijkl1 = ijkl1+1
+                zr(imatu1-1+ijkl1) = mcplc1(iaux, jaux)
             end do
         end do
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, 2*ndim*ndml2
-                ijkl2 = ijkl2 + 1
-                zr(imatu2-1+ijkl2) = mcplc2(iaux,jaux)
+                ijkl2 = ijkl2+1
+                zr(imatu2-1+ijkl2) = mcplc2(iaux, jaux)
             end do
         end do
         zr(imatu2-1+nddl+1) = zr(jinfor+1)
@@ -128,14 +128,14 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
     else if (elrf1 == 'HE8' .and. elrf2 == 'SE2') then
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, ndim*ndml1
-                ijkl1 = ijkl1 + 1
-                zr(imatu1-1+ijkl1) = mcplc1(iaux,jaux)
+                ijkl1 = ijkl1+1
+                zr(imatu1-1+ijkl1) = mcplc1(iaux, jaux)
             end do
         end do
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, 2*ndim*ndml2
-                ijkl2 = ijkl2 + 1
-                zr(imatu2-1+ijkl2) = mcplc2(iaux,jaux)
+                ijkl2 = ijkl2+1
+                zr(imatu2-1+ijkl2) = mcplc2(iaux, jaux)
             end do
         end do
         zr(imatu2-1+nddl+1) = zr(jinfor+1)
@@ -155,14 +155,14 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
     else if (elrf1 == 'P15' .and. elrf2 == 'SE2') then
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, ndim*ndml1
-                ijkl1 = ijkl1 + 1
-                zr(imatu1-1+ijkl1) = mcplc1(iaux,jaux)
+                ijkl1 = ijkl1+1
+                zr(imatu1-1+ijkl1) = mcplc1(iaux, jaux)
             end do
         end do
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, 2*ndim*ndml2
-                ijkl2 = ijkl2 + 1
-                zr(imatu2-1+ijkl2) = mcplc2(iaux,jaux)
+                ijkl2 = ijkl2+1
+                zr(imatu2-1+ijkl2) = mcplc2(iaux, jaux)
             end do
         end do
         zr(imatu2-1+nddl+1) = zr(jinfor+1)
@@ -189,14 +189,14 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
     else if (elrf1 == 'PE6' .and. elrf2 == 'SE2') then
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, ndim*ndml1
-                ijkl1 = ijkl1 + 1
-                zr(imatu1-1+ijkl1) = mcplc1(iaux,jaux)
+                ijkl1 = ijkl1+1
+                zr(imatu1-1+ijkl1) = mcplc1(iaux, jaux)
             end do
         end do
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, 2*ndim*ndml2
-                ijkl2 = ijkl2 + 1
-                zr(imatu2-1+ijkl2) = mcplc2(iaux,jaux)
+                ijkl2 = ijkl2+1
+                zr(imatu2-1+ijkl2) = mcplc2(iaux, jaux)
             end do
         end do
         zr(imatu2-1+nddl+1) = zr(jinfor+1)
@@ -214,14 +214,14 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
     else if (elrf1 == 'T10' .and. elrf2 == 'SE2') then
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, ndim*ndml1
-                ijkl1 = ijkl1 + 1
-                zr(imatu1-1+ijkl1) = mcplc1(iaux,jaux)
+                ijkl1 = ijkl1+1
+                zr(imatu1-1+ijkl1) = mcplc1(iaux, jaux)
             end do
         end do
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, 2*ndim*ndml2
-                ijkl2 = ijkl2 + 1
-                zr(imatu2-1+ijkl2) = mcplc2(iaux,jaux)
+                ijkl2 = ijkl2+1
+                zr(imatu2-1+ijkl2) = mcplc2(iaux, jaux)
             end do
         end do
         zr(imatu2-1+nddl+1) = zr(jinfor+1)
@@ -243,14 +243,14 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
     else if (elrf1 == 'TE4' .and. elrf2 == 'SE2') then
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, ndim*ndml1
-                ijkl1 = ijkl1 + 1
-                zr(imatu1-1+ijkl1) = mcplc1(iaux,jaux)
+                ijkl1 = ijkl1+1
+                zr(imatu1-1+ijkl1) = mcplc1(iaux, jaux)
             end do
         end do
         do iaux = 1, 2*ndim*ndml2
             do jaux = 1, 2*ndim*ndml2
-                ijkl2 = ijkl2 + 1
-                zr(imatu2-1+ijkl2) = mcplc2(iaux,jaux)
+                ijkl2 = ijkl2+1
+                zr(imatu2-1+ijkl2) = mcplc2(iaux, jaux)
             end do
         end do
         zr(imatu2-1+nddl+1) = zr(jinfor+1)
@@ -263,6 +263,6 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte,&
         zr(imatu2-1+nddl+8) = zr(jcoor1+ndim*ndml1-1+4)
         zr(imatu2-1+nddl+9) = zr(jcoor2+ndim*ndml2-1+1)
         zr(imatu2-1+nddl+10) = zr(jcoor2+ndim*ndml2-1+2)
-    endif
+    end if
 !
 end subroutine

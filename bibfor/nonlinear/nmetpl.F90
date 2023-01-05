@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmetpl(ds_inout, sd_suiv, sd_obsv)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -72,60 +72,60 @@ implicit none
             if (hat_type .eq. 'VALINC') then
                 if (hat_vari .eq. 'TEMP') then
                     ASSERT(.false.)
-                endif
+                end if
                 algo_name_new = algo_name_old
                 algo_name_new(14:16) = 'PLU'
                 ds_inout%field(i_field)%algo_name = algo_name_new
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - For DOF monitoring
 !
-    sdextr_suiv   = sd_suiv(1:14)
-    extr_info     = sdextr_suiv(1:14)//'     .INFO'
-    call jeveuo(extr_info, 'L', vi = v_extr_info)
-    nb_keyw_fact  = v_extr_info(1)
-    nb_field      = v_extr_info(6)
-    extr_field    = sdextr_suiv(1:14)//'     .CHAM'
+    sdextr_suiv = sd_suiv(1:14)
+    extr_info = sdextr_suiv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'L', vi=v_extr_info)
+    nb_keyw_fact = v_extr_info(1)
+    nb_field = v_extr_info(6)
+    extr_field = sdextr_suiv(1:14)//'     .CHAM'
     if (nb_keyw_fact .ne. 0) then
-        call jeveuo(extr_field, 'E', vk24 = v_extr_field)
-    endif
+        call jeveuo(extr_field, 'E', vk24=v_extr_field)
+    end if
     do i_keyw_fact = 1, nb_keyw_fact
-        i_field     = v_extr_info(7+7*(i_keyw_fact-1)+7)
-        field_type  = v_extr_field(4*(i_field-1)+1)
+        i_field = v_extr_info(7+7*(i_keyw_fact-1)+7)
+        field_type = v_extr_field(4*(i_field-1)+1)
         if (field_type .ne. 'NONE') then
-            algo_name_old = v_extr_field(4*(i_field-1)+4)(1:19)
+            algo_name_old = v_extr_field(4*(i_field-1)+4) (1:19)
             if (algo_name_old(13:15) .eq. 'MOI') then
                 algo_name_new = algo_name_old
                 algo_name_new(13:15) = 'PLU'
                 v_extr_field(4*(i_field-1)+4) = algo_name_new
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! - For observation
 !
-    sdextr_obsv   = sd_obsv(1:14)
-    extr_info     = sdextr_obsv(1:14)//'     .INFO'
-    call jeveuo(extr_info, 'L', vi = v_extr_info)
-    nb_keyw_fact  = v_extr_info(1)
-    nb_field      = v_extr_info(6)
-    extr_field    = sdextr_obsv(1:14)//'     .CHAM'
+    sdextr_obsv = sd_obsv(1:14)
+    extr_info = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'L', vi=v_extr_info)
+    nb_keyw_fact = v_extr_info(1)
+    nb_field = v_extr_info(6)
+    extr_field = sdextr_obsv(1:14)//'     .CHAM'
     if (nb_keyw_fact .ne. 0) then
-        call jeveuo(extr_field, 'E', vk24 = v_extr_field)
-    endif
+        call jeveuo(extr_field, 'E', vk24=v_extr_field)
+    end if
     do i_keyw_fact = 1, nb_keyw_fact
-        i_field     = v_extr_info(7+7*(i_keyw_fact-1)+7)
-        field_type  = v_extr_field(4*(i_field-1)+1)
+        i_field = v_extr_info(7+7*(i_keyw_fact-1)+7)
+        field_type = v_extr_field(4*(i_field-1)+1)
         if (field_type .ne. 'NONE') then
-            algo_name_old = v_extr_field(4*(i_field-1)+4)(1:19)
+            algo_name_old = v_extr_field(4*(i_field-1)+4) (1:19)
             if (algo_name_old(13:15) .eq. 'MOI') then
                 algo_name_new = algo_name_old
                 algo_name_new(13:15) = 'PLU'
                 v_extr_field(4*(i_field-1)+4) = algo_name_new
-            endif
-        endif
+            end if
+        end if
     end do
 !
 end subroutine

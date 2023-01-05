@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,31 +59,31 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
     if (iret .le. 0) then
         call utmess('A', 'UTILITAI_99', sk=ob1)
         goto 999
-    endif
+    end if
 !
     call jelira(ob1, 'NMAXOC', nmaxoc)
     call jelira(ob1, 'ACCES', cval=acces)
 !
-    write(unit,*)'IMPRESSION DE LA COLLECTION : ',ob1
+    write (unit, *) 'IMPRESSION DE LA COLLECTION : ', ob1
 !
     if (lattr) call jeimpa(unit, ob1, ' ')
-    if ((lcont) .and. (acces(1:2).eq.'NO')) then
+    if ((lcont) .and. (acces(1:2) .eq. 'NO')) then
         call jeprat(unit, ob1, '$$NOM', 'REPERTOIRE DE NOMS DE LA COLLECTION :'//ob1)
-    endif
+    end if
 !
 !     -- BOUCLE SUR LES ELEMENTS DE LA COLLECTION :
 !     ---------------------------------------------
     do ioc = 1, nmaxoc
-        if ((nivo.eq.1) .and. (ioc.gt.10)) goto 999
+        if ((nivo .eq. 1) .and. (ioc .gt. 10)) goto 999
         call jeexin(jexnum(ob1, ioc), iret)
         if (iret .eq. 0) goto 1
         if (lattr) then
             call jeimpa(unit, jexnum(ob1, ioc), ' ')
-        endif
+        end if
         if (lcont) then
             call jeimpo(unit, jexnum(ob1, ioc), ' ')
-        endif
-  1     continue
+        end if
+1       continue
     end do
 !
 999 continue

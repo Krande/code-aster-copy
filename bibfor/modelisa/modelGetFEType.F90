@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 !
-implicit none
+    implicit none
 !
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -29,10 +29,10 @@ implicit none
 #include "asterfort/lxlgut.h"
 #include "asterfort/deprecated_model.h"
 !
-integer, intent(in) :: iocc
-character(len=16), intent(in) :: phenom, modeli_in
-integer, intent(out) :: idx_modelisa
-character(len=16), intent(out) :: modeli
+    integer, intent(in) :: iocc
+    character(len=16), intent(in) :: phenom, modeli_in
+    integer, intent(out) :: idx_modelisa
+    character(len=16), intent(out) :: modeli
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,19 +57,19 @@ character(len=16), intent(out) :: modeli
 ! --------------------------------------------------------------------------------------------------
 !
     idx_modelisa = 0
-    modeli       = modeli_in
+    modeli = modeli_in
 !
 ! - Get formulation
 !
     formul = ' '
     if (getexm(keywordfact, 'FORMULATION') .eq. 1) then
-        call getvtx(keywordfact, 'FORMULATION', iocc=iocc, scal=formul, nbret = nbret)
+        call getvtx(keywordfact, 'FORMULATION', iocc=iocc, scal=formul, nbret=nbret)
         if (nbret .eq. 0) then
             formul = ' '
         else
             ASSERT(nbret .eq. 1)
-        endif
-    endif
+        end if
+    end if
 !
 ! - New modelisation
 !
@@ -85,7 +85,7 @@ character(len=16), intent(out) :: modeli
         modeli = modeli_in(1:lxlgut(modeli_in))//'#3'
     elseif (formul .ne. ' ') then
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Check deprecation warning
 !
@@ -95,7 +95,7 @@ character(len=16), intent(out) :: modeli
 !
     call jenonu(jexnom('&CATA.'//phenom(1:13)//'.MODL', modeli), idx_modelisa)
     if (idx_modelisa .eq. 0) then
-        call utmess('F', 'MODELE1_12', sk = formul)
-    endif
+        call utmess('F', 'MODELE1_12', sk=formul)
+    end if
 !
 end subroutine

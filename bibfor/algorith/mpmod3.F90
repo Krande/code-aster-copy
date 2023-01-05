@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
+subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham, &
                   vnoeud, vrange, vorien, nnoema, ncmpma)
 !
 !
@@ -98,17 +98,17 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
         nbcham = -nbcham
     else
         call utmess('A', 'ALGORITH10_93')
-    endif
+    end if
     call wkvect('&&LISTE_CHAM', 'V V K16', nbcham, lch)
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch),&
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch), &
                 nbret=ibid)
 !
 ! RECUPERATION DU NB DE VECTEURS DE BASE : NBMTOT
 !
-    call rsorac(basemo, 'LONUTI', 0, rbid, k8bid,&
-                cbid, rbid, 'ABSOLU', tmod, 1,&
+    call rsorac(basemo, 'LONUTI', 0, rbid, k8bid, &
+                cbid, rbid, 'ABSOLU', tmod, 1, &
                 ibid)
-    nbmtot=tmod(1)
+    nbmtot = tmod(1)
 !
 ! RECUPERATION DES OBJETS LIES A LA MESURE
 !
@@ -116,10 +116,10 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
 ! RECUPERATION DU NB DE NUMERO D ORDRE : NBORD
 !
-    call rsorac(nommes, 'LONUTI', 0, rbid, k8bid,&
-                cbid, rbid, 'ABSOLU', tmod, 1,&
+    call rsorac(nommes, 'LONUTI', 0, rbid, k8bid, &
+                cbid, rbid, 'ABSOLU', tmod, 1, &
                 ibid)
-    nbord=tmod(1)
+    nbord = tmod(1)
 !
     chs = '&&MESURE.CHS'
     nbmesu = 0
@@ -130,18 +130,18 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !     CALCUL DE NNOEMA ET NCMPMA
 !
     do ich = 1, nbcham
-        nomcha = zk16(lch-1 +ich)
-        call rsexch('F', nommes, nomcha, zi(lord), chamno,&
+        nomcha = zk16(lch-1+ich)
+        call rsexch('F', nommes, nomcha, zi(lord), chamno, &
                     iret)
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
         call cnocns(chamno, 'V', chs)
         call jeveuo(chs//'.CNSD', 'L', jcnsd)
 !
-        nbnoeu = zi(jcnsd-1 + 1)
-        nbcmp = zi(jcnsd-1 + 2)
-        nnoema = nnoema + nbnoeu
-        ncmpma = ncmpma + nbcmp
+        nbnoeu = zi(jcnsd-1+1)
+        nbcmp = zi(jcnsd-1+2)
+        nnoema = nnoema+nbnoeu
+        ncmpma = ncmpma+nbcmp
 !
     end do
 !
@@ -161,8 +161,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 ! BOUCLE SUR LES CHAMPS MESURES
 !
     do ich = 1, nbcham
-        nomcha = zk16(lch-1 +ich)
-        call rsexch('F', nommes, nomcha, zi(lord), chamno,&
+        nomcha = zk16(lch-1+ich)
+        call rsexch('F', nommes, nomcha, zi(lord), chamno, &
                     iret)
 !
         call jeveuo(chamno//'.DESC', 'L', vi=desc)
@@ -173,7 +173,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
             zcmplx = .true.
         else
             zcmplx = .false.
-        endif
+        end if
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
         call cnocns(chamno, 'V', chs)
@@ -183,13 +183,13 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
         call jeveuo(chs//'.CNSV', 'L', jcnsv)
         call jeveuo(chs//'.CNSL', 'L', jcnsl)
 !
-        nbnoeu = zi(jcnsd-1 + 1)
-        nbcmp = zi(jcnsd-1 + 2)
+        nbnoeu = zi(jcnsd-1+1)
+        nbcmp = zi(jcnsd-1+2)
         nomgd = cnsk(2)
 !
         if (nomgd(1:4) .eq. 'DEPL') then
 ! RECUPERATION DE L ORIENTATION
-            if ((typres(1:9).eq.'HARM_GENE') .or. (typres(1:9) .eq.'TRAN_GENE')) then
+            if ((typres(1:9) .eq. 'HARM_GENE') .or. (typres(1:9) .eq. 'TRAN_GENE')) then
 !  SI RESULTAT DE TYPE *_GENE ON SUPPOSE QUE L'ORIENTATION
 !  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 58
                 licmp(1) = 'D1X'
@@ -205,124 +205,124 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                     do icmp = 1, nbcmp
                         indice = (ino-1)*nbcmp+icmp
                         orien = .false.
-                        if (zl(jcnsl-1 + indice)) then
+                        if (zl(jcnsl-1+indice)) then
                             do ii = 1, 9
-                                if (zk8(jcnsc-1 +icmp) .eq. licmp(ii)) then
+                                if (zk8(jcnsc-1+icmp) .eq. licmp(ii)) then
                                     orien = .true.
-                                endif
+                                end if
                             end do
 ! ON NE TRAITE PAS NON PLUS LES DRX DRY DRZ
-                            if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DR') then
+                            if (zk8(jcnsc-1+icmp) (1:2) .eq. 'DR') then
                                 orien = .true.
-                            endif
+                            end if
                             if (.not. orien) then
                                 nbmesu = nbmesu+1
-                                zi(lnoeud-1 +nbmesu) = ino
-                                zk16(lcham-1 +nbmesu) = nomcha
-                                if (zk8(jcnsc-1 +icmp) .eq. 'D1') then
-                                    zk8(lrange-1 +nbmesu) = 'D1'
+                                zi(lnoeud-1+nbmesu) = ino
+                                zk16(lcham-1+nbmesu) = nomcha
+                                if (zk8(jcnsc-1+icmp) .eq. 'D1') then
+                                    zk8(lrange-1+nbmesu) = 'D1'
                                     do ii = 1, nbcmp
                                         if (zcmplx) then
-                                            val = dble( zc(jcnsv-1 +(ino-1) *nbcmp+ii ) )
+                                            val = dble(zc(jcnsv-1+(ino-1)*nbcmp+ii))
                                         else
-                                            val = zr(jcnsv-1 +(ino-1)* nbcmp+ii )
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(1)) then
-                                            zr(lori-1 +(nbmesu-1)*3+1) =&
-                                        val
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(2)) then
-                                            zr(lori-1 +(nbmesu-1)*3+2) =&
-                                        val
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(3)) then
-                                            zr(lori-1 +(nbmesu-1)*3+3) =&
-                                        val
-                                        endif
+                                            val = zr(jcnsv-1+(ino-1)*nbcmp+ii)
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(1)) then
+                                            zr(lori-1+(nbmesu-1)*3+1) = &
+                                                val
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(2)) then
+                                            zr(lori-1+(nbmesu-1)*3+2) = &
+                                                val
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(3)) then
+                                            zr(lori-1+(nbmesu-1)*3+3) = &
+                                                val
+                                        end if
                                     end do
-                                endif
-                                if (zk8(jcnsc-1 +icmp) .eq. 'D2') then
-                                    zk8(lrange-1 +nbmesu) = 'D2'
+                                end if
+                                if (zk8(jcnsc-1+icmp) .eq. 'D2') then
+                                    zk8(lrange-1+nbmesu) = 'D2'
                                     do ii = 1, nbcmp
                                         if (zcmplx) then
-                                            val = dble( zc(jcnsv-1 +(ino-1) *nbcmp+ii ) )
+                                            val = dble(zc(jcnsv-1+(ino-1)*nbcmp+ii))
                                         else
-                                            val = zr(jcnsv-1 +(ino-1)* nbcmp+ii )
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(4)) then
-                                            zr(lori-1 +(nbmesu-1)*3+1) =&
-                                        val
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(5)) then
-                                            zr(lori-1 +(nbmesu-1)*3+2) =&
-                                        val
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(6)) then
-                                            zr(lori-1 +(nbmesu-1)*3+3) =&
-                                        val
-                                        endif
+                                            val = zr(jcnsv-1+(ino-1)*nbcmp+ii)
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(4)) then
+                                            zr(lori-1+(nbmesu-1)*3+1) = &
+                                                val
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(5)) then
+                                            zr(lori-1+(nbmesu-1)*3+2) = &
+                                                val
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(6)) then
+                                            zr(lori-1+(nbmesu-1)*3+3) = &
+                                                val
+                                        end if
                                     end do
-                                endif
-                                if (zk8(jcnsc-1 +icmp) .eq. 'D3') then
-                                    zk8(lrange-1 +nbmesu) = 'D3'
+                                end if
+                                if (zk8(jcnsc-1+icmp) .eq. 'D3') then
+                                    zk8(lrange-1+nbmesu) = 'D3'
                                     do ii = 1, nbcmp
                                         if (zcmplx) then
-                                            val = dble( zc(jcnsv-1 +(ino-1) *nbcmp+ii ) )
+                                            val = dble(zc(jcnsv-1+(ino-1)*nbcmp+ii))
                                         else
-                                            val = zr(jcnsv-1 +(ino-1)* nbcmp+ii )
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(7)) then
-                                            zr(lori-1 +(nbmesu-1)*3+1) =&
-                                        val
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(8)) then
-                                            zr(lori-1 +(nbmesu-1)*3+2) =&
-                                        val
-                                        endif
-                                        if (zk8(jcnsc-1 +ii) .eq. licmp(9)) then
-                                            zr(lori-1 +(nbmesu-1)*3+3) =&
-                                        val
-                                        endif
+                                            val = zr(jcnsv-1+(ino-1)*nbcmp+ii)
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(7)) then
+                                            zr(lori-1+(nbmesu-1)*3+1) = &
+                                                val
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(8)) then
+                                            zr(lori-1+(nbmesu-1)*3+2) = &
+                                                val
+                                        end if
+                                        if (zk8(jcnsc-1+ii) .eq. licmp(9)) then
+                                            zr(lori-1+(nbmesu-1)*3+3) = &
+                                                val
+                                        end if
                                     end do
-                                endif
+                                end if
 !
-                                if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DX') then
-                                    zk8(lrange-1 +nbmesu) = 'DX'
-                                    zr(lori-1 +(nbmesu-1)*3+1) =&
-                                    1.0d0
-                                    zr(lori-1 +(nbmesu-1)*3+2) =&
-                                    0.0d0
-                                    zr(lori-1 +(nbmesu-1)*3+3) =&
-                                    0.0d0
-                                endif
-                                if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DY') then
-                                    zk8(lrange-1 +nbmesu) = 'DY'
-                                    zr(lori-1 +(nbmesu-1)*3+1) =&
-                                    0.0d0
-                                    zr(lori-1 +(nbmesu-1)*3+2) =&
-                                    1.0d0
-                                    zr(lori-1 +(nbmesu-1)*3+3) =&
-                                    0.0d0
-                                endif
-                                if (zk8(jcnsc-1 +icmp)(1:2) .eq. 'DZ') then
-                                    zk8(lrange-1 +nbmesu) = 'DZ'
-                                    zr(lori-1 +(nbmesu-1)*3+1) =&
-                                    0.0d0
-                                    zr(lori-1 +(nbmesu-1)*3+2) =&
-                                    0.0d0
-                                    zr(lori-1 +(nbmesu-1)*3+3) =&
-                                    1.0d0
-                                endif
-                            endif
-                        endif
+                                if (zk8(jcnsc-1+icmp) (1:2) .eq. 'DX') then
+                                    zk8(lrange-1+nbmesu) = 'DX'
+                                    zr(lori-1+(nbmesu-1)*3+1) = &
+                                        1.0d0
+                                    zr(lori-1+(nbmesu-1)*3+2) = &
+                                        0.0d0
+                                    zr(lori-1+(nbmesu-1)*3+3) = &
+                                        0.0d0
+                                end if
+                                if (zk8(jcnsc-1+icmp) (1:2) .eq. 'DY') then
+                                    zk8(lrange-1+nbmesu) = 'DY'
+                                    zr(lori-1+(nbmesu-1)*3+1) = &
+                                        0.0d0
+                                    zr(lori-1+(nbmesu-1)*3+2) = &
+                                        1.0d0
+                                    zr(lori-1+(nbmesu-1)*3+3) = &
+                                        0.0d0
+                                end if
+                                if (zk8(jcnsc-1+icmp) (1:2) .eq. 'DZ') then
+                                    zk8(lrange-1+nbmesu) = 'DZ'
+                                    zr(lori-1+(nbmesu-1)*3+1) = &
+                                        0.0d0
+                                    zr(lori-1+(nbmesu-1)*3+2) = &
+                                        0.0d0
+                                    zr(lori-1+(nbmesu-1)*3+3) = &
+                                        1.0d0
+                                end if
+                            end if
+                        end if
                     end do
                 end do
-            else if (typres(1:9).eq.'MODE_GENE') then
+            else if (typres(1:9) .eq. 'MODE_GENE') then
 !  SI RESULTAT DE TYPE MODE_GENE ON SUPPOSE QUE L'ORIENTATION
 !  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 55
 !  BOUCLE SUR LES NUMEROS D ORDRE POUR RECUPERATION DES DDL MESURE
                 do imode = 1, nbord
-                    call rsexch('F', nommes, nomcha, zi(lord-1+imode), chamno,&
+                    call rsexch('F', nommes, nomcha, zi(lord-1+imode), chamno, &
                                 iret)
                     call cnocns(chamno, 'V', chs)
                     call jeveuo(chs//'.CNSC', 'L', jcnsc)
@@ -331,82 +331,82 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
                     do ino = 1, nbnoeu
                         do icmp = 1, nbcmp
                             indice = (ino-1)*nbcmp+icmp
-                            if (zl(jcnsl-1 + indice)) then
+                            if (zl(jcnsl-1+indice)) then
                                 dcapt = .false.
                                 if (zcmplx) then
-                                    val = dble(zc(jcnsv-1 +(ino-1)* nbcmp+icmp) )
+                                    val = dble(zc(jcnsv-1+(ino-1)*nbcmp+icmp))
                                 else
-                                    val = zr(jcnsv-1 +(ino-1)*nbcmp+ icmp)
-                                endif
+                                    val = zr(jcnsv-1+(ino-1)*nbcmp+icmp)
+                                end if
                                 if (abs(val) .gt. (100*r8prem())) then
-                                    if ((zk8(jcnsc-1 +icmp).eq.'DX') .or.&
-                                        (zk8(jcnsc-1 +icmp).eq.'DY') .or.&
-                                        (zk8(jcnsc-1 +icmp).eq.'DZ')) then
+                                    if ((zk8(jcnsc-1+icmp) .eq. 'DX') .or. &
+                                        (zk8(jcnsc-1+icmp) .eq. 'DY') .or. &
+                                        (zk8(jcnsc-1+icmp) .eq. 'DZ')) then
                                         inomes = ino
                                         chames = nomcha
-                                        compms = zk8(jcnsc-1 +icmp)
+                                        compms = zk8(jcnsc-1+icmp)
                                         dcapt = .true.
-                                    endif
+                                    end if
                                     do imesu = 1, nbmesu
-                                        inocap = zi(lnoeud-1 +imesu)
-                                        chacap = zk16(lcham-1 +imesu)
-                                        comcap = zk8(lrange-1 +imesu)
-                                        if ((comcap .eq. compms) .and. (chacap .eq. chames)&
+                                        inocap = zi(lnoeud-1+imesu)
+                                        chacap = zk16(lcham-1+imesu)
+                                        comcap = zk8(lrange-1+imesu)
+                                        if ((comcap .eq. compms) .and. (chacap .eq. chames) &
                                             .and. (inocap .eq. inomes)) then
                                             dcapt = .false.
-                                        endif
+                                        end if
                                     end do
                                     if (dcapt) then
                                         nbmesu = nbmesu+1
-                                        zi(lnoeud-1 +nbmesu) = ino
-                                        zk16(lcham-1 +nbmesu) =&
-                                        nomcha
-                                        zk8(lrange-1 +nbmesu) = zk8( jcnsc-1 +icmp)
-                                    endif
-                                endif
-                            endif
+                                        zi(lnoeud-1+nbmesu) = ino
+                                        zk16(lcham-1+nbmesu) = &
+                                            nomcha
+                                        zk8(lrange-1+nbmesu) = zk8(jcnsc-1+icmp)
+                                    end if
+                                end if
+                            end if
                         end do
                     end do
                 end do
 !
                 do imesu = 1, nbmesu
-                    if (zk8(lrange-1 +imesu) .eq. 'DX') then
-                        zr(lori-1 +(imesu-1)*3+1) = 1.0d0
-                        zr(lori-1 +(imesu-1)*3+2) = 0.0d0
-                        zr(lori-1 +(imesu-1)*3+3) = 0.0d0
-                    endif
-                    if (zk8(lrange-1 +imesu) .eq. 'DY') then
-                        zr(lori-1 +(imesu-1)*3+1) = 0.0d0
-                        zr(lori-1 +(imesu-1)*3+2) = 1.0d0
-                        zr(lori-1 +(imesu-1)*3+3) = 0.0d0
-                    endif
-                    if (zk8(lrange-1 +imesu) .eq. 'DZ') then
-                        zr(lori-1 +(imesu-1)*3+1) = 0.0d0
-                        zr(lori-1 +(imesu-1)*3+2) = 0.0d0
-                        zr(lori-1 +(imesu-1)*3+3) = 1.0d0
-                    endif
+                    if (zk8(lrange-1+imesu) .eq. 'DX') then
+                        zr(lori-1+(imesu-1)*3+1) = 1.0d0
+                        zr(lori-1+(imesu-1)*3+2) = 0.0d0
+                        zr(lori-1+(imesu-1)*3+3) = 0.0d0
+                    end if
+                    if (zk8(lrange-1+imesu) .eq. 'DY') then
+                        zr(lori-1+(imesu-1)*3+1) = 0.0d0
+                        zr(lori-1+(imesu-1)*3+2) = 1.0d0
+                        zr(lori-1+(imesu-1)*3+3) = 0.0d0
+                    end if
+                    if (zk8(lrange-1+imesu) .eq. 'DZ') then
+                        zr(lori-1+(imesu-1)*3+1) = 0.0d0
+                        zr(lori-1+(imesu-1)*3+2) = 0.0d0
+                        zr(lori-1+(imesu-1)*3+3) = 1.0d0
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
 !
         if (nomgd(1:4) .eq. 'SIEF' .or. nomgd(1:4) .eq. 'EPSI') then
             do ino = 1, nbnoeu
                 do icmp = 1, nbcmp
                     indice = (ino-1)*nbcmp+icmp
-                    if (zl(jcnsl-1 + indice)) then
+                    if (zl(jcnsl-1+indice)) then
                         nbmesu = nbmesu+1
-                        zi(lnoeud-1 +nbmesu) = ino
-                        zk16(lcham-1 +nbmesu) = nomcha
-                        zk8(lrange-1 +nbmesu) = zk8(jcnsc-1 +icmp)
-                    endif
+                        zi(lnoeud-1+nbmesu) = ino
+                        zk16(lcham-1+nbmesu) = nomcha
+                        zk8(lrange-1+nbmesu) = zk8(jcnsc-1+icmp)
+                    end if
                 end do
             end do
-        endif
+        end if
 !
         call jeveuo(basemo//'           .ORDR', 'L', lord)
 !
-        ch1s='&&PJEFPR.CH1S'
-        ch2s='&&PJEFPR.CH2S'
+        ch1s = '&&PJEFPR.CH1S'
+        ch2s = '&&PJEFPR.CH2S'
 !
 ! FIN BOUCLE SUR LES NOMCHA
     end do
@@ -416,13 +416,13 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     call jeecra(vnoeud, 'LONUTI', nbmesu)
     call jeecra(vrange, 'LONUTI', nbmesu)
 !
-    zk16(lref-1 +1) = modmes
+    zk16(lref-1+1) = modmes
 ! PAS DE CALCUL DE MODIF STRUCTURALE POUR LES SDMIXTES
     if (nbcham .gt. 1) then
         call utmess('A', 'SOUSTRUC2_11')
-    endif
-    zk16(lref-1 +2) = nomcha
-    zk16(lref-1 +3) = basemo
+    end if
+    zk16(lref-1+2) = nomcha
+    zk16(lref-1+3) = basemo
 !
 ! DESTRUCTION DES VECTEURS DE TRAVAIL
 !

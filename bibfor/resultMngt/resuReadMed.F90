@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuReadMed(fileUnit    ,&
-                       resultName  ,&
-                       model       , meshAst     ,&
-                       fieldNb     , fieldList   ,&
-                       storeAccess , storeCreaNb ,&
-                       storeIndxNb , storeIndx   ,&
-                       storeTimeNb , storeTime   ,&
-                       storeEpsi   , storeCrit   ,&
-                       storePara   , fieldStoreNb)
+subroutine resuReadMed(fileUnit, &
+                       resultName, &
+                       model, meshAst, &
+                       fieldNb, fieldList, &
+                       storeAccess, storeCreaNb, &
+                       storeIndxNb, storeIndx, &
+                       storeTimeNb, storeTime, &
+                       storeEpsi, storeCrit, &
+                       storePara, fieldStoreNb)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -40,19 +40,19 @@ implicit none
 #include "asterfort/lrfmed.h"
 #include "asterfort/rs_getlast.h"
 !
-integer, intent(in) :: fileUnit
-character(len=8), intent(in) :: resultName
-character(len=8), intent(in) :: model, meshAst
-integer, intent(in) :: fieldNb
-character(len=16), intent(in) :: fieldList(100)
-integer, intent(in) :: storeIndxNb, storeTimeNb
-character(len=10), intent(in) :: storeAccess
-integer, intent(in) :: storeCreaNb
-character(len=19), intent(in) :: storeIndx, storeTime
-real(kind=8), intent(in) :: storeEpsi
-character(len=8), intent(in) :: storeCrit
-character(len=4), intent(in) :: storePara
-integer, intent(out) :: fieldStoreNb(100)
+    integer, intent(in) :: fileUnit
+    character(len=8), intent(in) :: resultName
+    character(len=8), intent(in) :: model, meshAst
+    integer, intent(in) :: fieldNb
+    character(len=16), intent(in) :: fieldList(100)
+    integer, intent(in) :: storeIndxNb, storeTimeNb
+    character(len=10), intent(in) :: storeAccess
+    integer, intent(in) :: storeCreaNb
+    character(len=19), intent(in) :: storeIndx, storeTime
+    real(kind=8), intent(in) :: storeEpsi
+    character(len=8), intent(in) :: storeCrit
+    character(len=4), intent(in) :: storePara
+    integer, intent(out) :: fieldStoreNb(100)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,7 +102,7 @@ integer, intent(out) :: fieldStoreNb(100)
 !
     if (model .ne. ' ') then
         call lrvemo(model)
-    endif
+    end if
 !
 ! - To have zero on all field
 !
@@ -125,46 +125,46 @@ integer, intent(out) :: fieldStoreNb(100)
             fieldNameMed = '________________________________________________________________'
             call getvtx(keywfact, 'NOM_RESU', iocc=iField, scal=resultNameMed, nbret=n1)
             nchar = lxlgut(resultNameMed)
-            fieldNameMed(1:nchar)    = resultNameMed(1:nchar)
+            fieldNameMed(1:nchar) = resultNameMed(1:nchar)
             nchar = lxlgut(fieldType)
-            fieldNameMed(9:8+nchar)  = fieldType(1:nchar)
+            fieldNameMed(9:8+nchar) = fieldType(1:nchar)
             fieldNameMed(9+nchar:64) = ' '
-        endif
+        end if
 ! ----- Check mesh (only at first)
         if (iField .eq. 1) then
             call lrvema(meshAst, fileUnit, fieldNameMed)
-        endif
+        end if
 ! ----- Get list of components
         cmpAstName = '&&OP0192.NOM_CMP'
         cmpMedName = '&&OP0192.NOM_CMP_MED'
-        cmpNb      = 0
+        cmpNb = 0
         call getvtx(keywfact, 'NOM_CMP', iocc=iField, nbval=0, nbret=nbOcc)
         if (nbOcc .lt. 0) then
             cmpNb = -nbOcc
-        endif
+        end if
         call getvtx(keywfact, 'NOM_CMP_MED', iocc=iField, nbval=0, nbret=nbOcc)
         if (-nbOcc .ne. cmpNb) then
             valk(1) = 'NOM_CMP'
             valk(2) = 'NOM_CMP_MED'
             call utmess('F', 'UTILITAI2_95', nk=2, valk=valk)
-        endif
+        end if
         if (cmpNb .gt. 0) then
-            call wkvect(cmpAstName, 'V V K8', cmpNb, vk8 = vCmpAstName)
-            call getvtx(keywfact, 'NOM_CMP', iocc=iField, nbval=cmpNb,&
+            call wkvect(cmpAstName, 'V V K8', cmpNb, vk8=vCmpAstName)
+            call getvtx(keywfact, 'NOM_CMP', iocc=iField, nbval=cmpNb, &
                         vect=vCmpAstName, nbret=nbOcc)
-            call wkvect(cmpMedName, 'V V K16', cmpNb, vk16 = vCmpMedName)
-            call getvtx('FORMAT_MED', 'NOM_CMP_MED', iocc=iField, nbval=cmpNb,&
+            call wkvect(cmpMedName, 'V V K16', cmpNb, vk16=vCmpMedName)
+            call getvtx('FORMAT_MED', 'NOM_CMP_MED', iocc=iField, nbval=cmpNb, &
                         vect=vCmpMedName, nbret=nbOcc)
-        endif
+        end if
 ! ----- Read field
-        call lrfmed(fileUnit            , resultName   , meshAst     , storeLast   ,&
-                    fieldType           , fieldQuantity, fieldSupport, fieldNameMed,&
-                    option              , param        , prolz       ,&
-                    storeAccess         , storeCreaNb  ,&
-                    storeIndxNb         , storeTimeNb  ,&
-                    storeIndx           , storeTime    ,&
-                    storeCrit           , storeEpsi    , storePara   ,&
-                    cmpNb               , cmpAstName   , cmpMedName  ,&
+        call lrfmed(fileUnit, resultName, meshAst, storeLast, &
+                    fieldType, fieldQuantity, fieldSupport, fieldNameMed, &
+                    option, param, prolz, &
+                    storeAccess, storeCreaNb, &
+                    storeIndxNb, storeTimeNb, &
+                    storeIndx, storeTime, &
+                    storeCrit, storeEpsi, storePara, &
+                    cmpNb, cmpAstName, cmpMedName, &
                     fieldStoreNb(iField))
     end do
 !

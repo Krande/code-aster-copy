@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,28 +34,28 @@ subroutine cvrmzm(n, a, lda, b, ldb)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     if (n .lt. 1) then
-        write(6,*)  'THE ORDER OF THE MATRIX MUST BE AT '//&
+        write (6, *) 'THE ORDER OF THE MATRIX MUST BE AT '//&
      &               'LEAST 1 WHILE N = %(I1) IS GIVEN.'
         goto 9000
-    endif
+    end if
 !
     if (lda .lt. n) then
-        write(6,*)  'THE LEADING DIMENSION OF A MUST BE AT '//&
+        write (6, *) 'THE LEADING DIMENSION OF A MUST BE AT '//&
      &               'LEAST AS LARGE AS N WHILE LDA = %(I1) AND N '//&
      &               '= %(I2) ARE GIVEN.'
         goto 9000
-    endif
+    end if
 !
     if (ldb .lt. n) then
-        write(6,*)  'THE LEADING DIMENSION OF B MUST BE AT '//&
+        write (6, *) 'THE LEADING DIMENSION OF B MUST BE AT '//&
      &               'LEAST AS LARGE AS N WHILE LDB = %(I1) AND N '//&
      &               '= %(I2) ARE GIVEN.'
         goto 9000
-    endif
+    end if
 !       --- A EST COPIEE DANS B
     do j = n, 1, -1
         do i = n, 1, -1
-            b(i,j) = dcmplx(a(i,j),0.0d0)
+            b(i, j) = dcmplx(a(i, j), 0.0d0)
         end do
     end do
 !

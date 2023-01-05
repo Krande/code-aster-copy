@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pteequ(prof_chno    , base, neq, igds, nb_cmp_field,&
+subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field, &
                   field_to_cata)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -86,48 +86,48 @@ implicit none
 !
     call jemarq()
 !
-    prno      = prof_chno(1:19)//'.PRNO'
-    nueq      = prof_chno(1:19)//'.NUEQ'
-    deeq      = prof_chno(1:19)//'.DEEQ'
+    prno = prof_chno(1:19)//'.PRNO'
+    nueq = prof_chno(1:19)//'.NUEQ'
+    deeq = prof_chno(1:19)//'.DEEQ'
 !
 ! - Information about GRANDEUR
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', igds), 'LONMAX', nb_cmp_fieldmx)
-    nec     = nbec(igds)
+    nec = nbec(igds)
     ASSERT(nb_cmp_fieldmx .ne. 0)
     ASSERT(nec .ne. 0)
 !
 ! - Create .DEEQ object
 !
     call jedetr(deeq)
-    call wkvect(deeq, base//' V I', max(1, 2*neq), vi = p_deeq)
+    call wkvect(deeq, base//' V I', max(1, 2*neq), vi=p_deeq)
     call jeecra(deeq, "LONUTI", 2*neq)
 !
 ! - Access to PRNO object
 !
     call jelira(prno, 'NMAXOC', nb_ligr)
 ! - It's field: no "tardif" element/node, only mesh
-    ASSERT(nb_ligr.eq.1)
+    ASSERT(nb_ligr .eq. 1)
     call jelira(jexnum(prno, 1), 'LONMAX', l)
-    ASSERT(l.gt.0)
+    ASSERT(l .gt. 0)
     call jeveuo(jexnum(prno, 1), 'L', jprno)
 !
 ! - Access to NUEQ object
 !
-    call jeveuo(nueq, 'L', vi = p_nueq)
+    call jeveuo(nueq, 'L', vi=p_nueq)
 !
     nb_node = l/(nec+2)
     do i_node = 1, nb_node
-        iddl = zi(jprno-1+ (i_node-1)* (nec+2)+1) - 1
-        iadg = jprno - 1 + (i_node-1)* (nec+2) + 3
+        iddl = zi(jprno-1+(i_node-1)*(nec+2)+1)-1
+        iadg = jprno-1+(i_node-1)*(nec+2)+3
         do i_cmp_field = 1, nb_cmp_field
             i_cmp_cata = field_to_cata(i_cmp_field)
-            if (exisdg(zi(iadg),i_cmp_cata)) then
-                iddl = iddl + 1
+            if (exisdg(zi(iadg), i_cmp_cata)) then
+                iddl = iddl+1
                 i_equa = p_nueq(iddl)
                 p_deeq(2*(i_equa-1)+1) = i_node
                 p_deeq(2*(i_equa-1)+2) = i_cmp_cata
-            endif
+            end if
         end do
     end do
 !

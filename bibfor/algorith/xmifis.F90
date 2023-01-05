@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
-                  n, ip1, ip2, pinref, miref, mifis,&
+                  n, ip1, ip2, pinref, miref, mifis, &
                   pintt, exit, jonc, u, v)
     implicit none
 !
@@ -58,74 +58,74 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime), ff(27)
     real(kind=8) :: epsmax, rbid, ip1ip2(ndime), ptxx(2*ndime)
     real(kind=8) :: vect(ndime), k, k1, k2, alpha, dekker(4*ndime)
-    real(kind=8) :: pta(ndime) , ptb(ndime), ptc(ndime), newpt(ndime)
+    real(kind=8) :: pta(ndime), ptb(ndime), ptc(ndime), newpt(ndime)
     integer :: itemax
     character(len=6) :: name
 !
 ! --------------------------------------------------------------------
 !
-    itemax=100
-    epsmax=1.d-9
-    name='XMIFIS'
+    itemax = 100
+    epsmax = 1.d-9
+    name = 'XMIFIS'
 !
     call xelrex(elrefp, nno, x)
-    ib=n(1)
-    ic=n(2)
-    ia=n(3)
-    if (present(u).and.present(v)) then
-       do j = 1, ndime
-          bc(j) = u(j)
-          ba(j) = v(j)
-       end do
+    ib = n(1)
+    ic = n(2)
+    ia = n(3)
+    if (present(u) .and. present(v)) then
+        do j = 1, ndime
+            bc(j) = u(j)
+            ba(j) = v(j)
+        end do
     else
-       if (ia.lt.1000) then
-          do j = 1, ndime
-             pta(j) = x(ndime*(ia-1)+j)
-          end do
-       else
-          do j = 1, ndim
-             newpt(j) = pintt(ndim*(ia-1001)+j)
-          end do
-          call reeref(elrefp, nno, geom, newpt, ndim,&
-                      pta, ff)
-       endif
+        if (ia .lt. 1000) then
+            do j = 1, ndime
+                pta(j) = x(ndime*(ia-1)+j)
+            end do
+        else
+            do j = 1, ndim
+                newpt(j) = pintt(ndim*(ia-1001)+j)
+            end do
+            call reeref(elrefp, nno, geom, newpt, ndim, &
+                        pta, ff)
+        end if
 !
-       if (ib.lt.1000) then
-          do j = 1, ndime
-             ptb(j) = x(ndime*(ib-1)+j)
-          end do
-       else
-          do j = 1, ndim
-             newpt(j) = pintt(ndim*(ib-1001)+j)
-          end do
-          call reeref(elrefp, nno, geom, newpt, ndim,&
-                      ptb, ff)
-       endif
+        if (ib .lt. 1000) then
+            do j = 1, ndime
+                ptb(j) = x(ndime*(ib-1)+j)
+            end do
+        else
+            do j = 1, ndim
+                newpt(j) = pintt(ndim*(ib-1001)+j)
+            end do
+            call reeref(elrefp, nno, geom, newpt, ndim, &
+                        ptb, ff)
+        end if
 !
-       if (ic.lt.1000) then
-          do j = 1, ndime
-             ptc(j) = x(ndime*(ic-1)+j)
-          end do
-       else
-          do j = 1, ndim
-             newpt(j) = pintt(ndim*(ic-1001)+j)
-          end do
-          call reeref(elrefp, nno, geom, newpt, ndim,&
-                      ptc, ff)
-       endif
-       dekker(:) = 0.d0
-       do j = 1, ndime
-          bc(j) = ptc(j)-ptb(j)
-          ba(j) = pta(j)-ptb(j)
-          dekker(j) = pta(j)
-          dekker(j+ndime) = ptb(j)
-          dekker(j+2*ndime) = ptc(j)
-       end do
-    endif
+        if (ic .lt. 1000) then
+            do j = 1, ndime
+                ptc(j) = x(ndime*(ic-1)+j)
+            end do
+        else
+            do j = 1, ndim
+                newpt(j) = pintt(ndim*(ic-1001)+j)
+            end do
+            call reeref(elrefp, nno, geom, newpt, ndim, &
+                        ptc, ff)
+        end if
+        dekker(:) = 0.d0
+        do j = 1, ndime
+            bc(j) = ptc(j)-ptb(j)
+            ba(j) = pta(j)-ptb(j)
+            dekker(j) = pta(j)
+            dekker(j+ndime) = ptb(j)
+            dekker(j+2*ndime) = ptc(j)
+        end do
+    end if
 !
     do j = 1, ndime
-      ip1ip2(j)=pinref(ndime*(ip2-1)+j)-pinref(ndime*(ip1-1)+j)
-    enddo
+        ip1ip2(j) = pinref(ndime*(ip2-1)+j)-pinref(ndime*(ip1-1)+j)
+    end do
     call xnormv(ndime, bc, rbid)
     call xnormv(ndime, ba, rbid)
     call xnormv(ndime, ip1ip2, rbid)
@@ -133,42 +133,42 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !   CE SERAIT PRUDENT DE LE REVERIFIER
 !   SI ORTH : BC EST LA NORMALE CHERCHEE
 !   SINON : CALCULER LA NORMALE
-    k=ddot(ndime,ba,1,bc,1)
-    k1=ddot(ndime,ba,1,ip1ip2,1)
-    k2=ddot(ndime,bc,1,ip1ip2,1)
-    alpha=dsqrt(1/(k1**2+k2**2-2*k*k1*k2))
-    do j=1,ndime
-        vect(j)=alpha*(k2*ba(j)-k1*bc(j))
-    enddo
+    k = ddot(ndime, ba, 1, bc, 1)
+    k1 = ddot(ndime, ba, 1, ip1ip2, 1)
+    k2 = ddot(ndime, bc, 1, ip1ip2, 1)
+    alpha = dsqrt(1/(k1**2+k2**2-2*k*k1*k2))
+    do j = 1, ndime
+        vect(j) = alpha*(k2*ba(j)-k1*bc(j))
+    end do
 !
-    do j=1,ndime
-      ptxx(j)=vect(j)
-      ptxx(j+ndime)=(pinref(ndime*(ip1-1)+j)+&
-                     pinref(ndime*(ip2-1)+j))/2.d0
-    enddo
+    do j = 1, ndime
+        ptxx(j) = vect(j)
+        ptxx(j+ndime) = (pinref(ndime*(ip1-1)+j)+ &
+                         pinref(ndime*(ip2-1)+j))/2.d0
+    end do
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
 !     ON CHOSIST LA METHODE DE NEWTON-DEKKER LORSQUE L'ON EFFECTUE LA
 !     RECHERCHE SUR LA FACE D'UN ELEMENT, AFIN DE NE PAS SORTIR DE CETTE FACE
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     ksi(:) = 0.d0
-    if ((present(u).and.present(v)) .or. jonc) then
-       call xnewto(elrefp, name, n,&
-                   ndime, ptxx, ndim, geom, lsn,&
-                   ip1, ip2, itemax,&
-                   epsmax, ksi)
+    if ((present(u) .and. present(v)) .or. jonc) then
+        call xnewto(elrefp, name, n, &
+                    ndime, ptxx, ndim, geom, lsn, &
+                    ip1, ip2, itemax, &
+                    epsmax, ksi)
     else
-       call xnewto(elrefp, name, n,&
-                   ndime, ptxx, ndim, geom, lsn,&
-                   ip1, ip2, itemax,&
-                   epsmax, ksi, exit, dekker)
-    endif
-    do j=1,ndime
-       miref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)
-    enddo
+        call xnewto(elrefp, name, n, &
+                    ndime, ptxx, ndim, geom, lsn, &
+                    ip1, ip2, itemax, &
+                    epsmax, ksi, exit, dekker)
+    end if
+    do j = 1, ndime
+        miref(j) = ksi(1)*ptxx(j)+ptxx(j+ndime)
+    end do
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elrefp, nno, ndim, geom, miref,&
+    call reerel(elrefp, nno, ndim, geom, miref, &
                 mifis)
 !
 end subroutine

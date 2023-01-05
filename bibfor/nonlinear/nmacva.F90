@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmacva(hval_veasse, cnvado)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 #include "asterfort/nonlinDSVectCombInit.h"
 !
-character(len=19), intent(in) :: hval_veasse(*), cnvado
+    character(len=19), intent(in) :: hval_veasse(*), cnvado
 !
 ! --------------------------------------------------------------------------------------------------
 !

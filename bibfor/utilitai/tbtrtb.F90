@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
+subroutine tbtrtb(tabin, basout, tabout, npara, lipara, &
                   lcrit, prec, crit)
     implicit none
 #include "asterf_types.h"
@@ -78,24 +78,24 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    ASSERT(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base .eq. 'V' .or. base .eq. 'G')
 !
 !     --- VERIFICATION DE LA TABLE ---
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
     nbpara = tbnp(1)
     nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
-    endif
+    end if
     if (nblign .eq. 0) then
         call utmess('F', 'UTILITAI4_66')
-    endif
+    end if
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
@@ -105,17 +105,17 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
         do j = 1, nbpara
             jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
-                type = tblp(1+4*(j-1)+1)(1:4)
+                type = tblp(1+4*(j-1)+1) (1:4)
                 if (type(1:1) .eq. 'C') then
                     valk = inpar
                     call utmess('F', 'UTILITAI7_2', sk=valk)
-                endif
+                end if
                 goto 10
-            endif
+            end if
         end do
         valk = inpar
         call utmess('F', 'UTILITAI6_89', sk=valk)
- 10     continue
+10      continue
     end do
 !
     call wkvect('&&TBTRTB.TRI', 'V V I', nblign, jnume)
@@ -126,34 +126,34 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !
     call tbtr01(tabin, nbpara, lipara(1), nblign, zi(jnume))
 !
-    if (lcrit(1)(1:2) .eq. 'DE') then
+    if (lcrit(1) (1:2) .eq. 'DE') then
         do i = 1, nblign
             tri2(i) = zi(jnume-1+i)
         end do
         do i = 1, nblign
             zi(jnume-1+i) = tri2(nblign-i+1)
         end do
-    endif
+    end if
 !
     if (npara .eq. 1) then
         goto 104
     else if (npara .eq. 2) then
     else if (npara .gt. 2) then
         call utmess('F', 'UTILITAI4_87')
-    endif
+    end if
     i = 1
     inpar = lipara(i)
     do j = 1, nbpara
         jnpar = tblp(1+4*(j-1))
         if (inpar .eq. jnpar) then
-            type = tblp(1+4*(j-1)+1)(1:4)
+            type = tblp(1+4*(j-1)+1) (1:4)
             nomjv = tblp(1+4*(j-1)+2)
             nomjvl = tblp(1+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jvall)
             ii = 0
- 30         continue
-            ii = ii + 1
+30          continue
+            ii = ii+1
             if (ii .ge. nblign) goto 32
             ideb = ii
             ifin = ii
@@ -163,72 +163,72 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                 m = zi(jnume+jj-1)
                 if (type(1:1) .eq. 'I') then
                     if (zi(jvale+n-1) .ne. zi(jvale+m-1)) then
-                        ifin = ifin - 1
+                        ifin = ifin-1
                         goto 36
-                    endif
+                    end if
                 else if (type(1:1) .eq. 'R') then
 !              IF ( ZR(JVALE+N-1) .NE. ZR(JVALE+M-1) ) THEN
 !             TEST D'EGALITE A PREC PRES
                     if (crit .eq. 'ABSOLU  ') then
-                        lok = ( abs(zr(jvale+n-1)-zr(jvale+m-1)) .le. prec*abs(zr(jvale+m-1)) )
+                        lok = (abs(zr(jvale+n-1)-zr(jvale+m-1)) .le. prec*abs(zr(jvale+m-1)))
                     else
-                        lok = ( abs(zr(jvale+n-1)-zr(jvale+m-1)) .le. prec )
-                    endif
-                    if (.not.lok) then
-                        ifin = ifin - 1
+                        lok = (abs(zr(jvale+n-1)-zr(jvale+m-1)) .le. prec)
+                    end if
+                    if (.not. lok) then
+                        ifin = ifin-1
                         goto 36
-                    endif
+                    end if
                 else if (type(1:1) .eq. 'C') then
                     if (zc(jvale+n-1) .ne. zc(jvale+m-1)) then
-                        ifin = ifin - 1
+                        ifin = ifin-1
                         goto 36
-                    endif
+                    end if
                 else if (type(1:3) .eq. 'K80') then
                     if (zk80(jvale+n-1) .ne. zk80(jvale+m-1)) then
-                        ifin = ifin - 1
+                        ifin = ifin-1
                         goto 36
-                    endif
+                    end if
                 else if (type(1:3) .eq. 'K32') then
                     if (zk32(jvale+n-1) .ne. zk32(jvale+m-1)) then
-                        ifin = ifin - 1
+                        ifin = ifin-1
                         goto 36
-                    endif
+                    end if
                 else if (type(1:3) .eq. 'K24') then
                     if (zk24(jvale+n-1) .ne. zk24(jvale+m-1)) then
-                        ifin = ifin - 1
+                        ifin = ifin-1
                         goto 36
-                    endif
+                    end if
                 else if (type(1:3) .eq. 'K16') then
                     if (zk16(jvale+n-1) .ne. zk16(jvale+m-1)) then
-                        ifin = ifin - 1
+                        ifin = ifin-1
                         goto 36
-                    endif
+                    end if
                 else if (type(1:2) .eq. 'K8') then
                     if (zk8(jvale+n-1) .ne. zk8(jvale+m-1)) then
-                        ifin = ifin - 1
+                        ifin = ifin-1
                         goto 36
-                    endif
-                endif
+                    end if
+                end if
             end do
- 36         continue
+36          continue
             nbuti = ifin-ideb+1
             if (nbuti .gt. 1) then
 !           --- ON TESTE AVEC LE PARAMETRE SUIVANT ---
                 call tbtr01(tabin, nbpara, lipara(i+1), nbuti, zi(jnume-1+ideb))
-                if (lcrit(i+1)(1:2) .eq. 'DE') then
+                if (lcrit(i+1) (1:2) .eq. 'DE') then
                     do k = 1, nbuti
                         tri2(k) = zi(jnume-1+ideb+k-1)
                     end do
                     do k = 1, nbuti
                         zi(jnume-1+ideb+k-1) = tri2(nbuti-k+1)
                     end do
-                endif
-            endif
+                end if
+            end if
             ii = ifin
             goto 30
- 32         continue
+32          continue
             goto 104
-        endif
+        end if
     end do
 104 continue
 !
@@ -240,23 +240,23 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !
 !     -- .TBNP :
     call wkvect(nomta2//'.TBNP', base//' V I', 2, ktbnp)
-    zi(ktbnp ) = nbpara
+    zi(ktbnp) = nbpara
     zi(ktbnp+1) = nblign
 !
 !     -- .TBLP :
-    ndim = 4 * nbpara
+    ndim = 4*nbpara
     call jecreo(nomta2//'.TBLP', base//' V K24')
     call jeecra(nomta2//'.TBLP', 'LONMAX', ndim)
     call jeecra(nomta2//'.TBLP', 'LONUTI', ndim)
     call jeveuo(nomta2//'.TBLP', 'E', vk24=nktblp)
     do i = 1, nbpara
-        nktblp(1+4*(i-1) ) = tblp(1+4*(i-1) )
+        nktblp(1+4*(i-1)) = tblp(1+4*(i-1))
         nktblp(1+4*(i-1)+1) = tblp(1+4*(i-1)+1)
 !
         call codent(i, 'D0', knume)
         nomjv = nomta2//'.'//knume
         nktblp(1+4*(i-1)+2) = nomjv
-        type = tblp(1+4*(i-1)+1)(1:4)
+        type = tblp(1+4*(i-1)+1) (1:4)
         call jecreo(nomjv, base//' V '//type)
         call jeecra(nomjv, 'LONMAX', nblign)
         call jeecra(nomjv, 'LONUTI', nblign)
@@ -292,7 +292,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                 zk16(kvale+j-1) = zk16(jvale+zi(jnume+j-1)-1)
             else if (type(1:3) .eq. 'K8') then
                 zk8(kvale+j-1) = zk8(jvale+zi(jnume+j-1)-1)
-            endif
+            end if
         end do
 !
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn,&
+subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
                   lfichUniq)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/gettco.h"
@@ -44,9 +44,9 @@ implicit none
 #include "asterfort/irdebg.h"
 #include "asterfort/isParallelMesh.h"
 !
-integer, intent(in) :: keywfIocc, fileUnit, fileVersion
-character(len=8), intent(in) :: fileFormat, modelIn
-aster_logical :: lfichUniq
+    integer, intent(in) :: keywfIocc, fileUnit, fileVersion
+    character(len=8), intent(in) :: fileFormat, modelIn
+    aster_logical :: lfichUniq
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,9 +99,9 @@ aster_logical :: lfichUniq
     model = ' '
     lModel = ASTER_FALSE
     if (modelIn .ne. ' ') then
-        model  = modelIn
+        model = modelIn
         lModel = ASTER_TRUE
-    endif
+    end if
 !
 ! - Format of real numbers
 !
@@ -122,8 +122,8 @@ aster_logical :: lfichUniq
             paraFormat = 'E'
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get elementary characteristics
 !
@@ -142,12 +142,12 @@ aster_logical :: lfichUniq
             lMeshCoor = ASTER_FALSE
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Print RESULTAT separation
 !
-    if (fileFormat .eq. 'RESULTAT') write(fileUnit,'(/,1X,80(''-''))')
+    if (fileFormat .eq. 'RESULTAT') write (fileUnit, '(/,1X,80(''-''))')
 !
 ! - Get results datastructure
 !
@@ -156,16 +156,16 @@ aster_logical :: lfichUniq
     lResu = nbOcc .ne. 0
     if (lResu) then
         resultName = answer
-    endif
+    end if
 !
 ! - Get model from result if necessary
 !
-    if (lResu.and.(.not. lModel) ) then
-        call dismoi('MODELE', resultName, 'RESULTAT',repk=model)
+    if (lResu .and. (.not. lModel)) then
+        call dismoi('MODELE', resultName, 'RESULTAT', repk=model)
         if (model(1:1) .eq. '#') then
             model = ' '
-        endif
-    endif
+        end if
+    end if
 !
 ! - To print complex values
 !
@@ -173,17 +173,17 @@ aster_logical :: lfichUniq
     call getvtx(keywf, 'PARTIE', iocc=keywfIocc, scal=cplxFormat, nbret=nbOcc)
     if (nbOcc .eq. 0) then
         cplxFormat = ' '
-    endif
+    end if
     if (lResu) then
         call gettco(resultName, resultType)
         if (resultType .eq. 'DYNA_HARMO' .or. resultType .eq. 'ACOU_HARMO') then
-            if (fileFormat .eq. 'GMSH'.or. fileFormat .eq. 'MED') then
+            if (fileFormat .eq. 'GMSH' .or. fileFormat .eq. 'MED') then
                 if (nbOcc .eq. 0) then
                     call utmess('F', 'RESULT3_69')
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 ! - Get name of field
 !
@@ -197,10 +197,10 @@ aster_logical :: lfichUniq
             if (fileFormat .eq. 'GMSH') then
                 if (cplxFormat .eq. ' ') then
                     call utmess('F', 'RESULT3_69')
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
 ! - Get parameter from INFO_MAILLAGE
 !
@@ -212,9 +212,9 @@ aster_logical :: lfichUniq
                 meshMEDInfo = 2
             else
                 call utmess('F', 'RESULT3_63')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Print mesh ?
 !
@@ -223,15 +223,15 @@ aster_logical :: lfichUniq
     lMesh = nbOcc .gt. 0
     if (lMesh) then
         meshName = answer
-    endif
+    end if
 !
 ! - For fileFormat = 'ASTER' => only mesh !
 !
     if (fileFormat .eq. 'ASTER') then
         if (.not. lMesh) then
             call utmess('F', 'RESULT3_70')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Check consistency of meshes
 !
@@ -239,8 +239,8 @@ aster_logical :: lfichUniq
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=modelMesh, arret='C', ier=iret)
         if (meshName .ne. modelMesh) then
             call utmess('F', 'RESULT3_66')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Generic name of datastructure
 !
@@ -253,65 +253,65 @@ aster_logical :: lfichUniq
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Generate title and print it for RESULTAT and IDEAS
 !
-    call irtitr(lResu     , lField  ,&
-                dsName    , meshName,&
-                fileFormat, fileUnit,&
+    call irtitr(lResu, lField, &
+                dsName, meshName, &
+                fileFormat, fileUnit, &
                 title)
 !
 ! - Print mesh
 !
     if (lMesh) then
         if (lfichUniq) then
-            if (.not.isParallelMesh(meshName)) then
+            if (.not. isParallelMesh(meshName)) then
                 call utmess('F', 'MED3_5')
-            endif
+            end if
             call iremed_filtre(meshName, '&&IRMHD2', 'V', lfichUniq)
-        endif
-        call irmail(fileFormat , fileUnit  , fileVersion,&
-                    meshName   , lModel    , model      ,&
+        end if
+        call irmail(fileFormat, fileUnit, fileVersion, &
+                    meshName, lModel, model, &
                     meshMEDInfo, realFormat, lfichUniq, '&&IRMHD2')
-    endif
+    end if
 !
 ! - What to print ? Components, parameters and storing index
 !
-    call irchor(keywf      , keywfIocc    ,&
-                dsName     , lResu        , lField,&
-                fieldListNb, fieldListType, fieldMedListType,&
-                storeListNb, storeListIndx,&
-                paraListNb , paraListName ,&
-                cmpListNb  , cmpListName  ,&
+    call irchor(keywf, keywfIocc, &
+                dsName, lResu, lField, &
+                fieldListNb, fieldListType, fieldMedListType, &
+                storeListNb, storeListIndx, &
+                paraListNb, paraListName, &
+                cmpListNb, cmpListName, &
                 iret)
     if (iret .ne. 0) goto 99
 !
 ! - What to print ? Topological entities (nodes/cells)
 !
-    call irtopo(keywf     , keywfIocc   ,&
-                dsName    , lResu       , lField,&
-                cellListNb, cellListNume,&
-                nodeListNb, nodeListNume,&
-                fileFormat, fileUnit    ,&
-                lfichUniq , iret)
+    call irtopo(keywf, keywfIocc, &
+                dsName, lResu, lField, &
+                cellListNb, cellListNume, &
+                nodeListNb, nodeListNume, &
+                fileFormat, fileUnit, &
+                lfichUniq, iret)
     if (iret .ne. 0) goto 99
 !
 ! - What to print ? Extremas values
 !
-    call irextv(fileFormat,&
-                keywf     , keywfIocc,&
-                lResu     , lField   ,&
-                lmax      , lmin     ,&
-                lsup      , borsup   ,&
-                linf      , borinf)
+    call irextv(fileFormat, &
+                keywf, keywfIocc, &
+                lResu, lField, &
+                lmax, lmin, &
+                lsup, borsup, &
+                linf, borinf)
 !
 ! - Type of field for GMSH
 !
     fieldGsmh = ' '
-    if ((lField.or.lResu) .and. fileFormat .eq. 'GMSH' .and. fileVersion .ge. 2) then
+    if ((lField .or. lResu) .and. fileFormat .eq. 'GMSH' .and. fileVersion .ge. 2) then
         call getvtx(keywf, 'TYPE_CHAM', iocc=keywfIocc, scal=fieldGsmh, nbret=nbOcc)
-    endif
+    end if
 !
 ! - Get IMPR_NOM_VARI
 !
@@ -322,77 +322,77 @@ aster_logical :: lfichUniq
 ! - Debug
 !
     if (ASTER_FALSE) then
-        call irdebg(dsName,&
-                  fileFormat, fileUnit, fileVersion,&
-                  lResu, lMesh, lField,&
-                  lMeshCoor, paraFormat,realFormat,cplxFormat,&
-                  lsup, linf, lmax, lmin,&
-                  borsup, borinf,&
-                  storeListNb, storeListIndx,&
-                  fieldListNb, fieldListType, fieldMedListType,&
-                  paraListNb, paraListName,&
-                  cmpListNb, cmpListName,&
-                  nodeListNb, nodeListNume,&
-                  cellListNb, cellListNume)
-    endif
+        call irdebg(dsName, &
+                    fileFormat, fileUnit, fileVersion, &
+                    lResu, lMesh, lField, &
+                    lMeshCoor, paraFormat, realFormat, cplxFormat, &
+                    lsup, linf, lmax, lmin, &
+                    borsup, borinf, &
+                    storeListNb, storeListIndx, &
+                    fieldListNb, fieldListType, fieldMedListType, &
+                    paraListNb, paraListName, &
+                    cmpListNb, cmpListName, &
+                    nodeListNb, nodeListNume, &
+                    cellListNb, cellListNume)
+    end if
 !
 ! - Print fields
 !
     if (lField .or. lResu) then
         if (fileFormat .eq. 'MED') then
-            call iremed(fileUnit   , dsName       , lResu           ,&
-                        fieldListNb, fieldListType, fieldMedListType,&
-                        storeListNb, storeListIndx,&
-                        paraListNb , paraListName ,&
-                        cmpListNb  , cmpListName  ,&
-                        cellListNb , cellListNume ,&
-                        nodeListNb , nodeListNume ,&
-                        cplxFormat , lVariName    ,&
-                        caraElem   , lfichUniq)
+            call iremed(fileUnit, dsName, lResu, &
+                        fieldListNb, fieldListType, fieldMedListType, &
+                        storeListNb, storeListIndx, &
+                        paraListNb, paraListName, &
+                        cmpListNb, cmpListName, &
+                        cellListNb, cellListNume, &
+                        nodeListNb, nodeListNume, &
+                        cplxFormat, lVariName, &
+                        caraElem, lfichUniq)
         elseif (fileFormat .eq. 'GMSH') then
             lFirstOcc = keywfIocc .eq. 1 .and. .not. lMesh
-            call irgmsh(dsName, cplxFormat, fileUnit, fieldListNb, fieldListType,&
-                        lResu, storeListNb, storeListIndx, cmpListNb, cmpListName,&
+            call irgmsh(dsName, cplxFormat, fileUnit, fieldListNb, fieldListType, &
+                        lResu, storeListNb, storeListIndx, cmpListNb, cmpListName, &
                         cellListNb, cellListNume, fileVersion, lFirstOcc, fieldGsmh)
         elseif (fileFormat .eq. 'RESULTAT') then
-            call irecri(fileUnit   , dsName       , lResu     ,&
-                        keywf      , keywfIocc    ,&
-                        storeListNb, storeListIndx,&
-                        fieldListNb, fieldListType,&
-                        paraListNb , paraListName , paraFormat,&
-                        cmpListNb  , cmpListName  ,&
-                        cellListNb , cellListNume ,&
-                        nodeListNb , nodeListNume ,&
-                        lMeshCoor  , lmax         , lmin,&
-                        lsup       , borsup       ,&
-                        linf       , borinf       ,&
+            call irecri(fileUnit, dsName, lResu, &
+                        keywf, keywfIocc, &
+                        storeListNb, storeListIndx, &
+                        fieldListNb, fieldListType, &
+                        paraListNb, paraListName, paraFormat, &
+                        cmpListNb, cmpListName, &
+                        cellListNb, cellListNume, &
+                        nodeListNb, nodeListNume, &
+                        lMeshCoor, lmax, lmin, &
+                        lsup, borsup, &
+                        linf, borinf, &
                         realFormat, cplxFormat)
         elseif (fileFormat .eq. 'IDEAS') then
-            call resuPrintIdeas(fileUnit   , dsName       , lResu     ,&
-                                storeListNb, storeListIndx,&
-                                fieldListNb, fieldListType,&
-                                title      , keywf        ,&
-                                keywfIocc  , realFormat   ,&
-                                cmpListNb  , cmpListName  ,&
-                                nodeListNb , nodeListNume ,&
-                                cellListNb , cellListNume)
+            call resuPrintIdeas(fileUnit, dsName, lResu, &
+                                storeListNb, storeListIndx, &
+                                fieldListNb, fieldListType, &
+                                title, keywf, &
+                                keywfIocc, realFormat, &
+                                cmpListNb, cmpListName, &
+                                nodeListNb, nodeListNume, &
+                                cellListNb, cellListNume)
         elseif (fileFormat .eq. 'ASTER') then
 ! --------- No results !
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
- 99 continue
+        end if
+    end if
+99  continue
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vk16 = fieldListType)
-    AS_DEALLOCATE(vk80 = fieldMedListType)
-    AS_DEALLOCATE(vi = storeListIndx)
-    AS_DEALLOCATE(vk16 = paraListName)
-    AS_DEALLOCATE(vk8 = cmpListName)
-    AS_DEALLOCATE(vi = nodeListNume)
-    AS_DEALLOCATE(vi = cellListNume)
+    AS_DEALLOCATE(vk16=fieldListType)
+    AS_DEALLOCATE(vk80=fieldMedListType)
+    AS_DEALLOCATE(vi=storeListIndx)
+    AS_DEALLOCATE(vk16=paraListName)
+    AS_DEALLOCATE(vk8=cmpListName)
+    AS_DEALLOCATE(vi=nodeListNume)
+    AS_DEALLOCATE(vi=cellListNume)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
-                  vff2, wref, dffr2, geom, wg,&
+subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
+                  vff2, wref, dffr2, geom, wg, &
                   kpg, ipg, idf2, rot, b)
 ! person_in_charge: jerome.laverne at edf.fr
 ! aslint: disable=W1306
@@ -65,16 +65,16 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
         wg = wref*jac
 !
 !       MATRICE DE ROTATION
-        noa1 = sqrt(cova(1,1)**2 + cova(2,1)**2 + cova(3,1)**2)
-        rot(1,1) = cova(1,3)
-        rot(1,2) = cova(2,3)
-        rot(1,3) = cova(3,3)
-        rot(2,1) = cova(1,1)/noa1
-        rot(2,2) = cova(2,1)/noa1
-        rot(2,3) = cova(3,1)/noa1
-        rot(3,1) = rot(1,2)*rot(2,3) - rot(1,3)*rot(2,2)
-        rot(3,2) = rot(1,3)*rot(2,1) - rot(1,1)*rot(2,3)
-        rot(3,3) = rot(1,1)*rot(2,2) - rot(1,2)*rot(2,1)
+        noa1 = sqrt(cova(1, 1)**2+cova(2, 1)**2+cova(3, 1)**2)
+        rot(1, 1) = cova(1, 3)
+        rot(1, 2) = cova(2, 3)
+        rot(1, 3) = cova(3, 3)
+        rot(2, 1) = cova(1, 1)/noa1
+        rot(2, 2) = cova(2, 1)/noa1
+        rot(2, 3) = cova(3, 1)/noa1
+        rot(3, 1) = rot(1, 2)*rot(2, 3)-rot(1, 3)*rot(2, 2)
+        rot(3, 2) = rot(1, 3)*rot(2, 1)-rot(1, 1)*rot(2, 3)
+        rot(3, 3) = rot(1, 1)*rot(2, 2)-rot(1, 2)*rot(2, 1)
 !
 !       CALCUL DE LA GEOMETRIE DANS LE REPERE LOCAL
         call r8inir(ndim*nno2, 0.d0, geoloc, 1)
@@ -82,40 +82,40 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
         do n = 1, nno2
             do i = 1, ndim
                 do j = 1, ndim
-                    geoloc(i,n) = geoloc(i,n) + rot(i,j)*geom(j,n)
+                    geoloc(i, n) = geoloc(i, n)+rot(i, j)*geom(j, n)
                 end do
             end do
         end do
 !
         do n = 1, nno2
             do i = 2, ndim
-                geotan(i-1,n)=geoloc(i,n)
+                geotan(i-1, n) = geoloc(i, n)
             end do
         end do
 !
 !       CALCUL DES DERIVEE DES FF DANS LE PLAN TANGENTIEL
-        call dfdm2d(nno2, kpg, ipg, idf2, geotan,&
+        call dfdm2d(nno2, kpg, ipg, idf2, geotan, &
                     wg2, dfdis(1, 1), dfdis(1, 2))
 !
-    else if (ndim.eq.2) then
+    else if (ndim .eq. 2) then
 !
 !       CALCUL DES DERIVEE DES FF DANS LE PLAN TANGENTIEL
-        call dfdm1d(nno2, wref, dffr2, geom, dfdis(1, 1),&
+        call dfdm1d(nno2, wref, dffr2, geom, dfdis(1, 1), &
                     cour, wg, cosa, sina)
 !
 !       CALCUL DE LA DISTANCE A L'AXE EN AXI, R=RAYON DU PG COURANT
         if (axi) then
-            ray = ddot(nno2,geom,2,vff2,1)
+            ray = ddot(nno2, geom, 2, vff2, 1)
             wg = ray*wg
-        endif
+        end if
 !
 !       MATRICE DE ROTATION
-        rot(1,1) = -cosa
-        rot(1,2) = -sina
-        rot(2,1) = sina
-        rot(2,2) = -cosa
+        rot(1, 1) = -cosa
+        rot(1, 2) = -sina
+        rot(2, 1) = sina
+        rot(2, 2) = -cosa
 !
-    endif
+    end if
 !
 !     CONSTRUCTION DE LA MATRICE B
     call r8inir((2*ndim-1)*(ndim+1)*(2*nno1+nno2), 0.d0, b, 1)
@@ -124,8 +124,8 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
         do j = 1, ndim
 !
             do n = 1, nno1
-                b(i,j,n) = - rot(i,j)*vff1(n)
-                b(i,j,n+nno1) = rot(i,j)*vff1(n)
+                b(i, j, n) = -rot(i, j)*vff1(n)
+                b(i, j, n+nno1) = rot(i, j)*vff1(n)
             end do
 !
         end do
@@ -133,7 +133,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
 !
     do i = 1, ndim-1
         do n = 1, nno2
-            b(ndim+i,ndim+1,2*nno1+n) = dfdis(n,i)
+            b(ndim+i, ndim+1, 2*nno1+n) = dfdis(n, i)
         end do
     end do
 !

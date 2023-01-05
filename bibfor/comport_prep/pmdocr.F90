@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine pmdocr(carcri)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/setBehaviourParaValue.h"
 #include "asterfort/Behaviour_type.h"
 !
-real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
+    real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,13 +61,13 @@ real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
     call carc_chck(behaviourPrepCrit)
 
 ! - Set in list
-    call setBehaviourParaValue(behaviourPrepCrit%v_crit,&
-                               behaviourPrepCrit%parm_theta_thm, behaviourPrepCrit%parm_alpha_thm,&
-                               behaviourPrepCrit%hho_coef_stab , behaviourPrepCrit%hho_type_stab ,&
-                               behaviourPrepCrit%hho_type_calc,&
-                               carcriList_ = carcri(1:CARCRI_SIZE))
+    call setBehaviourParaValue(behaviourPrepCrit%v_crit, &
+                               behaviourPrepCrit%parm_theta_thm, behaviourPrepCrit%parm_alpha_thm, &
+                               behaviourPrepCrit%hho_coef_stab, behaviourPrepCrit%hho_type_stab, &
+                               behaviourPrepCrit%hho_type_calc, &
+                               carcriList_=carcri(1:CARCRI_SIZE))
 
 ! - Clean
-    deallocate(behaviourPrepCrit%v_crit)
+    deallocate (behaviourPrepCrit%v_crit)
 !
 end subroutine

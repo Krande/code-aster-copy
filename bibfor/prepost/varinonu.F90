@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine varinonu(modelZ, comporZ     ,&
-                    nbCell, listCell    ,&
+subroutine varinonu(modelZ, comporZ, &
+                    nbCell, listCell, &
                     nbVari, listVariName, listVariNume)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,11 +37,11 @@ implicit none
 #include "asterfort/comp_meca_pvar.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: modelZ, comporZ
-integer, intent(in) :: nbCell, listCell(nbCell)
-integer, intent(in) :: nbVari
-character(len=16), intent(in) :: listVariName(nbVari)
-character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
+    character(len=*), intent(in) :: modelZ, comporZ
+    integer, intent(in) :: nbCell, listCell(nbCell)
+    integer, intent(in) :: nbVari
+    character(len=16), intent(in) :: listVariName(nbVari)
+    character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,31 +73,31 @@ character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
 ! - Prepare COMPOR field
 !
     compor = comporZ
-    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk = modelLigrel)
+    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=modelLigrel)
     call etenca(compor, modelLigrel, iret)
-    call jeveuo(compor//'.PTMA', 'L', vi = comporPtma)
+    call jeveuo(compor//'.PTMA', 'L', vi=comporPtma)
 
 ! - Prepare informations about internal variables
     call jeexin(comporInfo(1:19)//'.ZONE', iret)
     if (iret .eq. 0) then
-        call comp_meca_pvar(model_ = modelZ, comporMap_ = compor, comporInfo = comporInfo)
-    endif
+        call comp_meca_pvar(model_=modelZ, comporMap_=compor, comporInfo=comporInfo)
+    end if
 !
 ! - Access to informations
 !
     do iCell = 1, nbCell
-        cellNume  = listCell(iCell)
+        cellNume = listCell(iCell)
         zoneField = comporPtma(cellNume)
         call jelira(jexnum(comporInfo(1:19)//'.VARI', zoneField), 'LONMAX', nbVariZone)
         call jeveuo(jexnum(comporInfo(1:19)//'.VARI', zoneField), 'L', jv_vari)
         do iVari = 1, nbVari
             variNume = indk16(zk16(jv_vari), listVariName(iVari), 1, nbVariZone)
             if (variNume .eq. 0) then
-                call utmess('F', 'EXTRACTION_22', sk = listVariName(iVari))
-            endif
+                call utmess('F', 'EXTRACTION_22', sk=listVariName(iVari))
+            end if
             listVariNume(iCell, iVari) = 'V'
-            call codent(variNume, 'G', listVariNume(iCell, iVari)(2:8))
-        enddo
+            call codent(variNume, 'G', listVariNume(iCell, iVari) (2:8))
+        end do
     end do
 !
     call jedema()

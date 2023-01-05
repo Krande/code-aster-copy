@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine dieven(sddisc, i_event, lacti)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -50,16 +50,16 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (i_event .ne. 0) then
-        call utdidt('L', sddisc, 'ECHE', 'VERIF_EVEN', index_ = i_event,&
-                    valk_ = active)
+        call utdidt('L', sddisc, 'ECHE', 'VERIF_EVEN', index_=i_event, &
+                    valk_=active)
         if (active .eq. 'OUI') then
             lacti = .true.
-        else if (active.eq.'NON') then
+        else if (active .eq. 'NON') then
             lacti = .false.
         else
-            write(6,*) 'DIEVEN: ',i_event,active
+            write (6, *) 'DIEVEN: ', i_event, active
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

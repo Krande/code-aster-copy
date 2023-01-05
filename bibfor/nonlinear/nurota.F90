@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nurota(modelz, nume_ddl, compor, sdnuro)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -71,7 +71,7 @@ implicit none
 ! - Create list of elements type
 !
     nb_elem_type = 3
-    AS_ALLOCATE(vk16=list_elem_type, size = nb_elem_type)
+    AS_ALLOCATE(vk16=list_elem_type, size=nb_elem_type)
     list_elem_type(1) = 'MECA_POU_D_T_GD'
     list_elem_type(2) = 'MEC3TR7H'
     list_elem_type(3) = 'MEC3QU9H'
@@ -79,36 +79,36 @@ implicit none
 ! - Create list of components
 !
     nbCmp = 3
-    AS_ALLOCATE(vk8=listCmp, size = nbCmp)
+    AS_ALLOCATE(vk8=listCmp, size=nbCmp)
     listCmp(1) = 'DRX'
     listCmp(2) = 'DRY'
     listCmp(3) = 'DRZ'
 !
 ! - Pre-selection of elements which have GROT_GDEP
 !
-    defo_comp     = 'GROT_GDEP'
+    defo_comp = 'GROT_GDEP'
     call sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 !
 ! - Select nodes by element type
 !
-    call sele_node_elem(modelz        , nb_elem_type, list_elem_type, listNode, nb_node_found,&
+    call sele_node_elem(modelz, nb_elem_type, list_elem_type, listNode, nb_node_found, &
                         list_elem_comp)
 !
 ! - Create list of equations
 !
     call dismoi('NB_EQUA', nume_ddl, 'NUME_DDL', repi=nbEqua)
     if (nb_node_found .gt. 0) then
-        call wkvect(sdnuro, 'V V I', nbEqua, vi = listEqua)
+        call wkvect(sdnuro, 'V V I', nbEqua, vi=listEqua)
     else
         goto 999
-    endif
+    end if
 !
 ! - Find components in list of equations
 !
     call select_dof(listEqua, &
-                    numeDofZ_ = nume_ddl,&
-                    nbNodeToSelect_ = nb_node_found, listNodeToSelect_ = listNode,&
-                    nbCmpToSelect_  = nbCmp        , listCmpToSelect_  = listCmp)
+                    numeDofZ_=nume_ddl, &
+                    nbNodeToSelect_=nb_node_found, listNodeToSelect_=listNode, &
+                    nbCmpToSelect_=nbCmp, listCmpToSelect_=listCmp)
 !
 999 continue
 !

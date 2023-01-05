@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,12 +56,12 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
     aster_logical :: incr, elas
     character(len=8), pointer :: cesk(:) => null()
     character(len=16), pointer :: cesv(:) => null()
-    data  lcham/ 'RELCOM', 'DEFORM', 'INCELA'/
+    data lcham/'RELCOM', 'DEFORM', 'INCELA'/
 !
 !
     call jemarq()
 !
-    ASSERT(questi(1:9).eq.'ELAS_INCR')
+    ASSERT(questi(1:9) .eq. 'ELAS_INCR')
 !
     repk = ' '
     repi = 0
@@ -70,16 +70,16 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
     incr = .false.
     elas = .false.
 !
-    chtmp ='&&DISMCO_CHTMP'
-    chcalc='&&GVERLC_CHCALC'
+    chtmp = '&&DISMCO_CHTMP'
+    chcalc = '&&GVERLC_CHCALC'
 !
 !     PASSAGE CARTE COMPOR --> CHAMP SIMPLE,
 !     PUIS REDUCTION DU CHAMP SUR LA COMPOSANTE 'RELCOM'
 !     QUI CORRESPOND AU NOM DE LA LOI DE COMPORTEMENT
 !
-    call carces(nomob, 'ELEM', ' ', 'V', chtmp,&
+    call carces(nomob, 'ELEM', ' ', 'V', chtmp, &
                 'A', iret)
-    call cesred(chtmp, 0, [0], 3, lcham,&
+    call cesred(chtmp, 0, [0], 3, lcham, &
                 'V', chcalc)
     call detrsd('CHAM_ELEM_S', chtmp)
 !
@@ -95,28 +95,28 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 !
         if (incr .and. elas) goto 999
 !
-        call cesexi('C', jcald, jcall, ima, 1,&
+        call cesexi('C', jcald, jcall, ima, 1, &
                     1, 1, iadc)
 !
         if (iadc .gt. 0) then
             call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-            if (cesv(1+iadc-1+2)(1:9) .eq. 'COMP_INCR') then
+            if (cesv(1+iadc-1+2) (1:9) .eq. 'COMP_INCR') then
                 incr = .true.
-            endif
-            if (cesv(1+iadc-1+2)(1:9) .eq. 'COMP_ELAS') then
+            end if
+            if (cesv(1+iadc-1+2) (1:9) .eq. 'COMP_ELAS') then
                 elas = .true.
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !
 999 continue
 !
-    if (incr .and. .not.elas) repk='INCR'
-    if (elas .and. .not.incr) repk='ELAS'
-    if (elas .and. incr) repk='MIXTE'
+    if (incr .and. .not. elas) repk = 'INCR'
+    if (elas .and. .not. incr) repk = 'ELAS'
+    if (elas .and. incr) repk = 'MIXTE'
 !
-    if (.not.elas .and. .not.incr) ierd = 1
+    if (.not. elas .and. .not. incr) ierd = 1
 !
     call jedema()
 !

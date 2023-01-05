@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,11 +49,11 @@ subroutine nmdep0(oper, solalg)
     if (oper .eq. 'ON ') then
         depde0 = '&&CNPART.ZERO'
         call nmchso(solalg, 'SOLALG', 'DEPDEL', depde0, solalg)
-    else if (oper.eq.'OFF') then
+    else if (oper .eq. 'OFF') then
         depdel = '&&NMCH2P.DEPDEL'
         call nmchso(solalg, 'SOLALG', 'DEPDEL', depdel, solalg)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

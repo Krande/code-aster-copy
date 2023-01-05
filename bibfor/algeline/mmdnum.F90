@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine mmdnum(neqns, perm, invp, qsize)
     do node = 1, neqns
         nqsize = qsize(node)
         if (nqsize .le. 0) perm(node) = invp(node)
-        if (nqsize .gt. 0) perm(node) = - invp(node)
+        if (nqsize .gt. 0) perm(node) = -invp(node)
     end do
 !        ------------------------------------------------------
 !        FOR EACH NODE WHICH HAS BEEN MERGED, DO THE FOLLOWING.
@@ -70,24 +70,24 @@ subroutine mmdnum(neqns, perm, invp, qsize)
         father = node
 200     continue
         if (perm(father) .gt. 0) goto 300
-        father = - perm(father)
+        father = -perm(father)
         goto 200
 300     continue
 !                -----------------------
 !                NUMBER NODE AFTER ROOT.
 !                -----------------------
         root = father
-        num = perm(root) + 1
-        invp(node) = - num
+        num = perm(root)+1
+        invp(node) = -num
         perm(root) = num
 !                ------------------------
 !                SHORTEN THE MERGED TREE.
 !                ------------------------
         father = node
 400     continue
-        nextf = - perm(father)
+        nextf = -perm(father)
         if (nextf .le. 0) goto 500
-        perm(father) = - root
+        perm(father) = -root
         father = nextf
         goto 400
 500     continue
@@ -96,7 +96,7 @@ subroutine mmdnum(neqns, perm, invp, qsize)
 !        READY TO COMPUTE PERM.
 !        ----------------------
     do node = 1, neqns
-        num = - invp(node)
+        num = -invp(node)
         invp(node) = num
         perm(num) = node
     end do

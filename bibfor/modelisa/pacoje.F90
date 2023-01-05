@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
+subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz, &
                   ndim)
 ! aslint: disable=
     implicit none
@@ -116,11 +116,11 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
             call jeecra(jexnum(conr, iocc), 'LONMAX', 12*nbcoup)
         else
             call jeecra(jexnum(conr, iocc), 'LONMAX', 22*nbcoup)
-        endif
+        end if
         call jeveuo(jexnum(conr, iocc), 'E', idrad)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call wkvect('&&PACOJE.ANGL', 'V V R', nbcoup, idangl)
 !
@@ -139,14 +139,14 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
 ! ----- LES MOTS-CLES GROUP_MA_1 OU MAILLE_1
 !
         llist1 = '&&PACOJE.LLIST1'
-        call palima(noma, motfac, 'GROUP_MA_1', 'MAILLE_1', iocc,&
+        call palima(noma, motfac, 'GROUP_MA_1', 'MAILLE_1', iocc, &
                     llist1)
 !
 ! ----- CONSTRUCTION DE LA LISTE DE MAILLES LLIST2 SPECIFIEE APRES
 ! ----- LES MOTS-CLES GROUP_MA_2 OU MAILLE_2
 !
         llist2 = '&&PACOJE.LLIST2'
-        call palima(noma, motfac, 'GROUP_MA_2', 'MAILLE_2', iocc,&
+        call palima(noma, motfac, 'GROUP_MA_2', 'MAILLE_2', iocc, &
                     llist2)
 !
 ! ----- DETERMINATION DU VECTEUR NORMAL NOR1 (RESP. NOR2)
@@ -154,12 +154,12 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
 ! ----- AUXQUELLES APPARTIENT LE NOEUD NO1 (RESP. NO2),
 ! ----- CALCULE AU NOEUD NO1 (RESP. NO2)
 !
-        call cacono(noma, ndim, llist1, llist2, no1,&
+        call cacono(noma, ndim, llist1, llist2, no1, &
                     no2, nor1, nor2, inoma)
 !
         do j = 1, ndim
-            norm1(j) = norm1(j) + nor1(j)
-            norm2(j) = norm2(j) + nor2(j)
+            norm1(j) = norm1(j)+nor1(j)
+            norm2(j) = norm2(j)+nor2(j)
         end do
 !
 !       SI INOMA = -1 => NORM1 = 0 CAR MAILLE POI1
@@ -167,44 +167,44 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
 !
         if (inoma .ne. -1) then
             call normev(norm1, nrmbid)
-        endif
+        end if
         if (inoma .ne. -2) then
             call normev(norm2, nrmbid)
-        endif
+        end if
         jeu = 0.0d0
 !
 !       ANGLE ENTRE NORMALES ET MOYENNE DES NORMALES UNITILE SI POI1
 !
-        if ((inoma.ne.-1) .and. (inoma.ne.-2)) then
+        if ((inoma .ne. -1) .and. (inoma .ne. -2)) then
 !
             do j = 1, ndim
-                norm1(j) = (norm1(j) - norm2(j))/2.0d0
+                norm1(j) = (norm1(j)-norm2(j))/2.0d0
             end do
 !
-        else if (inoma.eq.-1) then
+        else if (inoma .eq. -1) then
 !
 !          NO1 APPARTIENT A UNE MAILLE POI1 : LA NORMALE EST NORM2
 !
             do j = 1, ndim
-                norm1(j) = - norm2(j)
+                norm1(j) = -norm2(j)
             end do
 !
-        else if (inoma.eq.-2) then
+        else if (inoma .eq. -2) then
 !
 !          NO2 APPARTIENT A UNE MAILLE POI1 : LA NORMALE EST NORM1
 !
-        endif
+        end if
 !
 !
         do j = 1, ndim
             zr(idrad-1+(2*ndim+1)*(i-1)+j) = norm1(j)
             zr(idrad-1+(2*ndim+1)*(i-1)+j+ndim) = norm2(j)
 !
-            jeu = jeu - zr(&
-                  ivale-1+nbcmp*(no1-1)+j) * norm1(j) + zr(ivale-1+nbcmp*(no2-1)+j) * norm1(j)
+            jeu = jeu-zr( &
+                  ivale-1+nbcmp*(no1-1)+j)*norm1(j)+zr(ivale-1+nbcmp*(no2-1)+j)*norm1(j)
         end do
 !
-        zr(idrad- 1+(2*ndim+1)*i) = jeu
+        zr(idrad-1+(2*ndim+1)*i) = jeu
 !
 !
     end do

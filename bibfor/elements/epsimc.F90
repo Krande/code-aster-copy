@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine epsimc(option, xyz, nno, npg, ndim,&
+subroutine epsimc(option, xyz, nno, npg, ndim, &
                   nbsig, ni, eps)
 !.======================================================================
     implicit none
@@ -78,16 +78,16 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
             do igau = 1, npg
-                exx=zr(idefi+nbsig*(igau-1)-1+1)
-                eyy=zr(idefi+nbsig*(igau-1)-1+2)
-                ezz=zr(idefi+nbsig*(igau-1)-1+3)
-                exy=zr(idefi+nbsig*(igau-1)-1+4)
+                exx = zr(idefi+nbsig*(igau-1)-1+1)
+                eyy = zr(idefi+nbsig*(igau-1)-1+2)
+                ezz = zr(idefi+nbsig*(igau-1)-1+3)
+                exy = zr(idefi+nbsig*(igau-1)-1+4)
 
                 eps(1+nbsig*(igau-1)) = exx
                 eps(2+nbsig*(igau-1)) = eyy
                 eps(3+nbsig*(igau-1)) = ezz
                 eps(4+nbsig*(igau-1)) = exy*deux
-            enddo
+            end do
         else
             call jevech('PEPSINF', 'L', idefi)
             call jevech('PTEMPSR', 'L', itemps)
@@ -106,22 +106,22 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
                 ygau = zero
 !
                 do i = 1, nno
-                    xgau = xgau + ni(i+nno*(igau-1))*xyz(1+2*(i-1))
-                    ygau = ygau + ni(i+nno*(igau-1))*xyz(2+2*(i-1))
-                enddo
+                    xgau = xgau+ni(i+nno*(igau-1))*xyz(1+2*(i-1))
+                    ygau = ygau+ni(i+nno*(igau-1))*xyz(2+2*(i-1))
+                end do
 !
                 valpar(1) = xgau
                 valpar(2) = ygau
 !
 !  --        INTERPOLATION
 !            -------------
-                call fointe('FM', zk8(idefi ), 3, nompar, valpar,&
+                call fointe('FM', zk8(idefi), 3, nompar, valpar, &
                             exx, ier)
-                call fointe('FM', zk8(idefi+1), 3, nompar, valpar,&
+                call fointe('FM', zk8(idefi+1), 3, nompar, valpar, &
                             eyy, ier)
-                call fointe('FM', zk8(idefi+2), 3, nompar, valpar,&
+                call fointe('FM', zk8(idefi+2), 3, nompar, valpar, &
                             ezz, ier)
-                call fointe('FM', zk8(idefi+3), 3, nompar, valpar,&
+                call fointe('FM', zk8(idefi+3), 3, nompar, valpar, &
                             exy, ier)
 !
                 eps(1+nbsig*(igau-1)) = exx
@@ -129,14 +129,14 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
                 eps(3+nbsig*(igau-1)) = ezz
                 eps(4+nbsig*(igau-1)) = exy*deux
 !
-            enddo
+            end do
 !
-        endif
+        end if
 !
 !      -------
 ! ---- CAS 3D
 !      -------
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
 !
 ! ---- RECUPERATION DES DEFORMATIONS
 !      -----------------------------
@@ -148,12 +148,12 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
 !      -----------------------------------
             do igau = 1, npg
 
-                exx=zr(idefi+nbsig*(igau-1)-1+1)
-                eyy=zr(idefi+nbsig*(igau-1)-1+2)
-                ezz=zr(idefi+nbsig*(igau-1)-1+3)
-                exy=zr(idefi+nbsig*(igau-1)-1+4)
-                exz=zr(idefi+nbsig*(igau-1)-1+5)
-                eyz=zr(idefi+nbsig*(igau-1)-1+6)
+                exx = zr(idefi+nbsig*(igau-1)-1+1)
+                eyy = zr(idefi+nbsig*(igau-1)-1+2)
+                ezz = zr(idefi+nbsig*(igau-1)-1+3)
+                exy = zr(idefi+nbsig*(igau-1)-1+4)
+                exz = zr(idefi+nbsig*(igau-1)-1+5)
+                eyz = zr(idefi+nbsig*(igau-1)-1+6)
 
                 eps(1+nbsig*(igau-1)) = exx
                 eps(2+nbsig*(igau-1)) = eyy
@@ -161,7 +161,7 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
                 eps(4+nbsig*(igau-1)) = exy*deux
                 eps(5+nbsig*(igau-1)) = exz*deux
                 eps(6+nbsig*(igau-1)) = eyz*deux
-            enddo
+            end do
         else
             call jevech('PEPSINF', 'L', idefi)
             call jevech('PTEMPSR', 'L', itemps)
@@ -182,10 +182,10 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
                 zgau = zero
 !
                 do i = 1, nno
-                    xgau = xgau + ni(i+nno*(igau-1))*xyz(1+3*(i-1))
-                    ygau = ygau + ni(i+nno*(igau-1))*xyz(2+3*(i-1))
-                    zgau = zgau + ni(i+nno*(igau-1))*xyz(3+3*(i-1))
-                enddo
+                    xgau = xgau+ni(i+nno*(igau-1))*xyz(1+3*(i-1))
+                    ygau = ygau+ni(i+nno*(igau-1))*xyz(2+3*(i-1))
+                    zgau = zgau+ni(i+nno*(igau-1))*xyz(3+3*(i-1))
+                end do
 !
                 valpar(1) = xgau
                 valpar(2) = ygau
@@ -193,17 +193,17 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
 !
 !  --        INTERPOLATION
 !            -------------
-                call fointe('FM', zk8(idefi ), 4, nompar, valpar,&
+                call fointe('FM', zk8(idefi), 4, nompar, valpar, &
                             exx, ier)
-                call fointe('FM', zk8(idefi+1), 4, nompar, valpar,&
+                call fointe('FM', zk8(idefi+1), 4, nompar, valpar, &
                             eyy, ier)
-                call fointe('FM', zk8(idefi+2), 4, nompar, valpar,&
+                call fointe('FM', zk8(idefi+2), 4, nompar, valpar, &
                             ezz, ier)
-                call fointe('FM', zk8(idefi+3), 4, nompar, valpar,&
+                call fointe('FM', zk8(idefi+3), 4, nompar, valpar, &
                             exy, ier)
-                call fointe('FM', zk8(idefi+4), 4, nompar, valpar,&
+                call fointe('FM', zk8(idefi+4), 4, nompar, valpar, &
                             exz, ier)
-                call fointe('FM', zk8(idefi+5), 4, nompar, valpar,&
+                call fointe('FM', zk8(idefi+5), 4, nompar, valpar, &
                             eyz, ier)
 !
                 eps(1+nbsig*(igau-1)) = exx
@@ -213,11 +213,11 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
                 eps(5+nbsig*(igau-1)) = exz*deux
                 eps(6+nbsig*(igau-1)) = eyz*deux
 !
-            enddo
+            end do
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

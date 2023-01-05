@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,34 +18,34 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine hmderp(ds_thm, yavp  , t     ,&
-                  pvp   , pad   ,&
-                  rho11 , rho12 , h11  , h12,&
-                  dp11p1, dp11p2, dp11t,&
-                  dp12p1, dp12p2, dp12t,&
-                  dp21p1, dp21p2, dp21t,&
-                  dp22p1, dp22p2, dp22t,&
-                  dp1pp1, dp2pp1, dtpp1,&
-                  dp1pp2, dp2pp2, dtpp2,&
-                  dp1pt , dp2pt , dtpt)
+subroutine hmderp(ds_thm, yavp, t, &
+                  pvp, pad, &
+                  rho11, rho12, h11, h12, &
+                  dp11p1, dp11p2, dp11t, &
+                  dp12p1, dp12p2, dp12t, &
+                  dp21p1, dp21p2, dp21t, &
+                  dp22p1, dp22p2, dp22t, &
+                  dp1pp1, dp2pp1, dtpp1, &
+                  dp1pp2, dp2pp2, dtpp2, &
+                  dp1pt, dp2pt, dtpt)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical, intent(in) :: yavp
-real(kind=8), intent(in) :: t, pvp, pad
-real(kind=8), intent(in) :: rho11, rho12, h11, h12
-real(kind=8), intent(out) :: dp11p1, dp11p2, dp11t
-real(kind=8), intent(out) :: dp12p1, dp12p2, dp12t
-real(kind=8), intent(out) :: dp21p1, dp21p2, dp21t
-real(kind=8), intent(out) :: dp22p1, dp22p2, dp22t
-real(kind=8), intent(out) :: dp1pp1(2), dp2pp1(2), dtpp1(2)
-real(kind=8), intent(out) :: dp1pp2(2), dp2pp2(2), dtpp2(2)
-real(kind=8), intent(out) :: dp1pt(2), dp2pt(2), dtpt(2)
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical, intent(in) :: yavp
+    real(kind=8), intent(in) :: t, pvp, pad
+    real(kind=8), intent(in) :: rho11, rho12, h11, h12
+    real(kind=8), intent(out) :: dp11p1, dp11p2, dp11t
+    real(kind=8), intent(out) :: dp12p1, dp12p2, dp12t
+    real(kind=8), intent(out) :: dp21p1, dp21p2, dp21t
+    real(kind=8), intent(out) :: dp22p1, dp22p2, dp22t
+    real(kind=8), intent(out) :: dp1pp1(2), dp2pp1(2), dtpp1(2)
+    real(kind=8), intent(out) :: dp1pp2(2), dp2pp2(2), dtpp2(2)
+    real(kind=8), intent(out) :: dp1pt(2), dp2pt(2), dtpt(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,60 +96,60 @@ real(kind=8), intent(out) :: dp1pt(2), dp2pt(2), dtpt(2)
 !
     dp11p1 = zero
     dp11p2 = zero
-    dp11t  = zero
+    dp11t = zero
     dp12p1 = zero
     dp12p2 = zero
-    dp12t  = zero
+    dp12t = zero
     dp21p1 = zero
     dp21p2 = zero
-    dp21t  = zero
+    dp21t = zero
     dp22p1 = zero
     dp22p2 = zero
-    dp22t  = zero
+    dp22t = zero
     dp1pp1(:) = zero
     dp2pp1(:) = zero
-    dtpp1(:)  = zero
+    dtpp1(:) = zero
     dp1pp2(:) = zero
     dp2pp2(:) = zero
-    dtpp2(:)  = zero
-    dp1pt(:)  = zero
-    dp2pt(:)  = zero
-    dtpt(:)   = zero
+    dtpp2(:) = zero
+    dp1pt(:) = zero
+    dp2pt(:) = zero
+    dtpt(:) = zero
 !
 ! - Get parameters
 !
-    rgaz   = ds_thm%ds_material%solid%r_gaz
-    cliq   = ds_thm%ds_material%liquid%unsurk
+    rgaz = ds_thm%ds_material%solid%r_gaz
+    cliq = ds_thm%ds_material%liquid%unsurk
     alpliq = ds_thm%ds_material%liquid%alpha
-    kh     = ds_thm%ds_material%ad%coef_henry
+    kh = ds_thm%ds_material%ad%coef_henry
 !
 ! - Compute
 !
     if (yavp) then
         dp11p1 = rho11*kh/(rho12*rgaz*t-rho11*kh)
-        dp11p2 = rho11*kh*(rgaz*t/kh - 1.d0)/(rho12*rgaz*t-rho11*kh)
+        dp11p2 = rho11*kh*(rgaz*t/kh-1.d0)/(rho12*rgaz*t-rho11*kh)
         dp12p1 = rho12/(rho12*rgaz*t/kh-(rho11))
         dp12p2 = (rgaz*t/kh-1.d0)*dp12p1
-        dp21p1 = - dp12p1
-        dp21p2 = 1.d0 - dp12p2
-        dp22p1 = -1.d0- dp11p1
-        dp22p2 = 1.d0- dp11p2
+        dp21p1 = -dp12p1
+        dp21p2 = 1.d0-dp12p2
+        dp22p1 = -1.d0-dp11p1
+        dp22p2 = 1.d0-dp11p2
         if (ds_thm%ds_elem%l_dof_ther) then
             l = (h12-h11)
-            dp11t = (-l*rgaz*rho12/kh+pad/t)/ ((rho12*rgaz*t/rho11/kh)-1)
+            dp11t = (-l*rgaz*rho12/kh+pad/t)/((rho12*rgaz*t/rho11/kh)-1)
             dp12t = (-l*rho11+pad)/t*dp12p1
-            dp21t = - dp12t
-            dp22t = - dp11t
-        endif
-        a1 = rgaz*t/kh - rho11/rho12
-        a2 = rho11/rho12*(rgaz*t/kh - 1)
+            dp21t = -dp12t
+            dp22t = -dp11t
+        end if
+        a1 = rgaz*t/kh-rho11/rho12
+        a2 = rho11/rho12*(rgaz*t/kh-1)
         if (ds_thm%ds_elem%l_dof_ther) then
             a3 = dp12t/pvp-1/t-cliq*dp22t-3*alpliq
             a4 = -dp12t/pvp+1/t+cliq*dp22t-3*alpliq
         else
             a3 = dp12t/pvp-1/t-cliq*dp22t
             a4 = -dp12t/pvp+1/t+cliq*dp22t
-        endif
+        end if
         dp1pp2(1) = a2/a1/a1*(cliq*dp11p1-1/pvp*dp12p1)
         dp2pp2(1) = a2/a1/a1*(cliq*dp11p2-1/pvp*dp12p2)
         dp1pp2(2) = rgaz*t*a2/a1/a1/kh*(-cliq*dp11p1+1/pvp*dp12p1)
@@ -159,48 +159,48 @@ real(kind=8), intent(out) :: dp1pt(2), dp2pt(2), dtpt(2)
         dp1pp1(2) = rgaz*t/kh*rho11/rho12/a1/a1*(dp12p1/pvp-cliq*dp11p1)
         dp2pp1(2) = rgaz*t/kh*rho11/rho12/a1/a1*(dp12p2/pvp-cliq*dp11p2)
         if (ds_thm%ds_elem%l_dof_ther) then
-            dtpp2(1) = rgaz/a1/kh - (rgaz*t/kh-1)/a1/a1*(rgaz/kh-a4*rho11/ rho12)
+            dtpp2(1) = rgaz/a1/kh-(rgaz*t/kh-1)/a1/a1*(rgaz/kh-a4*rho11/rho12)
             dtpp1(1) = -1.d0/a1/a1*(rgaz/kh-rho11/rho12*a4)
-            dtpp2(2) = rgaz/a1/kh*rho11/rho12 +&
-                       (rho11/rho12)*(rho11/ rho12)* a2*rgaz/kh/a1/a1*(1.d0+a3*t)
+            dtpp2(2) = rgaz/a1/kh*rho11/rho12+ &
+                       (rho11/rho12)*(rho11/rho12)*a2*rgaz/kh/a1/a1*(1.d0+a3*t)
             dtpp1(2) = rgaz/kh/a1/a1*rho11/rho12*(1.d0+a3*t)
-            dp1pt(1) = -1.d0/t/a1/a1*(&
-                           a1*(1.d0-dp11p1*(1.d0+l*rho11*cliq)) +&
-                           (pad-l*rho11)*rho11/rho12*(cliq*dp11p1-dp12p1/pvp)&
+            dp1pt(1) = -1.d0/t/a1/a1*( &
+                       a1*(1.d0-dp11p1*(1.d0+l*rho11*cliq))+ &
+                       (pad-l*rho11)*rho11/rho12*(cliq*dp11p1-dp12p1/pvp) &
                        )
-            dp2pt(1) = -1.d0/t/a1/a1*(&
-                           a1*(1.d0-dp11p2*(1.d0+l*rho11*cliq)) +&
-                           (pad-l*rho11)*rho11/rho12*(cliq*dp11p2-dp12p2/pvp)&
+            dp2pt(1) = -1.d0/t/a1/a1*( &
+                       a1*(1.d0-dp11p2*(1.d0+l*rho11*cliq))+ &
+                       (pad-l*rho11)*rho11/rho12*(cliq*dp11p2-dp12p2/pvp) &
                        )
-            dtpt(1)  = +1.d0/t/a1*(dp22t-l*(rho11*dp11t*cliq-3.d0* alpliq*rho11))-&
-                       1.d0/t/t/a1/a1*(rgaz*t/kh-rho11/rho12+t*(rgaz/ kh-rho11/rho12*a4))*&
+            dtpt(1) = +1.d0/t/a1*(dp22t-l*(rho11*dp11t*cliq-3.d0*alpliq*rho11))- &
+                      1.d0/t/t/a1/a1*(rgaz*t/kh-rho11/rho12+t*(rgaz/kh-rho11/rho12*a4))* &
                       (pad-l*rho11)
-            dp1pt(2) = 1.d0/a1*rho11/rho12*(l*rgaz/kh*rho12/pvp*dp12p1-dp22p1/t)-&
+            dp1pt(2) = 1.d0/a1*rho11/rho12*(l*rgaz/kh*rho12/pvp*dp12p1-dp22p1/t)- &
                        rgaz*t/kh*rho11/rho12/a1/a1*(l*rgaz/kh*rho12-pad/t)*a3
-            dp2pt(2) = 1.d0/a1*rho11/rho12*(l*rgaz/kh*rho12/pvp*dp12p2-dp22p2/t)-&
+            dp2pt(2) = 1.d0/a1*rho11/rho12*(l*rgaz/kh*rho12/pvp*dp12p2-dp22p2/t)- &
                        rgaz*t/kh*rho11/rho12/a1/a1*(l*rgaz/kh*rho12-pad/t)*a3
-            dtpt(2)  = rho11/rho12/a1*(&
-                            l*rgaz*rho12/kh*(dp12t/pvp-1.d0/t)+&
-                            pad/t/t -dp12t/t&
-                       )-&
-                       rgaz*t/kh*rho11/rho12/a1/a1*(l*rgaz*rho12/kh-pad/t)*(a3+1.d0/t)
-        endif
+            dtpt(2) = rho11/rho12/a1*( &
+                      l*rgaz*rho12/kh*(dp12t/pvp-1.d0/t)+ &
+                      pad/t/t-dp12t/t &
+                      )- &
+                      rgaz*t/kh*rho11/rho12/a1/a1*(l*rgaz*rho12/kh-pad/t)*(a3+1.d0/t)
+        end if
     else
         dp11p1 = rho11*kh/(rho12*rgaz*t-rho11*kh)
-        dp11p2 = rho11*kh*(rgaz*t/kh - 1.d0)/(rho12*rgaz*t-rho11*kh)
+        dp11p2 = rho11*kh*(rgaz*t/kh-1.d0)/(rho12*rgaz*t-rho11*kh)
         dp12p1 = zero
         dp12p2 = zero
-        dp21p1 = - dp12p1
-        dp21p2 = 1.d0 - dp12p2
-        dp22p1 = -1.d0- dp11p1
-        dp22p2 = 1.d0- dp11p2
+        dp21p1 = -dp12p1
+        dp21p2 = 1.d0-dp12p2
+        dp22p1 = -1.d0-dp11p1
+        dp22p2 = 1.d0-dp11p2
         if (ds_thm%ds_elem%l_dof_ther) then
             l = (h12-h11)
-            dp11t = (-l*rgaz*rho12/kh+pad/t)*rho11*kh/ (rho12*rgaz*t-rho11* kh)
+            dp11t = (-l*rgaz*rho12/kh+pad/t)*rho11*kh/(rho12*rgaz*t-rho11*kh)
             dp12t = zero
-            dp21t = - dp12t
-            dp22t = - dp11t
-        endif
-    endif
+            dp21t = -dp12t
+            dp22t = -dp11t
+        end if
+    end if
 !
 end subroutine

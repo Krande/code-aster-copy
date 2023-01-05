@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ subroutine tbexp2(nomta, para)
 !
     call tbexip(nomta, para, exist, typpar)
 !
-    if (.not.exist) then
-        valk (1) = para
-        valk (2) = nomta
+    if (.not. exist) then
+        valk(1) = para
+        valk(2) = nomta
         call utmess('F', 'UTILITAI6_93', nk=2, valk=valk)
-    endif
+    end if
 !
     call jedema()
 end subroutine

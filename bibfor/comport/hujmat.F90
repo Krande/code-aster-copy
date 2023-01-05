@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujmat(fami, kpg, ksp, mod, imat,&
+subroutine hujmat(fami, kpg, ksp, mod, imat, &
                   tempf, materf, ndt, ndi, nvi)
     implicit none
 ! HUJEUX  : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
@@ -73,45 +73,45 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
     nomc(7) = 'B       '
     nomc(8) = 'PHI     '
     nomc(9) = 'ANGDIL  '
-    nomc(10)= 'PCO     '
-    nomc(11)= 'PREF    '
-    nomc(12)= 'ACYC    '
-    nomc(13)= 'AMON    '
-    nomc(14)= 'CCYC    '
-    nomc(15)= 'CMON    '
-    nomc(16)= 'RD_ELA  '
-    nomc(17)= 'RI_ELA  '
-    nomc(18)= 'RHYS    '
-    nomc(19)= 'RMOB    '
-    nomc(20)= 'XM      '
+    nomc(10) = 'PCO     '
+    nomc(11) = 'PREF    '
+    nomc(12) = 'ACYC    '
+    nomc(13) = 'AMON    '
+    nomc(14) = 'CCYC    '
+    nomc(15) = 'CMON    '
+    nomc(16) = 'RD_ELA  '
+    nomc(17) = 'RI_ELA  '
+    nomc(18) = 'RHYS    '
+    nomc(19) = 'RMOB    '
+    nomc(20) = 'XM      '
 !af 30/04/07 debut
-    nomc(21)= 'RD_CYC  '
-    nomc(22)= 'RI_CYC  '
-    nomc(23)= 'DILA    '
-    nomc(24)= 'PTRAC   '
+    nomc(21) = 'RD_CYC  '
+    nomc(22) = 'RI_CYC  '
+    nomc(23) = 'DILA    '
+    nomc(24) = 'PTRAC   '
 !af fin
 !
-    materf(:,:)=0.d0
+    materf(:, :) = 0.d0
     cerr(:) = 0.d0
-    tempf= 0.d0
+    tempf = 0.d0
 !
 !
 ! --- RECUPERATION DES PROPRIETES DE LA LOI DE HUJEUX
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'HUJEUX', 0, '   ', [tempf],&
+    call rcvalb(fami, kpg, ksp, '+', imat, &
+                ' ', 'HUJEUX', 0, '   ', [tempf], &
                 21, nomc(4:24), materf(1:21, 2), cerr(4:24), 2)
 !
 !
     if (phenom .eq. 'ELAS') then
 !
 ! --- RECUPERATION DES PROPRIETES ELASTIQUES
-        call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', phenom, 0, '   ', [tempf],&
+        call rcvalb(fami, kpg, ksp, '+', imat, &
+                    ' ', phenom, 0, '   ', [tempf], &
                     3, nomc, materf(1:3, 1), cerr, 0, nan='NON')
 !
-        materf(17,1) =1.d0
+        materf(17, 1) = 1.d0
 !
-    else if (phenom.eq.'ELAS_ORTH') then
+    else if (phenom .eq. 'ELAS_ORTH') then
 !
         nomc(1) = 'E_L     '
         nomc(2) = 'E_T     '
@@ -122,9 +122,9 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
         nomc(7) = 'G_LT    '
         nomc(8) = 'G_LN    '
         nomc(9) = 'G_TN    '
-        nomc(10)= 'ALPHA_L '
-        nomc(11)= 'ALPHA_T '
-        nomc(12)= 'ALPHA_N '
+        nomc(10) = 'ALPHA_L '
+        nomc(11) = 'ALPHA_T '
+        nomc(12) = 'ALPHA_N '
 !
 ! ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
 !        -----------
@@ -140,21 +140,21 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
 !        ALPHA1= MATERF(7,1)
 !        ALPHA2= MATERF(8,1)
 !        ALPHA3= MATERF(9,1)
-        call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', phenom, 0, '   ', [tempf],&
+        call rcvalb(fami, kpg, ksp, '+', imat, &
+                    ' ', phenom, 0, '   ', [tempf], &
                     12, nomc, materf(1:12, 1), cerr, 0, nan='NON')
 !
-        nu21 = materf(2,1)*materf(4,1)/materf(1,1)
-        nu31 = materf(3,1)*materf(5,1)/materf(1,1)
-        nu32 = materf(3,1)*materf(6,1)/materf(2,1)
+        nu21 = materf(2, 1)*materf(4, 1)/materf(1, 1)
+        nu31 = materf(3, 1)*materf(5, 1)/materf(1, 1)
+        nu32 = materf(3, 1)*materf(6, 1)/materf(2, 1)
 !
-        materf(13,1) =nu21
-        materf(14,1) =nu31
-        materf(15,1) =nu32
-        materf(16,1) =1.d0 - materf(6,1)*nu32 - nu31*materf(5,1)&
-        - nu21*materf(4,1) - 2.d0*materf(6,1)*nu31*materf(4,1)
-        materf(17,1) =2.d0
+        materf(13, 1) = nu21
+        materf(14, 1) = nu31
+        materf(15, 1) = nu32
+        materf(16, 1) = 1.d0-materf(6, 1)*nu32-nu31*materf(5, 1) &
+                        -nu21*materf(4, 1)-2.d0*materf(6, 1)*nu31*materf(4, 1)
+        materf(17, 1) = 2.d0
 !
-    endif
+    end if
 !
 end subroutine

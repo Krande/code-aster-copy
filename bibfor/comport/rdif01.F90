@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rdif01(fami, kpg, ksp, rela_comp, mod,&
-                  imat, matcst, nbcomm, cpmono, nfs,&
-                  nsg, toutms, nvi, nmat, vini,&
-                  cothe, coeff, dcothe, dcoeff, pgl,&
-                  nbphas, coel, x, dtime, neps,&
-                  epsd, detot, dvin, nhsr, numhsr,&
+subroutine rdif01(fami, kpg, ksp, rela_comp, mod, &
+                  imat, matcst, nbcomm, cpmono, nfs, &
+                  nsg, toutms, nvi, nmat, vini, &
+                  cothe, coeff, dcothe, dcoeff, pgl, &
+                  nbphas, coel, x, dtime, neps, &
+                  epsd, detot, dvin, nhsr, numhsr, &
                   hsr, itmax, toler, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -71,26 +71,26 @@ subroutine rdif01(fami, kpg, ksp, rela_comp, mod,&
 !
     if (rela_comp .eq. 'MONOCRISTAL') then
 !       PAS DE VARIATION DES COEF AVEC LA TEMPERATURE
-        xm=0.d0
-        call coefft(cothe, coeff, dcothe, dcoeff, xm,&
+        xm = 0.d0
+        call coefft(cothe, coeff, dcothe, dcoeff, xm, &
                     dtime, coeft, nmat, coel)
-        call lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
-                    cpmono, nmat, nvi, vini, x,&
-                    dtime, pgl, mod, coeft, neps,&
-                    epsd, detot, coel, dvin, nfs,&
-                    nsg, toutms, hsr(1, 1, 1), itmax, toler,&
+        call lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
+                    cpmono, nmat, nvi, vini, x, &
+                    dtime, pgl, mod, coeft, neps, &
+                    epsd, detot, coel, dvin, nfs, &
+                    nsg, toutms, hsr(1, 1, 1), itmax, toler, &
                     iret)
 !
     else if (rela_comp .eq. 'POLYCRISTAL') then
 !       PAS DE VARIATION DES COEF AVEC LA TEMPERATURE
-        xm=0.d0
-        call coefft(cothe, coeff, dcothe, dcoeff, xm,&
+        xm = 0.d0
+        call coefft(cothe, coeff, dcothe, dcoeff, xm, &
                     dtime, coeft, nmat, coel)
-        call lcmmop(fami, kpg, ksp, rela_comp, nbcomm,&
-                    cpmono, nmat, nvi, vini, x,&
-                    dtime, mod, coeft, epsd, detot,&
-                    coel, nbphas, nfs, nsg, toutms,&
-                    dvin, nhsr, numhsr, hsr, itmax,&
+        call lcmmop(fami, kpg, ksp, rela_comp, nbcomm, &
+                    cpmono, nmat, nvi, vini, x, &
+                    dtime, mod, coeft, epsd, detot, &
+                    coel, nbphas, nfs, nsg, toutms, &
+                    dvin, nhsr, numhsr, hsr, itmax, &
                     toler, iret)
 !
     else
@@ -99,18 +99,18 @@ subroutine rdif01(fami, kpg, ksp, rela_comp, mod,&
             evi(itens) = vini(itens)
         end do
 !
-        call coefft(cothe, coeff, dcothe, dcoeff, x,&
+        call coefft(cothe, coeff, dcothe, dcoeff, x, &
                     dtime, coeft, nmat, coel)
 !
 !
-        call calsig(fami, kpg, ksp, evi, mod,&
-                    rela_comp, vini, x, dtime, epsd,&
+        call calsig(fami, kpg, ksp, evi, mod, &
+                    rela_comp, vini, x, dtime, epsd, &
                     detot, nmat, coel, sigi)
 !
-        call lcdvin(fami, kpg, ksp, rela_comp, mod,&
-                    imat, matcst, nvi, nmat, vini,&
-                    coeft, x, dtime, sigi, dvin,&
+        call lcdvin(fami, kpg, ksp, rela_comp, mod, &
+                    imat, matcst, nvi, nmat, vini, &
+                    coeft, x, dtime, sigi, dvin, &
                     iret)
 !
-    endif
+    end if
 end subroutine

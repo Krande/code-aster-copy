@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ subroutine te0049(option, nomte)
     integer :: npg1
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------
@@ -93,7 +93,7 @@ subroutine te0049(option, nomte)
     do i = 1, nno
         do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-        enddo
+        end do
     end do
     call ortrep(ndim, bary, repere)
 !
@@ -105,21 +105,21 @@ subroutine te0049(option, nomte)
 ! ---- CONSTRUCTION DU VECTEUR DES DEFORMATIONS INITIALES DEFINIES AUX
 ! ---- POINTS D'INTEGRATION A PARTIR DES DONNEES UTILISATEUR
 !      -----------------------------------------------------
-    call epsimc(option, zr(igeom), nno, npg1, ndim,&
+    call epsimc(option, zr(igeom), nno, npg1, ndim, &
                 nbsig, zr(ivf), epsi)
 !
 ! ---- CALCUL DU VECTEUR DES CONTRAINTES INITIALES AUX POINTS
 ! ---- D'INTEGRATION
 !      -------------
-    call sigimc('RIGI', nno, ndim, nbsig, npg1,&
-                zr(ivf), zr(igeom), instan, zi(imate), repere,&
+    call sigimc('RIGI', nno, ndim, nbsig, npg1, &
+                zr(ivf), zr(igeom), instan, zi(imate), repere, &
                 epsi, sigi)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES DUES AUX CONTRAINTES INITIALES
 ! ---- (I.E. BT*SIG_INITIALES)
 !      ----------------------
-    call bsigmc(nno, ndim, nbsig, npg1, ipoids,&
-                ivf, idfde, zr(igeom), nharm, sigi,&
+    call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
+                ivf, idfde, zr(igeom), nharm, sigi, &
                 bsigma)
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE

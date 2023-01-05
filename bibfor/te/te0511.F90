@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0511(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -66,13 +66,13 @@ implicit none
 ! --- CAS D'UN POST-TRAITEMENT EN MECANIQUE DRAINE --------------------
 ! =====================================================================
         logthm = .false.
-        if ((alias8(3:5).eq.'DPL') .or. (alias8(3:5).eq.'DPS')) then
+        if ((alias8(3:5) .eq. 'DPL') .or. (alias8(3:5) .eq. 'DPS')) then
             mod(1:6) = 'D_PLAN'
             nbsig = nbsigm()
-        else if (alias8(3:5).eq.'CPL') then
+        else if (alias8(3:5) .eq. 'CPL') then
             mod(1:6) = 'C_PLAN'
             nbsig = nbsigm()
-        else if (alias8(3:5).eq.'AX_') then
+        else if (alias8(3:5) .eq. 'AX_') then
             mod(1:4) = 'AXIS'
             nbsig = nbsigm()
         else
@@ -82,20 +82,20 @@ implicit none
             logthm = .true.
             if (alias8(3:5) .eq. 'AH2') then
                 mod(1:4) = 'AXIS'
-            else if ((alias8(3:5).eq.'DH2').or. (alias8(3:5).eq.'DR1').or.&
-                     (alias8(3:5).eq.'DM1'))then
+            else if ((alias8(3:5) .eq. 'DH2') .or. (alias8(3:5) .eq. 'DR1') .or. &
+                     (alias8(3:5) .eq. 'DM1')) then
                 mod(1:6) = 'D_PLAN'
             else
 ! =====================================================================
 ! --- CAS NON TRAITE --------------------------------------------------
 ! =====================================================================
                 call utmess('F', 'ELEMENTS_11', sk=nomte)
-            endif
-        endif
+            end if
+        end if
 ! =====================================================================
 ! --- RECUPERATION DU ELREFE ------------------------------------------
 ! =====================================================================
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 ! =====================================================================
 ! --- PARAMETRES EN ENTREE --------------------------------------------
@@ -109,7 +109,7 @@ implicit none
 ! --- RECUPERER EGALEMENT LA DIMENSION DU VECTEUR QUI DIFFERE SUIVANT -
 ! --- LA MODELISATION THM ---------------------------------------------
 ! =====================================================================
-            call tecach('OOO', 'PCONTPR', 'L', iret, nval=3,&
+            call tecach('OOO', 'PCONTPR', 'L', iret, nval=3, &
                         itab=tabthm)
             icontp = tabthm(1)
             dimmax = tabthm(2)
@@ -118,8 +118,8 @@ implicit none
 ! --- on teste la coherence des recuperations elrefe_info et tecach sur ----
 ! --- LE NOMBRE DE POINTS DE GAUSS ------------------------------------
 ! =====================================================================
-            ASSERT(npgu.eq.npg)
-            nbsig = dimmax / npg
+            ASSERT(npgu .eq. npg)
+            nbsig = dimmax/npg
 ! =====================================================================
 ! --- DANS LE CADRE DE LA THM ON RECUPERE DIRECTEMENT LA RELATION -----
 ! --- DE COMPORTEMENT DE TYPE MECANIQUE -------------------------------
@@ -128,11 +128,11 @@ implicit none
         else
             call jevech('PCONTPR', 'L', icontp)
             relcom = zk16(icompo-1+RELA_NAME)
-        endif
+        end if
 ! =====================================================================
 ! --- NOMBRE DE VARIABLES INTERNES ASSOCIE A LA LOI DE COMPORTEMENT ---
 ! =====================================================================
-        read (zk16(icompo-1+NVAR),'(I16)') nbvari
+        read (zk16(icompo-1+NVAR), '(I16)') nbvari
 ! =====================================================================
 ! --- PARAMETRES EN SORTIE --------------------------------------------
 ! =====================================================================
@@ -149,13 +149,13 @@ implicit none
 ! --- CALCUL DU MODULE DE RIGIDITE DE MICRO-DILTATION -----------------
 ! =====================================================================
             do ic = 1, nbsig
-                sig(ic) = zr(icontp-1+(kpg-1)*nbsig+ic )
+                sig(ic) = zr(icontp-1+(kpg-1)*nbsig+ic)
             end do
             do iv = 1, nbvari
-                vin(iv) = zr(ivarip-1+(kpg-1)*nbvari+iv )
+                vin(iv) = zr(ivarip-1+(kpg-1)*nbvari+iv)
             end do
             imat = zi(imate)
-            call evala1('RIGI', kpg, 1, mod, relcom,&
+            call evala1('RIGI', kpg, 1, mod, relcom, &
                         sig, vin, imat, module, icode)
 ! =====================================================================
 ! --- SURCHARGE DE L'INDICATEUR DE LOCALISATION -----------------------
@@ -165,6 +165,6 @@ implicit none
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
-    endif
+    end if
 ! =====================================================================
 end subroutine

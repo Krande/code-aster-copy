@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ subroutine mtdscr(nommat)
     if (ier .eq. 0) then
         call jecreo(mat19//'.&INT', ' V V I')
         call jeecra(mat19//'.&INT', 'LONMAX', 19)
-    endif
+    end if
 !
     call jeveuo(mat19//'.&INT', 'E', lmat)
     do k = 1, 19
@@ -106,7 +106,7 @@ subroutine mtdscr(nommat)
     call jeexin(mat19//'.&IN2', ier)
     if (ier .eq. 0) then
         call wkvect(mat19//'.&IN2', ' V V K24', 1, lnom)
-    endif
+    end if
 !
     call jeveut(mat19//'.&IN2', 'E', lnom)
     zk24(lnom) = mat19
@@ -118,7 +118,7 @@ subroutine mtdscr(nommat)
 !
 !
     call jeexin(mat19//'.REFA', ier)
-    ASSERT(ier.ne.0)
+    ASSERT(ier .ne. 0)
 !
 !
     call jeveuo(mat19//'.REFA', 'L', vk24=refa)
@@ -136,7 +136,7 @@ subroutine mtdscr(nommat)
         zi(lmat+5) = zi(jnequ-1+1)
     else
         zi(lmat+5) = zi(lmat+2)
-    endif
+    end if
 !
 !
 !     -- LMAT+3 :
@@ -147,9 +147,9 @@ subroutine mtdscr(nommat)
         call jelira(mat19//'.VALM', 'TYPE', cval=kbid)
     else
         call jelira(mat19//'.UALF', 'TYPE', cval=kbid)
-    endif
+    end if
 !
-    ASSERT(kbid(1:1).eq.'R' .or. kbid(1:1).eq.'C')
+    ASSERT(kbid(1:1) .eq. 'R' .or. kbid(1:1) .eq. 'C')
     if (kbid(1:1) .eq. 'R') zi(lmat+3) = 1
     if (kbid(1:1) .eq. 'C') zi(lmat+3) = 2
 !
@@ -163,12 +163,12 @@ subroutine mtdscr(nommat)
         if (tyma .eq. 'MS') then
             zi(lmat+4) = 1
 !
-        else if (tyma.eq.'MR') then
+        else if (tyma .eq. 'MR') then
             zi(lmat+4) = 0
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     else
         call jelira(mat19//'.UALF', 'NMAXOC', nb1)
@@ -177,14 +177,14 @@ subroutine mtdscr(nommat)
         if (nb1 .eq. nb2) then
             zi(lmat+4) = 1
 !
-        else if (nb1.eq.2*nb2) then
+        else if (nb1 .eq. 2*nb2) then
             zi(lmat+4) = 0
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 !     -- LMAT+7    (SI CHARGES CINEMATIQUES) :
@@ -196,7 +196,7 @@ subroutine mtdscr(nommat)
         zi(lmat+7) = ccid(lccid+1)
     else
         zi(lmat+7) = 0
-    endif
+    end if
 !
 !
 !     -- LMAT+14

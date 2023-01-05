@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,12 +80,12 @@ function cgvtem(resu, iord0)
                 exitem = .true.
             else
                 other_varc = cvrcvarc(ivarc)
-            endif
-        enddo
+            end if
+        end do
 !
         if (other_varc .ne. '') call utmess('A', 'RUPTURE1_72', nk=2, valk=[other_varc, chmat])
 !
-    endif
+    end if
 !
 ! - valeur retournee par la fonction
 !

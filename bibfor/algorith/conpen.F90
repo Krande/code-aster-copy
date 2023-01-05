@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
+subroutine conpen(macor, nbcor, macoc, nbcoc, lface, &
                   locorr, loreor, ma)
 !
 !  ROUTINE CONPEN
@@ -57,41 +57,41 @@ subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
     integer :: i1, i2, i3
 !-----------------------------------------------------------------------
 #define face(i1,i2,i3) nococ(1).eq.i1.and.nococ(2).eq.i2.and. \
-    nococ(3).eq.i3
+    nococ(3) .eq. i3
 !
 !     ------------------------------------------------------------------
 !
-    quadra=nbcoc.eq.15
+    quadra = nbcoc .eq. 15
     if (quadra) then
-        if (nbcor .eq. 15) nblir=6
-        if (nbcor .eq. 10) nblir=4
+        if (nbcor .eq. 15) nblir = 6
+        if (nbcor .eq. 10) nblir = 4
     else
         nblir = nbcor
-    endif
+    end if
     nblic = 6
 !
 !     -----------------------------------------------------------------
 !
-    call concom(macor, nblir, macoc, nblic, nbnoco,&
+    call concom(macor, nblir, macoc, nblic, nbnoco, &
                 nococ)
 !
     if (nbnoco .eq. 3) then
-        if (face(1,2,3) .or. face(4,5,6)) then
-            locorr=.true.
-            lface=face(1,2,3)
+        if (face(1, 2, 3) .or. face(4, 5, 6)) then
+            locorr = .true.
+            lface = face(1, 2, 3)
         else
             ASSERT(.false.)
-        endif
+        end if
         if (lface) then
-            i1=1
-            i2=2
-            i3=3
+            i1 = 1
+            i2 = 2
+            i3 = 3
         else
-            i1=6
-            i2=5
-            i3=4
-        endif
-        call conors(i1, i2, i3, macoc, nbcoc,&
+            i1 = 6
+            i2 = 5
+            i3 = 4
+        end if
+        call conors(i1, i2, i3, macoc, nbcoc, &
                     macor, nbcor, loreor, ma)
         if (loreor) then
             call conech(macoc, 1, 4)
@@ -101,24 +101,24 @@ subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
                 call conech(macoc, 7, 13)
                 call conech(macoc, 8, 14)
                 call conech(macoc, 9, 15)
-            endif
-        endif
-        call conjac(1, 2, 3, 4, macoc,&
+            end if
+        end if
+        call conjac(1, 2, 3, 4, macoc, &
                     nbcoc, ma)
-        call conjac(2, 3, 1, 5, macoc,&
+        call conjac(2, 3, 1, 5, macoc, &
                     nbcoc, ma)
-        call conjac(3, 1, 2, 6, macoc,&
+        call conjac(3, 1, 2, 6, macoc, &
                     nbcoc, ma)
-        call conjac(4, 6, 5, 1, macoc,&
+        call conjac(4, 6, 5, 1, macoc, &
                     nbcoc, ma)
-        call conjac(5, 4, 6, 2, macoc,&
+        call conjac(5, 4, 6, 2, macoc, &
                     nbcoc, ma)
-        call conjac(6, 5, 4, 3, macoc,&
+        call conjac(6, 5, 4, 3, macoc, &
                     nbcoc, ma)
 !
-    else if (nbnoco.gt.2) then
+    else if (nbnoco .gt. 2) then
         vali = nbnoco
         call utmess('E', 'ALGORITH12_59', si=vali)
-    endif
+    end if
 !
 end subroutine

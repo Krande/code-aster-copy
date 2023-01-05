@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,13 +57,13 @@ subroutine rcmo01(chmome, ima, ipt, vale)
 ! --- LES VALEURS DES COMPOSANTES
 !
     do icmp = 1, 3
-        iad = decal + (ipt-1)*nbcmp + icmp
+        iad = decal+(ipt-1)*nbcmp+icmp
         if (.not. zl(jcesl-1+iad)) then
-            vali (1) = ima
-            vali (2) = ipt
+            vali(1) = ima
+            vali(2) = ipt
             valk = 'MOMENT'
             call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
-        endif
+        end if
         vale(icmp) = cesv(iad)
     end do
 !

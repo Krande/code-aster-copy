@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
-                  matopa, matpsc, mxresf, nblagr, omemax,&
-                  omemin, omeshi, solveu, vecblo, npivot,&
+subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
+                  matopa, matpsc, mxresf, nblagr, omemax, &
+                  omemin, omeshi, solveu, vecblo, npivot, &
                   flage, nconv, vpinf, vpmax)
 ! ROUTINE EFFECTUANT LE CALCUL MODAL PARAMETRE DANS EIGSOL PAR LA METHODE DE JACOBI
 ! -------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !
     integer, intent(out) :: nconv
     real(kind=8), intent(out) :: vpinf, vpmax
-    aster_logical , intent(out) :: flage
+    aster_logical, intent(out) :: flage
 !
 ! --- INPUT/OUTPUT
 ! None
@@ -81,12 +81,12 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 ! ---  INITS.
 !
     call jemarq()
-    quapi2=r8depi()*r8depi()
-    rzero=0.d0
-    kmetho='LANCZOS'
+    quapi2 = r8depi()*r8depi()
+    rzero = 0.d0
+    kmetho = 'LANCZOS'
 !
-    nconv=0
-    flage=.false.
+    nconv = 0
+    flage = .false.
     call jeveuo(vecrer, 'E', lresur)
     call jeveuo(vecrei, 'E', lresui)
     call jeveuo(vecrek, 'E', lresuk)
@@ -95,13 +95,13 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !
 ! --- LECTURE DES DONNEES DE EIGSOL
 !
-    call vplecs(eigsol, itemax_=itemax, nbvect_=nbvect, nfreq_=nfreq,&
+    call vplecs(eigsol, itemax_=itemax, nbvect_=nbvect, nfreq_=nfreq, &
                 nperm_=nperm, omecor_=omecor, precdc_=precdc, &
                 tol_=tol, toldyn_=toldyn, &
                 method_=method, optiof_=optiof, &
                 typres_=typres, masse_=masse, raide_=raide, &
                 lc_=lc, lkr_=lkr, lns_=lns, lpg_=lpg)
-    ASSERT(method(1:6).eq.'JACOBI')
+    ASSERT(method(1:6) .eq. 'JACOBI')
 !
 ! ---  DESCRIPTEURS MATRICES
     call jeveuo(raide//'.&INT', 'E', lraide)
@@ -110,10 +110,10 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
     call jeveuo(matopa//'.&INT', 'E', lmatra)
     call jeexin(matpsc//'.&INT', iret)
     if (iret .eq. 0) then
-        lmtpsc=0
+        lmtpsc = 0
     else
         call jeveuo(matpsc//'.&INT', 'E', lmtpsc)
-    endif
+    end if
 !
 ! --- PRE-ALLOCATIONS MEMOIRE
 !
@@ -122,7 +122,7 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !
 ! --- CALCUL MODAL PROPREMENT DIT
 !
-    if (.not.lc) then
+    if (.not. lc) then
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -133,19 +133,19 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     ------------------------------------------------------------------
 !     -------  JACOBI PB GENERALISE REEL SYMETRIQUE --------------------
 !     ------------------------------------------------------------------
-        if ((.not.lkr) .or. lns) then
+        if ((.not. lkr) .or. lns) then
             ASSERT(.false.)
-        endif
-        call sspace(lmtpsc, lmatra, lmasse, neq, nbvect,&
-                    nfreq, zi(lprod), itemax, nperm, tol,&
-                    toldyn, zr(lvec), zr(lvalpr), nitjac, nitbat,&
+        end if
+        call sspace(lmtpsc, lmatra, lmasse, neq, nbvect, &
+                    nfreq, zi(lprod), itemax, nperm, tol, &
+                    toldyn, zr(lvec), zr(lvalpr), nitjac, nitbat, &
                     solveu)
-        call rectfr(nfreq, nbvect, omeshi, npivot, nblagr,&
+        call rectfr(nfreq, nbvect, omeshi, npivot, nblagr, &
                     zr(lvalpr), nbvect, zi(lresui), zr(lresur), mxresf)
-        call vpbost(typres, nfreq, nbvect, omeshi, zr(lvalpr),&
-                    nbvect, vpinf, vpmax, precdc, method,&
+        call vpbost(typres, nfreq, nbvect, omeshi, zr(lvalpr), &
+                    nbvect, vpinf, vpmax, precdc, method, &
                     omecor)
-        if (typres(1:9) .eq. 'DYNAMIQUE') call vpordi(1, 0, nfreq, zr(lresur+mxresf), zr(lvec),&
+        if (typres(1:9) .eq. 'DYNAMIQUE') call vpordi(1, 0, nfreq, zr(lresur+mxresf), zr(lvec), &
                                                       neq, zi(lresui))
 !
         do imet = 1, nfreq
@@ -153,18 +153,18 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
             zi(lresui-1+4*mxresf+imet) = nitjac
             zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-            if (lpg) zr(lresur-1+imet) = +1.d0 / (quapi2 * zr( lresur-1+imet))
+            if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
             zr(lresur-1+2*mxresf+imet) = rzero
-            zk24(lresuk-1+ mxresf+imet)= 'BATHE_WILSON'
+            zk24(lresuk-1+mxresf+imet) = 'BATHE_WILSON'
         end do
         if (typres(1:9) .ne. 'DYNAMIQUE') then
-            call vpordo(0, 0, nfreq, zr(lresur+mxresf), zr(lvec),&
+            call vpordo(0, 0, nfreq, zr(lresur+mxresf), zr(lvec), &
                         neq)
             do imet = 1, nfreq
-                zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
+                zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
                 zi(lresui-1+imet) = imet
             end do
-        endif
+        end if
     else
 !
 !     ------------------------------------------------------------------
@@ -173,12 +173,12 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
         ASSERT(.false.)
-    endif
+    end if
 !
 ! ---- NOMBRE DE MODES CONVERGES
 ! ---- SI LE SOLVEUR MODAL A BIEN ACHEVE SON TRAVAIL ON FAIT CETTE AFFEC
 ! ---- TATION SINON ON NE TIENT COMPTE QUE DES NCONV MODES REELLEMENT CV
-    if (.not.flage) nconv = nfreq
+    if (.not. flage) nconv = nfreq
 !
 !     ------------------------------------------------------------------
 !     -------------------- CORRECTION : OPTION BANDE -------------------
@@ -187,15 +187,15 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp,&
 ! --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
     mfreq = nconv
     if (optiof(1:5) .eq. 'BANDE') then
-        if (lc .or. lns .or. .not.lkr) then
+        if (lc .or. lns .or. .not. lkr) then
             ASSERT(.false.)
-        endif
-        do ifreq = mfreq - 1, 0, -1
-            if ((zr(lresur+mxresf+ifreq).gt.omemax) .or. (zr(lresur+ mxresf+ifreq).lt.omemin)) &
-            nconv = nconv - 1
-        enddo
+        end if
+        do ifreq = mfreq-1, 0, -1
+            if ((zr(lresur+mxresf+ifreq) .gt. omemax) .or. (zr(lresur+mxresf+ifreq) .lt. omemin)) &
+                nconv = nconv-1
+        end do
         if (mfreq .ne. nconv) call utmess('I', 'ALGELINE2_17')
-    endif
+    end if
 !
 ! --- NETTOYAGE OBJETS TEMPORAIRES
     call jedetr('&&VPCALJ.VALPRO')

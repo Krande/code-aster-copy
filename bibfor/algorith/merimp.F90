@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine merimp(l_xfem         , l_dyna     , l_hho   ,&
-                  model          , cara_elem  , sddyna  , iter_newt,&
-                  ds_constitutive, ds_material,&
-                  hval_incr      , hval_algo  , hhoField, caco3d   ,&
-                  mxchin         , lpain      , lchin   , nbin)
+subroutine merimp(l_xfem, l_dyna, l_hho, &
+                  model, cara_elem, sddyna, iter_newt, &
+                  ds_constitutive, ds_material, &
+                  hval_incr, hval_algo, hhoField, caco3d, &
+                  mxchin, lpain, lchin, nbin)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,19 +42,19 @@ implicit none
 #include "asterfort/nmvcex.h"
 #include "asterfort/xajcin.h"
 !
-aster_logical, intent(in) :: l_xfem, l_dyna, l_hho
-character(len=24), intent(in) :: model, cara_elem
-character(len=19), intent(in) :: sddyna
-integer, intent(in) :: iter_newt
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-type(HHO_Field), intent(in) :: hhoField
-character(len=24), intent(in) :: caco3d
-integer, intent(in) :: mxchin
-character(len=8), intent(inout) :: lpain(mxchin)
-character(len=19), intent(inout) :: lchin(mxchin)
-integer, intent(out) :: nbin
+    aster_logical, intent(in) :: l_xfem, l_dyna, l_hho
+    character(len=24), intent(in) :: model, cara_elem
+    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: iter_newt
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    type(HHO_Field), intent(in) :: hhoField
+    character(len=24), intent(in) :: caco3d
+    integer, intent(in) :: mxchin
+    character(len=8), intent(inout) :: lpain(mxchin)
+    character(len=19), intent(inout) :: lchin(mxchin)
+    integer, intent(out) :: nbin
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,12 +101,12 @@ integer, intent(out) :: nbin
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo    = model(1:8)//'.MODELE'
-    option    = 'FULL_MECA'
-    chiter    = '&&MERIMO.CH_ITERAT'
+    ligrmo = model(1:8)//'.MODELE'
+    option = 'FULL_MECA'
+    chiter = '&&MERIMO.CH_ITERAT'
     vari_iter = '&&MERIMO.VARMOJ'
     stru_iter = '&&MERIMO.STRMOJ'
-    nbin      = 0
+    nbin = 0
 !
 ! - Get fields from hat-variables - Begin of time step
 !
@@ -143,7 +143,7 @@ integer, intent(out) :: nbin
         call ndynkk(sddyna, 'DEPENT', depent)
         call ndynkk(sddyna, 'VITENT', vitent)
         call ndynkk(sddyna, 'STADYN', stadyn)
-    endif
+    end if
 !
 ! - Get external state variables
 !
@@ -160,7 +160,7 @@ integer, intent(out) :: nbin
         call copisd('CHAMP_GD', 'V', vari_curr(1:19), vari_iter(1:19))
     else
         call copisd('CHAMP_GD', 'V', vari_prev(1:19), vari_iter(1:19))
-    endif
+    end if
 !
 ! - Get structural variables from previous iteration
 !
@@ -169,14 +169,14 @@ integer, intent(out) :: nbin
         call copisd('CHAMP_GD', 'V', stru_curr(1:19), stru_iter(1:19))
     else
         call copisd('CHAMP_GD', 'V', stru_prev(1:19), stru_iter(1:19))
-    endif
+    end if
 !
 ! - Extend elementary field for internal variables
 !
     call exisd('CHAM_ELEM_S', ds_constitutive%compor, iret)
     if (iret .eq. 0) then
         call cesvar(cara_elem, ds_constitutive%compor, ligrmo, ds_constitutive%compor)
-    endif
+    end if
     call copisd('CHAM_ELEM_S', 'V', ds_constitutive%compor, vari_curr)
     call copisd('CHAM_ELEM_S', 'V', ds_constitutive%compor, sigm_curr)
 !
@@ -190,7 +190,7 @@ integer, intent(out) :: nbin
 !
 ! - Field for iteration number
 !
-    call mecact('V', chiter, 'MODELE', ligrmo, 'NEUT_I',&
+    call mecact('V', chiter, 'MODELE', ligrmo, 'NEUT_I', &
                 ncmp=1, nomcmp='X1', si=iter_newt)
 !
 ! - Input fields
@@ -210,7 +210,7 @@ integer, intent(out) :: nbin
     lpain(7) = 'PDEPLPR'
     lchin(7) = disp_cumu_inst(1:19)
     lpain(8) = 'PCACABL'
-    lchin(8) = chcara(10)(1:19)
+    lchin(8) = chcara(10) (1:19)
     lpain(9) = 'PINSTMR'
     lchin(9) = time_prev(1:19)
     lpain(10) = 'PINSTPR'
@@ -218,13 +218,13 @@ integer, intent(out) :: nbin
     lpain(11) = 'PCARCRI'
     lchin(11) = ds_constitutive%carcri(1:19)
     lpain(12) = 'PCAGNPO'
-    lchin(12) = chcara(6)(1:19)
+    lchin(12) = chcara(6) (1:19)
     lpain(13) = 'PCAORIE'
-    lchin(13) = chcara(1)(1:19)
+    lchin(13) = chcara(1) (1:19)
     lpain(14) = 'PCADISK'
-    lchin(14) = chcara(2)(1:19)
+    lchin(14) = chcara(2) (1:19)
     lpain(15) = 'PCACOQU'
-    lchin(15) = chcara(7)(1:19)
+    lchin(15) = chcara(7) (1:19)
     lpain(16) = 'PITERAT'
     lchin(16) = chiter(1:19)
     lpain(17) = 'PDDEPLA'
@@ -242,27 +242,27 @@ integer, intent(out) :: nbin
     lpain(23) = 'PVARIMP'
     lchin(23) = vari_iter(1:19)
     lpain(24) = 'PCAGNBA'
-    lchin(24) = chcara(11)(1:19)
+    lchin(24) = chcara(11) (1:19)
     lpain(25) = 'PCAMASS'
-    lchin(25) = chcara(12)(1:19)
+    lchin(25) = chcara(12) (1:19)
     lpain(26) = 'PCAGEPO'
-    lchin(26) = chcara(5)(1:19)
+    lchin(26) = chcara(5) (1:19)
     lpain(27) = 'PVARCMR'
     lchin(27) = vrcmoi(1:19)
     lpain(28) = 'PVARCPR'
     lchin(28) = vrcplu(1:19)
     lpain(29) = 'PNBSP_I'
-    lchin(29) = chcara(16)(1:19)
+    lchin(29) = chcara(16) (1:19)
     lpain(30) = 'PFIBRES'
-    lchin(30) = chcara(17)(1:19)
+    lchin(30) = chcara(17) (1:19)
     lpain(31) = 'PCINFDI'
-    lchin(31) = chcara(15)(1:19)
+    lchin(31) = chcara(15) (1:19)
     lpain(32) = 'PVARCRR'
     lchin(32) = vrcref(1:19)
     lpain(33) = 'PCACO3D'
     lchin(33) = caco3d(1:19)
     lpain(34) = 'PCAARPO'
-    lchin(34) = chcara(9)(1:19)
+    lchin(34) = chcara(9) (1:19)
     lpain(35) = 'PSTRXMR'
     lchin(35) = stru_prev(1:19)
     lpain(36) = 'PSTRXMP'
@@ -275,33 +275,33 @@ integer, intent(out) :: nbin
 !
     if (l_xfem) then
         call xajcin(model, option, mxchin, lchin, lpain, nbin)
-    endif
+    end if
 !
 ! - Dynamic
 !
     if (l_dyna) then
-        nbin = nbin + 1
+        nbin = nbin+1
         lpain(nbin) = 'PDEPENT'
         lchin(nbin) = depent(1:19)
-        nbin = nbin + 1
+        nbin = nbin+1
         lpain(nbin) = 'PVITENT'
         lchin(nbin) = vitent(1:19)
-        nbin = nbin + 1
+        nbin = nbin+1
         lpain(nbin) = 'PSTADYN'
         lchin(nbin) = stadyn(1:19)
-        nbin = nbin + 1
+        nbin = nbin+1
         lpain(nbin) = 'PVITPLU'
         lchin(nbin) = vite_curr(1:19)
-        nbin = nbin + 1
+        nbin = nbin+1
         lpain(nbin) = 'PACCPLU'
         lchin(nbin) = acce_curr(1:19)
-        nbin = nbin + 1
+        nbin = nbin+1
         lpain(nbin) = 'PVITMOI'
         lchin(nbin) = vite_prev(1:19)
-        nbin = nbin + 1
+        nbin = nbin+1
         lpain(nbin) = 'PACCMOI'
         lchin(nbin) = acce_prev(1:19)
-    endif
+    end if
 !
 ! - HHO
 !
@@ -312,6 +312,6 @@ integer, intent(out) :: nbin
         nbin = nbin+1
         lpain(nbin) = 'PCHHOST'
         lchin(nbin) = hhoField%fieldOUT_cell_ST
-    endif
+    end if
 !
 end subroutine

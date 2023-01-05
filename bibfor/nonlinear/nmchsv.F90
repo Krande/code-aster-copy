@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,11 +33,11 @@ implicit none
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 !
-integer :: fonact(*)
-character(len=19) :: sddyna
-character(len=19) :: veasse(*)
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Contact), intent(in) :: ds_contact
+    integer :: fonact(*)
+    character(len=19) :: sddyna
+    character(len=19) :: veasse(*)
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,12 +68,12 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    londe  = ndynlo(sddyna,'ONDE_PLANE')
-    lviss  = ndynlo(sddyna,'VECT_ISS')
-    lsstf  = isfonc(fonact,'SOUS_STRUC')
-    llapl  = isfonc(fonact,'LAPLACE')
-    ldidi  = isfonc(fonact,'DIDI')
-    l_macr = isfonc(fonact,'MACR_ELEM_STAT')
+    londe = ndynlo(sddyna, 'ONDE_PLANE')
+    lviss = ndynlo(sddyna, 'VECT_ISS')
+    lsstf = isfonc(fonact, 'SOUS_STRUC')
+    llapl = isfonc(fonact, 'LAPLACE')
+    ldidi = isfonc(fonact, 'DIDI')
+    l_macr = isfonc(fonact, 'MACR_ELEM_STAT')
 !
 ! --- NOM DES CHAMPS PAS PRECEDENT
 !
@@ -114,28 +114,28 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call copisd('CHAMP_GD', 'V', cncine, olcine)
     if (londe) then
         call copisd('CHAMP_GD', 'V', cnondp, olondp)
-    endif
+    end if
     if (ldidi) then
         call copisd('CHAMP_GD', 'V', cndidi, oldidi)
-    endif
+    end if
     if (llapl) then
         call copisd('CHAMP_GD', 'V', cnlapl, ollapl)
-    endif
+    end if
     if (lviss) then
         call copisd('CHAMP_GD', 'V', cnviss, olviss)
-    endif
+    end if
     if (lsstf) then
         call copisd('CHAMP_GD', 'V', cnsstf, olsstf)
-    endif
+    end if
     if (l_macr) then
         call copisd('CHAMP_GD', 'V', cnsstr, olsstr)
-    endif
+    end if
     if (ds_contact%l_cneltc) then
         call copisd('CHAMP_GD', 'V', ds_contact%cneltc, oleltc)
-    endif
+    end if
     if (ds_contact%l_cneltf) then
         call copisd('CHAMP_GD', 'V', ds_contact%cneltf, oleltf)
-    endif
+    end if
 !
     call jedema()
 end subroutine

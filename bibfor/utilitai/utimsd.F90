@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
+subroutine utimsd(unit, niveau, lattr, lcont, sch1, &
                   ipos, base, perm)
     implicit none
 !     --
@@ -81,47 +81,47 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !
 !
     call jemarq()
-    bas2= base
+    bas2 = base
 !
 !     --QUELQUES VERIFICATIONS:
 !     -------------------------
     if (ipos .eq. 0) then
-        tout=.true.
+        tout = .true.
     else
-        tout=.false.
+        tout = .false.
 !
-        long=len(sch1)
+        long = len(sch1)
         if (len(sch1) .gt. 24) then
             call utmess('F', 'UTILITAI5_42')
-        endif
-        if ((ipos.lt.0) .or. (ipos.gt.24)) then
+        end if
+        if ((ipos .lt. 0) .or. (ipos .gt. 24)) then
             call utmess('F', 'UTILITAI5_43')
-        endif
+        end if
         if (ipos+len(sch1) .gt. 25) then
             call utmess('F', 'UTILITAI5_44')
-        endif
-    endif
+        end if
+    end if
 !
 !     -- ECRITURE DE L'ENTETE :
 !    --------------------------
-    chain2='????????????????????????'
-    if (.not.tout) chain2(ipos:ipos-1+long)=sch1
-    write(unit,*) ' '
-    write(unit,*) '====> IMPR_CO DE LA STRUCTURE DE DONNEE : ',&
+    chain2 = '????????????????????????'
+    if (.not. tout) chain2(ipos:ipos-1+long) = sch1
+    write (unit, *) ' '
+    write (unit, *) '====> IMPR_CO DE LA STRUCTURE DE DONNEE : ',&
      &                chain2
-    write(unit,*) 'ATTRIBUT : ',lattr&
-     &                   ,' CONTENU : ',lcont,' BASE : >',bas2,'<'
-    call jelstc(bas2, sch1, ipos, 0, kbid,&
+    write (unit, *) 'ATTRIBUT : ', lattr&
+     &                   , ' CONTENU : ', lcont, ' BASE : >', bas2, '<'
+    call jelstc(bas2, sch1, ipos, 0, kbid, &
                 nbval)
-    nbobj= -nbval
-    write(unit,*) 'NOMBRE D''OBJETS (OU COLLECTIONS) TROUVES :',nbobj
-    write(unit,*) ' '
+    nbobj = -nbval
+    write (unit, *) 'NOMBRE D''OBJETS (OU COLLECTIONS) TROUVES :', nbobj
+    write (unit, *) ' '
     if (nbval .eq. 0) goto 999
 !
 !     -- RECHERCHE DES NOMS DES OBJETS VERIFIANT LE CRITERE:
 !    -------------------------------------------------------
     AS_ALLOCATE(vk24=liste, size=nbobj)
-    call jelstc(bas2, sch1, ipos, nbobj, liste,&
+    call jelstc(bas2, sch1, ipos, nbobj, liste, &
                 nbval)
 !
 !     -- ON TRIE PAR ORDRE ALPHABETIQUE:
@@ -133,56 +133,56 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     if (niveau .eq. 0) then
         do i = 1, nbobj
             ob1 = liste(i)
-            write(unit,*) '      >',ob1,'<'
+            write (unit, *) '      >', ob1, '<'
         end do
 !
 !
-    else if (niveau.eq.-1) then
+    else if (niveau .eq. -1) then
         ASSERT(present(perm))
-        ASSERT(perm.eq.'OUI' .or. perm.eq.'NON')
+        ASSERT(perm .eq. 'OUI' .or. perm .eq. 'NON')
         do i = 1, nbobj
             ob1 = liste(i)
             call dbgobj(ob1, perm, unit, '&&UTIMSD')
         end do
 !
 !
-    else if (niveau.gt.0) then
-        lb='========================================'
+    else if (niveau .gt. 0) then
+        lb = '========================================'
 !
 !       -- IMPRESSION DES ATTRIBUTS :
 !       -----------------------------
         if (lattr) then
-            write(unit,'(A40,A40)') lb,lb
-            write(unit,*) ' IMPRESSION DES ATTRIBUTS DES OBJETS TROUVES :'
+            write (unit, '(A40,A40)') lb, lb
+            write (unit, *) ' IMPRESSION DES ATTRIBUTS DES OBJETS TROUVES :'
             do i = 1, nbobj
                 ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
-                call utimob(unit, ob1, niveau, .true._1, .false._1,&
+                call utimob(unit, ob1, niveau, .true._1, .false._1, &
                             xous)
             end do
-        endif
+        end if
 !
 !       -- IMPRESSION DES VALEURS :
 !       ---------------------------
         if (lcont) then
-            write(unit,'(A40,A40)') lb,lb
-            write(unit,*) ' IMPRESSION DU CONTENU DES OBJETS TROUVES :'
+            write (unit, '(A40,A40)') lb, lb
+            write (unit, *) ' IMPRESSION DU CONTENU DES OBJETS TROUVES :'
             do i = 1, nbobj
                 ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
-                call utimob(unit, ob1, niveau, .false._1, .true._1,&
+                call utimob(unit, ob1, niveau, .false._1, .true._1, &
                             xous)
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
-    write(unit,*) '====> FIN IMPR_CO DE LA STRUCTURE DE DONNEE : ',&
+    write (unit, *) '====> FIN IMPR_CO DE LA STRUCTURE DE DONNEE : ',&
      &                chain2
 !
 !
-    flush(unit)
+    flush (unit)
     AS_DEALLOCATE(vk24=liste)
 999 continue
     call jedema()

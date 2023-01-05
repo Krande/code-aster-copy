@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine usubis(type, para, crit, epsi, x1,&
+subroutine usubis(type, para, crit, epsi, x1, &
                   x2, x, iret)
     implicit none
 #include "asterfort/usufon.h"
@@ -27,7 +27,7 @@ subroutine usubis(type, para, crit, epsi, x1,&
     real(kind=8) :: df, df1, df2, epsi, f, f1, f2
     real(kind=8) :: resu, x, x1, x2, xd, xg
 !-----------------------------------------------------------------------
-    parameter     ( maxit = 100 )
+    parameter(maxit=100)
 !     ------------------------------------------------------------------
 !
     iret = 0
@@ -36,32 +36,32 @@ subroutine usubis(type, para, crit, epsi, x1,&
     call usufon(type, para, x1, f1, df1)
     call usufon(type, para, x2, f2, df2)
     if (crit(1:4) .eq. 'RELA') then
-        if (abs(f1-resu) .le. epsi * abs(resu)) goto 999
+        if (abs(f1-resu) .le. epsi*abs(resu)) goto 999
     else
-        if (abs(f1 - resu) .le. epsi) goto 999
-    endif
+        if (abs(f1-resu) .le. epsi) goto 999
+    end if
     if (crit(1:4) .eq. 'RELA') then
-        if (abs(f2-resu) .le. epsi * abs(resu)) goto 999
+        if (abs(f2-resu) .le. epsi*abs(resu)) goto 999
     else
-        if (abs(f2 - resu) .le. epsi) goto 999
-    endif
+        if (abs(f2-resu) .le. epsi) goto 999
+    end if
     xg = x1
     xd = x2
     do i = 1, maxit
-        x = ( xg + xd ) * 0.5d0
+        x = (xg+xd)*0.5d0
         call usufon(type, para, x, f, df)
         if (crit(1:4) .eq. 'RELA') then
-            if (abs(f-resu) .le. epsi * abs(resu)) goto 999
+            if (abs(f-resu) .le. epsi*abs(resu)) goto 999
         else
             if (abs(f-resu) .le. epsi) goto 999
-        endif
+        end if
         if (f .lt. resu) then
             xg = x
             xd = xd
         else
             xg = xg
             xd = x
-        endif
+        end if
     end do
     iret = 10
     goto 999

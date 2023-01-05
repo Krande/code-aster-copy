@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine regcge(dimdef, dimcon, regula, ndim, defgep,&
+subroutine regcge(dimdef, dimcon, regula, ndim, defgep, &
                   sigp, r)
 ! --- BUT : MISE A JOUR DU CHAMP DE CONTRAINTES GENERALISEES -----------
 ! ======================================================================
@@ -37,9 +37,9 @@ subroutine regcge(dimdef, dimcon, regula, ndim, defgep,&
     adcor1 = regula(4)
     adcor2 = regula(5)
     adcor3 = regula(6)
-    dimde1 = adder2 - adder1
-    dimde2 = adder3 - adder2
-    dimde3 = dimdef - adder3 + 1
+    dimde1 = adder2-adder1
+    dimde2 = adder3-adder2
+    dimde3 = dimdef-adder3+1
     do i = 1, dimde1
         r(adcor1-1+i) = defgep(adder3-1+i)
     end do

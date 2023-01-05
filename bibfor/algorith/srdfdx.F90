@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine srdfdx(nbmat,mater,ucrip,invar,s,paraep,varpl,derpar,dfdxip)
+subroutine srdfdx(nbmat, mater, ucrip, invar, s, paraep, varpl, derpar, dfdxip)
 
 !
 
@@ -44,7 +44,7 @@ subroutine srdfdx(nbmat,mater,ucrip,invar,s,paraep,varpl,derpar,dfdxip)
 ! OUT : DFDXIP         : DF*/DXI*
 ! ===================================================================================
 
-    implicit      none
+    implicit none
 
 #include "asterfort/cos3t.h"
 #include "asterfort/srhtet.h"
@@ -54,24 +54,24 @@ subroutine srdfdx(nbmat,mater,ucrip,invar,s,paraep,varpl,derpar,dfdxip)
     !!!
 
     integer :: nbmat
-    real(kind=8) :: mater(nbmat,2),ucrip,s(6),paraep(3),varpl(4),derpar(3)
-    real(kind=8) :: dfdxip,invar
+    real(kind=8) :: mater(nbmat, 2), ucrip, s(6), paraep(3), varpl(4), derpar(3)
+    real(kind=8) :: dfdxip, invar
 
     !!!
     !!! Variables locales
     !!!
 
-    real(kind=8) :: pref,sigc,rcos3t,r0c,rtheta,sii
-    real(kind=8) :: dfdad,dfdsd,dfdmd,fact1,fact3,fact4,fact5
+    real(kind=8) :: pref, sigc, rcos3t, r0c, rtheta, sii
+    real(kind=8) :: dfdad, dfdsd, dfdmd, fact1, fact3, fact4, fact5
     integer :: ndi, ndt
-    common /tdim/ ndt, ndi
+    common/tdim/ndt, ndi
 
     !!!
     !!! Recuperation des parametres du modele
     !!!
 
-    sigc=mater(3,2)
-    pref=mater(1,2)
+    sigc = mater(3, 2)
+    pref = mater(1, 2)
 
     !!!
     !!! Calcul de sii et recuperation de h0c et h(theta)
@@ -79,56 +79,56 @@ subroutine srdfdx(nbmat,mater,ucrip,invar,s,paraep,varpl,derpar,dfdxip)
 
     sii = norm2(s(1:ndt))
 
-    rcos3t=cos3t(s,pref,1.d-8)
-    call srhtet(nbmat,mater,rcos3t,r0c,rtheta)
+    rcos3t = cos3t(s, pref, 1.d-8)
+    call srhtet(nbmat, mater, rcos3t, r0c, rtheta)
 
     !!!
     !!! Calcul de df*/ds*
     !!!
 
-    fact1=-paraep(1)*varpl(4)*sigc*r0c
+    fact1 = -paraep(1)*varpl(4)*sigc*r0c
 
-    if (ucrip.gt.0.d0) then
-        dfdsd=fact1*ucrip**(paraep(1)-1.d0)
+    if (ucrip .gt. 0.d0) then
+        dfdsd = fact1*ucrip**(paraep(1)-1.d0)
     else
-        dfdsd=0.d0
-    endif
+        dfdsd = 0.d0
+    end if
 
     !!!
     !!! Calcul de df*/dm*
     !!!
 
-    if (ucrip.gt.0.d0) then
+    if (ucrip .gt. 0.d0) then
 
-        fact3=-paraep(1)*sigc*r0c
-        fact4=varpl(1)*sii*rtheta/paraep(3)
-        fact5=varpl(2)*invar/paraep(3)
-        dfdmd=fact3*(fact4+fact5)*ucrip**(paraep(1)-1.d0)
+        fact3 = -paraep(1)*sigc*r0c
+        fact4 = varpl(1)*sii*rtheta/paraep(3)
+        fact5 = varpl(2)*invar/paraep(3)
+        dfdmd = fact3*(fact4+fact5)*ucrip**(paraep(1)-1.d0)
 
     else
 
-        dfdmd=0.d0
+        dfdmd = 0.d0
 
-    endif
+    end if
 
     !!!
     !!! Calcul de df*/da*
     !!!
 
-    if (ucrip.gt.0.d0) then
+    if (ucrip .gt. 0.d0) then
 
-        dfdad=-sigc*r0c*log(ucrip/varpl(4))*ucrip**paraep(1)
+        dfdad = -sigc*r0c*log(ucrip/varpl(4))*ucrip**paraep(1)
 
     else
 
-        dfdad=0.d0
+        dfdad = 0.d0
 
-    endif
+    end if
 
     !!!
     !!! Assemblage
     !!!
 
-    dfdxip=derpar(1)*dfdad+derpar(2)*dfdsd+derpar(3)*dfdmd
+    dfdxip = derpar(1)*dfdad+derpar(2)*dfdsd+derpar(3)*dfdmd
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
+subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc, &
                   decal, lgbloc, ncbloc)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -39,56 +39,56 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
 !-----------------------------------------------------------------------
     integer :: ib, ni
 !-----------------------------------------------------------------------
-    lm=ismaem()
-    lr=lor8em()
+    lm = ismaem()
+    lr = lor8em()
     nbloc = 1
     i0 = 1
 110 continue
     i = i0
     decal(seq(i)) = 1
-    long = debfsn(seq(i)+1) - debfsn(seq(i))
+    long = debfsn(seq(i)+1)-debfsn(seq(i))
     if (long .gt. mxbloc) then
-        vali (1) = mxbloc
-        vali (2) = i
-        vali (3) = long
+        vali(1) = mxbloc
+        vali(2) = i
+        vali(3) = long
         call utmess('F', 'ALGELINE4_21', ni=3, vali=vali)
-    endif
+    end if
 !      DO WHILE (LONG.LE.MXBLOC)
 120 continue
     if (long .le. mxbloc) then
         if (i .eq. nbsn) goto 130
-        i = i + 1
-        decal(seq(i)) = long + 1
-        l = debfsn(seq(i)+1) - debfsn(seq(i))
+        i = i+1
+        decal(seq(i)) = long+1
+        l = debfsn(seq(i)+1)-debfsn(seq(i))
         if (l .gt. mxbloc) then
-            vali (1) = mxbloc
-            vali (2) = i
-            vali (3) = l
+            vali(1) = mxbloc
+            vali(2) = i
+            vali(3) = l
             call utmess('F', 'ALGELINE4_21', ni=3, vali=vali)
-        endif
-        long = long + l
+        end if
+        long = long+l
         goto 120
 ! FIN DO WHILE
-    endif
+    end if
 !      CHAQUE BLOC VA DES NUMEROS DE SNDS SEQ(I0) A SEQ(I-1)
-    ncbloc(nbloc) = i - i0
-    lgbloc(nbloc) = long - l
-    nbloc = nbloc + 1
+    ncbloc(nbloc) = i-i0
+    lgbloc(nbloc) = long-l
+    nbloc = nbloc+1
     i0 = i
     goto 110
 !
 130 continue
-    ncbloc(nbloc) = nbsn - i0 + 1
+    ncbloc(nbloc) = nbsn-i0+1
     lgbloc(nbloc) = long
 !
     do ib = 1, nbloc
         if (lgbloc(ib) .gt. lm/lr) then
-            ni=3
-            vali(1)=ib
-            vali(2)=lgbloc(ib)
-            vali(3)=lm
+            ni = 3
+            vali(1) = ib
+            vali(2) = lgbloc(ib)
+            vali(3) = lm
             call utmess('A', 'ALGELINE3_52', ni=ni, vali=vali)
 !
-        endif
+        end if
     end do
 end subroutine

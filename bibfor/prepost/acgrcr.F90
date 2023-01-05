@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                  kwork, sompgw, jrwork, tspaq, ipg,&
-                  nommet, jvecno, jnorma, forcri, nompar,&
+subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                  kwork, sompgw, jrwork, tspaq, ipg, &
+                  nommet, jvecno, jnorma, forcri, nompar, &
                   vanocr, respc, vnmax)
     implicit none
 #include "asterf_types.h"
@@ -104,13 +104,13 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
     typch = 'PERIODIQUE'
     nomcr = 'FORMULE_CRITERE'
 !
-    call anacri(nomcr, forcri, typch, 'NON', praccr,&
+    call anacri(nomcr, forcri, typch, 'NON', praccr, &
                 lbid, crsigm, crepst, crepse, crepsp)
 !
     rayon = .false.
     if ((praccr(24) .eq. 1) .or. (praccr(25) .eq. 1) .or. (praccr(32) .eq. 1)) then
         rayon = .true.
-    endif
+    end if
 ! initialisation
     do i = 1, 35
         valpar(i) = 0.0d0
@@ -132,12 +132,12 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
         call wkvect('&&ACGRCR.DSNMAX', 'V V R', nbvec, jdsgma)
 !
         dectau = 0
-        call acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                    kwork, sompgw, jrwork, tspaq, ipg,&
-                    dectau, nommet, jvecno, jnorma, rayon,&
+        call acplcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                    kwork, sompgw, jrwork, tspaq, ipg, &
+                    dectau, nommet, jvecno, jnorma, rayon, &
                     jresun, jdtaum, jtauma, jsgnma, jdsgma)
 !
-    endif
+    end if
 !
     if (crepst) then
         call wkvect('&&ACGRCR.DGAMAX', 'V V R', nbvec, jdgama)
@@ -146,12 +146,12 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
         call wkvect('&&ACGRCR.DENMAX', 'V V R', nbvec, jdenma)
 !
         dectau = 6
-        call acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                    kwork, sompgw, jrwork, tspaq, ipg,&
-                    dectau, nommet, jvecno, jnorma, rayon,&
+        call acplcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                    kwork, sompgw, jrwork, tspaq, ipg, &
+                    dectau, nommet, jvecno, jnorma, rayon, &
                     jresun, jdgama, jgamma, jepnma, jdenma)
 !
-    endif
+    end if
 !
     if (crepsp) then
         call wkvect('&&ACGRCR.DGPMAX', 'V V R', nbvec, jdgpma)
@@ -160,12 +160,12 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
         call wkvect('&&ACGRCR.DEPMAX', 'V V R', nbvec, jdepma)
 !
         dectau = 12
-        call acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                    kwork, sompgw, jrwork, tspaq, ipg,&
-                    dectau, nommet, jvecno, jnorma, rayon,&
+        call acplcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                    kwork, sompgw, jrwork, tspaq, ipg, &
+                    dectau, nommet, jvecno, jnorma, rayon, &
                     jresun, jdgpma, jgapma, jeppma, jdepma)
 !
-    endif
+    end if
 !
 !
 ! 3/ CDU 1ER MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
@@ -187,43 +187,43 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
     chnom(1:19) = forcri
 !
     call jeveuo(chnom, 'L', jprof)
-    call fonbpa(forcri, zk24(jprof), cbid, nparma, np,&
+    call fonbpa(forcri, zk24(jprof), cbid, nparma, np, &
                 nompf)
 !
 !
     do i = 1, nbvec
         if (crsigm) then
-            valpar(24) = zr(jdtaum + i-1)
-            valpar(26) = zr(jdsgma + i-1)
-            valpar(28) = zr(jtauma + i-1)
-            valpar(30) = zr(jsgnma + i-1)
-        endif
+            valpar(24) = zr(jdtaum+i-1)
+            valpar(26) = zr(jdsgma+i-1)
+            valpar(28) = zr(jtauma+i-1)
+            valpar(30) = zr(jsgnma+i-1)
+        end if
 !
         if (crepst) then
 !! POUR ENGEERING STRAIN
-            valpar(25) = zr(jdgama + i-1)*2
-            valpar(27) = zr(jdenma + i-1)
-            valpar(29) = zr(jgamma + i-1)*2
-            valpar(31) = zr(jepnma + i-1)
-        endif
+            valpar(25) = zr(jdgama+i-1)*2
+            valpar(27) = zr(jdenma+i-1)
+            valpar(29) = zr(jgamma+i-1)*2
+            valpar(31) = zr(jepnma+i-1)
+        end if
         if (crepsp) then
-            valpar(32) = zr(jdgpma + i-1)*2
-            valpar(33) = zr(jdepma + i-1)
-            valpar(34) = zr(jgapma + i-1)*2
-            valpar(35) = zr(jeppma + i-1)
-        endif
+            valpar(32) = zr(jdgpma+i-1)*2
+            valpar(33) = zr(jdepma+i-1)
+            valpar(34) = zr(jgapma+i-1)*2
+            valpar(35) = zr(jeppma+i-1)
+        end if
 !
         do j = 1, np
             do ipar = 1, nparma
                 if (nompf(j) .eq. nompar(ipar)) then
                     valpu(j) = valpar(ipar)
                     goto 30
-                endif
+                end if
             end do
- 30         continue
+30          continue
         end do
         !
-        call fointe('F', forcri, np, nompf, valpu,&
+        call fointe('F', forcri, np, nompf, valpu, &
                     gcmax, ibid)
 !
         if (gcmax .gt. epsilo) then
@@ -233,47 +233,47 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
                 grcrma(1) = gcmax
                 mnmax(1) = i
 !
-            endif
-            if (( abs(grcrma(2)-grcrma(1)) .lt. epsilo ) .and. (i .ne. mnmax(1))) then
+            end if
+            if ((abs(grcrma(2)-grcrma(1)) .lt. epsilo) .and. (i .ne. mnmax(1))) then
                 grcrma(2) = gcmax
                 mnmax(2) = i
-            endif
-        endif
+            end if
+        end if
     end do
 !!!RECUPER DES VALUERS DE LA GRANDEUR CRITIQUE
     do k = 1, 2
         i = mnmax(k)
 !
         if (crsigm) then
-            valpar(24) = zr(jdtaum + i-1)
-            valpar(26) = zr(jdsgma + i-1)
-            valpar(28) = zr(jtauma + i-1)
-            valpar(30) = zr(jsgnma + i-1)
-        endif
+            valpar(24) = zr(jdtaum+i-1)
+            valpar(26) = zr(jdsgma+i-1)
+            valpar(28) = zr(jtauma+i-1)
+            valpar(30) = zr(jsgnma+i-1)
+        end if
 !
 !! *2 POUR ENGEERING STRAIN
         if (crepst) then
-            valpar(25) = zr(jdgama + i-1)*2
-            valpar(27) = zr(jdenma + i-1)
-            valpar(29) = zr(jgamma + i-1)*2
-            valpar(31) = zr(jepnma + i-1)
-        endif
+            valpar(25) = zr(jdgama+i-1)*2
+            valpar(27) = zr(jdenma+i-1)
+            valpar(29) = zr(jgamma+i-1)*2
+            valpar(31) = zr(jepnma+i-1)
+        end if
 !
         if (crepsp) then
-            valpar(32) = zr(jdgpma + i-1)*2
-            valpar(33) = zr(jdepma + i-1)
-            valpar(34) = zr(jgapma + i-1)*2
-            valpar(35) = zr(jeppma + i-1)
-        endif
+            valpar(32) = zr(jdgpma+i-1)*2
+            valpar(33) = zr(jdepma+i-1)
+            valpar(34) = zr(jgapma+i-1)*2
+            valpar(35) = zr(jeppma+i-1)
+        end if
 !
         do j = 1, 12
             respc(j+(k-1)*12) = valpar(23+j)
         end do
 !
 !!!ORIENTATION DU PLAN CRITIQUE
-        vnmax(3*(k-1)+1) = zr(jvectn + (i-1)*3)
-        vnmax(3*(k-1)+2) = zr(jvectn + (i-1)*3 + 1)
-        vnmax(3*(k-1)+3) = zr(jvectn + (i-1)*3 + 2)
+        vnmax(3*(k-1)+1) = zr(jvectn+(i-1)*3)
+        vnmax(3*(k-1)+2) = zr(jvectn+(i-1)*3+1)
+        vnmax(3*(k-1)+3) = zr(jvectn+(i-1)*3+2)
 !
     end do
 !
@@ -281,21 +281,21 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
         call jedetr('&&ACGRCR.TAUMAX')
         call jedetr('&&ACGRCR.SGNMAX')
         call jedetr('&&ACGRCR.DSNMAX')
-    endif
+    end if
 !
     if (crepst) then
         call jedetr('&&ACGRCR.DGAMAX')
         call jedetr('&&ACGRCR.GAMMAX')
         call jedetr('&&ACGRCR.EPNMAX')
         call jedetr('&&ACGRCR.DENMAX')
-    endif
+    end if
 !
     if (crepsp) then
         call jedetr('&&ACGRCR.DGPMAX')
         call jedetr('&&ACGRCR.GAPMAX')
         call jedetr('&&ACGRCR.EPPMAX')
         call jedetr('&&ACGRCR.DEPMAX')
-    endif
+    end if
 !
     call jedetr('&&ACGRCR.DTAU_MAX')
     call jedetr('&&ACGRCR.RESU_N')

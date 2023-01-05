@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mocon2(dir, sigb, siga, hh, nlit,&
-                  om, rr, nufsup, nufinf, nufsd1,&
+subroutine mocon2(dir, sigb, siga, hh, nlit, &
+                  om, rr, nufsup, nufinf, nufsd1, &
                   nufid1, nufsd2, nufid2, prec)
     implicit none
 ! person_in_charge: sebastien.fayolle at edf.fr
@@ -33,7 +33,7 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
     integer :: nlit
     real(kind=8) :: sigb, siga(nlit), hh, om(nlit), rr(nlit), prec, e1, sigma
     integer :: ordlu
-    parameter (ordlu=2)
+    parameter(ordlu=2)
     real(kind=8) :: poly(ordlu+1), xx
     integer :: i, j, npt
     integer :: ordok, jvale, jfon, jprol, jtab, lmax
@@ -43,30 +43,30 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
     call jelira(nufsup//'           .VALE', 'LONMAX', lmax)
 !
 !--- INTERPOLATION DE LA FONCTION ET CALCUL DES DERIVEES
-    e1=0.d0
+    e1 = 0.d0
     npt = lmax/2
-    call lsqpol(ordlu, e1, npt, zr(jtab), zr(jtab+npt),&
+    call lsqpol(ordlu, e1, npt, zr(jtab), zr(jtab+npt), &
                 ordok, poly, sigma)
 !
     call wkvect(nufsd1//'           .VALE', 'G V R', 2*npt, jvale)
-    jfon = jvale + npt
+    jfon = jvale+npt
     do i = 0, npt-1
-        xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
+        xx = zr(jtab)+(zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
-        zr(jfon +i) = 0.0d0
+        zr(jfon+i) = 0.0d0
         do j = 1, ordok
-            zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
+            zr(jfon+i) = zr(jfon+i)+j*poly(j+1)*(xx**(j-1))
         end do
     end do
 !
     call wkvect(nufsd2//'           .VALE', 'G V R', 2*npt, jvale)
-    jfon = jvale + npt
+    jfon = jvale+npt
     do i = 0, npt-1
-        xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
+        xx = zr(jtab)+(zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
-        zr(jfon +i) = 0.0d0
+        zr(jfon+i) = 0.0d0
         do j = 2, ordok-1
-            zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
+            zr(jfon+i) = zr(jfon+i)+j*(j-1)*poly(j+1)*(xx**(j-2))
         end do
     end do
 !
@@ -97,30 +97,30 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
     call jelira(nufinf//'           .VALE', 'LONMAX', lmax)
 !
 !--- INTERPOLATION DE LA FONCTION ET CALCUL DES DERIVEES
-    e1=0.d0
+    e1 = 0.d0
     npt = lmax/2
-    call lsqpol(ordlu, e1, npt, zr(jtab), zr(jtab+npt),&
+    call lsqpol(ordlu, e1, npt, zr(jtab), zr(jtab+npt), &
                 ordok, poly, sigma)
 !
     call wkvect(nufid1//'           .VALE', 'G V R', 2*npt, jvale)
-    jfon = jvale + npt
+    jfon = jvale+npt
     do i = 0, npt-1
-        xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
+        xx = zr(jtab)+(zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
-        zr(jfon +i) = 0.0d0
+        zr(jfon+i) = 0.0d0
         do j = 1, ordok
-            zr(jfon +i) = zr(jfon +i) + j*poly(j+1)*(xx**(j-1))
+            zr(jfon+i) = zr(jfon+i)+j*poly(j+1)*(xx**(j-1))
         end do
     end do
 !
     call wkvect(nufid2//'           .VALE', 'G V R', 2*npt, jvale)
-    jfon = jvale + npt
+    jfon = jvale+npt
     do i = 0, npt-1
-        xx = zr(jtab) + (zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
+        xx = zr(jtab)+(zr(jtab-1+npt)-zr(jtab))*i/(npt-1)
         zr(jvale+i) = xx
-        zr(jfon +i) = 0.0d0
+        zr(jfon+i) = 0.0d0
         do j = 2, ordok-1
-            zr(jfon +i) = zr(jfon +i)+ j*(j-1)*poly(j+1)*(xx**(j-2))
+            zr(jfon+i) = zr(jfon+i)+j*(j-1)*poly(j+1)*(xx**(j-2))
         end do
     end do
 !

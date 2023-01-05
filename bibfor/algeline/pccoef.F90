@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pccoef(n, in, ip, ac, icpl,&
+subroutine pccoef(n, in, ip, ac, icpl, &
                   icpc, acpc, cx)
 !
 !   ENTREE
@@ -58,16 +58,16 @@ subroutine pccoef(n, in, ip, ac, icpl,&
     do i = 2, n
 !  LIGNE CREUSE I DE AC --> LIGNE PLEINE IND-CX
 !                          (ICPL(I-1)=FIN LIGNE I)
-        k1 = in(i-1) + 1
+        k1 = in(i-1)+1
         k2 = in(i)
-        do k = k1, k2 - 1
+        do k = k1, k2-1
             j = ip(k)
             ind(j) = i
             cx(j) = ac(k)
         end do
-        kk1 = icpl(i-2) + 1
+        kk1 = icpl(i-2)+1
         kk2 = icpl(i-1)
-        do kk = kk1, kk2 - 1
+        do kk = kk1, kk2-1
             j = icpc(kk)
             if (ind(j) .eq. i) acpc(kk) = cx(j)
         end do

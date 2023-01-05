@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine srcalg(dfdsig, vecn, g, devgii)
 !     : DEVGII    : SECOND INVARIANT DE G = DEV(G)
 ! ===================================================================================
 
-    implicit      none
+    implicit none
 
 #include "asterfort/lcdevi.h"
 #include "asterfort/r8inir.h"
@@ -40,31 +40,31 @@ subroutine srcalg(dfdsig, vecn, g, devgii)
     !!! Variables globales
     !!!
 
-    integer :: ndi,ndt,i
-    real(kind=8) :: dfdsig(6),vecn(6),g(6),devgii
-    common /tdim/ ndt,ndi
+    integer :: ndi, ndt, i
+    real(kind=8) :: dfdsig(6), vecn(6), g(6), devgii
+    common/tdim/ndt, ndi
 
     !!!
     !!! Variables locales
     !!!
 
-    real(kind=8) :: devg(6),fact1
+    real(kind=8) :: devg(6), fact1
 
     !!!
     !!! Calcul de g
     !!!
-    call r8inir(6,0.d0,g,1)
+    call r8inir(6, 0.d0, g, 1)
     fact1 = dot_product(dfdsig(1:ndt), vecn(1:ndt))
 
-    do i=1,ndt
-        g(i)=dfdsig(i)-fact1*vecn(i)
+    do i = 1, ndt
+        g(i) = dfdsig(i)-fact1*vecn(i)
     end do
 
     !!!
     !!! Calcul du deviateur de g et de sa norme
     !!!
 
-    call lcdevi(g,devg)
+    call lcdevi(g, devg)
     devgii = norm2(devg(1:ndt))
 
 end subroutine

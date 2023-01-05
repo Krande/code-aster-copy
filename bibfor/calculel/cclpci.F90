@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cclpci(option, modele, resuin, resuou, mater , mateco,&
-                  carael, ligrel, numord, nbpain, lipain,&
+subroutine cclpci(option, modele, resuin, resuou, mater, mateco, &
+                  carael, ligrel, numord, nbpain, lipain, &
                   lichin, codret)
     implicit none
 !     --- ARGUMENTS ---
@@ -81,84 +81,84 @@ subroutine cclpci(option, modele, resuin, resuou, mater , mateco,&
 !
         nparin = zi(iaopds-1+2)
         nbpain = 0
-    endif
+    end if
 !
 !     BOUCLE SUR LES PARAMETRES DE L'OPTION
     do ipara = 1, nparin
         nochin = ' '
 !
-        nbpain = nbpain + 1
+        nbpain = nbpain+1
         lipain(nbpain) = zk8(iapara+ipara-1)
 !
-        optio2 = zk24(iaoplo+3*ipara-2)(1:16)
+        optio2 = zk24(iaoplo+3*ipara-2) (1:16)
 !
 !       CAS OU CE PARAM EST UNE OPTION OU UN CHAMP DANS LA
 !       SD RESULTAT
         call jenonu(jexnom('&CATA.OP.NOMOPT', optio2), opt2)
-        if ((opt2.ne.0) .or. (zk24(iaoplo+3*ipara-3).eq.'RESU')) then
+        if ((opt2 .ne. 0) .or. (zk24(iaoplo+3*ipara-3) .eq. 'RESU')) then
             if (zk24(iaoplo+3*ipara-1) .eq. 'NP1') then
                 decal = 1
-            else if (zk24(iaoplo+3*ipara-1)(1:3).eq.'NM1') then
+            else if (zk24(iaoplo+3*ipara-1) (1:3) .eq. 'NM1') then
                 decal = -1
             else
                 decal = 0
-            endif
-            call rsexch(' ', resuin, optio2, numord+decal, nochin,&
+            end if
+            call rsexch(' ', resuin, optio2, numord+decal, nochin, &
                         ierd)
             if (ierd .ne. 0) then
-                call rsexch(' ', resuou, optio2, numord+decal, nochin,&
+                call rsexch(' ', resuou, optio2, numord+decal, nochin, &
                             ierd)
-            endif
+            end if
 !
             if (ierd .ne. 0) then
-                if ((option.eq.optio2)) then
+                if ((option .eq. optio2)) then
 !             CAS OU UN CHAMP DEPEND DE LUI MEME A L'INSTANT N-1
 !             EXEMPLE : ENDO_ELGA
                     if (zk24(iaoplo+3*ipara-1) .eq. 'NM1T') then
-                        nochin='&&CALCOP.INT_0'
-                        call alchml(ligrel, optio2, lipain(nbpain), 'V', nochin,&
+                        nochin = '&&CALCOP.INT_0'
+                        call alchml(ligrel, optio2, lipain(nbpain), 'V', nochin, &
                                     ierd, ' ')
                         if (ierd .gt. 0) then
                             call utmess('A', 'CALCCHAMP_19', sk=option)
                             goto 10
-                        endif
+                        end if
                     else
-                        call rsexch(' ', resuou, optio2, numord+decal, nochin,&
+                        call rsexch(' ', resuou, optio2, numord+decal, nochin, &
                                     ierd)
-                        call alchml(ligrel, optio2, lipain(nbpain), 'G', nochin,&
+                        call alchml(ligrel, optio2, lipain(nbpain), 'G', nochin, &
                                     ierd, ' ')
                         if (ierd .gt. 0) then
                             call utmess('A', 'CALCCHAMP_19', sk=option)
                             goto 10
-                        endif
+                        end if
                         call rsnoch(resuou, optio2, numord+decal)
-                    endif
+                    end if
                 else
                     nochin = ' '
-                endif
-            endif
+                end if
+            end if
 !       CAS OU CE PARAM EST UN OBJET DU MAILLAGE
-        else if (zk24(iaoplo+3*ipara-3).eq.'MAIL') then
+        else if (zk24(iaoplo+3*ipara-3) .eq. 'MAIL') then
             call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
             nochin = noma//zk24(iaoplo+3*ipara-2)
 !       CAS OU CE PARAM EST UN OBJET DU MODELE
-        else if (zk24(iaoplo+3*ipara-3).eq.'MODL') then
+        else if (zk24(iaoplo+3*ipara-3) .eq. 'MODL') then
             nochin = modele//zk24(iaoplo+3*ipara-2)
 !       CAS OU CE PARAM EST UN OBJET DU CARA_ELEM
-        else if (zk24(iaoplo+3*ipara-3).eq.'CARA') then
+        else if (zk24(iaoplo+3*ipara-3) .eq. 'CARA') then
             nochin = carael//zk24(iaoplo+3*ipara-2)
 !       CAS OU CE PARAM EST UN OBJET PARTICULIER SUR LA VOLATILE
-        else if (zk24(iaoplo+3*ipara-3).eq.'VOLA') then
+        else if (zk24(iaoplo+3*ipara-3) .eq. 'VOLA') then
             nochin = zk24(iaoplo+3*ipara-2)
 !       CAS OU CE PARAM EST UN OBJET DU CHAMMAT
-        else if (zk24(iaoplo+3*ipara-3).eq.'CHMA') then
+        else if (zk24(iaoplo+3*ipara-3) .eq. 'CHMA') then
             nochin = mater//zk24(iaoplo+3*ipara-2)
 !       CAS OU CE PARAM EST UN OBJET DU MATECODE
-        else if (zk24(iaoplo+3*ipara-3).eq.'MACO') then
+        else if (zk24(iaoplo+3*ipara-3) .eq. 'MACO') then
             nochin = mateco//zk24(iaoplo+3*ipara-2)
-        endif
+        end if
         lichin(nbpain) = nochin
- 10     continue
+10      continue
     end do
 !
     call jedema()

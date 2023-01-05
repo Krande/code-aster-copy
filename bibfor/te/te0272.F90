@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine te0272(option, nomte)
     integer :: icode, jgano, nbres, ndim, nnos
     real(kind=8) :: flun, flunp1
 !-----------------------------------------------------------------------
-    parameter (nbres=3)
+    parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, r, z, flux, nx, ny, theta
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, ivectt, k, i, iflu
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -56,13 +56,13 @@ subroutine te0272(option, nomte)
     theta = zr(itemps+2)
     do kp = 1, npg
         k = (kp-1)*nno
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
         r = 0.d0
         z = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-            z = z + zr(igeom+2*i-1)*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
+            z = z+zr(igeom+2*i-1)*zr(ivf+k+i-1)
         end do
         poids = poids*r
         valpar(1) = r
@@ -71,14 +71,14 @@ subroutine te0272(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'INST'
         valpar(3) = zr(itemps)
-        call fointe('FM', zk8(iflu), 3, nompar, valpar,&
+        call fointe('FM', zk8(iflu), 3, nompar, valpar, &
                     flunp1, icode)
-        valpar(3) = zr(itemps) - zr(itemps+1)
-        call fointe('FM', zk8(iflu), 3, nompar, valpar,&
+        valpar(3) = zr(itemps)-zr(itemps+1)
+        call fointe('FM', zk8(iflu), 3, nompar, valpar, &
                     flun, icode)
-        flux = theta*flunp1 + (1.0d0-theta)*flun
+        flux = theta*flunp1+(1.0d0-theta)*flun
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(ivf+k+i-1)* flux
+            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(ivf+k+i-1)*flux
         end do
     end do
 end subroutine

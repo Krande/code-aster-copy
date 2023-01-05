@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine rcvarc(arret    , varc_name_, poum,&
-                  famiZ    , kpg       , ksp ,&
+subroutine rcvarc(arret, varc_name_, poum, &
+                  famiZ, kpg, ksp, &
                   varc_vale, iret)
 !
-use calcul_module, only : ca_decala_, ca_iactif_, ca_iel_, ca_iredec_, &
-     ca_jfpgl_, ca_jvcnom_, ca_km_, ca_kp_,&
-     ca_kr_, ca_nbcvrc_, ca_nfpg_, ca_nomte_, ca_option_, &
-     ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, ca_ctempl_, ca_ctempr_, ca_ctempm_, ca_ctempp_
+    use calcul_module, only: ca_decala_, ca_iactif_, ca_iel_, ca_iredec_, &
+                             ca_jfpgl_, ca_jvcnom_, ca_km_, ca_kp_, &
+                             ca_kr_, ca_nbcvrc_, ca_nfpg_, ca_nomte_, ca_option_, &
+            ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, ca_ctempl_, ca_ctempr_, ca_ctempm_, ca_ctempp_
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -37,13 +37,13 @@ implicit none
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-character(len=1), intent(in) :: arret
-character(len=*), intent(in) :: varc_name_
-character(len=*), intent(in) :: poum
-character(len=*), intent(in) :: famiZ
-integer, intent(in) :: kpg, ksp
-real(kind=8), intent(out) :: varc_vale
-integer, intent(out) :: iret
+    character(len=1), intent(in) :: arret
+    character(len=*), intent(in) :: varc_name_
+    character(len=*), intent(in) :: poum
+    character(len=*), intent(in) :: famiZ
+    integer, intent(in) :: kpg, ksp
+    real(kind=8), intent(out) :: varc_vale
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,17 +87,17 @@ integer, intent(out) :: iret
     if (iprem .eq. 0) then
         rundf = r8nnem()
         iprem = 1
-    endif
+    end if
     varc_name = varc_name_
     fami = famiZ
 !
 ! - From SIMU_POINT_MAT
 !
     if (ca_iactif_ .eq. 2) then
-        ASSERT(fami.eq.'PMAT')
+        ASSERT(fami .eq. 'PMAT')
         call rcvarp(arret, varc_name, poum, varc_vale, iret)
         goto 999
-    endif
+    end if
 !
 ! - For coupled problems
 !
@@ -111,35 +111,35 @@ integer, intent(out) :: iret
                 varc_vale = ca_ctempr_
             else
                 ASSERT(.false.)
-            endif
+            end if
             iret = 0
             goto 999
-        endif
-    endif
+        end if
+    end if
 !
 ! - No external state variable
 !
     if (ca_nbcvrc_ .eq. 0) then
         goto 998
-    endif
+    end if
 !
 ! - Get index of external state variable
 !
     varc_indx = indik8(zk8(ca_jvcnom_), varc_name, 1, ca_nbcvrc_)
     if (varc_indx .eq. 0) then
-        iret=1
+        iret = 1
         if (arret .eq. ' ') then
-            varc_vale=rundf
+            varc_vale = rundf
             goto 999
         else
             call tecael(iadzi, iazk24)
-            nomail  = zk24(iazk24-1+3)(1:8)
+            nomail = zk24(iazk24-1+3) (1:8)
             valk(1) = varc_name
             valk(2) = nomail
             valk(3) = poum
             call utmess('F', 'CALCUL_26', nk=3, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get index of gauss point in MATER integration rule
 !
@@ -150,34 +150,34 @@ integer, intent(out) :: iret
         valk(3) = ca_option_
         valk(4) = ca_nomte_
         call utmess('F', 'CALCUL_31', nk=4, valk=valk)
-    endif
+    end if
     kpgmat = ca_decala_(k)+kpg
 !
 ! - Get information about current element: using SAVE to save time if it's same element
 !
-    if (poum .eq. '-' .or. (poum.eq.'+' .and. ca_iredec_.eq.1)) then
+    if (poum .eq. '-' .or. (poum .eq. '+' .and. ca_iredec_ .eq. 1)) then
         if (ca_iel_ .ne. ca_km_) then
             if (arret .ne. ' ') then
                 call tecach('OOO', 'PVARCMR', 'L', ibid, nval=7, itab=itabm)
             else
                 call tecach('NNN', 'PVARCMR', 'L', iret, nval=7, itab=itabm)
                 if (iret .ne. 0) goto 998
-            endif
-            ca_km_=ca_iel_
-        endif
-    endif
+            end if
+            ca_km_ = ca_iel_
+        end if
+    end if
 
-    if (poum .eq. '+' .or. (poum.eq.'-' .and. ca_iredec_.eq.1)) then
+    if (poum .eq. '+' .or. (poum .eq. '-' .and. ca_iredec_ .eq. 1)) then
         if (ca_iel_ .ne. ca_kp_) then
             if (arret .ne. ' ') then
                 call tecach('OOO', 'PVARCPR', 'L', ibid, nval=7, itab=itabp)
             else
                 call tecach('NNN', 'PVARCPR', 'L', iret, nval=7, itab=itabp)
                 if (iret .ne. 0) goto 998
-            endif
-            ca_kp_=ca_iel_
-        endif
-    endif
+            end if
+            ca_kp_ = ca_iel_
+        end if
+    end if
 
     if (poum .eq. 'REF') then
         if (ca_iel_ .ne. ca_kr_) then
@@ -186,89 +186,89 @@ integer, intent(out) :: iret
             else
                 call tecach('NNN', 'PVARCRR', 'L', iret, nval=7, itab=itabr)
                 if (iret .ne. 0) goto 998
-            endif
-            ca_kr_=ca_iel_
-        endif
-    endif
+            end if
+            ca_kr_ = ca_iel_
+        end if
+    end if
 !
 ! - Get value
 !
     if (poum .eq. 'REF') then
-        nb2vrc=itabr(6)
-        nbsp=itabr(7)
-        kpgvrc=(kpgmat-1)*nbsp+ksp
-        varc_vale=zr(itabr(1) -1 + (kpgvrc-1)*nb2vrc + varc_indx)
+        nb2vrc = itabr(6)
+        nbsp = itabr(7)
+        kpgvrc = (kpgmat-1)*nbsp+ksp
+        varc_vale = zr(itabr(1)-1+(kpgvrc-1)*nb2vrc+varc_indx)
 
-    else if (poum.eq.'+' .and. ca_iredec_.eq.0) then
-        nb2vrc=itabp(6)
-        nbsp=itabp(7)
-        kpgvrc=(kpgmat-1)*nbsp+ksp
-        varc_vale=zr(itabp(1) -1 + (kpgvrc-1)*nb2vrc + varc_indx)
+    else if (poum .eq. '+' .and. ca_iredec_ .eq. 0) then
+        nb2vrc = itabp(6)
+        nbsp = itabp(7)
+        kpgvrc = (kpgmat-1)*nbsp+ksp
+        varc_vale = zr(itabp(1)-1+(kpgvrc-1)*nb2vrc+varc_indx)
 
-    else if (poum.eq.'-' .and. ca_iredec_.eq.0) then
-        nb2vrc=itabm(6)
-        nbsp=itabm(7)
-        kpgvrc=(kpgmat-1)*nbsp+ksp
-        varc_vale=zr(itabm(1) -1 + (kpgvrc-1)*nb2vrc + varc_indx)
+    else if (poum .eq. '-' .and. ca_iredec_ .eq. 0) then
+        nb2vrc = itabm(6)
+        nbsp = itabm(7)
+        kpgvrc = (kpgmat-1)*nbsp+ksp
+        varc_vale = zr(itabm(1)-1+(kpgvrc-1)*nb2vrc+varc_indx)
 
-    else if (ca_iredec_.eq.1) then
-        nb2vrc=itabm(6)
-        nbsp=itabm(7)
-        kpgvrc=(kpgmat-1)*nbsp+ksp
-        valvrm=zr(itabm(1) -1 + (kpgvrc-1)*nb2vrc + varc_indx)
+    else if (ca_iredec_ .eq. 1) then
+        nb2vrc = itabm(6)
+        nbsp = itabm(7)
+        kpgvrc = (kpgmat-1)*nbsp+ksp
+        valvrm = zr(itabm(1)-1+(kpgvrc-1)*nb2vrc+varc_indx)
 
-        nb2vrc=itabp(6)
-        nbsp=itabp(7)
-        kpgvrc=(kpgmat-1)*nbsp+ksp
-        valvrp=zr(itabp(1) -1 + (kpgvrc-1)*nb2vrc + varc_indx)
+        nb2vrc = itabp(6)
+        nbsp = itabp(7)
+        kpgvrc = (kpgmat-1)*nbsp+ksp
+        valvrp = zr(itabp(1)-1+(kpgvrc-1)*nb2vrc+varc_indx)
 
-        if ((.not.isnan(valvrm)) .and. (.not.isnan(valvrp))) then
+        if ((.not. isnan(valvrm)) .and. (.not. isnan(valvrp))) then
             if (poum .eq. '-') then
-                varc_vale=valvrm+(ca_td1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-&
-                ca_timed1_)
-            else if (poum.eq.'+') then
-                varc_vale=valvrm+(ca_tf1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-&
-                ca_timed1_)
+                varc_vale = valvrm+(ca_td1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_- &
+                                                                         ca_timed1_)
+            else if (poum .eq. '+') then
+                varc_vale = valvrm+(ca_tf1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_- &
+                                                                         ca_timed1_)
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
-            varc_vale=rundf
-        endif
+            varc_vale = rundf
+        end if
 
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    iret=0
+    iret = 0
     if (isnan(varc_vale)) then
-        iret=1
-    endif
+        iret = 1
+    end if
 !
 ! - Manage error
 !
     if (iret .eq. 1) then
         if (arret .eq. ' ') then
-            varc_vale=rundf
+            varc_vale = rundf
         else
             call tecael(iadzi, iazk24)
-            nomail=zk24(iazk24-1+3)(1:8)
+            nomail = zk24(iazk24-1+3) (1:8)
             valk(1) = varc_name
             valk(2) = nomail
             call utmess('F', 'CALCUL_26', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
     goto 999
 !
 998 continue
     if (arret .eq. ' ') then
-        varc_vale=rundf
-        iret=1
+        varc_vale = rundf
+        iret = 1
     else
         call tecael(iadzi, iazk24)
-        valk(1)=zk24(iazk24-1+3)
+        valk(1) = zk24(iazk24-1+3)
         call utmess('F', 'CALCUL_32', sk=valk(1))
-    endif
+    end if
 !
 999 continue
 !

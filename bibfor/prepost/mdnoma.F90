@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,11 +84,11 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
 ! 2.2. ==> NOM DU MAILLAGE
 !
         iaux = lxlgut(nomast)
-        ASSERT(iaux.ge.1 .and. iaux.le.8)
+        ASSERT(iaux .ge. 1 .and. iaux .le. 8)
         nomamd(1:iaux) = nomast(1:iaux)
         lnomam = iaux
 !
-    endif
+    end if
 !
 !====
 ! 3. BILAN
@@ -96,6 +96,6 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
 !
     if (codret .ne. 0) then
         call utmess('E', 'MED_62')
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine angco4(coor, zk1, izk, icoude, zk2,&
-                  rayon, theta, angl1, angl2, angl3,&
-                  angl4, pgl1, pgl2, pgl3, pgl4,&
+subroutine angco4(coor, zk1, izk, icoude, zk2, &
+                  rayon, theta, angl1, angl2, angl3, &
+                  angl4, pgl1, pgl2, pgl3, pgl4, &
                   omega, dn1n2, epsi, crit)
     implicit none
 #include "asterc/r8prem.h"
@@ -54,44 +54,44 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
 !     POINTS 1 4 3
 !
     do i = 1, 3
-        coor3(i)=coor(i)
-        coor3(3+i)=coor(9+i)
-        coor3(6+i)=coor(6+i)
-        zkini(i)=zk1(i)
+        coor3(i) = coor(i)
+        coor3(3+i) = coor(9+i)
+        coor3(6+i) = coor(6+i)
+        zkini(i) = zk1(i)
     end do
 !
 !
-    call angcou(coor3, zkini, izk, icoud1, zk4,&
-                rayon1, theta1, angl1, angl4, angl3,&
-                pgl1, pgl4, pgl3, omega1, dn1n4,&
+    call angcou(coor3, zkini, izk, icoud1, zk4, &
+                rayon1, theta1, angl1, angl4, angl3, &
+                pgl1, pgl4, pgl3, omega1, dn1n4, &
                 epsi, crit, zk3)
 !
 !     POINTS 3 2 4
 !
     do i = 1, 3
-        coor3(i) =coor(6+i)
-        coor3(3+i)=coor(3+i)
-        coor3(6+i)=coor(9+i)
-        zkini(i)=zk3(i)
+        coor3(i) = coor(6+i)
+        coor3(3+i) = coor(3+i)
+        coor3(6+i) = coor(9+i)
+        zkini(i) = zk3(i)
     end do
 !
-    call angcou(coor3, zkini, izk, icoud2, zk2,&
-                rayon2, theta2, angl3, angl2, angl4,&
-                pgl3, pgl2, pgl4, omega2, dn3n2,&
+    call angcou(coor3, zkini, izk, icoud2, zk2, &
+                rayon2, theta2, angl3, angl2, angl4, &
+                pgl3, pgl2, pgl4, omega2, dn3n2, &
                 epsi, crit, zk4)
 !
     do i = 1, 3
-        coo1(i) =coor(i)
+        coo1(i) = coor(i)
         coo2(i) = coor(3+i)
     end do
-    dn1n2 = sqrt( (coo1(1)-coo2(1) )**2 + ( coo1(2)-coo2(2) )**2 + ( coo1(3)-coo2(3) )**2 )
+    dn1n2 = sqrt((coo1(1)-coo2(1))**2+(coo1(2)-coo2(2))**2+(coo1(3)-coo2(3))**2)
 !
     if (icoud2 .ne. icoud1) then
         ASSERT(.false.)
     else
-        icoude=icoud2
-        rayon=rayon2
-    endif
+        icoude = icoud2
+        rayon = rayon2
+    end if
 !
     valtes = abs(rayon1)
     if (crit .eq. 'RELATIF') then
@@ -99,16 +99,16 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
             test = r8prem()
         else
             test = epsi2*valtes
-        endif
-    else if (crit.eq.'ABSOLU') then
+        end if
+    else if (crit .eq. 'ABSOLU') then
         test = epsi2
-    endif
+    end if
 !
     if (abs(rayon2-rayon1) .gt. test) then
         ASSERT(.false.)
     else
-        rayon=rayon2
-    endif
+        rayon = rayon2
+    end if
 !
     valtes = abs(theta1)
     if (crit .eq. 'RELATIF') then
@@ -116,16 +116,16 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
             test = r8prem()
         else
             test = epsi2*valtes
-        endif
-    else if (crit.eq.'ABSOLU') then
+        end if
+    else if (crit .eq. 'ABSOLU') then
         test = epsi2
-    endif
+    end if
 !
     if (abs(theta2-theta1) .gt. test) then
         ASSERT(.false.)
     else
-        theta=1.5d0*theta1
-    endif
+        theta = 1.5d0*theta1
+    end if
 !
     valtes = abs(omega1)
     if (crit .eq. 'RELATIF') then
@@ -133,14 +133,14 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
             test = r8prem()
         else
             test = epsi2*valtes
-        endif
-    else if (crit.eq.'ABSOLU') then
+        end if
+    else if (crit .eq. 'ABSOLU') then
         test = epsi2
-    endif
+    end if
 !
     if (abs(omega2-omega1) .gt. test) then
         ASSERT(.false.)
     else
-        omega=omega1
-    endif
+        omega = omega1
+    end if
 end subroutine

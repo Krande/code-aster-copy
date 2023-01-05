@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,15 +58,15 @@ subroutine op0198()
     character(len=19) :: tbinst, tbscrv, tbscmb, sigmrv, sigmdb, tbinth
     character(len=32) :: knom
 !
-    data  nomtab / 'GROUP_NO',   'INST',     'K1_REV',  'KCP_REV',&
-     &             'TEMPPF_REV', 'K1_MDB',   'KCP_MDB', 'TEMPPF_MDB',&
-     &             'K1C_REV',    'KCPC_REV', 'TEMPFC_REV'/
-    data  typpar / 'K32', 'R', 'R', 'R', 'R', 'R', 'R', 'R' ,'R' ,'R',&
-     &             'R' /
+    data nomtab/'GROUP_NO', 'INST', 'K1_REV', 'KCP_REV',&
+     &             'TEMPPF_REV', 'K1_MDB', 'KCP_MDB', 'TEMPPF_MDB',&
+     &             'K1C_REV', 'KCPC_REV', 'TEMPFC_REV'/
+    data typpar/'K32', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R',&
+     &             'R'/
 ! ======================================================================
     call jemarq()
-    ibid=0
-    c16b=(0.d0,0.d0)
+    ibid = 0
+    c16b = (0.d0, 0.d0)
     call infmaj()
 ! ======================================================================
     call getres(result, k8b, nomcmd)
@@ -90,8 +90,8 @@ subroutine op0198()
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES AUTRE QUE K1D ---------------------------
 ! ======================================================================
-    call recupe(noma, ndim, nk1d, lrev, lmdb,&
-                matrev, matmdb, deklag, prodef, londef,&
+    call recupe(noma, ndim, nk1d, lrev, lmdb, &
+                matrev, matmdb, deklag, prodef, londef, &
                 oridef, profil)
 ! ======================================================================
 ! --- VERIFICATION DES DONNEES -----------------------------------------
@@ -101,7 +101,7 @@ subroutine op0198()
 ! --- RECUPERATION DES TABLES D'INSTANT, D'ABSCISSES CURVILIGNES / -----
 ! --- COTE REVETEMENT / COTE METAL DE BASE -----------------------------
 ! ======================================================================
-    call recuvl(nbval, tbinst, nbval2, tbinth, norev,&
+    call recuvl(nbval, tbinst, nbval2, tbinth, norev, &
                 tbscrv, nomdb, tbscmb)
 ! ======================================================================
 ! --- CREATION DE LA TABLE RESULTAT ------------------------------------
@@ -110,7 +110,7 @@ subroutine op0198()
     nval = 8
     if (profil(1:12) .eq. 'SEMI_ELLIPSE') then
         nval = 11
-    endif
+    end if
     call tbajpa(result, nval, nomtab, typpar)
 ! ======================================================================
 ! --- CREATION DES VECTEURS NECESSAIRES --------------------------------
@@ -147,39 +147,39 @@ subroutine op0198()
 ! ======================================================================
             sigmrv = '&&OP0198.SIGMRV'
             sigmdb = '&&OP0198.SIGMDB'
-            call rechmc(ndim, temps, oridef, tabrev, tabmdb,&
+            call rechmc(ndim, temps, oridef, tabrev, tabmdb, &
                         norev, sigmrv, nomdb, sigmdb)
 ! ======================================================================
 ! --- RECUPERATION DES TEMPERATURES AUX POINTES DE LA FISSURE ----------
 ! ======================================================================
-            call rechth(temps, nbval2, tbinth, tabthr, tempa,&
+            call rechth(temps, nbval2, tbinth, tabthr, tempa, &
                         tempb)
 ! ======================================================================
 ! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------
 ! ======================================================================
             if (profil(1:7) .eq. 'ELLIPSE') then
-                call calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
-                            tbscmb, prodef, londef, deklag, lrev,&
+                call calck1(norev, nomdb, sigmrv, sigmdb, tbscrv, &
+                            tbscmb, prodef, londef, deklag, lrev, &
                             k1a, k1b)
 ! ======================================================================
 ! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------
 ! --- METHODE DES COEFFICIENTS D'INFLUENCE -----------------------------
 ! ======================================================================
-            else if (profil(1:12).eq.'SEMI_ELLIPSE') then
-                call calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef,&
-                                  lrev, lmdb, matrev, matmdb, tempa,&
+            else if (profil(1:12) .eq. 'SEMI_ELLIPSE') then
+                call calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
+                                  lrev, lmdb, matrev, matmdb, tempa, &
                                   tempb, k1a, k1b, k1c)
-            endif
+            end if
 ! ======================================================================
 ! --- AJOUT DE CORRECTION PLASTIQUE AU CALCUL DES FACTEURS -------------
 ! --- D'INTENSITE DE CONTRAINTES ---------------------------------------
 ! ======================================================================
-            decal=deklag
-            if (deklag .ge. 0.d0) decal=0.d0
-            if (profil(1:12) .eq. 'SEMI_ELLIPSE') decal=0.d0
-            call coplas(tempa, k1a, k1b, k1c, matrev,&
-                        lrev, decal, prodef, oridef, profil,&
-                        kal, kbl, kcl, dkma, dkmb,&
+            decal = deklag
+            if (deklag .ge. 0.d0) decal = 0.d0
+            if (profil(1:12) .eq. 'SEMI_ELLIPSE') decal = 0.d0
+            call coplas(tempa, k1a, k1b, k1c, matrev, &
+                        lrev, decal, prodef, oridef, profil, &
+                        kal, kbl, kcl, dkma, dkmb, &
                         dkmc, k1acp, k1bcp, k1ccp)
 ! ======================================================================
 ! --- RECUPERATION DES TEMPERATURES AUX POINTES DE LA FISSURE ----------
@@ -199,9 +199,9 @@ subroutine op0198()
                 rnom(8) = k1c
                 rnom(9) = k1ccp
                 rnom(10) = tempa
-            endif
+            end if
 !
-            call tbajli(result, nval, nomtab, [ibid], rnom,&
+            call tbajli(result, nval, nomtab, [ibid], rnom, &
                         [c16b], knom, 0)
 !
 ! ======================================================================

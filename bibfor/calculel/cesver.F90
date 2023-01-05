@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine cesver(cesz)
     if (typces .eq. 'ELNO' .or. typces .eq. 'ELGA') then
     else
         goto 999
-    endif
+    end if
 !
 !
 !     -- ON NE TRAITE QUE LES CHAMPS R OU C :
@@ -94,64 +94,64 @@ subroutine cesver(cesz)
     if (tsca .eq. 'R' .or. tsca .eq. 'C') then
     else
         goto 999
-    endif
+    end if
 !
 !
 !
 !     1- PARCOURS DES VALEURS DU CHAMP :
 !     ----------------------------------
     do icmp = 1, ncmp
-        rmi2=1.d200
-        rma2=-1.d200
-        rdispx=0.d0
+        rmi2 = 1.d200
+        rma2 = -1.d200
+        rdispx = 0.d0
         do ima = 1, nbma
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            lexima=.false.
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            lexima = .false.
 !         -- ON NE REGARDE QUE LE 1ER SOUS-POINT :
             do isp = 1, 1
-                rmi1=1.d200
-                rma1=-1.d200
+                rmi1 = 1.d200
+                rma1 = -1.d200
                 do ipt = 1, nbpt
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, icmp, iad)
                     if (iad .le. 0) goto 60
-                    lexima=.true.
+                    lexima = .true.
 !
                     if (tsca .eq. 'R') then
-                        r1=zr(jcesv-1+iad)
-                    else if (tsca.eq.'C') then
-                        r1=dble(zc(jcesv-1+iad))
-                    endif
-                    rmi1=min(rmi1,r1)
-                    rma1=max(rma1,r1)
-                    rmi2=min(rmi2,r1)
-                    rma2=max(rma2,r1)
- 60                 continue
+                        r1 = zr(jcesv-1+iad)
+                    else if (tsca .eq. 'C') then
+                        r1 = dble(zc(jcesv-1+iad))
+                    end if
+                    rmi1 = min(rmi1, r1)
+                    rma1 = max(rma1, r1)
+                    rmi2 = min(rmi2, r1)
+                    rma2 = max(rma2, r1)
+60                  continue
                 end do
                 if (lexima) then
-                    rdisp=rma1-rmi1
+                    rdisp = rma1-rmi1
                 else
-                    rdisp=0.d0
-                endif
+                    rdisp = 0.d0
+                end if
                 if (rdisp .gt. rdispx) then
-                    rdispx=rdisp
-                    ima1=ima
-                endif
+                    rdispx = rdisp
+                    ima1 = ima
+                end if
             end do
         end do
 !
-        rmax=max(abs(rmi2),abs(rma2))
+        rmax = max(abs(rmi2), abs(rma2))
         if (rdispx .gt. 0.1d0*rmax) then
-            valr(1)=rdispx
-            valr(2)=rmax
-            valr(3)=100.d0*rdispx/rmax
+            valr(1) = rdispx
+            valr(2) = rmax
+            valr(3) = 100.d0*rdispx/rmax
             call jenuno(jexnum(ma//'.NOMMAI', ima1), nomma)
-            valk(1)=nomma
-            valk(2)=cesc(icmp)
-            valk(3)=nomgd
-            call utmess('A', 'CALCULEL_26', nk=3, valk=valk, nr=3,&
+            valk(1) = nomma
+            valk(2) = cesc(icmp)
+            valk(3) = nomgd
+            call utmess('A', 'CALCULEL_26', nk=3, valk=valk, nr=3, &
                         valr=valr)
-        endif
+        end if
 !
     end do
 !

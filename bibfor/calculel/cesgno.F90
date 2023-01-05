@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine cesgno(ces1, celfpg, ces2)
 !         REMARQUE : LE CHAM_ELEM_S EST DEJA ALLOUE.
 !-----------------------------------------------------------------------
 !
-    integer, parameter :: nbpgmx =27
+    integer, parameter :: nbpgmx = 27
     character(len=8) :: elrf, fapg1, fapg(MT_NBFAMX)
     integer :: nbfpg, nbpg(MT_NBFAMX), ndiml, nnol, nnosl
 !
@@ -92,7 +92,7 @@ subroutine cesgno(ces1, celfpg, ces2)
 !        JNOFPG : ADRESSE DE CELFPG
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
-    ASSERT(iret.gt.0)
+    ASSERT(iret .gt. 0)
     call jeveuo(ces1//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces1//'.CESC', 'L', jces1c)
     call jeveuo(ces1//'.CESD', 'L', jces1d)
@@ -103,13 +103,13 @@ subroutine cesgno(ces1, celfpg, ces2)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call jelira(ces1//'.CESC', 'LONMAX', ncmp)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-    ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
+    ASSERT(tsca .eq. 'R' .or. tsca .eq. 'C')
 !
     call jeveuo(ces2//'.CESD', 'L', jces2d)
     call jeveuo(ces2//'.CESV', 'E', jces2v)
     call jeveuo(ces2//'.CESL', 'E', jces2l)
 !
-    ASSERT(celfpg.ne.' ')
+    ASSERT(celfpg .ne. ' ')
     call jeveuo(celfpg, 'E', jnofpg)
 !
 !
@@ -122,7 +122,7 @@ subroutine cesgno(ces1, celfpg, ces2)
 !
 !     BOUCLE TANT QUE CELFPG N'EST PAS TOTALEMENT EFFACE (AVANCE=1):
 !     ---------------------------------------------------------------
- 10 continue
+10  continue
     schema = ' '
     avance = 0
 !
@@ -131,7 +131,7 @@ subroutine cesgno(ces1, celfpg, ces2)
         if (schema .eq. ' ') schema = zk16(jnofpg-1+ima)
         if (zk16(jnofpg-1+ima) .ne. schema) goto 110
 !
-        avance = avance + 1
+        avance = avance+1
         schema = zk16(jnofpg-1+ima)
         elrf = schema(1:8)
         fapg1 = schema(9:16)
@@ -147,39 +147,39 @@ subroutine cesgno(ces1, celfpg, ces2)
 !           --------------------------------------------------------
 !
             if (avance .eq. 1) then
-                ASSERT(schema(1:8).eq.elrf)
+                ASSERT(schema(1:8) .eq. elrf)
 !
 ! --------- Get list of integration schemes of geometric support
-                call elraca(elrf, nbfpg_ = nbfpg, fapg_ = fapg, nbpg_ = nbpg, ndim_ = ndiml,&
-                            nno_ = nnol, nnos_ = nnosl)
+                call elraca(elrf, nbfpg_=nbfpg, fapg_=fapg, nbpg_=nbpg, ndim_=ndiml, &
+                            nno_=nnol, nnos_=nnosl)
 !
 ! --------- Get index for integration scheme
                 nufpg = indik8(fapg1, fapg1, 1, nbfpg)
-                ASSERT(nufpg.gt.0)
+                ASSERT(nufpg .gt. 0)
 !
                 call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
                 decal = 0
-                do ifam = 1, nufpg - 1
+                do ifam = 1, nufpg-1
                     npgl = nbpg(ifam)
 !
                     lonfam = npgl
-                    lonfam = lonfam + npgl*ndiml
-                    lonfam = lonfam + npgl*nnol
-                    lonfam = lonfam + npgl*nnol*ndiml
-                    lonfam = lonfam + npgl*nnol*ndiml*ndiml
-                    lonfam = lonfam + 2 + npgl*nnol
+                    lonfam = lonfam+npgl*ndiml
+                    lonfam = lonfam+npgl*nnol
+                    lonfam = lonfam+npgl*nnol*ndiml
+                    lonfam = lonfam+npgl*nnol*ndiml*ndiml
+                    lonfam = lonfam+2+npgl*nnol
 !
-                    decal = decal + lonfam
+                    decal = decal+lonfam
                 end do
 !
                 npgl = nbpg(nufpg)
 !
-                ipoidl = jvr + decal
-                jcoopl = ipoidl + npgl
-                ivfl = jcoopl + npgl*ndiml
-                idfdel = ivfl + npgl*nnol
-                jdfd2l = idfdel + npgl*nnol*ndiml
-                jganol = jdfd2l + npgl*nnol*ndiml*ndiml
+                ipoidl = jvr+decal
+                jcoopl = ipoidl+npgl
+                ivfl = jcoopl+npgl*ndiml
+                idfdel = ivfl+npgl*nnol
+                jdfd2l = idfdel+npgl*nnol*ndiml
+                jganol = jdfd2l+npgl*nnol*ndiml*ndiml
 !
                 ndim = ndiml
                 nnos = nnosl
@@ -192,32 +192,32 @@ subroutine cesgno(ces1, celfpg, ces2)
                 jdfd2 = jdfd2l
                 jgano = jganol
 !
-                ASSERT(nno.le.MT_NNOMAX)
-                ASSERT(npg.le.nbpgmx)
-            endif
+                ASSERT(nno .le. MT_NNOMAX)
+                ASSERT(npg .le. nbpgmx)
+            end if
 !
-            nbpt1 = zi(jces1d-1+5+4* (ima-1)+1)
-            nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
-            nbpt2 = zi(jces2d-1+5+4* (ima-1)+1)
-            nbsp2 = zi(jces2d-1+5+4* (ima-1)+2)
-            ASSERT(nbsp1.eq.nbsp2)
-            ASSERT(nbpt2.eq.nno)
+            nbpt1 = zi(jces1d-1+5+4*(ima-1)+1)
+            nbsp1 = zi(jces1d-1+5+4*(ima-1)+2)
+            nbpt2 = zi(jces2d-1+5+4*(ima-1)+1)
+            nbsp2 = zi(jces2d-1+5+4*(ima-1)+2)
+            ASSERT(nbsp1 .eq. nbsp2)
+            ASSERT(nbpt2 .eq. nno)
 !
 !
             do icmp = 1, ncmp
-                call cesexi('C', jces1d, jces1l, ima, 1,&
+                call cesexi('C', jces1d, jces1l, ima, 1, &
                             1, icmp, iad1)
                 if (iad1 .le. 0) goto 300
                 do isp = 1, nbsp1
                     do ino = 1, nno
-                        call cesexi('C', jces2d, jces2l, ima, ino,&
+                        call cesexi('C', jces2d, jces2l, ima, ino, &
                                     isp, icmp, iad2)
-                        ASSERT(iad2.lt.0)
+                        ASSERT(iad2 .lt. 0)
                         if (tsca .eq. 'R') then
                             zr(jces2v-1-iad2) = 0.d0
                         else
                             zc(jces2v-1-iad2) = 0.d0
-                        endif
+                        end if
                         zl(jces2l-1-iad2) = .true.
                     end do
                 end do
@@ -236,61 +236,61 @@ subroutine cesgno(ces1, celfpg, ces2)
             if (avance .eq. 1) then
 !
 ! --------- Get list of integration schemes of geometric support
-                call elraca(elrf, nbfpg_ = nbfpg, fapg_ = fapg, nbpg_ = nbpg, ndim_ = ndiml,&
-                            nno_ = nnol, nnos_ = nnosl)
+                call elraca(elrf, nbfpg_=nbfpg, fapg_=fapg, nbpg_=nbpg, ndim_=ndiml, &
+                            nno_=nnol, nnos_=nnosl)
 !
 ! --------- Get index for integration scheme
                 nufpg = indik8(fapg, fapg1, 1, nbfpg)
-                ASSERT(nufpg.gt.0)
+                ASSERT(nufpg .gt. 0)
 !
                 call nuelrf(elrf, nujni)
-                ASSERT(nujni.eq.2)
+                ASSERT(nujni .eq. 2)
                 call jni002(elrf, 10, liobj, nbobj)
                 call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
 !
                 decal = 0
-                do ifam = 1, nufpg - 1
+                do ifam = 1, nufpg-1
                     npgl = nbpg(ifam)
 !
                     lonfam = npgl
-                    lonfam = lonfam + npgl*ndiml
-                    lonfam = lonfam + npgl*nnol
-                    lonfam = lonfam + npgl*nnol*ndiml
-                    lonfam = lonfam + npgl*nnol*ndiml*ndiml
-                    lonfam = lonfam + 2 + npgl*nnol
+                    lonfam = lonfam+npgl*ndiml
+                    lonfam = lonfam+npgl*nnol
+                    lonfam = lonfam+npgl*nnol*ndiml
+                    lonfam = lonfam+npgl*nnol*ndiml*ndiml
+                    lonfam = lonfam+2+npgl*nnol
 !
-                    decal = decal + lonfam
+                    decal = decal+lonfam
                 end do
 !
                 npgl = nbpg(nufpg)
 !
-                ipoidl = jvr + decal
-                jcoopl = ipoidl + npgl
-                ivfl = jcoopl + npgl*ndiml
-                idfdel = ivfl + npgl*nnol
-                jdfd2l = idfdel + npgl*nnol*ndiml
-                jganol = jdfd2l + npgl*nnol*ndiml*ndiml
+                ipoidl = jvr+decal
+                jcoopl = ipoidl+npgl
+                ivfl = jcoopl+npgl*ndiml
+                idfdel = ivfl+npgl*nnol
+                jdfd2l = idfdel+npgl*nnol*ndiml
+                jganol = jdfd2l+npgl*nnol*ndiml*ndiml
                 nno = nint(zr(jganol-1+1))
                 npg = nint(zr(jganol-1+2))
-                jmat = jganol + 2
-                ASSERT(nno.le.MT_NNOMAX)
-                ASSERT(npg.le.nbpgmx)
-            endif
+                jmat = jganol+2
+                ASSERT(nno .le. MT_NNOMAX)
+                ASSERT(npg .le. nbpgmx)
+            end if
 !
 !
 !           3.2 : MULTIPLICATION PAR LA MATRICE
 !           ------------------------------------
-            nbpt1 = zi(jces1d-1+5+4* (ima-1)+1)
-            nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
-            nbpt2 = zi(jces2d-1+5+4* (ima-1)+1)
-            nbsp2 = zi(jces2d-1+5+4* (ima-1)+2)
-            ASSERT(nbsp1.eq.nbsp2)
-            ASSERT(nbpt1.eq.npg)
-            ASSERT(nbpt2.eq.nno)
+            nbpt1 = zi(jces1d-1+5+4*(ima-1)+1)
+            nbsp1 = zi(jces1d-1+5+4*(ima-1)+2)
+            nbpt2 = zi(jces2d-1+5+4*(ima-1)+1)
+            nbsp2 = zi(jces2d-1+5+4*(ima-1)+2)
+            ASSERT(nbsp1 .eq. nbsp2)
+            ASSERT(nbpt1 .eq. npg)
+            ASSERT(nbpt2 .eq. nno)
 !
 !
             do icmp = 1, ncmp
-                call cesexi('C', jces1d, jces1l, ima, 1,&
+                call cesexi('C', jces1d, jces1l, ima, 1, &
                             1, icmp, iad1)
                 if (iad1 .le. 0) goto 100
 !
@@ -298,15 +298,15 @@ subroutine cesgno(ces1, celfpg, ces2)
 !
 !               -- RECOPIE DANS VXPG :
                     do ipg = 1, npg
-                        call cesexi('C', jces1d, jces1l, ima, ipg,&
+                        call cesexi('C', jces1d, jces1l, ima, ipg, &
                                     isp, icmp, iad1)
-                        ASSERT(iad1.gt.0)
+                        ASSERT(iad1 .gt. 0)
                         if (tsca .eq. 'R') then
                             vrpg(ipg) = zr(jces1v-1+iad1)
 !
                         else
                             vcpg(ipg) = zc(jces1v-1+iad1)
-                        endif
+                        end if
                     end do
 !
 !               -- MULTIPLICATION :
@@ -314,37 +314,37 @@ subroutine cesgno(ces1, celfpg, ces2)
                         do ino = 1, nno
                             sr = 0.d0
                             do ipg = 1, npg
-                                sr = sr + zr(jmat-1+ (ino-1)*npg+ipg)* vrpg(ipg)
+                                sr = sr+zr(jmat-1+(ino-1)*npg+ipg)*vrpg(ipg)
                             end do
                             vrno(ino) = sr
                         end do
 !
                     else
                         do ino = 1, nno
-                            sc = dcmplx(0.d0,0.d0)
+                            sc = dcmplx(0.d0, 0.d0)
                             do ipg = 1, npg
-                                sc = sc + zr(jmat-1+ (ino-1)*npg+ipg)* vcpg(ipg)
+                                sc = sc+zr(jmat-1+(ino-1)*npg+ipg)*vcpg(ipg)
                             end do
                             vcno(ino) = sc
                         end do
-                    endif
+                    end if
 !
 !               -- RECOPIE DE VXNO :
                     do ino = 1, nno
-                        call cesexi('C', jces2d, jces2l, ima, ino,&
+                        call cesexi('C', jces2d, jces2l, ima, ino, &
                                     isp, icmp, iad2)
-                        ASSERT(iad2.lt.0)
+                        ASSERT(iad2 .lt. 0)
                         if (tsca .eq. 'R') then
                             zr(jces2v-1-iad2) = vrno(ino)
                         else
                             zc(jces2v-1-iad2) = vcno(ino)
-                        endif
+                        end if
                         zl(jces2l-1-iad2) = .true.
                     end do
                 end do
 100             continue
             end do
-        endif
+        end if
 !
 110     continue
     end do

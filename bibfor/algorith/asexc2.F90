@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
-                  corfre, noma, ndir, nomsup, nomspe,&
-                  dirspe, echspe, nature, nbsupm, nsupp,&
+subroutine asexc2(motfac, nbocc, nbmode, momec, amort, &
+                  corfre, noma, ndir, nomsup, nomspe, &
+                  dirspe, echspe, nature, nbsupm, nsupp, &
                   knoeu, kvspe, kaspe, nopara, nordr)
     implicit none
 #include "asterf_types.h"
@@ -90,8 +90,8 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
 !
 !     ------------------------------------------------------------------
 !
-    data  nompu / 'AMOR' , 'FREQ'    /
-    data   dir  / 'X' , 'Y' , 'Z' /
+    data nompu/'AMOR', 'FREQ'/
+    data dir/'X', 'Y', 'Z'/
 !
 !     ------------------------------------------------------------------
 !
@@ -101,7 +101,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
     zero = 0.d0
     un = 1.d0
     deuxpi = r8depi()
-    uns2pi = un / deuxpi
+    uns2pi = un/deuxpi
     nsupp(1) = 0
     nsupp(2) = 0
     nsupp(3) = 0
@@ -111,14 +111,14 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
 !     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 !
     call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
-    if (nimpr .eq. 0) niveau='TOUT     '
+    if (nimpr .eq. 0) niveau = 'TOUT     '
 !
     call getvr8(' ', 'FREQ_COUP', iocc=1, scal=fcoup, nbret=n1)
     if (n1 .eq. 0) then
-        call rsadpa(momec, 'L', 1, nopara(2), nordr(nbmode),&
+        call rsadpa(momec, 'L', 1, nopara(2), nordr(nbmode), &
                     0, sjv=ival, istop=0)
-        fcoup = uns2pi * sqrt(zr(ival))
-    endif
+        fcoup = uns2pi*sqrt(zr(ival))
+    end if
 !
 !     --- NOMBRE DE SUPPORTS PAR DIRECTION ---
     do ioc = 1, nbocc
@@ -134,18 +134,18 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
 !        --- UN SPECTRE SUIVANT UN AXE ---
         call getvr8(motfac, 'AXE', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvr8(motfac, 'AXE', iocc=ioc, nbval=3, vect=dirsp0,&
+            call getvr8(motfac, 'AXE', iocc=ioc, nbval=3, vect=dirsp0, &
                         nbret=n1)
             xnorm = zero
             do id = 1, 3
-                xnorm = xnorm + dirsp0(id) * dirsp0(id)
+                xnorm = xnorm+dirsp0(id)*dirsp0(id)
             end do
             if (xnorm .lt. epsi) then
-                ier = ier + 1
+                ier = ier+1
                 call utmess('E', 'SEISME_4')
                 goto 10
-            endif
-            xnorm = un / sqrt(xnorm)
+            end if
+            xnorm = un/sqrt(xnorm)
             call getvid(motfac, 'SPEC_OSCI', iocc=ioc, scal=spect, nbret=n1)
             nomsp0(1) = spect
             nomsp0(2) = spect
@@ -155,13 +155,13 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                 echsp0(1) = echel
                 echsp0(2) = echel
                 echsp0(3) = echel
-            endif
+            end if
 !
 !        --- UN SPECTRE DANS LES 3 DIRECTIONS ---
         else
             call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=3, vect=dirsp0,&
+                call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=3, vect=dirsp0, &
                             nbret=n1)
                 call getvid(motfac, 'SPEC_OSCI', iocc=ioc, scal=spect, nbret=n1)
                 nomsp0(1) = spect
@@ -172,18 +172,18 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                     echsp0(1) = echel
                     echsp0(2) = echel
                     echsp0(3) = echel
-                endif
+                end if
 !
 !        --- 3 SPECTRES DANS LES 3 DIRECTIONS ---
             else
 !
-                call getvid(motfac, 'SPEC_OSCI', iocc=ioc, nbval=3, vect=nomsp0,&
+                call getvid(motfac, 'SPEC_OSCI', iocc=ioc, nbval=3, vect=nomsp0, &
                             nbret=n1)
-                call getvr8(motfac, 'ECHELLE', iocc=ioc, nbval=3, vect=echsp0,&
+                call getvr8(motfac, 'ECHELLE', iocc=ioc, nbval=3, vect=echsp0, &
                             nbret=n1)
 !
-            endif
-        endif
+            end if
+        end if
 !
         call getvtx(motfac, 'NATURE', iocc=ioc, scal=knat, nbret=n1)
         if (knat .eq. 'ACCE') inat = 1
@@ -191,96 +191,96 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
         if (knat .eq. 'DEPL') inat = 3
 !
         do id = 1, 3
-            dirsp0(id) = xnorm * dirsp0(id)
+            dirsp0(id) = xnorm*dirsp0(id)
             if (abs(dirsp0(id)) .gt. epsi) then
                 ndir(id) = 1
 !
-                call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc,&
+                call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc, &
                             0, noeu, n1)
                 if (n1 .ne. 0) then
                     nno = -n1
                     AS_ALLOCATE(vk8=noeud, size=nno)
-                    call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc,&
+                    call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc, &
                                 nno, noeud, n1)
                     do ino = 1, nno
                         noeu = noeud(ino)
                         call jenonu(jexnom(obj2, noeu), iret)
                         if (iret .eq. 0) then
-                            ier = ier + 1
+                            ier = ier+1
                             valk(1) = noeu
                             valk(2) = noma
                             call utmess('E', 'SEISME_1', nk=2, valk=valk)
                             goto 20
-                        endif
+                        end if
                         do is = 1, nsupp(id)
-                            if (nomsup(id,is) .eq. noeu) then
-                                ier = ier + 1
+                            if (nomsup(id, is) .eq. noeu) then
+                                ier = ier+1
                                 call utmess('E', 'SEISME_7', sk=noeu)
                                 goto 20
-                            endif
+                            end if
                         end do
-                        nsupp(id) = nsupp(id) + 1
-                        nomsup(id,nsupp(id)) = noeu
-                        nomspe(id,nsupp(id)) = nomsp0(id)
-                        dirspe(id,nsupp(id)) = dirsp0(id)
-                        echspe(id,nsupp(id)) = echsp0(id)
-                        nature(id,nsupp(id)) = inat
- 20                     continue
+                        nsupp(id) = nsupp(id)+1
+                        nomsup(id, nsupp(id)) = noeu
+                        nomspe(id, nsupp(id)) = nomsp0(id)
+                        dirspe(id, nsupp(id)) = dirsp0(id)
+                        echspe(id, nsupp(id)) = echsp0(id)
+                        nature(id, nsupp(id)) = inat
+20                      continue
                     end do
                     AS_DEALLOCATE(vk8=noeud)
 !
                 else
-                    call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc,&
+                    call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc, &
                                 0, k8b, n1)
                     ngr = -n1
                     AS_ALLOCATE(vk24=group_no, size=ngr)
-                    call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc,&
+                    call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc, &
                                 ngr, group_no, n1)
                     do igr = 1, ngr
                         grnoeu = group_no(igr)
                         call jeexin(jexnom(obj1, grnoeu), iret)
                         if (iret .eq. 0) then
-                            ier = ier + 1
+                            ier = ier+1
                             valk(1) = grnoeu
                             valk(2) = noma
                             call utmess('E', 'SEISME_2', nk=2, valk=valk)
                             goto 30
-                        endif
+                        end if
                         call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
                         call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
                         do ino = 1, nno
                             call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
                             do is = 1, nsupp(id)
-                                if (nomsup(id,is) .eq. noeu) then
-                                    ier = ier + 1
+                                if (nomsup(id, is) .eq. noeu) then
+                                    ier = ier+1
                                     call utmess('E', 'SEISME_7', sk=noeu)
                                     goto 32
-                                endif
+                                end if
                             end do
-                            nsupp(id) = nsupp(id) + 1
-                            nomsup(id,nsupp(id)) = noeu
-                            nomspe(id,nsupp(id)) = nomsp0(id)
-                            dirspe(id,nsupp(id)) = dirsp0(id)
-                            echspe(id,nsupp(id)) = echsp0(id)
-                            nature(id,nsupp(id)) = inat
- 32                         continue
+                            nsupp(id) = nsupp(id)+1
+                            nomsup(id, nsupp(id)) = noeu
+                            nomspe(id, nsupp(id)) = nomsp0(id)
+                            dirspe(id, nsupp(id)) = dirsp0(id)
+                            echspe(id, nsupp(id)) = echsp0(id)
+                            nature(id, nsupp(id)) = inat
+32                          continue
                         end do
- 30                     continue
+30                      continue
                     end do
                     AS_DEALLOCATE(vk24=group_no)
-                endif
-            endif
+                end if
+            end if
         end do
 !
- 10     continue
+10      continue
     end do
 !
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
-    endif
+    end if
 !
 !     --- NOM DES SUPPORTS PAR DIRECTION ---
-    nbsupm = max(nsupp(1),nsupp(2),nsupp(3))
+    nbsupm = max(nsupp(1), nsupp(2), nsupp(3))
     call wkvect(knoeu, 'V V K8', 3*nbsupm, jkno)
     do is = 1, 3*nbsupm
         zk8(jkno+is-1) = '        '
@@ -288,104 +288,104 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
     do id = 1, 3
         i = nbsupm*(id-1)
         do is = 1, nsupp(id)
-            i = i + 1
-            zk8(jkno+i-1) = nomsup(id,is)
+            i = i+1
+            zk8(jkno+i-1) = nomsup(id, is)
         end do
     end do
 !
 !     --- INTERPOLATION DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
         call utmess('I', 'SEISME_59')
-    endif
+    end if
     call wkvect(kvspe, 'V V R', 3*nbsupm*nbmode, jvspe)
     do im = 1, nbmode
         ii = 0
         amor = amort(im)
-        call rsadpa(momec, 'L', 1, nopara(2), nordr(im),&
+        call rsadpa(momec, 'L', 1, nopara(2), nordr(im), &
                     0, sjv=ival, istop=0)
         omega2 = zr(ival)
-        omega = sqrt( omega2 )
-        freq = uns2pi * omega
+        omega = sqrt(omega2)
+        freq = uns2pi*omega
         valpu(1) = amor
         valpu(2) = freq
         if (corfre) then
-            correc = sqrt( un - amor*amor )
+            correc = sqrt(un-amor*amor)
         else
-            correc =1.
-        endif
+            correc = 1.
+        end if
         do id = 1, 3
             iii = 0
             if (ndir(id) .eq. 1) then
                 do is = 1, nsupp(id)
-                    call fointe('F ', nomspe(id, is), 2, nompu, valpu,&
+                    call fointe('F ', nomspe(id, is), 2, nompu, valpu, &
                                 resu, ier)
-                    coef = dirspe(id,is)*echspe(id,is)
-                    resu = resu * coef * correc
-                    if (nature(id,is) .eq. 2) resu = resu * omega
-                    if (nature(id,is) .eq. 3) resu = resu * omega2
-                    j = id + 3*(im-1) + 3*nbmode*(is-1)
+                    coef = dirspe(id, is)*echspe(id, is)
+                    resu = resu*coef*correc
+                    if (nature(id, is) .eq. 2) resu = resu*omega
+                    if (nature(id, is) .eq. 3) resu = resu*omega2
+                    j = id+3*(im-1)+3*nbmode*(is-1)
                     zr(jvspe+j-1) = resu
                     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                         if (ii .eq. 0) then
                             ii = 1
                             iii = 1
                             dircopy = dir(id)
-                            call utmess('I', 'SEISME_60', si=im, nk=2,&
-                                        valk=[dircopy, nomsup(id, is)], nr=3,&
+                            call utmess('I', 'SEISME_60', si=im, nk=2, &
+                                        valk=[dircopy, nomsup(id, is)], nr=3, &
                                         valr=[freq, amor, resu])
                         else
                             if (iii .eq. 0) then
                                 iii = 1
                                 dircopy = dir(id)
-                                call utmess('I', 'SEISME_73', nk=2,&
+                                call utmess('I', 'SEISME_73', nk=2, &
                                             valk=[dircopy, nomsup(id, is)], sr=resu)
                             else
                                 call utmess('I', 'SEISME_61', sk=nomsup(id, is), sr=resu)
-                            endif
-                        endif
-                    endif
+                            end if
+                        end if
+                    end if
                 end do
-            endif
+            end if
         end do
     end do
 !
 !     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
         call utmess('I', 'SEISME_62')
-    endif
+    end if
     call wkvect(kaspe, 'V V R', 3*nbsupm, jaspe)
     do id = 1, 3
         j = nbsupm*(id-1)
         if (ndir(id) .eq. 1) then
             iii = 0
             do is = 1, nsupp(id)
-                coef = dirspe(id,is)*echspe(id,is)
+                coef = dirspe(id, is)*echspe(id, is)
                 valpu(1) = amort(nbmode)
                 valpu(2) = fcoup
                 if (corfre) then
-                    correc = sqrt( un - amor*amor )
+                    correc = sqrt(un-amor*amor)
                 else
                     correc = 1.
-                endif
-                omega = deuxpi * fcoup
-                call fointe('F ', nomspe(id, is), 2, nompu, valpu,&
+                end if
+                omega = deuxpi*fcoup
+                call fointe('F ', nomspe(id, is), 2, nompu, valpu, &
                             resu, ier)
-                if (nature(id,is) .eq. 2) resu = resu * omega
-                if (nature(id,is) .eq. 3) resu = resu * omega * omega
-                j = j + 1
-                resu = resu * coef * correc
+                if (nature(id, is) .eq. 2) resu = resu*omega
+                if (nature(id, is) .eq. 3) resu = resu*omega*omega
+                j = j+1
+                resu = resu*coef*correc
                 zr(jaspe+j-1) = resu
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (iii .eq. 0) then
                         iii = 1
-                        call utmess('I', 'SEISME_63', nk=2, valk=[dir(id), nomsup(id, is)],&
+                        call utmess('I', 'SEISME_63', nk=2, valk=[dir(id), nomsup(id, is)], &
                                     sr=resu)
                     else
                         call utmess('I', 'SEISME_64', sk=nomsup(id, is), sr=resu)
-                    endif
-                endif
+                    end if
+                end if
             end do
-        endif
+        end if
     end do
 !
     call jedema()

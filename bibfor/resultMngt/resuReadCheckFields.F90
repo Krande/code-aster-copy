@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 !
 subroutine resuReadCheckFields(resultName, resultType, fieldNb, fieldList)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/jenonu.h"
 !
-character(len=8), intent(in) :: resultName
-character(len=16), intent(in) :: resultType
-integer, intent(in) :: fieldNb
-character(len=16), intent(in) :: fieldList(100)
+    character(len=8), intent(in) :: resultName
+    character(len=16), intent(in) :: resultType
+    integer, intent(in) :: fieldNb
+    character(len=16), intent(in) :: fieldList(100)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@ character(len=16), intent(in) :: fieldList(100)
         call jenonu(jexnom(resu19//'.DESC', fieldType), iexi)
         if (iexi .eq. 0) then
             call utmess('F', 'RESULT2_24', nk=2, valk=[resultType, fieldType])
-        endif
+        end if
     end do
 !
 end subroutine

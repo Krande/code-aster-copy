@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zaddrc(m, n, alpha, x, incx,&
+subroutine zaddrc(m, n, alpha, x, incx, &
                   y, incy, a, lda)
     implicit none
 #include "blas/zaxpy.h"
@@ -37,17 +37,17 @@ subroutine zaddrc(m, n, alpha, x, incx,&
 ! IN  : LDA  : DIMENSION DE A.
 !-----------------------------------------------------------------------
     integer :: iy, j
-    if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0,0.0d0)) goto 9000
+    if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0)) goto 9000
 !
     iy = 1
-    if (incy .lt. 0) iy = (-n+1)*incy + 1
+    if (incy .lt. 0) iy = (-n+1)*incy+1
 !
     i1x = 1
     do j = 1, n
-        call zaxpy(m, alpha*dconjg(y(iy)), x, incx, a(i1x),&
+        call zaxpy(m, alpha*dconjg(y(iy)), x, incx, a(i1x), &
                    1)
-        iy = iy + incy
-        i1x = i1x + lda
+        iy = iy+incy
+        i1x = i1x+lda
     end do
 !
 9000 continue

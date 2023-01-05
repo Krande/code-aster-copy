@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hujddd(carac, k, mater, ind, yf,&
+subroutine hujddd(carac, k, mater, ind, yf, &
                   vin, vec, mat, iret)
     implicit none
 ! CALCUL DE DIFFERENTES DERIVEES POUR LE MECANISME K
@@ -49,7 +49,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     integer :: ndt, ndi, i, j, k, mod, kk, nbmect
     integer :: ind(7), nbmeca, iret, iadzi, iazk24
     integer :: ifm, niv
-    parameter     (mod = 18)
+    parameter(mod=18)
     real(kind=8) :: beta, m, pco, pcoh, pc, pref, alpha
     real(kind=8) :: epsvpd, b, phi, angdil
     real(kind=8) :: dd, p, q, si, sigkij
@@ -65,18 +65,18 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     character(len=8) :: nomail
     aster_logical :: consol, tract, debug, dila
 ! =====================================================================
-    parameter     ( d12   = 0.5d0  )
-    parameter     ( d14   = 0.25d0 )
-    parameter     ( d13   = 0.3333333333334d0 )
-    parameter     ( un    = 1.d0   )
-    parameter     ( zero  = 0.d0   )
-    parameter     ( deux  = 2.d0   )
-    parameter     ( tole1 = 1.d-7  )
-    parameter     ( degr  = 0.0174532925199d0 )
-    parameter     ( d40   = 40.0d0 )
+    parameter(d12=0.5d0)
+    parameter(d14=0.25d0)
+    parameter(d13=0.3333333333334d0)
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(tole1=1.d-7)
+    parameter(degr=0.0174532925199d0)
+    parameter(d40=40.0d0)
 ! =====================================================================
-    common /tdim/   ndt, ndi
-    common /meshuj/ debug
+    common/tdim/ndt, ndi
+    common/meshuj/debug
 !
     call infniv(ifm, niv)
 !
@@ -84,15 +84,15 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 ! =====================================================================
 ! --- PROPRIETES HUJEUX MATERIAU --------------------------------------
 ! =====================================================================
-    beta = mater(2,2)
-    b = mater(4,2)
-    phi = mater(5,2)
-    angdil = mater(6,2)
-    pco = mater(7,2)
-    pref = mater(8,2)
+    beta = mater(2, 2)
+    b = mater(4, 2)
+    phi = mater(5, 2)
+    angdil = mater(6, 2)
+    pco = mater(7, 2)
+    pref = mater(8, 2)
     m = sin(degr*phi)
-    alpha = mater(20,2)*d12
-    ptrac = mater(21,2)
+    alpha = mater(20, 2)*d12
+    ptrac = mater(21, 2)
 !
 !
 ! =====================================================================
@@ -103,13 +103,13 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     do i = 1, 7
         if (ind(i) .gt. 0) then
             nbmect = nbmect+1
-            if (ind(i) .le. 8) nbmeca = nbmeca + 1
-        endif
-    enddo
+            if (ind(i) .le. 8) nbmeca = nbmeca+1
+        end if
+    end do
 !
     do i = 1, nbmeca
         if (ind(i) .eq. k) r = yf(ndt+1+i)
-    enddo
+    end do
 !
     epsvpd = yf(ndt+1)
 !
@@ -120,17 +120,17 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     if (aexp .ge. exptol) then
         iret = 1
         goto 999
-    endif
+    end if
 !
     pc = pco*exp(-beta*epsvpd)
     if ((pc/pref) .lt. tole1) then
         iret = 1
         goto 999
-    endif
+    end if
 !
     do i = 1, ndt
         sigf(i) = yf(i)
-    enddo
+    end do
 !
 !
 ! ---> PROJECTION DES CONTRAINTES DANS LE PLAN DEVIATEUR K
@@ -142,7 +142,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
     do i = 1, 6
         sigd(i) = zero
-    enddo
+    end do
 !
     dd = zero
     p = zero
@@ -150,18 +150,18 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     do i = 1, ndi
         if (k .lt. 4) then
             if (i .ne. k) then
-                p = p + sigf(i)
-                dd = dd + sigf(i)*si
+                p = p+sigf(i)
+                dd = dd+sigf(i)*si
                 si = -si
-            endif
+            end if
         else
             if (i .ne. (k-4)) then
-                p = p + sigf(i)
-                dd = dd + sigf(i)*si
+                p = p+sigf(i)
+                dd = dd+sigf(i)*si
                 si = -si
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
     dd = d12*dd
     p = d12*p
 !
@@ -172,7 +172,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     else
         dila = .false.
         pcoh = p
-    endif
+    end if
 !kh ---
 !
     si = un
@@ -181,40 +181,40 @@ subroutine hujddd(carac, k, mater, ind, yf,&
             if (i .ne. k) then
                 sigd(i) = dd*si
                 si = -si
-            endif
+            end if
         else
             if (i .ne. (k-4)) then
                 sigd(i) = dd*si
                 si = -si
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
     if (k .lt. 4) then
-        sigkij = sigf( ndt+1-k )
-        sigd( ndt+1-k ) = sigkij
+        sigkij = sigf(ndt+1-k)
+        sigd(ndt+1-k) = sigkij
     else
-        sigkij = sigf( ndt+5-k )
-        sigd( ndt+5-k ) = sigkij
-    endif
+        sigkij = sigf(ndt+5-k)
+        sigd(ndt+5-k) = sigkij
+    end if
 !af 14/05/07 Debut
 !
     if (k .lt. 4) then
-        q = dd**deux + (sigkij**deux)/deux
+        q = dd**deux+(sigkij**deux)/deux
         q = sqrt(q)
-        consol = (-q/pref).le.tole1
-    endif
+        consol = (-q/pref) .le. tole1
+    end if
 !
-    tract = ((p -ptrac)/pref) .lt. tole1
+    tract = ((p-ptrac)/pref) .lt. tole1
     if (tract) then
         if (debug) then
             call tecael(iadzi, iazk24)
-            nomail=zk24(iazk24-1+3) (1:8)
-            write(6,'(10(A))') 'HUJDDD :: TRACTION DANS LA MAILLE ',&
-            nomail
-            write(6,'(A,6(1X,E16.9))')'P =',p
-        endif
+            nomail = zk24(iazk24-1+3) (1:8)
+            write (6, '(10(A))') 'HUJDDD :: TRACTION DANS LA MAILLE ', &
+                nomail
+            write (6, '(A,6(1X,E16.9))') 'P =', p
+        end if
         goto 100
-    endif
+    end if
 !af 14/05/07 Fin
 !af 09/05/07 Debut
 !
@@ -222,28 +222,28 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 ! ====================================================================
 ! --- CALCUL DE SIGDC ET QC POUR MECANISME DEVIATOIRE CYCLIQUE -------
 ! ====================================================================
-    if ((k.gt.4) .and. (k.lt.8)) then
+    if ((k .gt. 4) .and. (k .lt. 8)) then
         do i = 1, ndt
-            sigdc(i)=zero
-        enddo
+            sigdc(i) = zero
+        end do
 !
         xk(1) = vin(4*k-11)
         xk(2) = vin(4*k-10)
         th(1) = vin(4*k-9)
         th(2) = vin(4*k-8)
-        si=un
+        si = un
         do i = 1, 3
-          if (i .ne. (k-4)) then
-            sigdc(i) = sigd(i)-(xk(1)-r*th(1))*(p -ptrac)*si* (un-b*log((p -ptrac)/pc))*m
-            si = -si
-          endif
-        enddo
+            if (i .ne. (k-4)) then
+                sigdc(i) = sigd(i)-(xk(1)-r*th(1))*(p-ptrac)*si*(un-b*log((p-ptrac)/pc))*m
+                si = -si
+            end if
+        end do
 !
-        sigdc(ndt+5-k) = sigd(ndt+5-k)-(xk(2)-r*th(2))*(p -ptrac)* (un-b*log((p -ptrac)/pc))*m
-        qc = sqrt(&
-             d12*( sigdc(1)**2+sigdc(2)**2+ sigdc(3)**2+sigdc(4)** 2+sigdc(5)**2+sigdc(6)**2 ))
-        consol = (-qc/pref).le.tole1
-    endif
+        sigdc(ndt+5-k) = sigd(ndt+5-k)-(xk(2)-r*th(2))*(p-ptrac)*(un-b*log((p-ptrac)/pc))*m
+        qc = sqrt( &
+             d12*(sigdc(1)**2+sigdc(2)**2+sigdc(3)**2+sigdc(4)**2+sigdc(5)**2+sigdc(6)**2))
+        consol = (-qc/pref) .le. tole1
+    end if
 100 continue
 !
 !
@@ -256,9 +256,9 @@ subroutine hujddd(carac, k, mater, ind, yf,&
         aexp = -beta*epsvpd
         if (aexp .ge. exptol) then
             call utmess('F', 'COMPOR1_7')
-        endif
+        end if
         p = (sigf(1)+sigf(2)+sigf(3))*d13
-    endif
+    end if
     if (k .eq. 4) p = (sigf(1)+sigf(2)+sigf(3))*d13
 !af 09/05/07 Fin
 !
@@ -272,47 +272,47 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
         if (k .eq. 4) then
             call utmess('F', 'COMPOR1_2')
-        endif
+        end if
 !
-        mat(:,:) = zero
+        mat(:, :) = zero
         if (consol) goto 600
 !
 !af 15/05/07 Debut
-        dsdds(:,:) = zero
-        sxs(:,:) = zero
-        sxp(:,:) = zero
-        pxp(:,:) = zero
-        pxh(:,:) = zero
+        dsdds(:, :) = zero
+        sxs(:, :) = zero
+        sxp(:, :) = zero
+        pxp(:, :) = zero
+        pxh(:, :) = zero
 !
         if (k .gt. 4) then
             kk = k-4
         else
             kk = k
-        endif
+        end if
 !
         do i = 1, ndt
             vp(i) = zero
             vhist(i) = zero
-        enddo
+        end do
 !
         do i = 1, ndi
             if (i .ne. (kk)) then
                 vp(i) = un
-            endif
-        enddo
+            end if
+        end do
 !
         do i = 1, ndi
             do j = 1, ndi
-                if ((i.ne.kk) .and. (j.ne.kk)) then
+                if ((i .ne. kk) .and. (j .ne. kk)) then
                     if (i .eq. j) then
-                        dsdds(i,j) = d12
+                        dsdds(i, j) = d12
                     else
-                        dsdds(i,j) = -d12
-                    endif
-                endif
-            enddo
-        enddo
-        dsdds(ndt+1-kk,ndt+1-kk) = un
+                        dsdds(i, j) = -d12
+                    end if
+                end if
+            end do
+        end do
+        dsdds(ndt+1-kk, ndt+1-kk) = un
 !
         if (k .lt. 4) then
             call hujksi('KSI   ', mater, r, ksi, iret)
@@ -320,31 +320,31 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
             do i = 1, ndt
                 do j = 1, ndt
-                    sxs(i,j) = sigd(i)*sigd(j)
-                    sxp(i,j) = sigd(i)*vp(j)
-                    pxp(i,j) = vp(i)*vp(j)
-                enddo
-            enddo
+                    sxs(i, j) = sigd(i)*sigd(j)
+                    sxp(i, j) = sigd(i)*vp(j)
+                    pxp(i, j) = vp(i)*vp(j)
+                end do
+            end do
 !
             if (.not. dila) then
                 do i = 1, ndt
                     do j = 1, ndt
-                        mat(i,j) = d12*(&
-                                   dsdds(i,j)/q - d12* sxs(i,j)/ q**3.d0 - alpha*ksi*(sxp(i,j)/ (&
-                                   &q*p)-pxp(i,j)* q/p**2.d0))
-                    enddo
-                enddo
+                        mat(i, j) = d12*( &
+                                   dsdds(i, j)/q-d12*sxs(i, j)/q**3.d0-alpha*ksi*(sxp(i, j)/(&
+                                   &q*p)-pxp(i, j)*q/p**2.d0))
+                    end do
+                end do
             else
                 do i = 1, ndt
                     do j = 1, ndt
-                        mat(i,j) = d12*(&
-                                   dsdds(i,j)/q - d12* sxs(i,j)/ q**3.d0 - alpha*ksi*sxp(i,j)/ (q&
-                                   &*pcoh))
-                    enddo
-                enddo
-            endif
+                        mat(i, j) = d12*( &
+                                    dsdds(i, j)/q-d12*sxs(i, j)/q**3.d0-alpha*ksi*sxp(i, j)/(q&
+                                                                                            &*pcoh))
+                    end do
+                end do
+            end if
 !
-        else if ((k.gt.4) .and. (k.lt.8)) then
+        else if ((k .gt. 4) .and. (k .lt. 8)) then
 ! ---> MECANISME CYCLIQUE DEVIATOIRE
 !
             call hujksi('KSI   ', mater, r, ksi, iret)
@@ -355,50 +355,50 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 if (i .ne. (k-4)) then
                     vhist(i) = si*(xk(1)-th(1)*r)
                     si = -si
-                endif
-            enddo
+                end if
+            end do
             vhist(ndt+5-k) = xk(2)-th(2)*r
 !
             do i = 1, ndt
                 do j = 1, ndt
-                    sxs(i,j) = sigdc(i)*sigdc(j)
-                    sxp(i,j) = sigd(i)*vp(j)
-                    scxp(i,j) = sigdc(i)*vp(j)
-                    pxp(i,j) = vp(i)*vp(j)
-                    pxh(i,j) = vhist(i)*vp(j)
-                enddo
-            enddo
+                    sxs(i, j) = sigdc(i)*sigdc(j)
+                    sxp(i, j) = sigd(i)*vp(j)
+                    scxp(i, j) = sigdc(i)*vp(j)
+                    pxp(i, j) = vp(i)*vp(j)
+                    pxh(i, j) = vhist(i)*vp(j)
+                end do
+            end do
 !
             ps = zero
             sxh = zero
             scxh = zero
             do i = 1, ndt
-                ps = ps + sigd(i)*sigdc(i)
-                sxh = sxh + sigd(i)*vhist(i)
-                scxh = scxh + sigdc(i)*vhist(i)
-            enddo
+                ps = ps+sigd(i)*sigdc(i)
+                sxh = sxh+sigd(i)*vhist(i)
+                scxh = scxh+sigdc(i)*vhist(i)
+            end do
 !
-            fac = d12*m*(un-b*(un+log((p -ptrac)/pc)))
+            fac = d12*m*(un-b*(un+log((p-ptrac)/pc)))
             do i = 1, ndt
                 do j = 1, ndt
-                    if ((.not.consol) .and. (.not.dila)) then
-                        mat(i,j) = d12/qc*(&
-                                   dsdds(i,j)-fac*pxh(i,j))- d14/qc**3.d0*(sxs(i,j)-fac*scxh*scxp&
-                                   &(i,j))- alpha*d12*ksi/(p*qc)*(scxp(i,j)+sxp(i,j)- fac*sxh*pxp&
-                                   &(i,j)-ps*d12/qc**2.d0*(scxp(i,j)- fac*scxh*pxp(i,j))-ps*d12/p&
-                                   &*pxp(i,j))
-                    else if ((.not.consol) .and. dila) then
-                        mat(i,j) = d12/qc*(&
-                                   dsdds(i,j)-fac*pxh(i,j))- d14/qc**3.d0*(sxs(i,j)-fac*scxh*scxp&
-                                   &(i,j))- alpha*d12*ksi/(pcoh*qc)*(scxp(i,j)+sxp(i,j)- fac*sxh*&
-                                   &pxp(i,j)-ps*d12/qc**2.d0*(scxp(i,j)- fac*scxh*pxp(i,j)))
+                    if ((.not. consol) .and. (.not. dila)) then
+                        mat(i, j) = d12/qc*( &
+                                   dsdds(i, j)-fac*pxh(i, j))-d14/qc**3.d0*(sxs(i, j)-fac*scxh*scxp&
+                                   &(i, j))-alpha*d12*ksi/(p*qc)*(scxp(i, j)+sxp(i, j)-fac*sxh*pxp&
+                                   &(i, j)-ps*d12/qc**2.d0*(scxp(i, j)-fac*scxh*pxp(i, j))-ps*d12/p&
+                                   &*pxp(i, j))
+                    else if ((.not. consol) .and. dila) then
+                        mat(i, j) = d12/qc*( &
+                                   dsdds(i, j)-fac*pxh(i, j))-d14/qc**3.d0*(sxs(i, j)-fac*scxh*scxp&
+                                   &(i, j))-alpha*d12*ksi/(pcoh*qc)*(scxp(i, j)+sxp(i, j)-fac*sxh*&
+                                   &pxp(i, j)-ps*d12/qc**2.d0*(scxp(i, j)-fac*scxh*pxp(i, j)))
                     else
-                        mat(i,j) = zero
-                    endif
-                enddo
-            enddo
+                        mat(i, j) = zero
+                    end if
+                end do
+            end do
 !
-        endif
+        end if
 600     continue
 !af 15/05/07 Fin
 !
@@ -409,12 +409,12 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 ! =====================================================================
     else if (carac(1:4) .eq. 'DFDS') then
 !
-        if (k .le. 8) p = p -ptrac
+        if (k .le. 8) p = p-ptrac
 !
         do i = 1, ndt
             vec(i) = zero
             vhist(i) = zero
-        enddo
+        end do
 !
         if (k .lt. 4) then
 !
@@ -422,31 +422,31 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 if (debug) then
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3) (1:8)
-                    write (ifm,'(10(A))')&
-     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ',nomail
-                endif
+                    write (ifm, '(10(A))')&
+     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ', nomail
+                end if
                 iret = 1
                 goto 999
-            endif
+            end if
 !
             do i = 1, ndi
                 if (i .ne. k) then
                     vec(i) = d12*m*r*(un-b*(un+log(p/pc)))
-                    if (.not.consol) vec(i) = vec(i)+d12*sigd(i) /q
-                endif
-            enddo
+                    if (.not. consol) vec(i) = vec(i)+d12*sigd(i)/q
+                end if
+            end do
 !
-            if (.not.consol) then
+            if (.not. consol) then
                 do i = ndi+1, ndt
                     vec(i) = d12*sigd(i)/q
-                enddo
-            endif
+                end do
+            end if
 !
         else if (k .eq. 4) then
 !
             do i = 1, ndi
                 vec(i) = -d13
-            enddo
+            end do
 !
 !af 09/05/07 Debut
 !
@@ -456,43 +456,43 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 if (debug) then
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3) (1:8)
-                    write (ifm,'(10(A))')&
-     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ',nomail
-                endif
+                    write (ifm, '(10(A))')&
+     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ', nomail
+                end if
                 iret = 1
                 goto 999
-            endif
+            end if
 !
             si = un
             do i = 1, ndi
                 if (i .ne. (k-4)) then
                     vhist(i) = si*(xk(1)-th(1)*r)
                     si = -si
-                endif
-            enddo
+                end if
+            end do
 !
             vhist(ndt+5-k) = xk(2)-th(2)*r
             scxh = zero
             do i = 1, ndt
-                scxh = scxh + sigdc(i)*vhist(i)
-            enddo
+                scxh = scxh+sigdc(i)*vhist(i)
+            end do
 !
             fac = d12*m*(un-b*(1+log(p/pc)))
 !
             do i = 1, ndi
                 if (i .ne. (k-4)) then
-                    if (.not. consol) vec(i) = fac*(r-scxh*d12/qc)+ d12*sigdc(i)/qc
-                endif
-            enddo
-            if (.not. consol) vec(ndt+5-k)= d12*sigdc(ndt+5-k)/qc
+                    if (.not. consol) vec(i) = fac*(r-scxh*d12/qc)+d12*sigdc(i)/qc
+                end if
+            end do
+            if (.not. consol) vec(ndt+5-k) = d12*sigdc(ndt+5-k)/qc
         else if (k .eq. 8) then
             do i = 1, ndi
                 if (vin(22) .eq. un) then
-                    vec(i)=d13
+                    vec(i) = d13
                 else
-                    vec(i)=-d13
-                endif
-            enddo
+                    vec(i) = -d13
+                end if
+            end do
 !
 !af 09/05/07 Fin
 !
@@ -500,9 +500,9 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !
             do i = 1, 3
                 if (i .ne. (k-8)) vec(i) = d12
-            enddo
+            end do
 !
-        endif
+        end if
 !
 ! =====================================================================
 ! --- CARAC = 'PSI' :                                     ---------
@@ -511,7 +511,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
     else if (carac(1:3) .eq. 'PSI') then
         do i = 1, ndt
             vec(i) = zero
-        enddo
+        end do
 !
         if (k .lt. 4) then
 !
@@ -519,30 +519,30 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                 if (debug) then
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3) (1:8)
-                    write (ifm,'(10(A))')&
-     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ',nomail
-                endif
+                    write (ifm, '(10(A))')&
+     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ', nomail
+                end if
                 iret = 1
                 goto 999
-            endif
+            end if
 !
             call hujksi('KSI   ', mater, r, ksi, iret)
             if (iret .eq. 1) goto 999
 !
             do i = 1, ndi
                 if (i .ne. k) then
-                    vec(i) = -alpha*ksi*(sin(degr*angdil) + q/pcoh)
-                    if (.not.consol) vec(i) = vec(i) + sigd(i) /q/ 2.d0
-                endif
-            enddo
+                    vec(i) = -alpha*ksi*(sin(degr*angdil)+q/pcoh)
+                    if (.not. consol) vec(i) = vec(i)+sigd(i)/q/2.d0
+                end if
+            end do
 !
-            if (.not.consol) vec(ndt+1-k) = sigd(ndt+1-k) /q/2.d0
+            if (.not. consol) vec(ndt+1-k) = sigd(ndt+1-k)/q/2.d0
 !
         else if (k .eq. 4) then
 !
             do i = 1, ndi
                 vec(i) = -d13
-            enddo
+            end do
 !
 !af 09/05/07 Debut
         else if (k .eq. 8) then
@@ -553,15 +553,15 @@ subroutine hujddd(carac, k, mater, ind, yf,&
                         vec(i) = -d13
                     else
                         vec(i) = d13
-                    endif
+                    end if
                 else
                     if (p .gt. zero) then
                         vec(i) = d13
                     else
                         vec(i) = -d13
-                    endif
-                endif
-            enddo
+                    end if
+                end if
+            end do
 !
         else if ((k .gt. 4) .and. (k .lt. 8)) then
 ! --- MECANISME DEVIATOIRE CYCLIQUE
@@ -569,46 +569,46 @@ subroutine hujddd(carac, k, mater, ind, yf,&
             if (tract) then
                 if (debug) then
                     call tecael(iadzi, iazk24)
-                    nomail=zk24(iazk24-1+3) (1:8)
-                    write (ifm,'(10(A))')&
-     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ',nomail
-                endif
+                    nomail = zk24(iazk24-1+3) (1:8)
+                    write (ifm, '(10(A))')&
+     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ', nomail
+                end if
                 iret = 1
                 goto 999
-            endif
+            end if
 !
             call hujksi('KSI   ', mater, r, ksi, iret)
             prod = zero
             do i = 1, ndt
-                prod = prod + sigd(i)*sigdc(i)
-            enddo
-            if (.not.consol) then
-                prod = prod / (2.d0*qc)
+                prod = prod+sigd(i)*sigdc(i)
+            end do
+            if (.not. consol) then
+                prod = prod/(2.d0*qc)
             else
                 prod = zero
-            endif
+            end if
 !
             do i = 1, ndi
 !
                 if (i .ne. (k-4)) then
-                    if (.not.consol) then
-                        vec(i) = -alpha*ksi*( sin(degr*angdil) + prod/ pcoh) + sigdc(i )/qc/2.d0
+                    if (.not. consol) then
+                        vec(i) = -alpha*ksi*(sin(degr*angdil)+prod/pcoh)+sigdc(i)/qc/2.d0
                     else
                         vec(i) = -alpha*ksi*sin(degr*angdil)
-                    endif
-                endif
+                    end if
+                end if
 !
-            enddo
-            if (.not.consol) vec(ndt+5-k) = sigdc(ndt+5-k)/qc/2.d0
+            end do
+            if (.not. consol) vec(ndt+5-k) = sigdc(ndt+5-k)/qc/2.d0
 !
 !af 09/05/07 Fin
 !
         else if (k .gt. 8) then
             do i = 1, 3
                 if (i .ne. (k-8)) vec(i) = d12
-            enddo
-        endif
+            end do
+        end if
 !
-    endif
+    end if
 999 continue
 end subroutine

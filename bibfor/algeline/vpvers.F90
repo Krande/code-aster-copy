@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine vpvers(eigsol, modes, checksd)
 !
 ! --- INPUT
 !
-    character(len=8),  intent(in) :: modes
+    character(len=8), intent(in) :: modes
     character(len=19), intent(in) :: eigsol
-    aster_logical    , intent(in) :: checksd
+    aster_logical, intent(in) :: checksd
 !
 ! --- OUTPUT
 ! None
@@ -71,13 +71,13 @@ subroutine vpvers(eigsol, modes, checksd)
 !
 !
 ! --  INITS.
-    eps=1.d+4*r8prem()
+    eps = 1.d+4*r8prem()
 !
 ! --  LECTURE DES PARAMETRES MODAUX
-    call vplecs(eigsol, alpha_=alpha, freq1_=freq1,&
-                appr_=appr, method_=method, typevp_=typevp, matra_=matra,&
-                matrb_=matrb, matrc_=matrc, modrig_=modrig, optiof_=optiof,&
-                typeqz_=typeqz, typres_=typres, amor_=amor, masse_=masse, raide_=raide,&
+    call vplecs(eigsol, alpha_=alpha, freq1_=freq1, &
+                appr_=appr, method_=method, typevp_=typevp, matra_=matra, &
+                matrb_=matrb, matrc_=matrc, modrig_=modrig, optiof_=optiof, &
+                typeqz_=typeqz, typres_=typres, amor_=amor, masse_=masse, raide_=raide, &
                 lc_=lc, lkr_=lkr, lns_=lns, lpg_=lpg, lqz_=lqz)
 !
 ! --  REGLES D'EXCLUSION
@@ -86,7 +86,7 @@ subroutine vpvers(eigsol, modes, checksd)
     if ((optiof(1:4).eq.'TOUT').and.(.not.lqz)) call utmess('F', 'ALGELINE5_65', sk='CALC_'//typevp)
 
 ! --  MODES RIGIDES
-    if ((modrig(1:11).eq.'MODE_RIGIDE') .and. (method(1:8).ne.'TRI_DIAG'))&
+    if ((modrig(1:11) .eq. 'MODE_RIGIDE') .and. (method(1:8) .ne. 'TRI_DIAG')) &
         call utmess('F', 'ALGELINE2_65')
 
 ! --  QEP
@@ -95,86 +95,86 @@ subroutine vpvers(eigsol, modes, checksd)
         valk(2) = matrc
         if (lpg) call utmess('F', 'ALGELINE5_82')
         if (optiof(1:5) .eq. 'BANDE') call utmess('F', 'ALGELINE2_66', nk=2, valk=valk)
-        if (((appr.eq.'I').or.(appr.eq.'C')) .and.&
-            ((abs(freq1).lt.eps).or.(optiof(1:11).eq.'PLUS_PETITE'))) then
+        if (((appr .eq. 'I') .or. (appr .eq. 'C')) .and. &
+            ((abs(freq1) .lt. eps) .or. (optiof(1:11) .eq. 'PLUS_PETITE'))) then
             call utmess('F', 'ALGELINE2_67')
-        endif
+        end if
         if (modrig(1:11) .eq. 'MODE_RIGIDE') call utmess('F', 'ALGELINE2_68', nk=2, valk=valk)
-        if ((method(1:8).eq.'SORENSEN') .and.&
-            ((abs(freq1).lt.eps).or.(optiof(1:11).eq.'PLUS_PETITE'))) then
+        if ((method(1:8) .eq. 'SORENSEN') .and. &
+            ((abs(freq1) .lt. eps) .or. (optiof(1:11) .eq. 'PLUS_PETITE'))) then
             call utmess('F', 'ALGELINE2_71')
-        endif
+        end if
         if (method(1:6) .eq. 'JACOBI') call utmess('F', 'ALGELINE5_64', sk=matrc)
-    endif
+    end if
 !
 ! --  MATRICE K COMPLEXE
-    if (.not.lkr) then
+    if (.not. lkr) then
         valk(1) = matra
         valk(2) = matrc
         if (lpg) call utmess('F', 'ALGELINE5_82')
-        if ((method(1:8).ne.'SORENSEN') .and. (.not.lqz)) call utmess('F', 'ALGELINE2_69')
+        if ((method(1:8) .ne. 'SORENSEN') .and. (.not. lqz)) call utmess('F', 'ALGELINE2_69')
         if (optiof(1:5) .eq. 'BANDE') call utmess('F', 'ALGELINE2_66', nk=2, valk=valk)
         if (abs(freq1) .lt. eps) call utmess('F', 'ALGELINE2_70')
         if (modrig(1:11) .eq. 'MODE_RIGIDE') call utmess('F', 'ALGELINE2_68', nk=2, valk=valk)
         if (typres(1:10) .eq. 'MODE_FLAMB') call utmess('F', 'ALGELINE2_46', sk=matra)
-    endif
+    end if
 !
 ! --  METHODE='SORENSEN'
     if (method(1:8) .eq. 'SORENSEN') then
-        if ((abs(alpha).lt.(1.2d0*eps)) .or. (abs(alpha).gt.(0.83d0-eps))) then
+        if ((abs(alpha) .lt. (1.2d0*eps)) .or. (abs(alpha) .gt. (0.83d0-eps))) then
             call utmess('E', 'ALGELINE2_64')
-        endif
-    endif
+        end if
+    end if
 !
 ! --  METHODE='QZ'
     if (lqz) then
-        if ((typeqz(1:5).eq.'QZ_QR') .and.&
-            ((typres(1:10).eq.'FLAMBEMENT').or.lc.or.(.not.lkr))) then
+        if ((typeqz(1:5) .eq. 'QZ_QR') .and. &
+            ((typres(1:10) .eq. 'FLAMBEMENT') .or. lc .or. (.not. lkr))) then
             valk(1) = matra
             valk(2) = matrc
             call utmess('F', 'ALGELINE5_60', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 ! -- MATRICE K ET/OU M ET OU C NON SYMETRIQUE(S)
     if (lns) then
         if (lpg) call utmess('F', 'ALGELINE5_82')
-        if ((.not.lqz) .and. (method(1:8).ne.'SORENSEN')) call utmess('F', 'ALGELINE5_69')
-        if (.not.lkr) call utmess('F', 'ALGELINE5_70', sk=matra)
+        if ((.not. lqz) .and. (method(1:8) .ne. 'SORENSEN')) call utmess('F', 'ALGELINE5_69')
+        if (.not. lkr) call utmess('F', 'ALGELINE5_70', sk=matra)
         if (optiof(1:5) .eq. 'BANDE') call utmess('F', 'ALGELINE4_39')
         if (modrig(1:11) .eq. 'MODE_RIGIDE') call utmess('F', 'ALGELINE4_40')
         if (typres(1:10) .eq. 'MODE_FLAMB') call utmess('F', 'ALGELINE4_41')
-    endif
+    end if
 !
 ! --  TRAITEMENT PARTICULIER LIE A L'OPTION PLUS GRANDE
     if (lpg) then
-        raide0=masse
-        masse0=raide
+        raide0 = masse
+        masse0 = raide
         raide = 'MATR'
         masse = 'MATM'
         call ajlagr(masse0, raide0, raide)
         call mtdefs(masse, masse0, 'V', ' ')
-        call mtcmbl(1, 'R', [1.d0], masse0, masse,&
+        call mtcmbl(1, 'R', [1.d0], masse0, masse, &
                     'LAGR', ' ', 'ELIM=')
 ! --  ON MODIFIE QUELQUES VALEURS DE LA SD EIGENSOLVER
-        k24buff=raide
+        k24buff = raide
         call vpecri(eigsol, 'K', 2, k24buff, rbid, ibid)
-        k24buff=masse
+        k24buff = masse
         call vpecri(eigsol, 'K', 3, k24buff, rbid, ibid)
-    endif
+    end if
 !
 ! --  COMPATIBILITE DES MODES (DONNEES ALTEREES)
     call exisd('MATR_ASSE', raide, iret)
     if (iret .ne. 0) then
         call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numedd)
     else
-        numedd=''
-    endif
+        numedd = ''
+    end if
     if (lpg) then
         call vpcrea(0, modes, raide0, amor, masse0, numedd, iret)
     else
         call vpcrea(0, modes, masse, amor, raide, numedd, iret)
-    endif
+    end if
 !
 ! --  VERIFICATION DES "REFE"
     call vrrefe(masse, raide, iret)
@@ -182,20 +182,20 @@ subroutine vpvers(eigsol, modes, checksd)
         valk(1) = raide
         valk(2) = masse
         call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
-    endif
+    end if
     if (lc) then
         call vrrefe(raide, amor, iret)
         if (iret .gt. 0) then
             valk(1) = raide
             valk(2) = amor
             call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
     if (checksd) then
         call cheksd(eigsol, 'SD_EIGENSOLVER', iret)
-        ASSERT(iret.eq.0)
-    endif
+        ASSERT(iret .eq. 0)
+    end if
 !
 !     FIN DE VPVERS
 !

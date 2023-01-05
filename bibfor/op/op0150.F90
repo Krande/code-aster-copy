@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine op0150()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -96,15 +96,15 @@ implicit none
 ! - Reuse mode
 !
     lReuse = ASTER_FALSE
-    if (getexm(' ','RESULTAT') .eq. 1) then
-        call getvid(' ', 'RESULTAT', scal = resultNameReuse, nbret = nbOcc)
+    if (getexm(' ', 'RESULTAT') .eq. 1) then
+        call getvid(' ', 'RESULTAT', scal=resultNameReuse, nbret=nbOcc)
         if (nbOcc .ne. 0) then
             lReuse = ASTER_TRUE
             if (resultName .ne. resultNameReuse) then
                 call utmess('F', 'SUPERVIS2_79', sk='RESULTAT')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Output format
 !
@@ -122,17 +122,17 @@ implicit none
             call utmess('F', 'UTILITAI2_86')
         else
             do iField = 1, fieldNb
-                call getvtx('FORMAT_MED', 'NOM_CHAM', iocc=iField, scal=fieldList(iField),&
+                call getvtx('FORMAT_MED', 'NOM_CHAM', iocc=iField, scal=fieldList(iField), &
                             nbret=nbOcc)
                 ASSERT(nbOcc .eq. 1)
             end do
-        endif
+        end if
     else
         call getvtx(' ', 'NOM_CHAM', nbval=100, vect=fieldList, nbret=fieldNb)
         if (fieldNb .lt. 0) then
             call utmess('F', 'UTILITAI2_86')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get standard parameters
 !
@@ -144,21 +144,21 @@ implicit none
 !
 ! - Get parameters for MODE_EMPI
 !
-    call resuGetEmpiricParameters(resultType  , fieldNb   , fieldList    ,&
+    call resuGetEmpiricParameters(resultType, fieldNb, fieldList, &
                                   empiNumePlan, empiSnapNb, empiFieldType)
 !
 ! - Get storage access from command file
 !
-    call resuReadStorageAccess(storeAccess,&
-                               storeIndxNb, storeIndx  ,&
-                               storeTimeNb, storeTime  ,&
-                               storeEpsi  , storeCrit)
+    call resuReadStorageAccess(storeAccess, &
+                               storeIndxNb, storeIndx, &
+                               storeTimeNb, storeTime, &
+                               storeEpsi, storeCrit)
 !
 ! - Prepare datastructure
 !
-    call resuReadPrepareDatastructure(resultName , resultType , lReuse,&
-                                      storeIndxNb, storeTimeNb,&
-                                      storeIndx  , storeTime  ,&
+    call resuReadPrepareDatastructure(resultName, resultType, lReuse, &
+                                      storeIndxNb, storeTimeNb, &
+                                      storeIndx, storeTime, &
                                       storeCreaNb, storePara)
 !
 ! - Create .REFD object and save matrices (dynamic results)
@@ -169,12 +169,12 @@ implicit none
         call getvid(' ', 'MATR_RIGI', scal=matrRigi, nbret=nbOcc)
         if (nbOcc .eq. 0) then
             matrRigi = ' '
-        endif
+        end if
         call getvid(' ', 'MATR_MASS', scal=matrMass, nbret=nbOcc)
         if (nbOcc .eq. 0) then
             matrMass = ' '
-        endif
-    endif
+        end if
+    end if
     call resuReadCreateREFD(resultName, resultType, matrRigi, matrMass)
 !
 ! - Check if fields are allowed for the result
@@ -184,43 +184,43 @@ implicit none
 ! - Read
 !
     if (fileFormat .eq. 'IDEAS') then
-        call lridea(fileUnit   ,&
-                    resultName , resultType ,&
-                    model      , meshAst    ,&
-                    fieldNb    , fieldList  ,&
-                    storeAccess,&
-                    storeIndxNb, storeTimeNb,&
-                    storeIndx  , storeTime  ,&
-                    storeCrit  , storeEpsi  ,&
+        call lridea(fileUnit, &
+                    resultName, resultType, &
+                    model, meshAst, &
+                    fieldNb, fieldList, &
+                    storeAccess, &
+                    storeIndxNb, storeTimeNb, &
+                    storeIndx, storeTime, &
+                    storeCrit, storeEpsi, &
                     storePara)
         fieldStoreNb = storeCreaNb
     else if (fileFormat .eq. 'IDEAS_DS58') then
-        call lect58(fileUnit   ,&
-                    resultName , resultType , meshAst,&
-                    fieldNb    , fieldList  ,&
-                    storeAccess,&
-                    storeIndxNb, storeTimeNb,&
-                    storeIndx  , storeTime  ,&
-                    storeCrit  , storeEpsi)
+        call lect58(fileUnit, &
+                    resultName, resultType, meshAst, &
+                    fieldNb, fieldList, &
+                    storeAccess, &
+                    storeIndxNb, storeTimeNb, &
+                    storeIndx, storeTime, &
+                    storeCrit, storeEpsi)
         fieldStoreNb = storeCreaNb
     else if (fileFormat .eq. 'MED') then
-        call resuReadMed(fileUnit    ,&
-                         resultName  ,&
-                         model       , meshAst     ,&
-                         fieldNb     , fieldList   ,&
-                         storeAccess , storeCreaNb ,&
-                         storeIndxNb , storeIndx   ,&
-                         storeTimeNb , storeTime   ,&
-                         storeEpsi   , storeCrit   ,&
-                         storePara   , fieldStoreNb)
+        call resuReadMed(fileUnit, &
+                         resultName, &
+                         model, meshAst, &
+                         fieldNb, fieldList, &
+                         storeAccess, storeCreaNb, &
+                         storeIndxNb, storeIndx, &
+                         storeTimeNb, storeTime, &
+                         storeEpsi, storeCrit, &
+                         storePara, fieldStoreNb)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Save standard parameters in results datastructure
 !
-    call resuSaveParameters(resultName  , resultType,&
-                            model       , caraElem  , fieldMate    , listLoad,&
+    call resuSaveParameters(resultName, resultType, &
+                            model, caraElem, fieldMate, listLoad, &
                             empiNumePlan, empiSnapNb, empiFieldType)
 !
 ! - Non-linear behaviour management
@@ -229,15 +229,15 @@ implicit none
         call getvtx(' ', 'VERI_VARI', scal=answer, nbret=nbret)
         lVeriVari = answer .eq. 'OUI'
         call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu, lVeriVari)
-    endif
+    end if
 !
 ! - Debug
 !
     if (niv .ge. 2) then
-        call resuReadDebug(resultName,&
-                           fieldNb   , fieldList, fieldStoreNb,&
-                           storePara , storeEpsi, storeCrit)
-    endif
+        call resuReadDebug(resultName, &
+                           fieldNb, fieldList, fieldStoreNb, &
+                           storePara, storeEpsi, storeCrit)
+    end if
 !
 ! - Save title
 !

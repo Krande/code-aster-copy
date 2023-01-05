@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine te0426(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -113,46 +113,46 @@ subroutine te0426(option, nomte)
 !      --------------------------------------------------------------
 !
     do igau = 1, npg1
-        call rcvarc(' ', 'EPSAXX', '+', 'RIGI', igau,&
-                    1, epsi(nbsig*(igau- 1)+1), iret)
-        if (iret .eq. 1) epsi(nbsig*(igau-1)+1)=0.d0
+        call rcvarc(' ', 'EPSAXX', '+', 'RIGI', igau, &
+                    1, epsi(nbsig*(igau-1)+1), iret)
+        if (iret .eq. 1) epsi(nbsig*(igau-1)+1) = 0.d0
 !
-        call rcvarc(' ', 'EPSAYY', '+', 'RIGI', igau,&
-                    1, epsi(nbsig*(igau- 1)+2), iret)
-        if (iret .eq. 1) epsi(nbsig*(igau-1)+2)=0.d0
+        call rcvarc(' ', 'EPSAYY', '+', 'RIGI', igau, &
+                    1, epsi(nbsig*(igau-1)+2), iret)
+        if (iret .eq. 1) epsi(nbsig*(igau-1)+2) = 0.d0
 !
-        call rcvarc(' ', 'EPSAZZ', '+', 'RIGI', igau,&
-                    1, epsi(nbsig*(igau- 1)+3), iret)
-        if (iret .eq. 1) epsi(nbsig*(igau-1)+3)=0.d0
+        call rcvarc(' ', 'EPSAZZ', '+', 'RIGI', igau, &
+                    1, epsi(nbsig*(igau-1)+3), iret)
+        if (iret .eq. 1) epsi(nbsig*(igau-1)+3) = 0.d0
 !
-        call rcvarc(' ', 'EPSAXY', '+', 'RIGI', igau,&
-                    1, epsi(nbsig*(igau- 1)+4), iret)
-        if (iret .eq. 1) epsi(nbsig*(igau-1)+4)=0.d0
-        epsi(nbsig*(igau- 1)+4) = 2.0*epsi(nbsig*(igau- 1)+4)
+        call rcvarc(' ', 'EPSAXY', '+', 'RIGI', igau, &
+                    1, epsi(nbsig*(igau-1)+4), iret)
+        if (iret .eq. 1) epsi(nbsig*(igau-1)+4) = 0.d0
+        epsi(nbsig*(igau-1)+4) = 2.0*epsi(nbsig*(igau-1)+4)
 !
-        call rcvarc(' ', 'EPSAXZ', '+', 'RIGI', igau,&
-                    1, epsi(nbsig*(igau- 1)+5), iret)
-        if (iret .eq. 1) epsi(nbsig*(igau-1)+5)=0.d0
-        epsi(nbsig*(igau- 1)+5) = 2.0*epsi(nbsig*(igau- 1)+5)
+        call rcvarc(' ', 'EPSAXZ', '+', 'RIGI', igau, &
+                    1, epsi(nbsig*(igau-1)+5), iret)
+        if (iret .eq. 1) epsi(nbsig*(igau-1)+5) = 0.d0
+        epsi(nbsig*(igau-1)+5) = 2.0*epsi(nbsig*(igau-1)+5)
 !
-        call rcvarc(' ', 'EPSAYZ', '+', 'RIGI', igau,&
-                    1, epsi(nbsig*(igau- 1)+6), iret)
-        if (iret .eq. 1) epsi(nbsig*(igau-1)+6)=0.d0
-        epsi(nbsig*(igau- 1)+6) = 2.0*epsi(nbsig*(igau- 1)+6)
+        call rcvarc(' ', 'EPSAYZ', '+', 'RIGI', igau, &
+                    1, epsi(nbsig*(igau-1)+6), iret)
+        if (iret .eq. 1) epsi(nbsig*(igau-1)+6) = 0.d0
+        epsi(nbsig*(igau-1)+6) = 2.0*epsi(nbsig*(igau-1)+6)
     end do
 !
 ! ---- CALCUL DU VECTEUR DES CONTRAINTES ANELASTIQUES AUX POINTS
 ! ---- D'INTEGRATION
 !      -------------
-    call sigimc(fami, nno, ndim, nbsig, npg1,&
-                zr(ivf), zr(igeom), instan, zi(imate), repere,&
+    call sigimc(fami, nno, ndim, nbsig, npg1, &
+                zr(ivf), zr(igeom), instan, zi(imate), repere, &
                 epsi, sigi)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES DUES AUX CONTRAINTES ANELASTIQUES
 ! ---- (I.E. BT*SIG_ANELASTIQUES)
 !      ----------------------
-    call bsigmc(nno, ndim, nbsig, npg1, ipoids,&
-                ivf, idfde, zr(igeom), nharm, sigi,&
+    call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
+                ivf, idfde, zr(igeom), nharm, sigi, &
                 bsigma)
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE

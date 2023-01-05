@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
+subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma, &
                   matopa, raide, lqz, solveu)
     implicit none
 #include "asterf_types.h"
@@ -79,14 +79,14 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
 !
     if (abs(ashift) .ge. 1.d0) then
         ashift = 0.95d0
-        valr (1) = 1.d0
-        valr (2) = 0.95d0
+        valr(1) = 1.d0
+        valr(2) = 0.95d0
         call utmess('I+', 'ALGELINE4_94')
         call utmess('I', 'ALGELINE4_96', nr=2, valr=valr)
-    endif
+    end if
 !
-    ashift = - (ashift*fshift)/sqrt(1.d0-ashift*ashift)
-    sigma = dcmplx(ashift,fshift)
+    ashift = -(ashift*fshift)/sqrt(1.d0-ashift*ashift)
+    sigma = dcmplx(ashift, fshift)
 !
 ! --- POUR QZ CALCUL DE LA MATRICE SHIFTEE ET DE SA FACTORISEE INUTILE
     if (lqz) goto 999
@@ -94,7 +94,7 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
 !     --- DECALAGE COMPLEXE ---
     call mtdefs(matopa, raide, 'V', 'C')
     call mtdscr(matopa)
-    nmatra=matopa(1:19)//'.&INT'
+    nmatra = matopa(1:19)//'.&INT'
     call jeveuo(matopa(1:19)//'.&INT', 'E', lmatra)
     constc(1) = dble(sigma*sigma)
     constc(2) = dimag(sigma*sigma)
@@ -105,14 +105,14 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
     typcst(1) = 'C'
     typcst(2) = 'C'
     typcst(3) = 'C'
-    call mtcmbl(3, typcst, constc, nmat, nmatra,&
+    call mtcmbl(3, typcst, constc, nmat, nmatra, &
                 namddl, ' ', 'ELIM=')
 !     --- FACTORISATION DES MATRICES ---
 !
-    base='V'
-    matpre=' '
-    matass=zk24(zi(lmatra+1))
-    call preres(solveu, base, ibid, matpre, matass,&
+    base = 'V'
+    matpre = ' '
+    matass = zk24(zi(lmatra+1))
+    call preres(solveu, base, ibid, matpre, matass, &
                 ibid, 1)
 !
 999 continue

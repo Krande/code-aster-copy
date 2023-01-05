@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine btdbpr(b, d, jacob, nbsig, nbinco,&
+subroutine btdbpr(b, d, jacob, nbsig, nbinco, &
                   btdb)
 !.======================================================================
     implicit none
@@ -55,13 +55,13 @@ subroutine btdbpr(b, d, jacob, nbsig, nbinco,&
 !
     do i = 1, nbinco
         do j = 1, nbsig
-            tab1(j) = jacob*b(j,i)
+            tab1(j) = jacob*b(j, i)
         end do
 !
         do j1 = 1, nbsig
             s = zero
             do j2 = 1, nbsig
-                s = s + tab1(j2)*d(j1,j2)
+                s = s+tab1(j2)*d(j1, j2)
             end do
             tab2(j1) = s
         end do
@@ -69,11 +69,11 @@ subroutine btdbpr(b, d, jacob, nbsig, nbinco,&
         do j1 = 1, i
             s = zero
             do j2 = 1, nbsig
-                s = s + b(j2,j1)*tab2(j2)
+                s = s+b(j2, j1)*tab2(j2)
             end do
 !
-            btdb(i,j1) = btdb(i,j1) + s
-            btdb(j1,i) = btdb(i,j1)
+            btdb(i, j1) = btdb(i, j1)+s
+            btdb(j1, i) = btdb(i, j1)
 !
         end do
     end do

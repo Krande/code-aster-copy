@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx,&
+subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx, &
                   cour, jacp, cosa, sina)
     implicit none
 #include "jeveux.h"
@@ -60,24 +60,24 @@ subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx,&
     dxdk = 0.d0
     dydk = 0.d0
     do i = 1, nno
-        dxdk = dxdk + coor( 2*i-1 ) * dfrdk(i)
-        dydk = dydk + coor( 2*i ) * dfrdk(i)
+        dxdk = dxdk+coor(2*i-1)*dfrdk(i)
+        dydk = dydk+coor(2*i)*dfrdk(i)
     end do
-    jac = sqrt ( dxdk**2 + dydk**2 )
+    jac = sqrt(dxdk**2+dydk**2)
 !
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
-        nomail= zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
-    endif
+    end if
 !
     cosa = dydk/jac
     sina = -dxdk/jac
-    d2xdk = coor(1) + coor(3) - 2.d0 * coor(5)
-    d2ydk = coor(2) + coor(4) - 2.d0 * coor(6)
-    cour = ( dxdk * d2ydk - d2xdk * dydk ) / jac**3
+    d2xdk = coor(1)+coor(3)-2.d0*coor(5)
+    d2ydk = coor(2)+coor(4)-2.d0*coor(6)
+    cour = (dxdk*d2ydk-d2xdk*dydk)/jac**3
     do i = 1, nno
-        dfdx(i) = dfrdk(i) / jac
+        dfdx(i) = dfrdk(i)/jac
     end do
-    jacp = jac * poids
+    jacp = jac*poids
 end subroutine

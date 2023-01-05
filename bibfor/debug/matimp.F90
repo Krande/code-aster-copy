@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,16 +67,16 @@ subroutine matimp(matz, ific, typimz)
 !
 !
     mat19 = matz
-    typimp=typimz
+    typimp = typimz
 !
     call jeveuo(mat19//'.REFA', 'L', vk24=refa)
-    noma=refa(1)(1:8)
-    nonu=refa(2)(1:14)
+    noma = refa(1) (1:8)
+    nonu = refa(2) (1:14)
 !
-    lmd= (refa(11) .eq. 'MATR_DISTR')
+    lmd = (refa(11) .eq. 'MATR_DISTR')
 !
     call dismoi('MATR_HPC', mat19, 'MATR_ASSE', repk=mathpc)
-    lmhpc = mathpc.eq.'OUI'
+    lmhpc = mathpc .eq. 'OUI'
     localOrGhost = ' '
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
@@ -90,123 +90,123 @@ subroutine matimp(matz, ific, typimz)
     else
         call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
         call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
-        jnlogl=0
+        jnlogl = 0
         if (lmhpc) then
             call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
             call asmpi_info(rank=mrank, size=msize)
             rang = to_aster_int(mrank)
             nbproc = to_aster_int(msize)
-        endif
-    endif
-    ASSERT(n1.eq.nsmdi)
+        end if
+    end if
+    ASSERT(n1 .eq. nsmdi)
 !     --- CALCUL DE N
-    n=nsmdi
+    n = nsmdi
 !     --- CALCUL DE NZ
-    nz=smdi(n)
+    nz = smdi(n)
 !
-    ASSERT(nz.le.nsmhc)
+    ASSERT(nz .le. nsmhc)
     call jelira(mat19//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
-        lsym=.true.
-    else if (nvale.eq.2) then
-        lsym=.false.
+        lsym = .true.
+    else if (nvale .eq. 2) then
+        lsym = .false.
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jeveuo(jexnum(mat19//'.VALM', 1), 'L', jvale)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
-    ASSERT(nlong.eq.nz)
-    if (.not.lsym) then
+    ASSERT(nlong .eq. nz)
+    if (.not. lsym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'L', jval2)
         call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong)
-        ASSERT(nlong.eq.nz)
-    endif
+        ASSERT(nlong .eq. nz)
+    end if
 !
     call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=ktyp)
-    ltypr=(ktyp.eq.'R')
+    ltypr = (ktyp .eq. 'R')
 !
 !     --- ENTETES
-    write(ific,*) ' '
-    write(ific,*) '% --------------------------------------------'//&
+    write (ific, *) ' '
+    write (ific, *) '% --------------------------------------------'//&
      &                '----------------------------------------------'
 !     --- ENTETE FORMAT ASTER
-    if ((typimp.eq.' ') .or. (typimp.eq.'ASTER')) then
-        write(ific,*) 'DIMENSION DE LA MATRICE :',n
-        write(ific,*) 'NOMBRE DE TERMES NON NULS (MATRICE SYMETRIQUE) :'&
-     &                ,nz
-        write(ific,*) 'MATRICE A COEEFICIENTS REELS :',ltypr
-        write(ific,*) 'MATRICE SYMETRIQUE :',lsym
-        write(ific,*) 'MATRICE DISTRIBUEE :',lmd
-        write(ific,*) 'MATRICE HPC :',lmhpc
-        if (lmhpc) write(ific,*) 'NUMEROTATION LOCALE AU PROCESSUS :',rang,' / ', nbproc
-        write(ific,*) ' '
+    if ((typimp .eq. ' ') .or. (typimp .eq. 'ASTER')) then
+        write (ific, *) 'DIMENSION DE LA MATRICE :', n
+        write (ific, *) 'NOMBRE DE TERMES NON NULS (MATRICE SYMETRIQUE) :'&
+     &                , nz
+        write (ific, *) 'MATRICE A COEEFICIENTS REELS :', ltypr
+        write (ific, *) 'MATRICE SYMETRIQUE :', lsym
+        write (ific, *) 'MATRICE DISTRIBUEE :', lmd
+        write (ific, *) 'MATRICE HPC :', lmhpc
+        if (lmhpc) write (ific, *) 'NUMEROTATION LOCALE AU PROCESSUS :', rang, ' / ', nbproc
+        write (ific, *) ' '
 !     --- ENTETE FORMAT MATLAB
-    else if (typimp.eq.'MATLAB') then
-        write(ific,*) '% IMPRESSION DE LA MATRICE '//mat19//' AU FORMAT'&
+    else if (typimp .eq. 'MATLAB') then
+        write (ific, *) '% IMPRESSION DE LA MATRICE '//mat19//' AU FORMAT'&
      &                //' MATLAB.'
         if (lmd) then
-            write(ific,*) '% 0- FUSIONNER LES FICHIERS PROVENANT DES'//&
+            write (ific, *) '% 0- FUSIONNER LES FICHIERS PROVENANT DES'//&
      &                  ' DIFFERENTS PROCESSEURS (MATR_DISTRIBUEE).'
-        endif
-        write(ific,*) '% 1- COPIER DANS UN FICHIER mat.dat.'
-        write(ific,*) '% 2- CHARGER DANS MATLAB OU OCTAVE PAR :'
-        write(ific,*) '% 2-1 >> load -ascii mat.dat;'
-        write(ific,*) '% 2-2 >> A=spconvert(mat);'
-        write(ific,*) ' '
+        end if
+        write (ific, *) '% 1- COPIER DANS UN FICHIER mat.dat.'
+        write (ific, *) '% 2- CHARGER DANS MATLAB OU OCTAVE PAR :'
+        write (ific, *) '% 2-1 >> load -ascii mat.dat;'
+        write (ific, *) '% 2-2 >> A=spconvert(mat);'
+        write (ific, *) ' '
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !     ------------------------------------------------
 !     IMPRESSION DES TERMES DE LA MATRICE
 !     ------------------------------------------------
-    if ((typimp.eq.' ') .or. (typimp.eq.'ASTER')) write(ific, 1003) 'ILIGL', 'JCOLL', 'VALEUR'
-    jcoll=1
+    if ((typimp .eq. ' ') .or. (typimp .eq. 'ASTER')) write (ific, 1003) 'ILIGL', 'JCOLL', 'VALEUR'
+    jcoll = 1
     do kterm = 1, nz
 !
 !       --- PARTIE TRIANGULAIRE SUPERIEURE
-        if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
-        iligl=zi4(jsmhc-1+kterm)
+        if (smdi(jcoll) .lt. kterm) jcoll = jcoll+1
+        iligl = zi4(jsmhc-1+kterm)
         if (lmd) then
-            iligg=zi(jnlogl+iligl-1)
-            jcolg=zi(jnlogl+jcoll-1)
+            iligg = zi(jnlogl+iligl-1)
+            jcolg = zi(jnlogl+jcoll-1)
         else
-            iligg=iligl
-            jcolg=jcoll
-        endif
-        if ((.not.lsym) .and. (iligg.ge.jcolg)) then
-            coltmp=jcolg
-            jcolg=iligg
-            iligg=coltmp
-        endif
+            iligg = iligl
+            jcolg = jcoll
+        end if
+        if ((.not. lsym) .and. (iligg .ge. jcolg)) then
+            coltmp = jcolg
+            jcolg = iligg
+            iligg = coltmp
+        end if
         if (ltypr) then
-            write(ific,1001) iligg,jcolg,zr(jvale-1+kterm)
+            write (ific, 1001) iligg, jcolg, zr(jvale-1+kterm)
         else
-            write(ific,1002) iligg,jcolg,dble(zc(jvale-1+kterm)),&
-            dimag(zc(jvale-1+kterm))
-        endif
+            write (ific, 1002) iligg, jcolg, dble(zc(jvale-1+kterm)), &
+                dimag(zc(jvale-1+kterm))
+        end if
 !
 !        --- PARTIE TRIANGULAIRE INFERIEURE
-        if ((.not.lsym) .and. (iligg.ne.jcolg)) then
+        if ((.not. lsym) .and. (iligg .ne. jcolg)) then
             if (ltypr) then
-                write(ific,1001) jcolg,iligg,zr(jval2-1+kterm)
+                write (ific, 1001) jcolg, iligg, zr(jval2-1+kterm)
             else
-                write(ific,1002) jcolg,iligg,dble(zc(jval2-1+kterm)),&
-                dimag(zc(jval2-1+kterm))
-            endif
-        endif
+                write (ific, 1002) jcolg, iligg, dble(zc(jval2-1+kterm)), &
+                    dimag(zc(jval2-1+kterm))
+            end if
+        end if
 !
 !       --- SI 'MATLAB' ET SYMETRIQUE , PSEUDO PARTIE INFERIEURE
-        if (lsym .and. (typimp.eq.'MATLAB') .and. (iligg.ne.jcolg)) then
+        if (lsym .and. (typimp .eq. 'MATLAB') .and. (iligg .ne. jcolg)) then
             if (ltypr) then
-                write(ific,1001) jcolg,iligg,zr(jvale-1+kterm)
+                write (ific, 1001) jcolg, iligg, zr(jvale-1+kterm)
             else
-                write(ific,1002) jcolg,iligg,dble(zc(jvale-1+kterm)),&
-                dimag(zc(jvale-1+kterm))
-            endif
-        endif
+                write (ific, 1002) jcolg, iligg, dble(zc(jvale-1+kterm)), &
+                    dimag(zc(jvale-1+kterm))
+            end if
+        end if
 !
     end do
 !
@@ -216,66 +216,66 @@ subroutine matimp(matz, ific, typimz)
 !     -- IMPRESSION DES CARACTERISTIQUES DES EQUATIONS :
 !     --------------------------------------------------
 !
-    if ((typimp.eq.' ') .or. (typimp.eq.'ASTER')) then
-        write(ific,*) ' '
-        write(ific,*) 'DESCRIPTION DES EQUATIONS :'
-        write(ific,*) ' '
-        write(ific,*) '   NUM_EQUA NOEUD    CMP'
+    if ((typimp .eq. ' ') .or. (typimp .eq. 'ASTER')) then
+        write (ific, *) ' '
+        write (ific, *) 'DESCRIPTION DES EQUATIONS :'
+        write (ific, *) ' '
+        write (ific, *) '   NUM_EQUA NOEUD    CMP'
         call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
         call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
         call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1)
-        nomgd=refn(2)(1:8)
+        nomgd = refn(2) (1:8)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-        ASSERT(n1.eq.2*n)
+        ASSERT(n1 .eq. 2*n)
         do k = 1, n
-            nuno=deeq(2*(k-1)+1)
-            nucmp=deeq(2*(k-1)+2)
+            nuno = deeq(2*(k-1)+1)
+            nucmp = deeq(2*(k-1)+2)
             if (lmhpc) then
-                if (zi(jprddl - 1 + k) .eq. rang) then
-                    localOrGhost='DDL_LOCAL'
+                if (zi(jprddl-1+k) .eq. rang) then
+                    localOrGhost = 'DDL_LOCAL'
                 else
-                    localOrGhost='DDL_GHOST'
-                endif
-            endif
+                    localOrGhost = 'DDL_GHOST'
+                end if
+            end if
             if (nuno .gt. 0 .and. nucmp .gt. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
-                nocmp=zk8(jcmp-1+nucmp)
-                write(ific,1004) k,nono,nocmp,localOrGhost
-            else if (nucmp.lt.0) then
-                ASSERT(nuno.gt.0)
+                nocmp = zk8(jcmp-1+nucmp)
+                write (ific, 1004) k, nono, nocmp, localOrGhost
+            else if (nucmp .lt. 0) then
+                ASSERT(nuno .gt. 0)
                 call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
-                nocmp=zk8(jcmp-1-nucmp)
+                nocmp = zk8(jcmp-1-nucmp)
                 if (zi(jdelg-1+k) .eq. -1) then
-                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR1 BLOCAGE'
+                    write (ific, 1005) k, nono, nocmp, localOrGhost, ' LAGR1 BLOCAGE'
                 else
-                    ASSERT(zi(jdelg-1+k).eq.-2)
-                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR2 BLOCAGE'
-                endif
+                    ASSERT(zi(jdelg-1+k) .eq. -2)
+                    write (ific, 1005) k, nono, nocmp, localOrGhost, ' LAGR2 BLOCAGE'
+                end if
             else
-                ASSERT(nuno.eq.0 .and. nucmp.eq.0)
-                nono=' '
-                nocmp=' '
+                ASSERT(nuno .eq. 0 .and. nucmp .eq. 0)
+                nono = ' '
+                nocmp = ' '
                 if (zi(jdelg-1+k) .eq. -1) then
-                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR1 RELATION LINEAIRE '
+                    write (ific, 1005) k, nono, nocmp, localOrGhost, ' LAGR1 RELATION LINEAIRE '
                 else
-                    ASSERT(zi(jdelg-1+k).eq.-2)
-                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR2 RELATION LINEAIRE '
-                endif
-            endif
+                    ASSERT(zi(jdelg-1+k) .eq. -2)
+                    write (ific, 1005) k, nono, nocmp, localOrGhost, ' LAGR2 RELATION LINEAIRE '
+                end if
+            end if
         end do
-    endif
+    end if
 !
 !     --- FIN IMPRESSION
-    write(ific,*) '% --------------------------------------------'//&
+    write (ific, *) '% --------------------------------------------'//&
      &              '----------------------------------------------'
 !
 !
 !
-    1001 format(2i12,1(1x,1pe23.15))
-    1002 format(2i12,2(1x,1pe23.15,1pe23.15))
-    1003 format(3a12,1x,1a14)
-    1004 format(i12,2(1x,a8),a10)
-    1005 format(i12,2(1x,a8),a10,a)
+1001 format(2i12, 1(1x, 1pe23.15))
+1002 format(2i12, 2(1x, 1pe23.15, 1pe23.15))
+1003 format(3a12, 1x, 1a14)
+1004 format(i12, 2(1x, a8), a10)
+1005 format(i12, 2(1x, a8), a10, a)
 !
     call jedema()
 end subroutine

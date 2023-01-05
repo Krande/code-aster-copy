@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calsvd(nm, m, n, a, w,&
+subroutine calsvd(nm, m, n, a, w, &
                   matu, u, matv, v, ierr)
     implicit none
 !
@@ -83,10 +83,10 @@ subroutine calsvd(nm, m, n, a, w,&
     integer(kind=4) :: ierr1
     integer :: nm1, nm2, ldvt, i, j, lwork
     character(len=1) :: code
-    parameter (nm1=20)
+    parameter(nm1=20)
     real(kind=8) :: vt(nm1*nm1)
 !     JE DOUBLE LA TAILLE DE WORK POUR DE MEILLEURS PERFS :
-    real(kind=8) :: work(2*(7*nm1**2 + 4*nm1))
+    real(kind=8) :: work(2*(7*nm1**2+4*nm1))
     integer(kind=4) :: iwork(8*nm1)
     aster_logical :: alloc, safe
     integer(kind=4), pointer :: viwork(:) => null()
@@ -98,7 +98,7 @@ subroutine calsvd(nm, m, n, a, w,&
 !
     call matfpe(-1)
 !
-    safe=.true.
+    safe = .true.
 !     LE BOOLEEN "SAFE" PERMET DE BASCULER ENTRE LES 2 ROUTINES LAPACK
 !     SAFE=.TRUE.  => DGESVD
 !     SAFE=.FALSE. => DGESDD
@@ -109,74 +109,74 @@ subroutine calsvd(nm, m, n, a, w,&
 !     1) LA ROUTINE CALSVD UTLISE V ET DGESDD UTILISE SA TRANSPOSEE: VT
 ! ----------------------------------------------------------------------
 !
-    nm2=max(n,m)
-    ldvt=nm2
-    lwork=2*(7*nm2**2 + 4*nm2)
+    nm2 = max(n, m)
+    ldvt = nm2
+    lwork = 2*(7*nm2**2+4*nm2)
 !
 !
 !     -- POUR NE PAS ALLOUER D'OBJETS JEVEUX POUR LES PETITS CAS :
 !     ------------------------------------------------------------
     if (nm1 .ge. nm2) then
-        alloc=.false.
+        alloc = .false.
     else
-        alloc=.true.
+        alloc = .true.
         AS_ALLOCATE(vr=vvt, size=nm2*nm2)
         AS_ALLOCATE(vr=vwork, size=lwork)
         AS_ALLOCATE(vi4=viwork, size=8*nm2)
-    endif
+    end if
 !
     if (matu .or. matv) then
-        code='A'
+        code = 'A'
     else
-        code='N'
-    endif
+        code = 'N'
+    end if
 !
 !     -- APPEL A LA ROUTINE LAPACK (DGESDD):
 !     ------------------------------------------------------------
-    if (.not.alloc) then
+    if (.not. alloc) then
         if (safe) then
-            call dgesvd(code, code, m, n, a,&
-                        nm, w, u, nm, vt,&
+            call dgesvd(code, code, m, n, a, &
+                        nm, w, u, nm, vt, &
                         ldvt, work, lwork, ierr1)
         else
-            call dgesdd(code, m, n, a, nm,&
-                        w, u, nm, vt, ldvt,&
+            call dgesdd(code, m, n, a, nm, &
+                        w, u, nm, vt, ldvt, &
                         work, lwork, iwork, ierr1)
-        endif
+        end if
         if (matv) then
             do i = 1, nm
                 do j = 1, n
-                    v(i,j)=vt((i-1)*ldvt+j)
+                    v(i, j) = vt((i-1)*ldvt+j)
                 end do
             end do
-        endif
+        end if
 !
     else
         if (safe) then
-            call dgesvd(code, code, m, n, a,&
-                        nm, w, u, nm, vvt,&
+            call dgesvd(code, code, m, n, a, &
+                        nm, w, u, nm, vvt, &
                         ldvt, vwork, lwork, ierr1)
         else
-            call dgesdd(code, m, n, a, nm,&
-                        w, u, nm, vvt, ldvt,&
+            call dgesdd(code, m, n, a, nm, &
+                        w, u, nm, vvt, ldvt, &
                         vwork, lwork, viwork, ierr1)
-        endif
+        end if
         if (matv) then
             do i = 1, nm
                 do j = 1, n
-                    v(i,j)=vvt((i-1)*ldvt+j)
+                    v(i, j) = vvt((i-1)*ldvt+j)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
-    ierr=ierr1
+    ierr = ierr1
 !
     if (alloc) then
         AS_DEALLOCATE(vr=vvt)
         AS_DEALLOCATE(vr=vwork)
         AS_DEALLOCATE(vi4=viwork)
-    endif
+    end if
 !
 !
     call matfpe(1)

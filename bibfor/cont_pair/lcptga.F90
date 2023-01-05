@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcptga(elem_dime, tria_coor , gauss_family,&
-                  nb_gauss , gauss_coor, gauss_weight)
+subroutine lcptga(elem_dime, tria_coor, gauss_family, &
+                  nb_gauss, gauss_coor, gauss_weight)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
@@ -27,10 +27,10 @@ implicit none
 !
 !
     integer, intent(in) :: elem_dime
-    real(kind=8), intent(in) :: tria_coor(2,3)
+    real(kind=8), intent(in) :: tria_coor(2, 3)
     character(len=8) :: gauss_family
     integer, intent(out) :: nb_gauss
-    real(kind=8), intent(out) :: gauss_coor(2,12)
+    real(kind=8), intent(out) :: gauss_coor(2, 12)
     real(kind=8), intent(out) :: gauss_weight(12)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,73 +51,73 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer ::i_gauss, i_dime, nb_node, model_ndim
-    real(kind=8) :: gauxx_coor(24), gauxx_weight(12), segm_coor(2,2)
+    real(kind=8) :: gauxx_coor(24), gauxx_weight(12), segm_coor(2, 2)
     real(kind=8) :: area
     real(kind=8) :: xpgpa(2), xpgpr(2)
     character(len=8) :: eleref
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model_ndim = elem_dime - 1
-    nb_gauss   = 0
+    model_ndim = elem_dime-1
+    nb_gauss = 0
     do i_dime = 1, model_ndim
-        gauss_coor(i_dime,1:12) = 0.d0
+        gauss_coor(i_dime, 1:12) = 0.d0
     end do
     gauss_weight(1:12) = 0.d0
 !
 ! - Select reference geometry for auxiliary parametric space
 !
-    if (model_ndim.eq. 2) then
-        eleref  = 'TR3'
+    if (model_ndim .eq. 2) then
+        eleref = 'TR3'
         nb_node = 3
     elseif (model_ndim .eq. 1) then
-        eleref  = 'SE2'
+        eleref = 'SE2'
         nb_node = 2
-        segm_coor(1,1) = tria_coor(1,1)
-        segm_coor(2,1) = tria_coor(2,1)
-        segm_coor(1,2) = tria_coor(1,2)
-        segm_coor(2,2) = tria_coor(2,2)
+        segm_coor(1, 1) = tria_coor(1, 1)
+        segm_coor(2, 1) = tria_coor(2, 1)
+        segm_coor(1, 2) = tria_coor(1, 2)
+        segm_coor(2, 2) = tria_coor(2, 2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Get integration scheme in auxiliary parametric space
 !
-    call elraga(eleref      , gauss_family, model_ndim, nb_gauss, gauxx_coor,&
+    call elraga(eleref, gauss_family, model_ndim, nb_gauss, gauxx_coor, &
                 gauxx_weight)
 !
 ! - Surface of real element
 !
-    if (model_ndim.eq. 2) then
-        area = (tria_coor(1,1)*tria_coor(2,2)-tria_coor(1,2)*tria_coor(2,1)+&
-                tria_coor(1,2)*tria_coor(2,3)-tria_coor(1,3)*tria_coor(2,2)+&
-                tria_coor(1,3)*tria_coor(2,1)-tria_coor(1,1)*tria_coor(2,3))*1.d0/2.d0
+    if (model_ndim .eq. 2) then
+        area = (tria_coor(1, 1)*tria_coor(2, 2)-tria_coor(1, 2)*tria_coor(2, 1)+ &
+                tria_coor(1, 2)*tria_coor(2, 3)-tria_coor(1, 3)*tria_coor(2, 2)+ &
+                tria_coor(1, 3)*tria_coor(2, 1)-tria_coor(1, 1)*tria_coor(2, 3))*1.d0/2.d0
         area = abs(area)
     else
-        area = tria_coor(1,2)-tria_coor(1,1)
+        area = tria_coor(1, 2)-tria_coor(1, 1)
         area = abs(area)
     end if
 !
 ! - Back in element parametric space
 !
     do i_gauss = 1, nb_gauss
-        do i_dime = 1,model_ndim
-            xpgpa(i_dime)=gauxx_coor(model_ndim*(i_gauss-1)+i_dime)
+        do i_dime = 1, model_ndim
+            xpgpa(i_dime) = gauxx_coor(model_ndim*(i_gauss-1)+i_dime)
         end do
         if (model_ndim .eq. 2) then
-            call reerel(eleref, nb_node, 2, tria_coor, xpgpa,&
+            call reerel(eleref, nb_node, 2, tria_coor, xpgpa, &
                         xpgpr)
         else
-            call reerel(eleref, nb_node, 2, segm_coor, xpgpa,&
+            call reerel(eleref, nb_node, 2, segm_coor, xpgpa, &
                         xpgpr)
-        endif
-        do i_dime=1,model_ndim
-            gauss_coor(i_dime,i_gauss)=xpgpr(i_dime)
+        end if
+        do i_dime = 1, model_ndim
+            gauss_coor(i_dime, i_gauss) = xpgpr(i_dime)
         end do
-        if (eleref  .eq. 'TR3') then
-            gauss_weight(i_gauss)=2*area*gauxx_weight(i_gauss)
+        if (eleref .eq. 'TR3') then
+            gauss_weight(i_gauss) = 2*area*gauxx_weight(i_gauss)
         elseif (eleref .eq. 'SE2') then
-            gauss_weight(i_gauss)=1/2.d0*area*gauxx_weight(i_gauss)
+            gauss_weight(i_gauss) = 1/2.d0*area*gauxx_weight(i_gauss)
         else
             ASSERT(.false.)
         end if

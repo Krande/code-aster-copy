@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine spect1(casint, nomu, spectr, ispect, base,&
-                  vite, nuor, imodi, imodf, nbm,&
+subroutine spect1(casint, nomu, spectr, ispect, base, &
+                  vite, nuor, imodi, imodf, nbm, &
                   nbpf, nomzon, vmoyzi, vmoyto)
     implicit none
 !     PROJECTION D UN SPECTRE DE TURBULENCE DE TYPE "LONGUEUR DE
@@ -93,7 +93,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     real(kind=8) :: rom, rov, sx, tauxv, tol, vitezi, x1
     real(kind=8) :: x2, xlc, xnu, epsi
 !-----------------------------------------------------------------------
-    data depla   /'DX      ','DY      ','DZ      '/
+    data depla/'DX      ', 'DY      ', 'DZ      '/
 !-----------------------------------------------------------------------
     call jemarq()
     epsi = r8prem()
@@ -118,7 +118,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     itypfl = zi(ifsic)
     if (itypfl .ne. 1) then
         call utmess('F', 'MODELISA7_4')
-    endif
+    end if
 !
 ! --- 1.3.RECUPERATION DE NOMS DE CONCEPTS PAR INDIRECTION
 !
@@ -135,9 +135,9 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
         if (nomzon .eq. zk8(ifsvk+3+iz)) then
             profvn = nomzon
             goto 11
-        endif
+        end if
     end do
- 11 continue
+11  continue
 !
 !
 ! --- 2.ACCES AU PROFIL DE VITESSE
@@ -153,7 +153,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 ! --- 2.2.RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !
     call jelira(profvn, 'LONUTI', nbp)
-    nbp = nbp / 2
+    nbp = nbp/2
 !
 !
 ! --- 3.RECUPERATION DU DIAMETRE EXTERIEUR DU TUBE ---
@@ -182,35 +182,35 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             x1 = zr(ipvn+ik-1)
             n1 = ik
             goto 51
-        endif
+        end if
     end do
- 51 continue
+51  continue
 !
     do ik = nbp, 1, -1
         if (abs(zr(ipvn+nbp+ik-1)) .gt. epsi) then
             x2 = zr(ipvn+ik-1)
             n2 = ik
             goto 61
-        endif
+        end if
     end do
- 61 continue
+61  continue
 !
 ! --- 5.2.CREATION D UN PROFIL DE VITESSE NORMALISE POUR
 ! ---     LE CALCUL DES LONGUEURS DE CORRELATION GENERALISEES
 !
     call wkvect('&&SPECT1.TEMP.VITN', 'V V R', nbp*2, ivitn)
     do i = n1, n2
-        zr(ivitn+i-1+nbp) = zr(ipvn+i-1+nbp) / vmoyzi
+        zr(ivitn+i-1+nbp) = zr(ipvn+i-1+nbp)/vmoyzi
     end do
     do i = 1, nbp
-        zr(ivitn+i-1 ) = zr(ipvn+i-1 )
+        zr(ivitn+i-1) = zr(ipvn+i-1)
     end do
 !
 ! --- 5.3.CREATION D UN VECTEUR DE TRAVAIL POUR STOCKER
 ! ---     LES LONGUEURS DE CORRELATION GENERALISEES
 !
     dim = (imodf-imodi)+1
-    nbfonc = (dim* (dim+1))/2
+    nbfonc = (dim*(dim+1))/2
     call wkvect('&&SPECT1.TEMP.LC2', 'V V R', nbfonc, ilc2)
 !
 ! --- 5.4 CREATION ET REMPLISSAGE DU VECTEUR DE TRAVAIL .DEFM ---
@@ -226,56 +226,56 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
         do ide = 1, 3
             if (depla(ide) .eq. nomcmp) then
                 idep = ide
-            endif
+            end if
         end do
     else
-        nbcmp=3
-    endif
+        nbcmp = 3
+    end if
 !
     do icmp = 1, nbcmp
         nomcha(1:13) = base(1:8)//'.C01.'
         nomcha(17:24) = '001.VALE'
         if (tout .eq. 'NON') then
             do im = 1, nbm
-                write(nomcha(14:16),'(I3.3)') nuor(im)
+                write (nomcha(14:16), '(I3.3)') nuor(im)
                 call jeveuo(nomcha, 'L', icha)
                 do ip = 1, nbp
-                    zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+idep- 1)
+                    zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+idep-1)
                 end do
                 call permnoe(maillage, zr(idefm+nbp*(im-1)), 1, nbp, 1)
                 call jelibe(nomcha)
             end do
         else
             do im = 1, nbm
-                write(nomcha(14:16),'(I3.3)') nuor(im)
+                write (nomcha(14:16), '(I3.3)') nuor(im)
                 call jeveuo(nomcha, 'L', icha)
                 do ip = 1, nbp
-                    zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+icmp- 1)
+                    zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+icmp-1)
                 end do
                 call permnoe(maillage, zr(idefm+nbp*(im-1)), 1, nbp, 1)
                 call jelibe(nomcha)
             end do
-        endif
+        end if
 !
         do jm = imodi, imodf
             ideb = jm
             if (casint) ideb = imodi
             do im = ideb, jm
-                jmb = jm - imodi + 1
-                imb = im - imodi + 1
-                kk = (jmb* (jmb-1))/2 + imb
-                zr(ilc2+kk-1) = zr(ilc2+kk-1)+spect2(x1,x2,xlc,zr( ivitn), zr(irhoe),zr(idefm),sp&
-                                &ect4,tol,ier, r1,err, nbp,im,jm)
+                jmb = jm-imodi+1
+                imb = im-imodi+1
+                kk = (jmb*(jmb-1))/2+imb
+              zr(ilc2+kk-1) = zr(ilc2+kk-1)+spect2(x1, x2, xlc, zr(ivitn), zr(irhoe), zr(idefm), sp&
+                                  &ect4, tol, ier, r1, err, nbp, im, jm)
 !
                 if (ier .ne. 0) then
-                    vali(1)=nuor(jm)
-                    vali(2)=nuor(im)
-                    valx(1)=zr(ilc2+kk-1)
-                    valx(2)=r1
-                    valx(3)=err
-                    call utmess('A', 'MODELISA7_7', ni=2, vali=vali, nr=3,&
+                    vali(1) = nuor(jm)
+                    vali(2) = nuor(im)
+                    valx(1) = zr(ilc2+kk-1)
+                    valx(2) = r1
+                    valx(3) = err
+                    call utmess('A', 'MODELISA7_7', ni=2, vali=vali, nr=3, &
                                 valr=valx)
-                endif
+                end if
             end do
         end do
     end do
@@ -309,12 +309,12 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             fr = zr(ivale+ifre-1)
             fr = (fr*phie)/vitezi
             fr = dble(abs(fr))
-            sx = (fr/frc)** (beta/2.d0)
-            sx = (1.d0-sx)* (1.d0-sx) + 4.d0*eps*eps*sx
+            sx = (fr/frc)**(beta/2.d0)
+            sx = (1.d0-sx)*(1.d0-sx)+4.d0*eps*eps*sx
             zr(lwr+ifre-1) = phi0/sx
         end do
 !
-    else if (ispect.eq.2) then
+    else if (ispect .eq. 2) then
 !
         frc = zr(irsp+1)
         phi0 = zr(irsp+2)
@@ -324,11 +324,11 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             fr = zr(ivale+ifre-1)
             fr = (fr*phie)/vitezi
             fr = dble(abs(fr))
-            sx = phi0/ (1.d0+ (fr/frc)**beta)
+            sx = phi0/(1.d0+(fr/frc)**beta)
             zr(lwr+ifre-1) = sx
         end do
 !
-    else if (ispect.eq.3) then
+    else if (ispect .eq. 3) then
 !
         do ifre = 1, nbpf
             fr = zr(ivale+ifre-1)
@@ -347,21 +347,21 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             else
                 phi0 = phi02
                 beta = beta2
-            endif
+            end if
 !
-            sx = phi0/ (fr**beta)
+            sx = phi0/(fr**beta)
             zr(lwr+ifre-1) = sx
         end do
 !
-    else if (ispect.eq.4) then
+    else if (ispect .eq. 4) then
 !
         rom = 0.d0
         ic = 0
         do ii = 1, nbp
             if (abs(zr(ipvn+nbp+ii-1)) .gt. epsi) then
-                rom = rom + zr(irhoe+nbp+ii-1)
-                ic = ic + 1
-            endif
+                rom = rom+zr(irhoe+nbp+ii-1)
+                ic = ic+1
+            end if
         end do
 !
         rom = rom/dble(ic)
@@ -377,11 +377,11 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
             fr = zr(ivale+ifre-1)
             fr = (fr*phie)/vitezi
             fr = dble(abs(fr))
-            sx = phi0/ ((fr**beta)* (rov**gamma))
+            sx = phi0/((fr**beta)*(rov**gamma))
             zr(lwr+ifre-1) = sx
         end do
 !
-    endif
+    end if
 !
 ! --- 6.2.3.CALCUL DES INTERSPECTRES
 !
@@ -392,25 +392,25 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
         ideb = im2
         if (casint) ideb = imodi
         do im1 = ideb, im2
-            ij = ij + 1
+            ij = ij+1
             call jeveuo(jexnum(chvale, ij), 'E', ivale)
             call jelira(jexnum(chvale, ij), 'LONMAX', nbval)
 !
-            im2b = im2 - imodi + 1
-            im1b = im1 - imodi + 1
-            kk = im2b* (im2b-1)/2 + im1b
+            im2b = im2-imodi+1
+            im1b = im1-imodi+1
+            kk = im2b*(im2b-1)/2+im1b
 !
             do il = 1, nbpf
                 if (nbval .eq. nbpf) then
-                    zr(ivale+il-1) = zr(ivale+il-1) + 0.25d0*phie* phie*phie*vitezi* vitezi*dble(&
-                                     &abs(vitezi))* zr(ilc2+kk-1)*zr(lwr+il-1)
+                    zr(ivale+il-1) = zr(ivale+il-1)+0.25d0*phie*phie*phie*vitezi*vitezi*dble(&
+                                     &abs(vitezi))*zr(ilc2+kk-1)*zr(lwr+il-1)
                 else
-                    zr(ivale+2* (il-1)) = zr(&
-                                          ivale+2* (il-1)) + 0.25d0*phie*phie*phie*vitezi* vitezi&
-                                          &*dble(abs( vitezi))* zr(ilc2+kk-1)*zr(lwr+il-1&
-                                          )
-                    zr(ivale+2* (il-1)+1) = 0.d0
-                endif
+                    zr(ivale+2*(il-1)) = zr( &
+                                         ivale+2*(il-1))+0.25d0*phie*phie*phie*vitezi*vitezi&
+                                        &*dble(abs(vitezi))*zr(ilc2+kk-1)*zr(lwr+il-1 &
+                                                                             )
+                    zr(ivale+2*(il-1)+1) = 0.d0
+                end if
             end do
         end do
     end do

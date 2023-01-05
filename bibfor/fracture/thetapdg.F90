@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,22 +70,22 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
     dtdm = 0.d0
 !
 !-- Calcul de theta_0, s et t au point de Gauss
-    do i=1, nno
-        th0 = th0 + ff(i)*zr(ithet-1+6*(i-1)+1)
-        s = s + ff(i)*zr(ithet-1+6*(i-1)+5)
-        do j=1, ndim
-            t(j) = t(j) + ff(i)*zr(ithet-1+6*(i-1)+j+1)
+    do i = 1, nno
+        th0 = th0+ff(i)*zr(ithet-1+6*(i-1)+1)
+        s = s+ff(i)*zr(ithet-1+6*(i-1)+5)
+        do j = 1, ndim
+            t(j) = t(j)+ff(i)*zr(ithet-1+6*(i-1)+j+1)
         end do
     end do
 !
 !-- Calcul de grad(theta_0), grad(s) et grad(t) au point de Gauss
     do k = 1, ndim
-       do i=1, nno
-           gradth0(k) = gradth0(k) + dfdi(i, k)*zr(ithet-1+6*(i-1)+1)
-           grads(k) = grads(k) + dfdi(i,k)*zr(ithet-1+6*(i-1)+5)
-           do j=1, ndim
-               gradt(j,k) = gradt(j,k) + dfdi(i, k)*zr(ithet-1+6*(i-1)+j+1)
-           end do
+        do i = 1, nno
+            gradth0(k) = gradth0(k)+dfdi(i, k)*zr(ithet-1+6*(i-1)+1)
+            grads(k) = grads(k)+dfdi(i, k)*zr(ithet-1+6*(i-1)+5)
+            do j = 1, ndim
+                gradt(j, k) = gradt(j, k)+dfdi(i, k)*zr(ithet-1+6*(i-1)+j+1)
+            end do
         end do
     end do
 !
@@ -106,19 +106,19 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
 !
 !------ Calcul de grad(theta) "analytique" au point de Gauss
 !-------Stockage de theta dans la 4ème colonne
-        do i=1, ndim
-            dtdm(i,4) = gam*th0*t(i)
-            do j=1, ndim
-                dtdm(i,j) = t(i)*(dgam*th0*grads(j) + gam*gradth0(j)) + gam*th0*gradt(i, j)
-            enddo
-        enddo
+        do i = 1, ndim
+            dtdm(i, 4) = gam*th0*t(i)
+            do j = 1, ndim
+                dtdm(i, j) = t(i)*(dgam*th0*grads(j)+gam*gradth0(j))+gam*th0*gradt(i, j)
+            end do
+        end do
 !
     else if (discr == "LINEAIRE") then
 !
 !       Longueur de la fissure
         xl = zr(ithet-1+6*(1-1)+6)
 !
-        do i=1, nno
+        do i = 1, nno
 !
 !---------- Récupération des asbcisses curvilignes pour les noeuds du fond
 !---------- restreint a la foncction de forme courante
@@ -129,45 +129,45 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
 !
 !---------- Recherche de la valeur de l'abscisse curviligne normalisée
 !---------- pour le projeté d'un noeud du maillage
-            if(sno  .ge. s0 .and. sno  .le. s1 .and. s0 .ne. s1) then
-                eval = (sno - s0) / (s1 - s0)
-            elseif (sno  .ge. s1 .and. sno  .le. s2) then
-                eval = 1.d0 - ((sno - s1) / (s2 - s1))
+            if (sno .ge. s0 .and. sno .le. s1 .and. s0 .ne. s1) then
+                eval = (sno-s0)/(s1-s0)
+            elseif (sno .ge. s1 .and. sno .le. s2) then
+                eval = 1.d0-((sno-s1)/(s2-s1))
 !---------- Cas fond fermé
-            elseif (s0 .gt. s1 .and. sno .ge. s0 ) then
-                eval = (sno - s0) / (xl - s0)
+            elseif (s0 .gt. s1 .and. sno .ge. s0) then
+                eval = (sno-s0)/(xl-s0)
             else
                 eval = 0.d0
-            endif
+            end if
 !
 !---------  Calcul de grad(theta) au point de Gauss
 !---------- Stockage de theta dans la 4ème colonne
-            do j = 1 , ndim
-                dtdm(j,4) = dtdm(j,4) + ff(i)*(eval*zr(ithet-1+6*(i-1)+1)* &
-                                                    zr(ithet-1+6*(i-1)+j+1))
+            do j = 1, ndim
+                dtdm(j, 4) = dtdm(j, 4)+ff(i)*(eval*zr(ithet-1+6*(i-1)+1)* &
+                                               zr(ithet-1+6*(i-1)+j+1))
                 do k = 1, ndim
-                    dtdm(j,k) = dtdm(j,k) + dfdi(i,k)*(eval*zr(ithet-1+6*(i-1)+1)* &
-                                                            zr(ithet-1+6*(i-1)+j+1))
-                enddo
-            enddo
+                    dtdm(j, k) = dtdm(j, k)+dfdi(i, k)*(eval*zr(ithet-1+6*(i-1)+1)* &
+                                                        zr(ithet-1+6*(i-1)+j+1))
+                end do
+            end do
         end do
 !
     else if (discr == "2D") then
 !
 !------ Calcul de grad(theta) "analytique" au point de Gauss
 !-------Stockage de theta dans la 4ème colonne
-        do i=1, ndim
-            dtdm(i,4) = th0*t(i)
-            do j=1, ndim
-                dtdm(i,j) = t(i)*gradth0(j) + th0*gradt(i,j)
-            enddo
-        enddo
+        do i = 1, ndim
+            dtdm(i, 4) = th0*t(i)
+            do j = 1, ndim
+                dtdm(i, j) = t(i)*gradth0(j)+th0*gradt(i, j)
+            end do
+        end do
 !
     else
 !
         ASSERT(ASTER_FALSE)
 !
-    endif
+    end if
 
 !
 end subroutine

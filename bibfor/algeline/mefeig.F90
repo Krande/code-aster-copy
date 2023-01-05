@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefeig(ndim, nbmod, matm, matr, mata,&
-                  fre, ksi, mavr, alfr, alfi,&
+subroutine mefeig(ndim, nbmod, matm, matr, mata, &
+                  fre, ksi, mavr, alfr, alfi, &
                   mat1, mavi, w, z, ind)
     implicit none
 !
@@ -95,18 +95,18 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 !
     do i = 1, nbmod
         do j = 1, nbmod
-            mat1(i,j) = matm(i,j)
-            mavi(i,j) = 0.d0
+            mat1(i, j) = matm(i, j)
+            mavi(i, j) = 0.d0
         end do
-        mavi(i,i) = 1.d0
+        mavi(i, i) = 1.d0
     end do
 !
     ier = 1
-    call mtcrog(mat1, mavi, 2*nbmod, nbmod, nbmod,&
+    call mtcrog(mat1, mavi, 2*nbmod, nbmod, nbmod, &
                 mavr, alfr, ier)
     if (ier .ne. 0) then
         call utmess('F', 'ALGELINE_77')
-    endif
+    end if
 !
 !
 ! --- CALCUL DU PRODUIT DE L INVERSE DE LA MATRICE DE MASSE PAR LES
@@ -115,16 +115,16 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --- CONSTRUCTION DE LA MATRICE DU PROBLEME MODALE GENERALISE MAR1 = A
     do i = 1, nbmod
         do j = 1, nbmod
-            mat1(i,nbmod+j) = 0.d0
-            mat1(nbmod+i,nbmod+j) = 0.d0
-            mat1(i,j) = 0.d0
-            mat1(nbmod+i,j) = 0.d0
+            mat1(i, nbmod+j) = 0.d0
+            mat1(nbmod+i, nbmod+j) = 0.d0
+            mat1(i, j) = 0.d0
+            mat1(nbmod+i, j) = 0.d0
             do k = 1, nbmod
-                mat1(nbmod+i,j) = mat1(nbmod+i,j) - mavr(i,k) * matr( k,j)
-                mat1(nbmod+i,nbmod+j) = mat1(nbmod+i,nbmod+j) - mavr( i,k) * mata(k,j)
+                mat1(nbmod+i, j) = mat1(nbmod+i, j)-mavr(i, k)*matr(k, j)
+                mat1(nbmod+i, nbmod+j) = mat1(nbmod+i, nbmod+j)-mavr(i, k)*mata(k, j)
             end do
         end do
-        mat1(i,nbmod+i) = 1.d0
+        mat1(i, nbmod+i) = 1.d0
     end do
 !
 !
@@ -132,13 +132,13 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 !
     ier = 1
     icode = 1
-    call vphqrp(mat1, 2*nbmod, 2*nbmod, icode, w,&
-                z, 2*nbmod, mavr, 30, ier,&
+    call vphqrp(mat1, 2*nbmod, 2*nbmod, icode, w, &
+                z, 2*nbmod, mavr, 30, ier, &
                 nitqr)
 !
     if (ier .eq. 1) then
         call utmess('F', 'ALGELINE_78')
-    endif
+    end if
 !
 ! --- ALFR: PARTIES REELLES DES VALEURS PROPRES
 ! --- ALFI: PARTIES IMAGINAIRES DES VALEURS PROPRES
@@ -148,8 +148,8 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
         alfr(ihh) = w(2*(ihh-1)+1)
         alfi(ihh) = w(2*(ihh-1)+2)
         do jhh = 1, 2*nbmod
-            mavr(jhh,ihh) = z(2*(jhh-1)+1,ihh)
-            mavi(jhh,ihh) = z(2*(jhh-1)+2,ihh)
+            mavr(jhh, ihh) = z(2*(jhh-1)+1, ihh)
+            mavi(jhh, ihh) = z(2*(jhh-1)+2, ihh)
 !         MAVR(JHH,IHH) = Z(2*(JHH+(IHH-1)*NBMOD-1)+1)
 !         MAVI(JHH,IHH) = Z(2*(JHH+(IHH-1)*NBMOD-1)+2)
         end do
@@ -175,9 +175,9 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
             b = 0.d0
             c = 0.d0
             do j = 1, nbmod
-                a = a + mavr(j,i)*mavr(j,i)
-                b = b + mavi(j,i)*mavi(j,i)
-                c = c + mavr(j,i)*mavi(j,i)*2
+                a = a+mavr(j, i)*mavr(j, i)
+                b = b+mavi(j, i)*mavi(j, i)
+                c = c+mavr(j, i)*mavi(j, i)*2
             end do
 !
             if (a .ne. 0.d0 .and. b .ne. 0.d0 .and. c .ne. 0.d0) then
@@ -185,66 +185,66 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --        CALCUL DES COMPLEXES MULTIPLICATEURS ALPHA ET BETA
 !           ALPHA = ALPHAR + I . ALPHAI
 !           BETA  = BETAR  + I . BETAI
-                u = a*a - b*b
-                v = a*c + b*c
-                det = u*u +v*v
-                alpha = (u + sqrt(det)) / v
-                adiv = sqrt(alpha*alpha + 1.d0)
-                alphar = 1.d0 / adiv
-                alphai = alpha / adiv
-                beta = (u - sqrt(det)) / v
-                bdiv = sqrt(beta*beta + 1.d0)
-                betar = 1.d0 / bdiv
-                betai = beta / bdiv
+                u = a*a-b*b
+                v = a*c+b*c
+                det = u*u+v*v
+                alpha = (u+sqrt(det))/v
+                adiv = sqrt(alpha*alpha+1.d0)
+                alphar = 1.d0/adiv
+                alphai = alpha/adiv
+                beta = (u-sqrt(det))/v
+                bdiv = sqrt(beta*beta+1.d0)
+                betar = 1.d0/bdiv
+                betai = beta/bdiv
 !
 ! --        CALCUL DES PRODUITS DES VECTEURS PROPRES PAR ALPHA ET BETA
                 do j = 1, 2*nbmod
-                    z(j,1) = (mavr(j,i) * alphar - mavi(j,i) * alphai)
-                    z(j+2*nbmod,1) = (mavr(j,i) * alphai + mavi(j,i) * alphar)
-                    z(j,2) = (mavr(j,i) * betar - mavi(j,i) * betai )
-                    z(j+2*nbmod,2) = (mavr(j,i) * betai + mavi(j,i) * betar )
+                    z(j, 1) = (mavr(j, i)*alphar-mavi(j, i)*alphai)
+                    z(j+2*nbmod, 1) = (mavr(j, i)*alphai+mavi(j, i)*alphar)
+                    z(j, 2) = (mavr(j, i)*betar-mavi(j, i)*betai)
+                    z(j+2*nbmod, 2) = (mavr(j, i)*betai+mavi(j, i)*betar)
                 end do
 !
 ! --        CALCUL DE LA SOMME DES CARRES DES PARTIES IMAGINAIRES
                 vnorma = 0.d0
                 vnormb = 0.d0
                 do j = 1, nbmod
-                    vnorma = vnorma + z(j+2*nbmod,1) * z(j+2*nbmod,1)
-                    vnormb = vnormb + z(j+2*nbmod,2) * z(j+2*nbmod,2)
+                    vnorma = vnorma+z(j+2*nbmod, 1)*z(j+2*nbmod, 1)
+                    vnormb = vnormb+z(j+2*nbmod, 2)*z(j+2*nbmod, 2)
                 end do
 !
 ! --        MISE A JOUR DU VECTEUR PROPRE OBTENUS AVEC LE COEFFICIENT
 !           ALPHA OU BETA MINIMISANT LA NORME DE LA PARTIE IMAGINAIRE
                 if (vnorma .lt. vnormb) then
                     do j = 1, 2*nbmod
-                        mavr(j,i) = z(j,1)
-                        mavi(j,i) = z(j+2*nbmod,1)
+                        mavr(j, i) = z(j, 1)
+                        mavi(j, i) = z(j+2*nbmod, 1)
                     end do
                 else
                     do j = 1, 2*nbmod
-                        mavr(j,i) = z(j,2)
-                        mavi(j,i) = z(j+2*nbmod,2)
+                        mavr(j, i) = z(j, 2)
+                        mavi(j, i) = z(j+2*nbmod, 2)
                     end do
-                endif
+                end if
 !
 ! --        TRAITEMENT DU CAS OU A OU B OU C = 0
 ! --        SI B = 0 ON A UN VECTEUR PROPRE REEL: ON NE FAIT RIEN
 ! --        SI A = 0 ON A UN VECTEUR PROPRE IMAGINAIRE PUR, ON MULTIPLIE
 ! --                 CE DERNIER PAR -I
 ! --        SI C=0 ET B>A, ON MULTIPLIE LE VECTEUR PROPRE PAR -I
-            else if (a.eq.0.d0) then
+            else if (a .eq. 0.d0) then
                 do j = 1, 2*nbmod
-                    mavr(j,i) = mavi(j,i)
-                    mavi(j,i) = 0.d0
+                    mavr(j, i) = mavi(j, i)
+                    mavi(j, i) = 0.d0
                 end do
-            else if (b.gt.a.and.c.eq.0.d0) then
+            else if (b .gt. a .and. c .eq. 0.d0) then
                 do j = 1, 2*nbmod
-                    u = mavi(j,i)
-                    mavi(j,i) = - mavr(j,i)
-                    mavr(j,i) = u
+                    u = mavi(j, i)
+                    mavi(j, i) = -mavr(j, i)
+                    mavr(j, i) = u
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 ! --  FIN DE BOUCLE SUR LES VECTEURS PROPRES
     end do
@@ -255,15 +255,15 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
     do i = 1, 2*nbmod
         snor = 0.d0
         do j = 1, nbmod
-            snor = snor + mavr(j,i)**2+ mavi(j,i)**2
+            snor = snor+mavr(j, i)**2+mavi(j, i)**2
         end do
-        snor = snor ** 0.5d0
+        snor = snor**0.5d0
         if (snor .ne. 0.d0) then
             do j = 1, 2*nbmod
-                mavr(j,i) = mavr(j,i) / snor
-                mavi(j,i) = mavi(j,i) / snor
+                mavr(j, i) = mavr(j, i)/snor
+                mavi(j, i) = mavi(j, i)/snor
             end do
-        endif
+        end if
     end do
 !
 ! --- VALEUR PROPRE (J) = (ALFR(J)+I*ALFI(J))
@@ -280,20 +280,20 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
     n = 0
     do i = 1, 2*nbmod
         if (alfi(i) .ge. 0.d0) then
-            n = n + 1
+            n = n+1
             ind(n) = i
-        endif
+        end if
     end do
 !
     if (n .ne. nbmod) then
-        write(note(1:3),'(I3.3)') n
+        write (note(1:3), '(I3.3)') n
         call utmess('F', 'ALGELINE_79', sk=note)
-    endif
+    end if
 !
 ! --- FREQUENCE ET AMORTISSEMENT REELS
 !
     do i = 1, nbmod
-        fre(i) = sqrt(alfr(ind(i))*alfr(ind(i)) + alfi(ind(i))*alfi( ind(i)) )/2.d0/pi
+        fre(i) = sqrt(alfr(ind(i))*alfr(ind(i))+alfi(ind(i))*alfi(ind(i)))/2.d0/pi
         ksi(i) = -alfr(ind(i))/2.d0/pi/fre(i)
     end do
 !
@@ -311,7 +311,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
                 k = ind(i)
                 ind(i) = ind(j)
                 ind(j) = k
-            endif
+            end if
         end do
     end do
 !
@@ -320,22 +320,22 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 ! --- RECHERCHE DES MAXIMA ET MINIMA
 !
     ifm = iunifi('MESSAGE')
-    write (ifm,*)
-    write (ifm,*) '==============================================='
-    write (ifm,*)
-    write (ifm,*) '     NORMES RELATIVES DES PARTIES REELLES '
-    write (ifm,*)
-    write (ifm,*) '     ET IMAGINAIRES  DES VECTEURS PROPRES'
-    write (ifm,*)
-    write (ifm,*) '==============================================='
-    write (ifm,*)
-    write (ifm,6000)
-    write (ifm,6001)
-    write (ifm,6002)
-    write (ifm,6003)
-    write (ifm,6001)
-    write (ifm,6000)
-    write (ifm,6000)
+    write (ifm, *)
+    write (ifm, *) '==============================================='
+    write (ifm, *)
+    write (ifm, *) '     NORMES RELATIVES DES PARTIES REELLES '
+    write (ifm, *)
+    write (ifm, *) '     ET IMAGINAIRES  DES VECTEURS PROPRES'
+    write (ifm, *)
+    write (ifm, *) '==============================================='
+    write (ifm, *)
+    write (ifm, 6000)
+    write (ifm, 6001)
+    write (ifm, 6002)
+    write (ifm, 6003)
+    write (ifm, 6001)
+    write (ifm, 6000)
+    write (ifm, 6000)
 !
     noremi = 1.0d0
     norema = 0.0d0
@@ -346,40 +346,40 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
         normr = 0.d0
         normi = 0.d0
         do j = 1, nbmod
-            normr = normr + mavr(j,ind(i)) * mavr(j,ind(i))
-            normi = normi + mavi(j,ind(i)) * mavi(j,ind(i))
+            normr = normr+mavr(j, ind(i))*mavr(j, ind(i))
+            normi = normi+mavi(j, ind(i))*mavi(j, ind(i))
         end do
-        norm = normi + normr
+        norm = normi+normr
         norm = sqrt(norm)
-        normr = sqrt(normr) / norm
-        normi = sqrt(normi) / norm
+        normr = sqrt(normr)/norm
+        normi = sqrt(normi)/norm
         if (noremi .gt. normr) noremi = normr
         if (norema .lt. normr) norema = normr
         if (noimmi .gt. normi) noimmi = normi
         if (noimma .lt. normi) noimma = normi
     end do
-    write (ifm,6005) norema , noimmi
-    write (ifm,6001)
-    write (ifm,6006) noremi , noimma
-    write (ifm,6001)
-    write (ifm,6000)
-    write (ifm,*)
+    write (ifm, 6005) norema, noimmi
+    write (ifm, 6001)
+    write (ifm, 6006) noremi, noimma
+    write (ifm, 6001)
+    write (ifm, 6000)
+    write (ifm, *)
 !
 !
 ! --- FORMATS
 !
-    6000 format (1x,'***************************************************',&
-     &       '*****************')
-    6001 format (1x,'*              *                         *          ',&
-     &       '               *')
-    6002 format (1x,'*    NUMERO    *   NORME RELATIVE DE LA  *   NORME '&
-     &       ,'RELATIVE DE LA  *')
-    6003 format (1x,'*  DE VECTEUR  *     PARTIE REELLE       *    PARTIE'&
-     &       ,' IMAGINAIRE    *')
-    6005 format (1p,1x,'*   MAX :    ','  * ',5x,d13.6,4x,'  *  '&
-     &       ,4x,d13.6,5x,' *')
-    6006 format (1p,1x,'*   MIN :    ','  * ',5x,d13.6,4x,'  *  '&
-     &       ,4x,d13.6,5x,' *')
+6000 format(1x, '***************************************************',&
+    &       '*****************')
+6001 format(1x, '*              *                         *          ',&
+    &       '               *')
+6002 format(1x, '*    NUMERO    *   NORME RELATIVE DE LA  *   NORME '&
+    &       , 'RELATIVE DE LA  *')
+6003 format(1x, '*  DE VECTEUR  *     PARTIE REELLE       *    PARTIE'&
+    &       , ' IMAGINAIRE    *')
+6005 format(1p, 1x, '*   MAX :    ', '  * ', 5x, d13.6, 4x, '  *  '&
+    &       , 4x, d13.6, 5x, ' *')
+6006 format(1p, 1x, '*   MIN :    ', '  * ', 5x, d13.6, 4x, '  *  '&
+    &       , 4x, d13.6, 5x, ' *')
 !
 !
 !

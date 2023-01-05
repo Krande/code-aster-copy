@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuReadPrepareDatastructure(resultName , resultType , lReuse,&
-                                        storeIndxNb, storeTimeNb,&
-                                        storeIndx  , storeTime  ,&
+subroutine resuReadPrepareDatastructure(resultName, resultType, lReuse, &
+                                        storeIndxNb, storeTimeNb, &
+                                        storeIndx, storeTime, &
                                         storeCreaNb, storePara)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,13 +34,13 @@ implicit none
 #include "asterfort/rs_get_liststore.h"
 #include "asterfort/rsGetSize.h"
 !
-character(len=8), intent(in) :: resultName
-character(len=16), intent(in) :: resultType
-aster_logical, intent(in) :: lReuse
-integer, intent(in) :: storeIndxNb, storeTimeNb
-character(len=19), intent(in) :: storeIndx, storeTime
-integer, intent(out) :: storeCreaNb
-character(len=4), intent(out) :: storePara
+    character(len=8), intent(in) :: resultName
+    character(len=16), intent(in) :: resultType
+    aster_logical, intent(in) :: lReuse
+    integer, intent(in) :: storeIndxNb, storeTimeNb
+    character(len=19), intent(in) :: storeIndx, storeTime
+    integer, intent(out) :: storeCreaNb
+    character(len=4), intent(out) :: storePara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,21 +70,21 @@ character(len=4), intent(out) :: storePara
 ! --------------------------------------------------------------------------------------------------
 !
     storeCreaNb = 0
-    storePara   = ' '
+    storePara = ' '
 !
 ! - Number of storing index to create
 !
     if ((storeTimeNb .eq. 0) .and. (storeTimeNb .eq. 0)) then
         storeCreaNb = 100
-    endif
+    end if
     if (storeTimeNb .ne. 0) then
         ASSERT(storeIndxNb .eq. 0)
         storeCreaNb = storeTimeNb
-    endif
+    end if
     if (storeIndxNb .ne. 0) then
         ASSERT(storeTimeNb .eq. 0)
         storeCreaNb = storeIndxNb
-    endif
+    end if
 !
     if (lReuse) then
 ! ----- Name of parameter for storage
@@ -93,42 +93,42 @@ character(len=4), intent(out) :: storePara
         if (storePara .eq. 'INST') then
             call rs_getlast(resultName, storeLastIndx, storeLastTime)
         elseif (storePara .eq. 'FREQ') then
-            call rs_getlast(resultName, storeLastIndx, freq_last = storeLastTime)
+            call rs_getlast(resultName, storeLastIndx, freq_last=storeLastTime)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         if ((storeTimeNb .eq. 0) .and. (storeIndxNb .eq. 0)) then
             call utmess('F', 'RESULT2_19')
-        endif
+        end if
         if (storeTimeNb .ne. 0) then
-            call jeveuo(storeTime//'.VALE', 'L', vr = vStoreTime)
+            call jeveuo(storeTime//'.VALE', 'L', vr=vStoreTime)
             if (vStoreTime(1) .le. storeLastTime) then
                 if (storePara .eq. 'INST') then
-                    call utmess('F', 'RESULT2_20', nr = 2, valr = [storeLastTime, vStoreTime(1)])
+                    call utmess('F', 'RESULT2_20', nr=2, valr=[storeLastTime, vStoreTime(1)])
                 elseif (storePara .eq. 'FREQ') then
-                    call utmess('F', 'RESULT2_21', nr = 2, valr = [storeLastTime, vStoreTime(1)])
+                    call utmess('F', 'RESULT2_21', nr=2, valr=[storeLastTime, vStoreTime(1)])
                 else
                     ASSERT(ASTER_FALSE)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
         if (storeIndxNb .ne. 0) then
-            call jeveuo(storeIndx//'.VALE', 'L', vi = vStoreIndx)
+            call jeveuo(storeIndx//'.VALE', 'L', vi=vStoreIndx)
             if (vStoreIndx(1) .le. storeLastIndx) then
-                call utmess('F', 'RESULT2_22', ni = 2, vali = [storeLastIndx, vStoreIndx(1)])
-            endif
-        endif
+                call utmess('F', 'RESULT2_22', ni=2, vali=[storeLastIndx, vStoreIndx(1)])
+            end if
+        end if
 ! ----- Is it enough for new fields ?
         call rs_get_liststore(resultName, resultSize)
         call rsGetSize(resultName, resultSizeMaxi)
-        if ((resultSize + storeCreaNb) .gt.  resultSizeMaxi) then
+        if ((resultSize+storeCreaNb) .gt. resultSizeMaxi) then
             call rsagsd(resultName, 0)
-        endif
+        end if
     else
 ! ----- Create results datastructures
         call rscrsd('G', resultName, resultType, storeCreaNb)
 ! ----- Name of parameter for storage
         call resuReadGetStorePara(resultName, storePara)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine frogdp(ds_measure, resoco, numedd, matass, resigr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/cfcpem.h"
@@ -113,9 +113,9 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : PENALISATION'
-        write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: PENALISATION'
-    endif
+        write (ifm, *) '<CONTACT><CALC> ALGO_CONTACT   : PENALISATION'
+        write (ifm, *) '<CONTACT><CALC> ALGO_FROTTEMENT: PENALISATION'
+    end if
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
@@ -138,7 +138,7 @@ implicit none
 ! ---        DU PAS DE TEMPS SANS CORRECTION DU CONTACT
 !
     depl0 = resoco(1:14)//'.DEP0'
-    call jeveuo(depl0 (1:19)//'.VALE', 'L', vr=vale)
+    call jeveuo(depl0(1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE GLOBALE
 !
@@ -146,11 +146,11 @@ implicit none
 !
 ! --- INITIALISATIONS DES VARIABLES
 !
-    nbliai = cfdisd(resoco,'NBLIAI')
-    neq = cfdisd(resoco,'NEQ' )
-    ndim = cfdisd(resoco,'NDIM' )
-    nesmax = cfdisd(resoco,'NESMAX')
-    nbliac = cfdisd(resoco,'NBLIAC')
+    nbliai = cfdisd(resoco, 'NBLIAI')
+    neq = cfdisd(resoco, 'NEQ')
+    ndim = cfdisd(resoco, 'NDIM')
+    nesmax = cfdisd(resoco, 'NESMAX')
+    nbliac = cfdisd(resoco, 'NBLIAC')
     iter = 1
 !
 ! --- CREATION DU SECOND MEMBRE ATMU = -E_N.[Ac]T.{JEU}
@@ -159,7 +159,7 @@ implicit none
 !
     if (nbliac .eq. 0) then
         goto 999
-    endif
+    end if
 !
 ! --- CALCUL DES COEFFICIENTS DE LAGRANGE MU POUR LE FROTTEMENT
 !
@@ -181,15 +181,15 @@ implicit none
 ! --- CREATION DE LA MATRICE MAF1 = E_T*AaT*Aa
 ! --- CETTE MATRICE NE SERT QU'AU CALCUL DU SECOND MEMBRE
 !
-    nmult = ndim - 1
-    call cfmata(resoco, neq, nbliai, nmult, numedd,&
+    nmult = ndim-1
+    call cfmata(resoco, neq, nbliai, nmult, numedd, &
                 fro1, numef1, maf1)
 !
 ! --- RECUPERATION DU SECOND MEMBRE E_T*AaT*Aa * DELTA -> AFMU
 !
     call mtdscr(maf1)
     call jeveuo(maf1//'.&INT', 'L', lmaf1)
-    call mrmult('ZERO', lmaf1, vale, zr(jafmu), 1,&
+    call mrmult('ZERO', lmaf1, vale, zr(jafmu), 1, &
                 .true._1)
 !
 ! --- CREATION DE FRO2 = E_T*AT
@@ -199,7 +199,7 @@ implicit none
 ! --- CREATION DE LA SECONDE PARTIE DE LA MATRICE DE FROTTEMENT MAF2
 !
     nmult = 1
-    call cfmata(resoco, neq, nbliai, nmult, numedd,&
+    call cfmata(resoco, neq, nbliai, nmult, numedd, &
                 fro2, numef2, maf2)
 !
 ! --- CALCUL DE LA MATRICE TANGENTE MAFROT = MACT+MAF1+MAF2
@@ -214,11 +214,11 @@ implicit none
 ! --- CALCUL DES FORCES DE CONTACT (AT.MU) ET FROTTEMENT (AF.MU)
 !
     do ieq = 1, neq
-        zr(jafmu-1+ieq) = zr(jafmu-1+ieq) + zr(jatmu-1+ieq)
+        zr(jafmu-1+ieq) = zr(jafmu-1+ieq)+zr(jatmu-1+ieq)
         zr(jatmu-1+ieq) = 0.d0
     end do
 !
-999  continue
+999 continue
 !
 ! --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 !
@@ -226,8 +226,8 @@ implicit none
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(ds_measure, 'Cont_Algo ', input_count = iter)
-    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_Algo ', input_count=iter)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count=nbliac)
 !
     call jedema()
 !

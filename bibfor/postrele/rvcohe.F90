@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     call jemarq()
     ier = 1
     call jeveuo(vcheff, 'L', acheff)
-    ncheff = zk24(acheff + i-1)
+    ncheff = zk24(acheff+i-1)
 !
     if (ncheff(1:1) .eq. '&') then
 !
@@ -101,38 +101,38 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             call jelira(nchp19//'.DESC', 'DOCU', cval=docu)
         else
             call jelira(nchp19//'.CELD', 'DOCU', cval=docu)
-        endif
+        end if
 !
         if (docu .eq. 'CHML') then
             ndesc = nchp19//'.CELD'
             call jeveuo(ndesc, 'L', jceld)
-            nbgrel = zi(jceld + 2-1)
+            nbgrel = zi(jceld+2-1)
             chelok = .true.
             grel = 0
- 10         continue
+10          continue
             if ((chelok) .and. (grel .lt. nbgrel)) then
-                grel = grel + 1
-                mod=zi(jceld-1+zi(jceld-1+4+grel) +2)
+                grel = grel+1
+                mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
                 if (mod .ne. 0) then
                     call jeveuo(jexnum('&CATA.TE.MODELOC', mod), 'L', amod)
-                    chelok = (zi(amod-1+1).eq. 2)
-                endif
+                    chelok = (zi(amod-1+1) .eq. 2)
+                end if
                 goto 10
-            endif
+            end if
             if (.not. chelok) then
                 call utmess('F', 'POSTRELE_47', si=i)
-            endif
-        endif
+            end if
+        end if
 !
 !        --- VERIFICATION SUR LES CMPS ---
         call jelira(jexnum(xdicmp, i), 'LONMAX', nbcmp)
         call jeveuo(jexnum(xdicmp, i), 'L', anumcp)
         do j = 1, nbcmp, 1
-            if (zi(anumcp + j-1) .eq. 0) then
+            if (zi(anumcp+j-1) .eq. 0) then
                 call jeveuo(jexnum(xdncmp, i), 'L', anomcp)
-                nomcmp = zk8(anomcp + j-1)
+                nomcmp = zk8(anomcp+j-1)
                 call utmess('F', 'POSTRELE_48', sk=nomcmp, si=i)
-            endif
+            end if
         end do
 !
 !        --- VERIFICATION DE CONCORDANCE DES MAILLAGES ---
@@ -147,12 +147,12 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             call jecreo('&&OP0051.NOM.GRPN', 'V V K24')
             call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn)
             call jeveuo('&&OP0051.NOM.GRPN', 'E', vk24=grpn)
-            call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=grpn,&
+            call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=grpn, &
                         nbret=n1)
             do k = 1, nbgrpn, 1
                 nomgrn = grpn(k)
-                iexi=0
-                ngrn=0
+                iexi = 0
+                ngrn = 0
                 call jeexin(nmaich//'.GROUPENO', iexi)
                 if (iexi .eq. 0) then
                     ier = 0
@@ -164,31 +164,31 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                         call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
                         if (n1 .eq. 0) then
                             ier = 0
-                        endif
-                    endif
-                endif
-                if(ier .eq. 0) then
+                        end if
+                    end if
+                end if
+                if (ier .eq. 0) then
                     exit
-                endif
+                end if
             end do
             call jedetr('&&OP0051.NOM.GRPN')
-        endif
+        end if
         if (nbneud .ne. 0) then
             call wkvect('&&OP0051.NOM.NEUD', 'V V K8', nbneud, alneud)
-            call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8( alneud),&
+            call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8(alneud), &
                         nbret=n1)
             nrepnd = nmaich//'.NOMNOE'
             do k = 1, nbneud, 1
-                nomnd = zk8(alneud + k-1)
+                nomnd = zk8(alneud+k-1)
                 call jenonu(jexnom(nrepnd, nomnd), n1)
                 if (n1 .eq. 0) then
                     call utmess('A', 'POSTRELE_51', sk=nomnd, si=i)
                     ier = 0
                     exit
-                endif
+                end if
             end do
             call jedetr('&&OP0051.NOM.NEUD')
-        endif
-    endif
+        end if
+    end if
     call jedema()
 end subroutine

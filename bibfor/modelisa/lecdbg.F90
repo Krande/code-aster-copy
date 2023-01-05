@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lecdbg(ifl, icl, iv, rv, cv,&
-                  cnl, mcl, nbm, nbg, dim,&
+subroutine lecdbg(ifl, icl, iv, rv, cv, &
+                  cnl, mcl, nbm, nbg, dim, &
                   nob, irteti)
     implicit none
 !       PREMIERE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE GROUPE
@@ -52,7 +52,7 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
     integer :: i, icl, ifl, ifm, irtet, irteti
     integer :: iv, nbg, numtcl
 !-----------------------------------------------------------------------
-    data b24        /'                        '/
+    data b24/'                        '/
     irteti = 0
 !
     ifm = iunifi('MESSAGE')
@@ -64,63 +64,63 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
         if (irtet .eq. 1) goto 4
         numtcl = i
         goto 5
-  4     continue
+4       continue
     end do
     goto 3
 !
 ! ----- LECTURE DES NOMS D OBJETS A DUMPER ?
 !
-  5 continue
-    write(ifm,*)' ----- LECDBG'
-  6 continue
-    call liritm(ifl, icl, iv, rv, cv,&
+5   continue
+    write (ifm, *) ' ----- LECDBG'
+6   continue
+    call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 1)
-    write(ifm,*)'       LIRITM : ICL = ',icl,&
-     &  ' IV = ',iv,' RV = ',rv,' CV(1:8) = ',cv(1:8),' DEBLIG =',deblig
+    write (ifm, *) '       LIRITM : ICL = ', icl,&
+     &  ' IV = ', iv, ' RV = ', rv, ' CV(1:8) = ', cv(1:8), ' DEBLIG =', deblig
     if (deblig .eq. 1) then
         call tesfin(icl, iv, cv, irtet)
         if (irtet .eq. 1) then
             goto 1
         else if (irtet .eq. 2) then
             goto 2
-        endif
-    endif
+        end if
+    end if
 !
 ! - MOT CLE DUMP
 !
     if (numtcl .eq. 1) then
         if (icl .ne. 4 .and. icl .ne. 3) then
             call utmess('F', 'MODELISA4_78', sk=mcl(1))
-        else if (iv.gt.24) then
+        else if (iv .gt. 24) then
             call utmess('F', 'MODELISA4_79', sk=mcl(1))
-        endif
-        dim(1) = dim(1) + 1
+        end if
+        dim(1) = dim(1)+1
         mtc = b24
         mtc(1:iv) = cv(1:iv)
-        nob(dim(1),1) = mtc
+        nob(dim(1), 1) = mtc
         goto 6
-    endif
+    end if
 !
 ! - MOT CLE DEBUG
 !
     if (numtcl .eq. 2) then
         if (icl .ne. 1 .and. icl .ne. 2) then
             call utmess('F', 'MODELISA4_78', sk=mcl(2))
-        endif
-        if(icl.eq.1)nbg = iv
-        if(icl.eq.2)nbg = nint(rv)
-        if(nbg.gt.1)nbg = 1
-        write(ifm,*)' ------------ DEBUG NIVEAU ',nbg,' --------------'
+        end if
+        if (icl .eq. 1) nbg = iv
+        if (icl .eq. 2) nbg = nint(rv)
+        if (nbg .gt. 1) nbg = 1
+        write (ifm, *) ' ------------ DEBUG NIVEAU ', nbg, ' --------------'
         goto 6
-    endif
+    end if
 !
-  1 continue
+1   continue
     irteti = 1
     goto 999
-  2 continue
+2   continue
     irteti = 2
     goto 999
-  3 continue
+3   continue
     irteti = 0
     goto 999
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine op0144()
 !
 !     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
     character(len=8) :: typflu
-    common  / kop144 / typflu
+    common/kop144/typflu
 !
     integer :: ibid, nbconn, iconn
     integer :: ncmp
@@ -81,7 +81,7 @@ subroutine op0144()
     character(len=8), pointer :: cmp_name(:) => null()
 !
 !-----------------------------------------------------------------------
-    data nomcmp /'DX      ','DY      ','DZ      ',  'DRX     ','DRY     ','DRZ     '/
+    data nomcmp/'DX      ', 'DY      ', 'DZ      ', 'DRX     ', 'DRY     ', 'DRZ     '/
 !
 !-----------------------------------------------------------------------
     integer :: i, iacmp, iamor, iav, icmp, idec, idesc
@@ -96,8 +96,8 @@ subroutine op0144()
     ibid = 0
 
     call jemarq()
-    c16b=(0.d0,0.d0)
-    r8b=0.d0
+    c16b = (0.d0, 0.d0)
+    r8b = 0.d0
     call infmaj()
 !
     call getres(nomu, concep, cmd)
@@ -112,27 +112,27 @@ subroutine op0144()
 !
     if (nbno .ne. 0 .and. nbam .ne. 0 .and. nbam .ne. nbno) then
         call utmess('F', 'ALGELINE2_82')
-    endif
+    end if
 !
     if (nbno .ne. 0 .and. nbconn .ne. 0 .and. nbconn .ne. nbno) then
         call utmess('F', 'ALGELINE2_83')
-    endif
+    end if
 !
 ! --- 1.RECUPERATION DES CARACTERISTIQUES MODALES AVANT COUPLAGE ---
 !
     call getvid('BASE_MODALE', 'MODE_MECA', iocc=1, scal=nombm)
 !
     tmode = .false.
-    calcul(1)=.false.
-    calcul(2)=.false.
+    calcul(1) = .false.
+    calcul(2) = .false.
     if (nbno .eq. 0) then
         tmode = .true.
         numoi = nombm//'           .ORDR'
         call jelira(numoi, 'LONUTI', nbno)
-        ASSERT(nbam.eq.0 .or. abs(nbam).eq.nbno)
+        ASSERT(nbam .eq. 0 .or. abs(nbam) .eq. nbno)
     else
         nbno = abs(nbno)
-    endif
+    end if
 !
 ! --- 1.1.CREATION ET REMPLISSAGE DE L'OBJET .NUMO
 !
@@ -144,7 +144,7 @@ subroutine op0144()
         end do
     else
         call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbno, vect=zi(inumo))
-    endif
+    end if
 !
 ! --- 1.2.CREATION D'UN VECTEUR TEMPORAIRE POUR LES AMORTISSEMENTS
 !
@@ -152,19 +152,19 @@ subroutine op0144()
     call wkvect('&&OP0144.CONNORS.AMOR', 'V V R', nbno, iconn)
     if (nbam .ne. 0) then
         call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=nbno, vect=zr(iamor))
-        calcul(1)=.true.
-    else if (nbconn.eq.0) then
-        calcul(1)=.true.
+        calcul(1) = .true.
+    else if (nbconn .eq. 0) then
+        calcul(1) = .true.
         call getvr8('BASE_MODALE', 'AMOR_UNIF', iocc=1, scal=amor)
         do i = 1, nbno
             zr(iamor+i-1) = amor
         end do
-    endif
+    end if
 !
     if (nbconn .ne. 0) then
         call getvr8('BASE_MODALE', 'AMOR_REDUIT_CONN', iocc=1, nbval=nbno, vect=zr(iconn))
-        calcul(2)=.true.
-    endif
+        calcul(2) = .true.
+    end if
 !
 !
 ! --- 2.RECUPERATION DE LA PLAGE DE VITESSES D'ECOULEMENT ---
@@ -179,21 +179,21 @@ subroutine op0144()
         vmin = vmax
         vmax = umin
         call utmess('A', 'ALGELINE2_85')
-    endif
+    end if
 !
     vite = nomu//'.VITE'
     call wkvect(vite, 'G V R', nbpv, ivite)
     if (nbpv .eq. 1) then
         vmoy = (vmin+vmax)/2.d0
-        write(ifm,*)'UNE SEULE VITESSE D''ECOULEMENT ETUDIEE :'//&
-        ' VMOY = (VMIN+VMAX)/2'
+        write (ifm, *) 'UNE SEULE VITESSE D''ECOULEMENT ETUDIEE :'// &
+            ' VMOY = (VMIN+VMAX)/2'
         zr(ivite) = vmoy
     else
         vpas = (vmax-vmin)/(nbpv-1)
         do iv = 1, nbpv
-            zr(ivite+iv-1) = vmin + (iv-1)*vpas
+            zr(ivite+iv-1) = vmin+(iv-1)*vpas
         end do
-    endif
+    end if
 !
 ! --- 2.2.CREATION DE L'OBJET .FREQ
 !
@@ -227,7 +227,7 @@ subroutine op0144()
         if (k8b(1:3) .eq. 'OUI') nivpar = 1
         call getvtx('IMPRESSION', 'DEFORMEE', iocc=1, scal=k8b)
         if (k8b(1:3) .eq. 'OUI') nivdef = 1
-    endif
+    end if
 !
 !
 ! --- 5.CREATION ET REMPLISSAGE DE L'OBJET .DESC ---
@@ -258,18 +258,18 @@ subroutine op0144()
     call jenonu(jexnom('&CATA.GD.NOMGD', gran), numgd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', iacmp)
     call jeveuo(jexatr('&CATA.GD.NOMCMP', 'LONCUM'), 'L', iav)
-    nbcomp = zi(iav+numgd) - zi(iav+numgd-1)
+    nbcomp = zi(iav+numgd)-zi(iav+numgd-1)
 !
     call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
     call wkvect('&&OP0144.DESC_NOEUD', 'V V I', nec*nbnoeu, jdesc)
     do ino = 1, nbnoeu
         do icmp = 1, 6
-            j = indik8(zk8(iacmp),nomcmp(icmp),1,nbcomp)
+            j = indik8(zk8(iacmp), nomcmp(icmp), 1, nbcomp)
             if (j .ne. 0) then
-                iec = (j-1)/30 + 1
-                jj = j - 30*(iec-1)
-                zi(jdesc+(ino-1)*nec+iec-1) = ior( zi(jdesc+(ino-1)* nec+iec-1), 2**jj )
-            endif
+                iec = (j-1)/30+1
+                jj = j-30*(iec-1)
+                zi(jdesc+(ino-1)*nec+iec-1) = ior(zi(jdesc+(ino-1)*nec+iec-1), 2**jj)
+            end if
         end do
     end do
 !
@@ -279,7 +279,7 @@ subroutine op0144()
         nbpar = nbpv
     else
         nbpar = 1
-    endif
+    end if
     call tbcrsd(nomu, 'G')
     call tbajpa(nomu, 1, 'NOM_CHAM', 'K24')
 !
@@ -300,15 +300,15 @@ subroutine op0144()
 !
     do io = 1, nbno
 !
-        write(nomvar,'(I3.3)') zi(inumo+io-1)
+        write (nomvar, '(I3.3)') zi(inumo+io-1)
         nomcha(14:16) = nomvar(1:3)
 !
         do ipar = 1, nbpar
 !
-            write(nompar,'(I3.3)') ipar
+            write (nompar, '(I3.3)') ipar
             nomcha(17:24) = nompar(1:3)//'     '
 !
-            call tbajli(nomu, 1, 'NOM_CHAM', [ibid], [r8b],&
+            call tbajli(nomu, 1, 'NOM_CHAM', [ibid], [r8b], &
                         [c16b], nomcha, 0)
 !
 ! --------CREATION DU CHAMP
@@ -339,28 +339,28 @@ subroutine op0144()
                     prno((nec+2)*(ino-1)+1) = idec
                     prno((nec+2)*(ino-1)+2) = 6
                     do inec = 1, nec
-                        ii = ii + 1
-                        prno((nec+2)*(ino-1)+2+inec) = zi(jdesc+ ii-1)
+                        ii = ii+1
+                        prno((nec+2)*(ino-1)+2+inec) = zi(jdesc+ii-1)
                     end do
-                    idec = idec + 6
+                    idec = idec+6
                 end do
                 prchno = cham19
 !
 ! ------------- Create object local components (field) => global components (catalog)
 !
-                call cmpcha(cham19, cmp_name, cata_to_field, field_to_cata, nb_cmpz = ncmp)
+                call cmpcha(cham19, cmp_name, cata_to_field, field_to_cata, nb_cmpz=ncmp)
 !
 ! ------------- Compute .DEEQ object
 !
-                call pteequ(prchno, 'G', long, numgd, ncmp,&
+                call pteequ(prchno, 'G', long, numgd, ncmp, &
                             field_to_cata)
-                AS_DEALLOCATE(vi = cata_to_field)
-                AS_DEALLOCATE(vi = field_to_cata)
-                AS_DEALLOCATE(vk8 = cmp_name)
+                AS_DEALLOCATE(vi=cata_to_field)
+                AS_DEALLOCATE(vi=field_to_cata)
+                AS_DEALLOCATE(vk8=cmp_name)
 !
             else
                 zk24(jcrefe+1) = prchno
-            endif
+            end if
 !
         end do
 !
@@ -372,29 +372,29 @@ subroutine op0144()
 !
     if (itypfl .eq. 1) then
 !
-        call flust1(nomu, typflu, nombm, zi(inumo), zr(iamor),&
-                    zr(iconn), zr(ifreq), zr(imasg), zr(ifact), zr(ivite),&
+        call flust1(nomu, typflu, nombm, zi(inumo), zr(iamor), &
+                    zr(iconn), zr(ifreq), zr(imasg), zr(ifact), zr(ivite), &
                     nbno, calcul, nbpv, nivpar, nivdef)
 !
-    else if (itypfl.eq.2) then
+    else if (itypfl .eq. 2) then
 !
-        call flust2(nomu, typflu, nombm, mailla, zi(inumo),&
-                    zr( iamor), zr(ifreq), zr(imasg), zr(ifact), zr(ivite),&
+        call flust2(nomu, typflu, nombm, mailla, zi(inumo), &
+                    zr(iamor), zr(ifreq), zr(imasg), zr(ifact), zr(ivite), &
                     nbno, nbpv, nivpar, nivdef)
 !
-    else if (itypfl.eq.3) then
+    else if (itypfl .eq. 3) then
 !
-        call flust3(nomu, typflu, nombm, zi(inumo), zr(iamor),&
-                    zr(ifreq), zr(imasg), zr(ifact), zr(ivite), nbno,&
+        call flust3(nomu, typflu, nombm, zi(inumo), zr(iamor), &
+                    zr(ifreq), zr(imasg), zr(ifact), zr(ivite), nbno, &
                     nbpv, nivpar, nivdef)
 !
     else
 !
-        call flust4(nomu, typflu, nombm, mailla, zi(inumo),&
-                    zr( iamor), zr(ifreq), zr(imasg), zr(ifact), zr(ivite),&
+        call flust4(nomu, typflu, nombm, mailla, zi(inumo), &
+                    zr(iamor), zr(ifreq), zr(imasg), zr(ifact), zr(ivite), &
                     nbno, nbpv, nivpar, nivdef)
 !
-    endif
+    end if
 !
 !
     call jedema()

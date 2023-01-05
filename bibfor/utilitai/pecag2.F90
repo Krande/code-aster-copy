@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
+subroutine pecag2(ndim, nsymx, nsymy, np, xyp, &
                   vale, valpar)
     implicit none
 #include "asterf_types.h"
@@ -67,33 +67,33 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
         do i = 1, 10
             valpar(i) = vale(i)
         end do
-    endif
+    end if
 !
     if (nsymx .and. .not. nsymy) then
         cdgy = 0.d0
         dy = vale(3)
-        ixx = 2*ixx + 2*aire*dy*dy
+        ixx = 2*ixx+2*aire*dy*dy
         iyy = 2*iyy
-        izz = 2*izz + 2*aire*dy*dy
-        aire = 2 * aire
+        izz = 2*izz+2*aire*dy*dy
+        aire = 2*aire
     else if (nsymy .and. .not. nsymx) then
         cdgx = 0.d0
         dx = vale(2)
         ixx = 2*ixx
-        iyy = 2*iyy + 2*aire*dx*dx
-        izz = 2*izz + 2*aire*dx*dx
-        aire = 2 * aire
+        iyy = 2*iyy+2*aire*dx*dx
+        izz = 2*izz+2*aire*dx*dx
+        aire = 2*aire
     else if (nsymx .and. nsymy) then
         cdgx = 0.d0
         cdgy = 0.d0
         dx = vale(2)
         dy = vale(3)
-        ixx = 4*ixx + 4*aire*dy*dy
-        iyy = 4*iyy + 4*aire*dx*dx
-        izz = 4*izz + 4*aire*(dx*dx + dy*dy)
+        ixx = 4*ixx+4*aire*dy*dy
+        iyy = 4*iyy+4*aire*dx*dx
+        izz = 4*izz+4*aire*(dx*dx+dy*dy)
         ixy = 0.d0
-        aire = 4 * aire
-    endif
+        aire = 4*aire
+    end if
     if (ndim .eq. 2) then
         valpar(12) = aire
         valpar(13) = cdgx
@@ -114,7 +114,7 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
         valpar(25) = ixy
         valpar(26) = ixz
         valpar(27) = iyz
-    endif
+    end if
 !
 !     TRAITEMENT DE ORIG_INER
 !
@@ -122,13 +122,13 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
         if (np .ne. 0) then
             xp = xyp(1)
             yp = xyp(2)
-            xgp = xp - cdgx
-            ygp = yp - cdgy
-            ixxp = ixx + aire*ygp*ygp
-            iyyp = iyy + aire*xgp*xgp
-            ixyp = ixy + aire*xgp*ygp
-            ixpr2p = ixr2 - ygp*(3.0d0*ixx+iyy) - aire*ygp*(xgp*xgp+ ygp*ygp) - 2.0d0*xgp*ixy
-            iypr2p = iyr2 - xgp*(3.0d0*iyy+ixx) - aire*xgp*(xgp*xgp+ ygp*ygp) - 2.0d0*ygp*ixy
+            xgp = xp-cdgx
+            ygp = yp-cdgy
+            ixxp = ixx+aire*ygp*ygp
+            iyyp = iyy+aire*xgp*xgp
+            ixyp = ixy+aire*xgp*ygp
+            ixpr2p = ixr2-ygp*(3.0d0*ixx+iyy)-aire*ygp*(xgp*xgp+ygp*ygp)-2.0d0*xgp*ixy
+            iypr2p = iyr2-xgp*(3.0d0*iyy+ixx)-aire*xgp*(xgp*xgp+ygp*ygp)-2.0d0*ygp*ixy
             valpar(21) = xp
             valpar(22) = yp
             valpar(23) = ixxp
@@ -145,10 +145,10 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
             valpar(23) = ixxp
             valpar(24) = iyyp
             valpar(25) = ixyp
-        endif
-    endif
+        end if
+    end if
 !
-    if (abs(ixx) .lt. epsi .and. abs(iyy) .lt. epsi .and. abs(izz) .lt. epsi .and. abs(ixy)&
+    if (abs(ixx) .lt. epsi .and. abs(iyy) .lt. epsi .and. abs(izz) .lt. epsi .and. abs(ixy) &
         .lt. epsi .and. abs(ixz) .lt. epsi .and. abs(iyz) .lt. epsi) then
 !
         ixprin = 0.d0
@@ -161,10 +161,10 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
         iypri2 = 0.d0
     else
         ar(1) = ixx
-        ar(2) = - ixy
-        ar(3) = - ixz
+        ar(2) = -ixy
+        ar(3) = -ixz
         ar(4) = iyy
-        ar(5) = - iyz
+        ar(5) = -iyz
         ar(6) = izz
         br(1) = 1.d0
         br(2) = 0.d0
@@ -178,47 +178,47 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
         toldyn = 1.d-2
         itype = 2
         iordre = 2
-        call jacobi(nbvec, nperm, tol, toldyn, ar,&
-                    br, vecpro, valpro, jac, nitjac,&
+        call jacobi(nbvec, nperm, tol, toldyn, ar, &
+                    br, vecpro, valpro, jac, nitjac, &
                     itype, iordre)
         if (valpro(1) .lt. valpro(2)) then
             v1(1) = 0.d0
             v1(2) = 0.d0
             v1(3) = 0.d0
-            v2(1) = vecpro(1,1)
-            v2(2) = vecpro(2,1)
-            v2(3) = vecpro(3,1)
-            v3(1) = vecpro(1,2)
-            v3(2) = vecpro(2,2)
-            v3(3) = vecpro(3,2)
+            v2(1) = vecpro(1, 1)
+            v2(2) = vecpro(2, 1)
+            v2(3) = vecpro(3, 1)
+            v3(1) = vecpro(1, 2)
+            v3(2) = vecpro(2, 2)
+            v3(3) = vecpro(3, 2)
             call orien2(v1, v2, v3, angl)
             ixprin = valpro(1)
             iyprin = valpro(2)
             izprin = valpro(3)
-            alpha = angl(1) * r8rddg()
-            beta = angl(2) * r8rddg()
-            gamma = angl(3) * r8rddg()
+            alpha = angl(1)*r8rddg()
+            beta = angl(2)*r8rddg()
+            gamma = angl(3)*r8rddg()
         else
             v1(1) = 0.d0
             v1(2) = 0.d0
             v1(3) = 0.d0
-            v2(1) = vecpro(1,2)
-            v2(2) = vecpro(2,2)
-            v2(3) = vecpro(3,2)
-            v3(1) = vecpro(1,1)
-            v3(2) = vecpro(2,1)
-            v3(3) = vecpro(3,1)
+            v2(1) = vecpro(1, 2)
+            v2(2) = vecpro(2, 2)
+            v2(3) = vecpro(3, 2)
+            v3(1) = vecpro(1, 1)
+            v3(2) = vecpro(2, 1)
+            v3(3) = vecpro(3, 1)
             call orien2(v1, v2, v3, angl)
             ixprin = valpro(2)
             iyprin = valpro(1)
             izprin = valpro(3)
-            alpha = angl(1) * r8rddg()
-            beta = angl(2) * r8rddg()
-            gamma = angl(3) * r8rddg()
-            ixpri2 = -sin(angl(1))*iyr2 + cos(angl(1))*ixr2
-            iypri2 = cos(angl(1))*iyr2 + sin(angl(1))*ixr2
-        endif
-    endif
+            alpha = angl(1)*r8rddg()
+            beta = angl(2)*r8rddg()
+            gamma = angl(3)*r8rddg()
+            ixpri2 = -sin(angl(1))*iyr2+cos(angl(1))*ixr2
+            iypri2 = cos(angl(1))*iyr2+sin(angl(1))*ixr2
+        end if
+    end if
     if (ndim .eq. 2) then
         valpar(18) = ixprin
         valpar(19) = iyprin
@@ -234,6 +234,6 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
         valpar(29) = alpha
         valpar(30) = beta
         valpar(31) = gamma
-    endif
+    end if
 !
 end subroutine

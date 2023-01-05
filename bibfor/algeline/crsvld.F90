@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine crsvld(motfac, solveu, istop, nprec, &
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
     call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=ibid)
-    ASSERT(ibid.eq.1)
+    ASSERT(ibid .eq. 1)
 !
 ! --- ON REMPLIT LA SD_SOLVEUR
     call jeveuo(solveu//'.SLVK', 'E', vk24=slvk)
@@ -75,11 +75,11 @@ subroutine crsvld(motfac, solveu, istop, nprec, &
     slvk(7) = 'XXXX'
     slvk(8) = 'XXXX'
     slvk(9) = 'XXXX'
-    slvk(10)= 'XXXX'
-    slvk(11)= 'XXXX'
-    slvk(12)= 'XXXX'
-    slvk(13)= kellag
-    slvk(14)= kxfem
+    slvk(10) = 'XXXX'
+    slvk(11) = 'XXXX'
+    slvk(12) = 'XXXX'
+    slvk(13) = kellag
+    slvk(14) = kxfem
 !
     slvr(1) = 0.d0
     slvr(2) = 0.d0

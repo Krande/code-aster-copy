@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rotchm(profno, vale, tetss, nbss, invsk,&
+subroutine rotchm(profno, vale, tetss, nbss, invsk, &
                   nbnot, nbcmp, iax)
 !    P. RICHARD     DATE 10/02/92
 !-----------------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
     real(kind=8) :: vale(*), tetss(nbss), tet0(nbcmpm, nbcmpm), udep(nbcmpm)
 !
 !-----------------------------------------------------------------------
-    data pgc /'ROTCHM'/
+    data pgc/'ROTCHM'/
 !-----------------------------------------------------------------------
 !
 !------------------------RECUPERATION DU PRNO DEEQ NUEQ-----------------
@@ -84,10 +84,10 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
-    endif
+    end if
 !
-    nueq=profno//'.NUEQ'
-    prno=profno//'.PRNO'
+    nueq = profno//'.NUEQ'
+    prno = profno//'.PRNO'
     call nueq_chck(profno)
 !
     call jenonu(jexnom(prno(1:19)//'.LILI', '&MAILLA'), ibid)
@@ -100,42 +100,42 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk,&
 !
 !---------------------------ROTATION------------------------------------
 !
-    tetcou=tetss(1)
+    tetcou = tetss(1)
     call intet0(tetcou, tet0, iax)
 !
 !
     do i = 1, nbnot
 !
-        numsec=invsk(i,1)
-        tetac=tetss(numsec)
+        numsec = invsk(i, 1)
+        tetac = tetss(numsec)
         if (tetac .ne. tetcou) then
-            tetcou=tetac
+            tetcou = tetac
             call intet0(tetcou, tet0, iax)
-        endif
+        end if
 !
-        inueq=zi(llprno+(nbec+2)*(i-1))
+        inueq = zi(llprno+(nbec+2)*(i-1))
         call isdeco(zi(llprno+(nbec+2)*(i-1)+2), zi(ltidec), nbcmp)
-        icomp=0
+        icomp = 0
 !
         do j = 1, nbcmpm
             if (zi(ltidec+j-1) .gt. 0) then
-                icomp=icomp+1
-                ieq(j)=zi(llnueq+inueq+icomp-2)
-                udep(j)=vale(ieq(j))
+                icomp = icomp+1
+                ieq(j) = zi(llnueq+inueq+icomp-2)
+                udep(j) = vale(ieq(j))
             else
-                ieq(j)=0
-                udep(j)=0.d0
-            endif
+                ieq(j) = 0
+                udep(j) = 0.d0
+            end if
         end do
 !
 !
         do j = 1, nbcmpm
             if (ieq(j) .gt. 0) then
-                vale(ieq(j))=0.d0
+                vale(ieq(j)) = 0.d0
                 do k = 1, nbcmpm
-                    vale(ieq(j))=vale(ieq(j))+tet0(j,k)*udep(k)
+                    vale(ieq(j)) = vale(ieq(j))+tet0(j, k)*udep(k)
                 end do
-            endif
+            end if
         end do
 !
     end do

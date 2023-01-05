@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,34 +56,34 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
         chnom(1:19) = vecnom(i)
         call jeveuo(chnom, 'L', jprof)
         call fopro1(zk24(jprof), 0, prolgd, interp)
-        call fonbpa(chnom(1:19), zk24(jprof), typfon, 10, nbpf,&
+        call fonbpa(chnom(1:19), zk24(jprof), typfon, 10, nbpf, &
                     nompf)
         call jelibe(chnom)
         if (nompf(1) .ne. 'TOUTPARA') then
-            vecpro(7)=nompf(1)
+            vecpro(7) = nompf(1)
             goto 2
-        endif
+        end if
     end do
     vali = nbfonc
     call utmess('E', 'UTILITAI8_1', si=vali)
-    ier=ier+1
-  2 continue
+    ier = ier+1
+2   continue
     do i = 1, nbfonc
         chnom(1:19) = vecnom(i)
         call jeveuo(chnom, 'L', jprof)
         call fopro1(zk24(jprof), 0, prolgd, interp)
-        call fonbpa(chnom(1:19), zk24(jprof), typfon, 10, nbpf,&
+        call fonbpa(chnom(1:19), zk24(jprof), typfon, 10, nbpf, &
                     nompf)
         call jelibe(chnom)
         if (nompf(1) .ne. vecpro(7) .and. nompf(1) .ne. 'TOUTPARA') then
-            valk (1) = vecnom(i)
-            valk (2) = nompf(1)
-            valk (3) = vecpro(7)
+            valk(1) = vecnom(i)
+            valk(2) = nompf(1)
+            valk(3) = vecpro(7)
             call utmess('E', 'UTILITAI8_2', nk=3, valk=valk)
-            ier=ier+1
-        endif
+            ier = ier+1
+        end if
         vecpro(7+2*i-1) = interp
-        vecpro(7+2*i ) = prolgd
+        vecpro(7+2*i) = prolgd
     end do
     call jedema()
 end subroutine

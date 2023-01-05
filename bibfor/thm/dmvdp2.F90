@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function dmvdp2(rho11  , rho12 ,&
-                satur  ,&
-                phi    , cs    , pvp,&
+function dmvdp2(rho11, rho12, &
+                satur, &
+                phi, cs, pvp, &
                 l_emmag, em)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-real(kind=8), intent(in) :: rho11, rho12
-real(kind=8), intent(in) :: satur
-real(kind=8), intent(in) :: phi, cs, pvp, em
-aster_logical, intent(in) :: l_emmag
-real(kind=8) :: dmvdp2
+    real(kind=8), intent(in) :: rho11, rho12
+    real(kind=8), intent(in) :: satur
+    real(kind=8), intent(in) :: phi, cs, pvp, em
+    aster_logical, intent(in) :: l_emmag
+    real(kind=8) :: dmvdp2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,9 +52,9 @@ real(kind=8) :: dmvdp2
 ! --------------------------------------------------------------------------------------------------
 !
     if (l_emmag) then
-        dmvdp2 = rho12 * ((1.d0-satur)*em + phi*(1.d0-satur)/pvp*rho12/rho11)
+        dmvdp2 = rho12*((1.d0-satur)*em+phi*(1.d0-satur)/pvp*rho12/rho11)
     else
-        dmvdp2 = rho12 * ((1.d0-satur)*cs + phi*(1.d0-satur)/pvp*rho12/rho11)
-    endif
+        dmvdp2 = rho12*((1.d0-satur)*cs+phi*(1.d0-satur)/pvp*rho12/rho11)
+    end if
 !
 end function

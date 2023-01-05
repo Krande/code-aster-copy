@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmcalm(typmat         , modelz, lischa   , ds_material, carele,&
-                  ds_constitutive, instam, instap   , valinc     , solalg,&
-                  optmaz         , base  , ds_system, meelem     , matele)
+subroutine nmcalm(typmat, modelz, lischa, ds_material, carele, &
+                  ds_constitutive, instam, instap, valinc, solalg, &
+                  optmaz, base, ds_system, meelem, matele)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -43,18 +43,18 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=*) :: modelz
-character(len=*) :: carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-real(kind=8) :: instam, instap
-character(len=19) :: lischa
-character(len=6) :: typmat
-character(len=*) :: optmaz
-character(len=1) :: base
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19) :: meelem(*), solalg(*), valinc(*)
-character(len=19) :: matele
+    character(len=*) :: modelz
+    character(len=*) :: carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    real(kind=8) :: instam, instap
+    character(len=19) :: lischa
+    character(len=6) :: typmat
+    character(len=*) :: optmaz
+    character(len=1) :: base
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: meelem(*), solalg(*), valinc(*)
+    character(len=19) :: matele
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,7 +112,7 @@ character(len=19) :: matele
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
-    if (valinc(1)(1:1) .ne. ' ') then
+    if (valinc(1) (1:1) .ne. ' ') then
         call nmchex(valinc, 'VALINC', 'DEPMOI', disp_prev)
         call nmchex(valinc, 'VALINC', 'SIGPLU', sigplu)
         call nmchex(valinc, 'VALINC', 'STRPLU', strplu)
@@ -121,15 +121,15 @@ character(len=19) :: matele
         call nmchex(valinc, 'VALINC', 'COMPLU', varc_curr)
         call nmvcex('INST', varc_prev, time_prev)
         call nmvcex('INST', varc_curr, time_curr)
-    endif
-    if (solalg(1)(1:1) .ne. ' ') then
+    end if
+    if (solalg(1) (1:1) .ne. ' ') then
         call nmchex(solalg, 'SOLALG', 'DEPDEL', disp_cumu_inst)
         call nmchex(solalg, 'SOLALG', 'DDEPLA', disp_newt_curr)
-    endif
-    if (meelem(1)(1:1) .ne. ' ') then
+    end if
+    if (meelem(1) (1:1) .ne. ' ') then
         merigi = ds_system%merigi
         call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
-    endif
+    end if
 !
     if (typmat .eq. 'MEDIRI') then
 !
@@ -137,61 +137,61 @@ character(len=19) :: matele
 !
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_80')
-        endif
+        end if
         call medime('V', 'ZERO', model, lischa, matele)
 !
 ! --- MATR_ELEM RIGIDITE GEOMETRIQUE
 !
-    else if (typmat.eq.'MEGEOM') then
+    else if (typmat .eq. 'MEGEOM') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_81')
-        endif
-        call merige(model(1:8), carele(1:8), sigplu, strplu, matele,&
+        end if
+        call merige(model(1:8), carele(1:8), sigplu, strplu, matele, &
                     'V', 0, mateco=ds_material%mateco)
 !
 ! --- MATR_ELEM MASSES
 !
-    else if (typmat.eq.'MEMASS') then
+    else if (typmat .eq. 'MEMASS') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_82')
-        endif
-        call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
-        call memame(optmat, model, ds_material%mater, ds_material%mateco,&
-                    carele, instam, ds_constitutive%compor, matele,&
-                    base  , modelLigrel)
+        end if
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+        call memame(optmat, model, ds_material%mater, ds_material%mateco, &
+                    carele, instam, ds_constitutive%compor, matele, &
+                    base, modelLigrel)
 !
 ! --- MATR_ELEM AMORTISSEMENT
 !
-    else if (typmat.eq.'MEAMOR') then
+    else if (typmat .eq. 'MEAMOR') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_83')
-        endif
+        end if
         call meamme(model, &
-                    ds_material%mater, ds_material%mateco, carele,&
-                    instam, base,&
-                    ds_system%merigi, memass,&
+                    ds_material%mater, ds_material%mateco, carele, &
+                    instam, base, &
+                    ds_system%merigi, memass, &
                     matele, varplu, ds_constitutive%compor)
 !
 ! --- MATR_ELEM POUR CHARGES SUIVEUSES
 !
-    else if (typmat.eq.'MESUIV') then
+    else if (typmat .eq. 'MESUIV') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_84')
-        endif
-        call mecgme(model, carele, ds_material%mater, ds_material%mateco  , lischa, instap,&
+        end if
+        call mecgme(model, carele, ds_material%mater, ds_material%mateco, lischa, instap, &
                     disp_prev, disp_cumu_inst, instam, ds_constitutive%compor, matele)
 !
 ! --- MATR_ELEM DES SOUS-STRUCTURES
 !
-    else if (typmat.eq.'MESSTR') then
+    else if (typmat .eq. 'MESSTR') then
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_85')
-        endif
-        call messtr(base  , optmat, model, carele, ds_material%mater,&
+        end if
+        call messtr(base, optmat, model, carele, ds_material%mater, &
                     matele)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! --- MENAGE
 !

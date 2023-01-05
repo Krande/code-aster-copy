@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,29 +79,29 @@ subroutine sschge(nomacr)
 !
     base = 'V'
     call jeveuo(nomacr//'.REFM', 'L', vk8=refm)
-    nomo= refm(1)
+    nomo = refm(1)
     materi = refm(3)
     if (materi .ne. '        ') then
-        call rcmfmc(materi, mateco, l_ther_ = ASTER_FALSE)
+        call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
     else
         mateco = ' '
-    endif
+    end if
     cara = refm(4)
-    nu= refm(5)
+    nu = refm(5)
     if (nu(1:8) .ne. nomacr) then
         ASSERT(.false.)
-    endif
+    end if
 !
     vecel = '&&VECEL            '
     vecas = nomacr//'.CHARMECA'
 !
     call jeveuo(nomacr//'.DESM', 'E', vi=desm)
     call jelira(nomacr//'.LICH', 'LONMAX', nch)
-    nch= nch-1
-    vprof= ' '
-    nddle= desm(4)
-    nddli= desm(5)
-    nddlt= nddle+nddli
+    nch = nch-1
+    vprof = ' '
+    nddle = desm(4)
+    nddli = desm(5)
+    nddlt = nddle+nddli
 !
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
 !        ET CHAM_MATER :
@@ -120,15 +120,15 @@ subroutine sschge(nomacr)
 !       ------------------------
         call getvtx('CAS_CHARGE', 'SUIV', iocc=iocc, scal=kbid, nbret=n1)
         if (kbid(1:3) .eq. 'OUI') then
-            zk8(ialich-1+1)= 'OUI_SUIV'
+            zk8(ialich-1+1) = 'OUI_SUIV'
         else
-            zk8(ialich-1+1)= 'NON_SUIV'
-        endif
+            zk8(ialich-1+1) = 'NON_SUIV'
+        end if
         call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
         if (-n1 .gt. nch) then
             call utmess('F', 'SOUSTRUC_40')
-        endif
-        call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=-n1, vect=zk8(ialich+1),&
+        end if
+        call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=-n1, vect=zk8(ialich+1), &
                     nbret=n2)
 !
 !       -- INSTANT:
@@ -137,7 +137,7 @@ subroutine sschge(nomacr)
 !
 !       -- CALCULS VECTEURS ELEMENTAIRES DU CHARGEMENT :
 !       ------------------------------------------------
-        call me2mme(nomo, -n1, zk8(ialich+1), materi, mateco, cara,&
+        call me2mme(nomo, -n1, zk8(ialich+1), materi, mateco, cara, &
                     time, vecel, 0, base)
         call ss2mm2(nomo, vecel, nomcas)
 !
@@ -147,7 +147,7 @@ subroutine sschge(nomacr)
 !       -- RECOPIE DE VECAS.VALE DANS .LICA(1:NDDLT) :
         call jeveuo(vecas//'.VALE', 'L', vr=vale)
         do kk = 1, nddlt
-            zr(ialica-1+kk)=vale(kk)
+            zr(ialica-1+kk) = vale(kk)
         end do
 !
 !       -- CONDENSATION DE .LICA(1:NDDLT) DANS .LICA(NDDLT+1,2*NDDLT) :

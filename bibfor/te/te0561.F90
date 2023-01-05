@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0561(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/nmforn.h"
 #include "asterfort/teattr.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,16 +59,16 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Type of modelling
 !
-    call teattr('S', 'TYPMOD' , typmod(1))
+    call teattr('S', 'TYPMOD', typmod(1))
     call teattr('S', 'TYPMOD2', typmod(2))
 !
 ! - Get parameters of element
 !
-    call elrefv('RIGI'  , ndim    ,&
-                nnoL    , nnoQ    , nnos,&
-                npg     , jv_poids,&
-                jv_vfL  , jv_vfQ  ,&
-                jv_dfdeL, jv_dfdeQ,&
+    call elrefv('RIGI', ndim, &
+                nnoL, nnoQ, nnos, &
+                npg, jv_poids, &
+                jv_vfL, jv_vfQ, &
+                jv_dfdeL, jv_dfdeQ, &
                 jv_ganoL, jv_ganoQ)
 !
 ! - Compute option
@@ -79,17 +79,17 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PMATERC', 'L', imate)
         call jevech('PDEPLMR', 'L', idplgm)
         call jevech('PVECTUR', 'E', ivectu)
-        call nmfogn(ndim, nnoQ, nnoL, npg, jv_poids,&
-                    zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom),&
+        call nmfogn(ndim, nnoQ, nnoL, npg, jv_poids, &
+                    zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL, zr(igeom), &
                     typmod, zi(imate), zr(idplgm), zr(icontm), zr(ivectu))
     elseif (option .eq. 'REFE_FORC_NODA') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PVECTUR', 'E', ivectu)
-        call nmforn(ndim, nnoQ, nnoL, npg, jv_poids,&
-                    zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, zr( igeom), zr(ivectu))
+        call nmforn(ndim, nnoQ, nnoL, npg, jv_poids, &
+                    zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, zr(igeom), zr(ivectu))
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

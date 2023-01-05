@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,27 +48,27 @@ subroutine dismcr(questi, nomobz, repi, repkz, ierd)
     character(len=32) :: repk
     character(len=8) :: nomob
     integer :: k, ncarte, iexi, jadr
-    parameter (ncarte=12)
+    parameter(ncarte=12)
     character(len=11) :: cartes(ncarte)
     character(len=19) :: cart1
-    data cartes/'.CARCOQUE',  '.CARGEOPO',  '.CARARCPO',&
-                '.CARCABLE',  '.CARDISCA',  '.CARDISCK',&
-                '.CARDISCM',  '.CARGENBA',  '.CARGENPO',&
-                '.CARMASSI',  '.CARORIEN',  '.CARPOUFL' /
+    data cartes/'.CARCOQUE', '.CARGEOPO', '.CARARCPO', &
+        '.CARCABLE', '.CARDISCA', '.CARDISCK', &
+        '.CARDISCM', '.CARGENBA', '.CARGENPO', &
+        '.CARMASSI', '.CARORIEN', '.CARPOUFL'/
 ! --------------------------------------------------------------------------------------------------
 !
     repk = ' '
     repi = 0
     ierd = 0
-    nomob=nomobz
+    nomob = nomobz
 !
 ! --------------------------------------------------------------------------------------------------
     if (questi .eq. 'NOM_MAILLA') then
-        do k=1,ncarte
-            cart1=nomob//cartes(k)
+        do k = 1, ncarte
+            cart1 = nomob//cartes(k)
             call dismca(questi, cart1, repi, repk, ierd)
             if (ierd .eq. 0) exit
-        enddo
+        end do
 ! --------------------------------------------------------------------------------------------------
     else if (questi .eq. 'NOM_MODELE') then
         call jeexin(nomob//'.MODELE', iexi)
@@ -77,18 +77,18 @@ subroutine dismcr(questi, nomobz, repi, repkz, ierd)
             repk = zk8(jadr)
         else
             ierd = 1
-        endif
+        end if
 ! --------------------------------------------------------------------------------------------------
-    else if (questi.eq.'EXI_AMOR') then
-        repk='NON'
+    else if (questi .eq. 'EXI_AMOR') then
+        repk = 'NON'
         call jeexin(nomob//'.CARDISCA  .VALE', iexi)
         if (iexi .ne. 0) then
-            if (.not.zerobj(nomob//'.CARDISCA  .VALE')) repk='OUI'
-        endif
+            if (.not. zerobj(nomob//'.CARDISCA  .VALE')) repk = 'OUI'
+        end if
 ! --------------------------------------------------------------------------------------------------
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
-    repkz=repk
+    repkz = repk
 end subroutine

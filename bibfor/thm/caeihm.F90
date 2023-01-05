@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine caeihm(ds_thm, nomte, l_axi, l_steady, mecani, press1,&
-                  press2, tempe, dimdef, dimcon, ndim,&
-                  nno1, nno2, npi, npg, dimuel,&
-                  iw, ivf1, idf1, ivf2, idf2,&
-                  jgano1, iu, ip, ipf, iq,&
+subroutine caeihm(ds_thm, nomte, l_axi, l_steady, mecani, press1, &
+                  press2, tempe, dimdef, dimcon, ndim, &
+                  nno1, nno2, npi, npg, dimuel, &
+                  iw, ivf1, idf1, ivf2, idf2, &
+                  jgano1, iu, ip, ipf, iq, &
                   inte_type)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/elref2.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/lteatt.h"
 #include "asterfort/thmGetElemIntegration.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-character(len=3), intent(out) :: inte_type
+    type(THM_DS), intent(inout) :: ds_thm
+    character(len=3), intent(out) :: inte_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,23 +82,23 @@ character(len=3), intent(out) :: inte_type
     integer :: npg, npi, n, i
     integer :: ivf1, idf1, ivf2, idf2, jgano1, jgano2, iw
     integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
-    integer, parameter :: f1q8(6) = (/1,2,5,4,3,7/)
-    integer, parameter :: f2q8(2) = (/8,6/)
-    integer, parameter :: f3q8(2) = (/1,2/)
-    integer, parameter :: f4q8(2) = (/4,3/)
+    integer, parameter :: f1q8(6) = (/1, 2, 5, 4, 3, 7/)
+    integer, parameter :: f2q8(2) = (/8, 6/)
+    integer, parameter :: f3q8(2) = (/1, 2/)
+    integer, parameter :: f4q8(2) = (/4, 3/)
     character(len=8) :: lielrf(10)
     character(len=16) :: nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_steady = ASTER_FALSE
-    ndim     = 2
-    l_axi    = ASTER_FALSE
-    l_vf     = ASTER_FALSE
+    ndim = 2
+    l_axi = ASTER_FALSE
+    l_vf = ASTER_FALSE
 ! ======================================================================
 ! --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 ! ======================================================================
-    call greihm(l_steady, ndim, mecani, press1, press2,&
+    call greihm(l_steady, ndim, mecani, press1, press2, &
                 tempe, dimdef, dimcon)
 
 !
@@ -108,27 +108,27 @@ character(len=3), intent(out) :: inte_type
 !
 ! - Get type of integration
 !
-    call thmGetElemIntegration(l_vf, inte_type = inte_type)
+    call thmGetElemIntegration(l_vf, inte_type=inte_type)
 !
-    l_axi = lteatt('AXIS','OUI')
+    l_axi = lteatt('AXIS', 'OUI')
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 ! ======================================================================
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npi, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgano1)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
                      npg=npi, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgano2)
 !
     if (inte_type .eq. 'RED') then
-        npg= npi-nnos
-    endif
+        npg = npi-nnos
+    end if
     if (inte_type .eq. 'CLA') then
-        npg= npi
-    endif
+        npg = npi
+    end if
 !
-    ndim = ndim + 1
+    ndim = ndim+1
 !
 ! ======================================================================
 ! --- DETERMINATION DES DECALAGES D'INDICE POUR ACCEDER AUX DDL --------
@@ -137,22 +137,22 @@ character(len=3), intent(out) :: inte_type
     dimuel = 2*nno1*ndim+nno2*3*(press1(1)+press2(1))+2
     do n = 1, 5
         do i = 1, 2
-            iu(i,n) = i + (f1q8(n)-1)*3
+            iu(i, n) = i+(f1q8(n)-1)*3
         end do
     end do
     do i = 1, 2
-        iu(i,6) = iu(i,3) + 4
+        iu(i, 6) = iu(i, 3)+4
     end do
     do n = 1, 2
-        ip(1,n) = 16 + (f2q8(n)-6)*2
+        ip(1, n) = 16+(f2q8(n)-6)*2
     end do
     do n = 1, 2
-        ipf(1,1,n) = 3+(f4q8(n)-1)*3
+        ipf(1, 1, n) = 3+(f4q8(n)-1)*3
     end do
     do n = 1, 2
-        ipf(1,2,n) = 3+(f3q8(n)-1)*3
+        ipf(1, 2, n) = 3+(f3q8(n)-1)*3
     end do
-    iq(1,1,1)=iu(2,6)+1
-    iq(1,2,1)=iu(2,3)+1
+    iq(1, 1, 1) = iu(2, 6)+1
+    iq(1, 2, 1) = iu(2, 3)+1
 !
 end subroutine

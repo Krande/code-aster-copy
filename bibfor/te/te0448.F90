@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 
 subroutine te0448(nomopt, nomte)
 !
-use HHO_basis_module
-use HHO_eval_module
-use HHO_init_module, only : hhoInfoInitCell
-use HHO_gradrec_module
-use HHO_Meca_module
-use HHO_quadrature_module
-use HHO_size_module
-use HHO_type
-use HHO_utils_module
+    use HHO_basis_module
+    use HHO_eval_module
+    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_gradrec_module
+    use HHO_Meca_module
+    use HHO_quadrature_module
+    use HHO_size_module
+    use HHO_type
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -63,7 +63,7 @@ implicit none
     character(len=8) :: typmod(2)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8) :: G_curr(3,3), E_curr(6)
+    real(kind=8) :: G_curr(3, 3), E_curr(6)
     real(kind=8) :: coorpg(3)
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr
@@ -82,12 +82,12 @@ implicit none
 ! --- Number of dofs
     call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
     nsig = nbsigm()
-    gbs_cmp = gbs / (hhoCell%ndim * hhoCell%ndim)
+    gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    ASSERT(nomopt.eq.'EPSI_ELGA')
+    ASSERT(nomopt .eq. 'EPSI_ELGA')
 !
 ! --- Initialize quadrature for the rigidity
     call hhoQuadCellRigi%initCell(hhoCell, npg)
@@ -95,22 +95,22 @@ implicit none
 ! --- Type of finite element
 !
     select case (hhoCell%ndim)
-        case(3)
-            typmod(1) = '3D'
-        case (2)
-            if (lteatt('AXIS','OUI')) then
-                ASSERT(ASTER_FALSE)
-                typmod(1) = 'AXIS'
-            else if (lteatt('C_PLAN','OUI')) then
-                ASSERT(ASTER_FALSE)
-                typmod(1) = 'C_PLAN'
-            else if (lteatt('D_PLAN','OUI')) then
-                typmod(1) = 'D_PLAN'
-            else
-                ASSERT(ASTER_FALSE)
-            endif
-        case default
+    case (3)
+        typmod(1) = '3D'
+    case (2)
+        if (lteatt('AXIS', 'OUI')) then
             ASSERT(ASTER_FALSE)
+            typmod(1) = 'AXIS'
+        else if (lteatt('C_PLAN', 'OUI')) then
+            ASSERT(ASTER_FALSE)
+            typmod(1) = 'C_PLAN'
+        else if (lteatt('D_PLAN', 'OUI')) then
+            typmod(1) = 'D_PLAN'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    case default
+        ASSERT(ASTER_FALSE)
     end select
     typmod(2) = 'HHO'
 !
@@ -122,7 +122,7 @@ implicit none
 !
 ! --- Compute Operators
 !
-    if(l_largestrains) then
+    if (l_largestrains) then
 !
 ! ----- Compute Gradient reconstruction
         call hhoGradRecFullMat(hhoCell, hhoData, gradrec)
@@ -144,9 +144,9 @@ implicit none
 !
 ! --- Compute local contribution
 !
-    if(l_largestrains) then
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_curr, 1,&
-                    0.d0, G_curr_coeff, 1)
+    if (l_largestrains) then
+        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_curr, 1, &
+                   0.d0, G_curr_coeff, 1)
         gbs_curr = gbs
     else
         call dgemv('N', gbs_sym, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
@@ -157,18 +157,18 @@ implicit none
 ! ----- Loop on quadrature point
 !
     do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-        coorpg(1:3) = hhoQuadCellRigi%points(1:3,ipg)
+        coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
 !
 ! --------- Eval basis function at the quadrature point
 !
         call hhoBasisCell%BSEval(hhoCell, coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
-        if(l_largestrains) then
+        if (l_largestrains) then
             G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                coorpg(1:3), G_curr_coeff, gbs)
+                                    coorpg(1:3), G_curr_coeff, gbs)
         else
             E_curr = hhoEvalSymMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                   coorpg(1:3), G_curr_coeff, gbs_sym)
+                                       coorpg(1:3), G_curr_coeff, gbs_sym)
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if
     end do

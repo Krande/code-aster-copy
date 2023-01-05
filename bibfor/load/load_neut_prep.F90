@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin     , lpain,&
+subroutine load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain, &
                           mateco_, varc_curr_, temp_prev_, temp_iter_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/megeom.h"
@@ -72,26 +72,26 @@ implicit none
 ! - Input fields
 !
     if (present(temp_prev_)) then
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PTEMPER'
         lchin(nb_in_prep) = temp_prev_(1:19)
-    endif
+    end if
     if (present(temp_iter_)) then
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PTEMPEI'
         lchin(nb_in_prep) = temp_iter_(1:19)
-    endif
+    end if
     if (present(mateco_)) then
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PMATERC'
         lchin(nb_in_prep) = mateco_(1:19)
-    endif
+    end if
     if (present(varc_curr_)) then
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PVARCPR'
         lchin(nb_in_prep) = varc_curr_(1:19)
-    endif
+    end if
 !
-    ASSERT(nb_in_prep.le.nb_in_maxi)
+    ASSERT(nb_in_prep .le. nb_in_maxi)
 !
 end subroutine

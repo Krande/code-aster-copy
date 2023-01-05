@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,16 +42,16 @@ subroutine cargri(lexc, densit, distn, dir11)
     call jevech('PCACOQU', 'L', icacoq)
 !
     densit = zr(icacoq)
-    alpha = zr(icacoq+1) * r8dgrd()
-    beta = zr(icacoq+2) * r8dgrd()
+    alpha = zr(icacoq+1)*r8dgrd()
+    beta = zr(icacoq+2)*r8dgrd()
     dir11(1) = cos(beta)*cos(alpha)
     dir11(2) = cos(beta)*sin(alpha)
-    dir11(3) = - sin(beta)
+    dir11(3) = -sin(beta)
 !
     if (lexc) then
         distn = zr(icacoq+3)
     else
         distn = r8vide()
-    endif
+    end if
 !
 end subroutine

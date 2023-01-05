@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -52,33 +52,33 @@ implicit none
     if (ndimg .eq. 3) then
         if (lctfc) then
             ndd1 = 6
-            call mmfield_prep(champ, champr,&
-                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
-                              list_cmp_ = ['DX      ','DY      ','DZ      ',&
-                                           'LAGS_C  ','LAGS_F1 ','LAGS_F2 '])
+            call mmfield_prep(champ, champr, &
+                              l_sort_=.true._1, nb_cmp_=ndd1, &
+                              list_cmp_=['DX      ', 'DY      ', 'DZ      ', &
+                                         'LAGS_C  ', 'LAGS_F1 ', 'LAGS_F2 '])
         else
             ndd1 = 4
-            call mmfield_prep(champ, champr,&
-                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
-                              list_cmp_ = ['DX      ','DY      ','DZ      ',&
-                                           'LAGS_C  '])
-        endif
-    else if (ndimg.eq.2) then
+            call mmfield_prep(champ, champr, &
+                              l_sort_=.true._1, nb_cmp_=ndd1, &
+                              list_cmp_=['DX      ', 'DY      ', 'DZ      ', &
+                                         'LAGS_C  '])
+        end if
+    else if (ndimg .eq. 2) then
         if (lctfc) then
             ndd1 = 4
-            call mmfield_prep(champ, champr,&
-                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
-                              list_cmp_ = ['DX      ','DY      ',&
-                                           'LAGS_C  ','LAGS_F1 '])
+            call mmfield_prep(champ, champr, &
+                              l_sort_=.true._1, nb_cmp_=ndd1, &
+                              list_cmp_=['DX      ', 'DY      ', &
+                                         'LAGS_C  ', 'LAGS_F1 '])
         else
             ndd1 = 3
-            call mmfield_prep(champ, champr,&
-                              l_sort_ = .true._1, nb_cmp_ = ndd1,&
-                              list_cmp_ = ['DX      ','DY      ',&
-                                           'LAGS_C  '])
-        endif
+            call mmfield_prep(champ, champr, &
+                              l_sort_=.true._1, nb_cmp_=ndd1, &
+                              list_cmp_=['DX      ', 'DY      ', &
+                                         'LAGS_C  '])
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

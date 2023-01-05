@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nonlinDSTableVoid(table)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/nonlinDSColumnVoid.h"
 !
-type(NL_DS_Table), intent(out) :: table
+    type(NL_DS_Table), intent(out) :: table
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,15 +50,15 @@ type(NL_DS_Table), intent(out) :: table
     call nonlinDSColumnVoid(column_void)
     nb_cols_maxi = table%nb_cols_maxi
 !
-    table%table_io                    = tableio_void
-    table%nb_cols                     = 0
-    table%cols(1:nb_cols_maxi)        = column_void
+    table%table_io = tableio_void
+    table%nb_cols = 0
+    table%cols(1:nb_cols_maxi) = column_void
     table%l_cols_acti(1:nb_cols_maxi) = ASTER_FALSE
-    table%width                       = 0
-    table%title_height                = 0
-    table%sep_line                    = ' '
-    table%l_csv                       = ASTER_FALSE
-    table%unit_csv                    = 0
-    table%indx_vale(1:nb_cols_maxi)   = 0
+    table%width = 0
+    table%title_height = 0
+    table%sep_line = ' '
+    table%l_csv = ASTER_FALSE
+    table%unit_csv = 0
+    table%indx_vale(1:nb_cols_maxi) = 0
 !
 end subroutine

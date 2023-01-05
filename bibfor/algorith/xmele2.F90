@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmele2(mesh  , model, ds_contact, ligrel, nfiss,&
+subroutine xmele2(mesh, model, ds_contact, ligrel, nfiss, &
                   chelem)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -68,14 +68,14 @@ implicit none
 ! IN  CHELEM : NOM DU CHAM_ELEM CREEE
 !
     integer, parameter :: nbcmp = 10
-    character(len=8), parameter :: licmp(nbcmp) = (/ 'RHON  ','MU    ','RHOTK ','INTEG ',&
-                                                     'COECH ','COSTCO','COSTFR','COPECO',&
-                                                     'COPEFR','RELA  '/)
+    character(len=8), parameter :: licmp(nbcmp) = (/'RHON  ', 'MU    ', 'RHOTK ', 'INTEG ', &
+                                                    'COECH ', 'COSTCO', 'COSTFR', 'COPECO', &
+                                                    'COPEFR', 'RELA  '/)
     integer :: ifm, niv, iret
     integer :: ibid, iad, i, ima, ifis, izone
-    integer :: nmaenr, nbma,  ispt, icmp
+    integer :: nmaenr, nbma, ispt, icmp
     character(len=8) :: nomfis
-    integer :: jcesl,  jcesd
+    integer :: jcesl, jcesd
     character(len=24) :: grp
     integer :: jgrp
     character(len=19) :: chelsi
@@ -92,13 +92,13 @@ implicit none
     call jemarq()
     call infdbg('XFEM', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<XFEM  > CREATION DU CHAM_ELEM PDONCO'
-    endif
+        write (ifm, *) '<XFEM  > CREATION DU CHAM_ELEM PDONCO'
+    end if
 !
 ! --- INITIALISATIONS
 !
     chelsi = '&&XMELE2.CES'
-    call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
+    call jeveuo(model//'.XFEM_CONT', 'L', vi=xfem_cont)
     contac = xfem_cont(1)
 !
 ! --- RECOPIE DU NOMBRE DE SOUS POINTS DE TOPOSE.HEA DANS LE CHAMP NBSP
@@ -113,7 +113,7 @@ implicit none
 !
 ! --- CREATION DU CHAM_ELEM_S
 !
-    call cescre('V', chelsi, 'ELEM', mesh, 'XCONTAC',&
+    call cescre('V', chelsi, 'ELEM', mesh, 'XCONTAC', &
                 nbcmp, licmp, [-1], nbsp, [-nbcmp])
 !
 ! --- ACCES AU CHAM_ELEM_S
@@ -143,19 +143,19 @@ implicit none
 !
 ! --- ZONE DE CONTACT IZONE CORRESPONDANTE
 !
-        izone = xxconi(ds_contact%sdcont_defi,nomfis,'MAIT')
+        izone = xxconi(ds_contact%sdcont_defi, nomfis, 'MAIT')
 !
 ! --- CARACTERISTIQUES DU CONTACT POUR LA FISSURE EN COURS
 !
-        coef(1) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_CONT',izone )
-        coef(2) = mminfr(ds_contact%sdcont_defi,'COEF_COULOMB' ,izone )
-        coef(3) = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_FROT',izone )
-        coef(4) = mminfi(ds_contact%sdcont_defi,'INTEGRATION' ,izone )
-        coef(6) = mminfr(ds_contact%sdcont_defi,'ALGO_CONT' ,izone )
-        coef(7) = mminfr(ds_contact%sdcont_defi,'ALGO_FROT' ,izone )
-        coef(8) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_CONT',izone )
-        coef(9) = mminfr(ds_contact%sdcont_defi,'COEF_PENA_FROT',izone )
-        coef(10)= mminfr(ds_contact%sdcont_defi,'RELATION' ,izone )
+        coef(1) = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_CONT', izone)
+        coef(2) = mminfr(ds_contact%sdcont_defi, 'COEF_COULOMB', izone)
+        coef(3) = mminfr(ds_contact%sdcont_defi, 'COEF_AUGM_FROT', izone)
+        coef(4) = mminfi(ds_contact%sdcont_defi, 'INTEGRATION', izone)
+        coef(6) = mminfr(ds_contact%sdcont_defi, 'ALGO_CONT', izone)
+        coef(7) = mminfr(ds_contact%sdcont_defi, 'ALGO_FROT', izone)
+        coef(8) = mminfr(ds_contact%sdcont_defi, 'COEF_PENA_CONT', izone)
+        coef(9) = mminfr(ds_contact%sdcont_defi, 'COEF_PENA_FROT', izone)
+        coef(10) = mminfr(ds_contact%sdcont_defi, 'RELATION', izone)
 !
 ! --- ON COPIE LES CHAMPS CORRESP. AUX ELEM. HEAV, CTIP ET HECT
 !
@@ -169,7 +169,7 @@ implicit none
 ! --- RECUPERATION DU NUMÉRO DE SOUS POINT ISPT
 !
                 do ispt = 1, nbsp(ima)
-                    call cesexi('S', jcesd, jcesl, ima, 1,&
+                    call cesexi('S', jcesd, jcesl, ima, 1, &
                                 ispt, 1, iad)
                     if (iad .lt. 0) goto 140
                 end do
@@ -179,25 +179,25 @@ implicit none
 ! --- RECOPIE EFFECTIVE DES CHAMPS
 !
                 do icmp = 1, nbcmp
-                    call cesexi('S', jcesd, jcesl, ima, 1,&
+                    call cesexi('S', jcesd, jcesl, ima, 1, &
                                 ispt, icmp, iad)
                     zl(jcesl-1-iad) = .true.
                     cesv(1-1-iad) = coef(icmp)
                 end do
             end do
-        endif
+        end if
 !
     end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !
-    if(contac.eq.1.or.contac.eq.3) then
-        call cescel(chelsi, ligrel, 'XCVBCA', 'PDONCO', 'NON',&
+    if (contac .eq. 1 .or. contac .eq. 3) then
+        call cescel(chelsi, ligrel, 'XCVBCA', 'PDONCO', 'NON', &
                     ibid, 'V', chelem, 'F', ibid)
-    else if(contac.eq.2) then
-        call cescel(chelsi, ligrel, 'RIGI_CONT_M', 'PDONCO', 'NON',&
+    else if (contac .eq. 2) then
+        call cescel(chelsi, ligrel, 'RIGI_CONT_M', 'PDONCO', 'NON', &
                     ibid, 'V', chelem, 'F', ibid)
-    endif
+    end if
 !
 ! --- MENAGE
 !

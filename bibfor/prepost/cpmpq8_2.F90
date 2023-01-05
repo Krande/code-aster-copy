@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,27 +49,27 @@ subroutine cpmpq8_2(conloc, numa, indno, indma)
 ! ----------------------------------------------------------------------
     call jemarq()
 ! ----------------------------------------------------------------------
-    call jeecra(jexnum(conloc,indma), 'LONMAX', ival=3)
-    call jeecra(jexnum(conloc,indma), 'LONUTI', ival=3)
-    call jeveuo(jexnum(conloc,indma), 'E', jconloc)
-    zi(jconloc+1-1)=zi(numa+1-1)
-    zi(jconloc+2-1)=zi(numa+2-1)
-    zi(jconloc+3-1)=indno
-    call jeecra(jexnum(conloc,indma+1), 'LONMAX', ival=3)
-    call jeecra(jexnum(conloc,indma+1), 'LONUTI', ival=3)
-    call jeveuo(jexnum(conloc,indma+1), 'E', jconloc)
-    zi(jconloc+1-1)=zi(numa+2-1)
-    zi(jconloc+2-1)=zi(numa+3-1)
-    zi(jconloc+3-1)=indno
-    call jeecra(jexnum(conloc,indma+2), 'LONMAX', ival=3)
-    call jeecra(jexnum(conloc,indma+2), 'LONUTI', ival=3)
-    call jeveuo(jexnum(conloc,indma+2), 'E', jconloc)
-    zi(jconloc+1-1)=zi(numa+3-1)
-    zi(jconloc+2-1)=zi(numa+4-1)
-    zi(jconloc+3-1)=indno
-    call jeecra(jexnum(conloc,indma+3), 'LONMAX', ival=3)
-    call jeecra(jexnum(conloc,indma+3), 'LONUTI', ival=3)
-    call jeveuo(jexnum(conloc,indma+3), 'E', jconloc)
+    call jeecra(jexnum(conloc, indma), 'LONMAX', ival=3)
+    call jeecra(jexnum(conloc, indma), 'LONUTI', ival=3)
+    call jeveuo(jexnum(conloc, indma), 'E', jconloc)
+    zi(jconloc+1-1) = zi(numa+1-1)
+    zi(jconloc+2-1) = zi(numa+2-1)
+    zi(jconloc+3-1) = indno
+    call jeecra(jexnum(conloc, indma+1), 'LONMAX', ival=3)
+    call jeecra(jexnum(conloc, indma+1), 'LONUTI', ival=3)
+    call jeveuo(jexnum(conloc, indma+1), 'E', jconloc)
+    zi(jconloc+1-1) = zi(numa+2-1)
+    zi(jconloc+2-1) = zi(numa+3-1)
+    zi(jconloc+3-1) = indno
+    call jeecra(jexnum(conloc, indma+2), 'LONMAX', ival=3)
+    call jeecra(jexnum(conloc, indma+2), 'LONUTI', ival=3)
+    call jeveuo(jexnum(conloc, indma+2), 'E', jconloc)
+    zi(jconloc+1-1) = zi(numa+3-1)
+    zi(jconloc+2-1) = zi(numa+4-1)
+    zi(jconloc+3-1) = indno
+    call jeecra(jexnum(conloc, indma+3), 'LONMAX', ival=3)
+    call jeecra(jexnum(conloc, indma+3), 'LONUTI', ival=3)
+    call jeveuo(jexnum(conloc, indma+3), 'E', jconloc)
     zi(jconloc+1-1) = zi(numa+4-1)
     zi(jconloc+2-1) = zi(numa+1-1)
     zi(jconloc+3-1) = indno

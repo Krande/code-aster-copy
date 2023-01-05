@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine te0062(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ALDRESSES FONCTIONS DE FORMES...
 !====
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     nbcmp = 3
@@ -84,28 +84,28 @@ subroutine te0062(option, nomte)
 !====
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemps)],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
                     1, nomres, lambda, icodre, 1)
         aniso = .false.
-    else if (phenom.eq.'THER_ORTH') then
+    else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
         nomres(3) = 'LAMBDA_N'
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', [zr(itemps)],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                    ' ', phenom, 1, 'INST', [zr(itemps)], &
                     3, nomres, valres, icodre, 1)
         lambor(1) = valres(1)
         lambor(2) = valres(2)
         lambor(3) = valres(3)
         aniso = .true.
-    else if (phenom.eq.'THER_NL') then
+    else if (phenom .eq. 'THER_NL') then
         aniso = .false.
-    else if (phenom.eq.'THER_NL_ORTH') then
+    else if (phenom .eq. 'THER_NL_ORTH') then
         aniso = .true.
     else
         call utmess('F', 'ELEMENTS2_63')
-    endif
+    end if
 !
 !====
 ! 1.4 PREALABLES LIES A L'ANISOTROPIE
@@ -128,15 +128,15 @@ subroutine te0062(option, nomte)
             orig(1) = zr(icamas+4)
             orig(2) = zr(icamas+5)
             orig(3) = zr(icamas+6)
-        endif
-    endif
+        end if
+    end if
 !
 !====
 ! 2. CALCULS TERMES DE FLUX
 !====
     do kp = 1, npg1
         l = (kp-1)*nno
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids, dfdx, dfdy, dfdz)
 !
 !     CALCUL DE T ET DE GRAD(T) AUX POINTS DE GAUSS
@@ -144,44 +144,44 @@ subroutine te0062(option, nomte)
         fluxx = 0.0d0
         fluxy = 0.0d0
         fluxz = 0.0d0
-        if (.not.global .and. aniso) then
+        if (.not. global .and. aniso) then
             point(1) = 0.d0
             point(2) = 0.d0
             point(3) = 0.d0
             do nuno = 1, nno
-                point(1) = point(1) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-3)
-                point(2) = point(2) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-2)
-                point(3) = point(3) + zr(ivf+l+nuno-1)*zr(igeom+3* nuno-1)
+                point(1) = point(1)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-3)
+                point(2) = point(2)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-2)
+                point(3) = point(3)+zr(ivf+l+nuno-1)*zr(igeom+3*nuno-1)
             end do
             call utrcyl(point, dire, orig, p)
-        endif
+        end if
 !
         do i = 1, nno
-            tpg = tpg + zr(itempe-1+i)*zr(ivf+l+i-1)
-            fluxx = fluxx + zr(itempe-1+i)*dfdx(i)
-            fluxy = fluxy + zr(itempe-1+i)*dfdy(i)
-            fluxz = fluxz + zr(itempe-1+i)*dfdz(i)
+            tpg = tpg+zr(itempe-1+i)*zr(ivf+l+i-1)
+            fluxx = fluxx+zr(itempe-1+i)*dfdx(i)
+            fluxy = fluxy+zr(itempe-1+i)*dfdy(i)
+            fluxz = fluxz+zr(itempe-1+i)*dfdz(i)
         end do
 !
         if (phenom .eq. 'THER_NL') then
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA', lambda, icodre, 1)
-        endif
+        end if
 !
         if (phenom .eq. 'THER_NL_ORTH') then
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA_L', lambor(1), icodre, 1)
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA_T', lambor(2), icodre, 1)
-            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', [tpg],&
+            call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                        ' ', phenom, 1, 'TEMP', [tpg], &
                         1, 'LAMBDA_N', lambor(3), icodre, 1)
-        endif
+        end if
 !
-        if (.not.aniso) then
+        if (.not. aniso) then
             fluglo(1) = lambda(1)*fluxx
             fluglo(2) = lambda(1)*fluxy
             fluglo(3) = lambda(1)*fluxz
@@ -198,7 +198,7 @@ subroutine te0062(option, nomte)
             n1 = 1
             n2 = 3
             call utpvlg(n1, n2, p, fluloc, fluglo)
-        endif
+        end if
 !
         zr(iflux+(kp-1)*nbcmp-1+1) = -fluglo(1)
         zr(iflux+(kp-1)*nbcmp-1+2) = -fluglo(2)

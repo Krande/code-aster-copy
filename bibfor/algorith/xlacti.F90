@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,32 +62,32 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
     end do
     nlact = 0
     call conare(typma, ar, nbar)
-    zxain=xxmmvd('ZXAIN')
+    zxain = xxmmvd('ZXAIN')
 !
 ! --- ON ACTIVE LES NOEUDS CONNECTES AUX POINTS D'INTERSECTION
     do nli = 1, ninter
-        iar=int(zr(jaint-1+zxain*(nli-1)+1))
-        ino=int(zr(jaint-1+zxain*(nli-1)+2))
-        nvit=int(zr(jaint-1+zxain*(nli-1)+5))
+        iar = int(zr(jaint-1+zxain*(nli-1)+1))
+        ino = int(zr(jaint-1+zxain*(nli-1)+2))
+        nvit = int(zr(jaint-1+zxain*(nli-1)+5))
         if (ino .gt. 0) then
-            lact(ino)=nli
-        else if (iar.gt.0) then
-            ino1=ar(iar,1)
-            ino2=ar(iar,2)
+            lact(ino) = nli
+        else if (iar .gt. 0) then
+            ino1 = ar(iar, 1)
+            ino2 = ar(iar, 2)
             if (nvit .eq. 1) then
-                lact(ino1)=nli
-                vit(ino1)=1
-                lact(ino2)=nli
-                vit(ino2)=1
+                lact(ino1) = nli
+                vit(ino1) = 1
+                lact(ino2) = nli
+                vit(ino2) = 1
             else
-                if (vit(ino1) .eq. 0) lact(ino1)=nli
-                if (vit(ino2) .eq. 0) lact(ino2)=nli
-            endif
-        endif
+                if (vit(ino1) .eq. 0) lact(ino1) = nli
+                if (vit(ino2) .eq. 0) lact(ino2) = nli
+            end if
+        end if
     end do
 ! --- ON COMPTE LE NOMBRE DE NOEUDS ACTIFS
     do ino = 1, 8
-        if (lact(ino) .ne. 0) nlact=nlact+1
+        if (lact(ino) .ne. 0) nlact = nlact+1
     end do
 !
 end subroutine

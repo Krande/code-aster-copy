@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cgveli(typfis, typdis, ndim, lnoff, liss,&
+subroutine cgveli(typfis, typdis, ndim, lnoff, liss, &
                   ndeg)
     implicit none
 !
@@ -62,8 +62,8 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss,&
 !     ----------------------------------------------------------
 !
 !     INITIALISATIONS
-    liss=' '
-    ndeg=-1
+    liss = ' '
+    ndeg = -1
 !
     if (ndim .eq. 2) then
 !
@@ -73,35 +73,35 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss,&
 !       L'UTILISATEUR NE DOIT PAS AVOIR RENSEIGNE LISSAGE_THETA
         call getvtx('LISSAGE', 'LISSAGE_THETA', iocc=1, scal=lissth, nbret=ier)
 !
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
 !
         call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ier)
         call getvtx('LISSAGE', 'LISSAGE_THETA', iocc=1, scal=lissth, nbret=ier)
 !
         if (lissg .eq. 'LEGENDRE' .and. lissth .eq. 'LEGENDRE') then
-            liss='LEGENDRE'
-        else if (lissg.eq.'LEGENDRE'.and.lissth.eq.'LAGRANGE') then
-            liss='MIXTE'
-        else if (lissg.eq.'LAGRANGE'.and.lissth.eq.'LAGRANGE') then
-            liss='LAGRANGE'
-            elseif (lissg.eq.'LAGRANGE_NO_NO'.and.lissth.eq.'LAGRANGE')&
-        then
-            liss='LAGRANGE_NO_NO'
+            liss = 'LEGENDRE'
+        else if (lissg .eq. 'LEGENDRE' .and. lissth .eq. 'LAGRANGE') then
+            liss = 'MIXTE'
+        else if (lissg .eq. 'LAGRANGE' .and. lissth .eq. 'LAGRANGE') then
+            liss = 'LAGRANGE'
+        elseif (lissg .eq. 'LAGRANGE_NO_NO' .and. lissth .eq. 'LAGRANGE') &
+            then
+            liss = 'LAGRANGE_NO_NO'
         else
             call utmess('F', 'RUPTURE0_86')
-        endif
+        end if
 !
 !       COMPATIBILITE ENTRE LISSAGE ET TYPFIS
         if (typfis .eq. 'FISSURE' .and. liss .eq. 'MIXTE') then
             call utmess('F', 'RUPTURE0_76')
-        endif
+        end if
 !
 !       COMPATIBILITE ENTRE LISSAGE ET OPTION
-        if(liss.eq.'MIXTE'.or.liss.eq.'LEGENDRE') then
-            if(typdis.eq.'COHESIF') then
+        if (liss .eq. 'MIXTE' .or. liss .eq. 'LEGENDRE') then
+            if (typdis .eq. 'COHESIF') then
                 call utmess('F', 'RUPTURE2_5')
-            endif
-        endif
+            end if
+        end if
 !
 !       RECUPERATION DU DEGRE DES POLYNOMES DE LEGENDRE
         call getvis('LISSAGE', 'DEGRE', iocc=1, scal=ndeg, nbret=ier)
@@ -110,10 +110,10 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss,&
         if (liss .eq. 'MIXTE') then
             if (ndeg .ge. lnoff) then
                 call utmess('F', 'RUPTURE0_84', si=lnoff)
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
 !
 end subroutine

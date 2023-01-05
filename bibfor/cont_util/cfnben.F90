@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfnben(sdcont_defi, enti_indx, enti_type, enti_nb_, enti_jdec_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -56,34 +56,34 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    enti_nb   = 0
+    enti_nb = 0
     enti_jdec = 0
 !
 ! - Access to contact datastructure
 !
     sdcont_pnomaco = sdcont_defi(1:16)//'.PNOMACO'
     sdcont_pmanoco = sdcont_defi(1:16)//'.PMANOCO'
-    call jeveuo(sdcont_pnomaco, 'L', vi = p_sdcont_pnomaco)
-    call jeveuo(sdcont_pmanoco, 'L', vi = p_sdcont_pmanoco)
+    call jeveuo(sdcont_pnomaco, 'L', vi=p_sdcont_pnomaco)
+    call jeveuo(sdcont_pmanoco, 'L', vi=p_sdcont_pmanoco)
 !
 ! - Get
 !
     if (enti_type .eq. 'CONNEX') then
-        enti_nb   = p_sdcont_pnomaco(enti_indx+1) - p_sdcont_pnomaco(enti_indx)
+        enti_nb = p_sdcont_pnomaco(enti_indx+1)-p_sdcont_pnomaco(enti_indx)
         enti_jdec = p_sdcont_pnomaco(enti_indx)
-    else if (enti_type.eq.'CONINV') then
-        enti_nb   = p_sdcont_pmanoco(enti_indx+1) - p_sdcont_pmanoco(enti_indx)
+    else if (enti_type .eq. 'CONINV') then
+        enti_nb = p_sdcont_pmanoco(enti_indx+1)-p_sdcont_pmanoco(enti_indx)
         enti_jdec = p_sdcont_pmanoco(enti_indx)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (present(enti_nb_)) then
         enti_nb_ = enti_nb
-    endif
+    end if
     if (present(enti_jdec_)) then
         enti_jdec_ = enti_jdec
-    endif
+    end if
 !
 !
 end subroutine

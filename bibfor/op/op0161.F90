@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,13 +57,13 @@ subroutine op0161()
     call getres(resu, concep, nomcmd)
 !
     call getvid(' ', 'RESULTAT', scal=resuin, nbret=n1)
-    call rsorac(resuin, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, k8b, tord, 1,&
+    call rsorac(resuin, 'LONUTI', ibid, rbid, k8b, &
+                cbid, rbid, k8b, tord, 1, &
                 nbtrou)
-    nbordr=tord(1)
+    nbordr = tord(1)
     call wkvect('&&OP0161.NUME_ORDRE', 'V V I', nbordr, jordr)
-    call rsorac(resuin, 'TOUT_ORDRE', 0, rbid, k8b,&
-                cbid, rbid, k8b, zi(jordr), nbordr,&
+    call rsorac(resuin, 'TOUT_ORDRE', 0, rbid, k8b, &
+                cbid, rbid, k8b, zi(jordr), nbordr, &
                 ibid)
 !
     call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n2)
@@ -88,73 +88,73 @@ subroutine op0161()
         k = 0
         do ior = 0, nbordr-1
             iordr = zi(jordr+ior)
-            call rsexch(' ', resuin, nsymb, iordr, nomch,&
+            call rsexch(' ', resuin, nsymb, iordr, nomch, &
                         iret)
             if (iret .eq. 0) then
-                k = k + 1
+                k = k+1
                 zk24(jnch+k-1) = nomch
-                call rsadpa(resuin, 'L', 1, 'TYPE_MODE', iordr,&
+                call rsadpa(resuin, 'L', 1, 'TYPE_MODE', iordr, &
                             0, sjv=jtmo, styp=k8b)
                 zk8(jtch+k-1) = zk8(jtmo)
-                call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr,&
+                call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr, &
                             0, sjv=jnmo, styp=k8b)
                 zi(jnha+k-1) = zi(jnmo)
                 zr(jcoe+k-1) = 1.d0
-                call rsadpa(resuin, 'L', 1, 'MODELE', iordr,&
+                call rsadpa(resuin, 'L', 1, 'MODELE', iordr, &
                             0, sjv=jmod, styp=k8b)
                 modele = zk8(jmod)
-                call rsadpa(resuin, 'L', 1, 'CHAMPMAT', iordr,&
+                call rsadpa(resuin, 'L', 1, 'CHAMPMAT', iordr, &
                             0, sjv=jmat, styp=k8b)
                 mate = zk8(jmat)
-                call rsadpa(resuin, 'L', 1, 'CARAELEM', iordr,&
+                call rsadpa(resuin, 'L', 1, 'CARAELEM', iordr, &
                             0, sjv=jcara, styp=k8b)
                 carele = zk8(jcara)
-            endif
+            end if
         end do
 !
         do ian = 1, nbangl
 !
 !     STOCKAGE DU NOM DU MODELE
 !     -------------------------
-            call rsadpa(resu, 'E', 1, 'MODELE', ian,&
+            call rsadpa(resu, 'E', 1, 'MODELE', ian, &
                         0, sjv=jpara, styp=k8b)
-            zk8(jpara)=modele
+            zk8(jpara) = modele
 !
 !     STOCKAGE DU NOM DU CHAMP MATERIAU
 !     ---------------------------------
-            call rsadpa(resu, 'E', 1, 'CHAMPMAT', ian,&
+            call rsadpa(resu, 'E', 1, 'CHAMPMAT', ian, &
                         0, sjv=jpara, styp=k8b)
-            zk8(jpara)=mate
+            zk8(jpara) = mate
 !
 !     STOCKAGE DU NOM DE LA CARACTERISTIQUE ELEMENTAIRE
 !     -------------------------------------------------
-            call rsadpa(resu, 'E', 1, 'CARAELEM', ian,&
+            call rsadpa(resu, 'E', 1, 'CARAELEM', ian, &
                         0, sjv=jpara, styp=k8b)
-            zk8(jpara)=carele
+            zk8(jpara) = carele
 !
         end do
 !
         if (k .ne. 0) then
             do ian = 1, nbangl
-                call rsexch(' ', resu, nsymb, ian, nomch,&
+                call rsexch(' ', resu, nsymb, ian, nomch, &
                             iret)
                 if (iret .eq. 110) then
                     call rsagsd(resu, 0)
-                    call rsexch(' ', resu, nsymb, ian, nomch,&
+                    call rsexch(' ', resu, nsymb, ian, nomch, &
                                 iret)
                 else if (iret .eq. 100) then
                 else
                     ASSERT(.false.)
-                endif
-                angle = zr(jangl+ian-1) * r8dgrd()
-                call refode(k, angle, zk24(jnch), zi(jnha), zk8( jtch),&
+                end if
+                angle = zr(jangl+ian-1)*r8dgrd()
+                call refode(k, angle, zk24(jnch), zi(jnha), zk8(jtch), &
                             zr(jcoe), 'G', nomch)
                 call rsnoch(resu, nsymb, ian)
-                call rsadpa(resu, 'E', 1, 'ANGLE', ian,&
+                call rsadpa(resu, 'E', 1, 'ANGLE', ian, &
                             0, sjv=jjan, styp=k8b)
                 zr(jjan) = zr(jangl+ian-1)
             end do
-        endif
+        end if
     end do
 !
     call jedema()

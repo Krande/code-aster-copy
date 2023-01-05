@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,10 +52,10 @@ subroutine lispcp(motfac, iexci, phase, npuis)
 !
     phase = 0.d0
     npuis = 0
-    eximcp = getexm(motfac,'PHAS_DEG')
+    eximcp = getexm(motfac, 'PHAS_DEG')
     if (eximcp .eq. 1) then
         call getvr8(motfac, 'PHAS_DEG', iocc=iexci, scal=phase, nbret=n)
         call getvis(motfac, 'PUIS_PULS', iocc=iexci, scal=npuis, nbret=n)
-    endif
+    end if
 !
 end subroutine

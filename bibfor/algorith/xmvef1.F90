@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
-                  hpg, ffc, ffe,&
-                  ffm, jacobi, dlagrc, dlagrf,&
-                  coeffr, lpenaf, coefff, tau1,&
-                  tau2, rese, mproj, coefcr,&
-                  jeu, nsinge, nsingm, fk_escl, fk_mait,&
-                  nvit, nconta, jddle, jddlm,&
-                  nfhe, nfhm, lmulti, heavn, heavfa,&
+subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc, &
+                  hpg, ffc, ffe, &
+                  ffm, jacobi, dlagrc, dlagrf, &
+                  coeffr, lpenaf, coefff, tau1, &
+                  tau2, rese, mproj, coefcr, &
+                  jeu, nsinge, nsingm, fk_escl, fk_mait, &
+                  nvit, nconta, jddle, jddlm, &
+                  nfhe, nfhm, lmulti, heavn, heavfa, &
                   vtmp)
 !
 !
@@ -40,7 +40,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
     real(kind=8) :: hpg, ffc(9), ffe(20), ffm(20), jacobi
     real(kind=8) :: dlagrc, dlagrf(2), jeu
     real(kind=8) :: coefff, coeffr, coefcr
-    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3)
+    real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3)
     real(kind=8) :: tau1(3), tau2(3), rese(3), mproj(3, 3), vtmp(336)
     integer :: nconta, ndeple
     aster_logical :: lpenaf, lmulti
@@ -97,20 +97,20 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
     iescl(2) = -1.d0
     imait(1) = 1.d0
     imait(2) = 1.d0
-    if (.not.lmulti) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
-    endif
+    if (.not. lmulti) then
+        hea_fa(1) = xcalc_code(1, he_inte=[-1])
+        hea_fa(2) = xcalc_code(1, he_inte=[+1])
+    end if
 !
-    nne=jnne(1)
-    nnes=jnne(2)
-    nnem=jnne(3)
-    nnm=jnnm(1)
-    nnms=jnnm(2)
-    ddles=jddle(1)
-    ddlem=jddle(2)
-    ddlms=jddlm(1)
-    ddlmm=jddlm(2)
+    nne = jnne(1)
+    nnes = jnne(2)
+    nnem = jnne(3)
+    nnm = jnnm(1)
+    nnms = jnnm(2)
+    ddles = jddle(1)
+    ddlem = jddle(2)
+    ddlms = jddlm(1)
+    ddlmm = jddlm(2)
     nddle = ddles*nnes+ddlem*nnem
 !
     vectt(:) = 0.d0
@@ -120,7 +120,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 !
     do i = 1, ndim
         do k = 1, ndim
-            vectt(i) = rese(k)*mproj(k,i) + vectt(i)
+            vectt(i) = rese(k)*mproj(k, i)+vectt(i)
         end do
     end do
 !
@@ -128,8 +128,8 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 !
     do i = 1, ndim
         t = dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)-rese(i)
-        tt(1)= t*tau1(i)+tt(1)
-        if (ndim .eq. 3) tt(2)= t*tau2(i)+tt(2)
+        tt(1) = t*tau1(i)+tt(1)
+        if (ndim .eq. 3) tt(2) = t*tau2(i)+tt(2)
     end do
 !
 ! --------------------- CALCUL DE [L1_FROT]-----------------------------
@@ -139,53 +139,53 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
         do j = 1, ndim
             do i = 1, ndeple
                 if (lmulti) then
-                    iescl(2)=xcalc_heav(heavn(nfhe*(i-1)+1),&
-                                            heavfa(1),&
-                                            heavn(nfhe*nne+nfhm*nnm+i))
+                    iescl(2) = xcalc_heav(heavn(nfhe*(i-1)+1), &
+                                          heavfa(1), &
+                                          heavn(nfhe*nne+nfhm*nnm+i))
                 else
-                    iescl(2)=xcalc_heav(heavn(i),&
-                                            hea_fa(1),&
-                                            heavn(nfhe*nne+nfhm*nnm+i))
-                endif
+                    iescl(2) = xcalc_heav(heavn(i), &
+                                          hea_fa(1), &
+                                          heavn(nfhe*nne+nfhm*nnm+i))
+                end if
 ! --- BLOCS ES,CL ; ES,EN ; (ES,SI)
                 if (nconta .eq. 3 .and. ndim .eq. 3) then
-                    vv = jacobi*hpg*coefff*(dlagrc-coefcr*jeu)*vectt( j)
+                    vv = jacobi*hpg*coefff*(dlagrc-coefcr*jeu)*vectt(j)
                 else
                     vv = jacobi*hpg*coefff*dlagrc*vectt(j)
-                endif
+                end if
                 call indent(i, ddles, ddlem, nnes, iin)
-                ii = iin + j
+                ii = iin+j
                 vtmp(ii) = vtmp(ii)-vv*ffe(i)
-                ii = ii + ndim
+                ii = ii+ndim
                 vtmp(ii) = vtmp(ii)-vv*iescl(2)*ffe(i)
                 do alp = 1, nsinge*ndim
-                    ii = iin + 2*ndim + alp
-                    vtmp(ii) = vtmp(ii)+fk_escl(i,alp,j)* vv
+                    ii = iin+2*ndim+alp
+                    vtmp(ii) = vtmp(ii)+fk_escl(i, alp, j)*vv
                 end do
             end do
             do i = 1, nnm
                 if (lmulti) then
-                    imait(2)=xcalc_heav(heavn(nfhe*nne+nfhm*(i-1)+1),&
-                                            heavfa(2),&
-                                            heavn((1+nfhe)*nne+nfhm*nnm+i))
+                    imait(2) = xcalc_heav(heavn(nfhe*nne+nfhm*(i-1)+1), &
+                                          heavfa(2), &
+                                          heavn((1+nfhe)*nne+nfhm*nnm+i))
                 else
-                    imait(2)=xcalc_heav(heavn(nne+i),&
-                                        hea_fa(2),&
-                                        heavn((1+nfhe)*nne+nfhm*nnm+i))
-                endif
+                    imait(2) = xcalc_heav(heavn(nne+i), &
+                                          hea_fa(2), &
+                                          heavn((1+nfhe)*nne+nfhm*nnm+i))
+                end if
                 if (nconta .eq. 3 .and. ndim .eq. 3) then
-                    vv = jacobi*hpg*coefff* (dlagrc-coefcr*jeu)*vectt( j)
+                    vv = jacobi*hpg*coefff*(dlagrc-coefcr*jeu)*vectt(j)
                 else
-                    vv = jacobi*hpg*coefff* dlagrc*vectt(j)
-                endif
+                    vv = jacobi*hpg*coefff*dlagrc*vectt(j)
+                end if
                 call indent(i, ddlms, ddlmm, nnms, iin)
-                ii = nddle + iin + j
+                ii = nddle+iin+j
                 vtmp(ii) = vtmp(ii)+vv*ffm(i)
-                ii = ii + ndim
+                ii = ii+ndim
                 vtmp(ii) = vtmp(ii)+vv*imait(2)*ffm(i)
                 do alp = 1, nsingm*ndim
-                    ii = ii + 2*ndim + alp
-                    vtmp(ii) = vtmp(ii)+vv*fk_mait(i,alp,j)
+                    ii = ii+2*ndim+alp
+                    vtmp(ii) = vtmp(ii)+vv*fk_mait(i, alp, j)
                 end do
             end do
         end do
@@ -195,24 +195,24 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
             do i = 1, ndeple
 ! --- BLOCS ES,SI
                 if (nconta .eq. 3 .and. ndim .eq. 3) then
-                    vv = jacobi*hpg*coefff* (dlagrc-coefcr*jeu)*vectt( j)
+                    vv = jacobi*hpg*coefff*(dlagrc-coefcr*jeu)*vectt(j)
                 else
-                    vv = jacobi*hpg*coefff* dlagrc*vectt(j)
-                endif
+                    vv = jacobi*hpg*coefff*dlagrc*vectt(j)
+                end if
                 call indent(i, ddles, ddlem, nnes, iin)
-                do alp=1,ndim*nsinge
-                  ii = iin + alp
-                  vtmp(ii) = vtmp(ii)+fk_escl(i,alp,j)* vv
-                enddo
+                do alp = 1, ndim*nsinge
+                    ii = iin+alp
+                    vtmp(ii) = vtmp(ii)+fk_escl(i, alp, j)*vv
+                end do
             end do
         end do
-    endif
+    end if
 !
 ! --------------------- CALCUL DE [L3]----------------------------------
 !
     if (nvit .eq. 1) then
         do i = 1, nnc
-            call xplma2(ndim, nne, nnes, ddles, i,&
+            call xplma2(ndim, nne, nnes, ddles, i, &
                         nfhe, pli)
             do j = 1, ndim-1
                 ii = pli+j
@@ -222,11 +222,11 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                     if (nconta .eq. 3 .and. ndim .eq. 3) then
                         vtmp(ii) = vtmp(ii)+jacobi*hpg*tt(j)*ffc(i)/coeffr
                     else
-                        vtmp(ii) = vtmp(ii)+jacobi*hpg*tt(j)*ffc(i)*coefff* dlagrc/coeffr
-                    endif
-                endif
+                        vtmp(ii) = vtmp(ii)+jacobi*hpg*tt(j)*ffc(i)*coefff*dlagrc/coeffr
+                    end if
+                end if
             end do
         end do
-    endif
+    end if
 !
 end subroutine

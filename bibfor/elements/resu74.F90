@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ subroutine resu74(tran, nomres)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, jacce,  jacce2, nbvint, jdepl
-    integer :: jdepl2, jdesc, jinst,  jinst2, jordr
+    integer :: i, jacce, jacce2, nbvint, jdepl
+    integer :: jdepl2, jdesc, jinst, jinst2, jordr
     integer :: jpas, jpas2, decal, jvint, jvint2
     integer :: jvite, jvite2
     real(kind=8), pointer :: acce1(:) => null()
@@ -74,14 +74,14 @@ subroutine resu74(tran, nomres)
 !
     call jeveuo(tran//'           .DESC', 'E', jdesc)
     nbmode = zi(jdesc+1)
-    ASSERT(nbmode.gt.0)
+    ASSERT(nbmode .gt. 0)
 !
 !     --- RECUPERATION DE L'INSTANT DE REPRISE
 !
     call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
     call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
-    if (nc.eq.0) crit = 'RELATIF'
-    if (np.eq.0) prec = 1.d-6
+    if (nc .eq. 0) crit = 'RELATIF'
+    if (np .eq. 0) prec = 1.d-6
 
 !
 !      --- RECHERCHE DU NUMERO D'ORDRE DE L'INSTANT DE REPRISE
@@ -93,27 +93,27 @@ subroutine resu74(tran, nomres)
     if (ni .eq. 0) tinit = inst1(nbinst)
 
     call jelira(tran//'           .DEPL', 'LONUTI', nbsto1)
-    ASSERT((nbsto1/nbmode).eq.nbinst)
+    ASSERT((nbsto1/nbmode) .eq. nbinst)
 
     nbsto1 = nbinst
     prec2 = prec
-    if (crit(1:7) .eq. 'RELATIF') prec2 = prec * inst1(1)
-    if (abs ( tinit - inst1(1) ) .le. prec2) then
+    if (crit(1:7) .eq. 'RELATIF') prec2 = prec*inst1(1)
+    if (abs(tinit-inst1(1)) .le. prec2) then
         nbinst = 1
         goto 202
-    endif
-    if (crit(1:7) .eq. 'RELATIF') prec2 = prec * inst1(nbsto1)
-    if (abs ( tinit - inst1(nbsto1) ) .le. prec2) then
+    end if
+    if (crit(1:7) .eq. 'RELATIF') prec2 = prec*inst1(nbsto1)
+    if (abs(tinit-inst1(nbsto1)) .le. prec2) then
         nbinst = nbsto1
         goto 202
-    endif
+    end if
     do i = 2, nbsto1-1
-        if (crit(1:7) .eq. 'RELATIF') prec2 = prec * inst1(i)
-        if (abs ( tinit - inst1(i) ) .le. prec2) then
+        if (crit(1:7) .eq. 'RELATIF') prec2 = prec*inst1(i)
+        if (abs(tinit-inst1(i)) .le. prec2) then
             nbinst = i
             goto 202
-        endif
-    enddo
+        end if
+    end do
 
 !   tran is thus to be truncated from i=1 up to i=nbinst
 !   its total size is nbsto1
@@ -127,13 +127,13 @@ subroutine resu74(tran, nomres)
 !
     call jeveuo(tran//'           .DEPL', 'E', vr=depl1)
     call jelira(nomres//'           .DEPL', 'LONUTI', nbsto2)
-    ASSERT(nbsto2.gt.nbmode)
-    ASSERT(mod(nbsto2,nbmode).eq.0)
+    ASSERT(nbsto2 .gt. nbmode)
+    ASSERT(mod(nbsto2, nbmode) .eq. 0)
 !
     nbsto3 = nbinst*nbmode
 !   --- From the second result (nomres), we remove the first entry as to avoid duplicating
 !       t=tinit for the second result (=tfin for the first)
-    nbstoc = nbsto3 + nbsto2 - nbmode
+    nbstoc = nbsto3+nbsto2-nbmode
 !
     call wkvect(resu//'           .DEPL', 'G V R', nbstoc, jdepl)
     call jeveuo(resu//'           .DEPL', 'E', vr=deplf)
@@ -168,7 +168,7 @@ subroutine resu74(tran, nomres)
     call jeveuo(tran//'           .ORDR', 'E', vi=ordr1)
     call jelira(nomres//'           .ORDR', 'LONUTI', nbsau2)
 !
-    nbsauv = nbinst + nbsau2 - 1
+    nbsauv = nbinst+nbsau2-1
 !
     call wkvect(resu//'           .ORDR', 'G V I', nbsauv, jordr)
     call copvis(nbinst, ordr1, zi(jordr))
@@ -177,8 +177,8 @@ subroutine resu74(tran, nomres)
 
     call jeveuo(nomres//'           .ORDR', 'E', vi=ordr2)
     do i = 1, nbsau2-1
-        zi(jordr+nbinst-1+i) = ordr2(i+1) + decal
-    enddo
+        zi(jordr+nbinst-1+i) = ordr2(i+1)+decal
+    end do
     call jedetr(nomres//'           .ORDR')
 !
     call wkvect(resu//'           .DISC', 'G V R', nbsauv, jinst)
@@ -221,10 +221,10 @@ subroutine resu74(tran, nomres)
         call jedetr(tran//'        .NL.VINT')
 
         call jeveuo(nomres//'        .NL.VINT', 'E', jvint2)
-        call dcopy(nbvarin, zr(jvint2+nbvint), 1, zr(jvint+ nbvarit), 1)
+        call dcopy(nbvarin, zr(jvint2+nbvint), 1, zr(jvint+nbvarit), 1)
         call jedetr(nomres//'        .NL.VINT')
 
-    endif
+    end if
 
     call jedetr(nomres//'           .DESC')
 
@@ -247,11 +247,11 @@ subroutine resu74(tran, nomres)
     if (nbnoli .ne. 0) then
         call jedupo(resu//'        .NL.VINT', 'G', tran//'        .NL.VINT', .false._1)
         call jedetr(resu//'        .NL.VINT')
-    endif
+    end if
 !
 !   --- Further cleanup
     call jeexin(nomres//'           .FDEP', iret)
-    if (iret.ne.0) then
+    if (iret .ne. 0) then
         call jedetr(nomres//'           .FDEP')
         call jedetr(nomres//'           .FVIT')
         call jedetr(nomres//'           .FACC')

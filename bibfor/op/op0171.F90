@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine op0171()
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -93,14 +93,14 @@ implicit none
     real(kind=8), pointer :: lagpm(:) => null()
     real(kind=8), pointer :: lagpp(:) => null()
 !
-    data maprec                 /'&&OP0171.MAPREC'/
-    data cndirp,cnchtp          /2*' '/
-    data cnchci,cnresi    /2*' '/
-    data chlapm,chlapp          /'&&OP0171.CLPM','&&OP0171.CLPP'/
-    data vtemp,vec2nd           /'&&OP0171.TH'  ,'&&OP0171.2ND'/
-    data vtempm,vtempp          /'&&OP0171.THM' ,'&&OP0171.THP'/
-    data matass                 /'&&MTHASS'/
-    data fmt                    /'(76(''*''))'/
+    data maprec/'&&OP0171.MAPREC'/
+    data cndirp, cnchtp/2*' '/
+    data cnchci, cnresi/2*' '/
+    data chlapm, chlapp/'&&OP0171.CLPM', '&&OP0171.CLPP'/
+    data vtemp, vec2nd/'&&OP0171.TH', '&&OP0171.2ND'/
+    data vtempm, vtempp/'&&OP0171.THM', '&&OP0171.THP'/
+    data matass/'&&MTHASS'/
+    data fmt/'(76(''*''))'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,7 +110,7 @@ implicit none
 !
     ce1 = ' '
     ce2 = ' '
-    solver   = '&&OP0171.SOLVER'
+    solver = '&&OP0171.SOLVER'
     listLoad = '&&OP0171.LISCHA'
 !
 ! - Get datastructure for results
@@ -118,24 +118,24 @@ implicit none
     call getres(result, k16bid, k8bid)
 
 ! - Read main parameters
-    call ntdoth(model, mater, mateco, caraElem, listLoad,&
-                matcst_ = matcst, coecst_ = coecst )
+    call ntdoth(model, mater, mateco, caraElem, listLoad, &
+                matcst_=matcst, coecst_=coecst)
 
 ! - EVOL_CHAR is prohibden
-    call load_neut_excl('THER_NON_LINE_MO', list_load_ = listLoad)
+    call load_neut_excl('THER_NON_LINE_MO', list_load_=listLoad)
 
 ! - Save list of loads in results datastructure
-    noobj ='12345678.1234.EXCIT'
+    noobj = '12345678.1234.EXCIT'
     call gnomsd(' ', noobj, 10, 13)
     listLoadResu = noobj(1:19)
     call copisd('LISTE_CHARGES', 'G', listLoad, listLoadResu)
 
 ! - No structural elements for this command
     caraElem = ' '
-    call dismoi('EXI_RDM', model, 'MODELE', repk = answer)
+    call dismoi('EXI_RDM', model, 'MODELE', repk=answer)
     if (answer .eq. 'OUI') then
         call utmess('F', 'THERNONLINE4_2')
-    endif
+    end if
 
 ! - Solver parameters
     call cresol(solver)
@@ -155,9 +155,9 @@ implicit none
         if (n1 .gt. 0) then
             if (answer .eq. 'NON') then
                 parcri(9) = 1
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
     itmaxl = parcri(1)
     epsr = parcrr(4)
     epsl = parcrr(6)
@@ -167,11 +167,11 @@ implicit none
     time = result(1:8)//'.CHTPS'
 !
 ! --- NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
-    noojb='12345678.00000.NUME.PRNO'
+    noojb = '12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
-    nume_dof=noojb(1:14)
-    call numero(nume_dof, 'VG',&
-                modelz = model , list_loadz = listLoad)
+    nume_dof = noojb(1:14)
+    call numero(nume_dof, 'VG', &
+                modelz=model, list_loadz=listLoad)
 !
     call vtcreb(vtemp, 'V', 'R', nume_ddlz=nume_dof)
 !
@@ -182,16 +182,16 @@ implicit none
         if (n2 .le. 0) then
             ASSERT(.false.)
         else
-            call rsexch('F', tempev, 'TEMP', num, tempin,&
+            call rsexch('F', tempev, 'TEMP', num, tempin, &
                         iret)
-        endif
+        end if
         call vtcopy(tempin, vtemp, 'F', iret)
-    endif
+    end if
 ! ======================================================================
 !
     ligrmo = model(1:8)//'.MODELE'
     r8aux(1) = 0.d0
-    call mecact('V', chlapm, 'MODELE', ligrmo, 'NEUT_R',&
+    call mecact('V', chlapm, 'MODELE', ligrmo, 'NEUT_R', &
                 ncmp=1, nomcmp='X1', sr=r8aux(1))
 !
     tpsnp1 = 0.d0
@@ -211,14 +211,14 @@ implicit none
     tpsthe(4) = 0.d0
     tpsthe(5) = 0.d0
     tpsthe(6) = 0.d0
-    write (ifm,fmt)
+    write (ifm, fmt)
 !
 ! --- DUPLICATION DES STRUCTURES DE DONNEES ET RECUPERATION D'ADRESSES
 !
     call copisd('CHAMP_GD', 'V', vtemp(1:19), vtempm(1:19))
     call copisd('CHAMP_GD', 'V', vtemp(1:19), vtempp(1:19))
     call copisd('CHAMP_GD', 'V', vtemp(1:19), vec2nd(1:19))
-    call jeveuo(vtemp(1:19 )//'.VALE', 'E', jtemp)
+    call jeveuo(vtemp(1:19)//'.VALE', 'E', jtemp)
     call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
     call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
     call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
@@ -231,14 +231,14 @@ implicit none
     testr = 1.d0
     reasvt = .true.
     reasmt = .true.
-    write (ifm,fmt)
-    write (ifm,102)
-102 format ('*',1x,'ITERATION',1x,'*',1x,'CRIT_TEMPER',1x,'*',1x,&
-           'VALE_TEST_TEMPER',1x,'*',1x,'CRIT_ENTHAL',1x,'*',1x,&
-          'VALE_TEST_ENTHAL',1x,'*')
-101 format ('*',3x,i4,a1,7x,4(1pd11.3,a1,3x),3x,'*')
+    write (ifm, fmt)
+    write (ifm, 102)
+102 format('*', 1x, 'ITERATION', 1x, '*', 1x, 'CRIT_TEMPER', 1x, '*', 1x, &
+           'VALE_TEST_TEMPER', 1x, '*', 1x, 'CRIT_ENTHAL', 1x, '*', 1x, &
+           'VALE_TEST_ENTHAL', 1x, '*')
+101 format('*', 3x, i4, a1, 7x, 4(1pd11.3, a1, 3x), 3x, '*')
 !
-    write (ifm,fmt)
+    write (ifm, fmt)
 !
 ! ======================================================================
 !        ITERATIONS DU PROBLEME DE TRANSPORT EN THERMIQUE N_LINEAIRE
@@ -249,28 +249,28 @@ implicit none
 !
 ! --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
 !
-    call nttcmv(model , mater , mateco   , caraElem, listLoad, nume_dof,&
-                solver, time  , tpsthe   , tpsnp1   , reasvt  ,&
-                reasmt, creas , vtemp    , vtempm   , vec2nd  ,&
-                matass, maprec, cndirp   , cnchci   , cnchtp)
+    call nttcmv(model, mater, mateco, caraElem, listLoad, nume_dof, &
+                solver, time, tpsthe, tpsnp1, reasvt, &
+                reasmt, creas, vtemp, vtempm, vec2nd, &
+                matass, maprec, cndirp, cnchci, cnchtp)
     reasmt = .true.
     reasvt = .false.
 !
 ! --- ARRET DES ITERATIONS
 !
-    if ((testi.gt.epsr .or. testr .gt. epsl) .and. iterl .lt. itmaxl) then
+    if ((testi .gt. epsr .or. testr .gt. epsl) .and. iterl .lt. itmaxl) then
 !
 ! *** ON CONTINUE...
 !
-        iterl = iterl + 1
+        iterl = iterl+1
 !
 ! - ITERATIONS INTERNES
 !
-        call nttain(model , mateco, caraElem, listLoad, nume_dof,&
-                    solver, time  , epsr     , lonch    , matass  ,&
-                    maprec, cnchci, cnresi   , vtemp    , vtempm  ,&
-                    vtempp, vec2nd, chlapm   , chlapp   , ci1     ,&
-                    ci2   , testi)
+        call nttain(model, mateco, caraElem, listLoad, nume_dof, &
+                    solver, time, epsr, lonch, matass, &
+                    maprec, cnchci, cnresi, vtemp, vtempm, &
+                    vtempp, vec2nd, chlapm, chlapp, ci1, &
+                    ci2, testi)
 !
 ! - ACTUALISATION DU CHAMP ENTHALPIE
 !
@@ -288,18 +288,18 @@ implicit none
             testr = 0.d0
             testn = 0.d0
             do k = 1, lglap
-                testr = testr + (lagpp(k)-lagpm(k))**2
-                testn = testn + lagpp(k)**2
+                testr = testr+(lagpp(k)-lagpm(k))**2
+                testn = testn+lagpp(k)**2
                 lagpm(k) = lagpp(k)
             end do
             testr = sqrt(testr/testn)
 !
-        endif
+        end if
 !
 ! - EVALUATION DE LA CONVERGENCE ET AFFICHAGE
 !
-        iifm = iunifi ('MESSAGE')
-        write(iifm,101) iterl,ce1,epsr,ce2,testi,ce1,epsl,ce2,testr
+        iifm = iunifi('MESSAGE')
+        write (iifm, 101) iterl, ce1, epsr, ce2, testi, ce1, epsl, ce2, testr
         call uttcpu('CPU.OP0171.2', 'FIN', ' ')
         call uttcpr('CPU.OP0171.2', 4, tps2)
 !
@@ -307,7 +307,7 @@ implicit none
 !
         if (etausr() .eq. 1) then
             call sigusr()
-        endif
+        end if
 !
 ! - Y A-T-IL ASSEZ DE TEMPS POUR REFAIRE UNE ITERATION ?
 !
@@ -315,9 +315,9 @@ implicit none
             vali(1) = iterl
             valr(1) = tps2(4)
             valr(2) = tps2(1)
-            call utmess('Z', 'DISCRETISATION2_79', si=vali(1), nr=2, valr=valr,&
+            call utmess('Z', 'DISCRETISATION2_79', si=vali(1), nr=2, valr=valr, &
                         num_except=ASTER_TIMELIMIT_ERROR)
-        endif
+        end if
 !
 ! - ON VA REFAIRE UNE ITERATION
 !
@@ -328,22 +328,22 @@ implicit none
     else
 !
 !
-        if ((parcri(9).eq.0) .and. (iterl.ge.itmaxl)) then
-            write (ifm,fmt)
+        if ((parcri(9) .eq. 0) .and. (iterl .ge. itmaxl)) then
+            write (ifm, fmt)
             call utmess('Z', 'MECANONLINE9_7', num_except=ASTER_CONVERGENCE_ERROR)
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! --- FIN DES ITERATIONS
 !
     call uttcpu('CPU.OP0171.1', 'FIN', ' ')
     call uttcpr('CPU.OP0171.1', 7, tps1)
-    write(ifm,fmt)
-    write(ifm,'(A,21X,A,1PE10.2,21X,A)')&
-     &                                 '*','DUREE:',tps1(7)-tpex,'*'
-    write(ifm,fmt)
-    write(ifm,'(/)')
+    write (ifm, fmt)
+    write (ifm, '(A,21X,A,1PE10.2,21X,A)')&
+     &                                 '*', 'DUREE:', tps1(7)-tpex, '*'
+    write (ifm, fmt)
+    write (ifm, '(/)')
 !
 ! ======================================================================
 !                   STOCKAGE DU RESULTAT
@@ -355,7 +355,7 @@ implicit none
     zr(jvPara) = 0.d0
     call copisd('CHAMP_GD', 'G', vtempp, fieldInResult)
     call rsnoch(result, 'TEMP', 0)
-    call rssepa(result, 0, model , mater, caraElem, listLoadResu)
+    call rssepa(result, 0, model, mater, caraElem, listLoadResu)
 !
     call titre()
 !

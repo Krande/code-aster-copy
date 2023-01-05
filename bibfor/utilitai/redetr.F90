@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,21 +56,21 @@ subroutine redetr(matelz)
 !
     call jemarq()
 !
-    matele=matelz
-    ldetr=.false.
+    matele = matelz
+    ldetr = .false.
     call dismoi('NOM_MAILLA', matele, 'MATR_ELEM', repk=noma)
     call dismoi('PARALLEL_MESH', noma, 'MAILLAGE', repk=kret)
 !
 !     -- SI LE MATR_ELEM NE CONTIENT QUE DES MACRO-ELEMENTS,
 !        L'OBJET .RELR N'EXISTE PAS ET IL N'Y A RIEN A FAIRE :
     call jeexin(matele//'.RELR', iexi)
-    iexi=min(1,abs(iexi))
+    iexi = min(1, abs(iexi))
     if (kret .eq. 'NON') then
-        iexiav=iexi
+        iexiav = iexi
         call asmpi_comm_vect('MPI_MAX', 'I', sci=iexi)
-        iexi=min(1,abs(iexi))
-        ASSERT(iexi.eq.iexiav)
-    endif
+        iexi = min(1, abs(iexi))
+        ASSERT(iexi .eq. iexiav)
+    end if
     if (iexi .eq. 0) goto 60
 !
     call jeveuo(matele//'.RELR', 'E', vk24=relr)
@@ -79,10 +79,10 @@ subroutine redetr(matelz)
 !     -- LE MATR_ELEM DOIT CONTENIR LE MEME NOMBRE DE RESUELEM
 !        SUR TOUS LES PROCESSEURS :
     if (kret .eq. 'NON') then
-        nb1av=nb1
+        nb1av = nb1
         call asmpi_comm_vect('MPI_MAX', 'I', sci=nb1)
-        ASSERT(nb1.eq.nb1av)
-    endif
+        ASSERT(nb1 .eq. nb1av)
+    end if
 !
 !     -- SI LE MATR_ELEM NE CONTIENT QU'1 RESUELEM OU AUCUN,
 !        IL NE FAUT RIEN DETRUIRE
@@ -90,7 +90,7 @@ subroutine redetr(matelz)
 !
 !     -- CREATION DES OBJETS TEMPORAIRES DE TRAVAIL
 !        ET DU BOOLEEN POUR DESTRUCTION A LA SORTIE
-    ldetr=.true.
+    ldetr = .true.
     AS_ALLOCATE(vk24=tempor, size=nb1)
     AS_ALLOCATE(vi=adetr, size=nb1)
 !
@@ -102,86 +102,86 @@ subroutine redetr(matelz)
 !     REMARQUE : LES CAS 1 ET 2 N'EXISTENT PAS ENCORE
 !                J'ESPERE QU'ILS N'ARRIVERONT JAMAIS
     do k = 1, nb1
-        adetr(k)=0
-        resuel=relr(k)(1:19)
+        adetr(k) = 0
+        resuel = relr(k) (1:19)
         if (resuel .eq. ' ') then
             ASSERT(.false.)
-            adetr(k)=1
+            adetr(k) = 1
             goto 10
-        endif
+        end if
 !
 !       -- EXISTENCE DU RESU_ELEM ?
         call exisd('RESUELEM', resuel, iret1)
         if (iret1 .eq. 0) then
-            adetr(k)=2
+            adetr(k) = 2
             ASSERT(.false.)
             goto 10
-        endif
+        end if
 !
 !
 !       -- SI LE RESU_ELEM EST NUL SUR TOUS LES PROCS,
 !          ON PEUT LE DETRUIRE:
-        izero=1
-        if (zerosd('RESUELEM',resuel)) izero=0
+        izero = 1
+        if (zerosd('RESUELEM', resuel)) izero = 0
         if (kret .eq. 'NON') then
             call asmpi_comm_vect('MPI_MAX', 'I', sci=izero)
-        endif
+        end if
         if (izero .eq. 0) then
-            adetr(k)=3
+            adetr(k) = 3
         else
-            adetr(k)=0
-        endif
- 10     continue
+            adetr(k) = 0
+        end if
+10      continue
     end do
 !
 !
 !     -- ON COMPTE LES RESUELEM A DETRUIRE :
-    nbdet=0
+    nbdet = 0
     do k = 1, nb1
-        if (adetr(k) .eq. 3) nbdet=nbdet+1
+        if (adetr(k) .eq. 3) nbdet = nbdet+1
     end do
     if (nbdet .eq. 0) goto 60
 !
 !     -- ON DETRUIT LES RESULEM NULS (ON EN GARDE AU MOINS 1) :
 !        ON PART DE LA FIN CAR LA MATRICE NON SYMETRIQUE EST
 !        EN GENERAL STOCKEE APRES LA SYMETRIQUE
-    nbdet=min(nbdet,nb1-1)
-    ico=0
+    nbdet = min(nbdet, nb1-1)
+    ico = 0
     do k = nb1, 1, -1
         if (adetr(k) .eq. 3) then
-            ico=ico+1
+            ico = ico+1
             if (ico .gt. nbdet) goto 31
-            resuel = relr(k)(1:19)
+            resuel = relr(k) (1:19)
             call detrsd('RESUELEM', resuel)
             relr(k) = ' '
-        endif
+        end if
     end do
- 31 continue
+31  continue
 !
 !     -- ON COMPACTE LE MATR_ELEM POUR QUE TOUS SES RESUELEM
 !        SOIENT "VRAIS"
-    ico=0
+    ico = 0
     do k = 1, nb1
-        resuel=relr(k)(1:19)
+        resuel = relr(k) (1:19)
         if (resuel .ne. ' ') then
-            ico=ico+1
+            ico = ico+1
             tempor(ico) = resuel
-        endif
+        end if
     end do
-    ASSERT(ico.gt.0)
+    ASSERT(ico .gt. 0)
 !
     call jeecra(matele//'.RELR', 'LONUTI', ico)
     do k = 1, ico
         relr(k) = tempor(k)
     end do
 !
- 60 continue
+60  continue
 !
 !     -- DESTRUCTION DES OBJETS TEMPORAIRES SI BESOIN
     if (ldetr) then
         AS_DEALLOCATE(vk24=tempor)
         AS_DEALLOCATE(vi=adetr)
-    endif
+    end if
 !
     call jedema()
 !

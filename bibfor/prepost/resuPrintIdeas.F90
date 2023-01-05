@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuPrintIdeas(fileUnit       , dsName       , lResu,&
-                          storeNb        , storeListIndx,&
-                          fieldListNb    , fieldListType,&
-                          title_         , titleKeywf_  ,&
-                          titleKeywfIocc_, realFormat_,&
-                          cmpUserNb_     , cmpUserName_ ,&
-                          nodeUserNb_    , nodeUserNume_,&
-                          cellUserNb_    , cellUserNume_)
+subroutine resuPrintIdeas(fileUnit, dsName, lResu, &
+                          storeNb, storeListIndx, &
+                          fieldListNb, fieldListType, &
+                          title_, titleKeywf_, &
+                          titleKeywfIocc_, realFormat_, &
+                          cmpUserNb_, cmpUserName_, &
+                          nodeUserNb_, nodeUserNume_, &
+                          cellUserNb_, cellUserNume_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -39,21 +39,21 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: fileUnit
-character(len=*), intent(in) :: dsName
-aster_logical, intent(in) :: lResu
-integer, intent(in) :: storeNb, storeListIndx(:)
-integer, intent(in) :: fieldListNb
-character(len=*), intent(in) :: fieldListType(*)
-character(len=*), optional, intent(in) :: title_, titleKeywf_
-integer, optional, intent(in) :: titleKeywfIocc_
-character(len=*), optional, intent(in) :: realFormat_
-integer, optional, intent(in) :: cmpUserNb_
-character(len=8), optional, pointer :: cmpUserName_(:)
-integer, optional, intent(in) :: cellUserNb_
-integer, optional, pointer :: cellUserNume_(:)
-integer, optional, intent(in) :: nodeUserNb_
-integer, optional, pointer :: nodeUserNume_(:)
+    integer, intent(in) :: fileUnit
+    character(len=*), intent(in) :: dsName
+    aster_logical, intent(in) :: lResu
+    integer, intent(in) :: storeNb, storeListIndx(:)
+    integer, intent(in) :: fieldListNb
+    character(len=*), intent(in) :: fieldListType(*)
+    character(len=*), optional, intent(in) :: title_, titleKeywf_
+    integer, optional, intent(in) :: titleKeywfIocc_
+    character(len=*), optional, intent(in) :: realFormat_
+    integer, optional, intent(in) :: cmpUserNb_
+    character(len=8), optional, pointer :: cmpUserName_(:)
+    integer, optional, intent(in) :: cellUserNb_
+    integer, optional, pointer :: cellUserNume_(:)
+    integer, optional, intent(in) :: nodeUserNb_
+    integer, optional, pointer :: nodeUserNume_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,33 +105,33 @@ integer, optional, pointer :: nodeUserNume_(:)
     if (present(cmpUserNb_)) then
         cmpUserNb = cmpUserNb_
         cmpUserName => cmpUserName_
-    endif
+    end if
     cellUserNb = 0
     if (present(cellUserNb_)) then
         cellUserNb = cellUserNb_
         cellUserNume => cellUserNume_
-    endif
+    end if
     nodeUserNb = 0
     if (present(nodeUserNb_)) then
         nodeUserNb = nodeUserNb_
         nodeUserNume => nodeUserNume_
-    endif
+    end if
     realFormat = '1PE12.5'
     if (present(realFormat_)) then
         realFormat = realFormat_
-    endif
+    end if
     title = ' '
     if (present(title_)) then
         title = title_
-    endif
+    end if
     titleKeywfIocc = 0
     if (present(titleKeywfIocc_)) then
         titleKeywfIocc = titleKeywfIocc_
-    endif
+    end if
     titleKeywf = ' '
     if (present(titleKeywf_)) then
         titleKeywf = titleKeywf_
-    endif
+    end if
 !
 ! - Loop on storing slots
 !
@@ -149,11 +149,11 @@ integer, optional, pointer :: nodeUserNume_(:)
                     call rsexch(' ', dsName, fieldType, storeIndx, fieldName, iret)
                     if (iret .ne. 0) then
                         cycle
-                    endif
+                    end if
                     call dismoi('TYPE_RESU', dsName, 'RESULTAT', repk=resultType)
                 else
                     fieldName = dsName
-                endif
+                end if
 ! ------------- Check support
                 call dismoi('TYPE_CHAMP', fieldName, 'CHAMP', repk=fieldSupport)
                 if ((fieldSupport .eq. 'NOEU') .or. (fieldSupport(1:2) .eq. 'EL')) then
@@ -161,38 +161,38 @@ integer, optional, pointer :: nodeUserNume_(:)
                     if (.not. lResu) then
                         call utmess('A', 'RESULT3_3')
                         cycle
-                    endif
+                    end if
                 else
                     if (resultType .eq. 'MODE_GENE' .or. resultType .eq. 'HARM_GENE') then
-                        call utmess('A+', 'RESULT3_2', sk = fieldType)
+                        call utmess('A+', 'RESULT3_2', sk=fieldType)
                     else
-                        call utmess('A+', 'RESULT3_1', sk = fieldType)
-                    endif
-                endif
+                        call utmess('A+', 'RESULT3_1', sk=fieldType)
+                    end if
+                end if
 ! ------------- Create sub-title
                 if (lResu) then
-                    call titre2(dsName    , fieldName, subtitleJvName, titleKeywf, titleKeywfIocc,&
+                    call titre2(dsName, fieldName, subtitleJvName, titleKeywf, titleKeywfIocc, &
                                 realFormat, fieldType, storeIndx)
                 else
-                    call titre2(dsName    , fieldName, subtitleJvName, titleKeywf, titleKeywfIocc,&
+                    call titre2(dsName, fieldName, subtitleJvName, titleKeywf, titleKeywfIocc, &
                                 realFormat)
-                endif
+                end if
 ! ------------- Print field
                 if (fieldSupport .eq. 'NOEU') then
-                    call resuPrintIdeasNode(fileUnit  , dsName      ,&
-                                            title     , storeIndx   ,&
-                                            fieldType , fieldName   ,&
-                                            cmpUserNb , cmpUserName ,&
+                    call resuPrintIdeasNode(fileUnit, dsName, &
+                                            title, storeIndx, &
+                                            fieldType, fieldName, &
+                                            cmpUserNb, cmpUserName, &
                                             nodeUserNb, nodeUserNume)
                 else
-                    call resuPrintIdeasElem(fileUnit  , dsName      ,&
-                                            title     , storeIndx   ,&
-                                            fieldType , fieldName   ,&
-                                            cmpUserNb , cmpUserName ,&
+                    call resuPrintIdeasElem(fileUnit, dsName, &
+                                            title, storeIndx, &
+                                            fieldType, fieldName, &
+                                            cmpUserNb, cmpUserName, &
                                             cellUserNb, cellUserNume)
-                endif
+                end if
             end do
-        endif
+        end if
         call jedema()
     end do
 !

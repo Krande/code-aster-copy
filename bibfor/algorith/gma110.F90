@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
-                  nbtgrm, nomres, nbincr, tabsgr, tabsst,&
+subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst, &
+                  nbtgrm, nomres, nbincr, tabsgr, tabsst, &
                   tabgma, tabnom)
     implicit none
 !  BUT : < MAILLAGE SQUELETTE SOUS-STRUCTURATION CLASSIQUE >
@@ -81,14 +81,14 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
         nomut = ' '
 !     --- RECHERCHE DES NOMS DANS NOM_GROUP_MA ---
         igrut = 0
- 10     continue
-        igrut = igrut + 1
+10      continue
+        igrut = igrut+1
         if (igrut .le. nbgrut) then
             if (tabsst(igrut) .ne. nomsst) goto 10
             if (tabgma(igrut) .ne. nomgr) goto 10
-            ngfind = ngfind + 1
+            ngfind = ngfind+1
             nomut = tabnom(igrut)
-        endif
+        end if
         if (exclu .eq. 'OUI' .and. nomut .eq. ' ') goto 40
         call jeveuo(jexnom(mailla//'.GROUPEMA', nomgr), 'L', ilstma)
         call jelira(jexnom(mailla//'.GROUPEMA', nomgr), 'LONMAX', nbgrma)
@@ -96,26 +96,26 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
             leng1 = lxlgut(nomsst)
             leng2 = lxlgut(nomgr)
             if (leng1+leng2 .gt. 8) then
-                valk (1) = nomgr
-                valk (2) = nomsst
+                valk(1) = nomgr
+                valk(2) = nomsst
                 call utmess('A', 'SOUSTRUC2_10', nk=2, valk=valk)
-            endif
-            leng2 = min(8-leng1,leng2)
+            end if
+            leng2 = min(8-leng1, leng2)
             if (leng2 .gt. 0) then
-                nomut=nomsst(1:leng1)//nomgr(1:leng2)
+                nomut = nomsst(1:leng1)//nomgr(1:leng2)
             else
-                nomut=nomsst(1:leng1)
-            endif
-        endif
+                nomut = nomsst(1:leng1)
+            end if
+        end if
         do igrold = 1, nbtgrm
             call jenuno(jexnum(nomres//'.GROUPEMA', igrold), k8bid)
             if (nomut .eq. k8bid) then
-                valk (1) = nomut
-                valk (2) = nomsst
-                valk (3) = nomgr
-                valk (4) = k8bid
+                valk(1) = nomut
+                valk(2) = nomsst
+                valk(3) = nomgr
+                valk(4) = k8bid
                 call utmess('F', 'ALGORITH13_26', nk=4, valk=valk)
-            endif
+            end if
         end do
         call jecroc(jexnom(nomres//'.GROUPEMA', nomut))
         call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONMAX', max(1, nbgrma))
@@ -123,16 +123,16 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
         call jeveuo(jexnom(nomres//'.GROUPEMA', nomut), 'E', ilstno)
         nbtgrm = nbtgrm+1
         do ima = 1, nbgrma
-            zi(ilstno-1+ima) = zi(ilstma-1+ima) + nbincr
+            zi(ilstno-1+ima) = zi(ilstma-1+ima)+nbincr
         end do
- 40     continue
+40      continue
     end do
 !
 ! --- ON VERIFIE SI LES GROUPES UTILISATEURS ONT TOUS ETE TROUVE
 !
     nsfind = 0
     do igrut = 1, nbgrut
-        if (tabsst(igrut) .eq. nomsst) nsfind = nsfind + 1
+        if (tabsst(igrut) .eq. nomsst) nsfind = nsfind+1
     end do
 !
     if (nsfind .gt. ngfind) then
@@ -141,22 +141,22 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
             nomut = tabgma(igrut)
             if (tabsst(igrut) .eq. nomsst) then
                 igr = 1
- 60             continue
+60              continue
                 if (igr .le. nbgr) then
                     if (tabsgr(igr) .ne. nomut) then
-                        igr = igr + 1
+                        igr = igr+1
                         goto 60
-                    endif
-                endif
+                    end if
+                end if
                 if (igr .gt. nbgr) then
-                    valk (1) = nomut
-                    valk (2) = k8bid
-                    valk (3) = nomsst
+                    valk(1) = nomut
+                    valk(2) = k8bid
+                    valk(3) = nomsst
                     call utmess('F', 'ALGORITH13_27', nk=3, valk=valk)
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

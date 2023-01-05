@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine barych(ch1z, ch2z, r1, r2, chz,&
+subroutine barych(ch1z, ch2z, r1, r2, chz, &
                   base, nomsdz)
     implicit none
 #include "jeveux.h"
@@ -58,12 +58,12 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
     aster_logical :: iden
 !-----------------------------------------------------------------------
     call jemarq()
-    ch1=ch1z
-    ch2=ch2z
-    ch=chz
+    ch1 = ch1z
+    ch2 = ch2z
+    ch = chz
 
-    nomsd='XXXX'
-    if (present(nomsdz)) nomsd=nomsdz
+    nomsd = 'XXXX'
+    if (present(nomsdz)) nomsd = nomsdz
 
     call copisd('CHAMP_GD', base, ch1, ch)
 
@@ -72,16 +72,14 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
         call jelira(ch//'.DESC', 'DOCU', cval=docu)
     else
         call jelira(ch//'.CELD', 'DOCU', cval=docu)
-    endif
+    end if
 
-
-    if (docu(1:4).eq.'CART') then
+    if (docu(1:4) .eq. 'CART') then
 !   -----------------------------------
-        valk(1)=nomsd
-        call utmess('F', 'CALCULEL_30',nk=1,valk=valk)
+        valk(1) = nomsd
+        call utmess('F', 'CALCULEL_30', nk=1, valk=valk)
 
-
-    else if (docu(1:4).eq.'CHNO') then
+    else if (docu(1:4) .eq. 'CHNO') then
 !   -----------------------------------
         call jelira(ch1//'.VALE', 'LONMAX', lon1)
         call jelira(ch1//'.VALE', 'TYPE', cval=scal)
@@ -93,43 +91,42 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
             call jeveuo(ch1//'.VALE', 'L', jvale1)
             call jeveuo(ch2//'.VALE', 'L', jvale2)
             if (scal(1:1) .eq. 'R') then
-                do i = 1,lon1
-                    zr(jvale-1+i) = r1*zr(jvale1-1+i) + r2*zr(jvale2-1+i)
-                enddo
-            else if (scal(1:1).eq.'C') then
-                do i = 1,lon1
-                    zc(jvale-1+i) = r1*zc(jvale1-1+i) + r2*zc(jvale2-1+i)
-                enddo
-            endif
+                do i = 1, lon1
+                    zr(jvale-1+i) = r1*zr(jvale1-1+i)+r2*zr(jvale2-1+i)
+                end do
+            else if (scal(1:1) .eq. 'C') then
+                do i = 1, lon1
+                    zc(jvale-1+i) = r1*zc(jvale1-1+i)+r2*zc(jvale2-1+i)
+                end do
+            end if
         else
             call vtcopy(ch2, ch, ' ', ier)
-            if ( ier.ne.0 ) then
+            if (ier .ne. 0) then
                 valk(1) = ch1
                 valk(2) = ch2
                 call utmess('F', 'ALGELINE7_21', nk=2, valk=valk)
-            endif
+            end if
             call jeveuo(ch//'.VALE', 'E', jvale)
             call jeveuo(ch1//'.VALE', 'L', jvale1)
             if (scal(1:1) .eq. 'R') then
-                do i = 1,lon1
-                    zr(jvale-1+i) = r1*zr(jvale1-1+i) + r2*zr(jvale-1+i)
-                enddo
-            else if (scal(1:1).eq.'C') then
-                do i = 1,lon1
-                    zc(jvale-1+i) = r1*zc(jvale1-1+i) + r2*zc(jvale-1+i)
-                enddo
-            endif
-        endif
+                do i = 1, lon1
+                    zr(jvale-1+i) = r1*zr(jvale1-1+i)+r2*zr(jvale-1+i)
+                end do
+            else if (scal(1:1) .eq. 'C') then
+                do i = 1, lon1
+                    zc(jvale-1+i) = r1*zc(jvale1-1+i)+r2*zc(jvale-1+i)
+                end do
+            end if
+        end if
 
-
-    else if (docu(1:4).eq.'CHML') then
+    else if (docu(1:4) .eq. 'CHML') then
 !   -----------------------------------
 !       -- on ne sait traiter que le cas tres simple ou les
 !          objets '.CELV' ont exactement la meme organisation.
 !          (memes nombres de sous-points et/ou de VARI)
         call vrrefe(ch1, ch2, ier)
-        iden=(ier.eq.0)
-        iden=iden .and. idenob(ch1//'.CELD',ch2//'.CELD')
+        iden = (ier .eq. 0)
+        iden = iden .and. idenob(ch1//'.CELD', ch2//'.CELD')
 
         if (iden) then
             call jelira(ch1//'.CELV', 'TYPE', cval=scal)
@@ -139,27 +136,26 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
             call jeveuo(ch1//'.CELV', 'L', jvale1)
             call jeveuo(ch2//'.CELV', 'L', jvale2)
             if (scal(1:1) .eq. 'R') then
-                do i = 1,lon1
-                    zr(jvale-1+i) = r1*zr(jvale1-1+i) + r2*zr(jvale2-1+i)
-                enddo
-            else if (scal(1:1).eq.'C') then
-                do i = 1,lon1
-                    zc(jvale-1+i) = r1*zc(jvale1-1+i) + r2*zc(jvale2-1+i)
-                enddo
-            endif
+                do i = 1, lon1
+                    zr(jvale-1+i) = r1*zr(jvale1-1+i)+r2*zr(jvale2-1+i)
+                end do
+            else if (scal(1:1) .eq. 'C') then
+                do i = 1, lon1
+                    zc(jvale-1+i) = r1*zc(jvale1-1+i)+r2*zc(jvale2-1+i)
+                end do
+            end if
         else
             if (.false.) then
                 call jeimpo(6, ch1//'.CELK', 'CELK_1:')
                 call jeimpo(6, ch2//'.CELK', 'CELK_2:')
                 call jeimpo(6, ch1//'.CELD', 'CELD_1:')
                 call jeimpo(6, ch2//'.CELD', 'CELD_2:')
-            endif
+            end if
             call utmess('F', 'CALCULEL_27')
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
-
+    end if
 
     call jedema()
 end subroutine

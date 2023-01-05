@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
     integer :: ianbno, ityma, nbtyma
 !-----------------------------------------------------------------------
     call jemarq()
-    ASSERT(nomobz.eq.'&')
+    ASSERT(nomobz .eq. '&')
     repk = ' '
     repi = 0
     ierd = 0
@@ -60,18 +60,18 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
     call jelira('&CATA.TM.NBNO', 'NUTIOC', nbtyma)
 !
     if (questi .eq. 'NB_TYPE_MA') then
-        repi=nbtyma
+        repi = nbtyma
 !
-    else if (questi.eq.'NB_NO_MAX') then
-        repi=0
+    else if (questi .eq. 'NB_NO_MAX') then
+        repi = 0
         do ityma = 1, nbtyma
             call jeveuo(jexnum('&CATA.TM.NBNO', ityma), 'L', ianbno)
-            repi=max(repi,zi(ianbno))
+            repi = max(repi, zi(ianbno))
         end do
 !
     else
-        ierd=1
-    endif
+        ierd = 1
+    end if
 !
     repkz = repk
     call jedema()

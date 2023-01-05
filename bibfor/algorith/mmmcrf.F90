@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
 !
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterc/r8vide.h"
@@ -51,7 +51,7 @@ subroutine mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
 ! ----------------------------------------------------------------------
 !
     integer :: ncmp
-    parameter    (ncmp=1)
+    parameter(ncmp=1)
     character(len=8) :: liscmp(ncmp)
 !
     real(kind=8) :: vmax1, vmax2, vmaxi
@@ -59,7 +59,7 @@ subroutine mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
     character(len=8) :: nomnoe
     integer :: numno1, numno2, numnoe
 !
-    data liscmp  /'LAGS_C'/
+    data liscmp/'LAGS_C'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,13 +80,13 @@ subroutine mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
 !
 ! --- CRITERE: VARIATION RELATIVE SUR LES LAGS_C
 !
-   if (vmax2 .gt. 1.d0) then
+    if (vmax2 .gt. 1.d0) then
         crilbd = vmax1/vmax2
-    elseif  (vmax2 .gt. 0.0) then
+    elseif (vmax2 .gt. 0.0) then
         crilbd = vmax1
     else
         crilbd = 0.d0
-    endif
+    end if
 
 !
 ! --- INFORMATIONS SUR LE CRITERE
@@ -97,7 +97,7 @@ subroutine mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
         nomnoe = ' '
     else
         call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
-    endif
+    end if
     nfrot = nomnoe//'        '
     vfrot = vmaxi
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caladu(neq, nbddl, coef, ddl, depl,&
+subroutine caladu(neq, nbddl, coef, ddl, depl, &
                   val)
 !
     implicit none
@@ -51,7 +51,7 @@ subroutine caladu(neq, nbddl, coef, ddl, depl,&
 !
     val = 0.d0
     do j = 1, nbddl
-        val = val + coef(j) * depl(ddl(j))
+        val = val+coef(j)*depl(ddl(j))
     end do
 !
 ! ======================================================================

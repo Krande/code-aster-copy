@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,11 +43,11 @@ subroutine te0047(optioz, nomtez)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use Behaviour_module, only : behaviourOption
-use te0047_type
+    use Behaviour_module, only: behaviourOption
+    use te0047_type
 !
-implicit none
-character(len=*) :: optioz, nomtez
+    implicit none
+    character(len=*) :: optioz, nomtez
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -98,7 +98,7 @@ character(len=*) :: optioz, nomtez
 ! --------------------------------------------------------------------------------------------------
 !
     for_discret%option = optioz
-    for_discret%nomte  = nomtez
+    for_discret%nomte = nomtez
     ! on vérifie que les caractéristiques ont été affectées
     ! le code du discret
     call infdis('CODE', ibid, r8bid, for_discret%nomte)
@@ -107,13 +107,13 @@ character(len=*) :: optioz, nomtez
     if (infodi .ne. ibid) then
         call utmess('F+', 'DISCRETS_25', sk=for_discret%nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
-    endif
+    end if
     ! discret de type raideur
     call infdis('DISK', infodi, r8bid, k8bid)
     if (infodi .eq. 0) then
         call utmess('A+', 'DISCRETS_27', sk=for_discret%nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
-    endif
+    end if
     ! Discrets symétriques ou pas
     call infdis('SYMK', IsSymetrique, r8bid, k8bid)
     ! informations sur les discrets :
@@ -125,7 +125,7 @@ character(len=*) :: optioz, nomtez
     call infted(for_discret%nomte, IsSymetrique, &
                 for_discret%nbt, for_discret%nno, for_discret%nc, for_discret%ndim, itype)
     !
-    ASSERT( (for_discret%ndim.eq.2).or.(for_discret%ndim.eq.3) )
+    ASSERT((for_discret%ndim .eq. 2) .or. (for_discret%ndim .eq. 3))
     !
     neq = for_discret%nno*for_discret%nc
     ! récupération des adresses jeveux
@@ -147,12 +147,12 @@ character(len=*) :: optioz, nomtez
     ! Discrets non-symétriques
     if (IsSymetrique .ne. 1) then
         ! Discrets non-symétriques, c'est ok si 'ELAS'
-        if (for_discret%rela_comp.eq.'ELAS') then
+        if (for_discret%rela_comp .eq. 'ELAS') then
             for_discret%rela_comp = 'ELAS_NOSYME'
         else
             call utmess('F', 'DISCRETS_40')
-        endif
-    endif
+        end if
+    end if
     ! Select objects to construct from option name
     !   lVari       : 'RAPH_MECA'  (1:9)'FULL_MECA'
     !   lSigm       : 'RAPH_MECA'  (1:9)'FULL_MECA'       'RIGI_MECA_TANG'
@@ -162,16 +162,16 @@ character(len=*) :: optioz, nomtez
     !   lMatrPred   :                                (1:4)'RIGI'
     call behaviourOption(for_discret%option, zk16(icompo), &
                          for_discret%lMatr, for_discret%lVect, &
-                         for_discret%lVari, for_discret%lSigm , codret)
+                         for_discret%lVari, for_discret%lSigm, codret)
     for_discret%lMatrPred = for_discret%option(1:4) .eq. 'RIGI'
-    for_discret%lPred     = for_discret%option      .eq. 'RIGI_MECA_TANG'
+    for_discret%lPred = for_discret%option .eq. 'RIGI_MECA_TANG'
     !
     if (for_discret%defo_comp .ne. 'PETIT') then
         call utmess('A', 'DISCRETS_18')
-    endif
+    end if
     ! si COMP_ELAS alors comportement ELAS | ELAS_NOSYME
-    if ((for_discret%type_comp.eq.'COMP_ELAS') .and. &
-        (for_discret%rela_comp(1:4).ne.'ELAS')) then
+    if ((for_discret%type_comp .eq. 'COMP_ELAS') .and. &
+        (for_discret%rela_comp(1:4) .ne. 'ELAS')) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
         messak(3) = for_discret%type_comp
@@ -179,12 +179,12 @@ character(len=*) :: optioz, nomtez
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_8', nk=5, valk=messak)
-    endif
+    end if
     ! dans les cas *_ELAS, les comportements qui ont une matrice de
     ! décharge sont : elas DIS_GRICRA. pour tous les autres cas : <f>
-    if ((for_discret%option(10:14).eq.'_ELAS') .and. &
-        (for_discret%rela_comp.ne.'ELAS') .and. &
-        (for_discret%rela_comp.ne.'DIS_GRICRA')) then
+    if ((for_discret%option(10:14) .eq. '_ELAS') .and. &
+        (for_discret%rela_comp .ne. 'ELAS') .and. &
+        (for_discret%rela_comp .ne. 'DIS_GRICRA')) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
         messak(3) = for_discret%type_comp
@@ -192,7 +192,7 @@ character(len=*) :: optioz, nomtez
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_10', nk=5, valk=messak)
-    endif
+    end if
     !
     ! récupération des orientations (angles nautiques)
     ! orientation de l'élément et déplacements dans les repères g et l
@@ -205,14 +205,14 @@ character(len=*) :: optioz, nomtez
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_6', nk=5, valk=messak)
-    endif
+    end if
     ! déplacements dans le repère global :
     !     ugm = déplacement précédent
     !     dug = incrément de déplacement
     do ii = 1, neq
         for_discret%ugm(ii) = zr(ideplm+ii-1)
         for_discret%dug(ii) = zr(ideplp+ii-1)
-    enddo
+    end do
     !
     ! matrice pgl de passage repère global -> repère local
     call matrot(zr(lorien), for_discret%pgl)
@@ -229,69 +229,69 @@ character(len=*) :: optioz, nomtez
                     for_discret%ugm, for_discret%ulm)
         call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, &
                     for_discret%dug, for_discret%dul)
-    endif
+    end if
     !
     ! Temps + et - , calcul de dt
     call jevech('PINSTMR', 'L', jtempsm)
     call jevech('PINSTPR', 'L', jtempsp)
-    for_discret%TempsPlus  = zr(jtempsp)
+    for_discret%TempsPlus = zr(jtempsp)
     for_discret%TempsMoins = zr(jtempsm)
     !
     ! Pour ELAS_NOSYME :
-    okelem = (for_discret%ndim.eq.3) .and. &
-             ( (for_discret%nomte.eq.'MECA_DIS_T_L') .or. &
-               (for_discret%nomte.eq.'MECA_DIS_T_N') )
+    okelem = (for_discret%ndim .eq. 3) .and. &
+             ((for_discret%nomte .eq. 'MECA_DIS_T_L') .or. &
+              (for_discret%nomte .eq. 'MECA_DIS_T_N'))
     !
     codret = 0
-    if (for_discret%rela_comp.eq.'ELAS') then
+    if (for_discret%rela_comp .eq. 'ELAS') then
         ! comportement élastique
         call dielas(for_discret, codret)
-    else if ((for_discret%rela_comp.eq.'ELAS_NOSYME').and.okelem) then
+    else if ((for_discret%rela_comp .eq. 'ELAS_NOSYME') .and. okelem) then
         ! comportement élastique non-symétrique
         call dis_elas_nosyme(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DASHPOT') then
+    else if (for_discret%rela_comp .eq. 'DASHPOT') then
         ! comportement dashpot
         call didashpot(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DIS_VISC') then
+    else if (for_discret%rela_comp .eq. 'DIS_VISC') then
         ! comportement de type zener (raideurs série et parallèle + amortisseur)
         call dizeng(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DIS_ECRO_TRAC') then
+    else if (for_discret%rela_comp .eq. 'DIS_ECRO_TRAC') then
         ! comportement avec ecrouissage isotrope à partir de la courbe force-déplacement
         call diisotrope(for_discret, codret)
-    else if (for_discret%rela_comp(1:10).eq.'DIS_GOUJ2E') then
+    else if (for_discret%rela_comp(1:10) .eq. 'DIS_GOUJ2E') then
         ! comportement pour les goujons :  DIS_GOUJ2E_PLAS DIS_GOUJ2E_ELAS
         call digou2(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'ARME') then
+    else if (for_discret%rela_comp .eq. 'ARME') then
         ! comportement pour les armements
         call diarm0(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'ASSE_CORN') then
+    else if (for_discret%rela_comp .eq. 'ASSE_CORN') then
         ! comportement pour les assemblages boulonés de cornière
         call dicora(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DIS_GRICRA') then
+    else if (for_discret%rela_comp .eq. 'DIS_GRICRA') then
         ! comportement des liaisons grille-crayon combustible
         call digric(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DIS_CHOC') then
+    else if (for_discret%rela_comp .eq. 'DIS_CHOC') then
         ! comportement choc avec frottement de coulomb et sans amortissement
         call dis_choc_frot(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DIS_CONTACT') then
+    else if (for_discret%rela_comp .eq. 'DIS_CONTACT') then
         ! comportement choc avec frottement de coulomb avec amortissement
         call dis_contact_frot(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DIS_ECRO_CINE') then
+    else if (for_discret%rela_comp .eq. 'DIS_ECRO_CINE') then
         ! comportement avec écrouissage cinématique
         call diecci(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'DIS_BILI_ELAS') then
+    else if (for_discret%rela_comp .eq. 'DIS_BILI_ELAS') then
         ! comportement élastique bi-linéaire
         call dibili(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'FONDATION') then
+    else if (for_discret%rela_comp .eq. 'FONDATION') then
         ! comportement fondation : superficielle
         call difondabb(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'CHOC_ENDO') then
+    else if (for_discret%rela_comp .eq. 'CHOC_ENDO') then
         ! comportement de choc avec déformation résiduelle
         call dichoc_endo_ldc(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'CHOC_ENDO_PENA') then
+    else if (for_discret%rela_comp .eq. 'CHOC_ENDO_PENA') then
         ! comportement de choc avec déformation résiduelle par pénalisation
         call dichoc_endo_pena(for_discret, codret)
-    else if (for_discret%rela_comp.eq.'JONC_ENDO_PLAS') then
+    else if (for_discret%rela_comp .eq. 'JONC_ENDO_PLAS') then
         ! comportement élasto-plastique endommageable : jonction voile-plancher
         call disjvp(for_discret, codret)
     else
@@ -303,11 +303,11 @@ character(len=*) :: optioz, nomtez
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_7', nk=5, valk=messak)
-    endif
+    end if
     ! les comportements valides passent par ici
     if (for_discret%lSigm) then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret
-    endif
+    end if
 !
 end subroutine

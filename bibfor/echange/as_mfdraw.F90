@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdraw(fid, cha, filter, val, locname,&
-                     typent, typgeo, numdt, dt, numo,&
+subroutine as_mfdraw(fid, cha, filter, val, locname, &
+                     typent, typgeo, numdt, dt, numo, &
                      cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -45,13 +45,13 @@ subroutine as_mfdraw(fid, cha, filter, val, locname,&
     typge4 = typgeo
     numdt4 = numdt
     numo4 = numo
-    call mfdraw(fidm, cha, numdt4, numo4, dt,&
-                typen4, typge4, locname, filter, val,&
+    call mfdraw(fidm, cha, numdt4, numo4, dt, &
+                typen4, typge4, locname, filter, val, &
                 cret4)
     cret = cret4
 #else
-    call mfdraw(fid, cha, numdt, numo, dt,&
-                typent, typgeo, locname, filter, val,&
+    call mfdraw(fid, cha, numdt, numo, dt, &
+                typent, typgeo, locname, filter, val, &
                 cret)
 #endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,12 +48,12 @@ subroutine foston(chval, vecnom, nbfonc)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    nbpt=0
+    nbpt = 0
     chfval(20:24) = '.VALE'
     do i = 1, nbfonc
         chfval(1:19) = vecnom(i)
         call jelira(chfval, 'LONUTI', nbp)
-        nbpt=nbpt+nbp
+        nbpt = nbpt+nbp
     end do
     call jeecra(chval, 'LONT', nbpt)
     do i = 1, nbfonc
@@ -65,7 +65,7 @@ subroutine foston(chval, vecnom, nbfonc)
         call jeecra(jexnum(chval, i), 'LONUTI', nbp)
         call jeveuo(jexnum(chval, i), 'E', lvaln)
         do j = 1, nbp
-            zr(lvaln+j-1)=zr(lvalf+j-1)
+            zr(lvaln+j-1) = zr(lvalf+j-1)
         end do
         call jelibe(chfval)
     end do

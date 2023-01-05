@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
+subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag, &
                   rmima)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -101,22 +101,22 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
         cvmax = -r8maem()
 !
         do iordr = 1, nbordr
-            n1 = n1 + 1
-            cui = zr(jrvecp+2*n1 -1)
+            n1 = n1+1
+            cui = zr(jrvecp+2*n1-1)
             cvi = zr(jrvecp+2*n1)
 !
             if (cui .lt. cumin) then
                 cumin = cui
-            endif
+            end if
             if (cui .gt. cumax) then
                 cumax = cui
-            endif
+            end if
             if (cvi .lt. cvmin) then
                 cvmin = cvi
-            endif
+            end if
             if (cvi .gt. cvmax) then
                 cvmax = cvi
-            endif
+            end if
         end do
 !
 !-----------------------------------------------------------------------
@@ -140,20 +140,20 @@ subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
 ! 3/ CAS OU TOUS LES POINTS SONT DANS UNE BOITE DONT LES DEUX COTES
 !    SONT INFERIEURS A EPSILO, ON NE FERA PAS DE PROJECTION.
 !
-            elseif ( (abs(cvmax-cvmin)/2.d0 .lt. epsilo) .and. (abs(cumax-&
-        cumin)/2.d0 .lt. epsilo) ) then
+        elseif ((abs(cvmax-cvmin)/2.d0 .lt. epsilo) .and. (abs(cumax- &
+                                                               cumin)/2.d0 .lt. epsilo)) then
             iflag(ivect) = 3
-            nsig0 = nsig0 + 1
-        endif
+            nsig0 = nsig0+1
+        end if
 !
-        rmima(4*ivect - 3) = cumin
-        rmima(4*ivect - 2) = cumax
-        rmima(4*ivect - 1) = cvmin
+        rmima(4*ivect-3) = cumin
+        rmima(4*ivect-2) = cumax
+        rmima(4*ivect-1) = cvmin
         rmima(4*ivect) = cvmax
 !
         if (nsig0 .eq. nbvec) then
             lsig0 = .true.
-        endif
+        end if
 !
     end do
 !

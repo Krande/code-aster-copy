@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,26 +53,26 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
     integer :: ier, isec, j, jdge, nc, nd, ne
     integer :: nel, ng, nr, nt, nx, ny, nz
 !--- -------------------------------------------------------------------
-    parameter       ( nr = 4 , nc = 2, ng = 8 )
-    parameter       ( nt = 4 , ne =12, nd = 6 )
-    parameter       ( nx = 10, ny = 8, nz = 4 )
+    parameter(nr=4, nc=2, ng=8)
+    parameter(nt=4, ne=12, nd=6)
+    parameter(nx=10, ny=8, nz=4)
     integer :: ogen(ng), orec(nr), ocer(nc), otpe(nt)
     integer :: dexc(ne), ddfx(nd), drec(nr), dcer(nc)
     integer :: pgen(nx), prec(ny), pcer(nz)
     character(len=24) :: valk(3)
     real(kind=8) :: tst
 !--- -------------------------------------------------------------------
-    data ogen      /1,2,3,8,12,13,14,19/
-    data orec      /24,25,28,29/
-    data ocer      /32,34/
-    data otpe      /4,5,15,16/
-    data dexc      /6,7,17,18,37,38,39,40,41,42,43,44/
-    data ddfx      /9,10,11,20,21,22/
-    data drec      /26,27,30,31/
-    data dcer      /33,35/
-    data pgen      /1,9,10,11,12,20,21,22,37,38/
-    data prec      /24,25,26,27,28,29,30,31/
-    data pcer      /32,33,34,35/
+    data ogen/1, 2, 3, 8, 12, 13, 14, 19/
+    data orec/24, 25, 28, 29/
+    data ocer/32, 34/
+    data otpe/4, 5, 15, 16/
+    data dexc/6, 7, 17, 18, 37, 38, 39, 40, 41, 42, 43, 44/
+    data ddfx/9, 10, 11, 20, 21, 22/
+    data drec/26, 27, 30, 31/
+    data dcer/33, 35/
+    data pgen/1, 9, 10, 11, 12, 20, 21, 22, 37, 38/
+    data prec/24, 25, 26, 27, 28, 29, 30, 31/
+    data pcer/32, 33, 34, 35/
 !--- -------------------------------------------------------------------
 !
     call jemarq()
@@ -88,23 +88,23 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
                 valk(1) = nom
                 valk(2) = tab(ogen(j))
                 call utmess('A', 'MODELISA_77', nk=2, valk=valk)
-                ier = ier + 1
-            endif
-        enddo
+                ier = ier+1
+            end if
+        end do
 !        1:MECA_POU_D_T
 !        4:MEFS_POU_D_T     5:MECA_POU_D_TG
 !       12:MECA_POU_D_TGM
-        if ((nel.eq.ntel(1) ) .or. (nel.eq.ntel(4) ) .or.&
-            (nel.eq.ntel(5) ) .or. (nel.eq.ntel(12))) then
+        if ((nel .eq. ntel(1)) .or. (nel .eq. ntel(4)) .or. &
+            (nel .eq. ntel(5)) .or. (nel .eq. ntel(12))) then
             do j = 1, nt
                 if (zr(jdge+otpe(j)-1) .eq. tst) then
                     valk(1) = nom
                     valk(2) = tab(otpe(j))
                     call utmess('A', 'MODELISA_78', nk=2, valk=valk)
-                endif
-            enddo
-        endif
-    endif
+                end if
+            end do
+        end if
+    end if
 !
 !   COMPLETUDE DES DONNES GEOMETRIQUES RECTANGLE
     if (isec .eq. 1) then
@@ -113,10 +113,10 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
                 valk(1) = nom
                 valk(2) = tab(orec(j))
                 call utmess('A', 'MODELISA_79', nk=2, valk=valk)
-                ier = ier + 1
-            endif
-        enddo
-    endif
+                ier = ier+1
+            end if
+        end do
+    end if
 !
 !   COMPLETUDE DES DONNES GEOMETRIQUES CERCLE
     if (isec .eq. 2) then
@@ -125,10 +125,10 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
                 valk(1) = nom
                 valk(2) = tab(ocer(j))
                 call utmess('A', 'MODELISA_80', nk=2, valk=valk)
-                ier = ier + 1
-            endif
-        enddo
-    endif
+                ier = ier+1
+            end if
+        end do
+    end if
 !
 !   VERIFICATION DE LA STRICTE POSITIVITE DE  VALEURS GENERALE
     if (isec .eq. 0) then
@@ -138,11 +138,11 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
                     valk(1) = nom
                     valk(2) = tab(pgen(j))
                     call utmess('A', 'MODELISA_81', nk=2, valk=valk)
-                    ier = ier + 1
-                endif
-            endif
-        enddo
-    endif
+                    ier = ier+1
+                end if
+            end if
+        end do
+    end if
 !
 !     VERIFICATION DE LA STRICTE POSITIVITE DE VALEURS RECTANGLE
     if (isec .eq. 1) then
@@ -152,11 +152,11 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
                     valk(1) = nom
                     valk(2) = tab(prec(j))
                     call utmess('A', 'MODELISA_82', nk=2, valk=valk)
-                    ier = ier + 1
-                endif
-            endif
-        enddo
-    endif
+                    ier = ier+1
+                end if
+            end if
+        end do
+    end if
 !
 !     VERIFICATION DE LA STRICTE POSITIVITE DE VALEURS CERCLE
     if (isec .eq. 2) then
@@ -166,11 +166,11 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
                     valk(1) = nom
                     valk(2) = tab(pcer(j))
                     call utmess('A', 'MODELISA_83', nk=2, valk=valk)
-                    ier = ier + 1
-                endif
-            endif
-        enddo
-    endif
+                    ier = ier+1
+                end if
+            end if
+        end do
+    end if
 !
     if (ier .ne. 0) goto 999
 !
@@ -178,36 +178,36 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
     if (isec .eq. 0) then
 !        EXCENTREMENTS, AIRES INTERIEURES, CONSTANTES DE GAUCHISSEMENT
         do j = 1, ne
-            if(zr(jdge+dexc(j)-1).eq.tst)zr(jdge+dexc(j)-1) = 0.d0
-        enddo
+            if (zr(jdge+dexc(j)-1) .eq. tst) zr(jdge+dexc(j)-1) = 0.d0
+        end do
 !        DIST. FIBRE EXT.+ RAYON TORSION
         do j = 1, nd
-            if(zr(jdge+ddfx(j)-1).eq.tst)zr(jdge+ddfx(j)-1) = 1.d0
-        enddo
+            if (zr(jdge+ddfx(j)-1) .eq. tst) zr(jdge+ddfx(j)-1) = 1.d0
+        end do
 !        EULER
         if (nel .eq. ntel(2) .or. nel .eq. ntel(11)) then
             do j = 1, nt
                 zr(jdge+otpe(j)-1) = 0.d0
-            enddo
-        endif
-    endif
+            end do
+        end if
+    end if
 !
 !     AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES RECTANGLE
     if (isec .eq. 1) then
         do j = 1, nr
             if (zr(jdge+drec(j)-1) .eq. tst) then
-                zr(jdge+drec(j)-1) = zr(jdge+orec(j)-1) / 2.d0
+                zr(jdge+drec(j)-1) = zr(jdge+orec(j)-1)/2.d0
             else
                 if (zr(jdge+drec(j)-1) .gt. (zr(jdge+orec(j)-1)/2.d0)) then
                     valk(1) = nom
                     valk(2) = tab(drec(j))
                     valk(3) = tab(orec(j))
                     call utmess('A', 'MODELISA_84', nk=3, valk=valk)
-                    ier = ier + 1
-                endif
-            endif
-        enddo
-    endif
+                    ier = ier+1
+                end if
+            end if
+        end do
+    end if
 !
 !     AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES CERCLE
     if (isec .eq. 2) then
@@ -220,11 +220,11 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
                     valk(2) = tab(dcer(j))
                     valk(3) = tab(ocer(j))
                     call utmess('A', 'MODELISA_85', nk=3, valk=valk)
-                    ier = ier + 1
-                endif
-            endif
-        enddo
-    endif
+                    ier = ier+1
+                end if
+            end if
+        end do
+    end if
 !
 999 continue
     call jedema()

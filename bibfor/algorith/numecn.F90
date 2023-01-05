@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine numecn(modele, champ, nume)
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
-    mo=modele
+    mo = modele
     call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=prfchn)
     call jelira(prfchn//'.LILI', 'NOMMAX', nb1)
 !
@@ -72,34 +72,34 @@ subroutine numecn(modele, champ, nume)
 !     ----------------------------------------
     lligr = '&&NUMECN.LISTE_LIGREL'
     if (nb1 .eq. 1) then
-        call wkvect(lligr, 'V V K24', 1, vk24 = list_ligr)
+        call wkvect(lligr, 'V V K24', 1, vk24=list_ligr)
         list_ligr(1) = mo//'.MODELE'
         nb_ligr = 1
     else
 !       ON N'AJOUTE QUE LES LIGRELS QUI EXISTENT ENCORE :
-        nb2=0
+        nb2 = 0
         do i1 = 2, nb1
             call jenuno(jexnum(prfchn//'.LILI', i1), nomlig)
             call jeexin(nomlig//'.LIEL', iret)
             if (iret .ne. 0) then
-                if (nomlig .ne. mo//'.MODELE') nb2=nb2+1
-            endif
+                if (nomlig .ne. mo//'.MODELE') nb2 = nb2+1
+            end if
         end do
-        call wkvect(lligr, 'V V K24', nb2+1,  vk24 = list_ligr)
+        call wkvect(lligr, 'V V K24', nb2+1, vk24=list_ligr)
         nb_ligr = nb2+1
-        i2=1
+        i2 = 1
         list_ligr(i2) = mo//'.MODELE'
         do i1 = 2, nb1
             call jenuno(jexnum(prfchn//'.LILI', i1), nomlig)
             call jeexin(nomlig//'.LIEL', iret)
             if (iret .ne. 0) then
                 if (nomlig .ne. mo//'.MODELE') then
-                    i2=i2+1
+                    i2 = i2+1
                     list_ligr(i2) = nomlig
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 !
 !     2. -- ON SAUVEGARDE LA LISTE DES LIGRELS D'UNE FOIS SUR L'AUTRE
@@ -107,13 +107,13 @@ subroutine numecn(modele, champ, nume)
 !       => NEWNUM : FAUT-IL CREER UN NOUVEAU NUME_EQUA ?
 !       => LLIGRS : LISTE DES LIGRELS SAUVEGARDEE
 !     ----------------------------------------------------------------
-    lligrs= '&&NUMECN.LISTE_LIGREL_S'
-    newnum=.true.
+    lligrs = '&&NUMECN.LISTE_LIGREL_S'
+    newnum = .true.
     call jeexin(lligrs, iexi)
     if (iexi .gt. 0) then
-        if (idenob(lligr,lligrs)) newnum=.false.
+        if (idenob(lligr, lligrs)) newnum = .false.
         call jedetr(lligrs)
-    endif
+    end if
     call jedupo(lligr, 'V', lligrs, .false._1)
 !
 !
@@ -121,20 +121,20 @@ subroutine numecn(modele, champ, nume)
 !     3. -- ON CALCULE NU14 SI NECESSAIRE :
 !     -------------------------------------
     if (newnum) then
-        noojb='12345678.00000.NUME.PRNO'
+        noojb = '12345678.00000.NUME.PRNO'
         call gnomsd(' ', noojb, 10, 14)
-        nu14=noojb(1:14)
+        nu14 = noojb(1:14)
 !
-        k19bid=' '
+        k19bid = ' '
         call nueffe(nb_ligr, list_ligr, 'VG', nu14, 'SANS')
-        nu19=nu14
+        nu19 = nu14
         call jedetr(nu19//'.ADLI')
         call jedetr(nu19//'.ADNE')
-        nume=nu14//'.NUME'
-        numes=nume
+        nume = nu14//'.NUME'
+        numes = nume
     else
-        nume=numes
-    endif
+        nume = numes
+    end if
 !
 !
 !

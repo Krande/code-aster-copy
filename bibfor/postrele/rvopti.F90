@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
+subroutine rvopti(mcf, iocc, nch19, nomgd, typegd, &
                   option)
     implicit none
 !
@@ -55,11 +55,11 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
 ! ------ POUR LES OPTIONS XXXX_NOEU_XXXX, ON RECUPERE L'OPTION
 !        PAR LE MOT CLE "NOM_CHAM"
 !
-        lnch = getexm ( mcf, 'NOM_CHAM' )
+        lnch = getexm(mcf, 'NOM_CHAM')
         if (lnch .eq. 1) then
             call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=option, nbret=nc)
             if (option(6:9) .eq. 'NOEU') goto 999
-        endif
+        end if
 !
         if (nomgd .eq. 'SIEF_R') then
             option = 'SIEF_NOEU_DEPL  '
@@ -71,7 +71,7 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
             option = 'DEPL_NOEU_DEPL  '
         else if (nomgd .eq. 'FORC_R') then
             option = 'FORC_NOEU_FORC  '
-        endif
-    endif
+        end if
+    end if
 999 continue
 end subroutine

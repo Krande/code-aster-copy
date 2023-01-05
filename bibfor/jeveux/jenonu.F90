@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ subroutine jenonu(nomlu, numo)
     integer :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
     integer :: jmarq, n
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
-    common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
+    common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
@@ -52,7 +52,7 @@ subroutine jenonu(nomlu, numo)
 !
     if (len(nomlu) .ne. 32) then
         call utmess('F', 'JEVEUX_24', sk=nomlu)
-    endif
+    end if
 !
     icre = 0
     noml32 = nomlu
@@ -60,19 +60,19 @@ subroutine jenonu(nomlu, numo)
 !
     if (iret .eq. 0) then
         call utmess('F', 'JEVEUX_23', sk=noml32)
-    endif
+    end if
 !
     if (iret .eq. 1) then
 !       ----- OBJET DE TYPE REPERTOIRE
-        iadmi = iadm ( jiadm(iclaos) + 2*idatos-1 )
+        iadmi = iadm(jiadm(iclaos)+2*idatos-1)
         iadmex = iadmi
         if (iadmex .eq. 0) then
             call jxveuo('L', itab, iret, jctab)
-        endif
+        end if
         call jjcroc('        ', icre)
         if (iadmex .eq. 0) then
             call jjlide('JENONU', noml32, iret)
-        endif
+        end if
 !
     else if (iret .eq. 2) then
 !       ----- REPERTOIRE DE COLLECTION --
@@ -81,7 +81,7 @@ subroutine jenonu(nomlu, numo)
         call jjlide('JENONU', noml32(1:24), iret)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     numo = idatoc
     ipgc = ipgcex

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine crsint(solveu)
 !----------------------------------------------------------------------
     integer :: zslvk, zslvr, zslvi
     integer :: islvk, islvr, islvi
-    integer :: i, monit(12), niv, nbproc,rang,ifm, iret
+    integer :: i, monit(12), niv, nbproc, rang, ifm, iret
     mpi_int :: mrank, msize
     character(len=24) :: kmonit(12)
 !----------------------------------------------------------------------
@@ -82,7 +82,6 @@ subroutine crsint(solveu)
     zi(islvi-1+7) = -9999
     zi(islvi-1+8) = 0
 
-
 !   -- si on ne veut pas se planter dans preres avec INFO=2,
 !      il faut ajouter tout ce bazar :
 !   -------------------------------------------------------------
@@ -91,36 +90,35 @@ subroutine crsint(solveu)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
 
-        kmonit(1)='&MUMPS.INFO.MAILLE'
-        kmonit(2)='&MUMPS.INFO.MEMOIRE'
-        kmonit(9)='&MUMPS.NB.MAILLE'
-        kmonit(10)='&MUMPS.INFO.MEM.EIC'
-        kmonit(11)='&MUMPS.INFO.MEM.EOC'
-        kmonit(12)='&MUMPS.INFO.MEM.USE'
+        kmonit(1) = '&MUMPS.INFO.MAILLE'
+        kmonit(2) = '&MUMPS.INFO.MEMOIRE'
+        kmonit(9) = '&MUMPS.NB.MAILLE'
+        kmonit(10) = '&MUMPS.INFO.MEM.EIC'
+        kmonit(11) = '&MUMPS.INFO.MEM.EOC'
+        kmonit(12) = '&MUMPS.INFO.MEM.USE'
         call jeexin(kmonit(1), iret)
-        if (iret .eq. 0) then 
+        if (iret .eq. 0) then
             call wkvect(kmonit(1), 'V V I', nbproc, monit(1))
             call wkvect(kmonit(2), 'V V I', nbproc, monit(2))
             call wkvect(kmonit(9), 'V V I', nbproc, monit(9))
             call wkvect(kmonit(10), 'V V I', nbproc, monit(10))
             call wkvect(kmonit(11), 'V V I', nbproc, monit(11))
             call wkvect(kmonit(12), 'V V I', nbproc, monit(12))
-            
+
             do i = 1, nbproc
-                zi(monit(1)+i-1)=0
-                zi(monit(2)+i-1)=0
-                zi(monit(9)+i-1)=0
-                zi(monit(10)+i-1)=0
-                zi(monit(11)+i-1)=0
-                zi(monit(12)+i-1)=0
+                zi(monit(1)+i-1) = 0
+                zi(monit(2)+i-1) = 0
+                zi(monit(9)+i-1) = 0
+                zi(monit(10)+i-1) = 0
+                zi(monit(11)+i-1) = 0
+                zi(monit(12)+i-1) = 0
             end do
-         endif
+        end if
 ! -----
         call asmpi_comm_jev('REDUCE', kmonit(9))
 ! ----- CORRECTION SI MODAL
 
-    endif
-
+    end if
 
     call jedema()
 end subroutine

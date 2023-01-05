@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,13 +42,13 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 !     ------------------------------------------------------------------
 !
     integer :: mxf
-    parameter       (mxf=100)
+    parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
     integer :: first, unitfi(mxf), nbfile
-    common/ asgfi1 / first, unitfi      , nbfile
-    common/ asgfi2 / namefi,ddname,typefi,accefi,etatfi,modifi
+    common/asgfi1/first, unitfi, nbfile
+    common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     character(len=255) :: namell
     character(len=16) :: name16
@@ -60,11 +60,11 @@ subroutine ulopen(unit, fichie, name, acces, autor)
     character(len=80) :: valk(3)
 !     CONSERVER LA COHERENCE AVEC IBIMPR
     integer :: mximpr
-    parameter   ( mximpr = 3)
-    character(len=16) :: nompr (mximpr)
-    integer :: unitpr (mximpr)
-    data          nompr  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
-    data          unitpr /    6      ,     6     ,      6  /
+    parameter(mximpr=3)
+    character(len=16) :: nompr(mximpr)
+    integer :: unitpr(mximpr)
+    data nompr/'MESSAGE', 'RESULTAT', 'ERREUR'/
+    data unitpr/6, 6, 6/
 !     ------------------------------------------------------------------
 !
     name16 = name
@@ -80,18 +80,18 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                 if (unit .eq. unitpr(i)) then
                     name16 = nompr(i)
                     goto 59
-                endif
+                end if
             end do
- 59         continue
-        endif
+59          continue
+        end if
 !
-        write(k4b,'(I3)') unit
+        write (k4b, '(I3)') unit
         if (fichie(1:1) .eq. ' ') then
             call codent(unit, 'G', k8b)
             namell = 'fort.'//k8b
         else
             namell = fichie
-        endif
+        end if
 !
         do i = 1, nbfile
             if (unitfi(i) .eq. unit) then
@@ -100,37 +100,37 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 !
                 if (namefi(i) .eq. namell) then
                     if (typefi(i) .eq. 'A') then
-                        if ((etatfi(i).eq.'O') .or. (etatfi(i).eq.'R')) then
+                        if ((etatfi(i) .eq. 'O') .or. (etatfi(i) .eq. 'R')) then
                             if (accefi(i) .eq. k1acce) then
                                 if (ddname(i) .eq. name16 .or. name16 .eq. ' ') then
                                     goto 999
-                                endif
+                                end if
                                 valk(1) = k4b
                                 valk(2) = ddname(i)
-                                valk(3) = namefi(i)(1:80)
+                                valk(3) = namefi(i) (1:80)
                                 call utmess('E', 'UTILITAI5_11', nk=3, valk=valk)
                                 call utmess('F', 'UTILITAI5_12', sk=name16)
                             else
                                 valk(1) = k4b
                                 valk(2) = accefi(i)
-                                valk(3) = namefi(i)(1:80)
+                                valk(3) = namefi(i) (1:80)
                                 call utmess('E', 'UTILITAI5_13', nk=3, valk=valk)
                                 call utmess('F', 'UTILITAI5_14')
-                            endif
-                        endif
+                            end if
+                        end if
                     else
                         valk(1) = k4b
-                        valk(2) = namefi(i)(1:80)
+                        valk(2) = namefi(i) (1:80)
                         call utmess('E', 'UTILITAI5_15', nk=2, valk=valk)
                         call utmess('F', 'UTILITAI5_16')
-                    endif
+                    end if
                 else
                     valk(1) = k4b
-                    valk(2) = namefi(i)(1:80)
+                    valk(2) = namefi(i) (1:80)
                     valk(3) = ddname(i)
                     call utmess('F', 'UTILITAI5_17', nk=3, valk=valk)
-                endif
-            endif
+                end if
+            end if
         end do
 !
 !     --- VERIFICATION DE L'OUVERTURE DU FICHIER ---
@@ -139,47 +139,47 @@ subroutine ulopen(unit, fichie, name, acces, autor)
             do i = 1, nbfile
                 if (ddname(i) .eq. name16) ddname(i) = ' '
             end do
-        endif
+        end if
         if (k1acce .eq. 'O') then
-            inquire ( file=namell, exist=v11, iostat=ier1)
-            if (.not.v11) then
-                valk(1)=namell(1:80)
-                valk(2)=k8b
+            inquire (file=namell, exist=v11, iostat=ier1)
+            if (.not. v11) then
+                valk(1) = namell(1:80)
+                valk(2) = k8b
                 call utmess('F', 'UTILITAI5_1', nk=2, valk=valk)
-            endif
-        endif
-        inquire ( unit=unit, opened=v11, iostat=ier1)
+            end if
+        end if
+        inquire (unit=unit, opened=v11, iostat=ier1)
         if (ier1 .eq. 0) then
             if (.not. v11 .and. unit .ne. 6) then
-                open ( unit=unit, file=namell, iostat=ier2 )
+                open (unit=unit, file=namell, iostat=ier2)
                 if (ier2 .ne. 0) then
                     valk(1) = k4b
                     valk(2) = namell(1:80)
                     call utmess('F', 'UTILITAI5_18', nk=2, valk=valk)
-                endif
+                end if
                 call ulposi(unit, k1acce, ierr)
                 if (ierr .gt. 0) then
                     call utmess('F', 'UTILITAI5_19', sk=k4b)
-                endif
-            endif
+                end if
+            end if
         else
             call utmess('F', 'UTILITAI5_20', sk=k4b)
-        endif
+        end if
 !
 !     --- ON STOCKE DANS LE COMMON ---
 !
         do i = 1, nbfile
             if (unitfi(i) .eq. 0) then
-                ifile=i
+                ifile = i
                 goto 16
-            endif
+            end if
         end do
-        nbfile = nbfile + 1
+        nbfile = nbfile+1
         if (nbfile .gt. mxf) then
             call utmess('F', 'UTILITAI5_21', si=mxf)
-        endif
-        ifile=nbfile
- 16     continue
+        end if
+        ifile = nbfile
+16      continue
         namefi(ifile) = namell
         ddname(ifile) = name16
         unitfi(ifile) = unit
@@ -193,13 +193,13 @@ subroutine ulopen(unit, fichie, name, acces, autor)
             etatfi(ifile) = 'R'
             close (unit=unit, iostat=ierr)
             if (ierr .gt. 0) then
-                write(k4b,'(I4)') unit
+                write (k4b, '(I4)') unit
                 call utmess('F', 'UTILITAI5_22', sk=k4b)
-            endif
-        endif
+            end if
+        end if
 !
     else if (unit .lt. 0) then
-        write(k4b,'(I4)') -unit
+        write (k4b, '(I4)')-unit
         do i = 1, nbfile
             if (unitfi(i) .eq. -unit) then
                 if (modifi(i) .eq. 'O') then
@@ -208,8 +208,8 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                         close (unit=-unit, iostat=ierr)
                         if (ierr .gt. 0) then
                             call utmess('F', 'UTILITAI_77', sk=k4b)
-                        endif
-                    endif
+                        end if
+                    end if
                     namefi(i) = ' '
                     ddname(i) = ' '
                     unitfi(i) = 0
@@ -220,10 +220,10 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     goto 999
                 else
                     call utmess('F', 'UTILITAI5_23', sk=k4b)
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 999 continue
 end subroutine

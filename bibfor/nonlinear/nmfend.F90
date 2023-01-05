@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,21 +34,21 @@ function nmfend(dr)
 !     VARIABLES LOCALES:
 !     ------------------
 !----- COMMONS NECESSAIRES A VENDOCHAB
-    common   /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,unsurn,unsurm
+    common/fvendo/mu, syvp, kvp, rm, dm, seqe, ad, dt, rd, unsurn, unsurm
     real(kind=8) :: mu, syvp, kvp, rm, dm, seqe, ad, dt, unsurn, unsurm
     real(kind=8) :: dd, rd, gder, unmd, dtn, puis
 !
-    dtn=dt**unsurn
+    dtn = dt**unsurn
 !
     if (dr .lt. r8miem()) then
-        gder=0.d0
-        dd=0.d0
+        gder = 0.d0
+        dd = 0.d0
     else
-        gder=kvp*(dr**unsurn)*((rm+dr)**unsurm)+syvp*dtn
-        puis=1.d0-rd*unsurn
-        dd=(dt**puis)*((gder/ad)**rd)
-    endif
-    unmd=1.d0-dm-dd
-    nmfend= gder*unmd+3.d0*mu*dr*dtn-seqe*unmd*dtn
+        gder = kvp*(dr**unsurn)*((rm+dr)**unsurm)+syvp*dtn
+        puis = 1.d0-rd*unsurn
+        dd = (dt**puis)*((gder/ad)**rd)
+    end if
+    unmd = 1.d0-dm-dd
+    nmfend = gder*unmd+3.d0*mu*dr*dtn-seqe*unmd*dtn
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,14 +83,14 @@ subroutine nbnode(noma, motfac, nzocu, nopono, nnocu)
         tymocl(2) = 'MAILLE'
         limocl(1) = 'GROUP_MA'
         limocl(2) = 'MAILLE'
-        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone,&
+        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone, &
                     nbmocl, limocl, tymocl, listmn, nbmano)
 !
         tymocl(1) = 'GROUP_NO'
         tymocl(2) = 'NOEUD'
         limocl(1) = 'GROUP_NO'
         limocl(2) = 'NOEUD'
-        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone,&
+        call reliem(k8bla, noma, 'NU_NOEUD', motfac, izone, &
                     nbmocl, limocl, tymocl, listnn, nbnono)
         nbno = nbmano+nbnono
         nnocu = nnocu+nbno

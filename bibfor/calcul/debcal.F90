@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,11 @@
 
 subroutine debcal(nin, lchin, lpain, nout, lchout)
 
-use calcul_module, only : ca_iachii_, ca_iachik_, ca_iachix_, &
-    ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_,&
-    ca_ligrel_, ca_option_, ca_iachid_
+    use calcul_module, only: ca_iachii_, ca_iachik_, ca_iachix_, &
+                             ca_iactif_, ca_iaobtr_, ca_iaopds_, ca_iaoppa_, ca_nbobtr_, &
+                             ca_ligrel_, ca_option_, ca_iachid_
 
-implicit none
-
+    implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -90,88 +89,83 @@ implicit none
 
     call dismoi('NOM_MAILLA', ca_ligrel_, 'LIGREL', repk=ma)
 
-
 !   -- verification que les champs "in" ont des noms licites:
 !   ---------------------------------------------------------
     do i = 1, nin
-        nompar=lpain(i)
+        nompar = lpain(i)
         call chlici(nompar, 8)
         if (nompar .ne. ' ') then
             call chlici(lchin(i), 19)
-        endif
+        end if
     end do
-
 
 !   -- verification de l'existence des champs "in"
 !   ---------------------------------------------------
     call wkvect('&&CALCUL.LCHIN_EXI', 'V V L', max(1, nin), ca_iachix_)
-    ca_nbobtr_=ca_nbobtr_+1
-    zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.LCHIN_EXI'
+    ca_nbobtr_ = ca_nbobtr_+1
+    zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.LCHIN_EXI'
     do i = 1, nin
-        chin=lchin(i)
-        zl(ca_iachix_-1+i)=.true.
-        if (lpain(i)(1:1) .eq. ' ') then
-            zl(ca_iachix_-1+i)=.false.
-        else if (chin(1:1).eq.' ') then
-            zl(ca_iachix_-1+i)=.false.
+        chin = lchin(i)
+        zl(ca_iachix_-1+i) = .true.
+        if (lpain(i) (1:1) .eq. ' ') then
+            zl(ca_iachix_-1+i) = .false.
+        else if (chin(1:1) .eq. ' ') then
+            zl(ca_iachix_-1+i) = .false.
         else
             call jeexin(chin//'.DESC', iret1)
             call jeexin(chin//'.CELD', iret2)
-            if ((iret1+iret2) .eq. 0) zl(ca_iachix_-1+i)=.false.
-        endif
+            if ((iret1+iret2) .eq. 0) zl(ca_iachix_-1+i) = .false.
+        end if
     end do
-
 
 !   -- on verifie que les champs "in" ont un maillage sous-jacent
 !      identique au maillage associe a ca_ligrel_ :
 !   -------------------------------------------------------------
     do i = 1, nin
-        chin=lchin(i)
-        if (.not.(zl(ca_iachix_-1+i))) cycle
+        chin = lchin(i)
+        if (.not. (zl(ca_iachix_-1+i))) cycle
         call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
         if (ma2 .ne. ma) then
-            valk(1)=chin
-            valk(2)=ca_ligrel_
-            valk(3)=ma2
-            valk(4)=ma
+            valk(1) = chin
+            valk(2) = ca_ligrel_
+            valk(3) = ma2
+            valk(4) = ma
             call utmess('F', 'CALCUL_3', nk=4, valk=valk)
-        endif
+        end if
     end do
-
 
 !   -- verification que les champs "out" sont differents
 !      des champs "in"
 !   ---------------------------------------------------
     do i = 1, nout
-        chou=lchout(i)
+        chou = lchout(i)
         do j = 1, nin
-            chin=lchin(j)
-            if (.not.zl(ca_iachix_-1+j)) cycle
+            chin = lchin(j)
+            if (.not. zl(ca_iachix_-1+j)) cycle
             if (chin .eq. chou) then
                 call utmess('F', 'CALCUL_4', sk=chou)
-            endif
+            end if
         end do
     end do
 
-
     call wkvect('&&CALCUL.LCHIN_I', 'V V I', max(1, ca_iachid_*nin), ca_iachii_)
-    ca_nbobtr_=ca_nbobtr_+1
-    zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.LCHIN_I'
+    ca_nbobtr_ = ca_nbobtr_+1
+    zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.LCHIN_I'
     call wkvect('&&CALCUL.LCHIN_K8', 'V V K8', max(1, 2*nin), ca_iachik_)
-    ca_nbobtr_=ca_nbobtr_+1
-    zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.LCHIN_K8'
-    nbpara = zi(ca_iaopds_-1+2) + zi(ca_iaopds_-1+3)
+    ca_nbobtr_ = ca_nbobtr_+1
+    zk24(ca_iaobtr_-1+ca_nbobtr_) = '&&CALCUL.LCHIN_K8'
+    nbpara = zi(ca_iaopds_-1+2)+zi(ca_iaopds_-1+3)
     do i = 1, nin
-        chin=lchin(i)
-        ASSERT(chin.ne.' ')
+        chin = lchin(i)
+        ASSERT(chin .ne. ' ')
         call jeexin(chin//'.DESC', iret1)
-        if (iret1 .gt. 0) objdes=chin//'.DESC'
+        if (iret1 .gt. 0) objdes = chin//'.DESC'
         call jeexin(chin//'.CELD', iret2)
-        if (iret2 .gt. 0) objdes=chin//'.CELD'
-        ASSERT((iret1+iret2).gt.0)
-        nompar=lpain(i)
-        jpar=indik8(zk8(ca_iaoppa_),nompar,1,nbpara)
-        ASSERT(jpar.ne.0)
+        if (iret2 .gt. 0) objdes = chin//'.CELD'
+        ASSERT((iret1+iret2) .gt. 0)
+        nompar = lpain(i)
+        jpar = indik8(zk8(ca_iaoppa_), nompar, 1, nbpara)
+        ASSERT(jpar .ne. 0)
 
         call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tych)
 
@@ -179,134 +173,134 @@ implicit none
 !           et qu'il n'a pas ete calcule avec le ligrel de calcul,
 !           on le transporte sur ce ligrel
 !           (et on modifie son nom dans lchin)
-        if ((tych(1:2).eq.'EL') .or. (tych.eq.'RESL')) then
+        if ((tych(1:2) .eq. 'EL') .or. (tych .eq. 'RESL')) then
             call dismoi('NOM_LIGREL', chin, 'CHAMP', repk=ligre2)
             if (ligre2 .ne. ca_ligrel_) then
                 call codent(i, 'G', knum)
-                lchin(i)='&&CALCUL.CHML.'//knum
-                ASSERT(ca_iactif_.eq.0)
-                call chligr(chin, ca_ligrel_, ca_option_, nompar, 'V',&
+                lchin(i) = '&&CALCUL.CHML.'//knum
+                ASSERT(ca_iactif_ .eq. 0)
+                call chligr(chin, ca_ligrel_, ca_option_, nompar, 'V', &
                             lchin(i))
 
-                call jeexin(lchin(i)(1:19)//'.CELD', ibid)
-                chin=lchin(i)
-                objdes(1:19)=chin
-                ca_nbobtr_=ca_nbobtr_+1
-                zk24(ca_iaobtr_-1+ca_nbobtr_)=lchin(i)//'.CELD'
-                ca_nbobtr_=ca_nbobtr_+1
+                call jeexin(lchin(i) (1:19)//'.CELD', ibid)
+                chin = lchin(i)
+                objdes(1:19) = chin
+                ca_nbobtr_ = ca_nbobtr_+1
+                zk24(ca_iaobtr_-1+ca_nbobtr_) = lchin(i)//'.CELD'
+                ca_nbobtr_ = ca_nbobtr_+1
                 if (tych(1:2) .eq. 'EL') then
-                    zk24(ca_iaobtr_-1+ca_nbobtr_)=lchin(i)//'.CELK'
+                    zk24(ca_iaobtr_-1+ca_nbobtr_) = lchin(i)//'.CELK'
                 else
-                    zk24(ca_iaobtr_-1+ca_nbobtr_)=lchin(i)//'.NOLI'
-                endif
-                ca_nbobtr_=ca_nbobtr_+1
-                zk24(ca_iaobtr_-1+ca_nbobtr_)=lchin(i)//'.CELV'
-            endif
-        endif
+                    zk24(ca_iaobtr_-1+ca_nbobtr_) = lchin(i)//'.NOLI'
+                end if
+                ca_nbobtr_ = ca_nbobtr_+1
+                zk24(ca_iaobtr_-1+ca_nbobtr_) = lchin(i)//'.CELV'
+            end if
+        end if
 
-        igd=grdeur(nompar)
-        zi(ca_iachii_-1+ca_iachid_*(i-1)+1)=igd
+        igd = grdeur(nompar)
+        zi(ca_iachii_-1+ca_iachid_*(i-1)+1) = igd
 
-        nec=nbec(igd)
-        zi(ca_iachii_-1+ca_iachid_*(i-1)+2)=nec
+        nec = nbec(igd)
+        zi(ca_iachii_-1+ca_iachid_*(i-1)+2) = nec
 
-        typsca=scalai(igd)
-        zk8(ca_iachik_-1+2*(i-1)+2)=typsca
+        typsca = scalai(igd)
+        zk8(ca_iachik_-1+2*(i-1)+2) = typsca
 
         call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx)
-        zi(ca_iachii_-1+ca_iachid_*(i-1)+3)=ncmpmx
-        if ( ncmpmx.ne.0 ) then
+        zi(ca_iachii_-1+ca_iachid_*(i-1)+3) = ncmpmx
+        if (ncmpmx .ne. 0) then
             call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', inomcp)
         else
             inomcp = 0
-        endif
-        zi(ca_iachii_-1+ca_iachid_*(i-1)+12)=inomcp
+        end if
+        zi(ca_iachii_-1+ca_iachid_*(i-1)+12) = inomcp
 
         call jelira(objdes, 'DOCU', cval=k8bi)
-        zk8(ca_iachik_-1+2*(i-1)+1)=k8bi
+        zk8(ca_iachik_-1+2*(i-1)+1) = k8bi
 
         call jeveuo(objdes, 'L', desc)
-        zi(ca_iachii_-1+ca_iachid_*(i-1)+4)=desc
+        zi(ca_iachii_-1+ca_iachid_*(i-1)+4) = desc
 
 !         -- si la grandeur associee au champ n'est pas celle associee
 !            au parametre, on arrete tout :
         if (igd .ne. zi(desc)) then
             call jenuno(jexnum('&CATA.GD.NOMGD', igd), k8bi1)
             call jenuno(jexnum('&CATA.GD.NOMGD', zi(desc)), k8bi2)
-            valk(1)=chin
-            valk(2)=k8bi2
-            valk(3)=nompar
-            valk(4)=k8bi1
-            valk(5)=ca_option_
+            valk(1) = chin
+            valk(2) = k8bi2
+            valk(3) = nompar
+            valk(4) = k8bi1
+            valk(5) = ca_option_
             call utmess('F', 'CALCUL_5', nk=5, valk=valk)
-        endif
+        end if
 
         call jeexin(chin//'.VALE', iret)
         if (iret .gt. 0) then
             call jeveuo(chin//'.VALE', 'L', iii)
-            zi(ca_iachii_-1+ca_iachid_*(i-1)+5)=iii
-        endif
+            zi(ca_iachii_-1+ca_iachid_*(i-1)+5) = iii
+        end if
 
         call jeexin(chin//'.CELV', iret)
         if (iret .gt. 0) then
             call jeveuo(chin//'.CELV', 'L', iii)
-            zi(ca_iachii_-1+ca_iachid_*(i-1)+5)=iii
-        endif
+            zi(ca_iachii_-1+ca_iachid_*(i-1)+5) = iii
+        end if
 
 !        -- pour les cartes :
-        if (zk8(ca_iachik_-1+2*(i-1)+1)(1:4) .eq. 'CART') then
+        if (zk8(ca_iachik_-1+2*(i-1)+1) (1:4) .eq. 'CART') then
 
 !           -- si la carte n'est pas constante, on l'etend:
-            if (.not.(zi(desc-1+2).eq.1.and.zi(desc-1+4).eq.1)) then
+            if (.not. (zi(desc-1+2) .eq. 1 .and. zi(desc-1+4) .eq. 1)) then
                 call etenca(chin, ca_ligrel_, iret)
                 if (iret .gt. 0) goto 998
                 call jeexin(chin//'.PTMA', iret)
                 if (iret .gt. 0) then
                     call jeveuo(chin//'.PTMA', 'L', iii)
-                    zi(ca_iachii_-1+ca_iachid_*(i-1)+6)=iii
-                    ca_nbobtr_=ca_nbobtr_+1
-                    zk24(ca_iaobtr_-1+ca_nbobtr_)=chin//'.PTMA'
-                endif
+                    zi(ca_iachii_-1+ca_iachid_*(i-1)+6) = iii
+                    ca_nbobtr_ = ca_nbobtr_+1
+                    zk24(ca_iaobtr_-1+ca_nbobtr_) = chin//'.PTMA'
+                end if
                 call jeexin(chin//'.PTMS', iret)
                 if (iret .gt. 0) then
                     call jeveuo(chin//'.PTMS', 'L', iii)
-                    zi(ca_iachii_-1+ca_iachid_*(i-1)+7)=iii
-                    ca_nbobtr_=ca_nbobtr_+1
-                    zk24(ca_iaobtr_-1+ca_nbobtr_)=chin//'.PTMS'
-                endif
-            endif
-        endif
+                    zi(ca_iachii_-1+ca_iachid_*(i-1)+7) = iii
+                    ca_nbobtr_ = ca_nbobtr_+1
+                    zk24(ca_iaobtr_-1+ca_nbobtr_) = chin//'.PTMS'
+                end if
+            end if
+        end if
 
 !        -- pour les cham_no a profil_noeud:
-        if (zk8(ca_iachik_-1+2*(i-1)+1)(1:4) .eq. 'CHNO') then
-            num=zi(desc-1+2)
+        if (zk8(ca_iachik_-1+2*(i-1)+1) (1:4) .eq. 'CHNO') then
+            num = zi(desc-1+2)
             if (num .gt. 0) then
                 call jeveuo(chin//'.REFE', 'L', vk24=refe)
-                noprno=refe(2)(1:19)//'.PRNO'
+                noprno = refe(2) (1:19)//'.PRNO'
                 call jeveuo(jexnum(noprno, 1), 'L', iii)
-                zi(ca_iachii_-1+ca_iachid_*(i-1)+8)=iii
+                zi(ca_iachii_-1+ca_iachid_*(i-1)+8) = iii
                 call jeveuo(ca_ligrel_//'.NBNO', 'L', vi=nbno)
                 if (nbno(1) .gt. 0) then
                     call jenonu(jexnom(noprno(1:19)//'.LILI', ca_ligrel_//'      '), jproli)
                     if (jproli .eq. 0) then
-                        zi(ca_iachii_-1+ca_iachid_*(i-1)+9)=isnnem()
+                        zi(ca_iachii_-1+ca_iachid_*(i-1)+9) = isnnem()
                     else
                         call jeveuo(jexnum(noprno, jproli), 'L', iii)
-                        zi(ca_iachii_-1+ca_iachid_*(i-1)+9)=iii
-                    endif
-                endif
+                        zi(ca_iachii_-1+ca_iachid_*(i-1)+9) = iii
+                    end if
+                end if
                 call jeveuo(noprno(1:19)//'.NUEQ', 'L', ianueq)
-                zi(ca_iachii_-1+ca_iachid_*(i-1)+10)=ianueq
-                zi(ca_iachii_-1+ca_iachid_*(i-1)+11)=1
-            endif
-        endif
-    enddo
+                zi(ca_iachii_-1+ca_iachid_*(i-1)+10) = ianueq
+                zi(ca_iachii_-1+ca_iachid_*(i-1)+11) = 1
+            end if
+        end if
+    end do
 
     goto 999
 
 !     -- sortie erreur:
 998 continue
-    chin=lchin(i)
+    chin = lchin(i)
     call utmess('F', 'CALCUL_6', sk=chin)
 
 !     -- sortie normale:

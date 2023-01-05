@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lsqpol(ordre, e1, npt, xx, yy,&
+subroutine lsqpol(ordre, e1, npt, xx, yy, &
                   ordok, poly, sigma)
 ! aslint: disable=W1306
     implicit none
@@ -59,7 +59,7 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
 !      MAIS EN SORTIE, ON A ORDOK >=0
 !
     real(kind=8) :: grand
-    parameter (grand = 1.0d20)
+    parameter(grand=1.0d20)
 !
     integer :: ordre, npt
     real(kind=8) :: xx(npt), yy(npt)
@@ -77,7 +77,7 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
 !
     if (ordre .lt. 1) then
         goto 999
-    endif
+    end if
 !
 !      ON A TOUJOURS DES POINTS DISTINCTS (LES XX SONT DISTINCTS)
 !      ON A TOUJOURS NPT>1
@@ -86,11 +86,11 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
 !         UNIQUEMENT POUR + DE PRECISION: MAIS LA ROUTINE MARCHE AUSSI
 !         POUR NPT=2
         ordok = 1
-        poly(2)=(yy(2)-yy(1))/(xx(2)-xx(1))
-        poly(1)= (yy(1)+yy(2)-poly(2)*(xx(1)+xx(2)))/2.d0
-        sigma=0.d0
+        poly(2) = (yy(2)-yy(1))/(xx(2)-xx(1))
+        poly(1) = (yy(1)+yy(2)-poly(2)*(xx(1)+xx(2)))/2.d0
+        sigma = 0.d0
         goto 999
-    endif
+    end if
 !
     v1 = grand
 !
@@ -109,25 +109,25 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
     d1 = sqrt(npt*1.0d0)
 !
     do i = 1, npt
-        ee(i) = 1.d0 / d1
+        ee(i) = 1.d0/d1
     end do
     f1 = d1
 !
     a1 = 0.d0
     do i = 1, npt
-        a1 = a1 + xx(i) * ee(i) * ee(i)
+        a1 = a1+xx(i)*ee(i)*ee(i)
     end do
 !
     poly1 = 0.d0
     do i = 1, npt
-        poly1 = poly1 + yy(i) * ee(i)
+        poly1 = poly1+yy(i)*ee(i)
     end do
 !
-    bb(1) = 1.d0 / f1
-    ff(1) = bb(1) * poly1
+    bb(1) = 1.d0/f1
+    ff(1) = bb(1)*poly1
 !
     do i = 1, npt
-        vv(i) = vv(i) + poly1*ee(i)
+        vv(i) = vv(i)+poly1*ee(i)
     end do
 !
 ! --- DEBUT BOUCLE ----------------------------------------
@@ -146,41 +146,41 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
         f1 = 0.d0
         do i = 1, npt
             b1 = ee(i)
-            ee(i) = (xx(i) - a2) * b1 - f2 * dd(i)
+            ee(i) = (xx(i)-a2)*b1-f2*dd(i)
             dd(i) = b1
-            f1 = f1 + ee(i) * ee(i)
+            f1 = f1+ee(i)*ee(i)
         end do
 !
         f1 = sqrt(f1)
         do i = 1, npt
-            ee(i) = ee(i) / f1
+            ee(i) = ee(i)/f1
         end do
         a1 = 0.d0
         do i = 1, npt
-            a1 = a1 + xx(i) * ee(i) * ee(i)
+            a1 = a1+xx(i)*ee(i)*ee(i)
         end do
 !
         poly1 = 0.d0
         do i = 1, npt
-            poly1 = poly1 + yy(i) * ee(i)
+            poly1 = poly1+yy(i)*ee(i)
         end do
 !
         do i = 0, ordloo
-            j = ordloo - i + 1
+            j = ordloo-i+1
             b2 = bb(j)
             d1 = 0.d0
-            if (j .gt. 1) d1 = bb(j - 1)
-            d1 = d1 - a2 * bb(j) - f2 * aa(j)
-            bb(j) = d1 / f1
+            if (j .gt. 1) d1 = bb(j-1)
+            d1 = d1-a2*bb(j)-f2*aa(j)
+            bb(j) = d1/f1
             aa(j) = b2
         end do
 !
         do i = 1, npt
-            vv(i) = vv(i) + poly1*ee(i)
+            vv(i) = vv(i)+poly1*ee(i)
         end do
 !
         do i = 1, ordre+1
-            ff(i) = ff(i) + poly1*bb(i)
+            ff(i) = ff(i)+poly1*bb(i)
         end do
 !
         do i = 1, ordre+1
@@ -191,20 +191,20 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
 !
         sigma = 0.d0
         do i = 1, npt
-            sigma = sigma + (vv(i) - yy(i)) * (vv(i) - yy(i))
+            sigma = sigma+(vv(i)-yy(i))*(vv(i)-yy(i))
         end do
 !
 !        NOTE THE DIVISION IS BY THE NUMBER OF DEGREES OF FREEDOM
-        if (npt .gt. ordloo + 1) then
+        if (npt .gt. ordloo+1) then
 !          SIGMA = SQRT(SIGMA / DFLOAT(NPT - ORDLOO - 1))
-            sigma = sqrt(sigma / (npt - ordloo - 1))
+            sigma = sqrt(sigma/(npt-ordloo-1))
         else
             goto 999
-        endif
+        end if
 !
         if (e1 .gt. 0.d0) then
 !          TEST FOR MINIMAL IMPROVEMENT OR IF ERROR IS LARGER, QUIT
-            if (( abs(v1 - sigma) .lt. (e1*sigma) ) .or. ( e1 * sigma .gt. e1 * v1 )) then
+            if ((abs(v1-sigma) .lt. (e1*sigma)) .or. (e1*sigma .gt. e1*v1)) then
 !           ABORTED SEQUENCE, RECOVER LAST VALUES
                 ordok = ordok2
                 sigma = v2
@@ -212,8 +212,8 @@ subroutine lsqpol(ordre, e1, npt, xx, yy,&
                     poly(i) = poly2(i)
                 end do
                 goto 999
-            endif
-        endif
+            end if
+        end if
 !
         v1 = sigma
 !

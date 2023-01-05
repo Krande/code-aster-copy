@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,21 +27,21 @@ subroutine predia(a, b, diag, nno)
 !
     real(kind=8) :: a(9, 9), b(9, 4), diag(9)
     do i = 1, nno
-        diag(i) = 1.d0/sqrt(a(i,i))
+        diag(i) = 1.d0/sqrt(a(i, i))
     end do
     do i = 1, nno
         do j = 1, i
-            a(i,j) = a(i,j) * diag(i) *diag(j)
+            a(i, j) = a(i, j)*diag(i)*diag(j)
         end do
     end do
     do ic = 1, 4
         do i = 1, nno
-            b(i,ic) = b(i,ic) * diag(i)
+            b(i, ic) = b(i, ic)*diag(i)
         end do
     end do
     do i = 1, nno
         do j = i+1, nno
-            a(i,j) = a(j,i)
+            a(i, j) = a(j, i)
         end do
     end do
 end subroutine

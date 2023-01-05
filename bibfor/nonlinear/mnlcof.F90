@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
-                  adime, xvecu0, xtang, ninc, nd,&
-                  nchoc, h, hf, ordman, xups,&
+subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
+                  adime, xvecu0, xtang, ninc, nd, &
+                  nchoc, h, hf, ordman, xups, &
                   xfpnla, lbif, nextr, epsbif)
     implicit none
 !
@@ -106,7 +106,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     call jeveuo(xvecu0, 'L', ivecu0)
     call jeveuo(xups, 'E', iups)
     call jeveuo(xtang, 'L', itang)
-    lbif=.false.
+    lbif = .false.
 ! ----------------------------------------------------------------------
 ! --- ON INSERE LE VECTEUR INITIAL
 ! ----------------------------------------------------------------------
@@ -118,18 +118,18 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- ON CALCUL LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
-    call mnldrv(.false._1, imat, numdrv, matdrv, xcdl,&
-                parcho, adime, xvecu0, zr(itang), ninc,&
+    call mnldrv(.false._1, imat, numdrv, matdrv, xcdl, &
+                parcho, adime, xvecu0, zr(itang), ninc, &
                 nd, nchoc, h, hf)
 ! ----------------------------------------------------------------------
 ! --- CALCUL DES ORDRES P=2,...,ORDMAN
 ! ----------------------------------------------------------------------
     AS_ALLOCATE(vr=fpnl, size=ninc)
-    xvecu1='&&MNLCOF.VECU1'
+    xvecu1 = '&&MNLCOF.VECU1'
     call wkvect(xvecu1, 'V V R', ninc, ivecu1)
-    xvecu2='&&MNLCOF.VECU2'
+    xvecu2 = '&&MNLCOF.VECU2'
     call wkvect(xvecu2, 'V V R', ninc, ivecu2)
-    xqnl='&&MNLCOF.VECQ'
+    xqnl = '&&MNLCOF.VECQ'
     call wkvect(xqnl, 'V V R', ninc-1, iqnl)
     do p = 2, ordman
 !       REMISE A ZERO DU SECOND MEMBRE
@@ -141,17 +141,17 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 !         VECUI = UPS(:,P-R)
             call dcopy(ninc, zr(iups+(p-r)*ninc), 1, zr(ivecu2), 1)
 !         CALCULE DE Q(UPS(:,R),UPS(:,P-R))
-            call mnlqnl(imat, xcdl, parcho, adime, xvecu1,&
-                        xvecu2, ninc, nd, nchoc, h,&
+            call mnlqnl(imat, xcdl, parcho, adime, xvecu1, &
+                        xvecu2, ninc, nd, nchoc, h, &
                         hf, xqnl)
 !         CALCUL DE FPNL(1:NEQ)=FPNL(1:NEQ)-Q(SYS,UPS(:,R),UPS(:,P-R))
-            call daxpy(ninc-1, -1.d0, zr(iqnl), 1, fpnl,&
+            call daxpy(ninc-1, -1.d0, zr(iqnl), 1, fpnl, &
                        1)
         end do
-        fpnl(ninc)=0.d0
+        fpnl(ninc) = 0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
-        call resoud(matdrv, ' ', solveu, ' ', 1,&
-                    ' ', ' ', 'v', fpnl, [cbid],&
+        call resoud(matdrv, ' ', solveu, ' ', 1, &
+                    ' ', ' ', 'v', fpnl, [cbid], &
                     ' ', .false._1, 0, iret)
         call dcopy(ninc, fpnl, 1, zr(iups+p*ninc), 1)
     end do
@@ -169,33 +169,33 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     AS_ALLOCATE(vr=ecar, size=nextr-1)
     do k = 1, nextr
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
-        alpha(k)=ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),1, zr(iups+(ordman-k+1-1)*ninc),1)
-        alpha(k)=alpha(k)/ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),&
-        1, zr(iups+(ordman-k+2-1)*ninc),1)
+        alpha(k) = ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), 1, zr(iups+(ordman-k+1-1)*ninc), 1)
+        alpha(k) = alpha(k)/ddot(ninc, zr(iups+(ordman-k+2-1)*ninc), &
+                                 1, zr(iups+(ordman-k+2-1)*ninc), 1)
         call dcopy(ninc, zr(iups+(ordman-k+1-1)*ninc), 1, zr(ivecu1), 1)
-        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),&
+        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1), &
                    1)
-        nvec=dnrm2(ninc, zr(ivecu1), 1)
-        ratio(k)=nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
+        nvec = dnrm2(ninc, zr(ivecu1), 1)
+        ratio(k) = nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
         if (k .gt. 1) then
-            ecar(k-1)=(alpha(k-1)-alpha(k))/alpha(k-1)
-        endif
+            ecar(k-1) = (alpha(k-1)-alpha(k))/alpha(k-1)
+        end if
     end do
-    nratio=dnrm2(nextr,ratio,1)
-    necar=dnrm2(nextr-1,ecar,1)
+    nratio = dnrm2(nextr, ratio, 1)
+    necar = dnrm2(nextr-1, ecar, 1)
     if (nratio .lt. epsbif .and. necar .lt. epsbif) then
-        lbif=.true.
+        lbif = .true.
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
-        ac=ddot(ninc,zr(iups+ordman*ninc),1, zr(iups+(ordman-1)*ninc),1)
-        ac=ac/ddot(ninc,zr(iups+ordman*ninc),1, zr(iups+ordman*ninc),1)
+        ac = ddot(ninc, zr(iups+ordman*ninc), 1, zr(iups+(ordman-1)*ninc), 1)
+        ac = ac/ddot(ninc, zr(iups+ordman*ninc), 1, zr(iups+ordman*ninc), 1)
         call dcopy(ninc, zr(iups+ordman*ninc), 1, zr(ivecu1), 1)
         call dscal(ninc, ac**ordman, zr(ivecu1), 1)
-        nudom=dnrm2(ninc,zr(ivecu1),1)
+        nudom = dnrm2(ninc, zr(ivecu1), 1)
         do k = 1, ordman
-            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+ k*ninc),&
+            call daxpy(ninc, -((1.d0/ac)**k), zr(ivecu1), 1, zr(iups+k*ninc), &
                        1)
         end do
-    endif
+    end if
 !
     call dscal(ninc, 0.d0, zr(ivecu1), 1)
 ! ----------------------------------------------------------------------
@@ -214,11 +214,11 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ---   VECU2 = UPS(:,ORDMAN+2-R)
         call dcopy(ninc, zr(iups+(ordman+1-r)*ninc), 1, zr(ivecu2), 1)
 ! ---   Q(VECU1,VECU2)
-        call mnlqnl(imat, xcdl, parcho, adime, xvecu1,&
-                    xvecu2, ninc, nd, nchoc, h,&
+        call mnlqnl(imat, xcdl, parcho, adime, xvecu1, &
+                    xvecu2, ninc, nd, nchoc, h, &
                     hf, xqnl)
 !       AJOUT DES DEUX VECTEURS DANS XFPNLA
-        call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla),&
+        call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnla), &
                    1)
     end do
 ! ----------------------------------------------------------------------

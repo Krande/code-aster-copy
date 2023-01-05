@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
+subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
                   nbcoor)
     implicit none
 !     IN
@@ -171,12 +171,12 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     integer :: nbmtit, nbno, nbno1, nbnogn, nbnoma, ntgeo, num
     integer :: numele, numgrm, numgrn, numlti, numneu, numnod
 !-----------------------------------------------------------------------
-    parameter       (nbmtit  = 1  )
-    parameter       (nbmgrp  = 2  )
-    parameter       (nbmcoo  = 3  )
-    parameter       (nbmmax  = 100)
-    parameter       (nbmdbg  = 2  )
-    parameter       (nbmint  = 7  )
+    parameter(nbmtit=1)
+    parameter(nbmgrp=2)
+    parameter(nbmcoo=3)
+    parameter(nbmmax=100)
+    parameter(nbmdbg=2)
+    parameter(nbmint=7)
 !
     integer :: dimtit(nbmtit), dimgrp(nbmgrp)
     integer :: dimmai(nbmmax), dimcoo(nbmcoo)
@@ -202,26 +202,26 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     character(len=80) :: cv, dat
 !
 !
-    data dat        /' '/
-    data mcltit     /'TITRE   '/
-    data mclgrp     /'GROUP_NO','GROUP_MA'/
-    data mclcoo     /'COOR_1D ','COOR_2D ','COOR_3D '/
-    data mcldbg     /'DUMP    ','DEBUG   '/
-    data mclint     /'GROUP_FA','SYS_UNIT','SYS_COOR','MACRO_AR',&
-     &                 'MACRO_FA','MACRO_EL','MATERIAU'/
+    data dat/' '/
+    data mcltit/'TITRE   '/
+    data mclgrp/'GROUP_NO', 'GROUP_MA'/
+    data mclcoo/'COOR_1D ', 'COOR_2D ', 'COOR_3D '/
+    data mcldbg/'DUMP    ', 'DEBUG   '/
+    data mclint/'GROUP_FA', 'SYS_UNIT', 'SYS_COOR', 'MACRO_AR',&
+     &                 'MACRO_FA', 'MACRO_EL', 'MATERIAU'/
 !
 ! --- INITIALISATION DU NB D'ERREUR
 !
     ier = 0
     k16nom = ' '
-    if (ulisop ( ifl, k16nom ) .eq. 0) then
+    if (ulisop(ifl, k16nom) .eq. 0) then
         call ulopen(ifl, ' ', ' ', 'NEW', 'O')
-    endif
+    end if
 !
     call jemarq()
 !
-    call sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
-                cooref, grpnoe, gpptnn, grpmai, gpptnm,&
+    call sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
+                cooref, grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
 !
 !  1  CONSTRUCTION DES NOMS JEVEUX POUR L OBJET-MAILLAGE
@@ -269,18 +269,18 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai)
     if (nbmmai .gt. nbmmax) then
         call utmess('F', 'MODELISA5_1')
-    endif
+    end if
     do i = 1, nbmmai
         call jenuno(jexnum('&CATA.TM.NOMTM', i), mclmai(i))
-        call jeveuo(jexnum('&CATA.TM.NBNO' , i), 'L', inbn)
+        call jeveuo(jexnum('&CATA.TM.NBNO', i), 'L', inbn)
         fmtmai(i) = zi(inbn)
     end do
 !
 ! -   LECTURE PREMIER ITEM  EN DEBUT DE LIGNE SUIVANTE
 !
-  9 continue
+9   continue
     deblig = -1
-    call liritm(ifl, icl, iv, rv, cv,&
+    call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 1)
 !
 ! -   ITEM = MOT CLE FIN , FINSF , AUTRE ?
@@ -290,72 +290,71 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         goto 8
     else if (irtet .eq. 2) then
         goto 9
-    endif
+    end if
 !
 ! -   PREMIERE LECTURE DES DONNEES POUR CHAQUE TYPE DE MOT CLE
 !
-    call lecdbg(ifl, icl, iv, rv, cv,&
-                cnl, mcldbg, nbmdbg, nbg, dimdbg,&
+    call lecdbg(ifl, icl, iv, rv, cv, &
+                cnl, mcldbg, nbmdbg, nbg, dimdbg, &
                 nomdbg, irtet)
     if (irtet .eq. 1) then
         goto 8
     else if (irtet .eq. 2) then
         goto 9
-    endif
+    end if
 !
-    call lectit(ifl, icl, iv, rv, cv,&
-                cnl, mcltit, nbmtit, nbg, dimtit,&
+    call lectit(ifl, icl, iv, rv, cv, &
+                cnl, mcltit, nbmtit, nbg, dimtit, &
                 nbttit, irtet)
     if (irtet .eq. 1) then
         goto 8
     else if (irtet .eq. 2) then
         goto 9
-    endif
+    end if
 !
-    call lecgrp(ifl, icl, iv, rv, cv,&
-                cnl, mclgrp, nbmgrp, nbg, dimgrp,&
+    call lecgrp(ifl, icl, iv, rv, cv, &
+                cnl, mclgrp, nbmgrp, nbg, dimgrp, &
                 nbtgrp, ier, irtet)
     if (irtet .eq. 1) then
         goto 8
     else if (irtet .eq. 2) then
         goto 9
-    endif
+    end if
 !
-    call leccoo(ifl, icl, iv, rv, cv,&
-                cnl, mclcoo, nbmcoo, nbg, dimcoo,&
+    call leccoo(ifl, icl, iv, rv, cv, &
+                cnl, mclcoo, nbmcoo, nbg, dimcoo, &
                 nbtcoo, ier, irtet)
     if (irtet .eq. 1) then
         goto 8
     else if (irtet .eq. 2) then
         goto 9
-    endif
+    end if
 !
-    call lecmai(ifl, icl, iv, rv, cv,&
-                cnl, mclmai, nbmmai, nbg, fmtmai,&
+    call lecmai(ifl, icl, iv, rv, cv, &
+                cnl, mclmai, nbmmai, nbg, fmtmai, &
                 dimmai, nbtmai, ier, irtet)
     if (irtet .eq. 1) then
         goto 8
     else if (irtet .eq. 2) then
         goto 9
-    endif
+    end if
 !
     call utmess('F', 'MODELISA_1')
-
 
 !
 ! -   DIMENSIONS GLOBALES DES OBJETS
 !
 ! -   DIMENSION ESPACE        (NB COORDONNEES)
 !
-  8 continue
+8   continue
     do i = 1, nbmcoo
-        if(dimcoo(i).ne.0)nbcoor = i
+        if (dimcoo(i) .ne. 0) nbcoor = i
     end do
 !
 ! -   DIMENSION CONNEX        (NB MAILLES)
 !
     do i = 1, nbmmai
-        nbmail = nbmail + dimmai(i)
+        nbmail = nbmail+dimmai(i)
     end do
 !
 ! -   DIMENSION COORDO        (NB NOEUDS)
@@ -378,7 +377,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 ! -   NOMBRE TOTAL DE NOEUDS LUS DANS LE TYPE MAILLE
 !
     do i = 1, nbmmai
-        nbnoma = nbnoma + nbtmai(i)
+        nbnoma = nbnoma+nbtmai(i)
     end do
 !
 ! -   NOMBRE TOTAL DE NOEUDS LUS DANS LES GROUPES NOEUDS
@@ -392,45 +391,45 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 ! -   DEBUG
 !
     if (nbg .ge. 0) then
-        write(ifm,*)'NBCOOR = ',nbcoor
-        write(ifm,*)'NBMAIL = ',nbmail
-        write(ifm,*)'NBNOEU = ',nbnoeu
-        write(ifm,*)'NBGRNO = ',nbgrno
-        write(ifm,*)'NBGRMA = ',nbgrma
-        write(ifm,*)'NBLTIT = ',nbltit
-        write(ifm,*)'NBNOMA = ',nbnoma
-        write(ifm,*)'NBNOGN = ',nbnogn
-        write(ifm,*)'NBMAGM = ',nbmagm
-        write(ifm,*)' '
+        write (ifm, *) 'NBCOOR = ', nbcoor
+        write (ifm, *) 'NBMAIL = ', nbmail
+        write (ifm, *) 'NBNOEU = ', nbnoeu
+        write (ifm, *) 'NBGRNO = ', nbgrno
+        write (ifm, *) 'NBGRMA = ', nbgrma
+        write (ifm, *) 'NBLTIT = ', nbltit
+        write (ifm, *) 'NBNOMA = ', nbnoma
+        write (ifm, *) 'NBNOGN = ', nbnogn
+        write (ifm, *) 'NBMAGM = ', nbmagm
+        write (ifm, *) ' '
         do i = 1, nbmcoo
-            write(ifm,*)'DIMCOO ',i,' = ',dimcoo(i)
+            write (ifm, *) 'DIMCOO ', i, ' = ', dimcoo(i)
         end do
         do i = 1, nbmmai
-            write(ifm,*)'DIMMAI ',i,' = ',dimmai(i)
+            write (ifm, *) 'DIMMAI ', i, ' = ', dimmai(i)
         end do
         do i = 1, nbmgrp
-            write(ifm,*)'DIMGRP ',i,' = ',dimgrp(i)
+            write (ifm, *) 'DIMGRP ', i, ' = ', dimgrp(i)
         end do
         do i = 1, nbmtit
-            write(ifm,*)'DIMTIT ',i,' = ',dimtit(i)
+            write (ifm, *) 'DIMTIT ', i, ' = ', dimtit(i)
         end do
-        write(ifm,*)'-------- FIN DEBUG -------------------'
-    endif
+        write (ifm, *) '-------- FIN DEBUG -------------------'
+    end if
 !
 ! -   FIN  DE LECTURE DU FICHIER
 !
     if (nbnoeu .eq. 0) then
         call utmess('F', 'MODELISA5_2')
         ier = 1
-    endif
+    end if
     if (nbmail .eq. 0) then
         call utmess('F', 'MODELISA5_3')
         ier = 1
-    endif
+    end if
 !
     if (ier .eq. 1) then
         call utmess('F', 'MODELISA4_94')
-    endif
+    end if
 !
 !
 !  3  CREATION  DES OBJETS TEMPORAIRES A TRANSCODER SUR LA VOLATILE
@@ -459,8 +458,8 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         call jeecra(titre, 'LONUTI', 1)
         call jeveuo(titre, 'E', iad)
         call enlird(dat)
-        zk80(iad)=dat
-    endif
+        zk80(iad) = dat
+    end if
 !
 ! -   OBJET TYPMAIL   = FAMILLE CONTIGUE D'ELEMENTS I (NUM TYPE ELE)
 !                       POINTEUR DE NOM       = NOMMAI
@@ -505,10 +504,10 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     if (nbgrno .ne. 0) then
         call jecreo(gpptnv, 'V N K24')
         call jeecra(gpptnv, 'NOMMAX', nbgrno)
-        call jecrec(grpnov, 'V V K8', 'NO '//gpptnv, 'CONTIG', 'VARIABLE',&
+        call jecrec(grpnov, 'V V K8', 'NO '//gpptnv, 'CONTIG', 'VARIABLE', &
                     nbgrno)
         call jeecra(grpnov, 'LONT', nbnogn)
-    endif
+    end if
 !
 ! -      OBJET GROUPMAV = FAMILLE CONTIGUE DE VECTEURS N*K8 VOLATILE
 !                         POINTEUR DE NOM       = GROUPMAV.$$NOM
@@ -518,17 +517,17 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     if (nbgrma .ne. 0) then
         call jecreo(gpptmv, 'V N K24')
         call jeecra(gpptmv, 'NOMMAX', nbgrma)
-        call jecrec(grpmav, 'V V K8', 'NO '//gpptmv, 'CONTIG', 'VARIABLE',&
+        call jecrec(grpmav, 'V V K8', 'NO '//gpptmv, 'CONTIG', 'VARIABLE', &
                     nbgrma)
         call jeecra(grpmav, 'LONT', nbmagm)
-    endif
+    end if
 !
 ! -     OBJET CONXV     = FAMILLE CONTIGUE DE VECTEURS N*K8 VOLATILE
 !                         POINTEUR DE NOM       = CONXV.$$NOM
 !                         POINTEUR DE LONGUEUR  = CONXV.$$LONC
 !                         LONGUEUR TOTALE       = NBNOMA
 !
-    call jecrec(conxv, 'V V K8', 'NO', 'CONTIG', 'VARIABLE',&
+    call jecrec(conxv, 'V V K8', 'NO', 'CONTIG', 'VARIABLE', &
                 nbmail)
     call jeecra(conxv, 'LONT', nbnoma)
 !
@@ -537,7 +536,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !                       POINTEUR DE LONGUEUR  = CONNEX.$$LONC
 !                       LONGUEUR TOTALE       = NBNOMA
 !
-    call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmail)
     call jeecra(connex, 'LONT', nbnoma)
     call jeecra(connex, 'NUTIOC', nbmail)
@@ -553,7 +552,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
 !     REMBOBINAGE DU FICHIER
 !
-    rewind(ifl)
+    rewind (ifl)
 !
 ! -   LECTURE PREMIER ITEM EN DEBUT DE LIGNE
 !
@@ -566,7 +565,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
 900 continue
     deblig = -1
-    call liritm(ifl, icl, iv, rv, cv,&
+    call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 2)
 !
 ! -   ITEM = MOT CLE  FIN OU FINSF OU AUTRE ?
@@ -576,45 +575,45 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         goto 800
     else if (irtet .eq. 2) then
         goto 900
-    endif
+    end if
 !
 ! -   STOCKAGE DES DONNEES POUR CHAQUE TYPE DE  MOT CLE
 !
-    call stktit(ifl, icl, iv, rv, cv,&
-                cnl, mcltit, nbmtit, numlti, titre,&
+    call stktit(ifl, icl, iv, rv, cv, &
+                cnl, mcltit, nbmtit, numlti, titre, &
                 irtet)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
         goto 900
-    endif
+    end if
 !
-    call stkcoo(ifl, icl, iv, rv, cv,&
-                cnl, mclcoo, nbmcoo, numneu, cooval,&
+    call stkcoo(ifl, icl, iv, rv, cv, &
+                cnl, mclcoo, nbmcoo, numneu, cooval, &
                 nomnoe, irtet)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
         goto 900
-    endif
+    end if
 !
-    call stkgrp(ifl, icl, iv, rv, cv,&
-                cnl, mclgrp, nbmgrp, numgrn, numgrm,&
+    call stkgrp(ifl, icl, iv, rv, cv, &
+                cnl, mclgrp, nbmgrp, numgrn, numgrm, &
                 grpnov, grpmav, irtet)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
         goto 900
-    endif
+    end if
 !
-    call stkmai(ifl, icl, iv, rv, cv,&
-                cnl, mclmai, nbmmai, numele, numnod,&
+    call stkmai(ifl, icl, iv, rv, cv, &
+                cnl, mclmai, nbmmai, numele, numnod, &
                 conxv, typmai, fmtmai, irtet)
     if (irtet .eq. 1) then
         goto 800
     else if (irtet .eq. 2) then
         goto 900
-    endif
+    end if
 !
     goto 900
 800 continue
@@ -623,13 +622,13 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     nbgrnp = 0
     do i = 1, nbgrno
         call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
-        if (nbno > 0) nbgrnp = nbgrnp + 1
+        if (nbno > 0) nbgrnp = nbgrnp+1
     end do
 !
     nbgrmp = 0
     do i = 1, nbgrma
         call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
-        if (nbma > 0) nbgrmp = nbgrmp + 1
+        if (nbma > 0) nbgrmp = nbgrmp+1
     end do
 !
 !
@@ -640,9 +639,9 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     if (nbgrnp .ne. 0) then
         call jecreo(gpptnn, 'G N K24')
         call jeecra(gpptnn, 'NOMMAX', nbgrnp)
-        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
+        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', &
                     nbgrnp)
-    endif
+    end if
 !
 ! -   OBJET GROUPEMA  = FAMILLE CONTIGUE DE VECTEURS N*IS
 !                       POINTEUR DE LONGUEUR  = GROUPEMA.$$LONC
@@ -651,9 +650,9 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     if (nbgrmp .ne. 0) then
         call jecreo(gpptnm, 'G N K24')
         call jeecra(gpptnm, 'NOMMAX', nbgrmp)
-        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
+        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', &
                     nbgrmp)
-    endif
+    end if
 !
 !
 !  6  TRANSCODAGE EN REPRESENTATION INTERNE ET STOCKAGE
@@ -678,7 +677,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                 valk(2) = nomn
                 call utmess('F', 'MODELISA5_4', nk=2, valk=valk)
                 ier = 1
-            endif
+            end if
         end do
     end do
 !
@@ -692,34 +691,34 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
 !         REMISE A ZERO DE L'OBJET "&&OP001.NOEUD2" :
             do ii = 1, nbnoeu
-                zi(jnoeu2-1+ii)=0
+                zi(jnoeu2-1+ii) = 0
             end do
 !
             call jenuno(jexnum(grpnov, i), nomg)
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
             call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
 !         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
-            if(nbno > 0) then
+            if (nbno > 0) then
                 nbno1 = 0
                 do im1 = 1, nbno
                     nom1 = zk8(jvg+im1-1)
-                    ASSERT(nom1.ne.' ')
+                    ASSERT(nom1 .ne. ' ')
                     call jenonu(jexnom(nomnoe, nom1), num)
                     if (num .eq. 0) then
-                        ier = ier + 1
+                        ier = ier+1
                         valk(1) = nom1
                         valk(2) = nomg
                         call utmess('F', 'MODELISA5_5', nk=2, valk=valk)
                         goto 610
-                    endif
-                    zi(jnoeu2-1+num)=zi(jnoeu2-1+num)+1
+                    end if
+                    zi(jnoeu2-1+num) = zi(jnoeu2-1+num)+1
                     if (zi(jnoeu2-1+num) .ge. 2) then
                         valk(1) = nom1
                         valk(2) = nomg
                         call utmess('A', 'MODELISA5_6', nk=2, valk=valk)
                         goto 610
-                    endif
-                    nbno1 = nbno1 + 1
+                    end if
+                    nbno1 = nbno1+1
                     zi(jnoeu+nbno1-1) = num
 610                 continue
                 end do
@@ -727,7 +726,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                 call jeecra(jexnom(grpnoe, nomg), 'LONMAX', nbno1)
                 call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno1)
                 call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
-                zi(jgg)=-ismaem()
+                zi(jgg) = -ismaem()
                 do j = 0, nbno1-1
                     zi(jgg+j) = zi(jnoeu+j)
                 end do
@@ -735,7 +734,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         end do
         call jedetr('&&OP0001.NOEUD')
         call jedetr('&&OP0001.NOEUD2')
-    endif
+    end if
 !
 !
 ! -     TRANCODAGE DE GROUPEMA
@@ -747,32 +746,32 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
 !         REMISE A ZERO DE L'OBJET "&&OP001.MAILLE2" :
             do ii = 1, nbmail
-                zi(jmail2-1+ii)=0
+                zi(jmail2-1+ii) = 0
             end do
             call jenuno(jexnum(grpmav, i), nomg)
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
             call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
 !         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTES ---
-            if(nbma > 0) then
+            if (nbma > 0) then
                 nbma1 = 0
                 do im1 = 1, nbma
                     nom1 = zk8(jvg+im1-1)
                     call jenonu(jexnom(nommai, nom1), num)
                     if (num .eq. 0) then
-                        ier = ier + 1
+                        ier = ier+1
                         valk(1) = nom1
                         valk(2) = nomg
                         call utmess('F', 'MODELISA5_7', nk=2, valk=valk)
                         goto 710
-                    endif
-                    zi(jmail2-1+num)=zi(jmail2-1+num)+1
+                    end if
+                    zi(jmail2-1+num) = zi(jmail2-1+num)+1
                     if (zi(jmail2-1+num) .ge. 2) then
                         valk(1) = nom1
                         valk(2) = nomg
                         call utmess('A', 'MODELISA5_8', nk=2, valk=valk)
                         goto 710
-                    endif
-                    nbma1 = nbma1 + 1
+                    end if
+                    nbma1 = nbma1+1
                     zi(jmail+nbma1-1) = num
 710                 continue
                 end do
@@ -780,7 +779,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                 call jeecra(jexnom(grpmai, nomg), 'LONMAX', nbma1)
                 call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma1)
                 call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
-                zi(jgg)=-ismaem()
+                zi(jgg) = -ismaem()
                 do j = 0, nbma1-1
                     zi(jgg+j) = zi(jmail+j)
                 end do
@@ -788,13 +787,13 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         end do
         call jedetr('&&OP0001.MAILLE')
         call jedetr('&&OP0001.MAILLE2')
-    endif
+    end if
 !
 ! -     FIN DE TRANSCODAGE
 !
     if (ier .ne. 0) then
         call utmess('F', 'MODELISA5_9')
-    endif
+    end if
 !
 ! -     DUMP DES OBJETS DEMANDES
 !
@@ -803,9 +802,9 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
             call jeexin(nomdbg(j, 1), iret)
             if (iret .gt. 0) then
                 call jeimpo(ifm, nomdbg(j, 1), 'DUMP DE '//nomdbg(j, 1))
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! -   MENAGE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mateReuseMngt(mateOUT  , mateOUT_nb  , mateOUT_list, &
+subroutine mateReuseMngt(mateOUT, mateOUT_nb, mateOUT_list, &
                          mateREUSE, mateREUSE_nb)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,11 +33,11 @@ implicit none
 #include "asterfort/jedupc.h"
 #include "asterfort/jelira.h"
 !
-character(len=8), intent(in) :: mateOUT
-integer, intent(in) :: mateOUT_nb
-character(len=32), pointer, intent(in) :: mateOUT_list(:)
-character(len=8), intent(out) :: mateREUSE
-integer, intent(out) :: mateREUSE_nb
+    character(len=8), intent(in) :: mateOUT
+    integer, intent(in) :: mateOUT_nb
+    character(len=32), pointer, intent(in) :: mateOUT_list(:)
+    character(len=8), intent(out) :: mateREUSE
+    integer, intent(out) :: mateREUSE_nb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ integer, intent(out) :: mateREUSE_nb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mateREUSE    = '&&OP0005'
+    mateREUSE = '&&OP0005'
     mateREUSE_nb = 0
     call getvid(' ', 'MATER', scal=mateIN, nbret=nocc)
     if (nocc .ne. 0) then
@@ -70,25 +70,25 @@ integer, intent(out) :: mateREUSE_nb
         call jelira(mateIN//'.MATERIAU.NOMRC', 'LONUTI', mateREUSE_nb)
         do i_mate = 1, mateOUT_nb
             nomrc = mateOUT_list(i_mate)
-            ind   = indk32 (zk32(jnorci), nomrc, 1, mateREUSE_nb)
+            ind = indk32(zk32(jnorci), nomrc, 1, mateREUSE_nb)
             if (ind .ne. 0) then
                 valk(1) = mateIN
                 valk(2) = nomrc
                 call utmess('F', 'MATERIAL2_9', nk=2, valk=valk)
-            endif
+            end if
         end do
 ! ----- Copy
         call jedupc('G', mateIN, 1, 'V', mateREUSE, ASTER_FALSE)
         if (mateOUT .eq. mateIN) then
             call jedetc('G', mateIN, 1)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Copy in output datastructure
 !
     if (mateREUSE_nb .ne. 0) then
         call jedupc('V', mateREUSE, 1, 'G', mateOUT, ASTER_FALSE)
         call jedetr(mateOUT//'.MATERIAU.NOMRC')
-    endif
+    end if
 !
 end subroutine

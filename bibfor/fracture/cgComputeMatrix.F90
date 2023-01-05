@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine cgComputeMatrix(cgField, cgTheta, cgStat)
 !
-use calcG_type
+    use calcG_type
 !
     implicit none
 !
@@ -49,27 +49,27 @@ use calcG_type
     integer          ::  i, j
     character(len=24) :: chabsfon
     real(kind=8) :: start, finish
-    real(kind=8), pointer :: matr(:)  => null()
+    real(kind=8), pointer :: matr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
     call cpu_time(start)
 !
     call jemarq()
 
-    cgTheta%matrix='&&OP0060.MATRIX'
+    cgTheta%matrix = '&&OP0060.MATRIX'
 
-    if(cgField%ndim==2)then
+    if (cgField%ndim == 2) then
 !       EN 2D, L'EQUATION EST SCALAIRE. A = 1
         call wkvect(cgTheta%matrix, 'V V R8', 1, vr=matr)
         matr(1) = 1.d0
-    else if(cgField%ndim==3) then
+    else if (cgField%ndim == 3) then
 !
-        if(cgTheta%discretization == 'LINEAIRE')then
+        if (cgTheta%discretization == 'LINEAIRE') then
 !       Calcul de A dans le cas LINERAIRE
             call cgTheta%getAbsfonName(chabsfon)
             call gmatc3(cgTheta%nnof, cgTheta%milieu, cgTheta%l_closed, &
-                    chabsfon, cgTheta%matrix)
-        elseif(cgTheta%discretization == 'LEGENDRE') then
+                        chabsfon, cgTheta%matrix)
+        elseif (cgTheta%discretization == 'LEGENDRE') then
 !
 !       Dans le cas LEGENDRE, A = Identité. On laisse en commentaires pour l'instant l'appel
 !       à la fonction historique qui calculait cette matrice au cas où ce ne serait pas l'idendité
@@ -79,25 +79,25 @@ use calcG_type
 !                         lonfis,cgTheta%matrix)
 !
             call wkvect(cgTheta%matrix, 'V V R8', (cgTheta%degree+1)*(cgTheta%degree+1), vr=matr)
-            do i =1, cgTheta%degree+1
-                do j=1, cgTheta%degree+1
-                    if (i==j) then
+            do i = 1, cgTheta%degree+1
+                do j = 1, cgTheta%degree+1
+                    if (i == j) then
                         matr((i-1)*(cgTheta%degree+1)+j) = 1.d0
                     else
                         matr((i-1)*(cgTheta%degree+1)+j) = 0.d0
-                    endif
-                enddo
-            enddo
+                    end if
+                end do
+            end do
 
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jedema()
 !
     call cpu_time(finish)
-    cgStat%cgCmpMat = finish - start
+    cgStat%cgCmpMat = finish-start
 end subroutine

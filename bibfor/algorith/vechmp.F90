@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem,&
+subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
                   partps, nbin_maxi, lpain, lchin, lastin)
 !
 !
@@ -87,7 +87,7 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem,&
     nomcmp(1) = 'INST'
     nomcmp(2) = 'DELTAT'
     nomcmp(3) = 'THETA'
-    call mecact('V', chtime, 'LIGREL', ligrmo, 'INST_R',&
+    call mecact('V', chtime, 'LIGREL', ligrmo, 'INST_R', &
                 ncmp=3, lnomcmp=nomcmp, vr=partps)
 !
 ! --- CHAMPS D'ENTREES STANDARDS
@@ -158,15 +158,15 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem,&
         lpain(30) = 'PBASECO'
         lchin(30) = nomo(1:8)//'.TOPOFAC.BA'
         lastin = 30
-    endif
+    end if
 !
 ! --- PCOMPOR UTILE POUR POUTRES MULTI-FIBRES
 !
-    lastin = lastin + 1
+    lastin = lastin+1
     lpain(lastin) = 'PCOMPOR'
     lchin(lastin) = mate(1:8)//'.COMPOR'
 !
-    ASSERT(lastin.le.nbin_maxi)
+    ASSERT(lastin .le. nbin_maxi)
 !
     call jedema()
 end subroutine

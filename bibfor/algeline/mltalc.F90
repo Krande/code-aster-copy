@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mltalc(local, global, adress, sn, lgsn,&
+subroutine mltalc(local, global, adress, sn, lgsn, &
                   place, sni, supnd, nbass)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
@@ -27,21 +27,21 @@ subroutine mltalc(local, global, adress, sn, lgsn,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     longsn = lgsn(sn)
-    do k = adress(sn), adress(sn) + longsn - 1
+    do k = adress(sn), adress(sn)+longsn-1
         local(k) = 0
     end do
-    do k = adress(sn) + longsn, adress(sn+1) - 1
+    do k = adress(sn)+longsn, adress(sn+1)-1
         local(k) = int(place(global(k)), 4)
     end do
     nbass = 0
     is = supnd(sni+1)
-    k = adress(sn) + longsn
+    k = adress(sn)+longsn
 !      DO WHILE (K.LT.ADRESS(SN+1).AND.GLOBAL(K).LT.IS)
 130 continue
     if (k .lt. adress(sn+1) .and. global(k) .lt. is) then
-        nbass = nbass + 1
-        k = k + 1
+        nbass = nbass+1
+        k = k+1
         goto 130
 ! FIN DO WHILE
-    endif
+    end if
 end subroutine

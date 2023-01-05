@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, type_comp,&
-                         crit, nb_form, name_form, name_gd, nb_cmp_resu,&
+subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, type_comp, &
+                         crit, nb_form, name_form, name_gd, nb_cmp_resu, &
                          work_out_val, work_out_ele, nb_elem_out, ichk)
 !
     implicit none
@@ -129,16 +129,15 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, ty
     call jeexin(list_elem, i_list_elem)
     if (i_list_elem .ne. 0) then
         call jeveuo(list_elem, 'L', j_elemin)
-    endif
-
+    end if
 
     do iel = 1, nb_elem
 
-        if (i_list_elem .ne.0)then
+        if (i_list_elem .ne. 0) then
             ima = zi(j_elemin-1+iel)
         else
             ima = iel
-        endif
+        end if
 
         ichk_elem = -1
         nbpt = zi(jchsd-1+5+4*(ima-1)+1)
@@ -156,52 +155,52 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, ty
 !
                 nb_val_in = 0
                 do icmp = 1, nbcmp
-                    call cesexi('S', jchsd, jchsl, ima, ipt,&
+                    call cesexi('S', jchsd, jchsl, ima, ipt, &
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
-                        nb_val_in = nb_val_in + 1
+                        nb_val_in = nb_val_in+1
                         zr(j_val-1+nb_val_in) = chsv(iad)
                         zk8(j_cmp-1+nb_val_in) = cesc(icmp)
-                    endif
-                enddo
+                    end if
+                end do
 !
 ! ------------- Compute result
 !
                 if (type_comp .eq. 'CRITERE') then
                     ASSERT(nb_cmp_resu .eq. 1)
-                    call ccchcr(crit, name_gd, nb_val_in, zr(j_val), zk8(j_cmp),&
+                    call ccchcr(crit, name_gd, nb_val_in, zr(j_val), zk8(j_cmp), &
                                 nb_cmp_resu, zr(j_resu), ichk_sp)
                 else if (type_comp .eq. 'FORMULE') then
                     ASSERT(nb_cmp_resu .eq. nb_form)
-                    call ccchcf(name_form, nb_val_in, zr(j_val), zk8(j_cmp), nb_cmp_resu,&
+                    call ccchcf(name_form, nb_val_in, zr(j_val), zk8(j_cmp), nb_cmp_resu, &
                                 zr(j_resu), ichk_sp)
                 else
                     ASSERT(.false.)
-                endif
+                end if
 !
 ! ------------- Copy to output field
 !
                 if (ichk_sp .eq. 0) then
                     ichk_elem = 0
                     do icmp = 1, nb_cmp_resu
-                        call cesexi('S', jchrd, jchrl, ima, ipt,&
+                        call cesexi('S', jchrd, jchrl, ima, ipt, &
                                     isp, icmp, iad)
                         iad = -iad
                         zl(jchrl-1+iad) = .true.
                         chrv(iad) = zr(j_resu-1+icmp)
-                    enddo
-                endif
-            enddo
-        enddo
+                    end do
+                end if
+            end do
+        end do
 !
 ! ----- Add element computed
 !
         if (ichk_elem .eq. 0) then
             ichk = 0
-            nb_elem_out = nb_elem_out + 1
+            nb_elem_out = nb_elem_out+1
             zi(j_elem-1+nb_elem_out) = ima
-        endif
-    enddo
+        end if
+    end do
 !
     call jedetr(work_val)
     call jedetr(work_cmp)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kineLoad,&
+subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kineLoad, &
                          integScheme_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,10 +37,10 @@ implicit none
 #include "asterfort/lisnnb.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: matrRigiz, matrMassz, matrDampz, listLoadz
-aster_logical, intent(in) :: lDamp
-character(len=24), intent(out) :: kineLoad
-integer, optional, intent(in) :: integScheme_
+    character(len=*), intent(in) :: matrRigiz, matrMassz, matrDampz, listLoadz
+    aster_logical, intent(in) :: lDamp
+    character(len=24), intent(out) :: kineLoad
+    integer, optional, intent(in) :: integScheme_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,125 +69,125 @@ integer, optional, intent(in) :: integScheme_
     lTransient = ASTER_FALSE
     if (present(integScheme_)) then
         lTransient = ASTER_TRUE
-    endif
+    end if
 
 ! - Get CHAM_CINE from list of loads
     if (lTransient) then
         call lisnch(listLoad, nbLoad)
         if (nbLoad .ne. 0) then
-            call jeveuo(listLoad(1:19)//'.INFC', 'L', vi = listLoadInfo)
-            call jeveuo(listLoad(1:19)//'.LCHA', 'L', vk24 = listLoadName)
-        endif
-        iLoadKine    = 0
+            call jeveuo(listLoad(1:19)//'.INFC', 'L', vi=listLoadInfo)
+            call jeveuo(listLoad(1:19)//'.LCHA', 'L', vk24=listLoadName)
+        end if
+        iLoadKine = 0
         kineLoadName = ' '
         do iLoad = 1, nbLoad
             if (ischar_iden(listLoadInfo, iLoad, nbLoad, 'DIRI', 'ELIM', listLoadName(iLoad))) then
                 if (iLoadKine .ne. 0) then
                     call utmess('F', 'DYNALINE2_13')
-                endif
+                end if
                 iLoadKine = iLoad
-            endif
+            end if
         end do
         lKineLoad = iLoadKine .ne. 0
         if (lKineLoad) then
-            kineLoadName = listLoadName(iLoadKine)(1:8)
-        endif
+            kineLoadName = listLoadName(iLoadKine) (1:8)
+        end if
     else
         call lisnnb(listLoad, nbLoad)
-        iLoadKine    = 0
+        iLoadKine = 0
         kineLoadName = ' '
         do iLoad = 1, nbLoad
             call lislco(listLoad, iLoad, genrec)
-            if (lisico('DIRI_ELIM' , genrec)) then
+            if (lisico('DIRI_ELIM', genrec)) then
                 if (iLoadKine .ne. 0) then
                     call utmess('F', 'DYNALINE2_13')
-                endif
+                end if
                 iLoadKine = iLoad
-            endif
+            end if
         end do
         lKineLoad = iLoadKine .ne. 0
         if (lKineLoad) then
             call lislch(listLoad, iLoadKine, kineLoadName)
-        endif
-    endif
+        end if
+    end if
 
 ! - Some parameters from matrices
     lKineLoadInDamp = ASTER_FALSE
-    matrDampMesh    = ' '
-    matrDampNbEqua  = 0
-    call dismoi('EXIS_CINE', matrRigi, 'MATR_ASSE', repk = answer)
+    matrDampMesh = ' '
+    matrDampNbEqua = 0
+    call dismoi('EXIS_CINE', matrRigi, 'MATR_ASSE', repk=answer)
     lKineLoadInRigi = answer .eq. 'OUI'
-    call dismoi('NOM_MAILLA', matrRigi, 'MATR_ASSE', repk = matrRigiMesh)
-    call dismoi('NB_EQUA', matrRigi, 'MATR_ASSE', repi = matrRigiNbEqua)
-    call dismoi('EXIS_CINE', matrMass, 'MATR_ASSE', repk = answer)
+    call dismoi('NOM_MAILLA', matrRigi, 'MATR_ASSE', repk=matrRigiMesh)
+    call dismoi('NB_EQUA', matrRigi, 'MATR_ASSE', repi=matrRigiNbEqua)
+    call dismoi('EXIS_CINE', matrMass, 'MATR_ASSE', repk=answer)
     lKineLoadInMass = answer .eq. 'OUI'
-    call dismoi('NOM_MAILLA', matrMass, 'MATR_ASSE', repk = matrMassMesh)
-    call dismoi('NB_EQUA', matrMass, 'MATR_ASSE', repi = matrMassNbEqua)
+    call dismoi('NOM_MAILLA', matrMass, 'MATR_ASSE', repk=matrMassMesh)
+    call dismoi('NB_EQUA', matrMass, 'MATR_ASSE', repi=matrMassNbEqua)
     if (lDamp) then
-        call dismoi('EXIS_CINE', matrDamp, 'MATR_ASSE', repk = answer)
+        call dismoi('EXIS_CINE', matrDamp, 'MATR_ASSE', repk=answer)
         lKineLoadInDamp = answer .eq. 'OUI'
-        call dismoi('NOM_MAILLA', matrDamp, 'MATR_ASSE', repk = matrDampMesh)
-        call dismoi('NB_EQUA', matrDamp, 'MATR_ASSE', repi = matrDampNbEqua)
-    endif
+        call dismoi('NOM_MAILLA', matrDamp, 'MATR_ASSE', repk=matrDampMesh)
+        call dismoi('NB_EQUA', matrDamp, 'MATR_ASSE', repi=matrDampNbEqua)
+    end if
 
 ! - Some parameters from kineLoad
-    kineLoadMesh   = ' '
+    kineLoadMesh = ' '
     if (lKineLoad) then
-        call dismoi('NOM_MAILLA', kineLoadName, 'CHARGE', repk = kineLoadMesh)
-    endif
+        call dismoi('NOM_MAILLA', kineLoadName, 'CHARGE', repk=kineLoadMesh)
+    end if
 
 ! - Only for Newmark
     if (present(integScheme_)) then
-        if (lKineLoadInRigi .and.&
+        if (lKineLoadInRigi .and. &
             (integScheme_ .ne. 1 .and. integScheme_ .ne. 2)) then
             call utmess('F', 'DYNALINE2_1')
-        endif
-    endif
+        end if
+    end if
 
 ! - Check consistency between matrices
     if (matrRigiMesh .ne. matrMassMesh) then
         call utmess('F', 'DYNALINE2_2')
-    endif
+    end if
     if (matrRigiNbEqua .ne. matrMassNbEqua) then
         call utmess('F', 'DYNALINE2_3')
-    endif
+    end if
     if (lDamp) then
         if (matrRigiMesh .ne. matrDampMesh) then
             call utmess('F', 'DYNALINE2_2')
-        endif
+        end if
         if (matrRigiNbEqua .ne. matrDampNbEqua) then
             call utmess('F', 'DYNALINE2_3')
-        endif
-    endif
+        end if
+    end if
 
 ! - Check consistency between matrices for kinematic loads
     if (lKineLoadInRigi) then
         if (lKineLoadInMass) then
             if (.not. idenob(matrRigi//'.CCID', matrMass//'.CCID')) then
                 call utmess('F', 'DYNALINE2_4')
-            endif
+            end if
         else
             call utmess('F', 'DYNALINE2_5')
-        endif
+        end if
         if (lDamp) then
             if (lKineLoadInDamp) then
                 if (.not. idenob(matrRigi//'.CCID', matrDamp//'.CCID')) then
                     call utmess('F', 'DYNALINE2_4')
-                endif
+                end if
             else
                 call utmess('F', 'DYNALINE2_5')
-            endif
-        endif
+            end if
+        end if
     else
         if (lKineLoadInMass) then
             call utmess('F', 'DYNALINE2_6')
-        endif
+        end if
         if (lDamp) then
             if (lKineLoadInDamp) then
                 call utmess('F', 'DYNALINE2_6')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 
 ! - Check consistency between kinematic load and kinematic load in matrices
 ! - Consistency between load from user and load in matrix
@@ -195,23 +195,23 @@ integer, optional, intent(in) :: integScheme_
         if (lKineLoad) then
             if (kineLoadMesh .ne. matrRigiMesh) then
                 call utmess('F', 'DYNALINE2_7')
-            endif
+            end if
         else
             call utmess('F', 'DYNALINE2_9')
-        endif
+        end if
     else
         if (lKineLoad) then
             call utmess('F', 'DYNALINE2_10')
-        endif
-    endif
+        end if
+    end if
 
 ! - Convert in nodal field
     if (lKineLoad) then
         kineLoad = '&&COMDLT.KINELOAD'
-        time     = 0.d0
-        call dismoi('NOM_NUME_DDL', matrRigi, 'MATR_ASSE', repk = numeDof)
+        time = 0.d0
+        call dismoi('NOM_NUME_DDL', matrRigi, 'MATR_ASSE', repk=numeDof)
         call calvci(kineLoad, numeDof, 1, kineLoadName, time, 'V', ASTER_FALSE)
-    endif
+    end if
 
 !
 end subroutine

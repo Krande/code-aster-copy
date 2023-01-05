@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine dkqb(caraq4, xyzl, igau, jacgau, bmat)
     real(kind=8) :: bm(3, 8), bf(3, 12), bc(2, 12), qsi, eta, jacob(5)
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
 ! --- COORDONNEES DU POINT D'INTEGRATION COURANT :
@@ -86,7 +86,7 @@ subroutine dkqb(caraq4, xyzl, igau, jacgau, bmat)
 !     ---------------
     do i = 1, 2
         do j = 1, 12
-            bc(i,j) = 0.0d0
+            bc(i, j) = 0.0d0
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cphe27(maout , inc   , jcnnpa, conloc,&
-                  limane, jmacou, jmacsu, macou ,&
-                  macsu , ind   , ind1  )
+subroutine cphe27(maout, inc, jcnnpa, conloc, &
+                  limane, jmacou, jmacsu, macou, &
+                  macsu, ind, ind1)
 !
 !
     implicit none
@@ -52,10 +52,10 @@ subroutine cphe27(maout , inc   , jcnnpa, conloc,&
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !
-    call jecroc(jexnum(maout//'.PATCH',inc+1))
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONMAX', ival=2)
-    call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONUTI', ival=2)
-    call jeveuo(jexnum(maout//'.PATCH',inc+1), 'E', patch)
+    call jecroc(jexnum(maout//'.PATCH', inc+1))
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONMAX', ival=2)
+    call jeecra(jexnum(maout//'.PATCH', inc+1), 'LONUTI', ival=2)
+    call jeveuo(jexnum(maout//'.PATCH', inc+1), 'E', patch)
 ! ----- Type de maille du patch ------------------------------------------------------------------
     zi(patch-1+1) = 27
 ! ----- DDL interne ------------------------------------------------------------------------------
@@ -63,33 +63,33 @@ subroutine cphe27(maout , inc   , jcnnpa, conloc,&
 ! ----- .CONOPA ----------------------------------------------------------------------------------
     zi(jcnnpa+zi(jmacou-1+9)-1) = inc
 ! --- NOUVEAUX ELEMENTS DE PEAU
-    call jeecra(jexnum(conloc,ind), 'LONMAX', ival=9)
-    call jeecra(jexnum(conloc,ind), 'LONUTI', ival=9)
-    call jeveuo(jexnum(conloc,ind), 'E', jconloc)
+    call jeecra(jexnum(conloc, ind), 'LONMAX', ival=9)
+    call jeecra(jexnum(conloc, ind), 'LONUTI', ival=9)
+    call jeveuo(jexnum(conloc, ind), 'E', jconloc)
     do ino = 1, 9
-        zi(jconloc+ino-1)=zi(jmacou+ino-1)
+        zi(jconloc+ino-1) = zi(jmacou+ino-1)
     end do
 
 ! --- NOUVEAUX ELEMENTS DE CORPS
-    call jeecra(jexnum(conloc,ind+1), 'LONMAX', ival=27)
-    call jeecra(jexnum(conloc,ind+1), 'LONUTI', ival=27)
-    call jeveuo(jexnum(conloc,ind+1), 'E', jconloc)
+    call jeecra(jexnum(conloc, ind+1), 'LONMAX', ival=27)
+    call jeecra(jexnum(conloc, ind+1), 'LONUTI', ival=27)
+    call jeveuo(jexnum(conloc, ind+1), 'E', jconloc)
     do ino = 1, 27
-        zi(jconloc+ino-1)=zi(jmacsu+ino-1)
+        zi(jconloc+ino-1) = zi(jmacsu+ino-1)
     end do
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Peau)
 
     call jeveuo(jexnum(limane, macou), 'E', jlimane)
-    zi(jlimane+1-1)=ind
+    zi(jlimane+1-1) = ind
 ! --- INFO PATCH LIE
-    zi(jlimane+2-1)=inc
+    zi(jlimane+2-1) = inc
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Volume)
 
     call jeveuo(jexnum(limane, macsu), 'E', jlimane)
-    zi(jlimane+1-1)=ind+1
+    zi(jlimane+1-1) = ind+1
 ! --- Nettoyage / mis à jour
-    ind=ind+2
-    ind1=ind1+0
+    ind = ind+2
+    ind1 = ind1+0
 !
     call jedema()
 end subroutine

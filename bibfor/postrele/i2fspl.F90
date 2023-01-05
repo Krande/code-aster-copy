@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ subroutine i2fspl(tvois2, tplace, n, existe, adrdbt)
 !-----------------------------------------------------------------------
     existe = .false.
 !
-    i = adrdbt + 1
+    i = adrdbt+1
 !
- 10 continue
+10  continue
     if ((.not. existe) .and. (i .le. n)) then
 !
         if (.not. tplace(i)) then
@@ -61,18 +61,18 @@ subroutine i2fspl(tvois2, tplace, n, existe, adrdbt)
 !
             else
 !
-                i = i + 1
+                i = i+1
 !
-            endif
+            end if
 !
         else
 !
-            i = i + 1
+            i = i+1
 !
-        endif
+        end if
 !
         goto 10
 !
-    endif
+    end if
 !
 end subroutine

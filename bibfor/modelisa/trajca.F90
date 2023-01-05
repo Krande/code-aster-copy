@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
+subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
                   ynoca, znoca, comima, gromai)
     implicit none
 !  DESCRIPTION : INTERPOLATION DE LA TRAJECTOIRE D'UN CABLE
@@ -103,7 +103,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     aster_logical :: lsplin
 !
     integer :: nbsub, jgmai
-    parameter    (nbsub=5)
+    parameter(nbsub=5)
     character(len=24) :: param(2), parcr
     real(kind=8), pointer :: absc_curv(:) => null()
     real(kind=8), pointer :: alpha_disc(:) => null()
@@ -113,15 +113,15 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     real(kind=8), pointer :: vd2z(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()
-    data          param /'ABSC_CURV               ',&
+    data param/'ABSC_CURV               ',&
      &                     'ALPHA                   '/
-    data          parcr /'NOEUD_CABLE             '/
+    data parcr/'NOEUD_CABLE             '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
-    cbid=(0.d0,0.d0)
-    ibid=0
+    cbid = (0.d0, 0.d0)
+    ibid = 0
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   CREATION DES OBJETS DE TRAVAIL
@@ -149,11 +149,11 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 20
-        endif
+        end if
     end do
 !
- 20 continue
-    idecal = nblign - nbno
+20  continue
+    idecal = nblign-nbno
 !
     call jeecra(xnoca, 'LONUTI', nblign)
     call jeveuo(xnoca, 'E', jx)
@@ -163,40 +163,40 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     call jeveuo(znoca, 'E', jz)
 !
     call jeveuo(comima, 'E', icmima)
-    xmin=r8maem()
-    ymin=r8maem()
-    zmin=r8maem()
-    xmax=-r8maem()
-    ymax=-r8maem()
-    zmax=-r8maem()
+    xmin = r8maem()
+    ymin = r8maem()
+    zmin = r8maem()
+    xmax = -r8maem()
+    ymax = -r8maem()
+    zmax = -r8maem()
     nonoma = mailla//'.NOMNOE'
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
     do ino = 1, nbno
         call jenonu(jexnom(nonoma, zk8(jnoca+idecal+ino-1)), numnoe)
-        zr(jx+idecal+ino-1) = zr(jcoor+3*(numnoe-1) )
+        zr(jx+idecal+ino-1) = zr(jcoor+3*(numnoe-1))
         zr(jy+idecal+ino-1) = zr(jcoor+3*(numnoe-1)+1)
         zr(jz+idecal+ino-1) = zr(jcoor+3*(numnoe-1)+2)
 !
 !        RECHERCHE DES COORDONNEES EXTREMES
-        if (zr(jx+idecal+ino-1) .lt. xmin) xmin=zr(jx+idecal+ino-1)
-        if (zr(jy+idecal+ino-1) .lt. ymin) ymin=zr(jy+idecal+ino-1)
-        if (zr(jz+idecal+ino-1) .lt. zmin) zmin=zr(jz+idecal+ino-1)
-        if (zr(jx+idecal+ino-1) .gt. xmax) xmax=zr(jx+idecal+ino-1)
-        if (zr(jy+idecal+ino-1) .gt. ymax) ymax=zr(jy+idecal+ino-1)
-        if (zr(jz+idecal+ino-1) .gt. zmax) zmax=zr(jz+idecal+ino-1)
+        if (zr(jx+idecal+ino-1) .lt. xmin) xmin = zr(jx+idecal+ino-1)
+        if (zr(jy+idecal+ino-1) .lt. ymin) ymin = zr(jy+idecal+ino-1)
+        if (zr(jz+idecal+ino-1) .lt. zmin) zmin = zr(jz+idecal+ino-1)
+        if (zr(jx+idecal+ino-1) .gt. xmax) xmax = zr(jx+idecal+ino-1)
+        if (zr(jy+idecal+ino-1) .gt. ymax) ymax = zr(jy+idecal+ino-1)
+        if (zr(jz+idecal+ino-1) .gt. zmax) zmax = zr(jz+idecal+ino-1)
     end do
 !     CONSTRUCTION DES 6 PLANS DEFINISSANT DE PAVE CONTENANT LE CABLE
     call jeveuo(gromai, 'L', jgmai)
     rr = zr(jgmai)
-    zr(icmima-1+1)=xmin-rr/2.d0
-    zr(icmima-1+2)=xmax+rr/2.d0
+    zr(icmima-1+1) = xmin-rr/2.d0
+    zr(icmima-1+2) = xmax+rr/2.d0
     rr = zr(jgmai+1)
-    zr(icmima-1+3)=ymin-rr/2.d0
-    zr(icmima-1+4)=ymax+rr/2.d0
+    zr(icmima-1+3) = ymin-rr/2.d0
+    zr(icmima-1+4) = ymax+rr/2.d0
     rr = zr(jgmai+2)
-    zr(icmima-1+5)=zmin-rr/2.d0
-    zr(icmima-1+6)=zmax+rr/2.d0
+    zr(icmima-1+5) = zmin-rr/2.d0
+    zr(icmima-1+6) = zmax+rr/2.d0
 !
 !
 !
@@ -211,31 +211,31 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !.... N.B. LE PASSAGE PREALABLE DANS LA ROUTINE TOPOCA GARANTIT NBNO > 2
 !
     do ino = 2, nbno
-        dx = zr(jx+idecal+ino-1) - zr(jx+idecal+ino-2)
-        dy = zr(jy+idecal+ino-1) - zr(jy+idecal+ino-2)
-        dz = zr(jz+idecal+ino-1) - zr(jz+idecal+ino-2)
-        du = dble ( sqrt ( dx * dx + dy * dy + dz * dz ) )
+        dx = zr(jx+idecal+ino-1)-zr(jx+idecal+ino-2)
+        dy = zr(jy+idecal+ino-1)-zr(jy+idecal+ino-2)
+        dz = zr(jz+idecal+ino-1)-zr(jz+idecal+ino-2)
+        du = dble(sqrt(dx*dx+dy*dy+dz*dz))
         if (du .eq. 0.0d0) then
-            write(k3b,'(I3)') icabl
+            write (k3b, '(I3)') icabl
             call utmess('F', 'MODELISA7_59', sk=k3b)
-        endif
-        corde_cumu(ino) = corde_cumu(1+ino-2) + du
+        end if
+        corde_cumu(ino) = corde_cumu(1+ino-2)+du
 !
 !        CALCUL DISCRET DES DEVIATIONS ANGULAIRES CUMULEES
 !        UTILISE EN CAS D ECHEC DE L INTERPOLATION PAR SPLINE
         if (ino .lt. nbno) then
-            dx1 = zr(jx+idecal+ino) - zr(jx+idecal+ino-1)
-            dy1 = zr(jy+idecal+ino) - zr(jy+idecal+ino-1)
-            dz1 = zr(jz+idecal+ino) - zr(jz+idecal+ino-1)
-            du1 = dble ( sqrt ( dx1 * dx1 + dy1 * dy1 + dz1 * dz1 ) )
-            psc = dx * dx1 + dy *dy1 + dz * dz1
-            psc = abs(psc /(du * du1))
-            alpha = trigom('ACOS',psc)
-            alpha_disc(ino) = alphcu + alpha/2.d0
-            alphcu = alphcu + alpha
+            dx1 = zr(jx+idecal+ino)-zr(jx+idecal+ino-1)
+            dy1 = zr(jy+idecal+ino)-zr(jy+idecal+ino-1)
+            dz1 = zr(jz+idecal+ino)-zr(jz+idecal+ino-1)
+            du1 = dble(sqrt(dx1*dx1+dy1*dy1+dz1*dz1))
+            psc = dx*dx1+dy*dy1+dz*dz1
+            psc = abs(psc/(du*du1))
+            alpha = trigom('ACOS', psc)
+            alpha_disc(ino) = alphcu+alpha/2.d0
+            alphcu = alphcu+alpha
         else
             alpha_disc(ino) = alphcu
-        endif
+        end if
 !
     end do
 !
@@ -243,29 +243,29 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 ! 4   INTERPOLATION SPLINE CUBIQUE DE LA TRAJECTOIRE DU CABLE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    dc1 = corde_cumu(1+1) - corde_cumu(1)
-    dcn = corde_cumu(nbno) - corde_cumu(1+nbno-2)
+    dc1 = corde_cumu(1+1)-corde_cumu(1)
+    dcn = corde_cumu(nbno)-corde_cumu(1+nbno-2)
 !
 ! 4.1 INTERPOLATION DE LA COORDONNEE X
 ! ---
-    d1x1 = ( zr(jx+idecal+1) - zr(jx+idecal) ) / dc1
-    d1xn = ( zr(jx+idecal+nbno-1) - zr(jx+idecal+nbno-2) ) / dcn
+    d1x1 = (zr(jx+idecal+1)-zr(jx+idecal))/dc1
+    d1xn = (zr(jx+idecal+nbno-1)-zr(jx+idecal+nbno-2))/dcn
 !
-    call spline(corde_cumu, zr(jx+idecal), nbno, d1x1, d1xn,&
+    call spline(corde_cumu, zr(jx+idecal), nbno, d1x1, d1xn, &
                 vd2x, iret)
 !
 ! 4.2 INTERPOLATION DE LA COORDONNEE Y
 ! ---
-    d1y1 = ( zr(jy+idecal+1) - zr(jy+idecal) ) / dc1
-    d1yn = ( zr(jy+idecal+nbno-1) - zr(jy+idecal+nbno-2) ) / dcn
-    call spline(corde_cumu, zr(jy+idecal), nbno, d1y1, d1yn,&
+    d1y1 = (zr(jy+idecal+1)-zr(jy+idecal))/dc1
+    d1yn = (zr(jy+idecal+nbno-1)-zr(jy+idecal+nbno-2))/dcn
+    call spline(corde_cumu, zr(jy+idecal), nbno, d1y1, d1yn, &
                 vd2y, iret)
 !
 ! 4.3 INTERPOLATION DE LA COORDONNEE Z
 ! ---
-    d1z1 = ( zr(jz+idecal+1) - zr(jz+idecal) ) / dc1
-    d1zn = ( zr(jz+idecal+nbno-1) - zr(jz+idecal+nbno-2) ) / dcn
-    call spline(corde_cumu, zr(jz+idecal), nbno, d1z1, d1zn,&
+    d1z1 = (zr(jz+idecal+1)-zr(jz+idecal))/dc1
+    d1zn = (zr(jz+idecal+nbno-1)-zr(jz+idecal+nbno-2))/dcn
+    call spline(corde_cumu, zr(jz+idecal), nbno, d1z1, d1zn, &
                 vd2z, iret)
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -282,21 +282,21 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     d1m = d1x1
     svar = 0
     do ino = 2, nbno-1
-        dcp = corde_cumu(ino+1) - corde_cumu(ino)
-        d1p = ( zr(jx+idecal+ino) - zr(jx+idecal+ino-1) ) / dcp
+        dcp = corde_cumu(ino+1)-corde_cumu(ino)
+        d1p = (zr(jx+idecal+ino)-zr(jx+idecal+ino-1))/dcp
         if (d1p .gt. d1m) then
-            if (svar .eq. -1) nbvar = nbvar + 1
+            if (svar .eq. -1) nbvar = nbvar+1
             svar = 1
         else if (d1p .lt. d1m) then
-            if (svar .eq. 1) nbvar = nbvar + 1
+            if (svar .eq. 1) nbvar = nbvar+1
             svar = -1
-        endif
+        end if
     end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
     do ino = 2, nbno
-        if (vd2x(ino)*vd2x(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
+        if (vd2x(ino)*vd2x(ino-1) .lt. 0.d0) nbvar2 = nbvar2+1
     end do
 !
     if (nbvar2 .ge. nbvar+10) then
@@ -306,7 +306,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         call utmess('I', 'MODELISA7_13', ni=3, vali=vali)
         lsplin = .false.
         goto 888
-    endif
+    end if
 !
 ! 4-BIS .2 INTERPOLATION DE LA COORDONNEE Y
 ! ---
@@ -316,21 +316,21 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     d1m = d1y1
     svar = 0
     do ino = 2, nbno-1
-        dcp = corde_cumu(ino+1) - corde_cumu(ino)
-        d1p = ( zr(jy+idecal+ino) - zr(jy+idecal+ino-1) ) / dcp
+        dcp = corde_cumu(ino+1)-corde_cumu(ino)
+        d1p = (zr(jy+idecal+ino)-zr(jy+idecal+ino-1))/dcp
         if (d1p .gt. d1m) then
-            if (svar .eq. -1) nbvar = nbvar + 1
+            if (svar .eq. -1) nbvar = nbvar+1
             svar = 1
         else if (d1p .lt. d1m) then
-            if (svar .eq. 1) nbvar = nbvar + 1
+            if (svar .eq. 1) nbvar = nbvar+1
             svar = -1
-        endif
+        end if
     end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
     do ino = 2, nbno
-        if (vd2y(ino)*vd2y(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
+        if (vd2y(ino)*vd2y(ino-1) .lt. 0.d0) nbvar2 = nbvar2+1
     end do
 !
     if (nbvar2 .ge. nbvar+10) then
@@ -340,7 +340,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         call utmess('I', 'MODELISA7_13', ni=3, vali=vali)
         lsplin = .false.
         goto 888
-    endif
+    end if
 !
 ! 4-BIS .3 INTERPOLATION DE LA COORDONNEE Z
 ! ---
@@ -350,21 +350,21 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     d1m = d1z1
     svar = 0
     do ino = 2, nbno-1
-        dcp = corde_cumu(ino+1) - corde_cumu(ino)
-        d1p = ( zr(jz+idecal+ino) - zr(jz+idecal+ino-1) ) / dcp
+        dcp = corde_cumu(ino+1)-corde_cumu(ino)
+        d1p = (zr(jz+idecal+ino)-zr(jz+idecal+ino-1))/dcp
         if (d1p .gt. d1m) then
-            if (svar .eq. -1) nbvar = nbvar + 1
+            if (svar .eq. -1) nbvar = nbvar+1
             svar = 1
         else if (d1p .lt. d1m) then
-            if (svar .eq. 1) nbvar = nbvar + 1
+            if (svar .eq. 1) nbvar = nbvar+1
             svar = -1
-        endif
+        end if
     end do
 !
 !     CONTROLE DE LA REGULARITE DE LA DERIVEE SECONDE
     nbvar2 = 0
     do ino = 2, nbno
-        if (vd2z(ino)*vd2z(ino-1) .lt. 0.d0) nbvar2 = nbvar2+ 1
+        if (vd2z(ino)*vd2z(ino-1) .lt. 0.d0) nbvar2 = nbvar2+1
     end do
 !
     if (nbvar2 .ge. nbvar+10) then
@@ -374,7 +374,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         call utmess('I', 'MODELISA7_13', ni=3, vali=vali)
         lsplin = .false.
         goto 888
-    endif
+    end if
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 5   CALCULS DE L'ABSCISSE CURVILIGNE ET DE LA DEVIATION ANGULAIRE
@@ -387,93 +387,93 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     do ino = 2, nbno
 !
         corde = corde_cumu(1+ino-2)
-        dc = ( corde_cumu(ino) - corde ) / dble ( nbsub )
+        dc = (corde_cumu(ino)-corde)/dble(nbsub)
 !
 !....... CONTRIBUTION DU PREMIER POINT
 !
-        call splin1(corde_cumu, zr(jx+idecal), vd2x, nbno, corde,&
+        call splin1(corde_cumu, zr(jx+idecal), vd2x, nbno, corde, &
                     d1x, iret)
-        call splin1(corde_cumu, zr(jy+idecal), vd2y, nbno, corde,&
+        call splin1(corde_cumu, zr(jy+idecal), vd2y, nbno, corde, &
                     d1y, iret)
-        call splin1(corde_cumu, zr(jz+idecal), vd2z, nbno, corde,&
+        call splin1(corde_cumu, zr(jz+idecal), vd2z, nbno, corde, &
                     d1z, iret)
-        call splin2(corde_cumu, vd2x, nbno, corde, d2x,&
+        call splin2(corde_cumu, vd2x, nbno, corde, d2x, &
                     iret)
-        call splin2(corde_cumu, vd2y, nbno, corde, d2y,&
+        call splin2(corde_cumu, vd2y, nbno, corde, d2y, &
                     iret)
-        call splin2(corde_cumu, vd2z, nbno, corde, d2z,&
+        call splin2(corde_cumu, vd2z, nbno, corde, d2z, &
                     iret)
-        normv2 = d1x * d1x + d1y * d1y + d1z * d1z
+        normv2 = d1x*d1x+d1y*d1y+d1z*d1z
         if (normv2 .eq. 0.0d0) then
-            write(k3b,'(I3)') icabl
+            write (k3b, '(I3)') icabl
             call utmess('F', 'MODELISA7_60', sk=k3b)
-        endif
-        absc = dble ( sqrt ( normv2 ) ) / 2.0d0
-        det1 = d1y * d2z - d1z * d2y
-        det2 = d1z * d2x - d1x * d2z
-        det3 = d1x * d2y - d1y * d2x
-        alpha = dble ( sqrt (det1*det1 + det2*det2 + det3*det3 )) / ( normv2 * 2.0d0)
+        end if
+        absc = dble(sqrt(normv2))/2.0d0
+        det1 = d1y*d2z-d1z*d2y
+        det2 = d1z*d2x-d1x*d2z
+        det3 = d1x*d2y-d1y*d2x
+        alpha = dble(sqrt(det1*det1+det2*det2+det3*det3))/(normv2*2.0d0)
 !
 !....... CONTRIBUTION DES POINTS INTERMEDIAIRES
 !
         do isub = 1, nbsub-1
-            corde = corde + dc
-            call splin1(corde_cumu, zr(jx+idecal), vd2x, nbno, corde,&
+            corde = corde+dc
+            call splin1(corde_cumu, zr(jx+idecal), vd2x, nbno, corde, &
                         d1x, iret)
-            call splin1(corde_cumu, zr(jy+idecal), vd2y, nbno, corde,&
+            call splin1(corde_cumu, zr(jy+idecal), vd2y, nbno, corde, &
                         d1y, iret)
-            call splin1(corde_cumu, zr(jz+idecal), vd2z, nbno, corde,&
+            call splin1(corde_cumu, zr(jz+idecal), vd2z, nbno, corde, &
                         d1z, iret)
-            call splin2(corde_cumu, vd2x, nbno, corde, d2x,&
+            call splin2(corde_cumu, vd2x, nbno, corde, d2x, &
                         iret)
-            call splin2(corde_cumu, vd2y, nbno, corde, d2y,&
+            call splin2(corde_cumu, vd2y, nbno, corde, d2y, &
                         iret)
-            call splin2(corde_cumu, vd2z, nbno, corde, d2z,&
+            call splin2(corde_cumu, vd2z, nbno, corde, d2z, &
                         iret)
-            normv2 = d1x * d1x + d1y * d1y + d1z * d1z
+            normv2 = d1x*d1x+d1y*d1y+d1z*d1z
             if (normv2 .eq. 0.0d0) then
-                write(k3b,'(I3)') icabl
+                write (k3b, '(I3)') icabl
                 call utmess('F', 'MODELISA7_60', sk=k3b)
-            endif
-            absc = absc + dble ( sqrt ( normv2 ) )
-            det1 = d1y * d2z - d1z * d2y
-            det2 = d1z * d2x - d1x * d2z
-            det3 = d1x * d2y - d1y * d2x
-            alpha = alpha + dble(sqrt(det1*det1+det2*det2+det3*det3)) / normv2
+            end if
+            absc = absc+dble(sqrt(normv2))
+            det1 = d1y*d2z-d1z*d2y
+            det2 = d1z*d2x-d1x*d2z
+            det3 = d1x*d2y-d1y*d2x
+            alpha = alpha+dble(sqrt(det1*det1+det2*det2+det3*det3))/normv2
         end do
 !
 !....... CONTRIBUTION DU DERNIER POINT
 !
-        corde = corde + dc
-        call splin1(corde_cumu, zr(jx+idecal), vd2x, nbno, corde,&
+        corde = corde+dc
+        call splin1(corde_cumu, zr(jx+idecal), vd2x, nbno, corde, &
                     d1x, iret)
-        call splin1(corde_cumu, zr(jy+idecal), vd2y, nbno, corde,&
+        call splin1(corde_cumu, zr(jy+idecal), vd2y, nbno, corde, &
                     d1y, iret)
-        call splin1(corde_cumu, zr(jz+idecal), vd2z, nbno, corde,&
+        call splin1(corde_cumu, zr(jz+idecal), vd2z, nbno, corde, &
                     d1z, iret)
-        call splin2(corde_cumu, vd2x, nbno, corde, d2x,&
+        call splin2(corde_cumu, vd2x, nbno, corde, d2x, &
                     iret)
-        call splin2(corde_cumu, vd2y, nbno, corde, d2y,&
+        call splin2(corde_cumu, vd2y, nbno, corde, d2y, &
                     iret)
-        call splin2(corde_cumu, vd2z, nbno, corde, d2z,&
+        call splin2(corde_cumu, vd2z, nbno, corde, d2z, &
                     iret)
-        normv2 = d1x * d1x + d1y * d1y + d1z * d1z
+        normv2 = d1x*d1x+d1y*d1y+d1z*d1z
         if (normv2 .eq. 0.0d0) then
-            write(k3b,'(I3)') icabl
+            write (k3b, '(I3)') icabl
             call utmess('F', 'MODELISA7_60', sk=k3b)
-        endif
-        absc = absc + dble ( sqrt ( normv2 ) ) / 2.0d0
-        det1 = d1y * d2z - d1z * d2y
-        det2 = d1z * d2x - d1x * d2z
-        det3 = d1x * d2y - d1y * d2x
-        alpha = alpha + dble( sqrt(det1*det1+det2*det2+det3*det3)) / ( normv2 * 2.0d0)
+        end if
+        absc = absc+dble(sqrt(normv2))/2.0d0
+        det1 = d1y*d2z-d1z*d2y
+        det2 = d1z*d2x-d1x*d2z
+        det3 = d1x*d2y-d1y*d2x
+        alpha = alpha+dble(sqrt(det1*det1+det2*det2+det3*det3))/(normv2*2.0d0)
 !
 !....... ABSCISSE CURVILIGNE ET DEVIATION ANGULAIRE CUMULEE
 !
-        absc = absc * dc
-        absc_curv(ino) = absc_curv(1+ino-2) + absc
-        alpha = alpha * dc
-        zr(jalph+ino-1) = zr(jalph+ino-2) + alpha
+        absc = absc*dc
+        absc_curv(ino) = absc_curv(1+ino-2)+absc
+        alpha = alpha*dc
+        zr(jalph+ino-1) = zr(jalph+ino-2)+alpha
 !
     end do
 !
@@ -486,17 +486,17 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         do ino = 1, nbno
             valpar(1) = absc_curv(ino)
             valpar(2) = zr(jalph+ino-1)
-            call tbajli(tablca, 2, param, [ibid], valpar,&
-                        [cbid], k3b, idecal+ ino)
+            call tbajli(tablca, 2, param, [ibid], valpar, &
+                        [cbid], k3b, idecal+ino)
         end do
     else
         do ino = 1, nbno
             valpar(1) = corde_cumu(ino)
             valpar(2) = alpha_disc(ino)
-            call tbajli(tablca, 2, param, [ibid], valpar,&
-                        [cbid], k3b, idecal+ ino)
+            call tbajli(tablca, 2, param, [ibid], valpar, &
+                        [cbid], k3b, idecal+ino)
         end do
-    endif
+    end if
 !
 ! --- MENAGE
 !

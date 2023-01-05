@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nonlinDSPrintCreate_T(ds_print)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/nonlinDSColumnVoid.h"
 !
-type(NL_DS_Print), intent(out) :: ds_print
+    type(NL_DS_Print), intent(out) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,26 +46,26 @@ type(NL_DS_Print), intent(out) :: ds_print
     type(NL_DS_Table) :: table_cvg
     type(NL_DS_Column) :: column
 !
-    character(len=24), parameter :: cols_name(nb_cols_defi) = (/&
-                  'INCR_INST','ITER_NUME','RESI_RELA','RELA_NOEU',&
-                  'RESI_MAXI','MAXI_NOEU','RELI_NBIT','RELI_COEF',&
-                  'MATR_ASSE','ITER_TIME'/)
-    character(len=16), parameter :: cols_title_1(nb_cols_defi) = (/&
-                  '   INCREMENT    ','     NEWTON     ','     RESIDU     ','     RESIDU     ',&
-                  '     RESIDU     ','     RESIDU     ','  RECH.  LINE.  ','  RECH.  LINE.  ',&
-                  '     OPTION     ','     NEWTON     '/)
-    character(len=16), parameter :: cols_title_2(nb_cols_defi) = (/&
-                  '    INSTANT     ','    ITERATION   ','     RELATIF    ','     MAXIMUM    ',&
-                  '     ABSOLU     ','     MAXIMUM    ','    NB. ITER    ','  COEFFICIENT   ',&
-                  '   ASSEMBLAGE   ','  TEMPS CALCUL  '/)
-    character(len=16), parameter :: cols_title_3(nb_cols_defi) = (/&
-                  '                ','                ',' RESI_GLOB_RELA ','    AU POINT    ',&
-                  ' RESI_GLOB_MAXI ','    AU POINT    ','                ','      RHO       ',&
-                  '                ','    VALEUR      '/)
-    character(len=1), parameter :: cols_type(nb_cols_defi) = (/&
-                  'R','I','R','K',&
-                  'R','K','I','R',&
-                  'K','R'/)
+    character(len=24), parameter :: cols_name(nb_cols_defi) = (/ &
+                                    'INCR_INST', 'ITER_NUME', 'RESI_RELA', 'RELA_NOEU', &
+                                    'RESI_MAXI', 'MAXI_NOEU', 'RELI_NBIT', 'RELI_COEF', &
+                                    'MATR_ASSE', 'ITER_TIME'/)
+    character(len=16), parameter :: cols_title_1(nb_cols_defi) = (/ &
+                   '   INCREMENT    ', '     NEWTON     ', '     RESIDU     ', '     RESIDU     ', &
+                   '     RESIDU     ', '     RESIDU     ', '  RECH.  LINE.  ', '  RECH.  LINE.  ', &
+                                    '     OPTION     ', '     NEWTON     '/)
+    character(len=16), parameter :: cols_title_2(nb_cols_defi) = (/ &
+                   '    INSTANT     ', '    ITERATION   ', '     RELATIF    ', '     MAXIMUM    ', &
+                   '     ABSOLU     ', '     MAXIMUM    ', '    NB. ITER    ', '  COEFFICIENT   ', &
+                                    '   ASSEMBLAGE   ', '  TEMPS CALCUL  '/)
+    character(len=16), parameter :: cols_title_3(nb_cols_defi) = (/ &
+                   '                ', '                ', ' RESI_GLOB_RELA ', '    AU POINT    ', &
+                   ' RESI_GLOB_MAXI ', '    AU POINT    ', '                ', '      RHO       ', &
+                                    '                ', '    VALEUR      '/)
+    character(len=1), parameter :: cols_type(nb_cols_defi) = (/ &
+                                   'R', 'I', 'R', 'K', &
+                                   'R', 'K', 'I', 'R', &
+                                   'K', 'R'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,20 +75,20 @@ type(NL_DS_Print), intent(out) :: ds_print
 !
     do i_col = 1, nb_cols_defi
         call nonlinDSColumnVoid(column)
-        column%name          = cols_name(i_col)(1:16)
-        if (cols_type(i_col).eq.'R') then
-            column%l_vale_real   = ASTER_TRUE
-        elseif (cols_type(i_col).eq.'I') then
-            column%l_vale_inte   = ASTER_TRUE
-        elseif (cols_type(i_col).eq.'K') then
-            column%l_vale_strg   = ASTER_TRUE
+        column%name = cols_name(i_col) (1:16)
+        if (cols_type(i_col) .eq. 'R') then
+            column%l_vale_real = ASTER_TRUE
+        elseif (cols_type(i_col) .eq. 'I') then
+            column%l_vale_inte = ASTER_TRUE
+        elseif (cols_type(i_col) .eq. 'K') then
+            column%l_vale_strg = ASTER_TRUE
         else
             ASSERT(ASTER_FALSE)
-        endif
-        column%title(1)    = cols_title_1(i_col)
-        column%title(2)    = cols_title_2(i_col)
-        column%title(3)    = cols_title_3(i_col)
-        table_cvg%cols(i_col)        = column
+        end if
+        column%title(1) = cols_title_1(i_col)
+        column%title(2) = cols_title_2(i_col)
+        column%title(3) = cols_title_3(i_col)
+        table_cvg%cols(i_col) = column
         table_cvg%l_cols_acti(i_col) = ASTER_FALSE
     end do
 !

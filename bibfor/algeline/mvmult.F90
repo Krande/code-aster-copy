@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,12 +60,12 @@ subroutine mvmult(mat, vec, res)
     call jelira(res19//'.VALE', 'TYPE', cval=typres2)
 !
     if (zi(lmat+3) .eq. 1) then
-        typmat='R'
-    else if (zi(lmat+3).eq.2) then
-        typmat='C'
+        typmat = 'R'
+    else if (zi(lmat+3) .eq. 2) then
+        typmat = 'C'
     else
         call utmess('F', 'ALGELINE2_86')
-    endif
+    end if
 !
     ASSERT(typres1 == typres2)
     ASSERT(typres1 == typmat)
@@ -73,9 +73,9 @@ subroutine mvmult(mat, vec, res)
 !     ----------------------------------
     if (typres1 .eq. 'R') then
         call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1, ASTER_TRUE)
-    else if (typres1.eq.'C') then
+    else if (typres1 .eq. 'C') then
         call mcmult('ZERO', lmat, zc(jchin), zc(jchout), 1, ASTER_TRUE)
-    endif
+    end if
 
     call jedema()
 end subroutine

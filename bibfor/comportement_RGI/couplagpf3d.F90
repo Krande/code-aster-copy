@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine couplagpf3d(a, b, ngf, na, avean,&
+subroutine couplagpf3d(a, b, ngf, na, avean, &
                        nc, dgfa_ds, deltam, kmve66)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
@@ -27,27 +27,27 @@ subroutine couplagpf3d(a, b, ngf, na, avean,&
     implicit none
 
     integer, intent(in) :: ngf, na, nc
-    real(kind=8), intent(inout) :: a(ngf,ngf+1),b(ngf)
-    real(kind=8), intent(in) :: avean, dgfa_ds(nc, 6), deltam, kmve66(6,6)
+    real(kind=8), intent(inout) :: a(ngf, ngf+1), b(ngf)
+    real(kind=8), intent(in) :: avean, dgfa_ds(nc, 6), deltam, kmve66(6, 6)
 !
     integer :: i, j, k
 !
-    do i=1,6
-        do j=1,na
+    do i = 1, 6
+        do j = 1, na
 !           couplage plasticite ->  kelvin
-            a(i,12+j)=avean*dgfa_ds(j,i)
+            a(i, 12+j) = avean*dgfa_ds(j, i)
 !           couplage plasticite -> maxwell
 !           attention kmve66 doit être dans la bonne base...
-            a(i+6,12+j)=dgfa_ds(j,i)*(deltam+kmve66(i,i))
-            do k=1,6
-                if (k.ne.i) then
-                    a(i+6,12+j)=a(i+6,12+j)+dgfa_ds(j,k)*kmve66(i,k)
+            a(i+6, 12+j) = dgfa_ds(j, i)*(deltam+kmve66(i, i))
+            do k = 1, 6
+                if (k .ne. i) then
+                    a(i+6, 12+j) = a(i+6, 12+j)+dgfa_ds(j, k)*kmve66(i, k)
                 end if
             end do
         end do
 !       mise a zero des seconds membre de fluage (deja fait normalement)
-        b(i)=0.d0
-        b(i+6)=0.d0
+        b(i) = 0.d0
+        b(i+6) = 0.d0
     end do
 
 end subroutine

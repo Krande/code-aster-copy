@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,19 +53,19 @@ subroutine op0040()
     ifi = 0
     nomfi = ' '
     call getvis(' ', 'UNITE', scal=ifi, nbret=n2)
-    if (.not. ulexis( ifi )) then
+    if (.not. ulexis(ifi)) then
         call ulopen(ifi, ' ', nomfi, 'NEW', 'O')
-    endif
+    end if
 !
     call jemarq()
 !
 !     RECUPERATION DU NOM DU RESULTAT
     call getvid(' ', 'RESULTAT', scal=resuin, nbret=ibid)
 !
-    write(ifi,*) '-----------------------------------------------',&
+    write (ifi, *) '-----------------------------------------------',&
      &                '------------'
-    write(ifi,*)&
-     & 'COMPOSANTES DES CHAMPS PRESENTS DANS LE RESULTAT : ',resuin
+    write (ifi, *)&
+     & 'COMPOSANTES DES CHAMPS PRESENTS DANS LE RESULTAT : ', resuin
 !
 !     LECTURE DU NOMBRE DE CHAMPS PRESENTS ET DU NOMBRE D'ORDRE
     call jelira(resuin//'.DESC', 'NOMMAX', nbcham)
@@ -75,20 +75,20 @@ subroutine op0040()
         call jenonu(jexnom(resuin//'.DESC', nomsym), ibid)
         call jeveuo(jexnum(resuin//'.TACH', ibid), 'L', jatach)
         iord = 1
-        if (zk24(jatach-1+iord)(1:1) .ne. ' ') then
-            write(ifi,*) '   - CHAMP ',nomsym,' :'
-            nomcha = zk24(jatach-1+iord)(1:19)
+        if (zk24(jatach-1+iord) (1:1) .ne. ' ') then
+            write (ifi, *) '   - CHAMP ', nomsym, ' :'
+            nomcha = zk24(jatach-1+iord) (1:19)
             call cmpcha(nomcha, cmp_name, cata_to_field, field_to_cata, nb_cmp)
-            do icmp = 1,nb_cmp
-                write(ifi,*) '      * ',cmp_name(icmp)
+            do icmp = 1, nb_cmp
+                write (ifi, *) '      * ', cmp_name(icmp)
             end do
-            AS_DEALLOCATE(vi = cata_to_field)
-            AS_DEALLOCATE(vi = field_to_cata)
-            AS_DEALLOCATE(vk8 = cmp_name)
-        endif
+            AS_DEALLOCATE(vi=cata_to_field)
+            AS_DEALLOCATE(vi=field_to_cata)
+            AS_DEALLOCATE(vk8=cmp_name)
+        end if
     end do
 !
-    write(ifi,*) '-----------------------------------------------',&
+    write (ifi, *) '-----------------------------------------------',&
      &                '------------'
 !
     call jedema()

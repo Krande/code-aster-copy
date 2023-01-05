@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine dcqpri(coorp1, coorp2, coori, sprim)
 !
     x1 = coorp1(1)
     y1 = coorp1(2)
-    x2 = coori(1,1)
-    y2 = coori(2,1)
-    x3 = coori(1,2)
-    y3 = coori(2,2)
+    x2 = coori(1, 1)
+    y2 = coori(2, 1)
+    x3 = coori(1, 2)
+    y3 = coori(2, 2)
     x4 = coorp2(1)
     y4 = coorp2(2)
 !
-    sprim =((x2-x1)*(y4-y1)-(y2-y1)*(x4-x1))&
+    sprim = ((x2-x1)*(y4-y1)-(y2-y1)*(x4-x1))&
      &     +((x4-x3)*(y2-y3)-(y4-y3)*(x2-x3))
 !
     sprim = abs(sprim)/2.d+0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mmeven(phase, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -72,16 +72,16 @@ implicit none
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... GESTION DES JEUX POUR EVENT-DRIVEN'
-    endif
+        write (ifm, *) '<CONTACT> ...... GESTION DES JEUX POUR EVENT-DRIVEN'
+    end if
 !
 ! --- PARAMETRES
 !
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
+    ntpc = cfdisi(ds_contact%sdcont_defi, 'NTPC')
 !
 ! --- UNE ZONE EN MODE SANS CALCUL: ON NE PEUT RIEN FAIRE
 !
-    lexiv = cfdisl(ds_contact%sdcont_defi,'EXIS_VERIF')
+    lexiv = cfdisl(ds_contact%sdcont_defi, 'EXIS_VERIF')
     if (lexiv) goto 999
 !
 ! --- ACCES OBJETS DU CONTACT
@@ -109,20 +109,20 @@ implicit none
         if (lactif) then
             if (phase .eq. 'INI') then
                 etacin = 1.d0
-            else if (phase.eq.'FIN') then
+            else if (phase .eq. 'FIN') then
                 etacfi = 1.d0
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             if (phase .eq. 'INI') then
                 etacin = 0.d0
-            else if (phase.eq.'FIN') then
+            else if (phase .eq. 'FIN') then
                 etacfi = 0.d0
             else
                 ASSERT(.false.)
-            endif
-        endif
+            end if
+        end if
         zr(jctevc+zeven*(iptc-1)+1-1) = etacin
         zr(jctevc+zeven*(iptc-1)+2-1) = etacfi
     end do

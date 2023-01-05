@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,29 +33,29 @@ function fitof(phi, f1, f2, amor, horig)
     complex(kind=8) :: h1, h2, h3, horig
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    eps=0.000001d0
-    fx1=f1
-    fx2=f2
+    eps = 0.000001d0
+    fx1 = f1
+    fx2 = f2
     call transf(fx1, amor, h1)
     call transf(fx2, amor, h2)
-    phi1=phase((h1-horig)/dcmplx(0.d0,1.d0))
-    phi2=phase((h2-horig)/dcmplx(0.d0,1.d0))
+    phi1 = phase((h1-horig)/dcmplx(0.d0, 1.d0))
+    phi2 = phase((h2-horig)/dcmplx(0.d0, 1.d0))
     if (((phi1-phi)*(phi2-phi)) .gt. 0.d0) then
-    endif
-101  continue
-    f3=(fx1+fx2)/2.d0
+    end if
+101 continue
+    f3 = (fx1+fx2)/2.d0
     call transf(f3, amor, h3)
-    phi3=phase((h3-horig)/dcmplx(0.d0,1.d0))
-    df=abs(f3-fx1)
+    phi3 = phase((h3-horig)/dcmplx(0.d0, 1.d0))
+    df = abs(f3-fx1)
     if (df .lt. eps) then
-        fitof=f3
+        fitof = f3
         goto 9999
-    endif
+    end if
     if (phi3 .ge. phi) then
-        fx1=f3
+        fx1 = f3
     else
-        fx2=f3
-    endif
+        fx2 = f3
+    end if
     goto 101
-9999  continue
+9999 continue
 end function

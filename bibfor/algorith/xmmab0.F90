@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmmab0(ndim, nnc, jnne,&
-                  hpg, ffc, jacobi, lpenac,&
-                  tau1, tau2, jddle,&
+subroutine xmmab0(ndim, nnc, jnne, &
+                  hpg, ffc, jacobi, lpenac, &
+                  tau1, tau2, jddle, &
                   nfhe, lmulti, heavno, mmat)
 !
 !
@@ -64,38 +64,38 @@ subroutine xmmab0(ndim, nnc, jnne,&
 ! ----------------------------------------------------------------------
 !
 ! --- INITIALISATIONS
-    nne=jnne(1)
-    nnes=jnne(2)
-    ddles=jddle(1)
+    nne = jnne(1)
+    nnes = jnne(2)
+    ddles = jddle(1)
 !
-    tt(:,:) = 0.d0
+    tt(:, :) = 0.d0
 !
 ! --- MATRICE
 !
     do i = 1, ndim
-        tt(1,1) = tau1(i)*tau1(i) + tt(1,1)
-        tt(1,2) = tau1(i)*tau2(i) + tt(1,2)
-        tt(2,1) = tau2(i)*tau1(i) + tt(2,1)
-        tt(2,2) = tau2(i)*tau2(i) + tt(2,2)
+        tt(1, 1) = tau1(i)*tau1(i)+tt(1, 1)
+        tt(1, 2) = tau1(i)*tau2(i)+tt(1, 2)
+        tt(2, 1) = tau2(i)*tau1(i)+tt(2, 1)
+        tt(2, 2) = tau2(i)*tau2(i)+tt(2, 2)
     end do
 !
     do i = 1, nnc
         do j = 1, nnc
-            call xplma2(ndim, nne, nnes, ddles, i,&
+            call xplma2(ndim, nne, nnes, ddles, i, &
                         nfhe, pli)
-            if (lmulti) pli = pli + (heavno(i)-1)*ndim
-            call xplma2(ndim, nne, nnes, ddles, j,&
+            if (lmulti) pli = pli+(heavno(i)-1)*ndim
+            call xplma2(ndim, nne, nnes, ddles, j, &
                         nfhe, plj)
-            if (lmulti) plj = plj + (heavno(j)-1)*ndim
+            if (lmulti) plj = plj+(heavno(j)-1)*ndim
             do l = 1, ndim-1
                 do k = 1, ndim-1
                     ii = pli+l
                     jj = plj+k
                     if (lpenac) then
-                        mmat(ii,jj) = mmat(ii,jj) + hpg*ffc(i)*ffc(j)* jacobi*tt(l, k)
+                        mmat(ii, jj) = mmat(ii, jj)+hpg*ffc(i)*ffc(j)*jacobi*tt(l, k)
                     else
-                        mmat(ii,jj) = mmat(ii,jj) + hpg*ffc(i)*ffc(j)* jacobi*tt(l, k)
-                    endif
+                        mmat(ii, jj) = mmat(ii, jj)+hpg*ffc(i)*ffc(j)*jacobi*tt(l, k)
+                    end if
                 end do
             end do
         end do

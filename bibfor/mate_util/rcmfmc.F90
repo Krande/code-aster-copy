@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine rcmfmc(chmatz, chmacz, l_thm_, l_ther_, basename_, base)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,11 +40,11 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/varc_prep.h"
 !
-character(len=*), intent(in) :: chmatz
-character(len=*), intent(out) :: chmacz
-aster_logical, intent(in), optional :: l_thm_, l_ther_
-character(len=*), intent(in), optional :: basename_
-character(len=1), intent(in), optional :: base
+    character(len=*), intent(in) :: chmatz
+    character(len=*), intent(out) :: chmacz
+    aster_logical, intent(in), optional :: l_thm_, l_ther_
+    character(len=*), intent(in), optional :: basename_
+    character(len=1), intent(in), optional :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ character(len=1), intent(in), optional :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbval,  iret, jvale, igd, kk
+    integer :: nbval, iret, jvale, igd, kk
     integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, j, k, nbmat
     integer :: inbmat
     character(len=1) :: bas
@@ -78,13 +78,13 @@ character(len=1), intent(in), optional :: base
 !
     call jemarq()
 !
-    chmat  = chmatz
+    chmat = chmatz
 !
-    if( present(basename_) ) then
+    if (present(basename_)) then
         basename = basename_
     else
         basename = "&&MATECO"
-    endif
+    end if
 !
     chemat = chmat//'.CHAMP_MAT'
     chmace = basename//'.MATE_CODE'
@@ -92,20 +92,20 @@ character(len=1), intent(in), optional :: base
     chmacengrp = chmace//'.NGRP'
 
 !
-    if( present(base) ) then
+    if (present(base)) then
         bas = base
     else
         bas = 'V'
-    endif
+    end if
 !
-    l_thm  = ASTER_FALSE
+    l_thm = ASTER_FALSE
     l_ther = ASTER_FALSE
     if (present(l_thm_)) then
         l_thm = l_thm_
-    endif
+    end if
     if (present(l_ther_)) then
         l_ther = l_ther_
-    endif
+    end if
 !
     call exisd('CARTE', chmace, iret)
     if (iret .eq. 0) then
@@ -114,26 +114,26 @@ character(len=1), intent(in), optional :: base
 
 ! ----- Traitement du materiau par elements
         call jelira(chemat//'.VALE', 'LONMAX', nbval)
-        call jeveuo(chemat//'.VALE', 'L', vk8= v_vale)
-        call jeveuo(chemat//'.DESC', 'L', vi = v_desc)
+        call jeveuo(chemat//'.VALE', 'L', vk8=v_vale)
+        call jeveuo(chemat//'.DESC', 'L', vi=v_desc)
         call jenuno(jexnum('&CATA.GD.NOMCMP', v_desc(1)), nomgd)
         call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
-        ASSERT(nbcmp.ge.30)
-        ASSERT((nbval/nbcmp)*nbcmp.eq.nbval)
+        ASSERT(nbcmp .ge. 30)
+        ASSERT((nbval/nbcmp)*nbcmp .eq. nbval)
         call copisd('CHAMP_GD', bas, chemat, chmace)
         call jedetr(chmace//'.VALE')
-        nbgrp=nbval/nbcmp
+        nbgrp = nbval/nbcmp
         call wkvect(chmace//'.VALE', bas//' V I', nbgrp, jvale)
         call jenonu(jexnom('&CATA.GD.NOMGD', 'ADRSJEVE'), igd)
-        call jeveuo(chmace//'.DESC', 'E', vi = v_desc)
+        call jeveuo(chmace//'.DESC', 'E', vi=v_desc)
         v_desc(1) = igd
 
 ! ----- Codage du materiau
         icompt = 0
         do i = 1, nbval
             if (v_vale(i) .ne. ' ') then
-                icompt=icompt+1
-            endif
+                icompt = icompt+1
+            end if
         end do
         ASSERT(icompt .gt. 0)
 
@@ -142,42 +142,42 @@ character(len=1), intent(in), optional :: base
         call wkvect(chmacegrp, bas//' V K8', icompt, igrp)
         call wkvect(chmacengrp, bas//' V I', nbgrp, ingrp)
 
-        icompt=0
-        inbmat=0
+        icompt = 0
+        inbmat = 0
         do i = 1, nbgrp
             do j = 1, 26
-                k=(i-1)*nbcmp+j
+                k = (i-1)*nbcmp+j
                 if (v_vale(k) .eq. 'TREF=>') exit
                 if (v_vale(k) .ne. ' ') then
-                    zk8(igrp+icompt)=v_vale(k)
-                    icompt=icompt+1
-                    inbmat=inbmat+1
-                endif
+                    zk8(igrp+icompt) = v_vale(k)
+                    icompt = icompt+1
+                    inbmat = inbmat+1
+                end if
             end do
-            zi(ingrp-1+i)=inbmat
-            inbmat=0
+            zi(ingrp-1+i) = inbmat
+            inbmat = 0
         end do
 
-        codi=' '
+        codi = ' '
         call jeveuo(chmacegrp, 'L', igrp)
         call jeveuo(chmacengrp, 'L', ingrp)
-        icompt=0
+        icompt = 0
         do kk = 1, nbgrp
-            nbmat=zi(ingrp-1+kk)
+            nbmat = zi(ingrp-1+kk)
             if (nbmat .ne. 0) then
                 call rcmaco(chmat(1:8), chmacegrp, icompt, nbmat, kk, l_ther, basename, bas)
                 call codent(kk, 'D0', knumat)
 !       -- le nom du codi est celui du premier materiau du groupe kk
-                codi(1:8)= basename
-                codi(9:13)='.'//knumat
+                codi(1:8) = basename
+                codi(9:13) = '.'//knumat
 !
                 call jeveuo(codi//'.CODI', 'L', zi(jvale+kk-1))
-                icompt=icompt+nbmat
-            endif
+                icompt = icompt+nbmat
+            end if
         end do
 
-    endif
-    chmacz=chmace
+    end if
+    chmacz = chmace
 !
     call jedema()
 end subroutine

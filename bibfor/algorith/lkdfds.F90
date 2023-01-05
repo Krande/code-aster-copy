@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdfds(nbmat, mater, s, para, var,&
+subroutine lkdfds(nbmat, mater, s, para, var, &
                   ds2hds, ucri, dfdsig)
     implicit none
 #include "asterc/r8prem.h"
@@ -51,29 +51,29 @@ subroutine lkdfds(nbmat, mater, s, para, var,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( zero    =  0.0d0   )
-    parameter       ( un      =  1.0d0   )
-    parameter       ( lgleps  =  1.0d-8  )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(lgleps=1.0d-8)
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =================================================================
-    data    kron    /un  ,un  ,un  ,zero  ,zero  ,zero/
+    data kron/un, un, un, zero, zero, zero/
 ! =================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 ! =================================================================
-    sigc = mater(3,2)
-    pref = mater(1,2)
+    sigc = mater(3, 2)
+    pref = mater(1, 2)
 ! =================================================================
 ! --- CALCUL DE h(THETA), H0E ET H0C, -----------------------------
 ! =================================================================
-    rcos3t = cos3t (s, pref, lgleps)
-    call lkhtet(nbmat, mater, rcos3t, h0e, h0c,&
+    rcos3t = cos3t(s, pref, lgleps)
+    call lkhtet(nbmat, mater, rcos3t, h0e, h0c, &
                 htheta)
 ! =================================================================
 ! --- CALCUL DES TERMES INTERMEDIARES
 ! =================================================================
-    fact1 = para(1) * sigc * h0c
-    fact3 = para(1) - un
+    fact1 = para(1)*sigc*h0c
+    fact3 = para(1)-un
 ! =================================================================
 ! --- RESULTAT FINAL
 ! =================================================================
@@ -81,15 +81,15 @@ subroutine lkdfds(nbmat, mater, s, para, var,&
     call r8inir(6, 0.d0, dfdsig, 1)
 !
     do i = 1, ndt
-        a(i) = var(1) * ds2hds(i) + var(2)* kron (i)
+        a(i) = var(1)*ds2hds(i)+var(2)*kron(i)
     end do
 !
     do i = 1, ndt
         if (ucri .le. r8prem()) then
             dfdsig(i) = ds2hds(i)
         else
-            dfdsig(i) = ds2hds(i) - fact1*((ucri)**fact3)*a(i)
-        endif
+            dfdsig(i) = ds2hds(i)-fact1*((ucri)**fact3)*a(i)
+        end if
     end do
 ! =================================================================
 end subroutine

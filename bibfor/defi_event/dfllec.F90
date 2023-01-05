@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dfllec(sdlist, dtmin)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: sdlist
-real(kind=8), intent(in) :: dtmin
+    character(len=8), intent(in) :: sdlist
+    real(kind=8), intent(in) :: dtmin
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,9 +81,9 @@ real(kind=8), intent(in) :: dtmin
 !
 ! - Initializations
 !
-    keywf         = 'ECHEC'
-    nb_fail_read  = 0
-    nb_fail       = 0
+    keywf = 'ECHEC'
+    nb_fail_read = 0
+    nb_fail = 0
     event_list(:) = 0
 !
 ! - Get number of failure keywords
@@ -94,22 +94,22 @@ real(kind=8), intent(in) :: dtmin
 ! - ERROR failure is required
 !
     if (.not. l_fail_error) then
-        nb_fail = nb_fail + 1
-    endif
+        nb_fail = nb_fail+1
+    end if
 !
 ! - Access to datastructures
 !
     sdlist_linfor = sdlist(1:8)//'.LIST.INFOR'
-    call jeveuo(sdlist_linfor, 'E', vr = v_sdlist_linfor)
+    call jeveuo(sdlist_linfor, 'E', vr=v_sdlist_linfor)
 !
 ! - Create datastructure
 !
     sdlist_eevenr = sdlist(1:8)//'.ECHE.EVENR'
     sdlist_eevenk = sdlist(1:8)//'.ECHE.EVENK'
     sdlist_esubdr = sdlist(1:8)//'.ECHE.SUBDR'
-    call wkvect(sdlist_eevenr, 'G V R'  , nb_fail*SIZE_LEEVR, vr   = v_sdlist_eevenr)
-    call wkvect(sdlist_eevenk, 'G V K16', nb_fail*SIZE_LEEVK, vk16 = v_sdlist_eevenk)
-    call wkvect(sdlist_esubdr, 'G V R'  , nb_fail*SIZE_LESUR, vr   = v_sdlist_esubdr)
+    call wkvect(sdlist_eevenr, 'G V R', nb_fail*SIZE_LEEVR, vr=v_sdlist_eevenr)
+    call wkvect(sdlist_eevenk, 'G V K16', nb_fail*SIZE_LEEVK, vk16=v_sdlist_eevenk)
+    call wkvect(sdlist_esubdr, 'G V R', nb_fail*SIZE_LESUR, vr=v_sdlist_esubdr)
     v_sdlist_linfor(9) = nb_fail
 !
 ! - Ordering list of events
@@ -124,22 +124,22 @@ real(kind=8), intent(in) :: dtmin
                 event_list(i_event) = i_fail
                 if (event_typek .eq. failEventKeyword(FAIL_EVT_INCR_QUANT)) then
                     v_work(i_last) = i_fail
-                    i_last = i_last + 1
-                endif
-            endif
+                    i_last = i_last+1
+                end if
+            end if
         end do
     end do
 !
 ! - List
 !
     i_fail_save = 0
-    iplus       = 0
-    i_last      = 1
+    iplus = 0
+    i_last = 1
     do i_event = 1, FAIL_EVT_NB
 !
 ! ----- Current event
 !
-        i_fail     = event_list(i_event)
+        i_fail = event_list(i_event)
         event_curr = failEventKeyword(i_event)
 !
 ! ----- Event to create
@@ -149,25 +149,25 @@ real(kind=8), intent(in) :: dtmin
 ! --------- This event doesn't exist but it's required
             if (event_curr .eq. failEventKeyword(FAIL_EVT_ERROR)) then
                 event_typek = event_curr
-                iplus       = 0
-                i_fail_save = i_fail_save + 1
-            endif
+                iplus = 0
+                i_fail_save = i_fail_save+1
+            end if
         else
             event_typek = event_curr
             if (event_typek .eq. failEventKeyword(FAIL_EVT_INCR_QUANT)) then
 ! ------------- This event must be at end of list
-                iplus  = v_work(i_last)
+                iplus = v_work(i_last)
                 i_fail = iplus
                 if (iplus .eq. 0) then
                     i_fail = 0
                 else
-                    i_fail_save = i_fail_save + 1
-                    i_last      = i_last + 1
-                endif
+                    i_fail_save = i_fail_save+1
+                    i_last = i_last+1
+                end if
             else
-                i_fail_save = i_fail_save + 1
-            endif
-        endif
+                i_fail_save = i_fail_save+1
+            end if
+        end if
 !
 ! ----- Get parameters
 !
@@ -177,43 +177,43 @@ real(kind=8), intent(in) :: dtmin
 ! ------------- Default value for this event
                 call dfdevn(action_typek, subd_method, subd_pas_mini, subd_pas, subd_niveau)
                 l_save = .true.
-            endif
+            end if
         else
 ! --------- Get parameters of EVENEMENT for current failure keyword
-            call dfllpe(keywf    , i_fail        , event_typek,&
-                        vale_ref , nom_cham      , nom_cmp   , crit_cmp,&
+            call dfllpe(keywf, i_fail, event_typek, &
+                        vale_ref, nom_cham, nom_cmp, crit_cmp, &
                         pene_maxi, resi_glob_maxi)
 ! --------- Get parameters of ACTION for current failure keyword
-            call dfllac(keywf          , i_fail       , dtmin     , event_typek,&
-                        action_typek   ,&
-                        subd_method    , subd_pas_mini,&
-                        subd_niveau    , subd_pas     ,&
-                        subd_auto      , subd_inst    , subd_duree,&
-                        pcent_iter_plus, coef_maxi    )
+            call dfllac(keywf, i_fail, dtmin, event_typek, &
+                        action_typek, &
+                        subd_method, subd_pas_mini, &
+                        subd_niveau, subd_pas, &
+                        subd_auto, subd_inst, subd_duree, &
+                        pcent_iter_plus, coef_maxi)
             l_save = .true.
-        endif
+        end if
 !
 ! ----- Save parameters in datastructure
 !
         if (l_save) then
-            call dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_esubdr,&
-                        i_fail_save    ,&
-                        event_typek    , vale_ref       , nom_cham       , nom_cmp        ,&
-                        crit_cmp       , pene_maxi      , resi_glob_maxi ,&
-                        action_typek   , subd_method    , subd_auto      , subd_pas_mini  ,&
-                        subd_pas       , subd_niveau    , pcent_iter_plus, coef_maxi      ,&
-                        subd_inst      , subd_duree)
-        endif
+            call dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, v_sdlist_esubdr, &
+                        i_fail_save, &
+                        event_typek, vale_ref, nom_cham, nom_cmp, &
+                        crit_cmp, pene_maxi, resi_glob_maxi, &
+                        action_typek, subd_method, subd_auto, subd_pas_mini, &
+                        subd_pas, subd_niveau, pcent_iter_plus, coef_maxi, &
+                        subd_inst, subd_duree)
+        end if
         if (iplus .ne. 0) then
             goto 157
-        endif
+        end if
     end do
 !
 ! - Compute maximum level of time step cutting
 !
     subd_niveau_maxi = 0.d0
     do i_fail = 1, nb_fail
-        subd_niveau_r    = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+4)
+        subd_niveau_r = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+4)
         subd_niveau_maxi = max(subd_niveau_r, subd_niveau_maxi)
     end do
     do i_fail = 1, nb_fail

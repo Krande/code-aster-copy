@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,16 +35,16 @@ function dcargu(c)
     if (dble(c) .eq. 0.d0) then
         if (dimag(c) .gt. 0.d0) then
             dcargu = pi/2.d0
-        else if (dimag(c).lt.0.d0) then
+        else if (dimag(c) .lt. 0.d0) then
             dcargu = -pi/2.d0
         else
             dcargu = 0.d0
-        endif
-    else if (dble(c).gt.0.d0) then
-        dcargu = dble(atan2(dimag(c),dble(c)))
-    else if (dble(c).lt.0.d0) then
-        dcargu = dble(atan2(dimag(c),dble(c))) + pi
-    endif
-    if (dcargu .lt. 0.d0) dcargu = dcargu + 2.d0*pi
+        end if
+    else if (dble(c) .gt. 0.d0) then
+        dcargu = dble(atan2(dimag(c), dble(c)))
+    else if (dble(c) .lt. 0.d0) then
+        dcargu = dble(atan2(dimag(c), dble(c)))+pi
+    end if
+    if (dcargu .lt. 0.d0) dcargu = dcargu+2.d0*pi
 !
 end function

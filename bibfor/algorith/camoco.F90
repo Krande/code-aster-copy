@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine camoco(nomres, numref, intf, raid, raildl,&
+subroutine camoco(nomres, numref, intf, raid, raildl, &
                   inord)
     implicit none
 !
@@ -62,7 +62,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
     integer :: nbdeb, nbec, nbfin, nbint, nbnoe, nbnot, neq
     integer :: ntail1, ntail2, numgd
 !-----------------------------------------------------------------------
-    parameter    (nbcpmx=300)
+    parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: nomres, intf, typcou, nomnoe, nomcmp, mailla
     character(len=19) :: numref, numddl
@@ -73,12 +73,12 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
     character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------
-    data pgc /'CAMOCO'/
+    data pgc/'CAMOCO'/
 !-----------------------------------------------------------------------
 !
 !
     call jemarq()
-    typdef='CONTRAINT'
+    typdef = 'CONTRAINT'
 !
 !---------------------RECHERCHE DU NUMDDL ASSOCIE A LA MATRICE----------
 !
@@ -86,8 +86,8 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !
 !---------------------REQUETTE DU DEEQ DU NUMDDL------------------------
 !
-    numddl(15:19)='.NUME'
-    deeq=numddl//'.DEEQ'
+    numddl(15:19) = '.NUME'
+    deeq = numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
@@ -105,7 +105,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !
 !-----------REQUETTE ADRESSE DE LA TABLE DESCRIPTION DES DEFORMEES------
 !
-    desdef=intf//'.IDC_DEFO'
+    desdef = intf//'.IDC_DEFO'
     call jeveuo(desdef, 'L', lldes)
     call jelira(desdef, 'LONMAX', nbnot)
 !**************************************************************
@@ -121,53 +121,53 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !
 !-----------COMPTAGE DU NOMBRE DE NOEUDS CRAIG BAMPT--------------------
 !
-    nbdeb=nbnot
-    nbfin=0
+    nbdeb = nbnot
+    nbfin = 0
 !
     do j = 1, nbint
         call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
-        typcou=idc_type(j)
+        typcou = idc_type(j)
         if (typcou .eq. 'CRAIGB   ') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)
             do i = 1, nbnoe
-                ik=zi(llnoin+i-1)
-                nbfin=max(nbfin,ik)
-                nbdeb=min(nbdeb,ik)
+                ik = zi(llnoin+i-1)
+                nbfin = max(nbfin, ik)
+                nbdeb = min(nbdeb, ik)
             end do
             call jelibe(jexnum(intf//'.IDC_LINO', j))
-        endif
+        end if
     end do
 !
     call jelibe(intf//'.IDC_TYPE')
 !
     if (nbfin .gt. 0) then
-        nbcb=nbfin-nbdeb+1
+        nbcb = nbfin-nbdeb+1
     else
-        nbcb=0
-    endif
+        nbcb = 0
+    end if
 !
 !
 !----------ALLOCATION DU VECTEUR DES DDL A IMPOSER A 1------------------
 !
-    ntail1=(nbcb*nbcmp)*2
-    ntail2=(nbcb*nbcmp)
+    ntail1 = (nbcb*nbcmp)*2
+    ntail2 = (nbcb*nbcmp)
 !
 !  TAILLE DOUBLE CAR PRESENCE EVENTUELLE DE DOUBLE LAGRANGE POUR LE
 !   BLOCAGE
 !
     if (ntail1 .eq. 0) goto 999
-    temddl='&&'//pgc//'.LISTE.DDL'
-    tempar='&&'//pgc//'.PARA.NOCMP'
+    temddl = '&&'//pgc//'.LISTE.DDL'
+    tempar = '&&'//pgc//'.PARA.NOCMP'
     call wkvect(temddl, 'V V I', ntail1, ltddl)
     call wkvect(tempar, 'V V K16', ntail2, ltpar)
     if (raildl .eq. '                  ') then
-        raildl='&&'//pgc//'.RAID.LDLT'
+        raildl = '&&'//pgc//'.RAID.LDLT'
         call facmtr(raid, raildl, ier)
-    endif
+    end if
 !
 !-------------COMPTAGE ET REPERAGE DES DEFORMEES A CALCULER-------------
 !
-    nbcont=0
+    nbcont = 0
 !
     if (nbcb .gt. 0) then
         do i = nbdeb, nbfin
@@ -175,27 +175,27 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !          ICOD=ZI(LLDES+2*NBNOT+I-1)
             call isdeco(zi(lldes+2*nbnot+(i-1)*nbec+1-1), idec, nbcmp)
 !**************************************************************
-            ino=zi(lldes+i-1)
+            ino = zi(lldes+i-1)
             call jenuno(jexnum(mailla//'.NOMNOE', ino), nomnoe)
             do j = 1, nbcmp
                 if (idec(j) .eq. 1) then
-                    jj=-j
-                    nbcont=nbcont+1
-                    nomcmp=zk8(llncmp+j-1)
-                    zk16(ltpar+nbcont-1)=nomnoe//nomcmp
-                    iad=ltddl+(nbcont-1)*2
-                    call cheddl(zi(lldeeq), neq, ino, jj, zi(iad),&
+                    jj = -j
+                    nbcont = nbcont+1
+                    nomcmp = zk8(llncmp+j-1)
+                    zk16(ltpar+nbcont-1) = nomnoe//nomcmp
+                    iad = ltddl+(nbcont-1)*2
+                    call cheddl(zi(lldeeq), neq, ino, jj, zi(iad), &
                                 2)
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
 !
 !
 !------------------CALCUL DES MODES CONTRAINTS--------------------------
 !
-    call defsta(nomres, numref, raildl, zi(ltddl), zk16(ltpar),&
+    call defsta(nomres, numref, raildl, zi(ltddl), zk16(ltpar), &
                 2, nbcont, typdef, inord)
 !
 !----------------------MENAGE-------------------------------------------

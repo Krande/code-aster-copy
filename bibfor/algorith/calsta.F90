@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calsta(proj, gamma, dh, def, nno,&
-                  kpg, sig, tmp, kk, kkd,&
+subroutine calsta(proj, gamma, dh, def, nno, &
+                  kpg, sig, tmp, kk, kkd, &
                   matuu, dsidep, jac)
 !
 !     CALCUL DES TERMES DE STABILISATION POUR LE QUAD4 SOUS INTEGRE
@@ -36,9 +36,9 @@ subroutine calsta(proj, gamma, dh, def, nno,&
     real(kind=8) :: defst2(4, 4, 2), def(4, 4, 2)
     real(kind=8) :: rac2
 !
-    data kron/1.d0,0.d0,0.d0,0.d0,1.d0,0.d0,0.d0,0.d0,1.d0/
-    data kron2/1.d0,0.d0,1.d0,0.d0,0.d0,1.d0/
-    data kron3/1.d0,0.d0,0.d0,1.d0,1.d0,0.d0/
+    data kron/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
+    data kron2/1.d0, 0.d0, 1.d0, 0.d0, 0.d0, 1.d0/
+    data kron3/1.d0, 0.d0, 0.d0, 1.d0, 1.d0, 0.d0/
 !
 !
 !    PROJ : INDICATEUR DE LA PROJECTION
@@ -50,7 +50,7 @@ subroutine calsta(proj, gamma, dh, def, nno,&
 !
     do i = 1, 3
         do j = 1, 3
-            f(i,j) = kron(i,j)
+            f(i, j) = kron(i, j)
         end do
     end do
 !
@@ -58,8 +58,8 @@ subroutine calsta(proj, gamma, dh, def, nno,&
 !
     do i = 1, 2
         do j = 1, 3
-            filtr1(i,j) = kron2(i,j)
-            filtr2(i,j) = kron3(i,j)
+            filtr1(i, j) = kron2(i, j)
+            filtr2(i, j) = kron3(i, j)
         end do
     end do
 !
@@ -71,92 +71,92 @@ subroutine calsta(proj, gamma, dh, def, nno,&
 !         ---------------------
                 if (proj .eq. 0) then
 !
-                    defst1(1,n,i) = f(i,1)*gamma(n)*dh(2*kpg-1)* filtr1(1,ifiltr) + def(1,n,i)* f&
-                                    &iltr1(2,ifiltr)
+                    defst1(1, n, i) = f(i, 1)*gamma(n)*dh(2*kpg-1)*filtr1(1, ifiltr)+def(1, n, i)*f&
+                                    &iltr1(2, ifiltr)
 !
-                    defst1(2,n,i) = f(i,2)*gamma(n)*dh(2*kpg)* filtr1(1,ifiltr) + def(2,n,i)* fil&
-                                    &tr1(2,ifiltr)
+                    defst1(2, n, i) = f(i, 2)*gamma(n)*dh(2*kpg)*filtr1(1, ifiltr)+def(2, n, i)*fil&
+                                    &tr1(2, ifiltr)
 !
-                    defst1(3,n,i) = 0.d0
+                    defst1(3, n, i) = 0.d0
 !
-                    defst1(4,n,i) = (&
-                                    filtr1(1, ifiltr)* (f(i, 1)*gamma( n)*dh(2*kpg)+f(i, 2)*gamma&
-                                    &(n)*dh(2*kpg-1))/rac2) + def(4,&
-                                    n, i)*filtr1(2, ifiltr&
+                    defst1(4, n, i) = ( &
+                                    filtr1(1, ifiltr)*(f(i, 1)*gamma(n)*dh(2*kpg)+f(i, 2)*gamma&
+                                    &(n)*dh(2*kpg-1))/rac2)+def(4, &
+                                    n, i)*filtr1(2, ifiltr &
                                     )
 !
 !
 !
-                    defst2(1,n,i) = f(i,1)*gamma(n)*dh(2*kpg-1)* filtr2(1,ifiltr) + def(1,n,i)* f&
-                                    &iltr2(2,ifiltr)
+                    defst2(1, n, i) = f(i, 1)*gamma(n)*dh(2*kpg-1)*filtr2(1, ifiltr)+def(1, n, i)*f&
+                                    &iltr2(2, ifiltr)
 !
-                    defst2(2,n,i) = f(i,2)*gamma(n)*dh(2*kpg)* filtr2(1,ifiltr) + def(2,n,i)* fil&
-                                    &tr2(2,ifiltr)
+                    defst2(2, n, i) = f(i, 2)*gamma(n)*dh(2*kpg)*filtr2(1, ifiltr)+def(2, n, i)*fil&
+                                    &tr2(2, ifiltr)
 !
-                    defst2(3,n,i) = 0.d0
+                    defst2(3, n, i) = 0.d0
 !
 !
-                    defst2(4,n,i) = (&
-                                    filtr2(1, ifiltr)* (f(i, 1)*gamma( n)*dh(2*kpg)+f(i, 2)*gamma&
-                                    &(n)*dh(2*kpg-1))/rac2) + def(4,&
-                                    n, i)*filtr2(2, ifiltr&
+                    defst2(4, n, i) = ( &
+                                    filtr2(1, ifiltr)*(f(i, 1)*gamma(n)*dh(2*kpg)+f(i, 2)*gamma&
+                                    &(n)*dh(2*kpg-1))/rac2)+def(4, &
+                                    n, i)*filtr2(2, ifiltr &
                                     )
 !
 !         OPTIMAL BENDING
 !         ---------------
-                else if (proj.eq.1) then
+                else if (proj .eq. 1) then
 !
-                    defst1(1,n,i) = f(i,1)*gamma(n)*dh(2*kpg-1)* filtr1(1,ifiltr) + def(1,n,i)* f&
-                                    &iltr1(2,ifiltr)
+                    defst1(1, n, i) = f(i, 1)*gamma(n)*dh(2*kpg-1)*filtr1(1, ifiltr)+def(1, n, i)*f&
+                                    &iltr1(2, ifiltr)
 !
-                    defst1(2,n,i) = f(i,2)*gamma(n)*dh(2*kpg)* filtr1(1,ifiltr) + def(2,n,i)* fil&
-                                    &tr1(2,ifiltr)
+                    defst1(2, n, i) = f(i, 2)*gamma(n)*dh(2*kpg)*filtr1(1, ifiltr)+def(2, n, i)*fil&
+                                    &tr1(2, ifiltr)
 !
-                    defst1(3,n,i) = 0.d0
+                    defst1(3, n, i) = 0.d0
 !
-                    defst1(4,n,i) = def(4,n,i)*filtr1(2,ifiltr)
-!
-!
-!
-                    defst2(1,n,i) = f(i,1)*gamma(n)*dh(2*kpg-1)* filtr2(1,ifiltr) + def(1,n,i)* f&
-                                    &iltr2(2,ifiltr)
-!
-                    defst2(2,n,i) = f(i,2)*gamma(n)*dh(2*kpg)* filtr2(1,ifiltr) + def(2,n,i)* fil&
-                                    &tr2(2,ifiltr)
-!
-                    defst2(3,n,i) = 0.d0
+                    defst1(4, n, i) = def(4, n, i)*filtr1(2, ifiltr)
 !
 !
-                    defst2(4,n,i) = def(4,n,i)*filtr2(2,ifiltr)
+!
+                    defst2(1, n, i) = f(i, 1)*gamma(n)*dh(2*kpg-1)*filtr2(1, ifiltr)+def(1, n, i)*f&
+                                    &iltr2(2, ifiltr)
+!
+                    defst2(2, n, i) = f(i, 2)*gamma(n)*dh(2*kpg)*filtr2(1, ifiltr)+def(2, n, i)*fil&
+                                    &tr2(2, ifiltr)
+!
+                    defst2(3, n, i) = 0.d0
+!
+!
+                    defst2(4, n, i) = def(4, n, i)*filtr2(2, ifiltr)
 !
 !
 !         INCOMPRESSIBLE
 !         --------------
-                else if (proj.eq.2) then
+                else if (proj .eq. 2) then
 !
-                    defst1(1,n,i) = f(i,1)*gamma(n)*dh(2*kpg-1)*0.5d0* filtr1(1,ifiltr) + def(1,n&
-                                    &,i)* filtr1(2,ifiltr) + f(i,2)* (-0.5d0)* dh(2*kpg)*gamma(n)
+                    defst1(1, n, i) = f(i, 1)*gamma(n)*dh(2*kpg-1)*0.5d0*filtr1(1, ifiltr)+def(1, n&
+                                    &, i)*filtr1(2, ifiltr)+f(i, 2)*(-0.5d0)*dh(2*kpg)*gamma(n)
 !
-                    defst1(2,n,i) = f(i,2)*gamma(n)*dh(2*kpg)*0.5d0* filtr1(1,ifiltr) + def(2,n,i&
-                                    &)* filtr1(2,ifiltr) + f(i,1)* (-0.5d0)* dh(2*kpg-1)*gamma(n)
+                   defst1(2, n, i) = f(i, 2)*gamma(n)*dh(2*kpg)*0.5d0*filtr1(1, ifiltr)+def(2, n, i&
+                                     &)*filtr1(2, ifiltr)+f(i, 1)*(-0.5d0)*dh(2*kpg-1)*gamma(n)
 !
-                    defst1(3,n,i) = 0.d0
+                    defst1(3, n, i) = 0.d0
 !
-                    defst1(4,n,i) = def(4,n,i)*filtr1(2,ifiltr)
+                    defst1(4, n, i) = def(4, n, i)*filtr1(2, ifiltr)
 !
 !
 !
-                    defst2(1,n,i) = f(i,1)*gamma(n)*dh(2*kpg-1)*0.5d0* filtr2(1,ifiltr) + def(1,n&
-                                    &,i)* filtr2(2,ifiltr) + f(i,2)*gamma(n)* dh(2*kpg)* (-0.5d0)
+                    defst2(1, n, i) = f(i, 1)*gamma(n)*dh(2*kpg-1)*0.5d0*filtr2(1, ifiltr)+def(1, n&
+                                    &, i)*filtr2(2, ifiltr)+f(i, 2)*gamma(n)*dh(2*kpg)*(-0.5d0)
 !
-                    defst2(2,n,i) = f(i,2)*gamma(n)*dh(2*kpg)*0.5d0* filtr2(1,ifiltr) + def(2,n,i&
-                                    &)* filtr2(2,ifiltr) + f(i,1)*gamma(n)* dh(2*kpg-1)* (-0.5d0)
+                   defst2(2, n, i) = f(i, 2)*gamma(n)*dh(2*kpg)*0.5d0*filtr2(1, ifiltr)+def(2, n, i&
+                                     &)*filtr2(2, ifiltr)+f(i, 1)*gamma(n)*dh(2*kpg-1)*(-0.5d0)
 !
-                    defst2(3,n,i) = 0.d0
+                    defst2(3, n, i) = 0.d0
 !
-                    defst2(4,n,i) = def(4,n,i)*filtr2(2,ifiltr)
+                    defst2(4, n, i) = def(4, n, i)*filtr2(2, ifiltr)
 !
-                endif
+                end if
             end do
         end do
 !
@@ -168,10 +168,10 @@ subroutine calsta(proj, gamma, dh, def, nno,&
             do i = 1, 2
                 do kl = 1, 4
                     sig(kl) = 0.d0
-                    sig(kl) = sig(kl) + defst1(1,n,i)*dsidep(1,kl)
-                    sig(kl) = sig(kl) + defst1(2,n,i)*dsidep(2,kl)
-                    sig(kl) = sig(kl) + defst1(3,n,i)*dsidep(3,kl)
-                    sig(kl) = sig(kl) + defst1(4,n,i)*dsidep(4,kl)
+                    sig(kl) = sig(kl)+defst1(1, n, i)*dsidep(1, kl)
+                    sig(kl) = sig(kl)+defst1(2, n, i)*dsidep(2, kl)
+                    sig(kl) = sig(kl)+defst1(3, n, i)*dsidep(3, kl)
+                    sig(kl) = sig(kl)+defst1(4, n, i)*dsidep(4, kl)
                 end do
 !
                 do j = 1, 2
@@ -180,21 +180,21 @@ subroutine calsta(proj, gamma, dh, def, nno,&
                             j1 = i
                         else
                             j1 = 2
-                        endif
+                        end if
 !
 !                 RIGIDITE ELASTIQUE
                         tmp = 0.d0
-                        tmp = tmp + sig(1)*defst2(1,m,j)
-                        tmp = tmp + sig(2)*defst2(2,m,j)
-                        tmp = tmp + sig(3)*defst2(3,m,j)
-                        tmp = tmp + sig(4)*defst2(4,m,j)
+                        tmp = tmp+sig(1)*defst2(1, m, j)
+                        tmp = tmp+sig(2)*defst2(2, m, j)
+                        tmp = tmp+sig(3)*defst2(3, m, j)
+                        tmp = tmp+sig(4)*defst2(4, m, j)
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                         if (j .le. j1) then
-                            kkd = (2* (n-1)+i-1)* (2* (n-1)+i)/2
-                            kk = kkd + 2* (m-1) + j
-                            matuu(kk) = matuu(kk) + tmp*jac
-                        endif
+                            kkd = (2*(n-1)+i-1)*(2*(n-1)+i)/2
+                            kk = kkd+2*(m-1)+j
+                            matuu(kk) = matuu(kk)+tmp*jac
+                        end if
 !
                     end do
                 end do

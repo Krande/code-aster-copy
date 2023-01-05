@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
-                  dgamv, im, sm, vinm, de,&
-                  ucrip, seuilp, gp, devgii, paraep,&
+subroutine lkdlam(varv, nbmat, mater, deps, depsv, &
+                  dgamv, im, sm, vinm, de, &
+                  ucrip, seuilp, gp, devgii, paraep, &
                   varpl, dfdsp, dlam)
 !
     implicit none
@@ -50,7 +50,7 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 ! --- : SEUILP:  VALEUR DU SEUIL PLASTIAQUE A L INSTANT MOINS -----
 ! OUT : DLAM  :  VALEUR DE DELTA LAMBDA  ELASTOPLASTIQUE ----------
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: ndi, ndt, i
     real(kind=8) :: zero, deux, trois
     real(kind=8) :: degp(6), dfdegp, derpar(3), dfdxip, dfdsig
@@ -58,21 +58,21 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( zero   =  0.0d0   )
-    parameter       ( deux   =  2.0d0   )
-    parameter       ( trois  =  3.0d0   )
+    parameter(zero=0.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 !
 ! =================================================================
 ! --- CONTRAINTES INTERMEDIARES -----------------------------------
 ! =================================================================
-    sigt(1:ndt) = matmul(de(1:ndt,1:ndt), deps(1:ndt))
+    sigt(1:ndt) = matmul(de(1:ndt, 1:ndt), deps(1:ndt))
 ! =================================================================
     call r8inir(6, 0.d0, sigint, 1)
 !
-    sigv(1:ndt) = matmul(de(1:ndt,1:ndt), depsv(1:ndt))
+    sigv(1:ndt) = matmul(de(1:ndt, 1:ndt), depsv(1:ndt))
 !
     do i = 1, ndt
-        sigint(i) = sigt(i) - sigv(i)
+        sigint(i) = sigt(i)-sigv(i)
     end do
 !
 ! =================================================================
@@ -80,14 +80,14 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 ! =================================================================
     call lkdepp(vinm, nbmat, mater, paraep, derpar)
 !
-    call lkdfdx(nbmat, mater, ucrip, im, sm,&
+    call lkdfdx(nbmat, mater, ucrip, im, sm, &
                 paraep, varpl, derpar, dfdxip)
 ! =================================================================
 ! --- PRODUIT DE DE PAR G -----------------------------------------
 ! =================================================================
 !
     call r8inir(6, 0.d0, degp, 1)
-    degp(1:ndt) = matmul(de(1:ndt,1:ndt), gp(1:ndt))
+    degp(1:ndt) = matmul(de(1:ndt, 1:ndt), gp(1:ndt))
 !
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR DEGP----------------------------------
@@ -102,13 +102,13 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 !
     if (varv .eq. 0) then
 !
-        dlam = (seuilp+dfdsig)/ (dfdegp - dfdxip*sqrt(deux/trois)* devgii)
+        dlam = (seuilp+dfdsig)/(dfdegp-dfdxip*sqrt(deux/trois)*devgii)
     else
 !
-        dlam = (seuilp+dfdsig+dfdxip*dgamv)/ (dfdegp - dfdxip*sqrt( deux/trois)*devgii)
-    endif
+        dlam = (seuilp+dfdsig+dfdxip*dgamv)/(dfdegp-dfdxip*sqrt(deux/trois)*devgii)
+    end if
     if (dlam .lt. zero) then
         dlam = zero
-    endif
+    end if
 ! =================================================================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmapma(mesh, ds_contact, model_ndim, i_zone,&
-                  lexfro, typint, aliase, posmae, node_mast_nume,&
-                  nnomae, elem_mast_indx, elem_mast_nume, ksipr1, ksipr2,&
-                  tau1m, tau2m, iptm, iptc, norm,&
+subroutine mmapma(mesh, ds_contact, model_ndim, i_zone, &
+                  lexfro, typint, aliase, posmae, node_mast_nume, &
+                  nnomae, elem_mast_indx, elem_mast_nume, ksipr1, ksipr2, &
+                  tau1m, tau2m, iptm, iptc, norm, &
                   nommam)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -98,18 +98,18 @@ implicit none
 !
 ! --- POSITION DU NOEUD ESCLAVE SI INTEGRATION AUX NOEUDS
 !
-    call mmpnoe(ds_contact%sdcont_defi, posmae, aliase, typint, iptm,&
+    call mmpnoe(ds_contact%sdcont_defi, posmae, aliase, typint, iptm, &
                 node_slav_indx)
 !
 ! --- NUMERO ABSOLU DU POINT DE CONTACT
 !
-    call mmnumn(mesh, typint, node_mast_nume, nnomae, iptm,&
+    call mmnumn(mesh, typint, node_mast_nume, nnomae, iptm, &
                 node_slav_nume)
 !
 ! --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
-    call mmtanr(mesh, model_ndim, ds_contact, i_zone,&
-                lexfro, node_slav_indx, ksipr1, ksipr2, elem_mast_indx,&
+    call mmtanr(mesh, model_ndim, ds_contact, i_zone, &
+                lexfro, node_slav_indx, ksipr1, ksipr2, elem_mast_indx, &
                 elem_mast_nume, tau1m, tau2m, tau1, tau2)
 !
 ! --- CALCUL DE LA NORMALE
@@ -118,17 +118,17 @@ implicit none
     if (noor .le. r8prem()) then
         call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), nommam)
         call utmess('F', 'CONTACT3_24', sk=nommam)
-    endif
+    end if
 !
 ! --- POIDS ET COORDONNEES DU POINT DE CONTACT
 !
-    call mmgaus(aliase, typint, iptm, ksipc1, ksipc2,&
+    call mmgaus(aliase, typint, iptm, ksipc1, ksipc2, &
                 wpc)
 !
 ! --- SAUVEGARDE APPARIEMENT
 !
-    call mmsauv(ds_contact, i_zone, iptc, elem_mast_nume, ksipr1,&
-                ksipr2, tau1, tau2, node_mast_nume, node_slav_nume,&
+    call mmsauv(ds_contact, i_zone, iptc, elem_mast_nume, ksipr1, &
+                ksipr2, tau1, tau2, node_mast_nume, node_slav_nume, &
                 ksipc1, ksipc2, wpc)
 !
 end subroutine

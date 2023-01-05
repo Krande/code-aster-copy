@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,23 +72,23 @@ function cfdisd(resoco, questz)
 !
     if (questi .eq. 'NDIM') then
         cfdisd = zi(jcoco+1-1)
-    else if (questi.eq.'NEQ') then
+    else if (questi .eq. 'NEQ') then
         cfdisd = zi(jcoco+2-1)
-    else if (questi.eq.'NBLIAC') then
+    else if (questi .eq. 'NBLIAC') then
         cfdisd = zi(jcoco+3-1)
-    else if (questi.eq.'LLF') then
+    else if (questi .eq. 'LLF') then
         cfdisd = zi(jcoco+4-1)
-    else if (questi.eq.'LLF1') then
+    else if (questi .eq. 'LLF1') then
         cfdisd = zi(jcoco+5-1)
-    else if (questi.eq.'LLF2') then
+    else if (questi .eq. 'LLF2') then
         cfdisd = zi(jcoco+6-1)
-    else if (questi.eq.'NESMAX') then
+    else if (questi .eq. 'NESMAX') then
         cfdisd = zi(jcoco+7-1)
-    else if (questi.eq.'NBLIAI') then
+    else if (questi .eq. 'NBLIAI') then
         cfdisd = zi(jcoco+8-1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end function

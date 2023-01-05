@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
-                  mode, nec, ncmp, n, k,&
+subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili, &
+                  mode, nec, ncmp, n, k, &
                   nddloc, pos)
 ! aslint: disable=
     implicit none
@@ -46,7 +46,7 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
     integer :: in, k, mode, n, nbecmx, ncmp
     integer :: nddloc, nec
 !-----------------------------------------------------------------------
-    parameter (nbecmx = 10)
+    parameter(nbecmx=10)
     integer :: ifin(nbecmx)
     integer :: admodl, lcmodl, pos(1)
     integer :: ecodg, ecodl
@@ -69,33 +69,33 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
     do iec = 1, nec-1
         ifin(iec) = 30
     end do
-    ifin(nec) = ncmp - 30*(nec-1)
+    ifin(nec) = ncmp-30*(nec-1)
 !
     in = 0
     nddloc = 0
 !
 !
     do iec = 1, nec
-        ecodg = prno(ili,n,2+iec)
+        ecodg = prno(ili, n, 2+iec)
         if (ecodg .eq. 0) goto 20
 !
-        ecodl = entcod(admodl,lcmodl,nec,mode,k,iec)
+        ecodl = entcod(admodl, lcmodl, nec, mode, k, iec)
 !
         do i = 1, ifin(iec)
             ecodg = ecodg/2
             if (ecodg .eq. 0) goto 20
             ecodl = ecodl/2
-            iecdg = iand(1,ecodg)
+            iecdg = iand(1, ecodg)
             if (iecdg .gt. 0) then
-                in = in + 1
-                iecdl = iand(1,ecodl)
+                in = in+1
+                iecdl = iand(1, ecodl)
                 if (iecdl .gt. 0) then
-                    nddloc = nddloc + 1
+                    nddloc = nddloc+1
                     pos(nddloc) = in
-                endif
-            endif
+                end if
+            end if
         end do
- 20     continue
+20      continue
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,11 +62,11 @@ subroutine caraff(noma, gran, base, cartz)
 !
     if (noma .eq. ' ') then
         call utmess('F', 'UTILITAI_10')
-    endif
+    end if
 !
     if (gran .eq. 'VARI_R') then
         call utmess('F', 'UTILITAI_11')
-    endif
+    end if
 !
     call dismoi('TYPE_SCA', gran, 'GRANDEUR', repk=tsca)
 !
@@ -91,14 +91,14 @@ subroutine caraff(noma, gran, base, cartz)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
 !
     if (gran .eq. 'VAR2_R') then
-        rvid=r8vide()
+        rvid = r8vide()
         nbcmp = ncmpmx
         do k = 1, ncmpmx
             zk8(jncmp-1+k) = zk8(iad-1+k)
             zr(jvalv-1+k) = rvid
         end do
         call nocart(carte, 1, nbcmp)
-    endif
+    end if
 !
 !     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 !     --------------------------------------------
@@ -107,33 +107,33 @@ subroutine caraff(noma, gran, base, cartz)
         call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call utmess('F', 'UTILITAI_12')
-        endif
+        end if
 !
         call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call utmess('F', 'UTILITAI_13')
-        endif
+        end if
 !
         call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
 !
         if (tsca .eq. 'R') then
             call getvr8(motclf, 'VALE', iocc=iocc, nbval=0, nbret=nbvar)
-        else if (tsca.eq.'I') then
+        else if (tsca .eq. 'I') then
             call getvis(motclf, 'VALE_I', iocc=iocc, nbval=0, nbret=nbvar)
-        else if (tsca.eq.'C') then
+        else if (tsca .eq. 'C') then
             call getvc8(motclf, 'VALE_C', iocc=iocc, nbval=0, nbret=nbvar)
-        else if (tsca.eq.'K8') then
+        else if (tsca .eq. 'K8') then
             call getvid(motclf, 'VALE_F', iocc=iocc, nbval=0, nbret=nbvar)
         else
             call utmess('F', 'UTILITAI_14', sk=tsca)
-        endif
+        end if
 !
 !       TEST SUR LES DONNEES INTRODUITES
         if (nbvar .ne. nbcmp) then
             call utmess('F', 'UTILITAI_15')
-        else if (-nbvar.gt.ncmpmx) then
-            vali(1)=-nbvar
-            vali(2)=ncmpmx
+        else if (-nbvar .gt. ncmpmx) then
+            vali(1) = -nbvar
+            vali(2) = ncmpmx
             call utmess('F', 'UTILITAI_8', ni=2, vali=vali)
         else
             nbcmp = -nbcmp
@@ -141,29 +141,29 @@ subroutine caraff(noma, gran, base, cartz)
             call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jncmp))
             if (tsca .eq. 'R') then
                 call getvr8(motclf, 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jvalv))
-            else if (tsca.eq.'I') then
+            else if (tsca .eq. 'I') then
                 call getvis(motclf, 'VALE_I', iocc=iocc, nbval=nbvar, vect=zi(jvalv))
-            else if (tsca.eq.'C') then
+            else if (tsca .eq. 'C') then
                 call getvc8(motclf, 'VALE_C', iocc=iocc, nbval=nbvar, vect=zc(jvalv))
-            else if (tsca.eq.'K8') then
+            else if (tsca .eq. 'K8') then
                 call getvid(motclf, 'VALE_F', iocc=iocc, nbval=nbvar, vect=zk8(jvalv))
-            endif
-        endif
+            end if
+        end if
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, nbcmp)
 !
         else
-            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
+            call reliem(' ', noma, 'NU_MAILLE', motclf, iocc, &
                         2, motcls, typmcl, mesmai, nbmail)
             if (nbmail .eq. 0) goto 30
             call jeveuo(mesmai, 'L', jmail)
-            call nocart(carte, 3, nbcmp, mode='NUM', nma=nbmail,&
+            call nocart(carte, 3, nbcmp, mode='NUM', nma=nbmail, &
                         limanu=zi(jmail))
             call jedetr(mesmai)
-        endif
- 30     continue
+        end if
+30      continue
     end do
 !
     call tecart(carte)

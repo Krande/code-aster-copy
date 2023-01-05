@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,12 +28,12 @@ subroutine jxveri()
 ! ZONE MEMOIRE UTILISEE
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     integer :: isstat
-    common /iconje/  isstat
+    common/iconje/isstat
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
 !-----------------------------------------------------------------------
     integer :: iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadm, ic
     integer :: idm, il, iret, isd, isdc, isf
@@ -42,21 +42,21 @@ subroutine jxveri()
     integer :: jluti, jmarq, jorig, jrnom, jtype, k, n
     integer :: ncla1, ncla2, nmax
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
     integer :: ldyn, lgdyn, nbdyn, nbfree
-    common /idynje/  ldyn , lgdyn , nbdyn , nbfree
+    common/idynje/ldyn, lgdyn, nbdyn, nbfree
     integer :: ivnmax, idiadm
-    parameter    ( ivnmax = 0   , idiadm = 3 )
+    parameter(ivnmax=0, idiadm=3)
 ! ----------------------------------------------------------------------
     character(len=32) :: nom32
     character(len=1) :: cgenr
@@ -68,50 +68,50 @@ subroutine jxveri()
 !
     if (ldyn .ne. 1 .and. ldyn .ne. 2) goto 300
     ncla1 = 1
-    ncla2 = index ( classe , '$' ) - 1
+    ncla2 = index(classe, '$')-1
     if (ncla2 .lt. 0) ncla2 = n
-    do ic = ncla2, ncla1, - 1
+    do ic = ncla2, ncla1, -1
         do j = 1, nremax(ic)
             iadmi = iadm(jiadm(ic)+2*j-1)
-            iadyn = iadm(jiadm(ic)+2*j )
+            iadyn = iadm(jiadm(ic)+2*j)
             if (iadmi .eq. 0 .or. iadyn .eq. 0) goto 205
             cgenr = genr(jgenr(ic)+j)
             nom32 = rnom(jrnom(ic)+j)
 !
-            isdc = iszon(jiszon + iadmi - 1) / isstat
-            ASSERT(isdc.eq.1 .or. isdc.eq.2)
+            isdc = iszon(jiszon+iadmi-1)/isstat
+            ASSERT(isdc .eq. 1 .or. isdc .eq. 2)
             if (cgenr .eq. 'X' .and. isdc .eq. 2) then
                 call jjvern(nom32, 0, iret)
                 call jjallc(ic, j, 'L', ibacol)
-                ixiadm = iszon ( jiszon + ibacol + idiadm )
-                nmax = iszon ( jiszon + ibacol + ivnmax )
+                ixiadm = iszon(jiszon+ibacol+idiadm)
+                nmax = iszon(jiszon+ibacol+ivnmax)
                 if (ixiadm .gt. 0) then
-                    ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
+                    ibiadm = iadm(jiadm(ic)+2*ixiadm-1)
                     do k = 1, nmax
-                        iadmoc = iszon(jiszon + ibiadm - 1 +2*k-1)
-                        iadyoc = iszon(jiszon + ibiadm - 1 +2*k )
+                        iadmoc = iszon(jiszon+ibiadm-1+2*k-1)
+                        iadyoc = iszon(jiszon+ibiadm-1+2*k)
                         if (iadyoc .ne. 0) then
-                            idm = iadmoc - 4
-                            isd = iszon(jiszon + idm + 3) / isstat
-                            ASSERT(isd.eq.1 .or. isd.eq.2)
-                            isf = iszon(jiszon + iszon(jiszon+idm) - 4 ) / isstat
-                            ASSERT(isf.eq.3 .or. isf.eq.4)
-                            il = iszon(jiszon+idm) - 8 - idm
+                            idm = iadmoc-4
+                            isd = iszon(jiszon+idm+3)/isstat
+                            ASSERT(isd .eq. 1 .or. isd .eq. 2)
+                            isf = iszon(jiszon+iszon(jiszon+idm)-4)/isstat
+                            ASSERT(isf .eq. 3 .or. isf .eq. 4)
+                            il = iszon(jiszon+idm)-8-idm
                             ASSERT(il .gt. 0)
-                        endif
+                        end if
                     end do
-                endif
+                end if
                 call jjlide('JEIMPO', nom32(1:24), 2)
                 goto 205
             else
-                idm = iadmi - 4
-                isd = iszon(jiszon + idm + 3) / isstat
-                ASSERT(isd.eq.1 .or. isd.eq.2)
-                isf = iszon(jiszon + iszon(jiszon+idm) - 4) / isstat
-                ASSERT(isf.eq.3 .or. isf.eq.4)
-                il = iszon(jiszon+idm) - 8 - idm
+                idm = iadmi-4
+                isd = iszon(jiszon+idm+3)/isstat
+                ASSERT(isd .eq. 1 .or. isd .eq. 2)
+                isf = iszon(jiszon+iszon(jiszon+idm)-4)/isstat
+                ASSERT(isf .eq. 3 .or. isf .eq. 4)
+                il = iszon(jiszon+idm)-8-idm
                 ASSERT(il .gt. 0)
-            endif
+            end if
 205         continue
         end do
     end do

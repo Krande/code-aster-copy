@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine op0025()
-  implicit none
+    implicit none
 #include "asterfort/utmess.h"
-  call utmess('F', 'FERMETUR_5')
+    call utmess('F', 'FERMETUR_5')
 end subroutine

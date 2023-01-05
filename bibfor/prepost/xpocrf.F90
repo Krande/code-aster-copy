@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,15 +77,15 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     call dismoi('NB_NO_MAILLA', maxfem, 'MAILLAGE', repi=nnntot)
     call dismoi('NB_MA_MAILLA', maxfem, 'MAILLAGE', repi=nbmax)
     call dismoi('DIM_GEOM', mo, 'MODELE', repi=ndim)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+    if (.not. (ndim .eq. 2 .or. ndim .eq. 3)) then
         call utmess('F', 'MODELISA2_6')
-    endif
+    end if
 !
     call jeveuo(maxfem//'.TYPMAIL', 'E', vi=typmail)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntpoi1)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg2)
 !
-    if ((nftot.gt.0) .and. (mftot.gt.0)) then
+    if ((nftot .gt. 0) .and. (mftot .gt. 0)) then
 !
 !       ATTRIBUTION DU NOM DES NOEUDS DU FOND DE FISSURE
         do ino = 1, nftot
@@ -100,7 +100,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 !
         ncompt = 0
         icompt = 0
-        coord2= maxfem//'.COORDO'
+        coord2 = maxfem//'.COORDO'
         call jeveuo(coord2//'.VALE', 'E', vr=vale)
 !
         do ifiss = 1, nfiss
@@ -120,7 +120,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                 else
                     call jeveuo(nomtab//'.0002', 'L', jva1)
                     call jeveuo(nomtab//'.0003', 'L', jva2)
-                endif
+                end if
                 nfond = zi(jva0-1+nfon)
                 call codent(ifiss, 'D0', chn1)
                 do ifon = 1, nfond
@@ -133,13 +133,13 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                     call jenonu(jexnom(maxfem//'.GROUPEMA', nogma), ibid)
                     if (ibid .gt. 0) then
                         call utmess('F', 'ALGELINE3_7', sk=nogma)
-                    endif
+                    end if
                     call jenonu(jexnom(maxfem//'.GROUPENO', nogno), ibid)
                     if (ibid .gt. 0) then
                         call utmess('F', 'SOUSTRUC_37', sk=nogno)
-                    endif
+                    end if
 !
-                    ntail = fondmult(2*ifon)-fondmult(2*ifon-1)+ 1
+                    ntail = fondmult(2*ifon)-fondmult(2*ifon-1)+1
 !
 !           CONSTRUCTION DES GROUPES DE MAILLES DU FOND DE FISSURE
                     call jecroc(jexnom(maxfem//'.GROUPEMA', nogma))
@@ -160,16 +160,16 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                         do ifon2 = 1, ntail
                             ifon1 = ifon2+fondmult(2*ifon-1)-1
                             ino = nnntot-nftot+ifon1+ncompt
-                            vale(1+3*(ino-1)-1+1) = zr(jva1-1+ ifon1)
-                            vale(1+3*(ino-1)-1+2) = zr(jva2-1+ ifon1)
-                            vale(1+3*(ino-1)-1+3) = zr(jva3-1+ ifon1)
+                            vale(1+3*(ino-1)-1+1) = zr(jva1-1+ifon1)
+                            vale(1+3*(ino-1)-1+2) = zr(jva2-1+ifon1)
+                            vale(1+3*(ino-1)-1+3) = zr(jva3-1+ifon1)
                         end do
                     else
                         ifon1 = fondmult(2*ifon-1)
                         ino = nnntot-nftot+ifon1+ncompt
                         vale(1+3*(ino-1)-1+1) = zr(jva1-1+ifon1)
                         vale(1+3*(ino-1)-1+2) = zr(jva2-1+ifon1)
-                    endif
+                    end if
 !
 !           CONNEXITE DES NOEUDS
                     do ifon2 = 1, ntail
@@ -183,31 +183,31 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                                 call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 2)
                                 call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
                                 do j = 1, 2
-                                    zi(jconx-1+j)=ino+j-2
+                                    zi(jconx-1+j) = ino+j-2
                                 end do
-                                icompt = icompt + 1
+                                icompt = icompt+1
                                 zi(iagma-1+ifon2-1) = ima
-                            endif
-                        else if (ntail.eq.1) then
+                            end if
+                        else if (ntail .eq. 1) then
                             ima = nbmax-mftot+icompt+1
                             typmail(ima) = ntpoi1
                             call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 1)
                             call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
                             zi(jconx) = ino
-                            icompt = icompt + 1
+                            icompt = icompt+1
                             zi(iagma-1+ifon2) = ima
-                        endif
+                        end if
                         zi(iagno-1+ifon2) = ino
                     end do
 !
                 end do
-                ncompt = ncompt + nfon
-            endif
+                ncompt = ncompt+nfon
+            end if
 !
         end do
 !
 !
-    endif
+    end if
 !
 !
 end subroutine

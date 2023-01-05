@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine couplagfp3d(a, ngf, na, nc,&
+subroutine couplagfp3d(a, ngf, na, nc, &
                        dpfa_ds, dpfa_dpg, dpg_depsa6, raideur66p)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
@@ -26,24 +26,24 @@ subroutine couplagfp3d(a, ngf, na, nc,&
     implicit none
 
     integer, intent(in) :: ngf, na, nc
-    real(kind=8), intent(inout) :: a(ngf,ngf+1)
+    real(kind=8), intent(inout) :: a(ngf, ngf+1)
     real(kind=8), intent(in) :: dpfa_ds(nc, 6), dpfa_dpg(nc)
     real(kind=8), intent(in) :: dpg_depsa6(6), raideur66p(6, 6)
 !
     integer :: i, j, k
 !
-    do i=1,na
-        do j=1,6
+    do i = 1, na
+        do j = 1, 6
 !           couplage kelvin -> plasticite
-            a(12+i,j)=0.d0
-            do k=1,6
-                a(12+i,j)=a(12+i,j)-dpfa_ds(i,k)*raideur66p(k,j)
+            a(12+i, j) = 0.d0
+            do k = 1, 6
+                a(12+i, j) = a(12+i, j)-dpfa_ds(i, k)*raideur66p(k, j)
             end do
 !           ici les deformation anelastique sont du fluage donc
 !           on prend dpg_depsa6 du cas general
-            a(12+i,j)=a(12+i,j)+dpfa_dpg(i)*dpg_depsa6(j)
+            a(12+i, j) = a(12+i, j)+dpfa_dpg(i)*dpg_depsa6(j)
 !           couplage maxwell -> plasticite
-            a(12+i,j+6)=a(12+i,j)
+            a(12+i, j+6) = a(12+i, j)
         end do
     end do
 

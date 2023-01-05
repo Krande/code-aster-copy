@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,12 +35,12 @@ function dpolyn(n, coef, x)
 !
 !     INITIALISATION DE LA VARIABLE MAIS AUSSI VALEUR DE
 !     LA DERIVEE POUR UN POLYNOME DE DEGRE 0
-    dpolyn=0.d0
+    dpolyn = 0.d0
 !
     if (n .gt. 0) then
         do i = 1, n
-            dpolyn = x*dpolyn + (n-i-1)*coef(n-i)
+            dpolyn = x*dpolyn+(n-i-1)*coef(n-i)
         end do
-    endif
+    end if
 !
 end function

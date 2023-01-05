@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmhoff(ndim, imate, inst, epsm, deps,&
+subroutine nmhoff(ndim, imate, inst, epsm, deps, &
                   option, sigp, dsidep)
 !
     implicit none
@@ -63,30 +63,30 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
     ndimsi = 2*ndim
     rac23 = sqrt(2.d0/3.d0)
 !
-    resi = option.eq.'RAPH_MECA' .or. option.eq.'FULL_MECA'
-    rigi = option.eq.'RIGI_MECA_TANG' .or. option.eq.'FULL_MECA'
-    elas = option.eq.'RIGI_MECA_ELAS'
+    resi = option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA'
+    rigi = option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'FULL_MECA'
+    elas = option .eq. 'RIGI_MECA_ELAS'
 !
     call dcopy(ndimsi, epsm, 1, eps, 1)
-    if (resi) call daxpy(ndimsi, 1.d0, deps, 1, eps,&
+    if (resi) call daxpy(ndimsi, 1.d0, deps, 1, eps, &
                          1)
-    epsno = dnrm2(ndimsi, eps,1)
+    epsno = dnrm2(ndimsi, eps, 1)
 !
-    line = inst.eq.1 .or. epsno.eq.0.d0
+    line = inst .eq. 1 .or. epsno .eq. 0.d0
 !
 !
 ! -- CARACTERISTIQUES MATERIAU (SY) ET RIGIDITE
 !
-    call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ',&
-                [0.d0], 1, 'SY', sy, cod,&
+    call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ', &
+                [0.d0], 1, 'SY', sy, cod, &
                 2)
-    m = 1 + 10**(1-inst)
-    am = sy(1) * rac23**m
+    m = 1+10**(1-inst)
+    am = sy(1)*rac23**m
     if (line) then
         coef = am
     else
-        coef = am * epsno**(m-2)
-    endif
+        coef = am*epsno**(m-2)
+    end if
 !
 !
 ! -- CALCUL DE SIGP
@@ -95,7 +95,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
         do k = 1, ndimsi
             sigp(k) = coef*eps(k)
         end do
-    endif
+    end if
 !
 !
 ! -- CALCUL DE DSIDEP(6,6)
@@ -105,18 +105,18 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
         call r8inir(36, 0.d0, dsidep, 1)
 !
         do k = 1, ndimsi
-            dsidep(k,k) = coef
+            dsidep(k, k) = coef
         end do
 !
         if (rigi .and. .not. line) then
-            coef = coef * (m-2) / epsno**2
+            coef = coef*(m-2)/epsno**2
             do k = 1, ndimsi
                 do l = 1, ndimsi
-                    dsidep(k,l) = dsidep(k,l) + coef*eps(k)*eps(l)
+                    dsidep(k, l) = dsidep(k, l)+coef*eps(k)*eps(l)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
     call matfpe(1)
 !

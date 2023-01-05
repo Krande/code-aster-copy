@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,23 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irccmp(errorType, quantityName,&
-                  cmpCataNb, cmpCataName ,&
-                  cmpUserNb, cmpUserName ,&
-                  cmpNb    , cmpIndx)
+subroutine irccmp(errorType, quantityName, &
+                  cmpCataNb, cmpCataName, &
+                  cmpUserNb, cmpUserName, &
+                  cmpNb, cmpIndx)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/utmess.h"
 !
-character(len=1), intent(in) :: errorType
-character(len=8), intent(in):: quantityName
-integer, intent(in) :: cmpCataNb
-character(len=8), pointer :: cmpCataName(:)
-integer, intent(in) :: cmpUserNb
-character(len=8), pointer :: cmpUserName(:)
-integer, intent(out) :: cmpNb
-integer, pointer :: cmpIndx(:)
+    character(len=1), intent(in) :: errorType
+    character(len=8), intent(in):: quantityName
+    integer, intent(in) :: cmpCataNb
+    character(len=8), pointer :: cmpCataName(:)
+    integer, intent(in) :: cmpUserNb
+    character(len=8), pointer :: cmpUserName(:)
+    integer, intent(out) :: cmpNb
+    integer, pointer :: cmpIndx(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,15 +61,15 @@ integer, pointer :: cmpIndx(:)
     do iCmpUser = 1, cmpUserNb
         do iCmpCata = 1, cmpCataNb
             if (cmpUserName(iCmpUser) .eq. cmpCataName(iCmpCata)) then
-                cmpNb          = cmpNb + 1
+                cmpNb = cmpNb+1
                 cmpIndx(cmpNb) = iCmpCata
                 goto 10
-            endif
+            end if
         end do
         if (errorType .ne. ' ') then
-            call utmess(errorType, 'RESULT3_25',&
+            call utmess(errorType, 'RESULT3_25', &
                         nk=2, valk=[cmpUserName(iCmpUser), quantityName])
-        endif
+        end if
 10      continue
     end do
 !

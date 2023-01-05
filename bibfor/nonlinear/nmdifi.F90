@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nmdifi(keywf, list_inst, tole, nb_inst, nume_end)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -60,12 +60,12 @@ implicit none
 !
 ! - Acces to list of times
 !
-    call jeveuo(list_inst, 'L', vr = v_list_inst)
+    call jeveuo(list_inst, 'L', vr=v_list_inst)
 !
 ! - Get keywords
 !
     call getvis(keywf, 'NUME_INST_FIN', iocc=1, scal=nume_end, nbret=n1)
-    call getvr8(keywf, 'INST_FIN'     , iocc=1, scal=inst    , nbret=n2)
+    call getvr8(keywf, 'INST_FIN', iocc=1, scal=inst, nbret=n2)
 !
 ! - No NUME_INST_FIN/INST_FIN
 !
@@ -76,13 +76,13 @@ implicit none
 !
     else if (n1 .eq. 0) then
         call utacli(inst, v_list_inst, nb_inst, tole, nume_end)
-    endif
+    end if
 !
 ! - Checks
 !
     if (nume_end .lt. 0 .or. nume_end .gt. (nb_inst-1)) then
         call utmess('F', 'DISCRETISATION_94')
-        nume_end = nb_inst - 1
-    endif
+        nume_end = nb_inst-1
+    end if
 !
 end subroutine

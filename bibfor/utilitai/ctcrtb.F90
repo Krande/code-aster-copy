@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
-                  toucmp, nbcmp, nbval, nkcmp, nkvari,&
+subroutine ctcrtb(nomtb, tych, resu, nkcha, typac, &
+                  toucmp, nbcmp, nbval, nkcmp, nkvari, &
                   ndim)
     implicit none
 #include "asterf_types.h"
@@ -69,105 +69,105 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    ASSERT(tych(1:2).eq.'EL'.or.tych.eq.'CART'.or.tych.eq.'NOEU')
+    ASSERT(tych(1:2) .eq. 'EL' .or. tych .eq. 'CART' .or. tych .eq. 'NOEU')
 !
 ! --- 0. INITIALISATION
 !     -----------------
-    chamns='&&CTCRTB.CHAM_NO_S'
-    chames='&&CTCRTB.CHAM_EL_S'
+    chamns = '&&CTCRTB.CHAM_NO_S'
+    chames = '&&CTCRTB.CHAM_EL_S'
     call jeveuo(nkcmp, 'L', jcmp)
     call jeexin(nkvari, iexi)
     if (iexi .gt. 0) then
         call jeveuo(nkvari, 'L', jvari)
     else
-        jvari=0
-    endif
+        jvari = 0
+    end if
 !
 !
 !     ----------------------------------------------------
 ! --- 1. DETERMINATION DU NOMBRE DE PARAMETRES DE LA TABLE
 !     ----------------------------------------------------
-    kk=0
+    kk = 0
     if (resu .eq. ' ') then
-        kk=kk+1
+        kk = kk+1
     else
-        kk=kk+2
-    endif
+        kk = kk+2
+    end if
 !
     if (resu .ne. ' ') then
         if (typac .ne. 'ORDRE') then
-            kk=kk+1
-        endif
-        kk=kk+1
-    endif
+            kk = kk+1
+        end if
+        kk = kk+1
+    end if
 !
     if (tych .eq. 'NOEU') then
 !        -- NOEUD
-        kk=kk+1
-    endif
+        kk = kk+1
+    end if
 !
     if (tych .eq. 'ELNO') then
 !        -- MAILLE + NOEUD + SOUS_POINT
-        kk=kk+3
-    endif
+        kk = kk+3
+    end if
 !
     if (tych .eq. 'ELGA') then
 !        -- MAILLE + POINT + SOUS_POINT
-        kk=kk+3
-    endif
+        kk = kk+3
+    end if
 !
     if (tych .eq. 'ELEM') then
 !        -- MAILLE + SOUS_POINT
-        kk=kk+2
-    endif
+        kk = kk+2
+    end if
 !
     if (tych .eq. 'CART') then
 !        -- MAILLE
-        kk=kk+1
-    endif
+        kk = kk+1
+    end if
 !
 !     -- COOR_X, ...
-    kk=kk+1
+    kk = kk+1
     if (ndim .ge. 2) then
-        kk=kk+1
-    endif
+        kk = kk+1
+    end if
     if (ndim .eq. 3) then
-        kk=kk+1
-    endif
+        kk = kk+1
+    end if
 !
 !     -- CMPS :
-    n=nbcmp
+    n = nbcmp
     call jeveuo(nkcha, 'L', jkcha)
 !     -- JE NE COMPRENDS PAS LA BOUCLE I=1,NBVAL (J. PELLET)
     do i = 1, nbval
-        if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
+        if (zk24(jkcha+i-1) (1:18) .ne. '&&CHAMP_INEXISTANT') then
             if (toucmp) then
                 if (tych .eq. 'NOEU') then
                     call cnocns(zk24(jkcha+i-1), 'V', chamns)
                     call jeveuo(chamns//'.CNSD', 'L', vi=cnsd)
                     call jeveuo(chamns//'.CNSC', 'L', vk8=cnsc)
-                    n=cnsd(2)
-                else if (tych(1:2).eq.'EL') then
+                    n = cnsd(2)
+                else if (tych(1:2) .eq. 'EL') then
                     call celces(zk24(jkcha+i-1), 'V', chames)
                     call jeveuo(chames//'.CESD', 'L', jcesd)
                     call jeveuo(chames//'.CESC', 'L', jcesc)
-                    n=zi(jcesd+1)
-                else if (tych.eq.'CART') then
-                    call carces(zk24(jkcha+i-1), 'ELEM', ' ', 'V', chames,&
+                    n = zi(jcesd+1)
+                else if (tych .eq. 'CART') then
+                    call carces(zk24(jkcha+i-1), 'ELEM', ' ', 'V', chames, &
                                 ' ', iret)
-                    ASSERT(iret.eq.0)
+                    ASSERT(iret .eq. 0)
                     call jeveuo(chames//'.CESD', 'L', jcesd)
                     call jeveuo(chames//'.CESC', 'L', jcesc)
-                    n=zi(jcesd+1)
+                    n = zi(jcesd+1)
                 else
                     ASSERT(.false.)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
-    kk=kk+n
+    kk = kk+n
 !
-    nbpara=kk
+    nbpara = kk
 !
 !
 !    ------------------------------------------------------------------
@@ -177,102 +177,102 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     AS_ALLOCATE(vk16=table_parak, size=nbpara)
     AS_ALLOCATE(vk8=table_typek, size=nbpara)
 !
-    kk=0
+    kk = 0
     if (resu .eq. ' ') then
-        table_parak(kk+1)='CHAM_GD'
-        table_typek(kk+1)='K16'
-        kk=kk+1
+        table_parak(kk+1) = 'CHAM_GD'
+        table_typek(kk+1) = 'K16'
+        kk = kk+1
     else
-        table_parak(kk+1)='RESULTAT'
-        table_typek(kk+1)='K16'
-        kk=kk+1
-        table_parak(kk+1)='NOM_CHAM'
-        table_typek(kk+1)='K16'
-        kk=kk+1
-    endif
+        table_parak(kk+1) = 'RESULTAT'
+        table_typek(kk+1) = 'K16'
+        kk = kk+1
+        table_parak(kk+1) = 'NOM_CHAM'
+        table_typek(kk+1) = 'K16'
+        kk = kk+1
+    end if
 !
     if (resu .ne. ' ') then
         if (typac .ne. 'ORDRE') then
-            table_parak(kk+1)=typac
-            table_typek(kk+1)='R'
-            if (typac .eq. 'MODE') table_typek(kk+1)='I'
-            kk=kk+1
-        endif
-        table_parak(kk+1)='NUME_ORDRE'
-        table_typek(kk+1)='I'
-        kk=kk+1
-    endif
+            table_parak(kk+1) = typac
+            table_typek(kk+1) = 'R'
+            if (typac .eq. 'MODE') table_typek(kk+1) = 'I'
+            kk = kk+1
+        end if
+        table_parak(kk+1) = 'NUME_ORDRE'
+        table_typek(kk+1) = 'I'
+        kk = kk+1
+    end if
 !
     if (tych(1:2) .eq. 'EL' .or. tych .eq. 'CART') then
-        table_parak(kk+1)='MAILLE'
-        table_typek(kk+1)='K8'
-        kk=kk+1
-    endif
+        table_parak(kk+1) = 'MAILLE'
+        table_typek(kk+1) = 'K8'
+        kk = kk+1
+    end if
     if (tych .eq. 'ELNO' .or. tych .eq. 'NOEU') then
-        table_parak(kk+1)='NOEUD'
-        table_typek(kk+1)='K8'
-        kk=kk+1
-    else if (tych.eq.'ELGA') then
-        table_parak(kk+1)='POINT'
-        table_typek(kk+1)='I'
-        kk=kk+1
-    endif
+        table_parak(kk+1) = 'NOEUD'
+        table_typek(kk+1) = 'K8'
+        kk = kk+1
+    else if (tych .eq. 'ELGA') then
+        table_parak(kk+1) = 'POINT'
+        table_typek(kk+1) = 'I'
+        kk = kk+1
+    end if
     if (tych(1:2) .eq. 'EL') then
 !        -- TOUS LES CHAMPS ELXX PEUVENT AVOIR DES SOUS_POINT :
-        table_parak(kk+1)='SOUS_POINT'
-        table_typek(kk+1)='I'
-        kk=kk+1
-    endif
+        table_parak(kk+1) = 'SOUS_POINT'
+        table_typek(kk+1) = 'I'
+        kk = kk+1
+    end if
 !
-    table_parak(kk+1)='COOR_X'
-    table_typek(kk+1)='R'
-    kk=kk+1
+    table_parak(kk+1) = 'COOR_X'
+    table_typek(kk+1) = 'R'
+    kk = kk+1
     if (ndim .ge. 2) then
-        table_parak(kk+1)='COOR_Y'
-        table_typek(kk+1)='R'
-        kk=kk+1
-    endif
+        table_parak(kk+1) = 'COOR_Y'
+        table_typek(kk+1) = 'R'
+        kk = kk+1
+    end if
     if (ndim .eq. 3) then
-        table_parak(kk+1)='COOR_Z'
-        table_typek(kk+1)='R'
-        kk=kk+1
-    endif
+        table_parak(kk+1) = 'COOR_Z'
+        table_typek(kk+1) = 'R'
+        kk = kk+1
+    end if
     if (toucmp) then
         if (tych .eq. 'NOEU') then
             do j = 1, n
-                table_parak(kk+1)=cnsc(j)
-                table_typek(kk+1)='R'
-                kk=kk+1
+                table_parak(kk+1) = cnsc(j)
+                table_typek(kk+1) = 'R'
+                kk = kk+1
             end do
-        else if (tych(1:2).eq.'EL'.or.tych.eq.'CART') then
+        else if (tych(1:2) .eq. 'EL' .or. tych .eq. 'CART') then
             do j = 1, n
-                table_parak(kk+1)=zk8(jcesc+j-1)
-                table_typek(kk+1)='R'
+                table_parak(kk+1) = zk8(jcesc+j-1)
+                table_typek(kk+1) = 'R'
 !
-                kk=kk+1
+                kk = kk+1
             end do
-        endif
+        end if
     else
         do j = 1, n
             if (jvari .eq. 0) then
                 nomcmp = zk8(jcmp+j-1)
             else
                 nomcmp = zk16(jvari+j-1)
-            endif
+            end if
             if (indk16(table_parak, nomcmp, 1, kk) .eq. 0) then
                 table_parak(kk+1) = nomcmp
                 table_typek(kk+1) = 'R'
-                kk=kk+1
+                kk = kk+1
             else
-                nbpara = nbpara - 1
-            endif
+                nbpara = nbpara-1
+            end if
         end do
-    endif
+    end if
 !
 !    ------------------------------------------------------------------
 ! --- 3. CREATION DE LA TABLE
 !     ------------------------------------------------------------------
-    call tbcrsv(nomtb, 'G', nbpara, table_parak, table_typek,&
+    call tbcrsv(nomtb, 'G', nbpara, table_parak, table_typek, &
                 0)
 !
 !

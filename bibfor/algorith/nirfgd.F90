@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nirfgd(ndim, nno1, nno2, nno3, npg,&
-                  iw, vff1, vff2, vff3, idff1,&
-                  vu, vg, vp, typmod, geomi,&
+subroutine nirfgd(ndim, nno1, nno2, nno3, npg, &
+                  iw, vff1, vff2, vff3, idff1, &
+                  vu, vg, vp, typmod, geomi, &
                   sigref, epsref, vect)
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
@@ -70,15 +70,15 @@ subroutine nirfgd(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: r, w, tau(6)
     real(kind=8) :: t1, dff1(nno1, 4)
 !
-    data         vij  / 1, 4, 5,&
+    data vij/1, 4, 5,&
      &                  4, 2, 6,&
-     &                  5, 6, 3 /
+     &                  5, 6, 3/
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
 !
-    axi = typmod(1).eq.'AXIS'
-    nddl = nno1*ndim + nno2 + nno3
+    axi = typmod(1) .eq. 'AXIS'
+    nddl = nno1*ndim+nno2+nno3
     ndu = ndim
     if (axi) ndu = 3
     ndimsi = 2*ndu
@@ -96,12 +96,12 @@ subroutine nirfgd(ndim, nno1, nno2, nno3, npg,&
             tau(kl) = sigref
             do na = 1, nno1
                 do ia = 1, ndu
-                    kk = vu(ia,na)
+                    kk = vu(ia, na)
                     t1 = 0.d0
                     do ja = 1, ndu
-                        t1 = t1 + tau(vij(ia,ja))*dff1(na,lij(ia,ja))
+                        t1 = t1+tau(vij(ia, ja))*dff1(na, lij(ia, ja))
                     end do
-                    vect(kk) = vect(kk) + abs(w*t1)/ndimsi
+                    vect(kk) = vect(kk)+abs(w*t1)/ndimsi
                 end do
             end do
         end do
@@ -109,15 +109,15 @@ subroutine nirfgd(ndim, nno1, nno2, nno3, npg,&
 ! - VECTEUR FINT:G
         do ra = 1, nno2
             kk = vg(ra)
-            t1 = vff2(ra,g)*sigref
-            vect(kk) = vect(kk) + abs(w*t1)
+            t1 = vff2(ra, g)*sigref
+            vect(kk) = vect(kk)+abs(w*t1)
         end do
 !
 ! - VECTEUR FINT:P
         do sa = 1, nno3
             kk = vp(sa)
-            t1 = vff3(sa,g)*epsref
-            vect(kk) = vect(kk) + abs(w*t1)
+            t1 = vff3(sa, g)*epsref
+            vect(kk) = vect(kk)+abs(w*t1)
         end do
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
-                  nstrs, isph, tdt, hini, hfin,&
+subroutine lcummd(vari, nvari, cmat, nmat, sigm, &
+                  nstrs, isph, tdt, hini, hfin, &
                   an, bn, cn, cfps, cfpd)
 !
 !
@@ -85,10 +85,10 @@ subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
         afp(i) = 0.d0
 !        DO 12 J=1,NSTRS
         do j = 1, 6
-            bfp(i,j) = 0d0
-            bfd(i,j) = 0d0
-            cfp(i,j) = 0d0
-            cfd(i,j) = 0d0
+            bfp(i, j) = 0d0
+            bfd(i, j) = 0d0
+            cfp(i, j) = 0d0
+            cfd(i, j) = 0d0
         end do
     end do
 !
@@ -103,27 +103,27 @@ subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
 !     $              AFD,BFD,CFD)
 !      ENDIF
 ! --> REBRANCHE le 25 aout 2004 - ylp.
-    if ((ides.eq.1) .or. (ides.eq.2)) then
-        call lcumfb(sigm, nstrs, vari, nvari, cmat,&
-                    nmat, tdt, hini, hfin, afd,&
+    if ((ides .eq. 1) .or. (ides .eq. 2)) then
+        call lcumfb(sigm, nstrs, vari, nvari, cmat, &
+                    nmat, tdt, hini, hfin, afd, &
                     bfd, cfd)
-    endif
+    end if
 !
 !  FLUAGE PROPRE
 !
     if (ifpo .ne. 0) then
-        call lcumsd(vari, nvari, cmat, nmat, nstrs,&
-                    isph, tdt, hini, hfin, afp,&
+        call lcumsd(vari, nvari, cmat, nmat, nstrs, &
+                    isph, tdt, hini, hfin, afp, &
                     bfp, cfp, cfps, cfpd)
-    endif
+    end if
 !
 !  CONSTRUCTION DE LA MATRICE DE FLUAGE TOTAL : EQUATION (3.9-2)
 !
     do i = 1, nstrs
-        an(i) = afd(i) + afp(i)
+        an(i) = afd(i)+afp(i)
         do j = 1, nstrs
-            bn(i,j) = bfd(i,j) + bfp(i,j)
-            cn(i,j) = cfd(i,j) + cfp(i,j)
+            bn(i, j) = bfd(i, j)+bfp(i, j)
+            cn(i, j) = cfd(i, j)+cfp(i, j)
         end do
     end do
 !

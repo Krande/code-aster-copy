@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,48 +35,48 @@ subroutine te0546(option, nomte)
 !.......................................................................
 !
 !
-    call tecach('OOO', 'PSIEFR', 'L', iret, nval=8,&
+    call tecach('OOO', 'PSIEFR', 'L', iret, nval=8, &
                 itab=itab1)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
     if (option .eq. 'SIGM_ELGA') then
-        call tecach('OOO', 'PSIGMR', 'E', iret, nval=8,&
+        call tecach('OOO', 'PSIGMR', 'E', iret, nval=8, &
                     itab=itab2)
-    else if (option.eq.'EFGE_ELGA') then
-        call tecach('OOO', 'PEFGER', 'E', iret, nval=8,&
+    else if (option .eq. 'EFGE_ELGA') then
+        call tecach('OOO', 'PEFGER', 'E', iret, nval=8, &
                     itab=itab2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !     -- VERIFICATIONS DE COHERENCE :
 !     --------------------------------
-    nbpg=itab1(3)
-    ASSERT(nbpg.ge.1)
-    ASSERT(nbpg.eq.itab2(3))
+    nbpg = itab1(3)
+    ASSERT(nbpg .ge. 1)
+    ASSERT(nbpg .eq. itab2(3))
 !
-    nbsp=itab1(7)
-    ASSERT(nbsp.ge.1)
-    ASSERT(nbsp.eq.itab2(7))
+    nbsp = itab1(7)
+    ASSERT(nbsp .ge. 1)
+    ASSERT(nbsp .eq. itab2(7))
 !
-    n1=itab1(2)
-    nbcmp=n1/nbpg
-    ASSERT(nbcmp*nbpg.eq.n1)
-    ASSERT(nbcmp*nbpg.eq.itab2(2))
+    n1 = itab1(2)
+    nbcmp = n1/nbpg
+    ASSERT(nbcmp*nbpg .eq. n1)
+    ASSERT(nbcmp*nbpg .eq. itab2(2))
 !
-    ASSERT(itab1(6).le.1)
-    ASSERT(itab2(6).le.1)
+    ASSERT(itab1(6) .le. 1)
+    ASSERT(itab2(6) .le. 1)
 !
 !     -- RECOPIE DES VALEURS :
 !     --------------------------
-    jin=itab1(1)
-    jout=itab2(1)
-    ico=0
+    jin = itab1(1)
+    jout = itab2(1)
+    ico = 0
     do kpg = 1, nbpg
         do ksp = 1, nbsp
             do kcmp = 1, nbcmp
-                ico=ico+1
-                zr(jout-1+ico)=zr(jin-1+ico)
+                ico = ico+1
+                zr(jout-1+ico) = zr(jin-1+ico)
             end do
         end do
     end do

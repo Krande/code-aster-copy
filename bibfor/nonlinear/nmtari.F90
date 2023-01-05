@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmtari(type, ndimsi, mat, sigel, vim,&
+subroutine nmtari(type, ndimsi, mat, sigel, vim, &
                   epm, dp, sp, xi, dsidep)
 !
 !
@@ -48,17 +48,17 @@ subroutine nmtari(type, ndimsi, mat, sigel, vim,&
 !
 !    MATRICE ELASTIQUE
 !
-    dsidep(:,:) = 0.d0
+    dsidep(:, :) = 0.d0
 !
-    tmp = (mat(1) - mat(2)) / 3.d0
+    tmp = (mat(1)-mat(2))/3.d0
     do i = 1, 3
         do j = 1, 3
-            dsidep(i,j) = tmp
+            dsidep(i, j) = tmp
         end do
     end do
 !
     do i = 1, ndimsi
-        dsidep(i,i) = dsidep(i,i) + mat(2)
+        dsidep(i, i) = dsidep(i, i)+mat(2)
     end do
 !
 !
@@ -67,17 +67,17 @@ subroutine nmtari(type, ndimsi, mat, sigel, vim,&
     if (type .ge. 2) then
         if (type .eq. 2) mode = 5
         if (type .eq. 3) mode = 6
-        call nmtacr(mode, ndimsi, mat, sigel, vim,&
-                    epm, dp, sp, xi, f,&
-                    g, fds, gds, fdp, gdp,&
+        call nmtacr(mode, ndimsi, mat, sigel, vim, &
+                    epm, dp, sp, xi, f, &
+                    g, fds, gds, fdp, gdp, &
                     fdx, gdx, dpmax, sig, tang)
         do i = 1, ndimsi
             do j = 1, ndimsi
-                dsidep(i,j)=dsidep(i,j)-mat(2)**2*(tang(i,j)+tang(j,i)&
-                )/2.d0
+                dsidep(i, j) = dsidep(i, j)-mat(2)**2*(tang(i, j)+tang(j, i) &
+                                                       )/2.d0
             end do
         end do
-    endif
+    end if
 !
 !
 end subroutine

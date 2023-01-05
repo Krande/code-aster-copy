@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -111,11 +111,11 @@ subroutine op0188()
 !
     if (typdis .eq. 'FISSURE') then
         mafond = fiss//'.MAILFISS.MAFOND'
-    else if (typdis.eq.'INTERFACE') then
+    else if (typdis .eq. 'INTERFACE') then
         mafond = fiss//'.MAILFISS.HEAV'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jeexin(mafond, iret)
     if (iret .eq. 0) then
@@ -123,10 +123,10 @@ subroutine op0188()
     else
         call jeveuo(mafond, 'L', jmafon)
         call jelira(mafond, 'LONMAX', nmafon)
-    endif
+    end if
 !
     do i = 1, nmafon
-        zi(jma-1+i)=zi(jmafon-1+i)
+        zi(jma-1+i) = zi(jmafon-1+i)
     end do
 !
 !     ------------------------------------------------------------------
@@ -146,20 +146,20 @@ subroutine op0188()
     if (typdis .eq. 'FISSURE') then
         call cnocns(fiss//'.LTNO', 'V', cnslt)
         call jeveuo(cnslt//'.CNSV', 'L', vr=lst)
-    endif
+    end if
 !
 !     REMPLISSAGE DE LA LISTE DES NOEUDS QUI SONT LA ZONE
-    nbnozo=0
+    nbnozo = 0
     do ino = 1, nbno
         if (typdis .eq. 'FISSURE') then
-            dist=sqrt(lst(ino)**2+lsn(ino)**2)
-        else if (typdis.eq.'INTERFACE') then
-            dist=sqrt(lsn(ino)**2)
-        endif
+            dist = sqrt(lst(ino)**2+lsn(ino)**2)
+        else if (typdis .eq. 'INTERFACE') then
+            dist = sqrt(lsn(ino)**2)
+        end if
         if (dist .le. rayon) then
-            nbnozo = nbnozo + 1
+            nbnozo = nbnozo+1
             zi(jnoeu-1+nbnozo) = ino
-        endif
+        end if
     end do
 !
 !     EMULATION DE DEFI_GROUP/CREA_GROUP_MA/OPTION='APPUI'
@@ -167,19 +167,19 @@ subroutine op0188()
     call wkvect(lismaz, 'V V I', nbma, idlima)
 !
 !     CONNECTIVITE INVERSE
-    cnxinv='&&OP0188.CNXINV'
+    cnxinv = '&&OP0188.CNXINV'
     call jeexin(cnxinv, iret)
     if (iret .eq. 0) then
 !       ON AIMERAIT LA STOCKER DANS LA BASE GLOBALE AU CAS OU ON EN AIT
 !       ENCORE BESOIN (POUR LA FISSURE SUIVANTE) MAIS ON A PAS LE DROIT
         call cncinv(ma, [ibid], 0, 'V', cnxinv)
-    endif
+    end if
     call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', adrvlc)
     call jeveuo(jexnum(cnxinv, 1), 'L', acncin)
 !
     do i = 1, nbnozo
         nuno = zi(jnoeu+i-1)
-        nbmac = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
+        nbmac = zi(adrvlc+nuno+1-1)-zi(adrvlc+nuno-1)
         jadr = zi(adrvlc+nuno-1)
         do j = 1, nbmac
             numa = zi(acncin+jadr-1+j-1)
@@ -191,13 +191,13 @@ subroutine op0188()
     nbmazo = 0
     do i = 1, nbma
         if (zi(idlima+i-1) .eq. 1) then
-            nbmazo = nbmazo + 1
-            zi(jma-1+nmafon+nbmazo)=i
-        endif
+            nbmazo = nbmazo+1
+            zi(jma-1+nmafon+nbmazo) = i
+        end if
     end do
 !
 !     NB DE MAILLES DANS LA LISTE
-    nbmali = nmafon + nbmazo
+    nbmali = nmafon+nbmazo
 !
 !     -------------------------------------------------------------
 !     4) STOCKAGE DANS LA CARTE ET TRANSFORMATION EN CHAM_ELEM
@@ -206,7 +206,7 @@ subroutine op0188()
 !     STOCKAGE DANS LA CARTE
     vncmp(1) = 'X1'
     valv(1) = 1.d0
-    call nocart(carte, 3, ncmp, mode='NUM', nma=nbmali,&
+    call nocart(carte, 3, ncmp, mode='NUM', nma=nbmali, &
                 limanu=zi(jma))
     call tecart(carte)
 !

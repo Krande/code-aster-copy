@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,13 @@ subroutine xchkgp(model)
 !     ------------------------------------------------------------------
 !
     integer :: nbflmx
-    parameter (nbflmx=20)
+    parameter(nbflmx=20)
     character(len=8) :: lifapg(nbflmx)
     integer :: linbpg(nbflmx)
 !
     integer :: iopt, nute, igr, nbgrel
     integer :: imolo, jmolo, nec, kfpg, kfam
-    integer :: igd,  nblfpg,  nbfam, nel, jliel, jfpgl, jcesdlon, jcesllon
+    integer :: igd, nblfpg, nbfam, nel, jliel, jfpgl, jcesdlon, jcesllon
     integer :: ndime, irese, nspg, nse, npg, npgfam
     integer :: ima, iadlon, iel
     integer :: k, nuflpg, nufgpg, vali(2)
@@ -77,7 +77,7 @@ subroutine xchkgp(model)
     integer, pointer :: tmfpg(:) => null()
     integer, pointer :: cesvlon(:) => null()
 !
-    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
+    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -96,16 +96,16 @@ subroutine xchkgp(model)
 !
 !   définition de l'option et du paramètre permettant d'identifier
 !   un champ porté par la famille XFEM de l'élément
-    option='TOU_INI_ELGA'
-    param='PSIEF_R'
-    if (pheno.eq.'THERMIQUE') then
-       option='TEMP_ELGA'
-       param='PTEMP_R'
-    endif
+    option = 'TOU_INI_ELGA'
+    param = 'PSIEF_R'
+    if (pheno .eq. 'THERMIQUE') then
+        option = 'TEMP_ELGA'
+        param = 'PTEMP_R'
+    end if
 !
 ! -- construction d'un champ simple pour parcourir PLONCHA
-    chlong=model//'.TOPOSE.LON'
-    chslon='&&XNPGSE.CHSLON'
+    chlong = model//'.TOPOSE.LON'
+    chslon = '&&XNPGSE.CHSLON'
     call celces(chlong, 'V', chslon)
 !
     call jeveuo(chslon//'.CESD', 'L', jcesdlon)
@@ -114,12 +114,12 @@ subroutine xchkgp(model)
 !
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
     do igr = 1, nbgrel
-        nel = nbelem(ligrel,igr)
+        nel = nbelem(ligrel, igr)
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-        nute = typele(ligrel,igr)
+        nute = typele(ligrel, igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
 !
-        imolo = modat2(iopt,nute,param)
+        imolo = modat2(iopt, nute, param)
         if (imolo .eq. 0) cycle
 !
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
@@ -132,49 +132,49 @@ subroutine xchkgp(model)
         if (kfpg .lt. 0) then
 !          FAMILLE "LISTE" :
             call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
-            nbfam=nbfam-1
+            nbfam = nbfam-1
             call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
-            elrefe=zk8(jfpgl-1+nbfam+1)
+            elrefe = zk8(jfpgl-1+nbfam+1)
             do k = 1, nbfam
                 noflpg = nomte//elrefe//zk8(jfpgl-1+k)
-                nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
+                nuflpg = indk32(pnlocfpg, noflpg, 1, nblfpg)
                 nufgpg = nolocfpg(nuflpg)
 !               stockage du nom de la famille courante
                 call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
-                lifapg(k)=nofpg(9:16)
+                lifapg(k) = nofpg(9:16)
 !               stockage du nombre de points de la famille courante
-                linbpg(k)=tmfpg(nufgpg)
+                linbpg(k) = tmfpg(nufgpg)
             end do
 !
 !       -- FAMILLE "ORDINAIRE"
         else
-            nbfam=1
+            nbfam = 1
 !           stockage du nom de la famille
             call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nofpg)
-            lifapg(1)=nofpg(9:16)
+            lifapg(1) = nofpg(9:16)
 !           stockage du nombre de points de la famille
-            linbpg(1)=tmfpg(kfpg)
-        endif
+            linbpg(1) = tmfpg(kfpg)
+        end if
 !
 !       --BOUCLE SUR LA/LES FAMILLE(S) :
         do kfam = 1, nbfam
-            famil=lifapg(kfam)
-            npgfam=linbpg(kfam)
+            famil = lifapg(kfam)
+            npgfam = linbpg(kfam)
 !
             if (famil(1:4) .eq. 'XFEM') then
 
 !               RECHERCHE DE LA FAMILLE XINT
 !
 !               type de maille associe au type d'element
-                noma=typma(nute)
+                noma = typma(nute)
 !               recuperationn de la dimension topologique de la maille
                 call dismoi('DIM_TOPO', noma, 'TYPE_MAILLE', repi=ndime)
 !               calcul du decalage a appliquer si la maille est quadratique
-                if (.not.ismali(noma)) then
-                   irese=3
+                if (.not. ismali(noma)) then
+                    irese = 3
                 else
-                   irese=0
-                endif
+                    irese = 0
+                end if
 !
 !               construction du nom de la famille de points de Gauss
 !               pour le sous-element
@@ -182,45 +182,45 @@ subroutine xchkgp(model)
 !
 !               recherche de cette famille dans la liste des familles
 !               de points de Gauss
-                nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
+                nuflpg = indk32(pnlocfpg, noflpg, 1, nblfpg)
 !
 !               Assertion : on a trouve la famille
-                ASSERT(nuflpg.ne.0)
+                ASSERT(nuflpg .ne. 0)
 
 !               recuperation du nombre de points de Gauss de la famille XINT,
 !               i.e. du nombre de points de Gauss par sous-element
                 nufgpg = nolocfpg(nuflpg)
-                nspg=tmfpg(nufgpg)
+                nspg = tmfpg(nufgpg)
 !
 !               calcul du nombre de points de Gauss pour chaque element
 !               du groupe d'elements
                 do iel = 1, nel
-                    ima=zi(jliel-1+iel)
+                    ima = zi(jliel-1+iel)
                     if (ima .le. 0) cycle
 !
 !                   recuperation du nombre de sous-element de l'element
                     call cesexi('C', jcesdlon, jcesllon, ima, 1, 1, 1, iadlon)
-                    ASSERT(iadlon.gt.0)
-                    nse=cesvlon(iadlon)
+                    ASSERT(iadlon .gt. 0)
+                    nse = cesvlon(iadlon)
 
 !                   calcul du nombre de points de Gauss de l'element
-                    npg=nse*nspg
+                    npg = nse*nspg
 
 !                   erreur fatale si le nombre de points de Gauss de l'élément
 !                   dépasse le nombre de points de Gauss de la famille XFEM
-                    if (npg.gt.npgfam) then
+                    if (npg .gt. npgfam) then
 !                      récupération du nom de la maille
-                       call jenuno(jexnum(ma//'.NOMMAI', ima), nomail)
+                        call jenuno(jexnum(ma//'.NOMMAI', ima), nomail)
 !
-                       vali(1)=npgfam
-                       vali(2)=npg
-                       valk(1)=nomte
-                       valk(2)=nomail
-                       call utmess('F', 'XFEM_56', nk=2, valk=valk, ni=2, vali=vali)
-                    endif
+                        vali(1) = npgfam
+                        vali(2) = npg
+                        valk(1) = nomte
+                        valk(2) = nomail
+                        call utmess('F', 'XFEM_56', nk=2, valk=valk, ni=2, vali=vali)
+                    end if
 !
-                enddo
-            endif
+                end do
+            end if
         end do
     end do
 !

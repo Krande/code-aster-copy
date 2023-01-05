@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cazocm(sdcont, keywf, i_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -88,29 +88,29 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tole_proj_ext    = 0.d0
-    tole_appa        = 0.d0
-    norm_dire(1:3)   = 0.d0
-    dire_appa(1:3)   = 0.d0
-    tole_interp      = 0.d0
-    jeuf1            = ' '
-    jeuf2            = ' '
-    type_pair        = ' '
-    type_norm        = ' '
+    tole_proj_ext = 0.d0
+    tole_appa = 0.d0
+    norm_dire(1:3) = 0.d0
+    dire_appa(1:3) = 0.d0
+    tole_interp = 0.d0
+    jeuf1 = ' '
+    jeuf2 = ' '
+    type_pair = ' '
+    type_norm = ' '
     type_appa_search = ' '
-    type_norm_mast   = ' '
-    type_norm_slav   = ' '
-    type_jacobian    = ' '
-    s_algo_cont      = ' '
-    dist_beam        = ' '
-    dist_shell       = ' '
-    cont_solv        = ' '
-    l_calc           = .true.
-    sdcont_defi      = sdcont(1:8)//'.CONTACT'
+    type_norm_mast = ' '
+    type_norm_slav = ' '
+    type_jacobian = ' '
+    s_algo_cont = ' '
+    dist_beam = ' '
+    dist_shell = ' '
+    cont_solv = ' '
+    l_calc = .true.
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Parameters
 !
-    l_liss = cfdisl(sdcont_defi,'LISSAGE')
+    l_liss = cfdisl(sdcont_defi, 'LISSAGE')
 !
 ! - Datastructures for contact
 !
@@ -120,12 +120,12 @@ implicit none
     sdcont_dirnor = sdcont_defi(1:16)//'.DIRNOR'
     sdcont_jeufo1 = sdcont_defi(1:16)//'.JFO1CO'
     sdcont_jeufo2 = sdcont_defi(1:16)//'.JFO2CO'
-    call jeveuo(sdcont_dirapp, 'E', vr = v_sdcont_dirapp)
-    call jeveuo(sdcont_dirnor, 'E', vr = v_sdcont_dirnor)
-    call jeveuo(sdcont_methco, 'E', vi = v_sdcont_methco)
-    call jeveuo(sdcont_toleco, 'E', vr = v_sdcont_toleco)
-    call jeveuo(sdcont_jeufo1, 'E', vk8 = v_sdcont_jeufo1)
-    call jeveuo(sdcont_jeufo2, 'E', vk8 = v_sdcont_jeufo2)
+    call jeveuo(sdcont_dirapp, 'E', vr=v_sdcont_dirapp)
+    call jeveuo(sdcont_dirnor, 'E', vr=v_sdcont_dirnor)
+    call jeveuo(sdcont_methco, 'E', vi=v_sdcont_methco)
+    call jeveuo(sdcont_toleco, 'E', vr=v_sdcont_toleco)
+    call jeveuo(sdcont_jeufo1, 'E', vk8=v_sdcont_jeufo1)
+    call jeveuo(sdcont_jeufo2, 'E', vk8=v_sdcont_jeufo2)
     zmeth = cfmmvd('ZMETH')
     zdirn = cfmmvd('ZDIRN')
     ztole = cfmmvd('ZTOLE')
@@ -138,27 +138,27 @@ implicit none
     else if (type_pair .eq. 'MAIT_ESCL') then
         v_sdcont_methco(zmeth*(i_zone-1)+1) = 1
     else if (type_pair .eq. 'MORTAR') then
-         v_sdcont_methco(zmeth*(i_zone-1)+1) = 2
+        v_sdcont_methco(zmeth*(i_zone-1)+1) = 2
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Type of jacobian (MORTAR)
 !
-    call getvtx(keywf, 'ALGO_CONT', iocc=i_zone, scal=s_algo_cont, nbret = iret)
+    call getvtx(keywf, 'ALGO_CONT', iocc=i_zone, scal=s_algo_cont, nbret=iret)
     if (iret .eq. 0) then
         s_algo_cont = ' '
-    endif
-    if  (s_algo_cont .eq. 'LAC' ) then
+    end if
+    if (s_algo_cont .eq. 'LAC') then
         call getvtx(keywf, 'TYPE_JACOBIEN', iocc=i_zone, scal=type_jacobian)
         if (type_jacobian .eq. 'INITIAL') then
-             v_sdcont_methco(zmeth*(i_zone-1)+23) = 0
+            v_sdcont_methco(zmeth*(i_zone-1)+23) = 0
         else if (type_jacobian .eq. 'ACTUALISE') then
-             v_sdcont_methco(zmeth*(i_zone-1)+23) = 1
+            v_sdcont_methco(zmeth*(i_zone-1)+23) = 1
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get DIST_POUTRE/DIST_COQUE
 !
@@ -166,12 +166,12 @@ implicit none
         call getvtx(keywf, 'DIST_POUTRE', iocc=i_zone, scal=dist_beam)
         if (dist_beam .eq. 'OUI') then
             v_sdcont_methco(zmeth*(i_zone-1)+2) = 1
-        endif
+        end if
         call getvtx(keywf, 'DIST_COQUE', iocc=i_zone, scal=dist_shell)
         if (dist_shell .eq. 'OUI') then
             v_sdcont_methco(zmeth*(i_zone-1)+3) = 1
-        endif
-    endif
+        end if
+    end if
 !
 ! - Type of normals
 !
@@ -184,13 +184,13 @@ implicit none
                 v_sdcont_methco(zmeth*(i_zone-1)+4) = 1
             else
                 v_sdcont_methco(zmeth*(i_zone-1)+4) = 0
-            endif
+            end if
         else if (type_norm(1:4) .eq. 'ESCL') then
             v_sdcont_methco(zmeth*(i_zone-1)+4) = 2
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Type of normals
 !
@@ -200,122 +200,122 @@ implicit none
 !
         if (type_norm_mast .eq. 'AUTO') then
             v_sdcont_methco(zmeth*(i_zone-1)+5) = 0
-        else if (type_norm_mast.eq.'FIXE') then
+        else if (type_norm_mast .eq. 'FIXE') then
             if (type_norm .ne. 'MAIT') then
                 call utmess('F', 'CONTACT3_50')
-            endif
+            end if
             if (l_liss) then
                 call utmess('F', 'CONTACT3_54')
-            endif
+            end if
             v_sdcont_methco(zmeth*(i_zone-1)+5) = 1
-            call getvr8(keywf, 'MAIT_FIXE', iocc=i_zone, nbval=3, vect=norm_dire,&
+            call getvr8(keywf, 'MAIT_FIXE', iocc=i_zone, nbval=3, vect=norm_dire, &
                         nbret=noc)
-            ASSERT(noc.gt.0)
+            ASSERT(noc .gt. 0)
             call normev(norm_dire, noor)
             if (noor .le. r8prem()) then
                 call utmess('F', 'CONTACT_15')
-            endif
+            end if
             v_sdcont_dirnor(zdirn*(i_zone-1)+1) = norm_dire(1)
             v_sdcont_dirnor(zdirn*(i_zone-1)+2) = norm_dire(2)
             v_sdcont_dirnor(zdirn*(i_zone-1)+3) = norm_dire(3)
-        else if (type_norm_mast.eq.'VECT_Y') then
+        else if (type_norm_mast .eq. 'VECT_Y') then
             if (type_norm .ne. 'MAIT') then
                 call utmess('F', 'CONTACT3_51')
-            endif
+            end if
             if (l_liss) then
                 call utmess('F', 'CONTACT3_54')
-            endif
+            end if
             v_sdcont_methco(zmeth*(i_zone-1)+5) = 2
-            call getvr8(keywf, 'MAIT_VECT_Y', iocc=i_zone, nbval=3, vect=norm_dire,&
+            call getvr8(keywf, 'MAIT_VECT_Y', iocc=i_zone, nbval=3, vect=norm_dire, &
                         nbret=noc)
-            ASSERT(noc.gt.0)
+            ASSERT(noc .gt. 0)
             call normev(norm_dire, noor)
             if (noor .le. r8prem()) then
                 call utmess('F', 'CONTACT_16')
-            endif
+            end if
             v_sdcont_dirnor(zdirn*(i_zone-1)+1) = norm_dire(1)
             v_sdcont_dirnor(zdirn*(i_zone-1)+2) = norm_dire(2)
             v_sdcont_dirnor(zdirn*(i_zone-1)+3) = norm_dire(3)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         call getvtx(keywf, 'VECT_ESCL', iocc=i_zone, scal=type_norm_slav)
 !
         if (type_norm_slav .eq. 'AUTO') then
             v_sdcont_methco(zmeth*(i_zone-1)+6) = 0
-        else if (type_norm_slav.eq.'FIXE') then
+        else if (type_norm_slav .eq. 'FIXE') then
             if (type_norm .ne. 'ESCL') then
                 call utmess('F', 'CONTACT3_52')
-            endif
+            end if
             if (l_liss) then
                 call utmess('F', 'CONTACT3_54')
-            endif
+            end if
             v_sdcont_methco(zmeth*(i_zone-1)+6) = 1
-            call getvr8(keywf, 'ESCL_FIXE', iocc=i_zone, nbval=3, vect=norm_dire,&
+            call getvr8(keywf, 'ESCL_FIXE', iocc=i_zone, nbval=3, vect=norm_dire, &
                         nbret=noc)
-            ASSERT(noc.gt.0)
+            ASSERT(noc .gt. 0)
             call normev(norm_dire, noor)
             if (noor .le. r8prem()) then
                 call utmess('F', 'CONTACT_15')
-            endif
+            end if
             v_sdcont_dirnor(zdirn*(i_zone-1)+4) = norm_dire(1)
             v_sdcont_dirnor(zdirn*(i_zone-1)+5) = norm_dire(2)
             v_sdcont_dirnor(zdirn*(i_zone-1)+6) = norm_dire(3)
-        else if (type_norm_slav.eq.'VECT_Y') then
+        else if (type_norm_slav .eq. 'VECT_Y') then
             if (type_norm .ne. 'ESCL') then
                 call utmess('F', 'CONTACT3_53')
-            endif
+            end if
             if (l_liss) then
                 call utmess('F', 'CONTACT3_54')
-            endif
+            end if
             v_sdcont_methco(zmeth*(i_zone-1)+6) = 2
-            call getvr8(keywf, 'ESCL_VECT_Y', iocc=i_zone, nbval=3, vect=norm_dire,&
+            call getvr8(keywf, 'ESCL_VECT_Y', iocc=i_zone, nbval=3, vect=norm_dire, &
                         nbret=noc)
-            ASSERT(noc.gt.0)
+            ASSERT(noc .gt. 0)
             call normev(norm_dire, noor)
             if (noor .le. r8prem()) then
                 call utmess('F', 'CONTACT_16')
-            endif
+            end if
             v_sdcont_dirnor(zdirn*(i_zone-1)+4) = norm_dire(1)
             v_sdcont_dirnor(zdirn*(i_zone-1)+5) = norm_dire(2)
             v_sdcont_dirnor(zdirn*(i_zone-1)+6) = norm_dire(3)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Pairing: search fixed direction - (DIRE_APPA)
 !
     if (s_algo_cont .eq. 'LAC') then
         call getvtx(keywf, 'TYPE_APPA', iocc=i_zone, scal=type_appa_search)
-        if (type_appa_search  .eq.  'ROBUSTE') then
+        if (type_appa_search .eq. 'ROBUSTE') then
             v_sdcont_methco(zmeth*(i_zone-1)+7) = 2
-        else if (type_appa_search  .eq.  'RAPIDE') then
+        else if (type_appa_search .eq. 'RAPIDE') then
             v_sdcont_methco(zmeth*(i_zone-1)+7) = 3
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         call getvtx(keywf, 'TYPE_PROJECTION', iocc=i_zone, scal=type_appa_search)
         if (type_appa_search .eq. 'ORTHOGONALE') then
             v_sdcont_methco(zmeth*(i_zone-1)+7) = 0
         else if (type_appa_search(1:4) .eq. 'FIXE') then
             v_sdcont_methco(zmeth*(i_zone-1)+7) = 1
-            call getvr8(keywf, 'DIRE_APPA', iocc=i_zone, nbval=3, vect=dire_appa,&
+            call getvr8(keywf, 'DIRE_APPA', iocc=i_zone, nbval=3, vect=dire_appa, &
                         nbret=noc)
-            ASSERT(noc.gt.0)
+            ASSERT(noc .gt. 0)
             call normev(dire_appa, noor)
             if (noor .le. r8prem()) then
                 call utmess('F', 'CONTACT3_15')
-            endif
+            end if
             v_sdcont_dirapp(3*(i_zone-1)+1) = dire_appa(1)
             v_sdcont_dirapp(3*(i_zone-1)+2) = dire_appa(2)
             v_sdcont_dirapp(3*(i_zone-1)+3) = dire_appa(3)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Resolution of contact (VERIF mode) ?
 !
@@ -327,8 +327,8 @@ implicit none
         else
             v_sdcont_methco(zmeth*(i_zone-1)+22) = 1
             l_calc = .false.
-        endif
-    endif
+        end if
+    end if
 !
 ! - DIST_MAIT/DIST_ESCL
 !
@@ -336,12 +336,12 @@ implicit none
         call getvid(keywf, 'DIST_MAIT', iocc=i_zone, scal=jeuf1, nbret=noc)
         if (noc .ne. 0) then
             v_sdcont_jeufo1(i_zone) = jeuf1
-        endif
+        end if
         call getvid(keywf, 'DIST_ESCL', iocc=i_zone, scal=jeuf2, nbret=noc)
         if (noc .ne. 0) then
             v_sdcont_jeufo2(i_zone) = jeuf2
-        endif
-    endif
+        end if
+    end if
 !
 ! - TOLE_PROJ_EXT
 ! --- TOLE_PROJ_EXT <0: disallow projection outside element
@@ -353,8 +353,8 @@ implicit none
             v_sdcont_toleco(ztole*(i_zone-1)+1) = -1.d0
         else
             v_sdcont_toleco(ztole*(i_zone-1)+1) = tole_proj_ext
-        endif
-    endif
+        end if
+    end if
 !
     if (s_algo_cont .eq. 'LAC') then
 ! - RESI_APPA
@@ -366,7 +366,7 @@ implicit none
             v_sdcont_toleco(ztole*(i_zone-1)+2) = -1.d0
         else
             v_sdcont_toleco(ztole*(i_zone-1)+2) = tole_appa
-        endif
+        end if
     else
 ! - DIST_APPA
 ! --- DIST_APPA <0: pairing for any distance
@@ -377,14 +377,14 @@ implicit none
             v_sdcont_toleco(ztole*(i_zone-1)+2) = -1.d0
         else
             v_sdcont_toleco(ztole*(i_zone-1)+2) = tole_appa
-        endif
-    endif
+        end if
+    end if
 !
 ! - Tolerance for non-computation mode
 !
-    if (.not.l_calc) then
+    if (.not. l_calc) then
         call getvr8(keywf, 'TOLE_INTERP', iocc=i_zone, scal=tole_interp)
         v_sdcont_toleco(ztole*(i_zone-1)+3) = tole_interp
-    endif
+    end if
 !
 end subroutine

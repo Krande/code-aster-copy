@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utmess(typ, idmess, nk, valk, sk,&
-                  ni, vali, si, nr, valr,&
+subroutine utmess(typ, idmess, nk, valk, sk, &
+                  ni, vali, si, nr, valr, &
                   sr, num_except, fname)
-use calcul_module, only : calcul_status
+    use calcul_module, only: calcul_status
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 ! All messages (informations, warnings, errors) should be printed through this subroutine.
@@ -71,35 +71,35 @@ use calcul_module, only : calcul_status
 !-----------------------------------------------------------------------------------
 
 !
-    ASSERT(ENSEMBLE2(nk,valk))
-    ASSERT(ENSEMBLE2(ni,vali))
-    ASSERT(ENSEMBLE2(nr,valr))
-    ASSERT(EXCLUS2(valk,sk))
-    ASSERT(EXCLUS2(vali,si))
-    ASSERT(EXCLUS2(valr,sr))
+    ASSERT(ENSEMBLE2(nk, valk))
+    ASSERT(ENSEMBLE2(ni, vali))
+    ASSERT(ENSEMBLE2(nr, valr))
+    ASSERT(EXCLUS2(valk, sk))
+    ASSERT(EXCLUS2(vali, si))
+    ASSERT(EXCLUS2(valr, sr))
     ASSERT(absent(num_except) .or. typ == 'Z')
     nexcep = 0
     if (present(num_except)) then
         nexcep = num_except
-    endif
+    end if
 !   associate pointers to valk or sk
     unk = 1
     uvk(1) = ' '
     use_valk = .false.
-    if (AU_MOINS_UN2(sk,valk)) then
+    if (AU_MOINS_UN2(sk, valk)) then
         if (present(nk)) then
             unk = nk
             use_valk = .true.
         else
             unk = 1
             uvk(1) = sk
-        endif
-    endif
+        end if
+    end if
 !   associate pointers to vali or si
     uni = 1
     uvi(1) = 0
     ptri => uvi(1:1)
-    if (AU_MOINS_UN2(si,vali)) then
+    if (AU_MOINS_UN2(si, vali)) then
         if (present(ni)) then
             uni = ni
             ptri => vali(1:ni)
@@ -107,13 +107,13 @@ use calcul_module, only : calcul_status
             uni = 1
             uvi(1) = si
             ptri => uvi(1:1)
-        endif
-    endif
+        end if
+    end if
 !   associate pointers to valr or sr
     unr = 1
     uvr(1) = 0.d0
     ptrr => uvr(1:1)
-    if (AU_MOINS_UN2(sr,valr)) then
+    if (AU_MOINS_UN2(sr, valr)) then
         if (present(nr)) then
             unr = nr
             ptrr => valr(1:nr)
@@ -121,42 +121,41 @@ use calcul_module, only : calcul_status
             unr = 1
             uvr(1) = sr
             ptrr => uvr(1:1)
-        endif
-    endif
+        end if
+    end if
 !
     ufname = ' '
     if (present(fname)) then
         ufname = fname
-    endif
-
+    end if
 
 !  1. Faut-il completer le message (si on est dans un calcul elementaire) ?
 !  ------------------------------------------------------------------------
-    typ2=typ
-    if (calcul_status().eq.3 .and. (typ2(1:1).eq.'F' .or. typ2(1:1).eq.'E')) then
-        under_te0000=.true.
-        if (typ2(2:2).eq.'+') under_te0000=.false.
+    typ2 = typ
+    if (calcul_status() .eq. 3 .and. (typ2(1:1) .eq. 'F' .or. typ2(1:1) .eq. 'E')) then
+        under_te0000 = .true.
+        if (typ2(2:2) .eq. '+') under_te0000 = .false.
     else
-        under_te0000=.false.
-    endif
+        under_te0000 = .false.
+    end if
     if (under_te0000) then
-        typ2(2:2)='+'
-    endif
+        typ2(2:2) = '+'
+    end if
 
 !   2. Emission du message demande :
 !   --------------------------------
     if (use_valk) then
-        call utmess_core(typ2, idmess, unk, valk, uni,&
+        call utmess_core(typ2, idmess, unk, valk, uni, &
                          ptri, unr, ptrr, nexcep, ufname)
     else
-        call utmess_core(typ2, idmess, unk, uvk, uni,&
+        call utmess_core(typ2, idmess, unk, uvk, uni, &
                          ptri, unr, ptrr, nexcep, ufname)
-    endif
+    end if
 
 !   3. Complement de message pour un calcul elementaire :
 !   -----------------------------------------------------
     if (under_te0000) then
         call temess(typ2(1:1))
-    endif
+    end if
 !
 end subroutine utmess

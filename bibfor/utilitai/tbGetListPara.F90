@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 !
 subroutine tbGetListPara(tabl_namez, nb_para, v_list_para, v_type_para, nb_line)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbtri.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-character(len=*), intent(in) :: tabl_namez
-integer, intent(out) :: nb_para
-character(len=24), pointer :: v_list_para(:)
-character(len=24), pointer :: v_type_para(:)
-integer, intent(out) :: nb_line
+    character(len=*), intent(in) :: tabl_namez
+    integer, intent(out) :: nb_para
+    character(len=24), pointer :: v_list_para(:)
+    character(len=24), pointer :: v_type_para(:)
+    integer, intent(out) :: nb_line
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,8 +57,8 @@ integer, intent(out) :: nb_line
 ! --------------------------------------------------------------------------------------------------
 !
     tabl_name = tabl_namez
-    nb_para   = 0
-    nb_line   = 0
+    nb_para = 0
+    nb_line = 0
 !
 ! - Access to objects
 !
@@ -73,20 +73,20 @@ integer, intent(out) :: nb_line
 ! - Get parameters of table
 !
     if (nb_para .ne. 0) then
-        AS_ALLOCATE(vk24=v_type_para, size = nb_para)
-        AS_ALLOCATE(vk24=v_list_para, size = nb_para)
-        AS_ALLOCATE(vk24=v_list_par1, size = nb_para)
-        AS_ALLOCATE(vi=v_tabint, size = nb_para)
+        AS_ALLOCATE(vk24=v_type_para, size=nb_para)
+        AS_ALLOCATE(vk24=v_list_para, size=nb_para)
+        AS_ALLOCATE(vk24=v_list_par1, size=nb_para)
+        AS_ALLOCATE(vi=v_tabint, size=nb_para)
         do i_para = 1, nb_para
             v_list_par1(i_para) = v_tblp(1+4*(i_para-1))
         end do
-        call tbtri(nb_para, tabint = v_tabint, tabchk = v_list_par1)
+        call tbtri(nb_para, tabint=v_tabint, tabchk=v_list_par1)
         do i_para = 1, nb_para
             v_list_para(i_para) = v_list_par1(v_tabint(i_para))
             v_type_para(i_para) = v_tblp(1+4*(v_tabint(i_para)-1)+1)
         end do
         AS_DEALLOCATE(vk24=v_list_par1)
         AS_DEALLOCATE(vi=v_tabint)
-    endif
+    end if
 !
 end subroutine

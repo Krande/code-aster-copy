@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
+subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq, &
                   ipg, nommet, vrespc)
     implicit none
 #include "jeveux.h"
@@ -88,12 +88,12 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 !234567
 !
 !-----------------------------------------------------------------------
-    data  tab1/ 180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
+    data tab1/180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
      &             11.25d0, 10.588d0, 10.0d0, 10.0d0, 10.0d0, 10.588d0,&
-     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0 /
+     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0/
 !
-    data  tab2/ 1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
-     &           12, 9, 6, 3 /
+    data tab2/1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
+     &           12, 9, 6, 3/
 !
     pi = r8pi()
 !-----------------------------------------------------------------------
@@ -121,16 +121,16 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
     tnecno = 209*nbordr
 !
     call jedisp(1, tdisp)
-    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
+    tdisp(1) = (tdisp(1)*loisem())/lor8em()
     if (tdisp(1) .lt. tneces) then
-        vali (1) = tdisp(1)
-        vali (2) = tneces
+        vali(1) = tdisp(1)
+        vali(2) = tneces
         call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
 !
     else
         call wkvect('&&ACMATA.VECT_NORMA3', 'V V R', tneces, jvecno)
         call wkvect('&&ACMATA.VECT_NORMA4', 'V V R', tnecno, jnorma)
-    endif
+    end if
 !
     dgam = 10.0d0
 !
@@ -139,13 +139,13 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
     ideb = 1
     dim = 627
     do j = 1, 18
-        gamma=(j-1)*dgam*(pi/180.0d0)
-        dphi=tab1(j)*(pi/180.0d0)
-        phi0=dphi/2.0d0
-        ngam=tab2(j)
+        gamma = (j-1)*dgam*(pi/180.0d0)
+        dphi = tab1(j)*(pi/180.0d0)
+        phi0 = dphi/2.0d0
+        ngam = tab2(j)
 !
-        call vecnuv(ideb, ngam, gamma, phi0, dphi,&
-                    n, k, dim, zr( jvectn), zr(jvectu),&
+        call vecnuv(ideb, ngam, gamma, phi0, dphi, &
+                    n, k, dim, zr(jvectn), zr(jvectu), &
                     zr(jvectv))
 !
     end do
@@ -169,8 +169,8 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
     nbvec = 209
     dectau = 0
 !
-    call taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                kwork, sompgw, jrwork, tspaq, ipg,&
+    call taurlo(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                kwork, sompgw, jrwork, tspaq, ipg, &
                 dectau, jvecno, jnorma)
 !
 !
@@ -183,7 +183,7 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 !
 ! 2/ CDU RAYON CIRCONSCRIT
 !
-    call raycir(jvecno, jdtaum, jresun, nbordr, nbvec,&
+    call raycir(jvecno, jdtaum, jresun, nbordr, nbvec, &
                 nommet)
 !
 ! 3/ CDU 1ER MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
@@ -194,19 +194,19 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
     mnmax(2) = 1
 !
     do i = 1, nbvec
-        if (zr(jdtaum + (i-1)) .gt. epsilo) then
-            if ((zr(jdtaum + (i-1))-dtaum(1))/zr(jdtaum + (i-1)) .gt. epsilo) then
+        if (zr(jdtaum+(i-1)) .gt. epsilo) then
+            if ((zr(jdtaum+(i-1))-dtaum(1))/zr(jdtaum+(i-1)) .gt. epsilo) then
                 dtaum(2) = dtaum(1)
                 mnmax(2) = mnmax(1)
-                dtaum(1) = zr(jdtaum + (i-1))
+                dtaum(1) = zr(jdtaum+(i-1))
                 mnmax(1) = i
-            endif
-            if (( (zr(jdtaum + (i-1))-dtaum(2))/zr(jdtaum + (i-1)) .gt. epsilo ) .and.&
+            end if
+            if (((zr(jdtaum+(i-1))-dtaum(2))/zr(jdtaum+(i-1)) .gt. epsilo) .and. &
                 (i .ne. mnmax(1))) then
-                dtaum(2) = zr(jdtaum + (i-1))
+                dtaum(2) = zr(jdtaum+(i-1))
                 mnmax(2) = i
-            endif
-        endif
+            end if
+        end if
     end do
 !
 ! 4/ 1-ER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
@@ -225,22 +225,22 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
         epnmax(k) = 0.0d0
         sepnmx(k) = 0.0d0
 !
-        nxm(k) = zr(jvectn + (mnmax(k)-1)*3)
-        nym(k) = zr(jvectn + (mnmax(k)-1)*3 + 1)
-        nzm(k) = zr(jvectn + (mnmax(k)-1)*3 + 2)
-        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)),nzm(k))
+        nxm(k) = zr(jvectn+(mnmax(k)-1)*3)
+        nym(k) = zr(jvectn+(mnmax(k)-1)*3+1)
+        nzm(k) = zr(jvectn+(mnmax(k)-1)*3+2)
+        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)), nzm(k))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(k)) .lt. epsilo) .and. (abs(nxm(k)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(k)),nxm(k))
-        endif
+            phim = atan2(abs(nym(k)), nxm(k))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 5.0d0*(pi/180.0d0)
@@ -248,39 +248,39 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
             phi0 = 0.0d0
             n = 0
 !
-            call vecnuv(1, 6, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn2), zr(jvecu2),&
+            call vecnuv(1, 6, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn2), zr(jvecu2), &
                         zr(jvecv2))
 !
             gamma = 0.0d0
             phi0 = pi
 !
-            call vecnuv(1, 1, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn2), zr(jvecu2),&
+            call vecnuv(1, 1, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn2), zr(jvecu2), &
                         zr(jvecv2))
 !
             nbvec = 7
-            call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg2, jnorma)
         else
             dgam2 = 2.0d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
             do j = 1, 3
-                gamma = gammam + (j-2)*dgam2
+                gamma = gammam+(j-2)*dgam2
 !
-                call vecnuv(1, 3, gamma, phim, dphi2,&
-                            n, 2, dim, zr(jvecn2), zr(jvecu2),&
+                call vecnuv(1, 3, gamma, phim, dphi2, &
+                            n, 2, dim, zr(jvecn2), zr(jvecu2), &
                             zr(jvecv2))
 !
             end do
 !
             nbvec = 9
-            call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg2, jnorma)
-        endif
+        end if
 !
 ! 4-1/E A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
 !     TAU POUR UN POINT DE GAUSS ET DU VECTEUR DE TRAVAIL
@@ -288,7 +288,7 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 !
 ! 4-2/L DU RAYON CIRCONSCRIT
 !
-        call raycir(jvpg2, jdtaum, jresun, nbordr, nbvec,&
+        call raycir(jvpg2, jdtaum, jresun, nbordr, nbvec, &
                     nommet)
 !
 ! 4-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
@@ -297,32 +297,32 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
         mnmax(k) = 1
 !
         do i = 1, nbvec
-            if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
-                dtaum(k) = zr(jdtaum + (i-1))
+            if (zr(jdtaum+(i-1)) .gt. dtaum(k)) then
+                dtaum(k) = zr(jdtaum+(i-1))
                 mnmax(k) = i
-            endif
+            end if
         end do
 !
 ! 5/ 2-EXIME RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 !    EAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 1
 !    DRES).
 !
-        nxm(k) = zr(jvecn2 + (mnmax(k)-1)*3)
-        nym(k) = zr(jvecn2 + (mnmax(k)-1)*3 + 1)
-        nzm(k) = zr(jvecn2 + (mnmax(k)-1)*3 + 2)
-        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)),nzm(k))
+        nxm(k) = zr(jvecn2+(mnmax(k)-1)*3)
+        nym(k) = zr(jvecn2+(mnmax(k)-1)*3+1)
+        nzm(k) = zr(jvecn2+(mnmax(k)-1)*3+2)
+        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)), nzm(k))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(k)) .lt. epsilo) .and. (abs(nxm(k)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(k)),nxm(k))
-        endif
+            phim = atan2(abs(nym(k)), nxm(k))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 1.0d0*(pi/180.0d0)
@@ -330,39 +330,39 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
             phi0 = 0.0d0
             n = 0
 !
-            call vecnuv(1, 6, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn1), zr(jvecu1),&
+            call vecnuv(1, 6, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn1), zr(jvecu1), &
                         zr(jvecv1))
 !
             gamma = 0.0d0
             phi0 = pi
 !
-            call vecnuv(1, 1, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn1), zr(jvecu1),&
+            call vecnuv(1, 1, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn1), zr(jvecu1), &
                         zr(jvecv1))
 !
             nbvec = 7
-            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg1, jnorma)
         else
             dgam2 = 1.0d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
             do j = 1, 3
-                gamma = gammam + (j-2)*dgam2
+                gamma = gammam+(j-2)*dgam2
 !
-                call vecnuv(1, 3, gamma, phim, dphi2,&
-                            n, 2, dim, zr(jvecn1), zr(jvecu1),&
+                call vecnuv(1, 3, gamma, phim, dphi2, &
+                            n, 2, dim, zr(jvecn1), zr(jvecu1), &
                             zr(jvecv1))
 !
             end do
 !
             nbvec = 9
-            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg1, jnorma)
-        endif
+        end if
 !
 ! 5-1/E A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
 !     TAU POUR UN POINT DE GAUSS ET DU VECTEUR DE TRAVAIL
@@ -371,7 +371,7 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 !
 ! 5-2/L DU RAYON CIRCONSCRIT
 !
-        call raycir(jvpg1, jdtaum, jresun, nbordr, nbvec,&
+        call raycir(jvpg1, jdtaum, jresun, nbordr, nbvec, &
                     nommet)
 !
 ! 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
@@ -380,29 +380,29 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
         mnmax(k) = 1
 !
         do i = 1, nbvec
-            if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
-                dtaum(k) = zr(jdtaum + (i-1))
+            if (zr(jdtaum+(i-1)) .gt. dtaum(k)) then
+                dtaum(k) = zr(jdtaum+(i-1))
                 mnmax(k) = i
-            endif
+            end if
         end do
 !
-        nxm(k) = zr(jvecn1 + (mnmax(k)-1)*3)
-        nym(k) = zr(jvecn1 + (mnmax(k)-1)*3 + 1)
-        nzm(k) = zr(jvecn1 + (mnmax(k)-1)*3 + 2)
-        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)),nzm(k))
+        nxm(k) = zr(jvecn1+(mnmax(k)-1)*3)
+        nym(k) = zr(jvecn1+(mnmax(k)-1)*3+1)
+        nzm(k) = zr(jvecn1+(mnmax(k)-1)*3+2)
+        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)), nzm(k))
 !
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(k)) .lt. epsilo) .and. (abs(nxm(k)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(k)),nxm(k))
-        endif
+            phim = atan2(abs(nym(k)), nxm(k))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 0.5d0*(pi/180.0d0)
@@ -410,39 +410,39 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
             phi0 = 0.0d0
             n = 0
 !
-            call vecnuv(1, 6, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn1), zr(jvecu1),&
+            call vecnuv(1, 6, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn1), zr(jvecu1), &
                         zr(jvecv1))
 !
             gamma = 0.0d0
             phi0 = pi
 !
-            call vecnuv(1, 1, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn1), zr(jvecu1),&
+            call vecnuv(1, 1, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn1), zr(jvecu1), &
                         zr(jvecv1))
 !
             nbvec = 7
-            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg1, jnorma)
         else
             dgam2 = 0.5d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
             do j = 1, 3
-                gamma = gammam + (j-2)*dgam2
+                gamma = gammam+(j-2)*dgam2
 !
-                call vecnuv(1, 3, gamma, phim, dphi2,&
-                            n, 2, dim, zr(jvecn2), zr(jvecu2),&
+                call vecnuv(1, 3, gamma, phim, dphi2, &
+                            n, 2, dim, zr(jvecn2), zr(jvecu2), &
                             zr(jvecv2))
 !
             end do
 !
             nbvec = 9
-            call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn2, jvecu2, jvecv2, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg2, jnorma)
-        endif
+        end if
 !
 !
 ! 5/ 3-IEME RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
@@ -451,7 +451,7 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 !
 ! 5-2/L DU RAYON CIRCONSCRIT
 !
-        call raycir(jvpg2, jdtaum, jresun, nbordr, nbvec,&
+        call raycir(jvpg2, jdtaum, jresun, nbordr, nbvec, &
                     nommet)
 !
 ! 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
@@ -460,28 +460,28 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
         mnmax(k) = 1
 !
         do i = 1, nbvec
-            if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
-                dtaum(k) = zr(jdtaum + (i-1))
+            if (zr(jdtaum+(i-1)) .gt. dtaum(k)) then
+                dtaum(k) = zr(jdtaum+(i-1))
                 mnmax(k) = i
-            endif
+            end if
         end do
 !
-        nxm(k) = zr(jvecn2 + (mnmax(k)-1)*3)
-        nym(k) = zr(jvecn2 + (mnmax(k)-1)*3 + 1)
-        nzm(k) = zr(jvecn2 + (mnmax(k)-1)*3 + 2)
-        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)),nzm(k))
+        nxm(k) = zr(jvecn2+(mnmax(k)-1)*3)
+        nym(k) = zr(jvecn2+(mnmax(k)-1)*3+1)
+        nzm(k) = zr(jvecn2+(mnmax(k)-1)*3+2)
+        gammam = atan2(sqrt(abs(1.0d0-nzm(k)**2)), nzm(k))
         if (gammam .lt. 0.0d0) then
-            gammam = gammam + pi
-        endif
+            gammam = gammam+pi
+        end if
 !
         if ((abs(nym(k)) .lt. epsilo) .and. (abs(nxm(k)) .lt. epsilo)) then
             phim = 0.0d0
         else
-            phim = atan2(abs(nym(k)),nxm(k))
-        endif
+            phim = atan2(abs(nym(k)), nxm(k))
+        end if
         if (phim .lt. 0.0d0) then
-            phim = phim + pi
-        endif
+            phim = phim+pi
+        end if
 !
         if (abs(gammam) .lt. epsilo) then
             gamma = 0.25d0*(pi/180.0d0)
@@ -489,39 +489,39 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
             phi0 = 0.0d0
             n = 0
 !
-            call vecnuv(1, 6, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn1), zr(jvecu1),&
+            call vecnuv(1, 6, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn1), zr(jvecu1), &
                         zr(jvecv1))
 !
             gamma = 0.0d0
             phi0 = pi
 !
-            call vecnuv(1, 1, gamma, phi0, dphi2,&
-                        n, 1, dim, zr( jvecn1), zr(jvecu1),&
+            call vecnuv(1, 1, gamma, phi0, dphi2, &
+                        n, 1, dim, zr(jvecn1), zr(jvecu1), &
                         zr(jvecv1))
 !
             nbvec = 7
-            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg1, jnorma)
         else
             dgam2 = 1.0d0*(pi/180.0d0)
             dphi2 = dgam2/sin(gammam)
             n = 0
             do j = 1, 3
-                gamma = gammam + (j-2)*dgam2
+                gamma = gammam+(j-2)*dgam2
 !
-                call vecnuv(1, 3, gamma, phim, dphi2,&
-                            n, 2, dim, zr(jvecn1), zr(jvecu1),&
+                call vecnuv(1, 3, gamma, phim, dphi2, &
+                            n, 2, dim, zr(jvecn1), zr(jvecu1), &
                             zr(jvecv1))
 !
             end do
 !
             nbvec = 9
-            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr,&
-                        kwork, sompgw, jrwork, tspaq, ipg,&
+            call taurlo(nbvec, jvecn1, jvecu1, jvecv1, nbordr, &
+                        kwork, sompgw, jrwork, tspaq, ipg, &
                         dectau, jvpg1, jnorma)
-        endif
+        end if
 !
 ! CALCLA CONTRAINTE NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 ! DE LRAINTE NORMALE MOYENNE SUR LE PLAN CRITIQUE,
@@ -548,7 +548,7 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 !
 ! 5-2/L DU RAYON CIRCONSCRIT
 !
-        call raycir(jvpg1, jdtaum, jresun, nbordr, nbvec,&
+        call raycir(jvpg1, jdtaum, jresun, nbordr, nbvec, &
                     nommet)
 !
 ! 5-3/L DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
@@ -557,33 +557,33 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
         mnmax(k) = 1
 !
         do i = 1, nbvec
-            if (zr(jdtaum + (i-1)) .gt. dtaum(k)) then
-                dtaum(k) = zr(jdtaum + (i-1))
+            if (zr(jdtaum+(i-1)) .gt. dtaum(k)) then
+                dtaum(k) = zr(jdtaum+(i-1))
                 mnmax(k) = i
-            endif
+            end if
         end do
 !
-        nxm(k) = zr(jvecn1 + (mnmax(k)-1)*3)
-        nym(k) = zr(jvecn1 + (mnmax(k)-1)*3 + 1)
-        nzm(k) = zr(jvecn1 + (mnmax(k)-1)*3 + 2)
+        nxm(k) = zr(jvecn1+(mnmax(k)-1)*3)
+        nym(k) = zr(jvecn1+(mnmax(k)-1)*3+1)
+        nzm(k) = zr(jvecn1+(mnmax(k)-1)*3+2)
 !
         do i = 1, nbordr
             decal = 18
 !           ADR = (J-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
             adrs = (i-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
-            sixx = zr(jrwork + adrs + 0)
-            siyy = zr(jrwork + adrs + 1)
-            sizz = zr(jrwork + adrs + 2)
-            sixy = zr(jrwork + adrs + 3)
-            sixz = zr(jrwork + adrs + 4)
-            siyz = zr(jrwork + adrs + 5)
+            sixx = zr(jrwork+adrs+0)
+            siyy = zr(jrwork+adrs+1)
+            sizz = zr(jrwork+adrs+2)
+            sixy = zr(jrwork+adrs+3)
+            sixz = zr(jrwork+adrs+4)
+            siyz = zr(jrwork+adrs+5)
 !
-            epsxx = zr(jrwork + adrs + 6)
-            epsyy = zr(jrwork + adrs + 7)
-            epszz = zr(jrwork + adrs + 8)
-            epsxy = zr(jrwork + adrs + 9)
-            epsxz = zr(jrwork + adrs + 10)
-            epsyz = zr(jrwork + adrs + 11)
+            epsxx = zr(jrwork+adrs+6)
+            epsyy = zr(jrwork+adrs+7)
+            epszz = zr(jrwork+adrs+8)
+            epsxy = zr(jrwork+adrs+9)
+            epsxz = zr(jrwork+adrs+10)
+            epsyz = zr(jrwork+adrs+11)
 !
 !
 ! CALCLA PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
@@ -593,12 +593,12 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 ! ON C PHYDRM QU'UNE FOIS, PARCE QUE LA PRESSION HYDROSTATIQUE
 ! EST ANTE PAR RAPPORT AU vect_n.
 !
-                phydro = (sixx + siyy + sizz)/3.0d0
+                phydro = (sixx+siyy+sizz)/3.0d0
 !
                 if (phydro .gt. phydrm) then
                     phydrm = phydro
-                endif
-            endif
+                end if
+            end if
 !
 !             EPSXX = C1*SIXX - C2*(SIXX + SIYY + SIZZ)
 !             EPSYY = C1*SIYY - C2*(SIXX + SIYY + SIZZ)
@@ -609,35 +609,35 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq,&
 !
 ! CALCvect_F = [SIG].vect_n
 !
-            fxm(k) = sixx*nxm(k) + sixy*nym(k) + sixz*nzm(k)
-            fym(k) = sixy*nxm(k) + siyy*nym(k) + siyz*nzm(k)
-            fzm(k) = sixz*nxm(k) + siyz*nym(k) + sizz*nzm(k)
+            fxm(k) = sixx*nxm(k)+sixy*nym(k)+sixz*nzm(k)
+            fym(k) = sixy*nxm(k)+siyy*nym(k)+siyz*nzm(k)
+            fzm(k) = sixz*nxm(k)+siyz*nym(k)+sizz*nzm(k)
 !
 ! CALCNORM = vect_F.vect_n
 !
-            norm(k) = fxm(k)*nxm(k) + fym(k)*nym(k) + fzm(k)*nzm(k)
+            norm(k) = fxm(k)*nxm(k)+fym(k)*nym(k)+fzm(k)*nzm(k)
 !
             if (abs(norm(k)) .gt. normax(k)) then
                 normax(k) = norm(k)
-            endif
+            end if
 !
-            snorm(k) = snorm(k) + norm(k)
+            snorm(k) = snorm(k)+norm(k)
 !
 ! CALCvect_EPS = [EPS].vect_n
 !
-            epsxm(k) = epsxx*nxm(k) + epsxy*nym(k) + epsxz*nzm(k)
-            epsym(k) = epsxy*nxm(k) + epsyy*nym(k) + epsyz*nzm(k)
-            epszm(k) = epsxz*nxm(k) + epsyz*nym(k) + epszz*nzm(k)
+            epsxm(k) = epsxx*nxm(k)+epsxy*nym(k)+epsxz*nzm(k)
+            epsym(k) = epsxy*nxm(k)+epsyy*nym(k)+epsyz*nzm(k)
+            epszm(k) = epsxz*nxm(k)+epsyz*nym(k)+epszz*nzm(k)
 !
 ! CALCEPSILON NORMALE = vect_EPS.vect_n
 !
-            epnorm(k) = epsxm(k)*nxm(k) + epsym(k)*nym(k) + epszm(k)* nzm(k)
+            epnorm(k) = epsxm(k)*nxm(k)+epsym(k)*nym(k)+epszm(k)*nzm(k)
 !
             if (abs(epnorm(k)) .gt. epnmax(k)) then
                 epnmax(k) = epnorm(k)
-            endif
+            end if
 !
-            sepnmx(k) = sepnmx(k) + epnorm(k)
+            sepnmx(k) = sepnmx(k)+epnorm(k)
         end do
 !
         normoy(k) = snorm(k)/nbordr

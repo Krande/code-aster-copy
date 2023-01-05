@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine exipat(mesh, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jeexin.h"
 !
@@ -47,7 +47,7 @@ implicit none
     iret = 0
     call jeexin(mesh//'.PATCH', ipatch)
     if (ipatch .ne. 0) then
-        iret=1
-    endif
+        iret = 1
+    end if
 !
 end subroutine

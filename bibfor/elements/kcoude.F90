@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,22 +44,22 @@ subroutine kcoude(nbrddl, poids, b, c, k)
 !
 !
     do i = 1, nbrddl
-        c11b1i=c(1,1)* b(1,i)
-        c12b1i=c(1,2)* b(1,i)
-        c13b1i=c(1,3)* b(1,i)
-        c21b2i=c(2,1)* b(2,i)
-        c31b3i=c(3,1)* b(3,i)
-        c32b3i=c(3,2)* b(3,i)
-        c22b2i=c(2,2)* b(2,i)
-        c23b2i=c(2,3)* b(2,i)
-        c33b3i=c(3,3)* b(3,i)
-        c44b4i=c(4,4)* b(4,i)
-        cb1j=c11b1i+c21b2i+c31b3i
-        cb2j=c22b2i+c12b1i+c32b3i
-        cb3j=c13b1i+c23b2i+c33b3i
+        c11b1i = c(1, 1)*b(1, i)
+        c12b1i = c(1, 2)*b(1, i)
+        c13b1i = c(1, 3)*b(1, i)
+        c21b2i = c(2, 1)*b(2, i)
+        c31b3i = c(3, 1)*b(3, i)
+        c32b3i = c(3, 2)*b(3, i)
+        c22b2i = c(2, 2)*b(2, i)
+        c23b2i = c(2, 3)*b(2, i)
+        c33b3i = c(3, 3)*b(3, i)
+        c44b4i = c(4, 4)*b(4, i)
+        cb1j = c11b1i+c21b2i+c31b3i
+        cb2j = c22b2i+c12b1i+c32b3i
+        cb3j = c13b1i+c23b2i+c33b3i
         do j = 1, i
-            k(i,j) = k(i,j) +( cb1j*b(1,j)+cb2j*b(2,j)+cb3j*b(3,j)+ c44b4i*b(4,j) ) *poids
-            k(j,i) = k(i,j)
+            k(i, j) = k(i, j)+(cb1j*b(1, j)+cb2j*b(2, j)+cb3j*b(3, j)+c44b4i*b(4, j))*poids
+            k(j, i) = k(i, j)
         end do
     end do
 !

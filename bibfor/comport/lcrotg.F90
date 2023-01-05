@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,9 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 !
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
-    common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
+    common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
+     &               pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
@@ -57,11 +57,11 @@ subroutine lcrotg(indice, dp, e, dtaudf)
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -80,8 +80,8 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 !
     call r8inir(36, 0.d0, dedetr, 1)
     call r8inir(6, 0.d0, dedfcd, 1)
-    call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                p = pm+dp, rp = rp, rprim = drdp, airerp = aire)
+    call rcfonc('V', 1, jprolp, jvalep, nbvalp, &
+                p=pm+dp, rp=rp, rprim=drdp, airerp=aire)
     tre = e(1)+e(2)+e(3)
     select case (indice)
 !
@@ -90,7 +90,7 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 !
     case (0)
         do ij = 1, 6
-            dedetr(ij,ij) = 1.d0
+            dedetr(ij, ij) = 1.d0
         end do
 !
 !
@@ -109,9 +109,9 @@ subroutine lcrotg(indice, dp, e, dtaudf)
         end do
         do ij = 1, 6
             do kl = 1, 6
-                a1(ij,kl) = 2.d0/3.d0*(1-al)*a2(ij)*a2(kl)
+                a1(ij, kl) = 2.d0/3.d0*(1-al)*a2(ij)*a2(kl)
             end do
-            a1(ij,ij) = a1(ij,ij) + al
+            a1(ij, ij) = a1(ij, ij)+al
         end do
 !
 !
@@ -144,10 +144,10 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 !
         do ij = 1, 6
             do kl = 1, 6
-                ddvetr(ij,kl) = a1(ij,kl) + (a2(ij)+al2/3.d0*kr(ij))*a3( kl)
+                ddvetr(ij, kl) = a1(ij, kl)+(a2(ij)+al2/3.d0*kr(ij))*a3(kl)
             end do
-            dtretr(ij) = al1*kr(ij)/3.d0 + al4*(a2(ij)+al2/3.d0*kr(ij))
-            dedfcd(ij) = be1/3.d0*kr(ij) + be2*(a2(ij)+al2/3.d0*kr(ij))
+            dtretr(ij) = al1*kr(ij)/3.d0+al4*(a2(ij)+al2/3.d0*kr(ij))
+            dedfcd(ij) = be1/3.d0*kr(ij)+be2*(a2(ij)+al2/3.d0*kr(ij))
         end do
 !
 !
@@ -155,8 +155,8 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 !
         do ij = 1, 6
             do kl = 1, 6
-                dedetr(ij,kl)=ddvetr(ij,kl)+(dtretr(ij)-al/3.d0*kr(ij))*&
-            kr(kl)
+                dedetr(ij, kl) = ddvetr(ij, kl)+(dtretr(ij)-al/3.d0*kr(ij))* &
+                                 kr(kl)
             end do
         end do
 !
@@ -194,7 +194,7 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 !
         do ij = 1, 6
             do kl = 1, 6
-                dedetr(ij,kl)= (al1+al2*al4)/3.d0*kr(ij)*kr(kl)
+                dedetr(ij, kl) = (al1+al2*al4)/3.d0*kr(ij)*kr(kl)
             end do
             dedfcd(ij) = (be1+al2*be2)/3.d0*kr(ij)
         end do
@@ -211,11 +211,11 @@ subroutine lcrotg(indice, dp, e, dtaudf)
                 sum = 0
                 do pq = 1, 6
                     do rs = 1, 6
-                        sum = sum + dtaude(ij,pq)*dedetr(pq,rs)* detrdf(rs,k,l)
+                        sum = sum+dtaude(ij, pq)*dedetr(pq, rs)*detrdf(rs, k, l)
                     end do
-                    sum = sum + dtaude(ij,pq)*dedfcd(pq)*dfcddj*djdf( k,l)
+                    sum = sum+dtaude(ij, pq)*dedfcd(pq)*dfcddj*djdf(k, l)
                 end do
-                dtaudf(ij,k,l) = sum
+                dtaudf(ij, k, l) = sum
             end do
         end do
     end do

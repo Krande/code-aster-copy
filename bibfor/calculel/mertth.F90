@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mertth(model, lload_name, lload_info, cara_elem, mate     , mateco,&
-                  time , time_move , temp_prev , temp_iter, matr_elem)
+subroutine mertth(model, lload_name, lload_info, cara_elem, mate, mateco, &
+                  time, time_move, temp_prev, temp_iter, matr_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -66,7 +66,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbchmx
-    parameter (nbchmx=4)
+    parameter(nbchmx=4)
     integer :: nbopt(nbchmx), nligr(nbchmx)
     character(len=6) :: nomopr(nbchmx), nomopf(nbchmx), nomchp(nbchmx)
     character(len=7) :: nompar(nbchmx), nompaf(nbchmx)
@@ -79,13 +79,13 @@ implicit none
     aster_logical :: load_empty
     character(len=24), pointer :: v_load_name(:) => null()
     integer, pointer :: v_load_info(:) => null()
-    data nomchp/'.COEFH','.FLUNL','.HECHP','.COEFH'/
-    data nomopr/'COEH_R','      ','PARO_R','COET_R'/
-    data nomopf/'COEH_F','FLUTNL','PARO_F','COET_F'/
-    data nompar/'PCOEFHR','       ','PHECHPR','PCOEFHR'/
-    data nompaf/'PCOEFHF','PFLUXNL','PHECHPF','PCOEFHF'/
-    data nbopt/3,4,5,3/
-    data nligr/1,1,2,1/
+    data nomchp/'.COEFH', '.FLUNL', '.HECHP', '.COEFH'/
+    data nomopr/'COEH_R', '      ', 'PARO_R', 'COET_R'/
+    data nomopf/'COEH_F', 'FLUTNL', 'PARO_F', 'COET_F'/
+    data nompar/'PCOEFHR', '       ', 'PHECHPR', 'PCOEFHR'/
+    data nompaf/'PCOEFHF', 'PFLUXNL', 'PHECHPF', 'PCOEFHF'/
+    data nbopt/3, 4, 5, 3/
+    data nligr/1, 1, 2, 1/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,7 +93,7 @@ implicit none
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
                         lload_name, lload_info)
 !
     call megeom(model, chgeom)
@@ -102,11 +102,11 @@ implicit none
     call jeexin(matr_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
         matr_elem = '&&METRIG'
-        call memare('V', matr_elem, model(1:8), mate, cara_elem,&
+        call memare('V', matr_elem, model(1:8), mate, cara_elem, &
                     'RIGI_THER')
     else
         call jedetr(matr_elem(1:19)//'.RELR')
-    endif
+    end if
 !
     ligrel(1) = model(1:8)//'.MODELE'
 !
@@ -128,17 +128,17 @@ implicit none
         lpain(6) = 'PTEMPEI'
         lchin(6) = temp_iter
         option = 'RIGI_THER_TRANS'
-        ilires = ilires + 1
+        ilires = ilires+1
         call codent(ilires, 'D0', lchout(1) (12:14))
-        call calcul('S', option, ligrel(1), 6, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', option, ligrel(1), 6, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
         call reajre(matr_elem, lchout(1), 'V')
-    endif
+    end if
 !
     if (nb_load .gt. 0) then
         do i_load = 1, nb_load
-            load_name = v_load_name(i_load)(1:8)
+            load_name = v_load_name(i_load) (1:8)
             load_nume = v_load_info(nb_load+i_load+1)
             if (load_nume .gt. 0) then
                 ligrel(2) = load_name//'.CHTH.LIGRE'
@@ -153,31 +153,31 @@ implicit none
                 lpaout(1) = 'PMATTTR'
                 lchout(1) = matr_elem(1:8)//'.ME001'
                 do k = 1, nbchmx
-                    lchin(2) = load_name(1:8)//'.CHTH'// nomchp(k)// '.DESC'
+                    lchin(2) = load_name(1:8)//'.CHTH'//nomchp(k)//'.DESC'
                     call jeexin(lchin(2), iret)
                     if (iret .gt. 0) then
-                        if (load_nume.eq. 1) then
+                        if (load_nume .eq. 1) then
                             option = 'RIGI_THER_'//nomopr(k)
                             lpain(2) = nompar(k)
-                        else if (load_nume.eq.2 .or. load_nume.eq.3) then
+                        else if (load_nume .eq. 2 .or. load_nume .eq. 3) then
                             option = 'RIGI_THER_'//nomopf(k)
                             lpain(2) = nompaf(k)
-                        endif
+                        end if
                         if (option(11:14) .eq. 'PARO') then
                             lpain(3) = 'PTEMPSR'
                             lchin(3) = time_move
-                        endif
+                        end if
                         if (k .eq. 2) lchin(4) = temp_iter
-                        ilires = ilires + 1
+                        ilires = ilires+1
                         call codent(ilires, 'D0', lchout(1) (12:14))
-                        call calcul('S', option, ligrel(nligr(k)), nbopt( k), lchin,&
-                                    lpain, 1, lchout, lpaout, 'V',&
+                        call calcul('S', option, ligrel(nligr(k)), nbopt(k), lchin, &
+                                    lpain, 1, lchout, lpaout, 'V', &
                                     'OUI')
                         call reajre(matr_elem, lchout(1), 'V')
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

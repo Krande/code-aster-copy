@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine arltep(ndim  ,coors ,npgs  , &
-                  kpgs  ,nns   ,fctfs   , &
-                  elrefc,nnc   ,coorc , &
-                  fctfc ,dfdxc ,dfdyc ,dfdzc)
+subroutine arltep(ndim, coors, npgs, &
+                  kpgs, nns, fctfs, &
+                  elrefc, nnc, coorc, &
+                  fctfc, dfdxc, dfdyc, dfdzc)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
@@ -33,19 +33,18 @@ implicit none
 #include "asterfort/arljac.h"
 #include "asterfort/jedema.h"
 !
-integer :: nns,npgs,kpgs
-character(len=8) :: elrefc
-integer :: nnc,ndim
-real(kind=8) ::  coors(ndim*nns),coorc(ndim*nnc)
-real(kind=8) ::  fctfs(nns*npgs)
-real(kind=8) ::  fctfc(ndim*ndim*nnc)
-real(kind=8) ::  dfdxc(nnc),dfdyc(nnc),dfdzc(nnc)
+    integer :: nns, npgs, kpgs
+    character(len=8) :: elrefc
+    integer :: nnc, ndim
+    real(kind=8) ::  coors(ndim*nns), coorc(ndim*nnc)
+    real(kind=8) ::  fctfs(nns*npgs)
+    real(kind=8) ::  fctfc(ndim*ndim*nnc)
+    real(kind=8) ::  dfdxc(nnc), dfdyc(nnc), dfdzc(nnc)
 
 ! ----------------------------------------------------------------------
 
 ! CALCUL DES MATRICES DE COUPLAGE ARLEQUIN
 ! OPTION ARLQ_MATR
-
 
 ! EXTENSION DES FF ET DFF D'UNE MAILLE C DANS UNE MAILLE S PLUS GRANDE
 
@@ -76,11 +75,11 @@ real(kind=8) ::  dfdxc(nnc),dfdyc(nnc),dfdzc(nnc)
 
 ! ----------------------------------------------------------------------
 
-    real(kind=8) ::  coorr(3),coorpc(3)
+    real(kind=8) ::  coorr(3), coorpc(3)
     real(kind=8) :: zero
-    integer ::  idim,jdim,ino,ibid,jdecal
-    real(kind=8) ::  dfr(3,nnc)
-    real(kind=8) ::  invjac(3,3)
+    integer ::  idim, jdim, ino, ibid, jdecal
+    real(kind=8) ::  dfr(3, nnc)
+    real(kind=8) ::  invjac(3, 3)
     integer ::  iret
 
 ! ----------------------------------------------------------------------
@@ -88,7 +87,7 @@ real(kind=8) ::  dfdxc(nnc),dfdyc(nnc),dfdzc(nnc)
 
     if (kpgs > npgs) then
         ASSERT(.false.)
-    endif
+    end if
 
 ! --- COORDONNEES DS ESPACE REEL DU POINT DE GAUSS IPG DE LA MAILLE S
 
@@ -97,9 +96,9 @@ real(kind=8) ::  dfdxc(nnc),dfdyc(nnc),dfdzc(nnc)
     coorr(:) = zero
     coorpc(:) = zero
 
-    do ino = 1,nns
-        do idim = 1,ndim
-            coorr(idim) = coorr(idim) + &
+    do ino = 1, nns
+        do idim = 1, ndim
+            coorr(idim) = coorr(idim)+ &
                           fctfs(jdecal+ino)* &
                           coors(ndim*(ino-1)+idim)
         end do
@@ -107,12 +106,12 @@ real(kind=8) ::  dfdxc(nnc),dfdyc(nnc),dfdzc(nnc)
 
 ! --- COORDONNEES DU PT DE GAUSS DS ESPACE PARA DE MAILLE C
 
-    call reereg('S',elrefc,nnc   ,coorc ,coorr ,ndim  , &
+    call reereg('S', elrefc, nnc, coorc, coorr, ndim, &
                 coorpc, iret)
 
 ! --- VALEURS DES FONCTIONS DE FORME DE ELT C EN COORPC
 
-    call arlelr(elrefc,coorpc,ndim*ndim*nnc,fctfc,ibid)
+    call arlelr(elrefc, coorpc, ndim*ndim*nnc, fctfc, ibid)
 
 ! --- DERIVEES DES FONCTIONS DE FORME DE REFERENCE EN COORPC
 
@@ -124,17 +123,17 @@ real(kind=8) ::  dfdxc(nnc),dfdyc(nnc),dfdzc(nnc)
 
 ! --- DERIVEES DES FONCTIONS DE FORMES CLASSIQUES EN COORPC
 
-    do ino = 1,nnc
-        dfdxc(ino)= invjac(1,1)*dfr(1,ino)
-        dfdyc(ino)= invjac(1,2)*dfr(1,ino)
-        dfdzc(ino)= invjac(1,3)*dfr(1,ino)
-        do jdim = 2,ndim
-            dfdxc(ino)= dfdxc(ino) + &
-                        invjac(jdim,1)*dfr(jdim,ino)
-            dfdyc(ino)= dfdyc(ino) + &
-                        invjac(jdim,2)*dfr(jdim,ino)
-            dfdzc(ino)= dfdzc(ino) + &
-                        invjac(jdim,3)*dfr(jdim,ino)
+    do ino = 1, nnc
+        dfdxc(ino) = invjac(1, 1)*dfr(1, ino)
+        dfdyc(ino) = invjac(1, 2)*dfr(1, ino)
+        dfdzc(ino) = invjac(1, 3)*dfr(1, ino)
+        do jdim = 2, ndim
+            dfdxc(ino) = dfdxc(ino)+ &
+                         invjac(jdim, 1)*dfr(jdim, ino)
+            dfdyc(ino) = dfdyc(ino)+ &
+                         invjac(jdim, 2)*dfr(jdim, ino)
+            dfdzc(ino) = dfdzc(ino)+ &
+                         invjac(jdim, 3)*dfr(jdim, ino)
         end do
     end do
 

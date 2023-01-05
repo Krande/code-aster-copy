@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,49 +17,49 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc8028(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
-                  compor, mult_comp, carcri, instam, instap, neps,&
-                  epsm, deps, nsig, sigm, vim,&
-                  option, angmas,sigp, nvi, vip, &
+subroutine lc8028(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  compor, mult_comp, carcri, instam, instap, neps, &
+                  epsm, deps, nsig, sigm, vim, &
+                  option, angmas, sigp, nvi, vip, &
                   typmod, icomp, ndsde, dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmcpla.h"
 #include "asterfort/kitPrepBehaviour.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-integer, intent(in) :: ndim
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-character(len=16), intent(in) :: mult_comp
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam
-real(kind=8), intent(in) :: instap
-integer, intent(in) :: neps
-real(kind=8), intent(in) :: epsm(*)
-real(kind=8), intent(in) :: deps(*)
-integer, intent(in) :: nsig
-real(kind=8), intent(in) :: sigm(*)
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(out) :: sigp(*)
-integer, intent(in) :: nvi
-real(kind=8), intent(out) :: vip(*)
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: icomp
-integer, intent(in) :: ndsde
-real(kind=8), intent(out) :: dsidep(*)
-integer, intent(out) :: codret
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(*)
+    real(kind=8), intent(in) :: deps(*)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(*)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(out) :: sigp(*)
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: vip(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: ndsde
+    real(kind=8), intent(out) :: dsidep(*)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,7 +77,7 @@ integer, intent(out) :: codret
 !
 ! - Compute behaviour
 !
-    call nmcpla(BEHinteg,&
+    call nmcpla(BEHinteg, &
                 fami, kpg, ksp, ndim, typmod, imate, &
                 compor_plas, compor_creep, carcri, &
                 instam, instap, neps, epsm, deps, &

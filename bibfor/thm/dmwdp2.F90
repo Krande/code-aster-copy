@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function dmwdp2(rho11 , satur  , phi, cs, cliq,&
+function dmwdp2(rho11, satur, phi, cs, cliq, &
                 dp11p2, l_emmag, em)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-real(kind=8), intent(in) :: rho11, phi, satur
-real(kind=8), intent(in) :: cs, cliq, dp11p2, em
-aster_logical, intent(in) :: l_emmag
-real(kind=8) :: dmwdp2
+    real(kind=8), intent(in) :: rho11, phi, satur
+    real(kind=8), intent(in) :: cs, cliq, dp11p2, em
+    aster_logical, intent(in) :: l_emmag
+    real(kind=8) :: dmwdp2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,6 +52,6 @@ real(kind=8) :: dmwdp2
         dmwdp2 = rho11*(phi*em+phi*cliq*dp11p2)
     else
         dmwdp2 = rho11*satur*(phi*cliq*dp11p2+cs)
-    endif
+    end if
 !
 end function

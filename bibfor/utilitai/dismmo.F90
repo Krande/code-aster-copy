@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -36,8 +36,8 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/lteatt.h"
 !
-integer :: repi, ierd
-character(len=*) :: questi, nomobz, repkz
+    integer :: repi, ierd
+    character(len=*) :: questi, nomobz, repkz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,8 +70,8 @@ character(len=*) :: questi, nomobz, repkz
     repi = 0
     ierd = 0
 !
-    model=nomobz
-    modelLigrel=model//'.MODELE'
+    model = nomobz
+    modelLigrel = model//'.MODELE'
 !
     call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
     mesh = lgrf(1)
@@ -85,15 +85,15 @@ character(len=*) :: questi, nomobz, repkz
     elseif (questi .eq. 'PARTITION') then
         call dismlg(questi, modelLigrel, repi, repk, ierd)
 
-    elseif ((questi .eq. 'DIM_GEOM') .or. (questi .eq. 'NB_SM_MAILLA') .or.&
+    elseif ((questi .eq. 'DIM_GEOM') .or. (questi .eq. 'NB_SM_MAILLA') .or. &
             (questi .eq. 'NB_SS_ACTI') .or. (questi .eq. 'NB_NL_MAILLA')) then
         call dismlg(questi, modelLigrel, repi, repk, ierd)
 
-    elseif ((questi .eq. 'AXIS') .or. (questi .eq. 'CALC_RIGI') .or.&
+    elseif ((questi .eq. 'AXIS') .or. (questi .eq. 'CALC_RIGI') .or. &
             (questi .eq. 'PHENOMENE')) then
         call dismlg(questi, modelLigrel, repi, repk, ierd)
 
-    elseif ((questi .eq. 'EXI_AMOR') .or.  (questi .eq. 'EXI_ELEM') .or. &
+    elseif ((questi .eq. 'EXI_AMOR') .or. (questi .eq. 'EXI_ELEM') .or. &
             (questi .eq. 'EXI_RDM') .or. (questi .eq. 'EXI_COQUE') .or. &
             (questi .eq. 'EXI_GRILLE') .or. (questi .eq. 'EXI_COQ3D') .or. &
             (questi .eq. 'EXI_PLAQUE') .or. (questi .eq. 'EXI_TUYAU') .or. &
@@ -110,48 +110,48 @@ character(len=*) :: questi, nomobz, repkz
         call dismqu(questi, modelLigrel, repi, repk, ierd)
 
     else if (questi .eq. 'NOM_MAILLA') then
-        repk=mesh
+        repk = mesh
 
     else if (questi .eq. 'MODELISATION') then
         call jeexin(modelLigrel//'.LIEL', iret)
-        if (iret  .eq.  0) goto 20
+        if (iret .eq. 0) goto 20
         call jelira(modelLigrel//'.LIEL', 'NUTIOC', nbgrel)
         if (nbgrel .le. 0) goto 20
-        ico=0
-        nomodl=' '
+        ico = 0
+        nomodl = ' '
 !
         do igrel = 1, nbgrel
-            call jeveuo(jexnum(modelLigrel//'.LIEL', igrel), 'L', vi = liel)
+            call jeveuo(jexnum(modelLigrel//'.LIEL', igrel), 'L', vi=liel)
             call jelira(jexnum(modelLigrel//'.LIEL', igrel), 'LONMAX', lielSize)
             elemTypeNume = liel(lielSize)
             call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), elemTypeName)
             call dismte('MODELISATION', elemTypeName, repi, repk, ierd)
-            nomod2=repk(1:16)
+            nomod2 = repk(1:16)
 !           -- ON ESPERE QUE LES NOMTE '#PLUSIEURS' SONT DES ELEMENTS
 !              DE BORD ET QUE L'ON PEUT LES IGNORER ET QU'IL EN RESTE
 !              D'AUTRES PLUS SIGNIFICATIFS :
             if (nomod2 .ne. '#PLUSIEURS') then
                 if (nomodl .ne. nomod2) then
-                    ico=ico+1
-                    nomodl=nomod2
-                endif
-            endif
+                    ico = ico+1
+                    nomodl = nomod2
+                end if
+            end if
         end do
-        ASSERT(ico.ge.1)
+        ASSERT(ico .ge. 1)
 !
         if (ico .eq. 1) then
-            repk=nomodl
+            repk = nomodl
         else if (ico .gt. 1) then
-            repk='#PLUSIEURS'
-        endif
+            repk = '#PLUSIEURS'
+        end if
         goto 30
 !
 20      continue
-        repk='#AUCUNE'
+        repk = '#AUCUNE'
 !
 30      continue
 
-    elseif ((questi .eq. 'NB_NO_MAILLA') .or. (questi .eq. 'NB_MA_MAILLA') .or.&
+    elseif ((questi .eq. 'NB_NO_MAILLA') .or. (questi .eq. 'NB_MA_MAILLA') .or. &
             (questi .eq. 'NB_NO_SS_MAX')) then
         call dismma(questi, mesh, repi, repk, ierd)
 
@@ -159,39 +159,39 @@ character(len=*) :: questi, nomobz, repkz
         call jeexin(model//'.NFIS', iret)
         if (iret .gt. 0) then
             call jeveuo(model//'.NFIS', 'L', vi=nfis)
-            repi=nfis(1)
+            repi = nfis(1)
         else
-            repi=0
-        endif
+            repi = 0
+        end if
 
     else if (questi .eq. 'PRE_COND_XFEM') then
         call jeexin(model//'.PRE_COND', iret)
         if (iret .gt. 0) then
             call jeveuo(model//'.PRE_COND', 'L', vk8=k8cond)
-            repk=k8cond(1)
+            repk = k8cond(1)
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
 
     else if (questi .eq. 'BESOIN_MATER') then
         call jeexin(modelLigrel//'.LIEL', iret)
         if (iret .gt. 0) then
             call jelira(modelLigrel//'.LIEL', 'NUTIOC', nbgrel)
-            repk='NON'
+            repk = 'NON'
             do igrel = 1, nbgrel
-                call jeveuo(jexnum(modelLigrel//'.LIEL', igrel), 'L', vi = liel)
+                call jeveuo(jexnum(modelLigrel//'.LIEL', igrel), 'L', vi=liel)
                 call jelira(jexnum(modelLigrel//'.LIEL', igrel), 'LONMAX', lielSize)
                 elemTypeNume = liel(lielSize)
                 call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), elemTypeName)
                 call dismte('MODELISATION', elemTypeName, repi, repk, ierd)
                 if (lteatt('TYPMOD', '0D', typel=elemTypeName)) then
-                    repk='OUI'
+                    repk = 'OUI'
                     goto 70
-                endif
+                end if
             end do
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
 
     else if (questi .eq. 'EXI_ELTVOL') then
 !          (EXISTENCE D'ELEMENTS DONT LA MAILLE EST VOLUMIQUE)
@@ -199,45 +199,45 @@ character(len=*) :: questi, nomobz, repkz
         call jeexin(modelLigrel//'.LIEL', iret)
         if (iret .gt. 0) then
             call jelira(modelLigrel//'.LIEL', 'NUTIOC', nbgrel)
-            repk='NON'
-            do igrel=1,nbgrel
-                call jeveuo(jexnum(modelLigrel//'.LIEL', igrel), 'L', vi = liel)
+            repk = 'NON'
+            do igrel = 1, nbgrel
+                call jeveuo(jexnum(modelLigrel//'.LIEL', igrel), 'L', vi=liel)
                 call jelira(jexnum(modelLigrel//'.LIEL', igrel), 'LONMAX', lielSize)
                 elemTypeNume = liel(lielSize)
                 call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), elemTypeName)
                 call dismte('TYPE_TYPMAIL', elemTypeName, repi, tytm, ierd)
                 if (tytm .eq. 'VOLU') then
-                    repk='OUI'
+                    repk = 'OUI'
                     goto 70
-                endif
+                end if
             end do
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
     else if (questi .eq. 'EXI_XFEM') then
         call jeexin(model//'.FISS', iret)
         if (iret .gt. 0) then
-            repk='OUI'
+            repk = 'OUI'
         else
-            repk='NON'
-        endif
+            repk = 'NON'
+        end if
     else
         goto 60
-    endif
+    end if
 !
     goto 70
 !
 !     -- SORTIE ERREUR :
 !     ------------------
 60  continue
-    ierd=1
+    ierd = 1
     goto 80
 !
 !     -- SORTIE NORMALE :
 !     ------------------
 70  continue
-    ierd=0
-    repkz=repk
+    ierd = 0
+    repkz = repk
 !
 !
 80  continue

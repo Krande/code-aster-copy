@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0086(option, nomte)
     real(kind=8)        :: valres(2)
     character(len=16)   :: nomres(2)
 !
-    integer :: nno, kp, ii, jj, imatuu, ipoids, ivf, igeom, imate,iforce
+    integer :: nno, kp, ii, jj, imatuu, ipoids, ivf, igeom, imate, iforce
     integer :: ideplp, idfdk, imat, iyty, iret
     integer :: jgano, kk, ndim, nelyty, nnos, nbval, nordre, npg
 !
@@ -60,8 +60,8 @@ subroutine te0086(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     demi = 0.5d0
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdk, jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
 !   3 efforts par noeud
     nordre = 3*nno
@@ -70,7 +70,7 @@ subroutine te0086(option, nomte)
 !   Parametres en sortie
     call jevech('PMATUUR', 'E', imatuu)
     nbval = nordre*(nordre+1)/2
-    zr(imatuu:imatuu-1+nbval)= 0.0d0
+    zr(imatuu:imatuu-1+nbval) = 0.0d0
 ! --------------------------------------------------------------------------------------------------
 !   Parametres en entree : si pas de DEPL MATGEOM=0
     call tecach('ONO', 'PDEPLPR', 'L', iret, iad=ideplp)
@@ -84,9 +84,9 @@ subroutine te0086(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'EC_SUR_E'
     r8bid = 0.0d0
-    call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS',  0, '  ', [r8bid],&
+    call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, '  ', [r8bid], &
                 1, nomres, valres, icodre, 1)
-    call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'CABLE', 0, '  ', [r8bid],&
+    call rcvalb('RIGI', 1, 1, '+', zi(imate), ' ', 'CABLE', 0, '  ', [r8bid], &
                 1, nomres(2), valres(2), icodre(2), 1)
     etraction = valres(1)
     ecompress = etraction*valres(2)
@@ -94,35 +94,35 @@ subroutine te0086(option, nomte)
 !
     valp(1) = 'SECT'
     call get_value_mode_local('PCACABL', valp, valr, iret, nbpara_=1)
-    aire   = valr(1)
+    aire = valr(1)
 !
-    imat = imatuu - 1
+    imat = imatuu-1
     do ii = 1, 3*nno
         w(ii) = zr(ideplp-1+ii)
-    enddo
+    end do
     do kp = 1, npg
         kk = (kp-1)*nordre*nordre
-        jacobi = sqrt(biline(nordre,zr(igeom),zr(iyty+kk),zr(igeom)))
+        jacobi = sqrt(biline(nordre, zr(igeom), zr(iyty+kk), zr(igeom)))
 !
         nx = zr(iforce-1+kp)
 !       Le cable a un module plus faible en compression qu'en traction
 !       Le module de compression peut même être nul.
-        if ( nx .lt. 0.0d0 ) then
+        if (nx .lt. 0.0d0) then
             ecable = ecompress
-        endif
+        end if
 !
         coef1 = ecable*aire*zr(ipoids-1+kp)/jacobi**3
         coef2 = nx*zr(ipoids-1+kp)/jacobi
         call matvec(nordre, zr(iyty+kk), 2, zr(igeom), w, ytywpq)
-        nelyty = iyty - 1 - nordre + kk
+        nelyty = iyty-1-nordre+kk
         do ii = 1, nordre
-            nelyty = nelyty + nordre
+            nelyty = nelyty+nordre
             do jj = 1, ii
-                imat = imat + 1
-                zr(imat) = zr(imat) + coef1*ytywpq(ii)*ytywpq(jj) + coef2*zr(nelyty+jj)
-            enddo
-        enddo
-    enddo
+                imat = imat+1
+                zr(imat) = zr(imat)+coef1*ytywpq(ii)*ytywpq(jj)+coef2*zr(nelyty+jj)
+            end do
+        end do
+    end do
 !
 999 continue
 end subroutine

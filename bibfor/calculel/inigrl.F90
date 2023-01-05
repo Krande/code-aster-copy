@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
+subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab, &
                   nval)
 ! aslint: disable=
     implicit none
@@ -68,7 +68,7 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
     call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !
 !     -- ON MET LES ADRESSES A ZERO :
-    do k = 1,nmax
+    do k = 1, nmax
         k24tab(k) = ' '
         adtabl(k) = 0
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romAlgoNLRead(paraAlgo)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
+    type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,31 +59,31 @@ type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_41')
-    endif
+    end if
 !
 ! - Initializations
 !
-    keywf         = 'MODELE_REDUIT'
-    l_hrom        = ASTER_FALSE
+    keywf = 'MODELE_REDUIT'
+    l_hrom = ASTER_FALSE
     l_hrom_corref = ASTER_FALSE
-    grnode_int    = ' '
-    grnode_sub    = ' '
-    coef_pena     = 0.d0
+    grnode_int = ' '
+    grnode_sub = ' '
+    coef_pena = 0.d0
 !
 ! - Read parameters
 !
-    call getvid(keywf, 'BASE_PRIMAL'   , iocc=1, scal = baseName)
-    call getvtx(keywf, 'DOMAINE_REDUIT', iocc=1, scal = answer)
+    call getvid(keywf, 'BASE_PRIMAL', iocc=1, scal=baseName)
+    call getvtx(keywf, 'DOMAINE_REDUIT', iocc=1, scal=answer)
     l_hrom = answer .eq. 'OUI'
     if (l_hrom) then
-        call getvtx(keywf,'GROUP_NO_INTERF', iocc=1, scal = grnode_int)
-        call getvtx(keywf,'CORR_COMPLET', iocc=1, scal = answer)
+        call getvtx(keywf, 'GROUP_NO_INTERF', iocc=1, scal=grnode_int)
+        call getvtx(keywf, 'CORR_COMPLET', iocc=1, scal=answer)
         l_hrom_corref = answer .eq. 'OUI'
         if (l_hrom_corref) then
-            call getvtx(keywf,'GROUP_NO_ENCASTRE', iocc=1, scal = grnode_sub)
-            call getvr8(keywf,'COEF_PENA'        , iocc=1, scal = coef_pena)
-        endif
-    endif
+            call getvtx(keywf, 'GROUP_NO_ENCASTRE', iocc=1, scal=grnode_sub)
+            call getvr8(keywf, 'COEF_PENA', iocc=1, scal=coef_pena)
+        end if
+    end if
 !
 ! - Get informations about base
 !
@@ -91,18 +91,18 @@ type(ROM_DS_AlgoPara), intent(inout) :: paraAlgo
 !
 ! - Save parameters in datastructure
 !
-    paraAlgo%l_rom         = ASTER_TRUE
-    paraAlgo%ds_empi       = base
-    paraAlgo%l_hrom        = l_hrom
-    paraAlgo%grnode_int    = grnode_int
+    paraAlgo%l_rom = ASTER_TRUE
+    paraAlgo%ds_empi = base
+    paraAlgo%l_hrom = l_hrom
+    paraAlgo%grnode_int = grnode_int
     paraAlgo%l_hrom_corref = l_hrom_corref
-    paraAlgo%grnode_sub    = grnode_sub
-    paraAlgo%vale_pena     = coef_pena
+    paraAlgo%grnode_sub = grnode_sub
+    paraAlgo%vale_pena = coef_pena
 !
 ! - Debug
 !
     if (niv .ge. 2) then
         call romAlgoNLPrintInfo(paraAlgo)
-    endif
+    end if
 !
 end subroutine

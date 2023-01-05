@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getExternalStateVariable(rela_comp    , rela_code_py,&
-                                    l_mfront_offi, l_mfront_proto,&
-                                    cptr_nbvarext, cptr_namevarext,&
+subroutine getExternalStateVariable(rela_comp, rela_code_py, &
+                                    l_mfront_offi, l_mfront_proto, &
+                                    cptr_nbvarext, cptr_namevarext, &
                                     variExteCode)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcextevari.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/iscode.h"
 #include "asterfort/utmess.h"
 !
-character(len=16), intent(in) :: rela_comp, rela_code_py
-aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
-integer, intent(in) :: cptr_nbvarext, cptr_namevarext
-integer, intent(out) :: variExteCode(2)
+    character(len=16), intent(in) :: rela_comp, rela_code_py
+    aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
+    integer, intent(in) :: cptr_nbvarext, cptr_namevarext
+    integer, intent(out) :: variExteCode(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,28 +63,28 @@ integer, intent(out) :: variExteCode(2)
     character(len=8) :: name_exte(8)
 
     integer :: tabcod(60)
-    character(len=16), parameter :: name_varc(nb_exte_list)  = (/'ELTSIZE1','ELTSIZE2','COORGA  ',&
-                                                                 'GRADVELO','HYGR    ','NEUT1   ',&
-                                                                 'NEUT2   ','TEMP    ','DTX     ',&
-                                                                 'DTY     ','DTZ     ','X       ',&
-                                                                 'Y       ','Z       ','SECH    ',&
-                                                                 'HYDR    ','CORR    ','IRRA    ',&
-                                                                 'EPSAXX  ','EPSAYY  ','EPSAZZ  ',&
-                                                                 'EPSAXY  ','EPSAXZ  ','EPSAYZ  ',&
-                                                                 'PFERRITE','PPERLITE','PBAINITE',&
-                                                                 'PMARTENS','ALPHPUR ','ALPHBET ',&
-                                                                 'TIME    ','TEMPREFE'/)
-    aster_logical, parameter :: l_allow_mfront(nb_exte_list) = (/.true.    ,.false.   ,.false.   ,&
-                                                                 .false.   ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true.    ,.true.    ,&
-                                                                 .true.    ,.true./)
+   character(len=16), parameter :: name_varc(nb_exte_list) = (/'ELTSIZE1', 'ELTSIZE2', 'COORGA  ', &
+                                                               'GRADVELO', 'HYGR    ', 'NEUT1   ', &
+                                                               'NEUT2   ', 'TEMP    ', 'DTX     ', &
+                                                               'DTY     ', 'DTZ     ', 'X       ', &
+                                                               'Y       ', 'Z       ', 'SECH    ', &
+                                                               'HYDR    ', 'CORR    ', 'IRRA    ', &
+                                                               'EPSAXX  ', 'EPSAYY  ', 'EPSAZZ  ', &
+                                                               'EPSAXY  ', 'EPSAXZ  ', 'EPSAYZ  ', &
+                                                               'PFERRITE', 'PPERLITE', 'PBAINITE', &
+                                                               'PMARTENS', 'ALPHPUR ', 'ALPHBET ', &
+                                                                'TIME    ', 'TEMPREFE'/)
+    aster_logical, parameter :: l_allow_mfront(nb_exte_list) = (/.true., .false., .false., &
+                                                                 .false., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true., .true., &
+                                                                 .true., .true./)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,22 +94,22 @@ integer, intent(out) :: variExteCode(2)
     nb_exte = 0
     name_exte = ' '
     if (l_mfront_proto .or. l_mfront_offi) then
-        call mfront_get_external_state_variable(cptr_nbvarext, cptr_namevarext,&
-                                                name_exte    , nb_exte)
+        call mfront_get_external_state_variable(cptr_nbvarext, cptr_namevarext, &
+                                                name_exte, nb_exte)
         ASSERT(nb_exte .le. 8)
     else
         call lcinfo(rela_code_py, idummy1, idummy2, nb_exte)
         ASSERT(nb_exte .le. 8)
         call lcextevari(rela_code_py, nb_exte, name_exte)
-    endif
+    end if
 
 ! - Print
     if (nb_exte .gt. 0) then
-        call utmess('I', 'COMPOR4_21', si = nb_exte, sk = rela_comp)
+        call utmess('I', 'COMPOR4_21', si=nb_exte, sk=rela_comp)
         do i_exte = 1, nb_exte
-            call utmess('I', 'COMPOR4_22', si = i_exte, sk = name_exte(i_exte))
+            call utmess('I', 'COMPOR4_22', si=i_exte, sk=name_exte(i_exte))
         end do
-    endif
+    end if
 
 ! - Coding
     tabcod = 0
@@ -117,12 +117,12 @@ integer, intent(out) :: variExteCode(2)
         do i_exte_list = 1, nb_exte_list
             if (name_exte(i_exte) .eq. name_varc(i_exte_list)) then
                 tabcod(i_exte_list) = 1
-                if (.not. l_allow_mfront(i_exte_list) .and.&
+                if (.not. l_allow_mfront(i_exte_list) .and. &
                     (l_mfront_proto .or. l_mfront_offi)) then
-                    call utmess('I', 'COMPOR2_25', sk = name_exte(i_exte))
+                    call utmess('I', 'COMPOR2_25', sk=name_exte(i_exte))
                     tabcod(i_exte_list) = 0
-                endif
-            endif
+                end if
+            end if
         end do
     end do
     call iscode(tabcod, variextecode, 60)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine apstos(mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -88,19 +88,19 @@ implicit none
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<Pairing> Segment-to-segment pairing'
-    endif
+        write (ifm, *) '<Pairing> Segment-to-segment pairing'
+    end if
 !
 ! - Initializations
 !
-    nb_pair_zone   = 0
+    nb_pair_zone = 0
 !
 ! - Get parameters
 !
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
-    l_smooth     = cfdisl(ds_contact%sdcont_defi, 'LISSAGE')
-    nt_patch     = ds_contact%nt_patch
-    zmeth        = cfmmvd('ZMETH')
+    l_smooth = cfdisl(ds_contact%sdcont_defi, 'LISSAGE')
+    nt_patch = ds_contact%nt_patch
+    zmeth = cfmmvd('ZMETH')
 !
 ! - Updated geometry
 !
@@ -108,7 +108,7 @@ implicit none
 !
 ! - Access to pairing datastructures
 !
-    sdappa      = ds_contact%sdcont_solv(1:14)//'.APPA'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
     sdappa_gapi = sdappa(1:19)//'.GAPI'
     call jerazo(sdappa_gapi, nt_patch, 1)
 !
@@ -118,14 +118,14 @@ implicit none
 !
 ! ----- Get parameters
 !
-        pair_tole     = mminfr(ds_contact%sdcont_defi, 'RESI_APPA', i_zone)
+        pair_tole = mminfr(ds_contact%sdcont_defi, 'RESI_APPA', i_zone)
         sdcont_methco = ds_contact%sdcont_defi(1:16)//'.METHCO'
-        call jeveuo(sdcont_methco, 'L', vi = v_sdcont_methco)
+        call jeveuo(sdcont_methco, 'L', vi=v_sdcont_methco)
         if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 2) then
-            pair_method  = 'ROBUSTE'
+            pair_method = 'ROBUSTE'
         else if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 3) then
-            pair_method  = 'RAPIDE'
-        endif
+            pair_method = 'RAPIDE'
+        end if
 !
 ! ----- Generate name of objects
 !
@@ -138,8 +138,8 @@ implicit none
 !
         call jelira(sdappa_mast, 'LONMAX', nb_elem_mast)
         call jelira(sdappa_slav, 'LONMAX', nb_elem_slav)
-        call jeveuo(sdappa_mast, 'L', vi = v_sdappa_mast)
-        call jeveuo(sdappa_slav, 'L', vi = v_sdappa_slav)
+        call jeveuo(sdappa_mast, 'L', vi=v_sdappa_mast)
+        call jeveuo(sdappa_slav, 'L', vi=v_sdappa_slav)
 !
 ! ----- Pairing
 !
@@ -147,30 +147,30 @@ implicit none
 ! ----- MPI initialisation
 !
         call asmpi_comm('GET', mpicou)
-        call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
-        nb_elem_mpi  = int(nb_elem_slav/nb_proc)
+        call asmpi_info(mpicou, rank=i_proc, size=nb_proc)
+        nb_elem_mpi = int(nb_elem_slav/nb_proc)
         nbr_elem_mpi = nb_elem_slav-nb_elem_mpi*nb_proc
-        idx_start    = 1+(i_proc)*nb_elem_mpi
-        idx_end      = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
+        idx_start = 1+(i_proc)*nb_elem_mpi
+        idx_end = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
         !write(*,*)"Proc : ", i_proc, "idx_start", idx_start, "idx_end", idx_end
-        nb_el_slav_mpi = idx_end - idx_start + 1
+        nb_el_slav_mpi = idx_end-idx_start+1
         AS_ALLOCATE(vi=v_appa_slav_mpi, size=nb_el_slav_mpi)
-        v_appa_slav_mpi(:)=v_sdappa_slav(idx_start:idx_end)
+        v_appa_slav_mpi(:) = v_sdappa_slav(idx_start:idx_end)
         !write(*,*)"I_PROC = ", i_proc
         !write(*,*)"NB_ELEM_MPI = ",nb_el_slav_mpi, "LIST_ELEM_SLAV_MPI = ",v_appa_slav_mpi(:)
         !write(*,*)"NB_ELEM_SLAV = ", nb_elem_slav, "LIST_ELEM_SLAV = ",v_sdappa_slav(:)
-        call aplcpg(mesh        , newgeo        , sdappa      , i_zone       , pair_tole,&
-                    nb_elem_mast, v_sdappa_mast , nb_el_slav_mpi, v_appa_slav_mpi, &
-                    nb_pair_zone, list_pair_zone, list_nbptit_zone, list_ptitsl_zone,&
-                    list_ptitma_zone,list_ptgama_zone,int(i_proc), int(nb_proc), pair_method)
+        call aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
+                    nb_elem_mast, v_sdappa_mast, nb_el_slav_mpi, v_appa_slav_mpi, &
+                    nb_pair_zone, list_pair_zone, list_nbptit_zone, list_ptitsl_zone, &
+                    list_ptitma_zone, list_ptgama_zone, int(i_proc), int(nb_proc), pair_method)
         AS_DEALLOCATE(vi=v_appa_slav_mpi)
     end do
 !
 ! - Save pairing information in sdappa data structure
 !
     !write(*,*)"Debut apstoc"
-    call apstoc(ds_contact, nb_pair_zone, list_pair_zone,list_nbptit_zone,list_ptitsl_zone,&
-                list_ptitma_zone,list_ptgama_zone)
+    call apstoc(ds_contact, nb_pair_zone, list_pair_zone, list_nbptit_zone, list_ptitsl_zone, &
+                list_ptitma_zone, list_ptgama_zone)
     !write(*,*)"Fin apstoc"
 !
 ! - Compute smooth normals at nodes

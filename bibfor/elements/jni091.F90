@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,11 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
     character(len=24) :: demr, liobj(nmaxob)
 ! DEB -----------------------------------------------------------------
 !
-    ASSERT(elrefe(1:6).eq.'THCOSE')
+    ASSERT(elrefe(1:6) .eq. 'THCOSE')
     demr = '&INEL.'//elrefe//'.DEMR'
 !
     nbobj = 1
-    ASSERT(nmaxob.gt.nbobj)
+    ASSERT(nmaxob .gt. nbobj)
     liobj(1) = demr
 !
     call jeexin(demr, iret)
@@ -60,13 +60,13 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
     do i = 1, npg1
         xi3 = x3(i)
 !
-        ff(1) = 1 - xi3*xi3
-        ff(2) = -xi3* (1-xi3)/2.d0
-        ff(3) = xi3* (1+xi3)/2.d0
+        ff(1) = 1-xi3*xi3
+        ff(2) = -xi3*(1-xi3)/2.d0
+        ff(3) = xi3*(1+xi3)/2.d0
 !
-        ll = 3* (i-1)
+        ll = 3*(i-1)
         do l = 1, 3
-            i1 = ll + l
+            i1 = ll+l
             zr(mzr-1+i1) = ff(l)
         end do
     end do
@@ -76,6 +76,6 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
     zr(mzr-1+15) = 0.555555555555556d0
 !
 !
- 30 continue
+30  continue
 !
 end subroutine

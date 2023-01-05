@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 !
 subroutine metaSteelTRCGetParameters(jv_mater, metaSteelPara)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcadma.h"
 !
-integer, intent(in) :: jv_mater
-type(META_SteelParameters), intent(out) :: metaSteelPara
+    integer, intent(in) :: jv_mater
+    type(META_SteelParameters), intent(out) :: metaSteelPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,23 +51,23 @@ type(META_SteelParameters), intent(out) :: metaSteelPara
 ! --------------------------------------------------------------------------------------------------
 !
     call jevech('PFTRC', 'L', jv_pftrc)
-    jftrc   = zi(jv_pftrc)
-    jtrc    = zi(jv_pftrc+1)
+    jftrc = zi(jv_pftrc)
+    jtrc = zi(jv_pftrc+1)
     call rcadma(jv_mater, 'META_ACIER', 'TRC', iadtrc, icodre, 1)
-    nbcb1   = nint(zr(iadtrc+1))
-    nbcb2   = nint(zr(iadtrc+1+2+nbcb1))
+    nbcb1 = nint(zr(iadtrc+1))
+    nbcb2 = nint(zr(iadtrc+1+2+nbcb1))
     nb_hist = nint(zr(iadtrc+2))
-    nbcb2   = nint(zr(iadtrc+1+2+nbcb1*nb_hist))
-    nblexp  = nint(zr(iadtrc+1+2+nbcb1*nb_hist+1))
-    nb_trc  = nint(zr(iadtrc+1+2+nbcb1*nb_hist+2+nbcb2*nblexp+1))
-    iadexp  = 5 + nbcb1*nb_hist
-    iadckm  = 7 + nbcb1*nb_hist + nbcb2*nblexp
+    nbcb2 = nint(zr(iadtrc+1+2+nbcb1*nb_hist))
+    nblexp = nint(zr(iadtrc+1+2+nbcb1*nb_hist+1))
+    nb_trc = nint(zr(iadtrc+1+2+nbcb1*nb_hist+2+nbcb2*nblexp+1))
+    iadexp = 5+nbcb1*nb_hist
+    iadckm = 7+nbcb1*nb_hist+nbcb2*nblexp
     metaSteelPara%trc%jv_ftrc = jftrc
-    metaSteelPara%trc%jv_trc  = jtrc
-    metaSteelPara%trc%iadexp  = iadexp
-    metaSteelPara%trc%iadckm  = iadckm
-    metaSteelPara%trc%iadtrc  = iadtrc
+    metaSteelPara%trc%jv_trc = jtrc
+    metaSteelPara%trc%iadexp = iadexp
+    metaSteelPara%trc%iadckm = iadckm
+    metaSteelPara%trc%iadtrc = iadtrc
     metaSteelPara%trc%nb_hist = nb_hist
-    metaSteelPara%trc%nb_trc  = nb_trc
+    metaSteelPara%trc%nb_trc = nb_trc
 !
 end subroutine

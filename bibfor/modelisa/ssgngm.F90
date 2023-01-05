@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 !
 !-----------------------------------------------------------------------
     integer :: i, ialgma, ialima, ialino, ianbno, iangno
-    integer :: ibid, ier, iocc, iret,  jtrav
+    integer :: ibid, ier, iocc, iret, jtrav
     integer :: n1, nb, nbgma, nbgno, nbma, nbnoto, no
     aster_logical :: l_exi_in_grp, l_exi_in_grp_p, l_parallel_mesh, l_added_grpno
 !-----------------------------------------------------------------------
@@ -90,35 +90,35 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 !
 !      CRITERE DE SELECTION
         call getvtx('CREA_GROUP_NO', 'CRIT_NOEUD', iocc=iocc, scal=selec, nbret=ibid)
-        call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
+        call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc, &
                     0, k8b, nb)
         call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=0, nbret=no)
         nbgma = -nb
         call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
-        call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
+        call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc, &
                     nbgma, zk24(ialgma), nb)
         if (no .ne. 0) then
             nbgno = -no
             if (nbgno .ne. nbgma) then
                 call utmess('F', 'MODELISA7_8')
-            endif
+            end if
 !
             call wkvect('&&SSGNGM.NOM_GNO', 'V V K24', nbgno, iangno)
-            call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=nbgno, vect=zk24(iangno),&
+            call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=nbgno, vect=zk24(iangno), &
                         nbret=no)
 !
-            if(nb .ne. nbgma) then
+            if (nb .ne. nbgma) then
                 ASSERT(l_parallel_mesh)
                 call wkvect('&&SSGNGM.NOM_TMP', 'V V K24', nbgno, vk24=v_gno)
                 call wkvect('&&SSGNGM.MA_TMP', 'V V K24', nbgma, vk24=v_gma)
-                call getvtx('CREA_GROUP_NO', 'GROUP_MA', iocc=iocc, nbval=nbgma, vect=zk24(ialgma),&
-                        nbret=nb)
+               call getvtx('CREA_GROUP_NO', 'GROUP_MA', iocc=iocc, nbval=nbgma, vect=zk24(ialgma), &
+                            nbret=nb)
                 nb = 0
                 do i = 1, nbgma
                     nomgma = zk24(ialgma-1+i)
                     call existGrpMa(noma(1:8), nomgma, l_exi_in_grp, l_exi_in_grp_p)
-                    if(l_exi_in_grp) then
-                        nb = nb + 1
+                    if (l_exi_in_grp) then
+                        nb = nb+1
                         v_gno(nb) = zk24(iangno-1+i)
                         v_gma(nb) = nomgma
                     end if
@@ -130,7 +130,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
                     zk24(ialgma-1+i) = v_gma(i)
                 end do
 !
-                do i = nbgma +1, nbgno
+                do i = nbgma+1, nbgno
                     zk24(iangno-1+i) = ' '
                     zk24(ialgma-1+i) = ' '
                 end do
@@ -142,19 +142,19 @@ subroutine ssgngm(noma, iocc, nbgnaj)
         else
             nbgma = nb
             iangno = ialgma
-        endif
+        end if
         call checkListOfGrpMa(noma, zk24(ialgma), nbgma, ASTER_TRUE)
         ier = 0
         do i = 1, nbgma
             nomgma = zk24(ialgma-1+i)
             call existGrpMa(noma(1:8), nomgma, l_exi_in_grp, l_exi_in_grp_p)
-            if (.not.l_exi_in_grp) then
-                ier = ier + 1
+            if (.not. l_exi_in_grp) then
+                ier = ier+1
                 call utmess('E', 'ELEMENTS_62', sk=nomgma)
-            endif
+            end if
         end do
-        ASSERT(ier.eq.0)
-    endif
+        ASSERT(ier .eq. 0)
+    end if
     if (nbgma .eq. 0) goto 60
 !
     call wkvect('&&SSGNGM.LISTE_NO ', 'V V I', nbnoto, ialino)
@@ -167,28 +167,27 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     do i = 1, nbgma
         nomgma = zk24(ialgma-1+i)
         call existGrpMa(noma(1:8), nomgma, l_exi_in_grp, l_exi_in_grp_p)
-        if(l_exi_in_grp) then
+        if (l_exi_in_grp) then
             call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma)
             call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
-            call gmgnre(noma, nbnoto, zi(jtrav), zi(ialima), nbma,&
+            call gmgnre(noma, nbnoto, zi(jtrav), zi(ialima), nbma, &
                         zi(ialino), zi(ianbno-1+i), selec)
 !
             nomgno = zk24(iangno-1+i)
             n1 = zi(ianbno-1+i)
             call addGrpNo(noma(1:8), nomgno, zi(ialino), n1, l_added_grpno)
-            if(l_added_grpno) then
-                nbgnaj = nbgnaj + 1
+            if (l_added_grpno) then
+                nbgnaj = nbgnaj+1
             end if
         end if
     end do
 !
- 60 continue
+60  continue
     call jedetr('&&SSGNGM.LISTE_GMA')
     call jedetr('&&SSGNGM.NOM_GNO')
     call jedetr('&&SSGNGM.LISTE_NO')
     call jedetr('&&SSGNGM.TRAV')
     call jedetr('&&SSGNGM.NB_NO')
     call jedema()
-
 
 end subroutine

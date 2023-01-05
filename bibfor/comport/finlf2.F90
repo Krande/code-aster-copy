@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine finlf2(ndim, delta, alpha, kn, kt,&
+subroutine finlf2(ndim, delta, alpha, kn, kt, &
                   mu, Bn, Bt, m1, m2, cbar, d1, res)
 !
-implicit none
+    implicit none
 !
     integer :: ndim
     real(kind=8) :: delta(ndim), alpha
@@ -39,8 +39,8 @@ implicit none
 !
     res = Bn*((mu*kn*delta(1)-cbar)/(mu*(kn*alpha**m2+Bn*(1-alpha)**m1)))**2
     do i = 2, ndim
-        res = res + Bt*(kt*delta(i)/(kt*alpha**m2+Bt*(1-alpha)**m1))**2
+        res = res+Bt*(kt*delta(i)/(kt*alpha**m2+Bt*(1-alpha)**m1))**2
     end do
     res = res*((m1-m2)*alpha+m2)*(1-alpha)**(m1-1)
-    res = res/d1 - 2*(alpha**(1-m2))
+    res = res/d1-2*(alpha**(1-m2))
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,28 +16,28 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apinte_chck(proj_tole       , elem_dime     , &
+subroutine apinte_chck(proj_tole, elem_dime, &
                        elem_mast_nbnode, elem_mast_coor, &
-                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                       proj_coor       , mast_norm     , slav_norm     ,&
+                       elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
+                       proj_coor, mast_norm, slav_norm, &
                        l_inter)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/apdist.h"
 !
-real(kind=8), intent(in) :: proj_tole
-integer, intent(in) :: elem_dime
-integer, intent(in) :: elem_mast_nbnode
-real(kind=8), intent(in) :: elem_mast_coor(3,9)
-integer, intent(in) :: elem_slav_nbnode
-real(kind=8), intent(in) :: elem_slav_coor(3,9)
-character(len=8), intent(in) :: elem_slav_code
-real(kind=8), intent(in) :: proj_coor(elem_dime-1,4)
-real(kind=8), intent(in) :: mast_norm(3), slav_norm(3)
-aster_logical, intent(out) :: l_inter
+    real(kind=8), intent(in) :: proj_tole
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: elem_mast_nbnode
+    real(kind=8), intent(in) :: elem_mast_coor(3, 9)
+    integer, intent(in) :: elem_slav_nbnode
+    real(kind=8), intent(in) :: elem_slav_coor(3, 9)
+    character(len=8), intent(in) :: elem_slav_code
+    real(kind=8), intent(in) :: proj_coor(elem_dime-1, 4)
+    real(kind=8), intent(in) :: mast_norm(3), slav_norm(3)
+    aster_logical, intent(out) :: l_inter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ aster_logical, intent(out) :: l_inter
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    debug   = ASTER_FALSE
+    debug = ASTER_FALSE
     l_inter = ASTER_TRUE
 !
     do i_node = 1, elem_mast_nbnode
@@ -85,47 +85,47 @@ aster_logical, intent(out) :: l_inter
         ksi1 = proj_coor(1, i_node)
         if (elem_dime .eq. 3) then
             ksi2 = proj_coor(2, i_node)
-        endif
+        end if
 ! ----- Compute distance from point to its orthogonal projection
         dist = 0.d0
         if (elem_slav_code .eq. "QU4") then
-            elin_slav_code   = "TR3"
-            elin_slav_nbnode =  3
+            elin_slav_code = "TR3"
+            elin_slav_nbnode = 3
         else
-            elin_slav_code   = elem_slav_code
+            elin_slav_code = elem_slav_code
             elin_slav_nbnode = elem_slav_nbnode
         end if
-        call apdist(elin_slav_code, elem_slav_coor, elin_slav_nbnode, ksi1, ksi2,&
-                    noma_coor     , dist          , vect_pm)
+        call apdist(elin_slav_code, elem_slav_coor, elin_slav_nbnode, ksi1, ksi2, &
+                    noma_coor, dist, vect_pm)
 ! ----- Sign of colinear product VECT_PM . NORMAL(slave)
         sig = 0.d0
         if (elem_dime .eq. 3) then
-            sig = vect_pm(1)*slav_norm(1)+&
-                  vect_pm(2)*slav_norm(2)+&
+            sig = vect_pm(1)*slav_norm(1)+ &
+                  vect_pm(2)*slav_norm(2)+ &
                   vect_pm(3)*slav_norm(3)
         elseif (elem_dime .eq. 2) then
-            sig = vect_pm(1)*slav_norm(1)+&
+            sig = vect_pm(1)*slav_norm(1)+ &
                   vect_pm(2)*slav_norm(2)
         else
             ASSERT(ASTER_FALSE)
         end if
-        dist_sign = -sign(dist,sig)
+        dist_sign = -sign(dist, sig)
 ! ----- Sign of colinear product VECT_PM . NORMAL(master)
         if (elem_dime .eq. 3) then
-            tevapr = vect_pm(1)*mast_norm(1)+&
-                     vect_pm(2)*mast_norm(2)+&
+            tevapr = vect_pm(1)*mast_norm(1)+ &
+                     vect_pm(2)*mast_norm(2)+ &
                      vect_pm(3)*mast_norm(3)
         elseif (elem_dime .eq. 2) then
-            tevapr = vect_pm(1)*mast_norm(1)+&
+            tevapr = vect_pm(1)*mast_norm(1)+ &
                      vect_pm(2)*mast_norm(2)
         else
             ASSERT(ASTER_FALSE)
         end if
         if (debug) then
-            write(*,*) "... Node: ",i_node,' - Coord: ', noma_coor
-            write(*,*) " => Distance: ",dist,' - Distance signée: ', dist_sign
-            write(*,*) " => VECT_PM . NORMAL: ", tevapr
-        endif
+            write (*, *) "... Node: ", i_node, ' - Coord: ', noma_coor
+            write (*, *) " => Distance: ", dist, ' - Distance signée: ', dist_sign
+            write (*, *) " => VECT_PM . NORMAL: ", tevapr
+        end if
 ! ----- No change of sign => no intersection
         if (dist_sign .lt. 0.d0-proj_tole) then
             if (tevapr .gt. 0.d0-proj_tole) then

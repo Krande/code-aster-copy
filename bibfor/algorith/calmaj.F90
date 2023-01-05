@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calmaj(option, max, may, maz, model,&
-                  vesto, modmec, chamno, num, vrai,&
+subroutine calmaj(option, max, may, maz, model, &
+                  vesto, modmec, chamno, num, vrai, &
                   i, j, mij)
     implicit none
 !
@@ -45,15 +45,15 @@ subroutine calmaj(option, max, may, maz, model,&
 !-----------PLONGEMENT DE LA PRESSION ET DES CHAMPS DE DEPL_R----
 !---------------SUR LE MODELE THERMIQUE D INTERFACE--------------
 !
-    call ploint(vesto, modmec, chamno, num, i,&
-                vrai, model, veprj, modx, mody,&
+    call ploint(vesto, modmec, chamno, num, i, &
+                vrai, model, veprj, modx, mody, &
                 modz)
 !
 !-------------------CALCUL DE LA MASSE AJOUTEE-------------------
 !---------------SUR LE MODELE THERMIQUE D INTERFACE--------------
 !
-    call calcin(option, max, may, maz, model,&
-                veprj, modx, mody, modz, i,&
+    call calcin(option, max, may, maz, model, &
+                veprj, modx, mody, modz, i, &
                 j, mij)
 !
 !

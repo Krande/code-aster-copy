@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine hydrxmat(xmat0, xmat1, hydra1, hydras, n,&
+subroutine hydrxmat(xmat0, xmat1, hydra1, hydras, n, &
                     erreur)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
@@ -25,31 +25,31 @@ subroutine hydrxmat(xmat0, xmat1, hydra1, hydras, n,&
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-      real(kind=8), intent(in) :: xmat0, hydra1, hydras, n
-      real(kind=8), intent(out) :: xmat1
-      integer, intent(out) :: erreur
+    real(kind=8), intent(in) :: xmat0, hydra1, hydras, n
+    real(kind=8), intent(out) :: xmat1
+    integer, intent(out) :: erreur
 !   declaration locale
-      real(kind=8) :: yy,zzmin,hydra
+    real(kind=8) :: yy, zzmin, hydra
 !   avant le seuil d hydratation on a 1e-3 des cracateristiques
-      parameter (zzmin=1.0d-3)
+    parameter(zzmin=1.0d-3)
 !   initialisation controle d erreur
-      erreur=0
-      if((hydras.le.0.).or.(hydras.gt.(1.d0-zzmin))) then
-             call utmess('E', 'COMPOR3_38')
-             print*,xmat0,xmat1,hydra1,hydras,n
-             xmat1=xmat0
-             erreur=1
-      end if
-      if (hydra1.le.(hydras+zzmin))then
-         hydra=hydras+zzmin
-      else
-         hydra=hydra1
-      end if
-      hydra=dmin1(hydra,1.d0)
-      if(abs(hydra-1.d0).ge.r8prem())then
-         yy=(hydra-hydras)/(1.d0-hydras)
-         xmat1=xmat0*(yy**n)
-      else
-         xmat1=xmat0
-      end if
+    erreur = 0
+    if ((hydras .le. 0.) .or. (hydras .gt. (1.d0-zzmin))) then
+        call utmess('E', 'COMPOR3_38')
+        print *, xmat0, xmat1, hydra1, hydras, n
+        xmat1 = xmat0
+        erreur = 1
+    end if
+    if (hydra1 .le. (hydras+zzmin)) then
+        hydra = hydras+zzmin
+    else
+        hydra = hydra1
+    end if
+    hydra = dmin1(hydra, 1.d0)
+    if (abs(hydra-1.d0) .ge. r8prem()) then
+        yy = (hydra-hydras)/(1.d0-hydras)
+        xmat1 = xmat0*(yy**n)
+    else
+        xmat1 = xmat0
+    end if
 end subroutine

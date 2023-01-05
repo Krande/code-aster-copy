@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK / BLAS
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ subroutine xerbla(srname, info)
 !     .. EXECUTABLE STATEMENTS ..
 !
     valk = srname
-    vali (1) = info
-    vali (2) = info
+    vali(1) = info
+    vali(2) = info
     call utmess('F', 'ALGELINE5_4', sk=valk, ni=2, vali=vali)
 !
 !     END OF XERBLA

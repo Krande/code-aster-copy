@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine stkcoo(ifl, icl, iv, rv, cv,&
-                  cnl, mcl, nbm, num, coo,&
+subroutine stkcoo(ifl, icl, iv, rv, cv, &
+                  cnl, mcl, nbm, num, coo, &
                   nno, irteti)
     implicit none
 !       SECONDE LECTURE DES DONNEES POUR UN MOT CLE DE TYPE COORDONNEE
@@ -71,26 +71,26 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
         if (irtet .eq. 1) goto 4
         numtcl = i
         goto 5
-  4     continue
+4       continue
     end do
     goto 3
 !
-  5 continue
+5   continue
     call jeveuo(coo, 'E', iad)
 !
 ! - LECTURE DE L'ENTETE
 !
-    deblig=0
-    call lirtet(ifl, 2, 0, cnl, nom,&
+    deblig = 0
+    call lirtet(ifl, 2, 0, cnl, nom, &
                 icl, iv, rv, cv, deblig)
     goto 9
 !
 ! - LIRE ITEM SUIVANT =  NOM DU NOEUD ?
 !
-  7 continue
-    call liritm(ifl, icl, iv, rv, cv,&
+7   continue
+    call liritm(ifl, icl, iv, rv, cv, &
                 cnl, deblig, 2)
-  9 continue
+9   continue
 !
 ! - ITEM = MOT  CLE FIN  OU FINSF ?
 !
@@ -99,7 +99,7 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
         goto 1
     else if (irtet .eq. 2) then
         goto 2
-    endif
+    end if
 !
 ! - CREATION DE NOM_DU_NOEUD DANS LE REPERTOIRE NOMNOE
 !
@@ -110,12 +110,12 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
         call jecroc(jexnom(nno, nomn))
     else
         call utmess('F', 'MODELISA7_10', sk=nomn)
-    endif
+    end if
 !
 ! - INCREMENTATION NUMERO DU NOEUD
 !
-    num = num + 1
-    idec = iad + (num-1) * 3
+    num = num+1
+    idec = iad+(num-1)*3
 !       IDEC = IAD + (NUM-1) * NUMTCL
 !
 ! - STOCKAGE DES  COORDONNEES DU NOEUD
@@ -125,9 +125,9 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
     end do
 !
     do i = 1, numtcl
-        call liritm(ifl, icl, iv, rv, cv,&
+        call liritm(ifl, icl, iv, rv, cv, &
                     cnl, deblig, 2)
-        if(icl.eq.1)rv = iv
+        if (icl .eq. 1) rv = iv
         zr(idec+i-1) = rv
     end do
 !
@@ -135,13 +135,13 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 !
     goto 7
 !
-  1 continue
+1   continue
     irteti = 1
     goto 999
-  2 continue
+2   continue
     irteti = 2
     goto 999
-  3 continue
+3   continue
     irteti = 0
     goto 999
 !

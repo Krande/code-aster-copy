@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: etienne.grimal at edf.fr
 !
-subroutine lc0167(fami  , kpg   , ksp   , ndim  , imate,&
-                  compor, carcri, instam, instap, epsm  ,&
-                  deps  , sigm  , vim   , option,&
-                  sigp  , vip   , typmod, &
+subroutine lc0167(fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, epsm, &
+                  deps, sigm, vim, option, &
+                  sigp, vip, typmod, &
                   dsidep, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/cfluendo3d.h"
 !
-character(len=*), intent(in) :: fami
-integer, intent(in) :: imate, ndim, kpg, ksp
-real(kind=8), intent(in)  :: instam, instap
-real(kind=8), intent(in)  :: epsm(6), deps(6)
-real(kind=8), intent(in)  :: sigm(6), vim(*)
-real(kind=8), intent(out) :: vip(*), sigp(6), dsidep(6, 6)
-character(len=16), intent(in) :: compor(*), option
-character(len=8), intent(in) :: typmod(*)
-real(kind=8), intent(in) :: carcri(*)
-integer, intent(out) :: codret
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: imate, ndim, kpg, ksp
+    real(kind=8), intent(in)  :: instam, instap
+    real(kind=8), intent(in)  :: epsm(6), deps(6)
+    real(kind=8), intent(in)  :: sigm(6), vim(*)
+    real(kind=8), intent(out) :: vip(*), sigp(6), dsidep(6, 6)
+    character(len=16), intent(in) :: compor(*), option
+    character(len=8), intent(in) :: typmod(*)
+    real(kind=8), intent(in) :: carcri(*)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,10 +46,10 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call cfluendo3d(fami  , kpg   , ksp   , ndim  , imate,&
-                    compor, carcri, instam, instap, epsm  ,&
-                    deps  , sigm  , vim   , option,&
-                    sigp  , vip   , typmod,&
+    call cfluendo3d(fami, kpg, ksp, ndim, imate, &
+                    compor, carcri, instam, instap, epsm, &
+                    deps, sigm, vim, option, &
+                    sigp, vip, typmod, &
                     dsidep, codret)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuSelectCmp(quantityIndx,&
-                         cmpUserNb   , cmpUserName,&
-                         cmpCataNb   , cmpCataName,&
-                         cmpNb       , cmpIndx)
+subroutine resuSelectCmp(quantityIndx, &
+                         cmpUserNb, cmpUserName, &
+                         cmpCataNb, cmpCataName, &
+                         cmpNb, cmpIndx)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/irccmp.h"
 #include "asterfort/jelira.h"
@@ -30,13 +30,13 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/as_allocate.h"
 !
-integer, intent(in) :: quantityIndx
-integer, intent(in) :: cmpUserNb
-character(len=8), pointer :: cmpUserName(:)
-integer, intent(out) :: cmpCataNb
-character(len=8), pointer :: cmpCataName(:)
-integer, intent(out) :: cmpNb
-integer, pointer :: cmpIndx(:)
+    integer, intent(in) :: quantityIndx
+    integer, intent(in) :: cmpUserNb
+    character(len=8), pointer :: cmpUserName(:)
+    integer, intent(out) :: cmpCataNb
+    character(len=8), pointer :: cmpCataName(:)
+    integer, intent(out) :: cmpNb
+    integer, pointer :: cmpIndx(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,21 +62,21 @@ integer, pointer :: cmpIndx(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cmpNb     = 0
+    cmpNb = 0
     cmpCataNb = 0
     errorType = ' '
     call jenuno(jexnum('&CATA.GD.NOMGD', quantityIndx), quantityName)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', quantityIndx), 'L', vk8 = cmpCataName)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', quantityIndx), 'L', vk8=cmpCataName)
     call jelira(jexnum('&CATA.GD.NOMCMP', quantityIndx), 'LONMAX', cmpCataNb)
     if (cmpUserNb .ne. 0 .and. quantityName .ne. 'VARI_R') then
-        AS_ALLOCATE(vi = cmpIndx, size = cmpUserNb)
-        call irccmp(errorType, quantityName,&
-                    cmpCataNb, cmpCataName ,&
-                    cmpUserNb, cmpUserName ,&
-                    cmpNb    , cmpIndx)
-    endif
+        AS_ALLOCATE(vi=cmpIndx, size=cmpUserNb)
+        call irccmp(errorType, quantityName, &
+                    cmpCataNb, cmpCataName, &
+                    cmpUserNb, cmpUserName, &
+                    cmpNb, cmpIndx)
+    end if
     if (cmpUserNb .eq. 0) then
         cmpNb = 0
-    endif
+    end if
 !
 end subroutine

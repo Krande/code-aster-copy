@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 !
 #include "asterfort/cfmmvd.h"
@@ -80,34 +80,34 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
     call jenuno(jexnum(noma//'.NOMMAI', nummae), nomesc)
     nummam = nint(zr(jtabf+ztabf*(iptc-1)+2))
     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommai)
-    write(ifm,1000) iptc,nomesc,nommai
+    write (ifm, 1000) iptc, nomesc, nommai
 !
 ! --- POINT DE CONTACT EN COURS
 !
-    write(ifm,1001)
-    write(ifm,1002) lambda,coefac,coefaf,jeusup
+    write (ifm, 1001)
+    write (ifm, 1002) lambda, coefac, coefaf, jeusup
     if (iform .eq. 2) then
-        write(ifm,1003) deltat,theta
+        write (ifm, 1003) deltat, theta
     else
-        write(ifm,1004) deltat
-    endif
+        write (ifm, 1004) deltat
+    end if
 !
 ! --- FORMATS AFFICHAGE
 !
-    1000 format (' <CONTACT>     * LA MAILLE DE CONTACT ',i5,&
-     &        '(',a8,'/',a8,')')
-    1001 format (' <CONTACT>        A POUR PROPRIETES')
+1000 format(' <CONTACT>     * LA MAILLE DE CONTACT ', i5,&
+    &        '(', a8, '/', a8, ')')
+1001 format(' <CONTACT>        A POUR PROPRIETES')
 !
-    1002 format (' <CONTACT>          - LAMBDA         : ',e10.3,&
-     &        ' - COEF_AUGM_CONT :  ',e10.3,&
-     &        ' - COEF_AUGM_FROT :  ',e10.3,&
-     &        ' - JEU SUPP.      :  ',e10.3)
+1002 format(' <CONTACT>          - LAMBDA         : ', e10.3,&
+    &        ' - COEF_AUGM_CONT :  ', e10.3,&
+    &        ' - COEF_AUGM_FROT :  ', e10.3,&
+    &        ' - JEU SUPP.      :  ', e10.3)
 !
-    1003 format (' <CONTACT>          AVEC FORMULATION EN VITESSE  ',&
-     &        ' - INC. DE TEMPS  :  ',e10.3,&
-     &        ' - THETA          :  ',e10.3)
-    1004 format (' <CONTACT>          AVEC FORMULATION EN DEPLACEMENT  ',&
-     &        ' - INC. DE TEMPS  :  ',e10.3)
+1003 format(' <CONTACT>          AVEC FORMULATION EN VITESSE  ',&
+    &        ' - INC. DE TEMPS  :  ', e10.3,&
+    &        ' - THETA          :  ', e10.3)
+1004 format(' <CONTACT>          AVEC FORMULATION EN DEPLACEMENT  ',&
+    &        ' - INC. DE TEMPS  :  ', e10.3)
 !
     call jedema()
 !

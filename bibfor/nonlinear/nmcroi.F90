@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine nmcroi(sd_obsv, keyw_fact, nb_keyw_fact)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmcrpx.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/wkvect.h"
 !
-integer, intent(in) :: nb_keyw_fact
-character(len=19), intent(in) :: sd_obsv
-character(len=16), intent(in) :: keyw_fact
+    integer, intent(in) :: nb_keyw_fact
+    character(len=19), intent(in) :: sd_obsv
+    character(len=16), intent(in) :: keyw_fact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,10 +54,10 @@ character(len=16), intent(in) :: keyw_fact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    base      = 'V'
+    base = 'V'
     keyw_step = 'PAS_OBSE'
     do i_keyw_fact = 1, nb_keyw_fact
-        write(chaine,'(I2)') i_keyw_fact
+        write (chaine, '(I2)') i_keyw_fact
         list_inst_obsv = sd_obsv(1:14)//chaine(1:2)//'.LI'
         call nmcrpx(keyw_fact, keyw_step, i_keyw_fact, list_inst_obsv, base)
     end do
@@ -65,9 +65,9 @@ character(len=16), intent(in) :: keyw_fact
 ! - Initial observation
 !
     obsv_init = sd_obsv(1:14)//'     .INIT'
-    call wkvect(obsv_init, 'V V K8', nb_keyw_fact, vk8 = v_obsv_init)
+    call wkvect(obsv_init, 'V V K8', nb_keyw_fact, vk8=v_obsv_init)
     do i_keyw_fact = 1, nb_keyw_fact
-        call getvtx(keyw_fact, 'OBSE_ETAT_INIT', iocc=i_keyw_fact, scal = answer)
+        call getvtx(keyw_fact, 'OBSE_ETAT_INIT', iocc=i_keyw_fact, scal=answer)
         v_obsv_init(i_keyw_fact) = answer
     end do
 !

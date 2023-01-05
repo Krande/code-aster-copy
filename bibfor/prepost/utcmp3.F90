@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,10 +44,10 @@ subroutine utcmp3(nbcmp, nomcmp, numcmp)
         call lxliis(nom(2:8), numcmp(i), iret)
 !
         if (iret .ne. 0) then
-            valk (1) = nom
-            valk (2) = 'VARI_R'
+            valk(1) = nom
+            valk(2) = 'VARI_R'
             call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
-        endif
+        end if
     end do
 !
 end subroutine

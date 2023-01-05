@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,23 +80,23 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 !   nom du parametre "nompar" servant a allouer le cham_elem "celmod" :
 !   PVARCPR <-> ELGA (par defaut)
 !   PVARCNO <-> ELNO
-    ASSERT( (nompar .eq. 'PVARCPR') .or. (nompar .eq. 'PVARCNO') )
+    ASSERT((nompar .eq. 'PVARCPR') .or. (nompar .eq. 'PVARCNO'))
 !
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
-    ligrmo=modele//'.MODELE'
+    ligrmo = modele//'.MODELE'
 !
 !     -- CALCUL DE JLISSD ET NBCHS :
     call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs)
     call jeveuo(chmat//'.LISTE_SD', 'L', vk16=liste_sd)
     call jelira(chmat//'.LISTE_SD', 'LONMAX', n1)
-    ASSERT(n1.eq.nbchs*7)
+    ASSERT(n1 .eq. nbchs*7)
 !
 !
 !     1. ALLOCATION DE CHVARS ET DE CHMAT.CESVI:
 !     ------------------------------------------
-    dceli='&&VRCIN2.DCELI'
-    celmod='&&VRCIN2.CELMOD'
+    dceli = '&&VRCIN2.DCELI'
+    celmod = '&&VRCIN2.CELMOD'
     call cesvar(carele, ' ', ligrmo, dceli)
 !
 !
@@ -109,18 +109,18 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
     nbma = zi(jdcld-1+1)
 !
     do ima = 1, nbma
-        nbpt = zi(jdcld-1+5+4* (ima-1)+1)
-        nbsp = max(1,zi(jdcld-1+5+4* (ima-1)+2))
-        ASSERT(nbpt.eq.1)
-        ASSERT(nbsp.eq.1)
-        call cesexi('C', jdcld, jdcll, ima, 1,&
+        nbpt = zi(jdcld-1+5+4*(ima-1)+1)
+        nbsp = max(1, zi(jdcld-1+5+4*(ima-1)+2))
+        ASSERT(nbpt .eq. 1)
+        ASSERT(nbsp .eq. 1)
+        call cesexi('C', jdcld, jdcll, ima, 1, &
                     1, 2, iad)
-        if (iad .gt. 0) dclv(iad)=nbcvrc
+        if (iad .gt. 0) dclv(iad) = nbcvrc
     end do
 !
-    call alchml(ligrmo, 'INIT_VARC', nompar, 'V', celmod,&
+    call alchml(ligrmo, 'INIT_VARC', nompar, 'V', celmod, &
                 iret, dceli)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
     call detrsd('CHAMP', dceli)
     call celces(celmod, 'V', chvars)
     call detrsd('CHAMP', celmod)
@@ -133,7 +133,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
     call jeveuo(chvars//'.CESL', 'E', jcesl)
     call jelira(chvars//'.CESL', 'LONMAX', n1)
     do k = 1, n1
-        zl(jcesl-1+k)=.false.
+        zl(jcesl-1+k) = .false.
     end do
 !
 !
@@ -144,16 +144,16 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 !     -- ON CHERCHE A BOUCLER SUR LES VARC.
 !        POUR CELA ON BOUCLE SUR LES CVRC ET ON "SAUTE"
 !        LES CVRC SUIVANTES (DE LA MEME VARC)
-    varc=' '
+    varc = ' '
     do k = 1, nbcvrc
         if (cvrcvarc(k) .eq. varc) goto 1
 !
-        varc=cvrcvarc(k)
+        varc = cvrcvarc(k)
         cart2 = chmat//'.'//varc//'.2'
-        ces2='&&VRCIN2.CES2'
-        call carces(cart2, 'ELEM', ' ', 'V', ces2,&
+        ces2 = '&&VRCIN2.CES2'
+        call carces(cart2, 'ELEM', ' ', 'V', ces2, &
                     'A', iret)
-        ASSERT(iret.eq.0)
+        ASSERT(iret .eq. 0)
 !
         call jeveuo(ces2//'.CESK', 'L', vk8=cesk2)
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
@@ -161,61 +161,61 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
         call jeveuo(ces2//'.CESL', 'L', jcesl2)
 !
         if (cesk(1) .ne. cesk2(1)) then
-            valk(1)=cesk(1)
-            valk(2)=cesk2(1)
+            valk(1) = cesk(1)
+            valk(2) = cesk2(1)
             call utmess('F', 'CALCULEL2_11', nk=2, valk=valk)
-        endif
+        end if
         nbma = zi(jcesd-1+1)
-        ASSERT(nbma.eq.zi(jcesd2-1+1))
+        ASSERT(nbma .eq. zi(jcesd2-1+1))
 !
 !           -- CALCUL DE NCMP (NOMBRE DE CVRC DANS VARC)
-        ncmp=0
+        ncmp = 0
         do k2 = k, nbcvrc
-            if (cvrcvarc(k2) .eq. varc) ncmp=ncmp+1
-        enddo
+            if (cvrcvarc(k2) .eq. varc) ncmp = ncmp+1
+        end do
 !
         do ima = 1, nbma
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            nbsp = max(1,zi(jcesd-1+5+4* (ima-1)+2))
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            nbsp = max(1, zi(jcesd-1+5+4*(ima-1)+2))
 !
-            call cesexi('C', jcesd2, jcesl2, ima, 1,&
+            call cesexi('C', jcesd2, jcesl2, ima, 1, &
                         1, 1, iad)
             if (iad .le. 0) goto 70
 !
 !                 -- CALCUL DE ICHS :
-            tysd1=cesv2(iad+1)
-            nosd1=cesv2(iad+2)
-            nosy1=cesv2(iad+3)
+            tysd1 = cesv2(iad+1)
+            nosd1 = cesv2(iad+2)
+            nosy1 = cesv2(iad+3)
             do ichs = 1, nbchs
-                tysd2=liste_sd(7*(ichs-1)+1)(1:8)
-                nosd2=liste_sd(7*(ichs-1)+2)(1:8)
-                nosy2=liste_sd(7*(ichs-1)+3)
-                if ((tysd1.eq.tysd2) .and. (nosd1.eq.nosd2) .and. ( nosy1.eq.nosy2)) goto 72
+                tysd2 = liste_sd(7*(ichs-1)+1) (1:8)
+                nosd2 = liste_sd(7*(ichs-1)+2) (1:8)
+                nosy2 = liste_sd(7*(ichs-1)+3)
+                if ((tysd1 .eq. tysd2) .and. (nosd1 .eq. nosd2) .and. (nosy1 .eq. nosy2)) goto 72
             end do
             ASSERT(.false.)
- 72         continue
+72          continue
 !
             do ipt = 1, nbpt
                 do isp = 1, nbsp
                     do icmp = 1, ncmp
-                        call cesexi('C', jcesd, jcesl, ima, ipt,&
-                                    isp, k-1+ icmp, iad)
+                        call cesexi('C', jcesd, jcesl, ima, ipt, &
+                                    isp, k-1+icmp, iad)
 !                                   LA FORMULE K-1+ICMP PEUT PARAITRE CURIEUSE MAIS
 !                                   EN REALITE, K S'INCREMENTE PAR PAQUETS DE NCMP
 !                                   (VOIR COMMENTAIRE EN DEBUT DE BOUCLE 1)
                         if (iad .eq. 0) goto 51
-                        ASSERT(iad.lt.0)
-                        iad=-iad
-                        zl(jcesl-1+iad)=.true.
-                        zi(jcesvi-1+iad)=ichs
- 51                     continue
+                        ASSERT(iad .lt. 0)
+                        iad = -iad
+                        zl(jcesl-1+iad) = .true.
+                        zi(jcesvi-1+iad) = ichs
+51                      continue
                     end do
                 end do
             end do
- 70         continue
+70          continue
         end do
         call detrsd('CHAMP', ces2)
-  1     continue
+1       continue
     end do
 !
 !

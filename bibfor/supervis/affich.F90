@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,29 +29,29 @@ subroutine affich(nomfic, texte)
     aster_logical :: ouvert
 !     ----------------------------------------------------------------
     ouvert = .true.
-    ifm = iunifi (nomfic)
+    ifm = iunifi(nomfic)
 !
 ! --- SI JEVEUX N'EST PAS DISPONIBLE (PAS INITIALISE OU FERME)
 !     ON SE CONTENTE DU WRITE BRUT
 !
     if (isjvup() .eq. 0) then
 !
-        write(ifm,'(A)') texte
+        write (ifm, '(A)') texte
 !
     elseif (ifm .ne. 0) then
 !        LE FICHIER EST-IL OUVERT ?
-        inquire ( unit=ifm, opened=ouvert, iostat=ier)
-        if (ier .eq. 0 .and. .not.ouvert) then
-            call uldefi(ifm, ' ', ' ', 'A', 'A',&
+        inquire (unit=ifm, opened=ouvert, iostat=ier)
+        if (ier .eq. 0 .and. .not. ouvert) then
+            call uldefi(ifm, ' ', ' ', 'A', 'A', &
                         'O')
-        endif
+        end if
 !
-        write(ifm,'(A)') texte
+        write (ifm, '(A)') texte
 !
         if (.not. ouvert) then
-            call uldefi(-ifm, ' ', ' ', 'A', 'A',&
+            call uldefi(-ifm, ' ', ' ', 'A', 'A', &
                         'O')
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

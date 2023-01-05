@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,44 +50,44 @@ subroutine xmoajo(jj, nfiss, itypx, ntypx)
 !
     call jemarq()
 !
-    ntypx(7) = ntypx(7) + 1
+    ntypx(7) = ntypx(7)+1
     if (nfiss .eq. 1) then
         if (zi(jj+1) .eq. -1) then
             zi(jj+5) = itypx(1)
-            ntypx(1) = ntypx(1) + 1
-        else if (zi(jj+2).eq.-1) then
+            ntypx(1) = ntypx(1)+1
+        else if (zi(jj+2) .eq. -1) then
             zi(jj+5) = itypx(2)
-            ntypx(2) = ntypx(2) + 1
-        else if (zi(jj+3).eq.-1) then
+            ntypx(2) = ntypx(2)+1
+        else if (zi(jj+3) .eq. -1) then
             zi(jj+5) = itypx(3)
-            ntypx(3) = ntypx(3) + 1
-        else if (zi(jj+1).eq.1) then
+            ntypx(3) = ntypx(3)+1
+        else if (zi(jj+1) .eq. 1) then
             zi(jj+5) = itypx(4)
-            ntypx(4) = ntypx(4) + 1
-        else if (zi(jj+1).eq.2) then
+            ntypx(4) = ntypx(4)+1
+        else if (zi(jj+1) .eq. 2) then
             zi(jj+5) = itypx(14)
-            ntypx(15) = ntypx(15) + 1
-        else if (zi(jj+2).eq.1) then
+            ntypx(15) = ntypx(15)+1
+        else if (zi(jj+2) .eq. 1) then
             zi(jj+5) = itypx(5)
-            ntypx(5) = ntypx(5) + 1
-        else if (zi(jj+3).eq.1) then
+            ntypx(5) = ntypx(5)+1
+        else if (zi(jj+3) .eq. 1) then
             zi(jj+5) = itypx(6)
-            ntypx(6) = ntypx(6) + 1
+            ntypx(6) = ntypx(6)+1
         else
             ASSERT(.false.)
-        endif
-    else if (nfiss.gt.1) then
+        end if
+    else if (nfiss .gt. 1) then
         if (zi(jj+1) .lt. 0) then
-            zi(jj+5)= itypx(6-zi(jj+1))
-            ntypx(7-zi(jj+1)) = ntypx(7-zi(jj+1)) + 1
-        else if (zi(jj+1).ge.5) then
+            zi(jj+5) = itypx(6-zi(jj+1))
+            ntypx(7-zi(jj+1)) = ntypx(7-zi(jj+1))+1
+        else if (zi(jj+1) .ge. 5) then
             zi(jj+5) = itypx(13+nfiss)
-            ntypx(14+zi(jj+1)-4) = ntypx(14+nfiss) + 1
+            ntypx(14+zi(jj+1)-4) = ntypx(14+nfiss)+1
         else
-            zi(jj+5)= itypx(9+zi(jj+1))
-            ntypx(10+zi(jj+1)) = ntypx(10+zi(jj+1)) + 1
-        endif
-    endif
+            zi(jj+5) = itypx(9+zi(jj+1))
+            ntypx(10+zi(jj+1)) = ntypx(10+zi(jj+1))+1
+        end if
+    end if
 !
     call jedema()
 end subroutine

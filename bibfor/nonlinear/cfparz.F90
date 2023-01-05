@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfparz(ds_contact, iliai, coefff, coefpn, coefpt,&
-                  coefte, dissup, izone, ip, numnoe,&
+subroutine cfparz(ds_contact, iliai, coefff, coefpn, coefpt, &
+                  coefte, dissup, izone, ip, numnoe, &
                   posnoe)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/cfmmvd.h"
@@ -89,7 +89,7 @@ implicit none
 !
 ! --- ADDITION DU JEU FICTIF DE LA ZONE
 !
-    zr(jjeuit+3*(iliai-1)+1-1) = zr(jjeuit+3*(iliai-1)+1-1) - dissup
+    zr(jjeuit+3*(iliai-1)+1-1) = zr(jjeuit+3*(iliai-1)+1-1)-dissup
 !
 ! --- RECOPIE CARACTERISTIQUES ZONE -> NOEUDS ESCLAVES
 !

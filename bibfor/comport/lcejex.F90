@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcejex(fami, kpg, ksp, ndim, mate,&
-                  option, am, da, sigma, dsidep,&
+subroutine lcejex(fami, kpg, ksp, ndim, mate, &
+                  option, am, da, sigma, dsidep, &
                   vim, vip)
 !
 !
@@ -53,15 +53,15 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
-    resi = option(1:9).eq.'FULL_MECA' .or. option.eq.'RAPH_MECA'
-    rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
-    elas = option.eq.'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS'
+    resi = option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
+    rigi = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA'
+    elas = option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS'
 !
 !
 ! CALCUL DU SAUT EN T+
 !
     call dcopy(ndim, am, 1, a, 1)
-    if (resi) call daxpy(ndim, 1.d0, da, 1, a,&
+    if (resi) call daxpy(ndim, 1.d0, da, 1, a, &
                          1)
 !
 !
@@ -76,10 +76,10 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
         poum = '-'
     else
         poum = '+'
-    endif
+    end if
 !
-    call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, poum, mate, &
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0], &
                 4, nom, val, cod, 2)
 !
     gc = val(1)
@@ -91,14 +91,14 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 !
 ! -- INITIALISATION
 !
-    ka = max(k0,vim(1))
+    ka = max(k0, vim(1))
     rtan = 0.d0
     do i = 2, ndim
-        rtan=rtan+a(i)**2
+        rtan = rtan+a(i)**2
     end do
-    na = sqrt( max(0.d0,a(1))**2 + rtan )
-    rk = sc * exp(-ka/lc) / ka
-    rc = rk + beta*(r0-rk)
+    na = sqrt(max(0.d0, a(1))**2+rtan)
+    rk = sc*exp(-ka/lc)/ka
+    rc = rk+beta*(r0-rk)
 !
 !
 ! INITIALISATION COMPLEMENTAIRE POUR RIGI_MECA_TANG (SECANTE PENALISEE)
@@ -108,9 +108,9 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
             diss = 0
         else
             diss = nint(vim(2))
-        endif
+        end if
         goto 5000
-    endif
+    end if
 !
 !
 ! -- CALCUL DE LA CONTRAINTE
@@ -118,23 +118,23 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
     call r8inir(6, 0.d0, sigma, 1)
 !
 !    CONTRAINTE DE CONTACT PENALISE
-    sigma(1) = rc * min(0.d0,a(1))
+    sigma(1) = rc*min(0.d0, a(1))
 !
 !    CONTRAINTE DE FISSURATION
     if (na .le. ka) then
         diss = 0
-        sigma(1) = sigma(1) + rk*max(0.d0,a(1))
+        sigma(1) = sigma(1)+rk*max(0.d0, a(1))
         do i = 2, ndim
-            sigma(i) = sigma(i) + rk*a(i)
+            sigma(i) = sigma(i)+rk*a(i)
         end do
     else
         diss = 1
-        ra = sc * exp(-na/lc) / na
-        sigma(1) = sigma(1) + ra*max(0.d0,a(1))
+        ra = sc*exp(-na/lc)/na
+        sigma(1) = sigma(1)+ra*max(0.d0, a(1))
         do i = 2, ndim
-            sigma(i) = sigma(i) + ra*a(i)
+            sigma(i) = sigma(i)+ra*a(i)
         end do
-    endif
+    end if
 !
 !
 ! -- ACTUALISATION DES VARIABLES INTERNES
@@ -146,15 +146,15 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
 !   V6 :  VALEUR DE L'ENERGIE RESIDUELLE COURANTE
 !   V7 A V9 : VALEURS DU SAUT
 !
-    kap = max(ka,na)
+    kap = max(ka, na)
     vip(1) = kap
     vip(2) = diss
     if (na .le. k0) then
         vip(3) = 0.d0
     else
         vip(3) = 1.d0
-    endif
-    vip(4) = 1.d0 - exp(-kap/lc) - 0.5d0*kap*sc*exp(-kap/lc)/gc
+    end if
+    vip(4) = 1.d0-exp(-kap/lc)-0.5d0*kap*sc*exp(-kap/lc)/gc
     vip(5) = gc*vip(4)
     vip(6) = 0.5d0*(na**2)*sc*exp(-kap/lc)/kap
     vip(7) = a(1)
@@ -163,7 +163,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
         vip(9) = a(3)
     else
         vip(9) = 0.d0
-    endif
+    end if
 !
 ! -- MATRICE TANGENTE
 !
@@ -173,50 +173,50 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
     call r8inir(36, 0.d0, dsidep, 1)
 !
 !    MATRICE TANGENTE DE CONTACT PENALISE
-    if (a(1) .le. 0.d0) dsidep(1,1) = dsidep(1,1) + rc
+    if (a(1) .le. 0.d0) dsidep(1, 1) = dsidep(1, 1)+rc
 !
 !    MATRICE TANGENTE DE FISSURATION
-    if ((diss.eq.0) .or. elas) then
+    if ((diss .eq. 0) .or. elas) then
 !
-        if (a(1) .gt. 0.d0) dsidep(1,1) = dsidep(1,1) + rk
+        if (a(1) .gt. 0.d0) dsidep(1, 1) = dsidep(1, 1)+rk
         do i = 2, ndim
-            dsidep(i,i) = dsidep(i,i) + rk
+            dsidep(i, i) = dsidep(i, i)+rk
         end do
 !
     else
 !
-        coef = (sc/lc + sc/na) / na**2
+        coef = (sc/lc+sc/na)/na**2
         coef2 = exp(-na/lc)
 !
         if (a(1) .le. 0.d0) then
 !
             do i = 2, ndim
-                dsidep(i,i)=dsidep(i,i) + sc*coef2/na - coef*coef2*a(&
-                i)*a(i)
+                dsidep(i, i) = dsidep(i, i)+sc*coef2/na-coef*coef2*a( &
+                               i)*a(i)
             end do
 !
             if (ndim .eq. 3) then
-                dsidep(2,3) = dsidep(2,3) - coef*coef2*a(2)*a(3)
-                dsidep(3,2) = dsidep(3,2) - coef*coef2*a(3)*a(2)
-            endif
+                dsidep(2, 3) = dsidep(2, 3)-coef*coef2*a(2)*a(3)
+                dsidep(3, 2) = dsidep(3, 2)-coef*coef2*a(3)*a(2)
+            end if
 !
         else
 !
             do i = 1, ndim
-                dsidep(i,i)=dsidep(i,i) + sc*coef2/na - coef*coef2*a(&
-                i)*a(i)
+                dsidep(i, i) = dsidep(i, i)+sc*coef2/na-coef*coef2*a( &
+                               i)*a(i)
             end do
 !
             do j = 1, ndim-1
                 do i = j+1, ndim
-                    dsidep(j,i) = dsidep(j,i) - coef*coef2*a(j)*a(i)
-                    dsidep(i,j) = dsidep(i,j) - coef*coef2*a(i)*a(j)
+                    dsidep(j, i) = dsidep(j, i)-coef*coef2*a(j)*a(i)
+                    dsidep(i, j) = dsidep(i, j)-coef*coef2*a(i)*a(j)
                 end do
             end do
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 999 continue
 end subroutine

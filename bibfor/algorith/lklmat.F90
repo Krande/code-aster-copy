@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lklmat(mod, imat, nbmat, tempd, materd,&
-                  materf, matcst, ndt, ndi, nvi,&
+subroutine lklmat(mod, imat, nbmat, tempd, materd, &
+                  materf, matcst, ndt, ndi, nvi, &
                   indal)
 !
     implicit none
@@ -66,10 +66,10 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( zero   =  0.0d0  )
-    parameter       ( un     =  1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! =================================================================
 ! --- NB DE COMPOSANTES / VARIABLES INTERNES ----------------------
 ! =================================================================
@@ -108,73 +108,73 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
     nomc(29) = 'MU1      '
     nomc(30) = 'XI1      '
 !
-    materd(:,:) = 0.d0
+    materd(:, :) = 0.d0
 !
 ! =================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
-    call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                [tempd], 3, nomc(1), materd(1, 1), cerr(1),&
+    call rcvala(imat, ' ', 'ELAS', 1, 'TEMP', &
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1), &
                 0)
-    indal=1
-    if (cerr(3) .ne. 0) indal=0
+    indal = 1
+    if (cerr(3) .ne. 0) indal = 0
 !
-    call rcvala(imat, ' ', 'LETK', 1, 'TEMP',&
-                [tempd], 27, nomc(4), materd(1, 2), cerr(4),&
+    call rcvala(imat, ' ', 'LETK', 1, 'TEMP', &
+                [tempd], 27, nomc(4), materd(1, 2), cerr(4), &
                 0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
-    e = materd(1,1)
-    nu = materd(2,1)
-    mu = e / (deux*(un+nu))
-    k = e / (trois*(un-deux*nu))
+    e = materd(1, 1)
+    nu = materd(2, 1)
+    mu = e/(deux*(un+nu))
+    k = e/(trois*(un-deux*nu))
 ! =================================================================
 ! --- STOCKAGE DES MODULES CALCULES COMME PARAMETRES MATERIAU -----
 ! =================================================================
-    materd(4,1) = mu
-    materd(5,1) = k
+    materd(4, 1) = mu
+    materd(5, 1) = k
 ! =================================================================
 ! - VERIFICATIONS -------------------------------------------------
 ! =================================================================
-    mu0v = materd(24,2)
-    xi0v = materd(25,2)
-    s0 = materd(11,2)
-    a0 = materd(8,2)
+    mu0v = materd(24, 2)
+    xi0v = materd(25, 2)
+    s0 = materd(11, 2)
+    a0 = materd(8, 2)
     if (s0 .eq. zero) then
         call utmess('F', 'COMPOR1_26')
-    endif
+    end if
     if (mu0v .eq. xi0v) then
         call utmess('F', 'COMPOR1_26')
-    endif
+    end if
 !
     var1 = un/(s0**a0)
     var2 = (un+mu0v)/(mu0v-xi0v)
 !
-    if ((mu0v.gt.xi0v) .and. (var1) .gt. (var2)) then
+    if ((mu0v .gt. xi0v) .and. (var1) .gt. (var2)) then
         call utmess('F', 'COMPOR1_26')
-    endif
+    end if
 ! =================================================================
 ! --- VERIFICATION DE LA COHERENCE DES PARAMETRES : ---------------
 ! --- SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E ET M_E -----------------
 ! =================================================================
-    mpic = materd(14,2)
-    apic = materd(10,2)
-    sigmp1 = materd(23,2)
-    sigc = materd( 3,2)
-    me = materd(13,2)
-    ae = materd( 9,2)
+    mpic = materd(14, 2)
+    apic = materd(10, 2)
+    sigmp1 = materd(23, 2)
+    sigc = materd(3, 2)
+    me = materd(13, 2)
+    ae = materd(9, 2)
     cohere =&
      &        abs(sigc/sigmp1*((mpic*sigmp1/sigc+1)**(apic/ae))-me)
     if (cohere .gt. 1.0d-2) then
         call utmess('F', 'ALGORITH5_12')
-    endif
+    end if
 ! =================================================================
 ! --- DEFINITION D'UN MATERIAU FINAL ------------------------------
 ! =================================================================
     do ii = 1, nbmat
-        materf(ii,1) = materd(ii,1)
-        materf(ii,2) = materd(ii,2)
+        materf(ii, 1) = materd(ii, 1)
+        materf(ii, 2) = materd(ii, 2)
     end do
     matcst = 'OUI'
 ! =================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,13 +51,13 @@ subroutine te0341(option, nomte)
 !
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1), fami='NOEU', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='NOEU', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npgn, jpoids=iwn, jvf=ivf1n, jdfde=idf1n, jgano=jgnn)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
-    ndim=3
+    ndim = 3
     nddl1 = 5
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
@@ -72,24 +72,24 @@ subroutine te0341(option, nomte)
     if (option .eq. 'FORC_NODA') then
         call jevech('PCOMPOR', 'L', icompo)
         if (zk16(icompo+2) .eq. 'PETIT_REAC') reactu = .true.
-    endif
+    end if
     if (.not. reactu) then
         do ino = 1, nno1
             do i = 1, ndim
-                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i)
-            enddo
-        enddo
+                geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i)
+            end do
+        end do
     else
         call jevech('PDEPLMR', 'L', iddlm)
         do ino = 1, nno1
             do i = 1, ndim
-                geom(i,ino) = zr(igeom-1+(ino-1)*ndim+i) + zr(iddlm-1+(ino-1)*nddl1+i)
-            enddo
-        enddo
-    endif
+                geom(i, ino) = zr(igeom-1+(ino-1)*ndim+i)+zr(iddlm-1+(ino-1)*nddl1+i)
+            end do
+        end do
+    end if
 !     DEFINITION DES TANGENTES
 !
-    call cgtang(3, nno1, npgn, geom, zr(idf1n),&
+    call cgtang(3, nno1, npgn, geom, zr(idf1n), &
                 tang)
 !
 !      OPTIONS FORC_NODA ET REFE_FORC_NODA
@@ -97,8 +97,8 @@ subroutine te0341(option, nomte)
     if (option .eq. 'FORC_NODA') then
 !
         call jevech('PCONTMR', 'L', icontm)
-        call cgfono(ndim, nno1, nno2, npg, zr(iw),&
-                    zr(ivf1), zr(ivf2), zr(idf1), geom, tang,&
+        call cgfono(ndim, nno1, nno2, npg, zr(iw), &
+                    zr(ivf1), zr(ivf2), zr(idf1), geom, tang, &
                     iu, iuc, im, zr(icontm), zr(ivectu))
 !
     else
@@ -110,11 +110,11 @@ subroutine te0341(option, nomte)
         call terefe('DEPL_REFE', 'MECA_CG', depref)
         call terefe('EFFORT_REFE', 'MECA_CG', forref)
 !
-        call cgfore(ndim, nno1, nno2, npg, zr(iw),&
-                    zr(ivf1), zr(ivf2), zr(idf1), a, geom,&
-                    tang, iu, iuc, im, forref,&
+        call cgfore(ndim, nno1, nno2, npg, zr(iw), &
+                    zr(ivf1), zr(ivf2), zr(idf1), a, geom, &
+                    tang, iu, iuc, im, forref, &
                     sigref, depref, zr(ivectu))
 !
-    endif
+    end if
 !
 end subroutine

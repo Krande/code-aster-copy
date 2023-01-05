@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mdfext(tinit, dt, neqgen, nbexci, idescf,&
-                  nomfon, coefm, liad, inumor, nbpas,&
+subroutine mdfext(tinit, dt, neqgen, nbexci, idescf, &
+                  nomfon, coefm, liad, inumor, nbpas, &
                   f)
     implicit none
 #include "jeveux.h"
@@ -59,28 +59,28 @@ subroutine mdfext(tinit, dt, neqgen, nbexci, idescf,&
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    nompar='INST'
+    nompar = 'INST'
     do i = 1, nbexci
-        t=tinit
+        t = tinit
         do k = 1, nbpas
             if (idescf(i) .eq. 1) then
-                call fointe('F ', nomfon(i), 1, [nompar], [t],&
+                call fointe('F ', nomfon(i), 1, [nompar], [t], &
                             alpha, ier)
                 do j = 1, neqgen
-                    f(j,k) = f(j,k) + alpha * zr(liad(i)+j-1)
+                    f(j, k) = f(j, k)+alpha*zr(liad(i)+j-1)
                 end do
-            else if (idescf(i).eq.2) then
-                call fointe('F ', nomfon(i), 1, [nompar], [t],&
+            else if (idescf(i) .eq. 2) then
+                call fointe('F ', nomfon(i), 1, [nompar], [t], &
                             alpha, ier)
-                f(inumor(i),k)=f(inumor(i),k)+alpha
-            else if (idescf(i).eq.3) then
+                f(inumor(i), k) = f(inumor(i), k)+alpha
+            else if (idescf(i) .eq. 3) then
                 do j = 1, neqgen
-                    f(j,k) = f(j,k) + coefm(i)* zr(liad(i)+j-1)
+                    f(j, k) = f(j, k)+coefm(i)*zr(liad(i)+j-1)
                 end do
-            else if (idescf(i).eq.4) then
-                f(inumor(i),k)=f(inumor(i),k)+coefm(i)
-            endif
-            t = tinit + ( k*dt )
+            else if (idescf(i) .eq. 4) then
+                f(inumor(i), k) = f(inumor(i), k)+coefm(i)
+            end if
+            t = tinit+(k*dt)
         end do
     end do
 !

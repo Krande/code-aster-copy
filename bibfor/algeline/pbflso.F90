@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pbflso(umoy, rmoy, long, icoq, imod,&
-                  nbm, rkip, tcoef, harm, lambda,&
-                  kcalcu, passag, condit, gamma, d,&
+subroutine pbflso(umoy, rmoy, long, icoq, imod, &
+                  nbm, rkip, tcoef, harm, lambda, &
+                  kcalcu, passag, condit, gamma, d, &
                   ysol)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -76,14 +76,14 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod,&
 !-----------------------------------------------------------------------
     itab = 0
     if (icoq .eq. 2) itab = 5
-    ln = tcoef(1+itab,imod)
+    ln = tcoef(1+itab, imod)
     dz = long/100.d0
 !
     if (umoy .lt. 1.d-5) then
 !
         do k = 1, 101
             z = dble(k-1)*dz
-            somm1 = dcmplx(0.d0,0.d0)
+            somm1 = dcmplx(0.d0, 0.d0)
             u = (ln/long)*z
             harm(1) = dble(cos(u))
             harm(2) = dble(sin(u))
@@ -94,9 +94,9 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod,&
             v = -1.d0*(rkip/rmoy)*z
             harm(6) = dble(exp(v))
             do m1 = 1, 6
-                somm1 = somm1 + d(m1)*harm(m1)
+                somm1 = somm1+d(m1)*harm(m1)
             end do
-            ysol(3,k) = somm1
+            ysol(3, k) = somm1
         end do
 !
     else
@@ -104,15 +104,15 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod,&
         do k = 1, 101
             z = dble(k-1)*dz
             do m1 = 1, 3
-                somm2 = dcmplx(0.d0,0.d0)
+                somm2 = dcmplx(0.d0, 0.d0)
                 do m2 = 1, 3
-                    somm2 = somm2 + passag(m1,m2) * gamma(m2) * dcmplx(exp(lambda(m2)*(z-condit(m&
+                    somm2 = somm2+passag(m1, m2)*gamma(m2)*dcmplx(exp(lambda(m2)*(z-condit(m&
                             &2)*long)))
                 end do
-                ysol(m1,k) = pbflkz(m1,z,long,ln,kcalcu) + somm2
+                ysol(m1, k) = pbflkz(m1, z, long, ln, kcalcu)+somm2
             end do
         end do
 !
-    endif
+    end if
 !
 end subroutine

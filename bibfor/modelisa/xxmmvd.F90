@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,26 +40,26 @@ function xxmmvd(vect)
 ! ----------------------------------------------------------------------
 !
     integer :: zxcar
-    parameter (zxcar=12)
+    parameter(zxcar=12)
     integer :: zxbas, zxedg
-    parameter (zxbas=14,zxedg=25)
+    parameter(zxbas=14, zxedg=25)
     integer :: zxain
-    parameter (zxain=5)
+    parameter(zxain=5)
     aster_logical :: lvect
 !
 ! ----------------------------------------------------------------------
 !
-    lvect=.false.
+    lvect = .false.
     if (vect .eq. 'ZXCAR') then
         xxmmvd = zxcar
-    else if (vect.eq.'ZXBAS') then
+    else if (vect .eq. 'ZXBAS') then
         xxmmvd = zxbas
-    else if (vect.eq.'ZXEDG') then
+    else if (vect .eq. 'ZXEDG') then
         xxmmvd = zxedg
-    else if (vect.eq.'ZXAIN') then
+    else if (vect .eq. 'ZXAIN') then
         xxmmvd = zxain
     else
         ASSERT(lvect)
-    endif
+    end if
 !
 end function

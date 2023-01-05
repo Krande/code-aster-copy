@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,34 +62,34 @@ subroutine pipere(npg, a, tau, nsol, eta)
     do g = 1, npg
 !
 !      LA PENTE DE LA DROITE CONSIDEREE EST NULLE
-        if (abs(a(1,g)) .le. abs(tau - a(0,g))/infini) then
+        if (abs(a(1, g)) .le. abs(tau-a(0, g))/infini) then
 !
 !      SON ORDONNEE EST SUPERIEURE AU SECOND MEMBRE -> PAS DE SOL.
-            if (a(0,g) .gt. tau) goto 1000
+            if (a(0, g) .gt. tau) goto 1000
 !
 !
 !      LA PENTE DE LA DROITE CONSIDEREE EST NEGATIVE
-        else if (a(1,g) .lt. 0) then
-            x = (tau - a(0,g)) / a(1,g)
+        else if (a(1, g) .lt. 0) then
+            x = (tau-a(0, g))/a(1, g)
             if (x .gt. eta(2)) then
                 eta(1) = eta(2)
                 goto 1000
             else if (x .gt. eta(1)) then
                 eta(1) = x
-            endif
+            end if
 !
 !
 !      LA PENTE DE LA DROITE CONSIDEREE EST POSITIVE
         else
-            x = (tau - a(0,g)) / a(1,g)
+            x = (tau-a(0, g))/a(1, g)
             if (x .lt. eta(1)) then
                 eta(2) = eta(1)
                 goto 1000
             else if (x .lt. eta(2)) then
                 eta(2) = x
-            endif
+            end if
 !
-        endif
+        end if
     end do
 !
 !
@@ -97,15 +97,15 @@ subroutine pipere(npg, a, tau, nsol, eta)
 !
     if (eta(1) .eq. -infini .and. eta(2) .eq. infini) then
         goto 1000
-    else if (eta(1).eq.-infini) then
+    else if (eta(1) .eq. -infini) then
         nsol = 1
         eta(1) = eta(2)
-    else if (eta(2).eq.infini) then
+    else if (eta(2) .eq. infini) then
         nsol = 1
         eta(2) = eta(1)
     else
         nsol = 2
-    endif
+    end if
     goto 999
 !
 !

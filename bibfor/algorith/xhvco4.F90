@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xhvco4(ino, ndim, sigma, lamb, pla,&
+subroutine xhvco4(ino, ndim, sigma, lamb, pla, &
                   jac, ffc, p, raug, vect)
 !
 !
@@ -67,30 +67,30 @@ subroutine xhvco4(ino, ndim, sigma, lamb, pla,&
 ! et qu on a accès à WSAUT(3)
 !    valeur de w au point de Gauss
 ! remplissage L1l
-    ptr(:,:) = 0.d0
+    ptr(:, :) = 0.d0
     sigglo(:) = 0.d0
 ! remplissage L2w
 ! on transpose la matrice
-    call transp(p, 3, ndim, ndim, ptr,&
+    call transp(p, 3, ndim, ndim, ptr, &
                 3)
 ! produit matrice vecteur
-    call prmave(0, ptr, 3, ndim, ndim,&
+    call prmave(0, ptr, 3, ndim, ndim, &
                 sigma, ndim, sigglo, ndim, ier)
 ! attention, cette fois on ne doit pas virer
 ! la boucle sur les noeuds,
 ! mais on remplit tout avec la contribution de J
 ! vecteur w*
-    pli=pla(ino)
-    ffi=ffc(ino)
+    pli = pla(ino)
+    ffi = ffc(ino)
 !
     do k = 1, ndim
-        vect(pli-1+3+ndim+k) = vect(pli-1+3+ndim+k) + sigma(k)* ffi*jac
+        vect(pli-1+3+ndim+k) = vect(pli-1+3+ndim+k)+sigma(k)*ffi*jac
     end do
 ! vecteur lambda*
 ! attention a ne pas oublier le terme lambda/r
-    pli=pla(ino)
+    pli = pla(ino)
     do k = 1, ndim
-        vect(pli-1+3+k) = vect(pli-1+3+k) + (sigma(k)-lamb(k))* ffi*jac/raug
+        vect(pli-1+3+k) = vect(pli-1+3+k)+(sigma(k)-lamb(k))*ffi*jac/raug
     end do
 !
 end subroutine

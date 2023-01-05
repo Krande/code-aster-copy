@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,13 +57,13 @@ subroutine te0529(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
 !    NOMBRE DE COMPOSANTES  A  CALCULER
-    nbcmp=6
+    nbcmp = 6
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
@@ -94,7 +94,7 @@ subroutine te0529(option, nomte)
         instan = zr(itemps)
     else
         instan = r8vide()
-    endif
+    end if
 !
 !     -----------------
 ! ---- RECUPERATION DU VECTEUR DES DEFORMATIONS EN SORTIE :
@@ -112,34 +112,34 @@ subroutine te0529(option, nomte)
         xyzgau(2) = 0.d0
         xyzgau(3) = 0.d0
         do idim = 1, ndim
-            xyzgau(idim) = xyzgau(idim) + zr(ivf+idim-1+nno*(igau-1))* zr(igeom+idim-1+ndim*(idim&
+            xyzgau(idim) = xyzgau(idim)+zr(ivf+idim-1+nno*(igau-1))*zr(igeom+idim-1+ndim*(idim&
                            &-1))
         end do
 !
 !
         optio2 = 'EPVC_ELGA_TEMP'
 !
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, zi( imate), optio2,&
+        call epstmc(fami, ndim, instan, '+', igau, &
+                    1, xyzgau, repere, zi(imate), optio2, &
                     epsth)
         optio2 = 'EPVC_ELGA_SECH'
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, zi( imate), optio2,&
+        call epstmc(fami, ndim, instan, '+', igau, &
+                    1, xyzgau, repere, zi(imate), optio2, &
                     epsse)
         optio2 = 'EPVC_ELGA_HYDR'
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, zi( imate), optio2,&
+        call epstmc(fami, ndim, instan, '+', igau, &
+                    1, xyzgau, repere, zi(imate), optio2, &
                     epshy)
         optio2 = 'EPVC_ELGA_PTOT'
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, zi( imate), optio2,&
+        call epstmc(fami, ndim, instan, '+', igau, &
+                    1, xyzgau, repere, zi(imate), optio2, &
                     epspt)
         do i = 1, 3
             epvc(i+nbcmp*(igau-1)) = epsth(i)
         end do
-        epvc(4+nbcmp*(igau-1) )= epsse(1)
-        epvc(5+nbcmp*(igau-1) )= epshy(1)
-        epvc(6+nbcmp*(igau-1) )= epspt(1)
+        epvc(4+nbcmp*(igau-1)) = epsse(1)
+        epvc(5+nbcmp*(igau-1)) = epshy(1)
+        epvc(6+nbcmp*(igau-1)) = epspt(1)
 !
     end do
 !
@@ -149,7 +149,7 @@ subroutine te0529(option, nomte)
 !      --------------------
     do igau = 1, npg
         do isig = 1, nbcmp
-            zr(idefo+nbcmp* (igau-1)+isig-1) = epvc(nbcmp* (igau-1)+ isig)
+            zr(idefo+nbcmp*(igau-1)+isig-1) = epvc(nbcmp*(igau-1)+isig)
         end do
     end do
 !

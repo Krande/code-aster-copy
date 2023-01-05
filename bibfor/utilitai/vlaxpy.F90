@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !     IN  CHAMNA    :  K*  : CHAM_NO MAITRE 1
 !     IN/OUT CHAMNB :  K*  : CHAM_NO MAITRE 2
 !----------------------------------------------------------------------
-    integer :: neq,   i
+    integer :: neq, i
     character(len=19) :: prno
     character(len=24) :: chamn1, chamn2
     integer, pointer :: delg(:) => null()
@@ -45,12 +45,12 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !----------------------------------------------------------------------
 !
     call jemarq()
-    chamn1=chamna
-    chamn2=chamnb
+    chamn1 = chamna
+    chamn2 = chamnb
 !
 ! --- NUMEROTATION POUR TRIER LES LAGRANGE ET LES DDLS PHYSIQUES
     call dismoi('PROF_CHNO', chamn1, 'CHAM_NO', repk=prno)
-    call jeveuo(prno(1:14)// '.NUME.DELG', 'L', vi=delg)
+    call jeveuo(prno(1:14)//'.NUME.DELG', 'L', vi=delg)
 !
 !
 ! --- MISE A JOUR DES VALEURS DES LAGRANGE
@@ -58,7 +58,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
     call jeveuo(chamn2(1:19)//'.VALE', 'E', vr=val2)
     call jelira(chamn2(1:19)//'.VALE', 'LONMAX', neq)
     do i = 1, neq
-        if (delg(i) .ne. 0) val2(i)=alpha*val1(i) + val2(i)
+        if (delg(i) .ne. 0) val2(i) = alpha*val1(i)+val2(i)
     end do
 !
     call jedema()

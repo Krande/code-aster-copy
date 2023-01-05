@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@
 !
 subroutine mmnonf(ndim, nno, alias, ksi1, ksi2, ff)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
 !
-character(len=8) :: alias
-real(kind=8) :: ksi1, ksi2
-real(kind=8) :: ff(9)
-integer :: nno, ndim
+    character(len=8) :: alias
+    real(kind=8) :: ksi1, ksi2
+    real(kind=8) :: ff(9)
+    integer :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !

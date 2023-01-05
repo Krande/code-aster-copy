@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmelnl(BEHinteg,&
+subroutine nmelnl(BEHinteg, &
                   fami, kpg, ksp, ndim, &
-                  typmod, imate, compor,&
+                  typmod, imate, compor, &
                   eps, sig, energi)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -62,12 +62,12 @@ implicit none
 ! OUT SIG     : CONTRAINTES LAGRANGIENNES
 ! OUT P       : VARIABLE INTERNE (AUXILIAIRE DE CALCUL)
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter      :: niter=300, elas_id = 1
+    integer, parameter      :: niter = 300, elas_id = 1
     real(kind=8), parameter :: prec_rela = 1.d-3
     real(kind=8), dimension(6), parameter:: kron = [1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0]
     character(len=16), parameter :: elas_keyword = 'ELAS'
-    character(len=16), dimension(6), parameter:: epsa_data=['EPSAXX','EPSAYY','EPSAZZ', &
-                                                            'EPSAXY','EPSAXZ','EPSAYZ']
+    character(len=16), dimension(6), parameter:: epsa_data = ['EPSAXX', 'EPSAYY', 'EPSAZZ', &
+                                                              'EPSAXY', 'EPSAXZ', 'EPSAYZ']
 ! --------------------------------------------------------------------------------------------------
     aster_logical:: cplan, line, nonlin, inco, puis, trac, elas
     integer      :: iret, codret, isec, ihyd, ieps
@@ -87,99 +87,96 @@ implicit none
 !====================================================================
     integer :: imate2, jprol2, jvale2, nbval2
     real(kind=8) :: pm, sigel(6), lin, epsthe
-    common /rconm1/ deuxmu, nu, e, sigy, rprim, pm, sigel, lin
-    common /kconm1/ imate2, jprol2, jvale2, nbval2
+    common/rconm1/deuxmu, nu, e, sigy, rprim, pm, sigel, lin
+    common/kconm1/imate2, jprol2, jvale2, nbval2
 !====================================================================
 !---COMMONS NECESSAIRES A ELAS_VMIS_PUIS
 !====================================================================
-    common /rconm2/alfafa,unsurn,sieleq
+    common/rconm2/alfafa, unsurn, sieleq
     real(kind=8) :: alfafa, unsurn
 ! --------------------------------------------------------------------------------------------------
-
-
 
 !====================================================================
 ! - INITIALISATIONS
 !====================================================================
-    
+
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
-    elas = (compor(1)(1:5) .eq. 'ELAS ')
-    line = (compor(1)(1:14).eq. 'ELAS_VMIS_LINE')
-    puis = (compor(1)(1:14).eq. 'ELAS_VMIS_PUIS')
-    trac = (compor(1)(1:14).eq. 'ELAS_VMIS_TRAC')
-    ASSERT (elas .or. line .or. puis .or. trac)
+    elas = (compor(1) (1:5) .eq. 'ELAS ')
+    line = (compor(1) (1:14) .eq. 'ELAS_VMIS_LINE')
+    puis = (compor(1) (1:14) .eq. 'ELAS_VMIS_PUIS')
+    trac = (compor(1) (1:14) .eq. 'ELAS_VMIS_TRAC')
+    ASSERT(elas .or. line .or. puis .or. trac)
 
     epsi = r8prem()
     rac2 = sqrt(2.d0)
     ndimsi = 2*ndim
-    
+
     p = 0
 
-    
 !====================================================================
 ! - LECTURE DES CARACTERISTIQUES ELASTIQUES
 !====================================================================
-    nomres(1)='E'
-    nomres(2)='NU'
-    nomres(3)='ALPHA'
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
+    nomres(3) = 'ALPHA'
 !
 ! TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
-    call verift(fami, kpg, ksp, '+', imate,&
+    call verift(fami, kpg, ksp, '+', imate, &
                 epsth_=epsthe)
 !
-    call verift(fami, kpg, ksp, '+', imate,&
+    call verift(fami, kpg, ksp, '+', imate, &
                 epsth_=epsthe)
 !
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, temp, iret)
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                 ksp, hydr, ihyd)
-    if (ihyd .ne. 0) hydr=0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    if (ihyd .ne. 0) hydr = 0.d0
+    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                 ksp, sech, isec)
-    if (isec .ne. 0) sech=0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    if (isec .ne. 0) sech = 0.d0
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, secref, iret)
-    if (iret .ne. 0) secref=0.d0
-    call get_elas_para(fami    , imate, '+', kpg, ksp, &
-                       elas_id , elas_keyword,&
-                       e_ = e, nu_ = nu, BEHinteg = BEHinteg)
+    if (iret .ne. 0) secref = 0.d0
+    call get_elas_para(fami, imate, '+', kpg, ksp, &
+                       elas_id, elas_keyword, &
+                       e_=e, nu_=nu, BEHinteg=BEHinteg)
     if (elas .or. line .or. puis) then
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, nomres(3), valres(3), icodre(3), 0)
-        if (icodre(3) .ne. 0) valres(3)=0.d0
+        if (icodre(3) .ne. 0) valres(3) = 0.d0
     else
-        call rctrac(imate, 1, 'SIGM', temp, jprol,&
+        call rctrac(imate, 1, 'SIGM', temp, jprol, &
                     jvale, nbvale, valres(1))
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'ELAS', 0, ' ', [0.d0], &
                     1, nomres(3), valres(3), icodre(3), 0)
         e = valres(1)
-        if (icodre(3) .ne. 0) valres(3)=0.d0
-    endif
+        if (icodre(3) .ne. 0) valres(3) = 0.d0
+    end if
 !
     deuxmu = e/(1.d0+nu)
-    if (abs(nu- 0.5d0) .ge. epsi) then
+    if (abs(nu-0.5d0) .ge. epsi) then
         troisk = e/(1.d0-2.d0*nu)
     else
         troisk = deuxmu
-    endif
+    end if
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !
-    nomres(4)='B_ENDOGE'
-    nomres(5)='K_DESSIC'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    nomres(4) = 'B_ENDOGE'
+    nomres(5) = 'K_DESSIC'
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, nomres(4), valres(4), icodre(4), 0)
     if (icodre(4) .ne. 0) valres(4) = 0.d0
     bendo = valres(4)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, ksp, '+', imate, &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, nomres(5), valres(5), icodre(5), 0)
     if (icodre(5) .ne. 0) valres(5) = 0.d0
     kdess = valres(5)
@@ -188,7 +185,7 @@ implicit none
 !     + MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
     do k = 1, ndimsi
-        call rcvarc(' ', epsa_data(k), '+', fami, kpg,&
+        call rcvarc(' ', epsa_data(k), '+', fami, kpg, &
                     ksp, epsa(k), ieps)
         if (ieps .ne. 0) epsa(k) = 0.d0
     end do
@@ -201,20 +198,20 @@ implicit none
 ! - LECTURE DES CARACTERISTIQUES DE NON LINEARITE DU MATERIAU
 !====================================================================
     if (line) then
-        nomres(1)='D_SIGM_EPSI'
-        nomres(2)='SY'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+        nomres(1) = 'D_SIGM_EPSI'
+        nomres(2) = 'SY'
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
                     2, nomres, valres, icodre, 2)
         dsde = valres(1)
         sigy = valres(2)
 !
     else if (puis) then
-        nomres(1)='SY'
-        nomres(2)='A_PUIS'
-        nomres(3)='N_PUIS'
-        call rcvala(imate, ' ', 'ECRO_PUIS', 1, 'TEMP',&
-                    [temp], 3, nomres, valres, icodre,&
+        nomres(1) = 'SY'
+        nomres(2) = 'A_PUIS'
+        nomres(3) = 'N_PUIS'
+        call rcvala(imate, ' ', 'ECRO_PUIS', 1, 'TEMP', &
+                    [temp], 3, nomres, valres, icodre, &
                     2)
         sigy = valres(1)
         alfafa = valres(2)
@@ -222,51 +219,50 @@ implicit none
         unsurn = 1.d0/valres(3)
 !
     else if (trac) then
-        call rcfonc('S', 1, jprol, jvale, nbvale,&
-                    sigy = sigy)
-    endif
+        call rcfonc('S', 1, jprol, jvale, nbvale, &
+                    sigy=sigy)
+    end if
 !====================================================================
 ! CALCULS DIVERS
 !====================================================================
 ! - CALCUL DE EPSMO ET EPSDV
-    ther = epsthe - kdess*(secref-sech)- bendo*hydr
+    ther = epsthe-kdess*(secref-sech)-bendo*hydr
 !
 ! TRAITEMENT PARTICULIER EN CONTRAINTE PLANE
     if (cplan) then
-        eps(3)= - nu/(1.d0-nu)*(eps(1)+eps(2)) +(1.d0+nu)/(1.d0-nu)*ther&
-                + nu/(1.d0-nu)*(epsa(1)+epsa(2)) + epsa(3)
-    endif
-
+        eps(3) = -nu/(1.d0-nu)*(eps(1)+eps(2))+(1.d0+nu)/(1.d0-nu)*ther &
+                 +nu/(1.d0-nu)*(epsa(1)+epsa(2))+epsa(3)
+    end if
 
     epsmo = 0.d0
     do k = 1, 3
-        epsth(k) = eps(k) - ther - epsa(k)
-        epsmo = epsmo + epsth(k)
+        epsth(k) = eps(k)-ther-epsa(k)
+        epsmo = epsmo+epsth(k)
     end do
     epsmo = epsmo/3.d0
 
-    do k = 4,ndimsi
-       epsth(k) = eps(k) - epsa(k)
+    do k = 4, ndimsi
+        epsth(k) = eps(k)-epsa(k)
     end do
 !
     do k = 1, ndimsi
-        epsdv(k) = epsth(k) - epsmo * kron(k)
+        epsdv(k) = epsth(k)-epsmo*kron(k)
     end do
 ! - CALCUL DE LA CONTRAINTE ELASTIQUE EQUIVALENTE
     epseq = 0.d0
     do k = 1, ndimsi
-        epseq = epseq + epsdv(k)*epsdv(k)
+        epseq = epseq+epsdv(k)*epsdv(k)
     end do
     epseq = sqrt(1.5d0*epseq)
-    sieleq = deuxmu * epseq
+    sieleq = deuxmu*epseq
     nonlin = .false.
-    if (.not. elas) nonlin = (sieleq.ge.sigy)
+    if (.not. elas) nonlin = (sieleq .ge. sigy)
 !====================================================================
 ! CAS NON LINEAIRE
 !====================================================================
 ! - CALCUL DE P, RP, RPRIM ET AIRERP
     if (nonlin) then
-        iret=0
+        iret = 0
 !===========================================
 !      CAS DES CONTRAINTES PLANES
 !===========================================
@@ -286,70 +282,70 @@ implicit none
                 jprol2 = jprol
                 jvale2 = jvale
                 nbval2 = nbvale
-                call rcfonc('V', 1, jprol, jvale, nbvale,&
-                            p = 0.d0, rp = rp, rprim = rprim, airerp = airerp)
+                call rcfonc('V', 1, jprol, jvale, nbvale, &
+                            p=0.d0, rp=rp, rprim=rprim, airerp=airerp)
                 lin = 0.d0
-            endif
+            end if
 !         CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
-            approx = 2.d0*epseq/3.d0 - sigy/1.5d0/deuxmu
-            prec = prec_rela * sigy
-            call zerofr(0, 'DEKKER', nmcri1, 0.d0, approx,&
+            approx = 2.d0*epseq/3.d0-sigy/1.5d0/deuxmu
+            prec = prec_rela*sigy
+            call zerofr(0, 'DEKKER', nmcri1, 0.d0, approx, &
                         prec, niter, p, codret, ibid)
             if (codret .ne. 0) call utmess('F', 'ALGORITH8_65')
             if (line) then
-                rp = sigy +rprim*p
+                rp = sigy+rprim*p
                 airerp = 0.5d0*(sigy+rp)*p
             else if (puis) then
                 call utmess('F', 'ALGORITH_1')
             else
-                call rcfonc('V', 1, jprol, jvale, nbvale,&
-                            p = p, rp = rp, rprim = rprim)
-            endif
+                call rcfonc('V', 1, jprol, jvale, nbvale, &
+                            p=p, rp=rp, rprim=rprim)
+            end if
 !
-            epseq = 1.5d0*p + rp/deuxmu
+            epseq = 1.5d0*p+rp/deuxmu
             g = rp/epseq
             x = 3*(deuxmu-g)/(troisk+2*g)*epsdv(3)
-            epsmo = epsmo +x/3.d0
-            eps(3) = eps(3) + x
-            epsdv(1)= epsdv(1)-x/3.d0
-            epsdv(2)= epsdv(2)-x/3.d0
-            epsdv(3)= epsdv(3)+x*2.d0/3.d0
+            epsmo = epsmo+x/3.d0
+            eps(3) = eps(3)+x
+            epsdv(1) = epsdv(1)-x/3.d0
+            epsdv(2) = epsdv(2)-x/3.d0
+            epsdv(3) = epsdv(3)+x*2.d0/3.d0
 !      CAS 2D OU 3D
         else
 !===========================================
 ! NON CONTRAINTE PLANE
 !===========================================
-            pm=0.d0
+            pm = 0.d0
             if (line) then
                 rprim = e*dsde/(e-dsde)
-                p = (sieleq - sigy) / (rprim+1.5d0*deuxmu)
-                rp = sigy +rprim*p
+                p = (sieleq-sigy)/(rprim+1.5d0*deuxmu)
+                rp = sigy+rprim*p
                 airerp = 0.5d0*(sigy+rp)*p
             else if (puis) then
 !           AMELIORATION DE LA PREDICTION EN ESTIMANT RPRIM(PM+DP0)
-                dp0 = ( sieleq - sigy)/1.5d0/deuxmu
-                rprim0 = unsurn*sigy*coco * (coco*dp0)**(unsurn-1.d0)
-                dp0 = dp0 / (1+rprim0/1.5d0/deuxmu)
+                dp0 = (sieleq-sigy)/1.5d0/deuxmu
+                rprim0 = unsurn*sigy*coco*(coco*dp0)**(unsurn-1.d0)
+                dp0 = dp0/(1+rprim0/1.5d0/deuxmu)
                 xap = dp0
-                precr = prec_rela * sigy
-                call zerofr(0, 'DEKKER', nmcri2, 0.d0, xap,&
+                precr = prec_rela*sigy
+                call zerofr(0, 'DEKKER', nmcri2, 0.d0, xap, &
                             precr, niter, p, codret, ibid)
                 if (codret .ne. 0) call utmess('F', 'ALGORITH8_65')
-                call ecpuis(e, sigy, alfafa, unsurn, pm,&
+                call ecpuis(e, sigy, alfafa, unsurn, pm, &
                             p, rp, rprim)
             else
-                call rcfonc('E', 1, jprol, jvale, nbvale,&
-                            e = e, nu = nu, p = 0.d0, rp = rp, rprim = rprim,&
-                            airerp = airerp, sieleq = sieleq, dp = p)
-            endif
+                call rcfonc('E', 1, jprol, jvale, nbvale, &
+                            e=e, nu=nu, p=0.d0, rp=rp, rprim=rprim, &
+                            airerp=airerp, sieleq=sieleq, dp=p)
+            end if
             g = rp/epseq
-        endif
+        end if
 !====================================================================
 ! CAS LINEAIRE
 !====================================================================
     else
         g = deuxmu
-    endif
+    end if
 !====================================================================
 ! - CALCUL DES CONTRAINTES ET DES PSEUDO VARIABLES INTERNES
 !====================================================================
@@ -359,15 +355,14 @@ implicit none
         end do
     else
         do k = 1, ndimsi
-            sig(k) = troisk*epsmo*kron(k) + g*epsdv(k)
+            sig(k) = troisk*epsmo*kron(k)+g*epsdv(k)
         end do
-    endif
-
+    end if
 
 !====================================================================
 ! - CALCUL DE L'ENERGIE
 !====================================================================
-        call nmelru(fami, kpg, ksp, &
-                    imate, compor, epseq, p, 3.d0*epsmo,&
-                    nonlin, energi)
+    call nmelru(fami, kpg, ksp, &
+                imate, compor, epseq, p, 3.d0*epsmo, &
+                nonlin, energi)
 end subroutine

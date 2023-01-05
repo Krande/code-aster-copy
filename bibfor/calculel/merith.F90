@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_,&
+subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_, &
                   time_, matr_elem_, nh, base_)
     implicit none
 !
@@ -74,7 +74,7 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_,&
 !     VARIABLES LOCALES:
 !     ------------------
 !-----------------------------------------------------------------------
-    integer :: i, iret,    long1, long2
+    integer :: i, iret, long1, long2
     integer :: long3, nh, numor3
     character(len=8) :: model, cara_elem, k8_dummy
     character(len=19) :: matr_elem
@@ -86,10 +86,10 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_,&
     character(len=24), pointer :: lire3(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    model     = model_
+    model = model_
     cara_elem = cara_elem_
-    time      = time_
-    base      = base_
+    time = time_
+    base = base_
     matr_elem = matr_elem_
 !
 ! - Current command
@@ -98,39 +98,39 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_,&
 !
 ! - EVOL_CHAR is prohibden
 !
-    call load_neut_excl(command, list_nbload_ = nb_load, list_name_ = list_name_)
+    call load_neut_excl(command, list_nbload_=nb_load, list_name_=list_name_)
 !
 !     -- RIGIDITE CORRESPONDANT AUX ELEMENTS ISO ET AUX ELEMENTS CAL_TI:
-    call merit1(model, nb_load, list_name_, mate, mateco, cara_elem,&
-                time, '&MERITH1           ', nh, matr_elem, 0,&
+    call merit1(model, nb_load, list_name_, mate, mateco, cara_elem, &
+                time, '&MERITH1           ', nh, matr_elem, 0, &
                 base)
     call jeexin('&MERITH1           .RELR', iret)
-    long1=0
+    long1 = 0
     if (iret .ne. 0) then
         call jelira('&MERITH1           .RELR', 'LONUTI', long1)
         call jeveuo('&MERITH1           .RELR', 'L', vk24=lire1)
-    endif
+    end if
 !
 !     -- RIGIDITE CORRESPONDANT AUX ELEMENTS D'ECHANGE:
-    call merit2(model, nb_load, list_name_, cara_elem, time,&
+    call merit2(model, nb_load, list_name_, cara_elem, time, &
                 '&MERITH2           ', matr_elem, long1, base)
     call jeexin('&MERITH2           .RELR', iret)
-    long2=0
+    long2 = 0
     if (iret .ne. 0) then
         call jelira('&MERITH2           .RELR', 'LONUTI', long2)
         call jeveuo('&MERITH2           .RELR', 'L', vk24=lire2)
-    endif
+    end if
 !
 !     -- OPERATEUR ELEMENTAIRE DE CONVECTION NATURELLE:
-    numor3 = long1 + long2
-    call merit3(model, nb_load, list_name_, mate, mateco, cara_elem,&
+    numor3 = long1+long2
+    call merit3(model, nb_load, list_name_, mate, mateco, cara_elem, &
                 time, '&MERITH3           ', matr_elem, numor3, base)
     call jeexin('&MERITH3           .RELR', iret)
-    long3=0
+    long3 = 0
     if (iret .ne. 0) then
         call jelira('&MERITH3           .RELR', 'LONUTI', long3)
         call jeveuo('&MERITH3           .RELR', 'L', vk24=lire3)
-    endif
+    end if
 !
 !
 !     -- ON RECOPIE LES .RELR DE &MERITH1, &MERITH2 ET
@@ -139,16 +139,16 @@ subroutine merith(model_, nb_load, list_name_, mate, mateco, cara_elem_,&
     call jedetr(matr_elem//'.RERR')
     call jedetr(matr_elem//'.RELR')
 !
-    call memare(base, matr_elem, model, mate, cara_elem,&
+    call memare(base, matr_elem, model, mate, cara_elem, &
                 'RIGI_THER')
 !
-    do i = 1,long1
+    do i = 1, long1
         call reajre(matr_elem, lire1(i), base)
     end do
-    do i = 1,long2
+    do i = 1, long2
         call reajre(matr_elem, lire2(i), base)
     end do
-    do i = 1,long3
+    do i = 1, long3
         call reajre(matr_elem, lire3(i), base)
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
+subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
                   rigma, rigma2, rigto)
     implicit none
 #include "jeveux.h"
@@ -67,7 +67,7 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
     do in = 0, nb-1
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         inoe = zi(ldnm)
-        noemax = max(noemax,inoe)
+        noemax = max(noemax, inoe)
     end do
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
@@ -79,23 +79,23 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
     do in = 0, nb-1
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         inoe = zi(ldnm)
-        parno(inoe) = parno(inoe) + 1
+        parno(inoe) = parno(inoe)+1
     end do
 !
     nbno = 0
     do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 25
-        nbno = nbno + 1
- 25     continue
+        nbno = nbno+1
+25      continue
     end do
 !
     AS_ALLOCATE(vi=noeud, size=nbno)
     ii = 0
     do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 26
-        ii = ii + 1
+        ii = ii+1
         noeud(ii) = ij
- 26     continue
+26      continue
     end do
 !
 !     LECTURE DES RIGIDITES ELEMENTAIRES
@@ -130,24 +130,24 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
         r2 = rigma(3*in+2)
         r3 = rigma(3*in+3)
 !
-        rigto(3*(im-1)+1) = r1 + rigto(3*(im-1)+1)
-        rigto(3*(im-1)+2) = r2 + rigto(3*(im-1)+2)
-        rigto(3*(im-1)+3) = r3 + rigto(3*(im-1)+3)
+        rigto(3*(im-1)+1) = r1+rigto(3*(im-1)+1)
+        rigto(3*(im-1)+2) = r2+rigto(3*(im-1)+2)
+        rigto(3*(im-1)+3) = r3+rigto(3*(im-1)+3)
 !
-        r1 = rigto(3*(im-1)+1) + rigma2(3*(i1-1)+1)
-        r2 = rigto(3*(im-1)+2) + rigma2(3*(i1-1)+2)
-        r3 = rigto(3*(im-1)+3) + rigma2(3*(i1-1)+3)
+        r1 = rigto(3*(im-1)+1)+rigma2(3*(i1-1)+1)
+        r2 = rigto(3*(im-1)+2)+rigma2(3*(i1-1)+2)
+        r3 = rigto(3*(im-1)+3)+rigma2(3*(i1-1)+3)
 !
         rigma(3*in+1) = r1
         rigma(3*in+2) = r2
         rigma(3*in+3) = r3
         call jenuno(jexnum(mlgnma, im), nommai)
-        write(ifr,1000) nommai,r1,r2,r3
+        write (ifr, 1000) nommai, r1, r2, r3
     end do
 !
-    1000 format(2x,'_F ( MAILLE=''',a8,''',',1x,'CARA= ''K_T_D_N'' , ',&
-     &      /7x,'VALE=(',1x,3(1x,1pe12.5,','),1x,'),',&
-     &      /'   ),')
+1000 format(2x, '_F ( MAILLE=''', a8, ''',', 1x, 'CARA= ''K_T_D_N'' , ',&
+    &      /7x, 'VALE=(', 1x, 3(1x, 1pe12.5, ','), 1x, '),',&
+    &      /'   ),')
 !
     AS_DEALLOCATE(vi=parno)
     AS_DEALLOCATE(vi=noeud)

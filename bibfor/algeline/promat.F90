@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine promat(a, nlamax, dimal, dimac, b,&
+subroutine promat(a, nlamax, dimal, dimac, b, &
                   nlbmax, dimbl, dimbc, res)
 !
 !    BUT : PRODUIT DE 2 MATRICES A*B DANS RES
@@ -42,14 +42,14 @@ subroutine promat(a, nlamax, dimal, dimac, b,&
 !-----------------------------------------------------------------------
     if (dimac .ne. dimbl) then
         call utmess('F', 'ALGELINE3_30')
-    endif
+    end if
     do ilig = 1, dimal
         do icol = 1, dimbc
-            xaux=0.d0
+            xaux = 0.d0
             do k = 1, dimac
-                xaux=xaux+a(ilig,k)*b(k,icol)
+                xaux = xaux+a(ilig, k)*b(k, icol)
             end do
-            res(ilig,icol)=xaux
+            res(ilig, icol) = xaux
         end do
     end do
 end subroutine

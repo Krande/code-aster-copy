@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkds2h(nbmat, mater, invar, s, dhds,&
+subroutine lkds2h(nbmat, mater, invar, s, dhds, &
                   ds2hds, retcom)
 !
     implicit none
@@ -48,25 +48,25 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( zero    =  0.0d0   )
-    parameter       ( un      =  1.0d0   )
-    parameter       ( trois   =  3.0d0   )
-    parameter       ( lgleps  =  1.0d-8  )
+    parameter(zero=0.0d0)
+    parameter(un=1.0d0)
+    parameter(trois=3.0d0)
+    parameter(lgleps=1.0d-8)
 ! -----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 ! -----------------------------------------------------------------
-    data    kron    /un     ,un     ,un     ,zero   ,zero  ,zero/
-    data    iden6   /un     , zero  , zero  , zero  ,zero  ,zero,&
-     &                 zero   , un    , zero  , zero  ,zero  ,zero,&
-     &                 zero   , zero  , un    , zero  ,zero  ,zero,&
-     &                 zero   , zero  , zero  , un    ,zero  ,zero,&
-     &                 zero   , zero  , zero  , zero  ,un    ,zero,&
-     &                 zero   , zero  , zero  , zero  ,zero  ,un/
+    data kron/un, un, un, zero, zero, zero/
+    data iden6/un, zero, zero, zero, zero, zero,&
+     &                 zero, un, zero, zero, zero, zero,&
+     &                 zero, zero, un, zero, zero, zero,&
+     &                 zero, zero, zero, un, zero, zero,&
+     &                 zero, zero, zero, zero, un, zero,&
+     &                 zero, zero, zero, zero, zero, un/
 ! =================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 ! =================================================================
-    h0ext = mater(4,2)
-    pref = mater(1,2)
+    h0ext = mater(4, 2)
+    pref = mater(1, 2)
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
@@ -77,23 +77,23 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
         call utmess('A', 'COMPOR1_30')
         retcom = 1
         goto 1000
-    endif
+    end if
 !
 ! =================================================================
 ! --- CALCUL DE h(THETA), H0E ET H0C, -----------------------------
 ! =================================================================
-    rcos3t = cos3t (s, pref, lgleps)
-    call lkhtet(nbmat, mater, rcos3t, h0e, h0c,&
+    rcos3t = cos3t(s, pref, lgleps)
+    call lkhtet(nbmat, mater, rcos3t, h0e, h0c, &
                 htheta)
 !
-    fact1 = (h0c - h0ext)/(h0c - h0e)
+    fact1 = (h0c-h0ext)/(h0c-h0e)
 ! =================================================================
 ! --- CALCUL DU PREMIER TERME
 ! =================================================================
 !
     call r8inir(6, 0.d0, a, 1)
     do i = 1, ndt
-        a(i) = fact1*dhds(i)*sii + htheta*s(i)/sii
+        a(i) = fact1*dhds(i)*sii+htheta*s(i)/sii
     end do
 !
 ! =================================================================
@@ -102,7 +102,7 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
     call r8inir(6*6, 0.d0, b, 1)
     do i = 1, ndt
         do k = 1, ndt
-            b(i,k) = iden6(i,k) - kron(i)*kron(k)/trois
+            b(i, k) = iden6(i, k)-kron(i)*kron(k)/trois
         end do
     end do
 !
@@ -111,8 +111,8 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
 ! =================================================================
     call r8inir(6, 0.d0, ds2hds, 1)
 !
-    bt(1:ndt,1:ndt) = transpose(b(1:ndt,1:ndt))
-    ds2hds(1:ndt) = matmul(bt(1:ndt,1:ndt), a(1:ndt))
+    bt(1:ndt, 1:ndt) = transpose(b(1:ndt, 1:ndt))
+    ds2hds(1:ndt) = matmul(bt(1:ndt, 1:ndt), a(1:ndt))
 !
 ! =================================================================
 1000 continue

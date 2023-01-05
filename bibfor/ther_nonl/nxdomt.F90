@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 subroutine nxdomt(ds_algopara, ds_algorom)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -32,8 +32,8 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/romAlgoNLRead.h"
 !
-type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,13 +57,13 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<THERNONLINE> . Read parameters for algorithm parameters'
-    endif
+        write (ifm, *) '<THERNONLINE> . Read parameters for algorithm parameters'
+    end if
 !
 ! - Initializations
 !
-    algo_meth      = ' '
-    reac_iter      = 0
+    algo_meth = ' '
+    reac_iter = 0
     iter_line_maxi = 0
     resi_line_rela = 1.d-3
 !
@@ -74,7 +74,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! - Get parameters of method
 !
-    if ((algo_meth .eq. 'NEWTON').or.(algo_meth .eq. 'NEWTON_KRYLOV')) then
+    if ((algo_meth .eq. 'NEWTON') .or. (algo_meth .eq. 'NEWTON_KRYLOV')) then
         keywf = 'NEWTON'
         call getvis(keywf, 'REAC_ITER', iocc=1, scal=reac_iter)
         ASSERT(reac_iter .ge. 0)
@@ -91,6 +91,6 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         call romAlgoNLRead(ds_algorom)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

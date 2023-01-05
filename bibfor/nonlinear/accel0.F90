@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine accel0(modele    , numedd   , fonact, lischa,&
-                  ds_contact, maprec   , solveu, valinc, sddyna,&
-                  ds_measure, ds_system, meelem, measse,&
-                  veelem    , veasse   , solalg)
+subroutine accel0(modele, numedd, fonact, lischa, &
+                  ds_contact, maprec, solveu, valinc, sddyna, &
+                  ds_measure, ds_system, meelem, measse, &
+                  veelem, veasse, solalg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/copisd.h"
 #include "asterfort/detlsp.h"
@@ -41,15 +41,15 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "asterfort/nonlinLoadDirichletCompute.h"
 !
-character(len=19) :: solveu, maprec, lischa
-character(len=19) :: sddyna
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=24) :: numedd, modele
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19) :: meelem(*), measse(*), veasse(*), veelem(*)
-character(len=19) :: solalg(*), valinc(*)
-integer :: fonact(*)
-type(NL_DS_System), intent(in) :: ds_system
+    character(len=19) :: solveu, maprec, lischa
+    character(len=19) :: sddyna
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: numedd, modele
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19) :: meelem(*), measse(*), veasse(*), veelem(*)
+    character(len=19) :: solalg(*), valinc(*)
+    integer :: fonact(*)
+    type(NL_DS_System), intent(in) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ type(NL_DS_System), intent(in) :: ds_system
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_26')
-    endif
+    end if
     call utmess('I', 'MECANONLINE_24')
 !
 ! - Initializations
@@ -113,20 +113,20 @@ type(NL_DS_System), intent(in) :: ds_system
 !
 ! --- ASSEMBLAGE ET FACTORISATION DE LA MATRICE
 !
-    call nmprac(fonact, lischa    , numedd    , solveu     ,&
+    call nmprac(fonact, lischa, numedd, solveu, &
                 sddyna, ds_measure, ds_contact, &
-                meelem, measse    , maprec    , matass     , faccvg)
+                meelem, measse, maprec, matass, faccvg)
     if (faccvg .eq. 2) then
         call vtzero(acce_prev)
         call utmess('A', 'MECANONLINE_69')
         goto 999
-    endif
+    end if
 !
 ! - Compute values of Dirichlet conditions
 !
-    call nonlinLoadDirichletCompute(lischa    , modele, numedd,&
-                                    ds_measure, matass, disp_prev,&
-                                    veelem    , veasse)
+    call nonlinLoadDirichletCompute(lischa, modele, numedd, &
+                                    ds_measure, matass, disp_prev, &
+                                    veelem, veasse)
 !
 ! - Evaluate second member for initial acceleration
 !
@@ -139,13 +139,13 @@ type(NL_DS_System), intent(in) :: ds_system
 !
 ! --- RESOLUTION DIRECTE
 !
-    call nmreso(fonact, cndonn, k19bla, cncinx, solveu,&
+    call nmreso(fonact, cndonn, k19bla, cncinx, solveu, &
                 maprec, matass, depso1, depso2, rescvg)
     if (rescvg .eq. 1) then
         call vtzero(acce_prev)
         call utmess('A', 'MECANONLINE_70')
         goto 999
-    endif
+    end if
 !
 ! --- DEPENDAMMENT DU SOLVEUR, TRAITEMENT PARTICULIER
 !
@@ -158,9 +158,9 @@ type(NL_DS_System), intent(in) :: ds_system
 999 continue
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ...... ACCMOI : '
+        write (ifm, *) '<MECANONLINE> ...... ACCMOI : '
         call nmdebg('VECT', acce_prev, ifm)
-    endif
+    end if
 !
 ! --- MENAGE
 !

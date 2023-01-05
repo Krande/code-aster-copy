@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,21 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getExternalStrainModel(l_mfront_offi, l_mfront_proto, paraExte,&
-                                  defo_comp    , istrainexte)
+subroutine getExternalStrainModel(l_mfront_offi, l_mfront_proto, paraExte, &
+                                  defo_comp, istrainexte)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 !
-aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
-type(Behaviour_ParaExte), intent(in) :: paraExte
-character(len=16), intent(in) :: defo_comp
-integer, intent(out) :: istrainexte
+    aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
+    type(Behaviour_ParaExte), intent(in) :: paraExte
+    character(len=16), intent(in) :: defo_comp
+    integer, intent(out) :: istrainexte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,23 +57,23 @@ integer, intent(out) :: istrainexte
 ! --------------------------------------------------------------------------------------------------
 !
     strain_model = paraExte%strain_model
-    istrainexte  = 0
+    istrainexte = 0
 !
     if (l_mfront_offi .or. l_mfront_proto) then
 ! ----- Indicator for large strains
         istrainexte = MFRONT_STRAIN_SMALL
-        if (strain_model .eq. MFRONT_STRAIN_SIMOMIEHE ) then
+        if (strain_model .eq. MFRONT_STRAIN_SIMOMIEHE) then
             istrainexte = MFRONT_STRAIN_SIMOMIEHE
-        endif
+        end if
         if (strain_model .eq. MFRONT_STRAIN_GROTGDEP) then
-            if (defo_comp .eq. 'PETIT' ) then
+            if (defo_comp .eq. 'PETIT') then
                 istrainexte = MFRONT_STRAIN_GROTGDEP_S
             elseif (defo_comp .eq. 'GROT_GDEP') then
                 istrainexte = MFRONT_STRAIN_GROTGDEP_L
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,26 +83,26 @@ subroutine medomg(result, numord, modele, mate, mateco, lischa)
 !
 ! - RECUPERATION MODELE, MATERIAU, CARA_ELEM ET LISCHA DANS SD RESU
 !
-    call rslesd(result, numord,&
-                model_ = modele, materi_ = materi,&
-                list_load_ = lisold, iexcit_ = iexcit)
+    call rslesd(result, numord, &
+                model_=modele, materi_=materi, &
+                list_load_=lisold, iexcit_=iexcit)
 !
 ! - CODAGE DU MATERIAU
 !
-    if (materi .ne. ' ') call rcmfmc(materi, mateco, l_ther_ = ASTER_FALSE)
+    if (materi .ne. ' ') call rcmfmc(materi, mateco, l_ther_=ASTER_FALSE)
     mate = materi
 !
 ! - ON PREND LE CHARGEMENT DANS LA SD
 !
     if (iexcit .eq. 0) then
         call liscnv(phenom, base, lisold, lischa)
-    endif
+    end if
 !
 ! - ON PREND LE CHARGEMENT DONNE PAR L'UTILISATEUR
 !
     if (iexcit .eq. 1) then
         call lislec(motfac, phenom, base, lischa)
-    endif
+    end if
 !
     call lisnnb(lischa, nbchar)
 !

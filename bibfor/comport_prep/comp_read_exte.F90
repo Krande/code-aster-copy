@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_read_exte(rela_comp   , keywf         , i_comp       ,&
-                          l_umat      , l_mfront_proto, l_mfront_offi,&
-                          libr_name   , subr_name     , nb_vari_umat)
+subroutine comp_read_exte(rela_comp, keywf, i_comp, &
+                          l_umat, l_mfront_proto, l_mfront_offi, &
+                          libr_name, subr_name, nb_vari_umat)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,15 +32,15 @@ implicit none
 #include "asterfort/mfront_get_function.h"
 #include "asterc/getfac.h"
 !
-character(len=16), intent(in) :: rela_comp
-character(len=16), intent(in) :: keywf
-integer, intent(in) :: i_comp
-aster_logical, intent(in) :: l_umat
-aster_logical, intent(in) :: l_mfront_proto
-aster_logical, intent(in) :: l_mfront_offi
-character(len=255), intent(out) :: libr_name
-character(len=255), intent(out) :: subr_name
-integer, intent(out) :: nb_vari_umat
+    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_comp
+    aster_logical, intent(in) :: l_umat
+    aster_logical, intent(in) :: l_mfront_proto
+    aster_logical, intent(in) :: l_mfront_offi
+    character(len=255), intent(out) :: libr_name
+    character(len=255), intent(out) :: subr_name
+    integer, intent(out) :: nb_vari_umat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,10 +69,10 @@ integer, intent(out) :: nb_vari_umat
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    libr_name    = ' '
-    subr_name    = ' '
+    libr_name = ' '
+    subr_name = ' '
     nb_vari_umat = 0
-    l_kit_thm    = ASTER_FALSE
+    l_kit_thm = ASTER_FALSE
 !
 ! - Get parameters
 !
@@ -92,36 +92,36 @@ integer, intent(out) :: nb_vari_umat
                 do i_keywf = 1, n_keywf
                     keyws = ' '
                     nbret = 0
-                    call getvtx(keywf_, 'RELATION', iocc = i_keywf, scal = keyws, nbret = nbret)
+                    call getvtx(keywf_, 'RELATION', iocc=i_keywf, scal=keyws, nbret=nbret)
                     if (nbret .eq. 1) then
                         if (trim(keyws) .eq. 'MFRONT') then
-                            n_mfront = n_mfront + 1
+                            n_mfront = n_mfront+1
                             i_comp_ = i_keywf
-                        endif
-                    endif
-                enddo
-            endif
+                        end if
+                    end if
+                end do
+            end if
             if (n_mfront .ne. 1) then
                 keywf_ = keywf
                 i_comp_ = i_comp
-            endif
-        endif
+            end if
+        end if
         if (i_comp_ .ne. 0) then
-            call getvis(keywf_, 'UNITE_LIBRAIRIE', iocc = i_comp_, scal = scali, nbret = nbret)
+            call getvis(keywf_, 'UNITE_LIBRAIRIE', iocc=i_comp_, scal=scali, nbret=nbret)
             if (nbret .eq. 0) then
-                call getvtx(keywf_, 'LIBRAIRIE'  , iocc = i_comp_, scal = libr_name)
+                call getvtx(keywf_, 'LIBRAIRIE', iocc=i_comp_, scal=libr_name)
             else
                 call codent(scali, 'G', saux08)
                 libr_name = 'fort.'//saux08
-            endif
-            call getvtx(keywf_, 'NOM_ROUTINE', iocc = i_comp_, scal = subr_name)
-        endif
+            end if
+            call getvtx(keywf_, 'NOM_ROUTINE', iocc=i_comp_, scal=subr_name)
+        end if
     elseif (l_umat) then
         if (i_comp .ne. 0) then
-            call getvtx(keywf, 'LIBRAIRIE'  , iocc = i_comp, scal = libr_name)
-            call getvtx(keywf, 'NOM_ROUTINE', iocc = i_comp, scal = subr_name)
-            call getvis(keywf, 'NB_VARI'    , iocc = i_comp, scal = nb_vari_umat)
-        endif
-    endif
+            call getvtx(keywf, 'LIBRAIRIE', iocc=i_comp, scal=libr_name)
+            call getvtx(keywf, 'NOM_ROUTINE', iocc=i_comp, scal=subr_name)
+            call getvis(keywf, 'NB_VARI', iocc=i_comp, scal=nb_vari_umat)
+        end if
+    end if
 !
 end subroutine

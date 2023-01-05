@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,19 +67,19 @@ subroutine imprsd(typesd, nomsd, ific, titre)
     call jemarq()
     typ2sd = typesd
 !
-    ASSERT((ific.ne.0) .and. (ific.le.100))
+    ASSERT((ific .ne. 0) .and. (ific .le. 100))
 !
 !     1. ECRITURE DU TITRE :
 !     ----------------------
-    write (ific,*) ' '
-    write (ific,*) '-----------------------------------------------'
-    write (ific,*) titre
+    write (ific, *) ' '
+    write (ific, *) '-----------------------------------------------'
+    write (ific, *) titre
 !
 !
 !     2. APPEL A LA BONNE ROUTINE :
 !     ------------------------------
 !
-    if ((typ2sd.eq.'CHAMP') .or. (typ2sd.eq.'CHAMP_GD') .or. (typ2sd.eq.'CHAMP_S')) then
+    if ((typ2sd .eq. 'CHAMP') .or. (typ2sd .eq. 'CHAMP_GD') .or. (typ2sd .eq. 'CHAMP_S')) then
 !     ------------------------------------
         ch = nomsd
         chs = '&&IMPRSD.CHS'
@@ -98,51 +98,51 @@ subroutine imprsd(typesd, nomsd, ific, titre)
             call cnocns(ch, 'V', chs)
             call cnsimp(chs, ific)
             call detrsd('CHAM_NO_S', chs)
-        endif
+        end if
 !
         if (i4 .gt. 0) then
             call celces(ch, 'V', chs)
             call cesimp(chs, ific, 0, [0])
             call detrsd('CHAM_ELEM_S', chs)
-        endif
+        end if
 !
-        if (i6 .gt. 0) write (ific,*) 'TYPE : RESUELEM NON TRAITE.'
+        if (i6 .gt. 0) write (ific, *) 'TYPE : RESUELEM NON TRAITE.'
 !
-    else if (typ2sd.eq.'CARTE') then
+    else if (typ2sd .eq. 'CARTE') then
 !
         ch = nomsd
         call exisd('CARTE', ch, i5)
         chs = '&&IMPRSD.CHS'
-         if (i5 .gt. 0) then
+        if (i5 .gt. 0) then
             call carces(ch, 'ELEM', ' ', 'V', chs, 'A', ib)
             call cesimp(chs, ific, 0, [0])
             call detrsd('CHAM_ELEM_S', chs)
-        endif
-    else if (typ2sd.eq.'TABLE') then
+        end if
+    else if (typ2sd .eq. 'TABLE') then
 !     --------------------------------------
-        table=nomsd
+        table = nomsd
         call jeveuo(table//'  .TBNP', 'L', vi=tbnp)
         call jeveuo(table//'  .TBLP', 'L', vk24=tblp)
-        npara=tbnp(1)
+        npara = tbnp(1)
         AS_ALLOCATE(vk16=lipara, size=npara)
-        do k=1,npara
-            lipara(k)=tblp(4*(k-1)+1)(1:16)
+        do k = 1, npara
+            lipara(k) = tblp(4*(k-1)+1) (1:16)
         end do
-        call tbimpr(table, 'ASTER', ific, npara, lipara,&
+        call tbimpr(table, 'ASTER', ific, npara, lipara, &
                     0, '1PE12.5')
         AS_DEALLOCATE(vk16=lipara)
 !
 !
-    else if (typ2sd.eq.'MATRICE') then
+    else if (typ2sd .eq. 'MATRICE') then
 !     --------------------------------------
-        matr=nomsd
+        matr = nomsd
         call matimp(matr, ific, 'ASTER')
 !
 !
     else
 !     --------------------------------------
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
-    endif
+    end if
 !
     call jedema()
 end subroutine

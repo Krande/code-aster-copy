@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ subroutine hsash(vectt, dudx, hss1, hss2)
 !
 #include "asterfort/matsa.h"
 #include "asterfort/promat.h"
-    real(kind=8) :: vectt ( 3 , 3 )
+    real(kind=8) :: vectt(3, 3)
 !
-    real(kind=8) :: dudx ( 9 )
+    real(kind=8) :: dudx(9)
 !
-    real(kind=8) :: hss1 ( 2 , 9 )
+    real(kind=8) :: hss1(2, 9)
 !
-    real(kind=8) :: hss2 ( 2 , 9 )
+    real(kind=8) :: hss2(2, 9)
 !
-    real(kind=8) :: hsh ( 2 , 6 )
+    real(kind=8) :: hsh(2, 6)
 !
-    real(kind=8) :: sa1 ( 6 , 9 )
+    real(kind=8) :: sa1(6, 9)
 !
-    real(kind=8) :: sa2 ( 6 , 9 )
+    real(kind=8) :: sa2(6, 9)
 !
 !     CONSTRUCTION DE  HSH  ( 2 , 6 ) SHEAR
 !
@@ -50,30 +50,30 @@ subroutine hsash(vectt, dudx, hss1, hss2)
 !
 !     CONSTRUCTION DE  HSH  ( 2 , 6 ) SHEAR ( ROUTINE HFMSS )
 !
-    hsh (1,1)=2*vectt(1,1)*vectt(3,1)
-    hsh (1,2)=2*vectt(1,2)*vectt(3,2)
-    hsh (1,3)=2*vectt(1,3)*vectt(3,3)
-    hsh (1,4)=vectt(3,2)*vectt(1,1)+vectt(3,1)*vectt(1,2)
-    hsh (1,5)=vectt(1,1)*vectt(3,3)+vectt(3,1)*vectt(1,3)
-    hsh (1,6)=vectt(3,3)*vectt(1,2)+vectt(1,3)*vectt(3,2)
+    hsh(1, 1) = 2*vectt(1, 1)*vectt(3, 1)
+    hsh(1, 2) = 2*vectt(1, 2)*vectt(3, 2)
+    hsh(1, 3) = 2*vectt(1, 3)*vectt(3, 3)
+    hsh(1, 4) = vectt(3, 2)*vectt(1, 1)+vectt(3, 1)*vectt(1, 2)
+    hsh(1, 5) = vectt(1, 1)*vectt(3, 3)+vectt(3, 1)*vectt(1, 3)
+    hsh(1, 6) = vectt(3, 3)*vectt(1, 2)+vectt(1, 3)*vectt(3, 2)
 !
-    hsh (2,1)=2*vectt(2,1)*vectt(3,1)
-    hsh (2,2)=2*vectt(2,2)*vectt(3,2)
-    hsh (2,3)=2*vectt(3,3)*vectt(2,3)
-    hsh (2,4)=vectt(2,1)*vectt(3,2)+vectt(3,1)*vectt(2,2)
-    hsh (2,5)=vectt(2,1)*vectt(3,3)+vectt(3,1)*vectt(2,3)
-    hsh (2,6)=vectt(2,2)*vectt(3,3)+vectt(2,3)*vectt(3,2)
+    hsh(2, 1) = 2*vectt(2, 1)*vectt(3, 1)
+    hsh(2, 2) = 2*vectt(2, 2)*vectt(3, 2)
+    hsh(2, 3) = 2*vectt(3, 3)*vectt(2, 3)
+    hsh(2, 4) = vectt(2, 1)*vectt(3, 2)+vectt(3, 1)*vectt(2, 2)
+    hsh(2, 5) = vectt(2, 1)*vectt(3, 3)+vectt(3, 1)*vectt(2, 3)
+    hsh(2, 6) = vectt(2, 2)*vectt(3, 3)+vectt(2, 3)*vectt(3, 2)
 !
 !---- MATRICE
-    hss1 ( 2 , 9 ) = hsh(2,6) * sa1 ( 6 , 9 )
+    hss1(2, 9) = hsh(2, 6)*sa1(6, 9)
 !
-    call promat(hsh, 2, 2, 6, sa1,&
+    call promat(hsh, 2, 2, 6, sa1, &
                 6, 6, 9, hss1)
 !
 !---- MATRICE
-    hss2 ( 2 , 9 ) = hsh(2,6) * sa2 ( 6 , 9 )
+    hss2(2, 9) = hsh(2, 6)*sa2(6, 9)
 !
-    call promat(hsh, 2, 2, 6, sa2,&
+    call promat(hsh, 2, 2, 6, sa2, &
                 6, 6, 9, hss2)
 !
 !

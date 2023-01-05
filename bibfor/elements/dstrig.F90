@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dstrig(nomte, xyzl, option, pgl, rig,&
+subroutine dstrig(nomte, xyzl, option, pgl, rig, &
                   ener)
     implicit none
 #include "asterf_types.h"
@@ -80,17 +80,17 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     aster_logical :: coupmf, exce, indith
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
-    data perm  / 1, 4,   7,  2,  5,  8, 3, 6, 9 /
-    data perm2 / 1, 7,  13, 19, 25, 31,&
-     &             2, 8,  14, 20, 26, 32,&
-     &             3, 9,  15, 21, 27, 33,&
+    data perm/1, 4, 7, 2, 5, 8, 3, 6, 9/
+    data perm2/1, 7, 13, 19, 25, 31,&
+     &             2, 8, 14, 20, 26, 32,&
+     &             3, 9, 15, 21, 27, 33,&
      &             4, 10, 16, 22, 28, 34,&
      &             5, 11, 17, 23, 29, 35,&
-     &             6, 12, 18, 24, 30, 36 /
+     &             6, 12, 18, 24, 30, 36/
 !     ----------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
     zero = 0.0d0
@@ -114,8 +114,8 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
 !     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEE -------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !     ------------------------------------------------------------------
 !     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
@@ -124,7 +124,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !     ------ CALCUL DE LA MATRICE BM -----------------------------------
     call dxtbm(carat3(9), bm)
 !     ------ CALCUL DU PRODUIT BMT.DM.BM -------------------------------
-    call utbtab('ZERO', 3, 6, dm, bm,&
+    call utbtab('ZERO', 3, 6, dm, bm, &
                 xab1, memb)
     aire = carat3(8)
     do k = 1, 36
@@ -140,14 +140,14 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     call dstbfb(carat3(9), bfb)
 !
 !     ------- CALCUL DU PRODUIT BFBT.DF.BFB --------------------------
-    call utbtab('ZERO', 3, 9, df, bfb,&
+    call utbtab('ZERO', 3, 9, df, bfb, &
                 xab2, kf11)
 !
     if (coupmf) then
 !        ----- CALCUL DU PRODUIT BMT.DMF.BFB ------------------------
-        call utctab('ZERO', 3, 9, 6, dmf,&
+        call utctab('ZERO', 3, 9, 6, dmf, &
                     bfb, bm, xab2, kmf11)
-    endif
+    end if
 !
 !     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
     call dsxhft(df, carat3(9), hft2)
@@ -156,7 +156,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
 ! ---   CALCUL DES MATRICES BCA ,PB ET PM DANS LE CAS DE L'EXCENTREMENT:
 !       ---------------------------------------------------------------
-        call dstci2(dci, carat3, hft2, dfc, dmc,&
+        call dstci2(dci, carat3, hft2, dfc, dmc, &
                     bca, pb, pm)
     else
 !
@@ -164,10 +164,10 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !       ------------------------------------------------------
         call dstcis(dci, carat3, hft2, bca, pb)
 !
-    endif
+    end if
 !
 !     ------- CALCUL DU PRODUIT BCAT.DCI.BCA ---------------------------
-    call utbtab('ZERO', 2, 3, dci, bca,&
+    call utbtab('ZERO', 2, 3, dci, bca, &
                 xab3, kaa)
 !
     do k = 1, 81
@@ -175,7 +175,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     end do
     do i = 1, 6
         do j = 1, 9
-            mefl(i,j) = 0.d0
+            mefl(i, j) = 0.d0
         end do
     end do
 !
@@ -192,12 +192,12 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
 ! ---   CALCUL DU PRODUIT BFBT.DF.BFA :
 !       -----------------------------
-        call utctab('ZERO', 3, 3, 9, df,&
+        call utctab('ZERO', 3, 3, 9, df, &
                     bfa, bfb, xab4, kf12)
 !
 ! ---   CALCUL DU PRODUIT BFAT.DF.BFA :
 !       -----------------------------
-        call utbtab('ZERO', 3, 3, df, bfa,&
+        call utbtab('ZERO', 3, 3, df, bfa, &
                     xab4, kf22)
 !
 !=========================================
@@ -206,23 +206,23 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
 ! ---   CALCUL DU PRODUIT BFBT.DFC.DCI.BCA :
 !       ----------------------------------
-        call utdtab('ZERO', 3, 2, 2, 9,&
+        call utdtab('ZERO', 3, 2, 2, 9, &
                     dfc, dci, bfb, xab5, xab6)
-        call promat(xab6, 9, 9, 2, bca,&
+        call promat(xab6, 9, 9, 2, bca, &
                     2, 2, 3, kfc11)
 !
 ! ---   CALCUL DU PRODUIT BFAT.DFC.DCI.BCA :
 !       ----------------------------------
-        call utdtab('ZERO', 3, 2, 2, 3,&
+        call utdtab('ZERO', 3, 2, 2, 3, &
                     dfc, dci, bfa, xab5, xab7)
-        call promat(xab7, 3, 3, 2, bca,&
+        call promat(xab7, 3, 3, 2, bca, &
                     2, 2, 3, kfc21)
 !
 ! ---   CALCUL DU PRODUIT BMT.DMC.DCI.BCA :
 !       ---------------------------------
-        call utdtab('ZERO', 3, 2, 2, 6,&
+        call utdtab('ZERO', 3, 2, 2, 6, &
                     dmc, dci, bm, xab5, xab8)
-        call promat(xab8, 6, 6, 2, bca,&
+        call promat(xab8, 6, 6, 2, bca, &
                     2, 2, 3, kmc)
 !
 !==============================================================
@@ -234,33 +234,33 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 ! ---   CALCUL DE LA SOMME KF22 + KAA :
 !       -----------------------------
         do k = 1, 9
-            ka(k) = kf22(k) + kaa(k) + kfc21(k) + kfc21(perm(k))
+            ka(k) = kf22(k)+kaa(k)+kfc21(k)+kfc21(perm(k))
         end do
 !
 ! ---   CALCUL DU PRODUIT PBT.KA.PB :
 !       ---------------------------
-        call utbtab('ZERO', 3, 9, ka, pb,&
+        call utbtab('ZERO', 3, 9, ka, pb, &
                     xab2, flexi)
         do k1 = 1, 81
             kfb(k1) = 0.d0
         end do
         do i = 1, 9
             do j = 1, 9
-                k1 = 9* (j-1) + i
-                k2 = 9* (i-1) + j
+                k1 = 9*(j-1)+i
+                k2 = 9*(i-1)+j
                 do k = 1, 3
-                    kfb(k1) = kfb(k1) + (kf12(i,k)+kfc11(i,k))*pb(k,j)
+                    kfb(k1) = kfb(k1)+(kf12(i, k)+kfc11(i, k))*pb(k, j)
                 end do
                 kfc(k2) = kfb(k1)
             end do
         end do
         do k = 1, 81
-            flexi(k) = flexi(k) + kf11(k) + kfb(k) + kfc(k)
+            flexi(k) = flexi(k)+kf11(k)+kfb(k)+kfc(k)
         end do
 !
         wgt = zr(ipoids+int-1)*carat3(7)
         do k = 1, 81
-            flex(k) = flex(k) + flexi(k)*wgt
+            flex(k) = flex(k)+flexi(k)*wgt
         end do
 !
         if (coupmf .or. exce) then
@@ -270,10 +270,10 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 ! ---     DE MEMBRANE ET DANS LA PARTIE COUPLAGE MEMBRANE-FLEXION
 ! ---     DE LA RIGIDITE :
 !         --------------
-            call utctab('ZERO', 3, 3, 6, dmf,&
+            call utctab('ZERO', 3, 3, 6, dmf, &
                         bfa, bm, xab4, kmf12)
 !
-        endif
+        end if
 !
         if (exce) then
 !=====================================================================
@@ -284,22 +284,22 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
 ! ---     CALCUL DU TERME [PM]T*([KF22] + [KAA])*[PM] :
 !         ------------------------------------------
-            call utbtab('ZERO', 3, 6, ka, pm,&
+            call utbtab('ZERO', 3, 6, ka, pm, &
                         xab9, memexc)
 !
 ! ---     CALCUL DU TERME [KMF12]*[PM] :
 !         ----------------------------
-            call promat(kmf12, 6, 6, 3, pm,&
+            call promat(kmf12, 6, 6, 3, pm, &
                         3, 3, 6, kmf12a)
 !
 ! ---     AJOUT DE CES NOUVELLES RIGIDITES DE MEMBRANE A LA
 ! ---     RIGIDITE DE MEMBRANE CLASSIQUE :
 !         -----------------------------
             do i = 1, 36
-                memb(i) = memb(i) + (memexc(i)+kmf12a(i)+kmf12a(perm2( i)))*wgt
+                memb(i) = memb(i)+(memexc(i)+kmf12a(i)+kmf12a(perm2(i)))*wgt
             end do
 !
-        endif
+        end if
 !
 !=====================================================================
 ! ---     TRAITEMENT DU COUPLAGE MEMBRANE-FLEXION                    =
@@ -317,10 +317,10 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 ! ---       AJOUT DANS LA RIGIDITE DE COUPLAGE MEMBRANE-FLEXION
 ! ---       DU TERME  [PM]T*([KF22]+[KAA])*[PB] :
 !           ----------------------------------
-                call utctab('ZERO', 3, 9, 6, ka,&
+                call utctab('ZERO', 3, 9, 6, ka, &
                             pb, pm, xab2, kmf)
 !
-            endif
+            end if
 !
 ! ---     AJOUT DANS LA RIGIDITE DE COUPLAGE MEMBRANE-FLEXION
 ! ---     DES TERMES [PM]T*[KF12]T + [KMF12]*[PB]   :
@@ -328,36 +328,36 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
             do i = 1, 9
                 do j = 1, 6
                     do k = 1, 3
-                        kmf(j,i) = kmf(j,i) + (kmf12(j,k)+kmc(j,k))* pb(k,i) + pm(k,j)*kf12(i,k)
+                        kmf(j, i) = kmf(j, i)+(kmf12(j, k)+kmc(j, k))*pb(k, i)+pm(k, j)*kf12(i, k)
                     end do
-                    k = 6* (i-1) + j
-                    mefli(j,i) = kmf11(j,i) + kmf(j,i)
+                    k = 6*(i-1)+j
+                    mefli(j, i) = kmf11(j, i)+kmf(j, i)
                 end do
             end do
             do i = 1, 6
                 do j = 1, 9
-                    mefl(i,j) = mefl(i,j) + mefli(i,j)*wgt
+                    mefl(i, j) = mefl(i, j)+mefli(i, j)*wgt
                 end do
             end do
-        endif
+        end if
 !
     end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxtloc(flex, memb, mefl, ctor, rig)
 !
-    else if (option.eq.'EPOT_ELEM') then
+    else if (option .eq. 'EPOT_ELEM') then
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(3, 6, pgl, zr(jdepg), depl)
-        call dxtloe(flex, memb, mefl, ctor, coupmf,&
+        call dxtloe(flex, memb, mefl, ctor, coupmf, &
                     depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
             do i = 1, 18
-                enerth = enerth + depl(i)*bsigth(i)
+                enerth = enerth+depl(i)*bsigth(i)
             end do
-            ener(1) = ener(1) - enerth
-        endif
-    endif
+            ener(1) = ener(1)-enerth
+        end if
+    end if
 !
 end subroutine

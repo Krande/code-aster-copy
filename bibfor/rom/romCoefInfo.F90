@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romCoefInfo(object_type, object_name_, i_coef, ds_multicoef)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -54,14 +54,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_cplx    = ds_multicoef%l_cplx
-    l_real    = ds_multicoef%l_real
+    l_cplx = ds_multicoef%l_cplx
+    l_real = ds_multicoef%l_real
 
     if (object_name_ .eq. ' ') then
         object_name = '<NoName>'
     else
         object_name = object_name_
-    endif
+    end if
 
     if (l_cplx) then
         cplx_real = real(ds_multicoef%coef_cplx(i_coef))
@@ -70,24 +70,24 @@ implicit none
         valr(2) = cplx_imag
     else
         real_real = ds_multicoef%coef_real(i_coef)
-    endif
+    end if
 !
 ! - Print
 !
     if (object_type .eq. 'V') then
         if (l_real) then
-            call utmess('I', 'ROM5_45', sk = object_name, sr = real_real)
+            call utmess('I', 'ROM5_45', sk=object_name, sr=real_real)
         else
-            call utmess('I', 'ROM5_46', sk = object_name, nr = 2, valr = valr)
-        endif
+            call utmess('I', 'ROM5_46', sk=object_name, nr=2, valr=valr)
+        end if
     elseif (object_type .eq. 'M') then
         if (l_real) then
-            call utmess('I', 'ROM5_47', sk = object_name, sr = real_real)
+            call utmess('I', 'ROM5_47', sk=object_name, sr=real_real)
         else
-            call utmess('I', 'ROM5_48', sk = object_name, nr = 2, valr = valr)
-        endif
+            call utmess('I', 'ROM5_48', sk=object_name, nr=2, valr=valr)
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

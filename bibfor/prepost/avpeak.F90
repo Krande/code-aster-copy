@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
+subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag, &
                   npoin, jvalpo, jvalor)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -73,69 +73,69 @@ subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
 !
         if (iflag(ivect) .eq. 3) then
             goto 10
-        endif
+        end if
 !
 ! ----- LE PREMIER POINT EST UN PIC -----
 !
         npoin(ivect) = 1
-        zr(jvalpo+(ivect-1)*nbordr + 1) = zr(jvalax+(ivect-1)*nbordr + 1)
-        zi(jvalor+ (ivect-1)*nbordr + 1) = 1
-        vmax = zr(jvalpo + (ivect-1)*nbordr + 1)
-        vmin = zr(jvalpo + (ivect-1)*nbordr + 1)
+        zr(jvalpo+(ivect-1)*nbordr+1) = zr(jvalax+(ivect-1)*nbordr+1)
+        zi(jvalor+(ivect-1)*nbordr+1) = 1
+        vmax = zr(jvalpo+(ivect-1)*nbordr+1)
+        vmin = zr(jvalpo+(ivect-1)*nbordr+1)
         pass = 0
         sortie = 2
 !
 ! ----- RECHERCHE DES PICS INTERMEDIAIRES -----
 !
         do iordr = 2, nbordr
-            valeur = zr(jvalax + (ivect-1)*nbordr + iordr)
+            valeur = zr(jvalax+(ivect-1)*nbordr+iordr)
             if (vmax .lt. valeur) then
                 vmax = valeur
                 ordmax = iordr
-            endif
+            end if
             if (vmin .gt. valeur) then
                 vmin = valeur
                 ordmin = iordr
-            endif
+            end if
             if (pass .eq. 0) then
                 if ((valeur-vmin) .gt. pseuil) then
                     sortie = 1
                     pass = 1
-                endif
+                end if
                 if ((vmax-valeur) .gt. pseuil) then
                     sortie = 0
                     pass = 1
-                endif
-            endif
+                end if
+            end if
             if ((sortie .eq. 1) .and. ((vmax-valeur)-pseuil .gt. epsilo)) then
-                npoin(ivect) = npoin(ivect) + 1
-                zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmax
-                zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmax
+                npoin(ivect) = npoin(ivect)+1
+                zr(jvalpo+(ivect-1)*nbordr+npoin(ivect)) = vmax
+                zi(jvalor+(ivect-1)*nbordr+npoin(ivect)) = ordmax
                 vmin = valeur
                 ordmin = iordr
                 sortie = 0
-            endif
+            end if
             if ((sortie .eq. 0) .and. ((valeur-vmin)-pseuil .gt. epsilo)) then
-                npoin(ivect) = npoin(ivect) + 1
-                zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmin
-                zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmin
+                npoin(ivect) = npoin(ivect)+1
+                zr(jvalpo+(ivect-1)*nbordr+npoin(ivect)) = vmin
+                zi(jvalor+(ivect-1)*nbordr+npoin(ivect)) = ordmin
                 vmax = valeur
                 ordmax = iordr
                 sortie = 1
-            endif
+            end if
         end do
 !
         if (sortie .eq. 0) then
-            npoin(ivect) = npoin(ivect) + 1
-            zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmin
-            zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmin
-        endif
+            npoin(ivect) = npoin(ivect)+1
+            zr(jvalpo+(ivect-1)*nbordr+npoin(ivect)) = vmin
+            zi(jvalor+(ivect-1)*nbordr+npoin(ivect)) = ordmin
+        end if
         if (sortie .eq. 1) then
-            npoin(ivect) = npoin(ivect) + 1
-            zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmax
-            zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmax
-        endif
- 10     continue
+            npoin(ivect) = npoin(ivect)+1
+            zr(jvalpo+(ivect-1)*nbordr+npoin(ivect)) = vmax
+            zi(jvalor+(ivect-1)*nbordr+npoin(ivect)) = ordmax
+        end if
+10      continue
     end do
 !
 !

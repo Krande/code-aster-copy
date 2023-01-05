@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine rc32env(lieu, futotenv)
     call jeveuo('&&RC3200.MAX_RESU.'//lieu, 'L', jmax)
     call getfac('SITUATION', nb)
 !
-    k=0
+    k = 0
     futotenv = 0.d0
 !
 555 continue
@@ -77,13 +77,13 @@ subroutine rc32env(lieu, futotenv)
         call jeveuo('&&RC3200.COMBS_RESU.'//lieu, 'L', ind2)
 !
         fuseism = zr(jmax+11)
-    endif
+    end if
     if (zi(jfact+6*k+5) .eq. 1) then
 !-------- le séisme n'intervient pas dans cette combinaison
         call jeveuo('&&RC3200.SITU_RESU.'//lieu, 'L', ind1)
         call jeveuo('&&RC3200.COMB_RESU.'//lieu, 'L', ind2)
         fuseism = 0.d0
-    endif
+    end if
 !
 !---- une situation seule a le plus grand fu unitaire
     if (num1 .eq. num2) then
@@ -91,22 +91,22 @@ subroutine rc32env(lieu, futotenv)
         ke = zr(ind1+123*(num1-1)+18)
         call rc32env2(num1, num2, ke, lieu, fen)
         call rc32env2(num1, num2, 1.0, lieu, fenel)
-        zr(jfactenv+3*k)=fen
-        zr(jfactenv+3*k+1)=fenel
-        zr(jfactenv+3*k+2)=fen*fuunit*noccpris
+        zr(jfactenv+3*k) = fen
+        zr(jfactenv+3*k+1) = fenel
+        zr(jfactenv+3*k+2) = fen*fuunit*noccpris
         futotenv = futotenv+fen*fuunit*noccpris
 !
 !---- une combinaison de situations a le plus grand fu unitaire
     else
-        fuunit= zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+17)+fuseism
+        fuunit = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+17)+fuseism
         ke = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+20)
         call rc32env2(num1, num2, ke, lieu, fen)
         call rc32env2(num1, num2, 1.0, lieu, fenel)
-        zr(jfactenv+3*k)=fen
-        zr(jfactenv+3*k+1)=fenel
-        zr(jfactenv+3*k+2)=fen*fuunit*noccpris
+        zr(jfactenv+3*k) = fen
+        zr(jfactenv+3*k+1) = fenel
+        zr(jfactenv+3*k+2) = fen*fuunit*noccpris
         futotenv = futotenv+fen*fuunit*noccpris
-    endif
+    end if
 !
     k = k+1
     goto 555

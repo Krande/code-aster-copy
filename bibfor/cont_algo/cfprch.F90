@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfprch(ds_contact, ddepla, depdel)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -73,14 +73,14 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ......... CREATION DES CHAMPS INITIAUX'
-    endif
+        write (ifm, *) '<CONTACT> ......... CREATION DES CHAMPS INITIAUX'
+    end if
 !
 ! --- PARAMETRES
 !
-    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
-    lgcp = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
-    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
+    neq = cfdisd(ds_contact%sdcont_solv, 'NEQ')
+    lgcp = cfdisl(ds_contact%sdcont_defi, 'CONT_GCP')
+    lctfd = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
@@ -96,7 +96,7 @@ implicit none
     ddeplc = ds_contact%sdcont_solv(1:14)//'.DELC'
     ddelt = ds_contact%sdcont_solv(1:14)//'.DDEL'
     call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
+    call jeveuo(ddelt(1:19)//'.VALE', 'E', vr=vddelt)
 !
 ! --- RECOPIE DANS DDEPL0 DU CHAMP DE DEPLACEMENTS OBTENU SANS
 ! --- TRAITER LE CONTACT (LE DDEPLA DONNE PAR STAT_NON_LINE)
@@ -114,7 +114,7 @@ implicit none
         call copisd('CHAMP_GD', 'V', ddepla, ddeplc)
     else
         call r8inir(neq, 0.d0, ddepc, 1)
-    endif
+    end if
 !
 ! --- CALCUL INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT
 ! --- DU PAS DE TEMPS SANS CORRECTION DU CONTACT -> DEPL0
@@ -122,13 +122,13 @@ implicit none
     if (lctfd) then
         depl0 = ds_contact%sdcont_solv(1:14)//'.DEP0'
         ddepl0 = ds_contact%sdcont_solv(1:14)//'.DEL0'
-        call jeveuo(depl0 (1:19)//'.VALE', 'E', vr=vdepl0)
+        call jeveuo(depl0(1:19)//'.VALE', 'E', vr=vdepl0)
         call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
         call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
         do ieq = 1, neq
             vdepl0(ieq) = ddep0(ieq)+depde(ieq)
         end do
-    endif
+    end if
 !
 ! --- INTIALISATIONS DES FORCES
 !
@@ -136,12 +136,12 @@ implicit none
     if (ier .ne. 0) then
         call jeveuo(afmu, 'E', jafmu)
         call r8inir(neq, 0.d0, zr(jafmu), 1)
-    endif
+    end if
     call jeexin(atmu, ier)
     if (ier .ne. 0) then
         call jeveuo(atmu, 'E', jatmu)
         call r8inir(neq, 0.d0, zr(jatmu), 1)
-    endif
+    end if
 !
     call jedema()
 !

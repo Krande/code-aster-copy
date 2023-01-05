@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,13 @@ subroutine hujpxs(mater, sig, vin, prox)
     real(kind=8) :: d13, zero, aexp, exptol, rh
     aster_logical :: prox
 !
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 !
-    data      d13, zero  /0.333333333334d0, 0.d0/
+    data d13, zero/0.333333333334d0, 0.d0/
 !
-    d = mater(3,2)
-    pco = mater(7,2)
-    beta = mater(2,2)
+    d = mater(3, 2)
+    pco = mater(7, 2)
+    beta = mater(2, 2)
     rh = vin(4)
     epsvpm = vin(23)
 !
@@ -46,14 +46,14 @@ subroutine hujpxs(mater, sig, vin, prox)
     exptol = min(exptol, 40.d0)
     aexp = -beta*epsvpm
 !
-    if (aexp .ge. exptol) write(6,'(A)') 'HUJPXS :: PB!!'
+    if (aexp .ge. exptol) write (6, '(A)') 'HUJPXS :: PB!!'
 !
     pc = pco*exp(-beta*epsvpm)
 !
     i1 = zero
     do i = 1, ndi
-        i1 = i1 + d13*sig(i)
-    enddo
+        i1 = i1+d13*sig(i)
+    end do
 !
     r4 = abs(i1)/abs(d*pc)
 !
@@ -64,7 +64,7 @@ subroutine hujpxs(mater, sig, vin, prox)
         prox = .true.
     else
         prox = .false.
-    endif
+    end if
 !        WRITE(6,*)'PROX =',PROX
 !
 end subroutine

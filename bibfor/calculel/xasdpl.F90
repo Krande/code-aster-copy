@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
 #include "asterfort/rcmfmc.h"
 !
     integer :: nboumx, nbinmx
-    parameter   (nboumx=1, nbinmx=11)
+    parameter(nboumx=1, nbinmx=11)
     character(len=8) :: lpaout(nboumx), lpain(nbinmx)
     character(len=19) :: lchout(nboumx), lchin(nbinmx)
 !
@@ -113,20 +113,20 @@ subroutine xasdpl(model, celmod, prol0, chou)
     call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tychi)
     call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
 
-    if (tychi.ne.'NOEU') call utmess('F', 'XFEM_86')
-    if (nomgd.ne.'DEPL_R') call utmess('F', 'XFEM_87')
+    if (tychi .ne. 'NOEU') call utmess('F', 'XFEM_86')
+    if (nomgd .ne. 'DEPL_R') call utmess('F', 'XFEM_87')
 !
 ! 2.  --  ON CREE UN CHAM_ELEM_S "MODELE" : CESMOD
 !         LIGREL: NOM DU LIGREL ASSOCIE A CHOU
 ! ---------------------------------------------------------------
-    ASSERT(celmod.ne.' ')
+    ASSERT(celmod .ne. ' ')
     call dismoi('NOM_LIGREL', celmod, 'CHAM_ELEM', repk=ligrel)
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma2)
     call dismoi('PHENOMENE', model, 'MODELE', repk=phen)
     l_ther = ASTER_FALSE
     if (phen .eq. 'THERM') then
         l_ther = ASTER_TRUE
-    endif
+    end if
 
 !   verification de la coherence entre le maillage sur lequel s'appuie
 !   le champ d'entree et le maillage sur lequel s'appuie le modele
@@ -136,7 +136,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
         valk(3) = ma
         valk(4) = ma2
         call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
-    endif
+    end if
 !
 !   recuperation de la dimension geometrique du maillage
     call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
@@ -144,7 +144,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
 !   on verfie que le modele comporte des elements X-FEM
     call dismoi('NB_FISS_XFEM', model, 'MODELE', repi=nfismo)
 
-    if (nfismo.eq.0) call utmess('F', 'XFEM_88')
+    if (nfismo .eq. 0) call utmess('F', 'XFEM_88')
 !
 !   on verifie que le modele n'est pas HM
     call exithm(model, yathm, perman)
@@ -152,32 +152,32 @@ subroutine xasdpl(model, celmod, prol0, chou)
     if (yathm) call utmess('F', 'XFEM_89')
 !
 !   Le modèle comporte-t-il au moins une fissure et pas seulement des interfaces
-    call jeveuo(model//'.FISS','L',jmofis)
-    call jeveuo(model//'.NFIS','L',jnfiss)
+    call jeveuo(model//'.FISS', 'L', jmofis)
+    call jeveuo(model//'.NFIS', 'L', jnfiss)
     nfiss = zi(jnfiss)
 !
-    lfiss=.false.
-    do ifiss = 1,nfiss
+    lfiss = .false.
+    do ifiss = 1, nfiss
         nomfis = zk8(jmofis-1+ifiss)
         call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
 !
-        if(typdis.eq.'FISSURE') then
-            lfiss=.true.
+        if (typdis .eq. 'FISSURE') then
+            lfiss = .true.
             exit
-        endif
-    enddo
+        end if
+    end do
 !
-    mate=' '
+    mate = ' '
     if (lfiss) then
-       !   -- recuperation du champ de matériau
-       call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=iret)
-       ! Assertion : si on a une fissure, le champ de matériau est fourni
-       if (iret.eq.0) then
-         call utmess('F', 'XFEM_100')
-       else
-         call rcmfmc(chmat, mate, l_ther_ = l_ther)
-       endif
-    endif
+        !   -- recuperation du champ de matériau
+        call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=iret)
+        ! Assertion : si on a une fissure, le champ de matériau est fourni
+        if (iret .eq. 0) then
+            call utmess('F', 'XFEM_100')
+        else
+            call rcmfmc(chmat, mate, l_ther_=l_ther)
+        end if
+    end if
 !
 !   creation du CHAM_ELEM_S pour stocker les deplacements recomposes
 !   a partir du CHAM_ELEM modele
@@ -208,7 +208,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
 !   interpolation du champ de deplacement aux points de Gauss
     mnoga = '&&XASDPL.MNOGA'
     call manopg(model, ligrel, option, param, mnoga)
-    call cnsces(cns, 'ELGA', cesout, mnoga, 'V',&
+    call cnsces(cns, 'ELGA', cesout, mnoga, 'V', &
                 cesdpl)
 
     call detrsd('CHAM_NO_S', cns)
@@ -221,11 +221,11 @@ subroutine xasdpl(model, celmod, prol0, chou)
 
 !   calcul du nombre de point de Gauss dans la famille XFEM,
 !   pour chaque element XFEM
-    chsnpg='&&XASDPL.CHSNPG'
+    chsnpg = '&&XASDPL.CHSNPG'
     call xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 !
 !   verification paranoiaque
-    ASSERT(exixfm.eq.'OUI')
+    ASSERT(exixfm .eq. 'OUI')
 !
     call jeveuo(chsnpg//'.CESD', 'L', jcesdnpg)
     call jeveuo(chsnpg//'.CESL', 'L', jceslnpg)
@@ -234,7 +234,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
 !     3. calcul des coordonnees des points de Gauss de la famille XFEM dans
 !        l'element de reference :
 !     ------------------------------------------------------------------
-    chxpg='&&XASDPL.CHXPG'
+    chxpg = '&&XASDPL.CHXPG'
     lpain(1) = 'PGEOMER'
     lchin(1) = ma//'.COORDO'
     lpain(2) = 'PPINTTO'
@@ -247,19 +247,19 @@ subroutine xasdpl(model, celmod, prol0, chou)
     lchin(5) = model//'.TOPOSE.LON'
     lpain(6) = 'PPMILTO'
     lchin(6) = model//'.TOPOSE.PMI'
-    nbin=6
+    nbin = 6
     lpaout(1) = 'PXFGEOM'
     lchout(1) = chxpg
-    nbout=1
+    nbout = 1
 !
-    call calcul('S', 'XFEM_XPG', ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', 'XFEM_XPG', ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 
 !     4. calcul du champ de deplacement recompose aux points de Gauss des
 !        sous-elements pour les elements X-FEM
 !     ------------------------------------------------------------------
-    chdpx='&&XASDPL.CHDPX'
+    chdpx = '&&XASDPL.CHDPX'
     lpain(1) = 'PDEPLNO'
     lchin(1) = chin
     lpain(2) = 'PXFGEOM'
@@ -274,32 +274,32 @@ subroutine xasdpl(model, celmod, prol0, chou)
     lchin(6) = model//'.LNNO'
     lpain(7) = 'PLST'
     lchin(7) = model//'.LTNO'
-    nbin=7
+    nbin = 7
 !   si le champ TOPOSE.HNO existe dans le modele, on l'ajoute a la liste
 !   des champs IN
-    chhno=model//'.TOPONO.HNO'
+    chhno = model//'.TOPONO.HNO'
     call exisd('CHAM_ELEM', chhno, iret)
-    if (iret.eq.1) then
-       lpain(8) = 'PHEA_NO'
-       lchin(8) = chhno
-       nbin=8
-    endif
+    if (iret .eq. 1) then
+        lpain(8) = 'PHEA_NO'
+        lchin(8) = chhno
+        nbin = 8
+    end if
     lpain(9) = 'PSTANO'
     lchin(9) = model//'.STNO'
     lpain(10) = 'PMATERC'
     lchin(10) = mate
     lpain(11) = 'PGEOMER'
     lchin(11) = ma//'.COORDO'
-    nbin=11
+    nbin = 11
     lpaout(1) = 'PDEPLPG'
     lchout(1) = chdpx
-    nbout=1
+    nbout = 1
 !
-    call calcul('S', 'DEPL_XPG', ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call calcul('S', 'DEPL_XPG', ligrel, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
-    chsdpx='&&XASDPL.CHSDGX'
+    chsdpx = '&&XASDPL.CHSDGX'
     call celces(chdpx, 'V', chsdpx)
 !
     call jeveuo(chsdpx//'.CESD', 'L', jcesddpx)
@@ -313,109 +313,109 @@ subroutine xasdpl(model, celmod, prol0, chou)
 
 !   boucle sur les groupes d'elements
     do igr = 1, nbgrel
-        nel = nbelem(ligrel,igr)
+        nel = nbelem(ligrel, igr)
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
-        nute = typele(ligrel,igr)
+        nute = typele(ligrel, igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
 !
-        lxfem=.false.
+        lxfem = .false.
 !
 !       type de maille associe au type d'element
-        noma=typma(nute)
+        noma = typma(nute)
 !       recuperationn de la dimension topologique de la maille
         call dismoi('DIM_TOPO', noma, 'TYPE_MAILLE', repi=ndime)
 !
 !       si l'element est un element de bord, on passe au groupe d'element
 !       suivant
-        if (ndime.lt.ndim) cycle
+        if (ndime .lt. ndim) cycle
 !
 !       calcul de l'identifiant du mode local associe au parametre
 !       PDEPL_R, pour le calcul de l'option TOU_INI_ELGA (cf. la
 !       construction du cham_elem modele dans op0195)
-        imolo = modat2(iopt,nute,param)
+        imolo = modat2(iopt, nute, param)
 !
 !       Assertion: l'element sait calculer PDEPL_R, avec l'option
 !                  TOU_INI_ELGA
-        ASSERT(imolo.ne.0)
+        ASSERT(imolo .ne. 0)
 !
 !       l'element est-il XFEM ?
         call teattr('C', 'XFEM', enr, iret, nomte)
-        lxfem=iret.eq.0
+        lxfem = iret .eq. 0
 !
 !       L'ELEMENT SAIT-IL CALCULER XFEM_XPG ?
-        numc = nucalc(iopt1,nute,1)
+        numc = nucalc(iopt1, nute, 1)
 !       L'ELEMENT SAIT-IL CALCULER DEPL_XPG ?
-        numc2 = nucalc(iopt2,nute,1)
+        numc2 = nucalc(iopt2, nute, 1)
 !
 !       assertion : un element xfem --- qui n'est pas un element de bord ---
 !       sait calculer les options XFEM_XPG et DEPL_XPG
-        ok=.not.lxfem.or.(numc.gt.0.and.numc2.gt.0)
+        ok = .not. lxfem .or. (numc .gt. 0 .and. numc2 .gt. 0)
         ASSERT(ok)
 !
 !       si l'element est X-FEM (et sait calculer XFEM_XPG et DEPL_XPG)
         if (lxfem) then
 !          boucle sur les elements du groupe
-           do iel = 1, nel
-               ima=zi(jliel-1+iel)
-               if (ima .lt. 0) cycle
+            do iel = 1, nel
+                ima = zi(jliel-1+iel)
+                if (ima .lt. 0) cycle
 !
 !              recuperation du nombre de point de Gauss de l'element
-               call cesexi('C', jcesdnpg, jceslnpg, ima, 1, 1, 1, iadnpg)
-               ASSERT(iadnpg.gt.0)
-               npg=cesvnpg(iadnpg)
+                call cesexi('C', jcesdnpg, jceslnpg, ima, 1, 1, 1, iadnpg)
+                ASSERT(iadnpg .gt. 0)
+                npg = cesvnpg(iadnpg)
 !
 !              boucle sur les points de Gauss
-               do kpg=1, npg
+                do kpg = 1, npg
 !                 recopie du champ de deplacement recompose au point de Gauss courant
 !                 dans le champ de sortie
-                  do k=1, ndim
+                    do k = 1, ndim
 !                    recuperation de la composante courante, au point de Gauss courant,
 !                    du champ de deplacement recompose
-                     call cesexi('C', jcesddpx, jcesldpx, ima, kpg, 1, k, iaddpx)
-                     ASSERT(iaddpx.gt.0)
+                        call cesexi('C', jcesddpx, jcesldpx, ima, kpg, 1, k, iaddpx)
+                        ASSERT(iaddpx .gt. 0)
 !                    stockage dans le champ de sortie de la composante courante, au
 !                    point de Gauss courant, du champ de deplacement recompose
-                     call cesexi('C', jcesd, jcesl, ima, kpg, 1, k, iad)
-                     iad=abs(iad)
-                     zl(jcesl-1+iad)=.true.
-                     cesv(iad)=cesvdpx(iaddpx)
-                  enddo
-               enddo
-           enddo
+                        call cesexi('C', jcesd, jcesl, ima, kpg, 1, k, iad)
+                        iad = abs(iad)
+                        zl(jcesl-1+iad) = .true.
+                        cesv(iad) = cesvdpx(iaddpx)
+                    end do
+                end do
+            end do
 !       si l'element est FEM
         else
 !          recopie du champ de deplacement de l'element dans le champ de sortie
-           do iel = 1, nel
-               ima=zi(jliel-1+iel)
-               if (ima .lt. 0) cycle
+            do iel = 1, nel
+                ima = zi(jliel-1+iel)
+                if (ima .lt. 0) cycle
 !
 !              recuperation du nombre de point de Gauss de l'element (comme le nombre de point
 !              sur lesquels le champ ELGA est defini)
-               npg=zi(jcesddpl-1+5+4*(ima-1)+1)
+                npg = zi(jcesddpl-1+5+4*(ima-1)+1)
 !
 !              boucle sur les points de Gauss de l'element
-               do kpg=1, npg
+                do kpg = 1, npg
 !                 recopie du champ de deplacement recompose au point de Gauss courant
 !                 dans le champ de sortie
-                  do k=1, ndim
+                    do k = 1, ndim
 !                    recuperation de la composante courante, au point de Gauss courant,
 !                    du champ de deplacement interpole aux points de Gauss
-                     call cesexi('C', jcesddpl, jcesldpl, ima, kpg, 1, k, iaddpl)
-                     ASSERT(iaddpl.gt.0)
+                        call cesexi('C', jcesddpl, jcesldpl, ima, kpg, 1, k, iaddpl)
+                        ASSERT(iaddpl .gt. 0)
 !                    stockage dans le champ de sortie de la composante courante, au
 !                    point de Gauss courant, du champ de deplacement interpole
-                     call cesexi('C', jcesd, jcesl, ima, kpg, 1, k, iad)
-                     iad=abs(iad)
-                     zl(jcesl-1+iad)=.true.
-                     cesv(iad)=cesvdpl(iaddpl)
-                  enddo
-               enddo
-           enddo
-        endif
-    enddo
+                        call cesexi('C', jcesd, jcesl, ima, kpg, 1, k, iad)
+                        iad = abs(iad)
+                        zl(jcesl-1+iad) = .true.
+                        cesv(iad) = cesvdpl(iaddpl)
+                    end do
+                end do
+            end do
+        end if
+    end do
 !
 !   -- cpnversion du CHAM_ELEM_S recompose en CHAM_ELEM
-    call cescel(cesout, ligrel, option, param, prol0,&
+    call cescel(cesout, ligrel, option, param, prol0, &
                 nncp, 'G', chou, 'F', iret)
 !
 !     -- MENAGE :

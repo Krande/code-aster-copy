@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,9 +29,9 @@ implicit none
 #include "asterfort/cesfus.h"
 #include "asterfort/detrsd.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: comp_noli
-character(len=19), intent(in) :: comp_fuse
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: comp_noli
+    character(len=19), intent(in) :: comp_fuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,16 +50,16 @@ character(len=19), intent(in) :: comp_fuse
     integer, parameter :: nc = 2
     character(len=19) :: chs(nc)
     aster_logical :: l_cumu(nc)
-    real(kind = 8) :: coef_real(nc)
-    complex(kind = 8) :: coef_cplx(nc)
+    real(kind=8) :: coef_real(nc)
+    complex(kind=8) :: coef_cplx(nc)
 !
     integer :: ibid
     character(len=19) :: comp_elas
     character(len=19) :: comp_elas_s, comp_noli_s, comp_fuse_s
     aster_logical :: l_cplx, l_etat_init
 !
-    data l_cumu      /.false._1,.false./
-    data coef_real   /1.d0, 1.d0/
+    data l_cumu/.false._1, .false./
+    data coef_real/1.d0, 1.d0/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,8 +72,8 @@ character(len=19), intent(in) :: comp_fuse
 !
 ! - Create ELAS COMPOR <CARTE>
 !
-    call comp_init(mesh, comp_elas, 'V' )
-    call comp_meca_elas(comp_elas, l_etat_init )
+    call comp_init(mesh, comp_elas, 'V')
+    call comp_meca_elas(comp_elas, l_etat_init)
 !
 ! - Transform ELAS COMPOR <CARTE> in <CHAM_ELEM_S>
 !
@@ -87,7 +87,7 @@ character(len=19), intent(in) :: comp_fuse
 !
     chs(1) = comp_elas_s
     chs(2) = comp_noli_s
-    call cesfus(nc, chs, l_cumu, coef_real, coef_cplx,&
+    call cesfus(nc, chs, l_cumu, coef_real, coef_cplx, &
                 l_cplx, 'V', comp_fuse_s)
 !
 ! - Transform in <CARTE>

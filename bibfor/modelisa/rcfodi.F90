@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,28 +44,28 @@ subroutine rcfodi(ifon, beta, f, df)
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !
-    parameter  ( indfct = 7 )
+    parameter(indfct=7)
 ! DEB ------------------------------------------------------------------
     nbvf = zi(ifon)
     jpro = zi(ifon+1)
     jvalf = zi(ifon+2)
-    if (zk24(jpro)(1:1) .eq. 'C') then
+    if (zk24(jpro) (1:1) .eq. 'C') then
         f = zr(jvalf+nbvf+1)
         df = 0.d0
         goto 101
-    else if (zk24(jpro)(1:1) .eq. 'N') then
+    else if (zk24(jpro) (1:1) .eq. 'N') then
         call utmess('F', 'MODELISA6_58')
-    endif
+    end if
     isave = zi(ifon+indfct)
 !
-    deja = beta.ge.zr(jvalf+isave+nbvf-1) .and. beta.le.zr(jvalf+isave+nbvf)
-    avant = beta.lt.zr(jvalf+isave+nbvf-1)
-    tesinf = beta.lt.zr(jvalf+nbvf)
-    tessup = beta.gt.zr(jvalf+nbvf+nbvf-1)
+    deja = beta .ge. zr(jvalf+isave+nbvf-1) .and. beta .le. zr(jvalf+isave+nbvf)
+    avant = beta .lt. zr(jvalf+isave+nbvf-1)
+    tesinf = beta .lt. zr(jvalf+nbvf)
+    tessup = beta .gt. zr(jvalf+nbvf+nbvf-1)
     entre = .not. tesinf .and. .not. tessup
     if (deja) then
-        jp = jvalf + isave
-        jv = jp + nbvf
+        jp = jvalf+isave
+        jv = jp+nbvf
         df = (zr(jp)-zr(jp-1))/(zr(jv)-zr(jv-1))
         f = df*(beta-zr(jv-1))+zr(jp-1)
         goto 100
@@ -78,59 +78,59 @@ subroutine rcfodi(ifon, beta, f, df)
             ideb = jvalf+isave
             ifin = jvalf+nbvf-1
             incr = 1
-        endif
-    endif
+        end if
+    end if
     if (entre) then
         if (incr .gt. 0) then
             do jp = ideb, ifin, incr
-                jv = jp + nbvf
+                jv = jp+nbvf
                 if (zr(jv) .ge. beta) then
                     df = (zr(jp)-zr(jp-1))/(zr(jv)-zr(jv-1))
                     f = df*(beta-zr(jv-1))+zr(jp-1)
                     isave = jp-jvalf
                     goto 5
-                endif
+                end if
             end do
-  5         continue
+5           continue
         else
             do jp = ideb, ifin, incr
-                jv = jp + nbvf
+                jv = jp+nbvf
                 if (zr(jv) .le. beta) then
                     df = (zr(jp+1)-zr(jp))/(zr(jv+1)-zr(jv))
                     f = df*(beta-zr(jv))+zr(jp)
                     isave = jp-jvalf+1
                     goto 6
-                endif
+                end if
             end do
-  6         continue
-        endif
+6           continue
+        end if
     else if (tesinf) then
         jv = jvalf+nbvf
         jp = jvalf
-        if (zk24(jpro+4)(2:2) .eq. 'C') then
+        if (zk24(jpro+4) (2:2) .eq. 'C') then
             df = 0.0d0
             f = zr(jp)
-        else if (zk24(jpro+4)(1:1).eq.'L') then
+        else if (zk24(jpro+4) (1:1) .eq. 'L') then
             df = (zr(jp+1)-zr(jp))/(zr(jv+1)-zr(jv))
             f = df*(beta-zr(jv))+zr(jp)
-        else if (zk24(jpro+4)(1:1).eq.'E') then
+        else if (zk24(jpro+4) (1:1) .eq. 'E') then
             call utmess('F', 'MODELISA4_63')
-        endif
+        end if
         isave = 1
     else if (tessup) then
-        jv = jvalf + 2*nbvf - 1
-        jp = jvalf + nbvf - 1
-        if (zk24(jpro+4)(2:2) .eq. 'C') then
+        jv = jvalf+2*nbvf-1
+        jp = jvalf+nbvf-1
+        if (zk24(jpro+4) (2:2) .eq. 'C') then
             df = 0.0d0
             f = zr(jp)
-        else if (zk24(jpro+4)(2:2).eq.'L') then
+        else if (zk24(jpro+4) (2:2) .eq. 'L') then
             df = (zr(jp)-zr(jp-1))/(zr(jv)-zr(jv-1))
             f = df*(beta-zr(jv-1))+zr(jp-1)
-        else if (zk24(jpro+4)(2:2).eq.'E') then
+        else if (zk24(jpro+4) (2:2) .eq. 'E') then
             call utmess('F', 'MODELISA4_65')
-        endif
-        isave = nbvf - 1
-    endif
+        end if
+        isave = nbvf-1
+    end if
 100 continue
     zi(ifon+indfct) = isave
 101 continue

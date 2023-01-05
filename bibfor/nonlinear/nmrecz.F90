@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmrecz(nume_dof , ds_contact, list_func_acti,&
-                  cndiri   , cnfint    , cnfext, cnsstr,&
-                  disp_iter,&
+subroutine nmrecz(nume_dof, ds_contact, list_func_acti, &
+                  cndiri, cnfint, cnfext, cnsstr, &
+                  disp_iter, &
                   func)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/dismoi.h"
@@ -32,11 +32,11 @@ implicit none
 #include "asterfort/nmequi.h"
 #include "asterfort/isfonc.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=24), intent(in) :: nume_dof
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19), intent(in) :: cndiri, cnfint, cnfext, cnsstr, disp_iter
-real(kind=8), intent(out) :: func
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: cndiri, cnfint, cnfext, cnsstr, disp_iter
+    real(kind=8), intent(out) :: func
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,8 +75,8 @@ real(kind=8), intent(out) :: func
     l_pilo = ASTER_FALSE
     l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
     cnequi = '&&CNCHAR.DONN'
-    call nmequi(l_disp    , l_pilo, l_macr, cnequi,&
-                cnfint    , cnfext, cndiri, cnsstr,&
+    call nmequi(l_disp, l_pilo, l_macr, cnequi, &
+                cnfint, cnfext, cndiri, cnsstr, &
                 ds_contact)
     call jeveuo(cnequi(1:19)//'.VALE', 'L', vr=v_cnequi)
 !
@@ -84,7 +84,7 @@ real(kind=8), intent(out) :: func
 !
     func = 0.d0
     do i_equa = 1, nb_equa
-        func = func + v_disp_iter(i_equa) * v_cnequi(i_equa)
+        func = func+v_disp_iter(i_equa)*v_cnequi(i_equa)
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
+subroutine jjecrs(iadmi, iclas, idos, idco, cus, &
                   jmarq)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
@@ -37,17 +37,17 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
 !              JMARQ(2) ADRESSE DE L'OBJET DANS LE DESCRIPTEUR DESMA
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
 ! ---                  ISTAT(1)->X , (2)->U , (3)->A , (4)->D
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
-    common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
+    common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
     real(kind=8) :: svuse, smxuse
-    common /statje/  svuse,smxuse
+    common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
     integer :: ista1, ista2, is, ktempo(2)
 ! DEB ------------------------------------------------------------------
@@ -66,9 +66,9 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
             iszon(jiszon+iadmi-2) = idos
             iszon(is-3) = idco
             iszon(is-2) = iclas
-            svuse = svuse + (iszon(jiszon+iadmi-4) - iadmi + 4)
-            smxuse = max(smxuse,svuse)
-        endif
+            svuse = svuse+(iszon(jiszon+iadmi-4)-iadmi+4)
+            smxuse = max(smxuse, svuse)
+        end if
         iszon(is-4) = istat(4)
 !
 ! --- ACCES EN LECTURE : 1/ XD ET UD PASSENT A UD
@@ -76,9 +76,9 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
 !
     else if (cus .eq. 'L') then
         if (ista1 .eq. istat(1)) then
-            svuse = svuse + (iszon(jiszon+iadmi-4) - iadmi + 4)
-            smxuse = max(smxuse,svuse)
-        endif
+            svuse = svuse+(iszon(jiszon+iadmi-4)-iadmi+4)
+            smxuse = max(smxuse, svuse)
+        end if
         if (ista2 .eq. istat(4)) then
             iszon(jiszon+iadmi-1) = istat(2)
         else
@@ -87,8 +87,8 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
             iszon(is-4) = istat(3)
             iszon(is-3) = idco
             iszon(is-2) = iclas
-        endif
-    endif
+        end if
+    end if
     if (ista1 .eq. istat(1)) then
         jmarq(1) = ipgc
         if (ipgc .gt. 0) then
@@ -98,37 +98,37 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
 !
                 lsi = lgd
                 lgd = 2*lgd
-                call jjalls(lgd*lois, 0, 'V', 'I', lois,&
+                call jjalls(lgd*lois, 0, 'V', 'I', lois, &
                             'INIT', iadma, iadrs, ktempo(1), ktempo(2))
                 iszon(jiszon+ktempo(1)-1) = istat(2)
                 iszon(jiszon+iszon(jiszon+ktempo(1)-4)-4) = istat(4)
-                svuse = svuse + (iszon(jiszon+ktempo(1)-4) - ktempo(1) + 4)
-                smxuse = max(smxuse,svuse)
+                svuse = svuse+(iszon(jiszon+ktempo(1)-4)-ktempo(1)+4)
+                smxuse = max(smxuse, svuse)
                 do k = 1, lsi
-                    iszon(jiszon+ktempo(1)+k-1) = iszon(jiszon+kdesma( 1)+k-1)
+                    iszon(jiszon+ktempo(1)+k-1) = iszon(jiszon+kdesma(1)+k-1)
                 end do
                 call jjlidy(kdesma(2), kdesma(1))
                 kdesma(1) = ktempo(1)
                 kdesma(2) = ktempo(2)
-            endif
+            end if
             lgduti = lgduti+1
-            iszon(jiszon + kdesma(1) + lgduti - 1) = iadmi
+            iszon(jiszon+kdesma(1)+lgduti-1) = iadmi
             jmarq(2) = lgduti
-        endif
+        end if
     else if (ipgc .eq. -1) then
         if (jmarq(1) .ne. -3) then
             jmarq(1) = ipgc
             if (jmarq(2) .gt. 0) then
-                iszon(jiszon + kdesma(1) + jmarq(2) - 1 ) = 0
+                iszon(jiszon+kdesma(1)+jmarq(2)-1) = 0
                 jmarq(2) = 0
-            endif
-        endif
+            end if
+        end if
     else if (ipgc .eq. -3) then
         jmarq(1) = ipgc
         if (jmarq(2) .gt. 0) then
-            iszon(jiszon + kdesma(1) + jmarq(2) - 1 ) = 0
+            iszon(jiszon+kdesma(1)+jmarq(2)-1) = 0
             jmarq(2) = 0
-        endif
-    endif
+        end if
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

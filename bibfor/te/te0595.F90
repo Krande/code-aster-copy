@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine te0595(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,7 +40,7 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,29 +82,29 @@ character(len=16), intent(in) :: option, nomte
     ivectu = 1
     codret = 0
     matsym = ASTER_TRUE
-    mini   = ASTER_FALSE
+    mini = ASTER_FALSE
 !
 ! - Get element parameters
 !
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou .ge. 2)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI',&
-                     ndim=ndim, nno=nnop, npg=npg,&
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', &
+                     ndim=ndim, nno=nnop, npg=npg, &
                      jpoids=iw, jvf=ivfp)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nnod, npg=npg,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nnod, npg=npg, &
                      jpoids=iw, jvf=ivfd, jdfde=idfd)
 !
 ! - Type of finite element
 !
-    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS  '
-    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     typmod(2) = '        '
 !
 ! - MINI ELEMENT ?
@@ -113,7 +113,7 @@ character(len=16), intent(in) :: option, nomte
     call teattr('S', 'ALIAS8', alias8, ibid)
     if (alias8(6:8) .eq. 'TR3' .or. alias8(6:8) .eq. 'TE4') then
         mini = ASTER_TRUE
-    endif
+    end if
 !
 ! - Get input fields
 !
@@ -128,7 +128,7 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Compute barycentric center
 !
@@ -145,9 +145,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -164,80 +164,80 @@ character(len=16), intent(in) :: option, nomte
             call nmtstm(zr(icarcr), imatuu, matsym)
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
 !
 ! - Compute options
 !
     if (defo_comp .eq. 'PETIT') then
-        if (lteatt('INCO','C2 ')) then
+        if (lteatt('INCO', 'C2 ')) then
 ! --------- Get index of dof
-            call niinit(typmod, ndim, nnod, 0,&
-                        nnop, 0, vu, vg, vp,&
+            call niinit(typmod, ndim, nnod, 0, &
+                        nnop, 0, vu, vg, vp, &
                         vpi)
-            nddl = nnod*ndim + nnop
-            call nufipd(ndim, nnod, nnop, npg, iw,&
-                        zr(ivfd), zr(ivfp), idfd, vu, vp,&
-                        zr(igeom), typmod, option, zi(imate), zk16(icompo),&
-                        lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
-                        zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
-                        zr(ivarip), mini, zr(ivectu),&
-                        zr(imatuu), codret,&
+            nddl = nnod*ndim+nnop
+            call nufipd(ndim, nnod, nnop, npg, iw, &
+                        zr(ivfd), zr(ivfp), idfd, vu, vp, &
+                        zr(igeom), typmod, option, zi(imate), zk16(icompo), &
+                        lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), &
+                        zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp), &
+                        zr(ivarip), mini, zr(ivectu), &
+                        zr(imatuu), codret, &
                         lSigm, lVect, lMatr)
-        else if (lteatt('INCO','C2O')) then
+        else if (lteatt('INCO', 'C2O')) then
 ! --------- Get index of dof
-            call niinit(typmod, ndim, nnod, 0,&
-                        nnop, nnop, vu, vg, vp,&
+            call niinit(typmod, ndim, nnod, 0, &
+                        nnop, nnop, vu, vg, vp, &
                         vpi)
-            nddl = nnod*ndim + nnop + nnop*ndim
-            call nofipd(ndim, nnod, nnop, nnop, npg,&
-                        iw, zr(ivfd), zr(ivfp), zr(ivfp), idfd,&
-                        vu, vp, vpi, zr(igeom), typmod,&
-                        option, nomte, zi(imate), zk16(icompo), lgpg,&
-                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
-                        angmas, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip),&
-                        zr(ivectu), zr(imatuu), codret,&
+            nddl = nnod*ndim+nnop+nnop*ndim
+            call nofipd(ndim, nnod, nnop, nnop, npg, &
+                        iw, zr(ivfd), zr(ivfp), zr(ivfp), idfd, &
+                        vu, vp, vpi, zr(igeom), typmod, &
+                        option, nomte, zi(imate), zk16(icompo), lgpg, &
+                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), &
+                        angmas, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
+                        zr(ivectu), zr(imatuu), codret, &
                         lSigm, lVect, lMatr)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else if (defo_comp .eq. 'GDEF_LOG') then
-        if (lteatt('INCO','C2 ')) then
+        if (lteatt('INCO', 'C2 ')) then
             ASSERT(.not. mini)
 ! --------- Get index of dof
-            call niinit(typmod, ndim, nnod, 0,&
-                        nnop, 0, vu, vg, vp,&
+            call niinit(typmod, ndim, nnod, 0, &
+                        nnop, 0, vu, vg, vp, &
                         vpi)
-            nddl = nnod*ndim + nnop
-            call nufilg(ndim, nnod, nnop, npg, iw,&
-                        zr(ivfd), zr(ivfp), idfd, vu, vp,&
-                        zr(igeom), typmod, option, zi(imate), zk16(icompo),&
-                        lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
-                        zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
-                        zr(ivarip), zr(ivectu), zr(imatuu),&
-                        matsym, codret,&
+            nddl = nnod*ndim+nnop
+            call nufilg(ndim, nnod, nnop, npg, iw, &
+                        zr(ivfd), zr(ivfp), idfd, vu, vp, &
+                        zr(igeom), typmod, option, zi(imate), zk16(icompo), &
+                        lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), &
+                        zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp), &
+                        zr(ivarip), zr(ivectu), zr(imatuu), &
+                        matsym, codret, &
                         lVect, lMatr)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Save return code
 !
     if (lSigm) then
         call jevech('PCODRET', 'E', icoret)
         zi(icoret) = codret
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,11 +51,11 @@ subroutine mepres(nomo, chpres, fonc, pres, cisa)
     if (fonc) then
         nomf(1) = zero
         nomf(2) = zero
-        call mecact('V', chpres, 'MODELE', ligrmo, 'PRES_F',&
+        call mecact('V', chpres, 'MODELE', ligrmo, 'PRES_F', &
                     ncmp=2, lnomcmp=licmp, vk=nomf)
     else
-        call mecact('V', chpres, 'MODELE', ligrmo, 'PRES_R',&
+        call mecact('V', chpres, 'MODELE', ligrmo, 'PRES_R', &
                     ncmp=2, lnomcmp=licmp, vr=rcmp)
-    endif
+    end if
 !
 end subroutine

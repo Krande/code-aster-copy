@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
 
 !
 !   -0.1- Input/output arguments
-    character(len=*) , intent(in) :: sd_dtm_
-    character(len=*) , intent(in) :: sd_int_
-    integer          , intent(in) :: index
+    character(len=*), intent(in) :: sd_dtm_
+    character(len=*), intent(in) :: sd_int_
+    integer, intent(in) :: index
     integer, pointer :: buffdtm(:)
     integer, pointer              :: buffint(:)
 !
@@ -43,13 +43,13 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
     integer          :: nbmode, i, iret
     character(len=8) :: sd_dtm, sd_int
 !
-    real(kind=8)    , pointer :: depl(:)   => null()
-    real(kind=8)    , pointer :: vite(:)   => null()
-    real(kind=8)    , pointer :: acce(:)   => null()
-    real(kind=8)    , pointer :: fext(:)   => null()
-    real(kind=8)    , pointer :: masgen(:)   => null()
-    real(kind=8)    , pointer :: riggen(:)   => null()
-    real(kind=8)    , pointer :: amogen(:)   => null()
+    real(kind=8), pointer :: depl(:) => null()
+    real(kind=8), pointer :: vite(:) => null()
+    real(kind=8), pointer :: acce(:) => null()
+    real(kind=8), pointer :: fext(:) => null()
+    real(kind=8), pointer :: masgen(:) => null()
+    real(kind=8), pointer :: riggen(:) => null()
+    real(kind=8), pointer :: amogen(:) => null()
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
@@ -59,7 +59,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
 
     mdiag = .false.
     call intget(sd_int, MASS_FUL, iocc=1, lonvec=iret, buffer=buffint)
-    if (iret.gt.0) then
+    if (iret .gt. 0) then
         call intget(sd_int, MASS_FUL, iocc=1, vr=masgen, buffer=buffint)
     else
         call intget(sd_int, MASS_DIA, iocc=1, vr=masgen, buffer=buffint)
@@ -68,7 +68,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
 
     kdiag = .false.
     call intget(sd_int, RIGI_FUL, iocc=1, lonvec=iret, buffer=buffint)
-    if (iret.gt.0) then
+    if (iret .gt. 0) then
         call intget(sd_int, RIGI_FUL, iocc=1, vr=riggen, buffer=buffint)
     else
         call intget(sd_int, RIGI_DIA, iocc=1, vr=riggen, buffer=buffint)
@@ -77,7 +77,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
 
     cdiag = .false.
     call intget(sd_int, AMOR_FUL, iocc=1, lonvec=iret, buffer=buffint)
-    if (iret.gt.0) then
+    if (iret .gt. 0) then
         call intget(sd_int, AMOR_FUL, iocc=1, vr=amogen, buffer=buffint)
     else
         call intget(sd_int, AMOR_DIA, iocc=1, vr=amogen, buffer=buffint)
@@ -89,7 +89,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
     call intget(sd_int, ACCE, iocc=index, vr=acce, buffer=buffint)
 
     call intget(sd_int, FORCE_EX, iocc=index, lonvec=iret)
-    if (iret.eq.0) then
+    if (iret .eq. 0) then
         call intinivec(sd_int, FORCE_EX, nbmode, iocc=index, vr=fext)
     else
         call intget(sd_int, FORCE_EX, iocc=index, vr=fext, buffer=buffint)
@@ -100,22 +100,22 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
         if (kdiag) then
             if (cdiag) then
                 do i = 1, nbmode
-                    fext(i) = masgen(i)*acce(i) + masgen(i)*amogen(i)*vite(i) &
-                                                + riggen(i)*depl(i)
+                    fext(i) = masgen(i)*acce(i)+masgen(i)*amogen(i)*vite(i) &
+                              +riggen(i)*depl(i)
                 end do
             else
 !               --- Calculate C[nxn] * V[n*1]
                 call pmavec('ZERO', nbmode, amogen, vite, fext)
                 do i = 1, nbmode
-                    fext(i) = masgen(i)*acce(i) + fext(i) &
-                                                + riggen(i)*depl(i)
+                    fext(i) = masgen(i)*acce(i)+fext(i) &
+                              +riggen(i)*depl(i)
                 end do
-            endif
+            end if
         else
 !           --- Calculate the term M[nxn] * A[nx1] + C[nxn] * V[nx1]
             if (cdiag) then
                 do i = 1, nbmode
-                    fext(i) = masgen(i)*acce(i) + masgen(i)*amogen(i)*vite(i)
+                    fext(i) = masgen(i)*acce(i)+masgen(i)*amogen(i)*vite(i)
                 end do
             else
                 do i = 1, nbmode
@@ -138,7 +138,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
             end do
         else
             call pmavec('ZERO', nbmode, amogen, vite, fext)
-        endif
+        end if
 
 !       --- Add up the term M[nxn] * A[nx1]
         call pmavec('CUMU', nbmode, masgen, acce, fext)
@@ -146,11 +146,11 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
 !       --- Add up the term K[nxn] * X[nx1]
         if (kdiag) then
             do i = 1, nbmode
-                fext(i) = fext(i) + riggen(i)*depl(i)
+                fext(i) = fext(i)+riggen(i)*depl(i)
             end do
         else
             call pmavec('CUMU', nbmode, riggen, depl, fext)
         end if
-    endif
+    end if
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
+subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
                   valinc, solalg)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,11 +43,11 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "asterfort/utmess.h"
 !
-integer :: fonact(*)
-character(len=19) :: sdnume, sddyna
-character(len=24) :: numedd
-character(len=19) :: solalg(*), valinc(*)
-real(kind=8) :: deltat
+    integer :: fonact(*)
+    character(len=19) :: sdnume, sddyna
+    character(len=24) :: numedd
+    character(len=19) :: solalg(*), valinc(*)
+    real(kind=8) :: deltat
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@ real(kind=8) :: deltat
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_56')
-    endif
+    end if
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -103,14 +103,14 @@ real(kind=8) :: deltat
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lstat = ndynlo(sddyna,'STATIQUE')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lgrot = isfonc(fonact,'GD_ROTA')
-    lexge = ndynlo(sddyna,'EXPL_GENE')
-    lexpl = ndynlo(sddyna,'EXPLICITE')
-    ltcha = ndynlo(sddyna,'TCHAMWA')
-    lendo = isfonc(fonact,'ENDO_NO')
-    lmuap = ndynlo(sddyna,'MULTI_APPUI')
+    lstat = ndynlo(sddyna, 'STATIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lgrot = isfonc(fonact, 'GD_ROTA')
+    lexge = ndynlo(sddyna, 'EXPL_GENE')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
+    ltcha = ndynlo(sddyna, 'TCHAMWA')
+    lendo = isfonc(fonact, 'ENDO_NO')
+    lmuap = ndynlo(sddyna, 'MULTI_APPUI')
 !
 ! --- TYPE DE FORMULATION SCHEMA DYNAMIQUE GENERAL
 !
@@ -119,46 +119,46 @@ real(kind=8) :: deltat
         lvite = .false.
         lacce = .false.
     else
-        ldepl = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1
-        lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
-        lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
-    endif
+        ldepl = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1
+        lvite = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 2
+        lacce = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3
+    end if
 !
 ! --- MISE A JOUR INCONNUE PRINCIPALE
 !
     coefpr = 1.d0
     if (ldepl) then
         if (lstat) then
-            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr,&
+            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr, &
                         depdel, ddepla, depdel, 0)
-            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr,&
+            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr, &
                         depplu, ddepla, depplu, 1)
-        endif
+        end if
     else if (lvite) then
-        call nmmaji(numedd, lgrot, lendo, sdnume, coefpr,&
+        call nmmaji(numedd, lgrot, lendo, sdnume, coefpr, &
                     vitdel, dvitla, vitdel, 0)
-        call nmmaji(numedd, lgrot, lendo, sdnume, coefpr,&
+        call nmmaji(numedd, lgrot, lendo, sdnume, coefpr, &
                     vitplu, dvitla, vitplu, 1)
     else if (lacce) then
         if (lexpl) then
             call copisd('CHAMP_GD', 'V', daccla, accplu)
         else
-            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr,&
+            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr, &
                         accdel, daccla, accdel, 0)
-            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr,&
+            call nmmaji(numedd, lgrot, lendo, sdnume, coefpr, &
                         accplu, daccla, accplu, 1)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- COEFFICIENTS
 !
     if (lstat) then
         goto 999
     else
-        coevit = ndynre(sddyna,'COEF_VITE')
-    endif
+        coevit = ndynre(sddyna, 'COEF_VITE')
+    end if
 !
 ! ---- MISE A JOUR INCONNUES SECONDAIRES
 !
@@ -172,7 +172,7 @@ real(kind=8) :: deltat
             call vtaxpy(1.d0, ddepla, depdel)
             call vtaxpy(1.d0, dvitla, vitdel)
             call vtaxpy(1.d0, daccla, accdel)
-        endif
+        end if
     else if (lvite) then
         call vtaxpy(1.d0, ddepla, depplu)
         call vtaxpy(1.d0, daccla, accplu)
@@ -182,30 +182,30 @@ real(kind=8) :: deltat
         call vtaxpy(-1.d0, depmoi, depdel)
     else if (lacce) then
         if (lexpl) then
-            if (.not.ltcha) then
+            if (.not. ltcha) then
                 call vtaxpy(coevit, accplu, vitplu)
-            endif
+            end if
         else
             call vtaxpy(1.d0, ddepla, depplu)
             call vtaxpy(1.d0, dvitla, vitplu)
-        endif
+        end if
         call vtaxpy(1.d0, ddepla, depdel)
         call vtaxpy(1.d0, dvitla, vitdel)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- MISE A JOUR DES DEPL/VITE/ACCE GENERALISEES
 !
     if (lexge) then
         call mxmajd(deltat, sddyna)
-    endif
+    end if
 !
 ! --- MISE A JOUR DES CHAMPS MULTI-APPUI
 !
     if (lmuap) then
         call ndmapp(sddyna, valinc)
-    endif
+    end if
 !
 ! --- AFFICHAGE
 !
@@ -224,8 +224,8 @@ real(kind=8) :: deltat
             call nmdebg('VECT', accplu, 6)
             call utmess('I', 'MECANONLINE13_62')
             call nmdebg('VECT', accdel, 6)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

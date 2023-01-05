@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dneigh(rnorm, n, h, ldh, ritzr,&
-                  ritzi, bounds, q, ldq, workl,&
+subroutine dneigh(rnorm, n, h, ldh, ritzr, &
+                  ritzi, bounds, q, ldq, workl, &
                   ierr)
 !
 !     SUBROUTINE ARPACK CALCULANT LES MODES PROPRES DE LA MATRICE DE
@@ -135,7 +135,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 #include "blas/dscal.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !
@@ -158,7 +158,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     %------------%
 !
     real(kind=8) :: one, zero
-    parameter (one = 1.0d+0, zero = 0.0d+0)
+    parameter(one=1.0d+0, zero=0.0d+0)
 !
 !     %------------------------%
 !     | LOCAL SCALARS & ARRAYS |
@@ -187,9 +187,9 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
     msglvl = mneigh
 !
     if (msglvl .gt. 2) then
-        call dmout(logfil, n, n, h, ldh,&
+        call dmout(logfil, n, n, h, ldh, &
                    ndigit, '_NEIGH: ENTERING UPPER HESSENBERG MATRIX H ')
-    endif
+    end if
 !
 !     %-----------------------------------------------------------%
 !     | 1. COMPUTE THE EIGENVALUES, THE LAST COMPONENTS OF THE    |
@@ -199,15 +199,15 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     | AND THE LAST COMPONENTS OF THE SCHUR VECTORS IN BOUNDS.   |
 !     %-----------------------------------------------------------%
 ! DUE TO CRP_102 CALL DLACPY ('ALL', N, N, H, LDH, WORKL, N)
-    call dlacpy('A', n, n, h, ldh,&
+    call dlacpy('A', n, n, h, ldh, &
                 workl, n)
-    call dlaqrb(.true._1, n, 1, n, workl,&
+    call dlaqrb(.true._1, n, 1, n, workl, &
                 n, ritzr, ritzi, bounds, ierr)
     if (ierr .ne. 0) goto 9000
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, n, bounds, ndigit, '_NEIGH: LAST ROW OF THE SCHUR MATRIX FOR H')
-    endif
+    end if
 !
 !     %-----------------------------------------------------------%
 !     | 2. COMPUTE THE EIGENVECTORS OF THE FULL SCHUR FORM T AND  |
@@ -219,8 +219,8 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     | COLUMNS OF Q.                                             |
 !     %-----------------------------------------------------------%
 !
-    call ar_dtrevc('R', 'A', select, n, workl,&
-                   n, vl, n, q, ldq,&
+    call ar_dtrevc('R', 'A', select, n, workl, &
+                   n, vl, n, q, ldq, &
                    n, n, workl(n*n+1), ierr)
 !
     if (ierr .ne. 0) goto 9000
@@ -236,13 +236,13 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !
     iconj = 0
     do i = 1, n
-        if (abs( ritzi(i) ) .le. zero) then
+        if (abs(ritzi(i)) .le. zero) then
 !
 !           %----------------------%
 !           | REAL EIGENVALUE CASE |
 !           %----------------------%
-            temp = dnrm2( n, q(1,i), 1 )
-            call dscal(n, one / temp, q(1, i), 1)
+            temp = dnrm2(n, q(1, i), 1)
+            call dscal(n, one/temp, q(1, i), 1)
         else
 !
 !           %-------------------------------------------%
@@ -254,23 +254,23 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !           %-------------------------------------------%
 !
             if (iconj .eq. 0) then
-                temp = dlapy2(dnrm2( n, q(1,i), 1 ), dnrm2( n, q(1,i+ 1), 1 ))
-                call dscal(n, one / temp, q(1, i), 1)
-                call dscal(n, one / temp, q(1, i+1), 1)
+                temp = dlapy2(dnrm2(n, q(1, i), 1), dnrm2(n, q(1, i+1), 1))
+                call dscal(n, one/temp, q(1, i), 1)
+                call dscal(n, one/temp, q(1, i+1), 1)
                 iconj = 1
             else
                 iconj = 0
-            endif
-        endif
+            end if
+        end if
     end do
 !
-    call dgemv('T', n, n, one, q,&
-               ldq, bounds, 1, zero, workl,&
+    call dgemv('T', n, n, one, q, &
+               ldq, bounds, 1, zero, workl, &
                1)
 !
     if (msglvl .gt. 1) then
         call dvout(logfil, n, workl, ndigit, '_NEIGH: LAST ROW OF THE EIGENVECTOR MATRIX FOR H')
-    endif
+    end if
 !
 !     %----------------------------%
 !     | COMPUTE THE RITZ ESTIMATES |
@@ -278,13 +278,13 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !
     iconj = 0
     do i = 1, n
-        if (abs( ritzi(i) ) .le. zero) then
+        if (abs(ritzi(i)) .le. zero) then
 !
 !           %----------------------%
 !           | REAL EIGENVALUE CASE |
 !           %----------------------%
 !
-            bounds(i) = rnorm * abs( workl(i) )
+            bounds(i) = rnorm*abs(workl(i))
         else
 !
 !           %-------------------------------------------%
@@ -296,20 +296,20 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !           %-------------------------------------------%
 !
             if (iconj .eq. 0) then
-                bounds(i) = rnorm * dlapy2( workl(i), workl(i+1) )
+                bounds(i) = rnorm*dlapy2(workl(i), workl(i+1))
                 bounds(i+1) = bounds(i)
                 iconj = 1
             else
                 iconj = 0
-            endif
-        endif
+            end if
+        end if
     end do
 !
     if (msglvl .gt. 2) then
         call dvout(logfil, n, ritzr, ndigit, '_NEIGH: REAL PART OF THE EIGENVALUES OF H')
         call dvout(logfil, n, ritzi, ndigit, '_NEIGH: IMAGINARY PART OF THE EIGENVALUES OF H')
         call dvout(logfil, n, bounds, ndigit, '_NEIGH: RITZ ESTIMATES FOR THE EIGENVALUES OF H')
-    endif
+    end if
 !
 9000 continue
 !

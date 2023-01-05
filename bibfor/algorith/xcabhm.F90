@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 ! aslint: disable=W1504,W1306
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
-subroutine xcabhm(ds_thm,&
-                  nddls, nddlm, nnop, nnops, nnopm,&
-                  dimuel, ndim, kpi, ff, ff2,&
-                  dfdi, dfdi2, b, nmec,&
-                  addeme, addep1, np1, axi,&
-                  ivf, ipoids, idfde, poids, coorse,&
-                  nno, geom, yaenrm, adenme, dimenr,&
+subroutine xcabhm(ds_thm, &
+                  nddls, nddlm, nnop, nnops, nnopm, &
+                  dimuel, ndim, kpi, ff, ff2, &
+                  dfdi, dfdi2, b, nmec, &
+                  addeme, addep1, np1, axi, &
+                  ivf, ipoids, idfde, poids, coorse, &
+                  nno, geom, yaenrm, adenme, dimenr, &
                   he, heavn, yaenrh, adenhy, nfiss, nfh)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -93,7 +93,7 @@ implicit none
     type(THM_DS), intent(in) :: ds_thm
     aster_logical :: axi
     integer :: nddls, nddlm, nmec, np1, ndim, nnop, i, n, kk
-    integer :: nnops, nnopm, kpi, dimuel, heavn(nnop,5)
+    integer :: nnops, nnopm, kpi, dimuel, heavn(nnop, 5)
     integer :: addeme, addep1
     integer :: yaenrm, adenme, dimenr
     integer :: yaenrh, adenhy, nfiss, nfh, ifh
@@ -102,28 +102,28 @@ implicit none
     real(kind=8) :: ff(nnop), ff2(nnops)
     real(kind=8) :: b(dimenr, dimuel), rac, r, geom(ndim, nnop)
     real(kind=8) :: rbid1(nno), rbid2(nno), rbid3(nno)
-    real(kind=8) :: he(nfiss) , poids, coorse(81)
+    real(kind=8) :: he(nfiss), poids, coorse(81)
 ! ======================================================================
 ! --- CALCUL DE CONSTANTES UTILES --------------------------------------
 ! ======================================================================
-    rac= sqrt(2.d0)
-    hea_se=xcalc_code(nfiss, he_real=[he])
+    rac = sqrt(2.d0)
+    hea_se = xcalc_code(nfiss, he_real=[he])
 ! ======================================================================
 ! --- INITIALISATION DE LA MATRICE B -----------------------------------
 ! ======================================================================
-    b(:,:) = 0.d0
+    b(:, :) = 0.d0
 ! ======================================================================
 ! --- CALCUL DU JACOBIEN DE LA TRANSFORMATION SSTET-> SSTET REF --------
 ! --- AVEC LES COORDONNEES DES SOUS-ELEMENTS ---------------------------
 ! ======================================================================
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
     if (ndim .eq. 2) then
-        call dfdm2d(nno, kpi, ipoids, idfde, coorse,&
+        call dfdm2d(nno, kpi, ipoids, idfde, coorse, &
                     poids, rbid1, rbid2)
     else if (ndim .eq. 3) then
-        call dfdm3d(nno, kpi, ipoids, idfde, coorse,&
+        call dfdm3d(nno, kpi, ipoids, idfde, coorse, &
                     poids, rbid1, rbid2, rbid3)
-    endif
+    end if
 ! ======================================================================
 ! --- MODIFICATION DU POIDS POUR LES MODELISATIONS AXIS ----------------
 ! ======================================================================
@@ -131,9 +131,9 @@ implicit none
         kk = (kpi-1)*nnop
         r = 0.d0
         do n = 1, nnop
-            r = r + zr(ivf+n+kk-1)*geom(1,n)
+            r = r+zr(ivf+n+kk-1)*geom(1, n)
         end do
-    endif
+    end if
 ! ======================================================================
 ! --- REMPLISSAGE DE L OPERATEUR B -------------------------------------
 ! ======================================================================
@@ -144,43 +144,43 @@ implicit none
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_meca) then
             do i = 1, ndim
-                b(addeme-1+i,(n-1)*nddls+i) = b(addeme-1+i,(n-1)*nddls+i)+ff(n)
+                b(addeme-1+i, (n-1)*nddls+i) = b(addeme-1+i, (n-1)*nddls+i)+ff(n)
             end do
 ! ======================================================================
 ! --- CALCUL DE DEPSX, DEPSY, DEPSZ (DEPSZ INITIALISE A 0 EN 2D) -------
 ! ======================================================================
             do i = 1, ndim
-                b(addeme+ndim-1+i,(n-1)*nddls+i) = b(addeme+ndim-1+i,(n-1)*nddls+i)+dfdi(n,i)
+                b(addeme+ndim-1+i, (n-1)*nddls+i) = b(addeme+ndim-1+i, (n-1)*nddls+i)+dfdi(n, i)
             end do
 ! ======================================================================
 ! --- CALCUL DE EPSXY --------------------------------------------------
 ! ======================================================================
-            b(addeme+ndim+3,(n-1)*nddls+1) = b(addeme+ndim+3,(n-1)*nddls+1)+dfdi(n,2)/rac
-            b(addeme+ndim+3,(n-1)*nddls+2) = b(addeme+ndim+3,(n-1)*nddls+2)+dfdi(n,1)/rac
+            b(addeme+ndim+3, (n-1)*nddls+1) = b(addeme+ndim+3, (n-1)*nddls+1)+dfdi(n, 2)/rac
+            b(addeme+ndim+3, (n-1)*nddls+2) = b(addeme+ndim+3, (n-1)*nddls+2)+dfdi(n, 1)/rac
             if (ndim .eq. 3) then
 ! ======================================================================
 ! --- CALCUL DE EPSXZ --------------------------------------------------
 ! ======================================================================
-               b(addeme+ndim+4,(n-1)*nddls+1)= b(addeme+ndim+4,(n-1)*nddls+1)+dfdi(n,3)/rac
-               b(addeme+ndim+4,(n-1)*nddls+3)= b(addeme+ndim+4,(n-1)*nddls+3)+dfdi(n,1)/rac
+                b(addeme+ndim+4, (n-1)*nddls+1) = b(addeme+ndim+4, (n-1)*nddls+1)+dfdi(n, 3)/rac
+                b(addeme+ndim+4, (n-1)*nddls+3) = b(addeme+ndim+4, (n-1)*nddls+3)+dfdi(n, 1)/rac
 ! ======================================================================
 ! --- CALCUL DE EPSYZ --------------------------------------------------
 ! ======================================================================
-               b(addeme+ndim+5,(n-1)*nddls+2)= b(addeme+ndim+5,(n-1)*nddls+2)+dfdi(n,3)/rac
-               b(addeme+ndim+5,(n-1)*nddls+3)= b(addeme+ndim+5,(n-1)*nddls+3)+dfdi(n,2)/rac
-            endif
-        endif
+                b(addeme+ndim+5, (n-1)*nddls+2) = b(addeme+ndim+5, (n-1)*nddls+2)+dfdi(n, 3)/rac
+                b(addeme+ndim+5, (n-1)*nddls+3) = b(addeme+ndim+5, (n-1)*nddls+3)+dfdi(n, 2)/rac
+            end if
+        end if
 ! ======================================================================
 ! --- TERMES HYDRAULIQUES (FONCTIONS DE FORMES P1) ---------------------
 ! ======================================================================
 ! --- SI PRESS1 --------------------------------------------------------
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_pre1) then
-            b(addep1,(n-1)*nddls+nmec+1)= b(addep1,(n-1)*nddls+nmec+1)+ff2(n)
+            b(addep1, (n-1)*nddls+nmec+1) = b(addep1, (n-1)*nddls+nmec+1)+ff2(n)
             do i = 1, ndim
-                b(addep1+i,(n-1)*nddls+nmec+1)= b(addep1+i,(n-1)*nddls+nmec+1)+dfdi2(n,i)
+                b(addep1+i, (n-1)*nddls+nmec+1) = b(addep1+i, (n-1)*nddls+nmec+1)+dfdi2(n, i)
             end do
-        endif
+        end if
 ! ======================================================================
 ! --- TERMES ENRICHIS PAR FONCTIONS HEAVISIDE (XFEM) -------------------
 ! ======================================================================
@@ -189,56 +189,56 @@ implicit none
         if (yaenrm .eq. 1) then
             do ifh = 1, nfh
                 do i = 1, ndim
-                    b(adenme-1+(ifh-1)*(ndim+1)+i,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i)= &
-                        b(adenme-1+(ifh-1)*(ndim+1)+i,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i)+&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*ff(n)
+                    b(adenme-1+(ifh-1)*(ndim+1)+i, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i) = &
+                        b(adenme-1+(ifh-1)*(ndim+1)+i, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i)+ &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*ff(n)
                 end do
                 do i = 1, ndim
-                    b(addeme-1+ndim+i,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i) =&
-                        b(addeme-1+ndim+i,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i)+&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi(n,i)
+                    b(addeme-1+ndim+i, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i) = &
+                        b(addeme-1+ndim+i, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+i)+ &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi(n, i)
                 end do
                 if (axi) then
-                    b(addeme+4,(n-1)*nddls+nmec+np1+1)=&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*ff(n)/r
-                endif
-                b(addeme+ndim+3,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1) = &
-                    b(addeme+ndim+3,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1)+&
-                    xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi(n,2)/rac
-                b(addeme+ndim+3,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2) =&
-                    b(addeme+ndim+3,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2)+&
-                    xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi(n,1)/rac
+                    b(addeme+4, (n-1)*nddls+nmec+np1+1) = &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*ff(n)/r
+                end if
+                b(addeme+ndim+3, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1) = &
+                    b(addeme+ndim+3, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1)+ &
+                    xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi(n, 2)/rac
+                b(addeme+ndim+3, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2) = &
+                    b(addeme+ndim+3, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2)+ &
+                    xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi(n, 1)/rac
                 if (ndim .eq. 3) then
-                    b(addeme+ndim+4,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1) =&
-                        b(addeme+ndim+4,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1)+&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi(n,3)/rac
-                    b(addeme+ndim+4,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3) =&
-                        b(addeme+ndim+4,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3)+&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi(n,1)/rac
-                    b(addeme+ndim+5,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2) =&
-                        b(addeme+ndim+5,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2)+&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi(n,3)/rac
-                    b(addeme+ndim+5,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3) =&
-                        b(addeme+ndim+5,(n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3)+&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi(n,2)/rac
-                endif
+                    b(addeme+ndim+4, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1) = &
+                        b(addeme+ndim+4, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+1)+ &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi(n, 3)/rac
+                    b(addeme+ndim+4, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3) = &
+                        b(addeme+ndim+4, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3)+ &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi(n, 1)/rac
+                    b(addeme+ndim+5, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2) = &
+                        b(addeme+ndim+5, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+2)+ &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi(n, 3)/rac
+                    b(addeme+ndim+5, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3) = &
+                        b(addeme+ndim+5, (n-1)*nddls+nmec+np1+(ifh-1)*(ndim+1)+3)+ &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi(n, 2)/rac
+                end if
             end do
-        endif
+        end if
 ! ======================================================================
 ! --- SI ENRICHISSEMENT HYDRAULIQUE (FONCTIONS DE FORME P1) ------------
 ! ======================================================================
-        if (yaenrh.eq.1) then
+        if (yaenrh .eq. 1) then
             do ifh = 1, nfh
-                b(adenhy+(ifh-1)*(ndim+1),(n-1)*nddls+nmec+np1+ifh*(ndim+1))=&
-                    b(adenhy+(ifh-1)*(ndim+1),(n-1)*nddls+nmec+np1+ifh*(ndim+1))+&
-                    xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*ff2(n)
-                do i=1,ndim
-                    b(addep1+i,(n-1)*nddls+nmec+np1+ifh*(ndim+1))=&
-                        b(addep1+i,(n-1)*nddls+nmec+np1+ifh*(ndim+1))+&
-                        xcalc_heav(heavn(n,ifh),hea_se,heavn(n,5))*dfdi2(n,i)
+                b(adenhy+(ifh-1)*(ndim+1), (n-1)*nddls+nmec+np1+ifh*(ndim+1)) = &
+                    b(adenhy+(ifh-1)*(ndim+1), (n-1)*nddls+nmec+np1+ifh*(ndim+1))+ &
+                    xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*ff2(n)
+                do i = 1, ndim
+                    b(addep1+i, (n-1)*nddls+nmec+np1+ifh*(ndim+1)) = &
+                        b(addep1+i, (n-1)*nddls+nmec+np1+ifh*(ndim+1))+ &
+                        xcalc_heav(heavn(n, ifh), hea_se, heavn(n, 5))*dfdi2(n, i)
                 end do
             end do
-        endif
+        end if
     end do
 ! ======================================================================
 ! --- ON REMPLIT MAINTENANT LE COIN SUPERIEUR DROIT DE B CORRESPONDANT -
@@ -247,86 +247,86 @@ implicit none
     do n = 1, nnopm
         if (ds_thm%ds_elem%l_dof_meca) then
             do i = 1, ndim
-                b(addeme-1+i,nnops*nddls+(n-1)*nddlm+i)=&
-                    b(addeme-1+i,nnops*nddls+(n-1)*nddlm+i)+ff(n+nnops)
+                b(addeme-1+i, nnops*nddls+(n-1)*nddlm+i) = &
+                    b(addeme-1+i, nnops*nddls+(n-1)*nddlm+i)+ff(n+nnops)
             end do
 ! ======================================================================
 ! --- CALCUL DE DEPSX, DEPSY, DEPSZ (DEPSZ INITIALISE A 0 EN 2D) -------
 ! ======================================================================
             do i = 1, ndim
-                b(addeme+ndim-1+i,nnops*nddls+(n-1)*nddlm+i)=&
-                    b(addeme+ndim-1+i,nnops*nddls+(n-1)*nddlm+i) +dfdi(n+nnops,i)
+                b(addeme+ndim-1+i, nnops*nddls+(n-1)*nddlm+i) = &
+                    b(addeme+ndim-1+i, nnops*nddls+(n-1)*nddlm+i)+dfdi(n+nnops, i)
             end do
 ! ======================================================================
 ! --- TERME U/R DANS EPSZ EN AXI ---------------------------------------
 ! ======================================================================
             if (axi) then
-                b(addeme+4,nnops*nddls+(n-1)*nddlm+1)=ff(n+nnops)/r
-            endif
+                b(addeme+4, nnops*nddls+(n-1)*nddlm+1) = ff(n+nnops)/r
+            end if
 ! ======================================================================
 ! --- CALCUL DE EPSXY POUR LES NOEUDS MILIEUX --------------------------
 ! ======================================================================
-            b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+1)=&
-                b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+1) + dfdi(n+nnops,2)/rac
-            b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+2)=&
-                b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+2) + dfdi(n+nnops,1)/rac
+            b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+1) = &
+                b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+1)+dfdi(n+nnops, 2)/rac
+            b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+2) = &
+                b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+2)+dfdi(n+nnops, 1)/rac
             if (ndim .eq. 3) then
 ! ======================================================================
 ! --- CALCUL DE EPSXZ POUR LES NOEUDS MILIEUX --------------------------
 ! ======================================================================
-                b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+1)=&
-                    b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+1) + dfdi(n+nnops,3)/rac
-                b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+3)=&
-                    b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+3) + dfdi(n+nnops,1)/rac
+                b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+1) = &
+                    b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+1)+dfdi(n+nnops, 3)/rac
+                b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+3) = &
+                    b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+3)+dfdi(n+nnops, 1)/rac
 ! ======================================================================
 ! --- CALCUL DE EPSYZ POUR LES NOEUDS MILIEUX --------------------------
 ! ======================================================================
-                b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+2)=&
-                    b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+2) +dfdi(n+nnops,3)/rac
-                b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+3)=&
-                    b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+3) +dfdi(n+nnops,2)/rac
-            endif
-        endif
+                b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+2) = &
+                    b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+2)+dfdi(n+nnops, 3)/rac
+                b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+3) = &
+                    b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+3)+dfdi(n+nnops, 2)/rac
+            end if
+        end if
 ! ======================================================================
 ! --- TERMES ENRICHIS PAR FONCTIONS HEAVISIDE (XFEM) -------------------
 ! ======================================================================
         if (yaenrm .eq. 1) then
             do ifh = 1, nfh
                 do i = 1, ndim
-                    b(adenme-1+(ifh-1)*(ndim+1)+i,nnops*nddls+(n-1)*nddlm+nmec*ifh+i)= &
-                        b(adenme-1+(ifh-1)*(ndim+1)+i,nnops*nddls+(n-1)*nddlm+nmec*ifh+i)+&
-                        xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*ff(n+nnops)
+                    b(adenme-1+(ifh-1)*(ndim+1)+i, nnops*nddls+(n-1)*nddlm+nmec*ifh+i) = &
+                        b(adenme-1+(ifh-1)*(ndim+1)+i, nnops*nddls+(n-1)*nddlm+nmec*ifh+i)+ &
+                        xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*ff(n+nnops)
                 end do
                 do i = 1, ndim
-                    b(addeme-1+ndim+i,nnops*nddls+(n-1)*nddlm+nmec*ifh+i)=&
-                        b(addeme-1+ndim+i,nnops*nddls+(n-1)*nddlm+nmec*ifh+i)+&
-                        xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*dfdi(n+nnops,i)
+                    b(addeme-1+ndim+i, nnops*nddls+(n-1)*nddlm+nmec*ifh+i) = &
+                        b(addeme-1+ndim+i, nnops*nddls+(n-1)*nddlm+nmec*ifh+i)+ &
+                        xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*dfdi(n+nnops, i)
                 end do
                 if (axi) then
-                    b(addeme+4,nnops*nddls+(n-1)*nddlm+nmec*ifh+1)=&
-                        xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*ff(n+nnops)/r
-                endif
-                b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec*ifh+1)=&
-                    b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec*ifh+1) +&
-                    xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*dfdi(n+nnops,2)/rac
-                b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec*ifh+2)=&
-                    b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec*ifh+2) +&
-                    xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*dfdi(n+nnops,1)/rac
+                    b(addeme+4, nnops*nddls+(n-1)*nddlm+nmec*ifh+1) = &
+                        xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*ff(n+nnops)/r
+                end if
+                b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+nmec*ifh+1) = &
+                    b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+nmec*ifh+1)+ &
+                    xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*dfdi(n+nnops, 2)/rac
+                b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+nmec*ifh+2) = &
+                    b(addeme+ndim+3, nnops*nddls+(n-1)*nddlm+nmec*ifh+2)+ &
+                    xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*dfdi(n+nnops, 1)/rac
                 if (ndim .eq. 3) then
-                    b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec*ifh+1)=&
-                        b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec*ifh+1) +&
-                        xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*dfdi(n+nnops,3)/rac
-                    b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec*ifh+3)=&
-                        b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec*ifh+3) +&
-                        xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*dfdi(n+nnops,1)/rac
-                    b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec*ifh+2)=&
-                        b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec*ifh+2) +&
-                        xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*dfdi(n+nnops,3)/rac
-                    b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec*ifh+3)=&
-                        b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec*ifh+3) +&
-                        xcalc_heav(heavn(n+nnops,ifh),hea_se,heavn(n+nnops,5))*dfdi(n+nnops,2)/rac
-                endif
+                    b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+nmec*ifh+1) = &
+                        b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+nmec*ifh+1)+ &
+                     xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*dfdi(n+nnops, 3)/rac
+                    b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+nmec*ifh+3) = &
+                        b(addeme+ndim+4, nnops*nddls+(n-1)*nddlm+nmec*ifh+3)+ &
+                     xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*dfdi(n+nnops, 1)/rac
+                    b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+nmec*ifh+2) = &
+                        b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+nmec*ifh+2)+ &
+                     xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*dfdi(n+nnops, 3)/rac
+                    b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+nmec*ifh+3) = &
+                        b(addeme+ndim+5, nnops*nddls+(n-1)*nddlm+nmec*ifh+3)+ &
+                     xcalc_heav(heavn(n+nnops, ifh), hea_se, heavn(n+nnops, 5))*dfdi(n+nnops, 2)/rac
+                end if
             end do
-        endif
+        end if
     end do
 end subroutine

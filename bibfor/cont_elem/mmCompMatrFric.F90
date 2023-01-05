@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,24 +18,24 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmCompMatrFric(phase      , l_large_slip,&
-                          l_pena_fric,&
-                          i_reso_geom, i_reso_fric ,&
-                          nbdm       , nbcps       , ndexfr,&
-                          ndim       , nne         , nnm   , nnl   ,&
-                          wpg        , jacobi      , coefac, coefaf,&
-                          jeu        , dlagrc      ,&
-                          ffe        , ffm         , ffl   , dffm  , ddffm,&
-                          tau1       , tau2        , mprojt,&
-                          rese       , nrese       , lambda, coefff,&
-                          mprt1n     , mprt2n      , mprnt1, mprnt2,&
-                          mprt11     , mprt12      , mprt21, mprt22,&
-                          kappa      , vech1       , vech2 ,&
-                          h          , &
-                          dlagrf     , djeut ,&
+subroutine mmCompMatrFric(phase, l_large_slip, &
+                          l_pena_fric, &
+                          i_reso_geom, i_reso_fric, &
+                          nbdm, nbcps, ndexfr, &
+                          ndim, nne, nnm, nnl, &
+                          wpg, jacobi, coefac, coefaf, &
+                          jeu, dlagrc, &
+                          ffe, ffm, ffl, dffm, ddffm, &
+                          tau1, tau2, mprojt, &
+                          rese, nrese, lambda, coefff, &
+                          mprt1n, mprt2n, mprnt1, mprnt2, &
+                          mprt11, mprt12, mprt21, mprt22, &
+                          kappa, vech1, vech2, &
+                          h, &
+                          dlagrf, djeut, &
                           matr_fric)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmmtas.h"
@@ -44,21 +44,21 @@ implicit none
 #include "asterfort/mmmtex.h"
 #include "Contact_type.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_large_slip, l_pena_fric
-integer, intent(in) :: i_reso_geom, i_reso_fric
-integer, intent(in) :: nbdm, nbcps, ndexfr
-integer, intent(in) :: ndim, nne, nnm, nnl
-real(kind=8), intent(in) :: wpg, jacobi, coefac, coefaf
-real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2,9), ddffm(3,9)
-real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: rese(3), nrese, lambda, coefff
-real(kind=8), intent(in) :: jeu, dlagrc
-real(kind=8), intent(in) :: mprt1n(3,3), mprt2n(3,3), mprnt1(3,3), mprnt2(3,3)
-real(kind=8), intent(in) :: mprt11(3,3), mprt12(3,3), mprt21(3,3), mprt22(3,3)
-real(kind=8), intent(in) :: kappa(2,2), vech1(3), vech2(3), h(2,2)
-real(kind=8), intent(in) :: dlagrf(2), djeut(3)
-real(kind=8), intent(inout) :: matr_fric(81, 81)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_large_slip, l_pena_fric
+    integer, intent(in) :: i_reso_geom, i_reso_fric
+    integer, intent(in) :: nbdm, nbcps, ndexfr
+    integer, intent(in) :: ndim, nne, nnm, nnl
+    real(kind=8), intent(in) :: wpg, jacobi, coefac, coefaf
+    real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2, 9), ddffm(3, 9)
+    real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: rese(3), nrese, lambda, coefff
+    real(kind=8), intent(in) :: jeu, dlagrc
+    real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(in) :: kappa(2, 2), vech1(3), vech2(3), h(2, 2)
+    real(kind=8), intent(in) :: dlagrf(2), djeut(3)
+    real(kind=8), intent(inout) :: matr_fric(81, 81)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -151,18 +151,18 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
     matrfe(:, :) = 0.d0
     matrff(:, :) = 0.d0
     matrfm(:, :) = 0.d0
-    nbcpf   = nbcps - 1
+    nbcpf = nbcps-1
 !
 ! - Prepare quantities for friction
 !
-    call mmPrepMatrFric(ndim  , nbcps ,&
-                        tau1  , tau2  , mprojt,&
-                        rese  , nrese ,&
-                        dlagrf, djeut ,&
-                        e     , a     ,&
-                        b     , d     ,&
-                        r     , tt    ,&
-                        dlagft, pdlaft,&
+    call mmPrepMatrFric(ndim, nbcps, &
+                        tau1, tau2, mprojt, &
+                        rese, nrese, &
+                        dlagrf, djeut, &
+                        e, a, &
+                        b, d, &
+                        r, tt, &
+                        dlagft, pdlaft, &
                         pdjeut, prese)
 !
 ! - MATR_EF
@@ -175,14 +175,14 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do idim = 1, ndim
                             jj = nbcpf*(inof-1)+icmp
                             ii = ndim*(inoe-1)+idim
-                            matref(ii,jj) = matref(ii,jj) -&
-                                            wpg*ffl(inof)*ffe(inoe)*jacobi*&
-                                            lambda*coefff*a(icmp,idim)
+                            matref(ii, jj) = matref(ii, jj)- &
+                                             wpg*ffl(inof)*ffe(inoe)*jacobi* &
+                                             lambda*coefff*a(icmp, idim)
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     else if (phase .eq. 'GLIS') then
         if (.not. l_pena_fric) then
             do inof = 1, nnl
@@ -191,15 +191,15 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do idim = 1, ndim
                             jj = nbcpf*(inof-1)+icmp
                             ii = ndim*(inoe-1)+idim
-                            matref(ii,jj) = matref(ii,jj) - &
-                                            wpg*ffl(inof)*ffe(inoe)*jacobi*&
-                                            lambda*coefff*b(icmp,idim)
+                            matref(ii, jj) = matref(ii, jj)- &
+                                             wpg*ffl(inof)*ffe(inoe)*jacobi* &
+                                             lambda*coefff*b(icmp, idim)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_MF
 !
@@ -211,14 +211,14 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do idim = 1, ndim
                             jj = nbcpf*(inof-1)+icmp
                             ii = ndim*(inom-1)+idim
-                            matrmf(ii,jj) = matrmf(ii,jj)+&
-                                            wpg*ffl(inof)*ffm(inom)*jacobi*&
-                                            lambda*coefff*a(icmp,idim)
+                            matrmf(ii, jj) = matrmf(ii, jj)+ &
+                                             wpg*ffl(inof)*ffm(inom)*jacobi* &
+                                             lambda*coefff*a(icmp, idim)
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     else if (phase .eq. 'GLIS') then
         if (.not. l_pena_fric) then
             do inof = 1, nnl
@@ -227,15 +227,15 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do idim = 1, ndim
                             jj = nbcpf*(inof-1)+icmp
                             ii = ndim*(inom-1)+idim
-                            matrmf(ii,jj) = matrmf(ii,jj)+&
-                                            wpg*ffl(inof)*ffm(inom)*jacobi*&
-                                            lambda*coefff*b(icmp,idim)
+                            matrmf(ii, jj) = matrmf(ii, jj)+ &
+                                             wpg*ffl(inof)*ffm(inom)*jacobi* &
+                                             lambda*coefff*b(icmp, idim)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_EE
 !
@@ -247,8 +247,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l, k)*ffe(j)
                         end do
                     end do
                 end do
@@ -260,14 +260,14 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(l, k)*ffe(j)
                         end do
                     end do
                 end do
             end do
-        endif
-    elseif (phase .eq.'GLIS') then
+        end if
+    elseif (phase .eq. 'GLIS') then
         if (l_pena_fric) then
             do i = 1, nne
                 do j = 1, nne
@@ -275,8 +275,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l, k)*ffe(j)
                         end do
                     end do
                 end do
@@ -288,14 +288,14 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do k = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matree(ii,jj) = matree(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l,k)*ffe(j)
+                            matree(ii, jj) = matree(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l, k)*ffe(j)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_MM
 !
@@ -307,8 +307,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do l = 1, ndim
                             ii = ndim*(i-1)+k
                             jj = ndim*(j-1)+l
-                            matrmm(ii,jj) = matrmm(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffm(i)*e(k,l)*ffm(j)
+                            matrmm(ii, jj) = matrmm(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffm(i)*e(k, l)*ffm(j)
                         end do
                     end do
                 end do
@@ -320,13 +320,13 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do l = 1, ndim
                             ii = ndim*(i-1)+k
                             jj = ndim*(j-1)+l
-                            matrmm(ii,jj) = matrmm(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffm(i)*e(k,l)*ffm(j)
+                            matrmm(ii, jj) = matrmm(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffm(i)*e(k, l)*ffm(j)
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     elseif (phase .eq. 'GLIS') then
         if (l_pena_fric) then
             do i = 1, nnm
@@ -335,8 +335,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do l = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matrmm(ii,jj) = matrmm(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffm(i)*d(l,k)*ffm(j)
+                            matrmm(ii, jj) = matrmm(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffm(i)*d(l, k)*ffm(j)
                         end do
                     end do
                 end do
@@ -348,14 +348,14 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do l = 1, ndim
                             ii = ndim*(i-1)+l
                             jj = ndim*(j-1)+k
-                            matrmm(ii,jj) = matrmm(ii,jj) -&
-                                            coefaf*coefff*lambda*wpg*jacobi*ffm(i)*d(l,k)*ffm(j)
+                            matrmm(ii, jj) = matrmm(ii, jj)- &
+                                             coefaf*coefff*lambda*wpg*jacobi*ffm(i)*d(l, k)*ffm(j)
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_ME
 !
@@ -366,8 +366,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+k
                         jj = ndim*(j-1)+l
-                        matrme(ii,jj) = matrme(ii,jj) +&
-                                        coefaf*coefff*lambda*wpg*jacobi*ffm(i)*e(l,k)*ffe(j)
+                        matrme(ii, jj) = matrme(ii, jj)+ &
+                                         coefaf*coefff*lambda*wpg*jacobi*ffm(i)*e(l, k)*ffe(j)
                     end do
                 end do
             end do
@@ -379,13 +379,13 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrme(ii,jj) = matrme(ii,jj) +&
-                                        coefaf*coefff*lambda*wpg*jacobi*ffm(i)*d(l,k)*ffe(j)
+                        matrme(ii, jj) = matrme(ii, jj)+ &
+                                         coefaf*coefff*lambda*wpg*jacobi*ffm(i)*d(l, k)*ffe(j)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - MATR_EM
 !
@@ -396,8 +396,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrem(ii,jj) = matrem(ii,jj) +&
-                                        coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(k,l)*ffm(j)
+                        matrem(ii, jj) = matrem(ii, jj)+ &
+                                         coefaf*coefff*lambda*wpg*jacobi*ffe(i)*e(k, l)*ffm(j)
                     end do
                 end do
             end do
@@ -409,13 +409,13 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do l = 1, ndim
                         ii = ndim*(i-1)+l
                         jj = ndim*(j-1)+k
-                        matrem(ii,jj) = matrem(ii,jj) +&
-                                        coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l,k)*ffm(j)
+                        matrem(ii, jj) = matrem(ii, jj)+ &
+                                         coefaf*coefff*lambda*wpg*jacobi*ffe(i)*d(l, k)*ffm(j)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - MATR_EC
 !
@@ -426,27 +426,27 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do inoe = 1, nne
                         do idim = 1, ndim
                             jj = ndim*(inoe-1)+idim
-                            matrec(jj,inoc) = matrec(jj,inoc) -&
-                                              coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi*&
-                                              (pdlaft(idim)+coefaf*pdjeut(idim))
+                            matrec(jj, inoc) = matrec(jj, inoc)- &
+                                               coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi* &
+                                               (pdlaft(idim)+coefaf*pdjeut(idim))
                         end do
                     end do
                 end do
-            endif
+            end if
         else if (phase .eq. 'GLIS') then
             if (.not. l_pena_fric) then
                 do inoc = 1, nnl
                     do inoe = 1, nne
                         do idim = 1, ndim
                             jj = ndim*(inoe-1)+idim
-                            matrec(jj,inoc) = matrec(jj,inoc) -&
-                                              coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi*prese(idim)
+                            matrec(jj, inoc) = matrec(jj, inoc)- &
+                                               coefff*wpg*ffl(inoc)*ffe(inoe)*jacobi*prese(idim)
                         end do
                     end do
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - MATR_MC
 !
@@ -457,27 +457,27 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do inom = 1, nnm
                         do idim = 1, ndim
                             jj = ndim*(inom-1)+idim
-                            matrmc(jj,inoc) = matrmc(jj,inoc) +&
-                                              coefff*wpg*ffl(inoc)*ffm(inom)*jacobi*&
-                                              (pdlaft(idim)+coefaf*pdjeut(idim))
+                            matrmc(jj, inoc) = matrmc(jj, inoc)+ &
+                                               coefff*wpg*ffl(inoc)*ffm(inom)*jacobi* &
+                                               (pdlaft(idim)+coefaf*pdjeut(idim))
                         end do
                     end do
                 end do
-            endif
+            end if
         else if (phase .eq. 'GLIS') then
             if (.not. l_pena_fric) then
                 do inoc = 1, nnl
                     do inom = 1, nnm
                         do idim = 1, ndim
                             jj = ndim*(inom-1)+idim
-                            matrmc(jj,inoc) = matrmc(jj,inoc) +&
-                                              coefff*wpg*ffl(inoc)*ffm(inom)*jacobi*prese(idim)
+                            matrmc(jj, inoc) = matrmc(jj, inoc)+ &
+                                               coefff*wpg*ffl(inoc)*ffm(inom)*jacobi*prese(idim)
                         end do
                     end do
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - MATR_FF
 !
@@ -488,8 +488,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do k = 1, nbcpf
                         ii = (ndim-1)*(i-1)+l
                         jj = (ndim-1)*(j-1)+k
-                        matrff(ii,jj) = matrff(ii,jj)+&
-                                        wpg*ffl(i)*ffl(j)*jacobi*tt(l,k)
+                        matrff(ii, jj) = matrff(ii, jj)+ &
+                                         wpg*ffl(i)*ffl(j)*jacobi*tt(l, k)
                     end do
                 end do
             end do
@@ -502,8 +502,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do k = 1, nbcpf
                             ii = (ndim-1)*(i-1)+l
                             jj = (ndim-1)*(j-1)+k
-                            matrff(ii,jj) = matrff(ii,jj)+&
-                                            wpg*ffl(i)*ffl(j)*jacobi*tt(l,k)*coefff*lambda/coefaf
+                            matrff(ii, jj) = matrff(ii, jj)+ &
+                                             wpg*ffl(i)*ffl(j)*jacobi*tt(l, k)*coefff*lambda/coefaf
                         end do
                     end do
                 end do
@@ -515,13 +515,13 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do k = 1, nbcpf
                             ii = (ndim-1)*(i-1)+l
                             jj = (ndim-1)*(j-1)+k
-                            matrff(ii,jj) = matrff(ii,jj)+&
-                                            wpg*ffl(i)*ffl(j)*jacobi*coefff*lambda*r(l,k)/coefaf
+                            matrff(ii, jj) = matrff(ii, jj)+ &
+                                             wpg*ffl(i)*ffl(j)*jacobi*coefff*lambda*r(l, k)/coefaf
                         end do
                     end do
                 end do
             end do
-        endif
+        end if
     else if (phase .eq. 'ADHE') then
         if (l_pena_fric) then
             do i = 1, nnl
@@ -530,14 +530,14 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                         do k = 1, nbcpf
                             ii = (ndim-1)*(i-1)+l
                             jj = (ndim-1)*(j-1)+k
-                            matrff(ii,jj) = matrff(ii,jj)+&
-                                            wpg*ffl(i)*ffl(j)*jacobi*tt(l,k)*coefff*lambda/coefaf
+                            matrff(ii, jj) = matrff(ii, jj)+ &
+                                             wpg*ffl(i)*ffl(j)*jacobi*tt(l, k)*coefff*lambda/coefaf
                         end do
                     end do
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 ! - MATR_FE
 !
@@ -548,8 +548,8 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inoe-1)+idim
-                        matrfe(ii,jj) = matrfe(ii,jj)-&
-                                        wpg*ffl(inof)*ffe(inoe)*jacobi* lambda*coefff*a(icmp,idim)
+                        matrfe(ii, jj) = matrfe(ii, jj)- &
+                                         wpg*ffl(inof)*ffe(inoe)*jacobi*lambda*coefff*a(icmp, idim)
                     end do
                 end do
             end do
@@ -561,13 +561,13 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inoe-1)+idim
-                        matrfe(ii,jj) = matrfe(ii,jj)-&
-                                        wpg*ffl(inof)*ffe(inoe)*jacobi* lambda*coefff*b(icmp,idim)
+                        matrfe(ii, jj) = matrfe(ii, jj)- &
+                                         wpg*ffl(inof)*ffe(inoe)*jacobi*lambda*coefff*b(icmp, idim)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - MATR_FM
 !
@@ -578,52 +578,52 @@ real(kind=8), intent(inout) :: matr_fric(81, 81)
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inom-1)+idim
-                        matrfm(ii,jj) = matrfm(ii,jj)+&
-                                        wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*a(icmp,idim)
+                        matrfm(ii, jj) = matrfm(ii, jj)+ &
+                                         wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*a(icmp, idim)
                     end do
                 end do
             end do
         end do
-    else if (phase(1:4).eq.'GLIS') then
+    else if (phase(1:4) .eq. 'GLIS') then
         do inof = 1, nnl
             do inom = 1, nnm
                 do icmp = 1, nbcpf
                     do idim = 1, ndim
                         ii = nbcpf*(inof-1)+icmp
                         jj = ndim*(inom-1)+idim
-                        matrfm(ii,jj) = matrfm(ii,jj)+&
-                                        wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*b(icmp,idim)
+                        matrfm(ii, jj) = matrfm(ii, jj)+ &
+                                         wpg*ffl(inof)*ffm(inom)*jacobi*lambda*coefff*b(icmp, idim)
                     end do
                 end do
             end do
         end do
-    endif
+    end if
 !
 ! - Non-linear geometric contribution
 !
     if (i_reso_geom .eq. ALGO_NEWT) then
         if (phase .eq. 'GLIS' .and. l_large_slip) then
-            call mmgtuu(ndim  , nne   , nnm   ,&
-                        wpg   , ffe   , ffm   , dffm  , ddffm ,&
-                        jacobi, coefac, coefff, jeu   , dlagrc,&
-                        mprt1n, mprt2n, mprnt1, mprnt2,&
-                        kappa , vech1 , vech2 , h     ,&
-                        mprt11, mprt12, mprt21, mprt22,&
+            call mmgtuu(ndim, nne, nnm, &
+                        wpg, ffe, ffm, dffm, ddffm, &
+                        jacobi, coefac, coefff, jeu, dlagrc, &
+                        mprt1n, mprt2n, mprnt1, mprnt2, &
+                        kappa, vech1, vech2, h, &
+                        mprt11, mprt12, mprt21, mprt22, &
                         matrmm, matrem, matrme)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Excluded direction of friction
 !
-    call mmmtex(ndexfr, ndim  , nnl   , nne   , nnm   , nbcps,&
+    call mmmtex(ndexfr, ndim, nnl, nne, nnm, nbcps, &
                 matrff, matrfe, matrfm, matref, matrmf)
 !
 ! - Assembling (friction here => nbcps > 0)
 !
-    call mmmtas(nbdm     , ndim  , nnl   , nne   , nnm   , nbcps,&
-                matrcc   , matree, matrmm, matrem,&
-                matrme   , matrce, matrcm, matrmc, matrec,&
-                matr_fric,&
-                matrff   , matrfe, matrfm, matrmf, matref)
+    call mmmtas(nbdm, ndim, nnl, nne, nnm, nbcps, &
+                matrcc, matree, matrmm, matrem, &
+                matrme, matrce, matrcm, matrmc, matrec, &
+                matr_fric, &
+                matrff, matrfe, matrfm, matrmf, matref)
 !
 end subroutine

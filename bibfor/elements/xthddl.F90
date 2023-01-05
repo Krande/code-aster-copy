@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xthddl(nfh, nddlno, nno, stano, option,&
+subroutine xthddl(nfh, nddlno, nno, stano, option, &
                   nomte, mat, vect)
 ! person_in_charge: sam.cuvilliez at edf.fr
 !
@@ -52,7 +52,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
     integer :: ier, istatu, ino, i, j, ielim, in, ddlmax
     integer :: nddl
 !      AU PLUS 8*3=24 DDL (MAX ATTEINT POUR L'HEXA8 XHT)
-    parameter    (ddlmax=24)
+    parameter(ddlmax=24)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
     aster_logical :: lelim, lmat, lvec
@@ -69,50 +69,50 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
     lvec = .false.
 !
 !   OPTIONS RELATIVES A UNE MATRICE
-    if (option .eq. 'RIGI_THER' .or. option .eq. 'RIGI_THER_PARO_F' .or. option .eq.&
+    if (option .eq. 'RIGI_THER' .or. option .eq. 'RIGI_THER_PARO_F' .or. option .eq. &
         'RIGI_THER_PARO_R' .or. option .eq. 'MASS_THER') then
         lmat = .true.
 !   OPTIONS RELATIVES A UN VECTEUR
-        elseif (     option .eq. 'CHAR_THER_EVOL'&
-            .or. option .eq. 'CHAR_THER_PARO_F'&
-            .or. option .eq. 'CHAR_THER_PARO_R' ) then
+    elseif (option .eq. 'CHAR_THER_EVOL' &
+            .or. option .eq. 'CHAR_THER_PARO_F' &
+            .or. option .eq. 'CHAR_THER_PARO_R') then
         lvec = .true.
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !-------------------------------------------------------------
 !   VERIFICATION DE LA COHERENCE OPTION / ARGUMENTS OPTIONNELS
 !-------------------------------------------------------------
 !
-    if (present(mat) .and. .not.present(vect)) then
-        ASSERT(lmat .and. .not.lvec)
-    else if (.not.present(mat) .and. present(vect)) then
-        ASSERT(.not.lmat .and. lvec)
+    if (present(mat) .and. .not. present(vect)) then
+        ASSERT(lmat .and. .not. lvec)
+    else if (.not. present(mat) .and. present(vect)) then
+        ASSERT(.not. lmat .and. lvec)
 !   EXACTEMENT UN DES 2 ARGUMENTS mat OU vect EST OBLIGATOIRE
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !-------------------------------------------------------------
 !
 ! --- TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
 !
     call teattr('S', 'XFEM', tyenel, ier, typel=nomte)
-    if (tyenel(1:2) .eq. 'XH') ielim=1
-    if (tyenel(1:2) .eq. 'XT') ielim=2
-    if (tyenel(1:3) .eq. 'XHT') ielim=3
+    if (tyenel(1:2) .eq. 'XH') ielim = 1
+    if (tyenel(1:2) .eq. 'XT') ielim = 2
+    if (tyenel(1:3) .eq. 'XHT') ielim = 3
 !
 !     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
 !
     nddl = nddlno*nno
-    ASSERT(nddl.le.ddlmax)
+    ASSERT(nddl .le. ddlmax)
     do ino = 1, ddlmax
-        posddl(ino)=0
+        posddl(ino) = 0
     end do
 !
 !     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
-    lelim=.false.
+    lelim = .false.
 !
     do ino = 1, nno
 !
@@ -123,47 +123,47 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !         -------------------------
 !         STATUT DES NOEUDS ENRICHIS
             istatu = abs(stano(ino))
-            ASSERT(istatu.le.1)
+            ASSERT(istatu .le. 1)
             if (istatu .eq. 0) then
 !           ON SUPPRIME LES DDL H
-                posddl(in+1+1)=1
-                lelim=.true.
-            endif
+                posddl(in+1+1) = 1
+                lelim = .true.
+            end if
 !
-        else if (ielim.eq.2) then
+        else if (ielim .eq. 2) then
 !         2) CAS DES MAILLES 'CARRÉ'
 !         --------------------------
 !         STATUT DES NOEUDS ENRICHIS
             istatu = abs(stano(ino))
-            ASSERT(istatu.le.2 .and. istatu.ne.1)
+            ASSERT(istatu .le. 2 .and. istatu .ne. 1)
             if (istatu .eq. 0) then
 !           ON SUPPRIME LES DDL E
-                posddl(in+1+nfh+1)=1
-                lelim=.true.
-            endif
+                posddl(in+1+nfh+1) = 1
+                lelim = .true.
+            end if
 !
-        else if (ielim.eq.3) then
+        else if (ielim .eq. 3) then
 !         3) CAS DES MAILLES 'ROND-CARRÉ'
 !         ------------------------------
 !         STATUT DES NOEUDS ENRICHIS
             istatu = abs(stano(ino))
-            ASSERT(istatu.le.3)
+            ASSERT(istatu .le. 3)
             if (istatu .eq. 2) then
 !           ON SUPPRIME LES DDL H
-                posddl(in+1+1)=1
-                lelim=.true.
-            else if (istatu.eq.1) then
+                posddl(in+1+1) = 1
+                lelim = .true.
+            else if (istatu .eq. 1) then
 !           ON SUPPRIME LES DDL E
-                posddl(in+1+nfh+1)=1
-                lelim=.true.
-            else if (istatu.eq.0) then
+                posddl(in+1+nfh+1) = 1
+                lelim = .true.
+            else if (istatu .eq. 0) then
 !           ON SUPPRIME LES DDL H ET E
-                posddl(in+1+1)=1
-                posddl(in+1+nfh+1)=1
-                lelim=.true.
-            endif
+                posddl(in+1+1) = 1
+                posddl(in+1+nfh+1) = 1
+                lelim = .true.
+            end if
 !
-        endif
+        end if
 !
     end do
 !
@@ -173,19 +173,19 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !       CALCUL DU COEFFICIENT DIAGONAL POUR
 !       L'ELIMINATION DES DDLS HEAVISIDE
         if (lmat) then
-            dmin=r8maem()
-            dmax=-r8maem()
+            dmin = r8maem()
+            dmax = -r8maem()
             do i = 1, nddl
-                codia=mat((i-1)*i/2+i)
+                codia = mat((i-1)*i/2+i)
                 if (codia .gt. dmax) then
-                    dmax=codia
-                else if (codia.lt.dmin) then
-                    dmin=codia
-                endif
+                    dmax = codia
+                else if (codia .lt. dmin) then
+                    dmin = codia
+                end if
             end do
-            codia=(dmax+dmin)/2.0d0
+            codia = (dmax+dmin)/2.0d0
             if (codia .eq. 0) codia = 1
-        endif
+        end if
 !
         do i = 1, nddl
             if (posddl(i) .eq. 0) goto 200
@@ -199,13 +199,13 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
                     if (j .eq. i) mat((i-1)*i/2+j) = codia
                     if (j .gt. i) mat((j-1)*j/2+i) = 0.d0
                 end do
-            endif
+            end if
 !         POUR LES OPTIONS CONCERNANT DES VECTEURS :
 !           MISE A ZERO DES TERMES I
             if (lvec) vect(i) = 0.d0
 200         continue
         end do
 !
-    endif
+    end if
 !
 end subroutine

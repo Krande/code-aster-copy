@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tridia(n, a, lda, d, e,&
+subroutine tridia(n, a, lda, d, e, &
                   tau, w)
     implicit none
 #include "asterc/r8prem.h"
@@ -52,66 +52,66 @@ subroutine tridia(n, a, lda, d, e,&
     tol = 0.0d0
     do i = 1, n
         do j = 1, i
-            tol = max(abs(dble(a(i,j))),abs(dimag(a(i,j))),tol)
+            tol = max(abs(dble(a(i, j))), abs(dimag(a(i, j))), tol)
         end do
     end do
     dgamma = r8prem()**2
 !
 !  --- REALISATION DE N-2 TRANSFORMATIONS SIMILAIRES ---
-    do k = 2, n - 1
+    do k = 2, n-1
         tau(k) = 0.0d0
-        vc = zdotc(n-k+1,a(k,k-1),1,a(k,k-1),1)
-        vr=max(abs(dble(vc)),abs(dimag(vc)))
+        vc = zdotc(n-k+1, a(k, k-1), 1, a(k, k-1), 1)
+        vr = max(abs(dble(vc)), abs(dimag(vc)))
         if (vr .le. dgamma*tol**2) goto 30
-        if (dble(a(k,k-1)) .eq. 0.0d0 .and. dimag(a(k,k-1)) .eq. 0.0d0) then
-            a(k,k-1) = sqrt(vr)
+        if (dble(a(k, k-1)) .eq. 0.0d0 .and. dimag(a(k, k-1)) .eq. 0.0d0) then
+            a(k, k-1) = sqrt(vr)
             delta = vr
-            tau(1) = -a(k,k-1)
+            tau(1) = -a(k, k-1)
         else
-            root = abs(a(k,k-1))*sqrt(vr)
-            delta = vr + root
+            root = abs(a(k, k-1))*sqrt(vr)
+            delta = vr+root
             ratio = vr/root
-            tau(1) = -ratio*dconjg(a(k,k-1))
-            a(k,k-1) = (ratio+1.0d0)*a(k,k-1)
-        endif
+            tau(1) = -ratio*dconjg(a(k, k-1))
+            a(k, k-1) = (ratio+1.0d0)*a(k, k-1)
+        end if
 !
 !   --- TRANSFORMATIONS ---
         do j = k, n
-            tau(j) = a(j,k-1)/delta
+            tau(j) = a(j, k-1)/delta
         end do
 !
-        call zmvpy('LOWER', n-k+1, (1.0d0, 0.0d0), a(k, k), lda,&
+        call zmvpy('LOWER', n-k+1, (1.0d0, 0.0d0), a(k, k), lda, &
                    a(k, k-1), 1, (0.0d0, 0.0d0), w(k), 1)
 !                                  RHO = U*NV
-        temp1 = zdotc(n-k+1,w(k),1,tau(k),1)
+        temp1 = zdotc(n-k+1, w(k), 1, tau(k), 1)
         rho = dble(temp1)
-        call zader2('LOWER', n-k+1, (-1.0d0, 0.0d0), tau(k), 1,&
+        call zader2('LOWER', n-k+1, (-1.0d0, 0.0d0), tau(k), 1, &
                     w(k), 1, a(k, k), lda)
-        call zadder('LOWER', n-k+1, rho*delta, tau(k), 1,&
+        call zadder('LOWER', n-k+1, rho*delta, tau(k), 1, &
                     a(k, k), lda)
         tau(k) = tau(1)
- 30     continue
+30      continue
     end do
 !
 !  --- LA MATRICE A ETE REDUITE EN UNE MATRICE HERMITIENNE
 !      TRIDIAGONALE. LA DIAGONALE SUPERIEURE EST TEMPORAIREMENT
 !      STOCKEE DANS LE VECTEUR TAU. LA DIAGONALE EST STOCKEE DANS D
     do i = 1, n
-        d(i) = dble(a(i,i))
+        d(i) = dble(a(i, i))
     end do
 !
     tau(1) = 1.0d0
-    if (n .gt. 1) tau(n) = dconjg(a(n,n-1))
+    if (n .gt. 1) tau(n) = dconjg(a(n, n-1))
     e(1) = 0.0d0
 !
     do i = 2, n
         bb = abs(tau(i))
         e(i) = bb
-        a(i,i) = dcmplx(dble(a(i,i)),bb)
+        a(i, i) = dcmplx(dble(a(i, i)), bb)
         if (bb .eq. 0.0d0) then
             tau(i) = 1.0d0
             bb = 1.0d0
-        endif
+        end if
         tau(i) = tau(i)*tau(i-1)/bb
     end do
 !

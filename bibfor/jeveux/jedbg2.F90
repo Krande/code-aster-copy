@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,16 +32,16 @@ subroutine jedbg2(dbgav, dbgap)
 !                 SI DBGAP=-1 : ON NE MODIFIE PAS IDEBUG
 !-----------------------------------------------------------------------
     integer :: lundef, idebug
-    common /undfje/  lundef,idebug
+    common/undfje/lundef, idebug
 !
-    dbgav=idebug
+    dbgav = idebug
 !
     if (dbgap .eq. -1) then
-    else if (dbgap.eq.0) then
-        idebug=0
-    else if (dbgap.eq.1) then
-        idebug=1
+    else if (dbgap .eq. 0) then
+        idebug = 0
+    else if (dbgap .eq. 1) then
+        idebug = 1
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,8 +82,8 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
     nbii = -nbii
     nbnf = -nbnf
     nbif = -nbif
-    nbis = nbno + nbio + nbnm + nbnc + nbcm + nbim
-    nbr8 = nbni + nbii + nbnf + nbif
+    nbis = nbno+nbio+nbnm+nbnc+nbcm+nbim
+    nbr8 = nbni+nbii+nbnf+nbif
     if (nbis .ne. 0) then
         call wkvect(nrval, 'V V R', 1, arval)
         zr(arval) = 0.0d0
@@ -91,31 +91,31 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             typac = 'NO'
             nbval = nbno
             call wkvect(nival, 'V V I', nbno, aival)
-            call getvis('ACTION', 'NUME_ORDRE', iocc=iocc, nbval=nbno, vect=zi( aival),&
+            call getvis('ACTION', 'NUME_ORDRE', iocc=iocc, nbval=nbno, vect=zi(aival), &
                         nbret=n1)
         else if (nbnm .ne. 0) then
             typac = 'NM'
             nbval = nbnm
             call wkvect(nival, 'V V I', nbnm, aival)
-            call getvis('ACTION', 'NUME_MODE', iocc=iocc, nbval=nbnm, vect=zi(aival),&
+            call getvis('ACTION', 'NUME_MODE', iocc=iocc, nbval=nbnm, vect=zi(aival), &
                         nbret=n1)
         else if (nbnc .ne. 0) then
             typac = 'NO'
             nbval = nbnc
             call wkvect(nival, 'V V I', nbnc, aival)
-            call getvtx('ACTION', 'NOM_CAS', iocc=iocc, nbval=nbnc, vect=nomcas,&
+            call getvtx('ACTION', 'NOM_CAS', iocc=iocc, nbval=nbnc, vect=nomcas, &
                         nbret=n1)
-            call rsorac(resu, 'NOM_CAS', ibid, r8b, nomcas,&
-                        c16b, prec, crit, zi(aival), 1,&
+            call rsorac(resu, 'NOM_CAS', ibid, r8b, nomcas, &
+                        c16b, prec, crit, zi(aival), 1, &
                         nbtrou)
         else if (nbcm .ne. 0) then
             typac = 'NO'
             nbval = nbcm
             call wkvect(nival, 'V V I', nbnc, aival)
-            call getvtx('ACTION', 'NOEUD_CMP', iocc=iocc, nbval=nbcm, vect=nomcas,&
+            call getvtx('ACTION', 'NOEUD_CMP', iocc=iocc, nbval=nbcm, vect=nomcas, &
                         nbret=n1)
-            call rsorac(resu, 'NOEUD_CMP', ibid, r8b, nomcas,&
-                        c16b, prec, crit, zi(aival), 1,&
+            call rsorac(resu, 'NOEUD_CMP', ibid, r8b, nomcas, &
+                        c16b, prec, crit, zi(aival), 1, &
                         nbtrou)
         else
             if (nbio .ne. 0) then
@@ -124,15 +124,15 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             else
                 typac = 'NM'
                 call getvid('ACTION', 'LIST_MODE', iocc=iocc, scal=nlist, nbret=n1)
-            endif
+            end if
             nlist(9:24) = '           .VALE'
             call jelira(nlist, 'LONMAX', nbval)
             call jeveuo(nlist, 'L', alist)
             call wkvect(nival, 'V V I', nbval, aival)
             do i = 1, nbval, 1
-                zi(aival + i-1) = zi(alist + i-1)
+                zi(aival+i-1) = zi(alist+i-1)
             end do
-        endif
+        end if
     else if (nbr8 .ne. 0) then
         call wkvect(nival, 'V V I', 1, aival)
         zi(aival) = 0
@@ -140,13 +140,13 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             typac = 'NI'
             nbval = nbni
             call wkvect(nrval, 'V V R', nbni, arval)
-            call getvr8('ACTION', 'INST', iocc=iocc, nbval=nbni, vect=zr(arval),&
+            call getvr8('ACTION', 'INST', iocc=iocc, nbval=nbni, vect=zr(arval), &
                         nbret=n1)
         else if (nbnf .ne. 0) then
             typac = 'NF'
             nbval = nbnf
             call wkvect(nrval, 'V V R', nbnf, arval)
-            call getvr8('ACTION', 'FREQ', iocc=iocc, nbval=nbnf, vect=zr(arval),&
+            call getvr8('ACTION', 'FREQ', iocc=iocc, nbval=nbnf, vect=zr(arval), &
                         nbret=n1)
         else
             if (nbii .ne. 0) then
@@ -155,15 +155,15 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             else
                 typac = 'NF'
                 call getvid('ACTION', 'LIST_FREQ', iocc=iocc, scal=nlist, nbret=n1)
-            endif
+            end if
             nlist(9:24) = '           .VALE'
             call jelira(nlist, 'LONMAX', nbval)
             call jeveuo(nlist, 'L', alist)
             call wkvect(nrval, 'V V R', nbval, arval)
             do i = 1, nbval, 1
-                zr(arval + i-1) = zr(alist + i-1)
+                zr(arval+i-1) = zr(alist+i-1)
             end do
-        endif
+        end if
     else
         call wkvect(nrval, 'V V R', 1, arval)
         call wkvect(nival, 'V V I', 1, aival)
@@ -171,6 +171,6 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
         zr(arval) = 0.0d0
         nbval = 0
         typac = 'TO'
-    endif
+    end if
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
-                  noesom, lcmin, cnsln, grln, cnslt,&
-                  grlt, isozro, nodtor,eletor, liggrd,&
-                  vpoint , cnsbl ,deltat ,cnsbet ,listp, nbrinit)
+subroutine xprupw_fmm(cmnd, noma, vcn, grlr, &
+                      noesom, lcmin, cnsln, grln, cnslt, &
+                      grlt, isozro, nodtor, eletor, liggrd, &
+                      vpoint, cnsbl, deltat, cnsbet, listp, nbrinit)
 !
-   implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
@@ -47,7 +47,7 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
     character(len=8)  :: cmnd, noma
     character(len=19) :: cnsln, grln, cnslt, grlt, noesom, isozro
     character(len=19) :: nodtor, eletor, liggrd
-    character(len=19) :: cnsbl ,cnsbet ,listp , vpoint
+    character(len=19) :: cnsbl, cnsbet, listp, vpoint
     character(len=24) :: vcn, grlr
     real(kind=8)      :: lcmin
     real(kind=8)      :: deltat
@@ -111,7 +111,7 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
 
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
     integer :: nbno, nbnoma, jcnsls, jgrls
-    integer :: node , ndim , nodneg ,nodpos
+    integer :: node, ndim, nodneg, nodpos
     integer :: jbl, jbeta, jlistp, jvp, jltno
     integer :: ifm, niv, jnodto
     integer :: j, inar
@@ -163,16 +163,16 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
     else
         cnsls = cnslt
         grls = grlt
-    endif
+    end if
 !
 !  RETRIEVE THE LEVEL SET AND ITS GRADIENT FOR THE INTEGRATION AT t=0
     call jeveuo(cnsls//'.CNSV', 'E', jcnsls)
     call jeveuo(grls//'.CNSV', 'E', jgrls)
 
     if (niv .ge. 0) then
-        write(ifm,*) '   REINITIALISATION DE LA LEVEL SET ',levset,&
-                       ' PAR LA METHODE FAST MARCHING'
-    endif
+        write (ifm, *) '   REINITIALISATION DE LA LEVEL SET ', levset, &
+            ' PAR LA METHODE FAST MARCHING'
+    end if
 
 !     RETRIEVE THE NUMBER OF NODES AND ELEMENTS IN THE MESH
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
@@ -192,7 +192,7 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
 
     call wkvect(isozro, 'V V L', nbnoma, jzero)
 
-    call xprls0(noma, noesom, lcmin, cnsln,&
+    call xprls0(noma, noesom, lcmin, cnsln, &
                 cnslt, isozro, levset, nodtor, eletor)
 
 !----------------------------------------------------------------------
@@ -212,18 +212,18 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
     call wkvect(calculs, 'V V R', nbnoma, jcalculs)
 
 !multiplie par -1 pour calculer les valeurs negatives de ls
-    zr(jcnsls:jcnsls+nbnoma-1) = -1 * zr(jcnsls:jcnsls+nbnoma-1)
+    zr(jcnsls:jcnsls+nbnoma-1) = -1*zr(jcnsls:jcnsls+nbnoma-1)
 
 !copie de ls
     zr(jcopiels:jcopiels+nbnoma-1) = zr(jcnsls:jcnsls+nbnoma-1)
 
     !initialisation de vtemp et calculs
-    do inar = 1 ,nbno
+    do inar = 1, nbno
 
-    !   RETREIVE THE NODE NUMBER
+        !   RETREIVE THE NODE NUMBER
         node = zi(jnodto-1+inar)
 
-        if ( .not. zl(jzero-1+node) .and. zr(jcopiels-1+node) .ge. 0 ) then
+        if (.not. zl(jzero-1+node) .and. zr(jcopiels-1+node) .ge. 0) then
             zl(jvtemp-1+node) = .true.
             zr(jcalculs-1+node) = r8gaem()
         elseif (zl(jzero-1+node) .and. zr(jcopiels-1+node) .ge. 0) then
@@ -236,11 +236,11 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
                                 jlistp, node, newlst, newlsn)
                 zr(jcalculs-1+node) = -newlst
                 zl(jvtemp-1+node) = .true.
-            endif
+            end if
         else
             zr(jcalculs-1+node) = r8gaem()
             zl(jvtemp-1+node) = .false.
-        endif
+        end if
     end do
 
 !----------------------------------------------------------------------
@@ -248,41 +248,41 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
 !              CALCUL LES VALEURS NEGATIVES (LS<0)
 !----------------------------------------------------------------------
     !!boucle tant qu'il reste un élément vrai
-    do while ( any(zl(jvtemp:jvtemp+nbnoma-1)) .eqv. .true. )
+    do while (any(zl(jvtemp:jvtemp+nbnoma-1)) .eqv. .true.)
 
         !!on recherche la valeur min dans le vecteur calculs
-         call xvaleurmin(jcalculs,jvtemp,jnodto,nbno,minlo)
+        call xvaleurmin(jcalculs, jvtemp, jnodto, nbno, minlo)
 
         !!on calcule les noeuds voisins du min!!
-         do j = 1 , ndim
+        do j = 1, ndim
             !! retrouve les voisins du noeud min
             nodneg = 6*(minlo-1)+2*(j-1)+2
             nodpos = 6*(minlo-1)+2*(j-1)+1
 
             !! si le numéro de noeud du voisin est 0 on se trouve en dehors du domaine
             if (zi(jvcn-1+nodneg) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodneg)) .and. .not. zl(jzero-1+zi(jvcn-1+nodneg)) ) then
+                if (zl(jvtemp-1+zi(jvcn-1+nodneg)) .and. .not. zl(jzero-1+zi(jvcn-1+nodneg))) then
                     !!calcul des noeuds voisins (i-1,j-i,k-1) !!
                     call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
                                     ndim, nodneg, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'inf')
-                endif
-            endif
+                                    jlistp, jvp, vale, deltat, levset, 'inf')
+                end if
+            end if
 
             if (zi(jvcn-1+nodpos) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodpos)) .and. .not. zl(jzero-1+zi(jvcn-1+nodpos)) ) then
+                if (zl(jvtemp-1+zi(jvcn-1+nodpos)) .and. .not. zl(jzero-1+zi(jvcn-1+nodpos))) then
                     !!calcul des noeuds voisins (i+1,j+i,k+1) !!
                     call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
                                     ndim, nodpos, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'inf')
-                endif
-            endif
-         end do
+                                    jlistp, jvp, vale, deltat, levset, 'inf')
+                end if
+            end if
+        end do
 
          !! on met le noeud à false pour ne plus le calculer !!
-         zl(jvtemp-1+zi(jnodto-1+minlo)) = .false.
+        zl(jvtemp-1+zi(jnodto-1+minlo)) = .false.
          !! on met à jour la vraie level set !!
-         zr(jcnsls-1+zi(jnodto-1+minlo)) = zr(jcalculs-1+zi(jnodto-1+minlo))
+        zr(jcnsls-1+zi(jnodto-1+minlo)) = zr(jcalculs-1+zi(jnodto-1+minlo))
     end do
 
 !----------------------------------------------------------------------
@@ -291,23 +291,23 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
 !----------------------------------------------------------------------
 
 !on inverse les valeurs pour calculer l'autre côté de l'iso zéro!
-    zr(jcnsls:jcnsls+nbnoma-1) = -1 * zr(jcnsls:jcnsls+nbnoma-1)
-    zr(jcopiels:jcopiels+nbnoma-1) = -1 * zr(jcopiels:jcopiels+nbnoma-1)
+    zr(jcnsls:jcnsls+nbnoma-1) = -1*zr(jcnsls:jcnsls+nbnoma-1)
+    zr(jcopiels:jcopiels+nbnoma-1) = -1*zr(jcopiels:jcopiels+nbnoma-1)
 
 !-----------------------------------------------------------------------
 !                     INITIALISATION
 !-----------------------------------------------------------------------
     !! initialisation de vtemp et calculs!
-    do inar = 1 , nbnoma
+    do inar = 1, nbnoma
         zl(jvtemp-1+inar) = .false.
-        zr(jcalculs-1+inar)= r8gaem()
-    enddo
+        zr(jcalculs-1+inar) = r8gaem()
+    end do
 
-    do inar = 1 ,nbno
+    do inar = 1, nbno
 
         node = zi(jnodto-1+inar)
 
-        if ( zr(jcopiels-1+node) .ge. 0 ) then
+        if (zr(jcopiels-1+node) .ge. 0) then
             if (.not. zl(jzero-1+node)) then
                 zl(jvtemp-1+node) = .true.
             else
@@ -319,9 +319,9 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
                                     jlistp, node, newlst, newlsn)
                     zr(jcalculs-1+node) = newlst
                     zl(jvtemp-1+node) = .true.
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 
 !----------------------------------------------------------------------
@@ -330,34 +330,34 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
 !----------------------------------------------------------------------
 
     !!boucle tant qu'il reste un élément vrai
-    do while ( any(zl(jvtemp:jvtemp+nbnoma-1)) .eqv. .true. )
+    do while (any(zl(jvtemp:jvtemp+nbnoma-1)) .eqv. .true.)
 
         !!on recherche la valeur min dans le vecteur calculs
-        call xvaleurmin(jcalculs,jvtemp,jnodto,nbno,minlo)
+        call xvaleurmin(jcalculs, jvtemp, jnodto, nbno, minlo)
         !!on calcule les noeuds voisins du min!!
-        do j = 1 , ndim
+        do j = 1, ndim
 
            !! retrouve les voisins du noeud min
             nodneg = 6*(minlo-1)+2*(j-1)+2
             nodpos = 6*(minlo-1)+2*(j-1)+1
 
             if (zi(jvcn-1+nodneg) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodneg)) .and. .not. zl(jzero-1+zi(jvcn-1+nodneg)) ) then
+                if (zl(jvtemp-1+zi(jvcn-1+nodneg)) .and. .not. zl(jzero-1+zi(jvcn-1+nodneg))) then
                     !!calcul des noeuds voisins (i-1,j-i,k-1) !!
                     call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
                                     ndim, nodneg, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'sup')
-                endif
-            endif
+                                    jlistp, jvp, vale, deltat, levset, 'sup')
+                end if
+            end if
 
             if (zi(jvcn-1+nodpos) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodpos)) .and. .not. zl(jzero-1+zi(jvcn-1+nodpos)) ) then
+                if (zl(jvtemp-1+zi(jvcn-1+nodpos)) .and. .not. zl(jzero-1+zi(jvcn-1+nodpos))) then
                     !!calcul des noeuds voisins (i+1,j+i,k+1) !!
                     call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
                                     ndim, nodpos, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'sup')
-                endif
-            endif
+                                    jlistp, jvp, vale, deltat, levset, 'sup')
+                end if
+            end if
         end do
 
         !! on met le noeud à false pour ne plus le calculer !!
@@ -376,21 +376,21 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr,&
     chams = '&&XPRFMM.CHAMS'
 
 !   EVALUATION OF THE GRADIENT OF THE NEW LEVEL SET
-    call cnscno(cnsls, ' ', 'NON', 'V', cnols,&
+    call cnscno(cnsls, ' ', 'NON', 'V', cnols, &
                 'F', ibid)
-    lpain(1)='PGEOMER'
-    lchin(1)=noma//'.COORDO'
-    lpain(2)='PNEUTER'
-    lchin(2)=cnols
-    lpaout(1)='PGNEUTR'
-    lchout(1)=celgls
+    lpain(1) = 'PGEOMER'
+    lchin(1) = noma//'.COORDO'
+    lpain(2) = 'PNEUTER'
+    lchin(2) = cnols
+    lpaout(1) = 'PGNEUTR'
+    lchout(1) = celgls
 !
-    call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     call celces(celgls, 'V', chams)
-    call cescns(chams, ' ', 'V', grls, ' ',&
+    call cescns(chams, ' ', 'V', grls, ' ', &
                 ibid)
     call jeveuo(grls//'.CNSV', 'E', jgrls)
 

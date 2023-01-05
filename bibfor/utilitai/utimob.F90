@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utimob(unit, obin, nivo, lattr, lcont,&
+subroutine utimob(unit, obin, nivo, lattr, lcont, &
                   xous)
     implicit none
 !     --
@@ -51,17 +51,17 @@ subroutine utimob(unit, obin, nivo, lattr, lcont,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     ob1 = obin
-    xous2=xous
-    lb='----------------------------------------'
-    write(unit,'(A40,A40)') lb,lb
+    xous2 = xous
+    lb = '----------------------------------------'
+    write (unit, '(A40,A40)') lb, lb
 !
     if (xous2 .eq. 'X') then
         call utimco(unit, ob1, nivo, lattr, lcont)
-    else if (xous2 .eq.'S') then
+    else if (xous2 .eq. 'S') then
         call utimos(unit, ob1, lattr, lcont)
     else
 !
         call utmess('F', 'UTILITAI5_41', sk=xous2)
-    endif
+    end if
 !
 end subroutine

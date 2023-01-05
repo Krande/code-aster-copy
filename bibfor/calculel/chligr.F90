@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
+subroutine chligr(chel1z, ligr2z, optioz, paramz, base2, &
                   chel2z)
 !
 ! person_in_charge: jacques.pellet at edf.fr
@@ -74,7 +74,7 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
     character(len=4) :: tych
     character(len=19) :: ces, chelv
     character(len=19) :: ligr1, ligr2
-    integer :: ibid, iret, nncp,  nbma
+    integer :: ibid, iret, nncp, nbma
     character(len=19) :: chel2, chel1, optio, param
     character(len=24) :: valk(2)
     character(len=8) :: noma
@@ -107,22 +107,22 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
         call jelira(chel1//'.DESC', 'DOCU', cval=tych)
     else
         call jelira(chel1//'.CELD', 'DOCU', cval=tych)
-    endif
-    ASSERT(tych.eq.'CHML')
+    end if
+    ASSERT(tych .eq. 'CHML')
 !
 ! --- VERIFICATIONS SI CHAMP ELGA
 !
     call jeveuo(chel1//'.CELK', 'L', vk24=celk)
     if (celk(3) .eq. 'ELGA') then
         chelv = '&&CHLIGR.CHELVIDE'
-        call alchml(ligr2, optio, param, 'V', chelv,&
+        call alchml(ligr2, optio, param, 'V', chelv, &
                     iret, ' ')
         if (iret .eq. 0) then
             call chvepg(chel1, chelv)
         else
             goto 20
-        endif
-    endif
+        end if
+    end if
 !
 ! --- VERIFICATIONS SI VARI_ELGA
 !
@@ -132,8 +132,8 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
             valk(1) = chel1
             valk(2) = chel2
             call utmess('F', 'CALCULEL_90', nk=2, valk=valk)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- ON TRANSFORME LE CHAM_ELEM CHEL1 EN CHAM_ELEM_S
 !
@@ -142,11 +142,11 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
 !
 ! --- ON TRANSFORME LE CHAM_ELEM_S EN CHEL2
 !
-    call cescel(ces, ligr2, optio, param, 'CHL',&
+    call cescel(ces, ligr2, optio, param, 'CHL', &
                 nncp, base2, chel2, 'F', ibid)
     call detrsd('CHAM_ELEM_S', ces)
 !
- 20 continue
+20  continue
     call detrsd('CHAM_ELEM', '&&CHLIGR.CHELVIDE')
     call jedema()
 end subroutine

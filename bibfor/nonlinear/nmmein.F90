@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmmein(mesh        , model   , crack      , nb_dim     , list_node,&
-                  nb_node     , list_cmp, list_node_1, list_node_2, cmp_name ,&
+subroutine nmmein(mesh, model, crack, nb_dim, list_node, &
+                  nb_node, list_cmp, list_node_1, list_node_2, cmp_name, &
                   nb_node_sele)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jedetr.h"
@@ -77,41 +77,41 @@ implicit none
     tabai = '&&NMMEIN.TABAI'
     l_ainter = .false.
     sdline_crack = '&&NMMEIN.LISEQ'
-    algo_lagr    = 2
+    algo_lagr = 2
     nb_node_sele = 0
-    l_pilo       = .true.
-    call jelira(list_cmp , 'LONMAX', ival=nb_cmp)
+    l_pilo = .true.
+    call jelira(list_cmp, 'LONMAX', ival=nb_cmp)
 !
 ! - Lagrange multiplier space selection for contact
 !
-    call xlagsp(mesh        , model , crack, algo_lagr, nb_dim,&
+    call xlagsp(mesh, model, crack, algo_lagr, nb_dim, &
                 sdline_crack, l_pilo, tabai, l_ainter)
 !
 ! - Init continuation method for XFEM
 !
     call jelira(sdline_crack, 'LONMAX', ival=nb_edge)
-    nb_edge=nb_edge/2
-    call nmaret(nb_edge  , nb_node    , nb_dim     , sdline_crack, nb_node_sele,&
+    nb_edge = nb_edge/2
+    call nmaret(nb_edge, nb_node, nb_dim, sdline_crack, nb_node_sele, &
                 list_node, list_node_1, list_node_2)
 !
 ! - Modification of list of components
 !
-    call jeveuo(list_cmp, 'E', vk8 = v_list_cmp)
+    call jeveuo(list_cmp, 'E', vk8=v_list_cmp)
     do i_cmp = 1, nb_cmp
         cmp_name = v_list_cmp(i_cmp)
-        if (cmp_name .eq. 'DX') v_list_cmp(i_cmp)='H1X'
-        if (cmp_name .eq. 'DY') v_list_cmp(i_cmp)='H1Y'
-        if (cmp_name .eq. 'DZ') v_list_cmp(i_cmp)='H1Z'
-        if (cmp_name(1:4).eq. 'DTAN' .or. cmp_name .eq. 'DNOR') then
+        if (cmp_name .eq. 'DX') v_list_cmp(i_cmp) = 'H1X'
+        if (cmp_name .eq. 'DY') v_list_cmp(i_cmp) = 'H1Y'
+        if (cmp_name .eq. 'DZ') v_list_cmp(i_cmp) = 'H1Z'
+        if (cmp_name(1:4) .eq. 'DTAN' .or. cmp_name .eq. 'DNOR') then
             call jedetr(list_cmp)
-            call wkvect(list_cmp, 'V V K8', nb_dim, vk8 = v_list_cmp)
+            call wkvect(list_cmp, 'V V K8', nb_dim, vk8=v_list_cmp)
             v_list_cmp(1) = 'H1X'
-            v_list_cmp(2) ='H1Y'
+            v_list_cmp(2) = 'H1Y'
             if (nb_dim .eq. 3) v_list_cmp(3) = 'H1Z'
             goto 2
-        endif
+        end if
     end do
-  2 continue
+2   continue
 !
     call jedetr(sdline_crack)
 end subroutine

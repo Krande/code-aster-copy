@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lireco(keywf         , mesh          , model         , i_zone      , list_elem_slav,&
-                  list_elem_mast, list_node_slav, list_node_mast, nb_elem_slav, nb_node_slav  ,&
-                  nb_elem_mast  , nb_node_mast)
+subroutine lireco(keywf, mesh, model, i_zone, list_elem_slav, &
+                  list_elem_mast, list_node_slav, list_node_mast, nb_elem_slav, nb_node_slav, &
+                  nb_elem_mast, nb_node_mast)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/reliem.h"
 !
@@ -71,8 +71,8 @@ implicit none
     nb_elem_mast = 0
     nb_node_slav = 0
     nb_node_mast = 0
-    k8bla        = ' '
-    nb_keyw      = 2
+    k8bla = ' '
+    nb_keyw = 2
     keyw_type(1) = 'GROUP_MA'
     keyw_type(2) = 'MAILLE'
 !
@@ -80,22 +80,22 @@ implicit none
 !
     keyw_name(1) = 'GROUP_MA_ESCL'
     keyw_name(2) = 'MAILLE_ESCL'
-    call reliem(k8bla  , mesh     , 'NU_MAILLE', keywf         , i_zone      ,&
-                nb_keyw, keyw_name, keyw_type  , list_elem_slav, nb_elem_slav)
+    call reliem(k8bla, mesh, 'NU_MAILLE', keywf, i_zone, &
+                nb_keyw, keyw_name, keyw_type, list_elem_slav, nb_elem_slav)
     keyw_name(1) = 'GROUP_MA_MAIT'
     keyw_name(2) = 'MAILLE_MAIT'
-    call reliem(k8bla  , mesh     , 'NU_MAILLE', keywf         , i_zone      ,&
-                nb_keyw, keyw_name, keyw_type  , list_elem_mast, nb_elem_mast)
+    call reliem(k8bla, mesh, 'NU_MAILLE', keywf, i_zone, &
+                nb_keyw, keyw_name, keyw_type, list_elem_mast, nb_elem_mast)
 !
 ! - Nodes
 !
     keyw_name(1) = 'GROUP_MA_ESCL'
     keyw_name(2) = 'MAILLE_ESCL'
-    call reliem(model  , mesh     , 'NU_NOEUD', keywf         , i_zone      ,&
-                nb_keyw, keyw_name, keyw_type , list_node_slav, nb_node_slav)
+    call reliem(model, mesh, 'NU_NOEUD', keywf, i_zone, &
+                nb_keyw, keyw_name, keyw_type, list_node_slav, nb_node_slav)
     keyw_name(1) = 'GROUP_MA_MAIT'
     keyw_name(2) = 'MAILLE_MAIT'
-    call reliem(model  , mesh     , 'NU_NOEUD', keywf         , i_zone      ,&
-                nb_keyw, keyw_name, keyw_type , list_node_mast, nb_node_mast)
+    call reliem(model, mesh, 'NU_NOEUD', keywf, i_zone, &
+                nb_keyw, keyw_name, keyw_type, list_node_mast, nb_node_mast)
 
 end subroutine

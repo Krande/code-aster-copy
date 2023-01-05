@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrMainPodIncr(lReuse, paraPod, baseOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -33,9 +33,9 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-aster_logical, intent(in) :: lReuse
-type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
-type(ROM_DS_Empi), intent(in) :: baseOut
+    aster_logical, intent(in) :: lReuse
+    type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
+    type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,12 +60,12 @@ type(ROM_DS_Empi), intent(in) :: baseOut
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_59')
-    endif
+    end if
 !
 ! - Get size of snapshots matrix
 !
-    call dbr_calcpod_size(baseOut, paraPod%snap,&
-                          m      , n)
+    call dbr_calcpod_size(baseOut, paraPod%snap, &
+                          m, n)
 !
 ! - Create snapshots matrix Q
 !
@@ -73,7 +73,7 @@ type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! - Incremental POD method
 !
-    call dbr_pod_incr(lReuse, baseOut, paraPod,&
+    call dbr_pod_incr(lReuse, baseOut, paraPod, &
                       q, s, v, nbMode, nbSnap)
 !
 ! - Save base
@@ -82,8 +82,8 @@ type(ROM_DS_Empi), intent(in) :: baseOut
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = q)
-    AS_DEALLOCATE(vr = v)
-    AS_DEALLOCATE(vr = s)
+    AS_DEALLOCATE(vr=q)
+    AS_DEALLOCATE(vr=v)
+    AS_DEALLOCATE(vr=s)
 !
 end subroutine

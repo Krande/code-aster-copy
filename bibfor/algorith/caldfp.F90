@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
     real(kind=8) :: dfpdg(3, 3), dfpmdf(3, 3, 3, 3), amax, amin, bmax, bmin
     real(kind=8) :: a(3, 3), am(3, 3), amt(3, 3), deta, coef2
     real(kind=8) :: b(3, 3), bm(3, 3), bmt(3, 3), detb
-    data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
+    data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------
 !
-    iret=0
-    iopt=2
+    iret = 0
+    iopt = 2
 !
     if (iopt .eq. 1) then
 !
@@ -61,31 +61,31 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         call daxpy(9, 1.d0, id, 1, a, 1)
 !
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
-        amax=0.d0
-        amin=100.d0
+        amax = 0.d0
+        amin = 100.d0
         do i = 1, 3
-           if (a(i,i) .gt. amax) amax=a(i,i)
-           if (a(i,i) .lt. amin) amin=a(i,i)
+            if (a(i, i) .gt. amax) amax = a(i, i)
+            if (a(i, i) .lt. amin) amin = a(i, i)
         end do
-        if ((amax.gt.1.d3) .or. (amin.lt.1.d-3)) then
-           iret=1
-           goto 9999
-        endif
+        if ((amax .gt. 1.d3) .or. (amin .lt. 1.d-3)) then
+            iret = 1
+            goto 9999
+        end if
 !
         call lcdetf(3, a, deta)
 !
         if (deta .gt. r8prem()) then
-           expo=-1.d0/3.d0
-           coef=deta**expo
+            expo = -1.d0/3.d0
+            coef = deta**expo
         else
-           iret=1
-           goto 9999
-        endif
+            iret = 1
+            goto 9999
+        end if
 !
         call matinv('S', 3, a, am, det2)
         amt = transpose(am)
 !
-        ddetdg = ddot(9,amt,1,msns,1)
+        ddetdg = ddot(9, amt, 1, msns, 1)
 !
         call dscal(9, ddetdg, a, 1)
 !
@@ -100,30 +100,30 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 ! calcul de dFp-1
         call r8inir(81, 0.d0, dfpmdf, 1)
         do i = 1, 3
-           do j = 1, 3
-              do k = 1, 3
-                 do l = 1, 3
-                    dfpmdf(i,j,k,l)=dfpmdf(i,j,k,l)+am(i,k)*amt(j,l)
-                 end do
-              end do
-           end do
+            do j = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
+                        dfpmdf(i, j, k, l) = dfpmdf(i, j, k, l)+am(i, k)*amt(j, l)
+                    end do
+                end do
+            end do
         end do
-        coef2= -deta**(2.d0/3.d0)
+        coef2 = -deta**(2.d0/3.d0)
 !
         call dscal(81, coef2, dfpmdf, 1)
 !
         call r8inir(9, 0.d0, dfpmdg, 1)
         do i = 1, 3
-           do j = 1, 3
-              do k = 1, 3
-                 do l = 1, 3
-                    dfpmdg(i,j)=dfpmdg(i,j)+dfpmdf(i,j,k,l)*dfpdg(k,l)
-                 end do
-              end do
-           end do
+            do j = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
+                        dfpmdg(i, j) = dfpmdg(i, j)+dfpmdf(i, j, k, l)*dfpdg(k, l)
+                    end do
+                end do
+            end do
         end do
 !
-     else if (iopt.eq.2) then
+    else if (iopt .eq. 2) then
 !
 !        calcul de dFp/dGamma par linearisation directe
 !        de exp(-dgamma.ms x ns)
@@ -132,32 +132,32 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         call dscal(9, -1.d0, b, 1)
         call daxpy(9, 1.d0, id, 1, b, 1)
 !
-        bmax=0.d0
-        bmin=100.d0
+        bmax = 0.d0
+        bmin = 100.d0
         do i = 1, 3
-           if (b(i,i) .gt. bmax) bmax=b(i,i)
-           if (b(i,i) .lt. bmin) bmin=b(i,i)
+            if (b(i, i) .gt. bmax) bmax = b(i, i)
+            if (b(i, i) .lt. bmin) bmin = b(i, i)
         end do
-        if ((bmax.gt.1.d3) .or. (bmin.lt.1.d-3)) then
-           iret=1
-           goto 9999
-        endif
+        if ((bmax .gt. 1.d3) .or. (bmin .lt. 1.d-3)) then
+            iret = 1
+            goto 9999
+        end if
 !
         call lcdetf(3, b, detb)
 !
         if (detb .gt. r8prem()) then
-           expo=-1.d0/3.d0
-           coef=detb**expo
+            expo = -1.d0/3.d0
+            coef = detb**expo
         else
-           iret=1
-           goto 9999
-        endif
+            iret = 1
+            goto 9999
+        end if
 !
         call matinv('S', 3, b, bm, det2)
 !
         bmt = transpose(bm)
 !
-        ddetdg = ddot(9,bmt,1,msns,1)
+        ddetdg = ddot(9, bmt, 1, msns, 1)
 !
         call dscal(9, ddetdg, b, 1)
 !
@@ -170,7 +170,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         call dscal(9, -coef, dfpmdg, 1)
 !
 !
-     else if (iopt.eq.3) then
+    else if (iopt .eq. 3) then
 !
 ! suivant DE SOUZA-NIETO
         ASSERT(.false.)
@@ -188,10 +188,10 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !         CALL DSCAL(9,-1.0D0,DFP,1)
 !         CALL DEXPMAP(DFPMDG,NOCONV,DFP)
 !
-     else
+    else
         ASSERT(.false.)
 !
-     endif
+    end if
 !
 !
 9999 continue

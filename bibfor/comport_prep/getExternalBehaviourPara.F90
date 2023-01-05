@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine getExternalBehaviourPara(mesh           , v_model_elem  , &
-                                    rela_comp      , kit_comp      , &
-                                    l_comp_external, comp_exte     , &
-                                    keywf_         , i_comp_       , elem_type_,&
-                                    type_cpla_in_  , type_cpla_out_)
+subroutine getExternalBehaviourPara(mesh, v_model_elem, &
+                                    rela_comp, kit_comp, &
+                                    l_comp_external, comp_exte, &
+                                    keywf_, i_comp_, elem_type_, &
+                                    type_cpla_in_, type_cpla_out_)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,17 +34,17 @@ implicit none
 #include "asterfort/comp_read_typmod.h"
 #include "asterc/mfront_get_strain_model.h"
 !
-character(len=8), intent(in) :: mesh
-integer, pointer :: v_model_elem(:)
-character(len=16), intent(in) :: rela_comp
-character(len=16), intent(in) :: kit_comp(4)
-aster_logical, intent(out) :: l_comp_external
-type(Behaviour_ParaExte), intent(inout)   :: comp_exte
-character(len=16), optional, intent(in) :: keywf_
-integer, optional, intent(in) :: i_comp_
-integer, optional, intent(in) :: elem_type_
-character(len=16), optional, intent(in) :: type_cpla_in_
-character(len=16), optional, intent(out) :: type_cpla_out_
+    character(len=8), intent(in) :: mesh
+    integer, pointer :: v_model_elem(:)
+    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: kit_comp(4)
+    aster_logical, intent(out) :: l_comp_external
+    type(Behaviour_ParaExte), intent(inout)   :: comp_exte
+    character(len=16), optional, intent(in) :: keywf_
+    integer, optional, intent(in) :: i_comp_
+    integer, optional, intent(in) :: elem_type_
+    character(len=16), optional, intent(in) :: type_cpla_in_
+    character(len=16), optional, intent(out) :: type_cpla_out_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,32 +80,32 @@ character(len=16), optional, intent(out) :: type_cpla_out_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_umat         = ASTER_FALSE
+    l_umat = ASTER_FALSE
     l_mfront_proto = ASTER_FALSE
-    l_mfront_offi  = ASTER_FALSE
-    keywf          = 'None'
-    i_comp         = 0
-    libr_name      = ' '
-    subr_name      = ' '
-    nbVariUMAT   = 0
-    model_mfront   = ' '
-    model_dim      = 0
-    type_cpla_out  = 'VIDE'
+    l_mfront_offi = ASTER_FALSE
+    keywf = 'None'
+    i_comp = 0
+    libr_name = ' '
+    subr_name = ' '
+    nbVariUMAT = 0
+    model_mfront = ' '
+    model_dim = 0
+    type_cpla_out = 'VIDE'
     if (present(type_cpla_in_)) then
         type_cpla_in = type_cpla_in_
-    endif
-    elem_type      = 0
+    end if
+    elem_type = 0
     if (present(elem_type_)) then
         elem_type = elem_type_
-    endif
-    strain_model   = 0
+    end if
+    strain_model = 0
 !
 ! - Read from command file or not ?
 !
     if (present(keywf_)) then
-        keywf       = keywf_
-        i_comp      = i_comp_
-    endif
+        keywf = keywf_
+        i_comp = i_comp_
+    end if
 
 ! - Get mechanical part of behaviour (required for KIT_THM)
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
@@ -113,41 +113,41 @@ character(len=16), optional, intent(out) :: type_cpla_out_
         relaMeca = kit_comp(1)
     else
         relaMeca = rela_comp
-    endif
+    end if
 !
 ! - Detect type
 !
-    call comp_meca_l(relaMeca, 'UMAT'        , l_umat)
-    call comp_meca_l(relaMeca, 'MFRONT_OFFI' , l_mfront_offi)
+    call comp_meca_l(relaMeca, 'UMAT', l_umat)
+    call comp_meca_l(relaMeca, 'MFRONT_OFFI', l_mfront_offi)
     call comp_meca_l(relaMeca, 'MFRONT_PROTO', l_mfront_proto)
 !
 ! - Get parameters for external programs (MFRONT/UMAT)
 !
-    call comp_read_exte(relaMeca , keywf         , i_comp       ,&
-                        l_umat   , l_mfront_proto, l_mfront_offi,&
-                        libr_name, subr_name     , nbVariUMAT)
+    call comp_read_exte(relaMeca, keywf, i_comp, &
+                        l_umat, l_mfront_proto, l_mfront_offi, &
+                        libr_name, subr_name, nbVariUMAT)
 !
 ! - Get model for MFRONT
 !
     if (l_mfront_proto .or. l_mfront_offi) then
-        if (associated(v_model_elem) ) then
+        if (associated(v_model_elem)) then
 ! --------- For *_NON_LINE cases
-            call comp_read_typmod(mesh     , v_model_elem, elem_type    ,&
-                                  keywf    , i_comp      , rela_comp    , type_cpla_in,&
+            call comp_read_typmod(mesh, v_model_elem, elem_type, &
+                                  keywf, i_comp, rela_comp, type_cpla_in, &
                                   model_dim, model_mfront, type_cpla_out)
         else
 ! --------- For CALC_POINT_MAT case
-            model_dim    = 3
+            model_dim = 3
             model_mfront = '_Tridimensional'
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get strain model for MFRONT
 !
     if (l_mfront_proto .or. l_mfront_offi) then
-        call mfront_get_strain_model(libr_name   , subr_name,&
+        call mfront_get_strain_model(libr_name, subr_name, &
                                      model_mfront, strain_model)
-    endif
+    end if
 !
 ! - Global flag
 !
@@ -157,15 +157,15 @@ character(len=16), optional, intent(out) :: type_cpla_out_
 !
     if (present(type_cpla_out_)) then
         type_cpla_out_ = type_cpla_out
-    endif
-    comp_exte%libr_name      = libr_name
-    comp_exte%subr_name      = subr_name
-    comp_exte%model_mfront   = model_mfront
-    comp_exte%model_dim      = model_dim
-    comp_exte%nbVariUMAT     = nbVariUMAT
-    comp_exte%l_umat         = l_umat
+    end if
+    comp_exte%libr_name = libr_name
+    comp_exte%subr_name = subr_name
+    comp_exte%model_mfront = model_mfront
+    comp_exte%model_dim = model_dim
+    comp_exte%nbVariUMAT = nbVariUMAT
+    comp_exte%l_umat = l_umat
     comp_exte%l_mfront_proto = l_mfront_proto
-    comp_exte%l_mfront_offi  = l_mfront_offi
-    comp_exte%strain_model   = strain_model
+    comp_exte%l_mfront_offi = l_mfront_offi
+    comp_exte%strain_model = strain_model
 !
 end subroutine

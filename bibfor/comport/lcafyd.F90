@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
-                  nmat, mod, nvi, vind, vinf,&
+subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
+                  nmat, mod, nvi, vind, vinf, &
                   sigd, nr, yd, bnews, mtrac)
     implicit none
 !
@@ -63,14 +63,14 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
     character(len=24) :: cpmono(5*nmat+1), necoul
     character(len=8) :: mod
     aster_logical :: bnews(3), mtrac
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
-    data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
+    common/polycr/irr, decirr, nbsyst, decal, gdef
+    data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------
 !
 !     INITIALISATION DE YD EN IMPLICITE
-    rela_comp=compor(RELA_NAME)
+    rela_comp = compor(RELA_NAME)
 !
 !
 !     AFFECTATION DE YD = ( SIGD , VIND , (EPSD(3)) )
@@ -79,49 +79,49 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !
     if (rela_comp .eq. 'MONOCRISTAL') then
 ! ATTENTION !         NS=(NVI-8)/3
-        ns=nr-ndt
-        irr=0
-        decirr=0
-        if (materf(nbcomm(1,1),2) .ge. 4) then
+        ns = nr-ndt
+        irr = 0
+        decirr = 0
+        if (materf(nbcomm(1, 1), 2) .ge. 4) then
 !           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
 !           UNE SEULE FAMILLE
-            ASSERT(nbcomm(nmat, 2).eq.1)
+            ASSERT(nbcomm(nmat, 2) .eq. 1)
             do i = 1, ns
-                yd(ndt+i)=vind(6+3*(i-1)+1)
+                yd(ndt+i) = vind(6+3*(i-1)+1)
             end do
-            necoul=cpmono(3)
+            necoul = cpmono(3)
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
-                irr=1
-                decirr=6+3*ns
-            endif
+                irr = 1
+                decirr = 6+3*ns
+            end if
             if (necoul .eq. 'MONO_DD_CFC_IRRA') then
-                irr=1
-                decirr=6+3*ns
-            endif
+                irr = 1
+                decirr = 6+3*ns
+            end if
         else
 !           AUTRES COMPORTEMENTS MONOCRISTALLINS
             do i = 1, ns
-                yd(ndt+i)=vind(6+3*(i-1)+2)
+                yd(ndt+i) = vind(6+3*(i-1)+2)
             end do
-        endif
+        end if
 !
 !
         if (gdef .eq. 1) then
 ! les 9 variables internes  de 6+3*ns+1 à 6+3*ns+9
 ! REPRESENTENT FE - ID
             call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
-            call daxpy(9, +1.d0, id, 1, fe,&
+            call daxpy(9, +1.d0, id, 1, fe, &
                        1)
             call lcgrla(fe, epsegl)
-            if (materf(nmat,2) .eq. 0) then
+            if (materf(nmat, 2) .eq. 0) then
                 call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
-            else if (materf(nmat,2).eq.1) then
+            else if (materf(nmat, 2) .eq. 1) then
                 call lcopli('ORTHOTRO', mod, materf(1, 1), hookf)
-            endif
+            end if
 ! Y contient H*(FeT.Fe-Id)/2, ce ne sont pas exactement les PK2
 ! Y contient ensuite les ns alpha_s ou gamma_s suivant la rela_comp
-            yd(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsegl(1:ndt))
-        endif
+            yd(1:ndt) = matmul(hookf(1:ndt, 1:ndt), epsegl(1:ndt))
+        end if
 !
 !
 !
@@ -147,18 +147,18 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !
     else if (rela_comp .eq. 'LKR') then
 ! --- INITIALISATION A ZERO DU MULTIPLICATEUR PLASTIQUE
-        yd(ndt+1)=0.d0
+        yd(ndt+1) = 0.d0
 ! --- INITIALISATION A XIP
-        yd(ndt+2)=vind(1)
+        yd(ndt+2) = vind(1)
 ! --- INITIALISATION A XIVP
-        yd(ndt+3)=vind(3)
+        yd(ndt+3) = vind(3)
 !
     else if (rela_comp .eq. 'HAYHURST') then
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
 !        DEFORMATION ELASTIQUE INSTANT PRECEDENT
-        yd(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
-        dtot=1.d0/(1.d0-vind(11))
-        yd(1:ndt) = dtot * yd(1:ndt)
+        yd(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigd(1:ndt))
+        dtot = 1.d0/(1.d0-vind(11))
+        yd(1:ndt) = dtot*yd(1:ndt)
 !
 !        CORRESPONDANCE ENTRE LES VARIABLES INTERNES ET LES EQUATIONS
 !        DU SYSTEME DIFFERENTIEL
@@ -172,7 +172,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
         yd(ndt+4) = vind(11)
 !
     else if (rela_comp .eq. 'HUJEUX') then
-        call hujayd(nmat, materf, nvi, vind, vinf,&
+        call hujayd(nmat, materf, nvi, vind, vinf, &
                     nr, yd, bnews, mtrac)
 !
     else
@@ -180,6 +180,6 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !        TOUTES LES VARIABLES INTERNES SONT RECOPIES
 !        LA DERNIERE C'EST TOUJOURS L'INDICATEUR PLASTIQUE
         yd(ndt+1:ndt+nvi-1) = vind(1:nvi-1)
-    endif
+    end if
 !
 end subroutine

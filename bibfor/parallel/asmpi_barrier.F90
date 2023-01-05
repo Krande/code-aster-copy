@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine asmpi_barrier(comm)
         call asmpi_comm('GET', comm2)
     else
         comm2 = comm
-    endif
+    end if
 !
 !   `asmpi_check()` is called from C
     DEBUG_MPI('mpi_barrier', 'communicator', comm2)
@@ -45,7 +45,7 @@ subroutine asmpi_barrier(comm)
         comm2 = 0
     else
         comm2 = comm
-    endif
+    end if
     idummy = 0
 #endif
 end subroutine asmpi_barrier

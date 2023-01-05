@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
-                  jmaen1, jmaen2, jmaen3, jmafon, nfon,&
-                  jfon, jnofaf, nbfond, jbas, jtail,&
+subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon, &
+                  jmaen1, jmaen2, jmaen3, jmafon, nfon, &
+                  jfon, jnofaf, nbfond, jbas, jtail, &
                   jfonmu, ndim, goinop)
 !
 !
@@ -80,7 +80,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 !
 ! --- ACCES AUX OBJETS
 !
-    if (.not.goinop) then
+    if (.not. goinop) then
         xheav = fiss(1:8)//'.MAILFISS.HEAV'
         xctip = fiss(1:8)//'.MAILFISS.CTIP'
         xhect = fiss(1:8)//'.MAILFISS.HECT'
@@ -98,7 +98,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             do i = 1, nmaen1
                 zi(jma1-1+i) = zi(jmaen1-1+i)
             end do
-        endif
+        end if
 !
 ! --- ENREGISTREMENT DES GROUP_MA 'CRACKTIP'
 !
@@ -107,7 +107,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             do i = 1, nmaen2
                 zi(jma2-1+i) = zi(jmaen2-1+i)
             end do
-        endif
+        end if
 !
 ! --- ENREGISTREMENT DES GROUP_MA ''HEAVISIDE-CRACKTIP'
 !
@@ -116,7 +116,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             do i = 1, nmaen3
                 zi(jma3-1+i) = zi(jmaen3-1+i)
             end do
-        endif
+        end if
 !
 ! --- ENREGISTREMENT DES MAILLES CONTENANT LE FOND DE FISSURE
 !
@@ -125,7 +125,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             do i = 1, nmafon
                 zi(jma4-1+i) = zi(jmafon-1+i)
             end do
-        endif
+        end if
 !
 ! --- ENREGISTREMENT DES COORD ET DES ABS CURV
 !
@@ -141,14 +141,14 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
             do i = 1, nfon
                 do k = 1, 4
                     zi(jnf-1+4*(i-1)+k) = zi(jnofaf-1+4*(i-1)+k)
-                enddo
-            enddo
+                end do
+            end do
 !
             call wkvect(xbasfo, 'G V R', 2*ndim*nfon, jba)
             do i = 1, nfon
                 do k = 1, ndim
-                    zr(jba-1+2*ndim*(i-1)+k) = zr(jbas-1+2*ndim*(i-1)+ k)
-                    zr(jba-1+2*ndim*(i-1)+k+ndim) = zr( jbas-1+2*ndim*(i-1)+k+ndim)
+                    zr(jba-1+2*ndim*(i-1)+k) = zr(jbas-1+2*ndim*(i-1)+k)
+                    zr(jba-1+2*ndim*(i-1)+k+ndim) = zr(jbas-1+2*ndim*(i-1)+k+ndim)
                 end do
             end do
 !
@@ -157,7 +157,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                 zr(jta-1+i) = zr(jtail-1+i)
             end do
 !
-        endif
+        end if
 !
 ! --- ENREGISTREMENT DES FONDS MULTIPLES
 !
@@ -167,7 +167,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                 zi(jfomu-1+2*(i-1)+1) = zi(jfonmu-1+2*(i-1)+1)
                 zi(jfomu-1+2*(i-1)+2) = zi(jfonmu-1+2*(i-1)+2)
             end do
-        endif
+        end if
 !
 !
     else if (goinop) then
@@ -184,7 +184,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                 zr(jfo-1+4*(i-1)+k) = zr(jfon-1+4*(i-1)+k)
             end do
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

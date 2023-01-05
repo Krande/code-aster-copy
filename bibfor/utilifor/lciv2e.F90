@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ function lciv2e(a)
     integer :: n, nd
     real(kind=8) :: a(6), dev(6)
     real(kind=8) :: lciv2e
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call lcdevi(a, dev)
-    lciv2e = lcnrte ( dev )
+    lciv2e = lcnrte(dev)
 end function

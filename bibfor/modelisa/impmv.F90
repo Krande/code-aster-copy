@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine impmv(ifm, txt, mv, nn, isym)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    implicit   none
+    implicit none
     integer :: ifm, nn, isym
     real(kind=8) :: mv(nn)
     character(len=8) :: txt
@@ -53,31 +53,31 @@ subroutine impmv(ifm, txt, mv, nn, isym)
 !       Symétrique par colonne
         kk = 0
         do jj = 1, dimmp
-            do  ii = 1, jj
-                kk = kk + 1
-                mp(ii,jj) = mv(kk)
-                mp(jj,ii) = mv(kk)
-            enddo
-        enddo
-        write(ifm,100) txt,'SYMETRIQUE'
+            do ii = 1, jj
+                kk = kk+1
+                mp(ii, jj) = mv(kk)
+                mp(jj, ii) = mv(kk)
+            end do
+        end do
+        write (ifm, 100) txt, 'SYMETRIQUE'
     else
 !      Non-symétrique par colonne
         kk = 0
         do jj = 1, dimmp
             do ii = 1, dimmp
-                kk = kk + 1
-                mp(ii,jj) = mv(kk)
-            enddo
-        enddo
-        write(ifm,100) txt,'NON SYMETRIQUE'
-    endif
+                kk = kk+1
+                mp(ii, jj) = mv(kk)
+            end do
+        end do
+        write (ifm, 100) txt, 'NON SYMETRIQUE'
+    end if
 !
     do ii = 1, dimmp
-        write(ifm,201) (mp(ii,jj),jj=1,dimmp)
-    enddo
+        write (ifm, 201) (mp(ii, jj), jj=1, dimmp)
+    end do
 !
-100 format(3x,a8,3x,a20)
-201 format(12(2x,1pd10.3))
+100 format(3x, a8, 3x, a20)
+201 format(12(2x, 1pd10.3))
 !
-999  continue
+999 continue
 end subroutine

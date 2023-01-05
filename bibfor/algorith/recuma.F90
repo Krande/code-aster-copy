@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
+subroutine recuma(mailla, nbma, nbgr, nomma, nomgr, &
                   nbto, numnot)
 !    P. RICHARD     DATE 13/07/90
 !-----------------------------------------------------------------------
@@ -58,21 +58,21 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
     integer :: i, iadg, icomp, j, nb, numa
 !-----------------------------------------------------------------------
     call jemarq()
-    icomp=0
+    icomp = 0
 !
 !-------RECUPERATION ET TRANSCODAGE DES MAILLES DES GROUPES-------------
 !
     if (nbgr .gt. 0) then
         do i = 1, nbgr
-            nomcou=nomgr(i)
+            nomcou = nomgr(i)
             call jelira(jexnom(mailla//'.GROUPEMA', nomcou), 'LONUTI', nb)
             call jeveuo(jexnom(mailla//'.GROUPEMA', nomcou), 'L', iadg)
             do j = 1, nb
-                icomp=icomp+1
-                numnot(icomp)=zi(iadg+j-1)
+                icomp = icomp+1
+                numnot(icomp) = zi(iadg+j-1)
             end do
         end do
-    endif
+    end if
 !
 !
 !-------RECUPERATION ET TRANSCODAGE DES MAILLES-------------------------
@@ -81,21 +81,21 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
 !
     if (nbma .gt. 0) then
         do i = 1, nbma
-            nomcou=nomma(i)
+            nomcou = nomma(i)
             call jenonu(jexnom(mailla//'.NOMMAI', nomcou), numa)
 !
             if (numa .eq. 0) then
-                valk (1) = mailla
-                valk (2) = nomcou
+                valk(1) = mailla
+                valk(2) = nomcou
                 call utmess('E', 'ALGORITH14_10', nk=2, valk=valk)
-            endif
+            end if
 !
-            icomp=icomp+1
-            numnot(icomp)=numa
+            icomp = icomp+1
+            numnot(icomp) = numa
 !
         end do
-    endif
-    nbto=icomp
+    end if
+    nbto = icomp
 !
     call jedema()
 end subroutine

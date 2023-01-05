@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine te0007(option, nomte)
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! --- INITIALISATIONS :
@@ -56,13 +56,13 @@ subroutine te0007(option, nomte)
 !
 ! - SPECIFICATION DE LA DIMENSION
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         ndim = 2
-    else if (lteatt('C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN', 'OUI')) then
         ndim = 2
-    else if (lteatt('D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN', 'OUI')) then
         ndim = 2
-    endif
+    end if
 !
     ndimsi = ndim*2
 !
@@ -79,17 +79,17 @@ subroutine te0007(option, nomte)
 !
 !         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
     do i = 1, ndim*nno
-        geo(i) =zr(igeom-1+i)
+        geo(i) = zr(igeom-1+i)
     end do
     call tecach('ONO', 'PDEPLMR', 'L', iretd, iad=idepl)
     call tecach('ONO', 'PCOMPOR', 'L', iretc, iad=icomp)
-    if ((iretd.eq.0) .and. (iretc.eq.0)) then
-        if (zk16(icomp+2)(1:6) .ne. 'PETIT ') then
+    if ((iretd .eq. 0) .and. (iretc .eq. 0)) then
+        if (zk16(icomp+2) (1:6) .ne. 'PETIT ') then
             do i = 1, ndim*nno
-                geo(i) =geo(i) + zr(idepl-1+i)
+                geo(i) = geo(i)+zr(idepl-1+i)
             end do
-        endif
-    endif
+        end if
+    end if
 ! ---- PARAMETRES EN SORTIE
 !      --------------------
 ! ----     VECTEUR DES FORCES INTERNES (BT*SIGMA)
@@ -98,27 +98,27 @@ subroutine te0007(option, nomte)
 !
 ! ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 !      --------------------------------------------------
-    call bsigmc(nno, ndim, nbsig, npg, ipoids,&
-                ivf, idfde, zr(igeom), nharm, zr(icontm),&
+    call bsigmc(nno, ndim, nbsig, npg, ipoids, &
+                ivf, idfde, zr(igeom), nharm, zr(icontm), &
                 bsigm)
 !
 ! ---- AFFECTATION DU VECTEUR EN SORTIE :
 !      ----------------------------------
     do n = 1, nnos
         do i = 1, ndim
-            ku = (ndimsi + ndim)*(n-1) + i
-            kp = ndim*(n-1) + i
+            ku = (ndimsi+ndim)*(n-1)+i
+            kp = ndim*(n-1)+i
             zr(ivectu+ku-1) = bsigm(kp)
         end do
         do i = 1, ndimsi
-            ku = (ndimsi + ndim)*(n-1) + i + ndim
+            ku = (ndimsi+ndim)*(n-1)+i+ndim
             zr(ivectu+ku-1) = 0.d0
         end do
     end do
     do n = nnos+1, nno
         do i = 1, ndim
-            ku = (ndimsi + ndim)*nnos + ndim*(n-nnos-1) + i
-            kp = ndim*(n-1) + i
+            ku = (ndimsi+ndim)*nnos+ndim*(n-nnos-1)+i
+            kp = ndim*(n-1)+i
             zr(ivectu+ku-1) = bsigm(kp)
         end do
     end do

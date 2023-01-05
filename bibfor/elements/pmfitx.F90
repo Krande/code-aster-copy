@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-implicit none
+    implicit none
 
 #include "jeveux.h"
 #include "MultiFiber_type.h"
@@ -71,21 +71,21 @@ implicit none
     real(kind=8) :: valres(4)
     character(len=2) ::  nomres2(2)
     character(len=16) :: nomres4(4)
-    data nomres2 /'E','NU'/
-    data nomres4 /'RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
+    data nomres2/'E', 'NU'/
+    data nomres4/'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 !
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'R1','EP1'/
+    data noms_cara1/'R1', 'EP1'/
 !-----------------------------------------------------------------------
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+    call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !
 !   Récupération des différents matériaux dans SDCOMP dans COMPOR
     call jevech('PCOMPOR', 'L', icompo)
@@ -94,11 +94,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !   boucle sur les groupes de fibre
     casect(:) = 0.0d+0
-    ipos=jacf
+    ipos = jacf
     do ig = 1, nbgrfi
-        icp=isdcom-1+(nug(ig)-1)*MULTI_FIBER_SIZEK
-        read(zk24(icp+MULTI_FIBER_NBFI),'(I24)') nbfig
-        materi=zk24(icp+MULTI_FIBER_MATER)(1:8)
+        icp = isdcom-1+(nug(ig)-1)*MULTI_FIBER_SIZEK
+        read (zk24(icp+MULTI_FIBER_NBFI), '(I24)') nbfig
+        materi = zk24(icp+MULTI_FIBER_MATER) (1:8)
 !       calcul des caractéristiques du groupe
         call pmfitg(tygrfi, nbfig, nbcarm, zr(ipos), carsec)
 !       multiplie par RHO ou E (constant sur le groupe)
@@ -108,36 +108,36 @@ implicit none
             if (codres(1) .eq. 1) then
                 call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS_FLUI', &
                             0, ' ', [0.0d+0], 1, 'E', val, codres, 1)
-            endif
-        else if (isw.eq.2) then
+            end if
+        else if (isw .eq. 2) then
             call rcvala(icdmat, materi, 'ELAS', 0, ' ', [0.0d+0], 1, 'RHO', val, codres, 3)
             if (codres(1) .eq. 1) then
                 call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
                 call jevech('PABSCUR', 'L', labsc)
                 absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/2.0d0
-                call rcvala(icdmat, materi, 'ELAS_FLUI', 1, 'ABSC',&
+                call rcvala(icdmat, materi, 'ELAS_FLUI', 1, 'ABSC', &
                             [absmoy], 4, nomres4, valres, codres, 1)
-                rhos  = valres(1)
+                rhos = valres(1)
                 rhofi = valres(2)
                 rhofe = valres(3)
-                cm    = valres(4)
-                phie  = vale_cara1(1)*2.0d0
-                if ( phie .le. r8prem() ) then
+                cm = valres(4)
+                phie = vale_cara1(1)*2.0d0
+                if (phie .le. r8prem()) then
                     call utmess('F', 'ELEMENTS3_26')
-                endif
+                end if
                 phii = (phie-2.0d0*vale_cara1(2))
                 call rhoequ(rho, rhos, rhofi, rhofe, cm, phii, phie)
                 val(1) = rho
-            endif
-        else if (isw.eq.3) then
+            end if
+        else if (isw .eq. 3) then
             call rcvala(icdmat, materi, 'ELAS', 0, ' ', [0.0d+0], 1, 'RHO', val, codres, 0)
             if (codres(1) .ne. 0) val(1) = 0.0d+0
-        endif
+        end if
         do i = 1, 6
-            casect(i) = casect(i) + val(1)*carsec(i)
-        enddo
-        ipos=ipos+nbfig*nbcarm
-    enddo
+            casect(i) = casect(i)+val(1)*carsec(i)
+        end do
+        ipos = ipos+nbfig*nbcarm
+    end do
 ! --------------------------------------------------------------------------------------------------
 !   si ito=1 on récupère le matériau de torsion
     if (isw .eq. 1) then
@@ -148,9 +148,9 @@ implicit none
         if (codres(1) .eq. 1) then
             call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS_FLUI', &
                         0, ' ', [0.0d+0], 2, nomres2, valres, codres, 1)
-        endif
-        e   = valres(1)
-        nu  = valres(2)
+        end if
+        e = valres(1)
+        nu = valres(2)
         gto = e/(2.0d0*(1.0d0+nu))
-    endif
+    end if
 end subroutine

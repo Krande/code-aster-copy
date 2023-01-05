@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmevel(sddisc, nume_inst  , vale  , loop_name, lsvimx,&
-                  ldvres, lresmx     , linsta, lerrcv   , lerror,&
+subroutine nmevel(sddisc, nume_inst, vale, loop_name, lsvimx, &
+                  ldvres, lresmx, linsta, lerrcv, lerror, &
                   conver, ds_contact_)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -35,18 +35,18 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/getFailEvent.h"
 !
-character(len=19), intent(in) :: vale(*)
-character(len=19), intent(in) :: sddisc
-character(len=4), intent(in) :: loop_name
-integer, intent(in) :: nume_inst
-aster_logical, intent(in) :: lsvimx
-aster_logical, intent(in) :: ldvres
-aster_logical, intent(in) :: lresmx
-aster_logical, intent(in) :: linsta
-aster_logical, intent(in) :: lerrcv
-aster_logical, intent(in) :: lerror
-aster_logical, intent(in) :: conver
-type(NL_DS_Contact), optional, intent(in) :: ds_contact_
+    character(len=19), intent(in) :: vale(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=4), intent(in) :: loop_name
+    integer, intent(in) :: nume_inst
+    aster_logical, intent(in) :: lsvimx
+    aster_logical, intent(in) :: ldvres
+    aster_logical, intent(in) :: lresmx
+    aster_logical, intent(in) :: linsta
+    aster_logical, intent(in) :: lerrcv
+    aster_logical, intent(in) :: lerror
+    aster_logical, intent(in) :: conver
+    type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +89,7 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
 ! --- NOMBRE D'EVENT-DRIVEN : NECHEC
 !
-    call utdidt('L', sddisc, 'LIST',  'NECHEC', vali_ = nb_fail)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
 !
 ! --- DETECTION DU _PREMIER_ EVENEMENT DECLENCHE
 ! --- DES QU'UN EVENT-DRIVEN EST SATISFAIT, ON SORT
@@ -107,52 +107,52 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
             if (lsvimx .or. lerrcv .or. lerror) then
                 i_fail_acti = i_fail
                 goto 99
-            endif
+            end if
         else if (event_type .eq. FAIL_EVT_DIVE_RESI) then
             if (ldvres) then
                 i_fail_acti = i_fail
                 if (i_fail_acti .ne. 0) then
                     goto 99
-                endif
-            endif
+                end if
+            end if
         else if (event_type .eq. FAIL_EVT_RESI_MAXI) then
             if (lresmx) then
                 i_fail_acti = i_fail
                 if (i_fail_acti .ne. 0) then
                     goto 99
-                endif
-            endif
+                end if
+            end if
         else if (event_type .eq. FAIL_EVT_INCR_QUANT) then
             if (conver) then
                 call nmevdg(sddisc, vale, i_fail, i_fail_acti)
                 if (i_fail_acti .ne. 0) then
                     goto 99
-                endif
-            endif
+                end if
+            end if
         else if (event_type .eq. FAIL_EVT_COLLISION) then
             if (loop_name .eq. 'INST') then
                 call nmevcx(sddisc, nume_inst, ds_contact_, i_fail, i_fail_acti)
                 if (i_fail_acti .ne. 0) then
                     goto 99
-                endif
-            endif
+                end if
+            end if
         else if (event_type .eq. FAIL_EVT_INTERPENE) then
             if (loop_name .eq. 'INST') then
                 call nmevin(sddisc, ds_contact_, i_fail, i_fail_acti)
                 if (i_fail_acti .ne. 0) then
                     goto 99
-                endif
-            endif
+                end if
+            end if
         else if (event_type .eq. FAIL_EVT_INSTABILITY) then
             if (linsta) then
                 i_fail_acti = i_fail
-            endif
+            end if
             if (i_fail_acti .ne. 0) then
                 goto 99
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 99  continue
@@ -161,6 +161,6 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
     if (i_fail_acti .ne. 0) then
         call eneven(sddisc, i_fail_acti, .true._1)
-    endif
+    end if
 !
 end subroutine

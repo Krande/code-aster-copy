@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_msdnjn(fid,maa,n,cret)
+subroutine as_msdnjn(fid, maa, n, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 !
@@ -34,24 +34,24 @@ subroutine as_msdnjn(fid,maa,n,cret)
 #else
 
 #ifdef ASTER_DEBUG_MED
-    write(6,*) '=== as_msdnjn fid=',fid
-    write(6,*) '=== as_msdnjn maa=',maa
+    write (6, *) '=== as_msdnjn fid=', fid
+    write (6, *) '=== as_msdnjn maa=', maa
 #endif
 
 #if !ASTER_MED_SAME_INT_IDT
     med_idt :: fid4
     med_int :: n4, cret4
-    fid4=to_med_idt(fid)
-    call msdnjn(fid4,maa,n4,cret4)
-    n=to_aster_int(n4)
-    cret=to_aster_int(cret4)
+    fid4 = to_med_idt(fid)
+    call msdnjn(fid4, maa, n4, cret4)
+    n = to_aster_int(n4)
+    cret = to_aster_int(cret4)
 #else
-    call msdnjn(fid,maa,n,cret)
+    call msdnjn(fid, maa, n, cret)
 #endif
 
 #ifdef ASTER_DEBUG_MED
-    write(6,*) '=== as_msdnjn n4=',n4
-    write(6,*) '=== as_msdnjn cret4=',cret4
+    write (6, *) '=== as_msdnjn n4=', n4
+    write (6, *) '=== as_msdnjn cret4=', cret4
 #endif
 
 #endif

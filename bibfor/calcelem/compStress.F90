@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine compStress(modelz , ligrel , compor,&
-                      chdispz, chgeom , chmate,&
-                      chcara , chtime , chharm,&
-                      chvarc , chvref , chstrx,&
-                      basez  , chelemz, codret)
+subroutine compStress(modelz, ligrel, compor, &
+                      chdispz, chgeom, chmate, &
+                      chcara, chtime, chharm, &
+                      chvarc, chvref, chstrx, &
+                      basez, chelemz, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ajchca.h"
@@ -35,12 +35,12 @@ implicit none
 #include "asterfort/meceuc.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: modelz, ligrel, compor
-character(len=*), intent(in) :: chdispz, chgeom, chmate
-character(len=*), intent(in) :: chcara(*), chtime, chharm
-character(len=*), intent(in) :: chvarc, chvref, chstrx
-character(len=*), intent(in) :: chelemz, basez
-integer, intent(out) :: codret
+    character(len=*), intent(in) :: modelz, ligrel, compor
+    character(len=*), intent(in) :: chdispz, chgeom, chmate
+    character(len=*), intent(in) :: chcara(*), chtime, chharm
+    character(len=*), intent(in) :: chvarc, chvref, chstrx
+    character(len=*), intent(in) :: chelemz, basez
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxin=65, maxout=1
+    integer, parameter :: maxin = 65, maxout = 1
     character(len=8) :: lpain(maxin), lpaout(maxout)
     character(len=24) :: lchin(maxin), lchout(maxout)
     character(len=1) :: base
@@ -66,18 +66,18 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    chdisp   = chdispz
-    chelem   = chelemz
-    codret   = 0
-    base     = basez
-    model    = modelz
-    option   = 'SIEF_ELGA'
+    chdisp = chdispz
+    chelem = chelemz
+    codret = 0
+    base = basez
+    model = modelz
+    option = 'SIEF_ELGA'
     lpain(:) = ' '
     lchin(:) = ' '
 !
 ! - Output field
 !
-    nbout     = 1
+    nbout = 1
     lchout(1) = chelem
     lpaout(1) = 'PCONTRR'
 !
@@ -88,14 +88,14 @@ integer, intent(out) :: codret
     call exisd('CHAM_ELEM_S', canbsp, iret1)
     if (iret1 .ne. 1) then
         call cesvar(cara_elem, ' ', ligrel, canbsp)
-    endif
+    end if
     call copisd('CHAM_ELEM_S', 'V', canbsp, chelem)
 !
 ! - Add input fields
 !
-    nbin      = 1
-    lpain(1)  = 'PDEPLAR'
-    lchin(1)  = chdisp
+    nbin = 1
+    lpain(1) = 'PDEPLAR'
+    lchin(1) = chdisp
     call ajchca('PABSCUR', chgeom(1:8)//'.ABSC_CURV', lpain, lchin, nbin, maxin, 'N')
 !
 ! - Fields for XFEM
@@ -124,7 +124,7 @@ integer, intent(out) :: codret
         call ajchca('PSTANO', chxfem(9), lpain, lchin, nbin, maxin, 'N')
         call ajchca('PFISNO', chxfem(10), lpain, lchin, nbin, maxin, 'N')
         call ajchca('PHEA_NO', chxfem(12), lpain, lchin, nbin, maxin, 'N')
-    endif
+    end if
 !
 ! - Fields for structural elements
 !
@@ -153,14 +153,14 @@ integer, intent(out) :: codret
 !
 ! - Computation (with preparation for COMPLEX fields)
 !
-    call meceuc('C'   , option, cara_elem, ligrel,&
-                nbin  , lchin , lpain    ,&
-                nbout , lchout, lpaout   , base)
+    call meceuc('C', option, cara_elem, ligrel, &
+                nbin, lchin, lpain, &
+                nbout, lchout, lpaout, base)
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         codret = 1
         call utmess('A', 'CALCCHAMP_89', sk=option)
-    endif
+    end if
 !
 ! - Clean
 !

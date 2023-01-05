@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
     call jemarq()
 !
     legrno = .false.
-  1 continue
-    read(nfic,1001,end=9997) kbid14, kbid4, ityp
+1   continue
+    read (nfic, 1001, end=9997) kbid14, kbid4, ityp
 !
     if (kbid14 .eq. 'ENREGISTREMENT' .and. kbid4 .eq. 'TYPE') then
 !
@@ -68,19 +68,19 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 !
 ! -- INFORMATIONS GENERALES MAILLAGE ----
 !
-            read(nfic,1002) nivo, nberr, ndim
+            read (nfic, 1002) nivo, nberr, ndim
             if (nberr .gt. 0) then
                 call utmess('A', 'PREPOST_59')
-            endif
-            read(nfic,1003) r8bid
+            end if
+            read (nfic, 1003) r8bid
             goto 1
 !
         else if (ityp .eq. '7') then
 !
 ! -- INFORMATIONS GENERALES CASTEM 2000 ----
 !
-            read(nfic,1004)
-            read(nfic,1004)
+            read (nfic, 1004)
+            read (nfic, 1004)
             goto 1
 !
         else if (ityp .eq. '5') then
@@ -94,10 +94,10 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 ! -- LECTURE D'UNE PILE  ----
 !
             if (niv .le. 6) then
-                read(nfic,1005) k4bid,k6bid,ipile,nbobno,nboblu
+                read (nfic, 1005) k4bid, k6bid, ipile, nbobno, nboblu
             else if (niv .gt. 6) then
-                read(nfic,1006) k4bid,k6bid,ipile,nbobno,nboblu
-            endif
+                read (nfic, 1006) k4bid, k6bid, ipile, nbobno, nboblu
+            end if
 !
 !
             if (ipile .eq. 0) then
@@ -107,7 +107,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
                 call gilig2(nfic, nbobno, niv)
 !
 !            --- LECTURE DES COORDONNEES ---
-                nbval = nboblu * ( ndim + 1 )
+                nbval = nboblu*(ndim+1)
                 call gilig1(nfic, ndim, nbval, nboblu)
 !
                 nbnoto = nboblu
@@ -118,7 +118,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
                     do i = 1, nboblu
                         zi(iaptin+i-1) = i
                     end do
-                endif
+                end if
                 goto 1
 !
             else if (ipile .eq. 32) then
@@ -130,10 +130,10 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 !
             else if (ipile .eq. 33) then
 !
-                read(nfic,1010) nbval
+                read (nfic, 1010) nbval
 !
 !            --- LECTURE DES COORDONNEES ---
-                nboblu = nbval / ( ndim + 1 )
+                nboblu = nbval/(ndim+1)
                 call gilig1(nfic, ndim, nbval, nboblu)
                 nbnoto = nboblu
 !
@@ -144,14 +144,14 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 !            --- LECTURE DES GROUPES DE MAILLES NOMMEES ---
                 call gilig0(nfic, nboblu, nbobno, nbobo, niv)
                 goto 1
-            endif
+            end if
 !
-        endif
+        end if
         goto 1
 !
     else
         goto 1
-    endif
+    end if
 !
 9997 continue
 !
@@ -163,13 +163,13 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 !
 !
 !
-    1001 format(1x,a14,4x,a4,3x,a1)
-    1002 format(7x,i4,14x,i4,10x,i4)
-    1003 format(8x,d12.5)
-    1004 format(10x)
-    1005 format(1x,a4,1x,a6,i4,18x,i5,11x,i5)
-    1006 format(1x,a4,1x,a6,i4,18x,i8,11x,i8)
-    1010 format(1x,i7)
+1001 format(1x, a14, 4x, a4, 3x, a1)
+1002 format(7x, i4, 14x, i4, 10x, i4)
+1003 format(8x, d12.5)
+1004 format(10x)
+1005 format(1x, a4, 1x, a6, i4, 18x, i5, 11x, i5)
+1006 format(1x, a4, 1x, a6, i4, 18x, i8, 11x, i8)
+1010 format(1x, i7)
 !
     call jedema()
 end subroutine

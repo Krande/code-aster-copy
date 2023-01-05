@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mmapre(mesh, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -87,8 +87,8 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ... Save pairing in contact datastructures'
-    endif
+        write (ifm, *) '<CONTACT> ... Save pairing in contact datastructures'
+    end if
 !
 ! - Pairing datastructure
 !
@@ -105,8 +105,8 @@ implicit none
 !
 ! --- PARAMETRES
 !
-    nzoco = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
-    ndimg = cfdisi(ds_contact%sdcont_defi,'NDIM' )
+    nzoco = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    ndimg = cfdisi(ds_contact%sdcont_defi, 'NDIM')
 !
 ! --- ACCES SD CONTACT
 !
@@ -121,18 +121,18 @@ implicit none
 !
 ! ----- INFORMATION SUR LA ZONE
 !
-        jdecme = mminfi(ds_contact%sdcont_defi,'JDECME',izone )
-        nbmae  = mminfi(ds_contact%sdcont_defi,'NBMAE' ,izone )
-        typint = mminfi(ds_contact%sdcont_defi,'INTEGRATION' ,izone )
+        jdecme = mminfi(ds_contact%sdcont_defi, 'JDECME', izone)
+        nbmae = mminfi(ds_contact%sdcont_defi, 'NBMAE', izone)
+        typint = mminfi(ds_contact%sdcont_defi, 'INTEGRATION', izone)
 !
 ! ----- MODE VERIF: ON SAUTE LES POINTS
 !
-        lveri = mminfl(ds_contact%sdcont_defi,'VERIF' ,izone )
+        lveri = mminfl(ds_contact%sdcont_defi, 'VERIF', izone)
         if (lveri) then
-            nbpt = mminfi(ds_contact%sdcont_defi,'NBPT' ,izone )
-            ip = ip + nbpt
+            nbpt = mminfi(ds_contact%sdcont_defi, 'NBPT', izone)
+            ip = ip+nbpt
             goto 25
-        endif
+        end if
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
@@ -140,7 +140,7 @@ implicit none
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
-            posmae = jdecme + imae
+            posmae = jdecme+imae
             call cfnumm(ds_contact%sdcont_defi, posmae, nummae)
 !
 ! ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
@@ -172,26 +172,26 @@ implicit none
 !
                 if (typapp .eq. 1) then
                     ASSERT(.false.)
-                endif
+                end if
 !
 ! ------------- Excluded nodes
 !
-                call mmexcl(typint     , typapp, iptm, ndexfr,&
+                call mmexcl(typint, typapp, iptm, ndexfr, &
                             l_node_excl, l_excl_frot)
                 zr(jtabf+ztabf*(iptc-1)+18) = 0.d0
                 zr(jtabf+ztabf*(iptc-1)+19) = 0.d0
                 if (l_node_excl) then
                     zr(jtabf+ztabf*(iptc-1)+18) = 1.d0
-                endif
+                end if
                 if (l_excl_frot) then
                     zr(jtabf+ztabf*(iptc-1)+19) = ndexfr
-                endif
+                end if
 !
 ! ------------- Excluded nodes => no contact !
 !
                 if (l_node_excl) then
                     zr(jtabf+ztabf*(iptc-1)+22) = 0.d0
-                endif
+                end if
 !
 ! --------- NUMEROS DE LA MAILLE MAITRE
 !
@@ -200,30 +200,30 @@ implicit none
 !
 ! --------- SAUVEGARDE APPARIEMENT
 !
-                call mmapma(mesh, ds_contact, ndimg, izone,&
-                            l_excl_frot, typint, aliase, posmae, nummae,&
-                            nnomae, posmam, nummam, ksipr1, ksipr2,&
-                            tau1m, tau2m, iptm, iptc, norm,&
+                call mmapma(mesh, ds_contact, ndimg, izone, &
+                            l_excl_frot, typint, aliase, posmae, nummae, &
+                            nnomae, posmam, nummam, ksipr1, ksipr2, &
+                            tau1m, tau2m, iptm, iptc, norm, &
                             nommam)
 !
 ! --------- LIAISON DE CONTACT EFFECTIVE
 !
-                iptc = iptc + 1
-                ntpc = ntpc + 1
+                iptc = iptc+1
+                ntpc = ntpc+1
 !
 ! --------- POINT SUIVANT
 !
-                ip = ip + 1
+                ip = ip+1
 !
             end do
         end do
- 25     continue
+25      continue
     end do
 !
 ! --- NOMBRE TOTAL DE NOEUDS EN CONTACT
 !
     zr(jtabf-1+1) = ntpc
-    ASSERT(ntpc.eq.cfdisi(ds_contact%sdcont_defi, 'NTPC'))
+    ASSERT(ntpc .eq. cfdisi(ds_contact%sdcont_defi, 'NTPC'))
 !
 ! - Flag for (re) numbering
 !
@@ -233,7 +233,7 @@ implicit none
 !
     if (niv .ge. 2) then
         call mmimp1(ifm, mesh, ds_contact)
-    endif
+    end if
 !
     call jedema()
 !

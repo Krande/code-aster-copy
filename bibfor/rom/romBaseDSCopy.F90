@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 !
 subroutine romBaseDSCopy(baseIn, resultName, baseOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/romModeDSCopy.h"
 #include "asterfort/romLineicDSCopy.h"
 !
-type(ROM_DS_Empi), intent(in)  :: baseIn
-character(len=8), intent(in)   :: resultName
-type(ROM_DS_Empi), intent(out) :: baseOut
+    type(ROM_DS_Empi), intent(in)  :: baseIn
+    character(len=8), intent(in)   :: resultName
+    type(ROM_DS_Empi), intent(out) :: baseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,10 +46,10 @@ type(ROM_DS_Empi), intent(out) :: baseOut
 ! --------------------------------------------------------------------------------------------------
 !
     baseOut%resultName = resultName
-    baseOut%baseType   = baseIn%baseType
+    baseOut%baseType = baseIn%baseType
     baseOut%lineicAxis = baseIn%lineicAxis
     baseOut%lineicSect = baseIn%lineicSect
-    baseOut%nbMode     = baseIn%nbMode
+    baseOut%nbMode = baseIn%nbMode
     baseOut%lineicNume = baseIn%lineicNume
 !
 ! - Copy lineic numbering

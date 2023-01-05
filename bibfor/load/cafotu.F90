@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cafotu(load, model, mapAlreadyCreated, mesh, geomDime, valeType, nbOcc)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -31,10 +31,10 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-aster_logical, intent(in) :: mapAlreadyCreated
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
-integer, intent(in) :: nbOcc, geomDime
+    aster_logical, intent(in) :: mapAlreadyCreated
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
+    integer, intent(in) :: nbOcc, geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,15 +69,15 @@ integer, intent(in) :: nbOcc, geomDime
     createMap = ASTER_TRUE
     if (mapAlreadyCreated) then
         createMap = ASTER_FALSE
-    endif
+    end if
 
 ! - Initializations
     ASSERT(valeType .eq. 'REEL' .or. valeType .eq. 'FONC')
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordFact, load , mesh, valeType,&
-                        nbMap      , map        , nbCmp, createMap)
+    call char_crea_cart('MECANIQUE', keywordFact, load, mesh, valeType, &
+                        nbMap, map, nbCmp, createMap)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', jvalv)
 !
@@ -90,12 +90,12 @@ integer, intent(in) :: nbOcc, geomDime
             call getvr8(keywordFact, 'PRES', iocc=iocc, scal=zr(jvalv), nbret=nbret)
         else
             call getvid(keywordFact, 'PRES', iocc=iocc, scal=zk8(jvalv), nbret=nbret)
-        endif
+        end if
 
 ! ----- Affect values of load
-        call char_affe_neum(model      , mesh, geomDime,&
-                            keywordFact, iocc,&
-                            nbMap      , map , nbCmp)
+        call char_affe_neum(model, mesh, geomDime, &
+                            keywordFact, iocc, &
+                            nbMap, map, nbCmp)
 
     end do
 !

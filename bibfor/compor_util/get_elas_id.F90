@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine get_elas_id(j_mater, elas_id, elas_keyword)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/rccoma.h"
 #include "asterfort/utmess.h"
@@ -60,30 +60,30 @@ implicit none
 !
 ! - Type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
-    if (elas_keyword_in.eq.'ELAS'.or.&
-        elas_keyword_in.eq.'ELAS_HYPER'.or.&
-        elas_keyword_in.eq.'ELAS_MEMBRANE'.or.&
-        elas_keyword_in.eq.'ELAS_META'.or.&
-        elas_keyword_in.eq.'ELAS_GLRC'.or.&
-        elas_keyword_in.eq.'ELAS_DHRC'.or.&
-        elas_keyword_in.eq.'ELAS_COQUE') then
+    if (elas_keyword_in .eq. 'ELAS' .or. &
+        elas_keyword_in .eq. 'ELAS_HYPER' .or. &
+        elas_keyword_in .eq. 'ELAS_MEMBRANE' .or. &
+        elas_keyword_in .eq. 'ELAS_META' .or. &
+        elas_keyword_in .eq. 'ELAS_GLRC' .or. &
+        elas_keyword_in .eq. 'ELAS_DHRC' .or. &
+        elas_keyword_in .eq. 'ELAS_COQUE') then
         elas_id = 1
-    elseif (elas_keyword_in.eq.'ELAS_ORTH') then
+    elseif (elas_keyword_in .eq. 'ELAS_ORTH') then
         elas_id = 2
-    elseif (elas_keyword_in.eq.'ELAS_ISTR') then
+    elseif (elas_keyword_in .eq. 'ELAS_ISTR') then
         elas_id = 3
-    elseif (elas_keyword_in.eq.'ELAS_VISCO') then
+    elseif (elas_keyword_in .eq. 'ELAS_VISCO') then
         elas_id = 4
-    elseif (elas_keyword_in.eq.'ELAS_VISCO_ORTH') then
+    elseif (elas_keyword_in .eq. 'ELAS_VISCO_ORTH') then
         elas_id = 5
-    elseif (elas_keyword_in.eq.'ELAS_VISCO_ISTR') then
+    elseif (elas_keyword_in .eq. 'ELAS_VISCO_ISTR') then
         elas_id = 6
     else
-        call utmess('F','COMPOR5_15', sk = elas_keyword_in)
-    endif
+        call utmess('F', 'COMPOR5_15', sk=elas_keyword_in)
+    end if
 !
     if (present(elas_keyword)) then
         elas_keyword = elas_keyword_in
-    endif
+    end if
 
 end subroutine

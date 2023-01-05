@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,14 +57,14 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
     call jenuno(jexnum('&CATA.TM.NBNO', ityp), nomtm)
     if (nomtm(1:3) .eq. 'SEG') then
         if (ndim .eq. 3) then
-            normal(1) = coor(4) - coor(1)
-            normal(2) = coor(5) - coor(2)
-            normal(3) = coor(6) - coor(3)
+            normal(1) = coor(4)-coor(1)
+            normal(2) = coor(5)-coor(2)
+            normal(3) = coor(6)-coor(3)
             if (inorm .eq. 1) then
                 call normev(normal, norme)
             else
                 call utmess('F', 'MODELISA3_20')
-            endif
+            end if
 !          ELSE
 !            NORMAL(1) = COOR(5) - COOR(2)
 !            NORMAL(2) = COOR(1) - COOR(4)
@@ -76,23 +76,23 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
 !          ENDIF
 !
         else
-            normal(1) = coor(5) - coor(2)
-            normal(2) = coor(1) - coor(4)
+            normal(1) = coor(5)-coor(2)
+            normal(2) = coor(1)-coor(4)
             normal(3) = 0.0d0
             if (inorm .eq. 1) then
                 call normev(normal, norme)
-            endif
+            end if
 !
-        endif
+        end if
 !
-    else if (nomtm(1:4).eq.'TRIA') then
+    else if (nomtm(1:4) .eq. 'TRIA') then
         if (ndim .eq. 2) then
             call utmess('F', 'MODELISA3_21')
 !
         else
             do j = 1, 3
-                xx(j) = coor(3+j) - coor(j)
-                yy(j) = coor(6+j) - coor(3+j)
+                xx(j) = coor(3+j)-coor(j)
+                yy(j) = coor(6+j)-coor(3+j)
             end do
             call provec(xx, yy, normal)
             do j = 1, 3
@@ -100,11 +100,11 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
             end do
             if (inorm .eq. 1) then
                 call normev(normal, norme)
-            endif
+            end if
 !
-        endif
+        end if
 !
-    else if (nomtm(1:4).eq.'QUAD') then
+    else if (nomtm(1:4) .eq. 'QUAD') then
         if (ndim .eq. 2) then
             call utmess('F', 'MODELISA3_22')
 !
@@ -113,8 +113,8 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
 !     PRODUIT VECTORIEL (N1N3) * (N2N4) POUR CALCULER LE VECTEUR NORMAL
 !
             do j = 1, 3
-                xx(j) = coor(6+j) - coor(j)
-                yy(j) = coor(9+j) - coor(3+j)
+                xx(j) = coor(6+j)-coor(j)
+                yy(j) = coor(9+j)-coor(3+j)
             end do
             call provec(xx, yy, normal)
             call normev(normal, norme)
@@ -129,42 +129,42 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
 !
                 surf = 0.0d0
                 do j = 1, 3
-                    xx(j) = coor(3+j) - coor(j)
-                    yy(j) = coor(6+j) - coor(j)
+                    xx(j) = coor(3+j)-coor(j)
+                    yy(j) = coor(6+j)-coor(j)
                 end do
                 call provec(xx, yy, vect)
                 call normev(vect, norme)
-                surf = surf + norme
+                surf = surf+norme
                 do j = 1, 3
-                    xx(j) = coor(6+j) - coor(j)
-                    yy(j) = coor(9+j) - coor(j)
+                    xx(j) = coor(6+j)-coor(j)
+                    yy(j) = coor(9+j)-coor(j)
                 end do
                 call provec(xx, yy, vect)
                 call normev(vect, norme)
-                surf = surf + norme
+                surf = surf+norme
                 do j = 1, 3
-                    xx(j) = coor(6+j) - coor(3+j)
-                    yy(j) = coor(9+j) - coor(3+j)
+                    xx(j) = coor(6+j)-coor(3+j)
+                    yy(j) = coor(9+j)-coor(3+j)
                 end do
                 call provec(xx, yy, vect)
                 call normev(vect, norme)
-                surf = surf + norme
+                surf = surf+norme
                 do j = 1, 3
-                    xx(j) = coor(9+j) - coor(3+j)
-                    yy(j) = coor(j) - coor(3+j)
+                    xx(j) = coor(9+j)-coor(3+j)
+                    yy(j) = coor(j)-coor(3+j)
                 end do
                 call provec(xx, yy, vect)
                 call normev(vect, norme)
-                surf = surf + norme
+                surf = surf+norme
                 surf = surf/4.0d0
                 do j = 1, 3
                     normal(j) = normal(j)*surf
                 end do
-            endif
+            end if
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 ! FIN ------------------------------------------------------------------

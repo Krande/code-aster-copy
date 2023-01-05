@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
+subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno, &
                   noeud, crack, tabhyp)
 !
 ! aslint: disable=W1306
@@ -76,9 +76,9 @@ subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
 ! --- ON COMPTE ET ON SELECTIONNE LES NOEUDS CONECTANTS
     do i = 1, nbno
         if (scorno(i) .gt. 1) then
-            nnovit = nnovit + 1
+            nnovit = nnovit+1
             novit(nnovit) = i
-        endif
+        end if
     end do
 !
 ! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTANTS
@@ -90,25 +90,25 @@ subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
             zi(jcntan-1+3*(i-1)+1) = noeud(novit(i))
             zi(jcntan-1+3*(i-1)+2) = scorno(novit(i))
             zi(jcntan-1+3*(i-1)+3) = nncone
-            nncone = nncone + scorno(novit(i))
+            nncone = nncone+scorno(novit(i))
         end do
 ! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTÉS
         call wkvect(crack(1:8)//'.CONNECTES ', 'G V I', nncone, jcntes)
-        k=0
+        k = 0
         do i = 1, nnovit
 ! --- POUR CHAQUE NOEUD VITAL, ON STOQUE SES NOEUDS CONECTÉS
             do ia = 1, nb_edge
-                if(tabhyp(ia)) cycle
-                if (tabdir(ia,1) .eq. novit(i)) then
+                if (tabhyp(ia)) cycle
+                if (tabdir(ia, 1) .eq. novit(i)) then
                     k = k+1
-                    zi(jcntes-1+k) = noeud(tabdir(ia,2))
-                else if (tabdir(ia,2).eq.novit(i)) then
+                    zi(jcntes-1+k) = noeud(tabdir(ia, 2))
+                else if (tabdir(ia, 2) .eq. novit(i)) then
                     k = k+1
-                    zi(jcntes-1+k) = noeud(tabdir(ia,1))
-                endif
+                    zi(jcntes-1+k) = noeud(tabdir(ia, 1))
+                end if
             end do
         end do
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,12 @@ subroutine jedetr(nomlu)
 ! IN  NOMLU  : NOM D'OBJET JEVEUX
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
-    common /nomcje/  nomuti , nomos , nomco , nomoc , bl32
+    common/nomcje/nomuti, nomos, nomco, nomoc, bl32
 !-----------------------------------------------------------------------
     integer :: iadmar, iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadd
     integer :: ibiadm, iblong, iblono, ibmarq, ic, ixdeso, ixiadd
@@ -50,21 +50,21 @@ subroutine jedetr(nomlu)
     integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
     integer :: lonoi, n, nmax
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
-    common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
+    common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
     integer :: nivo
-    common /jvnivo/ nivo
+    common/jvnivo/nivo
 !     ------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
     integer :: idnum
-    parameter    ( ivnmax = 0 , iddeso = 1 , idiadd = 2 , idiadm = 3 ,&
-     &               idmarq = 4 , idnom  = 5 ,              idlong = 7 ,&
-     &               idlono = 8 , idnum  = 10 )
+    parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
+     &               idmarq=4, idnom=5, idlong=7,&
+     &               idlono=8, idnum=10)
 !     ------------------------------------------------------------------
     character(len=32) :: noml32, nom32
     integer :: icre, iret, id(idnum), iaddi(2)
@@ -80,18 +80,18 @@ subroutine jedetr(nomlu)
         goto 999
     else if (iret .eq. 1) then
         ic = iclaos
-        iadmi = iadm (jiadm(ic) + 2*idatos-1 )
-        iadyn = iadm (jiadm(ic) + 2*idatos )
+        iadmi = iadm(jiadm(ic)+2*idatos-1)
+        iadyn = iadm(jiadm(ic)+2*idatos)
         call jjlidy(iadyn, iadmi)
-        iaddi(1) = iadd (jiadd(ic) + 2*idatos-1 )
-        iaddi(2) = iadd (jiadd(ic) + 2*idatos )
+        iaddi(1) = iadd(jiadd(ic)+2*idatos-1)
+        iaddi(2) = iadd(jiadd(ic)+2*idatos)
         if (iaddi(1) .gt. 0) then
             lonoi = lono(jlono(ic)+idatos)*ltyp(jltyp(ic)+idatos)
             call jxlibd(0, idatos, ic, iaddi, lonoi)
-        endif
+        end if
         if (nivo .ge. 2) then
             call utmess('I', 'JEVEUX_07', sk=noml32)
-        endif
+        end if
         call jjcren(noml32, -1, iret)
         nomos = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
         call jjmzat(iclaos, idatos)
@@ -101,91 +101,91 @@ subroutine jedetr(nomlu)
         if (noml32(25:32) .ne. '        ') then
             call jjcroc(noml32(25:32), icre)
             iret = 3
-        endif
+        end if
         if (iret .eq. 2) then
-            ixiadm = iszon( jiszon + ibacol + idiadm )
-            ixiadd = iszon( jiszon + ibacol + idiadd )
-            ixlono = iszon( jiszon + ibacol + idlono )
-            ixdeso = iszon( jiszon + ibacol + iddeso )
-            ixmarq = iszon( jiszon + ibacol + idmarq )
+            ixiadm = iszon(jiszon+ibacol+idiadm)
+            ixiadd = iszon(jiszon+ibacol+idiadd)
+            ixlono = iszon(jiszon+ibacol+idlono)
+            ixdeso = iszon(jiszon+ibacol+iddeso)
+            ixmarq = iszon(jiszon+ibacol+idmarq)
             if (ixiadm .gt. 0) then
-                ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
-                ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )
+                ibiadm = iadm(jiadm(ic)+2*ixiadm-1)
+                ibmarq = iadm(jiadm(ic)+2*ixmarq-1)
                 nmax = iszon(jiszon+ibacol+ivnmax)
                 do k = 1, nmax
-                    iadmar = iszon( jiszon + ibmarq - 1 + 2*k )
+                    iadmar = iszon(jiszon+ibmarq-1+2*k)
                     if (iadmar .ne. 0) then
                         iszon(jiszon+kdesma(1)+iadmar-1) = 0
-                    endif
-                    iadmoc = iszon( jiszon + ibiadm - 1 + 2*k-1 )
-                    iadyoc = iszon( jiszon + ibiadm - 1 + 2*k )
+                    end if
+                    iadmoc = iszon(jiszon+ibiadm-1+2*k-1)
+                    iadyoc = iszon(jiszon+ibiadm-1+2*k)
                     call jjlidy(iadyoc, iadmoc)
-                    ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
-                    iaddi(1) = iszon( jiszon + ibiadd -1 + 2*k-1 )
-                    iaddi(2) = iszon( jiszon + ibiadd -1 + 2*k )
+                    ibiadd = iadm(jiadm(ic)+2*ixiadd-1)
+                    iaddi(1) = iszon(jiszon+ibiadd-1+2*k-1)
+                    iaddi(2) = iszon(jiszon+ibiadd-1+2*k)
                     if (iaddi(1) .gt. 0) then
                         if (ixlono .gt. 0) then
-                            iblono=iadm(jiadm(ic)+2*ixlono-1)
-                            lonoi =iszon(jiszon+iblono+k-1)*ltyp(&
-                            jltyp(ic)+ixdeso)
+                            iblono = iadm(jiadm(ic)+2*ixlono-1)
+                            lonoi = iszon(jiszon+iblono+k-1)*ltyp( &
+                                    jltyp(ic)+ixdeso)
                         else
-                            lonoi = lono( jlono(ic)+ixdeso)*ltyp(jltyp( ic)+ixdeso)
-                        endif
+                            lonoi = lono(jlono(ic)+ixdeso)*ltyp(jltyp(ic)+ixdeso)
+                        end if
                         call jxlibd(idatco, k, ic, iaddi, lonoi)
-                    endif
+                    end if
                 end do
-            endif
+            end if
             do k = 1, idnum
-                id (k) = iszon ( jiszon + ibacol + k )
+                id(k) = iszon(jiszon+ibacol+k)
                 if (id(k) .gt. 0) then
-                    nom32 = rnom ( jrnom(ic) + id(k) )
-                    if (nom32(1:24) .eq. noml32(1:24) .or. nom32(25: 26) .eq. '&&') then
-                        iadmi = iadm (jiadm(ic) + 2*id(k)-1 )
-                        iadyn = iadm (jiadm(ic) + 2*id(k) )
+                    nom32 = rnom(jrnom(ic)+id(k))
+                    if (nom32(1:24) .eq. noml32(1:24) .or. nom32(25:26) .eq. '&&') then
+                        iadmi = iadm(jiadm(ic)+2*id(k)-1)
+                        iadyn = iadm(jiadm(ic)+2*id(k))
                         call jjlidy(iadyn, iadmi)
-                        iaddi(1) = iadd (jiadd(ic) + 2*id(k)-1 )
-                        iaddi(2) = iadd (jiadd(ic) + 2*id(k) )
+                        iaddi(1) = iadd(jiadd(ic)+2*id(k)-1)
+                        iaddi(2) = iadd(jiadd(ic)+2*id(k))
                         if (iaddi(1) .gt. 0) then
-                            lonoi = lono(jlono(ic)+id(k))*ltyp(jltyp( ic)+id(k) )
+                            lonoi = lono(jlono(ic)+id(k))*ltyp(jltyp(ic)+id(k))
                             call jxlibd(0, id(k), ic, iaddi, lonoi)
-                        endif
+                        end if
                     else
                         id(k) = 0
-                    endif
-                endif
+                    end if
+                end if
             end do
             do k = 1, idnum
                 if (id(k) .gt. 0) then
-                    nom32 = rnom ( jrnom(ic) + id(k) )
+                    nom32 = rnom(jrnom(ic)+id(k))
                     if (nivo .ge. 2) then
                         call utmess('I', 'JEVEUX_07', sk=noml32(1:24))
-                    endif
+                    end if
                     call jjcren(nom32, -2, iret)
                     call jjmzat(ic, id(k))
-                endif
+                end if
             end do
             iadyn = iadm(jiadm(ic)+2*idatco)
             call jjlidy(iadyn, ibacol)
-            iaddi(1) = iadd (jiadd(ic) + 2*idatco-1)
-            iaddi(2) = iadd (jiadd(ic) + 2*idatco )
+            iaddi(1) = iadd(jiadd(ic)+2*idatco-1)
+            iaddi(2) = iadd(jiadd(ic)+2*idatco)
             if (iaddi(1) .gt. 0) then
                 lonoi = lono(jlono(ic)+idatco)*ltyp(jltyp(ic)+idatco)
                 call jxlibd(0, idatco, ic, iaddi, lonoi)
-            endif
+            end if
             if (nivo .ge. 2) then
                 call utmess('I', 'JEVEUX_07', sk=noml32(1:24))
-            endif
+            end if
             call jjcren(noml32(1:24), -2, iret)
             call jjmzat(ic, idatco)
             nomco = '$$$$$$$$$$$$$$$$$$$$$$$$'
         else if (iret .eq. 3) then
-            ixiadm = iszon ( jiszon + ibacol + idiadm )
-            ixiadd = iszon ( jiszon + ibacol + idiadd )
-            ixlong = iszon ( jiszon + ibacol + idlong )
-            ixnom = iszon ( jiszon + ibacol + idnom )
-            ixdeso = iszon ( jiszon + ibacol + iddeso )
-            ixlono = iszon ( jiszon + ibacol + idlono )
-            ixmarq = iszon ( jiszon + ibacol + idmarq )
+            ixiadm = iszon(jiszon+ibacol+idiadm)
+            ixiadd = iszon(jiszon+ibacol+idiadd)
+            ixlong = iszon(jiszon+ibacol+idlong)
+            ixnom = iszon(jiszon+ibacol+idnom)
+            ixdeso = iszon(jiszon+ibacol+iddeso)
+            ixlono = iszon(jiszon+ibacol+idlono)
+            ixmarq = iszon(jiszon+ibacol+idmarq)
 !
 !         DESTRUCTION D''UN OBJET DE COLLECTION CONTIGUE REFUSEE
             ASSERT(ixiadd .gt. 0)
@@ -193,41 +193,41 @@ subroutine jedetr(nomlu)
 !         DESTRUCTION DANS UNE COLLECTION NON NOMMEE REFUSEE
             ASSERT(ixnom .gt. 0)
 !
-            ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
-            iaddi(1) = iszon ( jiszon + ibiadd - 1 + 2*idatoc-1 )
-            iaddi(2) = iszon ( jiszon + ibiadd - 1 + 2*idatoc )
+            ibiadd = iadm(jiadm(ic)+2*ixiadd-1)
+            iaddi(1) = iszon(jiszon+ibiadd-1+2*idatoc-1)
+            iaddi(2) = iszon(jiszon+ibiadd-1+2*idatoc)
             if (iaddi(1) .gt. 0) then
                 if (ixlono .gt. 0) then
                     iblono = iadm(jiadm(ic)+2*ixlono-1)
-                    lonoi = iszon(jiszon+iblono+idatoc-1)* ltyp(jltyp( ic)+ixdeso)
+                    lonoi = iszon(jiszon+iblono+idatoc-1)*ltyp(jltyp(ic)+ixdeso)
                 else
-                    lonoi = lono(jlono(ic)+ixdeso)*ltyp(jltyp(ic)+ ixdeso)
-                endif
+                    lonoi = lono(jlono(ic)+ixdeso)*ltyp(jltyp(ic)+ixdeso)
+                end if
                 call jxlibd(idatco, idatoc, ic, iaddi, lonoi)
-            endif
-            iszon ( jiszon + ibiadd + idatoc - 1 ) = 0
-            ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )
-            iadmar = iszon( jiszon + ibmarq - 1 + 2*idatoc )
+            end if
+            iszon(jiszon+ibiadd+idatoc-1) = 0
+            ibmarq = iadm(jiadm(ic)+2*ixmarq-1)
+            iadmar = iszon(jiszon+ibmarq-1+2*idatoc)
             if (iadmar .ne. 0) then
                 iszon(jiszon+kdesma(1)+iadmar-1) = 0
-            endif
-            ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
-            iadmi = iszon ( jiszon + ibiadm - 1 + 2*idatoc-1 )
-            iadyn = iszon ( jiszon + ibiadm - 1 + 2*idatoc )
+            end if
+            ibiadm = iadm(jiadm(ic)+2*ixiadm-1)
+            iadmi = iszon(jiszon+ibiadm-1+2*idatoc-1)
+            iadyn = iszon(jiszon+ibiadm-1+2*idatoc)
             call jjlidy(iadyn, iadmi)
-            iszon ( jiszon + ibiadm - 1 + 2*idatoc-1 ) = 0
-            iszon ( jiszon + ibiadm - 1 + 2*idatoc ) = 0
+            iszon(jiszon+ibiadm-1+2*idatoc-1) = 0
+            iszon(jiszon+ibiadm-1+2*idatoc) = 0
             if (ixlong .gt. 0) then
-                iblong = iadm ( jiadm(ic) + 2*ixlong-1 )
-                iszon ( jiszon + iblong + idatoc - 1 ) = 0
-            endif
+                iblong = iadm(jiadm(ic)+2*ixlong-1)
+                iszon(jiszon+iblong+idatoc-1) = 0
+            end if
             if (nivo .ge. 2) then
                 call utmess('I', 'JEVEUX_07', sk=noml32)
-            endif
+            end if
             call jjcroc(nomlu(25:32), -3)
             nomoc = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
-        endif
-    endif
+        end if
+    end if
 999 continue
 ! FIN ------------------------------------------------------------------
 end subroutine

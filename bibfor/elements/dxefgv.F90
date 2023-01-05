@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl, effgt)
     integer :: i
     character(len=16) :: opti16
 !
-    opti16=option
+    opti16 = option
 !
     call dxefgm(nomte, opti16, xyzl, pgl, depl, effgt)
 !
@@ -73,21 +73,21 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl, effgt)
             call dxefg2(pgl, sigth)
         else
             call dxefgt(pgl, sigth)
-        endif
+        end if
 ! ---     POINTS DE CALCUL
-    else if (option(8:9).eq.'NO') then
+    else if (option(8:9) .eq. 'NO') then
         if (nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEDKTG3') then
             call dxefn2(nomte, pgl, sigth)
         else
             call dxefnt(nomte, pgl, sigth)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CALCUL DES EFFORTS GENERALISES 'VRAIS'
 ! --- AUX POINTS DE CALCUL
 !     --------------------
     do i = 1, 32
-        effgt(i) = effgt(i) - sigth(i)
+        effgt(i) = effgt(i)-sigth(i)
     end do
 !
 end subroutine

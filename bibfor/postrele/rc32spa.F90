@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
+subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns, &
                    sp, spmeca, instsp)
     implicit none
 #include "asterf_types.h"
@@ -146,13 +146,13 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
             mbp(k) = zr(jcharb-1+k)
         end do
 !
-    endif
+    end if
 !-- On récupère les contraintes unitaires
     if (.not. ze200) then
         if (nmecap .eq. 1 .or. nmecap .eq. 3 .or. npresp .eq. 1) then
             call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
-        endif
-    endif
+        end if
+    end if
 !
 !-- SA partie unitaire (moments et/ou pression)
     do j = 1, 6
@@ -164,12 +164,12 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 sa(j) = sa(j)+(map(k)-mbp(k))*zr(jsigu-1+6*(k-1)+j)
             end do
         end do
-    endif
+    end if
     if (.not. ze200 .and. npresp .eq. 1) then
         do j = 1, 6
             sa(j) = sa(j)+(presap-presbp)*zr(jsigu-1+72+j)
         end do
-    endif
+    end if
 !
 !-- SB partie transitoire
     do j = 1, 6
@@ -181,15 +181,15 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
         tranp = .true.
         call jeveuo(jexnum('&&RC3200.TRANSIT.'//lieu, iocc1), 'L', jtranp)
         do j = 1, 6
-            sb(j) = zr(jtranp+6+j-1) -zr(jtranp+j-1)
-            sbm(j)= zr(jtranp+78+j-1)-zr(jtranp+72+j-1)
+            sb(j) = zr(jtranp+6+j-1)-zr(jtranp+j-1)
+            sbm(j) = zr(jtranp+78+j-1)-zr(jtranp+72+j-1)
         end do
         instpmin = zr(jtranp+86)
         instpmax = zr(jtranp+87)
     else
         instpmin = -1.0
         instpmax = -1.0
-    endif
+    end if
 !
 !-- SC partie unitaire avec interpolation des moments
     do j = 1, 6
@@ -209,7 +209,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 A1(k) = (mbp(k)-map(k))/(tempb-tempa)
                 B1(k) = (map(k)*tempb-mbp(k)*tempa)/(tempb-tempa)
             end do
-        endif
+        end if
 !
         if (tranp) then
             tempmin = zr(jtranp+90)
@@ -217,7 +217,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
             do k = 1, 12
                 mominp(k) = A1(k)*tempmin+B1(k)
                 momaxp(k) = A1(k)*tempmax+B1(k)
-                mij(k)=momaxp(k)-mominp(k)
+                mij(k) = momaxp(k)-mominp(k)
             end do
         else
             call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp)
@@ -228,16 +228,16 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 else
                     mominp(k) = A1(k)*zr(jtemp+1)+B1(k)
                     momaxp(k) = A1(k)*zr(jtemp+1)+B1(k)
-                endif
-                mij(k)=mominp(k)
+                end if
+                mij(k) = mominp(k)
             end do
-        endif
+        end if
         do j = 1, 6
             do k = 1, 12
-                sc(j) = sc(j) + mij(k)*zr(jsigu-1+6*(k-1)+j)
+                sc(j) = sc(j)+mij(k)*zr(jsigu-1+6*(k-1)+j)
             end do
         end do
-    endif
+    end if
 !--------------------------------------------------------------------
 !                  DANS LE CAS D'UNE SITUATION SEULE
 !                          CALCUL DE SN(P,P)
@@ -250,7 +250,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
     if (iocc2 .eq. 0 .or. iocc1 .eq. iocc2) then
 !
         if (ze200) then
-            call rcZ2s0('SP', map, mbp, presap, presbp,&
+            call rcZ2s0('SP', map, mbp, presap, presbp, &
                         ns, s2pp)
             call rctres(sb, tresca)
             sp(1) = s2pp+tresca
@@ -272,13 +272,13 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                     sp(1) = max(sp(1), tresca)
                     call rc32s0b(zr(jspseis), stm, tresca)
                     spmeca(1) = max(spmeca(1), tresca)
-                endif
+                end if
                 if (.not. unitaire) exit
             end do
-        endif
+        end if
 !
-        instsp(1)=instpmin
-        instsp(2)=instpmax
+        instsp(1) = instpmin
+        instsp(2) = instpmax
 !
         call getvtx(' ', 'SOUS_CYCL', scal=sscyc, nbret=n1)
         if (n1 .ne. 0 .and. sscyc .eq. 'OUI') call utmess('A', 'POSTRCCM_56')
@@ -300,8 +300,8 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
         if (.not. ze200) then
             if (nmecaq .eq. 1 .or. nmecaq .eq. 3 .or. npresq .eq. 1) then
                 call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
-            endif
-        endif
+            end if
+        end if
 !
         do k = 1, 12
             maq(k) = 0.d0
@@ -327,7 +327,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 maq(k) = zr(jchara-1+k)
                 mbq(k) = zr(jcharb-1+k)
             end do
-        endif
+        end if
 !
 !
 !-- SA partie unitaire (moments et/ou pression)
@@ -347,7 +347,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                         sa4(j) = sa4(j)+mbp(k)*zr(jsigu-1+6*(k-1)+j)
                     end do
                 end do
-            endif
+            end if
 !
             if (nmecaq .eq. 1) then
                 do j = 1, 6
@@ -358,7 +358,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                         sa4(j) = sa4(j)-maq(k)*zr(jsigu-1+6*(k-1)+j)
                     end do
                 end do
-            endif
+            end if
 !
             if (npresp .eq. 1 .or. npresq .eq. 1) then
                 do j = 1, 6
@@ -367,8 +367,8 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                     sa3(j) = sa3(j)+(presbp-presbq)*zr(jsigu-1+72+j)
                     sa4(j) = sa4(j)+(presbp-presaq)*zr(jsigu-1+72+j)
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !-- SB partie transitoire
         do j = 1, 6
@@ -393,15 +393,15 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
         else
             instqmin = -1.0
             instqmax = -1.0
-        endif
+        end if
 !
         if (tranp) then
             if (tranq) then
                 do j = 1, 6
-                    sb1(j) = zr(jtranp+6+j-1) -zr(jtranq+j-1)
-                    sb2(j) = zr(jtranq+6+j-1) -zr(jtranp+j-1)
-                    sbm1(j) = zr(jtranp+78+j-1) -zr(jtranq+72+j-1)
-                    sbm2(j) = zr(jtranq+78+j-1) -zr(jtranp+72+j-1)
+                    sb1(j) = zr(jtranp+6+j-1)-zr(jtranq+j-1)
+                    sb2(j) = zr(jtranq+6+j-1)-zr(jtranp+j-1)
+                    sbm1(j) = zr(jtranp+78+j-1)-zr(jtranq+72+j-1)
+                    sbm2(j) = zr(jtranq+78+j-1)-zr(jtranp+72+j-1)
                 end do
             else
                 do j = 1, 6
@@ -410,7 +410,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                     sbm1(j) = zr(jtranp+78+j-1)
                     sbm2(j) = -zr(jtranp+72+j-1)
                 end do
-            endif
+            end if
         else
             if (tranq) then
                 do j = 1, 6
@@ -419,8 +419,8 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                     sbm1(j) = -zr(jtranq+72+j-1)
                     sbm2(j) = zr(jtranq+78+j-1)
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 !-- SC partie unitaire avec interpolation des moments
         do j = 1, 6
@@ -441,7 +441,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                     A1(k) = (mbq(k)-maq(k))/(tempb-tempa)
                     B1(k) = (maq(k)*tempb-mbq(k)*tempa)/(tempb-tempa)
                 end do
-            endif
+            end if
 !
             if (tranq) then
                 tempmin = zr(jtranq+90)
@@ -459,19 +459,19 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                     else
                         mominq(k) = A1(k)*zr(jtemp+1)+B1(k)
                         momaxq(k) = A1(k)*zr(jtemp+1)+B1(k)
-                    endif
+                    end if
                 end do
-            endif
-        endif
+            end if
+        end if
 !
         if (nmecaq .eq. 3 .or. nmecap .eq. 3) then
             do j = 1, 6
                 do k = 1, 12
-                    sc1(j) = sc1(j) + (momaxp(k)-mominq(k))*zr(jsigu-1+6*(k-1)+j)
-                    sc2(j) = sc2(j) + (momaxq(k)-mominp(k))*zr(jsigu-1+6*(k-1)+j)
+                    sc1(j) = sc1(j)+(momaxp(k)-mominq(k))*zr(jsigu-1+6*(k-1)+j)
+                    sc2(j) = sc2(j)+(momaxq(k)-mominp(k))*zr(jsigu-1+6*(k-1)+j)
                 end do
             end do
-        endif
+        end if
 !
 ! --------------------------------------------------------------
 !                          CALCUL DE SP(P,Q)
@@ -483,38 +483,38 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
         if (npresq .eq. 1 .or. nmecaq .eq. 1) unitaire = .true.
 !
         if (ze200) then
-            trescapq(1)= -1.d0
-            trescapq(2)= -1.d0
-            tresmepq(1)= -1.d0
-            tresmepq(2)= -1.d0
-            call rcZ2s0('SP', map, mbq, presap, presbq,&
+            trescapq(1) = -1.d0
+            trescapq(2) = -1.d0
+            tresmepq(1) = -1.d0
+            tresmepq(2) = -1.d0
+            call rcZ2s0('SP', map, mbq, presap, presbq, &
                         ns, s2pp)
             if (s2pp .gt. s2(1)) then
                 s2(1) = s2pp
-                call rcZ2s0('SP', mbp, maq, presbp, presaq,&
+                call rcZ2s0('SP', mbp, maq, presbp, presaq, &
                             ns, s2(2))
-            endif
-            call rcZ2s0('SP', map, maq, presap, presaq,&
+            end if
+            call rcZ2s0('SP', map, maq, presap, presaq, &
                         ns, s2pp)
             if (s2pp .gt. s2(1)) then
                 s2(1) = s2pp
-                call rcZ2s0('SP', mbp, mbq, presbp, presbq,&
+                call rcZ2s0('SP', mbp, mbq, presbp, presbq, &
                             ns, s2(2))
-            endif
-            call rcZ2s0('SP', mbp, maq, presbp, presaq,&
+            end if
+            call rcZ2s0('SP', mbp, maq, presbp, presaq, &
                         ns, s2pp)
             if (s2pp .gt. s2(1)) then
                 s2(1) = s2pp
-                call rcZ2s0('SP', map, mbq, presap, presbq,&
+                call rcZ2s0('SP', map, mbq, presap, presbq, &
                             ns, s2(2))
-            endif
-            call rcZ2s0('SP', mbp, mbq, presbp, presbq,&
+            end if
+            call rcZ2s0('SP', mbp, mbq, presbp, presbq, &
                         ns, s2pp)
             if (s2pp .gt. s2(1)) then
                 s2(1) = s2pp
-                call rcZ2s0('SP', map, maq, presap, presaq,&
+                call rcZ2s0('SP', map, maq, presap, presaq, &
                             ns, s2(2))
-            endif
+            end if
 !
             call rctres(sb1, tresca1)
             call rctres(sb2, tresca2)
@@ -529,7 +529,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 instsp(2) = instqmin
                 instsp(3) = instqmax
                 instsp(4) = instpmin
-            endif
+            end if
             if (tresca2 .gt. trescapq(1)) then
                 trescapq(1) = tresca2
                 trescapq(2) = tresca1
@@ -539,17 +539,17 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 instsp(2) = instpmin
                 instsp(3) = instpmax
                 instsp(4) = instqmin
-            endif
+            end if
             sp(1) = s2(1)+trescapq(1)
             sp(2) = s2(2)+trescapq(2)
             spmeca(1) = s2(1)+tresmepq(1)
             spmeca(2) = s2(2)+tresmepq(2)
         else
 !------ si on est en B3200
-            trescapq(1)= -1.d0
-            trescapq(2)= -1.d0
-            tresmepq(1)= -1.d0
-            tresmepq(2)= -1.d0
+            trescapq(1) = -1.d0
+            trescapq(2) = -1.d0
+            tresmepq(1) = -1.d0
+            tresmepq(2) = -1.d0
             do i0 = 1, 2
                 do j = 1, 6
                     st11(j) = sb1(j)+sc1(j)+e0(i0)*sa1(j)
@@ -570,7 +570,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                         stm22(j) = sbm2(j)+sc2(j)+e0(i0)*sa2(j)
                         stm23(j) = sbm2(j)+sc2(j)+e0(i0)*sa3(j)
                         stm24(j) = sbm2(j)+sc2(j)+e0(i0)*sa4(j)
-                    endif
+                    end if
                 end do
 !
 !-------- Calcul du SP sans séisme
@@ -580,13 +580,13 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                         trescapq(1) = tresca
                         call rctres(stm11, tresme1)
                         tresmepq(1) = tresme1
-                    endif
+                    end if
                     call rctres(st21, tresca)
                     if (tresca .gt. trescapq(2)) then
                         trescapq(2) = tresca
                         call rctres(stm21, tresme2)
                         tresmepq(2) = tresme2
-                    endif
+                    end if
 !
                     if (unitaire) then
                         call rctres(st12, tresca)
@@ -594,39 +594,39 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                             trescapq(1) = tresca
                             call rctres(stm12, tresme1)
                             tresmepq(1) = tresme1
-                        endif
+                        end if
                         call rctres(st13, tresca)
                         if (tresca .gt. trescapq(1)) then
                             trescapq(1) = tresca
                             call rctres(stm13, tresme1)
                             tresmepq(1) = tresme1
-                        endif
+                        end if
                         call rctres(st14, tresca)
                         if (tresca .gt. trescapq(1)) then
                             trescapq(1) = tresca
                             call rctres(stm14, tresme1)
                             tresmepq(1) = tresme1
-                        endif
+                        end if
                         call rctres(st22, tresca)
                         if (tresca .gt. trescapq(2)) then
                             trescapq(2) = tresca
                             call rctres(stm22, tresme2)
                             tresmepq(2) = tresme2
-                        endif
+                        end if
                         call rctres(st23, tresca)
                         if (tresca .gt. trescapq(2)) then
                             trescapq(2) = tresca
                             call rctres(stm23, tresme2)
                             tresmepq(2) = tresme2
-                        endif
+                        end if
                         call rctres(st24, tresca)
                         if (tresca .gt. trescapq(2)) then
                             trescapq(2) = tresca
                             call rctres(stm24, tresme2)
                             tresmepq(2) = tresme2
-                        endif
-                    endif
-                endif
+                        end if
+                    end if
+                end if
 !
 !-------- Calcul du SP avec séisme
                 if (ns .ne. 0) then
@@ -635,13 +635,13 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                         trescapq(1) = tresca
                         call rc32s0b(zr(jspseis), stm11, tresme1)
                         tresmepq(1) = tresme1
-                    endif
+                    end if
                     call rc32s0b(zr(jspseis), st21, tresca)
                     if (tresca .gt. trescapq(2)) then
                         trescapq(2) = tresca
                         call rc32s0b(zr(jspseis), stm21, tresme2)
                         tresmepq(2) = tresme2
-                    endif
+                    end if
 !
                     if (unitaire) then
                         call rc32s0b(zr(jspseis), st12, tresca)
@@ -649,39 +649,39 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                             trescapq(1) = tresca
                             call rc32s0b(zr(jspseis), stm12, tresme1)
                             tresmepq(1) = tresme1
-                        endif
+                        end if
                         call rc32s0b(zr(jspseis), st13, tresca)
                         if (tresca .gt. trescapq(1)) then
                             trescapq(1) = tresca
                             call rc32s0b(zr(jspseis), stm13, tresme1)
                             tresmepq(1) = tresme1
-                        endif
+                        end if
                         call rc32s0b(zr(jspseis), st14, tresca)
                         if (tresca .gt. trescapq(1)) then
                             trescapq(1) = tresca
                             call rc32s0b(zr(jspseis), stm14, tresme1)
                             tresmepq(1) = tresme1
-                        endif
+                        end if
                         call rc32s0b(zr(jspseis), st22, tresca)
                         if (tresca .gt. trescapq(2)) then
                             trescapq(2) = tresca
                             call rc32s0b(zr(jspseis), stm22, tresme2)
                             tresmepq(2) = tresme2
-                        endif
+                        end if
                         call rc32s0b(zr(jspseis), st23, tresca)
                         if (tresca .gt. trescapq(2)) then
                             trescapq(2) = tresca
                             call rc32s0b(zr(jspseis), stm23, tresme2)
                             tresmepq(2) = tresme2
-                        endif
+                        end if
                         call rc32s0b(zr(jspseis), st24, tresca)
                         if (tresca .gt. trescapq(2)) then
                             trescapq(2) = tresca
                             call rc32s0b(zr(jspseis), stm24, tresme2)
                             tresmepq(2) = tresme2
-                        endif
-                    endif
-                endif
+                        end if
+                    end if
+                end if
 !
                 if (.not. unitaire) exit
             end do
@@ -694,7 +694,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 instsp(2) = instqmin
                 instsp(3) = instqmax
                 instsp(4) = instpmin
-            endif
+            end if
             if (trescapq(2) .gt. sp(1)) then
                 sp(1) = trescapq(2)
                 sp(2) = trescapq(1)
@@ -704,10 +704,10 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns,&
                 instsp(2) = instpmin
                 instsp(3) = instpmax
                 instsp(4) = instqmin
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
     call jedema()
 !

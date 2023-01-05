@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
 !
 !
     integer :: ndlmax
-    parameter   (ndlmax = 30)
+    parameter(ndlmax=30)
     integer :: jdecal, nbddl
     real(kind=8) :: xmu, jeuini
     integer :: iliai
@@ -93,7 +93,7 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
         if (ndim .eq. 3) then
             call jeveuo(jexnum(fro1, iliai+nbliai), 'E', jfro12)
             call r8inir(ndlmax, 0.d0, zr(jfro12), 1)
-        endif
+        end if
 !
 ! ----- LA LIAISON EST-ELLE ACTIVE ?
 !
@@ -103,20 +103,20 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
 !
         if (jeuini .lt. r8prem()) then
             jdecal = zi(japptr+iliai-1)
-            nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
+            nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
             xmu = zr(jmu+3*nbliai+iliai-1)
-            call daxpy(nbddl, xmu, zr(japcof+jdecal), 1, zr(jfro11),&
+            call daxpy(nbddl, xmu, zr(japcof+jdecal), 1, zr(jfro11), &
                        1)
             if (ndim .eq. 3) then
-                call daxpy(nbddl, xmu, zr(japcof+jdecal+ndlmax*nesmax), 1, zr(jfro12),&
+                call daxpy(nbddl, xmu, zr(japcof+jdecal+ndlmax*nesmax), 1, zr(jfro12), &
                            1)
-            endif
-        endif
+            end if
+        end if
 !
         call jelibe(jexnum(fro1, iliai))
         if (ndim .eq. 3) then
             call jelibe(jexnum(fro1, iliai+nbliai))
-        endif
+        end if
     end do
 !
     call jedema()

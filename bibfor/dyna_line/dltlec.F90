@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dltlec(result, modele, numedd, materi, mate,&
-                  carele, imat, masse, rigid,&
-                  amort, lamort, nchar, nveca, lischa,&
-                  charge, infoch, fomult, iaadve, ialifo,&
-                  nondp, iondp, solveu, iinteg, t0,&
+subroutine dltlec(result, modele, numedd, materi, mate, &
+                  carele, imat, masse, rigid, &
+                  amort, lamort, nchar, nveca, lischa, &
+                  charge, infoch, fomult, iaadve, ialifo, &
+                  nondp, iondp, solveu, iinteg, t0, &
                   nume, numrep, ds_inout)
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -143,7 +143,7 @@ implicit none
     call getvid(' ', 'MATR_AMOR', scal=amort, nbret=na)
     if (na .le. 0) then
         lamort = .false.
-    endif
+    end if
     call mtdscr(rigid)
     call jeveuo(rigid//'           .&INT', 'E', imat(1))
     call mtdscr(masse)
@@ -151,7 +151,7 @@ implicit none
     if (lamort) then
         call mtdscr(amort)
         call jeveuo(amort//'           .&INT', 'E', imat(3))
-    endif
+    end if
 !
 !====
 ! 3. LE CHARGEMENT
@@ -168,19 +168,19 @@ implicit none
 !
         nveca = 0
         nchar = 0
-        do ivec = 1 , nvect
+        do ivec = 1, nvect
             call getvid('EXCIT', 'VECT_ASSE', iocc=ivec, scal=channo, nbret=iaux)
             if (iaux .eq. 1) then
-                nveca = nveca + 1
-            endif
+                nveca = nveca+1
+            end if
             call getvid('EXCIT', 'CHARGE', iocc=ivec, scal=channo, nbret=iaux)
             if (iaux .eq. 1) then
-                nchar = nchar + 1
-            endif
+                nchar = nchar+1
+            end if
             call gettco(channo, loadType)
             if (loadType .eq. 'CHAR_CINE_MECA') then
-                nbCine = nbCine + 1
-            endif
+                nbCine = nbCine+1
+            end if
         end do
 !
 ! 3.1.2. ==> LISTE DE VECT_ASSE DECRIVANT LE CHARGEMENT
@@ -192,32 +192,32 @@ implicit none
 !
             indic = 0
             do ivec = 1, nveca
-                indic = indic + 1
+                indic = indic+1
 10              continue
                 call getvid('EXCIT', 'VECT_ASSE', iocc=indic, scal=channo, nbret=iaux)
                 if (iaux .eq. 0) then
-                    indic = indic + 1
+                    indic = indic+1
                     goto 10
-                endif
+                end if
                 call chpver('F', channo, 'NOEU', 'DEPL_R', ibid)
                 call jeveuo(channo//'.VALE', 'L', zi(iaadve+ivec-1))
-                call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=zk24( ialifo+ivec-1),&
+                call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=zk24(ialifo+ivec-1), &
                             nbret=iaux)
                 if (iaux .eq. 0) then
-                    call getvid('EXCIT', 'ACCE', iocc=indic, scal=zk24( ialifo+ivec-1),&
+                    call getvid('EXCIT', 'ACCE', iocc=indic, scal=zk24(ialifo+ivec-1), &
                                 nbret=iaux)
                     if (iaux .eq. 0) then
                         rval = 1.d0
                         call getvr8('EXCIT', 'COEF_MULT', iocc=indic, scal=rval, nbret=iaux)
                         zk24(ialifo+ivec-1) = '&&COMDLT.F_'
-                        call codent(ivec, 'G', zk24(ialifo+ivec-1)(12: 19))
+                        call codent(ivec, 'G', zk24(ialifo+ivec-1) (12:19))
                         call focste(zk24(ialifo+ivec-1), 'INST', rval, 'V')
-                    endif
-                endif
+                    end if
+                end if
             end do
 !
 !
-        endif
+        end if
 !
 ! 3.1.3. ==> LISTE DES CHARGES
 !
@@ -225,20 +225,20 @@ implicit none
             call getvid(' ', 'MODELE', scal=k8b, nbret=iaux)
             if (iaux .eq. 0) then
                 call utmess('F', 'DYNALINE1_24')
-            endif
-            call nmdome(modele, mater, mate, carele, lischa, blan8,&
+            end if
+            call nmdome(modele, mater, mate, carele, lischa, blan8, &
                         ibid)
             fomult = lischa//'.FCHA'
-        endif
+        end if
 !
 ! 3.1.4. ==> PAS DE CHARGES
 !
     else
 !
-        nveca=0
-        nchar=0
+        nveca = 0
+        nchar = 0
 !
-    endif
+    end if
 !
 ! 3.2. ==> TEST DE LA PRESENCE DE CHARGES DE TYPE 'ONDE_PLANE'
 !
@@ -248,16 +248,16 @@ implicit none
         call jeveuo(charge, 'L', ialich)
         do ich = 1, nchar
             if (zi(jinf+nchar+ich) .eq. 6) then
-                nondp = nondp + 1
-            endif
+                nondp = nondp+1
+            end if
         end do
-    endif
+    end if
 !
     if (nveca .ne. 0 .and. nchar .ne. 0) then
         if (nchar .ne. nondp .and. nchar .ne. nbCine) then
             call utmess('F', 'DYNALINE1_22')
-        endif
-    endif
+        end if
+    end if
 !
 ! 3.3. ==> RECUPERATION DES DONNEES DE CHARGEMENT PAR ONDE PLANE
 !
@@ -268,11 +268,11 @@ implicit none
         nond = 0
         do ich = 1, nchar
             if (zi(jinf+nchar+ich) .eq. 6) then
-                nond = nond + 1
-                zk8(iondp+nond-1) = zk24(ialich+ich-1)(1:8)
-            endif
+                nond = nond+1
+                zk8(iondp+nond-1) = zk24(ialich+ich-1) (1:8)
+            end if
         end do
-    endif
+    end if
 !
 !
 !====
@@ -285,21 +285,21 @@ implicit none
     call dismoi('NOM_MODELE', rigid, 'MATR_ASSE', repk=modele)
     call dismoi('CARA_ELEM', rigid, 'MATR_ASSE', repk=carael)
 
-    if((nchar .ne. 0).and.(len_trim(carele) .ne. 0)) then
+    if ((nchar .ne. 0) .and. (len_trim(carele) .ne. 0)) then
         !- S'ASSURER DE LA COHRENCE ENTRE LES CARA_ELEM RECUPEREES
-        ASSERT(carael(1:8).eq.carele(1:8))
+        ASSERT(carael(1:8) .eq. carele(1:8))
     else
         carele = carael(1:8)//'               '
-    endif
+    end if
 
     materi = ' '
-    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=materi, arret = 'C', ier = ierc)
+    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=materi, arret='C', ier=ierc)
     if (ierc .ne. 0) then
         materi = ' '
-    endif
+    end if
     if (materi .ne. ' ') then
-        call rcmfmc(materi, mate, l_ther_ = ASTER_FALSE)
-    endif
+        call rcmfmc(materi, mate, l_ther_=ASTER_FALSE)
+    end if
 !
 ! 4.2. ==> LECTURE DES PARAMETRES DU MOT CLE FACTEUR SOLVEUR ---
 !
@@ -313,17 +313,17 @@ implicit none
         iinteg = 1
     else
         if (method .eq. 'WILSON') then
-            iinteg=2
+            iinteg = 2
         else
             if (method .eq. 'DIFF_CENTRE') then
-                iinteg=3
+                iinteg = 3
             else
                 if (method .eq. 'ADAPT_ORDRE2') then
-                    iinteg=4
-                endif
-            endif
-        endif
-    endif
+                    iinteg = 4
+                end if
+            end if
+        end if
+    end if
 !
 ! 4.4. ==> L'INSTANT INITIAL ET SON NUMERO D'ORDRE SI REPRISE
 !

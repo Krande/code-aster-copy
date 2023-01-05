@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine merit1(modele, nchar, lchar, mate, mateco,&
-                  cara, time, matel, nh, prefch,&
+subroutine merit1(modele, nchar, lchar, mate, mateco, &
+                  cara, time, matel, nh, prefch, &
                   numero, base)
     implicit none
 !
@@ -95,8 +95,8 @@ subroutine merit1(modele, nchar, lchar, mate, mateco,&
     if (iret .gt. 0) then
         call jedetr(matel//'.RERR')
         call jedetr(matel//'.RELR')
-    endif
-    call memare('V', matel, modele, mate, cara,&
+    end if
+    call memare('V', matel, modele, mate, cara, &
                 'RIGI_THER')
 !
     lpaout(1) = 'PMATTTR'
@@ -117,13 +117,13 @@ subroutine merit1(modele, nchar, lchar, mate, mateco,&
         lchin(6) = chcara(12)
         ligrmo = modele//'.MODELE'
         option = 'RIGI_THER'
-        ilires=ilires+1
+        ilires = ilires+1
         call codent(ilires+numero, 'D0', lchout(1) (12:14))
-        call calcul('S', option, ligrmo, 6, lchin,&
-                    lpain, 1, lchout, lpaout, base,&
+        call calcul('S', option, ligrmo, 6, lchin, &
+                    lpain, 1, lchout, lpaout, base, &
                     'OUI')
         call reajre(matel, lchout(1), base)
-    endif
+    end if
     if (lchar(1) (1:8) .ne. '        ') then
         do icha = 1, nchar
             lpain(1) = 'PDDLMUR'
@@ -131,17 +131,17 @@ subroutine merit1(modele, nchar, lchar, mate, mateco,&
             call exisd('CHAMP_GD', lcharz//'.CHTH.CMULT', iret)
             if (iret .eq. 0) goto 10
             lchin(1) = lchar(icha)//'.CHTH.CMULT     '
-            ilires=ilires+1
+            ilires = ilires+1
             call codent(ilires+numero, 'D0', lchout(1) (12:14))
             ligrch = lchar(icha)//'.CHTH.LIGRE'
             option = 'THER_DDLM_R'
-            call calcul('S', option, ligrch, 1, lchin,&
-                        lpain, 1, lchout, lpaout, base,&
+            call calcul('S', option, ligrch, 1, lchin, &
+                        lpain, 1, lchout, lpaout, base, &
                         'OUI')
             call reajre(matel, lchout(1), base)
- 10         continue
+10          continue
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

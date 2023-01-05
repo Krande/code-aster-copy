@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lglind(nbmat, mater, parame, ge, q,&
-                  vecn, deps, devg, devgii, traceg,&
+subroutine lglind(nbmat, mater, parame, ge, q, &
+                  vecn, deps, devg, devgii, traceg, &
                   dy)
 !
     implicit none
@@ -54,21 +54,21 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( mun    = -1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
-    parameter       ( dix    = 10.0d0  )
+    parameter(mun=-1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(dix=10.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU -----------------------------
 ! ======================================================================
-    mu = mater( 4,1)
-    k = mater( 5,1)
-    sigc = mater( 9,2)
-    gamcjs = mater(12,2)
+    mu = mater(4, 1)
+    k = mater(5, 1)
+    sigc = mater(9, 2)
+    gamcjs = mater(12, 2)
 ! ======================================================================
 ! --- CALCUL DE H0, CALCUL INTERMEDIAIRE -------------------------------
 ! ======================================================================
@@ -80,12 +80,12 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
 ! ======================================================================
 ! --- CALCUL DE DFDS ---------------------------------------------------
 ! ======================================================================
-    call drfdrs(q, parame, h0, sigc, ge,&
+    call drfdrs(q, parame, h0, sigc, ge, &
                 duds, dfds)
 ! ======================================================================
 ! --- CALCUL DE G ------------------------------------------------------
 ! ======================================================================
-    call calcg(dfds, vecn, g, devg, traceg,&
+    call calcg(dfds, vecn, g, devg, traceg, &
                devgii)
 ! ======================================================================
 ! --- CALCUL DU PREMIER INCREMENT DE GAMP ------------------------------
@@ -94,7 +94,7 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
     do ii = 1, ndt
         if (abs(deps(ii)) .gt. gammax) gammax = abs(deps(ii))
     end do
-    dgamp = gammax / dix
+    dgamp = gammax/dix
 ! ======================================================================
 ! --- CALCUL DU PREMIER DELTA ------------------------------------------
 ! ======================================================================
@@ -103,24 +103,24 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
 ! --- CALCUL DU PREMIER INCREMENT DU DEVIATEUR DES CONTRAINTES ---------
 ! ======================================================================
     do ii = 1, ndt
-        ds(ii) = mun * deux * mu * ddelta * devg(ii)
+        ds(ii) = mun*deux*mu*ddelta*devg(ii)
     end do
 ! ======================================================================
 ! --- CALCUL DU PREMIER INCREMENT DU PREMIER INVARIANT DES CONTRAINTES -
 ! ======================================================================
-    dinv = mun * trois * k * ddelta * traceg
+    dinv = mun*trois*k*ddelta*traceg
 ! ======================================================================
 ! --- CALCUL DU PREMIER INCREMENT DE EVP -------------------------------
 ! ======================================================================
-    devp = ddelta * traceg
+    devp = ddelta*traceg
 ! ======================================================================
 ! --- STOCKAGE ---------------------------------------------------------
 ! ======================================================================
     dy(1:ndt) = ds(1:ndt)
-    dy(ndt+1)=dinv
-    dy(ndt+2)=dgamp
-    dy(ndt+3)=devp
-    dy(ndt+4)=ddelta
+    dy(ndt+1) = dinv
+    dy(ndt+2) = dgamp
+    dy(ndt+3) = devp
+    dy(ndt+4) = ddelta
 ! ======================================================================
     call jedema()
 ! ======================================================================

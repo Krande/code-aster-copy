@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
+subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
                   typres, chpres, basez)
 !     ------------------------------------------------------------------
 !     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
@@ -78,44 +78,44 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 !-----------------------------------------------------------------------
 ! --- PHASE D'INITIALISATION
 !-----------------------------------------------------------------------
-    type=typres
-    ch19=nomch(1)
+    type = typres
+    ch19 = nomch(1)
 !
-    if(present(basez)) then
+    if (present(basez)) then
         base = basez
     else
         base = 'V'
     end if
 !
 ! CHAM_NO OU CHAM_ELEM ?
-    k24b=ch19//'.DESC'
+    k24b = ch19//'.DESC'
     call jeexin(k24b, ibid)
     if (ibid .gt. 0) then
-        k24b=ch19//'.DESC'
+        k24b = ch19//'.DESC'
         call jelira(k24b, 'DOCU', cval=docu)
     else
-        k24b=ch19//'.CELD'
+        k24b = ch19//'.CELD'
         call jelira(k24b, 'DOCU', cval=docu)
-    endif
+    end if
 !
 !
 ! INIT. DE BASE
     if (docu .eq. 'CHNO') then
-        refe='.REFE'
-        desc='.DESC'
-        vale='.VALE'
-    else if (docu.eq.'CHML') then
-        refe='.CELK'
-        desc='.CELD'
-        vale='.CELV'
+        refe = '.REFE'
+        desc = '.DESC'
+        vale = '.VALE'
+    else if (docu .eq. 'CHML') then
+        refe = '.CELK'
+        desc = '.CELD'
+        vale = '.CELV'
     else
         call utmess('F', 'UTILITAI_21')
-    endif
+    end if
 !
 !
 !
 !   PREMIER CHAM_NO A CONCATENER
-    ch19=nomch(1)
+    ch19 = nomch(1)
 !
 !   OBTENTION DES ADRESSES ET DES TAILLES DES .DESC, .REFE ET .VALE
 !   DU PREMIER CHAM_NO A CONCATENER. ON SUPPOSE QUE
@@ -127,7 +127,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     call jeveuo(ch19//refe, 'L', jrefe)
 !
 !   CONSTRUCTION D'UN CHAM_GD RESULTAT SUR LE MODELE DE NOMCH(1)
-    ch19r=chpres
+    ch19r = chpres
     call jeexin(ch19r//vale, iret)
 !
     if (iret .eq. 0) then
@@ -141,19 +141,19 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         call jelira(ch19r//refe, 'LONMAX', nbref1)
         call jelira(ch19r//vale, 'LONMAX', nbval1)
 !       VERIFICATION DE LA COHERENCE DES DIMENSIONS
-        ASSERT(nbdes1.eq.nbdesc)
-        ASSERT(nbref1.eq.nbrefe)
-        ASSERT(nbval1.eq.nbvale)
-    endif
+        ASSERT(nbdes1 .eq. nbdesc)
+        ASSERT(nbref1 .eq. nbrefe)
+        ASSERT(nbval1 .eq. nbvale)
+    end if
 !
     call jeecra(ch19r//desc, 'DOCU', cval=docu)
 !   RECOPIE DU .DESC ET DU .REFE DU PREMIER CHAM_NO DE LA LISTE
 !   DANS CEUX DU CHAM_NO SOLUTION
     do i = 0, nbdesc-1
-        zi(kdesc+i)=zi(jdesc+i)
+        zi(kdesc+i) = zi(jdesc+i)
     end do
     do i = 0, nbrefe-1
-        zk24(krefe+i)=zk24(jrefe+i)
+        zk24(krefe+i) = zk24(jrefe+i)
     end do
 !
 !   CHANGER LA GRANDEUR
@@ -166,69 +166,69 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 !-----------------------------------------------------------------------
 ! --- BOUCLE SUR LES CHAM_GDS A COMBINER
 !-----------------------------------------------------------------------
-    iconst=1
+    iconst = 1
     do icmb = 1, nbcmb
 !
 !       CHAM_NO A CONCATENER
-        ch19=nomch(icmb)
+        ch19 = nomch(icmb)
 !
         call jeveuo(ch19//vale, 'L', jvale)
         if (typres(1:1) .eq. 'R') then
-            if (typech(icmb)(1:1) .eq. 'R') then
+            if (typech(icmb) (1:1) .eq. 'R') then
                 do ival = 0, nbvale-1
-                    zr(lvale+ival)=zr(lvale+ival)+ const(&
-                            iconst)*zr(jvale+ival)
+                    zr(lvale+ival) = zr(lvale+ival)+const( &
+                                     iconst)*zr(jvale+ival)
                 end do
             else
-                if (typcst(icmb)(1:1) .eq. 'R') then
+                if (typcst(icmb) (1:1) .eq. 'R') then
                     do ival = 0, nbvale-1
-                        zr(lvale+ival)=zr(lvale+ival)+&
-                                const(iconst)*dble(zc(jvale+ival))
+                        zr(lvale+ival) = zr(lvale+ival)+ &
+                                         const(iconst)*dble(zc(jvale+ival))
                     end do
-                else if (typcst(icmb)(1:1).eq.'I') then
+                else if (typcst(icmb) (1:1) .eq. 'I') then
                     do ival = 0, nbvale-1
-                        zr(lvale+ival)=zr(lvale+ival)+&
-                                const(iconst)*dimag(zc(jvale+ival))
+                        zr(lvale+ival) = zr(lvale+ival)+ &
+                                         const(iconst)*dimag(zc(jvale+ival))
                     end do
                 else
-                    type=typcst(icmb)(1:1)
+                    type = typcst(icmb) (1:1)
                     call utmess('F', 'PREPOST3_6', sk=type)
-                endif
-            endif
+                end if
+            end if
         else
-            if (typech(icmb)(1:1) .eq. 'R') then
-                if (typcst(icmb)(1:1) .eq. 'R') then
+            if (typech(icmb) (1:1) .eq. 'R') then
+                if (typcst(icmb) (1:1) .eq. 'R') then
                     do ival = 0, nbvale-1
-                        zc(lvale+ival)=zc(lvale+ival)+&
-                                const(iconst)*zr(jvale+ival)
+                        zc(lvale+ival) = zc(lvale+ival)+ &
+                                         const(iconst)*zr(jvale+ival)
                     end do
-                else if (typcst(icmb)(1:1).eq.'C') then
-                    c8cst=dcmplx(const(iconst),const(iconst+1)&
-                            )
+                else if (typcst(icmb) (1:1) .eq. 'C') then
+                    c8cst = dcmplx(const(iconst), const(iconst+1) &
+                                   )
                     do ival = 0, nbvale-1
-                        zc(lvale+ival)=zc(lvale+ival)+c8cst*&
-                                zr(jvale+ival)
+                        zc(lvale+ival) = zc(lvale+ival)+c8cst* &
+                                         zr(jvale+ival)
                     end do
-                endif
+                end if
             else
-                if (typcst(icmb)(1:1) .eq. 'R') then
+                if (typcst(icmb) (1:1) .eq. 'R') then
                     do ival = 0, nbvale-1
-                        zc(lvale+ival)=zc(lvale+ival)+&
-                                const(iconst)*zc(jvale+ival)
+                        zc(lvale+ival) = zc(lvale+ival)+ &
+                                         const(iconst)*zc(jvale+ival)
                     end do
-                else if (typcst(icmb)(:1).eq.'C') then
-                    c8cst=dcmplx(const(iconst),const(iconst+1)&
-                            )
+                else if (typcst(icmb) (:1) .eq. 'C') then
+                    c8cst = dcmplx(const(iconst), const(iconst+1) &
+                                   )
                     do ival = 0, nbvale-1
-                        zc(lvale+ival)=zc(lvale+ival)+c8cst*&
-                                zc(jvale+ival)
+                        zc(lvale+ival) = zc(lvale+ival)+c8cst* &
+                                         zc(jvale+ival)
                     end do
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
         call jelibe(ch19//vale)
-        iconst=iconst+1
-        if (typcst(icmb)(1:1) .eq. 'C') iconst=iconst+1
+        iconst = iconst+1
+        if (typcst(icmb) (1:1) .eq. 'C') iconst = iconst+1
     end do
 !
 !
@@ -236,13 +236,13 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     call jeveuo(ch19r//vale, 'E', kvale)
     if (type(1:1) .eq. 'R') then
         do ival = 0, nbvale-1
-            zr(kvale+ival)=zr(lvale+ival)
+            zr(kvale+ival) = zr(lvale+ival)
         end do
-    else if (type(1:1).eq.'C') then
+    else if (type(1:1) .eq. 'C') then
         do ival = 0, nbvale-1
-            zc(kvale+ival)=zc(lvale+ival)
+            zc(kvale+ival) = zc(lvale+ival)
         end do
-    endif
+    end if
 !
     call jedetr('&&VTCMBL.VALE')
     call jelibe(ch19r//vale)

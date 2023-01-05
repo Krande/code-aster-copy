@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_ztrexc(compq, n, t, ldt, q,&
+subroutine ar_ztrexc(compq, n, t, ldt, q, &
                      ldq, ifst, ilst, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
@@ -101,7 +101,7 @@ subroutine ar_ztrexc(compq, n, t, ldt, q,&
     integer :: ifst, ilst, info, ldq, ldt, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    complex(kind=8) :: q( ldq, * ), t( ldt, * )
+    complex(kind=8) :: q(ldq, *), t(ldt, *)
 !     ..
 !
 !     .. LOCAL SCALARS ..
@@ -119,24 +119,24 @@ subroutine ar_ztrexc(compq, n, t, ldt, q,&
 !     DECODE AND TEST THE INPUT PARAMETERS.
 !
     info = 0
-    wantq = lsame( compq, 'V' )
-    if (.not.lsame( compq, 'N' ) .and. .not.wantq) then
+    wantq = lsame(compq, 'V')
+    if (.not. lsame(compq, 'N') .and. .not. wantq) then
         info = -1
-    else if (n.lt.0) then
+    else if (n .lt. 0) then
         info = -2
-    else if (ldt.lt.max( 1, n )) then
+    else if (ldt .lt. max(1, n)) then
         info = -4
-    else if (ldq.lt.1 .or. ( wantq .and. ldq.lt.max( 1, n ) )) then
+    else if (ldq .lt. 1 .or. (wantq .and. ldq .lt. max(1, n))) then
         info = -6
-    else if (ifst.lt.1 .or. ifst.gt.n) then
+    else if (ifst .lt. 1 .or. ifst .gt. n) then
         info = -7
-    else if (ilst.lt.1 .or. ilst.gt.n) then
+    else if (ilst .lt. 1 .or. ilst .gt. n) then
         info = -8
-    endif
+    end if
     if (info .ne. 0) then
         call xerbla('ZTREXC', -info)
         goto 1000
-    endif
+    end if
 !
 !     QUICK RETURN IF POSSIBLE
 !
@@ -156,36 +156,36 @@ subroutine ar_ztrexc(compq, n, t, ldt, q,&
         m1 = -1
         m2 = 0
         m3 = -1
-    endif
+    end if
 !
-    do k = ifst + m1, ilst + m2, m3
+    do k = ifst+m1, ilst+m2, m3
 !
 !        INTERCHANGE THE K-TH AND (K+1)-TH DIAGONAL ELEMENTS.
 !
-        t11 = t( k, k )
-        t22 = t( k+1, k+1 )
+        t11 = t(k, k)
+        t22 = t(k+1, k+1)
 !
 !        DETERMINE THE TRANSFORMATION TO PERFORM THE INTERCHANGE.
 !
-        call ar_zlartg(t( k, k+1 ), t22-t11, cs, sn, temp)
+        call ar_zlartg(t(k, k+1), t22-t11, cs, sn, temp)
 !
 !        APPLY TRANSFORMATION TO THE MATRIX T.
 !
-        if (k+2 .le. n) call zrot(n-k-1, t( k, k+2 ), ldt, t( k+1, k+ 2 ), ldt,&
+        if (k+2 .le. n) call zrot(n-k-1, t(k, k+2), ldt, t(k+1, k+2), ldt, &
                                   cs, sn)
-        call zrot(k-1, t( 1, k ), 1, t( 1, k+1 ), 1,&
-                  cs, dconjg( sn ))
+        call zrot(k-1, t(1, k), 1, t(1, k+1), 1, &
+                  cs, dconjg(sn))
 !
-        t( k, k ) = t22
-        t( k+1, k+1 ) = t11
+        t(k, k) = t22
+        t(k+1, k+1) = t11
 !
         if (wantq) then
 !
 !           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 !
-            call zrot(n, q( 1, k ), 1, q( 1, k+1 ), 1,&
-                      cs, dconjg( sn ))
-        endif
+            call zrot(n, q(1, k), 1, q(1, k+1), 1, &
+                      cs, dconjg(sn))
+        end if
 !
     end do
 !

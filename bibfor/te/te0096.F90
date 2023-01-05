@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine te0096(option, nomte)
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -94,7 +94,7 @@ implicit none
 ! INITIALISATIONS
 ! =====================================================================
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     epsi = r8prem()
@@ -103,24 +103,24 @@ implicit none
     cp = .false.
     epsini = .false.
     typmod(2) = ' '
-    famil='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    famil = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
 ! - Initialisation of behaviour datastructure
 !
     call behaviourInit(BEHinteg)
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
         axi = .true.
-    else if (lteatt('C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN', 'OUI')) then
         typmod(1) = 'C_PLAN'
         cp = .true.
-    else if (lteatt('D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
-    endif
+    end if
 !
 ! NOMBRE DE COMPOSANTES DES TENSEURS
     ncmp = 2*ndim
@@ -141,7 +141,7 @@ implicit none
     do i = 1, nno
         thet = 0.d0
         do j = 1, ndim
-            thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
+            thet = thet+abs(zr(ithet+ndim*(i-1)+j-1))
         end do
         if (thet .lt. epsi) compt = compt+1
     end do
@@ -157,12 +157,12 @@ implicit none
     call jevech('PCOMPOR', 'L', icomp)
     matcod = zi(imate)
     do i = 1, 4
-        compor(i)= zk16(icomp+i-1)
+        compor(i) = zk16(icomp+i-1)
     end do
 !
 ! RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
 ! CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
-    if (option .eq. 'CALC_G_XFEM_F' ) then
+    if (option .eq. 'CALC_G_XFEM_F') then
         fonc = .true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -177,22 +177,22 @@ implicit none
         call jevech('PFRVOLU', 'L', iforc)
         call tecach('ONO', 'PEPSINR', 'L', iret, iad=iepsr)
         if (iepsr .ne. 0) epsini = .true.
-    endif
+    end if
 !
 !
 !   LOI DE COMPORTEMENT
-    grand = compor(3).eq.'GROT_GDEP'
-    incr = compor(4)(1:9).eq.'COMP_INCR'
+    grand = compor(3) .eq. 'GROT_GDEP'
+    incr = compor(4) (1:9) .eq. 'COMP_INCR'
     if (incr) then
         call jevech('PCONTRR', 'L', isigm)
-    endif
+    end if
     call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
     if (option .eq. 'CALC_G_XFEM' .or. option .eq. 'CALC_G_XFEM_F') then
         call tecach('ONO', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONO', 'PACCELE', 'L', iret, iad=iaccel)
-    endif
+    end if
 !
     do i = 1, ncmp*nno
         epsino(i) = 0.d0
@@ -203,9 +203,9 @@ implicit none
 ! =====================================================================
 !
 ! ON NE PEUT AVOIR SIMULTANEMENT PRE-DEFORMATIONS ET CONTRAINTES INIT.
-    if ((isigi.ne.0) .and. epsini) then
+    if ((isigi .ne. 0) .and. epsini) then
         call utmess('F', 'RUPTURE1_20')
-    endif
+    end if
 !
 ! =====================================================================
 ! RECUPERATION DES CHARGES ET PRE-DEFORMATIONS (CHARGEMENT PRE-EPSI)
@@ -219,16 +219,16 @@ implicit none
             end do
             do j = 1, ndim
                 kk = ndim*i1+j
-                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar,&
-                            fno( kk), ier)
+                call fointe('FM', zk8(iforf+j-1), 3, nompar, valpar, &
+                            fno(kk), ier)
             end do
             if (epsini) then
                 do j = 1, ncmp
                     kk = ncmp*i1+j
-                    call fointe('FM', zk8(iepsf+j-1), 3, nompar, valpar,&
+                    call fointe('FM', zk8(iepsf+j-1), 3, nompar, valpar, &
                                 epsino(kk), ier)
                 end do
-            endif
+            end if
         end do
     else
         do i = 1, nno
@@ -236,7 +236,7 @@ implicit none
             ij = ndim*i1
             ij1 = iforc+ij-1
             do j = 1, ndim
-                fno(ij+j)= zr(ij1+j)
+                fno(ij+j) = zr(ij1+j)
             end do
             if (epsini) then
                 ij = ncmp*i1
@@ -245,51 +245,51 @@ implicit none
                     epsino(ij+j) = zr(ij1+j)
                 end do
                 epsino(ij+4) = zr(ij1+4)*rac2
-            endif
+            end if
         end do
-    endif
+    end if
 !
     if (ivites .ne. 0) then
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
-        call rcvalb(famil, kpg, spt, poum, matcod,&
-                    ' ', phenom, 1, ' ', [rbid],&
+        call rcvalb(famil, kpg, spt, poum, matcod, &
+                    ' ', phenom, 1, ' ', [rbid], &
                     1, 'RHO', rho, icodre(1), 1)
-        call rcvalb(famil, kpg, spt, poum, matcod,&
-                    ' ', phenom, 1, ' ', [rbid],&
+        call rcvalb(famil, kpg, spt, poum, matcod, &
+                    ' ', phenom, 1, ' ', [rbid], &
                     1, 'NU', nu(1), icodre(1), 1)
-    endif
+    end if
 !
 ! CORRECTION DES FORCES VOLUMIQUES
-    if ((ipesa.ne.0) .or. (irota.ne.0)) then
+    if ((ipesa .ne. 0) .or. (irota .ne. 0)) then
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
-        call rcvalb(famil, kpg, spt, poum, matcod,&
-                    ' ', phenom, 1, ' ', [rbid],&
+        call rcvalb(famil, kpg, spt, poum, matcod, &
+                    ' ', phenom, 1, ' ', [rbid], &
                     1, 'RHO', rho, icodre(1), 1)
         if (ipesa .ne. 0) then
             do i = 1, nno
                 ij = ndim*(i-1)
                 do j = 1, ndim
-                    kk = ij + j
-                    fno(kk)=fno(kk)+rho(1)*zr(ipesa)*zr(ipesa+j)
+                    kk = ij+j
+                    fno(kk) = fno(kk)+rho(1)*zr(ipesa)*zr(ipesa+j)
                 end do
             end do
-        endif
+        end if
         if (irota .ne. 0) then
             om = zr(irota)
             do i = 1, nno
                 omo = 0.d0
                 ij = ndim*(i-1)
                 do j = 1, ndim
-                    omo = omo + zr(irota+j)* zr(igeom+ij+j-1)
+                    omo = omo+zr(irota+j)*zr(igeom+ij+j-1)
                 end do
                 do j = 1, ndim
-                    kk = ij + j
-                    fno(kk)=fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr(&
-                    irota+j))
+                    kk = ij+j
+                    fno(kk) = fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr( &
+                                                    irota+j))
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
 ! ======================================================================
@@ -313,27 +313,27 @@ implicit none
             tgdm(i) = 0.d0
             accele(i) = 0.d0
             do j = 1, 3
-                sr(i,j) = 0.d0
+                sr(i, j) = 0.d0
             end do
             do j = 1, 4
-                dudm(i,j) = 0.d0
-                dvdm(i,j) = 0.d0
-                dtdm(i,j) = 0.d0
-                dfdm(i,j) = 0.d0
+                dudm(i, j) = 0.d0
+                dvdm(i, j) = 0.d0
+                dtdm(i, j) = 0.d0
+                dfdm(i, j) = 0.d0
             end do
-            dfdm(i,5) = 0.d0
-            dtdm(i,5) = 0.d0
+            dfdm(i, 5) = 0.d0
+            dtdm(i, 5) = 0.d0
         end do
         do i = 1, 6
-            sigl (i) = 0.d0
+            sigl(i) = 0.d0
             sigin(i) = 0.d0
             epsin(i) = 0.d0
             epsp(i) = 0.d0
             eps(i) = 0.d0
-            epsref(i)= 0.d0
+            epsref(i) = 0.d0
             do j = 1, 3
-                dsigin(i,j) = 0.d0
-                depsin(i,j) = 0.d0
+                dsigin(i, j) = 0.d0
+                depsin(i, j) = 0.d0
             end do
         end do
 !
@@ -341,9 +341,9 @@ implicit none
 ! CALCUL DES ELEMENTS GEOMETRIQUES
 ! ===========================================
 !
-        call nmgeom(ndim, nno, axi, grand, zr(igeom),&
-                    kp, ipoids, ivf, idfde, zr(idepl),&
-                    .true._1, poids, dfdi, f, eps,&
+        call nmgeom(ndim, nno, axi, grand, zr(igeom), &
+                    kp, ipoids, ivf, idfde, zr(idepl), &
+                    .true._1, poids, dfdi, f, eps, &
                     r)
 ! - CALCULS DES GRADIENTS DE U (DUDM), DE THETA FISSURE (DTDM) ET DE
 !   LA FORCE VOLUMIQUE (DFDM),
@@ -355,30 +355,30 @@ implicit none
             der(4) = zr(ivf+l+i1)
             if (iret1 .eq. 0) then
                 do j = 1, ndim
-                    tgdm(j) = tgdm(j) + tn(i)*der(j)
+                    tgdm(j) = tgdm(j)+tn(i)*der(j)
                 end do
-            endif
+            end if
             do j = 1, ndim
                 ij1 = ndim*i1+j
-                ij = ij1 - 1
+                ij = ij1-1
                 do k = 1, ndim
-                    dudm(j,k) = dudm(j,k) + zr(idepl+ij)*der(k)
-                    dtdm(j,k) = dtdm(j,k) + zr(ithet+ij)*der(k)
-                    dfdm(j,k) = dfdm(j,k) + fno(ij1)*der(k)
+                    dudm(j, k) = dudm(j, k)+zr(idepl+ij)*der(k)
+                    dtdm(j, k) = dtdm(j, k)+zr(ithet+ij)*der(k)
+                    dfdm(j, k) = dfdm(j, k)+fno(ij1)*der(k)
                 end do
                 if (ivites .ne. 0) then
                     do k = 1, ndim
-                        dvdm(j,k) = dvdm(j,k) + zr(ivites+ij)*der(k)
+                        dvdm(j, k) = dvdm(j, k)+zr(ivites+ij)*der(k)
                     end do
-                    dvdm(j,4) = dvdm(j,4) + zr(ivites+ij)*der(4)
-                    accele(j) = accele(j) + zr(iaccel+ij)*der(4)
+                    dvdm(j, 4) = dvdm(j, 4)+zr(ivites+ij)*der(4)
+                    accele(j) = accele(j)+zr(iaccel+ij)*der(4)
                     if (cp) then
-                        vepscp = -nu(1)/(1.d0-nu(1))*(dvdm(1,1)+dvdm(2,2))
-                    endif
-                endif
-                dudm(j,4) = dudm(j,4) + zr(idepl+ij)*der(4)
-                dtdm(j,4) = dtdm(j,4) + zr(ithet+ij)*der(4)
-                dfdm(j,4) = dfdm(j,4) + fno(ij1)*der(4)
+                        vepscp = -nu(1)/(1.d0-nu(1))*(dvdm(1, 1)+dvdm(2, 2))
+                    end if
+                end if
+                dudm(j, 4) = dudm(j, 4)+zr(idepl+ij)*der(4)
+                dtdm(j, 4) = dtdm(j, 4)+zr(ithet+ij)*der(4)
+                dfdm(j, 4) = dfdm(j, 4)+fno(ij1)*der(4)
             end do
         end do
 !
@@ -396,19 +396,19 @@ implicit none
                 der(4) = zr(ivf+l+i1)
                 ij = ncmp*i1
                 do j = 1, ncmp
-                    epsin(j) = epsin(j)+ epsino(ij+j)*der(4)
+                    epsin(j) = epsin(j)+epsino(ij+j)*der(4)
                 end do
                 do j = 1, ncmp
                     ij1 = ij+j
                     do k = 1, ndim
-                        depsin(j,k) = depsin(j,k)+epsino(ij1)*der(k)
+                        depsin(j, k) = depsin(j, k)+epsino(ij1)*der(k)
                     end do
                 end do
             end do
             do i = 1, ncmp
                 eps(i) = eps(i)-epsin(i)
             end do
-        endif
+        end if
 !
 ! =======================================================
 ! CALCUL DES CONTRAINTES LAGRANGIENNES SIGL ET DE L'ENERGIE LIBRE
@@ -417,15 +417,15 @@ implicit none
         if (incr) then
 ! BESOIN GARDER APPEL NMPLRU POUR LE CALCUL DE L'ENERGIE EN PRESENCE
 ! D'ETAT INITIAL MAIS NETTOYAGE A COMPLETER
-            call nmplru(fami, kp, 1, '+', ndim,&
-                        typmod, matcod, compor, rbid, eps,&
+            call nmplru(fami, kp, 1, '+', ndim, &
+                        typmod, matcod, compor, rbid, eps, &
                         epsp, rbid, energi)
             do i = 1, 3
-                sigl(i)= zr(isigm+ncmp*(kp-1)+i-1)
+                sigl(i) = zr(isigm+ncmp*(kp-1)+i-1)
             end do
-            sigl(4)= zr(isigm+ncmp*(kp-1)+3)*rac2
+            sigl(4) = zr(isigm+ncmp*(kp-1)+3)*rac2
         else
-            call nmelnl(BEHinteg,&
+            call nmelnl(BEHinteg, &
                         fami, kp, 1, &
                         ndim, typmod, matcod, compor, &
                         eps, sigl, energi)
@@ -434,11 +434,11 @@ implicit none
             if (iret .eq. 0) then
                 call jevech('PCONTGR', 'L', isigm)
                 do i = 1, 3
-                    sigl(i)= zr(isigm+ncmp*(kp-1)+i-1)
+                    sigl(i) = zr(isigm+ncmp*(kp-1)+i-1)
                 end do
-                sigl(4)= zr(isigm+ncmp*(kp-1)+3)*rac2
-            endif
-        endif
+                sigl(4) = zr(isigm+ncmp*(kp-1)+3)*rac2
+            end if
+        end if
 !
 ! =======================================================
 ! DIVERS (DIVERGENCE, MODELISATION...)
@@ -446,24 +446,24 @@ implicit none
 !
 ! TRAITEMENTS DEPENDANT DE LA MODELISATION
         if (cp) then
-            dudm(3,3)= eps(3)
+            dudm(3, 3) = eps(3)
             if (ivites .ne. 0) then
-                dvdm(3,3)= vepscp
-            endif
-        endif
+                dvdm(3, 3) = vepscp
+            end if
+        end if
         if (axi) then
-            dudm(3,3)= dudm(1,4)/r
-            dtdm(3,3)= dtdm(1,4)/r
-            dfdm(3,3)= dfdm(1,4)/r
+            dudm(3, 3) = dudm(1, 4)/r
+            dtdm(3, 3) = dtdm(1, 4)/r
+            dfdm(3, 3) = dfdm(1, 4)/r
             if (ivites .ne. 0) then
-                dvdm(3,3)= dvdm(1,4)/r
-            endif
-        endif
+                dvdm(3, 3) = dvdm(1, 4)/r
+            end if
+        end if
 !
 ! CALCUL DE LA DIVERGENCE DU THETA FISSURE (DIVT)
         divt = 0.d0
         do i = 1, 3
-            divt = divt + dtdm(i,i)
+            divt = divt+dtdm(i, i)
         end do
 !
 !
@@ -483,13 +483,13 @@ implicit none
 ! CALCUL DE SIGMA INITIAL
                 ij = isigi+ncmp*i1-1
                 do j = 1, ncmp
-                    sigin(j) = sigin(j)+ zr(ij+j)*der(4)
+                    sigin(j) = sigin(j)+zr(ij+j)*der(4)
                 end do
 !
 ! CALCUL DU GRADIENT DE SIGMA INITIAL
                 do j = 1, ncmp
                     do k = 1, ndim
-                        dsigin(j,k)=dsigin(j,k)+zr(ij+j)*der(k)
+                        dsigin(j, k) = dsigin(j, k)+zr(ij+j)*der(k)
                     end do
                 end do
             end do
@@ -498,32 +498,32 @@ implicit none
             do i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
                 do j = 1, ndim
-                    dsigin(i,j) = dsigin(i,j)*rac2
+                    dsigin(i, j) = dsigin(i, j)*rac2
                 end do
             end do
 !
 ! CALCUL DE LA DEFORMATION DE REFERENCE
             call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
-            call rcvalb(fami, kp, 1, '+', matcod,&
-                     ' ', phenom, 0, ' ', [0.d0],&
-                     1, 'E', e(1), icodre(1), 1)
-            call rcvalb(fami, kp, 1, '+', matcod,&
-                     ' ', phenom, 0, ' ', [0.d0],&
-                     1, 'NU', nu(1), icodre(1), 1)
+            call rcvalb(fami, kp, 1, '+', matcod, &
+                        ' ', phenom, 0, ' ', [0.d0], &
+                        1, 'E', e(1), icodre(1), 1)
+            call rcvalb(fami, kp, 1, '+', matcod, &
+                        ' ', phenom, 0, ' ', [0.d0], &
+                        1, 'NU', nu(1), icodre(1), 1)
 !
             mu = e(1)/(2.d0*(1.d0+nu(1)))
 !
-            epsref(1)=-(1.d0/e(1))*(sigin(1)-(nu(1)*(sigin(2)+sigin(3))))
-            epsref(2)=-(1.d0/e(1))*(sigin(2)-(nu(1)*(sigin(3)+sigin(1))))
-            epsref(3)=-(1.d0/e(1))*(sigin(3)-(nu(1)*(sigin(1)+sigin(2))))
-            epsref(4)=-(1.d0/mu)*sigin(4)
+            epsref(1) = -(1.d0/e(1))*(sigin(1)-(nu(1)*(sigin(2)+sigin(3))))
+            epsref(2) = -(1.d0/e(1))*(sigin(2)-(nu(1)*(sigin(3)+sigin(1))))
+            epsref(3) = -(1.d0/e(1))*(sigin(3)-(nu(1)*(sigin(1)+sigin(2))))
+            epsref(4) = -(1.d0/mu)*sigin(4)
 !
 ! ENERGIE ELASTIQUE (expression WADIER)
 !
             do i = 1, ncmp
-                energi(1) = energi(1) + (eps(i)-0.5d0*epsref(i))* sigin(i)
+                energi(1) = energi(1)+(eps(i)-0.5d0*epsref(i))*sigin(i)
             end do
-        endif
+        end if
 !
 !
 !
@@ -531,15 +531,15 @@ implicit none
 ! =======================================================
 ! STOCKAGE DE SIGMA ET TRAITEMENTS DES TERMES CROISES
 ! =======================================================
-        sr(1,1)= sigl(1)
-        sr(2,2)= sigl(2)
-        sr(3,3)= sigl(3)
-        sr(1,2)= sigl(4)/rac2
-        sr(2,1)= sr(1,2)
-        sr(1,3)= sigl(5)/rac2
-        sr(3,1)= sr(1,3)
-        sr(2,3)= sigl(6)/rac2
-        sr(3,2)= sr(2,3)
+        sr(1, 1) = sigl(1)
+        sr(2, 2) = sigl(2)
+        sr(3, 3) = sigl(3)
+        sr(1, 2) = sigl(4)/rac2
+        sr(2, 1) = sr(1, 2)
+        sr(1, 3) = sigl(5)/rac2
+        sr(3, 1) = sr(1, 3)
+        sr(2, 3) = sigl(6)/rac2
+        sr(3, 2) = sr(2, 3)
 !
 ! CALCUL DE G
 !
@@ -553,18 +553,18 @@ implicit none
         prod4 = 0.d0
         if (ivites .ne. 0) then
             do j1 = 1, ndim
-                ecin = ecin + dvdm(j1,4)*dvdm(j1,4)
+                ecin = ecin+dvdm(j1, 4)*dvdm(j1, 4)
             end do
             do j1 = 1, ndim
                 do j2 = 1, ndim
-                    prod3 = prod3 + accele(j1)*dudm(j1,j2)*dtdm(j2,4)
-                    prod4 = prod4 + dvdm(j1,4)*dvdm(j1,j2)*dtdm(j2,4)
+                    prod3 = prod3+accele(j1)*dudm(j1, j2)*dtdm(j2, 4)
+                    prod4 = prod4+dvdm(j1, 4)*dvdm(j1, j2)*dtdm(j2, 4)
                 end do
             end do
             ecin = 0.5d0*rho(1)*ecin
             prod3 = rho(1)*prod3
             prod4 = rho(1)*prod4
-        endif
+        end if
 !
         prod = 0.d0
         prod2 = 0.d0
@@ -572,15 +572,15 @@ implicit none
             do j = 1, 3
                 do k = 1, 3
                     do m = 1, 3
-                        prod =prod+f(i,j)*sr(j,k)*dudm(i,m)*dtdm(m,k)
+                        prod = prod+f(i, j)*sr(j, k)*dudm(i, m)*dtdm(m, k)
                     end do
                 end do
             end do
         end do
-        prod = prod - ecin*divt + prod3 - prod4
-        prod2 = poids*( prod - energi(1)*divt)
+        prod = prod-ecin*divt+prod3-prod4
+        prod2 = poids*(prod-energi(1)*divt)
 !
-        tcla = tcla + prod2
+        tcla = tcla+prod2
 !
 ! =======================================================
 ! TERME THERMIQUE :   -(D(ENER)/DT)(GRAD(T).THETA)
@@ -589,13 +589,13 @@ implicit none
             prod = 0.d0
             prod2 = 0.d0
             do i = 1, ndim
-                prod = prod + tgdm(i)*dtdm(i,4)
+                prod = prod+tgdm(i)*dtdm(i, 4)
             end do
-            prod2 = - poids*prod*energi(2)
-            tthe = tthe + prod2
+            prod2 = -poids*prod*energi(2)
+            tthe = tthe+prod2
         else
             tthe = 0.d0
-        endif
+        end if
 ! =======================================================
 ! TERME FORCE VOLUMIQUE
 ! REMARQUE : POUR LA DERIVEE, TFOR EST INUTILE.
@@ -604,40 +604,40 @@ implicit none
 !
         prod2 = 0.d0
         do i = 1, ndim
-            prod=0.d0
+            prod = 0.d0
             do j = 1, ndim
-                prod = prod + dfdm(i,j)*dtdm(j,4)
+                prod = prod+dfdm(i, j)*dtdm(j, 4)
             end do
-            prod2 = prod2 + dudm(i,4)*(prod+dfdm(i,4)*divt)*poids
+            prod2 = prod2+dudm(i, 4)*(prod+dfdm(i, 4)*divt)*poids
         end do
 !
-        tfor = tfor + prod2
+        tfor = tfor+prod2
 !
 ! =======================================================
 ! TERME INITIAL:PROD1 LIE A LA CONTRAINTE (EPS-EPSREF):GRAD(SIGIN).THETA
 !               PROD2 LIE A LA PREDEFORMATION SIG:GRAD(EPSIN).THETA
 ! =======================================================
 !
-        if ((isigi.ne.0) .or. epsini) then
-            prod1=0.d0
-            prod2=0.d0
+        if ((isigi .ne. 0) .or. epsini) then
+            prod1 = 0.d0
+            prod2 = 0.d0
             if (isigi .ne. 0) then
                 do i = 1, ncmp
                     do j = 1, ndim
-                        prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*&
-                        dtdm(j,4)
+                        prod1 = prod1-(eps(i)-epsref(i))*dsigin(i, j)* &
+                                dtdm(j, 4)
                     end do
                 end do
             else if (epsini) then
                 do i = 1, ncmp
                     do j = 1, ndim
-                        prod2=prod2+sigl(i)*depsin(i,j)*dtdm(j,4)
+                        prod2 = prod2+sigl(i)*depsin(i, j)*dtdm(j, 4)
                     end do
                 end do
-            endif
-            tini = tini + (prod1+prod2)*poids
+            end if
+            tini = tini+(prod1+prod2)*poids
 
-        endif
+        end if
 
 ! ==================================================================
 ! FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
@@ -649,6 +649,6 @@ implicit none
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG
 
-    zr(igthet) = tthe + tcla + tfor + tini
+    zr(igthet) = tthe+tcla+tfor+tini
 !
 end subroutine

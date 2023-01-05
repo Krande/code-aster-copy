@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,13 +59,13 @@ subroutine calci(phib24, phi1j, bj, cij1)
 !
 ! ---PRODUIT MATRICE BJ ET LE VECTEUR POTENTIEL PHI1J
 !
-    call mrmult('ZERO', imade, phi1, produit, 1,&
+    call mrmult('ZERO', imade, phi1, produit, 1, &
                 .true._1)
 !
 !
 !--PRODUITS SCALAIRES VECTEURS  PHI1J PAR LE VECTEUR RESULTAT PRECEDENT
 !
-    cij1= ddot(nphi1,barre, 1,produit, 1)
+    cij1 = ddot(nphi1, barre, 1, produit, 1)
 !
 !---------------- MENAGE SUR LA VOLATILE ---------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine rrcResultCopyParameters(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/rslesd.h"
 #include "asterfort/rssepa.h"
 !
-type(ROM_DS_ParaRRC), intent(in) :: cmdPara
+    type(ROM_DS_ParaRRC), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,24 +58,24 @@ type(ROM_DS_ParaRRC), intent(in) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM16_5')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    nbStore       = cmdPara%resultDom%nbStore
+    nbStore = cmdPara%resultDom%nbStore
     resultDomName = cmdPara%resultDom%resultName
     resultRomName = cmdPara%resultRom%resultName
-    modelDom      = cmdPara%modelDom
+    modelDom = cmdPara%modelDom
 !
 ! - Copy
 !
-    do iStore = 1, nbStore - 1
+    do iStore = 1, nbStore-1
         numeStore = iStore
 ! ----- Get parameters
-        call rslesd(resultRomName , numeStore-1,&
-                    materi_   = materi    ,&
-                    cara_elem_ = caraElem ,&
-                    list_load_ = listLoad )
+        call rslesd(resultRomName, numeStore-1, &
+                    materi_=materi, &
+                    cara_elem_=caraElem, &
+                    list_load_=listLoad)
         call rsadpa(resultRomName, 'L', 1, 'INST', numeStore, 0, sjv=jvPara)
         time = zr(jvPara)
 ! ----- Save parameters

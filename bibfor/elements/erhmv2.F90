@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306,W1504
 !
-subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef,&
-                  nmec, np1, np2, ndim, nno,&
-                  nnos, npg, nddls, nddlm,&
-                  dimuel, ipoids, ivf, idfde, ipoid2,&
-                  ivf2, idfde2, elem_coor, fovo, deplp,&
-                  deplm, sielnp, sielnm, nbcmp, biot,&
-                  unsurm, fpx, fpy, frx, fry,&
-                  addeme, addep1,&
+subroutine erhmv2(ds_thm, axi, perman, deltat, dimdep, dimdef, &
+                  nmec, np1, np2, ndim, nno, &
+                  nnos, npg, nddls, nddlm, &
+                  dimuel, ipoids, ivf, idfde, ipoid2, &
+                  ivf2, idfde2, elem_coor, fovo, deplp, &
+                  deplm, sielnp, sielnm, nbcmp, biot, &
+                  unsurm, fpx, fpy, frx, fry, &
+                  addeme, addep1, &
                   addep2, addete, tm2h1v)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
@@ -134,30 +134,30 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ovfl      = r8miem()
+    ovfl = r8miem()
     tm2h1v(:) = 0.d0
 !
 ! =====================================================================
 ! 2. ------ BOUCLE SUR LES POINTS DE GAUSS ---------------------------
 ! =====================================================================
 !
-    do ipi = 1,npg
+    do ipi = 1, npg
 !
         kpi = ipi
 ! ----- Compute [B] matrix for generalized strains
-        call cabthm(ds_thm   , axi      , ndim   ,&
-                    nddls    , nddlm ,&
-                    nmec     , np1   , np2    ,&
-                    nno      , nnos  , &
-                    dimuel   , dimdef, kpi    ,&
-                    addeme   , addete, addep1 , addep2,&
-                    elem_coor     ,&
-                    ipoids   , ipoid2,&
-                    ivf      , ivf2  ,&
-                    idfde    , idfde2,&
-                    dfdi     , dfdi2 ,&
-                    poids    , poids2,&
-                    b        )
+        call cabthm(ds_thm, axi, ndim, &
+                    nddls, nddlm, &
+                    nmec, np1, np2, &
+                    nno, nnos, &
+                    dimuel, dimdef, kpi, &
+                    addeme, addete, addep1, addep2, &
+                    elem_coor, &
+                    ipoids, ipoid2, &
+                    ivf, ivf2, &
+                    idfde, idfde2, &
+                    dfdi, dfdi2, &
+                    poids, poids2, &
+                    b)
 !
 ! =====================================================================
 ! 2.2. ------ RECHERCHE DU GRADIENT DE LA PRESSION AU POINT DE GAUSS --
@@ -190,16 +190,16 @@ implicit none
         grapxm = 0.d0
         grapym = 0.d0
 !
-        iaux = ndim + 1
+        iaux = ndim+1
         jaux = nnos*dimdep
 !
         do nn = iaux, jaux, dimdep
-            grapxp = grapxp + b(addep1+1,nn)*deplp(nn)
-            grapyp = grapyp + b(addep1+2,nn)*deplp(nn)
+            grapxp = grapxp+b(addep1+1, nn)*deplp(nn)
+            grapyp = grapyp+b(addep1+2, nn)*deplp(nn)
             if (.not. perman) then
-                grapxm = grapxm + b(addep1+1,nn)*deplm(nn)
-                grapym = grapym + b(addep1+2,nn)*deplm(nn)
-            endif
+                grapxm = grapxm+b(addep1+1, nn)*deplm(nn)
+                grapym = grapym+b(addep1+2, nn)*deplm(nn)
+            end if
         end do
 !
 ! =====================================================================
@@ -220,35 +220,35 @@ implicit none
         dsxyxm = 0.d0
         dsyyym = 0.d0
 !
-        do ii = 1 , nno
+        do ii = 1, nno
             iaux = nbcmp*(ii-1)
             sigxxp = sielnp(iaux+1)
             sigyyp = sielnp(iaux+2)
             sigxyp = sielnp(iaux+4)
-            dsxxxp = dsxxxp + sigxxp * dfdi(ii,1)
-            dsxyyp = dsxyyp + sigxyp * dfdi(ii,2)
-            dsyyyp = dsyyyp + sigyyp * dfdi(ii,2)
-            dsxyxp = dsxyxp + sigxyp * dfdi(ii,1)
+            dsxxxp = dsxxxp+sigxxp*dfdi(ii, 1)
+            dsxyyp = dsxyyp+sigxyp*dfdi(ii, 2)
+            dsyyyp = dsyyyp+sigyyp*dfdi(ii, 2)
+            dsxyxp = dsxyxp+sigxyp*dfdi(ii, 1)
             if (.not. perman) then
                 sigxxm = sielnm(iaux+1)
                 sigyym = sielnm(iaux+2)
                 sigxym = sielnm(iaux+4)
-                dsxxxm = dsxxxm + sigxxm * dfdi(ii,1)
-                dsxyym = dsxyym + sigxym * dfdi(ii,2)
-                dsyyym = dsyyym + sigyym * dfdi(ii,2)
-                dsxyxm = dsxyxm + sigxym * dfdi(ii,1)
-            endif
+                dsxxxm = dsxxxm+sigxxm*dfdi(ii, 1)
+                dsxyym = dsxyym+sigxym*dfdi(ii, 2)
+                dsyyym = dsyyym+sigyym*dfdi(ii, 2)
+                dsxyxm = dsxyxm+sigxym*dfdi(ii, 1)
+            end if
         end do
 !
 ! LA DIVERGENCE DU TENSEUR DES CONTRAINTES EST UN VECTEUR
 ! DE COMPOSANTES :
 !
-        dsxp = dsxxxp + dsxyyp
-        dsyp = dsxyxp + dsyyyp
+        dsxp = dsxxxp+dsxyyp
+        dsyp = dsxyxp+dsyyyp
         if (.not. perman) then
-            dsxm = dsxxxm + dsxyym
-            dsym = dsxyxm + dsyyym
-        endif
+            dsxm = dsxxxm+dsxyym
+            dsym = dsxyxm+dsyyym
+        end if
 !
 ! =====================================================================
 ! 2.4. ------ ASSEMBLAGE DES 3 TERMES : -------------------------------
@@ -257,14 +257,14 @@ implicit none
 !           GRADIENT DE PRESSION
 ! =====================================================================
 !
-        forx = fovo(1) + fpx + frx(kpi)
-        fory = fovo(2) + fpy + fry(kpi)
-        tm2h1v(1) = tm2h1v(1) + poids* ( ( forx + dsxp - biot * grapxp )**2 +&
-                                         ( fory + dsyp - biot * grapyp )**2 )
+        forx = fovo(1)+fpx+frx(kpi)
+        fory = fovo(2)+fpy+fry(kpi)
+        tm2h1v(1) = tm2h1v(1)+poids*((forx+dsxp-biot*grapxp)**2+ &
+                                     (fory+dsyp-biot*grapyp)**2)
         if (.not. perman) then
-            tm2h1v(2) = tm2h1v(2) + poids* ( ( dsxp - dsxm - biot * ( grapxp - grapxm ))**2 +&
-                                             ( dsyp - dsym - biot * ( grapyp - grapym ))**2 )
-        endif
+            tm2h1v(2) = tm2h1v(2)+poids*((dsxp-dsxm-biot*(grapxp-grapxm))**2+ &
+                                         (dsyp-dsym-biot*(grapyp-grapym))**2)
+        end if
 !
 ! =====================================================================
 ! 2.5. TERME VOLUMIQUE DE L'HYDRAULIQUE (CF DOC R)
@@ -289,35 +289,35 @@ implicit none
             divuyp = 0.d0
             divuxm = 0.d0
             divuym = 0.d0
-            do ii = 1 , nno
+            do ii = 1, nno
                 if (ii .le. nnos) then
                     iaux = dimdep*(ii-1)
                 else
-                    iaux = (dimdep-1)*ii + nnos - 2
-                endif
-                divuxp = divuxp + deplp(iaux+1) * dfdi(ii,1)
-                divuyp = divuyp + deplp(iaux+2) * dfdi(ii,2)
-                divuxm = divuxm + deplm(iaux+1) * dfdi(ii,1)
-                divuym = divuym + deplm(iaux+2) * dfdi(ii,2)
+                    iaux = (dimdep-1)*ii+nnos-2
+                end if
+                divuxp = divuxp+deplp(iaux+1)*dfdi(ii, 1)
+                divuyp = divuyp+deplp(iaux+2)*dfdi(ii, 2)
+                divuxm = divuxm+deplm(iaux+1)*dfdi(ii, 1)
+                divuym = divuym+deplm(iaux+2)*dfdi(ii, 2)
             end do
-            divup = divuxp + divuyp
-            divum = divuxm + divuym
+            divup = divuxp+divuyp
+            divum = divuxm+divuym
             pressp = 0.d0
             pressm = 0.d0
-            iaux = ndim + 1
+            iaux = ndim+1
             jaux = nnos*dimdep
             do nn = iaux, jaux, dimdep
-                pressp = pressp + b(addep1,nn) * deplp(nn)
-                pressm = pressm + b(addep1,nn) * deplm(nn)
+                pressp = pressp+b(addep1, nn)*deplp(nn)
+                pressm = pressm+b(addep1, nn)*deplm(nn)
             end do
             if (deltat .gt. ovfl) then
-                ter11 = biot * ( divup - divum )/deltat
-                ter12 = unsurm * ( pressp - pressm )/deltat
-                tm2h1v(3) = tm2h1v(3) + poids2 * ( ter11 + ter12 )**2
+                ter11 = biot*(divup-divum)/deltat
+                ter12 = unsurm*(pressp-pressm)/deltat
+                tm2h1v(3) = tm2h1v(3)+poids2*(ter11+ter12)**2
             else
                 call utmess('F', 'INDICATEUR_31')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 end subroutine

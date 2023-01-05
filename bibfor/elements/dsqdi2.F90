@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
+subroutine dsqdi2(xyzl, df, dci, dmf, dfc, &
                   dmc, an, am)
     implicit none
 #include "jeveux.h"
@@ -98,8 +98,8 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
     real(kind=8) :: aa(4, 4), aai(4, 4), caraq4(25), jacob(5)
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(elrefe='SE2', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
-                     npg=npg, jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx,&
+    call elrefe_info(elrefe='SE2', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, &
                      jdfd2=idfd2, jgano=jgano)
     nc = 4
 !
@@ -113,20 +113,20 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
     do i = 1, 4
         do j = 1, 8
-            am(i,j) = zero
-            al(i,j) = zero
+            am(i, j) = zero
+            al(i, j) = zero
         end do
     end do
 !
     do i = 1, 4
         do j = 1, 12
-            an(i,j) = zero
-            aw(i,j) = zero
+            an(i, j) = zero
+            aw(i, j) = zero
         end do
     end do
 !
     call gquad4(xyzl, caraq4)
-    l(1) = caraq4( 9)
+    l(1) = caraq4(9)
     l(2) = caraq4(10)
     l(3) = caraq4(11)
     l(4) = caraq4(12)
@@ -160,20 +160,20 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
         do i = 1, 2
             do j = 1, 4
-                db(i,j) = zero
+                db(i, j) = zero
             end do
         end do
 !
         do i = 1, 2
             do j = 1, 12
-                dcidfb(i,j) = zero
-                dcb(i,j) = zero
+                dcidfb(i, j) = zero
+                dcb(i, j) = zero
             end do
         end do
 !
         do i = 1, 2
             do j = 1, 8
-                dcidmc(i,j) = zero
+                dcidmc(i, j) = zero
             end do
         end do
 !
@@ -185,19 +185,19 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !           ---------------
             do i = 1, 2
                 do j = 1, 4
-                    dfcbfa(i,j) = zero
+                    dfcbfa(i, j) = zero
                 end do
             end do
 !
             do i = 1, 2
                 do j = 1, 8
-                    dmctbm(i,j) = zero
+                    dmctbm(i, j) = zero
                 end do
             end do
 !
             do i = 1, 2
                 do j = 1, 12
-                    dfcbfb(i,j) = zero
+                    dfcbfb(i, j) = zero
                 end do
             end do
 !
@@ -215,7 +215,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
             else if (ic .eq. 4) then
                 qsi = -zr(ipoids-1+int)
                 eta = zr(icoopg-1+ndim*(int-1)+1)
-            endif
+            end if
 !
             call jquad4(xyzl, qsi, eta, jacob)
 !
@@ -230,7 +230,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! ---       CALCUL DES MATRICES  [BCB] ET [BCA] QUI SONT TELLES QUE
 ! ---       D (BETA)/(DQSI*DQSI) = [TB]*BETA + [TA]*ALPHA :
 !           ---------------------------------------------
-            call dsqci2(qsi, eta, caraq4, hft2, hmft2,&
+            call dsqci2(qsi, eta, caraq4, hft2, hmft2, &
                         bcb, bca, bcm)
 !
 ! ---      CALCUL DE LA MATRICE BFA AU POINT D'INTEGRATION COURANT
@@ -243,18 +243,18 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !           ---------------------------
             do j = 1, 4
                 do k = 1, 3
-                    dfcbfa(1,j) = dfcbfa(1,j) + dfc(k,1)*bfa(k,j)
-                    dfcbfa(2,j) = dfcbfa(2,j) + dfc(k,2)*bfa(k,j)
+                    dfcbfa(1, j) = dfcbfa(1, j)+dfc(k, 1)*bfa(k, j)
+                    dfcbfa(2, j) = dfcbfa(2, j)+dfc(k, 2)*bfa(k, j)
                 end do
             end do
 !
 ! ---       CALCUL DU PRODUIT DCI*(BCA - DFC_T*BFA) :
 !           --------------------------------------
             do j = 1, 4
-                db(1,j) = db(1,j) + dci(1,1) * (bca(1,j)-dfcbfa(1,j)) + dci(1,2) * (bca(2,j)-dfcb&
-                          &fa(2,j))
-                db(2,j) = db(2,j) + dci(2,1) * (bca(1,j)-dfcbfa(1,j)) + dci(2,2) * (bca(2,j)-dfcb&
-                          &fa(2,j))
+                db(1, j) = db(1, j)+dci(1, 1)*(bca(1, j)-dfcbfa(1, j))+dci(1, 2)*(bca(2, j)-dfcb&
+                          &fa(2, j))
+                db(2, j) = db(2, j)+dci(2, 1)*(bca(1, j)-dfcbfa(1, j))+dci(2, 2)*(bca(2, j)-dfcb&
+                          &fa(2, j))
             end do
 !
 !================================================================
@@ -281,16 +281,16 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !          ---------------------------
             do j = 1, 12
                 do k = 1, 3
-                    dfcbfb(1,j) = dfcbfb(1,j) + dfc(k,1)*bfb(k,j)
-                    dfcbfb(2,j) = dfcbfb(2,j) + dfc(k,2)*bfb(k,j)
+                    dfcbfb(1, j) = dfcbfb(1, j)+dfc(k, 1)*bfb(k, j)
+                    dfcbfb(2, j) = dfcbfb(2, j)+dfc(k, 2)*bfb(k, j)
                 end do
             end do
 !
 ! ---      CALCUL DU PRODUIT DCI*DFC_T*BFB :
 !          -------------------------------
             do j = 1, 12
-                dcidfb(1,j) = dcidfb(1,j) + dci(1,1)*dfcbfb(1,j) + dci(1,2)*dfcbfb(2,j)
-                dcidfb(2,j) = dcidfb(2,j) + dci(2,1)*dfcbfb(1,j) + dci(2,2)*dfcbfb(2,j)
+                dcidfb(1, j) = dcidfb(1, j)+dci(1, 1)*dfcbfb(1, j)+dci(1, 2)*dfcbfb(2, j)
+                dcidfb(2, j) = dcidfb(2, j)+dci(2, 1)*dfcbfb(1, j)+dci(2, 2)*dfcbfb(2, j)
             end do
 !
 !===================================================================
@@ -313,19 +313,19 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! ---     CALCUL DU TERME BCM-DMC_T*BM :
 !         ----------------------------
             do j = 1, 8
-                dmctbm(1,j) = dmctbm(1,j) + bcm(1,j)
-                dmctbm(2,j) = dmctbm(2,j) + bcm(2,j)
+                dmctbm(1, j) = dmctbm(1, j)+bcm(1, j)
+                dmctbm(2, j) = dmctbm(2, j)+bcm(2, j)
                 do k = 1, 3
-                    dmctbm(1,j) = dmctbm(1,j) - dmc(k,1)*bm(k,j)
-                    dmctbm(2,j) = dmctbm(2,j) - dmc(k,2)*bm(k,j)
+                    dmctbm(1, j) = dmctbm(1, j)-dmc(k, 1)*bm(k, j)
+                    dmctbm(2, j) = dmctbm(2, j)-dmc(k, 2)*bm(k, j)
                 end do
             end do
 !
 ! ---     CALCUL DU PRODUIT DCI*(BCM-DMC_T*BM) :
 !         ------------------------------------
             do j = 1, 8
-                dcidmc(1,j) = dcidmc(1,j) + dci(1,1)*dmctbm(1,j) + dci(1,2)*dmctbm(2,j)
-                dcidmc(2,j) = dcidmc(2,j) + dci(2,1)*dmctbm(1,j) + dci(2,2)*dmctbm(2,j)
+                dcidmc(1, j) = dcidmc(1, j)+dci(1, 1)*dmctbm(1, j)+dci(1, 2)*dmctbm(2, j)
+                dcidmc(2, j) = dcidmc(2, j)+dci(2, 1)*dmctbm(1, j)+dci(2, 2)*dmctbm(2, j)
             end do
 !
 !======================================================================
@@ -349,8 +349,8 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !=======================================================================
 !
             do j = 1, 12
-                dcb(1,j) = dcb(1,j) + dci(1,1)*bcb(1,j) + dci(1,2)* bcb(2,j)
-                dcb(2,j) = dcb(2,j) + dci(2,1)*bcb(1,j) + dci(2,2)* bcb(2,j)
+                dcb(1, j) = dcb(1, j)+dci(1, 1)*bcb(1, j)+dci(1, 2)*bcb(2, j)
+                dcb(2, j) = dcb(2, j)+dci(2, 1)*bcb(1, j)+dci(2, 2)*bcb(2, j)
             end do
 !
         end do
@@ -373,9 +373,9 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !===================================================================
 !
         do j = 1, 4
-            aa(ic,j) = - (x(ic) * db(1,j) + y(ic) * db(2,j))*undemi
+            aa(ic, j) = -(x(ic)*db(1, j)+y(ic)*db(2, j))*undemi
         end do
-        aa(ic,ic) = aa(ic,ic) + deux/trois * l(ic)
+        aa(ic, ic) = aa(ic, ic)+deux/trois*l(ic)
 !
 !================================================================
 ! --- DETERMINATION DE LA MATRICE AB QUI EST TELLE QUE          =
@@ -392,7 +392,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !================================================================
 !
         do j = 1, 12
-            ab(ic,j) = - (x(ic)*dcidfb(1,j) + y(ic)*dcidfb(2,j))* undemi
+            ab(ic, j) = -(x(ic)*dcidfb(1, j)+y(ic)*dcidfb(2, j))*undemi
         end do
 !
 !===================================================================
@@ -410,7 +410,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !===================================================================
 !
         do j = 1, 8
-            al(ic,j) = (x(ic)*dcidmc(1,j) + y(ic)*dcidmc(2,j))*undemi
+            al(ic, j) = (x(ic)*dcidmc(1, j)+y(ic)*dcidmc(2, j))*undemi
         end do
 !
 !======================================================================
@@ -434,7 +434,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !=======================================================================
 !
         do j = 1, 12
-            aw(ic,j) = (x(ic)*dcb(1,j) + y(ic)*dcb(2,j))*undemi
+            aw(ic, j) = (x(ic)*dcb(1, j)+y(ic)*dcb(2, j))*undemi
         end do
 !
     end do
@@ -442,30 +442,30 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 ! --  FIN DE LA BOUCLE SUR LES COTES DE L'ELEMENT
 !     -------------------------------------------
 !
-    aw(1,1) = aw(1,1) + un
-    aw(1,2) = aw(1,2) - x(1)/deux
-    aw(1,3) = aw(1,3) - y(1)/deux
-    aw(1,4) = aw(1,4) - un
-    aw(1,5) = aw(1,5) - x(1)/deux
-    aw(1,6) = aw(1,6) - y(1)/deux
-    aw(2,4) = aw(2,4) + un
-    aw(2,5) = aw(2,5) - x(2)/deux
-    aw(2,6) = aw(2,6) - y(2)/deux
-    aw(2,7) = aw(2,7) - un
-    aw(2,8) = aw(2,8) - x(2)/deux
-    aw(2,9) = aw(2,9) - y(2)/deux
-    aw(3,7) = aw(3,7) + un
-    aw(3,8) = aw(3,8) - x(3)/deux
-    aw(3,9) = aw(3,9) - y(3)/deux
-    aw(3,10) = aw(3,10) - un
-    aw(3,11) = aw(3,11) - x(3)/deux
-    aw(3,12) = aw(3,12) - y(3)/deux
-    aw(4,1) = aw(4,1) - un
-    aw(4,2) = aw(4,2) - x(4)/deux
-    aw(4,3) = aw(4,3) - y(4)/deux
-    aw(4,10) = aw(4,10) + un
-    aw(4,11) = aw(4,11) - x(4)/deux
-    aw(4,12) = aw(4,12) - y(4)/deux
+    aw(1, 1) = aw(1, 1)+un
+    aw(1, 2) = aw(1, 2)-x(1)/deux
+    aw(1, 3) = aw(1, 3)-y(1)/deux
+    aw(1, 4) = aw(1, 4)-un
+    aw(1, 5) = aw(1, 5)-x(1)/deux
+    aw(1, 6) = aw(1, 6)-y(1)/deux
+    aw(2, 4) = aw(2, 4)+un
+    aw(2, 5) = aw(2, 5)-x(2)/deux
+    aw(2, 6) = aw(2, 6)-y(2)/deux
+    aw(2, 7) = aw(2, 7)-un
+    aw(2, 8) = aw(2, 8)-x(2)/deux
+    aw(2, 9) = aw(2, 9)-y(2)/deux
+    aw(3, 7) = aw(3, 7)+un
+    aw(3, 8) = aw(3, 8)-x(3)/deux
+    aw(3, 9) = aw(3, 9)-y(3)/deux
+    aw(3, 10) = aw(3, 10)-un
+    aw(3, 11) = aw(3, 11)-x(3)/deux
+    aw(3, 12) = aw(3, 12)-y(3)/deux
+    aw(4, 1) = aw(4, 1)-un
+    aw(4, 2) = aw(4, 2)-x(4)/deux
+    aw(4, 3) = aw(4, 3)-y(4)/deux
+    aw(4, 10) = aw(4, 10)+un
+    aw(4, 11) = aw(4, 11)-x(4)/deux
+    aw(4, 12) = aw(4, 12)-y(4)/deux
 !
 !====================================
 ! ---    INVERSION DE LA MATRICE AA =
@@ -473,13 +473,13 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 !
     do i = 1, 4
         do j = 1, 4
-            aai(i,j) = zero
+            aai(i, j) = zero
         end do
     end do
     do i = 1, 4
-        aai(i,i) = un
+        aai(i, i) = un
     end do
-    call mgauss('NFVP', aa, aai, 4, 4,&
+    call mgauss('NFVP', aa, aai, 4, 4, &
                 4, det, iret)
 !
 !===================================================================
@@ -493,7 +493,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
     do i = 1, 4
         do k = 1, 4
             do j = 1, 12
-                an(i,j) = an(i,j) + aai(i,k) * (aw(k,j)+ab(k,j))
+                an(i, j) = an(i, j)+aai(i, k)*(aw(k, j)+ab(k, j))
             end do
         end do
     end do
@@ -507,7 +507,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
     do i = 1, 4
         do k = 1, 4
             do j = 1, 8
-                am(i,j) = am(i,j) + aai(i,k) * al(k,j)
+                am(i, j) = am(i, j)+aai(i, k)*al(k, j)
             end do
         end do
     end do

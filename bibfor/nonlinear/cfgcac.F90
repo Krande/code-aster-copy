@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,8 +82,8 @@ subroutine cfgcac(resoco, tole, neq, nbliai, nbliac)
     call r8inir(neq, 0.d0, zr(jatmu), 1)
     do iliai = 1, nbliai
         jdecal = zi(japptr+iliai-1)
-        nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-        call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal),&
+        nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
+        call calatm(neq, nbddl, zr(jmu+iliai-1), zr(japcoe+jdecal), zi(japddl+jdecal), &
                     zr(jatmu))
     end do
 !
@@ -92,9 +92,9 @@ subroutine cfgcac(resoco, tole, neq, nbliai, nbliac)
     nbliac = 0
     do iliai = 1, nbliai
         if (zr(jmu+iliai-1) .gt. tole) then
-            nbliac = nbliac + 1
+            nbliac = nbliac+1
             zi(jliac+nbliac-1) = iliai
-        endif
+        end if
     end do
 !
     call jedema()

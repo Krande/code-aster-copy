@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine compor_3d_fibre(fami,    kpg,    ksp,  option, sigx,   &
-                           instam,  instap, crit, icdmat, materi, &
-                           pcompor, epsx,   depx, angmas, vim,    &
-                           vip,     sigxp,  etan, codret)
+subroutine compor_3d_fibre(fami, kpg, ksp, option, sigx, &
+                           instam, instap, crit, icdmat, materi, &
+                           pcompor, epsx, depx, angmas, vim, &
+                           vip, sigxp, etan, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,10 +45,10 @@ subroutine compor_3d_fibre(fami,    kpg,    ksp,  option, sigx,   &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nmcomp.h"
 !
@@ -97,7 +97,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    eps(:) = 0.0; sigm(:) = 0.0; sigp(:) = 0.0; deps(:) = 0.0; dsidep(:,:) = 0.0
+    eps(:) = 0.0; sigm(:) = 0.0; sigp(:) = 0.0; deps(:) = 0.0; dsidep(:, :) = 0.0
     !
     eps(1) = epsx; deps(1) = depx; sigm(1) = sigx
     typmod(1) = 'COMP1D  '
@@ -108,13 +108,13 @@ implicit none
     !
     ! Appel à la loi de comportement
     call nmcomp(BEHinteg, &
-                fami,   kpg,     ksp,    2,      typmod, &
-                icdmat, pcompor, crit,   instam, instap, &
-                6,      eps,     deps,   6,      sigm,   &
-                vim,    option,  angmas, sigp,   vip,    &
-                36,     dsidep,  codret, materi_= materi)
+                fami, kpg, ksp, 2, typmod, &
+                icdmat, pcompor, crit, instam, instap, &
+                6, eps, deps, 6, sigm, &
+                vim, option, angmas, sigp, vip, &
+                36, dsidep, codret, materi_=materi)
     !
     sigxp = sigp(1)
-    etan  = dsidep(1,1)
+    etan = dsidep(1, 1)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 !
 subroutine rsGetSize(resultName, resultSize)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/rsorac.h"
 !
-character(len=8), intent(in) :: resultName
-integer, intent(out) :: resultSize
+    character(len=8), intent(in) :: resultName
+    integer, intent(out) :: resultSize
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,8 +47,8 @@ integer, intent(out) :: resultSize
 ! --------------------------------------------------------------------------------------------------
 !
     resultSize = 0
-    call rsorac(resultName, 'LONMAX', 0  , r8bid, k8bid,&
-                c16bid    , 0.d0     , ' ', list , 1    ,&
+    call rsorac(resultName, 'LONMAX', 0, r8bid, k8bid, &
+                c16bid, 0.d0, ' ', list, 1, &
                 iret)
     resultSize = list(1)
 !

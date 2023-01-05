@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlfft(n, x, y, h, nt,&
+subroutine mnlfft(n, x, y, h, nt, &
                   ind)
     implicit none
 !
@@ -71,10 +71,10 @@ subroutine mnlfft(n, x, y, h, nt,&
         do k = 1, n
             call zdscal(nt, 0.d0, zc(ixft), 1)
 !
-            zc(ixft)=nt*x(k)
+            zc(ixft) = nt*x(k)
             do j = 1, h
-                zc(ixft-1+j+1)=dcmplx((nt/2.d0)*x(j*n+k),(nt/2.d0)*x(n*(h+j)+k))
-                zc(ixft-1+nt-j+1)=dcmplx((nt/2.d0)*x(j*n+k),-(nt/2.d0)*x(n*(h+j)+k))
+                zc(ixft-1+j+1) = dcmplx((nt/2.d0)*x(j*n+k), (nt/2.d0)*x(n*(h+j)+k))
+                zc(ixft-1+nt-j+1) = dcmplx((nt/2.d0)*x(j*n+k), -(nt/2.d0)*x(n*(h+j)+k))
             end do
 !
             call fft(zc(ixft), nt, -1)
@@ -84,22 +84,22 @@ subroutine mnlfft(n, x, y, h, nt,&
             end do
         end do
 !
-    else if (ind.eq.1) then
+    else if (ind .eq. 1) then
 ! ---   APPLICATION DE LA FFT
         do k = 1, n
             do j = 1, nt
-                zc(iyf-1+j)=dcmplx(y((j-1)*n+k),0.d0)
+                zc(iyf-1+j) = dcmplx(y((j-1)*n+k), 0.d0)
             end do
 !
             call fft(zc(iyf), nt, 1)
 !
-            x(k)=dble(zc(iyf))/nt
+            x(k) = dble(zc(iyf))/nt
             do j = 1, h
-                x(j*n+k)=2.d0*dble(zc(iyf-1+j+1))/nt
-                x((h+j)*n+k)=2.d0*aimag(zc(iyf-1+j+1))/nt
+                x(j*n+k) = 2.d0*dble(zc(iyf-1+j+1))/nt
+                x((h+j)*n+k) = 2.d0*aimag(zc(iyf-1+j+1))/nt
             end do
         end do
-    endif
+    end if
 !
     call jedetr('&&mnlfft.xf')
     call jedetr('&&mnlfft.yf')

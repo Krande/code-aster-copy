@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
-                        i_zone         ,&
-                       ksipc1 , ksipc2     , ksipr1         , ksipr2     ,&
-                       tau1   , tau2       ,&
-                       elem_slav_indx,  elem_slav_nbno,&
-                       elem_slav_type, elem_slav_coor,&
-                       elem_mast_nume,&
-                       lagr_cont_node,&
-                       norm   , &
-                       gap    , gap_user,  lagr_cont_poin,&
-                        poin_slav_coor, poin_proj_coor)
+subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
+                       i_zone, &
+                       ksipc1, ksipc2, ksipr1, ksipr2, &
+                       tau1, tau2, &
+                       elem_slav_indx, elem_slav_nbno, &
+                       elem_slav_type, elem_slav_coor, &
+                       elem_mast_nume, &
+                       lagr_cont_node, &
+                       norm, &
+                       gap, gap_user, lagr_cont_poin, &
+                       poin_slav_coor, poin_proj_coor)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
@@ -71,7 +71,7 @@ implicit none
     real(kind=8), intent(out) :: gap
     real(kind=8), intent(out) :: gap_user
     real(kind=8), intent(out) :: lagr_cont_poin
-    real(kind=8),intent(out),optional :: poin_slav_coor(3), poin_proj_coor(3)
+    real(kind=8), intent(out), optional :: poin_slav_coor(3), poin_proj_coor(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,12 +115,12 @@ implicit none
 !
 ! - Coordinates of the contact point
 !
-    call mmvalp(model_ndim, elem_slav_type, elem_slav_nbno, 3, ksipc1,&
-                ksipc2    , elem_slav_coor, poin_slav_coor)
+    call mmvalp(model_ndim, elem_slav_type, elem_slav_nbno, 3, ksipc1, &
+                ksipc2, elem_slav_coor, poin_slav_coor)
 !
 ! - Coordinates of the projection of contact point
 !
-    call mcopco(mesh  , newgeo        , model_ndim, elem_mast_nume, ksipr1,&
+    call mcopco(mesh, newgeo, model_ndim, elem_mast_nume, ksipr1, &
                 ksipr2, poin_proj_coor)
 !
 ! - Local basis on master element
@@ -129,7 +129,7 @@ implicit none
     if (noor .le. r8prem()) then
         call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
         call utmess('F', 'CONTACT3_23', sk=elem_mast_name, nr=3, valr=poin_proj_coor)
-    endif
+    end if
 !
 ! - Compute gap
 !
@@ -137,12 +137,12 @@ implicit none
 !
 ! - Get user gap
 !
-    call cfdist(ds_contact, i_zone, elem_slav_indx, poin_slav_coor, time_curr,&
-                gap_user   )
+    call cfdist(ds_contact, i_zone, elem_slav_indx, poin_slav_coor, time_curr, &
+                gap_user)
 !
 ! - Interpolate contact pressure (Lagrange) at point
 !
-    call mmvalp_scal(model_ndim    , elem_slav_type, elem_slav_nbno, ksipc1, ksipc2,&
+    call mmvalp_scal(model_ndim, elem_slav_type, elem_slav_nbno, ksipc1, ksipc2, &
                      lagr_cont_node, lagr_cont_poin)
 !
 end subroutine

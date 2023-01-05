@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmsolm(sddyna, solalg)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,8 +35,8 @@ implicit none
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
 !
-character(len=19) :: sddyna
-character(len=19) :: solalg(*)
+    character(len=19) :: sddyna
+    character(len=19) :: solalg(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,22 +68,22 @@ character(len=19) :: solalg(*)
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> CONVERSION DES INCREMENTS APRES '//&
+        write (ifm, *) '<MECANONLINE> CONVERSION DES INCREMENTS APRES '//&
      &                'CORRECTION DU CONTACT '
-    endif
+    end if
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lstat = ndynlo(sddyna,'STATIQUE')
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    lstat = ndynlo(sddyna, 'STATIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
 ! --- TYPE DE FORMULATION SCHEMA DYNAMIQUE GENERAL
 !
     if (ldyna) then
-        ldepl = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1
-        lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
-        lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
-    endif
+        ldepl = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 1
+        lvite = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 2
+        lacce = ndynin(sddyna, 'FORMUL_DYNAMIQUE') .eq. 3
+    end if
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -96,11 +96,11 @@ character(len=19) :: solalg(*)
     if (lstat) then
         goto 999
     else if (ldyna) then
-        coevit = ndynre(sddyna,'COEF_VITE')
-        coeacc = ndynre(sddyna,'COEF_ACCE')
+        coevit = ndynre(sddyna, 'COEF_VITE')
+        coeacc = ndynre(sddyna, 'COEF_ACCE')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- RE-CALCUL DES INCREMENTS
 !
@@ -119,22 +119,22 @@ character(len=19) :: solalg(*)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- AFFICHAGE
 !
 999 continue
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... DEPL. SOLU.     : '
+        write (ifm, *) '<MECANONLINE> ... DEPL. SOLU.     : '
         call nmdebg('VECT', ddepla, ifm)
         if (ldyna) then
-            write (ifm,*) '<MECANONLINE> ... VITE. SOLU.     : '
+            write (ifm, *) '<MECANONLINE> ... VITE. SOLU.     : '
             call nmdebg('VECT', dvitla, ifm)
-            write (ifm,*) '<MECANONLINE> ... ACCE. SOLU.     : '
+            write (ifm, *) '<MECANONLINE> ... ACCE. SOLU.     : '
             call nmdebg('VECT', daccla, ifm)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

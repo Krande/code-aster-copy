@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcjplc(rela_comp, mod, angmas, imat, nmat,&
-                  mater, timed, timef, compor, nbcomm,&
-                  cpmono, pgl, nfs, nsg, toutms,&
-                  hsr, nr, nvi, epsd, deps,&
-                  itmax, toler, sigf, vinf, sigd,&
-                  vind, dsde, drdy, option, iret,&
+subroutine lcjplc(rela_comp, mod, angmas, imat, nmat, &
+                  mater, timed, timef, compor, nbcomm, &
+                  cpmono, pgl, nfs, nsg, toutms, &
+                  hsr, nr, nvi, epsd, deps, &
+                  itmax, toler, sigf, vinf, sigd, &
+                  vind, dsde, drdy, option, iret, &
                   fami, kpg, ksp)
 ! aslint: disable=W1504
     implicit none
@@ -52,43 +52,43 @@ subroutine lcjplc(rela_comp, mod, angmas, imat, nmat,&
     character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: option
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !
     integer :: nbcomm(nmat, 3)
     real(kind=8) :: sigf(*), sigd(*), vind(*), vinf(*), timed, timef, pgl(3, 3)
     real(kind=8) :: drdy(nr, nr)
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
-character(len=24) :: cpmono(5*nmat+1)
+    character(len=24) :: cpmono(5*nmat+1)
 !       ----------------------------------------------------------------
-    iret=0
+    iret = 0
     if (rela_comp .eq. 'VISCOCHAB') then
-        call cvmjpl(mod, nmat, mater, timed, timef,&
-                    epsd, deps, sigf, vinf, sigd,&
+        call cvmjpl(mod, nmat, mater, timed, timef, &
+                    epsd, deps, sigf, vinf, sigd, &
                     vind, nvi, nr, dsde)
     else if ((rela_comp .eq. 'MONOCRISTAL')) then
-        call lcmmjp(mod, nmat, mater, timed, timef,&
-                    compor, nbcomm, cpmono, pgl, nfs,&
-                    nsg, toutms, hsr, nr, nvi, sigd,&
-                    itmax, toler, vinf, vind, dsde,&
+        call lcmmjp(mod, nmat, mater, timed, timef, &
+                    compor, nbcomm, cpmono, pgl, nfs, &
+                    nsg, toutms, hsr, nr, nvi, sigd, &
+                    itmax, toler, vinf, vind, dsde, &
                     drdy, option, iret)
     else if (rela_comp .eq. 'LETK') then
-        call lkijpl(nmat, mater, sigf, nr, drdy,&
+        call lkijpl(nmat, mater, sigf, nr, drdy, &
                     dsde)
     else if (rela_comp .eq. 'LKR') then
-        call srijpl(nmat,mater,sigf,nr,drdy,dsde)
+        call srijpl(nmat, mater, sigf, nr, drdy, dsde)
     else if (rela_comp .eq. 'HAYHURST') then
-        n2=nr-ndt
-        call lcoptg(nmat, mater, nr, n2, drdy,&
+        n2 = nr-ndt
+        call lcoptg(nmat, mater, nr, n2, drdy, &
                     0, dsde, iret)
     else if (rela_comp .eq. 'HUJEUX') then
-        call hujopt(fami, kpg, ksp, mod, angmas,&
-                    imat, nmat, mater, nvi, vinf,&
+        call hujopt(fami, kpg, ksp, mod, angmas, &
+                    imat, nmat, mater, nvi, vinf, &
                     nr, drdy, sigf, dsde, iret)
     else
-        n2=nr-ndt
-        call lcoptg(nmat, mater, nr, n2, drdy,&
+        n2 = nr-ndt
+        call lcoptg(nmat, mater, nr, n2, drdy, &
                     1, dsde, iret)
-    endif
+    end if
 !
 end subroutine

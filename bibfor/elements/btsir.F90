@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine btsir(lonlig, loncol, jacgau, bmat, sigma,&
+subroutine btsir(lonlig, loncol, jacgau, bmat, sigma, &
                  bsigma)
     implicit none
     integer :: i, j, loncol, lonlig
@@ -40,9 +40,9 @@ subroutine btsir(lonlig, loncol, jacgau, bmat, sigma,&
     do i = 1, lonlig
         valbsi = 0.0d0
         do j = 1, loncol
-            valbsi = valbsi + abs(bmat(j,i)*sigma(j))
+            valbsi = valbsi+abs(bmat(j, i)*sigma(j))
         end do
-        bsigma(i) = bsigma(i) + valbsi*jacgau
+        bsigma(i) = bsigma(i)+valbsi*jacgau
     end do
 !
 end subroutine

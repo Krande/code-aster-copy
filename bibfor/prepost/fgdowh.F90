@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
+subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke, &
                   rke, lhaigh, rcorr, dom)
     implicit none
 #include "asterf_types.h"
@@ -67,10 +67,10 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
         if (endur) then
             dom(i) = 0.d0
         else
-            call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+            call rcvale(nommat, pheno, nbpar, nompar, [delta], &
                         1, nomres, nrupt(1), icodre(1), 2)
             dom(i) = 1.d0/nrupt(1)
-        endif
+        end if
     end do
 !
     call jedema()

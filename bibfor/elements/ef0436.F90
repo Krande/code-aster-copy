@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,8 +55,8 @@ subroutine ef0436(nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -67,71 +67,67 @@ subroutine ef0436(nomte)
 !
     call jevech('PEFFORR', 'E', jefno)
 
-
     call r8inir(3*9, 0.d0, sigg, 1)
 !
 ! - LE VECTEUR NORME QUI DETERMINE LE REPERE LOCAL DE LA MEMBRANE
 !   (COMPORTEMENT ANISOTROPE)
 !
-    alpha = zr(icacoq+1) * r8dgrd()
-    beta = zr(icacoq+2) * r8dgrd()
+    alpha = zr(icacoq+1)*r8dgrd()
+    beta = zr(icacoq+2)*r8dgrd()
 !
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
     do kpg = 1, npg
 !
-         do n = 1, nno
-            vff(n) =zr(ivf+(kpg-1)*nno+n-1)
-            dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
-            dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-         end do
+        do n = 1, nno
+            vff(n) = zr(ivf+(kpg-1)*nno+n-1)
+            dff(1, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2)
+            dff(2, n) = zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
+        end do
 !
 !        --- CALCUL DE LA MATRICE "B" :
 !              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
 !
-         call mbcine(nno, zr(igeom), dff, alpha, beta,&
+        call mbcine(nno, zr(igeom), dff, alpha, beta, &
                     b, jac)
 !
 !        ---  ON CALCULE LA CONTRAINTE AU PG :
 !
 !        -- CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
-         call r8inir(3, 0.d0, epsm, 1)
-         do n = 1, nno
-             do i = 1, nddl
-                 do c = 1, ncomp
-                     epsm(c)=epsm(c)+b(c,i,n)*zr(idepl+(n-1)*nddl+i-1)
-                 end do
-             end do
-         end do
+        call r8inir(3, 0.d0, epsm, 1)
+        do n = 1, nno
+            do i = 1, nddl
+                do c = 1, ncomp
+                    epsm(c) = epsm(c)+b(c, i, n)*zr(idepl+(n-1)*nddl+i-1)
+                end do
+            end do
+        end do
 !
 !        -- RETRAIT DE LA DEFORMATION THERMIQUE
-         call verift(fami, kpg, 1, '+', zi(imate),&
-                     epsth_=epsthe)
-         epsm(1) = epsm(1) - epsthe
-         epsm(2) = epsm(2) - epsthe
+        call verift(fami, kpg, 1, '+', zi(imate), &
+                    epsth_=epsthe)
+        epsm(1) = epsm(1)-epsthe
+        epsm(2) = epsm(2)-epsthe
 
 !
 !        --  CALCUL DE LA CONTRAINTE AU PG
-         call mbrigi(fami, kpg, imate, rig)
+        call mbrigi(fami, kpg, imate, rig)
 !
-         call r8inir(3, 0.d0, sig, 1)
-         do c = 1, ncomp
-             do cc = 1, ncomp
-                 sig(c) = sig(c) + epsm(cc)*rig(cc,c)
-             end do
-         end do
+        call r8inir(3, 0.d0, sig, 1)
+        do c = 1, ncomp
+            do cc = 1, ncomp
+                sig(c) = sig(c)+epsm(cc)*rig(cc, c)
+            end do
+        end do
 !
-         do c = 1, ncomp
-             sigg(c,kpg) = sig(c)
-         end do
+        do c = 1, ncomp
+            sigg(c, kpg) = sig(c)
+        end do
 
     end do
 
-
-
 !   -- passage ELGA -> ELNO :
     call ppgan2(jgano, 1, ncomp, sigg, zr(jefno))
-
 
 end subroutine

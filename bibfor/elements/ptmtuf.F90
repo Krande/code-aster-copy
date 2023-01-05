@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ptmtuf(m, rho, e, rof, ce,&
-                  a, ai, xl, xiy, xiz,&
+subroutine ptmtuf(m, rho, e, rof, ce, &
+                  a, ai, xl, xiy, xiz, &
                   g, alfay, alfaz, ey, ez)
     implicit none
 #include "asterc/r8gaem.h"
@@ -81,7 +81,7 @@ subroutine ptmtuf(m, rho, e, rof, ce,&
     real(kind=8) :: c11, c12, c13, c15, c24, c30, c35
     real(kind=8) :: c40, c60, c70, c105, c120, c140, c210, c420
 !-----------------------------------------------------------------------
-    data ip/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120/
 ! ---------------------------------------------------------------------
 !
     zero = 0.d0
@@ -109,103 +109,103 @@ subroutine ptmtuf(m, rho, e, rof, ce,&
     c210 = 210.d0
     c420 = 420.d0
     do i = 1, 136
-        m(i) =zero
+        m(i) = zero
     end do
 !
 !     -- SI G  ET E SONT NULS : ON FAIT G=1.
     if (abs(g) .lt. 1.d0/r8gaem()) then
         if (abs(e) .lt. 1.d0/r8gaem()) then
-            g=1.d0
+            g = 1.d0
         else
             call utmess('F', 'ELEMENTS2_54')
-        endif
-    endif
+        end if
+    end if
 !
 !     1/
-    m(ip(1)+1)= rho * a * xl / c3
-    m(ip(9)+1)= m(ip(1)+1) / c2
-    m(ip(9)+9)= m(ip(1)+1)
+    m(ip(1)+1) = rho*a*xl/c3
+    m(ip(9)+1) = m(ip(1)+1)/c2
+    m(ip(9)+9) = m(ip(1)+1)
 !
 !     2.1) CALCUL DES CONSTANTES
-    xl2 = xl * xl
+    xl2 = xl*xl
     if (alfay .ne. zero) then
-        asz = a / alfay
-        phiy = (c12 * e * xiz) / (g * asz * xl2)
+        asz = a/alfay
+        phiy = (c12*e*xiz)/(g*asz*xl2)
     else
         phiy = zero
-    endif
+    end if
     if (alfaz .ne. zero) then
-        asy = a / alfaz
-        phiz = (c12 * e * xiy) / (g * asy * xl2)
+        asy = a/alfaz
+        phiz = (c12*e*xiy)/(g*asy*xl2)
     else
         phiz = zero
-    endif
-    phiy2 = phiy * phiy
-    phiz2 = phiz * phiz
-    cy = (rho * a + rof * ai) * xl / (c1 + phiy)**2
-    cz = (rho * a + rof * ai) * xl / (c1 + phiz)**2
-    yial = xiy / ( a * xl2 )
-    zial = xiz / ( a * xl2 )
+    end if
+    phiy2 = phiy*phiy
+    phiz2 = phiz*phiz
+    cy = (rho*a+rof*ai)*xl/(c1+phiy)**2
+    cz = (rho*a+rof*ai)*xl/(c1+phiz)**2
+    yial = xiy/(a*xl2)
+    zial = xiz/(a*xl2)
 !
 !     2.2) REMPLISSAGE DE LA MATRICE
 !
-    m(ip( 2)+ 2) = cy * (c13/c35 + phiy*c7/c10 + phiy2/c3 + zial*c6/c5)
-    m(ip( 3)+ 3) = cz * (c13/c35 + phiz*c7/c10 + phiz2/c3 + yial*c6/c5)
-    m(ip( 4)+ 4) = rho * xl * (xiy+xiz) /c3
-    m(ip( 6)+ 2) = cy * xl * ( c11/c210 + phiy*c11/c120 + phiy2/c24 + zial*( c1/c10 - phiy/c2) )
-    m(ip( 5)+ 3) = -cz * xl * ( c11/c210 + phiz*c11/c120 + phiz2/c24 + yial*( c1/c10 - phiz/c2) )
-    m(ip( 6)+ 6) = cy * xl2 * (&
-                   c1/c105 + phiy/c60 + phiy2/c120 + zial*( c2/c15 + phiy/c6 + phiy2/c3))
-    m(ip( 5)+ 5) = cz * xl2 * (&
-                   c1/c105 + phiz/c60 + phiz2/c120 + yial*( c2/c15 + phiz/c6 + phiz2/c3))
-    m(ip(10)+ 2) = cy * (c9/c70 + c3*phiy/c10 + phiy2/c6 - zial*c6/c5)
-    m(ip(11)+ 3) = cz * (c9/c70 + c3*phiz/c10 + phiz2/c6 - yial*c6/c5)
-    m(ip(10)+ 6) = cy * xl *( c13/c420 + c3*phiy/c40 + phiy2/c24 - zial*(c1/c10 - phiy/c2) )
-    m(ip(13)+ 3) = cz * xl *( c13/c420 + c3*phiz/c40 + phiz2/c24 - yial*(c1/c10 - phiz/c2) )
-    m(ip(14)+ 6) = -cy * xl2 *(&
-                   c1/c140 + phiy/c60 + phiy2/c120 + zial*( c1/c30 + phiy/c6 - phiy2/c6))
-    m(ip(13)+ 5) = -cz * xl2 *(&
-                   c1/c140 + phiz/c60 + phiz2/c120 + yial*( c1/c30 + phiz/c6 - phiz2/c6))
-    m(ip(12)+ 4) = m(ip( 4)+ 4) / c2
-    m(ip(14)+ 2) = - m(ip(10)+ 6)
-    m(ip(14)+10) = - m(ip( 6)+ 2)
-    m(ip(14)+14) = m(ip( 6)+ 6)
-    m(ip(10)+10) = m(ip( 2)+ 2)
-    m(ip(11)+11) = m(ip( 3)+ 3)
-    m(ip(11)+ 5) = - m(ip(13)+ 3)
-    m(ip(13)+11) = - m(ip( 5)+ 3)
-    m(ip(12)+12) = m(ip( 4)+ 4)
-    m(ip(13)+13) = m(ip( 5)+ 5)
+    m(ip(2)+2) = cy*(c13/c35+phiy*c7/c10+phiy2/c3+zial*c6/c5)
+    m(ip(3)+3) = cz*(c13/c35+phiz*c7/c10+phiz2/c3+yial*c6/c5)
+    m(ip(4)+4) = rho*xl*(xiy+xiz)/c3
+    m(ip(6)+2) = cy*xl*(c11/c210+phiy*c11/c120+phiy2/c24+zial*(c1/c10-phiy/c2))
+    m(ip(5)+3) = -cz*xl*(c11/c210+phiz*c11/c120+phiz2/c24+yial*(c1/c10-phiz/c2))
+    m(ip(6)+6) = cy*xl2*( &
+                 c1/c105+phiy/c60+phiy2/c120+zial*(c2/c15+phiy/c6+phiy2/c3))
+    m(ip(5)+5) = cz*xl2*( &
+                 c1/c105+phiz/c60+phiz2/c120+yial*(c2/c15+phiz/c6+phiz2/c3))
+    m(ip(10)+2) = cy*(c9/c70+c3*phiy/c10+phiy2/c6-zial*c6/c5)
+    m(ip(11)+3) = cz*(c9/c70+c3*phiz/c10+phiz2/c6-yial*c6/c5)
+    m(ip(10)+6) = cy*xl*(c13/c420+c3*phiy/c40+phiy2/c24-zial*(c1/c10-phiy/c2))
+    m(ip(13)+3) = cz*xl*(c13/c420+c3*phiz/c40+phiz2/c24-yial*(c1/c10-phiz/c2))
+    m(ip(14)+6) = -cy*xl2*( &
+                  c1/c140+phiy/c60+phiy2/c120+zial*(c1/c30+phiy/c6-phiy2/c6))
+    m(ip(13)+5) = -cz*xl2*( &
+                  c1/c140+phiz/c60+phiz2/c120+yial*(c1/c30+phiz/c6-phiz2/c6))
+    m(ip(12)+4) = m(ip(4)+4)/c2
+    m(ip(14)+2) = -m(ip(10)+6)
+    m(ip(14)+10) = -m(ip(6)+2)
+    m(ip(14)+14) = m(ip(6)+6)
+    m(ip(10)+10) = m(ip(2)+2)
+    m(ip(11)+11) = m(ip(3)+3)
+    m(ip(11)+5) = -m(ip(13)+3)
+    m(ip(13)+11) = -m(ip(5)+3)
+    m(ip(12)+12) = m(ip(4)+4)
+    m(ip(13)+13) = m(ip(5)+5)
 !
     if (ez .ne. zero .or. ey .ne. zero) then
-        m(ip( 4)+ 2) = - ez * m(ip( 2)+ 2)
-        m(ip(12)+ 2) = - ez * m(ip(10)+ 2)
-        m(ip( 4)+ 3) = ey * m(ip( 3)+ 3)
-        m(ip(12)+ 3) = ey * m(ip(11)+ 3)
-        m(ip( 4)+ 4) = m( ip( 4)+ 4) + ez * ez * m(ip( 2)+ 2) + ey * ey * m(ip( 3)+ 3 )
-        m(ip( 5)+ 4) = ey * m(ip( 5)+ 3)
-        m(ip( 6)+ 4) = - ez * m(ip( 6)+ 2)
-        m(ip(10)+ 4) = m(ip(12)+ 2)
-        m(ip(11)+ 4) = m(ip(12)+ 3)
-        m(ip(12)+ 4) = m( ip(12)+ 4) + ez * ez * m(ip(10)+ 3) + ey * ey * m(ip(11)+ 3 )
-        m(ip(13)+ 4) = ey * m(ip(13)+ 3)
-        m(ip(14)+ 4) = - ez * m(ip(14)+ 2)
-        m(ip(12)+ 5) = - m(ip(14)+ 4)
-        m(ip(12)+ 6) = - m(ip(12)+ 4)
-        m(ip(12)+10) = m(ip( 4)+ 2)
-        m(ip(12)+11) = m(ip( 4)+ 3)
-        m(ip(12)+12) = m(ip( 4)+ 4)
-        m(ip(13)+12) = - m(ip( 5)+ 4)
-        m(ip(14)+12) = - m(ip( 6)+ 4)
-    endif
+        m(ip(4)+2) = -ez*m(ip(2)+2)
+        m(ip(12)+2) = -ez*m(ip(10)+2)
+        m(ip(4)+3) = ey*m(ip(3)+3)
+        m(ip(12)+3) = ey*m(ip(11)+3)
+        m(ip(4)+4) = m(ip(4)+4)+ez*ez*m(ip(2)+2)+ey*ey*m(ip(3)+3)
+        m(ip(5)+4) = ey*m(ip(5)+3)
+        m(ip(6)+4) = -ez*m(ip(6)+2)
+        m(ip(10)+4) = m(ip(12)+2)
+        m(ip(11)+4) = m(ip(12)+3)
+        m(ip(12)+4) = m(ip(12)+4)+ez*ez*m(ip(10)+3)+ey*ey*m(ip(11)+3)
+        m(ip(13)+4) = ey*m(ip(13)+3)
+        m(ip(14)+4) = -ez*m(ip(14)+2)
+        m(ip(12)+5) = -m(ip(14)+4)
+        m(ip(12)+6) = -m(ip(12)+4)
+        m(ip(12)+10) = m(ip(4)+2)
+        m(ip(12)+11) = m(ip(4)+3)
+        m(ip(12)+12) = m(ip(4)+4)
+        m(ip(13)+12) = -m(ip(5)+4)
+        m(ip(14)+12) = -m(ip(6)+4)
+    end if
 !     2/CONTRIBUTION DU FLUIDE
-    m(ip( 8)+ 8) = - ai * rof / xl
-    m(ip(16)+ 8) = - m(ip( 8)+ 8)
-    m(ip(16)+16) = m(ip( 8)+ 8)
-    m(ip( 8)+ 7) = xl * ai / (ce * ce * c3)
-    m(ip(16)+ 7) = m(ip( 8)+ 7) / c2
-    m(ip(15)+ 8) = m(ip( 8)+ 7) / c2
-    m(ip(16)+15) = m(ip( 8)+ 7)
-    m(ip( 8)+ 1) = - ai * rof
-    m(ip(16)+ 9) = ai * rof
+    m(ip(8)+8) = -ai*rof/xl
+    m(ip(16)+8) = -m(ip(8)+8)
+    m(ip(16)+16) = m(ip(8)+8)
+    m(ip(8)+7) = xl*ai/(ce*ce*c3)
+    m(ip(16)+7) = m(ip(8)+7)/c2
+    m(ip(15)+8) = m(ip(8)+7)/c2
+    m(ip(16)+15) = m(ip(8)+7)
+    m(ip(8)+1) = -ai*rof
+    m(ip(16)+9) = ai*rof
 end subroutine

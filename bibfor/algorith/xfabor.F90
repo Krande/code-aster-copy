@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
+subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc, &
                   fabord)
     implicit none
 #include "asterf_types.h"
@@ -63,7 +63,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !
     call jemarq()
 !
-    mai=noma//'.TYPMAIL'
+    mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
@@ -80,7 +80,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
     call jeveuo(jexnum(cnxinv, nunoc), 'L', jmanoc)
 !
 !     ON COMPTE LE NBRE DE MAILLES VOLUMIQUES COMMUNES AUX 3 NOEUDS :
-    nbmaco=0
+    nbmaco = 0
 !
 !     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD A
     do imaa = 1, nmanoa
@@ -90,7 +90,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
 !       NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-        ndime= tmdim(itypma)
+        ndime = tmdim(itypma)
 !
 !       SI MAILLE NON VOLUMIQUE ON CONTINUE À 100
         if (ndime .ne. 3) goto 100
@@ -102,7 +102,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
             itypma = zi(jma-1+numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
-            ndime= tmdim(itypma)
+            ndime = tmdim(itypma)
 !
 !         SI MAILLE NON VOLUMIQUE ON CONTINUE À 110
             if (ndime .ne. 3) goto 110
@@ -116,7 +116,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
                     itypma = zi(jma-1+numac)
                     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
-                    ndime= tmdim(itypma)
+                    ndime = tmdim(itypma)
 !
 !             SI MAILLE NON VOLUMIQUE ON CONTINUE À 120
                     if (ndime .ne. 3) goto 120
@@ -124,20 +124,20 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !             SI LA MAILLE EST EN COMMUN AUX NOEUDS B ET C (ET A),
 !             ON A DECOUVERT UNE MAILLE QUE LES TROIS NOEUDS
 !             ONT EN COMMUN
-                    if (numab .eq. numac) nbmaco=nbmaco+1
+                    if (numab .eq. numac) nbmaco = nbmaco+1
 !
 120                 continue
                 end do
-            endif
+            end if
 110         continue
         end do
 100     continue
     end do
 !
-    ASSERT(nbmaco.gt.0)
+    ASSERT(nbmaco .gt. 0)
 !
-    fabord=.false.
-    if (nbmaco .eq. 1) fabord=.true.
+    fabord = .false.
+    if (nbmaco .eq. 1) fabord = .true.
 !
     call jedema()
 end subroutine

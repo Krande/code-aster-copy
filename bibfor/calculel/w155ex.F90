@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !
     call infmaj()
     call infniv(ifm, niv)
-    resu19=resu
+    resu19 = resu
 !
 !
 !
@@ -63,67 +63,67 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !     -------------------------
     call getfac('EXTR_COQUE', n1)
     if (n1 .eq. 1) then
-        motfac='EXTR_COQUE'
+        motfac = 'EXTR_COQUE'
     else
         call getfac('EXTR_TUYAU', n1)
         if (n1 .eq. 1) then
-            motfac='EXTR_TUYAU'
+            motfac = 'EXTR_TUYAU'
         else
             call getfac('EXTR_PMF', n1)
             if (n1 .eq. 1) then
-                motfac='EXTR_PMF'
+                motfac = 'EXTR_PMF'
             else
 !           -- IL N'Y A RIEN A FAIRE :
                 goto 30
 !
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 !     -- 2.  : NOMSYM, NUCOU, NICOU, NANGL, NUFIB
 !     --------------------------------------------------
-    call getvtx(motfac, 'NOM_CHAM', iocc=1, nbval=10, vect=nomsym,&
+    call getvtx(motfac, 'NOM_CHAM', iocc=1, nbval=10, vect=nomsym, &
                 nbret=nbsym)
-    ASSERT(nbsym.gt.0)
+    ASSERT(nbsym .gt. 0)
     if (motfac .eq. 'EXTR_COQUE' .or. motfac .eq. 'EXTR_TUYAU') then
         call getvis(motfac, 'NUME_COUCHE', iocc=1, scal=nucou, nbret=ibid)
         call getvtx(motfac, 'NIVE_COUCHE', iocc=1, scal=nicou, nbret=ibid)
         if (motfac .eq. 'EXTR_TUYAU') then
             call getvis(motfac, 'ANGLE', iocc=1, scal=nangl, nbret=ibid)
-        endif
-    else if (motfac.eq.'EXTR_PMF') then
+        end if
+    else if (motfac .eq. 'EXTR_PMF') then
         call getvis(motfac, 'NUME_FIBRE', iocc=1, scal=nufib, nbret=ibid)
-    endif
+    end if
 !
 !
 !     -- 3. : BOUCLE SUR LES CHAMPS
 !     --------------------------------------------------
-    do isym=1,nbsym
-        modeav=' '
-        do i=1,nbordr
-            nuordr=liordr(i)
-            call rsexch(' ', resu19, nomsym(isym), nuordr, chin,iret)
+    do isym = 1, nbsym
+        modeav = ' '
+        do i = 1, nbordr
+            nuordr = liordr(i)
+            call rsexch(' ', resu19, nomsym(isym), nuordr, chin, iret)
             if (iret .eq. 0) then
-                call rslesd(resu, nuordr, model_ = modele, cara_elem_ = carele)
+                call rslesd(resu, nuordr, model_=modele, cara_elem_=carele)
                 if (modele .eq. ' ') call utmess('F', 'CALCULEL2_44')
                 if (carele .eq. ' ') call utmess('F', 'CALCULEL2_45')
 
                 if (modele .ne. modeav) then
                     call exlima(' ', 1, 'G', modele, ligrel)
-                    modeav=modele
-                endif
-                call rsexch(' ', nomres, nomsym(isym), nuordr, chextr,&
+                    modeav = modele
+                end if
+                call rsexch(' ', nomres, nomsym(isym), nuordr, chextr, &
                             iret)
-                ASSERT(iret.eq.100)
-                call w155ch(chin, carele, ligrel, chextr, motfac,&
+                ASSERT(iret .eq. 100)
+                call w155ch(chin, carele, ligrel, chextr, motfac, &
                             nucou, nicou, nangl, nufib)
                 call rsnoch(nomres, nomsym(isym), nuordr)
             else
-                valk(1)=nomsym(isym)
-                valk(2)=resu
+                valk(1) = nomsym(isym)
+                valk(2) = resu
                 call utmess('A', 'CALCULEL5_3', nk=2, valk=valk, si=nuordr)
-            endif
+            end if
         end do
     end do
 !

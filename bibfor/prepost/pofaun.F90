@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,19 +75,19 @@ subroutine pofaun()
     complex(kind=8) :: cbid
     aster_logical :: lhaigh, fateps, lke
 !     --- POST_FATI_UNIAX ----------------------------------------------
-    parameter (nbpapf=5)
+    parameter(nbpapf=5)
     character(len=1) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
     real(kind=8), pointer :: sigmax1(:) => null()
     real(kind=8), pointer :: sigmin1(:) => null()
-    data nomppf/'CYCLE','VALE_MIN','VALE_MAX','DOMMAGE','DOMM_CUMU'/
-    data typppf/'I','R','R','R','R'/
+    data nomppf/'CYCLE', 'VALE_MIN', 'VALE_MAX', 'DOMMAGE', 'DOMM_CUMU'/
+    data typppf/'I', 'R', 'R', 'R', 'R'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
-    cbid=(0.d0,0.d0)
-    ibid=0
+    cbid = (0.d0, 0.d0)
+    ibid = 0
     r8b = 0.d0
     fateps = .false.
     lhaigh = .false.
@@ -117,11 +117,11 @@ subroutine pofaun()
 !
 !     --- IMPRESSION DE LA FONCTION ----
     if (niv .eq. 2) then
-        write (ifm,'(1X,A)') 'VALEURS DE LA FONCTION CHARGEMENT:'
+        write (ifm, '(1X,A)') 'VALEURS DE LA FONCTION CHARGEMENT:'
         do i = 1, nbpts
-            write (ifm,1000) zr(ifonc+i-1),zr(ifonc+nbpts+i-1)
+            write (ifm, 1000) zr(ifonc+i-1), zr(ifonc+nbpts+i-1)
         end do
-    endif
+    end if
 !
 !
 !     --- RECUPERATION DU COEFFICIENT D'AMPLIFICATION ---
@@ -131,7 +131,7 @@ subroutine pofaun()
         call getvr8('COEF_MULT', 'KT', iocc=1, scal=rampl, nbret=n1)
 !        CALL FGAMPL(RAMPL,NBPTS,ZR(NBPTS+IFONC))
 !
-    endif
+    end if
 !
 !     --- EXTRACTION DES PICS DE LA FONCTION DE CHARGEMENT ---
 !
@@ -140,13 +140,13 @@ subroutine pofaun()
 !
 !     --- IMPRESSION DES PICS EXTRAITS DE LA FONCTION ----
     if (niv .eq. 2) then
-        write (ifm,*)
-        write (ifm,'(1X,A)') 'PICS EXTRAITS DE LA FONCTION CHARGEMENT'
-        write (ifm,'(1X,A)') 'APRES AVOIR PRIS EN COMPTE DE KT'
-        write (ifm,1010) pseuil,nbpoin
-        write (ifm,*)
-        write (ifm,'(4(1X,E18.6))') (zr(ivpoin+i-1),i=1,nbpoin)
-    endif
+        write (ifm, *)
+        write (ifm, '(1X,A)') 'PICS EXTRAITS DE LA FONCTION CHARGEMENT'
+        write (ifm, '(1X,A)') 'APRES AVOIR PRIS EN COMPTE DE KT'
+        write (ifm, 1010) pseuil, nbpoin
+        write (ifm, *)
+        write (ifm, '(4(1X,E18.6))') (zr(ivpoin+i-1), i=1, nbpoin)
+    end if
 !
 !
 !     ---RECUPERATION DE LA LOI DE COMPTAGES DE CYCLES
@@ -156,41 +156,41 @@ subroutine pofaun()
         method = methd1(1:8)
     else
         method = 'RFLO_MAX'
-    endif
+    end if
 !
     call wkvect('&&POFAUN.SIGMAX', 'V V R', nbpoin+2, ivmax)
     call wkvect('&&POFAUN.SIGMIN', 'V V R', nbpoin+2, ivmin)
     AS_ALLOCATE(vr=sigmax1, size=nbpoin+2)
     AS_ALLOCATE(vr=sigmin1, size=nbpoin+2)
     call wkvect('&&POFAUN.POIN.TRAV', 'V V R', nbpoin+2, ivtrav)
-    call wkvect('&&POFAUN.NUME.TRAV', 'V V I', 2* (nbpoin+2), intrav)
+    call wkvect('&&POFAUN.NUME.TRAV', 'V V I', 2*(nbpoin+2), intrav)
     if (method .eq. 'RAINFLOW') then
         call wkvect('&&POFAUN.FONC.PICS', 'V V R', nbpoin+2, ivpics)
-        call fgpic2(method, zr(ivtrav), zr(ivpoin), nbpoin, zr(ivpics),&
+        call fgpic2(method, zr(ivtrav), zr(ivpoin), nbpoin, zr(ivpics), &
                     nbpics)
-        call fgrain(zr(ivpics), nbpics, zi(intrav), nbcycl, zr(ivmin),&
+        call fgrain(zr(ivpics), nbpics, zi(intrav), nbcycl, zr(ivmin), &
                     zr(ivmax))
-    else if (method.eq.'RFLO_MAX') then
+    else if (method .eq. 'RFLO_MAX') then
 !
         call wkvect('&&POFAUN.FONC.PICS', 'V V R', nbpoin+2, ivpics)
-        call fgpic2(method, zr(ivtrav), zr(ivpoin), nbpoin, zr(ivpics),&
+        call fgpic2(method, zr(ivtrav), zr(ivpoin), nbpoin, zr(ivpics), &
                     nbpics)
-        call fgrain(zr(ivpics), nbpics, zi(intrav), nbcycl, sigmin1,&
+        call fgrain(zr(ivpics), nbpics, zi(intrav), nbcycl, sigmin1, &
                     sigmax1)
 !
         call fgrmax(nbcycl, sigmin1, sigmax1, zr(ivmin), zr(ivmax))
 !
-    else if (method.eq.'RCCM') then
+    else if (method .eq. 'RCCM') then
         call fgordo(nbpoin, zr(ivpoin), zr(ivtrav))
         call fgrccm(nbpoin, zr(ivtrav), nbcycl, zr(ivmin), zr(ivmax))
-    else if (method.eq.'NATUREL') then
+    else if (method .eq. 'NATUREL') then
         call fgcota(nbpoin, zr(ivpoin), nbcycl, zr(ivmin), zr(ivmax))
     else
         call utmess('F', 'FATIGUE1_15')
-    endif
+    end if
     if (nbcycl .eq. 0) then
         call utmess('F', 'FATIGUE1_16')
-    endif
+    end if
 !
 !     --- CORRECTION ELASTO-PLASTIQUE ---
 !
@@ -203,13 +203,13 @@ subroutine pofaun()
         nomres(3) = 'SM'
         nbpar = 0
         nompar = ' '
-        call rcvale(nommat, 'RCCM', nbpar, nompar, [r8b],&
+        call rcvale(nommat, 'RCCM', nbpar, nompar, [r8b], &
                     3, nomres, val, icodre, 2)
         call wkvect('&&POFAUN.KE', 'V V R', nbcycl, ivke)
         lke = .true.
-        call fgcoke(nbcycl, zr(ivmin), zr(ivmax), val(1), val(2),&
+        call fgcoke(nbcycl, zr(ivmin), zr(ivmax), val(1), val(2), &
                     val(3), zr(ivke))
-    endif
+    end if
 !
 !     --- CALCUL DU DOMMAGE ELEMENTAIRE ---
 !
@@ -228,19 +228,19 @@ subroutine pofaun()
             nomres(1) = 'SU'
             nbpar = 0
             nompar = ' '
-            call rcvale(nommat, 'RCCM', nbpar, nompar, [r8b],&
+            call rcvale(nommat, 'RCCM', nbpar, nompar, [r8b], &
                         1, nomres, val, icodre, 2)
             call wkvect('&&POFAUN.HAIG', 'V V R', nbcycl, ivcorr)
             lhaigh = .true.
-            call fgcorr(nbcycl, zr(ivmin), zr(ivmax), kcorre, val(1),&
+            call fgcorr(nbcycl, zr(ivmin), zr(ivmax), kcorre, val(1), &
                         zr(ivcorr))
-        endif
+        end if
 !
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
-        endif
+        end if
         cara = 'WOHLER'
         call rcpare(nommat, pheno, cara, icodwo)
         cara = 'A_BASQUIN'
@@ -248,48 +248,48 @@ subroutine pofaun()
         cara = 'A0'
         call rcpare(nommat, pheno, cara, icodhs)
         if (icodwo .eq. 0) then
-            call fgdowh(nommat, nbcycl, zr(ivmin), zr(ivmax), lke,&
+            call fgdowh(nommat, nbcycl, zr(ivmin), zr(ivmax), lke, &
                         zr(ivke), lhaigh, zr(ivcorr), zr(ivdome))
-        else if (icodba.eq.0) then
-            call fgdoba(nommat, nbcycl, zr(ivmin), zr(ivmax), lke,&
+        else if (icodba .eq. 0) then
+            call fgdoba(nommat, nbcycl, zr(ivmin), zr(ivmax), lke, &
                         zr(ivke), lhaigh, zr(ivcorr), zr(ivdome))
-        else if (icodhs.eq.0) then
-            call fgdohs(nommat, nbcycl, zr(ivmin), zr(ivmax), lke,&
+        else if (icodhs .eq. 0) then
+            call fgdohs(nommat, nbcycl, zr(ivmin), zr(ivmax), lke, &
                         zr(ivke), lhaigh, zr(ivcorr), zr(ivdome))
-        endif
+        end if
 !
 !     --- CALCUL DU DOMMAGE ELEMENTAIRE DE MANSON_COFFIN ----
 !         ----------------------------------------------
-    else if (kdomm.eq.'MANSON_COFFIN') then
-        if (.not.fateps) then
+    else if (kdomm .eq. 'MANSON_COFFIN') then
+        if (.not. fateps) then
             call utmess('F', 'FATIGUE1_17')
-        endif
+        end if
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
-        endif
+        end if
         cara = 'MANSON_COFFIN'
         call rcpare(nommat, pheno, cara, icodma)
         if (icodma .eq. 0) then
             call fgdoma(nommat, nbcycl, zr(ivmin), zr(ivmax), zr(ivdome))
         else
             call utmess('F', 'FATIGUE1_18')
-        endif
+        end if
 !
 !     --- CALCUL DU DOMMAGE ELEMENTAIRE DE TAHERI ---
 !         ---------------------------------------
-    else if (kdomm(1:6).eq.'TAHERI') then
+    else if (kdomm(1:6) .eq. 'TAHERI') then
         if (fateps) then
             call fgtahe(kdomm, nbcycl, zr(ivmin), zr(ivmax), zr(ivdome))
         else
             call utmess('F', 'FATIGUE1_19')
-        endif
+        end if
 !
-    else if (kdomm.eq.' ') then
+    else if (kdomm .eq. ' ') then
     else
         call utmess('F', 'FATIGUE1_20')
-    endif
+    end if
 !
 !     --- CREATION DE LA TABLE ---
 !
@@ -302,7 +302,7 @@ subroutine pofaun()
         val(1) = zr(ivmin+i-1)
         val(2) = zr(ivmax+i-1)
         val(3) = zr(ivdome+i-1)
-        call tbajli(result, nbp, nomppf, [i], val,&
+        call tbajli(result, nbp, nomppf, [i], val, &
                     [cbid], k8b, 0)
     end do
 !
@@ -314,10 +314,10 @@ subroutine pofaun()
 !
         call fgdomm(nbcycl, zr(ivdome), rdomm)
 !
-        call tbajli(result, 1, nomppf(5), [ibid], [rdomm],&
+        call tbajli(result, 1, nomppf(5), [ibid], [rdomm], &
                     [cbid], k8b, 0)
 !
-    endif
+    end if
 !
     call jedetr('&&POFAUN.FONC.POIN')
     call jedetr('&&POFAUN.SIGMAX')
@@ -331,8 +331,8 @@ subroutine pofaun()
     if (ivke .ne. 0) call jedetr('&&POFAUN.KE')
     if (ivcorr .ne. 0) call jedetr('&&POFAUN.HAIG')
 !
-    1000 format (2x,e18.6,5x,e18.6)
-    1010 format (1x,'SEUIL = ',e18.6,10x,'NB DE PICS = ',i5)
+1000 format(2x, e18.6, 5x, e18.6)
+1010 format(1x, 'SEUIL = ', e18.6, 10x, 'NB DE PICS = ', i5)
 !
     call jedema()
 end subroutine

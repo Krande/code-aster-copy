@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ subroutine te0247(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -71,7 +71,7 @@ implicit none
     integer :: jcret, iretm, iretp
     integer :: npg, ndimel, nnoel, nnosel
     integer :: istrxm, istrxp, ldep, codret
-    parameter    (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
+    parameter(nno=2, nc=6, nd=nc*nno, nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, em, num
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey, xfly, xflz
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2, xjx2, xl
@@ -91,12 +91,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 17
     real(kind=8) :: vale_cara(nb_cara)
-    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1  ','IY1 ','IZ1 ',&
-                                                          'AY1 ','AZ1 ','EY1 ',&
-                                                          'EZ1 ','JX1 ','A2  ',&
-                                                          'IY2 ','IZ2 ','AY2 ',&
-                                                          'AZ2 ','EY2 ','EZ2 ',&
-                                                          'JX2 ','TVAR'/)
+    character(len=8), parameter :: noms_cara(nb_cara) = (/'A1  ', 'IY1 ', 'IZ1 ', &
+                                                          'AY1 ', 'AZ1 ', 'EY1 ', &
+                                                          'EZ1 ', 'JX1 ', 'A2  ', &
+                                                          'IY2 ', 'IZ2 ', 'AY2 ', &
+                                                          'AZ2 ', 'EY2 ', 'EZ2 ', &
+                                                          'JX2 ', 'TVAR'/)
 ! --------------------------------------------------------------------------------------------------
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -116,63 +116,63 @@ implicit none
     call jevech('PDEPLPR', 'L', ideplp)
 !   POINT DE GAUSS DE L'ELEMENT
     call elrefe_info(fami='RIGI', ndim=ndimel, nno=nnoel, nnos=nnosel, npg=npg)
-    ASSERT((npg.eq.2).or.(npg.eq.3))
+    ASSERT((npg .eq. 2) .or. (npg .eq. 3))
 !
 ! - Properties of behaviour
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
 !
 ! - Select objects to construct from option name
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
     if (option .eq. 'RIGI_MECA_TANG') then
         lVect = ASTER_FALSE
         lSigm = ASTER_FALSE
         lVari = ASTER_FALSE
-    endif
+    end if
 !
 !   parametres en sortie
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
 !
     call matrot(zr(iorien), pgl)
     xl = lonele()
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
-    a      = vale_cara(1)
-    xiy    = vale_cara(2)
-    xiz    = vale_cara(3)
-    alfay  = vale_cara(4)
-    alfaz  = vale_cara(5)
-    xjx    = vale_cara(8)
-    a2     = vale_cara(9)
-    xiy2   = vale_cara(10)
-    xiz2   = vale_cara(11)
+    a = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
+    alfay = vale_cara(4)
+    alfaz = vale_cara(5)
+    xjx = vale_cara(8)
+    a2 = vale_cara(9)
+    xiy2 = vale_cara(10)
+    xiz2 = vale_cara(11)
     alfay2 = vale_cara(12)
     alfaz2 = vale_cara(13)
-    xjx2   = vale_cara(16)
-    ey = (vale_cara(6) +vale_cara(14))/2.d0
-    ez = (vale_cara(7) +vale_cara(15))/2.d0
+    xjx2 = vale_cara(16)
+    ey = (vale_cara(6)+vale_cara(14))/2.d0
+    ez = (vale_cara(7)+vale_cara(15))/2.d0
     itype = nint(vale_cara(17))
 !
-    if (defo_comp .ne. 'PETIT' .and.  defo_comp .ne. 'GROT_GDEP') then
-        call utmess('F', 'POUTRE0_40', sk = defo_comp)
-    endif
+    if (defo_comp .ne. 'PETIT' .and. defo_comp .ne. 'GROT_GDEP') then
+        call utmess('F', 'POUTRE0_40', sk=defo_comp)
+    end if
     reactu = defo_comp .eq. 'GROT_GDEP'
-    if (reactu .and. (rela_comp.eq.'ELAS')) then
+    if (reactu .and. (rela_comp .eq. 'ELAS')) then
 !       recuperation du 3eme angle nautique au temps t-
         call jevech('PSTRXMR', 'L', istrxm)
         gamma = zr(istrxm+3-1)
@@ -184,15 +184,15 @@ implicit none
             zr(istrxp+1-1) = angp(1)
             zr(istrxp+2-1) = angp(2)
             zr(istrxp+3-1) = angp(3)
-        endif
+        end if
 !
-    endif
+    end if
 !
 !   recuperation des caracteristiques elastiques
     call moytem('RIGI', npg, 1, '+', tempp, iretp)
     call moytem('RIGI', npg, 1, '-', tempm, iretm)
     itemp = 0
-    if ((iretp+iretm) .eq. 0) itemp=1
+    if ((iretp+iretm) .eq. 0) itemp = 1
     call matela(zi(imate), ' ', itemp, tempp, e, nu)
     call matela(zi(imate), ' ', itemp, tempm, em, num)
     call verifm('RIGI', npg, 1, 'T', zi(imate), epsthe, iret)
@@ -202,60 +202,60 @@ implicit none
         call porigi(nomte, e, nu, xl, klv)
 !
         if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA') then
-            if ((itemp.ne.0) .and. (nu.ne.num)) then
+            if ((itemp .ne. 0) .and. (nu .ne. num)) then
                 call utmess('A', 'POUTRE0_59')
-            endif
-            call nmpoel(npg, klv, xl, nno, nc, pgl, zr(ideplp),&
-                        epsthe, e, em, zr(icontm), fl, zr( icontp))
-        endif
+            end if
+            call nmpoel(npg, klv, xl, nno, nc, pgl, zr(ideplp), &
+                        epsthe, e, em, zr(icontm), fl, zr(icontp))
+        end if
 !
     else
         call utmess('F', 'POUTRE0_61', sk=rela_comp)
-    endif
+    end if
     if (lMatr) then
 !       calcul de la matrice de rigidite geometrique
-        if (reactu .and. (rela_comp.eq.'ELAS')) then
+        if (reactu .and. (rela_comp .eq. 'ELAS')) then
             ! Avec GROT_GDEP pas possible
-            valp(1:2)=['C_FLEX_Y', 'C_FLEX_Z']
+            valp(1:2) = ['C_FLEX_Y', 'C_FLEX_Z']
             call get_value_mode_local('PCAARPO', valp, valr, iret, retpara_=retp)
             xfly = 1.0; xflz = 1.0
-            if ( retp(1).eq.0) xfly = valr(1)
-            if ( retp(2).eq.0) xflz = valr(2)
-            if ( (abs(xfly-1.0).gt.r8miem()).or. &
-                 (abs(xflz-1.0).gt.r8miem()) ) then
-                call utmess('F', 'POUTRE0_64', nr=2, valr=[xfly,xflz])
-            endif
+            if (retp(1) .eq. 0) xfly = valr(1)
+            if (retp(2) .eq. 0) xflz = valr(2)
+            if ((abs(xfly-1.0) .gt. r8miem()) .or. &
+                (abs(xflz-1.0) .gt. r8miem())) then
+                call utmess('F', 'POUTRE0_64', nr=2, valr=[xfly, xflz])
+            end if
             if (option .eq. 'FULL_MECA') then
                 ldep = icontp
             else
                 ldep = icontm
-            endif
+            end if
             if (npg .eq. 2) then
                 do i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+i-1)
-                enddo
+                end do
             else
                 do i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+nc+i-1)
-                enddo
-            endif
+                end do
+            end if
             call r8inir(nk, 0.0d0, rgeom, 1)
             call ptkg00(sigma, a, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez, rgeom)
-            klv = klv + rgeom
-        endif
-    endif
+            klv = klv+rgeom
+        end if
+    end if
 !
 !   passage du repere local au repere global
     if (lMatr) then
         call utpslg(nno, nc, pgl, klv, zr(imatuu))
-    endif
+    end if
     if (lVect) then
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-    endif
+    end if
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !
 end subroutine

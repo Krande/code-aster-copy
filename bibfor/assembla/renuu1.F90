@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine renuu1(coin, longi, ordo, longo, nbco,&
+subroutine renuu1(coin, longi, ordo, longo, nbco, &
                   newn)
     implicit none
 !
@@ -48,29 +48,29 @@ subroutine renuu1(coin, longi, ordo, longo, nbco,&
 !-----------------------------------------------------------------------
     integer :: i, j, k
 !-----------------------------------------------------------------------
-    longo=0
+    longo = 0
     do i = 1, longi
         if (newn(coin(i)) .gt. 0) goto 1
-        longo=longo+1
+        longo = longo+1
 !
 !        -- ON PLACE LE 1ER EN 1ER :
         if (longo .eq. 1) then
-            ordo(1)= coin(i)
+            ordo(1) = coin(i)
             goto 1
-        endif
+        end if
 !
         do j = 1, longo-1
 !           -- ON INSERE COIN(I) :
             if (nbco(coin(i)) .le. nbco(ordo(j))) then
                 do k = longo-1, j, -1
-                    ordo(k+1)= ordo(k)
+                    ordo(k+1) = ordo(k)
                 end do
-                ordo(j)= coin(i)
+                ordo(j) = coin(i)
                 goto 1
-            endif
+            end if
         end do
-        ordo(longo)= coin(i)
-  1     continue
+        ordo(longo) = coin(i)
+1       continue
     end do
 !
 end subroutine

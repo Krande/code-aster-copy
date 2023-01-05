@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
-                  jopic, fatsoc, ncycl, jvmin, jvmax,&
+subroutine avrain(nbvec, nbordr, jitrv, npic, jpic, &
+                  jopic, fatsoc, ncycl, jvmin, jvmax, &
                   jomin, jomax)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -80,7 +80,7 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
 ! AU TEST SI (IFLAG(IVECT) .EQ. 3).
         if (npic(ivect) .eq. 0) then
             goto 10
-        endif
+        end if
 !
         ASSERT((nbordr+2) .ge. npic(ivect))
         adrs = (ivect-1)*(nbordr+2)
@@ -88,99 +88,99 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
         npicb = npic(ivect)
 !
         do i = 1, npicb
-            zi(jitrv + i) = i
+            zi(jitrv+i) = i
         end do
 !
         ncycl(ivect) = 0
 !
-  1     continue
+1       continue
 !
         i = 1
         j = 1
 !
-  2     continue
+2       continue
 !
         if (i+3 .gt. npicb) then
             goto 100
-        endif
+        end if
 !
-        e1 = abs ( zr(jpic + adrs + zi(jitrv + i+1)) - zr(jpic + adrs + zi(jitrv + i)) )
-        e2 = abs ( zr(jpic + adrs + zi(jitrv + i+2)) - zr(jpic + adrs + zi(jitrv + i+1)) )
-        e3 = abs ( zr(jpic + adrs + zi(jitrv + i+3)) - zr(jpic + adrs + zi(jitrv + i+2)) )
+        e1 = abs(zr(jpic+adrs+zi(jitrv+i+1))-zr(jpic+adrs+zi(jitrv+i)))
+        e2 = abs(zr(jpic+adrs+zi(jitrv+i+2))-zr(jpic+adrs+zi(jitrv+i+1)))
+        e3 = abs(zr(jpic+adrs+zi(jitrv+i+3))-zr(jpic+adrs+zi(jitrv+i+2)))
 !
-        if ((e1.ge. e2) .and. (e3 .ge. e2)) then
-            ncycl(ivect) = ncycl(ivect) + 1
-            if (zr(jpic+ adrs+ zi(jitrv + i+1)) .ge. zr(jpic + adrs+ zi(jitrv + i+2))) then
-                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+1))/ fatsoc
-                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+2))/ fatsoc
-                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+1))
-                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+2))
+        if ((e1 .ge. e2) .and. (e3 .ge. e2)) then
+            ncycl(ivect) = ncycl(ivect)+1
+            if (zr(jpic+adrs+zi(jitrv+i+1)) .ge. zr(jpic+adrs+zi(jitrv+i+2))) then
+                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic+adrs+zi(jitrv+i+1))/fatsoc
+                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic+adrs+zi(jitrv+i+2))/fatsoc
+                zi(jomax+adrs+ncycl(ivect)) = zi(jopic+adrs+zi(jitrv+i+1))
+                zi(jomin+adrs+ncycl(ivect)) = zi(jopic+adrs+zi(jitrv+i+2))
             else
-                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+2))/ fatsoc
-                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs + zi(jitrv + i+1))/ fatsoc
-                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+2))
-                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs + zi(jitrv + i+1))
-            endif
+                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic+adrs+zi(jitrv+i+2))/fatsoc
+                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic+adrs+zi(jitrv+i+1))/fatsoc
+                zi(jomax+adrs+ncycl(ivect)) = zi(jopic+adrs+zi(jitrv+i+2))
+                zi(jomin+adrs+ncycl(ivect)) = zi(jopic+adrs+zi(jitrv+i+1))
+            end if
 !
             do k = i+2, j+2, -1
-                zi(jitrv+ k) = zi(jitrv + k-2)
+                zi(jitrv+k) = zi(jitrv+k-2)
             end do
 !
-            j=j+2
-            i=j
+            j = j+2
+            i = j
             goto 2
         else
-            i=i+1
+            i = i+1
             goto 2
-        endif
+        end if
 !
 !  --- TRAITEMENT DU RESIDU -------
 !
 100     continue
 !
         if (.not. lresi) then
-            npicr = npicb - 2*ncycl(ivect)
+            npicr = npicb-2*ncycl(ivect)
             do i = 1, npicr
-                zi(jitrv + i) = zi(jitrv + 2*ncycl(ivect)+i)
+                zi(jitrv+i) = zi(jitrv+2*ncycl(ivect)+i)
             end do
-            r1 = zr(jpic + adrs + zi(jitrv + 1))
-            r2 = zr(jpic + adrs + zi(jitrv + 2))
-            rad= zr(jpic + adrs + zi(jitrv + npicr-1))
-            rd = zr(jpic + adrs + zi(jitrv + npicr))
+            r1 = zr(jpic+adrs+zi(jitrv+1))
+            r2 = zr(jpic+adrs+zi(jitrv+2))
+            rad = zr(jpic+adrs+zi(jitrv+npicr-1))
+            rd = zr(jpic+adrs+zi(jitrv+npicr))
             x = (rd-rad)*(r2-r1)
             y = (rd-rad)*(r1-rd)
             if ((x .gt. 0.d0) .and. (y .lt. 0.d0)) then
                 do i = 1, npicr
-                    zi(jitrv+i+npicr) = zi(jitrv + i)
+                    zi(jitrv+i+npicr) = zi(jitrv+i)
                 end do
                 npicb = 2*npicr
             else if ((x .gt. 0.d0) .and. (y .ge. 0.d0)) then
 ! -- ON ELIMINE  R1 ET RN
                 do i = npicr, 2, -1
-                    zi(jitrv + i+npicr-2) = zi(jitrv + i)
+                    zi(jitrv+i+npicr-2) = zi(jitrv+i)
                 end do
-                npicb = 2*npicr - 2
+                npicb = 2*npicr-2
             else if ((x .lt. 0.d0) .and. (y .lt. 0.d0)) then
 ! -- ON ELIMINE R1
                 do i = npicr, 2, -1
-                    zi(jitrv + i+npicr-1) = zi(jitrv + i)
+                    zi(jitrv+i+npicr-1) = zi(jitrv+i)
                 end do
-                npicb = 2*npicr - 1
+                npicb = 2*npicr-1
             else if ((x .lt. 0.d0) .and. (y .ge. 0.d0)) then
 ! -- ON ELIMINE RN
                 do i = npicr, 1, -1
-                    zi(jitrv + i+npicr-1) = zi(jitrv + i)
+                    zi(jitrv+i+npicr-1) = zi(jitrv+i)
                 end do
-                npicb = 2*npicr - 1
-            endif
+                npicb = 2*npicr-1
+            end if
             lresi = .true.
             goto 1
-        endif
+        end if
 !
 !
         ASSERT((nbordr+2) .ge. ncycl(ivect))
 !
- 10     continue
+10      continue
     end do
 !
     call jedema()

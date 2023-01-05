@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -124,7 +124,7 @@ subroutine cmpcar(carte)
     end do
 !     --VTRA NOTE POUR CHAQUE MAILLE SI ELLE A ETE TRAITEE.
 !
-    call jecrec(carte//'.LIM2', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(carte//'.LIM2', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmato)
 !     -- ON ESPERE QU'IL Y AURA MOINS DE GROUPES QUE DE MAILLES !!!
     call jeecra(carte//'.LIM2', 'LONT', nbmato, ' ')
@@ -138,7 +138,7 @@ subroutine cmpcar(carte)
     nbedit = desc(3)
     ii = 0
     do iedit = 1, nbedit
-        if (numt(3* (iedit-1)+3) .eq. 0) goto 11
+        if (numt(3*(iedit-1)+3) .eq. 0) goto 11
         num1 = numt((iedit-1)*3+1)
         num2 = numt((iedit-1)*3+2)
         irtnu = 0
@@ -147,21 +147,21 @@ subroutine cmpcar(carte)
             if (zl(iavtra-1+i)) goto 12
             icompt = 1
             vret(i) = iedit
-            irtnu = irtnu + 1
+            irtnu = irtnu+1
             lipr(icompt) = i
-            i1 = iavalp - 1 + (i-1)*ncmp
-            i2 = iadgp - 1 + (i-1)*nec
-            do j = i + 1, num2
+            i1 = iavalp-1+(i-1)*ncmp
+            i2 = iadgp-1+(i-1)*nec
+            do j = i+1, num2
                 if (zl(iavtra-1+i)) goto 13
-                i3 = iavalp - 1 + (j-1)*ncmp
-                i4 = iadgp - 1 + (j-1)*nec
+                i3 = iavalp-1+(j-1)*ncmp
+                i4 = iadgp-1+(j-1)*nec
 !              -- TESTE SI LES 2 GRANDEURS SONT PARFAITEMENT IDENTIQUES:
-                if (meiden(scal(1:4),ncmp,i1,i3,nec,i2,i4)) then
-                    icompt = icompt + 1
+                if (meiden(scal(1:4), ncmp, i1, i3, nec, i2, i4)) then
+                    icompt = icompt+1
                     lipr(icompt) = j
                     zl(iavtra-1+j) = .true.
-                endif
- 13             continue
+                end if
+13              continue
             end do
 !           -- RECOPIE DE LA LISTE DE MAILLES .LIPR DANS .LIM2 :
 !           -- ATTENTION .LIM2 CONTIENT LES NUMEROS TOTAUX DES MAILLES!
@@ -170,11 +170,11 @@ subroutine cmpcar(carte)
             do k = 1, icompt
                 lim2(ii+k) = lipr(k)
             end do
-            ii = ii + icompt
+            ii = ii+icompt
             zl(iavtra-1+i) = .true.
- 12         continue
+12          continue
         end do
- 11     continue
+11      continue
     end do
 !
 !     -- ON RECOPIE CE QU'IL FAUT DANS LES OBJETS FINAUX:
@@ -182,7 +182,7 @@ subroutine cmpcar(carte)
 !
     call jelira(carte//'.LIM2', 'NUTIOC', nbedi3)
     call jecreo(carte//'.DES3', 'V V I')
-    call jeecra(carte//'.DES3', 'LONMAX', 3+nbedi3* (2+nec))
+    call jeecra(carte//'.DES3', 'LONMAX', 3+nbedi3*(2+nec))
     call jeveuo(carte//'.DES3', 'E', i3desc)
     zi(i3desc-1+1) = desc(1)
     zi(i3desc-1+2) = nbedi3
@@ -196,7 +196,7 @@ subroutine cmpcar(carte)
     call jeecra(carte//'.VAL3', 'LONMAX', nbedi3*ncmp)
     call jeveuo(carte//'.VAL3', 'E', i3vale)
 !
-    call jecrec(carte//'.LIM3', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(carte//'.LIM3', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbedi3)
     call jeecra(carte//'.LIM3', 'LONT', nbmato, ' ')
 !
@@ -204,28 +204,28 @@ subroutine cmpcar(carte)
     do i = 1, nbmato
         if (vret(i) .le. 0) goto 21
         iedit = vret(i)
-        icompt = icompt + 1
+        icompt = icompt+1
 !
 !        --DES3 ET NOL3:
         zk24(i3noli-1+icompt) = zk24(i3noli-1+iedit)
         if (noli(iedit) (1:8) .eq. '        ') then
-            zi(i3desc-1+3+2* (icompt-1)+1) = 3
+            zi(i3desc-1+3+2*(icompt-1)+1) = 3
         else
-            zi(i3desc-1+3+2* (icompt-1)+1) = -3
-        endif
-        zi(i3desc-1+3+2* (icompt-1)+2) = icompt
-        iad = i3desc - 1 + 3 + 2*nbedi3 + nec* (icompt-1)
+            zi(i3desc-1+3+2*(icompt-1)+1) = -3
+        end if
+        zi(i3desc-1+3+2*(icompt-1)+2) = icompt
+        iad = i3desc-1+3+2*nbedi3+nec*(icompt-1)
         do k = 1, nec
-            zi(iad+k) = zi(iadgp-1+ (i-1)*nec+k)
+            zi(iad+k) = zi(iadgp-1+(i-1)*nec+k)
         end do
 !
 !        --VAL3:
         ico = 0
         do k = 1, ncmp
-            if (exisdg(zi(iadgp-1+ (i-1)*nec+1),k)) then
-                ico = ico + 1
-                call jacopo(1, ctype, iad1+ncmp*(i-1)+k-1, i3vale+ncmp*( icompt-1)+ico-1)
-            endif
+            if (exisdg(zi(iadgp-1+(i-1)*nec+1), k)) then
+                ico = ico+1
+                call jacopo(1, ctype, iad1+ncmp*(i-1)+k-1, i3vale+ncmp*(icompt-1)+ico-1)
+            end if
         end do
 !
 !        --LIMA:
@@ -233,16 +233,16 @@ subroutine cmpcar(carte)
             isigne = 1
         else
             isigne = -1
-        endif
+        end if
         call jelira(jexnum(carte//'.LIM2', icompt), 'LONMAX', nb)
         call jeecra(jexnum(carte//'.LIM3', icompt), 'LONMAX', nb)
         call jeveuo(jexnum(carte//'.LIM2', icompt), 'L', i2lima)
         call jeveuo(jexnum(carte//'.LIM3', icompt), 'E', i3lima)
         num1 = numt((iedit-1)*3+1)
         do k = 1, nb
-            zi(i3lima-1+k) = isigne* (zi(i2lima-1+k)-num1+1)
+            zi(i3lima-1+k) = isigne*(zi(i2lima-1+k)-num1+1)
         end do
- 21     continue
+21      continue
     end do
 !
 !     ON DETRUIT LA CARTE INITIALE EST ON RECOPIE DEFINITIVEMENT:
@@ -287,7 +287,7 @@ subroutine cmpcar(carte)
     call jelira(carte//'.LIM3', 'LONT', n)
     call jelira(carte//'.LIM3', 'TYPELONG', cval=ctype)
     call jeveuo(carte//'.LIM3', 'L', iad1)
-    call jecrec(carte//'.LIMA', bas1//' V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(carte//'.LIMA', bas1//' V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nboc)
     call jeecra(carte//'.LIMA', 'LONT', n, ' ')
     call jeveuo(carte//'.LIMA', 'E', iad2)

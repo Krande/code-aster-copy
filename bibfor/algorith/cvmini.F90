@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cvmini(typess, essai, mod, nmat, materf,&
-                  timed, timef, yd, epsd, deps,&
+subroutine cvmini(typess, essai, mod, nmat, materf, &
+                  timed, timef, yd, epsd, deps, &
                   dy)
     implicit none
 !     VISCOCHABOCHE : CALCUL SOLUTION ESSAI ( SI IOPTIO = 0 )
@@ -77,9 +77,9 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
     character(len=8) :: mod
 !       ----------------------------------------------------------------
-    common /tdim/   ndt , ndi
-    common /opti/   ioptio , idnr
-    common /coed/   c1d , c2d
+    common/tdim/ndt, ndi
+    common/opti/ioptio, idnr
+    common/coed/c1d, c2d
 !       ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -97,29 +97,29 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
     q = yd(3*ndt+3)
 !
 !
-    k0 = materf(1,2)
-    ak = materf(2,2)
-    n = materf(5,2)
-    alp = materf(6,2)
-    b = materf(7,2)
-    mr = materf(8,2)
-    gr = materf(9,2)
-    mu = materf(10,2)
-    qm = materf(11,2)
-    q0 = materf(12,2)
-    qr0 = materf(13,2)
-    eta = materf(14,2)
-    c1 = materf(15,2)
-    m1 = materf(16,2)
-    d1 = materf(17,2)
-    gx1 = materf(18,2)
-    g10 = materf(19,2)
-    c2 = materf(20,2)
-    m2 = materf(21,2)
-    d2 = materf(22,2)
-    gx2 = materf(23,2)
-    g20 = materf(24,2)
-    ai = materf(25,2)
+    k0 = materf(1, 2)
+    ak = materf(2, 2)
+    n = materf(5, 2)
+    alp = materf(6, 2)
+    b = materf(7, 2)
+    mr = materf(8, 2)
+    gr = materf(9, 2)
+    mu = materf(10, 2)
+    qm = materf(11, 2)
+    q0 = materf(12, 2)
+    qr0 = materf(13, 2)
+    eta = materf(14, 2)
+    c1 = materf(15, 2)
+    m1 = materf(16, 2)
+    d1 = materf(17, 2)
+    gx1 = materf(18, 2)
+    g10 = materf(19, 2)
+    c2 = materf(20, 2)
+    m2 = materf(21, 2)
+    d2 = materf(22, 2)
+    gx2 = materf(23, 2)
+    g20 = materf(24, 2)
+    ai = materf(25, 2)
 !
     nopt = 0
     if (ioptio .eq. 2) nopt = idnr
@@ -135,7 +135,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
     else if (typess .eq. 1) then
         dy(1:4*ndt+4) = 0.d0
-        dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), deps(1:ndt))
+        dsig(1:ndt) = matmul(hook(1:ndt, 1:ndt), deps(1:ndt))
         dy(1:ndt) = dsig(1:ndt)
 !
 ! - SOLUTION INITIALE = EXPLICITE
@@ -143,8 +143,8 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
     else if (typess .eq. 2) then
 ! -     SOLUTION D'ESSAI POUR  ( SIG  X1  X2  P  R  0  (EPS3))
 !
-        ccin = ai + (1.d0-ai) * exp( -b*p )
-        dt = timef - timed
+        ccin = ai+(1.d0-ai)*exp(-b*p)
+        dt = timef-timed
 ! - DP
         call cvmcvx(nmat, materf, sig, yd(ndt+1), seuil)
         if (seuil .le. 0.d0) then
@@ -154,72 +154,72 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
             end do
         else
             call chbfs(sig, x1, x2, dfds)
-            zz = seuil / ( k0 + ak * r)
+            zz = seuil/(k0+ak*r)
 !              IF ( ZZ .LT. 0.D0 ) ZZ = 0.D0
-            dp = dt * (zz**n) * exp( alp*(zz**(n+1)) )
-        endif
+            dp = dt*(zz**n)*exp(alp*(zz**(n+1)))
+        end if
 !
 ! - DSIG
-        vtmp(1:ndt) = (-dp) * dfds(1:ndt)
-        vtmp(1:ndt) = deps(1:ndt) + vtmp(1:ndt)
-        dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), vtmp(1:ndt))
+        vtmp(1:ndt) = (-dp)*dfds(1:ndt)
+        vtmp(1:ndt) = deps(1:ndt)+vtmp(1:ndt)
+        dsig(1:ndt) = matmul(hook(1:ndt, 1:ndt), vtmp(1:ndt))
 !
 ! - DX1
         zz = dot_product(x1(1:ndt), dfds(1:ndt))
         yy = dot_product(x1(1:ndt), x1(1:ndt))
-        zz = zz * (1.d0-d1) * g10 * ccin * dp * 2.d0/3.d0
-        xx = c1 * dp * 2.d0/3.d0 - zz
+        zz = zz*(1.d0-d1)*g10*ccin*dp*2.d0/3.d0
+        xx = c1*dp*2.d0/3.d0-zz
         if (yy .le. 0.d0) then
-            yy=0.d0
+            yy = 0.d0
         else
-            yy = gx1 * dt * (sqrt(yy*3.d0/2.d0) )**(m1-1.d0 ) + g10 * ccin * d1 * dp
-        endif
-        vtmp(1:ndt) = yy * x1(1:ndt)
-        dx1(1:ndt) = xx * dfds(1:ndt)
-        dx1(1:ndt) = dx1(1:ndt) - vtmp(1:ndt)
+            yy = gx1*dt*(sqrt(yy*3.d0/2.d0))**(m1-1.d0)+g10*ccin*d1*dp
+        end if
+        vtmp(1:ndt) = yy*x1(1:ndt)
+        dx1(1:ndt) = xx*dfds(1:ndt)
+        dx1(1:ndt) = dx1(1:ndt)-vtmp(1:ndt)
 !
 ! - CAS ANISOTHERME
 !
         if (c1 .ne. 0.d0) then
             difc1 = (c1-c1d)/c1
-            vtmp(1:ndt) = difc1 * x1(1:ndt)
-            dx1(1:ndt) = dx1(1:ndt) + vtmp(1:ndt)
-        endif
+            vtmp(1:ndt) = difc1*x1(1:ndt)
+            dx1(1:ndt) = dx1(1:ndt)+vtmp(1:ndt)
+        end if
 !
 ! - DX2
         zz = dot_product(x2(1:ndt), dfds(1:ndt))
         yy = dot_product(x2(1:ndt), x2(1:ndt))
-        zz = zz * (1.d0-d2) * g20 * ccin * dp * 2.d0/3.d0
-        xx = c2 * dp * 2.d0/3.d0 - zz
+        zz = zz*(1.d0-d2)*g20*ccin*dp*2.d0/3.d0
+        xx = c2*dp*2.d0/3.d0-zz
         if (yy .le. 0.d0) then
-            yy=0.d0
+            yy = 0.d0
         else
-            yy = gx2 * dt * (sqrt(yy*3.d0/2.d0) )**(m2-1.d0 ) + g20 * ccin * d2 * dp
-        endif
-        vtmp(1:ndt) = yy * x2(1:ndt)
-        dx2(1:ndt) = xx * dfds(1:ndt)
-        dx2(1:ndt) = dx2(1:ndt) - vtmp(1:ndt)
+            yy = gx2*dt*(sqrt(yy*3.d0/2.d0))**(m2-1.d0)+g20*ccin*d2*dp
+        end if
+        vtmp(1:ndt) = yy*x2(1:ndt)
+        dx2(1:ndt) = xx*dfds(1:ndt)
+        dx2(1:ndt) = dx2(1:ndt)-vtmp(1:ndt)
 !
 ! - CAS ANISOTHERME
 !
         if (c2 .ne. 0.d0) then
             difc2 = (c2-c2d)/c2
-            vtmp(1:ndt) = difc2 * x2(1:ndt)
-            dx2(1:ndt) = dx2(1:ndt) + vtmp(1:ndt)
-        endif
+            vtmp(1:ndt) = difc2*x2(1:ndt)
+            dx2(1:ndt) = dx2(1:ndt)+vtmp(1:ndt)
+        end if
 !
 ! - DR
-        grq = q0 + ( qm - q0 ) * ( 1.d0 - exp(-2.d0*mu*q) )
-        qr = grq - qr0 * (1.d0 - ((qm-grq)/qm)**2)
+        grq = q0+(qm-q0)*(1.d0-exp(-2.d0*mu*q))
+        qr = grq-qr0*(1.d0-((qm-grq)/qm)**2)
         sgn = 1.d0
-        if ((qr - r) .lt. 0.d0) sgn = - 1.d0
-        dr = b * (grq - r) * dp + sgn * gr * dt * (abs(qr - r))**mr
+        if ((qr-r) .lt. 0.d0) sgn = -1.d0
+        dr = b*(grq-r)*dp+sgn*gr*dt*(abs(qr-r))**mr
 !
 ! - DEPS(3)
         if (mod(1:6) .eq. 'C_PLAN') then
-            nun = materf(2,1) / (1.d0 - materf(2,1))
-            deps(3) = nun * (dp*(dfds(1)+dfds(2))-deps(1)-deps(2)) + dfds(3)*dp
-        endif
+            nun = materf(2, 1)/(1.d0-materf(2, 1))
+            deps(3) = nun*(dp*(dfds(1)+dfds(2))-deps(1)-deps(2))+dfds(3)*dp
+        end if
 !
 !
 ! - DY
@@ -232,7 +232,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
         if (mod(1:6) .eq. 'C_PLAN') then
             dy(3*ndt+4+nopt) = deps(3)
             dy(3) = 0.d0
-        endif
+        end if
 !
 !
 ! -         SOLUTION D'ESSAI POUR ( SIG  X1  X2  P  R  Q  XXI  (EPS3))
@@ -241,18 +241,18 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 ! - EPSP
             call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
-            vtmp(1:ndt) = sig(1:ndt) + dsig(1:ndt)
-            vtmp1(1:ndt) = matmul(fkooh(1:ndt,1:ndt), vtmp(1:ndt))
-            epsp(1:ndt) = epsd(1:ndt) + deps(1:ndt)
-            epsp(1:ndt) = epsp(1:ndt) - vtmp1(1:ndt)
+            vtmp(1:ndt) = sig(1:ndt)+dsig(1:ndt)
+            vtmp1(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), vtmp(1:ndt))
+            epsp(1:ndt) = epsd(1:ndt)+deps(1:ndt)
+            epsp(1:ndt) = epsp(1:ndt)-vtmp1(1:ndt)
 !
 ! N-ETOILE
-            vtmp(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
+            vtmp(1:ndt) = epsp(1:ndt)-xxi(1:ndt)
             xx = dot_product(vtmp(1:ndt), vtmp(1:ndt))
-            xx = sqrt( xx * 3.d0/2.d0 )
+            xx = sqrt(xx*3.d0/2.d0)
 !
 ! H(F)
-            zz = 2.d0/3.d0 * xx - q
+            zz = 2.d0/3.d0*xx-q
 !
             if (zz .lt. 0.d0) then
                 dq = 0.d0
@@ -262,8 +262,8 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
                 if (xx .eq. 0.d0) then
                     epxi(:) = 0.d0
                 else
-                    epxi(1:ndt) = (1.d0/xx) * vtmp(1:ndt)
-                endif
+                    epxi(1:ndt) = (1.d0/xx)*vtmp(1:ndt)
+                end if
 !
 ! N *  N-ETOILE
 !
@@ -276,19 +276,19 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 ! - DXXI
 !                   CALL LCPRSC ( DFDS    , EPXI  , ZZ    )
-                    xx =zz * (1.d0 - eta ) *dp * 3.d0/2.d0
-                    dxxi(1:ndt) = xx * epxi(1:ndt)
+                    xx = zz*(1.d0-eta)*dp*3.d0/2.d0
+                    dxxi(1:ndt) = xx*epxi(1:ndt)
 !
 ! - DQ
                     xx = dot_product(dfds(1:ndt), epxi(1:ndt))
-                    dq = dp * eta * xx
-                endif
-            endif
+                    dq = dp*eta*xx
+                end if
+            end if
 !
 ! - DY
             dy(3*ndt+3) = dq
             dy(3*ndt+4:3*ndt+4-1+ndt) = dxxi(1:ndt)
-        endif
+        end if
 !
 ! - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES
 !
@@ -297,9 +297,9 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = essai
             dy(3) = 0.d0
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
 end subroutine

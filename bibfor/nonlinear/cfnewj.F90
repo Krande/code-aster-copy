@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine cfnewj(ndim, coorde, coordp, norm, jeu)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit    none
+    implicit none
     integer :: ndim
     real(kind=8) :: jeu
     real(kind=8) :: coorde(3), coordp(3)
@@ -47,9 +47,9 @@ subroutine cfnewj(ndim, coorde, coordp, norm, jeu)
 !
 ! --- CALCUL JEU
 !
-    jeu = (coordp(1)-coorde(1))*norm(1) + (coordp(2)-coorde(2))*norm(2)
+    jeu = (coordp(1)-coorde(1))*norm(1)+(coordp(2)-coorde(2))*norm(2)
     if (ndim .eq. 3) then
-        jeu = jeu + (coordp(3)-coorde(3))*norm(3)
-    endif
+        jeu = jeu+(coordp(3)-coorde(3))*norm(3)
+    end if
 !
 end subroutine

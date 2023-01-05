@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdfdi(fid, ind, cha, type, comp,&
+subroutine as_mfdfdi(fid, ind, cha, type, comp, &
                      unit, nseqca, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -44,15 +44,15 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
     lmail = 0
     fidm = to_med_idt(fid)
     ind4 = to_med_int(ind)
-    call mfdfdi(fidm, ind4, cha, nommai, lmai4,&
-                type4, comp, unit, unidt, nseqc4,&
+    call mfdfdi(fidm, ind4, cha, nommai, lmai4, &
+                type4, comp, unit, unidt, nseqc4, &
                 cret4)
     type = type4
     cret = cret4
     nseqca = nseqc4
 #else
-    call mfdfdi(fid, ind, cha, nommai, lmail,&
-                type, comp, unit, unidt, nseqca,&
+    call mfdfdi(fid, ind, cha, nommai, lmail, &
+                type, comp, unit, unidt, nseqca, &
                 cret)
 #endif
 !

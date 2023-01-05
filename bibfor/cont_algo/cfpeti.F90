@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine cfpeti(sdcont_solv, neq, nbliai, nbliac, &
                   rho, llliai, llliac)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -82,15 +82,15 @@ implicit none
 !
 ! --- ACCES STRUCTURES DE DONNEES DE CONTACT
 !
-    liac   = sdcont_solv(1:14)//'.LIAC'
+    liac = sdcont_solv(1:14)//'.LIAC'
     appoin = sdcont_solv(1:14)//'.APPOIN'
     apcoef = sdcont_solv(1:14)//'.APCOEF'
-    apddl  = sdcont_solv(1:14)//'.APDDL'
+    apddl = sdcont_solv(1:14)//'.APDDL'
     jeuite = sdcont_solv(1:14)//'.JEUITE'
-    call jeveuo(liac  , 'L', jliac)
+    call jeveuo(liac, 'L', jliac)
     call jeveuo(appoin, 'L', japptr)
     call jeveuo(apcoef, 'L', japcoe)
-    call jeveuo(apddl , 'L', japddl)
+    call jeveuo(apddl, 'L', japddl)
     call jeveuo(jeuite, 'L', jjeuit)
 !
 ! --- ACCES AUX CHAMPS DE TRAVAIL
@@ -100,7 +100,7 @@ implicit none
     ddeplc = sdcont_solv(1:14)//'.DELC'
     ddelt = sdcont_solv(1:14)//'.DDEL'
     call jeveuo(ddeplc(1:19)//'.VALE', 'L', vr=ddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'L', vr=vddelt)
+    call jeveuo(ddelt(1:19)//'.VALE', 'L', vr=vddelt)
 !
 ! --- INITIALISATIONS
 !
@@ -116,7 +116,7 @@ implicit none
 ! ----- TOUTES LES LIAISONS SONT ACTIVES
 !
         rhorho = un
-    else if (nbliac.lt.nbliai) then
+    else if (nbliac .lt. nbliai) then
 !
 ! ----- RECHERCHE DES LIAISONS NON ACTIVES
 !
@@ -132,13 +132,13 @@ implicit none
 !
 ! ------- CALCUL DE RHOMIN
 !
-            if (.not.liaiac) then
+            if (.not. liaiac) then
 !
 ! --------- CALCUL DE [A].{DDELT} SI LA LIAISON N'EST PAS ACTIVE
 !
                 jdecal = zi(japptr+iliai-1)
-                nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-                call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), vddelt,&
+                nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
+                call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vddelt, &
                             aadelt)
 !
 ! --------- SI [A].{DDELT} EST POSITIF: LIAISON ACTIVEE
@@ -159,7 +159,7 @@ implicit none
 !
 ! ------------- CALCUL DE [A].{DDEPLC} - CORRECTION DU JEU
 !
-                        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), ddepc,&
+                        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), ddepc, &
                                     jeuinc)
 !
 ! ------------- CALCUL DE {JEU(DEPTOT) - [A].{DDEPLC}}/[A].{DDELT}
@@ -175,28 +175,28 @@ implicit none
 ! --------------- LLLIAI: LIAISON LA PLUS VIOLEE
 !
                             llliai = iliai
-                        endif
-                    endif
-                endif
-            endif
+                        end if
+                    end if
+                end if
+            end if
         end do
 !
 ! ----- TOUS LES {A.DELTA} SONT NEGATIFS
 !
-        if (.not.delpos) then
+        if (.not. delpos) then
             rhorho = un
-        endif
-    endif
+        end if
+    end if
 !
 ! --- ON FAIT EN SORTE QUE RHORHO <= 1.D0
 !
-    rho = min(rhorho,un)
+    rho = min(rhorho, un)
 !
 ! --- LIAISON ACTIVE
 !
     if (llliai .ne. 0) then
-        llliac = nbliac + 1
-    endif
+        llliac = nbliac+1
+    end if
 !
     call jedema()
 !

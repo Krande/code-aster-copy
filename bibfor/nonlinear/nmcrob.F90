@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmcrob(meshz      , modelz         , sddisc, ds_inout , cara_elemz,&
-                  ds_material, ds_constitutive, disp  , strx     , varc      ,&
-                  time       , sd_obsv  )
+subroutine nmcrob(meshz, modelz, sddisc, ds_inout, cara_elemz, &
+                  ds_material, ds_constitutive, disp, strx, varc, &
+                  time, sd_obsv)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -34,18 +34,18 @@ implicit none
 #include "asterfort/nmobno.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: meshz
-character(len=*), intent(in) :: modelz
-character(len=19), intent(in) :: sddisc
-type(NL_DS_InOut), intent(in) :: ds_inout
-character(len=*), intent(in) :: cara_elemz
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=*), intent(in) :: disp
-character(len=*), intent(in) :: strx
-character(len=*), intent(in) :: varc
-real(kind=8),  intent(in) :: time
-character(len=19), intent(out) :: sd_obsv
+    character(len=*), intent(in) :: meshz
+    character(len=*), intent(in) :: modelz
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=*), intent(in) :: cara_elemz
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=*), intent(in) :: disp
+    character(len=*), intent(in) :: strx
+    character(len=*), intent(in) :: varc
+    real(kind=8), intent(in) :: time
+    character(len=19), intent(out) :: sd_obsv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,32 +82,32 @@ character(len=19), intent(out) :: sd_obsv
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_obsv   = 0
-    sd_obsv   = '&&NMCROB.OBSV'
+    nb_obsv = 0
+    sd_obsv = '&&NMCROB.OBSV'
     keyw_fact = 'OBSERVATION'
     call getfac(keyw_fact, nb_keyw_fact)
-    ASSERT(nb_keyw_fact.le.99)
-    result    = ds_inout%result
+    ASSERT(nb_keyw_fact .le. 99)
+    result = ds_inout%result
 !
 ! - Access to storage datastructure
 !
-    sdarch    = sddisc(1:14)//'.ARCH'
+    sdarch = sddisc(1:14)//'.ARCH'
     arch_info = sdarch(1:19)//'.AINF'
-    call jeveuo(arch_info, 'L', vi = v_arch_info)
+    call jeveuo(arch_info, 'L', vi=v_arch_info)
 !
 ! - Read datas for extraction
 !
     sdextr_obsv = sd_obsv(1:14)
-    call nmextr(meshz       , modelz    , sdextr_obsv, ds_inout, keyw_fact,&
-                nb_keyw_fact, nb_obsv   ,&
-                cara_elemz  , ds_material, ds_constitutive, disp, strx,&
-                varc        , time       )
+    call nmextr(meshz, modelz, sdextr_obsv, ds_inout, keyw_fact, &
+                nb_keyw_fact, nb_obsv, &
+                cara_elemz, ds_material, ds_constitutive, disp, strx, &
+                varc, time)
 !
 ! - Set reuse index in OBSERVATION table
 !
     nume_reuse = v_arch_info(3)
-    extr_info  = sdextr_obsv(1:14)//'     .INFO'
-    call jeveuo(extr_info, 'E', vi = v_extr_info)
+    extr_info = sdextr_obsv(1:14)//'     .INFO'
+    call jeveuo(extr_info, 'E', vi=v_extr_info)
     v_extr_info(4) = nume_reuse
 !
 ! - Read parameters
@@ -127,6 +127,6 @@ character(len=19), intent(out) :: sd_obsv
 ! ----- Create table
 !
         call nmcrot(result, sd_obsv)
-    endif
+    end if
 !
 end subroutine

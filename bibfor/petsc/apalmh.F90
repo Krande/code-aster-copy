@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine apalmh(kptsc)
 !
 !
 ! person_in_charge: natacha.bereux at edf.fr
-use aster_petsc_module
-use petsc_data_module
+    use aster_petsc_module
+    use petsc_data_module
     implicit none
 
 #include "jeveux.h"
@@ -78,8 +78,8 @@ use petsc_data_module
     character(len=16) :: idxo, idxd
     character(len=14) :: nonu
 !
-    parameter   (idxo  ='&&APALMC.IDXO___')
-    parameter   (idxd  ='&&APALMC.IDXD___')
+    parameter(idxo='&&APALMC.IDXO___')
+    parameter(idxd='&&APALMC.IDXD___')
 !
     PetscInt, pointer :: v_idxd(:) => null()
     PetscInt, pointer :: v_idxo(:) => null()
@@ -108,9 +108,9 @@ use petsc_data_module
     nz = zi(jsmdi-1+nsmdi)
 !
     call apbloc(kptsc)
-    bs=tblocs(kptsc)
+    bs = tblocs(kptsc)
 
-    ASSERT(bs.ge.1)
+    ASSERT(bs .ge. 1)
 
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     call jeveuo(nonu//'.NUME.NULG', 'L', jnugll)
@@ -124,7 +124,7 @@ use petsc_data_module
 !
 #if ASTER_PETSC_INT_SIZE == 4
 ! maximum number of equation with short integer - use long int to remove this limit
-    ASSERT(neqg <= huge(neqg) )
+    ASSERT(neqg <= huge(neqg))
 #endif
 !
 !     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
@@ -137,29 +137,29 @@ use petsc_data_module
     num_ddl_max = 0
     num_ddl_min = ismaem()
     do jcoll = 1, nloc
-        procol = zi(jprddl - 1 + jcoll)
+        procol = zi(jprddl-1+jcoll)
         if (procol .eq. rang) then
-            ndprop = ndprop + 1
-            num_ddl_max = max(num_ddl_max, zi(jnugll + jcoll -1))
-            num_ddl_min = min(num_ddl_min, zi(jnugll + jcoll -1))
-        endif
+            ndprop = ndprop+1
+            num_ddl_max = max(num_ddl_max, zi(jnugll+jcoll-1))
+            num_ddl_min = min(num_ddl_min, zi(jnugll+jcoll-1))
+        end if
     end do
 
     call MatCreate(mpicou, a, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call MatSetSizes(a, to_petsc_int(ndprop), to_petsc_int(ndprop), &
-                     to_petsc_int(neqg), to_petsc_int(neqg),&
+                     to_petsc_int(neqg), to_petsc_int(neqg), &
                      ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
 !   IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION
     call MatSetBlockSize(a, to_petsc_int(bs), ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
     call MatSetType(a, MATMPIAIJ, ierr)
-    ASSERT(ierr.eq.0)
-    low=to_petsc_int(num_ddl_min)
-    high=to_petsc_int(num_ddl_max+1)
+    ASSERT(ierr .eq. 0)
+    low = to_petsc_int(num_ddl_min)
+    high = to_petsc_int(num_ddl_max+1)
 !
 #if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxo, 'V V S', ndprop, vi4=v_idxo)
@@ -171,53 +171,53 @@ use petsc_data_module
 !
     jcolg = zi(jnugll)
     if (zi(jprddl) .eq. rang) then
-        v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + one
-    endif
+        v_idxd(jcolg-low+1) = v_idxd(jcolg-low+1)+one
+    end if
 !
 !   On commence par s'occuper du nombre de NZ par ligne
 !   dans le bloc diagonal
     do jcoll = 2, nloc
-        nzdeb = zi(jsmdi + jcoll - 2) + 1
-        nzfin = zi(jsmdi + jcoll - 1)
-        procol = zi(jprddl + jcoll - 1)
-        jcolg = zi(jnugll + jcoll - 1)
+        nzdeb = zi(jsmdi+jcoll-2)+1
+        nzfin = zi(jsmdi+jcoll-1)
+        procol = zi(jprddl+jcoll-1)
+        jcolg = zi(jnugll+jcoll-1)
         nuno2 = 0
-        if( zi(jdeeq + (jcoll - 1) * 2).gt.0 ) then
+        if (zi(jdeeq+(jcoll-1)*2) .gt. 0) then
             nuno2 = 1
-        endif
+        end if
         do k = nzdeb, nzfin
-            iligl = zi4(jsmhc + k - 1)
-            prolig = zi(jprddl + iligl - 1)
-            iligg = zi(jnugll + iligl - 1)
+            iligl = zi4(jsmhc+k-1)
+            prolig = zi(jprddl+iligl-1)
+            iligg = zi(jnugll+iligl-1)
             nuno1 = 0
-            if( zi(jdeeq + (iligl - 1) * 2).gt.0 ) then
+            if (zi(jdeeq+(iligl-1)*2) .gt. 0) then
                 nuno1 = 1
-            endif
+            end if
             if (procol .eq. rang .and. prolig .eq. rang) then
-                v_idxd(iligg - low +1) = v_idxd(iligg - low +1) + one
+                v_idxd(iligg-low+1) = v_idxd(iligg-low+1)+one
                 if (iligg .ne. jcolg) then
-                    v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + one
-                endif
+                    v_idxd(jcolg-low+1) = v_idxd(jcolg-low+1)+one
+                end if
             else if (procol .ne. rang .and. prolig .eq. rang) then
-                v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + one
+                v_idxo(iligg-low+1) = v_idxo(iligg-low+1)+one
             else if (procol .eq. rang .and. prolig .ne. rang) then
-                v_idxo(jcolg - low +1) = v_idxo(jcolg - low +1) + one
-            endif
+                v_idxo(jcolg-low+1) = v_idxo(jcolg-low+1)+one
+            end if
         end do
     end do
 !
     call jeexin(nonu//'.NUME.MDLA', iret)
     jmdla = 0
     nblag = 0
-    if( iret.ne.0 ) then
+    if (iret .ne. 0) then
         call jeveuo(nonu//'.NUME.MDLA', 'L', jmdla)
         call jelira(nonu//'.NUME.MDLA', 'LONMAX', nblag)
         nblag = nblag/3
         do ipos = 0, nblag-1
-            iligl = zi(jmdla + ipos*3)
-            imult = zi(jmdla + ipos*3 + 1)
-            imults = zi(jmdla + ipos*3 + 2)-imult
-            iligg = zi(jnugll + iligl - 1)
+            iligl = zi(jmdla+ipos*3)
+            imult = zi(jmdla+ipos*3+1)
+            imults = zi(jmdla+ipos*3+2)-imult
+            iligg = zi(jnugll+iligl-1)
 !           Le but ici est de rajouter juste le bon nombre de termes
 !           On utilise le nombre de fois qu'apparaissent les noeuds de Lagrange
 !           dans des mailles tardives (sur tous les procs et sur les autres procs
@@ -235,16 +235,16 @@ use petsc_data_module
 !           différents (il y a alors un terme de couplage dans le bloc hors-diagonal)
 !           (voir issue31132)
             !ibid = (v_idxd(iligg - low +1)/imults)*(imult) + 1
-            ibid = imult * 6
-            v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + to_petsc_int(ibid)
-        enddo
-    endif
+            ibid = imult*6
+            v_idxo(iligg-low+1) = v_idxo(iligg-low+1)+to_petsc_int(ibid)
+        end do
+    end if
     unused_nz = -1
-    call MatMPIAIJSetPreallocation(a, unused_nz, v_idxd,&
+    call MatMPIAIJSetPreallocation(a, unused_nz, v_idxd, &
                                    unused_nz, v_idxo, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 
-    ap(kptsc)=a
+    ap(kptsc) = a
 
     call jedetr(idxd)
     call jedetr(idxo)

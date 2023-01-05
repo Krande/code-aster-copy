@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine canort(noma, nbma, listma, ndim, nbno,&
+subroutine canort(noma, nbma, listma, ndim, nbno, &
                   listno, type_calc)
 !
     implicit none
@@ -75,7 +75,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: dimcoo, i, ifonc, ibid, jnorm, isom, in
-    integer :: idobj2,    ij, ino
+    integer :: idobj2, ij, ino
     integer :: n, nocc, nno, nnos, nnn
     integer :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
     real(kind=8) :: coor(3, 9), a, b, c, pvec(3), norme
@@ -107,7 +107,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     call dffno('QU4', ibid, nno, nnos, dfqu4)
     call dffno('QU8', ibid, nno, nnos, dfqu8)
     call dffno('QU9', ibid, nno, nnos, dfqu9)
-    coninv='&&CANORT.CONINV'
+    coninv = '&&CANORT.CONINV'
 !
 ! - Creation of resultant object
 !
@@ -122,7 +122,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
     prec = armin(noma)*1.d-06
-    ASSERT(abs(nbma).gt.0)
+    ASSERT(abs(nbma) .gt. 0)
 !
 !     RECUPERATION DE LA CONNECTIVITE INVERSE
     call cncinv(noma, listma, abs(nbma), 'V', coninv)
@@ -132,17 +132,17 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     isom = 0
     do i = 1, nbno
         call jelira(jexnum(coninv, listno(i)), 'LONMAX', nnn)
-        isom = isom + nnn
+        isom = isom+nnn
     end do
 !
     call wkvect(nomob2, 'V V R', ndim*isom, idobj2)
 !
     call jeveuo(noma//'.COORDO    .DESC', 'L', vi=desc)
 !
-    ij=0
+    ij = 0
 !     BOUCLE SUR TOUS LES NOEUDS CONCERNES
     do ino = 1, nbno
-        numno=listno(ino)
+        numno = listno(ino)
         call jelira(jexnum(coninv, numno), 'LONMAX', nnn)
         call jeveuo(jexnum(coninv, numno), 'L', iinver)
 !
@@ -151,417 +151,417 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !
 !           NUMERO ABSOLUE DE LA MAILLE
 !
-            numail=listma(zi(iinver-1+imail))
-            ityp=typmail(numail)
+            numail = listma(zi(iinver-1+imail))
+            ityp = typmail(numail)
             call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nomtyp)
             call jeveuo(jexnum(noma//'.CONNEX', numail), 'L', jdes)
             call jelira(jexnum(noma//'.CONNEX', numail), 'LONMAX', nn)
             if (ndim .eq. 2 .and. nomtyp(1:4) .eq. 'SEG2') then
                 dimcoo = -desc(2)
-                lino(1)=zi(jdes-1+1)
-                lino(2)=zi(jdes-1+2)
-                coor(1,1)=vale(dimcoo*(lino(1)-1)+1)
-                coor(2,1)=vale(dimcoo*(lino(1)-1)+2)
-                coor(1,2)=vale(dimcoo*(lino(2)-1)+1)
-                coor(2,2)=vale(dimcoo*(lino(2)-1)+2)
-                eksix=coor(1,1)*dfse2(1)+coor(1,2)*dfse2(2)
-                eksiy=coor(2,1)*dfse2(1)+coor(2,2)*dfse2(2)
+                lino(1) = zi(jdes-1+1)
+                lino(2) = zi(jdes-1+2)
+                coor(1, 1) = vale(dimcoo*(lino(1)-1)+1)
+                coor(2, 1) = vale(dimcoo*(lino(1)-1)+2)
+                coor(1, 2) = vale(dimcoo*(lino(2)-1)+1)
+                coor(2, 2) = vale(dimcoo*(lino(2)-1)+2)
+                eksix = coor(1, 1)*dfse2(1)+coor(1, 2)*dfse2(2)
+                eksiy = coor(2, 1)*dfse2(1)+coor(2, 2)*dfse2(2)
                 if (type_calc .eq. 2) then
-                    norme=sqrt(eksix**2+eksiy**2)
+                    norme = sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
-                        a=eksix/norme
-                        b=eksiy/norme
+                        a = eksix/norme
+                        b = eksiy/norme
                     else
                         call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                         call utmess('F', 'CHARGES2_23', sk=knumai)
-                    endif
-                else if (type_calc .eq.1) then
-                    norme=sqrt(eksix**2+eksiy**2)
+                    end if
+                else if (type_calc .eq. 1) then
+                    norme = sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
-                        a=eksiy/norme
-                        b=-eksix/norme
+                        a = eksiy/norme
+                        b = -eksix/norme
                     else
                         call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                         call utmess('F', 'CHARGES2_24', sk=knumai)
-                    endif
-                endif
-                zr(jnorm-1+2*(ino-1)+1)=zr(jnorm-1+2*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+2*(ino-1)+2)=zr(jnorm-1+2*(ino-1)+2)&
-                +b/nnn
-                ij=ij+1
+                    end if
+                end if
+                zr(jnorm-1+2*(ino-1)+1) = zr(jnorm-1+2*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+2*(ino-1)+2) = zr(jnorm-1+2*(ino-1)+2) &
+                                          +b/nnn
+                ij = ij+1
                 zr(idobj2-1+2*(ij-1)+1) = a
                 zr(idobj2-1+2*(ij-1)+2) = b
-            else if (ndim.eq.2.and.nomtyp(1:4).eq.'SEG3') then
+            else if (ndim .eq. 2 .and. nomtyp(1:4) .eq. 'SEG3') then
                 do i = 1, nn
                     dimcoo = -desc(2)
-                    lino(i)=zi(jdes-1+i)
-                    coor(1,i)=vale(dimcoo*(lino(i)-1)+1)
-                    coor(2,i)=vale(dimcoo*(lino(i)-1)+2)
-                    coor(3,i)=0.d0
-                    if (numno .eq. lino(i)) in=i
+                    lino(i) = zi(jdes-1+i)
+                    coor(1, i) = vale(dimcoo*(lino(i)-1)+1)
+                    coor(2, i) = vale(dimcoo*(lino(i)-1)+2)
+                    coor(3, i) = 0.d0
+                    if (numno .eq. lino(i)) in = i
                 end do
-                eksix=0.d0
-                eksiy=0.d0
+                eksix = 0.d0
+                eksiy = 0.d0
 !              CALCUL DU  VECTEUR TANGENT VIA LES FONCTIONS DE FORMES
                 do ifonc = 1, nn
-                    eksix=eksix+coor(1,ifonc)*dfse3((in-1)*nn+ifonc)
-                    eksiy=eksiy+coor(2,ifonc)*dfse3((in-1)*nn+ifonc)
+                    eksix = eksix+coor(1, ifonc)*dfse3((in-1)*nn+ifonc)
+                    eksiy = eksiy+coor(2, ifonc)*dfse3((in-1)*nn+ifonc)
                 end do
 !              ON S INTERESSE AU VECTEUR TANGENT
                 if (type_calc .eq. 2) then
-                    norme=sqrt(eksix**2+eksiy**2)
+                    norme = sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
-                        a=eksix/norme
-                        b=eksiy/norme
+                        a = eksix/norme
+                        b = eksiy/norme
                     else
-                        call norlin('SE3', 2, knumai, coor, dfse2,&
+                        call norlin('SE3', 2, knumai, coor, dfse2, &
                                     in, prec, a, b, c)
-                    endif
+                    end if
 !
 !              ON S INTERESSE AU VECTEUR NORMAL
-                else if (type_calc .eq.1) then
-                    norme=sqrt(eksix**2+eksiy**2)
+                else if (type_calc .eq. 1) then
+                    norme = sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
-                        a=eksiy/norme
-                        b=-eksix/norme
+                        a = eksiy/norme
+                        b = -eksix/norme
                     else
-                        call norlin('SE3', 1, knumai, coor, dfse2,&
+                        call norlin('SE3', 1, knumai, coor, dfse2, &
                                     in, prec, a, b, c)
-                    endif
-                endif
-                zr(jnorm-1+2*(ino-1)+1)=zr(jnorm-1+2*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+2*(ino-1)+2)=zr(jnorm-1+2*(ino-1)+2)&
-                +b/nnn
-                ij=ij+1
+                    end if
+                end if
+                zr(jnorm-1+2*(ino-1)+1) = zr(jnorm-1+2*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+2*(ino-1)+2) = zr(jnorm-1+2*(ino-1)+2) &
+                                          +b/nnn
+                ij = ij+1
                 zr(idobj2-1+2*(ij-1)+1) = a
                 zr(idobj2-1+2*(ij-1)+2) = b
-            else if (ndim.eq.3.and.nomtyp(1:3).eq.'SEG') then
+            else if (ndim .eq. 3 .and. nomtyp(1:3) .eq. 'SEG') then
                 call utmess('F', 'CHARGES2_25')
 !
-            else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD4') then
+            else if (ndim .eq. 3 .and. nomtyp(1:5) .eq. 'QUAD4') then
                 do i = 1, nn
-                    lino(i)=zi(jdes-1+i)
-                    coor(1,i)=vale(3*(lino(i)-1)+1)
-                    coor(2,i)=vale(3*(lino(i)-1)+2)
-                    coor(3,i)=vale(3*(lino(i)-1)+3)
-                    if (numno .eq. lino(i)) in=i
+                    lino(i) = zi(jdes-1+i)
+                    coor(1, i) = vale(3*(lino(i)-1)+1)
+                    coor(2, i) = vale(3*(lino(i)-1)+2)
+                    coor(3, i) = vale(3*(lino(i)-1)+3)
+                    if (numno .eq. lino(i)) in = i
                 end do
-                eksix=0.d0
-                eksiy=0.d0
-                eksiz=0.d0
-                eetax=0.d0
-                eetay=0.d0
-                eetaz=0.d0
+                eksix = 0.d0
+                eksiy = 0.d0
+                eksiz = 0.d0
+                eetax = 0.d0
+                eetay = 0.d0
+                eetaz = 0.d0
 !
 !              CALCUL DES DEUX VECTEURS TANGENTS
                 do ifonc = 1, nn
-                    eksix=eksix+coor(1,ifonc)*dfqu4((in-1)*nn*2+ifonc)
-                    eksiy=eksiy+coor(2,ifonc)*dfqu4((in-1)*nn*2+ifonc)
-                    eksiz=eksiz+coor(3,ifonc)*dfqu4((in-1)*nn*2+ifonc)
+                    eksix = eksix+coor(1, ifonc)*dfqu4((in-1)*nn*2+ifonc)
+                    eksiy = eksiy+coor(2, ifonc)*dfqu4((in-1)*nn*2+ifonc)
+                    eksiz = eksiz+coor(3, ifonc)*dfqu4((in-1)*nn*2+ifonc)
 !
-                    eetax=eetax+coor(1,ifonc)*dfqu4((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetay=eetay+coor(2,ifonc)*dfqu4((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetaz=eetaz+coor(3,ifonc)*dfqu4((in-1)*nn*2+nn+&
-                    ifonc)
+                    eetax = eetax+coor(1, ifonc)*dfqu4((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetay = eetay+coor(2, ifonc)*dfqu4((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetaz = eetaz+coor(3, ifonc)*dfqu4((in-1)*nn*2+nn+ &
+                                                       ifonc)
                 end do
 !
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
-                a=eksiy*eetaz-eksiz*eetay
-                b=eksiz*eetax-eksix*eetaz
-                c=eksix*eetay-eksiy*eetax
-                norme=sqrt(a*a+b*b+c*c)
+                a = eksiy*eetaz-eksiz*eetay
+                b = eksiz*eetax-eksix*eetaz
+                c = eksix*eetay-eksiy*eetax
+                norme = sqrt(a*a+b*b+c*c)
                 if (norme .gt. prec) then
-                    a=a/norme
-                    b=b/norme
-                    c=c/norme
+                    a = a/norme
+                    b = b/norme
+                    c = c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                     call utmess('F', 'CHARGES2_26', sk=knumai)
-                endif
+                end if
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
-                zr(jnorm-1+3*(ino-1)+1)=zr(jnorm-1+3*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+3*(ino-1)+2)=zr(jnorm-1+3*(ino-1)+2)&
-                +b/nnn
-                zr(jnorm-1+3*(ino-1)+3)=zr(jnorm-1+3*(ino-1)+3)&
-                +c/nnn
-                ij=ij+1
+                zr(jnorm-1+3*(ino-1)+1) = zr(jnorm-1+3*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+3*(ino-1)+2) = zr(jnorm-1+3*(ino-1)+2) &
+                                          +b/nnn
+                zr(jnorm-1+3*(ino-1)+3) = zr(jnorm-1+3*(ino-1)+3) &
+                                          +c/nnn
+                ij = ij+1
 !              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 !              UNE VERIFICATION ULTERIEURE
                 zr(idobj2-1+3*(ij-1)+1) = a
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
-            else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD8') then
+            else if (ndim .eq. 3 .and. nomtyp(1:5) .eq. 'QUAD8') then
                 do i = 1, nn
-                    lino(i)=zi(jdes-1+i)
-                    coor(1,i)=vale(3*(lino(i)-1)+1)
-                    coor(2,i)=vale(3*(lino(i)-1)+2)
-                    coor(3,i)=vale(3*(lino(i)-1)+3)
-                    if (numno .eq. lino(i)) in=i
+                    lino(i) = zi(jdes-1+i)
+                    coor(1, i) = vale(3*(lino(i)-1)+1)
+                    coor(2, i) = vale(3*(lino(i)-1)+2)
+                    coor(3, i) = vale(3*(lino(i)-1)+3)
+                    if (numno .eq. lino(i)) in = i
                 end do
-                eksix=0.d0
-                eksiy=0.d0
-                eksiz=0.d0
-                eetax=0.d0
-                eetay=0.d0
-                eetaz=0.d0
+                eksix = 0.d0
+                eksiy = 0.d0
+                eksiz = 0.d0
+                eetax = 0.d0
+                eetay = 0.d0
+                eetaz = 0.d0
 !              CALCUL DES DEUX VECTEURS TANGENTS
                 do ifonc = 1, nn
 !
-                    eksix=eksix+coor(1,ifonc)*dfqu8((in-1)*nn*2+ifonc)
-                    eksiy=eksiy+coor(2,ifonc)*dfqu8((in-1)*nn*2+ifonc)
-                    eksiz=eksiz+coor(3,ifonc)*dfqu8((in-1)*nn*2+ifonc)
+                    eksix = eksix+coor(1, ifonc)*dfqu8((in-1)*nn*2+ifonc)
+                    eksiy = eksiy+coor(2, ifonc)*dfqu8((in-1)*nn*2+ifonc)
+                    eksiz = eksiz+coor(3, ifonc)*dfqu8((in-1)*nn*2+ifonc)
 !
-                    eetax=eetax+coor(1,ifonc)*dfqu8((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetay=eetay+coor(2,ifonc)*dfqu8((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetaz=eetaz+coor(3,ifonc)*dfqu8((in-1)*nn*2+nn+&
-                    ifonc)
+                    eetax = eetax+coor(1, ifonc)*dfqu8((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetay = eetay+coor(2, ifonc)*dfqu8((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetaz = eetaz+coor(3, ifonc)*dfqu8((in-1)*nn*2+nn+ &
+                                                       ifonc)
                 end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
-                a=eksiy*eetaz-eksiz*eetay
-                b=eksiz*eetax-eksix*eetaz
-                c=eksix*eetay-eksiy*eetax
-                norme=sqrt(a*a+b*b+c*c)
+                a = eksiy*eetaz-eksiz*eetay
+                b = eksiz*eetax-eksix*eetaz
+                c = eksix*eetay-eksiy*eetax
+                norme = sqrt(a*a+b*b+c*c)
                 if (norme .gt. prec) then
-                    a=a/norme
-                    b=b/norme
-                    c=c/norme
+                    a = a/norme
+                    b = b/norme
+                    c = c/norme
                 else
-                    call norlin('QU8', 0, knumai, coor, dfqu4,&
+                    call norlin('QU8', 0, knumai, coor, dfqu4, &
                                 in, prec, a, b, c)
-                endif
+                end if
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
-                zr(jnorm-1+3*(ino-1)+1)=zr(jnorm-1+3*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+3*(ino-1)+2)=zr(jnorm-1+3*(ino-1)+2)&
-                +b/nnn
-                zr(jnorm-1+3*(ino-1)+3)=zr(jnorm-1+3*(ino-1)+3)&
-                +c/nnn
-                ij=ij+1
+                zr(jnorm-1+3*(ino-1)+1) = zr(jnorm-1+3*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+3*(ino-1)+2) = zr(jnorm-1+3*(ino-1)+2) &
+                                          +b/nnn
+                zr(jnorm-1+3*(ino-1)+3) = zr(jnorm-1+3*(ino-1)+3) &
+                                          +c/nnn
+                ij = ij+1
 !              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 !              UNE VERIFICATION ULTERIEURE
                 zr(idobj2-1+3*(ij-1)+1) = a
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
-            else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD9') then
+            else if (ndim .eq. 3 .and. nomtyp(1:5) .eq. 'QUAD9') then
                 do i = 1, nn
-                    lino(i)=zi(jdes-1+i)
-                    coor(1,i)=vale(3*(lino(i)-1)+1)
-                    coor(2,i)=vale(3*(lino(i)-1)+2)
-                    coor(3,i)=vale(3*(lino(i)-1)+3)
-                    if (numno .eq. lino(i)) in=i
+                    lino(i) = zi(jdes-1+i)
+                    coor(1, i) = vale(3*(lino(i)-1)+1)
+                    coor(2, i) = vale(3*(lino(i)-1)+2)
+                    coor(3, i) = vale(3*(lino(i)-1)+3)
+                    if (numno .eq. lino(i)) in = i
                 end do
-                eksix=0.d0
-                eksiy=0.d0
-                eksiz=0.d0
-                eetax=0.d0
-                eetay=0.d0
-                eetaz=0.d0
+                eksix = 0.d0
+                eksiy = 0.d0
+                eksiz = 0.d0
+                eetax = 0.d0
+                eetay = 0.d0
+                eetaz = 0.d0
 !              CALCUL DES DEUX VECTEURS TANGENTS
                 do ifonc = 1, nn
-                    eksix=eksix+coor(1,ifonc)*dfqu9((in-1)*nn*2+ifonc)
-                    eksiy=eksiy+coor(2,ifonc)*dfqu9((in-1)*nn*2+ifonc)
-                    eksiz=eksiz+coor(3,ifonc)*dfqu9((in-1)*nn*2+ifonc)
+                    eksix = eksix+coor(1, ifonc)*dfqu9((in-1)*nn*2+ifonc)
+                    eksiy = eksiy+coor(2, ifonc)*dfqu9((in-1)*nn*2+ifonc)
+                    eksiz = eksiz+coor(3, ifonc)*dfqu9((in-1)*nn*2+ifonc)
 !
-                    eetax=eetax+coor(1,ifonc)*dfqu9((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetay=eetay+coor(2,ifonc)*dfqu9((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetaz=eetaz+coor(3,ifonc)*dfqu9((in-1)*nn*2+nn+&
-                    ifonc)
+                    eetax = eetax+coor(1, ifonc)*dfqu9((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetay = eetay+coor(2, ifonc)*dfqu9((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetaz = eetaz+coor(3, ifonc)*dfqu9((in-1)*nn*2+nn+ &
+                                                       ifonc)
                 end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
-                a=eksiy*eetaz-eksiz*eetay
-                b=eksiz*eetax-eksix*eetaz
-                c=eksix*eetay-eksiy*eetax
-                norme=sqrt(a*a+b*b+c*c)
+                a = eksiy*eetaz-eksiz*eetay
+                b = eksiz*eetax-eksix*eetaz
+                c = eksix*eetay-eksiy*eetax
+                norme = sqrt(a*a+b*b+c*c)
                 if (norme .gt. prec) then
-                    a=a/norme
-                    b=b/norme
-                    c=c/norme
+                    a = a/norme
+                    b = b/norme
+                    c = c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                     call utmess('F', 'CHARGES2_26', sk=knumai)
-                endif
+                end if
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
-                zr(jnorm-1+3*(ino-1)+1)=zr(jnorm-1+3*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+3*(ino-1)+2)=zr(jnorm-1+3*(ino-1)+2)&
-                +b/nnn
-                zr(jnorm-1+3*(ino-1)+3)=zr(jnorm-1+3*(ino-1)+3)&
-                +c/nnn
-                ij=ij+1
+                zr(jnorm-1+3*(ino-1)+1) = zr(jnorm-1+3*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+3*(ino-1)+2) = zr(jnorm-1+3*(ino-1)+2) &
+                                          +b/nnn
+                zr(jnorm-1+3*(ino-1)+3) = zr(jnorm-1+3*(ino-1)+3) &
+                                          +c/nnn
+                ij = ij+1
 !              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 !              UNE VERIFICATION ULTERIEURE
                 zr(idobj2-1+3*(ij-1)+1) = a
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
-            else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA3') then
+            else if (ndim .eq. 3 .and. nomtyp(1:5) .eq. 'TRIA3') then
                 do i = 1, nn
-                    lino(i)=zi(jdes-1+i)
-                    coor(1,i)=vale(3*(lino(i)-1)+1)
-                    coor(2,i)=vale(3*(lino(i)-1)+2)
-                    coor(3,i)=vale(3*(lino(i)-1)+3)
-                    if (numno .eq. lino(i)) in=i
+                    lino(i) = zi(jdes-1+i)
+                    coor(1, i) = vale(3*(lino(i)-1)+1)
+                    coor(2, i) = vale(3*(lino(i)-1)+2)
+                    coor(3, i) = vale(3*(lino(i)-1)+3)
+                    if (numno .eq. lino(i)) in = i
                 end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
-                eksix=0.d0
-                eksiy=0.d0
-                eksiz=0.d0
-                eetax=0.d0
-                eetay=0.d0
-                eetaz=0.d0
+                eksix = 0.d0
+                eksiy = 0.d0
+                eksiz = 0.d0
+                eetax = 0.d0
+                eetay = 0.d0
+                eetaz = 0.d0
                 do ifonc = 1, nn
-                    eksix=eksix+coor(1,ifonc)*dftr3((in-1)*nn*2+ifonc)
-                    eksiy=eksiy+coor(2,ifonc)*dftr3((in-1)*nn*2+ifonc)
-                    eksiz=eksiz+coor(3,ifonc)*dftr3((in-1)*nn*2+ifonc)
+                    eksix = eksix+coor(1, ifonc)*dftr3((in-1)*nn*2+ifonc)
+                    eksiy = eksiy+coor(2, ifonc)*dftr3((in-1)*nn*2+ifonc)
+                    eksiz = eksiz+coor(3, ifonc)*dftr3((in-1)*nn*2+ifonc)
 !
-                    eetax=eetax+coor(1,ifonc)*dftr3((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetay=eetay+coor(2,ifonc)*dftr3((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetaz=eetaz+coor(3,ifonc)*dftr3((in-1)*nn*2+nn+&
-                    ifonc)
+                    eetax = eetax+coor(1, ifonc)*dftr3((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetay = eetay+coor(2, ifonc)*dftr3((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetaz = eetaz+coor(3, ifonc)*dftr3((in-1)*nn*2+nn+ &
+                                                       ifonc)
                 end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
-                a=eksiy*eetaz-eksiz*eetay
-                b=eksiz*eetax-eksix*eetaz
-                c=eksix*eetay-eksiy*eetax
-                norme=sqrt(a*a+b*b+c*c)
+                a = eksiy*eetaz-eksiz*eetay
+                b = eksiz*eetax-eksix*eetaz
+                c = eksix*eetay-eksiy*eetax
+                norme = sqrt(a*a+b*b+c*c)
                 if (norme .gt. prec) then
-                    a=a/norme
-                    b=b/norme
-                    c=c/norme
+                    a = a/norme
+                    b = b/norme
+                    c = c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                     call utmess('F', 'CHARGES2_26', sk=knumai)
-                endif
+                end if
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
-                zr(jnorm-1+3*(ino-1)+1)=zr(jnorm-1+3*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+3*(ino-1)+2)=zr(jnorm-1+3*(ino-1)+2)&
-                +b/nnn
-                zr(jnorm-1+3*(ino-1)+3)=zr(jnorm-1+3*(ino-1)+3)&
-                +c/nnn
-                ij=ij+1
+                zr(jnorm-1+3*(ino-1)+1) = zr(jnorm-1+3*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+3*(ino-1)+2) = zr(jnorm-1+3*(ino-1)+2) &
+                                          +b/nnn
+                zr(jnorm-1+3*(ino-1)+3) = zr(jnorm-1+3*(ino-1)+3) &
+                                          +c/nnn
+                ij = ij+1
 !              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 !              UNE VERIFICATION ULTERIEURE
                 zr(idobj2-1+3*(ij-1)+1) = a
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
-            else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA6') then
+            else if (ndim .eq. 3 .and. nomtyp(1:5) .eq. 'TRIA6') then
                 do i = 1, nn
-                    lino(i)=zi(jdes-1+i)
-                    coor(1,i)=vale(3*(lino(i)-1)+1)
-                    coor(2,i)=vale(3*(lino(i)-1)+2)
-                    coor(3,i)=vale(3*(lino(i)-1)+3)
-                    if (numno .eq. lino(i)) in=i
+                    lino(i) = zi(jdes-1+i)
+                    coor(1, i) = vale(3*(lino(i)-1)+1)
+                    coor(2, i) = vale(3*(lino(i)-1)+2)
+                    coor(3, i) = vale(3*(lino(i)-1)+3)
+                    if (numno .eq. lino(i)) in = i
                 end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
-                eksix=0.d0
-                eksiy=0.d0
-                eksiz=0.d0
-                eetax=0.d0
-                eetay=0.d0
-                eetaz=0.d0
+                eksix = 0.d0
+                eksiy = 0.d0
+                eksiz = 0.d0
+                eetax = 0.d0
+                eetay = 0.d0
+                eetaz = 0.d0
                 do ifonc = 1, nn
-                    eksix=eksix+coor(1,ifonc)*dftr6((in-1)*nn*2+ifonc)
-                    eksiy=eksiy+coor(2,ifonc)*dftr6((in-1)*nn*2+ifonc)
-                    eksiz=eksiz+coor(3,ifonc)*dftr6((in-1)*nn*2+ifonc)
+                    eksix = eksix+coor(1, ifonc)*dftr6((in-1)*nn*2+ifonc)
+                    eksiy = eksiy+coor(2, ifonc)*dftr6((in-1)*nn*2+ifonc)
+                    eksiz = eksiz+coor(3, ifonc)*dftr6((in-1)*nn*2+ifonc)
 !
-                    eetax=eetax+coor(1,ifonc)*dftr6((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetay=eetay+coor(2,ifonc)*dftr6((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetaz=eetaz+coor(3,ifonc)*dftr6((in-1)*nn*2+nn+&
-                    ifonc)
+                    eetax = eetax+coor(1, ifonc)*dftr6((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetay = eetay+coor(2, ifonc)*dftr6((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetaz = eetaz+coor(3, ifonc)*dftr6((in-1)*nn*2+nn+ &
+                                                       ifonc)
                 end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
-                a=eksiy*eetaz-eksiz*eetay
-                b=eksiz*eetax-eksix*eetaz
-                c=eksix*eetay-eksiy*eetax
-                norme=sqrt(a*a+b*b+c*c)
+                a = eksiy*eetaz-eksiz*eetay
+                b = eksiz*eetax-eksix*eetaz
+                c = eksix*eetay-eksiy*eetax
+                norme = sqrt(a*a+b*b+c*c)
                 if (norme .gt. prec) then
-                    a=a/norme
-                    b=b/norme
-                    c=c/norme
+                    a = a/norme
+                    b = b/norme
+                    c = c/norme
                 else
-                    call norlin('TR6', 0, knumai, coor, dftr3,&
+                    call norlin('TR6', 0, knumai, coor, dftr3, &
                                 in, prec, a, b, c)
-                endif
+                end if
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
-                zr(jnorm-1+3*(ino-1)+1)=zr(jnorm-1+3*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+3*(ino-1)+2)=zr(jnorm-1+3*(ino-1)+2)&
-                +b/nnn
-                zr(jnorm-1+3*(ino-1)+3)=zr(jnorm-1+3*(ino-1)+3)&
-                +c/nnn
-                ij=ij+1
+                zr(jnorm-1+3*(ino-1)+1) = zr(jnorm-1+3*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+3*(ino-1)+2) = zr(jnorm-1+3*(ino-1)+2) &
+                                          +b/nnn
+                zr(jnorm-1+3*(ino-1)+3) = zr(jnorm-1+3*(ino-1)+3) &
+                                          +c/nnn
+                ij = ij+1
 !              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 !              UNE VERIFICATION ULTERIEURE
                 zr(idobj2-1+3*(ij-1)+1) = a
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
-            else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA7') then
+            else if (ndim .eq. 3 .and. nomtyp(1:5) .eq. 'TRIA7') then
                 do i = 1, nn
-                    lino(i)=zi(jdes-1+i)
-                    coor(1,i)=vale(3*(lino(i)-1)+1)
-                    coor(2,i)=vale(3*(lino(i)-1)+2)
-                    coor(3,i)=vale(3*(lino(i)-1)+3)
-                    if (numno .eq. lino(i)) in=i
+                    lino(i) = zi(jdes-1+i)
+                    coor(1, i) = vale(3*(lino(i)-1)+1)
+                    coor(2, i) = vale(3*(lino(i)-1)+2)
+                    coor(3, i) = vale(3*(lino(i)-1)+3)
+                    if (numno .eq. lino(i)) in = i
                 end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
-                eksix=0.d0
-                eksiy=0.d0
-                eksiz=0.d0
-                eetax=0.d0
-                eetay=0.d0
-                eetaz=0.d0
+                eksix = 0.d0
+                eksiy = 0.d0
+                eksiz = 0.d0
+                eetax = 0.d0
+                eetay = 0.d0
+                eetaz = 0.d0
                 do ifonc = 1, nn
-                    eksix=eksix+coor(1,ifonc)*dftr7((in-1)*nn*2+ifonc)
-                    eksiy=eksiy+coor(2,ifonc)*dftr7((in-1)*nn*2+ifonc)
-                    eksiz=eksiz+coor(3,ifonc)*dftr7((in-1)*nn*2+ifonc)
+                    eksix = eksix+coor(1, ifonc)*dftr7((in-1)*nn*2+ifonc)
+                    eksiy = eksiy+coor(2, ifonc)*dftr7((in-1)*nn*2+ifonc)
+                    eksiz = eksiz+coor(3, ifonc)*dftr7((in-1)*nn*2+ifonc)
 !
-                    eetax=eetax+coor(1,ifonc)*dftr7((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetay=eetay+coor(2,ifonc)*dftr7((in-1)*nn*2+nn+&
-                    ifonc)
-                    eetaz=eetaz+coor(3,ifonc)*dftr7((in-1)*nn*2+nn+&
-                    ifonc)
+                    eetax = eetax+coor(1, ifonc)*dftr7((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetay = eetay+coor(2, ifonc)*dftr7((in-1)*nn*2+nn+ &
+                                                       ifonc)
+                    eetaz = eetaz+coor(3, ifonc)*dftr7((in-1)*nn*2+nn+ &
+                                                       ifonc)
                 end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
-                a=eksiy*eetaz-eksiz*eetay
-                b=eksiz*eetax-eksix*eetaz
-                c=eksix*eetay-eksiy*eetax
-                norme=sqrt(a*a+b*b+c*c)
+                a = eksiy*eetaz-eksiz*eetay
+                b = eksiz*eetax-eksix*eetaz
+                c = eksix*eetay-eksiy*eetax
+                norme = sqrt(a*a+b*b+c*c)
                 if (norme .gt. prec) then
-                    a=a/norme
-                    b=b/norme
-                    c=c/norme
+                    a = a/norme
+                    b = b/norme
+                    c = c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
                     call utmess('F', 'CHARGES2_26', sk=knumai)
-                endif
+                end if
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
-                zr(jnorm-1+3*(ino-1)+1)=zr(jnorm-1+3*(ino-1)+1)&
-                +a/nnn
-                zr(jnorm-1+3*(ino-1)+2)=zr(jnorm-1+3*(ino-1)+2)&
-                +b/nnn
-                zr(jnorm-1+3*(ino-1)+3)=zr(jnorm-1+3*(ino-1)+3)&
-                +c/nnn
-                ij=ij+1
+                zr(jnorm-1+3*(ino-1)+1) = zr(jnorm-1+3*(ino-1)+1) &
+                                          +a/nnn
+                zr(jnorm-1+3*(ino-1)+2) = zr(jnorm-1+3*(ino-1)+2) &
+                                          +b/nnn
+                zr(jnorm-1+3*(ino-1)+3) = zr(jnorm-1+3*(ino-1)+3) &
+                                          +c/nnn
+                ij = ij+1
 !              ON STOCHE DANS L OBJET IDOBJ2 TOUTES LES NORMALES POUR
 !              UNE VERIFICATION ULTERIEURE
                 zr(idobj2-1+3*(ij-1)+1) = a
@@ -569,7 +569,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                 zr(idobj2-1+3*(ij-1)+3) = c
             else
                 ASSERT(.false.)
-            endif
+            end if
         end do
     end do
 !
@@ -579,68 +579,68 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
         ino = listno(n)
         call jelira(jexnum(coninv, ino), 'LONMAX', nocc)
         if (ndim .eq. 2) then
-            vnorm = zr(&
-                    jnorm-1+2*(n-1)+1)*zr(jnorm-1+2*(n-1)+1) + zr(jnorm-1+2*(n-1)+2)*zr(jnorm-1+2&
-                    &*(n-1)+2&
-                    )
+            vnorm = zr( &
+                    jnorm-1+2*(n-1)+1)*zr(jnorm-1+2*(n-1)+1)+zr(jnorm-1+2*(n-1)+2)*zr(jnorm-1+2&
+                                                                                     &*(n-1)+2 &
+                                                                                      )
             vnorm = sqrt(vnorm)
             if (vnorm .lt. 1.0d-2) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
                 call utmess('F', 'CHARGES2_30', sk=nomnoe)
-            endif
-            zr(jnorm-1+2*(n-1)+1)=zr(jnorm-1+2*(n-1)+1)/vnorm
-            zr(jnorm-1+2*(n-1)+2)=zr(jnorm-1+2*(n-1)+2)/vnorm
+            end if
+            zr(jnorm-1+2*(n-1)+1) = zr(jnorm-1+2*(n-1)+1)/vnorm
+            zr(jnorm-1+2*(n-1)+2) = zr(jnorm-1+2*(n-1)+2)/vnorm
             do i = 1, nocc
-                ij = ij + 1
-                cosvec = zr(&
-                         jnorm-1+2*(n-1)+1)*zr(idobj2-1+2*(ij-1)+1) + zr(jnorm-1+2*(n-1)+2)*zr(id&
-                         &obj2-1+2*(ij-1)+2&
+                ij = ij+1
+                cosvec = zr( &
+                         jnorm-1+2*(n-1)+1)*zr(idobj2-1+2*(ij-1)+1)+zr(jnorm-1+2*(n-1)+2)*zr(id&
+                         &obj2-1+2*(ij-1)+2 &
                          )
-                sinvec = zr(&
-                         jnorm-1+2*(n-1)+1)*zr(idobj2-1+2*(ij-1)+2) - zr(jnorm-1+2*(n-1)+2)*zr(id&
-                         &obj2-1+2*(ij-1)+1&
+                sinvec = zr( &
+                         jnorm-1+2*(n-1)+1)*zr(idobj2-1+2*(ij-1)+2)-zr(jnorm-1+2*(n-1)+2)*zr(id&
+                         &obj2-1+2*(ij-1)+1 &
                          )
-                angl = r8rddg()*atan2(sinvec,cosvec)
+                angl = r8rddg()*atan2(sinvec, cosvec)
                 if (abs(angl) .gt. 10.0d0) then
                     call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
                     call codree(abs(angl), 'G', kangl)
                     valk(1) = nomnoe
                     valk(2) = kangl
                     call utmess('A', 'CHARGES2_29', nk=2, valk=valk)
-                endif
-            enddo
-        else if (ndim.eq.3) then
-            vnorm = zr(&
-                    jnorm-1+3*(n-1)+1)*zr(jnorm-1+3*(n-1)+1) + zr(jnorm-1+3*(n-1)+2)*zr(jnorm-1+3&
-                    &*(n-1)+2) + zr(jnorm- 1+3*(n-1)+3)*zr(jnorm-1+3*(n-1)+3&
-                    )
+                end if
+            end do
+        else if (ndim .eq. 3) then
+            vnorm = zr( &
+                    jnorm-1+3*(n-1)+1)*zr(jnorm-1+3*(n-1)+1)+zr(jnorm-1+3*(n-1)+2)*zr(jnorm-1+3&
+                                             &*(n-1)+2)+zr(jnorm-1+3*(n-1)+3)*zr(jnorm-1+3*(n-1)+3 &
+                                                                                                   )
             vnorm = sqrt(vnorm)
             if (vnorm .lt. 1.0d-2) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
                 call utmess('F', 'CHARGES2_30', sk=nomnoe)
-            endif
-            zr(jnorm-1+3*(n-1)+1)=zr(jnorm-1+3*(n-1)+1)/vnorm
-            zr(jnorm-1+3*(n-1)+2)=zr(jnorm-1+3*(n-1)+2)/vnorm
-            zr(jnorm-1+3*(n-1)+3)=zr(jnorm-1+3*(n-1)+3)/vnorm
+            end if
+            zr(jnorm-1+3*(n-1)+1) = zr(jnorm-1+3*(n-1)+1)/vnorm
+            zr(jnorm-1+3*(n-1)+2) = zr(jnorm-1+3*(n-1)+2)/vnorm
+            zr(jnorm-1+3*(n-1)+3) = zr(jnorm-1+3*(n-1)+3)/vnorm
             do i = 1, nocc
-                ij = ij + 1
-                cosvec = zr(&
-                         jnorm-1+3*(n-1)+1)*zr(idobj2-1+3*(ij-1)+1) + zr(jnorm-1+3*(n-1)+2)*zr(id&
-                         &obj2-1+3*(ij-1)+2) + zr(jnorm-1+3*(n-1)+3)*zr(idobj2-1+3*(ij-1)+3&
+                ij = ij+1
+                cosvec = zr( &
+                         jnorm-1+3*(n-1)+1)*zr(idobj2-1+3*(ij-1)+1)+zr(jnorm-1+3*(n-1)+2)*zr(id&
+                         &obj2-1+3*(ij-1)+2)+zr(jnorm-1+3*(n-1)+3)*zr(idobj2-1+3*(ij-1)+3 &
                          )
-                call provec(zr(jnorm-1+3*(n-1)+1), zr(idobj2-1+3*(ij- 1)+1), pvec)
-                sinvec = pvec(1)*pvec(1) + pvec(2)*pvec(2) + pvec(3)* pvec(3)
+                call provec(zr(jnorm-1+3*(n-1)+1), zr(idobj2-1+3*(ij-1)+1), pvec)
+                sinvec = pvec(1)*pvec(1)+pvec(2)*pvec(2)+pvec(3)*pvec(3)
                 sinvec = sqrt(sinvec)
-                angl = r8rddg()*atan2(sinvec,cosvec)
+                angl = r8rddg()*atan2(sinvec, cosvec)
                 if (abs(angl) .gt. 10.0d0) then
                     call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
                     call codree(abs(angl), 'G', kangl)
                     valk(1) = nomnoe
                     valk(2) = kangl
                     call utmess('A', 'CHARGES2_29', nk=2, valk=valk)
-                endif
-            enddo
-        endif
+                end if
+            end do
+        end if
     end do
 !
     call jedetr(nomob2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
+subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw, &
                   tspaq, i, jvsieq)
 !
     implicit none
@@ -62,10 +62,10 @@ subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
 !
     decal = 18
     do iordr = 1, nbordr
-        adrs = (iordr-1)*tspaq + kwork*sommw*decal + (i-1)*decal
+        adrs = (iordr-1)*tspaq+kwork*sommw*decal+(i-1)*decal
 !
         do j = 1, 6
-            sig(j) = vwork(adrs + j )
+            sig(j) = vwork(adrs+j)
         end do
 !
         call fgequi(sig, 'SIGM', 3, equi)

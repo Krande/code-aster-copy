@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine gmatl3(nnoff, milieu, connex, &
                   abscur, vect)
 
-implicit none
+    implicit none
 
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -67,7 +67,7 @@ implicit none
     else
         nseg = nnoff-1
         elrefe = 'SE2'
-    endif
+    end if
 
     conn(1:3) = 0
 
@@ -84,24 +84,24 @@ implicit none
         else
             conn(1) = iseg
             conn(2) = iseg+1
-        endif
+        end if
 !
 !       CALCUL DE LA MATRICE ELEMENTAIRE POUR L'ELEMENT COURANT
         call gmate3(abscur, elrefe, conn, nno, mele)
 !
 !       LUMP DE LA MATRICE DE MASSE ELEMENTAIRE
         mlump = 0.d0
-        do i=1, nno
+        do i = 1, nno
             mlump(i) = 0.d0
-            do j=1, nno
-               mlump(i) = mlump(i) + mele(i, j)
+            do j = 1, nno
+                mlump(i) = mlump(i)+mele(i, j)
             end do
         end do
 
 !       AJOUT DE LA CONTRIBUTION DE DE LA MATRICE DE MASSE ELEMENTAIRE
 !       A LA MATRICE DE MASSE ASSEMBLEE
-        do i=1, nno
-            zr(ivect + conn(i) - 1) = zr(ivect + conn(i) - 1) + mlump(i)
+        do i = 1, nno
+            zr(ivect+conn(i)-1) = zr(ivect+conn(i)-1)+mlump(i)
         end do
 
     end do
@@ -111,9 +111,9 @@ implicit none
 !   * on ajoute la contibution du noeud nnoff au noeud 1                !
 !-----------------------------------------------------------------------!
     if (connex) then
-        zr(ivect + nnoff - 1) = zr(ivect + nnoff - 1) + zr(ivect + 1 - 1)
-        zr(ivect + 1     - 1) = zr(ivect + nnoff - 1)
-    endif
+        zr(ivect+nnoff-1) = zr(ivect+nnoff-1)+zr(ivect+1-1)
+        zr(ivect+1-1) = zr(ivect+nnoff-1)
+    end if
 
     call jedema()
 

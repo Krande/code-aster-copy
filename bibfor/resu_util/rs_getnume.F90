@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rs_getnume(result_, inst      , criter_, prec, nume,&
-                      iret   , vari_name_)
+subroutine rs_getnume(result_, inst, criter_, prec, nume, &
+                      iret, vari_name_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/rsorac.h"
 !
@@ -60,24 +60,24 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result    = result_
-    nume      = 0
-    iret      = 0
+    result = result_
+    nume = 0
+    iret = 0
     if (present(vari_name_)) then
         vari_name = vari_name_
     else
         vari_name = 'INST'
-    endif
-    call rsorac(result , vari_name, ibid   , inst, k8bid,&
-                c16bid , prec     , criter_, tnum, 1    ,&
+    end if
+    call rsorac(result, vari_name, ibid, inst, k8bid, &
+                c16bid, prec, criter_, tnum, 1, &
                 nb_find)
-    if (nb_find.lt.0) then
+    if (nb_find .lt. 0) then
         iret = 2
-    elseif (nb_find.eq.1) then
+    elseif (nb_find .eq. 1) then
         iret = 1
         nume = tnum(1)
-    elseif (nb_find.eq.0) then
+    elseif (nb_find .eq. 0) then
         iret = 0
-    endif
+    end if
 
 end subroutine

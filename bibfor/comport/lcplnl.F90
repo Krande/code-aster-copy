@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,19 @@
 ! aslint: disable=W1306,W1504
 !
 subroutine lcplnl(BEHinteg, &
-                  fami, kpg, ksp, rela_comp, toler,&
-                  itmax, mod, imat, nmat, materd,&
-                  materf, nr, nvi, timed, timef,&
-                  deps, epsd, sigd, vind, compor,&
-                  nbcomm, cpmono, pgl, nfs, nsg,&
-                  toutms, hsr, sigf, vinf, icomp,&
+                  fami, kpg, ksp, rela_comp, toler, &
+                  itmax, mod, imat, nmat, materd, &
+                  materf, nr, nvi, timed, timef, &
+                  deps, epsd, sigd, vind, compor, &
+                  nbcomm, cpmono, pgl, nfs, nsg, &
+                  toutms, hsr, sigf, vinf, icomp, &
                   codret, drdy, carcri)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !     INTEGRATION ELASTO-PLASTIQUE ET VISCO-PLASTICITE
 !           SUR DT DE Y = ( SIG , VIN )
@@ -124,7 +124,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     character(len=*) :: fami
 !
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !
     integer :: intg, codret
 !
@@ -154,11 +154,11 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     verjac = 0
 !
     if (algo .eq. 'NEWTON_PERT') then
-        verjac=2
-    endif
+        verjac = 2
+    end if
 !
     essai = 1.d-5
-    dt=timef-timed
+    dt = timef-timed
 !
     call r8inir(ndt+nvi, 0.d0, yd, 1)
 !
@@ -172,8 +172,8 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !
 !     CHOIX DES VALEURS DE VIND A AFFECTER A YD
-    call lcafyd(compor, materd, materf, nbcomm, cpmono,&
-                nmat, mod, nvi, vind, vinf,&
+    call lcafyd(compor, materd, materf, nbcomm, cpmono, &
+                nmat, mod, nvi, vind, vinf, &
                 sigd, nr1, yd, bnews, mtrac)
 !
 ! --- SAUVEGARDE DE VIND INITIAL - VIND1 (POUR HUJEUX)
@@ -182,7 +182,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS
     call lccaga(rela_comp, cargau)
 !
-    if (mod(1:6) .eq. 'C_PLAN') yd (nr) = epsd(3)
+    if (mod(1:6) .eq. 'C_PLAN') yd(nr) = epsd(3)
 !
 !     RESOLUTION ITERATIVE PAR NEWTON DE R(DY) = 0
 !     SOIT  DRDY(DYI) DDYI = -R(DYI)  ET DYI+1 = DYI + DDYI
@@ -191,7 +191,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     typess = -1
     intg = 0
 !
-  2 continue
+2   continue
 !
     call r8inir(nr, 0.d0, r, 1)
     call r8inir(ndt+nvi, 0.d0, ddy, 1)
@@ -199,115 +199,115 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     call r8inir(ndt+nvi, 0.d0, yf, 1)
 !
 !     CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
-    call lcinit(fami, kpg, ksp, rela_comp, typess,&
-                essai, mod, nmat, materf,&
-                timed, timef, intg, nr1, nvi,&
-                yd, epsd, deps, dy, compor,&
-                nbcomm, cpmono, pgl, nfs, nsg,&
-                toutms, vind, sigd, sigf, epstr,&
+    call lcinit(fami, kpg, ksp, rela_comp, typess, &
+                essai, mod, nmat, materf, &
+                timed, timef, intg, nr1, nvi, &
+                yd, epsd, deps, dy, compor, &
+                nbcomm, cpmono, pgl, nfs, nsg, &
+                toutms, vind, sigd, sigf, epstr, &
                 bnews, mtrac, indi, iret)
 !
     if (iret .ne. 0) then
         goto 3
-    endif
+    end if
 !
 ! --- ENREGISTREMENT DE LA SOLUTION D'ESSAI
-    ye(1:nr) = yd(1:nr) + dy(1:nr)
+    ye(1:nr) = yd(1:nr)+dy(1:nr)
 !
     iter = 0
 !
-  1 continue
+1   continue
 !
 !     ITERATIONS DE NEWTON
-    iter = iter + 1
+    iter = iter+1
 !
 !     PAR SOUCIS DE PERFORMANCES, ON NE REFAIT PAS DES OPERATIONS
 !     QUI ONT DEJA ETE FAITE A L'ITERATION PRECEDENTE DANS LE CAS
 !     DE LA RECHERCHE LINEAIRE
-    if (.not.lreli .or. iter .eq. 1) then
+    if (.not. lreli .or. iter .eq. 1) then
 !        INCREMENTATION DE  YF = YD + DY
-        yf(1:nr) = yd(1:nr) + dy(1:nr)
+        yf(1:nr) = yd(1:nr)+dy(1:nr)
 !
 !        CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
-        call lcresi(fami, kpg, ksp, rela_comp, mod,&
-                    imat, nmat, materd, materf,&
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, nr, nvi, vind,&
-                    vinf, itmax, toler, timed, timef,&
-                    yd, yf, deps, epsd, dy,&
+        call lcresi(fami, kpg, ksp, rela_comp, mod, &
+                    imat, nmat, materd, materf, &
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, nr, nvi, vind, &
+                    vinf, itmax, toler, timed, timef, &
+                    yd, yf, deps, epsd, dy, &
                     r, iret, carcri, indi)
 !
         if (iret .ne. 0) then
             goto 3
-        endif
+        end if
 !
-    endif
+    end if
 !     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
     if (iter .eq. 1) then
-       rini = r
+        rini = r
     end if
 !
 !
     if (verjac .ne. 2) then
 !         CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
-        call lcjacb(fami, kpg, ksp, rela_comp, mod,&
-                    nmat, materf, timed, timef,&
-                    yf, deps, itmax, toler, nbcomm,&
-                    cpmono, pgl, nfs, nsg, toutms,&
-                    hsr, nr, nvi, vind,&
-                    vinf, epsd, yd, dy, ye,&
-                    carcri, indi, vind1, bnews, mtrac,&
+        call lcjacb(fami, kpg, ksp, rela_comp, mod, &
+                    nmat, materf, timed, timef, &
+                    yf, deps, itmax, toler, nbcomm, &
+                    cpmono, pgl, nfs, nsg, toutms, &
+                    hsr, nr, nvi, vind, &
+                    vinf, epsd, yd, dy, ye, &
+                    carcri, indi, vind1, bnews, mtrac, &
                     drdy, iret)
         if (iret .ne. 0) then
             goto 3
-        endif
-    endif
+        end if
+    end if
 !
     if (verjac .ge. 1) then
-        call lcjacp(fami, kpg, ksp, rela_comp, toler,&
-                    itmax, mod, imat, nmat, materd,&
-                    materf, nr, nvi, timed, timef,&
-                    deps, epsd, vind, vinf, yd,&
-                    nbcomm, cpmono, pgl, nfs,&
-                    nsg, toutms, hsr, dy, r,&
-                    drdy, verjac, drdyb, iret, carcri,&
+        call lcjacp(fami, kpg, ksp, rela_comp, toler, &
+                    itmax, mod, imat, nmat, materd, &
+                    materf, nr, nvi, timed, timef, &
+                    deps, epsd, vind, vinf, yd, &
+                    nbcomm, cpmono, pgl, nfs, &
+                    nsg, toutms, hsr, dy, r, &
+                    drdy, verjac, drdyb, iret, carcri, &
                     indi)
         if (iret .ne. 0) goto 3
-    endif
+    end if
 !
 !     RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
     drdy1 = drdy
     ddy(1:nr) = r(1:nr)
-    call mgauss(cargau, drdy1, ddy, nr, nr1,&
+    call mgauss(cargau, drdy1, ddy, nr, nr1, &
                 1, rbid, iret)
 !
     if (iret .ne. 0) then
         goto 3
-    endif
+    end if
 !
 !     ACTUALISATION DE LA SOLUTION
-    if (.not.lreli) then
+    if (.not. lreli) then
 !        REACTUALISATION DE DY = DY + DDY
-        dy(1:nr) = ddy(1:nr) + dy(1:nr)
+        dy(1:nr) = ddy(1:nr)+dy(1:nr)
     else if (lreli) then
 !        RECHERCHE LINEAIRE : RENVOIE DY, YF ET R RE-ACTUALISES
-        call lcreli(fami, kpg, ksp, rela_comp, mod,&
-                    imat, nmat, materd, materf,&
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, nr, nvi, vind,&
-                    vinf, itmax, toler, timed, timef,&
-                    yd, yf, deps, epsd, dy,&
+        call lcreli(fami, kpg, ksp, rela_comp, mod, &
+                    imat, nmat, materd, materf, &
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, nr, nvi, vind, &
+                    vinf, itmax, toler, timed, timef, &
+                    yd, yf, deps, epsd, dy, &
                     r, ddy, iret, carcri, indi)
         if (iret .ne. 0) goto 3
-    endif
+    end if
     if (mod(1:6) .eq. 'C_PLAN') deps(3) = dy(nr)
 !
 !     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-    call lcconv(rela_comp, yd, dy, ddy, ye,&
-                nr, itmax, toler, iter, intg,&
-                nmat, materf, r, rini, epstr,&
-                typess, essai, icomp, nvi, vind,&
-                vinf, vind1, indi, bnews, mtrac,&
+    call lcconv(rela_comp, yd, dy, ddy, ye, &
+                nr, itmax, toler, iter, intg, &
+                nmat, materf, r, rini, epstr, &
+                typess, essai, icomp, nvi, vind, &
+                vinf, vind1, indi, bnews, mtrac, &
                 lreli, iret)
 !     IRET = 0 CONVERGENCE
 !          = 1 ITERATION SUIVANTE
@@ -320,34 +320,34 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
         goto 2
     else if (iret .eq. 3) then
         goto 3
-    endif
+    end if
 !
 !     CONVERGENCE > INCREMENTATION DE  YF = YD + DY
-    yf(1:ndt+nvi) = yd(1:ndt+nvi) + dy(1:ndt+nvi)
+    yf(1:ndt+nvi) = yd(1:ndt+nvi)+dy(1:ndt+nvi)
 !
 !     MISE A JOUR DE SIGF , VINF
     sigf(1:ndt) = yf(1:ndt)
 !
 !     POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-    call lcplnf(BEHinteg,&
-                rela_comp, vind, nbcomm, nmat, cpmono,&
-                materf, iter, nvi, itmax,&
-                toler, pgl, nfs, nsg, toutms,&
-                hsr, dt, dy, yd, yf,&
-                vinf, sigd, sigf,&
-                deps, nr1, mod, timef,&
+    call lcplnf(BEHinteg, &
+                rela_comp, vind, nbcomm, nmat, cpmono, &
+                materf, iter, nvi, itmax, &
+                toler, pgl, nfs, nsg, toutms, &
+                hsr, dt, dy, yd, yf, &
+                vinf, sigd, sigf, &
+                deps, nr1, mod, timef, &
                 indi, vind0, iret)
 !
     if (iret .ne. 0) then
         if (iret .eq. 2) goto 2
         goto 3
-    endif
+    end if
 !
 !     CONVERGENCE
     codret = 0
     goto 999
 !
-  3 continue
+3   continue
 !     NON CV, OU PB => REDECOUPAGE (LOCAL OU GLOBAL) DU PAS DE TEMPS
     codret = 1
 !

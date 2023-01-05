@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
+subroutine xajpmi(ndim, list, long, ipt, cpt, newpt, &
                   longar, ajout)
     implicit none
 !
@@ -58,19 +58,19 @@ subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
         do j = 1, ndim
             p(j) = list(ndim*(i-1)+j)
         end do
-        if (padist(ndim,p,newpt) .lt. (longar*cridist)) deja = .true.
+        if (padist(ndim, p, newpt) .lt. (longar*cridist)) deja = .true.
     end do
 !
     if (.not. deja) then
 !       CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
-        ipt = ipt + 1
-        cpt = cpt + 1
+        ipt = ipt+1
+        cpt = cpt+1
 !       TROP DE POINTS DANS LA LISTE
         ASSERT(ipt .le. long)
         do j = 1, ndim
             list(ndim*(ipt-1)+j) = newpt(j)
         end do
-    endif
+    end if
 !
-    ajout=(.not.deja)
+    ajout = (.not. deja)
 end subroutine

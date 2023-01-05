@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ subroutine cntdif(ivect, dimen, diff, valdif, maxdim)
 #include "asterfort/ordis.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer,intent(in) :: maxdim
-    integer,intent(in) :: dimen
-    integer,intent(in) :: ivect
-    integer,intent(out) :: diff
-    integer,intent(out) :: valdif(maxdim)
+    integer, intent(in) :: maxdim
+    integer, intent(in) :: dimen
+    integer, intent(in) :: ivect
+    integer, intent(out) :: diff
+    integer, intent(out) :: valdif(maxdim)
     integer :: ii
     integer, pointer :: vaux(:) => null()
 
@@ -48,19 +48,19 @@ subroutine cntdif(ivect, dimen, diff, valdif, maxdim)
     AS_ALLOCATE(vi=vaux, size=dimen)
 !
 !     ON COPIE DANS UN CONCEPT DE TRAVAIL
-    do   ii = 1, dimen
-        vaux(ii)=zi(ivect+ii-1)
+    do ii = 1, dimen
+        vaux(ii) = zi(ivect+ii-1)
     end do
 !     ON TRIE LE VECTEUR PAR ORDRE CROISSANT
     call ordis(vaux, dimen)
-    diff=1
+    diff = 1
 !     ON COMPTE LES ELEMENTS DIFFERENTS
-    do   ii = 1, dimen-1
+    do ii = 1, dimen-1
         if (vaux(ii+1) .gt. vaux(ii)) then
-            valdif(diff)=vaux(ii)
-            diff=diff+1
-        endif
+            valdif(diff) = vaux(ii)
+            diff = diff+1
+        end if
     end do
-    valdif(diff)=vaux(dimen)
+    valdif(diff) = vaux(dimen)
     AS_DEALLOCATE(vi=vaux)
 end subroutine

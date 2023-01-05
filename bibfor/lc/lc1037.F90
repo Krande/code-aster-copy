@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc1037(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
+subroutine lc1037(fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, &
                   nvi, dsidep, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/lcrolo.h"
 !
@@ -59,7 +59,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call lcrolo(fami, kpg, ksp, imate, option,&
-                carcri, epsm, deps, vim, vip,&
+    call lcrolo(fami, kpg, ksp, imate, option, &
+                carcri, epsm, deps, vim, vip, &
                 sigp, dsidep, codret)
 end subroutine

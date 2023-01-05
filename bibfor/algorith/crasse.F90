@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,33 +68,33 @@ subroutine crasse()
 !
 !     -- LA RE-ENTRANCE EST INTERDITE:
     call jeexin(resu2//'           .DESC', iret)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
 !     -- ON COMPTE LE NOMBRE MAX. DE NUMEROS D'ORDRE DE LA
 !        SD_RESULTAT :
-    nordmx=0
+    nordmx = 0
     do iocc = 1, nbfac
         call getvid('ASSE', 'RESULTAT', iocc=iocc, scal=resu1, nbret=n1)
-        resu19=resu1
+        resu19 = resu1
         call jelira(resu19//'.ORDR', 'LONUTI', nbord1)
-        nordmx=nordmx+nbord1
+        nordmx = nordmx+nbord1
     end do
 !
 !
 !     -- ALLOCATION DE LA SD_RESULTAT :
     call rscrsd('G', resu2, type, nordmx)
-    resu19=resu2
+    resu19 = resu2
     call jeveuo(resu19//'.ORDR', 'L', jord2)
 !
 !
 !     BOUCLE SUR LES OCCURRENCES DE ASSE :
 !     ------------------------------------
-    iord2=0
-    tprev=-1.d300
+    iord2 = 0
+    tprev = -1.d300
     do iocc = 1, nbfac
         call getvr8('ASSE', 'TRANSLATION', iocc=iocc, scal=trans, nbret=n1)
         call getvid('ASSE', 'RESULTAT', iocc=iocc, scal=resu1, nbret=n1)
-        resu19=resu1
+        resu19 = resu1
         call jelira(resu19//'.ORDR', 'LONUTI', nbord1)
         call jeveuo(resu19//'.ORDR', 'L', vi=ord1)
         call jelira(resu19//'.DESC', 'NOMUTI', nbcham)
@@ -103,41 +103,41 @@ subroutine crasse()
 !       -----------------------------------------------------------
         do kord1 = 1, nbord1
             iord1 = ord1(kord1)
-            iord2 = iord2 + 1
+            iord2 = iord2+1
 !
 !         -- STOCKAGE DE L'INSTANT :
-            call rsadpa(resu1, 'L', 1, 'INST', iord1,&
+            call rsadpa(resu1, 'L', 1, 'INST', iord1, &
                         0, sjv=iad, styp=k8b)
-            inst1=zr(iad)
+            inst1 = zr(iad)
 !         -- ON VERIFIE QUE LES INSTANTS SONT CROISSANTS :
-            inst2=inst1+trans
+            inst2 = inst1+trans
             if (inst2 .lt. tprev) then
-                valr(1)=tprev
-                valr(2)=inst2
+                valr(1) = tprev
+                valr(2) = inst2
                 call utmess('F', 'CALCULEL4_21', nr=2, valr=valr)
-            else if (inst2.eq.tprev) then
+            else if (inst2 .eq. tprev) then
 !           -- SI UN INSTANT EST TROUVE PLUSIEURS FOIS, ON ECRASE :
                 call utmess('I', 'CALCULEL4_22', sr=inst2)
-                iord2=iord2-1
-            endif
-            tprev=inst2
+                iord2 = iord2-1
+            end if
+            tprev = inst2
 !
-            call rsadpa(resu2, 'E', 1, 'INST', iord2,&
+            call rsadpa(resu2, 'E', 1, 'INST', iord2, &
                         0, sjv=iad, styp=k8b)
-            zr(iad)=inst2
+            zr(iad) = inst2
 !
             do kch = 1, nbcham
                 call jenuno(jexnum(resu19//'.DESC', kch), chter)
 !
 !           1- RECUPERATION DU CHAMP : CHAM1
-                call rsexch(' ', resu1, chter, iord1, cham1,&
+                call rsexch(' ', resu1, chter, iord1, cham1, &
                             iret)
                 if (iret .ne. 0) goto 115
 !
 !           2- STOCKAGE DE CHAM1 :
-                call rsexch(' ', resu2, chter, iord2, nomch,&
+                call rsexch(' ', resu2, chter, iord2, nomch, &
                             iret)
-                ASSERT(iret.eq.0.or.iret.eq.100)
+                ASSERT(iret .eq. 0 .or. iret .eq. 100)
                 call copisd('CHAMP_GD', 'G', cham1, nomch)
                 call rsnoch(resu2, chter, iord2)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,8 +72,8 @@ subroutine asenap(masse)
 !
     call jemarq()
 !
-    epsima =r8vide()
-    noref=' '
+    epsima = r8vide()
+    noref = ' '
 !
     call getres(resu, concep, nomcmd)
 !
@@ -90,7 +90,7 @@ subroutine asenap(masse)
 ! -- DE COMB_DEPL_APPUI
 !
     ncas = 0
-    call jecrec('&&ASENAP.LISTCAS', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec('&&ASENAP.LISTCAS', 'V V I', 'NU', 'DISPERSE', 'VARIABLE', &
                 nbocc)
 !
     do iocc = 1, nbocc
@@ -99,7 +99,7 @@ subroutine asenap(masse)
             call getfac('DEPL_MULT_APPUI', ncas)
             if (ncas .lt. 2) then
                 call utmess('F', 'SEISME_21')
-            endif
+            end if
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
@@ -109,16 +109,16 @@ subroutine asenap(masse)
             end do
         else
             call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=0, nbret=nc)
-            nc=-nc
+            nc = -nc
             if (nc .lt. 2) then
                 call utmess('F', 'SEISME_22')
-            endif
+            end if
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', nc)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
             call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=nc, vect=zi(jcas))
-            ncas =ncas+nc
-        endif
+            ncas = ncas+nc
+        end if
     end do
 !
 !
@@ -141,10 +141,10 @@ subroutine asenap(masse)
 !
     motfac = 'DEPL_MULT_APPUI'
     call getfac(motfac, nocas)
-    call jecrec('&&ASENAP.LINOEU ', 'V V K8', 'NO', 'DISPERSE', 'VARIABLE',&
+    call jecrec('&&ASENAP.LINOEU ', 'V V K8', 'NO', 'DISPERSE', 'VARIABLE', &
                 nocas)
 !
-    call jecrec('&&ASENAP.LIDIR ', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
+    call jecrec('&&ASENAP.LIDIR ', 'V V R', 'NO', 'DISPERSE', 'VARIABLE', &
                 nocas)
 ! VECTEUR MODE_STATIQUE
     call wkvect('&&ASENAP.STAT', 'V V K8', nocas, jsta)
@@ -164,16 +164,16 @@ subroutine asenap(masse)
 !
 ! -- STOCKAGE MODE STATIQUE DU NUME_CAS TRAITE
         call getvid(motfac, 'MODE_STAT', iocc=icas, scal=stat, nbret=ns)
-        zk8(jsta+icas-1)=stat
+        zk8(jsta+icas-1) = stat
 ! -- STOCKAGE DES NOEUD
         knum = 'N       '
         call codent(nucas, 'D0', knum(2:8))
-        nbmc=2
+        nbmc = 2
         motcle(1) = 'NOEUD'
         tymocl(1) = 'NOEUD'
         motcle(2) = 'GROUP_NO'
         tymocl(2) = 'GROUP_NO'
-        call reliem(' ', noma, 'NO_NOEUD', motfac, icas,&
+        call reliem(' ', noma, 'NO_NOEUD', motfac, icas, &
                     nbmc, motcle, tymocl, mesnoe, nbno)
         call jeveuo(mesnoe, 'L', jnoeu)
 !
@@ -185,7 +185,7 @@ subroutine asenap(masse)
             zk8(jno+ino-1) = zk8(jnoeu+ino-1)
         end do
 ! -- STOCKAGE DES NOEUD REFE
-        zi(jref+icas-1)= 0
+        zi(jref+icas-1) = 0
 !
         zr(jdref+icas-1) = 0.0d0
         zr(jdref+icas+1-1) = 0.0d0
@@ -196,16 +196,16 @@ subroutine asenap(masse)
         if (l_norefe) then
             call jenonu(jexnom(obj2, noref), ire1)
             if (ire1 .eq. 0) then
-                ier = ier + 1
+                ier = ier+1
                 valk(1) = noref
                 valk(2) = noma
                 call utmess('E', 'SEISME_1', nk=2, valk=valk)
                 goto 999
-            endif
+            end if
 !
             zk24(jnref+icas-1) = noref
-            zi(jref+icas-1)= 1
-        endif
+            zi(jref+icas-1) = 1
+        end if
 ! -- STOCKAGE DES DIRECTIONS D''ANCRAGE
 !
         kdir = 'D       '
@@ -215,29 +215,29 @@ subroutine asenap(masse)
         call jeecra(jexnom('&&ASENAP.LIDIR', kdir), 'LONUTI', 3*nbno)
         call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'E', jdir)
         do ino = 1, 3*nbno
-            zr(jdir+ino-1)= epsima
+            zr(jdir+ino-1) = epsima
         end do
         call getvr8(motfac, 'DX', iocc=icas, scal=dx, nbret=nx)
         call getvr8(motfac, 'DY', iocc=icas, scal=dy, nbret=ny)
         call getvr8(motfac, 'DZ', iocc=icas, scal=dz, nbret=nz)
 !
         do ino = 1, nbno
-            if (nx .ne. 0) zr(jdir+3*(ino-1))= dx
+            if (nx .ne. 0) zr(jdir+3*(ino-1)) = dx
             if (ny .ne. 0) zr(jdir+3*(ino-1)+1) = dy
-            if (nz .ne. 0) zr(jdir+3*(ino-1)+2)= dz
+            if (nz .ne. 0) zr(jdir+3*(ino-1)+2) = dz
 !
             if (zk8(jno+ino-1) .eq. noref) then
                 zr(jdref+icas-1) = dx
                 zr(jdref+icas+1-1) = dy
                 zr(jdref+icas+2-1) = dz
-            endif
+            end if
             if (zi(jref+icas-1) .eq. 1) then
-                zr(jdir+3*(ino-1))=zr(jdir+3*(ino-1))-zr(jdref+icas-1)
-                zr(jdir+3*(ino-1)+1)=zr(jdir+3*(ino-1)+1)-zr(jdref+&
-                icas+1-1)
-                zr(jdir+3*(ino-1)+2)=zr(jdir+3*(ino-1)+2)-zr(jdref+&
-                icas+2-1)
-            endif
+                zr(jdir+3*(ino-1)) = zr(jdir+3*(ino-1))-zr(jdref+icas-1)
+                zr(jdir+3*(ino-1)+1) = zr(jdir+3*(ino-1)+1)-zr(jdref+ &
+                                                               icas+1-1)
+                zr(jdir+3*(ino-1)+2) = zr(jdir+3*(ino-1)+2)-zr(jdref+ &
+                                                               icas+2-1)
+            end if
 !
         end do
     end do
@@ -248,7 +248,7 @@ subroutine asenap(masse)
 999 continue
     if (ier .ne. 0) then
         call utmess('F', 'SEISME_6')
-    endif
+    end if
 !
     call jedema()
 end subroutine

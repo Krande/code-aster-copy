@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine te0089(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,65 +71,65 @@ character(len=16), intent(in) :: option, nomte
 ! - Get element parameters
 !
     call teattr('S', 'FORMULATION', fsi_form, iret)
-    l_axis = (lteatt('AXIS','OUI'))
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
+    l_axis = (lteatt('AXIS', 'OUI'))
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, ndim=ndim, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ASSERT(nno .le. 3)
 !
 ! - Get material properties for fluid
 !
     j_mater = zi(jv_mate)
-    call getFluidPara(j_mater, cele_r_ = celer)
+    call getFluidPara(j_mater, cele_r_=celer)
 !
 ! - Loop on Gauss points
 !
     do ipg = 1, npg
         ldec = (ipg-1)*nno
-        call vff2dn(ndim, nno, ipg, ipoids, idfde,&
+        call vff2dn(ndim, nno, ipg, ipoids, idfde, &
                     zr(jv_geom), nx, ny, poids)
         norm(1) = nx
         norm(2) = ny
         if (l_axis) then
             r = 0.d0
             do ino1 = 1, nno
-                r = r + zr(jv_geom+2*(ino1-1))*zr(ivf+ldec+ino1-1)
+                r = r+zr(jv_geom+2*(ino1-1))*zr(ivf+ldec+ino1-1)
             end do
             poids = poids*r
-        endif
+        end if
         if (fsi_form .eq. 'FSI_UP') then
             do ino1 = 1, nno
-               do ino2 = 1, nno
-                   do jdim = 1, 2
-                       ind1 = 3*(ino1-1)+jdim
-                       ind2 = 3*(ino2-1)+3
-                       if (celer .eq. 0.d0) then
-                           mmat(ind1,ind2) = 0.d0
-                       else
-                           mmat(ind1,ind2) = mmat(ind1,ind2) -&
-                                             poids*norm(jdim)*&
-                                             zr(ivf+ldec+ino1-1)* zr(ivf+ldec+ino2-1)
-                       end if
-                   end do
-               end do
+                do ino2 = 1, nno
+                    do jdim = 1, 2
+                        ind1 = 3*(ino1-1)+jdim
+                        ind2 = 3*(ino2-1)+3
+                        if (celer .eq. 0.d0) then
+                            mmat(ind1, ind2) = 0.d0
+                        else
+                            mmat(ind1, ind2) = mmat(ind1, ind2)- &
+                                               poids*norm(jdim)* &
+                                               zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)
+                        end if
+                    end do
+                end do
             end do
         else
-            call utmess('F', 'FLUID1_2', sk = fsi_form)
-        endif
+            call utmess('F', 'FLUID1_2', sk=fsi_form)
+        end if
     end do
 !
 ! - Output field
 !
     if (fsi_form .eq. 'FSI_UP') then
         call jevech('PMATUNS', 'E', jv_matr)
-        do ino2 = 1,3*nno
+        do ino2 = 1, 3*nno
             do ino1 = 1, 3*nno
                 ij = ino2+3*nno*(ino1-1)
-                zr(jv_matr+ij-1) = mmat(ino1,ino2)
+                zr(jv_matr+ij-1) = mmat(ino1, ino2)
             end do
         end do
     else
-        call utmess('F', 'FLUID1_2', sk = fsi_form)
-    endif
+        call utmess('F', 'FLUID1_2', sk=fsi_form)
+    end if
 !
 end subroutine

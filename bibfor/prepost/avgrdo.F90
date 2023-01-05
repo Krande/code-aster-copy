@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
-                  kwork, sommw, tspaq, i, nommat,&
-                  nomcri, nomfor, grdvie, forvie, vala,&
-                  coefpa, ncycl, jvmin, jvmax, jomin,&
+subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp, &
+                  kwork, sommw, tspaq, i, nommat, &
+                  nomcri, nomfor, grdvie, forvie, vala, &
+                  coefpa, ncycl, jvmin, jvmax, jomin, &
                   jomax, post, cudomx, vnormx, nbplan)
 !
 ! aslint: disable=W1306,W1504
@@ -128,9 +128,9 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
     call wkvect('&&AVGRDO_NRUPT', 'V V R', nbvec*nbordr, jnrupt)
     call wkvect('&&AVGRDO_DOMEL', 'V V R', nbvec*nbordr, jdomel)
 !
-    call avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
-                kwork, sommw, tspaq, i, vala,&
-                coefpa, ncycl, jvmin, jvmax, jomin,&
+    call avcrit(nbvec, nbordr, vectn, vwork, tdisp, &
+                kwork, sommw, tspaq, i, vala, &
+                coefpa, ncycl, jvmin, jvmax, jomin, &
                 jomax, nomcri, nomfor, jgdreq)
 !
 !          CALL AVCRIT(NBVEC, NBORDR, VALA, COEFPA, NCYCL,
@@ -139,8 +139,8 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !
 ! 2. CALCUL DU DOMMAGE ELEMENTAIRE DE WOHLER
 !
-    call avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
-                jgdreq, grdvie, forvie, post, jdomel,&
+    call avdowh(nbvec, nbordr, nommat, nomcri, ncycl, &
+                jgdreq, grdvie, forvie, post, jdomel, &
                 jnrupt)
 !
 ! 3. CALCUL DU DOMMAGE TOTAL (CUMUL)

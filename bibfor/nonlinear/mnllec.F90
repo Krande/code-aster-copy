@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mnllec(imat, numedd, ordman, epsman, pasman,&
-                  epscor, h, hf, itemax, nbran,&
+subroutine mnllec(imat, numedd, ordman, epsman, pasman, &
+                  epscor, h, hf, itemax, nbran, &
                   nextr, epsbif)
     implicit none
 !
@@ -91,14 +91,14 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman,&
     call getvis('RESOLUTION', 'NB_HARM_NONL', iocc=1, scal=hf)
     if (h .gt. hf) then
         call utmess('F', 'MECANONLINE9_63')
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- CHOIX DE LA METHODE DE CONTINUATION
 ! ----------------------------------------------------------------------
     call getvtx('RESOLUTION', 'METHODE', iocc=1, scal=method)
     if (method .eq. 'EHMAN') then
         imeth = 1
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- PARAMETRE DE LA MAN
 ! ----------------------------------------------------------------------
@@ -113,12 +113,12 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman,&
         call getvis('RESOLUTION', 'ITER_NEWTON_MAXI', iocc=1, scal=itemax)
 ! ----- NOMBRE DE PAS DE LA MAN
         call getvis('RESOLUTION', 'NB_PAS_MAN', iocc=1, scal=pasman)
-        pasman=pasman+1
+        pasman = pasman+1
 ! ----- NOMBRE DE BRANCHE
         call getvis('RESOLUTION', 'NB_BRANCHE', iocc=1, scal=nbran)
 ! ----- NOMBRE DE TERME A PRENDRE EN COMPTE POUR LA DETECTION DE BIFURCATION
         call getvis('RESOLUTION', 'CRIT_ORDR_BIFURCATION', iocc=1, scal=nextr)
 ! ----- RESIDU BIFURCATION
         call getvr8('RESOLUTION', 'RESI_RELA_BIFURCATION', iocc=1, scal=epsbif)
-    endif
+    end if
 end subroutine

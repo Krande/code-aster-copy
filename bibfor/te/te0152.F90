@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0152(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
@@ -26,7 +26,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/getFluidPara.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,8 +59,8 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Get element parameters
 !
-    call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', &
+                     nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! - Get material properties for fluid
@@ -78,7 +78,7 @@ character(len=16), intent(in) :: option, nomte
 ! - Get geometry
 !
     do i = 1, nno
-        x(i) = zr(jv_geom+3* (i-1))
+        x(i) = zr(jv_geom+3*(i-1))
         y(i) = zr(jv_geom+3*i-2)
         z(i) = zr(jv_geom+3*i-1)
     end do
@@ -88,27 +88,27 @@ character(len=16), intent(in) :: option, nomte
     volume = 0.d0
     do ipg = 1, npg
         l = (ipg-1)*nno
-        call dfdm3d(nno, ipg, ipoids, idfde, zr(jv_geom),&
+        call dfdm3d(nno, ipg, ipoids, idfde, zr(jv_geom), &
                     poids)
-        volume = volume + poids
+        volume = volume+poids
         do i = 1, nno
-            zr(jv_mass+1) = zr(jv_mass+1) + poids*x(i)*zr(ivf+l+i-1)
-            zr(jv_mass+2) = zr(jv_mass+2) + poids*y(i)*zr(ivf+l+i-1)
-            zr(jv_mass+3) = zr(jv_mass+3) + poids*z(i)*zr(ivf+l+i-1)
+            zr(jv_mass+1) = zr(jv_mass+1)+poids*x(i)*zr(ivf+l+i-1)
+            zr(jv_mass+2) = zr(jv_mass+2)+poids*y(i)*zr(ivf+l+i-1)
+            zr(jv_mass+3) = zr(jv_mass+3)+poids*z(i)*zr(ivf+l+i-1)
             xxi = 0.d0
             yyi = 0.d0
             zzi = 0.d0
             do j = 1, nno
-                xxi = xxi + x(i)*zr(ivf+l+i-1)*x(j)*zr(ivf+l+j-1)
-                yyi = yyi + y(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
-                zzi = zzi + z(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
-                matine(2) = matine(2) + poids*x(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
-                matine(4) = matine(4) + poids*x(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
-                matine(5) = matine(5) + poids*y(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
+                xxi = xxi+x(i)*zr(ivf+l+i-1)*x(j)*zr(ivf+l+j-1)
+                yyi = yyi+y(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
+                zzi = zzi+z(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
+                matine(2) = matine(2)+poids*x(i)*zr(ivf+l+i-1)*y(j)*zr(ivf+l+j-1)
+                matine(4) = matine(4)+poids*x(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
+                matine(5) = matine(5)+poids*y(i)*zr(ivf+l+i-1)*z(j)*zr(ivf+l+j-1)
             end do
-            matine(1) = matine(1) + poids* (yyi+zzi)
-            matine(3) = matine(3) + poids* (xxi+zzi)
-            matine(6) = matine(6) + poids* (xxi+yyi)
+            matine(1) = matine(1)+poids*(yyi+zzi)
+            matine(3) = matine(3)+poids*(xxi+zzi)
+            matine(6) = matine(6)+poids*(xxi+yyi)
         end do
     end do
 !
@@ -122,11 +122,11 @@ character(len=16), intent(in) :: option, nomte
     zr(jv_mass+1) = xg
     zr(jv_mass+2) = yg
     zr(jv_mass+3) = zg
-    zr(jv_mass+4) = matine(1)*rho - zr(jv_mass)*(yg*yg+zg*zg)
-    zr(jv_mass+5) = matine(3)*rho - zr(jv_mass)*(xg*xg+zg*zg)
-    zr(jv_mass+6) = matine(6)*rho - zr(jv_mass)*(xg*xg+yg*yg)
-    zr(jv_mass+7) = matine(2)*rho - zr(jv_mass)*(xg*yg)
-    zr(jv_mass+8) = matine(4)*rho - zr(jv_mass)*(xg*zg)
-    zr(jv_mass+9) = matine(5)*rho - zr(jv_mass)*(yg*zg)
+    zr(jv_mass+4) = matine(1)*rho-zr(jv_mass)*(yg*yg+zg*zg)
+    zr(jv_mass+5) = matine(3)*rho-zr(jv_mass)*(xg*xg+zg*zg)
+    zr(jv_mass+6) = matine(6)*rho-zr(jv_mass)*(xg*xg+yg*yg)
+    zr(jv_mass+7) = matine(2)*rho-zr(jv_mass)*(xg*yg)
+    zr(jv_mass+8) = matine(4)*rho-zr(jv_mass)*(xg*zg)
+    zr(jv_mass+9) = matine(5)*rho-zr(jv_mass)*(yg*zg)
 !
 end subroutine

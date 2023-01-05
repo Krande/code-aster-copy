@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
-                  resuk, nbpari, nbparr, nbpark, mxresf,&
+subroutine vppcom(lcomod, icom1, icom2, resui, resur, &
+                  resuk, nbpari, nbparr, nbpark, mxresf, &
                   vectr, nconv, neq, typres)
     implicit none
 #include "asterf_types.h"
@@ -76,10 +76,10 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !     --- MAIS REFUSES PAR L'AGLA).
 !      LCPU=.TRUE.
 !      LCPU=.FALSE.
-    izero=0
-    k24buf='&&OP0045.BUFFMPI'
-    k24bus='&&OP0045.BUFFMPI.SAVE'
-    klcom='&&OP0045.LCOMOD1'
+    izero = 0
+    k24buf = '&&OP0045.BUFFMPI'
+    k24bus = '&&OP0045.BUFFMPI.SAVE'
+    klcom = '&&OP0045.LCOMOD1'
     if (lcomod) then
         call asmpi_comm('GET_WORLD', mpicow)
         call asmpi_comm('GET', mpicou)
@@ -87,7 +87,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- (POUR SOLVEUR LINEAIRE DU SOLVEUR MODAL)
         if (mpicow .eq. mpicou) then
             ASSERT(.false.)
-        endif
+        end if
         call asmpi_info(comm=mpicou, rank=rangl)
 !       ----------------------------------------------------------------
 !       --- STEP 0: COMM AU SEIN DU COM_WORLD
@@ -101,19 +101,19 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         call asmpi_comm('SET', mpicow)
         call asmpi_barrier()
         if (rangl .eq. 0) then
-            l1=1
+            l1 = 1
         else
-            l1=2
-        endif
+            l1 = 2
+        end if
         call asmpi_split_comm(mpicow, l1, to_mpi_int(icom1), 'procs0', mpico0)
         ASSERT(mpicow .ne. mpico0)
         call asmpi_info(mpico0, rangll, l2)
-        if ((l2.ne.icom2) .and. (rangl.eq.0)) then
+        if ((l2 .ne. icom2) .and. (rangl .eq. 0)) then
             ASSERT(.false.)
-        endif
-        if ((rangll.ne.(icom1-1)) .and. (rangl.eq.0)) then
+        end if
+        if ((rangll .ne. (icom1-1)) .and. (rangl .eq. 0)) then
             ASSERT(.false.)
-        endif
+        end if
 !
 !       --- VECTEUR DES DECALAGES (NCONV) PAR PROC POUR VECTEURS PROPRES
 !       --- CALCUL ET AFFECTATION DU NBRE TOTAL DE MODES CONVERGES
@@ -123,18 +123,18 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- ZI(JLCOM+ICOM1-1)=NCONVL SI RANGL=0, 0 SINON
 !       --- NCONV=NCONVG: NBRE DE MODES CONVERGES TOTAL
 !       --- NCONVM=MAX(NCONVL) (POUR DIMENSIONNER BUFFER DE COM)
-        nconvl=nconv
-        if (rangl .eq. 0) zi(jlcom+icom1-1)=nconvl
+        nconvl = nconv
+        if (rangl .eq. 0) zi(jlcom+icom1-1) = nconvl
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=icom2, vi=zi(jlcom))
-        nconvg=somint(icom2,zi(jlcom))
+        nconvg = somint(icom2, zi(jlcom))
         if (nconvg .le. 0) then
             ASSERT(.false.)
-        endif
-        nconv=nconvg
-        nconvm=maxint(icom2,zi(jlcom))
+        end if
+        nconv = nconvg
+        nconvm = maxint(icom2, zi(jlcom))
         if (nconvm .le. 0) then
             ASSERT(.false.)
-        endif
+        end if
 !
 !       ----------------------------------------------------------------
 !       --- STEP 1: COMM ENTRE LES MAITRES DE CHAQUE SOUS-BANDES
@@ -153,14 +153,14 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
             call wkvect(k24bus, 'V V R', nconvm*neq, jlbufs)
             call dcopy(nconvl*neq, vectr, 1, zr(jlbufs), 1)
             do i = 1, icom2
-                idecal=0
+                idecal = 0
                 do j = 1, i-1
-                    idecal=idecal+zi(jlcom+j-1)
+                    idecal = idecal+zi(jlcom+j-1)
                 end do
                 if (idecal .lt. 0) then
                     ASSERT(.false.)
-                endif
-                i8=neq*zi(jlcom+i-1)
+                end if
+                i8 = neq*zi(jlcom+i-1)
                 if (i .eq. icom1) call dcopy(i8, zr(jlbufs), 1, zr(jlbuff), 1)
                 call asmpi_comm_vect('BCAST', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
                 call dcopy(i8, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
@@ -171,13 +171,13 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
             ibid = 0
             rbid = 0.d0
             cbid = dcmplx(0.d0)
-            call comatr('T', 'R', icom2, icom1-1, zi(jlcom),&
-                        0, 0, [ibid], mxresf, nbparr,&
+            call comatr('T', 'R', icom2, icom1-1, zi(jlcom), &
+                        0, 0, [ibid], mxresf, nbparr, &
                         resur, 0, 0, [cbid])
-            call comatr('T', 'I', icom2, icom1-1, zi(jlcom),&
-                        mxresf, nbpari, resui, 0, 0,&
+            call comatr('T', 'I', icom2, icom1-1, zi(jlcom), &
+                        mxresf, nbpari, resui, 0, 0, &
                         [rbid], 0, 0, [cbid])
-        endif
+        end if
 !
 !       ----------------------------------------------------------------
 !       --- STEP 2: BARRIERE SUR LE COM_WORLD AU CAS OU
@@ -230,12 +230,12 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       ----------------------------------------------------------------
         if (typres(1:9) .ne. 'DYNAMIQUE') then
             do i = 1, nconvg
-                resui(i)=i
+                resui(i) = i
             end do
-        endif
+        end if
         do i = 1, nbpark
-            j=1+(i-1)*mxresf
-            k24b=resuk(j)
+            j = 1+(i-1)*mxresf
+            k24b = resuk(j)
             resuk(j:j-1+nconvg) = k24b
         end do
 !       ----------------------------------------------------------------
@@ -243,7 +243,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       ----------------------------------------------------------------
         call jedetr(klcom)
         call asmpi_comm('FREE', mpico0)
-    endif
+    end if
 !
     call jedema()
 !

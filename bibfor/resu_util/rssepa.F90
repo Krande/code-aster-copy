@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rssepa(result, nuordr, modele, mate, carele,&
+subroutine rssepa(result, nuordr, modele, mate, carele, &
                   excit)
 !
     implicit none
@@ -53,27 +53,27 @@ subroutine rssepa(result, nuordr, modele, mate, carele,&
 !
 !     STOCKAGE DU NOM DU MODELE
 !     -------------------------
-    call rsadpa(result, 'E', 1, 'MODELE', nuordr,&
+    call rsadpa(result, 'E', 1, 'MODELE', nuordr, &
                 0, sjv=jpara, styp=k8b)
-    zk8(jpara)=modele
+    zk8(jpara) = modele
 !
 !     STOCKAGE DU NOM DU CHAMP MATERIAU
 !     ---------------------------------
-    call rsadpa(result, 'E', 1, 'CHAMPMAT', nuordr,&
+    call rsadpa(result, 'E', 1, 'CHAMPMAT', nuordr, &
                 0, sjv=jpara, styp=k8b)
-    zk8(jpara)=mate(1:8)
+    zk8(jpara) = mate(1:8)
 !
 !     STOCKAGE DU NOM DE LA CARACTERISTIQUE ELEMENTAIRE
 !     -------------------------------------------------
-    call rsadpa(result, 'E', 1, 'CARAELEM', nuordr,&
+    call rsadpa(result, 'E', 1, 'CARAELEM', nuordr, &
                 0, sjv=jpara, styp=k8b)
-    zk8(jpara)=carele
+    zk8(jpara) = carele
 !
 !     STOCKAGE DU NOM DE LA SD INFO_CHARGE
 !     ------------------------------------
-    call rsadpa(result, 'E', 1, 'EXCIT', nuordr,&
+    call rsadpa(result, 'E', 1, 'EXCIT', nuordr, &
                 0, sjv=jpara, styp=k8b)
-    zk24(jpara)=excit(1:19)
+    zk24(jpara) = excit(1:19)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,23 +50,23 @@ subroutine almulr(czero, table, nbval, mantis, expo)
     if (czero .eq. 'ZERO') then
         mantis = 1.d0
         expo = 0
-    endif
+    end if
 !
     do ival = 1, nbval
         mantis = mantis*table(ival)
         if (abs(mantis) .ge. trent) then
             mantis = mantis*trent1
-            expo = expo + itrent
-        else if (abs(mantis).le.trent1) then
+            expo = expo+itrent
+        else if (abs(mantis) .le. trent1) then
             mantis = mantis*trent
-            expo = expo - itrent
-        endif
+            expo = expo-itrent
+        end if
     end do
 !
     if (mantis .ne. zero) then
         ie = nint(log10(abs(mantis)))
-        mantis = mantis/ (dix**ie)
-        expo = expo + ie
-    endif
+        mantis = mantis/(dix**ie)
+        expo = expo+ie
+    end if
 !
 end subroutine

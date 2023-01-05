@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,13 +48,13 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
     integer :: nco, ng, nj, nm, nn, nsom, nv
     integer :: nval
 ! --------------------------------------------------------------------------------------------------
-    parameter ( nbcar = 100 , nbval = 1000 , nco = 4 )
+    parameter(nbcar=100, nbval=1000, nco=4)
     real(kind=8) :: val(nbval)
     character(len=6) :: kioc
     character(len=8) :: car(nbcar), nomu, carori(nco)
     character(len=16) :: cmd, concep
     character(len=24) :: valk(2)
-    data carori  /'VECT_Y  ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
+    data carori/'VECT_Y  ', 'VECT_X_Y', 'ANGL_NAU', 'ANGL_VRI'/
 ! --------------------------------------------------------------------------------------------------
 !
     call getres(nomu, concep, cmd)
@@ -77,42 +77,42 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj, ier)
         if (ioc .eq. 1) then
             if (nv .eq. 0) then
                 call utmess('E', 'MODELISA_57')
-                ier = ier + 1
-            endif
+                ier = ier+1
+            end if
             if (nc .eq. 0) then
                 call utmess('E', 'MODELISA_58')
-                ier = ier + 1
-            endif
-        endif
+                ier = ier+1
+            end if
+        end if
 !       CARA
         kk = 0
         if (ncar .gt. 0) then
             if (nval .eq. 0) then
                 call utmess('E', 'MODELISA_59', sk=kioc)
-                ier = ier + 1
-            endif
+                ier = ier+1
+            end if
             do jj = 1, nco
                 if (car(1) .eq. carori(jj)) kk = jj
-            enddo
-        endif
+            end do
+        end if
 !       VALE
         if (nval .gt. 0) then
-            if ((kk.eq.1.and.nval.ne.3) .or. (kk.eq.2.and.nval.ne.6) .or.&
-                (kk.eq.3.and.nval.ne.3) .or. (kk.eq.4.and.nval.ne.1)) then
+            if ((kk .eq. 1 .and. nval .ne. 3) .or. (kk .eq. 2 .and. nval .ne. 6) .or. &
+                (kk .eq. 3 .and. nval .ne. 3) .or. (kk .eq. 4 .and. nval .ne. 1)) then
                 valk(1) = kioc
                 valk(2) = carori(kk)
                 call utmess('E', 'MODELISA_60', nk=2, valk=valk)
-                ier = ier + 1
-            endif
-        endif
+                ier = ier+1
+            end if
+        end if
 !
-        nsom = ng + nm + nj + nn
+        nsom = ng+nm+nj+nn
         if (nsom .eq. ng .or. nsom .eq. nm .or. nsom .eq. nj .or. nsom .eq. nn) then
-            nlm = max(nlm,-nm)
-            nlg = max(nlg,-ng)
-            nln = max(nln,-nn)
-            nlj = max(nlj,-nj)
-        endif
-    enddo
+            nlm = max(nlm, -nm)
+            nlg = max(nlg, -ng)
+            nln = max(nln, -nn)
+            nlj = max(nlj, -nj)
+        end if
+    end do
 !
 end subroutine

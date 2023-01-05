@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine zbroot(mem, rhonew, echec)
     real(kind=8) :: parmul, fneg, fpos
     integer :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
-    common /zbpar/ rhoneg,rhopos,&
-     &               parmul,fneg  ,fpos  ,&
-     &               dimcpl,nbcpl ,bpos  ,lopti
+    common/zbpar/rhoneg, rhopos,&
+     &               parmul, fneg, fpos,&
+     &               dimcpl, nbcpl, bpos, lopti
 !
     real(kind=8) :: x0, x1, f0, f1, p0, p1
 !
@@ -55,35 +55,35 @@ subroutine zbroot(mem, rhonew, echec)
     echec = .false.
 !
     if (nbcpl .ge. 2) then
-        x1 = mem(1,1)
-        x0 = mem(1,2)
-        f1 = mem(2,1)
-        f0 = mem(2,2)
+        x1 = mem(1, 1)
+        x0 = mem(1, 2)
+        f1 = mem(2, 1)
+        f0 = mem(2, 2)
         if (abs(f1) .ge. abs(f0)) then
 ! -- EN CAS DE NON PERTINENCE DES ITERES : DICHOTOMIE
-            rhonew = 0.5d0 * (rhoneg + rhopos)
+            rhonew = 0.5d0*(rhoneg+rhopos)
             goto 9999
         else
 ! -- INTERPOLATION LINEAIRE
             if (abs(x1-x0) .lt. r8prem()) then
                 echec = .true.
                 goto 9999
-            endif
+            end if
             p1 = (f1-f0)/(x1-x0)
-            p0 = f0 - p1*x0
+            p0 = f0-p1*x0
 !
             if (abs(p1) .le. abs(f0)/(rhopos+x0)) then
-                rhonew = 0.5d0 * (rhoneg + rhopos)
+                rhonew = 0.5d0*(rhoneg+rhopos)
             else
                 rhonew = -p0/p1
-            endif
-        endif
+            end if
+        end if
 !      DO 5000 I = 1,NBCPL
 !        WRITE (6,5010) I,MEM(1,I),MEM(2,I)
 ! 5000 CONTINUE
 ! 5010 FORMAT('RL DBG : ',I4,2X,G22.15,2X,G22.15)
 !
-    endif
+    end if
 !
 9999 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rvrthe(x, y, t1, t2, n1,&
+subroutine rvrthe(x, y, t1, t2, n1, &
                   n2)
     implicit none
 !
@@ -27,7 +27,7 @@ subroutine rvrthe(x, y, t1, t2, n1,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    r = sqrt(x*x + y*y)
+    r = sqrt(x*x+y*y)
 !
     if (abs(r) .lt. 1.0d-6) then
 !
@@ -44,6 +44,6 @@ subroutine rvrthe(x, y, t1, t2, n1,&
         n1 = -t2
         n2 = t1
 !
-    endif
+    end if
 !
 end subroutine

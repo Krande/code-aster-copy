@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine te0259(option, nomte)
 !
 !
     integer :: nddl, nbres
-    parameter (nbres=3)
+    parameter(nbres=3)
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
     character(len=8) :: nompar, fami, poum
@@ -55,24 +55,24 @@ subroutine te0259(option, nomte)
     integer :: imate, lmat, lorien
     integer :: nbpar, nc, nno, kpg, spt
 !     ------------------------------------------------------------------
-    data nomres/'E','RHO','NU'/
+    data nomres/'E', 'RHO', 'NU'/
 !     ------------------------------------------------------------------
     zero = 0.d0
 !     ------------------------------------------------------------------
 !
 !     --- CARACTERISTIQUES DES ELEMENTS
 !
-    if (nomte .eq. 'MECA_POU_D_E' .or. nomte .eq. 'MECA_POU_D_T' .or. nomte .eq.&
+    if (nomte .eq. 'MECA_POU_D_E' .or. nomte .eq. 'MECA_POU_D_T' .or. nomte .eq. &
         'MECA_POU_D_EM') then
         nno = 2
         nc = 6
-        elseif (nomte.eq.'MECA_POU_D_TG' .or. nomte.eq.'MECA_POU_D_TGM'&
-    ) then
+    elseif (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM' &
+            ) then
         nno = 2
         nc = 7
     else
         call utmess('F', 'ELEMENTS2_42', sk=nomte)
-    endif
+    end if
 !
     nddl = nc*nno
 !
@@ -83,12 +83,12 @@ subroutine te0259(option, nomte)
     nbpar = 0
     nompar = ' '
     valpar = zero
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', nbpar, nompar, [valpar],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'ELAS', nbpar, nompar, [valpar], &
                 nbres, nomres, valres, codres, 1)
     e = valres(1)
     rho = valres(2)
@@ -101,7 +101,7 @@ subroutine te0259(option, nomte)
     call jevech('PCAORIE', 'L', lorien)
 !
 !     --- CALCUL DE LA MATRICE GYROSCOPIQUE LOCALE ---
-    call pogyro(nomte, rho, xnu, zi(imate), klv,&
+    call pogyro(nomte, rho, xnu, zi(imate), klv, &
                 78)
 !
     call matrot(zr(lorien), pgl)
@@ -110,7 +110,7 @@ subroutine te0259(option, nomte)
 !
     if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
         call masstg(klw, mlv)
-    endif
+    end if
 !
 ! CONSITUER UNE MATRICE PLEINE A PARTIR DE LA TRIANGULAIRE SUPERIEURE
 !
@@ -118,6 +118,6 @@ subroutine te0259(option, nomte)
         call upletr(nddl, zr(lmat), mlv)
     else
         call upletr(nddl, zr(lmat), klw)
-    endif
+    end if
 !
 end subroutine

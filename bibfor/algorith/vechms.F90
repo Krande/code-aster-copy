@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vechms(nomo, mate, mateco, carele, varplu, lischa,&
+subroutine vechms(nomo, mate, mateco, carele, varplu, lischa, &
                   partps, vecele)
 !
 !
@@ -68,7 +68,7 @@ subroutine vechms(nomo, mate, mateco, carele, varplu, lischa,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbin_maxi
-    parameter    (nbin_maxi=42)
+    parameter(nbin_maxi=42)
     character(len=8) :: lpain(nbin_maxi)
     character(len=19) :: lchin(nbin_maxi)
 !
@@ -87,7 +87,7 @@ subroutine vechms(nomo, mate, mateco, carele, varplu, lischa,&
 !
     nomlis = '&&NOMLIS'
     call exixfe(nomo, ier)
-    lxfem = ier.ne.0
+    lxfem = ier .ne. 0
     call detrsd('VECT_ELEM', vecele)
 !
 ! --- NOMBRE DE CHARGES
@@ -96,24 +96,24 @@ subroutine vechms(nomo, mate, mateco, carele, varplu, lischa,&
 !
 ! --- NOMBRE DE CHARGES DE TYPE NEUMANN MECANIQUE
 !
-    nbneum = lisnbg(lischa,'NEUM_MECA')
+    nbneum = lisnbg(lischa, 'NEUM_MECA')
     if (nbneum .eq. 0) goto 99
 !
 ! --- CHAMPS D'ENTREES STANDARDS
 !
-    call vechmp(nomo, mate, mateco, carele, varplu, lxfem,&
+    call vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
                 partps, nbin_maxi, lpain, lchin, lastin)
 !
 ! --- LISTE DES INDEX DES CHARGES
 !
     call lisnol(lischa, 'NEUM_MECA', nomlis, nbch)
-    ASSERT(nbch.gt.0)
+    ASSERT(nbch .gt. 0)
 !
 ! --- CALCUL
 !
     do ichar = 1, nbchar
         call lislco(lischa, ichar, genrec)
-        lneum = lisico('NEUM_MECA',genrec)
+        lneum = lisico('NEUM_MECA', genrec)
         if (lneum) then
 !
 ! ------- CALCUL DE LA CHARGE ?
@@ -122,12 +122,12 @@ subroutine vechms(nomo, mate, mateco, carele, varplu, lischa,&
 !
 ! ------- BOUCLE SUR LES TOUS LES TYPES DE CHARGE PREVUS
 !
-            call vechmx(nomo, lischa, ichar, nbch, nomlis,&
+            call vechmx(nomo, lischa, ichar, nbch, nomlis, &
                         nbin_maxi, lpain, lchin, lastin, vecele)
-        endif
+        end if
     end do
 !
- 99 continue
+99  continue
 !
     call jedetr(nomlis)
 !

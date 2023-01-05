@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,16 @@ subroutine vpmort(neq, x, y, my, imode)
     real(kind=8) :: r8val, r8norm
     integer :: ieq, iprec
 !     ------------------------------------------------------------------
-    do iprec = 1, imode - 1
+    do iprec = 1, imode-1
         r8val = 0.d0
         r8norm = 0.d0
         do ieq = 1, neq
-            r8val = r8val + x(ieq) * my(ieq,iprec)
-            r8norm = r8norm + y(ieq,iprec) * my(ieq,iprec)
+            r8val = r8val+x(ieq)*my(ieq, iprec)
+            r8norm = r8norm+y(ieq, iprec)*my(ieq, iprec)
         end do
         r8val = -r8val/r8norm
         do ieq = 1, neq
-            x(ieq) = x(ieq) + r8val * y(ieq,iprec)
+            x(ieq) = x(ieq)+r8val*y(ieq, iprec)
         end do
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_exc2(l_cristal, l_pmf,&
-                          l_excl   , vari_excl)
+subroutine comp_meca_exc2(l_cristal, l_pmf, &
+                          l_excl, vari_excl)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-aster_logical, intent(in) :: l_cristal, l_pmf
-aster_logical, intent(out) :: l_excl
-character(len=16), intent(out) :: vari_excl
+    aster_logical, intent(in) :: l_cristal, l_pmf
+    aster_logical, intent(out) :: l_excl
+    character(len=16), intent(out) :: vari_excl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,19 +43,19 @@ character(len=16), intent(out) :: vari_excl
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_excl    = ASTER_FALSE
+    l_excl = ASTER_FALSE
     vari_excl = ' '
 
 ! - Multiple comportment (PMF)
     if (l_pmf) then
-        l_excl    = ASTER_TRUE
+        l_excl = ASTER_TRUE
         vari_excl = '&&MULT_PMF'
-    endif
+    end if
 
 ! - Multiple comportment
     if (l_cristal) then
-        l_excl    = ASTER_TRUE
+        l_excl = ASTER_TRUE
         vari_excl = '&&MULT_COMP'
-    endif
+    end if
 !
 end subroutine

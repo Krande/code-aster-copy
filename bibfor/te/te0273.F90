@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,9 @@ subroutine te0273(option, nomte)
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
 !
 !
 !====
@@ -77,12 +77,12 @@ subroutine te0273(option, nomte)
 !    CALCUL DES PRODUITS VECTORIELS OMI   OMJ
 !
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
@@ -104,26 +104,26 @@ subroutine te0273(option, nomte)
             idec = (i-1)*ndim
             do j = 1, nno
                 jdec = (j-1)*ndim
-                nx = nx+ zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sx( i,j)
-                ny = ny+ zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sy( i,j)
-                nz = nz+ zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sz( i,j)
-            enddo
-        enddo
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
+            end do
+        end do
 !
 !   CALCUL DU JACOBIEN AU POINT DE GAUSS KP
-        jac = sqrt(nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
 !
         tpg = 0.d0
         do i = 1, nno
 ! CALCUL DE T-
-            tpg = tpg + zr(itempr+i-1) * zr(ivf+ldec+i-1)
+            tpg = tpg+zr(itempr+i-1)*zr(ivf+ldec+i-1)
         end do
 !
 ! OBTENTION DES PARAMETRES MATERIAU
         call foderi(coef, tpg, alpha, rbid)
 !
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + zr(ipoids+kp-1)*jac* (1.d0-theta)*alpha*zr(ivf+ldec&
+            zr(ivectt+i-1) = zr(ivectt+i-1)+zr(ipoids+kp-1)*jac*(1.d0-theta)*alpha*zr(ivf+ldec&
                              &+i-1)
         end do
 !

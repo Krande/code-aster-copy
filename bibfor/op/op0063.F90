@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine op0063()
 !
     kvide = '????????'
     rvide = r8vide()
-    cvide = dcmplx(rvide,rvide)
+    cvide = dcmplx(rvide, rvide)
 !
     call getvid(' ', 'MODE_NON_LINE', scal=modenl)
 !
@@ -68,9 +68,9 @@ subroutine op0063()
     ival(1) = iordr
     lipar(1) = 'NUME_ORDRE'
 !
-    call tbliva(modenl, 1, lipar, ival, [r8b],&
-                [c16b], k8b, k8b, [r8b], 'NOM_SD',&
-                k8b, ibid, r8b, c16b, modein,&
+    call tbliva(modenl, 1, lipar, ival, [r8b], &
+                [c16b], k8b, k8b, [r8b], 'NOM_SD', &
+                k8b, ibid, r8b, c16b, modein, &
                 iret)
 !
     call getvtx(' ', 'TYPE_RESU', scal=tres)
@@ -83,14 +83,14 @@ subroutine op0063()
         nomsym(1) = 'DEPL'
         nbpara = 0
         nbtrou = -1
-        call vprecu(modein, nomsym(1), nbtrou, [ibid], kvec,&
-                    nbpara, k16bid, k24bid, k24bid, k24bid,&
-                    neq, nbmode, typmod, npari, nparr,&
+        call vprecu(modein, nomsym(1), nbtrou, [ibid], kvec, &
+                    nbpara, k16bid, k24bid, k24bid, k24bid, &
+                    neq, nbmode, typmod, npari, nparr, &
                     npark)
         call jeveuo(kvec, 'L', lvect)
         call transft(modein, kvec, neq, inbpt, nomres)
         call jedetr(kvec)
-    endif
+    end if
 !
     call jedema()
 !

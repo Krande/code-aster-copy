@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,12 +55,12 @@ subroutine te0197(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(option.eq.'CHAR_MECA_ROTA_R')
+    ASSERT(option .eq. 'CHAR_MECA_ROTA_R')
 !
 ! - Finite element parameters
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - IN fields
 !
@@ -83,40 +83,40 @@ subroutine te0197(option, nomte)
 !
     if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
         call utmess('F', 'CHARGES2_65')
-    endif
+    end if
     if (abs(rota_axis(2)) .le. r8miem()) then
         call utmess('F', 'CHARGES2_65')
-    endif
-    if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or.&
+    end if
+    if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or. &
         abs(rota_cent(3)) .gt. r8miem()) then
         call utmess('F', 'CHARGES2_66')
-    endif
+    end if
 !
 ! - Material
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(j_mate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, zi(j_mate), &
+                ' ', 'ELAS', 0, ' ', [0.d0], &
                 1, 'RHO', rho, icodre, 1)
 !
 ! - Computation
 !
     do kp = 1, npg1
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(j_geom),&
+        k = (kp-1)*nno
+        call dfdm2d(nno, kp, ipoids, idfde, zr(j_geom), &
                     poids)
         r = 0.d0
         do i = 1, nno
-            r = r + zr(j_geom+2*(i-1))*zr(ivf+k+i-1)
+            r = r+zr(j_geom+2*(i-1))*zr(ivf+k+i-1)
         end do
         poids = poids*rho(1)*r
-        r = r - rota_cent(1)
+        r = r-rota_cent(1)
         do i = 1, nno
-            k=(kp-1)*nno
-            zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids * (rota_speed*rota_axis(2))**2 * r * zr(i&
+            k = (kp-1)*nno
+            zr(j_vect+3*i-3) = zr(j_vect+3*i-3)+poids*(rota_speed*rota_axis(2))**2*r*zr(i&
                                &vf+k+i-1)
         end do
     end do

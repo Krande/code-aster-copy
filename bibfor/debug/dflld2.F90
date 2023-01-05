@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine dflld2(sdlist, i_fail)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "event_def.h"
@@ -28,8 +28,8 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: sdlist
-integer, intent(in) :: i_fail
+    character(len=8), intent(in) :: sdlist
+    integer, intent(in) :: i_fail
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,33 +58,33 @@ integer, intent(in) :: i_fail
 ! - Access to datastructures
 !
     sdlist_linfor = sdlist(1:8)//'.LIST.INFOR'
-    call jeveuo(sdlist_linfor, 'L', vr = v_sdlist_linfor)
+    call jeveuo(sdlist_linfor, 'L', vr=v_sdlist_linfor)
     sdlist_esubdr = sdlist(1:8)//'.ECHE.SUBDR'
-    call jeveuo(sdlist_esubdr, 'L', vr = v_sdlist_esubdr)
+    call jeveuo(sdlist_esubdr, 'L', vr=v_sdlist_esubdr)
 !
 ! - Print
 !
-    subd_pas      = nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+2))
+    subd_pas = nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+2))
     subd_pas_mini = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+3)
-    subd_niveau   = nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+4))
-    subd_inst     = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+5)
-    subd_duree    = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+6)
-    subd_auto     = nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+10))
+    subd_niveau = nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+4))
+    subd_inst = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+5)
+    subd_duree = v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+6)
+    subd_auto = nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+10))
     if (nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+1)) .eq. 1) then
         call utmess('I', 'DISCRETISATION3_60')
         if (subd_niveau .eq. 0) then
-            call utmess('I', 'DISCRETISATION3_61', si = subd_pas, sr = subd_pas_mini)
+            call utmess('I', 'DISCRETISATION3_61', si=subd_pas, sr=subd_pas_mini)
         else
-            call utmess('I', 'DISCRETISATION3_62', ni = 2, vali = [subd_pas, subd_niveau])
-        endif
+            call utmess('I', 'DISCRETISATION3_62', ni=2, vali=[subd_pas, subd_niveau])
+        end if
     else if (nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+1)) .eq. 2) then
         if (subd_auto .eq. 2) then
             call utmess('I', 'DISCRETISATION3_70')
         else if (subd_auto .eq. 1) then
             call utmess('I', 'DISCRETISATION3_71')
-            call utmess('I', 'DISCRETISATION3_72', nr=2, valr = [subd_inst, subd_duree])
-        endif
-    endif
+            call utmess('I', 'DISCRETISATION3_72', nr=2, valr=[subd_inst, subd_duree])
+        end if
+    end if
 !
     call jedema()
 end subroutine

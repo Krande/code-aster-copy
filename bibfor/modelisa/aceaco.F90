@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
+subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
                   nbocc)
     implicit none
 #include "asterf_types.h"
@@ -63,7 +63,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     character(len=19) :: cartco, cartcf
     character(len=24) :: tmpnco, tmpvco, tmpncf, tmpvcf
 !-----------------------------------------------------------------------
-    pi=r8pi()
+    pi = r8pi()
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
     call jemarq()
@@ -73,7 +73,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     call exisd('CARTE', cartco, iret)
     if (iret .eq. 0) then
         call alcart('G', cartco, noma, 'CACOQU_R')
-    endif
+    end if
     tmpnco = cartco//'.NCMP'
     tmpvco = cartco//'.VALV'
     call jeveuo(tmpnco, 'E', jdcc)
@@ -102,17 +102,17 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
             if (nvf+nexf .ne. 0) then
                 lcartf = .true.
                 goto 110
-            endif
+            end if
         end do
 110     continue
 !
 !        CARTE POUR LES NOMS DES FONCTIONS
         if (lcartf) then
             call alcart('V', cartcf, noma, 'CACOQU_F')
-        endif
+        end if
     else
         lcartf = .true.
-    endif
+    end if
 !     SI LA CARTE EXISTE
     if (lcartf) then
         tmpncf = cartcf//'.NCMP'
@@ -121,8 +121,8 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
         call jeveuo(tmpvcf, 'E', jdvcf)
 !        LES NOMS DES FONCTIONS
         zk8(jdccf) = 'EP'
-        zk8(jdccf+1)= 'EXCENT'
-    endif
+        zk8(jdccf+1) = 'EXCENT'
+    end if
 !
     call wkvect('&&TMPCOQUE', 'V V K24', lmax, jdls)
     call wkvect('&&TMPCOQUE2', 'V V K8', lmax, jdls2)
@@ -136,15 +136,15 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
         excent = 0.d0
         xiner = 0.d0
         inert = 'NON'
-        call getvem(noma, 'GROUP_MA', 'COQUE', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'COQUE', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'COQUE', 'MAILLE', ioc,&
+        call getvem(noma, 'MAILLE', 'COQUE', 'MAILLE', ioc, &
                     lmax, zk8(jdls2), nm)
         call getvr8('COQUE', 'EPAIS', iocc=ioc, scal=epa, nbret=nv)
         call getvid('COQUE', 'EPAIS_FO', iocc=ioc, scal=epaf, nbret=nvf)
-        call getvr8('COQUE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang,&
+        call getvr8('COQUE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang, &
                     nbret=na)
-        call getvr8('COQUE', 'VECTEUR', iocc=ioc, nbval=3, vect=vect,&
+        call getvr8('COQUE', 'VECTEUR', iocc=ioc, nbval=3, vect=vect, &
                     nbret=nvec)
         call getvr8('COQUE', 'A_CIS', iocc=ioc, scal=kappa, nbret=nk)
         call getvtx('COQUE', 'MODI_METRIQUE', iocc=ioc, scal=korrec, nbret=nco)
@@ -161,28 +161,28 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
             if (lcartf) zk8(jdvcf) = epaf
         else
             ASSERT(.false.)
-        endif
+        end if
         zr(jdvc+1) = ang(1)
         zr(jdvc+2) = ang(2)
         if (nvec .ne. 0) then
             call angvx(vect, ang(1), ang(2))
             zr(jdvc+1) = ang(1)*180.d0/pi
             zr(jdvc+2) = ang(2)*180.d0/pi
-        endif
+        end if
         zr(jdvc+3) = kappa
-        if (korrec .eq. 'OUI') correc=1.d0
+        if (korrec .eq. 'OUI') correc = 1.d0
         zr(jdvc+4) = correc
         zr(jdvc+5) = rigi
 !
         zr(jdvc+6) = excent
-        if (lcartf) zk8(jdvcf+1)= '&&ACEACO'
+        if (lcartf) zk8(jdvcf+1) = '&&ACEACO'
         if (nexf .ne. 0) then
             zr(jdvc+6) = 0.0d0
-            if (lcartf) zk8(jdvcf+1)= excf
-        endif
+            if (lcartf) zk8(jdvcf+1) = excf
+        end if
 !
         if ((nex+nexf) .ne. 0 .and. nin .eq. 0) inert = 'OUI'
-        if (inert .eq. 'OUI') xiner=1.d0
+        if (inert .eq. 'OUI') xiner = 1.d0
         zr(jdvc+7) = xiner
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
@@ -194,32 +194,32 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
                 do i = 1, ng
                     call nocart(cartcf, 2, 2, groupma=zk24(jdls+i-1))
                 end do
-            endif
-        endif
+            end if
+        end if
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
         if (nm .gt. 0) then
-            call nocart(cartco, 3, 8, mode='NOM', nma=nm,&
+            call nocart(cartco, 3, 8, mode='NOM', nma=nm, &
                         limano=zk8(jdls2))
             if (lcartf) then
-                call nocart(cartcf, 3, 2, mode='NOM', nma=nm,&
+                call nocart(cartcf, 3, 2, mode='NOM', nma=nm, &
                             limano=zk8(jdls2))
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !
     call jedetr('&&TMPCOQUE')
     call jedetr('&&TMPCOQUE2')
 !     SI NI GRILLE NI MEMBRANE
-    if ((.not.locagb) .and. (.not.locamb)) then
+    if ((.not. locagb) .and. (.not. locamb)) then
         call jedetr(tmpnco)
         call jedetr(tmpvco)
         if (lcartf) then
             call jedetr(tmpncf)
             call jedetr(tmpvcf)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 end subroutine

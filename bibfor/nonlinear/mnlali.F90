@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
-                  adime, ninc, nd, nchoc, h,&
+subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
+                  adime, ninc, nd, nchoc, h, &
                   hf, ampl, xvect, lnm, num_ordr)
     implicit none
 !
@@ -99,8 +99,8 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 ! --- RECUPERATION DES NOMS ET DE LA TAILLE DES
 ! ---                                   MATRICES DE RIGIDITE ET DE MASSE
 ! ----------------------------------------------------------------------
-    matrig=zk24(zi(imat(1)+1))(1:19)
-    matrma=zk24(zi(imat(2)+1))(1:19)
+    matrig = zk24(zi(imat(1)+1)) (1:19)
+    matrma = zk24(zi(imat(2)+1)) (1:19)
     neq = zi(imat(1)+2)
 ! ----------------------------------------------------------------------
 ! --- QUELQUES VALEURS UTILES
@@ -128,62 +128,62 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 ! --- RECUPERATION DE LA FREQUENCE PROPRE DU MODE LINEAIRE
 ! ----------------------------------------------------------------------
     if (reprise) then
-        call rsadpa(modini, 'L', 1, 'FREQ', 2,&
+        call rsadpa(modini, 'L', 1, 'FREQ', 2, &
                     0, sjv=ifreq, styp=k16bid)
     else
-        call rsadpa(lnm, 'L', 1, 'FREQ', num_ordr,&
+        call rsadpa(lnm, 'L', 1, 'FREQ', num_ordr, &
                     0, sjv=ifreq, styp=k16bid)
-    endif
+    end if
     omega = r8depi()*zr(ifreq)/zr(iadim-1+3)
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DU MODE D'INITIALISATION
 ! ----------------------------------------------------------------------
-    clnm='&&MNLALI.RECUP     '
+    clnm = '&&MNLALI.RECUP     '
     if (reprise) then
-        call vprecu(modini, 'DEPL', -1, [0], clnm,&
-                    0, ' ', ' ', ' ', ' ',&
-                    neqv, nbmode, typmod, nbpari, nbparr,&
+        call vprecu(modini, 'DEPL', -1, [0], clnm, &
+                    0, ' ', ' ', ' ', ' ', &
+                    neqv, nbmode, typmod, nbpari, nbparr, &
                     nbpark)
     else
-        call vprecu(lnm, 'DEPL', -1, [0], clnm,&
-                    0, ' ', ' ', ' ', ' ',&
-                    neqv, nbmode, typmod, nbpari, nbparr,&
+        call vprecu(lnm, 'DEPL', -1, [0], clnm, &
+                    0, ' ', ' ', ' ', ' ', &
+                    neqv, nbmode, typmod, nbpari, nbparr, &
                     nbpark)
-    endif
+    end if
     call jeveuo(clnm, 'L', ilnm)
 !
 ! ----------------------------------------------------------------------
 ! --- COPIE DU MODE PROPRE DANS LE VECTEUR D'INITIALISATION
 ! ----------------------------------------------------------------------
     if (reprise) then
-        ht=(nbmode-1)/2
+        ht = (nbmode-1)/2
         do j = 1, nbmode
-            i=0
+            i = 0
             do k = 1, neq
                 if (zi(icdl-1+k) .eq. 0) then
-                    i=i+1
+                    i = i+1
                     if (h .gt. ht .and. j .gt. ht+1) then
-                        zr(ivect-1+(h-ht+j-1)*nd+i)=zr(ilnm-1+(j-1)*&
-                        neq+k)
-                        else if(h.lt.ht.and.j.gt.(h+1).and.j.le.(2*h+1))&
-                    then
-                        zr(ivect-1+(j-1)*nd+i)=zr(ilnm-1+(ht-h+j-1)*&
-                        neq+k)
+                        zr(ivect-1+(h-ht+j-1)*nd+i) = zr(ilnm-1+(j-1)* &
+                                                         neq+k)
+                    else if (h .lt. ht .and. j .gt. (h+1) .and. j .le. (2*h+1)) &
+                        then
+                        zr(ivect-1+(j-1)*nd+i) = zr(ilnm-1+(ht-h+j-1)* &
+                                                    neq+k)
                     else
-                        zr(ivect-1+(j-1)*nd+i)=zr(ilnm-1+(j-1)*neq+k)
-                    endif
-                endif
+                        zr(ivect-1+(j-1)*nd+i) = zr(ilnm-1+(j-1)*neq+k)
+                    end if
+                end if
             end do
         end do
     else
-        i=0
+        i = 0
         do k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
-                i=i+1
-                zr(ivect-1+nd+i)=zr(ilnm-1+k+(num_ordr-1)*neq)
-            endif
+                i = i+1
+                zr(ivect-1+nd+i) = zr(ilnm-1+k+(num_ordr-1)*neq)
+            end if
         end do
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- ADIMENSIONNEMENT
 ! ----------------------------------------------------------------------
@@ -193,55 +193,55 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 ! --- MISE A L'ECHELLE PAR L'AMPLITUDE DE DEPART
 !        iamax=idamax(nd,zr(ivect+nd),1)
 !        ampref=zr(ivect-1+nd+iamax)
-        ampref=1.d0
+        ampref = 1.d0
         call dscal(nd, ampl/ampref, zr(ivect+nd), 1)
-    endif
+    end if
 ! ----------------------------------------------------------------------
 ! --- REMPLISSAGE DES FORCES DE CHOCS ET DES VECTEURS AUXILIAIRES
 ! ----------------------------------------------------------------------
-    xdep1='&&MNLALI.DEP1'
-    xdep2='&&MNLALI.DEP2'
-    xtemp='&&MNLALI.TEMP'
+    xdep1 = '&&MNLALI.DEP1'
+    xdep2 = '&&MNLALI.DEP2'
+    xtemp = '&&MNLALI.TEMP'
     call wkvect(xdep1, 'V V R', 2*h+1, idep1)
     call wkvect(xdep2, 'V V R', 2*h+1, idep2)
     call wkvect(xtemp, 'V V R', ninc, itemp)
     nt = int(2**int(dlog(2.d0*dble(hf)+1.d0)/dlog(2.d0)+1.d0))
-    neqs=0
+    neqs = 0
     do i = 1, nchoc
 ! ---   ON RECUPERE LES PARAMETRES DE CHOCS
-        alpha=raid(i)/zr(iadim)
-        eta=reg(i)
-        jeu=vjeu(i)/zr(ijmax)
-        if (type(i)(1:7) .eq. 'BI_PLAN') then
-            nddl=vnddl(6*(i-1)+1)
+        alpha = raid(i)/zr(iadim)
+        eta = reg(i)
+        jeu = vjeu(i)/zr(ijmax)
+        if (type(i) (1:7) .eq. 'BI_PLAN') then
+            nddl = vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1),&
+            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
                        1)
-            call mnlbil(zr(idep1), omega, alpha, eta, h,&
-                        hf, nt, zr(ivect+ nd*(2*h+1)+neqs*(2*hf+1)))
-        else if (type(i)(1:6).eq.'CERCLE') then
-            nddlx=vnddl(6*(i-1)+1)
-            nddly=vnddl(6*(i-1)+2)
+            call mnlbil(zr(idep1), omega, alpha, eta, h, &
+                        hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
+        else if (type(i) (1:6) .eq. 'CERCLE') then
+            nddlx = vnddl(6*(i-1)+1)
+            nddly = vnddl(6*(i-1)+2)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
             call dscal(2*h+1, 0.d0, zr(idep2), 1)
             call dcopy(2*h+1, zr(ivect-1+nddlx), nd, zr(idep1), 1)
-            zr(idep1)=zr(idep1)-orig(3*(i-1)+1)
+            zr(idep1) = zr(idep1)-orig(3*(i-1)+1)
             call dscal(2*h+1, 1.d0/jeu, zr(idep1), 1)
             call dcopy(2*h+1, zr(ivect-1+nddly), nd, zr(idep2), 1)
-            zr(idep2)=zr(idep2)-orig(3*(i-1)+2)
+            zr(idep2) = zr(idep2)-orig(3*(i-1)+2)
             call dscal(2*h+1, 1.d0/jeu, zr(idep2), 1)
-            call mnlcir(xdep1, xdep2, omega, alpha, eta,&
+            call mnlcir(xdep1, xdep2, omega, alpha, eta, &
                         h, hf, nt, xtemp)
-            call dcopy(4*(2*hf+1), zr(itemp), 1, zr(ivect+nd*(2*h+1)+ neqs*(2*hf+1)), 1)
-        else if (type(i)(1:4).eq.'PLAN') then
-            nddl=vnddl(6*(i-1)+1)
+            call dcopy(4*(2*hf+1), zr(itemp), 1, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1)
+        else if (type(i) (1:4) .eq. 'PLAN') then
+            nddl = vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
-            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1),&
+            call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1), &
                        1)
-            call mnluil(zr(idep1), omega, alpha, eta, h,&
-                        hf, nt, zr(ivect+ nd*(2*h+1)+neqs*(2*hf+1)))
-        endif
-        neqs=neqs+vneqs(i)
+            call mnluil(zr(idep1), omega, alpha, eta, h, &
+                        hf, nt, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)))
+        end if
+        neqs = neqs+vneqs(i)
     end do
 !
 ! ----------------------------------------------------------------------

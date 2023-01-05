@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,25 +17,25 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmtfu(phase ,&
-                  ndim  , nnl   , nne   , nnm   , nbcps,&
-                  wpg   , jacobi, ffl   , ffe   , ffm  ,&
-                  tau1  , tau2  , mprojt,&
-                  rese  , nrese , lambda, coefff,&
+subroutine mmmtfu(phase, &
+                  ndim, nnl, nne, nnm, nbcps, &
+                  wpg, jacobi, ffl, ffe, ffm, &
+                  tau1, tau2, mprojt, &
+                  rese, nrese, lambda, coefff, &
                   matrfe, matrfm)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmmtfe.h"
 #include "asterfort/mmmtfm.h"
 !
-character(len=4), intent(in) :: phase
-integer, intent(in) :: ndim, nne, nnm, nnl, nbcps
-real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), ffm(9), jacobi
-real(kind=8), intent(in) :: rese(3), nrese, lambda, coefff
-real(kind=8), intent(out) :: matrfe(18, 27), matrfm(18, 27)
+    character(len=4), intent(in) :: phase
+    integer, intent(in) :: ndim, nne, nnm, nnl, nbcps
+    real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), ffm(9), jacobi
+    real(kind=8), intent(in) :: rese(3), nrese, lambda, coefff
+    real(kind=8), intent(out) :: matrfe(18, 27), matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,18 +71,18 @@ real(kind=8), intent(out) :: matrfe(18, 27), matrfm(18, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call mmmtfe(phase,&
-                ndim  , nne   , nnl   , nbcps ,&
-                wpg   , jacobi, ffe   , ffl   ,&
-                tau1  , tau2  , mprojt,&
-                rese  , nrese , lambda, coefff,&
+    call mmmtfe(phase, &
+                ndim, nne, nnl, nbcps, &
+                wpg, jacobi, ffe, ffl, &
+                tau1, tau2, mprojt, &
+                rese, nrese, lambda, coefff, &
                 matrfe)
 !
-    call mmmtfm(phase,&
-                ndim  , nnm   , nnl   , nbcps ,&
-                wpg   , jacobi, ffm   , ffl   ,&
-                tau1  , tau2  , mprojt,&
-                rese  , nrese , lambda, coefff,&
+    call mmmtfm(phase, &
+                ndim, nnm, nnl, nbcps, &
+                wpg, jacobi, ffm, ffl, &
+                tau1, tau2, mprojt, &
+                rese, nrese, lambda, coefff, &
                 matrfm)
 !
 end subroutine

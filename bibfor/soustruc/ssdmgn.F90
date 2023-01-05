@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine ssdmgn(mag)
     call jeveuo(mag//'.DIME', 'L', vi=dime)
     call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
     call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
-    nbsma= dime(4)
+    nbsma = dime(4)
     nomgng = ' '
 !
 !
@@ -89,23 +89,23 @@ subroutine ssdmgn(mag)
 !     --------------------------
     call getfac('DEFI_GROUP_NO', nocc)
 !
-    nbgnot=0
-    lont= 0
+    nbgnot = 0
+    lont = 0
     do iocc = 1, nocc
-        call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi,&
+        call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi, &
                     nbret=n1)
         if (n1 .eq. 4) then
-            unaun=.false.
+            unaun = .false.
         else
             call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc=iocc, scal=kbid, nbret=n2)
-            ASSERT(n2.ne.0)
-            unaun=.true.
-        endif
+            ASSERT(n2 .ne. 0)
+            unaun = .true.
+        end if
 !
 !
 !     --1.1 CAS : INDEX, TOUT OU MAILLE :
 !     -----------------------------------
-        if (.not.unaun) then
+        if (.not. unaun) then
             call getvtx('DEFI_GROUP_NO', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
             call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc=iocc, scal=nosma, nbret=n2)
             if (n2 .eq. 1) then
@@ -114,23 +114,23 @@ subroutine ssdmgn(mag)
                     valk(1) = nosma
                     valk(2) = mag
                     call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
-                endif
+                end if
                 call jenonu(jexnom(mag//'.SUPMAIL', nosma), nusma)
-            endif
+            end if
 !
             do isma = 1, nbsma
-                if ((n2.eq.1) .and. (nusma.ne.isma)) goto 21
-                nomacr= vnomacr(isma)
+                if ((n2 .eq. 1) .and. (nusma .ne. isma)) goto 21
+                nomacr = vnomacr(isma)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
                 call jeexin(mal//'.GROUPENO', iret)
                 if (iret .eq. 0) goto 21
                 call jelira(mal//'.GROUPENO', 'NUTIOC', nbgno, kbid)
-                nbgnot= nbgnot+nbgno
+                nbgnot = nbgnot+nbgno
                 do igno = 1, nbgno
                     call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3)
-                    lont= lont+n3
+                    lont = lont+n3
                 end do
- 21             continue
+21              continue
             end do
 !
 !
@@ -141,16 +141,16 @@ subroutine ssdmgn(mag)
             call getvtx('DEFI_GROUP_NO', 'GROUP_NO_INIT', iocc=iocc, scal=nomgnl, nbret=n)
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
-            nomacr= vnomacr(isma)
+            nomacr = vnomacr(isma)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
             call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3)
-            nbgnot= nbgnot+1
-            lont=lont+n3
-        endif
+            nbgnot = nbgnot+1
+            lont = lont+n3
+        end if
     end do
 !
 !     -- SI LONT = 0 ON S'ARRETE LA. (PLUS BAS : BUG ????)
-    if ((lont.eq.0) .or. (nbgnot.eq.0)) goto 999
+    if ((lont .eq. 0) .or. (nbgnot .eq. 0)) goto 999
 !
 !
 !
@@ -159,8 +159,8 @@ subroutine ssdmgn(mag)
 !     ---------------
 !     --ON SURDIMENSIONNE LE NOMBRE MAX D'OBJETS DE LA COLLECTION
 !       DISPERSEE .GROUPENO :
-    nbgno2= 2*nbgnot+20
-    call jecrec(mag//'.GROUPENO', 'G V I', 'NOM', 'DISPERSE', 'VARIABLE',&
+    nbgno2 = 2*nbgnot+20
+    call jecrec(mag//'.GROUPENO', 'G V I', 'NOM', 'DISPERSE', 'VARIABLE', &
                 nbgno2)
 !
     AS_ALLOCATE(vi=work1, size=lont)
@@ -169,54 +169,54 @@ subroutine ssdmgn(mag)
 !     --3 REMPLISSAGE:
 !     ----------------
     do iocc = 1, nocc
-        unaun=.true.
-        call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi,&
+        unaun = .true.
+        call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi, &
                     nbret=n1)
-        if (n1 .eq. 4) unaun=.false.
+        if (n1 .eq. 4) unaun = .false.
 !
 !
 !       --3.1 CAS : INDEX, TOUT OU MAILLE :
 !       -----------------------------------
-        if (.not.unaun) then
+        if (.not. unaun) then
             call getvtx('DEFI_GROUP_NO', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
             call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc=iocc, scal=nosma, nbret=n2)
             if (n2 .eq. 1) call jenonu(jexnom(mag//'.SUPMAIL', nosma), nusma)
-            lpr=0
-            call getltx('DEFI_GROUP_NO', 'PREFIXE', iocc, 8, 1,&
+            lpr = 0
+            call getltx('DEFI_GROUP_NO', 'PREFIXE', iocc, 8, 1, &
                         lpr, nbid)
             lpref = lpr(1)
-            call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi,&
+            call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi, &
                         nbret=n3)
-            lmail=indi(2)-indi(1)+1
-            lgnl=indi(4)-indi(3)+1
-            lmail=max(lmail,0)
-            lgnl=max(lgnl,0)
-            longt= lpref+lmail+lgnl
+            lmail = indi(2)-indi(1)+1
+            lgnl = indi(4)-indi(3)+1
+            lmail = max(lmail, 0)
+            lgnl = max(lgnl, 0)
+            longt = lpref+lmail+lgnl
             if (longt .gt. 8) then
                 call utmess('F', 'SOUSTRUC_61')
-            endif
+            end if
             if (lpref .gt. 0) then
                 call getvtx('DEFI_GROUP_NO', 'PREFIXE', iocc=iocc, scal=pref, nbret=nbid)
-            endif
+            end if
 !
             do isma = 1, nbsma
-                if ((n2.eq.1) .and. (nusma.ne.isma)) goto 51
-                nomacr= vnomacr(isma)
+                if ((n2 .eq. 1) .and. (nusma .ne. isma)) goto 51
+                nomacr = vnomacr(isma)
                 call jenuno(jexnum(mag//'.SUPMAIL', isma), nomail)
-                i1noe=dime_2(4*(isma-1)+3)
+                i1noe = dime_2(4*(isma-1)+3)
                 call jeveuo(nomacr//'.LINO', 'L', ialino)
                 call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
                 call jeexin(mal//'.GROUPENO', iret)
                 if (iret .eq. 0) then
-                    nbgno=0
+                    nbgno = 0
                 else
                     call jelira(mal//'.GROUPENO', 'NUTIOC', nbgno)
-                endif
+                end if
                 do igno = 1, nbgno
                     call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3)
                     call jeveuo(jexnum(mal//'.GROUPENO', igno), 'L', iagnl)
-                    call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3,&
+                    call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3, &
                                 work1, lont, nbno)
 !
 !
@@ -225,12 +225,12 @@ subroutine ssdmgn(mag)
 !               --3.1.1 CALCUL DE NOMGNG:
 !               -------------------------
                         call jenuno(jexnum(mal//'.GROUPENO', igno), nomgnl)
-                        i1=1
-                        if (lpref .gt. 0) nomgng(i1:i1-1+lpref) = pref( 1:lpref)
-                        i1= i1+lpref
+                        i1 = 1
+                        if (lpref .gt. 0) nomgng(i1:i1-1+lpref) = pref(1:lpref)
+                        i1 = i1+lpref
                         if (lmail .gt. 0) nomgng(i1:i1-1+lmail) = nomail(indi(1):indi(2))
-                        i1= i1+lmail
-                        if (lgnl .gt. 0) nomgng(i1:i1-1+lgnl) = nomgnl( indi(3):indi(4))
+                        i1 = i1+lmail
+                        if (lgnl .gt. 0) nomgng(i1:i1-1+lgnl) = nomgnl(indi(3):indi(4))
 !
 !               --3.1.2 RECOPIE DES NUMEROS DE NOEUDS:
 !               --------------------------------------
@@ -239,14 +239,14 @@ subroutine ssdmgn(mag)
                         call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                         call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
                         do ii = 1, nbno
-                            inol=work1(ii)
-                            kk= indiis(zi(ialino),inol,1,nbnoex)
+                            inol = work1(ii)
+                            kk = indiis(zi(ialino), inol, 1, nbnoex)
                             ASSERT(kk .ne. 0)
-                            zi(iagno-1+ii)=i1noe+kk
+                            zi(iagno-1+ii) = i1noe+kk
                         end do
-                    endif
+                    end if
                 end do
- 51             continue
+51              continue
             end do
 !
 !
@@ -258,14 +258,14 @@ subroutine ssdmgn(mag)
             call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc=iocc, scal=nomgng, nbret=n)
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
-            i1noe=dime_2(4*(isma-1)+3)
-            nomacr= vnomacr(isma)
+            i1noe = dime_2(4*(isma-1)+3)
+            nomacr = vnomacr(isma)
             call jeveuo(nomacr//'.LINO', 'L', ialino)
             call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
             call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3)
             call jeveuo(jexnom(mal//'.GROUPENO', nomgnl), 'L', iagnl)
-            call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3,&
+            call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3, &
                         work1, lont, nbno)
 !
             if (nbno .gt. 0) then
@@ -274,15 +274,15 @@ subroutine ssdmgn(mag)
                 call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                 call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
                 do ii = 1, nbno
-                    inol=work1(ii)
-                    kk= indiis(zi(ialino),inol,1,nbnoex)
+                    inol = work1(ii)
+                    kk = indiis(zi(ialino), inol, 1, nbnoex)
                     ASSERT(kk .ne. 0)
-                    zi(iagno-1+ii)=i1noe+kk
+                    zi(iagno-1+ii) = i1noe+kk
                 end do
             else
                 call utmess('A', 'SOUSTRUC_62', sk=nomgng)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cavite(phenom, load, mesh, valeType, nbOcc)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "LoadTypes_type.h"
@@ -35,10 +35,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 !
-character(len=16), intent(in) :: phenom
-character(len=8), intent(in) :: load, mesh
-character(len=4), intent(in) :: valeType
-integer, intent(in) :: nbOcc
+    character(len=16), intent(in) :: phenom
+    character(len=8), intent(in) :: load, mesh
+    character(len=4), intent(in) :: valeType
+    integer, intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,8 +73,8 @@ integer, intent(in) :: nbOcc
     call jemarq()
 
 ! - Creation and initialization to zero of <CARTE>
-    call char_crea_cart(phenom, keywFact, load , mesh, valeType,&
-                        nbMap , map     , nbCmp)
+    call char_crea_cart(phenom, keywFact, load, mesh, valeType, &
+                        nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', jvValv)
 
@@ -85,55 +85,55 @@ integer, intent(in) :: nbOcc
 
 ! ----- Get type of speed: with direction or without it
         if (valeType .eq. 'REEL') then
-            call getvr8(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
+            call getvr8(keywFact, 'VNOR', iocc=iocc, nbval=0, nbret=nbRet)
         elseif (valeType .eq. 'COMP') then
-            call getvc8(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
+            call getvc8(keywFact, 'VNOR', iocc=iocc, nbval=0, nbret=nbRet)
             ASSERT(nbRet .eq. -1)
         elseif (valeType .eq. 'FONC') then
-            call getvid(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
+            call getvid(keywFact, 'VNOR', iocc=iocc, nbval=0, nbret=nbRet)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
         nbRet = abs(nbRet)
         ASSERT(nbRet .le. 1)
         if (nbRet .eq. 0) then
             keyword = 'VITE'
         else
             keyword = 'VNOR'
-        endif
+        end if
         if (valeType .eq. 'COMP') then
             ASSERT(keyword .eq. 'VNOR')
-        endif
+        end if
 
 ! ----- Get value of speed
         if (valeType .eq. 'REEL') then
-            call getvr8(keywFact, keyword, iocc=iocc, scal = speedReal, nbret=nbRet)
+            call getvr8(keywFact, keyword, iocc=iocc, scal=speedReal, nbret=nbRet)
         elseif (valeType .eq. 'COMP') then
-            call getvc8(keywFact, keyword, iocc=iocc, scal = speedCplx, nbret=nbRet)
+            call getvc8(keywFact, keyword, iocc=iocc, scal=speedCplx, nbret=nbRet)
         elseif (valeType .eq. 'FONC') then
-            call getvid(keywFact, keyword, iocc=iocc, scal = speedFunc, nbret=nbRet)
-        endif
+            call getvid(keywFact, keyword, iocc=iocc, scal=speedFunc, nbret=nbRet)
+        end if
 
 ! ----- Get direction if necessary
         speedDirectionReal = 0.d0
         speedDirectionFunc = ' '
         if (keyword .eq. 'VITE') then
             if (valeType .eq. 'REEL') then
-                call getvr8(keywFact, 'DIRECTION',&
-                            iocc=iocc, nbval = 0, nbret=nbRet)
+                call getvr8(keywFact, 'DIRECTION', &
+                            iocc=iocc, nbval=0, nbret=nbRet)
                 nbVal = abs(nbRet)
-                call getvr8(keywFact, 'DIRECTION',&
-                            iocc=iocc, nbval = nbVal, vect = speedDirectionReal, nbret=nbRet)
+                call getvr8(keywFact, 'DIRECTION', &
+                            iocc=iocc, nbval=nbVal, vect=speedDirectionReal, nbret=nbRet)
             elseif (valeType .eq. 'COMP') then
                 speedDirectionReal = 0.d0
             elseif (valeType .eq. 'FONC') then
-                call getvid(keywFact, 'DIRECTION',&
-                            iocc=iocc, nbval = 0, nbret=nbRet)
+                call getvid(keywFact, 'DIRECTION', &
+                            iocc=iocc, nbval=0, nbret=nbRet)
                 nbVal = abs(nbRet)
-                call getvid(keywFact, 'DIRECTION',&
-                            iocc=iocc, nbval = nbVal, vect = speedDirectionFunc, nbret=nbRet)
-            endif
-        endif
+                call getvid(keywFact, 'DIRECTION', &
+                            iocc=iocc, nbval=nbVal, vect=speedDirectionFunc, nbret=nbRet)
+            end if
+        end if
 
 ! ----- Save values
         if (keyword .eq. 'VNOR') then
@@ -146,7 +146,7 @@ integer, intent(in) :: nbOcc
             elseif (valeType .eq. 'FONC') then
                 zk8(jvValv-1+1) = speedFunc
                 zk8(jvValv-1+2) = '&FOZERO'
-            endif
+            end if
         else
             if (valeType .eq. 'REEL') then
                 zr(jvValv-1+1) = speedReal
@@ -166,16 +166,16 @@ integer, intent(in) :: nbOcc
                 zk8(jvValv-1+3) = speedDirectionFunc(1)
                 zk8(jvValv-1+4) = speedDirectionFunc(2)
                 zk8(jvValv-1+5) = speedDirectionFunc(3)
-            endif
+            end if
 
-        endif
+        end if
 
 ! ----- Set parameter in field
         if (nbCell .ne. 0) then
             call jeveuo(listCell, 'L', jvCell)
             call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell, limanu=zi(jvCell))
             call jedetr(listCell)
-        endif
+        end if
 
     end do
 !

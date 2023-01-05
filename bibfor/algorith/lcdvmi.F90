@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcdvmi(sigma, y, f, dfds, d2fds,&
+subroutine lcdvmi(sigma, y, f, dfds, d2fds, &
                   seq)
     implicit none
     real(kind=8) :: y, sigma(6), f, seq, dfds(6), d2fds(6, 6)
@@ -51,7 +51,7 @@ subroutine lcdvmi(sigma, y, f, dfds, d2fds,&
 !
     seq = sqrt((s23+s31+s12)/2.d0+1.5d0*(t12+t23+t31))
 !
-    f = seq - y
+    f = seq-y
 !
     if (seq .lt. 1.d-9) goto 20
 !
@@ -65,39 +65,39 @@ subroutine lcdvmi(sigma, y, f, dfds, d2fds,&
     dfds(5) = 3.d0*sigma(5)/seq/2.d0
     dfds(6) = 3.d0*sigma(6)/seq/2.d0
 !
-    d2fds(1,1) = ( 1.0d0-dfds(1)*dfds(1) )/seq
-    d2fds(1,2) = (-0.5d0-dfds(1)*dfds(2) )/seq
-    d2fds(1,3) = (-0.5d0-dfds(1)*dfds(3) )/seq
-    d2fds(1,4) = ( -dfds(1)*dfds(4) )/seq
-    d2fds(1,5) = ( -dfds(1)*dfds(5) )/seq
-    d2fds(1,6) = ( -dfds(1)*dfds(6) )/seq
+    d2fds(1, 1) = (1.0d0-dfds(1)*dfds(1))/seq
+    d2fds(1, 2) = (-0.5d0-dfds(1)*dfds(2))/seq
+    d2fds(1, 3) = (-0.5d0-dfds(1)*dfds(3))/seq
+    d2fds(1, 4) = (-dfds(1)*dfds(4))/seq
+    d2fds(1, 5) = (-dfds(1)*dfds(5))/seq
+    d2fds(1, 6) = (-dfds(1)*dfds(6))/seq
 !
-    d2fds(2,2) = ( 1.0d0-dfds(2)*dfds(2) )/seq
-    d2fds(2,3) = (-0.5d0-dfds(2)*dfds(3) )/seq
-    d2fds(2,4) = ( -dfds(2)*dfds(4) )/seq
-    d2fds(2,5) = ( -dfds(2)*dfds(5) )/seq
-    d2fds(2,6) = ( -dfds(2)*dfds(6) )/seq
+    d2fds(2, 2) = (1.0d0-dfds(2)*dfds(2))/seq
+    d2fds(2, 3) = (-0.5d0-dfds(2)*dfds(3))/seq
+    d2fds(2, 4) = (-dfds(2)*dfds(4))/seq
+    d2fds(2, 5) = (-dfds(2)*dfds(5))/seq
+    d2fds(2, 6) = (-dfds(2)*dfds(6))/seq
 !
-    d2fds(3,3) = ( 1.0d0-dfds(3)*dfds(3) )/seq
-    d2fds(3,4) = ( -dfds(3)*dfds(4) )/seq
-    d2fds(3,5) = ( -dfds(3)*dfds(5) )/seq
-    d2fds(3,6) = ( -dfds(3)*dfds(6) )/seq
+    d2fds(3, 3) = (1.0d0-dfds(3)*dfds(3))/seq
+    d2fds(3, 4) = (-dfds(3)*dfds(4))/seq
+    d2fds(3, 5) = (-dfds(3)*dfds(5))/seq
+    d2fds(3, 6) = (-dfds(3)*dfds(6))/seq
 !
-    d2fds(4,4) = ( 3.d0-dfds(4)*dfds(4) )/seq
-    d2fds(4,5) = ( -dfds(4)*dfds(5) )/seq
-    d2fds(4,6) = ( -dfds(4)*dfds(6) )/seq
+    d2fds(4, 4) = (3.d0-dfds(4)*dfds(4))/seq
+    d2fds(4, 5) = (-dfds(4)*dfds(5))/seq
+    d2fds(4, 6) = (-dfds(4)*dfds(6))/seq
 !
-    d2fds(5,5) = ( 3.d0-dfds(5)*dfds(5) )/seq
-    d2fds(5,6) = ( -dfds(5)*dfds(6) )/seq
+    d2fds(5, 5) = (3.d0-dfds(5)*dfds(5))/seq
+    d2fds(5, 6) = (-dfds(5)*dfds(6))/seq
 !
-    d2fds(6,6) = ( 3.d0-dfds(6)*dfds(6) )/seq
+    d2fds(6, 6) = (3.d0-dfds(6)*dfds(6))/seq
 !
     do i = 1, 6
         do j = i, 6
-            d2fds(j,i) = d2fds(i,j)
+            d2fds(j, i) = d2fds(i, j)
         end do
     end do
 !
- 20 continue
+20  continue
 !
 end subroutine

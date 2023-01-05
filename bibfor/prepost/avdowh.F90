@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
-                  jgdeq, grdvie, forvie, post, jdomel,&
+subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl, &
+                  jgdeq, grdvie, forvie, post, jdomel, &
                   jnrupt)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -82,29 +82,29 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
         call rccome(nommat, 'FATIGUE', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
-        endif
-    endif
+        end if
+    end if
 !
     if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
         call rcpare(nommat, 'FATIGUE', 'MANSON_COFFIN', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_89', sk=nomcri(1:16))
-        endif
+        end if
 !
         do ivect = 1, nbvec
             do icycl = 1, ncycl(ivect)
-                adrs = (ivect-1)*nbordr + icycl
+                adrs = (ivect-1)*nbordr+icycl
 !
-                call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs),&
+                call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs), &
                             1, 'MANSON_COFFIN', zr(jnrupt+adrs), icodre(1), 1)
 !
                 call limend(nommat, zr(jgdeq+adrs), 'MANSON_COFFIN', kbid, limit)
                 if (limit) then
-                    zr(jnrupt+adrs)=r8maem()
+                    zr(jnrupt+adrs) = r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs),&
+                    call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs), &
                                 1, 'MANSON_COFFIN', zr(jnrupt+adrs), icodre(1), 1)
-                endif
+                end if
 !
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
                 zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
@@ -112,24 +112,24 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
             end do
         end do
 !
-        elseif (( nomcri(1:14) .eq. 'MATAKE_MODI_AV' ) .or. ( nomcri(1:16)&
-                               .eq. 'DANG_VAN_MODI_AV' )) then
+    elseif ((nomcri(1:14) .eq. 'MATAKE_MODI_AV') .or. (nomcri(1:16) &
+                                                       .eq. 'DANG_VAN_MODI_AV')) then
         call rcpare(nommat, 'FATIGUE', 'WOHLER', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
-        endif
+        end if
 !
         do ivect = 1, nbvec
             do icycl = 1, ncycl(ivect)
-                adrs = (ivect-1)*nbordr + icycl
+                adrs = (ivect-1)*nbordr+icycl
 !
                 call limend(nommat, zr(jgdeq+adrs), 'WOHLER', kbid, limit)
                 if (limit) then
-                    zr(jnrupt+adrs)=r8maem()
+                    zr(jnrupt+adrs) = r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', zr(jgdeq+adrs),&
+                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', zr(jgdeq+adrs), &
                                 1, 'WOHLER  ', zr(jnrupt+adrs), icodre(1), 1)
-                endif
+                end if
 !
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
                 zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
@@ -141,36 +141,36 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !
         do ivect = 1, nbvec
             do icycl = 1, ncycl(ivect)
-                adrs = (ivect-1)*nbordr + icycl
+                adrs = (ivect-1)*nbordr+icycl
 !
                 call limend(nommat, zr(jgdeq+adrs), grdvie, forvie, limit)
 !
                 if (limit) then
-                    zr(jnrupt+adrs)=r8maem()
+                    zr(jnrupt+adrs) = r8maem()
                 else
 !
                     if (grdvie .eq. 'WOHLER') then
                         nomgrd = 'SIGM    '
 !
-                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs),&
+                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs), &
                                     1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
-                    endif
+                    end if
 !
                     if (grdvie .eq. 'MANSON_COFFIN') then
                         nomgrd = 'EPSI    '
-                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs),&
+                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs), &
                                     1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
 !
-                    endif
+                    end if
 !
                     if (grdvie .eq. 'FORM_VIE') then
                         call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs), icodre(1))
-                    endif
+                    end if
 !
                     zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
                     zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
-                endif
+                end if
 !
 !
             end do
@@ -178,7 +178,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !
 !
 !
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,15 +45,15 @@ subroutine te0207(option, nomte)
 !    ICI AUX FONCTIONS DE FORMES 2D DES FACES DES MAILLES JOINT 3D
 !    PAR EXEMPLE FONCTION DE FORME DU QUAD4 POUR LES HEXA8.
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     if (nno .gt. 4) then
         call utmess('F', 'ELEMENTS5_22')
-    endif
+    end if
     if (npg .gt. 4) then
         call utmess('F', 'ELEMENTS5_23')
-    endif
+    end if
 !
     nddl = 6*nno
 !
@@ -62,7 +62,7 @@ subroutine te0207(option, nomte)
     call jevech('PCONTMR', 'L', icont)
     call jevech('PVECTUR', 'E', ivect)
 !
-    call nmfifn(nno, nddl, npg, zr(ipoids), zr(ivf),&
+    call nmfifn(nno, nddl, npg, zr(ipoids), zr(ivf), &
                 zr(idfde), zr(igeom), zr(icont), zr(ivect))
 !
 end subroutine

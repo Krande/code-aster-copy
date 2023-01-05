@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
-                        lrev, lmdb, matrev, matmdb, tempa,&
+                        lrev, lmdb, matrev, matmdb, tempa, &
                         tempb, k1a, k1b, k1c)
     implicit none
 #include "jeveux.h"
@@ -74,7 +74,7 @@ subroutine calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( zero   =  0.0d0 )
+    parameter(zero=0.0d0)
 ! ======================================================================
     call jemarq()
 ! ======================================================================
@@ -117,40 +117,40 @@ subroutine calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
     call jeexin(coeinf, iexi)
 !
     if (iexi .gt. 0) then
-       call jeveuo(coeinf, 'E', jcoein)
+        call jeveuo(coeinf, 'E', jcoein)
     else
-       call wkvect(coeinf, 'V V R8', 15, jcoein)
-    endif
-       call coef_infl(prodef, londef, lrev, matrev, matmdb, &
-                      tempa, tempb, zr(jcoein))
+        call wkvect(coeinf, 'V V R8', 15, jcoein)
+    end if
+    call coef_infl(prodef, londef, lrev, matrev, matmdb, &
+                   tempa, tempb, zr(jcoein))
 ! ======================================================================
 ! --- CALCUL DES COEFFICIENTS DU POLYNOME ------------------------------
 ! ======================================================================
 ! On verifie que l'on a bien 5 points
 
-   if(nomdb.eq.5) then
-      do ific = 1,5
-         sigma(ific) = zr(jsigmb+ific-1)
-      end do
-   else
-       vali=nomdb
-       call utmess('F', 'PREPOST_6',si=vali)
+    if (nomdb .eq. 5) then
+        do ific = 1, 5
+            sigma(ific) = zr(jsigmb+ific-1)
+        end do
+    else
+        vali = nomdb
+        call utmess('F', 'PREPOST_6', si=vali)
 !      ASSERT(.false.)
-   endif
+    end if
 !
-    call coef_poly(lrev,lmdb,zr(jabsmb),sigma)
+    call coef_poly(lrev, lmdb, zr(jabsmb), sigma)
 !
-    asxl=(prodef+lrev)/(lrev+lmdb)
+    asxl = (prodef+lrev)/(lrev+lmdb)
 
 ! ======================================================================
 ! --- CALCUL DU FACTEUR INTENSITE DE CONTRAINTE ------------------------
 ! --- AU POINT A -------------------------------------------------------
 ! ======================================================================
 
-    k1a = sqrt(pi*a)*(sigma(1)*zr(jcoein)           + &
-                      sigma(2)*zr(jcoein+1)*asxl    + &
-                      sigma(3)*zr(jcoein+2)*asxl**2 + &
-                      sigma(4)*zr(jcoein+3)*asxl**3 + &
+    k1a = sqrt(pi*a)*(sigma(1)*zr(jcoein)+ &
+                      sigma(2)*zr(jcoein+1)*asxl+ &
+                      sigma(3)*zr(jcoein+2)*asxl**2+ &
+                      sigma(4)*zr(jcoein+3)*asxl**3+ &
                       sigma(5)*zr(jcoein+4)*asxl**4)
 
 ! ======================================================================
@@ -158,21 +158,21 @@ subroutine calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
 ! --- AU POINT B -------------------------------------------------------
 ! ======================================================================
 
-    k1b = sqrt(pi*a)*(sigma(1)*zr(jcoein+5)         + &
-                      sigma(2)*zr(jcoein+6)*asxl    + &
-                      sigma(3)*zr(jcoein+7)*asxl**2 + &
-                      sigma(4)*zr(jcoein+8)*asxl**3 + &
+    k1b = sqrt(pi*a)*(sigma(1)*zr(jcoein+5)+ &
+                      sigma(2)*zr(jcoein+6)*asxl+ &
+                      sigma(3)*zr(jcoein+7)*asxl**2+ &
+                      sigma(4)*zr(jcoein+8)*asxl**3+ &
                       sigma(5)*zr(jcoein+9)*asxl**4)
 
 ! ======================================================================
 ! --- CALCUL DU FACTEUR INTENSITE DE CONTRAINTE ------------------------
 ! --- AU POINT C -------------------------------------------------------
 ! ======================================================================
-    k1c = sqrt(pi*a)*(sigma(1)*zr(jcoein+10)         + &
-                      sigma(2)*zr(jcoein+11)*asxl    + &
-                      sigma(3)*zr(jcoein+12)*asxl**2 + &
-                      sigma(4)*zr(jcoein+13)*asxl**3 + &
+    k1c = sqrt(pi*a)*(sigma(1)*zr(jcoein+10)+ &
+                      sigma(2)*zr(jcoein+11)*asxl+ &
+                      sigma(3)*zr(jcoein+12)*asxl**2+ &
+                      sigma(4)*zr(jcoein+13)*asxl**3+ &
                       sigma(5)*zr(jcoein+14)*asxl**4)
-   call jedema()
+    call jedema()
 ! ======================================================================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
-                  sdpilo, rho, eta, isxfe, f,&
+subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
+                  sdpilo, rho, eta, isxfe, f, &
                   indic)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -89,7 +89,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 !
         selpil = sdpilo(1:14)//'.PLSL'
         call jeveuo(selpil(1:19)//'.VALE', 'L', vr=plsl)
-    endif
+    end if
 !
 !
 ! --- INITIALISATIONS--------------------------------
@@ -117,12 +117,12 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
     if (isxfe) then
         do i = 1, neq
             if (deeq(2*i) .gt. 0) then
-                norm_depold = norm_depold + depol(i)**2
+                norm_depold = norm_depold+depol(i)**2
                 if (coee(i) .eq. 0.d0) then
-                    sca = sca + depol(i)* vcoef(i)**2*(depde(i) + rho*du0(1+i-1) + eta*zr(jdu1+i-&
+                    sca = sca+depol(i)*vcoef(i)**2*(depde(i)+rho*du0(1+i-1)+eta*zr(jdu1+i-&
                           &1))
-                    nodup1 = nodup1 + vcoef(i)**2*(depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))**2
-                    nodup2 = nodup2 + vcoef(i)**2*depol(i) **2
+                    nodup1 = nodup1+vcoef(i)**2*(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1))**2
+                    nodup2 = nodup2+vcoef(i)**2*depol(i)**2
                 else
                     da = 0.d0
                     dn = 0.d0
@@ -130,35 +130,35 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
                     dp = 0.d0
                     do j = i+1, neq
                         if (coee(i) .eq. coee(j)) then
-                            da = da + vcoef(i)*depol(i)+ vcoef(j)*depol(j)
-                            dn = dn + vcoef(i)*depde(i)+ vcoef(j)*depde(j)
-                            dc = dc + vcoef(i)*du0(i)+ vcoef(j)*du0(j)
-                            dp = dp + vcoef(i)*zr(jdu1-1+i)+ vcoef(j)*zr(jdu1-1+j)
-                        endif
+                            da = da+vcoef(i)*depol(i)+vcoef(j)*depol(j)
+                            dn = dn+vcoef(i)*depde(i)+vcoef(j)*depde(j)
+                            dc = dc+vcoef(i)*du0(i)+vcoef(j)*du0(j)
+                            dp = dp+vcoef(i)*zr(jdu1-1+i)+vcoef(j)*zr(jdu1-1+j)
+                        end if
                     end do
-                    sca = sca + da*(dn+rho*dc+eta*dp)
-                    nodup1 = nodup1 + (dn+rho*dc+eta*dp)**2
-                    nodup2 = nodup2 + da**2
-                endif
-            endif
+                    sca = sca+da*(dn+rho*dc+eta*dp)
+                    nodup1 = nodup1+(dn+rho*dc+eta*dp)**2
+                    nodup2 = nodup2+da**2
+                end if
+            end if
         end do
         nodup = nodup1*nodup2
     else
         do i = 1, neq
             coef = plsl(i)
-            sca = sca + (depol(i)*(depde(i) + rho*du0(i) + eta*zr(jdu1+i-1)) )*coef
-            nodup = nodup + ( depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))**2
-            norm_depold = norm_depold + depol(i)**2
+            sca = sca+(depol(i)*(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1)))*coef
+            nodup = nodup+(depde(i)+rho*du0(i)+eta*zr(jdu1+i-1))**2
+            norm_depold = norm_depold+depol(i)**2
         end do
-    endif
+    end if
 !
-    if (nodup .eq. 0.d0.or.norm_depold.eq.0.d0) then
+    if (nodup .eq. 0.d0 .or. norm_depold .eq. 0.d0) then
         indic = 0
         f = 0.d0
     else
         indic = 1
-        f = sca / sqrt(nodup)
-    endif
+        f = sca/sqrt(nodup)
+    end if
     f = -f
 !
     call jedema()

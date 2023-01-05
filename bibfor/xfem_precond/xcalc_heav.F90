@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ function xcalc_heav(id_no, hea_se, iflag)
 !
 !-----------------------------------------------------------------------
 !
-    if ( id_no.eq.hea_se) then
-      xcalc_heav=2.d0
+    if (id_no .eq. hea_se) then
+        xcalc_heav = 2.d0
     else
-      xcalc_heav=0.d0
-    endif
+        xcalc_heav = 0.d0
+    end if
 !  ASTUCE POUR OBTENIR UN SAUT DE DEPLACEMENT = (+2) * H1X POUR UNE  FISSURE
 !    REMARQUE: ON RAJOUTE CETTE CONVENTION PARCE QUE LA DEFINITION DE LA
 !        TOPOLOGIE SIGNE HEAVISIDE PAR FACETTE EST DIFFERENTE DU SIMPLE AU MULTI HEAVISIDE
@@ -58,7 +58,7 @@ function xcalc_heav(id_no, hea_se, iflag)
 !    * NFISS>1 : LA TOPOLOGIE EST CONSTRUITE EXPLICITEMENT ET STOCKEE DANS TOPOFAC.HEA
 !                => CETTE INFO EST CODEE ENSUITE DANS TOPONO.HFA
 !                   => ET TRANSPORTEE DE MANIERE TRANSPARENTE
-     if (iflag.eq.-999) xcalc_heav=1.d0*xcalc_heav
-     if (iflag.eq.999) xcalc_heav=-1.d0*xcalc_heav
+    if (iflag .eq. -999) xcalc_heav = 1.d0*xcalc_heav
+    if (iflag .eq. 999) xcalc_heav = -1.d0*xcalc_heav
 !
 end function

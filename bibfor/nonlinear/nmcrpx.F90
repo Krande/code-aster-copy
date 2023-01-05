@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
         nbinst = 0
         dtmin = 0.d0
         goto 99
-    endif
+    end if
 !
 ! --- LECTURE PRECISION
 !
@@ -118,7 +118,7 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
 !
 ! --- LECTURE LISTE INSTANTS
 !
-    call nmcrpa(motfac, iocc, sdlist, base, nbinst,&
+    call nmcrpa(motfac, iocc, sdlist, base, nbinst, &
                 dtmin)
 !
 ! --- LECTURE PAS
@@ -127,15 +127,15 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
     if (nbinst .eq. 0) then
         call getvis(motfac, motpas, iocc=iocc, scal=freq, nbret=n1)
         if (n1 .ne. 0) then
-            ASSERT(freq.ge.0)
-        endif
-    endif
+            ASSERT(freq .ge. 0)
+        end if
+    end if
 !
 ! --- AUCUN MOT-CLE : PAS  = 1
 !
     if (n1+nbinst .eq. 0) then
         freq = 1
-    endif
+    end if
 !
 ! --- SAUVEGARDE INFORMATIONS
 !

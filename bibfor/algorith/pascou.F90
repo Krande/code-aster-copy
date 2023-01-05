@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,48 +82,48 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 !
 ! --- INITIALISATIONS
 !
-    nompro ='OP0070'
+    nompro = 'OP0070'
     chvarc = '&&PASCOU.CH_VARC_R'
 !
     call getvid(' ', 'MODELE', scal=mo, nbret=ibid)
 !
-    ligrel=mo//'.MODELE'
+    ligrel = mo//'.MODELE'
 !
-    lpain(1)='PMATERC'
-    lchin(1)=mateco
+    lpain(1) = 'PMATERC'
+    lchin(1) = mateco
 !
 ! --- RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(mo, chgeom)
 !
-    lpain(2)='PGEOMER'
-    lchin(2)=chgeom
+    lpain(2) = 'PGEOMER'
+    lchin(2) = chgeom
 !
 ! --- CHAMP DES VARIABLES DE COMMANDE
     numins = 0
-    instin = diinst(sddisc,numins)
-    call vrcins(mo, mate, carele, instin, chvarc,&
-                    codret)
+    instin = diinst(sddisc, numins)
+    call vrcins(mo, mate, carele, instin, chvarc, &
+                codret)
 
-    lpain(3)='PVARCPR'
-    lchin(3)=chvarc(1:19)
+    lpain(3) = 'PVARCPR'
+    lchin(3) = chvarc(1:19)
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     call mecara(carele(1:8), chcara)
 !
     if (carele(1:8) .ne. ' ') then
-        lpain(4)='PCACOQU'
-        lchin(4)=chcara(7)
-    endif
+        lpain(4) = 'PCACOQU'
+        lchin(4) = chcara(7)
+    end if
 !
-    lpaout(1)='PCOURAN'
-    lchout(1)='&&'//nompro//'.PAS_COURANT'
+    lpaout(1) = 'PCOURAN'
+    lchout(1) = '&&'//nompro//'.PAS_COURANT'
 !
-    call calcul('S', 'PAS_COURANT', ligrel, 4, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'PAS_COURANT', ligrel, 4, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 !     PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
-    chams ='&&'//nompro//'.CHAMS'
+    chams = '&&'//nompro//'.CHAMS'
 !
     call celces(lchout(1), 'V', chams)
 !
@@ -144,13 +144,13 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
     boopos = .false.
     nbmcfl = 1
     do ima = 1, nbma
-        call cesexi('C', jcesd, jcesl, ima, 1,&
+        call cesexi('C', jcesd, jcesl, ima, 1, &
                     1, 1, iad)
         if (iad .gt. 0) then
             valeur = cesv(iad)
-        else if (iad.eq.0) then
+        else if (iad .eq. 0) then
             goto 10
-        endif
+        end if
         if (valeur .lt. 0) then
             booneg = .true.
         else
@@ -159,12 +159,12 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
                 if (valeur .le. dtcou) then
                     dtcou = valeur
                     nbmcfl = ima
-                endif
+                end if
             else
                 dtcou = valeur
-            endif
-        endif
- 10     continue
+            end if
+        end if
+10      continue
     end do
 !
     call getvtx('SCHEMA_TEMPS', 'STOP_CFL', iocc=1, scal=stocfl, nbret=n1)
@@ -173,29 +173,29 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
     if (boopos) then
         if (booneg) then
             call utmess('A', 'DYNAMIQUE_3')
-        endif
+        end if
 !
 !       VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
-        call utdidt('L', sddisc, 'LIST', 'NBINST',&
-                    vali_ = nbinst)
+        call utdidt('L', sddisc, 'LIST', 'NBINST', &
+                    vali_=nbinst)
         call jeveuo(sddisc//'.DITR', 'L', vr=ditr)
 !
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=mail)
         call jenuno(jexnum(mail//'.NOMMAI', nbmcfl), maicfl)
 !
 !
-        if (ndynlo(sddyna,'DIFF_CENT')) then
-            dtcou = dtcou / (2.d0)
+        if (ndynlo(sddyna, 'DIFF_CENT')) then
+            dtcou = dtcou/(2.d0)
             call utmess('I', 'DYNAMIQUE_5', sk=maicfl, sr=dtcou)
         else
-            if (ndynlo(sddyna,'TCHAMWA')) then
-                phi=ndynre(sddyna,'PHI')
+            if (ndynlo(sddyna, 'TCHAMWA')) then
+                phi = ndynre(sddyna, 'PHI')
                 dtcou = dtcou/(phi*2.d0)
                 call utmess('I', 'DYNAMIQUE_6', sk=maicfl, sr=dtcou)
             else
                 call utmess('F', 'DYNAMIQUE_1')
-            endif
-        endif
+            end if
+        end if
 !
         do i = 1, nbinst-1
             if (ditr(i+1)-ditr(i) .gt. dtcou) then
@@ -203,15 +203,15 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
                     call utmess('F', 'DYNAMIQUE_2')
                 else
                     call utmess('A', 'DYNAMIQUE_2')
-                endif
-            endif
+                end if
+            end if
         end do
 !
-    else if (stocfl(1:3).eq.'OUI') then
+    else if (stocfl(1:3) .eq. 'OUI') then
         call utmess('F', 'DYNAMIQUE_4')
-    else if (stocfl(1:3).eq.'NON') then
+    else if (stocfl(1:3) .eq. 'NON') then
         call utmess('A', 'DYNAMIQUE_4')
-    endif
+    end if
 !
     call jedema()
 !

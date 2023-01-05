@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
+subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha, &
                   re, he, chelem)
     implicit none
 #include "jeveux.h"
@@ -76,12 +76,12 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
 !
 ! 1 - CREATION D UN CHAM_ELEM_S CHSING
 !
-    chsing='&&SINGUE.SING'
-    nompaz='SING_R'
-    licmp(1)='DEGRE'
-    licmp(2)='RAPPORT'
-    licmp(3)='TAILLE'
-    call cescre('V', chsing, 'ELEM', nomail, nompaz,&
+    chsing = '&&SINGUE.SING'
+    nompaz = 'SING_R'
+    licmp(1) = 'DEGRE'
+    licmp(2) = 'RAPPORT'
+    licmp(3) = 'TAILLE'
+    call cescre('V', chsing, 'ELEM', nomail, nompaz, &
                 3, licmp, [-1], [-1], nbr)
 !
 ! 2 - STOCKAGE DANS CHSING DE ALPHA ET RE
@@ -93,38 +93,38 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
     call jeveuo(chsing//'.CESV', 'E', vr=cesv)
 !
     do icmp = 1, nbcmp
-        if (cesc(icmp)(1:5) .eq. 'DEGRE') ncmp1=icmp
-        if (cesc(icmp)(1:7) .eq. 'RAPPORT') ncmp2=icmp
-        if (cesc(icmp)(1:6) .eq. 'TAILLE') ncmp3=icmp
+        if (cesc(icmp) (1:5) .eq. 'DEGRE') ncmp1 = icmp
+        if (cesc(icmp) (1:7) .eq. 'RAPPORT') ncmp2 = icmp
+        if (cesc(icmp) (1:6) .eq. 'TAILLE') ncmp3 = icmp
     end do
 !
     do inel = 1, nelem
-        call cesexi('C', jcesd, jcesl, inel, 1,&
+        call cesexi('C', jcesd, jcesl, inel, 1, &
                     1, ncmp1, iad1)
-        call cesexi('C', jcesd, jcesl, inel, 1,&
+        call cesexi('C', jcesd, jcesl, inel, 1, &
                     1, ncmp2, iad2)
-        call cesexi('C', jcesd, jcesl, inel, 1,&
+        call cesexi('C', jcesd, jcesl, inel, 1, &
                     1, ncmp3, iad3)
         if ((-iad1) .gt. 0) then
-            zl(jcesl-iad1-1)=.true.
-            cesv(1-iad1-1)= alpha(inel)
-        endif
+            zl(jcesl-iad1-1) = .true.
+            cesv(1-iad1-1) = alpha(inel)
+        end if
         if ((-iad2) .gt. 0) then
-            zl(jcesl-iad2-1)=.true.
-            cesv(1-iad2-1)= 1.d0/re(inel)
-        endif
+            zl(jcesl-iad2-1) = .true.
+            cesv(1-iad2-1) = 1.d0/re(inel)
+        end if
         if ((-iad3) .gt. 0) then
-            zl(jcesl-iad3-1)=.true.
-            cesv(1-iad3-1)= he(inel)
-        endif
+            zl(jcesl-iad3-1) = .true.
+            cesv(1-iad3-1) = he(inel)
+        end if
     end do
 !
 ! 3 - TRANSFORMATION DU CHAM_ELEM_S EN CHAM_ELEM
 !
-    opti='SING_ELEM'
-    nompaz='PSING_R'
+    opti = 'SING_ELEM'
+    nompaz = 'PSING_R'
 !
-    call cescel(chsing, ligrmo(1:19), opti, nompaz, 'NON',&
+    call cescel(chsing, ligrmo(1:19), opti, nompaz, 'NON', &
                 nncp, 'G', chelem(1:19), 'F', ibid)
 !
     call detrsd('CHAM_ELEM_S', chsing)

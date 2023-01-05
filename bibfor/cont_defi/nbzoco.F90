@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nbzoco(keywf, mesh, i_zone, nb_cont_surf)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/getvtx.h"
 #include "asterfort/verima.h"
@@ -50,51 +50,51 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_cont_surf  = 0
+    nb_cont_surf = 0
     nb_group_mast = 0
     nb_group_slav = 0
-    nb_mast       = 0
-    nb_slav       = 0
+    nb_mast = 0
+    nb_slav = 0
 !
 ! - Number of master elements
 !
-    call getvtx(keywf, 'GROUP_MA_MAIT', iocc=i_zone, vect=list_elem,&
+    call getvtx(keywf, 'GROUP_MA_MAIT', iocc=i_zone, vect=list_elem, &
                 nbret=nb_group_mast)
     if (nb_group_mast .ne. 0) then
         call verima(mesh, list_elem, nb_group_mast, 'GROUP_MA')
-    endif
-    call getvtx(keywf, 'MAILLE_MAIT', iocc=i_zone, vect=list_elem,&
+    end if
+    call getvtx(keywf, 'MAILLE_MAIT', iocc=i_zone, vect=list_elem, &
                 nbret=nb_mast)
     if (nb_mast .ne. 0) then
         call verima(mesh, list_elem, nb_mast, 'MAILLE')
-    endif
+    end if
 !
 ! - Number of slave elements
 !
-    call getvtx(keywf, 'GROUP_MA_ESCL', iocc=i_zone, vect=list_elem,&
+    call getvtx(keywf, 'GROUP_MA_ESCL', iocc=i_zone, vect=list_elem, &
                 nbret=nb_group_slav)
     if (nb_group_slav .ne. 0) then
         call verima(mesh, list_elem, nb_group_slav, 'GROUP_MA')
-    endif
-    call getvtx(keywf, 'MAILLE_ESCL', iocc=i_zone, vect=list_elem,&
+    end if
+    call getvtx(keywf, 'MAILLE_ESCL', iocc=i_zone, vect=list_elem, &
                 nbret=nb_slav)
     if (nb_group_slav .ne. 0) then
         call verima(mesh, list_elem, nb_slav, 'MAILLE')
-    endif
+    end if
 !
 ! - Total number of contact surfaces
 !
     if (nb_group_mast .ne. 0) then
-        nb_cont_surf = nb_cont_surf + 1
-    endif
+        nb_cont_surf = nb_cont_surf+1
+    end if
     if (nb_group_slav .ne. 0) then
-        nb_cont_surf = nb_cont_surf + 1
-    endif
+        nb_cont_surf = nb_cont_surf+1
+    end if
     if (nb_mast .ne. 0) then
-        nb_cont_surf = nb_cont_surf + 1
-    endif
+        nb_cont_surf = nb_cont_surf+1
+    end if
     if (nb_slav .ne. 0) then
-        nb_cont_surf = nb_cont_surf + 1
-    endif
+        nb_cont_surf = nb_cont_surf+1
+    end if
 !
 end subroutine

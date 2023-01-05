@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
     character(len=6) :: nompro
     character(len=16) :: typch
     character(len=19) :: dch, dchs, chplu, chmoi, chmois, chplus
-    parameter   (nompro = 'EXTDCH')
+    parameter(nompro='EXTDCH')
     aster_logical :: bool
     real(kind=8), pointer :: cnsv(:) => null()
     integer, pointer :: cnsd(:) => null()
@@ -82,7 +82,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 !
     call jemarq()
 !
-    bool = typext .eq. 'MIN' .or. typext .eq. 'MAX' .or. typext .eq. 'MIN_ABS' .or. typext .eq.&
+    bool = typext .eq. 'MIN' .or. typext .eq. 'MAX' .or. typext .eq. 'MIN_ABS' .or. typext .eq. &
            'MAX_ABS' .or. typext .eq. 'MIN_VAR'
     ASSERT(bool)
 !
@@ -93,19 +93,19 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         call nmchex(valinc, 'VALINC', 'VARMOI', chmoi)
         call nmchex(valinc, 'VALINC', 'VARPLU', chplu)
         typch = 'CHAM_ELGA'
-    else if (nocham.eq.'SIEF_ELGA') then
+    else if (nocham .eq. 'SIEF_ELGA') then
         call nmchex(valinc, 'VALINC', 'SIGMOI', chmoi)
         call nmchex(valinc, 'VALINC', 'SIGPLU', chplu)
         typch = 'CHAM_ELGA'
-    else if (nocham.eq.'DEPL') then
+    else if (nocham .eq. 'DEPL') then
         call nmchex(valinc, 'VALINC', 'DEPMOI', chmoi)
         call nmchex(valinc, 'VALINC', 'DEPPLU', chplu)
         typch = 'CHAM_NO'
-    endif
+    end if
 !
 !     INITIALISATION DE L'EXTREMUM
     if (typext .eq. 'MIN' .or. typext .eq. 'MIN_ABS' .or. typext .eq. 'MIN_VAR') dval = &
-                                                                                 r8maem()
+        r8maem()
 !
     if (typext .eq. 'MAX') dval = r8miem()
     if (typext .eq. 'MAX_ABS') dval = 0.d0
@@ -119,10 +119,10 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         chplus = '&&'//nompro//'.CHPLUS'
 !
         call celces(chmoi, 'V', chmois)
-        call cesred(chmois, 0, [0], 1, nocmp,&
+        call cesred(chmois, 0, [0], 1, nocmp, &
                     'V', chmois)
         call celces(chplu, 'V', chplus)
-        call cesred(chplus, 0, [0], 1, nocmp,&
+        call cesred(chplus, 0, [0], 1, nocmp, &
                     'V', chplus)
 !
         call jeveuo(chmois//'.CESD', 'L', jmoid)
@@ -133,7 +133,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         call jeveuo(chplus//'.CESV', 'L', jpluv)
 !
         nbma = zi(jmoid-1+1)
-        ASSERT(zi(jplud-1+1).eq.nbma)
+        ASSERT(zi(jplud-1+1) .eq. nbma)
 !
         do ima = 1, nbma
             nbpt = zi(jmoid-1+5+4*(ima-1)+1)
@@ -147,54 +147,54 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
             do ipt = 1, nbpt
                 do isp = 1, nbsp
                     do icmp = 1, nbcmp
-                        call cesexi('C', jmoid, jmoil, ima, ipt,&
+                        call cesexi('C', jmoid, jmoil, ima, ipt, &
                                     isp, 1, imoiad)
-                        call cesexi('C', jplud, jplul, ima, ipt,&
+                        call cesexi('C', jplud, jplul, ima, ipt, &
                                     isp, 1, ipluad)
 !
                         if (imoiad .gt. 0 .or. ipluad .gt. 0) then
 !
-                            ASSERT(imoiad.gt.0 .and. ipluad.gt.0)
+                            ASSERT(imoiad .gt. 0 .and. ipluad .gt. 0)
 !
                             vmoi = zr(jmoiv-1+imoiad)
                             vplu = zr(jpluv-1+ipluad)
                             valeur = vplu-vmoi
 !
-                            if (typext(5:7) .eq. 'ABS') valeur = abs( valeur)
+                            if (typext(5:7) .eq. 'ABS') valeur = abs(valeur)
                             if (typext(5:7) .eq. 'VAR') then
                                 if (abs(valeur) .gt. r8prem()) then
-                                    valeur =1.d-3/abs(valeur)
+                                    valeur = 1.d-3/abs(valeur)
 !                      DVAL = MIN(DVAL,TMP)
                                 else
-                                    valeur=r8maem()
-                                endif
+                                    valeur = r8maem()
+                                end if
 !
-                            endif
+                            end if
                             if (typext(1:3) .eq. 'MIN') then
-                                dval = min(dval,valeur)
+                                dval = min(dval, valeur)
 !
-                            else if (typext(1:3).eq.'MAX') then
-                                dval = max(dval,valeur)
+                            else if (typext(1:3) .eq. 'MAX') then
+                                dval = max(dval, valeur)
 !
-                            endif
+                            end if
 !
-                        endif
+                        end if
                     end do
                 end do
             end do
         end do
 !
-    else if (typch.eq.'CHAM_NO') then
+    else if (typch .eq. 'CHAM_NO') then
 !
 !       CALCUL DE L'INCREMENT DU CHAMP
 !       DCH = CHPLU - CHMOI
         dch = '&&'//nompro//'.DELTACH   '
         dchs = '&&'//nompro//'.DELTACHS  '
-        call barych(chplu, chmoi, 1.d0, -1.d0, dch,&
+        call barych(chplu, chmoi, 1.d0, -1.d0, dch, &
                     'V')
 !
         call cnocns(dch, 'V', dchs)
-        call cnsred(dchs, 0, [0], 1, nocmp,&
+        call cnsred(dchs, 0, [0], 1, nocmp, &
                     'V', dchs)
         call jeveuo(dchs//'.CNSV', 'L', vr=cnsv)
         call jeveuo(dchs//'.CNSL', 'L', jcnsl)
@@ -205,14 +205,14 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
                 valeur = abs(cnsv(ino))
                 if (typext(5:7) .eq. 'ABS') valeur = abs(valeur)
                 if (typext(1:3) .eq. 'MIN') then
-                    dval = min(dval,valeur)
-                else if (typext(1:3).eq.'MAX') then
-                    dval = max(dval,valeur)
-                endif
-            endif
+                    dval = min(dval, valeur)
+                else if (typext(1:3) .eq. 'MAX') then
+                    dval = max(dval, valeur)
+                end if
+            end if
         end do
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

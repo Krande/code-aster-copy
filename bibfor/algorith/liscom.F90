@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,32 +68,32 @@ subroutine liscom(nomo, codarr, lischa)
     ichar = 1
     call lislch(lischa, ichar, charge)
     call lislco(lischa, ichar, genrec)
-    lveag = lisico('VECT_ASSE_GENE',genrec)
-    lveas = lisico('VECT_ASSE' ,genrec)
+    lveag = lisico('VECT_ASSE_GENE', genrec)
+    lveas = lisico('VECT_ASSE', genrec)
     if (nomo .ne. ' ') then
-        if (.not.lveag .and. .not.lveas) then
+        if (.not. lveag .and. .not. lveas) then
             call dismoi('NOM_MODELE', charge, 'CHARGE', repk=modch1)
             if (modch1 .ne. nomo) then
                 call utmess(codarr, 'CHARGES5_5', sk=charge)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- BOUCLE SUR LES CHARGES
 !
     do ichar = 2, nbchar
         call lislch(lischa, ichar, charge)
         call lislco(lischa, ichar, genrec)
-        lveag = lisico('VECT_ASSE_GENE',genrec)
-        lveas = lisico('VECT_ASSE' ,genrec)
+        lveag = lisico('VECT_ASSE_GENE', genrec)
+        lveas = lisico('VECT_ASSE', genrec)
         if (nomo .ne. ' ') then
-            if (.not.lveag .and. .not.lveas) then
+            if (.not. lveag .and. .not. lveas) then
                 call dismoi('NOM_MODELE', charge, 'CHARGE', repk=modch2)
                 if (modch1 .ne. modch2) then
                     call utmess(codarr, 'CHARGES5_6')
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
 999 continue

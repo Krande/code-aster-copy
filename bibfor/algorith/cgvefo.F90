@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine cgvefo(option, typfis, nomfis, typdis)
         call jeexin(nomfis//'.FOND.NOEU', ier)
         if (ier .eq. 0) then
             call utmess('F', 'RUPTURE1_4')
-        endif
-    endif
+        end if
+    end if
 !
 !     COMPATIBILITE ENTRE OPTION ET "ENTAILLE"
 !     ON NE SAIT DEFINIR K QUE DANS LE CAS D'UNE FISSURE AVEC LEVRES
@@ -67,17 +67,17 @@ subroutine cgvefo(option, typfis, nomfis, typdis)
 !
         call dismoi('CONFIG_INIT', nomfis, 'FOND_FISS', repk=conf)
 !
-        if ((option .eq. 'CALC_K_G' .or. option .eq. 'K_G_MODA')&
-            .and. (conf.eq.'DECOLLEE')) then
+        if ((option .eq. 'CALC_K_G' .or. option .eq. 'K_G_MODA') &
+            .and. (conf .eq. 'DECOLLEE')) then
             call utmess('F', 'RUPTURE0_29', sk=option)
-        endif
+        end if
 !
-    endif
+    end if
 !
 !   SI FISSURE TYPE 'COHESIF', LA SEULE OPTION EST CALC_K_G
-    if(typdis.eq.'COHESIF'.and.option.ne.'CALC_K_G') then
-        call utmess('F','RUPTURE2_5')
-    endif
+    if (typdis .eq. 'COHESIF' .and. option .ne. 'CALC_K_G') then
+        call utmess('F', 'RUPTURE2_5')
+    end if
 !
 !
     call jedema()

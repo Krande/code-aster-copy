@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,48 +42,48 @@ function lonele(dime, igeom)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-    integer,optional,intent(in)  :: dime
-    integer,optional,intent(out) :: igeom
+    integer, optional, intent(in)  :: dime
+    integer, optional, intent(out) :: igeom
     real(kind=8) :: lonele
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer             :: iadzi, iazk24, igeomloc, idimloc
-    real(kind=8)        :: r8bid,xl
+    real(kind=8)        :: r8bid, xl
     character(len=8)    :: nomail
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if ( present(dime) ) then
+    if (present(dime)) then
         idimloc = dime
     else
         idimloc = 3
-    endif
+    end if
 !
     call jevech('PGEOMER', 'L', igeomloc)
-    igeomloc = igeomloc - 1
+    igeomloc = igeomloc-1
 !
     if (idimloc .eq. 3) then
-        r8bid = ( zr(igeomloc+4) - zr(igeomloc+1) )**2
-        r8bid = ( zr(igeomloc+5) - zr(igeomloc+2) )**2 + r8bid
-        r8bid = ( zr(igeomloc+6) - zr(igeomloc+3) )**2 + r8bid
-    else if (idimloc.eq.2) then
-        r8bid = ( zr(igeomloc+3) - zr(igeomloc+1) )**2
-        r8bid = ( zr(igeomloc+4) - zr(igeomloc+2) )**2 + r8bid
+        r8bid = (zr(igeomloc+4)-zr(igeomloc+1))**2
+        r8bid = (zr(igeomloc+5)-zr(igeomloc+2))**2+r8bid
+        r8bid = (zr(igeomloc+6)-zr(igeomloc+3))**2+r8bid
+    else if (idimloc .eq. 2) then
+        r8bid = (zr(igeomloc+3)-zr(igeomloc+1))**2
+        r8bid = (zr(igeomloc+4)-zr(igeomloc+2))**2+r8bid
     else
 !       no warning: ‘r8bid’ may be used uninitialized in this function
         r8bid = 0.0d0
-        ASSERT( ASTER_FALSE )
-    endif
-    xl = sqrt( r8bid )
+        ASSERT(ASTER_FALSE)
+    end if
+    xl = sqrt(r8bid)
     if (xl .le. r8prem()) then
         call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
+        nomail = zk24(iazk24-1+3) (1:8)
         call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    end if
 !
     lonele = xl
-    if ( present(igeom) ) then
+    if (present(igeom)) then
         igeom = igeomloc
-    endif
+    end if
 end function

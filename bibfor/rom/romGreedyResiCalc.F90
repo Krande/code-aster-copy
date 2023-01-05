@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romGreedyResiCalc(ds_multipara, ds_algoGreedy,&
+subroutine romGreedyResiCalc(ds_multipara, ds_algoGreedy, &
                              i_mode_until, i_mode_coef)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/romGreedyResiNormCalc.h"
 #include "asterfort/romMultiParaDOM2mbrCreate.h"
 !
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
-integer, intent(in) :: i_mode_until, i_mode_coef
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
+    integer, intent(in) :: i_mode_until, i_mode_coef
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_50')
-    endif
+    end if
 !
 ! - Get parameters
 !
@@ -69,7 +69,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef
     nb_mode = ds_algoGreedy%solveROM%syst_size
     nb_equa = ds_algoGreedy%solveDOM%syst_size
     ASSERT(i_mode_until .le. nb_mode)
-    ASSERT(i_mode_coef  .le. nb_mode)
+    ASSERT(i_mode_coef .le. nb_mode)
 !
 ! - Compute residual
 !
@@ -77,8 +77,8 @@ integer, intent(in) :: i_mode_until, i_mode_coef
 ! ----- Compute second member for one coefficient
         call romMultiParaDOM2mbrCreate(ds_multipara, i_coef, ds_algoGreedy%solveDOM)
 ! ----- Compute residual for one coefficient
-        call romGreedyResi(ds_multipara, ds_algoGreedy,&
-                           i_mode_until, i_mode_coef , i_coef)
+        call romGreedyResi(ds_multipara, ds_algoGreedy, &
+                           i_mode_until, i_mode_coef, i_coef)
 ! ----- Compute norm of residual/norm second membre
         call romGreedyResiNormCalc(i_coef, nb_equa, ds_algoGreedy)
     end do
@@ -87,8 +87,8 @@ integer, intent(in) :: i_mode_until, i_mode_coef
 !
     if (niv .ge. 2) then
         do i_coef = 1, nb_coef
-            call utmess('I', 'ROM2_49', si = i_coef, sr = ds_algoGreedy%resi_norm(i_coef))
+            call utmess('I', 'ROM2_49', si=i_coef, sr=ds_algoGreedy%resi_norm(i_coef))
         end do
-    endif
+    end if
 !
 end subroutine

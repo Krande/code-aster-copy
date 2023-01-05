@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmarc0(result, modele        , ds_material  , carele   , fonact,&
-                  sdcrit, sddyna        , ds_errorindic,&
-                  sdpilo, list_load_resu, numarc       , time_curr)
+subroutine nmarc0(result, modele, ds_material, carele, fonact, &
+                  sdcrit, sddyna, ds_errorindic, &
+                  sdpilo, list_load_resu, numarc, time_curr)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -39,15 +39,15 @@ implicit none
 #include "asterfort/rssepa.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=8) :: result
-integer :: numarc
-integer :: fonact(*)
-real(kind=8) :: time_curr
-character(len=19) :: sddyna, sdpilo
-character(len=19) :: list_load_resu, sdcrit
-character(len=24) :: modele, carele
-type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
-type(NL_DS_Material), intent(in) :: ds_material
+    character(len=8) :: result
+    integer :: numarc
+    integer :: fonact(*)
+    real(kind=8) :: time_curr
+    character(len=19) :: sddyna, sdpilo
+    character(len=19) :: list_load_resu, sdcrit
+    character(len=24) :: modele, carele
+    type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
+    type(NL_DS_Material), intent(in) :: ds_material
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,18 +90,18 @@ type(NL_DS_Material), intent(in) :: ds_material
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE' )
-    lexge = ndynlo(sddyna,'EXPL_GENE' )
-    lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
-    lthm = isfonc(fonact,'THM' )
-    lpilo = isfonc(fonact,'PILOTAGE' )
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    lexge = ndynlo(sddyna, 'EXPL_GENE')
+    lerrt = isfonc(fonact, 'ERRE_TEMPS_THM')
+    lthm = isfonc(fonact, 'THM')
+    lpilo = isfonc(fonact, 'PILOTAGE')
 !
 ! --- ARCHIVAGE DE THETA EN THM
 !
     if (lthm) then
         call rsadpa(result, 'E', 1, 'PARM_THETA', numarc, 0, sjv=jv_para)
         zr(jv_para) = ds_errorindic%parm_theta
-    endif
+    end if
 !
 ! --- ARCHIVAGE DE L'INSTANT
 !
@@ -111,14 +111,14 @@ type(NL_DS_Material), intent(in) :: ds_material
 ! --- ARCHIVAGE DE L'INSTANT PRECEDENT
 !
     if (ldyna) then
-        time_prev = ndynre(sddyna,'INST_PREC')
+        time_prev = ndynre(sddyna, 'INST_PREC')
         call rsadpa(result, 'E', 1, 'INST_PREC', numarc, 0, sjv=jv_para)
         zr(jv_para) = time_prev
-    endif
+    end if
 !
 ! --- ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE
 !
-    call rssepa(result, numarc, modele(1:8), ds_material%mater(1:8), carele(1:8),&
+    call rssepa(result, numarc, modele(1:8), ds_material%mater(1:8), carele(1:8), &
                 list_load_resu)
 !
 ! --- ARCHIVAGE DES CRITERES DE CONVERGENCE
@@ -145,7 +145,7 @@ type(NL_DS_Material), intent(in) :: ds_material
         zr(jv_para) = ds_errorindic%erre_thm_loca
         call rsadpa(result, 'E', 1, 'ERRE_TPS_GLOB', numarc, 0, sjv=jv_para)
         zr(jv_para) = ds_errorindic%erre_thm_glob
-    endif
+    end if
 !
 ! --- ARCHIVAGE DE COEF_MULT SI PILOTAGE
 !
@@ -153,20 +153,20 @@ type(NL_DS_Material), intent(in) :: ds_material
         call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
         typpil = pltk(1)
         typsel = pltk(6)
-        if ((typpil.eq.'LONG_ARC'.or.typpil.eq.'SAUT_LONG_ARC') .and. typsel .eq.&
+        if ((typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') .and. typsel .eq. &
             'ANGL_INCR_DEPL') then
             call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
             coef = plir(1)
             call rsadpa(result, 'E', 1, 'COEF_MULT', numarc, 0, sjv=jv_para)
             zr(jv_para) = coef
-        endif
-    endif
+        end if
+    end if
 !
 ! --- ARCHIVAGE DEPL/VITE/ACCE GENERALISES
 !
     if (lexge) then
         call ndaram(result, sddyna, numarc)
-    endif
+    end if
 !
     call jedema()
 end subroutine

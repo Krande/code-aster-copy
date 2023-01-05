@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine te0552(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter  :: mxnoeu=4, mxnpg=4, nbcompo=6, nbdepl=3
-    integer, parameter  :: sp_couche_dkt=3, sp_couche_gri=1
+    integer, parameter  :: mxnoeu = 4, mxnpg = 4, nbcompo = 6, nbdepl = 3
+    integer, parameter  :: sp_couche_dkt = 3, sp_couche_gri = 1
 !
     integer             :: icmp, indga, indno, indx, ino, ipg, iptc, nbcou, icou
     integer             :: ndim, nno, nnos, npg, iret, kdec
@@ -60,17 +60,17 @@ subroutine te0552(option, nomte)
 !
     if (option .ne. 'DEPL_ELGA') then
         ASSERT(.false.)
-    endif
+    end if
     !
     ! Les éléments traités
-    elem_dkt =  (nomte.eq.'MEDKTR3').or.(nomte.eq.'MEDKQU4').or. &
-                (nomte.eq.'MEDSQU4').or.(nomte.eq.'MEDSTR3').or. &
-                (nomte.eq.'MEQ4QU4').or.(nomte.eq.'MET3TR3')
-    elem_gri =  (nomte.eq.'MEGCQU4').or.(nomte.eq.'MEGCTR3')
-    ASSERT( elem_dkt .or. elem_gri )
+    elem_dkt = (nomte .eq. 'MEDKTR3') .or. (nomte .eq. 'MEDKQU4') .or. &
+               (nomte .eq. 'MEDSQU4') .or. (nomte .eq. 'MEDSTR3') .or. &
+               (nomte .eq. 'MEQ4QU4') .or. (nomte .eq. 'MET3TR3')
+    elem_gri = (nomte .eq. 'MEGCQU4') .or. (nomte .eq. 'MEGCTR3')
+    ASSERT(elem_dkt .or. elem_gri)
     !
     fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=jvf, jdfde=idfdx, jgano=jgano)
     !
     ASSERT(nno .le. mxnoeu)
@@ -82,9 +82,9 @@ subroutine te0552(option, nomte)
     ! Matrice de passage Global-->Local
     if (nno .eq. 3) then
         call dxtpgl(zr(jgeom), pgl)
-    else if (nno.eq.4) then
+    else if (nno .eq. 4) then
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
-    endif
+    end if
     ! Passage des déplacements dans le repère local
     call utpvgl(nno, nbcompo, pgl, zr(jdepg), deplno)
     !
@@ -95,70 +95,70 @@ subroutine te0552(option, nomte)
     do ipg = 1, npg
         kdec = (ipg-1)*nno
         do ino = 1, nno
-            do icmp=1, nbcompo
+            do icmp = 1, nbcompo
                 indga = (ipg-1)*nbcompo+icmp
                 indno = (ino-1)*nbcompo+icmp
-                deplga(indga) = deplga(indga) + deplno(indno)*zr(jvf+kdec+ino-1)
-            enddo
-        enddo
-    enddo
+                deplga(indga) = deplga(indga)+deplno(indno)*zr(jvf+kdec+ino-1)
+            end do
+        end do
+    end do
     !
     ! Calcul des déplacements aux sous-points
     ! Caractéristiques des coques
     call jevech('PCACOQU', 'L', icacoq)
     epcoqu = zr(icacoq)
     !
-    if ( elem_dkt ) then
+    if (elem_dkt) then
         excent = zr(icacoq+4)
         call jevech('PNBSP_I', 'L', jnbspi)
         nbcou = zi(jnbspi)
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_46')
-        endif
+        end if
         !
         hcouche = epcoqu/nbcou
-        zmin    = excent - epcoqu*0.50
+        zmin = excent-epcoqu*0.50
         !
         do icou = 1, nbcou
             do iptc = 1, sp_couche_dkt
                 ! Altitude des points dans la couche
                 if (iptc .eq. 1) then
-                    zic = zmin + (icou-1)*hcouche
-                else if (iptc.eq.2) then
-                    zic = zmin + (icou-1)*hcouche + hcouche*0.50
+                    zic = zmin+(icou-1)*hcouche
+                else if (iptc .eq. 2) then
+                    zic = zmin+(icou-1)*hcouche+hcouche*0.50
                 else
-                    zic = zmin + (icou-1)*hcouche + hcouche
-                endif
+                    zic = zmin+(icou-1)*hcouche+hcouche
+                end if
                 !
                 do ipg = 1, npg
-                    indga     = (ipg-1)*nbcompo
-                    deplsp(1) = deplga(indga+1) +  deplga(indga+5)*zic
-                    deplsp(2) = deplga(indga+2) -  deplga(indga+4)*zic
+                    indga = (ipg-1)*nbcompo
+                    deplsp(1) = deplga(indga+1)+deplga(indga+5)*zic
+                    deplsp(2) = deplga(indga+2)-deplga(indga+4)*zic
                     deplsp(3) = deplga(indga+3)
                     ! Adresse du sous-point
-                    indx = jdeplga + nbdepl*(sp_couche_dkt*(nbcou*(ipg-1)+icou-1)+iptc-1)
+                    indx = jdeplga+nbdepl*(sp_couche_dkt*(nbcou*(ipg-1)+icou-1)+iptc-1)
                     ! Passage des déplacements dans le repère global
                     call utpvlg(1, nbdepl, pgl, deplsp, zr(indx))
-                enddo
-            enddo
-        enddo
-    else if ( elem_gri ) then
+                end do
+            end do
+        end do
+    else if (elem_gri) then
         excent = zr(icacoq+3)
         nbcou = 1
-        icou  = 1
-        iptc  = 1
+        icou = 1
+        iptc = 1
         !
         zic = excent
         do ipg = 1, npg
-            indga     = (ipg-1)*nbcompo
-            deplsp(1) = deplga(indga+1) +  deplga(indga+5)*zic
-            deplsp(2) = deplga(indga+2) -  deplga(indga+4)*zic
+            indga = (ipg-1)*nbcompo
+            deplsp(1) = deplga(indga+1)+deplga(indga+5)*zic
+            deplsp(2) = deplga(indga+2)-deplga(indga+4)*zic
             deplsp(3) = deplga(indga+3)
             ! Adresse du sous-point
-            indx = jdeplga + nbdepl*(sp_couche_gri*(nbcou*(ipg-1)+icou-1)+iptc-1)
+            indx = jdeplga+nbdepl*(sp_couche_gri*(nbcou*(ipg-1)+icou-1)+iptc-1)
             ! Passage des déplacements dans le repère global
             call utpvlg(1, nbdepl, pgl, deplsp, zr(indx))
-        enddo
-    endif
+        end do
+    end if
 !
 end subroutine

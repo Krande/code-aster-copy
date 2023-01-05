@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,17 +52,17 @@ function cgverho(imate)
 ! ----------------------------------------------------------------------
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
-    if (lteatt('LXFEM','OUI')) then
-        fami='XFEM'
+    if (lteatt('LXFEM', 'OUI')) then
+        fami = 'XFEM'
     else
-        fami='RIGI'
-    endif
-    call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+        fami = 'RIGI'
+    end if
+    call rcvalb(fami, 1, 1, '+', zi(imate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', rhobid(1), codrho(1), 0)
 !
 !   rhoabs -> .true. si rho est absent
-    rhoabs = codrho(1).ne.0
+    rhoabs = codrho(1) .ne. 0
 !
     call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
@@ -70,8 +70,8 @@ function cgverho(imate)
 !
 !   si le champ est present, et rho absent -> NOOK
     cgverho = .true.
-    if ((ipesa.ne.0) .and. rhoabs) cgverho = .false.
-    if ((irota.ne.0) .and. rhoabs) cgverho = .false.
-    if ((ipuls.ne.0) .and. rhoabs) cgverho = .false.
+    if ((ipesa .ne. 0) .and. rhoabs) cgverho = .false.
+    if ((irota .ne. 0) .and. rhoabs) cgverho = .false.
+    if ((ipuls .ne. 0) .and. rhoabs) cgverho = .false.
 !
 end function

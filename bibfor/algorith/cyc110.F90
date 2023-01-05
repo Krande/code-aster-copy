@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,8 +66,8 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
 !-----------------------------------------------------------------------
     integer :: i, iatyma, ibid, icomp, igd, ioctou
-    integer :: itcon, j, k,  ldcoo, lddesc, lddime
-    integer :: ldgrma, ldref, ldskin,  llcona,  llcox
+    integer :: itcon, j, k, ldcoo, lddesc, lddime
+    integer :: ldgrma, ldref, ldskin, llcona, llcox
     integer :: lltitr, lltyp, ltnmgr, ltnmma, ltnuma, ltnuno, nbcon
     integer :: nbgr, nbid, nbma, nbmato, nbno, nbnoto, nbsect
     integer :: nbskma, nbskno, nbtemp, nbtout, nbuf, ntacon, ntemna
@@ -96,9 +96,9 @@ subroutine cyc110(nomres, mailla, nbsect)
     if (nbma .lt. 0) then
         nbma = -nbma
         call wkvect('&&CYC110.NOM.MA', 'V V K8', nbma, ltnmma)
-        call getvtx(motfac, mcmail, iocc=1, nbval=nbma, vect=zk8(ltnmma),&
+        call getvtx(motfac, mcmail, iocc=1, nbval=nbma, vect=zk8(ltnmma), &
                     nbret=nbid)
-    endif
+    end if
 !
 !-------TRAITEMENT DES GROUPES DE MAILLES EN ENTREE---------------------
 !
@@ -108,10 +108,10 @@ subroutine cyc110(nomres, mailla, nbsect)
     if (nbgr .lt. 0) then
         nbgr = -nbgr
         call wkvect('&&CYC110.NOM.GRMA', 'V V K24', nbgr, ltnmgr)
-        call getvtx(motfac, mcgrm, iocc=1, nbval=nbgr, vect=zk24(ltnmgr),&
+        call getvtx(motfac, mcgrm, iocc=1, nbval=nbgr, vect=zk24(ltnmgr), &
                     nbret=nbid)
         call compma(mailla, nbgr, zk24(ltnmgr), nbuf)
-    endif
+    end if
 !
 !-----------CAS DE LA RESTITUTION DU MAILLAGE EN ENTIER-----------------
 !
@@ -119,15 +119,15 @@ subroutine cyc110(nomres, mailla, nbsect)
     if (ioctou .lt. 0) then
         ioctou = 1
         call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbtout)
-    endif
+    end if
 !
 !----------NOMBRE DE MAILLES (AVEC REPETITION EVENTUELLE)---------------
 !
     if (ioctou .eq. 1) then
         nbskma = nbtout
     else
-        nbskma = nbma + nbuf
-    endif
+        nbskma = nbma+nbuf
+    end if
 !
 !--------ALLOCATION DU VECTEUR DES NUMERO DE MAILLES--------------------
 !
@@ -141,9 +141,9 @@ subroutine cyc110(nomres, mailla, nbsect)
             zi(ltnuma+i-1) = i
         end do
     else
-        call recuma(mailla, nbma, nbgr, zk8(ltnmma), zk24(ltnmgr),&
+        call recuma(mailla, nbma, nbgr, zk8(ltnmma), zk24(ltnmgr), &
                     nbskma, zi(ltnuma))
-    endif
+    end if
 !
 !----------------DESTRUCTION DES OBJETS CADUQUES------------------------
 !
@@ -160,7 +160,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     do i = 1, nbskma
         numa = zi(ltnuma+i-1)
         call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno)
-        nbtemp = nbtemp + nbno
+        nbtemp = nbtemp+nbno
     end do
 !
     nbskno = nbtemp
@@ -179,7 +179,7 @@ subroutine cyc110(nomres, mailla, nbsect)
         call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno)
         call jeveuo(jexnum(mailla//'.CONNEX', numa), 'L', llcox)
         do j = 1, nbno
-            icomp = icomp + 1
+            icomp = icomp+1
             zi(ltnuno+icomp-1) = zi(llcox+j-1)
         end do
 !
@@ -215,9 +215,9 @@ subroutine cyc110(nomres, mailla, nbsect)
     call jecreo(nomres//'.NOMMAI', 'G N K8')
     call jeecra(nomres//'.NOMMAI', 'NOMMAX', nbmato)
 !
-    call jecrec(nomres//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(nomres//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbmato)
-    call jeecra(nomres//'.CONNEX','NUTIOC',nbmato)
+    call jeecra(nomres//'.CONNEX', 'NUTIOC', nbmato)
     call jeecra(nomres//'.CONNEX', 'LONT', ntacon)
 !
     call wkvect(nomres//'.TYPMAIL', 'G V I', nbmato, ibid)
@@ -229,7 +229,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     gpptnm = nomres//'.PTRNOMMAI'
     call jecreo(gpptnm, 'G N K24')
     call jeecra(gpptnm, 'NOMMAX', nbsect)
-    call jecrec(nomres//'.GROUPEMA', 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
+    call jecrec(nomres//'.GROUPEMA', 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', &
                 nbsect)
 !
 !
@@ -285,7 +285,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
     do i = 1, nbsect
-        teta = tetsec* (i-1)
+        teta = tetsec*(i-1)
 !
 !  CREATION NOM DES GROUPES
 !
@@ -300,7 +300,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
         do j = 1, nbskno
             numno = zi(ltnuno+j-1)
-            ntemno = ntemno + 1
+            ntemno = ntemno+1
             call codent(ntemno, 'D0', kchiff)
             nomcou = 'NO'//kchiff
             call jecroc(jexnom(nomres//'.NOMNOE', nomcou))
@@ -310,17 +310,17 @@ subroutine cyc110(nomres, mailla, nbsect)
             zi(ldskin+nbnoto+ntemno-1) = numno
 !
 !
-            xanc = vale(1+3* (numno-1))
-            yanc = vale(1+3* (numno-1)+1)
-            zanc = vale(1+3* (numno-1)+2)
+            xanc = vale(1+3*(numno-1))
+            yanc = vale(1+3*(numno-1)+1)
+            zanc = vale(1+3*(numno-1)+2)
 !
-            xnew = xanc*cos(teta) - sin(teta)*yanc
-            ynew = yanc*cos(teta) + sin(teta)*xanc
+            xnew = xanc*cos(teta)-sin(teta)*yanc
+            ynew = yanc*cos(teta)+sin(teta)*xanc
             znew = zanc
 !
-            zr(ldcoo+ (ntemno-1)*3) = xnew
-            zr(ldcoo+ (ntemno-1)*3+1) = ynew
-            zr(ldcoo+ (ntemno-1)*3+2) = znew
+            zr(ldcoo+(ntemno-1)*3) = xnew
+            zr(ldcoo+(ntemno-1)*3+1) = ynew
+            zr(ldcoo+(ntemno-1)*3+2) = znew
 !
         end do
 !
@@ -328,7 +328,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
         do j = 1, nbskma
             numma = zi(ltnuma+j-1)
-            ntemna = ntemna + 1
+            ntemna = ntemna+1
             call codent(ntemna, 'D0', kchiff)
             nomcou = 'MA'//kchiff
 !
@@ -344,7 +344,7 @@ subroutine cyc110(nomres, mailla, nbsect)
             call jeveuo(jexnum(mailla//'.CONNEX', numma), 'L', llcona)
 !
             do k = 1, nbcon
-                itcon = itcon + 1
+                itcon = itcon+1
                 ligne(1) = i
                 ligne(2) = zi(llcona+k-1)
                 call trnuli(zi(ldskin), nbnoto, 2, ligne, nunew)
@@ -352,7 +352,7 @@ subroutine cyc110(nomres, mailla, nbsect)
             end do
 !
             call jeveuo(mailla//'.TYPMAIL', 'L', iatyma)
-            lltyp=iatyma-1+numma
+            lltyp = iatyma-1+numma
             nldtyp(ntemna) = zi(lltyp)
 !
         end do

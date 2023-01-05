@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmimr0(ds_print, loop_name)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/SetTableColumn.h"
@@ -55,7 +55,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     table_cvg = ds_print%table_cvg
-    nb_cols   = table_cvg%nb_cols
+    nb_cols = table_cvg%nb_cols
 !
 ! - No value affected in row for loop level
 !
@@ -63,9 +63,9 @@ implicit none
         if (table_cvg%l_cols_acti(i_col)) then
             col_name = table_cvg%cols(i_col)%name
             if (loop_name .eq. col_name(1:4)) then
-                call SetTableColumn(table_cvg, name_ = col_name, flag_affe_ = .false._1)
-            endif
-        endif
+                call SetTableColumn(table_cvg, name_=col_name, flag_affe_=.false._1)
+            end if
+        end if
     end do
 !
 ! - Set convergence table

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine getTimeListBounds(sddisc, t_ini, t_end)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
 !
-character(len=19), intent(in) :: sddisc
-real(kind=8), intent(out) :: t_ini, t_end
+    character(len=19), intent(in) :: sddisc
+    real(kind=8), intent(out) :: t_ini, t_end
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +48,7 @@ real(kind=8), intent(out) :: t_ini, t_end
 !
     sddisc_ditr = sddisc(1:19)//'.DITR'
     call jelira(sddisc_ditr, 'LONMAX', nb_time)
-    call jeveuo(sddisc_ditr, 'E', vr = v_sddisc_ditr)
+    call jeveuo(sddisc_ditr, 'E', vr=v_sddisc_ditr)
     t_ini = v_sddisc_ditr(1)
     t_end = v_sddisc_ditr(nb_time)
 !

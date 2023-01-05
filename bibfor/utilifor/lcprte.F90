@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ subroutine lcprte(x, y, m)
 !       ----------------------------------------------------------------
     integer :: n, nd, i, j
     real(kind=8) :: x(6), y(6), m(6, 6)
-    common /tdim/   n , nd
+    common/tdim/n, nd
     do i = 1, n
         do j = 1, n
-            m(i,j) = x(i)*y(j)
+            m(i, j) = x(i)*y(j)
         end do
     end do
 end subroutine

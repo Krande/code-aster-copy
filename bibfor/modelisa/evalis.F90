@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine evalis(isz, pg, phi, sphi, freq,&
+subroutine evalis(isz, pg, phi, sphi, freq, &
                   iff, nomres)
     implicit none
 !-----------------------------------------------------------------------
@@ -71,13 +71,13 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
     call jeveuo(pg//'.CESD', 'L', vi=vpg)
 !
 ! NOMBRE DE MAILLES
-    nma=vpg(1)
+    nma = vpg(1)
 !
 ! NOMBRE DE MODES
     call jelira(phi, 'LONMAX', nbm)
 !
 ! PAS DE FREQUENCE COURANT
-    valpar(7)=freq
+    valpar(7) = freq
 !
 ! RECUPERATION DES NOMS DES CHAMPS PHI ET SPHI
     call jeveuo(phi, 'L', iphi)
@@ -85,7 +85,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 !
 ! EXPLORATION DU MODE 1. NB : ON SUPPOSE QUE TOUS LES MODES SONT DEFINIS
 ! AUX MEMES DDL
-    phii=zk24(iphi)(1:19)
+    phii = zk24(iphi) (1:19)
     call jeveuo(phii//'.CESV', 'L', ivfi)
     call jeveuo(phii//'.CESD', 'L', idfi)
     call jeveuo(phii//'.CESL', 'L', ilfi)
@@ -95,30 +95,30 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 ! BOUCLE SUR LES MAILLES ET POINTS DE GAUSS I
     do ima = 1, nma
 !  NOMBRE DE PDG ET DE SOUS PDG DE LA MAILLE IMA
-        nbpg=vpg(5+4*(ima-1)+1)
-        nbsp=vpg(5+4*(ima-1)+2)
-        posma=vpg(5+4*(ima-1)+4)
-        ASSERT(nbsp.eq.1)
+        nbpg = vpg(5+4*(ima-1)+1)
+        nbsp = vpg(5+4*(ima-1)+2)
+        posma = vpg(5+4*(ima-1)+4)
+        ASSERT(nbsp .eq. 1)
         do ipg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS IPG X1,Y1,Z1 ET POIDS DE GAUSS
-            valpar(1)=zr(ivpg+posma+4*(ipg-1))
-            valpar(2)=zr(ivpg+posma+4*(ipg-1)+1)
-            valpar(3)=zr(ivpg+posma+4*(ipg-1)+2)
-            pdgi=zr(ivpg+posma+4*(ipg-1)+3)
-            nbcmp=zi(idfi-1+5+4*(ima-1)+3)
-            posmai=zi(idfi-1+5+4*(ima-1)+4)
+            valpar(1) = zr(ivpg+posma+4*(ipg-1))
+            valpar(2) = zr(ivpg+posma+4*(ipg-1)+1)
+            valpar(3) = zr(ivpg+posma+4*(ipg-1)+2)
+            pdgi = zr(ivpg+posma+4*(ipg-1)+3)
+            nbcmp = zi(idfi-1+5+4*(ima-1)+3)
+            posmai = zi(idfi-1+5+4*(ima-1)+4)
             do icmp = 1, nbcmp
-                nocmpi=cesc(icmp)
-                call cesexi('S', idfi, ilfi, ima, ipg,&
+                nocmpi = cesc(icmp)
+                call cesexi('S', idfi, ilfi, ima, ipg, &
                             1, icmp, iret)
                 if (iret .lt. 0) goto 7
 ! CALCUL DE LA S.PHI POUR LA MAILLE IMA, LE PDG IPG, ET LA COMPOSANTE
 ! ICMP
-                call evali2(isz, pg, nma, phi, valpar,&
-                            posmai, ipg, pdgi, icmp, nocmpi,&
+                call evali2(isz, pg, nma, phi, valpar, &
+                            posmai, ipg, pdgi, icmp, nocmpi, &
                             sphi)
 !
-  7             continue
+7               continue
             end do
         end do
     end do
@@ -133,7 +133,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 !
 ! CALCUL DE LA LONGUEUR DES CHAMPS PHI ET S.PHI. NB : ON SUPPOSE QUE
 ! TOUS LES MODES ONT LA MEME TAILLE
-    phii=zk24(iphi)(1:19)
+    phii = zk24(iphi) (1:19)
     call jelira(phii//'.CESV', 'LONMAX', nbval)
 !
     chnumi = nomres//'.NUMI'
@@ -145,7 +145,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
     call jelira(chfreq, 'LONMAX', nbpoin)
 !
 ! PRODUIT PHI^T.S.PHI (UNIQUEMENT LA PARTIE TRIANGULAIRE SUPERIEURE)
-    ind=1
+    ind = 1
     do im1 = 1, nbm
         do im2 = im1, nbm
             if (iff .eq. 0) then
@@ -155,38 +155,38 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
                     nbabs = nbpoin
                 else
                     nbabs = 2*nbpoin
-                endif
+                end if
                 call jecroc(jexnum(chvale, ind))
                 call jeecra(jexnum(chvale, ind), 'LONMAX', nbabs)
                 call jeecra(jexnum(chvale, ind), 'LONUTI', nbabs)
-            endif
+            end if
             call jeveuo(jexnum(chvale, ind), 'E', lvale)
 !
-            val=(0.0d0,0.0d0)
-            phii=zk24(iphi-1+im1)(1:19)
-            sphii=zk24(isphi-1+im2)(1:19)
+            val = (0.0d0, 0.0d0)
+            phii = zk24(iphi-1+im1) (1:19)
+            sphii = zk24(isphi-1+im2) (1:19)
             call jeveuo(phii//'.CESV', 'L', ivfi)
             call jeveuo(sphii//'.CESV', 'L', ivsfi)
             do ival = 1, nbval
-                val=val+dcmplx(zr(ivfi-1+ival),0.0d0)*zc(ivsfi-1+ival)
+                val = val+dcmplx(zr(ivfi-1+ival), 0.0d0)*zc(ivsfi-1+ival)
             end do
             if (im1 .eq. im2) then
-                zr(lvale+iff)=dble(val)
+                zr(lvale+iff) = dble(val)
             else
-                zr(lvale+2*iff)=dble(val)
-                zr(lvale+2*iff+1)=dimag(val)
-            endif
+                zr(lvale+2*iff) = dble(val)
+                zr(lvale+2*iff+1) = dimag(val)
+            end if
 !
-            ind=ind+1
+            ind = ind+1
         end do
     end do
 !
 ! REMISE A 0 DES CHAM_ELEM_S DE SPHI
     do im1 = 1, nbm
-        sphii=zk24(isphi-1+im1)(1:19)
+        sphii = zk24(isphi-1+im1) (1:19)
         call jeveuo(sphii//'.CESV', 'E', ivsfi)
         do ival = 1, nbval
-            zc(ivsfi-1+ival)=(0.0d0,0.0d0)
+            zc(ivsfi-1+ival) = (0.0d0, 0.0d0)
         end do
     end do
 !

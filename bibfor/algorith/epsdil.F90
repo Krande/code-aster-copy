@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
-                  idfde, idfde2, geom, dimdef, dimuel,&
-                  ndim, nddls, nddlm, nno, nnos,&
-                  nnom, interp, axi, regula, deplp,&
+subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2, &
+                  idfde, idfde2, geom, dimdef, dimuel, &
+                  ndim, nddls, nddlm, nno, nnos, &
+                  nnom, interp, axi, regula, deplp, &
                   defgep)
 ! ======================================================================
 ! person_in_charge: romeo.fernandes at edf.fr
@@ -47,31 +47,31 @@ subroutine epsdil(npi, ipoids, ipoid2, ivf, ivf2,&
 ! --- DEFINITION DE L'OPERATEUR B (DEFINI PAR E=B.U) -------------------
 ! ======================================================================
         if (interp .eq. 'P0') then
-            call cabrp0(kpi, ipoids, ipoid2, ivf, ivf2,&
-                        idfde, idfde2, geom, dimdef, dimuel,&
-                        ndim, nddls, nddlm, nno, nnos,&
-                        nnom, axi, regula, b, poids,&
+            call cabrp0(kpi, ipoids, ipoid2, ivf, ivf2, &
+                        idfde, idfde2, geom, dimdef, dimuel, &
+                        ndim, nddls, nddlm, nno, nnos, &
+                        nnom, axi, regula, b, poids, &
                         poids2)
-        else if (interp.eq.'SL') then
-            call cabrsl(kpi, ipoids, ipoid2, ivf, ivf2,&
-                        idfde, idfde2, geom, dimdef, dimuel,&
-                        ndim, nddls, nddlm, nno, nnos,&
-                        nnom, axi, regula, b, poids,&
+        else if (interp .eq. 'SL') then
+            call cabrsl(kpi, ipoids, ipoid2, ivf, ivf2, &
+                        idfde, idfde2, geom, dimdef, dimuel, &
+                        ndim, nddls, nddlm, nno, nnos, &
+                        nnom, axi, regula, b, poids, &
                         poids2)
-        else if (interp.eq.'P1') then
-            call cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
-                        idfde, idfde2, geom, dimdef, dimuel,&
-                        ndim, nddls, nddlm, nno, nnos,&
-                        nnom, axi, regula, b, poids,&
+        else if (interp .eq. 'P1') then
+            call cabrp1(kpi, ipoids, ipoid2, ivf, ivf2, &
+                        idfde, idfde2, geom, dimdef, dimuel, &
+                        ndim, nddls, nddlm, nno, nnos, &
+                        nnom, axi, regula, b, poids, &
                         poids2)
-        endif
+        end if
 ! ======================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES E=B.U -----------------------
 ! ======================================================================
         do i = 1, dimdef
-            defgep((kpi-1)*dimdef+i)=0.0d0
+            defgep((kpi-1)*dimdef+i) = 0.0d0
             do n = 1, dimuel
-                defgep((kpi-1)*dimdef+i) = defgep( (kpi-1)*dimdef+i)+ b(i,n)*deplp(n)
+                defgep((kpi-1)*dimdef+i) = defgep((kpi-1)*dimdef+i)+b(i, n)*deplp(n)
             end do
         end do
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function meiden(scal, ncmp, i1, i3, nec,&
+function meiden(scal, ncmp, i1, i3, nec, &
                 i2, i4)
     implicit none
 !
@@ -65,29 +65,29 @@ function meiden(scal, ncmp, i1, i3, nec,&
         do i = 1, ncmp
             if (zi(i1+i) .ne. zi(i3+i)) goto 999
         end do
-    else if (scal(1:1).eq.'R') then
+    else if (scal(1:1) .eq. 'R') then
         do i = 1, ncmp
             if (zr(i1+i) .ne. zr(i3+i)) goto 999
         end do
-    else if (scal(1:1).eq.'C') then
+    else if (scal(1:1) .eq. 'C') then
         do i = 1, ncmp
             if (zc(i1+i) .ne. zc(i3+i)) goto 999
         end do
-    else if (scal(1:3).eq.'K8 ') then
+    else if (scal(1:3) .eq. 'K8 ') then
         do i = 1, ncmp
             if (zk8(i1+i) .ne. zk8(i3+i)) goto 999
         end do
-    else if (scal(1:3).eq.'K16') then
+    else if (scal(1:3) .eq. 'K16') then
         do i = 1, ncmp
             if (zk16(i1+i) .ne. zk16(i3+i)) goto 999
         end do
-    else if (scal(1:3).eq.'K24') then
+    else if (scal(1:3) .eq. 'K24') then
         do i = 1, ncmp
             if (zk24(i1+i) .ne. zk24(i3+i)) goto 999
         end do
     else
         ASSERT(.false.)
-    endif
+    end if
     meiden = .true.
 999 continue
 end function

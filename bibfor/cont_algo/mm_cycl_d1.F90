@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mm_cycl_d1(ds_contact    , i_cont_poin   ,&
-                      coef_cont     , pres_cont_prev, dist_cont_prev,&
-                      indi_cont_eval,indi_cont_prev,&
-                      dist_cont     , pres_cont,alpha_cont_matr,alpha_cont_vect)
+subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
+                      coef_cont, pres_cont_prev, dist_cont_prev, &
+                      indi_cont_eval, indi_cont_prev, &
+                      dist_cont, pres_cont, alpha_cont_matr, alpha_cont_vect)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -40,7 +40,7 @@ implicit none
     real(kind=8), intent(in) :: coef_cont
     real(kind=8), intent(in) :: pres_cont_prev
     real(kind=8), intent(in) :: dist_cont_prev
-    integer, intent(in) :: indi_cont_eval,indi_cont_prev
+    integer, intent(in) :: indi_cont_eval, indi_cont_prev
     real(kind=8), intent(in) :: dist_cont
     real(kind=8), intent(in) :: pres_cont
     real(kind=8), intent(out) :: alpha_cont_matr, alpha_cont_vect
@@ -86,9 +86,9 @@ implicit none
     cycl_long_acti = ds_contact%cycl_long_acti
     cycl_type = 1
     cycl_ecod = 0
-    detect    = .false.
+    detect = .false.
     !on definit une pression rasante proche du zero
-    pres_near_zero = 1.d-2 * ds_contact%arete_min
+    pres_near_zero = 1.d-2*ds_contact%arete_min
     alpha_cont_matr = 1.0d0
     alpha_cont_vect = 1.0d0
 !
@@ -97,55 +97,54 @@ implicit none
     sdcont_cyclis = ds_contact%sdcont_solv(1:14)//'.CYCLIS'
     sdcont_cycnbr = ds_contact%sdcont_solv(1:14)//'.CYCNBR'
     sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
-    call jeveuo(sdcont_cyclis, 'E', vi = p_sdcont_cyclis)
-    call jeveuo(sdcont_cycnbr, 'E', vi = p_sdcont_cycnbr)
-    call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
+    call jeveuo(sdcont_cyclis, 'E', vi=p_sdcont_cyclis)
+    call jeveuo(sdcont_cycnbr, 'E', vi=p_sdcont_cycnbr)
+    call jeveuo(sdcont_cyceta, 'E', vi=p_sdcont_cyceta)
 !
 ! - Previous augmented lagrangian
 !
-    laug_cont_prev = pres_cont_prev - coef_cont * dist_cont_prev
+    laug_cont_prev = pres_cont_prev-coef_cont*dist_cont_prev
 !
 ! - Current augmented lagrangian
 !
-    laug_cont_curr = pres_cont - coef_cont * dist_cont
+    laug_cont_curr = pres_cont-coef_cont*dist_cont
 !
 ! - Cycle state
 !
-    cycl_long    = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
-    cycl_ecod    = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
-    cycl_ecod    = cycl_ecod + (2**cycl_long)*indi_cont_eval
+    cycl_long = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
+    cycl_ecod = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
+    cycl_ecod = cycl_ecod+(2**cycl_long)*indi_cont_eval
 
 !
 ! - Cycling detection
 !
     cycl_stat = 0
-    if (cycl_long+1  .eq. cycl_long_acti) then
+    if (cycl_long+1 .eq. cycl_long_acti) then
         detect = iscycl(cycl_ecod, cycl_long_acti)
         if (p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) .ge. 10) then
             cycl_stat = 10
             if (indi_cont_eval .eq. indi_cont_prev) cycl_stat = 0
         elseif (detect) then
             cycl_stat = 10
-            call mm_cycl_d1_ss(pres_near_zero, laug_cont_prev, laug_cont_curr, zone_cont_prev,&
-                               zone_cont_curr, cycl_sub_type,alpha_cont_matr,alpha_cont_vect)
+            call mm_cycl_d1_ss(pres_near_zero, laug_cont_prev, laug_cont_curr, zone_cont_prev, &
+                               zone_cont_curr, cycl_sub_type, alpha_cont_matr, alpha_cont_vect)
 
-            cycl_stat = cycl_stat + cycl_sub_type
+            cycl_stat = cycl_stat+cycl_sub_type
             alpha_cont_matr = 0.99d0
             alpha_cont_vect = 0.99d0
-        endif
-    endif
-
+        end if
+    end if
 
 !
 ! - Cycling save : incrementation of cycle objects
 !
-    cycl_long = cycl_long + 1
+    cycl_long = cycl_long+1
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
-    if (cycl_long .eq. cycl_long_acti)  then
+    if (cycl_long .eq. cycl_long_acti) then
         cycl_long = 0
         cycl_ecod = 0
-    endif
+    end if
     p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type) = cycl_long
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
     ASSERT(cycl_long .le. cycl_long_acti)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ subroutine ibtcpu(ier)
     ier = 0
     tpmax = 0.d0
     ntmax = 0.d0
-    l1=0
-    l2=0
+    l1 = 0
+    l2 = 0
 !     RECUPERATION DU TEMPS LIMITE DE L'EXECUTION
     call gtoptr('tpmax', tpmax, iret)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
     itpmax = nint(tpmax)
 !
     itest = jdcget('TestMode')
@@ -61,41 +61,41 @@ subroutine ibtcpu(ier)
 !     SI CODE PRESENT
 !
     if (itest .ne. 0 .and. l1 .eq. 0 .and. l2 .eq. 0) then
-        ntmax = tpmax - dix
+        ntmax = tpmax-dix
         call rdtmax(itpmax-ntmax)
         goto 100
-    endif
+    end if
 !
 !     SI CODE ABSENT
 !
     if (itest .eq. 0 .and. l1 .eq. 0 .and. l2 .eq. 0) then
-        pccpu=0.1d0
-        ntmax = max ( tpmax*(1-pccpu) , tpmax-iborne )
+        pccpu = 0.1d0
+        ntmax = max(tpmax*(1-pccpu), tpmax-iborne)
         call rdtmax(itpmax-ntmax)
         goto 100
-    endif
+    end if
 !
     if (l1 .gt. 0) then
         if (lcpu .gt. tpmax) then
             call getres(cbid, cbid, nomcmd)
             call utmess('F', 'SUPERVIS_31')
             ier = 1
-        endif
-        ntmax = tpmax - lcpu
+        end if
+        ntmax = tpmax-lcpu
         call rdtmax(itpmax-ntmax)
-    endif
+    end if
 !
     if (l2 .gt. 0) then
-        ntmax = max ( tpmax*(1-pccpu) , tpmax-iborne )
+        ntmax = max(tpmax*(1-pccpu), tpmax-iborne)
         call rdtmax(itpmax-ntmax)
-    endif
+    end if
 !
 !     IMPRESSION D'UN MESSAGE D'INFORMATION
 !
-100  continue
-    vali(1)=itpmax
-    vali(2)=int(ntmax)
-    vali(3)=int(itpmax-ntmax)
+100 continue
+    vali(1) = itpmax
+    vali(2) = int(ntmax)
+    vali(3) = int(itpmax-ntmax)
     call utmess('I', 'SUPERVIS_64', ni=3, vali=vali)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
+subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel, &
                   corres, option, nompar, iret)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -57,7 +57,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     character(len=19) :: cham1s, dcel
     character(len=24) :: valk(5)
     integer ::  ipo, nbma
-    integer ::  jce2l,  jce2d, jce2k, icmp2
+    integer ::  jce2l, jce2d, jce2k, icmp2
 !
     integer :: jcesk, jcesd, jcesv, jcesl
 !
@@ -125,11 +125,11 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
     if (nomgd .eq. 'VAR2_R') then
 !
-        dcel='&&PJCORR'
+        dcel = '&&PJCORR'
 !
         licmp(1) = 'NPG_DYN'
         licmp(2) = 'NCMP_DYN'
-        call cescre('V', dcel, 'ELEM', ma, 'DCEL_I',&
+        call cescre('V', dcel, 'ELEM', ma, 'DCEL_I', &
                     2, licmp, [-1], [-1], [-2])
 !
         call jeveuo(dcel//'.CESD', 'E', jcesd)
@@ -140,26 +140,26 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
         call dismoi('NB_MA_MAILLA', nomo2, 'MODELE', repi=nbma)
 !
         do ima = 1, nbma
-            nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-            ASSERT(nbpt.eq.1)
-            nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-            ASSERT(nbsp.eq.1)
+            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
+            ASSERT(nbpt .eq. 1)
+            nbsp = zi(jcesd-1+5+4*(ima-1)+2)
+            ASSERT(nbsp .eq. 1)
 !
             do ipt = 1, nbpt
                 do isp = 1, nbsp
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, 1, iad)
-                    zi(jcesv-1-iad)=0
-                    zl(jcesl-1-iad)=.true.
-                    call cesexi('C', jcesd, jcesl, ima, ipt,&
+                    zi(jcesv-1-iad) = 0
+                    zl(jcesl-1-iad) = .true.
+                    call cesexi('C', jcesd, jcesl, ima, ipt, &
                                 isp, 2, iad)
-                    zi(jcesv-1-iad)=nbmax
-                    zl(jcesl-1-iad)=.true.
+                    zi(jcesv-1-iad) = nbmax
+                    zl(jcesl-1-iad) = .true.
                 end do
             end do
         end do
 !
-        call alchml(ligrel, option, nompar, 'V', cel2,&
+        call alchml(ligrel, option, nompar, 'V', cel2, &
                     iret, dcel)
 !
         if (iret .eq. 1) then
@@ -168,10 +168,10 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
             valk(3) = ligrel
             valk(4) = cel2
             call utmess('F', 'CALCULEL_50', nk=4, valk=valk)
-        endif
+        end if
 !
     else
-        call alchml(ligrel, option, nompar, 'V', cel2,&
+        call alchml(ligrel, option, nompar, 'V', cel2, &
                     iret, ' ')
 !
         if (iret .eq. 1) then
@@ -180,9 +180,9 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
             valk(3) = ligrel
             valk(4) = cel2
             call utmess('F', 'CALCULEL_50', nk=4, valk=valk)
-        endif
+        end if
 !
-    endif
+    end if
 !
     call celces(cel2, 'V', ces2)
     call detrsd('CHAM_ELEM', cel2)
@@ -195,7 +195,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     call jelira(ces2//'.CESC', 'LONMAX', ncmp2)
 !   -- on met les booleens a .false. :
     call jelira(ces2//'.CESL', 'LONMAX', nval)
-    zl(jce2l-1+1:jce2l-1+nval)=.false.
+    zl(jce2l-1+1:jce2l-1+nval) = .false.
 !
 !
 !
@@ -205,24 +205,24 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     call jeveuo(corres//'.PJEF_EL', 'L', vi=pjef_el)
 !
     do icmp1 = 1, ncmp1
-        icmp2 = indik8( ce2c,cnsc(icmp1), 1, ncmp2 )
+        icmp2 = indik8(ce2c, cnsc(icmp1), 1, ncmp2)
         if (icmp2 .eq. 0) goto 92
-        ASSERT(ce2c(icmp2).eq.cnsc(icmp1))
+        ASSERT(ce2c(icmp2) .eq. cnsc(icmp1))
 !       -- nbno1 est le nombre de pseudo-noeuds du maillage 2
         do ipo = 1, nbno1
-            ima=pjef_el(2*ipo-1)
-            ipt= pjef_el(2*ipo)
-            call cesexi('C', jce2d, jce2l, ima, ipt,&
+            ima = pjef_el(2*ipo-1)
+            ipt = pjef_el(2*ipo)
+            call cesexi('C', jce2d, jce2l, ima, ipt, &
                         1, icmp2, iad2)
-            ASSERT(iad2.le.0)
-            iad2=-iad2
+            ASSERT(iad2 .le. 0)
+            iad2 = -iad2
             if (iad2 .eq. 0) goto 98
 !
-            ce2v(iad2)=cnsv(1+(ipo-1)*ncmp1+icmp1-1)
-            zl(jce2l-1+iad2)=.true.
- 98         continue
+            ce2v(iad2) = cnsv(1+(ipo-1)*ncmp1+icmp1-1)
+            zl(jce2l-1+iad2) = .true.
+98          continue
         end do
- 92     continue
+92      continue
     end do
 !
 !

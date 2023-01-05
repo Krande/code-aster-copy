@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,11 +40,11 @@ function norsig(sigma, nbsig)
     norsi2 = zero
 !
     do i = 1, 3
-        norsi2 = norsi2 + sigma(i)*sigma(i)
+        norsi2 = norsi2+sigma(i)*sigma(i)
     end do
 !
     do i = 4, nbsig
-        norsi2 = norsi2 + deux*sigma(i)*sigma(i)
+        norsi2 = norsi2+deux*sigma(i)*sigma(i)
     end do
 !
     norsig = sqrt(norsi2)

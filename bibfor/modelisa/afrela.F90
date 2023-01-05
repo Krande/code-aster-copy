@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
-                  repe_defi, nbterm, vale_real, vale_cplx, vale_func,&
+subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
+                  repe_defi, nbterm, vale_real, vale_cplx, vale_func, &
                   type_coef, vale_type, epsi, lisrez)
 !
     implicit none
@@ -125,79 +125,79 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 ! - Information about linear relation before normalization
 !
     if (niv .eq. 2) then
-        write (ifm,*) ' '
-        write (ifm,'(A,I4,A)') ' _RELA IMPRESSION D''UNE RELATION LINEAIRE ENTRE ', nbterm, &
-                               ' DDLS. (AVANT NORMALISATION DE LA RELATION)'
+        write (ifm, *) ' '
+        write (ifm, '(A,I4,A)') ' _RELA IMPRESSION D''UNE RELATION LINEAIRE ENTRE ', nbterm, &
+            ' DDLS. (AVANT NORMALISATION DE LA RELATION)'
         do iterm = 1, nbterm
             if (repe_type(iterm) .eq. 0) then
                 if (type_coef .eq. 'REEL') then
-                    write (ifm,101) coef_real(iterm),node_name(iterm),dof_name(iterm)
-                else if (type_coef.eq.'COMP') then
-                    write (ifm,103) dble(coef_cplx(iterm)),dimag(coef_cplx(iterm)),&
-                                     node_name(iterm), dof_name(iterm)
+                    write (ifm, 101) coef_real(iterm), node_name(iterm), dof_name(iterm)
+                else if (type_coef .eq. 'COMP') then
+                    write (ifm, 103) dble(coef_cplx(iterm)), dimag(coef_cplx(iterm)), &
+                        node_name(iterm), dof_name(iterm)
                 else
                     ASSERT(.false.)
-                endif
+                end if
             else
                 if (type_coef .eq. 'REEL') then
-                    write (ifm,102) coef_real(iterm),node_name(iterm),dof_name(iterm),&
-                                    (repe_defi(idirect,iterm),idirect=1,repe_type(iterm))
-                else if (type_coef.eq.'COMP') then
-                    write (ifm,104) dble(coef_cplx(iterm)),dimag(coef_cplx(iterm)),&
-                                     node_name(iterm), dof_name(iterm), &
-                                     (repe_defi(idirect,iterm),idirect=1,repe_type(iterm))
+                    write (ifm, 102) coef_real(iterm), node_name(iterm), dof_name(iterm), &
+                        (repe_defi(idirect, iterm), idirect=1, repe_type(iterm))
+                else if (type_coef .eq. 'COMP') then
+                    write (ifm, 104) dble(coef_cplx(iterm)), dimag(coef_cplx(iterm)), &
+                        node_name(iterm), dof_name(iterm), &
+                        (repe_defi(idirect, iterm), idirect=1, repe_type(iterm))
                 else
                     ASSERT(.false.)
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
         if (vale_type .eq. 'REEL') then
-            write (ifm,*) '_RELA = ',vale_real
-        else if (vale_type.eq.'COMP') then
-            write (ifm,*) '_RELA = ',vale_cplx
-        else if (vale_type.eq.'FONC') then
-            write (ifm,*) '_RELA = ',vale_func
+            write (ifm, *) '_RELA = ', vale_real
+        else if (vale_type .eq. 'COMP') then
+            write (ifm, *) '_RELA = ', vale_cplx
+        else if (vale_type .eq. 'FONC') then
+            write (ifm, *) '_RELA = ', vale_func
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Normalization ratio
 !
     if (type_coef .eq. 'REEL') then
         norm_coef = 0.d0
         do iterm = 1, nbterm
-            norm_coef = max(norm_coef,abs(coef_real(iterm)))
-        enddo
+            norm_coef = max(norm_coef, abs(coef_real(iterm)))
+        end do
         if (norm_coef .eq. 0.d0) then
             call utmess('F', 'CHARGES2_97')
-        endif
-    else if (type_coef.eq.'COMP') then
+        end if
+    else if (type_coef .eq. 'COMP') then
         norm_coef = 0.d0
         do iterm = 1, nbterm
-            norm_coef = max(norm_coef,abs(coef_cplx(iterm)))
-        enddo
+            norm_coef = max(norm_coef, abs(coef_cplx(iterm)))
+        end do
         if (norm_coef .eq. 0.d0) then
             call utmess('F', 'CHARGES2_97')
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Normalization of values
 !
     if (vale_type .eq. 'REEL') then
         vale_real_norm = vale_real_norm/norm_coef
-    else if (vale_type.eq.'COMP') then
+    else if (vale_type .eq. 'COMP') then
         vale_cplx_norm = vale_cplx_norm/norm_coef
-    else if (vale_type.eq.'FONC') then
+    else if (vale_type .eq. 'FONC') then
 ! ----- Alarm if normalization ratio too much different from 1 ...
-        if ((norm_coef.gt.1.d3) .or. (norm_coef.lt.1.d-3)) then
+        if ((norm_coef .gt. 1.d3) .or. (norm_coef .lt. 1.d-3)) then
             call utmess('A', 'CHARGES2_99')
-        endif
+        end if
 ! ----- ... but cannot normalize function value !
-        norm_coef=1.d0
-    endif
+        norm_coef = 1.d0
+    end if
 !
 ! - No <LIST_RELA> object -> creation
 !
@@ -208,7 +208,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
     call jeveuo(lisrel//'.RLNR', 'E', idnbre)
     nbrel0 = zi(idnbre)
-    nbrela = nbrel0 + 1
+    nbrela = nbrel0+1
 !
 ! - Initial maximum linear relations number
 !
@@ -225,7 +225,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
         lonuti = 0
     else
         lonuti = zi(idpoin+nbrel0-1)
-    endif
+    end if
 !
 ! - Real number of terms: zero (epsi) terms vanished + active terms (local coordinate system)
 !
@@ -234,42 +234,42 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
         if (type_coef .eq. 'COMP') then
             if (abs(coef_cplx(iterm)) .gt. epsi) then
                 if (repe_type(iterm) .eq. 0) then
-                    nbterr = nbterr + 1
+                    nbterr = nbterr+1
                 else
-                    nbterr = nbterr + repe_type(iterm)
-                endif
-            endif
-        else if (type_coef.eq.'REEL') then
+                    nbterr = nbterr+repe_type(iterm)
+                end if
+            end if
+        else if (type_coef .eq. 'REEL') then
             if (abs(coef_real(iterm)) .gt. epsi) then
                 if (repe_type(iterm) .eq. 0) then
-                    nbterr = nbterr + 1
+                    nbterr = nbterr+1
                 else
-                    nbterr = nbterr + repe_type(iterm)
-                endif
-            endif
+                    nbterr = nbterr+repe_type(iterm)
+                end if
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
     end do
 !
 ! - Increase object size if necessary
 !
     if (lonuti+nbterr .ge. lveclr) then
-        imult = (lonuti+nbterr)/lveclr + 1
+        imult = (lonuti+nbterr)/lveclr+1
         call juveca(lisrel//'.RLCO', imult*lveclr)
         call juveca(lisrel//'.RLDD', imult*lveclr)
         call juveca(lisrel//'.RLNO', imult*lveclr)
-    endif
+    end if
 !
 ! - No enough place for linear relation -> increase objects size
 !
     if (nbrela .ge. nbrmax) then
-        imult = nbrela/nbrmax + 1
+        imult = nbrela/nbrmax+1
         call juveca(lisrel//'.RLBE', imult*nbrmax)
         call juveca(lisrel//'.RLNT', imult*nbrmax)
         call juveca(lisrel//'.RLPO', imult*nbrmax)
         call juveca(lisrel//'.RLSU', imult*nbrmax)
-    endif
+    end if
 !
 ! - Linear relation access
 !
@@ -289,13 +289,13 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
         ipoint = 0
     else
         ipoint = zi(idpoin+nbrel0-1)
-    endif
+    end if
     rlnt(nbrela) = nbterr
     if (nbrel0 .eq. 0) then
         zi(idpoin) = nbterr
     else
-        zi(idpoin+nbrela-1) = zi(idpoin+nbrel0-1) + nbterr
-    endif
+        zi(idpoin+nbrela-1) = zi(idpoin+nbrel0-1)+nbterr
+    end if
 !
 ! - New linear relation affectation
 !
@@ -308,7 +308,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
 ! ----------------- Global coordinate system
 !
-                    k = k + 1
+                    k = k+1
                     zc(idcoef+ipoint+k-1) = coef_cplx(iterm)/norm_coef
                     rldd(1+ipoint+k-1) = dof_name(iterm)
                     rlno(1+ipoint+k-1) = node_name(iterm)
@@ -318,11 +318,11 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
                     if (dof_name(iterm) .eq. 'DEPL') then
                         l_rota = .false.
-                    else if (dof_name(iterm).eq.'ROTA') then
+                    else if (dof_name(iterm) .eq. 'ROTA') then
                         l_rota = .true.
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
 !
 ! ----------------- Change coordinate system
 ! ----------------- DEPL --> repe_defi(1)*U  + repe_defi(2)*V  + repe_defi(3)*W
@@ -330,18 +330,18 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
                     mdim = repe_type(iterm)
                     do idim = 1, mdim
-                        k = k + 1
-                        zc(idcoef+ipoint+k-1) = coef_cplx(iterm)/norm_coef*repe_defi(idim,iterm)
+                        k = k+1
+                        zc(idcoef+ipoint+k-1) = coef_cplx(iterm)/norm_coef*repe_defi(idim, iterm)
                         rlno(1+ipoint+k-1) = node_name(iterm)
-                        if (.not.l_rota) then
+                        if (.not. l_rota) then
                             rldd(1+ipoint+k-1) = dof_name_tran(idim)
                         else
                             rldd(1+ipoint+k-1) = dof_name_rota(idim)
-                        endif
-                    enddo
-                endif
-            endif
-        enddo
+                        end if
+                    end do
+                end if
+            end if
+        end do
 !
     else if (type_coef .eq. 'REEL') then
         do iterm = 1, nbterm
@@ -350,7 +350,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
 ! ----------------- Global coordinate system
 !
-                    k = k + 1
+                    k = k+1
                     zr(idcoef+ipoint+k-1) = coef_real(iterm)/norm_coef
                     rldd(1+ipoint+k-1) = dof_name(iterm)
                     rlno(1+ipoint+k-1) = node_name(iterm)
@@ -360,11 +360,11 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
                     if (dof_name(iterm) .eq. 'DEPL') then
                         l_rota = .false.
-                    else if (dof_name(iterm).eq.'ROTA') then
+                    else if (dof_name(iterm) .eq. 'ROTA') then
                         l_rota = .true.
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
 !
 ! ----------------- Change coordinate system
 ! ----------------- DEPL --> repe_defi(1)*U  + repe_defi(2)*V  + repe_defi(3)*W
@@ -372,39 +372,39 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
                     mdim = repe_type(iterm)
                     do idim = 1, mdim
-                        k = k + 1
-                        zr(idcoef+ipoint+k-1) = coef_real(iterm)/norm_coef*repe_defi(idim,iterm)
+                        k = k+1
+                        zr(idcoef+ipoint+k-1) = coef_real(iterm)/norm_coef*repe_defi(idim, iterm)
                         rlno(1+ipoint+k-1) = node_name(iterm)
-                        if (.not.l_rota) then
+                        if (.not. l_rota) then
                             rldd(1+ipoint+k-1) = dof_name_tran(idim)
                         else
                             rldd(1+ipoint+k-1) = dof_name_rota(idim)
-                        endif
-                    enddo
-                endif
-            endif
-        enddo
+                        end if
+                    end do
+                end if
+            end if
+        end do
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Value affectation
 !
     if (vale_type .eq. 'REEL') then
         zr(idbeta+nbrela-1) = vale_real_norm
-    else if (vale_type.eq.'COMP') then
+    else if (vale_type .eq. 'COMP') then
         zc(idbeta+nbrela-1) = vale_cplx_norm
-    else if (vale_type.eq.'FONC') then
+    else if (vale_type .eq. 'FONC') then
         zk24(idbeta+nbrela-1) = vale_func
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 !
-    101 format (' _RELA ',e14.7,a10,a10)
-    103 format (' _RELA ',e14.7,1x,e14.7,a10,a10)
-    102 format (' _RELA ',e14.7,a10,a10,3x,3 (1x,e14.7))
-    104 format (' _RELA ',e14.7,1x,e14.7,a10,a10,3x,3 (1x,e14.7))
+101 format(' _RELA ', e14.7, a10, a10)
+103 format(' _RELA ', e14.7, 1x, e14.7, a10, a10)
+102 format(' _RELA ', e14.7, a10, a10, 3x, 3(1x, e14.7))
+104 format(' _RELA ', e14.7, 1x, e14.7, a10, a10, 3x, 3(1x, e14.7))
 !
 end subroutine

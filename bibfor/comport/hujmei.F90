@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine hujmei(vin)
 !   ------------------------------------------------------------------
     real(kind=8) :: un, zero, vin(*)
 ! ----------------------------------------------------------------------
-    data      zero, un  /0.d0, 1.d0/
+    data zero, un/0.d0, 1.d0/
 !
 ! ==================================================================
 ! --- MISE A JOUR DES VARIABLES INTERNES DE MEMOIRE ----------------
@@ -36,13 +36,13 @@ subroutine hujmei(vin)
     if (vin(21) .eq. zero) then
         vin(21) = vin(4)
     else
-        vin(21)= vin(21)-vin(22)*vin(8)
-    endif
+        vin(21) = vin(21)-vin(22)*vin(8)
+    end if
 !
     if (vin(22) .eq. zero) then
         vin(22) = un
     else
-        vin(22) = - vin(22)
-    endif
+        vin(22) = -vin(22)
+    end if
 !
 end subroutine

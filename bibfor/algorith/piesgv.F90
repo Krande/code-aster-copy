@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine piesgv(neps, tau, mat, lccrma, vim,&
-                  epsm, epsp, epsd, typmod, lcesga,&
+subroutine piesgv(neps, tau, mat, lccrma, vim, &
+                  epsm, epsp, epsd, typmod, lcesga, &
                   etamin, etamax, lcesbo, copilo)
     implicit none
 #include "asterf_types.h"
@@ -32,7 +32,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
             character(len=*), intent(in) :: fami
         end subroutine lccrma
 !
-        subroutine lcesga(mode, eps, gameps, dgamde, itemax,&
+        subroutine lcesga(mode, eps, gameps, dgamde, itemax, &
                           precvg, iret)
             integer, intent(in) :: mode, itemax
             real(kind=8), intent(in) :: eps(6), precvg
@@ -40,7 +40,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
             real(kind=8), intent(out) :: gameps, dgamde(6)
         end subroutine lcesga
 !
-        subroutine lcesbo(ep0, ep1, l0, l1, etamin,&
+        subroutine lcesbo(ep0, ep1, l0, l1, etamin, &
                           etamax, vide, etam, etap)
             real(kind=8), intent(in) :: ep0(6), ep1(6), l0, l1, etamin, etamax
             aster_logical, intent(out) :: vide
@@ -72,8 +72,8 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
 !  ITEMAX: NOMBRE MAX D'ITERATIONS POUR LA METHODE DE NEWTON
 !  ERRA  : ERREUR TOLEREE SUR A DANS LA LDC (CRIT CVG)
 !  RED   : REDUCTION DE L'ERREUR POUR EN FAIRE UN CRITERE DE PRECISION
-    integer, parameter :: itemax=100
-    real(kind=8), parameter :: red=1.d-2, erra=1.d-6
+    integer, parameter :: itemax = 100
+    real(kind=8), parameter :: red = 1.d-2, erra = 1.d-6
 ! ----------------------------------------------------------------------
     aster_logical :: cplan, croiss, gauche, droite, vide
     integer :: ndim, ndimsi, i, n
@@ -82,30 +82,30 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
     real(kind=8) :: gm, dgm, gp, dgp, gl, dgl
 ! ----------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
-    common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
+    common/lcee/lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
 ! ----------------------------------------------------------------------
     real(kind=8) :: pk, pm, pp, pq
-    common /lces/ pk,pm,pp,pq
+    common/lces/pk, pm, pp, pq
 ! ----------------------------------------------------------------------
     real(kind=8) :: ep0(6), ep1(6), phi0, phi1, a, drda, precga
-    common /pies/ ep0,ep1,phi0,phi1,a,drda,precga
+    common/pies/ep0, ep1, phi0, phi1, a, drda, precga
 ! ----------------------------------------------------------------------
 !
 !
 !
 ! -- INITIALISATION
 !
-    cplan = typmod(1).eq.'C_PLAN  '
+    cplan = typmod(1) .eq. 'C_PLAN  '
     ndim = (neps-2)/3
     ndimsi = 2*ndim
     if (ndim .eq. 2) then
         ep0(5:6) = 0
         ep1(5:6) = 0
-    endif
+    end if
 !
 ! -- LECTURE DES CARACTERISTIQUES MATERIAU
 !
-    call lcesma(mat, 'NONE', 1, 1, '+',&
+    call lcesma(mat, 'NONE', 1, 1, '+', &
                 lccrma)
 !
 !
@@ -116,7 +116,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
 !
 !  NON PILOTABLE CAR TROP PRES DE L'ENDOMMAGEMENT ULTIME
     if (a .ge. 0.99) goto 999
-    drda = lcesvf(1,a)
+    drda = lcesvf(1, a)
 !
 !
 ! -- EXTRACTION DES DEFORMATIONS ET DES PARAMETRES NON LOCAUX
@@ -127,28 +127,28 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
     end do
 !
     if (cplan) then
-        coplan = -lambda / (lambda + deuxmu)
+        coplan = -lambda/(lambda+deuxmu)
         ep0(3) = coplan*(ep0(1)+ep0(2))
         ep1(3) = coplan*(ep1(1)+ep1(2))
-    endif
+    end if
 !
-    phi0 = epsm(ndimsi+2) + pr*epsm(ndimsi+1) + epsp(ndimsi+2) + pr*epsp(ndimsi+1)
-    phi1 = epsd(ndimsi+2) + pr*epsd(ndimsi+1)
+    phi0 = epsm(ndimsi+2)+pr*epsm(ndimsi+1)+epsp(ndimsi+2)+pr*epsp(ndimsi+1)
+    phi1 = epsd(ndimsi+2)+pr*epsd(ndimsi+1)
 !
 !
 !
 ! -- AFFINER LES BORNES
 !
-    l0 = pm/pk/drda * (pk+pr*a-phi0)
-    l1 = - pm/pk/drda * phi1
-    call lcesbo(ep0, ep1, l0, l1, etamin,&
+    l0 = pm/pk/drda*(pk+pr*a-phi0)
+    l1 = -pm/pk/drda*phi1
+    call lcesbo(ep0, ep1, l0, l1, etamin, &
                 etamax, vide, etm, etp)
 !
 !  PAS DE SOLUTION POUR LE PILOTAGE
     if (vide) then
-        copilo(1,3) = 0
+        copilo(1, 3) = 0
         goto 999
-    endif
+    end if
 !
 !
 !
@@ -173,88 +173,88 @@ subroutine piesgv(neps, tau, mat, lccrma, vim,&
 !
 ! 2. BORNES SUPERIEURES AU SEUIL : DOUBLE NEWTON
 !
-        if (gm .ge. 0 .and. gp .ge. 0) then
+    if (gm .ge. 0 .and. gp .ge. 0) then
 !
 !          INITIALISATION A GAUCHE ET A DROITE
-            etam = etm
-            etap = etp
-            do n = 1, itemax
+        etam = etm
+        etap = etp
+        do n = 1, itemax
 !
 !              TEST DE CONVERGENCE
-                gauche = abs(gm).le.precvg
-                droite = abs(gp).le.precvg
-                if (gauche .and. droite) goto 150
+            gauche = abs(gm) .le. precvg
+            droite = abs(gp) .le. precvg
+            if (gauche .and. droite) goto 150
 !
 !              ABSENCE DE SOLUTION SI FONCTION AU-DESSUS DE ZERO
-                if (dgm .ge. 0 .or. dgp .le. 0) then
-                    copilo(1,3) = 0
-                    goto 999
-                endif
+            if (dgm .ge. 0 .or. dgp .le. 0) then
+                copilo(1, 3) = 0
+                goto 999
+            end if
 !
 !              METHODE DE NEWTON A GAUCHE ET A DROITE
-                if (.not.gauche) etam = etam - gm/dgm
-                if (.not.droite) etap = etap - gp/dgp
+            if (.not. gauche) etam = etam-gm/dgm
+            if (.not. droite) etap = etap-gp/dgp
 
 !              ABSENCE DE SOLUTION SI FONCTION AU-DESSUS DE ZERO
-                if (etap.lt.etam) then
-                    copilo(1,3) = 0
-                    goto 999
-                end if
+            if (etap .lt. etam) then
+                copilo(1, 3) = 0
+                goto 999
+            end if
 !
 !              CALCUL DE LA FONCTION ET DERIVEE
-                if (.not.gauche) call piesfg(lcesga, etam, gm, dgm)
-                if (.not.droite) call piesfg(lcesga, etap, gp, dgp)
+            if (.not. gauche) call piesfg(lcesga, etam, gm, dgm)
+            if (.not. droite) call piesfg(lcesga, etap, gp, dgp)
 !
-            end do
+        end do
 !
 !          ECHEC DE LA RESOLUTION AVEC LE NOMBRE D'ITERATIONS REQUIS
-            call utmess('F', 'PILOTAGE_83')
+        call utmess('F', 'PILOTAGE_83')
 !
 !
 !          POST-TRAITEMENT DES SOLUTIONS
-150         continue
-            copilo(1,1) = tau+etam
-            copilo(2,1) = -1
-            copilo(1,2) = tau-etap
-            copilo(2,2) = 1
-            goto 999
-        endif
+150     continue
+        copilo(1, 1) = tau+etam
+        copilo(2, 1) = -1
+        copilo(1, 2) = tau-etap
+        copilo(2, 2) = 1
+        goto 999
+    end if
 !
 !
 !     3. BORNES DE PART ET D'AUTRE DU SEUIL --> NEWTON DEPUIS POSITIVE
-        if (gm .ge. 0) then
-            croiss = .false.
-            etal = etm
-            gl = gm
-            dgl = dgm
-        else
-            croiss = .true.
-            etal = etp
-            gl = gp
-            dgl = dgp
-        endif
+    if (gm .ge. 0) then
+        croiss = .false.
+        etal = etm
+        gl = gm
+        dgl = dgm
+    else
+        croiss = .true.
+        etal = etp
+        gl = gp
+        dgl = dgp
+    end if
 !
-        do n = 1, itemax
+    do n = 1, itemax
 !
 !          TEST DE CONVERGENCE
-            if (abs(gl) .le. precvg) goto 250
+        if (abs(gl) .le. precvg) goto 250
 !
 !          METHODE DE NEWTON A GAUCHE ET A DROITE
-            etal = etal - gl/dgl
-            call piesfg(lcesga, etal, gl, dgl)
-        end do
+        etal = etal-gl/dgl
+        call piesfg(lcesga, etal, gl, dgl)
+    end do
 !
-        call utmess('F', 'PILOTAGE_83')
+    call utmess('F', 'PILOTAGE_83')
 !
 !      POST-TRAITEMENT DES SOLUTIONS
-250     continue
-        if (croiss) then
-            copilo(1,1) = tau-etal
-            copilo(2,1) = 1
-        else
-            copilo(1,1) = tau+etal
-            copilo(2,1) = -1
-        endif
+250 continue
+    if (croiss) then
+        copilo(1, 1) = tau-etal
+        copilo(2, 1) = 1
+    else
+        copilo(1, 1) = tau+etal
+        copilo(2, 1) = -1
+    end if
 !
 999 continue
-    end subroutine
+end subroutine

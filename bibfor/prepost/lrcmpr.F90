@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !
     character(len=6) :: nompro
     character(len=8) :: saux08
-    parameter ( nompro = 'LRCMPR' )
+    parameter(nompro='LRCMPR')
 !
     integer :: ifm, nivinf
 !
@@ -75,9 +75,9 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'DEBUT DE '//nompro
-    endif
-    1001 format(/,10('='),a,10('='),/)
+        write (ifm, 1001) 'DEBUT DE '//nompro
+    end if
+1001 format(/, 10('='), a, 10('='),/)
 !
 ! 1.2. ==> NOMS DES TABLEAUX DE TRAVAIL
 !               12   345678   9012345678901234
@@ -89,15 +89,15 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !
     call as_mpfpsn(idfimd, nomprf, lgprom, codret)
     if (codret .ne. 0) then
-        saux08='mpfpsn'
+        saux08 = 'mpfpsn'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     if (nivinf .gt. 1) then
-        write (ifm,4101) nomprf, lgprom
-    endif
-    4101 format('. LECTURE DU PROFIL : ',a,&
-     &     /,'... LONGUEUR : ',i8)
+        write (ifm, 4101) nomprf, lgprom
+    end if
+4101 format('. LECTURE DU PROFIL : ', a,&
+    &     /, '... LONGUEUR : ', i8)
 !
 !====
 ! 3. LECTURE DES VALEURS DU PROFIL MED
@@ -107,22 +107,22 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 !
     call as_mpfprr(idfimd, zi(adprom), lgprom, nomprf, codret)
     if (codret .ne. 0) then
-        saux08='mpfprr'
+        saux08 = 'mpfprr'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
 !
     if (nivinf .gt. 1) then
         if (lgprom .ge. 10) then
-            write (ifm,4201) zi(adprom), zi(adprom+1), zi(adprom+2)
-            write (ifm,4202) zi(adprom+lgprom-3), zi(adprom+lgprom-2),&
-            zi(adprom+lgprom-1)
+            write (ifm, 4201) zi(adprom), zi(adprom+1), zi(adprom+2)
+            write (ifm, 4202) zi(adprom+lgprom-3), zi(adprom+lgprom-2), &
+                zi(adprom+lgprom-1)
         else
-            write (ifm,4203) (zi(adprom+iaux),iaux=0,lgprom-1)
-        endif
-    endif
-    4201 format('... 3 1ERES VALEURS     : ',3i8)
-    4202 format('... 3 DERNIERES VALEURS : ',3i8)
-    4203 format('... VALEURS : ',10i8)
+            write (ifm, 4203) (zi(adprom+iaux), iaux=0, lgprom-1)
+        end if
+    end if
+4201 format('... 3 1ERES VALEURS     : ', 3i8)
+4202 format('... 3 DERNIERES VALEURS : ', 3i8)
+4203 format('... VALEURS : ', 10i8)
 !
 !====
 ! 4. TRANSFERT EN UN PROFIL ASTER
@@ -133,14 +133,14 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
     lgproa = lgprom
     call wkvect(ntproa, 'V V I', lgproa, adproa)
 !
-    do iaux = 0 , lgprom-1
+    do iaux = 0, lgprom-1
         zi(adproa+iaux) = zi(adprom+iaux)
     end do
 !
     call jedetr(ntprom)
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'FIN DE '//nompro
-    endif
+        write (ifm, 1001) 'FIN DE '//nompro
+    end if
 !
 end subroutine

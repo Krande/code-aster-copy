@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,36 +42,36 @@ subroutine gchfus(fonct1, fonct2, fonct3)
 !
     call jemarq()
 !
-    fo1=fonct1
-    fo2=fonct2
-    fo3=fonct3
+    fo1 = fonct1
+    fo2 = fonct2
+    fo3 = fonct3
 !
     call jelira(fo1//'.VALE', 'LONMAX', nptf1)
     call jelira(fo2//'.VALE', 'LONMAX', nptf2)
 !
-    nptf1=nptf1/2
-    nptf2=nptf2/2
+    nptf1 = nptf1/2
+    nptf2 = nptf2/2
 !
     if (nptf1 .ge. nptf2) then
         call copisd('FONCTION', 'V', fo1, fo3)
-        fotmp1=fo2
-        fotmp2=fo1
-        nptf=nptf1
+        fotmp1 = fo2
+        fotmp2 = fo1
+        nptf = nptf1
     else
         call copisd('FONCTION', 'V', fo2, fo3)
-        fotmp1=fo1
-        fotmp2=fo2
-        nptf=nptf2
-    endif
+        fotmp1 = fo1
+        fotmp2 = fo2
+        nptf = nptf2
+    end if
 !
     call jeveuo(fotmp1//'.PROL', 'L', jprol)
     call jeveuo(fotmp2//'.VALE', 'L', jval)
     call jeveuo(fo3//'.VALE', 'E', vr=vale)
 !
     do i = 1, nptf
-        call fointe('A', fotmp1, 1, zk24(jprol+3-1), zr(jval+i-1),&
+        call fointe('A', fotmp1, 1, zk24(jprol+3-1), zr(jval+i-1), &
                     y, iret)
-        vale(1+nptf+i-1)=zr(jval+nptf+i-1)+y
+        vale(1+nptf+i-1) = zr(jval+nptf+i-1)+y
     end do
 !
     call jedema()

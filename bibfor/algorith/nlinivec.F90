@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
+subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi, &
                     vr, vc, vk8, vk16, vk24, address)
     implicit none
 ! Extract the value of a parameter in the temporary data structure for the
@@ -52,17 +52,17 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
 !   ====================================================================
 !
 !   -0.1- Input/output arguments
-    character(len=*)                    , intent(in) :: sd_nl_
-    integer                             , intent(in) :: ip
-    integer,                              intent(in) :: lonvec
-    integer,                    optional, intent(in) :: iocc
-    integer          , pointer, optional :: vi(:)
-    real(kind=8)     , pointer, optional :: vr(:)
-    complex(kind=8)  , pointer, optional :: vc(:)
-    character(len=8) , pointer, optional :: vk8(:)
+    character(len=*), intent(in) :: sd_nl_
+    integer, intent(in) :: ip
+    integer, intent(in) :: lonvec
+    integer, optional, intent(in) :: iocc
+    integer, pointer, optional :: vi(:)
+    real(kind=8), pointer, optional :: vr(:)
+    complex(kind=8), pointer, optional :: vc(:)
+    character(len=8), pointer, optional :: vk8(:)
     character(len=16), pointer, optional :: vk16(:)
     character(len=24), pointer, optional :: vk24(:)
-    integer                   , optional, intent(out) :: address
+    integer, optional, intent(out) :: address
 !
 !   -0.2- Local variables
 !   --- For strings copying
@@ -82,30 +82,30 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
     sd_nl = sd_nl_
 
 !   The parameter to be saved was not found in the predefined list
-    if (ip.gt._NL_NBPAR) then
+    if (ip .gt. _NL_NBPAR) then
         ASSERT(.false.)
     end if
 
     savename(1:8) = sd_nl
     if (present(iocc)) then
 !       The parameter to be extracted is global but an occurence index was given
-        ASSERT(parind(ip).gt.0)
+        ASSERT(parind(ip) .gt. 0)
         call codent(iocc, 'G', k_iocc)
         savename(9:15) = '.'//k_iocc(1:6)
     else
-        ASSERT(parind(ip).lt.0)
+        ASSERT(parind(ip) .lt. 0)
     end if
-    savename(16:24)='.'//params(ip)
+    savename(16:24) = '.'//params(ip)
 
     call jeexin(savename, iret)
-    if (iret.ne.0) then
+    if (iret .ne. 0) then
         ! write (*,*) "Careful, using nlinivec with a pre-existing vector"
         ! write (*,*) "The original <", params(ip) ,"> vector is deleted"
         call jelibe(savename)
         call jedetr(savename)
     end if
 
-    if (partyp(ip).eq.'I') then
+    if (partyp(ip) .eq. 'I') then
         if (present(vi)) then
             call wkvect(savename, 'V V I', lonvec, vi=vi)
             do i = 1, lonvec
@@ -117,7 +117,7 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
                 zi(add+i-1) = 0
             end do
         end if
-    else if (partyp(ip).eq.'R') then
+    else if (partyp(ip) .eq. 'R') then
         if (present(vr)) then
             call wkvect(savename, 'V V R', lonvec, vr=vr)
             do i = 1, lonvec
@@ -129,7 +129,7 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
                 zr(add+i-1) = 0.d0
             end do
         end if
-    else if (partyp(ip).eq.'C') then
+    else if (partyp(ip) .eq. 'C') then
         if (present(vc)) then
             call wkvect(savename, 'V V C', lonvec, vc=vc)
             do i = 1, lonvec
@@ -141,7 +141,7 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
                 zc(add+i-1) = dcmplx(0.d0, 0.d0)
             end do
         end if
-    else if (partyp(ip).eq.'K8') then
+    else if (partyp(ip) .eq. 'K8') then
         if (present(vk8)) then
             call wkvect(savename, 'V V K8', lonvec, vk8=vk8)
             do i = 1, lonvec
@@ -153,7 +153,7 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
                 zk8(add+i-1) = ' '
             end do
         end if
-    else if (partyp(ip).eq.'K16') then
+    else if (partyp(ip) .eq. 'K16') then
         if (present(vk16)) then
             call wkvect(savename, 'V V K16', lonvec, vk16=vk16)
             do i = 1, lonvec
@@ -165,7 +165,7 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
                 zk16(add+i-1) = ' '
             end do
         end if
-    else if (partyp(ip).eq.'K24') then
+    else if (partyp(ip) .eq. 'K24') then
         if (present(vk24)) then
             call wkvect(savename, 'V V K24', lonvec, vk24=vk24)
             do i = 1, lonvec

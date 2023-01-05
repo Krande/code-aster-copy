@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-subroutine mminit(mesh  , ds_contact, sddyna  , hat_valinc, ds_measure,&
+subroutine mminit(mesh, ds_contact, sddyna, hat_valinc, ds_measure, &
                   sdnume, nume_inst, list_func_acti)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
@@ -40,14 +40,14 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=19), intent(in) :: hat_valinc(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sddyna
-character(len=19), intent(in) :: sdnume
-integer, intent(in) :: nume_inst
-integer, intent(in) :: list_func_acti(*)
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=19), intent(in) :: hat_valinc(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: sdnume
+    integer, intent(in) :: nume_inst
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,16 +83,16 @@ integer, intent(in) :: list_func_acti(*)
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'CONTACT5_13')
-    endif
+    end if
 !
 ! - Initializations
 !
-    l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-    l_geom_sans  = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')
-    l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
-    ztabf        = cfmmvd('ZTABF')
-    zetat        = cfmmvd('ZETAT')
-    nb_inte_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
+    l_cont_allv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+    l_geom_sans = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
+    ztabf = cfmmvd('ZTABF')
+    zetat = cfmmvd('ZETAT')
+    nb_inte_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
 !
 ! - Using *_INIT options (like SEUIL_INIT)
 !
@@ -120,14 +120,14 @@ integer, intent(in) :: list_func_acti(*)
     if (l_dyna) then
         call misazl(ds_contact, sdnume, acce_curr)
         call misazl(ds_contact, sdnume, vite_curr)
-    endif
+    end if
 !
 ! - Management of status for time cut
 !
     sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     sdcont_etatct = ds_contact%sdcont_solv(1:14)//'.ETATCT'
-    call jeveuo(sdcont_tabfin, 'E', vr = v_sdcont_tabfin)
-    call jeveuo(sdcont_etatct, 'L', vr = v_sdcont_etatct)
+    call jeveuo(sdcont_tabfin, 'E', vr=v_sdcont_tabfin)
+    call jeveuo(sdcont_etatct, 'L', vr=v_sdcont_etatct)
 
     do ipc = 1, nb_inte_poin
         v_sdcont_tabfin(ztabf*(ipc-1)+23) = v_sdcont_etatct(zetat*(ipc-1)+1)
@@ -142,7 +142,7 @@ integer, intent(in) :: list_func_acti(*)
     if (l_dyna) then
         call copisd('CHAMP_GD', 'V', vite_curr, sdcont_vitini)
         call copisd('CHAMP_GD', 'V', acce_curr, sdcont_accini)
-    endif
+    end if
 !
 ! - Save displacements for geometric loop
 !
@@ -156,19 +156,19 @@ integer, intent(in) :: list_func_acti(*)
 !
 ! - Update pairing ?
 !
-    l_pair = .not.l_geom_sans .or. (l_geom_sans.and.l_step_first)
+    l_pair = .not. l_geom_sans .or. (l_geom_sans .and. l_step_first)
 !
 ! - Initial pairing
 !
     if (l_pair) then
         call mmapin(mesh, ds_contact, ds_measure)
-    endif
+    end if
 !
 ! - Initial options
 !
-    if (.not.l_cont_allv.and.l_step_first) then
+    if (.not. l_cont_allv .and. l_step_first) then
         call mmopti(mesh, ds_contact, list_func_acti)
-    endif
+    end if
 !
 ! - Cycling initialization
 !

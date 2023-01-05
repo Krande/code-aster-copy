@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rstran(interp, resu, motcle, iocc, kdisc,&
+subroutine rstran(interp, resu, motcle, iocc, kdisc, &
                   krang, nbdisc, ier)
     implicit none
 #include "jeveux.h"
@@ -101,7 +101,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     else
 !     --- CAS D'UNE SD RESU_LTAT
         call rslipa(resu_, 'INST', '&&RSTRAN.LIINST', ldisc, nbi)
-    endif
+    end if
 !
     call jeexin(resu_//'.ORDR', iret)
     if (iret .eq. 0) then
@@ -115,8 +115,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         call jelira(resu_//'.ORDR', 'LONUTI', nbi2)
         if (nbi .ne. nbi2) then
             call utmess('F', 'ALGORITH17_27')
-        endif
-    endif
+        end if
+    end if
 !
 !     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
 !
@@ -126,23 +126,23 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         call wkvect(krang_, 'V V I', nbdisc, jrang)
         call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
         AS_ALLOCATE(vi=nume, size=nbdisc)
-        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=nume,&
+        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=nume, &
                     nbret=nno)
-        do i = 0, nbdisc - 1
-            do iord = 0, nbi - 1
+        do i = 0, nbdisc-1
+            do iord = 0, nbi-1
                 if (nume(1+i) .eq. zi(jordr+iord)) goto 30
             end do
-            ier = ier + 110
+            ier = ier+110
             vali = nume(1+i)
             call utmess('A', 'UTILITAI8_17', si=vali)
             goto 40
- 30         continue
-            zi(jrang+i) = iord + 1
+30          continue
+            zi(jrang+i) = iord+1
             zr(jdisc+i) = zr(ldisc+iord)
- 40         continue
+40          continue
         end do
         goto 100
-    endif
+    end if
 !
 !     --- RECHERCHE A PARTIR D'UN INSTANT ---
 !
@@ -154,48 +154,48 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
             call jelira(listr//'.VALE', 'LONMAX', nbdisc)
         else
             goto 80
-        endif
+        end if
     else
         nbdisc = -lt
         call wkvect('&&RSTRAN.INSTANTS', 'V V R', nbdisc, laccr)
-        call getvr8(motcle, 'INST', iocc=iocc, nbval=nbdisc, vect=zr(laccr),&
+        call getvr8(motcle, 'INST', iocc=iocc, nbval=nbdisc, vect=zr(laccr), &
                     nbret=l)
-    endif
+    end if
     call wkvect(krang_, 'V V I', nbdisc, jrang)
     call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
-    do i = 0, nbdisc - 1
+    do i = 0, nbdisc-1
         tusr = zr(laccr+i)
         if (interp(1:3) .ne. 'NON') then
-            zi(jrang+i) = i + 1
+            zi(jrang+i) = i+1
             zr(jdisc+i) = tusr
             goto 70
-        endif
-        call rsindi(type, ldisc, 1, jordr, ival,&
-                    tusr, kval, cval, epsi, crit,&
+        end if
+        call rsindi(type, ldisc, 1, jordr, ival, &
+                    tusr, kval, cval, epsi, crit, &
                     nbi, nbtrou, nutrou, 1)
         if (nbtrou .eq. 0) then
-            ier = ier + 110
+            ier = ier+110
             valr = tusr
             call utmess('A', 'UTILITAI8_18', sr=valr)
             goto 70
-        else if (nbtrou.ne.1) then
-            ier = ier + 100
+        else if (nbtrou .ne. 1) then
+            ier = ier+100
             valr = tusr
             vali = -nbtrou
             call utmess('F', 'UTILITAI8_19', si=vali, sr=valr)
             goto 70
-        endif
-        do iord = 0, nbi - 1
+        end if
+        do iord = 0, nbi-1
             if (nutrou(1) .eq. zi(jordr+iord)) goto 60
         end do
- 60     continue
-        zi(jrang+i) = iord + 1
+60      continue
+        zi(jrang+i) = iord+1
         zr(jdisc+i) = zr(ldisc+iord)
- 70     continue
+70      continue
     end do
     goto 100
 !
- 80 continue
+80  continue
 !
 !     --- RECHERCHE A PARTIR D'UNE FREQUENCE ---
 !
@@ -209,54 +209,54 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
                 call jelira(listr//'.VALE', 'LONMAX', nbdisc)
             else
                 goto 81
-            endif
+            end if
         else
             nbdisc = -lt
             call wkvect('&&RSTRAN.FREQUENCES', 'V V R', nbdisc, laccr)
-            call getvr8(motcle, 'FREQ', iocc=iocc, nbval=nbdisc, vect=zr(laccr),&
+            call getvr8(motcle, 'FREQ', iocc=iocc, nbval=nbdisc, vect=zr(laccr), &
                         nbret=l)
-        endif
+        end if
         call wkvect(krang_, 'V V I', nbdisc, jrang)
         call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
-        do i = 0, nbdisc - 1
+        do i = 0, nbdisc-1
             tusr = zr(laccr+i)
-            call rsindi(type, ldisc, 1, jordr, ival,&
-                        tusr, kval, cval, epsi, crit,&
+            call rsindi(type, ldisc, 1, jordr, ival, &
+                        tusr, kval, cval, epsi, crit, &
                         nbi, nbtrou, nutrou, 1)
             if (nbtrou .eq. 0) then
-                ier = ier + 110
+                ier = ier+110
                 valr = tusr
                 call utmess('A', 'UTILITAI8_18', sr=valr)
                 goto 71
-            else if (nbtrou.ne.1) then
-                ier = ier + 100
+            else if (nbtrou .ne. 1) then
+                ier = ier+100
                 valr = tusr
                 vali = -nbtrou
                 call utmess('F', 'UTILITAI8_19', si=vali, sr=valr)
                 goto 71
-            endif
-            do iord = 0, nbi - 1
+            end if
+            do iord = 0, nbi-1
                 if (nutrou(1) .eq. zi(jordr+iord)) goto 61
             end do
- 61         continue
-            zi(jrang+i) = iord + 1
+61          continue
+            zi(jrang+i) = iord+1
             zr(jdisc+i) = zr(ldisc+iord)
- 71         continue
+71          continue
         end do
         goto 100
-    endif
+    end if
 !
 !  --- PAR DEFAUT, TOUT ORDRE
 !
- 81 continue
+81  continue
 !
     call getvtx(motcle, 'TOUT_INST', iocc=iocc, scal=k8b, nbret=nto)
     call getvtx(motcle, 'TOUT_ORDRE', iocc=iocc, scal=k8b, nbret=nto)
     nbdisc = nbi
     call wkvect(krang_, 'V V I', nbdisc, jrang)
     call wkvect(kdisc_, 'V V R8', nbdisc, jdisc)
-    do iord = 0, nbdisc - 1
-        zi(jrang+iord) = iord + 1
+    do iord = 0, nbdisc-1
+        zi(jrang+iord) = iord+1
         zr(jdisc+iord) = zr(ldisc+iord)
     end do
 !

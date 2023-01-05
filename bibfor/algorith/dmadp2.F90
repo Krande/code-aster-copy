@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function dmadp2(rho22, sat, phi, cs, mamolg,&
+function dmadp2(rho22, sat, phi, cs, mamolg, &
                 kh, dp21p2, emmag, em)
     implicit none
 #include "asterf_types.h"
@@ -33,6 +33,6 @@ function dmadp2(rho22, sat, phi, cs, mamolg,&
         dmadp2 = rho22*sat*(phi*mamolg*dp21p2/rho22/kh+dphip2)
     else
         dmadp2 = rho22*sat*(phi*mamolg*dp21p2/rho22/kh+cs)
-    endif
+    end if
 ! ======================================================================
 end function

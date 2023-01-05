@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine numer3(modelz, list_loadz, nume_ddlz, sd_iden_relaz, base)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -56,20 +56,20 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call infmue()
-    nume_ddl_old  = nume_ddlz
+    nume_ddl_old = nume_ddlz
     nume_ddl_save = '&&NUMER3.NUAV'
     call copisd('NUME_DDL', 'V', nume_ddlz, nume_ddl_save)
     call detrsd('NUME_DDL', nume_ddlz)
 !
 ! - Numbering
 !
-    call numero(nume_ddlz, base,&
-                modelz = modelz , list_loadz = list_loadz,&
-                sd_iden_relaz = sd_iden_relaz)
+    call numero(nume_ddlz, base, &
+                modelz=modelz, list_loadz=list_loadz, &
+                sd_iden_relaz=sd_iden_relaz)
 !
 ! - Same equations ! The re-numbering works only with MUMPS/MULT_FRONT/PETSc, not with LDLT
 !
-    ASSERT(idenob(nume_ddl_old//'.NUME.DEEQ',nume_ddl_save//'.NUME.DEEQ'))
+    ASSERT(idenob(nume_ddl_old//'.NUME.DEEQ', nume_ddl_save//'.NUME.DEEQ'))
 !
     call detrsd('NUME_DDL', nume_ddl_save)
     call infbav()

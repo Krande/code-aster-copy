@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
-                  igeom, elrefp, inoloc, nbnoma, jcesd3,&
-                  jcesl3, jcesv3, numa2, iheav, nfiss,&
-                  vhea, jcesd8, jcesl8, jcesv8, lfiss,&
+subroutine xcrvol(nse, ndim, jcnse, nnose, jpint, &
+                  igeom, elrefp, inoloc, nbnoma, jcesd3, &
+                  jcesl3, jcesv3, numa2, iheav, nfiss, &
+                  vhea, jcesd8, jcesl8, jcesv8, lfiss, &
                   vtot)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -57,17 +57,17 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
             ASSERT(ino2 .le. 2000)
             if (ino2 .gt. 1000) then
                 do j = 1, ndim
-                    co(i,j)=zr(jpint-1+ndim*(ino2-1000-1)+j)
+                    co(i, j) = zr(jpint-1+ndim*(ino2-1000-1)+j)
                 end do
             else
                 do j = 1, ndim
-                    co(i,j)=zr(igeom-1+ndim*(ino2-1)+j)
+                    co(i, j) = zr(igeom-1+ndim*(ino2-1)+j)
                 end do
-            endif
+            end if
         end do
         do i = 1, ndim
             do j = 1, ndim
-                mat(i,j)=co(1,j)-co(i+1,j)
+                mat(i, j) = co(1, j)-co(i+1, j)
             end do
         end do
 !
@@ -75,69 +75,69 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !
         vse = 0.d0
         if (ndim .eq. 2) then
-            vse = abs(mat(1,1)*mat(2,2)- mat(2,1)*mat(1,2))/2
-        else if (ndim.eq.3) then
-            vse = abs(&
-                  mat(1,1)*mat(2,2)*mat(3,3) + mat(2,1)*mat(3,2)* mat(1,3) + mat(3,1)*mat(1,2)*ma&
-                  &t(2,3) - mat(3,1)*mat(2,2)* mat(1,3) - mat(2,1)*mat(1,2)*mat(3,3) - mat(1,1)*m&
-                  &at(3,2)* mat(2,3)&
+            vse = abs(mat(1, 1)*mat(2, 2)-mat(2, 1)*mat(1, 2))/2
+        else if (ndim .eq. 3) then
+            vse = abs( &
+                 mat(1, 1)*mat(2, 2)*mat(3, 3)+mat(2, 1)*mat(3, 2)*mat(1, 3)+mat(3, 1)*mat(1, 2)*ma&
+                  &t(2, 3)-mat(3, 1)*mat(2, 2)*mat(1, 3)-mat(2, 1)*mat(1, 2)*mat(3, 3)-mat(1, 1)*m&
+                  &at(3, 2)*mat(2, 3) &
                   )/6
-        endif
+        end if
 !
 !       CALCUL DU BARYCENTRE
 !
         bary(:) = 0.d0
         do j = 1, ndim
             do i = 1, ndim+1
-                bary(j) = bary(j)+co(i,j)
+                bary(j) = bary(j)+co(i, j)
             end do
             bary(j) = bary(j)/(ndim+1)
         end do
 !
 !        CALCUL DES DERIVEES DES FONCTIONS DE FORME
 !
-        call reeref(elrefp, nbnoma, zr(igeom), bary, ndim,&
+        call reeref(elrefp, nbnoma, zr(igeom), bary, ndim, &
                     xe, ff, dfdi=dfdi)
-        deriv =0.d0
+        deriv = 0.d0
         do i = 1, ndim
-            deriv = max(abs(dfdi(inoloc,i)),deriv)
+            deriv = max(abs(dfdi(inoloc, i)), deriv)
         end do
 !       EN QUADRATIQUE : AUGMENTATION DU NOMBRE DE POINTS
-        if (.not.iselli(elrefp)) then
+        if (.not. iselli(elrefp)) then
             do k = 1, ndim+1
                 point(:) = 0.d0
                 do j = 1, ndim
-                    point(j) = (bary(j)+co(k,j))/2
+                    point(j) = (bary(j)+co(k, j))/2
                 end do
-                call reeref(elrefp, nbnoma, zr(igeom), point, ndim,&
+                call reeref(elrefp, nbnoma, zr(igeom), point, ndim, &
                             xe, ff, dfdi=dfdi)
                 do i = 1, ndim
-                    deriv = max(abs(dfdi(inoloc,i)),deriv)
+                    deriv = max(abs(dfdi(inoloc, i)), deriv)
                 end do
             end do
-        endif
+        end if
         vse = vse*deriv**2
 !
 !  EN QUADRATIQUE :: MULTIPLICATION PAR UN TERME CORRECTIF CAR L INTEGRATION EST IMPRECISE
 !    ASYMPTOTIQUEMENT DFDI EST PROCHE DE EPS=VSE**1/NDIM
 !    L INTEGRALE DE DFDI**2 VARIE EN EPS**3
-        if (.not.iselli(elrefp) .and. lfiss) vse = vse*vse**(3/ndim)
+        if (.not. iselli(elrefp) .and. lfiss) vse = vse*vse**(3/ndim)
 !       DETERMINATION DU SIGNE DU SOUS ELEMENT
         do i = 1, nfiss
-            call cesexi('S', jcesd3, jcesl3, numa2, 1,&
+            call cesexi('S', jcesd3, jcesl3, numa2, 1, &
                         i, ise, iad)
             he(i) = zi(jcesv3-1+iad)
         end do
 !       CALCUL DU CODE DU SOUS ELEMENT
-        hea_se=xcalc_code(nfiss, he_real=[he])
+        hea_se = xcalc_code(nfiss, he_real=[he])
 !       CALCUL DU CODE DU DDL HEAVISIDE
-        call cesexi('C', jcesd8, jcesl8, numa2, inoloc,&
+        call cesexi('C', jcesd8, jcesl8, numa2, inoloc, &
                     1, iheav, iad)
         hea_no = zi(jcesv8-1+iad)
         if (hea_se .eq. hea_no) then
-            vhea = vhea + vse
-        endif
-        vtot = vtot + vse
+            vhea = vhea+vse
+        end if
+        vtot = vtot+vse
     end do
 !
 end subroutine

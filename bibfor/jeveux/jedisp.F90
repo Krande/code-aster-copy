@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,16 +34,16 @@ subroutine jedisp(n, tab)
 !
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
     integer :: ldyn, lgdyn, nbdyn, nbfree
-    common /idynje/  ldyn , lgdyn , nbdyn , nbfree
+    common/idynje/ldyn, lgdyn, nbdyn, nbfree
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
     integer :: k
 !
@@ -56,6 +56,6 @@ subroutine jedisp(n, tab)
 !
     if (ldyn .eq. 1) then
         tab(1) = nint((vmxdyn-mcdyn)/lois)
-    endif
+    end if
 ! FIN-------------------------------------------------------------------
 end subroutine

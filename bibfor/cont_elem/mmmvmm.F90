@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,34 +18,34 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmmvmm(phase , l_pena_cont, l_pena_fric, l_large_slip,&
-                  ndim  , nnm   ,&
-                  norm  , tau1  , tau2  , mprojt,&
-                  wpg   , ffm   , dffm  , jacobi, jeu   ,&
-                  coefac, coefaf, lambda, coefff,&
-                  dlagrc, dlagrf, djeu  ,&
-                  rese  , nrese ,&
-                  mprt1n, mprt2n,&
-                  mprt11, mprt12, mprt21, mprt22, kappa,&
+subroutine mmmvmm(phase, l_pena_cont, l_pena_fric, l_large_slip, &
+                  ndim, nnm, &
+                  norm, tau1, tau2, mprojt, &
+                  wpg, ffm, dffm, jacobi, jeu, &
+                  coefac, coefaf, lambda, coefff, &
+                  dlagrc, dlagrf, djeu, &
+                  rese, nrese, &
+                  mprt1n, mprt2n, &
+                  mprt11, mprt12, mprt21, mprt22, kappa, &
                   vectcm, vectfm)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip
-integer, intent(in) :: ndim, nnm
-real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, ffm(9), dffm(2,9), jacobi, jeu
-real(kind=8), intent(in) :: coefac, coefaf, lambda, coefff
-real(kind=8), intent(in) :: dlagrc, dlagrf(2), djeu(3)
-real(kind=8), intent(in) :: rese(3), nrese
-real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3)
-real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
-real(kind=8), intent(in) :: kappa(2,2)
-real(kind=8), intent(out) :: vectcm(27), vectfm(27)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip
+    integer, intent(in) :: ndim, nnm
+    real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, ffm(9), dffm(2, 9), jacobi, jeu
+    real(kind=8), intent(in) :: coefac, coefaf, lambda, coefff
+    real(kind=8), intent(in) :: dlagrc, dlagrf(2), djeu(3)
+    real(kind=8), intent(in) :: rese(3), nrese
+    real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3)
+    real(kind=8), intent(in) :: mprt11(3, 3), mprt12(3, 3), mprt21(3, 3), mprt22(3, 3)
+    real(kind=8), intent(in) :: kappa(2, 2)
+    real(kind=8), intent(out) :: vectcm(27), vectfm(27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,7 +123,7 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
 !
     do i = 1, ndim
         do j = 1, ndim
-            plagft(i) = mprojt(i,j)*dlagft(j)+plagft(i)
+            plagft(i) = mprojt(i, j)*dlagft(j)+plagft(i)
         end do
     end do
 !
@@ -133,25 +133,25 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
         do i = 1, ndim
             do j = 1, ndim
                 if (l_large_slip) then
-                    g(i,j) =kappa(1,1)*mprt11(i,j)+kappa(1,2)*mprt12(i,j)&
-                           +kappa(2,1)*mprt21(i,j)+kappa(2,2)*mprt22(i,j)
-                    g1(i,j)=kappa(1,1)*mprt1n(i,j)*jeu+kappa(2,1)*mprt2n(i,j)*jeu
-                    g2(i,j)=kappa(2,2)*mprt2n(i,j)*jeu+kappa(1,2)*mprt1n(i,j)*jeu
-                    prese(i)  = g(i,j)*rese(j)/nrese+prese(i)
-                    prese1(i) = g1(i,j)*rese(j)/nrese+prese1(i)
-                    prese2(i) = g2(i,j)*rese(j)/nrese+prese2(i)
+                    g(i, j) = kappa(1, 1)*mprt11(i, j)+kappa(1, 2)*mprt12(i, j) &
+                              +kappa(2, 1)*mprt21(i, j)+kappa(2, 2)*mprt22(i, j)
+                    g1(i, j) = kappa(1, 1)*mprt1n(i, j)*jeu+kappa(2, 1)*mprt2n(i, j)*jeu
+                    g2(i, j) = kappa(2, 2)*mprt2n(i, j)*jeu+kappa(1, 2)*mprt1n(i, j)*jeu
+                    prese(i) = g(i, j)*rese(j)/nrese+prese(i)
+                    prese1(i) = g1(i, j)*rese(j)/nrese+prese1(i)
+                    prese2(i) = g2(i, j)*rese(j)/nrese+prese2(i)
                 else
-                    prese(i) = mprojt(i,j)*rese(j)/nrese+prese(i)
-                endif
+                    prese(i) = mprojt(i, j)*rese(j)/nrese+prese(i)
+                end if
             end do
         end do
-    endif
+    end if
 !
 ! - PROJECTION DU SAUT SUR LE PLAN TANGENT
 !
     do i = 1, ndim
         do k = 1, ndim
-            dvitet(i) = mprojt(i,k)*djeu(k)+dvitet(i)
+            dvitet(i) = mprojt(i, k)*djeu(k)+dvitet(i)
         end do
     end do
 !
@@ -159,7 +159,7 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
 !
     do i = 1, ndim
         do j = 1, ndim
-            pdvitt(i) = mprojt(i,j)*dvitet(j)+pdvitt(i)
+            pdvitt(i) = mprojt(i, j)*dvitet(j)+pdvitt(i)
         end do
     end do
 !
@@ -170,7 +170,7 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
             do inom = 1, nnm
                 do idim = 1, ndim
                     ii = ndim*(inom-1)+idim
-                    vectcm(ii) = vectcm(ii)-&
+                    vectcm(ii) = vectcm(ii)- &
                                  wpg*ffm(inom)*jacobi*norm(idim)*jeu*coefac
                 end do
             end do
@@ -178,34 +178,34 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
             do inom = 1, nnm
                 do idim = 1, ndim
                     ii = ndim*(inom-1)+idim
-                    vectcm(ii) = vectcm(ii)+&
+                    vectcm(ii) = vectcm(ii)+ &
                                  wpg*ffm(inom)*jacobi*norm(idim)*(dlagrc-jeu*coefac)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 
     if (phase .eq. 'GLIS') then
         do inom = 1, nnm
             do idim = 1, ndim
                 ii = ndim*(inom-1)+idim
                 if (l_large_slip) then
-                    matr(ii)   = ffm(inom)*prese(idim)+1.* dffm(1,inom)*&
-                        prese1(idim)+1.*dffm(2,inom)*prese2(idim)
-                    vectfm(ii) = vectfm(ii)+ wpg*matr(ii)*jacobi*(lambda-0.*jeu)*coefff
+                    matr(ii) = ffm(inom)*prese(idim)+1.*dffm(1, inom)* &
+                               prese1(idim)+1.*dffm(2, inom)*prese2(idim)
+                    vectfm(ii) = vectfm(ii)+wpg*matr(ii)*jacobi*(lambda-0.*jeu)*coefff
                 else
-                    vectfm(ii) = vectfm(ii)+ wpg*ffm(inom)*jacobi*prese(idim)*lambda*coefff
-                endif
+                    vectfm(ii) = vectfm(ii)+wpg*ffm(inom)*jacobi*prese(idim)*lambda*coefff
+                end if
             end do
         end do
-    endif
+    end if
 
     if (phase .eq. 'ADHE') then
         if (l_pena_fric) then
             do inom = 1, nnm
                 do idim = 1, ndim
                     ii = ndim*(inom-1)+idim
-                    vectfm(ii) = vectfm(ii)+&
+                    vectfm(ii) = vectfm(ii)+ &
                                  wpg*ffm(inom)*jacobi*pdvitt(idim)*lambda*coefff*coefaf
                 end do
             end do
@@ -213,12 +213,12 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
             do inom = 1, nnm
                 do idim = 1, ndim
                     ii = ndim*(inom-1)+idim
-                    vectfm(ii) = vectfm(ii)+&
-                                 wpg*ffm(inom)*jacobi*(lambda-0.*jeu)*coefff*(&
-                                   plagft(idim)+pdvitt(idim)*coefaf)
+                    vectfm(ii) = vectfm(ii)+ &
+                                 wpg*ffm(inom)*jacobi*(lambda-0.*jeu)*coefff*( &
+                                 plagft(idim)+pdvitt(idim)*coefaf)
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

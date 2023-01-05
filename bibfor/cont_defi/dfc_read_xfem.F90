@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dfc_read_xfem(sdcont      , keywf, mesh, model, model_ndim,&
+subroutine dfc_read_xfem(sdcont, keywf, mesh, model, model_ndim, &
                          nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -59,8 +59,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_defi    = sdcont(1:8)//'.CONTACT'
-    l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    l_cont_xfem_gg = cfdisl(sdcont_defi, 'CONT_XFEM_GG')
 !
 ! - Read cracks
 !
@@ -70,7 +70,7 @@ implicit none
 !
     if (l_cont_xfem_gg) then
         call xmacon(sdcont, mesh, model)
-    endif
+    end if
 !
 ! - Prepare informations for linear relations for LBB condition
 !

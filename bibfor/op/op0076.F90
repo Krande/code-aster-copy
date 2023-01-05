@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine op0076()
     character(len=24) :: nddlge
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  idcham, iddesc,  idrefe, idvecg
+    integer ::  idcham, iddesc, idrefe, idvecg
     integer :: ierd, n1, nbinst, nbmode, nt, nf, ni
     integer, pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
@@ -96,18 +96,18 @@ subroutine op0076()
 !       ---  ON PLANTE SI LE MOT CLE DEMANDE EST FREQ POUR UN TRAN_GENE
         if (nf .ne. 0) then
             call utmess('E', 'ALGORITH9_51')
-        endif
+        end if
 !
 !       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
         call wkvect(nomres//'           .VALE', 'G V R', nbmode, idvecg)
 !
 !       --- RECUPERATION DU CHAMP ---
-        call extrac(interp, prec, crit, nbinst, disc,&
-                    temps, zr( idcham), nbmode, zr(idvecg), ierd)
+        call extrac(interp, prec, crit, nbinst, disc, &
+                    temps, zr(idcham), nbmode, zr(idvecg), ierd)
 !
         if (ierd .ne. 0) then
             call utmess('E', 'ALGORITH9_49')
-        endif
+        end if
 !
 ! --- CAS DU HARM_GENE
 !
@@ -115,20 +115,20 @@ subroutine op0076()
 !       ---  ON PLANTE SI LE MOT CLE DEMANDE EST INST POUR UN HARM_GENE
         if (nt .ne. 0) then
             call utmess('E', 'ALGORITH9_52')
-        endif
+        end if
 !
 !       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
         call wkvect(nomres//'           .VALE', 'G V C', nbmode, idvecg)
 !
 !       --- RECUPERATION DU CHAMP ---
-        call zxtrac('NON', 0.d0, 'RELATIF', nbinst, disc,&
+        call zxtrac('NON', 0.d0, 'RELATIF', nbinst, disc, &
                     freq, zc(idcham), nbmode, zc(idvecg), ierd)
 !
         if (ierd .ne. 0) then
             call utmess('E', 'ALGORITH9_50')
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

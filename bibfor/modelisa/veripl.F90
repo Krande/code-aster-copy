@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,31 +75,31 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 !
 !       CALCUL DE LA NORMALE (N) A LA FACETTE IMA :
         do k = 1, 3
-            a(k) = vale(3* (zi(jconx-1+1)-1)+k)
-            b(k) = vale(3* (zi(jconx-1+2)-1)+k)
-            c(k) = vale(3* (zi(jconx-1+3)-1)+k)
-            ab(k) = b(k) - a(k)
-            ac(k) = c(k) - a(k)
+            a(k) = vale(3*(zi(jconx-1+1)-1)+k)
+            b(k) = vale(3*(zi(jconx-1+2)-1)+k)
+            c(k) = vale(3*(zi(jconx-1+3)-1)+k)
+            ab(k) = b(k)-a(k)
+            ac(k) = c(k)-a(k)
         end do
-        n(1) = ab(2)*ac(3) - ab(3)*ac(2)
-        n(2) = ab(3)*ac(1) - ab(1)*ac(3)
-        n(3) = ab(1)*ac(2) - ab(2)*ac(1)
+        n(1) = ab(2)*ac(3)-ab(3)*ac(2)
+        n(2) = ab(3)*ac(1)-ab(1)*ac(3)
+        n(3) = ab(1)*ac(2)-ab(2)*ac(1)
 !
 !
-        iprem = iprem + 1
+        iprem = iprem+1
         if (iprem .eq. 1) then
             n1(1) = n(1)
             n1(2) = n(2)
             n1(3) = n(3)
             numai1 = numail
             goto 20
-        endif
+        end if
 !
-        nn = n(1)*n(1) + n(2)*n(2) + n(3)*n(3)
-        n1n = n1(1)*n(1) + n1(2)*n(2) + n1(3)*n(3)
-        n1n1 = n1(1)*n1(1) + n1(2)*n1(2) + n1(3)*n1(3)
+        nn = n(1)*n(1)+n(2)*n(2)+n(3)*n(3)
+        n1n = n1(1)*n(1)+n1(2)*n(2)+n1(3)*n(3)
+        n1n1 = n1(1)*n1(1)+n1(2)*n1(2)+n1(3)*n1(3)
 !
-        cos2a = (n1n*n1n)/ (nn*n1n1)
+        cos2a = (n1n*n1n)/(nn*n1n1)
 !
         if (cos2a .lt. cos2b) then
             call jenuno(jexnum(ma2//'.NOMMAI', numail), nomail)
@@ -107,9 +107,9 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
             valk(1) = nomai1
             valk(2) = nomail
             call utmess(typerr, 'MODELISA7_80', nk=2, valk=valk)
-        endif
+        end if
 !
- 20     continue
+20      continue
     end do
 !
     call jedema()

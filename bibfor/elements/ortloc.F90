@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,16 +31,16 @@ subroutine ortloc(dsidep, i1, j1, r)
 !
     do i = 1, 3
         do j = 1, 3
-            trav(i,j) = dsidep(i+i1,j+j1)
+            trav(i, j) = dsidep(i+i1, j+j1)
         end do
     end do
 !
-    call utbtab('ZERO', 3, 3, trav, r,&
+    call utbtab('ZERO', 3, 3, trav, r, &
                 xab, trav)
 !
     do i = 1, 3
         do j = 1, 3
-            dsidep(i+i1,j+j1) = trav(i,j)
+            dsidep(i+i1, j+j1) = trav(i, j)
         end do
     end do
 !

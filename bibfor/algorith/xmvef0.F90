@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmvef0(ndim, jnne, nnc,&
-                  hpg, ffc, jacobi, lpenac,&
-                  dlagrf, tau1, tau2,&
-                  jddle, nfhe, lmulti, heavno,&
+subroutine xmvef0(ndim, jnne, nnc, &
+                  hpg, ffc, jacobi, lpenac, &
+                  dlagrf, tau1, tau2, &
+                  jddle, nfhe, lmulti, heavno, &
                   vtmp)
 !
     implicit none
@@ -63,9 +63,9 @@ subroutine xmvef0(ndim, jnne, nnc,&
 !
 ! --- INITIALISATIONS
 !
-    nne=jnne(1)
-    nnes=jnne(2)
-    ddles=jddle(1)
+    nne = jnne(1)
+    nnes = jnne(2)
+    ddles = jddle(1)
 !
     tt(:) = 0.d0
 !
@@ -80,16 +80,16 @@ subroutine xmvef0(ndim, jnne, nnc,&
 ! --------------------- CALCUL DE {L3_FROT}----------------------------
 !
     do i = 1, nnc
-        call xplma2(ndim, nne, nnes, ddles, i,&
+        call xplma2(ndim, nne, nnes, ddles, i, &
                     nfhe, pl)
-        if (lmulti) pl = pl + (heavno(i)-1)*ndim
+        if (lmulti) pl = pl+(heavno(i)-1)*ndim
         do l = 1, ndim-1
             ii = pl+l
             if (lpenac) then
-                vtmp(ii)= vtmp(ii)+jacobi*hpg*ffc(i)*tt(l)
+                vtmp(ii) = vtmp(ii)+jacobi*hpg*ffc(i)*tt(l)
             else
-                vtmp(ii)= vtmp(ii)+jacobi*hpg*ffc(i)*tt(l)
-            endif
+                vtmp(ii) = vtmp(ii)+jacobi*hpg*ffc(i)*tt(l)
+            end if
         end do
     end do
 !

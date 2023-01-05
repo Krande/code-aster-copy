@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 subroutine mmmmpb(rese, nrese, ndim, matprb)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 !
-real(kind=8), intent(in) :: rese(3), nrese
-integer, intent(in) :: ndim
-real(kind=8), intent(out) :: matprb(3, 3)
+    real(kind=8), intent(in) :: rese(3), nrese
+    integer, intent(in) :: ndim
+    real(kind=8), intent(out) :: matprb(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +48,7 @@ real(kind=8), intent(out) :: matprb(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    matprb(:,:) = 0.d0
+    matprb(:, :) = 0.d0
     theta = 1.d0
     ASSERT(nrese .gt. r8prem())
 !
@@ -60,15 +60,15 @@ real(kind=8), intent(out) :: matprb(3, 3)
 !
     do i = 1, ndim
         do j = 1, ndim
-            matprb(i,j) = -theta*rese(i)*rese(j)/norme
+            matprb(i, j) = -theta*rese(i)*rese(j)/norme
         end do
     end do
     do j = 1, ndim
-        matprb(j,j) = 1.d0+matprb(j,j)
+        matprb(j, j) = 1.d0+matprb(j, j)
     end do
     do i = 1, ndim
         do j = 1, ndim
-            matprb(i,j) = matprb(i,j)/nrese
+            matprb(i, j) = matprb(i, j)/nrese
         end do
     end do
 !

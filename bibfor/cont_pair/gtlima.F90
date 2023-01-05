@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine gtlima(sdappa, sdcont_defi, i_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
@@ -69,7 +69,7 @@ implicit none
 ! - Access to contact datastructures
 !
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
-    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
 !
 ! - Access to current contact zone
 !
@@ -80,8 +80,8 @@ implicit none
 !
 ! - Create objects
 !
-    call wkvect(sdappa_mast, 'V V I', nb_elem_mast, vi = v_list_mast)
-    call wkvect(sdappa_slav, 'V V I', nb_elem_slav, vi = v_list_slav)
+    call wkvect(sdappa_mast, 'V V I', nb_elem_mast, vi=v_list_mast)
+    call wkvect(sdappa_slav, 'V V I', nb_elem_slav, vi=v_list_slav)
 !
 ! - Fill objects
 !

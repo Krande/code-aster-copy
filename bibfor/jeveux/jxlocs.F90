@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
+subroutine jxlocs(itab, gen1, lty1, lon1, jadm, &
                   ldeps, jitab)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
@@ -41,11 +41,11 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
 ! OUT JITAB  : ADRESSE DANS ITAB DU SEGMENT DE VALEUR
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: iloc
-    common /ilocje/  iloc
+    common/ilocje/iloc
 !
     integer :: idec
     integer(kind=8) :: valloc, ia, ltyp2
@@ -54,30 +54,30 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
     integer :: ir, kadm, ladm
 !-----------------------------------------------------------------------
     kadm = jadm
-    ladm = iszon(jiszon + kadm - 3)
+    ladm = iszon(jiszon+kadm-3)
     jitab = 0
     valloc = loc(itab)
-    ia = (iloc-valloc) + kadm*lois
+    ia = (iloc-valloc)+kadm*lois
     ir = 0
     ltyp2 = lty1
-    idec = mod(ia,ltyp2)
+    idec = mod(ia, ltyp2)
     if (idec .ne. 0 .and. gen1(1:1) .ne. 'N') then
         if (idec .gt. 0) then
-            ir = lty1 - idec
+            ir = lty1-idec
         else
             ir = -idec
-        endif
-    endif
+        end if
+    end if
     if (lty1 .ne. lois .and. gen1(1:1) .ne. 'N') then
         if (ir .ne. ladm) then
             if (ldeps) then
-                call jxdeps((kadm-1)*lois + ladm + 1, (kadm-1)* lois + ir + 1, lon1)
+                call jxdeps((kadm-1)*lois+ladm+1, (kadm-1)*lois+ir+1, lon1)
             else
                 call utmess('F', 'JEVEUX1_60')
-            endif
-        endif
-    endif
-    jitab = 1 + (ia+ir)/lty1
-    iszon(jiszon + kadm - 3 ) = ir
+            end if
+        end if
+    end if
+    jitab = 1+(ia+ir)/lty1
+    iszon(jiszon+kadm-3) = ir
 ! FIN ------------------------------------------------------------------
 end subroutine

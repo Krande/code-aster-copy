@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,14 +41,14 @@ subroutine te0202(option, nomte)
     character(len=8) :: typmod(2)
 !
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'
-    endif
+    end if
     typmod(2) = 'ELEMJOIN'
 !
-    npg=2
+    npg = 2
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCONTMR', 'L', icont)

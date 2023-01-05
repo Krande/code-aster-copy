@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine te0009(option, nomte)
 !     ------------------------------------------------------------------
 !
     integer :: nddlm, nl1, ipoint, lorien
-    parameter     (nddlm=6,nl1=(nddlm+1)*nddlm/2)
+    parameter(nddlm=6, nl1=(nddlm+1)*nddlm/2)
     integer :: i, nc, nno, jdm, jdc, j, infodi, ibid, irep, indvxx
     real(kind=8) :: vxx, r8bid, pgl(3, 3), klv(nl1), klw(nl1)
     real(kind=8) :: vml(36)
@@ -56,24 +56,24 @@ subroutine te0009(option, nomte)
         if (infodi .ne. ibid) then
             call utmess('F+', 'DISCRETS_25', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'F+')
-        endif
+        end if
 !        DISCRET DE TYPE MASSE
         call infdis('DISM', infodi, r8bid, k8bid)
         if (infodi .eq. 0) then
             call utmess('A+', 'DISCRETS_26', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'A+')
-        endif
+        end if
 !       type de repere
         call infdis('REPM', irep, r8bid, k8bid)
         nno = 1
         nc = 6
     else
         call utmess('F', 'CALCULEL_17')
-    endif
+    end if
 !     OPTION DE CALCUL INVALIDE
     if (option .ne. 'MECA_GYRO') then
         ASSERT(.false.)
-    endif
+    end if
 !
     call infdis('SYMM', infodi, r8bid, k8bid)
     call jevech('PCADISM', 'L', jdc)
@@ -88,20 +88,20 @@ subroutine te0009(option, nomte)
         else
             call utppgl(nno, nc, pgl, zr(jdc), vml)
             indvxx = 22
-        endif
+        end if
         vxx = vml(indvxx)
     else
         if (infodi .eq. 1) then
             indvxx = 10
-        else if (infodi.eq.2) then
+        else if (infodi .eq. 2) then
             indvxx = 22
-        endif
+        end if
         vxx = zr(jdc+indvxx-1)
-    endif
+    end if
     call jevech('PMATUNS', 'E', jdm)
 !
     do i = 1, nl1
-        klv(i)=0.d0
+        klv(i) = 0.d0
     end do
 !
 !     I : LIGNE ; J : COLONNE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@ subroutine indice1(i, k, l)
     implicit none
     integer :: i, k, l
     if (i .eq. 1) then
-        k=2
-        l=3
+        k = 2
+        l = 3
     end if
     if (i .eq. 2) then
-        k=1
-        l=3
+        k = 1
+        l = 3
     end if
     if (i .eq. 3) then
-        k=1
-        l=2
+        k = 1
+        l = 2
     end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine xmligr(mesh, model, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -45,9 +45,9 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: model
-character(len=8), intent(in) :: mesh
-type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
     integer, parameter :: nbtyp = 30
     integer :: ico, jco, nbgrel, ipc, nbpc, k, ino
-    integer :: jlgrf, jtymai, jmail,  ilcnx1
+    integer :: jlgrf, jtymai, jmail, ilcnx1
     integer :: nummam, nummae, jnbno, long, jad, ityte
     integer :: nndel, numtyp, compt(nbtyp), jtabf, ztabf
     integer :: imod, iatt(2), imail(2), nno(2), ndim, ifm, niv
@@ -82,20 +82,20 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     integer, pointer :: typnema(:) => null()
     integer, pointer :: connex(:) => null()
 !
-    data (mode(k),k=1,3) /'MECP','MEDP','ME3D'/
-    data (attr(k),k=1,7) /'H','C','T','2','3','4','H'/
-    data (mail(1,k),k=1,8) /'T3','Q4','T6','Q8',&
-     &                         ' ',' ',' ',' '/
-    data (mail(2,k),k=1,8) /'T4','P5','P6','H8',&
-     &                        'TD','PT','PQ','HV'/
-    data (mail2(1,k),k=1,8) /'TR3','QU4','TR6','QU8',&
-     &                         ' ',' ',' ',' '/
-    data (mail2(2,k),k=1,8) /'TE4','PY5','PE6','HE8',&
-     &                         'T10','P13','P15','H20'/
-    data (mail3(1,k),k=1,8) /'TRIA3','QUAD4','TRIA6','QUAD8',&
-     &                         ' ',' ',' ',' '/
-    data (mail3(2,k),k=1,8) /'TETRA4','PYRAM5','PENTA6','HEXA8',&
-     &                         'TETRA10','PYRAM13','PENTA15','HEXA20'/
+    data(mode(k), k=1, 3)/'MECP', 'MEDP', 'ME3D'/
+    data(attr(k), k=1, 7)/'H', 'C', 'T', '2', '3', '4', 'H'/
+    data(mail(1, k), k=1, 8)/'T3', 'Q4', 'T6', 'Q8',&
+     &                         ' ', ' ', ' ', ' '/
+    data(mail(2, k), k=1, 8)/'T4', 'P5', 'P6', 'H8',&
+     &                        'TD', 'PT', 'PQ', 'HV'/
+    data(mail2(1, k), k=1, 8)/'TR3', 'QU4', 'TR6', 'QU8',&
+     &                         ' ', ' ', ' ', ' '/
+    data(mail2(2, k), k=1, 8)/'TE4', 'PY5', 'PE6', 'HE8',&
+     &                         'T10', 'P13', 'P15', 'H20'/
+    data(mail3(1, k), k=1, 8)/'TRIA3', 'QUAD4', 'TRIA6', 'QUAD8',&
+     &                         ' ', ' ', ' ', ' '/
+    data(mail3(2, k), k=1, 8)/'TETRA4', 'PYRAM5', 'PENTA6', 'HEXA8',&
+     &                         'TETRA10', 'PYRAM13', 'PENTA15', 'HEXA20'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,7 +103,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'CONTACT5_21')
-    endif
+    end if
 !
 ! --- ACCES OBJETS
 !
@@ -140,7 +140,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     do ipc = 1, nbpc
         nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
         nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
-        call xmelel(ndim, jmail, jtymai, nummae, nummam,&
+        call xmelel(ndim, jmail, jtymai, nummae, nummam, &
                     imod, iatt, imail, nno)
         long = long+nno(1)+nno(2)
     end do
@@ -156,14 +156,14 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --- CREATION DE L'OBJET .NEMA
 !
-    call jecrec(ligrxf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(ligrxf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbpc)
     call jeecra(ligrxf//'.NEMA', 'LONT', long)
     nbgrel = 0
     do ipc = 1, nbpc
         nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
         nummam = nint(zr(jtabf+ztabf*(ipc-1)+2))
-        call xmelel(ndim, jmail, jtymai, nummae, nummam,&
+        call xmelel(ndim, jmail, jtymai, nummae, nummam, &
                     imod, iatt, imail, nno)
 !
 ! ----- CREATION DE L'ELEMENT DE CONTACT DANS LE LIGREL
@@ -173,10 +173,10 @@ type(NL_DS_Contact), intent(in) :: ds_contact
         call jeecra(jexnum(ligrxf//'.NEMA', ipc), 'LONMAX', nndel+1)
         call jeveuo(jexnum(ligrxf//'.NEMA', ipc), 'E', jad)
         if (iatt(1) .ne. 3) then
-            nomtm = mail2(ndim-1,imail(1))//mail2(ndim-1,imail(2))
+            nomtm = mail2(ndim-1, imail(1))//mail2(ndim-1, imail(2))
         else
-            nomtm = mail3(ndim-1,imail(1))
-        endif
+            nomtm = mail3(ndim-1, imail(1))
+        end if
         call jenonu(jexnom('&CATA.TM.NOMTM', nomtm), numtyp)
         zi(jad-1+nndel+1) = numtyp
 !
@@ -189,43 +189,43 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! ----- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
 !
         do ino = 1, nno(2)
-            zi(jad-1+nno(1)+ino) = connex(1+zi(ilcnx1-1+nummam)-2+ ino)
+            zi(jad-1+nno(1)+ino) = connex(1+zi(ilcnx1-1+nummam)-2+ino)
         end do
 !
 ! --- TYPE D'ÉLÉMENT TARDIF
 !
-        nomte=mode(imod)//mail(ndim-1,imail(1))//attr(iatt(1))
+        nomte = mode(imod)//mail(ndim-1, imail(1))//attr(iatt(1))
         if (iatt(1) .ne. 3) then
-            nomte=nomte(1:7)//mail(ndim-1,imail(2))//attr(iatt(2))//&
-            '_XH'
+            nomte = nomte(1:7)//mail(ndim-1, imail(2))//attr(iatt(2))// &
+                    '_XH'
         else
-            nomte=nomte(1:7)//'_XH'
-        endif
+            nomte = nomte(1:7)//'_XH'
+        end if
         do k = 1, nbgrel
             if (nomte .eq. nomte2(k)) then
                 compt(k) = compt(k)+1
-                typnema(ipc)=k
+                typnema(ipc) = k
                 goto 50
-            endif
+            end if
         end do
         nbgrel = nbgrel+1
         nomte2(nbgrel) = nomte
         compt(nbgrel) = 1
-        typnema(ipc)=nbgrel
- 50     continue
+        typnema(ipc) = nbgrel
+50      continue
     end do
-    ASSERT(nbgrel.ne.0)
+    ASSERT(nbgrel .ne. 0)
 !
 ! --- CREATION DE L'OBJET .LIEL
 !
-    call jecrec(ligrxf//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(ligrxf//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbgrel)
 !
-    long = nbgrel + nbpc
+    long = nbgrel+nbpc
     call jeecra(ligrxf//'.LIEL', 'LONT', long)
     ico = 0
     do k = 1, nbgrel
-        ico = ico + 1
+        ico = ico+1
         call jecroc(jexnum(ligrxf//'.LIEL', ico))
         call jeecra(jexnum(ligrxf//'.LIEL', ico), 'LONMAX', compt(k)+1)
         call jeveuo(jexnum(ligrxf//'.LIEL', ico), 'E', jad)
@@ -236,9 +236,9 @@ type(NL_DS_Contact), intent(in) :: ds_contact
         jco = 0
         do ipc = 1, nbpc
             if (typnema(ipc) .eq. k) then
-                jco = jco + 1
+                jco = jco+1
                 zi(jad-1+jco) = -ipc
-            endif
+            end if
         end do
     end do
 !

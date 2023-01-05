@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine kfomvc(sr , m  , usm        , satur,&
+subroutine kfomvc(sr, m, usm, satur, &
                   krl, krg, dkrl_dsatur, dkrg_dsatur)
 !
-implicit none
+    implicit none
 !
-real(kind=8), intent(in) :: sr, m, usm, satur
-real(kind=8), intent(out) :: krl, krg, dkrl_dsatur, dkrg_dsatur
+    real(kind=8), intent(in) :: sr, m, usm, satur
+    real(kind=8), intent(out) :: krl, krg, dkrl_dsatur, dkrg_dsatur
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,15 +47,15 @@ real(kind=8), intent(out) :: krl, krg, dkrl_dsatur, dkrg_dsatur
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    s1          = (satur-sr)/(1.d0-sr)
-    umsr        = (1.d0-sr)
-    usumsr      = 1.d0/umsr
-    krl         = (s1**0.5d0)*((1.d0-(1.d0-s1**usm)**m)**2.d0)
-    krg         = (1.d0-satur)**3.d0
-    a           = 1.d0-s1**usm
-    dkrl_dsatur = usumsr*(krl/(2.d0*s1)+&
-                  2.d0*((s1)**0.5d0)*(1.d0-a**m)*(a**(m-1.d0))*(s1**(usm-1.d0)))
-    a           = 1.d0-s1
+    s1 = (satur-sr)/(1.d0-sr)
+    umsr = (1.d0-sr)
+    usumsr = 1.d0/umsr
+    krl = (s1**0.5d0)*((1.d0-(1.d0-s1**usm)**m)**2.d0)
+    krg = (1.d0-satur)**3.d0
+    a = 1.d0-s1**usm
+    dkrl_dsatur = usumsr*(krl/(2.d0*s1)+ &
+                          2.d0*((s1)**0.5d0)*(1.d0-a**m)*(a**(m-1.d0))*(s1**(usm-1.d0)))
+    a = 1.d0-s1
     dkrg_dsatur = -3.d0*(1-satur)**2.d0
 !
 !

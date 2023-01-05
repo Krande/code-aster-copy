@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use te0047_type
-implicit none
+    use te0047_type
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -53,8 +53,8 @@ implicit none
 #include "asterfort/vecma.h"
 #include "blas/dcopy.h"
 !
-type(te0047_dscr), intent(in) :: for_discret
-integer, intent(out)          :: iret
+    type(te0047_dscr), intent(in) :: for_discret
+    integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ integer, intent(out)          :: iret
     aster_logical       :: rigi, resi, Prediction, Dynamique
 ! --------------------------------------------------------------------------------------------------
 !   Pour le matériau
-    integer, parameter  :: nbre1=3
+    integer, parameter  :: nbre1 = 3
     real(kind=8)        :: valre1(nbre1)
     integer             :: codre1(nbre1)
     character(len=16)   :: materiau
@@ -84,17 +84,17 @@ integer, intent(out)          :: iret
 !   Pour l'intégration de la loi de comportement
     real(kind=8)            :: temps0, temps1, dtemps
 !   Paramètres de la loi :     jeu
-    integer,parameter       :: ijeu=1
-    integer, parameter      :: nbpara=1, nbpain= 2*3 + 3
+    integer, parameter       :: ijeu = 1
+    integer, parameter      :: nbpara = 1, nbpain = 2*3+3
     real(kind=8)            :: ldcpar(nbpara)
     integer                 :: ldcpai(nbpain)
     character(len=8)        :: ldccar(1)
 !   Équations du système
-    integer, parameter      :: nbequa=6
+    integer, parameter      :: nbequa = 6
     real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
     integer                 :: nbdecp
 !   Variables internes
-    integer,parameter       :: nbvari=5, nbcorr=4, idebut=nbvari
+    integer, parameter       :: nbvari = 5, nbcorr = 4, idebut = nbvari
     integer                 :: Correspond(nbcorr)
     real(kind=8)            :: varmo(nbvari), varpl(nbvari)
 ! --------------------------------------------------------------------------------------------------
@@ -102,19 +102,19 @@ integer, intent(out)          :: iret
     real(kind=8)    :: LongDist, Dist12, forceref, rigidref, deplaref
 ! --------------------------------------------------------------------------------------------------
 !   Paramètres associés au matériau codé
-    integer, parameter  :: lmat = 9 , lfct = 10
+    integer, parameter  :: lmat = 9, lfct = 10
 ! --------------------------------------------------------------------------------------------------
 !   RIGI_MECA_TANG ->        DSIDEP        -->  RIGI
 !   FULL_MECA      ->  SIGP  DSIDEP  VARP  -->  RIGI  RESI
 !   RAPH_MECA      ->  SIGP          VARP  -->        RESI
-    rigi = (for_discret%option(1:4).eq.'RIGI' .or. for_discret%option(1:4).eq.'FULL')
-    resi = (for_discret%option(1:4).eq.'RAPH' .or. for_discret%option(1:4).eq.'FULL')
+    rigi = (for_discret%option(1:4) .eq. 'RIGI' .or. for_discret%option(1:4) .eq. 'FULL')
+    resi = (for_discret%option(1:4) .eq. 'RAPH' .or. for_discret%option(1:4) .eq. 'FULL')
     iret = 0
 ! --------------------------------------------------------------------------------------------------
     call jevech('PCOMPOR', 'L', icompo)
 !   Seulement en 3D, sur un segment, avec seulement de la translation
-    if ((for_discret%nomte(1:12).ne.'MECA_DIS_T_L').or. &
-        (for_discret%ndim.ne.3).or.(for_discret%nno.ne.2).or.(for_discret%nc.ne.3)) then
+    if ((for_discret%nomte(1:12) .ne. 'MECA_DIS_T_L') .or. &
+        (for_discret%ndim .ne. 3) .or. (for_discret%nno .ne. 2) .or. (for_discret%nc .ne. 3)) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
         messak(3) = zk16(icompo+3)
@@ -122,7 +122,7 @@ integer, intent(out)          :: iret
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_22', nk=5, valk=messak)
-    endif
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   Nombre de degré de liberté
     neq = for_discret%nno*for_discret%nc
@@ -144,11 +144,11 @@ integer, intent(out)          :: iret
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_5', nk=5, valk=messak)
-    endif
+    end if
 !   les caractéristiques sont toujours dans le repère local. on fait seulement une copie
     call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
 !   Récupère les termes diagonaux de la matrice de raideur
-    call diraidklv(for_discret%nomte,raide,klv)
+    call diraidklv(for_discret%nomte, raide, klv)
 ! --------------------------------------------------------------------------------------------------
 !   Champ de vitesse
     Dynamique = ASTER_FALSE
@@ -158,28 +158,28 @@ integer, intent(out)          :: iret
         Dynamique = ASTER_TRUE
     else
         dvl(:) = 0.0d0
-    endif
+    end if
 !   Champ de déplacement d'entrainement
     call tecach('ONO', 'PDEPENT', 'L', iretlc, iad=idepen)
     if (iretlc .eq. 0) then
         call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
     else
         dpe(:) = 0.0d0
-    endif
+    end if
 !   Champ de vitesse d'entrainement
     call tecach('ONO', 'PVITENT', 'L', iretlc, iad=iviten)
     if (iretlc .eq. 0) then
         call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(iviten), dve)
     else
         dve(:) = 0.d0
-    endif
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   Variables internes
     call jevech('PVARIMR', 'L', ivarim)
     do ii = 1, nbvari
         varmo(ii) = zr(ivarim+ii-1)
         varpl(ii) = varmo(ii)
-    enddo
+    end do
 ! --------------------------------------------------------------------------------------------------
 !   Coordonnees du discret dans le repère local
     xl(:) = 0.0
@@ -188,19 +188,19 @@ integer, intent(out)          :: iret
 !   Adresse de la SD mater
     jmater = zi(imater)
 !   Nombre de matériau sur la maille : 1 seul autorisé
-    nbmater=zi(jmater)
-    ASSERT(nbmater.eq.1)
+    nbmater = zi(jmater)
+    ASSERT(nbmater .eq. 1)
 !   Adresse du matériau codé
     imate = jmater+zi(jmater+nbmater+1)
 !   Recherche du matériau dans la SD compor
     materiau = 'DIS_CHOC_ENDO'
     ipi = 0
     do kk = 1, zi(imate+1)
-        if ( zk32(zi(imate)+kk-1)(1:16) .eq. materiau ) then
+        if (zk32(zi(imate)+kk-1) (1:16) .eq. materiau) then
             ipi = zi(imate+2+kk-1)
             goto 10
-        endif
-    enddo
+        end if
+    end do
 !   Le matériau n'est pas trouvé
     messak(1) = for_discret%nomte
     messak(2) = for_discret%option
@@ -218,7 +218,7 @@ integer, intent(out)          :: iret
 !       Nombre de point     : zi(ii)
 !       Adresse des valeurs : zi(ii+2)
     do kk = 1, zi(ipi+2)
-        if      ('FXP   ' .eq. zk16(zi(ipi+3)+idf+kk-1)) then
+        if ('FXP   ' .eq. zk16(zi(ipi+3)+idf+kk-1)) then
             ii = ipi+lmat-1+lfct*(kk-1)
             ldcpai(1) = zi(ii)
             ldcpai(2) = zi(ii+2)
@@ -230,20 +230,20 @@ integer, intent(out)          :: iret
             ii = ipi+lmat-1+lfct*(kk-1)
             ldcpai(5) = zi(ii)
             ldcpai(6) = zi(ii+2)
-        endif
-    enddo
-    ASSERT( (ldcpai(1).eq.ldcpai(3)).and.(ldcpai(1).eq.ldcpai(5)) )
-    if ( ldcpai(1).lt. 5 ) then
+        end if
+    end do
+    ASSERT((ldcpai(1) .eq. ldcpai(3)) .and. (ldcpai(1) .eq. ldcpai(5)))
+    if (ldcpai(1) .lt. 5) then
         messak(1) = materiau
         messak(2) = '[FXP|RIGIP|AMORP]'
         call utmess('F', 'DISCRETS_64', nk=2, valk=messak)
-    endif
+    end if
 ! --------------------------------------------------------------------------------------------------
 !   Le premier point de FXP     : forceref
 !                       RIGIP   : rigidref
 !   Le déplacement de référence : deplaref = forceref/rigidref
-    forceref = zr( ldcpai(1) + ldcpai(2) )
-    rigidref = zr( ldcpai(3) + ldcpai(4) )
+    forceref = zr(ldcpai(1)+ldcpai(2))
+    rigidref = zr(ldcpai(3)+ldcpai(4))
     deplaref = forceref/rigidref
 ! --------------------------------------------------------------------------------------------------
 !   loi de comportement non-linéaire : récupération du temps + et - , calcul de dt
@@ -251,28 +251,28 @@ integer, intent(out)          :: iret
     call jevech('PINSTMR', 'L', jtm)
     temps0 = zr(jtm)
     temps1 = zr(jtp)
-    dtemps = temps1 - temps0
+    dtemps = temps1-temps0
 !   contrôle de rk5 : découpage successif, erreur maximale
     call jevech('PCARCRI', 'L', icarcr)
 !   nombre d'itérations maxi (ITER_INTE_MAXI=-20 par défaut)
-    nbdecp = abs( nint(zr(icarcr)) )
+    nbdecp = abs(nint(zr(icarcr)))
 !   tolérance de convergence (RESI_INTE_RELA=1.0E-06 par défaut)
     errmax = zr(icarcr+2)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Paramètres de la loi de comportement
     valre1(:) = 0.0
-    call rcvala(jmater, ' ', 'DIS_CHOC_ENDO', 0, ' ',&
-                [0.0d0], 3, ['DIST_1   ','DIST_2   ','CRIT_AMOR'], valre1, codre1, 1)
+    call rcvala(jmater, ' ', 'DIS_CHOC_ENDO', 0, ' ', &
+                [0.0d0], 3, ['DIST_1   ', 'DIST_2   ', 'CRIT_AMOR'], valre1, codre1, 1)
 !   Calcul du jeu final
 !   Longueur du discret
-    xd(1:3)   = xl(1+for_discret%ndim:2*for_discret%ndim) - xl(1:for_discret%ndim)
-    LongDist  = xd(1)
-    Dist12    = -valre1(1) -valre1(2)
+    xd(1:3) = xl(1+for_discret%ndim:2*for_discret%ndim)-xl(1:for_discret%ndim)
+    LongDist = xd(1)
+    Dist12 = -valre1(1)-valre1(2)
 !   Amortissement dans le critère ou pas : 1 ou 2
-    ldcpai(9) = nint( valre1(3) )
+    ldcpai(9) = nint(valre1(3))
 !
-    ldcpar(ijeu) = LongDist + Dist12
+    ldcpar(ijeu) = LongDist+Dist12
 !   Loi complète
     ldcpai(7) = 1
 !
@@ -283,8 +283,8 @@ integer, intent(out)          :: iret
 !       ldcpai(7) = 1 Loi complète
 !                 = 2 Loi sans frottement, ni amortissement
     ldcpai(8) = 0
-    evoljeu0  = 1.0
-    evoljeu1  = 1.0
+    evoljeu0 = 1.0
+    evoljeu1 = 1.0
 ! --------------------------------------------------------------------------------------------------
 !
 !   équations du système :
@@ -292,21 +292,21 @@ integer, intent(out)          :: iret
 !       y0   : ux  fx  vx  pcum  uxan jeu
 !       vari :         3   1     2    4
 !
-    Correspond(:) = [ 4, 5, 3, 6]
-    y0(:)  = 0.0; dy0(:) = 0.0
-    do ii=1,nbcorr
+    Correspond(:) = [4, 5, 3, 6]
+    y0(:) = 0.0; dy0(:) = 0.0
+    do ii = 1, nbcorr
         y0(Correspond(ii)) = varmo(ii)
-    enddo
+    end do
 !   Les grandeurs et leurs dérivées
-    y0(1)  = (for_discret%ulm(1+for_discret%nc) - for_discret%ulm(1) + &
-              dpe(1+for_discret%nc) - dpe(1))
-    y0(2)  = zr(icontm)
-    dy0(1) = (for_discret%dul(1+for_discret%nc) - for_discret%dul(1))/dtemps
-    dy0(3) = (dvl(1+for_discret%nc) - dvl(1) + dve(1+for_discret%nc) - dve(1) - y0(3))/dtemps
+    y0(1) = (for_discret%ulm(1+for_discret%nc)-for_discret%ulm(1)+ &
+             dpe(1+for_discret%nc)-dpe(1))
+    y0(2) = zr(icontm)
+    dy0(1) = (for_discret%dul(1+for_discret%nc)-for_discret%dul(1))/dtemps
+    dy0(3) = (dvl(1+for_discret%nc)-dvl(1)+dve(1+for_discret%nc)-dve(1)-y0(3))/dtemps
 !   calcul de la vitesse d'évolution du jeu
-    if (nint(varmo(idebut)).eq.0) then
+    if (nint(varmo(idebut)) .eq. 0) then
         y0(6) = LongDist
-    endif
+    end if
     dy0(6) = Dist12*(evoljeu1-evoljeu0)/dtemps
 !   RIGIP est obligatoire Kp( y0(4) ) = raideur
 !       La fonction raideur et sa dérivée
@@ -318,24 +318,24 @@ integer, intent(out)          :: iret
 !
     force(:) = 0.0
 !   Prédiction en dynamique, on retourne les efforts précédents
-    Prediction =((iterat.eq.1).and. resi .and. Dynamique)
+    Prediction = ((iterat .eq. 1) .and. resi .and. Dynamique)
 !
 !   Soit on intègre le jeu soit on prend sa valeur
 !       ldcpai(8) = 1 : intégration du jeu
 !       ldcpai(8) = 0 : valeur finale
-    xjeu = y0(6)*ldcpai(8) + ldcpar(ijeu)*(1.0 - ldcpai(8))
+    xjeu = y0(6)*ldcpai(8)+ldcpar(ijeu)*(1.0-ldcpai(8))
 !
-    if ( Prediction.and.(ldcpai(8).eq.0) ) then
-        r8bid = y0(1) + dy0(1)*dtemps + xjeu - y0(5)
-        raide(1) =  0.0
-        if ( r8bid <= 0.0 ) then
-            raide(1) =  rignor
-            if (for_discret%option.eq.'RAPH_MECA') then
+    if (Prediction .and. (ldcpai(8) .eq. 0)) then
+        r8bid = y0(1)+dy0(1)*dtemps+xjeu-y0(5)
+        raide(1) = 0.0
+        if (r8bid <= 0.0) then
+            raide(1) = rignor
+            if (for_discret%option .eq. 'RAPH_MECA') then
                 force(1) = raide(1)*r8bid
-            endif
-        endif
+            end if
+        end if
         goto 888
-    endif
+    end if
 !
 !   Norme pour le critère d'erreur
     ynorme(1) = deplaref
@@ -345,42 +345,42 @@ integer, intent(out)          :: iret
     ynorme(5) = deplaref
     ynorme(6) = deplaref
 !
-    call rk5adp(nbequa, ldcpar, ldcpai, ldccar, temps0, dtemps, nbdecp,&
+    call rk5adp(nbequa, ldcpar, ldcpai, ldccar, temps0, dtemps, nbdecp, &
                 errmax, y0, dy0, ldc_dichoc_endo, resu, iret, ynorme)
 !   resu(1:nbeq)            : variables intégrées
 !   resu(nbeq+1:2*nbeq)     : d(resu)/d(t) a t+dt
     if (iret .ne. 0) goto 999
 !
 !   Les variables internes
-    do ii=1,nbcorr
+    do ii = 1, nbcorr
         varpl(ii) = resu(Correspond(ii))
-    enddo
+    end do
     varpl(idebut) = 1.0
 !
-    call rcvala(jmater, ' ', 'DIS_CHOC_ENDO', 1, 'PCUM',[resu(4)], &
+    call rcvala(jmater, ' ', 'DIS_CHOC_ENDO', 1, 'PCUM', [resu(4)], &
                 1, ['RIGIP'], valre1, codre1, 0, nan='NON')
     raide(1) = valre1(1)
 !
-    deplac   = resu(1) - y0(1)
+    deplac = resu(1)-y0(1)
     force(1) = min(0.0, resu(2))
-    if ( abs(deplac) > r8prem() ) then
-        raide(1) = min( raide(1), abs((force(1) - y0(2))/deplac) )
-    endif
+    if (abs(deplac) > r8prem()) then
+        raide(1) = min(raide(1), abs((force(1)-y0(2))/deplac))
+    end if
 !
 888 continue
 ! --------------------------------------------------------------------------------------------------
 !   Actualisation de la matrice tangente : klv(i,i) = raide(i)
     call diklvraid(for_discret%nomte, klv, raide)
 !   Actualisation de la matrice quasi-tangente
-    if ( rigi ) then
+    if (rigi) then
         call jevech('PMATUUR', 'E', imatri)
         call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imatri))
-    endif
+    end if
 !
 !   Efforts généralisés, Forces nodales
 !       Sortie : efforts généralisés
 !       Calcul : Forces nodales  (Mise à jour après)
-    if ( resi ) then
+    if (resi) then
         call jevech('PCONTPR', 'E', icontp)
 !       demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, neq)
@@ -389,17 +389,17 @@ integer, intent(out)          :: iret
 !       efforts généralisés aux noeuds 1 et 2 (repère local)
 !       on change le signe des efforts sur le premier noeud pour les MECA_DIS_TR_L et MECA_DIS_T_L
         do ii = 1, for_discret%nc
-            zr(icontp-1+ii)                = -fl(ii)    + zr(icontm-1+ii)
-            zr(icontp-1+ii+for_discret%nc) =  fl(ii+for_discret%nc) + &
-                                              zr(icontm-1+ii+for_discret%nc)
-            fl(ii)                         =  fl(ii)    - zr(icontm-1+ii)
-            fl(ii+for_discret%nc)          =  fl(ii+for_discret%nc) + &
-                                              zr(icontm-1+ii+for_discret%nc)
-        enddo
-        zr(icontp-1+1)                =  force(1)
-        zr(icontp-1+1+for_discret%nc) =  force(1)
-        fl(1)                         = -force(1)
-        fl(1+for_discret%nc)          =  force(1)
+            zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
+            zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
+                                             zr(icontm-1+ii+for_discret%nc)
+            fl(ii) = fl(ii)-zr(icontm-1+ii)
+            fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
+                                    zr(icontm-1+ii+for_discret%nc)
+        end do
+        zr(icontp-1+1) = force(1)
+        zr(icontp-1+1+for_discret%nc) = force(1)
+        fl(1) = -force(1)
+        fl(1+for_discret%nc) = force(1)
         ! Sortie : forces nodales
         ! forces nodales aux noeuds 1 et 2 (repère global)
         call jevech('PVECTUR', 'E', ifono)
@@ -408,10 +408,10 @@ integer, intent(out)          :: iret
         ! mise à jour des variables internes
         call jevech('PVARIPR', 'E', ivarip)
         do ii = 1, nbvari
-            zr(ivarip+ii-1)        = varpl(ii)
+            zr(ivarip+ii-1) = varpl(ii)
             zr(ivarip+ii-1+nbvari) = varpl(ii)
-        enddo
-    endif
+        end do
+    end if
 !
 999 continue
 end subroutine

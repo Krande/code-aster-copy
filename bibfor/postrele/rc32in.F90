@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,8 +56,8 @@ subroutine rc32in()
         do i = 1, 8
             zr(jvalin+i+10) = 1
         end do
-        zr(jvalin+15) =0
-        zr(jvalin+17) =0
+        zr(jvalin+15) = 0
+        zr(jvalin+17) = 0
 !------ cas corps-tubulure
         call getvr8('CHAR_MECA', 'MX_TUBU', iocc=1, scal=bid, nbret=n2)
         if (n2 .ne. 0) then
@@ -71,31 +71,31 @@ subroutine rc32in()
             call getvr8('TUYAU', 'I_CORP', scal=zr(jvalin+18), iocc=1, nbret=n2h)
             if (n2a*n2b*n2c*n2d*n2e*n2f*n2g*n2h .eq. 0) then
                 call utmess('F', 'POSTRCCM_46')
-            endif
+            end if
             call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1a)
             call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1b)
             call getvr8('TUYAU', 'I', scal=zr(jvalin+8), iocc=1, nbret=n1c)
             if (n1a+n1b+n1c .ne. 0) then
                 call utmess('F', 'POSTRCCM_46')
             else
-                zr(jvalin+2) =0
-                zr(jvalin+3) =0
-                zr(jvalin+3) =1
-            endif
+                zr(jvalin+2) = 0
+                zr(jvalin+3) = 0
+                zr(jvalin+3) = 1
+            end if
         else
             call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1a)
             call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1b)
             call getvr8('TUYAU', 'I', scal=zr(jvalin+8), iocc=1, nbret=n1c)
             if (n1a*n1b*n1c .eq. 0) call utmess('F', 'POSTRCCM_46')
-        endif
+        end if
 ! ----- cas du b3200 sans indices de contraintes
     else
         do j = 1, 19
             zr(jvalin+j-1) = 1
         end do
-        zr(jvalin+15) =0
-        zr(jvalin+17) =0
-    endif
+        zr(jvalin+15) = 0
+        zr(jvalin+17) = 0
+    end if
 !
 ! --- facteur de concentration de contrainte (b3200 uniquement)
     zr(jvalin+9) = 1
@@ -104,12 +104,12 @@ subroutine rc32in()
     call getvr8('FACT_SIGM', 'KT_SN', iocc=1, nbval=0, nbret=ktsn)
     if (ktsn .ne. 0) then
         call getvr8('FACT_SIGM', 'KT_SN', scal=zr(jvalin+9), iocc=1, nbret=ktsn)
-    endif
+    end if
 !
     call getvr8('FACT_SIGM', 'KT_SP', iocc=1, nbval=0, nbret=ktsp)
     if (ktsp .ne. 0) then
         call getvr8('FACT_SIGM', 'KT_SP', scal=zr(jvalin+10), iocc=1, nbret=ktsp)
-    endif
+    end if
 !
     call jedema()
 end subroutine

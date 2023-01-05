@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine lcdevi(a, d)
 !       ----------------------------------------------------------------
     integer :: n, nd
     real(kind=8) :: a(6), d(6), ta
-    common /tdim/   n , nd
+    common/tdim/n, nd
 !
 !
 !-----------------------------------------------------------------------
@@ -32,13 +32,13 @@ subroutine lcdevi(a, d)
 !-----------------------------------------------------------------------
     ta = 0.d0
     do i = 1, nd
-        ta = ta + a(i)
+        ta = ta+a(i)
     end do
-    ta = ta / 3.d0
+    ta = ta/3.d0
     do i = 1, nd
-        d(i) = a(i) - ta
+        d(i) = a(i)-ta
     end do
-    do i = nd + 1, n
+    do i = nd+1, n
         d(i) = a(i)
     end do
 end subroutine

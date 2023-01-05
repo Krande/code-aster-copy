@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nxrech(model    , mate    , mateco   , cara_elem, list_load  , nume_dof   ,&
-                  tpsthe   , time    , lonch    , compor     , varc_curr  ,&
-                  temp_iter, vtempp  , vtempr   , temp_prev  , hydr_prev  ,&
-                  hydr_curr, dry_prev, dry_curr , vec2nd     , cnvabt     ,&
-                  cnresi   , rho     , iterho   , ds_algopara)
+subroutine nxrech(model, mate, mateco, cara_elem, list_load, nume_dof, &
+                  tpsthe, time, lonch, compor, varc_curr, &
+                  temp_iter, vtempp, vtempr, temp_prev, hydr_prev, &
+                  hydr_curr, dry_prev, dry_curr, vec2nd, cnvabt, &
+                  cnresi, rho, iterho, ds_algopara)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -38,19 +38,19 @@ implicit none
 #include "asterfort/verstp.h"
 #include "asterfort/vethbt.h"
 !
-character(len=24), intent(in) :: model
-character(len=24), intent(in) :: mate, mateco
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: nume_dof
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-real(kind=8) :: tpsthe(6)
-character(len=24), intent(in) :: time
-character(len=19), intent(in) :: varc_curr
-integer :: lonch
-real(kind=8) :: rho
-character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
-character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate, mateco
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    real(kind=8) :: tpsthe(6)
+    character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr
+    integer :: lonch
+    real(kind=8) :: rho
+    character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
+    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,10 +76,10 @@ character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     real(kind=8), pointer :: tempp(:) => null()
     real(kind=8), pointer :: tempr(:) => null()
     character(len=24) :: lload_name, lload_info
-    parameter (rhomin = -2.d0, rhomax = 2.d0)
-    data typres        /'R'/
-    data bidon         /'&&FOMULT.BIDON'/
-    data vebtla        /'&&VETBTL           .RELR'/
+    parameter(rhomin=-2.d0, rhomax=2.d0)
+    data typres/'R'/
+    data bidon/'&&FOMULT.BIDON'/
+    data vebtla/'&&VETBTL           .RELR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,79 +103,79 @@ character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
 !
     f0 = 0.d0
     do i = 1, lonch
-        f0 = f0 + tempp(i)*( zr(j2nd+i-1) - zr(jvare+i-1) - zr( jbtla+i-1) )
+        f0 = f0+tempp(i)*(zr(j2nd+i-1)-zr(jvare+i-1)-zr(jbtla+i-1))
     end do
 !
     rho0 = 0.d0
     rho = 1.d0
-    itrmax = ds_algopara%line_search%iter_maxi + 1
+    itrmax = ds_algopara%line_search%iter_maxi+1
     do iterho = 1, itrmax
         do i = 1, lonch
-            tempr(i) = tempm(i) + rho * tempp(i)
+            tempr(i) = tempm(i)+rho*tempp(i)
         end do
 !
 ! ----- Neumann loads elementary vectors (residuals)
 !
-        call verstp(model    , lload_name, lload_info, cara_elem, mateco,&
-                    time_curr,  time     , compor    , temp_prev ,vtempr,&
-                    varc_curr,  veresi   , 'V'       ,&
-                    hydr_prev, hydr_curr , dry_prev  , dry_curr )
+        call verstp(model, lload_name, lload_info, cara_elem, mateco, &
+                    time_curr, time, compor, temp_prev, vtempr, &
+                    varc_curr, veresi, 'V', &
+                    hydr_prev, hydr_curr, dry_prev, dry_curr)
 !
 ! ----- Neumann loads vector (residuals)
 !
         call asasve(veresi, nume_dof, typres, varesi)
-        call ascova('D', varesi, bidon, 'INST', r8bid,&
+        call ascova('D', varesi, bidon, 'INST', r8bid, &
                     typres, cnresi)
         call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
 !
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
-        call vethbt(model, lload_name, lload_info, cara_elem, mate,&
+        call vethbt(model, lload_name, lload_info, cara_elem, mate, &
                     vtempr, vebtla, 'V')
         call asasve(vebtla, nume_dof, typres, vabtla)
-        call ascova('D', vabtla, bidon, 'INST', r8bid,&
+        call ascova('D', vabtla, bidon, 'INST', r8bid, &
                     typres, cnvabt)
         call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)
 !
         f1 = 0.d0
         do i = 1, lonch
-            f1 = f1 + tempp(i) * ( zr(j2nd+i-1) - zr(jvare+i-1) - zr(jbtla+i-1) )
+            f1 = f1+tempp(i)*(zr(j2nd+i-1)-zr(jvare+i-1)-zr(jbtla+i-1))
         end do
         testm = 0.d0
         do k = 1, lonch
-            testm = max( testm, abs(zr(j2nd+k-1)-zr(jvare+k-1)-zr( jbtla+k-1)))
+            testm = max(testm, abs(zr(j2nd+k-1)-zr(jvare+k-1)-zr(jbtla+k-1)))
         end do
         if (testm .lt. ds_algopara%line_search%resi_rela) then
             goto 999
-        endif
+        end if
 !
         if (iterho .eq. 1) then
             ffinal = f1
             rhof = 1.d0
-        endif
+        end if
         if (abs(f1) .lt. abs(ffinal)) then
-            ffinal=f1
-            rhof=rho
-        endif
-        rhot=rho
+            ffinal = f1
+            rhof = rho
+        end if
+        rhot = rho
         if (abs(f1-f0) .gt. r8prem()) then
             rho = -(f0*rhot-f1*rho0)/(f1-f0)
             if (rho .lt. rhomin) rho = rhomin
             if (rho .gt. rhomax) rho = rhomax
             if (abs(rho-rhot) .lt. 1.d-08) then
                 goto 40
-            endif
+            end if
         else
             goto 40
-        endif
-        rho0= rhot
+        end if
+        rho0 = rhot
         f0 = f1
     end do
 40  continue
-    rho=rhof
-    f1=ffinal
+    rho = rhof
+    f1 = ffinal
 !
 999 continue
-    iterho = iterho - 1
+    iterho = iterho-1
     call jedema()
 end subroutine

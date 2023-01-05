@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,13 +39,13 @@ subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
     call infniv(ifm, niv)
 !
     cycmax = 1
-    ampmax = sigmax(1) - sigmin(1)
+    ampmax = sigmax(1)-sigmin(1)
 !
     do i = 2, ncyc
-        if ((sigmax(i) - sigmin(i)) .gt. ampmax) then
-            ampmax = sigmax(i) - sigmin(i)
+        if ((sigmax(i)-sigmin(i)) .gt. ampmax) then
+            ampmax = sigmax(i)-sigmin(i)
             cycmax = i
-        endif
+        end if
     end do
 !
     smin(1) = sigmin(cycmax)
@@ -58,27 +58,27 @@ subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
         else if (i .gt. cycmax) then
             smin(i) = sigmin(i)
             smax(i) = sigmax(i)
-        endif
+        end if
     end do
     if (cycmax .eq. ncyc) then
         smin(ncyc) = sigmin(ncyc-1)
         smax(ncyc) = sigmax(ncyc-1)
-    endif
+    end if
 !
 !     --- IMPRESSION DES PICS EXTRAITS DE LA FONCTION ----
     if (niv .eq. 2) then
-        write (ifm,*)
-        write (ifm,'(1X,A)') 'PICS APRES LE COMPTAGE RAINFLOW_MAX'
-        write (ifm,*)
-        write (6,*) 'NOMBRE DE CYCLES = ', ncyc
-        write (ifm,*)
-        write (ifm,'(1X,A)') '     CHARGEMENT_MAX     CHARGEMENT_MIN'
-        write (ifm,*)
-        write (ifm,'(2(1X,E18.6))') (smax(i),smin(i),i=1,ncyc)
+        write (ifm, *)
+        write (ifm, '(1X,A)') 'PICS APRES LE COMPTAGE RAINFLOW_MAX'
+        write (ifm, *)
+        write (6, *) 'NOMBRE DE CYCLES = ', ncyc
+        write (ifm, *)
+        write (ifm, '(1X,A)') '     CHARGEMENT_MAX     CHARGEMENT_MIN'
+        write (ifm, *)
+        write (ifm, '(2(1X,E18.6))') (smax(i), smin(i), i=1, ncyc)
 !         DO 106 I = 1,NCYC
 !             WRITE (IFM,'(2(1X,E18.6))'), SMAX(I),SMIN(I)
 ! 106     CONTINUE
 !
-    endif
+    end if
 !
 end subroutine

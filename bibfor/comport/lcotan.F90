@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcotan(opt, angmas, etatd, etatf, fami,&
-                  kpg, ksp, rela_comp, mod, imat,&
-                  nmat, materd, materf, epsd, deps,&
-                  sigd, sigf, nvi, vind, vinf,&
-                  drdy, vp, vecp, theta, dt,&
-                  devg, devgii, timed, timef, compor,&
-                  nbcomm, cpmono, pgl, nfs, nsg,&
-                  toutms, hsr, nr, itmax, toler,&
+subroutine lcotan(opt, angmas, etatd, etatf, fami, &
+                  kpg, ksp, rela_comp, mod, imat, &
+                  nmat, materd, materf, epsd, deps, &
+                  sigd, sigf, nvi, vind, vinf, &
+                  drdy, vp, vecp, theta, dt, &
+                  devg, devgii, timed, timef, compor, &
+                  nbcomm, cpmono, pgl, nfs, nsg, &
+                  toutms, hsr, nr, itmax, toler, &
                   typma, dsde, codret)
 ! aslint: disable=W1504
     implicit none
@@ -78,8 +78,8 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
     character(len=*) :: fami
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typma
-        character(len=16), intent(in) :: rela_comp
-        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=16) :: opt
     character(len=24) :: cpmono(5*nmat+1)
 !
@@ -91,7 +91,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), drdy(*)
 !     ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
 !     OPTIONS 'FULL_MECA' ET 'RIGI_MECA_TANG' = CALCUL DE DSDE
 !     ----------------------------------------------------------------
@@ -99,7 +99,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !     ET CALCUL ELASTIQUE    ET   A (T)    POUR 'RIGI_MECA_TANG'
 !     ----------------------------------------------------------------
 !
-    codret=0
+    codret = 0
 !
 !     MATRICE TANGENTE DE PREDICTION
 !
@@ -107,40 +107,40 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !
         if (rela_comp .eq. 'LAIGLE') then
 !
-            call lcjela(rela_comp, mod, nmat, materd, vind,&
+            call lcjela(rela_comp, mod, nmat, materd, vind, &
                         dsde)
 !
-        else if ((etatd.eq.'PLASTIC').and.(rela_comp.eq.'MONOCRISTAL')) then
+        else if ((etatd .eq. 'PLASTIC') .and. (rela_comp .eq. 'MONOCRISTAL')) then
 !
-            call lcjplc(rela_comp, mod, angmas, imat, nmat,&
-                        materf, timed, timef, compor, nbcomm,&
-                        cpmono, pgl, nfs, nsg, toutms,&
-                        hsr, nr, nvi, epsd, deps,&
-                        itmax, toler, sigd, vind, sigd,&
-                        vind, dsde, drdy, opt, codret,&
+            call lcjplc(rela_comp, mod, angmas, imat, nmat, &
+                        materf, timed, timef, compor, nbcomm, &
+                        cpmono, pgl, nfs, nsg, toutms, &
+                        hsr, nr, nvi, epsd, deps, &
+                        itmax, toler, sigd, vind, sigd, &
+                        vind, dsde, drdy, opt, codret, &
                         fami, kpg, ksp)
             if (codret .ne. 0) goto 999
 !
-        else if ((etatd.eq.'PLASTIC').and.(typma.eq.'VITESSE ')) then
+        else if ((etatd .eq. 'PLASTIC') .and. (typma .eq. 'VITESSE ')) then
             if ((rela_comp .eq. 'HOEK_BROWN') .or. (rela_comp .eq. 'HOEK_BROWN_EFF')) then
 ! ---              HOEK-BROWN : CALCUL DES VALEURS ET VECTEURS PROPRES
 ! ---                           DU DEVIATEUR ELASTIQUE
                 call lchbvp(sigd, vp, vecp)
-            endif
-            call lcjpla(fami, kpg, ksp, rela_comp, mod,&
-                        nr, imat, nmat, materd, nvi,&
-                        deps, sigd, vind, dsde, sigd,&
-                        vind, vp, vecp, theta, dt,&
+            end if
+            call lcjpla(fami, kpg, ksp, rela_comp, mod, &
+                        nr, imat, nmat, materd, nvi, &
+                        deps, sigd, vind, dsde, sigd, &
+                        vind, vp, vecp, theta, dt, &
                         devg, devgii, codret)
             if (codret .ne. 0) goto 999
 !
         else
 !
 !           CAS GENERAL : ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
-            call lcjela(rela_comp, mod, nmat, materd, vind,&
+            call lcjela(rela_comp, mod, nmat, materd, vind, &
                         dsde)
 !
-        endif
+        end if
 !
 !
     else if (opt(1:9) .eq. 'FULL_MECA') then
@@ -152,25 +152,25 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !   --->    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 !   --->    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
             if (typma .eq. 'COHERENT') then
-                call lcjplc(rela_comp, mod, angmas, imat, nmat,&
-                            materf, timed, timef, compor, nbcomm,&
-                            cpmono, pgl, nfs, nsg, toutms,&
-                            hsr, nr, nvi, epsd, deps,&
-                            itmax, toler, sigf, vinf, sigd,&
-                            vind, dsde, drdy, opt, codret,&
+                call lcjplc(rela_comp, mod, angmas, imat, nmat, &
+                            materf, timed, timef, compor, nbcomm, &
+                            cpmono, pgl, nfs, nsg, toutms, &
+                            hsr, nr, nvi, epsd, deps, &
+                            itmax, toler, sigf, vinf, sigd, &
+                            vind, dsde, drdy, opt, codret, &
                             fami, kpg, ksp)
                 if (codret .ne. 0) goto 999
             else if (typma .eq. 'VITESSE ') then
-                call lcjpla(fami, kpg, ksp, rela_comp, mod,&
-                            nr, imat, nmat, materd, nvi,&
-                            deps, sigf, vinf, dsde, sigd,&
-                            vind, vp, vecp, theta, dt,&
+                call lcjpla(fami, kpg, ksp, rela_comp, mod, &
+                            nr, imat, nmat, materd, nvi, &
+                            deps, sigf, vinf, dsde, sigd, &
+                            vind, vp, vecp, theta, dt, &
                             devg, devgii, codret)
                 if (codret .ne. 0) goto 999
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
 ! -   MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE
 !     SIG3=0 ET DE LA CONSERVATION DE L'ENERGIE
@@ -179,10 +179,10 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
             if (k .eq. 3) cycle
             do l = 1, ndt
                 if (l .eq. 3) cycle
-                dsde(k,l) = dsde(k,l) - 1.d0/dsde(3,3)*dsde(k,3)*dsde( 3,l)
+                dsde(k, l) = dsde(k, l)-1.d0/dsde(3, 3)*dsde(k, 3)*dsde(3, l)
             end do
         end do
-    endif
+    end if
 !
-999  continue
+999 continue
 end subroutine

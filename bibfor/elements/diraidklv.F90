@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,35 +42,35 @@ subroutine diraidklv(nomte, raide, klv)
         raide(4) = klv(10)
         raide(5) = klv(15)
         raide(6) = klv(21)
-    else if (nomte.eq.'MECA_DIS_TR_N') then
+    else if (nomte .eq. 'MECA_DIS_TR_N') then
         raide(1) = klv(1)
         raide(2) = klv(3)
         raide(3) = klv(6)
         raide(4) = klv(10)
         raide(5) = klv(15)
         raide(6) = klv(21)
-    else if (nomte.eq.'MECA_DIS_T_L') then
+    else if (nomte .eq. 'MECA_DIS_T_L') then
         raide(1) = klv(1)
         raide(2) = klv(3)
         raide(3) = klv(6)
-    else if (nomte.eq.'MECA_DIS_T_N') then
+    else if (nomte .eq. 'MECA_DIS_T_N') then
         raide(1) = klv(1)
         raide(2) = klv(3)
         raide(3) = klv(6)
-    else if (nomte.eq.'MECA_2D_DIS_T_L') then
+    else if (nomte .eq. 'MECA_2D_DIS_T_L') then
         raide(1) = klv(1)
         raide(2) = klv(3)
-    else if (nomte.eq.'MECA_2D_DIS_T_N') then
+    else if (nomte .eq. 'MECA_2D_DIS_T_N') then
         raide(1) = klv(1)
         raide(2) = klv(3)
-    else if (nomte.eq.'MECA_2D_DIS_TR_L') then
-        raide(1) = klv(1)
-        raide(2) = klv(3)
-        raide(3) = klv(6)
-    else if (nomte.eq.'MECA_2D_DIS_TR_N') then
+    else if (nomte .eq. 'MECA_2D_DIS_TR_L') then
         raide(1) = klv(1)
         raide(2) = klv(3)
         raide(3) = klv(6)
-    endif
+    else if (nomte .eq. 'MECA_2D_DIS_TR_N') then
+        raide(1) = klv(1)
+        raide(2) = klv(3)
+        raide(3) = klv(6)
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
+subroutine rc36cm(iocc, etat, nbma, listma, nbchar, &
                   lichar, chmome)
     implicit none
 #include "asterf_types.h"
@@ -62,7 +62,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     integer, pointer :: nume_char(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
-    cbid=(0.d0,0.d0)
+    cbid = (0.d0, 0.d0)
 !
     call jeveuo('&&RC3600.NUME_CHAR', 'L', vi=nume_char)
     call jeveuo('&&RC3600.CHAMP', 'L', vk24=champ)
@@ -84,15 +84,15 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
         do ir = 1, nbresu, 1
             if (lichar(icha) .eq. nume_char(ir)) goto 114
         end do
-        vali (1) = iocc
-        vali (2) = lichar(icha)
+        vali(1) = iocc
+        vali(2) = lichar(icha)
         call utmess('F', 'POSTRCCM_28', ni=2, vali=vali)
 114     continue
         if (etat .eq. 'S') then
             seisme = .true.
         else
             autre = .true.
-        endif
+        end if
         lich(icha) = champ(ir)
         licm(icha) = .true.
         licr(icha) = 1.d0
@@ -100,25 +100,25 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 !
     if (seisme .and. autre) then
         call utmess('F', 'POSTRCCM_29', si=iocc)
-    endif
+    end if
 !
     if (nbchar .eq. 1) then
         chams0 = lich(1)
-        call cesred(chams0, nbma, listma, nbcmp, nocmp,&
+        call cesred(chams0, nbma, listma, nbcmp, nocmp, &
                     'V', chmome)
     else
 !
-        chams0='&&RC36CM.CHAMS0'
+        chams0 = '&&RC36CM.CHAMS0'
         if (autre) then
-            call cesfus(nbchar, lich, licm, licr, [cbid],&
+            call cesfus(nbchar, lich, licm, licr, [cbid], &
                         .false._1, 'V', chams0)
         else
             call cesqua(nbchar, lich, licm, 'V', chams0)
-        endif
-        call cesred(chams0, nbma, listma, nbcmp, nocmp,&
+        end if
+        call cesred(chams0, nbma, listma, nbcmp, nocmp, &
                     'V', chmome)
         call detrsd('CHAM_ELEM_S', chams0)
-    endif
+    end if
 !
     AS_DEALLOCATE(vk24=lich)
     AS_DEALLOCATE(vl=licm)

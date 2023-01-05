@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
-                  materf, tempd, tempf, tref, depst,&
+subroutine lcdedi(fami, kpg, ksp, nmat, materd, &
+                  materf, tempd, tempf, tref, depst, &
                   epsdt, depsm, epsdm, l_epsi_varc_)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8vide.h"
 #include "asterf_types.h"
@@ -71,76 +71,76 @@ implicit none
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     aster_logical :: l_epsi_varc
 !       ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+    common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
     l_epsi_varc = ASTER_TRUE
     if (present(l_epsi_varc_)) then
         l_epsi_varc = l_epsi_varc_
-    endif
+    end if
 !
-    if (.not.isnan(tref)) then
+    if (.not. isnan(tref)) then
         if (tref .eq. r8vide()) then
             call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, td, iret)
             call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tf, iret)
             call rcvarc(' ', 'TEMP', 'REF', fami, kpg, ksp, tr, iret)
         else
-            td=tempd
-            tf=tempf
-            tr=tref
-        endif
+            td = tempd
+            tf = tempf
+            tr = tref
+        end if
     else
-        td=tempd
-        tf=tempf
-        tr=tref
-    endif
+        td = tempd
+        tf = tempf
+        tr = tref
+    end if
 !
-    if ((.not.isnan(tf)) .and. (.not.isnan(td)) .and. l_epsi_varc) then
+    if ((.not. isnan(tf)) .and. (.not. isnan(td)) .and. l_epsi_varc) then
         if (isnan(tr)) then
             call utmess('F', 'COMPOR5_43')
         else
-            if (materd(nmat,1) .eq. 0) then
-                alphad = materd(3,1)
-                alphaf = materf(3,1)
+            if (materd(nmat, 1) .eq. 0) then
+                alphad = materd(3, 1)
+                alphaf = materf(3, 1)
                 do k = 1, ndi
-                    depsm(k) = depst(k) - ( alphaf*(tf-tr) - alphad*( td-tr))
-                    epsdm(k) = epsdt(k) - ( alphad*(td-tr) )
+                    depsm(k) = depst(k)-(alphaf*(tf-tr)-alphad*(td-tr))
+                    epsdm(k) = epsdt(k)-(alphad*(td-tr))
                 end do
                 do k = ndi+1, ndt
                     depsm(k) = depst(k)
                     epsdm(k) = epsdt(k)
                 end do
 !
-            else if (materd(nmat,1).eq.1) then
+            else if (materd(nmat, 1) .eq. 1) then
 !
-                alphdl = materd(73,1)
-                alphdt = materd(74,1)
-                alphdn = materd(75,1)
+                alphdl = materd(73, 1)
+                alphdt = materd(74, 1)
+                alphdn = materd(75, 1)
 !
-                alphfl = materf(73,1)
-                alphft = materf(74,1)
-                alphfn = materf(75,1)
+                alphfl = materf(73, 1)
+                alphft = materf(74, 1)
+                alphfn = materf(75, 1)
 !
-                depsm(1) = depst(1) - ( alphfl*(tf-tr) - alphdl*(td- tr))
-                depsm(2) = depst(2) - ( alphft*(tf-tr) - alphdt*(td- tr))
-                depsm(3) = depst(3) - ( alphfn*(tf-tr) - alphdn*(td- tr))
+                depsm(1) = depst(1)-(alphfl*(tf-tr)-alphdl*(td-tr))
+                depsm(2) = depst(2)-(alphft*(tf-tr)-alphdt*(td-tr))
+                depsm(3) = depst(3)-(alphfn*(tf-tr)-alphdn*(td-tr))
 !
-                epsdm(1) = epsdt(1) - ( alphdl*(td-tr) )
-                epsdm(2) = epsdt(2) - ( alphdt*(td-tr) )
-                epsdm(3) = epsdt(3) - ( alphdn*(td-tr) )
+                epsdm(1) = epsdt(1)-(alphdl*(td-tr))
+                epsdm(2) = epsdt(2)-(alphdt*(td-tr))
+                epsdm(3) = epsdt(3)-(alphdn*(td-tr))
 !
                 do k = 4, 6
                     depsm(k) = depst(k)
                     epsdm(k) = epsdt(k)
                 end do
-            endif
+            end if
 !
-        endif
+        end if
     else
-        alphad = materd(3,1)
-        alphaf = materf(3,1)
+        alphad = materd(3, 1)
+        alphaf = materf(3, 1)
         do k = 1, ndt
             depsm(k) = depst(k)
             epsdm(k) = epsdt(k)
         end do
-    endif
+    end if
 end subroutine

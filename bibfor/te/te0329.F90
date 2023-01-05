@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,11 +48,11 @@ subroutine te0329(option, nomte)
     integer :: i, iacce, iadzi, iazk24, idim, iharm, ino
     integer :: ivectu, ivetel, j, jno, k
 !-----------------------------------------------------------------------
-    if (lteatt('DIM_TOPO_MODELI','3')) then
+    if (lteatt('DIM_TOPO_MODELI', '3')) then
 !   ----------------------------------------
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-        idfdy = idfdx + 1
+        idfdy = idfdx+1
 !
         call jevech('PACCELR', 'L', iacce)
         call jevech('PGEOMER', 'L', igeom)
@@ -60,43 +60,43 @@ subroutine te0329(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
 !
         do i = 1, nno
-            acloc(1,i)=0.0d0
-            acloc(2,i)=0.0d0
-            acloc(3,i)=0.0d0
+            acloc(1, i) = 0.0d0
+            acloc(2, i) = 0.0d0
+            acloc(3, i) = 0.0d0
         end do
 !
-        k=0
+        k = 0
         do i = 1, nno
             do idim = 1, 3
-                k=k+1
-                acloc(idim,i) = zr(iacce+k-1)
+                k = k+1
+                acloc(idim, i) = zr(iacce+k-1)
             end do
         end do
 !
         do ipg = 1, npg1
-            acc(1,ipg)=0.0d0
-            acc(2,ipg)=0.0d0
-            acc(3,ipg)=0.0d0
+            acc(1, ipg) = 0.0d0
+            acc(2, ipg) = 0.0d0
+            acc(3, ipg) = 0.0d0
         end do
 !
 !
         do ipg = 1, npg1
-            ldec=(ipg-1)*nno
+            ldec = (ipg-1)*nno
             do i = 1, nno
-                acc(1,ipg) = acc(1,ipg) + acloc(1,i)* zr(ivf+ldec+i-1)
-                acc(2,ipg) = acc(2,ipg) + acloc(2,i)* zr(ivf+ldec+i-1)
-                acc(3,ipg) = acc(3,ipg) + acloc(3,i)* zr(ivf+ldec+i-1)
+                acc(1, ipg) = acc(1, ipg)+acloc(1, i)*zr(ivf+ldec+i-1)
+                acc(2, ipg) = acc(2, ipg)+acloc(2, i)*zr(ivf+ldec+i-1)
+                acc(3, ipg) = acc(3, ipg)+acloc(3, i)*zr(ivf+ldec+i-1)
             end do
         end do
 !     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
         do ino = 1, nno
-            i = igeom + 3*(ino-1) -1
+            i = igeom+3*(ino-1)-1
             do jno = 1, nno
-                j = igeom + 3*(jno-1) -1
-                sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-                sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-                sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+                j = igeom+3*(jno-1)-1
+                sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+                sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+                sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
             end do
         end do
 !
@@ -105,8 +105,8 @@ subroutine te0329(option, nomte)
 !
         do ipg = 1, npg1
 !
-            kdec=(ipg-1)*nno*ndim
-            ldec=(ipg-1)*nno
+            kdec = (ipg-1)*nno*ndim
+            ldec = (ipg-1)*nno
 !
             nx(ipg) = 0.0d0
             ny(ipg) = 0.0d0
@@ -117,54 +117,54 @@ subroutine te0329(option, nomte)
                 do j = 1, nno
                     jdec = (j-1)*ndim
 !
-                    nx(ipg) = nx(ipg) + zr(idfdx+kdec+idec) * zr( idfdy+kdec+jdec) * sx(i,j)
-                    ny(ipg) = ny(ipg) + zr(idfdx+kdec+idec) * zr( idfdy+kdec+jdec) * sy(i,j)
-                    nz(ipg) = nz(ipg) + zr(idfdx+kdec+idec) * zr( idfdy+kdec+jdec) * sz(i,j)
+                    nx(ipg) = nx(ipg)+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                    ny(ipg) = ny(ipg)+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                    nz(ipg) = nz(ipg)+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
 !
                 end do
             end do
 !
 !      CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
-            jac(ipg) = sqrt ( nx(ipg)*nx(ipg) + ny(ipg)*ny(ipg) + nz(ipg)*nz(ipg))
+            jac(ipg) = sqrt(nx(ipg)*nx(ipg)+ny(ipg)*ny(ipg)+nz(ipg)*nz(ipg))
 !
 !       CALCUL DE LA NORMALE UNITAIRE
 !
-            norm(1,ipg) = nx(ipg)/jac(ipg)
-            norm(2,ipg) = ny(ipg)/jac(ipg)
-            norm(3,ipg) = nz(ipg)/jac(ipg)
+            norm(1, ipg) = nx(ipg)/jac(ipg)
+            norm(2, ipg) = ny(ipg)/jac(ipg)
+            norm(3, ipg) = nz(ipg)/jac(ipg)
         end do
 !
 !    CALCUL DE COORDONNEES AUX POINTS DE GAUSS
 !
         do ipg = 1, npg1
-            ldec=(ipg-1)*nno
-            x(1,ipg)=0.0d0
-            x(2,ipg)=0.0d0
-            x(3,ipg)=0.0d0
+            ldec = (ipg-1)*nno
+            x(1, ipg) = 0.0d0
+            x(2, ipg) = 0.0d0
+            x(3, ipg) = 0.0d0
 !
             do j = 1, nno
 !
-                x(1,ipg)= x(1,ipg)+zr(igeom + 3*(j-1) -1+1) *zr(ivf+&
-                ldec+j-1)
-                x(2,ipg)= x(2,ipg)+zr( igeom + 3*(j-1) -1+2) *zr(ivf+&
-                ldec+j-1)
-                x(3,ipg)= x(3,ipg)+zr( igeom + 3*(j-1) -1+3) *zr(ivf+&
-                ldec+j-1)
+                x(1, ipg) = x(1, ipg)+zr(igeom+3*(j-1)-1+1)*zr(ivf+ &
+                                                               ldec+j-1)
+                x(2, ipg) = x(2, ipg)+zr(igeom+3*(j-1)-1+2)*zr(ivf+ &
+                                                               ldec+j-1)
+                x(3, ipg) = x(3, ipg)+zr(igeom+3*(j-1)-1+3)*zr(ivf+ &
+                                                               ldec+j-1)
 !
             end do
 !
 ! CALCUL DU FLUX FLUIDE NORMAL AUX POINTS DE GAUSS
 !
-            flufn(ipg) = acc(1,ipg)*norm(1,ipg)+acc(2,ipg)* norm(2, ipg)+acc(3,ipg)*norm(3,ipg)
+            flufn(ipg) = acc(1, ipg)*norm(1, ipg)+acc(2, ipg)*norm(2, ipg)+acc(3, ipg)*norm(3, ipg)
 !
         end do
 !
 ! STOCKAGE DU FLUX FLUIDE DANS UN VECTEUR INDEXE
 ! PAR LE MODE ET L'ELEMENT
 !
-        imode='CHBIDON'
-        ielem ='CHBIDON'
+        imode = 'CHBIDON'
+        ielem = 'CHBIDON'
         call codent(zi(iharm), 'D0', imode)
         call tecael(iadzi, iazk24, noms=0)
         call codent(zi(iadzi), 'D0', ielem)
@@ -175,16 +175,16 @@ subroutine te0329(option, nomte)
         call wkvect(vetel, 'V V R8', 4*npg1, ivetel)
         do ipg = 0, npg1-1
             zr(ivetel+4*ipg) = jac(ipg+1)*zr(ipoids+ipg)*flufn(ipg+1)
-            zr(ivetel+4*ipg+1) = x(1,ipg+1)
-            zr(ivetel+4*ipg+2) = x(2,ipg+1)
-            zr(ivetel+4*ipg+3) = x(3,ipg+1)
+            zr(ivetel+4*ipg+1) = x(1, ipg+1)
+            zr(ivetel+4*ipg+2) = x(2, ipg+1)
+            zr(ivetel+4*ipg+3) = x(3, ipg+1)
         end do
 !
 !
-    else if (nomte.eq.'MEDKQU4') then
+    else if (nomte .eq. 'MEDKQU4') then
 !   ----------------------------------
         call shl329()
 !
-    endif
+    end if
 !
 end subroutine

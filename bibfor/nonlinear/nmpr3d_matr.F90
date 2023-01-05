@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,16 +90,16 @@ subroutine nmpr3d_matr(nno, npg, poidsg, vff, dff, &
             do j = 1, 3
                 do n = 1, nno
                     do i = 1, 3
-                        t1 = (dff(1, m, kpg)*cnva(j,1) + &
-                              dff(2, m, kpg)*cnva(j,2)) * vff(n,kpg)*cova(i,3)
-                        t2 = dff(1,m,kpg)*cova(j,3) * vff(n,kpg)* cnva(i,1)
-                        t3 = dff(2,m,kpg)*cova(j,3) * vff(n,kpg)* cnva(i,2)
-                        t = poidsg(kpg) * p(kpg) * jac * (t1 - t2 - t3)
-                        matc(i,n,j,m) = matc(i,n,j,m) + t
-                    enddo
-                enddo
-            enddo
-        enddo
-     enddo
+                        t1 = (dff(1, m, kpg)*cnva(j, 1)+ &
+                              dff(2, m, kpg)*cnva(j, 2))*vff(n, kpg)*cova(i, 3)
+                        t2 = dff(1, m, kpg)*cova(j, 3)*vff(n, kpg)*cnva(i, 1)
+                        t3 = dff(2, m, kpg)*cova(j, 3)*vff(n, kpg)*cnva(i, 2)
+                        t = poidsg(kpg)*p(kpg)*jac*(t1-t2-t3)
+                        matc(i, n, j, m) = matc(i, n, j, m)+t
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@
 !
 subroutine nonlinDSColumnVoid(column)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8vide.h"
 !
-type(NL_DS_Column), intent(out) :: column
+    type(NL_DS_Column), intent(out) :: column
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,17 +42,17 @@ type(NL_DS_Column), intent(out) :: column
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    column%name          = ' '
-    column%l_vale_affe   = ASTER_FALSE
-    column%l_vale_inte   = ASTER_FALSE
-    column%l_vale_real   = ASTER_FALSE
-    column%l_vale_cplx   = ASTER_FALSE
-    column%l_vale_strg   = ASTER_FALSE
-    column%vale_inte     = ismaem()
-    column%vale_real     = r8vide()
-    column%vale_cplx     = dcmplx(r8vide(),r8vide())
-    column%vale_strg     = ' '
-    column%mark          = ' '
-    column%title(1:3)    = ' '
+    column%name = ' '
+    column%l_vale_affe = ASTER_FALSE
+    column%l_vale_inte = ASTER_FALSE
+    column%l_vale_real = ASTER_FALSE
+    column%l_vale_cplx = ASTER_FALSE
+    column%l_vale_strg = ASTER_FALSE
+    column%vale_inte = ismaem()
+    column%vale_real = r8vide()
+    column%vale_cplx = dcmplx(r8vide(), r8vide())
+    column%vale_strg = ' '
+    column%mark = ' '
+    column%title(1:3) = ' '
 !
 end subroutine

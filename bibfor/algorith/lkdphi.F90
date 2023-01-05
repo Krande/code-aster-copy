@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
+subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv, &
                   dphi)
 !
     implicit none
@@ -40,25 +40,25 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
 ! OUT : DPHI  :  AMPLITUDE DES DEFORMATIONS IRREVERSIBLES  --------
 !       DPHI   = A*n/PA*(fv(SIG,XIV)/PA)**(n-1).dfv/dsig*De
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: i, ndi, ndt
     real(kind=8) :: un, zero
     real(kind=8) :: pa, a, n, aa(6)
-    parameter       (un     =  1.0d0  )
-    parameter       (zero   =  0.0d0  )
+    parameter(un=1.0d0)
+    parameter(zero=0.0d0)
 ! =================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 ! =================================================================
-    pa = mater(1,2)
-    a = mater(21,2)
-    n = mater(22,2)
+    pa = mater(1, 2)
+    a = mater(21, 2)
+    n = mater(22, 2)
 !
 ! =================================================================
 ! --- MATRICE INTERMEDIAIRE ---------------------------------------
 ! =================================================================
     call r8inir(6, 0.d0, aa, 1)
 !
-    aa(1:ndt) = matmul(de(1:ndt,1:ndt), dfdsv(1:ndt))
+    aa(1:ndt) = matmul(de(1:ndt, 1:ndt), dfdsv(1:ndt))
 !
 ! =================================================================
 ! --- CALCUL DE DPHI/DDEPS ------------------------------------
@@ -67,8 +67,8 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
         if (seuilv .le. zero) then
             dphi(i) = zero
         else
-            dphi(i) = a * n /pa * (seuilv/pa)**(n-un)*aa(i)
-        endif
+            dphi(i) = a*n/pa*(seuilv/pa)**(n-un)*aa(i)
+        end if
     end do
 ! =================================================================
 end subroutine

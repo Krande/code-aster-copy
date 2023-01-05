@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calamr(phib24, phi1j, bi, num, j,&
+subroutine calamr(phib24, phi1j, bi, num, j, &
                   cij2)
     implicit none
 !
@@ -45,13 +45,13 @@ subroutine calamr(phib24, phi1j, bi, num, j,&
 !-----------------------------------------------------------------------
     integer :: j
 !-----------------------------------------------------------------------
-    phib19='PHIB19'
-    incr='BID'
-    call chnucn(phib24(1:19), num, 0, k8bid, 'V',&
+    phib19 = 'PHIB19'
+    incr = 'BID'
+    call chnucn(phib24(1:19), num, 0, k8bid, 'V', &
                 phib19)
     call codent(j, 'D0', incr)
-    ph1plo='PHPLO'//incr
-    call chnucn(phi1j, num, 0, k8bid, 'V',&
+    ph1plo = 'PHPLO'//incr
+    call chnucn(phi1j, num, 0, k8bid, 'V', &
                 ph1plo)
 !-------------------CALCUL DE L'AMORTISSEMENT AJOUTE-------------------
 !---------------SUR LE MODELE THERMIQUE D INTERFACE--------------

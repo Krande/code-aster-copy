@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amort, arret='C')
 !
 ! RECUPERATION DE LA FREQUENCE
-    call rsadpa(modein, 'L', 1, 'FREQ', 2,&
+    call rsadpa(modein, 'L', 1, 'FREQ', 2, &
                 0, sjv=iaux, styp=k8b)
     freq = zr(iaux)
 !
@@ -83,13 +83,13 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     nbordr = nbmode
     nbhar = int(nbordr/2)
 !
-    nt = 2**int(1.+ log10(dble(nbpt))/log10(2.))
+    nt = 2**int(1.+log10(dble(nbpt))/log10(2.))
     call rscrsd('G', nomres, typres, nt)
     krefe(1:19) = nomres
     matrice(1) = rigid
     matrice(2) = masse
     matrice(3) = amort
-    call refdaj('F', nomres, nbmode, numedd, 'DYNAMIQUE',&
+    call refdaj('F', nomres, nbmode, numedd, 'DYNAMIQUE', &
                 matrice, ier)
 !
     iarchi = -1
@@ -99,7 +99,7 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
 !
     call wkvect(krefe//'.REP', 'V V R', neq*nt, lrep)
 !
-    call mnlfft(neq, zr(lvect), zr(lrep), nbhar, nt,&
+    call mnlfft(neq, zr(lvect), zr(lrep), nbhar, nt, &
                 0)
 !
     nomsym(1) = 'DEPL'
@@ -107,25 +107,25 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     do itps = 1, nt
         temps = (itps-1)*deltat
 !
-        iarchi = iarchi + 1
-        call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
+        iarchi = iarchi+1
+        call rsadpa(nomres, 'E', 1, 'INST', iarchi, &
                     0, sjv=iaux, styp=k8b)
         zr(iaux) = temps
 !
-        call rsexch(' ', nomres, nomsym(1), iarchi, chamno,&
+        call rsexch(' ', nomres, nomsym(1), iarchi, chamno, &
                     iaux)
         call vtcrem(chamno, rigid, 'G', 'R')
 !
         chamno(20:24) = '.VALE'
         call jeveuo(chamno, 'E', jaux)
 !
-        do 211 , ieq = 1, neq
-        iadd = (itps-1)*neq+ieq
-        zr(jaux-1+ieq) = zr(lrep-1+iadd)
-211     continue
+        do 211, ieq = 1, neq
+            iadd = (itps-1)*neq+ieq
+            zr(jaux-1+ieq) = zr(lrep-1+iadd)
+211         continue
 !
-        call rsnoch(nomres, nomsym(1), iarchi)
-    end do
+            call rsnoch(nomres, nomsym(1), iarchi)
+        end do
 !
-    call jedema()
-end subroutine
+        call jedema()
+        end subroutine

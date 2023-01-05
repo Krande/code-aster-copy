@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ subroutine vtcrem(chamno, matass, base, typc)
     refa(1:19) = matass
     call jeveuo(refa, 'L', jrefa)
     call dismoi('NB_EQUA', matass, 'MATR_ASSE', repi=neq)
-    crefe(1)=zk24(jrefa-1+1)
-    crefe(2)=zk24(jrefa-1+2)(1:14)//'.NUME'
+    crefe(1) = zk24(jrefa-1+1)
+    crefe(2) = zk24(jrefa-1+2) (1:14)//'.NUME'
     call vtcrea(chamno, crefe, base, typc, neq)
 !
     call jedema()

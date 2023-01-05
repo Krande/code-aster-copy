@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine editgd(ncmp,nedit,dg,ncmpmx,ctype,&
-                  jnocmp,jncmp,jvalv,jvale)
+subroutine editgd(ncmp, nedit, dg, ncmpmx, ctype, &
+                  jnocmp, jncmp, jvalv, jvale)
     implicit none
 !
 !     ARGUMENTS:
@@ -59,41 +59,41 @@ subroutine editgd(ncmp,nedit,dg,ncmpmx,ctype,&
     debgd = (nedit-1)*ncmpmx
 !
 !   -- on compte le nombre de cmps a noter reellement :
-    ncmp2=0
-    do i=1,ncmp
-        if (zk8(jncmp-1+i)(1:1) .ne. ' ') ncmp2=ncmp2+1
-    enddo
+    ncmp2 = 0
+    do i = 1, ncmp
+        if (zk8(jncmp-1+i) (1:1) .ne. ' ') ncmp2 = ncmp2+1
+    end do
 !
     indgd = 0
-    ico=0
+    ico = 0
     do i = 1, ncmpmx
         nomcmp = zk8(jnocmp-1+i)
-        j = indik8(zk8(jncmp),nomcmp,1,ncmp)
+        j = indik8(zk8(jncmp), nomcmp, 1, ncmp)
         if (j .ne. 0) then
-            ico=ico+1
-            indgd = indgd + 1
-            iec = (i-1)/30 + 1
-            reste = i - 30* (iec-1)
-            code = lshift(1,reste)
-            dg(iec) = ior(dg(iec),code)
-            deb2 = debgd + indgd
+            ico = ico+1
+            indgd = indgd+1
+            iec = (i-1)/30+1
+            reste = i-30*(iec-1)
+            code = lshift(1, reste)
+            dg(iec) = ior(dg(iec), code)
+            deb2 = debgd+indgd
             call jacopo(1, ctype, jvalv+j-1, jvale+deb2-1)
-        endif
-    enddo
+        end if
+    end do
     if (ico .ne. ncmp2) then
         call utmess('F+', 'CALCULEL6_68')
         do i = 1, ncmpmx
             nomcmp = zk8(jnocmp-1+i)
             valk = nomcmp
             call utmess('F+', 'CALCULEL6_69', sk=valk)
-        enddo
+        end do
         call utmess('F+', 'CALCULEL6_70')
         do i = 1, ncmp
             nomcmp = zk8(jncmp-1+i)
             valk = nomcmp
             call utmess('F+', 'CALCULEL6_71', sk=valk)
-         enddo
-         call utmess('F', 'VIDE_1')
-    endif
+        end do
+        call utmess('F', 'VIDE_1')
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eifore(ndim, axi, nno1, nno2, npg,&
-                  wref, vff1, vff2, dffr2, geom,&
-                  ang, iu, im, sigref, depref,&
+subroutine eifore(ndim, axi, nno1, nno2, npg, &
+                  wref, vff1, vff2, dffr2, geom, &
+                  ang, iu, im, sigref, depref, &
                   vect)
 !
 !
@@ -62,28 +62,28 @@ subroutine eifore(ndim, axi, nno1, nno2, npg,&
 !
     do g = 1, npg
 !
-        call eicine(ndim, axi, nno1, nno2, vff1(1, g),&
-                    vff2(1, g), wref(g), dffr2(1, 1, g), geom, ang,&
+        call eicine(ndim, axi, nno1, nno2, vff1(1, g), &
+                    vff2(1, g), wref(g), dffr2(1, 1, g), geom, ang, &
                     wg, b)
 !
 !      VECTEUR FINT:U
         do n = 1, 2*nno1
             do i = 1, ndim
-                kk = iu(i,n)
+                kk = iu(i, n)
                 t1 = 0
                 do k = 1, ndim
-                    t1 = t1 + abs(b(k,i,n))*sigref/ndim
+                    t1 = t1+abs(b(k, i, n))*sigref/ndim
                 end do
-                vect(kk) = vect(kk) + wg*t1
+                vect(kk) = vect(kk)+wg*t1
             end do
         end do
 !
 !      VECTEUR FINT:M
         do n = 1, nno2
             do i = 1, ndim
-                kk = im(i,n)
-                t1 = abs(vff2(n,g))*depref
-                vect(kk) = vect(kk) + wg*t1
+                kk = im(i, n)
+                t1 = abs(vff2(n, g))*depref
+                vect(kk) = vect(kk)+wg*t1
             end do
         end do
 !

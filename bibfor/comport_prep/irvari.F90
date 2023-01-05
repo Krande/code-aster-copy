@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine irvari(ifi        , field_med    , vari_elga, field_loca, model    ,&
-                  nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
-                  nume_store , nbmaec       , limaec   , result    , cara_elem,&
-                  carael     , nbCmpDyna    , lfichUniq, codret)
+subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
+                  nb_cmp_sele, cmp_name_sele, partie, numpt, instan, &
+                  nume_store, nbmaec, limaec, result, cara_elem, &
+                  carael, nbCmpDyna, lfichUniq, codret)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -46,24 +46,24 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
 !
-integer, intent(in) :: ifi
-character(len=64), intent(in) :: field_med
-character(len=19), intent(in) :: vari_elga
-character(len=8), intent(in) :: field_loca
-character(len=8), intent(in) :: model
-integer, intent(in) :: nb_cmp_sele
-character(len=*), intent(in) :: cmp_name_sele(*)
-character(len=*), intent(in) :: partie
-integer, intent(in) :: numpt
-real(kind=8), intent(in) :: instan
-integer, intent(in) :: nume_store
-integer, intent(in) :: nbmaec
-integer, intent(in) :: limaec(*)
-character(len=8), intent(in) :: result
-character(len=8), intent(in) :: cara_elem, carael
-integer, intent(inout) :: nbCmpDyna
-aster_logical, intent(in) :: lfichUniq
-integer, intent(out) :: codret
+    integer, intent(in) :: ifi
+    character(len=64), intent(in) :: field_med
+    character(len=19), intent(in) :: vari_elga
+    character(len=8), intent(in) :: field_loca
+    character(len=8), intent(in) :: model
+    integer, intent(in) :: nb_cmp_sele
+    character(len=*), intent(in) :: cmp_name_sele(*)
+    character(len=*), intent(in) :: partie
+    integer, intent(in) :: numpt
+    real(kind=8), intent(in) :: instan
+    integer, intent(in) :: nume_store
+    integer, intent(in) :: nbmaec
+    integer, intent(in) :: limaec(*)
+    character(len=8), intent(in) :: result
+    character(len=8), intent(in) :: cara_elem, carael
+    integer, intent(inout) :: nbCmpDyna
+    aster_logical, intent(in) :: lfichUniq
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,7 +107,7 @@ integer, intent(out) :: codret
     character(len=8), parameter :: base_name = '&&IRVARI'
     character(len=19) :: compor, ligrel
     character(len=19), parameter :: vari_elga_s = '&&IRVARI.VARIELGA_S'
-    character(len=19), parameter :: vari_elgr   = '&&IRVARI.VARIELGR'
+    character(len=19), parameter :: vari_elgr = '&&IRVARI.VARIELGR'
     character(len=19), parameter :: vari_elgr_s = '&&IRVARI.VARIELGR_S'
     character(len=19) :: vari_link
     character(len=19), parameter :: vari_redu = '&&IRVARI.VARIREDU'
@@ -143,40 +143,40 @@ integer, intent(out) :: codret
 !
 ! - Prepare informations about internal variables
 !
-    call comp_meca_pvar(model_ = model, comporMap_ = compor, comporInfo = comporInfo)
+    call comp_meca_pvar(model_=model, comporMap_=compor, comporInfo=comporInfo)
 
 ! - Access to informations
-    call jeveuo(comporInfo(1:19)//'.INFO', 'L', vi = comporInfoInfo)
+    call jeveuo(comporInfo(1:19)//'.INFO', 'L', vi=comporInfoInfo)
     nbCellMesh = comporInfoInfo(1)
-    nbMapZone      = comporInfoInfo(2)
+    nbMapZone = comporInfoInfo(2)
     nb_vari_maxi = comporInfoInfo(3)
-    nt_vari      = comporInfoInfo(4)
+    nt_vari = comporInfoInfo(4)
 !
-    if ( nt_vari .eq. 0 ) then
+    if (nt_vari .eq. 0) then
         codret = 300
         goto 999
-    endif
-    call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi = comporInfoZone)
+    end if
+    call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi=comporInfoZone)
 !
 ! - Create list of internal variables and link to zone in <CARTE> COMPOR
 !
     call comp_meca_uvar(comporInfo, base_name, vari_redu, nb_vari_redu, codret)
-    call jeveuo(vari_redu, 'L', vk16 = v_vari_redu)
+    call jeveuo(vari_redu, 'L', vk16=v_vari_redu)
 ! - Behaviours that cannot give name of internal state variables
     if (codret .eq. 200) then
         goto 999
-    endif
+    end if
 ! - Only elastic behaviours
     if (nb_vari_redu .eq. 0) then
         codret = 300
         goto 999
-    endif
+    end if
 !
 ! - Access to <CARTE> COMPOR
 !
-    call jeveuo(compor//'.DESC', 'L', vi   = v_compor_desc)
-    call jeveuo(jexnum(compor//'.LIMA', 1), 'L', vi = v_compor_lima)
-    call jeveuo(jexatr(compor//'.LIMA', 'LONCUM'), 'L', vi = v_compor_lima_lc)
+    call jeveuo(compor//'.DESC', 'L', vi=v_compor_desc)
+    call jeveuo(jexnum(compor//'.LIMA', 1), 'L', vi=v_compor_lima)
+    call jeveuo(jexatr(compor//'.LIMA', 'LONCUM'), 'L', vi=v_compor_lima_lc)
 !
 ! - Transform VARI_ELGA in VARI_ELGA_S
 !
@@ -187,18 +187,18 @@ integer, intent(out) :: codret
 !
 ! - Prepare objects to reduced list of internal variables
 !
-    call wkvect(label_vxx, 'V V K8', nb_vari_redu, vk8 = v_label_vxx)
-    call wkvect(label_med, 'V V K16', 2*nb_vari_redu, vk16 = v_label_med)
+    call wkvect(label_vxx, 'V V K8', nb_vari_redu, vk8=v_label_vxx)
+    call wkvect(label_med, 'V V K16', 2*nb_vari_redu, vk16=v_label_med)
     do i_vari_redu = 1, nb_vari_redu
         call codent(i_vari_redu, 'G', saux07)
-        v_label_vxx(i_vari_redu)         = 'V'//saux07
+        v_label_vxx(i_vari_redu) = 'V'//saux07
         v_label_med(2*(i_vari_redu-1)+1) = 'V'//saux07
         v_label_med(2*(i_vari_redu-1)+2) = v_vari_redu(i_vari_redu)
     end do
 !
 ! - Create VARI_ELGR_S on reduced list of internal variables
 !
-    call cescrm('V', vari_elgr_s, field_loca, 'VARI_R', nb_vari_redu,&
+    call cescrm('V', vari_elgr_s, field_loca, 'VARI_R', nb_vari_redu, &
                 v_label_vxx, vari_elga_s)
     call jeveuo(vari_elgr_s//'.CESD', 'L', jv_elgr_cesd)
     call jeveuo(vari_elgr_s//'.CESL', 'L', jv_elgr_cesl)
@@ -214,7 +214,7 @@ integer, intent(out) :: codret
 !
             call codent(iMapZone, 'G', saux08)
             vari_link = base_name//saux08
-            call jeveuo(vari_link, 'L', vi = v_vari_link)
+            call jeveuo(vari_link, 'L', vi=v_vari_link)
 !
 ! --------- Access to current zone in CARTE
 !
@@ -223,13 +223,13 @@ integer, intent(out) :: codret
             affe_indx = v_compor_desc(1+4+(iMapZone-1)*2)
             if (affe_type .eq. 3) then
                 nbCell = v_compor_lima_lc(1+affe_indx)-v_compor_lima_lc(affe_indx)
-                posit   = v_compor_lima_lc(affe_indx)
+                posit = v_compor_lima_lc(affe_indx)
             else if (affe_type .eq. 1) then
                 nbCell = nbCellMesh
-                posit   = 0
+                posit = 0
             else
                 ASSERT(.false.)
-            endif
+            end if
             call jelira(jexnum(comporInfo(1:19)//'.VARI', iMapZone), 'LONMAX', nb_vari_zone)
 !
 ! --------- Loop on elements in zone of CARTE
@@ -241,44 +241,44 @@ integer, intent(out) :: codret
                     nume_elem = iCell
                 else
                     ASSERT(.false.)
-                endif
-                nb_pt   = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+1)
-                nb_spt  = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+2)
+                end if
+                nb_pt = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+1)
+                nb_spt = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+2)
                 nb_vari = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+3)
                 do i_pt = 1, nb_pt
                     do i_spt = 1, nb_spt
                         do i_vari = 1, nb_vari
-                            call cesexi('C'  , jv_elga_cesd, jv_elga_cesl, nume_elem, i_pt,&
-                                        i_spt, i_vari      , jv_elga)
+                            call cesexi('C', jv_elga_cesd, jv_elga_cesl, nume_elem, i_pt, &
+                                        i_spt, i_vari, jv_elga)
                             if (jv_elga .gt. 0 .and. i_vari .le. nb_vari_zone) then
                                 i_vari_redu = v_vari_link(i_vari)
                                 if (i_vari_redu .ne. 0) then
-                                    call cesexi('C'  , jv_elgr_cesd, jv_elgr_cesl, nume_elem, i_pt,&
-                                                i_spt, i_vari_redu , jv_elgr)
+                                    call cesexi('C', jv_elgr_cesd, jv_elgr_cesl, nume_elem, i_pt, &
+                                                i_spt, i_vari_redu, jv_elgr)
                                     ASSERT(jv_elgr .ne. 0)
                                     jv_elgr = abs(jv_elgr)
-                                    v_elgr_cesv(jv_elgr)      = v_elga_cesv(jv_elga)
+                                    v_elgr_cesv(jv_elgr) = v_elga_cesv(jv_elga)
                                     zl(jv_elgr_cesl-1+jv_elgr) = .true.
-                                endif
-                            endif
-                        enddo
-                    enddo
-                enddo
-            enddo
-        endif
-    enddo
+                                end if
+                            end if
+                        end do
+                    end do
+                end do
+            end do
+        end if
+    end do
 !
 ! - Transform VARI_ELGR_S in VARI_ELGR
 !
     nomres = field_med(1:8)//'VARI_ELGA_NOMME'
-    call cescel(vari_elgr_s, ligrel, ' ', ' ', 'OUI',&
+    call cescel(vari_elgr_s, ligrel, ' ', ' ', 'OUI', &
                 nume_elem, 'V', vari_elgr, 'F', codret_dummy)
 !
 ! - Write in MED file
 !
-    call irceme(ifi, nomres, vari_elgr, field_loca, model,&
-                nb_cmp_sele, cmp_name_sele, label_med, partie, numpt,&
-                instan, nume_store, nbmaec, limaec, cara_elem,&
+    call irceme(ifi, nomres, vari_elgr, field_loca, model, &
+                nb_cmp_sele, cmp_name_sele, label_med, partie, numpt, &
+                instan, nume_store, nbmaec, limaec, cara_elem, &
                 carael, field_type, nbCmpDyna, lfichUniq, codret)
 !
 999 continue
@@ -296,11 +296,11 @@ integer, intent(out) :: codret
     call jedetr(vari_redu)
     call jedetr(label_vxx)
     call jedetr(label_med)
-    do iMapZone = 1,nbMapZone
+    do iMapZone = 1, nbMapZone
         call codent(iMapZone, 'G', saux08)
         vari_link = base_name//saux08
         call jedetr(vari_link)
-    enddo
+    end do
 !
     call jedema()
 !

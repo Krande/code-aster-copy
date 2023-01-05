@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,10 +49,10 @@ subroutine rrldc(a, nordre, x, nves)
 !     RESOLUTION DESCENDANTE
     do nv = 1, nves
         do in = ilign1, ilign2-1
-            r8val = - x (in,nv)
+            r8val = -x(in, nv)
             do i = in+1, ilign2
-                idiag=i*(i-1)/2+1
-                x(i,nv) = x(i,nv) + r8val*dconjg(a(idiag+i-in))
+                idiag = i*(i-1)/2+1
+                x(i, nv) = x(i, nv)+r8val*dconjg(a(idiag+i-in))
             end do
         end do
     end do
@@ -61,7 +61,7 @@ subroutine rrldc(a, nordre, x, nves)
     do nv = 1, nves
         do in = ilign1, ilign2
             indiag = in*(in-1)/2+1
-            x ( in , nv ) = x ( in , nv ) / a(indiag)
+            x(in, nv) = x(in, nv)/a(indiag)
         end do
     end do
 !
@@ -69,9 +69,9 @@ subroutine rrldc(a, nordre, x, nves)
     do nv = 1, nves
         do in = ilign2, ilign1+1, -1
             indiag = in*(in-1)/2+1
-            r8val = - x ( in , nv )
+            r8val = -x(in, nv)
             do i = 1, in-1
-                x(i,nv) = x(i,nv) + r8val*a(indiag+in-i)
+                x(i, nv) = x(i, nv)+r8val*a(indiag+in-i)
             end do
         end do
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine caelca(modele, chmat, caelem, irana1, icabl,&
-                  nbnoca, numaca, quad, regl, relax,&
-                  ea, rh1000, prelax, fprg, frco,&
+subroutine caelca(modele, chmat, caelem, irana1, icabl, &
+                  nbnoca, numaca, quad, regl, relax, &
+                  ea, rh1000, prelax, fprg, frco, &
                   frli, sa)
     implicit none
 ! --------------------------------------------------------------------------------------------------
@@ -111,17 +111,17 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     character(len=16) :: bpela(5), etcca(4), young
     character(len=16) :: nomele(2)
 !
-    data          nomele /'MECA_BARRE      ','MECGSEG3        '/
-    data          bpela  /'RELAX_1000','MU0_RELAX','F_PRG',&
-                          'FROT_COURB','FROT_LINE'/
-    data          etcca  /'RELAX_1000','F_PRG','COEF_FROT','PERT_LIGNE'/
-    data          young  /'E       '/
+    data nomele/'MECA_BARRE      ', 'MECGSEG3        '/
+    data bpela/'RELAX_1000', 'MU0_RELAX', 'F_PRG', &
+        'FROT_COURB', 'FROT_LINE'/
+    data etcca/'RELAX_1000', 'F_PRG', 'COEF_FROT', 'PERT_LIGNE'/
+    data young/'E       '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
 !
-    eps = 1.0d+02 * r8prem()
+    eps = 1.0d+02*r8prem()
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   VERIFICATION DU TYPE DES ELEMENTS
@@ -129,30 +129,30 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !
     nbno = nbnoca(icabl)
     if (quad) then
-        ASSERT((mod(nbno-1,2).eq.0))
-        nbma=(nbno-1)/2
+        ASSERT((mod(nbno-1, 2) .eq. 0))
+        nbma = (nbno-1)/2
     else
         nbma = nbno-1
-    endif
+    end if
 !
 !
     call jelira(numaca, 'LONUTI', lonuti)
-    idecma = lonuti - nbma
+    idecma = lonuti-nbma
     call jeveuo(numaca, 'L', jnumac)
 !
     do i = 1, 2
         call jenonu(jexnom('&CATA.TE.NOMTE', nomele(i)), ntyele(i))
-    enddo
+    end do
     modmai = modele//'.MAILLE'
     call jeveuo(modmai, 'L', jmodma)
 !
     do imail = 1, nbma
         numail = zi(jnumac+idecma+imail-1)
-        if ((zi(jmodma+numail-1).ne.ntyele(1)) .and. (zi(jmodma+numail-1).ne.ntyele(2))) then
-            write(k3cab,'(I3)') icabl
+        if ((zi(jmodma+numail-1) .ne. ntyele(1)) .and. (zi(jmodma+numail-1) .ne. ntyele(2))) then
+            write (k3cab, '(I3)') icabl
             call utmess('F', 'MODELISA2_48', sk=k3cab)
-        endif
-    enddo
+        end if
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   RECUPERATION DES CARACTERISTIQUES DU MATERIAU ACIER
@@ -168,17 +168,17 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     numail = zi(jnumac+idecma)
     ias = zi(jptma+numail-1)
     if (ias .eq. 0) then
-        write(k3mai,'(I3)') numail
-        write(k3cab,'(I3)') icabl
+        write (k3mai, '(I3)') numail
+        write (k3cab, '(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
         call utmess('F', 'MODELISA2_49', nk=2, valk=valk)
-    endif
+    end if
 !
     call dismoi('NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', repi=nbcmp)
 !   NBCMP COMPOSANTES POUR LA GRANDEUR NOMMATER QUI COMPOSE LA CARTE
 !   => ACCES  AU NOM DU MATERIAU ASSOCIE A UNE MAILLE
-    idebgd=nbcmp*(ias-1)+1
+    idebgd = nbcmp*(ias-1)+1
     acier = zk8(jvalk+idebgd-1)
 !   ON VERIFIE QUE LE MEME MATERIAU A ETE AFFECTE A TOUTES LES MAILLES DU CABLE
 !   N.B. LE PASSAGE PREALABLE DANS LA ROUTINE TOPOCA GARANTIT NBNO > 2
@@ -186,28 +186,28 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         numail = zi(jnumac+idecma+imail-1)
         ias = zi(jptma+numail-1)
         if (ias .eq. 0) then
-            write(k3mai,'(I3)') numail
-            write(k3cab,'(I3)') icabl
+            write (k3mai, '(I3)') numail
+            write (k3cab, '(I3)') icabl
             valk(1) = k3mai
             valk(2) = k3cab
             call utmess('F', 'MODELISA2_49', nk=2, valk=valk)
-        endif
-        idebgd=nbcmp*(ias-1)+1
+        end if
+        idebgd = nbcmp*(ias-1)+1
         k8b = zk8(jvalk+idebgd-1)
         if (k8b .ne. acier) then
-            write(k3cab,'(I3)') icabl
+            write (k3cab, '(I3)') icabl
             call utmess('F', 'MODELISA2_50', sk=k3cab)
-        endif
-    enddo
+        end if
+    end do
 !
 !   2.2 RELATION DE COMPORTEMENT <ELAS> DU MATERIAU ACIER
     call rccome(acier, 'ELAS', iret, k11_ind_nomrc=k11)
     rcvalk = acier//k11//'.VALK'
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
-        write(k3cab,'(I3)') icabl
+        write (k3cab, '(I3)') icabl
         call utmess('F', 'MODELISA2_51', sk=k3cab)
-    endif
+    end if
     rcvalr = acier//k11//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
     call jeveuo(rcvalr, 'L', jvalr)
@@ -219,33 +219,33 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             trouv1 = .true.
             ea = zr(jvalr+icste-1)
             goto 31
-        endif
-    enddo
+        end if
+    end do
 !
- 31 continue
+31  continue
     if (.not. trouv1) then
-        write(k3cab,'(I3)') icabl
+        write (k3cab, '(I3)') icabl
         call utmess('F', 'MODELISA2_52', sk=k3cab)
-    endif
+    end if
     if (ea .le. 0.0d0) then
-        write(k3cab,'(I3)') icabl
+        write (k3cab, '(I3)') icabl
         call utmess('F', 'MODELISA2_53', sk=k3cab)
-    endif
+    end if
 !
 !   2.3 RELATION DE COMPORTEMENT <BPEL_ACIER> OU <ETCC_ACIER> DU MATERIAU ACIER
-    ASSERT( (regl.eq.'BPEL') .or. (regl.eq.'ETCC') )
+    ASSERT((regl .eq. 'BPEL') .or. (regl .eq. 'ETCC'))
 !
     if (regl .eq. 'BPEL') then
         call rccome(acier, 'BPEL_ACIER', iret, k11_ind_nomrc=k11)
     else
         call rccome(acier, 'ETCC_ACIER', iret, k11_ind_nomrc=k11)
-    endif
+    end if
     rcvalk = acier//k11//'.VALK'
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
-        write(k3cab,'(I3)') icabl
+        write (k3cab, '(I3)') icabl
         call utmess('F', 'MODELISA2_54', sk=k3cab)
-    endif
+    end if
     rcvalr = acier//k11//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
     call jeveuo(rcvalr, 'L', jvalr)
@@ -263,25 +263,25 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             if (zk16(jvalk+icste-1) .eq. bpela(1)) then
                 trouv1 = .true.
                 rh1000 = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. bpela(2)) then
                 trouv2 = .true.
                 prelax = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. bpela(3)) then
                 trouv3 = .true.
                 fprg = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. bpela(4)) then
                 trouv4 = .true.
                 frco = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. bpela(5)) then
                 trouv5 = .true.
                 frli = zr(jvalr+icste-1)
-            endif
+            end if
             if (trouv1 .and. trouv2 .and. trouv3 .and. trouv4 .and. trouv5) goto 41
-        enddo
+        end do
 41      continue
 !
     else if (regl .eq. 'ETCC') then
@@ -295,37 +295,37 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             if (zk16(jvalk+icste-1) .eq. etcca(1)) then
                 trouv1 = .true.
                 rh1000 = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. etcca(2)) then
                 trouv2 = .true.
                 fprg = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. etcca(3)) then
                 trouv3 = .true.
                 frco = zr(jvalr+icste-1)
-            endif
+            end if
             if (zk16(jvalk+icste-1) .eq. etcca(4)) then
                 trouv4 = .true.
                 frli = zr(jvalr+icste-1)
-            endif
+            end if
             if (trouv1 .and. trouv2 .and. trouv3 .and. trouv4) goto 43
-        enddo
+        end do
 43      continue
 !       POUR ETCC, FRLI=FROTTEMENT*PERTE EN LIGNE
-        frli=frli*frco
-    endif
+        frli = frli*frco
+    end if
 !
     if (rh1000 .eq. 0.0d0) then
         relax_loc = .false.
     else
         relax_loc = .true.
-    endif
+    end if
     if (relax_loc .and. fprg .le. 0.0d0) then
-        write(k3cab,'(I3)') icabl
+        write (k3cab, '(I3)') icabl
         call utmess('F', 'MODELISA2_55', sk=k3cab)
-    endif
+    end if
 !
-    if ( relax ) then
+    if (relax) then
 !       Si l'utilisateur a fait TYPE_RELAX = BPEL ou ETCC => relax = true
 !           si rh1000 == 0.0 ==> relax = false = relax_loc
 !           si rh1000 <> 0.0 ==> relax = true  = relax_loc
@@ -333,11 +333,11 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     else
 !       Si l'utilisateur a fait TYPE_RELAX = SANS => relax = false
 !           si rh1000 <> 0 ==> <A>
-        if ( relax_loc ) then
+        if (relax_loc) then
             valr(1) = rh1000
             call utmess('A', 'MODELISA2_47', nr=1, valr=valr)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -362,34 +362,34 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     numail = zi(jnumac+idecma)
     ias = zi(jptma+numail-1)
     if (ias .eq. 0) then
-        write(k3mai,'(I3)') numail
-        write(k3cab,'(I3)') icabl
+        write (k3mai, '(I3)') numail
+        write (k3cab, '(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
         call utmess('F', 'MODELISA2_57', nk=2, valk=valk)
-    endif
+    end if
 !
     icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
     iranv = 0
     do icmp = 1, irana1
-        if (exisdg([icode],icmp)) iranv = iranv + 1
-    enddo
+        if (exisdg([icode], icmp)) iranv = iranv+1
+    end do
     if (iranv .eq. 0) then
-        write(k3mai,'(I3)') numail
-        write(k3cab,'(I3)') icabl
+        write (k3mai, '(I3)') numail
+        write (k3cab, '(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
         call utmess('F', 'MODELISA2_58', nk=2, valk=valk)
-    endif
+    end if
 !
     sa = zr(jvalr+ncaba*(ias-1)+iranv-1)
     if (sa .le. 0.0d0) then
-        write(k3mai,'(I3)') numail
-        write(k3cab,'(I3)') icabl
+        write (k3mai, '(I3)') numail
+        write (k3cab, '(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
         call utmess('F', 'MODELISA2_59', nk=2, valk=valk)
-    endif
+    end if
 !
 !     ON VERIFIE QUE LA MEME AIRE DE SECTION DROITE A ETE AFFECTEE
 !     A TOUTES LES MAILLES DU CABLE
@@ -400,32 +400,32 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         ias = zi(jptma+numail-1)
 !
         if (ias .eq. 0) then
-            write(k3mai,'(I3)') numail
-            write(k3cab,'(I3)') icabl
+            write (k3mai, '(I3)') numail
+            write (k3cab, '(I3)') icabl
             valk(1) = k3mai
             valk(2) = k3cab
             call utmess('F', 'MODELISA2_57', nk=2, valk=valk)
-        endif
+        end if
 !
         icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
         iranv = 0
         do icmp = 1, irana1
-            if (exisdg([icode],icmp)) iranv = iranv + 1
-        enddo
+            if (exisdg([icode], icmp)) iranv = iranv+1
+        end do
         if (iranv .eq. 0) then
-            write(k3mai,'(I3)') numail
-            write(k3cab,'(I3)') icabl
+            write (k3mai, '(I3)') numail
+            write (k3cab, '(I3)') icabl
             valk(1) = k3mai
             valk(2) = k3cab
             call utmess('F', 'MODELISA2_58', nk=2, valk=valk)
-        endif
+        end if
         rbid = zr(jvalr+ncaba*(ias-1)+iranv-1)
         if (dble(abs(rbid-sa))/sa .gt. eps) then
-            write(k3cab,'(I3)') icabl
+            write (k3cab, '(I3)') icabl
             call utmess('F', 'MODELISA2_60', sk=k3cab)
-        endif
+        end if
 !
-    enddo
+    end do
 !
     call jedema()
 !

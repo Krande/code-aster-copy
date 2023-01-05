@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rs_getfirst(result_, nume_first, inst_first)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/rsadpa.h"
@@ -53,19 +53,19 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result     = result_
+    result = result_
     nume_first = 0
-    call rsorac(result, 'PREMIER', 0  , r8bid, k8bid,&
-                c16bid, 0.d0     , ' ', list , 1    ,&
+    call rsorac(result, 'PREMIER', 0, r8bid, k8bid, &
+                c16bid, 0.d0, ' ', list, 1, &
                 iret)
     if (iret .eq. 0) then
         call utmess('F', 'RESULT1_3', sk=result)
-    endif
+    end if
     nume_first = list(1)
     if (present(inst_first)) then
-        call rsadpa(result, 'L', 1, 'INST', nume_first,&
+        call rsadpa(result, 'L', 1, 'INST', nume_first, &
                     0, sjv=jinst)
         inst_first = zr(jinst)
-    endif
+    end if
 
 end subroutine

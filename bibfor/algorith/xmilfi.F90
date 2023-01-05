@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
+subroutine xmilfi(elp, n, ndime, nno, ptint, ndim, &
                   jtabco, jtabls, ipp, ip, milfi)
     implicit none
 !
@@ -51,24 +51,24 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
 ! --------------------------------------------------------------------
 !
 !
-    itemax=500
-    epsmax=1.d-9
-    name='XMILFI'
+    itemax = 500
+    epsmax = 1.d-9
+    name = 'XMILFI'
 !
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     ksi(:) = 0.d0
-    call xnewto(elp, name, n,&
-                ndime, ptint, ndim, zr(jtabco), zr(jtabls),&
-                ipp, ip, itemax,&
+    call xnewto(elp, name, n, &
+                ndime, ptint, ndim, zr(jtabco), zr(jtabls), &
+                ipp, ip, itemax, &
                 epsmax, ksi)
 !
-    ASSERT(ksi(1).ge.-1.d0 .and. ksi(1).le.1.d0)
-    ASSERT(ksi(2).ge.-1.d0 .and. ksi(2).le.1.d0)
+    ASSERT(ksi(1) .ge. -1.d0 .and. ksi(1) .le. 1.d0)
+    ASSERT(ksi(2) .ge. -1.d0 .and. ksi(2) .le. 1.d0)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elp, nno, ndim, zr(jtabco), ksi,&
+    call reerel(elp, nno, ndim, zr(jtabco), ksi, &
                 milfi)
 !
 end subroutine

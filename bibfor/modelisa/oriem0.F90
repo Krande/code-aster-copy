@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine oriem0(kdim, type, coor, lino1, nbno1,&
-                  lino2, nbno2, lino3, nbno3, ipos,&
+subroutine oriem0(kdim, type, coor, lino1, nbno1, &
+                  lino2, nbno2, lino3, nbno3, ipos, &
                   indmai)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -78,12 +78,12 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
     call jemarq()
 !
     if (kdim .eq. '3D') then
-        ASSERT(type(1:4).eq.'TRIA' .or. type(1:4).eq.'QUAD')
-    else if (kdim.eq.'2D') then
-        ASSERT(type(1:3).eq.'SEG')
+        ASSERT(type(1:4) .eq. 'TRIA' .or. type(1:4) .eq. 'QUAD')
+    else if (kdim .eq. '2D') then
+        ASSERT(type(1:3) .eq. 'SEG')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
 !   --- verification de la position des mailles 1 et 2
@@ -96,28 +96,28 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 !
 !   -- cas 3D :
     if (type(1:3) .ne. 'SEG') then
-        ASSERT(kdim.eq.'3D')
+        ASSERT(kdim .eq. '3D')
         n3 = lino3(3)
         do ic = 1, 3
-            n1n2(ic)=coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
-            n1n3(ic)=coor(3*(n3-1)+ic)-coor(3*(n1-1)+ic)
+            n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
+            n1n3(ic) = coor(3*(n3-1)+ic)-coor(3*(n1-1)+ic)
         end do
         call provec(n1n2, n1n3, nor1)
 !
 !   -- cas 2D :
     else
-        ASSERT(kdim.eq.'2D')
+        ASSERT(kdim .eq. '2D')
         do ic = 1, 3
-            n1n2(ic)=coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
+            n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
         end do
-        ASSERT(n1n2(3).eq.0.d0)
+        ASSERT(n1n2(3) .eq. 0.d0)
 !
 !       -- on tourne n1n2 de +90 degres :
-        nor1(1)=-n1n2(2)
-        nor1(2)=n1n2(1)
-        nor1(3)=0.d0
-    endif
-    ASSERT(ddot(3,nor1,1,nor1,1).gt.0)
+        nor1(1) = -n1n2(2)
+        nor1(2) = n1n2(1)
+        nor1(3) = 0.d0
+    end if
+    ASSERT(ddot(3, nor1, 1, nor1, 1) .gt. 0)
 !
 !
 !
@@ -125,76 +125,76 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
     do ino = 1, nbno1
 !        -- on cherche un noeud de lino1 (n2) qui ne soit pas un noeud
 !           de la peau :
-        indi=indiis(lino3(1),lino1(ino),1,nbno3)
+        indi = indiis(lino3(1), lino1(ino), 1, nbno3)
         if (indi .eq. 0) then
-            n2=lino1(ino)
-            n1=lino3(1)
+            n2 = lino1(ino)
+            n1 = lino3(1)
             do ic = 1, 3
-                n1n2(ic)=coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
+                n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
             end do
 !           -- ps1 > 0 <=> la normale de la peau est orientee comme la
 !                         la normale exterieure de la maille 1
-            ps1=ddot(3,n1n2,1,nor1,1)
+            ps1 = ddot(3, n1n2, 1, nor1, 1)
             goto 40
 !
-        endif
+        end if
     end do
     ASSERT(.false.)
- 40 continue
+40  continue
 !
 !
 !   -- position de la maille 2 par rapport a la maille de peau  => ps2
     do ino = 1, nbno2
-        indi=indiis(lino3(1),lino2(ino),1,nbno3)
+        indi = indiis(lino3(1), lino2(ino), 1, nbno3)
         if (indi .eq. 0) then
-            n2=lino2(ino)
-            n1=lino3(1)
+            n2 = lino2(ino)
+            n1 = lino3(1)
             do ic = 1, 3
-                n1n2(ic)=coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
+                n1n2(ic) = coor(3*(n2-1)+ic)-coor(3*(n1-1)+ic)
             end do
-            ps2=ddot(3,n1n2,1,nor1,1)
+            ps2 = ddot(3, n1n2, 1, nor1, 1)
             goto 70
 !
-        endif
+        end if
     end do
     ASSERT(.false.)
- 70 continue
+70  continue
 !
 !
 !   -- les mailles 1 et 2 sont elles du meme cote par rapport
 !      a la maille de peau ?
 !   ---------------------------------------------------------
 !
-    ipos=0
-    indmai=0
+    ipos = 0
+    indmai = 0
 !
 !   -- si l'un des mailles est degeneree, on ne sait pas repondre :
     if (ps1 .eq. 0.d0) then
-        ipos=1
-        indmai=-1
+        ipos = 1
+        indmai = -1
         if (ps2 .eq. 0.d0) then
-            indmai=-12
-        endif
+            indmai = -12
+        end if
     else
         if (ps2 .eq. 0.d0) then
-            ipos=1
-            indmai=-2
-        endif
-    endif
+            ipos = 1
+            indmai = -2
+        end if
+    end if
 !
     if (ipos .eq. 1) then
-        ASSERT(indmai.lt.0)
+        ASSERT(indmai .lt. 0)
         goto 999
-    endif
+    end if
 !
-    if ((ps1.gt.0.and.ps2.gt.0) .or. (ps1.lt.0.and.ps2.lt.0)) then
-        ipos=0
-        indmai=0
+    if ((ps1 .gt. 0 .and. ps2 .gt. 0) .or. (ps1 .lt. 0 .and. ps2 .lt. 0)) then
+        ipos = 0
+        indmai = 0
     else
-        ipos=1
-        if (ps1 .lt. 0) indmai=1
-        if (ps2 .lt. 0) indmai=2
-    endif
+        ipos = 1
+        if (ps1 .lt. 0) indmai = 1
+        if (ps2 .lt. 0) indmai = 2
+    end if
 !
 999 continue
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine finlf1(ndim, delta, plasti, alpha, kn, kt,&
+subroutine finlf1(ndim, delta, plasti, alpha, kn, kt, &
                   mu, Bn, Bt, m1, m2, cbar, D1, res)
 !
-implicit none
+    implicit none
 !
     integer :: ndim
     real(kind=8) :: delta(ndim), plasti(ndim), alpha
@@ -43,12 +43,12 @@ implicit none
     wnorm = 0.d0
     do i = 1, ndim-1
         wvec(i) = kt*(delta(i+1)-plasti(i+1))*alpha**m2-Bt*plasti(i+1)*(1.d0-alpha)**m1
-        wnorm = wnorm + wvec(i)**2
+        wnorm = wnorm+wvec(i)**2
     end do
     wnorm = sqrt(wnorm)
     if (wnorm .le. 0.d0) then
         do i = 1, ndim-1
-        frwvec(i) = 0.d0
+            frwvec(i) = 0.d0
         end do
     else
         do i = 1, ndim-1
@@ -62,14 +62,14 @@ implicit none
 !
     disc = mu*Bn*plasti(1)
     do i = 1, ndim-1
-        disc = disc + Bt*plasti(i+1)*frwvec(i)
+        disc = disc+Bt*plasti(i+1)*frwvec(i)
     end do
     disc = disc*((m2-m1)*alpha-m2)
     disc = disc**2
-    disc = disc * (1-alpha)**(m1-1)
+    disc = disc*(1-alpha)**(m1-1)
     disc2 = Bn*plasti(1)**2
     do i = 2, ndim
-        disc2 = disc2 + Bt*plasti(i)**2
+        disc2 = disc2+Bt*plasti(i)**2
     end do
     disc2 = disc2*((m2-m1)*alpha-m2)*(1.d0-alpha)**(m1-1)+2.d0*D1*alpha**(m2+1)
     disc2 = disc2*(mu**2*Bn+Bt)*((m2-m1)*alpha-m2)

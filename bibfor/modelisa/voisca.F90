@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
+subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi, &
                   nunobi)
     implicit none
 !  DESCRIPTION : SELECTION DANS LA LISTE NUNOBE DES NOEUDS DE BETON
@@ -82,10 +82,10 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !
 !     SELECTION DES NOEUDS APPARTENANT AU PAVE FORME PAR LES
 !     COORDONNEES EXTREMES DES NOEUDS DU CABLE
-    j=0
+    j = 0
     do i = 1, nbnobe
         noebe = zi(inube-1+i)
-        x = zr(jcoor+3*(noebe-1) )
+        x = zr(jcoor+3*(noebe-1))
         y = zr(jcoor+3*(noebe-1)+1)
         z = zr(jcoor+3*(noebe-1)+2)
         if (x .lt. xmin) goto 10
@@ -97,9 +97,9 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !
         zi(inubi+j) = noebe
         j = j+1
- 10     continue
+10      continue
     end do
-    nbnobi=j
+    nbnobi = j
 !
     call jedema()
 end subroutine

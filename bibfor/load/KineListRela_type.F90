@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,39 +25,39 @@
 !
 module KineListRela_type
 !
-implicit none
+    implicit none
 ! ==================================================================================================
 #include "asterf_types.h"
 ! ==================================================================================================
-type KINE_LIST_RELA
+    type KINE_LIST_RELA
 ! - Type of relation: (implicit or explicit)
 !       'implicit': no second member (RHS)
 !       'explicit': with a second membre (RHS)
-    character(len=16) :: relaType = ' '
+        character(len=16) :: relaType = ' '
 
 ! - Number of terms in relation
-    integer :: nbTermMaxi = 0
+        integer :: nbTermMaxi = 0
 
 ! - List of relations (LHS)
-    character(len=4) :: coefMultType = ' '
-    character(len=8), pointer :: nodeName(:) => null()
-    character(len=8), pointer :: dofName(:) => null()
-    real(kind=8), pointer :: coefMultReal(:) => null()
-    real(kind=8) :: coefMultTole = 1.d-6
+        character(len=4) :: coefMultType = ' '
+        character(len=8), pointer :: nodeName(:) => null()
+        character(len=8), pointer :: dofName(:) => null()
+        real(kind=8), pointer :: coefMultReal(:) => null()
+        real(kind=8) :: coefMultTole = 1.d-6
 
 ! - List of relations (RHS)
-    character(len=4) :: coefImpoType = ' '
-    real(kind=8) :: coefImpoReal = 0.d0
-    character(len=8) :: coefImpoFunc = ' '
-    complex(kind=8) :: coefImpoCplx = dcmplx(0.d0, 0.d0)
+        character(len=4) :: coefImpoType = ' '
+        real(kind=8) :: coefImpoReal = 0.d0
+        character(len=8) :: coefImpoFunc = ' '
+        complex(kind=8) :: coefImpoCplx = dcmplx(0.d0, 0.d0)
 
 ! - Local coordinates system
-    real(kind=8), pointer :: LCSVale(:) => null()
-    integer, pointer :: LCSType(:) => null()
+        real(kind=8), pointer :: LCSVale(:) => null()
+        integer, pointer :: LCSType(:) => null()
 
 ! - Name of JEVEUX object for aflrch subroutine
-    character(len=19) :: listLineRela = ' '
+        character(len=19) :: listLineRela = ' '
 
-end type KINE_LIST_RELA
+    end type KINE_LIST_RELA
 !
 end module KineListRela_type

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndmuap(numins, numedd, sddyna, sddisc)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/diinst.h"
@@ -34,9 +34,9 @@ implicit none
 #include "asterfort/nmdebg.h"
 #include "asterfort/r8inir.h"
 !
-integer :: numins
-character(len=24) :: numedd
-character(len=19) :: sddyna, sddisc
+    integer :: numins
+    character(len=24) :: numedd
+    character(len=19) :: sddyna, sddisc
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,14 +74,14 @@ character(len=19) :: sddyna, sddisc
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... INIT. MULTI-APPUI'
-    endif
+        write (ifm, *) '<MECANONLINE> ... INIT. MULTI-APPUI'
+    end if
 !
 ! --- INITIALISATIONS
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    nbexci = ndynin(sddyna,'NBRE_EXCIT')
-    instap = diinst(sddisc,numins)
+    nbexci = ndynin(sddyna, 'NBRE_EXCIT')
+    instap = diinst(sddisc, numins)
 !
 ! --- ACCES SD MULTI-APPUI
 !
@@ -114,34 +114,34 @@ character(len=19) :: sddyna, sddisc
 !
     do iex = 1, nbexci
         if (zi(jmltap+iex-1) .eq. 1) then
-            call fointe('F ', zk8(jnodep+iex-1), 1, ['INST'], [instap],&
+            call fointe('F ', zk8(jnodep+iex-1), 1, ['INST'], [instap], &
                         coef1, ie)
-            call fointe('F ', zk8(jnovit+iex-1), 1, ['INST'], [instap],&
+            call fointe('F ', zk8(jnovit+iex-1), 1, ['INST'], [instap], &
                         coef2, ie)
-            call fointe('F ', zk8(jnoacc+iex-1), 1, ['INST'], [instap],&
+            call fointe('F ', zk8(jnoacc+iex-1), 1, ['INST'], [instap], &
                         coef3, ie)
         else
             coef1 = zero
             coef2 = zero
             coef3 = zero
-        endif
+        end if
         do ie = 1, neq
-            depen(ie) = depen(ie)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef1
-            viten(ie) = viten(ie)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef2
-            accen(ie) = accen(ie)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef3
+            depen(ie) = depen(ie)+zr(jpsdel+(iex-1)*neq+ie-1)*coef1
+            viten(ie) = viten(ie)+zr(jpsdel+(iex-1)*neq+ie-1)*coef2
+            accen(ie) = accen(ie)+zr(jpsdel+(iex-1)*neq+ie-1)*coef3
         end do
     end do
 !
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ...... DEPL. ENTRAINEMENT'
+        write (ifm, *) '<MECANONLINE> ...... DEPL. ENTRAINEMENT'
         call nmdebg('VECT', depent, ifm)
-        write (ifm,*) '<MECANONLINE> ...... VITE. ENTRAINEMENT'
+        write (ifm, *) '<MECANONLINE> ...... VITE. ENTRAINEMENT'
         call nmdebg('VECT', vitent, ifm)
-        write (ifm,*) '<MECANONLINE> ...... ACCE. ENTRAINEMENT'
+        write (ifm, *) '<MECANONLINE> ...... ACCE. ENTRAINEMENT'
         call nmdebg('VECT', accent, ifm)
-    endif
+    end if
 !
     call jedema()
 !

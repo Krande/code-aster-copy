@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
-                  sigmpg, effgt,nbcou)
+subroutine vdxsig(nomte, option, xi, nb1, npgsr, &
+                  sigmpg, effgt, nbcou)
     implicit none
 #include "jeveux.h"
 #include "asterfort/btdfn.h"
@@ -76,18 +76,18 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
     deux = 2.0d0
 ! NOMBRE DE POINTS DE GAUSS DANS LA TRANCHE
 ! (POUR RESTER COHERENT AVEC SIEF_ELGA EN PLASTICITE )
-    npge=3
-    epsval(1)=-1.d0
-    epsval(2)=0.d0
-    epsval(3)=1.d0
+    npge = 3
+    epsval(1) = -1.d0
+    epsval(2) = 0.d0
+    epsval(3) = 1.d0
 !
 !     RECUPERATION DES OBJETS
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1  =zi(lzi-1+1)
-    nb2  =zi(lzi-1+2)
-    npgsr=zi(lzi-1+3)
-    npgsn=zi(lzi-1+4)
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    npgsr = zi(lzi-1+3)
+    npgsn = zi(lzi-1+4)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
@@ -95,23 +95,23 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
     epais = zr(jcara)
 !
     call jevech('PNBSP_I', 'L', jcou)
-    nbcou=zi(jcou)
-    imoy=(3*nbcou+1)/2
+    nbcou = zi(jcou)
+    imoy = (3*nbcou+1)/2
     hic = un/nbcou
     zmin = -0.5d0
 !
-    call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
+    call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, &
                 1, tref, iret)
-    call vectan(nb1, nb2, xi, zr(lzr), vecta,&
+    call vectan(nb1, nb2, xi, zr(lzr), vecta, &
                 vectn, vectpt)
 !
     call jevech('PDEPLAR', 'L', jdepg)
 !
-    call trndgl(nb2, vectn, vectpt, zr(jdepg), depl,&
+    call trndgl(nb2, vectn, vectpt, zr(jdepg), depl, &
                 rotf)
 !
-    kwgt=0
-    kpgs=0
+    kwgt = 0
+    kpgs = 0
 !
     do icou = 1, nbcou
 !
@@ -122,23 +122,23 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
 !       -- COTE DES POINTS D'INTEGRATION
 !       --------------------------------
             if (inte .eq. 1) then
-                ksi3s2 = zmin + (icou-1)*hic
-            else if (inte.eq.2) then
-                ksi3s2 = zmin + hic/deux + (icou-1)*hic
+                ksi3s2 = zmin+(icou-1)*hic
+            else if (inte .eq. 2) then
+                ksi3s2 = zmin+hic/deux+(icou-1)*hic
             else
-                ksi3s2 = zmin + hic + (icou-1)*hic
-            endif
+                ksi3s2 = zmin+hic+(icou-1)*hic
+            end if
 !
             do intsr = 1, npgsr
-                call mahsms(0, nb1, xi, ksi3s2, intsr,&
-                            zr(lzr), epais, vectn, vectg, vectt,&
+                call mahsms(0, nb1, xi, ksi3s2, intsr, &
+                            zr(lzr), epais, vectn, vectg, vectt, &
                             hsfm, hss)
 !
-                call hsj1ms(epais, vectg, vectt, hsfm, hss,&
+                call hsj1ms(epais, vectg, vectt, hsfm, hss, &
                             hsj1m, hsj1s)
 !
-                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
-                            epais, vectpt, hsj1m, hsj1s, btdm,&
+                call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
+                            epais, vectpt, hsj1m, hsj1s, btdm, &
                             btds)
             end do
 !
@@ -148,104 +148,104 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
 !                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
 !
-                call mahsf(1, nb1, xi, ksi3s2, intsn,&
-                           zr(lzr), epais, vectn, vectg, vectt,&
+                call mahsf(1, nb1, xi, ksi3s2, intsn, &
+                           zr(lzr), epais, vectn, vectg, vectt, &
                            hsf)
 !
-                call hsj1f(intsn, zr(lzr), epais, vectg, vectt,&
+                call hsj1f(intsn, zr(lzr), epais, vectg, vectt, &
                            hsf, kwgt, hsj1fx, wgt)
 !
-                call btdfn(1, nb1, nb2, ksi3s2, intsn,&
+                call btdfn(1, nb1, nb2, ksi3s2, intsn, &
                            zr(lzr), epais, vectpt, hsj1fx, btdf)
 !
 !     CALCUL DE BTDMN, BTDSN : M=MEMBRANE , S=CISAILLEMENT , N=NORMAL
 !     FORMATION DE BTILD
 !
-                call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
+                call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
                             btdm, btdf, btds, btild)
 !
 !     APPEL DE MATRTH POUR RECUPERER INDITH AFIN DE SAVOIR SI
 !     ALPHA EST DONNE C'EST A DIRE SI THERMIQUE
 !
-                call rcvarc(' ', 'TEMP', '+', 'MASS', intsn,&
+                call rcvarc(' ', 'TEMP', '+', 'MASS', intsn, &
                             3*icou-2, tinf, iret1)
-                call rcvarc(' ', 'TEMP', '+', 'MASS', intsn,&
+                call rcvarc(' ', 'TEMP', '+', 'MASS', intsn, &
                             3*icou-1, tmoy, iret2)
-                call rcvarc(' ', 'TEMP', '+', 'MASS', intsn,&
+                call rcvarc(' ', 'TEMP', '+', 'MASS', intsn, &
                             3*icou, tsup, iret3)
                 if ((iret1+iret2+iret3) .eq. 0) then
-                    call matrth('MASS', npgsn, young, nu, alpha,&
+                    call matrth('MASS', npgsn, young, nu, alpha, &
                                 indith)
-                    xi3=epsval(inte)
-                    p1xi3= 1-xi3*xi3
-                    p2xi3=-xi3*(1-xi3)/2.d0
-                    p3xi3= xi3*(1+xi3)/2.d0
+                    xi3 = epsval(inte)
+                    p1xi3 = 1-xi3*xi3
+                    p2xi3 = -xi3*(1-xi3)/2.d0
+                    p3xi3 = xi3*(1+xi3)/2.d0
                     if (iret .eq. 1) then
                         call utmess('F', 'CALCULEL_15')
                     else
-                        tem(kwgt)=tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3
-                        tem(kwgt)=tem(kwgt)-tref
-                    endif
+                        tem(kwgt) = tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3
+                        tem(kwgt) = tem(kwgt)-tref
+                    end if
                 else
-                    indith=-1
-                endif
+                    indith = -1
+                end if
 !
-                call vdesga(kwgt, nb1, nb2, depl, btild,&
-                            indith, alpha, tem, eps, sig,&
+                call vdesga(kwgt, nb1, nb2, depl, btild, &
+                            indith, alpha, tem, eps, sig, &
                             vectt)
 !
                 kpgs = kpgs+1
-                k1=6*((intsn-1)*npge*nbcou+npge*(icou-1)+inte - 1)
+                k1 = 6*((intsn-1)*npge*nbcou+npge*(icou-1)+inte-1)
                 if (option .eq. 'EPSI_ELGA') then
                     do i = 1, 6
                         sigmpg(k1+i) = eps(i+6*(kpgs-1))
                     end do
-                else if (option.eq.'SIEF_ELGA') then
+                else if (option .eq. 'SIEF_ELGA') then
                     do i = 1, 6
                         sigmpg(k1+i) = sig(i+6*(kpgs-1))
 !                  write (6,*) "sigmpg(k1+i)",sigmpg(k1+i)
                     end do
-                endif
+                end if
 !
-             end do
-         end do
+            end do
+        end do
     end do
 !
-    kwgt=0
-    kpgs=0
+    kwgt = 0
+    kpgs = 0
 !
     do inte = 1, npge
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
-        ksi3s2=epsval(inte)/2.d0
+        ksi3s2 = epsval(inte)/2.d0
         do intsr = 1, npgsr
-            call mahsms(0, nb1, xi, ksi3s2, intsr,&
-                        zr(lzr), epais, vectn, vectg, vectt,&
+            call mahsms(0, nb1, xi, ksi3s2, intsr, &
+                        zr(lzr), epais, vectn, vectg, vectt, &
                         hsfm, hss)
 !
-            call hsj1ms(epais, vectg, vectt, hsfm, hss,&
+            call hsj1ms(epais, vectg, vectt, hsfm, hss, &
                         hsj1m, hsj1s)
 !
-            call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
-                        epais, vectpt, hsj1m, hsj1s, btdm,&
+            call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
+                        epais, vectpt, hsj1m, hsj1s, btdm, &
                         btds)
 !
 !       CALL BTDMSP(NB1,NB2,XI,INTE,INTSR,ZR(LZR),EPAIS,VECTPT,
 !    &                                       HSJ1M,HSJ1S,BTDM,BTDS)
-            call mahsf(0, nb1, xi, ksi3s2, intsr,&
-                       zr(lzr), epais, vectn, vectg, vectt,&
+            call mahsf(0, nb1, xi, ksi3s2, intsr, &
+                       zr(lzr), epais, vectn, vectg, vectt, &
                        hsf)
 !
-            call hsj1f(intsr, zr(lzr), epais, vectg, vectt,&
+            call hsj1f(intsr, zr(lzr), epais, vectg, vectt, &
                        hsf, kwgt, hsj1fx, wgt)
 !
-            call btdfn(0, nb1, nb2, ksi3s2, intsr,&
+            call btdfn(0, nb1, nb2, ksi3s2, intsr, &
                        zr(lzr), epais, vectpt, hsj1fx, btdf)
 !     CALL BTDFP(0,NB1,NB2,XI,INTE,INTSR,ZR(LZR),EPAIS,VECTPT,HSJ1FX,
 !    &                                                             BTDF)
 !
-            call btdmsn(0, nb1, intsr, npgsr, zr(lzr),&
+            call btdmsn(0, nb1, intsr, npgsr, zr(lzr), &
                         btdm, btdf, btds, btild)
 !
 !     CALL BTILDP(0,NB1,XI,INTE,INTSR,NPGSR,ZR(LZR),BTDM,BTDF,BTDS,
@@ -254,57 +254,57 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
 !     APPEL DE MATRTH POUR RECUPERER INDITH AFIN DE SAVOIR SI
 !     ALPHA EST DONNE C'EST A DIRE SI THERMIQUE
 !
-            call rcvarc(' ', 'TEMP', '+', 'RIGI', intsr,&
+            call rcvarc(' ', 'TEMP', '+', 'RIGI', intsr, &
                         1, tinf, iret1)
-            call rcvarc(' ', 'TEMP', '+', 'RIGI', intsr,&
+            call rcvarc(' ', 'TEMP', '+', 'RIGI', intsr, &
                         imoy, tmoy, iret2)
-            call rcvarc(' ', 'TEMP', '+', 'RIGI', intsr,&
+            call rcvarc(' ', 'TEMP', '+', 'RIGI', intsr, &
                         3*nbcou, tsup, iret3)
             if ((iret1+iret2+iret3) .eq. 0) then
-                call matrth('RIGI', npgsr, young, nu, alpha,&
+                call matrth('RIGI', npgsr, young, nu, alpha, &
                             indith)
-                xi3=epsval(inte)
-                p1xi3= 1-xi3*xi3
-                p2xi3=-xi3*(1-xi3)/2.d0
-                p3xi3= xi3*(1+xi3)/2.d0
+                xi3 = epsval(inte)
+                p1xi3 = 1-xi3*xi3
+                p2xi3 = -xi3*(1-xi3)/2.d0
+                p3xi3 = xi3*(1+xi3)/2.d0
                 if (iret .eq. 1) then
                     call utmess('F', 'CALCULEL_15')
                 else
-                    tempga(kwgt)=tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3
-                    tempga(kwgt)=tempga(kwgt)-tref
-                endif
+                    tempga(kwgt) = tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3
+                    tempga(kwgt) = tempga(kwgt)-tref
+                end if
             else
-                tempga(kwgt)=0.d0
-            endif
+                tempga(kwgt) = 0.d0
+            end if
 !
-            call vdesga(kwgt, nb1, nb2, depl, btild,&
-                        indith, alpha, tempga, epsiln, sigma,&
+            call vdesga(kwgt, nb1, nb2, depl, btild, &
+                        indith, alpha, tempga, epsiln, sigma, &
                         vectt)
 !
-         end do
-     end do
+        end do
+    end do
 !
     if (option(1:9) .eq. 'EFGE_ELNO') then
 !
-        call vdefge(nomte, nb1, npgsr, zr(lzr), epais,&
+        call vdefge(nomte, nb1, npgsr, zr(lzr), epais, &
                     sigma, effgt)
 !
-    endif
+    end if
 !
 ! --- DETERMINATION DES REPERES  LOCAUX DE L'ELEMENT AUX POINTS
 ! --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR :
 !     --------------------------------------------------------------
     k = 0
     do intsr = 1, npgsr
-        call vectgt(0, nb1, xi, zero, intsr,&
+        call vectgt(0, nb1, xi, zero, intsr, &
                     zr(lzr), epais, vectn, vectg, vectt)
 !
         do j = 1, 3
             do i = 1, 3
-                k = k + 1
-                zr(lzr+2000+k-1) = vectt(i,j)
+                k = k+1
+                zr(lzr+2000+k-1) = vectt(i, j)
             end do
-         end do
-     end do
+        end do
+    end do
 !
 end subroutine

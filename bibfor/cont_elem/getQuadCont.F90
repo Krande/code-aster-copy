@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 subroutine getQuadCont(elem_dime, l_axis, nb_node_slav, &
-                        elem_slav_code, elem_slav_coor,&
-                        elem_mast_code, &
-                        nb_qp, coor_qp, weight_qp )
+                       elem_slav_code, elem_slav_coor, &
+                       elem_mast_code, &
+                       nb_qp, coor_qp, weight_qp)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -33,12 +33,12 @@ implicit none
 #include "asterfort/mmdonf.h"
 #include "jeveux.h"
 !
-integer, intent(in) :: elem_dime, nb_node_slav
-aster_logical, intent(in) :: l_axis
-character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-real(kind=8), intent(in) :: elem_slav_coor(3, 9)
-real(kind=8), intent(out) :: coor_qp(2, 48), weight_qp(48)
-integer, intent(out) :: nb_qp
+    integer, intent(in) :: elem_dime, nb_node_slav
+    aster_logical, intent(in) :: l_axis
+    character(len=8), intent(in) :: elem_slav_code, elem_mast_code
+    real(kind=8), intent(in) :: elem_slav_coor(3, 9)
+    real(kind=8), intent(out) :: coor_qp(2, 48), weight_qp(48)
+    integer, intent(out) :: nb_qp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,8 +60,8 @@ integer, intent(out) :: nb_qp
     aster_logical :: l_slav_line, l_mast_line
     integer :: i_node, i_dime, i_tria, i_gauss, jcont
     integer :: nb_tria, nb_poin_inte, nb_gauss
-    real(kind=8) :: tria_coot_sl(2,3), tria_coor_sl(16), poin_inte_sl(16)
-    real(kind=8) :: gauss_weight_sl(12), gauss_coor_sl(2,12)
+    real(kind=8) :: tria_coot_sl(2, 3), tria_coor_sl(16), poin_inte_sl(16)
+    real(kind=8) :: gauss_weight_sl(12), gauss_coor_sl(2, 12)
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9), jacobian_sl
     character(len=8) :: elga_fami
 !
@@ -82,13 +82,13 @@ integer, intent(out) :: nb_qp
 !
 ! - Triangulation of convex polygon defined by intersection points
     if (elem_dime .eq. 3) then
-        if(nb_poin_inte == 3) then
+        if (nb_poin_inte == 3) then
             nb_tria = 1
         else
             nb_tria = nb_poin_inte
         end if
 !
-        if(l_slav_line .and. l_mast_line) then
+        if (l_slav_line .and. l_mast_line) then
             ! order 3 by triangle
             elga_fami = 'FPG4'
         else
@@ -97,7 +97,7 @@ integer, intent(out) :: nb_qp
         end if
     elseif (elem_dime .eq. 2) then
         nb_tria = 1
-        if(l_slav_line .and. l_mast_line) then
+        if (l_slav_line .and. l_mast_line) then
             ! order 5
             elga_fami = 'FPG3'
         else
@@ -115,28 +115,28 @@ integer, intent(out) :: nb_qp
             call latrco(i_tria, nb_poin_inte, poin_inte_sl, tria_coor_sl)
         elseif (elem_dime .eq. 2) then
             tria_coor_sl(1:16) = poin_inte_sl(1:16)
-        endif
+        end if
 ! ----- Change shape of vector (slave)
-        tria_coot_sl(1:2,1:3) = 0.d0
+        tria_coot_sl(1:2, 1:3) = 0.d0
         if (elem_dime .eq. 3) then
-            do i_node = 1,3
-                do i_dime = 1,(elem_dime-1)
+            do i_node = 1, 3
+                do i_dime = 1, (elem_dime-1)
                     tria_coot_sl(i_dime, i_node) = &
                         tria_coor_sl((i_node-1)*(elem_dime-1)+i_dime)
                 end do
             end do
         else
-            tria_coot_sl(1,1) = tria_coor_sl(1)
-            tria_coot_sl(2,1) = 0.d0
-            tria_coot_sl(1,2) = tria_coor_sl(2)
-            tria_coot_sl(2,2) = 0.d0
+            tria_coot_sl(1, 1) = tria_coor_sl(1)
+            tria_coot_sl(2, 1) = 0.d0
+            tria_coot_sl(1, 2) = tria_coor_sl(2)
+            tria_coot_sl(2, 2) = 0.d0
         end if
 ! ----- Get integration points for slave element
-        call lcptga(elem_dime, tria_coot_sl , elga_fami      ,&
-                    nb_gauss , gauss_coor_sl, gauss_weight_sl)
+        call lcptga(elem_dime, tria_coot_sl, elga_fami, &
+                    nb_gauss, gauss_coor_sl, gauss_weight_sl)
 ! ----- Loop on integration points
         do i_gauss = 1, nb_gauss
-            nb_qp = nb_qp + 1
+            nb_qp = nb_qp+1
             ASSERT(nb_qp <= 48)
 ! --------- Get current integration point (slave)
             do i_dime = 1, elem_dime-1
@@ -145,18 +145,18 @@ integer, intent(out) :: nb_qp
 !
 ! - Get shape functions and first derivative only (for perf)
 !
-            call mmnonf(elem_dime, nb_node_slav, elem_slav_code,&
-                        gauss_coor_sl(1, i_gauss), gauss_coor_sl(2, i_gauss),&
-                        shape_func )
-            call mmdonf(elem_dime, nb_node_slav, elem_slav_code,&
-                        gauss_coor_sl(1, i_gauss), gauss_coor_sl(2, i_gauss),&
+            call mmnonf(elem_dime, nb_node_slav, elem_slav_code, &
+                        gauss_coor_sl(1, i_gauss), gauss_coor_sl(2, i_gauss), &
+                        shape_func)
+            call mmdonf(elem_dime, nb_node_slav, elem_slav_code, &
+                        gauss_coor_sl(1, i_gauss), gauss_coor_sl(2, i_gauss), &
                         shape_dfunc)
 ! --------- Compute jacobian
-            call mmmjac(l_axis, nb_node_slav, elem_dime,&
-                        elem_slav_code , elem_slav_coor  ,&
+            call mmmjac(l_axis, nb_node_slav, elem_dime, &
+                        elem_slav_code, elem_slav_coor, &
                         shape_func, shape_dfunc, jacobian_sl)
 
-            weight_qp(nb_qp) = jacobian_sl * gauss_weight_sl(i_gauss)
+            weight_qp(nb_qp) = jacobian_sl*gauss_weight_sl(i_gauss)
         end do
     end do
 !

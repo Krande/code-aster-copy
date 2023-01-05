@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine nmsigi(ligrmo, compor, sigini)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=2)
+    parameter(nbout=1, nbin=2)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -80,15 +80,15 @@ subroutine nmsigi(ligrmo, compor, sigini)
             if (iret .gt. 0) then
                 lchin(2) = sigcha
                 call copisd('CHAM_ELEM_S', 'V', compor, lchout(1))
-                call calcul('S', option, ligrmo, 2, lchin,&
-                            lpain, 1, lchout, lpaout, 'V',&
+                call calcul('S', option, ligrmo, 2, lchin, &
+                            lpain, 1, lchout, lpaout, 'V', &
                             'OUI')
                 call detrsd('CHAM_ELEM_S', lchout(1))
                 call copisd('CHAMP_GD', 'V', '&&NMSIGI.PEPCON3', sigini)
-            endif
+            end if
         end do
         call detrsd('CHAMP_GD', '&&NMSIGI.PEPCON3')
-    endif
+    end if
 !
     call jedema()
 !.

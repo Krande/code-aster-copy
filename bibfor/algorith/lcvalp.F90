@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 
 subroutine lcvalp(t, valp)
     implicit none
-    real(kind=8),intent(in) :: t(6)
-    real(kind=8),intent(out):: valp(3)
+    real(kind=8), intent(in) :: t(6)
+    real(kind=8), intent(out):: valp(3)
 ! --------------------------------------------------------------------------------------------------
 !  CALCUL DES VALEURS PROPRES D'UN TENSEUR SYMETRIQUE
 ! --------------------------------------------------------------------------------------------------
 !  T      IN  TENSEUR (1:6) CODE AVEC RAC2 SUR LE CISAILLEMENT
 !  VALP   OUT VALEURS PROPRES (1:3) DANS L'ORDRE DECROISSANT
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8),parameter,dimension(6):: kr=(/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
-    real(kind=8),parameter:: pi = 4*atan(1.d0)
-    real(kind=8),parameter:: rac2 = sqrt(2.d0)
+    real(kind=8), parameter, dimension(6):: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
+    real(kind=8), parameter:: pi = 4*atan(1.d0)
+    real(kind=8), parameter:: rac2 = sqrt(2.d0)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: p, d(6), s, s3, quatj3, ratio, th
 ! --------------------------------------------------------------------------------------------------
@@ -37,8 +37,8 @@ subroutine lcvalp(t, valp)
     p = (t(1)+t(2)+t(3))/3
 !
 !  DEVIATEUR ET SECOND INVARIANT (2/3 VON MISES)
-    d = t - p*kr
-    s = sqrt(2.d0*dot_product(d,d)/3.d0)
+    d = t-p*kr
+    s = sqrt(2.d0*dot_product(d, d)/3.d0)
     s3 = s**3
 !
 !  TROISIEME INVARIANT (4 X DETERMINANT DE DEV)
@@ -46,17 +46,17 @@ subroutine lcvalp(t, valp)
 !
 !  ANGLE DE LODE
     if (abs(quatj3) .ge. s3) then
-        ratio = sign(1.d0,quatj3)
+        ratio = sign(1.d0, quatj3)
     else
         ratio = quatj3/s3
-        ratio = max(ratio,-1.d0)
+        ratio = max(ratio, -1.d0)
         ratio = min(ratio, 1.d0)
-    endif
+    end if
     th = acos(ratio)/3
 !
 !  VALEURS PROPRES RANGEES DANS L'ORDRE DECROISSANT
-    valp(1) = p + s*cos(th)
-    valp(2) = p + s*cos(th-2*pi/3.d0)
-    valp(3) = p + s*cos(th+2*pi/3.d0)
+    valp(1) = p+s*cos(th)
+    valp(2) = p+s*cos(th-2*pi/3.d0)
+    valp(3) = p+s*cos(th+2*pi/3.d0)
 !
 end subroutine

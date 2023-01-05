@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: mael_mass_desc(:) => null()
 !
-    data blanc         /'        '/
+    data blanc/'        '/
 !
 !-----------------------------------------------------------------------
 !
@@ -113,7 +113,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     else
         chmat = blanc
         chcar = blanc
-    endif
+    end if
 !
     if (lintf .ne. blanc) then
 ! ON RECUPERE LE NBRE DE NOEUDS PRESENTS DANS INTERF_DYNA
@@ -121,22 +121,22 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! ON RECUPERE LE LISTE DES NOEUDS PRESENTS DANS INTERF_DYNA
         call jeveuo(lintf//'.IDC_DEFO', 'L', vi=idc_defo)
     else
-        nbnoe=0
-    endif
+        nbnoe = 0
+    end if
     call jeveuo(nomres//'.MAEL_MASS_DESC', 'L', vi=mael_mass_desc)
     call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbmtot)
     if (nbmtot .eq. 0) then
         ASSERT(.false.)
-    endif
+    end if
     call dismoi('NB_MODES_STA', basmod, 'RESULTAT', repi=nbmdef)
-    nbmdyn=nbmtot-nbmdef
+    nbmdyn = nbmtot-nbmdef
     if (nbmdyn .lt. 0) then
         ASSERT(.false.)
-    endif
+    end if
 !
     if (nbmtot .ne. mael_mass_desc(2)) then
         call utmess('I', 'ALGORITH_52')
-    endif
+    end if
 !
 ! **********************
 !     CREATION DU .NUME
@@ -151,14 +151,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
     call jelira(jexnum(nu(1:19)//'.PRNO', 1), 'LONMAX', n1)
     call jeveuo(jexnum(nu(1:19)//'.PRNO', 1), 'L', iaprno)
     nbno = n1/(nec+2)
-    k=1
+    k = 1
     ncmpmx = 0
     do i = 1, nbno
-        nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)
+        nunot = zi(iaprno-1+(i-1)*(nec+2)+1)
         if (nunot .ne. 0) then
-            nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
-            ncmpmx = max(ncmpmx,nueq)
-        endif
+            nueq = zi(iaprno-1+(i-1)*(nec+2)+2)
+            ncmpmx = max(ncmpmx, nueq)
+        end if
     end do
 ! ON VA CHOISIR PLUSIEURS NOEUDS QUI NE SONT PAS PRESENTS DANS
 ! L'INTERFACE ET TELS QUE LE NBRE DE DDL CONSIDERE SOIT EGAL
@@ -172,98 +172,98 @@ subroutine comp81(nomres, basmod, raidf, noma)
         call jeveuo(jexnom(noma//'.GROUPENO', gnex), 'L', ldgn0)
         call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
         do j = 1, nbno2
-            zi(ldgn+j-1)=zi(ldgn0+j-1)
+            zi(ldgn+j-1) = zi(ldgn0+j-1)
         end do
     else
-        nbno2=nbnoe
+        nbno2 = nbnoe
         if (nbno2 .ne. 0) then
             call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
             do j = 1, nbno2
-                zi(ldgn+j-1)=idc_defo(j)
+                zi(ldgn+j-1) = idc_defo(j)
             end do
         else
             call wkvect('&&COMP81.NEUEXC', 'V V I', 1, ldgn)
             zi(ldgn) = 0
-        endif
-    endif
+        end if
+    end if
 556 continue
-    nbndyn=nbmdyn/ncmpmx
-    rbndyn=dble(nbmdyn)/dble(ncmpmx)
+    nbndyn = nbmdyn/ncmpmx
+    rbndyn = dble(nbmdyn)/dble(ncmpmx)
     if (abs(rbndyn-dble(nbndyn)) .gt. 0.d0) then
         call utmess('I', 'ALGORITH_53', si=ncmpmx)
-    endif
+    end if
     if (nbndyn .eq. 0) then
         call wkvect(nomres//'.NEUBID', 'V V I', 1, inebid)
         zi(inebid) = 0
         goto 554
-    endif
+    end if
     call wkvect(nomres//'.NEUBID', 'V V I', nbndyn, inebid)
     if (igin .ne. 0) then
         call jeveuo(jexnom(noma//'.GROUPENO', gnin), 'L', ldgn0)
         do j = 1, nbndyn
-            zi(inebid+j-1)=zi(ldgn0+j-1)
+            zi(inebid+j-1) = zi(ldgn0+j-1)
         end do
         goto 554
-    endif
+    end if
     do i = 1, nbno
-        nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)
+        nunot = zi(iaprno-1+(i-1)*(nec+2)+1)
         if (nunot .ne. 0) then
-            nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
+            nueq = zi(iaprno-1+(i-1)*(nec+2)+2)
             if (nueq .eq. ncmpmx) then
                 do j = 1, nbno2
                     if (i .eq. zi(ldgn+j-1)) goto 555
                 end do
-                zi(inebid+k-1)= i
+                zi(inebid+k-1) = i
                 if (k .eq. nbndyn) goto 554
-                k=k+1
-            endif
-        endif
+                k = k+1
+            end if
+        end if
 555     continue
     end do
 !
 554 continue
     if (nbmdef .ne. 0) then
-        call rsadpa(basmod, 'L', 1, 'NOEUD_CMP', nbmdyn+1,&
+        call rsadpa(basmod, 'L', 1, 'NOEUD_CMP', nbmdyn+1, &
                     0, sjv=lnocmp, styp=k8bid)
-        if (zk16(lnocmp) .eq. ' ') lredu=.true.
-    endif
+        if (zk16(lnocmp) .eq. ' ') lredu = .true.
+    end if
     if (lredu) then
-        nbndef=nbmdef/ncmpmx
-        rbndef=dble(nbmdef)/dble(ncmpmx)
+        nbndef = nbmdef/ncmpmx
+        rbndef = dble(nbmdef)/dble(ncmpmx)
         if (abs(rbndef-dble(nbndef)) .gt. 0.d0) then
             call utmess('I', 'ALGORITH_54', si=ncmpmx)
-        endif
+        end if
         call wkvect('&&COMP81.NOSTDY', 'V V I', nbndef, instdy)
         if (igin .ne. 0) then
             call jeveuo(jexnom(noma//'.GROUPENO', gnin), 'L', ldgn0)
             do j = 1, nbndef
-                zi(instdy+j-1)=zi(ldgn0+nbndyn+j-1)
+                zi(instdy+j-1) = zi(ldgn0+nbndyn+j-1)
             end do
             goto 654
-        endif
+        end if
         if (nbndyn .ne. 0) then
-            nbnot = nbno2 + nbndyn
+            nbnot = nbno2+nbndyn
             call juveca('&&COMP81.NEUEXC', nbnot)
             call jeveuo('&&COMP81.NEUEXC', 'E', ldgn)
             do j = nbno2+1, nbnot
-                zi(ldgn+j-1)=zi(inebid+j-1-nbno2)
+                zi(ldgn+j-1) = zi(inebid+j-1-nbno2)
             end do
             nbno2 = nbnot
-        endif
-        k=1
+        end if
+        k = 1
         do i = 1, nbno
-            nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)
+            nunot = zi(iaprno-1+(i-1)*(nec+2)+1)
             if (nunot .ne. 0) then
-                nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
+                nueq = zi(iaprno-1+(i-1)*(nec+2)+2)
                 if (nueq .eq. ncmpmx) then
                     do j = 1, nbno2
                         if (i .eq. zi(ldgn+j-1)) goto 655
                     end do
-                    zi(instdy+k-1)= i
+                    zi(instdy+k-1) = i
                     if (k .eq. nbndef) goto 654
-                    k=k+1
-                endif
-            endif
+                    k = k+1
+                end if
+            end if
 655         continue
         end do
 !
@@ -272,33 +272,33 @@ subroutine comp81(nomres, basmod, raidf, noma)
         if (nbnoe .ne. 0) then
             call wkvect('&&COMP81.NOSTDY', 'V V I', nbnoe, instdy)
             do j = 1, nbnoe
-                zi(instdy+j-1)=idc_defo(j)
+                zi(instdy+j-1) = idc_defo(j)
             end do
         else
             call wkvect('&&COMP81.NOSTDY', 'V V I', 1, instdy)
             zi(instdy) = 0
-        endif
+        end if
         nbndef = nbnoe
-    endif
+    end if
 !
 ! **********************
 !     CREATION DU .REFM
 ! **********************
     call wkvect(nomres//'.REFM', 'G V K8', 8, iarefm)
 ! STOCKAGE DU NOM DU MODELE
-    zk8(iarefm-1+1)= nomo
+    zk8(iarefm-1+1) = nomo
 ! STOCKAGE DU NOM DU MAILLAGE
-    zk8(iarefm-1+2)= noma
+    zk8(iarefm-1+2) = noma
 ! STOCKAGE DU NOM DU CHAMP DE MATERIAU
-    zk8(iarefm-1+3)=chmat
+    zk8(iarefm-1+3) = chmat
 ! STOCKAGE DU NOM DU CHAMP DE CARACTERISTIQUES ELEMENTAIRES
-    zk8(iarefm-1+4)=chcar
+    zk8(iarefm-1+4) = chcar
 ! STOCKAGE DU NOM DE LA NUMEROTATION
-    zk8(iarefm-1+5)=nu(1:8)
+    zk8(iarefm-1+5) = nu(1:8)
 ! STOCKAGE DU NOM DU CHAMP DE CARACTERISTIQUES ELEMENTAIRES
-    zk8(iarefm-1+6)= 'OUI_RIGI'
-    zk8(iarefm-1+7)= 'OUI_MASS'
-    zk8(iarefm-1+8)= 'NON_AMOR'
+    zk8(iarefm-1+6) = 'OUI_RIGI'
+    zk8(iarefm-1+7) = 'OUI_MASS'
+    zk8(iarefm-1+8) = 'NON_AMOR'
 !
 ! **********************
 !     CREATION DU .DESM
@@ -306,24 +306,24 @@ subroutine comp81(nomres, basmod, raidf, noma)
     call wkvect(nomres//'.DESM', 'G V I', 10, iadesm)
 !
 ! METTRE ICI LE NBRE DE ?
-    zi(iadesm-1+1)= 0
+    zi(iadesm-1+1) = 0
 ! METTRE ICI LE NBRE DE NOEUD EXTERIEUR NON DUPLIQUES
-    zi(iadesm-1+2)=nbndef+nbndyn
+    zi(iadesm-1+2) = nbndef+nbndyn
 ! METTRE ICI LE NBRE DE NOEUDS INTERNES
-    zi(iadesm-1+3)=nbno
+    zi(iadesm-1+3) = nbno
 ! METTRE ICI LE NBRE DE DDL EXTERIEUR
-    zi(iadesm-1+4)=mael_mass_desc(2)
+    zi(iadesm-1+4) = mael_mass_desc(2)
 ! METTRE ICI LE NBRE DE DDL INTERIEUR (OU TOTAL)
-    zi(iadesm-1+5)=0
+    zi(iadesm-1+5) = 0
 ! METTRE ICI LE NBRE DE CHARGEMENT
-    zi(iadesm-1+6)=0
-    zi(iadesm-1+7)=0
+    zi(iadesm-1+6) = 0
+    zi(iadesm-1+7) = 0
 ! METTRE ICI LE NBRE DE LAGRANGE EXTERNE
-    zi(iadesm-1+8)=0
+    zi(iadesm-1+8) = 0
 ! METTRE ICI LE NBRE DE LAGRANGE LIAISON
-    zi(iadesm-1+9)=0
+    zi(iadesm-1+9) = 0
 ! METTRE ICI LE NBRE DE LAGRANGE INTERNE
-    zi(iadesm-1+10)=0
+    zi(iadesm-1+10) = 0
 !
     if ((nbndef+nbndyn) .eq. 0) goto 669
 !
@@ -332,10 +332,10 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! **********************
     call wkvect(nomres//'.LINO', 'G V I', nbndef+nbndyn, iaconx)
     do i = 1, nbndyn
-        zi(iaconx+i-1)=zi(inebid+i-1)
+        zi(iaconx+i-1) = zi(inebid+i-1)
     end do
     do i = nbndyn+1, nbndef+nbndyn
-        zi(iaconx+i-1)=zi(instdy+i-nbndyn-1)
+        zi(iaconx+i-1) = zi(instdy+i-nbndyn-1)
     end do
 !
 ! **********************
@@ -343,14 +343,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! **********************
     call wkvect(nomres//'.CONX', 'G V I', 3*(nbndef+nbndyn), iacon1)
     do i = 1, nbndyn
-        zi(iacon1+3*i-3)=1
-        zi(iacon1+3*i-2)=zi(inebid+i-1)
-        zi(iacon1+3*i-1)=0
+        zi(iacon1+3*i-3) = 1
+        zi(iacon1+3*i-2) = zi(inebid+i-1)
+        zi(iacon1+3*i-1) = 0
     end do
     do i = nbndyn+1, nbndef+nbndyn
-        zi(iacon1+3*i-3)=1
-        zi(iacon1+3*i-2)=zi(instdy+i-nbndyn-1)
-        zi(iacon1+3*i-1)=0
+        zi(iacon1+3*i-3) = 1
+        zi(iacon1+3*i-2) = zi(instdy+i-nbndyn-1)
+        zi(iacon1+3*i-1) = 0
     end do
 669 continue
 !
@@ -359,16 +359,16 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! **********************
     call jeexin(nomres//'.MAEL_AMOR_VALE', iret)
     if (iret .gt. 0) then
-        zk8(iarefm-1+8)= 'OUI_AMOR'
-    endif
+        zk8(iarefm-1+8) = 'OUI_AMOR'
+    end if
 !
 !     -- CREATION DES OBJETS .LICA ET .LICH:
 !     --------------------------------------
     call getfac('CAS_CHARGE', nocc)
     if (nocc .ne. 0) then
-        call jecrec(nomres//'.LICA', 'G V R', 'NO', 'DISPERSE', 'CONSTANT',&
+        call jecrec(nomres//'.LICA', 'G V R', 'NO', 'DISPERSE', 'CONSTANT', &
                     nocc)
-        call jecrec(nomres//'.LICH', 'G V K8', 'NO', 'CONTIG', 'CONSTANT',&
+        call jecrec(nomres//'.LICH', 'G V K8', 'NO', 'CONTIG', 'CONSTANT', &
                     nocc)
         call jeecra(nomres//'.LICA', 'LONMAX', 2*nbmtot)
         call jeecra(nomres//'.LICH', 'LONMAX', 3)
@@ -381,7 +381,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
                 vectas = ' '
             else
                 resuge = ' '
-            endif
+            end if
             call jecroc(jexnom(nomres//'.LICA', nomcas))
             call jecroc(jexnom(nomres//'.LICH', nomcas))
             call jenonu(jexnom(nomres//'.LICA', nomcas), icas)
@@ -393,13 +393,13 @@ subroutine comp81(nomres, basmod, raidf, noma)
                     zr(ialica+ie-1) = vale(ie)
                     zr(ialica+nbmtot+ie-1) = vale(ie)
                 end do
-            endif
-            zk8(ialich)='NON_SUIV'
-            zk8(ialich+1)=vectas
-            zk8(ialich+2)=resuge
-            zi(iadesm-1+7)=icas
+            end if
+            zk8(ialich) = 'NON_SUIV'
+            zk8(ialich+1) = vectas
+            zk8(ialich+2) = resuge
+            zi(iadesm-1+7) = icas
         end do
-    endif
+    end if
 !
 ! --- MENAGE
 !

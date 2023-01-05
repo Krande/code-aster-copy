@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine dibili(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use te0047_type
-implicit none
+    use te0047_type
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -48,8 +48,8 @@ implicit none
 #include "asterfort/vecma.h"
 #include "blas/dcopy.h"
 !
-type(te0047_dscr), intent(in) :: for_discret
-integer, intent(out)          :: iret
+    type(te0047_dscr), intent(in) :: for_discret
+    integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,23 +63,23 @@ integer, intent(out)          :: iret
 !       nbparc : 3 paramètres par composante
 !       nbvint : 1 variables internes par composantes
     integer :: nbparc, nbvint
-    parameter   (nbparc = 3, nbvint = 1*6)
+    parameter(nbparc=3, nbvint=1*6)
 !       nbpart : nombre paramètres total
 !       valpar : valeur paramètres de la loi
 !       nompar : nom des paramètres de la loi
     integer :: nbpart
-    parameter   (nbpart = nbparc*6)
+    parameter(nbpart=nbparc*6)
     real(kind=8) :: valpar(nbpart), coeflo(6, nbparc), vardnl(nbvint)
     integer :: codret(nbpart)
     character(len=8) :: nompar(nbpart)
     aster_logical :: okdire(6)
 !   nbparc paramètres par composante
-    data nompar /'KDEB_DX','KFIN_DX','FPRE_DX',&
-                 'KDEB_DY','KFIN_DY','FPRE_DY',&
-                 'KDEB_DZ','KFIN_DZ','FPRE_DZ',&
-                 'KDEB_RX','KFIN_RX','FPRE_RX',&
-                 'KDEB_RY','KFIN_RY','FPRE_RY',&
-                 'KDEB_RZ','KFIN_RZ','FPRE_RZ'/
+    data nompar/'KDEB_DX', 'KFIN_DX', 'FPRE_DX', &
+        'KDEB_DY', 'KFIN_DY', 'FPRE_DY', &
+        'KDEB_DZ', 'KFIN_DZ', 'FPRE_DZ', &
+        'KDEB_RX', 'KFIN_RX', 'FPRE_RX', &
+        'KDEB_RY', 'KFIN_RY', 'FPRE_RY', &
+        'KDEB_RZ', 'KFIN_RZ', 'FPRE_RZ'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,36 +103,36 @@ integer, intent(out)          :: iret
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_5', nk=5, valk=messak)
-    endif
+    end if
 !   récupère tous les paramètres
 !   température : si 2 noeuds ==> moyenne
-    call rcvarc(' ', 'TEMP', '+', 'RIGI', 1,&
+    call rcvarc(' ', 'TEMP', '+', 'RIGI', 1, &
                 1, temp1, iretvc)
     temper = temp1
     if (for_discret%nno .eq. 2) then
-        call rcvarc(' ', 'TEMP', '+', 'RIGI', 2,&
+        call rcvarc(' ', 'TEMP', '+', 'RIGI', 2, &
                     1, temp2, iretvc)
         temper = (temp1+temp2)*0.5d0
-    endif
+    end if
     valpar(:) = 0.0d0
-    call rcvalb('FPG1', 1, 1, '+', zi(imat),&
-                ' ', 'DIS_BILI_ELAS', 1, 'TEMP', [temper],&
+    call rcvalb('FPG1', 1, 1, '+', zi(imat), &
+                ' ', 'DIS_BILI_ELAS', 1, 'TEMP', [temper], &
                 nbpart, nompar, valpar, codret, 0)
 !   les caractéristiques sont toujours dans le repère local on fait seulement une copie
     call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
 !   si un ddl n'est pas affecte d'un comportement non-linéaire
 !   il est donc élastique dans cette direction. ==> dinonc
     raide(:) = 0.0d0
-    coeflo(:,:) = -1.0d0
+    coeflo(:, :) = -1.0d0
 !   examen des codret, valpar. on affecte raide, les paramètres
-    call dinonc(for_discret%nomte, codret, valpar, klv, raide,&
+    call dinonc(for_discret%nomte, codret, valpar, klv, raide, &
                 nbparc, coeflo, okdire)
 !   loi de comportement non-linéaire
     neq = for_discret%nno*for_discret%nc
-    ulp(1:12) = for_discret%ulm(1:12) + for_discret%dul(1:12)
+    ulp(1:12) = for_discret%ulm(1:12)+for_discret%dul(1:12)
     vardnl(:) = 0.0d0
     call dinon4(neq, for_discret%ulm, for_discret%dul, ulp, for_discret%nno, &
-                for_discret%nc, zr(ivarim), raide, nbparc, coeflo,&
+                for_discret%nc, zr(ivarim), raide, nbparc, coeflo, &
                 okdire, vardnl)
 !   actualisation de la matrice quasi-tangente
     call diklvraid(for_discret%nomte, klv, raide)
@@ -141,60 +141,60 @@ integer, intent(out)          :: iret
         call jevech('PMATUUR', 'E', imat)
         if (for_discret%ndim .eq. 3) then
             call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-        else if (for_discret%ndim.eq.2) then
+        else if (for_discret%ndim .eq. 2) then
             call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-        endif
-    endif
+        end if
+    end if
     !
-    if ( for_discret%lVect .or. for_discret%lSigm ) then
+    if (for_discret%lVect .or. for_discret%lSigm) then
         ! demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, neq)
         ! calcul de fl = klc.dul (incrément d'effort)
         call pmavec('ZERO', neq, klc, for_discret%dul, fl)
-    endif
+    end if
     ! calcul des efforts généralisés
-    if ( for_discret%lSigm ) then
+    if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
-                zr(icontp-1+ii) = fl(ii) + zr(icontm-1+ii)
-            enddo
-        else if (for_discret%nno.eq.2) then
+                zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
+            end do
+        else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
-                zr(icontp-1+ii)                = -fl(ii) + zr(icontm-1+ii)
-                zr(icontp-1+ii+for_discret%nc) =  fl(ii+for_discret%nc) + &
-                                                  zr(icontm-1+ii+for_discret%nc)
-            enddo
-        endif
-    endif
+                zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
+                zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
+                                                 zr(icontm-1+ii+for_discret%nc)
+            end do
+        end if
+    end if
     ! calcul des forces nodales
-    if ( for_discret%lVect ) then
+    if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
         ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
         if (for_discret%nno .eq. 1) then
             do ii = 1, neq
-                fl(ii) = fl(ii) + zr(icontm-1+ii)
-            enddo
-        else if (for_discret%nno.eq.2) then
+                fl(ii) = fl(ii)+zr(icontm-1+ii)
+            end do
+        else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
-                fl(ii)                = fl(ii) - zr(icontm-1+ii)
-                fl(ii+for_discret%nc) = fl(ii+for_discret%nc) + &
+                fl(ii) = fl(ii)-zr(icontm-1+ii)
+                fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+ &
                                         zr(icontm-1+ii+for_discret%nc)
-            enddo
-        endif
+            end do
+        end if
         ! forces nodales aux noeuds 1 et 2 (repère global)
         if (for_discret%nc .ne. 2) then
             call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         else
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
-        endif
-    endif
+        end if
+    end if
     ! mise à jour des variables internes
-    if ( for_discret%lVari ) then
+    if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         do ii = 1, nbvint
             zr(ivarip+ii-1) = vardnl(ii)
-        enddo
-    endif
+        end do
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 !
 subroutine rrcClean(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/romFieldBuildClean.h"
 #include "asterfort/romResultClean.h"
 #include "asterfort/romTableClean.h"
 !
-type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
+    type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,8 +51,8 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
     do iFieldBuild = 1, cmdPara%nbFieldBuild
         call romFieldBuildClean(cmdPara%fieldBuild(iFieldBuild))
     end do
-    deallocate(cmdPara%fieldBuild)
-    deallocate(cmdPara%fieldName)
+    deallocate (cmdPara%fieldBuild)
+    deallocate (cmdPara%fieldName)
     call romTableClean(cmdPara%tablReduCoor)
 !
 end subroutine

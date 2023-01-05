@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
-                  ffc, ffp, idepd, idepm, indco,&
-                  jac, lact, mmat, mu, nd,&
-                  ndim, nfh, nfiss, nno, nnol,&
-                  nnos, nvit, pla, seuil,&
+subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls, &
+                  ffc, ffp, idepd, idepm, indco, &
+                  jac, lact, mmat, mu, nd, &
+                  ndim, nfh, nfiss, nno, nnol, &
+                  nnos, nvit, pla, seuil, &
                   singu, fk, tau1, tau2)
 ! aslint: disable=W1504
     implicit none
@@ -73,7 +73,7 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
     real(kind=8) :: coeffp, coeffr, ik(3, 3), jac, knp(3, 3)
     real(kind=8) :: mmat(216, 216), mu, nd(3), p(3, 3), ffc(8), ffp(27)
     real(kind=8) :: ptknp(3, 3), seuil, tau1(3), tau2(3)
-    real(kind=8) :: fk(27,3,3)
+    real(kind=8) :: fk(27, 3, 3)
     aster_logical :: adher
 !
     if (mu .eq. 0.d0 .or. seuil .eq. 0.d0) indco = 0
@@ -84,65 +84,65 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
 !
 ! --- CALCUL DE LA MATRICE F - CAS SANS CONTACT
 !
-            call xmmab6(ndim, nnol, pla, ffc, jac,&
+            call xmmab6(ndim, nnol, pla, ffc, jac, &
                         tau1, tau2, lact, mmat)
 !
-        endif
-    else if (indco.eq.1) then
+        end if
+    else if (indco .eq. 1) then
 !
 ! --- CALCUL DES INCREMENTS - DÉPLACEMENTS&
 ! --- SEMI-MULTIPLICATEUR DE FROTTEMENT
 !
-        call xmmsa1(algofr, ndim, nno, nnos, nnol,&
-                    pla, ffc, ffp, idepd, idepm,&
-                    nfh, nd, tau1, tau2, singu,&
-                    fk, lact, ddls, ddlm, coeffr,&
-                    coeffp, p, adher, knp, ptknp,&
+        call xmmsa1(algofr, ndim, nno, nnos, nnol, &
+                    pla, ffc, ffp, idepd, idepm, &
+                    nfh, nd, tau1, tau2, singu, &
+                    fk, lact, ddls, ddlm, coeffr, &
+                    coeffp, p, adher, knp, ptknp, &
                     ik)
 !
 ! --- CALCUL DE B, BT
 !
         if (algofr .eq. 1) then
-            call xmmab3(ndim, nno, nnos, nnol, pla,&
-                        ffc, ffp, jac, knp, nfh,&
-                        seuil, tau1, tau2, mu, singu,&
+            call xmmab3(ndim, nno, nnos, nnol, pla, &
+                        ffc, ffp, jac, knp, nfh, &
+                        seuil, tau1, tau2, mu, singu, &
                         fk, lact, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE B_U
 !
-            call xmmab4(ndim, nno, nnos, ffp, jac,&
-                        ptknp, nfh, seuil, mu, singu,&
+            call xmmab4(ndim, nno, nnos, ffp, jac, &
+                        ptknp, nfh, seuil, mu, singu, &
                         fk, coeffr, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE F (NULLE EN ADHERENCE)
 !
-            if (.not.adher) then
-                call xmmab5(ndim, nnol, pla, ffc, jac,&
-                            coeffr, seuil, tau1, tau2, mu,&
+            if (.not. adher) then
+                call xmmab5(ndim, nnol, pla, ffc, jac, &
+                            coeffr, seuil, tau1, tau2, mu, &
                             ik, lact, mmat)
-            endif
-        else if (algofr.eq.2) then
-            call xmmbp3(ndim, nno, nnos, nnol, pla,&
-                        ffc, ffp, jac, knp, nfh,&
-                        seuil, tau1, tau2, mu, singu,&
+            end if
+        else if (algofr .eq. 2) then
+            call xmmbp3(ndim, nno, nnos, nnol, pla, &
+                        ffc, ffp, jac, knp, nfh, &
+                        seuil, tau1, tau2, mu, singu, &
                         fk, lact, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE B_U
 !
-            call xmmab4(ndim, nno, nnos, ffp, jac,&
-                        ptknp, nfh, seuil, mu, singu,&
+            call xmmab4(ndim, nno, nnos, ffp, jac, &
+                        ptknp, nfh, seuil, mu, singu, &
                         fk, coeffp, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE F - CAS GLISSANT OU PENALISATION (NON SEULE)
 !
-            call xmmbp5(ndim, nnol, pla, ffc, jac,&
-                        coeffp, seuil, tau1, tau2, mu,&
+            call xmmbp5(ndim, nnol, pla, ffc, jac, &
+                        coeffp, seuil, tau1, tau2, mu, &
                         lact, mmat)
         else
-            ASSERT(algofr.eq.0)
-        endif
+            ASSERT(algofr .eq. 0)
+        end if
 !
     else
-        ASSERT(indco.eq.0 .or. indco.eq.1)
-    endif
+        ASSERT(indco .eq. 0 .or. indco .eq. 1)
+    end if
 end subroutine

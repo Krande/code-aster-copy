@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,8 +110,8 @@ subroutine crnlgc(numddl)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-    mesh = zk24(jrefn)(1:8)
-    nomgdr = zk24(jrefn + 1)(1:8)
+    mesh = zk24(jrefn) (1:8)
+    nomgdr = zk24(jrefn+1) (1:8)
 
     call jeveuo(numddl//'.NUME.NULG', 'E', vi=v_nugll)
     call jeveuo(numddl//'.NUME.PDDL', 'E', vi=v_posdd)
@@ -123,8 +123,8 @@ subroutine crnlgc(numddl)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
 !
-    if(nb_comm > 0) then
-        call jedupo(mesh//'.DOMJOINTS', 'G', numddl//'.NUME.DOMJ', ASTER_FALSE )
+    if (nb_comm > 0) then
+        call jedupo(mesh//'.DOMJOINTS', 'G', numddl//'.NUME.DOMJ', ASTER_FALSE)
     end if
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
@@ -164,26 +164,26 @@ subroutine crnlgc(numddl)
 !       DES DEUX COTES LES NOEUDS NE SONT PAS DANS LE MEME ORDRE ?
         tag4 = to_mpi_int(v_tag(iaux))
         numpr4 = to_mpi_int(numpro)
-        lgenve1 = nbnoee*(1 + nec) + 1
-        lgenvr1 = nbnoer*(1 + nec) + 1
+        lgenve1 = nbnoee*(1+nec)+1
+        lgenvr1 = nbnoer*(1+nec)+1
         call wkvect('&&CRNULG.NOEUD_NEC_E1', 'V V I', lgenvr1, jenvoi1)
         call wkvect('&&CRNULG.NOEUD_NEC_R1', 'V V I', lgenve1, jrecep1)
 !
-        lgenve2 = nbnoee*(1 + nec) + 1
-        lgenvr2 = nbnoer*(1 + nec) + 1
+        lgenve2 = nbnoee*(1+nec)+1
+        lgenvr2 = nbnoer*(1+nec)+1
 !
 !       On commence par envoyer, le but final est de recevoir les numeros de ddl
 !       On boucle donc sur les noeuds a recevoir
         nb_ddl_envoi = 0
         do jaux = 1, nbnoer
-            poscom = (jaux - 1)*(1 + nec) + 1
-            numno1 = zi(jjoinr + 2*(jaux - 1))
-            numno2 = zi(jjoinr + 2*jaux - 1)
-            zi(jenvoi1 + poscom) = numno2
+            poscom = (jaux-1)*(1+nec)+1
+            numno1 = zi(jjoinr+2*(jaux-1))
+            numno2 = zi(jjoinr+2*jaux-1)
+            zi(jenvoi1+poscom) = numno2
             do iec = 1, nec
-                zi(jenvoi1 + poscom + iec) = zzprno(1, numno1, 2 + iec)
+                zi(jenvoi1+poscom+iec) = zzprno(1, numno1, 2+iec)
             end do
-            nb_ddl_envoi = nb_ddl_envoi + zzprno(1, numno1, 2)
+            nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
         end do
         zi(jenvoi1) = nb_ddl_envoi
         n4e = to_mpi_int(lgenvr1)
@@ -191,39 +191,38 @@ subroutine crnlgc(numddl)
         call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
                               zi(jrecep1), n4r, numpr4, tag4, mpicou)
 
-
         call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', max(1, zi(jrecep1)), jenvoi2)
         call wkvect('&&CRNULG.NUM_DDL_GLOB_R', 'V V I', max(1, zi(jenvoi1)), jrecep2)
         call codlet(numpro, 'G', chnbjo)
 
         nbddl = 0
-        if(zi(jrecep1) > 0) then
+        if (zi(jrecep1) > 0) then
             call wkvect(numddl//'.NUMEE'//chnbjo, 'G V I', zi(jrecep1), jnujoi1)
 !
             do jaux = 1, nbnoee
-                poscom = (jaux - 1)*(1 + nec) + 1
-                numno1 = zi(jrecep1 + poscom)
+                poscom = (jaux-1)*(1+nec)+1
+                numno1 = zi(jrecep1+poscom)
 !
                 nddl = zzprno(1, numno1, 1)
                 nddlg = v_nugll(nddl)
 !
 !           Recherche des composantes demandees
                 do iec = 1, nec
-                    zi(jencod + iec - 1) = zzprno(1, numno1, 2 + iec)
-                    zi(jenco2 + iec - 1) = zi(jrecep1 + poscom + iec)
+                    zi(jencod+iec-1) = zzprno(1, numno1, 2+iec)
+                    zi(jenco2+iec-1) = zi(jrecep1+poscom+iec)
                 end do
                 call isdeco(zi(jencod), zi(jcpnec), ncmpmx)
                 call isdeco(zi(jenco2), zi(jcpne2), ncmpmx)
                 ico2 = 0
                 do icmp = 1, ncmpmx
-                    if (zi(jcpnec + icmp - 1) .eq. 1) then
-                        if (zi(jcpne2 + icmp - 1) .eq. 1) then
+                    if (zi(jcpnec+icmp-1) .eq. 1) then
+                        if (zi(jcpne2+icmp-1) .eq. 1) then
                             ASSERT(nddlg .ne. -1)
-                            zi(jenvoi2 + nbddl) = nddlg + ico2
-                            zi(jnujoi1 + nbddl) = nddl + ico2
-                            nbddl = nbddl + 1
+                            zi(jenvoi2+nbddl) = nddlg+ico2
+                            zi(jnujoi1+nbddl) = nddl+ico2
+                            nbddl = nbddl+1
                         end if
-                        ico2 = ico2 + 1
+                        ico2 = ico2+1
                     end if
                 end do
             end do
@@ -235,20 +234,20 @@ subroutine crnlgc(numddl)
         call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
                               zi(jrecep2), n4r, numpr4, tag4, mpicou)
 
-        if(nb_ddl_envoi > 0) then
+        if (nb_ddl_envoi > 0) then
             call wkvect(numddl//'.NUMER'//chnbjo, 'G V I', nb_ddl_envoi, jnujoi2)
 !
             curpos = 0
             do jaux = 1, nbnoer
-                numno1 = zi(jjoinr + 2*(jaux - 1))
+                numno1 = zi(jjoinr+2*(jaux-1))
                 nddll = zzprno(1, numno1, 1)
                 nbcmp = zzprno(1, numno1, 2)
-                do icmp = 0, nbcmp - 1
-                    ASSERT(zi(jrecep2 + curpos) .ne. -1)
-                    v_nugll(nddll + icmp) = zi(jrecep2 + curpos)
-                    v_posdd(nddll + icmp) = numpro
-                    zi(jnujoi2 + curpos) = nddll + icmp
-                    curpos = curpos + 1
+                do icmp = 0, nbcmp-1
+                    ASSERT(zi(jrecep2+curpos) .ne. -1)
+                    v_nugll(nddll+icmp) = zi(jrecep2+curpos)
+                    v_posdd(nddll+icmp) = numpro
+                    zi(jnujoi2+curpos) = nddll+icmp
+                    curpos = curpos+1
                 end do
             end do
             ASSERT(curpos .eq. nb_ddl_envoi)
@@ -283,10 +282,10 @@ subroutine crnlgc(numddl)
                 call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
                 call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V I', nbnoee, jnujoi1)
                 do jaux = 1, nbnoee
-                    numnoe = -zi(jjoine + jaux - 1)
+                    numnoe = -zi(jjoine+jaux-1)
                     ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
                     nddll = zzprno(ili, numnoe, 1)
-                    zi(jnujoi1 + jaux - 1) = v_nugll(nddll)
+                    zi(jnujoi1+jaux-1) = v_nugll(nddll)
                 end do
                 n4e = to_mpi_int(nbnoee)
             end if
@@ -301,7 +300,7 @@ subroutine crnlgc(numddl)
             if (rang .lt. numpro) then
                 if (iret1 .ne. 0) then
                     call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
-                        end if
+                end if
                 if (iret2 .ne. 0) then
                     call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
                 end if
@@ -316,10 +315,10 @@ subroutine crnlgc(numddl)
 
             if (iret2 .ne. 0) then
                 do jaux = 1, nbnoer
-                    numnoe = -zi(jjoinr + jaux - 1)
+                    numnoe = -zi(jjoinr+jaux-1)
                     ASSERT(zzprno(ili, numnoe, 2) .eq. 1)
                     nddll = zzprno(ili, numnoe, 1)
-                    v_nugll(nddll) = zi(jnujoi2 + jaux - 1)
+                    v_nugll(nddll) = zi(jnujoi2+jaux-1)
                     v_posdd(nddll) = numpro
                 end do
             end if
@@ -339,7 +338,7 @@ subroutine crnlgc(numddl)
     nbddll = zi(jnequ)
     call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
     do iaux = 1, nbddll
-        nuno = v_deeq((iaux - 1)*2 + 1)
+        nuno = v_deeq((iaux-1)*2+1)
         if (nuno .ne. 0) then
             ASSERT(v_posdd(iaux) == v_noex(nuno))
         else
@@ -354,7 +353,7 @@ subroutine crnlgc(numddl)
         nno = 0
         do ino = 1, nb_node
             if (v_noex(ino) == rang) then
-                if (zi(idprn1 - 1 + (ino - 1)*(2 + nec) + 2) .gt. 0) nno = nno + 1
+                if (zi(idprn1-1+(ino-1)*(2+nec)+2) .gt. 0) nno = nno+1
             end if
         end do
         call asmpi_comm_vect("MPI_SUM", "I", sci=nno)
@@ -368,8 +367,8 @@ subroutine crnlgc(numddl)
         end if
         call asmpi_comm_vect("MPI_SUM", "I", sci=nlag)
 !
-        vali(1) = zi(jnequ + 1)
-        vali(2) = zi(jnequ + 1) - nlag
+        vali(1) = zi(jnequ+1)
+        vali(2) = zi(jnequ+1)-nlag
         vali(3) = nno
         vali(4) = nlag
         vali(5) = nlag/2
@@ -380,18 +379,18 @@ subroutine crnlgc(numddl)
     if (ASTER_FALSE) then
         nonulg = mesh//'.NULOGL'
         call jeveuo(nonulg, 'L', jmlogl)
-        do iaux = 0, nbddll - 1
-            nuno = v_deeq(iaux*2 + 1)
-            if (nuno .ne. 0) nuno = zi(jmlogl + nuno - 1) + 1
+        do iaux = 0, nbddll-1
+            nuno = v_deeq(iaux*2+1)
+            if (nuno .ne. 0) nuno = zi(jmlogl+nuno-1)+1
 ! numero ddl local, numéro noeud local, numéro noeud global, num composante du noeud,
 !            num ddl global, num ddl seq, num proc proprio
-            write(130+rang, *) iaux, v_deeq(iaux*2+1), v_deeg(iaux*2+1) , v_deeq(iaux*2 + 2), &
-            v_nugll(iaux + 1), v_nuls(iaux+1), v_posdd(1 + iaux)
+            write (130+rang, *) iaux, v_deeq(iaux*2+1), v_deeg(iaux*2+1), v_deeq(iaux*2+2), &
+                v_nugll(iaux+1), v_nuls(iaux+1), v_posdd(1+iaux)
 
-            write(190+rang, *) iaux, v_deeg(iaux*2+1), v_nuls(iaux+1), v_nugll(iaux + 1)
+            write (190+rang, *) iaux, v_deeg(iaux*2+1), v_nuls(iaux+1), v_nugll(iaux+1)
         end do
-        flush(130+rang)
-        flush(190+rang)
+        flush (130+rang)
+        flush (190+rang)
     end if
 !
     call jedema()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,15 +74,15 @@ subroutine ligrma(ma, listgr)
         call jeveuo(jexnum(ma//'.GROUPEMA', i), 'L', iagma)
         call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n)
         do ii = 1, n
-            ima=zi(iagma-1+ii)
-            zi(jlong-1+ima)=zi(jlong-1+ima)+1
-            nbmat = nbmat +1
+            ima = zi(iagma-1+ii)
+            zi(jlong-1+ima) = zi(jlong-1+ima)+1
+            nbmat = nbmat+1
         end do
     end do
 !
 !     CREATION DE LA COLLECTION CONTINUE A NBMA LIGNES DE LONGUEUR
 !     TOTALE EGALE A NBMAT
-    call jecrec(listgr, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
+    call jecrec(listgr, 'V V I', 'NU', 'CONTIG', 'VARIABLE', &
                 nbma)
     call jeecra(listgr, 'LONT', nbmat)
     do ima = 1, nbma
@@ -95,10 +95,10 @@ subroutine ligrma(ma, listgr)
         call jeveuo(jexnum(ma//'.GROUPEMA', i), 'L', iagma)
         call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n)
         do ii = 1, n
-            ima=zi(iagma-1+ii)
+            ima = zi(iagma-1+ii)
             call jeveuo(jexnum(listgr, ima), 'E', jlist)
 !         ON AJOUTE LE GROUPE I A LA LISTE DES GROUPES POUR CETTE MAILLE
-            zi(jcpt-1+ima) = zi(jcpt-1+ima) + 1
+            zi(jcpt-1+ima) = zi(jcpt-1+ima)+1
             zi(jlist-1+zi(jcpt-1+ima)) = i
         end do
     end do

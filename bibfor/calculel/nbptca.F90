@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !  mailles du maillage : v(ima) : nbpt(maille_ima)
 !  les mailles tardives sont ignorees.
 !-----------------------------------------------------------------------
-    integer :: iret, nbma, ima,  jnbpt, jnbno, iacnx1, ilcnx1, nbno
+    integer :: iret, nbma, ima, jnbpt, jnbno, iacnx1, ilcnx1, nbno
     character(len=8) :: ma
     character(len=19) :: cel, ces
     integer, pointer :: cesd(:) => null()
@@ -70,7 +70,7 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 
-    call alchml(ligrel, option, param, 'V', cel,&
+    call alchml(ligrel, option, param, 'V', cel, &
                 iret, ' ')
     if (iret .ne. 0) then
 !       - IL N'Y A RIEN A FAIRE : NBPT(IMA)=0
@@ -78,13 +78,12 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
         call celces(cel, 'V', ces)
         call jeveuo(ces//'.CESD', 'L', vi=cesd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = cesd(5+4* (ima-1)+1)
-            nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
+            zi(jnbpt-1+ima) = cesd(5+4*(ima-1)+1)
+            nbno = zi(ilcnx1+ima)-zi(ilcnx1-1+ima)
             zi(jnbno-1+ima) = nbno
         end do
 
-    endif
-
+    end if
 
     call detrsd('CHAM_ELEM', cel)
     call detrsd('CHAM_ELEM_S', ces)

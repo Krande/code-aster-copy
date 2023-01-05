@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine calc_myf_gf(em, ftj, fcj, h, ea, omx, &
-                       ya, sya, ipenteflex, kappa_flex,&
+                       ya, sya, ipenteflex, kappa_flex, &
                        myf, pendf)
 !
     implicit none
@@ -66,19 +66,19 @@ subroutine calc_myf_gf(em, ftj, fcj, h, ea, omx, &
     real(kind=8) :: area, coef, darea_min, aread, darea, c, e0, pendt
 
 ! c est fixe en dur mais devra prochainement etre laisse a l'utilisateur
-    c= 5.d0
+    c = 5.d0
 
-    e_t=ftj/em
-    e_c=-fcj/em
-    e_u=(1.d0+c)*e_t
+    e_t = ftj/em
+    e_c = -fcj/em
+    e_u = (1.d0+c)*e_t
     kappa_y = (2.d0*e_t)/h
 
-    kappa_test = max(-2.d0*e_c/h,2*e_u/h)
+    kappa_test = max(-2.d0*e_c/h, 2*e_u/h)
     !ASSERT(kappa_test .gt. kappa_y)
 
     pentelf = ((1.d0/12.d0)*em*(h**3)+2.d0*ea*omx*(ya**2))
 
-    if (ipenteflex .eq. 1)then
+    if (ipenteflex .eq. 1) then
         nb_decoup = 1000
         ind_s = 0
         myf = 0.d0
@@ -97,73 +97,73 @@ subroutine calc_myf_gf(em, ftj, fcj, h, ea, omx, &
         dkappa = (kappa_test-kappa_y)/nb_decoup
         dpent_p = pentelf
         do i = 0, nb_decoup-1
-            kappa = kappa_y + dkappa*i
-            call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa,&
+            kappa = kappa_y+dkappa*i
+            call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa, &
                                  e0, cas)
-            call calc_moment(e0, kappa, em, ftj, fcj, c, h, ea, omx, ya, sya, cas,&
+            call calc_moment(e0, kappa, em, ftj, fcj, c, h, ea, omx, ya, sya, cas, &
                              effort, moment)
-            call calc_moment(0.d0, kappa, em, ftj, fcj, c, h, ea, omx, ya, sya, 1,&
-                            effort, moelas)
+            call calc_moment(0.d0, kappa, em, ftj, fcj, c, h, ea, omx, ya, sya, 1, &
+                             effort, moelas)
             dmom = abs(moment-moelas)/moelas
-            if (dmom .lt. 5.d0/100.d0)then
+            if (dmom .lt. 5.d0/100.d0) then
                 ind_s = i
-            elseif (ind_s .eq. i-1)then
+            elseif (ind_s .eq. i-1) then
 !           le point seuil est selectionne
                 kappa_s = kappa
                 myf = moelas
             else
 !               calcul de la tangente a la courbe en ce point
                 kappa1 = kappa-dkappa/2.d0
-                call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa1,&
-                                 e0, cas)
+                call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa1, &
+                                     e0, cas)
 
-                call calc_moment(e0, kappa1, em, ftj, fcj, c, h, ea, omx, ya, sya, cas,&
-                             effort, moment1)
+                call calc_moment(e0, kappa1, em, ftj, fcj, c, h, ea, omx, ya, sya, cas, &
+                                 effort, moment1)
 
                 kappa2 = kappa+dkappa/2.d0
-                call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa2,&
-                                 e0, cas)
+                call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa2, &
+                                     e0, cas)
 
-                call calc_moment(e0, kappa2, em, ftj, fcj, c, h, ea, omx, ya, sya, cas,&
-                             effort, moment2)
+                call calc_moment(e0, kappa2, em, ftj, fcj, c, h, ea, omx, ya, sya, cas, &
+                                 effort, moment2)
 
                 pendt_cc = (moment2-moment1)/dkappa
                 if (pendt_cc .gt. 0.d0 .and. pendt_cc .lt. pendt_c) then
                     pendt_c = pendt_cc
                     kappa_c = kappa
                     momen_c = moment
-                endif
+                end if
 !               tangente
                 pendt_d = (moment-myf)/(kappa-kappa_s)
                 if (pendt_d .gt. 0.d0) then
                     dpent = abs(pendt_d-pendt_cc)
-                    if (dpent .lt. dpent_min .and. dpent .lt. dpent_p)then
+                    if (dpent .lt. dpent_min .and. dpent .lt. dpent_p) then
                         kappa_f = kappa
                         momen_f = moment
                         dpent_min = dpent
                         pendt_f = pendt_d
-                    endif
-                    if (dpent .gt. dpent_p .and. dpent_min .lt. pentelf)then
+                    end if
+                    if (dpent .gt. dpent_p .and. dpent_min .lt. pentelf) then
                         dpent_p = 0.d0
                     else
                         dpent_p = dpent
-                    endif
-                endif
-            endif
-        enddo
-        kappa_r =  kappa_f
-        momen_r =  momen_f
-        if  (kappa_f .eq. 0.d0) then
+                    end if
+                end if
+            end if
+        end do
+        kappa_r = kappa_f
+        momen_r = momen_f
+        if (kappa_f .eq. 0.d0) then
 !       aucun point n'a ete selectionne, il faut modifier My
             pendt_f = pendt_c
             kappa_s = (momen_c-pendt_c*kappa_c)/(pentelf-pendt_f)
             myf = pentelf*kappa_s
-            kappa_r =  kappa_c
-            momen_r =  momen_c
+            kappa_r = kappa_c
+            momen_r = momen_c
             call utmess('A', 'ALGORITH6_34')
-        endif
+        end if
     elseif (ipenteflex .eq. 2) then
-        if (kappa_flex .gt. kappa_y)then
+        if (kappa_flex .gt. kappa_y) then
             nb_decoup = 10000
             dkappa = (kappa_flex-kappa_y)/nb_decoup
             area = 0.d0
@@ -171,33 +171,33 @@ subroutine calc_myf_gf(em, ftj, fcj, h, ea, omx, &
             do i = 0, nb_decoup
                 kappa = kappa_y+dkappa*i
 
-                call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa,&
-                                 e0, cas)
-                call calc_moment(e0, kappa, em, ftj, fcj, c, h, ea, omx, ya, sya, cas,&
-                             effort, moment)
+                call calc_axe_neutre(em, ftj, fcj, c, h, ea, omx, ya, sya, kappa, &
+                                     e0, cas)
+                call calc_moment(e0, kappa, em, ftj, fcj, c, h, ea, omx, ya, sya, cas, &
+                                 effort, moment)
 
-                if (i.eq.0 .or. i.eq. nb_decoup)then
+                if (i .eq. 0 .or. i .eq. nb_decoup) then
                     coef = 0.5d0
                 else
                     coef = 1.d0
-                endif
-                area = area + moment*dkappa*coef
-            enddo
+                end if
+                area = area+moment*dkappa*coef
+            end do
             momen_r = moment
             kappa_s = kappa_y
             darea_min = area
             do i = 0, nb_decoup-1
                 kappa = kappa_y+dkappa*i
                 aread = pentelf*(kappa_y+kappa)/2.d0*(kappa-kappa_y)
-                aread =aread + (momen_r+pentelf*kappa)/2.d0*(kappa_flex-kappa)
+                aread = aread+(momen_r+pentelf*kappa)/2.d0*(kappa_flex-kappa)
                 darea = abs(aread-area)
                 pendt = (momen_r-pentelf*kappa)/(kappa_flex-kappa)
-                if (darea .lt. darea_min .and. pendt .gt. 0.d0)then
+                if (darea .lt. darea_min .and. pendt .gt. 0.d0) then
                     kappa_s = kappa
                     darea_min = darea
-                endif
-            enddo
-            myf =  pentelf*kappa_s
+                end if
+            end do
+            myf = pentelf*kappa_s
             kappa_r = kappa_flex
 
             pendt_f = (momen_r-myf)/(kappa_r-kappa_s)
@@ -208,19 +208,19 @@ subroutine calc_myf_gf(em, ftj, fcj, h, ea, omx, &
             kappa_r = kappa_y
             momen_r = pentelf*kappa_y
             pendt_f = 0.d0
-        endif
+        end if
 
-        if (pendt_f .lt. 0.d0)then
+        if (pendt_f .lt. 0.d0) then
             call utmess('A', 'ALGORITH6_36', sr=kappa_y)
             pendt_f = 0.d0
             kappa_s = kappa_y
-            myf =  pentelf*kappa_y
+            myf = pentelf*kappa_y
             kappa_r = kappa_flex
             momen_r = pentelf*kappa_y
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 
     pendf = pendt_f
 !

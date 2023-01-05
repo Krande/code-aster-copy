@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine dfftan(ndim, baslo, inoff, vtan)
 !
 !-----------------------------------------------------------------------
 !
-    ASSERT((ndim.eq.2).or.(ndim.eq.3))
+    ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !
     if (ndim .eq. 3) then
 !
@@ -57,12 +57,12 @@ subroutine dfftan(ndim, baslo, inoff, vtan)
 !
         call provec(vdir, vnor, vtan)
 !
-    else if (ndim.eq.2) then
+    else if (ndim .eq. 2) then
 !
         vtan(1) = 0.d0
         vtan(2) = 0.d0
         vtan(3) = 1.d0
 !
-    endif
+    end if
 !
 end subroutine

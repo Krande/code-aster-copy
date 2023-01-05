@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,22 +16,22 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nzcalc(carcri, nb_phase, phase, zalpha,&
-                  fmel  , seuil   , dt   , trans ,&
-                  rprim , deuxmu  , eta  , unsurn,&
-                  dp    , iret)
+subroutine nzcalc(carcri, nb_phase, phase, zalpha, &
+                  fmel, seuil, dt, trans, &
+                  rprim, deuxmu, eta, unsurn, &
+                  dp, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/nzfpri.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
 !
-integer, intent(in) :: nb_phase
-real(kind=8), intent(in) :: phase(nb_phase), zalpha
-real(kind=8) :: seuil, dt, trans, rprim, deuxmu, carcri(3), fmel
-real(kind=8) :: eta(5), unsurn(5), dp
-integer, intent(out) :: iret
+    integer, intent(in) :: nb_phase
+    real(kind=8), intent(in) :: phase(nb_phase), zalpha
+    real(kind=8) :: seuil, dt, trans, rprim, deuxmu, carcri(3), fmel
+    real(kind=8) :: eta(5), unsurn(5), dp
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,23 +61,23 @@ integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    eps    = 1.d-6
-    spetra = 1.5d0*deuxmu*trans +1.d0
-    r0     = 1.5d0*deuxmu + rprim*spetra
+    eps = 1.d-6
+    spetra = 1.5d0*deuxmu*trans+1.d0
+    r0 = 1.5d0*deuxmu+rprim*spetra
 !
 ! - Plastic try
 !
     dpplas = seuil/r0
-    dp     = dpplas
-    call nzfpri(deuxmu  , trans, rprim , seuil,&
-                nb_phase, phase, zalpha,&
-                fmel    , eta  , unsurn,&
-                dt      , dp   , &
-                fplas   , fp   , fd    ,&
-                fprim   , fdevi)
-    if (abs(fprim) / (1.d0+seuil) .lt. carcri(3)) then
+    dp = dpplas
+    call nzfpri(deuxmu, trans, rprim, seuil, &
+                nb_phase, phase, zalpha, &
+                fmel, eta, unsurn, &
+                dt, dp, &
+                fplas, fp, fd, &
+                fprim, fdevi)
+    if (abs(fprim)/(1.d0+seuil) .lt. carcri(3)) then
         goto 999
-    endif
+    end if
     dpmax = dpplas
     dpmin = 0.d0
 !
@@ -86,50 +86,50 @@ integer, intent(out) :: iret
     do i_phase = 1, nb_phase
         if (phase(i_phase) .gt. eps) then
             dp = dpplas
-            call nzfpri(deuxmu  , trans, rprim , seuil ,&
-                        nb_phase, phase, zalpha,&
-                        fmel    , eta  , unsurn,&
-                        dt      , dp   , &
-                        fplas   , fp   , fd    ,&
-                        fprim   , fdevi)
-            if (abs(fprim) / (1.d0+seuil) .lt. carcri(3)) then
+            call nzfpri(deuxmu, trans, rprim, seuil, &
+                        nb_phase, phase, zalpha, &
+                        fmel, eta, unsurn, &
+                        dt, dp, &
+                        fplas, fp, fd, &
+                        fprim, fdevi)
+            if (abs(fprim)/(1.d0+seuil) .lt. carcri(3)) then
                 goto 999
-            endif
-            if (abs(fp(i_phase)) / (1.d0+seuil) .lt. carcri(3)) then
+            end if
+            if (abs(fp(i_phase))/(1.d0+seuil) .lt. carcri(3)) then
                 goto 99
-            endif
-            dp             = 0.d0
+            end if
+            dp = 0.d0
             coefa(i_phase) = (eta(i_phase)*spetra)/dt**unsurn(i_phase)
             do iter = 1, nint(carcri(1))
-                call nzfpri(deuxmu  , trans, rprim , seuil,&
-                            nb_phase, phase, zalpha,&
-                            fmel    , eta  , unsurn,&
-                            dt      , dp   , &
-                            fplas   , fp   , fd    ,&
-                            fprim   , fdevi)
-                if (abs(fprim) / (1+seuil) .lt. carcri(3)) then
-                    goto 999
-                endif
-                if (abs(fp(i_phase)) / (1+seuil) .lt. carcri(3)) then
-                    goto 99
-                endif
-                dp = (fplas/coefa(i_phase) )**(1.d0/unsurn(i_phase))
-                if (dp .gt. dpplas) then
-                    dp = dpplas
-                endif
-                call nzfpri(deuxmu  , trans, rprim , seuil,&
-                            nb_phase, phase, zalpha,&
-                            fmel    , eta  , unsurn,&
-                            dt      , dp   , &
-                            fplas   , fp   , fd    ,&
-                            fprim   , fdevi)
+                call nzfpri(deuxmu, trans, rprim, seuil, &
+                            nb_phase, phase, zalpha, &
+                            fmel, eta, unsurn, &
+                            dt, dp, &
+                            fplas, fp, fd, &
+                            fprim, fdevi)
                 if (abs(fprim)/(1+seuil) .lt. carcri(3)) then
                     goto 999
-                endif
+                end if
                 if (abs(fp(i_phase))/(1+seuil) .lt. carcri(3)) then
                     goto 99
-                endif
-                dp = dp - fp(i_phase)/fd(i_phase)
+                end if
+                dp = (fplas/coefa(i_phase))**(1.d0/unsurn(i_phase))
+                if (dp .gt. dpplas) then
+                    dp = dpplas
+                end if
+                call nzfpri(deuxmu, trans, rprim, seuil, &
+                            nb_phase, phase, zalpha, &
+                            fmel, eta, unsurn, &
+                            dt, dp, &
+                            fplas, fp, fd, &
+                            fprim, fdevi)
+                if (abs(fprim)/(1+seuil) .lt. carcri(3)) then
+                    goto 999
+                end if
+                if (abs(fp(i_phase))/(1+seuil) .lt. carcri(3)) then
+                    goto 99
+                end if
+                dp = dp-fp(i_phase)/fd(i_phase)
             end do
             iret = 1
             goto 999
@@ -139,10 +139,10 @@ integer, intent(out) :: iret
                 dpmin = dpu(i_phase)
                 dpmax = dpu(i_phase)
             else
-                dpmin = min(dpmin,dpu(i_phase))
-                dpmax = max(dpmax,dpu(i_phase))
-            endif
-        endif
+                dpmin = min(dpmin, dpu(i_phase))
+                dpmax = max(dpmax, dpu(i_phase))
+            end if
+        end if
     end do
 !
 !
@@ -150,28 +150,28 @@ integer, intent(out) :: iret
 !
 !------EXAMEN DE LA SOLUTION DP=DPMIN
     dp = dpmin
-    call nzfpri(deuxmu  , trans, rprim , seuil,&
-                nb_phase, phase, zalpha,&
-                fmel    , eta  , unsurn,&
-                dt      , dp   , &
-                fplas   , fp   , fd    ,&
-                fprim   , fdevi)
+    call nzfpri(deuxmu, trans, rprim, seuil, &
+                nb_phase, phase, zalpha, &
+                fmel, eta, unsurn, &
+                dt, dp, &
+                fplas, fp, fd, &
+                fprim, fdevi)
 
     if (fprim .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_12')
-    endif
+    end if
     x(2) = dp
     y(2) = fprim
 !
 !------EXAMEN DE LA SOLUTION DP=DPMAX
 !
     dp = dpmax
-    call nzfpri(deuxmu  , trans, rprim , seuil,&
-                nb_phase, phase, zalpha,&
-                fmel    , eta  , unsurn,&
-                dt      , dp   , &
-                fplas   , fp   , fd    ,&
-                fprim   , fdevi)
+    call nzfpri(deuxmu, trans, rprim, seuil, &
+                nb_phase, phase, zalpha, &
+                fmel, eta, unsurn, &
+                dt, dp, &
+                fplas, fp, fd, &
+                fprim, fdevi)
 !
     x(1) = dp
     y(1) = fprim
@@ -184,34 +184,34 @@ integer, intent(out) :: iret
     do iter = 1, int(carcri(1))
         call zeroco(x, y)
         dp = x(4)
-        call nzfpri(deuxmu  , trans, rprim , seuil,&
-                    nb_phase, phase, zalpha,&
-                    fmel    , eta  , unsurn,&
-                    dt      , dp   , &
-                    fplas   , fp   , fd    ,&
-                    fprim   , fdevi)
+        call nzfpri(deuxmu, trans, rprim, seuil, &
+                    nb_phase, phase, zalpha, &
+                    fmel, eta, unsurn, &
+                    dt, dp, &
+                    fplas, fp, fd, &
+                    fprim, fdevi)
         if (abs(fprim)/(1.d0+seuil) .lt. carcri(3)) then
             goto 999
-        endif
+        end if
         dpnew = dp-fprim/fdevi
         if ((dpnew .ge. dpmin) .and. (dpnew .le. dpmax)) then
-            call nzfpri(deuxmu  , trans, rprim , seuil,&
-                        nb_phase, phase, zalpha,&
-                        fmel    , eta  , unsurn,&
-                        dt      , dpnew, &
-                        fplas   , fp   , fd    ,&
-                        fpnew   , fdevi)
+            call nzfpri(deuxmu, trans, rprim, seuil, &
+                        nb_phase, phase, zalpha, &
+                        fmel, eta, unsurn, &
+                        dt, dpnew, &
+                        fplas, fp, fd, &
+                        fpnew, fdevi)
             if (abs(fpnew)/(1.d0+seuil) .lt. carcri(3)) then
                 dp = dpnew
                 goto 999
-            endif
+            end if
             if (abs(fpnew)/(1.d0+seuil) .lt. abs(fprim)/(1.d0+seuil)) then
-                dp    = dpnew
+                dp = dpnew
                 fprim = fpnew
-            endif
-        endif
-        y(4)=fprim
-        x(4)=dp
+            end if
+        end if
+        y(4) = fprim
+        x(4) = dp
     end do
     iret = 1
 !

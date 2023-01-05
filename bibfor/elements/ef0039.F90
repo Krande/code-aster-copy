@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,15 +28,15 @@ subroutine ef0039(nomte)
     integer :: itab(2), ieffo, n1, i, iret, icontg
 !     ------------------------------------------------------------------
 !
-    call tecach('OOO', 'PEFFORR', 'E', iret, nval=2,&
+    call tecach('OOO', 'PEFFORR', 'E', iret, nval=2, &
                 itab=itab)
-    ieffo=itab(1)
-    n1=itab(2)
+    ieffo = itab(1)
+    n1 = itab(2)
 !
     call jevech('PCONTRR', 'L', icontg)
 !
     do i = 1, n1
-        zr(ieffo-1+i)=zr(icontg-1+i)
+        zr(ieffo-1+i) = zr(icontg-1+i)
     end do
 !
 end subroutine

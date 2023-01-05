@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine digouj(option, rela_comp, nno, nbt, neq,&
-                  nc, icodma, dul, sim, varim,&
-                  pgl, klv, klc, varip, fono,&
+subroutine digouj(option, rela_comp, nno, nbt, neq, &
+                  nc, icodma, dul, sim, varim, &
+                  pgl, klv, klc, varip, fono, &
                   sip, nomte)
 ! ----------------------------------------------------------------------
     implicit none
@@ -74,16 +74,16 @@ subroutine digouj(option, rela_comp, nno, nbt, neq,&
     real(kind=8) :: e, rp, rprim, sieleq, sigdv, sigel, sigeps
     real(kind=8) :: sigy
 !-----------------------------------------------------------------------
-    valpap=0.d0
-    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
+    valpap = 0.d0
+    call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, &
                 itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
     if (nc .ne. 2) then
         valk(1) = nomte
         valk(2) = rela_comp
         call utmess('F', 'ELEMENTS_31', nk=2, valk=valk)
-    endif
+    end if
 !
 ! --- CALCUL ELASTIQUE
 !
@@ -96,61 +96,61 @@ subroutine digouj(option, rela_comp, nno, nbt, neq,&
     call pmavec('ZERO', neq, klc, dul, dfl)
     dut = dul(2+nc)-dul(2)
 !
-    ASSERT(rela_comp(1:10).eq.'DIS_GOUJ2E')
+    ASSERT(rela_comp(1:10) .eq. 'DIS_GOUJ2E')
 !
-    call rctype(icodma, 0, nompar, [valpap], para_vale,&
+    call rctype(icodma, 0, nompar, [valpap], para_vale, &
                 para_type)
-    call rctrac(icodma, 1, 'SIGM', para_vale, jprolp,&
+    call rctrac(icodma, 1, 'SIGM', para_vale, jprolp, &
                 jvalep, nbvalp, e)
     if (rela_comp .eq. 'DIS_GOUJ2E_PLAS') then
-        call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                    sigy = sigy)
-        call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                    p = varim(1), rp = rp, rprim = rprim, airerp = airerp)
-        plasti=(varim(2).ge.0.5d0)
-    else if (rela_comp.eq.'DIS_GOUJ2E_ELAS') then
-        sigy=0.d0
-        rp=0.d0
-        plasti=.false.
-    endif
+        call rcfonc('S', 1, jprolp, jvalep, nbvalp, &
+                    sigy=sigy)
+        call rcfonc('V', 1, jprolp, jvalep, nbvalp, &
+                    p=varim(1), rp=rp, rprim=rprim, airerp=airerp)
+        plasti = (varim(2) .ge. 0.5d0)
+    else if (rela_comp .eq. 'DIS_GOUJ2E_ELAS') then
+        sigy = 0.d0
+        rp = 0.d0
+        plasti = .false.
+    end if
 !
-    deps=dut
+    deps = dut
 !
-    sigel = sim(2) + e*deps
+    sigel = sim(2)+e*deps
     sieleq = abs(sigel)
-    seuil = sieleq - rp
+    seuil = sieleq-rp
 !
-    dp=0.d0
+    dp = 0.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         do i = 1, nc
-            sip(i) = -dfl(i) + sim(i)
-            sip(i+nc) = dfl(i+nc) + sim(i+nc)
-            fl(i) = dfl(i) - sim(i)
-            fl(i+nc) = dfl(i+nc) + sim(i+nc)
+            sip(i) = -dfl(i)+sim(i)
+            sip(i+nc) = dfl(i+nc)+sim(i+nc)
+            fl(i) = dfl(i)-sim(i)
+            fl(i+nc) = dfl(i+nc)+sim(i+nc)
         end do
 !
         if (rela_comp .eq. 'DIS_GOUJ2E_ELAS') then
-            sip(2 ) = sigel
+            sip(2) = sigel
 !
-        else if (rela_comp.eq. 'DIS_GOUJ2E_PLAS') then
+        else if (rela_comp .eq. 'DIS_GOUJ2E_PLAS') then
             if (seuil .le. 0.d0) then
                 varip(2) = 0.d0
                 dp = 0.d0
             else
                 varip(2) = 1.d0
-                nu=0.5d0
-                call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
-                            e = e, nu = nu, p = varim(1), rp = rp, rprim = rprim,&
-                            airerp = airerp, sieleq = sieleq, dp = dp)
-            endif
-            varip(1) = varim(1) + dp
-            plasti=(varip(2).ge.0.5d0)
+                nu = 0.5d0
+                call rcfonc('E', 1, jprolp, jvalep, nbvalp, &
+                            e=e, nu=nu, p=varim(1), rp=rp, rprim=rprim, &
+                            airerp=airerp, sieleq=sieleq, dp=dp)
+            end if
+            varip(1) = varim(1)+dp
+            plasti = (varip(2) .ge. 0.5d0)
 !
             sip(2) = sigel*rp/(rp+e*dp)
             varip(1+lgpg) = varip(1)
             varip(2+lgpg) = varip(2)
-        endif
+        end if
         sip(2+nc) = sip(2)
 !
 !        FL : EFFORTS GENERALISES AUX NOEUDS 1 ET 2 (REPERE LOCAL)
@@ -163,51 +163,51 @@ subroutine digouj(option, rela_comp, nno, nbt, neq,&
             call ut2vlg(nno, nc, pgl, fl, fono)
         else
             call utpvlg(nno, nc, pgl, fl, fono)
-        endif
-    endif
+        end if
+    end if
 !
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then
 !         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
-            rp=0.d0
+            rp = 0.d0
             sigdv = sim(2)
             rp = abs(sigdv)
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
             sigdv = sip(2)
-        endif
+        end if
 !
-        a=1.d0
-        dsidep=0.d0
+        a = 1.d0
+        dsidep = 0.d0
         if (rela_comp .eq. 'DIS_GOUJ2E_PLAS') then
             sigeps = 0.d0
-            sigeps = sigeps + sigdv*deps
-            if (plasti .and. (sigeps.ge.0.d0)) then
+            sigeps = sigeps+sigdv*deps
+            if (plasti .and. (sigeps .ge. 0.d0)) then
                 a = 1.d0+e*dp/rp
-                coef = - e**2/(e+rprim)/rp**2 *(1.d0 - dp*rprim/rp )/ a
+                coef = -e**2/(e+rprim)/rp**2*(1.d0-dp*rprim/rp)/a
                 dsidep = coef*sigdv*sigdv
-            endif
-        endif
-        dsidep = dsidep + e/a
-    endif
+            end if
+        end if
+        dsidep = dsidep+e/a
+    end if
 !
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
         if (nc .eq. 2) then
 !            KLV(3)  =  DSIDEP
 !            KLV(10)  = DSIDEP
-            klc(2,2) = dsidep
-            klc(4,4) = dsidep
-            klc(2,4) = -dsidep
-            klc(4,2) = -dsidep
-        else if (nc.eq.3) then
+            klc(2, 2) = dsidep
+            klc(4, 4) = dsidep
+            klc(2, 4) = -dsidep
+            klc(4, 2) = -dsidep
+        else if (nc .eq. 3) then
 !            KLV(3)  =  DSIDEP
 !            KLV(15)  = DSIDEP
-            klc(2,2) = dsidep
-            klc(5,5) = dsidep
-            klc(2,5) = -dsidep
-            klc(5,2) = -dsidep
-        endif
+            klc(2, 2) = dsidep
+            klc(5, 5) = dsidep
+            klc(2, 5) = -dsidep
+            klc(5, 2) = -dsidep
+        end if
         call mavec(klc, neq, klv, nbt)
-    endif
+    end if
 end subroutine

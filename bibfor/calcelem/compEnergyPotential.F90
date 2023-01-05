@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine compEnergyPotential(option , modelz , ligrel, compor, l_temp,&
-                               chdispz, chtempz,&
-                               chharm , chgeom , chmate, chcara, chtime,&
-                               chvarc , chvref , &
-                               basez  , chelemz, codret)
+subroutine compEnergyPotential(option, modelz, ligrel, compor, l_temp, &
+                               chdispz, chtempz, &
+                               chharm, chgeom, chmate, chcara, chtime, &
+                               chvarc, chvref, &
+                               basez, chelemz, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ajchca.h"
@@ -32,13 +32,13 @@ implicit none
 #include "asterfort/meceuc.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: option, modelz, ligrel, compor
-aster_logical, intent(in) :: l_temp
-character(len=*), intent(in) :: chdispz, chtempz
-character(len=*), intent(in) :: chharm, chgeom, chmate, chcara(*), chtime
-character(len=*), intent(in) :: chvarc, chvref
-character(len=*), intent(in) :: chelemz, basez
-integer, intent(out) :: codret
+    character(len=*), intent(in) :: option, modelz, ligrel, compor
+    aster_logical, intent(in) :: l_temp
+    character(len=*), intent(in) :: chdispz, chtempz
+    character(len=*), intent(in) :: chharm, chgeom, chmate, chcara(*), chtime
+    character(len=*), intent(in) :: chvarc, chvref
+    character(len=*), intent(in) :: chelemz, basez
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxin=65, maxout=1
+    integer, parameter :: maxin = 65, maxout = 1
     character(len=8) :: lpain(maxin), lpaout(maxout)
     character(len=24) :: lchin(maxin), lchout(maxout)
     character(len=1) :: base
@@ -63,24 +63,24 @@ integer, intent(out) :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     cara_elem = chcara(1)
-    chtemp    = chtempz
-    chdisp    = chdispz
-    chelem    = chelemz
-    codret    = 0
-    base      = basez
-    model     = modelz
-    lpain(:)  = ' '
-    lchin(:)  = ' '
+    chtemp = chtempz
+    chdisp = chdispz
+    chelem = chelemz
+    codret = 0
+    base = basez
+    model = modelz
+    lpain(:) = ' '
+    lchin(:) = ' '
 !
 ! - Output field
 !
-    nbout     = 1
+    nbout = 1
     lchout(1) = chelem
     lpaout(1) = 'PENERDR'
 !
 ! - Add input fields
 !
-    nbin     = 1
+    nbin = 1
 
     if (l_temp) then
         lpain(1) = 'PTEMPER'
@@ -88,7 +88,7 @@ integer, intent(out) :: codret
     else
         lpain(1) = 'PDEPLAR'
         lchin(1) = chdisp
-    endif
+    end if
 !
 ! - Fields for structural elements
 !
@@ -114,14 +114,14 @@ integer, intent(out) :: codret
 !
 ! - Computation (with preparation for COMPLEX fields)
 !
-    call meceuc('C'   , option, cara_elem, ligrel,&
-                nbin  , lchin , lpain    ,&
-                nbout , lchout, lpaout   , base)
+    call meceuc('C', option, cara_elem, ligrel, &
+                nbin, lchin, lpain, &
+                nbout, lchout, lpaout, base)
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         codret = 1
         call utmess('A', 'CALCCHAMP_89', sk=option)
-    endif
+    end if
 !
 ! - Clean
 !

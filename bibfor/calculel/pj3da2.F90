@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3da2(ino2, geom2, i, geom1, tetr4,&
+subroutine pj3da2(ino2, geom2, i, geom1, tetr4, &
                   cobary, d2, volu)
     implicit none
 #include "asterf_types.h"
@@ -47,138 +47,138 @@ subroutine pj3da2(ino2, geom2, i, geom1, tetr4,&
 ! DEB ------------------------------------------------------------------
 !
     do k = 1, 3
-        m(k)=geom2(3*(ino2-1)+k)
-        a(k)=geom1(3*(tetr4(1+6*(i-1)+1)-1)+k)
-        b(k)=geom1(3*(tetr4(1+6*(i-1)+2)-1)+k)
-        c(k)=geom1(3*(tetr4(1+6*(i-1)+3)-1)+k)
-        d(k)=geom1(3*(tetr4(1+6*(i-1)+4)-1)+k)
-        ab(k)=b(k)-a(k)
-        ac(k)=c(k)-a(k)
-        ad(k)=d(k)-a(k)
+        m(k) = geom2(3*(ino2-1)+k)
+        a(k) = geom1(3*(tetr4(1+6*(i-1)+1)-1)+k)
+        b(k) = geom1(3*(tetr4(1+6*(i-1)+2)-1)+k)
+        c(k) = geom1(3*(tetr4(1+6*(i-1)+3)-1)+k)
+        d(k) = geom1(3*(tetr4(1+6*(i-1)+4)-1)+k)
+        ab(k) = b(k)-a(k)
+        ac(k) = c(k)-a(k)
+        ad(k) = d(k)-a(k)
     end do
 !
-    d2=r8maem()
-    dp=r8maem()
+    d2 = r8maem()
+    dp = r8maem()
 !
 !     1. ON BOUCLE SUR LES 4 FACETTES :
 !     ---------------------------------
-    call pj3da3(m, a, b, c, ok,&
+    call pj3da3(m, a, b, c, ok, &
                 l1, l2, l3, dp)
-    if ((ok) .and. (dp.lt.d2)) then
-        d2=dp
-        la=l1
-        lb=l2
-        lc=l3
-        ld=0.d0
-    endif
+    if ((ok) .and. (dp .lt. d2)) then
+        d2 = dp
+        la = l1
+        lb = l2
+        lc = l3
+        ld = 0.d0
+    end if
 !
-    call pj3da3(m, b, c, d, ok,&
+    call pj3da3(m, b, c, d, ok, &
                 l1, l2, l3, dp)
-    if ((ok) .and. (dp.lt.d2)) then
-        d2=dp
-        lb=l1
-        lc=l2
-        ld=l3
-        la=0.d0
-    endif
+    if ((ok) .and. (dp .lt. d2)) then
+        d2 = dp
+        lb = l1
+        lc = l2
+        ld = l3
+        la = 0.d0
+    end if
 !
-    call pj3da3(m, c, d, a, ok,&
+    call pj3da3(m, c, d, a, ok, &
                 l1, l2, l3, dp)
-    if ((ok) .and. (dp.lt.d2)) then
-        d2=dp
-        lc=l1
-        ld=l2
-        la=l3
-        lb=0.d0
-    endif
+    if ((ok) .and. (dp .lt. d2)) then
+        d2 = dp
+        lc = l1
+        ld = l2
+        la = l3
+        lb = 0.d0
+    end if
 !
-    call pj3da3(m, d, a, b, ok,&
+    call pj3da3(m, d, a, b, ok, &
                 l1, l2, l3, dp)
-    if ((ok) .and. (dp.lt.d2)) then
-        d2=dp
-        ld=l1
-        la=l2
-        lb=l3
-        lc=0.d0
-    endif
+    if ((ok) .and. (dp .lt. d2)) then
+        d2 = dp
+        ld = l1
+        la = l2
+        lb = l3
+        lc = 0.d0
+    end if
 !
 !
 !     2. ON BOUCLE SUR LES 6 ARRETES :
 !     ---------------------------------
-    call pj3da4(m, a, b, l1, l2,&
+    call pj3da4(m, a, b, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        la=l1
-        lb=l2
-        lc=0.d0
-        ld=0.d0
-    endif
+        d2 = dp
+        la = l1
+        lb = l2
+        lc = 0.d0
+        ld = 0.d0
+    end if
 !
-    call pj3da4(m, b, c, l1, l2,&
+    call pj3da4(m, b, c, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        lb=l1
-        lc=l2
-        la=0.d0
-        ld=0.d0
-    endif
+        d2 = dp
+        lb = l1
+        lc = l2
+        la = 0.d0
+        ld = 0.d0
+    end if
 !
-    call pj3da4(m, c, d, l1, l2,&
+    call pj3da4(m, c, d, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        lc=l1
-        ld=l2
-        la=0.d0
-        lb=0.d0
-    endif
+        d2 = dp
+        lc = l1
+        ld = l2
+        la = 0.d0
+        lb = 0.d0
+    end if
 !
-    call pj3da4(m, d, a, l1, l2,&
+    call pj3da4(m, d, a, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        ld=l1
-        la=l2
-        lb=0.d0
-        lc=0.d0
-    endif
+        d2 = dp
+        ld = l1
+        la = l2
+        lb = 0.d0
+        lc = 0.d0
+    end if
 !
-    call pj3da4(m, a, c, l1, l2,&
+    call pj3da4(m, a, c, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        la=l1
-        lc=l2
-        lb=0.d0
-        ld=0.d0
-    endif
+        d2 = dp
+        la = l1
+        lc = l2
+        lb = 0.d0
+        ld = 0.d0
+    end if
 !
-    call pj3da4(m, b, d, l1, l2,&
+    call pj3da4(m, b, d, l1, l2, &
                 dp)
     if (dp .lt. d2) then
-        d2=dp
-        lb=l1
-        ld=l2
-        la=0.d0
-        lc=0.d0
-    endif
+        d2 = dp
+        lb = l1
+        ld = l2
+        la = 0.d0
+        lc = 0.d0
+    end if
 !
 !
 !     3. ON CALCULE VOLU :
 !     --------------------
-    v(1)=ab(2)*ac(3)-ab(3)*ac(2)
-    v(2)=ab(3)*ac(1)-ab(1)*ac(3)
-    v(3)=ab(1)*ac(2)-ab(2)*ac(1)
-    volu=abs(v(1)*ad(1)+v(2)*ad(2)+v(3)*ad(3))
-    volu=volu/4.d0
+    v(1) = ab(2)*ac(3)-ab(3)*ac(2)
+    v(2) = ab(3)*ac(1)-ab(1)*ac(3)
+    v(3) = ab(1)*ac(2)-ab(2)*ac(1)
+    volu = abs(v(1)*ad(1)+v(2)*ad(2)+v(3)*ad(3))
+    volu = volu/4.d0
 !
 !
 !
-    cobary(1)=la
-    cobary(2)=lb
-    cobary(3)=lc
-    cobary(4)=ld
+    cobary(1) = la
+    cobary(2) = lb
+    cobary(3) = lc
+    cobary(4) = ld
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nxnoli(model, mate  , cara_elem, l_stat  , l_evol    ,&
-                  para , sddisc, sdcrit   , ds_inout, ds_algorom)
+subroutine nxnoli(model, mate, cara_elem, l_stat, l_evol, &
+                  para, sddisc, sdcrit, ds_inout, ds_algorom)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -80,13 +80,13 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<THERMIQUE> PREPARATION DE LA SD EVOL_THER'
-    endif
+        write (ifm, *) '<THERMIQUE> PREPARATION DE LA SD EVOL_THER'
+    end if
 !
 ! - INSTANT INITIAL
 !
     nume_inst = 0
-    force     = .true.
+    force = .true.
 !
 ! - Get parameters in input/ouput management datastructure
 !
@@ -95,30 +95,30 @@ implicit none
 !
 ! --- ACCES SD ARCHIVAGE
 !
-    sdarch      = sddisc(1:14)//'.ARCH'
+    sdarch = sddisc(1:14)//'.ARCH'
     sdarch_ainf = sdarch(1:19)//'.AINF'
 !
 ! - Current storing index
 !
-    call jeveuo(sdarch_ainf, 'L', vi = v_sdarch_ainf)
+    call jeveuo(sdarch_ainf, 'L', vi=v_sdarch_ainf)
     nume_store = v_sdarch_ainf(1)
 !
 ! --- CREATION DE LA SD EVOL_THER OU NETTOYAGE DES ANCIENS NUMEROS
 !
     if (lreuse) then
-        ASSERT(nume_store.ne.0)
+        ASSERT(nume_store .ne. 0)
         call rsrusd(result, nume_store)
     else
-        ASSERT(nume_store.eq.0)
+        ASSERT(nume_store .eq. 0)
         call rscrsd('G', result, 'EVOL_THER', 100)
-    endif
+    end if
 !
 ! - Storing initial state
 !
-    if ((.not.lreuse) .and. (.not.l_stat) .and. l_evol) then
+    if ((.not. lreuse) .and. (.not. l_stat) .and. l_evol) then
         call utmess('I', 'ARCHIVAGE_4')
-        call ntarch(nume_inst, model   , mate , cara_elem, para      ,&
-                    sddisc   , ds_inout, force, sdcrit   , ds_algorom)
-    endif
+        call ntarch(nume_inst, model, mate, cara_elem, para, &
+                    sddisc, ds_inout, force, sdcrit, ds_algorom)
+    end if
 !
 end subroutine

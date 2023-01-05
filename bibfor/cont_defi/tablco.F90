@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -99,37 +99,37 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    pre_length = 20*max(nb_cont_node,nb_cont_elem)
+    pre_length = 20*max(nb_cont_node, nb_cont_elem)
 !
 ! - Datastructure for contact definition
 !
-    sdcont_defi    = sdcont(1:8)//'.CONTACT'
-    sdcont_mailco  = sdcont_defi(1:16)//'.MAILCO'
-    sdcont_noeuco  = sdcont_defi(1:16)//'.NOEUCO'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_noeuco = sdcont_defi(1:16)//'.NOEUCO'
     sdcont_pzoneco = sdcont_defi(1:16)//'.PZONECO'
     sdcont_psumaco = sdcont_defi(1:16)//'.PSUMACO'
     sdcont_psunoco = sdcont_defi(1:16)//'.PSUNOCO'
-    sdcont_manoco  = sdcont_defi(1:16)//'.MANOCO'
+    sdcont_manoco = sdcont_defi(1:16)//'.MANOCO'
     sdcont_pmanoco = sdcont_defi(1:16)//'.PMANOCO'
-    sdcont_nomaco  = sdcont_defi(1:16)//'.NOMACO'
+    sdcont_nomaco = sdcont_defi(1:16)//'.NOMACO'
     sdcont_pnomaco = sdcont_defi(1:16)//'.PNOMACO'
-    call jeveuo(sdcont_mailco , 'L', vi = v_sdcont_mailco)
-    call jeveuo(sdcont_noeuco , 'L', vi = v_sdcont_noeuco)
-    call jeveuo(sdcont_pzoneco, 'L', vi = v_sdcont_pzoneco)
-    call jeveuo(sdcont_psumaco, 'E', vi = v_sdcont_psumaco)
-    call jeveuo(sdcont_psunoco, 'E', vi = v_sdcont_psunoco)
+    call jeveuo(sdcont_mailco, 'L', vi=v_sdcont_mailco)
+    call jeveuo(sdcont_noeuco, 'L', vi=v_sdcont_noeuco)
+    call jeveuo(sdcont_pzoneco, 'L', vi=v_sdcont_pzoneco)
+    call jeveuo(sdcont_psumaco, 'E', vi=v_sdcont_psumaco)
+    call jeveuo(sdcont_psunoco, 'E', vi=v_sdcont_psunoco)
 !
 ! - Access to mesh
 !
     call jeveuo(mesh//'.CONNEX', 'L', vi=v_connex)
-    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_longcum)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi=v_connex_longcum)
 !
 ! - Construct inverse connectivity
 !
-    connex_inv='&&TABLCO.CONINV'
+    connex_inv = '&&TABLCO.CONINV'
     call cncinv(mesh, v_sdcont_mailco, nb_cont_elem, 'V', connex_inv)
-    call jeveuo(connex_inv, 'L', vi = v_coninv)
-    call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi = v_coninv_longcum)
+    call jeveuo(connex_inv, 'L', vi=v_coninv)
+    call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi=v_coninv_longcum)
 !
 ! - Working vectors
 !
@@ -138,25 +138,25 @@ implicit none
 !
 ! - Construct MANOCO objects (list of elements connected to each contact node)
 !
-    call wkvect(sdcont_manoco, 'G V I', pre_length, vi = v_sdcont_manoco)
-    call wkvect(sdcont_pmanoco, 'G V I', nb_cont_node+1, vi = v_sdcont_pmanoco)
+    call wkvect(sdcont_manoco, 'G V I', pre_length, vi=v_sdcont_manoco)
+    call wkvect(sdcont_pmanoco, 'G V I', nb_cont_node+1, vi=v_sdcont_pmanoco)
     v_sdcont_pmanoco(1) = 0
 !
 ! - Loop on surfaces
 !
-    inc  = 0
+    inc = 0
     long = pre_length
     do i_cont_surf = 1, nb_cont_surf
 !
 ! ----- Pointers to nodes/elements of current surface
 !
-        jdecno  = v_sdcont_psunoco(i_cont_surf)
-        jdecma  = v_sdcont_psumaco(i_cont_surf)
+        jdecno = v_sdcont_psunoco(i_cont_surf)
+        jdecma = v_sdcont_psumaco(i_cont_surf)
 !
 ! ----- Numbers of nodes/elements of current surface
 !
-        nb_node = v_sdcont_psunoco(i_cont_surf+1) - v_sdcont_psunoco(i_cont_surf)
-        nb_elem = v_sdcont_psumaco(i_cont_surf+1) - v_sdcont_psumaco(i_cont_surf)
+        nb_node = v_sdcont_psunoco(i_cont_surf+1)-v_sdcont_psunoco(i_cont_surf)
+        nb_elem = v_sdcont_psumaco(i_cont_surf+1)-v_sdcont_psumaco(i_cont_surf)
 !
 ! ----- Loop on nodes
 !
@@ -171,23 +171,23 @@ implicit none
 !
             nb_node_elem = v_coninv_longcum(node_nume+1)-v_coninv_longcum(node_nume)
             do i_elem = 1, nb_node_elem
-                numalo=v_coninv(v_coninv_longcum(node_nume)+i_elem-1)
-                if (numalo .le. v_sdcont_psumaco(i_cont_surf+1) .and.&
+                numalo = v_coninv(v_coninv_longcum(node_nume)+i_elem-1)
+                if (numalo .le. v_sdcont_psumaco(i_cont_surf+1) .and. &
                     numalo .gt. v_sdcont_psumaco(i_cont_surf)) then
-                    inc=inc+1
+                    inc = inc+1
                     if (inc .gt. long) then
                         long = 2*long
                         call juveca(sdcont_manoco, long)
-                        call jeveuo(sdcont_manoco, 'E', vi = v_sdcont_manoco)
-                    endif
-                    v_sdcont_manoco(inc)=numalo
-                    v_work_node(jdecno+i_node) = v_work_node(jdecno+i_node) + 1
-                endif
+                        call jeveuo(sdcont_manoco, 'E', vi=v_sdcont_manoco)
+                    end if
+                    v_sdcont_manoco(inc) = numalo
+                    v_work_node(jdecno+i_node) = v_work_node(jdecno+i_node)+1
+                end if
             end do
 !
 ! --------- Update pointer
 !
-            v_sdcont_pmanoco(jdecno+i_node+1) = v_sdcont_pmanoco(jdecno+i_node) +&
+            v_sdcont_pmanoco(jdecno+i_node+1) = v_sdcont_pmanoco(jdecno+i_node)+ &
                                                 v_work_node(jdecno+i_node)
         end do
     end do
@@ -200,22 +200,22 @@ implicit none
 !
 ! - Construct NOMACO objects (list of nodes connected to each contact element)
 !
-    call wkvect(sdcont_pnomaco, 'G V I', nb_cont_elem+1, vi = v_sdcont_pnomaco)
+    call wkvect(sdcont_pnomaco, 'G V I', nb_cont_elem+1, vi=v_sdcont_pnomaco)
     v_sdcont_pnomaco(1) = 0
 !
 ! - Compute length of NOMACO - Loop on surfaces
 !
-    inc  = 0
+    inc = 0
     long = pre_length
     do i_cont_surf = 1, nb_cont_surf
 !
 ! ----- Pointer to nodes of current surface
 !
-        jdecno  = v_sdcont_psunoco(i_cont_surf)
+        jdecno = v_sdcont_psunoco(i_cont_surf)
 !
 ! ----- Number of nodes of current surface
 !
-        nb_node = v_sdcont_psunoco(i_cont_surf+1) - v_sdcont_psunoco(i_cont_surf)
+        nb_node = v_sdcont_psunoco(i_cont_surf+1)-v_sdcont_psunoco(i_cont_surf)
 !
 ! ----- Loop on nodes
 !
@@ -223,39 +223,39 @@ implicit none
 !
 ! --------- Current node
 !
-            node_nume    = v_sdcont_noeuco(jdecno+i_node)
+            node_nume = v_sdcont_noeuco(jdecno+i_node)
             nb_node_elem = v_coninv_longcum(node_nume+1)-v_coninv_longcum(node_nume)
 !
 ! --------- Loop on elements connected to current node
 !
             do i_elem = 1, nb_node_elem
                 numalo = v_coninv(v_coninv_longcum(node_nume)+i_elem-1)
-                if (numalo .le. v_sdcont_psumaco(i_cont_surf+1) .and.&
+                if (numalo .le. v_sdcont_psumaco(i_cont_surf+1) .and. &
                     numalo .gt. v_sdcont_psumaco(i_cont_surf)) then
-                    inc=inc+1
+                    inc = inc+1
                     if (inc .gt. long) then
                         long = 2*long
-                    endif
-                endif
+                    end if
+                end if
             end do
         end do
     end do
 !
 ! - Upadte NOMACO - Loop on surfaces
 !
-    call wkvect(sdcont_nomaco, 'G V I', long, vi = v_sdcont_nomaco)
+    call wkvect(sdcont_nomaco, 'G V I', long, vi=v_sdcont_nomaco)
     inc = 0
     do i_cont_surf = 1, nb_cont_surf
 !
 ! ----- Pointers to nodes/elements of current surface
 !
-        jdecno  = v_sdcont_psunoco(i_cont_surf)
-        jdecma  = v_sdcont_psumaco(i_cont_surf)
+        jdecno = v_sdcont_psunoco(i_cont_surf)
+        jdecma = v_sdcont_psumaco(i_cont_surf)
 !
 ! ----- Numbers of nodes/elements of current surface
 !
-        nb_node = v_sdcont_psunoco(i_cont_surf+1) - v_sdcont_psunoco(i_cont_surf)
-        nb_elem = v_sdcont_psumaco(i_cont_surf+1) - v_sdcont_psumaco(i_cont_surf)
+        nb_node = v_sdcont_psunoco(i_cont_surf+1)-v_sdcont_psunoco(i_cont_surf)
+        nb_elem = v_sdcont_psumaco(i_cont_surf+1)-v_sdcont_psumaco(i_cont_surf)
 !
 ! ----- Loop on nodes
 !
@@ -263,17 +263,17 @@ implicit none
 !
 ! --------- Current node
 !
-            node_nume    = v_sdcont_noeuco(jdecno+i_node)
+            node_nume = v_sdcont_noeuco(jdecno+i_node)
             nb_node_elem = v_coninv_longcum(node_nume+1)-v_coninv_longcum(node_nume)
 !
 ! --------- Loop on elements connected to current node
 !
             do i_elem = 1, nb_node_elem
                 numalo = v_coninv(v_coninv_longcum(node_nume)+i_elem-1)
-                if (numalo .le. v_sdcont_psumaco(i_cont_surf+1) .and.&
+                if (numalo .le. v_sdcont_psumaco(i_cont_surf+1) .and. &
                     numalo .gt. v_sdcont_psumaco(i_cont_surf)) then
-                    v_work_elem(numalo)=v_work_elem(numalo)+1
-                endif
+                    v_work_elem(numalo) = v_work_elem(numalo)+1
+                end if
             end do
         end do
 !
@@ -283,7 +283,7 @@ implicit none
 !
 ! --------- Update pointer
 !
-            v_sdcont_pnomaco(jdecma+i_elem+1) = v_sdcont_pnomaco(jdecma+i_elem) +&
+            v_sdcont_pnomaco(jdecma+i_elem+1) = v_sdcont_pnomaco(jdecma+i_elem)+ &
                                                 v_work_elem(jdecma+i_elem)
 !
 ! --------- Current element
@@ -293,16 +293,16 @@ implicit none
 ! --------- Save nodes
 !
             do i = 1, elem_nbnode(elem_nume)
-                no=numglm(elem_nume,i)
+                no = numglm(elem_nume, i)
                 do i_node = 1, nb_node
                     node_nume = v_sdcont_noeuco(jdecno+i_node)
                     if (no .eq. node_nume) then
-                        inc = inc + 1
-                        v_sdcont_nomaco(inc) = jdecno + i_node
+                        inc = inc+1
+                        v_sdcont_nomaco(inc) = jdecno+i_node
                         goto 130
-                    endif
+                    end if
                 end do
-130         continue
+130             continue
             end do
         end do
     end do

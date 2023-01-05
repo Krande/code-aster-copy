@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc0050(BEHinteg,&
-                  fami   , kpg   , ksp   , ndim  , typmod,&
-                  imate  , compor, carcri, instam, instap,&
-                  neps   , epsm  , deps  , nsig  , sigm  ,&
-                  nvi    , vim   , option, angmas,&
-                  stress , statev, dsidep, codret)
+subroutine lc0050(BEHinteg, &
+                  fami, kpg, ksp, ndim, typmod, &
+                  imate, compor, carcri, instam, instap, &
+                  neps, epsm, deps, nsig, sigm, &
+                  nvi, vim, option, angmas, &
+                  stress, statev, dsidep, codret)
 !
-use calcul_module, only : ca_iactif_
-use Behaviour_type
+    use calcul_module, only: ca_iactif_
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
@@ -44,24 +44,24 @@ implicit none
 #include "asterfort/umatPrepareStrain.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg, ksp, ndim
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam, instap
-integer, intent(in) :: neps, nsig, nvi
-real(kind=8), intent(in) :: epsm(6), deps(6)
-real(kind=8), intent(in) :: sigm(6)
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(*)
-real(kind=8), intent(out) :: stress(6)
-real(kind=8), intent(out) :: statev(nvi)
-real(kind=8), intent(out) :: dsidep(6, 6)
-integer, intent(out) :: codret
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg, ksp, ndim
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam, instap
+    integer, intent(in) :: neps, nsig, nvi
+    real(kind=8), intent(in) :: epsm(6), deps(6)
+    real(kind=8), intent(in) :: sigm(6)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(out) :: stress(6)
+    real(kind=8), intent(out) :: statev(nvi)
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -139,11 +139,11 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ntens     = 2*ndim
-    ndi       = 3
-    nshr      = ntens-ndi
-    codret    = 0
-    nprops    = npropmax
+    ntens = 2*ndim
+    ndi = 3
+    nshr = ntens-ndi
+    codret = 0
+    nprops = npropmax
     rela_comp = compor(RELA_NAME)
 !
 ! - Pointer to UMAT function
@@ -152,7 +152,7 @@ integer, intent(out) :: codret
 !
 ! - Get temperature
 !
-    temp  = BEHinteg%esva%temp_prev
+    temp = BEHinteg%esva%temp_prev
     dtemp = BEHinteg%esva%temp_incr
 !
 ! - Get index of element / Newton iteration
@@ -177,14 +177,14 @@ integer, intent(out) :: codret
 !
 ! - Get material properties
 !
-    call mat_proto(BEHinteg,&
-                   fami    , kpg  , ksp, '+', imate, compor(1),&
-                   nprops  , props)
+    call mat_proto(BEHinteg, &
+                   fami, kpg, ksp, '+', imate, compor(1), &
+                   nprops, props)
 !
 ! - Prepare strains
 !
-    call umatPrepareStrain(neps , epsm , deps ,&
-                           stran , dstran, dfgrd0, dfgrd1)
+    call umatPrepareStrain(neps, epsm, deps, &
+                           stran, dstran, dfgrd0, dfgrd1)
 !
 ! - Number of internal state variables
 !
@@ -194,33 +194,33 @@ integer, intent(out) :: codret
 !
     time(1) = instap-instam
     time(2) = instam
-    dtime   = instap-instam
+    dtime = instap-instam
 !
 ! - Anisotropic case
 !
     call matrot(angmas, drott)
     do i = 1, 3
         do j = 1, 3
-            drot(j,i) = drott(i,j)
+            drot(j, i) = drott(i, j)
         end do
     end do
 !
 ! - Transfer some variables from aster to UMAT
 !
     celent = 0.d0
-    npt    = kpg
-    layer  = 1
-    kspt   = ksp
-    kstep  = 1
+    npt = kpg
+    layer = 1
+    kspt = ksp
+    kstep = 1
     cmname = rela_comp
     pnewdt = 1.d0
 !
 ! - Unused variables in UMAT
 !
-    sse    = 0.d0
-    spd    = 0.d0
-    scd    = 0.d0
-    rpl    = 0.d0
+    sse = 0.d0
+    spd = 0.d0
+    scd = 0.d0
+    rpl = 0.d0
     ddsddt = 0.d0
     drplde = 0.d0
     drpldt = 0.d0
@@ -232,52 +232,52 @@ integer, intent(out) :: codret
         call dcopy(nsig, sigm, 1, stress, 1)
         call dscal(3, usrac2, stress(4), 1)
         statev(1:nstatv) = vim(1:nstatv)
-        call umatwp(pfumat, stress, statev, ddsdde,&
-                    sse, spd, scd, rpl, ddsddt,&
-                    drplde, drpldt, stran, dstran, time,&
-                    dtime, temp, dtemp,&
-                    BEHinteg%exte%predef, BEHinteg%exte%dpred,&
-                    cmname, ndi, nshr, ntens, nstatv,&
-                    props, nprops, coords, drot, pnewdt,&
-                    celent, dfgrd0, dfgrd1, noel, npt,&
+        call umatwp(pfumat, stress, statev, ddsdde, &
+                    sse, spd, scd, rpl, ddsddt, &
+                    drplde, drpldt, stran, dstran, time, &
+                    dtime, temp, dtemp, &
+                    BEHinteg%exte%predef, BEHinteg%exte%dpred, &
+                    cmname, ndi, nshr, ntens, nstatv, &
+                    props, nprops, coords, drot, pnewdt, &
+                    celent, dfgrd0, dfgrd1, noel, npt, &
                     layer, kspt, kstep, kinc)
-    else if (option(1:9).eq. 'RIGI_MECA') then
+    else if (option(1:9) .eq. 'RIGI_MECA') then
         dstran = 0.d0
         stress = sigm
-        call umatwp(pfumat, sigm, vim, ddsdde,&
-                    sse, spd, scd, rpl, ddsddt,&
-                    drplde, drpldt, stran, dstran, time,&
-                    dtime, temp, dtemp,&
-                    BEHinteg%exte%predef, BEHinteg%exte%dpred,&
-                    cmname, ndi, nshr, ntens, nstatv,&
-                    props, nprops, coords, drot, pnewdt,&
-                    celent, dfgrd0, dfgrd1, noel, npt,&
+        call umatwp(pfumat, sigm, vim, ddsdde, &
+                    sse, spd, scd, rpl, ddsddt, &
+                    drplde, drpldt, stran, dstran, time, &
+                    dtime, temp, dtemp, &
+                    BEHinteg%exte%predef, BEHinteg%exte%dpred, &
+                    cmname, ndi, nshr, ntens, nstatv, &
+                    props, nprops, coords, drot, pnewdt, &
+                    celent, dfgrd0, dfgrd1, noel, npt, &
                     layer, kspt, kstep, kinc)
-    endif
+    end if
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call dscal(3, rac2, stress(4), 1)
-    endif
+    end if
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         dsidep = 0.d0
-        call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
+        call lcicma(ddsdde, ntens, ntens, ntens, ntens, 1, 1, dsidep, 6, 6, 1, 1)
         do i = 1, 6
             do j = 4, 6
-                dsidep(i,j) = dsidep(i,j)*rac2
+                dsidep(i, j) = dsidep(i, j)*rac2
             end do
         end do
         do i = 4, 6
             do j = 1, 6
-                dsidep(i,j) = dsidep(i,j)*rac2
+                dsidep(i, j) = dsidep(i, j)*rac2
             end do
         end do
-     endif
+    end if
 !
 ! - Rerturn code
 !
     if (pnewdt .lt. 0.99d0) then
-        codret=1
-    endif
+        codret = 1
+    end if
 !
 end subroutine

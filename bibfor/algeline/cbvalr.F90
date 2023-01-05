@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cbvalr(rouc, neq, smhc, smdi, idlexc,&
+subroutine cbvalr(rouc, neq, smhc, smdi, idlexc, &
                   coefr, coefc, valmi, valmr, valmc)
     implicit none
 !     BUT : ACCUMULTATION DANS VALMR (OU VALMC) DE COEF*VALMI
@@ -43,56 +43,56 @@ subroutine cbvalr(rouc, neq, smhc, smdi, idlexc,&
         do ilig = 1, neq
             ifinli = smdi(ilig)
             do ind = idebli, ifinli
-                kin = kin + 1
+                kin = kin+1
                 jcol = smhc(ind)
-                valmr(kin) = valmr(kin) + coefr*valmi(kin)* (1-idlexc( jcol))* (1-idlexc(ilig))
+                valmr(kin) = valmr(kin)+coefr*valmi(kin)*(1-idlexc(jcol))*(1-idlexc(ilig))
             end do
-            idebli = smdi(ilig) + 1
+            idebli = smdi(ilig)+1
         end do
 !
 !
-    else if (rouc.eq.'RC') then
+    else if (rouc .eq. 'RC') then
 !     -------------------------------
         do ilig = 1, neq
             ifinli = smdi(ilig)
             do ind = idebli, ifinli
-                kin = kin + 1
+                kin = kin+1
                 jcol = smhc(ind)
-                valmr(kin) = valmr(kin) + dble(coefc*valmi(kin)* (1-idlexc(jcol))* (1-idlexc(ilig&
+                valmr(kin) = valmr(kin)+dble(coefc*valmi(kin)*(1-idlexc(jcol))*(1-idlexc(ilig&
                              &)))
             end do
-            idebli = smdi(ilig) + 1
+            idebli = smdi(ilig)+1
         end do
 !
 !
-    else if (rouc.eq.'CR') then
+    else if (rouc .eq. 'CR') then
 !     -------------------------------
         do ilig = 1, neq
             ifinli = smdi(ilig)
             do ind = idebli, ifinli
-                kin = kin + 1
+                kin = kin+1
                 jcol = smhc(ind)
-                valmc(kin) = valmc(kin) + coefr*valmi(kin)* (1-idlexc( jcol))* (1-idlexc(ilig))
+                valmc(kin) = valmc(kin)+coefr*valmi(kin)*(1-idlexc(jcol))*(1-idlexc(ilig))
             end do
-            idebli = smdi(ilig) + 1
+            idebli = smdi(ilig)+1
         end do
 !
 !
-    else if (rouc.eq.'CC') then
+    else if (rouc .eq. 'CC') then
 !     -------------------------------
         do ilig = 1, neq
             ifinli = smdi(ilig)
             do ind = idebli, ifinli
-                kin = kin + 1
+                kin = kin+1
                 jcol = smhc(ind)
-                valmc(kin) = valmc(kin) + coefc*valmi(kin)* (1-idlexc( jcol))* (1-idlexc(ilig))
+                valmc(kin) = valmc(kin)+coefc*valmi(kin)*(1-idlexc(jcol))*(1-idlexc(ilig))
             end do
-            idebli = smdi(ilig) + 1
+            idebli = smdi(ilig)+1
         end do
 !
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

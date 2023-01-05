@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmelcv(mesh          , model         ,&
-                  ds_material   , ds_contact    , ds_constitutive,&
-                  disp_prev     , vite_prev     ,&
-                  acce_prev     , vite_curr     ,&
-                  time_prev     , time_curr     ,&
-                  disp_cumu_inst,&
+subroutine nmelcv(mesh, model, &
+                  ds_material, ds_contact, ds_constitutive, &
+                  disp_prev, vite_prev, &
+                  acce_prev, vite_curr, &
+                  time_prev, time_curr, &
+                  disp_cumu_inst, &
                   vect_elem_cont, vect_elem_fric)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -44,15 +44,15 @@ implicit none
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: model
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Contact), intent(in) :: ds_contact
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19), intent(in) :: disp_prev, vite_prev, acce_prev, vite_curr
-character(len=19), intent(in) :: time_prev, time_curr
-character(len=19), intent(in) :: disp_cumu_inst
-character(len=19), intent(out) :: vect_elem_cont, vect_elem_fric
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19), intent(in) :: disp_prev, vite_prev, acce_prev, vite_curr
+    character(len=19), intent(in) :: time_prev, time_curr
+    character(len=19), intent(in) :: disp_cumu_inst
+    character(len=19), intent(out) :: vect_elem_cont, vect_elem_fric
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,7 +81,7 @@ character(len=19), intent(out) :: vect_elem_cont, vect_elem_fric
 !
     integer :: ifm, niv
     integer, parameter :: nbout = 2
-    integer, parameter :: nbin  = 36
+    integer, parameter :: nbin = 36
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=1) :: base
@@ -101,27 +101,27 @@ character(len=19), intent(out) :: vect_elem_cont, vect_elem_fric
 !
 ! - Get contact parameters
 !
-    l_cont_cont    = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_xfem    = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
-    l_all_verif    = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
+    l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
 !
 ! --- TYPE DE CONTACT
 !
-    if (.not.l_all_verif .and. ((.not.l_cont_lac) .or. ds_contact%nb_cont_pair.ne.0)) then
+    if (.not. l_all_verif .and. ((.not. l_cont_lac) .or. ds_contact%nb_cont_pair .ne. 0)) then
 ! ----- Display
         if (niv .ge. 2) then
-            call utmess('I','CONTACT5_28')
-        endif
+            call utmess('I', 'CONTACT5_28')
+        end if
 ! ----- Init fields
         call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
 ! ----- Prepare input fields
-        call nmelco_prep('VECT'   ,&
-                         mesh     , model    , ds_material, ds_contact,&
-                         disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
-                         nbin     , lpain    , lchin    ,&
-                         option   , time_prev, time_curr , ds_constitutive)
+        call nmelco_prep('VECT', &
+                         mesh, model, ds_material, ds_contact, &
+                         disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst, &
+                         nbin, lpain, lchin, &
+                         option, time_prev, time_curr, ds_constitutive)
 ! ----- <LIGREL> for contact elements
         ligrel = ds_contact%ligrel_elem_cont
 ! ----- Preparation of elementary vectors
@@ -135,13 +135,13 @@ character(len=19), intent(out) :: vect_elem_cont, vect_elem_fric
         lpaout(2) = 'PVECTFR'
         lchout(2) = vect_elem_fric
 ! ----- Computation
-        call calcul('S'  , option, ligrel, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, base ,&
+        call calcul('S', option, ligrel, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
 ! ----- Copy output fields
         call reajre(vect_elem_cont, lchout(1), base)
         call reajre(vect_elem_fric, lchout(2), base)
-    endif
+    end if
 !
     call jedema()
 !

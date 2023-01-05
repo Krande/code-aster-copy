@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arlgrm(mail  ,nomgrp,dime  ,ima  ,connex,loncum, &
-                  nummai,nommai,itypm ,nbno , cxno)
-
+subroutine arlgrm(mail, nomgrp, dime, ima, connex, loncum, &
+                  nummai, nommai, itypm, nbno, cxno)
 
 ! ROUTINE ARLEQUIN
 
 ! DONNE LES COORDONNEES D'UNE MAILLE D'UN GROUPE
 
 ! ----------------------------------------------------------------------
-
 
 ! IN  NOMGRP : NOM DU GROUPE DE MAILLES ARLEQUIN
 ! IN  MAIL   : NOM DU MAILLAGE
@@ -57,43 +55,43 @@ subroutine arlgrm(mail  ,nomgrp,dime  ,ima  ,connex,loncum, &
 !     ----------
     character(len=19) :: nomgrp
     character(len=8) :: mail
-    integer :: ima,dime
-    integer :: connex(*),loncum(*)
+    integer :: ima, dime
+    integer :: connex(*), loncum(*)
     integer :: nummai
     character(len=8) :: nommai
-    integer :: nbno,itypm
+    integer :: nbno, itypm
     integer :: cxno(27)
 !-----------------------------------------------------------------------
-    integer :: jgrp,jtyp,aima
+    integer :: jgrp, jtyp, aima
 !-----------------------------------------------------------------------
 
     call jemarq()
 
 ! --- INITIALISATIONS
 
-    ASSERT((dime.gt.0).and.(dime.le.3))
+    ASSERT((dime .gt. 0) .and. (dime .le. 3))
     aima = abs(ima)
 
 ! --- LECTURE DONNEES MAILLAGE
 
-    call jeveuo(mail(1:8)//'.TYPMAIL        ','L',jtyp)
+    call jeveuo(mail(1:8)//'.TYPMAIL        ', 'L', jtyp)
 
 ! --- LECTURE DONNEES GROUPE DE MAILLES
 
-    call jeveuo(nomgrp(1:19),'L',jgrp)
+    call jeveuo(nomgrp(1:19), 'L', jgrp)
 
 ! --- NUMERO ABSOLU ET NOM DE LA MAILLE
 
     nummai = zi(jgrp-1+aima)
-    call jenuno(jexnum(mail(1:8)//'.NOMMAI',nummai),nommai)
+    call jenuno(jexnum(mail(1:8)//'.NOMMAI', nummai), nommai)
 
 ! --- TYPE DE LA MAILLE
 
-    itypm  = zi(jtyp-1+nummai)
+    itypm = zi(jtyp-1+nummai)
 
 ! --- CONNECTIVITE DE LA MAILLE
 
-    call arlcnn(nummai,connex,loncum,nbno,cxno)
+    call arlcnn(nummai, connex, loncum, nbno, cxno)
 
     call jedema()
 

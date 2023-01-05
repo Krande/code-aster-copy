@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,22 +61,22 @@ subroutine lctel2()
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', iamolo)
         if (zi(iamolo-1+1) .eq. 5) then
             call jenuno(jexnum('&CATA.TE.NOMMOLOC', imolo), nomolo)
-            nomte= nomolo(1:16)
+            nomte = nomolo(1:16)
             call jenonu(jexnom('&CATA.TE.NOMTE', nomte), ite)
-            zi(iatamx-1+ite)=max(zi(iatamx-1+ite),zi(iamolo-1+3))
-        endif
+            zi(iatamx-1+ite) = max(zi(iatamx-1+ite), zi(iamolo-1+3))
+        end if
     end do
 !
 !
 !     OBJET .NBLIGCOL :
 !     -------------------
     call wkvect('&CATA.TE.NBLIGCOL', 'G V I', 6, jnblig)
-    zi(jnblig-1+1)=nbop
-    zi(jnblig-1+2)=nbte
-    zi(jnblig-1+3)=nbte
-    zi(jnblig-1+4)=nbgd
-    zi(jnblig-1+5)=nbte
-    zi(jnblig-1+6)=nbgd
+    zi(jnblig-1+1) = nbop
+    zi(jnblig-1+2) = nbte
+    zi(jnblig-1+3) = nbte
+    zi(jnblig-1+4) = nbgd
+    zi(jnblig-1+5) = nbte
+    zi(jnblig-1+6) = nbgd
 !
 !
 !     OBJET .OPTTE :
@@ -85,11 +85,11 @@ subroutine lctel2()
     call jelira('&CATA.TE.OPTT2', 'LONMAX', n)
     call wkvect('&CATA.TE.OPTTE', 'G V I', nbte*nbop, joptte)
     do ioptte = 1, n/2
-        iop=optt2(2*(ioptte-1)+1)
-        ite=optt2(2*(ioptte-1)+2)
+        iop = optt2(2*(ioptte-1)+1)
+        ite = optt2(2*(ioptte-1)+2)
         if (iop .eq. 0 .or. ite .eq. 0) goto 2
-        zi(joptte-1+(ite-1)*nbop+iop)=ioptte
-  2     continue
+        zi(joptte-1+(ite-1)*nbop+iop) = ioptte
+2       continue
     end do
     call jedetr('&CATA.TE.OPTT2')
 !

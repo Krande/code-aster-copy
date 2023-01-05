@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mm_cycl_detect(ds_contact    , &
-                          l_frot_zone   , i_cont_poin   ,&
-                           coef_cont, coef_frot,&
-                          pres_cont_prev, dist_cont_prev,&
-                          pres_frot_curr,pres_frot_prev ,&
-                          indi_frot_prev, dist_frot_prev,&
-                          indi_cont_eval, indi_frot_eval,&
+subroutine mm_cycl_detect(ds_contact, &
+                          l_frot_zone, i_cont_poin, &
+                          coef_cont, coef_frot, &
+                          pres_cont_prev, dist_cont_prev, &
+                          pres_frot_curr, pres_frot_prev, &
+                          indi_frot_prev, dist_frot_prev, &
+                          indi_cont_eval, indi_frot_eval, &
                           indi_cont_prev, &
-                          dist_cont_curr, pres_cont_curr, dist_frot_curr,&
-                          alpha_cont_matr,alpha_cont_vect,&
-                          alpha_frot_matr,alpha_frot_vect)
+                          dist_cont_curr, pres_cont_curr, dist_frot_curr, &
+                          alpha_cont_matr, alpha_cont_vect, &
+                          alpha_frot_matr, alpha_frot_vect)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mm_cycl_d1.h"
@@ -87,28 +87,28 @@ implicit none
 !
 ! - Detection of cycling: contact/no contact
 !
-    call mm_cycl_d1(ds_contact, i_cont_poin, pres_cont_prev, dist_cont_prev, coef_cont,&
-                    indi_cont_eval,indi_cont_prev, dist_cont_curr, pres_cont_curr,alpha_cont_matr,&
+    call mm_cycl_d1(ds_contact, i_cont_poin, pres_cont_prev, dist_cont_prev, coef_cont, &
+                  indi_cont_eval, indi_cont_prev, dist_cont_curr, pres_cont_curr, alpha_cont_matr, &
                     alpha_cont_vect)
 !
 ! - Detection of cycling: sliding/sticking
 !
     if (l_frot_zone) then
-        call mm_cycl_d2(ds_contact, i_cont_poin, indi_cont_eval, indi_frot_eval,&
-                      coef_frot , pres_frot_curr,pres_frot_prev ,&
-                      dist_frot_curr,dist_frot_prev , alpha_frot_matr,alpha_frot_vect)
-    endif
+        call mm_cycl_d2(ds_contact, i_cont_poin, indi_cont_eval, indi_frot_eval, &
+                        coef_frot, pres_frot_curr, pres_frot_prev, &
+                        dist_frot_curr, dist_frot_prev, alpha_frot_matr, alpha_frot_vect)
+    end if
 !
 ! - Detection of cycling: sliding forward/backward
 !
     if (l_frot_zone) then
-        call mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev,&
+        call mm_cycl_d3(ds_contact, i_cont_poin, indi_frot_prev, dist_frot_prev, &
                         indi_cont_eval, indi_frot_eval, dist_frot_curr)
-    endif
+    end if
 !
 ! - Detection of cycling: old flip/flop
 !
-    call mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval,indi_cont_prev,&
-                    pres_cont_curr,pres_cont_prev)
+    call mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval, indi_cont_prev, &
+                    pres_cont_curr, pres_cont_prev)
 !
 end subroutine

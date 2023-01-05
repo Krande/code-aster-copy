@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_msesei(fid, imasup, nomaes, nvtymd, dimest,&
-                     nomasu, medcel, nbnosu, nbmssu, tygems,&
+subroutine as_msesei(fid, imasup, nomaes, nvtymd, dimest, &
+                     nomasu, medcel, nbnosu, nbmssu, tygems, &
                      nbattc, prespr, nbattv, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -41,8 +41,8 @@ subroutine as_msesei(fid, imasup, nomaes, nvtymd, dimest,&
     med_int :: nbmss4, tygem4, nbatc4, presp4, nbatv4, codre4
     fidm = to_med_idt(fid)
     imasu4 = imasup
-    call msesei(fidm, imasu4, nomaes, nvtym4, dimes4,&
-                nomasu, medce4, nbnos4, nbmss4, tygem4,&
+    call msesei(fidm, imasu4, nomaes, nvtym4, dimes4, &
+                nomasu, medce4, nbnos4, nbmss4, tygem4, &
                 nbatc4, presp4, nbatv4, codre4)
     nvtymd = nvtym4
     dimest = dimes4
@@ -55,8 +55,8 @@ subroutine as_msesei(fid, imasup, nomaes, nvtymd, dimest,&
     nbattv = nbatv4
     codret = codre4
 #else
-    call msesei(fid, imasup, nomaes, nvtymd, dimest,&
-                nomasu, medcel, nbnosu, nbmssu, tygems,&
+    call msesei(fid, imasup, nomaes, nvtymd, dimest, &
+                nomasu, medcel, nbnosu, nbmssu, tygems, &
                 nbattc, prespr, nbattv, codret)
 #endif
 !

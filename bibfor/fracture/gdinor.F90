@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,10 +78,10 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
         dir2z = dir1z
         num1 = zi(iadnum+i-1)
         num2 = zi(iadnum+i)
-        x1 = zr(iacoor+(num1-1)*3 )
+        x1 = zr(iacoor+(num1-1)*3)
         y1 = zr(iacoor+(num1-1)*3+1)
         z1 = zr(iacoor+(num1-1)*3+2)
-        x2 = zr(iacoor+(num2-1)*3 )
+        x2 = zr(iacoor+(num2-1)*3)
         y2 = zr(iacoor+(num2-1)*3+1)
         z2 = zr(iacoor+(num2-1)*3+2)
         x21 = x2-x1
@@ -90,9 +90,9 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
 !
 !    CALCUL DU PRODUIT VECTORIEL : U VECT N , OU U EST LE VECTEUR ARETE
 !
-        dir1x = y21*nz - z21*ny
-        dir1y = z21*nx - x21*nz
-        dir1z = x21*ny - y21*nx
+        dir1x = y21*nz-z21*ny
+        dir1y = z21*nx-x21*nz
+        dir1z = x21*ny-y21*nx
         if (i .ne. 1) then
 !
 !    MOYENNAGE DES 2 DIRECTIONS POUR UN NOEUD APPARTENANT A 2 ARETES
@@ -107,9 +107,9 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
             dir11x = dir1x
             dir11y = dir1y
             dir11z = dir1z
-        endif
+        end if
         norme = sqrt(dirmox*dirmox+dirmoy*dirmoy+dirmoz*dirmoz)
-        zr(in2+3*(i-1) ) = dirmox/norme
+        zr(in2+3*(i-1)) = dirmox/norme
         zr(in2+3*(i-1)+1) = dirmoy/norme
         zr(in2+3*(i-1)+2) = dirmoz/norme
     end do
@@ -123,18 +123,18 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
         dirmoy = (dir1y+dir11y)/2.d0
         dirmoz = (dir1z+dir11z)/2.d0
         norme = sqrt(dirmox*dirmox+dirmoy*dirmoy+dirmoz*dirmoz)
-        zr(in2+3*(lobj2-1) ) = dirmox/norme
+        zr(in2+3*(lobj2-1)) = dirmox/norme
         zr(in2+3*(lobj2-1)+1) = dirmoy/norme
         zr(in2+3*(lobj2-1)+2) = dirmoz/norme
-        zr(in2+3*(1-1) ) = dirmox/norme
-        zr(in2+3*(1-1) +1) = dirmoy/norme
-        zr(in2+3*(1-1) +2) = dirmoz/norme
+        zr(in2+3*(1-1)) = dirmox/norme
+        zr(in2+3*(1-1)+1) = dirmoy/norme
+        zr(in2+3*(1-1)+2) = dirmoz/norme
     else
         norme = sqrt(dir1x*dir1x+dir1y*dir1y+dir1z*dir1z)
-        zr(in2+3*(lobj2-1) ) = dir1x/norme
+        zr(in2+3*(lobj2-1)) = dir1x/norme
         zr(in2+3*(lobj2-1)+1) = dir1y/norme
         zr(in2+3*(lobj2-1)+2) = dir1z/norme
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine sscgma(ma, nbgmp, nbgmin)
 !
-implicit none
+    implicit none
 !
 #include "asterc/getres.h"
 #include "asterfort/as_allocate.h"
@@ -93,7 +93,7 @@ implicit none
     call getres(kbid, concep, cmd)
     l_parallel_mesh = isParallelMesh(ma)
     lisma = '&&SSCGMA.LISTE_MAILLES'
-    if(l_parallel_mesh) then
+    if (l_parallel_mesh) then
         call jelira(ma//'.PAR_GRPMAI', 'NOMMAX', nbgrmn)
     else
         call jelira(ma//'.GROUPEMA', 'NMAXOC', nbgrmn)
@@ -115,14 +115,14 @@ implicit none
         call jenonu(jexnom(ma//'.GROUPEMA', nogma), iret)
         if (iret .gt. 0) then
             call utmess('F', 'ALGELINE3_7', sk=nogma)
-        endif
+        end if
 !
-        call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc,&
+        call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc, &
                     0, kbid, n2)
         call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc=iocc, nbval=0, nbret=n3)
         call getvtx('CREA_GROUP_MA', 'UNION', iocc=iocc, nbval=0, nbret=n4)
         call getvtx('CREA_GROUP_MA', 'DIFFE   ', iocc=iocc, nbval=0, nbret=n5)
-        call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc,&
+        call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc, &
                     0, kbid, n6)
         call getvtx('CREA_GROUP_MA', 'OPTION', iocc=iocc, nbval=0, nbret=n7)
         call getvtx('CREA_GROUP_MA', 'TOUT', iocc=iocc, nbval=0, nbret=n8)
@@ -139,23 +139,23 @@ implicit none
 !       -- MOT CLEF TOUT:
 !       -------------------
         if (n8 .gt. 0) then
-            nbma=nbmat
+            nbma = nbmat
             call wkvect(lisma, 'V V I', nbma, jlisma)
             do ima = 1, nbmat
                 zi(jlisma-1+ima) = ima
             end do
             goto 219
-        endif
+        end if
 !
 !
 !       -- MOT CLEF MAILLE:
 !       -------------------
         if (n2 .gt. 0) then
-            if(l_parallel_mesh) then
+            if (l_parallel_mesh) then
                 call utmess('F', 'MODELISA7_86')
             end if
             AS_ALLOCATE(vk8=l_maille, size=n2)
-            call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc,&
+            call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc, &
                         n2, l_maille, n1)
             call wkvect('&&SSCGMA.MAILLE', 'V V I', n2, jmail)
             call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
@@ -166,39 +166,39 @@ implicit none
                 nom1 = l_maille(im1)
                 call jenonu(jexnom(ma//'.NOMMAI', nom1), num)
                 if (num .eq. 0) then
-                    ier = ier + 1
+                    ier = ier+1
                     call utmess('E', 'SOUSTRUC_31', sk=nom1)
                     goto 20
-                endif
-                maille2(num) = maille2(num) + 1
+                end if
+                maille2(num) = maille2(num)+1
                 if (maille2(num) .eq. 2) then
                     valk(1) = nom1
                     valk(2) = nogma
                     call utmess('A', 'SOUSTRUC_32', nk=2, valk=valk)
                     goto 20
-                endif
-                nbma = nbma + 1
+                end if
+                nbma = nbma+1
                 zi(jmail+nbma-1) = num
- 20             continue
+20              continue
             end do
             if (ier .ne. 0) then
                 ASSERT(.false.)
-            endif
+            end if
             call wkvect(lisma, 'V V I', nbma, jlisma)
-            do ima = 0, nbma - 1
+            do ima = 0, nbma-1
                 zi(jlisma+ima) = zi(jmail+ima)
             end do
             call jedetr('&&SSCGMA.MAILLE')
             AS_DEALLOCATE(vi=maille2)
             AS_DEALLOCATE(vk8=l_maille)
             goto 219
-        endif
+        end if
 !
 !
 !       -- MOT CLEF GROUP_MA:
 !       ---------------------
         if (n6 .gt. 0) then
-            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc,&
+            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc, &
                         1, nogma2, nbid)
             call getvtx('CREA_GROUP_MA', 'POSITION', iocc=iocc, nbval=0, nbret=n6b)
             call jenonu(jexnom(ma//'.GROUPEMA', nogma2), igm2)
@@ -213,48 +213,48 @@ implicit none
                 if (n6a .eq. 0) ind2 = ili2
                 if (ind2 .lt. ind1) then
                     call utmess('F', 'SOUSTRUC_33')
-                endif
+                end if
                 if (ili2 .lt. ind2) then
                     call utmess('F', 'SOUSTRUC_34')
-                endif
-                n6a = ind2 - ind1 + 1
+                end if
+                n6a = ind2-ind1+1
             else
                 n6a = 1
-            endif
+            end if
             call wkvect(lisma, 'V V I', n6a, jlisma)
-            nbma=n6a
+            nbma = n6a
             if (n6b .eq. 0) then
-                n = ind2 - ind1 + 1
+                n = ind2-ind1+1
                 do ii = 1, n
                     zi(jlisma-1+ii) = zi(iagm2-2+ind1+ii)
                 end do
                 goto 219
-            endif
+            end if
             call getvtx('CREA_GROUP_MA', 'POSITION', iocc=iocc, scal=kpos, nbret=n6b)
             if (kpos .eq. 'INIT') then
                 zi(jlisma) = zi(iagm2)
-            else if (kpos.eq.'FIN') then
+            else if (kpos .eq. 'FIN') then
                 ii = ili2
                 zi(jlisma) = zi(iagm2+ii-1)
-            else if (kpos.eq.'MILIEU') then
+            else if (kpos .eq. 'MILIEU') then
                 ii = (ili2+1)/2
                 zi(jlisma) = zi(iagm2+ii-1)
-            endif
+            end if
             goto 219
-        endif
+        end if
 !
 !
 !       -- MOT CLEF INTER:
 !       -------------------
         if (n3 .gt. 0) then
-            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'INTERSEC', iocc,&
+            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'INTERSEC', iocc, &
                         n3, lik8, nbid)
             n3 = nbid
             do igm = 1, n3
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 if (igm2 .eq. 0) then
                     call utmess('F', 'SOUSTRUC_35', sk=lik8(igm))
-                endif
+                end if
             end do
 !
             call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
@@ -266,7 +266,7 @@ implicit none
                 call jedetr('&&SSCGMA.LII2')
                 call wkvect('&&SSCGMA.LII1', 'V V I', nbis, ialii1)
                 call wkvect('&&SSCGMA.LII2', 'V V I', nbis, ialii2)
-            endif
+            end if
             n = ili1
             do ii = 1, n
                 zi(ialii1-1+ii) = zi(iagm1-1+ii)
@@ -276,8 +276,8 @@ implicit none
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
-                call utlisi('INTER', zi(ialii1), n, zi(iagm2), ili2,&
-                            zi( ialii2), nbis, ntrou)
+                call utlisi('INTER', zi(ialii1), n, zi(iagm2), ili2, &
+                            zi(ialii2), nbis, ntrou)
                 n = ntrou
                 do ii = 1, n
                     zi(ialii1-1+ii) = zi(ialii2-1+ii)
@@ -287,29 +287,29 @@ implicit none
             if (n .eq. 0) then
                 if (alarm .eq. 'OUI') then
                     call utmess('A', 'SOUSTRUC_36', sk=nogma)
-                endif
+                end if
             else
                 call wkvect(lisma, 'V V I', n, jlisma)
-                nbma=n
+                nbma = n
                 do ii = 1, n
                     zi(jlisma-1+ii) = zi(ialii1-1+ii)
                 end do
-            endif
+            end if
             goto 219
-        endif
+        end if
 !
 !
 !       -- MOT CLEF UNION:
 !       -------------------
         if (n4 .gt. 0) then
-            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'UNION', iocc,&
+            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'UNION', iocc, &
                         n4, lik8, nbid)
             n4 = nbid
             do igm = 1, n4
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 if (igm2 .eq. 0) then
                     call utmess('F', 'SOUSTRUC_35', sk=lik8(igm))
-                endif
+                end if
             end do
 !
             call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
@@ -321,7 +321,7 @@ implicit none
                 call jedetr('&&SSCGMA.LII2')
                 call wkvect('&&SSCGMA.LII1', 'V V I', nbis, ialii1)
                 call wkvect('&&SSCGMA.LII2', 'V V I', nbis, ialii2)
-            endif
+            end if
             n = ili1
             do ii = 1, n
                 zi(ialii1-1+ii) = zi(iagm1-1+ii)
@@ -331,18 +331,18 @@ implicit none
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
-                call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
-                            zi( ialii2), nbis, ntrou)
+                call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2, &
+                            zi(ialii2), nbis, ntrou)
 !
                 if (ntrou .lt. 0) then
                     nbis = -2*ntrou
                     call jedetr('&&SSCGMA.LII2')
                     call wkvect('&&SSCGMA.LII2', 'V V I', nbis, ialii2)
-                    call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
+                    call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2, &
                                 zi(ialii2), nbis, ntrou)
                     call jedetr('&&SSCGMA.LII1')
                     call wkvect('&&SSCGMA.LII1', 'V V I', nbis, ialii1)
-                endif
+                end if
                 n = ntrou
                 do ii = 1, n
                     zi(ialii1-1+ii) = zi(ialii2-1+ii)
@@ -352,29 +352,29 @@ implicit none
             if (n .eq. 0) then
                 if (alarm .eq. 'OUI') then
                     call utmess('A', 'SOUSTRUC_36', sk=nogma)
-                endif
+                end if
             else
                 call wkvect(lisma, 'V V I', n, jlisma)
-                nbma=n
+                nbma = n
                 do ii = 1, n
                     zi(jlisma-1+ii) = zi(ialii1-1+ii)
                 end do
-            endif
+            end if
             goto 219
-        endif
+        end if
 !
 !
 !       -- MOT CLEF DIFFE:
 !       -------------------
         if (n5 .gt. 0) then
-            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'DIFFE', iocc,&
+            call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'DIFFE', iocc, &
                         n5, lik8, nbid)
             n5 = nbid
             do igm = 1, n5
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 if (igm2 .eq. 0) then
                     call utmess('F', 'SOUSTRUC_35', sk=lik8(igm))
-                endif
+                end if
             end do
 !
             call jenonu(jexnom(ma//'.GROUPEMA', lik8(1)), igm1)
@@ -386,7 +386,7 @@ implicit none
                 call jedetr('&&SSCGMA.LII2')
                 call wkvect('&&SSCGMA.LII1', 'V V I', nbis, ialii1)
                 call wkvect('&&SSCGMA.LII2', 'V V I', nbis, ialii2)
-            endif
+            end if
             n = ili1
             do ii = 1, n
                 zi(ialii1-1+ii) = zi(iagm1-1+ii)
@@ -396,8 +396,8 @@ implicit none
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
-                call utlisi('DIFFE', zi(ialii1), n, zi(iagm2), ili2,&
-                            zi( ialii2), nbis, ntrou)
+                call utlisi('DIFFE', zi(ialii1), n, zi(iagm2), ili2, &
+                            zi(ialii2), nbis, ntrou)
                 n = ntrou
                 do ii = 1, n
                     zi(ialii1-1+ii) = zi(ialii2-1+ii)
@@ -407,16 +407,16 @@ implicit none
             if (n .eq. 0) then
                 if (alarm .eq. 'OUI') then
                     call utmess('A', 'SOUSTRUC_36', sk=nogma)
-                endif
+                end if
             else
                 call wkvect(lisma, 'V V I', n, jlisma)
-                nbma=n
+                nbma = n
                 do ii = 1, n
                     zi(jlisma-1+ii) = zi(ialii1-1+ii)
                 end do
-            endif
+            end if
             goto 219
-        endif
+        end if
 !
 !
 !       -- MOT CLEF OPTION:
@@ -432,30 +432,30 @@ implicit none
 !
 !            -- TRAITEMENT DE L'OPTION SPHERE :
 !               -----------------------------
-            else if (option(1:6).eq.'SPHERE') then
+            else if (option(1:6) .eq. 'SPHERE') then
                 call cgmasp('CREA_GROUP_MA', iocc, ma, lisma, nbma)
 !
 !            -- TRAITEMENT DE L'OPTION CYLINDRE :
 !               -------------------------------
-            else if (option(1:8).eq.'CYLINDRE') then
+            else if (option(1:8) .eq. 'CYLINDRE') then
                 call cgmacy('CREA_GROUP_MA', iocc, ma, lisma, nbma)
 !
 !            -- TRAITEMENT DE L'OPTION BANDE :
 !               ----------------------------
-            else if (option(1:5).eq.'BANDE') then
+            else if (option(1:5) .eq. 'BANDE') then
                 call cgmaba('CREA_GROUP_MA', iocc, ma, lisma, nbma)
 !
 !            -- TRAITEMENT DE L'OPTION APPUI_STRICT :
 !               ----------------------------------
-            else if (option(1:5).eq.'APPUI') then
+            else if (option(1:5) .eq. 'APPUI') then
                 call cgmaap('CREA_GROUP_MA', iocc, ma, lisma, nbma)
 !
 !            -- TRAITEMENT DE L'OPTION FISS_XFEM :
 !               ----------------------------------
-            else if (option(1:9).eq.'FISS_XFEM') then
+            else if (option(1:9) .eq. 'FISS_XFEM') then
                 call cgmaxf('CREA_GROUP_MA', iocc, ma, lisma, nbma)
-            endif
-        endif
+            end if
+        end if
 !
 !
 !       -- ON FILTRE LES TYPES DE MAILLES :
@@ -470,9 +470,9 @@ implicit none
                     if (alarm .eq. 'OUI') then
                         call utmess('A', 'SOUSTRUC_36', sk=nogma)
                     end if
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 
 !
 !       -- CREATION ET AFFECTATION DU GROUP_MA :
@@ -480,8 +480,8 @@ implicit none
         call jeveuo(lisma, 'L', idlima)
         call addGrpMa(ma, nogma, zi(idlima), nbma, l_added_grpma)
 
-        if(l_added_grpma) then
-            nbgnaj = nbgnaj + 1
+        if (l_added_grpma) then
+            nbgnaj = nbgnaj+1
         end if
 !
         call jedetr(lisma)
@@ -491,51 +491,51 @@ implicit none
 !     IMPRESSIONS NIVEAUX 1 ET 2
 !     --------------------------
     if (niv .ge. 1 .and. nbgnaj .ne. 0) then
-        write (ifm,'(/,/,A,I6,/,45(''=''))')&
-     &    'NOMBRE  DE GROUPES DE MAILLES CREES : ',nbgnaj
+        write (ifm, '(/,/,A,I6,/,45(''=''))')&
+     &    'NOMBRE  DE GROUPES DE MAILLES CREES : ', nbgnaj
 !
-        write (ifm,'(/,15X,54(''-''),2(/,15X,A),/,15X,54(''-''))')&
+        write (ifm, '(/,15X,54(''-''),2(/,15X,A),/,15X,54(''-''))')&
      &    '!         NOM DU GROUPE         ! NBRE DE MAILLES DU !',&
      &    '!            MAILLES            !     GROUPE_MA      !'
 !
         do i = 1, nbgnaj
-            ii = nbgmin + i
+            ii = nbgmin+i
             call jenuno(jexnum(ma//'.GROUPEMA', ii), nogma)
             call jelira(jexnum(ma//'.GROUPEMA', ii), 'LONUTI', nbma)
-            write (ifm,'(15X,A,2X,A24,5X,A,2X,I8,10X,A)') '!',nogma,'!',&
-     &      nbma,'!'
+            write (ifm, '(15X,A,2X,A24,5X,A,2X,I8,10X,A)') '!', nogma, '!',&
+     &      nbma, '!'
         end do
-        write (ifm,'(15X,54(''-''),/)')
-    endif
+        write (ifm, '(15X,54(''-''),/)')
+    end if
 !
 !     IMPRESSIONS NIVEAU 2
 !     --------------------
     if (niv .eq. 2 .and. nbgnaj .ne. 0) then
         maxcol = 8
         do i = 1, nbgnaj
-            ii = nbgmin + i
+            ii = nbgmin+i
             call jeveuo(jexnum(ma//'.GROUPEMA', ii), 'L', jlisma)
             call jenuno(jexnum(ma//'.GROUPEMA', ii), nogma)
             call jelira(jexnum(ma//'.GROUPEMA', ii), 'LONUTI', nbma)
-            write (ifm,'(/,3A,/,28(''-''))') 'MAILLES DU GROUPE ',&
-            nogma, ' :'
+            write (ifm, '(/,3A,/,28(''-''))') 'MAILLES DU GROUPE ', &
+                nogma, ' :'
             nbline = nbma/maxcol
-            ireste = mod(nbma,maxcol)
-            if (ireste .ne. 0) nbline = nbline + 1
+            ireste = mod(nbma, maxcol)
+            if (ireste .ne. 0) nbline = nbline+1
             nbcol = maxcol
             kkk = 0
             do jjj = 1, nbline
                 if (ireste .ne. 0 .and. jjj .eq. nbline) nbcol = ireste
                 do iii = 1, nbcol
-                    kkk = kkk + 1
+                    kkk = kkk+1
                     call jenuno(jexnum(ma//'.NOMMAI', zi(jlisma-1+kkk)), noma)
                     card((iii-1)*10+1:) = ' '//noma//' '
                 end do
-                write (ifm,'(A)') card(:10*nbcol)
+                write (ifm, '(A)') card(:10*nbcol)
             end do
         end do
-        write (ifm,'(/,/)')
-    endif
+        write (ifm, '(/,/)')
+    end if
 !
 !
 ! --- MENAGE

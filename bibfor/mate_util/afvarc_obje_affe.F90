@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
 !
-use Material_Datastructure_type
+    use Material_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -63,7 +63,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8), parameter :: keywf_type(2) = (/'GROUP_MA', 'MAILLE  '/)
-    character(len=16), parameter :: keywf_name(2)= (/'GROUP_MA', 'MAILLE  '/)
+    character(len=16), parameter :: keywf_name(2) = (/'GROUP_MA', 'MAILLE  '/)
     character(len=24), parameter :: list_elem = '&&AFVARC.MES_MAILLES'
     integer :: nb_elem, nb_varc_cmp, nb_affe_varc, nb_cmp, nb_varc_cata
     integer :: i_affe_varc, i_cmp, i_varc_cmp
@@ -87,7 +87,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_varc_cmp  = varc_affe%nb_varc_cmp
+    nb_varc_cmp = varc_affe%nb_varc_cmp
     nb_affe_varc = varc_affe%nb_affe_varc
     nb_varc_cata = varc_cata%nb_varc
     ASSERT(nb_affe_varc .ne. 0)
@@ -96,23 +96,23 @@ implicit none
 !
     cvnom = chmate//'.CVRCNOM'
     cvvar = chmate//'.CVRCVARC'
-    cvgd  = chmate//'.CVRCGD'
+    cvgd = chmate//'.CVRCGD'
     cvcmp = chmate//'.CVRCCMP'
-    call jeveuo(cvnom, 'E', vk8 = v_cvnom)
-    call jeveuo(cvvar, 'E', vk8 = v_cvvar)
-    call jeveuo(cvgd , 'E', vk8 = v_cvgd)
-    call jeveuo(cvcmp, 'E', vk8 = v_cvcmp)
+    call jeveuo(cvnom, 'E', vk8=v_cvnom)
+    call jeveuo(cvvar, 'E', vk8=v_cvvar)
+    call jeveuo(cvgd, 'E', vk8=v_cvgd)
+    call jeveuo(cvcmp, 'E', vk8=v_cvcmp)
 !
 ! - Fill main objects
 !
-    AS_ALLOCATE(vl = v_active, size = nb_varc_cata)
+    AS_ALLOCATE(vl=v_active, size=nb_varc_cata)
     i_varc_cmp = 0
     do i_affe_varc = 1, nb_affe_varc
         indx_cata = varc_affe%list_affe_varc(i_affe_varc)%indx_cata
         varc_name = varc_cata%list_cata_varc(indx_cata)%name
-        nb_cmp    = varc_cata%list_cata_varc(indx_cata)%nb_cmp
+        nb_cmp = varc_cata%list_cata_varc(indx_cata)%nb_cmp
         phys_para = varc_cata%list_cata_varc(indx_cata)%type_phys_para
-        if (.not.v_active(indx_cata)) then
+        if (.not. v_active(indx_cata)) then
             do i_cmp = 1, nb_cmp
                 v_cvnom(i_cmp+i_varc_cmp) = &
                     varc_cata%list_cata_varc(indx_cata)%list_cmp(i_cmp)%varc_cmp
@@ -123,12 +123,12 @@ implicit none
                 v_cvgd(i_cmp+i_varc_cmp) = &
                     phys_para
             end do
-            i_varc_cmp = i_varc_cmp + nb_cmp
+            i_varc_cmp = i_varc_cmp+nb_cmp
             v_active(indx_cata) = .true._1
-        endif
+        end if
     end do
     ASSERT(i_varc_cmp .eq. nb_varc_cmp)
-    AS_DEALLOCATE(vl = v_active)
+    AS_DEALLOCATE(vl=v_active)
 !
 ! - Fill fields
 !
@@ -136,23 +136,23 @@ implicit none
     do i_affe_varc = 1, nb_affe_varc
         indx_cata = varc_affe%list_affe_varc(i_affe_varc)%indx_cata
         varc_name = varc_cata%list_cata_varc(indx_cata)%name
-        nb_cmp    = varc_cata%list_cata_varc(indx_cata)%nb_cmp
+        nb_cmp = varc_cata%list_cata_varc(indx_cata)%nb_cmp
         vale_refe = varc_affe%list_affe_varc(i_affe_varc)%vale_refe
-        cart1     = chmate//'.'//varc_name//'.1'
-        cart2     = chmate//'.'//varc_name//'.2'
-        call jeveuo(cart1//'.VALV', 'E', vr   = v_cart_valv1)
-        call jeveuo(cart2//'.VALV', 'E', vk16 = v_cart_valv2)
+        cart1 = chmate//'.'//varc_name//'.1'
+        cart2 = chmate//'.'//varc_name//'.2'
+        call jeveuo(cart1//'.VALV', 'E', vr=v_cart_valv1)
+        call jeveuo(cart2//'.VALV', 'E', vk16=v_cart_valv2)
         do i_cmp = 1, nb_cmp
             v_cart_valv1(i_cmp) = vale_refe
         end do
-        type_affe      = varc_affe%list_affe_varc(i_affe_varc)%type_affe
+        type_affe = varc_affe%list_affe_varc(i_affe_varc)%type_affe
         vale_phys_para = varc_affe%list_affe_varc(i_affe_varc)%vale_phys_para
         type_phys_para = varc_cata%list_cata_varc(indx_cata)%type_phys_para
 
-        evol           = varc_affe%list_affe_varc(i_affe_varc)%evol
-        evol_func      = varc_affe%list_affe_varc(i_affe_varc)%evol_func
-        evol_prol_l    = varc_affe%list_affe_varc(i_affe_varc)%evol_prol_l
-        evol_prol_r    = varc_affe%list_affe_varc(i_affe_varc)%evol_prol_r
+        evol = varc_affe%list_affe_varc(i_affe_varc)%evol
+        evol_func = varc_affe%list_affe_varc(i_affe_varc)%evol_func
+        evol_prol_l = varc_affe%list_affe_varc(i_affe_varc)%evol_prol_l
+        evol_prol_r = varc_affe%list_affe_varc(i_affe_varc)%evol_prol_r
         v_cart_valv2(1) = varc_name
         if (type_affe .eq. 'CHAMP') then
             v_cart_valv2(2) = 'CHAMP'
@@ -175,7 +175,7 @@ implicit none
             empty_vale(1:nb_cmp) = r8nnem()
             empty_name(1:nb_cmp) = &
                 varc_cata%list_cata_varc(indx_cata)%list_cmp(1:nb_cmp)%phys_para_cmp
-            call mecact(jv_base, cart_empty, 'MAILLA', mesh, type_phys_para,&
+            call mecact(jv_base, cart_empty, 'MAILLA', mesh, type_phys_para, &
                         ncmp=nb_cmp, lnomcmp=empty_name, vr=empty_vale)
             v_cart_valv2(2) = 'CHAMP'
             v_cart_valv2(3) = cart_empty(1:16)
@@ -183,31 +183,31 @@ implicit none
             v_cart_valv2(5) = ' '
             v_cart_valv2(6) = ' '
             v_cart_valv2(7) = ' '
-        endif
+        end if
 ! ----- Set values in CARTE
-        call getvtx('AFFE_VARC', 'TOUT'    , iocc=i_affe_varc, scal=answer, nbret=nbtou)
+        call getvtx('AFFE_VARC', 'TOUT', iocc=i_affe_varc, scal=answer, nbret=nbtou)
         call getvtx('AFFE_VARC', 'GROUP_MA', iocc=i_affe_varc, nbval=0, nbret=nbgm1)
-        call getvtx('AFFE_VARC', 'MAILLE'  , iocc=i_affe_varc, nbval=0, nbret=nbm1)
+        call getvtx('AFFE_VARC', 'MAILLE', iocc=i_affe_varc, nbval=0, nbret=nbm1)
         if (nbgm1+nbm1 .eq. 0) then
-            nbtou=1
-        endif
+            nbtou = 1
+        end if
         if (nbtou .ne. 0) then
             call nocart(cart1, 1, nb_cmp)
             call nocart(cart2, 1, 7)
         else
-            call reliem(model, mesh, 'NU_MAILLE', 'AFFE_VARC', i_affe_varc,&
+            call reliem(model, mesh, 'NU_MAILLE', 'AFFE_VARC', i_affe_varc, &
                         2, keywf_name, keywf_type, list_elem, nb_elem)
             if (nb_elem .ne. 0) then
                 call jeveuo(list_elem, 'L', jv_list_elem)
-                call nocart(cart1, 3, nb_cmp, mode='NUM', nma=nb_elem,&
+                call nocart(cart1, 3, nb_cmp, mode='NUM', nma=nb_elem, &
                             limanu=zi(jv_list_elem))
-                call nocart(cart2, 3, 7, mode='NUM', nma=nb_elem,&
+                call nocart(cart2, 3, 7, mode='NUM', nma=nb_elem, &
                             limanu=zi(jv_list_elem))
                 call jedetr(list_elem)
-            endif
-        endif
+            end if
+        end if
 ! ----- For XFEM
-        call xvarc_temp(varc_name, type_affe   , evol, evol_prol_l, evol_prol_r,&
+        call xvarc_temp(varc_name, type_affe, evol, evol_prol_l, evol_prol_r, &
                         evol_func, nb_affe_varc, cart2)
     end do
 !

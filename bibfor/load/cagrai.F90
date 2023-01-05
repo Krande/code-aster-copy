@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cagrai(load, mesh, model, valeType)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -34,8 +34,8 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-character(len=4), intent(in) :: valeType
+    character(len=8), intent(in) :: load, mesh, model
+    character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ character(len=4), intent(in) :: valeType
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'PRE_GRAD_TEMP'
-    integer :: nchgi, jvalv,  nx, ny, nz, i, iocc, nbtou, nbma, jma
+    integer :: nchgi, jvalv, nx, ny, nz, i, iocc, nbtou, nbma, jma
     real(kind=8) :: grx, gry, grz
     character(len=8) :: k8b, typmcl(2), grxf, gryf, grzf
     character(len=16) :: motcle(2)
@@ -71,11 +71,11 @@ character(len=4), intent(in) :: valeType
 !
     if (valeType .eq. 'REEL') then
         call alcart('G', carte, mesh, 'FLUX_R')
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         call alcart('G', carte, mesh, 'FLUX_F')
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
@@ -87,11 +87,11 @@ character(len=4), intent(in) :: valeType
         do i = 1, 3
             zr(jvalv-1+i) = 0.d0
         end do
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         do i = 1, 3
             zk8(jvalv-1+i) = '&FOZERO'
         end do
-    endif
+    end if
     call nocart(carte, 1, 3)
 !
     mesmai = '&&CAGRAI.MES_MAILLES'
@@ -112,7 +112,7 @@ character(len=4), intent(in) :: valeType
             if (nx .ne. 0) zr(jvalv-1+1) = grx
             if (ny .ne. 0) zr(jvalv-1+2) = gry
             if (nz .ne. 0) zr(jvalv-1+3) = grz
-        else if (valeType.eq.'FONC') then
+        else if (valeType .eq. 'FONC') then
             call getvid(keywordFact, 'FLUX_X', iocc=iocc, scal=grxf, nbret=nx)
             call getvid(keywordFact, 'FLUX_Y', iocc=iocc, scal=gryf, nbret=ny)
             call getvid(keywordFact, 'FLUX_Z', iocc=iocc, scal=grzf, nbret=nz)
@@ -122,20 +122,20 @@ character(len=4), intent(in) :: valeType
             if (nx .ne. 0) zk8(jvalv-1+1) = grxf
             if (ny .ne. 0) zk8(jvalv-1+2) = gryf
             if (nz .ne. 0) zk8(jvalv-1+3) = grzf
-        endif
+        end if
 !
         call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, 3)
 !
         else
-            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc,&
+            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc, &
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) cycle
             call jeveuo(mesmai, 'L', jma)
             call nocart(carte, 3, 3, mode='NUM', nma=nbma, limanu=zi(jma))
             call jedetr(mesmai)
-        endif
+        end if
 !
     end do
 !

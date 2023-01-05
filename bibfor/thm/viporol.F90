@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,35 +17,35 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine viporol(ds_thm,nbvari,&
-                  advico, vicphi,&
-                  dtemp , dpi,&
-                  deps  , depsv ,&
-                  signe , satur , unsks , phi0,&
-                  cs0   , tbiot , cbiot ,&
-                  alpha0, alphfi,&
-                  vintm , vintp ,&
-                  phi   , phim  , retcom)
+subroutine viporol(ds_thm, nbvari, &
+                   advico, vicphi, &
+                   dtemp, dpi, &
+                   deps, depsv, &
+                   signe, satur, unsks, phi0, &
+                   cs0, tbiot, cbiot, &
+                   alpha0, alphfi, &
+                   vintm, vintp, &
+                   phi, phim, retcom)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/THM_type.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-integer, intent(in) :: nbvari
-integer, intent(in) :: advico, vicphi
-real(kind=8), intent(in) :: dtemp, dpi
-real(kind=8), intent(in) :: deps(6), depsv
-real(kind=8), intent(in) :: signe, satur, unsks, phi0
-real(kind=8), intent(in) :: cs0, tbiot(6), cbiot
-real(kind=8), intent(in) :: alpha0, alphfi
-real(kind=8), intent(in) :: vintm(nbvari)
-real(kind=8), intent(inout) :: vintp(nbvari)
-real(kind=8), intent(out) :: phi, phim
-integer, intent(out) :: retcom
+    type(THM_DS), intent(in) :: ds_thm
+    integer, intent(in) :: nbvari
+    integer, intent(in) :: advico, vicphi
+    real(kind=8), intent(in) :: dtemp, dpi
+    real(kind=8), intent(in) :: deps(6), depsv
+    real(kind=8), intent(in) :: signe, satur, unsks, phi0
+    real(kind=8), intent(in) :: cs0, tbiot(6), cbiot
+    real(kind=8), intent(in) :: alpha0, alphfi
+    real(kind=8), intent(in) :: vintm(nbvari)
+    real(kind=8), intent(inout) :: vintp(nbvari)
+    real(kind=8), intent(out) :: phi, phim
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,39 +88,39 @@ integer, intent(out) :: retcom
 ! --------------------------------------------------------------------------------------------------
 !
     varbio = 0.d0
-    phi    = 0.d0
-    phim   = 0.d0
+    phi = 0.d0
+    phim = 0.d0
     retcom = 0
 !
-    if (ds_thm%ds_material%biot%type .eq.  BIOT_TYPE_ISOT) then
-        varbio = cbiot*depsv- 3.d0*alphfi*dtemp + cs0*(dpi)
+    if (ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ISOT) then
+        varbio = cbiot*depsv-3.d0*alphfi*dtemp+cs0*(dpi)
         if (varbio .gt. epxmax) then
             retcom = 2
             goto 99
-        endif
-        vintp(advico+vicphi) = varbio + vintm(advico+vicphi)
-        phi  = vintp(advico+vicphi) + phi0
-        phim = vintm(advico+vicphi) + phi0
+        end if
+        vintp(advico+vicphi) = varbio+vintm(advico+vicphi)
+        phi = vintp(advico+vicphi)+phi0
+        phim = vintm(advico+vicphi)+phi0
 
-    else if ((ds_thm%ds_material%biot%type .eq.  BIOT_TYPE_ISTR).or.&
-             (ds_thm%ds_material%biot%type .eq.  BIOT_TYPE_ORTH)) then
+    else if ((ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ISTR) .or. &
+             (ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ORTH)) then
         do i = 1, 3
-            varbio = varbio + tbiot(i)*deps(i)
+            varbio = varbio+tbiot(i)*deps(i)
         end do
         do i = 4, 6
-            varbio = varbio + tbiot(i)*deps(i)/rac2
+            varbio = varbio+tbiot(i)*deps(i)/rac2
         end do
-        varbio = varbio - 3.d0*alphfi*dtemp + cs0*(dpi)
+        varbio = varbio-3.d0*alphfi*dtemp+cs0*(dpi)
         if (varbio .gt. epxmax) then
             retcom = 2
             goto 99
-        endif
-        vintp(advico+vicphi) = varbio + vintm(advico+vicphi)
-        phi  = vintp(advico+vicphi) + phi0
-        phim = vintm(advico+vicphi) + phi0
+        end if
+        vintp(advico+vicphi) = varbio+vintm(advico+vicphi)
+        phi = vintp(advico+vicphi)+phi0
+        phim = vintm(advico+vicphi)+phi0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 99  continue
 !

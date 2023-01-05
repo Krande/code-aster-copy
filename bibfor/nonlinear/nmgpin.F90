@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,14 +36,14 @@ subroutine nmgpin(ndim, nno, axi, vu)
 !
     do n = 1, nno
         do i = 1, ndim
-            vu(i,n) = i + ndim*(n-1)
+            vu(i, n) = i+ndim*(n-1)
         end do
     end do
 !
     if (axi) then
         do n = 1, nno
-            vu(3,n) = vu(1,n)
+            vu(3, n) = vu(1, n)
         end do
-    endif
+    end if
 !
 end subroutine

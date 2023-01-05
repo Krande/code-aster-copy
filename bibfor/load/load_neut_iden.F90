@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine load_neut_iden(nb_type_neumz, load_name, list_load_keyw, nb_load_exist_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -50,7 +50,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 11)
+    parameter(nb_type_neum=11)
 !
     character(len=24) :: load_keyw, obje_name
     character(len=19) :: cart_name(2)
@@ -60,36 +60,36 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nb_type_neumz.eq.nb_type_neum)
+    ASSERT(nb_type_neumz .eq. nb_type_neum)
     list_load_keyw(1:nb_type_neumz) = .false.
     nb_load_exist = 0
 !
     do i_type_neum = 1, nb_type_neum
-        call load_neut_data(i_type_neum, nb_type_neum,&
-                            load_obje_ = load_obje, load_keyw_ = load_keyw, nb_obje_ = nb_obje)
-        ASSERT(nb_obje.le.2)
-        ASSERT(nb_obje.ge.1)
-        l_load_exist = nb_obje.gt.0
+        call load_neut_data(i_type_neum, nb_type_neum, &
+                            load_obje_=load_obje, load_keyw_=load_keyw, nb_obje_=nb_obje)
+        ASSERT(nb_obje .le. 2)
+        ASSERT(nb_obje .ge. 1)
+        l_load_exist = nb_obje .gt. 0
         do i_obje = 1, nb_obje
-            if (load_keyw.eq.'EVOL_CHAR') then
-                ASSERT(nb_obje.eq.1)
+            if (load_keyw .eq. 'EVOL_CHAR') then
+                ASSERT(nb_obje .eq. 1)
                 obje_name = load_name(1:8)//'.CHTH'//load_obje(i_obje)
                 call jeexin(obje_name, iret)
-                l_load_exist = l_load_exist.and.(iret.ne.0)
+                l_load_exist = l_load_exist .and. (iret .ne. 0)
             else
                 cart_name = load_name(1:8)//'.CHTH'//load_obje(i_obje)
                 call exisd('CHAMP_GD', cart_name(i_obje), iret)
-                l_load_exist = l_load_exist.and.(iret.eq.1)
-            endif
+                l_load_exist = l_load_exist .and. (iret .eq. 1)
+            end if
         end do
         if (l_load_exist) then
-            nb_load_exist = nb_load_exist + 1
+            nb_load_exist = nb_load_exist+1
             list_load_keyw(i_type_neum) = .true.
-        endif
+        end if
     end do
 !
     if (present(nb_load_exist_)) then
         nb_load_exist_ = nb_load_exist
-    endif
+    end if
 !
 end subroutine

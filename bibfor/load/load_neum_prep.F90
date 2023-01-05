@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_prep(model    , cara_elem , mate      , mateco, load_type     , inst_prev,&
-                          inst_curr, inst_theta, nb_in_maxi, nb_in_prep    , lchin    ,&
-                          lpain    , varc_curr , disp_prev , disp_cumu_inst, compor   ,&
-                          nharm    , strx_prev_, vite_curr_, acce_curr_)
+subroutine load_neum_prep(model, cara_elem, mate, mateco, load_type, inst_prev, &
+                          inst_curr, inst_theta, nb_in_maxi, nb_in_prep, lchin, &
+                          lpain, varc_curr, disp_prev, disp_cumu_inst, compor, &
+                          nharm, strx_prev_, vite_curr_, acce_curr_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
@@ -97,11 +97,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     ligrel_model = model(1:8)//'.MODELE'
-    chtime       = '&&VECHME.CHTIME'
-    chharm       = '&&VECHME.CHHARM'
+    chtime = '&&VECHME.CHTIME'
+    chharm = '&&VECHME.CHHARM'
     call exixfe(model, ier)
-    l_xfem = ier.ne.0
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
+    l_xfem = ier .ne. 0
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 ! - Geometry field
 !
@@ -113,13 +113,13 @@ implicit none
 !
 ! - Times field
 !
-    if (load_type.ne.'Dead') then
+    if (load_type .ne. 'Dead') then
         nomcmp(1) = 'INST'
         chinst_curr = '&&VECHME.CH_INST_R'
-        call mecact('V', chinst_curr, 'LIGREL', ligrel_model, 'INST_R  ',&
+        call mecact('V', chinst_curr, 'LIGREL', ligrel_model, 'INST_R  ', &
                     ncmp=1, nomcmp=nomcmp(1), sr=inst_curr)
         chinst_prev = '&&VECHME.CH_INST_M'
-        call mecact('V', chinst_prev, 'LIGREL', ligrel_model, 'INST_R  ',&
+        call mecact('V', chinst_prev, 'LIGREL', ligrel_model, 'INST_R  ', &
                     ncmp=1, nomcmp=nomcmp(1), sr=inst_prev)
         nomcmp(1) = 'INST'
         nomcmp(2) = 'DELTAT'
@@ -127,7 +127,7 @@ implicit none
         time(1) = inst_curr
         time(2) = inst_curr-inst_prev
         time(3) = inst_theta
-        call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ',&
+        call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ', &
                     ncmp=3, lnomcmp=nomcmp, vr=time)
     else
         nomcmp(1) = 'INST'
@@ -136,122 +136,122 @@ implicit none
         time(1) = inst_prev
         time(2) = inst_curr-inst_prev
         time(3) = inst_theta
-        call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ',&
+        call mecact('V', chtime, 'LIGREL', ligrel_model, 'INST_R  ', &
                     ncmp=3, lnomcmp=nomcmp, vr=time)
-    endif
+    end if
 !
 ! - Fourier field
 !
     if (present(nharm)) then
         call meharm(model, nharm, chharm)
-    endif
+    end if
 !
 ! - Input fields
 !
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = chgeom(1:19)
-    lpain(2)  = 'PTEMPSR'
-    lchin(2)  = chtime(1:19)
-    lpain(3)  = 'PMATERC'
-    lchin(3)  = mateco(1:19)
-    lpain(4)  = 'PCACOQU'
-    lchin(4)  = chcara(7)(1:19)
-    lpain(5)  = 'PCAGNPO'
-    lchin(5)  = chcara(6)(1:19)
-    lpain(6)  = 'PCADISM'
-    lchin(6)  = chcara(3)(1:19)
-    lpain(7)  = 'PCAORIE'
-    lchin(7)  = chcara(1)(1:19)
-    lpain(8)  = 'PCACABL'
-    lchin(8)  = chcara(10)(1:19)
-    lpain(9)  = 'PCAARPO'
-    lchin(9)  = chcara(9)(1:19)
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom(1:19)
+    lpain(2) = 'PTEMPSR'
+    lchin(2) = chtime(1:19)
+    lpain(3) = 'PMATERC'
+    lchin(3) = mateco(1:19)
+    lpain(4) = 'PCACOQU'
+    lchin(4) = chcara(7) (1:19)
+    lpain(5) = 'PCAGNPO'
+    lchin(5) = chcara(6) (1:19)
+    lpain(6) = 'PCADISM'
+    lchin(6) = chcara(3) (1:19)
+    lpain(7) = 'PCAORIE'
+    lchin(7) = chcara(1) (1:19)
+    lpain(8) = 'PCACABL'
+    lchin(8) = chcara(10) (1:19)
+    lpain(9) = 'PCAARPO'
+    lchin(9) = chcara(9) (1:19)
     lpain(10) = 'PCAGNBA'
-    lchin(10) = chcara(11)(1:19)
+    lchin(10) = chcara(11) (1:19)
     lpain(11) = 'PCAMASS'
-    lchin(11) = chcara(12)(1:19)
+    lchin(11) = chcara(12) (1:19)
     lpain(12) = 'PCAGEPO'
-    lchin(12) = chcara(5)(1:19)
+    lchin(12) = chcara(5) (1:19)
     lpain(13) = 'PNBSP_I'
-    lchin(13) = chcara(16)(1:19)
+    lchin(13) = chcara(16) (1:19)
     lpain(14) = 'PFIBRES'
-    lchin(14) = chcara(17)(1:19)
+    lchin(14) = chcara(17) (1:19)
     lpain(15) = 'PCINFDI'
-    lchin(15) = chcara(15)(1:19)
+    lchin(15) = chcara(15) (1:19)
     nb_in_prep = 15
     if (present(nharm)) then
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PHARMON'
         lchin(nb_in_prep) = chharm(1:19)
-    endif
+    end if
     if (present(varc_curr)) then
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PVARCPR'
         lchin(nb_in_prep) = varc_curr(1:19)
-    endif
+    end if
 !
 ! - Specific
 !
-    if (load_type.eq.'Dead'.or.load_type.eq.'Pilo') then
-        nb_in_prep = nb_in_prep + 1
+    if (load_type .eq. 'Dead' .or. load_type .eq. 'Pilo') then
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PCOMPOR'
         lchin(nb_in_prep) = mate(1:8)//'.COMPOR'
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PABSCUR'
         lchin(nb_in_prep) = mesh(1:8)//'.ABSC_CURV'
-    endif
-    if (load_type.eq.'Pilo') then
-        nb_in_prep = nb_in_prep + 1
+    end if
+    if (load_type .eq. 'Pilo') then
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PDEPLMR'
         lchin(nb_in_prep) = disp_prev(1:19)
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PDEPLPR'
         lchin(nb_in_prep) = disp_cumu_inst(1:19)
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PINSTMR'
         lchin(nb_in_prep) = chinst_prev(1:19)
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PINSTPR'
         lchin(nb_in_prep) = chinst_curr(1:19)
-    endif
-    if (load_type.eq.'Suiv') then
-        nb_in_prep = nb_in_prep + 1
+    end if
+    if (load_type .eq. 'Suiv') then
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PDEPLMR'
         lchin(nb_in_prep) = disp_prev(1:19)
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PDEPLPR'
         lchin(nb_in_prep) = disp_cumu_inst(1:19)
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PINSTMR'
         lchin(nb_in_prep) = chinst_prev(1:19)
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PINSTPR'
         lchin(nb_in_prep) = chinst_curr(1:19)
-        nb_in_prep = nb_in_prep + 1
+        nb_in_prep = nb_in_prep+1
         lpain(nb_in_prep) = 'PCOMPOR'
         lchin(nb_in_prep) = compor(1:19)
-        if ( present(vite_curr_) ) then
-            nb_in_prep = nb_in_prep + 1
+        if (present(vite_curr_)) then
+            nb_in_prep = nb_in_prep+1
             lpain(nb_in_prep) = 'PVITPLU'
             lchin(nb_in_prep) = vite_curr_(1:19)
-        endif
-        if ( present(acce_curr_) ) then
-            nb_in_prep = nb_in_prep + 1
+        end if
+        if (present(acce_curr_)) then
+            nb_in_prep = nb_in_prep+1
             lpain(nb_in_prep) = 'PACCPLU'
             lchin(nb_in_prep) = acce_curr_(1:19)
-        endif
-        if ( present(strx_prev_) ) then
-            nb_in_prep = nb_in_prep + 1
+        end if
+        if (present(strx_prev_)) then
+            nb_in_prep = nb_in_prep+1
             lpain(nb_in_prep) = 'PSTRXMR'
             lchin(nb_in_prep) = strx_prev_(1:19)
-        endif
-    endif
+        end if
+    end if
 !
 ! - XFEM fields
 !
     if (l_xfem) then
-        call xajcin(model, 'CHAR_MECA_NEUM', nb_in_maxi, lchin, lpain,&
+        call xajcin(model, 'CHAR_MECA_NEUM', nb_in_maxi, lchin, lpain, &
                     nb_in_prep)
-    endif
+    end if
 !
 end subroutine

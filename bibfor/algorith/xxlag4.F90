@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xxlag4(ffc, idepl, idepm, lact, ndim,&
+subroutine xxlag4(ffc, idepl, idepm, lact, ndim, &
                   nnol, pla, lamb, nvec, champ)
     implicit none
 #include "jeveux.h"
@@ -46,25 +46,25 @@ subroutine xxlag4(ffc, idepl, idepm, lact, ndim,&
 ! --- (DEPDEL+DEPMOI)
     if (champ .eq. 'LAMBDA') then
         indcha = 0
-    else if (champ.eq.'W') then
+    else if (champ .eq. 'W') then
         indcha = 1
-    else if (champ.eq.'MU') then
+    else if (champ .eq. 'MU') then
         indcha = 2
     else
         ASSERT(.false.)
-    endif
+    end if
     lamb(:) = 0.d0
     do i = 1, nnol
-        pli=pla(i)
-        ffi=ffc(i)
-        nli=lact(i)
+        pli = pla(i)
+        ffi = ffc(i)
+        nli = lact(i)
         if (nli .eq. 0) goto 1
         do j = 1, ndim
-            lamb(j) = lamb(j) + ffi * zr(idepl-1+indcha*ndim+pli-1+j)
+            lamb(j) = lamb(j)+ffi*zr(idepl-1+indcha*ndim+pli-1+j)
             if (nvec .eq. 2) then
-                lamb(j) = lamb(j) + ffi * zr(idepm-1+indcha*ndim+pli-1+j)
-            endif
+                lamb(j) = lamb(j)+ffi*zr(idepm-1+indcha*ndim+pli-1+j)
+            end if
         end do
-  1     continue
+1       continue
     end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,34 +60,34 @@ subroutine pmfbkb(cars, b, wi, gxjx, sk)
     real(kind=8) :: sk(78), cars(6), gxjx, b(4), wi
     real(kind=8) :: ks11, ks12, ks13, ks22, ks33, ks23
     real(kind=8) :: b1b1, b1b2, b1b3, b1b4, b2b2, b2b3, b2b4, b3b3, b3b4, b4b4
-    data ip/0,1,3,6,10,15,21,28,36,45,55,66/
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/
 !
 ! SK MIS A ZERO AU DEBUT DE TE0535
 ! LES 20 TERMES DE COUPLAGE TORSION-QUELQUECHOSE SONT NULS
 ! ET DOIVENT ETRE INITIALISES UNE FOIS
 ! ET PUIS CA ARRANGE LE SEGMENTATION VIOLATION ...
 !
-    b1b1=b(1)*b(1)
-    b1b2=b(1)*b(2)
-    b1b3=b(1)*b(3)
-    b1b4=b(1)*b(4)
-    b2b2=b(2)*b(2)
-    b2b3=b(2)*b(3)
-    b2b4=b(2)*b(4)
-    b3b3=b(3)*b(3)
-    b3b4=b(3)*b(4)
-    b4b4=b(4)*b(4)
+    b1b1 = b(1)*b(1)
+    b1b2 = b(1)*b(2)
+    b1b3 = b(1)*b(3)
+    b1b4 = b(1)*b(4)
+    b2b2 = b(2)*b(2)
+    b2b3 = b(2)*b(3)
+    b2b4 = b(2)*b(4)
+    b3b3 = b(3)*b(3)
+    b3b4 = b(3)*b(4)
+    b4b4 = b(4)*b(4)
 !
 ! --- POUR ETRE PLUS PARLANT
 ! --- ATTENTION : SIGNE MOINS POUR KS13 ET KS23
 ! --- MULTIPLICATION PAR LE POIDS
 
-    ks11=cars(1)*wi
-    ks13=-cars(2)*wi
-    ks12=cars(3)*wi
-    ks33=cars(4)*wi
-    ks22=cars(5)*wi
-    ks23=-cars(6)*wi
+    ks11 = cars(1)*wi
+    ks13 = -cars(2)*wi
+    ks12 = cars(3)*wi
+    ks33 = cars(4)*wi
+    ks22 = cars(5)*wi
+    ks23 = -cars(6)*wi
 !
 !     1/ TRACTION - COMPRESSION
     sk(1) = ks11*b1b1
@@ -125,46 +125,46 @@ subroutine pmfbkb(cars, b, wi, gxjx, sk)
     sk(ip(10)+10) = sk(ip(4)+4)
 !
 !     5/ COUPLAGE AXIAL-FLEXIONS
-    sk(ip(6)+1)=-ks13*b1b3
-    sk(ip(12)+1)=-ks13*b1b4
-    sk(ip(12)+7)=-sk(ip(12)+1)
-    sk(ip(7)+6)=-sk(ip(6)+1)
-    sk(ip(5)+1)=-ks12*b1b3
-    sk(ip(11)+1)=-ks12*b1b4
-    sk(ip(11)+7)=-sk(ip(11)+1)
-    sk(ip(7)+5)=-sk(ip(5)+1)
+    sk(ip(6)+1) = -ks13*b1b3
+    sk(ip(12)+1) = -ks13*b1b4
+    sk(ip(12)+7) = -sk(ip(12)+1)
+    sk(ip(7)+6) = -sk(ip(6)+1)
+    sk(ip(5)+1) = -ks12*b1b3
+    sk(ip(11)+1) = -ks12*b1b4
+    sk(ip(11)+7) = -sk(ip(11)+1)
+    sk(ip(7)+5) = -sk(ip(5)+1)
 !
 !     5BIS/ COUPLAGE TRANCHANT NORMAL
-    sk(ip(2)+1)=-ks13*b1b2
-    sk(ip(8)+1)=-sk(ip(2)+1)
-    sk(ip(7)+2)=-sk(ip(2)+1)
-    sk(ip(8)+7)=sk(ip(2)+1)
-    sk(ip(3)+1)=ks12*b1b2
-    sk(ip(9)+1)=-sk(ip(3)+1)
-    sk(ip(7)+3)=-sk(ip(3)+1)
-    sk(ip(9)+7)=sk(ip(3)+1)
+    sk(ip(2)+1) = -ks13*b1b2
+    sk(ip(8)+1) = -sk(ip(2)+1)
+    sk(ip(7)+2) = -sk(ip(2)+1)
+    sk(ip(8)+7) = sk(ip(2)+1)
+    sk(ip(3)+1) = ks12*b1b2
+    sk(ip(9)+1) = -sk(ip(3)+1)
+    sk(ip(7)+3) = -sk(ip(3)+1)
+    sk(ip(9)+7) = sk(ip(3)+1)
 !
 !
 !
 !     6/ COUPLAGE FLEXIONS XOZ - XOY
-    sk(ip(3)+2)=-ks23*b2b2
-    sk(ip(9)+2)=-sk(ip(3)+2)
-    sk(ip(8)+3)=-sk(ip(3)+2)
-    sk(ip(9)+8)=sk(ip(3)+2)
+    sk(ip(3)+2) = -ks23*b2b2
+    sk(ip(9)+2) = -sk(ip(3)+2)
+    sk(ip(8)+3) = -sk(ip(3)+2)
+    sk(ip(9)+8) = sk(ip(3)+2)
 !
-    sk(ip(5)+2)=ks23*b2b3
-    sk(ip(6)+3)=-sk(ip(5)+2)
-    sk(ip(11)+2)=ks23*b2b4
-    sk(ip(12)+3)=-sk(ip(11)+2)
-    sk(ip(8)+5)=-sk(ip(5)+2)
-    sk(ip(9)+6)=sk(ip(5)+2)
-    sk(ip(11)+8)=-sk(ip(11)+2)
-    sk(ip(12)+9)=sk(ip(11)+2)
+    sk(ip(5)+2) = ks23*b2b3
+    sk(ip(6)+3) = -sk(ip(5)+2)
+    sk(ip(11)+2) = ks23*b2b4
+    sk(ip(12)+3) = -sk(ip(11)+2)
+    sk(ip(8)+5) = -sk(ip(5)+2)
+    sk(ip(9)+6) = sk(ip(5)+2)
+    sk(ip(11)+8) = -sk(ip(11)+2)
+    sk(ip(12)+9) = sk(ip(11)+2)
 !
-    sk(ip(6)+5)=ks23*b3b3
-    sk(ip(12)+11)=ks23*b4b4
+    sk(ip(6)+5) = ks23*b3b3
+    sk(ip(12)+11) = ks23*b4b4
 !
-    sk(ip(12)+5)=ks23*b3b4
-    sk(ip(11)+6)=sk(ip(12)+5)
+    sk(ip(12)+5) = ks23*b3b4
+    sk(ip(11)+6) = sk(ip(12)+5)
 !
 end subroutine

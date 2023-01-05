@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utersa(ndim, iflup, iflum, ino, mno,&
-                  jno, ivois, ma, iel, nbnv,&
-                  nbsv, iavalp, iavalm, nsomm, jac,&
-                  ltheta, valthe, valunt, niv, ifm,&
-                  ityp, xn, yn, zn, term22,&
+subroutine utersa(ndim, iflup, iflum, ino, mno, &
+                  jno, ivois, ma, iel, nbnv, &
+                  nbsv, iavalp, iavalm, nsomm, jac, &
+                  ltheta, valthe, valunt, niv, ifm, &
+                  ityp, xn, yn, zn, term22, &
                   aux, jad, jadv, noe)
 ! person_in_charge: olivier.boiteau at edf.fr
 !-----------------------------------------------------------------------
@@ -91,30 +91,30 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
 ! NUMERO LOCALE (INOV) DANS LA MAILLE VOISINE DU PREMIER NOEUD (DE
 ! NUMERO GLOBALE NCHER) DE NUM LOCAL INO ET COMMUN AUX DEUX EFS.
         ncher = zi(jad-1+ino)
-        inov = indiis(zi(jadv),ncher,1,nbnv)
-        if (niv .eq. 2) write(ifm,*)'INOV LOCAL/GLOBAL',inov,ncher
+        inov = indiis(zi(jadv), ncher, 1, nbnv)
+        if (niv .eq. 2) write (ifm, *) 'INOV LOCAL/GLOBAL', inov, ncher
 ! NUMERO LOCALE (JNOV)  DU NOEUD VOISIN DE JNO
         ncher = zi(jad-1+jno)
-        jnov = indiis(zi(jadv),ncher,1,nbnv)
-        if (niv .eq. 2) write(ifm,*)'JNOV LOCAL/GLOBAL',jnov,ncher
+        jnov = indiis(zi(jadv), ncher, 1, nbnv)
+        if (niv .eq. 2) write (ifm, *) 'JNOV LOCAL/GLOBAL', jnov, ncher
 !
 ! POINT DE DEPART: INO
         ij = iflup+(ino-1)*ndim
         i1 = iavalp+ndim*((iel-1)*nbnv+inov-1)
         aux2 = -valthe*(zr(ij)*xn(1)+zr(ij+1)*yn(1))
         aux1 = valthe*(zr(i1)*xn(1)+zr(i1+1)*yn(1))
-        term23 = aux1 + aux2
-        if (niv .eq. 2) write(ifm,*)' ZR INO P',aux1,aux2
+        term23 = aux1+aux2
+        if (niv .eq. 2) write (ifm, *) ' ZR INO P', aux1, aux2
         if (ltheta) then
             ij = ij+iflum-iflup
             i1 = i1+iavalm-iavalp
             aux4 = -valunt*(zr(ij)*xn(1)+zr(ij+1)*yn(1))
             aux3 = valunt*(zr(i1)*xn(1)+zr(i1+1)*yn(1))
-            aux1 = aux1 + aux3
-            aux2 = aux2 + aux4
-            term23 = term23 + aux3 + aux4
-            if (niv .eq. 2) write(ifm,*)' ZR INO M',aux3,aux4
-        endif
+            aux1 = aux1+aux3
+            aux2 = aux2+aux4
+            term23 = term23+aux3+aux4
+            if (niv .eq. 2) write (ifm, *) ' ZR INO M', aux3, aux4
+        end if
         term22 = jac(1)*term23*term23
         aux1 = (aux1-aux2)*0.5d0
         aux = jac(1)*aux1*aux1
@@ -124,98 +124,98 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
         i1 = iavalp+ndim*((iel-1)*nbnv+jnov-1)
         aux2 = -valthe*(zr(ij)*xn(2)+zr(ij+1)*yn(2))
         aux1 = valthe*(zr(i1)*xn(2)+zr(i1+1)*yn(2))
-        term23 = aux1 + aux2
-        if (niv .eq. 2) write(ifm,*)' ZR JNO P',aux1,aux2
+        term23 = aux1+aux2
+        if (niv .eq. 2) write (ifm, *) ' ZR JNO P', aux1, aux2
         if (ltheta) then
             ij = ij+iflum-iflup
             i1 = i1+iavalm-iavalp
             aux4 = -valunt*(zr(ij)*xn(2)+zr(ij+1)*yn(2))
             aux3 = valunt*(zr(i1)*xn(2)+zr(i1+1)*yn(2))
-            aux1 = aux1 + aux3
-            aux2 = aux2 + aux4
-            term23 = term23 + aux3 + aux4
-            if (niv .eq. 2) write(ifm,*)' ZR JNO M',aux3,aux4
-        endif
-        term22 = term22 + jac(2)*term23*term23
+            aux1 = aux1+aux3
+            aux2 = aux2+aux4
+            term23 = term23+aux3+aux4
+            if (niv .eq. 2) write (ifm, *) ' ZR JNO M', aux3, aux4
+        end if
+        term22 = term22+jac(2)*term23*term23
         aux1 = (aux1-aux2)*0.5d0
-        aux = aux + jac(2)*aux1*aux1
+        aux = aux+jac(2)*aux1*aux1
 !
 ! POINT MILIEU SI NECESSAIRE: MNO
         if (nsomm .eq. 3) then
 ! TESTS POUR CALCULER MNOV AFIN DE TRAITER LES MAILLES VOISINES
 ! COMPORTANT DES ORIENTATIONS LOCALES IDENTIQUES (MAILLAGE SYMETRISE)
-            if ((inov.eq.nbsv) .and. (jnov.eq.1)) then
+            if ((inov .eq. nbsv) .and. (jnov .eq. 1)) then
                 inov0 = 0
             else
                 inov0 = inov
-            endif
-            if ((jnov.eq.nbsv) .and. (inov.eq.1)) then
+            end if
+            if ((jnov .eq. nbsv) .and. (inov .eq. 1)) then
                 jnov0 = 0
             else
                 jnov0 = jnov
-            endif
+            end if
             if (inov0 .lt. jnov0) then
-                mnov = inov + nbsv
+                mnov = inov+nbsv
             else
-                mnov = jnov + nbsv
-            endif
+                mnov = jnov+nbsv
+            end if
             ij = iflup+(mno-1)*ndim
             i1 = iavalp+ndim*((iel-1)*nbnv+mnov-1)
             aux2 = -valthe*(zr(ij)*xn(3)+zr(ij+1)*yn(3))
             aux1 = valthe*(zr(i1)*xn(3)+zr(i1+1)*yn(3))
-            term23 = aux1 + aux2
+            term23 = aux1+aux2
             if (niv .eq. 2) then
-                write(ifm,*)' INOV0/JN0V0/MNOV ',inov0,jnov0,mnov
-                write(ifm,*)' ZR MNO P',aux1,aux2
-            endif
+                write (ifm, *) ' INOV0/JN0V0/MNOV ', inov0, jnov0, mnov
+                write (ifm, *) ' ZR MNO P', aux1, aux2
+            end if
             if (ltheta) then
                 ij = ij+iflum-iflup
                 i1 = i1+iavalm-iavalp
                 aux4 = -valunt*(zr(ij)*xn(3)+zr(ij+1)*yn(3))
                 aux3 = valunt*(zr(i1)*xn(3)+zr(i1+1)*yn(3))
-                aux1 = aux1 + aux3
-                aux2 = aux2 + aux4
-                term23 = term23 + aux3 + aux4
-                if (niv .eq. 2) write(ifm,*)' ZR MNO M',aux3,aux4
-            endif
-            term22 = term22 + jac(3)*term23*term23
+                aux1 = aux1+aux3
+                aux2 = aux2+aux4
+                term23 = term23+aux3+aux4
+                if (niv .eq. 2) write (ifm, *) ' ZR MNO M', aux3, aux4
+            end if
+            term22 = term22+jac(3)*term23*term23
             aux1 = (aux1-aux2)*0.5d0
-            aux = aux + jac(3)*aux1*aux1
-        endif
+            aux = aux+jac(3)*aux1*aux1
+        end if
     else
 !
 ! CAS 3D
         do in = 1, nsomm
 !
 ! NOEUD COURANT
-            iino = noe(in,ino,ityp)
+            iino = noe(in, ino, ityp)
             ncher = zi(jad-1+iino)
-            if (niv .eq. 2) write(ifm, *)'NOEUD COURANT LOCAL/GLOBAL', iino, ncher
+            if (niv .eq. 2) write (ifm, *) 'NOEUD COURANT LOCAL/GLOBAL', iino, ncher
 ! NOEUD VOISIN CORRESPONDANT
-            iinov = indiis(zi(jadv),ncher,1,nbnv)
-            if (niv .eq. 2) write(ifm,*)'SON VOISIN LOCAL',iinov
+            iinov = indiis(zi(jadv), ncher, 1, nbnv)
+            if (niv .eq. 2) write (ifm, *) 'SON VOISIN LOCAL', iinov
 !
             ij = iflup+(iino-1)*ndim
             i1 = iavalp+ndim*((iel-1)*nbnv+iinov-1)
-            aux2 = -valthe*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+zr(ij+2)* zn(in))
-            aux1 = valthe*(zr(i1)*xn(in)+zr(i1+1)*yn(in)+zr(i1+2)* zn(in))
-            term23 = aux1 + aux2
-            if (niv .eq. 2) write(ifm,*)' ZR IINO P/IN ',aux1,aux2,in
+            aux2 = -valthe*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+zr(ij+2)*zn(in))
+            aux1 = valthe*(zr(i1)*xn(in)+zr(i1+1)*yn(in)+zr(i1+2)*zn(in))
+            term23 = aux1+aux2
+            if (niv .eq. 2) write (ifm, *) ' ZR IINO P/IN ', aux1, aux2, in
             if (ltheta) then
                 ij = ij+iflum-iflup
                 i1 = i1+iavalm-iavalp
-                aux4 = -valunt*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+zr(ij+2) * zn(in) )
-                aux3 = valunt*(zr(i1)*xn(in)+zr(i1+1)*yn(in)+zr(i1+2)* zn(in))
-                aux1 = aux1 + aux3
-                aux2 = aux2 + aux4
-                term23 = term23 + aux3 + aux4
-                if (niv .eq. 2) write(ifm,*)' ZR IINO M    ',aux3,aux4
-            endif
-            term22 = term22 + term23*term23*jac(in)
+                aux4 = -valunt*(zr(ij)*xn(in)+zr(ij+1)*yn(in)+zr(ij+2)*zn(in))
+                aux3 = valunt*(zr(i1)*xn(in)+zr(i1+1)*yn(in)+zr(i1+2)*zn(in))
+                aux1 = aux1+aux3
+                aux2 = aux2+aux4
+                term23 = term23+aux3+aux4
+                if (niv .eq. 2) write (ifm, *) ' ZR IINO M    ', aux3, aux4
+            end if
+            term22 = term22+term23*term23*jac(in)
             aux1 = (aux1-aux2)*0.5d0
-            aux = aux + aux1*aux1*jac(in)
+            aux = aux+aux1*aux1*jac(in)
         end do
 !
-    endif
+    end if
 !
 end subroutine

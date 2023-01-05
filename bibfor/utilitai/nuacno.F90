@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine nuacno(nuagez, list_nodez, chnoz)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -75,34 +75,34 @@ implicit none
 !
     call jemarq()
 !
-    chno        = chnoz
-    list_node   = list_nodez
-    nuage       = nuagez
+    chno = chnoz
+    list_node = list_nodez
+    nuage = nuagez
 !
-    call jeveuo(chno//'.DESC', 'L', vi = p_desc)
+    call jeveuo(chno//'.DESC', 'L', vi=p_desc)
     idx_gd = p_desc(1)
-    num    = p_desc(2)
+    num = p_desc(2)
     call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
     call jenuno(jexnum('&CATA.GD.NOMGD', idx_gd), gran_name)
     nb_ec = nbec(idx_gd)
     call wkvect('&&NUACNO.NOMCMP', 'V V I', ncmpmx, kcomp)
     AS_ALLOCATE(vi=ent_cod, size=nb_ec)
 !
-    call jeveuo(chno//'.REFE', 'L', vk24 = p_refe)
-    mesh     = p_refe(1)(1:8)
-    profchno = p_refe(2)(1:19)
-    call nueq_chck(profchno, l_error= .true.)
+    call jeveuo(chno//'.REFE', 'L', vk24=p_refe)
+    mesh = p_refe(1) (1:8)
+    profchno = p_refe(2) (1:19)
+    call nueq_chck(profchno, l_error=.true.)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_point)
 !
     if (list_node .ne. ' ') then
         call jelira(list_node, 'LONUTI', nb_point)
-        call jeveuo(list_node, 'L', vi = p_list_node)
+        call jeveuo(list_node, 'L', vi=p_list_node)
     else
-        call wkvect('&&NUACNO.NOEUD', 'V V I', nb_point, vi = p_list_node)
+        call wkvect('&&NUACNO.NOEUD', 'V V I', nb_point, vi=p_list_node)
         do i_pt = 1, nb_point
             p_list_node(i_pt) = i_pt
         end do
-    endif
+    end if
 !
     call jelira(chno//'.VALE', 'TYPE', cval=type_scal)
     call jeveuo(chno//'.VALE', 'E', kvale)
@@ -112,7 +112,7 @@ implicit none
         itype = 2
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jeveuo(nuage//'.NUAV', 'L', jnuav)
     call jeveuo(nuage//'.NUAI', 'L', jnuai)
@@ -127,51 +127,51 @@ implicit none
         end do
         do j = 1, nb_point
             nume_pt = p_list_node(j)
-            ival = ncmp * ( nume_pt - 1 )
+            ival = ncmp*(nume_pt-1)
             icompt = 0
             do icmp = 1, ncmpmx
-                if (exisdg(ent_cod, icmp )) then
-                    icompt = icompt + 1
-                    k = nc*(j-1) + icompt
+                if (exisdg(ent_cod, icmp)) then
+                    icompt = icompt+1
+                    k = nc*(j-1)+icompt
                     if (itype .eq. 1) then
                         zr(kvale-1+ival+icmp) = zr(jnuav+k-1)
                     else
                         zc(kvale-1+ival+icmp) = zc(jnuav+k-1)
-                    endif
-                endif
+                    end if
+                end if
             end do
         end do
     else
 !
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
 !
-        call jeveuo(profchno//'.NUEQ', 'L',  vi=nueq)
+        call jeveuo(profchno//'.NUEQ', 'L', vi=nueq)
         call jenonu(jexnom(profchno//'.LILI', '&MAILLA'), i_ligr_mesh)
         call jeveuo(jexnum(profchno//'.PRNO', i_ligr_mesh), 'L', iaprno)
         do j = 1, nb_point
             nume_pt = p_list_node(j)
-            ival = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+1 )
-            ncmp = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2 )
+            ival = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+1)
+            ncmp = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+2)
             if (ncmp .eq. 0) goto 210
             do i_ec = 1, nb_ec
-                ent_cod(i_ec) = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2+i_ec )
+                ent_cod(i_ec) = zi(iaprno-1+(nume_pt-1)*(nb_ec+2)+2+i_ec)
             end do
             icompt = 0
             do icmp = 1, ncmpmx
-                if (exisdg(ent_cod, icmp )) then
-                    icompt = icompt + 1
+                if (exisdg(ent_cod, icmp)) then
+                    icompt = icompt+1
                     ieq = nueq(ival-1+icompt)
-                    k = nc*(j-1) + icompt
+                    k = nc*(j-1)+icompt
                     if (itype .eq. 1) then
                         zr(kvale-1+ieq) = zr(jnuav+k-1)
                     else
                         zc(kvale-1+ieq) = zc(jnuav+k-1)
-                    endif
-                endif
+                    end if
+                end if
             end do
 210         continue
         end do
-    endif
+    end if
 !
     call jedetr('&&NUACNO.NOMCMP')
     AS_DEALLOCATE(vi=ent_cod)

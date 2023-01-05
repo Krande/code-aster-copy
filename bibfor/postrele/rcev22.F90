@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
-                  ccont, lfatig, flexio, lrocht, cnoc,&
+subroutine rcev22(nbinti, kinti, iocc, csigm, cinst, &
+                  ccont, lfatig, flexio, lrocht, cnoc, &
                   cresu, cpres, lsymm)
     implicit none
 #include "asterf_types.h"
@@ -57,7 +57,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     integer :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo
     integer :: jsigm, jinst, ncmp, iret, jsioe, iocc, nbins0
     integer :: jnocc, jresu, nbcycl, jresp
-    parameter  ( ncmp = 6 )
+    parameter(ncmp=6)
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
     real(kind=8) :: momen0_axis(4), momen1_axis(4), momen2_axis(4), rho
     complex(kind=8) :: cbid
@@ -78,8 +78,8 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     motclf = 'TRANSITOIRE'
 !
     if (lsymm) then
-        call getvr8(' ', 'RAYON_MOYEN', scal = rho, nbret = n1)
-    endif
+        call getvr8(' ', 'RAYON_MOYEN', scal=rho, nbret=n1)
+    end if
 !
     nocmp(1) = 'SIXX'
     nocmp(2) = 'SIYY'
@@ -114,7 +114,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
         lrocht = .true.
         call wkvect(cpres, 'V V K8', 1, jresp)
         zk8(jresp-1+1) = tabpr0
-    endif
+    end if
 !
     call getvr8(motclf, 'INST', iocc=iocc, scal=r8b, nbret=n1)
     if (n1 .ne. 0) then
@@ -133,8 +133,8 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 table = '&&RCEV22.RESU_ME'
                 tabfle = '&&RCEV22.SIGM_TH'
                 tabpre = '&&RCEV22.RESU_PR'
-                call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
-                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                call tbextb(tabl0, 'V', table, 1, 'INTITULE', &
+                            'EQ', [ibid], [r8b], [cbid], kinti, &
                             [r8b], k8b, iret)
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
@@ -144,10 +144,10 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                     valk(1) = tabl0
                     valk(2) = 'INTITULE'
                     call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-                endif
+                end if
                 if (flexio) then
-                    call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
-                                'EQ', [ibid], [r8b], [cbid], kinti,&
+                    call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE', &
+                                'EQ', [ibid], [r8b], [cbid], kinti, &
                                 [r8b], k8b, iret)
                     if (iret .eq. 10) then
                         valk(1) = 'INTITULE'
@@ -157,11 +157,11 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                         valk(1) = tabfl0
                         valk(2) = 'INTITULE'
                         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-                    endif
-                endif
+                    end if
+                end if
                 if (lrocht) then
-                    call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
-                                'EQ', [ibid], [r8b], [cbid], kinti,&
+                    call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE', &
+                                'EQ', [ibid], [r8b], [cbid], kinti, &
                                 [r8b], k8b, iret)
                     if (iret .eq. 10) then
                         valk(1) = 'INTITULE'
@@ -171,23 +171,23 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                         valk(1) = tabpr0
                         valk(2) = 'INTITULE'
                         call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
             call tbexip(table, valek(1), exist, k8b)
             if (.not. exist) then
-                valk (1) = table
-                valk (2) = 'INTITULE'
-                valk (3) = kinti
-                valk (4) = valek(1)
+                valk(1) = table
+                valk(2) = 'INTITULE'
+                valk(3) = kinti
+                valk(4) = valek(1)
                 call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-            endif
-            call tbexv1(table, valek(1), instan, 'V', nbins0,&
+            end if
+            call tbexv1(table, valek(1), instan, 'V', nbins0, &
                         k8b)
             call jedetr(instan)
-        endif
-    endif
-    nbinst = nbinst + nbins0
+        end if
+    end if
+    nbinst = nbinst+nbins0
 !
 ! --- PRESENCE DES COMPOSANTES DANS LA TABLE
 !
@@ -201,8 +201,8 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             table = '&&RCEV22.RESU_ME'
             tabfle = '&&RCEV22.SIGM_TH'
             tabpre = '&&RCEV22.RESU_PR'
-            call tbextb(tabl0, 'V', table, 1, 'INTITULE',&
-                        'EQ', [ibid], [r8b], [cbid], kinti,&
+            call tbextb(tabl0, 'V', table, 1, 'INTITULE', &
+                        'EQ', [ibid], [r8b], [cbid], kinti, &
                         [r8b], k8b, iret)
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
@@ -212,10 +212,10 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 valk(1) = tabl0
                 valk(2) = 'INTITULE'
                 call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-            endif
+            end if
             if (flexio) then
-                call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
-                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE', &
+                            'EQ', [ibid], [r8b], [cbid], kinti, &
                             [r8b], k8b, iret)
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
@@ -225,11 +225,11 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                     valk(1) = tabfl0
                     valk(2) = 'INTITULE'
                     call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-                endif
-            endif
+                end if
+            end if
             if (lrocht) then
-                call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE',&
-                            'EQ', [ibid], [r8b], [cbid], kinti,&
+                call tbextb(tabpr0, 'V', tabpre, 1, 'INTITULE', &
+                            'EQ', [ibid], [r8b], [cbid], kinti, &
                             [r8b], k8b, iret)
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
@@ -239,41 +239,41 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                     valk(1) = tabpr0
                     valk(2) = 'INTITULE'
                     call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 !
     ncmpr = 6
     do i = 1, 4
         call tbexip(table, nocmp(i), exist, k8b)
         if (.not. exist) then
-            valk (1) = table
-            valk (2) = 'INTITULE'
-            valk (3) = kinti
-            valk (4) = nocmp(i)
+            valk(1) = table
+            valk(2) = 'INTITULE'
+            valk(3) = kinti
+            valk(4) = nocmp(i)
             call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-        endif
+        end if
         if (flexio) then
             call tbexip(tabfle, nocmp(i), exist, k8b)
             if (.not. exist) then
-                valk (1) = tabfle
-                valk (2) = 'INTITULE'
-                valk (3) = kinti
-                valk (4) = nocmp(i)
+                valk(1) = tabfle
+                valk(2) = 'INTITULE'
+                valk(3) = kinti
+                valk(4) = nocmp(i)
                 call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-            endif
-        endif
+            end if
+        end if
         if (lrocht) then
             call tbexip(tabpre, nocmp(i), exist, k8b)
             if (.not. exist) then
-                valk (1) = tabpre
-                valk (2) = 'INTITULE'
-                valk (3) = kinti
-                valk (4) = nocmp(i)
+                valk(1) = tabpre
+                valk(2) = 'INTITULE'
+                valk(3) = kinti
+                valk(4) = nocmp(i)
                 call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-            endif
-        endif
+            end if
+        end if
     end do
     call tbexip(table, nocmp(5), exist, k8b)
     if (.not. exist) ncmpr = 4
@@ -282,17 +282,17 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
     call tbexip(table, valek(2), exist, k8b)
     if (.not. exist) then
-        valk (1) = table
-        valk (2) = 'INTITULE'
-        valk (3) = kinti
-        valk (4) = valek(2)
+        valk(1) = table
+        valk(2) = 'INTITULE'
+        valk(3) = kinti
+        valk(4) = valek(2)
         call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-    endif
-    call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
+    end if
+    call tbexv1(table, valek(2), abscur, 'V', nbabsc, &
                 k8b)
-    call tbexv1(table, 'COOR_X          ', coord_x, 'V', nbxcoo,&
+    call tbexv1(table, 'COOR_X          ', coord_x, 'V', nbxcoo, &
                 k8b)
-    call tbexv1(table, 'COOR_Y          ', coord_y, 'V', nbycoo,&
+    call tbexv1(table, 'COOR_Y          ', coord_y, 'V', nbycoo, &
                 k8b)
 !
     call jeveuo(abscur, 'L', jabsc)
@@ -303,15 +303,15 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
         do i = 1, nbabsc
             zr(jxcoo-1+i) = zr(jxcoo)
         end do
-    endif 
+    end if
     if (nbycoo .eq. 1) then
         do i = 1, nbabsc
             zr(jycoo-1+i) = zr(jycoo)
         end do
-    endif
-    allocate(contraintes(ncmpr, nbabsc))
-    allocate(cont_flexio(ncmpr, nbabsc))
-    allocate(cont_pressi(ncmpr, nbabsc))
+    end if
+    allocate (contraintes(ncmpr, nbabsc))
+    allocate (cont_flexio(ncmpr, nbabsc))
+    allocate (cont_pressi(ncmpr, nbabsc))
 !    AS_ALLOCATE(vr=contraintes, size=nbabsc)
 !    AS_ALLOCATE(vr=cont_flexio, size=nbabsc)
 !    AS_ALLOCATE(vr=cont_pressi, size=nbabsc)
@@ -319,18 +319,18 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
     if (lsymm) then
-        ndim = 9 * nbinst * ncmp
+        ndim = 9*nbinst*ncmp
     else
-        ndim = 6 * nbinst * ncmp
-    endif
+        ndim = 6*nbinst*ncmp
+    end if
     call wkvect(csigm, 'V V R', ndim, jsigm)
     call wkvect(cinst, 'V V R', nbinst, jinst)
     call wkvect(cnoc, 'V V I', nbinst, jnocc)
     call wkvect(cresu, 'V V K8', nbinst, jresu)
     if (lfatig) then
-        ndim = 2 * nbinst * ncmp
+        ndim = 2*nbinst*ncmp
         call wkvect(ccont, 'V V R', ndim, jsioe)
-    endif
+    end if
 !
 ! --- RECUPERATION DES INFORMATIONS
 !
@@ -342,7 +342,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     if (n1 .ne. 0) then
         nbins0 = -n1
         call wkvect(instan, 'V V R', nbins0, kinst)
-        call getvr8(motclf, 'INST', iocc=iocc, nbval=nbins0, vect=zr(kinst),&
+        call getvr8(motclf, 'INST', iocc=iocc, nbval=nbins0, vect=zr(kinst), &
                     nbret=n1)
         call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec(1), nbret=n1)
         call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit(1), nbret=n1)
@@ -358,23 +358,23 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             crit(1) = 'RELATIF'
             call tbexip(table, valek(1), exist, k8b)
             if (.not. exist) then
-                valk (1) = table
-                valk (2) = 'INTITULE'
-                valk (3) = kinti
-                valk (4) = valek(1)
+                valk(1) = table
+                valk(2) = 'INTITULE'
+                valk(3) = kinti
+                valk(4) = valek(1)
                 call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
-            endif
-            call tbexv1(table, valek(1), instan, 'V', nbins0,&
+            end if
+            call tbexv1(table, valek(1), instan, 'V', nbins0, &
                         k8b)
             call jeveuo(instan, 'L', kinst)
-        endif
-    endif
+        end if
+    end if
 !
 ! ---
     do i = 1, nbins0
 !
-        zr (jinst+i-1) = zr(kinst+i-1)
-        zi (jnocc-1+i) = nbcycl
+        zr(jinst+i-1) = zr(kinst+i-1)
+        zi(jnocc-1+i) = nbcycl
         zk8(jresu-1+i) = tabl0
 !
         vale(1) = zr(kinst+i-1)
@@ -384,65 +384,65 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             do k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
 !
-                call tbliva(table, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintes(j, k), cbid, k8b,&
+                call tbliva(table, 2, valek, [ibid], vale, &
+                            [cbid], k8b, crit, prec, nocmp(j), &
+                            k8b, ibid, contraintes(j, k), cbid, k8b, &
                             iret)
                 if (iret .ne. 0) then
-                    valk (1) = table
-                    valk (2) = nocmp(j)
-                    valk (3) = valek(1)
-                    valk (4) = valek(2)
-                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                    valk(1) = table
+                    valk(2) = nocmp(j)
+                    valk(3) = valek(1)
+                    valk(4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                 valr=vale)
-                endif
+                end if
 !
                 if (flexio) then
-                    call tbliva(tabfle, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, cont_flexio(j, k), cbid, k8b,&
+                    call tbliva(tabfle, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, cont_flexio(j, k), cbid, k8b, &
                                 iret)
                     if (iret .ne. 0) then
-                        valk (1) = tabfle
-                        valk (2) = nocmp(j)
-                        valk (3) = valek(1)
-                        valk (4) = valek(2)
-                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                        valk(1) = tabfle
+                        valk(2) = nocmp(j)
+                        valk(3) = valek(1)
+                        valk(4) = valek(2)
+                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                     valr=vale)
-                    endif
-                endif
+                    end if
+                end if
 !
                 if (lrocht) then
-                    call tbliva(tabpre, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, cont_pressi(j, k), cbid, k8b,&
+                    call tbliva(tabpre, 2, valek, [ibid], vale, &
+                                [cbid], k8b, crit, prec, nocmp(j), &
+                                k8b, ibid, cont_pressi(j, k), cbid, k8b, &
                                 iret)
                     if (iret .ne. 0) then
-                        valk (1) = tabpre
-                        valk (2) = nocmp(j)
-                        valk (3) = valek(1)
-                        valk (4) = valek(2)
-                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                        valk(1) = tabpre
+                        valk(2) = nocmp(j)
+                        valk(3) = valek(1)
+                        valk(4) = valek(2)
+                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2, &
                                     valr=vale)
-                    endif
-                endif
+                    end if
+                end if
 !
             end do
 !
             if (lfatig) then
-                l = ncmp*(i-1) + j
-                zr(jsioe-1+l) = contraintes(j,1)
-                l = ncmp*nbinst + ncmp*(i-1) + j
-                zr(jsioe-1+l) = contraintes(j,nbabsc)
-            endif
+                l = ncmp*(i-1)+j
+                zr(jsioe-1+l) = contraintes(j, 1)
+                l = ncmp*nbinst+ncmp*(i-1)+j
+                zr(jsioe-1+l) = contraintes(j, nbabsc)
+            end if
 !
             if (.not. lsymm) then
                 call rc32my(nbabsc, zr(jabsc), contraintes(j, :), momen0, momen1)
                 momen1 = 0.5d0*momen1
                 !
-                l = ncmp*(i-1) + j
+                l = ncmp*(i-1)+j
                 zr(jsigm-1+l) = momen0
-                l = ncmp*nbinst + ncmp*(i-1) + j
+                l = ncmp*nbinst+ncmp*(i-1)+j
                 zr(jsigm-1+l) = momen1
                 !
                 if (flexio) then
@@ -451,10 +451,10 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 else
                     momen0 = 0.d0
                     momen1 = 0.d0
-                endif
-                l = 2*ncmp*nbinst + ncmp*(i-1) + j
+                end if
+                l = 2*ncmp*nbinst+ncmp*(i-1)+j
                 zr(jsigm-1+l) = momen0
-                l = 3*ncmp*nbinst + ncmp*(i-1) + j
+                l = 3*ncmp*nbinst+ncmp*(i-1)+j
                 zr(jsigm-1+l) = momen1
                 !
                 if (lrocht) then
@@ -463,20 +463,20 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 else
                     momen0 = r8vide()
                     momen1 = r8vide()
-                endif
-                l = 4*ncmp*nbinst + ncmp*(i-1) + j
+                end if
+                l = 4*ncmp*nbinst+ncmp*(i-1)+j
                 zr(jsigm-1+l) = momen0
-                l = 5*ncmp*nbinst + ncmp*(i-1) + j
+                l = 5*ncmp*nbinst+ncmp*(i-1)+j
                 zr(jsigm-1+l) = momen1
-            endif
+            end if
 !
         end do
         if (lsymm) then
-            call rc32axis(nbabsc, zr(jabsc), zr(jxcoo), zr(jycoo), contraintes,&
+            call rc32axis(nbabsc, zr(jabsc), zr(jxcoo), zr(jycoo), contraintes, &
                           momen0_axis, momen1_axis, momen2_axis, rho)
             l1 = ncmp*(i-1)
-            l2 = ncmp*nbinst + ncmp*(i-1)
-            l3 = 2*ncmp*nbinst + ncmp*(i-1)
+            l2 = ncmp*nbinst+ncmp*(i-1)
+            l3 = 2*ncmp*nbinst+ncmp*(i-1)
             do j = 1, 4
                 zr(jsigm-1+l1+j) = momen0_axis(j)
                 zr(jsigm-1+l2+j) = momen1_axis(j)
@@ -484,16 +484,16 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             end do
 !
             if (flexio) then
-                call rc32axis(nbabsc, zr(jabsc), zr(jxcoo), zr(jycoo), cont_flexio,&
+                call rc32axis(nbabsc, zr(jabsc), zr(jxcoo), zr(jycoo), cont_flexio, &
                               momen0_axis, momen1_axis, momen2_axis, rho)
             else
                 momen0_axis = 0.d0
                 momen1_axis = 0.d0
                 momen2_axis = 0.d0
-            endif
-            l1 = 3*ncmp*nbinst + ncmp*(i-1)
-            l2 = 4*ncmp*nbinst + ncmp*(i-1)
-            l3 = 5*ncmp*nbinst + ncmp*(i-1)
+            end if
+            l1 = 3*ncmp*nbinst+ncmp*(i-1)
+            l2 = 4*ncmp*nbinst+ncmp*(i-1)
+            l3 = 5*ncmp*nbinst+ncmp*(i-1)
             do j = 1, 4
                 zr(jsigm-1+l1+j) = momen0_axis(j)
                 zr(jsigm-1+l2+j) = momen1_axis(j)
@@ -501,22 +501,22 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             end do
 !
             if (lrocht) then
-                call rc32axis(nbabsc, zr(jabsc), zr(jxcoo), zr(jycoo), cont_pressi,&
+                call rc32axis(nbabsc, zr(jabsc), zr(jxcoo), zr(jycoo), cont_pressi, &
                               momen0_axis, momen1_axis, momen2_axis, rho)
             else
                 momen0_axis = 0.d0
                 momen1_axis = 0.d0
                 momen2_axis = 0.d0
-            endif
-            l1 = 6*ncmp*nbinst + ncmp*(i-1)
-            l2 = 7*ncmp*nbinst + ncmp*(i-1)
-            l3 = 8*ncmp*nbinst + ncmp*(i-1)
+            end if
+            l1 = 6*ncmp*nbinst+ncmp*(i-1)
+            l2 = 7*ncmp*nbinst+ncmp*(i-1)
+            l3 = 8*ncmp*nbinst+ncmp*(i-1)
             do j = 1, 4
                 zr(jsigm-1+l1+j) = momen0_axis(j)
                 zr(jsigm-1+l2+j) = momen1_axis(j)
                 zr(jsigm-1+l3+j) = momen2_axis(j)
             end do
-        endif 
+        end if
 !
     end do
 !
@@ -524,9 +524,9 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     call jedetr(abscur)
     call jedetr(coord_x)
     call jedetr(coord_y)
-    deallocate(contraintes)
-    deallocate(cont_flexio)
-    deallocate(cont_pressi)
+    deallocate (contraintes)
+    deallocate (cont_flexio)
+    deallocate (cont_pressi)
 !    AS_DEALLOCATE(vr=contraintes)
 !    AS_DEALLOCATE(vr=cont_flexio)
 !    AS_DEALLOCATE(vr=cont_pressi)
@@ -534,7 +534,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
         call detrsd('TABLE', table)
         if (flexio) call detrsd('TABLE', tabfle)
         if (lrocht) call detrsd('TABLE', tabpre)
-    endif
+    end if
 !
     call jedema()
 end subroutine

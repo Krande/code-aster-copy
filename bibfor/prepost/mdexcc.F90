@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
+subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc, &
                   existc, nbcmfi, nmcmfi, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_____________________________________________________________________
@@ -82,13 +82,13 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'MDEXCC' )
+    parameter(nompro='MDEXCC')
 !
     integer :: edlect
     integer :: vali(2)
-    parameter (edlect=0)
+    parameter(edlect=0)
     integer :: mfloat
-    parameter (mfloat=6)
+    parameter(mfloat=6)
 !
 !
     integer :: lnochm, jnbcha, jnocha, jcmpch
@@ -119,9 +119,9 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 1.1 ==> OUVERTURE DU FICHIER S'IL N'EST PAS DEJA OUVERT
 !
-    inquire(file=nofimd,exist=ficexi)
+    inquire (file=nofimd, exist=ficexi)
 !
-    if (.not.ficexi) goto 999
+    if (.not. ficexi) goto 999
 !
     if (idfimd .eq. 0) then
         call as_med_open(idfimd, nofimd, edlect, iouv)
@@ -129,7 +129,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
     else
         dejouv = .true.
         iouv = 0
-    endif
+    end if
 !
 ! 1.2 ==> SI ON A PU OUVRIR LE FICHIER, ON COMMENCER A LE LIRE
 !
@@ -139,9 +139,9 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
         call as_mfdnfd(idfimd, nbcham, codret)
         if (codret .ne. 0) then
-            saux08='mfdnfd'
+            saux08 = 'mfdnfd'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
         if (nbcham .le. 0) goto 30
 !
         call jeexin(nonbch, iret)
@@ -155,15 +155,15 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
             if (nbcha2 .ne. nbcham) then
                 call jeveuo(nocmch, 'L', jcmpch)
                 do iaux = 1, nbcha2
-                    nomcmp = zk24( jcmpch+iaux-1 )
+                    nomcmp = zk24(jcmpch+iaux-1)
                     call jedetr(nomcmp)
                 end do
                 call jedetr(nonbch)
                 call jedetr(nonoch)
                 call jedetr(nocmch)
                 iret = 0
-            endif
-        endif
+            end if
+        end if
 !
         if (iret .eq. 0) then
 !
@@ -178,42 +178,42 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 1.5 ==> POUR CHAQUE CHAMP ON CHERCHE SON NOM ET SES COMPOSANTES
 !
-            do 10 , iaux = 1 , nbcham
-            call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
-            if (codret .ne. 0) then
-                saux08='mfdnfc'
-                call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
+            do 10, iaux = 1, nbcham
+                call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
+                if (codret .ne. 0) then
+                    saux08 = 'mfdnfc'
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                end if
 !
-            call codent(iaux, 'G', saux08)
-            call wkvect('&&'//nompro//saux08//'N', 'V V K16', nbcmfi, adncmp)
-            call wkvect('&&'//nompro//saux08//'U', 'V V K16', nbcmfi, aducmp)
-            saux64 = ' '
+                call codent(iaux, 'G', saux08)
+                call wkvect('&&'//nompro//saux08//'N', 'V V K16', nbcmfi, adncmp)
+                call wkvect('&&'//nompro//saux08//'U', 'V V K16', nbcmfi, aducmp)
+                saux64 = ' '
 !
 ! 1.5.1 ==> LECTURE DU NOM DU CHAMP MED ET DE SES COMPOSANTES
 !
-            call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
-                           zk16(aducmp), nseqca, codret)
-            if (codret .ne. 0 .or. jaux .ne. mfloat) then
-                vali (1) = iaux
-                if (codret .ne. 0) then
-                    saux08='mfdfdi'
-                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
-                if (saux64 .eq. nochmd .and. jaux .ne. mfloat) then
-                    vali (1) = jaux
-                    call utmess('A+', 'MED_84', si=vali(1))
-                    call utmess('F', 'MED_75')
-                endif
-            endif
+                call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp), &
+                               zk16(aducmp), nseqca, codret)
+                if (codret .ne. 0 .or. jaux .ne. mfloat) then
+                    vali(1) = iaux
+                    if (codret .ne. 0) then
+                        saux08 = 'mfdfdi'
+                        call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                    end if
+                    if (saux64 .eq. nochmd .and. jaux .ne. mfloat) then
+                        vali(1) = jaux
+                        call utmess('A+', 'MED_84', si=vali(1))
+                        call utmess('F', 'MED_75')
+                    end if
+                end if
 !
 ! 1.5.2 ==> RECOPIE DANS LES CHAMPS ALLOUES
 !
-            zk80( jnocha+iaux-1 ) = saux64
-            zk24( jcmpch+iaux-1 ) = '&&'//nompro//saux08//'N'
-            call jedetr('&&'//nompro//saux08//'U')
- 10         continue
-        endif
+                zk80(jnocha+iaux-1) = saux64
+                zk24(jcmpch+iaux-1) = '&&'//nompro//saux08//'N'
+                call jedetr('&&'//nompro//saux08//'U')
+10              continue
+                end if
 !
 !====
 ! 2. LE CHAMP EST-IL PRESENT ?
@@ -221,102 +221,102 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 !
 ! 2.1. ==> NBCHAM : NOMBRE DE CHAMPS DANS LE FICHIER
 !
-        call jeveuo(nonoch, 'L', jnocha)
-        call jeveuo(nocmch, 'L', jcmpch)
+                call jeveuo(nonoch, 'L', jnocha)
+                call jeveuo(nocmch, 'L', jcmpch)
 !
 ! 2.2. ==> RECHERCHE DU CHAMP VOULU
 !
-        lnochm = lxlgut(nochmd)
+                lnochm = lxlgut(nochmd)
 !
-        do 22 , iaux = 1 , nbcham
+                do 22, iaux = 1, nbcham
 !
-        saux64 = zk80( jnocha+iaux-1 )
-        nomcmp = zk24( jcmpch+iaux-1 )
+                    saux64 = zk80(jnocha+iaux-1)
+                    nomcmp = zk24(jcmpch+iaux-1)
 !
 ! 2.2.3. ==> COMPARAISON DU NOM DU CHAMP
 !
-        jaux = lxlgut(saux64)
+                    jaux = lxlgut(saux64)
 !
-        if (jaux .eq. lnochm) then
-            if (saux64(1:jaux) .eq. nochmd(1:lnochm)) then
-                existc = 1
-            endif
-        endif
+                    if (jaux .eq. lnochm) then
+                        if (saux64(1:jaux) .eq. nochmd(1:lnochm)) then
+                            existc = 1
+                        end if
+                    end if
 !
 ! 2.2.4. ==> C'EST LE BON CHAMP. CONTROLE DU NOM DES COMPOSANTES
 !
-        if (existc .eq. 1) then
+                    if (existc .eq. 1) then
 !
 ! 2.2.4.1. ==> TRANSFERT DES NOMS DES COMPOSANTES DANS LE TABLEAU
 !              DE SORTIE
 !
-            call jelira(nomcmp, 'LONMAX', nbcmfi)
-            call jeveuo(nomcmp, 'L', adncmp)
+                        call jelira(nomcmp, 'LONMAX', nbcmfi)
+                        call jeveuo(nomcmp, 'L', adncmp)
 !
-            call wkvect(nmcmfi, 'V V K16', nbcmfi, adncfi)
+                        call wkvect(nmcmfi, 'V V K16', nbcmfi, adncfi)
 !
-            do 2241 , kaux = 0 , nbcmfi-1
-            zk16(adncfi+kaux) = zk16(adncmp+kaux)
-2241         continue
+                        do 2241, kaux = 0, nbcmfi-1
+                            zk16(adncfi+kaux) = zk16(adncmp+kaux)
+2241                        continue
 !
 ! 2.2.4.2. ==> TEST DES NOMS DES COMPOSANTES
 !
-            if (nbcmpc .gt. nbcmfi) then
+                            if (nbcmpc .gt. nbcmfi) then
 !
-                existc = 2
+                                existc = 2
 !
-            else if (nbcmpc.gt.0) then
+                            else if (nbcmpc .gt. 0) then
 !
-                call jeveuo(nomcmc, 'L', adncmc)
+                                call jeveuo(nomcmc, 'L', adncmc)
 !
 !      ZK16(ADNCMC+JAUX) : NOM DE LA (JAUX+1)-EME COMPOSANTE A CONTROLER
 !      ZK16(ADNCMP+KAUX) : NOM DE LA (KAUX+1)-EME COMPOSANTE DU CHAMP
 !
-                do 2242 , jaux = 0 , nbcmpc-1
+                                do 2242, jaux = 0, nbcmpc-1
 !
-                saux16 = zk16(adncmc+jaux)
+                                    saux16 = zk16(adncmc+jaux)
 !
-                do 2243 , kaux = 0 , nbcmfi-1
-                if (saux16 .eq. zk16(adncmp+kaux)) then
-                    goto 2242
-                endif
-2243             continue
+                                    do 2243, kaux = 0, nbcmfi-1
+                                    if (saux16 .eq. zk16(adncmp+kaux)) then
+                                        goto 2242
+                                    end if
+2243                                continue
 !
 !           AUCUNE COMPOSANTE DU CHAMP LU NE CORRESPOND A LA COMPOSANTE
 !           SOUHAITEE
 !
-                existc = 2
+                                    existc = 2
 !
-2242             continue
+2242                                continue
 !
-            endif
+                                    end if
 !
-            goto 30
+                                    goto 30
 !
-        endif
+                                    end if
 !
- 22     continue
+22                                  continue
 !
 !====
 ! 3. LA FIN
 !====
 !
- 30     continue
+30                                  continue
 !
 !====
 ! 4. ==> FERMETURE DU FICHIER S'IL Y A BESOIN
 !====
 !
-        if (.not.dejouv) then
-            call as_mficlo(idfimd, codret)
-            if (codret .ne. 0) then
-                saux08='mficlo'
-                call utmess('F', 'DVP_97', sk=saux08, si=codret)
-            endif
-            idfimd = 0
-        endif
-    endif
+                                    if (.not. dejouv) then
+                                        call as_mficlo(idfimd, codret)
+                                        if (codret .ne. 0) then
+                                            saux08 = 'mficlo'
+                                            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                                        end if
+                                        idfimd = 0
+                                    end if
+                                    end if
 !
-999 continue
+999                                 continue
 !
-end subroutine
+                                    end subroutine

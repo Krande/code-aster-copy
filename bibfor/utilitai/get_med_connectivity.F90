@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine get_med_connectivity(mesh, med_connect)
 
     if (med_connect .eq. ' ') then
         call gnomsd_xx(med_connect)
-    endif
+    end if
 
 !   get conversion arrays code_aster <---> med
     call lrmtyp(modnum=modnum, nuanom=nuanom)
@@ -73,7 +73,7 @@ subroutine get_med_connectivity(mesh, med_connect)
     call jeecra(med_connect, 'NUTIOC', ival=nbcell)
     call jeecra(med_connect, 'LONT', ival=size)
 
-    do i=1, nbcell
+    do i = 1, nbcell
         ityp = typmast(i)
         call jelira(jexnum(connex, i), 'LONMAX', ival=nbnode)
         call jeveuo(jexnum(connex, i), 'L', vi=p_elt)
@@ -81,14 +81,14 @@ subroutine get_med_connectivity(mesh, med_connect)
         call jeecra(jexnum(med_connect, i), 'LONUTI', ival=nbnode)
         call jeveuo(jexnum(med_connect, i), 'E', vi=m_elt)
         if (modnum(ityp) .eq. 0) then
-            do j=1, nbnode
+            do j = 1, nbnode
                 m_elt(j) = p_elt(j)
             end do
         else
-            do j=1, nbnode
+            do j = 1, nbnode
                 m_elt(j) = p_elt(nuanom(ityp, j))
             end do
-        endif
+        end if
     end do
 
     call jedema()

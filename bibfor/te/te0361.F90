@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine te0361(option, nomte)
 !
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,7 +35,7 @@ implicit none
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,16 +62,16 @@ character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    axi = lteatt('AXIS','OUI')
+    axi = lteatt('AXIS', 'OUI')
 !
 ! - Get element parameters
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
-    ndim = ndim + 1
+    ndim = ndim+1
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
     call eiinit(nomte, iu, im, it)
@@ -85,7 +85,7 @@ character(len=16) :: option, nomte
     call jevech('PCAMASS', 'L', icamas)
     if (zr(icamas) .eq. -1.d0) then
         call utmess('F', 'JOINT1_47')
-    endif
+    end if
 !
 !     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
 !
@@ -95,18 +95,18 @@ character(len=16) :: option, nomte
 !
     if (option .eq. 'FORC_NODA') then
         call jevech('PCONTMR', 'L', icontm)
-        call eifono(ndim, axi, nno1, nno2, npg,&
-                    zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom),&
+        call eifono(ndim, axi, nno1, nno2, npg, &
+                    zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom), &
                     ang, iu, im, zr(icontm), zr(ivectu))
     elseif (option .eq. 'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref)
         call terefe('DEPL_REFE', 'MECA_INTERFACE', depref)
-        call eifore(ndim, axi, nno1, nno2, npg,&
-                    zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom),&
-                    ang, iu, im, sigref, depref,&
+        call eifore(ndim, axi, nno1, nno2, npg, &
+                    zr(iw), zr(ivf1), zr(ivf2), zr(idf2), zr(igeom), &
+                    ang, iu, im, sigref, depref, &
                     zr(ivectu))
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

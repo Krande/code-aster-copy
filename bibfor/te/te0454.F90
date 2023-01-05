@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 
 subroutine te0454(nomopt, nomte)
 !
-use HHO_type
-use HHO_utils_module
-use HHO_size_module
-use HHO_quadrature_module
-use HHO_ther_module
-use HHO_init_module, only : hhoInfoInitCell
+    use HHO_type
+    use HHO_utils_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_ther_module
+    use HHO_init_module, only: hhoInfoInitCell
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
@@ -81,12 +81,12 @@ implicit none
 ! --- Type of finite element
 !
     select case (hhoCell%ndim)
-        case(3)
-            typmod(1) = '3D'
-        case (2)
-            typmod(1) = 'PLAN'
-        case default
-            ASSERT(ASTER_FALSE)
+    case (3)
+        typmod(1) = '3D'
+    case (2)
+        typmod(1) = 'PLAN'
+    case default
+        ASSERT(ASTER_FALSE)
     end select
     typmod(2) = 'HHO'
 !
@@ -97,7 +97,7 @@ implicit none
 ! --- Compute local contribution
 !
     call hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
-                             fami, lhs=lhs)
+                          fami, lhs=lhs)
 !
 ! --- Save lhs
 !

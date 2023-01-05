@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
-                  nfreq, lprod, itemax, nperm, tol,&
-                  toldyn, vect, valpro, nitjac, nitbat,&
+subroutine sspace(lraid, lmatra, lmass, neq, nbvec, &
+                  nfreq, lprod, itemax, nperm, tol, &
+                  toldyn, vect, valpro, nitjac, nitbat, &
                   solveu)
     implicit none
 #include "asterf_types.h"
@@ -98,10 +98,10 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     data valm/'                   .VALM'/
 !
 !     INIT. OBJETS ASTER
-    matass=zk24(zi(lmatra+1))
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(lmatra+1))
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
 !     ------------------------------------------------------------------
 !     ------   PREMIERE DECLARATION DE VARIABLES AUXILLIAIRES   --------
 !     ------------------------------------------------------------------
@@ -144,24 +144,24 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     --- ON INITIALISE LES VECTEURS ---
 !
     do i = 1, neq
-        vect(i,1) = rdiam(i)*lprod(i)
+        vect(i, 1) = rdiam(i)*lprod(i)
     end do
 !
     icomp = 0
-    do i = 2, nbvec - 1
- 60     continue
+    do i = 2, nbvec-1
+60      continue
         if (lprod(ipos(1+i+icomp-1-1)) .eq. 0) then
-            icomp = icomp + 1
+            icomp = icomp+1
             goto 60
         else
-            vect(ipos(1+i+icomp-1-1),i) = 1.d0
-        endif
+            vect(ipos(1+i+icomp-1-1), i) = 1.d0
+        end if
     end do
 !
     dseed = 123457.d0
     call ggubs(dseed, neq, vect(1, nbvec))
     do i = 1, neq
-        vect(i,nbvec) = vect(i,nbvec)*lprod(i)
+        vect(i, nbvec) = vect(i, nbvec)*lprod(i)
     end do
 !
 !     ------------------------------------------------------------------
@@ -169,8 +169,8 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     -- DESTRUCTION D'UNE PARTIE DES PREMIERES VARIABLES AUXILLIAIRES -
 !     ------------------------------------------------------------------
 !
-    call wkvect('&&SSPACE.AR', 'V V R', nbvec* (nbvec+1)/2, iar)
-    call wkvect('&&SSPACE.BR', 'V V R', nbvec* (nbvec+1)/2, ibr)
+    call wkvect('&&SSPACE.AR', 'V V R', nbvec*(nbvec+1)/2, iar)
+    call wkvect('&&SSPACE.BR', 'V V R', nbvec*(nbvec+1)/2, ibr)
     AS_ALLOCATE(vr=vecpro, size=nbvec*nbvec)
     AS_ALLOCATE(vr=tempor, size=nbvec)
     AS_ALLOCATE(vr=tolvec, size=nbvec)
@@ -186,11 +186,11 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     iconvf = .false.
     iter = 0
 !     --- NOMBRE DE FREQUENCES CONVERGEES SOUHAITEES
-    nfrcv = nfreq + (nbvec-nfreq)/2
+    nfrcv = nfreq+(nbvec-nfreq)/2
 !
- 90 continue
+90  continue
 !
-    iter = iter + 1
+    iter = iter+1
 !
 !     --- CALCUL DE LA MATRICE SYMETRIQUE DE RAIDEUR PROJETEE ---
 !     ---       ON NE STOCKE QUE LA MOITIE DE LA MATRICE      ---
@@ -198,21 +198,21 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     ii = 0
     do jj = 1, nbvec
         do kk = 1, neq
-            vvect(kk) = vect(kk,jj)*lprod(kk)
+            vvect(kk) = vect(kk, jj)*lprod(kk)
         end do
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, vvect, [cbid],&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, vvect, [cbid], &
                     criter, .false._1, 0, iret)
         do ll = jj, nbvec
             art = 0.d0
             do kk = 1, neq
-                art = art + vect(kk,ll)*vvect(kk)*lprod(kk)
+                art = art+vect(kk, ll)*vvect(kk)*lprod(kk)
             end do
-            ii = ii + 1
+            ii = ii+1
             zr(iar+ii-1) = art
         end do
         do kk = 1, neq
-            vect(kk,jj) = vvect(kk)*lprod(kk)
+            vect(kk, jj) = vvect(kk)*lprod(kk)
         end do
     end do
 !
@@ -221,21 +221,21 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
     ii = 0
     do jj = 1, nbvec
-        call mrmult('ZERO', lmass, vect(1, jj), vvect, 1,&
+        call mrmult('ZERO', lmass, vect(1, jj), vvect, 1, &
                     .false._1)
         do ll = jj, nbvec
             brt = 0.0d0
             do kk = 1, neq
-                brt = brt + vect(kk,ll)*vvect(kk)*lprod(kk)
+                brt = brt+vect(kk, ll)*vvect(kk)*lprod(kk)
             end do
-            ii = ii + 1
+            ii = ii+1
             zr(ibr+ii-1) = brt
         end do
         if (iconv .le. 0) then
             do kk = 1, neq
-                vect(kk,jj) = vvect(kk)
+                vect(kk, jj) = vvect(kk)
             end do
-        endif
+        end if
     end do
 !
 !     --- ALGORITHME DE JACOBI SUR LES MATRICES PROJETEES ---
@@ -244,12 +244,12 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
     type = 1
     iordre = 0
-    call jacobi(nbvec, nperm, tol, toldyn, zr(iar),&
-                zr(ibr), vecpro, valpro, vjacobi, nitja,&
+    call jacobi(nbvec, nperm, tol, toldyn, zr(iar), &
+                zr(ibr), vecpro, valpro, vjacobi, nitja, &
                 type, iordre)
     if (nitja .gt. nitjac) then
         nitjac = nitja
-    endif
+    end if
 !
 !     --- CALCUL DES VECTEURS PROPRES DU SYSTEME COMPLET ---
 !
@@ -266,9 +266,9 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
             if (tolvec(i) .gt. tol*abs(valpro(i))) then
                 if (i .gt. nfreq) then
                     iconvf = .true.
-                endif
+                end if
                 goto 220
-            endif
+            end if
         end do
         iconv = 1
         iconvf = .true.
@@ -282,18 +282,18 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
             tempor(i) = valpro(i)
         end do
         goto 90
-    endif
+    end if
 !
 !
 !     --- CLASSEMENT PAR ORDRE CROISSANT DES VALEURS PROPRES ---
 !     ---   ET DONC DES VECTEURS PROPRES DU SYSTEME COMPLET  ---
 !
     nitbat = iter
-    call vpordi(1, 0, nbvec, valpro, vect,&
+    call vpordi(1, 0, nbvec, valpro, vect, &
                 neq, fpos)
-    if (.not.iconvf) then
+    if (.not. iconvf) then
         call utmess('A', 'ALGELINE3_45')
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     ------------- DESTRUCTION DES VARIABLES AUXILLIAIRES -------------

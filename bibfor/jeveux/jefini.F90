@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine jefini(cond,close)
+subroutine jefini(cond, close)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterf_types.h"
@@ -40,29 +40,29 @@ subroutine jefini(cond,close)
 !
     integer :: i, n
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
 !
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: nbfic
-    common /iparje/  nbfic
+    common/iparje/nbfic
 !     ------------------------------------------------------------------
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 !
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
-    common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
+    common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: ldyn, lgdyn, nbdyn, nbfree
-    common /idynje/  ldyn , lgdyn , nbdyn , nbfree
+    common/idynje/ldyn, lgdyn, nbdyn, nbfree
     integer :: icdyn, mxltot
-    common /xdynje/  icdyn , mxltot
+    common/xdynje/icdyn, mxltot
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 !     ==================================================================
     integer :: vali(7), info, ifm, ires, iret
     aster_logical :: close_base
@@ -72,24 +72,24 @@ subroutine jefini(cond,close)
 !     ------------------------------------------------------------------
 !
     if (present(close)) then
-       close_base = close
+        close_base = close
     else
-       close_base = ASTER_FALSE
-    endif
+        close_base = ASTER_FALSE
+    end if
 !
 
-    kcond = cond ( 1: min( len(cond) , len(kcond) ) )
+    kcond = cond(1:min(len(cond), len(kcond)))
     ASSERT(kcond .eq. 'NORMAL  ' .or. kcond .eq. 'ERREUR  ' .or. kcond .ne. 'TEST    ')
     if (kcond .eq. 'NORMAL  ' .or. kcond .eq. 'TEST    ') then
         staou = '        '
     else
         staou = 'SAUVE   '
-    endif
+    end if
 !
 !     EVALUATION DE LA CONSOMMATION MEMOIRE
 !
-    k8tab(1)='VMPEAK'
-    k8tab(2)='MEM_TOTA'
+    k8tab(1) = 'VMPEAK'
+    k8tab(2) = 'MEM_TOTA'
     call utgtme(2, k8tab, rval, iret)
 !
 !    if (rval(1) .gt. 0) then
@@ -104,21 +104,21 @@ subroutine jefini(cond,close)
     if (kcond .eq. 'TEST    ') then
         do i = 1, nbfic
             if (classe(i:i) .ne. ' ') then
-                call jeimpr(6, classe(i:i), '     JEFINI     ' // kcond)
-            endif
-        enddo
+                call jeimpr(6, classe(i:i), '     JEFINI     '//kcond)
+            end if
+        end do
 !     -------------  EDITION SEGMENTATION MEMOIRE ----------------------
         call jeimpm(6)
-    endif
+    end if
 !     -------------  LIBERATION FICHIER --------------------------------
     if (kcond .ne. 'ERREUR  ') then
-        if ( close_base ) then
+        if (close_base) then
             info = 0
             do i = 1, nbfic
                 if (classe(i:i) .ne. ' ') then
                     call jelibf(staou, classe(i:i), info)
-                endif
-            enddo
+                end if
+            end do
 !       -----------  DESALLOCATION GESTION DES MARQUES -----------------
             call jjlidy(kdesma(2), kdesma(1))
             call jjlidy(kposma(2), kposma(1))
@@ -127,10 +127,10 @@ subroutine jefini(cond,close)
             kposma(1) = 0
             kposma(2) = 0
 !
-        endif
+        end if
     else
         call asabrt(6)
-    endif
+    end if
 !
 !     --- IMPRESSION DES CONSOMMATIONS MEMOIRE ---
 !
@@ -142,24 +142,24 @@ subroutine jefini(cond,close)
     ires = iunifi('RESULTAT')
 !
     if (ires .gt. 0) then
-        write(ires,*) ' '
-        write(ires,'(2A,F11.2,A)')&
+        write (ires, *) ' '
+        write (ires, '(2A,F11.2,A)')&
      &        ' <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR ',&
-     &        'L''EXECUTION :                ',rval(1),' Mo'
-        write(ires,'(2A,F11.2,A)')&
+     &        'L''EXECUTION :                ', rval(1), ' Mo'
+        write (ires, '(2A,F11.2,A)')&
      &        ' <I> <FIN> MEMOIRE JEVEUX OPTIMALE REQUISE POUR ',&
-     &        'L''EXECUTION :                ',rval(2),' Mo'
+     &        'L''EXECUTION :                ', rval(2), ' Mo'
         if (rval(3) .gt. 0) then
-            write(ires,'(2A,F11.2,A)')&
+            write (ires, '(2A,F11.2,A)')&
      &        ' <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS'&
-     &        ,' LORS DE L''EXECUTION :',rval(3),' Mo'
-        endif
-    endif
+     &        , ' LORS DE L''EXECUTION :', rval(3), ' Mo'
+        end if
+    end if
 !
     if (kcond .ne. 'TEST    ') then
         if (ifm .gt. 0) then
-            write(ifm,*) ' '
-            write(ifm,*) '<I>       FERMETURE DES BASES EFFECTUEE'
+            write (ifm, *) ' '
+            write (ifm, *) '<I>       FERMETURE DES BASES EFFECTUEE'
             if (ldyn .eq. 1) then
                 vali(1) = nint(mxdyn/(1024*1024))
                 vali(2) = liszon*lois/(1024*1024)
@@ -168,56 +168,56 @@ subroutine jefini(cond,close)
                 vali(5) = nint(mldyn/(1024*1024))
                 vali(6) = nint(lgio(1)/(1024*1024))
                 vali(7) = nint(lgio(2)/(1024*1024))
-                write(ifm,*) ' '
-                write(ifm,*) '  STATISTIQUES CONCERNANT L'''&
+                write (ifm, *) ' '
+                write (ifm, *) '  STATISTIQUES CONCERNANT L'''&
      &                 //'ALLOCATION DYNAMIQUE :'
-                write(ifm,*) '    TAILLE CUMULEE MAXIMUM            :',&
-     &                 vali(1),' Mo.'
-                write(ifm,*) '    TAILLE CUMULEE LIBEREE            :',&
-     &                 vali(5),' Mo.'
-                write(ifm,*) '    NOMBRE TOTAL D''ALLOCATIONS        :',&
+                write (ifm, *) '    TAILLE CUMULEE MAXIMUM            :',&
+     &                 vali(1), ' Mo.'
+                write (ifm, *) '    TAILLE CUMULEE LIBEREE            :',&
+     &                 vali(5), ' Mo.'
+                write (ifm, *) '    NOMBRE TOTAL D''ALLOCATIONS        :',&
      &                 vali(3)
-                write(ifm,*) '    NOMBRE TOTAL DE LIBERATIONS       :',&
+                write (ifm, *) '    NOMBRE TOTAL DE LIBERATIONS       :',&
      &                 vali(4)
-                write(ifm,*) '    APPELS AU MECANISME DE LIBERATION :',&
+                write (ifm, *) '    APPELS AU MECANISME DE LIBERATION :',&
      &                 icdyn
-                write(ifm,*) '    TAILLE MEMOIRE CUMULEE RECUPEREE  :',&
-     &                 mxltot,' Mo.'
-                write(ifm,*) '    VOLUME DES LECTURES               :',&
-     &                  vali(6),' Mo.'
-                write(ifm,*) '    VOLUME DES ECRITURES              :',&
-     &                  vali(7),' Mo.'
-                write(ifm,*) ' '
-            endif
-            write(ifm,'(A,F11.2,A)')&
+                write (ifm, *) '    TAILLE MEMOIRE CUMULEE RECUPEREE  :',&
+     &                 mxltot, ' Mo.'
+                write (ifm, *) '    VOLUME DES LECTURES               :',&
+     &                  vali(6), ' Mo.'
+                write (ifm, *) '    VOLUME DES ECRITURES              :',&
+     &                  vali(7), ' Mo.'
+                write (ifm, *) ' '
+            end if
+            write (ifm, '(A,F11.2,A)')&
      &       '   MEMOIRE JEVEUX MINIMALE REQUISE POUR L''EXECUTION :',&
-     &       rval(1),' Mo'
-            write(ifm,'(A)') '     - IMPOSE DE NOMBREUX ACCES DISQUE'
-            write(ifm,'(A)') '     - RALENTIT LA VITESSE D''EXECUTION'
-            write(ifm,'(A,F11.2,A)')&
+     &       rval(1), ' Mo'
+            write (ifm, '(A)') '     - IMPOSE DE NOMBREUX ACCES DISQUE'
+            write (ifm, '(A)') '     - RALENTIT LA VITESSE D''EXECUTION'
+            write (ifm, '(A,F11.2,A)')&
      &       '   MEMOIRE JEVEUX OPTIMALE REQUISE POUR L''EXECUTION :',&
-     &       rval(2),' Mo'
-            write(ifm,'(A)') '     - LIMITE LES ACCES DISQUE'
-            write(ifm,'(A)') '     - AMELIORE LA VITESSE D''EXECUTION'
+     &       rval(2), ' Mo'
+            write (ifm, '(A)') '     - LIMITE LES ACCES DISQUE'
+            write (ifm, '(A)') '     - AMELIORE LA VITESSE D''EXECUTION'
             if (rval(3) .gt. 0) then
-                write(ifm,'(A,F11.2,A)')&
+                write (ifm, '(A,F11.2,A)')&
      &       '   MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :',&
-     &       rval(3),' Mo'
-                write(ifm,'(A)') '     - COMPREND LA MEMOIRE CONSOMMEE PAR '//&
+     &       rval(3), ' Mo'
+                write (ifm, '(A)') '     - COMPREND LA MEMOIRE CONSOMMEE PAR '//&
      &       ' JEVEUX, '
-                write(ifm,'(A)') '       LE SUPERVISEUR PYTHON, '//&
+                write (ifm, '(A)') '       LE SUPERVISEUR PYTHON, '//&
      &       'LES LIBRAIRIES EXTERNES'
-            endif
-            write(ifm,*) ' '
+            end if
+            write (ifm, *) ' '
 !
             call enlird(ladate)
-            write(ifm,*) '<I>       FIN D''EXECUTION LE : '//ladate
+            write (ifm, *) '<I>       FIN D''EXECUTION LE : '//ladate
 !
-        endif
+        end if
 !
 !       --- ON FERME TOUT ---
         call ulclos()
 !
         call xfini(19)
-    endif
+    end if
 end subroutine

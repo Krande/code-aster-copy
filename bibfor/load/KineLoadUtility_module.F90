@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,19 +24,19 @@
 !
 module KineLoadUtility_module
 ! ==================================================================================================
-use KineListRela_type
-use KineListRela_module
+    use KineListRela_type
+    use KineListRela_module
 ! ==================================================================================================
-implicit none
+    implicit none
 ! ==================================================================================================
-public :: kineLoadGetSlaveNodes, kineLoadGetSlaveCells, kineLoadGetSlaveNodesFromSkin
-public :: kineLoadGetMasterNodes, kineLoadGetMasterCells
-public :: kineLoadNormFromSkinCells, kineLoadNormAtNodes
-public :: kineLoadSetLCS, kineLoadElimMult, kineLoadReadTransf, kineLoadApplyTransf
-public :: kineLoadGetPhysQuanInfo, kineLoadDeleteNodePair
-public :: kineLoadCheckCmpOnNode, kineLoadApplyEccentricity
+    public :: kineLoadGetSlaveNodes, kineLoadGetSlaveCells, kineLoadGetSlaveNodesFromSkin
+    public :: kineLoadGetMasterNodes, kineLoadGetMasterCells
+    public :: kineLoadNormFromSkinCells, kineLoadNormAtNodes
+    public :: kineLoadSetLCS, kineLoadElimMult, kineLoadReadTransf, kineLoadApplyTransf
+    public :: kineLoadGetPhysQuanInfo, kineLoadDeleteNodePair
+    public :: kineLoadCheckCmpOnNode, kineLoadApplyEccentricity
 ! ==================================================================================================
-private
+    private
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -91,72 +91,72 @@ contains
 ! Ptr nodeSkinToBody   : pointer between body and skin nodes
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGetSlaveNodesFromSkin(modelZ, meshZ, meshNbNode, geomDime,&
-                                         factorKeywordZ, iOcc,&
-                                         nodeSlavJv, nbNodeSlav, nodeSlav,&
-                                         nbCellSlav, cellSlav,&
-                                         nodeSkinToBody)
+    subroutine kineLoadGetSlaveNodesFromSkin(modelZ, meshZ, meshNbNode, geomDime, &
+                                             factorKeywordZ, iOcc, &
+                                             nodeSlavJv, nbNodeSlav, nodeSlav, &
+                                             nbCellSlav, cellSlav, &
+                                             nodeSkinToBody)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
-    integer, intent(in) :: iOcc, meshNbNode, geomDime
-    character(len=24), intent(out) :: nodeSlavJv
-    integer, intent(out) :: nbNodeSlav, nbCellSlav
-    integer, pointer :: nodeSlav(:), cellSlav(:)
-    integer, pointer :: nodeSkinToBody(:)
+        character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
+        integer, intent(in) :: iOcc, meshNbNode, geomDime
+        character(len=24), intent(out) :: nodeSlavJv
+        integer, intent(out) :: nbNodeSlav, nbCellSlav
+        integer, pointer :: nodeSlav(:), cellSlav(:)
+        integer, pointer :: nodeSkinToBody(:)
 ! - Local
-    character(len=24) :: cellSlavJv
-    aster_logical :: lError
-    character(len=8) :: cellNameError, mesh, model
-    integer :: iNodeSlav
-    integer, parameter :: nbCellSkin2D = 3, nbCellSkin3D = 8
-    character(len=8), parameter :: cellSkin2D(nbCellSkin2D) = (/'SEG2', 'SEG3', 'SEG4'/)
-    character(len=8), parameter :: cellSkin3D(nbCellSkin3D) = (/'TRIA3', 'TRIA6',&
-                                                                'QUAD4', 'QUAD8',&
-                                                                'QUAD9', 'SEG2 ',&
-                                                                'SEG3 ', 'SEG4 '/)
+        character(len=24) :: cellSlavJv
+        aster_logical :: lError
+        character(len=8) :: cellNameError, mesh, model
+        integer :: iNodeSlav
+        integer, parameter :: nbCellSkin2D = 3, nbCellSkin3D = 8
+        character(len=8), parameter :: cellSkin2D(nbCellSkin2D) = (/'SEG2', 'SEG3', 'SEG4'/)
+        character(len=8), parameter :: cellSkin3D(nbCellSkin3D) = (/'TRIA3', 'TRIA6', &
+                                                                    'QUAD4', 'QUAD8', &
+                                                                    'QUAD9', 'SEG2 ', &
+                                                                    'SEG3 ', 'SEG4 '/)
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    model = modelZ
-    nbNodeSlav = 0
+        mesh = meshZ
+        model = modelZ
+        nbNodeSlav = 0
 
 ! - Get slave cells
-    call kineLoadGetSlaveCells(modelZ, meshZ,&
-                               factorKeywordZ, iOcc,&
-                               cellSlavJv, nbCellSlav, cellSlav)
+        call kineLoadGetSlaveCells(modelZ, meshZ, &
+                                   factorKeywordZ, iOcc, &
+                                   cellSlavJv, nbCellSlav, cellSlav)
 
 ! - Get nodes from skin cells
-    nodeSlavJv = '&&NBNLMA.LN'
-    call jedetr(nodeSlavJv)
-    if (geomDime .eq. 2) then
-        call nbnlma(mesh,&
-                    nbCellSlav, cellSlav,&
-                    nbCellSkin2D, cellSkin2D,&
-                    nbNodeSlav, lError, cellNameError)
-    elseif (geomDime .eq. 3) then
-        call nbnlma(mesh,&
-                    nbCellSlav, cellSlav,&
-                    nbCellSkin3D, cellSkin3D,&
-                    nbNodeSlav, lError, cellNameError)
-    else
-        ASSERT(ASTER_FALSE)
-    endif
-    call jedetr('&&NBNLMA.NBN')
-    if (lError) then
-        call utmess('F', 'CHARGES7_4')
-    endif
-    call jeveuo(nodeSlavJv, 'L', vi = nodeSlav)
-    call jelira(nodeSlavJv, 'LONUTI', nbNodeSlav)
+        nodeSlavJv = '&&NBNLMA.LN'
+        call jedetr(nodeSlavJv)
+        if (geomDime .eq. 2) then
+            call nbnlma(mesh, &
+                        nbCellSlav, cellSlav, &
+                        nbCellSkin2D, cellSkin2D, &
+                        nbNodeSlav, lError, cellNameError)
+        elseif (geomDime .eq. 3) then
+            call nbnlma(mesh, &
+                        nbCellSlav, cellSlav, &
+                        nbCellSkin3D, cellSkin3D, &
+                        nbNodeSlav, lError, cellNameError)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+        call jedetr('&&NBNLMA.NBN')
+        if (lError) then
+            call utmess('F', 'CHARGES7_4')
+        end if
+        call jeveuo(nodeSlavJv, 'L', vi=nodeSlav)
+        call jelira(nodeSlavJv, 'LONUTI', nbNodeSlav)
 
 ! - Indirection between volumic and skin nodes
-    AS_ALLOCATE(vi = nodeSkinToBody, size = meshNbNode)
-    do iNodeSlav = 1, nbNodeSlav
-        nodeSkinToBody(nodeSlav(iNodeSlav)) = iNodeSlav
-    enddo
+        AS_ALLOCATE(vi=nodeSkinToBody, size=meshNbNode)
+        do iNodeSlav = 1, nbNodeSlav
+            nodeSkinToBody(nodeSlav(iNodeSlav)) = iNodeSlav
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadNormFromSkinCells
@@ -172,30 +172,30 @@ end subroutine
 ! Ptr norm             : pointer to list of normals
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadNormFromSkinCells(meshZ, geomDime,&
-                                     nbCellSkin, cellSkin,&
-                                     nbNode, node, norm)
+    subroutine kineLoadNormFromSkinCells(meshZ, geomDime, &
+                                         nbCellSkin, cellSkin, &
+                                         nbNode, node, norm)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in) :: geomDime
-    integer, intent(in) :: nbCellSkin
-    integer, pointer :: cellSkin(:)
-    integer, intent(in) :: nbNode
-    integer, pointer :: node(:)
-    real(kind=8), pointer :: norm(:)
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in) :: geomDime
+        integer, intent(in) :: nbCellSkin
+        integer, pointer :: cellSkin(:)
+        integer, intent(in) :: nbNode
+        integer, pointer :: node(:)
+        real(kind=8), pointer :: norm(:)
 ! - Local
-    character(len=24), parameter :: normJv = '&&CANORT.NORMALE'
-    character(len=8) :: mesh
+        character(len=24), parameter :: normJv = '&&CANORT.NORMALE'
+        character(len=8) :: mesh
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    call jedetr(normJv)
-    call canort(mesh, nbCellSkin, cellSkin, geomDime, nbNode, node, 1)
-    call jeveuo(normJv, 'L', vr = norm)
+        mesh = meshZ
+        call jedetr(normJv)
+        call canort(mesh, nbCellSkin, cellSkin, geomDime, nbNode, node, 1)
+        call jeveuo(normJv, 'L', vr=norm)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGetSlaveNodes
@@ -211,35 +211,35 @@ end subroutine
 ! In  keywordSuffix    : suffix to keyword to read slave nodes
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGetSlaveNodes(meshZ,&
-                                 factorKeywordZ, iOcc,&
-                                 nodeSlavJv, nbNodeSlav, nodeSlav,&
-                                 keywordSuffixZ_)
+    subroutine kineLoadGetSlaveNodes(meshZ, &
+                                     factorKeywordZ, iOcc, &
+                                     nodeSlavJv, nbNodeSlav, nodeSlav, &
+                                     keywordSuffixZ_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ, factorKeywordZ
-    integer, intent(in) :: iOcc
-    character(len=24), intent(out) :: nodeSlavJv
-    integer, intent(out) :: nbNodeSlav
-    integer, pointer :: nodeSlav(:)
-    character(len=*), optional, intent(in) :: keywordSuffixZ_
+        character(len=*), intent(in) :: meshZ, factorKeywordZ
+        integer, intent(in) :: iOcc
+        character(len=24), intent(out) :: nodeSlavJv
+        integer, intent(out) :: nbNodeSlav
+        integer, pointer :: nodeSlav(:)
+        character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
-    character(len=8) :: mesh, keywordSuffix
+        character(len=8) :: mesh, keywordSuffix
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    nbNodeSlav = 0
-    nodeSlavJv = '&&CALIRC.LINONU2'
-    keywordSuffix = '_ESCL'
-    if (present(keywordSuffixZ_)) then
-        keywordSuffix = keywordSuffixZ_
-    endif
-    call jedetr(nodeSlavJv)
-    call getnode(mesh, factorKeywordZ, iOcc, 'F', nodeSlavJv, nbNodeSlav, suffix = keywordSuffix)
-    call jeveuo(nodeSlavJv, 'L', vi = nodeSlav)
+        mesh = meshZ
+        nbNodeSlav = 0
+        nodeSlavJv = '&&CALIRC.LINONU2'
+        keywordSuffix = '_ESCL'
+        if (present(keywordSuffixZ_)) then
+            keywordSuffix = keywordSuffixZ_
+        end if
+        call jedetr(nodeSlavJv)
+        call getnode(mesh, factorKeywordZ, iOcc, 'F', nodeSlavJv, nbNodeSlav, suffix=keywordSuffix)
+        call jeveuo(nodeSlavJv, 'L', vi=nodeSlav)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGetMasterCells
@@ -256,36 +256,36 @@ end subroutine
 ! In  keywordSuffix    : suffix to keyword to read master cells
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGetMasterCells(modelZ, meshZ,&
-                                  factorKeywordZ, iOcc,&
-                                  cellMastJv, nbCellMast, cellMast,&
-                                  keywordSuffixZ_)
+    subroutine kineLoadGetMasterCells(modelZ, meshZ, &
+                                      factorKeywordZ, iOcc, &
+                                      cellMastJv, nbCellMast, cellMast, &
+                                      keywordSuffixZ_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
-    integer, intent(in) :: iOcc
-    character(len=24), intent(out) :: cellMastJv
-    integer, intent(out) :: nbCellMast
-    integer, pointer :: cellMast(:)
-    character(len=*), optional, intent(in) :: keywordSuffixZ_
+        character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
+        integer, intent(in) :: iOcc
+        character(len=24), intent(out) :: cellMastJv
+        integer, intent(out) :: nbCellMast
+        integer, pointer :: cellMast(:)
+        character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
-    character(len=8) :: mesh, model, keywordSuffix
+        character(len=8) :: mesh, model, keywordSuffix
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    model = modelZ
-    nbCellMast = 0
-    cellMastJv = '&&CALIRC.LIMANU1'
-    keywordSuffix = '_MAIT'
-    if (present(keywordSuffixZ_)) then
-        keywordSuffix = keywordSuffixZ_
-    endif
-    call jedetr(cellMastJv)
-    call getelem(mesh, factorKeywordZ, iOcc, 'F', cellMastJv, nbCellMast, keywordSuffix, model)
-    call jeveuo(cellMastJv, 'L', vi = cellMast)
+        mesh = meshZ
+        model = modelZ
+        nbCellMast = 0
+        cellMastJv = '&&CALIRC.LIMANU1'
+        keywordSuffix = '_MAIT'
+        if (present(keywordSuffixZ_)) then
+            keywordSuffix = keywordSuffixZ_
+        end if
+        call jedetr(cellMastJv)
+        call getelem(mesh, factorKeywordZ, iOcc, 'F', cellMastJv, nbCellMast, keywordSuffix, model)
+        call jeveuo(cellMastJv, 'L', vi=cellMast)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGetSlaveCells
@@ -302,38 +302,38 @@ end subroutine
 ! In  keywordSuffix    : suffix to keyword to read slave cells
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGetSlaveCells(modelZ, meshZ,&
-                                 factorKeywordZ, iOcc,&
-                                 cellSlavJv, nbCellSlav, cellSlav,&
-                                 keywordSuffixZ_)
+    subroutine kineLoadGetSlaveCells(modelZ, meshZ, &
+                                     factorKeywordZ, iOcc, &
+                                     cellSlavJv, nbCellSlav, cellSlav, &
+                                     keywordSuffixZ_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
-    integer, intent(in) :: iOcc
-    character(len=24), intent(out) :: cellSlavJv
-    integer, intent(out) :: nbCellSlav
-    integer, pointer :: cellSlav(:)
-    character(len=*), optional, intent(in) :: keywordSuffixZ_
+        character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
+        integer, intent(in) :: iOcc
+        character(len=24), intent(out) :: cellSlavJv
+        integer, intent(out) :: nbCellSlav
+        integer, pointer :: cellSlav(:)
+        character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
-    character(len=8) :: mesh, model, keywordSuffix
+        character(len=8) :: mesh, model, keywordSuffix
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    model = modelZ
-    cellSlavJv = '&&CALIRC.LIMANU2'
-    keywordSuffix = '_ESCL'
-    if (present(keywordSuffixZ_)) then
-        keywordSuffix = keywordSuffixZ_
-    endif
-    call jedetr(cellSlavJv)
-    call getelem(mesh, factorKeywordZ, iOcc, ' ', cellSlavJv, nbCellSlav, keywordSuffix, model)
-    if (nbCellSlav .eq. 0) then
-        call utmess('F', 'CHARGES7_49')
-    endif
-    call jeveuo(cellSlavJv, 'L', vi = cellSlav)
+        mesh = meshZ
+        model = modelZ
+        cellSlavJv = '&&CALIRC.LIMANU2'
+        keywordSuffix = '_ESCL'
+        if (present(keywordSuffixZ_)) then
+            keywordSuffix = keywordSuffixZ_
+        end if
+        call jedetr(cellSlavJv)
+        call getelem(mesh, factorKeywordZ, iOcc, ' ', cellSlavJv, nbCellSlav, keywordSuffix, model)
+        if (nbCellSlav .eq. 0) then
+            call utmess('F', 'CHARGES7_49')
+        end if
+        call jeveuo(cellSlavJv, 'L', vi=cellSlav)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGetMasterNodes
@@ -349,35 +349,35 @@ end subroutine
 ! In  keywordSuffix    : suffix to keyword to read master nodes
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGetMasterNodes(meshZ,&
-                                  factorKeywordZ, iOcc,&
-                                  nodeMastJv, nbNodeMast, nodeMast,&
-                                  keywordSuffixZ_)
+    subroutine kineLoadGetMasterNodes(meshZ, &
+                                      factorKeywordZ, iOcc, &
+                                      nodeMastJv, nbNodeMast, nodeMast, &
+                                      keywordSuffixZ_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ, factorKeywordZ
-    integer, intent(in) :: iOcc
-    character(len=24), intent(out) :: nodeMastJv
-    integer, intent(out) :: nbNodeMast
-    integer, pointer :: nodeMast(:)
-    character(len=*), optional, intent(in) :: keywordSuffixZ_
+        character(len=*), intent(in) :: meshZ, factorKeywordZ
+        integer, intent(in) :: iOcc
+        character(len=24), intent(out) :: nodeMastJv
+        integer, intent(out) :: nbNodeMast
+        integer, pointer :: nodeMast(:)
+        character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
-    character(len=8) :: mesh, keywordSuffix
+        character(len=8) :: mesh, keywordSuffix
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    nbNodeMast = 0
-    nodeMastJv = '&&CALIRC.LINONU1'
-    keywordSuffix = '_MAIT'
-    if (present(keywordSuffixZ_)) then
-        keywordSuffix = keywordSuffixZ_
-    endif
-    call jedetr(nodeMastJv)
-    call getnode(mesh, factorKeywordZ, iOcc, ' ', nodeMastJv, nbNodeMast, suffix = keywordSuffix)
-    call jeveuo(nodeMastJv, 'L', vi = nodeMast)
+        mesh = meshZ
+        nbNodeMast = 0
+        nodeMastJv = '&&CALIRC.LINONU1'
+        keywordSuffix = '_MAIT'
+        if (present(keywordSuffixZ_)) then
+            keywordSuffix = keywordSuffixZ_
+        end if
+        call jedetr(nodeMastJv)
+        call getnode(mesh, factorKeywordZ, iOcc, ' ', nodeMastJv, nbNodeMast, suffix=keywordSuffix)
+        call jeveuo(nodeMastJv, 'L', vi=nodeMast)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadElimMult
@@ -391,45 +391,45 @@ end subroutine
 ! Ptr nodeElim         : list of duplicate nodes
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadElimMult(iOcc, nodeJv, nbNode, node, nodeElim)
+    subroutine kineLoadElimMult(iOcc, nodeJv, nbNode, node, nodeElim)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    integer, intent(in) :: iOcc
-    character(len=24), intent(in) :: nodeJv
-    integer, intent(inout) :: nbNode
-    integer, pointer :: node(:), nodeElim(:)
+        integer, intent(in) :: iOcc
+        character(len=24), intent(in) :: nodeJv
+        integer, intent(inout) :: nbNode
+        integer, pointer :: node(:), nodeElim(:)
 ! - Local
-    integer :: iNode, elimNodeIndx, nodeNume
-    integer, pointer :: nodeCopy(:) => null()
+        integer :: iNode, elimNodeIndx, nodeNume
+        integer, pointer :: nodeCopy(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
-    elimNodeIndx = 0
-    AS_ALLOCATE(vi = nodeCopy, size = nbNode)
-    do iNode = 1, nbNode
-        nodeNume = node(iNode)
-        if (nodeElim(nodeNume) .eq. 0) then
-            nodeElim(nodeNume) = 1
-            elimNodeIndx = elimNodeIndx + 1
-            nodeCopy(elimNodeIndx) = nodeNume
-        endif
-    enddo
+        elimNodeIndx = 0
+        AS_ALLOCATE(vi=nodeCopy, size=nbNode)
+        do iNode = 1, nbNode
+            nodeNume = node(iNode)
+            if (nodeElim(nodeNume) .eq. 0) then
+                nodeElim(nodeNume) = 1
+                elimNodeIndx = elimNodeIndx+1
+                nodeCopy(elimNodeIndx) = nodeNume
+            end if
+        end do
 
 ! - New number of nodes
-    nbNode = elimNodeIndx
-    if (nbNode .eq. 0) then
-        call utmess('F','CHARGES7_48', si = iOcc)
-    endif
+        nbNode = elimNodeIndx
+        if (nbNode .eq. 0) then
+            call utmess('F', 'CHARGES7_48', si=iOcc)
+        end if
 
 ! - New list of nodes
-    call jedetr(nodeJv)
-    call wkvect(nodeJv, 'V V I', nbNode, vi = node)
-    do iNode = 1, nbNode
-        node(iNode) = nodeCopy(iNode)
-    enddo
-    AS_DEALLOCATE(vi = nodeCopy)
+        call jedetr(nodeJv)
+        call wkvect(nodeJv, 'V V I', nbNode, vi=node)
+        do iNode = 1, nbNode
+            node(iNode) = nodeCopy(iNode)
+        end do
+        AS_DEALLOCATE(vi=nodeCopy)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadReadTransf
@@ -448,49 +448,49 @@ end subroutine
 ! Out rotaMatr         : rotation matrix
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadReadTransf(meshZ, geomDime,&
-                              factorKeywordZ, iOcc,&
-                              nodeJv, nbNode, geomJv,&
-                              lApplyRota_, rotaMatr_)
+    subroutine kineLoadReadTransf(meshZ, geomDime, &
+                                  factorKeywordZ, iOcc, &
+                                  nodeJv, nbNode, geomJv, &
+                                  lApplyRota_, rotaMatr_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ, factorKeywordZ
-    integer, intent(in) :: iOcc, geomDime, nbNode
-    character(len=24), intent(in) :: nodeJv
-    character(len=24), intent(out) :: geomJv
-    aster_logical, optional, intent(out) :: lApplyRota_
-    real(kind=8), optional, intent(out) :: rotaMatr_(3, 3)
+        character(len=*), intent(in) :: meshZ, factorKeywordZ
+        integer, intent(in) :: iOcc, geomDime, nbNode
+        character(len=24), intent(in) :: nodeJv
+        character(len=24), intent(out) :: geomJv
+        aster_logical, optional, intent(out) :: lApplyRota_
+        real(kind=8), optional, intent(out) :: rotaMatr_(3, 3)
 ! - Local
-    character(len=8) :: mesh
-    aster_logical :: lTran, lCent, lAnglNaut
-    real(kind=8) :: tranPara(3), centPara(3), anglNautPara(3)
-    aster_logical :: lApplyRota
-    real(kind=8) :: rotaMatr(3, 3)
+        character(len=8) :: mesh
+        aster_logical :: lTran, lCent, lAnglNaut
+        real(kind=8) :: tranPara(3), centPara(3), anglNautPara(3)
+        aster_logical :: lApplyRota
+        real(kind=8) :: rotaMatr(3, 3)
 !   ------------------------------------------------------------------------------------------------
 !
-    lApplyRota = ASTER_FALSE
-    mesh = meshZ
-    rotaMatr = 0.d0
-    geomJv = '&&CALIRC.GEOM_TRANS2'
+        lApplyRota = ASTER_FALSE
+        mesh = meshZ
+        rotaMatr = 0.d0
+        geomJv = '&&CALIRC.GEOM_TRANS2'
 
 ! - Get transformation from user
-    call char_read_tran(factorKeywordZ, iOcc, geomDime,&
-                        lTran, tranPara,&
-                        lCent, centPara,&
-                        lAnglNaut, anglNautPara)
+        call char_read_tran(factorKeywordZ, iOcc, geomDime, &
+                            lTran, tranPara, &
+                            lCent, centPara, &
+                            lAnglNaut, anglNautPara)
 
 ! - Apply transformation on nodes
-    call calirg(mesh, nbNode, nodeJv,&
-                tranPara, centPara, &
-                lAnglNaut, anglNautPara,&
-                geomJv, lApplyRota, rotaMatr)
-    if (present(lApplyRota_)) then
-        lApplyRota_ = lApplyRota
-        rotaMatr_ = rotaMatr
-    endif
+        call calirg(mesh, nbNode, nodeJv, &
+                    tranPara, centPara, &
+                    lAnglNaut, anglNautPara, &
+                    geomJv, lApplyRota, rotaMatr)
+        if (present(lApplyRota_)) then
+            lApplyRota_ = lApplyRota
+            rotaMatr_ = rotaMatr
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadApplyTransf
@@ -514,104 +514,104 @@ end subroutine
 ! Out geomMastJv       : name of JEVEUX object for coordinates of master nodes after transformation
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadApplyTransf(outputFileZ, meshZ, meshNbNode,&
-                               factorKeywordZ, iOcc,&
-                               lMastTransf, mastTransf,&
-                               lSlavTransf, slavTransf,&
-                               nbNodeSlav, nodeSlav,&
-                               lVerbose, meshDebugJv,&
-                               geomSlavJv, geomMastJv)
+    subroutine kineLoadApplyTransf(outputFileZ, meshZ, meshNbNode, &
+                                   factorKeywordZ, iOcc, &
+                                   lMastTransf, mastTransf, &
+                                   lSlavTransf, slavTransf, &
+                                   nbNodeSlav, nodeSlav, &
+                                   lVerbose, meshDebugJv, &
+                                   geomSlavJv, geomMastJv)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: outputFileZ, meshZ
-    integer, intent(in) :: meshNbNode
-    character(len=*), intent(in) :: factorKeywordZ
-    integer, intent(in) :: iOcc
-    aster_logical, intent(in) :: lMastTransf, lSlavTransf
-    character(len=8), intent(in) :: mastTransf(3), slavTransf(3)
-    character(len=24), intent(out) :: geomMastJv
-    integer, intent(in) :: nbNodeSlav
-    integer, pointer :: nodeSlav(:)
-    character(len=24), intent(in) :: geomSlavJv
-    aster_logical, intent(in) :: lVerbose
-    character(len=8), intent(in) :: meshDebugJv
+        character(len=*), intent(in) :: outputFileZ, meshZ
+        integer, intent(in) :: meshNbNode
+        character(len=*), intent(in) :: factorKeywordZ
+        integer, intent(in) :: iOcc
+        aster_logical, intent(in) :: lMastTransf, lSlavTransf
+        character(len=8), intent(in) :: mastTransf(3), slavTransf(3)
+        character(len=24), intent(out) :: geomMastJv
+        integer, intent(in) :: nbNodeSlav
+        integer, pointer :: nodeSlav(:)
+        character(len=24), intent(in) :: geomSlavJv
+        aster_logical, intent(in) :: lVerbose
+        character(len=8), intent(in) :: meshDebugJv
 ! - Local
-    integer :: iNode, iFunc
-    integer :: ier, jvGeomInit, nodeNume
-    character(len=24) :: nodeMastJv
-    character(len=8) :: mesh, outputFile
-    character(len=8), parameter :: funcParaName(3) = (/'X', 'Y', 'Z'/)
-    real(kind=8) :: funcEval(3)
-    integer :: nbNodeMast
-    integer, pointer :: nodeMast(:) => null()
-    real(kind=8), pointer :: geomMast(:) => null(), geomSlav(:) => null()
-    real(kind=8), pointer :: geomVerbose(:) => null()
+        integer :: iNode, iFunc
+        integer :: ier, jvGeomInit, nodeNume
+        character(len=24) :: nodeMastJv
+        character(len=8) :: mesh, outputFile
+        character(len=8), parameter :: funcParaName(3) = (/'X', 'Y', 'Z'/)
+        real(kind=8) :: funcEval(3)
+        integer :: nbNodeMast
+        integer, pointer :: nodeMast(:) => null()
+        real(kind=8), pointer :: geomMast(:) => null(), geomSlav(:) => null()
+        real(kind=8), pointer :: geomVerbose(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    outputFile = outputFileZ
+        mesh = meshZ
+        outputFile = outputFileZ
 
 ! - Access to meshes
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', jvGeomInit)
-    if (lVerbose) then
-        call jeveuo(meshDebugJv(1:8)//'.COORDO    .VALE', 'E', vr = geomVerbose)
-    endif
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', jvGeomInit)
+        if (lVerbose) then
+            call jeveuo(meshDebugJv(1:8)//'.COORDO    .VALE', 'E', vr=geomVerbose)
+        end if
 
 ! - Transformation on master side
-    if (lMastTransf) then
-        geomMastJv = '&&CALIRC.GEOM_TRANS1'
-        call kineLoadGetMasterNodes(meshZ,&
-                                    factorKeywordZ, iOcc,&
-                                    nodeMastJv, nbNodeMast, nodeMast)
-        call wkvect(geomMastJv, 'V V R', 3*meshNbNode, vr = geomMast)
-        do iNode = 1, nbNodeMast
-            nodeNume = nodeMast(iNode)
-            do iFunc = 1, 3
-                call fointe('F', mastTransf(iFunc),&
-                            3, funcParaName,&
-                            zr(jvGeomInit+3*(nodeNume-1)), funcEval(iFunc), ier)
-                ASSERT(ier .eq. 0)
-            enddo
-            geomMast(3*(nodeNume-1)+1) = funcEval(1)
-            geomMast(3*(nodeNume-1)+2) = funcEval(2)
-            geomMast(3*(nodeNume-1)+3) = funcEval(3)
-            if (lVerbose) then
-                geomVerbose(3*(nodeNume-1)+1) = funcEval(1)
-                geomVerbose(3*(nodeNume-1)+2) = funcEval(2)
-                geomVerbose(3*(nodeNume-1)+3) = funcEval(3)
-            endif
-        enddo
-    endif
+        if (lMastTransf) then
+            geomMastJv = '&&CALIRC.GEOM_TRANS1'
+            call kineLoadGetMasterNodes(meshZ, &
+                                        factorKeywordZ, iOcc, &
+                                        nodeMastJv, nbNodeMast, nodeMast)
+            call wkvect(geomMastJv, 'V V R', 3*meshNbNode, vr=geomMast)
+            do iNode = 1, nbNodeMast
+                nodeNume = nodeMast(iNode)
+                do iFunc = 1, 3
+                    call fointe('F', mastTransf(iFunc), &
+                                3, funcParaName, &
+                                zr(jvGeomInit+3*(nodeNume-1)), funcEval(iFunc), ier)
+                    ASSERT(ier .eq. 0)
+                end do
+                geomMast(3*(nodeNume-1)+1) = funcEval(1)
+                geomMast(3*(nodeNume-1)+2) = funcEval(2)
+                geomMast(3*(nodeNume-1)+3) = funcEval(3)
+                if (lVerbose) then
+                    geomVerbose(3*(nodeNume-1)+1) = funcEval(1)
+                    geomVerbose(3*(nodeNume-1)+2) = funcEval(2)
+                    geomVerbose(3*(nodeNume-1)+3) = funcEval(3)
+                end if
+            end do
+        end if
 
 ! - Transformation on slave side
-    if (lSlavTransf) then
-        call jeveuo(geomSlavJv, 'E', vr = geomSlav)
-        do iNode = 1, nbNodeSlav
-            nodeNume = nodeSlav(iNode)
-            do iFunc = 1, 3
-                call fointe('F',slavTransf(iFunc),&
-                            3, funcParaName,&
-                            zr(jvGeomInit+3*(nodeNume-1)), funcEval(iFunc),ier)
-                ASSERT(ier .eq. 0)
-            enddo
-            geomSlav(3*(nodeNume-1)+1) = funcEval(1)
-            geomSlav(3*(nodeNume-1)+2) = funcEval(2)
-            geomSlav(3*(nodeNume-1)+3) = funcEval(3)
-            if (lVerbose) then
-                geomVerbose(3*(nodeNume-1)+1) = funcEval(1)
-                geomVerbose(3*(nodeNume-1)+2) = funcEval(2)
-                geomVerbose(3*(nodeNume-1)+3) = funcEval(3)
-            endif
-        enddo
-    endif
+        if (lSlavTransf) then
+            call jeveuo(geomSlavJv, 'E', vr=geomSlav)
+            do iNode = 1, nbNodeSlav
+                nodeNume = nodeSlav(iNode)
+                do iFunc = 1, 3
+                    call fointe('F', slavTransf(iFunc), &
+                                3, funcParaName, &
+                                zr(jvGeomInit+3*(nodeNume-1)), funcEval(iFunc), ier)
+                    ASSERT(ier .eq. 0)
+                end do
+                geomSlav(3*(nodeNume-1)+1) = funcEval(1)
+                geomSlav(3*(nodeNume-1)+2) = funcEval(2)
+                geomSlav(3*(nodeNume-1)+3) = funcEval(3)
+                if (lVerbose) then
+                    geomVerbose(3*(nodeNume-1)+1) = funcEval(1)
+                    geomVerbose(3*(nodeNume-1)+2) = funcEval(2)
+                    geomVerbose(3*(nodeNume-1)+3) = funcEval(3)
+                end if
+            end do
+        end if
 
 ! - Print mesh for debug
-    if ( lVerbose ) then
-        call kineLoadPrintMesh(meshDebugJv, outputFileZ, iOcc)
-    endif
+        if (lVerbose) then
+            call kineLoadPrintMesh(meshDebugJv, outputFileZ, iOcc)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadSetLCS
@@ -628,63 +628,63 @@ end subroutine
 ! IO  kineListRela     : object for list of linear relations
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadSetLCS(geomDime, nbNodeMast,&
-                          iLink,&
-                          normSlav, nodeSkinToBody,&
-                          lApplyRota, rotaMatr,&
-                          kineListRela)
+    subroutine kineLoadSetLCS(geomDime, nbNodeMast, &
+                              iLink, &
+                              normSlav, nodeSkinToBody, &
+                              lApplyRota, rotaMatr, &
+                              kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    integer, intent(in) :: geomDime, nbNodeMast
-    integer, intent(in) :: iLink
-    real(kind=8), pointer :: normSlav(:)
-    integer, pointer :: nodeSkinToBody(:)
-    aster_logical, intent(in) :: lApplyRota
-    real(kind=8), intent(in) :: rotaMatr(3, 3)
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        integer, intent(in) :: geomDime, nbNodeMast
+        integer, intent(in) :: iLink
+        real(kind=8), pointer :: normSlav(:)
+        integer, pointer :: nodeSkinToBody(:)
+        aster_logical, intent(in) :: lApplyRota
+        real(kind=8), intent(in) :: rotaMatr(3, 3)
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    integer :: iNodeMast, iGeomDime, jGeomDime
-    real(kind=8) :: normal(3)
+        integer :: iNodeMast, iGeomDime, jGeomDime
+        real(kind=8) :: normal(3)
 !   ------------------------------------------------------------------------------------------------
 !
-    kineListRela%LCSType(1:nbNodeMast+1) = geomDime
-    if (lApplyRota) then
+        kineListRela%LCSType(1:nbNodeMast+1) = geomDime
+        if (lApplyRota) then
 
 ! ----- Compute normal with rotation between slave and master sides
-        normal = 0.d0
-        do iGeomDime = 1, geomDime
-            do jGeomDime = 1, geomDime
-                normal(iGeomDime) = normal(iGeomDime) + &
-                                    rotaMatr(jGeomDime,iGeomDime)*&
-                                    normSlav(geomDime*(nodeSkinToBody(iLink)-1)+jGeomDime)
-            enddo
-        enddo
+            normal = 0.d0
+            do iGeomDime = 1, geomDime
+                do jGeomDime = 1, geomDime
+                    normal(iGeomDime) = normal(iGeomDime)+ &
+                                        rotaMatr(jGeomDime, iGeomDime)* &
+                                        normSlav(geomDime*(nodeSkinToBody(iLink)-1)+jGeomDime)
+                end do
+            end do
 
 ! ----- Save normal for slave side
-        do iGeomDime = 1, geomDime
-            kineListRela%LCSVale(iGeomDime) =&
-                normSlav(geomDime*(nodeSkinToBody(iLink)-1)+iGeomDime)
-        enddo
+            do iGeomDime = 1, geomDime
+                kineListRela%LCSVale(iGeomDime) = &
+                    normSlav(geomDime*(nodeSkinToBody(iLink)-1)+iGeomDime)
+            end do
 
 ! ----- Save normal for master side
-        do iNodeMast = 2, nbNodeMast + 1
-            do iGeomDime = 1, geomDime
-                kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) = - normal(iGeomDime)
-            enddo
-        enddo
-    else
+            do iNodeMast = 2, nbNodeMast+1
+                do iGeomDime = 1, geomDime
+                    kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) = -normal(iGeomDime)
+                end do
+            end do
+        else
 
 ! ----- Save normal for slave and master sideS
-        do iNodeMast = 1, nbNodeMast + 1
-            do iGeomDime = 1, geomDime
-                kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) =&
-                    normSlav(geomDime*(nodeSkinToBody(iLink)-1)+iGeomDime)
-            enddo
-        enddo
-    endif
+            do iNodeMast = 1, nbNodeMast+1
+                do iGeomDime = 1, geomDime
+                    kineListRela%LCSVale(3*(iNodeMast-1)+iGeomDime) = &
+                        normSlav(geomDime*(nodeSkinToBody(iLink)-1)+iGeomDime)
+                end do
+            end do
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadPrintMesh
@@ -696,33 +696,33 @@ end subroutine
 ! In  fileIndx         : index of output file
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadPrintMesh(meshDebugJv, fileBaseNameZ, fileIndx)
+    subroutine kineLoadPrintMesh(meshDebugJv, fileBaseNameZ, fileIndx)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=8), intent(in) :: meshDebugJv
-    character(len=*), intent(in) :: fileBaseNameZ
-    integer, intent(in) :: fileIndx
+        character(len=8), intent(in) :: meshDebugJv
+        character(len=*), intent(in) :: fileBaseNameZ
+        integer, intent(in) :: fileIndx
 ! - Local
-    character(len=8) :: fileBaseName
-    integer :: fileUnit
-    character(len=4) :: fileIndxStr
-    character(len=80) :: fileName
-    character(len=8), parameter :: k8dummy = ' '
-    character(len=16), parameter :: k16dummy = ' '
+        character(len=8) :: fileBaseName
+        integer :: fileUnit
+        character(len=4) :: fileIndxStr
+        character(len=80) :: fileName
+        character(len=8), parameter :: k8dummy = ' '
+        character(len=16), parameter :: k16dummy = ' '
 !   ------------------------------------------------------------------------------------------------
 !
-    fileBaseName = fileBaseNameZ
-    write (fileIndxStr,'(A1,I3.3)') '_',fileIndx
-    fileName = 'REPE_OUT/'//fileBaseName(1:8)//fileIndxStr//'_transf_geom.med'
-    fileUnit = ulnume()
-    if (fileUnit .le. 0) call utmess('F', 'UTILITAI5_10')
-    call ulaffe(fileUnit, fileName, ' ', 'N', 'O')
-    call irmail('MED', fileUnit, 0, meshDebugJv, ASTER_FALSE, k8dummy, 1, k16dummy)
-    call ulopen(-fileUnit, k8dummy, k8dummy, k8dummy, k8dummy)
-    call jedetr(meshDebugJv)
+        fileBaseName = fileBaseNameZ
+        write (fileIndxStr, '(A1,I3.3)') '_', fileIndx
+        fileName = 'REPE_OUT/'//fileBaseName(1:8)//fileIndxStr//'_transf_geom.med'
+        fileUnit = ulnume()
+        if (fileUnit .le. 0) call utmess('F', 'UTILITAI5_10')
+        call ulaffe(fileUnit, fileName, ' ', 'N', 'O')
+        call irmail('MED', fileUnit, 0, meshDebugJv, ASTER_FALSE, k8dummy, 1, k16dummy)
+        call ulopen(-fileUnit, k8dummy, k8dummy, k8dummy, k8dummy)
+        call jedetr(meshDebugJv)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadGetPhysQuanInfo
@@ -734,45 +734,45 @@ end subroutine
 ! Out dofDZIndx        : index of dof "DZ" in physical quantity
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadGetPhysQuanInfo(physQuanNameZ, nbEc, dofDZIndx_)
+    subroutine kineLoadGetPhysQuanInfo(physQuanNameZ, nbEc, dofDZIndx_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: physQuanNameZ
-    integer, intent(out) :: nbEc
-    integer, optional, intent(out) :: dofDZIndx_
+        character(len=*), intent(in) :: physQuanNameZ
+        integer, intent(out) :: nbEc
+        integer, optional, intent(out) :: dofDZIndx_
 ! - Local
-    integer, parameter :: nbDofMaxi = 300
-    character(len=8) :: physQuanDofName(nbDofMaxi)
-    character(len=8) :: physQuanName
-    integer :: dofDZIndx, jvPhysQuanDofName
-    integer :: physQuanSize, physQuanNbDof, iQuanDof
+        integer, parameter :: nbDofMaxi = 300
+        character(len=8) :: physQuanDofName(nbDofMaxi)
+        character(len=8) :: physQuanName
+        integer :: dofDZIndx, jvPhysQuanDofName
+        integer :: physQuanSize, physQuanNbDof, iQuanDof
 !   ------------------------------------------------------------------------------------------------
 !
-    physQuanName = physQuanNameZ
-    nbEc = 0
-    dofDZIndx = 0
+        physQuanName = physQuanNameZ
+        nbEc = 0
+        dofDZIndx = 0
 
 ! - Access to list of DOF
-    physQuanDofName = ' '
-    call dismoi('NB_EC', physQuanName, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
-    call jelira(jexnom('&CATA.GD.NOMCMP', physQuanName), 'LONMAX', physQuanSize)
-    physQuanNbDof = physQuanSize - 1
-    ASSERT(physQuanSize .le. nbDofMaxi)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', physQuanName), 'L', jvPhysQuanDofName)
-    do iQuanDof = 1, physQuanNbDof
-        physQuanDofName(iQuanDof) = zk8(jvPhysQuanDofName - 1 + iQuanDof)
-    end do
+        physQuanDofName = ' '
+        call dismoi('NB_EC', physQuanName, 'GRANDEUR', repi=nbec)
+        ASSERT(nbec .le. 10)
+        call jelira(jexnom('&CATA.GD.NOMCMP', physQuanName), 'LONMAX', physQuanSize)
+        physQuanNbDof = physQuanSize-1
+        ASSERT(physQuanSize .le. nbDofMaxi)
+        call jeveuo(jexnom('&CATA.GD.NOMCMP', physQuanName), 'L', jvPhysQuanDofName)
+        do iQuanDof = 1, physQuanNbDof
+            physQuanDofName(iQuanDof) = zk8(jvPhysQuanDofName-1+iQuanDof)
+        end do
 
 ! - Index of dof DZ in physical quantity
-    dofDZIndx = indik8(physQuanDofName, 'DZ', 1, physQuanNbDof)
+        dofDZIndx = indik8(physQuanDofName, 'DZ', 1, physQuanNbDof)
 
-    if (present(dofDZIndx_)) then
-        dofDZIndx_ = dofDZIndx
-    endif
+        if (present(dofDZIndx_)) then
+            dofDZIndx_ = dofDZIndx
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadNormAtNodes
@@ -788,115 +788,115 @@ end subroutine
 ! In  conrJv           : name of JEVEUX object for normals
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadNormAtNodes(meshZ, modelZ, geomDime,&
-                               factorKeywordZ, iOcc,&
-                               coni, conrJvZ)
+    subroutine kineLoadNormAtNodes(meshZ, modelZ, geomDime, &
+                                   factorKeywordZ, iOcc, &
+                                   coni, conrJvZ)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ, modelZ
-    integer, intent(in) :: geomDime
-    character(len=*), intent(in) :: factorKeywordZ
-    integer, intent(in) :: iOcc
-    integer, pointer :: coni(:)
-    character(len=*), intent(in) :: conrJvZ
+        character(len=*), intent(in) :: meshZ, modelZ
+        integer, intent(in) :: geomDime
+        character(len=*), intent(in) :: factorKeywordZ
+        integer, intent(in) :: iOcc
+        integer, pointer :: coni(:)
+        character(len=*), intent(in) :: conrJvZ
 ! - Local
-    character(len=8) :: mesh, model
-    character(len=24) :: conrJv
-    integer :: jvGeom
-    integer :: iNode, iDime, nbNode, inoma
-    integer :: nodeMastNume, nodeSlavNume
-    real(kind=8) :: normMast(3), normSlav(3)
-    real(kind=8) :: normDumm, jeu
-    real(kind=8), pointer :: normNode(:) => null()
-    character(len=24) :: cellMastJv, cellSlavJv
-    integer :: nbCellMast, nbCellSlav
-    integer, pointer :: cellMast(:) => null(), cellSlav(:) => null()
+        character(len=8) :: mesh, model
+        character(len=24) :: conrJv
+        integer :: jvGeom
+        integer :: iNode, iDime, nbNode, inoma
+        integer :: nodeMastNume, nodeSlavNume
+        real(kind=8) :: normMast(3), normSlav(3)
+        real(kind=8) :: normDumm, jeu
+        real(kind=8), pointer :: normNode(:) => null()
+        character(len=24) :: cellMastJv, cellSlavJv
+        integer :: nbCellMast, nbCellSlav
+        integer, pointer :: cellMast(:) => null(), cellSlav(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    model = modelZ
-    conrJv = conrJvZ
+        mesh = meshZ
+        model = modelZ
+        conrJv = conrJvZ
 
 ! - Access to mesh
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', jvGeom)
+        call jeveuo(mesh//'.COORDO    .VALE', 'L', jvGeom)
 
 ! - Access to pairing
-    nbNode = coni(1)
+        nbNode = coni(1)
 
 ! - Create object for normal
-    call jecroc(jexnum(conrJv, iOcc))
-    if (geomDime .eq. 2) then
-        call jeecra(jexnum(conrJv, iOcc), 'LONMAX', 12*nbNode)
-    elseif (geomDime .eq. 3) then
-        call jeecra(jexnum(conrJv, iOcc), 'LONMAX', 22*nbNode)
-    else
-        ASSERT(ASTER_FALSE)
-    endif
-    call jeveuo(jexnum(conrJv, iocc), 'E', vr = normNode)
+        call jecroc(jexnum(conrJv, iOcc))
+        if (geomDime .eq. 2) then
+            call jeecra(jexnum(conrJv, iOcc), 'LONMAX', 12*nbNode)
+        elseif (geomDime .eq. 3) then
+            call jeecra(jexnum(conrJv, iOcc), 'LONMAX', 22*nbNode)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+        call jeveuo(jexnum(conrJv, iocc), 'E', vr=normNode)
 
-    do iNode = 1, nbNode
+        do iNode = 1, nbNode
 ! ----- Current pair
-        nodeMastNume = coni(1+2*(iNode-1)+1)
-        nodeSlavNume = coni(1+2*(iNode-1)+2)
+            nodeMastNume = coni(1+2*(iNode-1)+1)
+            nodeSlavNume = coni(1+2*(iNode-1)+2)
 
 ! ----- Get list of master cells
-        call kineLoadGetMasterCells(model, mesh,&
-                                    factorKeywordZ, iOcc,&
-                                    cellMastJv, nbCellMast, cellMast,&
-                                    '_1')
+            call kineLoadGetMasterCells(model, mesh, &
+                                        factorKeywordZ, iOcc, &
+                                        cellMastJv, nbCellMast, cellMast, &
+                                        '_1')
 
 ! ----- Get list of slave cells
-        call kineLoadGetSlaveCells(model, mesh,&
-                                   factorKeywordZ, iOcc,&
-                                   cellSlavJv, nbCellSlav, cellSlav,&
-                                    '_2')
+            call kineLoadGetSlaveCells(model, mesh, &
+                                       factorKeywordZ, iOcc, &
+                                       cellSlavJv, nbCellSlav, cellSlav, &
+                                       '_2')
 
 ! ----- Compute average normals on cells
-        normMast = 0.d0
-        normSlav = 0.d0
-        call kineLoadAverageNormal(mesh, geomDime,&
-                                   nodeMastNume, nbCellMast, cellMast,&
-                                   nodeSlavNume, nbCellSlav, cellSlav,&
-                                   inoma, normMast, normSlav)
+            normMast = 0.d0
+            normSlav = 0.d0
+            call kineLoadAverageNormal(mesh, geomDime, &
+                                       nodeMastNume, nbCellMast, cellMast, &
+                                       nodeSlavNume, nbCellSlav, cellSlav, &
+                                       inoma, normMast, normSlav)
 
 ! ----- For cells = 'POI1'
-        if (inoma .ne. -1) then
-            call normev(normMast, normDumm)
-        endif
-        if (inoma .ne. -2) then
-            call normev(normSlav, normDumm)
-        endif
-        jeu = 0.d0
+            if (inoma .ne. -1) then
+                call normev(normMast, normDumm)
+            end if
+            if (inoma .ne. -2) then
+                call normev(normSlav, normDumm)
+            end if
+            jeu = 0.d0
 
 !       ANGLE ENTRE NORMALES ET MOYENNE DES NORMALES UNITILE SI POI1
-        if ((inoma.ne.-1) .and. (inoma.ne.-2)) then
-            normMast = (normMast - normSlav)/2.d0
+            if ((inoma .ne. -1) .and. (inoma .ne. -2)) then
+                normMast = (normMast-normSlav)/2.d0
 
-        else if (inoma.eq.-1) then
-            normMast = - normSlav
+            else if (inoma .eq. -1) then
+                normMast = -normSlav
 
-        else if (inoma.eq.-2) then
+            else if (inoma .eq. -2) then
 
-        endif
+            end if
 
 ! ----- Compute gap
-        jeu = 0.d0
-        do iDime = 1, geomDime
-            jeu = jeu - zr(jvGeom-1+3*(nodeMastNume-1)+iDime) * normMast(iDime) +&
-                        zr(jvGeom-1+3*(nodeSlavNume-1)+iDime) * normMast(iDime)
-        end do
+            jeu = 0.d0
+            do iDime = 1, geomDime
+                jeu = jeu-zr(jvGeom-1+3*(nodeMastNume-1)+iDime)*normMast(iDime)+ &
+                      zr(jvGeom-1+3*(nodeSlavNume-1)+iDime)*normMast(iDime)
+            end do
 
 ! ----- Save
-        do iDime = 1, geomDime
-            normNode((2*geomDime+1)*(iNode-1)+iDime) = normMast(iDime)
-            normNode((2*geomDime+1)*(iNode-1)+iDime+geomDime) = normSlav(iDime)
+            do iDime = 1, geomDime
+                normNode((2*geomDime+1)*(iNode-1)+iDime) = normMast(iDime)
+                normNode((2*geomDime+1)*(iNode-1)+iDime+geomDime) = normSlav(iDime)
+            end do
+            normNode((2*geomDime+1)*iNode) = jeu
         end do
-        normNode((2*geomDime+1)*iNode) = jeu
-    end do
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadDeleteNodePair
@@ -909,56 +909,56 @@ end subroutine
 ! Ptr coni             : pointer to the pairing of nodes
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadDeleteNodePair(meshZ, factorKeywordZ, iOcc, coni)
+    subroutine kineLoadDeleteNodePair(meshZ, factorKeywordZ, iOcc, coni)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ, factorKeywordZ
-    integer, intent(in) :: iOcc
-    integer, pointer :: coni(:)
+        character(len=*), intent(in) :: meshZ, factorKeywordZ
+        integer, intent(in) :: iOcc
+        integer, pointer :: coni(:)
 ! - Local
-    character(len=8) :: mesh
-    integer, parameter :: nbKeywordExcl = 2
-    character(len=24), parameter :: keywordExcl(nbKeywordExcl) = (/'SANS_GROUP_NO   ',&
-                                                                   'SANS_NOEUD      '/)
-    character(len=16), parameter :: keywordExclType(nbKeywordExcl) = (/'GROUP_NO        ',&
-                                                                       'NOEUD           '/)
-    integer :: iNodeInit, iNodeExcl
-    character(len=24), parameter :: nodeExclJv = '&&CAEXNO.LISTENOEUD'
-    integer, pointer :: nodeExcl(:) => null()
-    integer :: nbNodeInit, nbNodeExcl, nbNode
+        character(len=8) :: mesh
+        integer, parameter :: nbKeywordExcl = 2
+        character(len=24), parameter :: keywordExcl(nbKeywordExcl) = (/'SANS_GROUP_NO   ', &
+                                                                       'SANS_NOEUD      '/)
+        character(len=16), parameter :: keywordExclType(nbKeywordExcl) = (/'GROUP_NO        ', &
+                                                                           'NOEUD           '/)
+        integer :: iNodeInit, iNodeExcl
+        character(len=24), parameter :: nodeExclJv = '&&CAEXNO.LISTENOEUD'
+        integer, pointer :: nodeExcl(:) => null()
+        integer :: nbNodeInit, nbNodeExcl, nbNode
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
+        mesh = meshZ
 
 ! - Get list of exclude nodes
-    call reliem(' ', mesh, 'NU_NOEUD', factorKeywordZ, iocc,&
-                nbKeywordExcl, keywordExcl, keywordExclType, nodeExclJv, nbNodeExcl)
+        call reliem(' ', mesh, 'NU_NOEUD', factorKeywordZ, iocc, &
+                    nbKeywordExcl, keywordExcl, keywordExclType, nodeExclJv, nbNodeExcl)
 
 ! - Change pairing
-    if (nbNodeExcl .ne. 0) then
-        call jeveuo(nodeExclJv, 'L', vi = nodeExcl)
-        nbNodeInit = coni(1)
-        nbNode = 0
-        do iNodeInit = 1, nbNodeInit
-            nbNode = nbNode + 1
-            do iNodeExcl = 1, nbNodeExcl
-                if ((coni(1+2*(iNodeInit-1)+1) .eq. nodeExcl(iNodeExcl)) .or.&
-                    (coni(1+2*(iNodeInit-1)+2) .eq. nodeExcl(iNodeExcl))) then
-                    nbNode = nbNode - 1
-                    goto 2
-                endif
+        if (nbNodeExcl .ne. 0) then
+            call jeveuo(nodeExclJv, 'L', vi=nodeExcl)
+            nbNodeInit = coni(1)
+            nbNode = 0
+            do iNodeInit = 1, nbNodeInit
+                nbNode = nbNode+1
+                do iNodeExcl = 1, nbNodeExcl
+                    if ((coni(1+2*(iNodeInit-1)+1) .eq. nodeExcl(iNodeExcl)) .or. &
+                        (coni(1+2*(iNodeInit-1)+2) .eq. nodeExcl(iNodeExcl))) then
+                        nbNode = nbNode-1
+                        goto 2
+                    end if
+                end do
+                coni(1+2*(nbNode-1)+1) = coni(1+2*(iNodeInit-1)+1)
+                coni(1+2*(nbNode-1)+2) = coni(1+2*(iNodeInit-1)+2)
+2               continue
             end do
-            coni(1+2*(nbNode-1)+1) = coni(1+2*(iNodeInit-1)+1)
-            coni(1+2*(nbNode-1)+2) = coni(1+2*(iNodeInit-1)+2)
- 2          continue
-        end do
-        coni(1) = nbNode
-    endif
+            coni(1) = nbNode
+        end if
 !
-    call jedetr(nodeExclJv)
+        call jedetr(nodeExclJv)
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadAverageNormals
@@ -978,103 +978,103 @@ end subroutine
 ! Out normSlav         : normal for slave side
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadAverageNormal(meshZ, geomDime,&
-                                 nodeMastNume, nbCellMast, cellMast,&
-                                 nodeSlavNume, nbCellSlav, cellSlav,&
-                                 inoma, normMast, normSlav)
+    subroutine kineLoadAverageNormal(meshZ, geomDime, &
+                                     nodeMastNume, nbCellMast, cellMast, &
+                                     nodeSlavNume, nbCellSlav, cellSlav, &
+                                     inoma, normMast, normSlav)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in) :: geomDime
-    integer, intent(in) :: nodeMastNume, nbCellMast
-    integer, pointer :: cellMast(:)
-    integer, intent(in) :: nodeSlavNume, nbCellSlav
-    integer, pointer :: cellSlav(:)
-    integer, intent(out) :: inoma
-    real(kind=8), intent(out) :: normMast(3), normSlav(3)
+        character(len=*), intent(in) :: meshZ
+        integer, intent(in) :: geomDime
+        integer, intent(in) :: nodeMastNume, nbCellMast
+        integer, pointer :: cellMast(:)
+        integer, intent(in) :: nodeSlavNume, nbCellSlav
+        integer, pointer :: cellSlav(:)
+        integer, intent(out) :: inoma
+        real(kind=8), intent(out) :: normMast(3), normSlav(3)
 ! - Local
-    character(len=8) :: mesh
-    integer, pointer :: connex(:) => null(), cellNbNode(:) => null(), typmail(:) => null()
-    integer, parameter :: normNorm = 1
-    integer :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode, cellMastNume, cellSlavNume
-    aster_logical :: mastHasPOI1, slavHasPOI1
-    real(kind=8) :: normCell(3), cellCoor(27)
+        character(len=8) :: mesh
+        integer, pointer :: connex(:) => null(), cellNbNode(:) => null(), typmail(:) => null()
+        integer, parameter :: normNorm = 1
+        integer :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode, cellMastNume, cellSlavNume
+        aster_logical :: mastHasPOI1, slavHasPOI1
+        real(kind=8) :: normCell(3), cellCoor(27)
 !   ------------------------------------------------------------------------------------------------
 !
-    mesh = meshZ
-    inoma = 0
-    normMast = 0.d0
-    normSlav = 0.d0
+        mesh = meshZ
+        inoma = 0
+        normMast = 0.d0
+        normSlav = 0.d0
 
 ! - Access to mesh
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = typmail)
+        call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
 
 ! - Compute normal for master side
-    mastHasPOI1 = ASTER_FALSE
-    do iCellMast = 1, nbCellMast
+        mastHasPOI1 = ASTER_FALSE
+        do iCellMast = 1, nbCellMast
 ! ----- Current cell
-        cellMastNume = cellMast(iCellMast)
+            cellMastNume = cellMast(iCellMast)
 
 ! ----- Get properties of current cell
-        cellTypeNume = typmail(cellMastNume)
-        call jeveuo(jexnum('&CATA.TM.NBNO', cellTypeNume), 'L', vi = cellNbNode)
-        nbNode = cellNbNode(1)
-        call jeveuo(jexnum(mesh//'.CONNEX', cellMastNume), 'L', vi = connex)
-        do iNode = 1, nbNode
-            if (connex(iNode) .eq. nodeMastNume) then
-                if (nbNode .eq. 1) then
-                    mastHasPOI1 = ASTER_TRUE
+            cellTypeNume = typmail(cellMastNume)
+            call jeveuo(jexnum('&CATA.TM.NBNO', cellTypeNume), 'L', vi=cellNbNode)
+            nbNode = cellNbNode(1)
+            call jeveuo(jexnum(mesh//'.CONNEX', cellMastNume), 'L', vi=connex)
+            do iNode = 1, nbNode
+                if (connex(iNode) .eq. nodeMastNume) then
+                    if (nbNode .eq. 1) then
+                        mastHasPOI1 = ASTER_TRUE
+                        exit
+                    end if
+                    inoma = 1
+                    ASSERT(nbNode .le. 27)
+                    call pacoor(mesh, cellMastNume, nbNode, cellCoor)
+                    call canorm(cellCoor, normCell, geomDime, cellTypeNume, normNorm)
+                    normMast = normMast+normCell
                     exit
-                endif
-                inoma = 1
-                ASSERT(nbNode .le. 27)
-                call pacoor(mesh, cellMastNume, nbNode, cellCoor)
-                call canorm(cellCoor, normCell, geomDime, cellTypeNume, normNorm)
-                normMast = normMast + normCell
-                exit
-            endif
+                end if
+            end do
         end do
-    end do
 
 ! - Compute normal for slave side
-    slavHasPOI1 = ASTER_FALSE
-    do iCellSlav = 1, nbCellSlav
+        slavHasPOI1 = ASTER_FALSE
+        do iCellSlav = 1, nbCellSlav
 ! ----- Current cell
-        cellSlavNume = cellSlav(iCellSlav)
+            cellSlavNume = cellSlav(iCellSlav)
 
 ! ----- Get properties of current cell
-        cellTypeNume = typmail(cellSlavNume)
-        call jeveuo(jexnum('&CATA.TM.NBNO', cellTypeNume), 'L', vi = cellNbNode)
-        nbNode = cellNbNode(1)
-        call jeveuo(jexnum(mesh//'.CONNEX', cellSlavNume), 'L', vi = connex)
-        do iNode = 1, nbNode
-            if (connex(iNode) .eq. nodeSlavNume) then
-                if (nbNode .eq. 1) then
-                    slavHasPOI1 = ASTER_TRUE
+            cellTypeNume = typmail(cellSlavNume)
+            call jeveuo(jexnum('&CATA.TM.NBNO', cellTypeNume), 'L', vi=cellNbNode)
+            nbNode = cellNbNode(1)
+            call jeveuo(jexnum(mesh//'.CONNEX', cellSlavNume), 'L', vi=connex)
+            do iNode = 1, nbNode
+                if (connex(iNode) .eq. nodeSlavNume) then
+                    if (nbNode .eq. 1) then
+                        slavHasPOI1 = ASTER_TRUE
+                        exit
+                    end if
+                    inoma = 1
+                    ASSERT(nbNode .le. 27)
+                    call pacoor(mesh, cellSlavNume, nbNode, cellCoor)
+                    call canorm(cellCoor, normCell, geomDime, cellTypeNume, normNorm)
+                    normSlav = normSlav+normCell
                     exit
-                endif
-                inoma = 1
-                ASSERT(nbNode .le. 27)
-                call pacoor(mesh, cellSlavNume, nbNode, cellCoor)
-                call canorm(cellCoor, normCell, geomDime, cellTypeNume, normNorm)
-                normSlav = normSlav + normCell
-                exit
-            endif
+                end if
+            end do
         end do
-    end do
 
 ! - Treatment of POI1 cells
-    if (mastHasPOI1 .and. slavHasPOI1) then
-        call utmess('F', 'CHARGES7_9')
-    endif
-    if (mastHasPOI1) then
-        inoma = -1
-    else if (slavHasPOI1) then
-        inoma = -2
-    endif
+        if (mastHasPOI1 .and. slavHasPOI1) then
+            call utmess('F', 'CHARGES7_9')
+        end if
+        if (mastHasPOI1) then
+            inoma = -1
+        else if (slavHasPOI1) then
+            inoma = -2
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadCheckCmpOnNode
@@ -1082,34 +1082,34 @@ end subroutine
 ! Check components on node
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadCheckCmpOnNode(jvPrnm, nodeNume,&
-                                  physQuanNbCmp, jvPhysQuanCmpName,&
-                                  nbDof, nbec, dofName,&
-                                  dofExist, oneDofDoesntExist)
+    subroutine kineLoadCheckCmpOnNode(jvPrnm, nodeNume, &
+                                      physQuanNbCmp, jvPhysQuanCmpName, &
+                                      nbDof, nbec, dofName, &
+                                      dofExist, oneDofDoesntExist)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    integer, intent(in) :: jvPrnm, nodeNume
-    integer, intent(in) :: physQuanNbCmp, nbec, nbDof
-    character(len=8), pointer :: dofName(:)
-    integer, intent(in) :: jvPhysQuanCmpName
-    aster_logical, pointer :: dofExist(:)
-    aster_logical, intent(out) :: oneDofDoesntExist
+        integer, intent(in) :: jvPrnm, nodeNume
+        integer, intent(in) :: physQuanNbCmp, nbec, nbDof
+        character(len=8), pointer :: dofName(:)
+        integer, intent(in) :: jvPhysQuanCmpName
+        aster_logical, pointer :: dofExist(:)
+        aster_logical, intent(out) :: oneDofDoesntExist
 ! - Local
-    integer :: iDof, idxCmp
+        integer :: iDof, idxCmp
 !   ------------------------------------------------------------------------------------------------
 !
-    dofExist = ASTER_TRUE
-    oneDofDoesntExist = ASTER_FALSE
-    do iDof = 1, nbDof
-        idxCmp = indik8(zk8(jvPhysQuanCmpName), dofName(iDof), 1, physQuanNbCmp)
-        ASSERT(idxCmp .gt. 0)
-        if (.not.exisdg(zi(jvPrnm-1+(nodeNume-1)*nbec+1), idxCmp)) then
-            dofExist(iDof) = ASTER_FALSE
-            oneDofDoesntExist = ASTER_TRUE
-        endif
-    enddo
+        dofExist = ASTER_TRUE
+        oneDofDoesntExist = ASTER_FALSE
+        do iDof = 1, nbDof
+            idxCmp = indik8(zk8(jvPhysQuanCmpName), dofName(iDof), 1, physQuanNbCmp)
+            ASSERT(idxCmp .gt. 0)
+            if (.not. exisdg(zi(jvPrnm-1+(nodeNume-1)*nbec+1), idxCmp)) then
+                dofExist(iDof) = ASTER_FALSE
+                oneDofDoesntExist = ASTER_TRUE
+            end if
+        end do
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! kineLoadApplyEccentricity
@@ -1117,31 +1117,31 @@ end subroutine
 ! Apply eccentricity on coefficients
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine kineLoadApplyEccentricity(iDime, nodeNameZ, rotaCmpNameZ,&
-                                     coef, coefZero, xyzom,&
-                                     iTerm, kineListRela)
+    subroutine kineLoadApplyEccentricity(iDime, nodeNameZ, rotaCmpNameZ, &
+                                         coef, coefZero, xyzom, &
+                                         iTerm, kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    integer, intent(in) :: iDime
-    character(len=*), intent(in) :: nodeNameZ, rotaCmpNameZ
-    real(kind=8), intent(in) :: coef, coefZero
-    real(kind=8), intent(in) :: xyzom(3)
-    integer, intent(inout) :: iTerm
-    type(KINE_LIST_RELA), intent(inout) :: kineListRela
+        integer, intent(in) :: iDime
+        character(len=*), intent(in) :: nodeNameZ, rotaCmpNameZ
+        real(kind=8), intent(in) :: coef, coefZero
+        real(kind=8), intent(in) :: xyzom(3)
+        integer, intent(inout) :: iTerm
+        type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-    character(len=8) :: rotaCmpName, nodeName
+        character(len=8) :: rotaCmpName, nodeName
 !   ------------------------------------------------------------------------------------------------
 !
-    nodeName = nodeNameZ
-    rotaCmpName = rotaCmpNameZ
-    if ( abs(coef*xyzom(iDime)) .gt. coefZero) then
-        iTerm = iTerm + 1
-        kineListRela%nodeName(iTerm) = nodeName
-        kineListRela%coefMultReal(iTerm) = coef*xyzom(iDime)
-        kineListRela%dofName(iTerm) = rotaCmpName
-    endif
+        nodeName = nodeNameZ
+        rotaCmpName = rotaCmpNameZ
+        if (abs(coef*xyzom(iDime)) .gt. coefZero) then
+            iTerm = iTerm+1
+            kineListRela%nodeName(iTerm) = nodeName
+            kineListRela%coefMultReal(iTerm) = coef*xyzom(iDime)
+            kineListRela%dofName(iTerm) = rotaCmpName
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
-end subroutine
+    end subroutine
 !
 end module KineLoadUtility_module

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine erhms2(perman, ino, nbs, theta, jac,&
-                  nx, ny, sielnp, adsip, sielnm,&
-                  nbcmp, typmav, tbref1, tbref2, ivois,&
+subroutine erhms2(perman, ino, nbs, theta, jac, &
+                  nx, ny, sielnp, adsip, sielnm, &
+                  nbcmp, typmav, tbref1, tbref2, ivois, &
                   tm2h1s)
 !
 ! =====================================================================
@@ -116,19 +116,19 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !                 3 --> MNO NOEUD MILIEU S'IL EXISTE
 ! =====================================================================
 !
-    if (.not.perman) then
+    if (.not. perman) then
         ibid = 1
     else
         ibid = 0
         theta = 1.d0
-    endif
-    ta1 = 1.d0 - theta
+    end if
+    ta1 = 1.d0-theta
 !
     if (ino .eq. nbs) then
-        jno=1
+        jno = 1
     else
-        jno=ino+1
-    endif
+        jno = ino+1
+    end if
 !
     iaux = nbcmp*(ino-1)
     sixxp(1) = sielnp(iaux+1)
@@ -147,7 +147,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
 !
-    mno=nbs+ino
+    mno = nbs+ino
 !
     iaux = nbcmp*(mno-1)
     sixxp(3) = sielnp(iaux+1)
@@ -180,7 +180,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
 !
-        mno=nbs+ino
+        mno = nbs+ino
 !
         iaux = nbcmp*(mno-1)
         sixxm(3) = sielnm(iaux+1)
@@ -189,7 +189,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
         fluxm(3) = sielnm(iaux+adsip+ibid+1+5)
         fluym(3) = sielnm(iaux+adsip+ibid+2+5)
 !
-    endif
+    end if
 !
 !
 ! =====================================================================
@@ -220,7 +220,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
         iavalm = jcelvm-1+zi(jceldm-1+zi(jceldm-1+4+igrel)+8)
     else
         iavalm = 1
-    endif
+    end if
 !
 ! 2.2. ----- TESTS SUR LA MAILLE VOISINE ------------------------------
 !
@@ -232,16 +232,16 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
             nbnv = 3
         else
             nbnv = 6
-        endif
-    else if (formv.eq.'QU') then
+        end if
+    else if (formv .eq. 'QU') then
         if (noeuv .eq. '4') then
             nbnv = 4
-        else if (noeuv.eq.'8') then
+        else if (noeuv .eq. '8') then
             nbnv = 8
         else
             nbnv = 9
-        endif
-    endif
+        end if
+    end if
 !
 ! 2.3 ----- ADRESSE DANS LE VECTEUR DES CONTRAINTES DE LA PREMIERE
 !           COMPOSANTE DU 1ER NOEUD DE L'ELEMENT IEL DE NUMERO IGREL
@@ -256,7 +256,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 ! ADRESSE DU POINTEUR DE LONGUEUR DE LA CONNECTIVITE
     iconx2 = tbref1(12)
 !
-    jad = iconx1-1+zi(iconx2+zi(ivois )-1)
+    jad = iconx1-1+zi(iconx2+zi(ivois)-1)
     jadv = iconx1-1+zi(iconx2+zi(ivois+ino)-1)
 !
 !     NCHER : NUMERO GLOBAL DU NOEUD LOCAL INO DANS LA MAILLE COURANTE
@@ -266,12 +266,12 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !     ON CHERCHE A QUEL NUMERO LOCAL (INOV) DANS LA MAILLE VOISINE
 !     CORRESPOND LE NOEUD DE NUMERO GLOBAL NCHER
 !
-    inov = indiis(zi(jadv),ncher,1,nbnv)
+    inov = indiis(zi(jadv), ncher, 1, nbnv)
 !
 !     IDEM POUR JNO LOCAL DE LA MAILLE COURANTE
 !
     ncher = zi(jad-1+jno)
-    jnov = indiis(zi(jadv),ncher,1,nbnv)
+    jnov = indiis(zi(jadv), ncher, 1, nbnv)
 !
 ! ADRESSE DES NOEUDS INOV ET JNOV DE LA MAILLE VOISINE
 ! DE L'ELEMENT COURANT
@@ -298,12 +298,12 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !
 ! 2.4. NOEUD MILIEU
 !
-    mno=nbs+ino
+    mno = nbs+ino
 !
 ! MEME OPERATION QUE POUR LES EXTREMITES : ON PASSE PAR LE NUMERO GLOBAL
 !
     ncher = zi(jad-1+mno)
-    mnov = indiis(zi(jadv),ncher,1,nbnv)
+    mnov = indiis(zi(jadv), ncher, 1, nbnv)
 !
 ! ADRESSE DU NOEUD MNOV DE LA MAILLE VOISINE DE L'ELEMENT COURANT
 !
@@ -339,12 +339,12 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !
 ! NOEUD MILIEU
 !
-        mno = nbs + ino
+        mno = nbs+ino
 !
 ! MEME OPERATION QUE POUR LES EXTREMITES : ON PASSE PAR LE NUMERO GLOBAL
 !
         ncher = zi(jad-1+mno)
-        mnov = indiis(zi(jadv),ncher,1,nbnv)
+        mnov = indiis(zi(jadv), ncher, 1, nbnv)
 !
 ! ADRESSE DU NOEUD MNOV DE LA MAILLE VOISINE DE L'ELEMENT COURANT
 !
@@ -358,7 +358,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
         fluxmv(3) = zr(iaux+adsip+ibid+1+5)
         fluymv(3) = zr(iaux+adsip+ibid+2+5)
 !
-    endif
+    end if
 !
 ! =====================================================================
 ! 3. --- CALCUL DES SAUTS DES TERMES DIFFUSIFS
@@ -370,61 +370,61 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !
 ! 3.1. SAUTS EN CHAQUE NOEUD DE L'ARETE
 !
-    do 10 , i=1 , 3
+    do 10, i = 1, 3
 !
-    dsgxxp(i) = sixxp(i) - sixxpv(i)
-    dsgyyp(i) = siyyp(i) - siyypv(i)
-    dsgxyp(i) = sixyp(i) - sixypv(i)
+        dsgxxp(i) = sixxp(i)-sixxpv(i)
+        dsgyyp(i) = siyyp(i)-siyypv(i)
+        dsgxyp(i) = sixyp(i)-sixypv(i)
 !
-    dmxp(i) = fluxp(i) - fluxpv(i)
-    dmyp(i) = fluyp(i) - fluypv(i)
+        dmxp(i) = fluxp(i)-fluxpv(i)
+        dmyp(i) = fluyp(i)-fluypv(i)
 !
 ! POUR L'INTEGRATION NUMERIQUE, ON UTILISE :
 !      . SI 3 NOEUDS SOMMETS, UNE FORMULATION DE SIMPSON
 !      . SI 2 NOEUDS SOMMETS, UNE METHODE DES TRAPEZES
 !
-    intme1(i) = jac(i)* ( (dsgxxp(i)*nx(i) + dsgxyp(i)*ny(i))**2 +(dsgxyp(i)*nx(i) + dsgyyp(i)*ny&
-                &(i))**2 )
+        intme1(i) = jac(i)*((dsgxxp(i)*nx(i)+dsgxyp(i)*ny(i))**2+(dsgxyp(i)*nx(i)+dsgyyp(i)*ny&
+                    &(i))**2)
 !
-    dmxfin(i) = theta * dmxp(i)
-    dmyfin(i) = theta * dmyp(i)
+        dmxfin(i) = theta*dmxp(i)
+        dmyfin(i) = theta*dmyp(i)
 !
-    if (.not. perman) then
+        if (.not. perman) then
 !
-        dsgxxm(i) = sixxm(i) - sixxmv(i)
-        dsgyym(i) = siyym(i) - siyymv(i)
-        dsgxym(i) = sixym(i) - sixymv(i)
+            dsgxxm(i) = sixxm(i)-sixxmv(i)
+            dsgyym(i) = siyym(i)-siyymv(i)
+            dsgxym(i) = sixym(i)-sixymv(i)
 !
-        dmxm(i) = fluxm(i) - fluxmv(i)
-        dmym(i) = fluym(i) - fluymv(i)
+            dmxm(i) = fluxm(i)-fluxmv(i)
+            dmym(i) = fluym(i)-fluymv(i)
 !
-        intme2(i) = jac(i)* ( ( (dsgxxp(i) - dsgxxm(i))*nx(i) +(dsgxyp(i) - dsgxym(i))*ny(i))**2 &
-                    &+( (dsgxyp(i) - dsgxym( i))*nx(i) +(dsgyyp(i) - dsgyym(i))*ny(i))**2 )
+            intme2(i) = jac(i)*(((dsgxxp(i)-dsgxxm(i))*nx(i)+(dsgxyp(i)-dsgxym(i))*ny(i))**2 &
+                        &+((dsgxyp(i)-dsgxym(i))*nx(i)+(dsgyyp(i)-dsgyym(i))*ny(i))**2)
 !
-        dmxfin(i) = theta * dmxp(i) + ta1 * dmxm(i)
-        dmyfin(i) = theta * dmyp(i) + ta1 * dmym(i)
+            dmxfin(i) = theta*dmxp(i)+ta1*dmxm(i)
+            dmyfin(i) = theta*dmyp(i)+ta1*dmym(i)
 !
-    endif
+        end if
 !
 ! =====================================================================
 ! 3.B --- PARTIE HYDRAULIQUE
 ! =====================================================================
 !
-    inthyd(i) = jac(i)*((dmxfin(i)*nx(i) + dmyfin(i)*ny(i))**2)
+        inthyd(i) = jac(i)*((dmxfin(i)*nx(i)+dmyfin(i)*ny(i))**2)
 !
-    10 end do
+10  end do
 !
 ! =====================================================================
 ! 3.C --- ASSEMBLAGE DES DIFFERENTS TERMES
 ! =====================================================================
 !
-    tm2h1s(1) = tm2h1s(1) + ((intme1(1)+4.d0*intme1(3)+intme1(2))/3.d0)
-    tm2h1s(3) = tm2h1s(3) + ((inthyd(1)+4.d0*inthyd(3)+inthyd(2))/3.d0)
+    tm2h1s(1) = tm2h1s(1)+((intme1(1)+4.d0*intme1(3)+intme1(2))/3.d0)
+    tm2h1s(3) = tm2h1s(3)+((inthyd(1)+4.d0*inthyd(3)+inthyd(2))/3.d0)
 !
     if (.not. perman) then
 !
-        tm2h1s(2) = tm2h1s(2) + (intme2(1)+4.d0*intme2(3)+intme2(2))/ 3.d0
+        tm2h1s(2) = tm2h1s(2)+(intme2(1)+4.d0*intme2(3)+intme2(2))/3.d0
 !
-    endif
+    end if
 !
 end subroutine

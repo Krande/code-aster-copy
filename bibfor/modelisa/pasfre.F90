@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pasfre(disc, freq, pasf, dim, nbm,&
+subroutine pasfre(disc, freq, pasf, dim, nbm, &
                   iv, imodi, freqi, freqf, nb)
     implicit none
 !  CALCUL DE LA DISCRETISATION FREQUENTIELLE
@@ -61,73 +61,73 @@ subroutine pasfre(disc, freq, pasf, dim, nbm,&
     nb4 = nb/4
     pi = r8pi()
     nbpf = nb*dim
-    nbz = 4 *dim
+    nbz = 4*dim
 !
-    disc(1,1) = freqi
-    disc(2,nbz) = freqf
+    disc(1, 1) = freqi
+    disc(2, nbz) = freqf
 !
     do im = 1, dim
-        numo = imodi + (im-1)
+        numo = imodi+(im-1)
 !
-        if (freq(2,numo,iv) .lt. 0.d0) then
-            df = 20.d0*freq(1,numo,iv) * 1.d-06
+        if (freq(2, numo, iv) .lt. 0.d0) then
+            df = 20.d0*freq(1, numo, iv)*1.d-06
         else
-            df = 2.d0*pi*freq(1,numo,iv)*freq(2,numo,iv)
-        endif
+            df = 2.d0*pi*freq(1, numo, iv)*freq(2, numo, iv)
+        end if
 !
         if (im .gt. 1) then
             ip = im-1
-            disc(1,ip*4+1) = disc(2,ip*4)
-        endif
+            disc(1, ip*4+1) = disc(2, ip*4)
+        end if
 !
         if (im .lt. dim) then
-            disc(2,(im-1)*4+4) = (freq(1,numo,iv)+freq(1,numo+1,iv))/ 2.d0
-        endif
+            disc(2, (im-1)*4+4) = (freq(1, numo, iv)+freq(1, numo+1, iv))/2.d0
+        end if
 !
-        dff = freq(1,numo,iv)-disc(1,(im-1)*4+1)
+        dff = freq(1, numo, iv)-disc(1, (im-1)*4+1)
         if (df .ge. dff) then
-            disc(2,(im-1)*4+1) = freq(1,numo,iv) - (dff/2.d0)
-            disc(1,(im-1)*4+2) = freq(1,numo,iv) - (dff/2.d0)
+            disc(2, (im-1)*4+1) = freq(1, numo, iv)-(dff/2.d0)
+            disc(1, (im-1)*4+2) = freq(1, numo, iv)-(dff/2.d0)
         else
-            disc(2,(im-1)*4+1) = freq(1,numo,iv) - df
-            disc(1,(im-1)*4+2) = freq(1,numo,iv) - df
-        endif
+            disc(2, (im-1)*4+1) = freq(1, numo, iv)-df
+            disc(1, (im-1)*4+2) = freq(1, numo, iv)-df
+        end if
 !
-        disc(2,(im-1)*4+2) = freq(1,numo,iv)
-        disc(1,(im-1)*4+3) = freq(1,numo,iv)
+        disc(2, (im-1)*4+2) = freq(1, numo, iv)
+        disc(1, (im-1)*4+3) = freq(1, numo, iv)
 !
-        dff = disc(2,(im-1)*4+4) - freq(1,numo,iv)
+        dff = disc(2, (im-1)*4+4)-freq(1, numo, iv)
         if (df .ge. dff) then
-            disc(2,(im-1)*4+3) = freq(1,numo,iv) + (dff/2.d0)
-            disc(1,(im-1)*4+4) = freq(1,numo,iv) + (dff/2.d0)
+            disc(2, (im-1)*4+3) = freq(1, numo, iv)+(dff/2.d0)
+            disc(1, (im-1)*4+4) = freq(1, numo, iv)+(dff/2.d0)
         else
-            disc(2,(im-1)*4+3) = freq(1,numo,iv) + df
-            disc(1,(im-1)*4+4) = freq(1,numo,iv) + df
-        endif
+            disc(2, (im-1)*4+3) = freq(1, numo, iv)+df
+            disc(1, (im-1)*4+4) = freq(1, numo, iv)+df
+        end if
     end do
 !
     if = 1
     do iz = 1, nbz
         if (iz .lt. nbz) then
-            fmin = disc(1,iz)
-            fmax = disc(2,iz)
-            pas = (fmax - fmin) / dble(nb4)
+            fmin = disc(1, iz)
+            fmax = disc(2, iz)
+            pas = (fmax-fmin)/dble(nb4)
             pasf(if) = fmin
             do ip = 1, nb4-1
                 if = if+1
-                pasf(if) = fmin + pas*ip
+                pasf(if) = fmin+pas*ip
             end do
             if = if+1
         else
-            fmin = disc(1,iz)
-            fmax = disc(2,iz)
-            pas = (fmax - fmin) / dble(nb4-1)
+            fmin = disc(1, iz)
+            fmax = disc(2, iz)
+            pas = (fmax-fmin)/dble(nb4-1)
             pasf(if) = fmin
             do ip = 1, nb4-2
                 if = if+1
-                pasf(if) = fmin + pas*ip
+                pasf(if) = fmin+pas*ip
             end do
-        endif
+        end if
     end do
     pasf(nbpf) = fmax
 end subroutine

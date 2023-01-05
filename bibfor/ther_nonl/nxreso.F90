@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+subroutine nxreso(matass, maprec, solver, cnchci, cn2mbr, &
                   chsolu)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/resoud.h"
@@ -52,8 +52,8 @@ implicit none
 !
     criter = '&&RESGRA_GCPC'
 
-    call resoud(matass, maprec, solver, cnchci, 0,&
-                cn2mbr, chsolu, 'V', [0.d0], [cbid],&
+    call resoud(matass, maprec, solver, cnchci, 0, &
+                cn2mbr, chsolu, 'V', [0.d0], [cbid], &
                 criter, .true._1, 0, iret)
 !
 

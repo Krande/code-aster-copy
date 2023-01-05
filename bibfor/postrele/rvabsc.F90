@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,9 +71,9 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 !
     tabsc(1) = 0.0d0
 !
-    xp = vale(1+ (tnd(1)-1)*3 + 1-1)
-    yp = vale(1+ (tnd(1)-1)*3 + 2-1)
-    zzp = vale(1+ (tnd(1)-1)*3 + 3-1)
+    xp = vale(1+(tnd(1)-1)*3+1-1)
+    yp = vale(1+(tnd(1)-1)*3+2-1)
+    zzp = vale(1+(tnd(1)-1)*3+3-1)
 !
     tcoor(1) = xp
     tcoor(2) = yp
@@ -81,17 +81,17 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 !
     do i = 2, nbn, 1
 !
-        xc = vale(1+ (tnd(i)-1)*3 + 1-1)
-        yc = vale(1+ (tnd(i)-1)*3 + 2-1)
-        zzc = vale(1+ (tnd(i)-1)*3 + 3-1)
+        xc = vale(1+(tnd(i)-1)*3+1-1)
+        yc = vale(1+(tnd(i)-1)*3+2-1)
+        zzc = vale(1+(tnd(i)-1)*3+3-1)
 !
         l = sqrt((xc-xp)*(xc-xp)+(yc-yp)*(yc-yp)+(zzc-zzp)*(zzc-zzp))
 !
-        tabsc(i) = tabsc(i-1) + l
+        tabsc(i) = tabsc(i-1)+l
 !
-        tcoor(3*(i-1) + 1) = xc
-        tcoor(3*(i-1) + 2) = yc
-        tcoor(3*(i-1) + 3) = zzc
+        tcoor(3*(i-1)+1) = xc
+        tcoor(3*(i-1)+2) = yc
+        tcoor(3*(i-1)+3) = zzc
 !
         xp = xc
         yp = yc

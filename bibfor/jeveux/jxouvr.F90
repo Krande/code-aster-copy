@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,35 +32,35 @@ subroutine jxouvr(iclas, idn, mode)
 !-----------------------------------------------------------------------
     integer :: ierr
 !-----------------------------------------------------------------------
-    parameter      ( n = 5 )
+    parameter(n=5)
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     character(len=8) :: nombas
-    common /kbasje/  nombas(n)
+    common/kbasje/nombas(n)
     character(len=128) :: repglo, repvol
-    common /banvje/  repglo,repvol
+    common/banvje/repglo, repvol
     integer :: lrepgl, lrepvo
-    common /balvje/  lrepgl,lrepvo
+    common/balvje/lrepgl, lrepvo
 !     ------------------------------------------------------------------
     character(len=512) :: nom512
     integer :: mode_
 ! DEB ------------------------------------------------------------------
     mode_ = 1
-    if ( present(mode) ) then
+    if (present(mode)) then
         mode_ = mode
     else
-      if ( kstout(iclas) == 'LIBERE' .and. kstini(iclas) == 'POURSUIT' ) then
-        mode_ = 0
-      endif
-      if ( kstini(iclas) == 'DEBUT' ) then
-        mode_ = 2
-      endif
-    endif
+        if (kstout(iclas) == 'LIBERE' .and. kstini(iclas) == 'POURSUIT') then
+            mode_ = 0
+        end if
+        if (kstini(iclas) == 'DEBUT') then
+            mode_ = 2
+        end if
+    end if
     ierr = 0
-    call get_jvbasename(nomfic(iclas)(1:4), idn, nom512)
+    call get_jvbasename(nomfic(iclas) (1:4), idn, nom512)
     call opendr(nom512, mode_, ierr)
     if (ierr .ne. 0) then
-       call utmess('F', 'JEVEUX_43', sk=nom512(1:24), si=ierr)
-    endif
+        call utmess('F', 'JEVEUX_43', sk=nom512(1:24), si=ierr)
+    end if
 end subroutine

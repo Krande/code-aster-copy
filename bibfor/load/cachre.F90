@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cachre(load, model, mesh, geomDime, valeType,&
+subroutine cachre(load, model, mesh, geomDime, valeType, &
                   param, keywordFactZ)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -37,11 +37,11 @@ implicit none
 #include "asterfort/tecart.h"
 !
 
-character(len=8), intent(in) :: load, mesh, model
-integer, intent(in) :: geomDime
-character(len=4), intent(in) :: valeType
-character(len=5), intent(in) :: param
-character(len=*), intent(in) :: keywordFactZ
+    character(len=8), intent(in) :: load, mesh, model
+    integer, intent(in) :: geomDime
+    character(len=4), intent(in) :: valeType
+    character(len=5), intent(in) :: param
+    character(len=*), intent(in) :: keywordFactZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ character(len=*), intent(in) :: keywordFactZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, n, nchre, nrep, ncmp, jvalv,  iocc, nfx, nfy, nfz
+    integer :: i, n, nchre, nrep, ncmp, jvalv, iocc, nfx, nfy, nfz
     integer :: nmx, nmy, nmz, nplan, nmgx, nmgy, nmgz
     real(kind=8) :: fx, fy, fz, mx, my, mz, vpre, mgx, mgy, mgz
     complex(kind=8) :: cfx, cfy, cfz, cmx, cmy, cmz, cvpre
@@ -83,13 +83,13 @@ character(len=*), intent(in) :: keywordFactZ
 !
     if (valeType .eq. 'REEL') then
         call alcart('G', carte, mesh, 'FORC_R')
-    else if (valeType.eq.'FONC') then
+    else if (valeType .eq. 'FONC') then
         call alcart('G', carte, mesh, 'FORC_F')
-    else if (valeType.eq.'COMP') then
+    else if (valeType .eq. 'COMP') then
         call alcart('G', carte, mesh, 'FORC_C')
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
@@ -112,15 +112,15 @@ character(len=*), intent(in) :: keywordFactZ
     if (valeType(1:4) .eq. 'REEL') then
         do i = 1, 11
             zr(jvalv-1+i) = 0.d0
-        enddo
-    else if (valeType(1:4).eq.'COMP') then
+        end do
+    else if (valeType(1:4) .eq. 'COMP') then
         do i = 1, 11
-            zc(jvalv-1+i) = dcmplx( 0.d0 , 0.d0 )
-        enddo
-    else if (valeType.eq.'FONC') then
+            zc(jvalv-1+i) = dcmplx(0.d0, 0.d0)
+        end do
+    else if (valeType .eq. 'FONC') then
         do i = 1, 6
             zk8(jvalv-1+i) = '&FOZERO'
-        enddo
+        end do
         zk8(jvalv-1+7) = 'GLOBAL'
         zk8(jvalv-1+8) = '&FOZERO'
         zk8(jvalv-1+9) = '&FOZERO'
@@ -128,7 +128,7 @@ character(len=*), intent(in) :: keywordFactZ
         zk8(jvalv-1+11) = '&FOZERO'
     else
         ASSERT(.false.)
-    endif
+    end if
     call nocart(carte, 1, 11)
 !
 ! --- STOCKAGE DANS LA CARTE ---
@@ -139,13 +139,13 @@ character(len=*), intent(in) :: keywordFactZ
         if (keywordFact .eq. 'FORCE_POUTRE') then
             call getvtx(keywordFact, 'TYPE_CHARGE', iocc=iocc, scal=typch, nbret=n)
             if (typch .eq. 'VENT') nrep = 2
-        endif
+        end if
         if (valeType .eq. 'COMP') then
             call getvc8(keywordFact, 'FX', iocc=iocc, scal=cfx, nbret=nfx)
             call getvc8(keywordFact, 'FY', iocc=iocc, scal=cfy, nbret=nfy)
             call getvc8(keywordFact, 'FZ', iocc=iocc, scal=cfz, nbret=nfz)
-            if (keywordFact .ne. 'FORCE_INTERNE' .and.&
-                keywordFact .ne. 'FORCE_POUTRE' .and.&
+            if (keywordFact .ne. 'FORCE_INTERNE' .and. &
+                keywordFact .ne. 'FORCE_POUTRE' .and. &
                 keywordFact .ne. 'FORCE_FACE') then
                 call getvc8(keywordFact, 'MX', iocc=iocc, scal=cmx, nbret=nmx)
                 call getvc8(keywordFact, 'MY', iocc=iocc, scal=cmy, nbret=nmy)
@@ -154,7 +154,7 @@ character(len=*), intent(in) :: keywordFactZ
                 nmx = 0
                 nmy = 0
                 nmz = 0
-            endif
+            end if
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
                 if (keywordFact .eq. 'FORCE_POUTRE') then
                     nrep = 1
@@ -178,48 +178,48 @@ character(len=*), intent(in) :: keywordFactZ
                         nmx = 0
                         nmy = 0
                         nmz = 0
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
             if (nfx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FX'
                 zc(jvalv-1+ncmp) = cfx
-            endif
+            end if
             if (nfy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FY'
                 zc(jvalv-1+ncmp) = cfy
-            endif
+            end if
             if (nfz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FZ'
                 zc(jvalv-1+ncmp) = cfz
-            endif
+            end if
             if (nmx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MX'
                 zc(jvalv-1+ncmp) = cmx
-            endif
+            end if
             if (nmy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MY'
                 zc(jvalv-1+ncmp) = cmy
-            endif
+            end if
             if (nmz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MZ'
                 zc(jvalv-1+ncmp) = cmz
-            endif
+            end if
             if (nrep .ge. 1) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'REP'
-                if (nrep .eq. 1) zc(jvalv-1+ncmp) = dcmplx(1.d0,1.d0)
-                if (nrep .eq. 2) zc(jvalv-1+ncmp) = dcmplx(2.d0,2.d0)
+                if (nrep .eq. 1) zc(jvalv-1+ncmp) = dcmplx(1.d0, 1.d0)
+                if (nrep .eq. 2) zc(jvalv-1+ncmp) = dcmplx(2.d0, 2.d0)
                 if (nrep .eq. 1) zc(jvalv-1+ncmp) = 1.d0
                 if (nrep .eq. 2) zc(jvalv-1+ncmp) = 2.d0
-            endif
-        else if (valeType.eq.'REEL') then
+            end if
+        else if (valeType .eq. 'REEL') then
             call getvr8(keywordFact, 'FX', iocc=iocc, scal=fx, nbret=nfx)
             call getvr8(keywordFact, 'FY', iocc=iocc, scal=fy, nbret=nfy)
             call getvr8(keywordFact, 'FZ', iocc=iocc, scal=fz, nbret=nfz)
@@ -228,20 +228,20 @@ character(len=*), intent(in) :: keywordFactZ
                 call getvr8(keywordFact, 'MX', iocc=iocc, scal=mx, nbret=nmx)
                 call getvr8(keywordFact, 'MY', iocc=iocc, scal=my, nbret=nmy)
                 call getvr8(keywordFact, 'MZ', iocc=iocc, scal=mz, nbret=nmz)
-             else
-               nmx = 0
-               nmy = 0
-               nmz = 0
-            endif
-            if (keywordFact .eq. 'FORCE_POUTRE') then
-               call getvr8(keywordFact, 'MGX', iocc=iocc, scal=mgx, nbret=nmgx)
-               call getvr8(keywordFact, 'MGY', iocc=iocc, scal=mgy, nbret=nmgy)
-               call getvr8(keywordFact, 'MGZ', iocc=iocc, scal=mgz, nbret=nmgz)
             else
-               nmgx = 0
-               nmgy = 0
-               nmgz = 0
-            endif
+                nmx = 0
+                nmy = 0
+                nmz = 0
+            end if
+            if (keywordFact .eq. 'FORCE_POUTRE') then
+                call getvr8(keywordFact, 'MGX', iocc=iocc, scal=mgx, nbret=nmgx)
+                call getvr8(keywordFact, 'MGY', iocc=iocc, scal=mgy, nbret=nmgy)
+                call getvr8(keywordFact, 'MGZ', iocc=iocc, scal=mgz, nbret=nmgz)
+            else
+                nmgx = 0
+                nmgy = 0
+                nmgz = 0
+            end if
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
                 if (keywordFact .eq. 'FORCE_POUTRE') then
                     nrep = 1
@@ -268,61 +268,61 @@ character(len=*), intent(in) :: keywordFactZ
                         nmx = 0
                         nmy = 0
                         nmz = 0
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
             if (nfx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FX'
                 zr(jvalv-1+ncmp) = fx
-            endif
+            end if
             if (nfy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FY'
                 zr(jvalv-1+ncmp) = fy
-            endif
+            end if
             if (nfz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FZ'
                 zr(jvalv-1+ncmp) = fz
-            endif
+            end if
             if (nmx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MX'
                 zr(jvalv-1+ncmp) = mx
-            endif
+            end if
             if (nmy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MY'
                 zr(jvalv-1+ncmp) = my
-            endif
+            end if
             if (nmz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MZ'
                 zr(jvalv-1+ncmp) = mz
-            endif
+            end if
             if (nmgx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MGX'
                 zr(jvalv-1+ncmp) = mgx
-            endif
+            end if
             if (nmgy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MGY'
                 zr(jvalv-1+ncmp) = mgy
-            endif
+            end if
             if (nmgz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MGZ'
                 zr(jvalv-1+ncmp) = mgz
-            endif
+            end if
 
             if (nrep .ge. 1) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'REP'
                 if (nrep .eq. 1) zr(jvalv-1+ncmp) = 1.d0
                 if (nrep .eq. 2) zr(jvalv-1+ncmp) = 2.d0
-            endif
+            end if
         else
             call getvid(keywordFact, 'FX', iocc=iocc, scal=kfx, nbret=nfx)
             call getvid(keywordFact, 'FY', iocc=iocc, scal=kfy, nbret=nfy)
@@ -333,19 +333,19 @@ character(len=*), intent(in) :: keywordFactZ
                 call getvid(keywordFact, 'MY', iocc=iocc, scal=kmy, nbret=nmy)
                 call getvid(keywordFact, 'MZ', iocc=iocc, scal=kmz, nbret=nmz)
             else
-               nmx = 0
-               nmy = 0
-               nmz = 0
-            endif
+                nmx = 0
+                nmy = 0
+                nmz = 0
+            end if
             if (keywordFact .eq. 'FORCE_POUTRE') then
-               call getvid(keywordFact, 'MGX', iocc=iocc, scal=kmgx, nbret=nmgx)
-               call getvid(keywordFact, 'MGY', iocc=iocc, scal=kmgy, nbret=nmgy)
-               call getvid(keywordFact, 'MGZ', iocc=iocc, scal=kmgz, nbret=nmgz)
+                call getvid(keywordFact, 'MGX', iocc=iocc, scal=kmgx, nbret=nmgx)
+                call getvid(keywordFact, 'MGY', iocc=iocc, scal=kmgy, nbret=nmgy)
+                call getvid(keywordFact, 'MGZ', iocc=iocc, scal=kmgz, nbret=nmgz)
             else
-               nmgx = 0
-               nmgy = 0
-               nmgz = 0
-            endif
+                nmgx = 0
+                nmgy = 0
+                nmgz = 0
+            end if
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
                 if (keywordFact .eq. 'FORCE_POUTRE') then
                     nrep = 1
@@ -372,91 +372,91 @@ character(len=*), intent(in) :: keywordFactZ
                         nmy = 0
                         nmz = 0
                         nrep = 3
-                    endif
-                endif
-            endif
+                    end if
+                end if
+            end if
             if (nfx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FX'
                 zk8(jvalv-1+ncmp) = kfx
-            endif
+            end if
             if (nfy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FY'
                 zk8(jvalv-1+ncmp) = kfy
-            endif
+            end if
             if (nfz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'FZ'
                 zk8(jvalv-1+ncmp) = kfz
-            endif
+            end if
             if (nmx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MX'
                 zk8(jvalv-1+ncmp) = kmx
-            endif
+            end if
             if (nmy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MY'
                 zk8(jvalv-1+ncmp) = kmy
-            endif
+            end if
             if (nmz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MZ'
                 zk8(jvalv-1+ncmp) = kmz
-            endif
+            end if
             if (nmgx .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MGX'
                 zk8(jvalv-1+ncmp) = kmgx
-            endif
+            end if
             if (nmgy .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MGY'
                 zk8(jvalv-1+ncmp) = kmgy
-            endif
+            end if
             if (nmgz .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'MGZ'
                 zk8(jvalv-1+ncmp) = kmgz
-            endif
+            end if
 
             if (nrep .ge. 1) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'REP'
                 if (nrep .eq. 1) zk8(jvalv-1+ncmp) = 'LOCAL'
                 if (nrep .eq. 2) zk8(jvalv-1+ncmp) = 'VENT'
                 if (nrep .eq. 3) zk8(jvalv-1+ncmp) = 'LOCAL_PR'
 ! --           (NREP=3) CAS D UNE PRESSION --> ON PREND L OPPOSE DE
 ! --           LA VALEUR LUE DANS LE TE
-            endif
-        endif
+            end if
+        end if
         if (ncmp .eq. 0) goto 20
 !
         if (keywordFact .eq. 'FORCE_COQUE') then
             call getvtx(keywordFact, 'PLAN', iocc=iocc, scal=plan, nbret=nplan)
             if (nplan .ne. 0) then
-                ncmp = ncmp + 1
+                ncmp = ncmp+1
                 vncmp(ncmp) = 'PLAN'
                 if (valeType .eq. 'REEL') then
                     if (plan .eq. 'MAIL') then
                         zr(jvalv-1+ncmp) = dble(0)
-                    else if (plan.eq.'INF') then
+                    else if (plan .eq. 'INF') then
                         zr(jvalv-1+ncmp) = dble(-1)
-                    else if (plan.eq.'SUP') then
+                    else if (plan .eq. 'SUP') then
                         zr(jvalv-1+ncmp) = dble(1)
-                    else if (plan.eq.'MOY') then
+                    else if (plan .eq. 'MOY') then
                         zr(jvalv-1+ncmp) = dble(2)
-                    endif
-                else if (valeType.eq.'FONC') then
+                    end if
+                else if (valeType .eq. 'FONC') then
                     zk8(jvalv-1+ncmp) = plan
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(model , mesh, geomDime, keywordFact, iocc, 1,&
+        call char_affe_neum(model, mesh, geomDime, keywordFact, iocc, 1, &
                             cartes, ncmps)
 !
 20      continue

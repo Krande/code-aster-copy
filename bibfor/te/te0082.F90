@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0082(option, nomte)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -39,7 +39,7 @@ implicit none
 #include "asterfort/vecma.h"
 #include "blas/ddot.h"
 !
-character(len=16) :: option, nomte
+    character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,46 +75,46 @@ character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='MASS',nno=nno,nnos=nnos,&
-                     npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde)
-    nddl = 2 * nno
-    nvec = nddl * ( nddl + 1 ) / 2
+    call elrefe_info(fami='MASS', nno=nno, nnos=nnos, &
+                     npg=npg2, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+    nddl = 2*nno
+    nvec = nddl*(nddl+1)/2
 !
 ! - Get model of finite element
 !
-    call thmGetElemModel(ds_thm, l_axi_ = l_axi)
+    call thmGetElemModel(ds_thm, l_axi_=l_axi)
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, ASTER_FALSE, ASTER_FALSE, 2    ,&
-                    mecani, press1     , press2     , tempe)
-    if (lteatt('TYPMOD2','THM')) then
-        idec = press1(1) + press2(1) + tempe(1)
+    call thmGetGene(ds_thm, ASTER_FALSE, ASTER_FALSE, 2, &
+                    mecani, press1, press2, tempe)
+    if (lteatt('TYPMOD2', 'THM')) then
+        idec = press1(1)+press2(1)+tempe(1)
     else
         idec = 0
-    endif
+    end if
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+    call rcvalb('FPG1', 1, 1, '+', zi(imate), &
+                ' ', phenom, 0, ' ', [0.d0], &
                 1, 'RHO', valres, icodre(1), 1)
 !
     matv(:) = 0.d0
 !
     do kp = 1, npg2
         k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom), &
                     poids)
-        if (lteatt('AXIS','OUI')) then
+        if (lteatt('AXIS', 'OUI')) then
             r = 0.0d0
             do i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
             end do
             poids = poids*r
-        endif
+        end if
         poids = poids*valres(1)
 !
         kd1 = 2
@@ -129,8 +129,8 @@ character(len=16) :: option, nomte
                 ij2 = kd2+j-1
                 vfi = zr(ivf+k+ii-1)
                 vfj = zr(ivf+k+jj-1)
-                matv(ij1 ) = matv(ij1 ) + poids*vfi*vfj
-                matv(ij2+1) = matv(ij2+1) + poids*vfi*vfj
+                matv(ij1) = matv(ij1)+poids*vfi*vfj
+                matv(ij2+1) = matv(ij2+1)+poids*vfi*vfj
             end do
         end do
     end do
@@ -149,7 +149,7 @@ character(len=16) :: option, nomte
                         i2 = i+idec*(k-1)
                     else
                         i2 = i+idec*nnos
-                    endif
+                    end if
                     do l = 1, nno
                         do n2 = 1, 2
                             j = 2*l+n2-2
@@ -158,14 +158,14 @@ character(len=16) :: option, nomte
                                 j2 = j+idec*(l-1)
                             else
                                 j2 = j+idec*nnos
-                            endif
-                            zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1) /2+j)
+                            end if
+                            zr(imatuu+i2*(i2-1)/2+j2-1) = matv(i*(i-1)/2+j)
                         end do
                     end do
 105                 continue
                 end do
             end do
-        endif
+        end if
 !
     else if (option .eq. 'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
@@ -185,7 +185,7 @@ character(len=16) :: option, nomte
                         i2 = i+idec*(k-1)
                     else
                         i2 = i+idec*nnos
-                    endif
+                    end if
                     vect1(i) = zr(iacce+i2-1)
                 end do
             end do
@@ -197,23 +197,23 @@ character(len=16) :: option, nomte
                         i2 = i+idec*(k-1)
                     else
                         i2 = i+idec*nnos
-                    endif
+                    end if
                     zr(ivect+i2-1) = vect2(i)
                 end do
             end do
-        endif
+        end if
 !
 ! OPTION ECIN_ELEM : CALCUL DE L'ENERGIE CINETIQUE
 !
     else if (option .eq. 'ECIN_ELEM') then
-        stopz='ONO'
+        stopz = 'ONO'
         call tecach(stopz, 'PVITESR', 'L', iret, iad=ivite)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
             call jevech('PENERCR', 'E', iecin)
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(ivite), masvit)
-            zr(iecin) = .5d0*ddot(nddl,zr(ivite),1,masvit,1)
+            zr(iecin) = .5d0*ddot(nddl, zr(ivite), 1, masvit, 1)
         else
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=idepl)
             if (iret .eq. 0) then
@@ -221,14 +221,14 @@ character(len=16) :: option, nomte
                 call jevech('POMEGA2', 'L', ifreq)
                 call vecma(matv, nvec, matp, nddl)
                 call pmavec('ZERO', nddl, matp, zr(idepl), masdep)
-                zr(iecin) = .5d0*ddot(nddl,zr(idepl),1,masdep,1)*zr( ifreq)
+                zr(iecin) = .5d0*ddot(nddl, zr(idepl), 1, masdep, 1)*zr(ifreq)
             else
                 call utmess('F', 'ELEMENTS2_1', sk=option)
-            endif
-        endif
+            end if
+        end if
 !
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

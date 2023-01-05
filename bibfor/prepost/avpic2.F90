@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
-                  npoin, jvalpo, jvalor, npic, jpic,&
+subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv, &
+                  npoin, jvalpo, jvalor, npic, jpic, &
                   jordpi)
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
@@ -73,7 +73,7 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
     if (method .ne. 'RAINFLOW') then
         k8b = method(1:8)
         call utmess('F', 'PREPOST_4', sk=k8b)
-    endif
+    end if
 !
     do ivect = 1, nbvec
 !
@@ -81,35 +81,35 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
 ! AU TEST SI (IFLAG(IVECT) .EQ. 3).
         if (npoin(ivect) .eq. 0) then
             goto 10
-        endif
+        end if
 !
 ! ----- RECHERCHE DU POINT LE PLUS GRAND EN VALEUR ABSOLUE -----
 !
         ASSERT(nbordr .ge. npoin(ivect))
         adrs = (ivect-1)*(nbordr+2)
 !
-        pmax = abs(zr(jvalpo + (ivect-1)*nbordr + 1))
+        pmax = abs(zr(jvalpo+(ivect-1)*nbordr+1))
         nmax = 1
         do i = 2, npoin(ivect)
-            if (abs(zr(jvalpo + (ivect-1)*nbordr + i)) .gt. pmax*(1.0d0+ epsilo)) then
+            if (abs(zr(jvalpo+(ivect-1)*nbordr+i)) .gt. pmax*(1.0d0+epsilo)) then
 !
-                pmax = abs(zr(jvalpo + (ivect-1)*nbordr + i))
+                pmax = abs(zr(jvalpo+(ivect-1)*nbordr+i))
                 nmax = i
-            endif
+            end if
         end do
-        pmax = zr(jvalpo + (ivect-1)*nbordr + nmax)
+        pmax = zr(jvalpo+(ivect-1)*nbordr+nmax)
         ntrv = npoin(ivect)
 !
 ! ----- REARANGEMENT AVEC POINT LE PLUS GRAND AU DEBUT
 !       ET A LA FIN                                    -----
 !
         do i = nmax, npoin(ivect)
-            zr(jrtrv + i-nmax+1) = zr(jvalpo + (ivect-1)*nbordr + i)
-            zi(jitrv + i-nmax+1) = zi(jvalor + (ivect-1)*nbordr + i)
+            zr(jrtrv+i-nmax+1) = zr(jvalpo+(ivect-1)*nbordr+i)
+            zi(jitrv+i-nmax+1) = zi(jvalor+(ivect-1)*nbordr+i)
         end do
         do i = 1, nmax-1
-            zr(jrtrv +npoin(ivect)+i-nmax+1) = zr(jvalpo + (ivect-1)*nbordr + i)
-            zi(jitrv +npoin(ivect)+i-nmax+1) = zi(jvalor + (ivect-1)*nbordr + i)
+            zr(jrtrv+npoin(ivect)+i-nmax+1) = zr(jvalpo+(ivect-1)*nbordr+i)
+            zi(jitrv+npoin(ivect)+i-nmax+1) = zi(jvalor+(ivect-1)*nbordr+i)
         end do
 !
 ! ----- EXTRACTION DES PICS SUR LE VECTEUR REARANGE -----
@@ -117,38 +117,38 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
 ! 1. LE PREMIER POINT EST UN PIC
 !
         npic(ivect) = 1
-        zr(jpic+ adrs + 1) = zr(jrtrv + 1)
+        zr(jpic+adrs+1) = zr(jrtrv+1)
         pinter = zr(jrtrv+2)
-        zi(jordpi + adrs + 1) = zi(jitrv + 1)
-        ointer = zi(jitrv+ 2)
+        zi(jordpi+adrs+1) = zi(jitrv+1)
+        ointer = zi(jitrv+2)
 !
 ! 2. RECHERCHE DE TOUS LES PICS
 !
         do i = 3, ntrv
-            dp1 = pinter - zr(jpic + adrs + npic(ivect))
-            dp2 = zr(jrtrv + i) - pinter
+            dp1 = pinter-zr(jpic+adrs+npic(ivect))
+            dp2 = zr(jrtrv+i)-pinter
 !
 ! 2.1 ON CONSERVE LE POINT INTERMEDIAIRE COMME UN PIC
 !
             if (dp1*dp2 .lt. -epsilo) then
-                npic(ivect) = npic(ivect) + 1
-                zr(jpic + adrs + npic(ivect)) = pinter
-                zi(jordpi + adrs + npic(ivect)) = ointer
-            endif
+                npic(ivect) = npic(ivect)+1
+                zr(jpic+adrs+npic(ivect)) = pinter
+                zi(jordpi+adrs+npic(ivect)) = ointer
+            end if
 !
 ! 2.2 LE DERNIER POINT DEVIENT POINT INTERMEDIAIRE
 !
-            pinter = zr(jrtrv + i)
-            ointer = zi(jitrv + i)
+            pinter = zr(jrtrv+i)
+            ointer = zi(jitrv+i)
         end do
 !
 ! 3. LE DERNIER POINT EST UN PIC
 !
-        npic(ivect) = npic(ivect) + 1
-        zr(jpic + adrs + npic(ivect)) = zr(jrtrv + ntrv)
-        zi(jordpi + adrs + npic(ivect)) = zi(jitrv + ntrv)
+        npic(ivect) = npic(ivect)+1
+        zr(jpic+adrs+npic(ivect)) = zr(jrtrv+ntrv)
+        zi(jordpi+adrs+npic(ivect)) = zi(jitrv+ntrv)
 !
- 10     continue
+10      continue
     end do
 !
     call jedema()

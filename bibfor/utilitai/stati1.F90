@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,22 +32,22 @@ subroutine stati1(nval, serie, moyenn, ectype)
 !
     integer :: k
 !----------------------------------------------------------------------
-    ASSERT(nval.ge.1)
+    ASSERT(nval .ge. 1)
 !
 !
 !     -- MOYENNE :
-    moyenn=0.d0
+    moyenn = 0.d0
     do k = 1, nval
-        moyenn=moyenn+serie(k)
+        moyenn = moyenn+serie(k)
     end do
-    moyenn=moyenn/nval
+    moyenn = moyenn/nval
 !
 !
 !     -- ECART-TYPE :
-    ectype=0.d0
+    ectype = 0.d0
     do k = 1, nval
-        ectype=ectype+(serie(k)-moyenn)**2
+        ectype = ectype+(serie(k)-moyenn)**2
     end do
-    ectype=sqrt(ectype/nval)
+    ectype = sqrt(ectype/nval)
 !
 end subroutine

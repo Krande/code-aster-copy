@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
 !
     integer :: ndim, ipt
     real(kind=8) :: basloc(*)
-    real(kind=8) :: p(3,3), invp(3,3)
+    real(kind=8) :: p(3, 3), invp(3, 3)
 !
 !
 !
@@ -43,17 +43,17 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
     real(kind=8) :: e1(3), e2(3), e3(3), norme
 !----------------------------------------------------------------
 !
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
-      call utmess('F', 'ELEMENTS6_9', si=ndim)
-    endif
+    if (.not. (ndim .eq. 2 .or. ndim .eq. 3)) then
+        call utmess('F', 'ELEMENTS6_9', si=ndim)
+    end if
 !
-    e1(:)=0.d0
-    e2(:)=0.d0
-    e3(:)=0.d0
+    e1(:) = 0.d0
+    e2(:) = 0.d0
+    e3(:) = 0.d0
 !
-    do  i = 1, ndim
-      e1(i) = basloc(3*ndim*(ipt-1)+i+ndim)
-      e2(i) = basloc(3*ndim*(ipt-1)+i+2*ndim)
+    do i = 1, ndim
+        e1(i) = basloc(3*ndim*(ipt-1)+i+ndim)
+        e2(i) = basloc(3*ndim*(ipt-1)+i+2*ndim)
     end do
 !
 !  *  NORMALISATION DE LA BASE
@@ -64,12 +64,12 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
 !    if (ndim.eq.3) call provec(e2, e3, e1)
 !
 !  *  CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-    p(:,1)=e1(:)
-    p(:,2)=e2(:)
-    p(:,3)=e3(:)
+    p(:, 1) = e1(:)
+    p(:, 2) = e2(:)
+    p(:, 3) = e3(:)
     do i = 1, 3
         do j = 1, 3
-            invp(i,j)=p(j,i)
+            invp(i, j) = p(j, i)
         end do
     end do
 !

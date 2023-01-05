@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine lcmmre(typmod, nmat, materd, materf, &
-                  nbcomm, cpmono, pgl, nfs, nsg,&
-                  toutms, hsr, nr, nvi, vind,&
-                  itmax, toler, timed, timef, yd,&
+                  nbcomm, cpmono, pgl, nfs, nsg, &
+                  toutms, hsr, nr, nvi, vind, &
+                  itmax, toler, timed, timef, yd, &
                   yf, deps, dy, r, iret)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -84,21 +84,21 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
     character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
     integer :: irr, decirr, nbsyst, decal, gdef
-    common/polycr/irr,decirr,nbsyst,decal,gdef
+    common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
-    common /tdim/   ndt , ndi
-    common /deps6/depsdt
+    common/tdim/ndt, ndi
+    common/deps6/depsdt
 !     ----------------------------------------------------------------
 !
-    dt=timef-timed
+    dt = timef-timed
 !     INVERSE DE L'OPERATEUR D'ELASTICITE DE HOOKE
     if (materf(nmat) .eq. 0) then
         call lcopil('ISOTROPE', typmod, materd(1), dkooh)
         call lcopil('ISOTROPE', typmod, materf(1), fkooh)
-    else if (materf(nmat).eq.1) then
+    else if (materf(nmat) .eq. 1) then
         call lcopil('ORTHOTRO', typmod, materd(1), dkooh)
         call lcopil('ORTHOTRO', typmod, materf(1), fkooh)
-    endif
+    end if
 !
     call r8inir(9, 0.d0, gamsns, 1)
     sigf(1:ndt) = yf(1:ndt)
@@ -110,84 +110,84 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
         call dscal(3, sqrt(2.d0), depst(4), 1)
     else
         call dcopy(6, deps, 1, depst, 1)
-    endif
-    depsdt=sqrt(ddot(6,depst,1,depst,1)/1.5d0)/dt
+    end if
+    depsdt = sqrt(ddot(6, depst, 1, depst, 1)/1.5d0)/dt
 !
-    nbfsys=nbcomm(nmat,2)
-    iret=0
+    nbfsys = nbcomm(nmat, 2)
+    iret = 0
 !
 !
 !     NSFA : debut de la famille IFA dans DY et YD, YF
-    nsfa=6
+    nsfa = 6
 !     NSFV : debut de la famille IFA dans les variables internes
-    nsfv=6
+    nsfv = 6
 !
     do ifa = 1, nbfsys
 !
-        ifl=nbcomm(ifa,1)
-        nuecou=nint(materf(nmat+ifl))
-        nomfam=cpmono(5*(ifa-1)+1)(1:16)
+        ifl = nbcomm(ifa, 1)
+        nuecou = nint(materf(nmat+ifl))
+        nomfam = cpmono(5*(ifa-1)+1) (1:16)
 !
-        call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
+        call lcmmsg(nomfam, nbsys, 0, pgl, mus, &
                     ng, lg, 0, q)
 !
         do is = 1, nbsys
 !           CALCUL DE LA SCISSION REDUITE
-            call caltau(ifa, is, sigf, fkooh,&
-                        nfs, nsg, toutms, taus, mus,&
+            call caltau(ifa, is, sigf, fkooh, &
+                        nfs, nsg, toutms, taus, mus, &
                         msns)
 !           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
-            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
-                        hsr, nsfv, nsfa, ifa, nbsys,&
-                        is, dt, nvi, vind, yd,&
-                        dy, itmax, toler, materf, expbp,&
-                        taus, dalpha, dgamma, dp, crit,&
+            call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
+                        hsr, nsfv, nsfa, ifa, nbsys, &
+                        is, dt, nvi, vind, yd, &
+                        dy, itmax, toler, materf, expbp, &
+                        taus, dalpha, dgamma, dp, crit, &
                         sgns, rp, iret)
 !
             if (iret .gt. 0) then
                 goto 999
-            endif
+            end if
 !
             if (nuecou .ge. 4) then
 !           POUR LES LOIS DD_* ALPHA représente la variable principale
-                r(nsfa+is)=-(dy(nsfa+is)-dalpha)
+                r(nsfa+is) = -(dy(nsfa+is)-dalpha)
             else
-                dgamm1=dy(nsfa+is)
-                r(nsfa+is)=-(dgamm1-dgamma)
-            endif
+                dgamm1 = dy(nsfa+is)
+                r(nsfa+is) = -(dgamm1-dgamma)
+            end if
 !
             if (gdef .eq. 0) then
-                call daxpy(6, dgamma, mus, 1, devi,&
+                call daxpy(6, dgamma, mus, 1, devi, &
                            1)
             else
-                call daxpy(9, dgamma, msns, 1, gamsns,&
+                call daxpy(9, dgamma, msns, 1, gamsns, &
                            1)
-            endif
+            end if
         end do
 !
-        nsfa=nsfa+nbsys
-        nsfv=nsfv+nbsys*3
+        nsfa = nsfa+nbsys
+        nsfv = nsfv+nbsys*3
 !
     end do
 !
     if (gdef .eq. 1) then
-        call calcfe(nr, ndt, nvi, vind, deps,&
+        call calcfe(nr, ndt, nvi, vind, deps, &
                     gamsns, fe, fp, iret)
         if (iret .gt. 0) then
             goto 999
-        endif
+        end if
         call lcgrla(fe, epsgl)
-        h1sigf(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
-        r(1:ndt) = epsgl(1:ndt) - h1sigf(1:ndt)
+        h1sigf(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
+        r(1:ndt) = epsgl(1:ndt)-h1sigf(1:ndt)
     else
         sigd(1:ndt) = yd(1:ndt)
-        epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
-        depse(1:ndt) = deps(1:ndt) - devi(1:ndt)
-        epsef(1:ndt) = epsed(1:ndt) + depse(1:ndt)
+        epsed(1:ndt) = matmul(dkooh(1:ndt, 1:ndt), sigd(1:ndt))
+        depse(1:ndt) = deps(1:ndt)-devi(1:ndt)
+        epsef(1:ndt) = epsed(1:ndt)+depse(1:ndt)
 ! LA PREMIERE EQUATION EST  (HF-1)SIGF -(HD-1)SIGD -(DEPS-DEPSP)=0
-        h1sigf(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
-        r(1:ndt) = epsef(1:ndt) - h1sigf(1:ndt)
-    endif
+        h1sigf(1:ndt) = matmul(fkooh(1:ndt, 1:ndt), sigf(1:ndt))
+        r(1:ndt) = epsef(1:ndt)-h1sigf(1:ndt)
+    end if
 !
-999  continue
+999 continue
 end subroutine

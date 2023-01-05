@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
+subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax, &
                   dom)
     implicit none
 #include "asterf_types.h"
@@ -55,7 +55,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
     integer :: i, ier, nbpar
     real(kind=8) :: rbid, zero
 !-----------------------------------------------------------------------
-    data zero /1.d-13/
+    data zero/1.d-13/
 !
     call jemarq()
 !
@@ -77,10 +77,10 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
         nbpar = 0
         nomres(2) = 'A_BASQUIN'
         nomres(3) = 'BETA_BASQUIN'
-        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
+        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid], &
                     2, nomres(2), val(2), icodre(2), 2)
         mode = 'BASQ'
-    endif
+    end if
     cara = 'A0'
     call rcpare(nommat, pheno, cara, icodhs)
     if (icodhs .eq. 0) then
@@ -92,13 +92,13 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
         nomres(9) = 'SL'
         nbpar = 0
         nompar = ' '
-        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
+        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid], &
                     6, nomres(4), val(4), icodre(4), 2)
         nomres(10) = 'E'
-        call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid],&
+        call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid], &
                     1, nomres(10), re(1), icodre(10), 2)
         mode = 'ZONE'
-    endif
+    end if
 !
     do i = 1, nbcycl
         delta = (abs(epsmax(i)-epsmin(i)))/2.d0
@@ -107,7 +107,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
 !
 ! --- INTERPOLATION SUR MANSON_COFFIN ---
 !
-            call rcvale(nommat, pheno, nbpar, nompa1, [delta],&
+            call rcvale(nommat, pheno, nbpar, nompa1, [delta], &
                         1, nomre1, nrupt(1), icodre(1), 2)
             dom(i) = 1.d0/nrupt(1)
         else
@@ -115,7 +115,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
             nomp(2) = 'EPSI'
             valp(1) = epmax
             valp(2) = delta
-            call fointe('F ', nomnap, 2, nomp, valp,&
+            call fointe('F ', nomnap, 2, nomp, valp, &
                         dnap, ier)
 !
 ! --- INTERPOLATION SUR WOHLER ---
@@ -127,25 +127,25 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
                 if (endur) then
                     dom(i) = 0.d0
                 else
-                    call rcvale(nommat, pheno, nbpar, nompar, [dnap],&
+                    call rcvale(nommat, pheno, nbpar, nompar, [dnap], &
                                 1, nomre2, nrupt(1), icodre(1), 2)
                     dom(i) = 1.d0/nrupt(1)
-                endif
-            else if (mode.eq.'BASQ') then
-                dom(i) = val(2)* dnap**val(3)
-            else if (mode.eq.'ZONE') then
+                end if
+            else if (mode .eq. 'BASQ') then
+                dom(i) = val(2)*dnap**val(3)
+            else if (mode .eq. 'ZONE') then
                 slmodi = val(9)
                 salt = (val(4)/re(1))*dnap
-                x = log10 (salt)
+                x = log10(salt)
                 if (salt .ge. slmodi) then
-                    y = val(5) + val(6)*x + val(7)*x**2 + val(8)*x**3
+                    y = val(5)+val(6)*x+val(7)*x**2+val(8)*x**3
                     nrupt(1) = 10**y
-                    dom(i) = 1.d0 / nrupt(1)
+                    dom(i) = 1.d0/nrupt(1)
                 else
                     dom(i) = 0.d0
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
     end do
 !
     call jedema()

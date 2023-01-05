@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rrssm2(neq, smhcr, smhci, smdir, smdii,&
+subroutine rrssm2(neq, smhcr, smhci, smdir, smdii, &
                   idlexc, coef, valmi, valmr)
     implicit none
 #include "jeveux.h"
@@ -56,28 +56,28 @@ subroutine rrssm2(neq, smhcr, smhci, smdir, smdii,&
             i2 = smhci(j2)
             do j1 = idebl1, ifinl1
                 i1 = smhcr(j1)
-                k = k + 1
+                k = k+1
                 if (i1 .eq. i2) goto 30
             end do
- 30         continue
+30          continue
             ind_lig(i2) = k
         end do
 !
 !
 !       -- CUMUL DANS LA MATRICE RESULTAT :
 !       ------------------------------------
-        kin1 = idebl1 - 1
+        kin1 = idebl1-1
         do j2 = idebl2, ifinl2
-            kin2 = kin2 + 1
+            kin2 = kin2+1
             i2 = smhci(j2)
             ind1 = ind_lig(i2)
-            valmr(kin1+ind1) = valmr(kin1+ind1) + coef*valmi(kin2)* ( 1-idlexc(i2))* (1-idlexc(ie&
+            valmr(kin1+ind1) = valmr(kin1+ind1)+coef*valmi(kin2)*(1-idlexc(i2))*(1-idlexc(ie&
                                &qua))
             ind_lig(i2) = 0
         end do
 !
-        idebl1 = smdir(iequa) + 1
-        idebl2 = smdii(iequa) + 1
+        idebl1 = smdir(iequa)+1
+        idebl2 = smdii(iequa)+1
     end do
     AS_DEALLOCATE(vi=ind_lig)
 !

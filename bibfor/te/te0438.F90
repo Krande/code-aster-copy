@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,13 +43,13 @@ subroutine te0438(option, nomte)
     real(kind=8) :: tang(3, 3)
 ! =====================================================================
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1),fami='NOEU',ndim=ndim,nno=nno1,nnos=nnos,&
-  npg=npgn,jpoids=iwn,jvf=ivf1n,jdfde=idf1n,jgano=jgnn)
-    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
-  npg=npg,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
-    ndim=3
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
+                     npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1), fami='NOEU', ndim=ndim, nno=nno1, nnos=nnos, &
+                     npg=npgn, jpoids=iwn, jvf=ivf1n, jdfde=idf1n, jgano=jgnn)
+    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
+                     npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
+    ndim = 3
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
     call cginit(nomte, iu, iuc, im)
 
@@ -66,13 +66,13 @@ subroutine te0438(option, nomte)
 !
 !     DEFINITION DES TANGENTES
 !
-    call cgtang(3, nno1, npgn, zr(igeom), zr(idf1n),&
+    call cgtang(3, nno1, npgn, zr(igeom), zr(idf1n), &
                 tang)
     call jevech('PDEFOPG', 'E', iepsi)
 
-    call cgepsi(ndim, nno1, nno2, npg, zr(iw),&
-                zr(ivf1), zr(idf1), zr(igeom), tang,&
-                zr(iddld),iu,iuc,zr(iepsi))
+    call cgepsi(ndim, nno1, nno2, npg, zr(iw), &
+                zr(ivf1), zr(idf1), zr(igeom), tang, &
+                zr(iddld), iu, iuc, zr(iepsi))
 
 ! ======================================================================
 end subroutine

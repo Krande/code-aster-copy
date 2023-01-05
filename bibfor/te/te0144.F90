@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,11 @@ subroutine te0144(option, nomte)
     real(kind=8) :: e, xnu, xl
 !
 ! --------------------------------------------------------------------------------------------------
-    parameter    (nbres=2)
+    parameter(nbres=2)
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
     character(len=16) :: nomres(nbres)
-    data nomres / 'E', 'NU'/
+    data nomres/'E', 'NU'/
 ! --------------------------------------------------------------------------------------------------
 !
     nno = 2
@@ -80,11 +80,11 @@ subroutine te0144(option, nomte)
     else
 !       option non programmee
         ASSERT(.false.)
-    endif
+    end if
 !
 !   point de gauss de l'element
-    call elrefe_info(fami='RIGI',npg=npg)
-    ASSERT((npg.eq.2).or.(npg.eq.3))
+    call elrefe_info(fami='RIGI', npg=npg)
+    ASSERT((npg .eq. 2) .or. (npg .eq. 3))
 !   recuperation des caracteristiques materiaux
     call jevech('PMATERC', 'L', lmater)
 !
@@ -92,7 +92,7 @@ subroutine te0144(option, nomte)
     call verifm('RIGI', npg, 1, '+', zi(lmater), epsith, iret)
     call moytem('RIGI', npg, 1, '+', temp, iret1)
 !
-    call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', 1, 'TEMP', [temp],&
+    call rcvalb('RIGI', 1, 1, '+', zi(lmater), ' ', 'ELAS', 1, 'TEMP', [temp], &
                 2, nomres, valres, codres, 1)
     e = valres(1)
     xnu = valres(2)
@@ -117,7 +117,7 @@ subroutine te0144(option, nomte)
     call jevech('PDEPLAR', 'L', jdepl)
     do i = 1, 12
         ug(i) = zr(jdepl+i-1)
-    enddo
+    end do
 !
 !   vecteur deplacement local  UL = PGL * UG
     call utpvgl(nno, nc, pgl, ug, ul)
@@ -129,17 +129,17 @@ subroutine te0144(option, nomte)
     if (epsith .ne. 0.0d0) then
         do i = 1, 12
             ug(i) = 0.0d0
-        enddo
-        ug(1) = -epsith * xl
+        end do
+        ug(1) = -epsith*xl
         ug(7) = -ug(1)
 !       calcul des forces induites
         do i = 1, 6
             do j = 1, 6
-                fl(i) = fl(i) - klc(i,j) * ug(j)
-                fl(i+6) = fl(i+6) - klc(i+6,j+6) * ug(j+6)
-            enddo
-        enddo
-    endif
+                fl(i) = fl(i)-klc(i, j)*ug(j)
+                fl(i+6) = fl(i+6)-klc(i+6, j+6)*ug(j+6)
+            end do
+        end do
+    end if
 !   archivage
     if (npg .eq. 2) then
         ASSERT(.false.)
@@ -155,8 +155,8 @@ subroutine te0144(option, nomte)
 !           c'est lineaire : (n2) = ( (n1) + (n3) )/2
         do i = 1, 6
             zr(jeffo+i-1) = -fl(i)
-            zr(jeffo+i+6-1) = (-fl(i) + fl(i+6))*0.5d0
+            zr(jeffo+i+6-1) = (-fl(i)+fl(i+6))*0.5d0
             zr(jeffo+i+12-1) = fl(i+6)
-        enddo
-    endif
+        end do
+    end if
 end subroutine

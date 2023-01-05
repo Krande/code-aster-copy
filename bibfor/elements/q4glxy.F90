@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,24 +29,24 @@ subroutine q4glxy(hlt2, depf, lambda)
 !       ---- CALCUL DE LA MATRICE TB -------------------------------
     do k = 1, 6
         do j = 1, 12
-            tb(k,j) = 0.d0
+            tb(k, j) = 0.d0
         end do
     end do
-    tb(3,2) = 0.25d0
-    tb(3,5) = -0.25d0
-    tb(3,8) = 0.25d0
-    tb(3,11) = -0.25d0
-    tb(6,3) = 0.25d0
-    tb(6,6) = -0.25d0
-    tb(6,9) = 0.25d0
-    tb(6,12) = -0.25d0
+    tb(3, 2) = 0.25d0
+    tb(3, 5) = -0.25d0
+    tb(3, 8) = 0.25d0
+    tb(3, 11) = -0.25d0
+    tb(6, 3) = 0.25d0
+    tb(6, 6) = -0.25d0
+    tb(6, 9) = 0.25d0
+    tb(6, 12) = -0.25d0
 !
 !        -------------- BLB = HLT2.TB ---------------------------
     do i = 1, 4
         do j = 1, 12
-            blb(i,j) = 0.d0
+            blb(i, j) = 0.d0
             do k = 1, 6
-                blb(i,j) = blb(i,j) + hlt2(i,k)*tb(k,j)
+                blb(i, j) = blb(i, j)+hlt2(i, k)*tb(k, j)
             end do
         end do
     end do
@@ -56,7 +56,7 @@ subroutine q4glxy(hlt2, depf, lambda)
     end do
     do i = 1, 4
         do j = 1, 12
-            lambda(i) = lambda(i) + blb(i,j)*depf(j)
+            lambda(i) = lambda(i)+blb(i, j)*depf(j)
         end do
     end do
 !

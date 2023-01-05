@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utlicm(quantityName,&
-                  cmpUserNb   , cmpUserName,&
-                  cmpCataNb   , cmpCataName,&
-                  cmpValidNb  , numcmp     ,&
-                  ntncmp      , ntucmp)
+subroutine utlicm(quantityName, &
+                  cmpUserNb, cmpUserName, &
+                  cmpCataNb, cmpCataName, &
+                  cmpValidNb, numcmp, &
+                  ntncmp, ntucmp)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/infniv.h"
 #include "asterfort/assert.h"
@@ -30,13 +30,13 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in):: quantityName
-integer, intent(in) :: cmpUserNb
-character(len=8), pointer :: cmpUserName(:)
-integer, intent(in) :: cmpCataNb
-character(len=8), pointer :: cmpCataName(:)
-integer, intent(out) :: cmpValidNb
-character(len=*), intent(in) :: numcmp, ntncmp, ntucmp
+    character(len=8), intent(in):: quantityName
+    integer, intent(in) :: cmpUserNb
+    character(len=8), pointer :: cmpUserName(:)
+    integer, intent(in) :: cmpCataNb
+    character(len=8), pointer :: cmpCataName(:)
+    integer, intent(out) :: cmpValidNb
+    character(len=*), intent(in) :: numcmp, ntncmp, ntucmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,33 +74,33 @@ character(len=*), intent(in) :: numcmp, ntncmp, ntucmp
         cmpValidNb = cmpUserNb
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     if (nivinf .gt. 1) then
-        write (ifm,*) 'NOMBRE DE COMPOSANTES DEMANDEES : ', cmpValidNb
-    endif
-    call wkvect(numcmp, 'V V I', cmpValidNb, vi = cmpIndx)
+        write (ifm, *) 'NOMBRE DE COMPOSANTES DEMANDEES : ', cmpValidNb
+    end if
+    call wkvect(numcmp, 'V V I', cmpValidNb, vi=cmpIndx)
 !
 ! - Get index of user components in physical quantity
 !
     if (cmpUserNb .eq. 0) then
-        do iCmp = 1 , cmpValidNb
+        do iCmp = 1, cmpValidNb
             cmpIndx(iCmp) = iCmp
         end do
     else
-        call irccmp('A'       , quantityName,&
-                    cmpCataNb , cmpCataName ,&
-                    cmpUserNb , cmpUserName ,&
+        call irccmp('A', quantityName, &
+                    cmpCataNb, cmpCataName, &
+                    cmpUserNb, cmpUserName, &
                     cmpValidNb, cmpIndx)
         if (cmpValidNb .ne. cmpUserNb) then
             call utmess('F', 'UTILITAI5_46', sk=quantityName)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get names of physical components
 !
-    call wkvect(ntncmp, 'V V K16', cmpValidNb, vk16 = cmpValidName)
-    call wkvect(ntucmp, 'V V K16', cmpValidNb, vk16 = cmpValidUnit)
-    do iCmp = 1 , cmpValidNb
+    call wkvect(ntncmp, 'V V K16', cmpValidNb, vk16=cmpValidName)
+    call wkvect(ntucmp, 'V V K16', cmpValidNb, vk16=cmpValidUnit)
+    do iCmp = 1, cmpValidNb
         cmpValidName(iCmp) = cmpCataName(cmpIndx(iCmp))
         cmpValidUnit(iCmp) = ' '
     end do

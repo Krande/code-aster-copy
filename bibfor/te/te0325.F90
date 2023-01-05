@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,29 +52,29 @@ subroutine te0325(option, nomte)
     integer :: k, mater
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
-    idfdy = idfdx + 1
+    idfdy = idfdx+1
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PVECTTR', 'E', ivectt)
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
     mater = zi(imate)
-    call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'THER', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, mater, &
+                ' ', 'THER', 0, ' ', [0.d0], &
                 1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then
         call jevech('PACCELR', 'L', iacce)
-        elseif ( option(16:16).eq.'X' .or. option(16:16).eq.'Y' .or.&
-    option(16:16).eq.'Z' ) then
+    elseif (option(16:16) .eq. 'X' .or. option(16:16) .eq. 'Y' .or. &
+            option(16:16) .eq. 'Z') then
         call jevech('PTEMPER', 'L', itemp)
-    endif
+    end if
 !
 ! ON RECUPERE LE CHAMNO DE DEPL (MODAL)
 !
@@ -82,25 +82,25 @@ subroutine te0325(option, nomte)
     do i = 1, nno
         if (option(16:16) .eq. 'R') then
             do idim = 1, 3
-                k=k+1
-                acloc(idim,i) = zr(iacce+k-1)
+                k = k+1
+                acloc(idim, i) = zr(iacce+k-1)
             end do
         else if (option(16:16) .eq. 'X') then
-            k=k+1
-            acloc(1,i) = zr(itemp+k-1)
-            acloc(2,i) = 0.d0
-            acloc(3,i) = 0.d0
-        else if (option(16:16).eq.'Y') then
-            k=k+1
-            acloc(1,i) = 0.d0
-            acloc(2,i) = zr(itemp+k-1)
-            acloc(3,i) = 0.d0
-        else if (option(16:16).eq.'Z') then
-            k=k+1
-            acloc(1,i) = 0.d0
-            acloc(2,i) = 0.d0
-            acloc(3,i) = zr(itemp+k-1)
-        endif
+            k = k+1
+            acloc(1, i) = zr(itemp+k-1)
+            acloc(2, i) = 0.d0
+            acloc(3, i) = 0.d0
+        else if (option(16:16) .eq. 'Y') then
+            k = k+1
+            acloc(1, i) = 0.d0
+            acloc(2, i) = zr(itemp+k-1)
+            acloc(3, i) = 0.d0
+        else if (option(16:16) .eq. 'Z') then
+            k = k+1
+            acloc(1, i) = 0.d0
+            acloc(2, i) = 0.d0
+            acloc(3, i) = zr(itemp+k-1)
+        end if
     end do
 !
     do i = 1, nno
@@ -110,20 +110,20 @@ subroutine te0325(option, nomte)
 !     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
     do ipg = 1, npg1
-        kdec=(ipg-1)*nno*ndim
-        ldec=(ipg-1)*nno
+        kdec = (ipg-1)*nno*ndim
+        ldec = (ipg-1)*nno
 !
         nx = 0.0d0
         ny = 0.0d0
@@ -134,34 +134,34 @@ subroutine te0325(option, nomte)
             do j = 1, nno
                 jdec = (j-1)*ndim
 !
-                nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+                nx = nx+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sx(i, j)
+                ny = ny+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sy(i, j)
+                nz = nz+zr(idfdx+kdec+idec)*zr(idfdy+kdec+jdec)*sz(i, j)
 !
             end do
         end do
 !
-        acc(1,ipg)=0.0d0
-        acc(2,ipg)=0.0d0
-        acc(3,ipg)=0.0d0
+        acc(1, ipg) = 0.0d0
+        acc(2, ipg) = 0.0d0
+        acc(3, ipg) = 0.0d0
         do i = 1, nno
-            acc(1,ipg) = acc(1,ipg) + acloc(1,i)*zr(ivf+ldec+i-1)
-            acc(2,ipg) = acc(2,ipg) + acloc(2,i)*zr(ivf+ldec+i-1)
-            acc(3,ipg) = acc(3,ipg) + acloc(3,i)*zr(ivf+ldec+i-1)
+            acc(1, ipg) = acc(1, ipg)+acloc(1, i)*zr(ivf+ldec+i-1)
+            acc(2, ipg) = acc(2, ipg)+acloc(2, i)*zr(ivf+ldec+i-1)
+            acc(3, ipg) = acc(3, ipg)+acloc(3, i)*zr(ivf+ldec+i-1)
         end do
 !
 !        CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
-        jac = sqrt (nx*nx + ny*ny + nz*nz)
+        jac = sqrt(nx*nx+ny*ny+nz*nz)
         norm(1) = nx/jac
         norm(2) = ny/jac
         norm(3) = nz/jac
         flufn(ipg) = 0.d0
 ! CALCUL DU FLUX FLUIDE NORMAL AU POINT DE GAUSS
-        flufn(ipg) = acc(1,ipg)*norm(1) + acc(2,ipg)*norm(2) +acc(3, ipg)*norm(3)
+        flufn(ipg) = acc(1, ipg)*norm(1)+acc(2, ipg)*norm(2)+acc(3, ipg)*norm(3)
 !
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + jac*zr(ipoids+ipg-1)* flufn(ipg) * rho(1) * zr(ivf+&
+            zr(ivectt+i-1) = zr(ivectt+i-1)+jac*zr(ipoids+ipg-1)*flufn(ipg)*rho(1)*zr(ivf+&
                              &ldec+i-1)
         end do
     end do

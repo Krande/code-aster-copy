@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine rsexpa(resu, icode, nompar, iret)
     character(len=16), pointer :: nom_par(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    iret=0
+    iret = 0
 !
     call rsnopa(resu, icode, '&&RSEXPA.NOM_PAR', nbac, nbpa)
     call jeexin('&&RSEXPA.NOM_PAR', ire1)
@@ -56,10 +56,10 @@ subroutine rsexpa(resu, icode, nompar, iret)
     if ((nbac+nbpa) .ne. 0) then
         do ipa = 1, nbac+nbpa
             if (nompar .eq. nom_par(ipa)) then
-                iret=100
-            endif
+                iret = 100
+            end if
         end do
-    endif
+    end if
 !
     call jedetr('&&RSEXPA.NOM_PAR')
 !

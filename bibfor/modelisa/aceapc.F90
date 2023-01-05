@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,23 +73,23 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
     okflex = .false.
     do ioc = 1, nbocc
         call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
-        if ( sec .ne. 'COUDE' ) cycle
+        if (sec .ne. 'COUDE') cycle
 !
-        call getvr8('POUTRE', 'COEF_FLEX',    iocc=ioc, scal=xfl,  nbret=nfl)
+        call getvr8('POUTRE', 'COEF_FLEX', iocc=ioc, scal=xfl, nbret=nfl)
         call getvr8('POUTRE', 'COEF_FLEX_XY', iocc=ioc, scal=xfly, nbret=nfly)
         call getvr8('POUTRE', 'COEF_FLEX_XZ', iocc=ioc, scal=xflz, nbret=nflz)
-        call getvr8('POUTRE', 'INDI_SIGM',    iocc=ioc, scal=xsi,  nbret=nsi)
+        call getvr8('POUTRE', 'INDI_SIGM', iocc=ioc, scal=xsi, nbret=nsi)
         call getvr8('POUTRE', 'INDI_SIGM_XY', iocc=ioc, scal=xsiy, nbret=nsiy)
         call getvr8('POUTRE', 'INDI_SIGM_XZ', iocc=ioc, scal=xsiz, nbret=nsiz)
 !
-        if ( nfly+nflz+nfl+nsiy+nsiz+nsi.gt.0 ) then
+        if (nfly+nflz+nfl+nsiy+nsiz+nsi .gt. 0) then
             okflex = .true.
             exit
-        endif
-    enddo
-    if ( .not. okflex ) then
+        end if
+    end do
+    if (.not. okflex) then
         goto 999
-    endif
+    end if
 !
     mlggma = noma//'.GROUPEMA'
     mlgnma = noma//'.NOMMAI'
@@ -107,7 +107,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 !
     call wkvect('&&TMPPOUTRE_COURBE', 'V V K24', lmax, jdls)
 !
-    ifly=0; isiy=1; iflz=2; isiz=3
+    ifly = 0; isiy = 1; iflz = 2; isiz = 3
     zk8(jdcc+ifly) = 'C_FLEX_Y'
     zk8(jdcc+isiy) = 'I_SIGM_Y'
     zk8(jdcc+iflz) = 'C_FLEX_Z'
@@ -121,57 +121,57 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
         zr(jdvc+isiz) = 1.0
 !
         call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE',   'POUTRE', 'MAILLE',   ioc, lmax, zk24(jdls), nm)
+        call getvem(noma, 'MAILLE', 'POUTRE', 'MAILLE', ioc, lmax, zk24(jdls), nm)
 !
-        call getvr8('POUTRE', 'COEF_FLEX',    iocc=ioc, scal=xfl,  nbret=nfl)
+        call getvr8('POUTRE', 'COEF_FLEX', iocc=ioc, scal=xfl, nbret=nfl)
         call getvr8('POUTRE', 'COEF_FLEX_XY', iocc=ioc, scal=xfly, nbret=nfly)
         call getvr8('POUTRE', 'COEF_FLEX_XZ', iocc=ioc, scal=xflz, nbret=nflz)
 !
-        call getvr8('POUTRE', 'INDI_SIGM',    iocc=ioc, scal=xsi,  nbret=nsi)
+        call getvr8('POUTRE', 'INDI_SIGM', iocc=ioc, scal=xsi, nbret=nsi)
         call getvr8('POUTRE', 'INDI_SIGM_XY', iocc=ioc, scal=xsiy, nbret=nsiy)
         call getvr8('POUTRE', 'INDI_SIGM_XZ', iocc=ioc, scal=xsiz, nbret=nsiz)
 !
-        if ( nfly.ne.0 ) then
+        if (nfly .ne. 0) then
             zr(jdvc+ifly) = xfly
             okflex = .true.
-        endif
-        if ( nflz.ne.0 ) then
+        end if
+        if (nflz .ne. 0) then
             zr(jdvc+iflz) = xflz
             okflex = .true.
-        endif
-        if ( nfl.ne.0 ) then
+        end if
+        if (nfl .ne. 0) then
             zr(jdvc+ifly) = xfl
             zr(jdvc+iflz) = xfl
             okflex = .true.
-        endif
+        end if
 !
-        if ( nsiy.ne.0 ) then
+        if (nsiy .ne. 0) then
             zr(jdvc+isiy) = xsiy
             okflex = .true.
-        endif
-        if ( nsiz.ne.0 ) then
+        end if
+        if (nsiz .ne. 0) then
             zr(jdvc+isiz) = xsiz
             okflex = .true.
-        endif
-        if ( nsi.ne.0 ) then
+        end if
+        if (nsi .ne. 0) then
             zr(jdvc+isiy) = xsi
             zr(jdvc+isiz) = xsi
             okflex = .true.
-        endif
+        end if
 !
-        if ( okflex ) then
+        if (okflex) then
 !           Toutes les mailles de la liste de groupes mailles
             if (ng .gt. 0) then
                 do igm = 1, ng
                     call nocart(cartar, 2, 4, groupma=zk24(jdls-1+igm))
-                enddo
-            endif
+                end do
+            end if
 !           Toutes les mailles de la liste de mailles
             if (nm .gt. 0) then
                 call nocart(cartar, 3, 4, mode='NOM', nma=nm, limano=zk24(jdls))
-            endif
-        endif
-    enddo
+            end if
+        end if
+    end do
 !
     call jedetr('&&TMPPOUTRE_COURBE')
     call jedetr(tmpnar)

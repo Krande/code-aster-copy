@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine carcomp(carte_1, carte_2, iret, indxCmpExcl_)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-character(len=*), intent(in) :: carte_1, carte_2
-integer, intent(out) :: iret
-integer, intent(in), optional :: indxCmpExcl_
+    character(len=*), intent(in) :: carte_1, carte_2
+    integer, intent(out) :: iret
+    integer, intent(in), optional :: indxCmpExcl_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,31 +82,31 @@ integer, intent(in), optional :: indxCmpExcl_
     if (present(indxCmpExcl_)) then
         indxCmpExcl = indxCmpExcl_
         ASSERT(indxCmpExcl .gt. 0)
-    endif
+    end if
 !
 ! - <GRANDEUR>
 !
-    call dismoi('NOM_GD', carte_1, 'CARTE', repk = nomgd1)
-    call dismoi('NOM_GD', carte_2, 'CARTE', repk = nomgd2)
+    call dismoi('NOM_GD', carte_1, 'CARTE', repk=nomgd1)
+    call dismoi('NOM_GD', carte_2, 'CARTE', repk=nomgd2)
     if (nomgd1 .eq. nomgd2) then
         nomgd = nomgd1
     else
         iret = 1
         goto 99
-    endif
-    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk = tsca)
+    end if
+    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 ! - Mesh
 !
-    call dismoi('NOM_MAILLA', carte_1, 'CHAMP', repk = mesh_1)
-    call dismoi('NOM_MAILLA', carte_2, 'CHAMP', repk = mesh_2)
+    call dismoi('NOM_MAILLA', carte_1, 'CHAMP', repk=mesh_1)
+    call dismoi('NOM_MAILLA', carte_2, 'CHAMP', repk=mesh_2)
     if (mesh_1 .eq. mesh_2) then
         mesh = mesh_1
     else
         iret = 1
         goto 99
-    endif
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi = nbCell)
+    end if
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
 !
 ! - Changing in simpler datastructure
 !
@@ -129,28 +129,28 @@ integer, intent(in), optional :: indxCmpExcl_
         else
             iret = 1
             goto 99
-        endif
+        end if
         do iCmp = 1, nbCmp
             call cesexi('C', jcesd1, jcesl1, iCell, 1, 1, iCmp, iad1)
             call cesexi('C', jcesd2, jcesl2, iCell, 1, 1, iCmp, iad2)
             if (iad1 .lt. 0 .or. iad2 .lt. 0) then
                 cycle
-            endif
+            end if
             if (indxCmpExcl .gt. 0) then
                 if (iCmp .eq. indxCmpExcl) then
                     cycle
-                endif
-            endif
+                end if
+            end if
             if (iad1 .eq. 0) then
                 if (iad2 .ne. 0) then
                     iret = 1
                     goto 99
-                endif
+                end if
             else if (iad2 .eq. 0) then
                 if (iad1 .ne. 0) then
                     iret = 1
                     goto 99
-                endif
+                end if
             else
                 if (tsca .eq. 'R') then
                     valr1 = zr(jcesv1-1+iad1)
@@ -161,52 +161,52 @@ integer, intent(in), optional :: indxCmpExcl_
                     else
                         valr_error = valr1-valr2
                         type_test = 'ABSOLU'
-                    endif
+                    end if
                     if (type_test .eq. 'RELATIF') then
-                        lok = ( abs( valr_error ) .le. epsi*abs(valr2))
+                        lok = (abs(valr_error) .le. epsi*abs(valr2))
                     else
-                        lok = ( abs( valr_error ) .le. epsi )
-                    endif
-                else if (tsca.eq.'I') then
+                        lok = (abs(valr_error) .le. epsi)
+                    end if
+                else if (tsca .eq. 'I') then
                     vali1 = zi(jcesv1-1+iad1)
                     vali2 = zi(jcesv2-1+iad2)
                     lok = vali1 .eq. vali2
-                else if (tsca.eq.'L') then
+                else if (tsca .eq. 'L') then
                     vall1 = zl(jcesv1-1+iad1)
                     vall2 = zl(jcesv2-1+iad2)
                     lok = vall1 .and. vall2
-                else if (tsca.eq.'K8') then
+                else if (tsca .eq. 'K8') then
                     valk1 = zk8(jcesv1-1+iad1)
                     valk2 = zk8(jcesv2-1+iad2)
                     lok = valk1 .eq. valk2
-                else if (tsca.eq.'K16') then
+                else if (tsca .eq. 'K16') then
                     valk1 = zk16(jcesv1-1+iad1)
                     valk2 = zk16(jcesv2-1+iad2)
                     lok = valk1 .eq. valk2
-                else if (tsca.eq.'K24') then
+                else if (tsca .eq. 'K24') then
                     valk1 = zk24(jcesv1-1+iad1)
                     valk2 = zk24(jcesv2-1+iad2)
                     lok = valk1 .eq. valk2
-                else if (tsca.eq.'K32') then
+                else if (tsca .eq. 'K32') then
                     valk1 = zk32(jcesv1-1+iad1)
                     valk2 = zk32(jcesv2-1+iad2)
                     lok = valk1 .eq. valk2
-                else if (tsca.eq.'K80') then
+                else if (tsca .eq. 'K80') then
                     valk1 = zk80(jcesv1-1+iad1)
                     valk2 = zk80(jcesv2-1+iad2)
                     lok = valk1 .eq. valk2
                 else
                     ASSERT(.false.)
-                endif
-            endif
-            if (.not.lok) then
+                end if
+            end if
+            if (.not. lok) then
                 iret = 1
                 goto 99
-            endif
+            end if
         end do
     end do
 !
- 99 continue
+99  continue
 !
     call detrsd('CHAM_ELEM_S', carte_1s)
     call detrsd('CHAM_ELEM_S', carte_2s)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine te0543(option, nomte)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES COEFFICIENTS A0 ET A1
 !                          POUR LE PILOTAGE PAR CRITERE ELASTIQUE
@@ -60,25 +60,25 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - TYPE DE MODELISATION
 !
-    if (lteatt('DIM_TOPO_MODELI','3')) then
+    if (lteatt('DIM_TOPO_MODELI', '3')) then
         typmod(1) = '3D'
-    else if (lteatt('AXIS','OUI')) then
+    else if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
-    else if (lteatt('C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN', 'OUI')) then
         typmod(1) = 'C_PLAN'
-    else if (lteatt('D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
-    endif
+    end if
 !
     typmod(2) = 'DEPLA'
 !
-    if (lteatt('TYPMOD2','ELEMDISC')) then
-        typmod(2)='ELEMDISC'
-    endif
+    if (lteatt('TYPMOD2', 'ELEMDISC')) then
+        typmod(2) = 'ELEMDISC'
+    end if
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     ASSERT(nno .le. 27)
     ASSERT(npg .le. 27)
@@ -102,38 +102,38 @@ character(len=16), intent(in) :: option, nomte
     if (pilo .eq. 'PRED_ELAS') then
         call jevech('PCDTAU', 'L', ictau)
         call jevech('PBORNPI', 'L', iborne)
-    endif
+    end if
 !
 ! -- NOMBRE DE VARIABLES INTERNES
 !
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
+    lgpg = max(jtab(6), 1)*jtab(7)
 !
 ! - Prepare external state variables
 !
     if (rela_comp .eq. 'BETON_DOUBLE_DP') then
-        call behaviourPrepESVAElem(zr(icarcr), typmod  ,&
-                                   nno       , npg     , ndim ,&
-                                   ipoids    , ivf     , idfde,&
-                                   zr(igeom) , BEHinteg)
-    endif
+        call behaviourPrepESVAElem(zr(icarcr), typmod, &
+                                   nno, npg, ndim, &
+                                   ipoids, ivf, idfde, &
+                                   zr(igeom), BEHinteg)
+    end if
 !
 ! PARAMETRES EN SORTIE
 !
     call jevech('PCOPILO', 'E', icopil)
 !
     if (typmod(2) .eq. 'ELEMDISC') then
-        call pipeed(nno, npg, ipoids, ivf, idfde,&
-                    zr(igeom), typmod, zi(imate), lgpg, zr(ideplm),&
-                    zr(ivarim), zr(iddepl), zr(idepl0), zr(idepl1),&
+        call pipeed(nno, npg, ipoids, ivf, idfde, &
+                    zr(igeom), typmod, zi(imate), lgpg, zr(ideplm), &
+                    zr(ivarim), zr(iddepl), zr(idepl0), zr(idepl1), &
                     zr(ictau), zr(icopil))
     else
-        call pipepe(BEHinteg,&
-                    pilo, ndim, nno, npg, ipoids,&
-                    ivf, idfde, zr( igeom), typmod, zi(imate),&
-                    zk16(icompo), lgpg, zr(ideplm), zr( icontm), zr(ivarim),&
-                    zr(iddepl), zr(idepl0), zr(idepl1), zr( icopil),&
+        call pipepe(BEHinteg, &
+                    pilo, ndim, nno, npg, ipoids, &
+                    ivf, idfde, zr(igeom), typmod, zi(imate), &
+                    zk16(icompo), lgpg, zr(ideplm), zr(icontm), zr(ivarim), &
+                    zr(iddepl), zr(idepl0), zr(idepl1), zr(icopil), &
                     iborne, ictau)
-    endif
+    end if
 !
 end subroutine

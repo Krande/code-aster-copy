@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nonlinDSContactInit(mesh, model, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/armin.h"
@@ -39,9 +39,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/isParallelMesh.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=8), intent(in) :: model
-type(NL_DS_Contact), intent(inout) :: ds_contact
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,14 +78,14 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! - Initializations
 !
-    l_cont      = ASTER_FALSE
-    l_unil      = ASTER_FALSE
+    l_cont = ASTER_FALSE
+    l_unil = ASTER_FALSE
     l_form_disc = ASTER_FALSE
     l_form_cont = ASTER_FALSE
     l_form_xfem = ASTER_FALSE
-    l_form_lac  = ASTER_FALSE
+    l_form_lac = ASTER_FALSE
     l_iden_rela = ASTER_FALSE
-    iden_rela   = '&&CFMXR0.IDEN_RELA'
+    iden_rela = '&&CFMXR0.IDEN_RELA'
 !
     if (ds_contact%l_contact) then
 !
@@ -93,54 +93,54 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_3')
-        endif
+        end if
 !
 ! ----- Forbiden for a ParallelMesh
 !
-        ASSERT(.not.isParallelMesh(mesh))
+        ASSERT(.not. isParallelMesh(mesh))
 !
 ! ----- Datastructure from DEFI_CONTACT
 !
-        sdcont                 = ds_contact%sdcont
-        sdcont_paraci          = sdcont(1:8)//'.PARACI'
+        sdcont = ds_contact%sdcont
+        sdcont_paraci = sdcont(1:8)//'.PARACI'
         ds_contact%sdcont_defi = sdcont(1:8)//'.CONTACT'
         ds_contact%sdunil_defi = sdcont(1:8)//'.UNILATE'
-        call jeveuo(sdcont_paraci, 'E', vi = v_sdcont_paraci)
+        call jeveuo(sdcont_paraci, 'E', vi=v_sdcont_paraci)
 !
 ! ----- Contact formulation
 !
-        cont_form      = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
-        ASSERT(cont_form.ge.1 .and. cont_form.le.5)
-        l_form_disc    = cont_form .eq. 1
-        l_form_cont    = cont_form .eq. 2
-        l_form_xfem    = cont_form .eq. 3
-        l_unil         = cont_form .eq. 4
-        l_form_lac     = cont_form .eq. 5
-        l_cont         = cont_form .ne. 4
+        cont_form = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
+        ASSERT(cont_form .ge. 1 .and. cont_form .le. 5)
+        l_form_disc = cont_form .eq. 1
+        l_form_cont = cont_form .eq. 2
+        l_form_xfem = cont_form .eq. 3
+        l_unil = cont_form .eq. 4
+        l_form_lac = cont_form .eq. 5
+        l_cont = cont_form .ne. 4
         l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi, 'CONT_XFEM_GG')
-        l_edge_elim    = cfdisl(ds_contact%sdcont_defi, 'ELIM_ARETE')
-        l_all_verif    = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-        l_inte_node    = cfdisl(ds_contact%sdcont_defi, 'ALL_INTEG_NOEUD')
-        l_iden_rela    = ASTER_FALSE
+        l_edge_elim = cfdisl(ds_contact%sdcont_defi, 'ELIM_ARETE')
+        l_all_verif = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+        l_inte_node = cfdisl(ds_contact%sdcont_defi, 'ALL_INTEG_NOEUD')
+        l_iden_rela = ASTER_FALSE
 !
 ! ----- Fields for CONT_NOEU
 !
         if (l_form_cont .or. l_form_disc .or. l_form_xfem) then
-            ds_contact%field_cont_node  = '&&CFMXR0.CNOINR'
+            ds_contact%field_cont_node = '&&CFMXR0.CNOINR'
             ds_contact%fields_cont_node = '&&CFMXR0.CNSINR'
-            ds_contact%field_cont_perc  = '&&CFMXR0.CNSPER'
+            ds_contact%field_cont_perc = '&&CFMXR0.CNSPER'
             if (l_inte_node) then
                 ds_contact%l_cont_node = ASTER_TRUE
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Fields for CONT_ELEM
 !
         if (l_form_lac) then
-            ds_contact%field_cont_elem  = '&&CFMXR0.CEOINR'
+            ds_contact%field_cont_elem = '&&CFMXR0.CEOINR'
             ds_contact%fields_cont_elem = '&&CFMXR0.CESINR'
-            ds_contact%l_cont_elem      = ASTER_TRUE
-        endif
+            ds_contact%l_cont_elem = ASTER_TRUE
+        end if
 
 !
 ! ----- Special for contact stabilization with elastic matrix
@@ -149,8 +149,8 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             ds_contact%sContStab = v_sdcont_paraci(31)
             if (ds_contact%sContStab .gt. 0) then
                 ds_contact%lContStab = ASTER_TRUE
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Special for discrete contact
 !
@@ -160,78 +160,78 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             ds_contact%l_dof_rela = i_exist .gt. 0
             if (i_exist .gt. 0) then
                 ds_contact%ligrel_dof_rela = sdcont
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Special for continue contact
 !
         if (l_form_cont) then
 !           MATR_DISTRIBUEE='OUI' forbidden with continue contact
             call matdis(matd)
-            if (matd.eq.'OUI') call utmess('F','MECANONLINE_6')
-            ds_contact%field_input      = ds_contact%sdcont_solv(1:14)//'.CHML'
-            ds_contact%l_elem_slav      = ASTER_TRUE
+            if (matd .eq. 'OUI') call utmess('F', 'MECANONLINE_6')
+            ds_contact%field_input = ds_contact%sdcont_solv(1:14)//'.CHML'
+            ds_contact%l_elem_slav = ASTER_TRUE
             ds_contact%ligrel_elem_slav = sdcont
-            ds_contact%l_elem_cont      = ASTER_TRUE
+            ds_contact%l_elem_cont = ASTER_TRUE
             ds_contact%ligrel_elem_cont = '&&LIGRCF.CHME.LIGRE'
-            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8 = v_load_type)
+            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8=v_load_type)
             v_load_type(1) = 'ME'
-            ds_contact%it_cycl_maxi     = 6
-        endif
+            ds_contact%it_cycl_maxi = 6
+        end if
 !
 ! ----- Special for xfem contact
 !
         if (l_form_xfem) then
             ds_contact%field_input = ds_contact%sdcont_solv(1:14)//'.CHML'
             if (l_edge_elim) then
-                call xrela_elim(mesh, ds_contact, iden_rela, l_iden_rela,&
+                call xrela_elim(mesh, ds_contact, iden_rela, l_iden_rela, &
                                 model)
             else
                 call jeexin(sdcont(1:8)//'.CHME.LIGRE.LGRF', i_exist)
                 ds_contact%l_dof_rela = i_exist .gt. 0
                 if (i_exist .gt. 0) then
                     ds_contact%ligrel_dof_rela = sdcont
-                endif
-            endif
+                end if
+            end if
             if (l_cont_xfem_gg) then
                 ds_contact%ligrel_elem_cont = model(1:8)//'.MODELE'
-            endif
-            ds_contact%l_elem_cont      = ASTER_FALSE
+            end if
+            ds_contact%l_elem_cont = ASTER_FALSE
             ds_contact%ligrel_elem_cont = model(1:8)//'.MODELE'
-        endif
+        end if
 !
 ! ----- Special for xfem contact (large sliding)
 !
         if (l_cont_xfem_gg) then
-            ds_contact%l_elem_cont      = ASTER_TRUE
+            ds_contact%l_elem_cont = ASTER_TRUE
             ds_contact%ligrel_elem_cont = '&&LIGRXF.CHME.LIGRE'
-            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8 = v_load_type)
+            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8=v_load_type)
             v_load_type(1) = 'ME'
             if (ds_contact%l_dof_rela) then
                 ds_contact%ligrel_elem_slav = sdcont
-                ds_contact%l_elem_slav      = ASTER_FALSE
+                ds_contact%l_elem_slav = ASTER_FALSE
             else
                 ds_contact%ligrel_elem_slav = sdcont
-                ds_contact%l_elem_slav      = ASTER_TRUE
-            endif
-        endif
+                ds_contact%l_elem_slav = ASTER_TRUE
+            end if
+        end if
 !
 ! ----- Special for LAC contact
 !
         if (l_form_lac) then
-            ds_contact%field_input      = ds_contact%sdcont_solv(1:14)//'.CHML'
-            ds_contact%l_elem_slav      = ASTER_TRUE
+            ds_contact%field_input = ds_contact%sdcont_solv(1:14)//'.CHML'
+            ds_contact%l_elem_slav = ASTER_TRUE
             ds_contact%ligrel_elem_slav = sdcont
-            ds_contact%l_elem_cont      = ASTER_TRUE
+            ds_contact%l_elem_cont = ASTER_TRUE
             ds_contact%ligrel_elem_cont = '&&LIGRCF.CHME.LIGRE'
-            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8 = v_load_type)
+            call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8=v_load_type)
             v_load_type(1) = 'ME'
             call jelira(mesh//'.PATCH', 'NUTIOC', nt_patch)
             nt_patch = nt_patch-1
             ds_contact%nt_patch = nt_patch
             call lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
             ds_contact%arete_min = armin(mesh)
-        endif
+        end if
 !
 ! ----- Identity relation
 !
@@ -240,7 +240,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             ds_contact%iden_rela = iden_rela
         else
             ds_contact%iden_rela = ' '
-        endif
+        end if
 !
 ! ----- Flag for (re) numbering
 !
@@ -249,27 +249,27 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
                 ds_contact%l_renumber = ASTER_FALSE
             else
                 ds_contact%l_renumber = ASTER_TRUE
-            endif
-        endif
+            end if
+        end if
         if (l_form_lac) then
             ds_contact%l_renumber = ASTER_TRUE
-        endif
+        end if
 !
 ! ----- Flag for pairing
 !
         if (l_form_disc) then
-            ds_contact%l_pair       = ASTER_TRUE
+            ds_contact%l_pair = ASTER_TRUE
             ds_contact%l_first_geom = ASTER_TRUE
-        endif
+        end if
 !
 ! ----- Special for UNIL contact
 !
         if (l_unil) then
-           l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
-           if (l_unil_pena) then
-             ds_contact%nume_dof_unil = '&&NMASUN.NUME'
-           endif
-        endif
+            l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
+            if (l_unil_pena) then
+                ds_contact%nume_dof_unil = '&&NMASUN.NUME'
+            end if
+        end if
 !
 ! ----- Save parameters
 !
@@ -278,7 +278,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         ds_contact%l_form_cont = l_form_cont
         ds_contact%l_form_disc = l_form_disc
         ds_contact%l_form_xfem = l_form_xfem
-        ds_contact%l_form_lac  = l_form_lac
-    endif
+        ds_contact%l_form_lac = l_form_lac
+    end if
 !
 end subroutine

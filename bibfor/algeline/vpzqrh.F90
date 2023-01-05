@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpzqrh(h, neq, ih, k, l,&
-                  wr, wi, z, iz, mxiter,&
+subroutine vpzqrh(h, neq, ih, k, l, &
+                  wr, wi, z, iz, mxiter, &
                   ier, nitqr)
     implicit none
 #include "asterf_types.h"
@@ -50,40 +50,40 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     ka = 1
     do i = 1, neq
         do j = ka, neq
-            rnorm = rnorm+abs(h(i,j))
+            rnorm = rnorm+abs(h(i, j))
         end do
         ka = i
         if (i .ge. k .and. i .le. l) goto 10
-        wr(i) = h(i,i)
+        wr(i) = h(i, i)
         wi(i) = 0.d0
- 10     continue
+10      continue
     end do
     ien = l
     t = 0.d0
 !
 !     --- RECHERCHE DES VALEURS PROPRES SUIVANTES ---
- 15 continue
+15  continue
     if (ien .lt. k) goto 145
     iter = 0
     na = ien-1
     ienm2 = na-1
 !
 !     --- RECHERCHE DU PLUS PETIT ELEMENT (SIMPLE) SUR LA SUR-DIAGONALE
- 20 continue
+20  continue
     npl = ien+k
     do ll = k, ien
         lb = npl-ll
         if (lb .eq. k) goto 30
-        s = abs(h(lb-1,lb-1))+abs(h(lb,lb))
+        s = abs(h(lb-1, lb-1))+abs(h(lb, lb))
         if (s .eq. 0.0d0) s = rnorm
-        if (abs(h(lb,lb-1)) .le. epsmac*s) goto 30
+        if (abs(h(lb, lb-1)) .le. epsmac*s) goto 30
     end do
 !
- 30 continue
-    x = h(ien,ien)
+30  continue
+    x = h(ien, ien)
     if (lb .eq. ien) goto 110
-    y = h(na,na)
-    w = h(ien,na)*h(na,ien)
+    y = h(na, na)
+    w = h(ien, na)*h(na, ien)
     if (lb .eq. na) goto 115
     if (iter .eq. mxiter) goto 250
 !
@@ -91,66 +91,66 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     iter = iter+1
     if (iter .gt. nitqr) then
         nitqr = iter
-    endif
-    if (mod(iter,10) .eq. 0) then
+    end if
+    if (mod(iter, 10) .eq. 0) then
         t = t+x
         do i = k, ien
-            h(i,i) = h(i,i)-x
+            h(i, i) = h(i, i)-x
         end do
-        s = abs(h(ien,na))+abs(h(na,ienm2))
+        s = abs(h(ien, na))+abs(h(na, ienm2))
         x = 0.75d0*s
         y = x
         w = -0.4375d0*s*s
-    endif
+    end if
 !
 !     --- RECHERCHE DES 2 PLUS PETITS ELEMENTS SUR LA SUR-DIAGONALE
     naml = ienm2+lb
     do mm = lb, ienm2
         m = naml-mm
-        zz = h(m,m)
+        zz = h(m, m)
         r = x-zz
         s = y-zz
-        p = (r*s-w)/h(m+1,m)+h(m,m+1)
-        q = h(m+1,m+1)-zz-r-s
-        r = h(m+2,m+1)
+        p = (r*s-w)/h(m+1, m)+h(m, m+1)
+        q = h(m+1, m+1)-zz-r-s
+        r = h(m+2, m+1)
         s = abs(p)+abs(q)+abs(r)
         p = p/s
         q = q/s
         r = r/s
         if (m .eq. lb) goto 50
-        if (abs(h(m,m-1))*(abs(q)+abs(r)) .le.&
-            epsmac*abs(p)*(abs(h(m-1, m-1))+abs(zz)+abs(h(m+1,m+1)))) goto 50
+        if (abs(h(m, m-1))*(abs(q)+abs(r)) .le. &
+            epsmac*abs(p)*(abs(h(m-1, m-1))+abs(zz)+abs(h(m+1, m+1)))) goto 50
     end do
- 50 continue
+50  continue
     mp2 = m+2
     do i = mp2, ien
-        h(i,i-2) = 0.d0
+        h(i, i-2) = 0.d0
         if (i .eq. mp2) goto 55
-        h(i,i-3) = 0.d0
- 55     continue
+        h(i, i-3) = 0.d0
+55      continue
     end do
 !
 !     EN AVANT POUR LE "DOUBLE QR" SUR LA SOUS MATRICE
 !              LIGNES DE "L" A "EN" ET COLONNES DE "M" A "EN"
     do ka = m, na
-        notlas = ka.ne.na
+        notlas = ka .ne. na
         if (ka .eq. m) goto 60
-        p = h(ka,ka-1)
-        q = h(ka+1,ka-1)
+        p = h(ka, ka-1)
+        q = h(ka+1, ka-1)
         r = 0.d0
-        if (notlas) r = h(ka+2,ka-1)
+        if (notlas) r = h(ka+2, ka-1)
         x = abs(p)+abs(q)+abs(r)
         if (x .eq. 0.d0) goto 105
         p = p/x
         q = q/x
         r = r/x
- 60     continue
-        s = sign(sqrt(p*p+q*q+r*r),p)
+60      continue
+        s = sign(sqrt(p*p+q*q+r*r), p)
         if (ka .eq. m) then
-            if (lb .ne. m) h(ka,ka-1) = -h(ka,ka-1)
+            if (lb .ne. m) h(ka, ka-1) = -h(ka, ka-1)
         else
-            h(ka,ka-1) = -s*x
-        endif
+            h(ka, ka-1) = -s*x
+        end if
         p = p+s
         x = p/s
         y = q/s
@@ -159,37 +159,37 @@ subroutine vpzqrh(h, neq, ih, k, l,&
         r = r/p
 !        --- ALTERATION DES LIGNES ---
         do j = ka, neq
-            p = h(ka,j)+q*h(ka+1,j)
+            p = h(ka, j)+q*h(ka+1, j)
             if (notlas) then
-                p = p+r*h(ka+2,j)
-                h(ka+2,j) = h(ka+2,j)-p*zz
-            endif
-            h(ka+1,j) = h(ka+1,j)-p*y
-            h(ka,j) = h(ka,j)-p*x
+                p = p+r*h(ka+2, j)
+                h(ka+2, j) = h(ka+2, j)-p*zz
+            end if
+            h(ka+1, j) = h(ka+1, j)-p*y
+            h(ka, j) = h(ka, j)-p*x
         end do
-        j = min(ien,ka+3)
+        j = min(ien, ka+3)
 !        --- ALTERATION DES COLONNES ---
         do i = 1, j
-            p = x*h(i,ka)+y*h(i,ka+1)
-            if (.not.notlas) goto 85
-            p = p+zz*h(i,ka+2)
-            h(i,ka+2) = h(i,ka+2)-p*r
- 85         continue
-            h(i,ka+1) = h(i,ka+1)-p*q
-            h(i,ka) = h(i,ka)-p
+            p = x*h(i, ka)+y*h(i, ka+1)
+            if (.not. notlas) goto 85
+            p = p+zz*h(i, ka+2)
+            h(i, ka+2) = h(i, ka+2)-p*r
+85          continue
+            h(i, ka+1) = h(i, ka+1)-p*q
+            h(i, ka) = h(i, ka)-p
         end do
         if (iz .ge. neq) then
 !           --- ON GARDE LES TRANSFORMATIONS POUR LES VECTEURS ----
             do i = k, l
-                p = x*z(i,ka)+y*z(i,ka+1)
+                p = x*z(i, ka)+y*z(i, ka+1)
                 if (notlas) then
-                    p = p+zz*z(i,ka+2)
-                    z(i,ka+2) = z(i,ka+2)-p*r
-                endif
-                z(i,ka+1) = z(i,ka+1)-p*q
-                z(i,ka) = z(i,ka)-p
+                    p = p+zz*z(i, ka+2)
+                    z(i, ka+2) = z(i, ka+2)-p*r
+                end if
+                z(i, ka+1) = z(i, ka+1)-p*q
+                z(i, ka) = z(i, ka)-p
             end do
-        endif
+        end if
 105     continue
     end do
     goto 20
@@ -198,8 +198,8 @@ subroutine vpzqrh(h, neq, ih, k, l,&
 !
 !     --- UNE RACINE TROUVEE ---
 110 continue
-    h(ien,ien) = x+t
-    wr(ien) = h(ien,ien)
+    h(ien, ien) = x+t
+    wr(ien) = h(ien, ien)
     wi(ien) = 0.d0
     ien = na
     goto 15
@@ -209,49 +209,49 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     p = (y-x)*0.5d0
     q = p*p+w
     zz = sqrt(abs(q))
-    h(ien,ien) = x+t
-    x = h(ien,ien)
-    h(na,na) = y+t
+    h(ien, ien) = x+t
+    x = h(ien, ien)
+    h(na, na) = y+t
     if (q .lt. 0.d0) goto 135
 !
 !     --- RACINES DOUBLES REELLES ---
-    zz = p+sign(zz,p)
+    zz = p+sign(zz, p)
     wr(na) = x+zz
     wr(ien) = wr(na)
     if (zz .ne. 0.d0) wr(ien) = x-w/zz
     wi(na) = 0.d0
     wi(ien) = 0.d0
-    x = h(ien,na)
+    x = h(ien, na)
 !
 !     --- SI X ET ZZ TROP PETIT ALORS ON FAIT UNE NORMALISATION   ---
 !     --- MISE A L'ECHELLE OU RECADRAGE C'EST SELON VOTRE CULTURE ---
-    scale = abs(x) + abs(zz)
-    r = scale * sqrt( (x/scale)**2 + (zz/scale)**2 )
+    scale = abs(x)+abs(zz)
+    r = scale*sqrt((x/scale)**2+(zz/scale)**2)
     p = x/r
     q = zz/r
 !
 !     --- ALTERATION DES LIGNES ---
     do j = na, neq
-        zz = h(na,j)
-        h(na,j) = q*zz+p*h(ien,j)
-        h(ien,j) = q*h(ien,j)-p*zz
+        zz = h(na, j)
+        h(na, j) = q*zz+p*h(ien, j)
+        h(ien, j) = q*h(ien, j)-p*zz
     end do
 !
 !     --- ALTERATION DES COLONNES ---
     do i = 1, ien
-        zz = h(i,na)
-        h(i,na) = q*zz+p*h(i,ien)
-        h(i,ien) = q*h(i,ien)-p*zz
+        zz = h(i, na)
+        h(i, na) = q*zz+p*h(i, ien)
+        h(i, ien) = q*h(i, ien)-p*zz
     end do
 !
     if (iz .ge. neq) then
 !        --- STOCKER LES TRANSFORMATIONS POUR LES VECTEURS ---
         do i = k, l
-            zz = z(i,na)
-            z(i,na) = q*zz+p*z(i,ien)
-            z(i,ien) = q*z(i,ien)-p*zz
+            zz = z(i, na)
+            z(i, na) = q*zz+p*z(i, ien)
+            z(i, ien) = q*z(i, ien)-p*zz
         end do
-    endif
+    end if
     goto 140
 !
 !     --- VALEURS COMPLEXES CONJUGUEES ---
@@ -282,14 +282,14 @@ subroutine vpzqrh(h, neq, ih, k, l,&
 !
 !        --- VECTEUR REEL ---
         m = ien
-        h(ien,ien) = 1.d0
+        h(ien, ien) = 1.d0
         if (na .eq. 0) goto 220
         do ii = 1, na
             i = ien-ii
-            w = h(i,i)-p
-            r = h(i,ien)
+            w = h(i, i)-p
+            r = h(i, ien)
             do j = m, na
-                r = r+h(i,j)*h(j,ien)
+                r = r+h(i, j)*h(j, ien)
             end do
             if (wi(i) .ge. 0.d0) goto 160
             zz = w
@@ -300,21 +300,21 @@ subroutine vpzqrh(h, neq, ih, k, l,&
             if (wi(i) .ne. 0.d0) goto 165
             t = w
             if (w .eq. 0.d0) t = epsmac*rnorm
-            h(i,ien) = -r/t
+            h(i, ien) = -r/t
             goto 175
 !
 !           RESOLUTION DANS LE CAS REEL ---
 165         continue
-            x = h(i,i+1)
-            y = h(i+1,i)
+            x = h(i, i+1)
+            y = h(i+1, i)
             q = (wr(i)-p)*(wr(i)-p)+wi(i)*wi(i)
             t = (x*s-zz*r)/q
-            h(i,ien) = t
+            h(i, ien) = t
             if (abs(x) .le. abs(zz)) then
-                h(i+1,ien) = (-s-y*t)/zz
+                h(i+1, ien) = (-s-y*t)/zz
             else
-                h(i+1,ien) = (-r-w*t)/x
-            endif
+                h(i+1, ien) = (-r-w*t)/x
+            end if
 175         continue
         end do
         goto 220
@@ -323,60 +323,60 @@ subroutine vpzqrh(h, neq, ih, k, l,&
 180     continue
         m = na
 !        --- VECTEUR COMPLEXE ---
-        if (abs(h(ien,na)) .le. abs(h(na,ien))) goto 185
-        h(na,na) = q/h(ien,na)
-        h(na,ien) = -(h(ien,ien)-p)/h(ien,na)
+        if (abs(h(ien, na)) .le. abs(h(na, ien))) goto 185
+        h(na, na) = q/h(ien, na)
+        h(na, ien) = -(h(ien, ien)-p)/h(ien, na)
         goto 190
 185     continue
-        z3 = dcmplx(0.d0,-h(na,ien))/dcmplx(h(na,na)-p,q)
-        h(na,na) = dble (z3)
-        h(na,ien) = dimag(z3)
+        z3 = dcmplx(0.d0, -h(na, ien))/dcmplx(h(na, na)-p, q)
+        h(na, na) = dble(z3)
+        h(na, ien) = dimag(z3)
 190     continue
-        h(ien,na) = 0.d0
-        h(ien,ien) = 1.d0
+        h(ien, na) = 0.d0
+        h(ien, ien) = 1.d0
         ienm2 = na-1
         if (ienm2 .eq. 0) goto 220
         do ii = 1, ienm2
             i = na-ii
-            w = h(i,i)-p
+            w = h(i, i)-p
             ra = 0.d0
-            sa = h(i,ien)
+            sa = h(i, ien)
             do j = m, na
-                ra = ra+h(i,j)*h(j,na)
-                sa = sa+h(i,j)*h(j,ien)
+                ra = ra+h(i, j)*h(j, na)
+                sa = sa+h(i, j)*h(j, ien)
             end do
             if (wi(i) .lt. 0.d0) then
                 zz = w
                 r = ra
                 s = sa
-            else if (wi(i).eq.0.d0) then
+            else if (wi(i) .eq. 0.d0) then
                 m = i
-                z3 = dcmplx(-ra,-sa)/dcmplx(w,q)
-                h(i,na) = dble (z3)
-                h(i,ien) = dimag(z3)
+                z3 = dcmplx(-ra, -sa)/dcmplx(w, q)
+                h(i, na) = dble(z3)
+                h(i, ien) = dimag(z3)
             else
 !
 !              --- RESOUDRE LES EQUATIONS (EN COMPLEXE)
                 m = i
-                x = h(i,i+1)
-                y = h(i+1,i)
+                x = h(i, i+1)
+                y = h(i+1, i)
                 vr = (wr(i)-p)*(wr(i)-p)+wi(i)*wi(i)-q*q
                 vi = (wr(i)-p)*q
                 vi = vi+vi
-                if (vr .eq. 0.d0 .and. vi .eq. 0.d0) vr=epsmac*rnorm*(&
-                                                     abs(w) + abs(q)+abs(x)+abs(y)+abs(zz))
-                z3 = dcmplx(x*r-zz*ra+q*sa,x*s-zz*sa-q*ra)/dcmplx(vr, vi)
-                h(i,na) = dble (z3)
-                h(i,ien) = dimag(z3)
+                if (vr .eq. 0.d0 .and. vi .eq. 0.d0) vr = epsmac*rnorm*( &
+                                                          abs(w)+abs(q)+abs(x)+abs(y)+abs(zz))
+                z3 = dcmplx(x*r-zz*ra+q*sa, x*s-zz*sa-q*ra)/dcmplx(vr, vi)
+                h(i, na) = dble(z3)
+                h(i, ien) = dimag(z3)
                 if (abs(x) .le. abs(zz)+abs(q)) then
-                    z3 = dcmplx(-r-y*h(i,na),-s-y*h(i,ien))/dcmplx(zz, q)
-                    h(i+1,na) = dble (z3)
-                    h(i+1,ien) = dimag(z3)
+                    z3 = dcmplx(-r-y*h(i, na), -s-y*h(i, ien))/dcmplx(zz, q)
+                    h(i+1, na) = dble(z3)
+                    h(i+1, ien) = dimag(z3)
                 else
-                    h(i+1,na) = (-ra-w*h(i,na)+q*h(i,ien))/x
-                    h(i+1,ien) = (-sa-w*h(i,ien)-q*h(i,na))/x
-                endif
-            endif
+                    h(i+1, na) = (-ra-w*h(i, na)+q*h(i, ien))/x
+                    h(i+1, ien) = (-sa-w*h(i, ien)-q*h(i, na))/x
+                end if
+            end if
         end do
 220     continue
     end do
@@ -386,7 +386,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     do i = 1, neq
         if (i .ge. k .and. i .le. l) goto 230
         do j = i, neq
-            z(i,j) = h(i,j)
+            z(i, j) = h(i, j)
         end do
 230     continue
     end do
@@ -395,13 +395,13 @@ subroutine vpzqrh(h, neq, ih, k, l,&
 !     APPLICATION DES TRANSFORMATIONS ---
     do jj = k, neq
         j = neq+k-jj
-        m = min(j,l)
+        m = min(j, l)
         do i = k, l
             zz = 0.d0
             do ka = k, m
-                zz = zz+z(i,ka)*h(ka,j)
+                zz = zz+z(i, ka)*h(ka, j)
             end do
-            z(i,j) = zz
+            z(i, j) = zz
         end do
     end do
     goto 999
@@ -418,10 +418,10 @@ subroutine vpzqrh(h, neq, ih, k, l,&
     if (iz .ge. neq) then
         do i = 1, neq
             do j = 1, neq
-                z(i,j) = 0.d0
+                z(i, j) = 0.d0
             end do
         end do
-    endif
+    end if
 !     --- SORTIE ---
 999 continue
 end subroutine

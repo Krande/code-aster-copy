@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,26 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine mmmtuf(phase , l_pena_fric,&
-                  ndim  , nne        , nnm   , nnl   , nbcps ,&
-                  wpg   , jacobi     , ffe   , ffm   , ffl   ,&
-                  tau1  , tau2       , mprojt,&
-                  rese  , nrese      , lambda, coefff,&
+subroutine mmmtuf(phase, l_pena_fric, &
+                  ndim, nne, nnm, nnl, nbcps, &
+                  wpg, jacobi, ffe, ffm, ffl, &
+                  tau1, tau2, mprojt, &
+                  rese, nrese, lambda, coefff, &
                   matref, matrmf)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmmtef.h"
 #include "asterfort/mmmtmf.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_fric
-integer, intent(in) :: ndim, nne, nnm, nnl, nbcps
-real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), ffm(9), jacobi
-real(kind=8), intent(in) :: rese(3), nrese, lambda, coefff
-real(kind=8), intent(out) :: matrmf(27, 18), matref(27, 18)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_fric
+    integer, intent(in) :: ndim, nne, nnm, nnl, nbcps
+    real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: wpg, ffl(9), ffe(9), ffm(9), jacobi
+    real(kind=8), intent(in) :: rese(3), nrese, lambda, coefff
+    real(kind=8), intent(out) :: matrmf(27, 18), matref(27, 18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,18 +74,18 @@ real(kind=8), intent(out) :: matrmf(27, 18), matref(27, 18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call mmmtef(phase , l_pena_fric,&
-                ndim  , nne        , nnl        , nbcps ,&
-                wpg   , jacobi     , ffe        , ffl   ,&
-                tau1  , tau2       , mprojt,&
-                rese  , nrese      , lambda     , coefff,&
+    call mmmtef(phase, l_pena_fric, &
+                ndim, nne, nnl, nbcps, &
+                wpg, jacobi, ffe, ffl, &
+                tau1, tau2, mprojt, &
+                rese, nrese, lambda, coefff, &
                 matref)
 !
-    call mmmtmf(phase , l_pena_fric,&
-                ndim  , nnm        , nnl        , nbcps ,&
-                wpg   , jacobi     , ffm        , ffl   ,&
-                tau1  , tau2       , mprojt,&
-                rese  , nrese      , lambda     , coefff,&
+    call mmmtmf(phase, l_pena_fric, &
+                ndim, nnm, nnl, nbcps, &
+                wpg, jacobi, ffm, ffl, &
+                tau1, tau2, mprojt, &
+                rese, nrese, lambda, coefff, &
                 matrmf)
 !
 end subroutine

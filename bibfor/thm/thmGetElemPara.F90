@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,20 +18,20 @@
 ! person_in_charge: sylvie.granet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine thmGetElemPara(ds_thm   , l_axi    , l_steady ,&
-                          type_elem, inte_type, ndim     ,&
-                          mecani   , press1   , press2   , tempe  ,&
-                          dimdep   , dimdef   , dimcon   , dimuel ,&
-                          nddls    , nddlm    , nddl_meca, nddl_p1, nddl_p2,&
-                          nno      , nnos     ,&
-                          npi      , npg      ,&
-                          jv_poids , jv_func  , jv_dfunc ,&
-                          jv_poids2, jv_func2 , jv_dfunc2,&
+subroutine thmGetElemPara(ds_thm, l_axi, l_steady, &
+                          type_elem, inte_type, ndim, &
+                          mecani, press1, press2, tempe, &
+                          dimdep, dimdef, dimcon, dimuel, &
+                          nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, &
+                          nno, nnos, &
+                          npi, npg, &
+                          jv_poids, jv_func, jv_dfunc, &
+                          jv_poids2, jv_func2, jv_dfunc2, &
                           jv_gano)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -42,19 +42,19 @@ implicit none
 #include "asterfort/thmGetElemRefe.h"
 #include "asterfort/thmGetElemInfo.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-aster_logical, intent(out) :: l_axi, l_steady
-character(len=8), intent(out) :: type_elem(2)
-character(len=3), intent(out) :: inte_type
-integer, intent(out) :: ndim
-integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
-integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
-integer, intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
-integer, intent(out) :: nno, nnos
-integer, intent(out) :: npi, npg
-integer, intent(out) :: jv_func, jv_dfunc, jv_poids
-integer, intent(out) :: jv_func2, jv_dfunc2, jv_poids2
-integer, intent(out) :: jv_gano
+    type(THM_DS), intent(inout) :: ds_thm
+    aster_logical, intent(out) :: l_axi, l_steady
+    character(len=8), intent(out) :: type_elem(2)
+    character(len=3), intent(out) :: inte_type
+    integer, intent(out) :: ndim
+    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
+    integer, intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2
+    integer, intent(out) :: nno, nnos
+    integer, intent(out) :: npi, npg
+    integer, intent(out) :: jv_func, jv_dfunc, jv_poids
+    integer, intent(out) :: jv_func2, jv_dfunc2, jv_poids2
+    integer, intent(out) :: jv_gano
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,8 +140,8 @@ integer, intent(out) :: jv_gano
 !
 ! - Get generalized coordinates
 !
-    call thmGetGene(ds_thm, l_steady, l_vf  , ndim ,&
-                    mecani, press1  , press2, tempe)
+    call thmGetGene(ds_thm, l_steady, l_vf, ndim, &
+                    mecani, press1, press2, tempe)
 !
 ! - Get reference elements
 !
@@ -149,19 +149,19 @@ integer, intent(out) :: jv_gano
 !
 ! - Get informations about element
 !
-    call thmGetElemInfo(l_vf     , elrefe  , elref2   ,&
-                        nno      , nnos    , nnom     ,&
-                        jv_gano  , jv_poids, jv_poids2,&
-                        jv_func  , jv_func2, jv_dfunc , jv_dfunc2,&
-                        inte_type, npi     , npi2     , npg)
+    call thmGetElemInfo(l_vf, elrefe, elref2, &
+                        nno, nnos, nnom, &
+                        jv_gano, jv_poids, jv_poids2, &
+                        jv_func, jv_func2, jv_dfunc, jv_dfunc2, &
+                        inte_type, npi, npi2, npg)
 !
 !
 ! - Get dimensions about element
 !
-    call thmGetElemDime(ndim     , nnos   , nnom   ,&
-                        mecani   , press1 , press2 , tempe ,&
-                        nddls    , nddlm  ,&
-                        nddl_meca, nddl_p1, nddl_p2,&
-                        dimdep   , dimdef , dimcon , dimuel)
+    call thmGetElemDime(ndim, nnos, nnom, &
+                        mecani, press1, press2, tempe, &
+                        nddls, nddlm, &
+                        nddl_meca, nddl_p1, nddl_p2, &
+                        dimdep, dimdef, dimcon, dimuel)
 !
 end subroutine

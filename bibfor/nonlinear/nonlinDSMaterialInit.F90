@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinDSMaterialInit(model      , mater    , mateco , cara_elem,&
-                                compor     , hval_incr,&
-                                nume_dof   , time_init,&
+subroutine nonlinDSMaterialInit(model, mater, mateco, cara_elem, &
+                                compor, hval_incr, &
+                                nume_dof, time_init, &
                                 ds_material)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,12 +37,12 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcle.h"
 !
-character(len=24), intent(in) :: model, mateco, cara_elem, mater
-character(len=24), intent(in) :: compor
-character(len=19), intent(in) :: hval_incr(*)
-character(len=24), intent(in) :: nume_dof
-real(kind=8), intent(in) :: time_init
-type(NL_DS_Material), intent(inout) :: ds_material
+    character(len=24), intent(in) :: model, mateco, cara_elem, mater
+    character(len=24), intent(in) :: compor
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=24), intent(in) :: nume_dof
+    real(kind=8), intent(in) :: time_init
+    type(NL_DS_Material), intent(inout) :: ds_material
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,12 +71,12 @@ type(NL_DS_Material), intent(inout) :: ds_material
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_8')
-    endif
+    end if
 !
 ! - Save material field
 !
     ds_material%mateco = mateco
-    ds_material%mater  = mater
+    ds_material%mater = mater
 
 !
 ! - Create external state variables for reference state
@@ -92,7 +92,7 @@ type(NL_DS_Material), intent(inout) :: ds_material
 !
     vect_elem = '&&VARCINIT_ELEM'
     vect_asse = ds_material%fvarc_init(1:19)
-    call nmvcfo('-', model, mater, mateco, cara_elem, compor,&
+    call nmvcfo('-', model, mater, mateco, cara_elem, compor, &
                 ds_material%varc_refe, hval_incr, vect_elem)
     call assvec('V', vect_asse, 1, vect_elem, [1.d0], nume_dof)
     call detrsd('RESUELEM', vect_elem)

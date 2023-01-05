@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 subroutine jeveuoc(nomlu, cel, pc)
 ! aslint: disable=W0405,C1002
-      use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
-      implicit none
+    use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
+    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "jeveux_private.h"
@@ -39,33 +39,33 @@ subroutine jeveuoc(nomlu, cel, pc)
 
 !   ==================================================================
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
     integer :: ibacol, iblono, inat, inatb, ixdeso, ixiadd, ixlono
     integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
     integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
     integer :: jtype, lonoi, ltypi, n
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     integer :: numatr
-    common /idatje/  numatr
+    common/idatje/numatr
 !     ------------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     integer :: izr, izc, izl, izk8, izk16, izk24, izk32, izk80
-    equivalence    (izr,zr),(izc,zc),(izl,zl),(izk8,zk8),(izk16,zk16),&
-     &               (izk24,zk24),(izk32,zk32),(izk80,zk80)
+    equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16),&
+     &               (izk24, zk24), (izk32, zk32), (izk80, zk80)
 ! ----------------------------------------------------------------------
     character(len=1) :: genri, typei, kcel
     character(len=8) :: noml8
     character(len=32) :: noml32
     integer :: icre, iret
     integer :: iddeso, idiadd, idlono
-    parameter    (  iddeso = 1 , idiadd = 2  , idlono = 8   )
+    parameter(iddeso=1, idiadd=2, idlono=8)
 
     integer :: jad, n1, jctab
     character(len=8) :: ktyp
@@ -77,7 +77,7 @@ subroutine jeveuoc(nomlu, cel, pc)
     kcel = cel
     if (kcel .ne. 'L' .and. kcel .ne. 'E') then
         call utmess('F', 'JEVEUX1_27', sk=kcel)
-    endif
+    end if
 !
     icre = 0
     call jjvern(noml32, icre, iret)
@@ -90,30 +90,30 @@ subroutine jeveuoc(nomlu, cel, pc)
 !
 ! ----   IRET = 1
     case (1)
-        genri = genr( jgenr(iclaos) + idatos )
-        typei = type( jtype(iclaos) + idatos )
-        ltypi = ltyp( jltyp(iclaos) + idatos )
+        genri = genr(jgenr(iclaos)+idatos)
+        typei = type(jtype(iclaos)+idatos)
+        ltypi = ltyp(jltyp(iclaos)+idatos)
         if (genri .eq. 'N') then
             call utmess('F', 'JEVEUX1_20', sk=noml32)
-        endif
+        end if
 ! ----   IRET = 2
     case (2)
         call jjallc(iclaco, idatco, cel, ibacol)
-        ixiadd = iszon ( jiszon + ibacol + idiadd )
-        ixdeso = iszon ( jiszon + ibacol + iddeso )
+        ixiadd = iszon(jiszon+ibacol+idiadd)
+        ixdeso = iszon(jiszon+ibacol+iddeso)
 !
 ! ----   on traite l'accès au pointeur de longueur
 !
         if (noml8 .eq. '$$XATR  ') then
             ixlono = numatr
-            iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
-            genri = genr ( jgenr(iclaco) + ixlono )
-            ltypi = ltyp ( jltyp(iclaco) + ixlono )
-            lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
-            call jxlocs(zi, genri, ltypi, lonoi, iblono,&
+            iblono = iadm(jiadm(iclaco)+2*ixlono-1)
+            genri = genr(jgenr(iclaco)+ixlono)
+            ltypi = ltyp(jltyp(iclaco)+ixlono)
+            lonoi = lono(jlono(iclaco)+ixlono)*ltypi
+            call jxlocs(zi, genri, ltypi, lonoi, iblono, &
                         .false._1, jctab)
-            n1 = long ( jlong(iclaco) + ixlono )
-            ktyp='I'
+            n1 = long(jlong(iclaco)+ixlono)
+            ktyp = 'I'
             goto 100
         else
             if (noml8 .ne. ' ') then
@@ -121,79 +121,77 @@ subroutine jeveuoc(nomlu, cel, pc)
                 call jjcroc(noml8, icre)
 !            ------ CAS D'UN OBJET DE COLLECTION  ------
                 if (ixiadd .ne. 0) inatb = 3
-               else
+            else
                 if (ixiadd .ne. 0) then
 !            ----------- COLLECTION DISPERSEE
                     call utmess('F', 'JEVEUX1_21', sk=noml32)
-                endif
-            endif
-            genri = genr( jgenr(iclaco) + ixdeso )
-            typei = type( jtype(iclaco) + ixdeso )
-            ltypi = ltyp( jltyp(iclaco) + ixdeso )
-        endif
+                end if
+            end if
+            genri = genr(jgenr(iclaco)+ixdeso)
+            typei = type(jtype(iclaco)+ixdeso)
+            ltypi = ltyp(jltyp(iclaco)+ixdeso)
+        end if
 !
     end select
 !
     call jjalty(typei, ltypi, cel, inatb, jctab)
     if (inat .eq. 3 .and. ixiadd .eq. 0) then
-        ixlono = iszon ( jiszon + ibacol + idlono )
+        ixlono = iszon(jiszon+ibacol+idlono)
         if (ixlono .gt. 0) then
-            iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
-            lonoi = iszon(jiszon+iblono-1+idatoc+1) - iszon(jiszon+ iblono-1+idatoc )
+            iblono = iadm(jiadm(iclaco)+2*ixlono-1)
+            lonoi = iszon(jiszon+iblono-1+idatoc+1)-iszon(jiszon+iblono-1+idatoc)
             if (lonoi .gt. 0) then
-                jctab = jctab + (iszon(jiszon+iblono-1+idatoc) - 1)
+                jctab = jctab+(iszon(jiszon+iblono-1+idatoc)-1)
             else
                 call utmess('F', 'JEVEUX1_22', sk=noml32)
-            endif
+            end if
         else
-            jctab = jctab + long(jlong(iclaco)+ixdeso) * (idatoc-1)
-        endif
-    endif
+            jctab = jctab+long(jlong(iclaco)+ixdeso)*(idatoc-1)
+        end if
+    end if
 100 continue
-
 
 !     -- cas : on demande l'adresse :
 !     --------------------------------
-    jad=jctab
-
+    jad = jctab
 
 !     -- cas : on demande un pointeur sur un vecteur :
 !     ------------------------------------------------
-    call jgetlmx(noml32,n1)
-    call jelira(noml32,'TYPELONG',cval=ktyp)
+    call jgetlmx(noml32, n1)
+    call jelira(noml32, 'TYPELONG', cval=ktyp)
 
-    if (ktyp.eq.'L') then
-        call jgetptc(jad,pc,vl=zl(1))
+    if (ktyp .eq. 'L') then
+        call jgetptc(jad, pc, vl=zl(1))
 
-    elseif (ktyp.eq.'I') then
-        call jgetptc(jad,pc,vi=zi(1))
+    elseif (ktyp .eq. 'I') then
+        call jgetptc(jad, pc, vi=zi(1))
 
-    elseif (ktyp.eq.'S') then
-        call jgetptc(jad,pc,vi4=zi4(1))
+    elseif (ktyp .eq. 'S') then
+        call jgetptc(jad, pc, vi4=zi4(1))
 
-    elseif (ktyp.eq.'R') then
-        call jgetptc(jad,pc,vr=zr(1))
+    elseif (ktyp .eq. 'R') then
+        call jgetptc(jad, pc, vr=zr(1))
 
-    elseif (ktyp.eq.'C') then
-        call jgetptc(jad,pc,vc=zc(1))
+    elseif (ktyp .eq. 'C') then
+        call jgetptc(jad, pc, vc=zc(1))
 
-    elseif (ktyp.eq.'K8') then
-        call jgetptc(jad,pc,vk8=zk8(1))
+    elseif (ktyp .eq. 'K8') then
+        call jgetptc(jad, pc, vk8=zk8(1))
 
-    elseif (ktyp.eq.'K16') then
-        call jgetptc(jad,pc,vk16=zk16(1))
+    elseif (ktyp .eq. 'K16') then
+        call jgetptc(jad, pc, vk16=zk16(1))
 
-    elseif (ktyp.eq.'K24') then
-        call jgetptc(jad,pc,vk24=zk24(1))
+    elseif (ktyp .eq. 'K24') then
+        call jgetptc(jad, pc, vk24=zk24(1))
 
-    elseif (ktyp.eq.'K32') then
-        call jgetptc(jad,pc,vk32=zk32(1))
+    elseif (ktyp .eq. 'K32') then
+        call jgetptc(jad, pc, vk32=zk32(1))
 
-    elseif (ktyp.eq.'K80') then
-        call jgetptc(jad,pc,vk80=zk80(1))
+    elseif (ktyp .eq. 'K80') then
+        call jgetptc(jad, pc, vk80=zk80(1))
 
     else
         ASSERT(.false.)
-    endif
+    end if
 
 end subroutine

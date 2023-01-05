@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
+subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma, &
                   listma, chelem)
     implicit none
 #include "jeveux.h"
@@ -42,9 +42,9 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
     call jeexin(chelem(1:19)//'.CESD', iret)
 !
     if (iret .eq. 0) then
-        call cescre('V', chelem, 'ELNO', noma, nomgd,&
+        call cescre('V', chelem, 'ELNO', noma, nomgd, &
                     nbcmp, nocmp, [-1], [-1], [-nbcmp])
-    endif
+    end if
 !
     call jeveuo(chelem(1:19)//'.CESD', 'L', vi=cesd)
     call jeveuo(chelem(1:19)//'.CESV', 'E', vr=cesv)
@@ -56,7 +56,7 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
         decal = cesd(5+4*(ima-1)+4)
         do ipt = 1, nbpt
             do icmp = 1, nbcmp
-                iad = decal + (ipt-1)*nbcmp + icmp
+                iad = decal+(ipt-1)*nbcmp+icmp
                 zl(jcesl-1+iad) = .true.
                 cesv(iad) = 0.d0
             end do

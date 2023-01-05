@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@
 !
 subroutine nonlinDSAlgoParaCreate(ds_algopara)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 !
-type(NL_DS_AlgoPara), intent(out) :: ds_algopara
+    type(NL_DS_AlgoPara), intent(out) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,26 +42,26 @@ type(NL_DS_AlgoPara), intent(out) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ds_algopara%method           = ' '
-    ds_algopara%matrix_pred      = ' '
-    ds_algopara%matrix_corr      = ' '
-    ds_algopara%reac_incr        = 0
-    ds_algopara%reac_iter        = 0
-    ds_algopara%pas_mini_elas    = -9999.0d0
-    ds_algopara%reac_iter_elas   = 0
-    ds_algopara%l_dyna           = ASTER_FALSE
-    ds_algopara%l_line_search    = ASTER_FALSE
-    ds_algopara%l_pilotage       = ASTER_FALSE
+    ds_algopara%method = ' '
+    ds_algopara%matrix_pred = ' '
+    ds_algopara%matrix_corr = ' '
+    ds_algopara%reac_incr = 0
+    ds_algopara%reac_iter = 0
+    ds_algopara%pas_mini_elas = -9999.0d0
+    ds_algopara%reac_iter_elas = 0
+    ds_algopara%l_dyna = ASTER_FALSE
+    ds_algopara%l_line_search = ASTER_FALSE
+    ds_algopara%l_pilotage = ASTER_FALSE
     ds_algopara%result_prev_disp = ' '
     ds_algopara%l_matr_rigi_syme = ASTER_FALSE
 !
 ! - Parameters for line search
 !
-    ds_algopara%line_search%method    = ' '
+    ds_algopara%line_search%method = ' '
     ds_algopara%line_search%resi_rela = 0.d0
     ds_algopara%line_search%iter_maxi = 0
-    ds_algopara%line_search%rho_mini  = 0.d0
-    ds_algopara%line_search%rho_maxi  = 0.d0
-    ds_algopara%line_search%rho_excl  = 0.d0
+    ds_algopara%line_search%rho_mini = 0.d0
+    ds_algopara%line_search%rho_maxi = 0.d0
+    ds_algopara%line_search%rho_excl = 0.d0
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xelfis_lists(fiss, modele, elfiss_heav,&
-                            elfiss_ctip, elfiss_hect)
+subroutine xelfis_lists(fiss, modele, elfiss_heav, &
+                        elfiss_ctip, elfiss_hect)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -83,9 +83,9 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav,&
     elfiss(2) = elfiss_ctip
     elfiss(3) = elfiss_hect
 !
-    do k = 1,3
+    do k = 1, 3
 !
-        nb_ma_lis   = 0
+        nb_ma_lis = 0
         iadr_lis_ma = 0
 !
 ! ----- la liste existe-t-elle
@@ -101,10 +101,10 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav,&
 ! --------- compter dans la liste courante les mailles qui portent des EF
 !
             nb_el_lis = 0
-            do i = 1,nb_ma_lis
+            do i = 1, nb_ma_lis
                 ima = zi(iadr_lis_ma-1+i)
                 if (p_mail_affe(ima) .ne. 0) nb_el_lis = nb_el_lis+1
-            enddo
+            end do
 !
 ! --------- creer la sous-liste
 !
@@ -113,19 +113,19 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav,&
 ! --------- remplir la sous-liste
 !
             cpt = 0
-            do i = 1,nb_ma_lis
+            do i = 1, nb_ma_lis
                 ima = zi(iadr_lis_ma-1+i)
                 if (p_mail_affe(ima) .ne. 0) then
                     cpt = cpt+1
                     zi(iadr_lis_el-1+cpt) = ima
-                endif
-            enddo
+                end if
+            end do
 !
-        endif
+        end if
 !
 ! - fin boucle sur les 3 types possibles de liste de mailles
 !
-    enddo
+    end do
 !
     call jedema()
 !

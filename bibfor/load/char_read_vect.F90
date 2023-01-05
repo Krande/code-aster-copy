@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 !
-character(len=16), intent(in) :: keywordfact
-integer, intent(in) :: iocc
-character(len=*), intent(in) :: keyword_z
-real(kind=8), intent(out) :: vect_r(3)
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    character(len=*), intent(in) :: keyword_z
+    real(kind=8), intent(out) :: vect_r(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,6 +56,6 @@ real(kind=8), intent(out) :: vect_r(3)
     if (val_nb .ne. 0) then
         ASSERT(val_nb .le. 3)
         call getvr8(keywordfact, keyword, iocc=iocc, nbval=val_nb, vect=vect_r)
-    endif
+    end if
 !
 end subroutine

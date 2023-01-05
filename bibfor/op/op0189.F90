@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine op0189()
 !-----------------------------------------------------------------------
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'OP0189' )
+    parameter(nompro='OP0189')
 !
     character(len=5) :: k5blan
     character(len=8) :: cartout, nomres, modele, mailla
@@ -70,7 +70,7 @@ subroutine op0189()
     integer :: i, j, iret, iel, ima, nbordr, iorfin, jptvoi, jelvoi
     integer :: cpt, itypel, igrel, numa, numaco, ndim, dimmai, dimmod
     integer :: nbma, nbgrmo, nbel, nbelco, nbelma
-    integer :: jrepmo, nbvois, nbvmas, numavo, jcesd,  jcesl, iad
+    integer :: jrepmo, nbvois, nbvmas, numavo, jcesd, jcesl, iad
     integer :: jcelds, jcelvs
     integer, pointer :: numeor(:) => null(), tab_typel(:) => null()
     integer, pointer :: tab_tra(:) => null(), tab_numa(:) => null()
@@ -80,20 +80,20 @@ subroutine op0189()
 !
 !   code des modelisations autorisees pour les elements "massifs"
     integer :: nmodmas
-    parameter (nmodmas=4)
+    parameter(nmodmas=4)
     character(len=3) :: lk3moma(nmodmas)
     character(len=8) :: lk8moma(nmodmas)
-    data lk3moma /'CPL', 'DPL', 'AX_', '3D_'/
+    data lk3moma/'CPL', 'DPL', 'AX_', '3D_'/
 !
 !   attributs 'TYPMOD2' des modelisations "cohesives"
     integer :: natczm
-    parameter (natczm=2)
+    parameter(natczm=2)
     character(len=8) :: lk8atczm(natczm)
-    data lk8atczm /'ELEMJOIN', 'INTERFAC'/
+    data lk8atczm/'ELEMJOIN', 'INTERFAC'/
 !
 !   pour la sd voisinage
     integer :: nvoima, nscoma
-    parameter(nvoima=100,nscoma=4)
+    parameter(nvoima=100, nscoma=4)
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     integer :: livmas(2)
@@ -106,9 +106,9 @@ subroutine op0189()
 ! ---
 !
     k5blan = '     '
-    do i = 1,nmodmas
+    do i = 1, nmodmas
         lk8moma(i) = lk3moma(i)//k5blan
-    enddo
+    end do
 !
 ! --- recuperation du concept produit et des valeurs donnees aux mots-cles
 !
@@ -119,9 +119,9 @@ subroutine op0189()
 !
     k24ordr = nomres//'           .ORDR'
     call jeexin(k24ordr, iret)
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
     call jelira(k24ordr, 'LONUTI', ival=nbordr)
-    ASSERT(nbordr.gt.0)
+    ASSERT(nbordr .gt. 0)
     call jeveuo(k24ordr, 'L', vi=numeor)
     iorfin = numeor(nbordr)
 !
@@ -145,22 +145,22 @@ subroutine op0189()
 !
     call dismoi('DIM_GEOM', mailla, 'MAILLAGE', repi=dimmai)
     call dismoi('DIM_GEOM', modele, 'MODELE', repi=dimmod)
-    ASSERT(dimmai.eq.dimmod)
+    ASSERT(dimmai .eq. dimmod)
     ndim = dimmai
 !
     if (ndim .eq. 2) then
-        codvoi='A2'
+        codvoi = 'A2'
     else if (ndim .eq. 3) then
-        codvoi='F3'
+        codvoi = 'F3'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- creation du cham_elem_s dans lequel on va ecrire par maille cohesive
 ! --- la triaxialite (moyennee) des elements massifs voisins
 !
     cestmp = '&&'//nompro//'.CESTMP'
-    call cescre('V', cestmp, 'ELEM', mailla, 'NEUT_R',&
+    call cescre('V', cestmp, 'ELEM', mailla, 'NEUT_R', &
                 1, 'X1', [0], [-1], [-1])
     call jeveuo(cestmp//'.CESD', 'L', jcesd)
     call jeveuo(cestmp//'.CESV', 'E', vr=cesv)
@@ -181,42 +181,42 @@ subroutine op0189()
     nbgrmo = nbgrel(ligrmo)
     do igrel = 1, nbgrmo
 
-        itypel = typele(ligrmo,igrel)
+        itypel = typele(ligrmo, igrel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), k16tyel)
 !
 !       ce sont des elements cohesifs
         call teattr('C', 'TYPMOD2', k8mod2, iret, typel=k16tyel)
-        if (iret.eq.0) then
-            if ( knindi(8,k8mod2,lk8atczm,natczm).gt.0 ) then
+        if (iret .eq. 0) then
+            if (knindi(8, k8mod2, lk8atczm, natczm) .gt. 0) then
 
-                nbelco = nbelco + nbelem(ligrmo,igrel)
+                nbelco = nbelco+nbelem(ligrmo, igrel)
 
-            endif
-        endif
+            end if
+        end if
 
 !       ce sont des elements "massifs"
         call teattr('S', 'ALIAS8', k8alia, iret, typel=k16tyel)
-        if ( knindi(8,k8alia(3:5)//k5blan,lk8moma,nmodmas).gt.0 ) then
+        if (knindi(8, k8alia(3:5)//k5blan, lk8moma, nmodmas) .gt. 0) then
 
             call teattr('S', 'PRINCIPAL', k8prin, iret, typel=k16tyel)
             if (k8prin(1:3) .eq. 'OUI') then
 
                 call jeveuo(jexnum(ligrmo//'.LIEL', igrel), 'L', vi=tab_numa)
-                do iel=1,nbelem(ligrmo,igrel)
+                do iel = 1, nbelem(ligrmo, igrel)
                     numa = tab_numa(iel)
                     tab_tra(numa) = 1
-                enddo
+                end do
 
-                nbelma = nbelma + nbelem(ligrmo,igrel)
+                nbelma = nbelma+nbelem(ligrmo, igrel)
 
-            endif
+            end if
 
-        endif
+        end if
 
-    enddo
+    end do
 !
-    if ( nbelco.eq.0 ) call utmess('F', 'PREPOST6_46', sk=modele)
-    ASSERT( nbelma.gt.0 )
+    if (nbelco .eq. 0) call utmess('F', 'PREPOST6_46', sk=modele)
+    ASSERT(nbelma .gt. 0)
 !
 ! --- allocation de la liste des mailles portant des elements cohesifs
 !
@@ -230,24 +230,24 @@ subroutine op0189()
 !
     do igrel = 1, nbgrmo
 
-        itypel = typele(ligrmo,igrel)
+        itypel = typele(ligrmo, igrel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), k16tyel)
 !
 !       ce sont des elements cohesifs
         call teattr('C', 'TYPMOD2', k8mod2, iret, typel=k16tyel)
-        if (iret.eq.0) then
-            if ( knindi(8,k8mod2,lk8atczm,natczm).gt.0 ) then
+        if (iret .eq. 0) then
+            if (knindi(8, k8mod2, lk8atczm, natczm) .gt. 0) then
 
-                nbel = nbelem(ligrmo,igrel)
+                nbel = nbelem(ligrmo, igrel)
                 call jeveuo(jexnum(ligrmo//'.LIEL', igrel), 'L', vi=tab_numa)
                 tab_maco(cpt+1:cpt+nbel) = tab_numa(1:nbel)
 
-                cpt = cpt + nbel
+                cpt = cpt+nbel
 
-            endif
-        endif
+            end if
+        end if
 
-    enddo
+    end do
 !
 ! -------------------------------------------------------------------
 !                boucle sur les mailles cohesives
@@ -256,7 +256,7 @@ subroutine op0189()
 ! --- recuperation de la sd_voisinage
 !
     call jeveuo(ligrmo//'.NVGE', 'L', vk16=vvge)
-    k16vge=vvge(1)
+    k16vge = vvge(1)
     call jeveuo(k16vge(1:12)//'.PTVOIS', 'L', jptvoi)
     call jeveuo(k16vge(1:12)//'.ELVOIS', 'L', jelvoi)
 !
@@ -264,32 +264,32 @@ subroutine op0189()
 
         numaco = tab_maco(ima)
 
-        call voiuti(numaco, codvoi, nvoima, nscoma, jrepmo,&
-                    jptvoi, jelvoi, nbvois, livois, tyvois,&
+        call voiuti(numaco, codvoi, nvoima, nscoma, jrepmo, &
+                    jptvoi, jelvoi, nbvois, livois, tyvois, &
                     nbnovo, nbsoco, lisoco)
 
         nbvmas = 0
         do j = 1, nbvois
             numavo = livois(j)
-            if ( tab_tra(numavo) .eq. 1 ) then
+            if (tab_tra(numavo) .eq. 1) then
                 nbvmas = nbvmas+1
                 livmas(nbvmas) = numavo
-            endif
-        enddo
+            end if
+        end do
 !       1 ou 2 voisin(s) "massif" pour une maille cohesive
-        ASSERT( nbvmas .eq. 1 .or. nbvmas .eq. 2 )
+        ASSERT(nbvmas .eq. 1 .or. nbvmas .eq. 2)
 
 !       calcul de la triaxialite moyennee sur les voisins "massif"
-        call trvocz(ndim, nbvmas, livmas, jrepmo,&
+        call trvocz(ndim, nbvmas, livmas, jrepmo, &
                     jcelds, jcelvs, trxmoy)
 !
         call cesexi('S', jcesd, jcesl, numaco, 1, 1, 1, iad)
-        ASSERT(iad.lt.0)
+        ASSERT(iad .lt. 0)
         iad = -iad
         zl(jcesl-1+iad) = .true.
         cesv(iad) = trxmoy
 
-    enddo
+    end do
 !
 ! --- creation de la carte en sortie
 !

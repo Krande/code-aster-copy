@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cldual_maj(list_load, disp)
 
-implicit none
+    implicit none
 
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -56,7 +56,7 @@ implicit none
     character(len=13)  :: load_dual
     aster_logical :: ltran
     aster_logical :: load_empty
-    integer :: nb_link,i_link,iexi
+    integer :: nb_link, i_link, iexi
     integer :: i_load, nb_load
     integer :: i_load_diri
     aster_logical :: ischar_diri
@@ -70,14 +70,14 @@ implicit none
 ! - Initializations
 !
     i_load_diri = 0
-    ltran       = .false._1
+    ltran = .false._1
     ischar_diri = .false._1
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load    , v_load_name, v_load_info,&
-                        list_load_ = list_load)
-    ASSERT(.not.load_empty)
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
+                        list_load_=list_load)
+    ASSERT(.not. load_empty)
 !
 ! - Identify undead Dirichlet load
 !
@@ -88,15 +88,15 @@ implicit none
 !
 ! --------- Get load
 !
-            load_name = v_load_name(i_load_diri)(1:8)
+            load_name = v_load_name(i_load_diri) (1:8)
             load_dual = load_name//'.DUAL'
 !
 ! --------- Some checks
 !
             call jeexin(load_name//'.DUAL.PRDK', iexi)
-            ASSERT(iexi.gt.0)
+            ASSERT(iexi .gt. 0)
             call jeveuo(load_name//'.TYPE', 'L', vk8=load_type)
-            ASSERT(load_type(1).eq.'MECA_RE')
+            ASSERT(load_type(1) .eq. 'MECA_RE')
 !
 ! --------- Datastructure access
 !
@@ -105,31 +105,31 @@ implicit none
 !
 ! --------- Find type of dual relation
 !
-            do i_link = 1,nb_link
-               dual_type = dual_prdk(i_link)
-               if (dual_type.eq.' ' .or. dual_type.eq.'LIN') then
+            do i_link = 1, nb_link
+                dual_type = dual_prdk(i_link)
+                if (dual_type .eq. ' ' .or. dual_type .eq. 'LIN') then
 ! -------- Nothing to do
-               else if (dual_type(1:2).eq.'2D' .or.  dual_type(1:2).eq.'3D') then
-                   ltran=.true._1
-               else if (dual_type .eq. 'ROTA2D') then
-                   call utmess('F','CHARGES_35')
-               else if (dual_type .eq. 'ROTA3D') then
-                   call utmess('F','CHARGES_36')
-               else if (dual_type.eq.'NLIN') then
+                else if (dual_type(1:2) .eq. '2D' .or. dual_type(1:2) .eq. '3D') then
+                    ltran = .true._1
+                else if (dual_type .eq. 'ROTA2D') then
+                    call utmess('F', 'CHARGES_35')
+                else if (dual_type .eq. 'ROTA3D') then
+                    call utmess('F', 'CHARGES_36')
+                else if (dual_type .eq. 'NLIN') then
 !                  -- Le nom de la charge est malheureusement inexploitable.
 !                     C'est une copie temporaire.
-                   call utmess('F','CHARGES_30')
-               else
+                    call utmess('F', 'CHARGES_30')
+                else
                     ASSERT(ASTER_FALSE)
-               endif
-            enddo
+                end if
+            end do
 !
 ! --------- Update for LIAISON_SOLIDE
 !
             if (ltran) then
                 call solide_tran_maj(load_name, disp)
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

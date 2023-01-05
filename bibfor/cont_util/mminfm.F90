@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,19 +80,19 @@ subroutine mminfm(posmae, defico, questz, irep)
 !
     indmae = zi(jtypma+ztypm*(posmae-1)+2-1)
     posma2 = zi(jmaesc+zmaes*(indmae-1)+1-1)
-    ASSERT(posma2.eq.posmae)
+    ASSERT(posma2 .eq. posmae)
 !
 ! --- QUESTION
 !
     if (questi .eq. 'IZONE') then
         irep = zi(jmaesc+zmaes*(indmae-1)+2-1)
-    else if (questi.eq.'NPTM') then
+    else if (questi .eq. 'NPTM') then
         irep = zi(jmaesc+zmaes*(indmae-1)+3-1)
-    else if (questi.eq.'NDEXFR') then
+    else if (questi .eq. 'NDEXFR') then
         irep = zi(jmaesc+zmaes*(indmae-1)+4-1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedema()
 end subroutine

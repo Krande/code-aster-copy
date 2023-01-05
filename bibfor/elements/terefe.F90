@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine terefe(refe_name, type_elem, refe_vale)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
@@ -58,112 +58,112 @@ implicit none
     if (refe_name .eq. 'SIGM_REFE') then
         if (type_elem .eq. 'MECA_ISO') then
             index = 1
-        else if (type_elem.eq.'THM_JOINT') then
+        else if (type_elem .eq. 'THM_JOINT') then
             index = 1
-        else if (type_elem.eq.'MECA_INTERFACE') then
+        else if (type_elem .eq. 'MECA_INTERFACE') then
             index = 1
-        else if (type_elem.eq.'MECA_COQUE3D') then
+        else if (type_elem .eq. 'MECA_COQUE3D') then
             index = 1
-        else if (type_elem.eq.'MECA_GRADVARI') then
+        else if (type_elem .eq. 'MECA_GRADVARI') then
             index = 1
-        else if (type_elem.eq.'MECA_TUYAU') then
+        else if (type_elem .eq. 'MECA_TUYAU') then
             index = 1
-        else if (type_elem.eq.'THM') then
+        else if (type_elem .eq. 'THM') then
             index = 1
-        else if (type_elem.eq.'MECA_INCO') then
+        else if (type_elem .eq. 'MECA_INCO') then
             index = 1
-        else if (type_elem.eq.'MECA_CG') then
+        else if (type_elem .eq. 'MECA_CG') then
             index = 1
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'EPSI_REFE') then
+        end if
+    else if (refe_name .eq. 'EPSI_REFE') then
         if (type_elem .eq. 'MECA_INCO') then
             index = 2
-        else if (type_elem.eq.'GRILLE') then
+        else if (type_elem .eq. 'GRILLE') then
             index = 1
-        else if (type_elem.eq.'MEMBRANE') then
+        else if (type_elem .eq. 'MEMBRANE') then
             index = 1
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'FLUX_THER_REFE') then
+        end if
+    else if (refe_name .eq. 'FLUX_THER_REFE') then
         if (type_elem .eq. 'THM') then
             index = 4
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'FLUX_HYD1_REFE') then
+        end if
+    else if (refe_name .eq. 'FLUX_HYD1_REFE') then
         if (type_elem .eq. 'THM_JOINT') then
             index = 2
-        else if (type_elem.eq.'THM') then
+        else if (type_elem .eq. 'THM') then
             index = 2
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'FLUX_HYD2_REFE') then
+        end if
+    else if (refe_name .eq. 'FLUX_HYD2_REFE') then
         if (type_elem .eq. 'THM') then
             index = 3
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'VARI_REFE') then
+        end if
+    else if (refe_name .eq. 'VARI_REFE') then
         if (type_elem .eq. 'MECA_GRADVARI') then
             index = 2
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'EFFORT_REFE') then
+        end if
+    else if (refe_name .eq. 'EFFORT_REFE') then
         if (type_elem .eq. 'MECA_DISCRET') then
             index = 1
-        else if (type_elem.eq.'MECA_BARRE') then
+        else if (type_elem .eq. 'MECA_BARRE') then
             index = 1
-        else if (type_elem.eq.'MECA_CABLE') then
+        else if (type_elem .eq. 'MECA_CABLE') then
             index = 1
-        else if (type_elem.eq.'MECA_POULIE') then
+        else if (type_elem .eq. 'MECA_POULIE') then
             index = 1
-        else if (type_elem.eq.'MECA_POUTRE') then
+        else if (type_elem .eq. 'MECA_POUTRE') then
             index = 1
-        else if (type_elem.eq.'MECA_COQUE') then
+        else if (type_elem .eq. 'MECA_COQUE') then
             index = 1
-        else if (type_elem.eq.'MECA_CG') then
+        else if (type_elem .eq. 'MECA_CG') then
             index = 2
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'MOMENT_REFE') then
+        end if
+    else if (refe_name .eq. 'MOMENT_REFE') then
         if (type_elem .eq. 'MECA_DISCRET') then
             index = 2
-        else if (type_elem.eq.'MECA_POUTRE') then
+        else if (type_elem .eq. 'MECA_POUTRE') then
             index = 2
-        else if (type_elem.eq.'MECA_COQUE') then
+        else if (type_elem .eq. 'MECA_COQUE') then
             index = 2
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'DEPL_REFE') then
+        end if
+    else if (refe_name .eq. 'DEPL_REFE') then
         if (type_elem .eq. 'MECA_INTERFACE') then
             index = 2
-        else if (type_elem.eq.'MECA_CG') then
+        else if (type_elem .eq. 'MECA_CG') then
             index = 4
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'LAGR_REFE') then
+        end if
+    else if (refe_name .eq. 'LAGR_REFE') then
         if (type_elem .eq. 'MECA_GRADVARI') then
             index = 3
         else
             ASSERT(.false.)
-        endif
-    else if (refe_name.eq.'PI_REFE') then
+        end if
+    else if (refe_name .eq. 'PI_REFE') then
         if (type_elem .eq. 'MECA_INCO') then
             index = 3
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Get and check value
 !
@@ -174,6 +174,6 @@ implicit none
         call utmess('F', 'MECANONLINE5_55', nk=2, valk=kmess)
     else
         refe_vale = val
-    endif
+    end if
 !
 end subroutine

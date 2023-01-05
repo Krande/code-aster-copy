@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0248(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,7 +43,7 @@ implicit none
 #include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,12 +64,12 @@ character(len=16), intent(in) :: option, nomte
     integer :: iinstp, ideplm, ideplp, icontm, ivarim, icompo
     integer :: icarcr, imatuu, ivectu, icontp, nno, nc, ivarip, jcret, nbvari
     integer :: jtab(7), iret
-    parameter (neq=6,nbt=21,nvamax=8)
+    parameter(neq=6, nbt=21, nvamax=8)
     character(len=4) :: fami
 !
 !   constantes pour PINTO_MENEGOTTO
     integer :: ncstpm, codret
-    parameter (ncstpm=13)
+    parameter(ncstpm=13)
     real(kind=8) :: cstpm(ncstpm)
 !
     real(kind=8) :: e, epsm
@@ -88,7 +88,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret=0
+    codret = 0
     fami = 'RIGI'
     vectu = 0.d0
 !
@@ -113,9 +113,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -126,10 +126,10 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Some checks
 !
-    if ( (option.eq. 'FULL_MECA_ELAS' .or. option.eq.'RIGI_MECA_ELAS') .and. &
-         (rela_comp .ne. 'ELAS') ) then
-        call utmess('F', 'POUTRE0_43', sk = rela_comp)
-    endif
+    if ((option .eq. 'FULL_MECA_ELAS' .or. option .eq. 'RIGI_MECA_ELAS') .and. &
+        (rela_comp .ne. 'ELAS')) then
+        call utmess('F', 'POUTRE0_43', sk=rela_comp)
+    end if
 !
 !   Angle du mot clef MASSIF de AFFE_CARA_ELEM, initialisé à r8nnem (on ne s'en sert pas)
 !
@@ -139,24 +139,24 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
     if (option(1:10) .eq. 'RIGI_MECA_') then
         ivarip = ivarim
         icontp = icontm
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
-    endif
+    end if
     if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontp)
-    endif
+    end if
 !
 !   Récupération de la section de la barre
     aire = zr(isect)
@@ -167,59 +167,59 @@ character(len=16), intent(in) :: option, nomte
     if (defo_comp(6:10) .eq. '_REAC') then
         if (nomte .eq. 'MECA_BARRE') then
             do i = 1, 3
-                w(i)   = zr(igeom-1+i) + zr(ideplm-1+i) + zr(ideplp-1+i)
-                w(i+3) = zr(igeom+2+i) + zr(ideplm+2+i) + zr(ideplp+2+ i)
-                xd(i)  = w(i+3) - w(i)
-            enddo
-        else if (nomte.eq.'MECA_2D_BARRE') then
-            w(1)  = zr(igeom-1+1) + zr(ideplm-1+1) + zr(ideplp-1+1)
-            w(2)  = zr(igeom-1+2) + zr(ideplm-1+2) + zr(ideplp-1+2)
-            w(3)  = 0.d0
-            w(4)  = zr(igeom-1+3) + zr(ideplm-1+3) + zr(ideplp-1+3)
-            w(5)  = zr(igeom-1+4) + zr(ideplm-1+4) + zr(ideplp-1+4)
-            w(6)  = 0.d0
-            xd(1) = w(4) - w(1)
-            xd(2) = w(5) - w(2)
+                w(i) = zr(igeom-1+i)+zr(ideplm-1+i)+zr(ideplp-1+i)
+                w(i+3) = zr(igeom+2+i)+zr(ideplm+2+i)+zr(ideplp+2+i)
+                xd(i) = w(i+3)-w(i)
+            end do
+        else if (nomte .eq. 'MECA_2D_BARRE') then
+            w(1) = zr(igeom-1+1)+zr(ideplm-1+1)+zr(ideplp-1+1)
+            w(2) = zr(igeom-1+2)+zr(ideplm-1+2)+zr(ideplp-1+2)
+            w(3) = 0.d0
+            w(4) = zr(igeom-1+3)+zr(ideplm-1+3)+zr(ideplp-1+3)
+            w(5) = zr(igeom-1+4)+zr(ideplm-1+4)+zr(ideplp-1+4)
+            w(6) = 0.d0
+            xd(1) = w(4)-w(1)
+            xd(2) = w(5)-w(2)
             xd(3) = 0.d0
-        endif
+        end if
         call angvx(xd, ang1(1), ang1(2))
         ang1(3) = zr(iorie+2)
         call matrot(ang1, pgl)
     else
         if (nomte .eq. 'MECA_BARRE') then
             do i = 1, 3
-                w(i)   = zr(igeom-1+i)
+                w(i) = zr(igeom-1+i)
                 w(i+3) = zr(igeom+2+i)
-                xd(i)  = w(i+3) - w(i)
-            enddo
-        else if (nomte.eq.'MECA_2D_BARRE') then
-            w(1)  = zr(igeom-1+1)
-            w(2)  = zr(igeom-1+2)
-            w(3)  = 0.d0
-            w(4)  = zr(igeom-1+3)
-            w(5)  = zr(igeom-1+4)
-            w(6)  = 0.d0
-            xd(1) = w(4) - w(1)
-            xd(2) = w(5) - w(2)
+                xd(i) = w(i+3)-w(i)
+            end do
+        else if (nomte .eq. 'MECA_2D_BARRE') then
+            w(1) = zr(igeom-1+1)
+            w(2) = zr(igeom-1+2)
+            w(3) = 0.d0
+            w(4) = zr(igeom-1+3)
+            w(5) = zr(igeom-1+4)
+            w(6) = 0.d0
+            xd(1) = w(4)-w(1)
+            xd(2) = w(5)-w(2)
             xd(3) = 0.d0
-        endif
+        end if
         call matrot(zr(iorie), pgl)
-    endif
+    end if
 !
-    xlong0=ddot(3,xd,1,xd,1)
+    xlong0 = ddot(3, xd, 1, xd, 1)
     xlong0 = sqrt(xlong0)
 !
     if (xlong0 .eq. 0.d0) then
         call utmess('F', 'POUTRE0_62')
-    endif
+    end if
 !
 !   Incrément de déplacement en repère local
     if (nomte .eq. 'MECA_BARRE') then
         do i = 1, 6
             deplm(i) = zr(ideplm+i-1)
             deplp(i) = zr(ideplp+i-1)
-        enddo
-    else if (nomte.eq.'MECA_2D_BARRE') then
+        end do
+    else if (nomte .eq. 'MECA_2D_BARRE') then
         deplm(1) = zr(ideplm)
         deplm(2) = zr(ideplm+1)
         deplm(3) = 0.d0
@@ -233,33 +233,33 @@ character(len=16), intent(in) :: option, nomte
         deplp(4) = zr(ideplp+2)
         deplp(5) = zr(ideplp+3)
         deplp(6) = 0.d0
-    endif
+    end if
 !
     call utpvgl(nno, nc, pgl, deplm, uml)
     call utpvgl(nno, nc, pgl, deplp, dul)
 !
-    dlong = dul(4) - dul(1)
-    xlongm = xlong0 + uml(4) - uml(1)
+    dlong = dul(4)-dul(1)
+    xlongm = xlong0+uml(4)-uml(1)
 !   Récupération de l'effort normal précédent moyen effnom pour l'élément
     effnom = zr(icontm)
 !
 !   RELATION DE COMPORTEMENT
-    if ( (rela_comp .eq. 'ELAS') .or. &
-         (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
-         (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. &
-         (rela_comp .eq. 'CORR_ACIER') .or. &
-         (rela_comp .eq. 'VMIS_CINE_LINE') .or. &
-         (rela_comp .eq. 'RELAX_ACIER') ) then
+    if ((rela_comp .eq. 'ELAS') .or. &
+        (rela_comp .eq. 'VMIS_ISOT_LINE') .or. &
+        (rela_comp .eq. 'VMIS_ISOT_TRAC') .or. &
+        (rela_comp .eq. 'CORR_ACIER') .or. &
+        (rela_comp .eq. 'VMIS_CINE_LINE') .or. &
+        (rela_comp .eq. 'RELAX_ACIER')) then
 !       Récupération des caractéristiques du matériau
         epsm = (uml(4)-uml(1))/xlong0
-        call nmiclb(fami, 1, 1, option, rela_comp,&
-                    zi(imate), xlong0, aire, zr(iinstm), zr(iinstp),&
-                    dlong, effnom, zr(ivarim), effnop, zr(ivarip),&
+        call nmiclb(fami, 1, 1, option, rela_comp, &
+                    zi(imate), xlong0, aire, zr(iinstm), zr(iinstp), &
+                    dlong, effnom, zr(ivarim), effnop, zr(ivarip), &
                     klv, fono, epsm, zr(icarcr), codret)
 !
         if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
             zr(icontp) = effnop
-        endif
+        end if
 !
         if (option(1:10) .eq. 'RIGI_MECA_') then
             call utpslg(nno, nc, pgl, klv, matuu)
@@ -267,18 +267,18 @@ character(len=16), intent(in) :: option, nomte
             zr(icontp) = effnop
             if (option(1:9) .eq. 'FULL_MECA') then
                 call utpslg(nno, nc, pgl, klv, matuu)
-            endif
+            end if
             call utpvlg(nno, nc, pgl, fono, vectu)
-        endif
+        end if
 !
     else if (rela_comp .eq. 'VMIS_ASYM_LINE') then
 !       Récupération des caractéristiques du matériau
-        call nmmaba(zi(imate), rela_comp, e, dsde, sigy,&
+        call nmmaba(zi(imate), rela_comp, e, dsde, sigy, &
                     ncstpm, cstpm)
 !
-        call nmasym(fami, 1, 1, zi(imate), option,&
-                    xlong0, aire, zr(iinstm), zr( iinstp), dlong,&
-                    effnom, zr(ivarim), zr(icontp), zr(ivarip), klv,&
+        call nmasym(fami, 1, 1, zi(imate), option, &
+                    xlong0, aire, zr(iinstm), zr(iinstp), dlong, &
+                    effnom, zr(ivarim), zr(icontp), zr(ivarip), klv, &
                     fono)
 !
         if (option(1:10) .eq. 'RIGI_MECA_') then
@@ -286,13 +286,13 @@ character(len=16), intent(in) :: option, nomte
         else
             if (option(1:9) .eq. 'FULL_MECA') then
                 call utpslg(nno, nc, pgl, klv, matuu)
-            endif
+            end if
             call utpvlg(nno, nc, pgl, fono, vectu)
-        endif
+        end if
 !
     else if (rela_comp .eq. 'PINTO_MENEGOTTO') then
 !       Récupération des caractéristiques du matériau
-        call nmmaba(zi(imate), rela_comp, e, dsde, sigy,&
+        call nmmaba(zi(imate), rela_comp, e, dsde, sigy, &
                     ncstpm, cstpm)
 !
         vim(1) = zr(ivarim)
@@ -303,9 +303,9 @@ character(len=16), intent(in) :: option, nomte
         vim(6) = zr(ivarim+5)
         vim(7) = zr(ivarim+6)
         vim(8) = zr(ivarim+7)
-        call nmpime(fami, 1, 1, zi(imate), option,&
-                    xlong0, aire, xlongm, dlong, ncstpm,&
-                    cstpm, vim, effnom, vip, effnop,&
+        call nmpime(fami, 1, 1, zi(imate), option, &
+                    xlong0, aire, xlongm, dlong, ncstpm, &
+                    cstpm, vim, effnom, vip, effnop, &
                     klv, fono)
 !
         if (option(1:10) .eq. 'RIGI_MECA_') then
@@ -314,8 +314,8 @@ character(len=16), intent(in) :: option, nomte
             zr(icontp) = effnop
             if (option(1:9) .eq. 'FULL_MECA') then
                 call utpslg(nno, nc, pgl, klv, matuu)
-            endif
-            zr(ivarip)   = vip(1)
+            end if
+            zr(ivarip) = vip(1)
             zr(ivarip+1) = vip(2)
             zr(ivarip+2) = vip(3)
             zr(ivarip+3) = vip(4)
@@ -324,7 +324,7 @@ character(len=16), intent(in) :: option, nomte
             zr(ivarip+6) = vip(7)
             zr(ivarip+7) = vip(8)
             call utpvlg(nno, nc, pgl, fono, vectu)
-        endif
+        end if
 !
     else
 !       Double DEBORST : risque d'impact sur les performances d'intégration de la loi
@@ -332,23 +332,23 @@ character(len=16), intent(in) :: option, nomte
         call r8inir(nbt, 0.d0, klv, 1)
 !
 
-        if ((rela_cpla.ne.'DEBORST') .and. (rela_comp .ne. 'SANS')) then
-            call utmess('F', 'COMPOR4_32', sk = rela_comp)
+        if ((rela_cpla .ne. 'DEBORST') .and. (rela_comp .ne. 'SANS')) then
+            call utmess('F', 'COMPOR4_32', sk=rela_comp)
         else
 !
-            sigx=effnom/aire
-            epsx=(uml(4)-uml(1))/xlong0
-            depx=dlong/xlong0
+            sigx = effnom/aire
+            epsx = (uml(4)-uml(1))/xlong0
+            depx = dlong/xlong0
 !
             if (lVect) then
                 call tecach('OOO', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
-                nbvari = max(jtab(6),1)*jtab(7)
-                ivarmp=jtab(1)
+                nbvari = max(jtab(6), 1)*jtab(7)
+                ivarmp = jtab(1)
                 call dcopy(nbvari, zr(ivarmp), 1, zr(ivarip), 1)
-            endif
+            end if
 !
-            call comp1d(fami, 1, 1, option, sigx,&
-                        epsx, depx, angmas, zr(ivarim), zr(ivarip),&
+            call comp1d(fami, 1, 1, option, sigx, &
+                        epsx, depx, angmas, zr(ivarim), zr(ivarip), &
                         sigxp, etan, codret)
 !
             if (lVect) then
@@ -357,36 +357,36 @@ character(len=16), intent(in) :: option, nomte
 !               calcul des forces nodales
                 fono(1) = -sigxp*aire
                 fono(4) = sigxp*aire
-            endif
+            end if
 !           calcul de la matrice tangente
             klv(1) = etan
             klv(7) = -etan
             klv(10) = etan
-        endif
+        end if
 !
 !       passage de klv et fono du repère local au repère global
         if (lMatr) then
             call utpslg(nno, nc, pgl, klv, matuu)
-        endif
+        end if
         if (lVect) then
             call utpvlg(nno, nc, pgl, fono, vectu)
-        endif
+        end if
 !
-    endif
+    end if
 !
     if (nomte .eq. 'MECA_BARRE') then
         if (lMatr) then
             do i = 1, 21
                 zr(imatuu+i-1) = matuu(i)
-            enddo
-        endif
+            end do
+        end if
         if (lVect) then
             do i = 1, 6
                 zr(ivectu+i-1) = vectu(i)
-            enddo
-        endif
+            end do
+        end if
 !
-    else if (nomte.eq.'MECA_2D_BARRE') then
+    else if (nomte .eq. 'MECA_2D_BARRE') then
         if (lMatr) then
             zr(imatuu) = matuu(1)
             zr(imatuu+1) = matuu(2)
@@ -398,18 +398,18 @@ character(len=16), intent(in) :: option, nomte
             zr(imatuu+7) = matuu(12)
             zr(imatuu+8) = matuu(14)
             zr(imatuu+9) = matuu(15)
-        endif
+        end if
         if (lVect) then
             zr(ivectu) = vectu(1)
             zr(ivectu+1) = vectu(2)
             zr(ivectu+2) = vectu(4)
             zr(ivectu+3) = vectu(5)
-        endif
+        end if
 !
-    endif
+    end if
 !
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !
 end subroutine

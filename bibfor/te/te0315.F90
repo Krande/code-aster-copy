@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,47 +55,47 @@ subroutine te0315(option, nomte)
     integer :: nnos
     real(kind=8) :: r, rho(1)
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PVECTTR', 'E', ivectt)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
 !
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 0, ' ', [0.d0],&
+    call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                ' ', 'THER', 0, ' ', [0.d0], &
                 1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then
         call jevech('PACCELR', 'L', iacce)
     else
-        if ((option(16:16).eq.'X') .or. (option(16:16).eq.'Y')) then
+        if ((option(16:16) .eq. 'X') .or. (option(16:16) .eq. 'Y')) then
             call jevech('PTEMPER', 'L', itemp)
-        endif
-    endif
+        end if
+    end if
 !
     k = 0
     do i = 1, nno
         if (option(16:16) .eq. 'R') then
             do idim = 1, 2
-                k = k + 1
-                acloc(idim,i) = zr(iacce+k-1)
+                k = k+1
+                acloc(idim, i) = zr(iacce+k-1)
             end do
-        else if ((option(16:16).eq.'X')) then
-            k = k + 1
-            acloc(1,i) = zr(itemp+k-1)
-            acloc(2,i) = 0.d0
-        else if (option(16:16).eq.'Y') then
-            k = k + 1
-            acloc(1,i) = 0.d0
-            acloc(2,i) = zr(itemp+k-1)
-        endif
+        else if ((option(16:16) .eq. 'X')) then
+            k = k+1
+            acloc(1, i) = zr(itemp+k-1)
+            acloc(2, i) = 0.d0
+        else if (option(16:16) .eq. 'Y') then
+            k = k+1
+            acloc(1, i) = 0.d0
+            acloc(2, i) = zr(itemp+k-1)
+        end if
     end do
 !
     do i = 1, nno
@@ -110,14 +110,14 @@ subroutine te0315(option, nomte)
         nx = 0.d0
         ny = 0.d0
 !        --- ON CALCULE L ACCEL AU POINT DE GAUSS
-        acc(1,kp) = 0.d0
-        acc(2,kp) = 0.d0
+        acc(1, kp) = 0.d0
+        acc(2, kp) = 0.d0
         do i = 1, nno
-            acc(1,kp) = acc(1,kp) + acloc(1,i)*zr(ivf+ldec+i-1)
-            acc(2,kp) = acc(2,kp) + acloc(2,i)*zr(ivf+ldec+i-1)
+            acc(1, kp) = acc(1, kp)+acloc(1, i)*zr(ivf+ldec+i-1)
+            acc(2, kp) = acc(2, kp)+acloc(2, i)*zr(ivf+ldec+i-1)
         end do
 !
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
         norm(1) = nx
         norm(2) = ny
@@ -125,20 +125,20 @@ subroutine te0315(option, nomte)
 !
 ! CALCUL DU FLUX FLUIDE NORMAL AU POINT DE GAUSS
 !
-        flufn(kp) = acc(1,kp)*norm(1) + acc(2,kp)*norm(2)
+        flufn(kp) = acc(1, kp)*norm(1)+acc(2, kp)*norm(2)
 !
 ! CAS AXISYMETRIQUE
 !
         if (laxi) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+ldec+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 !
         do i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*flufn(kp)*rho(1)*zr( ivf+ldec+i-1)
+            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*flufn(kp)*rho(1)*zr(ivf+ldec+i-1)
         end do
     end do
 !

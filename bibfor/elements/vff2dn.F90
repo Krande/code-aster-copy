@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
+subroutine vff2dn(ndim, nno, ipg, ipoids, idfde, &
                   coor, nx, ny, jac)
     implicit none
 #include "jeveux.h"
@@ -48,17 +48,17 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
     integer :: i, k
     real(kind=8) :: dx, dxds, dyds
 !
-    ASSERT(ndim.eq.1)
+    ASSERT(ndim .eq. 1)
     dxds = 0.d0
     dyds = 0.d0
     do i = 1, nno
         k = nno*(ipg-1)
         dx = zr(idfde-1+k+i)
-        dxds = dxds + dx * coor(2*i-1)
-        dyds = dyds + dx * coor(2*i)
+        dxds = dxds+dx*coor(2*i-1)
+        dyds = dyds+dx*coor(2*i)
     end do
-    jac = sqrt(dxds**2 + dyds**2)
+    jac = sqrt(dxds**2+dyds**2)
     nx = dyds/jac
     ny = -dxds/jac
-    jac = zr(ipoids + ipg-1) * jac
+    jac = zr(ipoids+ipg-1)*jac
 end subroutine

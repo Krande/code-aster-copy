@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dimsl(ndim, nno, nnos, dimdef, dimcon,&
-                 nnom, nnoc, nddls, nddlm, nddlc,&
+subroutine dimsl(ndim, nno, nnos, dimdef, dimcon, &
+                 nnom, nnoc, nddls, nddlm, nddlc, &
                  dimuel, regula)
-    implicit      none
+    implicit none
     integer :: ndim, nno, nnos, dimdef, dimcon, nnom, nnoc, nddls, nddlm
     integer :: nddlc, dimuel, regula(6)
 ! ======================================================================
@@ -41,12 +41,12 @@ subroutine dimsl(ndim, nno, nnos, dimdef, dimcon,&
 ! ======================================================================
 ! --- [E] = [DEPV,DGONFDX,DGONFDY,DGONFDZ] ------------------------
 ! ======================================================================
-    nddls = ndim + 1
+    nddls = ndim+1
     nddlm = ndim
     nddlc = 0
 ! ======================================================================
-    nnom = nno - nnos
-    dimuel = nnos*nddls + nnom*nddlm
+    nnom = nno-nnos
+    dimuel = nnos*nddls+nnom*nddlm
 ! ======================================================================
 ! --- POSITIONS DU POINTEUR REGULA : -----------------------------------
 ! --- (1) : ADRESSE DES DEFORMATIONS DEP*** ----------------------------
@@ -56,11 +56,11 @@ subroutine dimsl(ndim, nno, nnos, dimdef, dimcon,&
 ! --- (5) : ADRESSE DES CONTRAINTES GENERALISEES SIG*** ----------------
 ! --- (6) : ADRESSE DES CONTRAINTES GENERALISEES DEP*** ----------------
 ! ======================================================================
-    regula(1)=1
-    regula(2)=regula(1)+def1
-    regula(3)=regula(2)+def2
-    regula(4)=1
-    regula(5)=regula(4)+cont1
-    regula(6)=regula(5)+cont2
+    regula(1) = 1
+    regula(2) = regula(1)+def1
+    regula(3) = regula(2)+def2
+    regula(4) = 1
+    regula(5) = regula(4)+cont1
+    regula(6) = regula(5)+cont2
 ! ======================================================================
 end subroutine

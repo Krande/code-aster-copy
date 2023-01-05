@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcour2(resu, noma, nomno, coorn,&
-                  nbnoeu, trav1, trav2, trav3, fonoeu, chfond, basfon,&
-                  nomfiss, connex, stok4, liss,&
+subroutine gcour2(resu, noma, nomno, coorn, &
+                  nbnoeu, trav1, trav2, trav3, fonoeu, chfond, basfon, &
+                  nomfiss, connex, stok4, liss, &
                   nbre, milieu, ndimte, norfon)
     implicit none
 !
@@ -122,10 +122,10 @@ subroutine gcour2(resu, noma, nomno, coorn,&
 ! VERIFICATION SI MAILLAGE QUADRATIQUE OU NON
 !
     call jeveuo(nomfiss//'.FOND.TYPE', 'L', iftyp)
-    milieu =.false.
-    if (zk8(iftyp).eq.'SEG3' .or. zk8(iftyp).eq.'NOE3') then
-        milieu =.true.
-    endif
+    milieu = .false.
+    if (zk8(iftyp) .eq. 'SEG3' .or. zk8(iftyp) .eq. 'NOE3') then
+        milieu = .true.
+    end if
 !
 ! VERIFICATION PRESENCE NB_POINT_FOND
 !
@@ -135,17 +135,17 @@ subroutine gcour2(resu, noma, nomno, coorn,&
 
     if (nbptfd .ne. 0) then
         milieu = .false.
-    endif
+    end if
 !
 ! INTERDICTION D AVOIR NB_POINT_FOND AVEC LISSAGES
 ! LAGRANGE_NO_NO, MIXTE OU LEGENDRE
 !
     if (nbptfd .ne. 0) then
-        if ((liss.eq.'LEGENDRE').or.(liss.eq.'MIXTE')&
-           .or.(liss.eq.'LAGRANGE_NO_NO')) then
+        if ((liss .eq. 'LEGENDRE') .or. (liss .eq. 'MIXTE') &
+            .or. (liss .eq. 'LAGRANGE_NO_NO')) then
             call utmess('F', 'RUPTURE1_73')
-        endif
-    endif
+        end if
+    end if
 !
 ! RECUPERATION  DES NUMEROS DE NOEUDS DE GAMM0
 !
@@ -153,7 +153,7 @@ subroutine gcour2(resu, noma, nomno, coorn,&
     call wkvect(numgam, 'V V I', nbnoeu, iadnum)
     do j = 1, nbnoeu
         call jenonu(jexnom(nomno, zk8(iadrno+j-1)), zi(iadnum+j-1))
-    enddo
+    end do
 !
 !  SI LEVRE_INF EST DEFINIE DANS LE CONCEPT FOND
 !
@@ -170,7 +170,7 @@ subroutine gcour2(resu, noma, nomno, coorn,&
     call jeexin(basfon, iebas)
 !
 !   DETERMINATION DE LA DIRECTION DE PROPAGATION
-    if(iebas .ne. 0) then
+    if (iebas .ne. 0) then
 !       CAS D'UNE FISSURE : LA DIRECTION EST A PRENDRE DANS BASEFOND
         call jeveuo(basfon, 'L', jvect)
         do i = 1, nbnoeu
@@ -178,15 +178,15 @@ subroutine gcour2(resu, noma, nomno, coorn,&
             zr(in2+(i-1)*3+2-1) = zr(jvect-1+6*(i-1)+5)
             zr(in2+(i-1)*3+3-1) = zr(jvect-1+6*(i-1)+6)
         end do
-    else if (ienorm.ne.0) then
+    else if (ienorm .ne. 0) then
 !       CAS D'UNE ENTAILLE : BASEFOND N'EXISTE PAS
         call gdinor(norm, nbnoeu, iadnum, coorn, in2)
     else
         ASSERT(.FALSE.)
-    endif
+    end if
 
 !
-    norfon= '&&NORM.STOCK'
+    norfon = '&&NORM.STOCK'
     call wkvect(norfon, 'V V R', 3*nbnoeu, inorfon)
 !
 !   stockage des directions des normales au fond de fissure
@@ -212,7 +212,7 @@ subroutine gcour2(resu, noma, nomno, coorn,&
             zr(inorfon+(i-1)*3+2-1) = zr(in2+(i-1)*3+2-1)
             zr(inorfon+(i-1)*3+3-1) = zr(in2+(i-1)*3+3-1)
         end do
-    endif
+    end if
 !
 ! ALLOCATION D UN OBJET INDICATEUR DU CHAMP THETA SUR GAMMO
 !
@@ -225,11 +225,11 @@ subroutine gcour2(resu, noma, nomno, coorn,&
 ! ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 ! TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
 !
-    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+    if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') .or. (liss .eq. 'MIXTE')) then
         ndimte = nbnoeu
     else
-        ndimte = nbre + 1
-    endif
+        ndimte = nbre+1
+    end if
 !
     call wkvect(resu, base//' V K24', ndimte+1, jresu)
 !
@@ -240,12 +240,12 @@ subroutine gcour2(resu, noma, nomno, coorn,&
         chamno = resu(1:8)//'_CHAM'//kiord//'     '
         zk24(jresu+k-1) = chamno
         call jeexin(chamno(1:19)//'.DESC', iret)
-        ASSERT(iret.ge.0 .and. iret.le.100)
+        ASSERT(iret .ge. 0 .and. iret .le. 100)
         if (iret .eq. 0) then
             call jedetr(chamno(1:19)//'.DESC')
             call jedetr(chamno(1:19)//'.REFE')
             call jedetr(chamno(1:19)//'.VALE')
-        endif
+        end if
 !  .DESC
         chamno(20:24) = '.DESC'
         call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nec)
@@ -265,9 +265,9 @@ subroutine gcour2(resu, noma, nomno, coorn,&
         call wkvect(chamno, base//' V R', 3*nbel, itheta)
 !
         if (k .ne. (ndimte+1)) then
-            if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')&
-            .or.(liss.eq.'MIXTE')) then
-                if (nbptfd.eq.0) then
+            if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') &
+                .or. (liss .eq. 'MIXTE')) then
+                if (nbptfd .eq. 0) then
                     do i = 1, nbnoeu
                         num = zi(iadnum+i-1)
                         zr(itheta+(num-1)*3+1-1) = 0.d0
@@ -276,75 +276,75 @@ subroutine gcour2(resu, noma, nomno, coorn,&
                         zi(indic+num-1) = 1
                     end do
                     num = zi(iadnum+k-1)
-                    iadrtt = iadrt3 + (k-1)*nbnoeu + k - 1
+                    iadrtt = iadrt3+(k-1)*nbnoeu+k-1
                     zr(iadrtt) = 1.d0
-                    zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(k-1)*3+ 1-1)
-                    zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(k-1)*3+ 2-1)
-                    zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(k-1)*3+ 3-1)
-                    if (connex .and. (k.eq.1)) then
+                    zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(k-1)*3+1-1)
+                    zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(k-1)*3+2-1)
+                    zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(k-1)*3+3-1)
+                    if (connex .and. (k .eq. 1)) then
                         num = zi(iadnum+ndimte-1)
-                        iadrtt = iadrt3 + (k-1)*nbnoeu + ndimte - 1
+                        iadrtt = iadrt3+(k-1)*nbnoeu+ndimte-1
                         zr(iadrtt) = 1.d0
-                        zr(itheta+(num-1)*3+1-1)=zr(iadrtt)*zr(in2+(&
-                        ndimte-1)*3+1-1)
-                        zr(itheta+(num-1)*3+2-1)=zr(iadrtt)*zr(in2+(&
-                        ndimte-1)*3+2-1)
-                        zr(itheta+(num-1)*3+3-1)=zr(iadrtt)*zr(in2+(&
-                        ndimte-1)*3+3-1)
-                    endif
-                    if (connex .and. (k.eq.ndimte)) then
+                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+( &
+                                                                 ndimte-1)*3+1-1)
+                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+( &
+                                                                 ndimte-1)*3+2-1)
+                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+( &
+                                                                 ndimte-1)*3+3-1)
+                    end if
+                    if (connex .and. (k .eq. ndimte)) then
                         num = zi(iadnum+1-1)
-                        iadrtt = iadrt3 + (k-1)*nbnoeu + 1 - 1
+                        iadrtt = iadrt3+(k-1)*nbnoeu+1-1
                         zr(iadrtt) = 1.d0
-                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(1-1) *3+1-1)
-                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(1-1) *3+2-1)
-                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(1-1) *3+3-1)
-                    endif
+                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(1-1)*3+1-1)
+                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(1-1)*3+2-1)
+                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(1-1)*3+3-1)
+                    end if
                 else
                     zr(iadrt3-1+(k-1)*nbnoeu+k) = 1.d0
-                    if (connex .and. (k.eq.1)) then
-                        iadrtt = iadrt3 + (k-1)*nbnoeu + ndimte - 1
+                    if (connex .and. (k .eq. 1)) then
+                        iadrtt = iadrt3+(k-1)*nbnoeu+ndimte-1
                         zr(iadrtt) = 1.d0
-                    endif
-                    if (connex .and. (k.eq.ndimte)) then
-                        iadrtt = iadrt3 + (k-1)*nbnoeu + 1 - 1
+                    end if
+                    if (connex .and. (k .eq. ndimte)) then
+                        iadrtt = iadrt3+(k-1)*nbnoeu+1-1
                         zr(iadrtt) = 1.d0
-                    endif
-                endif
+                    end if
+                end if
             else
-                if (nbptfd.eq.0) then
+                if (nbptfd .eq. 0) then
                     do i = 1, nbnoeu
                         num = zi(iadnum+i-1)
-                        iadrtt = iadrt3 + (k-1)*nbnoeu + i - 1
-                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(i-1) *3+1-1)
-                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(i-1) *3+2-1)
-                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(i-1) *3+3-1)
+                        iadrtt = iadrt3+(k-1)*nbnoeu+i-1
+                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt)*zr(in2+(i-1)*3+1-1)
+                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt)*zr(in2+(i-1)*3+2-1)
+                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt)*zr(in2+(i-1)*3+3-1)
                         zi(indic+num-1) = 1
                     end do
                 else
                     do i = 1, nbnoeu
                         zr(iadrt3-1+(k-1)*nbnoeu+i) = 1.d0
                     end do
-                endif
-            endif
+                end if
+            end if
         else
 !     STOCKAGE DE LA DIRECTION DU CHAMPS THETA SUR LE FOND DE FISSURE
-            if (nbptfd.eq.0) then
+            if (nbptfd .eq. 0) then
                 do i = 1, nbnoeu
                     num = zi(iadnum+i-1)
                     zr(itheta+(num-1)*3+1-1) = zr(in2+(i-1)*3+1-1)
                     zr(itheta+(num-1)*3+2-1) = zr(in2+(i-1)*3+2-1)
                     zr(itheta+(num-1)*3+3-1) = zr(in2+(i-1)*3+3-1)
                 end do
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !         BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE SANS GAMMO
 !         POUR CALCULER PROJ(M)=N
 !
     do i = 1, nbel
-        if ((zi(indic+i-1) .ne. 1).or.(nbptfd.ne.0)) then
+        if ((zi(indic+i-1) .ne. 1) .or. (nbptfd .ne. 0)) then
             zr(itheta+(i-1)*3+1-1) = 0.d0
             zr(itheta+(i-1)*3+2-1) = 0.d0
             zr(itheta+(i-1)*3+3-1) = 0.d0
@@ -367,24 +367,24 @@ subroutine gcour2(resu, noma, nomno, coorn,&
                 xim = xm-xi1
                 yim = ym-yi1
                 zim = zm-zi1
-                s = xij*xim + yij*yim + zij*zim
-                norm2 = xij*xij + yij *yij + zij*zij
+                s = xij*xim+yij*yim+zij*zim
+                norm2 = xij*xij+yij*yij+zij*zij
                 s = s/norm2
                 if ((s-1) .ge. eps) then
                     s = 1.d0
-                endif
+                end if
                 if (s .le. eps) then
                     s = 0.d0
-                endif
+                end if
                 xn = s*xij+xi1
                 yn = s*yij+yi1
                 zn = s*zij+zi1
-                d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+ (zn-zm)*(zn- zm))
+                d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm))
                 if (d .lt. (dmin*(1-abs(r8prem())*1.d04))) then
                     dmin = d
                     jmin = j
                     smin = s
-                endif
+                end if
             end do
             rii = (1-smin)*zr(iadrt1+jmin-1)+smin*zr(iadrt1+jmin+1-1)
             rsi = (1-smin)*zr(iadrt2+jmin-1)+smin*zr(iadrt2+jmin+1-1)
@@ -405,12 +405,12 @@ subroutine gcour2(resu, noma, nomno, coorn,&
                     valz = (1-smin)*zr(in2+(jmin-1)*3+3-1)*tei
                     valz = valz+smin*zr(in2+(jmin+1-1)*3+3-1)*tej
 !
-                    if ((abs(alpha).le.eps) .or. (alpha.lt.0)) then
+                    if ((abs(alpha) .le. eps) .or. (alpha .lt. 0)) then
                         zr(itheta+(i-1)*3+1-1) = valx
                         zr(itheta+(i-1)*3+2-1) = valy
                         zr(itheta+(i-1)*3+3-1) = valz
-                        else if((abs(alpha-1).le.eps).or.((alpha-1).gt.0))&
-                    then
+                    else if ((abs(alpha-1) .le. eps) .or. ((alpha-1) .gt. 0)) &
+                        then
                         zr(itheta+(i-1)*3+1-1) = 0.d0
                         zr(itheta+(i-1)*3+2-1) = 0.d0
                         zr(itheta+(i-1)*3+3-1) = 0.d0
@@ -418,14 +418,14 @@ subroutine gcour2(resu, noma, nomno, coorn,&
                         zr(itheta+(i-1)*3+1-1) = (1-alpha)*valx
                         zr(itheta+(i-1)*3+2-1) = (1-alpha)*valy
                         zr(itheta+(i-1)*3+3-1) = (1-alpha)*valz
-                    endif
+                    end if
                 else
                     zr(itheta+(i-1)*3+1-1) = 0.d0
                     zr(itheta+(i-1)*3+2-1) = 0.d0
                     zr(itheta+(i-1)*3+3-1) = 0.d0
-                endif
+                end if
             end do
-        endif
+        end if
     end do
 !
 ! DESTRUCTION D'OBJETS DE TRAVAIL

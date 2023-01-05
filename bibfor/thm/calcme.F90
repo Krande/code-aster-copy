@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,36 +18,36 @@
 ! aslint: disable=W1504
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine calcme(option, j_mater, ndim  , typmod, angl_naut,&
-                  compor, carcri , instam, instap,&
-                  addeme, adcome , dimdef, dimcon,&
-                  defgem, deps   ,&
-                  congem, vintm  ,&
-                  congep, vintp  ,&
-                  dsdeme, retcom )
+subroutine calcme(option, j_mater, ndim, typmod, angl_naut, &
+                  compor, carcri, instam, instap, &
+                  addeme, adcome, dimdef, dimcon, &
+                  defgem, deps, &
+                  congem, vintm, &
+                  congep, vintp, &
+                  dsdeme, retcom)
 !
-use Behaviour_type
-use Behaviour_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/lcidbg.h"
 !
-character(len=16), intent(in) :: option, compor(*)
-integer, intent(in) :: j_mater
-character(len=8), intent(in) :: typmod(2)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam, instap
-integer, intent(in) :: ndim, dimdef, dimcon, addeme, adcome
-real(kind=8), intent(in) :: vintm(*)
-real(kind=8), intent(in) :: angl_naut(3)
-real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
-real(kind=8), intent(inout) :: congep(dimcon)
-real(kind=8), intent(inout) :: vintp(*)
-real(kind=8), intent(out) :: dsdeme(6, 6)
-integer, intent(out) :: retcom
+    character(len=16), intent(in) :: option, compor(*)
+    integer, intent(in) :: j_mater
+    character(len=8), intent(in) :: typmod(2)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam, instap
+    integer, intent(in) :: ndim, dimdef, dimcon, addeme, adcome
+    real(kind=8), intent(in) :: vintm(*)
+    real(kind=8), intent(in) :: angl_naut(3)
+    real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
+    real(kind=8), intent(inout) :: congep(dimcon)
+    real(kind=8), intent(inout) :: vintp(*)
+    real(kind=8), intent(out) :: dsdeme(6, 6)
+    integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,11 +91,11 @@ integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    fami        = 'FPG1'
-    kpg         = 1
-    ksp         = 1
-    dsdeme(:,:) = 0.d0
-    retcom      = 0
+    fami = 'FPG1'
+    kpg = 1
+    ksp = 1
+    dsdeme(:, :) = 0.d0
+    retcom = 0
 !
 ! - Initialisation of behaviour datastructure
 !
@@ -103,19 +103,19 @@ integer, intent(out) :: retcom
 !
 ! - Integration of mechanical behaviour
 !
-    call nmcomp(BEHinteg      ,&
-                fami          , kpg                , ksp      , ndim  , typmod        ,&
-                j_mater       , compor             , carcri   , instam, instap        ,&
-                neps          , defgem(addeme+ndim), deps     , nsig  , congem(adcome),&
-                vintm         , option             , angl_naut                        ,&
-                congep(adcome), vintp              , ndsdeme  , dsdeme, retcom         )
+    call nmcomp(BEHinteg, &
+                fami, kpg, ksp, ndim, typmod, &
+                j_mater, compor, carcri, instam, instap, &
+                neps, defgem(addeme+ndim), deps, nsig, congem(adcome), &
+                vintm, option, angl_naut, &
+                congep(adcome), vintp, ndsdeme, dsdeme, retcom)
 !
 ! - If integration has failed
 !
     if (retcom .eq. 1) then
-        call lcidbg(fami  , kpg   , ksp           , typmod, compor             ,&
-                    carcri, instam, instap        , neps  , defgem(addeme+ndim),&
-                    deps  , nsig  , congem(adcome), vintm , option)
-    endif
+        call lcidbg(fami, kpg, ksp, typmod, compor, &
+                    carcri, instam, instap, neps, defgem(addeme+ndim), &
+                    deps, nsig, congem(adcome), vintm, option)
+    end if
 !
 end subroutine

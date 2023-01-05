@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,6 @@ subroutine chpnua(nx, chpt, lno, nuage)
         call utmess('F', 'UTILITAI_34')
     else
         call utmess('F', 'CALCULEL_17')
-    endif
+    end if
 !
 end subroutine

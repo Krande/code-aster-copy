@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine comp_meta_save(mesh, compor, nb_cmp, ds_comporMeta)
 !
-use Metallurgy_type
+    use Metallurgy_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/comp_read_mesh.h"
@@ -30,10 +30,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: compor
-integer, intent(in) :: nb_cmp
-type(META_PrepPara), intent(in) :: ds_comporMeta
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: compor
+    integer, intent(in) :: nb_cmp
+    type(META_PrepPara), intent(in) :: ds_comporMeta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,9 +61,9 @@ type(META_PrepPara), intent(in) :: ds_comporMeta
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keywordfact    = 'COMPORTEMENT'
+    keywordfact = 'COMPORTEMENT'
     list_elem_affe = '&&COMPMETASAVE.LIST'
-    nb_comp        = ds_comporMeta%nb_comp
+    nb_comp = ds_comporMeta%nb_comp
 !
 ! - Access to COMPOR <CARTE>
 !
@@ -76,34 +76,34 @@ type(META_PrepPara), intent(in) :: ds_comporMeta
 ! ----- Get options
 !
         phase_type = ds_comporMeta%v_comp(i_comp)%phase_type
-        loi_meta   = ds_comporMeta%v_comp(i_comp)%loi_meta
-        nb_vari    = ds_comporMeta%v_comp(i_comp)%nb_vari
-        nume_comp  = ds_comporMeta%v_comp(i_comp)%nume_comp
-        nb_phase   = ds_comporMeta%v_comp(i_comp)%nb_phase
+        loi_meta = ds_comporMeta%v_comp(i_comp)%loi_meta
+        nb_vari = ds_comporMeta%v_comp(i_comp)%nb_vari
+        nume_comp = ds_comporMeta%v_comp(i_comp)%nume_comp
+        nb_phase = ds_comporMeta%v_comp(i_comp)%nb_phase
 !
 ! ----- Set options in COMPOR <CARTE>
 !
         v_compor_valv(1) = phase_type
-        write (v_compor_valv(2),'(I16)') nb_vari
+        write (v_compor_valv(2), '(I16)') nb_vari
         v_compor_valv(3) = loi_meta
-        write (v_compor_valv(4),'(I16)') nume_comp
-        write (v_compor_valv(5),'(I16)') nb_phase
+        write (v_compor_valv(4), '(I16)') nume_comp
+        write (v_compor_valv(5), '(I16)') nb_phase
 !
 ! ----- Get list of elements where comportment is defined
 !
-        call comp_read_mesh(mesh          , keywordfact, i_comp        ,&
-                            list_elem_affe, l_affe_all , nb_elem_affe)
+        call comp_read_mesh(mesh, keywordfact, i_comp, &
+                            list_elem_affe, l_affe_all, nb_elem_affe)
 !
 ! ----- Affect in COMPOR <CARTE>
 !
         if (l_affe_all) then
             call nocart(compor, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
-            call nocart(compor, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = v_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi=v_elem_affe)
+            call nocart(compor, 3, nb_cmp, mode='NUM', nma=nb_elem_affe, &
+                        limanu=v_elem_affe)
             call jedetr(list_elem_affe)
-        endif
+        end if
     end do
 !
     call jedetr(compor//'.NCMP')

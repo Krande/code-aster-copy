@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine elref1(elrefe)
-use calcul_module, only : calcul_status, ca_jnbelr_, ca_jnoelr_, ca_nute_
-implicit none
+    use calcul_module, only: calcul_status, ca_jnbelr_, ca_jnoelr_, ca_nute_
+    implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -33,11 +33,11 @@ implicit none
 !     - si le type_elem n'a pas d'elrefe :  elrefe='XXXXXXXX'
 !----------------------------------------------------------------------
 
-    ASSERT(calcul_status().eq.3)
-    if (zi(ca_jnbelr_-1+2* (ca_nute_-1)+2) .eq. 0) then
+    ASSERT(calcul_status() .eq. 3)
+    if (zi(ca_jnbelr_-1+2*(ca_nute_-1)+2) .eq. 0) then
         elrefe = 'XXXXXXXX'
     else
-        elrefe = zk8(ca_jnoelr_-1+zi(ca_jnbelr_-1+2* (ca_nute_-1)+2))
-    endif
-    ASSERT(elrefe.ne.' ')
+        elrefe = zk8(ca_jnoelr_-1+zi(ca_jnbelr_-1+2*(ca_nute_-1)+2))
+    end if
+    ASSERT(elrefe .ne. ' ')
 end subroutine

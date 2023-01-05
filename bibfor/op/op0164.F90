@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,10 +105,10 @@ subroutine op0164()
     call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
     call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
     if (lissf) then
-        nbmode = nbmodd + nbmods
+        nbmode = nbmodd+nbmods
     else
         nbmode = nbmods
-    endif
+    end if
 !
     tabrig = '&&OP0164.RIGM'
     tabri2 = '&&OP0164.RIG2'
@@ -119,30 +119,30 @@ subroutine op0164()
     ibin = 1
     if (typbin .ne. 'BINAIRE') then
         ibin = 0
-    endif
+    end if
     if (nit .ne. 0) then
         call wkvect(tabrit, 'V V R', nbmode*nbmode, jrit)
         call irmitm(nbmode, ifmis, inst, tabrit, ibin)
         call jeveuo(tabrit, 'L', jrit)
         do i1 = 1, nbmode
             do i2 = 1, nbmode
-                zr(jrig+2*(i2-1)*nbmode+2*i1-2)=zr(jrit+(i2-1)*nbmode+&
-                i1-1)
-                zr(jrig+2*(i2-1)*nbmode+2*i1-1)=0.d0
+                zr(jrig+2*(i2-1)*nbmode+2*i1-2) = zr(jrit+(i2-1)*nbmode+ &
+                                                     i1-1)
+                zr(jrig+2*(i2-1)*nbmode+2*i1-1) = 0.d0
             end do
         end do
         call jedetr(tabrit)
         goto 21
-    endif
+    end if
     if (typbin .ne. 'BINAIRE') then
         k16nom = ' '
-        if (ulisop ( ifmis, k16nom ) .eq. 0) then
+        if (ulisop(ifmis, k16nom) .eq. 0) then
             call ulopen(ifmis, ' ', ' ', 'NEW', 'O')
-        endif
+        end if
         call irmifr(ifmis, freq, ifreq, nfreq, ic)
         call wkvect(tabfrq, 'V V R', nfreq, jfrq)
         rewind ifmis
-        read(ifmis,'(A72)') texte
+        read (ifmis, '(A72)') texte
         if (texte(1:4) .eq. 'XXXX') goto 4
         do i2 = 1, nbmode
             do i1 = 1, nbmode
@@ -150,29 +150,29 @@ subroutine op0164()
                 if (ic .ge. 1) nsaut = nfreq-1
                 if (i1 .eq. 1 .and. i2 .eq. 1) nsaut = ifreq
                 do i = 1, nsaut
-                    read(ifmis,'(A72)') texte
+                    read (ifmis, '(A72)') texte
                 end do
-                read(ifmis,*) (a(j),j=1,3)
+                read (ifmis, *) (a(j), j=1, 3)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-2) = a(2)
                 zr(jrig+2*(i2-1)*nbmode+2*i1-1) = -a(3)
                 if (ic .ge. 1) then
-                    read(ifmis,*) (a2(j),j=1,3)
+                    read (ifmis, *) (a2(j), j=1, 3)
                     zr(jri2+2*(i2-1)*nbmode+2*i1-2) = a2(2)
                     zr(jri2+2*(i2-1)*nbmode+2*i1-1) = -a2(3)
-                    zr(jrig+2*(i2-1)*nbmode+2*i1-2) = zr(&
-                                                      jrig+2*(i2-1) *nbmode+2*i1-2) + (freq-a(1))&
-                                                      &/(a2(1)-a(1)) * (zr(jri2+2*(i2-1)*nbmode+2&
-                                                      &*i1-2) -zr(jrig+2*(i2- 1)*nbmode+2*i1-2)&
+                    zr(jrig+2*(i2-1)*nbmode+2*i1-2) = zr( &
+                                                      jrig+2*(i2-1)*nbmode+2*i1-2)+(freq-a(1))&
+                                                      &/(a2(1)-a(1))*(zr(jri2+2*(i2-1)*nbmode+2&
+                                                      &*i1-2)-zr(jrig+2*(i2-1)*nbmode+2*i1-2) &
                                                       )
-                    zr(jrig+2*(i2-1)*nbmode+2*i1-1) = zr(&
-                                                      jrig+2*(i2-1) *nbmode+2*i1-1) + (freq-a(1))&
-                                                      &/(a2(1)-a(1)) * (zr(jri2+2*(i2-1)*nbmode+2&
-                                                      &*i1-1) -zr(jrig+2*(i2- 1)*nbmode+2*i1-1)&
+                    zr(jrig+2*(i2-1)*nbmode+2*i1-1) = zr( &
+                                                      jrig+2*(i2-1)*nbmode+2*i1-1)+(freq-a(1))&
+                                                      &/(a2(1)-a(1))*(zr(jri2+2*(i2-1)*nbmode+2&
+                                                      &*i1-1)-zr(jrig+2*(i2-1)*nbmode+2*i1-1) &
                                                       )
-                endif
+                end if
             end do
         end do
-  4     continue
+4       continue
     else
         rewind ifmis
 !
@@ -180,65 +180,65 @@ subroutine op0164()
 !   On convertit ensuite en INTEGER (*4 sur machine 32 bits, sinon *8).
 !   Les reels ne posent pas de probleme : ce sont toujours des REAL*8
 !
-        read(ifmis) long1,long2,long3
-        nfreq=long1
-        nbmode=long2
-        n1=long3
-        ic=1
+        read (ifmis) long1, long2, long3
+        nfreq = long1
+        nbmode = long2
+        n1 = long3
+        ic = 1
         call wkvect(tabfrq, 'V V R', nfreq, jfrq)
-        read(ifmis) (zr(jfrq+ifr-1),ifr=1,nfreq)
+        read (ifmis) (zr(jfrq+ifr-1), ifr=1, nfreq)
         do i = 1, nfreq
             a(1) = zr(jfrq+i-1)
-            if (freq .le. (a(1) + 1.d-6)) then
+            if (freq .le. (a(1)+1.d-6)) then
                 ifreq = i
-                if (i .gt. 1 .and. freq .lt. (a(1) - 1.d-6)) then
+                if (i .gt. 1 .and. freq .lt. (a(1)-1.d-6)) then
                     ifreq = ifreq-1
-                endif
-                if (freq .le. r8prem( )) ic = 2
+                end if
+                if (freq .le. r8prem()) ic = 2
                 if (i .eq. 1 .and. nfreq .eq. 1) ic = 0
-                if (i .eq. nfreq .and. freq .ge. (a(1) - 1.d-6)) then
+                if (i .eq. nfreq .and. freq .ge. (a(1)-1.d-6)) then
                     ic = 0
                     ifreq = nfreq
-                endif
+                end if
                 goto 7
-            endif
+            end if
         end do
         ifreq = nfreq
         ic = 0
-  7     continue
+7       continue
         do i = 1, ifreq-1
-            read(ifmis) a(1)
+            read (ifmis) a(1)
         end do
-        read(ifmis) ((zr(jrig+2*(i2-1)*nbmode+2*i1-2), zr(jrig+2*(i2-&
-        1)*nbmode+2*i1-1), i1=1,nbmode),i2=1,nbmode)
+        read (ifmis) ((zr(jrig+2*(i2-1)*nbmode+2*i1-2), zr(jrig+2*(i2- &
+                                                     1)*nbmode+2*i1-1), i1=1, nbmode), i2=1, nbmode)
         if (ic .ge. 1) then
-            read(ifmis) ((zr(jri2+2*(i2-1)*nbmode+2*i1-2), zr(jri2+2*(&
-            i2-1)*nbmode+2*i1-1), i1=1,nbmode),i2=1,nbmode)
+            read (ifmis) ((zr(jri2+2*(i2-1)*nbmode+2*i1-2), zr(jri2+2*( &
+                                                  i2-1)*nbmode+2*i1-1), i1=1, nbmode), i2=1, nbmode)
             do i1 = 1, nbmode
                 do i2 = 1, nbmode
-                    zr(jrig+2*(i2-1)*nbmode+2*i1-2) = zr(&
-                                                      jrig+2*(i2-1) *nbmode+2*i1-2) + (freq-zr(jf&
-                                                      &rq+ifreq-1))/(zr( jfrq+ifreq)-zr(jfrq+ifre&
-                                                      &q-1)) * (zr(jri2+2*(i2-1)* nbmode+2*i1-2) &
-                                                      &-zr(jrig+2*(i2-1)*nbmode+2*i1-2)&
+                    zr(jrig+2*(i2-1)*nbmode+2*i1-2) = zr( &
+                                                      jrig+2*(i2-1)*nbmode+2*i1-2)+(freq-zr(jf&
+                                                      &rq+ifreq-1))/(zr(jfrq+ifreq)-zr(jfrq+ifre&
+                                                      &q-1))*(zr(jri2+2*(i2-1)*nbmode+2*i1-2) &
+                                                      &-zr(jrig+2*(i2-1)*nbmode+2*i1-2) &
                                                       )
-                    zr(jrig+2*(i2-1)*nbmode+2*i1-1) = zr(&
-                                                      jrig+2*(i2-1) *nbmode+2*i1-1) + (freq-zr(jf&
-                                                      &rq+ifreq-1))/(zr( jfrq+ifreq)-zr(jfrq+ifre&
-                                                      &q-1)) * (zr(jri2+2*(i2-1)* nbmode+2*i1-1) &
-                                                      &-zr(jrig+2*(i2-1)*nbmode+2*i1-1)&
+                    zr(jrig+2*(i2-1)*nbmode+2*i1-1) = zr( &
+                                                      jrig+2*(i2-1)*nbmode+2*i1-1)+(freq-zr(jf&
+                                                      &rq+ifreq-1))/(zr(jfrq+ifreq)-zr(jfrq+ifre&
+                                                      &q-1))*(zr(jri2+2*(i2-1)*nbmode+2*i1-1) &
+                                                      &-zr(jrig+2*(i2-1)*nbmode+2*i1-1) &
                                                       )
                 end do
             end do
-        endif
+        end if
         do i1 = 1, nbmode
             do i2 = 1, nbmode
-                zr(jrig+2*(i2-1)*nbmode+2*i1-1)= -zr(jrig+2*(i2-1)*&
-                nbmode+2*i1-1)
+                zr(jrig+2*(i2-1)*nbmode+2*i1-1) = -zr(jrig+2*(i2-1)* &
+                                                      nbmode+2*i1-1)
             end do
         end do
-    endif
- 21 continue
+    end if
+21  continue
 !
 ! ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
@@ -250,12 +250,12 @@ subroutine op0164()
     resu = ' '
     resu(1:8) = nomres
     if (lsym) then
-        call jecrec(resu//'.VALM', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(resu//'.VALM', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
                     1)
     else
-        call jecrec(resu//'.VALM', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
+        call jecrec(resu//'.VALM', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
                     2)
-    endif
+    end if
     call jeecra(resu//'.VALM', 'LONMAX', nterm)
 !
     call wkvect(resu//'.LIME', 'G V K24', 1, ialime)
@@ -263,18 +263,18 @@ subroutine op0164()
 !
     call wkvect(resu//'.CONL', 'G V C', nueq, iaconl)
     do i = 1, nueq
-        zc(iaconl+i-1) = dcmplx(1.0d0,0.0d0)
+        zc(iaconl+i-1) = dcmplx(1.0d0, 0.0d0)
     end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
-    zk24(jrefa-1+11)='MPI_COMPLET'
+    zk24(jrefa-1+11) = 'MPI_COMPLET'
     zk24(jrefa-1+1) = basemo
     zk24(jrefa-1+2) = nugene
     if (lsym) then
         zk24(jrefa-1+9) = 'MS'
     else
         zk24(jrefa-1+9) = 'MR'
-    endif
+    end if
     zk24(jrefa-1+10) = 'GENE'
 !
     call wkvect(resu//'.DESC', 'G V I', 3, iadesc)
@@ -287,7 +287,7 @@ subroutine op0164()
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2
-    endif
+    end if
 !
 !
 ! --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
@@ -296,10 +296,10 @@ subroutine op0164()
 !
     call jecroc(jexnum(resu//'.VALM', 1))
     call jeveuo(jexnum(resu//'.VALM', 1), 'E', ldblo)
-    if (.not.lsym) then
+    if (.not. lsym) then
         call jecroc(jexnum(resu//'.VALM', 2))
         call jeveuo(jexnum(resu//'.VALM', 2), 'E', ldblo2)
-    endif
+    end if
 !
 ! ------ PROJECTION DE LA MATRICE ASSEMBLEE
 !
@@ -308,22 +308,22 @@ subroutine op0164()
 !
     do i = 1, nueq
 !
-        ii = i - nbmodd
+        ii = i-nbmodd
         if (lissf .and. i .le. nbmodd) ii = i+nbmods
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
         do j = 1, i
-            jj = j - nbmodd
+            jj = j-nbmodd
             if (lissf .and. j .le. nbmodd) jj = j+nbmods
 !
 ! ----------- PRODUIT SCALAIRE VECTASS * MODE
 !
-            if (.not.lissf .and. (i.le.nbmodd.or.j.le.nbmodd)) then
-                zc(ldblo+i*(i-1)/2+j-1) = dcmplx(0.d0,0.d0)
-                if (.not.lsym) then
-                    zc(ldblo2+i*(i-1)/2+j-1) = dcmplx(0.d0,0.d0)
-                endif
+            if (.not. lissf .and. (i .le. nbmodd .or. j .le. nbmodd)) then
+                zc(ldblo+i*(i-1)/2+j-1) = dcmplx(0.d0, 0.d0)
+                if (.not. lsym) then
+                    zc(ldblo2+i*(i-1)/2+j-1) = dcmplx(0.d0, 0.d0)
+                end if
             else
 !
 ! ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
@@ -331,21 +331,21 @@ subroutine op0164()
                 partr = zr(jrig+2*(ii-1)*nbmode+2*jj-2)
                 parti = zr(jrig+2*(ii-1)*nbmode+2*jj-1)
                 if (lsym) then
-                    partr = 0.5d0*(zr(jrig+2*(jj-1)*nbmode+2*ii-2) + partr)
-                    parti = 0.5d0*(zr(jrig+2*(jj-1)*nbmode+2*ii-1) + parti)
-                endif
-                zc(ldblo+i*(i-1)/2+j-1) = dcmplx(partr,parti)
-                if (.not.lsym) then
+                    partr = 0.5d0*(zr(jrig+2*(jj-1)*nbmode+2*ii-2)+partr)
+                    parti = 0.5d0*(zr(jrig+2*(jj-1)*nbmode+2*ii-1)+parti)
+                end if
+                zc(ldblo+i*(i-1)/2+j-1) = dcmplx(partr, parti)
+                if (.not. lsym) then
                     partr = zr(jrig+2*(jj-1)*nbmode+2*ii-2)
                     parti = zr(jrig+2*(jj-1)*nbmode+2*ii-1)
-                    zc(ldblo2+i*(i-1)/2+j-1) = dcmplx(partr,parti)
-                endif
-            endif
+                    zc(ldblo2+i*(i-1)/2+j-1) = dcmplx(partr, parti)
+                end if
+            end if
 !
         end do
     end do
     call jelibe(jexnum(resu//'.VALM', 1))
-    if (.not.lsym) call jelibe(jexnum(resu//'.VALM', 2))
+    if (.not. lsym) call jelibe(jexnum(resu//'.VALM', 2))
     call jedetr(tabrig)
     call jedetr(tabfrq)
 !

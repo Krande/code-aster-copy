@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
+subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
                   excl, omecor, ernorm)
     implicit none
 #include "jeveux.h"
@@ -73,44 +73,44 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
 !     ------------------------------------------------------------------
 !     ---------------------- CALCUL DES NORMES D'ERREUR ----------------
 !     ------------------------------------------------------------------
-    rmin=100.d0*r8miem()
+    rmin = 100.d0*r8miem()
 !
 !        --- NON PRISE EN COMPTE DES DDLS EXCLUS
     do i = 1, neq
-        raux=excl(i)
+        raux = excl(i)
         call dscal(nbprop, raux, vecp(i), neq)
     end do
 !
     do i = 1, nbprop
-        ivec=(i-1)*neq+1
-        call mrmult('ZERO', lraide, vecp(ivec), zr(iaux1), 1,&
+        ivec = (i-1)*neq+1
+        call mrmult('ZERO', lraide, vecp(ivec), zr(iaux1), 1, &
                     .false._1)
-        call mrmult('ZERO', lmasse, vecp(ivec), zr(iaux2), 1,&
+        call mrmult('ZERO', lmasse, vecp(ivec), zr(iaux2), 1, &
                     .false._1)
         anorm1 = 0.d0
         do j = 1, neq
-            raux=zr(iaux1+j-1)
+            raux = zr(iaux1+j-1)
             anorm1 = anorm1+raux*raux*excl(j)
         end do
-        raux=-valp(i)
-        call daxpy(neq, raux, zr(iaux2), 1, zr(iaux1),&
+        raux = -valp(i)
+        call daxpy(neq, raux, zr(iaux2), 1, zr(iaux1), &
                    1)
         anorm2 = 0.d0
         do j = 1, neq
-            raux=zr(iaux1+j-1)
+            raux = zr(iaux1+j-1)
             anorm2 = anorm2+raux*raux*excl(j)
         end do
 !
 !
         if (abs(valp(i)) .gt. xseuil) then
             if (anorm1 .ge. rmin) then
-                ernorm(i)= sqrt(anorm2/anorm1)
+                ernorm(i) = sqrt(anorm2/anorm1)
             else
-                ernorm(i)= 1.d+70
-            endif
+                ernorm(i) = 1.d+70
+            end if
         else
-            ernorm(i) = abs(valp(i)) * sqrt(anorm2)
-        endif
+            ernorm(i) = abs(valp(i))*sqrt(anorm2)
+        end if
     end do
 !
 !     ----------------------------------------------------------------

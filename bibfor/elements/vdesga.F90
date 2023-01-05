@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
-                  indith, alpha, tempga, epsiln, sigma,&
+subroutine vdesga(kwgt, nb1, nb2, depl, btild, &
+                  indith, alpha, tempga, epsiln, sigma, &
                   vectt)
     implicit none
 !
@@ -39,18 +39,18 @@ subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
     deux = 2.0d0
 !
     do i = 1, 5
-        epsi(i)=0.d0
+        epsi(i) = 0.d0
         do k = 1, 5*nb1+2
-            epsi(i)=epsi(i)+btild(i,k)*depl(k)
+            epsi(i) = epsi(i)+btild(i, k)*depl(k)
         end do
     end do
 !
-    epsiln(1,kwgt)=epsi(1)
-    epsiln(2,kwgt)=epsi(2)
-    epsiln(3,kwgt)=0.d0
-    epsiln(4,kwgt)=epsi(3)/deux
-    epsiln(5,kwgt)=epsi(4)/deux
-    epsiln(6,kwgt)=epsi(5)/deux
+    epsiln(1, kwgt) = epsi(1)
+    epsiln(2, kwgt) = epsi(2)
+    epsiln(3, kwgt) = 0.d0
+    epsiln(4, kwgt) = epsi(3)/deux
+    epsiln(5, kwgt) = epsi(4)/deux
+    epsiln(6, kwgt) = epsi(5)/deux
 !
     call jevech('PCACOQU', 'L', jcara)
     kappa = zr(jcara+3)
@@ -62,13 +62,13 @@ subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
 !     PAS DE CONTRAINTES THERMIQUES
 !
         do i = 1, 5
-            sigm(i)=0.d0
+            sigm(i) = 0.d0
             do k = 1, 5
-                sigm(i)=sigm(i)+matc(i,k)*epsi(k)
+                sigm(i) = sigm(i)+matc(i, k)*epsi(k)
             end do
         end do
 !
-    else if (indith.eq.0) then
+    else if (indith .eq. 0) then
 !
 !     AVEC CONTRAINTES THERMIQUES
 !
@@ -79,27 +79,27 @@ subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
 !     DEFORMATIONS TOTALES = DEFOR(ELAS) - DEFOR(THER)
 !     PUIS CONTRAINTES VRAIES = H * DEFORMATIONS TOTALES
 !
-        epstot(1)=epsi(1)-alpha*tempga(kwgt)
-        epstot(2)=epsi(2)-alpha*tempga(kwgt)
-        epstot(3)=epsi(3)
-        epstot(4)=epsi(4)
-        epstot(5)=epsi(5)
+        epstot(1) = epsi(1)-alpha*tempga(kwgt)
+        epstot(2) = epsi(2)-alpha*tempga(kwgt)
+        epstot(3) = epsi(3)
+        epstot(4) = epsi(4)
+        epstot(5) = epsi(5)
 !
         do i = 1, 5
-            sigm(i)=0.d0
+            sigm(i) = 0.d0
             do k = 1, 5
-                sigm(i)=sigm(i)+matc(i,k)*epstot(k)
+                sigm(i) = sigm(i)+matc(i, k)*epstot(k)
             end do
         end do
 !
-    endif
+    end if
 !
-    sigma(1,kwgt)=sigm(1)
-    sigma(2,kwgt)=sigm(2)
-    sigma(3,kwgt)=0.d0
-    sigma(4,kwgt)=sigm(3)
-    sigma(5,kwgt)=sigm(4)
-    sigma(6,kwgt)=sigm(5)
+    sigma(1, kwgt) = sigm(1)
+    sigma(2, kwgt) = sigm(2)
+    sigma(3, kwgt) = 0.d0
+    sigma(4, kwgt) = sigm(3)
+    sigma(5, kwgt) = sigm(4)
+    sigma(6, kwgt) = sigm(5)
 !
 !
 end subroutine

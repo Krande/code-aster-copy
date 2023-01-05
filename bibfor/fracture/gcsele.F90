@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
-                  chepsi, chpesa, chrota, lvolu, l1d2d,&
-                  l2d3d, lpres, lepsi, lpesa, lrota, lfchar,&
-                  lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi,&
-                  lfpesa, lfrota, carte0, lpchar,&
+subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres, &
+                  chepsi, chpesa, chrota, lvolu, l1d2d, &
+                  l2d3d, lpres, lepsi, lpesa, lrota, lfchar, &
+                  lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi, &
+                  lfpesa, lfrota, carte0, lpchar, &
                   lccomb)
 !
     implicit none
@@ -82,49 +82,49 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
     lpchar = .false.
     if (motcle .eq. 'FORCE_INTERNE#2D' .or. motcle .eq. 'FORCE_INTERNE#3D') then
         carte0 = chvolu
-        if (.not.lvolu) lpchar = .true.
+        if (.not. lvolu) lpchar = .true.
         lvolu = .true.
         lfvolu = lfchar
         lccomb = .true.
-    else if (motcle.eq.'FORCE_CONTOUR') then
+    else if (motcle .eq. 'FORCE_CONTOUR') then
         carte0 = ch1d2d
-        if (.not.l1d2d) lpchar = .true.
+        if (.not. l1d2d) lpchar = .true.
         l1d2d = .true.
         lf1d2d = lfchar
         lccomb = .true.
-    else if (motcle.eq.'FORCE_FACE') then
+    else if (motcle .eq. 'FORCE_FACE') then
         carte0 = ch2d3d
-        if (.not.l2d3d) lpchar = .true.
+        if (.not. l2d3d) lpchar = .true.
         l2d3d = .true.
         lf2d3d = lfchar
         lccomb = .true.
-    else if (motcle.eq.'PRES_REP') then
+    else if (motcle .eq. 'PRES_REP') then
         carte0 = chpres
-        if (.not.lpres) lpchar = .true.
+        if (.not. lpres) lpchar = .true.
         lpres = .true.
         lfpres = lfchar
         lccomb = .true.
-    else if (motcle.eq.'EPSI_INIT') then
+    else if (motcle .eq. 'EPSI_INIT') then
         carte0 = chepsi
-        if (.not.lepsi) lpchar = .true.
+        if (.not. lepsi) lpchar = .true.
         lepsi = .true.
         lfepsi = lfchar
         lccomb = .false.
-    else if (motcle.eq.'PESANTEUR') then
+    else if (motcle .eq. 'PESANTEUR') then
         carte0 = chpesa
-        if (.not.lpesa) lpchar = .true.
+        if (.not. lpesa) lpchar = .true.
         lpesa = .true.
         lfpesa = lfchar
         lccomb = .false.
-    else if (motcle.eq.'ROTATION') then
+    else if (motcle .eq. 'ROTATION') then
         carte0 = chrota
-        if (.not.lrota) lpchar = .true.
+        if (.not. lrota) lpchar = .true.
         lrota = .true.
         lfrota = lfchar
         lccomb = .false.
     else
-        write(6,*) 'MOT-CLEF:',motcle
+        write (6, *) 'MOT-CLEF:', motcle
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

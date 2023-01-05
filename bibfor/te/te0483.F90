@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine te0483(option, nomte)
     ndim = 3
 !
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoi, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -61,8 +61,8 @@ subroutine te0483(option, nomte)
 !
 !
 ! - CALCUL DE LA CONTRIBUTION ELEMENTAIRE A LA CHARGE LIMITE
-    call nmholi(ndim, axi, nno, npg, ipoi,&
-                ivf, idfde, zi(imate), zr(itemps), zr(igeom),&
+    call nmholi(ndim, axi, nno, npg, ipoi, &
+                ivf, idfde, zi(imate), zr(itemps), zr(igeom), &
                 zr(idepl), zr(iechli))
 !
 end subroutine

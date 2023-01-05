@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine projmc(matras, nomres, basemo, nugene, nu,&
+subroutine projmc(matras, nomres, basemo, nugene, nu, &
                   neq, nbmo)
     implicit none
 #include "jeveux.h"
@@ -48,8 +48,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iddeeq,  nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
-    integer :: i, j, k, imatra,    iblo, ldblo, n1bloc, n2bloc, hc
+    integer :: iddeeq, nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
+    integer :: i, j, k, imatra, iblo, ldblo, n1bloc, n2bloc, hc
 
     complex(kind=8) :: pij
     character(len=16) :: typbas
@@ -73,13 +73,13 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     call gettco(basemo, typbas)
     call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)
 !
-    nomsto=nugene//'.SMOS'
+    nomsto = nugene//'.SMOS'
     call jeveuo(nomsto//'.SMDE', 'L', vi=smde)
     nueq = smde(1)
     ntbloc = smde(2)
     nbloc = smde(3)
 !
-    call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT', &
                 nbloc)
     call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
 !
@@ -88,11 +88,11 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
     call wkvect(resu//'.CONL', 'G V C', nueq, iaconl)
     do i = 1, nueq
-        zc(iaconl+i-1) = dcmplx(1.0d0,0.0d0)
+        zc(iaconl+i-1) = dcmplx(1.0d0, 0.0d0)
     end do
 !
     call wkvect(resu//'.REFA', 'G V K24', 20, jrefa)
-    zk24(jrefa-1+11)='MPI_COMPLET'
+    zk24(jrefa-1+11) = 'MPI_COMPLET'
     zk24(jrefa-1+1) = basemo
     zk24(jrefa-1+2) = nugene
     zk24(jrefa-1+9) = 'MS'
@@ -107,7 +107,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2
-    endif
+    end if
 !
     AS_ALLOCATE(vc=vectass2, size=neq)
     AS_ALLOCATE(vc=vectass3, size=neq)
@@ -138,26 +138,26 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
         do i = n1bloc, n2bloc
 !
             do k = 1, neq
-                vectass2(k)=dcmplx(vbasemo(1+(i-1)*neq+k-1),zero)
+                vectass2(k) = dcmplx(vbasemo(1+(i-1)*neq+k-1), zero)
             end do
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
 !
-            call mcmult('ZERO', imatra, vectass2, vectass3, 1,&
+            call mcmult('ZERO', imatra, vectass2, vectass3, 1, &
                         .true._1)
             call zeclag(vectass3, neq, zi(iddeeq))
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
             hc = smdi(i)
-            if (i .gt. 1) hc = hc - smdi(i-1)
+            if (i .gt. 1) hc = hc-smdi(i-1)
             do j = (i-hc+1), i
 !
 ! ----------- PRODUIT SCALAIRE VECTASS * MODE
 !
-                pij = dcmplx(zero,zero)
+                pij = dcmplx(zero, zero)
                 do k = 1, neq
-                    pij = pij + vectass3(k)* dcmplx(vbasemo(1+(j-1) *neq+k-1),zero)
+                    pij = pij+vectass3(k)*dcmplx(vbasemo(1+(j-1)*neq+k-1), zero)
                 end do
 !
 ! ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,9 +58,9 @@ subroutine inmain(nommat, neq, nozero)
 !
 !-- CREATION DU .REFA
     call wkvect(nommat//'.REFA', 'V V K24', 20, jrefa)
-    zk24(jrefa-1+11)='MPI_COMPLET'
-    zk24(jrefa-1+1)=' '
-    zk24(jrefa-1+2)='&&NUME91'
+    zk24(jrefa-1+11) = 'MPI_COMPLET'
+    zk24(jrefa-1+1) = ' '
+    zk24(jrefa-1+2) = '&&NUME91'
     zk24(jrefa-1+8) = 'ASSE'
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'GENE'
@@ -69,20 +69,20 @@ subroutine inmain(nommat, neq, nozero)
 !
 !-- CREATION DU .LIME
     call wkvect(nommat//'.LIME', 'V V K24', 1, ibid)
-    zk24(ibid)='&&MODL91'
+    zk24(ibid) = '&&MODL91'
 !
 !-- CREATION DU .CONL
     call wkvect(nommat//'.CONL', 'V V R', neq, j1)
     do i1 = 1, neq
-        zr(j1+i1-1)=1.d0
+        zr(j1+i1-1) = 1.d0
     end do
 !
 !-- .VALM NE DOIT PAS EXISTER :
     call jeexin(nommat//'.VALM', iret)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
 !-- ALLOCATION DES MATRICES D'INTERFACE
-    call jecrec(nommat//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
+    call jecrec(nommat//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT', &
                 1)
 !
     call jecroc(jexnum(nommat//'.VALM', 1))

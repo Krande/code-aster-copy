@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,18 +44,18 @@ subroutine te0122(option, nomte)
     character(len=8) :: lielrf(10)
 !     ------------------------------------------------------------------
 !
-    jlin2d = ((nomte.eq.'MFPLQU4' ).or. (nomte.eq.'MFAXQU4' ))
+    jlin2d = ((nomte .eq. 'MFPLQU4') .or. (nomte .eq. 'MFAXQU4'))
 !
-    jlin3d = ((nomte.eq.'MEFI_HEXA8' ) .or. (nomte.eq.'MEFI_PENTA6' ))
+    jlin3d = ((nomte .eq. 'MEFI_HEXA8') .or. (nomte .eq. 'MEFI_PENTA6'))
 !
-    jquad = ((nomte.eq.'MFPLQU8' ) .or. (nomte.eq.'MEFI_HEXA20' ) .or. (nomte.eq.'MEFI_PENTA15'))
+   jquad = ((nomte .eq. 'MFPLQU8') .or. (nomte .eq. 'MEFI_HEXA20') .or. (nomte .eq. 'MEFI_PENTA15'))
 !
-    jhm = lteatt('TYPMOD2','EJ_HYME')
+    jhm = lteatt('TYPMOD2', 'EJ_HYME')
 !
-    interf = lteatt('TYPMOD2','INTERFAC')
+    interf = lteatt('TYPMOD2', 'INTERFAC')
 !
 !
-    quadra = (jquad.or.jhm.or.interf)
+    quadra = (jquad .or. jhm .or. interf)
 !
 ! RAPPEL DES INTERPOLATIONS POUR L'ESPACE
 ! JOINT 2D (QUAD4)  EST BASE SUR LE QUAD4 A 2PG DONC NPG=2, NNO=4
@@ -79,17 +79,17 @@ subroutine te0122(option, nomte)
 !     INFORMATIONS SUR L'ELEMENT DE REFERENCE
     if (quadra) then
         call elref2(nomte, 2, lielrf, ntrou)
-        call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+        call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                          npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !       DIMENSION ESPACE POUR LES JOINTS QUADRA, HYME OU INTERFACE
-        ndime = ndim + 1
+        ndime = ndim+1
     else
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                          jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !       DIMENSION DE L'ESPACE POUR LES JOINTS LINEAIRES
         if (jlin2d) ndime = ndim
-        if (jlin3d) ndime = ndim + 1
-    endif
+        if (jlin3d) ndime = ndim+1
+    end if
 !
 !     INFORMATIONS SUR LES CHAMPS
     if (option .eq. 'SIEF_ELNO') then
@@ -99,17 +99,17 @@ subroutine te0122(option, nomte)
 !
         if (jhm .or. jquad) ncmp = 2*ndime-1
         if (interf) ncmp = 2*ndime
-        if (.not.(quadra)) ncmp = ndime
+        if (.not. (quadra)) ncmp = ndime
 !
-    else if (option.eq.'VARI_ELNO') then
+    else if (option .eq. 'VARI_ELNO') then
 !
         call jevech('PVARIGR', 'L', ichg)
-        call tecach('OOO', 'PVARINR', 'E', ibid, nval=7,&
+        call tecach('OOO', 'PVARINR', 'E', ibid, nval=7, &
                     itab=jtab)
-        ncmp = max(jtab(6),1)*jtab(7)
+        ncmp = max(jtab(6), 1)*jtab(7)
         ichn = jtab(1)
 !
-    endif
+    end if
 !
 ! ############################################################
 !     ELEMENTS QUADRATIQUE 2D ET 3D
@@ -124,16 +124,16 @@ subroutine te0122(option, nomte)
                 ig = ichg-1+i
                 in = ichn-1+i
 !           NOEUDS 1,4,8
-                zr(in) = zr(ig+ncmp) + (zr(ig)-zr(ig+ncmp))*(1.d0- sqrt(3.d0))/2.d0
-                zr(in+3*ncmp) = zr(ig+ncmp) + (zr(ig)-zr(ig+ncmp))*( 1.d0-sqrt(3.d0))/2.d0
-                zr(in+7*ncmp) = zr(ig+ncmp) + (zr(ig)-zr(ig+ncmp))*( 1.d0-sqrt(3.d0))/2.d0
+                zr(in) = zr(ig+ncmp)+(zr(ig)-zr(ig+ncmp))*(1.d0-sqrt(3.d0))/2.d0
+                zr(in+3*ncmp) = zr(ig+ncmp)+(zr(ig)-zr(ig+ncmp))*(1.d0-sqrt(3.d0))/2.d0
+                zr(in+7*ncmp) = zr(ig+ncmp)+(zr(ig)-zr(ig+ncmp))*(1.d0-sqrt(3.d0))/2.d0
 !           NOEUDS 2,3,6
-                zr(in+ ncmp) = zr(ig+ncmp) + (zr(ig)-zr(ig+ncmp))*( 1.d0+sqrt(3.d0))/2.d0
-                zr(in+2*ncmp) = zr(ig+ncmp) + (zr(ig)-zr(ig+ncmp))*( 1.d0+sqrt(3.d0))/2.d0
-                zr(in+5*ncmp) = zr(ig+ncmp) + (zr(ig)-zr(ig+ncmp))*( 1.d0+sqrt(3.d0))/2.d0
+                zr(in+ncmp) = zr(ig+ncmp)+(zr(ig)-zr(ig+ncmp))*(1.d0+sqrt(3.d0))/2.d0
+                zr(in+2*ncmp) = zr(ig+ncmp)+(zr(ig)-zr(ig+ncmp))*(1.d0+sqrt(3.d0))/2.d0
+                zr(in+5*ncmp) = zr(ig+ncmp)+(zr(ig)-zr(ig+ncmp))*(1.d0+sqrt(3.d0))/2.d0
 !           NOEUDS 5,7
-                zr(in+4*ncmp) = (zr(ig) + zr(ig+ncmp))/2.d0
-                zr(in+6*ncmp) = (zr(ig) + zr(ig+ncmp))/2.d0
+                zr(in+4*ncmp) = (zr(ig)+zr(ig+ncmp))/2.d0
+                zr(in+6*ncmp) = (zr(ig)+zr(ig+ncmp))/2.d0
             end do
 !
         else
@@ -151,16 +151,16 @@ subroutine te0122(option, nomte)
 !
                 if (nno .eq. 4) then
 !             (POUR L'HEXA20 : 9 10 11 12)
-                    zr(in + 8*ncmp) = (zr(in ) + zr(in+ ncmp) )/2.d0
-                    zr(in + 9*ncmp) = (zr(in+ ncmp) + zr(in+2*ncmp) )/ 2.d0
-                    zr(in + 10*ncmp) = (zr(in+2*ncmp) + zr(in+3*ncmp) )/2.d0
-                    zr(in + 11*ncmp) = (zr(in+3*ncmp) + zr(in ) )/ 2.d0
-                else if (nno.eq.3) then
+                    zr(in+8*ncmp) = (zr(in)+zr(in+ncmp))/2.d0
+                    zr(in+9*ncmp) = (zr(in+ncmp)+zr(in+2*ncmp))/2.d0
+                    zr(in+10*ncmp) = (zr(in+2*ncmp)+zr(in+3*ncmp))/2.d0
+                    zr(in+11*ncmp) = (zr(in+3*ncmp)+zr(in))/2.d0
+                else if (nno .eq. 3) then
 !             (POUR LE PENTA15 : 7 8 9)
-                    zr(in + 6*ncmp) = (zr(in ) + zr(in+ ncmp) )/2.d0
-                    zr(in + 7*ncmp) = (zr(in+ ncmp) + zr(in+2*ncmp) )/ 2.d0
-                    zr(in + 8*ncmp) = (zr(in+2*ncmp) + zr(in ) )/2.d0
-                endif
+                    zr(in+6*ncmp) = (zr(in)+zr(in+ncmp))/2.d0
+                    zr(in+7*ncmp) = (zr(in+ncmp)+zr(in+2*ncmp))/2.d0
+                    zr(in+8*ncmp) = (zr(in+2*ncmp)+zr(in))/2.d0
+                end if
 !
                 do j = 1, nno
 !             ON REMPLIT LES NOEUDS SOMMETS DE LA 2ND FACE
@@ -168,7 +168,7 @@ subroutine te0122(option, nomte)
 !             AINSI QUE LES NOEUDS MILIEU INTERMEDIAIRES
 !             (POUR L'HEXA20 : 13 14 15 16, POUR LE PENTA15 : 10 11 12)
 !             A L'IDENTIQUE DES NOEUDS SOMMETS DE LA 1ERE FACE
-                    zr(in+(j+ nno-1)*ncmp) = zr(in+(j-1)*ncmp)
+                    zr(in+(j+nno-1)*ncmp) = zr(in+(j-1)*ncmp)
                     zr(in+(j+3*nno-1)*ncmp) = zr(in+(j-1)*ncmp)
 !             ON REMPLIT LES NOEUDS MILIEU DE LA DEUXIEME FACE
 !             (POUR L'HEXA20 : 17 18 19 20, POUR LE PENTA15 : 13 14 15)
@@ -178,7 +178,7 @@ subroutine te0122(option, nomte)
 !
             end do
 !
-        endif
+        end if
 !
 !#########################################
 !     ELEMENTS DE JOINT LINEAIRES 2D ET 3D
@@ -192,10 +192,10 @@ subroutine te0122(option, nomte)
             do i = 1, ncmp
                 ig = ichg-1+i
                 in = ichn-1+i
-                zr(in) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0-sqrt(3.d0) )/2.d0
-                zr(in+3*ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0- sqrt(3.d0))/2.d0
-                zr(in+ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0+sqrt( 3.d0))/2.d0
-                zr(in+2*ncmp) = zr(ig)+ (zr(ig+ncmp)-zr(ig))*(1.d0+ sqrt(3.d0))/2.d0
+                zr(in) = zr(ig)+(zr(ig+ncmp)-zr(ig))*(1.d0-sqrt(3.d0))/2.d0
+                zr(in+3*ncmp) = zr(ig)+(zr(ig+ncmp)-zr(ig))*(1.d0-sqrt(3.d0))/2.d0
+                zr(in+ncmp) = zr(ig)+(zr(ig+ncmp)-zr(ig))*(1.d0+sqrt(3.d0))/2.d0
+                zr(in+2*ncmp) = zr(ig)+(zr(ig+ncmp)-zr(ig))*(1.d0+sqrt(3.d0))/2.d0
             end do
 !
         else
@@ -211,8 +211,8 @@ subroutine te0122(option, nomte)
                 end do
             end do
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 end subroutine

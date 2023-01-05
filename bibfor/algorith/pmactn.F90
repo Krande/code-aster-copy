@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmactn(sddisc, ds_conv, iterat, numins, itemax,&
-                  sderro, liccvg , actite, action)
+subroutine pmactn(sddisc, ds_conv, iterat, numins, itemax, &
+                  sderro, liccvg, actite, action)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -81,33 +81,33 @@ implicit none
 !
     if (actite .eq. 2) then
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- AFFICHAGE
 !
     if (ldccvg .eq. 1) then
         call utmess('I', 'COMPOR1_9')
-    else if (faccvg.eq.1) then
+    else if (faccvg .eq. 1) then
         call utmess('I', 'COMPOR2_4')
-    endif
+    end if
 !
 ! --- BOUCLE TEMPS SUIVANTE
 !
     if (actite .eq. 0) then
         action = 3
         goto 999
-    endif
+    end if
 !
 ! --- SORTIE DE BOUCLE (PROBLEME)
 !
     if (actite .eq. 3) then
         action = 0
         goto 999
-    endif
+    end if
 !
 ! --- ECHEC DE NEWTON: IL FAUT FAIRE QUELQUE CHOSE
 !
-    ASSERT(actite.eq.1)
+    ASSERT(actite .eq. 1)
 !
 ! --- RECHERCHE DES EVENEMENTS ACTIVES
 !
@@ -118,9 +118,9 @@ implicit none
     if (ievdac .eq. 0) then
         retact = 0
     else
-        call nmevac(sddisc, sderro, ievdac, numins, iterat,&
+        call nmevac(sddisc, sderro, ievdac, numins, iterat, &
                     retact)
-    endif
+    end if
 !
 ! --- TRAITEMENT DE L'ACTION
 !
@@ -130,27 +130,27 @@ implicit none
 !
         action = 1
 !
-    else if (retact.eq.2) then
+    else if (retact .eq. 2) then
 !
 ! ----- AUTORISATION DE FAIRE DES ITERATIONS DE NEWTON EN PLUS
 !
         action = 2
 !
-    else if (retact.eq.3) then
+    else if (retact .eq. 3) then
 !
 ! ----- ON ARRETE TOUT
 !
         action = 0
         call utmess('Z', 'MECANONLINE9_7', num_except=ASTER_CONVERGENCE_ERROR)
 !
-    else if ((retact.eq.4).and.(.not.ds_conv%l_stop).and.itemax) then
+    else if ((retact .eq. 4) .and. (.not. ds_conv%l_stop) .and. itemax) then
 !
 ! ----- CONVERGENCE FORCEE: ON VA AU PAS DE TEMPS SUIVANT
 !
         call utmess('A', 'MECANONLINE2_37')
         action = 3
 !
-    else if ((retact.eq.4).and.(.not.ds_conv%l_stop)) then
+    else if ((retact .eq. 4) .and. (.not. ds_conv%l_stop)) then
 !
 ! ----- CONVERGENCE FORCEE: ON VA AU PAS DE TEMPS SUIVANT
 !
@@ -163,7 +163,7 @@ implicit none
 !
         action = 0
         call utmess('A', 'MECANONLINE9_7')
-    endif
+    end if
 !
 999 continue
 !

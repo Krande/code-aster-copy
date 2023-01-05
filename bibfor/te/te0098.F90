@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 !
 subroutine te0098(option, nomte)
 !
-implicit none
-character(len=16) :: nomte, option
+    implicit none
+    character(len=16) :: nomte, option
 !
 #include "asterfort/utmess.h"
 !

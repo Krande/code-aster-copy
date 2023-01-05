@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -68,13 +68,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tref          = r8nnem()
+    tref = r8nnem()
     l_tref_is_nan = .false.
-    l_empty       = .false.
+    l_empty = .false.
 !
 ! - Access to CHAM_MATER
 !
-    call jeveuo(chmate//'.CHAMP_MAT .DESC', 'L', vi =v_chmate_desc)
+    call jeveuo(chmate//'.CHAMP_MAT .DESC', 'L', vi=v_chmate_desc)
     call jeveuo(chmate//'.CHAMP_MAT .VALE', 'L', vk8=v_chmate_vale)
 
     cartrf = chmate//'.TEMP    .2'
@@ -82,7 +82,7 @@ implicit none
     if (iret .ne. 0) then
         call jeveuo(cartrf//'.VALE', 'L', vk16=v_vtrf)
         l_empty = v_vtrf(1) .eq. 'CHAMP' .and. v_vtrf(4) .eq. 'VIDE'
-    endif
+    end if
 !
 ! - Check physical quantity
 !
@@ -95,23 +95,23 @@ implicit none
 ! - Get TREF (SUR LE 1ER ENTIER CODE)
 !
     ec1 = v_chmate_desc(3+2*ngdmax+nbec*(imate-1)+1)
-    k   = 0
+    k = 0
     do kk = 1, 30
-        if (exisdg([ec1],kk)) then
-            k=k+1
-        endif
+        if (exisdg([ec1], kk)) then
+            k = k+1
+        end if
     end do
     if (v_chmate_vale(nb_cmp*(imate-1)+k-3) .ne. 'TREF=>') then
         call utmess('F', 'MATERIAL1_56', sk=chmate)
-    endif
-    ktref(1:8)   = v_chmate_vale(nb_cmp*(imate-1)+k-2)
-    ktref(9:16)  = v_chmate_vale(nb_cmp*(imate-1)+k-1)
+    end if
+    ktref(1:8) = v_chmate_vale(nb_cmp*(imate-1)+k-2)
+    ktref(9:16) = v_chmate_vale(nb_cmp*(imate-1)+k-1)
     ktref(17:24) = v_chmate_vale(nb_cmp*(imate-1)+k)
     if (ktref(1:3) .eq. 'NAN') then
         tref = r8nnem()
         l_tref_is_nan = .true.
     else
-        read (ktref,'(1PE22.15)') tref
-    endif
+        read (ktref, '(1PE22.15)') tref
+    end if
 !
 end subroutine

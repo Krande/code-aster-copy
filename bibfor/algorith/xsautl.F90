@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,34 +32,34 @@ subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
 ! ----------------------------------------------------------------------
 
     integer :: i, ndim, ier1, ier2
-    real(kind=8) :: p(3,3), nd(3), tau1(3), tau2(3)
+    real(kind=8) :: p(3, 3), nd(3), tau1(3), tau2(3)
     real(kind=8) :: saut(3), sautm(3), am(3), ad(3)
 
-    p(:,:) = 0.d0
+    p(:, :) = 0.d0
     am(:) = 0.d0
     ad(:) = 0.d0
 !
 ! --- ON CONSTRUIT P MATRICE DE PASSAGE BASE FIXE --> BASE COVARIANTE
 !
     do i = 1, ndim
-        p(1,i) = nd(i)
+        p(1, i) = nd(i)
     end do
     do i = 1, ndim
-        p(2,i) = tau1(i)
+        p(2, i) = tau1(i)
     end do
-    if (ndim.eq.3) then
-       do i = 1, ndim
-            p(3,i) = tau2(i)
-       end do
-    endif
+    if (ndim .eq. 3) then
+        do i = 1, ndim
+            p(3, i) = tau2(i)
+        end do
+    end if
 !
 ! --- CALCUL SAUT DE DEPLACEMENT + EN BASE LOCALE {AM}=[P]{SAUT+}
 !
-    call prmave(0, p, 3, ndim, ndim,&
+    call prmave(0, p, 3, ndim, ndim, &
                 saut, ndim, am, ndim, ier1)
 !
 ! --- CALCUL SAUT DE DEPLACEMENT - EN BASE LOCALE {AD}=[P]{SAUT-}
 !
-    call prmave(0, p, 3, ndim, ndim,&
+    call prmave(0, p, 3, ndim, ndim, &
                 sautm, ndim, ad, ndim, ier2)
 end subroutine

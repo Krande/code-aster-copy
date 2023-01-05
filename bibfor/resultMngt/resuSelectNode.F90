@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,21 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine resuSelectNode(meshName  , meshNodeNb  ,&
-                          nodeUserNb, nodeUserNume,&
-                          nodeName  , nodeNume    ,&
+subroutine resuSelectNode(meshName, meshNodeNb, &
+                          nodeUserNb, nodeUserNume, &
+                          nodeName, nodeNume, &
                           nodeNb)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jexnum.h"
 #include "asterfort/jenuno.h"
 !
-character(len=8), intent(in) :: meshName
-integer, intent(in) :: nodeUserNb, meshNodeNb, nodeUserNume(*)
-character(len=8), pointer :: nodeName(:)
-integer, pointer :: nodeNume(:)
-integer, intent(out) :: nodeNb
+    character(len=8), intent(in) :: meshName
+    integer, intent(in) :: nodeUserNb, meshNodeNb, nodeUserNume(*)
+    character(len=8), pointer :: nodeName(:)
+    integer, pointer :: nodeNume(:)
+    integer, intent(out) :: nodeNb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,6 +67,6 @@ integer, intent(out) :: nodeNb
             call jenuno(jexnum(meshName//'.NOMNOE', nodeNume(iNode)), nodeName(iNode))
         end do
         nodeNb = nodeUserNb
-    endif
+    end if
 !
 end subroutine

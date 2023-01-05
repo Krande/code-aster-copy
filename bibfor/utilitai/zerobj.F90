@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,15 +47,15 @@ function zerobj(obj)
 ! -DEB------------------------------------------------------------------
 !
     call jemarq()
-    zerobj=.true.
-    obj2=obj
+    zerobj = .true.
+    obj2 = obj
 !
     call jelira(obj2, 'TYPE', cval=typsca)
-    ASSERT(typsca.eq.'R' .or. typsca.eq.'C')
+    ASSERT(typsca .eq. 'R' .or. typsca .eq. 'C')
     call jelira(obj2, 'XOUS', cval=xous)
     call jelira(obj2, 'XOUS', cval=xous)
     call jelira(obj2, 'GENR', cval=genr)
-    ASSERT(genr.eq.'V')
+    ASSERT(genr .eq. 'V')
 !
 !
 !     1) CAS DES OBJETS SIMPLES :
@@ -70,10 +70,10 @@ function zerobj(obj)
             end do
         else
             do j = 1, long
-                if (zc(jval-1+j) .ne. (0.d0,0.d0)) goto 9998
+                if (zc(jval-1+j) .ne. (0.d0, 0.d0)) goto 9998
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
 !     2) CAS DES COLLECTIONS :
@@ -97,18 +97,18 @@ function zerobj(obj)
                 end do
             else
                 do j = 1, long
-                    if (zc(jval-1+j) .ne. (0.d0,0.d0)) goto 9998
+                    if (zc(jval-1+j) .ne. (0.d0, 0.d0)) goto 9998
                 end do
-            endif
- 10         continue
+            end if
+10          continue
         end do
-    endif
+    end if
 !
 !
 !
     goto 999
 9998 continue
-    zerobj=.false.
+    zerobj = .false.
 !
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,28 +65,28 @@ subroutine cragch(long, typcoe, typval, ligrch)
 ! --------- VARIABLES LOCALES ------------------------------------------
     character(len=8) :: noma, mod, base
     character(len=19) :: ca1, ca2
-    integer :: iret, longut,   ngdmx, nedit, ndisp
+    integer :: iret, longut, ngdmx, nedit, ndisp
     integer, pointer :: desc(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
     call jemarq()
-    ASSERT(long.gt.0)
+    ASSERT(long .gt. 0)
 !
 ! --- CARTES DE LA CHARGE ---
 !
     if (ligrch(12:13) .eq. 'TH') then
-        ca1= ligrch(1:8)//'.CHTH.CMULT'
-        ca2= ligrch(1:8)//'.CHTH.CIMPO'
-    else if (ligrch(12:13).eq.'ME') then
-        ca1= ligrch(1:8)//'.CHME.CMULT'
-        ca2= ligrch(1:8)//'.CHME.CIMPO'
-    else if (ligrch(12:13).eq.'AC') then
-        ca1= ligrch(1:8)//'.CHAC.CMULT'
-        ca2= ligrch(1:8)//'.CHAC.CIMPO'
+        ca1 = ligrch(1:8)//'.CHTH.CMULT'
+        ca2 = ligrch(1:8)//'.CHTH.CIMPO'
+    else if (ligrch(12:13) .eq. 'ME') then
+        ca1 = ligrch(1:8)//'.CHME.CMULT'
+        ca2 = ligrch(1:8)//'.CHME.CIMPO'
+    else if (ligrch(12:13) .eq. 'AC') then
+        ca1 = ligrch(1:8)//'.CHAC.CMULT'
+        ca2 = ligrch(1:8)//'.CHAC.CIMPO'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- ON CREE LES CARTES .CMULT ET .CIMPO SI ELLES N'EXISTENT PAS ---
 !
@@ -104,22 +104,22 @@ subroutine cragch(long, typcoe, typval, ligrch)
 !
         if (typcoe .eq. 'REEL' .or. typcoe .eq. 'FONC') then
             call alcart('G', ca1, noma, 'DDLM_R')
-        else if (typcoe.eq.'COMP') then
+        else if (typcoe .eq. 'COMP') then
             call alcart('G', ca1, noma, 'DDLM_C')
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         if (typval .eq. 'REEL') then
             call alcart('G', ca2, noma, 'DDLI_R')
-        else if (typval.eq.'FONC') then
+        else if (typval .eq. 'FONC') then
             call alcart('G', ca2, noma, 'DDLI_F')
-        else if (typval.eq.'COMP') then
+        else if (typval .eq. 'COMP') then
             call alcart('G', ca2, noma, 'DDLI_C')
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
@@ -129,13 +129,13 @@ subroutine cragch(long, typcoe, typval, ligrch)
     call jeveuo(ca1(1:19)//'.DESC', 'L', vi=desc)
     ngdmx = desc(2)
     nedit = desc(3)
-    ndisp = ngdmx - nedit
-    ASSERT(ndisp.ge.0)
+    ndisp = ngdmx-nedit
+    ASSERT(ndisp .ge. 0)
     if (long .gt. ndisp) then
 ! ---       LA TAILLE DES CARTES .CMULT ET .CIMPO EST    ---
 ! ---       INSUFFISANTE ON LES REDIMENSIONNE DE MANIERE ---
 ! ---       ADEQUATE                                     ---
-        longut = nedit + long
+        longut = nedit+long
         call agcart(longut, ca1)
         call agcart(longut, ca2)
 !
@@ -152,7 +152,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
         call jedetr(ca2//'.LIMA')
         call jeagco(ca2//'.TRAV', ca2//'.LIMA', longut, 2*longut, base)
         call jedetr(ca2//'.TRAV')
-    endif
+    end if
 !
     call jedema()
 end subroutine

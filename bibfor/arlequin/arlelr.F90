@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arlelr(elrefz,x,dimf,ff,nno)
+subroutine arlelr(elrefz, x, dimf, ff, nno)
 ! ----------------------------------------------------------------------
-
-
-
-
 
 ! ======================================================================
 
@@ -32,8 +28,8 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 
-    integer :: dimf,nno
-    real(kind=8) :: x(*),ff(*)
+    integer :: dimf, nno
+    real(kind=8) :: x(*), ff(*)
     character(len=8) elrefz
 
 ! BUT:   CALCUL DES FONCTIONS DE FORMES ET DE LEURS DERIVEES
@@ -47,8 +43,8 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
 !        NNO    : NOMBRE DE NOEUDS
 !   -------------------------------------------------------------------
     character(len=8) :: elrefe
-    real(kind=8) :: nte4(12),nte10(30),nhe8(24),nh20(60),npe6(18),npe15(45)
-    real(kind=8) :: x0,y0,z0,al,zero,un,deux,quatre,uns2,uns4,uns8
+    real(kind=8) :: nte4(12), nte10(30), nhe8(24), nh20(60), npe6(18), npe15(45)
+    real(kind=8) :: x0, y0, z0, al, zero, un, deux, quatre, uns2, uns4, uns8
 
 ! ------------------------------------------------------------------
     call jemarq()
@@ -69,28 +65,28 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
         z0 = x(3)
         nno = 8
 
-        nhe8(1) = (un-x0)* (un-y0)* (un-z0)*uns8
+        nhe8(1) = (un-x0)*(un-y0)*(un-z0)*uns8
         nhe8(2) = zero
         nhe8(3) = zero
-        nhe8(4) = (un+x0)* (un-y0)* (un-z0)*uns8
+        nhe8(4) = (un+x0)*(un-y0)*(un-z0)*uns8
         nhe8(5) = zero
         nhe8(6) = zero
-        nhe8(7) = (un+x0)* (un+y0)* (un-z0)*uns8
+        nhe8(7) = (un+x0)*(un+y0)*(un-z0)*uns8
         nhe8(8) = zero
         nhe8(9) = zero
-        nhe8(10) = (un-x0)* (un+y0)* (un-z0)*uns8
+        nhe8(10) = (un-x0)*(un+y0)*(un-z0)*uns8
         nhe8(11) = zero
         nhe8(12) = zero
-        nhe8(13) = (un-x0)* (un-y0)* (un+z0)*uns8
+        nhe8(13) = (un-x0)*(un-y0)*(un+z0)*uns8
         nhe8(14) = zero
         nhe8(15) = zero
-        nhe8(16) = (un+x0)* (un-y0)* (un+z0)*uns8
+        nhe8(16) = (un+x0)*(un-y0)*(un+z0)*uns8
         nhe8(17) = zero
         nhe8(18) = zero
-        nhe8(19) = (un+x0)* (un+y0)* (un+z0)*uns8
+        nhe8(19) = (un+x0)*(un+y0)*(un+z0)*uns8
         nhe8(20) = zero
         nhe8(21) = zero
-        nhe8(22) = (un-x0)* (un+y0)* (un+z0)*uns8
+        nhe8(22) = (un-x0)*(un+y0)*(un+z0)*uns8
         nhe8(23) = zero
         nhe8(24) = zero
 
@@ -107,64 +103,64 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
         z0 = x(3)
         nno = 20
 
-        nh20(1) = (un-x0)* (un-y0)* (un-z0)* (-x0-y0-z0-deux)*uns8
+        nh20(1) = (un-x0)*(un-y0)*(un-z0)*(-x0-y0-z0-deux)*uns8
         nh20(2) = zero
         nh20(3) = zero
-        nh20(4) = (un+x0)* (un-y0)* (un-z0)* (x0-y0-z0-deux)*uns8
+        nh20(4) = (un+x0)*(un-y0)*(un-z0)*(x0-y0-z0-deux)*uns8
         nh20(5) = zero
         nh20(6) = zero
-        nh20(7) = (un+x0)* (un+y0)* (un-z0)* (x0+y0-z0-deux)*uns8
+        nh20(7) = (un+x0)*(un+y0)*(un-z0)*(x0+y0-z0-deux)*uns8
         nh20(8) = zero
         nh20(9) = zero
-        nh20(10) = (un-x0)* (un+y0)* (un-z0)* (-x0+y0-z0-deux)*uns8
+        nh20(10) = (un-x0)*(un+y0)*(un-z0)*(-x0+y0-z0-deux)*uns8
         nh20(11) = zero
         nh20(12) = zero
-        nh20(13) = (un-x0)* (un-y0)* (un+z0)* (-x0-y0+z0-deux)*uns8
+        nh20(13) = (un-x0)*(un-y0)*(un+z0)*(-x0-y0+z0-deux)*uns8
         nh20(14) = zero
         nh20(15) = zero
-        nh20(16) = (un+x0)* (un-y0)* (un+z0)* (x0-y0+z0-deux)*uns8
+        nh20(16) = (un+x0)*(un-y0)*(un+z0)*(x0-y0+z0-deux)*uns8
         nh20(17) = zero
         nh20(18) = zero
-        nh20(19) = (un+x0)* (un+y0)* (un+z0)* (x0+y0+z0-deux)*uns8
+        nh20(19) = (un+x0)*(un+y0)*(un+z0)*(x0+y0+z0-deux)*uns8
         nh20(20) = zero
         nh20(21) = zero
-        nh20(22) = (un-x0)* (un+y0)* (un+z0)* (-x0+y0+z0-deux)*uns8
+        nh20(22) = (un-x0)*(un+y0)*(un+z0)*(-x0+y0+z0-deux)*uns8
         nh20(23) = zero
         nh20(24) = zero
-        nh20(25) = (un-x0*x0)* (un-y0)* (un-z0)*uns4
+        nh20(25) = (un-x0*x0)*(un-y0)*(un-z0)*uns4
         nh20(26) = zero
         nh20(27) = zero
-        nh20(28) = (un+x0)* (un-y0*y0)* (un-z0)*uns4
+        nh20(28) = (un+x0)*(un-y0*y0)*(un-z0)*uns4
         nh20(29) = zero
         nh20(30) = zero
-        nh20(31) = (un-x0*x0)* (un+y0)* (un-z0)*uns4
+        nh20(31) = (un-x0*x0)*(un+y0)*(un-z0)*uns4
         nh20(32) = zero
         nh20(33) = zero
-        nh20(34) = (un-x0)* (un-y0*y0)* (un-z0)*uns4
+        nh20(34) = (un-x0)*(un-y0*y0)*(un-z0)*uns4
         nh20(35) = zero
         nh20(36) = zero
-        nh20(37) = (un-x0)* (un-y0)* (un-z0*z0)*uns4
+        nh20(37) = (un-x0)*(un-y0)*(un-z0*z0)*uns4
         nh20(38) = zero
         nh20(39) = zero
-        nh20(40) = (un+x0)* (un-y0)* (un-z0*z0)*uns4
+        nh20(40) = (un+x0)*(un-y0)*(un-z0*z0)*uns4
         nh20(41) = zero
         nh20(42) = zero
-        nh20(43) = (un+x0)* (un+y0)* (un-z0*z0)*uns4
+        nh20(43) = (un+x0)*(un+y0)*(un-z0*z0)*uns4
         nh20(44) = zero
         nh20(45) = zero
-        nh20(46) = (un-x0)* (un+y0)* (un-z0*z0)*uns4
+        nh20(46) = (un-x0)*(un+y0)*(un-z0*z0)*uns4
         nh20(47) = zero
         nh20(48) = zero
-        nh20(49) = (un-x0*x0)* (un-y0)* (un+z0)*uns4
+        nh20(49) = (un-x0*x0)*(un-y0)*(un+z0)*uns4
         nh20(50) = zero
         nh20(51) = zero
-        nh20(52) = (un+x0)* (un-y0*y0)* (un+z0)*uns4
+        nh20(52) = (un+x0)*(un-y0*y0)*(un+z0)*uns4
         nh20(53) = zero
         nh20(54) = zero
-        nh20(55) = (un-x0*x0)* (un+y0)* (un+z0)*uns4
+        nh20(55) = (un-x0*x0)*(un+y0)*(un+z0)*uns4
         nh20(56) = zero
         nh20(57) = zero
-        nh20(58) = (un-x0)* (un-y0*y0)* (un+z0)*uns4
+        nh20(58) = (un-x0)*(un-y0*y0)*(un+z0)*uns4
         nh20(59) = zero
         nh20(60) = zero
 
@@ -181,22 +177,22 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
         z0 = x(3)
         nno = 6
 
-        npe6(1) = uns2*y0* (un-x0)
+        npe6(1) = uns2*y0*(un-x0)
         npe6(2) = zero
         npe6(3) = zero
-        npe6(4) = uns2*z0* (un-x0)
+        npe6(4) = uns2*z0*(un-x0)
         npe6(5) = zero
         npe6(6) = zero
-        npe6(7) = uns2* (un-y0-z0)* (un-x0)
+        npe6(7) = uns2*(un-y0-z0)*(un-x0)
         npe6(8) = zero
         npe6(9) = zero
-        npe6(10) = uns2*y0* (un+x0)
+        npe6(10) = uns2*y0*(un+x0)
         npe6(11) = zero
         npe6(12) = zero
-        npe6(13) = uns2*z0* (un+x0)
+        npe6(13) = uns2*z0*(un+x0)
         npe6(14) = zero
         npe6(15) = zero
-        npe6(16) = uns2* (un-y0-z0)* (un+x0)
+        npe6(16) = uns2*(un-y0-z0)*(un+x0)
         npe6(17) = zero
         npe6(18) = zero
 
@@ -212,7 +208,7 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
         y0 = x(2)
         z0 = x(3)
         nno = 15
-        al = un - y0 - z0
+        al = un-y0-z0
 
         npe15(1) = uns2*y0*(un-x0)*((deux*y0)-deux-x0)
         npe15(2) = zero
@@ -279,7 +275,7 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
         nte4(4) = z0
         nte4(5) = zero
         nte4(6) = zero
-        nte4(7) = un - x0 - y0 - z0
+        nte4(7) = un-x0-y0-z0
         nte4(8) = zero
         nte4(9) = zero
         nte4(10) = x0
@@ -298,7 +294,7 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
         y0 = x(2)
         z0 = x(3)
         nno = 10
-        al = un - x0 - y0 - z0
+        al = un-x0-y0-z0
 
         nte10(1) = (deux*y0-un)*y0
         nte10(2) = zero
@@ -341,7 +337,7 @@ subroutine arlelr(elrefz,x,dimf,ff,nno)
         ASSERT(.false.)
     end if
 
-    ASSERT(dimf.ge.nno)
+    ASSERT(dimf .ge. nno)
 
     call jedema()
 

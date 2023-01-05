@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,26 +26,26 @@ subroutine ibimpr()
 #include "asterfort/uldefi.h"
 !
     integer :: mximpr
-    parameter   ( mximpr = 3)
-    character(len=16) :: nompr (mximpr)
-    integer :: unitpr (mximpr)
+    parameter(mximpr=3)
+    character(len=16) :: nompr(mximpr)
+    integer :: unitpr(mximpr)
     character(len=1) :: autpr(mximpr)
     integer :: passe
-    save       passe
-    data       passe  /    0     /
-    data       nompr  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
-    data       unitpr /    6      ,     8     ,      9  /
-    data       autpr /    'N'    ,     'O'     ,    'N' /
+    save passe
+    data passe/0/
+    data nompr/'MESSAGE', 'RESULTAT', 'ERREUR'/
+    data unitpr/6, 8, 9/
+    data autpr/'N', 'O', 'N'/
     integer :: i
 !   ------------------------------------------------------------------
-    passe = passe + 1
+    passe = passe+1
 !
 ! --- DEFINITION DES UNITES STANDARDS
     if (passe .eq. 1) then
         do i = 1, mximpr
-            call uldefi(unitpr(i), ' ', nompr(i), 'A', 'N',&
+            call uldefi(unitpr(i), ' ', nompr(i), 'A', 'N', &
                         autpr(i))
-        enddo
-    endif
+        end do
+    end if
 !
 end subroutine

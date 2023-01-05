@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,38 +61,38 @@ subroutine ssafmo(model)
 !
 ! - Initializations
 !
-    ioc         = 1
+    ioc = 1
     keywordfact = 'AFFE_SOUS_STRUC'
 !
 ! - Access to mesh
 !
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
-    call dismoi('NB_SM_MAILLA', mesh, 'MAILLAGE', repi = nb_super_elem)
-    call dismoi('NB_NL_MAILLA', mesh, 'MAILLAGE', repi = nb_node_lagr)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dismoi('NB_SM_MAILLA', mesh, 'MAILLAGE', repi=nb_super_elem)
+    call dismoi('NB_NL_MAILLA', mesh, 'MAILLAGE', repi=nb_node_lagr)
     if (nb_super_elem .eq. 0) then
         call utmess('F', 'SOUSTRUC_30')
-    endif
+    end if
 !
 ! - Create main object
 !
-    call wkvect(model//'.MODELE    .SSSA', 'G V I', nb_super_elem+3, vi = p_model_sssa)
+    call wkvect(model//'.MODELE    .SSSA', 'G V I', nb_super_elem+3, vi=p_model_sssa)
 !
 ! - TOUT = 'OUI'
 !
-    call getvtx(keywordfact, 'TOUT', iocc=ioc, nbret = n_affe_all)
+    call getvtx(keywordfact, 'TOUT', iocc=ioc, nbret=n_affe_all)
     if (n_affe_all .eq. 1) then
         do ielem = 1, nb_super_elem
             p_model_sssa(ielem) = 1
         end do
         nb_ss_acti = nb_super_elem
         goto 999
-    endif
+    end if
 !
 ! - SUPER_MAILLE
 !
     call getvtx(keywordfact, 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n1)
     nb_ss_acti = -n1
-    AS_ALLOCATE(vk8 = p_list_elem, size = nb_ss_acti)
+    AS_ALLOCATE(vk8=p_list_elem, size=nb_ss_acti)
     call getvtx(keywordfact, 'SUPER_MAILLE', iocc=ioc, nbval=nb_ss_acti, vect=p_list_elem)
     do isuperelem = 1, nb_ss_acti
         name_super_elem = p_list_elem(isuperelem)
@@ -103,7 +103,7 @@ subroutine ssafmo(model)
             call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
         else
             p_model_sssa(nume_super_elem) = 1
-        endif
+        end if
     end do
 !
 999 continue
@@ -111,6 +111,6 @@ subroutine ssafmo(model)
     p_model_sssa(nb_super_elem+2) = nb_ss_acti
     p_model_sssa(nb_super_elem+3) = nb_node_lagr
 !
-    AS_DEALLOCATE(vk8 = p_list_elem)
+    AS_DEALLOCATE(vk8=p_list_elem)
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ddi_kit_read(keywordfact, iocc     , l_etat_init,&
-                        rela_flua  , rela_plas, rela_cpla  , rela_coup)
+subroutine ddi_kit_read(keywordfact, iocc, l_etat_init, &
+                        rela_flua, rela_plas, rela_cpla, rela_coup)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/getvtx.h"
@@ -54,18 +54,18 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: dmflua, dmplas
-    parameter  ( dmflua = 5, dmplas = 9)
+    parameter(dmflua=5, dmplas=9)
     character(len=16) :: poflua(dmflua), poplas(dmplas)
     integer :: ikit, ii, nocc
     character(len=16) :: rela_kit(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    data poflua / 'BETON_GRANGER'      ,'BETON_GRANGER_V'    ,        &
-                  'BETON_UMLV'   ,'GLRC_DM'         ,'GLRC_DAMAGE'/
-    data poplas / 'ELAS'            ,'VMIS_ISOT_TRAC'  ,'VMIS_ISOT_PUIS'  ,        &
-                  'VMIS_ISOT_LINE'  ,'VMIS_CINE_LINE'  ,'ROUSS_PR'        ,        &
-                  'BETON_DOUBLE_DP' ,'ENDO_ISOT_BETON' ,'MAZARS'/
+    data poflua/'BETON_GRANGER', 'BETON_GRANGER_V', &
+        'BETON_UMLV', 'GLRC_DM', 'GLRC_DAMAGE'/
+    data poplas/'ELAS', 'VMIS_ISOT_TRAC', 'VMIS_ISOT_PUIS', &
+        'VMIS_ISOT_LINE', 'VMIS_CINE_LINE', 'ROUSS_PR', &
+        'BETON_DOUBLE_DP', 'ENDO_ISOT_BETON', 'MAZARS'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,10 +76,10 @@ implicit none
 !
 ! - Read command file
 !
-    call getvtx(keywordfact, 'RELATION_KIT', iocc = iocc, nbval = 0, nbret = nocc)
+    call getvtx(keywordfact, 'RELATION_KIT', iocc=iocc, nbval=0, nbret=nocc)
     nocc = -nocc
-    ASSERT(nocc.le.2)
-    call getvtx(keywordfact, 'RELATION_KIT', iocc = iocc, nbval = nocc, vect = rela_kit)
+    ASSERT(nocc .le. 2)
+    call getvtx(keywordfact, 'RELATION_KIT', iocc=iocc, nbval=nocc, vect=rela_kit)
 !
 ! - Get relations for kit
 !
@@ -91,8 +91,8 @@ implicit none
             if (rela_kit(ikit) .eq. poflua(ii)) then
                 rela_flua = rela_kit(ikit)
                 cycle
-            endif
-        enddo
+            end if
+        end do
 !
 ! ----- Elasto-plastic
 !
@@ -100,37 +100,37 @@ implicit none
             if (rela_kit(ikit) .eq. poplas(ii)) then
                 rela_plas = rela_kit(ikit)
                 cycle
-            endif
-        enddo
-    enddo
+            end if
+        end do
+    end do
 !
 ! - Compatibility
 !
     if (rela_flua(1:13) .eq. 'BETON_GRANGER') then
-        if (rela_plas .ne. 'ELAS' .and. rela_plas .ne. 'VMIS_ISOT_TRAC' .and. rela_plas&
-            .ne. 'VMIS_ISOT_PUIS' .and. rela_plas .ne. 'VMIS_ISOT_LINE' .and. rela_plas&
+        if (rela_plas .ne. 'ELAS' .and. rela_plas .ne. 'VMIS_ISOT_TRAC' .and. rela_plas &
+            .ne. 'VMIS_ISOT_PUIS' .and. rela_plas .ne. 'VMIS_ISOT_LINE' .and. rela_plas &
             .ne. 'ROUSS_PR' .and. rela_plas .ne. 'BETON_DOUBLE_DP') then
             call utmess('F', 'COMPOR3_2', sk=rela_plas)
-        endif
-    else if (rela_flua.eq.'BETON_UMLV') then
+        end if
+    else if (rela_flua .eq. 'BETON_UMLV') then
         if (rela_plas .ne. 'ENDO_ISOT_BETON' .and. rela_plas .ne. 'MAZARS') then
             call utmess('F', 'COMPOR3_3', sk=rela_plas)
-        endif
-    else if (rela_flua(1:4).eq.'GLRC') then
-        if (rela_plas .ne. 'VMIS_ISOT_TRAC' .and. rela_plas .ne. 'VMIS_ISOT_LINE' .and.&
+        end if
+    else if (rela_flua(1:4) .eq. 'GLRC') then
+        if (rela_plas .ne. 'VMIS_ISOT_TRAC' .and. rela_plas .ne. 'VMIS_ISOT_LINE' .and. &
             rela_plas .ne. 'VMIS_CINE_LINE') then
             call utmess('F', 'COMPOR3_4', sk=rela_plas)
-        endif
+        end if
     else
         call utmess('F', 'COMPOR3_6', sk=rela_flua)
-    endif
+    end if
 !
 ! - For GLRC: internal Deborst Algorithm and special internal variables
 !
     if (rela_flua(1:4) .eq. 'GLRC') then
         rela_coup = 'DDI_PLAS_ENDO'
         rela_cpla = 'DEBORST'
-    endif
+    end if
 !
 ! - Alarm
 !
@@ -138,8 +138,8 @@ implicit none
         if (rela_flua .eq. 'BETON_UMLV') then
             if (rela_plas .eq. 'ENDO_ISOT_BETON' .or. rela_plas .eq. 'MAZARS') then
                 call utmess('A', 'COMPOR3_83')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 end subroutine

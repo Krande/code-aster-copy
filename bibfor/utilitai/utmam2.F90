@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 !
     call jeveuo(modele//'.MAILLE', 'L', vi=maille)
     call jelira(modele//'.MAILLE', 'LONMAX', nbmail)
-    ASSERT(nbma.eq.nbmail)
+    ASSERT(nbma .eq. nbmail)
 !
     AS_ALLOCATE(vi=liste_m_temp, size=nbmail)
 !
@@ -72,9 +72,9 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 !
     do ima = 1, nbmail
         if (maille(ima) .gt. 0) then
-            nbtrou=nbtrou+1
-            liste_m_temp(nbtrou)=ima
-        endif
+            nbtrou = nbtrou+1
+            liste_m_temp(nbtrou) = ima
+        end if
     end do
 !
     if (nbtrou .eq. 0) goto 999

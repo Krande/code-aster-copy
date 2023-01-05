@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna,&
+subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna, &
                   sdnume, valinc, solalg, veasse)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/copisd.h"
@@ -34,12 +34,12 @@ implicit none
 #include "asterfort/nmmajc.h"
 #include "asterfort/nmsolu.h"
 !
-integer :: fonact(*)
-integer :: numins
-character(len=19) :: sddisc, sdnume, sddyna
-character(len=24) :: numedd
-character(len=19) :: veasse(*)
-character(len=19) :: solalg(*), valinc(*)
+    integer :: fonact(*)
+    integer :: numins
+    character(len=19) :: sddisc, sdnume, sddyna
+    character(len=24) :: numedd
+    character(len=19) :: veasse(*)
+    character(len=19) :: solalg(*), valinc(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,8 +78,8 @@ character(len=19) :: solalg(*), valinc(*)
     call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> CORRECTION INCR. DEPL.'
-    endif
+        write (ifm, *) '<MECANONLINE> CORRECTION INCR. DEPL.'
+    end if
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -92,14 +92,14 @@ character(len=19) :: solalg(*), valinc(*)
 !
 ! --- INITIALISATIONS
 !
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins)
-    deltat = instap - instam
+    instam = diinst(sddisc, numins-1)
+    instap = diinst(sddisc, numins)
+    deltat = instap-instam
 !
 ! --- CALCUL DE LA RESULTANTE DES EFFORTS EXTERIEURS
 !
     call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
-    call nmfext(0.d0, fonact, veasse, cnfext, sddynz_ = sddyna)
+    call nmfext(0.d0, fonact, veasse, cnfext, sddynz_=sddyna)
 !
 ! --- CONVERSION RESULTAT dU VENANT DE K.dU = F SUIVANT SCHEMAS
 !
@@ -114,23 +114,23 @@ character(len=19) :: solalg(*), valinc(*)
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... DEPL. PRED. (1) : '
+        write (ifm, *) '<MECANONLINE> ... DEPL. PRED. (1) : '
         call nmdebg('VECT', deppr1, ifm)
-        write (ifm,*) '<MECANONLINE> ... DEPL. SOLU.     : '
+        write (ifm, *) '<MECANONLINE> ... DEPL. SOLU.     : '
         call nmdebg('VECT', ddepla, ifm)
-        write (ifm,*) '<MECANONLINE> ... VITE. PRED. (1) : '
+        write (ifm, *) '<MECANONLINE> ... VITE. PRED. (1) : '
         call nmdebg('VECT', vitpr1, ifm)
-        write (ifm,*) '<MECANONLINE> ... VITE. SOLU.     : '
+        write (ifm, *) '<MECANONLINE> ... VITE. SOLU.     : '
         call nmdebg('VECT', dvitla, ifm)
-        write (ifm,*) '<MECANONLINE> ... ACCE. PRED. (1) : '
+        write (ifm, *) '<MECANONLINE> ... ACCE. PRED. (1) : '
         call nmdebg('VECT', accpr1, ifm)
-        write (ifm,*) '<MECANONLINE> ... ACCE. SOLU.     : '
+        write (ifm, *) '<MECANONLINE> ... ACCE. SOLU.     : '
         call nmdebg('VECT', daccla, ifm)
-    endif
+    end if
 !
 ! --- ACTUALISATION DES CHAMPS SOLUTIONS
 !
-    call nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
+    call nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
                 valinc, solalg)
 !
     call jedema()

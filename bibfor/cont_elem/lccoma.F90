@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,29 +16,29 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lccoma(elem_dime    , nb_node_mast, nb_node_slav   , nb_lagr,&
+subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
                   l_norm_smooth, &
-                  indi_lagc    , poidpg      , shape_mast_func,&
-                  jaco_upda    , dist_vect   ,&
-                  mmat     )
+                  indi_lagc, poidpg, shape_mast_func, &
+                  jaco_upda, dist_vect, &
+                  mmat)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-integer, intent(in) :: elem_dime
-integer, intent(in) :: nb_node_mast
-integer, intent(in) :: nb_node_slav
-integer, intent(in) :: nb_lagr
-aster_logical, intent(in) :: l_norm_smooth
-integer, intent(in) :: indi_lagc(10)
-real(kind=8), intent(in) :: poidpg
-real(kind=8), intent(in) :: shape_mast_func(9)
-real(kind=8), intent(in) :: jaco_upda, dist_vect(3)
-real(kind=8), intent(inout) :: mmat(55,55)
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: nb_node_mast
+    integer, intent(in) :: nb_node_slav
+    integer, intent(in) :: nb_lagr
+    aster_logical, intent(in) :: l_norm_smooth
+    integer, intent(in) :: indi_lagc(10)
+    real(kind=8), intent(in) :: poidpg
+    real(kind=8), intent(in) :: shape_mast_func(9)
+    real(kind=8), intent(in) :: jaco_upda, dist_vect(3)
+    real(kind=8), intent(inout) :: mmat(55, 55)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,25 +68,25 @@ real(kind=8), intent(inout) :: mmat(55,55)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    shift     = 0
-    jj        = 0
-    r_nb_lagr = real(nb_lagr,kind=8)
+    shift = 0
+    jj = 0
+    r_nb_lagr = real(nb_lagr, kind=8)
 !
     if (l_norm_smooth) then
         call jevech('PSNO', 'L', jv_norm)
         do i_node_lagc = 1, nb_node_slav
             shift = shift+indi_lagc(i_node_lagc)
-            if (indi_lagc(i_node_lagc+1).eq. 1) then
-                indlgc  = (i_node_lagc-1)*elem_dime+shift+elem_dime+1
+            if (indi_lagc(i_node_lagc+1) .eq. 1) then
+                indlgc = (i_node_lagc-1)*elem_dime+shift+elem_dime+1
                 do i_node_mast = 1, nb_node_mast
                     do i_dime = 1, elem_dime
-                        jj=(i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
-                        mmat(jj,indlgc) = mmat(jj,indlgc)+&
-                            (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)*&
-                             jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
-                        mmat(indlgc,jj) = mmat(indlgc,jj)+&
-                            (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)*&
-                             jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                        jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
+                        mmat(jj, indlgc) = mmat(jj, indlgc)+ &
+                           (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)* &
+                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                        mmat(indlgc, jj) = mmat(indlgc, jj)+ &
+                           (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)* &
+                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
                     end do
                 end do
             end if
@@ -94,17 +94,17 @@ real(kind=8), intent(inout) :: mmat(55,55)
     else
         do i_node_lagc = 1, nb_node_slav
             shift = shift+indi_lagc(i_node_lagc)
-            if (indi_lagc(i_node_lagc+1).eq. 1) then
+            if (indi_lagc(i_node_lagc+1) .eq. 1) then
                 indlgc = (i_node_lagc-1)*elem_dime+shift+elem_dime+1
                 do i_node_mast = 1, nb_node_mast
                     do i_dime = 1, elem_dime
-                        jj=(i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
-                        mmat(jj,indlgc)= mmat(jj,indlgc)+&
-                            (-dist_vect(i_dime)*&
-                             jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
-                        mmat(indlgc,jj)= mmat(indlgc,jj)+&
-                            (-dist_vect(i_dime)*&
-                             jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                        jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
+                        mmat(jj, indlgc) = mmat(jj, indlgc)+ &
+                                           (-dist_vect(i_dime)* &
+                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                        mmat(indlgc, jj) = mmat(indlgc, jj)+ &
+                                           (-dist_vect(i_dime)* &
+                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
                     end do
                 end do
             end if

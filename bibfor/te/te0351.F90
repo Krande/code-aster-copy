@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,20 +39,20 @@ subroutine te0351(option, nomte)
 !
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - TYPE DE MODELISATION
 !
-    if (lteatt('AXIS','OUI')) then
+    if (lteatt('AXIS', 'OUI')) then
         typmod(1) = 'AXIS'
-    else if (lteatt('C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN', 'OUI')) then
         typmod(1) = 'C_PLAN'
-    else if (lteatt('D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN', 'OUI')) then
         typmod(1) = 'D_PLAN'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     typmod(2) = 'ASSU    '
 !
@@ -61,7 +61,7 @@ subroutine te0351(option, nomte)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PVECTUR', 'E', ivectu)
 !
-    call nmasf2(nno, npg1, ipoids, ivf, idfde,&
+    call nmasf2(nno, npg1, ipoids, ivf, idfde, &
                 zr(igeom), typmod, zr(icontm), work, zr(ivectu))
 !
 end subroutine

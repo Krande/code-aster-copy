@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,8 @@ subroutine lisdbl(lischa)
                 call lislch(lischa, ichar2, charg2)
                 if (charg1 .eq. charg2) then
                     call utmess('F', 'CHARGES5_2', sk=charg1)
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 !

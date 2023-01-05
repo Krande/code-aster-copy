@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,26 +44,26 @@ subroutine gnomsd(nomres, noojb, k1, k2)
     character(len=16) :: concep, cmd
     character(len=24) :: noojb, noojb1
 !     -----------------------------------------------------------------
-    ASSERT(k2.gt.k1)
-    ASSERT(k1.gt.8)
-    ASSERT(k2.le.24)
+    ASSERT(k2 .gt. k1)
+    ASSERT(k1 .gt. 8)
+    ASSERT(k2 .le. 24)
 !
-    nomre2=nomres
+    nomre2 = nomres
     if (nomre2 .eq. ' ') then
         call getres(nomu, concep, cmd)
     else
-        nomu=nomre2
-    endif
-    noojb1=noojb
-    noojb1(1:8)=nomu
+        nomu = nomre2
+    end if
+    noojb1 = noojb
+    noojb1(1:8) = nomu
 !
-    ndigit=k2-k1+1
-    nmaxsd=int(10**ndigit)
+    ndigit = k2-k1+1
+    nmaxsd = int(10**ndigit)
 !
 !
 !     -- SI 0 EST LIBRE C'EST GAGNE :
 !     ----------------------------------------------------------
-    inum=0
+    inum = 0
     call codent(inum, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
     if (iret .eq. 0) goto 40
@@ -72,36 +72,36 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 !     -- IL N'Y A PEUT ETRE PAS DE NOM POSSIBLE :
 !        (TOUS LES NOMS SONT DEJA UTILISES)
 !     ----------------------------------------------------------
-    inum=nmaxsd-1
+    inum = nmaxsd-1
     call codent(inum, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
     if (iret .gt. 0) then
         call utmess('F', 'MODELISA4_69', si=inum)
-    endif
+    end if
 !
 !
 !     -- ON CHERCHE UN INTERVALLE (N1,N2) CONTENANT LE NUMERO
 !        INUM CHERCHE :  N1<INUM<=N2
 !     ----------------------------------------------------------
-    n1=0
-    iessai=2
+    n1 = 0
+    iessai = 2
 10  continue
     call codent(iessai, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
     if (iret .eq. 0) then
-        n2=iessai
+        n2 = iessai
         goto 20
 !
     else
-        n1=iessai
-        iessai=min(2*n1,nmaxsd-1)
+        n1 = iessai
+        iessai = min(2*n1, nmaxsd-1)
         goto 10
 !
-    endif
+    end if
 20  continue
-    ASSERT(n1.ge.0)
-    ASSERT(n2.lt.nmaxsd)
-    ASSERT(n1.lt.n2)
+    ASSERT(n1 .ge. 0)
+    ASSERT(n2 .lt. nmaxsd)
+    ASSERT(n1 .lt. n2)
 !
 !
 !
@@ -110,29 +110,29 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 30  continue
     if (n1 .eq. n2-1) then
 !       -- ON A TROUVE :
-        inum=n2
+        inum = n2
         goto 40
 !
     else
-        iessai=n1+(n2-n1)/2
+        iessai = n1+(n2-n1)/2
         call codent(iessai, 'D0', noojb1(k1:k2))
         call jeexin(noojb1, iret)
         if (iret .eq. 0) then
-            n2=iessai
+            n2 = iessai
             goto 30
 !
         else
-            n1=iessai
+            n1 = iessai
             goto 30
 !
-        endif
-    endif
+        end if
+    end if
 !
 !
 !
 40  continue
     call codent(inum, 'D0', noojb1(k1:k2))
-    noojb=noojb1
+    noojb = noojb1
 !
 !
 end subroutine

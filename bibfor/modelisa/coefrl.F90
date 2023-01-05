@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
-                  ires, bornck, nborck, coefck, ipas1,&
+subroutine coefrl(nom1, nom2, nom3, nckmax, ipas, &
+                  ires, bornck, nborck, coefck, ipas1, &
                   ires1)
     implicit none
 !  IN    : NOM1      : A RENSEIGNER
@@ -46,7 +46,7 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
 !
 !     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
     character(len=8) :: typflu
-    common  / kop144 / typflu
+    common/kop144/typflu
 !
     integer :: unit, nbomax, nbloc
     integer :: jborne, jcoeff, jvired, nbval1, nbval2, nbval3
@@ -71,30 +71,30 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
     unit = zi(iunit-1+2)
     nbomax = 20
     k16nom = ' '
-    if (ulisop ( unit, k16nom ) .eq. 0) then
+    if (ulisop(unit, k16nom) .eq. 0) then
         call ulopen(unit, ' ', ' ', 'NEW', 'O')
-    endif
-    rewind(unit)
-    read (unit,*) nbloc
+    end if
+    rewind (unit)
+    read (unit, *) nbloc
     zero = 0.0d0
 !
 ! --- BLOC D'INITIALISATION
     do i = 1, nbomax
-        bock1 (i) = zero
+        bock1(i) = zero
         bornck(i) = zero
         do j = 1, nckmax
-            coef1 (i,j) = zero
-            coefck(i,j) = zero
+            coef1(i, j) = zero
+            coefck(i, j) = zero
         end do
     end do
 !
     do kk = 1, nbloc
-        read (unit,*) ipas1
-        read (unit,*) ires1
-        read (unit,*) nb1
+        read (unit, *) ipas1
+        read (unit, *) ires1
+        read (unit, *) nb1
         if (ipas1 .eq. ipas .and. ires1 .eq. ires) then
             nbval1 = 3
-            nbval2 = nb1 + nb1*nckmax
+            nbval2 = nb1+nb1*nckmax
             nbval3 = 2
             call wkvect(nom1, 'V V I', nbval1, jborne)
             call wkvect(nom2, 'V V R', nbval2, jcoeff)
@@ -102,9 +102,9 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
             zi(jborne-1+1) = ipas1
             zi(jborne-1+2) = ires1
             zi(jborne-1+3) = nb1
-            read (unit,*) (bock1(i),i = 1,nb1),vrmin,vrmax
+            read (unit, *) (bock1(i), i=1, nb1), vrmin, vrmax
             do i = 1, nb1
-                zr( jcoeff+i-1 ) = bock1(i)
+                zr(jcoeff+i-1) = bock1(i)
             end do
 !
             zr(jvired-1+1) = vrmin
@@ -112,10 +112,10 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
 !
             k = 1
             do i = 1, nb1
-                read (unit,*) (coef1(i,j),j = 1,nckmax)
+                read (unit, *) (coef1(i, j), j=1, nckmax)
                 do j = 1, nckmax
-                    zr(jcoeff+nb1+k-1) = coef1(i,j)
-                    k = k + 1
+                    zr(jcoeff+nb1+k-1) = coef1(i, j)
+                    k = k+1
                 end do
             end do
 !
@@ -124,21 +124,21 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
             do i = 1, nb1
                 bornck(i) = bock1(i)
                 do j = 1, nckmax
-                    coefck(i,j) = coef1(i,j)
+                    coefck(i, j) = coef1(i, j)
                 end do
             end do
             goto 120
         else
-            read (unit,*) (bock1(i),i = 1,nb1),vrmin,vrmax
+            read (unit, *) (bock1(i), i=1, nb1), vrmin, vrmax
             do i = 1, nb1
-                read (unit,*) (coef1(i,j),j = 1,nckmax)
+                read (unit, *) (coef1(i, j), j=1, nckmax)
             end do
-            read (unit,*)
-        endif
+            read (unit, *)
+        end if
     end do
     if (ipas1 .ne. ipas .or. ires1 .ne. ires) then
         call utmess('F', 'MODELISA4_33')
-    endif
+    end if
 !
 120 continue
     call ulopen(-unit, ' ', ' ', ' ', ' ')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine hbmajs(dg, nbmat, materf, se, i1e,&
+subroutine hbmajs(dg, nbmat, materf, se, i1e, &
                   sigeqe, etap, sigp)
     implicit none
     integer :: nbmat
@@ -34,23 +34,23 @@ subroutine hbmajs(dg, nbmat, materf, se, i1e,&
     integer :: ii, ndi, ndt
     real(kind=8) :: k, mu, i1, dev(6), un, neuf, trois
 ! =================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( neuf   =  9.0d0  )
-    parameter       ( trois  =  3.0d0  )
+    parameter(un=1.0d0)
+    parameter(neuf=9.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
-    k = materf(5,1)
-    mu = materf(4,1)
+    k = materf(5, 1)
+    mu = materf(4, 1)
     do ii = 1, ndt
         dev(ii) = se(ii)*(un-trois*mu*dg/(sigeqe*(etap+un)))
     end do
-    i1 = i1e - neuf*k*etap*dg/(etap+un)
+    i1 = i1e-neuf*k*etap*dg/(etap+un)
     do ii = 1, ndt
         sigp(ii) = dev(ii)
     end do
     do ii = 1, ndi
-        sigp(ii) = sigp(ii) + i1/trois
+        sigp(ii) = sigp(ii)+i1/trois
     end do
 ! ======================================================================
 end subroutine

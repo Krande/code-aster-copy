@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ subroutine mdlibe(nomres, nbnli)
 #include "asterfort/jeexin.h"
 !   Input arguments
     character(len=8), intent(in) :: nomres
-    integer,          intent(in) :: nbnli
+    integer, intent(in) :: nbnli
 !   Local variables
     integer           :: iret
     character(len=9)  :: bl8pt
     character(len=12) :: bl11pt
 !-----------------------------------------------------------------------
     bl11pt = '           .'
-    bl8pt  = '        .'
+    bl8pt = '        .'
 
     call jelibe(nomres//bl11pt//'DEPL')
     call jelibe(nomres//bl11pt//'VITE')
@@ -48,12 +48,12 @@ subroutine mdlibe(nomres, nbnli)
     call jelibe(nomres//bl11pt//'DISC')
     call jelibe(nomres//bl11pt//'PTEM')
 
-    if (nbnli .gt. 0 ) then
+    if (nbnli .gt. 0) then
         call jelibe(nomres//bl8pt//'NL.TYPE')
         call jelibe(nomres//bl8pt//'NL.INTI')
         call jelibe(nomres//bl8pt//'NL.VIND')
         call jeexin(nomres//bl8pt//'NL.VINT', iret)
-        if (iret.gt.0) call jelibe(nomres//bl8pt//'NL.VINT')
+        if (iret .gt. 0) call jelibe(nomres//bl8pt//'NL.VINT')
     end if
 !
 end subroutine

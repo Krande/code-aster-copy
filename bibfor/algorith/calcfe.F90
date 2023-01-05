@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcfe(nr, ndt, nvi, vind, df,&
+subroutine calcfe(nr, ndt, nvi, vind, df, &
                   gamsns, fe, fp, iret)
     implicit none
 !       MONOCRISTAL : CALCUL DE Fe et Fp, F=Fe.Fp
@@ -41,20 +41,20 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
     real(kind=8) :: vind(*), id(3, 3), det, coef, dfp(3, 3), expo, fp(3, 3)
     real(kind=8) :: fpm(3, 3), dfpmax, dfpmin, det2
     integer :: nr, ndt, iret, iopt, i, nvi
-    data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
+    data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------
 !
-    iret=0
-    iopt=2
+    iret = 0
+    iopt = 2
 !
     call dcopy(9, vind(nvi-3-18+10), 1, fem, 1)
-    call dcopy(9, vind(nvi-3-18+1 ), 1, fpm, 1)
-    call daxpy(9, 1.d0, id, 1, fem,&
+    call dcopy(9, vind(nvi-3-18+1), 1, fpm, 1)
+    call daxpy(9, 1.d0, id, 1, fem, &
                1)
-    call daxpy(9, 1.d0, id, 1, fpm,&
+    call daxpy(9, 1.d0, id, 1, fpm, &
                1)
 !
-    dffe = matmul(df,fem)
+    dffe = matmul(df, fem)
 !
     call dcopy(9, gamsns, 1, dfp, 1)
 !
@@ -62,69 +62,69 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 !
 !        suivant ANNAND 1996
 !
-        call daxpy(9, 1.d0, id, 1, dfp,&
+        call daxpy(9, 1.d0, id, 1, dfp, &
                    1)
 !
 !        TEST ANALOGUE A SIMO_MIEHE NMGPFI
-        dfpmax=0.d0
-        dfpmin=100.d0
+        dfpmax = 0.d0
+        dfpmin = 100.d0
         do i = 1, 3
-            if (dfp(i,i) .gt. dfpmax) dfpmax=dfp(i,i)
-            if (dfp(i,i) .lt. dfpmin) dfpmin=dfp(i,i)
+            if (dfp(i, i) .gt. dfpmax) dfpmax = dfp(i, i)
+            if (dfp(i, i) .lt. dfpmin) dfpmin = dfp(i, i)
         end do
-        if ((dfpmax.gt.1.d3) .or. (dfpmin.lt.1.d-3)) then
-            iret=1
+        if ((dfpmax .gt. 1.d3) .or. (dfpmin .lt. 1.d-3)) then
+            iret = 1
             goto 999
-        endif
+        end if
 !
         call lcdetf(3, dfp, det)
 !
         if (det .gt. r8prem()) then
-            expo=-1.d0/3.d0
-            coef=det**expo
+            expo = -1.d0/3.d0
+            coef = det**expo
             call dscal(9, coef, dfp, 1)
         else
-            iret=1
+            iret = 1
             goto 999
-        endif
+        end if
 !
         call matinv('S', 3, dfp, dfpm, det2)
 !
-    else if (iopt.eq.2) then
+    else if (iopt .eq. 2) then
 !
 !        linearisation directe de exp(-dgamma.ms x ns)
 !
         call dcopy(9, dfp, 1, dfpm, 1)
         call dscal(9, -1.d0, dfpm, 1)
-        call daxpy(9, 1.d0, id, 1, dfpm,&
+        call daxpy(9, 1.d0, id, 1, dfpm, &
                    1)
 !
-        dfpmax=0.d0
-        dfpmin=100.d0
+        dfpmax = 0.d0
+        dfpmin = 100.d0
         do i = 1, 3
-            if (dfpm(i,i) .gt. dfpmax) dfpmax=dfpm(i,i)
-            if (dfpm(i,i) .lt. dfpmin) dfpmin=dfpm(i,i)
+            if (dfpm(i, i) .gt. dfpmax) dfpmax = dfpm(i, i)
+            if (dfpm(i, i) .lt. dfpmin) dfpmin = dfpm(i, i)
         end do
-        if ((dfpmax.gt.1.d3) .or. (dfpmin.lt.1.d-3)) then
-            iret=1
+        if ((dfpmax .gt. 1.d3) .or. (dfpmin .lt. 1.d-3)) then
+            iret = 1
             goto 999
-        endif
+        end if
 !
         call lcdetf(3, dfpm, det)
 !
         if (det .gt. r8prem()) then
-            expo=-1.d0/3.d0
-            coef=det**expo
+            expo = -1.d0/3.d0
+            coef = det**expo
             call dscal(9, coef, dfpm, 1)
         else
-            iret=1
+            iret = 1
             goto 999
-        endif
+        end if
 !
         call matinv('S', 3, dfpm, dfp, det2)
 !
 !
-    else if (iopt.eq.3) then
+    else if (iopt .eq. 3) then
 !
 ! suivant DE SOUZA-NIETO
 !
@@ -146,13 +146,13 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 !         ENDIF
 !         CALL MATINV('S',3,DFPM,DFP,DET2)
 !
-    endif
+    end if
 !
-    fe = matmul(dffe,dfpm)
+    fe = matmul(dffe, dfpm)
 !
 ! post traitement
 !
-    fp = matmul(dfp,fpm)
+    fp = matmul(dfp, fpm)
 !
 999 continue
 !

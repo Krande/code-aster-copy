@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine rescmp(cnfnod     , cnequi,&
+subroutine rescmp(cnfnod, cnequi, &
                   r_comp_vale, r_comp_name, r_comp_indx)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,10 +34,10 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=19), intent(in) :: cnfnod, cnequi
-real(kind=8), intent(out) :: r_comp_vale
-character(len=8), intent(out) :: r_comp_name
-integer, intent(out) :: r_comp_indx
+    character(len=19), intent(in) :: cnfnod, cnequi
+    real(kind=8), intent(out) :: r_comp_vale
+    character(len=8), intent(out) :: r_comp_name
+    integer, intent(out) :: r_comp_indx
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,11 +104,11 @@ integer, intent(out) :: r_comp_indx
             if (zl(jcnsl-1+(i_node-1)*nb_cmp+i_cmp)) goto 20
         end do
         goto 30
- 20     continue
-        nbcmpu = nbcmpu + 1
-        ASSERT(nbcmpu.lt.999)
+20      continue
+        nbcmpu = nbcmpu+1
+        ASSERT(nbcmpu .lt. 999)
         licmpu(nbcmpu) = i_cmp
- 30     continue
+30      continue
     end do
 !
 ! - Some checks
@@ -134,14 +134,14 @@ integer, intent(out) :: r_comp_indx
                 resim = abs(v_cnequi_cnsv(i))
                 fonam = abs(v_cnfnod_cnsv(i))
                 if (resim .gt. maxddr(i_cmp)) then
-                    maxddr(i_cmp)= resim
-                    numnod(i_cmp)= i_node
-                endif
-                maxddf(i_cmp)=max(fonam,maxddf(i_cmp))
-            endif
+                    maxddr(i_cmp) = resim
+                    numnod(i_cmp) = i_node
+                end if
+                maxddf(i_cmp) = max(fonam, maxddf(i_cmp))
+            end if
         end do
     end do
-    r_comp_vale=0.d0
+    r_comp_vale = 0.d0
 !
 !
     do i_cmp = 1, nbcmpu
@@ -149,11 +149,11 @@ integer, intent(out) :: r_comp_indx
             res = maxddr(i_cmp)/maxddf(i_cmp)
         else
             res = -1
-        endif
+        end if
         if (res .gt. r_comp_vale) then
             r_comp_vale = res
             cmpmax = i_cmp
-        endif
+        end if
     end do
 !
 !  POUR INFO SI BESOIN NUMDDL  : NUMERO DU DDL PENALISANT
@@ -166,7 +166,7 @@ integer, intent(out) :: r_comp_indx
     else
         r_comp_indx = numnod(cmpmax)
         r_comp_name = nomddl(cmpmax)
-    endif
+    end if
 !
     call detrsd('CHAM_NO_S', cnequi_s)
     call detrsd('CHAM_NO_S', cnfnod_s)

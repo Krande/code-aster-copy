@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,45 +17,45 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc0035(BEHinteg,&
-                  fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
+subroutine lc0035(BEHinteg, &
+                  fami, kpg, ksp, ndim, imate, &
+                  compor, carcri, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, &
                   nvi, dsidep, codret)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/lkcomp.h"
 #include "asterfort/lkpost.h"
 #include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg
-integer, intent(in) :: ksp
-integer, intent(in) :: ndim
-integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
-real(kind=8), intent(in) :: instam
-real(kind=8), intent(in) :: instap
-real(kind=8), intent(in) :: epsm(*)
-real(kind=8), intent(in) :: deps(*)
-real(kind=8), intent(in) :: sigm(6)
-real(kind=8), intent(in) :: vim(*)
-character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: angmas(3)
-real(kind=8), intent(out) :: sigp(6)
-real(kind=8), intent(out) :: vip(*)
-character(len=8), intent(in) :: typmod(*)
-integer, intent(in) :: icomp
-integer, intent(in) :: nvi
-real(kind=8), intent(out) :: dsidep(6, 6)
-integer, intent(out) :: codret
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(in) :: epsm(*)
+    real(kind=8), intent(in) :: deps(*)
+    real(kind=8), intent(in) :: sigm(6)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(6)
+    real(kind=8), intent(out) :: vip(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,23 +75,23 @@ integer, intent(out) :: codret
 !
     call utlcal('VALE_NOM', algo_inte, carcri(6))
 !
-    if ((algo_inte(1:10).eq.'SPECIFIQUE') .or. (option(1:14).eq.'RIGI_MECA_TANG')) then
+    if ((algo_inte(1:10) .eq. 'SPECIFIQUE') .or. (option(1:14) .eq. 'RIGI_MECA_TANG')) then
         call lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
-                    deps, sigm, vim,&
-                    option, sigp, vip, dsidep, codret,&
+                    deps, sigm, vim, &
+                    option, sigp, vip, dsidep, codret, &
                     nvi)
     else
-        call plasti(BEHinteg    ,&
-                    fami, kpg, ksp, typmod, imate,&
-                    compor, carcri, instam, instap,&
-                    epsm, deps, sigm,&
-                    vim, option, angmas, sigp, vip,&
+        call plasti(BEHinteg, &
+                    fami, kpg, ksp, typmod, imate, &
+                    compor, carcri, instam, instap, &
+                    epsm, deps, sigm, &
+                    vim, option, angmas, sigp, vip, &
                     dsidep, icomp, nvi, codret)
-    endif
+    end if
 !
 ! --- AJOUT DE CRITERES D'INTERPRETATION POUR AIDER AUX POST-TRAITEMENTS
     if (option(1:5) .ne. 'RIGI_') then
         call lkpost(imate, sigp, nvi, vip)
-    endif
+    end if
 !
 end subroutine

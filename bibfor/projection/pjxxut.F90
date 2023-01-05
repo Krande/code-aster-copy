@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pjxxut(projDime     , typeSelect     ,&
-                  entity1      , entity2        ,&
-                  nbCellSelect1, listCellSelect1,&
-                  nbNodeSelect2, listNodeSelect2,&
-                  mesh1        , mesh2          ,&
-                  nbCellType   , cellListNume   , cellListCode)
+subroutine pjxxut(projDime, typeSelect, &
+                  entity1, entity2, &
+                  nbCellSelect1, listCellSelect1, &
+                  nbNodeSelect2, listNodeSelect2, &
+                  mesh1, mesh2, &
+                  nbCellType, cellListNume, cellListCode)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -41,13 +41,13 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=2), intent(in) :: projDime
-character(len=*), intent(in) :: typeSelect
-character(len=8), intent(in) :: entity1, entity2
-integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
-character(len=8), intent(out) :: mesh1, mesh2
-integer, intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
-character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
+    character(len=2), intent(in) :: projDime
+    character(len=*), intent(in) :: typeSelect
+    character(len=8), intent(in) :: entity1, entity2
+    integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    character(len=8), intent(out) :: mesh1, mesh2
+    integer, intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
+    character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,9 +113,9 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
     call jemarq()
 
 ! - Initializations
-    mesh1        = ' '
-    mesh2        = ' '
-    nbCellType   = 0
+    mesh1 = ' '
+    mesh2 = ' '
+    nbCellType = 0
     cellListNume = 0
     cellListCode = ' '
 
@@ -127,8 +127,8 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         call dismoi('NOM_MAILLA', model1, 'MODELE', repk=mesh1)
     else
         model1 = ' '
-        mesh1  = entity1
-    endif
+        mesh1 = entity1
+    end if
 
 ! - Detect model or mesh for second entity
     model2 = ' '
@@ -139,14 +139,14 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         call pjnout(model2)
     else
         model2 = ' '
-        mesh2  = entity2
-    endif
+        mesh2 = entity2
+    end if
 
 ! - Parameters about meshes
-    call dismoi('NB_NO_MAILLA', mesh1, 'MAILLAGE', repi = nbNode1)
-    call dismoi('NB_NO_MAILLA', mesh2, 'MAILLAGE', repi = nbNode2)
-    call dismoi('NB_MA_MAILLA', mesh1, 'MAILLAGE', repi = nbCell1)
-    call dismoi('NB_MA_MAILLA', mesh2, 'MAILLAGE', repi = nbCell2)
+    call dismoi('NB_NO_MAILLA', mesh1, 'MAILLAGE', repi=nbNode1)
+    call dismoi('NB_NO_MAILLA', mesh2, 'MAILLAGE', repi=nbNode2)
+    call dismoi('NB_MA_MAILLA', mesh1, 'MAILLAGE', repi=nbCell1)
+    call dismoi('NB_MA_MAILLA', mesh2, 'MAILLAGE', repi=nbCell2)
 
 ! - List of type of cells with this dimension
     if (projDime .eq. '0D') then
@@ -177,7 +177,7 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         cellListCode(5) = 'QU8'
         cellListCode(6) = 'QU9'
 
-    else if (projDime.eq.'3D') then
+    else if (projDime .eq. '3D') then
         nbCellType = 11
         cellTypeName(1) = 'TETRA4'
         cellTypeName(2) = 'TETRA10'
@@ -204,14 +204,14 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
 
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
     do iCellType = 1, nbCellType
         call jenonu(jexnom('&CATA.TM.NOMTM', cellTypeName(iCellType)), cellListNume(iCellType))
     end do
 
 ! - Get list of cells for first entity
-    call wkvect('&&PJXXCO.LIMA1', 'V V I', nbCell1, vi = listCell1)
+    call wkvect('&&PJXXCO.LIMA1', 'V V I', nbCell1, vi=listCell1)
     if (model1 .eq. ' ') then
         do iCell1 = 1, nbCell1
             listCell1(iCell1) = 1
@@ -222,17 +222,17 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         do iCellModel = 1, nbCellModel
             if (zi(iad-1+iCellModel) .ne. 0) then
                 listCell1(iCellModel) = 1
-            endif
+            end if
         end do
-    endif
+    end if
 
 ! - Select from type for first entity
     call jeveuo(mesh1//'.TYPMAIL', 'L', iad)
     do iCellType = 1, nbCellType
         do iCell1 = 1, nbCell1
             if (zi(iad-1+iCell1) .eq. cellListNume(iCellType)) then
-                listCell1(iCell1) = listCell1(iCell1) + 1
-            endif
+                listCell1(iCell1) = listCell1(iCell1)+1
+            end if
         end do
     end do
 
@@ -244,7 +244,7 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
             listCell1(iCell1) = 1
         else if (listCell1(iCell1) .gt. 2) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end do
 
 ! - Selection of cells for first entity when list is given
@@ -255,11 +255,11 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         do iCell1 = 1, nbCell1
             listCell1(iCell1) = listCell1(iCell1)/2
         end do
-    endif
+    end if
 
 ! - Get list of 'good' nodes for first entity
-    call wkvect('&&PJXXCO.LINO1', 'V V I', nbNode1, vi = listNode1)
-    call jeveuo(mesh1//'.CONNEX', 'L', vi = connex)
+    call wkvect('&&PJXXCO.LINO1', 'V V I', nbNode1, vi=listNode1)
+    call jeveuo(mesh1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(mesh1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     do iCell1 = 1, nbCell1
         if (listCell1(iCell1) .ne. 0) then
@@ -268,52 +268,52 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
                 nodeNume = connex(1+zi(ilcnx1-1+iCell1)-2+iNode)
                 listNode1(nodeNume) = 1
             end do
-        endif
+        end if
     end do
 
 ! - Get list of 'good' nodes for second entity
-    call wkvect('&&PJXXCO.LINO2', 'V V I', nbNode2, vi = listNode2)
+    call wkvect('&&PJXXCO.LINO2', 'V V I', nbNode2, vi=listNode2)
     if (model2 .ne. ' ') then
         call jeveuo(model2//'.NOEUD_UTIL', 'L', iad)
         if (typeSelect .eq. 'TOUT') then
             do iNode2 = 1, nbNode2
                 if (zi(iad-1+iNode2) .ne. 0) then
                     listNode2(iNode2) = 1
-                endif
+                end if
             end do
         else if (typeSelect .eq. 'PARTIE') then
             do iNodeSelect2 = 1, nbNodeSelect2
                 if (zi(iad-1+listNodeSelect2(iNodeSelect2)) .ne. 0) then
                     listNode2(listNodeSelect2(iNodeSelect2)) = 1
-                endif
+                end if
             end do
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         if (typeSelect .eq. 'TOUT') then
             do iNode2 = 1, nbNode2
                 listNode2(iNode2) = 1
             end do
-        else if (typeSelect.eq.'PARTIE') then
+        else if (typeSelect .eq. 'PARTIE') then
             do iNodeSelect2 = 1, nbNodeSelect2
                 listNode2(listNodeSelect2(iNodeSelect2)) = 1
             end do
         else
             ASSERT(ASTER_FALSE)
-        endif
-    endif
+        end if
+    end if
 
 ! - Stop if there node nodes in second entity
     nbNodeCount = 0
     do iNode2 = 1, nbNode2
         if (listNode2(iNode2) .gt. 0) then
-            nbNodeCount = nbNodeCount + 1
-        endif
+            nbNodeCount = nbNodeCount+1
+        end if
     end do
     if (nbNodeCount .eq. 0) then
         call utmess('F', 'PROJECTION4_54')
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine mvnume(depmoi, depdel, depplu)
         call vtcopy(depmoi, depmo1, 'F', iret)
     else
         depmo1 = depmoi
-    endif
+    end if
 !
 ! --- ON CALCULE LE CHAMP DEPPLU=DEPMO1+DEPDEL
 !
@@ -82,7 +82,7 @@ subroutine mvnume(depmoi, depdel, depplu)
     nomch(2) = depdel
     typres = 'R'
     chpres = depplu
-    call vtcmbl(2, typcst, const, typech, nomch,&
+    call vtcmbl(2, typcst, const, typech, nomch, &
                 typres, chpres)
 !
     call jedema()

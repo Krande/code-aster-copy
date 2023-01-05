@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gedisc(ndim, nno, npg, vff, geom,&
+subroutine gedisc(ndim, nno, npg, vff, geom, &
                   pg)
 !
     implicit none
@@ -37,8 +37,8 @@ subroutine gedisc(ndim, nno, npg, vff, geom,&
 ! ----------------------------------------------------------------------
     do g = 1, npg
         do i = 1, ndim
-            pg(i,g) = ddot(nno,geom(i,1),ndim,vff(1,g),1)
+            pg(i, g) = ddot(nno, geom(i, 1), ndim, vff(1, g), 1)
         end do
-        pg(ndim+1,g) = 0.d0
+        pg(ndim+1, g) = 0.d0
     end do
 end subroutine

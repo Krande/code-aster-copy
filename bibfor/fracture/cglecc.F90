@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,20 +56,20 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 !     RECUPERATION DU MOT-CLE CALCUL_CONTRAINTE
 !
 !     PAR DEFAUT, ON RECALCULE LES CONTRAINTES
-    calsig='OUI'
+    calsig = 'OUI'
 !
     call getfac('COMPORTEMENT', ncelas)
 !
     if (ncelas .gt. 0) then
         call getvtx(' ', 'CALCUL_CONTRAINTE', scal=calsig, nbret=ier)
-    endif
+    end if
 !
 !     CALSIG='NON' N'EST PAS COMPATIBLE AVEC X-FEM
     if (calsig .eq. 'NON') then
         if (typfis .eq. 'FISSURE') then
             call utmess('F', 'RUPTURE1_39')
-        endif
-    endif
+        end if
+    end if
 !
 !     LES AUTRES VERIF SONF FAITES DANS LE CAPY (OPTION...)
 !
@@ -82,15 +82,15 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 !
         do i = 1, nbord
             iord = zi(jvec-1+i)
-            call rsexch(' ', resu, 'SIEF_ELGA', iord, k24b,&
+            call rsexch(' ', resu, 'SIEF_ELGA', iord, k24b, &
                         ier)
             if (ier .ne. 0) then
 !           PROBLEME DANS LA RECUP DE SIEF_ELGA POUR CE NUME_ORDRE
-                vali=iord
+                vali = iord
                 call utmess('F', 'RUPTURE0_93', si=vali)
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, ivf1, idff1, vu,&
-                  vp, typmod, igeom, mate, mini,&
+subroutine nurmtd(ndim, nno1, nno2, npg, iw, &
+                  vff1, vff2, ivf1, idff1, vu, &
+                  vp, typmod, igeom, mate, mini, &
                   matr)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -89,23 +89,23 @@ implicit none
     real(kind=8) :: fm(3, 3)
     character(len=16) :: compor, option
 !
-    data         fm   / 1.d0, 0.d0, 0.d0,&
+    data fm/1.d0, 0.d0, 0.d0,&
      &                  0.d0, 1.d0, 0.d0,&
      &                  0.d0, 0.d0, 1.d0/
-    data         idev2/ 2.d0,-1.d0,-1.d0, 0.d0,&
-     &                 -1.d0, 2.d0,-1.d0, 0.d0,&
-     &                 -1.d0,-1.d0, 2.d0, 0.d0,&
+    data idev2/2.d0, -1.d0, -1.d0, 0.d0,&
+     &                 -1.d0, 2.d0, -1.d0, 0.d0,&
+     &                 -1.d0, -1.d0, 2.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 3.d0/
-    data         idev / 2.d0,-1.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-     &                 -1.d0, 2.d0,-1.d0, 0.d0, 0.d0, 0.d0,&
-     &                 -1.d0,-1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
+    data idev/2.d0, -1.d0, -1.d0, 0.d0, 0.d0, 0.d0,&
+     &                 -1.d0, 2.d0, -1.d0, 0.d0, 0.d0, 0.d0,&
+     &                 -1.d0, -1.d0, 2.d0, 0.d0, 0.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 3.d0, 0.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 0.d0, 3.d0, 0.d0,&
      &                  0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 3.d0/
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
-    axi = typmod(1).eq.'AXIS'
+    axi = typmod(1) .eq. 'AXIS'
     rac2 = sqrt(2.d0)
     option = 'RIGI_MECA       '
     compor = 'ELAS            '
@@ -127,7 +127,7 @@ implicit none
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
     do g = 1, npg
-        idecpg = nno1* (g-1) - 1
+        idecpg = nno1*(g-1)-1
 !
 ! - COORDONNEES AU POINT D'INTEGRATION COURANT
         xyzgau(1) = 0.d0
@@ -135,119 +135,119 @@ implicit none
         xyzgau(3) = 0.d0
         if (ndim .eq. 3) then
             do ia = 1, nno1
-                idecno = 3* (ia-1) - 1
-                xyzgau(1) = xyzgau(1)+zr(ivf1+ia+idecpg)*zr(igeom+1+ idecno)
-                xyzgau(2) = xyzgau(2)+zr(ivf1+ia+idecpg)*zr(igeom+2+ idecno)
-                xyzgau(3) = xyzgau(3)+zr(ivf1+ia+idecpg)*zr(igeom+3+ idecno)
+                idecno = 3*(ia-1)-1
+                xyzgau(1) = xyzgau(1)+zr(ivf1+ia+idecpg)*zr(igeom+1+idecno)
+                xyzgau(2) = xyzgau(2)+zr(ivf1+ia+idecpg)*zr(igeom+2+idecno)
+                xyzgau(3) = xyzgau(3)+zr(ivf1+ia+idecpg)*zr(igeom+3+idecno)
             end do
-        endif
+        end if
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 ! - CALCUL DE DFDI,F,EPS,R(EN AXI) ET POIDS
-        call dfdmip(ndim, nno1, axi, zr(igeom), g,&
-                    iw, vff1(1, g), idff1, r, w,&
+        call dfdmip(ndim, nno1, axi, zr(igeom), g, &
+                    iw, vff1(1, g), idff1, r, w, &
                     dff1)
 !
 ! - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
         if (ndim .eq. 2) then
             do na = 1, nno1
                 do ia = 1, ndim
-                    def(1,na,ia)= fm(ia,1)*dff1(na,1)
-                    def(2,na,ia)= fm(ia,2)*dff1(na,2)
-                    def(3,na,ia)= 0.d0
-                    def(4,na,ia)=(fm(ia,1)*dff1(na,2)+fm(ia,2)*dff1(na,1))/rac2
+                    def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = fm(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = 0.d0
+                    def(4, na, ia) = (fm(ia, 1)*dff1(na, 2)+fm(ia, 2)*dff1(na, 1))/rac2
                 end do
             end do
 !
 ! - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
             if (axi) then
                 do na = 1, nno1
-                    def(3,na,1) = fm(3,3)*vff1(na,g)/r
+                    def(3, na, 1) = fm(3, 3)*vff1(na, g)/r
                 end do
-            endif
+            end if
         else
             do na = 1, nno1
                 do ia = 1, ndim
-                    def(1,na,ia)= fm(ia,1)*dff1(na,1)
-                    def(2,na,ia)= fm(ia,2)*dff1(na,2)
-                    def(3,na,ia)= fm(ia,3)*dff1(na,3)
-                    def(4,na,ia)=(fm(ia,1)*dff1(na,2)+fm(ia,2)*dff1(na,1))/rac2
-                    def(5,na,ia)=(fm(ia,1)*dff1(na,3)+fm(ia,3)*dff1(na,1))/rac2
-                    def(6,na,ia)=(fm(ia,2)*dff1(na,3)+fm(ia,3)*dff1(na,2))/rac2
+                    def(1, na, ia) = fm(ia, 1)*dff1(na, 1)
+                    def(2, na, ia) = fm(ia, 2)*dff1(na, 2)
+                    def(3, na, ia) = fm(ia, 3)*dff1(na, 3)
+                    def(4, na, ia) = (fm(ia, 1)*dff1(na, 2)+fm(ia, 2)*dff1(na, 1))/rac2
+                    def(5, na, ia) = (fm(ia, 1)*dff1(na, 3)+fm(ia, 3)*dff1(na, 1))/rac2
+                    def(6, na, ia) = (fm(ia, 2)*dff1(na, 3)+fm(ia, 3)*dff1(na, 2))/rac2
                 end do
             end do
-        endif
+        end if
 !
 ! - CALCUL DE TRACE(B)
         do na = 1, nno1
             do ia = 1, ndim
-                deftr(na,ia) = def(1,na,ia) + def(2,na,ia) + def(3,na, ia)
+                deftr(na, ia) = def(1, na, ia)+def(2, na, ia)+def(3, na, ia)
             end do
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor,&
+        call tanbul(option, ndim, g, mate, compor, &
                     .false._1, .true._1, alpha, dsidep, trepst)
-        dsidep(4,4) = dsidep(4,4) / 2.d0
+        dsidep(4, 4) = dsidep(4, 4)/2.d0
         if (ndim .eq. 3) then
-            dsidep(5,5) = dsidep(5,5) / 2.d0
-            dsidep(6,6) = dsidep(6,6) / 2.d0
-        endif
+            dsidep(5, 5) = dsidep(5, 5)/2.d0
+            dsidep(6, 6) = dsidep(6, 6)/2.d0
+        end if
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsidep,&
+            call calkbb(nno1, ndim, w, def, dsidep, &
                         kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm,&
+            call calkce(nno1, ndim, kbp, kbb, presm, &
                         presd, kce, rce)
         else
             call r8inir(nno2*nno2, 0.d0, kce, 1)
-        endif
-        devd(:,:) = 0.0d0
-        ddev(:,:) = 0.0d0
-        dddev(:,:) = 0.0d0
+        end if
+        devd(:, :) = 0.0d0
+        ddev(:, :) = 0.0d0
+        dddev(:, :) = 0.0d0
 !
         if (ndim .eq. 3) then
-            devd(1:6,1:6) = matmul(idev/3.d0,dsidep(1:6,1:6))
-            ddev(1:6,1:6) = matmul(dsidep(1:6,1:6),idev/3.d0)
-            dddev(1:6,1:6) = matmul(devd(1:6,1:6),idev/3.d0)
+            devd(1:6, 1:6) = matmul(idev/3.d0, dsidep(1:6, 1:6))
+            ddev(1:6, 1:6) = matmul(dsidep(1:6, 1:6), idev/3.d0)
+            dddev(1:6, 1:6) = matmul(devd(1:6, 1:6), idev/3.d0)
         else
-            devd(1:4,1:4) = matmul(idev2/3.d0,dsidep(1:4,1:4))
-            ddev(1:4,1:4) = matmul(dsidep(1:4,1:4),idev2/3.d0)
-            dddev(1:4,1:4) = matmul(devd(1:4,1:4),idev2/3.d0)
-        endif
+            devd(1:4, 1:4) = matmul(idev2/3.d0, dsidep(1:4, 1:4))
+            ddev(1:4, 1:4) = matmul(dsidep(1:4, 1:4), idev2/3.d0)
+            dddev(1:4, 1:4) = matmul(devd(1:4, 1:4), idev2/3.d0)
+        end if
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE
 ! - TERME K:UX
         do na = 1, nno1
             do ia = 1, ndim
-                vuiana = vu(ia,na)
+                vuiana = vu(ia, na)
                 os = (vuiana-1)*vuiana/2
 !
 ! - TERME K:UU      KUU(NDIM,NNO1,NDIM,NNO1)
                 do nb = 1, nno1
                     do ib = 1, ndim
-                        if (vu(ib,nb) .le. vuiana) then
-                            kk = os+vu(ib,nb)
+                        if (vu(ib, nb) .le. vuiana) then
+                            kk = os+vu(ib, nb)
                             t1 = 0.d0
                             do ja = 1, 2*ndim
                                 do jb = 1, 2*ndim
-                                    t1 = t1 + def(ja,na,ia)*dddev(ja, jb)*def(jb,nb,ib)
+                                    t1 = t1+def(ja, na, ia)*dddev(ja, jb)*def(jb, nb, ib)
                                 end do
                             end do
-                            matr(kk) = matr(kk) + w*t1
-                        endif
+                            matr(kk) = matr(kk)+w*t1
+                        end if
                     end do
                 end do
 !
 ! - TERME K:UP      KUP(NDIM,NNO1,NNO2)
                 do sb = 1, nno2
                     if (vp(sb) .lt. vuiana) then
-                        kk = os + vp(sb)
-                        t1 = deftr(na,ia)*vff2(sb,g)
-                        matr(kk) = matr(kk) + w*t1
-                    endif
+                        kk = os+vp(sb)
+                        t1 = deftr(na, ia)*vff2(sb, g)
+                        matr(kk) = matr(kk)+w*t1
+                    end if
                 end do
             end do
         end do
@@ -260,21 +260,21 @@ implicit none
 ! - TERME K:PU      KPU(NDIM,NNO2,NNO1)
             do nb = 1, nno1
                 do ib = 1, ndim
-                    if (vu(ib,nb) .lt. vpsa) then
-                        kk = os + vu(ib,nb)
-                        t1 = vff2(sa,g)*deftr(nb,ib)
-                        matr(kk) = matr(kk) + w*t1
-                    endif
+                    if (vu(ib, nb) .lt. vpsa) then
+                        kk = os+vu(ib, nb)
+                        t1 = vff2(sa, g)*deftr(nb, ib)
+                        matr(kk) = matr(kk)+w*t1
+                    end if
                 end do
             end do
 !
 ! - TERME K:PP      KPP(NNO2,NNO2)
             do sb = 1, nno2
                 if (vp(sb) .le. vpsa) then
-                    kk = os + vp(sb)
-                    t1 = - vff2(sa,g)*vff2(sb,g)*alpha
-                    matr(kk) = matr(kk) + w*t1 - kce(sa,sb)
-                endif
+                    kk = os+vp(sb)
+                    t1 = -vff2(sa, g)*vff2(sb, g)*alpha
+                    matr(kk) = matr(kk)+w*t1-kce(sa, sb)
+                end if
             end do
         end do
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine posddl(typesd  , resu, node_name, cmp_name, node_nume,&
+subroutine posddl(typesd, resu, node_name, cmp_name, node_nume, &
                   dof_nume)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -69,7 +69,7 @@ implicit none
         call dismoi('NOM_MAILLA', resu, 'CHAM_NO', repk=mesh)
     else
         ASSERT(.false.)
-    endif
+    end if
     call jenonu(jexnom(mesh//'.NOMNOE', node_name), node_nume)
 !
     if (node_nume .ne. 0) then
@@ -78,40 +78,40 @@ implicit none
 !
 ! ----- Create list of components to ssek
 !
-        AS_ALLOCATE(vk8=list_cmp, size = nbCmp)
+        AS_ALLOCATE(vk8=list_cmp, size=nbCmp)
         list_cmp(1) = cmp_name
 !
 ! ----- Create list of results
 !
-        AS_ALLOCATE(vi=tablCmp, size = nbCmp)
+        AS_ALLOCATE(vi=tablCmp, size=nbCmp)
 !
 ! ----- Create list of nodes
 !
         nbNode = 1
-        AS_ALLOCATE(vi=list_node, size = nbNode)
+        AS_ALLOCATE(vi=list_node, size=nbNode)
         list_node(1) = node_nume
 !
 ! ----- Find specific dof
 !
         if (typesd .eq. 'NUME_DDL') then
-            call select_dof(tablCmp_ = tablCmp, &
-                            numeDofZ_ = resu, &
-                            nbNodeToSelect_  = nbNode, listNodeToSelect_ = list_node,&
-                            nbCmpToSelect_   = nbCmp , listCmpToSelect_  = list_cmp)
+            call select_dof(tablCmp_=tablCmp, &
+                            numeDofZ_=resu, &
+                            nbNodeToSelect_=nbNode, listNodeToSelect_=list_node, &
+                            nbCmpToSelect_=nbCmp, listCmpToSelect_=list_cmp)
         else if (typesd .eq. 'CHAM_NO') then
-            call select_dof(tablCmp_    = tablCmp,&
-                            fieldNodeZ_ = resu,&
-                            nbNodeToSelect_ = nbNode, listNodeToSelect_ = list_node,&
-                            nbCmpToSelect_  = nbCmp , listCmpToSelect_  = list_cmp)
+            call select_dof(tablCmp_=tablCmp, &
+                            fieldNodeZ_=resu, &
+                            nbNodeToSelect_=nbNode, listNodeToSelect_=list_node, &
+                            nbCmpToSelect_=nbCmp, listCmpToSelect_=list_cmp)
         else
             ASSERT(.false.)
-        endif
+        end if
         dof_nume = tablCmp(1)
 !
         AS_DEALLOCATE(vi=tablCmp)
         AS_DEALLOCATE(vi=list_node)
         AS_DEALLOCATE(vk8=list_cmp)
 !
-    endif
+    end if
 
 end subroutine

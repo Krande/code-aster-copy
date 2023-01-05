@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,55 +39,55 @@ subroutine zerog2(x, y, z, i)
 !    TEST DES PRE-CONDITIONS
     if (y(1) .gt. 0 .or. y(2) .lt. 0) then
         call utmess('F', 'ELEMENTS4_61')
-    endif
+    end if
 !
     if (y(3) .lt. 0.d0) then
-        x(1)=x(3)
-        y(1)=y(3)
-        z(1)=z(3)
+        x(1) = x(3)
+        y(1) = y(3)
+        z(1) = z(3)
     else
-        x(2)=x(3)
-        y(2)=y(3)
-        z(2)=z(3)
-    endif
+        x(2) = x(3)
+        y(2) = y(3)
+        z(2) = z(3)
+    end if
 !
 !    CONSTRUCTION D'UN NOUVEL ESTIME
     if (x(1) .eq. x(2)) then
         call utmess('F', 'ALGORITH9_84')
-    endif
-    if (mod(i,2) .eq. 0) then
-        x0=x(1)
-        x1=x(2)
-        y0=y(1)
-        y1=y(2)
-        z0=z(1)
+    end if
+    if (mod(i, 2) .eq. 0) then
+        x0 = x(1)
+        x1 = x(2)
+        y0 = y(1)
+        y1 = y(2)
+        z0 = z(1)
     else
-        x0=x(2)
-        x1=x(1)
-        y0=y(2)
-        y1=y(1)
-        z0=z(2)
-    endif
-    a=(y1-y0-z0*(x1-x0))/(x1-x0)**2
-    b=z0-2*a*x0
-    c=y0+a*x0**2-z0*x0
+        x0 = x(2)
+        x1 = x(1)
+        y0 = y(2)
+        y1 = y(1)
+        z0 = z(2)
+    end if
+    a = (y1-y0-z0*(x1-x0))/(x1-x0)**2
+    b = z0-2*a*x0
+    c = y0+a*x0**2-z0*x0
 !
     if (a .ne. 0.d0) then
         call zerop2(b/a, c/a, rac, nrac)
     else
         if (b .ne. 0.d0) then
-            x(3)=-c/b
+            x(3) = -c/b
             goto 9999
         else
             call utmess('F', 'ALGORITH9_84')
-        endif
-    endif
+        end if
+    end if
 !
     if (((x(1)-rac(1))*(x(2)-rac(1))) .lt. 0.d0) then
-        x(3)=rac(1)
+        x(3) = rac(1)
     else
-        x(3)=rac(2)
-    endif
+        x(3) = rac(2)
+    end if
 !
-9999  continue
+9999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
+subroutine tbexfo(nomta, parax, paray, nomfo, interp, &
                   prolgd, basfon)
     implicit none
 #include "jeveux.h"
@@ -60,24 +60,24 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    ASSERT(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base .eq. 'V' .or. base .eq. 'G')
 !
 !     --- VERIFICATION DE LA TABLE ---
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI4_64')
-    endif
+    end if
 !
     call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
     nbpara = tbnp(1)
     nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
-    endif
+    end if
     if (nblign .eq. 0) then
         call utmess('F', 'UTILITAI4_76')
-    endif
+    end if
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
@@ -89,7 +89,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     end do
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
- 12 continue
+12  continue
     inpar = paray
     do ipary = 1, nbpara
         jnpar = tblp(1+4*(ipary-1))
@@ -97,7 +97,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     end do
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
- 16 continue
+16  continue
 !
     typex = tblp(1+4*(iparx-1)+1)
     nojvx = tblp(1+4*(iparx-1)+2)
@@ -107,11 +107,11 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     nojvly = tblp(1+4*(ipary-1)+3)
 !
     if (typex .ne. typey) then
-        if ((typex(1:1).eq.'I' .and. ((typey(1:1).eq.'R').or.(typey(1:1).eq.'C'))) .or.&
-            (typex(1:1).eq.'R' .and. ((typey(1:1).eq.'I').or.(typey(1:1).eq.'C')))) goto 17
+        if ((typex(1:1) .eq. 'I' .and. ((typey(1:1) .eq. 'R') .or. (typey(1:1) .eq. 'C'))) .or. &
+            (typex(1:1) .eq. 'R' .and. ((typey(1:1) .eq. 'I') .or. (typey(1:1) .eq. 'C')))) goto 17
         call utmess('F', 'UTILITAI4_77')
-    endif
- 17 continue
+    end if
+17  continue
 !
     call jeveuo(nojvx, 'L', jvalex)
     call jeveuo(nojvy, 'L', jvaley)
@@ -119,15 +119,15 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     call jeveuo(nojvly, 'L', jvally)
     nbval = 0
     do i = 1, nblign
-        if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) nbval = nbval + 1
+        if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) nbval = nbval+1
     end do
 !
 !     VERIF QU'ON A TROUVE QUELQUE CHOSE
     if (nbval .eq. 0) then
         call utmess('F', 'UTILITAI4_78')
-    endif
+    end if
 !
-    ASSERT(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon) .le. 24)
     call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
     zk24(lpro) = 'FONCTION'
     zk24(lpro+1) = interp
@@ -137,7 +137,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     zk24(lpro+5) = nomfon
 !
     nbfon = nbval
-    nbval = 2 * nbval
+    nbval = 2*nbval
 !
     iv = 0
     if (typex(1:1) .eq. 'I') then
@@ -146,32 +146,32 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
             call wkvect(nomfon//'.VALE', base//' V R', nbval, kvale)
             do i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                    iv = iv + 1
+                    iv = iv+1
                     zr(kvale+iv-1) = zi(jvalex+i-1)*1.d0
                     zr(kvale+nbfon+iv-1) = zr(jvaley+i-1)
-                endif
+                end if
             end do
         else if (typey(1:1) .eq. 'C') then
             zk24(lpro) = 'FONCT_C'
             call wkvect(nomfon//'.VALE', base//' V R', nbfon*3, kvale)
             do i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                    iv = iv + 1
+                    iv = iv+1
                     zr(kvale+iv-1) = zi(jvalex+i-1)*1.d0
                     zr(kvale+nbfon+iv-1) = dble(zc(jvaley+i-1))
                     zr(kvale+2*nbfon+iv-1) = dimag(zc(jvaley+i-1))
-                endif
+                end if
             end do
         else if (typey(1:1) .eq. 'I') then
             call wkvect(nomfon//'.VALE', base//' V I', nbval, kvale)
             do i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                    iv = iv + 1
+                    iv = iv+1
                     zi(kvale+iv-1) = zi(jvalex+i-1)
                     zi(kvale+nbfon+iv-1) = zi(jvaley+i-1)
-                endif
+                end if
             end do
-        endif
+        end if
 !
     else if (typex(1:1) .eq. 'R') then
 !
@@ -179,89 +179,89 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
             call wkvect(nomfon//'.VALE', base//' V R', nbval, kvale)
             do i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                    iv = iv + 1
+                    iv = iv+1
                     zr(kvale+iv-1) = zr(jvalex+i-1)
                     zr(kvale+nbfon+iv-1) = zi(jvaley+i-1)*1.d0
-                endif
+                end if
             end do
         else if (typey(1:1) .eq. 'C') then
             zk24(lpro) = 'FONCT_C'
             call wkvect(nomfon//'.VALE', base//' V R', 3*nbfon, kvale)
             do i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                    iv = iv + 1
+                    iv = iv+1
                     zr(kvale+iv-1) = zr(jvalex+i-1)
                     zr(kvale+nbfon+iv-1) = dble(zc(jvaley+i-1))
                     zr(kvale+2*nbfon+iv-1) = dimag(zc(jvaley+i-1))
 !
-                endif
+                end if
             end do
         else if (typey(1:1) .eq. 'R') then
             call wkvect(nomfon//'.VALE', base//' V R', nbval, kvale)
             do i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                    iv = iv + 1
+                    iv = iv+1
                     zr(kvale+iv-1) = zr(jvalex+i-1)
                     zr(kvale+nbfon+iv-1) = zr(jvaley+i-1)
-                endif
+                end if
             end do
-        endif
+        end if
 !
     else if (typex(1:1) .eq. 'C') then
         call wkvect(nomfon//'.VALE', base//' V C', nbval, kvale)
         do i = 1, nblign
             if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zc(kvale+iv-1) = zc(jvalex+i-1)
                 zc(kvale+nbfon+iv-1) = zc(jvaley+i-1)
-            endif
+            end if
         end do
     else if (typex(1:3) .eq. 'K80') then
         call wkvect(nomfon//'.VALE', base//' V K80', nbval, kvale)
         do i = 1, nblign
             if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk80(kvale+iv-1) = zk80(jvalex+i-1)
                 zk80(kvale+nbfon+iv-1) = zk80(jvaley+i-1)
-            endif
+            end if
         end do
     else if (typex(1:3) .eq. 'K32') then
         call wkvect(nomfon//'.VALE', base//' V K32', nbval, kvale)
         do i = 1, nblign
             if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk32(kvale+iv-1) = zk32(jvalex+i-1)
                 zk32(kvale+nbfon+iv-1) = zk32(jvaley+i-1)
-            endif
+            end if
         end do
     else if (typex(1:3) .eq. 'K24') then
         call wkvect(nomfon//'.VALE', base//' V K24', nbval, kvale)
         do i = 1, nblign
             if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk24(kvale+iv-1) = zk24(jvalex+i-1)
                 zk24(kvale+nbfon+iv-1) = zk24(jvaley+i-1)
-            endif
+            end if
         end do
     else if (typex(1:3) .eq. 'K16') then
         call wkvect(nomfon//'.VALE', base//' V ZK16', nbval, kvale)
         do i = 1, nblign
             if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk16(kvale+iv-1) = zk16(jvalex+i-1)
                 zk16(kvale+nbfon+iv-1) = zk16(jvaley+i-1)
-            endif
+            end if
         end do
     else if (typex(1:2) .eq. 'K8') then
         call wkvect(nomfon//'.VALE', base//' V ZK8', nbval, kvale)
         do i = 1, nblign
             if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
-                iv = iv + 1
+                iv = iv+1
                 zk8(kvale+iv-1) = zk8(jvalex+i-1)
                 zk8(kvale+nbfon+iv-1) = zk8(jvaley+i-1)
-            endif
+            end if
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

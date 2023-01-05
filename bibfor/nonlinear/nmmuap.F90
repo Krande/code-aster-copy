@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine nmmuap(sddyna)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/ndynkk.h"
 #include "asterfort/wkvect.h"
 !
-character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: sddyna
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ character(len=19), intent(in) :: sddyna
 ! - Access to dynamic datastructure
 !
     dynaNOSD = sddyna(1:15)//'.NOM_SD'
-    call jeveuo(dynaNOSD, 'E', vk24 = vDynaNOSD)
+    call jeveuo(dynaNOSD, 'E', vk24=vDynaNOSD)
 !
 ! - Get modes
 !
@@ -76,7 +76,7 @@ character(len=19), intent(in) :: sddyna
 !
 ! - LECTURE EFFORTS MULTI-APPUIS
 !
-    nbexci = ndynin(sddyna,'NBRE_EXCIT')
+    nbexci = ndynin(sddyna, 'NBRE_EXCIT')
     call ndynkk(sddyna, 'MUAP_MAFDEP', mafdep)
     call ndynkk(sddyna, 'MUAP_MAFVIT', mafvit)
     call ndynkk(sddyna, 'MUAP_MAFACC', mafacc)
@@ -98,16 +98,16 @@ character(len=19), intent(in) :: sddyna
             call getvid('EXCIT', 'ACCE', iocc=iExci, scal=k8bid, nbret=na)
             if (na .ne. 0) then
                 call getvid('EXCIT', 'ACCE', iocc=iExci, scal=zk8(jnoacc+iExci-1), nbret=na)
-            endif
+            end if
             call getvid('EXCIT', 'FONC_MULT', iocc=iExci, scal=k8bid, nbret=nf)
             if (nf .ne. 0) then
-                call getvid('EXCIT', 'FONC_MULT', iocc=iExci, scal=zk8(jnoacc+iExci- 1), nbret=nf)
-            endif
+                call getvid('EXCIT', 'FONC_MULT', iocc=iExci, scal=zk8(jnoacc+iExci-1), nbret=nf)
+            end if
 ! --------- Get speeds
             call getvid('EXCIT', 'VITE', iocc=iExci, scal=zk8(jnovit+iExci-1), nbret=nv)
 ! --------- Get displacements
             call getvid('EXCIT', 'DEPL', iocc=iExci, scal=zk8(jnodep+iExci-1), nbret=nd)
-        endif
+        end if
     end do
 !
     call jedema()

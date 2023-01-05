@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine dxefgt(pgl, sigt)
     real(kind=8) :: coe1, coe2, epais, tref
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
-                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, jpoids=ipoids, &
+                     jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, jgano=jgano)
 !
     call r8inir(32, 0.d0, sigt, 1)
 !
@@ -83,9 +83,9 @@ subroutine dxefgt(pgl, sigt)
     if (indith .ne. -1) then
 !
         call jevech('PNBSP_I', 'L', jcou)
-        nbcou=zi(jcou)
-        ipg=(3*nbcou+1)/2
-        npgh=3
+        nbcou = zi(jcou)
+        ipg = (3*nbcou+1)/2
+        npgh = 3
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !     -----------------------------------
@@ -109,17 +109,17 @@ subroutine dxefgt(pgl, sigt)
 !  --      CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
 !  --      SONT LES RESULTATS DE LA ROUTINE DXMATH.
 !          ----------------------------------------
-                    coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0 - tref
+                    coe1 = (tsuppg+tinfpg+4.d0*tmoypg)/6.d0-tref
                     coe2 = (tsuppg-tinfpg)/epais
 !
-                    sigt(1+8* (igau-1)) = coe1* ( dm(1,1)+dm(1,2)) + coe2* (dmf(1,1)+dmf(1,2) )
-                    sigt(2+8* (igau-1)) = coe1* ( dm(2,1)+dm(2,2)) + coe2* (dmf(2,1)+dmf(2,2) )
-                    sigt(3+8* (igau-1)) = coe1* ( dm(3,1)+dm(3,2)) + coe2* (dmf(3,1)+dmf(3,2) )
-                    sigt(4+8* (igau-1)) = coe2* ( df(1,1)+df(1,2)) + coe1* (dmf(1,1)+dmf(1,2) )
-                    sigt(5+8* (igau-1)) = coe2* ( df(2,1)+df(2,2)) + coe1* (dmf(2,1)+dmf(2,2) )
-                    sigt(6+8* (igau-1)) = coe2* ( df(3,1)+df(3,2)) + coe1* (dmf(3,1)+dmf(3,2) )
-                endif
-            endif
+                    sigt(1+8*(igau-1)) = coe1*(dm(1, 1)+dm(1, 2))+coe2*(dmf(1, 1)+dmf(1, 2))
+                    sigt(2+8*(igau-1)) = coe1*(dm(2, 1)+dm(2, 2))+coe2*(dmf(2, 1)+dmf(2, 2))
+                    sigt(3+8*(igau-1)) = coe1*(dm(3, 1)+dm(3, 2))+coe2*(dmf(3, 1)+dmf(3, 2))
+                    sigt(4+8*(igau-1)) = coe2*(df(1, 1)+df(1, 2))+coe1*(dmf(1, 1)+dmf(1, 2))
+                    sigt(5+8*(igau-1)) = coe2*(df(2, 1)+df(2, 2))+coe1*(dmf(2, 1)+dmf(2, 2))
+                    sigt(6+8*(igau-1)) = coe2*(df(3, 1)+df(3, 2))+coe1*(dmf(3, 1)+dmf(3, 2))
+                end if
+            end if
         end do
-    endif
+    end if
 end subroutine

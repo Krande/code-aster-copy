@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm,&
-                  numenm, lmait, lescl, lmfixe, lefixe,&
-                  tau1m, tau2m, tau1e, tau2e, tau1,&
+subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
+                  numenm, lmait, lescl, lmfixe, lefixe, &
+                  tau1m, tau2m, tau1e, tau2e, tau1, &
                   tau2)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -96,11 +96,11 @@ implicit none
 !
     if (typenm .eq. 'MAIL') then
         call jenuno(jexnum(noma//'.NOMMAI', numenm), nomenm)
-    else if (typenm.eq.'NOEU') then
+    else if (typenm .eq. 'NOEU') then
         call jenuno(jexnum(noma//'.NOMNOE', numenm), nomenm)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- NOM DU NOEUD ESCLAVE
 !
@@ -108,7 +108,7 @@ implicit none
         nomnoe = 'PT CONT.'
     else
         call cfnomm(noma, ds_contact%sdcont_defi, 'NOEU', posnoe, nomnoe)
-    endif
+    end if
     valk(1) = nomnoe
     valk(2) = nomenm
 !
@@ -118,8 +118,8 @@ implicit none
         call cfnorm(ndimg, tau1e, tau2e, enorm, noor)
         if (noor .le. r8prem()) then
             call utmess('F', 'CONTACT3_26', sk=nomnoe)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- NORMALE A LA MAILLE MAITRE: INTERIEURE
 !
@@ -128,52 +128,52 @@ implicit none
         if (noor .le. r8prem()) then
             if (typenm .eq. 'MAIL') then
                 call utmess('F', 'CONTACT3_27', sk=nomenm)
-            else if (typenm.eq.'NOEU') then
+            else if (typenm .eq. 'NOEU') then
                 call utmess('F', 'CONTACT3_26', sk=nomenm)
             else
                 ASSERT(.false.)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- CALCUL DE LA NORMALE
 !
-    if (lmait .and. (.not.lescl)) then
+    if (lmait .and. (.not. lescl)) then
         call dcopy(3, mnorm, 1, norm, 1)
-    else if (lmait.and.lescl) then
+    else if (lmait .and. lescl) then
         do i = 1, 3
-            norm(i) = (enorm(i) + mnorm(i))/2.d0
+            norm(i) = (enorm(i)+mnorm(i))/2.d0
         end do
     else if (lescl) then
         call dcopy(3, enorm, 1, norm, 1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- RECOPIE DES TANGENTES SI NORMALE FIXE
 !
     if (lmfixe) then
-        if (lmait .and. (.not.lescl)) then
+        if (lmait .and. (.not. lescl)) then
             call dcopy(3, tau1m, 1, tau1, 1)
             call dcopy(3, tau2m, 1, tau2, 1)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
     if (lefixe) then
-        if (lescl .and. (.not.lmait)) then
+        if (lescl .and. (.not. lmait)) then
             call dcopy(3, tau1e, 1, tau2, 1)
             call dcopy(3, tau2e, 1, tau1, 1)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RE-CALCUL DES TANGENTES SI NORMALE AUTO
 !
-    if ((.not.lmfixe) .and. (.not.lefixe)) then
+    if ((.not. lmfixe) .and. (.not. lefixe)) then
         call mmmron(ndimg, norm, tau1, tau2)
-    endif
+    end if
 !
 ! --- NORMALISATION DES TANGENTES
 !
@@ -181,11 +181,11 @@ implicit none
     if (niverr .eq. 1) then
         if (typenm .eq. 'MAIL') then
             call utmess('F', 'CONTACT3_31', nk=2, valk=valk)
-        else if (typenm.eq.'NOEU') then
+        else if (typenm .eq. 'NOEU') then
             call utmess('F', 'CONTACT3_35', nk=2, valk=valk)
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

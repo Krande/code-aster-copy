@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
-                  ncmprf, ncmpve, ntlcmp, nbvato, nbenec,&
-                  lienec, adsd, adsl, nomaas, modele,&
-                  typgeo, nomtyp, ntproa, chanom, sdcarm,&
+subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
+                  ncmprf, ncmpve, ntlcmp, nbvato, nbenec, &
+                  lienec, adsd, adsl, nomaas, modele, &
+                  typgeo, nomtyp, ntproa, chanom, sdcarm, &
                   field_type, nosdfu)
 !_______________________________________________________________________
 !     ECRITURE D'UN CHAMP -  FORMAT MED - CREATION DU PROFIL
@@ -98,14 +98,14 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     character(len=8) :: nomtyp(*), nosdfu
     character(len=19) :: chanom
     character(len=24) :: ncaimi, ncaimk
-character(len=16), intent(in) :: field_type
+    character(len=16), intent(in) :: field_type
 !
 ! 0.2. ==> COMMUNS
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'IRCMPR' )
+    parameter(nompro='IRCMPR')
 !
     integer :: ifm, nivinf, i, j, jco
     integer :: iaux, ima, nbno, nbma
@@ -136,10 +136,10 @@ character(len=16), intent(in) :: field_type
 !
     if (nivinf .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,101) 'DEBUT DE '//nompro
+        write (ifm, 101) 'DEBUT DE '//nompro
         call utflsh(codret)
-    endif
-    101 format(/,4x,10('='),a,10('='),/)
+    end if
+101 format(/, 4x, 10('='), a, 10('='),/)
 !
 !               12   345678   9012345678901234
     ntprom = '&&'//nompro//'.PROFIL_MED     '
@@ -178,51 +178,51 @@ character(len=16), intent(in) :: field_type
         call dismoi('NB_MA_MAILLA', nomaas, 'MAILLAGE', repi=nbma)
         AS_ALLOCATE(vi=noeu_centr, size=nbno)
         do i = 1, nbno
-            noeu_centr(i)=0
+            noeu_centr(i) = 0
         end do
 !
         do i = 1, nbma
             if (dtyp(i) .eq. MT_TETRA15) then
-                jco=iadcnx+zi(ilcnx+i-1)-1
+                jco = iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 5
-                    noeu_centr(1+zi(jco+10+j-1)-1)=1
+                    noeu_centr(1+zi(jco+10+j-1)-1) = 1
                 end do
             elseif (dtyp(i) .eq. MT_PYRAM19) then
-                jco=iadcnx+zi(ilcnx+i-1)-1
+                jco = iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 6
-                    noeu_centr(1+zi(jco+13+j-1)-1)=1
+                    noeu_centr(1+zi(jco+13+j-1)-1) = 1
                 end do
             elseif (dtyp(i) .eq. MT_PENTA21) then
-                jco=iadcnx+zi(ilcnx+i-1)-1
+                jco = iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 3
-                    noeu_centr(1+zi(jco+18+j-1)-1)=1
+                    noeu_centr(1+zi(jco+18+j-1)-1) = 1
                 end do
-            endif
+            end if
         end do
 !
 ! 1.3.2. ==> COMPLEMENTS POUR DES CHAMPS AUX ELEMENTS
 !
-    else if (typech(1:2).eq.'EL') then
+    else if (typech(1:2) .eq. 'EL') then
 !
         call jeveuo(nomaas//'.TYPMAIL', 'L', vi=nadtypm)
         call jelira(nomaas//'.TYPMAIL', 'LONMAX', nbmail)
         call wkvect('&&IRCMPR.TYPMA', 'V V I', nbmail, adtyp2)
         do ima = 1, nbmail
             if (nadtypm(ima) .eq. MT_TETRA15) then
-                zi(adtyp2+ima-1)=MT_TETRA10
+                zi(adtyp2+ima-1) = MT_TETRA10
             elseif (nadtypm(ima) .eq. MT_PYRAM19) then
-                zi(adtyp2+ima-1)=MT_PYRAM13
+                zi(adtyp2+ima-1) = MT_PYRAM13
             elseif (nadtypm(ima) .eq. MT_PENTA21) then
-                zi(adtyp2+ima-1)=MT_PENTA18
+                zi(adtyp2+ima-1) = MT_PENTA18
             elseif (nadtypm(ima) .eq. MT_HEXA9) then
-                zi(adtyp2+ima-1)=MT_HEXA8
+                zi(adtyp2+ima-1) = MT_HEXA8
             else
-                zi(adtyp2+ima-1)=nadtypm(ima)
-            endif
+                zi(adtyp2+ima-1) = nadtypm(ima)
+            end if
         end do
         if (typech(1:4) .eq. 'ELGA') then
             call jeveuo(modele//'.MAILLE', 'L', adefma)
-        endif
+        end if
         call wkvect(ntpror, 'V V I', nbvato, adpror)
         call wkvect(ntauxi, 'V V I', nbvato, adauxi)
 !
@@ -232,7 +232,7 @@ character(len=16), intent(in) :: field_type
 !
         call utmess('F', 'MED_46', sk=typech)
 !
-    endif
+    end if
 !
 !====
 ! 2. APPELS DES PROGRAMMES SPECIFIQUES
@@ -242,10 +242,10 @@ character(len=16), intent(in) :: field_type
 !
 ! 2.1. ==> LES NOEUDS
 !
-        call ircmpn(nofimd, ncmprf, ncmpve, zi(adnucm), zl(adexic),&
-                    nbvato, nbenec, lienec, adsl, zi(adcaii),&
+        call ircmpn(nofimd, ncmprf, ncmpve, zi(adnucm), zl(adexic), &
+                    nbvato, nbenec, lienec, adsl, zi(adcaii), &
                     caimpk, zi(adproa), noeu_centr, nosdfu)
-        zk80(adcaik:adcaik+2)=caimpk(1:3)
+        zk80(adcaik:adcaik+2) = caimpk(1:3)
 !
     else
 !
@@ -255,15 +255,15 @@ character(len=16), intent(in) :: field_type
             iaux = adefma
         else
             iaux = adtyp2
-        endif
+        end if
 !
-        call ircmpe(nofimd, ncmpve, zi(adnucm), zl(adexic), nbvato,&
-                    nbenec, lienec, adsd, adsl, nbimpr,&
-                    ncaimi, ncaimk, zi(iaux), zi(adtyp2), typgeo,&
-                    nomtyp, typech, zi(adproa), zi(adprom), zi(adpror),&
+        call ircmpe(nofimd, ncmpve, zi(adnucm), zl(adexic), nbvato, &
+                    nbenec, lienec, adsd, adsl, nbimpr, &
+                    ncaimi, ncaimk, zi(iaux), zi(adtyp2), typgeo, &
+                    nomtyp, typech, zi(adproa), zi(adprom), zi(adpror), &
                     zi(adauxi), chanom, sdcarm, field_type, nosdfu)
 !
-    endif
+    end if
 !
 !====
 ! 3. LA FIN
@@ -279,8 +279,8 @@ character(len=16), intent(in) :: field_type
 !
     if (nivinf .gt. 1) then
         call cpu_time(end_time)
-        write (ifm,*) '    ==========FIN DE '//nompro, " EN ", &
-            end_time - start_time, " sec=========="
-    endif
+        write (ifm, *) '    ==========FIN DE '//nompro, " EN ", &
+            end_time-start_time, " sec=========="
+    end if
 !
 end subroutine

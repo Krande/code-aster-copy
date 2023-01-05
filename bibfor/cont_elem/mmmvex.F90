@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 !
 subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/isdeco.h"
 !
-integer, intent(in) :: nnl, nbcps, ndexfr
-real(kind=8), intent(inout) :: vectff(18)
+    integer, intent(in) :: nnl, nbcps, ndexfr
+    real(kind=8), intent(inout) :: vectff(18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,21 +46,21 @@ real(kind=8), intent(inout) :: vectff(18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbcpf = nbcps - 1
+    nbcpf = nbcps-1
 !
     if (ndexfr .ne. 0) then
         call isdeco([ndexfr], ndexcl, 10)
         do i = 1, nnl
             if (ndexcl(i) .eq. 1) then
                 do l = 1, nbcpf
-                    if ((l.eq.2) .and. (ndexcl(10).eq.0)) then
+                    if ((l .eq. 2) .and. (ndexcl(10) .eq. 0)) then
                         cycle
-                    endif
+                    end if
                     ii = (i-1)*nbcpf+l
                     vectff(ii) = 0.d0
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

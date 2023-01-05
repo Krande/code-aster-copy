@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
-                     profil, pflmod, typent, typgeo, numdt,&
+subroutine as_mfdrpr(fid, cha, val, intlac, numco, &
+                     profil, pflmod, typent, typgeo, numdt, &
                      numo, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -48,13 +48,13 @@ subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
     numdt4 = numdt
     numo4 = numo
     pflmo4 = pflmod
-    call mfdrpr(fidm, cha, numdt4, numo4, typen4,&
-                typge4, pflmo4, profil, intla4, numco4,&
+    call mfdrpr(fidm, cha, numdt4, numo4, typen4, &
+                typge4, pflmo4, profil, intla4, numco4, &
                 val, cret4)
     cret = cret4
 #else
-    call mfdrpr(fid, cha, numdt, numo, typent,&
-                typgeo, pflmod, profil, intlac, numco,&
+    call mfdrpr(fid, cha, numdt, numo, typent, &
+                typgeo, pflmod, profil, intlac, numco, &
                 val, cret)
 #endif
 !

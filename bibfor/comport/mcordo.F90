@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, &
 !     aster_logical :: epflag
     aster_logical :: lorder
 !
-    parameter (   mdim=3     ,ndim=6     )
+    parameter(mdim=3, ndim=6)
 !
 ! Declaration of vector and matrix type variables
     integer :: iorder(mdim)
@@ -68,102 +68,102 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, &
     real(kind=8) :: r3, r4, small, tol, dmax1, pstmin, pstmax
 !
 !
-    data  r0    ,r1    ,r2    ,r3    ,r4    ,small ,tol   /&
-     &    0.0d0 ,1.0d0 ,2.0d0 ,3.0d0 ,4.0d0 ,1.d-06,1.d-10/
+    data r0, r1, r2, r3, r4, small, tol/&
+     &    0.0d0, 1.0d0, 2.0d0, 3.0d0, 4.0d0, 1.d-06, 1.d-10/
 !
 ! Declaration of Common space variables
 !     common / debug / epflag
 !
-    lorder=.false.
-    pst1=pstra(1)
-    pst2=pstra(2)
-    pst3=pstra(3)
-    refe=dmax1(abs(pst1),abs(pst2),abs(pst3))*small
+    lorder = .false.
+    pst1 = pstra(1)
+    pst2 = pstra(2)
+    pst3 = pstra(3)
+    refe = dmax1(abs(pst1), abs(pst2), abs(pst3))*small
 ! Re-ordering principal components if two repeated eigenvalues
 ! such that x1!=x2=x3
     if (abs(pst1-pst3) .lt. refe) then
-        iorder(1)=2
-        iorder(2)=1
-        iorder(3)=3
-        lorder=.true.
-        edge=r1
-        apex=r0
-    endif
-    if (abs(pst1-pst2) .lt. refe .and. .not.lorder) then
-        iorder(1)=3
-        iorder(2)=1
-        iorder(3)=2
-        lorder=.true.
-        edge=r1
-        apex=r0
-    else if (abs(pst2-pst3).lt.refe .and. .not.lorder) then
-        lorder=.false.
-        edge=r1
-        apex=r0
-        elseif(abs(pst2-pst3).lt.refe .and. abs(pst1-pst2).lt.refe .and.&
-    lorder)then
-        lorder=.false.
-        edge=r0
-        apex=r1
-    else if (.not.lorder) then
-        iorder(1)=1
-        iorder(3)=1
-        pstmax=pst1
-        pstmin=pst1
+        iorder(1) = 2
+        iorder(2) = 1
+        iorder(3) = 3
+        lorder = .true.
+        edge = r1
+        apex = r0
+    end if
+    if (abs(pst1-pst2) .lt. refe .and. .not. lorder) then
+        iorder(1) = 3
+        iorder(2) = 1
+        iorder(3) = 2
+        lorder = .true.
+        edge = r1
+        apex = r0
+    else if (abs(pst2-pst3) .lt. refe .and. .not. lorder) then
+        lorder = .false.
+        edge = r1
+        apex = r0
+    elseif (abs(pst2-pst3) .lt. refe .and. abs(pst1-pst2) .lt. refe .and. &
+            lorder) then
+        lorder = .false.
+        edge = r0
+        apex = r1
+    else if (.not. lorder) then
+        iorder(1) = 1
+        iorder(3) = 1
+        pstmax = pst1
+        pstmin = pst1
         do i = 2, 3
             if (pstra(i) .ge. pstmax) then
-                iorder(1)=i
-                pstmax=pstra(i)
-            endif
+                iorder(1) = i
+                pstmax = pstra(i)
+            end if
             if (pstra(i) .lt. pstmin) then
-                iorder(3)=i
-                pstmin=pstra(i)
-            endif
+                iorder(3) = i
+                pstmin = pstra(i)
+            end if
         end do
-        if (iorder(1) .ne. 1 .and. iorder(3) .ne. 1) iorder(2)=1
-        if (iorder(1) .ne. 2 .and. iorder(3) .ne. 2) iorder(2)=2
-        if (iorder(1) .ne. 3 .and. iorder(3) .ne. 3) iorder(2)=3
-        if (iorder(1) .ne. 1 .or. iorder(2) .ne. 2 .or. iorder(3) .ne. 3) lorder=.true.
-        edge=r0
-        apex=r0
+        if (iorder(1) .ne. 1 .and. iorder(3) .ne. 1) iorder(2) = 1
+        if (iorder(1) .ne. 2 .and. iorder(3) .ne. 2) iorder(2) = 2
+        if (iorder(1) .ne. 3 .and. iorder(3) .ne. 3) iorder(2) = 3
+        if (iorder(1) .ne. 1 .or. iorder(2) .ne. 2 .or. iorder(3) .ne. 3) lorder = .true.
+        edge = r0
+        apex = r0
     else
-        codret=1
+        codret = 1
         goto 999
-    endif
+    end if
 !
 !
 ! Re-order PSTRA and DPRSTS
     if (lorder) then
 !
         do i = 1, mdim
-            vbidon(i)=pstra(iorder(i))
+            vbidon(i) = pstra(iorder(i))
             do j = 1, mdim
-                tbidon(i,j)=dpstrs(iorder(i),iorder(j))
+                tbidon(i, j) = dpstrs(iorder(i), iorder(j))
             end do
         end do
 !
         do i = 1, mdim
-            pstra(i)=vbidon(i)
+            pstra(i) = vbidon(i)
             do j = 1, mdim
-                dpstrs(i,j)=tbidon(i,j)
+                dpstrs(i, j) = tbidon(i, j)
             end do
         end do
 !
 ! Re-order PSTRS and DIRPRJ
         do i = 1, mdim
-            vbidon(i)=pstrs(iorder(i))
+            vbidon(i) = pstrs(iorder(i))
             do j = 1, mdim
-                tbidon(j,i)=dirprj(j,iorder(i))
+                tbidon(j, i) = dirprj(j, iorder(i))
             end do
         end do
 !
         do i = 1, mdim
-            pstrs(i)=vbidon(i)
+            pstrs(i) = vbidon(i)
             do j = 1, mdim
-                dirprj(j,i)=tbidon(j,i)
+                dirprj(j, i) = tbidon(j, i)
             end do
         end do
 !
-    endif
+    end if
 999 continue
 end subroutine

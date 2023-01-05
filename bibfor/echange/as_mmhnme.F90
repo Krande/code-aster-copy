@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
+subroutine as_mmhnme(fid, maa, quoi, typent, typgeo, &
                      typcon, n, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -47,16 +47,16 @@ subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
     quoi4 = quoi
     mdnon4 = mdnont
     mdnoi4 = mdnoit
-    call mmhnme(fidm, maa, mdnon4, mdnoi4, typen4,&
-                typge4, quoi4, typco4, chtse4, chttr4,&
+    call mmhnme(fidm, maa, mdnon4, mdnoi4, typen4, &
+                typge4, quoi4, typco4, chtse4, chttr4, &
                 n4, cret4)
     n = n4
     cret = cret4
 #else
     mdnont = -1
     mdnoit = -1
-    call mmhnme(fid, maa, mdnont, mdnoit, typent,&
-                typgeo, quoi, typcon, chtseq, chttra,&
+    call mmhnme(fid, maa, mdnont, mdnoit, typent, &
+                typgeo, quoi, typcon, chtseq, chttra, &
                 n, cret)
 #endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
+subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
                   chou)
     implicit none
 #include "asterf_types.h"
@@ -105,12 +105,12 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
     if (ma .eq. ' ') then
         call utmess('F', 'UTILITAI_27')
-    endif
+    end if
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
         call utmess('F', 'CALCULEL_67', sk=nomgd)
-    endif
+    end if
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
 !
     if (tychr(1:2) .eq. 'EL') then
@@ -135,7 +135,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         cesmod = ' '
         modele = ' '
         ncmpdisp = 0
-    endif
+    end if
 !
 !
 !     2- BOUCLE DE VERIF SUR LES OCCURENCES DU MOT CLE "ASSE" :
@@ -154,43 +154,43 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych2)
         call dismoi('NOM_MAILLA', champ, 'CHAMP', repk=ma2)
         if (ma .ne. ma2) then
-            valk(1)=champ
-            valk(2)=ma2
-            valk(3)=ma
+            valk(1) = champ
+            valk(2) = ma2
+            valk(3) = ma
             call utmess('F', 'CALCULEL2_17', nk=3, valk=valk)
-        endif
+        end if
 !
 !
-        valk(1)=champ
-        valk(2)=tychr
+        valk(1) = champ
+        valk(2) = tychr
         if (tychr .eq. 'NOEU') then
             if (tych2 .ne. 'NOEU') then
                 call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
-            endif
+            end if
 !
-        else if (tychr.eq.'ELGA') then
-            if ((tych2.ne.'CART') .and. (tych2.ne.'ELEM') .and. (tych2.ne.'ELGA')) then
+        else if (tychr .eq. 'ELGA') then
+            if ((tych2 .ne. 'CART') .and. (tych2 .ne. 'ELEM') .and. (tych2 .ne. 'ELGA')) then
                 call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
-            endif
+            end if
 !
-        else if (tychr.eq.'ELNO') then
-            if ((tych2.ne.'CART') .and. (tych2.ne. 'ELNO')) then
+        else if (tychr .eq. 'ELNO') then
+            if ((tych2 .ne. 'CART') .and. (tych2 .ne. 'ELNO')) then
                 call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
-            endif
+            end if
 !
-        else if (tychr.eq.'ELEM') then
-            if ((tych2.ne.'CART') .and. (tych2.ne. 'ELEM')) then
+        else if (tychr .eq. 'ELEM') then
+            if ((tych2 .ne. 'CART') .and. (tych2 .ne. 'ELEM')) then
                 call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
-            endif
+            end if
 !
-        else if (tychr.eq.'CART') then
-            if ((tych2.ne.'CART') .and. (tych2.ne. 'ELEM')) then
+        else if (tychr .eq. 'CART') then
+            if ((tych2 .ne. 'CART') .and. (tych2 .ne. 'ELEM')) then
                 call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
-            endif
+            end if
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
     end do
 !
@@ -216,7 +216,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     else
         typem = 'NU_MAILLE'
         nbmocl = 3
-    endif
+    end if
 !
 !
 !
@@ -239,61 +239,61 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         if (n1 .lt. 0) then
             ncmp = -n1
             call wkvect('&&CHPASS.LICMP', 'V V K8', ncmp, jlicmp)
-            call getvtx('ASSE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jlicmp),&
+            call getvtx('ASSE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jlicmp), &
                         nbret=ib)
             AS_ALLOCATE(vk8=licmp2, size=ncmp)
             call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .lt. 0) then
                 chgcmp = .true.
-                nchg = nchg + 1
+                nchg = nchg+1
                 if (n1 .ne. -ncmp) then
                     call utmess('F', 'UTILITAI_31')
-                endif
-                call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=ncmp, vect=licmp2,&
+                end if
+                call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=ncmp, vect=licmp2, &
                             nbret=ib)
             else
                 if (ncmpdisp > 0) licmp2(1:ncmp) = zk8(jlicmp:jlicmp-1+ncmp)
-            endif
+            end if
 
-            if (ncmpdisp > 0 .and. nomgd.ne. 'VARI_R') then
-                do i=1,ncmp
+            if (ncmpdisp > 0 .and. nomgd .ne. 'VARI_R') then
+                do i = 1, ncmp
                     compOK = ASTER_FALSE
-                    do j=1,ncmpdisp
-                        if (licmp2(i) .eq. licmpdisp(j))then
+                    do j = 1, ncmpdisp
+                        if (licmp2(i) .eq. licmpdisp(j)) then
                             compOK = ASTER_TRUE
                             exit
-                        endif
-                    enddo
+                        end if
+                    end do
                     if (.not. compOK) then
-                        call utmess('A','UTILITAI_36', sk=licmp2(i))
+                        call utmess('A', 'UTILITAI_36', sk=licmp2(i))
                         messConseil = ASTER_TRUE
-                    endif
-                enddo
-            elseif (ncmpdisp > 0)then
-                do i=1,ncmp
-                    do j=1,ncmpdisp
+                    end if
+                end do
+            elseif (ncmpdisp > 0) then
+                do i = 1, ncmp
+                    do j = 1, ncmpdisp
                         nomcmp = licmp2(i)
-                        if (nomcmp(1:1) .ne. 'V')then
-                            call utmess('A','UTILITAI_36', sk=licmp2(i))
-                        endif
-                    enddo
-                enddo
-            endif
+                        if (nomcmp(1:1) .ne. 'V') then
+                            call utmess('A', 'UTILITAI_36', sk=licmp2(i))
+                        end if
+                    end do
+                end do
+            end if
 !
         else
             ncmp = 0
             jlicmp = 0
-        endif
+        end if
 !
 !       4.1 VERIFICATION DE LA GRANDEUR ASSOCIEE AU CHAMP
 !       ------------------------------------------------------
         call dismoi('NOM_GD', champ, 'CHAMP', repk=nomgd2)
-        if ((.not.chgcmp) .and. (nomgd2.ne.nomgd)) then
-            valk(1)=champ
-            valk(2)=nomgd
-            valk(3)=nomgd2
+        if ((.not. chgcmp) .and. (nomgd2 .ne. nomgd)) then
+            valk(1) = champ
+            valk(2) = nomgd
+            valk(3) = nomgd2
             call utmess('F', 'UTILITAI_32', nk=3, valk=valk)
-        endif
+        end if
 !
 !
         call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca)
@@ -301,17 +301,17 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         if (iret .ne. 0) then
             if (tsca .ne. 'C') then
                 call utmess('F', 'UTILITAI_33')
-            endif
+            end if
             lcoc = .true.
 !
         else
             lcoc = .false.
             call getvr8('ASSE', 'COEF_R', iocc=iocc, scal=coefr, nbret=ib)
-        endif
+        end if
 !
 !       4.2 RECUPERATION DE LA LISTE DES NOEUDS OU MAILLES :
 !       ----------------------------------------------------
-        call reliem(modele, ma, typem, 'ASSE', iocc,&
+        call reliem(modele, ma, typem, 'ASSE', iocc, &
                     nbmocl, limocl, tymocl, nutrou, nbtrou)
         call jeveuo(nutrou, 'L', jnutro)
 !
@@ -320,81 +320,81 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !       ------------------------------------------
         if (tych2 .eq. 'NOEU') then
             call cnocns(champ, 'V', chs1)
-            call cnsred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp),&
+            call cnsred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp), &
                         'V', chs2)
 !
-        else if (tych2(1:2).eq.'EL') then
+        else if (tych2(1:2) .eq. 'EL') then
             call celces(champ, 'V', chs1)
 
             call jeveuo(chs1//'.CESD', 'L', jcesd)
             call jeveuo(chs1//'.CESC', 'L', jcesc)
 
-            if (nomgd2 .ne. 'VARI_R')then
-                do i=1,ncmp
+            if (nomgd2 .ne. 'VARI_R') then
+                do i = 1, ncmp
                     compOK = ASTER_FALSE
-                    do j=1,zi(jcesd+1)
-                        if (zk8(jlicmp-1+i) .eq. zk8(jcesc-1+j))then
+                    do j = 1, zi(jcesd+1)
+                        if (zk8(jlicmp-1+i) .eq. zk8(jcesc-1+j)) then
                             compOK = ASTER_TRUE
                             exit
-                        endif
-                    enddo
+                        end if
+                    end do
                     if (.not. compOK) then
-                        call utmess('F','UTILITAI_43', nk=2, valk=[zk8(jlicmp-1+i),champ])
-                    endif
-                enddo
-            endif
+                        call utmess('F', 'UTILITAI_43', nk=2, valk=[zk8(jlicmp-1+i), champ])
+                    end if
+                end do
+            end if
 
-            call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp),&
+            call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp), &
                         'V', chs2)
 !
-        else if (tych2.eq.'CART') then
+        else if (tych2 .eq. 'CART') then
             if (tychr .eq. 'CART') then
-                call carces(champ, 'ELEM', cesmod, 'V', chs1,&
+                call carces(champ, 'ELEM', cesmod, 'V', chs1, &
                             'A', ib)
             else
-                call carces(champ, tychr, cesmod, 'V', chs1,&
+                call carces(champ, tychr, cesmod, 'V', chs1, &
                             'A', ib)
-            endif
+            end if
 
             call jeveuo(chs1//'.CESD', 'L', jcesd)
             call jeveuo(chs1//'.CESC', 'L', jcesc)
 
-            if (nomgd2 .ne. 'VARI_R')then
-                do i=1,ncmp
+            if (nomgd2 .ne. 'VARI_R') then
+                do i = 1, ncmp
                     compOK = ASTER_FALSE
-                    do j=1,zi(jcesd+1)
-                        if (zk8(jlicmp-1+i) .eq. zk8(jcesc-1+j))then
+                    do j = 1, zi(jcesd+1)
+                        if (zk8(jlicmp-1+i) .eq. zk8(jcesc-1+j)) then
                             compOK = ASTER_TRUE
                             exit
-                        endif
-                    enddo
+                        end if
+                    end do
                     if (.not. compOK) then
-                        call utmess('F','UTILITAI_43', nk=2, valk=[zk8(jlicmp-1+i),champ])
-                    endif
-                enddo
-            endif
+                        call utmess('F', 'UTILITAI_43', nk=2, valk=[zk8(jlicmp-1+i), champ])
+                    end if
+                end do
+            end if
 
-            call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp),&
+            call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp), &
                         'V', chs2)
 !
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 !
 !       4.4 SI ON DOIT CHANGER LES CMPS ET/OU LA GRANDEUR :
 !       ----------------------------------------------------
         if (chgcmp) then
-            call chsut1(chs2, nomgd, ncmp, zk8(jlicmp), licmp2,&
+            call chsut1(chs2, nomgd, ncmp, zk8(jlicmp), licmp2, &
                         'V', chs2)
-        endif
+        end if
 !
 !
 !       4.4 FUSION DU CHAMP REDUIT AVEC LE CHAMP RESULTAT :
 !       ----------------------------------------------------
         if (iocc .eq. 1) then
             bool(1) = .false.
-            call chsfus(1, chs2, bool(1), [coefr], [coefc],&
+            call chsfus(1, chs2, bool(1), [coefr], [coefc], &
                         lcoc, 'V', chs3)
         else
             lichs(1) = chs3
@@ -405,9 +405,9 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
             lcoefr(2) = coefr
             lcoefc(1) = 1.d0
             lcoefc(2) = coefc
-            call chsfus(2, lichs, lcumul, lcoefr, lcoefc,&
+            call chsfus(2, lichs, lcumul, lcoefr, lcoefc, &
                         lcoc, 'V', chs3)
-        endif
+        end if
 !
         call jedetr('&&CHPASS.LICMP')
         AS_DEALLOCATE(vk8=licmp2)
@@ -416,18 +416,18 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 !     ----------------------------------------------------
     if (tychr .eq. 'NOEU') then
-        call cnscno(chs3, ' ', 'NON', 'G', chou,&
+        call cnscno(chs3, ' ', 'NON', 'G', chou, &
                     'F', ibid)
-    else if (tychr(1:2).eq.'EL') then
-        call cescel(chs3, ligrel, option, ' ', prol0,&
+    else if (tychr(1:2) .eq. 'EL') then
+        call cescel(chs3, ligrel, option, ' ', prol0, &
                     nncp, 'G', chou, 'F', ibid)
-    else if (tychr.eq.'CART') then
+    else if (tychr .eq. 'CART') then
         call cescar(chs3, chou, 'G')
     else
         ASSERT(.false.)
-    endif
+    end if
 
-    if (messConseil) call utmess('A','UTILITAI_42')
+    if (messConseil) call utmess('A', 'UTILITAI_42')
 !
 !
 !     6- MENAGE :

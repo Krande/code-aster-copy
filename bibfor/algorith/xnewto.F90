@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xnewto(elrefp, name, n, ndime, ptxx,&
-                  ndim, tabco, tabls, ipp, ip,&
+subroutine xnewto(elrefp, name, n, ndime, ptxx, &
+                  ndim, tabco, tabls, ipp, ip, &
                   itemax, epsmax, ksi, exit, dekker)
     implicit none
 !
@@ -60,10 +60,10 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     real(kind=8) :: test, epsrel, epsabs, refe, itermin
     integer :: iter, i, arete
     real(kind=8) :: zero
-    parameter    (zero=0.d0)
+    parameter(zero=0.d0)
     real(kind=8) :: dist, dmin, intinf, intsup
     real(kind=8) :: ksi2(ndime), delta(ndime), ksim(ndime)
-    data  itermin/3/
+    data itermin/3/
 !
 ! ------------------------------------------------------------------
 !
@@ -73,8 +73,8 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !  ATTENTION: ON SUPPOSE QUE LA FONCTION APPELANTE A DEJA
 !  INITIALISE LE NEWTON EN AMONT
     do i = 1, ndime
-        ksi2(i)=ksi(i)
-    enddo
+        ksi2(i) = ksi(i)
+    end do
 !
     delta(:) = zero
     iter = 0
@@ -85,13 +85,13 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     arete = 1
 !
     if (present(dekker)) then
-        call xintva(name, dekker, ptxx, ndime, intinf,&
+        call xintva(name, dekker, ptxx, ndime, intinf, &
                     intsup)
-    endif
+    end if
 !
 ! --- DEBUT DE LA BOUCLE
 !
- 20 continue
+20  continue
 !-------------------------
 !
 !     FAIRE TANT QUE
@@ -100,57 +100,57 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 ! --- CALCUL DE L'INCREMENT
 !
     if (name .eq. 'XMILFI') then
-        call xdelt2(elrefp, n, ndime, ksi2, ptxx,&
-                    ndim, tabco, tabls, ipp, ip,&
+        call xdelt2(elrefp, n, ndime, ksi2, ptxx, &
+                    ndim, tabco, tabls, ipp, ip, &
                     delta)
     elseif (name .eq. 'XINTAR') then
         call xdelt3(ndim, ksi2, tabls, delta(1))
     else if (name .eq. 'XINTER') then
-        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), &
                     delta(1), arete)
     else if (name .eq. 'XMIFIS') then
-        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), &
                     delta(1))
     else if (name .eq. 'XCENFI') then
-        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), &
                     delta(1))
-    endif
+    end if
 !
 ! --- ACTUALISATION
 !
     do i = 1, ndime
-        ksi2(i) = ksi2(i) - delta(i)
+        ksi2(i) = ksi2(i)-delta(i)
     end do
 !
-    iter = iter + 1
+    iter = iter+1
 !
 !   ON VERIFIE POUR XMIFIS QUE LE NEWTON RESTE DANS LA FACE TRIA
 !   DE RECHERCHE, SINON ON ACTIVE LA METHODE DE DEKKER
     if (name .eq. 'XMIFIS' .or. name .eq. 'XCENFI' .or. name .eq. 'XINTER') then
         if (present(dekker)) then
-            if (iter.eq.itemax) then
+            if (iter .eq. itemax) then
 !   DANS CERTAINS CAS, IL EST IMPOSSIBLE DE TROUVER UN POINT MILIEU SUR LA
 !   FISSURE DANS LA FACE DU SOUS ELEMENT, ON EFFECTUE ALORS UNE APPROXIAMTION
 !   LINEAIRE DE LA FISSURE SUR CETTE FACE
-               if (name.eq.'XINTER') then
-                  ksi2(1) = ksi(1)
-               else
-                  ksi2(1) = 0.d0
-                  if (exit(1).le.1) then
-                     exit(1) = 1
-                  endif
-               endif
-               goto 30
-            endif
+                if (name .eq. 'XINTER') then
+                    ksi2(1) = ksi(1)
+                else
+                    ksi2(1) = 0.d0
+                    if (exit(1) .le. 1) then
+                        exit(1) = 1
+                    end if
+                end if
+                goto 30
+            end if
             if (ksi2(1) .gt. intsup) then
                 ksi2(1) = ksi2(1)+delta(1)
                 ksi2(1) = (ksi2(1)+intsup)/2.d0
-            else if (ksi2(1).lt.intinf) then
+            else if (ksi2(1) .lt. intinf) then
                 ksi2(1) = ksi2(1)+delta(1)
                 ksi2(1) = (ksi2(1)+intinf)/2.d0
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     do i = 1, ndime
         dist = dist+delta(i)*delta(i)
@@ -161,26 +161,26 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
         do i = 1, ndime
             ksim(i) = ksi2(i)
         end do
-    endif
+    end if
 !
 ! --- CALCUL DE LA REFERENCE POUR TEST DEPLACEMENTS
 !
     refe = zero
     do i = 1, ndime
-        refe = refe + ksi2(i)*ksi2(i)
+        refe = refe+ksi2(i)*ksi2(i)
     end do
     if (refe .le. epsrel) then
         refe = 1.d0
         eps = epsabs
     else
         eps = epsrel
-    endif
+    end if
 !
 ! --- CALCUL POUR LE TEST DE CONVERGENCE
 !
     test = zero
     do i = 1, ndime
-        test = test + delta(i)*delta(i)
+        test = test+delta(i)*delta(i)
     end do
     test = sqrt(test/refe)
 !
@@ -188,25 +188,25 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
     if (iter .lt. itermin) goto 20
 !
-    if ((test.gt.eps) .and. (iter.lt.itemax)) then
+    if ((test .gt. eps) .and. (iter .lt. itemax)) then
         goto 20
-    else if ((iter.ge.itemax).and.(test.gt.eps)) then
+    else if ((iter .ge. itemax) .and. (test .gt. eps)) then
         call utmess('F', 'XFEM_67')
         do i = 1, ndime
             ksi2(i) = ksim(i)
         end do
-    endif
+    end if
 !
 ! --- FIN DE LA BOUCLE
 !
     do i = 1, ndime
-        ksi2(i)=ksi2(i)-delta(i)
+        ksi2(i) = ksi2(i)-delta(i)
     end do
 !
 30  continue
 !   GESTION DU CAS NDIME<NDIM
     do i = 1, ndime
-        ksi(i)=ksi2(i)
-    enddo
+        ksi(i) = ksi2(i)
+    end do
 !    write(6,*)'CONVERGENCE DE ',name,' EN ',iter,' ITERATIONS'
 end subroutine

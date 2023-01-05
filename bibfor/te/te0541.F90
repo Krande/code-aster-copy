@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,13 @@ subroutine te0541(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !     CARACTERISTIQUES DU TYPE D'ELEMENT : GEOMETRIE ET INTEGRATION
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
     call elref1(elref)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
+    call xteini(nomte, nfh, nfe, singu, ddlc, &
+                nnom, ddls, nddl, ddlm, nfiss, &
                 contac)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -75,10 +75,10 @@ subroutine te0541(option, nomte)
             compor(k) = zk16(itab(1)-1+k)
         else
             compor(k) = ' '
-        endif
+        end if
     end do
 !     X-FEM AVEC VARC TEMP UNIQUEMENT EN HPP
-    ASSERT(compor(3).eq.'PETIT' .or. compor(3).eq.' ')
+    ASSERT(compor(3) .eq. 'PETIT' .or. compor(3) .eq. ' ')
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
@@ -96,26 +96,26 @@ subroutine te0541(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
-    if ((ibid.eq.0) .and. ltequa(elref,enr))&
-    call jevech('PPMILTO', 'L', jpmilt)
+    if (enr(1:2) .eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
+    if ((ibid .eq. 0) .and. ltequa(elref, enr)) &
+        call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
-    if (nfe.gt.0) call jevech('PMATERC', 'L', imate)
+    if (nfe .gt. 0) call jevech('PMATERC', 'L', imate)
 !
 !     CALCUL DES CONTRAINTES THERMIQUES
     call xsigth(ndim, zi(jlonch), zr(itemps), nbsig, zr(icontt))
 !
 !     CALCUL DU VECTEUR \INT BT*SIGMA_THERMIQUE
-    call xbsig(ndim, nno, nfh, nfe, ddlc,&
-               ddlm, igeom, compor, jpintt, zi(jcnset),&
-               zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt), nbsig,&
-               ibid, zr(jlsn), zr(jlst), ivectu, jpmilt,&
+    call xbsig(ndim, nno, nfh, nfe, ddlc, &
+               ddlm, igeom, compor, jpintt, zi(jcnset), &
+               zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt), nbsig, &
+               ibid, zr(jlsn), zr(jlst), ivectu, jpmilt, &
                nfiss, jheavn, jstno, imate)
 !
 !     POUR LES DDLS HEAVISIDE ENRICHIS A TORT
-    call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nno, nnos, zi(jstno), .false._1, lbid,&
-                option, nomte, ddlm, nfiss, jfisno,&
+    call xteddl(ndim, nfh, nfe, ddls, nddl, &
+                nno, nnos, zi(jstno), .false._1, lbid, &
+                option, nomte, ddlm, nfiss, jfisno, &
                 vect=zr(ivectu))
 !
 !

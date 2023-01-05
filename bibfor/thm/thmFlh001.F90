@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine thmFlh001(ds_thm, lMatr , lSigm  , perman, ndim,&
-                     dimdef, dimcon,&
-                     addep1, adcp11, addeme , addete,&
-                     grap1 , rho11 , gravity, tperm ,&
-                     congep, dsde  )
+subroutine thmFlh001(ds_thm, lMatr, lSigm, perman, ndim, &
+                     dimdef, dimcon, &
+                     addep1, adcp11, addeme, addete, &
+                     grap1, rho11, gravity, tperm, &
+                     congep, dsde)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-aster_logical, intent(in) :: lMatr, lSigm, perman
-integer, intent(in) :: ndim, dimdef, dimcon
-integer, intent(in) :: addeme, addep1, addete, adcp11
-real(kind=8), intent(in) :: rho11, grap1(3)
-real(kind=8), intent(in) :: gravity(3), tperm(ndim, ndim)
-real(kind=8), intent(inout) :: congep(1:dimcon)
-real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
+    type(THM_DS), intent(in) :: ds_thm
+    aster_logical, intent(in) :: lMatr, lSigm, perman
+    integer, intent(in) :: ndim, dimdef, dimcon
+    integer, intent(in) :: addeme, addep1, addete, adcp11
+    real(kind=8), intent(in) :: rho11, grap1(3)
+    real(kind=8), intent(in) :: gravity(3), tperm(ndim, ndim)
+    real(kind=8), intent(inout) :: congep(1:dimcon)
+    real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,16 +73,16 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 ! --------------------------------------------------------------------------------------------------
 !
     lambd1(:) = 0.d0
-    dr11p1    = 0.d0
-    dr11t     = 0.d0
+    dr11p1 = 0.d0
+    dr11t = 0.d0
 !
 ! - Get parameters
 !
-    cliq   = ds_thm%ds_material%liquid%unsurk
+    cliq = ds_thm%ds_material%liquid%unsurk
     alpliq = ds_thm%ds_material%liquid%alpha
-    krel1  = 1.d0
+    krel1 = 1.d0
     dkrel1 = 0.d0
-    visco  = ds_thm%ds_material%liquid%visc
+    visco = ds_thm%ds_material%liquid%visc
     dvisco = ds_thm%ds_material%liquid%dvisc_dtemp
 !
 ! - Adress
@@ -91,7 +91,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
         bdcp11 = adcp11-1
     else
         bdcp11 = adcp11
-    endif
+    end if
 !
 ! - Thermic conductivity
 !
@@ -107,8 +107,8 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
         dr11p1 = rho11*cliq
         if (ds_thm%ds_elem%l_dof_ther) then
             dr11t = -3.d0*alpliq*rho11
-        endif
-    endif
+        end if
+    end if
 !
 ! - Hydraulic flux
 !
@@ -116,46 +116,46 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
         do i = 1, ndim
             congep(bdcp11+i) = 0.d0
             do j = 1, ndim
-                congep(bdcp11+i) = congep(bdcp11+i)+&
-                                   rho11*lambd1(1)*tperm(i,j)*(-grap1(j)+rho11*gravity(j))
+                congep(bdcp11+i) = congep(bdcp11+i)+ &
+                                   rho11*lambd1(1)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
             end do
         end do
-    endif
+    end if
 !
 ! - Update matrix
 !
     if (lMatr) then
         do i = 1, ndim
             do j = 1, ndim
-                dsde(bdcp11+i,addep1)   = dsde(bdcp11+i,addep1) +&
-                                          dr11p1*lambd1(1)*tperm(i,j)*(-grap1(j)+rho11*gravity(j))
-                dsde(bdcp11+i,addep1)   = dsde(bdcp11+i,addep1) +&
-                                          rho11*lambd1(3)*tperm(i,j)*(-grap1(j)+rho11*gravity(j))
-                dsde(bdcp11+i,addep1)   = dsde(bdcp11+i,addep1) +&
-                                          rho11*lambd1(1)*tperm(i,j)*(dr11p1*gravity(j))
-                dsde(bdcp11+i,addep1+j) = dsde(bdcp11+i,addep1+j) -&
-                                          rho11*lambd1(1)*tperm(i,j)
+                dsde(bdcp11+i, addep1) = dsde(bdcp11+i, addep1)+ &
+                                         dr11p1*lambd1(1)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                dsde(bdcp11+i, addep1) = dsde(bdcp11+i, addep1)+ &
+                                         rho11*lambd1(3)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                dsde(bdcp11+i, addep1) = dsde(bdcp11+i, addep1)+ &
+                                         rho11*lambd1(1)*tperm(i, j)*(dr11p1*gravity(j))
+                dsde(bdcp11+i, addep1+j) = dsde(bdcp11+i, addep1+j)- &
+                                           rho11*lambd1(1)*tperm(i, j)
             end do
             if (ds_thm%ds_elem%l_dof_meca) then
                 do j = 1, 3
                     do k = 1, ndim
-                        dsde(bdcp11+i,addeme+ndim-1+i) = dsde(bdcp11+i,addeme+ndim-1+i) +&
-                                                         rho11*lambd1(2)*tperm(i,k)*&
-                                                         (-grap1(k)+rho11*gravity(k))
+                        dsde(bdcp11+i, addeme+ndim-1+i) = dsde(bdcp11+i, addeme+ndim-1+i)+ &
+                                                          rho11*lambd1(2)*tperm(i, k)* &
+                                                          (-grap1(k)+rho11*gravity(k))
                     end do
                 end do
-            endif
+            end if
             if (ds_thm%ds_elem%l_dof_ther) then
                 do j = 1, ndim
-                    dsde(adcp11+i,addete) = dsde(adcp11+i,addete) +&
-                                            dr11t*lambd1(1)*tperm(i,j)*(-grap1(j)+rho11*gravity(j))
-                    dsde(adcp11+i,addete) = dsde(adcp11+i,addete) +&
-                                            rho11*lambd1(5)*tperm(i,j)*(-grap1(j)+rho11*gravity(j))
-                    dsde(adcp11+i,addete) = dsde(adcp11+i,addete) +&
-                                            rho11*lambd1(1)*tperm(i,j)*(dr11t*gravity(j))
+                    dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
+                                            dr11t*lambd1(1)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                    dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
+                                            rho11*lambd1(5)*tperm(i, j)*(-grap1(j)+rho11*gravity(j))
+                    dsde(adcp11+i, addete) = dsde(adcp11+i, addete)+ &
+                                             rho11*lambd1(1)*tperm(i, j)*(dr11t*gravity(j))
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine te0239(option, nomte)
 !
-use Behaviour_type
-use Behaviour_module, only : behaviourOption, behaviourInit
+    use Behaviour_type
+    use Behaviour_module, only: behaviourOption, behaviourInit
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,7 +43,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,19 +83,19 @@ character(len=16), intent(in) :: option, nomte
     aster_logical :: testl1, testl2
     type(Behaviour_Integ) :: BEHinteg
     integer, parameter :: nbres = 2
-    character(len=16), parameter :: nomres(nbres) = (/'E ','NU'/)
+    character(len=16), parameter :: nomres(nbres) = (/'E ', 'NU'/)
     integer :: valret(nbres)
     real(kind=8) :: valres(nbres)
-    parameter (npge=3)
-    data zero,un,deux/0.d0,1.d0,2.d0/
+    parameter(npge=3)
+    data zero, un, deux/0.d0, 1.d0, 2.d0/
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ivarip=1
+    ivarip = 1
 !
-    eps   = 1.d-3
+    eps = 1.d-3
     codret = 0
 !
 !   Angle du mot clef MASSIF de AFFE_CARA_ELEM, initialisé à r8nnem (on ne s'en sert pas)
@@ -107,7 +107,7 @@ character(len=16), intent(in) :: option, nomte
     call behaviourInit(BEHinteg)
 !
     call elref1(elrefe)
-    call elrefe_info(fami='RIGI',  nno=nno, npg=npg,&
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdk)
 !
 !       TYPMOD(1) = 'C_PLAN  '
@@ -132,7 +132,7 @@ character(len=16), intent(in) :: option, nomte
         lgpg = itab(7)
     else
         lgpg = itab(6)*itab(7)
-    endif
+    end if
     call jevech('PNBSP_I', 'L', jnbspi)
 !
 ! - Properties of shell
@@ -144,9 +144,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -154,27 +154,27 @@ character(len=16), intent(in) :: option, nomte
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     rela_cpla = zk16(icompo-1+PLANESTRESS)
-    read (zk16(icompo-1+2),'(I16)') nbvari
+    read (zk16(icompo-1+2), '(I16)') nbvari
 !
 ! - Some checks
 !
     if (rela_cpla .eq. 'COMP_ELAS') then
         if (rela_comp .ne. 'ELAS') then
             call utmess('F', 'PLATE1_8')
-        endif
-    endif
+        end if
+    end if
     if (defo_comp(6:10) .eq. '_REAC') then
-        call utmess('A', 'PLATE1_9', sk = defo_comp)
-    endif
+        call utmess('A', 'PLATE1_9', sk=defo_comp)
+    end if
 !
 !--- NBRE DE  COUCHES ET LONG. MAX
     nbcou = zi(jnbspi-1+1)
     if (nbcou .le. 0) then
         call utmess('F', 'PLATE1_10')
-    endif
+    end if
     if (nbcou .gt. 10) then
         call utmess('F', 'PLATE1_11')
-    endif
+    end if
 !---- EPAISSEUR DE CHAQUE COUCHE
     hic = h/nbcou
     ndimv = npg*npge*nbcou*nbvari
@@ -183,26 +183,26 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-    endif
+    end if
     if (lVect) then
         call jevech('PVECTUR', 'E', ivectu)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCONTPR', 'E', icontp)
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
     if (lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
-    endif
+    end if
 !
     call r8inir(81, 0.d0, rtange, 1)
     kpki = 0
 !-- DEBUT DE BOUCLE D'INTEGRATION SUR LA SURFACE NEUTRE
-    do  kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx, &
                     cour, jacp, cosa, sina)
         r = zero
 !
@@ -211,9 +211,9 @@ character(len=16), intent(in) :: option, nomte
 !
 !-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
 !
-        do  i = 1, nno
-            r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-        enddo
+        do i = 1, nno
+            r = r+zr(igeom+2*i-2)*zr(ivf+k+i-1)
+        end do
 !
 !===============================================================
 !     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
@@ -221,54 +221,54 @@ character(len=16), intent(in) :: option, nomte
         call moytpg('RIGI', kp, 3, '-', tempm, iret)
         nbpar = 1
         nompar = 'TEMP'
-        call rcvalb('RIGI', kp, 1, '-', zi(imate),&
-                    ' ', 'ELAS', nbpar, nompar, [tempm],&
+        call rcvalb('RIGI', kp, 1, '-', zi(imate), &
+                    ' ', 'ELAS', nbpar, nompar, [tempm], &
                     2, nomres, valres, valret, 1)
 !
         nu = valres(2)
-        cisail = valres(1)/ (un+nu)
+        cisail = valres(1)/(un+nu)
 !
 !       ON EST EN AXIS:
         jacp = jacp*r
 !
         test = abs(h*cour/deux)
         if (test .ge. un) correc = zero
-        test2 = abs(h*cosa/ (deux*r))
+        test2 = abs(h*cosa/(deux*r))
         if (test2 .ge. un) correc = zero
 !
-        testl1 = (test.le.eps .or. correc.eq.zero)
-        testl2 = (&
-                 test2 .le. eps .or. correc .eq. zero .or. abs(cosa) .le. eps .or. abs(cour*r)&
-                 .le. eps .or. abs(cosa-cour*r) .le. eps&
+        testl1 = (test .le. eps .or. correc .eq. zero)
+        testl2 = ( &
+                 test2 .le. eps .or. correc .eq. zero .or. abs(cosa) .le. eps .or. abs(cour*r) &
+                 .le. eps .or. abs(cosa-cour*r) .le. eps &
                  )
 !
 !-- DEBUT DE BOUCLE D'INTEGRATION DANS L'EPAISSEUR
 !
-        do  icou = 1, nbcou
-            do  inte = 1, npge
+        do icou = 1, nbcou
+            do inte = 1, npge
                 if (inte .eq. 1) then
-                    zic = zmin + (icou-1)*hic
+                    zic = zmin+(icou-1)*hic
                     coef = 1.d0/3.d0
-                else if (inte.eq.2) then
-                    zic = zmin + hic/2.d0 + (icou-1)*hic
+                else if (inte .eq. 2) then
+                    zic = zmin+hic/2.d0+(icou-1)*hic
                     coef = 4.d0/3.d0
                 else
-                    zic = zmin + hic + (icou-1)*hic
+                    zic = zmin+hic+(icou-1)*hic
                     coef = 1.d0/3.d0
-                endif
+                end if
 !
                 x3 = zic
 !
                 if (testl1) then
                     rhos = 1.d0
                 else
-                    rhos = 1.d0 + x3*cour
-                endif
+                    rhos = 1.d0+x3*cour
+                end if
                 if (testl2) then
                     rhot = 1.d0
                 else
-                    rhot = 1.d0 + x3*cosa/r
-                endif
+                    rhot = 1.d0+x3*cosa/r
+                end if
 !
 !           CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
 !           EPSSS, EPSTT, EPSSX3 (EN FONCTION DES DEFORMATIONS
@@ -276,62 +276,62 @@ character(len=16), intent(in) :: option, nomte
 !           DE L'INSTANT PRECEDANT ET DES DEFORMATIONS INCREMENTALES
 !           DE L'INSTANT PRESENT
 !
-                call defgen(testl1, testl2, nno, r, x3,&
-                            sina, cosa, cour, zr( ivf+k), dfdx,&
+                call defgen(testl1, testl2, nno, r, x3, &
+                            sina, cosa, cour, zr(ivf+k), dfdx, &
                             zr(ideplm), eps2d, epsx3)
-                call defgen(testl1, testl2, nno, r, x3,&
-                            sina, cosa, cour, zr( ivf+k), dfdx,&
+                call defgen(testl1, testl2, nno, r, x3, &
+                            sina, cosa, cour, zr(ivf+k), dfdx, &
                             zr(ideplp), deps2d, depsx3)
 !
 !
 !           CONSTRUCTION DE LA DEFORMATION GSX3
 !           ET DE LA CONTRAINTE SGMSX3
-                gsx3 = 2.d0* (epsx3+depsx3)
+                gsx3 = 2.d0*(epsx3+depsx3)
                 sgmsx3 = cisail*kappa*gsx3/2.d0
 !
 !           CALCUL DU NUMERO DU POINT D'INTEGRATION COURANT
-                kpki = kpki + 1
-                k1 = 4* (kpki-1)
-                k2 = lgpg* (kp-1) + (npge* (icou-1)+inte-1)*nbvari
-                ksp=(icou-1)*npge + inte
+                kpki = kpki+1
+                k1 = 4*(kpki-1)
+                k2 = lgpg*(kp-1)+(npge*(icou-1)+inte-1)*nbvari
+                ksp = (icou-1)*npge+inte
 !
-                do  i = 1, 4
-                    sigm2d(i)=zr(icontm+k1+i-1)
-                enddo
+                do i = 1, 4
+                    sigm2d(i) = zr(icontm+k1+i-1)
+                end do
 !
 !  APPEL AU COMPORTEMENT
-                call comcq1('RIGI', kp, ksp, zi(imate),&
-                            zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), eps2d,&
-                            deps2d,  sigm2d, zr(ivarim+k2),&
-                            option, angmas, sigp2d, zr( ivarip+k2), dsidep,&
+                call comcq1('RIGI', kp, ksp, zi(imate), &
+                            zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp), eps2d, &
+                            deps2d, sigm2d, zr(ivarim+k2), &
+                            option, angmas, sigp2d, zr(ivarip+k2), dsidep, &
                             cod, BEHinteg)
                 if (lSigm) then
-                    do  i = 1, 4
-                        zr(icontp+k1+i-1)=sigp2d(i)
-                    enddo
-                endif
+                    do i = 1, 4
+                        zr(icontp+k1+i-1) = sigp2d(i)
+                    end do
+                end if
 !
 !           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 !           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
                 if (cod .ne. 0) then
                     if (codret .ne. 1) then
                         codret = cod
-                    endif
-                endif
+                    end if
+                end if
 !
 !
                 if (lMatr) then
 !-- CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
 !-- CONSTRUCTION DE LA MATRICE DTD (DTILD)
-                    call matdtd(nomte, testl1, testl2, dsidep, cisail,&
-                                x3, cour, r, cosa, kappa,&
+                    call matdtd(nomte, testl1, testl2, dsidep, cisail, &
+                                x3, cour, r, cosa, kappa, &
                                 dtildi)
-                    do  i = 1, 5
-                        do  j = 1, 5
-                            dtild(i,j) = dtild(i,j) + dtildi(i,j)* 0.5d0*hic*coef
-                      enddo
-                  enddo
-                endif
+                    do i = 1, 5
+                        do j = 1, 5
+                            dtild(i, j) = dtild(i, j)+dtildi(i, j)*0.5d0*hic*coef
+                        end do
+                    end do
+                end if
 !
                 if (lVect) then
 !-- CALCULS DES EFFORTS INTERIEURS : BOUCLE SUR L'EPAISSEUR
@@ -342,42 +342,42 @@ character(len=16), intent(in) :: option, nomte
                     sigtdi(4) = x3*zr(icontp-1+k1+2)/rhot
                     sigtdi(5) = sgmsx3/rhos
 !
-                    do  i = 1, 5
-                        sigmtd(i) = sigmtd(i) + sigtdi(i)*0.5d0*hic* coef
-                    enddo
-                endif
+                    do i = 1, 5
+                        sigmtd(i) = sigmtd(i)+sigtdi(i)*0.5d0*hic*coef
+                    end do
+                end if
 !-- FIN DE BOUCLE SUR LES POINTS D'INTEGRATION DANS L'EPAISSEUR
-            enddo
-        enddo
+            end do
+        end do
 !
         if (lVect) then
 !-- CALCUL DES EFFORTS INTERIEURS
-            call effi(nomte, sigmtd, zr(ivf+k), dfdx, jacp,&
+            call effi(nomte, sigmtd, zr(ivf+k), dfdx, jacp, &
                       sina, cosa, r, zr(ivectu))
-        endif
+        end if
         if (lMatr) then
 !-- CONSTRUCTION DE LA MATRICE TANGENTE
-            call mattge(nomte, dtild, sina, cosa, r,&
-                    jacp, zr(ivf+k), dfdx, rtangi)
-            do  i = 1, 9
-                do  j = 1, 9
-                    rtange(i,j) = rtange(i,j) + rtangi(i,j)
-                enddo
-            enddo
-        endif
+            call mattge(nomte, dtild, sina, cosa, r, &
+                        jacp, zr(ivf+k), dfdx, rtangi)
+            do i = 1, 9
+                do j = 1, 9
+                    rtange(i, j) = rtange(i, j)+rtangi(i, j)
+                end do
+            end do
+        end if
     end do
     if (lMatr) then
 !-- STOCKAGE DE LA MATRICE TANGENTE
         kompt = 0
-        do  j = 1, 9
+        do j = 1, 9
             do i = 1, j
-                kompt = kompt + 1
-                zr(imatuu-1+kompt) = rtange(i,j)
-         end do
-       end do
-    endif
+                kompt = kompt+1
+                zr(imatuu-1+kompt) = rtange(i, j)
+            end do
+        end do
+    end if
 !
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 end subroutine

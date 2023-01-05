@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,9 +90,9 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
-    ndim=3
+    ndim = 3
     call dismoi('Z_CST', noma, 'MAILLAGE', repk=k8bid)
-    if (k8bid .eq. 'OUI') ndim=2
+    if (k8bid .eq. 'OUI') ndim = 2
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
@@ -103,7 +103,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
     mocle(1) = 'POINT'
     mocle(2) = 'NOEUD_CENTRE'
     mocle(3) = 'GROUP_NO_CENTRE'
-    call utcono(motfac, mocle, iocc, noma, ndim,&
+    call utcono(motfac, mocle, iocc, noma, ndim, &
                 x0, iret)
 !
 ! --- RECUPERATION DE LA DIRECTION PERPENDICULAIRE AU PLAN MILIEU
@@ -118,18 +118,18 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
             nvect = -nvect
             if (ndim .eq. 3 .and. nvect .ne. 3) then
                 call utmess('F', 'MODELISA3_94')
-            else if (ndim.eq.2.and.nvect.ne.2) then
+            else if (ndim .eq. 2 .and. nvect .ne. 2) then
                 call utmess('F', 'MODELISA3_95')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor, &
                             nbret=nv)
-            endif
-        endif
+            end if
+        end if
     else
         nangle = -nangle
-        ndim1 = ndim - 1
-        nangle = min (nangle,ndim1)
-        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+        ndim1 = ndim-1
+        nangle = min(nangle, ndim1)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle, &
                     nbret=nv)
 !
         if (ndim .eq. 2) then
@@ -138,21 +138,21 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
             vecnor(1) = cos(angle(1))
             vecnor(2) = sin(angle(1))
             vecnor(3) = zero
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             angle(1) = angle(1)*r8dgrd()
             angle(2) = angle(2)*r8dgrd()
 !
             vecnor(1) = cos(angle(1))*cos(angle(2))
             vecnor(2) = sin(angle(1))*cos(angle(2))
             vecnor(3) = -sin(angle(2))
-        endif
-    endif
+        end if
+    end if
 !
-    xnorm2 = vecnor(1)*vecnor(1) + vecnor(2)*vecnor(2) + vecnor(3)*vecnor(3)
+    xnorm2 = vecnor(1)*vecnor(1)+vecnor(2)*vecnor(2)+vecnor(3)*vecnor(3)
 !
     if (xnorm2 .eq. zero) then
         call utmess('F', 'MODELISA3_96')
-    endif
+    end if
 !
     xnorm = sqrt(xnorm2)
 !
@@ -169,8 +169,8 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
         call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
             call utmess('F', 'MODELISA3_98')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE :
 !     ---------------------------------------------
@@ -181,7 +181,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ----------------------
     call wkvect(lisnoe, 'V V I', nbnoe, idlino)
 !
-    call cgnop0(nbnoe, vale, x0, vecnor, prec,&
+    call cgnop0(nbnoe, vale, x0, vecnor, prec, &
                 nbno, zi(idlino))
 !
     call jedema()

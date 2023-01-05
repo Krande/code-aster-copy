@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine bcoqaf(bm, bf, bc, nbno, bmat)
     do i = 1, nbno
         do k = 1, 2
             do j = 1, 3
-                bmat(j,6*(i-1)+k) = bm(j,2*(i-1)+k)
+                bmat(j, 6*(i-1)+k) = bm(j, 2*(i-1)+k)
             end do
         end do
     end do
@@ -59,7 +59,7 @@ subroutine bcoqaf(bm, bf, bc, nbno, bmat)
     do i = 1, nbno
         do k = 1, 3
             do j = 1, 3
-                bmat(3+j,6*(i-1)+k+2) = bf(j,3*(i-1)+k)
+                bmat(3+j, 6*(i-1)+k+2) = bf(j, 3*(i-1)+k)
             end do
         end do
     end do
@@ -69,7 +69,7 @@ subroutine bcoqaf(bm, bf, bc, nbno, bmat)
     do i = 1, nbno
         do k = 1, 3
             do j = 1, 2
-                bmat(6+j,6*(i-1)+k+2) = bc(j,3*(i-1)+k)
+                bmat(6+j, 6*(i-1)+k+2) = bc(j, 3*(i-1)+k)
             end do
         end do
     end do

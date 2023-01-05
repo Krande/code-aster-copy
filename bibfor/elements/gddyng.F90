@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gddyng(kp, nno, en, x0sk, rmkm1,&
-                  rmk, omkm1, ompkm1, omk, ompk,&
-                  x0sec, rgmkm, rgmk, omgkm, ompgkm,&
+subroutine gddyng(kp, nno, en, x0sk, rmkm1, &
+                  rmk, omkm1, ompkm1, omk, ompk, &
+                  x0sec, rgmkm, rgmk, omgkm, ompgkm, &
                   omgk, ompgk)
 !
 ! FONCTION: POUR UN ELEMENT DE POUTRE EN GRAND DEPLACEMENT, CALCULE
@@ -60,23 +60,23 @@ subroutine gddyng(kp, nno, en, x0sk, rmkm1,&
 !-----------------------------------------------------------------------
     zero = 0.d0
     do kc = 1, 3
-        x0sec (kc) = zero
-        rgmkm (kc) = zero
+        x0sec(kc) = zero
+        rgmkm(kc) = zero
         rgmk(kc) = zero
-        omgkm (kc) = zero
-        ompgkm (kc) = zero
-        omgk (kc) = zero
-        ompgk (kc) = zero
+        omgkm(kc) = zero
+        ompgkm(kc) = zero
+        omgk(kc) = zero
+        ompgk(kc) = zero
     end do
     do kc = 1, 3
         do ne = 1, nno
-            x0sec (kc) = x0sec (kc) + en(ne,kp)*x0sk (kc,ne)
-            rgmkm (kc) = rgmkm (kc) + en(ne,kp)*rmkm1 (kc,ne)
-            rgmk (kc) = rgmk (kc) + en(ne,kp)*rmk (kc,ne)
-            omgkm (kc) = omgkm (kc) + en(ne,kp)*omkm1 (kc,ne)
-            ompgkm (kc) = ompgkm (kc) + en(ne,kp)*ompkm1 (kc,ne)
-            omgk (kc) = omgk (kc) + en(ne,kp)*omk (kc,ne)
-            ompgk (kc) = ompgk (kc) + en(ne,kp)*ompk(kc,ne)
+            x0sec(kc) = x0sec(kc)+en(ne, kp)*x0sk(kc, ne)
+            rgmkm(kc) = rgmkm(kc)+en(ne, kp)*rmkm1(kc, ne)
+            rgmk(kc) = rgmk(kc)+en(ne, kp)*rmk(kc, ne)
+            omgkm(kc) = omgkm(kc)+en(ne, kp)*omkm1(kc, ne)
+            ompgkm(kc) = ompgkm(kc)+en(ne, kp)*ompkm1(kc, ne)
+            omgk(kc) = omgk(kc)+en(ne, kp)*omk(kc, ne)
+            ompgk(kc) = ompgk(kc)+en(ne, kp)*ompk(kc, ne)
         end do
     end do
 end subroutine

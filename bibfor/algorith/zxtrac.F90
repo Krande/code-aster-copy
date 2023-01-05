@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zxtrac(interp, prec, crit, nbinst, ti,&
+subroutine zxtrac(interp, prec, crit, nbinst, ti, &
                   temps, y, neq, xtract, ier)
     implicit none
 #include "asterfort/utmess.h"
@@ -50,40 +50,40 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti,&
 !     --- RECUPERATION DU CHAMP ---
 !
     prec2 = prec
-    if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(1)
-    if (abs( temps - ti(1) ) .le. prec2) then
+    if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(1)
+    if (abs(temps-ti(1)) .le. prec2) then
         call zcopy(neq, y(1), 1, xtract, 1)
         goto 999
-    endif
-    if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(nbinst)
-    if (abs( temps - ti(nbinst) ) .le. prec2) then
+    end if
+    if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(nbinst)
+    if (abs(temps-ti(nbinst)) .le. prec2) then
         call zcopy(neq, y((nbinst-1)*neq+1), 1, xtract, 1)
         goto 999
-    endif
+    end if
 !
     if (temps .lt. ti(1)) then
-        ier = ier + 1
+        ier = ier+1
         goto 999
-    endif
+    end if
     if (temps .gt. ti(nbinst)) then
-        ier = ier + 1
+        ier = ier+1
         goto 999
-    endif
+    end if
     if (interp(1:3) .eq. 'NON') then
 !
 !        --- PAS D'INTERPOLATION ---
         do i = 2, nbinst-1
-            if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(i)
-            if (abs( temps - ti(i) ) .le. prec2) then
+            if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(i)
+            if (abs(temps-ti(i)) .le. prec2) then
                 call zcopy(neq, y((i-1)*neq+1), 1, xtract, 1)
                 goto 999
-            endif
+            end if
         end do
-        ier = ier + 1
+        ier = ier+1
     else
 !        ON INTERDIT L'INTERPOLATION POUR LES COMPLEXES
         call utmess('E', 'ALGORITH11_79')
-    endif
+    end if
 !
 999 continue
 end subroutine

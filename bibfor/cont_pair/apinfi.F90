@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine apinfi(sdappa, questi_, i_poin, vali)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
@@ -56,18 +56,18 @@ implicit none
 !
     vali = 0
     sdappa_appa = sdappa(1:19)//'.APPA'
-    call jeveuo(sdappa_appa, 'L', vi = v_sdappa_appa)
+    call jeveuo(sdappa_appa, 'L', vi=v_sdappa_appa)
 !
     if (questi_ .eq. 'APPARI_TYPE') then
         vali = v_sdappa_appa(4*(i_poin-1)+1)
-    else if (questi_.eq.'APPARI_ENTITE') then
+    else if (questi_ .eq. 'APPARI_ENTITE') then
         vali = v_sdappa_appa(4*(i_poin-1)+2)
-    else if (questi_.eq.'APPARI_ZONE') then
+    else if (questi_ .eq. 'APPARI_ZONE') then
         vali = v_sdappa_appa(4*(i_poin-1)+3)
-    else if (questi_.eq.'APPARI_MAILLE') then
+    else if (questi_ .eq. 'APPARI_MAILLE') then
         vali = v_sdappa_appa(4*(i_poin-1)+4)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

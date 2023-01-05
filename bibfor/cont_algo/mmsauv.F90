@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmsauv(ds_contact, izone, iptc, nummam, ksipr1,&
-                  ksipr2, tau1, tau2, nummae, numnoe,&
+subroutine mmsauv(ds_contact, izone, iptc, nummam, ksipr1, &
+                  ksipr2, tau1, tau2, nummae, numnoe, &
                   ksipc1, ksipc2, wpc)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -82,7 +82,7 @@ implicit none
     tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'E', jtabf)
     ztabf = cfmmvd('ZTABF')
-    ASSERT(izone.gt.0)
+    ASSERT(izone .gt. 0)
 !
 ! --- STOCKAGE DES VALEURS POUR LE CHAM_ELEM (VOIR MMCHML)
 !

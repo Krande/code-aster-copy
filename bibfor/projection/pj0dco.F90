@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj0dco(typeSelect   ,&
-                  entity1      , entity2        ,&
-                  nbCellSelect1, listCellSelect1,&
-                  nbNodeSelect2, listNodeSelect2,&
-                  geom1        , geom2, corrMesh,&
+subroutine pj0dco(typeSelect, &
+                  entity1, entity2, &
+                  nbCellSelect1, listCellSelect1, &
+                  nbNodeSelect2, listNodeSelect2, &
+                  geom1, geom2, corrMesh, &
                   dmax0d)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -45,12 +45,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=*), intent(in) :: typeSelect
-character(len=8), intent(in) :: entity1, entity2
-integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
-character(len=*), intent(in) :: geom1, geom2
-character(len=16), intent(in)  :: corrMesh
-real(kind=8), intent(in) :: dmax0d
+    character(len=*), intent(in) :: typeSelect
+    character(len=8), intent(in) :: entity1, entity2
+    integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    character(len=*), intent(in) :: geom1, geom2
+    character(len=16), intent(in)  :: corrMesh
+    real(kind=8), intent(in) :: dmax0d
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,28 +95,28 @@ real(kind=8), intent(in) :: dmax0d
 !
     call jemarq()
     call infniv(ifm, niv)
-    
-    ASSERT(typeSelect.eq.'PARTIE')
+
+    ASSERT(typeSelect .eq. 'PARTIE')
 
 ! - Prepare list of entities
-    
-    call pjxxut('0D'         , typeSelect     ,&
-                entity1      , entity2        ,&
-                nbCellSelect1, listCellSelect1,&
-                nbNodeSelect2, listNodeSelect2,&
-                mesh1        , mesh2          ,&
-                nbCellType   , cellListType   , cellListCode)
-    
-    call jeveuo('&&PJXXCO.LIMA1', 'L', vi = listCell1)
-    call jeveuo('&&PJXXCO.LINO2', 'L', vi = listNode2)
+
+    call pjxxut('0D', typeSelect, &
+                entity1, entity2, &
+                nbCellSelect1, listCellSelect1, &
+                nbNodeSelect2, listNodeSelect2, &
+                mesh1, mesh2, &
+                nbCellType, cellListType, cellListCode)
+
+    call jeveuo('&&PJXXCO.LIMA1', 'L', vi=listCell1)
+    call jeveuo('&&PJXXCO.LINO2', 'L', vi=listNode2)
 
 ! - Space dimension
     call dismoi('Z_QUASI_ZERO', mesh1, 'MAILLAGE', repk=cdim1)
     if (cdim1 .eq. 'OUI') then
-        ndim=2
+        ndim = 2
     else
-        ndim=3
-    endif
+        ndim = 3
+    end if
 
 ! - Access to meshes
     call dismoi('NB_NO_MAILLA', mesh2, 'MAILLAGE', repi=nbNode2)
@@ -128,16 +128,16 @@ real(kind=8), intent(in) :: dmax0d
     do iCell1 = 1, nbCell1
         if (listCell1(iCell1) .ne. 0) then
             cellTypeNume = typmail(iCell1)
-            if (cellTypeNume.eq.cellListType(1)) then
-                nbPoi = nbPoi + 1
+            if (cellTypeNume .eq. cellListType(1)) then
+                nbPoi = nbPoi+1
             else
                 call utmess('F', 'PROJECTION4_1')
-            endif
-        endif
+            end if
+        end if
     end do
     if (nbPoi .eq. 0) then
         call utmess('F', 'PROJECTION4_55')
-    endif
+    end if
 
 ! - Create object of couples iCell1/Node1
 !      on cree l'objet v='&&pjxxco.poi1' : ojb s v i
@@ -154,32 +154,31 @@ real(kind=8), intent(in) :: dmax0d
     do iCell1 = 1, nbCell1
         if (listCell1(iCell1) .ne. 0) then
             cellTypeNume = typmail(iCell1)
-            if (cellTypeNume.eq.cellListType(1)) then
-                nbPoi=nbPoi+1
-                zi(iase2+(nbPoi-1)*2+2)=iCell1
-                zi(iase2+(nbPoi-1)*2+1)=connex(1+ zi(ilcnx1-1+iCell1)-1)
-            endif
-        endif
+            if (cellTypeNume .eq. cellListType(1)) then
+                nbPoi = nbPoi+1
+                zi(iase2+(nbPoi-1)*2+2) = iCell1
+                zi(iase2+(nbPoi-1)*2+1) = connex(1+zi(ilcnx1-1+iCell1)-1)
+            end if
+        end if
     end do
-    
 
 ! - Get coordinates of nodes
     if (geom1 .eq. ' ') then
         call jeveuo(mesh1//'.COORDO    .VALE', 'L', iacoo1)
     else
         call jeveuo(geom1, 'L', iacoo1)
-    endif
+    end if
     if (geom2 .eq. ' ') then
         call jeveuo(mesh2//'.COORDO    .VALE', 'L', iacoo2)
     else
         call jeveuo(geom2, 'L', iacoo2)
-    endif
+    end if
 
 ! - Create temporary datastructure
     call wkvect(corrMesh//'.PJXX_K1', 'V V K24', 5, jxxk1)
-    zk24(jxxk1-1+1)=mesh1
-    zk24(jxxk1-1+2)=mesh2
-    zk24(jxxk1-1+3)='COLLOCATION'
+    zk24(jxxk1-1+1) = mesh1
+    zk24(jxxk1-1+2) = mesh2
+    zk24(jxxk1-1+3) = 'COLLOCATION'
     call wkvect(corrMesh//'.PJEF_NB', 'V V I', nbNode2, iaconb)
     call wkvect(corrMesh//'.PJEF_NU', 'V V I', nbNode2, iaconu)
     call wkvect(corrMesh//'.PJEF_CF', 'V V R', nbNode2, iacocf)
@@ -190,25 +189,25 @@ real(kind=8), intent(in) :: dmax0d
     do iNode2 = 1, nbNode2
         if (listNode2(iNode2) .eq. 0) cycle
         coor2(1:ndim) = zr(iacoo2+ndim*(iNode2-1)-1+1:iacoo2+ndim*(iNode2-1)-1+ndim)
-        d2=r8maem()
+        d2 = r8maem()
         do iPoi = 1, nbPoi
             iNode1 = zi(iase2+(iPoi-1)*2+1)
             coor1(1:ndim) = zr(iacoo1+ndim*(iNode1-1)-1+1:iacoo1+ndim*(iNode1-1)-1+ndim)
-            v12(1:ndim) = coor2(1:ndim) - coor1(1:ndim)
+            v12(1:ndim) = coor2(1:ndim)-coor1(1:ndim)
             dp = v12(1)**2+v12(2)**2
-            if (ndim.eq.3) dp = dp + v12(3)**2
+            if (ndim .eq. 3) dp = dp+v12(3)**2
             dp = sqrt(dp)
-            if (dp .lt.d2)then
-                d2=dp
+            if (dp .lt. d2) then
+                d2 = dp
                 cellLink1 = zi(iase2+(iPoi-1)*2+2)
                 nodeLink1 = iNode1
-            endif
-        enddo
-                    
-        if (d2.gt.dmax0d)then
+            end if
+        end do
+
+        if (d2 .gt. dmax0d) then
             call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
-            call utmess('F', 'PROJECTION4_2', sk=nodeName2, nr=2, valr=[d2,dmax0d])
-        endif
+            call utmess('F', 'PROJECTION4_2', sk=nodeName2, nr=2, valr=[d2, dmax0d])
+        end if
 
         zi(iaconb-1+iNode2) = 1
         zi(iacom1-1+iNode2) = cellLink1
@@ -216,8 +215,8 @@ real(kind=8), intent(in) :: dmax0d
             zi(iaconu-1+idecal+k) = nodeLink1
             zr(iacocf-1+idecal+k) = 1.d0
         end do
-        idecal=idecal+1
-    enddo
+        idecal = idecal+1
+    end do
 
 ! - Debug
 !    if (dbg) then

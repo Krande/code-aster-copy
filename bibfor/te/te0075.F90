@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine te0075(option, nomte)
     integer :: icode, j
     real(kind=8) :: flun, flunp1
 !-----------------------------------------------------------------------
-    parameter (nbres=3)
+    parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
     real(kind=8) :: valpar(nbres), poids, r, z, flux, nx, ny, theta
     real(kind=8) :: coorse(18), vectt(9)
@@ -55,16 +55,16 @@ subroutine te0075(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
+        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
@@ -84,18 +84,18 @@ subroutine te0075(option, nomte)
     do ise = 1, nse
         do i = 1, nno
             do j = 1, 2
-                coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
         do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         coorse, nx, ny, poids)
             r = 0.d0
             z = 0.d0
             do i = 1, nno
-                l = (kp-1)*nno + i
-                r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
-                z = z + coorse(2* (i-1)+2)*zr(ivf+l-1)
+                l = (kp-1)*nno+i
+                r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
+                z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
             end do
             if (laxi) poids = poids*r
             valpar(1) = r
@@ -104,19 +104,19 @@ subroutine te0075(option, nomte)
             nompar(2) = 'Y'
             nompar(3) = 'INST'
             valpar(3) = zr(itemps)
-            call fointe('FM', zk8(iflu), 3, nompar, valpar,&
+            call fointe('FM', zk8(iflu), 3, nompar, valpar, &
                         flunp1, icode)
             if (theta .ne. 1.0d0) then
-                valpar(3) = zr(itemps) - zr(itemps+1)
-                call fointe('FM', zk8(iflu), 3, nompar, valpar,&
+                valpar(3) = zr(itemps)-zr(itemps+1)
+                call fointe('FM', zk8(iflu), 3, nompar, valpar, &
                             flun, icode)
             else
                 flun = 0.0d0
-            endif
-            flux = theta*flunp1 + (1.0d0-theta)*flun
+            end if
+            flux = theta*flunp1+(1.0d0-theta)*flun
             do i = 1, nno
-                li = ivf + (kp-1)*nno + i - 1
-                vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)*flux
+                li = ivf+(kp-1)*nno+i-1
+                vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*flux
             end do
         end do
     end do

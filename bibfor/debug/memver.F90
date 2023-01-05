@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,30 +48,30 @@ subroutine memver(action, prec, arret, titre)
     real(kind=8) :: tmax, mtots, mtot, rval(1)
     character(len=8) :: k8tab(1)
     integer :: iret
-    save mtots,precs
+    save mtots, precs
 !
-    ASSERT(action.eq.'MESURE' .or. action.eq.'VERIF')
-    if (action .eq. 'MESURE') precs=2.d0*prec
+    ASSERT(action .eq. 'MESURE' .or. action .eq. 'VERIF')
+    if (action .eq. 'MESURE') precs = 2.d0*prec
 !
-    ASSERT(arret(1:1).eq.'F' .or. arret(1:1).eq.' ')
-    ASSERT(arret(2:2).eq.'I' .or. arret(2:2).eq.' ')
+    ASSERT(arret(1:1) .eq. 'F' .or. arret(1:1) .eq. ' ')
+    ASSERT(arret(2:2) .eq. 'I' .or. arret(2:2) .eq. ' ')
 !
     call memres('NON', 'NON', ' ', precs, tmax)
     k8tab(1) = 'COUR_JV'
     call utgtme(1, k8tab, rval, iret)
-    mtot=tmax+rval(1)
+    mtot = tmax+rval(1)
 !
     if (action .eq. 'MESURE') then
-        mtots=mtot
+        mtots = mtot
     else
         if (arret(2:2) .eq. 'I') then
-            write (6,9000)'<MEMVER> MTOTS,MTOT,DIFF=',titre, mtots,&
-            mtot,mtots-mtot
-        endif
+            write (6, 9000) '<MEMVER> MTOTS,MTOT,DIFF=', titre, mtots, &
+                mtot, mtots-mtot
+        end if
         if (arret(1:1) .eq. 'F') then
-            ASSERT(mtots-mtot.lt.precs)
-        endif
-    endif
+            ASSERT(mtots-mtot .lt. precs)
+        end if
+    end if
 !
-    9000 format (2(a,1x),3(f15.3,1x))
+9000 format(2(a, 1x), 3(f15.3, 1x))
 end subroutine

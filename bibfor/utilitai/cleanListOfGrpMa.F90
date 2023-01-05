@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine cleanListOfGrpMa(mesh, listGrpMa, nbGrpMa, l_stop, iret)
     character(len=24), pointer :: listGrpMaTmp(:) => null()
 !-----------------------------------------------------------------------
 !
-    if(nbGrpMa == 0) then
+    if (nbGrpMa == 0) then
         iret = 1
         go to 999
     end if
@@ -71,7 +71,7 @@ subroutine cleanListOfGrpMa(mesh, listGrpMa, nbGrpMa, l_stop, iret)
 ! --- Initialisation
 !
     AS_ALLOCATE(vk24=listGrpMaTmp, size=nbGrpMa)
-    nbGrpMaTmp     = 0
+    nbGrpMaTmp = 0
 !
     do iGrpMa = 1, nbGrpMa
         GrpMaName = listGrpMa(iGrpMa)
@@ -84,19 +84,19 @@ subroutine cleanListOfGrpMa(mesh, listGrpMa, nbGrpMa, l_stop, iret)
 ! --- The group of cells exist in the local mesh
 !
             if (l_exi_in_grp) then
-                nbGrpMaTmp = nbGrpMaTmp + 1
+                nbGrpMaTmp = nbGrpMaTmp+1
                 listGrpMaTmp(nbGrpMaTmp) = GrpMaName
-            endif
+            end if
         else
-            if(l_stop) then
+            if (l_stop) then
                 valk(1) = GrpMaName
                 valk(2) = mesh
                 call utmess('F', 'MODELISA7_77', nk=2, valk=valk)
             end if
-        endif
+        end if
     end do
 !
-    if(nbGrpMaTmp < nbGrpMa) then
+    if (nbGrpMaTmp < nbGrpMa) then
         iret = 0
     else
         iret = 1
@@ -108,13 +108,13 @@ subroutine cleanListOfGrpMa(mesh, listGrpMa, nbGrpMa, l_stop, iret)
         listGrpMa(iGrpMa) = listGrpMaTmp(iGrpMa)
     end do
 !
-    do iGrpMa = nbGrpMaTmp + 1, nbGrpMa
+    do iGrpMa = nbGrpMaTmp+1, nbGrpMa
         listGrpMa(iGrpMa) = " "
     end do
 !
     nbGrpMa = nbGrpMaTmp
 !
-    AS_DEALLOCATE(vk24= listGrpMaTmp)
+    AS_DEALLOCATE(vk24=listGrpMaTmp)
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,20 +18,20 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmflam(option         ,&
-                  model          , ds_material  , cara_elem  , list_load  , list_func_acti,&
-                  nume_dof       , nume_dof_inva, ds_system ,&
+subroutine nmflam(option, &
+                  model, ds_material, cara_elem, list_load, list_func_acti, &
+                  nume_dof, nume_dof_inva, ds_system, &
                   ds_constitutive, &
-                  sddisc         , nume_inst    ,&
-                  sddyna         , sderro       , ds_algopara,&
-                  ds_measure     ,&
-                  hval_incr      , hval_algo    ,&
-                  hval_meelem    , hval_measse  ,&
+                  sddisc, nume_inst, &
+                  sddyna, sderro, ds_algopara, &
+                  ds_measure, &
+                  hval_incr, hval_algo, &
+                  hval_meelem, hval_measse, &
                   ds_posttimestep)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -57,23 +57,23 @@ implicit none
 #include "asterfort/vpleci.h"
 #include "asterfort/nonlinDSPostTimeStepSave.h"
 !
-character(len=16), intent(in) :: option
-character(len=24), intent(in) :: model, cara_elem
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=19), intent(in) :: list_load
-integer, intent(in) :: list_func_acti(*)
-character(len=24), intent(in) :: nume_dof, nume_dof_inva
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-character(len=19), intent(in) :: sddyna
-character(len=24), intent(in) :: sderro
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    character(len=16), intent(in) :: option
+    character(len=24), intent(in) :: model, cara_elem
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=19), intent(in) :: list_load
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: nume_dof, nume_dof_inva
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: sderro
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,7 +127,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! - Initializations
 !
-    inst   = diinst(sddisc, nume_inst)
+    inst = diinst(sddisc, nume_inst)
     matgeo = '&&NMFLAM.MAGEOM'
     matas2 = '&&NMFLAM.MATASS'
     linsta = ASTER_FALSE
@@ -139,20 +139,20 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --- RECUPERATION DES OPTIONS
 !
-    call nmflal(option, ds_posttimestep, mod45 , l_hpp ,&
-                nfreq , cdsp           , typmat, optmod, bande,&
-                nddle , nsta           , modrig, typcal)
+    call nmflal(option, ds_posttimestep, mod45, l_hpp, &
+                nfreq, cdsp, typmat, optmod, bande, &
+                nddle, nsta, modrig, typcal)
 !
 ! --- CALCUL DE LA MATRICE TANGENTE ASSEMBLEE ET DE LA MATRICE GEOM.
 !
-    call nmflma(typmat, mod45 , l_hpp  , ds_algopara, model,&
-                ds_material, cara_elem, sddisc, sddyna     , list_func_acti,&
-                nume_inst, hval_incr, hval_algo, list_load     ,&
-                nume_dof     , nume_dof_inva, ds_system,&
-                ds_constitutive, ds_measure, hval_meelem,&
-                hval_measse, nddle , ds_posttimestep, modrig,&
+    call nmflma(typmat, mod45, l_hpp, ds_algopara, model, &
+                ds_material, cara_elem, sddisc, sddyna, list_func_acti, &
+                nume_inst, hval_incr, hval_algo, list_load, &
+                nume_dof, nume_dof_inva, ds_system, &
+                ds_constitutive, ds_measure, hval_meelem, &
+                hval_measse, nddle, ds_posttimestep, modrig, &
                 ldccvg, matas2, matgeo)
-    ASSERT(ldccvg.eq.0)
+    ASSERT(ldccvg .eq. 0)
 !
 ! --- CALCUL DES MODES PROPRES
 !
@@ -165,33 +165,33 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 ! --- CREATION DE LA SD EIGENSOLVER PARAMETRANT LE CALCUL MODAL
 ! --- UN GEP SYM REEL RESOLU VIA SORENSEN
 !
-    eigsol='&&NMFLAM.EIGSOL'
-    k1bid='R'
-    k16bid=''
-    k19bid=''
-    ibid=isnnem()
-    r8bid=r8vide()
+    eigsol = '&&NMFLAM.EIGSOL'
+    k1bid = 'R'
+    k16bid = ''
+    k19bid = ''
+    ibid = isnnem()
+    r8bid = r8vide()
     if (mod45 .eq. 'VIBR') then
         typres = 'DYNAMIQUE'
     else
         typres = 'MODE_FLAMB'
-    endif
+    end if
     method = 'SORENSEN'
 ! MATR_A
-    raide=matas2
+    raide = matas2
 ! MATR_B
-    masse=matgeo
+    masse = matgeo
 ! OPTION MODALE
-    optiof=optmod
-    if (optiof(1:5).eq.'BANDE') then
-      nbborn=2
+    optiof = optmod
+    if (optiof(1:5) .eq. 'BANDE') then
+        nbborn = 2
     else
-      nbborn=1
-    endif
+        nbborn = 1
+    end if
 ! DIM_SOUS_ESPACE EN DUR
-    nbvect=0
+    nbvect = 0
 ! COEF_SOUS_ESPACE
-    nbvec2=cdsp
+    nbvec2 = cdsp
 ! NMAX_ITER_SHIFT EN DUR
     nbrss = 5
 ! PARA_ORTHO_SOREN EN DUR
@@ -205,39 +205,39 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 ! SEUIL_FREQ/CRIT EN DUR
     fcorig = 1.d-2
     if (typres(1:9) .eq. 'DYNAMIQUE') then
-      omecor = omega2(fcorig)
-      bande(1)=freqom(bande(1))
-      bande(2)=freqom(bande(2))
+        omecor = omega2(fcorig)
+        bande(1) = freqom(bande(1))
+        bande(2) = freqom(bande(2))
     else
-      omecor=fcorig
-    endif
+        omecor = fcorig
+    end if
 ! VERI_MODE/PREC_SHIFT EN DUR
     precdc = 5.d-2
 ! STOP_BANDE_VIDE EN DUR
-    arret='NON'
+    arret = 'NON'
 ! STURM EN DUR
-    sturm='NON'
+    sturm = 'NON'
 ! OPTION MODE RIGIDE EN DUR
-    modri2='SANS'
+    modri2 = 'SANS'
 ! OPTION STOP_ERREUR EN DUR
-    stoper='NON'
+    stoper = 'NON'
 ! TYPE DE CALCUL: 'CALIBRATION' OU 'TOUT'.
-    call vpcres(eigsol, typres, raide, masse, k19bid, optiof, method, modri2, arret, k19bid,&
-                stoper, sturm, typcal, k1bid, k16bid, nfreqc, nbvect, nbvec2, nbrss, nbborn, ibid,&
-                ibid, ibid, ibid, maxitr, bande, precsh, omecor, precdc, r8bid,&
+    call vpcres(eigsol, typres, raide, masse, k19bid, optiof, method, modri2, arret, k19bid, &
+                stoper, sturm, typcal, k1bid, k16bid, nfreqc, nbvect, nbvec2, nbrss, nbborn, ibid, &
+                ibid, ibid, ibid, maxitr, bande, precsh, omecor, precdc, r8bid, &
                 r8bid, r8bid, r8bid, r8bid, tolsor, alpha)
 !
 ! - Compute eigen values/vecteors
 !
     call nmop45(eigsol, l_hpp, mod45, sdmode, sdstab, ds_posttimestep, nfreq_calibr)
     call vpleci(eigsol, 'I', 1, k24bid, r8bid, nfreqc)
-    call detrsd('EIGENSOLVER',eigsol)
+    call detrsd('EIGENSOLVER', eigsol)
 !
 ! - No eigen value
 !
     if (nfreqc .eq. 0) then
         goto 999
-    endif
+    end if
 !
 ! - Print info
 !
@@ -250,13 +250,13 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
             call utmess('I', 'MECANONLINE6_11', si=i_freq, sr=zr(jv_para))
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end do
     i_freq = 1
     if (nsta .ne. 0) then
         call rsadpa(sdstab, 'L', 1, 'CHAR_STAB', i_freq, 0, sjv=jv_para)
         call utmess('I', 'MECANONLINE6_12', si=i_freq, sr=zr(jv_para))
-    endif
+    end if
 !
 ! --- DETECTION INSTABILITE SI DEMANDE
 !
@@ -268,19 +268,19 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
             freq_abso = abs(freq_calc)
             if (freq_abso .lt. freq_mini_abso) then
                 freq_mini_abso = freq_abso
-                freq_mini      = freq_calc
-            endif
+                freq_mini = freq_calc
+            end if
         end do
         call nmflin(ds_posttimestep, matas2, freq_mini, linsta)
         call nmcrel(sderro, 'CRIT_STAB', linsta)
-    endif
+    end if
 !
 999 continue
 !
 ! - Save results
 !
-    call nonlinDSPostTimeStepSave(mod45       , sdmode         , sdstab,&
-                                  inst        , nume_inst      , nfreqc,&
+    call nonlinDSPostTimeStepSave(mod45, sdmode, sdstab, &
+                                  inst, nume_inst, nfreqc, &
                                   nfreq_calibr, ds_posttimestep)
 !
 ! --- DESTRUCTION DE LA SD DE STOCKAGE DES MODES

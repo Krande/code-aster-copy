@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
+subroutine utflm2(mailla, tabmai, nbma, dim, typmai, &
                   nbtrou, tatrou)
     implicit none
 #include "jeveux.h"
@@ -84,7 +84,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    ASSERT(nbma.gt.0)
+    ASSERT(nbma .gt. 0)
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyp)
 !
@@ -93,7 +93,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
         call jenonu(jexnom('&CATA.TM.NOMTM', typmai), itych)
         if (itych .eq. 0) then
             call utmess('F', 'CALCULEL2_67', sk=typmai)
-        endif
+        end if
 !
     else
 !
@@ -108,7 +108,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
             call jenuno(jexnum('&CATA.TM.NOMTM', i), type_maille(i))
             call dismoi('DIM_TOPO', type_maille(i), 'TYPE_MAILLE', repi=dime_topo(i))
         end do
-    endif
+    end if
 !
 !
 ! ----RECUPERATION DE LA LISTE DES TYPES DE MAILLE DU MAILLAGE
@@ -130,19 +130,19 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
             liste_typmai(i) = typmail(tabmai(i))
             if (dime_topo(liste_typmai(i)) .eq. dim) then
                 liste_m_temp(ii) = tabmai(i)
-                nbtrou = nbtrou + 1
-                ii = ii + 1
-            endif
+                nbtrou = nbtrou+1
+                ii = ii+1
+            end if
         else
 !
 ! --------TRI SUR LE TYPE DE LA MAILLE :
 !
             if (typmail(tabmai(i)) .eq. itych) then
                 liste_m_temp(ii) = tabmai(i)
-                nbtrou = nbtrou + 1
-                ii = ii + 1
-            endif
-        endif
+                nbtrou = nbtrou+1
+                ii = ii+1
+            end if
+        end if
     end do
 !
     if (nbtrou .eq. 0) goto 999

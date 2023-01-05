@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
-                 iscal, rscal, cscal, kscal, ivect,&
-                 rvect, cvect, kvect, vi, vr,&
-                 vc, vk8, vk16, vk24, address,&
+subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv, &
+                 iscal, rscal, cscal, kscal, ivect, &
+                 rvect, cvect, kvect, vi, vr, &
+                 vc, vk8, vk16, vk24, address, &
                  buffer)
     use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
     implicit none
@@ -67,29 +67,29 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
 !   ====================================================================
 !
 !   -0.1- Input/output arguments
-    character(len=*)          , intent(in) :: sd_nl_
-    integer                   , intent(in) :: ip
-    integer,          optional, intent(in) :: iocc
-    character(len=24),optional, intent(out):: savejv
-    integer,          optional, intent(out):: lonvec
-    integer,          optional, intent(out):: iscal
-    real(kind=8),     optional, intent(out):: rscal
-    complex(kind=8),  optional, intent(out):: cscal
+    character(len=*), intent(in) :: sd_nl_
+    integer, intent(in) :: ip
+    integer, optional, intent(in) :: iocc
+    character(len=24), optional, intent(out):: savejv
+    integer, optional, intent(out):: lonvec
+    integer, optional, intent(out):: iscal
+    real(kind=8), optional, intent(out):: rscal
+    complex(kind=8), optional, intent(out):: cscal
     character(len=*), optional, intent(out):: kscal
-    integer,          optional, intent(out):: ivect(*)
-    real(kind=8),     optional, intent(out):: rvect(*)
-    complex(kind=8),  optional, intent(out):: cvect(*)
+    integer, optional, intent(out):: ivect(*)
+    real(kind=8), optional, intent(out):: rvect(*)
+    complex(kind=8), optional, intent(out):: cvect(*)
     character(len=*), optional, intent(out):: kvect(*)
 !
-    integer          , pointer, optional :: vi(:)
-    real(kind=8)     , pointer, optional :: vr(:)
-    complex(kind=8)  , pointer, optional :: vc(:)
-    character(len=8) , pointer, optional :: vk8(:)
+    integer, pointer, optional :: vi(:)
+    real(kind=8), pointer, optional :: vr(:)
+    complex(kind=8), pointer, optional :: vc(:)
+    character(len=8), pointer, optional :: vk8(:)
     character(len=16), pointer, optional :: vk16(:)
     character(len=24), pointer, optional :: vk24(:)
 !
-    integer                   , optional, intent(out) :: address
-    integer          , pointer, optional  :: buffer(:)
+    integer, optional, intent(out) :: address
+    integer, pointer, optional  :: buffer(:)
 !
 !   -0.2- Local variables
 !   --- For strings copying
@@ -115,7 +115,7 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
 
-    if ((.not.present(lonvec)).and.(.not.present(savejv))) then
+    if ((.not. present(lonvec)) .and. (.not. present(savejv))) then
         output_test = UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
                       UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
                       UN_PARMI3(vk8, vk16, vk24) .or. &
@@ -124,18 +124,17 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
         ASSERT(output_test)
     end if
 
-
 !   The parameter to be saved was not found in the predefined list
-    if (ip.gt._NL_NBPAR) then
+    if (ip .gt. _NL_NBPAR) then
         ASSERT(.false.)
     end if
 
-    if (present(buffer).and.(.not.present(savejv))) then
+    if (present(buffer) .and. (.not. present(savejv))) then
 
         dec = 0
         if (present(iocc)) then
             level = size(buffer)/(2*_NL_NBPAR)
-            if (iocc.le.level) then
+            if (iocc .le. level) then
                 dec = (iocc-1)*2*_NL_NBPAR
             else if (present(lonvec)) then
                 lonvec = 0
@@ -148,10 +147,10 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
         addr = buffer(dec+ip)
         lvec = buffer(dec+_NL_NBPAR+ip)
 
-        if (present(lonvec))  lonvec  = lvec
+        if (present(lonvec)) lonvec = lvec
         if (present(address)) address = addr
 
-        if (addr.ne.0) then
+        if (addr .ne. 0) then
             if (present(iscal)) then
                 iscal = zi(addr)
             elseif (present(rscal)) then
@@ -190,7 +189,7 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
             else if (present(vk24)) then
                 call jgetptc(addr, pc, vk24=zk24(1))
                 call c_f_pointer(pc, vk24, [lvec])
-            endif
+            end if
             if (present(address)) address = addr
             goto 99
         else if (present(lonvec)) then
@@ -202,13 +201,13 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
     savename(1:8) = sd_nl
     if (present(iocc)) then
 !       The parameter to be extracted is global but an occurence index was given
-        ASSERT(parind(ip).gt.0)
+        ASSERT(parind(ip) .gt. 0)
         call codent(iocc, 'G', k_iocc)
         savename(9:15) = '.'//k_iocc(1:6)
     else
-        ASSERT(parind(ip).lt.0)
+        ASSERT(parind(ip) .lt. 0)
     end if
-    savename(16:24)='.'//params(ip)
+    savename(16:24) = '.'//params(ip)
 
 !   ====================================================================
 !   = 2 = Extracting data
@@ -217,17 +216,17 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
 !   --- Length of vectors
     if (present(savejv)) savejv = savename
 
-    if (present(lonvec).or.UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
-                           UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
-                           UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
+    if (present(lonvec) .or. UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
+        UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
+        UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
         call jeexin(savename, lvec)
-        if (lvec.le.0) then
+        if (lvec .le. 0) then
             if (present(lonvec)) then
                 lonvec = 0
                 goto 99
             end if
         else
-          call jelira(savename, 'LONMAX', lvec)
+            call jelira(savename, 'LONMAX', lvec)
         end if
     end if
 
@@ -237,82 +236,82 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
         UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
         UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
 !   --- Vectors
-        if (abs(parind(ip)).eq.2) then
+        if (abs(parind(ip)) .eq. 2) then
 !
             if (UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
                 UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
-                if (partyp(ip).eq.'I') then
+                if (partyp(ip) .eq. 'I') then
                     if (present(ivect)) then
-                        call jeveuo(savename,'L',addr)
+                        call jeveuo(savename, 'L', addr)
                         do i = 1, lvec
                             ivect(i) = zi(addr+i-1)
                         end do
                     else
-                        call jeveuo(savename,'E',vi=vi)
-                    endif
-                else if (partyp(ip).eq.'R') then
+                        call jeveuo(savename, 'E', vi=vi)
+                    end if
+                else if (partyp(ip) .eq. 'R') then
                     if (present(rvect)) then
-                        call jeveuo(savename,'L',addr)
+                        call jeveuo(savename, 'L', addr)
                         call dcopy(lvec, zr(addr), 1, rvect, 1)
                     else
-                        call jeveuo(savename,'E',vr=vr)
+                        call jeveuo(savename, 'E', vr=vr)
                     end if
-                else if (partyp(ip).eq.'C') then
+                else if (partyp(ip) .eq. 'C') then
                     if (present(cvect)) then
-                        call jeveuo(savename,'L',addr)
+                        call jeveuo(savename, 'L', addr)
                         call zcopy(lvec, zc(addr), 1, cvect, 1)
                     else
-                        call jeveuo(savename,'E',vc=vc)
+                        call jeveuo(savename, 'E', vc=vc)
                     end if
-                else if (partyp(ip).eq.'K8') then
+                else if (partyp(ip) .eq. 'K8') then
                     if (present(kvect)) then
-                        call jeveuo(savename,'L',addr)
+                        call jeveuo(savename, 'L', addr)
                         do i = 1, lvec
                             kvect(i) = zk8(addr+i-1)
                         end do
                     else
-                        call jeveuo(savename,'E',vk8=vk8)
+                        call jeveuo(savename, 'E', vk8=vk8)
                     end if
-                else if (partyp(ip).eq.'K16') then
+                else if (partyp(ip) .eq. 'K16') then
                     if (present(kvect)) then
-                        call jeveuo(savename,'L',addr)
+                        call jeveuo(savename, 'L', addr)
                         do i = 1, lvec
                             kvect(i) = zk16(addr+i-1)
                         end do
                     else
-                        call jeveuo(savename,'E',vk16=vk16)
+                        call jeveuo(savename, 'E', vk16=vk16)
                     end if
-                else if (partyp(ip).eq.'K24') then
+                else if (partyp(ip) .eq. 'K24') then
                     if (present(kvect)) then
-                        call jeveuo(savename,'L',addr)
+                        call jeveuo(savename, 'L', addr)
                         do i = 1, lvec
                             kvect(i) = zk24(addr+i-1)
                         end do
                     else
-                        call jeveuo(savename,'E',vk24=vk24)
+                        call jeveuo(savename, 'E', vk24=vk24)
                     end if
                 end if
             end if
 !
 !   --- Scalars
-        else if (abs(parind(ip)).eq.1) then
+        else if (abs(parind(ip)) .eq. 1) then
 !
 !           The parameter to get is a scalar but no scalar output was found
             output_test = UN_PARMI4(kscal, iscal, rscal, cscal)
             ASSERT(output_test)
 !
-            call jeveuo(savename,'L',jscal)
-            if (partyp(ip).eq.'I')  then
+            call jeveuo(savename, 'L', jscal)
+            if (partyp(ip) .eq. 'I') then
                 iscal = zi(jscal)
-            elseif (partyp(ip).eq.'R') then
+            elseif (partyp(ip) .eq. 'R') then
                 rscal = zr(jscal)
-            elseif (partyp(ip).eq.'C') then
+            elseif (partyp(ip) .eq. 'C') then
                 cscal = zc(jscal)
-            else if (partyp(ip).eq.'K8') then
+            else if (partyp(ip) .eq. 'K8') then
                 kscal = zk8(jscal)
-            else if (partyp(ip).eq.'K16') then
+            else if (partyp(ip) .eq. 'K16') then
                 kscal = zk16(jscal)
-            else if (partyp(ip).eq.'K24') then
+            else if (partyp(ip) .eq. 'K24') then
                 kscal = zk24(jscal)
             end if
 !
@@ -321,10 +320,10 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
 !
 !   jeveux memory address
     if (present(address)) then
-        if (addr.ne.0) then
+        if (addr .ne. 0) then
             address = addr
         else
-            call jeveuo(savename,'E', address)
+            call jeveuo(savename, 'E', address)
         end if
     end if
 !

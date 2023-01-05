@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine trrapr(clef, tab, ntab, n, g,&
+subroutine trrapr(clef, tab, ntab, n, g, &
                   d, m)
 !             TRI RAPIDE : CHOIX PIVOT ET EXPLORATION (CF TRI)
 ! ----------------------------------------------------------------------
@@ -52,41 +52,41 @@ subroutine trrapr(clef, tab, ntab, n, g,&
                 m = g
             else
                 m = d
-            endif
-        endif
+            end if
+        end if
     else
         if (clef(m) .lt. clef(d)) then
             if (clef(g) .lt. clef(d)) then
                 m = g
             else
                 m = d
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     pivot = clef(m)
     clef(m) = clef(g)
     clef(g) = pivot
 !
     do i = 1, ntab
-        tmpr = tab(m,i)
-        tab(m,i) = tab(g,i)
-        tab(g,i) = tmpr
+        tmpr = tab(m, i)
+        tab(m, i) = tab(g, i)
+        tab(g, i) = tmpr
     end do
 !
 ! --- EXPLORATION
 !
     gp = g
-    dp = d + 1
+    dp = d+1
 !
- 20 continue
+20  continue
 !
-    gp = gp + 1
+    gp = gp+1
     if (clef(gp) .lt. pivot) goto 20
 !
- 30 continue
+30  continue
 !
-    dp = dp - 1
+    dp = dp-1
     if (clef(dp) .gt. pivot) goto 30
 !
     if (gp .lt. dp) then
@@ -96,26 +96,26 @@ subroutine trrapr(clef, tab, ntab, n, g,&
         clef(dp) = tmpi
 !
         do i = 1, ntab
-            tmpr = tab(gp,i)
-            tab(gp,i) = tab(dp,i)
-            tab(dp,i) = tmpr
+            tmpr = tab(gp, i)
+            tab(gp, i) = tab(dp, i)
+            tab(dp, i) = tmpr
         end do
 !
         goto 20
 !
-    endif
+    end if
 !
 ! --- PLACEMENT DU PIVOT
 !
-    m = gp - 1
+    m = gp-1
 !
     clef(g) = clef(m)
     clef(m) = pivot
 !
     do i = 1, ntab
-        tmpr = tab(g,i)
-        tab(g,i) = tab(m,i)
-        tab(m,i) = tmpr
+        tmpr = tab(g, i)
+        tab(g, i) = tab(m, i)
+        tab(m, i) = tmpr
     end do
 !
 end subroutine

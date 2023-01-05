@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine reajre(matr_vect_elemz, resu_elemz, base)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/exisd.h"
 #include "asterfort/jeecra.h"
@@ -48,7 +48,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ndim
-    parameter (ndim=10)
+    parameter(ndim=10)
 !
     integer :: iret, nlmax, nluti, iret1, iret2
     character(len=19) :: matr_vect_elem, resu_elem
@@ -56,23 +56,23 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    resu_elem      = resu_elemz
+    resu_elem = resu_elemz
     matr_vect_elem = matr_vect_elemz
 !
 ! - Create RELR object
 !
     call jeexin(matr_vect_elem//'.RELR', iret)
     if (iret .eq. 0) then
-        call wkvect(matr_vect_elem//'.RELR', base//' V K24', ndim, vk24 = p_relr)
+        call wkvect(matr_vect_elem//'.RELR', base//' V K24', ndim, vk24=p_relr)
         call jeecra(matr_vect_elem//'.RELR', 'LONUTI', 0)
-    endif
+    end if
 !
 ! - Add resu_elem
 !
     if (resu_elem .ne. ' ') then
         call exisd('RESUELEM', resu_elem, iret1)
-        call exisd('CHAM_NO' , resu_elem, iret2)
-        if ((iret1.ne.0) .or. (iret2.ne.0)) then
+        call exisd('CHAM_NO', resu_elem, iret2)
+        if ((iret1 .ne. 0) .or. (iret2 .ne. 0)) then
 !
 ! --------- Increase size if necessary
 !
@@ -80,14 +80,14 @@ implicit none
             call jelira(matr_vect_elem//'.RELR', 'LONUTI', nluti)
             if (nlmax .eq. nluti) then
                 call juveca(matr_vect_elem//'.RELR', nlmax+ndim)
-            endif
+            end if
 !
 ! --------- Add resu_elem
 !
-            call jeveuo(matr_vect_elem//'.RELR', 'E', vk24 = p_relr)
+            call jeveuo(matr_vect_elem//'.RELR', 'E', vk24=p_relr)
             p_relr(nluti+1) = resu_elem
             call jeecra(matr_vect_elem//'.RELR', 'LONUTI', nluti+1)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

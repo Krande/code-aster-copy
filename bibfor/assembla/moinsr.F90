@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine moinsr(j, n, idil, idiich, idsuiv,&
+subroutine moinsr(j, n, idil, idiich, idsuiv, &
                   nosuiv, idip, noip, iilib, iimax)
     implicit none
 #include "jeveux.h"
@@ -70,16 +70,16 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
         zi(idiich-1+j) = iilib
         if ((iilib+n) .ge. iimax) then
             iimax = nint(1.5d0*iimax)
-            ASSERT((iilib+n).lt.iimax)
+            ASSERT((iilib+n) .lt. iimax)
             call juveca(noip, iimax)
             call jeveuo(noip, 'E', idip)
             call juveca(nosuiv, iimax)
             call jeveuo(nosuiv, 'E', idsuiv)
-        endif
+        end if
         do k = 1, n
-            zi(idsuiv-1+iilib) = iilib + 1
+            zi(idsuiv-1+iilib) = iilib+1
             zi(idip-1+iilib) = zi(idil-1+k)
-            iilib = iilib + 1
+            iilib = iilib+1
         end do
 !        MARQUAGE FIN DE CHAINE
         zi(idsuiv-1+iilib-1) = -j
@@ -100,14 +100,14 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
             if ((iilib+1) .ge. iimax) then
                 iimax = nint(1.5d0*iimax)
                 call juveca(noip, iimax)
-                ASSERT((iilib+1).lt.iimax)
+                ASSERT((iilib+1) .lt. iimax)
                 call jeveuo(noip, 'E', idip)
                 call juveca(nosuiv, iimax)
                 call jeveuo(nosuiv, 'E', idsuiv)
-            endif
-            iilib = iilib + 1
+            end if
+            iilib = iilib+1
 !
-        else if (zi(idil).eq.zi(idip-1+idebch)) then
+        else if (zi(idil) .eq. zi(idip-1+idebch)) then
 !
 !           IL(1) EXISTE DEJA DANS LA CHAINE J . PAS D'INSERTION
             ii1 = idebch
@@ -118,16 +118,16 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
 !           IP(IDEBCH) < IL(1)
             ii1 = idebch
             kil = 1
-        endif
+        end if
 !
 !        INSERTION DU RESTE DE IL
         kip = zi(idsuiv-1+ii1)
 !
- 20     continue
+20      continue
         if (kil .le. n) then
 !
 !           TOUS LES ELEMENTS DE IL N'ONT PAS ETE TRAITES
- 30         continue
+30          continue
             if (kip .gt. 0) then
 !
 !              LA CHAINE J N A PAS ETE ENTIEREMENT PARCOURUE.
@@ -139,12 +139,12 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
 !
 !                  L'ELEMENT IL(KIL) EXISTE DEJA DANS LA CHAINE J
 !                  PAS D'INSERTION
-                    kil = kil + 1
+                    kil = kil+1
                     ii1 = kip
                     kip = zi(idsuiv-1+ii1)
                     goto 20
 !
-                else if (zi(idil-1+kil).gt.zi(idip-1+kip)) then
+                else if (zi(idil-1+kil) .gt. zi(idip-1+kip)) then
 !
 !                  L'ELEMENT IL(KIL) NE S'INSERE PAS AVANT IP(KIP)
                     ii1 = kip
@@ -162,16 +162,16 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
                     if ((iilib+1) .ge. iimax) then
                         iimax = nint(1.5d0*iimax)
                         call juveca(noip, iimax)
-                        ASSERT((iilib+1).lt.iimax)
+                        ASSERT((iilib+1) .lt. iimax)
                         call jeveuo(noip, 'E', idip)
                         call juveca(nosuiv, iimax)
                         call jeveuo(nosuiv, 'E', idsuiv)
-                    endif
-                    iilib = iilib + 1
-                    kil = kil + 1
+                    end if
+                    iilib = iilib+1
+                    kil = kil+1
                     goto 20
 !
-                endif
+                end if
 !
             else
 !
@@ -181,20 +181,20 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
                 if ((iilib+1+n-kil) .ge. iimax) then
                     iimax = nint(1.5d0*iimax)
                     call juveca(noip, iimax)
-                    ASSERT((iilib+1+n-kil).lt.iimax)
+                    ASSERT((iilib+1+n-kil) .lt. iimax)
                     call jeveuo(noip, 'E', idip)
                     call juveca(nosuiv, iimax)
                     call jeveuo(nosuiv, 'E', idsuiv)
-                endif
+                end if
                 do k = kil, n
-                    zi(idsuiv-1+iilib) = iilib + 1
+                    zi(idsuiv-1+iilib) = iilib+1
                     zi(idip-1+iilib) = zi(idil-1+k)
-                    iilib = iilib + 1
+                    iilib = iilib+1
                 end do
 !              MARQUAGE FIN DE CHAINE
                 zi(idsuiv-1+iilib-1) = -j
 !
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 end subroutine

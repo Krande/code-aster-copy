@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine rsinfo(nomcon, ifi)
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=6) :: nompro
-    parameter ( nompro = 'RSINFO' )
+    parameter(nompro='RSINFO')
 !
     integer :: ifi, ibid, nbnosy, lres, inomsy, i, j, k, isy, ii
     integer :: iatach, lnosy, lnopa, lnupa, latac, lg, lb
@@ -87,7 +87,7 @@ subroutine rsinfo(nomcon, ifi)
     if (nbnosy .eq. 0) then
         call utmess('A', 'UTILITAI4_34', sk=nomd2)
         goto 999
-    endif
+    end if
 !
 ! 1.2. ==> CONSTANTES
 !
@@ -106,34 +106,34 @@ subroutine rsinfo(nomcon, ifi)
     call jeexin(nomd2(1:8)//'           .DESC', j)
     if (j .eq. 0) then
         goto 999
-    endif
+    end if
 !
 ! 2.2. ==> NUMEROS D'ORDRE
 !
-    call rsorac(nomd2, 'LONUTI', 0, r8b, k8b,&
-                c16b, r8b, k8b, tord, 1,&
+    call rsorac(nomd2, 'LONUTI', 0, r8b, k8b, &
+                c16b, r8b, k8b, tord, 1, &
                 ibid)
-    nbordt=tord(1)
+    nbordt = tord(1)
     if (nbordt .eq. 0) then
-       write (ifi,103) nomd2(1:8)
-       goto 999
-    endif
+        write (ifi, 103) nomd2(1:8)
+        goto 999
+    end if
 !
     if (nbordt .eq. 1) then
-        write (ifi,101) nomd2(1:8)
+        write (ifi, 101) nomd2(1:8)
     else
-        write (ifi,102) nomd2(1:8), nbordt
-    endif
+        write (ifi, 102) nomd2(1:8), nbordt
+    end if
 !
-101 format(/,1x,'STRUCTURE DU CONCEPT ',a,' CALCULE POUR 1',&
-           ' NUMERO D''ORDRE')
-102 format(/,1x,'STRUCTURE DU CONCEPT ',a,' CALCULE POUR ',i10,&
-           ' NUMEROS D''ORDRE')
-103 format(/,1x,'STRUCTURE DU CONCEPT ',a,' VIDE, NE CONTENANT AUCUN NUMERO D''ORDRE')
+101 format(/, 1x, 'STRUCTURE DU CONCEPT ', a, ' CALCULE POUR 1', &
+            ' NUMERO D''ORDRE')
+102 format(/, 1x, 'STRUCTURE DU CONCEPT ', a, ' CALCULE POUR ', i10, &
+            ' NUMEROS D''ORDRE')
+103 format(/, 1x, 'STRUCTURE DU CONCEPT ', a, ' VIDE, NE CONTENANT AUCUN NUMERO D''ORDRE')
 !
     call wkvect('&&'//nompro//'.NUME_ORDRE', 'V V I', nbordt, lres)
-    call rsorac(nomd2, 'TOUT_ORDRE', 0, r8b, k8b,&
-                c16b, r8b, k8b, zi(lres), nbordt,&
+    call rsorac(nomd2, 'TOUT_ORDRE', 0, r8b, k8b, &
+                c16b, r8b, k8b, zi(lres), nbordt, &
                 ibid)
 !
 ! 2.3. ==> NOMS SYMBOLIQUES
@@ -146,35 +146,35 @@ subroutine rsinfo(nomcon, ifi)
         call jenonu(jexnom(nomd2//'.DESC', nomsym), ibid)
         call jeveuo(jexnum(nomd2//'.TACH', ibid), 'L', iatach)
         do i = 1, nbordt
-            if (zk24(iatach-1+i)(1:1) .ne. ' ') then
-                inomsy = inomsy + 1
-                lg = lxlgut( nomsym )
-                lb = ( 16 - lg ) / 2
+            if (zk24(iatach-1+i) (1:1) .ne. ' ') then
+                inomsy = inomsy+1
+                lg = lxlgut(nomsym)
+                lb = (16-lg)/2
                 zk16(lnosy+inomsy-1) = blanc(1:lb)//nomsym
                 zk16(latac+inomsy-1) = nomsym
                 goto 241
-            endif
+            end if
         end do
 241     continue
     end do
 !
     if (inomsy .eq. 0) then
-        write (ifi,'(/,1X,A)') 'LISTE DES NOMS SYMBOLIQUES: AUCUN'
+        write (ifi, '(/,1X,A)') 'LISTE DES NOMS SYMBOLIQUES: AUCUN'
         goto 243
-    endif
+    end if
 !
     call codent(inomsy, 'D', nomb1)
     form1 = '(1X,''!'',1X,A10,1X,'//nomb1//'(''!'',A16),''!'')'
-    longt = 17 * inomsy
+    longt = 17*inomsy
     if (longt .gt. 2000) then
         call utmess('A', 'UTILITAI4_36')
         goto 999
-    endif
+    end if
     call codent(longt, 'G', nomb1)
     form2 = '(1X,''!'',1X,I10,1X,''!'',A'//nomb1//')'
     form3 = '(1X,''!'',1X,A10,1X,''!'',A'//nomb1//')'
 !
-    write (ifi,'(/,1X,A)') 'LISTE DES NOMS SYMBOLIQUES:'
+    write (ifi, '(/,1X,A)') 'LISTE DES NOMS SYMBOLIQUES:'
 !
     call wkvect('&&'//nompro//'.TIRET', 'V V K16', max(inomsy, 1), ltirt)
     call wkvect('&&'//nompro//'.POINT', 'V V K16', max(inomsy, 1), lpoin)
@@ -183,9 +183,9 @@ subroutine rsinfo(nomcon, ifi)
         zk16(ltirt+i-1) = '----------------'
         zk16(lpoin+i-1) = '      ...       '
     end do
-    write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
-    write (ifi,form1) 'NUME_ORDRE', ( zk16(lnosy+j-1), j=1,inomsy )
-    write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
+    write (ifi, form1) '----------', (zk16(ltirt+j-1), j=1, inomsy)
+    write (ifi, form1) 'NUME_ORDRE', (zk16(lnosy+j-1), j=1, inomsy)
+    write (ifi, form1) '----------', (zk16(ltirt+j-1), j=1, inomsy)
 !
     chain1 = ' '
     chain3 = ' '
@@ -198,24 +198,24 @@ subroutine rsinfo(nomcon, ifi)
 ! RECHERCHE DES NOMS SYMBOLIQUES POUR LE NUMERO D'ORDRE COURANT, I
 !
         do isy = 1, inomsy
-            ipcf = ipcd + 16 - 1
+            ipcf = ipcd+16-1
             nomsym = zk16(latac+isy-1)
-            call rsexch(' ', nomd2, nomsym, zi(lres+i-1), noch19,&
+            call rsexch(' ', nomd2, nomsym, zi(lres+i-1), noch19, &
                         iret)
             if (iret .eq. 0) then
                 call dismoi('NOM_GD', noch19, 'CHAMP', repk=nomgd)
-                lg = lxlgut( nomgd )
-                lb = ( 16 - lg ) / 2
+                lg = lxlgut(nomgd)
+                lb = (16-lg)/2
                 chain2(ipcd:ipcf) = blanc(1:lb)//nomgd(1:lg)//blanc
                 chain4(ipcd:ipcf) = zk16(lpoin+isy-1)
             else
                 chain2(ipcd:ipcf) = blanc
                 chain4(ipcd:ipcf) = blanc
-            endif
-            ipcd = ipcf + 1
+            end if
+            ipcd = ipcf+1
             chain2(ipcd:ipcd) = '!'
             chain4(ipcd:ipcd) = '!'
-            ipcd = ipcd + 1
+            ipcd = ipcd+1
         end do
 !
 ! ECRITURE : ON ECRIT TOUJOURS LA PREMIERE ET LA DERNIERE LIGNE. AU
@@ -224,48 +224,48 @@ subroutine rsinfo(nomcon, ifi)
 ! . 1ERE LIGNE : LA CHAINE COMPLETE
 !
         if (i .eq. 1) then
-            write (ifi,form2) zi(lres+i-1) , chain2(1:longt)
+            write (ifi, form2) zi(lres+i-1), chain2(1:longt)
             ii = 1
 !
 ! . SI LE NOUVEAU TEXTE, CHAIN2, EST DIFFERENT DE CELUI DE LA LIGNE
 !   PRECEDENTE, CHAIN1
 ! . OU SI C'EST LA DERNIERE LIGNE
 !
-        else if (chain1.ne.chain2 .or. i.eq.nbordt) then
+        else if (chain1 .ne. chain2 .or. i .eq. nbordt) then
 !          . ON VIENT JUSTE D'ECRIRE CHAIN1
             if (ii .eq. (i-1)) then
-                write (ifi,form2) zi(lres+i-1) , chain2(1:longt)
+                write (ifi, form2) zi(lres+i-1), chain2(1:longt)
 !          . ON A ECRIT CHAIN1 DEUX NUMEROS AVANT : ON ECRIT LE
 !          NUMERO PRECEDENT, I-1, ET LE COURANT, I.
             else if (ii .eq. (i-2)) then
-                write (ifi,form2) zi(lres+i-2) , chain1(1:longt)
-                write (ifi,form2) zi(lres+i-1) , chain2(1:longt)
+                write (ifi, form2) zi(lres+i-2), chain1(1:longt)
+                write (ifi, form2) zi(lres+i-1), chain2(1:longt)
 !          . ON A ECRIT CHAIN1 PLUS DE DEUX NUMEROS AVANT : ON ECRIT
 !          UNE LIGNE DE POINTILLES, LE NUMERO PRECEDENT, I-1, ET LE
 !          NUMERO COURANT, I.
             else
                 if (chain1 .ne. chain2) then
                     if (ii .eq. (i-3)) then
-                        write (ifi,form2) zi(lres+i-3) , chain1(1:&
-                        longt)
+                        write (ifi, form2) zi(lres+i-3), chain1(1: &
+                                                                longt)
                     else
-                        write (ifi,form3) '       ...' , chain3(1:longt)
-                    endif
-                    write (ifi,form2) zi(lres+i-2) , chain1(1:longt)
+                        write (ifi, form3) '       ...', chain3(1:longt)
+                    end if
+                    write (ifi, form2) zi(lres+i-2), chain1(1:longt)
                 else
-                    write (ifi,form3) '       ...' , chain3(1:longt)
-                endif
-                write (ifi,form2) zi(lres+i-1) , chain2(1:longt)
-            endif
+                    write (ifi, form3) '       ...', chain3(1:longt)
+                end if
+                write (ifi, form2) zi(lres+i-1), chain2(1:longt)
+            end if
             ii = i
 !
-        endif
+        end if
         chain1(1:longt) = chain2(1:longt)
         chain3(1:longt) = chain4(1:longt)
 !
     end do
 !
-    write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
+    write (ifi, form1) '----------', (zk16(ltirt+j-1), j=1, inomsy)
 !
 243 continue
 !
@@ -283,29 +283,29 @@ subroutine rsinfo(nomcon, ifi)
     call rsnopa(nomd2, 2, '&&'//nompro//'.NOMS_PARA', nbac, nbpa)
     call jeveuo('&&'//nompro//'.NOMS_PARA', 'L', jpa)
     if (nbac .ne. 0) then
-        write (ifi,'(/,1X,A)') 'LISTE DES NOMS DE VARIABLES D''ACCES:'
+        write (ifi, '(/,1X,A)') 'LISTE DES NOMS DE VARIABLES D''ACCES:'
         do iac = 1, nbac
-            call rsadpa(nomd2, 'L', 1, zk16(jpa-1+iac), zi(lres),&
+            call rsadpa(nomd2, 'L', 1, zk16(jpa-1+iac), zi(lres), &
                         1, sjv=iad, styp=ctype, istop=0)
             if (ctype(1:1) .eq. 'I') then
-                write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  I'
-            else if (ctype(1:1).eq.'R') then
+                write (ifi, '(38X,A,A)') zk16(jpa-1+iac), ' DE TYPE  I'
+            else if (ctype(1:1) .eq. 'R') then
                 if (zr(iad) .ne. rundf) then
-                    write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  R'
-                endif
-            else if (ctype(1:3).eq.'K80') then
-                write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  K80'
-            else if (ctype(1:3).eq.'K32') then
-                write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  K32'
-            else if (ctype(1:3).eq.'K24') then
-                write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  K24'
-            else if (ctype(1:3).eq.'K16') then
-                write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  K16'
-            else if (ctype(1:2).eq.'K8') then
-                write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  K8'
-            endif
+                    write (ifi, '(38X,A,A)') zk16(jpa-1+iac), ' DE TYPE  R'
+                end if
+            else if (ctype(1:3) .eq. 'K80') then
+                write (ifi, '(38X,A,A)') zk16(jpa-1+iac), ' DE TYPE  K80'
+            else if (ctype(1:3) .eq. 'K32') then
+                write (ifi, '(38X,A,A)') zk16(jpa-1+iac), ' DE TYPE  K32'
+            else if (ctype(1:3) .eq. 'K24') then
+                write (ifi, '(38X,A,A)') zk16(jpa-1+iac), ' DE TYPE  K24'
+            else if (ctype(1:3) .eq. 'K16') then
+                write (ifi, '(38X,A,A)') zk16(jpa-1+iac), ' DE TYPE  K16'
+            else if (ctype(1:2) .eq. 'K8') then
+                write (ifi, '(38X,A,A)') zk16(jpa-1+iac), ' DE TYPE  K8'
+            end if
         end do
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !
@@ -318,7 +318,7 @@ subroutine rsinfo(nomcon, ifi)
         do i = 1, nbordt
             do j = 1, nbpa
                 nopara = zk16(jpa-1+j+nbac)
-                call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
+                call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1), &
                             1, sjv=iad, styp=ctype, istop=0)
                 if (ctype(1:1) .eq. 'I') then
                 else if (ctype(1:1) .eq. 'R') then
@@ -326,14 +326,14 @@ subroutine rsinfo(nomcon, ifi)
                 else if (ctype(1:1) .eq. 'K') then
                 else
                     goto 261
-                endif
-                lg = lxlgut( nopara )
-                lb = ( 16 - lg ) / 2
+                end if
+                lg = lxlgut(nopara)
+                lb = (16-lg)/2
                 nopar2 = blanc(1:lb)//nopara
                 do k = 1, ipar
                     if (zk16(lnopa+k-1) .eq. nopar2) goto 261
                 end do
-                ipar = ipar + 1
+                ipar = ipar+1
                 zk16(lnopa+ipar-1) = nopar2
                 zk16(lnupa+ipar-1) = nopara
 261             continue
@@ -342,7 +342,7 @@ subroutine rsinfo(nomcon, ifi)
 !
         call codent(ipar, 'D', nomb1)
         form1 = '(1X,''!'',1X,A10,1X,'//nomb1//'(''!'',A16),''!'')'
-        ipcd = 17 * ipar
+        ipcd = 17*ipar
         call codent(ipcd, 'G', nomb1)
         form2 = '(1X,''!'',1X,I10,1X,''!'',A'//nomb1//')'
 !
@@ -353,10 +353,10 @@ subroutine rsinfo(nomcon, ifi)
             zk16(lpoin+i-1) = '      ...       '
         end do
 !
-        write (ifi,'(/,1X,A)') 'LISTE DES NOMS DE PARAMETRES:'
-        write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,ipar )
-        write (ifi,form1) 'NUME_ORDRE', ( zk16(lnopa+j-1), j=1,ipar )
-        write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,ipar )
+        write (ifi, '(/,1X,A)') 'LISTE DES NOMS DE PARAMETRES:'
+        write (ifi, form1) '----------', (zk16(ltirt+j-1), j=1, ipar)
+        write (ifi, form1) 'NUME_ORDRE', (zk16(lnopa+j-1), j=1, ipar)
+        write (ifi, form1) '----------', (zk16(ltirt+j-1), j=1, ipar)
 !
         chain1 = ' '
         do i = 1, nbordt
@@ -365,32 +365,32 @@ subroutine rsinfo(nomcon, ifi)
             chain2 = ' '
             ipcd = 1
             do j = 1, ipar
-                ipcf = ipcd + 15
+                ipcf = ipcd+15
                 nopara = zk16(lnupa+j-1)
-                call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
+                call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1), &
                             1, sjv=iad, styp=ctype, istop=0)
                 if (ctype(1:1) .eq. 'I') then
                     chain2(ipcd:ipcf) = '       I        '
-                else if (ctype(1:1).eq.'R') then
+                else if (ctype(1:1) .eq. 'R') then
                     if (zr(iad) .ne. rundf) then
                         chain2(ipcd:ipcf) = '       R        '
-                    endif
-                else if (ctype(1:3).eq.'K80') then
+                    end if
+                else if (ctype(1:3) .eq. 'K80') then
                     chain2(ipcd:ipcf) = '      K80        '
-                else if (ctype(1:3).eq.'K32') then
+                else if (ctype(1:3) .eq. 'K32') then
                     chain2(ipcd:ipcf) = '      K32        '
-                else if (ctype(1:3).eq.'K24') then
+                else if (ctype(1:3) .eq. 'K24') then
                     chain2(ipcd:ipcf) = '      K24        '
-                else if (ctype(1:3).eq.'K16') then
+                else if (ctype(1:3) .eq. 'K16') then
                     chain2(ipcd:ipcf) = '      K16        '
-                else if (ctype(1:2).eq.'K8') then
+                else if (ctype(1:2) .eq. 'K8') then
                     chain2(ipcd:ipcf) = '       K8        '
                 else
                     chain2(ipcd:ipcf) = blanc
-                endif
-                ipcd = ipcf + 1
+                end if
+                ipcd = ipcf+1
                 chain2(ipcd:ipcd) = '!'
-                ipcd = ipcd + 1
+                ipcd = ipcd+1
             end do
 !
 ! ECRITURE : ON ECRIT TOUJOURS LA PREMIERE ET LA DERNIERE LIGNE. AU
@@ -399,49 +399,49 @@ subroutine rsinfo(nomcon, ifi)
 ! . 1ERE LIGNE : LA CHAINE COMPLETE
 !
             if (i .eq. 1) then
-                write (ifi,form2) zi(lres+i-1) , chain2
+                write (ifi, form2) zi(lres+i-1), chain2
                 ii = 1
 !
 ! . SI LE NOUVEAU TEXTE, CHAIN2, EST DIFFERENT DE CELUI DE LA LIGNE
 !   PRECEDENTE, CHAIN1
 ! . OU SI C'EST LA DERNIERE LIGNE
 !
-            else if (chain1.ne.chain2 .or. i.eq.nbordt) then
+            else if (chain1 .ne. chain2 .or. i .eq. nbordt) then
 !          . ON VIENT JUSTE D'ECRIRE CHAIN1
                 if (ii .eq. (i-1)) then
-                    write (ifi,form2) zi(lres+i-1) , chain2
+                    write (ifi, form2) zi(lres+i-1), chain2
 !          . ON A ECRIT CHAIN1 DEUX NUMEROS AVANT : ON ECRIT LE
 !          NUMERO PRECEDENT, I-1, ET LE COURANT, I.
                 else if (ii .eq. (i-2)) then
-                    write (ifi,form2) zi(lres+i-2) , chain1
-                    write (ifi,form2) zi(lres+i-1) , chain2
+                    write (ifi, form2) zi(lres+i-2), chain1
+                    write (ifi, form2) zi(lres+i-1), chain2
 !          . ON A ECRIT CHAIN1 PLUS DE DEUX NUMEROS AVANT : ON ECRIT
 !          UNE LIGNE DE POINTILLES, LE NUMERO PRECEDENT, I-1, ET LE
 !          NUMERO COURANT, I.
                 else
                     if (chain1 .ne. chain2) then
                         if (ii .eq. (i-3)) then
-                            write (ifi,form2) zi(lres+i-3) , chain1
+                            write (ifi, form2) zi(lres+i-3), chain1
                         else
-                            write (ifi,form1)'       ...',(zk16(lpoin+k-1),k=1,ipar)
-                        endif
-                        write (ifi,form2) zi(lres+i-2) , chain1
+                            write (ifi, form1) '       ...', (zk16(lpoin+k-1), k=1, ipar)
+                        end if
+                        write (ifi, form2) zi(lres+i-2), chain1
                     else
-                        write (ifi,form1)'       ...',(zk16(lpoin+k-1),k=1,ipar)
-                    endif
-                    write (ifi,form2) zi(lres+i-1) , chain2
-                endif
+                        write (ifi, form1) '       ...', (zk16(lpoin+k-1), k=1, ipar)
+                    end if
+                    write (ifi, form2) zi(lres+i-1), chain2
+                end if
                 ii = i
-            endif
+            end if
             chain1 = chain2
         end do
-        write (ifi,form1) '----------', ( zk16(ltirt+k-1), k=1,ipar )
+        write (ifi, form1) '----------', (zk16(ltirt+k-1), k=1, ipar)
         call jedetr('&&'//nompro//'.TIRET')
         call jedetr('&&'//nompro//'.POINT')
         call jedetr('&&'//nompro//'.NOM_PARA')
         call jedetr('&&'//nompro//'.NUM_PARA')
         call jedetr('&&'//nompro//'.PARA_EXIS')
-    endif
+    end if
 !
 ! 2.6. ==> MENAGE PARTIEL
 !

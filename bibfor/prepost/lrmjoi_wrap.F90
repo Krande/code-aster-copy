@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,14 +47,14 @@ subroutine lrmjoi_wrap(nomu, nofimd)
 !
     med_idt :: fid, ifimed
     integer :: nbnoeu, ndim, codret, vali(3)
-    integer, parameter :: edlect=0
+    integer, parameter :: edlect = 0
 !
     aster_logical :: existm
 !
     call jemarq()
 !
-    call sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
-                cooref, grpnoe, gpptnn, grpmai, gpptnm,&
+    call sdmail(nomu, nommai, nomnoe, cooval, coodsc, &
+                cooref, grpnoe, gpptnn, grpmai, gpptnm, &
                 connex, titre, typmai, adapma)
 !
     call jelira(cooval, 'LONMAX', nbnoeu)
@@ -62,11 +62,11 @@ subroutine lrmjoi_wrap(nomu, nofimd)
 !
     ifimed = 0
     nomamd = ' '
-    call mdexpm(nofimd, ifimed, nomamd, existm, ndim,&
+    call mdexpm(nofimd, ifimed, nomamd, existm, ndim, &
                 codret)
-    if (.not.existm) then
+    if (.not. existm) then
         call utmess('F', 'MED_50', sk=nofimd)
-    endif
+    end if
 !
     call as_med_open(fid, nofimd, edlect, codret)
     if (codret .ne. 0) then
@@ -75,7 +75,7 @@ subroutine lrmjoi_wrap(nomu, nofimd)
         vali(1) = codret
         call utmess('A', 'MODELISA9_51', nk=2, valk=valk, si=vali(1))
         call utmess('F', 'PREPOST_69')
-    endif
+    end if
 !
     call lrmjoi(fid, nommai, nomamd, nbnoeu)
 !

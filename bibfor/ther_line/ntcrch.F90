@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/carces.h"
 #include "asterfort/cescel.h"
@@ -60,23 +60,23 @@ implicit none
 !
 ! - Create hydration
 !
-    hydric     = '&&NTCRCH.HYDR_C'
-    hydris     = '&&NTCRCH.HYDR_S'
+    hydric = '&&NTCRCH.HYDR_C'
+    hydris = '&&NTCRCH.HYDR_S'
     if (present(vhydr_)) then
         hydr_init_ = '&&NTCRCH.HYDR0'
-        call mecact('V', hydric, 'MODELE', ligrmo, 'HYDR_R',&
+        call mecact('V', hydric, 'MODELE', ligrmo, 'HYDR_R', &
                     ncmp=1, nomcmp='HYDR', sr=0.d0)
-        call carces(hydric, 'ELNO', ' ', 'V', hydris,&
+        call carces(hydric, 'ELNO', ' ', 'V', hydris, &
                     'A', iret)
-        call cescel(hydris, ligrmo, 'RESI_RIGI_MASS', 'PHYDRPP', 'NON',&
+        call cescel(hydris, ligrmo, 'RESI_RIGI_MASS', 'PHYDRPP', 'NON', &
                     nncp, 'V', hydr_init_, 'F', ibid)
         call copisd('CHAMP_GD', 'V', hydr_init_, vhydr_)
-    endif
+    end if
 !
 ! - Create temperature
 !
-    vtemp='&&NXLECTVAR_____'
-    call vtcreb(vtemp, 'V', 'R', nume_ddlz = nume_dof)
+    vtemp = '&&NXLECTVAR_____'
+    call vtcreb(vtemp, 'V', 'R', nume_ddlz=nume_dof)
 !
     call detrsd('CHAMP', hydric)
     call detrsd('CHAMP', hydris)

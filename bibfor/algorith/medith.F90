@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine medith(base, cumul, model_, list_load, matr_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -34,11 +34,11 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/load_list_info.h"
 !
-character(len=1), intent(in) :: base
-character(len=4), intent(in) :: cumul
-character(len=*), intent(in) :: model_
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: matr_elem
+    character(len=1), intent(in) :: base
+    character(len=4), intent(in) :: cumul
+    character(len=*), intent(in) :: model_
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: matr_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,8 +79,8 @@ character(len=24), intent(in) :: matr_elem
 !
 ! - Initializations
 !
-    model     = model_
-    option    = 'THER_DDLM_R'
+    model = model_
+    option = 'THER_DDLM_R'
     resu_elem = matr_elem(1:8)//'.???????'
 !
 ! - Init fields
@@ -89,11 +89,11 @@ character(len=24), intent(in) :: matr_elem
 !
 ! - Loads
 !
-    call load_list_info(load_empty, nb_load    , v_load_name, v_load_info,&
-                        list_load_ = list_load)
+    call load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
+                        list_load_=list_load)
     if (load_empty) then
         goto 99
-    endif
+    end if
 !
 ! - Prepare MATR_ELEM
 !
@@ -101,18 +101,18 @@ character(len=24), intent(in) :: matr_elem
         call jedetr(matr_elem(1:19)//'.RELR')
         call memare(base, matr_elem, model, ' ', ' ', 'RIGI_THER')
         call reajre(matr_elem, resu_elem, base)
-    endif
+    end if
 !
 ! - Prepare RESU_ELEM
 !
     if (cumul .eq. 'ZERO') then
         i_resu_elem = 0
-    else if (cumul.eq.'CUMU') then
+    else if (cumul .eq. 'CUMU') then
         call jelira(matr_elem(1:19)//'.RELR', 'LONUTI', i_resu_elem)
-        i_resu_elem = i_resu_elem + 1
+        i_resu_elem = i_resu_elem+1
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Output field
 !
@@ -121,7 +121,7 @@ character(len=24), intent(in) :: matr_elem
 ! - Loop on loads
 !
     do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
+        load_name = v_load_name(i_load) (1:8)
         load_nume = v_load_info(i_load+1)
         if (load_nume .ne. 0) then
             ligrch = load_name(1:8)//'.CHTH.LIGRE'
@@ -143,17 +143,17 @@ character(len=24), intent(in) :: matr_elem
 !
 ! --------- Computation
 !
-            call calcul('S'  , option, ligrch, nbin, lchin,&
-                        lpain, nbout, lchout, lpaout, base,&
+            call calcul('S', option, ligrch, nbin, lchin, &
+                        lpain, nbout, lchout, lpaout, base, &
                         'OUI')
 !
 ! --------- Save RESU_ELEM
 !
             call reajre(matr_elem, lchout(1), base)
-            i_resu_elem = i_resu_elem + 1
-        endif
+            i_resu_elem = i_resu_elem+1
+        end if
     end do
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

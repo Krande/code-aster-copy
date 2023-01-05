@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine facmtr(matin, matout, ier)
 !-----------------------------------------------------------------------
     call jemarq()
     if (matin .eq. ' ') goto 9999
-    hplog=.false.
-    if (matin(1:19) .ne. matout(1:19)) hplog=.true.
+    hplog = .false.
+    if (matin(1:19) .ne. matout(1:19)) hplog = .true.
 !
 !---------CONTROLE D'EXISTENCE DE LA MATRICE----------------------------
 !
@@ -67,7 +67,7 @@ subroutine facmtr(matin, matout, ier)
     if (ier .eq. 0) then
         valk = matin
         call utmess('F', 'ALGORITH12_39', sk=valk)
-    endif
+    end if
 !
 !
 !    SI LA FACTORISATION EST HORS PLACE
@@ -78,25 +78,25 @@ subroutine facmtr(matin, matout, ier)
         if (ier .gt. 0) then
             valk = matin
             call utmess('F', 'ALGORITH13_10', sk=valk)
-        endif
+        end if
         call mtdscr(matout)
-    endif
+    end if
 !
 !
 !     -- FACTORISATION EN PLACE DE LA MATRICE DUPLIQUEE :
-    solveu='&&OP0099.SOLVEUR'
-    matpre='&&OP0099.MATPRE'
-    call preres(solveu, 'V', ire, matpre, matout,&
+    solveu = '&&OP0099.SOLVEUR'
+    matpre = '&&OP0099.MATPRE'
+    call preres(solveu, 'V', ire, matpre, matout, &
                 ibid, -9999)
 !
 !
 !
     if (ire .gt. 1) then
         call utmess('F', 'ALGORITH13_11')
-        ier=-1
-    else if (ire.eq.1) then
-        ier=-2
-    endif
+        ier = -1
+    else if (ire .eq. 1) then
+        ier = -2
+    end if
 !
 9999 continue
     call jedema()

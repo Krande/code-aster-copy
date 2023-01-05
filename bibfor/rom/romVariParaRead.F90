@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romVariParaRead(ds_varipara, keywfact, iocc)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -60,18 +60,18 @@ implicit none
     nbret = abs(nbret)
     ASSERT(nbret .le. 1)
     if (nbret .gt. 0) then
-        call getvtx(keywfact, 'NOM_PARA', iocc=iocc, scal = ds_varipara%para_name)
-    endif
+        call getvtx(keywfact, 'NOM_PARA', iocc=iocc, scal=ds_varipara%para_name)
+    end if
 !
 ! - Read value of parameters
 !
     call getvr8(keywfact, 'VALE_PARA', iocc=iocc, nbret=nb_vale_para)
     nb_vale_para = abs(nb_vale_para)
     ASSERT(nb_vale_para .ge. 1)
-    AS_ALLOCATE(vr = ds_varipara%para_vale, size = nb_vale_para)
-    call getvr8(keywfact, 'VALE_PARA', iocc=iocc, nbval = nb_vale_para,&
-                vect = ds_varipara%para_vale)
-    call getvr8(keywfact, 'VALE_INIT', iocc=iocc, scal = ds_varipara%para_init)
+    AS_ALLOCATE(vr=ds_varipara%para_vale, size=nb_vale_para)
+    call getvr8(keywfact, 'VALE_PARA', iocc=iocc, nbval=nb_vale_para, &
+                vect=ds_varipara%para_vale)
+    call getvr8(keywfact, 'VALE_INIT', iocc=iocc, scal=ds_varipara%para_init)
 !
 ! - Total number of value of parameters
 !

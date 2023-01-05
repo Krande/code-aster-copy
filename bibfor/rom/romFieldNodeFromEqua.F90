@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romFieldNodeFromEqua(field, nbNodeMesh, listNode)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -31,9 +31,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Field), intent(in) :: field
-integer, intent(in) :: nbNodeMesh
-integer, pointer :: listNode(:)
+    type(ROM_DS_Field), intent(in) :: field
+    integer, intent(in) :: nbNodeMesh
+    integer, pointer :: listNode(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,19 +66,19 @@ integer, pointer :: listNode(:)
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM11_7')
-    endif
+    end if
 !
 ! - Get parameters
 !
     fieldRefe = field%fieldRefe
-    nbEqua    = field%nbEqua
+    nbEqua = field%nbEqua
     fieldSupp = field%fieldSupp
     ASSERT(fieldSupp .eq. 'NOEU')
 !
 ! - Properties of field
 !
-    call dismoi('PROF_CHNO', fieldRefe, 'CHAM_NO', repk = profChno)
-    call jeveuo(profChno(1:19)//'.DEEQ', 'L', vi = deeq)
+    call dismoi('PROF_CHNO', fieldRefe, 'CHAM_NO', repk=profChno)
+    call jeveuo(profChno(1:19)//'.DEEQ', 'L', vi=deeq)
     call jelira(fieldRefe(1:19)//'.VALE', 'LONMAX', nbEquaChck)
     ASSERT(nbEquaChck .eq. nbEqua)
 !
@@ -90,22 +90,22 @@ integer, pointer :: listNode(:)
 
 ! ----- Detect {Node,C mp} on current equation
         numeNode = deeq(2*(numeEqua-1)+1)
-        numeCmp  = deeq(2*(numeEqua-1)+2)
+        numeCmp = deeq(2*(numeEqua-1)+2)
 
 ! ----- Physical node
         if (numeNode .gt. 0 .and. numeCmp .gt. 0) then
-            listNode(numeNode) = listNode(numeNode) + 1
-        endif
+            listNode(numeNode) = listNode(numeNode)+1
+        end if
 
 ! ----- Non-Physical node (Lagrange)
         if (numeNode .gt. 0 .and. numeCmp .lt. 0) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 
 ! ----- Non-Physical node (Lagrange) - LIAISON_DDL
         if (numeNode .eq. 0 .and. numeCmp .eq. 0) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     end do
 !
 ! - Set value
@@ -114,7 +114,7 @@ integer, pointer :: listNode(:)
         nbCmpOnNode = listNode(iNodeMesh)
         if (nbCmpOnNode .ne. 0) then
             listNode(iNodeMesh) = iNodeMesh
-        endif
+        end if
     end do
 !
 end subroutine

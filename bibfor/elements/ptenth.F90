@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ptenth(ul, xl, f, n, mat,  enerth)
+subroutine ptenth(ul, xl, f, n, mat, enerth)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,10 +36,10 @@ subroutine ptenth(ul, xl, f, n, mat,  enerth)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    implicit  none
+    implicit none
 !
     integer ::  n
-    real(kind=8) :: ul(12), f, mat(n,n), enerth
+    real(kind=8) :: ul(12), f, mat(n, n), enerth
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,16 +59,16 @@ subroutine ptenth(ul, xl, f, n, mat,  enerth)
 !       calcul des forces induites par les déformations thermiques
         do ii = 1, 6
             do jj = 1, 6
-                flt(ii)   = flt(ii)   - mat(ii,jj)    *ugt(jj)
-                flt(ii+6) = flt(ii+6) - mat(ii+6,jj+6)*ugt(jj+6)
-                flm(ii)   = flm(ii)   - mat(ii,jj)    *ul(jj)
-                flm(ii+6) = flm(ii+6) - mat(ii+6,jj+6)*ul(jj+6)
-            enddo
-        enddo
+                flt(ii) = flt(ii)-mat(ii, jj)*ugt(jj)
+                flt(ii+6) = flt(ii+6)-mat(ii+6, jj+6)*ugt(jj+6)
+                flm(ii) = flm(ii)-mat(ii, jj)*ul(jj)
+                flm(ii+6) = flm(ii+6)-mat(ii+6, jj+6)*ul(jj+6)
+            end do
+        end do
 !       energie de deformation induite par les deformations thermiques
-        do  ii = 1, 12
-            enerth = enerth + (0.5d0*ugt(ii)*flt(ii)-ugt(ii)*flm(ii))
-        enddo
-    endif
+        do ii = 1, 12
+            enerth = enerth+(0.5d0*ugt(ii)*flt(ii)-ugt(ii)*flm(ii))
+        end do
+    end if
 !
 end subroutine

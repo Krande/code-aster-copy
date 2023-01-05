@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,49 +47,49 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
 !
     call jemarq()
 !
-    noch=nocham
-    ASSERT(arret.eq.'F'.or.arret.eq.'C')
-    ie1=0
-    ie2=0
-    ier=1
+    noch = nocham
+    ASSERT(arret .eq. 'F' .or. arret .eq. 'C')
+    ie1 = 0
+    ie2 = 0
+    ier = 1
 !
 !     VERIFICATION DU TYPE
     if (locham(1:1) .ne. '*') then
-        loch=locham
-        call dismoi('TYPE_CHAMP', noch, 'CHAMP', repk=tych, arret=arret,&
+        loch = locham
+        call dismoi('TYPE_CHAMP', noch, 'CHAMP', repk=tych, arret=arret, &
                     ier=ie1)
-        if ((loch(3:4).ne.'XX' .and. loch.ne.tych ) .or.&
-            (loch(3:4) .eq.'XX' .and. loch(1:2).ne.tych(1:2))) then
-            ie1=1
+        if ((loch(3:4) .ne. 'XX' .and. loch .ne. tych) .or. &
+            (loch(3:4) .eq. 'XX' .and. loch(1:2) .ne. tych(1:2))) then
+            ie1 = 1
             if (arret .eq. 'F') then
-                valk (1) = noch
-                valk (2) = loch
-                valk (3) = tych
+                valk(1) = noch
+                valk(2) = loch
+                valk(3) = tych
                 call utmess('F', 'ELEMENTS_10', nk=3, valk=valk)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !     VERIFICATION DE LA GRANDEUR
     if (gdcham(1:1) .ne. '*') then
-        gdch=gdcham
-        call dismoi('NOM_GD', noch, 'CHAMP', repk=nomgd, arret=arret,&
+        gdch = gdcham
+        call dismoi('NOM_GD', noch, 'CHAMP', repk=nomgd, arret=arret, &
                     ier=ie2)
         if (gdch .ne. nomgd) then
-            ie2=1
+            ie2 = 1
             if (arret .eq. 'F') then
-                valk (1) = noch
-                valk (2) = gdch
-                valk (3) = nomgd
+                valk(1) = noch
+                valk(2) = gdch
+                valk(3) = nomgd
                 call utmess('F', 'ELEMENTS_37', nk=3, valk=valk)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !    VERIFICATION CROISE POUR SORTIR UN 'ET' DES 2 CONDITIONS
-    if ((ie1.eq.0) .and. (ie2.eq.0)) then
+    if ((ie1 .eq. 0) .and. (ie2 .eq. 0)) then
         ier = 0
-    endif
+    end if
     call jedema()
 !
 end subroutine

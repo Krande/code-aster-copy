@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
+subroutine w155ch(chin, carele, ligrel, chextr, motfac, &
                   nucou, nicou, nangl, nufib)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -96,32 +96,32 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call dismoi('TYPE_SCA', chin, 'CHAM_ELEM', repk=tsca)
     call dismoi('MXNBSP', chin, 'CHAM_ELEM', repi=nbspmx)
     call dismoi('NOM_LIGREL', chin, 'CHAM_ELEM', repk=ligre1)
-    same_ligrel=ligre1.eq.ligrel
+    same_ligrel = ligre1 .eq. ligrel
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel2)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', vi=lliel2)
     call jeveuo(ligre1//'.LIEL', 'L', vi=liel1)
     call jeveuo(jexatr(ligre1//'.LIEL', 'LONCUM'), 'L', vi=lliel1)
     if (nbspmx .le. 1) then
         call utmess('F', 'CALCULEL2_15')
-    endif
+    end if
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call jeveuo(chin//'.CELD', 'L', vi=celd1)
     call jeveuo(chin//'.CELV', 'L', jcelv1)
     nbgr1 = celd1(2)
 !
-    ces1='&&W155CH.CES1'
-    ces2='&&W155CH.CES2'
-    ces5='&&W155CH.CES5'
+    ces1 = '&&W155CH.CES1'
+    ces2 = '&&W155CH.CES2'
+    ces5 = '&&W155CH.CES5'
 !
 !   1.  liste des mailles a traiter :
 !   ---------------------------------
-    linuma='&&W155CH.LIMA'
-    linute='&&W155CH.LITE'
+    linuma = '&&W155CH.LIMA'
+    linute = '&&W155CH.LITE'
     call liglma(ligrel, nbellg, linuma, linute)
-    ASSERT(nbellg.gt.0)
+    ASSERT(nbellg .gt. 0)
     call jeveuo(linuma, 'L', jlima)
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgr)
-    if (.not.same_ligrel) then
+    if (.not. same_ligrel) then
 !       -- il faut pouvoir faire la correspondance (igr2,iel2 <-> igr1, iel1)
         AS_ALLOCATE(vi=igriel1, size=2*nbma)
         do igr1 = 1, nbgr1
@@ -130,15 +130,15 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
             imolo = celd1(debugr1+2)
             if (imolo .eq. 0) goto 172
             do iel1 = 1, nbel1
-                numa = numail1(igr1,iel1)
+                numa = numail1(igr1, iel1)
                 if (numa .lt. 0) goto 142
-                igriel1(2*(numa-1)+1)=igr1
-                igriel1(2*(numa-1)+2)=iel1
+                igriel1(2*(numa-1)+1) = igr1
+                igriel1(2*(numa-1)+2) = iel1
 142             continue
-            enddo
+            end do
 172         continue
-        enddo
-    endif
+        end do
+    end if
 !
 !
 !   2.  nombre de couches, secteurs et fibres  des elements :
@@ -146,11 +146,11 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call celces(carele//'.CANBSP', 'V', ces1)
 !
 !     -- l'ordre des cmps est important (utilise dans w155ma)
-    licmp(1)='COQ_NCOU'
-    licmp(2)='TUY_NCOU'
-    licmp(3)='TUY_NSEC'
-    licmp(4)='NBFIBR'
-    call cesred(ces1, nbellg, zi(jlima), 4, licmp,&
+    licmp(1) = 'COQ_NCOU'
+    licmp(2) = 'TUY_NCOU'
+    licmp(3) = 'TUY_NSEC'
+    licmp(4) = 'NBFIBR'
+    call cesred(ces1, nbellg, zi(jlima), 4, licmp, &
                 'V', ces2)
     call detrsd('CHAM_ELEM_S', ces1)
     call jeveuo(ces2//'.CESD', 'L', jce2d)
@@ -161,21 +161,21 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !   2-bis  valeur de omega (angzzk) pour les tuyaux :
 !   -----------------------------------------------------------
     if (motfac .eq. 'EXTR_TUYAU') then
-        call carces(carele//'.CARORIEN', 'ELEM', ' ', 'V', ces1,&
+        call carces(carele//'.CARORIEN', 'ELEM', ' ', 'V', ces1, &
                     'A', iret)
-        ASSERT(iret.eq.0)
-        licmp(1)='ANGZZK'
-        call cesred(ces1, nbellg, zi(jlima), 1, licmp,&
+        ASSERT(iret .eq. 0)
+        licmp(1) = 'ANGZZK'
+        call cesred(ces1, nbellg, zi(jlima), 1, licmp, &
                     'V', ces5)
         call detrsd('CHAM_ELEM_S', ces1)
         call jeveuo(ces5//'.CESD', 'L', jce5d)
         call jeveuo(ces5//'.CESV', 'L', jce5v)
         call jeveuo(ces5//'.CESL', 'L', jce5l)
     else
-        jce5d=0
-        jce5v=0
-        jce5l=0
-    endif
+        jce5d = 0
+        jce5v = 0
+        jce5l = 0
+    end if
 !
 !
 !   3. Allocation de chextr :
@@ -183,11 +183,11 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !
     if (nomgd .eq. 'VARI_R') then
 !       -- il faut recuperer le nombre de variables internes dans chin
-        dcel='&&W155CH.DCEL'
+        dcel = '&&W155CH.DCEL'
 !
         licmp(1) = 'NPG_DYN'
         licmp(2) = 'NCMP_DYN'
-        call cescre('V', dcel, 'ELEM', ma, 'DCEL_I',&
+        call cescre('V', dcel, 'ELEM', ma, 'DCEL_I', &
                     2, licmp, [-1], [-1], [-2])
 !
         call jeveuo(dcel//'.CESD', 'E', jcesd)
@@ -201,31 +201,31 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
             if (imolo .eq. 0) goto 171
 !
             do iel1 = 1, nbel1
-                numa = numail1(igr1,iel1)
+                numa = numail1(igr1, iel1)
                 if (numa .lt. 0) goto 141
 !
-                ncdyn = celd1(debugr1+4+4* (iel1-1)+2)
-                call cesexi('C', jcesd, jcesl, numa, 1,&
+                ncdyn = celd1(debugr1+4+4*(iel1-1)+2)
+                call cesexi('C', jcesd, jcesl, numa, 1, &
                             1, 1, iad)
-                cesv(1-1-iad)=0
-                zl(jcesl-1-iad)=.true.
-                call cesexi('C', jcesd, jcesl, numa, 1,&
+                cesv(1-1-iad) = 0
+                zl(jcesl-1-iad) = .true.
+                call cesexi('C', jcesd, jcesl, numa, 1, &
                             1, 2, iad)
-                cesv(1-1-iad)=ncdyn
-                zl(jcesl-1-iad)=.true.
+                cesv(1-1-iad) = ncdyn
+                zl(jcesl-1-iad) = .true.
 141             continue
             end do
 171         continue
         end do
     else
-        dcel=' '
-    endif
+        dcel = ' '
+    end if
 !
     call dismoi('NOM_OPTION', chin, 'CHAM_ELEM', repk=option)
     call dismoi('NOM_PARAM', chin, 'CHAM_ELEM', repk=nompar)
-    call alchml(ligrel, option, nompar, 'G', chextr,&
+    call alchml(ligrel, option, nompar, 'G', chextr, &
                 iret, dcel)
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
 !
 !   4. Recopie des valeurs de chin vers chextr :
@@ -233,8 +233,8 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !   -- une difficulte : ligrel peut etre different de ligre1
     call jeveuo(chextr//'.CELD', 'L', vi=celd2)
     call jeveuo(chextr//'.CELV', 'E', jcelv2)
-    nbgr2=celd2(2)
-    ASSERT(nbgr2.eq.nbgr)
+    nbgr2 = celd2(2)
+    ASSERT(nbgr2 .eq. nbgr)
 !
     do igr2 = 1, nbgr2
         debugr2 = celd2(4+igr2)
@@ -245,57 +245,57 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
         lgcata = celd2(debugr2+3)
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
         nbpt = zi(jmolo-1+4)
-        ncmp=lgcata/nbpt
-        ASSERT(nbpt*ncmp.eq.lgcata)
+        ncmp = lgcata/nbpt
+        ASSERT(nbpt*ncmp .eq. lgcata)
 !
         do iel2 = 1, nbel2
-            numa = numail2(igr2,iel2)
+            numa = numail2(igr2, iel2)
             if (numa .lt. 0) goto 140
 !
             if (same_ligrel) then
-                igr1=igr2
-                iel1=iel2
+                igr1 = igr2
+                iel1 = iel2
             else
-                igr1=igriel1(2*(numa-1)+1)
-                iel1=igriel1(2*(numa-1)+2)
+                igr1 = igriel1(2*(numa-1)+1)
+                iel1 = igriel1(2*(numa-1)+2)
                 if (iel1*igr1 .eq. 0) goto 140
-                ASSERT(iel1*igr1.gt.0)
-            endif
+                ASSERT(iel1*igr1 .gt. 0)
+            end if
             debugr1 = celd1(4+igr1)
 !
-            nbsp1 = celd1(debugr1+4+4* (iel1-1)+1)
-            nbsp2 = celd2(debugr2+4+4* (iel2-1)+1)
-            ASSERT(nbsp2.le.1)
-            ncdyn1 = max(celd1(debugr1+4+4* (iel1-1)+2),1)
-            ncdyn2 = max(celd2(debugr2+4+4* (iel2-1)+2),1)
-            ASSERT(ncdyn1.eq.ncdyn2)
-            ncdyn=ncdyn1
-            ASSERT(celd1(debugr1+4+4* (iel1-1)+3).eq.lgcata*nbsp1*ncdyn)
-            ASSERT(celd2(debugr2+4+4* (iel2-1)+3).eq.lgcata*ncdyn)
+            nbsp1 = celd1(debugr1+4+4*(iel1-1)+1)
+            nbsp2 = celd2(debugr2+4+4*(iel2-1)+1)
+            ASSERT(nbsp2 .le. 1)
+            ncdyn1 = max(celd1(debugr1+4+4*(iel1-1)+2), 1)
+            ncdyn2 = max(celd2(debugr2+4+4*(iel2-1)+2), 1)
+            ASSERT(ncdyn1 .eq. ncdyn2)
+            ncdyn = ncdyn1
+            ASSERT(celd1(debugr1+4+4*(iel1-1)+3) .eq. lgcata*nbsp1*ncdyn)
+            ASSERT(celd2(debugr2+4+4*(iel2-1)+3) .eq. lgcata*ncdyn)
 !
-            adiel1 = celd1(debugr1+4+4* (iel1-1)+4)
-            adiel2 = celd2(debugr2+4+4* (iel2-1)+4)
+            adiel1 = celd1(debugr1+4+4*(iel1-1)+4)
+            adiel2 = celd2(debugr2+4+4*(iel2-1)+4)
 !
-            call w155ma(numa, nucou, nicou, nangl, nufib,&
-                        motfac, jce2d, jce2l, jce2v, jce5d,&
-                        jce5l, jce5v, ksp1, ksp2, c1,&
+            call w155ma(numa, nucou, nicou, nangl, nufib, &
+                        motfac, jce2d, jce2l, jce2v, jce5d, &
+                        jce5l, jce5v, ksp1, ksp2, c1, &
                         c2, iret)
             if (iret .eq. 1) goto 140
 !
             do ipt = 1, nbpt
-                ncmp1=ncmp*ncdyn
+                ncmp1 = ncmp*ncdyn
                 do kcmp = 1, ncmp1
-                    ieq2=adiel2-1+(ipt-1)*ncmp1+kcmp
-                    ieq11=adiel1-1+(ipt-1)*nbsp1*ncmp1 + (ksp1-1)*ncmp1 + kcmp
-                    ieq12=adiel1-1+(ipt-1)*nbsp1*ncmp1 + (ksp2-1)*ncmp1 + kcmp
+                    ieq2 = adiel2-1+(ipt-1)*ncmp1+kcmp
+                    ieq11 = adiel1-1+(ipt-1)*nbsp1*ncmp1+(ksp1-1)*ncmp1+kcmp
+                    ieq12 = adiel1-1+(ipt-1)*nbsp1*ncmp1+(ksp2-1)*ncmp1+kcmp
 !
                     if (tsca .eq. 'R') then
                         zr(jcelv2-1+ieq2) = c1*zr(jcelv1-1+ieq11)+c2*zr(jcelv1-1+ieq12)
-                    else if (tsca.eq.'C') then
+                    else if (tsca .eq. 'C') then
                         zc(jcelv2-1+ieq2) = c1*zc(jcelv1-1+ieq11)+c2*zc(jcelv1-1+ieq12)
                     else
                         ASSERT(.false.)
-                    endif
+                    end if
                 end do
             end do
 140         continue

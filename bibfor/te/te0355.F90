@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine te0355(nomopt, nomte)
 !
-use contact_type
+    use contact_type
 !
     implicit none
 !
@@ -65,7 +65,7 @@ use contact_type
 !
 ! - Computation
 !
-    if(nomopt == "CHAR_MECA_CONT") then
+    if (nomopt == "CHAR_MECA_CONT") then
 !
 ! --- Compute contact residual
 !
@@ -75,11 +75,11 @@ use contact_type
 !
         call writeVector('PVECTCR', geom%nb_dofs, vect_cont)
 !
-        if(parameters%l_fric) then
+        if (parameters%l_fric) then
             call writeVector('PVECTFR', geom%nb_dofs, vect_fric)
         end if
 !
-    elseif(nomopt == "RIGI_CONT") then
+    elseif (nomopt == "RIGI_CONT") then
 !
 ! --- Compute contact matrix
 !
@@ -89,7 +89,7 @@ use contact_type
 !
         call writeMatrix('PMATUUR', geom%nb_dofs, geom%nb_dofs, ASTER_TRUE, matr_cont)
 !
-        if(parameters%l_fric) then
+        if (parameters%l_fric) then
             call writeMatrix('PMATUNS', geom%nb_dofs, geom%nb_dofs, ASTER_FALSE, matr_fric)
         end if
 !

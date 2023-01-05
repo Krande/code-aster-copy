@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine nurenu(nu, base)
     integer, pointer :: nequl(:) => null()
     integer, pointer :: join(:) => null()
     mpi_int :: mrank, msize
-    parameter    (nonbdd='&&NUPODD.NBDDL')
+    parameter(nonbdd='&&NUPODD.NBDDL')
 !
     call jemarq()
 !
@@ -74,69 +74,69 @@ subroutine nurenu(nu, base)
     call jeveuo(nu//'.NUML.PDDL', 'L', vi=pddl)
     call jeveuo(nu//'.NUML.NEQU', 'L', vi=nequl)
     call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequg)
-    neql=nequl(1)
-    neqg=nequg(1)
+    neql = nequl(1)
+    neqg = nequg(1)
 !
-    nbrddl=0
+    nbrddl = 0
     do iddl = 0, neql-1
-        if (pddl(iddl+1) .eq. rang) nbrddl=nbrddl+1
+        if (pddl(iddl+1) .eq. rang) nbrddl = nbrddl+1
     end do
 !
     call wkvect(nonbdd, 'V V I', nbproc, jnbddl)
-    zi(jnbddl+rang)=nbrddl
+    zi(jnbddl+rang) = nbrddl
     call asmpi_comm_jev('MPI_SUM', nonbdd)
-    nbddpr=zi(jnbddl)
+    nbddpr = zi(jnbddl)
     do iproc = 1, nbproc-1
-        zi(jnbddl+iproc)=zi(jnbddl+iproc)+nbddpr
-        nbddpr=zi(jnbddl+iproc)
+        zi(jnbddl+iproc) = zi(jnbddl+iproc)+nbddpr
+        nbddpr = zi(jnbddl+iproc)
     end do
-    ASSERT(neqg.eq.nbddpr)
+    ASSERT(neqg .eq. nbddpr)
 !
     call wkvect(nu//'.NUML.NLGP', base(1:1)//' V I', neql, jnulg)
-    decals=0
-    if (rang .ne. 0) decals=zi(jnbddl+rang-1)
+    decals = 0
+    if (rang .ne. 0) decals = zi(jnbddl+rang-1)
     call jedetr(nonbdd)
 !
-    decald=1
+    decald = 1
     do iddl = 0, neql-1
         if (pddl(iddl+1) .eq. rang) then
-            zi(jnulg+iddl)=decals+decald
-            decald=decald+1
-        endif
+            zi(jnulg+iddl) = decals+decald
+            decald = decald+1
+        end if
     end do
 !
     call jeveuo(nu//'.NUML.JOIN', 'L', vi=join)
     call jelira(nu//'.NUML.JOIN', 'LONMAX', njoint)
 !
     do iaux = 0, njoint-1
-        numpro=join(iaux+1)
+        numpro = join(iaux+1)
         if (numpro .eq. -1) cycle
 !
-        num=iaux+1
+        num = iaux+1
         call codent(num, 'G', chnbjo)
-        nojoin=nu//'.NUML.'//chnbjo
+        nojoin = nu//'.NUML.'//chnbjo
         call jeveuo(nojoin, 'L', jjoint)
         call jelira(nojoin, 'LONMAX', nbddlj)
         AS_ALLOCATE(vi=tmp, size=nbddlj)
         if (rang .lt. numpro) then
 !           !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
             do iddl = 0, nbddlj-1
-                numddl=zi(jjoint+iddl)
-                tmp(iddl+1)=zi(jnulg+numddl-1)
+                numddl = zi(jjoint+iddl)
+                tmp(iddl+1) = zi(jnulg+numddl-1)
             end do
-            call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
+            call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj, &
                                   vi=tmp)
-        else if (rang.gt.numpro) then
+        else if (rang .gt. numpro) then
 !           !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
-            call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
+            call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj, &
                                   vi=tmp)
             do iddl = 0, nbddlj-1
-                numddl=zi(jjoint+iddl)
-                zi(jnulg+numddl-1)=tmp(iddl+1)
+                numddl = zi(jjoint+iddl)
+                zi(jnulg+numddl-1) = tmp(iddl+1)
             end do
         else
             ASSERT(.false.)
-        endif
+        end if
         AS_DEALLOCATE(vi=tmp)
     end do
 !

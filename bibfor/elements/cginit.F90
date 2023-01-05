@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,20 +35,20 @@ subroutine cginit(nomte, iu, iuc, im)
     integer :: n
     integer :: use3(3), ucse3(3), umse3(2)
 ! ----------------------------------------------------------------------
-    data use3   /1,2,3/
-    data ucse3  /1,2,3/
-    data umse3  /1,2/
+    data use3/1, 2, 3/
+    data ucse3/1, 2, 3/
+    data umse3/1, 2/
 ! ----------------------------------------------------------------------
 !
-    if ((nomte.eq.'MECGSEG3')) then
+    if ((nomte .eq. 'MECGSEG3')) then
         do n = 1, 3
-            iu(1,n) = 1 + (use3(n)-1)*5
-            iu(2,n) = 2 + (use3(n)-1)*5
-            iu(3,n) = 3 + (use3(n)-1)*5
+            iu(1, n) = 1+(use3(n)-1)*5
+            iu(2, n) = 2+(use3(n)-1)*5
+            iu(3, n) = 3+(use3(n)-1)*5
         end do
 !
         do n = 1, 3
-            iuc(n) = 4 + (ucse3(n)-1)*5
+            iuc(n) = 4+(ucse3(n)-1)*5
         end do
 !
         do n = 1, 2
@@ -57,6 +57,6 @@ subroutine cginit(nomte, iu, iuc, im)
 !
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine te0209(option, nomte)
 !     ------------------------------------------------------------------
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 !
@@ -60,28 +60,28 @@ subroutine te0209(option, nomte)
     theta = zr(itemps+2)
 !
     do kp = 1, npg
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids1)
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom+2*nno), nx, ny, poids2)
         r1 = 0.d0
         r2 = 0.d0
         tpg = 0.d0
         do i = 1, nno
-            l = (kp-1)*nno + i
-            r1 = r1 + zr(igeom+2*i-2)*zr(ivf+l-1)
-            r2 = r2 + zr(igeom+2* (nno+i)-2)*zr(ivf+l-1)
-            tpg = tpg + (zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+l-1)
+            l = (kp-1)*nno+i
+            r1 = r1+zr(igeom+2*i-2)*zr(ivf+l-1)
+            r2 = r2+zr(igeom+2*(nno+i)-2)*zr(ivf+l-1)
+            tpg = tpg+(zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+l-1)
         end do
         if (laxi) then
             poids1 = poids1*r1
             poids2 = poids2*r2
-        endif
+        end if
         poids = (poids1+poids2)/2
         do i = 1, nno
-            li = ivf + (kp-1)*nno + i - 1
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(li)*coefh* ( 1.0d0-theta)*tpg
-            zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno) - poids*zr(li)* coefh* (1.0d0-theta)*tpg
+            li = ivf+(kp-1)*nno+i-1
+            zr(ivectt+i-1) = zr(ivectt+i-1)+poids*zr(li)*coefh*(1.0d0-theta)*tpg
+            zr(ivectt+i-1+nno) = zr(ivectt+i-1+nno)-poids*zr(li)*coefh*(1.0d0-theta)*tpg
         end do
     end do
 end subroutine

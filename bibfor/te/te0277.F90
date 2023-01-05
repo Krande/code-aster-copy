@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine te0277(option, nomte)
 !
     real(kind=8) :: z1, z2
 !-----------------------------------------------------------------------
-    parameter (nbres=3)
+    parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
     real(kind=8) :: z, hechp, nx, ny, tpg, theta
@@ -53,9 +53,9 @@ subroutine te0277(option, nomte)
 !-----------------------------------------------------------------------
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -67,9 +67,9 @@ subroutine te0277(option, nomte)
     theta = zr(itemps+2)
 !
     do kp = 1, npg
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids1)
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom+2*nno), nx, ny, poids2)
         r1 = 0.d0
         r2 = 0.d0
@@ -77,17 +77,17 @@ subroutine te0277(option, nomte)
         z2 = 0.d0
         tpg = 0.d0
         do i = 1, nno
-            l = (kp-1)*nno + i
-            r1 = r1 + zr(igeom+2*i-2)*zr(ivf+l-1)
-            r2 = r2 + zr(igeom+2* (nno+i)-2)*zr(ivf+l-1)
-            z1 = z1 + zr(igeom+2*i-1)*zr(ivf+l-1)
-            z2 = z2 + zr(igeom+2* (nno+i)-1)*zr(ivf+l-1)
-            tpg = tpg + (zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+l-1)
+            l = (kp-1)*nno+i
+            r1 = r1+zr(igeom+2*i-2)*zr(ivf+l-1)
+            r2 = r2+zr(igeom+2*(nno+i)-2)*zr(ivf+l-1)
+            z1 = z1+zr(igeom+2*i-1)*zr(ivf+l-1)
+            z2 = z2+zr(igeom+2*(nno+i)-1)*zr(ivf+l-1)
+            tpg = tpg+(zr(itemp+nno+i-1)-zr(itemp+i-1))*zr(ivf+l-1)
         end do
         if (laxi) then
             poids1 = poids1*r1
             poids2 = poids2*r2
-        endif
+        end if
         r = (r1+r2)/2.0d0
         z = (z1+z2)/2.0d0
         poids = (poids1+poids2)/2
@@ -97,13 +97,13 @@ subroutine te0277(option, nomte)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'INST'
-        call fointe('A', zk8(ihechp), 3, nompar, valpar,&
+        call fointe('A', zk8(ihechp), 3, nompar, valpar, &
                     hechp, icode)
-        ASSERT(icode.eq.0)
+        ASSERT(icode .eq. 0)
         do i = 1, nno
-            li = ivf + (kp-1)*nno + i - 1
-            zr(iveres+i-1) = zr(iveres+i-1) - poids*zr(li)*hechp* theta*tpg
-            zr(iveres+i-1+nno) = zr(iveres+i-1+nno) + poids*zr(li)* hechp*theta*tpg
+            li = ivf+(kp-1)*nno+i-1
+            zr(iveres+i-1) = zr(iveres+i-1)-poids*zr(li)*hechp*theta*tpg
+            zr(iveres+i-1+nno) = zr(iveres+i-1+nno)+poids*zr(li)*hechp*theta*tpg
         end do
     end do
 end subroutine

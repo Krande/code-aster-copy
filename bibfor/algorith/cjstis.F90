@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,44 +37,44 @@ subroutine cjstis(mod, mater, sig, vin, dsde)
 !
     character(len=8) :: mod
 !
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
 !
-    data          zero  / 0.d0 /
-    data          d12   / .5d0 /
-    data          un    / 1.d0 /
-    data          deux  / 2.d0 /
-    data          trois / 3.d0 /
+    data zero/0.d0/
+    data d12/.5d0/
+    data un/1.d0/
+    data deux/2.d0/
+    data trois/3.d0/
 !
 !       ----------------------------------------------------------------
 !
 !--->   CALCUL PREMIER INVARIANT DES CONTRAINTES
-    qinit = mater(13,2)
-    pa = mater(12,2)
+    qinit = mater(13, 2)
+    pa = mater(12, 2)
     i1 = zero
     do i = 1, ndi
-        i1 = i1 + sig(i)
+        i1 = i1+sig(i)
     end do
 !
     if ((i1+qinit) .eq. 0.d0) then
-        i1 = -qinit+1.d-12 * pa
-    endif
+        i1 = -qinit+1.d-12*pa
+    end if
 !
 !--->   CALCUL DES COEF. UTILES
-    coef1 = ((i1+qinit)/trois/mater(12,2))**mater(3,2)
-    e = mater(1,1) * coef1
-    nu = mater(2,1)
-    ke = e/trois/( un-deux*nu )
-    kp = mater(4,2)*(vin(1)/mater(12,2))**mater(3,2)
-    coef2 = ke * ke / (ke+kp)
-    al = e * (un-nu) / (un+nu) / (un-deux*nu) - coef2
-    la = nu * e / (un+nu) / (un-deux*nu) - coef2
-    mu = e * d12 / (un+nu)
+    coef1 = ((i1+qinit)/trois/mater(12, 2))**mater(3, 2)
+    e = mater(1, 1)*coef1
+    nu = mater(2, 1)
+    ke = e/trois/(un-deux*nu)
+    kp = mater(4, 2)*(vin(1)/mater(12, 2))**mater(3, 2)
+    coef2 = ke*ke/(ke+kp)
+    al = e*(un-nu)/(un+nu)/(un-deux*nu)-coef2
+    la = nu*e/(un+nu)/(un-deux*nu)-coef2
+    mu = e*d12/(un+nu)
 !
 !
 ! - EN FAIT ON NE TIENT PAS COMPTE DE COEF2, SINON NON CONVERGENCE
 !
-    al = e * (un-nu) / (un+nu) / (un-deux*nu)
-    la = nu * e / (un+nu) / (un-deux*nu)
+    al = e*(un-nu)/(un+nu)/(un-deux*nu)
+    la = nu*e/(un+nu)/(un-deux*nu)
 !
 !
 !
@@ -84,19 +84,19 @@ subroutine cjstis(mod, mater, sig, vin, dsde)
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
         do i = 1, ndi
             do j = 1, ndi
-                if (i .eq. j) dsde(i,j) = al
-                if (i .ne. j) dsde(i,j) = la
+                if (i .eq. j) dsde(i, j) = al
+                if (i .ne. j) dsde(i, j) = la
             end do
         end do
         do i = ndi+1, ndt
             do j = ndi+1, ndt
-                if (i .eq. j) dsde(i,j) = deux* mu
+                if (i .eq. j) dsde(i, j) = deux*mu
             end do
         end do
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
         call utmess('F', 'ALGORITH2_15')
-    endif
+    end if
 !
 end subroutine

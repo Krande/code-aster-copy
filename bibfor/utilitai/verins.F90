@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 !
-subroutine verins(sddisc,ds_posttimestep)
-use NonLin_Datastructure_type
-implicit none
+subroutine verins(sddisc, ds_posttimestep)
+    use NonLin_Datastructure_type
+    implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -41,11 +41,11 @@ implicit none
     call jemarq()
     if (ds_posttimestep%l_mode_vibr .or. ds_posttimestep%l_crit_stab) then
 ! Obtenir les instants obligatoire de DYNA_NON_LINE
-        call jeveuo(sddisc(1:19)//'.LIPO', 'L', vr = nl_inst_val)
-        call jeveuo(sddisc(1:19)//'.LINF', 'L',vr = nl_inst_info)
+        call jeveuo(sddisc(1:19)//'.LIPO', 'L', vr=nl_inst_val)
+        call jeveuo(sddisc(1:19)//'.LINF', 'L', vr=nl_inst_info)
         inst_init = nl_inst_val(1)
         nb_nl_inst = nint(nl_inst_info(8))
-    endif
+    end if
 
     alarm = 0
 ! Vérifier les instants demandés par CRIT_STAB
@@ -58,10 +58,10 @@ implicit none
 !!!! Si un instant est antérieur à l'instant initial
 !!!! ou s'il n'est pas dans la lsite de DNL
             if (vibr_inst <= inst_init .or. nb_found == -1) then
-                alarm(1) = alarm(1) + 1
-            endif
+                alarm(1) = alarm(1)+1
+            end if
         end do
-    endif
+    end if
 
 ! Vérifier les instants demandés par MODE_VIBR
     if (ds_posttimestep%l_mode_vibr) then
@@ -73,19 +73,19 @@ implicit none
 !!!! Si un instant est antérieur à l'instant initial
 !!!! ou s'il n'est pas dans la lsite de DNL
             if (vibr_inst <= inst_init .or. nb_found == -1) then
-                alarm(2) = alarm(2) + 1
-            endif
+                alarm(2) = alarm(2)+1
+            end if
         end do
-    endif
+    end if
 
 ! Emettre le message d'alarme
-    mess_alarm = (/' ',' '/)
-    valr(1)=inst_init
-    if (alarm(1).ne.0) mess_alarm(1) = 'CRIT_STAB'
-    if (alarm(2).ne.0) mess_alarm(2) = 'MODE_VIBR'
-    if (alarm(1).ne.0 .or. alarm(2).ne.0) then
-        call utmess('A', 'UTILITAI8_75',nk=2, valk=mess_alarm, nr=1, valr = valr)
-    endif
+    mess_alarm = (/' ', ' '/)
+    valr(1) = inst_init
+    if (alarm(1) .ne. 0) mess_alarm(1) = 'CRIT_STAB'
+    if (alarm(2) .ne. 0) mess_alarm(2) = 'MODE_VIBR'
+    if (alarm(1) .ne. 0 .or. alarm(2) .ne. 0) then
+        call utmess('A', 'UTILITAI8_75', nk=2, valk=mess_alarm, nr=1, valr=valr)
+    end if
 !
     call jedema()
 end subroutine

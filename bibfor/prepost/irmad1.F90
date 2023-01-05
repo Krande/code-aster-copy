@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irmad1(ifi, versio, nbno, prno, nueq,&
-                  nec, dg, ncmpmx, itype, nstat,&
+subroutine irmad1(ifi, versio, nbno, prno, nueq, &
+                  nec, dg, ncmpmx, itype, nstat, &
                   chamno, nomcmp, nomsym, numnoe)
     implicit none
 !
@@ -61,37 +61,37 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
     do inno = 1, nbno
         ino = numnoe(inno)
         do iec = 1, nec
-            dg(iec)=prno((ino-1)*(nec+2)+2+iec)
+            dg(iec) = prno((ino-1)*(nec+2)+2+iec)
         end do
-        ncmp = prno((ino-1)* (nec+2)+2)
+        ncmp = prno((ino-1)*(nec+2)+2)
         if (ncmp .eq. 0) goto 100
         icompt = 0
         do icmp = 1, ncmpmx
-            if (exisdg(dg,icmp)) icompt = icompt + 1
+            if (exisdg(dg, icmp)) icompt = icompt+1
         end do
-        nbcmpt = max( nbcmpt , icompt )
+        nbcmpt = max(nbcmpt, icompt)
 100     continue
     end do
     nrow = nbcmpt
-    ncol = nbno * nstat
-    ndim = ncol * nrow
+    ncol = nbno*nstat
+    ndim = ncol*nrow
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL ---
 !
-    ASSERT((itype.eq.1).or.(itype.eq.2))
+    ASSERT((itype .eq. 1) .or. (itype .eq. 2))
     if (itype .eq. 1) then
         call wkvect('&&IRMAD1.VAL', 'V V R', ndim, irval)
     else if (itype .eq. 2) then
         call wkvect('&&IRMAD1.VAL', 'V V C', ndim, irval)
-    endif
+    end if
 !
 ! ---- RECHERCHE DES GRANDEURS SUPERTAB -----
 !
-    call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
+    call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs, &
                 nbcmps, nomgds, ipcmps)
     do ichs = 1, 50
         do ist = 1, 50
-            ipcmps(ichs,ist)=-1
+            ipcmps(ichs, ist) = -1
         end do
     end do
 !
@@ -101,11 +101,11 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
         if (ichs .gt. 1) then
             afaire = .false.
             do icp = 1, nbcmps(ichs)
-                afaire = (afaire.or.ltabl(ipcmps(ichs,icp)))
+                afaire = (afaire .or. ltabl(ipcmps(ichs, icp)))
             end do
             if (.not. afaire) goto 20
-        endif
-        impre = impre + 1
+        end if
+        impre = impre+1
         do ist = 1, nstat
             chamn = chamno(ist)
             call jeveuo(chamn//'.VALE', 'L', iavale)
@@ -114,34 +114,34 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                 do iec = 1, nec
                     dg(iec) = prno((ino-1)*(nec+2)+2+iec)
                 end do
-                ival = prno((ino-1)* (nec+2)+1)
-                ncmp = prno((ino-1)* (nec+2)+2)
+                ival = prno((ino-1)*(nec+2)+1)
+                ncmp = prno((ino-1)*(nec+2)+2)
                 if (ncmp .eq. 0) goto 40
                 icompt = 0
                 do icmp = 1, ncmpmx
-                    if (exisdg(dg,icmp)) then
-                        if (ichs .eq. 1) ltabl(icmp)= .true.
-                        icompt = icompt + 1
+                    if (exisdg(dg, icmp)) then
+                        if (ichs .eq. 1) ltabl(icmp) = .true.
+                        icompt = icompt+1
                         k1 = nueq(ival-1+icompt)
                         do icms = 1, nbcmps(ichs)
-                            icmsup = ipcmps(ichs,icms)
+                            icmsup = ipcmps(ichs, icms)
                             if (icmp .eq. icmsup) then
-                                k2 = icms + (inno-1)*nbcmpt + (ist-1)* nbcmpt*nbno
+                                k2 = icms+(inno-1)*nbcmpt+(ist-1)*nbcmpt*nbno
                                 if (itype .eq. 1) then
                                     zr(irval-1+k2) = zr(iavale-1+k1)
                                 else
                                     zc(irval-1+k2) = zc(iavale-1+k1)
-                                endif
+                                end if
                                 goto 44
-                            endif
+                            end if
                         end do
-                    endif
- 44                 continue
+                    end if
+44                  continue
                 end do
- 40             continue
+40              continue
             end do
         end do
- 20     continue
+20      continue
     end do
 !
     ASSERT(impre .le. 1)
@@ -152,22 +152,22 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
             mtyp = 4
         else
             mtyp = 6
-        endif
+        end if
         mfor = 3
         mkey = 2
-        write (ifi,'(A)') '    -1'
-        write (ifi,'(A)') '   252'
-        write (ifi,'(I10)') imat
-        write (ifi,'(5I10)') mtyp, mfor, nrow, ncol, mkey
+        write (ifi, '(A)') '    -1'
+        write (ifi, '(A)') '   252'
+        write (ifi, '(I10)') imat
+        write (ifi, '(5I10)') mtyp, mfor, nrow, ncol, mkey
         if (itype .eq. 1) then
-            write (ifi ,'(1P,4D20.12)') ( zr(irval+i) , i=0,ndim-1 )
+            write (ifi, '(1P,4D20.12)') (zr(irval+i), i=0, ndim-1)
         else
-            write (ifi ,'(1P,2(2D20.12))') ( zc(irval+i) , i=0,ndim-1&
-            )
-        endif
+            write (ifi, '(1P,2(2D20.12))') (zc(irval+i), i=0, ndim-1 &
+                                            )
+        end if
         mfor = 3
-        write (ifi,'(A)') '    -1'
-    endif
+        write (ifi, '(A)') '    -1'
+    end if
 !
     call jedetr('&&IRMAD1.VAL')
     call jedema()

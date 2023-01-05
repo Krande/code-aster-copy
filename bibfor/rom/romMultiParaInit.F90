@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romMultiParaInit(ds_multipara, nb_mode_maxi)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,8 +30,8 @@ implicit none
 #include "asterfort/romMultiParaProdModeInit.h"
 #include "asterfort/romMultiParaCoefInit.h"
 !
-type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-integer, intent(in) :: nb_mode_maxi
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+    integer, intent(in) :: nb_mode_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ integer, intent(in) :: nb_mode_maxi
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_19')
-    endif
+    end if
 !
 ! - Prepare product [Matrix] x [Mode], reduced Matrix and Reduced Vector
 !

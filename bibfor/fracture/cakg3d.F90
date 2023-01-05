@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cakg3d(option, result, modele, depla, thetai,&
-                  mate, mateco, compor, lischa, symech, chfond,&
-                  nnoff, basloc, courb, iord, ndeg,&
-                  liss, ndimte,&
-                  extim, time, nbprup, noprup, fiss,&
-                  lmoda, puls, milieu,&
+subroutine cakg3d(option, result, modele, depla, thetai, &
+                  mate, mateco, compor, lischa, symech, chfond, &
+                  nnoff, basloc, courb, iord, ndeg, &
+                  liss, ndimte, &
+                  extim, time, nbprup, noprup, fiss, &
+                  lmoda, puls, milieu, &
                   connex, coor, iadnoe, typdis)
 
     implicit none
@@ -105,17 +105,17 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !                   'FISSURE' OU 'COHESIF'
 ! ======================================================================
     integer :: nbmxpa
-    parameter (nbmxpa = 20)
+    parameter(nbmxpa=20)
 !
     integer :: nbinmx, nboumx, numfon
-    parameter   (nbinmx=50,nboumx=1)
+    parameter(nbinmx=50, nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
 !
     integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
     integer :: nnoff, num, ino1, ino2, inga
 !     integer :: incr, nres
-    integer :: ndeg, nsig, livi(nbmxpa),pbtype
+    integer :: ndeg, nsig, livi(nbmxpa), pbtype
     integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
 !    real(kind=8) :: xi(nnoff-1), yi(nnoff-1), zi(nnoff-1)
@@ -146,11 +146,11 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     call infniv(ifm, niv)
 !   Securite appels
-    if(present(typdis)) then
+    if (present(typdis)) then
         typdisc = typdis
     else
         typdisc = 'RIEN'
-    endif
+    end if
 !   cas FEM ou X-FEM
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
@@ -159,12 +159,11 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
 
-
 !   Recuperation du LIGREL
     ligrmo = modele//'.MODELE'
 !
-    chvarc='&&CAKG3D.VARC'
-    chvref='&&CAKG3D.VARC.REF'
+    chvarc = '&&CAKG3D.VARC'
+    chvref = '&&CAKG3D.VARC.REF'
 !   Initialisation des champs
     chvolu = ' '
     chpesa = ' '
@@ -177,7 +176,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     loncha = ' '
     pmilto = ' '
     chpres = ' '
-    stano  = ' '
+    stano = ' '
 !
 !   RECUPERATION DU COMPORTEMENT (dans cakg2d, on recupere pas incr
 !    call getfac('COMPORTEMENT', incr)
@@ -201,8 +200,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 
     chsigi = '&&CAKG3D.CHSIGI'
     celmod = '&&CAKG3D.CELMOD'
-    sigelno= '&&CAKG3D.SIGELNO'
-    sigseno= '&&CAKG3D.SIGSENO'
+    sigelno = '&&CAKG3D.SIGELNO'
+    sigseno = '&&CAKG3D.SIGSENO'
 
     call getvid('ETAT_INIT', 'SIGM', iocc=1, scal=chsigi, nbret=nsig)
 
@@ -215,44 +214,43 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
 
 !       Verification du type de champ
-        pbtype=0
-        if (.not.lxfem) then
+        pbtype = 0
+        if (.not. lxfem) then
 !         cas FEM : verif que le champ est soit ELNO, soit NOEU, soit ELGA
-          if (ino1.eq.1 .and. ino2.eq.1 .and. inga.eq.1) pbtype=1
+            if (ino1 .eq. 1 .and. ino2 .eq. 1 .and. inga .eq. 1) pbtype = 1
         elseif (lxfem) then
 !         cas X-FEM : verif que le champ est ELGA (seul cas autorise)
-          if (inga.eq.1) pbtype=1
-        endif
-        if (pbtype.eq.1) call utmess('F', 'RUPTURE1_12')
+            if (inga .eq. 1) pbtype = 1
+        end if
+        if (pbtype .eq. 1) call utmess('F', 'RUPTURE1_12')
 
 !       transformation si champ ELGA
-        if (inga.eq.0) then
+        if (inga .eq. 0) then
 
 !           traitement du champ pour les elements finis classiques
-            call detrsd('CHAMP',celmod)
-            call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
+            call detrsd('CHAMP', celmod)
+            call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod, &
                         iret, ' ')
-            call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
+            call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V', &
                         sigelno, modele)
             call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
 
 !           calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM
-            if (lxfem) call xelgano(modele,chsigi,sigseno)
+            if (lxfem) call xelgano(modele, chsigi, sigseno)
 !            call imprsd('CHAMP',chsigi,6,'chsigi')
 
-        endif
-    endif
-
+        end if
+    end if
 
 !   RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
-    call vrcins(modele, mate, ' ', time, chvarc,&
+    call vrcins(modele, mate, ' ', time, chvarc, &
                 codret)
 !
     call vrcref(modele, mate(1:8), '        ', chvref(1:19))
 !
 !     TRAITEMENT DES CHARGES
 !     ON SHUNTE SI COHESIF
-    if(typdisc.eq.'COHESIF') then
+    if (typdisc .eq. 'COHESIF') then
 !       Parametres non utilises
 !       ms renseignes pour ne pas pourrir l'appel à calcul.F90
 !       avec des conditions partout
@@ -265,7 +263,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !       Evite de passer un champ supplementaire à calcul.F90
 !       pour porter l'info du type de discontinuite
 !       Evite egalement l'ajout d'un test de sortie pour éléments XH
-        opti='CALC_K_G_COHE'
+        opti = 'CALC_K_G_COHE'
     else
         chvolu = '&&CAKG3D.VOLU'
         ch1d2d = '&&CAKG3D.1D2D'
@@ -274,8 +272,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         chepsi = '&&CAKG3D.EPSI'
         chpesa = '&&CAKG3D.PESA'
         chrota = '&&CAKG3D.ROTA'
-        call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
-                    chpres, chepsi, chpesa, chrota, lfonc,&
+        call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
+                    chpres, chepsi, chpesa, chrota, lfonc, &
                     time, iord)
         if (lfonc) then
             pavolu = 'PFFVOLU'
@@ -289,8 +287,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             papres = 'PPRESSR'
             pepsin = 'PEPSINR'
             opti = 'CALC_K_G_XFEM'
-        endif
-    endif
+        end if
+    end if
 !
 !     RECUPERATION DES DONNEES XFEM OU FEM (TOPOSE)
     pintto = modele(1:8)//'.TOPOSE.PIN'
@@ -315,11 +313,11 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     NDIMTE = NDEG+1 SI TH-LEGENDRE
 !
 !   pourquoi modifier NDIMTE (argument d'entree)
-    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+    if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') .or. (liss .eq. 'MIXTE')) then
         ndimte = nnoff
     else
-        ndimte = ndeg + 1
-    endif
+        ndimte = ndeg+1
+    end if
 !
     call wkvect('&&CAKG3D.VALG', 'V V R8', ndimte*8, iadrgk)
     call jeveuo(thetai, 'L', jresu)
@@ -329,7 +327,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !   BOUCLE SUR LES DIFFERENTS CHAMPS THETA
     do i = 1, ndimte
 !
-        call inical(26,lpain,lchin,1,lpaout,lchout)
+        call inical(26, lpain, lchin, 1, lpaout, lchout)
         chthet = zk24(jresu+i-1)
         call codent(i, 'G', chgthi)
 !
@@ -388,7 +386,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             lchin(25) = modele(1:8)//'.TOPOFAC.LO'
             lpain(26) = 'PBASECO'
             lchin(26) = modele(1:8)//'.TOPOFAC.BA'
-        endif
+        end if
         lpain(27) = 'PPMILTO'
         lchin(27) = pmilto
         lpain(28) = 'PHEA_NO'
@@ -402,49 +400,49 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
         chtime = '&&CAKG3D.CH_INST_R'
         if (opti .eq. 'CALC_K_G_XFEM_F') then
-            call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
+            call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ', &
                         ncmp=1, nomcmp='INST   ', sr=time)
-            nchin = nchin + 1
+            nchin = nchin+1
             lpain(nchin) = 'PTEMPSR'
             lchin(nchin) = chtime
-        endif
+        end if
 !
         if (lmoda) then
             chpuls = '&&CAKG3D.PULS'
-            call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ',&
+            call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ', &
                         ncmp=1, nomcmp='FREQ   ', sr=puls)
-            nchin = nchin + 1
+            nchin = nchin+1
             lpain(nchin) = 'PPULPRO'
             lchin(nchin) = chpuls
-        endif
+        end if
 
 !       CHAMP DE CONTRAINTE INITIALE
         if (nsig .ne. 0) then
-          if (inga .eq. 0) then
+            if (inga .eq. 0) then
 !           champ de contrainte initiale transforme en ELNO
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1)=sigelno
-            nchin = nchin + 1
+                lpain(nchin+1) = 'PSIGINR'
+                lchin(nchin+1) = sigelno
+                nchin = nchin+1
 
 !           si X-FEM : champ de contrainte initiale transforme en SE-ELNO
-            if (lxfem) then
-                lpain(nchin+1) = 'PSIGISE'
-                lchin(nchin+1) = sigseno
-                nchin = nchin + 1
-            endif
+                if (lxfem) then
+                    lpain(nchin+1) = 'PSIGISE'
+                    lchin(nchin+1) = sigseno
+                    nchin = nchin+1
+                end if
 
-          else
+            else
 !           champ de contrainte initiale donne par l'uutilisateur (NOEUD ou ELNO)
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1) = chsigi
-            nchin = nchin + 1
-          endif
-        endif
+                lpain(nchin+1) = 'PSIGINR'
+                lchin(nchin+1) = chsigi
+                nchin = nchin+1
+            end if
+        end if
 
-        ASSERT(nchin.le.nbinmx)
+        ASSERT(nchin .le. nbinmx)
 
-        call calcul('S', opti, ligrmo, nchin, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
+        call calcul('S', opti, ligrmo, nchin, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
 !
 !       FAIRE LA "SOMME" D'UN CHAM_ELEM
@@ -455,7 +453,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             do j = 1, 7
                 zr(iadrgk-1+(i-1)*8+j) = gkthi(j)
             end do
-        else if (symech.eq.'OUI') then
+        else if (symech .eq. 'OUI') then
 !         G, fic1, fic2, fic3, K1, K2, K3,
             zr(iadrgk-1+(i-1)*8+1) = 2.d0*gkthi(1)
             zr(iadrgk-1+(i-1)*8+2) = 2.d0*gkthi(2)
@@ -464,7 +462,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             zr(iadrgk-1+(i-1)*8+5) = 2.d0*gkthi(5)
             zr(iadrgk-1+(i-1)*8+6) = 0.d0
             zr(iadrgk-1+(i-1)*8+7) = 0.d0
-        endif
+        end if
 !
     end do
 !
@@ -474,13 +472,13 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     call wkvect('&&CAKG3D.VALGK_S', 'V V R8', nnoff*5, iadgks)
 !
-    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
+    if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO')) then
         call wkvect('&&CAKG3D.VALGKI', 'V V R8', nnoff*5, iadgki)
     else
         call wkvect('&&CAKG3D.VALGKI', 'V V R8', (ndeg+1)*5, iadgki)
-    endif
+    end if
 !
-    abscur='&&CAKG3D.ABSCU'
+    abscur = '&&CAKG3D.ABSCU'
     call wkvect(abscur, 'V V R', nnoff, iadabs)
 !
 !     PREMIERE METHODE : G_LEGENDRE ET THETA_LEGENDRE
@@ -489,28 +487,28 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !                       (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
 !
 !
-    if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
+    if ((liss .ne. 'LAGRANGE') .and. (liss .ne. 'LAGRANGE_NO_NO') .and. (liss .ne. 'MIXTE')) then
         num = 1
-        call gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks,&
+        call gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks, &
                     iadgki, abscur)
 !
-    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
-        if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO')) then
+    else if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') .or. (liss .eq. 'MIXTE')) then
+        if ((liss .ne. 'LAGRANGE') .and. (liss .ne. 'LAGRANGE_NO_NO')) then
             num = 2
             call utmess('F', 'RUPTURE1_17')
         else
             num = 3
-            call gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
+            call gkmet3(nnoff, chfond, iadrgk, milieu, connex, &
                         iadgks, iadgki, abscur, num, typdis)
-        endif
-    endif
+        end if
+    end if
 !
 !     IMPRESSION DE G(S), K1(S), K2(S) ET K3(S)
     if (niv .ge. 2) then
-        call gksimp(result, nnoff, zr(iadabs), num,&
-                    iadgks, ndeg, ndimte, iadgki, extim,&
+        call gksimp(result, nnoff, zr(iadabs), num, &
+                    iadgks, ndeg, ndimte, iadgki, extim, &
                     time, iord, ifm)
-    endif
+    end if
 !
 !     ECRITURE DE LA TABLE DE G(S), K1(S), K2(S) ET K3(S)
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
@@ -522,15 +520,15 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     else
         call tbajvi(result, nbprup, 'NUME_ORDRE', iord, livi)
         call tbajvr(result, nbprup, 'INST', time, livr)
-    endif
+    end if
 !
     diff2g = 0.d0
     difrel = 0.d0
 !
     do i = 1, nnoff
-        if (.not.lxfem) then
+        if (.not. lxfem) then
             call tbajvk(result, nbprup, 'NOEUD', zk8(iadnoe-1+i), livk)
-        endif
+        end if
         call tbajvi(result, nbprup, 'NUM_PT', i, livi)
         call tbajvr(result, nbprup, 'ABSC_CURV', zr(coor-1+4*(i-1)+4), livr)
         call tbajvr(result, nbprup, 'COOR_X', zr(coor-1+4*(i-1)+1), livr)
@@ -541,24 +539,24 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'K3', zr(iadgks-1+5*(i-1)+4), livr)
         call tbajvr(result, nbprup, 'G', zr(iadgks-1+5*(i-1)+1), livr)
         call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+5*(i-1)+5), livr)
-        call tbajli(result, nbprup, noprup, livi, livr,&
+        call tbajli(result, nbprup, noprup, livi, livr, &
                     livc, livk, 0)
-        if ((codret .eq. 'OK') .and. ( abs( zr(iadgks-1+5*(i-1)+1) ) .ge. 1.e-12 ) ) then
-            difrel= abs((zr(iadgks-1+5*(i-1)+1)- zr(iadgks-1+5*(i-1)+5))/zr(iadgks-1+5*(i-1)+1))
-            diff2g = diff2g + difrel
-        endif
+        if ((codret .eq. 'OK') .and. (abs(zr(iadgks-1+5*(i-1)+1)) .ge. 1.e-12)) then
+            difrel = abs((zr(iadgks-1+5*(i-1)+1)-zr(iadgks-1+5*(i-1)+5))/zr(iadgks-1+5*(i-1)+1))
+            diff2g = diff2g+difrel
+        end if
 !
     end do
 !
-    if ((codret .eq. 'OK') .and. (diff2g/nnoff.gt.0.5)) call utmess('A', 'RUPTURE1_71',&
-                                                                    sr = diff2g)
+    if ((codret .eq. 'OK') .and. (diff2g/nnoff .gt. 0.5)) call utmess('A', 'RUPTURE1_71', &
+                                                                      sr=diff2g)
 !
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !
     call jedetr(abscur)
     call jedetr('&&CAKG3D.VALGK_S')
-    if(typdisc.ne.'COHESIF') then
+    if (typdisc .ne. 'COHESIF') then
         call jedetr('&&CAKG3D.VALGKI')
         call detrsd('CHAMP_GD', chvarc)
         call detrsd('CHAMP_GD', chvref)
@@ -571,7 +569,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call detrsd('CHAMP_GD', chrota)
 !
         call jedetr('&&CAKG3D.VALG')
-    endif
+    end if
 !
     call jedema()
 end subroutine

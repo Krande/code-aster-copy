@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
-                  nbpara, nopara, nomvai, nomvar, nomvak,&
-                  neq, nbmode, typmod, nbpari, nbparr,&
+subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec, &
+                  nbpara, nopara, nomvai, nomvar, nomvak, &
+                  neq, nbmode, typmod, nbpari, nbparr, &
                   nbpark)
     implicit none
 #include "asterf_types.h"
@@ -93,19 +93,19 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     integer :: lresui, lresuk, lresur, lvale, nbmodt, nbout, nbtpar
     integer :: nbtrou, neq1, nordr
 !-----------------------------------------------------------------------
-    data  vale  /'                   .VALE'/
+    data vale/'                   .VALE'/
 !     ------------------------------------------------------------------
     call jemarq()
 !
     if (nbvect .lt. 0) then
 !        --- TOUS LES MODES ---
-        call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b,&
-                    c16b, 0.0d0, k8b, tmod, 1,&
+        call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b, &
+                    c16b, 0.0d0, k8b, tmod, 1, &
                     nbtrou)
-        nbmode=tmod(1)
+        nbmode = tmod(1)
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmode, lnumor)
-        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
-                    c16b, 0.0d0, k8b, zi(lnumor), nbmode,&
+        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b, &
+                    c16b, 0.0d0, k8b, zi(lnumor), nbmode, &
                     nbtrou)
     else if (nbvect .gt. 0) then
 !        --- A PARTIR D'UNE LISTE DE NUMEROS D'ORDRE ---
@@ -119,29 +119,29 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
 !        --- RIEN ---
         nbmode = 0
         typmod = '?'
-        call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b,&
-                    c16b, 0.0d0, k8b, tmod, 1,&
+        call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b, &
+                    c16b, 0.0d0, k8b, tmod, 1, &
                     nbtrou)
-        nbmodt=tmod(1)
+        nbmodt = tmod(1)
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmodt, lnumor)
-        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
-                    c16b, 0.0d0, k8b, zi(lnumor), nbmodt,&
+        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b, &
+                    c16b, 0.0d0, k8b, zi(lnumor), nbmodt, &
                     nbtrou)
         goto 100
-    endif
+    end if
 !     ------------------------------------------------------------------
 !
 !          *************** ON RECUPERE LES CHAMPS ***************
 !
 !     --- RECUPERATION DE NEQ ---
-    call rsexch('F', modes, nomsy, zi(lnumor), vale(1:19),&
+    call rsexch('F', modes, nomsy, zi(lnumor), vale(1:19), &
                 iret)
     call jeexin(vale(1:19)//'.VALE', ibid)
     if (ibid .gt. 0) then
-        vale(20:24)='.VALE'
+        vale(20:24) = '.VALE'
     else
-        vale(20:24)='.CELV'
-    endif
+        vale(20:24) = '.CELV'
+    end if
 !
     call jelira(vale, 'LONMAX', neq)
     call jelira(vale, 'TYPE', cval=typmod)
@@ -152,21 +152,21 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     else if (typmod(1:1) .eq. 'C') then
         call wkvect(nomvec, 'V V C', neq*nbmode, lmode)
     else
-        valk (1) = typmod(1:1)
+        valk(1) = typmod(1:1)
         call utmess('F', 'ALGELINE4_80', sk=valk(1))
-    endif
+    end if
 !
 !        --- VECTEUR PROPRE ---
     do imode = 1, nbmode
         nordr = zi(lnumor-1+imode)
-        call rsexch('F', modes, nomsy, nordr, vale(1:19),&
+        call rsexch('F', modes, nomsy, nordr, vale(1:19), &
                     iret)
         call jeexin(vale(1:19)//'.VALE', ibid)
         if (ibid .gt. 0) then
-            vale(20:24)='.VALE'
+            vale(20:24) = '.VALE'
         else
-            vale(20:24)='.CELV'
-        endif
+            vale(20:24) = '.CELV'
+        end if
 !
         call jeveuo(vale, 'L', lvale)
         call jelira(vale, 'LONMAX', neq1)
@@ -182,11 +182,11 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
                 do ieq = 0, neq-1
                     zc(lmode+neq*(imode-1)+ieq) = zc(lvale+ieq)
                 end do
-            endif
+            end if
             call jelibe(vale)
         else
             call utmess('F', 'ALGELINE3_71')
-        endif
+        end if
     end do
 100 continue
 !     ------------------------------------------------------------------
@@ -212,27 +212,27 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         nbparr = 0
         nbpark = 0
         goto 200
-    endif
+    end if
 !
     nbpari = 0
     nbparr = 0
     nbpark = 0
     do i = 1, nbout
-        call rsadpa(modes, 'L', 1, zk16(jpara+i-1), zi(lnumor),&
+        call rsadpa(modes, 'L', 1, zk16(jpara+i-1), zi(lnumor), &
                     i, sjv=lnume, styp=type, istop=0)
         if (type(1:1) .eq. 'I') then
-            nbpari = nbpari + 1
-        else if (type(1:1).eq.'R') then
-            nbparr = nbparr + 1
-        else if (type(1:1).eq.'K') then
-            nbpark = nbpark + 1
+            nbpari = nbpari+1
+        else if (type(1:1) .eq. 'R') then
+            nbparr = nbparr+1
+        else if (type(1:1) .eq. 'K') then
+            nbpark = nbpark+1
         else
-        endif
+        end if
     end do
     if (recunp) then
-        nbtpar = nbpari + nbparr + nbpark
+        nbtpar = nbpari+nbparr+nbpark
         call wkvect(nopara, 'V V K16', nbtpar, lnopar)
-    endif
+    end if
 !
     if (nbpari .ne. 0) call wkvect(nomvai, 'V V I', nbpari*nbmode, lresui)
     if (nbparr .ne. 0) call wkvect(nomvar, 'V V R', nbparr*nbmode, lresur)
@@ -244,31 +244,31 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     do i = 1, nbout
         do j = 1, nbmode
             nordr = zi(lnumor-1+j)
-            call rsadpa(modes, 'L', 1, zk16(jpara+i-1), nordr,&
+            call rsadpa(modes, 'L', 1, zk16(jpara+i-1), nordr, &
                         i, sjv=lnume, styp=type, istop=0)
             if (type(1:1) .eq. 'I') then
-                ii = ii + 1
+                ii = ii+1
                 zi(lresui+ii-1) = zi(lnume)
                 if (recunp .and. j .eq. 1) then
                     zk16(lnopar+ii-1) = zk16(jpara+i-1)
-                endif
-            else if (type(1:1).eq.'R') then
-                ir = ir + 1
+                end if
+            else if (type(1:1) .eq. 'R') then
+                ir = ir+1
                 zr(lresur+ir-1) = zr(lnume)
                 if (recunp .and. j .eq. 1) then
                     zk16(lnopar+nbpari+ir-1) = zk16(jpara+i-1)
-                endif
-            else if (type(1:1).eq.'K') then
-                ik = ik + 1
+                end if
+            else if (type(1:1) .eq. 'K') then
+                ik = ik+1
                 if (type(2:3) .eq. '24') then
                     zk24(lresuk+ik-1) = zk24(lnume)
                 else
                     zk24(lresuk+ik-1) = zk16(lnume)//'        '
-                endif
+                end if
                 if (recunp .and. j .eq. 1) then
                     zk16(lnopar+nbpari+nbparr+ik-1) = zk16(jpara+i-1)
-                endif
-            endif
+                end if
+            end if
         end do
     end do
 200 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine intenc(nbna, jac, vectx, vecty, mat11,&
+subroutine intenc(nbna, jac, vectx, vecty, mat11, &
                   mat22, mat12, nx, ny, inte)
     implicit none
     integer :: nbna
@@ -58,30 +58,30 @@ subroutine intenc(nbna, jac, vectx, vecty, mat11,&
 !        D'INTEGRATION SELON LE NOMBRE DE POINTS DE L'ARETE CONSIDEREE
 !        SOIT NBNA = 2 OU 3
 !
-    inte1=jac(1)*&
+    inte1 = jac(1)*&
      &      ((vectx(1)-mat11(1)*nx(1)-mat12(1)*ny(1))**2&
      &      +(vecty(1)-mat12(1)*nx(1)-mat22(1)*ny(1))**2)
 !
-    inte2=jac(2)*&
+    inte2 = jac(2)*&
      &      ((vectx(2)-mat11(2)*nx(2)-mat12(2)*ny(2))**2&
      &      +(vecty(2)-mat12(2)*nx(2)-mat22(2)*ny(2))**2)
 !
-    poids(1)=1.d0
-    poids(2)=1.d0
+    poids(1) = 1.d0
+    poids(2) = 1.d0
 !
-    inte=inte1*poids(1)+inte2*poids(2)
+    inte = inte1*poids(1)+inte2*poids(2)
 !
     if (nbna .eq. 3) then
 !
-        inte3=jac(3)* ((vectx(3)-mat11(3)*nx(3)-mat12(3)*ny(3))**2&
-        +(vecty(3)-mat12(3)*nx(3)-mat22(3)*ny(3))**2)
+        inte3 = jac(3)*((vectx(3)-mat11(3)*nx(3)-mat12(3)*ny(3))**2 &
+                        +(vecty(3)-mat12(3)*nx(3)-mat22(3)*ny(3))**2)
 !
-        poids(1)=1.d0/3.d0
-        poids(2)=1.d0/3.d0
-        poids(3)=4.d0/3.d0
+        poids(1) = 1.d0/3.d0
+        poids(2) = 1.d0/3.d0
+        poids(3) = 4.d0/3.d0
 !
-        inte=inte1*poids(1)+inte2*poids(2)+inte3*poids(3)
+        inte = inte1*poids(1)+inte2*poids(2)+inte3*poids(3)
 !
-    endif
+    end if
 !
 end subroutine

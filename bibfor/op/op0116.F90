@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,8 +83,8 @@ subroutine op0116()
     para(2) = -1.d150
     pi = r8pi()
     epstol = 1.d5*r8prem()
-    r8b=0.d0
-    c16b = dcmplx(0.,0.)
+    r8b = 0.d0
+    c16b = dcmplx(0., 0.)
 !
 !---------------------------------------------------------------------
     call jemarq()
@@ -102,7 +102,7 @@ subroutine op0116()
 !---------------------------------------------------------------------
     call dismoi('NOM_MODELE', rigthe, 'MATR_ASSE', repk=modele)
     call dismoi('CHAM_MATER', rigthe, 'MATR_ASSE', repk=mater)
-    if (ib .ne. 0) call rcmfmc(mater, mateco, l_ther_ = ASTER_FALSE)
+    if (ib .ne. 0) call rcmfmc(mater, mateco, l_ther_=ASTER_FALSE)
 !---------------------------------------------------------------------
 !---------- NUMEROTATION DES DDL FLUIDES -----------------------------
 !---------------------------------------------------------------------
@@ -113,18 +113,18 @@ subroutine op0116()
 !---------------------------------------------------------------------
     call dismoi('SOLVEUR', rigthe, 'MATR_ASSE', repk=solve1)
     call jeveuo(solve1//'.SLVK', 'E', j1)
-    metres=zk24(j1)
+    metres = zk24(j1)
     if (metres .ne. 'MUMPS' .and. metres .ne. 'PETSC') then
-        solve2='&&OP0116.SOLVEUR'
+        solve2 = '&&OP0116.SOLVEUR'
         call copisd('SOLVEUR', 'V', solve1, solve2)
     else
-        solve2=solve1
-    endif
+        solve2 = solve1
+    end if
 !
     call dismoi('DIM_GEOM', modele, 'MODELE', repi=dim)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maflui)
 !
-    modelisa = ['2D' , '3D']
+    modelisa = ['2D', '3D']
     modelis = modelisa(dim-1)
 !
 ! - Create input/output management datastructure
@@ -137,7 +137,7 @@ subroutine op0116()
 !
     vect2 = '&&OP0116.2ND.MEMBRE'
     call chflch(rigthe, vect2, infcha)
-    ds_inout%list_load_resu=infcha
+    ds_inout%list_load_resu = infcha
 !
 !---------------------------------------------------------------------
 !---------- APPEL A CALFLU -------------------------------------------
@@ -150,7 +150,7 @@ subroutine op0116()
         call wkvect('&&OP0116.TYSTO', 'V V K24', nbmod, iady)
         call wkvect('&&OP0116.TZSTO', 'V V K24', nbmod, iady)
 !
-        call tabcor(modelis, mater, mateco, mailla, maflui,&
+        call tabcor(modelis, mater, mateco, mailla, maflui, &
                     modele, nuddl, 0, icor)
 !
         call getvr8(' ', 'COEF_MULT', iocc=1, nbval=0, nbret=icoef)
@@ -161,69 +161,69 @@ subroutine op0116()
         call getvr8(' ', 'COEF_MULT', iocc=1, nbval=nbcoefs, vect=zr(jcoef))
 !
         do i = 1, nbmod
-            call rsexch('F', modmec, 'DEPL', i, chamno,&
+            call rsexch('F', modmec, 'DEPL', i, chamno, &
                         ib)
-            call rsadpa(modmec, 'L', 1, 'FREQ', i,&
+            call rsadpa(modmec, 'L', 1, 'FREQ', i, &
                         0, sjv=j1)
             freq = zr(j1)
 !
             constant = 1
             if (i .le. nbcoefs) then
                 constant = zr(jcoef+i-1)
-            endif
+            end if
 !
             tmpmod = '&&OP0116.MODxMOIN.1'
             if (potentiel(1:4) .eq. 'PRES') then
-                constant = constant * 4.d0*pi*pi*freq*freq
+                constant = constant*4.d0*pi*pi*freq*freq
             else if (potentiel(1:4) .eq. 'VITE') then
-                constant = constant * 2.d0*pi*freq
+                constant = constant*2.d0*pi*freq
             else if (potentiel(1:4) .eq. 'DEPL') then
-                constant = constant * 1.0
-            endif
+                constant = constant*1.0
+            end if
 !
-            call vtcmbl(1, 'R', [constant], 'R', [chamno],&
+            call vtcmbl(1, 'R', [constant], 'R', [chamno], &
                         'R', tmpmod)
 !
             chamnx = '&&OP0116.CHAMNX'
             chamny = '&&OP0116.CHAMNY'
             vesolx = '&&OP0116.VESOLX'
             vesoly = '&&OP0116.VESOLY'
-            call alimrs(mater, mateco, mailla, maflui, modele,&
-                        0, nuddl, tmpmod, chamnx, 'DX',&
+            call alimrs(mater, mateco, mailla, maflui, modele, &
+                        0, nuddl, tmpmod, chamnx, 'DX', &
                         icor)
-            call alimrs(mater, mateco, mailla, maflui, modele,&
-                        0, nuddl, tmpmod, chamny, 'DY',&
+            call alimrs(mater, mateco, mailla, maflui, modele, &
+                        0, nuddl, tmpmod, chamny, 'DY', &
                         icor)
-            call calflu(chamnx, modele, mater, mateco, nuddl,&
+            call calflu(chamnx, modele, mater, mateco, nuddl, &
                         vesolx, nbdesc, nbrefe, nbvale, 'X')
-            call calflu(chamny, modele, mater, mateco, nuddl,&
+            call calflu(chamny, modele, mater, mateco, nuddl, &
                         vesoly, nbdesc, nbrefe, nbvale, 'Y')
 !
             chcomb = "&&OP0116.CHCOMB"
-            nomch = [vect2(1:19), vesolx(1:19),vesoly(1:19)]
-            call vtcmbl(3, ['R', 'R', 'R'], [1.d0, 1.d0, 1.d0], ['R', 'R', 'R'], nomch,&
+            nomch = [vect2(1:19), vesolx(1:19), vesoly(1:19)]
+            call vtcmbl(3, ['R', 'R', 'R'], [1.d0, 1.d0, 1.d0], ['R', 'R', 'R'], nomch, &
                         'R', chcomb)
 !
             if (dim .eq. 3) then
                 chamnz = '&&OP0116.CHAMNZ'
                 vesolz = '&&OP0116.VESOLZ'
-                call alimrs(mater, mateco, mailla, maflui, modele,&
-                            0, nuddl, tmpmod, chamnz, 'DZ',&
+                call alimrs(mater, mateco, mailla, maflui, modele, &
+                            0, nuddl, tmpmod, chamnz, 'DZ', &
                             icor)
-                call calflu(chamnz, modele, mater, mateco, nuddl,&
+                call calflu(chamnz, modele, mater, mateco, nuddl, &
                             vesolz, nbdesc, nbrefe, nbvale, 'Z')
 !
                 chcmb2 = "&&OP0116.CHCOMB2"
-                call vtcmbl(2, ['R', 'R'], [1.d0, 1.d0], ['R', 'R'], [chcomb, vesolz],&
+                call vtcmbl(2, ['R', 'R'], [1.d0, 1.d0], ['R', 'R'], [chcomb, vesolz], &
                             'R', chcmb2)
                 chcomb = chcmb2
-            endif
+            end if
 !
             vectas = chcomb(1:19)
             resuas = '&&NXLECTVAR_____'
             call chpver('F', vectas, 'NOEU', '*', ib)
-            call resoud(rigthe, ' ', solve2, ' ', 0,&
-                        vectas, resuas, 'V', [r8b], [c16b],&
+            call resoud(rigthe, ' ', solve2, ' ', 0, &
+                        vectas, resuas, 'V', [r8b], [c16b], &
                         ' ', .true._1, 0, ib)
 !
             if (i .eq. 1) then
@@ -244,23 +244,23 @@ subroutine op0116()
                 call wkvect(liditr, 'V V R', nbmod, jdisc)
                 zr(jdisc+1-1) = freq
 !
-                call ntnoli(modele, mater, bl24, .false._1, ltrans,&
+                call ntnoli(modele, mater, bl24, .false._1, ltrans, &
                             para, arcinf(1:19), ds_inout)
-            endif
+            end if
 !           --- Pour les modes doubles, assurer la qualite monotone de la discretisation
 !               en frequence (indispensable pour un stockage evol_ther)
             if (i .gt. 1) then
                 if (freq .le. zr(jdisc+i-2)) then
-                    freq = zr(jdisc+i-2) + epstol
+                    freq = zr(jdisc+i-2)+epstol
                 end if
             end if
             zr(jdisc+i-1) = freq
             force = .false._1
-            call ntarch(i-1, modele, mater, bl24, para,&
+            call ntarch(i-1, modele, mater, bl24, para, &
                         arcinf(1:19), ds_inout, force)
 !
         end do
-    endif
+    end if
 !
 !
     call jedema()

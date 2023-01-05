@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0054(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
+subroutine lc0054(fami, kpg, ksp, ndim, imate, &
+                  compor, crit, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, &
                   nvi, dsidep, codret)
 ! aslint: disable=W1504,W0104
     implicit none
@@ -73,12 +73,12 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
     call rccoma(imate, 'ELAS', 1, mcmate, iret)
 !
     if (mcmate .eq. 'ELAS') then
-        call nmtevp(fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, crit, instam, instap,&
-                    deps, sigm, vim, option, sigp,&
+        call nmtevp(fami, kpg, ksp, ndim, typmod, &
+                    imate, compor, crit, instam, instap, &
+                    deps, sigm, vim, option, sigp, &
                     vip, dsidep, r8bid, r8bid, codret)
     else
         call utmess('F', 'ALGORITH6_88')
-    endif
+    end if
 !
 end subroutine

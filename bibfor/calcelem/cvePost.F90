@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cvePost(vectElemz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
 !
-character(len=*), intent(in) :: vectElemz
+    character(len=*), intent(in) :: vectElemz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,24 +54,24 @@ character(len=*), intent(in) :: vectElemz
     vectElem = vectElemz
 
 ! - Get mesh
-    call dismoi('NOM_MAILLA', vectElem, 'VECT_ELEM', repk = mesh)
+    call dismoi('NOM_MAILLA', vectElem, 'VECT_ELEM', repk=mesh)
 
 ! - Complete for MPI
     call jeexin(vectElem//'.RELR', iexi)
     if (iexi .gt. 0 .and. .not. isParallelMesh(mesh)) then
         call jelira(vectElem//'.RELR', 'LONMAX', nbResuElem)
-        call jeveuo(vectElem//'.RELR', 'L', vk24 = relr)
+        call jeveuo(vectElem//'.RELR', 'L', vk24=relr)
         do iResuElem = 1, nbResuElem
-            resuElem = relr(iResuElem)(1:19)
+            resuElem = relr(iResuElem) (1:19)
             call jeexin(resuElem//'.RESL', iexi)
             if (iexi .eq. 0) cycle
-            call dismoi('MPI_COMPLET', resuElem, 'RESUELEM', repk = answer)
-            ASSERT((answer.eq.'OUI').or.(answer.eq.'NON'))
+            call dismoi('MPI_COMPLET', resuElem, 'RESUELEM', repk=answer)
+            ASSERT((answer .eq. 'OUI') .or. (answer .eq. 'NON'))
             if (answer .eq. 'NON') then
                 call sdmpic('RESUELEM', resuElem)
-            endif
+            end if
         end do
-    endif
+    end if
 
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ subroutine vpri2d(sig, sigi)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     s = sig(1)+sig(2)
-    sp= sig(1)-sig(2)
-    delta=sp**2+4.d0*sig(4)**2
+    sp = sig(1)-sig(2)
+    delta = sp**2+4.d0*sig(4)**2
     sqd = sqrt(delta)
     al1 = (s+sqd)/2.d0
     al2 = (s-sqd)/2.d0
-    sigi = max(al1,al2,sig(3),0.d0)
+    sigi = max(al1, al2, sig(3), 0.d0)
 end subroutine

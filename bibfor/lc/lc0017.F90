@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0017(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
+subroutine lc0017(fami, kpg, ksp, ndim, imate, &
+                  compor, crit, instam, instap, epsm, &
+                  deps, sigm, vim, option, angmas, &
+                  sigp, vip, typmod, icomp, &
                   nvi, dsidep, codret)
 ! aslint: disable=W1504,W0104
     implicit none
@@ -34,6 +34,6 @@ subroutine lc0017(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    call nmhoff(ndim, imate, instap, epsm, deps,&
+    call nmhoff(ndim, imate, instap, epsm, deps, &
                 option, sigp, dsidep)
 end subroutine

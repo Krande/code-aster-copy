@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,10 +54,10 @@ subroutine ldc_dis_contact_frot(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     real(kind=8) :: seuil, ft, dlam, dffx, dffy, dffz, ctamor, cnamor, xjeu
 !
 !   système d'équations
-    integer, parameter :: iux=1, iuy=2, iuz=3, ifx=4, ify=5, ifz=6
+    integer, parameter :: iux = 1, iuy = 2, iuz = 3, ifx = 4, ify = 5, ifz = 6
     integer, parameter :: ivx=7, ivy=8, ivz=9, iuyan=10, iuzan=11, ifcy=12, ifcz=13, ije=14
 !   paramètres du modèle :
-    integer,parameter  :: ikn=1, ikt=2, imu=3, icn=4, ict=5, ijeu=6, iky=7, ikz=8
+    integer, parameter  :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
 !
     decoup = ASTER_FALSE
     dyy(iux) = dy0(iux)
@@ -71,75 +71,75 @@ subroutine ldc_dis_contact_frot(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 !   Soit on intègre le jeu soit on prend sa valeur
 !       ppi(2) = 1 : intégration du jeu
 !       ppi(2) = 0 : valeur finale
-    xjeu = yy0(ije)*ppi(2) + ppr(ijeu)*(1.0 - ppi(2))
+    xjeu = yy0(ije)*ppi(2)+ppr(ijeu)*(1.0-ppi(2))
 !
 !   ppi(1) = 1 : seulement du contact, pas de frottement, pas de seuil
 !   ppi(1) = 2 : La loi complète
 !   ppi(1) = 3 : contact direction normale
 !
-    if ( yy0(iux) + xjeu > 0.0 ) then
+    if (yy0(iux)+xjeu > 0.0) then
         dyy(iuyan) = 0.0
         dyy(iuzan) = 0.0
-        dyy(ifcy)  = 0.0
-        dyy(ifcz)  = 0.0
-        dyy(ifx)   = 0.0
-        dyy(ify)   = ppr(iky)*dyy(iuy)
-        dyy(ifz)   = ppr(ikz)*dyy(iuz)
+        dyy(ifcy) = 0.0
+        dyy(ifcz) = 0.0
+        dyy(ifx) = 0.0
+        dyy(ify) = ppr(iky)*dyy(iuy)
+        dyy(ifz) = ppr(ikz)*dyy(iuz)
         goto 999
-    endif
+    end if
 !
-    if ( ppi(1) == 1 ) then
+    if (ppi(1) == 1) then
         dyy(iuyan) = 0.0
         dyy(iuzan) = 0.0
-        dyy(ifcy)  = 0.0
-        dyy(ifcz)  = 0.0
+        dyy(ifcy) = 0.0
+        dyy(ifcz) = 0.0
         ! Si on s'enfonce
-        if ( dyy(ivx) < 0.0 )  then
-            dyy(ifx) = ppr(ikn)*dyy(iux) + ppr(icn)*dyy(ivx)
+        if (dyy(ivx) < 0.0) then
+            dyy(ifx) = ppr(ikn)*dyy(iux)+ppr(icn)*dyy(ivx)
         else
-            if ( yy0(ifx) < 0.0 ) then
-                dyy(ifx) = ppr(ikn)*dyy(iux) + ppr(icn)*dyy(ivx)
+            if (yy0(ifx) < 0.0) then
+                dyy(ifx) = ppr(ikn)*dyy(iux)+ppr(icn)*dyy(ivx)
             else
                 dyy(ifx) = 0.0
-            endif
-        endif
-        dyy(ify)   = ppr(iky)*dyy(iuy)
-        dyy(ifz)   = ppr(ikz)*dyy(iuz)
-!
-    else if ( ppi(1) == 3 ) then
-        ASSERT( ppi(2) == 1 )
-        dyy(iuyan) = dyy(iuy)
-        dyy(iuzan) = dyy(iuz)
-        dyy(ifcy)  = 0.0
-        dyy(ifcz)  = 0.0
-        !
-        dyy(ifx) = ppr(ikn)*(dyy(iux) + dyy(ije))
+            end if
+        end if
         dyy(ify) = ppr(iky)*dyy(iuy)
         dyy(ifz) = ppr(ikz)*dyy(iuz)
 !
-    else if ( ppi(1) == 2) then
-        ft     = (yy0(ifcy)**2 + yy0(ifcz)**2)**0.5
-        seuil  = ft - ppr(imu)*abs(yy0(ifx))
+    else if (ppi(1) == 3) then
+        ASSERT(ppi(2) == 1)
+        dyy(iuyan) = dyy(iuy)
+        dyy(iuzan) = dyy(iuz)
+        dyy(ifcy) = 0.0
+        dyy(ifcz) = 0.0
+        !
+        dyy(ifx) = ppr(ikn)*(dyy(iux)+dyy(ije))
+        dyy(ify) = ppr(iky)*dyy(iuy)
+        dyy(ifz) = ppr(ikz)*dyy(iuz)
+!
+    else if (ppi(1) == 2) then
+        ft = (yy0(ifcy)**2+yy0(ifcz)**2)**0.5
+        seuil = ft-ppr(imu)*abs(yy0(ifx))
         ctamor = 0.0; cnamor = ppr(icn)
-        if ( seuil < 0.0 ) then
+        if (seuil < 0.0) then
             dyy(iuyan) = 0.0
             dyy(iuzan) = 0.0
             ctamor = 0.0
         else
-            if ( ft > r8prem() ) then
+            if (ft > r8prem()) then
                 dffy = yy0(ifcy)/ft
                 dffz = yy0(ifcz)/ft
             else
                 dffy = 0.0
                 dffz = 0.0
-            endif
-            if ( yy0(ifx) > 0.0 )then
+            end if
+            if (yy0(ifx) > 0.0) then
                 dffx = -ppr(imu)
             else
-                dffx =  ppr(imu)
-            endif
-            dlam = dffy*dyy(iuy) + dffz*dyy(iuz) + ppr(ikn)*dffx*dyy(iux)/ppr(ikt)
-            if ( dlam < 0.0 ) then
+                dffx = ppr(imu)
+            end if
+            dlam = dffy*dyy(iuy)+dffz*dyy(iuz)+ppr(ikn)*dffx*dyy(iux)/ppr(ikt)
+            if (dlam < 0.0) then
                 dyy(iuyan) = 0.0
                 dyy(iuzan) = 0.0
                 ctamor = 0.0
@@ -147,16 +147,16 @@ subroutine ldc_dis_contact_frot(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
                 dyy(iuyan) = dlam*dffy
                 dyy(iuzan) = dlam*dffz
                 ctamor = ppr(ict)
-            endif
-        endif
-        dyy(ifcy) = ppr(ikt)*(dyy(iuy)-dyy(iuyan)) + ctamor*dyy(ivy)
-        dyy(ifcz) = ppr(ikt)*(dyy(iuz)-dyy(iuzan)) + ctamor*dyy(ivz)
-        dyy(ifx)  = ppr(ikn)*dyy(iux) + cnamor*dyy(ivx)
-        dyy(ify)  = ppr(iky)*dyy(iuy) + dyy(ifcy)
-        dyy(ifz)  = ppr(ikz)*dyy(iuz) + dyy(ifcz)
+            end if
+        end if
+        dyy(ifcy) = ppr(ikt)*(dyy(iuy)-dyy(iuyan))+ctamor*dyy(ivy)
+        dyy(ifcz) = ppr(ikt)*(dyy(iuz)-dyy(iuzan))+ctamor*dyy(ivz)
+        dyy(ifx) = ppr(ikn)*dyy(iux)+cnamor*dyy(ivx)
+        dyy(ify) = ppr(iky)*dyy(iuy)+dyy(ifcy)
+        dyy(ifz) = ppr(ikz)*dyy(iuz)+dyy(ifcz)
     else
-        ASSERT( .false. )
-    endif
+        ASSERT(.false.)
+    end if
 !
 999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cacoeq(sdcont, mesh)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -75,17 +75,17 @@ implicit none
     character(len=24) :: sdcont_noeuqu
     integer, pointer :: v_sdcont_noeuqu(:) => null()
 !
-    data repe_defi /0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0/
+    data repe_defi/0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    vale_type    = 'REEL'
-    vale_func    = '&FOZERO'
-    vale_cplx    = (0.0d0,0.0d0)
-    vale_real    = 0.0d0
-    coef_cplx(1) = (1.0d0,0.0d0)
-    coef_cplx(2) = (-0.5d0,0.0d0)
-    coef_cplx(2) = (-0.5d0,0.0d0)
+    vale_type = 'REEL'
+    vale_func = '&FOZERO'
+    vale_cplx = (0.0d0, 0.0d0)
+    vale_real = 0.0d0
+    coef_cplx(1) = (1.0d0, 0.0d0)
+    coef_cplx(2) = (-0.5d0, 0.0d0)
+    coef_cplx(2) = (-0.5d0, 0.0d0)
     coef_real(1) = 1.0d0
     coef_real(2) = -0.5d0
     coef_real(3) = -0.5d0
@@ -99,26 +99,26 @@ implicit none
 !
 ! - Access to datastructure
 !
-    sdcont_defi   = sdcont(1:8)//'.CONTACT'
+    sdcont_defi = sdcont(1:8)//'.CONTACT'
     sdcont_noeuqu = sdcont_defi(1:16)//'.NOEUQU'
     call jeexin(sdcont_noeuqu, iret)
     if (iret .eq. 0) then
         nb_node_quad = 0
     else
-        call jeveuo(sdcont_noeuqu , 'L', vi = v_sdcont_noeuqu)
-        call jelira(sdcont_noeuqu , 'LONUTI', nb_node_quad)
-    endif
+        call jeveuo(sdcont_noeuqu, 'L', vi=v_sdcont_noeuqu)
+        call jelira(sdcont_noeuqu, 'LONUTI', nb_node_quad)
+    end if
 !
 ! - No QUAD8 nodes -> exit
 !
-    if ((iret.eq.0) .or. (nb_node_quad.eq.0)) then
+    if ((iret .eq. 0) .or. (nb_node_quad .eq. 0)) then
         goto 99
-    endif
+    end if
 !
 ! - Parameters
 !
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
-    nb_cont_node = cfdisi(sdcont_defi,'NNOCO')
+    nb_cont_zone = cfdisi(sdcont_defi, 'NZOCO')
+    nb_cont_node = cfdisi(sdcont_defi, 'NNOCO')
 !
 ! - Construct inverse connectivity
 !
@@ -126,17 +126,17 @@ implicit none
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=v_mesh_typmail)
 !
 ! - List of nodes to suppress
 !
-    AS_ALLOCATE(vi = v_list_excl, size=nb_cont_node)
+    AS_ALLOCATE(vi=v_list_excl, size=nb_cont_node)
 !
 ! - Loop on nodes to link
 !
     nb_node_quad = nb_node_quad/3
-    i_excl       = 1
-    nb_excl      = 0
+    i_excl = 1
+    nb_excl = 0
     do i_node_quad = 1, nb_node_quad
 !
 ! ----- Get the two nodes to link with the middle one
@@ -152,7 +152,7 @@ implicit none
             goto 30
         else
             l_line_rela = .true.
-        endif
+        end if
 !
 ! ----- Name of the three nodes
 !
@@ -166,17 +166,17 @@ implicit none
             call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(1), suppo1)
             call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(2), suppo2)
             call cfmmex(sdcont_defi, 'CONT', i_zone, node_nume(3), suppo3)
-            if ((suppo1.eq.1) .or. (suppo2.eq.1) .or. (suppo3.eq.1)) then
+            if ((suppo1 .eq. 1) .or. (suppo2 .eq. 1) .or. (suppo3 .eq. 1)) then
                 l_line_rela = .false.
                 goto 30
-            endif
+            end if
         end do
 !
 ! ----- Loop on elements connected to middle node
 !
-        call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi = v_coninv_longcum)
-        nb_node_elem = v_coninv_longcum(node_nume(1)+1) - v_coninv_longcum(node_nume(1))
-        call jeveuo(jexnum(connex_inv, node_nume(1)), 'L', vi = v_coninv)
+        call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi=v_coninv_longcum)
+        nb_node_elem = v_coninv_longcum(node_nume(1)+1)-v_coninv_longcum(node_nume(1))
+        call jeveuo(jexnum(connex_inv, node_nume(1)), 'L', vi=v_coninv)
         do i_elem = 1, nb_node_elem
 !
 ! --------- Type of element
@@ -193,18 +193,18 @@ implicit none
                         elem_nume = v_coninv(i_elem_c)
                         type_nume = v_mesh_typmail(elem_nume)
                         call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name_c)
-                        if ((type_name_c(1:5).eq.'TRIA6') .or.&
-                            (type_name_c(1:5).eq.'TRIA7') .or.&
-                            (type_name_c(1:5).eq.'QUAD9')) then
+                        if ((type_name_c(1:5) .eq. 'TRIA6') .or. &
+                            (type_name_c(1:5) .eq. 'TRIA7') .or. &
+                            (type_name_c(1:5) .eq. 'QUAD9')) then
                             v_list_excl(i_excl) = node_nume(1)
-                            i_excl  = i_excl + 1
-                            nb_excl = nb_excl + 1
+                            i_excl = i_excl+1
+                            nb_excl = nb_excl+1
                             goto 25
-                        endif
-                    endif
+                        end if
+                    end if
                 end do
-            endif
- 25         continue
+            end if
+25          continue
         end do
 !
 ! ----- Linear relations
@@ -212,31 +212,31 @@ implicit none
         dof_name(1) = 'DX'
         dof_name(2) = 'DX'
         dof_name(3) = 'DX'
-        call afrela(coef_real, coef_cplx, dof_name , node_name, repe_type,&
-                    repe_defi, 3        , vale_real, vale_cplx, vale_func,&
-                    type_coef, vale_type, 0.d0     , list_rela)
+        call afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
+                    repe_defi, 3, vale_real, vale_cplx, vale_func, &
+                    type_coef, vale_type, 0.d0, list_rela)
         dof_name(1) = 'DY'
         dof_name(2) = 'DY'
         dof_name(3) = 'DY'
-        call afrela(coef_real, coef_cplx, dof_name , node_name, repe_type,&
-                    repe_defi, 3        , vale_real, vale_cplx, vale_func,&
-                    type_coef, vale_type, 0.d0     , list_rela)
+        call afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
+                    repe_defi, 3, vale_real, vale_cplx, vale_func, &
+                    type_coef, vale_type, 0.d0, list_rela)
         dof_name(1) = 'DZ'
         dof_name(2) = 'DZ'
         dof_name(3) = 'DZ'
-        call afrela(coef_real, coef_cplx, dof_name , node_name, repe_type,&
-                    repe_defi, 3        , vale_real, vale_cplx, vale_func,&
-                    type_coef, vale_type, 0.d0     , list_rela)
- 30     continue
+        call afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
+                    repe_defi, 3, vale_real, vale_cplx, vale_func, &
+                    type_coef, vale_type, 0.d0, list_rela)
+30      continue
     end do
 !
     if (l_line_rela) then
         call aflrch(list_rela, sdcont, 'NLIN')
         call cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
         call jedetr(connex_inv)
-    endif
-    AS_DEALLOCATE(vi = v_list_excl)
+    end if
+    AS_DEALLOCATE(vi=v_list_excl)
 !
- 99 continue
+99  continue
 !
 end subroutine

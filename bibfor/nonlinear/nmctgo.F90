@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmctgo(mesh, sderro, hval_incr, ds_print, ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
@@ -77,13 +77,13 @@ implicit none
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> MISE A JOUR DU SEUIL DE GEOMETRIE'
-    endif
+        write (ifm, *) '<MECANONLINE> MISE A JOUR DU SEUIL DE GEOMETRIE'
+    end if
 !
 ! - Initializations
 !
-    loop_geom_node  = ' '
-    loop_geom_vale  = r8vide()
+    loop_geom_node = ' '
+    loop_geom_vale = r8vide()
     call mmbouc(ds_contact, 'Geom', 'Set_NoError')
 !
 ! - Get fields
@@ -93,19 +93,19 @@ implicit none
 !
 ! - Get contact parameters
 !
-    l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_lac  = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
-    l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
+    l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
+    l_cont_lac = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_disc = cfdisl(ds_contact%sdcont_defi, 'FORMUL_DISCRETE')
+    l_cont_xfem = cfdisl(ds_contact%sdcont_defi, 'FORMUL_XFEM')
 !
 ! - Get geometry loop parameters
 !
     loop_geom_disp = ds_contact%sdcont_solv(1:14)//'.DEPG'
     iter_geom_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_GEOM_MAXI')
-    nb_iter_geom   = cfdisi(ds_contact%sdcont_defi, 'NB_ITER_GEOM' )
-    l_geom_manu    = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_MANU')
-    l_geom_sans    = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')
-    l_geom_auto    = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_AUTO')
+    nb_iter_geom = cfdisi(ds_contact%sdcont_defi, 'NB_ITER_GEOM')
+    l_geom_manu = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_MANU')
+    l_geom_sans = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')
+    l_geom_auto = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_AUTO')
 !
 ! - Update triggers
 !
@@ -113,58 +113,58 @@ implicit none
 !
 ! ----- Compute geometry criterion
 !
-        call mmmcri_geom(mesh      , disp_prev, loop_geom_disp, disp_curr,&
+        call mmmcri_geom(mesh, disp_prev, loop_geom_disp, disp_curr, &
                          ds_contact)
 !
 ! ----- Get values
 !
-        call mmbouc(ds_contact, 'Geom', 'Read_Counter'  , loop_geom_count)
-        call mmbouc(ds_contact, 'Geom', 'Is_Convergence', loop_state_ = loop_geom_conv)
+        call mmbouc(ds_contact, 'Geom', 'Read_Counter', loop_geom_count)
+        call mmbouc(ds_contact, 'Geom', 'Is_Convergence', loop_state_=loop_geom_conv)
 !
 ! ----- For REAC_GEOM = 'MANU'
 !
         if (l_geom_manu) then
             if (loop_geom_count .eq. nb_iter_geom) then
-                if ((.not.loop_geom_conv) .and. (nb_iter_geom.gt.1)) then
+                if ((.not. loop_geom_conv) .and. (nb_iter_geom .gt. 1)) then
                     call utmess('A', 'CONTACT3_96')
-                endif
+                end if
                 call mmbouc(ds_contact, 'Geom', 'Set_Convergence')
             else
                 call mmbouc(ds_contact, 'Geom', 'Set_Divergence')
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- For REAC_GEOM = 'SANS'
 !
         if (l_geom_sans) then
             call mmbouc(ds_contact, 'Geom', 'Set_Convergence')
-        endif
+        end if
 !
 ! ----- For REAC_GEOM = 'AUTO'
 !
         if (l_geom_auto) then
-            if ((.not.loop_geom_conv) .and. (loop_geom_count .eq. iter_geom_maxi)) then
+            if ((.not. loop_geom_conv) .and. (loop_geom_count .eq. iter_geom_maxi)) then
                 if (l_cont_cont) then
                     call cfverl(ds_contact)
-                endif
+                end if
                 call mmbouc(ds_contact, 'Geom', 'Set_Error')
-            endif
-        endif
+            end if
+        end if
 !
 ! ----- Update reference displacement for geometry loop
 !
-        call mmbouc(ds_contact, 'Geom', 'Is_Convergence', loop_state_ = loop_geom_conv)
-        if (.not.loop_geom_conv) then
+        call mmbouc(ds_contact, 'Geom', 'Is_Convergence', loop_state_=loop_geom_conv)
+        if (.not. loop_geom_conv) then
             call copisd('CHAMP_GD', 'V', disp_curr, loop_geom_disp)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Get final loop state
 !
-    call mmbouc(ds_contact, 'Geom', 'Is_Convergence', loop_state_ = loop_geom_conv)
-    call mmbouc(ds_contact, 'Geom', 'Is_Error'      , loop_state_ = loop_geom_error)
-    call mmbouc(ds_contact, 'Geom', 'Get_Locus'     , loop_locus_ = loop_geom_node)
-    call mmbouc(ds_contact, 'Geom', 'Get_Vale'      , loop_vale_  = loop_geom_vale)
+    call mmbouc(ds_contact, 'Geom', 'Is_Convergence', loop_state_=loop_geom_conv)
+    call mmbouc(ds_contact, 'Geom', 'Is_Error', loop_state_=loop_geom_error)
+    call mmbouc(ds_contact, 'Geom', 'Get_Locus', loop_locus_=loop_geom_node)
+    call mmbouc(ds_contact, 'Geom', 'Get_Vale', loop_vale_=loop_geom_vale)
 !
 ! - Save events
 !
@@ -173,13 +173,13 @@ implicit none
         call nmcrel(sderro, 'DIVE_FIXG', .false._1)
     else
         call nmcrel(sderro, 'DIVE_FIXG', .true._1)
-    endif
+    end if
 !
 ! - Set values in convergence table for contact geoemtry informations
 !
     if (l_cont_cont .or. l_cont_xfem .or. l_cont_lac) then
         call nmimck(ds_print, 'BOUC_NOEU', loop_geom_node, .true._1)
         call nmimcr(ds_print, 'BOUC_VALE', loop_geom_vale, .true._1)
-    endif
+    end if
 !
 end subroutine

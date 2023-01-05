@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: iatyma, ibid,  idlima, idnoeu, ima
+    integer :: iatyma, ibid, idlima, idnoeu, ima
     integer :: ino1, ino2, ino3, iocc, ityp, jtyp, nangle
     integer :: nb, nbang, nbma, nbmai, nbno, nbo, nboui
     integer :: ndim, ndim1, nv, nvect
@@ -125,7 +125,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
         ndim = 2
     else
         ndim = 3
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA DIRECTION FOURNIE PAR L'UTILISATEUR
 ! --- ET COINCIDANT AVEC LA NORMALE DES ELEMENTS SURFACIQUES
@@ -138,44 +138,44 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
             call utmess('F', 'MODELISA3_80')
         else
             nvect = -nvect
-            nvect = min (nvect,ndim)
-            call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
+            nvect = min(nvect, ndim)
+            call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor, &
                         nbret=nv)
             if (abs(nv) .ne. ndim) then
                 valk = motfac
-                vali (1) = iocc
+                vali(1) = iocc
                 call utmess('F+', 'MODELISA9_36', sk=valk, si=vali(1))
                 if (ndim .eq. 2) then
                     call utmess('F+', 'MODELISA9_24')
                 else
                     call utmess('F+', 'MODELISA9_25')
-                endif
-                vali (1) = abs(nv)
-                vali (2) = ndim
+                end if
+                vali(1) = abs(nv)
+                vali(2) = ndim
                 valk = 'VECT_NORMALE'
                 call utmess('F', 'MODELISA9_39', sk=valk, ni=2, vali=vali)
-            endif
-        endif
+            end if
+        end if
     else
         nangle = -nangle
-        ndim1 = ndim - 1
-        nangle = min (nangle,ndim1)
-        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+        ndim1 = ndim-1
+        nangle = min(nangle, ndim1)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle, &
                     nbret=nv)
         if (abs(nv) .ne. ndim1) then
             valk = motfac
-            vali (1) = iocc
+            vali(1) = iocc
             call utmess('F+', 'MODELISA9_40', sk=valk, si=vali(1))
             if (ndim .eq. 2) then
                 call utmess('F+', 'MODELISA9_24')
             else
                 call utmess('F+', 'MODELISA9_25')
-            endif
-            vali (1) = abs(nv)
-            vali (2) = ndim1
+            end if
+            vali(1) = abs(nv)
+            vali(2) = ndim1
             valk = 'ANGL_NAUT'
             call utmess('F', 'MODELISA9_43', sk=valk, ni=2, vali=vali)
-        endif
+        end if
 !
         if (ndim .eq. 2) then
             angle(1) = angle(1)*r8dgrd()
@@ -183,21 +183,21 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
             vecnor(1) = cos(angle(1))
             vecnor(2) = sin(angle(1))
             vecnor(3) = zero
-        else if (ndim.eq.3) then
+        else if (ndim .eq. 3) then
             angle(1) = angle(1)*r8dgrd()
             angle(2) = angle(2)*r8dgrd()
 !
             vecnor(1) = cos(angle(1))*cos(angle(2))
             vecnor(2) = sin(angle(1))*cos(angle(2))
             vecnor(3) = -sin(angle(2))
-        endif
-    endif
+        end if
+    end if
 !
-    xnorm2 = vecnor(1)*vecnor(1) + vecnor(2)*vecnor(2) + vecnor(3)*vecnor(3)
+    xnorm2 = vecnor(1)*vecnor(1)+vecnor(2)*vecnor(2)+vecnor(3)*vecnor(3)
 !
     if (xnorm2 .eq. zero) then
         call utmess('F', 'MODELISA3_81')
-    endif
+    end if
 !
     xnorm = sqrt(xnorm2)
 !
@@ -215,7 +215,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
     else
         call getvr8(motfac, 'ANGL_PREC', iocc=iocc, scal=angpre, nbret=nb)
         angpre = angpre*r8dgrd()
-    endif
+    end if
 !
 ! --- ON REGARDE SI L'ON TIENT COMPTE OU NON DU FAIT QUE LA NORMALE
 ! --- FOURNIE PAR L'UTILISATEUR ET LA DIRECTION NORMALE A
@@ -226,17 +226,17 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
         ouinon = 'OUI'
     else
         call getvtx(motfac, 'VERI_SIGNE', iocc=iocc, scal=ouinon, nbret=nbo)
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA DIMENSION DE L'ESPACE DES COORDONNEES :
 !     --------------------------------------------------------
     call jelira(noma//'.COORDO    .VALE', 'DOCU', cval=cdim)
 !
     if (cdim .eq. '2   ') then
-        ndim=2
-    else if (cdim.eq.'3   ') then
-        ndim=3
-    endif
+        ndim = 2
+    else if (cdim .eq. '3   ') then
+        ndim = 3
+    end if
 !
 ! --- RECUPERATION DU NOMBRE DE MAILLES DU MAILLAGE :
 !     ---------------------------------------------
@@ -273,7 +273,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !         ---------------------------------
         call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
         call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
-        jtyp=iatyma-1+ibid
+        jtyp = iatyma-1+ibid
         ityp = zi(jtyp)
         call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nomtyp)
 !
@@ -284,10 +284,10 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
             ino1 = zi(idnoeu+1-1)
             ino2 = zi(idnoeu+2-1)
 !
-            coor(1,1)=vale(3*(ino1-1)+1)
-            coor(2,1)=vale(3*(ino1-1)+2)
-            coor(1,2)=vale(3*(ino2-1)+1)
-            coor(2,2)=vale(3*(ino2-1)+2)
+            coor(1, 1) = vale(3*(ino1-1)+1)
+            coor(2, 1) = vale(3*(ino1-1)+2)
+            coor(1, 2) = vale(3*(ino2-1)+1)
+            coor(2, 2) = vale(3*(ino2-1)+2)
 !
 ! ---         CALCUL DES COMPOSANTES A ET B DU VECTEUR NORMAL
 ! ---         A L'ELEMENT :
@@ -298,23 +298,23 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---     LES MAILLES SURFACIQUES SONT DES TRIA3 OU DES TRIA6
 ! ---     OU DES TRIA9 OU DES QUAD4 OU DES QUAD8 :
 !         --------------------------------------
-            elseif (ndim.eq.3.and. (nomtyp(1:4).eq.'TRIA'.or.nomtyp(1:4)&
-        .eq.'QUAD')) then
+        elseif (ndim .eq. 3 .and. (nomtyp(1:4) .eq. 'TRIA' .or. nomtyp(1:4) &
+                                   .eq. 'QUAD')) then
             ino1 = zi(idnoeu+1-1)
             ino2 = zi(idnoeu+2-1)
             ino3 = zi(idnoeu+3-1)
 !
-            coor(1,1)=vale(3*(ino1-1)+1)
-            coor(2,1)=vale(3*(ino1-1)+2)
-            coor(3,1)=vale(3*(ino1-1)+3)
+            coor(1, 1) = vale(3*(ino1-1)+1)
+            coor(2, 1) = vale(3*(ino1-1)+2)
+            coor(3, 1) = vale(3*(ino1-1)+3)
 !
-            coor(1,2)=vale(3*(ino2-1)+1)
-            coor(2,2)=vale(3*(ino2-1)+2)
-            coor(3,2)=vale(3*(ino2-1)+3)
+            coor(1, 2) = vale(3*(ino2-1)+1)
+            coor(2, 2) = vale(3*(ino2-1)+2)
+            coor(3, 2) = vale(3*(ino2-1)+3)
 !
-            coor(1,3)=vale(3*(ino3-1)+1)
-            coor(2,3)=vale(3*(ino3-1)+2)
-            coor(3,3)=vale(3*(ino3-1)+3)
+            coor(1, 3) = vale(3*(ino3-1)+1)
+            coor(2, 3) = vale(3*(ino3-1)+2)
+            coor(3, 3) = vale(3*(ino3-1)+3)
 !
 ! ---         CALCUL DES COMPOSANTES A, B ET C DU VECTEUR NORMAL
 ! ---         A L'ELEMENT :
@@ -325,26 +325,26 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !         ------------------------------------
         else
             goto 10
-        endif
+        end if
 !
 ! ---     CALCUL DE L'ANGLE FORME PAR LE VECTEUR NORMAL A L'ELEMENT
 ! ---     ET LA DIRECTION FOURNIE PAR L'UTILISATEUR :
 !         -----------------------------------------
-        xnorel = sqrt(a*a + b*b + c*c)
+        xnorel = sqrt(a*a+b*b+c*c)
 !
 ! ---     CAS OU L'ON TIENT COMPTE  DU FAIT QUE LA NORMALE FOURNIE
 ! ---     PAR L'UTILISATEUR ET LA DIRECTION NORMALE A L'ELEMENT
 ! ---     DOIVENT AVOIR LA MEME ORIENTATION :
 !         ---------------------------------
         if (ouinon(1:3) .eq. 'OUI') then
-            psca = a*vecnor(1) + b*vecnor(2) + c*vecnor(3)
+            psca = a*vecnor(1)+b*vecnor(2)+c*vecnor(3)
             if (psca .le. zero) goto 10
-        endif
+        end if
 !
-        psca = abs(a*vecnor(1) + b*vecnor(2) + c*vecnor(3))/xnorel
+        psca = abs(a*vecnor(1)+b*vecnor(2)+c*vecnor(3))/xnorel
         if (psca .gt. un) then
-            psca = psca - eps
-        endif
+            psca = psca-eps
+        end if
         ang = acos(psca)
 !
 ! ---       SI LE VECTEUR NORMAL A L'ELEMENT ET LA DIRECTION FOURNIE
@@ -353,10 +353,10 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---       GROUP_MA :
 !           --------
         if (abs(ang) .lt. abs(angpre)) then
-            nbma = nbma + 1
+            nbma = nbma+1
             zi(idlima+nbma-1) = ima
-        endif
- 10     continue
+        end if
+10      continue
     end do
 !
     call jedema()

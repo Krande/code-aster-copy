@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine caflnl(load, mesh, model)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh, model
+    character(len=8), intent(in) :: load, mesh, model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ character(len=8), intent(in) :: load, mesh, model
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FLUX_NL'
-    integer :: nflux, jvalv,  nf, iocc, nbtou, nbma, jma, ncmp, lprol
+    integer :: nflux, jvalv, nf, iocc, nbtou, nbma, jma, ncmp, lprol
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=19) :: carte
@@ -94,21 +94,21 @@ character(len=8), intent(in) :: load, mesh, model
         prol = zk8(jvalv)//'           .PROL'
         call jeveuo(prol, 'L', lprol)
         nompar = zk24(lprol+2)
-        if (nompar(1:4) .ne.'TEMP') call utmess('F','CHARGES2_3',sk=zk8(jvalv))
+        if (nompar(1:4) .ne. 'TEMP') call utmess('F', 'CHARGES2_3', sk=zk8(jvalv))
 !
         call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ncmp)
 !
         else
-            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc,&
+            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc, &
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) cycle
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
+            call nocart(carte, 3, ncmp, mode='NUM', nma=nbma, &
                         limanu=zi(jma))
             call jedetr(mesmai)
-        endif
+        end if
 !
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cjsmde(mod, crit, mater, nvi, epsd,&
-                  deps, sigd, sigf, vind, vinf,&
-                  noconv, aredec, stopnc, niter, epscon,&
+subroutine cjsmde(mod, crit, mater, nvi, epsd, &
+                  deps, sigd, sigf, vind, vinf, &
+                  noconv, aredec, stopnc, niter, epscon, &
                   trac)
     implicit none
 !     INTEGRATION PLASTIQUE (MECANISME ISOTROPE SEUL) DE LA LOI CJS
@@ -48,7 +48,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 #include "asterfort/iunifi.h"
 #include "asterfort/mgauss.h"
     integer :: ndt, ndi, nvi, nr, nmod
-    parameter ( nmod = 14 )
+    parameter(nmod=14)
     integer :: iter, niter, iret
     aster_logical :: noconv, aredec, stopnc, trac
 !
@@ -62,16 +62,16 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     real(kind=8) :: det, pa, qinit
     integer :: umess
     integer :: nitimp
-    parameter (nitimp = 200)
+    parameter(nitimp=200)
 !
     integer :: essai, essmax
-    parameter (essmax = 10)
+    parameter(essmax=10)
 !
 !    SI ABS(COS_NORMALES) < TOLROT RELAX = RELAX*DECREL
 !
     real(kind=8) :: tolrot, decrel
-    parameter (tolrot = 0.8d0)
-    parameter (decrel = 0.5d0)
+    parameter(tolrot=0.8d0)
+    parameter(decrel=0.5d0)
 !
     real(kind=8) :: relax(essmax+1), rotagd(essmax+1), xf(6), nor1(7), nor2(7)
     real(kind=8) :: erimp(nitimp, 4)
@@ -82,19 +82,19 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !
     character(len=8) :: mod
 !
-    common /tdim/   ndt, ndi
+    common/tdim/ndt, ndi
     umess = iunifi('MESSAGE')
     noconv = .false.
     trac = .false.
-    pa = mater(12,2)
-    qinit = mater(13,2)
+    pa = mater(12, 2)
+    qinit = mater(13, 2)
     trac = .false.
 !
 !
 !
 ! -> DIMENSION DU PROBLEME NR = NDT(SIG) + 1(R) + NDT(X) + 1(DLAMBD)
 !
-    nr = 2* ndt + 2
+    nr = 2*ndt+2
 !
 ! -> MISE A ZERO DES DATAS
 !
@@ -124,7 +124,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !    (SOLUTION EXPLICITE)
 !
 !
-    call cjside(mod, mater, epsd, deps, yd,&
+    call cjside(mod, mater, epsd, deps, yd, &
                 gd, dy)
 !
 !
@@ -135,11 +135,11 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     iter = 0
 100 continue
 !
-    iter = iter + 1
+    iter = iter+1
 !
 ! -> INCREMENTATION DE YF = YD + DY
 !
-    yf(1:nr) = yd(1:nr) + dy(1:nr)
+    yf(1:nr) = yd(1:nr)+dy(1:nr)
 !
 !
 !
@@ -169,7 +169,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
         vinf(nvi) = 0.d0
         trac = .true.
         goto 999
-    endif
+    end if
 !
 !
 !
@@ -180,18 +180,18 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     do i = 1, nr
         r(i) = 0.d0
         do j = 1, nr
-            drdy(i,j) = 0.d0
+            drdy(i, j) = 0.d0
         end do
     end do
 !
 !
-    call cjsjde(mod, mater, epsd, deps, yd,&
+    call cjsjde(mod, mater, epsd, deps, yd, &
                 yf, gd, r, signe, drdy)
 !
 ! -> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
 !
     ddy(1:nr) = r(1:nr)
-    call mgauss('NFVP', drdy, ddy, nmod, nr,&
+    call mgauss('NFVP', drdy, ddy, nmod, nr, &
                 1, det, iret)
 !
     relax(1) = 1.d0
@@ -202,31 +202,31 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
         sigf(i) = yd(i)+dy(i)
         xf(i) = yd(ndt+1+i)+dy(ndt+1+i)
     end do
-    call cjsnor(mater, sigf, xf, nor1, devnu1,&
+    call cjsnor(mater, sigf, xf, nor1, devnu1, &
                 tra1)
 !
     essai = 0
- 40 continue
-    essai = essai + 1
-    if ((.not.devnu1) .and. (.not.tra1)) then
+40  continue
+    essai = essai+1
+    if ((.not. devnu1) .and. (.not. tra1)) then
         if (essai .gt. essmax) then
             if (aredec .and. stopnc) then
-                call cjsncn('CJSMDE', essmax, ndt, nvi, umess,&
-                            relax, rotagd, epsd, deps, sigd,&
+                call cjsncn('CJSMDE', essmax, ndt, nvi, umess, &
+                            relax, rotagd, epsd, deps, sigd, &
                             vind)
             else
                 noconv = .true.
                 goto 200
-            endif
-        endif
+            end if
+        end if
 !
 !   ESTIMATION NORMALE AU POINT YD + RELAX*DY
 !
         do i = 1, ndt
             sigf(i) = yd(i)+dy(i)+relax(essai)*ddy(i)
-            xf(i) = yd(ndt+1+i)+dy(ndt+1+i)+ relax(essai)*ddy(ndt+1+i)
+            xf(i) = yd(ndt+1+i)+dy(ndt+1+i)+relax(essai)*ddy(ndt+1+i)
         end do
-        call cjsnor(mater, sigf, xf, nor2, devnu2,&
+        call cjsnor(mater, sigf, xf, nor2, devnu2, &
                     tra2)
 !
         rotagd(essai) = 0.d0
@@ -235,11 +235,11 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
         end do
         rotagd(essai) = rotagd(essai)/(nor1(ndt+1)*nor2(ndt+1))
 !
-        if (abs(rotagd(essai)) .lt. tolrot .and. (.not.devnu2) .and. ( .not.tra2)) then
+        if (abs(rotagd(essai)) .lt. tolrot .and. (.not. devnu2) .and. (.not. tra2)) then
             relax(essai+1) = relax(essai)*decrel
             goto 40
-        endif
-    endif
+        end if
+    end if
 !
 !  DANS LES CAS OU DEVNU1 OU DEVNU2 (ON A DETCTE DES DEVIATEURS NULS)
 !  OU TRA1 OU TRA2 ( ON A DETECTE DES TRACTIONS) ON ABANDONNE
@@ -258,14 +258,14 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
     if (err2 .eq. 0.d0) then
         err = err1
     else
-        err = err1 / err2
-    endif
+        err = err1/err2
+    end if
     if (iter .le. nitimp) then
-        erimp(iter,1) = err1
-        erimp(iter,2) = err2
-        erimp(iter,3) = err
-        erimp(iter,4) = relax(essai)
-    endif
+        erimp(iter, 1) = err1
+        erimp(iter, 2) = err2
+        erimp(iter, 3) = err
+        erimp(iter, 4) = relax(essai)
+    end if
 !
     if (iter .le. int(abs(crit(1)))) then
 !
@@ -276,19 +276,19 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !          --  NON CONVERVENCE : ITERATION SUIVANTE  --
         else
             goto 100
-        endif
+        end if
 !
     else
 !
 !          --  NON CONVERVENCE : ITERATION MAXI ATTEINTE  --
         if (aredec .and. stopnc) then
-            call cjsncv('CJSMDE', nitimp, iter, ndt, nvi,&
-                        umess, erimp, epsd, deps, sigd,&
+            call cjsncv('CJSMDE', nitimp, iter, ndt, nvi, &
+                        umess, erimp, epsd, deps, sigd, &
                         vind)
         else
             noconv = .true.
-        endif
-    endif
+        end if
+    end if
 !
 200 continue
 !
@@ -300,7 +300,7 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !
 ! -> INCREMENTATION DE YF = YD + DY
 !
-    yf(1:nr) = yd(1:nr) + dy(1:nr)
+    yf(1:nr) = yd(1:nr)+dy(1:nr)
 !
 !
 ! -> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES

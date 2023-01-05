@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/comp_init.h"
@@ -38,11 +38,11 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=8), intent(in) :: model, chmate
-aster_logical, intent(in) :: lInitialState
-character(len=19), intent(in) :: compor
-character(len=1), intent(in) :: base
-aster_logical, intent(in), optional :: l_verbose
+    character(len=8), intent(in) :: model, chmate
+    aster_logical, intent(in) :: lInitialState
+    character(len=19), intent(in) :: compor
+    character(len=1), intent(in) :: base
+    aster_logical, intent(in), optional :: l_verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,13 +72,13 @@ aster_logical, intent(in), optional :: l_verbose
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_4')
-    endif
+    end if
 
 ! - Initialisations
     verbose = ASTER_FALSE
     if (present(l_verbose)) then
         verbose = l_verbose
-    endif
+    end if
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - Create datastructure to prepare comportement
@@ -108,10 +108,10 @@ aster_logical, intent(in), optional :: l_verbose
 ! - Verbose mode
     if (verbose) then
         call comp_info(model, compor)
-    endif
+    end if
 
 ! - Clean
-    deallocate(behaviourPrepPara%v_para)
-    deallocate(behaviourPrepPara%v_paraExte)
+    deallocate (behaviourPrepPara%v_para)
+    deallocate (behaviourPrepPara%v_paraExte)
 !
 end subroutine

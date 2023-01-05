@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,11 +56,11 @@ subroutine codent(entier, cadre, chaine, kstop)
 !-----------------------------------------------------------------------
     integer :: i, ier, il, il1
 !-----------------------------------------------------------------------
-    data        chiffr/'0','1','2','3','4','5','6','7','8','9'/
+    data chiffr/'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'/
 !
 !
     if (present(kstop)) then
-        ASSERT(kstop.eq.' '.or.kstop.eq.'F')
+        ASSERT(kstop .eq. ' ' .or. kstop .eq. 'F')
     else
         kstop = 'F'
     end if
@@ -74,28 +74,28 @@ subroutine codent(entier, cadre, chaine, kstop)
     lg = len(chaine)
 !
 !     ON CADRE A DOITE A PRIORI   CADRAGE A DROITE
-    il = lg + 1
- 10 continue
-    il = il - 1
+    il = lg+1
+10  continue
+    il = il-1
     if (il .le. 0) then
         ier = 1
         goto 99000
     else
-        ival = mod(ent,10)
+        ival = mod(ent, 10)
         chaine(il:il) = chiffr(ival)
-        ent = ent / 10
-    endif
+        ent = ent/10
+    end if
     if (ent .ne. 0) goto 10
 !
     if (neg) then
-        il = il - 1
+        il = il-1
         if (il .le. 0) then
             ier = 1
             goto 99000
         else
             chaine(il:il) = '-'
-        endif
-    endif
+        end if
+    end if
 !
     if (cadre(1:1) .eq. 'D') then
 !        --- CADRAGE A DROITE ---
@@ -106,8 +106,8 @@ subroutine codent(entier, cadre, chaine, kstop)
                     chaine(i:i) = '0'
                 end do
                 if (neg) chaine(1:1) = '-'
-            endif
-        endif
+            end if
+        end if
 !
     else if (cadre(1:1) .eq. 'G') then
 !        --- CADRAGE A GAUCHE ---
@@ -118,7 +118,7 @@ subroutine codent(entier, cadre, chaine, kstop)
         chaine(lg-il1+1:) = ' '
     else
         ier = 1
-    endif
+    end if
 !
 !     SORTIE -----------------------------------------------------------
 99000 continue
@@ -129,7 +129,7 @@ subroutine codent(entier, cadre, chaine, kstop)
             end do
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

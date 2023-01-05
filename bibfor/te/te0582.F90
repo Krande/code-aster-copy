@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine te0582(option, nomte)
 ! ......................................................................
 !
     integer :: nbrddm
-    parameter (nbrddm=156)
+    parameter(nbrddm=156)
     integer :: npg, ipoids, ivf
     integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
     real(kind=8) :: mass(nbrddm*nbrddm), k(nbrddm*nbrddm)
@@ -49,53 +49,53 @@ subroutine te0582(option, nomte)
 !
 !
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &
+                     jdfd2=jdfd2, jgano=jgano)
 !
     m = 3
     if (nomte .eq. 'MET6SEG3') m = 6
 !
 !     FORMULE GENERALE
 !
-    nbrddl = nno* (6+3+6* (m-1))
+    nbrddl = nno*(6+3+6*(m-1))
 !
 !     VERIFS PRAGMATIQUES
 !
     if (nbrddl .gt. nbrddm) then
         call utmess('F', 'ELEMENTS4_40')
-    endif
+    end if
     if (nomte .eq. 'MET3SEG3') then
         if (nbrddl .ne. 63) then
             call utmess('F', 'ELEMENTS4_41')
-        endif
-    else if (nomte.eq.'MET6SEG3') then
+        end if
+    else if (nomte .eq. 'MET6SEG3') then
         if (nbrddl .ne. 117) then
             call utmess('F', 'ELEMENTS4_41')
-        endif
-    else if (nomte.eq.'MET3SEG4') then
+        end if
+    else if (nomte .eq. 'MET3SEG4') then
         if (nbrddl .ne. 84) then
             call utmess('F', 'ELEMENTS4_41')
-        endif
+        end if
     else
         call utmess('F', 'ELEMENTS4_42')
-    endif
+    end if
 !
     if (option .eq. 'RIGI_MECA') then
         call turigi(nomte, nbrddl, k)
-    else if ((option.eq.'MASS_MECA').or.(option.eq.'M_GAMMA')) then
+    else if ((option .eq. 'MASS_MECA') .or. (option .eq. 'M_GAMMA')) then
         call tumass(nomte, nbrddl, mass)
-    endif
+    end if
 !
     if (option .eq. 'MASS_MECA') then
         call jevech('PMATUUR', 'E', imass)
 !     DIMENSION DE LA MATRICE STOCKEE SOUS FORME VECTEUR
-        nc = nbrddl* (nbrddl+1)/2
+        nc = nbrddl*(nbrddl+1)/2
         call mavec(mass, nbrddl, zr(imass), nc)
-    else if (option.eq.'M_GAMMA') then
+    else if (option .eq. 'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
         call pmavec('ZERO', nbrddl, mass, zr(iacce), zr(ivect))
-    endif
+    end if
 !
 end subroutine

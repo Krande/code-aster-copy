@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ subroutine te0419(option, nomte)
 !
     real(kind=8) :: epais, temper
 !-----------------------------------------------------------------------
-    parameter (npge=2)
+    parameter(npge=2)
     real(kind=8) :: epsval(npge), ksi3s2, ksi3
-    data epsval / -0.577350269189626d0,  0.577350269189626d0 /
+    data epsval/-0.577350269189626d0, 0.577350269189626d0/
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PVECTUR', 'E', jvecg)
@@ -69,10 +69,10 @@ subroutine te0419(option, nomte)
 !     RECUPERATION DES OBJETS
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb1  =zi(lzi-1+1)
-    nb2  =zi(lzi-1+2)
-    npgsr=zi(lzi-1+3)
-    npgsn=zi(lzi-1+4)
+    nb1 = zi(lzi-1+1)
+    nb2 = zi(lzi-1+2)
+    npgsr = zi(lzi-1+3)
+    npgsn = zi(lzi-1+4)
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
 !
@@ -86,28 +86,28 @@ subroutine te0419(option, nomte)
 !
 !
     do i = 1, nddle
-        forcth(i)=0.d0
+        forcth(i) = 0.d0
     end do
 !
-    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&
+    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta, &
                 vectn, vectpt)
 !
-    kwgt=0
+    kwgt = 0
     do inte = 1, npge
-        ksi3s2=epsval(inte)/2.d0
+        ksi3s2 = epsval(inte)/2.d0
 !
 !     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
 !
         do intsr = 1, npgsr
-            call mahsms(0, nb1, zr(jgeom), ksi3s2, intsr,&
-                        zr(lzr), epais, vectn, vectg, vectt,&
+            call mahsms(0, nb1, zr(jgeom), ksi3s2, intsr, &
+                        zr(lzr), epais, vectn, vectg, vectt, &
                         hsfm, hss)
 !
-            call hsj1ms(epais, vectg, vectt, hsfm, hss,&
+            call hsj1ms(epais, vectg, vectt, hsfm, hss, &
                         hsj1m, hsj1s)
 !
-            call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr),&
-                        epais, vectpt, hsj1m, hsj1s, btdm,&
+            call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
+                        epais, vectpt, hsj1m, hsj1s, btdm, &
                         btds)
         end do
 !
@@ -117,38 +117,38 @@ subroutine te0419(option, nomte)
 !     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
 !                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
 !
-            call mahsf(1, nb1, zr(jgeom), ksi3s2, intsn,&
-                       zr(lzr), epais, vectn, vectg, vectt,&
+            call mahsf(1, nb1, zr(jgeom), ksi3s2, intsn, &
+                       zr(lzr), epais, vectn, vectg, vectt, &
                        hsf)
 !
-            call hsj1f(intsn, zr(lzr), epais, vectg, vectt,&
+            call hsj1f(intsn, zr(lzr), epais, vectg, vectt, &
                        hsf, kwgt, hsj1fx, wgt)
 !
-            call btdfn(1, nb1, nb2, ksi3s2, intsn,&
+            call btdfn(1, nb1, nb2, ksi3s2, intsn, &
                        zr(lzr), epais, vectpt, hsj1fx, btdf)
 !
 !     CALCUL DE BTDMN, BTDSN
 !     ET
 !     FORMATION DE BTILD
 !
-            call btdmsn(1, nb1, intsn, npgsr, zr(lzr),&
+            call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
                         btdm, btdf, btds, btild)
 !
-            call matrth('MASS', npgsn, young, nu, alpha,&
+            call matrth('MASS', npgsn, young, nu, alpha, &
                         indith)
 !
 !     CALCUL DU CHAMP DE TEMPERATURE ET(OU) DES EFFORTS THERMIQUES
 !     INDIC=1 : TEMPERATURE ET EFFORTS THERMIQUES
 !     INDIC=0 : TEMPERATURE
 !
-            indic=1
-            ksi3=epsval(inte)
-            call btldth('MASS', ksi3, nb1, intsn, btild,&
-                        wgt, indic, young, nu, alpha,&
+            indic = 1
+            ksi3 = epsval(inte)
+            call btldth('MASS', ksi3, nb1, intsn, btild, &
+                        wgt, indic, young, nu, alpha, &
                         temper, forthi)
 !
             do i = 1, nddle
-                forcth(i)=forcth(i)+forthi(i)
+                forcth(i) = forcth(i)+forthi(i)
             end do
 !
         end do
@@ -156,18 +156,18 @@ subroutine te0419(option, nomte)
 !
     call vexpan(nb1, forcth, vecl)
     do i = 1, 3
-        vecl(6*nb1+i)=0.d0
+        vecl(6*nb1+i) = 0.d0
     end do
 !
     do ib = 1, nb2
         do i = 1, 2
             do j = 1, 3
-                vecpt(ib,i,j)=vectpt(ib,i,j)
+                vecpt(ib, i, j) = vectpt(ib, i, j)
             end do
         end do
-        vecpt(ib,3,1)=vectn(ib,1)
-        vecpt(ib,3,2)=vectn(ib,2)
-        vecpt(ib,3,3)=vectn(ib,3)
+        vecpt(ib, 3, 1) = vectn(ib, 1)
+        vecpt(ib, 3, 2) = vectn(ib, 2)
+        vecpt(ib, 3, 3) = vectn(ib, 3)
     end do
 !
     call trnflg(nb2, vecpt, vecl, zr(jvecg))

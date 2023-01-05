@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,30 +48,30 @@ subroutine trmail(ific, nocc)
         call getvtx('MAILLAGE', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
         call tresu_read_refe('MAILLAGE', iocc, tbtxt)
-        lref=.false.
+        lref = .false.
         call getvr8('MAILLAGE', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
-            lref=.true.
-            tbref(1)=tbtxt(1)
-            tbref(2)=tbtxt(2)
-            tbtxt(1)='NON_REGRESSION'
-        endif
+            lref = .true.
+            tbref(1) = tbtxt(1)
+            tbref(2) = tbtxt(2)
+            tbtxt(1) = 'NON_REGRESSION'
+        end if
 !
-        write (ific,*) '---- MAILLAGE '
-        write (ific,*) '     ',nommai
+        write (ific, *) '---- MAILLAGE '
+        write (ific, *) '     ', nommai
 !
         call getvis('MAILLAGE', 'VALE_CALC_I', iocc=iocc, scal=refi, nbret=n2)
         if (n2 .eq. 1) then
-            call tresu_mail(nommai, tbtxt, refi, iocc, epsi,&
+            call tresu_mail(nommai, tbtxt, refi, iocc, epsi, &
                             crit, .true._1, ssigne)
             if (lref) then
                 call getvis('MAILLAGE', 'VALE_REFE_I', iocc=iocc, scal=refir, nbret=n2r)
-                ASSERT(n2.eq.n2r)
-                call tresu_mail(nommai, tbref, refir, iocc, epsir,&
+                ASSERT(n2 .eq. n2r)
+                call tresu_mail(nommai, tbref, refir, iocc, epsir, &
                                 crit, .false._1, ssigne)
-            endif
-        endif
-        write (ific,*)' '
+            end if
+        end if
+        write (ific, *) ' '
     end do
 !
 !

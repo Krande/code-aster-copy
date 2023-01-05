@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine clas99(nomres)
 ! --- RECUPERATION DES CONCEPTS AMONT
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ii, inor,  lrang
+    integer :: i, ibid, ii, inor, lrang
     integer :: ltmome, ltnbmo, nbid, nbnmaxmode, nbmod, nbmodo(1), nbmoma
     integer :: nbmome, nbmout, nbsdd, nmaxmode
     real(kind=8) :: bid, ebid
@@ -68,7 +68,7 @@ subroutine clas99(nomres)
     call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=intf)
 !
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
-    numddl(15:19)='.NUME'
+    numddl(15:19) = '.NUME'
 !
 ! --- RECUPERATION DU NOMBRE DE MODE_MECA A PRENDRE EN COMPTE
 !
@@ -85,21 +85,21 @@ subroutine clas99(nomres)
     call wkvect('&&CLAS99.LIST.MODE_MECA', 'V V K8', nbmome, ltmome)
     call wkvect('&&CLAS99.LIST.NBMOD', 'V V I', nbmome, ltnbmo)
 !
-    call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=nbmome, vect=zk8(ltmome),&
+    call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=nbmome, vect=zk8(ltmome), &
                 nbret=ibid)
 !
-    if (nbnmaxmode.ge.1) then
+    if (nbnmaxmode .ge. 1) then
 !      length of NMAX_MODE list will be equal to length of MODE_MECA list
-       call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmo),&
-                nbret=nbid)
-       if (nbnmaxmode.eq.1) then
-          nmaxmode=0
-          call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nmaxmode, nbret=ibid)
-          do i = 1, nbmome
-             zi(ltnbmo+i-1) = nmaxmode
-          end do
-       endif
-    endif
+        call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmo), &
+                    nbret=nbid)
+        if (nbnmaxmode .eq. 1) then
+            nmaxmode = 0
+            call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nmaxmode, nbret=ibid)
+            do i = 1, nbmome
+                zi(ltnbmo+i-1) = nmaxmode
+            end do
+        end if
+    end if
 !
 ! --- DETERMINATION DU NOMBRE TOTAL DE MODES PROPRES DE LA BASE
 !
@@ -107,25 +107,25 @@ subroutine clas99(nomres)
     nbmoma = 0
 !
     do i = 1, nbmome
-        call rsorac(zk8(ltmome-1+i), 'LONUTI', ibid, bid, kbid,&
-                    cbid, ebid, 'ABSOLU', nbmodo, 1,&
+        call rsorac(zk8(ltmome-1+i), 'LONUTI', ibid, bid, kbid, &
+                    cbid, ebid, 'ABSOLU', nbmodo, 1, &
                     nbid)
 !
 !       if NMAX_MODE is set by the user, one takes it into account
 !       otherwise one takes all modes in each MODE_MECA
-        if (nbnmaxmode.ge.1) then
-           nbmout = zi(ltnbmo-1+i)
-           if (nbmout .lt. nbmodo(1))   nbmodo(1)=nbmout
-        endif
+        if (nbnmaxmode .ge. 1) then
+            nbmout = zi(ltnbmo-1+i)
+            if (nbmout .lt. nbmodo(1)) nbmodo(1) = nbmout
+        end if
 !
         zi(ltnbmo+i-1) = nbmodo(1)
-        nbmoma = max(nbmoma,nbmodo(1))
+        nbmoma = max(nbmoma, nbmodo(1))
         nbmod = nbmod+nbmodo(1)
     end do
 !
     call wkvect('&&CLAS99.NUME.RANG', 'V V I', nbmoma, lrang)
     do ii = 1, nbmoma
-        zi(lrang+ii-1)=ii
+        zi(lrang+ii-1) = ii
     end do
 !
 !
@@ -133,7 +133,7 @@ subroutine clas99(nomres)
 !
     ASSERT(intf(1:8) .ne. ' ')
     call jeveuo(intf//'.IDC_DESC', 'L', vi=idc_desc)
-    nbsdd=nbmod+idc_desc(5)
+    nbsdd = nbmod+idc_desc(5)
 !      NBSDD1=ZI(LLDESC+4)
 !
 !
@@ -144,13 +144,13 @@ subroutine clas99(nomres)
 ! --- ALLOCATION DE LA STRUCTURE DE DONNEES MODE_MECA
 !
     call rscrsd('G', nomres, 'MODE_MECA', nbsdd)
-    raidlt=' '
+    raidlt = ' '
 !
 ! --- COPIE DES MODES DYNAMIQUES
 !
-    inor=1
+    inor = 1
     do i = 1, nbmome
-        call moco99(nomres, zk8(ltmome+i-1), zi(ltnbmo+i-1), zi(lrang), inor,&
+        call moco99(nomres, zk8(ltmome+i-1), zi(ltnbmo+i-1), zi(lrang), inor, &
                     .true._1)
     end do
     if (nbmoma .gt. 0) call jedetr('&&CLAS99.NUME.ORD')
@@ -159,23 +159,23 @@ subroutine clas99(nomres)
 !      CALL UTIMSD(6,2,.TRUE.,.TRUE.,NOMRES(1:8),1,'G')
 !
 ! --- CALCUL DES MODES D'ATTACHE
-    call camoat(nomres, numddl, intf, raid, raidlt,&
+    call camoat(nomres, numddl, intf, raid, raidlt, &
                 inor)
 !
 ! --- CALCUL DES MODES CONTRAINTS
-    call camoco(nomres, numddl, intf, raid, raidlt,&
+    call camoco(nomres, numddl, intf, raid, raidlt, &
                 inor)
 !
 ! --- CALCUL DES MODES CONTRAINTS HARMONIQUES
-    call camoch(nomres, numddl, intf, raid, mass,&
+    call camoch(nomres, numddl, intf, raid, mass, &
                 raidlt, inor)
 !
 ! --- DESTRUCTION MATRICE FACTORISEE
 !
     if (raidlt(1:1) .ne. ' ') then
         call detrsd('MATR_ASSE', raidlt)
-        raidlt=' '
-    endif
+        raidlt = ' '
+    end if
 !
     call jedema()
 end subroutine

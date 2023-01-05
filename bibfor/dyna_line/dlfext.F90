@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dlfext(nveca, nchar, temps, neq, liad,&
-                  lifo, charge, infoch, fomult, modele,&
+subroutine dlfext(nveca, nchar, temps, neq, liad, &
+                  lifo, charge, infoch, fomult, modele, &
                   mate, mateco, carele, numedd, f)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -41,10 +41,10 @@ implicit none
 #include "asterfort/vedime.h"
 #include "blas/dcopy.h"
 !
-integer :: nveca, nchar, neq, liad(*)
-real(kind=8) :: temps, f(*)
-character(len=24) :: lifo(*), infoch, fomult
-character(len=24) :: modele, carele, charge, mate, mateco, numedd
+    integer :: nveca, nchar, neq, liad(*)
+    real(kind=8) :: temps, f(*)
+    character(len=24) :: lifo(*), infoch, fomult
+    character(len=24) :: modele, carele, charge, mate, mateco, numedd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ character(len=24) :: modele, carele, charge, mate, mateco, numedd
     typmat = 'R'
     para = 'INST'
     lischa = charge(1:19)
-    ASSERT(lischa.eq.infoch(1:19))
+    ASSERT(lischa .eq. infoch(1:19))
 !
     partps(1:3) = [temps, r8vide(), r8vide()]
 !
@@ -113,16 +113,16 @@ character(len=24) :: modele, carele, charge, mate, mateco, numedd
 !
 ! 2.2. ==> --- CAS D'UN CHARGEMENT DEFINI PAR CHARGE ---
 !
-    else if (nchar.ne.0) then
+    else if (nchar .ne. 0) then
 !
 ! 2.2.1 ==>
 !
         call jeveuo(infoch, 'L', jinf)
         nchar = zi(jinf)
-        call vechme('S', modele, charge, infoch, partps,&
+        call vechme('S', modele, charge, infoch, partps, &
                     carele, mate, mateco, vechmp)
         call asasve(vechmp, numedd, typmat, vachmp)
-        call ascova('D', vachmp, fomult, 'INST', temps,&
+        call ascova('D', vachmp, fomult, 'INST', temps, &
                     typmat, cnchmp)
         call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(cnchmp(1:19)//'.VALE', 'E', vr=f1)
@@ -131,10 +131,10 @@ character(len=24) :: modele, carele, charge, mate, mateco, numedd
 !
 ! 2.2.2. ==> -- LES DIRICHLETS
 !
-        call vedime(modele, charge, infoch, temps, typmat,&
+        call vedime(modele, charge, infoch, temps, typmat, &
                     vechmp)
         call asasve(vechmp, numedd, typmat, vachmp)
-        call ascova('D', vachmp, fomult, para, temps,&
+        call ascova('D', vachmp, fomult, para, temps, &
                     typmat, cnchmp)
         call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f2)
@@ -143,18 +143,18 @@ character(len=24) :: modele, carele, charge, mate, mateco, numedd
         iret = 0
         do ieq = 1, lonch
             if (abs(f2(ieq)) .gt. r8prem()) iret = 1
-        enddo
-        if ((iret.eq.1) .and. (method.ne.'NEWMARK')) then
+        end do
+        if ((iret .eq. 1) .and. (method .ne. 'NEWMARK')) then
             call utmess('F', 'DYNALINE1_20')
-        endif
+        end if
 !
         do ieq = 1, lonch
-            f(ieq) = f(ieq) + f2(ieq)
-        enddo
+            f(ieq) = f(ieq)+f2(ieq)
+        end do
 !
     else
         call r8inir(neq, 0.d0, f, 1)
-    endif
+    end if
 !
     call jedetr(cnchmp)
 !

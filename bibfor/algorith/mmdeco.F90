@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine mmdeco(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
@@ -63,7 +63,7 @@ implicit none
 !
 ! --- INITIALISATION
 !
-    ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
+    ntpc = cfdisi(ds_contact%sdcont_defi, 'NTPC')
 !
 ! --- SAUVEGARDE DE L ETAT DE CONTACT EN CAS DE REDECOUPAGE
 !

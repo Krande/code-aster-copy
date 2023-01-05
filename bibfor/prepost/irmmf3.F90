@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou,&
-                  nomgen, nbec, nomast, prefix, typgeo,&
-                  nomtyp, nmatyp, nufaen, nufacr, nogrfa,&
+subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
+                  nomgen, nbec, nomast, prefix, typgeo, &
+                  nomtyp, nmatyp, nufaen, nufacr, nogrfa, &
                   nofaex, tabaux, infmed, ifm, nosdfu)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -53,21 +53,21 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-med_idt :: fid
-integer :: typgeo(*), nmatyp(*)
-integer :: typent, nbrent, nbgrou
-integer :: nbec
-integer :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
-integer :: infmed
-integer :: ifm
-character(len=6) :: prefix
-character(len=8) :: nomast
-character(len=24) :: nomgen(*)
-character(len=8) :: nomtyp(*)
-character(len=*) :: nofaex(*)
-character(len=80) :: nogrfa(nbgrou)
-character(len=*) :: nomamd
-character(len=8) :: nosdfu
+    med_idt :: fid
+    integer :: typgeo(*), nmatyp(*)
+    integer :: typent, nbrent, nbgrou
+    integer :: nbec
+    integer :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
+    integer :: infmed
+    integer :: ifm
+    character(len=6) :: prefix
+    character(len=8) :: nomast
+    character(len=24) :: nomgen(*)
+    character(len=8) :: nomtyp(*)
+    character(len=*) :: nofaex(*)
+    character(len=80) :: nogrfa(nbgrou)
+    character(len=*) :: nomamd
+    character(len=8) :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,13 +113,13 @@ character(len=8) :: nosdfu
     character(len=6), parameter :: nompro = 'IRMMF3'
     integer, parameter :: edmail = 0, ednoeu = 3, tygeno = 0
     integer :: edfuin
-    parameter (edfuin=0)
+    parameter(edfuin=0)
     integer :: codret
     integer :: iaux, jaux, kaux
     integer :: numfam, nfam, cmpt, ii
     integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
     integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
-    integer :: jgren,  jtest4, i_fama, kfama
+    integer :: jgren, jtest4, i_fama, kfama
     integer :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
     integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
     character(len=8) :: saux08
@@ -147,12 +147,12 @@ character(len=8) :: nosdfu
     else
         saux09 = '.GROUPEMA'
         saux08 = "MAILLES"
-    endif
+    end if
 
     if (infmed .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE : '
-    endif
+     write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE : '
+    end if
 !
 !     NATT = NOMBRE D'ATTRIBUTS DANS UNE FAMILLE : JAMAIS. ELLES NE SONT
 !            DEFINIES QUE PAR LES GROUPES
@@ -167,7 +167,7 @@ character(len=8) :: nosdfu
 !====
 !
     call asmpi_comm('GET', world)
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     if (nbgrou .ne. 0) then
@@ -177,13 +177,13 @@ character(len=8) :: nosdfu
 !          D'APPARTENANCE
 !
         call cpu_time(start1)
-        do ige = 1 , nbgrou
+        do ige = 1, nbgrou
             call jeexin(jexnom(nomast//saux09, nomgen(ige)), codret)
-            if(codret.ne.0) then
+            if (codret .ne. 0) then
                 call jeveuo(jexnom(nomast//saux09, nomgen(ige)), 'L', jgren)
                 call jelira(jexnom(nomast//saux09, nomgen(ige)), 'LONMAX', nbeg)
 !           POUR CHAQUE GROUPE, ON BOUCLE SUR LES ENTITES QU'IL CONTIENT.
-                do iaux = 1 , nbeg
+                do iaux = 1, nbeg
 !
 !           DEBUT VECTEUR ENTIER CODE POUR ENTITE IENT DANS JENTXG
                     ient = zi(jgren-1+iaux)
@@ -193,9 +193,9 @@ character(len=8) :: nosdfu
 !             MISE A -1 DU NUM DE FAMILLE POUR CETTE ENTITE DANS NUFAEN
 !             POUR INDIQUER QU'ELLE APPARTIENT AU MOINS A UN GROUPE
                         nufaen(ient) = 1
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
 !
 ! 2.2. ==> BUT DE L'ETAPE 2.2 : FAIRE LA PARTITION EN FAMILLE ET NOTER :
@@ -228,23 +228,23 @@ character(len=8) :: nosdfu
 !           FAMILLE VIENT D'APPARAITRE. ON STOCKE SES CARACTERISTIQUES.
 !
                 jaux = nbec*(ient-1)
-                do numfam = 1 , nfam
+                do numfam = 1, nfam
                     entfam = nufacr(numfam)
                     kaux = nbec*(entfam-1)
-                    do iaux = 1 , nbec
+                    do iaux = 1, nbec
                         if (tabaux(jaux+iaux) .ne. tabaux(kaux+iaux)) then
                             goto 221
-                        endif
+                        end if
                     end do
 !             ON A TROUVE UNE FAMILLE AVEC LA MEME COMPOSITION :
 !             . ON NOTE QUE LA FAMILLE EST LA MEME
 !             . ON PASSE A L'ENTITE SUIVANTE
                     nufaen(ient) = nufaen(entfam)
                     goto 22
-    221             continue
+221                 continue
                 end do
 !           AUCUN ENTITE NE CORRESPONDAIT : ON CREE UNE NOUVELLE FAMILLE
-                nfam = nfam + 1
+                nfam = nfam+1
 !           ON MEMORISE CE NUMERO DE FAMILLE POUR L'ENTITE COURANTE
 !           ATTENTION : LA CONVENTION MED VEUT QUE LE NUMERO SOIT
 !           POSITIF POUR LES FAMILLES DE NOEUDS, NEGATIF POUR
@@ -252,17 +252,17 @@ character(len=8) :: nosdfu
                 nufaen(ient) = nfam
                 if (typent .ne. tygeno) then
                     nufaen(ient) = -nufaen(ient)
-                endif
+                end if
 !           ON INDIQUE OU SE TROUVE LA 1ERE REFERENCE A CETTE FAMILLE
 !           DANS LE VECTEUR NUFACR POUR EVITER DE PERDRE SON TEMPS APRES
                 nufacr(nfam) = ient
-            endif
+            end if
 22          continue
         end do
         call cpu_time(end1)
         if (infmed .gt. 1) then
-            write (ifm,*)'<',nompro,'> ** Preparation des familles en ', end1-start1, "sec."
-        endif
+            write (ifm, *) '<', nompro, '> ** Preparation des familles en ', end1-start1, "sec."
+        end if
 !
 ! 2.3. ==> BUT DE L'ETAPE 2.3 : CREATION DES FAMILLES D'ENTITES ET LES
 !          ECRIRE DANS LE FICHIER
@@ -275,20 +275,20 @@ character(len=8) :: nosdfu
         call cpu_time(start1)
         nfam_max = nfam
         call asmpi_comm_vect('MPI_MAX', 'I', sci=nfam_max)
-        if(nfam_max.ne.0) then
+        if (nfam_max .ne. 0) then
             call cpu_time(start2)
 !
             ! On cherche le nombre de groupe en local
             numgrp = 0
             ! boucle sur famille locale
-            do iaux = 1 , nfam
+            do iaux = 1, nfam
 !
 !         NUMERO DE LA 1ERE ENTITE FAISANT REFERENCE A CETTE FAMILLE
                 ient = nufacr(iaux)
 !
 !         NB ET NOMS+NUMS DES GROUPES ASSOCIES A LA FAMILLE
                 call nomgfa(nomgen, nbgrou, tabaux(1+(ient-1)*nbec), nogrfa, nbgnof)
-                numgrp = numgrp + nbgnof
+                numgrp = numgrp+nbgnof
             end do
 !
             call wkvect('&&IRMMF2.NOGRFA', 'V V K80', max(1, numgrp), jgrou)
@@ -306,34 +306,34 @@ character(len=8) :: nosdfu
             nbfam_tot = 0
             ! on compte le nb de famille totale
             do jaux = 0, nbproc-1
-                nbfam_tot = nbfam_tot + zi(jtest+jaux)
+                nbfam_tot = nbfam_tot+zi(jtest+jaux)
                 v_count(jaux+1) = to_mpi_int(zi(jtest+jaux))
                 v_displ(jaux+2) = to_mpi_int(nbfam_tot)
-            enddo
+            end do
 !
 ! On a plus de famille en HPC qu'en std car les familles sont redécoupés par sous-domaine
 ! donc 1 famille en std peut donner jusqu'à nb_sous_domaine familles dans le maillage de fin
 !
             if (infmed .gt. 1) then
-                write (ifm,*) '<',nompro,'> ** Nombre de familles locales/globales: ', &
-                nfam, nbfam_tot, numgrp
-            endif
+                write (ifm, *) '<', nompro, '> ** Nombre de familles locales/globales: ', &
+                    nfam, nbfam_tot, numgrp
+            end if
 !
             numfam = 0
             do jaux = 0, rang
-                numfam = numfam + zi(jtest+jaux)
-            enddo
+                numfam = numfam+zi(jtest+jaux)
+            end do
 !
             numgrp = 0
             ! boucle sur famille locale
-            do iaux = 1 , nfam
+            do iaux = 1, nfam
 !
 ! 2.3.1. ==> DETERMINATION DE LA FAMILLE : NOM, NOMS ET NUMEROS DES
 !              GROUPES ASSOCIES
-                numfam = numfam + iaux
+                numfam = numfam+iaux
                 if (typent .ne. tygeno) then
                     numfam = -numfam
-                endif
+                end if
 !
 !         NUMERO DE LA 1ERE ENTITE FAISANT REFERENCE A CETTE FAMILLE
                 ient = nufacr(iaux)
@@ -345,7 +345,7 @@ character(len=8) :: nosdfu
 !
 !         NOM DE LA FAMILLE : ON LE CONSTRUIT A PARTIR DU NUMERO DE FAMILLE
 !
-                jaux = iaux - 1
+                jaux = iaux-1
                 call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
 !
                 ! nb de groupe de la famille
@@ -355,15 +355,15 @@ character(len=8) :: nosdfu
                 ! noms des groupes de la famille
                 do jaux = 1, nbgnof
                     zk80(jgrou+numgrp) = nogrfa(jaux)
-                    numgrp = numgrp + 1
-                enddo
+                    numgrp = numgrp+1
+                end do
             end do
 !
             call cpu_time(end2)
             if (infmed .gt. 1) then
-                write (ifm,*) '<',nompro,'> ** Création des noms de familles en ', end2-start2, &
-                ' sec'
-            endif
+                write (ifm, *) '<', nompro, '> ** Création des noms de familles en ', end2-start2, &
+                    ' sec'
+            end if
             call cpu_time(start1)
 !
             call wkvect('&&IRMMF2.TEST4', 'V V I', max(1, nfam), jtest4)
@@ -384,10 +384,10 @@ character(len=8) :: nosdfu
             ! on compte le nb de grp
             nbgr_tot = 0
             do jaux = 0, nbproc-1
-                nbgr_tot = nbgr_tot + zi(jtest12+jaux)
+                nbgr_tot = nbgr_tot+zi(jtest12+jaux)
                 v_count2(jaux+1) = to_mpi_int(zi(jtest12+jaux))
                 v_displ2(jaux+2) = to_mpi_int(nbgr_tot)
-            enddo
+            end do
 
             call wkvect('&&IRMMF2.NOMGFAG', 'V V K80', nbgr_tot, vk80=v_nomgfag)
             ! Allgather des groupes
@@ -396,11 +396,11 @@ character(len=8) :: nosdfu
 !
             call cpu_time(end1)
             if (infmed .gt. 1) then
-                write (ifm,*)'<',nompro,'> ** Partage des familles en ', &
-                end1-start1, "sec."
-            endif
+                write (ifm, *) '<', nompro, '> ** Partage des familles en ', &
+                    end1-start1, "sec."
+            end if
 !
-           ! boucle sur les familles
+            ! boucle sur les familles
             call cpu_time(start1)
             call wkvect('&&IRMMF2.FAMA', 'V V K80', nbfam_tot, vk80=v_fama)
             nbgr = 0
@@ -412,40 +412,40 @@ character(len=8) :: nosdfu
 !
                 lfamtr = ASTER_FALSE
                 do kaux = 1, i_fama
-                    if(v_fama(kaux).eq.nomfam) then
+                    if (v_fama(kaux) .eq. nomfam) then
                         lfamtr = ASTER_TRUE
                         kfama = kaux
                         exit
-                    endif
-                enddo
+                    end if
+                end do
 !
-                if(.not.lfamtr) then
+                if (.not. lfamtr) then
                     do kaux = 1, nbgnof
                         nogrfa(kaux) = v_nomgfag(nbgr+kaux)
-                    enddo
+                    end do
 !
 ! 2.3.2. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
 !
-                    i_fama = i_fama + 1
+                    i_fama = i_fama+1
                     if (typent .ne. tygeno) then
                         call as_mfacre(fid, nomamd, nomfam, -i_fama, nbgnof, nogrfa, codret)
                     else
                         call as_mfacre(fid, nomamd, nomfam, i_fama, nbgnof, nogrfa, codret)
-                    endif
+                    end if
                     if (codret .ne. 0) then
-                        saux08='mfacre'
+                        saux08 = 'mfacre'
                         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                    endif
+                    end if
                     kfama = i_fama
                     v_fama(i_fama) = nomfam
                 end if
-                nbgr = nbgr + nbgnof
+                nbgr = nbgr+nbgnof
 !
-                if(iaux > v_displ(rang+1) .and. iaux <= v_displ(rang+2)) then
-                    ii = ii + 1
+                if (iaux > v_displ(rang+1) .and. iaux <= v_displ(rang+2)) then
+                    ii = ii+1
                     zi(jtest4+ii-1) = kfama
                 end if
-            enddo
+            end do
             ASSERT(ii == nfam)
 !
             call jedetr('&&IRMMF2.NOGRFA')
@@ -462,36 +462,36 @@ character(len=8) :: nosdfu
             call jedetr('&&IRMMF2.NOMFAG')
             call jedetr('&&IRMMF2.NOMGFAG')
             call jedetr('&&IRMMF2.FAMA')
-        endif
+        end if
         if (typent .ne. tygeno) then
             do ient = 1, nbrent
-                if(nufaen(ient).eq.0) then
+                if (nufaen(ient) .eq. 0) then
                     nufaen(ient) = 0
                 else
                     nufaen(ient) = -zi(jtest4-nufaen(ient)-1)
-                endif
-            enddo
+                end if
+            end do
         else
             call jeveuo(nosdfu//'.NOEU', 'L', jno)
             cmpt = 0
             do ient = 1, nbrent
-                if(zi(jno+ient-1).gt.0) then
-                    cmpt = cmpt + 1
-                    if(nufaen(ient).eq.0) then
+                if (zi(jno+ient-1) .gt. 0) then
+                    cmpt = cmpt+1
+                    if (nufaen(ient) .eq. 0) then
                         nufaen(cmpt) = 0
                     else
                         nufaen(cmpt) = zi(jtest4+nufaen(ient)-1)
-                    endif
-                endif
-            enddo
-        endif
+                    end if
+                end if
+            end do
+        end if
         call jedetr('&&IRMMF2.TEST4')
-    endif
+    end if
     call cpu_time(end1)
     if (infmed .gt. 1) then
-        write (ifm,*)'<',nompro,'> ** Ecriture caractéristiques des familles en ', &
-        end1-start1, "sec."
-    endif
+        write (ifm, *) '<', nompro, '> ** Ecriture caractéristiques des familles en ', &
+            end1-start1, "sec."
+    end if
 !
 !====
 ! 3. ECRITURE DE LA TABLE DES NUMEROS DE FAMILLES DES ENTITES
@@ -507,28 +507,28 @@ character(len=8) :: nosdfu
         start = zi(jnbno)
         nbnol = zi(jnbno+1)
         nbnot = zi(jnbno+2)
-        ASSERT(cmpt.eq.nbnol)
+        ASSERT(cmpt .eq. nbnol)
         call as_mfrall(1, filter, codret)
 !
-        call as_mfrblc(fid, nbnot, 1, 1, 0,&
-                       edfuin, 2, "", start, nbnol,&
+        call as_mfrblc(fid, nbnot, 1, 1, 0, &
+                       edfuin, 2, "", start, nbnol, &
                        1, nbnol, 0, filter(1), codret)
         if (codret .ne. 0) then
-            saux08='mfrblc'
+            saux08 = 'mfrblc'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
-        call as_mmhaaw(fid, nomamd, nufaen, nbnol, filter(1),&
+        end if
+        call as_mmhaaw(fid, nomamd, nufaen, nbnol, filter(1), &
                        ednoeu, tygeno, codret)
         if (codret .ne. 0) then
-            saux08='mmhaaw'
+            saux08 = 'mmhaaw'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
         call as_mfrdea(1, filter, codret)
         if (codret .ne. 0) then
-            saux08='mfrdea'
+            saux08 = 'mfrdea'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
-        endif
+        end if
 !
 ! 3.2. ==> ECRITURE DANS LE CAS DES MAILLES : IL FAUT PASSER PAR LA
 !          RENUMEROTATION ASTER-MED
@@ -536,61 +536,61 @@ character(len=8) :: nosdfu
     else
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         call jeveuo(nosdfu//'.MATY', 'L', jtyp)
-        do ityp = 1 , MT_NTYMAX
+        do ityp = 1, MT_NTYMAX
             nbmat = zi(jtyp+3*(ityp-1)+2)
-            if (nbmat.ne.0) then
+            if (nbmat .ne. 0) then
                 start = zi(jtyp+3*(ityp-1))
                 nbmal = nmatyp(ityp)
                 ASSERT(zi(jtyp+3*(ityp-1)+1) == nbmal)
                 nbbloc = 1
-                if(nbmal == 0) nbbloc = 0
+                if (nbmal == 0) nbbloc = 0
                 call as_mfrall(1, filter, codret)
-                call as_mfrblc(fid, nbmat, 1, 1, 0,&
-                               edfuin, 2, "", start, nbmal,&
+                call as_mfrblc(fid, nbmat, 1, 1, 0, &
+                               edfuin, 2, "", start, nbmal, &
                                nbbloc, nbmal, 0, filter(1), codret)
                 if (codret .ne. 0) then
-                    saux08='mfrblc'
+                    saux08 = 'mfrblc'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
 !
                 cmpt = 0
-                if(nbmal > 0) then
+                if (nbmal > 0) then
 !               RECUPERATION DU TABLEAU DES RENUMEROTATIONS
                     call jeveuo('&&'//prefix//'.NUM.'//nomtyp(ityp), 'L', kaux)
 !               CREATION VECTEUR NUMEROS DE FAMILLE POUR LES MAILLES / TYPE
-                    do iaux = 1 , nmatyp(ityp)
-                        if(zi(jma+ient-1).gt.0) then
-                            cmpt = cmpt + 1
+                    do iaux = 1, nmatyp(ityp)
+                        if (zi(jma+ient-1) .gt. 0) then
+                            cmpt = cmpt+1
                             tabaux(cmpt) = nufaen(zi(kaux-1+iaux))
-                        endif
+                        end if
                     end do
                 end if
-                ASSERT(cmpt.eq.nbmal)
+                ASSERT(cmpt .eq. nbmal)
 !
-                call as_mmhaaw(fid, nomamd, tabaux, nbmal, filter(1),&
-                            edmail, typgeo(ityp), codret)
+                call as_mmhaaw(fid, nomamd, tabaux, nbmal, filter(1), &
+                               edmail, typgeo(ityp), codret)
                 if (codret .ne. 0) then
-                    saux08='mmhaaw'
+                    saux08 = 'mmhaaw'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
+                end if
 !
                 call as_mfrdea(1, filter, codret)
                 if (codret .ne. 0) then
-                    saux08='mfrdea'
+                    saux08 = 'mfrdea'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                endif
-            endif
-        enddo
-    endif
+                end if
+            end if
+        end do
+    end if
     call cpu_time(end1)
     if (infmed .gt. 1) then
-        write (ifm,*)'<',nompro,'> ** Ecriture des familles en ', end1-start1, "sec."
-    endif
+        write (ifm, *) '<', nompro, '> ** Ecriture des familles en ', end1-start1, "sec."
+    end if
 !
     if (infmed .gt. 1) then
         call cpu_time(end_time)
-        write (ifm,*)'<',nompro,'> FIN ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE EN ',&
+   write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE EN ', &
             end_time-start_time, "sec."
-    endif
+    end if
 !
 end subroutine

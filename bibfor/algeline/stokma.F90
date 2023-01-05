@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine stokma(amat, nlig, ncol, nmat, amatst)
 !
     do j = 1, ncol
         do i = 1, nlig
-            amatst(i,j,nmat) = amat(i,j)
+            amatst(i, j, nmat) = amat(i, j)
         end do
     end do
 end subroutine

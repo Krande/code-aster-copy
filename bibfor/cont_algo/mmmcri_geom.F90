@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mmmcri_geom(mesh      , disp_prev, loop_geom_disp, disp_curr,&
+subroutine mmmcri_geom(mesh, disp_prev, loop_geom_disp, disp_curr, &
                        ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -60,7 +60,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nb_cmp_disp = 3
-    character(len=8), parameter :: list_cmp_disp(nb_cmp_disp) = (/'DX','DY','DZ'/)
+    character(len=8), parameter :: list_cmp_disp(nb_cmp_disp) = (/'DX', 'DY', 'DZ'/)
     real(kind=8) :: geom_dif1_maxi, geom_dif2_maxi, geom_mini
     real(kind=8) :: loop_geom_vale, alpha, geom_maxi, geom_epsi_maxi
     character(len=24) :: geom_diff_1, geom_diff_2
@@ -76,12 +76,12 @@ implicit none
     loop_geom_vale = 0.d0
     loop_geom_node = ' '
     loop_geom_vale = r8vide()
-    alpha          = -1.d0
+    alpha = -1.d0
     loop_geom_conv = .false.
 !
 ! - Get parameters
 !
-    geom_epsi_maxi = cfdisr(ds_contact%sdcont_defi,'RESI_GEOM' )
+    geom_epsi_maxi = cfdisr(ds_contact%sdcont_defi, 'RESI_GEOM')
 !
 ! - Compute difference disp_curr - loop_geom_disp
 !
@@ -107,9 +107,9 @@ implicit none
         geom_maxi = geom_dif2_maxi
         geom_mini = r8prem()
     else
-        geom_maxi = max(geom_maxi,geom_dif2_maxi)
+        geom_maxi = max(geom_maxi, geom_dif2_maxi)
         geom_mini = 1.d-6*geom_maxi
-    endif
+    end if
     ds_contact%geom_maxi = geom_maxi
 !
 ! - Compute criterion
@@ -119,10 +119,10 @@ implicit none
             loop_geom_vale = 10.0d0*geom_epsi_maxi
         else
             loop_geom_vale = 1.d-1*geom_epsi_maxi
-        endif
+        end if
     else
         loop_geom_vale = geom_dif1_maxi/geom_dif2_maxi
-    endif
+    end if
 !
 ! - Criterion test
 !
@@ -130,7 +130,7 @@ implicit none
         loop_geom_conv = .true.
     else
         loop_geom_conv = .false.
-    endif
+    end if
 !
 ! - Get name of node
 !
@@ -138,18 +138,18 @@ implicit none
         loop_geom_node = ' '
     else
         call jenuno(jexnum(mesh//'.NOMNOE', geom_dif1_node), node_name)
-    endif
+    end if
     loop_geom_node = node_name
 !
 ! - Save values
 !
-    call mmbouc(ds_contact, 'Geom', 'Set_Locus', loop_locus_ = loop_geom_node)
-    call mmbouc(ds_contact, 'Geom', 'Set_Vale' , loop_vale_  = loop_geom_vale)
+    call mmbouc(ds_contact, 'Geom', 'Set_Locus', loop_locus_=loop_geom_node)
+    call mmbouc(ds_contact, 'Geom', 'Set_Vale', loop_vale_=loop_geom_vale)
     if (loop_geom_conv) then
         call mmbouc(ds_contact, 'Geom', 'Set_Convergence')
     else
         call mmbouc(ds_contact, 'Geom', 'Set_Divergence')
-    endif
+    end if
 !
     call detrsd('CHAMP_GD', geom_diff_1)
     call detrsd('CHAMP_GD', geom_diff_2)

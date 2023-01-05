@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
+subroutine critet(epsp, epsd, eta, lambda, deuxmu, &
                   fpd, seuil, crit, critp)
 !
 !
@@ -59,7 +59,7 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
 !
 ! ----------------------------------------------------------------------
 !
-    rac2=sqrt(2.d0)
+    rac2 = sqrt(2.d0)
 ! -- ON DIAGONALISE LE TENSEUR DE DEFORMATION
     tr(1) = epsp(1)+eta*epsd(1)
     tr(2) = (epsp(4)+eta*epsd(4))/rac2
@@ -81,42 +81,42 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
         do k = 1, 3
             sigel(k) = 0.d0
         end do
-    endif
+    end if
     do k = 1, 3
         if (epm(k) .gt. 0.d0) then
-            sigel(k) = sigel(k) + deuxmu*epm(k)
-        endif
+            sigel(k) = sigel(k)+deuxmu*epm(k)
+        end if
     end do
-    crit= fpd * 0.5d0 * ddot(3,epm,1,sigel,1) - seuil
+    crit = fpd*0.5d0*ddot(3, epm, 1, sigel, 1)-seuil
 !
     do i = 1, 3
         if (epm(i) .lt. 0.d0) then
-            tr(i)=0.d0
+            tr(i) = 0.d0
         else
-            tr(i)=epm(i)
-        endif
-        tr(i+3)=0.d0
+            tr(i) = epm(i)
+        end if
+        tr(i+3) = 0.d0
     end do
 !
 ! -- CALCUL DE LA DERIVEE DU CRITERE
 !
     call bptobg(tr, ppeps, vecp)
     call r8inir(6, 0.d0, dfde, 1)
-    tre=epm(1)+epm(2)+epm(3)
+    tre = epm(1)+epm(2)+epm(3)
 !
     if (tre .gt. 0.d0) then
         do i = 1, 3
-            dfde(i)=fpd*lambda*tre
+            dfde(i) = fpd*lambda*tre
         end do
-    endif
+    end if
     do i = 1, 3
-        dfde(i)=dfde(i)+deuxmu*fpd*ppeps(i)
+        dfde(i) = dfde(i)+deuxmu*fpd*ppeps(i)
     end do
     do i = 4, 6
-        dfde(i)=deuxmu*fpd*ppeps(i)*rac2
+        dfde(i) = deuxmu*fpd*ppeps(i)*rac2
     end do
 !
-    critp=ddot(6,dfde,1,epsd,1)
+    critp = ddot(6, dfde, 1, epsd, 1)
 !
 !
 end subroutine

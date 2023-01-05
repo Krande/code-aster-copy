@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calc_epth_elga(fami   , ndim  , poum  , kpg  , ksp,&
+subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
                           j_mater, xyzgau, repere, epsi_ther)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -77,11 +77,11 @@ implicit none
 ! - Get elasticity type
 !
     call get_elas_id(j_mater, elas_id, elas_keyword)
-    ASSERT(elas_id.le.3)
+    ASSERT(elas_id .le. 3)
 !
 ! - Non-isotropic elasticity: prepare basis
 !
-    if (elas_id.gt.1)  then
+    if (elas_id .gt. 1) then
         if (repere(1) .gt. 0.d0) then
             angl(1) = repere(2)
             angl(2) = repere(3)
@@ -95,24 +95,24 @@ implicit none
             orig(2) = repere(6)
             orig(3) = repere(7)
             call utrcyl(xyzgau, dire, orig, p_glob_loca)
-        endif
-    endif
+        end if
+    end if
 !
 ! - Compute (local) thermic strains
 !
-    if (elas_id.eq.1) then
-        if (elas_keyword.eq.'ELAS_META') then
-            call verift(fami, kpg, ksp, poum, j_mater,&
-                        epsth_meta_= epsth)
+    if (elas_id .eq. 1) then
+        if (elas_keyword .eq. 'ELAS_META') then
+            call verift(fami, kpg, ksp, poum, j_mater, &
+                        epsth_meta_=epsth)
         else
-            call verift(fami, kpg, ksp, poum, j_mater,&
-                        epsth_ = epsth)
-        endif
+            call verift(fami, kpg, ksp, poum, j_mater, &
+                        epsth_=epsth)
+        end if
         epsi_ther(1) = epsth
         epsi_ther(2) = epsth
         epsi_ther(3) = epsth
-    else if (elas_id.eq.2)  then
-        call verift(fami, kpg, ksp, poum, j_mater,&
+    else if (elas_id .eq. 2) then
+        call verift(fami, kpg, ksp, poum, j_mater, &
                     epsth_anis_=epsth_anis)
         epsi_ther_vect(1) = epsth_anis(1)
         epsi_ther_vect(2) = epsth_anis(2)
@@ -120,8 +120,8 @@ implicit none
         epsi_ther_vect(4) = 0.d0
         epsi_ther_vect(5) = 0.d0
         epsi_ther_vect(6) = 0.d0
-    else if (elas_id.eq.3) then
-        call verift(fami, kpg, ksp, poum, j_mater,&
+    else if (elas_id .eq. 3) then
+        call verift(fami, kpg, ksp, poum, j_mater, &
                     epsth_anis_=epsth_anis)
         epsi_ther_vect(1) = epsth_anis(1)
         epsi_ther_vect(2) = epsth_anis(1)
@@ -131,25 +131,25 @@ implicit none
         epsi_ther_vect(6) = 0.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Non-isotropic elasticity: rotate strains
 !
-    if (elas_id.gt.1)  then
-        vepst1(1)=epsi_ther_vect(1)
-        vepst1(2)=epsi_ther_vect(4)
-        vepst1(3)=epsi_ther_vect(2)
-        vepst1(4)=epsi_ther_vect(5)
-        vepst1(5)=epsi_ther_vect(6)
-        vepst1(6)=epsi_ther_vect(3)
+    if (elas_id .gt. 1) then
+        vepst1(1) = epsi_ther_vect(1)
+        vepst1(2) = epsi_ther_vect(4)
+        vepst1(3) = epsi_ther_vect(2)
+        vepst1(4) = epsi_ther_vect(5)
+        vepst1(5) = epsi_ther_vect(6)
+        vepst1(6) = epsi_ther_vect(3)
         call utpslg(1, 3, p_glob_loca, vepst1, vepst2)
-        epsi_ther(1)=vepst2(1)
-        epsi_ther(2)=vepst2(3)
-        epsi_ther(3)=vepst2(6)
-        epsi_ther(4)=vepst2(2)
-        epsi_ther(5)=vepst2(4)
-        epsi_ther(6)=vepst2(5)
+        epsi_ther(1) = vepst2(1)
+        epsi_ther(2) = vepst2(3)
+        epsi_ther(3) = vepst2(6)
+        epsi_ther(4) = vepst2(2)
+        epsi_ther(5) = vepst2(4)
+        epsi_ther(6) = vepst2(5)
         if (ndim .eq. 2) epsi_ther(3) = epsi_ther_vect(3)
-    endif
+    end if
 !
 end subroutine

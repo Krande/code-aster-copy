@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,18 @@ function omega2(freq)
 !                   ALORS ON RETOURNE  (-OMEGA2)
 !     ------------------------------------------------------------------
     real(kind=8) :: depide
-    save                 depide
+    save depide
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data                 depide/-1.d0/
+    data depide/-1.d0/
 !     ------------------------------------------------------------------
     if (depide .lt. 0) then
         depide = r8depi()
-        depide = depide * depide
-    endif
+        depide = depide*depide
+    end if
     if (freq .ge. 0) then
-        omega2 = + freq * freq * depide
+        omega2 = +freq*freq*depide
     else
-        omega2 = - freq * freq * depide
-    endif
+        omega2 = -freq*freq*depide
+    end if
 end function

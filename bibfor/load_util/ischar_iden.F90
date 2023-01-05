@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,20 +19,20 @@
 !
 function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, load_name)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
-aster_logical :: ischar_iden
-integer, pointer :: v_load_info(:)
-integer, intent(in) :: i_load
-integer, intent(in) :: nb_load
-character(len=4), intent(in) :: load_type_1
-character(len=4), intent(in) :: load_type_2
-character(len=24), optional, intent(in) :: load_name
+    aster_logical :: ischar_iden
+    integer, pointer :: v_load_info(:)
+    integer, intent(in) :: i_load
+    integer, intent(in) :: nb_load
+    character(len=4), intent(in) :: load_type_1
+    character(len=4), intent(in) :: load_type_2
+    character(len=24), optional, intent(in) :: load_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,31 +73,31 @@ character(len=24), optional, intent(in) :: load_name
 ! --------------------------------------------------------------------------------------------------
 !
     ischar_iden = ASTER_FALSE
-    lelim       = ASTER_FALSE
-    ldual       = ASTER_FALSE
-    ldiri       = ASTER_FALSE
-    ldidi       = ASTER_FALSE
-    lneum       = ASTER_FALSE
-    londe       = ASTER_FALSE
-    llapl       = ASTER_FALSE
-    lsigm       = ASTER_FALSE
-    lsuiv       = ASTER_FALSE
-    lelem       = ASTER_FALSE
-    lpilo       = ASTER_FALSE
+    lelim = ASTER_FALSE
+    ldual = ASTER_FALSE
+    ldiri = ASTER_FALSE
+    ldidi = ASTER_FALSE
+    lneum = ASTER_FALSE
+    londe = ASTER_FALSE
+    llapl = ASTER_FALSE
+    lsigm = ASTER_FALSE
+    lsuiv = ASTER_FALSE
+    lelem = ASTER_FALSE
+    lpilo = ASTER_FALSE
 !
     load_nume_diri = v_load_info(i_load+1)
     load_nume_neum = v_load_info(i_load+nb_load+1)
-    if ((load_nume_diri .eq. -1).or.(load_nume_diri .eq. -2).or.(load_nume_diri .eq. -3)) then
+    if ((load_nume_diri .eq. -1) .or. (load_nume_diri .eq. -2) .or. (load_nume_diri .eq. -3)) then
         if (present(load_name)) then
-            char19=load_name
-            call jeveuo(char19//'.AFCI','L',jafci)
-            if (zi(jafci-1+1).gt.0) then
-                ldiri  = ASTER_TRUE
-                lelim  = ASTER_TRUE
-            endif
+            char19 = load_name
+            call jeveuo(char19//'.AFCI', 'L', jafci)
+            if (zi(jafci-1+1) .gt. 0) then
+                ldiri = ASTER_TRUE
+                lelim = ASTER_TRUE
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
     else if (load_nume_diri .eq. 1) then
         ldiri = ASTER_TRUE
         ldual = ASTER_TRUE
@@ -157,18 +157,18 @@ character(len=24), optional, intent(in) :: load_name
             if (v_load_info(2*nb_load+3) .ne. 0) then
                 lneum = ASTER_TRUE
                 llapl = ASTER_TRUE
-            endif
+            end if
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
     if (ldiri) then
         if (v_load_info(3*nb_load+i_load+3) .eq. 1) then
             ldidi = ASTER_TRUE
-        endif
-    endif
+        end if
+    end if
     if (load_type_1 .eq. 'DIRI') then
         if (ldiri) then
             if (load_type_2 .eq. 'DUAL') then
@@ -184,13 +184,13 @@ character(len=24), optional, intent(in) :: load_name
             else if (load_type_2 .eq. '    ') then
                 ischar_iden = ldiri
             else
-                write(6,*) 'SOUTYP: ',load_type_2
+                write (6, *) 'SOUTYP: ', load_type_2
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         else if (lneum) then
             ischar_iden = ASTER_FALSE
-        endif
-    else if (load_type_1.eq.'NEUM') then
+        end if
+    else if (load_type_1 .eq. 'NEUM') then
         if (lneum) then
             if (load_type_2 .eq. 'ONDE') then
                 ischar_iden = londe
@@ -207,14 +207,14 @@ character(len=24), optional, intent(in) :: load_name
             else if (load_type_2 .eq. 'PILO') then
                 ischar_iden = lpilo
             else
-                write(6,*) 'SOUTYP: ',load_type_2
+                write (6, *) 'SOUTYP: ', load_type_2
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         else if (ldiri) then
             ischar_iden = ASTER_FALSE
-        endif
+        end if
     else
-        write(6,*) 'TYPCHA: ',load_type_1
+        write (6, *) 'TYPCHA: ', load_type_1
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 end function

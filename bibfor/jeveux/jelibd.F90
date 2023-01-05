@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,10 +39,10 @@ subroutine jelibd(nomlu, ltot)
     character(len=*) :: nomlu
 !
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     -----------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadmi, iadyn, ibacol, ibiadm
@@ -52,42 +52,42 @@ subroutine jelibd(nomlu, ltot)
     integer :: jrnom, jtype, k, ltot, ltypi, n
     integer :: nbacce, nbmax
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
     integer :: nitecr, kmarq
-    common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
-     &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
-     &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
+    common/ificje/nblmax(n), nbluti(n), longbl(n),&
+     &                 kitlec(n), kitecr(n), kiadm(n),&
+     &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 !
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
-    common /jiacce/  jiacce(n),nbacce(2*n)
-    common /jindir/  jindir(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
+    common/jiacce/jiacce(n), nbacce(2*n)
+    common/jindir/jindir(n)
     integer :: isstat
-    common /iconje/  isstat
+    common/iconje/isstat
     integer :: ldyn, lgdyn, nbdyn, nbfree
-    common /idynje/  ldyn , lgdyn , nbdyn , nbfree
+    common/idynje/ldyn, lgdyn, nbdyn, nbfree
     integer :: icdyn, mxltot
-    common /xdynje/  icdyn , mxltot
+    common/xdynje/icdyn, mxltot
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: datei
-    common /iheuje/  datei
+    common/iheuje/datei
 ! ----------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idiadm
-    parameter    ( ivnmax = 0 , iddeso = 1 , idiadd = 2 , idiadm = 3 )
+    parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3)
 ! ----------------------------------------------------------------------
     character(len=32) :: noml32
     integer :: icre, iret
@@ -105,14 +105,14 @@ subroutine jelibd(nomlu, ltot)
 ! ----  CAS D'UN OBJET SIMPLE
 !
         inat = 1
-        iadmi = iadm (jiadm(iclaos)+2*idatos-1)
-        ltypi = ltyp (jltyp(iclaos)+idatos)
+        iadmi = iadm(jiadm(iclaos)+2*idatos-1)
+        ltypi = ltyp(jltyp(iclaos)+idatos)
         if (iadmi .eq. 0) then
             goto 999
-        endif
+        end if
         iadyn = iadm(jiadm(iclaos)+2*idatos)
 !
-        call jjlbsg(iclaos, idatos, 0, 0, iadmi,&
+        call jjlbsg(iclaos, idatos, 0, 0, iadmi, &
                     iadyn, ltot)
 !
     else if (iret .eq. 2) then
@@ -125,70 +125,70 @@ subroutine jelibd(nomlu, ltot)
         else
             call jjcroc(noml32(25:32), icre)
             inat = 3
-        endif
-    endif
+        end if
+    end if
     if (inat .eq. 2) then
 !
 ! ----- CAS D'UNE COLLECTION ENTIERE : ON LIBERE TOUS LES OC
 !
-        ixiadd = iszon ( jiszon + ibacol + idiadd )
-        ixiadm = iszon ( jiszon + ibacol + idiadm )
-        ixdeso = iszon ( jiszon + ibacol + iddeso )
-        ltypi = ltyp( jltyp(iclaco) + ixdeso )
+        ixiadd = iszon(jiszon+ibacol+idiadd)
+        ixiadm = iszon(jiszon+ibacol+idiadm)
+        ixdeso = iszon(jiszon+ibacol+iddeso)
+        ltypi = ltyp(jltyp(iclaco)+ixdeso)
         if (ixiadd .eq. 0) then
 !
 ! ------- COLLECTION CONTIGUE
 !
-            iadmi = iadm ( jiadm(iclaco) + 2*ixdeso-1 )
+            iadmi = iadm(jiadm(iclaco)+2*ixdeso-1)
             if (iadmi .eq. 0) then
                 goto 999
-            endif
-            iadyn = iadm ( jiadm(iclaco) + 2*ixdeso )
+            end if
+            iadyn = iadm(jiadm(iclaco)+2*ixdeso)
 !
-            call jjlbsg(iclaco, ixdeso, 0, 0, iadmi,&
+            call jjlbsg(iclaco, ixdeso, 0, 0, iadmi, &
                         iadyn, ltot)
 !
         else
 !
 ! ------- COLLECTION DISPERSEE
 !
-            nbmax = iszon ( jiszon + ibacol + ivnmax )
-            ibiadm = iadm ( jiadm(iclaco) + 2*ixiadm-1 )
+            nbmax = iszon(jiszon+ibacol+ivnmax)
+            ibiadm = iadm(jiadm(iclaco)+2*ixiadm-1)
             do k = 1, nbmax
-                iadmi = iszon(jiszon + ibiadm - 1 + 2*k-1 )
+                iadmi = iszon(jiszon+ibiadm-1+2*k-1)
                 if (iadmi .eq. 0) then
                     goto 10
-                endif
-                iadyn = iszon(jiszon + ibiadm - 1 + 2*k )
+                end if
+                iadyn = iszon(jiszon+ibiadm-1+2*k)
 !
-                call jjlbsg(iclaco, idatco, k, ibacol, iadmi,&
+                call jjlbsg(iclaco, idatco, k, ibacol, iadmi, &
                             iadyn, ltot)
 !
- 10             continue
+10              continue
             end do
-        endif
+        end if
     else if (inat .eq. 3) then
 !       ------ CAS D'UN OBJET DE COLLECTION  ------
-        ixiadd = iszon ( jiszon + ibacol + idiadd )
-        ixiadm = iszon ( jiszon + ibacol + idiadm )
-        ixdeso = iszon ( jiszon + ibacol + iddeso )
-        ltypi = ltyp( jltyp(iclaco) + ixdeso )
+        ixiadd = iszon(jiszon+ibacol+idiadd)
+        ixiadm = iszon(jiszon+ibacol+idiadm)
+        ixdeso = iszon(jiszon+ibacol+iddeso)
+        ltypi = ltyp(jltyp(iclaco)+ixdeso)
         if (ixiadd .ne. 0) then
 !
 ! -------- COLLECTION DISPERSEE
 !
-            ibiadm = iadm ( jiadm(iclaco) + 2*ixiadm-1 )
-            iadmi = iszon(jiszon + ibiadm - 1 + 2*idatoc-1 )
+            ibiadm = iadm(jiadm(iclaco)+2*ixiadm-1)
+            iadmi = iszon(jiszon+ibiadm-1+2*idatoc-1)
             if (iadmi .eq. 0) then
                 goto 999
-            endif
-            iadyn = iszon(jiszon + ibiadm - 1 + 2*idatoc)
+            end if
+            iadyn = iszon(jiszon+ibiadm-1+2*idatoc)
 !
-            call jjlbsg(iclaco, idatco, idatoc, ibacol, iadmi,&
+            call jjlbsg(iclaco, idatco, idatoc, ibacol, iadmi, &
                         iadyn, ltot)
 !
-        endif
-    endif
+        end if
+    end if
 999 continue
 !
 end subroutine

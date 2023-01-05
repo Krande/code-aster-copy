@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndiner(nb_equa, sddyna, hval_incr, hval_measse, cniner)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
@@ -31,10 +31,10 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "blas/dscal.h"
 !
-integer, intent(in) :: nb_equa
-character(len=19), intent(in) :: sddyna
-character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
-character(len=19), intent(in) :: cniner
+    integer, intent(in) :: nb_equa
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
+    character(len=19), intent(in) :: cniner
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,23 +63,23 @@ character(len=19), intent(in) :: cniner
 !
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> CALCUL DES FORCES D''INERTIE'
-    endif
+        write (ifm, *) '<MECANONLINE> CALCUL DES FORCES D''INERTIE'
+    end if
 !
 ! - Get hat variables
 !
-    call nmchex(hval_incr  , 'VALINC', 'VITPLU', vite_curr)
+    call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
     call nmchex(hval_measse, 'MEASSE', 'MEMASS', matr_mass)
 !
 ! - Initializations
 !
     call vtzero(cniner)
-    coef_iner = ndynre(sddyna,'COEF_FORC_INER')
+    coef_iner = ndynre(sddyna, 'COEF_FORC_INER')
 !
 ! --- ACCES SD
 !
     call jeveuo(matr_mass(1:19)//'.&INT', 'L', jv_matr_mass)
-    call jeveuo(cniner(1:19)//'.VALE'   , 'E', vr=v_iner)
+    call jeveuo(cniner(1:19)//'.VALE', 'E', vr=v_iner)
     call jeveuo(vite_curr(1:19)//'.VALE', 'L', vr=v_vite_prev)
 !
 ! - Compute
@@ -91,6 +91,6 @@ character(len=19), intent(in) :: cniner
 !
     if (niv .ge. 2) then
         call nmdebg('VECT', cniner, ifm)
-    endif
+    end if
 !
 end subroutine

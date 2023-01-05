@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 ! person_in_charge: samuel.geniaut at edf.fr
 ! aslint: disable=W1306
 !
-subroutine xcalfev(elrefp, ndim, nnop, basloc, stano,&
-                   he, geom, kappa, mu, ff,&
-                   fk, dfdi, dkdgl, face, nnop_lin,&
+subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
+                   he, geom, kappa, mu, ff, &
+                   fk, dfdi, dkdgl, face, nnop_lin, &
                    ff_lin, dfdi_lin)
 !
     implicit none
@@ -79,144 +79,144 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano,&
 !----------------------------------------------------------------
 !
     lctlin = is_enr_line()
-    lshift=.not.(count(stano(1:nnop).eq.-2).eq.nnop)
-    method='DEFAULT'
-    lcourb=.false.
-    lbid=ASTER_FALSE
+    lshift = .not. (count(stano(1:nnop) .eq. -2) .eq. nnop)
+    method = 'DEFAULT'
+    lcourb = .false.
+    lbid = ASTER_FALSE
 !
-    xref(:)= 0.d0
-    ff_n(:)=0.d0
-    p(:,:,:) = 0.d0
-    invp(:,:,:) = 0.d0
+    xref(:) = 0.d0
+    ff_n(:) = 0.d0
+    p(:, :, :) = 0.d0
+    invp(:, :, :) = 0.d0
     r_n(:) = 0.d0
     t_n(:) = 0.d0
-    p_g(:,:) = 0.d0
-    invp_g(:,:) = 0.d0
+    p_g(:, :) = 0.d0
+    invp_g(:, :) = 0.d0
     ff1(:) = 0.d0
-    dfdi1(:,:)=0.d0
+    dfdi1(:, :) = 0.d0
     th = 0.d0
-    fk(:,:,:)=0.d0
-    if (.not.present(dkdgl)) then
-        lderiv=.false.
+    fk(:, :, :) = 0.d0
+    if (.not. present(dkdgl)) then
+        lderiv = .false.
     else
-        lderiv=.true.
-        if (.not.present(dfdi)) then
+        lderiv = .true.
+        if (.not. present(dfdi)) then
             call utmess('F', 'ELEMENTS6_6', sk='dfdi')
-        endif
-        dkdgl(:,:,:,:)=0.d0
-    endif
+        end if
+        dkdgl(:, :, :, :) = 0.d0
+    end if
 !
     if (present(nnop_lin) .and. lctlin) then
-        if (.not.present(ff_lin)) then
+        if (.not. present(ff_lin)) then
             call utmess('F', 'ELEMENTS6_6', sk='ff_lin')
-        endif
-        nnops=nnop_lin
-        ff1(1:nnops)=ff_lin(1:nnops)
+        end if
+        nnops = nnop_lin
+        ff1(1:nnops) = ff_lin(1:nnops)
         if (lderiv) then
-            if (.not.present(dfdi_lin)) then
+            if (.not. present(dfdi_lin)) then
                 call utmess('F', 'ELEMENTS6_6', sk='dfdi_lin')
-            endif
-            dfdi1(1:nnops,1:ndim)=dfdi_lin(1:nnops,1:ndim)
-        endif
+            end if
+            dfdi1(1:nnops, 1:ndim) = dfdi_lin(1:nnops, 1:ndim)
+        end if
     else
-        nnops=nnop
-        ff1(1:nnops)=ff(1:nnops)
-        if (lderiv) dfdi1(1:nnops,1:ndim)=dfdi(1:nnops,1:ndim)
-    endif
+        nnops = nnop
+        ff1(1:nnops) = ff(1:nnops)
+        if (lderiv) dfdi1(1:nnops, 1:ndim) = dfdi(1:nnops, 1:ndim)
+    end if
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  PREPARATION DES COORDONNEES CYLINDRIQUES
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    lcourb=lcourb.and.lderiv
+    lcourb = lcourb .and. lderiv
     if (lderiv) then
-        call coor_cyl(ndim, nnop, basloc, geom, ff,&
-                      p_g, invp_g, rr, th, l_not_zero,&
+        call coor_cyl(ndim, nnop, basloc, geom, ff, &
+                      p_g, invp_g, rr, th, l_not_zero, &
                       courb, dfdi, lcourb)
     else
-        call coor_cyl(ndim, nnop, basloc, geom, ff,&
+        call coor_cyl(ndim, nnop, basloc, geom, ff, &
                       p_g, invp_g, rr, th, l_not_zero)
-    endif
+    end if
 !
-    if (.not.l_not_zero) goto 999
+    if (.not. l_not_zero) goto 999
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  CORRECTION POUR LE CONTACT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (present(face)) then
-        if (.not.(face.eq.'MAIT'.or.face.eq.'ESCL'.or.face.eq.' ')) then
+        if (.not. (face .eq. 'MAIT' .or. face .eq. 'ESCL' .or. face .eq. ' ')) then
             call utmess('F', 'ELEMENTS6_6', sk='face')
-        endif
-        if (face .eq. 'MAIT') th=+1.d0*r8pi()
-        if (face .eq. 'ESCL') th=-1.d0*r8pi()
-        if (face .eq. ' ') th=he*abs(th)
+        end if
+        if (face .eq. 'MAIT') th = +1.d0*r8pi()
+        if (face .eq. 'ESCL') th = -1.d0*r8pi()
+        if (face .eq. ' ') th = he*abs(th)
     else
-        th=he*abs(th)
-    endif
+        th = he*abs(th)
+    end if
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  CALCUL DU SIGNE POUR L INTERPOLATION FANTOME
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    signe=sign(1.d0,th)
+    signe = sign(1.d0, th)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  PREPARATION DU SHIFT: INTERPOLATION AUX NOEUDS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    fkpo_g(:,:)=0.d0
-    fkpo_n(:,:,:)=0.d0
+    fkpo_g(:, :) = 0.d0
+    fkpo_n(:, :, :) = 0.d0
     if (lshift) then
         call xelrex(elrefp, nno, xref, ndime=ndime)
         do ino = 1, nnop
             call elrfvf(elrefp, xref((ndime*(ino-1)+1):(ndime*(ino-1)+ndime)), ff_n)
-            call coor_cyl(ndim, nnop, basloc, geom, ff_n,&
+            call coor_cyl(ndim, nnop, basloc, geom, ff_n, &
                           p(ino, 1:3, 1:3), invp(ino, 1:3, 1:3), r_n(ino), t_n(ino), lbid)
-        enddo
+        end do
 !
         do ino = 1, nnop
 !     INTERPOLATION FANTOME DANS LES MAILLES XHT
             if (stano(ino) .eq. 1 .or. stano(ino) .eq. 3) then
-                call xdeffk_wrap(kappa, mu, r_n(ino), signe*abs(t_n(ino)), ndim,&
+                call xdeffk_wrap(kappa, mu, r_n(ino), signe*abs(t_n(ino)), ndim, &
                                  fkpo_n(ino, 1:ndim, 1:ndim), method, stano(ino))
 !     INTERPOLATION STANDARD DANS LES MAILLES XT
-            else if (stano(ino).eq.0 .or. stano(ino).eq.2) then
-                call xdeffk_wrap(kappa, mu, r_n(ino), t_n(ino), ndim,&
+            else if (stano(ino) .eq. 0 .or. stano(ino) .eq. 2) then
+                call xdeffk_wrap(kappa, mu, r_n(ino), t_n(ino), ndim, &
                                  fkpo_n(ino, 1:ndim, 1:ndim), method, stano(ino))
-            else if (stano(ino).eq.-2) then
+            else if (stano(ino) .eq. -2) then
                 goto 5
             else
                 call utmess('F', 'ELEMENTS6_6', sk='stano')
-            endif
+            end if
             do alp = 1, ndim
                 do i = 1, ndim
-                    fkpo_g(alp,i)=fkpo_g(alp,i)+fkpo_n(ino,alp,i)*ff(ino)
-                enddo
-            enddo
-  5         continue
+                    fkpo_g(alp, i) = fkpo_g(alp, i)+fkpo_n(ino, alp, i)*ff(ino)
+                end do
+            end do
+5           continue
         end do
-    endif
+    end if
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !     FONCTIONS D'ENRICHISSEMENT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  * AU POINT DE GAUSS
-    call xdeffk_wrap(kappa, mu, rr, th, ndim,&
+    call xdeffk_wrap(kappa, mu, rr, th, ndim, &
                      fkpo, method, 0)
 !  * CONVERSION DANS LA BASE GLOBALE
-    fk_gl(:,:)=0.d0
+    fk_gl(:, :) = 0.d0
     do alp = 1, ndim
         do i = 1, ndim
             do j = 1, ndim
-                fk_gl(alp,i)=fk_gl(alp,i)+p_g(i,j)*(fkpo(alp,j)-fkpo_g(alp,j))
-            enddo
-        enddo
-    enddo
+                fk_gl(alp, i) = fk_gl(alp, i)+p_g(i, j)*(fkpo(alp, j)-fkpo_g(alp, j))
+            end do
+        end do
+    end do
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  PREPARATION DE LA DERIVATION
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    lderiv=lderiv.and.l_not_zero
+    lderiv = lderiv .and. l_not_zero
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  PREPARATION DE LA DERIVATION DE LA FONCTION SHIFT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    dkdgl_g(:,:,:)=0.d0
+    dkdgl_g(:, :, :) = 0.d0
     if (lderiv) then
         if (lshift) then
             do ino = 1, nnop
@@ -225,26 +225,26 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano,&
                     do i = 1, ndim
                         do j = 1, ndim
                             do k = 1, ndim
-                                dkdgl_g(alp,i,j)=dkdgl_g(alp,i,j)+p_g(i,k)*fkpo_n(ino,alp,k)*dfdi(ino,j)
-                            enddo
-                        enddo
-                    enddo
-                enddo
-  7             continue
+                  dkdgl_g(alp, i, j) = dkdgl_g(alp, i, j)+p_g(i, k)*fkpo_n(ino, alp, k)*dfdi(ino, j)
+                            end do
+                        end do
+                    end do
+                end do
+7               continue
             end do
-        endif
+        end if
 !  ON ROGNE SUR TOUT / CALCUL DE LA DERIVEE EN AMONT
 !  *  DERIVEES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
-        call xderfk_wrap(kappa, mu, rr, th, ndim,&
+        call xderfk_wrap(kappa, mu, rr, th, ndim, &
                          dkdpo, method, 0)
 !  *  DERIVEES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
         do alp = 1, ndim
             do i = 1, ndim
-                dkdlo(alp,i,1)=dkdpo(alp,i,1)*cos(th)-dkdpo(alp,i,2)*sin(th)/rr
-                dkdlo(alp,i,2)=dkdpo(alp,i,1)*sin(th)+dkdpo(alp,i,2)*cos(th)/rr
-            enddo
-        enddo
-    endif
+                dkdlo(alp, i, 1) = dkdpo(alp, i, 1)*cos(th)-dkdpo(alp, i, 2)*sin(th)/rr
+                dkdlo(alp, i, 2) = dkdpo(alp, i, 1)*sin(th)+dkdpo(alp, i, 2)*cos(th)/rr
+            end do
+        end do
+    end if
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  CALCUL DES FONCTIONS VECTORIELLES AU POINT
@@ -258,31 +258,31 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !     DERIVEES DES FONCTIONS D'ENRICHISSEMENT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if (.not.lderiv) goto 11
+        if (.not. lderiv) goto 11
 !  *  CONVERSION DANS LA BASE GLOBALE
         do alp = 1, ndim
             do i = 1, ndim
                 do j = 1, ndim
                     do k = 1, ndim
                         do l = 1, 2
-                            dkdgl(ino,alp,i,j)=dkdgl(ino,alp,i,j)+p_g(i,k)*dkdlo(alp,k,l)*invp_g(l,j)
-                        enddo
-                    enddo
-                    dkdgl(ino,alp,i,j)=(dkdgl(ino,alp,i,j)-dkdgl_g(alp,i,j))*ff1(ino)+&
-                                fk_gl(alp,i)*dfdi1(ino,j)
-                enddo
-            enddo
-        enddo
+               dkdgl(ino, alp, i, j) = dkdgl(ino, alp, i, j)+p_g(i, k)*dkdlo(alp, k, l)*invp_g(l, j)
+                        end do
+                    end do
+                    dkdgl(ino, alp, i, j) = (dkdgl(ino, alp, i, j)-dkdgl_g(alp, i, j))*ff1(ino)+ &
+                                            fk_gl(alp, i)*dfdi1(ino, j)
+                end do
+            end do
+        end do
 !
- 11     continue
+11      continue
 !  *  MULTIPLICATION DE FK PAR FF
         do alp = 1, ndim
             do i = 1, ndim
-                fk(ino,alp,i)=fk_gl(alp,i)*ff1(ino)
-            enddo
-        enddo
+                fk(ino, alp, i) = fk_gl(alp, i)*ff1(ino)
+            end do
+        end do
 !
- 10     continue
+10      continue
     end do
 !
 999 continue

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,39 +50,39 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
 !
 !*** PETIK1: VECTEUR BETA (SIMO: 'A THREE-DIMENSIONAL FINITE-STRAIN ROD
 !***                       MODEL-PART 2'.)
-    teta2=ddot(3,tetag,1,tetag,1)
+    teta2 = ddot(3, tetag, 1, tetag, 1)
     if (abs(teta2) .lt. epsil) goto 11
-    teta1 = sqrt (teta2)
+    teta1 = sqrt(teta2)
     call provec(tetag, tetapg, v1)
-    coef1 = sin(teta1) / teta1
-    prosca=ddot(3,tetag,1,tetapg,1)
-    coef2 = (un-coef1) * prosca / teta2
-    coef3 = demi * (sin(demi*teta1)/(demi*teta1))**2
+    coef1 = sin(teta1)/teta1
+    prosca = ddot(3, tetag, 1, tetapg, 1)
+    coef2 = (un-coef1)*prosca/teta2
+    coef3 = demi*(sin(demi*teta1)/(demi*teta1))**2
     do i = 1, 3
-        petik1(i) = coef1*tetapg(i) + coef2*tetag(i) + coef3*v1(i)
+        petik1(i) = coef1*tetapg(i)+coef2*tetag(i)+coef3*v1(i)
     end do
     goto 20
 !
 !*** TETAG EST TRES PETIT ET BETA VAUT PRATIQUEMENT TETAPRIM
- 11 continue
+11  continue
     do i = 1, 3
         petik1(i) = tetapg(i)
     end do
 !
- 20 continue
+20  continue
 !
 !
     call marota(tetag, amat1)
     call antisy(petikm, un, amat2)
-    call promat(amat1, 3, 3, 3, amat2,&
+    call promat(amat1, 3, 3, 3, amat2, &
                 3, 3, 3, amat3)
-    call transp(amat1, 3, 3, 3, amat2,&
+    call transp(amat1, 3, 3, 3, amat2, &
                 3)
-    call promat(amat3, 3, 3, 3, amat2,&
+    call promat(amat3, 3, 3, 3, amat2, &
                 3, 3, 3, amat1)
     call axial(amat1, petik2)
 !
     do i = 1, 3
-        petik(i) = petik1(i) + petik2(i)
+        petik(i) = petik1(i)+petik2(i)
     end do
 end subroutine

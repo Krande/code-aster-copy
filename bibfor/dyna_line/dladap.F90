@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine dladap(result, tinit, lcrea, lamort, neq,&
-                  imat, masse, rigid, amort, dep0,&
-                  vit0, acc0, fexte, famor, fliai,&
-                  nchar, nveca, liad, lifo, modele,&
-                  mate, mateco, carele, charge, infoch, fomult,&
-                  numedd, nume, numrep, ds_energy,&
+subroutine dladap(result, tinit, lcrea, lamort, neq, &
+                  imat, masse, rigid, amort, dep0, &
+                  vit0, acc0, fexte, famor, fliai, &
+                  nchar, nveca, liad, lifo, modele, &
+                  mate, mateco, carele, charge, infoch, fomult, &
+                  numedd, nume, numrep, ds_energy, &
                   sd_obsv, mesh)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -174,7 +174,7 @@ implicit none
     call wkvect('&&DLADAP.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLADAP.F2', 'V V R', neq, iwk2)
     call wkvect('&&DLADAP.DEPL', 'V V R', neq, jdepl)
-    call vtcreb('&&DLADAP.DEP2', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&DLADAP.DEP2', 'V', 'R', nume_ddlz=numedd)
     call jeveuo('&&DLADAP.DEP2      '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLADAP.VITE', 'V V R', neq, jvite)
     call wkvect('&&DLADAP.VIT2', 'V V R', neq, jvit2)
@@ -197,7 +197,7 @@ implicit none
     epsi = r8prem()
     npas = 0
     iarchi = nume
-    ener   = ds_energy%l_comp
+    ener = ds_energy%l_comp
 !
 ! 1.4. ==> PARAMETRES D'INTEGRATION
 !
@@ -205,61 +205,61 @@ implicit none
     call getvr8('INCREMENT', 'PAS', iocc=1, scal=dti, nbret=ibid)
     if (ibid .eq. 0) then
         call utmess('F', 'DYNALINE1_11')
-    endif
+    end if
     if (dti .eq. 0.d0) then
         call utmess('F', 'DYNALINE1_12')
-    endif
+    end if
     dtmax = 0.d0
-    call recpar(neq, dti, dtmax, zr(jvmin), vvar,&
+    call recpar(neq, dti, dtmax, zr(jvmin), vvar, &
                 cmp, cdp, dtmin, nper, nrmax)
     nbordr = int((tfin-tinit)/dti)+2
     nbipas = int((tfin-tinit)/dti)+1
 !
 ! 1.5. ==> EXTRACTION DIAGONALE M ET CALCUL VITESSE INITIALE
 !
-    call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=sop, arret='C',&
+    call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=sop, arret='C', &
                 ier=ibid)
     if (sop .eq. 'MASS_MECA_DIAG') then
         call extdia(masse, numedd, 2, zr(iwk1))
     else
         call utmess('F', 'DYNALINE1_13')
-    endif
+    end if
 !
     do ieq = 1, neq
 !
         if (zr(iwk1+ieq-1) .ne. 0.d0) then
 !
-            zr(iwk1+ieq-1)=1.0d0/zr(iwk1+ieq-1)
-            nddl = zi(adeeq + 2*ieq-1)
+            zr(iwk1+ieq-1) = 1.0d0/zr(iwk1+ieq-1)
+            nddl = zi(adeeq+2*ieq-1)
             do iv1 = 1, neq
-                iv2=ieq+iv1
+                iv2 = ieq+iv1
                 if (iv2 .le. neq) then
                     if (zi(adeeq+2*iv2-1) .eq. nddl) then
                         zi(jind2+ieq-1) = iv2
                         goto 152
-                    endif
+                    end if
                 else
                     goto 152
-                endif
+                end if
             end do
 !
 152         continue
 !
             do iv1 = 1, neq
-                iv2=ieq-iv1
+                iv2 = ieq-iv1
                 if (iv2 .gt. 0) then
                     if (zi(adeeq+2*iv2-1) .eq. nddl) then
                         zi(jind1+ieq-1) = iv2
                         goto 154
-                    endif
+                    end if
                 else
                     goto 154
-                endif
+                end if
             end do
 !
 154         continue
 !
-        endif
+        end if
 !
     end do
 !
@@ -267,7 +267,7 @@ implicit none
 !
     do ieq = 1, neq
         zr(jdepl+ieq-1) = dep0(ieq)
-        zr(jvite+ieq-1) = vit0(ieq)- 0.5d0*dti*acc0(ieq)
+        zr(jvite+ieq-1) = vit0(ieq)-0.5d0*dti*acc0(ieq)
         zr(jvip1+ieq-1) = vit0(ieq)
         zr(jacce+ieq-1) = acc0(ieq)
         zr(jvmin1+ieq-1) = 1.d-15
@@ -289,38 +289,38 @@ implicit none
         typear(4) = '         '
         typear(5) = '         '
         typear(6) = '         '
-    endif
+    end if
     call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=ibid)
-    if (ibid .eq. 0) iparch=1
-    dtarch = dti * iparch
+    if (ibid .eq. 0) iparch = 1
+    dtarch = dti*iparch
     call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=0, nbret=nnc)
     if (nnc .ne. 0) then
         nbexcl = -nnc
-        call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=nbexcl, vect=typ1,&
+        call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=nbexcl, vect=typ1, &
                     nbret=nnc)
-    endif
+    end if
 !
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ARCHIVAGE_14')
-    endif
+    end if
     do iexcl = 1, nbexcl
         if (typ1(iexcl) .eq. 'DEPL') then
             typear(1) = '    '
-        else if (typ1(iexcl).eq.'VITE') then
+        else if (typ1(iexcl) .eq. 'VITE') then
             typear(2) = '    '
-        else if (typ1(iexcl).eq.'ACCE') then
+        else if (typ1(iexcl) .eq. 'ACCE') then
             typear(3) = '    '
-        endif
+        end if
     end do
 !
 !====
 ! 2. CREATION DES CONCEPTS RESULTAT
 !====
 !
-    call dltcrr(result, neq, nbordr, iarchi, 'PREMIER(S)',&
-                tinit, lcrea, typres, masse, rigid,&
-                amort, dep0, vit0, acc0, fexte,&
-                famor, fliai, numedd, nume, nbtyar,&
+    call dltcrr(result, neq, nbordr, iarchi, 'PREMIER(S)', &
+                tinit, lcrea, typres, masse, rigid, &
+                amort, dep0, vit0, acc0, fexte, &
+                famor, fliai, numedd, nume, nbtyar, &
                 typear)
 !
 !
@@ -336,18 +336,18 @@ implicit none
     tjob = 0.d0
     nbpasc = 0
     temps = tinit
-    tarch = tinit + dtarch
+    tarch = tinit+dtarch
     dt1 = 0.d0
     dt2 = dti
     call uttcpu('CPU.DLADAP', 'INIT', ' ')
 !
- 30 continue
+30  continue
 !
     if (ener) then
         do ieq = 1, neq
-            fexte(ieq)=fexte(ieq+neq)
+            fexte(ieq) = fexte(ieq+neq)
         end do
-    endif
+    end if
 !
     freqpr = 5
     if (niv .eq. 2) freqpr = 1
@@ -364,130 +364,130 @@ implicit none
         if (iveri .eq. 0) then
             call uttcpu('CPU.DLADAP', 'DEBUT', ' ')
         else
-            if (mod(iveri,nbpasc) .eq. 0) then
+            if (mod(iveri, nbpasc) .eq. 0) then
                 call uttcpu('CPU.DLADAP', 'DEBUT', ' ')
-            endif
-        endif
+            end if
+        end if
 !
 !        --- DERNIER PAS DE TEMPS ? ---
         if (temps+dt2 .gt. tfin) dt2 = tfin-temps
 101     continue
         if (err .gt. 1.d0 .and. nr .lt. nrmax) then
-            nbiter = nbiter + 1
+            nbiter = nbiter+1
             pas1 = (dt1+dt2)*0.5d0
             pas2 = dt2*0.5d0
             do ieq = 0, neq-1
 !            --- VITESSES AUX INSTANTS INTERMEDIAIRES ------
-                zr(jvit2+ieq) = zr(jvite+ieq) + pas1 * zr(jacce+ieq)
+                zr(jvit2+ieq) = zr(jvite+ieq)+pas1*zr(jacce+ieq)
 !            --- DEPLACEMENTS AUX INSTANTS 'TEMPS+DT2' ---------
-                vale(ieq+1) = zr(jdepl+ieq) + (dt2 * zr(jvit2+ieq))
+                vale(ieq+1) = zr(jdepl+ieq)+(dt2*zr(jvit2+ieq))
             end do
 ! ------------- CALCUL DU SECOND MEMBRE F*
             r8val = temps+dt2
-            call dlfext(nveca, nchar, r8val, neq, liad,&
-                        lifo, charge, infoch, fomult, modele,&
+            call dlfext(nveca, nchar, r8val, neq, liad, &
+                        lifo, charge, infoch, fomult, modele, &
                         mate, mateco, carele, numedd, zr(iforc1))
 !
             if (ener) then
                 do ieq = 1, neq
-                    fexte(ieq+neq)=zr(iforc1+ieq-1)
+                    fexte(ieq+neq) = zr(iforc1+ieq-1)
                 end do
-            endif
+            end if
 !
 ! ------------- FORCE DYNAMIQUE F* = F* - K DEP - C VIT
-            call dlfdyn(imat(1), imat(3), lamort, neq, vale,&
-                        zr( jvit2), zr(iforc1), zr(iwk0))
+            call dlfdyn(imat(1), imat(3), lamort, neq, vale, &
+                        zr(jvit2), zr(iforc1), zr(iwk0))
 !
 ! ------------- RESOLUTION DE M . A = F ET CALCUL DE VITESSE STOCKEE
 !           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
             do ieq = 1, neq
-                zr(jacc2+ieq-1)=zr(iwk1+ieq-1)*zr(iforc1+ieq-1)
+                zr(jacc2+ieq-1) = zr(iwk1+ieq-1)*zr(iforc1+ieq-1)
 !           --- VITESSE AUX INSTANTS 'TEMPS+DT2' ---
-                zr(jvip2+ieq-1)=zr(jvit2+ieq-1)+pas2*zr(jacc2+ieq-1)
+                zr(jvip2+ieq-1) = zr(jvit2+ieq-1)+pas2*zr(jacc2+ieq-1)
             end do
 !
 !        --- CALCUL DE VMIN ---
             if (vvar(1:4) .eq. 'MAXI') then
                 do ieq = 0, neq-1
                     rtmp = abs(zr(jvite+ieq)*1.d-02)
-                    zr(jvmin+ieq) = max(zr(jvmin+ieq),rtmp)
+                    zr(jvmin+ieq) = max(zr(jvmin+ieq), rtmp)
                 end do
             else if (vvar(1:4) .eq. 'NORM') then
                 do ieq = 0, neq-1
                     if (zr(iwk1+ieq) .ne. 0.d0) then
-                        zr(jvmin1+ieq)=1.d-02*zr(jvit2+(zi(jind1+ieq)-&
-                        1))
-                        zr(jvmin2+ieq)=1.d-02*zr(jvit2+(zi(jind2+ieq)-&
-                        1))
-                    endif
+                        zr(jvmin1+ieq) = 1.d-02*zr(jvit2+(zi(jind1+ieq)- &
+                                                          1))
+                        zr(jvmin2+ieq) = 1.d-02*zr(jvit2+(zi(jind2+ieq)- &
+                                                          1))
+                    end if
                     rtmp = 1.d-15
-                    zr(jvmin+ieq)=max(rtmp,zr(jvmin1+ieq),zr(jvmin2+&
-                    ieq))
+                    zr(jvmin+ieq) = max(rtmp, zr(jvmin1+ieq), zr(jvmin2+ &
+                                                                 ieq))
                 end do
-            endif
+            end if
 !
 !        --- CALCUL DE FREQ. APPARENTE ET ERREUR ---
-            call frqapp(dt2, neq, zr(jdepl), vale, zr(jacce),&
-                        zr( jacc2), zr(jvmin), freq)
-            err = nper * freq * dt2
+            call frqapp(dt2, neq, zr(jdepl), vale, zr(jacce), &
+                        zr(jacc2), zr(jvmin), freq)
+            err = nper*freq*dt2
 !
 !       --- REDUCTION DU PAS DE TEMPS ---
             if (err .gt. 1.d0) dt2 = dt2/cdp
             if (dt2 .le. dtmin .and. abs(tfin-(temps+dt2)) .gt. epsi) then
                 call utmess('F', 'DYNALINE1_17')
-            endif
-            nr = nr + 1
+            end if
+            nr = nr+1
 !       LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
             goto 101
         else if (err .gt. 1.d0 .and. nr .ge. nrmax) then
-            dt2 = dt2 * cdp
+            dt2 = dt2*cdp
             valr(1) = temps+dt2
             valr(2) = err
             valr(3) = dt2
             call utmess('A', 'DYNALINE1_16', si=nrmax, nr=3, valr=valr)
-        endif
+        end if
 !
         dt1 = dt2
-        temp2 = temps + dt2
+        temp2 = temps+dt2
 !
 !        --- AUGMENTATION DU PAS SI ERREUR TROP FAIBLE ---
         if (err .lt. 0.75d0) then
             if (npas .eq. 5) then
                 dt2 = cmp*dt2
-                dt2 = min(dt2,dti)
+                dt2 = min(dt2, dti)
                 npas = 4
-            endif
-            npas = npas + 1
+            end if
+            npas = npas+1
         else
             npas = 0
-        endif
-        ipas = ipas + 1
+        end if
+        ipas = ipas+1
 !
 !
 !       --- ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION ---
-        if ((temps.le.tarch .and. temp2.ge.tarch) .or. (temp2.eq.tfin)) then
+        if ((temps .le. tarch .and. temp2 .ge. tarch) .or. (temp2 .eq. tfin)) then
             istoc = 0
             alarm = 1
             if ((temp2-tarch) .le. (tarch-temps)) then
                 tarchi = temp2
-                call dlarch(result, neq, istoc, iarchi, ' ',&
-                            alarm, temp2, nbtyar, typear, masse,&
-                            vale, zr( jvip2), zr(jacc2), fexte(1+neq), famor(1+neq),&
-                            fliai(1+ neq))
+                call dlarch(result, neq, istoc, iarchi, ' ', &
+                            alarm, temp2, nbtyar, typear, masse, &
+                            vale, zr(jvip2), zr(jacc2), fexte(1+neq), famor(1+neq), &
+                            fliai(1+neq))
             else
                 tarchi = temps
-                call dlarch(result, neq, istoc, iarchi, ' ',&
-                            alarm, temps, nbtyar, typear, masse,&
-                            zr(jdepl), zr( jvip1), zr(jacce), fexte, famor,&
+                call dlarch(result, neq, istoc, iarchi, ' ', &
+                            alarm, temps, nbtyar, typear, masse, &
+                            zr(jdepl), zr(jvip1), zr(jacce), fexte, famor, &
                             fliai)
-            endif
-            tarch = tarch + dtarch
-        endif
+            end if
+            tarch = tarch+dtarch
+        end if
 !
         perc = int(100.d0*((temps-tinit)/(tfin-tinit)))
         if (perc .ne. last_prperc) then
-            if (mod(perc,freqpr) .eq. 0) then
-                call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, ipas], nr=2,&
+            if (mod(perc, freqpr) .eq. 0) then
+                call utmess('I', 'PROGRESS_1', ni=2, vali=[perc, ipas], nr=2, &
                             valr=[temps, tarch-dtarch])
                 last_prperc = perc
             end if
@@ -495,19 +495,19 @@ implicit none
 !
 !
         if (ener) then
-            masse1=masse//'           '
-            amort1=amort//'           '
-            rigid1=rigid//'           '
+            masse1 = masse//'           '
+            amort1 = amort//'           '
+            rigid1 = rigid//'           '
             call wkvect('FNODABID', 'V V R', 2*neq, ifnobi)
             call wkvect('FCINEBID', 'V V R', 2*neq, ifcibi)
 ! ON CALCULE LA VITESSE A T N-1
-            call enerca(k19bid, zr(jdepl), zr(jvip1), vale, zr(jvip2),&
-                        masse1, amort1, rigid1, fexte, famor,&
-                        fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1,&
+            call enerca(k19bid, zr(jdepl), zr(jvip1), vale, zr(jvip2), &
+                        masse1, amort1, rigid1, fexte, famor, &
+                        fliai, zr(ifnobi), zr(ifcibi), lamort, .true._1, &
                         .false._1, ds_energy, '&&DLADAP')
             call jedetr('FNODABID')
             call jedetr('FCINEBID')
-        endif
+        end if
 !
 ! ------------- ARCHIVAGE DES PARAMETRES
 !
@@ -532,31 +532,31 @@ implicit none
             call dcopy(neq, zr(jacc2), 1, zr(iaccmoi), 1)
 
             ! make observation
-            call nmobse(mesh, sd_obsv  , t_obs)
-        endif
+            call nmobse(mesh, sd_obsv, t_obs)
+        end if
 !
 ! ------------- VERIFICATION DU TEMPS DE CALCUL RESTANT
         if (iveri .eq. 0) then
             call uttcpu('CPU.DLADAP', 'FIN', ' ')
             call uttcpr('CPU.DLADAP', 4, tps1)
             tjob = tps1(1)
-            if (tps1(4) .eq. 0.d0) tps1(4)=1.d-02
-            nbpasc = int(1.d-02 * (tps1(1)/tps1(4)))+1
+            if (tps1(4) .eq. 0.d0) tps1(4) = 1.d-02
+            nbpasc = int(1.d-02*(tps1(1)/tps1(4)))+1
         else
-            if (mod(iveri,nbpasc) .eq. 0) then
+            if (mod(iveri, nbpasc) .eq. 0) then
                 call uttcpu('CPU.DLADAP', 'FIN', ' ')
                 call uttcpr('CPU.DLADAP', 4, tps1)
-                if (tps1(1) .le. max(tjob/100.d0,15.d0)) then
+                if (tps1(1) .le. max(tjob/100.d0, 15.d0)) then
                     goto 999
-                endif
-                if (tps1(4) .eq. 0.d0) tps1(4)=1.d-02
-                nbpasc = int(1.d-02 * (tjob/tps1(4)))+1
-            endif
-        endif
-        iveri = iveri + 1
+                end if
+                if (tps1(4) .eq. 0.d0) tps1(4) = 1.d-02
+                nbpasc = int(1.d-02*(tjob/tps1(4)))+1
+            end if
+        end if
+        iveri = iveri+1
 !
         goto 30
-    endif
+    end if
 !
 999 continue
 !
@@ -572,11 +572,11 @@ implicit none
         end do
 !
         alarm = 0
-        call dlarch(result, neq, istoc, iarchi, 'DERNIER(S)',&
-                    alarm, temps, nbtyar, typear, masse,&
-                    zr(jdepl), zr(jvip1), zr(jacce), fexte(neq+1), famor(neq+1),&
+        call dlarch(result, neq, istoc, iarchi, 'DERNIER(S)', &
+                    alarm, temps, nbtyar, typear, masse, &
+                    zr(jdepl), zr(jvip1), zr(jacce), fexte(neq+1), famor(neq+1), &
                     fliai(neq+1))
-    endif
+    end if
 !
 !====
 ! 5. LA FIN
@@ -586,22 +586,22 @@ implicit none
 !
     if (etausr() .eq. 1) then
         call sigusr()
-    endif
+    end if
 !
-    if (tps1(1) .le. max(tjob/100.d0,15.d0)) then
+    if (tps1(1) .le. max(tjob/100.d0, 15.d0)) then
         vali(1) = ipas
         vali(2) = iarchi
         vali(3) = nbpasc
         valr(1) = tarchi
         valr(2) = nbpasc*tps1(4)
         valr(3) = tps1(1)
-        call utmess('Z', 'DYNAMIQUE_11', ni=3, vali=vali, nr=3,&
+        call utmess('Z', 'DYNAMIQUE_11', ni=3, vali=vali, nr=3, &
                     valr=valr, num_except=ASTER_TIMELIMIT_ERROR)
-    endif
+    end if
 !
     vali(1) = ipas
     vali(2) = nbiter
-    call utmess('I', 'DYNALINE1_21', ni=2, vali=vali, nr=8,&
+    call utmess('I', 'DYNALINE1_21', ni=2, vali=vali, nr=8, &
                 valr=valr)
 !
 !     --- DESTRUCTION DES OBJETS DE TRAVAIL ---

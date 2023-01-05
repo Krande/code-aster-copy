@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine simult()
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
 !-----------------------------------------------------------------------
-    integer :: i,  idno, ii, in, ldgn
+    integer :: i, idno, ii, in, ldgn
     integer :: nb, nbd, nbdir, nbgr, nbno, nbv
     character(len=24), pointer :: group_no(:) => null()
 !-----------------------------------------------------------------------
@@ -82,14 +82,14 @@ subroutine simult()
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
     do i = 1, nbdir
-        xnorm = xnorm + depl(i) * depl(i)
+        xnorm = xnorm+depl(i)*depl(i)
     end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
-    endif
+    end if
     do i = 1, nbdir
-        depl(i) = depl(i) / xnorm
+        depl(i) = depl(i)/xnorm
     end do
 !
 !     --- ON RECUPERE LES MODES STATIQUES ---
@@ -98,23 +98,23 @@ subroutine simult()
 !
 !     --- ON RECUPERE LES POINTS D'ANCRAGE ---
 !
-    call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0,&
+    call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0, &
                 0, kbid, nbno)
     if (nbno .ne. 0) then
 !
 !        --- ON RECUPERE UNE LISTE DE NOEUD ---
         nbno = -nbno
         call wkvect('&&SIMULT.NOEUD', 'V V K8', nbno, idno)
-        call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0,&
+        call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0, &
                     nbno, zk8(idno), nbv)
     else
 !
 !        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
-        call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0,&
+        call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0, &
                     0, kbid, nbgr)
         nbgr = -nbgr
         AS_ALLOCATE(vk24=group_no, size=nbgr)
-        call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0,&
+        call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0, &
                     nbgr, group_no, nbv)
 !
 !        --- ECLATE LE GROUP_NO EN NOEUD ---
@@ -128,12 +128,12 @@ subroutine simult()
             call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
             do in = 0, nb-1
                 call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
-                ii = ii + 1
+                ii = ii+1
                 zk8(idno+ii) = nomnoe
             end do
         end do
-    endif
-    call simul2(resu, nomcmd, masse, modsta, nbdir,&
+    end if
+    call simul2(resu, nomcmd, masse, modsta, nbdir, &
                 depl, zk8(idno), nbno)
 !
 ! --- MENAGE

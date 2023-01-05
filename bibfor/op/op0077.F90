@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine op0077()
     character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, vbl24(1)
-    integer :: ioc1,  nbord, i, iord, lpaout(3)
+    integer :: ioc1, nbord, i, iord, lpaout(3)
 !
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -84,15 +84,15 @@ subroutine op0077()
     character(len=16) :: depl
     character(len=24) :: chamol
 !-----------------------------------------------------------------------
-    data depl   /'DEPL            '/
+    data depl/'DEPL            '/
     data k8b/'        '/
-    data param/'MODELE','CHAMPMAT','CARAELEM'/
-    data vbl24 /'                        '/
+    data param/'MODELE', 'CHAMPMAT', 'CARAELEM'/
+    data vbl24/'                        '/
 !
     call jemarq()
     call infmaj()
-    k8bid='        '
-    blanc='        '
+    k8bid = '        '
+    blanc = '        '
 !
 !     -----------------------------------------------------------------
 !
@@ -108,10 +108,10 @@ subroutine op0077()
             do j = i+1, nbcham
                 if (champ(i) .eq. champ(j)) then
                     call utmess('E', 'ALGORITH9_30')
-                endif
+                end if
             end do
         end do
-    endif
+    end if
 !
 !
 ! --- CREATION DU PROFIL :
@@ -123,10 +123,10 @@ subroutine op0077()
         profno = '&&OP0077.PROFC.NUME'
     else
         profno = nomres//'.PROFC.NUME'
-    endif
+    end if
 ! --- CREATION D'UN OBJET REFN DU PROFIL SUR BASE VOLATILE
     call wkvect(profno//'.REFN', 'V V K24', 4, jrefn)
-    zk24(jrefn+1)='DEPL_R'
+    zk24(jrefn+1) = 'DEPL_R'
 !
 !
 !
@@ -140,53 +140,53 @@ subroutine op0077()
 !      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
         call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
         call getvid(' ', 'RESULTAT', scal=result, nbret=ibid)
-        zk24(jrefn)=mailsk
+        zk24(jrefn) = mailsk
         call getfac('CYCLIQUE', ioc1)
         if (ioc1 .gt. 0) then
             call excygl(nomres, typres, result, mailsk, profno)
             call jeveuo(profno//'.REFN', 'E', jrefnb)
-            zk24(jrefnb)=mailsk
-            zk24(jrefnb+1)='DEPL_R'
-            concep(1:9)='         '
-            resin=result
+            zk24(jrefnb) = mailsk
+            zk24(jrefnb+1) = 'DEPL_R'
+            concep(1:9) = '         '
+            resin = result
             goto 30
 !
         else
             if (typres .eq. 'MODE_MECA') then
                 call regres(nomres, mailsk, result, profno)
                 call jeveuo(profno//'.REFN', 'E', jrefnb)
-                zk24(jrefnb)=mailsk
-                zk24(jrefnb+1)='DEPL_R'
-                concep(1:9)='         '
-                resin=result
+                zk24(jrefnb) = mailsk
+                zk24(jrefnb+1) = 'DEPL_R'
+                concep(1:9) = '         '
+                resin = result
                 goto 30
 !
             else
                 call utmess('E', 'ALGORITH9_46')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 !
 ! INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
 !      PROMES=.FALSE.
-    if ((concep(1:9).eq.'TRAN_GENE') .or. (concep(1:9).eq.'MODE_GENE') .or.&
-        (concep(1:9).eq.'HARM_GENE')) then
+    if ((concep(1:9) .eq. 'TRAN_GENE') .or. (concep(1:9) .eq. 'MODE_GENE') .or. &
+        (concep(1:9) .eq. 'HARM_GENE')) then
         call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=matgen, arret='C')
         call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen)
 ! LE RESU_GENE VIENT DE PROJ_MESU_MODAL
-        if ((matgen(1:8).eq.blanc) .and. (numgen(1:8).eq.blanc)) then
+        if ((matgen(1:8) .eq. blanc) .and. (numgen(1:8) .eq. blanc)) then
 !          PROMES=.TRUE.
-            typrep=blanc
+            typrep = blanc
         else
             if (numgen(1:8) .eq. blanc) then
                 call jeveuo(matgen(1:8)//'           .REFA', 'L', j2refe)
-                numgen=zk24(j2refe+1)(1:14)
-            endif
+                numgen = zk24(j2refe+1) (1:14)
+            end if
             call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', j3refe)
             call gettco(zk24(j3refe), typrep)
-        endif
-    endif
+        end if
+    end if
 !
 !     --- DYNAMIQUE TRANSITOIRE ---
 !
@@ -201,37 +201,37 @@ subroutine op0077()
                 call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
                 call retrgl(nomres, resin, mailsk, profno)
                 call jeveuo(profno//'.REFN', 'E', jrefnb)
-                zk24(jrefnb)=mailsk
-                zk24(jrefnb+1)='DEPL_R'
-            endif
+                zk24(jrefnb) = mailsk
+                zk24(jrefnb+1) = 'DEPL_R'
+            end if
 !
 !
 !
-        else if (typrep(1:9).eq.'MODE_GENE') then
+        else if (typrep(1:9) .eq. 'MODE_GENE') then
             call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=n1)
             call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=n2)
-            if ((n1.ne.0.and.n2.ne.0)) then
+            if ((n1 .ne. 0 .and. n2 .ne. 0)) then
                 call utmess('F', 'ALGORITH9_47')
-            endif
+            end if
             call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) then
                 call utmess('F', 'ALGORITH9_48')
-            endif
+            end if
             call tran77(nomres, typres, resin, mode)
-        endif
+        end if
 !
 !
 !
 !     --- CALCUL MODAL PAR SOUS-STRUCTURATION CLASSIQUE ---
 !                  OU SANS SOUS-STRUCTURATION
 !
-    else if (concep(1:9).eq.'MODE_GENE') then
+    else if (concep(1:9) .eq. 'MODE_GENE') then
 !
 ! --- CAS DE LA SOUS-STRUCTURATION MODALE
         if (typrep(1:11) .eq. 'MODELE_GENE') then
 !
             call getvid(' ', 'SQUELETTE', nbval=0, nbret=isk)
-            call jeveuo(resin(1:8)//'           .ORDR','L',ibid)
+            call jeveuo(resin(1:8)//'           .ORDR', 'L', ibid)
             call dcapno(resin, depl, zi(ibid), chamol)
             call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
 
@@ -246,7 +246,7 @@ subroutine op0077()
                     call rege2c(nomres, resin, nomsst)
                 else
                     ASSERT(.false.)
-                endif
+                end if
 
             else
                 call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
@@ -260,20 +260,20 @@ subroutine op0077()
                     call regegc(nomres, resin, mailsk, profno)
                 else
                     ASSERT(.false.)
-                endif
+                end if
                 call jeveuo(profno//'.REFN', 'E', jrefnb)
-                zk24(jrefnb)=mailsk
-                zk24(jrefnb+1)='DEPL_R'
-            endif
+                zk24(jrefnb) = mailsk
+                zk24(jrefnb+1) = 'DEPL_R'
+            end if
         else
 !
 !     --- CALCUL MODAL SANS SOUS-STRUCTURATION ---
             call regene(nomres, resin, profno)
-        endif
+        end if
 !
 !     --- CALCUL MODAL PAR SOUS-STYRUCTURATION CYCLIQUE ---
 !
-    else if (concep(1:9).eq.'MODE_CYCL') then
+    else if (concep(1:9) .eq. 'MODE_CYCL') then
         call getvid(' ', 'SQUELETTE', nbval=0, nbret=isk)
         if (isk .eq. 0) then
             call getvis(' ', 'SECTEUR', scal=numsec, nbret=ibid)
@@ -282,13 +282,13 @@ subroutine op0077()
             call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
             call recygl(nomres, 'MODE_MECA', resin, mailsk, profno)
             call jeveuo(profno//'.REFN', 'E', jrefnb)
-            zk24(jrefnb)=mailsk
-            zk24(jrefnb+1)='DEPL_R'
-        endif
+            zk24(jrefnb) = mailsk
+            zk24(jrefnb+1) = 'DEPL_R'
+        end if
 !
 !     --- CALCUL HARMONIQUE PAR SOUS-STRUCTURATION CLASSIQUE ---
 !
-    else if (concep(1:9).eq.'HARM_GENE') then
+    else if (concep(1:9) .eq. 'HARM_GENE') then
 !
 ! --- CAS DE LA SOUS-STRUCTURATION HARMONIQUE
         if (typrep(1:11) .eq. 'MODELE_GENE') then
@@ -300,31 +300,31 @@ subroutine op0077()
                 call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
                 call rehagl(nomres, resin, mailsk, profno)
                 call jeveuo(profno//'.REFN', 'E', jrefnb)
-                zk24(jrefnb)=mailsk
-                zk24(jrefnb+1)='DEPL_R'
-            endif
+                zk24(jrefnb) = mailsk
+                zk24(jrefnb+1) = 'DEPL_R'
+            end if
 !
-        else if (typrep(1:9).eq.'MODE_GENE') then
+        else if (typrep(1:9) .eq. 'MODE_GENE') then
             call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=n1)
             call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=n2)
-            if ((n1.ne.0.and.n2.ne.0)) then
+            if ((n1 .ne. 0 .and. n2 .ne. 0)) then
                 call utmess('F', 'ALGORITH9_47')
-            endif
+            end if
             call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) then
                 call utmess('F', 'ALGORITH9_48')
-            endif
+            end if
             call harm75(nomres, typres, resin, mode)
-        endif
+        end if
 !
-    endif
+    end if
 !
- 30 continue
+30  continue
 !
 ! --- STOCKAGE
     call gettco(resin, concep)
-    if ((concep(1:9).ne.'TRAN_GENE') .and. (concep(1:9).ne.'MODE_CYCL') .and.&
-        (concep(1:9).ne.'HARM_GENE')) then
+    if ((concep(1:9) .ne. 'TRAN_GENE') .and. (concep(1:9) .ne. 'MODE_CYCL') .and. &
+        (concep(1:9) .ne. 'HARM_GENE')) then
         call jeveuo(nomres//'           .ORDR', 'L', vi=ordr)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
@@ -340,26 +340,26 @@ subroutine op0077()
 !
             call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen)
             call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', lmodge)
-            call jenonu(jexnom(zk24(lmodge)(1:8)//'      .MODG.SSNO', nomsst), iret)
-            call jeveuo(jexnum(zk24(lmodge)(1:8)//'      .MODG.SSME', iret), 'L', lmacr)
+            call jenonu(jexnom(zk24(lmodge) (1:8)//'      .MODG.SSNO', nomsst), iret)
+            call jeveuo(jexnum(zk24(lmodge) (1:8)//'      .MODG.SSME', iret), 'L', lmacr)
 !-- RECUPERATION DES INFOS CARA_ELEM / MATER / MODELE POUR LES SST
 !-- DANS LE .REFM DANS LE MACRO ELEMENT CORRESPONDANT
             call jeveuo(zk8(lmacr)//'.REFM', 'L', vk8=refm)
             do iord = 1, nbord
-                call rsadpa(nomres, 'E', 3, param, ordr(iord),&
+                call rsadpa(nomres, 'E', 3, param, ordr(iord), &
                             0, tjv=lpaout, styp=k8b)
-                zk8(lpaout(1))=refm(1)
-                zk8(lpaout(2))=refm(3)
-                zk8(lpaout(3))=refm(4)
+                zk8(lpaout(1)) = refm(1)
+                zk8(lpaout(2)) = refm(3)
+                zk8(lpaout(3)) = refm(4)
             end do
-        endif
+        end if
 !
-    endif
+    end if
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
     call jeexin(nomres//'           .REFD', iret)
-    if (iret .eq. 0) call refdaj(' ', nomres, -1, profno, 'INIT',&
+    if (iret .eq. 0) call refdaj(' ', nomres, -1, profno, 'INIT', &
                                  ' ', iret)
 !
     call jedema()

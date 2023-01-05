@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine load_neum_evcu(model    , ligrel_calc, cara_elem, load_name     , i_load,&
-                          inst_curr, disp_prev  , strx_prev, disp_cumu_inst, vite_curr,&
-                          base     , resu_elem  , vect_elem)
+subroutine load_neum_evcu(model, ligrel_calc, cara_elem, load_name, i_load, &
+                          inst_curr, disp_prev, strx_prev, disp_cumu_inst, vite_curr, &
+                          base, resu_elem, vect_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/gettco.h"
 #include "asterfort/assert.h"
@@ -107,7 +107,7 @@ implicit none
 !
     integer :: nblic
     character(len=8) :: licmp(3)
-    data licmp/'DX','DY','DZ'/
+    data licmp/'DX', 'DY', 'DZ'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,11 +116,11 @@ implicit none
 ! - Initializations
 !
     ibid = 0
-    field_no_refe  = '&&MNVGME.RESU_PROJE'
+    field_no_refe = '&&MNVGME.RESU_PROJE'
     load_name_evol = '&&NMVGME.FNOE_CALC'
-    mesh_defo      = '.0000000'
+    mesh_defo = '.0000000'
     field_no_refe1 = '.0000000'
-    newnom         = '.0000000'
+    newnom = '.0000000'
 !
 ! - Get evol_char
 !
@@ -128,29 +128,29 @@ implicit none
     call jeexin(object, ier)
     if (ier .eq. 0) then
         goto 99
-    endif
-    call jeveuo(object, 'L', vk8 = p_object)
+    end if
+    call jeveuo(object, 'L', vk8=p_object)
     evol_char = p_object(1)
 !
 ! - Check
 !
     call dismoi('NB_CHAMP_UTI', evol_char, 'RESULTAT', repi=nb_cham)
-    ASSERT(nb_cham.gt.0)
+    ASSERT(nb_cham .gt. 0)
     call gettco(evol_char, type_sd)
     ASSERT(type_sd .eq. 'EVOL_CHAR')
 !
 ! - Get lineic forces (CHAR_MECA_SR1D1D)
 !
     option = ' '
-    call rsinch(evol_char, 'VITE_VENT', 'INST', inst_curr, load_name_evol,&
+    call rsinch(evol_char, 'VITE_VENT', 'INST', inst_curr, load_name_evol, &
                 'EXCLU', 'EXCLU', 0, 'V', ier)
     if (ier .le. 2) then
         option = 'CHAR_MECA_SR1D1D'
         goto 10
-    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+    else if (ier .eq. 11 .or. ier .eq. 12 .or. ier .eq. 20) then
         call utmess('F', 'CHARGES3_9', sk=evol_char, sr=inst_curr)
-    endif
-10 continue
+    end if
+10  continue
 !
 ! - Compute lineic forces (CHAR_MECA_SR1D1D)
 !
@@ -163,33 +163,33 @@ implicit none
         call dismoi('Z_CST', mesh_1, 'MAILLAGE', repk=repk)
         ndim = 3
         if (repk .eq. 'OUI') then
-            ndim=2
-        endif
+            ndim = 2
+        end if
 !
 ! ----- Check
 !
-        call jeveuo(mesh_1//'.DIME', 'E', vi = p_mesh1_dime)
+        call jeveuo(mesh_1//'.DIME', 'E', vi=p_mesh1_dime)
         nbno = p_mesh1_dime(1)
         dime = p_mesh1_dime(6)
-        if (nbno * dime .ne. nbequa) then
+        if (nbno*dime .ne. nbequa) then
             call utmess('F', 'CHARGES3_10', sk=load_name_evol)
-        endif
+        end if
 !
 ! ----- Mesh deformation
 !
         call gcncon('.', mesh_defo)
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh_2)
         call copisd('MAILLAGE', 'V', mesh_2, mesh_defo)
-        call vtgpld('CUMU', 1.d0, mesh_2//'.COORDO', disp_prev, 'V',&
+        call vtgpld('CUMU', 1.d0, mesh_2//'.COORDO', disp_prev, 'V', &
                     mesh_defo//'.COORDO1')
-        call vtgpld('CUMU', 1.d0, mesh_defo//'.COORDO1',  disp_cumu_inst, 'V',&
+        call vtgpld('CUMU', 1.d0, mesh_defo//'.COORDO1', disp_cumu_inst, 'V', &
                     mesh_defo//'.COORDO')
         call detrsd('CHAMP_GD', mesh_defo//'.COORDO1')
 !
 ! ----- Create reference field
 !
         nblic = 3
-        call cnocre(mesh_defo, 'DEPL_R', 0, [ibid], nblic,&
+        call cnocre(mesh_defo, 'DEPL_R', 0, [ibid], nblic, &
                     licmp, [ibid], 'V', ' ', field_no_refe)
 !
 ! ----- Create SD NUAGE
@@ -197,7 +197,7 @@ implicit none
         nuage1 = '&&NUAGE1'
         nuage2 = '&&NUAGE2'
         call chpnua(ndim, load_name_evol, ' ', nuage1)
-        call chpnua(ndim, field_no_refe , ' ', nuage2)
+        call chpnua(ndim, field_no_refe, ' ', nuage2)
 !
 ! ----- Projection on deformed mesg
 !
@@ -207,7 +207,7 @@ implicit none
 !
 ! ----- Set right mesh
 !
-        call jeveuo(field_no_refe//'.REFE', 'E', vk24 = p_field_refe)
+        call jeveuo(field_no_refe//'.REFE', 'E', vk24=p_field_refe)
         p_field_refe(1) = mesh_2
 !
 ! ----- Relative speed field
@@ -216,9 +216,9 @@ implicit none
         if (ier .gt. 0) then
             call gcncon('.', field_no_refe1)
             call copisd('CHAMP_GD', 'V', field_no_refe, field_no_refe1)
-            call barych(field_no_refe1, vite_curr(1:19), 1.0d0, -1.0d0, field_no_refe,&
+            call barych(field_no_refe1, vite_curr(1:19), 1.0d0, -1.0d0, field_no_refe, &
                         'V')
-        endif
+        end if
 !
 ! ----- Input fields
 !
@@ -229,15 +229,15 @@ implicit none
         lpain(2) = 'PVITER'
         lchin(2) = field_no_refe
         lpain(3) = 'PVENTCX'
-        lchin(3) = chcara(14)(1:19)
+        lchin(3) = chcara(14) (1:19)
         lpain(4) = 'PDEPLMR'
         lchin(4) = disp_prev(1:19)
         lpain(5) = 'PDEPLPR'
         lchin(5) = disp_cumu_inst(1:19)
         lpain(6) = 'PCAGNPO'
-        lchin(6) = chcara(6)(1:19)
+        lchin(6) = chcara(6) (1:19)
         lpain(7) = 'PCAORIE'
-        lchin(7) = chcara(1)(1:19)
+        lchin(7) = chcara(1) (1:19)
         lpain(8) = 'PSTRXMR'
         lchin(8) = strx_prev(1:19)
 !
@@ -250,12 +250,12 @@ implicit none
         newnom = resu_elem(10:16)
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, ichin_ = i_load)
+        call corich('E', resu_elem, ichin_=i_load)
 !
 ! ----- Compute
 !
-        call calcul('S', option, ligrel_calc, 8, lchin,&
-                    lpain, 1, resu_elem, lpaout, base,&
+        call calcul('S', option, ligrel_calc, 8, lchin, &
+                    lpain, 1, resu_elem, lpaout, base, &
                     'OUI')
         call reajre(vect_elem, resu_elem, base)
 !
@@ -265,9 +265,9 @@ implicit none
         call detrsd('NUAGE', nuage2)
         call jedetc('V', mesh_defo, 1)
         call detrsd('CHAMP_GD', field_no_refe1)
-    endif
+    end if
 !
- 99 continue
+99  continue
 !
     call jedema()
 end subroutine

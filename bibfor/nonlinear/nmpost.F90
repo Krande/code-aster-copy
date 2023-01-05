@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,20 +18,20 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmpost(model          , mesh           , cara_elem      , list_load,&
-                  numedof        , numfix         , ds_system      ,&
-                  ds_constitutive, ds_material   ,&
-                  ds_contact     , ds_algopara    , list_func_acti ,&
-                  ds_measure     , sddisc         , nume_inst      , eta      ,&
-                  sd_obsv        , sderro         , sddyna         ,&
-                  hval_incr      , hval_algo      ,&
-                  hval_meelem    , hval_measse    , hval_veasse    ,&
-                  ds_energy      , ds_errorindic  ,&
+subroutine nmpost(model, mesh, cara_elem, list_load, &
+                  numedof, numfix, ds_system, &
+                  ds_constitutive, ds_material, &
+                  ds_contact, ds_algopara, list_func_acti, &
+                  ds_measure, sddisc, nume_inst, eta, &
+                  sd_obsv, sderro, sddyna, &
+                  hval_incr, hval_algo, &
+                  hval_meelem, hval_measse, hval_veasse, &
+                  ds_energy, ds_errorindic, &
                   ds_posttimestep)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfmxpo.h"
@@ -48,30 +48,30 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/nmrest_ecro.h"
 !
-character(len=24), intent(in) :: model
-character(len=8), intent(in) :: mesh
-character(len=24), intent(in) :: cara_elem
-character(len=19), intent(in) :: list_load
-character(len=24), intent(in) :: numedof, numfix
-type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-real(kind=8), intent(in) :: eta
-character(len=19), intent(in) :: sd_obsv
-character(len=24), intent(in) :: sderro
-character(len=19), intent(in) :: sddyna
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
-character(len=19), intent(in) :: hval_veasse(*)
-type(NL_DS_Energy), intent(inout) :: ds_energy
-type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
-type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
+    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: numedof, numfix
+    type(NL_DS_System), intent(in) :: ds_system
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    real(kind=8), intent(in) :: eta
+    character(len=19), intent(in) :: sd_obsv
+    character(len=24), intent(in) :: sderro
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
+    character(len=19), intent(in) :: hval_veasse(*)
+    type(NL_DS_Energy), intent(inout) :: ds_energy
+    type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
+    type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,12 +117,12 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lcont       = isfonc(list_func_acti,'CONTACT')
-    lerrt       = isfonc(list_func_acti,'ERRE_TEMPS_THM')
-    l_mode_vibr = isfonc(list_func_acti,'MODE_VIBR')
-    l_crit_stab = isfonc(list_func_acti,'CRIT_STAB')
-    lener       = isfonc(list_func_acti,'ENERGIE')
-    l_post_incr = isfonc(list_func_acti,'POST_INCR')
+    lcont = isfonc(list_func_acti, 'CONTACT')
+    lerrt = isfonc(list_func_acti, 'ERRE_TEMPS_THM')
+    l_mode_vibr = isfonc(list_func_acti, 'MODE_VIBR')
+    l_crit_stab = isfonc(list_func_acti, 'CRIT_STAB')
+    lener = isfonc(list_func_acti, 'ENERGIE')
+    l_post_incr = isfonc(list_func_acti, 'POST_INCR')
 !
 ! - Extract variables
 !
@@ -133,7 +133,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 ! - Observation ?
 !
     l_obsv = ASTER_FALSE
-    time   = diinst(sddisc, nume_inst)
+    time = diinst(sddisc, nume_inst)
     call lobs(sd_obsv, nume_inst, time, l_obsv)
 !
 ! - State of time loop
@@ -144,52 +144,52 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
     if (etfixe .eq. 'CONV') then
 ! ----- Launch timer for post-treatment
-        call nmtime(ds_measure, 'Init'  , 'Post')
+        call nmtime(ds_measure, 'Init', 'Post')
         call nmtime(ds_measure, 'Launch', 'Post')
 ! ----- Evaluate THM error (SM)
         if (lerrt) then
-            call nmetca(model , mesh     , ds_material%mateco, hval_incr,&
+            call nmetca(model, mesh, ds_material%mateco, hval_incr, &
                         sddisc, nume_inst, ds_errorindic)
-        endif
+        end if
 ! ----- Post-treatment for contact
         if (lcont) then
-            call cfmxpo(mesh      , model    , ds_contact, nume_inst, sddisc,&
-                        ds_measure, hval_algo, hval_incr )
-        endif
+            call cfmxpo(mesh, model, ds_contact, nume_inst, sddisc, &
+                        ds_measure, hval_algo, hval_incr)
+        end if
 ! ----- Spectral analysis (MODE_VIBR/CRIT_STAB)
         if (l_mode_vibr .or. l_crit_stab) then
-            call nmspec(model          , ds_material   , cara_elem  ,&
-                        list_load      , list_func_acti,&
-                        numedof        , numfix        , ds_system  ,&
+            call nmspec(model, ds_material, cara_elem, &
+                        list_load, list_func_acti, &
+                        numedof, numfix, ds_system, &
                         ds_constitutive, &
-                        sddisc         , nume_inst     ,&
-                        sddyna         , sderro        , ds_algopara,&
-                        ds_measure     ,&
-                        hval_incr      , hval_algo     ,&
-                        hval_meelem    , hval_measse   ,&
+                        sddisc, nume_inst, &
+                        sddyna, sderro, ds_algopara, &
+                        ds_measure, &
+                        hval_incr, hval_algo, &
+                        hval_meelem, hval_measse, &
                         ds_posttimestep)
-        endif
+        end if
 ! ----- CALCUL DES ENERGIES
         if (lener) then
-            call nmener(hval_incr      , hval_veasse   , hval_measse, sddyna     , eta      ,&
-                        ds_energy      , list_func_acti, numedof    , numfix     ,&
-                        hval_meelem    , nume_inst     , model      , ds_material, cara_elem,&
-                        ds_constitutive, ds_measure    , sddisc     , hval_algo  ,&
-                        ds_contact     , ds_system)
-        endif
+            call nmener(hval_incr, hval_veasse, hval_measse, sddyna, eta, &
+                        ds_energy, list_func_acti, numedof, numfix, &
+                        hval_meelem, nume_inst, model, ds_material, cara_elem, &
+                        ds_constitutive, ds_measure, sddisc, hval_algo, &
+                        ds_contact, ds_system)
+        end if
 ! ----- Post-treatment for behavior laws.
         if (l_post_incr) then
             call nmrest_ecro(model, ds_material%mateco, ds_constitutive, hval_incr)
-        endif
+        end if
 ! ----- Make observation
         if (l_obsv) then
-            call nmobse(mesh     , sd_obsv  , time,&
-                        cara_elem, model    , ds_material, ds_constitutive, disp_curr,&
+            call nmobse(mesh, sd_obsv, time, &
+                        cara_elem, model, ds_material, ds_constitutive, disp_curr, &
                         strx_curr, varc_curr)
-        endif
+        end if
 ! ----- End of timer for post-treatment
         call nmtime(ds_measure, 'Stop', 'Post')
         call nmrinc(ds_measure, 'Post')
-    endif
+    end if
 !
 end subroutine

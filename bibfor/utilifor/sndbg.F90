@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,28 +58,28 @@ subroutine sndbg(ifm, iclass, ival, rval, kval)
 !-----------------------------------------------------------------------
     cval = kval
     pgm = ' <SNDBG >:  '
-    write(ifm,'(1X,72(''-''))')
+    write (ifm, '(1X,72(''-''))')
     if (iclass .eq. -1) then
-        write(ifm,*) pgm,'EOF    : "FIN DE FICHIER"'
-    else if (iclass.eq.0) then
-        write(ifm,*) pgm,'ERREUR : "'//cval(:ival)//'"'
-    else if (iclass.eq.1) then
-        write(ifm,*) pgm,'ENTIER :', ival
-    else if (iclass.eq.2) then
-        write(ifm,*) pgm,'REEL   :', rval(1)
-    else if (iclass.eq.3) then
-        write(ifm,*) pgm,'IDENT  : "'//cval(:ival)//'"'
-    else if (iclass.eq.4) then
-        write(ifm,*) pgm,'TEXTE  : "'//cval(:ival)//'"'
-    else if (iclass.eq.5) then
-        write(ifm,*) pgm,'CMPLX  : (',rval(1),',',rval(2),')'
-    else if (iclass.eq.6) then
-        write(ifm,*) pgm,'BOOLEAN: ',ival
-    else if (iclass.gt.6.and.iclass.lt.13) then
-        write(ifm,*) pgm,iclass,'  : "'//cval(:ival)//'"'
-    else if (iclass.eq.13) then
-        write(ifm,*) pgm,'UNDEF  : "'//cval(:ival)//'"'
+        write (ifm, *) pgm, 'EOF    : "FIN DE FICHIER"'
+    else if (iclass .eq. 0) then
+        write (ifm, *) pgm, 'ERREUR : "'//cval(:ival)//'"'
+    else if (iclass .eq. 1) then
+        write (ifm, *) pgm, 'ENTIER :', ival
+    else if (iclass .eq. 2) then
+        write (ifm, *) pgm, 'REEL   :', rval(1)
+    else if (iclass .eq. 3) then
+        write (ifm, *) pgm, 'IDENT  : "'//cval(:ival)//'"'
+    else if (iclass .eq. 4) then
+        write (ifm, *) pgm, 'TEXTE  : "'//cval(:ival)//'"'
+    else if (iclass .eq. 5) then
+        write (ifm, *) pgm, 'CMPLX  : (', rval(1), ',', rval(2), ')'
+    else if (iclass .eq. 6) then
+        write (ifm, *) pgm, 'BOOLEAN: ', ival
+    else if (iclass .gt. 6 .and. iclass .lt. 13) then
+        write (ifm, *) pgm, iclass, '  : "'//cval(:ival)//'"'
+    else if (iclass .eq. 13) then
+        write (ifm, *) pgm, 'UNDEF  : "'//cval(:ival)//'"'
     else
-        write(ifm,*) pgm,'CLASSE INDEFINIE ',iclass
-    endif
+        write (ifm, *) pgm, 'CLASSE INDEFINIE ', iclass
+    end if
 end subroutine

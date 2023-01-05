@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine romResultCreateMode(result, fieldName, mode)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 !
-type(ROM_DS_Result), intent(in) :: result
-character(len=24), intent(in) :: fieldName
-type(ROM_DS_Field), intent(inout) :: mode
+    type(ROM_DS_Result), intent(in) :: result
+    character(len=24), intent(in) :: fieldName
+    type(ROM_DS_Field), intent(inout) :: mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,10 +59,10 @@ type(ROM_DS_Field), intent(inout) :: mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    fieldRefe  = ' '
+    fieldRefe = ' '
     resultName = result%resultName
     resultType = result%resultType
-    nbStore    = result%nbStore
+    nbStore = result%nbStore
 !
 ! - Some checks
 !
@@ -75,15 +75,15 @@ type(ROM_DS_Field), intent(inout) :: mode
 !
 ! - Get model
 !
-    call rsadpa(resultName, 'L', 1, 'MODELE'   , numeStoreFirst, 0, sjv=jvPara)
+    call rsadpa(resultName, 'L', 1, 'MODELE', numeStoreFirst, 0, sjv=jvPara)
     model = zk8(jvPara)
 !
 ! - Get _representative_ field in result
 !
     call rsexch(' ', resultName, fieldName, numeStoreFirst, fieldRefe, iret)
     if (iret .ne. 0) then
-        call utmess('F', 'ROM13_10', sk = fieldName)
-    endif
+        call utmess('F', 'ROM13_10', sk=fieldName)
+    end if
 !
 ! - Get informations from field
 !
@@ -93,6 +93,6 @@ type(ROM_DS_Field), intent(inout) :: mode
 !
     if (mode%lLagr) then
         call utmess('F', 'ROM13_11')
-    endif
+    end if
 !
 end subroutine

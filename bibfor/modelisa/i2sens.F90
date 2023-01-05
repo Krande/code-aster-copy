@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
+subroutine i2sens(chemin, nbrma2, limail, nbrma, connex, &
                   typmai, abscis)
     implicit none
 #include "asterfort/assert.h"
@@ -32,20 +32,20 @@ subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
 !-----------------------------------------------------------------------
 !
     mi = limail(chemin(1))
-    call i2extf(mi, 1, connex, typmai, nig,&
+    call i2extf(mi, 1, connex, typmai, nig, &
                 nid)
     delta = abscis(2)-abscis(1)
-    mi = int(sign(1.d0*mi,delta))
+    mi = int(sign(1.d0*mi, delta))
     chemin(1) = mi
 
     do j = 2, nbrma
         mj = limail(chemin(j))
-        call i2extf(mj, 1, connex, typmai, njg,&
+        call i2extf(mj, 1, connex, typmai, njg, &
                     njd)
 !
         if ((nid .eq. njd) .or. (nig .eq. njg)) then
             mj = -mj*mi/abs(mi)
-        endif
+        end if
 !
         mi = mj
         nig = njg

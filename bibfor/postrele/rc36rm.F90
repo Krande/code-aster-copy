@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,29 +70,29 @@ subroutine rc36rm()
             call getvtx(motclf, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=n1)
             call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
             call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
-            call rsutnu(resu, motclf, iocc, knum, nbordr,&
+            call rsutnu(resu, motclf, iocc, knum, nbordr, &
                         prec, crit, iret)
             if (iret .ne. 0) then
-                vali (1) = iocc
-                valk (1) = nomsym
-                valk (2) = resu
+                vali(1) = iocc
+                valk(1) = nomsym
+                valk(2) = resu
                 call utmess('F', 'POSTRCCM_20', nk=2, valk=valk, si=vali(1))
-            endif
+            end if
             if (nbordr .ne. 1) then
-                vali (1) = iocc
-                valk (1) = nomsym
-                valk (2) = resu
+                vali(1) = iocc
+                valk(1) = nomsym
+                valk(2) = resu
                 call utmess('F', 'POSTRCCM_21', nk=2, valk=valk, si=vali(1))
-            endif
+            end if
             call jeveuo(knum, 'L', jord)
-            call rsexch('F', resu, nomsym, zi(jord), nomcha,&
+            call rsexch('F', resu, nomsym, zi(jord), nomcha, &
                         iret)
             call jedetr(knum)
 !
         else
             call getvid(motclf, 'CHAM_GD', iocc=iocc, scal=nomcha, nbret=n1)
 !
-        endif
+        end if
 !
         call codent(iocc, 'D0', k8b)
         chams0 = '&&RC3602.'//k8b

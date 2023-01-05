@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine dbrMainGreedy(paraGreedy, baseOut)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
@@ -40,8 +40,8 @@ implicit none
 #include "asterfort/romSolveDOMSystSolve.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
-type(ROM_DS_Empi), intent(inout) :: baseOut
+    type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
+    type(ROM_DS_Empi), intent(inout) :: baseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,31 +72,31 @@ type(ROM_DS_Empi), intent(inout) :: baseOut
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_60')
-    endif
+    end if
 !
 ! - Initializations
 !
-    iMode      = 1
+    iMode = 1
     algoGreedy = paraGreedy%algoGreedy
-    multiPara  = paraGreedy%multiPara
-    solveDOM   = algoGreedy%solveDOM
-    nbEqua     = multiPara%field%nbEqua
+    multiPara = paraGreedy%multiPara
+    solveDOM = algoGreedy%solveDOM
+    nbEqua = multiPara%field%nbEqua
     toleGreedy = paraGreedy%toleGreedy
-    lStabFSI   = paraGreedy%lStabFSI
+    lStabFSI = paraGreedy%lStabFSI
     lOrthoBase = paraGreedy%lOrthoBase
     nbModeMaxi = paraGreedy%nbModeMaxi
-    systType   = solveDOM%syst_type
-    systSolu   = solveDOM%syst_solu
+    systType = solveDOM%syst_type
+    systSolu = solveDOM%syst_solu
 !
 ! - First mode
 !
     if (niv .ge. 2) then
         call utmess('I', 'ROM18_61')
-    endif
+    end if
 !
 ! - Evaluation of initial coefficients
 !
-    call romEvalCoef(paraGreedy%multiPara, l_init = ASTER_TRUE)
+    call romEvalCoef(paraGreedy%multiPara, l_init=ASTER_TRUE)
 !
 ! - Create initial second member
 !
@@ -122,25 +122,25 @@ type(ROM_DS_Empi), intent(inout) :: baseOut
 ! - Loop on modes
 !
     iMode = 2
-    tole  = r8gaem()
+    tole = r8gaem()
     do while (iMode .le. nbModeMaxi)
 ! ----- Print
         if (niv .ge. 2) then
-            call utmess('I', 'ROM18_62', si = iMode)
-        endif
+            call utmess('I', 'ROM18_62', si=iMode)
+        end if
 
 ! ----- Compute reduced coefficients and residual
         if (paraGreedy%lStabFSI) then
-            call romMultiParaCoefCompute(baseOut    , paraGreedy%multiPara, algoGreedy,&
+            call romMultiParaCoefCompute(baseOut, paraGreedy%multiPara, algoGreedy, &
                                          3*(iMode-1), iMode-1)
-            call romGreedyResiCalc(paraGreedy%multiPara, paraGreedy%algoGreedy,&
+            call romGreedyResiCalc(paraGreedy%multiPara, paraGreedy%algoGreedy, &
                                    3*(iMode-1), iMode-1)
         else
-            call romMultiParaCoefCompute(baseOut , paraGreedy%multiPara, algoGreedy,&
+            call romMultiParaCoefCompute(baseOut, paraGreedy%multiPara, algoGreedy, &
                                          iMode-1, iMode-1)
-            call romGreedyResiCalc(paraGreedy%multiPara, paraGreedy%algoGreedy,&
+            call romGreedyResiCalc(paraGreedy%multiPara, paraGreedy%algoGreedy, &
                                    iMode-1, iMode-1)
-        endif
+        end if
 
 ! ----- Find maximum
         call romGreedyResiMaxi(multiPara, algoGreedy, iCoefMaxi)
@@ -167,11 +167,11 @@ type(ROM_DS_Empi), intent(inout) :: baseOut
             call romNormalize(systType, systSolu, nbEqua)
             if (lOrthoBase) then
                 call romOrthoBasis(multiPara, baseOut, systSolu)
-            endif
+            end if
             call romGreedyModeSave(multiPara, baseOut, iMode, systSolu)
-        endif
+        end if
 !
-        iMode = iMode + 1
+        iMode = iMode+1
     end do
 !
 end subroutine

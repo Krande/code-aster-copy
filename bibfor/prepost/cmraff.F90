@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 !
 subroutine cmraff(mesh_in, mesh_out, level, info)
 !
-use crea_maillage_module
+    use crea_maillage_module
 !
-implicit none
+    implicit none
 !
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-character(len=8), intent(in) :: mesh_in, mesh_out
-integer, intent(in) :: level, info
+    character(len=8), intent(in) :: mesh_in, mesh_out
+    integer, intent(in) :: level, info
 !
 ! ----------------------------------------------------------------------
 !         RAFFINEMENT UNIFORME DES MAILLES
@@ -35,7 +35,7 @@ integer, intent(in) :: level, info
 ! IN/JXOUT  mesh_out  K8  NOM DU MAILLAGE TRANSFORME
 ! ----------------------------------------------------------------------
 !
-type(Mmesh) :: mesh_raff
+    type(Mmesh) :: mesh_raff
 !
 ! --------------------------------------------------------------------------------------------------
 !

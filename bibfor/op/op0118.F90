@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,14 +46,14 @@ subroutine op0118()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: npfft, dim, dim2, l, nbtir
-    integer :: ifm, niv, nbval,   nbfreq, k
+    integer :: ifm, niv, nbval, nbfreq, k
     integer :: nbfc, long, ln, ln2, lonv, lvalf, lvalc, lr, lv
     integer :: lx, ly, ln4, kf, ifo, kt, it
     integer :: ix, iy, lnr, kk, ifft
     integer :: jump
-    integer :: linst, lrefe,ibid, ifonc, inum, ispec
+    integer :: linst, lrefe, ibid, ifonc, inum, ispec
 !
-    integer :: lnuor,lnuord
+    integer :: lnuor, lnuord
 !
     real(kind=8) :: pui2, pui2d, pui3d, freini, frefin, dfreq, tt, dt, tini
     real(kind=8) :: tfin, duree
@@ -69,7 +69,7 @@ subroutine op0118()
 !
     call jemarq()
 !
-    c16b=(0.d0,0.d0)
+    c16b = (0.d0, 0.d0)
     call infmaj()
     call infniv(ifm, niv)
 !
@@ -110,22 +110,22 @@ subroutine op0118()
     dim = desc(2)
     nbfc = desc(3)
 !                        => NBFC = (DIM*(DIM+1))/2
-    long = nbfreq + nbfc*2*nbfreq
+    long = nbfreq+nbfc*2*nbfreq
     if (long .ne. nbval) then
         call utmess('F', 'ALGORITH9_55')
-    endif
+    end if
 !
 !===============
 ! 5. PREPARATION GENERATION
 !===============
     pui2 = log(dble(nbfreq))/log(2.d0)
-    pui2d = abs( pui2 - aint( pui2 ))
-    pui3d = abs( 1.d0 - pui2d )
+    pui2d = abs(pui2-aint(pui2))
+    pui3d = abs(1.d0-pui2d)
     if (pui2d .ge. 1.d-06 .and. pui3d .ge. 1.d-06) then
         npfft = 2**int(log(dble(nbfreq))/log(2.d0))
     else
         npfft = nbfreq
-    endif
+    end if
 !
     ln = npfft
     ln2 = ln*2
@@ -134,9 +134,9 @@ subroutine op0118()
     freini = vale(1)
     frefin = vale(ln)
 !
-    dfreq = (frefin - freini)/(ln-1)
-    tt = 1.d0 / dfreq
-    dt = tt / ln2
+    dfreq = (frefin-freini)/(ln-1)
+    tt = 1.d0/dfreq
+    dt = tt/ln2
 ! C'EST BIEN TT/LN2 ET NON TT/(LN2-1) CAR LA GENERATION COMMENCE
 ! A T=DT ET NON T=0.
     tfin = ln2*nbtir*dt
@@ -149,27 +149,26 @@ subroutine op0118()
     call wkvect('&&OP0118.TEMP.VALX', 'V V C', dim, lx)
     call wkvect('&&OP0118.TEMP.VALY', 'V V R', ln4*dim, ly)
 
-
 !===============
 ! 5.  CALCUL DES FFT
 !===============
     do it = 1, nbtir
 !
-        call genale(vale, zr(lvalf), zc(lr), zc(lv), zc(lx),&
+        call genale(vale, zr(lvalf), zc(lr), zc(lv), zc(lx), &
                     dim, long, lonv, ln)
 !
         do kf = 1, dim
             do k = 1, ln
-                ix = lvalf + (k-1) + (kf-1)*ln2
-                iy = ix + ln
-                zc(lvalc+k-1) = dcmplx(zr(ix),zr(iy))
+                ix = lvalf+(k-1)+(kf-1)*ln2
+                iy = ix+ln
+                zc(lvalc+k-1) = dcmplx(zr(ix), zr(iy))
                 if (k .ne. 1) then
-                    lnr = ln2 - k + 1
+                    lnr = ln2-k+1
                     zc(lvalc+lnr) = dconjg(zc(lvalc+k-1))
                 else
-                    zc(lvalc+ln) = dcmplx(0.d0,0.d0)
-                    zc(lvalc+k-1) = dcmplx(0.d0,0.d0)
-                endif
+                    zc(lvalc+ln) = dcmplx(0.d0, 0.d0)
+                    zc(lvalc+k-1) = dcmplx(0.d0, 0.d0)
+                end if
             end do
             do kk = 1, ln2
                 zc(lvalc+kk-1) = zc(lvalc+kk-1)*sqrt(ln2/dt)
@@ -178,8 +177,8 @@ subroutine op0118()
             ifft = -1
             call fft(zc(lvalc), ln2, ifft)
 !
-            ifo = ly + ln2* (it-1) + 1 + (kf-1)*ln4
-            if (it .eq. 1) zr(ifo-1)=0.d0
+            ifo = ly+ln2*(it-1)+1+(kf-1)*ln4
+            if (it .eq. 1) zr(ifo-1) = 0.d0
             do inum = 1, ln2
                 zr(ifo-1+inum) = dble(zc(lvalc-1+inum))
             end do
@@ -195,9 +194,9 @@ subroutine op0118()
     if (ibid .eq. 0) then
         call wkvect(chinst, 'G V R', ln4, linst)
         do kt = 1, ln4
-                zr(linst-1+kt) = dt* (kt-1)
+            zr(linst-1+kt) = dt*(kt-1)
         end do
-    endif
+    end if
 !
     call wkvect(nomvec(1:8)//'.REFE', 'G V K16', 3, lrefe)
     zk16(lrefe) = 'DSP'
@@ -211,7 +210,7 @@ subroutine op0118()
 !
 !
     chvale = nomvec(1:8)//'.VALE'
-    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',dim)
+    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE', dim)
     do ifonc = 1, dim
         call jecroc(jexnum(chvale, ifonc))
         call jeecra(jexnum(chvale, ifonc), 'LONMAX', ln4)
@@ -238,13 +237,13 @@ subroutine op0118()
 ! LA GENERATION COMMENCE A T=DT MAIS ON METS LE SIGNAL COMMENCE
 ! A TINI=0. AVEC UNE VALEUR NULLE
         tini = 0.d0
-        write (ifm,200)
-        write (ifm,210) dt, tini, tfin , npfft
-    endif
+        write (ifm, 200)
+        write (ifm, 210) dt, tini, tfin, npfft
+    end if
 !
-    200 format ('<-PAS DE TEMPS->   <-TEMPS INITIAL->  <-TEMPS FINAL->'//&
+200 format('<-PAS DE TEMPS->   <-TEMPS INITIAL->  <-TEMPS FINAL->'//&
      &'  <-NB PT FFT->')
-    210 format (1p,2x,d11.4,8x,d11.4,8x,d11.4,8x, i6)
+210 format(1p, 2x, d11.4, 8x, d11.4, 8x, d11.4, 8x, i6)
 !
     call jedema()
 end subroutine

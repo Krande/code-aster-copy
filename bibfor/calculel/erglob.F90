@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine erglob(cheler, yathm, perman, option, iord,&
+subroutine erglob(cheler, yathm, perman, option, iord, &
                   resuco, resuc1)
     implicit none
 #include "asterf_types.h"
@@ -93,12 +93,12 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
     call jelira(chele2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL5_44')
-    endif
+    end if
 !
 ! 1.3. ON RETROUVE LE NOM DU LIGREL
 !
     call jeveuo(chele2//'.CELK', 'L', vk24=celk)
-    ligrel = celk(1)(1:19)
+    ligrel = celk(1) (1:19)
     call jeveuo(chele2//'.CELD', 'L', jceld)
 !
 ! 1.4. ON VERIFIE LA LONGUEUR DES CHAMPS LOCAUX POUR L'OPTION
@@ -106,21 +106,21 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
     first = .true.
     nbgr = nbgrel(ligrel)
 !
-    do 10 ,j = 1,nbgr
-    mode=zi(jceld-1+zi(jceld-1+4+j)+2)
-    if (mode .eq. 0) goto 10
-    long2 = digdel(mode)
-    icoef=max(1,zi(jceld-1+4))
-    long2 = long2 * icoef
-    if (first) then
-        longt = long2
-        first = .false.
-    else
-        if (longt .ne. long2) then
-            call utmess('F', 'CALCULEL3_54')
-        endif
-    endif
-    10 end do
+    do 10, j = 1, nbgr
+        mode = zi(jceld-1+zi(jceld-1+4+j)+2)
+        if (mode .eq. 0) goto 10
+        long2 = digdel(mode)
+        icoef = max(1, zi(jceld-1+4))
+        long2 = long2*icoef
+        if (first) then
+            longt = long2
+            first = .false.
+        else
+            if (longt .ne. long2) then
+                call utmess('F', 'CALCULEL3_54')
+            end if
+        end if
+10  end do
 !
 !==================================
 ! 2. CALCUL DES INDICATEURS GLOBAUX
@@ -128,12 +128,12 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
 !
     call jeveuo(chele2//'.CELV', 'E', iavale)
     if (yathm) then
-        call erglhm(perman, jceld, iavale, iord, ligrel,&
+        call erglhm(perman, jceld, iavale, iord, ligrel, &
                     longt, nbgr, resuc1)
     else
-        call erglme(jceld, iavale, option, iord, ligrel,&
+        call erglme(jceld, iavale, option, iord, ligrel, &
                     longt, nbgr, resuco, resuc1)
-    endif
+    end if
 !
     call jedema()
 !

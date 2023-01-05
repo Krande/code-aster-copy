@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,8 +90,8 @@ subroutine regeec(nomres, resgen, nomsst)
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
-    data depl   /'DEPL            '/
-    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
+    data depl/'DEPL            '/
+    data nompar/'FREQ', 'RIGI_GENE', 'MASS_GENE', 'OMEGA2', 'NUME_MODE',&
      &              'TYPE_MODE'/
 !-----------------------------------------------------------------------
 !
@@ -103,13 +103,13 @@ subroutine regeec(nomres, resgen, nomsst)
     call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
     call jeveuo(raid//'.REFA', 'L', vk24=refa)
-    nume_gene = refa(2)(1:14)
+    nume_gene = refa(2) (1:14)
     prof_gene = nume_gene(1:14)//'.NUME'
     call nueq_chck(prof_gene, neqred)
     call jelibe(raid//'.REFA')
 !
     call jeveuo(prof_gene//'.REFN', 'L', vk24=refn)
-    model_gene = refn(1)(1:8)
+    model_gene = refn(1) (1:8)
     call jelibe(prof_gene//'.REFN')
 !
 ! --- RECUPERATION NUMERO DE SOUS-STRUCTURE
@@ -117,18 +117,18 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     call jenonu(jexnom(model_gene//'      .MODG.SSNO', nomsst), nusst)
     if (nusst .eq. 0) then
-        valk (1) = model_gene
-        valk (2) = nomsst
+        valk(1) = model_gene
+        valk(2) = nomsst
         call utmess('F', 'ALGORITH14_25', nk=2, valk=valk)
-    endif
+    end if
 !
 !
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
-    seliai=nume_gene(1:14)//'.ELIM.BASE'
-    sizlia=nume_gene(1:14)//'.ELIM.TAIL'
-    sst=   nume_gene(1:14)//'.ELIM.NOMS'
+    seliai = nume_gene(1:14)//'.ELIM.BASE'
+    sizlia = nume_gene(1:14)//'.ELIM.TAIL'
+    sst = nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
 !
@@ -138,15 +138,15 @@ subroutine regeec(nomres, resgen, nomsst)
         call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'L', llors)
         call jelira(jexnum(prof_gene//'.ORIG', i_ligr_ss), 'LONMAX', nbsst)
 !
-        nutars=0
+        nutars = 0
         do i = 1, nbsst
-            if (zi(llors+i-1) .eq. nusst) nutars=i
+            if (zi(llors+i-1) .eq. nusst) nutars = i
         end do
 !
 !
         call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_ss), 'L', llprs)
-        nbddg=zi(llprs+(nutars-1)*2+1)
-        ieq=zi(llprs+(nutars-1)*2)
+        nbddg = zi(llprs+(nutars-1)*2+1)
+        ieq = zi(llprs+(nutars-1)*2)
 !
     else
 !
@@ -154,31 +154,31 @@ subroutine regeec(nomres, resgen, nomsst)
         call jeveuo(sst, 'L', ibid)
         do i1 = 1, nbsst
             if (nomsst .eq. zk8(ibid+i1-1)) then
-                nusst=i1
-            endif
+                nusst = i1
+            end if
         end do
-        neqet=0
-        ieq=0
+        neqet = 0
+        ieq = 0
 !
         call jeveuo(seliai, 'L', lmapro)
         call jeveuo(sizlia, 'L', lsilia)
         call jeveuo(sst, 'L', lsst)
-        ibid=1
+        ibid = 1
         do i = 1, nbsst
-            neqet=neqet+zi(lsilia+i-1)
+            neqet = neqet+zi(lsilia+i-1)
         end do
 !
-        ieq=0
+        ieq = 0
         do i1 = 1, nusst-1
-            ieq=ieq+zi(lsilia+i1-1)
+            ieq = ieq+zi(lsilia+i1-1)
         end do
         call wkvect('&&MODE_ETENDU_REST_ELIM', 'V V R', neqet, lmoet)
 !
-    endif
+    end if
 !
 ! --- RECUPERATION DE LA BASE MODALE
 !
-    call mgutdm(model_gene, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
+    call mgutdm(model_gene, nomsst, ibid, 'NOM_BASE_MODALE', ibid, &
                 basmod)
 !
     call refdcp(basmod, nomres)
@@ -187,12 +187,12 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     if (elim .eq. 0) then
         if (nbbas .ne. nbddg) then
-            valk (1) = basmod
-            vali (1) = nbbas
-            vali (2) = nbddg
+            valk(1) = basmod
+            vali(1) = nbbas
+            vali(2) = nbddg
             call utmess('F', 'ALGORITH14_26', sk=valk(1), ni=2, vali=vali)
-        endif
-    endif
+        end if
+    end if
 !
     call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lint)
 !
@@ -200,13 +200,13 @@ subroutine regeec(nomres, resgen, nomsst)
     call dismoi('NOM_NUME_DDL', lint, 'INTERF_DYNA', repk=numddl)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !
-    crefe(1)=mailla
-    crefe(2)=numddl
+    crefe(1) = mailla
+    crefe(2) = numddl
 !
 ! --- RECUPERATION NOMBRE DE MODES PROPRES CALCULES
 !
-    call rsorac(resgen, 'LONUTI', 0, rbid, kbid,&
-                cbid, rbid, kbid, nbmod, 1,&
+    call rsorac(resgen, 'LONUTI', 0, rbid, kbid, &
+                cbid, rbid, kbid, nbmod, 1, &
                 ibid)
 !
 ! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
@@ -217,8 +217,8 @@ subroutine regeec(nomres, resgen, nomsst)
         call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nno)
     else
 !-- SI ON APPELLE DEPUIS QUAL_MODL, ON RESTITUE TOUS LES MODES
-        nno=0
-    endif
+        nno = 0
+    end if
 !
     if (nno .ne. 0) then
         nbmod(1) = -nno
@@ -229,7 +229,7 @@ subroutine regeec(nomres, resgen, nomsst)
         do i = 1, nbmod(1)
             zi(jbid+i-1) = i
         end do
-    endif
+    end if
 !
 ! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
 !
@@ -248,27 +248,27 @@ subroutine regeec(nomres, resgen, nomsst)
         call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
         if (typesca .ne. "R") then
             call utmess('F', 'SOUSTRUC_84')
-        endif
+        end if
         call jeveuo(chamol, 'L', llchol)
 !-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         if (elim .ne. 0) then
             do i1 = 1, neqet
-                zr(lmoet+i1-1)=0.d0
+                zr(lmoet+i1-1) = 0.d0
                 do k1 = 1, neqred
-                    zr(lmoet+i1-1)=zr(lmoet+i1-1)+ zr(lmapro+(k1-1)*&
-                    neqet+i1-1)* zr(llchol+k1-1)
+                    zr(lmoet+i1-1) = zr(lmoet+i1-1)+zr(lmapro+(k1-1)* &
+                                                       neqet+i1-1)*zr(llchol+k1-1)
                 end do
             end do
-            llchol=lmoet
-        endif
+            llchol = lmoet
+        end if
 !
 ! ----- REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
-        call rsexch(' ', nomres, depl, i, chamne,&
+        call rsexch(' ', nomres, depl, i, chamne, &
                     ier)
         call vtcrea(chamne, crefe, 'G', 'R', neq)
         call jeveuo(chamne//'.VALE', 'E', vr=vale)
 !
-        call rsadpa(resgen, 'L', 5, nompar, iord,&
+        call rsadpa(resgen, 'L', 5, nompar, iord, &
                     0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
@@ -278,10 +278,10 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! ----- BOUCLE SUR LES MODES PROPRES DE LA BASE
         if (elim .ne. 0) then
-            ibid=nbbas
+            ibid = nbbas
         else
-            ibid=nbddg
-        endif
+            ibid = nbddg
+        end if
         do j = 1, ibid
             call dcapno(basmod, depl, j, chamba)
             call jeveuo(chamba, 'L', llchab)
@@ -289,16 +289,16 @@ subroutine regeec(nomres, resgen, nomsst)
 ! ------- BOUCLE SUR LES EQUATIONS PHYSIQUES
             do k = 1, neq
                 if (elim .ne. 0) then
-                    iad=llchol+ieq+j-1
+                    iad = llchol+ieq+j-1
                 else
-                    iad=llchol+nueq(1+ieq+j-2)-1
-                endif
-                vale(k) = vale(k) + zr(llchab+k-1)*zr(iad)
+                    iad = llchol+nueq(1+ieq+j-2)-1
+                end if
+                vale(k) = vale(k)+zr(llchab+k-1)*zr(iad)
             end do
             call jelibe(chamba)
         end do
         call rsnoch(nomres, depl, i)
-        call rsadpa(nomres, 'E', 6, nompar, i,&
+        call rsadpa(nomres, 'E', 6, nompar, i, &
                     0, tjv=iadpar, styp=kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek

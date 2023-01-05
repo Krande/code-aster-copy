@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine diarme(nbt, neq, icodma, ul, dul,&
-                  utl, sim, varim, klv, varip,&
+subroutine diarme(nbt, neq, icodma, ul, dul, &
+                  utl, sim, varim, klv, varip, &
                   kty2, duly)
 ! ----------------------------------------------------------------------
     implicit none
@@ -52,13 +52,13 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
     real(kind=8) :: dle, dlp, effoy, fle, flp, rap, uly
     real(kind=8) :: utot, valpar, varmax, zero
 !-----------------------------------------------------------------------
-    parameter    ( nbre2 = 5 )
+    parameter(nbre2=5)
     real(kind=8) :: kty, kye, kyp, kyg
     real(kind=8) :: valre2(nbre2)
     integer :: codre2(nbre2), kpg, spt
     character(len=8) :: nompar, nomre2(nbre2), fami, poum
 !
-    data nomre2 /'KYE','DLE','KYP','DLP','KYG'/
+    data nomre2/'KYE', 'DLE', 'KYP', 'DLP', 'KYG'/
 !
 ! ----------------------------------------------------------------------
 ! --- DEFINITION DES PARAMETRES
@@ -71,12 +71,12 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
 !
 ! --- CARACTERISTIQUES DU MATERIAU
 !
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, icodma,&
-                ' ', 'ARME', nbpar, nompar, [valpar],&
+    fami = 'FPG1'
+    kpg = 1
+    spt = 1
+    poum = '+'
+    call rcvalb(fami, kpg, spt, poum, icodma, &
+                ' ', 'ARME', nbpar, nompar, [valpar], &
                 nbre2, nomre2, valre2, codre2, 1)
 !
     kye = valre2(1)
@@ -123,9 +123,9 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
             kty = kyg
             kty2 = kyg
 !
-        endif
+        end if
 !
-    else if (rap.gt.0.d0.or.(uly.eq.0.d0.and.duly.ne.0.d0)) then
+    else if (rap .gt. 0.d0 .or. (uly .eq. 0.d0 .and. duly .ne. 0.d0)) then
 !
 ! ======================================================================
 !                          ON CHARGE
@@ -165,12 +165,12 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
                     else
 !  ON REJOINT LA COURBE ULTIME
                         varip = varmax
-                        kty2 = kye*dle - effoy + kyp*varmax + kyg*abs(utot-dlp)
+                        kty2 = kye*dle-effoy+kyp*varmax+kyg*abs(utot-dlp)
                         kty2 = kty2/abs(duly)
                         kty = kyg
-                    endif
+                    end if
 !
-                endif
+                end if
 !
             else
 !
@@ -195,9 +195,9 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
                     kty2 = kty2/abs(duly)
                     kty = kyg
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
         else
 !
@@ -207,9 +207,9 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
             kty = kyg
             kty2 = kyg
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
 ! ======================================================================
 !                         MODIFICATIONS FINALES

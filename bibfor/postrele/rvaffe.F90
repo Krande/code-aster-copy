@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
-                  typaff, quant, option, rep, nomtab,&
+subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail, &
+                  typaff, quant, option, rep, nomtab, &
                   xnovar, ncheff, i1, isd)
     implicit none
 #include "jeveux.h"
@@ -63,7 +63,7 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
     call jemarq()
     call infniv(ifm, niv)
     oper = 'EXTRACTION'
-    if (niv .gt. 1) call rvinfa(ifm, mcf, iocc, quant, option,&
+    if (niv .gt. 1) call rvinfa(ifm, mcf, iocc, quant, option, &
                                 oper, rep(1:1))
     nvale = sdeval//'.VALE'
     npnbn = sdeval//'.PNBN'
@@ -88,58 +88,58 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
     call jeveuo(nnocp, 'L', anocp)
     fin = 0
     do ioc = 1, nboc, 1
-        call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
-        call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
-        call jeveuo(jexnum(sdlieu(1:19)//'.COOR' , ioc), 'L', acoor)
-        s1 = zr(aabsc + 1-1)
-        s2 = zr(aabsc + nbpt-1)
+        call jelira(jexnum(nabsc, ioc), 'LONMAX', nbpt)
+        call jeveuo(jexnum(nabsc, ioc), 'L', aabsc)
+        call jeveuo(jexnum(sdlieu(1:19)//'.COOR', ioc), 'L', acoor)
+        s1 = zr(aabsc+1-1)
+        s2 = zr(aabsc+nbpt-1)
         if (niv .gt. 1) then
             if (docul .eq. 'LSTN') then
-                write(ifm,*)'CHEMIN DE NOEUDS'
-            endif
-        endif
-        deb = fin + 1
-        fin = deb + nbpt
+                write (ifm, *) 'CHEMIN DE NOEUDS'
+            end if
+        end if
+        deb = fin+1
+        fin = deb+nbpt
         if (docu .eq. 'CHLM') then
-            fin = fin - 2
+            fin = fin-2
         else if (docu .eq. 'CHNO') then
-            fin = fin - 1
-        endif
-        adr1 = zi(apadr + deb-1)
-        nbco = zi(apnco + deb-1)
-        nbsp = zi(apnsp + deb-1)
+            fin = fin-1
+        end if
+        adr1 = zi(apadr+deb-1)
+        nbco = zi(apnco+deb-1)
+        nbsp = zi(apnsp+deb-1)
         if (docu .eq. 'CHNO') then
-            call rvtecn(zr(avale + adr1-1), zr(aabsc), zi(apnco + deb- 1), zi(apnsp + deb-1),&
-                        zr(acoor), zk8(anocp), zk8(anomnd), nbcp, nbpt,&
-                        docul, nomtab, iocc, xnovar, ncheff,&
+            call rvtecn(zr(avale+adr1-1), zr(aabsc), zi(apnco+deb-1), zi(apnsp+deb-1), &
+                        zr(acoor), zk8(anocp), zk8(anomnd), nbcp, nbpt, &
+                        docul, nomtab, iocc, xnovar, ncheff, &
                         i1, ioc, isd)
         else
             if (typaff .eq. 'E') then
-                call rvtec0(zr(avale + adr1-1), zi(apnco+deb-1), zi(apnsp+deb-1), zr(aabsc),&
-                            zr(acoor), zk8(anocp), zk8(anomnd), sdmail, nbpt,&
-                            docul, nbcp, zi(apadr), nomtab, iocc,&
+                call rvtec0(zr(avale+adr1-1), zi(apnco+deb-1), zi(apnsp+deb-1), zr(aabsc), &
+                            zr(acoor), zk8(anocp), zk8(anomnd), sdmail, nbpt, &
+                            docul, nbcp, zi(apadr), nomtab, iocc, &
                             xnovar, ncheff, i1)
             else
                 call wkvect(nvaux, 'V V R', nbco*nbsp*nbpt*nbcp, avaux)
                 call wkvect(npnca, 'V V I', nbpt, apnca)
                 call wkvect(npnsa, 'V V I', nbpt, apnsa)
                 do i = 1, nbpt-1, 1
-                    zi(apnca + i-1) = zi(apnco + i-1)
-                    zi(apnsa + i-1) = zi(apnsp + i-1)
+                    zi(apnca+i-1) = zi(apnco+i-1)
+                    zi(apnsa+i-1) = zi(apnsp+i-1)
                 end do
                 if (docul .eq. 'LSTN') then
-                    zi(apnca + nbpt-1) = zi(apnco + nbpt-1)
-                    zi(apnsa + nbpt-1) = zi(apnsp + nbpt-1)
+                    zi(apnca+nbpt-1) = zi(apnco+nbpt-1)
+                    zi(apnsa+nbpt-1) = zi(apnsp+nbpt-1)
                 else
-                    zi(apnca + nbpt-1) = zi(apnco + nbpt-2)
-                    zi(apnsa + nbpt-1) = zi(apnsp + nbpt-2)
-                endif
+                    zi(apnca+nbpt-1) = zi(apnco+nbpt-2)
+                    zi(apnsa+nbpt-1) = zi(apnsp+nbpt-2)
+                end if
                 ln = nbcp*nbsp
                 if (docul .eq. 'LSTN') then
                     do i = 1, nbpt, 1
-                        adri = zi(apadr + i-1)
-                        nbni = zi(apnbn + i-1)
-                        nbsi = zi(apnsp + i-1)
+                        adri = zi(apadr+i-1)
+                        nbni = zi(apnbn+i-1)
+                        nbsi = zi(apnsp+i-1)
                         deci = ln*nbco*(i-1)
                         lni = nbcp*nbsi
                         lci = lni*nbni
@@ -148,19 +148,19 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
                                 ax = 0.0d0
                                 lll = 0
                                 do l = 1, nbni, 1
-                                    indic = adri-1+(j-1)*lci+(l-1)* lni+k-1
+                                    indic = adri-1+(j-1)*lci+(l-1)*lni+k-1
                                     if (zr(avale+indic) .eq. r8vide()) goto 140
-                                    lll = lll + 1
-                                    ax = ax + zr(avale+indic)
+                                    lll = lll+1
+                                    ax = ax+zr(avale+indic)
 140                                 continue
                                 end do
                                 if (lll .eq. 0) then
-                                    zr(avaux+deci+(j-1)*ln + k-1) =&
-                                    0.d0
+                                    zr(avaux+deci+(j-1)*ln+k-1) = &
+                                        0.d0
                                 else
-                                    zr(avaux+deci+(j-1)*ln + k-1) =&
-                                    ax/lll
-                                endif
+                                    zr(avaux+deci+(j-1)*ln+k-1) = &
+                                        ax/lll
+                                end if
                             end do
                         end do
                     end do
@@ -170,65 +170,65 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
                             adri = zi(apadr+deb-1)
                             do k = 1, nbco, 1
                                 do j = 1, ln, 1
-                                    indic = adri - 1 + 2*ln*(k-1) + j- 1
+                                    indic = adri-1+2*ln*(k-1)+j-1
                                     if (zr(avale+indic) .eq. r8vide()) then
                                         zr(avaux+ln*(k-1)+j-1) = 0.d0
                                     else
-                                        zr(avaux+ln*(k-1)+j-1) = zr( avale+indic)
-                                    endif
+                                        zr(avaux+ln*(k-1)+j-1) = zr(avale+indic)
+                                    end if
                                 end do
                             end do
                         else if (i .eq. nbpt) then
-                            adri = zi(apadr +deb-1+ nbpt-2) + ln
+                            adri = zi(apadr+deb-1+nbpt-2)+ln
                             do k = 1, nbco, 1
                                 do j = 1, ln, 1
-                                    indic = adri - 1 + 2*ln*(k-1) + j- 1
+                                    indic = adri-1+2*ln*(k-1)+j-1
                                     if (zr(avale+indic) .eq. r8vide()) then
-                                        zr(avaux+((nbpt-1)*nbco+k-1)*&
-                                        ln+j-1) = 0.d0
+                                        zr(avaux+((nbpt-1)*nbco+k-1)* &
+                                           ln+j-1) = 0.d0
                                     else
-                                        zr(avaux+((nbpt-1)*nbco+k-1)*&
-                                        ln+j-1) = zr(avale+indic)
-                                    endif
+                                        zr(avaux+((nbpt-1)*nbco+k-1)* &
+                                           ln+j-1) = zr(avale+indic)
+                                    end if
                                 end do
                             end do
                         else
-                            adri = zi(apadr +deb-1+ i-2)
+                            adri = zi(apadr+deb-1+i-2)
                             do k = 1, nbco, 1
                                 do j = 1, ln, 1
                                     indi1 = adri-1+ln*(2*k-1)+j-1
-                                    indi2 = adri-1+ln*2*(k-1+nbco)+j- 1
-                                    if (zr(avale+indi1) .eq. r8vide() .and. zr(avale+indi2)&
+                                    indi2 = adri-1+ln*2*(k-1+nbco)+j-1
+                                    if (zr(avale+indi1) .eq. r8vide() .and. zr(avale+indi2) &
                                         .eq. r8vide()) then
-                                        zr(avaux+ln*(nbco*(i-1)+k-1)+&
-                                        j-1) = 0.d0
-                                        elseif(zr(avale+indi1).eq.r8vide()&
-                                    ) then
-                                        zr(avaux+ln*(nbco*(i-1)+k-1)+&
-                                        j-1) = zr(avale+indi2)
-                                        elseif(zr(avale+indi2).eq.r8vide()&
-                                    ) then
-                                        zr(avaux+ln*(nbco*(i-1)+k-1)+&
-                                        j-1) = zr(avale+indi1)
+                                        zr(avaux+ln*(nbco*(i-1)+k-1)+ &
+                                           j-1) = 0.d0
+                                    elseif (zr(avale+indi1) .eq. r8vide() &
+                                            ) then
+                                        zr(avaux+ln*(nbco*(i-1)+k-1)+ &
+                                           j-1) = zr(avale+indi2)
+                                    elseif (zr(avale+indi2) .eq. r8vide() &
+                                            ) then
+                                        zr(avaux+ln*(nbco*(i-1)+k-1)+ &
+                                           j-1) = zr(avale+indi1)
                                     else
-                                        zr(avaux+ln*(nbco*(i-1)+k-1)+&
-                                        j-1) = 0.5d0*(zr(avale+indi1)+&
-                                        zr(avale+indi2))
-                                    endif
+                                        zr(avaux+ln*(nbco*(i-1)+k-1)+ &
+                                           j-1) = 0.5d0*(zr(avale+indi1)+ &
+                                                         zr(avale+indi2))
+                                    end if
                                 end do
                             end do
-                        endif
+                        end if
                     end do
-                endif
-                call rvtecn(zr(avaux), zr(aabsc), zi(apnca), zi(apnsa), zr(acoor),&
-                            zk8(anocp), zk8(anomnd), nbcp, nbpt, docul,&
-                            nomtab, iocc, xnovar, ncheff, i1,&
+                end if
+                call rvtecn(zr(avaux), zr(aabsc), zi(apnca), zi(apnsa), zr(acoor), &
+                            zk8(anocp), zk8(anomnd), nbcp, nbpt, docul, &
+                            nomtab, iocc, xnovar, ncheff, i1, &
                             ioc, isd)
                 call jedetr(nvaux)
                 call jedetr(npnca)
                 call jedetr(npnsa)
-            endif
-        endif
+            end if
+        end if
     end do
     call jedema()
 end subroutine

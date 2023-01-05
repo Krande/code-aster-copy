@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine te0137(option, nomte)
 ! ......................................................................
 !
     integer :: nbres
-    parameter (nbres=3)
+    parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
     real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg, theta
     real(kind=8) :: coenp1, sigma, epsil, tz0
@@ -55,24 +55,24 @@ subroutine te0137(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt('LUMPE','OUI')) then
+    if (lteatt('LUMPE', 'OUI')) then
         call teattr('S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
+        if (alias8(6:8) .eq. 'SE3') elrefe = 'SE2'
+    end if
 !
-    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     tz0 = r8t0()
 !
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     if (option(11:14) .eq. 'COEF') then
         call jevech('PCOEFHF', 'L', iech)
-    else if (option(11:14).eq.'RAYO') then
+    else if (option(11:14) .eq. 'RAYO') then
         call jevech('PRAYONF', 'L', iray)
-    endif
+    end if
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
@@ -92,21 +92,21 @@ subroutine te0137(option, nomte)
 !
         do i = 1, nno
             do j = 1, 2
-                coorse(2* (i-1)+j) = zr(igeom-1+2* (c(ise,i)-1)+j)
+                coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise, i)-1)+j)
             end do
         end do
 !
         do kp = 1, npg
-            call vff2dn(ndim, nno, kp, ipoids, idfde,&
+            call vff2dn(ndim, nno, kp, ipoids, idfde, &
                         coorse, nx, ny, poids)
             r = 0.d0
             z = 0.d0
             tpg = 0.d0
             do i = 1, nno
-                l = (kp-1)*nno + i
-                r = r + coorse(2* (i-1)+1)*zr(ivf+l-1)
-                z = z + coorse(2* (i-1)+2)*zr(ivf+l-1)
-                tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
+                l = (kp-1)*nno+i
+                r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
+                z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
+                tpg = tpg+zr(itemp-1+c(ise, i))*zr(ivf+l-1)
             end do
             if (laxi) poids = poids*r
             valpar(1) = r
@@ -116,26 +116,26 @@ subroutine te0137(option, nomte)
             nompar(3) = 'INST'
             valpar(3) = zr(itemps)
             if (option(11:14) .eq. 'COEF') then
-                call fointe('A', zk8(iech), 3, nompar, valpar,&
+                call fointe('A', zk8(iech), 3, nompar, valpar, &
                             coenp1, icode)
-                ASSERT(icode.eq.0)
+                ASSERT(icode .eq. 0)
                 do i = 1, nno
-                    li = ivf + (kp-1)*nno + i - 1
-                    vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li )* theta*coenp1*tpg
+                    li = ivf+(kp-1)*nno+i-1
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*theta*coenp1*tpg
                 end do
-            else if (option(11:14).eq.'RAYO') then
-                call fointe('A', zk8(iray), 4, nompar, valpar,&
+            else if (option(11:14) .eq. 'RAYO') then
+                call fointe('A', zk8(iray), 4, nompar, valpar, &
                             sigma, ier)
-                ASSERT(ier.eq.0)
-                call fointe('A', zk8(iray+1), 4, nompar, valpar,&
+                ASSERT(ier .eq. 0)
+                call fointe('A', zk8(iray+1), 4, nompar, valpar, &
                             epsil, ier)
-                ASSERT(ier.eq.0)
+                ASSERT(ier .eq. 0)
                 do i = 1, nno
-                    li = ivf + (kp-1)*nno + i - 1
-                    vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)* theta*sigma*epsil* (tpg+tz0&
-                                      )**4
+                    li = ivf+(kp-1)*nno+i-1
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*theta*sigma*epsil*(tpg+tz0 &
+                                                                                        )**4
                 end do
-            endif
+            end if
 !
         end do
     end do

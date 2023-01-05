@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
-                  chsecm, chsolu, base, rsolu, csolu,&
+subroutine resou1(matass, matpre, solveu, chcine, nsecm, &
+                  chsecm, chsolu, base, rsolu, csolu, &
                   criter, prepos, istop, iret)
 !
 !-----------------------------------------------------------------------
@@ -110,14 +110,14 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
     aster_logical :: dbg
-    character(len=1), parameter :: ftype(2) = ['R','C']
+    character(len=1), parameter :: ftype(2) = ['R', 'C']
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     integer, pointer :: slvi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
-    dbg=.false.
+    dbg = .false.
 !
     call jemarq()
     call infniv(ifm, niv)
@@ -131,7 +131,7 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     csol19 = chsolu
     crit19 = criter
 !
-    ASSERT(matr19.ne.' ')
+    ASSERT(matr19 .ne. ' ')
     call dismoi('MPI_COMPLET', matr19, 'MATR_ASSE', repk=kmpic)
 !
     if (solv19 .eq. ' ') call dismoi('SOLVEUR', matr19, 'MATR_ASSE', repk=solv19)
@@ -139,48 +139,48 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     call jeveuo(solv19//'.SLVR', 'L', vr=slvr)
     call jeveuo(solv19//'.SLVI', 'L', vi=slvi)
     metres = slvk(1)
-    ASSERT(metres.ne.' ')
+    ASSERT(metres .ne. ' ')
     if (kmpic .eq. 'NON') then
-        ASSERT(metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
-    endif
+        ASSERT(metres .eq. 'MUMPS' .or. metres .eq. 'PETSC')
+    end if
 !
 !     VERIFICATIONS ET INITIALISATIONS
-    ASSERT((istop.eq.0).or.(istop.eq.2).or.(istop.eq.-9999))
+    ASSERT((istop .eq. 0) .or. (istop .eq. 2) .or. (istop .eq. -9999))
     if (istop .eq. -9999) then
         istopz = slvi(8)
     else
         istopz = istop
-    endif
+    end if
     iret = 0
 !
     call mtdscr(matr19)
     call jeveuo(matr19//'.&INT', 'L', lmat)
-    neq=zi(lmat+2)
-    type=ftype(zi(lmat+3))
+    neq = zi(lmat+2)
+    type = ftype(zi(lmat+3))
 !
-    ASSERT(nsecm.ge.0)
+    ASSERT(nsecm .ge. 0)
     call jeveuo(matr19//'.REFA', 'L', vk24=refa)
     if (refa(11) .eq. 'MATR_DISTR') then
-        imd=1
+        imd = 1
     else
-        imd=0
-    endif
+        imd = 0
+    end if
     if (nsecm .eq. 0) then
-        ASSERT(secm19.ne.' ')
-        ASSERT(csol19.ne.' ')
+        ASSERT(secm19 .ne. ' ')
+        ASSERT(csol19 .ne. ' ')
         if (csol19 .ne. secm19) then
             call detrsd('CHAMP_GD', csol19)
             call vtdefs(csol19, secm19, base, ' ')
-        endif
+        end if
 !
         call jelira(secm19//'.VALE', 'LONMAX', neq1)
         call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
-        if ((neq1.ne.neq) .and. (imd.eq.0)) then
+        if ((neq1 .ne. neq) .and. (imd .eq. 0)) then
             call utmess('F', 'FACTOR_67')
-        endif
+        end if
         if (typ1 .ne. type) then
             call utmess('F', 'FACTOR_68')
-        endif
+        end if
 !
         call jeveuo(secm19//'.VALE', 'L', jval2)
         if (imd .eq. 0) then
@@ -189,17 +189,17 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
         else
             call wkvect('&&RESOU1.TRAV', 'V V '//type, neq1, jtrav)
             call jacopo(neq1, type, jval2, jtrav)
-        endif
+        end if
 !
     else
-        ASSERT(secm19.eq.' ')
-        ASSERT(csol19.eq.' ')
-    endif
+        ASSERT(secm19 .eq. ' ')
+        ASSERT(csol19 .eq. ' ')
+    end if
 !
     if (cine19 .ne. ' ') then
         call jelira(cine19//'.VALE', 'TYPE', cval=typ1)
-        ASSERT(typ1.eq.type)
-    endif
+        ASSERT(typ1 .eq. type)
+    end if
 !
 !
 !
@@ -213,81 +213,81 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
         call dbgobj(matr19//'.VALF', 'OUI', 6, '&&RESOU1 MATR.VALF')
         call dbgobj(matr19//'.CONL', 'OUI', 6, '&&RESOU1 MATR.CONL')
         call dbgobj(matr19//'.CCVA', 'OUI', 6, '&&RESOU1 MATR.CCVA')
-    endif
+    end if
 !
 !
 !
 !
     if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT') then
 !     ----------------------------------------------------
-        call dismoi('MATR_HPC',matr19,'MATR_ASSE',repk=khpc)
-        if( khpc == "OUI" ) then
-            call utmess( 'F', 'FACTOR_93' )
-        endif
+        call dismoi('MATR_HPC', matr19, 'MATR_ASSE', repk=khpc)
+        if (khpc == "OUI") then
+            call utmess('F', 'FACTOR_93')
+        end if
         if (nsecm .gt. 0) then
-            call resldl(solv19, matr19, cine19, nsecm, rsolu,&
+            call resldl(solv19, matr19, cine19, nsecm, rsolu, &
                         csolu, prepos)
         else
             if (type .eq. 'R') then
-                call resldl(solv19, matr19, cine19, 1, zr(jtrav),&
+                call resldl(solv19, matr19, cine19, 1, zr(jtrav), &
                             [cbid], prepos)
             else
-                call resldl(solv19, matr19, cine19, 1, [0.d0],&
+                call resldl(solv19, matr19, cine19, 1, [0.d0], &
                             zc(jtrav), prepos)
-            endif
-        endif
+            end if
+        end if
 !
 !
 !
-    else if (metres.eq.'MUMPS') then
+    else if (metres .eq. 'MUMPS') then
 !     ----------------------------------------------------
         if (nsecm .gt. 0) then
-            call amumph('RESOUD', solv19, matr19, rsolu, csolu,&
+            call amumph('RESOUD', solv19, matr19, rsolu, csolu, &
                         cine19, nsecm, iret, prepos)
         else
             if (type .eq. 'R') then
-                call amumph('RESOUD', solv19, matr19, zr(jtrav), [cbid],&
+                call amumph('RESOUD', solv19, matr19, zr(jtrav), [cbid], &
                             cine19, 1, iret, prepos)
             else
-                call amumph('RESOUD', solv19, matr19, [0.d0], zc(jtrav),&
+                call amumph('RESOUD', solv19, matr19, [0.d0], zc(jtrav), &
                             cine19, 1, iret, prepos)
-            endif
-        endif
-        ASSERT(iret.eq.0)
+            end if
+        end if
+        ASSERT(iret .eq. 0)
 !
 !
 !
-    else if (metres.eq.'GCPC') then
+    else if (metres .eq. 'GCPC') then
 !     ----------------------------------
         niter = slvi(2)
         epsi = slvr(2)
-        ASSERT(type.eq.'R')
+        ASSERT(type .eq. 'R')
         if (nsecm .gt. 0) then
-            call resgra(matr19, mpre19, cine19, niter, epsi,&
-                        crit19, nsecm, rsolu, solv19, istopz,&
+            call resgra(matr19, mpre19, cine19, niter, epsi, &
+                        crit19, nsecm, rsolu, solv19, istopz, &
                         iret)
         else
-            call resgra(matr19, mpre19, cine19, niter, epsi,&
-                        crit19, 1, zr(jtrav), solv19, istopz,&
+            call resgra(matr19, mpre19, cine19, niter, epsi, &
+                        crit19, 1, zr(jtrav), solv19, istopz, &
                         iret)
-        endif
+        end if
 !
 !
 !
-    else if (metres.eq.'PETSC') then
+    else if (metres .eq. 'PETSC') then
 !     ----------------------------------
-        ASSERT(type.eq.'R')
+        ASSERT(type .eq. 'R')
         if (nsecm .gt. 0) then
-            call apetsc('RESOUD', solv19, matr19, rsolu, cine19,&
+            call apetsc('RESOUD', solv19, matr19, rsolu, cine19, &
                         nsecm, istopz, iret)
         else
-            call apetsc('RESOUD', solv19, matr19, zr(jtrav), cine19,&
+            call apetsc('RESOUD', solv19, matr19, zr(jtrav), cine19, &
                         1, istopz, iret)
-        endif
+        end if
 !
     else
         call utmess('F', 'ALGELINE3_44', sk=metres)
-    endif
+    end if
 !
 !
 !     -- RECOPIE DANS LE CHAMP SOLUTION S'IL Y A LIEU :
@@ -297,14 +297,14 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
             call jacopo(neq, type, jtrav, jvals)
         else
             call jacopo(neq1, type, jtrav, jvals)
-        endif
-    endif
+        end if
+    end if
     call jedetr('&&RESOU1.TRAV')
 !
 !
 !
 !
-    if (dbg .and. (nsecm.eq.0)) call dbgobj(csol19//'.VALE', 'OUI', 6, '&&RESOU1 SOLU')
+    if (dbg .and. (nsecm .eq. 0)) call dbgobj(csol19//'.VALE', 'OUI', 6, '&&RESOU1 SOLU')
 !
 !
     call jedbg2(ibid, idbgav)

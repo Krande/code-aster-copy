@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,39 +60,39 @@ subroutine lctel3()
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igdgeo)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'GEOM_R'), 'L', inocmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', 'GEOM_R'), 'LONMAX', nbcmp)
-    ix=indik8(zk8(inocmp),'X',1,nbcmp)
-    iy=indik8(zk8(inocmp),'Y',1,nbcmp)
-    iz=indik8(zk8(inocmp),'Z',1,nbcmp)
+    ix = indik8(zk8(inocmp), 'X', 1, nbcmp)
+    iy = indik8(zk8(inocmp), 'Y', 1, nbcmp)
+    iz = indik8(zk8(inocmp), 'Z', 1, nbcmp)
     call dismoi('NB_EC', 'GEOM_R', 'GRANDEUR', repi=nbec)
-    ASSERT(nbec.le.1)
+    ASSERT(nbec .le. 1)
 !
 !     - BOUCLE SUR TOUS LES MODES LOCAUX DES CATALOGUES :
     call jelira('&CATA.TE.NOMMOLOC', 'NOMMAX', nbml)
     do iml = 1, nbml
         call jeveuo(jexnum('&CATA.TE.MODELOC', iml), 'L', iamolo)
-        icode=zi(iamolo-1+1)
-        igd=zi(iamolo-1+2)
+        icode = zi(iamolo-1+1)
+        igd = zi(iamolo-1+2)
         if (igd .ne. igdgeo) goto 1
         if (icode .gt. 3) goto 1
 !
         call jenuno(jexnum('&CATA.TE.NOMMOLOC', iml), nomolo)
-        nomte=nomolo(1:16)
+        nomte = nomolo(1:16)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte), ite)
 !
-        nbpt=zi(iamolo-1+4)
+        nbpt = zi(iamolo-1+4)
         if (nbpt .ge. 10000) then
-            nbdg=nbpt-10000
+            nbdg = nbpt-10000
         else
-            nbdg=1
-        endif
+            nbdg = 1
+        end if
 !
         do k = 1, nbdg
-            dg=zi(iamolo-1+4+k)
-            if (exisdg([dg],ix)) zi(iadige-1+ite)=max(1,zi(iadige-1+ite) )
-            if (exisdg([dg],iy)) zi(iadige-1+ite)=max(2,zi(iadige-1+ite) )
-            if (exisdg([dg],iz)) zi(iadige-1+ite)=max(3,zi(iadige-1+ite) )
+            dg = zi(iamolo-1+4+k)
+            if (exisdg([dg], ix)) zi(iadige-1+ite) = max(1, zi(iadige-1+ite))
+            if (exisdg([dg], iy)) zi(iadige-1+ite) = max(2, zi(iadige-1+ite))
+            if (exisdg([dg], iz)) zi(iadige-1+ite) = max(3, zi(iadige-1+ite))
         end do
-  1     continue
+1       continue
     end do
 !
 !

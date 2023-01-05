@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,28 +62,28 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES PARAMETRES ET CREATION DU SOLVEUR
 ! ----------------------------------------------------------------------
-    solveu=numdrv//'.SOLV'
+    solveu = numdrv//'.SOLV'
     call cresol(solveu)
 ! ----------------------------------------------------------------------
 ! --- CREATION DU NUME_DDL_GENE ASSOCIEE A LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
 ! --- CREATION DU PROF_GENE
-    prof_gene=numdrv//'.NUME'
-    lili=prof_gene//'.LILI'
-    orig=prof_gene//'.ORIG'
-    prno=prof_gene//'.PRNO'
+    prof_gene = numdrv//'.NUME'
+    lili = prof_gene//'.LILI'
+    orig = prof_gene//'.ORIG'
+    prno = prof_gene//'.PRNO'
 !
 ! - Create PROF_GENE
 !
-    call profgene_crsd(prof_gene, 'V', ninc, nb_sstr = 1, nb_link = 1,&
-                       model_genez = ' ', gran_namez = 'DEPL_R')
+    call profgene_crsd(prof_gene, 'V', ninc, nb_sstr=1, nb_link=1, &
+                       model_genez=' ', gran_namez='DEPL_R')
 !
 ! - Set sub_structures
 !
     call jenonu(jexnom(lili, '&SOUSSTR'), i_ligr_sstr)
-    ASSERT(i_ligr_sstr.eq.1)
-    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi = prgene_prno)
-    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi = prgene_orig)
+    ASSERT(i_ligr_sstr .eq. 1)
+    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi=prgene_orig)
     prgene_prno(1) = 1
     prgene_prno(2) = ninc
     prgene_orig(1) = 1
@@ -91,37 +91,37 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! - Set links
 !
     call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
-    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_prno)
-    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_orig)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi=prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi=prgene_orig)
     prgene_prno(1) = 0
     prgene_orig(1) = 1
 
 ! --- CREATION DU SMOS
     call wkvect(numdrv//'.SMOS.SMDI', 'V V I', ninc, ibid)
     call wkvect(numdrv//'.SMOS.SMDE', 'V V I', 3, ismde)
-    zi(ismde-1+1)=ninc
-    zi(ismde-1+3)=1
+    zi(ismde-1+1) = ninc
+    zi(ismde-1+3) = 1
 !
 ! ----------------------------------------------------------------------
 ! --- CREATION DU MATR_ASSE_GENE ASSOCIEE A LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
 ! --- REFA
     call wkvect(matdrv//'.REFA', 'V V K24', 20, mrefa)
-    zk24(mrefa-1+1)=' '
-    zk24(mrefa-1+2)=numdrv
-    zk24(mrefa-1+3)=' '
-    zk24(mrefa-1+4)='&&MELANGE'
-    zk24(mrefa-1+5)=' '
-    zk24(mrefa-1+6)=' '
-    zk24(mrefa-1+7)=' '
+    zk24(mrefa-1+1) = ' '
+    zk24(mrefa-1+2) = numdrv
+    zk24(mrefa-1+3) = ' '
+    zk24(mrefa-1+4) = '&&MELANGE'
+    zk24(mrefa-1+5) = ' '
+    zk24(mrefa-1+6) = ' '
+    zk24(mrefa-1+7) = ' '
 !    numdrv//'.SOLV'
-    zk24(mrefa-1+8)=' '
-    zk24(mrefa-1+9)='MR'
-    zk24(mrefa-1+10)='GENE'
-    zk24(mrefa-1+11)='MPI_COMPLET'
+    zk24(mrefa-1+8) = ' '
+    zk24(mrefa-1+9) = 'MR'
+    zk24(mrefa-1+10) = 'GENE'
+    zk24(mrefa-1+11) = 'MPI_COMPLET'
 ! --- DESC
     call wkvect(matdrv//'.DESC', 'V V I', 3, mdesc)
-    zi(mdesc-1+1)=2
-    zi(mdesc-1+3)=2
+    zi(mdesc-1+1) = 2
+    zi(mdesc-1+3) = 2
 !
 end subroutine

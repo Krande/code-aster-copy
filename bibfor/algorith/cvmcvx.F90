@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
     real(kind=8) :: ar, r, k, c1d, c2d
     real(kind=8) :: mater(nmat, 2), seuil
 !       ----------------------------------------------------------------
-    common /tdim/   ndt , ndi
-    common /coed/   c1d , c2d
+    common/tdim/ndt, ndi
+    common/coed/c1d, c2d
 !       ----------------------------------------------------------------
 !
 ! - CALCUL DU PREMIER SEUIL
@@ -48,12 +48,12 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !-----------------------------------------------------------------------
     real(kind=8) :: c1f, c2f
 !-----------------------------------------------------------------------
-    ar = mater(3,2)
-    k = mater(4,2)
+    ar = mater(3, 2)
+    k = mater(4, 2)
 !        C1D      = MATERD(15,2)
 !        C2D      = MATERD(20,2)
-    c1f = mater(15,2)
-    c2f = mater(20,2)
+    c1f = mater(15, 2)
+    c2f = mater(20, 2)
     x1(1:ndt) = vin(1:ndt)
     x2(1:ndt) = vin(ndt+1:ndt+ndt)
 !
@@ -61,15 +61,15 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !
     if (c1d .ne. 0.d0) then
         difc1 = c1f/c1d
-        x1(1:ndt) = difc1 * x1(1:ndt)
-    endif
+        x1(1:ndt) = difc1*x1(1:ndt)
+    end if
     if (c2d .ne. 0.d0) then
         difc2 = c2f/c2d
-        x2(1:ndt) = difc2 * x2(1:ndt)
-    endif
+        x2(1:ndt) = difc2*x2(1:ndt)
+    end if
 !
     r = vin(2*ndt+2)
     call lcdevi(sig, dev)
-    dev(1:ndt) = dev(1:ndt) - x1(1:ndt) - x2(1:ndt)
-    seuil = lcnrts( dev ) - ar * r - k
+    dev(1:ndt) = dev(1:ndt)-x1(1:ndt)-x2(1:ndt)
+    seuil = lcnrts(dev)-ar*r-k
 end subroutine

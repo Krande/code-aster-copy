@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,19 +81,19 @@ subroutine asmasu(ma1, ma2, mag)
 !CC              4       DE SUPER MAILLES
 !CC              5       DU MAJORANT DE SUPER MAILLES
     do i = 1, 5
-        zi(iadime-1+i)=dim1(i)+dim2(i)
+        zi(iadime-1+i) = dim1(i)+dim2(i)
     end do
 !
-    ncoor=max(dim1(6),dim2(6))
-    zi(iadime-1+6)=ncoor
+    ncoor = max(dim1(6), dim2(6))
+    zi(iadime-1+6) = ncoor
 !
-    nbma=zi(iadime-1+3)
-    nbm1=dim1(3)
-    nbm2=dim2(3)
+    nbma = zi(iadime-1+3)
+    nbm1 = dim1(3)
+    nbm2 = dim2(3)
 !
-    nbno=zi(iadime-1+1)
-    nbn1=dim1(1)
-    nbn2=dim2(1)
+    nbno = zi(iadime-1+1)
+    nbn1 = dim1(1)
+    nbn2 = dim2(1)
 !
 !     --OBJET .NOMMAI:
 !     ----------------
@@ -103,27 +103,27 @@ subroutine asmasu(ma1, ma2, mag)
         if (nbm1+nbm2 .ge. 10000000) then
             do i = 1, nbm1
                 call codlet(i, 'G', kind)
-                noma='M'//kind
+                noma = 'M'//kind
                 call jecroc(jexnom(mag//'.NOMMAI', noma))
-            enddo
+            end do
             do i = 1, nbm2
                 call codlet(nbm1+i, 'G', kind)
-                noma='M'//kind
+                noma = 'M'//kind
                 call jecroc(jexnom(mag//'.NOMMAI', noma))
-            enddo
+            end do
         else
             do i = 1, nbm1
                 call codent(i, 'G', kind)
-                noma='M'//kind
+                noma = 'M'//kind
                 call jecroc(jexnom(mag//'.NOMMAI', noma))
-            enddo
+            end do
             do i = 1, nbm2
                 call codent(nbm1+i, 'G', kind)
-                noma='M'//kind
+                noma = 'M'//kind
                 call jecroc(jexnom(mag//'.NOMMAI', noma))
-            enddo
-        endif
-    endif
+            end do
+        end if
+    end if
 !
 !     --OBJET .NOMNOE:
 !     ----------------
@@ -133,41 +133,41 @@ subroutine asmasu(ma1, ma2, mag)
         if (nbn1+nbn2 .ge. 10000000) then
             do i = 1, nbn1
                 call codlet(i, 'G', kind)
-                nono='N'//kind
+                nono = 'N'//kind
                 call jecroc(jexnom(mag//'.NOMNOE', nono))
-            enddo
+            end do
             do i = 1, nbn2
                 call codlet(nbn1+i, 'G', kind)
-                nono='N'//kind
+                nono = 'N'//kind
                 call jecroc(jexnom(mag//'.NOMNOE', nono))
-            enddo
+            end do
         else
             do i = 1, nbn1
                 call codent(i, 'G', kind)
-                nono='N'//kind
+                nono = 'N'//kind
                 call jecroc(jexnom(mag//'.NOMNOE', nono))
-            enddo
+            end do
             do i = 1, nbn2
                 call codent(nbn1+i, 'G', kind)
-                nono='N'//kind
+                nono = 'N'//kind
                 call jecroc(jexnom(mag//'.NOMNOE', nono))
-            enddo
-        endif
-    endif
+            end do
+        end if
+    end if
 !
 !
 !     --OBJET .CONNEX:
 !     -----------------
     if (nbma .gt. 0) then
-        call jecrec(mag//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+        call jecrec(mag//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', &
                     nbma)
-        call jeecra(mag//'.CONNEX','NUTIOC',nbma)
+        call jeecra(mag//'.CONNEX', 'NUTIOC', nbma)
 
-        l1=0
-        l2=0
+        l1 = 0
+        l2 = 0
         if (nbm1 .gt. 0) call jelira(ma1//'.CONNEX', 'LONT', l1)
         if (nbm2 .gt. 0) call jelira(ma2//'.CONNEX', 'LONT', l2)
-        l3= l1+l2
+        l3 = l1+l2
         call jeecra(mag//'.CONNEX', 'LONT', l3)
         do i = 1, nbm1
             call jeveuo(jexnum(ma1//'.CONNEX', i), 'L', iacon1)
@@ -175,50 +175,50 @@ subroutine asmasu(ma1, ma2, mag)
             call jeecra(jexnum(mag//'.CONNEX', i), 'LONMAX', n)
             call jeveuo(jexnum(mag//'.CONNEX', i), 'E', iaconx)
             do ii = 1, n
-                zi(iaconx-1+ii)=zi(iacon1-1+ii)
+                zi(iaconx-1+ii) = zi(iacon1-1+ii)
             end do
         end do
         do i = 1, nbm2
-            i1= i+nbm1
+            i1 = i+nbm1
             call jeveuo(jexnum(ma2//'.CONNEX', i), 'L', iacon2)
             call jelira(jexnum(ma2//'.CONNEX', i), 'LONMAX', n)
             call jeecra(jexnum(mag//'.CONNEX', i1), 'LONMAX', n)
             call jeveuo(jexnum(mag//'.CONNEX', i1), 'E', iaconx)
             do ii = 1, n
-                zi(iaconx-1+ii)=zi(iacon2-1+ii)+nbn1
+                zi(iaconx-1+ii) = zi(iacon2-1+ii)+nbn1
             end do
         end do
-    endif
+    end if
 !
 !     -- CREATION DU CHAMP .COORDO :
 !     ------------------------------
-    coordo= mag//'.COORDO'
+    coordo = mag//'.COORDO'
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
     call wkvect(coordo//'.DESC', 'G V I', 3, iadesc)
     call jeecra(coordo//'.DESC', 'DOCU', ibid, 'CHNO')
-    zi (iadesc-1+1)= igeomr
+    zi(iadesc-1+1) = igeomr
 !     -- TOUJOURS 3 COMPOSANTES X, Y ET Z
-    zi (iadesc-1+2)= -3
+    zi(iadesc-1+2) = -3
 !     -- 14 = 2**1 + 2**2 + 2**3
-    zi (iadesc-1+3)= 14
+    zi(iadesc-1+3) = 14
 !
     call wkvect(coordo//'.REFE', 'G V K24', 4, iarefe)
-    zk24(iarefe-1+1)= mag
+    zk24(iarefe-1+1) = mag
     call jeveuo(ma1//'.COORDO    .VALE', 'L', vr=coo1)
     call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=coo2)
     call wkvect(coordo//'.VALE', 'G V R', 3*nbno, iavale)
 !     -- COORDONNEES DES NOEUDS :
-    do 51 , ino=1, nbn1
+    do 51, ino = 1, nbn1
     do k = 1, 3
-        zr(iavale-1+3*(ino-1)+k)=coo1(3*(ino-1)+k)
+        zr(iavale-1+3*(ino-1)+k) = coo1(3*(ino-1)+k)
     end do
-    51 end do
-    do 52 , ino=1, nbn2
+51  end do
+    do 52, ino = 1, nbn2
     do k = 1, 3
-        zr(iavale-1+3*(nbn1+ino-1)+k)=coo2(3*(ino-1)+k)
+        zr(iavale-1+3*(nbn1+ino-1)+k) = coo2(3*(ino-1)+k)
     end do
-    52 end do
+52  end do
 !
 !
 !     --OBJET .TYPMAIL:
@@ -227,20 +227,20 @@ subroutine asmasu(ma1, ma2, mag)
         call wkvect(mag//'.TYPMAIL', 'G V I', nbma, ibid)
         do i = 1, nbm1
             call jeveuo(ma1//'.TYPMAIL', 'L', iatyma)
-            iatyp1=iatyma-1+i
+            iatyp1 = iatyma-1+i
             call jeveuo(mag//'.TYPMAIL', 'E', iatyma)
-            iatypx=iatyma-1+i
-            zi(iatypx)=zi(iatyp1)
+            iatypx = iatyma-1+i
+            zi(iatypx) = zi(iatyp1)
         end do
         do i = 1, nbm2
-            i1=i+nbm1
+            i1 = i+nbm1
             call jeveuo(ma2//'.TYPMAIL', 'L', iatyma)
-            iatyp2=iatyma-1+i
+            iatyp2 = iatyma-1+i
             call jeveuo(mag//'.TYPMAIL', 'E', iatyma)
-            iatypx=iatyma-1+i1
-            zi(iatypx)=zi(iatyp2)
+            iatypx = iatyma-1+i1
+            zi(iatypx) = zi(iatyp2)
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .GROUPEMA:
@@ -251,11 +251,11 @@ subroutine asmasu(ma1, ma2, mag)
     nbgm2 = 0
     if (iret1 .gt. 0) call jelira(ma1//'.GROUPEMA', 'NUTIOC', nbgm1)
     if (iret2 .gt. 0) call jelira(ma2//'.GROUPEMA', 'NUTIOC', nbgm2)
-    nbgma = nbgm1 + nbgm2
+    nbgma = nbgm1+nbgm2
     if (nbgma .gt. 0) then
         call jecreo(mag//'.PTRNOMMAI', 'G N K24')
         call jeecra(mag//'.PTRNOMMAI', 'NOMMAX', nbgma)
-        call jecrec(mag//'.GROUPEMA', 'G V I', 'NO '//mag//'.PTRNOMMAI', 'DISPERSE', 'VARIABLE',&
+        call jecrec(mag//'.GROUPEMA', 'G V I', 'NO '//mag//'.PTRNOMMAI', 'DISPERSE', 'VARIABLE', &
                     nbgma)
         do i = 1, nbgm1
             call jeveuo(jexnum(ma1//'.GROUPEMA', i), 'L', iagma1)
@@ -266,7 +266,7 @@ subroutine asmasu(ma1, ma2, mag)
             call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPEMA', i), 'E', iagmax)
             do ii = 1, n
-                zi(iagmax-1+ii)=zi(iagma1-1+ii)
+                zi(iagmax-1+ii) = zi(iagma1-1+ii)
             end do
         end do
         icompt = 0
@@ -277,33 +277,33 @@ subroutine asmasu(ma1, ma2, mag)
             call jeexin(jexnom(mag//'.GROUPEMA', nogma), iret)
             if (iret .gt. 0) then
                 call utmess('A', 'MODELISA2_21', sk=nogma)
-                nogmab=nogma
+                nogmab = nogma
                 ii = lxlgut(nogmab(1:7))
                 do k = ii+1, 7
-                    nogmab(k:k)='_'
+                    nogmab(k:k) = '_'
                 end do
                 do k = 0, 9
                     call codent(k, 'G', kkk)
-                    nogmab(8:8)=kkk
+                    nogmab(8:8) = kkk
                     call jeexin(jexnom(mag//'.GROUPEMA', nogmab), iret)
                     if (iret .eq. 0) goto 723
                 end do
 723             continue
-                write (ifm,*) ' LE GROUP_MA '//nogma//' DU MAILLAGE '&
-                //ma2//' EST RENOMME '//nogmab//' DANS '//mag
-                nogma=nogmab
-            endif
-            icompt = icompt + 1
-            i1 = nbgm1 + icompt
+                write (ifm, *) ' LE GROUP_MA '//nogma//' DU MAILLAGE ' &
+                    //ma2//' EST RENOMME '//nogmab//' DANS '//mag
+                nogma = nogmab
+            end if
+            icompt = icompt+1
+            i1 = nbgm1+icompt
             call jecroc(jexnom(mag//'.GROUPEMA', nogma))
             call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1, n))
             call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPEMA', i1), 'E', iagmax)
             do ii = 1, n
-                zi(iagmax-1+ii)=zi(iagma2-1+ii)+nbm1
+                zi(iagmax-1+ii) = zi(iagma2-1+ii)+nbm1
             end do
         end do
-    endif
+    end if
 !
 !
 !     --OBJET .GROUPENO:
@@ -314,11 +314,11 @@ subroutine asmasu(ma1, ma2, mag)
     nbgn2 = 0
     if (iret1 .gt. 0) call jelira(ma1//'.GROUPENO', 'NUTIOC', nbgn1)
     if (iret2 .gt. 0) call jelira(ma2//'.GROUPENO', 'NUTIOC', nbgn2)
-    nbgno = nbgn1 + nbgn2
+    nbgno = nbgn1+nbgn2
     if (nbgno .gt. 0) then
         call jecreo(mag//'.PTRNOMNOE', 'G N K24')
         call jeecra(mag//'.PTRNOMNOE', 'NOMMAX', nbgno)
-        call jecrec(mag//'.GROUPENO', 'G V I', 'NO '//mag//'.PTRNOMNOE', 'DISPERSE', 'VARIABLE',&
+        call jecrec(mag//'.GROUPENO', 'G V I', 'NO '//mag//'.PTRNOMNOE', 'DISPERSE', 'VARIABLE', &
                     nbgno)
         do i = 1, nbgn1
             call jeveuo(jexnum(ma1//'.GROUPENO', i), 'L', iagno1)
@@ -329,7 +329,7 @@ subroutine asmasu(ma1, ma2, mag)
             call jeecra(jexnum(mag//'.GROUPENO', i), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPENO', i), 'E', iagnox)
             do ii = 1, n
-                zi(iagnox-1+ii)=zi(iagno1-1+ii)
+                zi(iagnox-1+ii) = zi(iagno1-1+ii)
             end do
         end do
         icompt = 0
@@ -340,33 +340,33 @@ subroutine asmasu(ma1, ma2, mag)
             call jeexin(jexnom(mag//'.GROUPENO', nogno), iret)
             if (iret .gt. 0) then
                 call utmess('A', 'MODELISA2_22', sk=nogno)
-                nognob=nogno
+                nognob = nogno
                 ii = lxlgut(nognob(1:7))
                 do k = ii+1, 7
-                    nognob(k:k)='_'
+                    nognob(k:k) = '_'
                 end do
                 do k = 0, 9
                     call codent(k, 'G', kkk)
-                    nognob(8:8)=kkk
+                    nognob(8:8) = kkk
                     call jeexin(jexnom(mag//'.GROUPENO', nognob), iret)
                     if (iret .eq. 0) goto 823
                 end do
 823             continue
-                write (ifm,*) ' LE GROUP_NO '//nogno//' DU MAILLAGE '&
-                //ma2//' EST RENOMME '//nognob//' DANS '//mag
-                nogno=nognob
-            endif
-            icompt = icompt + 1
-            i1 = nbgn1 + icompt
+                write (ifm, *) ' LE GROUP_NO '//nogno//' DU MAILLAGE ' &
+                    //ma2//' EST RENOMME '//nognob//' DANS '//mag
+                nogno = nognob
+            end if
+            icompt = icompt+1
+            i1 = nbgn1+icompt
             call jecroc(jexnom(mag//'.GROUPENO', nogno))
             call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1, n))
             call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONUTI', n)
             call jeveuo(jexnum(mag//'.GROUPENO', i1), 'E', iagnox)
             do ii = 1, n
-                zi(iagnox-1+ii)=zi(iagno2-1+ii)+nbn1
+                zi(iagnox-1+ii) = zi(iagno2-1+ii)+nbn1
             end do
         end do
-    endif
+    end if
 !
     call jedema()
 end subroutine

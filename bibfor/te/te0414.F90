@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 subroutine te0414(option, nomte)
 !
-use Behaviour_module, only : behaviourOption
+    use Behaviour_module, only: behaviourOption
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,7 +35,7 @@ implicit none
 #include "asterfort/vdxnlr.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,9 +74,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, zk16(icompo),&
-                         lMatr , lVect ,&
-                         lVari , lSigm ,&
+    call behaviourOption(option, zk16(icompo), &
+                         lMatr, lVect, &
+                         lVari, lSigm, &
                          codret)
 !
 ! - Properties of behaviour
@@ -88,16 +88,16 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', jmatr)
-    endif
+    end if
     if (lSigm) then
         call jevech('PCODRET', 'E', jcret)
-    endif
+    end if
 !
 ! - Some checks
 !
     if (rela_comp(1:5) .eq. 'ELAS_') then
         call utmess('F', 'PLATE1_12', sk=rela_comp)
-    endif
+    end if
 !
 ! - Compute
 !
@@ -110,18 +110,18 @@ character(len=16), intent(in) :: option, nomte
 !           HYPO-ELASTICITE
             call vdpnlr(option, nomte, codret)
             goto 999
-        endif
+        end if
     else if (defo_comp(1:5) .eq. 'PETIT') then
         if (defo_comp(6:10) .eq. '_REAC') then
             call utmess('A', 'PLATE1_13')
             do i = 1, nb2-1
-                i1=3*(i-1)
-                i2=6*(i-1)
-                zr(jgeom+i1) = zr(jgeom+i1) +zr(ideplm+i2) +zr(ideplp+ i2)
-                zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(ideplm+i2+1) +zr(ideplp+i2+1)
-                zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(ideplm+i2+2) +zr(ideplp+i2+2)
+                i1 = 3*(i-1)
+                i2 = 6*(i-1)
+                zr(jgeom+i1) = zr(jgeom+i1)+zr(ideplm+i2)+zr(ideplp+i2)
+                zr(jgeom+i1+1) = zr(jgeom+i1+1)+zr(ideplm+i2+1)+zr(ideplp+i2+1)
+                zr(jgeom+i1+2) = zr(jgeom+i1+2)+zr(ideplm+i2+2)+zr(ideplp+i2+2)
             end do
-        endif
+        end if
 !
         call vdxnlr(option, nomte, zr(jgeom), matloc, nb1, codret)
 !
@@ -132,19 +132,19 @@ character(len=16), intent(in) :: option, nomte
 ! -----    OPERATION DE TRANFORMATION DE MATLOC DANS LE REPERE GLOBAL ET STOCKAGE DANS ZR
             nddlet = 6*nb1+3
             call tranlg(nb1, 51, nddlet, plg, matloc, zr(jmatr))
-        endif
+        end if
     else
         call utmess('F', 'PLATE1_14', sk=defo_comp)
-    endif
+    end if
 !
     if (lSigm) then
         zi(jcret) = codret
-    endif
+    end if
 !
 999 continue
 !
     if (lSigm) then
         call cosiro(nomte, 'PCONTPR', 'E', 'IU', 'G', ibid, 'R')
-    endif
+    end if
 !
 end subroutine

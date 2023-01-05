@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfverl(ds_contact)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -65,7 +65,7 @@ implicit none
 !
     sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
     call jeexin(sdappa(1:19)//'.VERK', ier)
-    lliss = cfdisl(ds_contact%sdcont_defi,'LISSAGE')
+    lliss = cfdisl(ds_contact%sdcont_defi, 'LISSAGE')
 !
 ! --- SD VERIFICATION FACETTISATION
 !
@@ -75,7 +75,7 @@ implicit none
     call jeveuo(apvera, 'L', jlista)
     call jelira(apverk, 'LONUTI', ival=nnoeu)
     call jelira(apverk, 'LONMAX', ival=nbno)
-    if ((nnoeu.eq.0) .or. (lliss)) goto 999
+    if ((nnoeu .eq. 0) .or. (lliss)) goto 999
 !
     call utmess('I', 'CONTACT3_19', si=nnoeu)
 !
@@ -83,11 +83,11 @@ implicit none
         nomnoe = zk8(jlistn+ino-1)
         angle = zr(jlista+ino-1)
         if (nomnoe .ne. ' ') then
-            write(6,100) nomnoe,angle
-        endif
+            write (6, 100) nomnoe, angle
+        end if
     end do
 !
-100 format (a8,3x,f8.2)
+100 format(a8, 3x, f8.2)
 !
 999 continue
 !

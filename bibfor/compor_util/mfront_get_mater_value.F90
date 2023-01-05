@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfront_get_mater_value(BEHinteg , rela_comp,&
-                                  fami     , kpg      , ksp, imate, &
-                                  nprops   , props)
+subroutine mfront_get_mater_value(BEHinteg, rela_comp, &
+                                  fami, kpg, ksp, imate, &
+                                  nprops, props)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8nnem.h"
 #include "asterc/mfront_get_mater_prop.h"
@@ -33,12 +33,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
-character(len=16), intent(in) :: rela_comp
-character(len=*), intent(in) :: fami
-integer, intent(in) :: kpg, ksp, imate
-integer, intent(inout) :: nprops
-real(kind=8), intent(out) :: props(*)
+    type(Behaviour_Integ), intent(in) :: BEHinteg
+    character(len=16), intent(in) :: rela_comp
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg, ksp, imate
+    integer, intent(inout) :: nprops
+    real(kind=8), intent(out) :: props(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,14 +77,14 @@ real(kind=8), intent(out) :: props(*)
 !
 ! - Coordinates of current Gauss point
 !
-    para_vale = BEHinteg%elem%coor_elga(kpg,:)
+    para_vale = BEHinteg%elem%coor_elga(kpg, :)
 !
 ! - Get parameters
 !
     if (rela_comp .eq. 'MFRONT') then
-        call mat_proto(BEHinteg,&
-                       fami    , kpg, ksp, '+', imate, rela_comp,&
-                       nprops  , props)
+        call mat_proto(BEHinteg, &
+                       fami, kpg, ksp, '+', imate, rela_comp, &
+                       nprops, props)
     else
 ! ----- Get the number and the names of the material properties
         call mfront_get_mater_prop(rela_comp, nbcoef, nomres)
@@ -94,19 +94,19 @@ real(kind=8), intent(out) :: props(*)
         if (BEHinteg%tabcod(ZFERRITE) .eq. 1) then
             meta_type = 1
             nb_phasis = 5
-            call metaGetPhase(fami     , '+', kpg, ksp, meta_type,&
-                              nb_phasis, zcold_   = zalpha)
+            call metaGetPhase(fami, '+', kpg, ksp, meta_type, &
+                              nb_phasis, zcold_=zalpha)
             do i = 1, nbcoef
-                if (nomres(i)(1:4) .eq. 'meta') then
-                    call rcvalb(fami, 1, 1, '+', imate,&
-                                ' ', rela_comp, 1, 'META', [zalpha],&
+                if (nomres(i) (1:4) .eq. 'meta') then
+                    call rcvalb(fami, 1, 1, '+', imate, &
+                                ' ', rela_comp, 1, 'META', [zalpha], &
                                 1, nomres(i), propl(i), codrel(i), 2)
                 else
                     call rcvalb(fami, kpg, ksp, '+', imate, &
                                 ' ', rela_comp, 0, ' ', [0.d0], &
                                 1, nomres(i), propl(i), codrel(i), 1)
-                endif
-            enddo
+                end if
+            end do
         elseif (BEHinteg%tabcod(ZALPHPUR) .eq. 1) then
             meta_type = 2
             nb_phasis = 3
@@ -120,15 +120,15 @@ real(kind=8), intent(out) :: props(*)
                 call rcvalb(fami, kpg, ksp, '+', imate, &
                             ' ', rela_comp, nb_para, para_name, para_vale, &
                             nbcoef, nomres, propl, codrel, 1)
-            endif
-        endif
+            end if
+        end if
 ! ----- Count the number of properties (but there are all compulsory)
         nprops = 0
         do i = 1, nbcoef
             if (codrel(i) .eq. 0) then
                 nprops = nprops+1
                 props(nprops) = propl(i)
-            endif
+            end if
         end do
-    endif
+    end if
 end

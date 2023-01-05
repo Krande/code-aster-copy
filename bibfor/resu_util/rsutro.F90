@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ subroutine rsutro(nomsd, iordg, iordr, ierr)
     call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     if (nbordr .eq. 0) then
         ierr = 10
-    else if (iordg.gt.nbordr) then
+    else if (iordg .gt. nbordr) then
         ierr = 20
     else
         call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
         iordr = ordr(iordg)
-    endif
+    end if
 !
     call jedema()
 end subroutine

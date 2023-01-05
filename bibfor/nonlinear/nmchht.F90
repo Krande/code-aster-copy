@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmchht(model    , ds_material, cara_elem     , ds_constitutive,&
-                  list_load, nume_dof   , list_func_acti, ds_measure     ,&
-                  sddyna   , sddisc     , sdnume        , &
-                  hval_incr, hval_algo  , hval_measse   , ds_inout)
+subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
+                  list_load, nume_dof, list_func_acti, ds_measure, &
+                  sddyna, sddisc, sdnume, &
+                  hval_incr, hval_algo, hval_measse, ds_inout)
 !
-use NonLin_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
@@ -49,17 +49,17 @@ implicit none
 #include "asterfort/nonlinLoadDynaCompute.h"
 #include "asterfort/nmdidi.h"
 !
-character(len=24), intent(in) :: model
-type(NL_DS_Material), intent(in) :: ds_material
-character(len=24), intent(in) :: cara_elem
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-character(len=24), intent(in) :: nume_dof
-character(len=19), intent(in) :: list_load
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sddyna, sddisc, sdnume
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*), hval_measse(*)
-type(NL_DS_InOut), intent(in) :: ds_inout
+    character(len=24), intent(in) :: model
+    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24), intent(in) :: cara_elem
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: list_load
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sddyna, sddisc, sdnume
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*), hval_measse(*)
+    type(NL_DS_InOut), intent(in) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,18 +107,18 @@ type(NL_DS_InOut), intent(in) :: ds_inout
 !
     iter_newt = 0
     call nmchai('VEELEM', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zveelm)
+    ASSERT(nmax .eq. zveelm)
     call nmchai('VEASSE', 'LONMAX', nmax)
-    ASSERT(nmax.eq.zveass)
+    ASSERT(nmax .eq. zveass)
 !
 ! - Active functionnalities
 !
-    l_didi  = isfonc(list_func_acti,'DIDI')
-    l_macr  = isfonc(list_func_acti,'MACR_ELEM_STAT')
+    l_didi = isfonc(list_func_acti, 'DIDI')
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 !
 ! - Initial time
 !
-    time_init = diinst(sddisc,0)
+    time_init = diinst(sddisc, 0)
 !
 ! - Get previous time
 !
@@ -128,8 +128,8 @@ type(NL_DS_InOut), intent(in) :: ds_inout
 !
     if (abs(time_prev_step-time_init) .le. r8prem()) then
         l_comp_mstp = ASTER_FALSE
-        call utmess('A','DYNAMIQUE_52')
-    endif
+        call utmess('A', 'DYNAMIQUE_52')
+    end if
 !
 ! - Computation
 !
@@ -140,9 +140,9 @@ type(NL_DS_InOut), intent(in) :: ds_inout
         call nmvcex('INST', varc_prev, time_prev)
         call copisd('CHAMP_GD', 'V', time_prev, varc_curr(1:14)//'.INST')
         call nmvcex('INST', varc_curr, time_curr)
-        call mecact('V', time_prev, 'MODELE', model(1:8)//'.MODELE', 'INST_R',&
-                   ncmp=1, nomcmp='INST', sr=time_prev_step)
-        call mecact('V', time_curr, 'MODELE', model(1:8)//'.MODELE', 'INST_R',&
+        call mecact('V', time_prev, 'MODELE', model(1:8)//'.MODELE', 'INST_R', &
+                    ncmp=1, nomcmp='INST', sr=time_prev_step)
+        call mecact('V', time_curr, 'MODELE', model(1:8)//'.MODELE', 'INST_R', &
                     ncmp=1, nomcmp='INST', sr=time_init)
 ! ----- Create external state variables
         call nmvcle(model, ds_material%mater, cara_elem, time_prev_step, varc_prev)
@@ -185,42 +185,41 @@ type(NL_DS_InOut), intent(in) :: ds_inout
         call nmcha0('VEASSE', 'CNSSTF', cnsstf, hval_veasse)
         call nmcha0('VEASSE', 'CNSSTR', cnsstr, hval_veasse)
 
-
 ! ----- Set in the datastructure ds_system
-        ds_system%veinte   = vefint
-        ds_system%cnfint   = cnfint
+        ds_system%veinte = vefint
+        ds_system%cnfint = cnfint
         ds_system%nume_dof = nume_dof
 ! ----- Compute forces from macro-elements
         if (l_macr) then
             call nmchex(hval_incr, 'VALINC', 'DEPMOI', disp_prev)
-            call nonlinSubStruCompute(ds_measure , disp_prev  ,&
+            call nonlinSubStruCompute(ds_measure, disp_prev, &
                                       hval_measse, cnsstr)
-        endif
+        end if
 ! ----- Compute internal forces
-        call nonlinIntForce(CORR_NEWTON   ,&
-                            model         , cara_elem      ,&
-                            list_func_acti, iter_newt      , sdnume,&
-                            ds_material   , ds_constitutive,&
-                            ds_system     , ds_measure     ,&
-                            hval_incr     , hval_algo      ,&
+        call nonlinIntForce(CORR_NEWTON, &
+                            model, cara_elem, &
+                            list_func_acti, iter_newt, sdnume, &
+                            ds_material, ds_constitutive, &
+                            ds_system, ds_measure, &
+                            hval_incr, hval_algo, &
                             ldccvg)
 ! ----- Compute forces
         mode = 'FIXE'
-        call nonlinLoadCompute(mode          , list_load      ,&
-                               model         , cara_elem      , nume_dof  , list_func_acti,&
-                               ds_material   , ds_constitutive, ds_measure,&
-                               time_prev_step, time_init,&
-                               hval_incr     , hval_algo         ,&
-                               hval_veelem   , hval_veasse)
-        call nonlinLoadDynaCompute(mode          , sddyna     ,&
-                                   model         , nume_dof   ,&
-                                   ds_material   , ds_measure , ds_inout,&
-                                   time_prev_step, time_init  ,&
-                                   hval_veelem   , hval_veasse)
+        call nonlinLoadCompute(mode, list_load, &
+                               model, cara_elem, nume_dof, list_func_acti, &
+                               ds_material, ds_constitutive, ds_measure, &
+                               time_prev_step, time_init, &
+                               hval_incr, hval_algo, &
+                               hval_veelem, hval_veasse)
+        call nonlinLoadDynaCompute(mode, sddyna, &
+                                   model, nume_dof, &
+                                   ds_material, ds_measure, ds_inout, &
+                                   time_prev_step, time_init, &
+                                   hval_veelem, hval_veasse)
 ! ----- Compute vector for DIDI loads
         if (l_didi) then
-            call nmdidi(ds_inout   , model      , list_load, nume_dof, hval_incr,&
+            call nmdidi(ds_inout, model, list_load, nume_dof, hval_incr, &
                         hval_veelem, hval_veasse)
-        endif
-    endif
+        end if
+    end if
 end subroutine

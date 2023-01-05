@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcicma(a, la, ca, lc, cc,&
-                  xa, ya, b, lb, cb,&
+subroutine lcicma(a, la, ca, lc, cc, &
+                  xa, ya, b, lb, cb, &
                   xb, yb)
     implicit none
 !       INCLUSION D UNE SOUS MATRICE C(LC,CC) SE TROUVANT
@@ -37,7 +37,7 @@ subroutine lcicma(a, la, ca, lc, cc,&
 !
     do i = 1, lc
         do j = 1, cc
-            b ( xb+i-1 , yb+j-1 ) = a ( xa+i-1 , ya+j-1 )
+            b(xb+i-1, yb+j-1) = a(xa+i-1, ya+j-1)
         end do
     end do
 end subroutine

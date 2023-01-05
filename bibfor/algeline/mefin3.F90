@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function mefin3(nbz, nbgrp, imod, icyl, jmod,&
-                jcyl, z, f1, f2, f3,&
+function mefin3(nbz, nbgrp, imod, icyl, jmod, &
+                jcyl, z, f1, f2, f3, &
                 g, h)
     implicit none
 !
@@ -67,27 +67,27 @@ function mefin3(nbz, nbgrp, imod, icyl, jmod,&
 !     A GAUCHE ET A DROITE
 !     ------------------------------------------------
 !
-    h(1) = (f2(nbz2+2,jmod)-f2(nbz2+1,jmod))/(z(2)-z(1))
+    h(1) = (f2(nbz2+2, jmod)-f2(nbz2+1, jmod))/(z(2)-z(1))
 !
     do n = 2, nbz-1
-        h(n) = (&
-               (&
-               f2(n+nbz2+1,jmod)-f2(n+nbz2,jmod))*(z(n+1)-z(n)) +(f2(n+nbz2-1,jmod)-f2(n+nbz2,jmo&
-               &d))*(z(n-1)-z(n))) /((z(n+1)- z(n))*(z(n+1)-z(n)) +(z(n-1)-z(n))*(z(n-1)-z(n)&
-               )&
+        h(n) = ( &
+               ( &
+              f2(n+nbz2+1, jmod)-f2(n+nbz2, jmod))*(z(n+1)-z(n))+(f2(n+nbz2-1, jmod)-f2(n+nbz2, jmo&
+               &d))*(z(n-1)-z(n)))/((z(n+1)-z(n))*(z(n+1)-z(n))+(z(n-1)-z(n))*(z(n-1)-z(n) &
+               ) &
                )
     end do
 !
-    h(nbz) = (f2(nbz*jcyl,jmod)-f2(nbz*jcyl-1,jmod))/ (z(nbz)-z(nbz-1))
+    h(nbz) = (f2(nbz*jcyl, jmod)-f2(nbz*jcyl-1, jmod))/(z(nbz)-z(nbz-1))
 !
     g(1) = (h(2)-h(1))/(z(2)-z(1))
 !
     do n = 2, nbz-1
-        g(n) = (&
-               (&
-               h(n+1)-h(n))*(z(n+1)-z(n)) +(h(n-1)-h(n))*(z(n-1)-z( n))) /((z(n+1)-z(n))*(z(n+1)-&
-               &z(n)) +(z(n-1)-z(n))*(z(n-1)-z(n)&
-               )&
+        g(n) = ( &
+               ( &
+               h(n+1)-h(n))*(z(n+1)-z(n))+(h(n-1)-h(n))*(z(n-1)-z(n)))/((z(n+1)-z(n))*(z(n+1)-&
+               &z(n))+(z(n-1)-z(n))*(z(n-1)-z(n) &
+               ) &
                )
     end do
 !
@@ -96,8 +96,8 @@ function mefin3(nbz, nbgrp, imod, icyl, jmod,&
     mefin3 = 0.d0
 !
     do n = 1, nbz-1
-        mefin3 = mefin3+0.5d0*(&
-                 z(n+1)-z(n))* (f3(n+1)*f1(n+nbz1+1, imod)*g(n+1) +f3(n)*f1(n+nbz1,imod)*g(n))
+        mefin3 = mefin3+0.5d0*( &
+                 z(n+1)-z(n))*(f3(n+1)*f1(n+nbz1+1, imod)*g(n+1)+f3(n)*f1(n+nbz1, imod)*g(n))
     end do
 !
 end function

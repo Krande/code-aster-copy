@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine romBasePrintInfo(base)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/romModePrintInfo.h"
 !
-type(ROM_DS_Empi), intent(in) :: base
+    type(ROM_DS_Empi), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,18 +43,18 @@ type(ROM_DS_Empi), intent(in) :: base
 !
     call utmess('I', 'ROM12_10')
     if (base%nbMode .ne. 0) then
-        call utmess('I', 'ROM12_11', si = base%nbMode)
-    endif
+        call utmess('I', 'ROM12_11', si=base%nbMode)
+    end if
     if (base%baseType .eq. 'LINEIQUE') then
         call utmess('I', 'ROM12_12')
-        call utmess('I', 'ROM12_13', sk = base%lineicAxis)
-        call utmess('I', 'ROM12_14', sk = base%lineicSect)
+        call utmess('I', 'ROM12_13', sk=base%lineicAxis)
+        call utmess('I', 'ROM12_14', sk=base%lineicSect)
     else
         call utmess('I', 'ROM12_15')
-    endif
+    end if
     if (base%nbSnap .ne. 0) then
-        call utmess('I', 'ROM12_16', si = base%nbSnap)
-    endif
+        call utmess('I', 'ROM12_16', si=base%nbSnap)
+    end if
     call utmess('I', 'ROM12_17')
     call romModePrintInfo(base%mode)
 !

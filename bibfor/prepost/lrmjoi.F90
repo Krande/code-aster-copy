@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine lrmjoi(fid, nommail, nomam2, nbnoeu)
 !
-use sort_module
+    use sort_module
 !
     implicit none
 #include "asterf.h"
@@ -85,7 +85,7 @@ use sort_module
 !
     call jemarq()
 !
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
@@ -108,7 +108,7 @@ use sort_module
     call wkvect(mesh//'.NOEX', 'G V I', nbnoeu, vi=v_noext)
     v_noext(1:nbnoeu) = rang
 !
-    if ( nbproc > 1 ) then
+    if (nbproc > 1) then
 !
 ! --- Récupération de la numérotation globale des noeuds
 !
@@ -130,11 +130,11 @@ use sort_module
 !
         nbjoin_max = nbjoin
         call asmpi_comm_vect("MPI_MAX", "I", sci=nbjoin_max)
-        if(nbjoin_max == 0) then
+        if (nbjoin_max == 0) then
             call utmess('A', 'MAILLAGE1_5', sk=nomam2)
         end if
 
-        if(nbjoin > 0) then
+        if (nbjoin > 0) then
             call wkvect(mesh//'.DOMJOINTS', 'G V I', nbjoin/2, vi=v_dom)
 !
 ! --- Boucle sur les joints entre les sous-domaines
@@ -142,47 +142,47 @@ use sort_module
             incr = 0
             do i_join = 1, nbjoin
                 call as_msdjni(fid, nomam2, i_join, nomjoi, descri, domdis, &
-                            nommad, nstep, ncorre, codret)
+                               nommad, nstep, ncorre, codret)
                 ASSERT(domdis <= nbproc)
                 ASSERT(ncorre == 1)
 !
                 do icor = 1, ncorre
                     call as_msdszi(fid, nomam2, nomjoi, MED_NO_DT, MED_NO_IT, icor, entlcl, &
-                                geolcl, entdst, geodst, ncorr2, codret)
+                                   geolcl, entdst, geodst, ncorr2, codret)
 
                     call decode_join(nomjoi, dom1, dom2)
 !
-                    if ( entlcl.eq.MED_NODE.and.geolcl.eq.MED_NONE ) then
+                    if (entlcl .eq. MED_NODE .and. geolcl .eq. MED_NONE) then
                         call codlet(domdis, 'G', chdomdis)
-                        if ( dom1.eq.rang ) then
+                        if (dom1 .eq. rang) then
                             nojoin = mesh//'.R.'//chdomdis
-                            incr = incr + 1
+                            incr = incr+1
                             v_dom(incr) = domdis
                         else
                             nojoin = mesh//'.E.'//chdomdis
-                        endif
+                        end if
 !
 ! --- Récupération de la table de correspondance pour les noeuds partagés par 2 sous-domaines
 !
                         call wkvect(nojoin, 'V V I', 2*ncorr2, vi=v_nojoin)
                         call as_msdcrr(fid, nomam2, nomjoi, -1, -1, entlcl, &
-                                    geolcl, entdst, geodst, 2*ncorr2, &
-                                    v_nojoin, codret)
+                                       geolcl, entdst, geodst, 2*ncorr2, &
+                                       v_nojoin, codret)
 !
 ! --- On récupère le numéro du sous-domaine pour les noeuds partagés
 !
-                        if(dom1.eq.rang) then
+                        if (dom1 .eq. rang) then
                             deca = 1
                             do ino = 1, ncorr2
                                 numno = v_nojoin(deca)
                                 v_noext(numno) = -1
-                                deca = deca +2
+                                deca = deca+2
                             end do
                         end if
 !
-                    endif
-                enddo
-            enddo
+                    end if
+                end do
+            end do
 !
             call sort_i8(v_dom, nbjoin/2)
         end if
@@ -194,24 +194,24 @@ use sort_module
 ! --- Verification NOEX
 !
         do ino = 1, nbnoeu
-            ASSERT(v_noext(ino).ne.-1)
+            ASSERT(v_noext(ino) .ne. -1)
         end do
 !
     else
         do ino = 1, nbnoeu
-            zi(jnlogl + ino - 1) = ino - 1
+            zi(jnlogl+ino-1) = ino-1
         end do
-    endif
+    end if
 !
 ! --- Creation .MAEX
 !
-    connex = mesh //'.CONNEX'
+    connex = mesh//'.CONNEX'
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
     call wkvect(mesh//'.MAEX', 'G V I', nbma, vi=v_maex)
     v_maex(1:nbma) = ismaem()
     do ima = 1, nbma
-        call jelira(jexnum(connex , ima), 'LONMAX', nbnoma)
-        call jeveuo(jexnum(connex , ima), 'L', vi=v_connex)
+        call jelira(jexnum(connex, ima), 'LONMAX', nbnoma)
+        call jeveuo(jexnum(connex, ima), 'L', vi=v_connex)
         do ino = 1, nbnoma
             node_id = v_connex(ino)
             v_maex(ima) = min(v_maex(ima), v_noext(node_id))
@@ -224,8 +224,8 @@ use sort_module
     call jedetr(nomnoe)
     call jecreo(nomnoe, 'G N K8')
     call jeecra(nomnoe, 'NOMMAX', nbnoeu)
-    do ino = 1 , nbnoeu
-        call codlet(zi(jnlogl + ino - 1), 'G', code)
+    do ino = 1, nbnoeu
+        call codlet(zi(jnlogl+ino-1), 'G', code)
         nom = 'N'//code
         call jecroc(jexnom(nomnoe, nom))
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,9 +37,9 @@ subroutine lcrofg(y, dp, s, seuil, dseuil)
 !
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
-    common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
+    common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
+     &               pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
@@ -51,11 +51,11 @@ subroutine lcrofg(y, dp, s, seuil, dseuil)
     real(kind=8) :: etr(6), dvetr(6), eqetr, tretr, detrdf(6, 3, 3)
     real(kind=8) :: dtaude(6, 6)
 !
-    common /gdclc/&
-     &          ind1,ind2,kr,rac2,rc,&
-     &          lambda,mu,deuxmu,unk,troisk,cother,&
-     &          jm,dj,jp,djdf,&
-     &          etr,dvetr,eqetr,tretr,detrdf,&
+    common/gdclc/&
+     &          ind1, ind2, kr, rac2, rc,&
+     &          lambda, mu, deuxmu, unk, troisk, cother,&
+     &          jm, dj, jp, djdf,&
+     &          etr, dvetr, eqetr, tretr, detrdf,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -69,7 +69,7 @@ subroutine lcrofg(y, dp, s, seuil, dseuil)
 ! 2 - CALCUL DU SEUIL ET DE SA DERIVEE
 !
     ddp = sig1*(1+y)*exp(y)/(unk*fonc)
-    seuil = deuxmu*eqetr - s - 3.d0*mu*dp
-    dseuil = - 3.d0*mu*ddp - ds
+    seuil = deuxmu*eqetr-s-3.d0*mu*dp
+    dseuil = -3.d0*mu*ddp-ds
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
-                  jsigse, nno, nbcmp, jcnset, dsg11,&
+subroutine xrmes2(ndim, nbnase, cpt, in, ivois, &
+                  jsigse, nno, nbcmp, jcnset, dsg11, &
                   dsg22, dsg12)
 ! aslint: disable=W1306
     implicit none
@@ -66,26 +66,26 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
 ! ----------------------------------------------------------------------
 !
     if (in .eq. nno) then
-        insui=1
+        insui = 1
     else
-        insui=in+1
-    endif
+        insui = in+1
+    end if
 !
 ! --- ON ETABLIT LA CORRESPONDANCE ENTRE LA NUMEROTATION DES NOEUDS
 ! --- LOCALE À LA MAILLE COURANTE ET LA NUMEROTATION DES NOEUDS LOCALE
 ! --- À LA MAILLE VOISINE. POUR CELA ON UTILISE LA NUMEROTATION XFEM
 !
-    inx=zi(jcnset-1+(ndim+1)*(cpt-1)+in)
-    insux=zi(jcnset-1+(ndim+1)*(cpt-1)+insui)
+    inx = zi(jcnset-1+(ndim+1)*(cpt-1)+in)
+    insux = zi(jcnset-1+(ndim+1)*(cpt-1)+insui)
 !
     do j = 1, nno
-        inxv=zi(jcnset-1+(ndim+1)*(ivois-1)+j)
+        inxv = zi(jcnset-1+(ndim+1)*(ivois-1)+j)
         if (inxv .eq. inx) then
-            inv=j
-        endif
+            inv = j
+        end if
         if (inxv .eq. insux) then
-            invsui=j
-        endif
+            invsui = j
+        end if
     end do
 !
 ! --- LE CAS QUADRATIQUE N'EST PAS PRÉVU CAR LES ELEMENTS SOUS DECOUPE
@@ -94,33 +94,33 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
 ! --- RECUPERATION DES CONTRAINTES AUX NOEUDS DE L'ARRÊTE COURANTE
 ! --- POUR LE SOUS-ELEMENT COURANT
 !
-    sig11(1)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+1)
-    sig11(2)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(insui-1)+1)
+    sig11(1) = zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+1)
+    sig11(2) = zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(insui-1)+1)
 !
-    sig22(1)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+2)
-    sig22(2)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(insui-1)+2)
+    sig22(1) = zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+2)
+    sig22(2) = zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(insui-1)+2)
 !
-    sig12(1)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+4)
-    sig12(2)=zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(insui-1)+4)
+    sig12(1) = zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(in-1)+4)
+    sig12(2) = zr(jsigse-1+nbcmp*nno*(cpt-1)+nbcmp*(insui-1)+4)
 !
 ! --- RECUPERATION DES CONTRAINTES AUX NOEUDS DE L'ARRÊTE COURANTE
 ! --- POUR LE SOUS-ELEMENT VOISIN PAR RAPPORT À CETTE ARRÊTE
 !
-    sigv11(1)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(inv-1)+1)
-    sigv11(2)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(invsui-1)+1)
+    sigv11(1) = zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(inv-1)+1)
+    sigv11(2) = zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(invsui-1)+1)
 !
-    sigv22(1)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(inv-1)+2)
-    sigv22(2)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(invsui-1)+2)
+    sigv22(1) = zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(inv-1)+2)
+    sigv22(2) = zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(invsui-1)+2)
 !
-    sigv12(1)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(inv-1)+4)
-    sigv12(2)=zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(invsui-1)+4)
+    sigv12(1) = zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(inv-1)+4)
+    sigv12(2) = zr(jsigse-1+nbcmp*nno*(ivois-1)+nbcmp*(invsui-1)+4)
 !
 ! --- CALCUL DU SAUT DE CONTRAINTES
 !
     do k = 1, nbnase
-        dsg11(k)=sig11(k)-sigv11(k)
-        dsg22(k)=sig22(k)-sigv22(k)
-        dsg12(k)=sig12(k)-sigv12(k)
+        dsg11(k) = sig11(k)-sigv11(k)
+        dsg22(k) = sig22(k)-sigv22(k)
+        dsg12(k) = sig12(k)-sigv12(k)
     end do
 !
 end subroutine

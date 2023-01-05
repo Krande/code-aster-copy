@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lglmat(mod, imat, nbmat, tempd, materd,&
-                  materf, matcst, ndt, ndi, nr,&
+subroutine lglmat(mod, imat, nbmat, tempd, materd, &
+                  materf, matcst, ndt, ndi, nr, &
                   nvi)
 !
     implicit none
@@ -65,9 +65,9 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( un     =  1.0d0  )
-    parameter       ( deux   =  2.0d0  )
-    parameter       ( trois  =  3.0d0  )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! =================================================================
     call jemarq()
 ! =================================================================
@@ -77,7 +77,7 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! - NOMBRE DE CONDITIONS NON-LINEAIRES ----------------------------
 ! =================================================================
-    nr = ndt + 4
+    nr = ndt+4
 ! =================================================================
 ! --- DEFINITION DES CHAMPS ---------------------------------------
 ! =================================================================
@@ -102,60 +102,60 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
 ! =================================================================
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
-    call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                [tempd], 3, nomc(1), materd(1, 1), cerr(1),&
+    call rcvala(imat, ' ', 'ELAS', 1, 'TEMP', &
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1), &
                 0)
-    call rcvala(imat, ' ', 'LAIGLE', 1, 'TEMP',&
-                [tempd], 14, nomc(4), materd(1, 2), cerr(4),&
+    call rcvala(imat, ' ', 'LAIGLE', 1, 'TEMP', &
+                [tempd], 14, nomc(4), materd(1, 2), cerr(4), &
                 0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
-    e = materd(1,1)
-    nu = materd(2,1)
-    mu = e / (deux*(un+nu))
-    k = e / (trois*(un-deux*nu))
+    e = materd(1, 1)
+    nu = materd(2, 1)
+    mu = e/(deux*(un+nu))
+    k = e/(trois*(un-deux*nu))
 ! =================================================================
 ! - VERIFICATIONS -------------------------------------------------
 ! =================================================================
-    gamma = materd(10,2)
-    ksi = materd(11,2)
+    gamma = materd(10, 2)
+    ksi = materd(11, 2)
     if ((gamma/ksi) .gt. un) then
         call utmess('F', 'ALGORITH5_11')
-    endif
+    end if
 ! =================================================================
 ! --- STOCKAGE DES MODULES CALCULES COMME PARAMETRES MATERIAU -----
 ! =================================================================
-    materd(4,1) = mu
-    materd(5,1) = k
+    materd(4, 1) = mu
+    materd(5, 1) = k
 ! =================================================================
 ! --- CALCUL DE SIGMA_P2 ET DECALAGE DE PA ------------------------
 ! =================================================================
-    materd(15,2) = materd(14,2)
-    sigc = materd( 9,2)
-    mult = materd( 3,2)
-    me = materd( 4,2)
-    ae = materd( 5,2)
+    materd(15, 2) = materd(14, 2)
+    sigc = materd(9, 2)
+    mult = materd(3, 2)
+    me = materd(4, 2)
+    ae = materd(5, 2)
     sigmp2 = sigc*((mult/me**ae)**(un/(ae-un)))
-    materd(14,2) = sigmp2
+    materd(14, 2) = sigmp2
 ! =================================================================
 ! --- VERIFICATION DE LA COHERENCE DES PARAMETRES : ---------------
 ! --- SIGMA_C, SIGMA_P1, M_PIC, A_PIC, A_E ET M_E -----------------
 ! =================================================================
-    mpic = materd( 6,2)
-    apic = materd( 7,2)
-    sigmp1 = materd(13,2)
+    mpic = materd(6, 2)
+    apic = materd(7, 2)
+    sigmp1 = materd(13, 2)
     cohere =&
      &        abs(sigc/sigmp1*((mpic*sigmp1/sigc+1)**(apic/ae))-me)
     if (cohere .gt. 1.0d-2) then
         call utmess('F', 'ALGORITH5_12')
-    endif
+    end if
 ! =================================================================
 ! --- DEFINITION D'UN MATERIAU FINAL ------------------------------
 ! =================================================================
     do ii = 1, nbmat
-        materf(ii,1) = materd(ii,1)
-        materf(ii,2) = materd(ii,2)
+        materf(ii, 1) = materd(ii, 1)
+        materf(ii, 2) = materd(ii, 2)
     end do
     matcst = 'OUI'
 ! =================================================================

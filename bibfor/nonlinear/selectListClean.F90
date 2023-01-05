@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@
 !
 subroutine selectListClean(selectList)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 !
-type(NL_DS_SelectList), intent(inout) :: selectList
+    type(NL_DS_SelectList), intent(inout) :: selectList
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,6 +42,6 @@ type(NL_DS_SelectList), intent(inout) :: selectList
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    AS_DEALLOCATE(vr = selectList%list_value)
+    AS_DEALLOCATE(vr=selectList%list_value)
 !
 end subroutine

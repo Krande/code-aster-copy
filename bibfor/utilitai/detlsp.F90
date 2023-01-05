@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine detlsp(matasz, solvez)
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/amumph.h"
 #include "asterfort/crsvfm.h"
@@ -56,27 +56,27 @@ subroutine detlsp(matasz, solvez)
     solveu = solvez
     matass = matasz
 !
-    c16bid=dcmplx(0.d0,0.d0)
-    r8bid=0.d0
+    c16bid = dcmplx(0.d0, 0.d0)
+    r8bid = 0.d0
 !
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     metres = slvk(1)
     if (metres .eq. 'PETSC' .or. metres .eq. 'GCPC') then
         precon = slvk(2)
-        if ((precon .eq. 'LDLT_SP').or.(precon.eq. 'LDLT_DP')) then
+        if ((precon .eq. 'LDLT_SP') .or. (precon .eq. 'LDLT_DP')) then
             solvbd = slvk(3)
             pcpivbd = 0
             usersmbd = 'XXXX'
             blrepsbd = -123.d0
             precbd = 'S'
-            rankbd='F'
-            renumbd='XXXXX'
-            call crsvfm(solvbd, matass, precbd, rankbd,pcpivbd, usersmbd, blrepsbd, renumbd, ibid)
-            call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid],&
+            rankbd = 'F'
+            renumbd = 'XXXXX'
+            call crsvfm(solvbd, matass, precbd, rankbd, pcpivbd, usersmbd, blrepsbd, renumbd, ibid)
+            call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid], &
                         ' ', 0, iret, .true._1)
             call detrsd('SOLVEUR', solvbd)
-        endif
-    endif
+        end if
+    end if
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rs_get_listload(result_, nume, list_load, iexcit)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -66,53 +66,53 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result      = result_
-    iexcit      = 0
-    list_load   = ' '
+    result = result_
+    iexcit = 0
+    list_load = ' '
     list_load_r = ' '
 !
 ! - Get from command file
 !
     nb_load_comm = 0
-    if (getexm('EXCIT','CHARGE') .eq. 1) then
+    if (getexm('EXCIT', 'CHARGE') .eq. 1) then
         call getfac('EXCIT', nb_load_comm)
         if (nb_load_comm .ne. 0) then
-            AS_ALLOCATE(vk8 = v_loadc_name, size = nb_load_comm)
-            AS_ALLOCATE(vk8 = v_loadc_func, size = nb_load_comm)
+            AS_ALLOCATE(vk8=v_loadc_name, size=nb_load_comm)
+            AS_ALLOCATE(vk8=v_loadc_func, size=nb_load_comm)
             do i_load_comm = 1, nb_load_comm
-                call getvid('EXCIT', 'CHARGE', iocc=i_load_comm, scal=v_loadc_name(i_load_comm),&
+                call getvid('EXCIT', 'CHARGE', iocc=i_load_comm, scal=v_loadc_name(i_load_comm), &
                             nbret=n1)
                 call getvid('EXCIT', 'FONC_MULT', iocc=i_load_comm, scal=func_name, nbret=n2)
                 if (n2 .ne. 0) then
                     v_loadc_func(i_load_comm) = func_name
-                endif
+                end if
             end do
-        endif
-    endif
-    if (getexm(' ','CHARGE') .eq. 1) then
+        end if
+    end if
+    if (getexm(' ', 'CHARGE') .eq. 1) then
         call getvid(' ', 'CHARGE', nbval=0, nbret=nb_load)
-        nb_load      = -nb_load
-        nb_load_comm = max(1,nb_load)
-        AS_ALLOCATE(vk8 = v_loadc_name, size = nb_load_comm)
-        AS_ALLOCATE(vk8 = v_loadc_func, size = nb_load_comm)
-        call getvid(' ', 'CHARGE', nbval = nb_load, vect=v_loadc_name, nbret=n2)
-    endif
+        nb_load = -nb_load
+        nb_load_comm = max(1, nb_load)
+        AS_ALLOCATE(vk8=v_loadc_name, size=nb_load_comm)
+        AS_ALLOCATE(vk8=v_loadc_func, size=nb_load_comm)
+        call getvid(' ', 'CHARGE', nbval=nb_load, vect=v_loadc_name, nbret=n2)
+    end if
 !
 ! - Get from results datastructure
 !
     call rsadpa(result, 'L', 1, 'EXCIT', nume, 0, sjv=jv_para)
-    list_load_r = zk24(jv_para)(1:19)
+    list_load_r = zk24(jv_para) (1:19)
 !
 ! - Get objects
 !
     nb_load_resu = 0
     if (list_load_r .ne. ' ') then
-        call jeveuo(list_load_r(1:19)//'.LCHA', 'L', vk24 = v_loadr_name)
-        call jeveuo(list_load_r(1:19)//'.INFC', 'L', vi   = v_loadr_info)
-        call jeveuo(list_load_r(1:19)//'.FCHA', 'L', vk24 = v_loadr_func)
+        call jeveuo(list_load_r(1:19)//'.LCHA', 'L', vk24=v_loadr_name)
+        call jeveuo(list_load_r(1:19)//'.INFC', 'L', vi=v_loadr_info)
+        call jeveuo(list_load_r(1:19)//'.FCHA', 'L', vk24=v_loadr_func)
         nb_load_resu = v_loadr_info(1)
-        list_load    = list_load_r
-    endif
+        list_load = list_load_r
+    end if
 !
 ! - Some checks between stored in results datastructure or from command file
 !
@@ -124,15 +124,15 @@ implicit none
             vali(1) = nb_load_comm
             vali(2) = nb_load_resu
             call utmess('A', 'RESULT1_65', ni=2, vali=vali)
-        endif
+        end if
 !
 ! ----- Name of loads
 !
         do i_load_comm = 1, nb_load_comm
             do i_load_resu = 1, nb_load_resu
-                if (v_loadc_name(i_load_comm) .eq. v_loadr_name(i_load_resu)(1:8)) then
+                if (v_loadc_name(i_load_comm) .eq. v_loadr_name(i_load_resu) (1:8)) then
                     goto 30
-                endif
+                end if
             end do
             call utmess('A', 'RESULT1_40')
 30          continue
@@ -142,16 +142,16 @@ implicit none
 !
         do i_load_comm = 1, nb_load_comm
             do i_load_resu = 1, nb_load_resu
-                func_name = v_loadr_func(i_load_resu)(1:8)
+                func_name = v_loadr_func(i_load_resu) (1:8)
                 if (func_name(1:2) .eq. '&&') then
                     func_name = ' '
-                endif
+                end if
                 if (v_loadc_func(i_load_comm) .eq. func_name) then
                     goto 60
-                endif
+                end if
                 if (func_name .eq. ' ') then
                     goto 60
-                endif
+                end if
             end do
             call utmess('A', 'RESULT1_41')
 60          continue
@@ -161,38 +161,38 @@ implicit none
 !
         do i_load_comm = 1, nb_load_comm
             do i_load_resu = 1, nb_load_resu
-                if (v_loadc_name(i_load_comm) .eq. v_loadr_name(i_load_resu)(1:8)) then
-                    func_name = v_loadr_func(i_load_resu)(1:8)
+                if (v_loadc_name(i_load_comm) .eq. v_loadr_name(i_load_resu) (1:8)) then
+                    func_name = v_loadr_func(i_load_resu) (1:8)
                     if (func_name(1:2) .eq. '&&') then
                         func_name = ' '
-                    endif
+                    end if
                     if (v_loadc_func(i_load_comm) .eq. func_name) then
                         goto 95
-                    endif
+                    end if
                     valk(1) = v_loadc_name(i_load_comm)
                     valk(2) = v_loadc_func(i_load_comm)
-                    valk(3) = v_loadr_name(i_load_resu)(1:8)
-                    valk(4) = v_loadr_func(i_load_resu)(1:8)
+                    valk(3) = v_loadr_name(i_load_resu) (1:8)
+                    valk(4) = v_loadr_func(i_load_resu) (1:8)
                     call utmess('A', 'RESULT1_66', nk=4, valk=valk)
-                endif
+                end if
             end do
 95          continue
         end do
-    endif
+    end if
 !
 ! - Cleaning
 !
-    AS_DEALLOCATE(vk8 = v_loadc_name)
-    AS_DEALLOCATE(vk8 = v_loadc_func)
+    AS_DEALLOCATE(vk8=v_loadc_name)
+    AS_DEALLOCATE(vk8=v_loadc_func)
 !
 ! - Where loads are coming from ?
 !
     iexcit = 0
     if (nb_load_comm .ne. 0) then
         iexcit = 1
-    endif
+    end if
     if (nb_load_comm .eq. 0 .and. list_load_r(1:1) .eq. ' ') then
         iexcit = 1
-    endif
+    end if
 !
 end subroutine

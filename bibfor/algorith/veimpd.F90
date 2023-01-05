@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=4)
+    parameter(nbout=1, nbin=4)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=19) :: vecele
@@ -87,11 +87,11 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
         debug = .true.
     else
         debug = .false.
-    endif
+    end if
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
+    call inical(nbin, lpain, lchin, nbout, lpaout, &
                 lchout)
 !
 ! --- CHAMPS D'ENTREE
@@ -116,15 +116,15 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
 !
 ! --- CALCUL
 !
-    call corich('E', lchout(1), ichin_ = -1)
-    call calcul('S', option, ligrmo, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
+    call corich('E', lchout(1), ichin_=-1)
+    call calcul('S', option, ligrmo, nbin, lchin, &
+                lpain, nbout, lchout, lpaout, 'V', &
                 'OUI')
 !
     if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+        call dbgcal(option, ifmdbg, nbin, lpain, lchin, &
                     nbout, lpaout, lchout)
-    endif
+    end if
 !
     call reajre(vecele, lchout(1), 'V')
 !

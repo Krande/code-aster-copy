@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
-                  jordr, jcoef, nbpt, ntcmp, numcmp,&
+subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr, &
+                  jordr, jcoef, nbpt, ntcmp, numcmp, &
                   impr, vdomag)
 ! aslint: disable=W1306
     implicit none
@@ -99,7 +99,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
         valk(1) = nomsym
         valk(2) = nomsd
         call utmess('F', 'PREPOST_51', nk=2, valk=valk)
-    endif
+    end if
     call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
 !
     call jenonu(jexnom(nomsd2//'.DESC', nomsym), numsym)
@@ -107,19 +107,19 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
         valk(1) = nomsym
         valk(2) = nomsd2
         call utmess('F', 'PREPOST_51', nk=2, valk=valk)
-    endif
+    end if
     call jeveuo(jexnum(nomsd2//'.TACH', numsym), 'L', ivch2)
 !
 ! RECUPERATION PROPRIETES MATERIAUX
 !
     nomrm(1) = 'SU'
     nompar = ' '
-    call rcvale(nommat, 'RCCM', 0, nompar, [r8b],&
+    call rcvale(nommat, 'RCCM', 0, nompar, [r8b], &
                 1, nomrm, val, icodre(1), 2)
     if (icodre(1) .ne. 0) then
         valk(1) = 'SU'
         call utmess('F', 'FATIGUE1_88', sk=valk(1))
-    endif
+    end if
     su = val(1)
 !
     nomphe = 'FATIGUE   '
@@ -133,8 +133,8 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
         if (zk16(ivalk-1+nbr+nbc+ik) .eq. 'WOHLER') then
             nomfon = zk16(ivalk-1+nbr+nbc+nbf+ik)
             call jeveuo(nomfon//'           .VALE', 'L', vr=vale)
-            salt0=vale(1)
-        endif
+            salt0 = vale(1)
+        end if
     end do
 !
     valr(1) = su
@@ -143,30 +143,30 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !
     icmp = 1
     dmin = 1.d10
-    smax= 0.d0
+    smax = 0.d0
     crit = .false.
     r8min = r8miem()
 !
 ! ---       CALCUL DU VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
 !
-    chequi = zk24(ivch)(1:19)
+    chequi = zk24(ivch) (1:19)
     if (chequi .eq. ' ') then
         valk(1) = chequi
         valk(2) = nomsym
         valk(3) = nomsd
         call utmess('F', 'PREPOST_52', nk=3, valk=valk)
-    endif
+    end if
     call jeveuo(chequi//'.CELV', 'L', vr=celv)
 !
     do iord = 1, nbordr
         numord = zi(jordr+iord-1)
-        chequ2(iord) = zk24(ivch2+numord-1)(1:19)
+        chequ2(iord) = zk24(ivch2+numord-1) (1:19)
         if (chequ2(iord) .eq. ' ') then
             valk(1) = chequ2(iord)
             valk(2) = nomsym
             valk(3) = nomsd2
             call utmess('F', 'PREPOST_52', nk=3, valk=valk)
-        endif
+        end if
         call jeveuo(chequ2(iord)//'.CELV', 'L', ivord2(iord))
     end do
 !
@@ -178,48 +178,48 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
         zr(ivpt+1) = 0.d0
         do iord = 1, nbordr
             coeff = zr(jcoef+iord-1)
-            zr(ivpt+1) = zr(ivpt+1) + coeff* abs(zr(ivord2(iord)+(ipt- 1)*ntcmp+numcmp(icmp)-1))
+            zr(ivpt+1) = zr(ivpt+1)+coeff*abs(zr(ivord2(iord)+(ipt-1)*ntcmp+numcmp(icmp)-1))
         end do
 !
         if (zr(ivpt) .gt. su) then
             if (impr .ge. 2) then
                 call utmess('I', 'FATIGUE1_80')
-            endif
+            end if
             saltm = 0.d0
             crit = .true.
-            smax = max(zr(ivpt) , smax)
+            smax = max(zr(ivpt), smax)
         else if (zr(ivpt) .gt. 0.d0) then
             if (kcorre .eq. 'GOODMAN') then
-                saltm = salt0 *(1 - zr(ivpt)/su )
-            else if (kcorre.eq.'GERBER') then
-                saltm = salt0 *(1 - (zr(ivpt)/su)**2 )
-            endif
+                saltm = salt0*(1-zr(ivpt)/su)
+            else if (kcorre .eq. 'GERBER') then
+                saltm = salt0*(1-(zr(ivpt)/su)**2)
+            end if
         else
             saltm = salt0
-        endif
+        end if
 !
         if (abs(zr(ivpt+1)) .gt. r8min) then
-            dmax = saltm / abs(zr(ivpt+1))
+            dmax = saltm/abs(zr(ivpt+1))
         else
             dmax = 1.d10
-        endif
+        end if
         if (dmax .lt. dmin) dmin = dmax
 !
         vdomag(ipt) = dmax
         if (impr .ge. 2) then
-            valr (1) = zr(ivpt)
-            valr (2) = zr(ivpt+1)
-            valr (3) = dmax
+            valr(1) = zr(ivpt)
+            valr(2) = zr(ivpt+1)
+            valr(3) = dmax
             call utmess('I', 'FATIGUE1_79', si=ipt, nr=3, valr=valr)
-        endif
+        end if
 !
     end do
 !
     if (crit) then
-        valr (1) = smax
-        valr (2) = su
+        valr(1) = smax
+        valr(2) = su
         call utmess('A', 'FATIGUE1_83', nr=2, valr=valr)
-    endif
+    end if
     call utmess('I', 'FATIGUE1_82', sr=dmin)
 !
 !

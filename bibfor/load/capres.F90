@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 !
 subroutine capres(load, mesh, model, geomDime, valeType, nbOccPresRep)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/capres_skin.h"
 #include "asterfort/capres_volu.h"
 #include "asterfort/dismoi.h"
 !
-character(len=8), intent(in)  :: load, mesh, model
-integer, intent(in) :: geomDime
-character(len=4), intent(in)  :: valeType
-integer, intent(in) :: nbOccPresRep
+    character(len=8), intent(in)  :: load, mesh, model
+    integer, intent(in) :: geomDime
+    character(len=4), intent(in)  :: valeType
+    integer, intent(in) :: nbOccPresRep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,9 +56,9 @@ integer, intent(in) :: nbOccPresRep
     call capres_skin(load, mesh, model, geomDime, valeType, nbOccPresRep)
 
 ! - For volumic elements
-    call dismoi('EXI_COQSOL', model, 'MODELE', repk = answer)
+    call dismoi('EXI_COQSOL', model, 'MODELE', repk=answer)
     if (answer .eq. 'OUI') then
         call capres_volu(load, mesh, valeType, nbOccPresRep)
-    endif
+    end if
 !
 end subroutine

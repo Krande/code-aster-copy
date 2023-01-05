@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine pregms(igmsh, imod)
     integer :: i, imes, nbmail, nbnode, versio, maxnod, nbtyma
     integer :: vali(1)
 !
-    parameter    (maxnod=32,nbtyma=19)
+    parameter(maxnod=32, nbtyma=19)
     integer :: nbnoma(nbtyma), nuconn(nbtyma, maxnod)
     character(len=8) :: nomail(nbtyma)
 !
@@ -76,68 +76,68 @@ subroutine pregms(igmsh, imod)
 !
 ! --- LECTURE EN DEBUT DU FICHIER .GMSH POUR DETERMINER LE FORMAT :
 !     -----------------------------------------
-    read(igmsh,*) debfic
+    read (igmsh, *) debfic
 !
     if (debfic(1:4) .eq. '$NOD') then
         versio = 1
-    else if (debfic(1:11).eq.'$MeshFormat') then
+    else if (debfic(1:11) .eq. '$MeshFormat') then
         versio = 2
-        read(igmsh,*)
-        read(igmsh,*)
- 20     continue
-        read(igmsh,*) debno
+        read (igmsh, *)
+        read (igmsh, *)
+20      continue
+        read (igmsh, *) debno
         if (debno(1:6) .ne. '$Nodes') then
             goto 20
-        endif
+        end if
     else
         call utmess('F', 'PREPOST6_38')
-    endif
+    end if
 !
     call utmess('I', 'PREPOST6_39')
-    vali(1)=versio
+    vali(1) = versio
     call utmess('I', 'PREPOST6_40', si=vali(1))
 !
 ! --- ECRITURE DU TITRE DANS LE FICHIER .MAIL :
 !     ---------------------------------------
-    write(imod,'(A)') 'TITRE'
+    write (imod, '(A)') 'TITRE'
 !
 ! --- ECRITURE DE LA DATE DU JOUR :
 !     ---------------------------
     call jjmmaa(ct, aut)
     aut1 = 'INTERFACE_GMSH'
-    write(imod,'(9X,2A,17X,A,A2,A,A2,A,A4)')'AUTEUR=',aut1,'DATE=',&
-     &  ct(1)(1:2),'/',ct(2)(1:2),'/',ct(3)
-    write(imod,'(A)') 'FINSF'
-    write(imod,'(A)') '%'
+    write (imod, '(9X,2A,17X,A,A2,A,A2,A,A4)') 'AUTEUR=', aut1, 'DATE=',&
+     &  ct(1) (1:2), '/', ct(2) (1:2), '/', ct(3)
+    write (imod, '(A)') 'FINSF'
+    write (imod, '(A)') '%'
 !
 ! --- LECTURE DES NOEUDS ET DE LEURS COORDONNEES DANS LE FICHIER .GMSH:
 !     ----------------------------------------------------------------
-    write(imes,*)
-    write(imes,*) 'LECTURE DES NOEUDS ET DE LEURS COORDONNEES'
+    write (imes, *)
+    write (imes, *) 'LECTURE DES NOEUDS ET DE LEURS COORDONNEES'
     call gmlneu(igmsh, nbnode)
 !
 ! --- FIN DE LA LECTURE DES NOEUDS :
 !     ----------------------------
-    read(igmsh,*) finnod
+    read (igmsh, *) finnod
 !
-    if ((finnod(1:7).ne.'$ENDNOD') .and. (finnod(1:9).ne.'$EndNodes')) then
+    if ((finnod(1:7) .ne. '$ENDNOD') .and. (finnod(1:9) .ne. '$EndNodes')) then
         call utmess('F', 'PREPOST6_41')
-    endif
+    end if
 !
 ! --- DEBUT DE LA LECTURE DES ELEMENTS DANS LE FICHIER .GMSH :
 !     ------------------------------------------------------
-    write(imes,*)
-    write(imes,*) 'LECTURE DES MAILLES'
-    read(igmsh,*) debelm
+    write (imes, *)
+    write (imes, *) 'LECTURE DES MAILLES'
+    read (igmsh, *) debelm
 !
-    if ((debelm(1:4).ne.'$ELM') .and. (debelm(1:9).ne.'$Elements')) then
+    if ((debelm(1:4) .ne. '$ELM') .and. (debelm(1:9) .ne. '$Elements')) then
         call utmess('F', 'PREPOST6_42')
-    endif
+    end if
 !
 !
 ! --- LECTURE DES MAILLES ET DES GROUP_MA :
 !     -----------------------------------
-    call gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
+    call gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
                 nuconn, versio)
 !
 ! --- ECRITURE DES NOEUDS ET DE LEURS COORDONNEES DANS LE FICHIER .MAIL:
@@ -146,7 +146,7 @@ subroutine pregms(igmsh, imod)
 !
 ! --- ECRITURE DES MAILLES ET DES GROUP_MA DANS LE FICHIER .MAIL :
 !     ----------------------------------------------------------
-    call gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
+    call gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
                 nbmail)
 !
 ! --- MENAGE :

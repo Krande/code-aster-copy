@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
-                  nchond, vecond, veonde, vaonde, temps,&
+subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
+                  nchond, vecond, veonde, vaonde, temps, &
                   foonde)
     implicit none
 #include "jeveux.h"
@@ -34,7 +34,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
 #include "asterfort/reajre.h"
 #include "asterfort/vrcins.h"
 !
-    integer :: i, ibid, iret, j,  jvaond
+    integer :: i, ibid, iret, j, jvaond
     integer :: nchond, neq, npain
     character(len=8) :: lpain(6), lpaout(1), chondp(nchond)
     character(len=24) :: modele, mateco, numedd, vecond
@@ -56,7 +56,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
     end do
 !
     chinst = '&&CHINST'
-    call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
+    call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=temps)
     ligrel = modele(1:8)//'.MODELE'
     call jeveuo(ligrel(1:19)//'.LGRF', 'L', vk8=lgrf)
@@ -65,7 +65,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
 ! --- CREATION CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT
 !
     chvarc = '&&CHME.ONDPL.CHVARC'
-    call vrcins(modele, mate, ' ', temps, chvarc,&
+    call vrcins(modele, mate, ' ', temps, chvarc, &
                 codret)
 !
     lpain(1) = 'PGEOMER'
@@ -93,11 +93,11 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
             lchin(5) = chondp(i)//'.CHME.ONDPL.DESC'
             lchin(6) = chondp(i)//'.CHME.ONDPR.DESC'
 !
-            call calcul('S', 'ONDE_PLAN', ligrel, npain, lchin,&
-                        lpain, 1, lchout, lpaout, 'V',&
+            call calcul('S', 'ONDE_PLAN', ligrel, npain, lchin, &
+                        lpain, 1, lchout, lpaout, 'V', &
                         'OUI')
 !
-            call corich('E', lchout(1), ichin_ = -1)
+            call corich('E', lchout(1), ichin_=-1)
             call jedetr(veonde(1:19)//'.RELR')
             call reajre(veonde, lchout(1), 'V')
             call asasve(veonde, numedd, 'R', vaonde)
@@ -106,11 +106,11 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
             call jeveuo(zk24(jvaond) (1:19)//'.VALE', 'L', vr=vale)
 !
             do j = 1, neq
-                foonde(j) = foonde(j) + vale(j)
+                foonde(j) = foonde(j)+vale(j)
             end do
             call detrsd('CHAMP_GD', zk24(jvaond) (1:19))
 !
-        endif
+        end if
     end do
 !
     call detrsd('CHAMP_GD', chvarc)

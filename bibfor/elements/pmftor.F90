@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,33 +27,33 @@ subroutine pmftor(ety, etz, sk)
 !     SK = MATRICE DE RIGIDITE
 !    -------------------------------------------------------------------
     integer :: ip(12)
-    real(kind=8) :: etz2,ety2
-    data ip/0,1,3,6,10,15,21,28,36,45,55,66/
+    real(kind=8) :: etz2, ety2
+    data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/
 !
     ety2 = ety*ety
     etz2 = etz*etz
 !
 !   rectification pour la torsion
-    sk(ip(4)+4)  =  sk(ip(4)+4) + etz2*sk(ip(2)+2) + ety2*sk(ip(3)+3)
+    sk(ip(4)+4) = sk(ip(4)+4)+etz2*sk(ip(2)+2)+ety2*sk(ip(3)+3)
     sk(ip(10)+4) = -sk(ip(4)+4)
-    sk(ip(10)+10)=  sk(ip(4)+4)
+    sk(ip(10)+10) = sk(ip(4)+4)
 !
 !   terme induit par l'excentricite
-    sk(ip(4)+2)  = -etz*sk(ip(2)+2) + ety*sk(ip(3)+2)
+    sk(ip(4)+2) = -etz*sk(ip(2)+2)+ety*sk(ip(3)+2)
     sk(ip(10)+2) = -sk(ip(4)+2)
-    sk(ip(4)+3)  = -etz*sk(ip(3)+2) + ety*sk(ip(3)+3)
+    sk(ip(4)+3) = -etz*sk(ip(3)+2)+ety*sk(ip(3)+3)
     sk(ip(10)+3) = -sk(ip(4)+3)
-    sk(ip(5)+4)  = -etz*sk(ip(5)+2) + ety*sk(ip(5)+3)
-    sk(ip(6)+4)  = -etz*sk(ip(6)+2) + ety*sk(ip(6)+3)
-    sk(ip(8)+4)  =  sk(ip(10)+2)
-    sk(ip(9)+4)  =  sk(ip(10)+3)
-    sk(ip(11)+4) =  sk(ip(5)+4)
-    sk(ip(12)+4) =  sk(ip(6)+4)
+    sk(ip(5)+4) = -etz*sk(ip(5)+2)+ety*sk(ip(5)+3)
+    sk(ip(6)+4) = -etz*sk(ip(6)+2)+ety*sk(ip(6)+3)
+    sk(ip(8)+4) = sk(ip(10)+2)
+    sk(ip(9)+4) = sk(ip(10)+3)
+    sk(ip(11)+4) = sk(ip(5)+4)
+    sk(ip(12)+4) = sk(ip(6)+4)
     sk(ip(10)+5) = -sk(ip(5)+4)
     sk(ip(10)+6) = -sk(ip(6)+4)
-    sk(ip(10)+8) =  sk(ip(4)+2)
-    sk(ip(10)+9) =  sk(ip(4)+3)
-    sk(ip(11)+10)=  sk(ip(10)+5)
-    sk(ip(12)+10)=  sk(ip(10)+6)
+    sk(ip(10)+8) = sk(ip(4)+2)
+    sk(ip(10)+9) = sk(ip(4)+3)
+    sk(ip(11)+10) = sk(ip(10)+5)
+    sk(ip(12)+10) = sk(ip(10)+6)
 !
 end subroutine

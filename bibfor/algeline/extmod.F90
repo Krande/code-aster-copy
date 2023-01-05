@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
+subroutine extmod(basemo, numddl, nume, nbnumo, dmode, &
                   nbeq, nbnoe, iddl, nbddl)
     implicit none
 ! EXTRAIRE D'UN CONCEPT MODE_MECA LA DEFORMEE POUR UN OU PLUSIEURS DDL
@@ -56,21 +56,21 @@ subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
     icm = 0
     do i = 1, nbnumo
         inumo = nume(i)
-        call rsexch('F', basemo, 'DEPL', inumo, nomcha,&
+        call rsexch('F', basemo, 'DEPL', inumo, nomcha, &
                     iret)
         nomcha = nomcha(1:19)//'.VALE'
         call jeveuo(nomcha, 'L', iadmod)
-        ipm = ipm + icm
+        ipm = ipm+icm
         icm = 0
         do j = 1, nbeq
             do k = 1, nbddl
                 if (zi(ideeq+(2*j)-1) .eq. iddl(k)) then
-                    icm = icm + 1
+                    icm = icm+1
                     dmode(ipm+icm) = zr(iadmod+j-1)
                     goto 22
-                endif
+                end if
             end do
- 22         continue
+22          continue
         end do
     end do
 !

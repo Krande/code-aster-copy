@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caraun(sdcont, nzocu , nbgdcu, coefcu,&
+subroutine caraun(sdcont, nzocu, nbgdcu, coefcu, &
                   compcu, multcu, penacu, ntcmp)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: sdcont
-integer, intent(in) :: nzocu
-character(len=24), intent(in) :: nbgdcu, coefcu, compcu, multcu, penacu
-integer, intent(out) :: ntcmp
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: nzocu
+    character(len=24), intent(in) :: nbgdcu, coefcu, compcu, multcu, penacu
+    integer, intent(out) :: ntcmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,9 +95,9 @@ integer, intent(out) :: ntcmp
 !
 ! - Initializations
 !
-    iform       = 4
-    keywf       = 'ZONE'
-    ntcmp       = 0
+    iform = 4
+    keywf = 'ZONE'
+    ntcmp = 0
 !
 ! - Datastructure for contact definition
 !
@@ -116,14 +116,14 @@ integer, intent(out) :: ntcmp
         v_sdcont_paraci(30) = 1
     else if (s_algo_cont .eq. 'PENALISATION') then
         v_sdcont_paraci(30) = 4
-        call wkvect(penacu, 'V V R', nzocu, vr = v_sdunil_penacu)
+        call wkvect(penacu, 'V V R', nzocu, vr=v_sdunil_penacu)
         do i_zone = 1, nzocu
             call getvr8(keywf, 'COEF_PENA', iocc=i_zone, scal=pena)
             v_sdunil_penacu(i_zone) = pena
-        enddo
+        end do
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Parameter
 !
@@ -131,7 +131,7 @@ integer, intent(out) :: ntcmp
 !
 ! - Right-hand side
 !
-    call wkvect(coefcu, 'V V K8', nzocu, vk8 = v_sdunil_coefcu)
+    call wkvect(coefcu, 'V V K8', nzocu, vk8=v_sdunil_coefcu)
     do i_zone = 1, nzocu
         call getvid(keywf, 'COEF_IMPO', iocc=i_zone, scal=ccoef, nbret=noc)
         v_sdunil_coefcu(i_zone) = ccoef
@@ -139,34 +139,34 @@ integer, intent(out) :: ntcmp
 !
 ! - Left-hand side - Count DOF
 !
-    call wkvect(nbgdcu, 'V V I', nzocu+1, vi = v_sdunil_nbgdcu)
+    call wkvect(nbgdcu, 'V V I', nzocu+1, vi=v_sdunil_nbgdcu)
     v_sdunil_nbgdcu(1) = 1
     ntcmp = 0
     do i_zone = 1, nzocu
-        call getvtx(keywf, 'NOM_CMP'  , iocc=i_zone, scal=k8bid, nbret=nbcmp)
+        call getvtx(keywf, 'NOM_CMP', iocc=i_zone, scal=k8bid, nbret=nbcmp)
         call getvid(keywf, 'COEF_MULT', iocc=i_zone, scal=k8bid, nbret=nbcmul)
         if (nbcmp .ne. nbcmul) then
             call utmess('F', 'UNILATER_42')
-        endif
-        nbcmp  = abs(nbcmp)
+        end if
+        nbcmp = abs(nbcmp)
         nbcmul = abs(nbcmul)
-        ntcmp  = ntcmp + nbcmp
+        ntcmp = ntcmp+nbcmp
         if (ntcmp .gt. zmax) then
             call utmess('F', 'UNILATER_43')
-        endif
-        v_sdunil_nbgdcu(i_zone+1) = v_sdunil_nbgdcu(i_zone) + nbcmp
+        end if
+        v_sdunil_nbgdcu(i_zone+1) = v_sdunil_nbgdcu(i_zone)+nbcmp
     end do
 !
-    call wkvect(compcu, 'V V K8', ntcmp, vk8 = v_sdunil_compcu)
-    call wkvect(multcu, 'V V K8', ntcmp, vk8 = v_sdunil_multcu)
+    call wkvect(compcu, 'V V K8', ntcmp, vk8=v_sdunil_compcu)
+    call wkvect(multcu, 'V V K8', ntcmp, vk8=v_sdunil_multcu)
 !
 ! - Left-hand side - List of parameters
 !
     do i_zone = 1, nzocu
-        nbcmp = v_sdunil_nbgdcu(i_zone+1) - v_sdunil_nbgdcu(i_zone)
-        call getvtx(keywf, 'NOM_CMP', iocc=i_zone, nbval=nbcmp, vect=cmpgd,&
+        nbcmp = v_sdunil_nbgdcu(i_zone+1)-v_sdunil_nbgdcu(i_zone)
+        call getvtx(keywf, 'NOM_CMP', iocc=i_zone, nbval=nbcmp, vect=cmpgd, &
                     nbret=noc)
-        call getvid(keywf, 'COEF_MULT', iocc=i_zone, nbval=nbcmp, vect=ccmult,&
+        call getvid(keywf, 'COEF_MULT', iocc=i_zone, nbval=nbcmp, vect=ccmult, &
                     nbret=noc)
         do icmp = 1, nbcmp
             v_sdunil_compcu(v_sdunil_nbgdcu(i_zone)+icmp-1) = cmpgd(icmp)

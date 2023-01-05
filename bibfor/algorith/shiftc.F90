@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ subroutine shiftc(craid, cmass, ndim, valshi)
 !-----------------------------------------------------------------------
     integer :: i, ndim
 !-----------------------------------------------------------------------
-    czero=dcmplx(0.d0,0.d0)
+    czero = dcmplx(0.d0, 0.d0)
 !
     if (valshi .eq. czero) goto 999
 !
     do i = 1, ndim*(ndim+1)/2
-        craid(i)=craid(i)+valshi*cmass(i)
+        craid(i) = craid(i)+valshi*cmass(i)
     end do
 !
 999 continue

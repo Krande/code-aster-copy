@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,21 +42,21 @@ function sdsolv(vect)
 ! ----------------------------------------------------------------------
 !
     integer :: zslvk, zslvr, zslvi, zslvo
-    parameter (zslvk=14,zslvr=5,zslvi=9,zslvo=31)
+    parameter(zslvk=14, zslvr=5, zslvi=9, zslvo=31)
 !
 ! ----------------------------------------------------------------------
 !
 !
     if (vect .eq. 'ZSLVK') then
         sdsolv = zslvk
-    else if (vect.eq.'ZSLVR') then
+    else if (vect .eq. 'ZSLVR') then
         sdsolv = zslvr
-    else if (vect.eq.'ZSLVI') then
+    else if (vect .eq. 'ZSLVI') then
         sdsolv = zslvi
-    else if (vect.eq.'ZSLVO') then
+    else if (vect .eq. 'ZSLVO') then
         sdsolv = zslvo
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end function

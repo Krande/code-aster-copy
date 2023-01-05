@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,28 +17,28 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine thmComputeResidual(ds_thm    , parm_theta, gravity,&
-                              ndim      ,&
-                              dimdef    , dimcon ,&
-                              mecani    , press1 , press2, tempe, &
-                              congem    , congep ,&
-                              time_incr ,&
-                              r         )
+subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
+                              ndim, &
+                              dimdef, dimcon, &
+                              mecani, press1, press2, tempe, &
+                              congem, congep, &
+                              time_incr, &
+                              r)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in)  :: parm_theta, gravity(3)
-integer, intent(in) :: ndim
-integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
-real(kind=8), intent(in) :: time_incr
-real(kind=8), intent(out) :: r(dimdef+1)
+    type(THM_DS), intent(in) :: ds_thm
+    real(kind=8), intent(in)  :: parm_theta, gravity(3)
+    integer, intent(in) :: ndim
+    integer, intent(in) :: dimdef, dimcon
+    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
+    real(kind=8), intent(in) :: time_incr
+    real(kind=8), intent(out) :: r(dimdef+1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,156 +99,156 @@ real(kind=8), intent(out) :: r(dimdef+1)
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         do i = 1, 6
-            r(addeme+ndim+i-1) = r(addeme+ndim+i-1) + congep(adcome+i-1)
+            r(addeme+ndim+i-1) = r(addeme+ndim+i-1)+congep(adcome+i-1)
         end do
         do i = 1, 6
-            r(addeme+ndim+i-1) = r(addeme+ndim-1+i) + congep(adcome+6+i-1)
+            r(addeme+ndim+i-1) = r(addeme+ndim-1+i)+congep(adcome+6+i-1)
         end do
         if (ds_thm%ds_elem%l_dof_pre1) then
             do i = 1, ndim
-                r(addeme+i-1) = r(addeme+i-1) - gravity(i)*congep(adcp11)
+                r(addeme+i-1) = r(addeme+i-1)-gravity(i)*congep(adcp11)
             end do
             if (nbpha1 .gt. 1) then
                 do i = 1, ndim
-                    r(addeme+i-1) = r(addeme+i-1) - gravity(i)*congep(adcp12)
+                    r(addeme+i-1) = r(addeme+i-1)-gravity(i)*congep(adcp12)
                 end do
-            endif
-        endif
+            end if
+        end if
         if (ds_thm%ds_elem%l_dof_pre2) then
             do i = 1, ndim
-                r(addeme+i-1) = r(addeme+i-1) - gravity(i)*congep(adcp21)
+                r(addeme+i-1) = r(addeme+i-1)-gravity(i)*congep(adcp21)
             end do
             if (nbpha2 .gt. 1) then
                 do i = 1, ndim
-                    r(addeme+i-1) = r(addeme+i-1) - gravity(i)*congep(adcp22)
+                    r(addeme+i-1) = r(addeme+i-1)-gravity(i)*congep(adcp22)
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - First pressure DOF
 !
     if (ds_thm%ds_elem%l_dof_pre1) then
-        r(addep1) = r(addep1) - congep(adcp11) + congem(adcp11)
+        r(addep1) = r(addep1)-congep(adcp11)+congem(adcp11)
         if (nbpha1 .gt. 1) then
-            r(addep1) = r(addep1) - congep(adcp12) + congem(adcp12)
-        endif
+            r(addep1) = r(addep1)-congep(adcp12)+congem(adcp12)
+        end if
         do i = 1, ndim
-            r(addep1+i) = r(addep1+i)+&
-                          time_incr*((parm_theta)*congep(adcp11+i)+&
+            r(addep1+i) = r(addep1+i)+ &
+                          time_incr*((parm_theta)*congep(adcp11+i)+ &
                                      (1.d0-parm_theta)*congem(adcp11+i))
         end do
         if (nbpha1 .gt. 1) then
             do i = 1, ndim
-                r(addep1+i) = r(addep1+i)+&
-                              time_incr*((parm_theta)*congep(adcp12+i)+&
+                r(addep1+i) = r(addep1+i)+ &
+                              time_incr*((parm_theta)*congep(adcp12+i)+ &
                                          (1.d0-parm_theta)*congem(adcp12+i))
             end do
-        endif
+        end if
         if (ds_thm%ds_elem%l_dof_ther) then
-            r(dimdef+1) = r(dimdef+1)-&
-                          (congep(adcp11)-congem(adcp11))*&
-                          ((parm_theta)*congep(adcp11+ndim+1)+&
+            r(dimdef+1) = r(dimdef+1)- &
+                          (congep(adcp11)-congem(adcp11))* &
+                          ((parm_theta)*congep(adcp11+ndim+1)+ &
                            (1.d0-parm_theta)*congem(adcp11+ndim+1))
             if (nbpha1 .gt. 1) then
-                r(dimdef+1) = r(dimdef+1)-&
-                              (congep(adcp12)-congem(adcp12))*&
-                              ((parm_theta)*congep(adcp12+ndim+1)+&
+                r(dimdef+1) = r(dimdef+1)- &
+                              (congep(adcp12)-congem(adcp12))* &
+                              ((parm_theta)*congep(adcp12+ndim+1)+ &
                                (1.d0-parm_theta)*congem(adcp12+ndim+1))
-            endif
+            end if
             do i = 1, ndim
-                r(addete) = r(addete)+&
-                            time_incr*((parm_theta)*congep(adcp11+i)+&
+                r(addete) = r(addete)+ &
+                            time_incr*((parm_theta)*congep(adcp11+i)+ &
                                        (1.d0-parm_theta)*congem(adcp11+i))*gravity(i)
             end do
             if (nbpha1 .gt. 1) then
                 do i = 1, ndim
-                    r(addete) = r(addete)+&
-                                time_incr*((parm_theta)*congep(adcp12+i)+&
+                    r(addete) = r(addete)+ &
+                                time_incr*((parm_theta)*congep(adcp12+i)+ &
                                            (1.d0-parm_theta)*congem(adcp12+i))*gravity(i)
                 end do
-            endif
+            end if
             do i = 1, ndim
-                r(addete+i) = r(addete+i)+&
-                              time_incr*((parm_theta)*congep(adcp11+ndim+1)*congep(adcp11+i)+&
+                r(addete+i) = r(addete+i)+ &
+                              time_incr*((parm_theta)*congep(adcp11+ndim+1)*congep(adcp11+i)+ &
                                          (1.d0-parm_theta)*congem(adcp11+ndim+1)*congem(adcp11+i))
             end do
             if (nbpha1 .gt. 1) then
                 do i = 1, ndim
-                    r(addete+i) = r(addete+i)+&
-                        time_incr*(parm_theta*congep(adcp12+ndim+1)*congep(adcp12+i) +&
-                                  (1.d0-parm_theta)*congem(adcp12+ndim+1)*congem(adcp12+i))
+                    r(addete+i) = r(addete+i)+ &
+                                  time_incr*(parm_theta*congep(adcp12+ndim+1)*congep(adcp12+i)+ &
+                                           (1.d0-parm_theta)*congem(adcp12+ndim+1)*congem(adcp12+i))
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Second pressure DOF
 !
     if (ds_thm%ds_elem%l_dof_pre2) then
-        r(addep2) = r(addep2) - congep(adcp21) + congem(adcp21)
+        r(addep2) = r(addep2)-congep(adcp21)+congem(adcp21)
         if (nbpha2 .gt. 1) then
-            r(addep2) = r(addep2) - congep(adcp22) + congem(adcp22)
-        endif
+            r(addep2) = r(addep2)-congep(adcp22)+congem(adcp22)
+        end if
         do i = 1, ndim
-            r(addep2+i) = r(addep2+i) +&
-                          time_incr*((parm_theta)*congep(adcp21+i)+&
+            r(addep2+i) = r(addep2+i)+ &
+                          time_incr*((parm_theta)*congep(adcp21+i)+ &
                                      (1.d0-parm_theta)*congem(adcp21+i))
         end do
         if (nbpha2 .gt. 1) then
             do i = 1, ndim
-                r(addep2+i) = r(addep2+i) +&
-                              time_incr*((parm_theta)*congep(adcp22+i)+&
+                r(addep2+i) = r(addep2+i)+ &
+                              time_incr*((parm_theta)*congep(adcp22+i)+ &
                                          (1.d0-parm_theta)*congem(adcp22+i))
             end do
-        endif
+        end if
         if (ds_thm%ds_elem%l_dof_ther) then
-            r(dimdef+1) = r(dimdef+1)-&
-                          (congep(adcp21)-congem(adcp21))*&
-                          ((parm_theta)*congep(adcp21+ndim+1)+&
+            r(dimdef+1) = r(dimdef+1)- &
+                          (congep(adcp21)-congem(adcp21))* &
+                          ((parm_theta)*congep(adcp21+ndim+1)+ &
                            (1.d0-parm_theta)*congem(adcp21+ndim+1))
             if (nbpha2 .gt. 1) then
-                r(dimdef+1) = r(dimdef+1)-&
-                              (congep(adcp22)-congem(adcp22))*&
-                              ((parm_theta)*congep(adcp22+ndim+1)+&
+                r(dimdef+1) = r(dimdef+1)- &
+                              (congep(adcp22)-congem(adcp22))* &
+                              ((parm_theta)*congep(adcp22+ndim+1)+ &
                                (1.d0-parm_theta)*congem(adcp22+ndim+1))
-            endif
+            end if
             do i = 1, ndim
-                r(addete) = r(addete) +&
-                            time_incr*((parm_theta)*congep(adcp21+i)+&
+                r(addete) = r(addete)+ &
+                            time_incr*((parm_theta)*congep(adcp21+i)+ &
                                        (1.d0-parm_theta)*congem(adcp21+i))*gravity(i)
             end do
             if (nbpha2 .gt. 1) then
                 do i = 1, ndim
-                    r(addete) = r(addete) +&
-                                time_incr*((parm_theta)*congep(adcp22+i)+&
+                    r(addete) = r(addete)+ &
+                                time_incr*((parm_theta)*congep(adcp22+i)+ &
                                            (1.d0-parm_theta)*congem(adcp22+i))*gravity(i)
                 end do
-            endif
+            end if
             do i = 1, ndim
-                r(addete+i) = r(addete+i) +&
-                    time_incr*((parm_theta)*congep(adcp21+ndim+1)*congep(adcp21+i) +&
-                               (1.d0-parm_theta)*congem(adcp21+ndim+1)*congem(adcp21+i))
+                r(addete+i) = r(addete+i)+ &
+                              time_incr*((parm_theta)*congep(adcp21+ndim+1)*congep(adcp21+i)+ &
+                                         (1.d0-parm_theta)*congem(adcp21+ndim+1)*congem(adcp21+i))
             end do
             if (nbpha2 .gt. 1) then
                 do i = 1, ndim
-                    r(addete+i) = r(addete+i) +&
-                        time_incr*((parm_theta)*congep(adcp22+ndim+1)*congep(adcp22+i) +&
-                                   (1.d0-parm_theta)*congem(adcp22+ndim+1)*congem(adcp22+i))
+                    r(addete+i) = r(addete+i)+ &
+                                  time_incr*((parm_theta)*congep(adcp22+ndim+1)*congep(adcp22+i)+ &
+                                           (1.d0-parm_theta)*congem(adcp22+ndim+1)*congem(adcp22+i))
                 end do
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Thermal DOF
 !
     if (ds_thm%ds_elem%l_dof_ther) then
-        r(dimdef+1) = r(dimdef+1) - (congep(adcote)-congem(adcote))
+        r(dimdef+1) = r(dimdef+1)-(congep(adcote)-congem(adcote))
         do i = 1, ndim
-            r(addete+i) = r(addete+i) +&
-                          time_incr*((parm_theta)*congep(adcote+i)+&
+            r(addete+i) = r(addete+i)+ &
+                          time_incr*((parm_theta)*congep(adcote+i)+ &
                                      (1.d0-parm_theta)*congem(adcote+i))
         end do
-    endif
+    end if
 !
 end subroutine

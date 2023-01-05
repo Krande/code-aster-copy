@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine op0141()
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
-    data depl /'DEPL            '/
+    data depl/'DEPL            '/
 !
 !     --- RECUPERATION DU RESULTAT ET DU MODE A TRAITER ---
     call jemarq()
@@ -93,20 +93,20 @@ subroutine op0141()
     if (n1 .ne. 0) then
 ! COOL ELLE EXISTE
         call mtdscr(matras)
-        matr=matras
+        matr = matras
         call jeveuo(matr//'.&INT', 'E', imatra)
         call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdda)
         call dismoi('NB_EQUA', matras, 'MATR_ASSE', repi=neq)
     else
 ! PAS COOL ELLE EXISTE PAS
-        matr=' '
-    endif
+        matr = ' '
+    end if
 !
     ieri = .false.
     call getvtx(' ', 'IERI', scal=rep, nbret=n1)
     if (n1 .eq. 1) then
         if (rep .eq. 'OUI') ieri = .true.
-    endif
+    end if
 !
 ! RECUPERATION DES BASES DE MODES
     call getvid(' ', 'BASE_1', scal=base1, nbret=n2)
@@ -129,108 +129,108 @@ subroutine op0141()
         zcmplx = .false.
         if (c1 .or. c2) then
             call utmess('F', 'ALGELINE5_71')
-        endif
-    endif
+        end if
+    end if
 !
 ! RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
     call gettco(base1, typba1)
-    call rsorac(base1, 'LONUTI', 0, rbid, k8b,&
-                cbid, rbid, 'ABSOLU', tmod, 1,&
+    call rsorac(base1, 'LONUTI', 0, rbid, k8b, &
+                cbid, rbid, 'ABSOLU', tmod, 1, &
                 ibid)
-    nbmod1=tmod(1)
+    nbmod1 = tmod(1)
     call gettco(base2, typba2)
-    call rsorac(base2, 'LONUTI', 0, rbid, k8b,&
-                cbid, rbid, 'ABSOLU', tmod, 1,&
+    call rsorac(base2, 'LONUTI', 0, rbid, k8b, &
+                cbid, rbid, 'ABSOLU', tmod, 1, &
                 ibid)
-    nbmod2=tmod(1)
+    nbmod2 = tmod(1)
 !
 ! RECUPERATION DE LA NUMEROTATION DES BASES
 !
-    if ((typba1(1:9).eq.'MODE_MECA') .or. (typba1(1:9).eq.'MODE_GENE')) then
+    if ((typba1(1:9) .eq. 'MODE_MECA') .or. (typba1(1:9) .eq. 'MODE_GENE')) then
         call dismoi('REF_RIGI_PREM', base1, 'RESU_DYNA', repk=matri1, arret='C')
         call exisd('MATR_ASSE', matri1, iret)
         if (iret .ne. 0) then
             call dismoi('NOM_NUME_DDL', matri1, 'MATR_ASSE', repk=numdd1)
         else
             call dismoi('NUME_DDL', base1, 'RESU_DYNA', repk=numdd1)
-        endif
+        end if
     else
 !       On passe par la numerotation du REFD
         call dismoi('NUME_DDL', base1, 'RESU_DYNA', repk=numdd1)
-    endif
+    end if
     call exisd('NUME_DDL', numdd1, iret)
     if (iret .ne. 1) then
         call utmess('F', 'CALCESSAI0_14', sk=base1)
-    endif
+    end if
 !
     call jeveuo(numdd1//'.NUME.NEQU', 'L', vi=nllneq1)
     neq1 = nllneq1(1)
 !
 !
-    if ((typba2(1:9).eq.'MODE_MECA') .or. (typba2(1:9).eq.'MODE_GENE')) then
+    if ((typba2(1:9) .eq. 'MODE_MECA') .or. (typba2(1:9) .eq. 'MODE_GENE')) then
         call dismoi('REF_RIGI_PREM', base2, 'RESU_DYNA', repk=matri2, arret='C')
         call exisd('MATR_ASSE', matri2, iret)
         if (iret .ne. 0) then
             call dismoi('NOM_NUME_DDL', matri2, 'MATR_ASSE', repk=numdd2)
         else
             call dismoi('NUME_DDL', base2, 'RESU_DYNA', repk=numdd2)
-        endif
+        end if
     else
         call dismoi('NUME_DDL', base2, 'RESU_DYNA', repk=numdd2)
-    endif
+    end if
     call exisd('NUME_DDL', numdd2, iret)
     if (iret .ne. 1) then
         call utmess('F', 'CALCESSAI0_14', sk=base2)
-    endif
+    end if
     call jeveuo(numdd2//'.NUME.NEQU', 'L', llneq2)
 !
 ! ---- Verification : les deux nume_ddl doivent etre identiques
-    pronu1=(numdd1//'.NUME')
-    pronu2=(numdd2//'.NUME')
-    if (.not.idensd('PROF_CHNO',pronu1,pronu2)) then
+    pronu1 = (numdd1//'.NUME')
+    pronu2 = (numdd2//'.NUME')
+    if (.not. idensd('PROF_CHNO', pronu1, pronu2)) then
         call utmess('F', 'ALGELINE2_80')
-    endif
+    end if
 !
 ! --- Verification : le nume_ddl doit etre celui de la MATR_ASSE
     if (matr .ne. ' ') then
-        pronua=(numdda//'.NUME')
-        if (.not.idensd('PROF_CHNO',pronu1,pronua)) then
+        pronua = (numdda//'.NUME')
+        if (.not. idensd('PROF_CHNO', pronu1, pronua)) then
             call utmess('F', 'ALGELINE2_81')
-        endif
+        end if
         nu = numdda(1:14)
         call jeveuo(nu//'.NUME.DEEQ', 'L', vi=deeq)
     else
         nu = numdd1(1:14)
-        neq=neq1
-    endif
+        neq = neq1
+    end if
 !
 ! INITIALISATION DE LA TABLE DES MACS
     if (zcmplx) then
-        nbpara=3
+        nbpara = 3
     else
-        nbpara=4
-    endif
+        nbpara = 4
+    end if
     call wkvect('&&OP0141.TYPE_PARA', 'V V K8 ', nbpara, ityp)
     call wkvect('&&OP0141.NOM_PARA', 'V V K16', nbpara, inom)
     do i = 1, 2
-        zk8(ityp+i-1)='I'
+        zk8(ityp+i-1) = 'I'
     end do
     if (zcmplx) then
         call wkvect('&&OP0141.MAC', 'V V R', 1, indv)
     else
         call wkvect('&&OP0141.MAC', 'V V R', 2, indv)
 ! MATRICE GENERALISEE EN PLUS POUR LES MODES REELS
-        zk16(inom+3)='Y1_W_Y2'
-        zk8(ityp+3)='R'
-    endif
-    zk8(ityp+2)='R'
-    zk16(inom)='NUME_MODE_1'
-    zk16(inom+1)='NUME_MODE_2'
+        zk16(inom+3) = 'Y1_W_Y2'
+        zk8(ityp+3) = 'R'
+    end if
+    zk8(ityp+2) = 'R'
+    zk16(inom) = 'NUME_MODE_1'
+    zk16(inom+1) = 'NUME_MODE_2'
     if (ieri) then
-        zk16(inom+2)='IERI'
+        zk16(inom+2) = 'IERI'
     else
-        zk16(inom+2)='MAC'
-    endif
+        zk16(inom+2) = 'MAC'
+    end if
     call tbajpa(table, nbpara, zk16(inom), zk8(ityp))
 !
     call wkvect('&&OP0141.IJ', 'V V I', 2, ind)
@@ -249,79 +249,79 @@ subroutine op0141()
 !
 ! BOUCLE DE CALCUL DES MACS
         do i = 1, nbmod1
-            pii=0.d0
+            pii = 0.d0
             if (matr .ne. ' ') then
-                call mcmult('ZERO', imatra, zc(idbas1+(i-1)*neq), zc( idvec1), 1,&
+                call mcmult('ZERO', imatra, zc(idbas1+(i-1)*neq), zc(idvec1), 1, &
                             .true._1)
 !
                 do iddl = 1, neq
-                    if (deeq(2*iddl) .le. 0) zc(idvec1-1+iddl) = dcmplx(0.d0,0.d0)
+                    if (deeq(2*iddl) .le. 0) zc(idvec1-1+iddl) = dcmplx(0.d0, 0.d0)
                 end do
 !
             else
                 call zcopy(neq, zc(idbas1+(i-1)*neq), 1, zc(idvec1), 1)
-            endif
+            end if
 !
 ! PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
-            ztemp = dcmplx(0.0d0,0.0d0)
+            ztemp = dcmplx(0.0d0, 0.0d0)
             do iddl = 1, neq
-                ztemp = ztemp + zc( idbas1+(i-1)*neq-1+iddl)*dconjg(zc( idvec1-1+iddl))
+                ztemp = ztemp+zc(idbas1+(i-1)*neq-1+iddl)*dconjg(zc(idvec1-1+iddl))
             end do
             pii = abs(ztemp)
 !
-            zi(ind)=i
+            zi(ind) = i
 !
             do j = 1, nbmod2
-                pij=0.d0
-                pjj=0.d0
+                pij = 0.d0
+                pjj = 0.d0
                 if (matr .ne. ' ') then
-                    call mcmult('ZERO', imatra, zc(idbas2+(j-1)*neq), zc(idvec2), 1,&
+                    call mcmult('ZERO', imatra, zc(idbas2+(j-1)*neq), zc(idvec2), 1, &
                                 .true._1)
 !
                     do iddl = 1, neq
-                        if (deeq(2*iddl) .le. 0) zc(idvec2-1+iddl) = dcmplx(0.d0,0.d0)
+                        if (deeq(2*iddl) .le. 0) zc(idvec2-1+iddl) = dcmplx(0.d0, 0.d0)
                     end do
 !
                 else
                     call zcopy(neq, zc(idbas2+(j-1)*neq), 1, zc(idvec2), 1)
-                endif
+                end if
 !
-                ztemp = dcmplx(0.0d0,0.0d0)
+                ztemp = dcmplx(0.0d0, 0.0d0)
                 do iddl = 1, neq
-                    ztemp = ztemp + zc( idbas2+(j-1)*neq-1+iddl)* dconjg(zc(idvec2-1+iddl))
+                    ztemp = ztemp+zc(idbas2+(j-1)*neq-1+iddl)*dconjg(zc(idvec2-1+iddl))
                 end do
                 pjj = abs(ztemp)
 !
                 if (ieri) then
                     do iddl = 1, neq
-                        zc(idbas3-1+iddl)=zc(idbas1+(i-1)*neq-1+iddl)&
-                        -zc(idbas2+(j-1)*neq-1+iddl)
+                        zc(idbas3-1+iddl) = zc(idbas1+(i-1)*neq-1+iddl) &
+                                            -zc(idbas2+(j-1)*neq-1+iddl)
                     end do
-                    call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1,&
+                    call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1, &
                                 .true._1)
                     do iddl = 1, neq
-                        if (deeq(2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0,0.d0)
+                        if (deeq(2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0, 0.d0)
                     end do
 !
-                    ztemp = dcmplx(0.0d0,0.0d0)
+                    ztemp = dcmplx(0.0d0, 0.0d0)
                     do iddl = 1, neq
-                        ztemp = ztemp + zc(idbas3-1+iddl)*dconjg(zc( idvec3-1+iddl))
+                        ztemp = ztemp+zc(idbas3-1+iddl)*dconjg(zc(idvec3-1+iddl))
                     end do
                     pij = abs(ztemp)
 !
-                    pij = (pij**2) / (pii**2 + pjj**2)
+                    pij = (pij**2)/(pii**2+pjj**2)
                 else
-                    ztemp = dcmplx(0.0d0,0.0d0)
+                    ztemp = dcmplx(0.0d0, 0.0d0)
                     do iddl = 1, neq
-                        ztemp = ztemp + zc( idbas1+(i-1)*neq-1+iddl)* dconjg(zc(idvec2-1+iddl) )
+                        ztemp = ztemp+zc(idbas1+(i-1)*neq-1+iddl)*dconjg(zc(idvec2-1+iddl))
                     end do
                     pij = abs(ztemp)
-                    pij = (pij**2) / (pii * pjj)
-                endif
+                    pij = (pij**2)/(pii*pjj)
+                end if
 !
-                zi(ind+1)=j
-                zr(indv)=pij
-                call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
+                zi(ind+1) = j
+                zr(indv) = pij
+                call tbajli(table, nbpara, zk16(inom), zi(ind), zr(indv), &
                             [cbid], k8b, 0)
             end do
         end do
@@ -340,76 +340,76 @@ subroutine op0141()
 !
 ! BOUCLE DE CALCUL DES MACS
         do i = 1, nbmod1
-            pii=0.d0
+            pii = 0.d0
             if (matr .ne. ' ') then
-                call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1,&
+                call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1, &
                             .true._1)
                 call zerlag(neq, deeq, vectr=zr(idvec1))
             else
                 call dcopy(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec1), 1)
-            endif
+            end if
 !
-            pii = abs(ddot( neq, zr(idbas1+(i-1)*neq),1, zr(idvec1),1) )
+            pii = abs(ddot(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec1), 1))
 !
-            zi(ind)=i
+            zi(ind) = i
 !
             do j = 1, nbmod2
-                pij=0.d0
-                pjj=0.d0
+                pij = 0.d0
+                pjj = 0.d0
                 if (matr .ne. ' ') then
-                    call mrmult('ZERO', imatra, zr(idbas2+(j-1)*neq), zr(idvec2), 1,&
+                    call mrmult('ZERO', imatra, zr(idbas2+(j-1)*neq), zr(idvec2), 1, &
                                 .true._1)
                     call zerlag(neq, deeq, vectr=zr(idvec2))
                 else
                     call dcopy(neq, zr(idbas2+(j-1)*neq), 1, zr(idvec2), 1)
-                endif
+                end if
 !
-                pjj = abs(ddot( neq, zr(idbas2+(j-1)*neq),1, zr( idvec2),1))
+                pjj = abs(ddot(neq, zr(idbas2+(j-1)*neq), 1, zr(idvec2), 1))
 !
                 if (ieri) then
                     do ieq = 1, neq
-                        zr(idbas3-1+ieq) = zr(idbas1+neq*(i-1)-1+ieq) - zr(idbas2+neq*(i-1)-1+ieq)
+                        zr(idbas3-1+ieq) = zr(idbas1+neq*(i-1)-1+ieq)-zr(idbas2+neq*(i-1)-1+ieq)
                     end do
                     call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1, ASTER_TRUE)
                     call zerlag(neq, deeq, vectr=zr(idvec3))
 !
-                    pij = abs(ddot( neq,zr(idbas3) ,1, zr(idvec3),1))
+                    pij = abs(ddot(neq, zr(idbas3), 1, zr(idvec3), 1))
 !
-                    pij = (pij**2) / (pii**2 + pjj**2)
+                    pij = (pij**2)/(pii**2+pjj**2)
 !  POUR LA MATRICE GENERALISEE : Y1_W_Y2
-                    rbid = abs(ddot( neq,zr(idbas1+(i-1)*neq) ,1, zr(idvec2),1) )
+                    rbid = abs(ddot(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec2), 1))
 !
-                    rbid = (rbid**2) / (pii * pjj)
-                    zr(indv+1)=sqrt(rbid*pii*pjj)
+                    rbid = (rbid**2)/(pii*pjj)
+                    zr(indv+1) = sqrt(rbid*pii*pjj)
                 else
-                    pij = abs(ddot( neq,zr(idbas1+(i-1)*neq) ,1, zr(idvec2),1))
+                    pij = abs(ddot(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec2), 1))
 !
-                    pij = (pij**2) / (pii * pjj)
-                    zr(indv+1)=sqrt(pij*pii*pjj)
-                endif
+                    pij = (pij**2)/(pii*pjj)
+                    zr(indv+1) = sqrt(pij*pii*pjj)
+                end if
 !
-                zi(ind+1)=j
-                zr(indv)=pij
-                call tbajli(table, nbpara, zk16(inom), zi(ind), zr( indv),&
+                zi(ind+1) = j
+                zr(indv) = pij
+                call tbajli(table, nbpara, zk16(inom), zi(ind), zr(indv), &
                             [cbid], k8b, 0)
             end do
         end do
 !
-    endif
+    end if
 !  FIN TEST SUR TYPE DE VECTEURS (C/R)
 !
     if (niv .ge. 2) then
-        call tbimpr(table, 'TABLEAU', ifm, 3, zk16(inom),&
+        call tbimpr(table, 'TABLEAU', ifm, 3, zk16(inom), &
                     0, '1PE12.5')
         if (nbpara .eq. 4) then
-            write(ifm,*) ' '
-            write(ifm,1000) zk16(inom+2)
-            call tbimex(table, ifm, 4, zk16(inom), 'EXCEL',&
+            write (ifm, *) ' '
+            write (ifm, 1000) zk16(inom+2)
+            call tbimex(table, ifm, 4, zk16(inom), 'EXCEL', &
                         '1PE12.5')
-            write(ifm,*) ' '
-        endif
-    endif
-    1000 format('AFFICHAGE ',a4,' ET MATRICE GENERALISEE : ')
+            write (ifm, *) ' '
+        end if
+    end if
+1000 format('AFFICHAGE ', a4, ' ET MATRICE GENERALISEE : ')
 !
     call jedema()
 end subroutine

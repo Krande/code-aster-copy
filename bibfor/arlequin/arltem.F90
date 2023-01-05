@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine arltem(ndim  ,nomte, &
-    nns   ,jcoors, &
-    npgs  ,ivfs  ,idfdes,ipoids, &
-    elref1,ndml1   ,jcoor1, &
-    elref2,ndml2   ,jcoor2, &
-    mcpln1,mcpln2)
-
-
-
-
-
+subroutine arltem(ndim, nomte, &
+                  nns, jcoors, &
+                  npgs, ivfs, idfdes, ipoids, &
+                  elref1, ndml1, jcoor1, &
+                  elref2, ndml2, jcoor2, &
+                  mcpln1, mcpln2)
 
     implicit none
 #include "jeveux.h"
@@ -36,16 +31,15 @@ subroutine arltem(ndim  ,nomte, &
 #include "asterfort/arlten.h"
 #include "asterfort/arlted.h"
 
-
     integer :: ndim
     character(len=16) :: nomte
-    integer :: nns,npgs
-    integer :: ivfs,ipoids,idfdes
-    character(len=8) :: elref1,elref2
-    integer :: ndml1,jcoor1,jcoors
-    integer :: ndml2,jcoor2
-    real(kind=8) ::  mcpln1(2*ndim*ndml2,ndim*ndml1)
-    real(kind=8) ::  mcpln2(2*ndim*ndml2,2*ndim*ndml2),mlv(78)
+    integer :: nns, npgs
+    integer :: ivfs, ipoids, idfdes
+    character(len=8) :: elref1, elref2
+    integer :: ndml1, jcoor1, jcoors
+    integer :: ndml2, jcoor2
+    real(kind=8) ::  mcpln1(2*ndim*ndml2, ndim*ndml1)
+    real(kind=8) ::  mcpln2(2*ndim*ndml2, 2*ndim*ndml2), mlv(78)
 
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +48,6 @@ subroutine arltem(ndim  ,nomte, &
 ! SUR MAILLE SUPPORT S
 !
 ! ----------------------------------------------------------------------
-
 
 ! IN  NDIM   : DIMENSION DU PROBLEME
 ! IN  NOMTE  : NOM DU TYPE_ELEMENT MAILLE SUPPORT S
@@ -84,26 +77,25 @@ subroutine arltem(ndim  ,nomte, &
 
 ! --- CALCUL DES FF ET DES DERIVEES DES FF DES MAILLES COUPLEES
 
+    call jevech('PINFORR', 'L', jinfor)
 
-    call jevech('PINFORR','L',jinfor)
-
-    e   = zr(jinfor+6-1)
+    e = zr(jinfor+6-1)
     rho = 1.d0
     xnu = zr(jinfor+8-1)
-    call arlmas('MECA_POU_D_T',e,xnu,rho,1,mlv)
-    call arlt1d(mlv,ndim,ndml2,mcpln2)
+    call arlmas('MECA_POU_D_T', e, xnu, rho, 1, mlv)
+    call arlt1d(mlv, ndim, ndml2, mcpln2)
 
-    if ((nomte(1:9) == 'MECA_HEXA').or.(nomte(1:10) == 'MECA_PENTA') &
-                                   .or.(nomte(1:10) == 'MECA_TETRA')) then
-        call arlted(ndim  , &
-                    nns   ,jcoors, &
-                    npgs  ,ivfs  , idfdes, ipoids, &
-                    elref1, ndml1   ,jcoor1, &
+    if ((nomte(1:9) == 'MECA_HEXA') .or. (nomte(1:10) == 'MECA_PENTA') &
+        .or. (nomte(1:10) == 'MECA_TETRA')) then
+        call arlted(ndim, &
+                    nns, jcoors, &
+                    npgs, ivfs, idfdes, ipoids, &
+                    elref1, ndml1, jcoor1, &
                     fcpig1, poijcs, &
-                    dfdx1, dfdy1 , dfdz1 )
-        call arlten(zr(jcoor1)     ,zr(jcoor2), npgs, ndim , poijcs , &
-                    ndml1 , ndml2 , fcpig1 , dfdx1 , dfdy1 , dfdz1 , &
+                    dfdx1, dfdy1, dfdz1)
+        call arlten(zr(jcoor1), zr(jcoor2), npgs, ndim, poijcs, &
+                    ndml1, ndml2, fcpig1, dfdx1, dfdy1, dfdz1, &
                     mcpln1)
-    endif
+    end if
 
 end subroutine

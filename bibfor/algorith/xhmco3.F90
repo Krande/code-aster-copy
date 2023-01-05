@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xhmco3(ino, ndim, dsidep, pla, p,&
+subroutine xhmco3(ino, ndim, dsidep, pla, p, &
                   ffc, jac, raug, mmat)
     implicit none
 #include "jeveux.h"
@@ -59,45 +59,45 @@ subroutine xhmco3(ino, ndim, dsidep, pla, p,&
 !     INITIALISATION
 ! on reecrit tout
 ! matrices A et AT
-    au(:,:) = 0.d0
-    dside2(:,:) = 0.d0
-    temp(:,:) = 0.d0
-    ptr(:,:) = 0.d0
+    au(:, :) = 0.d0
+    dside2(:, :) = 0.d0
+    temp(:, :) = 0.d0
+    ptr(:, :) = 0.d0
 ! ensuite, on prend exemple sur XMMCO2 pour l'opération
 ! changement de base
     do i = 1, ndim
         do j = 1, ndim
-            dside2(i,j) = dsidep(i,j)
+            dside2(i, j) = dsidep(i, j)
         end do
     end do
 !
 ! MATRICE TANGENTE EN BASE FIXE [P]T [DSIDEP] [P]
 !
 ! ne sert plus dans la formulation avec directions
-    call transp(p, 3, ndim, ndim, ptr,&
+    call transp(p, 3, ndim, ndim, ptr, &
                 3)
-    call promat(ptr, 3, ndim, ndim, dside2,&
+    call promat(ptr, 3, ndim, ndim, dside2, &
                 3, ndim, ndim, temp)
-    call promat(temp, 3, ndim, ndim, p,&
+    call promat(temp, 3, ndim, ndim, p, &
                 3, ndim, ndim, au)
 ! on peut alors remplir la matrice C : w*/lambda et sa transposee
 ! on vire la boucle sur I
 ! elle est déjà à l'extérieur
 ! avec la formulation qui inclut les directions
 ! on prend direct la matrice locale
-    pli=pla(ino)
+    pli = pla(ino)
     ffi = ffc(ino)
     do l = 1, ndim
         do k = 1, ndim
-            mmat(pli-1+3+k,pli-1+3+ndim+l) = mmat(pli-1+3+k, pli-1+3+ndim+l)+ ffi*dside2(k,l)*jac
-            mmat(pli-1+3+ndim+l,pli-1+3+k) = mmat(pli-1+3+ndim+l,pli-1+3+k)+ ffi*dside2(k,l)*jac
+            mmat(pli-1+3+k, pli-1+3+ndim+l) = mmat(pli-1+3+k, pli-1+3+ndim+l)+ffi*dside2(k, l)*jac
+            mmat(pli-1+3+ndim+l, pli-1+3+k) = mmat(pli-1+3+ndim+l, pli-1+3+k)+ffi*dside2(k, l)*jac
         end do
     end do
 ! on remplit la matrice w*/w
     do l = 1, ndim
         do k = 1, ndim
-            mmat(pli-1+3+ndim+k,pli-1+3+ndim+l) = mmat(pli-1+3+ndim+k, pli-1+3+ndim+l)+ raug*ffi*&
-                                                  &dside2(k,l)*jac
+            mmat(pli-1+3+ndim+k, pli-1+3+ndim+l) = mmat(pli-1+3+ndim+k, pli-1+3+ndim+l)+raug*ffi*&
+                                                  &dside2(k, l)*jac
         end do
     end do
 ! on remplit la matrice lambda*/lambda :
@@ -105,9 +105,9 @@ subroutine xhmco3(ino, ndim, dsidep, pla, p,&
 ! sur la diagonale uniquement!
     do l = 1, ndim
         do k = 1, ndim
-            mmat(pli-1+3+k,pli-1+3+l) = mmat(pli-1+3+k, pli-1+3+l)+ ffi*dside2(k,l)*jac/raug
+            mmat(pli-1+3+k, pli-1+3+l) = mmat(pli-1+3+k, pli-1+3+l)+ffi*dside2(k, l)*jac/raug
         end do
-        mmat(pli-1+3+l,pli-1+3+l) = mmat(pli-1+3+l, pli-1+3+l)- ffi*jac/raug
+        mmat(pli-1+3+l, pli-1+3+l) = mmat(pli-1+3+l, pli-1+3+l)-ffi*jac/raug
     end do
 !
 end subroutine

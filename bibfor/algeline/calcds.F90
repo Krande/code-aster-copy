@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcds(hook, devg, devgii, dfds, dfdg,&
+subroutine calcds(hook, devg, devgii, dfds, dfdg, &
                   dsde)
 !
     implicit none
@@ -42,22 +42,22 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
-    parameter       ( deux   = 2.0d0  )
-    parameter       ( trois  = 3.0d0  )
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! ======================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! ======================================================================
     call jemarq()
 ! ======================================================================
 ! --- CALCUL DU NUMERATEUR ---------------------------------------------
 ! ======================================================================
-    dsde(:,:) = 0.d0
-    mat(:,:) = 0.d0
-    tmp(:,:) = 0.d0
-    num(:,:) = 0.d0
+    dsde(:, :) = 0.d0
+    mat(:, :) = 0.d0
+    tmp(:, :) = 0.d0
+    num(:, :) = 0.d0
     do i = 1, ndt
         do j = 1, ndt
-            mat(i,j) = devg(i)*dfds(j)
+            mat(i, j) = devg(i)*dfds(j)
         end do
     end do
     call lglpma(ndt, hook, mat, tmp)
@@ -66,16 +66,16 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
 ! --- CALCUL DU DENOMINATEUR -------------------------------------------
 ! ======================================================================
     call lglpmv('ZERO', ndt, hook, devg, vec)
-    val=ddot(ndt,dfds,1,vec,1)
+    val = ddot(ndt, dfds, 1, vec, 1)
     denom = sqrt(deux/trois)*dfdg*devgii-val
 ! ======================================================================
 ! --- CALCUL DE DSIG/DEPS (NON SYMETRIQUE) -----------------------------
 ! --- STOCKAGE DANS MATRICE TEMPORAIRE AVANT SYMETRISATION -------------
 ! ======================================================================
-    tmp(:,:) = 0.d0
+    tmp(:, :) = 0.d0
     do i = 1, ndt
         do j = 1, ndt
-            dsde(i,j) = hook(i,j) + num(i,j)/denom
+            dsde(i, j) = hook(i, j)+num(i, j)/denom
         end do
     end do
 ! ======================================================================

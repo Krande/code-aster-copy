@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmprac(fonact, lischa, numedd, solveu     ,&
-                  sddyna, ds_measure, ds_contact,&
-                  meelem, measse, maprec, matass    , faccvg)
+subroutine nmprac(fonact, lischa, numedd, solveu, &
+                  sddyna, ds_measure, ds_contact, &
+                  meelem, measse, maprec, matass, faccvg)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,15 +43,15 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/asmama.h"
 !
-integer :: fonact(*)
-character(len=19) :: sddyna, lischa
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=24) :: numedd
-character(len=19) :: solveu
-character(len=19) :: meelem(*), measse(*)
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19) :: maprec, matass
-integer :: faccvg
+    integer :: fonact(*)
+    character(len=19) :: sddyna, lischa
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=24) :: numedd
+    character(len=19) :: solveu
+    character(len=19) :: meelem(*), measse(*)
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19) :: maprec, matass
+    integer :: faccvg
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,7 +94,7 @@ integer :: faccvg
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_76')
-    endif
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -104,7 +104,7 @@ integer :: faccvg
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lctcc = isfonc(fonact,'CONT_CONTINU')
+    lctcc = isfonc(fonact, 'CONT_CONTINU')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -118,8 +118,8 @@ integer :: faccvg
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
-    call nmmatr('ACCEL_INIT', fonact    , lischa, numedd, sddyna,&
-                numins      , ds_contact, meelem, measse, matass)
+    call nmmatr('ACCEL_INIT', fonact, lischa, numedd, sddyna, &
+                numins, ds_contact, meelem, measse, matass)
 !
 ! --- SI METHODE CONTINUE ON REMPLACE LES TERMES DIAGONAUX NULS PAR
 ! --- DES UNS POUR POUVOIR INVERSER LA MATRICE ASSEMBLE MATASS
@@ -132,14 +132,14 @@ integer :: faccvg
             neql = zi(lres+5)
         else
             neql = neq
-        endif
+        end if
         call jeveuo(jexnum(matass//'.VALM', 1), 'E', jvalm)
         do ieq = 1, neql
             if (zr(jvalm-1+zi(iadia-1+ieq)) .eq. 0.d0) then
                 zr(jvalm-1+zi(iadia-1+ieq)) = 1.d0
-            endif
+            end if
         end do
-    endif
+    end if
 !
 ! --- ON ACTIVE LA DETECTION DE SINGULARITE (NPREC=8)
 ! --- ON EVITE L'ARRET FATAL LORS DE L'INVERSION DE LA MATRICE
@@ -152,9 +152,9 @@ integer :: faccvg
 !
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
 !
-    call nmtime(ds_measure, 'Init'  , 'Factor')
+    call nmtime(ds_measure, 'Init', 'Factor')
     call nmtime(ds_measure, 'Launch', 'Factor')
-    call preres(solveu, 'V', faccvg, maprec, matass,&
+    call preres(solveu, 'V', faccvg, maprec, matass, &
                 ibid, -9999)
     call nmtime(ds_measure, 'Stop', 'Factor')
     call nmrinc(ds_measure, 'Factor')
@@ -168,7 +168,7 @@ integer :: faccvg
 !
     if (faccvg .eq. 1) then
         call utmess('A', 'MECANONLINE_78')
-    endif
+    end if
 !
     call jedema()
 !

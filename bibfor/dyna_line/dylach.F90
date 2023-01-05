@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dylach(nomo, mate, mateco, carele, lischa, numedd,&
+subroutine dylach(nomo, mate, mateco, carele, lischa, numedd, &
                   vediri, veneum, vevoch, vassec)
 !
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/asvepr.h"
 #include "asterfort/jedema.h"
@@ -73,7 +73,7 @@ subroutine dylach(nomo, mate, mateco, carele, lischa, numedd,&
 ! --- CALCUL DES VECTEURS ELEMENTAIRES
 !
     call vedimd(nomo, lischa, instan, vediri)
-    call vechms(nomo, mate, mateco, carele, k19bid, lischa,&
+    call vechms(nomo, mate, mateco, carele, k19bid, lischa, &
                 partps, veneum)
     call veassc(lischa, vassec)
 !

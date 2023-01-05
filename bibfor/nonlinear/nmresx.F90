@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2016 Stefan H. Reiterer               WWW.CODE-ASTER.ORG
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 subroutine nmresx(sddisc, sderro, iter_newt)
 !
-implicit none
+    implicit none
 !
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
@@ -30,9 +30,9 @@ implicit none
 #include "asterfort/utdidt.h"
 #include "asterfort/getFailEvent.h"
 !
-character(len=19), intent(in) :: sddisc
-character(len=24), intent(in) :: sderro
-integer, intent(in) :: iter_newt
+    character(len=19), intent(in) :: sddisc
+    character(len=24), intent(in) :: sderro
+    integer, intent(in) :: iter_newt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,13 +59,13 @@ integer, intent(in) :: iter_newt
 !
 ! - Index of RESI_MAXI index
 !
-    call utdidt('L', sddisc, 'LIST',  'NECHEC', vali_ = nb_fail)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
     i_fail_acti = 0
     do i_fail = 1, nb_fail
         call getFailEvent(sddisc, i_fail, event_type)
         if (event_type .eq. FAIL_EVT_RESI_MAXI) then
             i_fail_acti = i_fail
-        endif
+        end if
     end do
 !
 ! - Get RESI_GLOB_MAXI
@@ -75,11 +75,11 @@ integer, intent(in) :: iter_newt
 ! - Evaluate event
 !
     if (i_fail_acti .gt. 0) then
-        call utdidt('L', sddisc, 'ECHE', 'RESI_GLOB_MAXI', index_ = i_fail_acti, valr_ = vale_resi)
+        call utdidt('L', sddisc, 'ECHE', 'RESI_GLOB_MAXI', index_=i_fail_acti, valr_=vale_resi)
         if (r(1) .gt. vale_resi) then
             l_resi_maxi = .true.
-        endif
-    endif
+        end if
+    end if
 !
 ! - Save event
 !

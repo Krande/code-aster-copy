@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
-                           vi4, vr, vc, sci, sci4,&
+subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi, &
+                           vi4, vr, vc, sci, sci4, &
                            scr, scc)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -100,24 +100,24 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
 !
 !   -- verification rendez-vous - a voir si on garde car beacuoup de comm
-    iret=1
+    iret = 1
 #ifdef ASTER_DEBUG_MPI
     call asmpi_check(iret)
     if (iret .ne. 0) then
         call utmess('I', 'APPELMPI_83', sk=optmpi)
         goto 999
-    endif
+    end if
 #endif
 !
 !
 !   -- Calcul de typsc1 :
 !   ---------------------------------------
-    typsc1=typsca
-    ASSERT(typsc1.eq.'R' .or. typsc1.eq.'C' .or. typsc1.eq.'I' .or. typsc1.eq.'S')
-    ASSERT(typsc1.ne.'R' .or. present(vr) .or. present(scr))
-    ASSERT(typsc1.ne.'C' .or. present(vc) .or. present(scc))
-    ASSERT(typsc1.ne.'I' .or. present(vi) .or. present(sci))
-    ASSERT(typsc1.ne.'S' .or. present(vi4) .or. present(sci4))
+    typsc1 = typsca
+    ASSERT(typsc1 .eq. 'R' .or. typsc1 .eq. 'C' .or. typsc1 .eq. 'I' .or. typsc1 .eq. 'S')
+    ASSERT(typsc1 .ne. 'R' .or. present(vr) .or. present(scr))
+    ASSERT(typsc1 .ne. 'C' .or. present(vc) .or. present(scc))
+    ASSERT(typsc1 .ne. 'I' .or. present(vi) .or. present(sci))
+    ASSERT(typsc1 .ne. 'S' .or. present(vi4) .or. present(sci4))
 !
 !
 !   -- communication :
@@ -141,7 +141,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
         call asmpi_comm_mvect(optmpi, typsca, nbval, bcrank, vc=vc)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 999 continue
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
@@ -154,7 +154,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     real(kind=8) :: rdummy
     complex(kind=8) :: cdummy
 !
-    if (present(nbval) .and. present(vi) .and. present(vr) .and. present(vc) .and.&
+    if (present(nbval) .and. present(vi) .and. present(vr) .and. present(vc) .and. &
         present(bcrank) .and. present(sci) .and. present(scr) .and. present(scc)) then
         kdummy = optmpi(1:1)
         kdummy = typsca(1:1)
@@ -168,6 +168,6 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
         i4dummy = sci4
         rdummy = scr
         cdummy = scc
-    endif
+    end if
 #endif
 end subroutine

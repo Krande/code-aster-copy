@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 !
 subroutine mmGetCoefficients(coefff, coefac, coefaf, alpha_cont)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 !
-real(kind=8), intent(out) :: coefff, coefac, coefaf
-real(kind=8), intent(out) :: alpha_cont
+    real(kind=8), intent(out) :: coefff, coefac, coefaf
+    real(kind=8), intent(out) :: alpha_cont
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,9 +49,9 @@ real(kind=8), intent(out) :: alpha_cont
 !
     call jevech('PCONFR', 'L', jpcf)
 !
-    coefac     = zr(jpcf-1+16)
-    coefaf     = zr(jpcf-1+19)
-    coefff     = zr(jpcf-1+20)
+    coefac = zr(jpcf-1+16)
+    coefaf = zr(jpcf-1+19)
+    coefff = zr(jpcf-1+20)
     alpha_cont = zr(jpcf-1+28)
     alpha_fric = zr(jpcf-1+42)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine IncrEnergy(ds_energy, energy_type_, vale_r)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -55,7 +55,7 @@ implicit none
 !
 ! - Get table
 !
-    table   = ds_energy%table
+    table = ds_energy%table
     nb_cols = table%nb_cols
 !
 ! - Get column
@@ -65,14 +65,14 @@ implicit none
         if (table%cols(i_col)%name .eq. energy_type) then
             ASSERT(indx_col .eq. 0)
             indx_col = i_col
-        endif
+        end if
     end do
     ASSERT(indx_col .ne. 0)
 !
 ! - Add energy
 !
     ASSERT(table%cols(indx_col)%l_vale_real)
-    table%cols(indx_col)%vale_real = table%cols(indx_col)%vale_real + vale_r
+    table%cols(indx_col)%vale_real = table%cols(indx_col)%vale_real+vale_r
 !
 ! - Set table
 !

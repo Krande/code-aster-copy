@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
+subroutine typddl(choixz, numez, neq, tabddl, nbacti, &
                   nbbloq, nblagr, nbliai)
     implicit none
 #include "jeveux.h"
@@ -103,23 +103,23 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
             tabddl(i) = 1
         end do
         do i = 1, neq
-            n = zi(adeeq + 2*i-1)
+            n = zi(adeeq+2*i-1)
             if (n .eq. 0) then
-                nbliai = nbliai + 1
+                nbliai = nbliai+1
                 tabddl(i) = 0
             else if (n .lt. 0) then
                 tabddl(i) = 0
-                nd = zi(adeeq + 2*i-2)
-                ideb = zi(aprno + (nec+2)*(nd-1) + 1-1)
+                nd = zi(adeeq+2*i-2)
+                ideb = zi(aprno+(nec+2)*(nd-1)+1-1)
                 ico = 0
-                do icmp = 1, -n - 1
-                    if (exisdg(zi(aprno+(nec+2)*(nd-1)+ 3-1),icmp)) then
-                        ico = ico + 1
-                    endif
+                do icmp = 1, -n-1
+                    if (exisdg(zi(aprno+(nec+2)*(nd-1)+3-1), icmp)) then
+                        ico = ico+1
+                    end if
                 end do
-                iddl = ideb + ico
+                iddl = ideb+ico
                 tabddl(iddl) = -1
-            endif
+            end if
         end do
 !
     else
@@ -127,18 +127,18 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
 ! CAS DE LA NUMEROTATION GENERALISEE
 !
         do i = 1, neq
-            n=zi(adeeq+2*i-1)
+            n = zi(adeeq+2*i-1)
             if (n .gt. 0) then
-                tabddl(i)=i
+                tabddl(i) = i
             else
-                tabddl(i)=0
-            endif
+                tabddl(i) = 0
+            end if
         end do
 !
         call jeveuo(nume//'.NUME.REFN', 'L', jrefe)
         call gettco(zk24(jrefe), typrep)
         if (typrep .eq. 'MODELE_GENE     ') then
-            modgen = zk24(jrefe)(1:8)
+            modgen = zk24(jrefe) (1:8)
             call jenonu(jexnom(norig(1:19)//'.LILI', '&SOUSSTR'), ibid)
             call jelira(jexnum(norig, ibid), 'LONMAX', nbsst)
 ! On compte que si il y a plus d'une sous-structure
@@ -148,19 +148,19 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                 do i = 1, nbsst
                     nusst = zi(jorig-1+i)
                     kbid = '        '
-                    call mgutdm(modgen, kbid, nusst, 'NOM_BASE_MODALE', ibid,&
+                    call mgutdm(modgen, kbid, nusst, 'NOM_BASE_MODALE', ibid, &
                                 basemo)
                     call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbdefo)
-                    n1ddl = zi(jprno+2*(i-1))+zi(jprno+2*(i-1)+1)- nbdefo
+                    n1ddl = zi(jprno+2*(i-1))+zi(jprno+2*(i-1)+1)-nbdefo
                     n2ddl = zi(jprno+2*(i-1))+zi(jprno+2*(i-1)+1)-1
                     do j = n1ddl, n2ddl
-                        tabddl(j)=-j
+                        tabddl(j) = -j
                     end do
                 end do
-            endif
-        endif
+            end if
+        end if
 !
-    endif
+    end if
 !
 !
     nbacti = 0
@@ -170,89 +170,89 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
         do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
-                nbacti = nbacti + 1
+                nbacti = nbacti+1
                 tabddl(i) = 1
             else if (n .eq. 0) then
-                nblagr = nblagr + 1
+                nblagr = nblagr+1
                 tabddl(i) = 0
             else
-                nbbloq = nbbloq + 1
+                nbbloq = nbbloq+1
                 tabddl(i) = 0
-            endif
+            end if
         end do
-    else if (choix.eq.'BLOQ') then
+    else if (choix .eq. 'BLOQ') then
         do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
-                nbacti = nbacti + 1
+                nbacti = nbacti+1
                 tabddl(i) = 0
             else if (n .eq. 0) then
-                nblagr = nblagr + 1
+                nblagr = nblagr+1
                 tabddl(i) = 0
             else
-                nbbloq = nbbloq + 1
+                nbbloq = nbbloq+1
                 tabddl(i) = 1
-            endif
+            end if
         end do
     else if (choix .eq. 'LAGR') then
         do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
-                nbacti = nbacti + 1
+                nbacti = nbacti+1
                 tabddl(i) = 0
             else if (n .eq. 0) then
-                nblagr = nblagr + 1
+                nblagr = nblagr+1
                 tabddl(i) = 1
             else
-                nbbloq = nbbloq + 1
+                nbbloq = nbbloq+1
                 tabddl(i) = 0
-            endif
+            end if
         end do
     else if (choix .eq. 'ACBL') then
         do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
-                nbacti = nbacti + 1
+                nbacti = nbacti+1
                 tabddl(i) = 1
             else if (n .eq. 0) then
-                nblagr = nblagr + 1
+                nblagr = nblagr+1
                 tabddl(i) = 0
             else
-                nbbloq = nbbloq + 1
+                nbbloq = nbbloq+1
                 tabddl(i) = 1
-            endif
+            end if
         end do
     else if (choix .eq. 'ACLA') then
         do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
-                nbacti = nbacti + 1
+                nbacti = nbacti+1
                 tabddl(i) = 1
             else if (n .eq. 0) then
-                nblagr = nblagr + 1
+                nblagr = nblagr+1
                 tabddl(i) = 1
             else
-                nbbloq = nbbloq + 1
+                nbbloq = nbbloq+1
                 tabddl(i) = 0
-            endif
+            end if
         end do
     else if (choix .eq. 'BLLA') then
         do i = 1, neq
             n = tabddl(i)
             if (n .gt. 0) then
-                nbacti = nbacti + 1
+                nbacti = nbacti+1
                 tabddl(i) = 0
             else if (n .eq. 0) then
-                nblagr = nblagr + 1
+                nblagr = nblagr+1
                 tabddl(i) = 1
             else
-                nbbloq = nbbloq + 1
+                nbbloq = nbbloq+1
                 tabddl(i) = 1
-            endif
+            end if
         end do
     else
         call utmess('F', 'UTILITAI5_3', sk=choix)
-    endif
+    end if
 !
     call jedema()
 !

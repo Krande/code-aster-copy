@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine eclaco(ipg, mxnbn2, connx, nbno2, i1,&
-                  i2, i3, i4, i5, i6,&
+subroutine eclaco(ipg, mxnbn2, connx, nbno2, i1, &
+                  i2, i3, i4, i5, i6, &
                   i7, i8)
     implicit none
     integer :: mxnbn2
@@ -25,16 +25,16 @@ subroutine eclaco(ipg, mxnbn2, connx, nbno2, i1,&
     integer :: nbno2(*), work(8), k
     integer :: ipg, i1, i2, i3, i4, i5, i6, i7, i8
 !
-    work(1)=i1
-    work(2)=i2
-    work(3)=i3
-    work(4)=i4
-    work(5)=i5
-    work(6)=i6
-    work(7)=i7
-    work(8)=i8
+    work(1) = i1
+    work(2) = i2
+    work(3) = i3
+    work(4) = i4
+    work(5) = i5
+    work(6) = i6
+    work(7) = i7
+    work(8) = i8
     do k = 1, nbno2(ipg)
-        connx(k,ipg)=work(k)
+        connx(k, ipg) = work(k)
     end do
 !
 end subroutine

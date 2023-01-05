@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
+subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb, &
                   typeps, vaux, ddlexc, delta)
 !
 !     SUBROUTINE ASTER ORTHONORMALISANT LES NCONV VECTEUR VECT(:,J)
@@ -101,29 +101,29 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
     real(kind=8) :: eps, raux, rauold, delta1
 !----------------------------------------------------------------
 ! INITIALISATION DU PLUS PETIT REEL*8 EVITANT L'OVERFLOW
-    eps = r8miem()**(2.0d+0 / 3.0d+0)
+    eps = r8miem()**(2.0d+0/3.0d+0)
 !
 ! NORMALISATION DU PREMIER VECTEUR PROPRE
     if (typeps .ne. 0) then
-        call mrmult('ZERO', lmatb, vect(1, 1), vaux, 1,&
+        call mrmult('ZERO', lmatb, vect(1, 1), vaux, 1, &
                     .false._1)
     else
         do i = 1, nbeq
-            vaux(i) = vect(i,1)
+            vaux(i) = vect(i, 1)
         end do
-    endif
+    end if
     raux = 0.d0
     do i = 1, nbeq
-        raux = raux + vect(i,1) * vaux(i) * ddlexc(i)
+        raux = raux+vect(i, 1)*vaux(i)*ddlexc(i)
     end do
     if (typeps .eq. 1) then
-        delta(1) = sign(1.d0,raux)
+        delta(1) = sign(1.d0, raux)
     else
         delta(1) = 1.d0
-    endif
-    raux = delta(1) / max(eps,sqrt(abs(raux)))
+    end if
+    raux = delta(1)/max(eps, sqrt(abs(raux)))
     do i = 1, nbeq
-        vect(i,1) = vect(i,1) * raux * ddlexc(i)
+        vect(i, 1) = vect(i, 1)*raux*ddlexc(i)
     end do
 !
 ! BOUCLE 1 SUR LES VECTEURS PROPRES
@@ -134,70 +134,70 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
 !
 ! CALCUL (VJ,VI) ET ||VI|| (STEP 1)/ (VJ,VI+) (STEP 2 SI NECESSAIRE)
             step = 0
- 20         continue
-            step = step + 1
+20          continue
+            step = step+1
 !
             if (typeps .ne. 0) then
-                call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
+                call mrmult('ZERO', lmatb, vect(1, i), vaux, 1, &
                             .false._1)
             else
                 do k = 1, nbeq
-                    vaux(k) = vect(k,i)
+                    vaux(k) = vect(k, i)
                 end do
-            endif
+            end if
             raux = 0.d0
             do k = 1, nbeq
-                raux = raux + vect(k,j) * vaux(k) * ddlexc(k)
+                raux = raux+vect(k, j)*vaux(k)*ddlexc(k)
             end do
             if (step .eq. 1) then
                 rauold = 0.d0
                 do k = 1, nbeq
-                    rauold = rauold + vect(k,i) * vaux(k) * ddlexc(k)
+                    rauold = rauold+vect(k, i)*vaux(k)*ddlexc(k)
                 end do
-            endif
+            end if
 !
 ! CALCUL VI+ <- VI - (VJ,VI)VJ (STEP 1)
 ! CALCUL VI++ <- VI+ - (VJ,VI+)VJ (STEP 2)
-            delta1 = raux * delta(j)
+            delta1 = raux*delta(j)
             do k = 1, nbeq
-                vect(k,i) = (vect(k,i) - delta1 * vect(k,j)) * ddlexc( k)
+                vect(k, i) = (vect(k, i)-delta1*vect(k, j))*ddlexc(k)
             end do
 !
 ! CALCUL DE ||VI+|| (STEP 1) ET ||VI++|| (STEP 2)
             if (typeps .ne. 0) then
-                call mrmult('ZERO', lmatb, vect(1, i), vaux, 1,&
+                call mrmult('ZERO', lmatb, vect(1, i), vaux, 1, &
                             .false._1)
-            else if (typeps.eq.0) then
+            else if (typeps .eq. 0) then
                 do k = 1, nbeq
-                    vaux(k) = vect(k,i)
+                    vaux(k) = vect(k, i)
                 end do
-            endif
+            end if
             raux = 0.d0
             do k = 1, nbeq
-                raux = raux + vect(k,i) * vaux(k) * ddlexc(k)
+                raux = raux+vect(k, i)*vaux(k)*ddlexc(k)
             end do
 !
 ! PREMIER TEST
-            if ((sqrt(abs(raux)).gt.(alpha*sqrt(abs(rauold)) -eps)) .and. (step.le.2)) then
+            if ((sqrt(abs(raux)) .gt. (alpha*sqrt(abs(rauold))-eps)) .and. (step .le. 2)) then
                 goto 60
-            else if (step.eq.1) then
+            else if (step .eq. 1) then
                 rauold = raux
                 goto 20
-            else if (step.eq.2) then
+            else if (step .eq. 2) then
                 do k = 1, nbeq
-                    vect(k,i) = 0.d0
+                    vect(k, i) = 0.d0
                 end do
-            endif
+            end if
 !
- 60         continue
+60          continue
             if (typeps .eq. 1) then
-                delta(i) = sign(1.d0,raux)
+                delta(i) = sign(1.d0, raux)
             else
                 delta(i) = 1.d0
-            endif
-            raux = delta(i)/max(eps,sqrt(abs(raux)))
+            end if
+            raux = delta(i)/max(eps, sqrt(abs(raux)))
             do k = 1, nbeq
-                vect(k,i) = vect(k,i) * ddlexc(k) * raux
+                vect(k, i) = vect(k, i)*ddlexc(k)*raux
             end do
         end do
 !

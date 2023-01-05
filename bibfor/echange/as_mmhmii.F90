@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mmhmii(fid, indice, maa, dim, type,&
+subroutine as_mmhmii(fid, indice, maa, dim, type, &
                      desc, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -43,21 +43,21 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
     fidm = to_med_idt(fid)
     indic4 = to_med_int(indice)
 !   -- initialisation des chaines (prudent car appel C ensuite):
-    maa=' '
-    desc=' '
-    descdt=' '
-    nom(:)=' '
-    unit(:)=' '
-    call mmhmii(fidm, indic4, maa, dim4, dimb4,&
-                type4, desc, descdt, typtr4, nbseq4,&
+    maa = ' '
+    desc = ' '
+    descdt = ' '
+    nom(:) = ' '
+    unit(:) = ' '
+    call mmhmii(fidm, indic4, maa, dim4, dimb4, &
+                type4, desc, descdt, typtr4, nbseq4, &
                 typre4, nom, unit, cret4)
     dim = dim4
     type = type4
     cret = cret4
 #else
     aster_int :: dimb, typtri, nbseq, typrep
-    call mmhmii(fid, indice, maa, dim, dimb,&
-                type, desc, descdt, typtri, nbseq,&
+    call mmhmii(fid, indice, maa, dim, dimb, &
+                type, desc, descdt, typtri, nbseq, &
                 typrep, nom, unit, cret)
 #endif
 !

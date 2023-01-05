@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fext(t, neq, nvect, liad, lifo,&
+subroutine fext(t, neq, nvect, liad, lifo, &
                 f)
     implicit none
 #include "jeveux.h"
@@ -49,9 +49,9 @@ subroutine fext(t, neq, nvect, liad, lifo,&
     zero = 0.d0
     call r8inir(neq, zero, f, 1)
     do i = 1, nvect
-        call fointe('F ', lifo(i), 1, [nompar], [t],&
+        call fointe('F ', lifo(i), 1, [nompar], [t], &
                     alpha, ier)
-        call daxpy(neq, alpha, zr(liad(i)), 1, f,&
+        call daxpy(neq, alpha, zr(liad(i)), 1, f, &
                    1)
     end do
 end subroutine

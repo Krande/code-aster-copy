@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine e1e2nn(nno, dfde, dfdk, e1n, e2n,&
-                  nxn, nyn, nzn, normn, j1n,&
+subroutine e1e2nn(nno, dfde, dfdk, e1n, e2n, &
+                  nxn, nyn, nzn, normn, j1n, &
                   j2n, san, can)
     implicit none
 !
@@ -42,84 +42,84 @@ subroutine e1e2nn(nno, dfde, dfdk, e1n, e2n,&
 !
 ! CALCUL DE E1 E2 AUX NOEUDS
     do i = 1, nno
-        e1n(1,i)=0.0d0
-        e1n(2,i)=0.0d0
-        e1n(3,i)=0.0d0
+        e1n(1, i) = 0.0d0
+        e1n(2, i) = 0.0d0
+        e1n(3, i) = 0.0d0
 !
-        e2n(1,i)=0.0d0
-        e2n(2,i)=0.0d0
-        e2n(3,i)=0.0d0
+        e2n(1, i) = 0.0d0
+        e2n(2, i) = 0.0d0
+        e2n(3, i) = 0.0d0
 !
         do j = 1, nno
-            e1n(1,i)= e1n(1,i)+dfde(j,i)*zr(igeom + 3*(j-1) -1+1)
-            e1n(2,i)= e1n(2,i)+dfde(j,i)*zr(igeom + 3*(j-1) -1+2)
-            e1n(3,i)= e1n(3,i)+dfde(j,i)*zr(igeom + 3*(j-1) -1+3)
+            e1n(1, i) = e1n(1, i)+dfde(j, i)*zr(igeom+3*(j-1)-1+1)
+            e1n(2, i) = e1n(2, i)+dfde(j, i)*zr(igeom+3*(j-1)-1+2)
+            e1n(3, i) = e1n(3, i)+dfde(j, i)*zr(igeom+3*(j-1)-1+3)
 !
-            e2n(1,i)= e2n(1,i)+dfdk(j,i)*zr(igeom + 3*(j-1) -1+1)
-            e2n(2,i)= e2n(2,i)+dfdk(j,i)*zr(igeom + 3*(j-1) -1+2)
-            e2n(3,i)= e2n(3,i)+dfdk(j,i)*zr(igeom + 3*(j-1) -1+3)
+            e2n(1, i) = e2n(1, i)+dfdk(j, i)*zr(igeom+3*(j-1)-1+1)
+            e2n(2, i) = e2n(2, i)+dfdk(j, i)*zr(igeom+3*(j-1)-1+2)
+            e2n(3, i) = e2n(3, i)+dfdk(j, i)*zr(igeom+3*(j-1)-1+3)
 !
         end do
-        j1n(i)=sqrt(e1n(1,i)**2+e1n(2,i)**2+e1n(3,i)**2)
+        j1n(i) = sqrt(e1n(1, i)**2+e1n(2, i)**2+e1n(3, i)**2)
 !
-        uni1n(1,i)=e1n(1,i)/j1n(i)
-        uni1n(2,i)=e1n(2,i)/j1n(i)
-        uni1n(3,i)=e1n(3,i)/j1n(i)
+        uni1n(1, i) = e1n(1, i)/j1n(i)
+        uni1n(2, i) = e1n(2, i)/j1n(i)
+        uni1n(3, i) = e1n(3, i)/j1n(i)
 !
     end do
 ! CALCUL DE LA NORMALE AUX NOEUDS
 !    CALCUL DU PRODUIT VECTORIEL DE E1 E2
     do ino = 1, nno
-        i = igeom + 3*(ino-1) -1
+        i = igeom+3*(ino-1)-1
         do jno = 1, nno
-            j = igeom + 3*(jno-1) -1
-            sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
-            sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
-            sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
+            j = igeom+3*(jno-1)-1
+            sx(ino, jno) = zr(i+2)*zr(j+3)-zr(i+3)*zr(j+2)
+            sy(ino, jno) = zr(i+3)*zr(j+1)-zr(i+1)*zr(j+3)
+            sz(ino, jno) = zr(i+1)*zr(j+2)-zr(i+2)*zr(j+1)
         end do
     end do
     do i = 1, nno
-        nxn(i)=0.0d0
-        nyn(i)=0.0d0
-        nzn(i)=0.0d0
+        nxn(i) = 0.0d0
+        nyn(i) = 0.0d0
+        nzn(i) = 0.0d0
         do j = 1, nno
             do k = 1, nno
-                nxn(i)= nxn(i)+dfde(j,i)*dfdk(k,i)*sx(j,k)
-                nyn(i)= nyn(i)+dfde(j,i)*dfdk(k,i)*sy(j,k)
-                nzn(i)= nzn(i)+dfde(j,i)*dfdk(k,i)*sz(j,k)
+                nxn(i) = nxn(i)+dfde(j, i)*dfdk(k, i)*sx(j, k)
+                nyn(i) = nyn(i)+dfde(j, i)*dfdk(k, i)*sy(j, k)
+                nzn(i) = nzn(i)+dfde(j, i)*dfdk(k, i)*sz(j, k)
             end do
         end do
 !       CALCUL DU JACOBIEN AUX NOEUDS
 !
-        jac(i) = sqrt (nxn(i)*nxn(i) + nyn(i)*nyn(i) + nzn(i)*nzn(i))
+        jac(i) = sqrt(nxn(i)*nxn(i)+nyn(i)*nyn(i)+nzn(i)*nzn(i))
 !
 ! CALCUL DE LA NORMALE UNITAIRE AUX NOEUDS
 !
-        normn(1,i)=nxn(i)/jac(i)
-        normn(2,i)=nyn(i)/jac(i)
-        normn(3,i)=nzn(i)/jac(i)
+        normn(1, i) = nxn(i)/jac(i)
+        normn(2, i) = nyn(i)/jac(i)
+        normn(3, i) = nzn(i)/jac(i)
 !
 ! CALCUL DU VECTEUR UNI2 ORTHOGONAL AUX NOEUDS A E1N
 !
-        uni2n(1,i)= -uni1n(2,i)*normn(3,i) +uni1n(3,i)*normn(2,i)
-        uni2n(2,i)=-uni1n(3,i)*normn(1,i) +uni1n(1,i)*normn(3,i)
-        uni2n(3,i)=-uni1n(1,i)*normn(2,i) +uni1n(2,i)*normn(1,i)
+        uni2n(1, i) = -uni1n(2, i)*normn(3, i)+uni1n(3, i)*normn(2, i)
+        uni2n(2, i) = -uni1n(3, i)*normn(1, i)+uni1n(1, i)*normn(3, i)
+        uni2n(3, i) = -uni1n(1, i)*normn(2, i)+uni1n(2, i)*normn(1, i)
 !
     end do
 ! CALCUL DE LA NORME DE E1 E2 AUX NOEUDS
     do i = 1, nno
 !
-        j2n(i)=sqrt(e2n(1,i)**2+e2n(2,i)**2+e2n(3,i)**2)
+        j2n(i) = sqrt(e2n(1, i)**2+e2n(2, i)**2+e2n(3, i)**2)
 !
         if (j2n(i) .lt. (1.d-15)) then
             can(i) = 0.d0
             san(i) = 0.d0
         else
-            can(i)=(uni2n(1,i)*e2n(1,i)+uni2n(2,i)*e2n(2,i) +uni2n(3,&
-            i)*e2n(3,i))/j2n(i)
-            san(i)=(uni1n(1,i)*e2n(1,i)+uni1n(2,i)*e2n(2,i) +uni1n(3,&
-            i)*e2n(3,i))/j2n(i)
-        endif
+            can(i) = (uni2n(1, i)*e2n(1, i)+uni2n(2, i)*e2n(2, i)+uni2n(3, &
+                                                                        i)*e2n(3, i))/j2n(i)
+            san(i) = (uni1n(1, i)*e2n(1, i)+uni1n(2, i)*e2n(2, i)+uni1n(3, &
+                                                                        i)*e2n(3, i))/j2n(i)
+        end if
 !
 !
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine greihm(perman, ndim, mecani, press1, press2,&
+subroutine greihm(perman, ndim, mecani, press1, press2, &
                   tempe, dimdef, dimcon)
     implicit none
 #include "asterf_types.h"
@@ -109,10 +109,10 @@ subroutine greihm(perman, ndim, mecani, press1, press2,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-    ASSERT(lteatt('MECA','OUI'))
-    ASSERT(lteatt('THER','NON'))
-    ASSERT(lteatt('HYDR1','1'))
-    ASSERT(lteatt('HYDR2','0'))
+    ASSERT(lteatt('MECA', 'OUI'))
+    ASSERT(lteatt('THER', 'NON'))
+    ASSERT(lteatt('HYDR1', '1'))
+    ASSERT(lteatt('HYDR2', '0'))
 
     mecani(1) = 1
     press1(1) = 1
@@ -137,7 +137,7 @@ subroutine greihm(perman, ndim, mecani, press1, press2,&
         mecani(6) = 0
         mecani(7) = 0
         mecani(8) = ndim
-    endif
+    end if
 !
 !  EN MODE PERMANENT POUR LES PROBLEMES HYDRAULIQUES ET/OU THERMIQUE,
 !  IL N'Y A PLUS DE VARIABLES SCALAIRES. IL NE RESTE QUE LES FLUX.
@@ -146,33 +146,33 @@ subroutine greihm(perman, ndim, mecani, press1, press2,&
         iaux = 0
     else
         iaux = 1
-    endif
+    end if
 !
     if (press1(1) .eq. 1) then
         press1(8) = ndim
-        press1(9) = iaux + ndim-1
-        if (tempe(1) .eq. 1) press1(9) = press1(9) + 1
+        press1(9) = iaux+ndim-1
+        if (tempe(1) .eq. 1) press1(9) = press1(9)+1
     else
         press1(8) = 0
         press1(9) = 0
-    endif
+    end if
 !
     if (press2(1) .eq. 1) then
         press2(7) = ndim
-        press2(8) = iaux + ndim-1
-        if (tempe(1) .eq. 1) press2(8) = press2(8) + 1
+        press2(8) = iaux+ndim-1
+        if (tempe(1) .eq. 1) press2(8) = press2(8)+1
     else
         press2(7) = 0
         press2(8) = 0
-    endif
+    end if
 !
     if (tempe(1) .eq. 1) then
-        tempe(4) = 1 + ndim
-        tempe(5) = 1 + ndim
+        tempe(4) = 1+ndim
+        tempe(5) = 1+ndim
     else
         tempe(4) = 0
         tempe(5) = 0
-    endif
+    end if
 !
 ! =====================================================================
 ! 2.2. ADRESSE DES SOUS-TABLEAUX DANS LES DEFORMATIONS PHYSIQUES, LES -
@@ -187,59 +187,59 @@ subroutine greihm(perman, ndim, mecani, press1, press2,&
     else
         mecani(2) = 0
         mecani(3) = 0
-    endif
+    end if
 !
 ! 2.2.2. ==> DEFORMATIONS ET CONTRAINTES POUR LA PREMIERE PRESSION
 !
     if (press1(1) .eq. 1) then
-        press1(3) = mecani(6) + mecani(2)
-        press1(5) = mecani(7) + mecani(3)
+        press1(3) = mecani(6)+mecani(2)
+        press1(5) = mecani(7)+mecani(3)
         press1(6) = press1(5)
         if (press1(2) .eq. 2) then
-            press1(6) = press1(6) + press1(9)
-        endif
-    endif
+            press1(6) = press1(6)+press1(9)
+        end if
+    end if
 !
 ! 2.2.3. ==> DEFORMATIONS ET CONTRAINTES POUR LA SECONDE PRESSION
 !
     if (press2(1) .eq. 1) then
-        press2(3) = press1(3) + press1(8)
-        press2(4) = press1(5) + press1(2)*press1(9)
+        press2(3) = press1(3)+press1(8)
+        press2(4) = press1(5)+press1(2)*press1(9)
         press2(5) = press2(4)
         if (press2(2) .eq. 2) then
-            press2(5) = press2(5) + press2(8)
-        endif
-    endif
+            press2(5) = press2(5)+press2(8)
+        end if
+    end if
 !
 ! ADRESSES DES CONTRAINTES CORRESPONDANTS AUX MULTIPLICATEURS DE
 ! LAGRANGE MECANIQUES ET HYDRAULIQUES
-    mecani(4)=press1(3)+press1(2)*press1(8)+press2(2)*press2(7)-ndim
-    mecani(5)=press1(5)+press1(9)*press1(2)+press2(8)*press2(2)-ndim
+    mecani(4) = press1(3)+press1(2)*press1(8)+press2(2)*press2(7)-ndim
+    mecani(5) = press1(5)+press1(9)*press1(2)+press2(8)*press2(2)-ndim
 !
     if (press1(1) .eq. 1) then
-        press1(4) = mecani(4)+ ndim
+        press1(4) = mecani(4)+ndim
         press1(7) = mecani(5)+ndim
-    endif
+    end if
 !
     if (press2(1) .eq. 1) then
-        press2(6) = press1(7) + 4
-    endif
+        press2(6) = press1(7)+4
+    end if
 !
 !
 ! 2.2.4. ==> DEFORMATIONS ET CONTRAINTES POUR LA TEMPERATURE
 !
     if (tempe(1) .eq. 1) then
-        tempe(2) = mecani(6) + press1(8) + press2(7) + 1
-        tempe(3) = mecani(7) + press1(2)*press1(9) + press2(2)*press2( 8) + 1
-    endif
+        tempe(2) = mecani(6)+press1(8)+press2(7)+1
+        tempe(3) = mecani(7)+press1(2)*press1(9)+press2(2)*press2(8)+1
+    end if
 !
 ! =====================================================================
 ! 2.3. DIMENSION DES DEPLACEMENTS, DEFORMATIONS ET CONTRAINTES --------
 ! =====================================================================
-    dimdef=mecani(6)+press1(8)+press2(7)+tempe(4)+&
-     &                     (press1(1)+press2(1))*4 +mecani(8)
-    dimcon = mecani(7) + mecani(8)
-    dimcon = dimcon +press1(9)*press1(2)+press2(8)*press2(2) + (press1(1)+press2(1))*4+tempe(5)
+    dimdef = mecani(6)+press1(8)+press2(7)+tempe(4)+&
+     &                     (press1(1)+press2(1))*4+mecani(8)
+    dimcon = mecani(7)+mecani(8)
+    dimcon = dimcon+press1(9)*press1(2)+press2(8)*press2(2)+(press1(1)+press2(1))*4+tempe(5)
 !
 ! =====================================================================
 !

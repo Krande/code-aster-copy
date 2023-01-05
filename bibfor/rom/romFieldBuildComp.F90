@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldBuildComp(resultDomNameZ, resultRomNameZ,&
-                             nbStore       , fieldBuild)
+subroutine romFieldBuildComp(resultDomNameZ, resultRomNameZ, &
+                             nbStore, fieldBuild)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -32,9 +32,9 @@ implicit none
 #include "asterfort/romFieldSave.h"
 #include "asterfort/utmess.h"
 !
-character(len=*), intent(in) :: resultDomNameZ, resultRomNameZ
-integer, intent(in) :: nbStore
-type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
+    character(len=*), intent(in) :: resultDomNameZ, resultRomNameZ
+    integer, intent(in) :: nbStore
+    type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,18 +68,18 @@ type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
 !
 ! - Get parameters
 !
-    fieldDom       = fieldBuild%fieldDom
-    fieldRom       = fieldBuild%fieldRom
-    nbEquaDom      = fieldDom%nbEqua
-    lRIDTrunc      = fieldBuild%lRIDTrunc
-    nbEquaRID      = fieldBuild%nbEquaRID
+    fieldDom = fieldBuild%fieldDom
+    fieldRom = fieldBuild%fieldRom
+    nbEquaDom = fieldDom%nbEqua
+    lRIDTrunc = fieldBuild%lRIDTrunc
+    nbEquaRID = fieldBuild%nbEquaRID
     nbEquaRIDTotal = fieldBuild%nbEquaRIDTotal
 !
 ! - Debug print
 !
     if (niv .ge. 2) then
-        call utmess('I', 'ROM17_7', sk = fieldDom%fieldName)
-    endif
+        call utmess('I', 'ROM17_7', sk=fieldDom%fieldName)
+    end if
 !
 ! - Save zero vector for initial state
 !
@@ -87,8 +87,8 @@ type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
 !
 ! - Preallocate
 !
-    AS_ALLOCATE(vr = valeRom, size = nbEquaRID)
-    AS_ALLOCATE(vr = valeDom, size = nbEquaDom)
+    AS_ALLOCATE(vr=valeRom, size=nbEquaRID)
+    AS_ALLOCATE(vr=valeDom, size=nbEquaDom)
 !
 ! - Compute fields
 !
@@ -96,7 +96,7 @@ type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
         numeStore = iStore
 
 ! ----- Read field from reduced results datastructure
-        call romFieldRead('Read'   , fieldRom      , fieldRomObject,&
+        call romFieldRead('Read', fieldRom, fieldRomObject, &
                           fieldVale, resultRomNameZ, numeStore)
 
 ! ----- Truncate if required
@@ -106,22 +106,22 @@ type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
                 numeEqua = fieldBuild%equaRIDTrunc(iEqua)
                 if (numeEqua .ne. 0) then
                     valeRom(numeEqua) = fieldVale(iEqua)
-                endif
+                end if
             end do
         else
             do iEqua = 1, nbEquaRID
                 valeRom(iEqua) = fieldVale(iEqua)
             end do
-        endif
+        end if
 
 ! ----- Get reconstructed field from transient
         do iEqua = 1, nbEquaDom
             valeDom(iEqua) = fieldBuild%fieldTransientVale(iEqua+nbEquaDom*(numeStore-1))
-        enddo
+        end do
 
 ! ----- Save field in complete results datastructure
-        call romFieldSave('Partial'           , resultDomNameZ         , numeStore,&
-                          fieldDom            , valeDom                ,&
+        call romFieldSave('Partial', resultDomNameZ, numeStore, &
+                          fieldDom, valeDom, &
                           fieldBuild%nbEquaRID, fieldBuild%equaRIDTotal, valeRom)
 
 ! ----- Free memory from field
@@ -131,7 +131,7 @@ type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vr = valeRom)
-    AS_DEALLOCATE(vr = valeDom)
+    AS_DEALLOCATE(vr=valeRom)
+    AS_DEALLOCATE(vr=valeDom)
 !
 end subroutine

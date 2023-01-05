@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dsqbfa(qsi, eta, jacob, caraq4, bfa)
-    implicit  none
+    implicit none
     real(kind=8) :: qsi, eta, jacob(*), caraq4(*), bfa(3, 4)
 !     MATRICE BFA(3,4) AU POINT QSI ETA POUR L'ELEMENT DSQ
 !     -----------------------------------------------------
@@ -39,33 +39,33 @@ subroutine dsqbfa(qsi, eta, jacob, caraq4, bfa)
     s7 = caraq4(19)
     s8 = caraq4(20)
 !
-    peta = 1.d0 + eta
-    meta = 1.d0 - eta
-    pqsi = 1.d0 + qsi
-    mqsi = 1.d0 - qsi
-    etac = (1.d0 - eta * eta) / 2.d0
-    qsic = (1.d0 - qsi * qsi) / 2.d0
+    peta = 1.d0+eta
+    meta = 1.d0-eta
+    pqsi = 1.d0+qsi
+    mqsi = 1.d0-qsi
+    etac = (1.d0-eta*eta)/2.d0
+    qsic = (1.d0-qsi*qsi)/2.d0
 !
-    px1 = - qsi * meta * vj11 - qsic * vj12
-    px2 = - eta * pqsi * vj12 + etac * vj11
-    px3 = - qsi * peta * vj11 + qsic * vj12
-    px4 = - eta * mqsi * vj12 - etac * vj11
-    py1 = - qsi * meta * vj21 - qsic * vj22
-    py2 = - eta * pqsi * vj22 + etac * vj21
-    py3 = - qsi * peta * vj21 + qsic * vj22
-    py4 = - eta * mqsi * vj22 - etac * vj21
+    px1 = -qsi*meta*vj11-qsic*vj12
+    px2 = -eta*pqsi*vj12+etac*vj11
+    px3 = -qsi*peta*vj11+qsic*vj12
+    px4 = -eta*mqsi*vj12-etac*vj11
+    py1 = -qsi*meta*vj21-qsic*vj22
+    py2 = -eta*pqsi*vj22+etac*vj21
+    py3 = -qsi*peta*vj21+qsic*vj22
+    py4 = -eta*mqsi*vj22-etac*vj21
 !
-    bfa(1,1) = px1 * c5
-    bfa(1,2) = px2 * c6
-    bfa(1,3) = px3 * c7
-    bfa(1,4) = px4 * c8
-    bfa(2,1) = py1 * s5
-    bfa(2,2) = py2 * s6
-    bfa(2,3) = py3 * s7
-    bfa(2,4) = py4 * s8
-    bfa(3,1) = py1 * c5 + px1 * s5
-    bfa(3,2) = py2 * c6 + px2 * s6
-    bfa(3,3) = py3 * c7 + px3 * s7
-    bfa(3,4) = py4 * c8 + px4 * s8
+    bfa(1, 1) = px1*c5
+    bfa(1, 2) = px2*c6
+    bfa(1, 3) = px3*c7
+    bfa(1, 4) = px4*c8
+    bfa(2, 1) = py1*s5
+    bfa(2, 2) = py2*s6
+    bfa(2, 3) = py3*s7
+    bfa(2, 4) = py4*s8
+    bfa(3, 1) = py1*c5+px1*s5
+    bfa(3, 2) = py2*c6+px2*s6
+    bfa(3, 3) = py3*c7+px3*s7
+    bfa(3, 4) = py4*c8+px4*s8
 !
 end subroutine

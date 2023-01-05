@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine calyrc(load, mesh, model, geomDime)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -52,8 +52,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: load, mesh, model
-integer, intent(in) :: geomDime
+    character(len=8), intent(in) :: load, mesh, model
+    integer, intent(in) :: geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,7 +120,7 @@ integer, intent(in) :: geomDime
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    nul=0
+    nul = 0
     motfac = 'LIAISON_CYCL'
     call getfac(motfac, nocc)
     if (nocc .eq. 0) goto 310
@@ -134,21 +134,21 @@ integer, intent(in) :: geomDime
     lisrel = '&&CALYRC.RLLISTE'
     zero = 0.0d0
     beta = 0.0d0
-    betac = (0.0d0,0.0d0)
+    betac = (0.0d0, 0.0d0)
     kbeta = ' '
     ndim1 = 3
     lreori = .false.
 !
-    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
+    if (.not. (geomDime .eq. 2 .or. geomDime .eq. 3)) then
         call utmess('F', 'CHARGES2_6')
-    endif
+    end if
 !
     if (geomDime .eq. 2) then
         nbtyp = 3
         listyp(1) = 'SEG2'
         listyp(2) = 'SEG3'
         listyp(3) = 'SEG4'
-    else if (geomDime.eq.3) then
+    else if (geomDime .eq. 3) then
         nbtyp = 11
         listyp(1) = 'TRIA3'
         listyp(2) = 'TRIA6'
@@ -161,10 +161,10 @@ integer, intent(in) :: geomDime
         listyp(9) = 'SEG3'
         listyp(10) = 'SEG4'
         listyp(11) = 'TRIA7'
-    endif
+    end if
 !
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nnomx)
-    idmax = nnomx + 3
+    idmax = nnomx+3
     AS_ALLOCATE(vk8=nomnoe, size=idmax)
     AS_ALLOCATE(vk8=nomddl, size=idmax)
     AS_ALLOCATE(vr=coef, size=idmax)
@@ -181,7 +181,7 @@ integer, intent(in) :: geomDime
         if (typlia .eq. 'DEPL') then
             call getvtx(motfac, 'DDL_ESCL', iocc=iocc, scal=ddl2, nbret=nddl2)
             if (nddl2 .gt. 0) dnor = .true.
-        endif
+        end if
 !
 !        1.1 RECUPERATION DE LA LISTE DES MAILLE_MAIT :
 !        ----------------------------------------------
@@ -190,7 +190,7 @@ integer, intent(in) :: geomDime
         tymocl(1) = 'MAILLE'
         motcle(2) = 'GROUP_MA_MAIT1'
         tymocl(2) = 'GROUP_MA'
-        call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
+        call reliem(model, mesh, 'NU_MAILLE', motfac, iocc, &
                     2, motcle, tymocl, '&&CALYRC.LIMANU1', nbma1)
         call jeveuo('&&CALYRC.LIMANU1', 'L', vi=limanu1)
 !        -- 2eme groupe maitre --
@@ -198,15 +198,15 @@ integer, intent(in) :: geomDime
         tymocl(1) = 'MAILLE'
         motcle(2) = 'GROUP_MA_MAIT2'
         tymocl(2) = 'GROUP_MA'
-        call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
+        call reliem(model, mesh, 'NU_MAILLE', motfac, iocc, &
                     2, motcle, tymocl, '&&CALYRC.LIMANU2', nbma2)
         if (nbma2 .gt. 0) then
             call jeveuo('&&CALYRC.LIMANU2', 'L', vi=limanu2)
-        endif
+        end if
 !
 !        1.2 RECUPERATION DES NOEUD_ESCL
 !        -------------------------------
-        if (.not.dnor) then
+        if (.not. dnor) then
 !
 !        -- RECUPERATION DE LA LISTE DES NOEUD_ESCL :
 !        --------------------------------------------
@@ -218,7 +218,7 @@ integer, intent(in) :: geomDime
             tymocl(3) = 'MAILLE'
             motcle(4) = 'GROUP_MA_ESCL'
             tymocl(4) = 'GROUP_MA'
-            call reliem(' ', mesh, 'NU_NOEUD', motfac, iocc,&
+            call reliem(' ', mesh, 'NU_NOEUD', motfac, iocc, &
                         4, motcle, tymocl, '&&CALYRC.LINONU', nbno3)
             call jeveuo('&&CALYRC.LINONU', 'L', iagno3)
 !
@@ -230,31 +230,31 @@ integer, intent(in) :: geomDime
             tymocl(1) = 'MAILLE'
             motcle(2) = 'GROUP_MA_ESCL'
             tymocl(2) = 'GROUP_MA'
-            call reliem(model, mesh, 'NU_MAILLE', motfac, iocc,&
+            call reliem(model, mesh, 'NU_MAILLE', motfac, iocc, &
                         2, motcle, tymocl, '&&CALYRC.LIMANU3', nbma3)
             if (nbma3 .eq. 0) then
                 valk(1) = motcle(1)
                 valk(2) = motcle(2)
                 call utmess('F', 'MODELISA8_49', nk=2, valk=valk)
-            endif
+            end if
             call jeveuo('&&CALYRC.LIMANU3', 'L', vi=limanu3)
 !
             norien = 0
-            call orilma(mesh, geomDime, limanu3, nbma3, norien,&
+            call orilma(mesh, geomDime, limanu3, nbma3, norien, &
                         ntrait, lreori, 0, [0])
             if (norien .ne. 0) then
                 call utmess('F', 'MODELISA3_19')
-            endif
+            end if
 !
 ! ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'
 ! ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'
 ! ---        DES MAILLES DE PEAU MAILLE_ESCL :
 !            -------------------------------
-            call nbnlma(mesh, nbma3, limanu3, nbtyp, listyp,&
+            call nbnlma(mesh, nbma3, limanu3, nbtyp, listyp, &
                         nbno3, l_error, elem_error)
             if (l_error) then
-                call utmess('F', 'CHARGES6_5', sk = elem_error)
-            endif
+                call utmess('F', 'CHARGES6_5', sk=elem_error)
+            end if
 !
 ! ---        CALCUL DES NORMALES EN CHAQUE NOEUD :
 !            -----------------------------------
@@ -271,22 +271,22 @@ integer, intent(in) :: geomDime
                 zi(indire+ln(i)-1) = i
             end do
 !
-            call canort(mesh, nbma3, limanu3, geomDime, nbno3,&
+            call canort(mesh, nbma3, limanu3, geomDime, nbno3, &
                         ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
             call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false._1)
             call jeveuo('&&CALYRC.LINONU', 'L', iagno3)
-        endif
+        end if
 !
 !
 !       1.3 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 !       ------------------------------------------
-        call char_read_tran(motfac, iocc, geomDime, l_tran, tran,&
+        call char_read_tran(motfac, iocc, geomDime, l_tran, tran, &
                             l_cent, cent, l_angl_naut, angl_naut)
 !
         geom3 = '&&CALYRC.GEOM_TRANSF'
         list_node = '&&CALYRC.LINONU'
-        call calirg(mesh, nbno3, list_node, tran, cent,&
+        call calirg(mesh, nbno3, list_node, tran, cent, &
                     l_angl_naut, angl_naut, geom3, lrota, mrota)
 !
 !
@@ -294,27 +294,27 @@ integer, intent(in) :: geomDime
 !       -------------------
         if (geomDime .eq. 2) then
 !        -- 1er groupe esclave / 1er groupe maitre --
-            call pj2dco('PARTIE', model, model, nbma1, limanu1,&
-                        nbno3, zi( iagno3), ' ', geom3, cores1,&
+            call pj2dco('PARTIE', model, model, nbma1, limanu1, &
+                        nbno3, zi(iagno3), ' ', geom3, cores1, &
                         .false._1, r8b, 0.d0)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
-                call pj2dco('PARTIE', model, model, nbma2, limanu2,&
-                            nbno3, zi( iagno3), ' ', geom3, cores2,&
+                call pj2dco('PARTIE', model, model, nbma2, limanu2, &
+                            nbno3, zi(iagno3), ' ', geom3, cores2, &
                             .false._1, r8b, 0.d0)
-            endif
-        else if (geomDime.eq.3) then
+            end if
+        else if (geomDime .eq. 3) then
 !        -- 1er groupe esclave / 1er groupe maitre --
-            call pj3dco('PARTIE', model, model, nbma1, limanu1,&
-                        nbno3, zi( iagno3), ' ', geom3, cores1,&
+            call pj3dco('PARTIE', model, model, nbma1, limanu1, &
+                        nbno3, zi(iagno3), ' ', geom3, cores1, &
                         .false._1, r8b, 0.d0)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
-                call pj3dco('PARTIE', model, model, nbma2, limanu2,&
-                            nbno3, zi( iagno3), ' ', geom3, cores2,&
+                call pj3dco('PARTIE', model, model, nbma2, limanu2, &
+                            nbno3, zi(iagno3), ' ', geom3, cores2, &
                             .false._1, r8b, 0.d0)
-            endif
-        endif
+            end if
+        end if
 !
 !        -- 1er groupe maitre --
         call jeveuo(cores1//'.PJEF_NB', 'L', vi=conb1)
@@ -328,7 +328,7 @@ integer, intent(in) :: geomDime
             call jeveuo(cores2//'.PJEF_NU', 'L', vi=conu2)
             call jeveuo(cores2//'.PJEF_CF', 'L', vr=cocf2)
 !         CALL JELIRA(CORES2//'.PJEF_NB','LONMAX',NBNO2,KB)
-        endif
+        end if
 !
 !
 !       3. ECRITURE DES RELATIONS LINEAIRES :
@@ -340,19 +340,19 @@ integer, intent(in) :: geomDime
         call getvr8(motfac, 'COEF_MAIT1', iocc=iocc, scal=coef11, nbret=icoef1)
         if (icoef1 .le. 0) then
             coef11 = 1.d0
-        endif
+        end if
         if (nbma2 .gt. 0) then
 !        -- 2eme groupe maitre --
             call getvr8(motfac, 'COEF_MAIT2', iocc=iocc, scal=coef12, nbret=icoef2)
             if (icoef2 .le. 0) then
                 coef12 = 1.d0
-            endif
-        endif
+            end if
+        end if
 !        -- 1er groupe esclave --
         call getvr8(motfac, 'COEF_ESCL', iocc=iocc, scal=coef3, nbret=icoef3)
         if (icoef3 .le. 0) then
             coef3 = 1.d0
-        endif
+        end if
 !
 !       3.1 CAS "DEPL" :
 !       =================
@@ -360,7 +360,7 @@ integer, intent(in) :: geomDime
 !
 !       -- 3.1.1 S'IL N'Y A PAS DE ROTATION :
 !       -------------------------------------
-            if (.not.lrota) then
+            if (.not. lrota) then
                 idcal1 = 0
                 idcal2 = 0
                 do ino2 = 1, nbno3
@@ -371,8 +371,8 @@ integer, intent(in) :: geomDime
                         nno12 = conb2(ino2)
                     else
                         nno12 = 0
-                    endif
-                    if ((nno11.eq.0) .and. (nno12.eq.0)) goto 90
+                    end if
+                    if ((nno11 .eq. 0) .and. (nno12 .eq. 0)) goto 90
 !
                     nuno2 = ino2
                     call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
@@ -398,36 +398,36 @@ integer, intent(in) :: geomDime
 !           -- AFFECTATION DES RELATIONS CONCERNANT LE NOEUD INO2 :
 !           -----------------------------------------------------
                     if (dnor) then
-                        do ino1 = 1, nno11 + nno12 + 1
+                        do ino1 = 1, nno11+nno12+1
                             dim(ino1) = geomDime
                             nomddl(ino1) = 'DEPL'
                             do idim = 1, geomDime
-                                direct(1+ (ino1-1)*ndim1+idim-1) =&
-                                normale(1+ (zi(indire+ino2-1)-1)*geomDime+&
-                                idim-1)
+                                direct(1+(ino1-1)*ndim1+idim-1) = &
+                                    normale(1+(zi(indire+ino2-1)-1)*geomDime+ &
+                                            idim-1)
                             end do
                         end do
-                        call afrela(coef, coemuc, nomddl, nomnoe, dim,&
-                                    direct, nno11+ nno12+1, beta, betac, kbeta,&
+                        call afrela(coef, coemuc, nomddl, nomnoe, dim, &
+                                    direct, nno11+nno12+1, beta, betac, kbeta, &
                                     typcoe, valeType, 1.d-6, lisrel)
                     else
                         do k = 1, geomDime
                             if (k .eq. 1) cmp = 'DX'
                             if (k .eq. 2) cmp = 'DY'
                             if (k .eq. 3) cmp = 'DZ'
-                            do ino1 = 1, nno11 + nno12 + 1
+                            do ino1 = 1, nno11+nno12+1
                                 nomddl(ino1) = cmp
                             end do
-                            call afrela(coef, coemuc, nomddl, nomnoe, dim,&
-                                        direct, nno11+nno12+1, beta, betac, kbeta,&
+                            call afrela(coef, coemuc, nomddl, nomnoe, dim, &
+                                        direct, nno11+nno12+1, beta, betac, kbeta, &
                                         typcoe, valeType, 1.d-6, lisrel)
-                            call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe,&
+                            call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe, &
                                         beta)
                         end do
-                    endif
-                    idcal1 = idcal1 + nno11
-                    idcal2 = idcal2 + nno12
- 90                 continue
+                    end if
+                    idcal1 = idcal1+nno11
+                    idcal2 = idcal2+nno12
+90                  continue
                 end do
 !
 !       -- 3.1.2  S'IL Y A UNE ROTATION :
@@ -445,15 +445,15 @@ integer, intent(in) :: geomDime
                         nno12 = conb2(ino2)
                     else
                         nno12 = 0
-                    endif
-                    if ((nno11.eq.0) .and. (nno12.eq.0)) goto 250
+                    end if
+                    if ((nno11 .eq. 0) .and. (nno12 .eq. 0)) goto 250
                     do k = 1, idmax
                         nomnoe(k) = ' '
                         nomddl(k) = ' '
                         coef(k) = zero
                         dim(k) = 0
                         do kk = 1, 3
-                            direct(1+3* (k-1)+kk-1) = zero
+                            direct(1+3*(k-1)+kk-1) = zero
                         end do
                     end do
 !
@@ -468,7 +468,7 @@ integer, intent(in) :: geomDime
                         ij = 1
                     else
                         ij = geomDime
-                    endif
+                    end if
 !
                     do ino1 = 1, nno11
                         nuno1 = conu1(1+idcal1-1+ino1)
@@ -491,8 +491,8 @@ integer, intent(in) :: geomDime
                     if (dnor) then
                         do idim = 1, geomDime
                             do jdim = 1, geomDime
-                                normal(idim) = normal(idim) + mrota( jdim,idim)*normale(1+ (zi(in&
-                                               &dire+ino2- 1)-1)*geomDime+jdim-1)
+                                normal(idim) = normal(idim)+mrota(jdim, idim)*normale(1+(zi(in&
+                                               &dire+ino2-1)-1)*geomDime+jdim-1)
                             end do
                         end do
                         coef(1) = 1.0d0*coef3
@@ -500,25 +500,25 @@ integer, intent(in) :: geomDime
                         nomddl(1) = 'DEPL'
                         dim(1) = geomDime
                         do idim = 1, geomDime
-                            direct(idim) = normale(1+ (zi(indire+ ino2-1)-1 )*geomDime+idim-1 )
+                            direct(idim) = normale(1+(zi(indire+ino2-1)-1)*geomDime+idim-1)
                         end do
-                        do ino1 = 2, nno11 + 1
+                        do ino1 = 2, nno11+1
                             dim(ino1) = geomDime
                             nomddl(ino1) = 'DEPL'
                             do idim = 1, geomDime
-                                direct(1+ (ino1-1)*ndim1+idim-1) = - normal( idim)
+                                direct(1+(ino1-1)*ndim1+idim-1) = -normal(idim)
                             end do
                         end do
-                        do ino1 = 2, nno12 + 1
+                        do ino1 = 2, nno12+1
                             dim(1+nno11+ino1-1) = geomDime
                             nomddl(nno11+ino1) = 'DEPL'
                             do idim = 1, geomDime
-                                direct(1+nno11+ (ino1-1)*ndim1+idim-&
-                                1) = -normal(idim)
+                                direct(1+nno11+(ino1-1)*ndim1+idim- &
+                                       1) = -normal(idim)
                             end do
                         end do
-                        call afrela(coef, coemuc, nomddl, nomnoe, dim,&
-                                    direct, nno11+ nno12+1, beta, betac, kbeta,&
+                        call afrela(coef, coemuc, nomddl, nomnoe, dim, &
+                                    direct, nno11+nno12+1, beta, betac, kbeta, &
                                     typcoe, valeType, 1.d-6, lisrel)
                     else
                         do k = 1, geomDime
@@ -537,32 +537,32 @@ integer, intent(in) :: geomDime
                                 if (kk .eq. 3) cmp = 'DZ'
                                 nomnoe(kk) = nono2
                                 nomddl(kk) = cmp
-                                coef(kk) = -mrota(kk,k)*coef3
+                                coef(kk) = -mrota(kk, k)*coef3
                             end do
-                            call afrela(coef, coemuc, nomddl, nomnoe, dim,&
-                                        direct, nno11+nno12+geomDime, beta, betac, kbeta,&
+                            call afrela(coef, coemuc, nomddl, nomnoe, dim, &
+                                        direct, nno11+nno12+geomDime, beta, betac, kbeta, &
                                         typcoe, valeType, 1.d-6, lisrel)
-                            call imprel(motfac, nno11+nno12+geomDime, coef, nomddl, nomnoe,&
+                            call imprel(motfac, nno11+nno12+geomDime, coef, nomddl, nomnoe, &
                                         beta)
                         end do
-                    endif
-                    idcal1 = idcal1 + nno11
-                    idcal2 = idcal2 + nno12
+                    end if
+                    idcal1 = idcal1+nno11
+                    idcal2 = idcal2+nno12
 250                 continue
                 end do
-            endif
+            end if
 !
 !
 !       3.2 CAS "TEMP" :
 !       =================
-        else if (typlia.eq.'TEMP') then
+        else if (typlia .eq. 'TEMP') then
             idcal1 = 0
             idcal2 = 0
             do ino2 = 1, nbno2
 !           NNO1: NB DE NOEUD_MAIT LIES A INO2
                 nno11 = conb1(ino2)
                 nno12 = conb2(ino2)
-                if ((nno11.eq.0) .and. (nno12.eq.0)) goto 290
+                if ((nno11 .eq. 0) .and. (nno12 .eq. 0)) goto 290
 !
                 nuno2 = ino2
                 call jenuno(jexnum(mesh//'.NOMNOE', nuno2), nono2)
@@ -588,21 +588,21 @@ integer, intent(in) :: geomDime
 !           -- AFFECTATION DE LA RELATION CONCERNANT LE NOEUD INO2 :
 !           -----------------------------------------------------
                 cmp = 'TEMP'
-                do ino1 = 1, nno11 + nno12 + 1
+                do ino1 = 1, nno11+nno12+1
                     nomddl(ino1) = cmp
                 end do
-                call afrela(coef, coemuc, nomddl, nomnoe, dim,&
-                            direct, nno11+nno12+1, beta, betac, kbeta,&
+                call afrela(coef, coemuc, nomddl, nomnoe, dim, &
+                            direct, nno11+nno12+1, beta, betac, kbeta, &
                             typcoe, valeType, 1.d-6, lisrel)
-                call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe,&
+                call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe, &
                             beta)
-                idcal1 = idcal1 + nno11
-                idcal2 = idcal2 + nno12
+                idcal1 = idcal1+nno11
+                idcal2 = idcal2+nno12
 290             continue
             end do
         else
             ASSERT(.false.)
-        endif
+        end if
 !
         call detrsd('CORRESP_2_MAILLA', cores1)
         call detrsd('CORRESP_2_MAILLA', cores2)

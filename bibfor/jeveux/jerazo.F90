@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine jerazo(nomlu, ni, i1)
 ! IN  NOMLU : NOM DE L'OBJET JEVEUX
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
     integer :: i, ibacol, iblono, icre, inat, inatb, iret
     integer :: ixdeso, ixiadd, ixlono, j1, j2, jcara, jctab
@@ -45,26 +45,26 @@ subroutine jerazo(nomlu, ni, i1)
     integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
     integer :: jtype, lonoi, ltypi, n
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
 ! ----------------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
     integer :: numatr
-    common /idatje/  numatr
+    common/idatje/numatr
 ! -------------------------------------------------
     character(len=32) :: noml32
     character(len=8) :: noml8
     character(len=1) :: typei, genri
 ! ----------------------------------------------------------------------
     integer :: iddeso, idiadd, idlono
-    parameter    (  iddeso = 1 ,idiadd = 2  ,&
-     &               idlono = 8   )
+    parameter(iddeso=1, idiadd=2,&
+     &               idlono=8)
 ! ----------------------------------------------------------------------
     noml32 = nomlu
     noml8 = noml32(25:32)
@@ -78,24 +78,24 @@ subroutine jerazo(nomlu, ni, i1)
         call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
         goto 100
     else if (iret .eq. 1) then
-        genri = genr( jgenr(iclaos) + idatos )
-        typei = type( jtype(iclaos) + idatos )
-        ltypi = ltyp( jltyp(iclaos) + idatos )
+        genri = genr(jgenr(iclaos)+idatos)
+        typei = type(jtype(iclaos)+idatos)
+        ltypi = ltyp(jltyp(iclaos)+idatos)
         if (genri .eq. 'N') then
             call utmess('F', 'JEVEUX1_20', sk=noml32)
-        endif
+        end if
         goto 100
     else if (iret .eq. 2) then
         call jjallc(iclaco, idatco, 'E', ibacol)
-        ixiadd = iszon ( jiszon + ibacol + idiadd )
-        ixdeso = iszon ( jiszon + ibacol + iddeso )
+        ixiadd = iszon(jiszon+ibacol+idiadd)
+        ixdeso = iszon(jiszon+ibacol+iddeso)
         if (noml8 .eq. '$$XATR  ') then
             ixlono = numatr
-            iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
-            genri = genr ( jgenr(iclaco) + ixlono )
-            ltypi = ltyp ( jltyp(iclaco) + ixlono )
-            lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
-            call jxlocs(zi, genri, ltypi, lonoi, iblono,&
+            iblono = iadm(jiadm(iclaco)+2*ixlono-1)
+            genri = genr(jgenr(iclaco)+ixlono)
+            ltypi = ltyp(jltyp(iclaco)+ixlono)
+            lonoi = lono(jlono(iclaco)+ixlono)*ltypi
+            call jxlocs(zi, genri, ltypi, lonoi, iblono, &
                         .false._1, jctab)
             goto 1000
         else
@@ -108,36 +108,36 @@ subroutine jerazo(nomlu, ni, i1)
                 if (ixiadd .ne. 0) then
 !            ----------- COLLECTION DISPERSEE
                     call utmess('F', 'JEVEUX1_21', sk=noml32)
-                endif
-            endif
-            genri = genr( jgenr(iclaco) + ixdeso )
-            typei = type( jtype(iclaco) + ixdeso )
-            ltypi = ltyp( jltyp(iclaco) + ixdeso )
-        endif
+                end if
+            end if
+            genri = genr(jgenr(iclaco)+ixdeso)
+            typei = type(jtype(iclaco)+ixdeso)
+            ltypi = ltyp(jltyp(iclaco)+ixdeso)
+        end if
     else
         ASSERT(.false.)
-    endif
-100  continue
+    end if
+100 continue
     call jjalty(typei, ltypi, 'E', inatb, jctab)
     if (inat .eq. 3 .and. ixiadd .eq. 0) then
-        ixlono = iszon ( jiszon + ibacol + idlono )
+        ixlono = iszon(jiszon+ibacol+idlono)
         if (ixlono .gt. 0) then
-            iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
-            lonoi = iszon(jiszon+iblono-1+idatoc+1) - iszon(jiszon+ iblono-1+idatoc )
+            iblono = iadm(jiadm(iclaco)+2*ixlono-1)
+            lonoi = iszon(jiszon+iblono-1+idatoc+1)-iszon(jiszon+iblono-1+idatoc)
             if (lonoi .gt. 0) then
-                jctab = jctab + (iszon(jiszon+iblono-1+idatoc) - 1)
+                jctab = jctab+(iszon(jiszon+iblono-1+idatoc)-1)
             else
                 call utmess('F', 'JEVEUX1_22', sk=noml32)
-            endif
+            end if
         else
-            jctab = jctab + long(jlong(iclaco)+ixdeso) * (idatoc-1)
-        endif
-    endif
-1000  continue
+            jctab = jctab+long(jlong(iclaco)+ixdeso)*(idatoc-1)
+        end if
+    end if
+1000 continue
 !
-    jini = jctab + i1 - 1
+    jini = jctab+i1-1
     j1 = 0
-    j2 = ni - 1
+    j2 = ni-1
     if (typei .eq. 'I') then
         do i = j1, j2
             zi(jini+i) = 0
@@ -152,7 +152,7 @@ subroutine jerazo(nomlu, ni, i1)
         end do
     else if (typei .eq. 'C') then
         do i = j1, j2
-            zc(jini+i) = (0.d0,0.d0)
+            zc(jini+i) = (0.d0, 0.d0)
         end do
     else if (typei .eq. 'L') then
         do i = j1, j2
@@ -179,7 +179,7 @@ subroutine jerazo(nomlu, ni, i1)
             do i = j1, j2
                 zk80(jini+i) = ' '
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ subroutine te0134(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
-    ASSERT( (nnos.eq.3).or.(nnos.eq.4) )
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+    ASSERT((nnos .eq. 3) .or. (nnos .eq. 4))
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcacoq)
@@ -69,36 +69,36 @@ subroutine te0134(option, nomte)
     matrice = .False.
 !   Si on demande les vecteurs, c'est les 3
     call tecach('NNO', 'PREPLO1', 'E', iret, iad=jrepl1)
-    if ( iret.eq. 0 ) then
+    if (iret .eq. 0) then
         vecteur = .true.
         call jevech('PREPLO2', 'E', jrepl2)
         call jevech('PREPLO3', 'E', jrepl3)
     else
         jrepl2 = 1
         jrepl3 = 1
-    endif
+    end if
 !   Si on demande la matrice de passage
     call tecach('NNO', 'PMATPASS', 'E', iret, iad=jmatpas)
-    if ( iret.eq. 0 ) then
+    if (iret .eq. 0) then
         matrice = .true.
     else
         jmatpas = 1
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
     do ii = 1, nnos*3
         coor(ii) = zr(jgeom-1+ii)
-    enddo
+    end do
 !
 ! --------------------------------------------------------------------------------------------------
 !   CALCUL DE LA MATRICE DE PASSAGE GLOBAL -> LOCAL(INTRINSEQUE)
-    if      (nnos .eq. 3) then
+    if (nnos .eq. 3) then
         call dxtpgl(coor, pgl)
     else if (nnos .eq. 4) then
         call dxqpgl(coor, pgl, 'S', iret)
-    endif
+    end if
     alpha = zr(jcacoq+1)*r8dgrd()
-    beta  = zr(jcacoq+2)*r8dgrd()
+    beta = zr(jcacoq+2)*r8dgrd()
 ! --------------------------------------------------------------------------------------------------
     call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
@@ -130,28 +130,28 @@ subroutine te0134(option, nomte)
     call utpvlg(1, 3, pgl, puly, uy)
     call utpvlg(1, 3, pgl, pulz, uz)
 !
-    if ( vecteur ) then
-        do  ii = 1, 3
-            zr(jrepl1-1+ii)=ux(ii)
-            zr(jrepl2-1+ii)=uy(ii)
-            zr(jrepl3-1+ii)=uz(ii)
-        enddo
-    endif
-    if ( matrice ) then
+    if (vecteur) then
+        do ii = 1, 3
+            zr(jrepl1-1+ii) = ux(ii)
+            zr(jrepl2-1+ii) = uy(ii)
+            zr(jrepl3-1+ii) = uz(ii)
+        end do
+    end if
+    if (matrice) then
 !       matrice de passage du repère GLOBAL au repère LOCAL, constante par élément
-        zr(jmatpas ) = 0.5
+        zr(jmatpas) = 0.5
 !       Stockage en colonne
-        zr(jmatpas +1 )= ux(1)
-        zr(jmatpas +2 )= ux(2)
-        zr(jmatpas +3 )= ux(3)
+        zr(jmatpas+1) = ux(1)
+        zr(jmatpas+2) = ux(2)
+        zr(jmatpas+3) = ux(3)
 !
-        zr(jmatpas +4 )= uy(1)
-        zr(jmatpas +5 )= uy(2)
-        zr(jmatpas +6 )= uy(3)
+        zr(jmatpas+4) = uy(1)
+        zr(jmatpas+5) = uy(2)
+        zr(jmatpas+6) = uy(3)
 !
-        zr(jmatpas +7 )= uz(1)
-        zr(jmatpas +8 )= uz(2)
-        zr(jmatpas +9 )= uz(3)
-    endif
+        zr(jmatpas+7) = uz(1)
+        zr(jmatpas+8) = uz(2)
+        zr(jmatpas+9) = uz(3)
+    end if
 !
 end subroutine

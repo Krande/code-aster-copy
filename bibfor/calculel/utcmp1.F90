@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,27 +53,27 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari, nom_vari)
     if (nomgd .eq. 'VARI_R') then
 !     ------------------------------
         call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)
-        ASSERT(n2.eq.1 .or. n2.eq.0)
-        if (n2.eq.0) then
+        ASSERT(n2 .eq. 1 .or. n2 .eq. 0)
+        if (n2 .eq. 0) then
             call getvtx(mcfac, 'NOM_VARI', iocc=iocc, scal=nom_vari, nbret=n2)
-            ASSERT(n2.eq.1)
-            ivari=-1
+            ASSERT(n2 .eq. 1)
+            ivari = -1
         else
             call lxliis(nomcmp(2:8), ibid, iret)
-            ivari=ibid
-            if ((nomcmp(1:1).ne.'V') .or. (iret.ne.0)) then
-                valk (1) = nomcmp
-                valk (2) = 'VARI_R'
+            ivari = ibid
+            if ((nomcmp(1:1) .ne. 'V') .or. (iret .ne. 0)) then
+                valk(1) = nomcmp
+                valk(2) = 'VARI_R'
                 call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
-            endif
-        endif
+            end if
+        end if
 !
 !     -- SI GRANDEUR /= VARI_R :
 !     --------------------------
     else
         call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)
-        ASSERT(n2.eq.1)
-        ivari=0
-    endif
+        ASSERT(n2 .eq. 1)
+        ivari = 0
+    end if
 !
 end subroutine

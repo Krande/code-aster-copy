@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax,&
-                          ino_xfem, is_xfem, nbnoxfem, ieq_loc, scal,&
+subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
+                          ino_xfem, is_xfem, nbnoxfem, ieq_loc, scal, &
                           deca, k8cmp, tab_mloc)
 !
 !-----------------------------------------------------------------------
@@ -70,92 +70,92 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax,&
     call jelira(jexnum(matass//'.VALM', 1), 'LONMAX', nnz)
     call jelira(matass//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
-        lsym=.true.
-    else if (nvale.eq.2) then
-        lsym=.false.
+        lsym = .true.
+    else if (nvale .eq. 2) then
+        lsym = .false.
         call jeveuo(jexnum(matass//'.VALM', 2), 'E', jval2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    tab_mloc(1:deca*nbnoxfem)=0.d0
+    tab_mloc(1:deca*nbnoxfem) = 0.d0
 !
-    jcoll=1
-    nunoj=deeq(2*(jcoll-1)+1)
-    jpos=ieq_loc(jcoll)
+    jcoll = 1
+    nunoj = deeq(2*(jcoll-1)+1)
+    jpos = ieq_loc(jcoll)
     do kterm = 1, nnz
         if (smdi(jcoll) .lt. kterm) then
-            jcoll=jcoll+1
-            nunoj=deeq(2*(jcoll-1)+1)
-            jpos=ieq_loc(jcoll)
-        endif
-        iligl=zi4(jsmhc-1+kterm)
-        ipos=ieq_loc(iligl)
+            jcoll = jcoll+1
+            nunoj = deeq(2*(jcoll-1)+1)
+            jpos = ieq_loc(jcoll)
+        end if
+        iligl = zi4(jsmhc-1+kterm)
+        ipos = ieq_loc(iligl)
         if (ipos .le. 0) goto 30
-        nunoi=deeq(2*(iligl-1)+1)
+        nunoi = deeq(2*(iligl-1)+1)
         if (is_xfem(nunoi) .and. ipos .gt. 0) then
-            tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos)=max(&
-                        tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos),&
-                        abs(zr(jvale-1+kterm)))
-        endif
+            tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos) = max( &
+                                                      tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos), &
+                                                      abs(zr(jvale-1+kterm)))
+        end if
         if (iligl .eq. jcoll) goto 30
         if (jpos .le. 0) goto 30
         if (is_xfem(nunoj) .and. jpos .gt. 0) then
-            tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos)=max(&
-                        tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos),&
-                        abs(zr(jvale-1+kterm)))
-        endif
-        if (.not.lsym) then
+            tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos) = max( &
+                                                      tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos), &
+                                                      abs(zr(jvale-1+kterm)))
+        end if
+        if (.not. lsym) then
             if (is_xfem(nunoi) .and. ipos .gt. 0) then
-                tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos)=max(&
-                          tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos),&
-                          abs(zr(jval2-1+kterm)))
-            endif
+                tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos) = max( &
+                                                          tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos), &
+                                                          abs(zr(jval2-1+kterm)))
+            end if
             if (is_xfem(nunoj) .and. jpos .gt. 0) then
-                tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos)=max(&
-                          tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos),&
-                          abs(zr(jval2-1+kterm)))
-            endif
-        endif
+                tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos) = max( &
+                                                          tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos), &
+                                                          abs(zr(jval2-1+kterm)))
+            end if
+        end if
 !
- 30     continue
+30      continue
     end do
 !
     do iligl = 1, neq
         if (ieq_loc(iligl) .le. 0) goto 60
-        nunoi=deeq(2*(iligl-1)+1)
+        nunoi = deeq(2*(iligl-1)+1)
         if (.not. is_xfem(nunoi)) goto 60
-        rcoef=sqrt(tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl)))
+        rcoef = sqrt(tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl)))
         if (rcoef .le. 0.d0) then
-            call utmess('F', 'XFEMPRECOND_7', nk=1, valk=k8cmp(deeq(2*(iligl-1)+2)), ni=2,&
+            call utmess('F', 'XFEMPRECOND_7', nk=1, valk=k8cmp(deeq(2*(iligl-1)+2)), ni=2, &
                         vali=[iligl, nunoi])
-        endif
-        tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))=scal/rcoef
- 60     continue
+        end if
+        tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl)) = scal/rcoef
+60      continue
     end do
 !
-    jcoll=1
-    nunoj=deeq(2*(jcoll-1)+1)
+    jcoll = 1
+    nunoj = deeq(2*(jcoll-1)+1)
     do kterm = 1, nnz
         if (smdi(jcoll) .lt. kterm) then
-            jcoll=jcoll+1
-            nunoj=deeq(2*(jcoll-1)+1)
-        endif
+            jcoll = jcoll+1
+            nunoj = deeq(2*(jcoll-1)+1)
+        end if
         if (ieq_loc(jcoll) .ne. 0) then
-            valej=tab_mloc(deca*(ino_xfem(nunoj)-1)+ieq_loc(jcoll))
+            valej = tab_mloc(deca*(ino_xfem(nunoj)-1)+ieq_loc(jcoll))
         else
-            valej=1.d0
-        endif
-        iligl=zi4(jsmhc-1+kterm)
-        nunoi=deeq(2*(iligl-1)+1)
+            valej = 1.d0
+        end if
+        iligl = zi4(jsmhc-1+kterm)
+        nunoi = deeq(2*(iligl-1)+1)
         if (ieq_loc(iligl) .ne. 0) then
-            valei=tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))
+            valei = tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))
         else
-            valei=1.d0
-        endif
-        zr(jvale-1+kterm)=zr(jvale-1+kterm)*valei*valej
-        if (.not. lsym) zr(jval2-1+kterm)=zr(jval2-1+kterm)*valei*valej
-    enddo
+            valei = 1.d0
+        end if
+        zr(jvale-1+kterm) = zr(jvale-1+kterm)*valei*valej
+        if (.not. lsym) zr(jval2-1+kterm) = zr(jval2-1+kterm)*valei*valej
+    end do
 !
     call jedema()
 !

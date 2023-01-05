@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
+subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau, &
                 bmat)
     implicit none
 #include "asterf_types.h"
@@ -59,8 +59,8 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
     aster_logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2, &
                      jgano=jgano)
 !
 ! --- COORDONNEES DU POINT D'INTEGRATION COURANT :
@@ -71,8 +71,8 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
 ! --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 ! --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 !     ----------------------------------------------------
-    call dxmate('RIGI', df, dm, dmf, dc,&
-                dci, dmc, dfc, nno, pgl,&
+    call dxmate('RIGI', df, dm, dmf, dc, &
+                dci, dmc, dfc, nno, pgl, &
                 multic, coupmf, t2iu, t2ui, t1ve)
 !
 ! --- CALCUL DE LA MATRICE (AN) RELIANT LES INCONNUES NOTEES (ALFA)
@@ -116,16 +116,16 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
 !     -------------------------
     do i = 1, 3
         do j = 1, 12
-            bfn(i,j) = 0.d0
+            bfn(i, j) = 0.d0
         end do
     end do
 !
     do i = 1, 3
         do j = 1, 12
             do k = 1, 4
-                bfn(i,j) = bfn(i,j) + bfa(i,k)*an(k,j)
+                bfn(i, j) = bfn(i, j)+bfa(i, k)*an(k, j)
             end do
-            bf(i,j) = bfb(i,j) + bfn(i,j)
+            bf(i, j) = bfb(i, j)+bfn(i, j)
         end do
     end do
 !
@@ -148,20 +148,20 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
 !
 ! --- CALCUL DES MATRICES (BCB) ET (BCA) ET (BCM) :
 !     -------------------------------------------
-    call dsqcis(qsi, eta, caraq4, hmft2, hft2,&
+    call dsqcis(qsi, eta, caraq4, hmft2, hft2, &
                 bcm, bcb, bca)
 !
     do i = 1, 2
         do j = 1, 12
-            bc(i,j) = 0.d0
-            bcn(i,j) = 0.d0
+            bc(i, j) = 0.d0
+            bcn(i, j) = 0.d0
         end do
     end do
 !
     do i = 1, 2
         do j = 1, 12
             do k = 1, 4
-                bcn(i,j) = bcn(i,j) + bca(i,k)*an(k,j)
+                bcn(i, j) = bcn(i, j)+bca(i, k)*an(k, j)
             end do
         end do
     end do
@@ -169,7 +169,7 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
     do i = 1, 2
         do j = 1, 12
             do k = 1, 2
-                bc(i,j) = bc(i,j) + dci(i,k)* (bcb(k,j)+bcn(k,j))
+                bc(i, j) = bc(i, j)+dci(i, k)*(bcb(k, j)+bcn(k, j))
             end do
         end do
     end do

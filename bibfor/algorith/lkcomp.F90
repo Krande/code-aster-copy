@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
-                  deps, sigm, vinm,&
-                  option, sigp, vinp, dside, retcom,&
+                  deps, sigm, vinm, &
+                  option, sigp, vinp, dside, retcom, &
                   invi)
 !
     implicit none
@@ -85,7 +85,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
     aster_logical ::  l_temp, lVari
     real(kind=8) :: mun, un, zero, deux, trois
 !      REAL*8        LGLEPS
-    parameter    (nbmat  = 90 )
+    parameter(nbmat=90)
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2)
     real(kind=8) :: dt, alpha, coef
     real(kind=8) :: sigml(6), sigpl(6), depml(6), depsth(6)
@@ -107,16 +107,16 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       (mun   = -1.d0 )
-    parameter       (un    =  1.d0 )
-    parameter       (zero  =  0.d0 )
-    parameter       (deux  =  2.d0 )
-    parameter       (trois =  3.d0 )
+    parameter(mun=-1.d0)
+    parameter(un=1.d0)
+    parameter(zero=0.d0)
+    parameter(deux=2.d0)
+    parameter(trois=3.d0)
 !      PARAMETER       (LGLEPS =  1.0D-8 )
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
 ! =================================================================
-    data   kron /un , un , un , zero ,zero ,zero/
+    data kron/un, un, un, zero, zero, zero/
 !
     ASSERT(invi .eq. 9)
 ! - Flag to modify internal state variable
@@ -146,7 +146,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 
     iel = 0.d0
     i1el = 0.d0
-    sel1  = 0.d0
+    sel1 = 0.d0
 
     dvml = 0.d0
     devml = 0.d0
@@ -190,13 +190,13 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 
 !
 !
-    dt = instap - instam
+    dt = instap-instam
 
 !
 ! - Get temperatures
 !
-    call get_varc(fami, kpg, ksp , 'T',&
-                  tm , tp , tref, l_temp)
+    call get_varc(fami, kpg, ksp, 'T', &
+                  tm, tp, tref, l_temp)
 
 ! =================================================================
 ! --- RECUPERATION DES PARAMETRES DU MODELE -----------------------
@@ -204,26 +204,26 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! =================================================================
 !
     matcst = 'OUI'
-    call lklmat(typmod(1), imate, nbmat, tm, materd,&
-                materf, matcst, ndt, ndi, nvi,&
+    call lklmat(typmod(1), imate, nbmat, tm, materd, &
+                materf, matcst, ndt, ndi, nvi, &
                 indal)
-    ASSERT(invi.eq.nvi)
+    ASSERT(invi .eq. nvi)
 !      SIGC   = MATERD(3,2)
-    xipic = materd(18,2)
-    xivm = materd(20,2)
+    xipic = materd(18, 2)
+    xivm = materd(20, 2)
 ! =================================================================
 ! --- CONVENTIONS DE SIGNE DU MODELE LAIGLE VISCOPLASTIQUE --------
 ! =================================================================
 !
     do i = 1, ndt
-        sigml(i) = mun * sigm(i)
-        depml(i) = mun * deps(i)
+        sigml(i) = mun*sigm(i)
+        depml(i) = mun*deps(i)
     end do
 ! =================================================================
 ! --- DEFINITION DES INVARIANTS ET DU DEVIATEUR A L'INSTANT MOINS--
 ! =================================================================
 !
-    i1ml = trace(ndi,sigml)
+    i1ml = trace(ndi, sigml)
 !
     call lcdevi(sigml, sml)
 !
@@ -233,13 +233,13 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! ---PRISE EN COMPTE DE LA DILATATION THERMIQUE--------------------
 ! =================================================================
 !
-    alpha = materd(3,1)
+    alpha = materd(3, 1)
 !
     if (l_temp) then
-        coef = alpha*(tp-tref) - alpha*(tm-tref)
+        coef = alpha*(tp-tref)-alpha*(tm-tref)
     else
         coef = zero
-    endif
+    end if
 !
 ! =================================================================
 ! --- DEFINITION DES DEFORMATIONS VOLUMIQUES ET DEVIATORIQUES -----
@@ -250,11 +250,11 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
         depsth(k) = depml(k)
     end do
     do k = 1, 3
-        depsth(k) = depsth(k) - coef
-        dvml = dvml + depsth(k)
+        depsth(k) = depsth(k)-coef
+        dvml = dvml+depsth(k)
     end do
     do k = 1, ndt
-        devml(k) = depsth(k) - dvml/3.d0 * kron(k)
+        devml(k) = depsth(k)-dvml/3.d0*kron(k)
     end do
 !
 ! =================================================================
@@ -262,26 +262,26 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! =================================================================
     somme = sum(vinm(1:nvi))
     if (abs(somme) .lt. r8prem()) then
-        call lkcrip(i1ml, sml, vinm, nbmat, materd,&
+        call lkcrip(i1ml, sml, vinm, nbmat, materd, &
                     ucrpm, seupm)
-        if (seupm/materd(4,1) .gt. 1.0d-6) then
+        if (seupm/materd(4, 1) .gt. 1.0d-6) then
             call utmess('F', 'ALGORITH2_2')
-        endif
-    endif
+        end if
+    end if
 ! =================================================================
 ! --- PREDICTION ELASTIQUE ----------------------------------------
 ! =================================================================
-    call lkelas(ndi, ndt, nbmat, materd, depsth,&
+    call lkelas(ndi, ndt, nbmat, materd, depsth, &
                 sigml, de, kk, mu)
 !
-    iel = i1ml + trois*kk*dvml
+    iel = i1ml+trois*kk*dvml
 !
     do i = 1, ndt
-        sel(i) = sml(i) + deux* mu *devml(i)
+        sel(i) = sml(i)+deux*mu*devml(i)
     end do
 !
     do i = 1, ndt
-        sigel(i) = sel(i) + iel/trois*kron(i)
+        sigel(i) = sel(i)+iel/trois*kron(i)
     end do
 !
 !
@@ -292,7 +292,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! =================================================================
 ! --- CALCUL DE fv(SIGE, XIVM) ---CRITERE VISQUEUX MAX-------------
 ! =================================================================
-        call lkcriv(xivm, iel, sel, vinm, nbmat,&
+        call lkcriv(xivm, iel, sel, vinm, nbmat, &
                     materd, ucrivm, seuivm)
 !
 !           IF (UCRIVM.LT.ZERO)  CALL UTMESS('F','COMPOR1_27')
@@ -308,20 +308,20 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
             varv = 0
         else
             varv = 1
-        endif
+        end if
 !
         vintr = vinm(3)
 !
 ! =================================================================
 ! --- CALCUL DE fv(SIGE, XIVM) ---CRITERE VISCOPLASTIQUE ---------
 ! =================================================================
-        call lkcriv(vintr, iel, sel, vinm, nbmat,&
+        call lkcriv(vintr, iel, sel, vinm, nbmat, &
                     materd, ucriv, seuilv)
 !
 ! --- VERIFICATION DU SIGNE DE U A L INSTANT MOINS AVANT ENTREE
 ! --- DANS LKDGDE
 !
-        call lkcriv(vintr, i1ml, sml, vinm, nbmat,&
+        call lkcriv(vintr, i1ml, sml, vinm, nbmat, &
                     materd, ucrvm, seuvm)
 !
 ! =================================================================
@@ -356,41 +356,41 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
             val = 0
 !
 ! -------------CALCUL DE DEPSV ET DE GAMMAV ----CRITERE VISQUEUX---
-            call lkdgde(val, vintr, dt, seuilv, ucrvm,&
-                        i1ml, sml, vinm, nbmat, materd,&
+            call lkdgde(val, vintr, dt, seuilv, ucrvm, &
+                        i1ml, sml, vinm, nbmat, materd, &
                         depsv, dgamv, iret)
             if (iret .eq. 1) then
                 retcom = 1
                 goto 999
-            endif
+            end if
 !
-            dvml1 = trace(ndi,depsv)
+            dvml1 = trace(ndi, depsv)
             call lcdevi(depsv, devml1)
 !
 ! -------------DELTA XIV
 !
-            dxivm = xivm - vinm(3)
-            dxiv = min(dgamv,dxivm)
+            dxivm = xivm-vinm(3)
+            dxiv = min(dgamv, dxivm)
 !
 !---- XIV A T + DT ------------------------------------------------
 !
-            variTmp(3) = vinm(3) + dxiv
+            variTmp(3) = vinm(3)+dxiv
 !
 !---- GAMMAV A T + DT ---------------------------------------------
 !
-            variTmp(4) = vinm(4) + dgamv
+            variTmp(4) = vinm(4)+dgamv
 !
 ! --  INDICATEUR DE VISCOSITE
             variTmp(6) = 1.d0
 !
-        endif
+        end if
 !
 ! --- MISE A JOUR DE LA PREDICTION DE LA CONTRAINTE ---------------
 !
-        i1el = iel - trois*kk*dvml1
+        i1el = iel-trois*kk*dvml1
 !
         do i = 1, ndt
-            sel1(i) = sel(i) - deux* mu *devml1(i)
+            sel1(i) = sel(i)-deux*mu*devml1(i)
         end do
 ! =================================================================
 ! --- CRITERE ELASTOPLASTIQUE  ------------------------------------
@@ -398,19 +398,19 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! --- VERIFICATION DU SIGNE DE U A L INSTANT MOINS AVANT ENTREE
 ! --- DANS LKGAMP et LKOPTG
 !
-        call lkcrip(i1ml, sml, vinm, nbmat, materd,&
+        call lkcrip(i1ml, sml, vinm, nbmat, materd, &
                     ucrpm, seupm)
 !
 ! =================================================================
 ! --- CALCUL DE fp(SIGE, XIPM) ---CRITERE ELASTOPLASTIQUE ---------
 ! =================================================================
-        call lkcrip(i1el, sel1, vinm, nbmat, materd,&
+        call lkcrip(i1el, sel1, vinm, nbmat, materd, &
                     ucrip, seuilp)
 !
         if ((ucrip .lt. zero) .or. (ucrpm .lt. zero)) then
             retcom = 1
             goto 999
-        endif
+        end if
 !
 !==================================================================
 !--------- ELASTICITE ---------------------------------------------
@@ -425,7 +425,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !---- REACTUALISATION DES CONTRAINTES -----------------------------
 !
             do i = 1, ndt
-                sigel(i) = sel1(i) + i1el/trois*kron(i)
+                sigel(i) = sel1(i)+i1el/trois*kron(i)
                 sigpl(i) = sigel(i)
             end do
 !
@@ -438,7 +438,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
                 dxip = zero
                 variTmp(5) = 0.0d0
 !
-            else if (varv.eq.1) then
+            else if (varv .eq. 1) then
 !
 ! -------- DILATANCE
 !---------- ELASTICITE EN DESSUS DU CRITERE VISQUEUX MAX
@@ -446,11 +446,11 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
                 dxip = dgamv
                 variTmp(5) = 1.0d0
 !
-            endif
+            end if
 !
 !---- XIP A T + DT ------------------------------------------------
 !
-            variTmp(1) = vinm(1) + dxip
+            variTmp(1) = vinm(1)+dxip
 !
 !---- GAMMAP A T + DT ---------------------------------------------
 !
@@ -467,19 +467,19 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
                 val = 0
             else
                 val = 1
-            endif
+            end if
 !
 ! ------- CALCUL DE  GAMMAP -------------CRITERE ELASTOPLASTIQUE--
 !
-            call lkgamp(val, varv, i1ml, sml, ucrpm,&
-                        seupm, vinm, nbmat, materd, de,&
-                        depsth, depsv, dgamv, depsp, dgamp,&
+            call lkgamp(val, varv, i1ml, sml, ucrpm, &
+                        seupm, vinm, nbmat, materd, de, &
+                        depsth, depsv, dgamv, depsp, dgamp, &
                         iret)
 !
             if (iret .eq. 1) then
                 retcom = 1
                 goto 999
-            endif
+            end if
 !
 ! -------- DELTA XIP
 !
@@ -491,28 +491,28 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
                 dxip = dgamp
                 variTmp(5) = 0.0d0
 !
-            else if (varv.eq.1) then
+            else if (varv .eq. 1) then
 !
 ! -------- DILATANCE
 !--------- PLASTIFICATION ET EN DESSUS DU CRITERE VISQUEUX MAX
 !
-                dxip = dgamp + dgamv
+                dxip = dgamp+dgamv
                 variTmp(5) = 1.0d0
 !
-            endif
+            end if
 ! =================================================================
 ! --- REACTUALISATION DES CONTRAINTES  ----------------------------
 ! =================================================================
 ! --- DEFORMATIONS IRREVERSIBLES ----------------------------------
 !
-            irrev(1:ndt) = depsv(1:ndt) + depsp(1:ndt)
+            irrev(1:ndt) = depsv(1:ndt)+depsp(1:ndt)
 !
-            vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
+            vecd(1:ndt) = depsth(1:ndt)-irrev(1:ndt)
 !
-            dsig(1:ndt) = matmul(de(1:ndt,1:ndt), vecd(1:ndt))
+            dsig(1:ndt) = matmul(de(1:ndt, 1:ndt), vecd(1:ndt))
 !
             do i = 1, ndt
-                sigpl(i) = sigml(i) + dsig(i)
+                sigpl(i) = sigml(i)+dsig(i)
             end do
 !
 !==================================================================
@@ -520,43 +520,43 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !==================================================================
 !---- XIP A T + DT ------------------------------------------------
 !
-            variTmp(1) = vinm(1) + dxip
+            variTmp(1) = vinm(1)+dxip
 !
 !---- GAMMAP A T + DT ---------------------------------------------
 !
-            variTmp(2) = vinm(2) + dgamp
+            variTmp(2) = vinm(2)+dgamp
 !
 ! --  INDICATEUR DE PLASTICITE
 !
             variTmp(7) = 1.d0
-        endif
-    endif
+        end if
+    end if
 !
 ! =================================================================
 ! --- TERMES DE L OPERATEUR TANGENT -------------------------------
 ! =================================================================
     if (option(11:14) .eq. 'ELAS') then
-        call lkelas(ndi, ndt, nbmat, materd, depsth,&
+        call lkelas(ndi, ndt, nbmat, materd, depsth, &
                     sigml, de, kk, mu)
-        dside(1:ndt,1:ndt) =de(1:ndt,1:ndt)
-    endif
+        dside(1:ndt, 1:ndt) = de(1:ndt, 1:ndt)
+    end if
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then
             if ((vinm(7) .eq. 0.d0) .and. (vinm(6) .eq. 0.d0)) then
                 matr = 0
-            else if ((vinm(7) .eq. 1.d0).or.(vinm(6) .eq. 1.d0)) then
+            else if ((vinm(7) .eq. 1.d0) .or. (vinm(6) .eq. 1.d0)) then
                 matr = 1
-            endif
-        endif
+            end if
+        end if
         if (option(1:9) .eq. 'FULL_MECA') then
             if ((variTmp(7) .eq. 0.d0) .and. (variTmp(6) .eq. 0.d0)) then
                 matr = 0
-            else if ((variTmp(7) .eq. 1.d0).or.(variTmp(6) .eq. 1.d0)) then
+            else if ((variTmp(7) .eq. 1.d0) .or. (variTmp(6) .eq. 1.d0)) then
                 matr = 1
-            endif
-        endif
+            end if
+        end if
         call r8inir(6*6, 0.d0, dside, 1)
-        call lkelas(ndi, ndt, nbmat, materd, depsth,&
+        call lkelas(ndi, ndt, nbmat, materd, depsth, &
                     sigml, de, kk, mu)
 !
         if (matr .eq. 0) then
@@ -564,7 +564,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
             do i = 1, ndt
                 do k = 1, ndt
-                    dside(i,k) = de(i,k)
+                    dside(i, k) = de(i, k)
                 end do
             end do
 !
@@ -574,51 +574,51 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
                 val = 0
             else
                 val = 1
-            endif
+            end if
 !
             if (seuivm .lt. zero) then
                 varv = 0
             else
                 varv = 1
-            endif
+            end if
 !
-            vintr=vinm(3)
+            vintr = vinm(3)
 !
-            call lkcrip(i1ml, sml, vinm, nbmat, materd,&
+            call lkcrip(i1ml, sml, vinm, nbmat, materd, &
                         ucrpm, seupm)
 !
-            call lkcriv(vintr, i1ml, sml, vinm, nbmat,&
+            call lkcriv(vintr, i1ml, sml, vinm, nbmat, &
                         materd, ucrvm, seuvm)
 !
-            call lkcriv(vintr, iel, sel, vinm, nbmat,&
+            call lkcriv(vintr, iel, sel, vinm, nbmat, &
                         materd, ucriv, seuilv)
 !
-            call lkoptg(val, varv, dt, nbmat, materd,&
-                        i1ml, sml, iel, sel, ucrpm,&
-                        ucrvm, ucriv, seuilv, vinm, de,&
+            call lkoptg(val, varv, dt, nbmat, materd, &
+                        i1ml, sml, iel, sel, ucrpm, &
+                        ucrvm, ucriv, seuilv, vinm, de, &
                         depsv, dside, iret)
 !
 !
             if (iret .eq. 1) then
                 retcom = 1
                 goto 999
-            endif
+            end if
 !
-        endif
+        end if
 !
-    endif
+    end if
 !==================================================================
 !--------- CONTRAINTES DE SORTIE:
 ! -------- RETABLISSEMENT DES SIGNES POUR ASTER --
 !==================================================================
     do i = 1, ndt
-        sigp(i) = mun * sigpl(i)
-        deps(i) = mun * depsth(i)
+        sigp(i) = mun*sigpl(i)
+        deps(i) = mun*depsth(i)
     end do
 ! =================================================================
 999 continue
 ! - Copy internal state variables
     if (lVari) then
         vinp = variTmp
-    endif
+    end if
 end subroutine

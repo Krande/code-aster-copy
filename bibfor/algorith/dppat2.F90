@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,43 +28,43 @@ function dppat2(mater, pmoins, pplus, plas)
     real(kind=8) :: un, deux, trois, young, nu, troisk, deuxmu, phi, c, pult
     real(kind=8) :: alpha1, alpha, douze, psi, beta, betam, dp
 ! ======================================================================
-    parameter  ( un    =  1.0d0 )
-    parameter  ( deux  =  2.0d0 )
-    parameter  ( trois =  3.0d0 )
-    parameter  ( douze = 12.0d0 )
+    parameter(un=1.0d0)
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
+    parameter(douze=12.0d0)
 ! ======================================================================
-    young = mater(1,1)
-    nu = mater(2,1)
-    troisk = young / (un-deux*nu)
-    deuxmu = young / (un+nu)
-    alpha1 = mater(1,2)
-    phi = mater(2,2)
-    c = mater(3,2)
-    pult = mater(4,2)
-    psi = mater(5,2)
+    young = mater(1, 1)
+    nu = mater(2, 1)
+    troisk = young/(un-deux*nu)
+    deuxmu = young/(un+nu)
+    alpha1 = mater(1, 2)
+    phi = mater(2, 2)
+    c = mater(3, 2)
+    pult = mater(4, 2)
+    psi = mater(5, 2)
     alpha = deux*sin(phi)/(trois-sin(phi))
     beta = deux*sin(psi)/(trois-sin(psi))
-    dp = pplus - pmoins
+    dp = pplus-pmoins
     if (plas .eq. 1.0d0) then
         if (pplus .lt. pult) then
-            betam = betaps (beta, pmoins, pult)
-            dppat2 = trois*deuxmu/deux + trois*troisk*alpha*betam - 6.0d0*troisk*alpha*dp*beta/pu&
-                     &lt - douze*c*cos(phi)/(trois- sin(phi))* (un-(un-alpha1)/pult*pplus)*(un-al&
+            betam = betaps(beta, pmoins, pult)
+            dppat2 = trois*deuxmu/deux+trois*troisk*alpha*betam-6.0d0*troisk*alpha*dp*beta/pu&
+                     &lt-douze*c*cos(phi)/(trois-sin(phi))*(un-(un-alpha1)/pult*pplus)*(un-al&
                      &pha1)/pult
         else
             dppat2 = trois*deuxmu/deux
-        endif
-    else if (plas.eq.2.0d0) then
+        end if
+    else if (plas .eq. 2.0d0) then
         call utmess('F', 'ALGORITH3_43')
         if (pplus .lt. pult) then
-            betam = betaps (beta, pmoins, pult)
-            dppat2 = trois*troisk*alpha*betam - douze*c*cos(phi)/( trois-sin(phi))* (un-(un-alpha&
-                     &1)/pult*pplus)*(un-alpha1)/ pult
+            betam = betaps(beta, pmoins, pult)
+            dppat2 = trois*troisk*alpha*betam-douze*c*cos(phi)/(trois-sin(phi))*(un-(un-alpha&
+                     &1)/pult*pplus)*(un-alpha1)/pult
         else
             dppat2 = 0.0d0
-        endif
+        end if
     else
         dppat2 = 0.0d0
-    endif
+    end if
 ! ======================================================================
 end function

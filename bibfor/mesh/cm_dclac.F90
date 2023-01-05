@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cm_dclac(meshIn, meshOut)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,7 +37,7 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: meshIn, meshOut
+    character(len=8), intent(in) :: meshIn, meshOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,44 +68,44 @@ character(len=8), intent(in) :: meshIn, meshOut
 ! --------------------------------------------------------------------------------------------------
 !
     meshAux = 'MAILAUX'
-    ligrma  = '&&OP0167.LIMA'
-    nbSlavCellGroup   = 0
+    ligrma = '&&OP0167.LIMA'
+    nbSlavCellGroup = 0
     call infniv(ifm, niv)
 !
 ! - Get group
 !
-    call getvtx(keywfact, 'GROUP_MA_ESCL' , iocc=1, nbval=0, nbret=nbSlavCellGroup)
+    call getvtx(keywfact, 'GROUP_MA_ESCL', iocc=1, nbval=0, nbret=nbSlavCellGroup)
     nbSlavCellGroup = -nbSlavCellGroup
-    call wkvect(ligrma, 'V V K24', nbSlavCellGroup, vk24 = slavCellGroup)
-    call getvtx(keywfact, 'GROUP_MA_ESCL' , iocc=1, nbval=nbSlavCellGroup, vect=slavCellGroup)
+    call wkvect(ligrma, 'V V K24', nbSlavCellGroup, vk24=slavCellGroup)
+    call getvtx(keywfact, 'GROUP_MA_ESCL', iocc=1, nbval=nbSlavCellGroup, vect=slavCellGroup)
 !
 ! - Get options
 !
-    call getvtx(keywfact, 'DECOUPE_HEXA', iocc=1,scal=typ_dec_lac)
+    call getvtx(keywfact, 'DECOUPE_HEXA', iocc=1, scal=typ_dec_lac)
     if (typ_dec_lac == "PYRA") then
         typ_dec = 1
     elseif (typ_dec_lac == "HEXA") then
         typ_dec = 0
-    endif
+    end if
 !
     call copisd('MAILLAGE', 'V', meshIn, meshAux)
 !
-    do iSlavCellGroup = 1,nbSlavCellGroup
+    do iSlavCellGroup = 1, nbSlavCellGroup
 ! ----- LISTE DE MAILLE DU GROUP_MA
-        same_zone  = ASTER_FALSE
+        same_zone = ASTER_FALSE
         nb_ma_test = 0
-        nbtrav     = 0
+        nbtrav = 0
         call gtgrma(meshIn, meshAux, slavCellGroup(iSlavCellGroup), listCell, nbCell)
         nbCellInit = nbCell
         AS_ALLOCATE(vi=li_trav, size=nbCell)
 ! ----- Gestion du cas avec des mailles surfaciques possédant des mailles volumiques communes
         do while (nb_ma_test .lt. nbCell)
 
-            call wkvect(cninv,'V V I', nbCell, jvConxInv)
-            call cnmpmc(meshAux,nbCell, listCell, zi(jvConxInv))
+            call wkvect(cninv, 'V V I', nbCell, jvConxInv)
+            call cnmpmc(meshAux, nbCell, listCell, zi(jvConxInv))
             call def_list_test(nbCell, jvConxInv, listCell, li_trav, nbtrav)
 ! --------- CREATION DES PATCHS ET RAFFINEMENT LOCAL
-            call cppagn(meshAux, meshOut,  nbtrav, li_trav, iSlavCellGroup, typ_dec, jvConxInv,&
+            call cppagn(meshAux, meshOut, nbtrav, li_trav, iSlavCellGroup, typ_dec, jvConxInv, &
                         same_zone, nb_ma_test)
 ! --------- COPIE DES DONNEES DANS LE MAILLAGE AUXILIAIRE
             call detrsd('MAILLAGE', meshAux)
@@ -118,20 +118,20 @@ character(len=8), intent(in) :: meshIn, meshOut
             AS_DEALLOCATE(vi=li_trav)
             call gtgrma(meshIn, meshAux, slavCellGroup(iSlavCellGroup), listCell, nbCell)
             AS_ALLOCATE(vi=li_trav, size=nbCell)
-        enddo
+        end do
         AS_DEALLOCATE(vi=listCell)
         AS_DEALLOCATE(vi=li_trav)
 ! ----- IMPRESSIONS
         if (niv .ge. 1) then
-            call utmess('I', 'MESH1_3', ni = 2, vali = [iSlavCellGroup, nbCellInit])
-        endif
+            call utmess('I', 'MESH1_3', ni=2, vali=[iSlavCellGroup, nbCellInit])
+        end if
 ! ----- NETTOYAGE
         AS_DEALLOCATE(vi=li_trav)
-    enddo
+    end do
 ! - CREATION DU POINTEUR VERS LES NOMS
-    call wkvect(meshOut//'.PTRNOMPAT', 'G V K24', nbSlavCellGroup, vk24 = ptrPatchName)
+    call wkvect(meshOut//'.PTRNOMPAT', 'G V K24', nbSlavCellGroup, vk24=ptrPatchName)
     do iSlavCellGroup = 1, nbSlavCellGroup
-       ptrPatchName(iSlavCellGroup) = slavCellGroup(iSlavCellGroup)
+        ptrPatchName(iSlavCellGroup) = slavCellGroup(iSlavCellGroup)
     end do
     call jedetr(meshAux//'.PATCH')
     call jedetr(meshAux//'.CONOPA')

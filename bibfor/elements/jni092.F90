@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,12 @@ subroutine jni092(elrefe, nmaxob, liobj, nbobj)
     real(kind=8) :: dff(2)
     character(len=24) :: yty, liobj(nmaxob)
 ! DEB -----------------------------------------------------------------
-    ASSERT(elrefe.eq.'CABPOU')
+    ASSERT(elrefe .eq. 'CABPOU')
 !
     yty = '&INEL.CABPOU.YTY'
 !
     nbobj = 1
-    ASSERT(nmaxob.gt.nbobj)
+    ASSERT(nmaxob .gt. nbobj)
     liobj(1) = yty
 !
     call jeexin(yty, iret)
@@ -45,7 +45,7 @@ subroutine jni092(elrefe, nmaxob, liobj, nbobj)
     nno = 2
     npg = 1
 !
-    lyty = npg*9*nno**2 + npg
+    lyty = npg*9*nno**2+npg
     call wkvect(yty, 'V V R', lyty, iyty)
     dff(1) = -0.5d0
     dff(2) = 0.5d0

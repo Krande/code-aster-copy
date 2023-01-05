@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romAlgoMGS(nb_mode   , nb_equa    , syst_type, field_iden, base,&
-                      vr_mode_in, vr_mode_out,&
+subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base, &
+                      vr_mode_in, vr_mode_out, &
                       vc_mode_in, vc_mode_out)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "blas/zdotc.h"
@@ -29,12 +29,12 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 !
-integer, intent(in) :: nb_mode, nb_equa
-character(len=1), intent(in) :: syst_type
-character(len=8), intent(in) :: base
-character(len=24), intent(in) :: field_iden
-real(kind=8), pointer, optional :: vr_mode_in(:), vr_mode_out(:)
-complex(kind=8), pointer, optional :: vc_mode_in(:), vc_mode_out(:)
+    integer, intent(in) :: nb_mode, nb_equa
+    character(len=1), intent(in) :: syst_type
+    character(len=8), intent(in) :: base
+    character(len=24), intent(in) :: field_iden
+    real(kind=8), pointer, optional :: vr_mode_in(:), vr_mode_out(:)
+    complex(kind=8), pointer, optional :: vc_mode_in(:), vc_mode_out(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,17 +56,17 @@ complex(kind=8), pointer, optional :: vc_mode_in(:), vc_mode_out(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-   complex(kind=8) :: term_c
-   real(kind=8) :: term_r
-   real(kind=8), pointer :: vr_mode(:) => null()
-   complex(kind=8), pointer :: vc_mode(:) => null()
-   character(len=19) :: mode
-   integer :: i_mode, iret
+    complex(kind=8) :: term_c
+    real(kind=8) :: term_r
+    real(kind=8), pointer :: vr_mode(:) => null()
+    complex(kind=8), pointer :: vc_mode(:) => null()
+    character(len=19) :: mode
+    integer :: i_mode, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-   term_c = dcmplx(0.d0,0.d0)
-   term_r = 0.d0
+    term_c = dcmplx(0.d0, 0.d0)
+    term_r = 0.d0
 !
 ! - Orthogonalization the basis with algorithme MGS
 !
@@ -74,17 +74,17 @@ complex(kind=8), pointer, optional :: vc_mode_in(:), vc_mode_out(:)
         vr_mode_out(1:nb_equa) = vr_mode_in(1:nb_equa)
         do i_mode = 1, nb_mode
             call rsexch(' ', base, field_iden, i_mode, mode, iret)
-            call jeveuo(mode(1:19)//'.VALE', 'L', vr = vr_mode)
+            call jeveuo(mode(1:19)//'.VALE', 'L', vr=vr_mode)
             term_r = ddot(nb_equa, vr_mode, 1, vr_mode_in, 1)
-            vr_mode_out(1:nb_equa) = vr_mode_out(1:nb_equa) - term_r*vr_mode(1:nb_equa)
+            vr_mode_out(1:nb_equa) = vr_mode_out(1:nb_equa)-term_r*vr_mode(1:nb_equa)
         end do
     else if (syst_type .eq. 'C') then
         vc_mode_out(1:nb_equa) = vc_mode_in(1:nb_equa)
         do i_mode = 1, nb_mode
             call rsexch(' ', base, field_iden, i_mode, mode, iret)
-            call jeveuo(mode(1:19)//'.VALE', 'L', vc = vc_mode)
+            call jeveuo(mode(1:19)//'.VALE', 'L', vc=vc_mode)
             term_c = zdotc(nb_equa, vc_mode, 1, vc_mode_in, 1)
-            vc_mode_out(1:nb_equa) = vc_mode_out(1:nb_equa) - term_c*vc_mode(1:nb_equa)
+            vc_mode_out(1:nb_equa) = vc_mode_out(1:nb_equa)-term_c*vc_mode(1:nb_equa)
         end do
     else
         ASSERT(ASTER_FALSE)

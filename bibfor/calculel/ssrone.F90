@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,27 +51,27 @@ subroutine ssrone(mag, isma, rota)
     call jeexin(mag//'.PARA_R', iret)
     if (iret .gt. 0) then
 !         -- ROT1= 1 : PEUT-ETRE , 0 : NON , 2 : OUI
-        rot1=1
+        rot1 = 1
         call jeveuo(mag//'.PARA_R', 'L', vr=para_r)
     else
-        rot1=0
-    endif
-    rot2=rot1
+        rot1 = 0
+    end if
+    rot2 = rot1
     if (rot2 .eq. 1) then
-        r1=0.0d0
+        r1 = 0.0d0
         do k = 4, 6
-            r1= r1+ abs(para_r(14*(isma-1)+k))
+            r1 = r1+abs(para_r(14*(isma-1)+k))
         end do
-        rot1=0
-        if (r1 .gt. 1.d-6) rot1=2
-    endif
+        rot1 = 0
+        if (r1 .gt. 1.d-6) rot1 = 2
+    end if
 !
-    ASSERT((rot1.eq.2).or.(rot1.eq.0))
+    ASSERT((rot1 .eq. 2) .or. (rot1 .eq. 0))
     if (rot1 .eq. 2) then
-        rota='OUI'
-    else if (rot1.eq.0) then
-        rota='NON'
-    endif
+        rota = 'OUI'
+    else if (rot1 .eq. 0) then
+        rota = 'NON'
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine meamme(modelz,&
-                  matez, matecoz, caraElemz,&
-                  time, basez,&
-                  matrRigiz, matrMassz,&
+subroutine meamme(modelz, &
+                  matez, matecoz, caraElemz, &
+                  time, basez, &
+                  matrRigiz, matrMassz, &
                   matrElemz, &
                   variz, comporz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -47,12 +47,12 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 !
-character(len=*), intent(in) :: modelz
-character(len=*), intent(in) :: matez, matecoz, caraElemz
-real(kind=8), intent(in) :: time
-character(len=*), intent(in) :: basez
-character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
-character(len=*), intent(in) :: variz, comporz
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(in) :: matez, matecoz, caraElemz
+    real(kind=8), intent(in) :: time
+    character(len=*), intent(in) :: basez
+    character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
+    character(len=*), intent(in) :: variz, comporz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,35 +125,35 @@ character(len=*), intent(in) :: variz, comporz
     matrMass = matrMassz
     compor = comporz
     vari = variz
-    lpain  = ' '
-    lchin  = ' '
+    lpain = ' '
+    lchin = ' '
     lpaout = ' '
     lchout = ' '
 
 ! - Get parameters
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
-    call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nbSubstruct)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - Preparation of input fields
-    call mecham(option, model, caraElem, modeFourier, chgeom,&
+    call mecham(option, model, caraElem, modeFourier, chgeom, &
                 chcara, chharm, iret)
 
 ! - Special map for non-linear cases
     call jedetr(nonLinearMap)
-    call mecact('V', nonLinearMap, 'MAILLA', mesh, 'NEUT_I',&
+    call mecact('V', nonLinearMap, 'MAILLA', mesh, 'NEUT_I', &
                 ncmp=nbCmp, nomcmp=cmpName, si=cmpVale)
 
 ! - Field for external state variables
     call vrcins(model, mate, caraElem, time, chvarc, codret)
 
 ! - Get RESU_ELEM from rigidity matrix
-    resuElemRigi    = ' '
+    resuElemRigi = ' '
     idxResuElemRigi = 0
     if (matrRigi(1:1) .ne. ' ') then
         call jeexin(matrRigi(1:19)//'.RELR', iret)
         if (iret .gt. 0) then
-            call jeveuo(matrRigi(1:19)//'.RELR', 'L', vk24 = listResuElem)
+            call jeveuo(matrRigi(1:19)//'.RELR', 'L', vk24=listResuElem)
             call jelira(matrRigi(1:19)//'.RELR', 'LONUTI', nbResuElem)
             do iResuElem = 1, nbResuElem
                 resuElemRigi = listResuElem(iResuElem)
@@ -161,39 +161,39 @@ character(len=*), intent(in) :: variz, comporz
                 call dismoi('NOM_MODELE', resuElemRigi, 'RESUELEM', repk=modelResu)
                 if (modelResu .eq. model) then
                     goto 20
-                endif
+                end if
             end do
             ASSERT(ASTER_FALSE)
- 20         continue
-        endif
-    endif
+20          continue
+        end if
+    end if
 
 ! - Get RESU_ELEM from mass matrix
     resuElemMass = ' '
     if (matrMass(1:1) .ne. ' ') then
         call jeexin(matrMass(1:19)//'.RELR', iret)
         if (iret .gt. 0) then
-            call jeveuo(matrMass(1:19)//'.RELR', 'L', vk24 = listResuElem)
+            call jeveuo(matrMass(1:19)//'.RELR', 'L', vk24=listResuElem)
             call jelira(matrMass(1:19)//'.RELR', 'LONUTI', nbResuElem)
             do iResuElem = 1, nbResuElem
                 resuElemMass = listResuElem(iResuElem)
                 call dismoi('NOM_MODELE', resuElemMass, 'RESUELEM', repk=modelResu)
                 if (modelResu .eq. model) then
                     goto 40
-                endif
+                end if
             end do
             ASSERT(ASTER_FALSE)
- 40         continue
-        endif
-    endif
+40          continue
+        end if
+    end if
 
 ! - Prepare RESU_ELEM objects
     call memare(base, matrElem, model, mate, caraElem, 'AMOR_MECA')
-    call jeveuo(matrElem//'.RERR', 'E', vk24 = rerr)
+    call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
     call jedetr(matrElem//'.RELR')
     if (nbSubstruct .gt. 0) then
         rerr(3) = 'OUI_SOUS_STRUC'
-    endif
+    end if
 
 ! - Input fields
     lpain(1) = 'PGEOMER'
@@ -201,19 +201,19 @@ character(len=*), intent(in) :: variz, comporz
     lpain(2) = 'PMATERC'
     lchin(2) = matecoz(1:19)
     lpain(3) = 'PCAORIE'
-    lchin(3) = chcara(1)(1:19)
+    lchin(3) = chcara(1) (1:19)
     lpain(4) = 'PCADISA'
-    lchin(4) = chcara(4)(1:19)
+    lchin(4) = chcara(4) (1:19)
     lpain(5) = 'PCAGNPO'
-    lchin(5) = chcara(6)(1:19)
+    lchin(5) = chcara(6) (1:19)
     lpain(6) = 'PCACOQU'
-    lchin(6) = chcara(7)(1:19)
+    lchin(6) = chcara(7) (1:19)
     lpain(7) = 'PVARCPR'
     lchin(7) = chvarc(1:19)
     lpain(8) = 'PCADISK'
-    lchin(8) = chcara(2)(1:19)
+    lchin(8) = chcara(2) (1:19)
     lpain(9) = 'PCINFDI'
-    lchin(9) = chcara(15)(1:19)
+    lchin(9) = chcara(15) (1:19)
     lpain(10) = 'PMASSEL'
     lchin(10) = resuElemMass(1:19)
     lpain(11) = 'PCOMPOR'
@@ -226,26 +226,26 @@ character(len=*), intent(in) :: variz, comporz
 
 ! - Get symmetric or unsymmetric rigidity matrix
     if (resuElemRigi .ne. ' ') then
-        nbFieldIn = nbFieldIn + 1
+        nbFieldIn = nbFieldIn+1
         lchin(nbFieldIn) = resuElemRigi(1:19)
         call dismoi('NOM_GD', resuElemRigi, 'RESUELEM', repk=physQuantityName)
         if (physQuantityName .eq. 'MDNS_R') then
             lpain(nbFieldIn) = 'PRIGINS'
         else
             lpain(nbFieldIn) = 'PRIGIEL'
-            call jeveuo(matrRigi(1:19)//'.RELR', 'L', vk24 = listResuElem)
+            call jeveuo(matrRigi(1:19)//'.RELR', 'L', vk24=listResuElem)
             call jelira(matrRigi(1:19)//'.RELR', 'LONUTI', nbResuElem)
             if (idxResuElemRigi .lt. nbResuElem) then
                 resuElemRigi = listResuElem(idxResuElemRigi+1)
                 call dismoi('NOM_GD', resuElemRigi, 'RESUELEM', repk=physQuantityName)
                 if (physQuantityName .eq. 'MDNS_R') then
-                    nbFieldIn = nbFieldIn + 1
+                    nbFieldIn = nbFieldIn+1
                     lpain(nbFieldIn) = 'PRIGINS'
                     lchin(nbFieldIn) = resuElemRigi(1:19)
-                endif
-            endif
-        endif
-    endif
+                end if
+            end if
+        end if
+    end if
 
 ! - Output fields
     lpaout(1) = 'PMATUUR'
@@ -257,10 +257,10 @@ character(len=*), intent(in) :: variz, comporz
 ! - Compute
     ASSERT(nbFieldIn .le. nbFieldInMax)
     ASSERT(nbFieldOut .le. nbFieldOutMax)
-    call calcul('S',&
-                option, modelLigrel,&
-                nbFieldIn, lchin, lpain,&
-                nbFieldOut, lchout, lpaout,&
+    call calcul('S', &
+                option, modelLigrel, &
+                nbFieldIn, lchin, lpain, &
+                nbFieldOut, lchout, lpaout, &
                 base, 'OUI')
 
 ! - Save RESU_ELEM

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
 ! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
-subroutine ar_ztrsen(select, n, t, ldt, q,&
-                  ldq, w, m, info)
+subroutine ar_ztrsen(select, n, t, ldt, q, &
+                     ldq, w, m, info)
 !  -- LAPACK ROUTINE (VERSION 2.0) --
 !     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
 !     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
@@ -178,8 +178,8 @@ subroutine ar_ztrsen(select, n, t, ldt, q,&
     integer :: info, ldq, ldt, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    aster_logical :: select( * )
-    complex(kind=8) :: q( ldq, * ), t( ldt, * ), w( * )
+    aster_logical :: select(*)
+    complex(kind=8) :: q(ldq, *), t(ldt, *), w(*)
 !     ..
 !     .. LOCAL SCALARS ..
     integer :: ierr, k, ks, n1, n2, nn
@@ -194,53 +194,53 @@ subroutine ar_ztrsen(select, n, t, ldt, q,&
 !
     m = 0
     do k = 1, n
-        if (select( k )) m = m + 1
+        if (select(k)) m = m+1
     end do
 !
     n1 = m
-    n2 = n - m
+    n2 = n-m
     nn = n1*n2
 !
     info = 0
     if (n .lt. 0) then
         info = -4
-    else if (ldt.lt.max( 1, n )) then
+    else if (ldt .lt. max(1, n)) then
         info = -6
-    else if (ldq.lt.1 .or. (ldq.lt.n )) then
+    else if (ldq .lt. 1 .or. (ldq .lt. n)) then
         info = -8
-    endif
+    end if
     if (info .ne. 0) then
         call xerbla('ZTRSEN', -info)
         goto 100
-    endif
+    end if
 !
 !     QUICK RETURN IF POSSIBLE
 !
     if (m .eq. n .or. m .eq. 0) then
         goto 40
-    endif
+    end if
 !
 !     COLLECT THE SELECTED EIGENVALUES AT THE TOP LEFT CORNER OF T.
 !
     ks = 0
     do k = 1, n
-        if (select( k )) then
-            ks = ks + 1
+        if (select(k)) then
+            ks = ks+1
 !
 !           SWAP THE K-TH EIGENVALUE TO POSITION KS.
 !
-            if (k .ne. ks) call ar_ztrexc('V', n, t, ldt, q,&
-                                       ldq, k, ks, ierr)
-        endif
+            if (k .ne. ks) call ar_ztrexc('V', n, t, ldt, q, &
+                                          ldq, k, ks, ierr)
+        end if
     end do
 !
 !
- 40 continue
+40  continue
 !
 !     COPY REORDERED EIGENVALUES TO W.
 !
     do k = 1, n
-        w( k ) = t( k, k )
+        w(k) = t(k, k)
     end do
 100 continue
     call matfpe(1)

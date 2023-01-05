@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dnconv(n, ritzr, ritzi, bounds, tol,&
+subroutine dnconv(n, ritzr, ritzi, bounds, tol, &
                   nconv)
 !
 !     SUBROUTINE ARPACK EFFECTUANT LES TESTS DE CONVERGENCE.
@@ -130,12 +130,12 @@ subroutine dnconv(n, ritzr, ritzi, bounds, tol,&
 !     | GET MACHINE DEPENDENT CONSTANT. |
 !     %---------------------------------%
 !
-    eps23 = (r8prem()*0.5d0)**(2.0d+0 / 3.0d+0)
+    eps23 = (r8prem()*0.5d0)**(2.0d+0/3.0d+0)
 !
     nconv = 0
     do i = 1, n
-        temp = max( eps23, dlapy2( ritzr(i), ritzi(i) ) )
-        if (bounds(i) .le. tol*temp) nconv = nconv + 1
+        temp = max(eps23, dlapy2(ritzr(i), ritzi(i)))
+        if (bounds(i) .le. tol*temp) nconv = nconv+1
     end do
 !
     call matfpe(1)

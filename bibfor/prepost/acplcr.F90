@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                  kwork, sompgw, jrwork, tspaq, ipg,&
-                  dectau, nommet, jvecpg, jnorma, rayon,&
+subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                  kwork, sompgw, jrwork, tspaq, ipg, &
+                  dectau, nommet, jvecpg, jnorma, rayon, &
                   jresun, jdtaum, jtauma, jsgnma, jdsgma)
 !
     implicit none
@@ -84,29 +84,29 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
 !
     epsilo = 1.0d-7
 !
-    call taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                kwork, sompgw, jrwork, tspaq, ipg,&
+    call taurlo(nbvec, jvectn, jvectu, jvectv, nbordr, &
+                kwork, sompgw, jrwork, tspaq, ipg, &
                 dectau, jvecpg, jnorma)
 !
 !  CDU RAYON CIRCONSCRIT
 !
     if (rayon) then
-        call raycir(jvecpg, jdtaum, jresun, nbordr, nbvec,&
+        call raycir(jvecpg, jdtaum, jresun, nbordr, nbvec, &
                     nommet)
-    endif
+    end if
 !
 ! SHEAR MAX
     n = 0
     do ivect = 1, nbvec
         zr(jtauma+ivect-1) = r8prem()
         do iordr = 1, nbordr
-            n = n + 1
-            cutau = zr( jvecpg + (n-1)*2 )
-            cvtau = zr( jvecpg + (n-1)*2 + 1 )
-            tau = sqrt(cutau**2 +cvtau**2)
+            n = n+1
+            cutau = zr(jvecpg+(n-1)*2)
+            cvtau = zr(jvecpg+(n-1)*2+1)
+            tau = sqrt(cutau**2+cvtau**2)
             if ((tau .gt. epsilo) .and. ((tau-zr(jtauma+ivect)) .gt. epsilo)) then
                 zr(jtauma+ivect-1) = tau
-            endif
+            end if
         end do
 !
     end do
@@ -117,16 +117,16 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
         dnomin = zr(jnorma)
         dnomax = zr(jnorma)
         do iordr = 1, nbordr
-            norm = zr( jnorma -1 +iordr+(ivect-1)*nbordr)
-            if ((dnomin - norm) .gt. epsilo) then
+            norm = zr(jnorma-1+iordr+(ivect-1)*nbordr)
+            if ((dnomin-norm) .gt. epsilo) then
                 dnomin = norm
-            endif
-            if ((dnomax - norm) .lt. epsilo) then
+            end if
+            if ((dnomax-norm) .lt. epsilo) then
                 dnomax = norm
-            endif
+            end if
         end do
 !
-        zr(jdsgma+ivect-1) = (dnomax - dnomin)/2
+        zr(jdsgma+ivect-1) = (dnomax-dnomin)/2
         zr(jsgnma+ivect-1) = dnomax
 !
 !

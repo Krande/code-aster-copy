@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
+subroutine mtcmbl(nbcomb, typcst, const, limat, matrez, &
                   ddlexc, numedd, elim)
     implicit none
 #include "asterf_types.h"
@@ -105,31 +105,31 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !   -----------------------------------------------------------------
     call jemarq()
 !
-    ASSERT(elim.eq.'ELIM=' .or. elim.eq.'ELIM1')
+    ASSERT(elim .eq. 'ELIM=' .or. elim .eq. 'ELIM1')
 !
     matres = matrez
-    mat1=limat(1)
-    ASSERT(nbcomb.ge.1)
+    mat1 = limat(1)
+    ASSERT(nbcomb .ge. 1)
     call jelira(matres//'.REFA', 'CLAS', cval=base)
     call jelira(matres//'.VALM', 'TYPE', cval=typres)
     call jelira(matres//'.VALM', 'NMAXOC', nbloc)
     call jelira(matres//'.VALM', 'LONMAX', lgbloc)
-    ASSERT(nbloc.eq.1.or.nbloc.eq.2)
+    ASSERT(nbloc .eq. 1 .or. nbloc .eq. 2)
     call jeveuo(matres//'.REFA', 'E', jrefar)
-    ASSERT(zk24(jrefar-1+9) (1:1).eq.'M')
+    ASSERT(zk24(jrefar-1+9) (1:1) .eq. 'M')
     symr = zk24(jrefar-1+9) .eq. 'MS'
     if (symr) then
-        ASSERT(nbloc.eq.1)
+        ASSERT(nbloc .eq. 1)
     else
-        ASSERT(nbloc.eq.2)
-    endif
+        ASSERT(nbloc .eq. 2)
+    end if
 !
-    ASSERT(ddlexc.eq.' '.or.ddlexc.eq.'LAGR')
+    ASSERT(ddlexc .eq. ' ' .or. ddlexc .eq. 'LAGR')
     AS_ALLOCATE(vi=lispoint, size=nbcomb)
-    reutil=.false.
+    reutil = .false.
     do i = 1, nbcomb
-        ASSERT(typcst(i).eq.'R'.or.typcst(i).eq.'C')
-        mati=limat(i)
+        ASSERT(typcst(i) .eq. 'R' .or. typcst(i) .eq. 'C')
+        mati = limat(i)
         call jeveuo(mati//'.REFA', 'L', jrefai)
         if (zk24(jrefai-1+3) .eq. 'ELIMF') call mtmchc(mati, 'ELIML')
         call mtdscr(mati)
@@ -139,15 +139,15 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         call jeveuo(mati//'.REFA', 'L', jrefai)
         symi = zk24(jrefai-1+9) .eq. 'MS'
         if (symi) then
-            ASSERT(nbloc.eq.1)
+            ASSERT(nbloc .eq. 1)
         else
-            ASSERT(nbloc.eq.2)
-            nosymr=.not.symr
+            ASSERT(nbloc .eq. 2)
+            nosymr = .not. symr
             ASSERT(nosymr)
-        endif
+        end if
         call dismoi('XFEM', mati, 'MATR_ASSE', repk=kxfem)
         if (kxfem .eq. 'XFEM_PRECOND') call utmess('F', 'XFEMPRECOND_3', nk=1, valk=mati)
-        if (mati .eq. matres) reutil=.true.
+        if (mati .eq. matres) reutil = .true.
     end do
 !
 !
@@ -155,11 +155,11 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !      il ne faut pas la detruire !
 !   ------------------------------------------------------------
     if (reutil) then
-        matemp='&&MTCMBL.MATEMP'
+        matemp = '&&MTCMBL.MATEMP'
         call mtdefs(matemp, matres, 'V', typres)
     else
         matemp = matres
-    endif
+    end if
     call jelira(matemp//'.REFA', 'CLAS', cval=bas2)
 !
 !
@@ -167,24 +167,24 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !   ----------------------------------------------------
     call dismoi('MPI_COMPLET', mat1, 'MATR_ASSE', repk=kmpic1)
     if (kmpic1 .eq. 'OUI') then
-        zk24(jrefar-1+11)='MPI_COMPLET'
+        zk24(jrefar-1+11) = 'MPI_COMPLET'
     else
-        zk24(jrefar-1+11)='MPI_INCOMPLET'
-    endif
+        zk24(jrefar-1+11) = 'MPI_INCOMPLET'
+    end if
     matd = .false.
     call dismoi('MATR_DISTR', mat1, 'MATR_ASSE', repk=kmatd)
     if (kmatd .eq. 'OUI') then
         matd = .true.
-        zk24(jrefar-1+11)='MATR_DISTR'
-    endif
+        zk24(jrefar-1+11) = 'MATR_DISTR'
+    end if
     do i = 2, nbcomb
-        mati=limat(i)
+        mati = limat(i)
         call dismoi('MPI_COMPLET', mati, 'MATR_ASSE', repk=kmpic)
         if (kmpic .ne. kmpic1) then
-            valk(1)=mat1
-            valk(2)=mati
+            valk(1) = mat1
+            valk(2) = mati
             call utmess('F', 'CALCULEL6_55', nk=2, valk=valk)
-        endif
+        end if
         call dismoi('MATR_DISTR', mati, 'MATR_ASSE', repk=kmatd)
 
 !       il est necessaire que toutes les matrices qu'on cherche a
@@ -193,8 +193,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         if (kmatd .eq. 'OUI') then
             ASSERT(matd)
         else
-            ASSERT(.not.matd)
-        endif
+            ASSERT(.not. matd)
+        end if
     end do
 !
 !
@@ -203,24 +203,24 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     call jeveuo(mat1//'.REFA', 'L', vk24=refa1)
     ier1 = 0
     do i = 2, nbcomb
-        mati=limat(i)
+        mati = limat(i)
         call jeveuo(mati//'.REFA', 'L', jrefai)
         if (refa1(2) .ne. zk24(jrefai-1+2)) ier1 = 1
         if (refa1(2) .ne. zk24(jrefai-1+2)) ier1 = 1
         if (refa1(1) .ne. zk24(jrefai-1+1)) then
             call utmess('F', 'ALGELINE2_9')
-        endif
+        end if
         if (elim .eq. 'ELIM=') then
-            if (.not.idenob(mat1//'.CCID',mati//'.CCID')) then
-                valk(1)=mat1
-                valk(2)=mati
+            if (.not. idenob(mat1//'.CCID', mati//'.CCID')) then
+                valk(1) = mat1
+                valk(2) = mati
 !               -- si on ne fait pas le DEALLOCATE, on ne peut pas executer
 !                  le test zzzz213a qui fait un try/except
 !                  puis execute a nouveau cette routine
                 AS_DEALLOCATE(vi=lispoint)
                 call utmess('F', 'ALGELINE2_10', nk=2, valk=valk)
-            endif
-        endif
+            end if
+        end if
     end do
 !
 !
@@ -233,7 +233,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     if (ier1 .eq. 0) then
         call mtdscr(matemp)
         call jeveuo(matemp//'.&INT', 'E', lres)
-        call cbvale(nbcomb, typcst, const, lispoint, typres,&
+        call cbvale(nbcomb, typcst, const, lispoint, typres, &
                     lres, ddlexc, matd)
 !
 !   --   cas ou les matrices a combiner n'ont pas le meme profil :
@@ -243,14 +243,14 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !       profil, on plante !
         if (matd) then
             call utmess('F', 'ALGELINE5_1')
-        endif
-        call prosmo(matemp, limat, nbcomb, base, numedd,&
+        end if
+        call prosmo(matemp, limat, nbcomb, base, numedd, &
                     symr, typres)
         call mtdscr(matemp)
         call jeveuo(matemp//'.&INT', 'E', lres)
-        call cbval2(nbcomb, typcst, const, lispoint, typres,&
+        call cbval2(nbcomb, typcst, const, lispoint, typres, &
                     lres, ddlexc)
-    endif
+    end if
 !
 !
 !   -- ddl elimines :
@@ -262,7 +262,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     call jedetr(matemp//'.CCII')
     call jedup1(mat1//'.CCID', bas2, matemp//'.CCID')
     call jeexin(matemp//'.CCID', ier)
-    if (ier .gt. 0) refa(3)='ELIML'
+    if (ier .gt. 0) refa(3) = 'ELIML'
 !
 !
 !   -- construction du descripteur de la matrice resultat :
@@ -274,22 +274,22 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !   -- combinaison lineaire des .CONL des matrices si necessaire :
 !   ===============================================================
     if (ddlexc .ne. 'LAGR') then
-        call mtconl(nbcomb, typcst, const, lispoint, typres,&
+        call mtconl(nbcomb, typcst, const, lispoint, typres, &
                     lres)
     else
-        call jedetr(zk24(zi(lres+1))(1:19)//'.CONL')
-    endif
+        call jedetr(zk24(zi(lres+1)) (1:19)//'.CONL')
+    end if
 !
 !
 !   -- on remet la matrice dans l'etat 'asse' :
 !   -------------------------------------------
     call jeveuo(matres//'.REFA', 'E', jrefar)
-    zk24(jrefar-1+8)='ASSE'
+    zk24(jrefar-1+8) = 'ASSE'
 !
     if (reutil) then
         call copisd('MATR_ASSE', base, matemp, matres)
         call detrsd('MATR_ASSE', matemp)
-    endif
+    end if
 !
     AS_DEALLOCATE(vi=lispoint)
 !

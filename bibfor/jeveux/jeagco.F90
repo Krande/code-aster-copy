@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,9 +54,9 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 !     POUR UNE COLLECTION CONTIGUEE ON S'ASSURE QUE LONTNW >= LONT SCHIN
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
-    common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
+    common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !-----------------------------------------------------------------------
     integer :: iadmi, iadmo1, iadmo2, iadout, iadyn, iadzon, ibacol
     integer :: ibaout, ibiadd, ibiadm, ibiado, iblono, ibmaro, icin
@@ -67,26 +67,26 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
     integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
     integer :: llect, lonoi, n, nbl, nmax
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
-    common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
+    parameter(n=5)
+    common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
+    common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
 !     ------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
     integer :: idnum
-    parameter    ( ivnmax = 0 , iddeso = 1 , idiadd = 2 , idiadm = 3 ,&
-     &               idmarq = 4 , idnom  = 5 ,              idlong = 7 ,&
-     &               idlono = 8 , idnum  = 10 )
+    parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
+     &               idmarq=4, idnom=5, idlong=7,&
+     &               idlono=8, idnum=10)
     integer :: iv(idnum)
     character(len=8) :: csuffi(idnum)
 ! ----------------------------------------------------------------------
@@ -95,14 +95,14 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
     character(len=32) :: nomin, nomout
     character(len=1) :: kclas, genri, typei
     aster_logical :: libcol, x2u, lconst, lnom
-    data             iv / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
-    data             csuffi / '$$DESO  ','$$IADD  ','$$IADM  ',&
-     &                          '$$MARQ  ','$$NOM   ','        ',&
-     &                          '$$LONG  ','$$LONO  ','$$LUTI  ',&
-     &                          '$$NUM   ' /
+    data iv/0, 0, 0, 0, 1, 0, 1, 1, 1, 1/
+    data csuffi/'$$DESO  ', '$$IADD  ', '$$IADM  ',&
+     &                          '$$MARQ  ', '$$NOM   ', '        ',&
+     &                          '$$LONG  ', '$$LONO  ', '$$LUTI  ',&
+     &                          '$$NUM   '/
 ! DEB ------------------------------------------------------------------
     kclas = claout
-    icout = index ( classe , kclas)
+    icout = index(classe, kclas)
 !
     nomin = schin
     nomout = schout
@@ -115,13 +115,13 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 !
         idin = idatco
         icin = iclaco
-        ibacol = iadm ( jiadm(icin) + 2*idin-1 )
+        ibacol = iadm(jiadm(icin)+2*idin-1)
         libcol = .false.
         if (ibacol .eq. 0) then
             libcol = .true.
         else
             if (iszon(jiszon+ibacol-1) .eq. istat(1)) libcol = .true.
-        endif
+        end if
         call jjallc(icin, idin, 'L', ibacol)
         nmax = iszon(jiszon+ibacol+ivnmax)
         ASSERT(nmax .le. nbocnw)
@@ -129,11 +129,11 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
         call jjcren(nomout(1:24), 0, iret2)
         if (iret2 .ne. 0) then
             call jedetr(nomout(1:24))
-        endif
+        end if
         call jjcren(nomout(1:24), 2, iret2)
         idout = idatco
         idcout = idatco
-        call jjcrec(icout, idout, 'X', 'I', idnum+1,&
+        call jjcrec(icout, idout, 'X', 'I', idnum+1, &
                     iadzon)
         iszon(jiszon+iadzon+ivnmax) = nbocnw
         ibaout = iadm(jiadm(icout)+2*idout-1)
@@ -146,17 +146,17 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 ! ----  COLLECTION DISPERSEE
             iv(1) = 0
             ASSERT(lontnw .eq. 0)
-        endif
+        end if
 !
-        ixlong = iszon (jiszon+ibacol+idlong)
+        ixlong = iszon(jiszon+ibacol+idlong)
         lconst = (ixlong .eq. 0)
-        ixnom = iszon (jiszon+ibacol+idnom)
+        ixnom = iszon(jiszon+ibacol+idnom)
         lnom = (ixnom .ne. 0)
 !
 ! ----- RECOPIE DES OBJETS ATTRIBUTS DE COLLECTION
 !
         do k = 1, idnum
-            idat = iszon ( jiszon + ibacol + k )
+            idat = iszon(jiszon+ibacol+k)
             if (idat .gt. 0) then
                 nomin = rnom(jrnom(icin)+idat)
                 nomout = nomout(1:24)//csuffi(k)
@@ -166,72 +166,72 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
                     idout = idatos
                     iadmi = iadm(jiadm(icin)+2*idat-1)
                     iaddi(1) = iadd(jiadd(icin)+2*idat-1)
-                    iaddi(2) = iadd(jiadd(icin)+2*idat )
+                    iaddi(2) = iadd(jiadd(icin)+2*idat)
                     genr(jgenr(icout)+idout) = genr(jgenr(icin)+idat)
                     ltyp(jltyp(icout)+idout) = ltyp(jltyp(icin)+idat)
                     type(jtype(icout)+idout) = type(jtype(icin)+idat)
                     llect = lono(jlono(icin)+idat)
 !
                     if (k .eq. iddeso .and. iv(1) .eq. 1) then
-                        lono(jlono(icout)+idout)= max(lontnw,llect)
+                        lono(jlono(icout)+idout) = max(lontnw, llect)
                         if (lconst) then
-                            long(jlong(icout)+idout)=lontnw/nbocnw
-                        endif
-                    else if (k.eq.idlono) then
-                        lono(jlono(icout)+idout)= nbocnw+1
-                        long(jlong(icout)+idout)= nbocnw+1
-                    else if (k.eq.idnum) then
-                        lono(jlono(icout)+idout)= 2
-                        long(jlong(icout)+idout)= 2
+                            long(jlong(icout)+idout) = lontnw/nbocnw
+                        end if
+                    else if (k .eq. idlono) then
+                        lono(jlono(icout)+idout) = nbocnw+1
+                        long(jlong(icout)+idout) = nbocnw+1
+                    else if (k .eq. idnum) then
+                        lono(jlono(icout)+idout) = 2
+                        long(jlong(icout)+idout) = 2
                     else
-                        lono(jlono(icout)+idout)= nbocnw
-                        long(jlong(icout)+idout)= nbocnw
-                    endif
+                        lono(jlono(icout)+idout) = nbocnw
+                        long(jlong(icout)+idout) = nbocnw
+                    end if
                     genri = genr(jgenr(icout)+idout)
                     typei = type(jtype(icout)+idout)
                     ltypi = ltyp(jltyp(icout)+idout)
                     lonoi = lono(jlono(icout)+idout)
-                    nbl = lonoi * ltypi
+                    nbl = lonoi*ltypi
                     if (nbl .gt. 0) then
-                        if ((k.eq.1 .and. iv(1).eq.1 ) .or. k .gt. 1) then
-                            call jjallt(nbl, icout, genri, typei, ltypi,&
+                        if ((k .eq. 1 .and. iv(1) .eq. 1) .or. k .gt. 1) then
+                            call jjallt(nbl, icout, genri, typei, ltypi, &
                                         'INIT', iadout, iadyn)
-                            call jjecrs(iadout, icout, idout, 0, 'E',&
+                            call jjecrs(iadout, icout, idout, 0, 'E', &
                                         imarq(jmarq(icout)+2*idout-1))
                             iadm(jiadm(icout)+2*idout-1) = iadout
-                            iadm(jiadm(icout)+2*idout ) = iadyn
-                        endif
-                    endif
+                            iadm(jiadm(icout)+2*idout) = iadyn
+                        end if
+                    end if
 !
                     if (k .eq. idnom) then
                         if (lnom) then
 !
 ! -- IL FAUT TRAITER LE REPERTOIRE DE NOM A PART
 !
-                            do ioc = 1, luti(jluti(icin) + ixnom)
+                            do ioc = 1, luti(jluti(icin)+ixnom)
                                 call jenuno(jexnum(nomin, ioc), nom24)
                                 call jecroc(jexnom(nomout, nom24))
                             end do
-                        endif
+                        end if
 !
                     else if (iv(k) .eq. 1) then
                         if (iadmi .ne. 0) then
-                            iadmo1 = (iadmi-1)*lois+iszon(jiszon+ iadmi-3)+1
-                            iadmo2 = (iadout-1)*lois+iszon(jiszon+ iadout-3)+1
+                            iadmo1 = (iadmi-1)*lois+iszon(jiszon+iadmi-3)+1
+                            iadmo2 = (iadout-1)*lois+iszon(jiszon+iadout-3)+1
                             call jxdeps(iadmo1, iadmo2, llect*ltypi)
                         else if (iaddi(1) .gt. 0) then
-                            call jxliro(icin, iadout, iaddi, llect* ltypi)
-                        endif
-                    endif
+                            call jxliro(icin, iadout, iaddi, llect*ltypi)
+                        end if
+                    end if
                     docu(jdocu(icout)+idout) = docu(jdocu(icin)+idat)
                     luti(jluti(icout)+idout) = luti(jluti(icin)+idat)
                     if (k .eq. idnum .and. iadmi .ne. 0) then
                         iszon(jiszon+iadout) = nbocnw
                         iszon(jiszon+iadout+1) = iszon(jiszon+iadmi+1)
-                    endif
-                endif
+                    end if
+                end if
                 iszon(jiszon+ibaout+k) = idatos
-            endif
+            end if
         end do
 !
 ! ----- POUR UNE COLLECTION DISPERSEE, RECOPIE DES SEGMENTS DE VALEURS
@@ -256,30 +256,30 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
             do k = 1, nmax
                 iadmi = iszon(jiszon+ibiadm-1+2*k-1)
                 iaddi(1) = iszon(jiszon+ibiadd-1+2*k-1)
-                iaddi(2) = iszon(jiszon+ibiadd-1+2*k )
+                iaddi(2) = iszon(jiszon+ibiadd-1+2*k)
                 if (iadmi .eq. 0 .and. iaddi(1) .eq. 0) goto 2
                 if (ixlono .eq. 0) then
                     nbl = lono(jlono(icin)+ixdeso)*ltypi
                 else
                     iblono = iadm(jiadm(icin)+2*ixlono-1)
                     nbl = iszon(jiszon+iblono-1+k)*ltypi
-                endif
+                end if
                 if (iadmi .ne. 0) then
                     ista1 = iszon(jiszon+iadmi-1)
                     ista2 = iszon(jiszon+iszon(jiszon+iadmi-4)-4)
-                    if (ista1 .eq. istat(1) .and. (ista2.eq.istat(3) .or.ista2.eq.istat(4))) then
+                  if (ista1 .eq. istat(1) .and. (ista2 .eq. istat(3) .or. ista2 .eq. istat(4))) then
                         x2u = .true.
                         iszon(jiszon+iadmi-1) = istat(2)
                     else
                         x2u = .false.
-                    endif
-                endif
-                call jjallt(nbl, icout, genri, typei, ltypi,&
+                    end if
+                end if
+                call jjallt(nbl, icout, genri, typei, ltypi, &
                             'INIT', iadout, iadyn)
-                call jjecrs(iadout, icout, k, idcout, 'E',&
-                            iszon(jiszon+ ibmaro-1+2*k-1))
+                call jjecrs(iadout, icout, k, idcout, 'E', &
+                            iszon(jiszon+ibmaro-1+2*k-1))
                 iszon(jiszon+ibiado-1+2*k-1) = iadout
-                iszon(jiszon+ibiado-1+2*k ) = iadyn
+                iszon(jiszon+ibiado-1+2*k) = iadyn
                 if (iadmi .ne. 0) then
                     iadmo1 = (iadmi-1)*lois+iszon(jiszon+iadmi-3)+1
                     iadmo2 = (iadout-1)*lois+iszon(jiszon+iadout-3)+1
@@ -289,12 +289,12 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
                     call jxliro(icin, iadout, iaddi, nbl)
                 else
                     call utmess('F', 'JEVEUX1_65', sk=nomin, si=k)
-                endif
-  2             continue
+                end if
+2               continue
             end do
-        endif
+        end if
         if (libcol) call jjlide('JELIBE', nomin(1:24), iret1)
         call jjlide('JELIBE', nomout(1:24), iret2)
-    endif
+    end if
 ! FIN ------------------------------------------------------------------
 end subroutine

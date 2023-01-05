@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcpitg(compor, df, line, dp, dvbe,&
+subroutine lcpitg(compor, df, line, dp, dvbe, &
                   dtaudf)
 !
 !
@@ -52,11 +52,11 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
     real(kind=8) :: jp, dj, jm, dfb(3, 3)
     real(kind=8) :: djdf(3, 3), dbtrdf(6, 3, 3)
 !
-    common /gdsmc/&
-     &            bem,betr,dvbetr,eqbetr,trbetr,&
-     &            jp,dj,jm,dfb,&
-     &            djdf,dbtrdf,&
-     &            kr,id,rac2,rc,ind,ind1,ind2
+    common/gdsmc/&
+     &            bem, betr, dvbetr, eqbetr, trbetr,&
+     &            jp, dj, jm, dfb,&
+     &            djdf, dbtrdf,&
+     &            kr, id, rac2, rc, ind, ind1, ind2
 ! ----------------------------------------------------------------------
 !  COMMON MATERIAU POUR VON MISES
 !
@@ -64,10 +64,10 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
     real(kind=8) :: pm, young, nu, mu, unk, troisk, cother
     real(kind=8) :: sigm0, epsi0, dt, coefm, rpm, pente, apui, npui, sigy
 !
-    common /lcpim/&
-     &          pm,young,nu,mu,unk,troisk,cother,&
-     &          sigm0,epsi0,dt,coefm,rpm,pente,&
-     &          apui,npui,sigy,jprol,jvale,nbval
+    common/lcpim/&
+     &          pm, young, nu, mu, unk, troisk, cother,&
+     &          sigm0, epsi0, dt, coefm, rpm, pente,&
+     &          apui, npui, sigy, jprol, jvale, nbval
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: ij, kl, k, l
@@ -84,28 +84,28 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
         a3 = 0
         a4 = 0
     else
-        eqbe=sqrt(1.5d0*ddot(6,dvbe,1,dvbe,1))
-        a2=1/(1+trbetr*dp/eqbe)
+        eqbe = sqrt(1.5d0*ddot(6, dvbe, 1, dvbe, 1))
+        a2 = 1/(1+trbetr*dp/eqbe)
 !
-        rb=pente
+        rb = pente
         if (compor(1:4) .eq. 'VISC' .and. dp .ne. 0.d0) then
             arg = (dp/(dt*epsi0))**(1.d0/coefm)
-            rb = rb + sigm0*arg/(sqrt(arg**2+1.d0)*coefm*dp)
-        endif
+            rb = rb+sigm0*arg/(sqrt(arg**2+1.d0)*coefm*dp)
+        end if
 !
-        a3=(a2*dp/eqbe)-mu/(rb+mu*trbetr)
-        a3=3.d0*trbetr*a3/(2.d0*eqbe*eqbe)
+        a3 = (a2*dp/eqbe)-mu/(rb+mu*trbetr)
+        a3 = 3.d0*trbetr*a3/(2.d0*eqbe*eqbe)
 !
-        a4=dp/eqbe*((mu*trbetr/(rb+mu*trbetr))-1.d0)
-    endif
+        a4 = dp/eqbe*((mu*trbetr/(rb+mu*trbetr))-1.d0)
+    end if
 !
 !
 ! 2 - DERIVEE DE DVBE PAR RAPPORT A BETR = DVBBTR
 !
     do ij = 1, 6
         do kl = 1, 6
-            dvbbtr(ij,kl)= a2*(id(ij,kl)-kr(ij)*kr(kl)/3.d0) + a3*&
-            dvbe(ij)*dvbe(kl) + a4*dvbe(ij)*kr(kl)
+            dvbbtr(ij, kl) = a2*(id(ij, kl)-kr(ij)*kr(kl)/3.d0)+a3* &
+                             dvbe(ij)*dvbe(kl)+a4*dvbe(ij)*kr(kl)
         end do
     end do
 !
@@ -115,7 +115,7 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
     do ij = 1, 6
         do k = 1, 3
             do l = 1, 3
-                dvbedf(ij,k,l) = ddot(6,dvbbtr(ij,1),6,dbtrdf(1,k,l), 1)
+                dvbedf(ij, k, l) = ddot(6, dvbbtr(ij, 1), 6, dbtrdf(1, k, l), 1)
             end do
         end do
     end do
@@ -130,7 +130,7 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
     do ij = 1, 6
         do k = 1, 3
             do l = 1, 3
-                dtaudf(ij,k,l) = dtaudb*dvbedf(ij,k,l) + dtaudj*kr(ij) *djdf(k,l)
+                dtaudf(ij, k, l) = dtaudb*dvbedf(ij, k, l)+dtaudj*kr(ij)*djdf(k, l)
             end do
         end do
     end do

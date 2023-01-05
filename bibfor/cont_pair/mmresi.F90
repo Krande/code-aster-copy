@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
+subroutine mmresi(alias, nno, ndim, coorma, coorpt, &
                   ksi1, ksi2, valeur)
 ! person_in_charge: mickael.abbas at edf.fr
     implicit none
@@ -57,7 +57,7 @@ subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
     real(kind=8) :: vec1(3), tau1(3), tau2(3)
     real(kind=8) :: residu(2)
     real(kind=8) :: zero
-    parameter   (zero=0.d0)
+    parameter(zero=0.d0)
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,37 +74,37 @@ subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
 ! --- CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT
 ! --- DANS LA MAILLE
 !
-    call mmfonf(ndim, nno, alias, ksi1, ksi2,&
+    call mmfonf(ndim, nno, alias, ksi1, ksi2, &
                 ff, dff, ddff)
 !
 ! --- CALCUL DU VECTEUR POSITION DU POINT COURANT SUR LA MAILLE
 !
     do idim = 1, ndim
         do ino = 1, nno
-            vec1(idim) = coorma(3*(ino-1)+idim)*ff(ino) + vec1(idim)
+            vec1(idim) = coorma(3*(ino-1)+idim)*ff(ino)+vec1(idim)
         end do
     end do
 !
 ! --- CALCUL DES TANGENTES
 !
-    call mmtang(ndim, nno, coorma, dff, tau1,&
+    call mmtang(ndim, nno, coorma, dff, tau1, &
                 tau2)
 !
 ! --- CALCUL DE LA QUANTITE A MINIMISER
 !
     do idim = 1, ndim
-        vec1(idim) = coorpt(idim) - vec1(idim)
+        vec1(idim) = coorpt(idim)-vec1(idim)
     end do
 !
 ! --- CALCUL DU RESIDU
 !
-    residu(1) = vec1(1)*tau1(1) + vec1(2)*tau1(2) + vec1(3)*tau1(3)
+    residu(1) = vec1(1)*tau1(1)+vec1(2)*tau1(2)+vec1(3)*tau1(3)
     if (ndim .eq. 3) then
-        residu(2) = vec1(1)*tau2(1) + vec1(2)*tau2(2) + vec1(3)*tau2( 3)
-    endif
+        residu(2) = vec1(1)*tau2(1)+vec1(2)*tau2(2)+vec1(3)*tau2(3)
+    end if
 !
 ! --- VALEUR DE G
 !
-    valeur = 0.5d0 * (residu(1)**2+residu(2)**2)
+    valeur = 0.5d0*(residu(1)**2+residu(2)**2)
 !
 end subroutine

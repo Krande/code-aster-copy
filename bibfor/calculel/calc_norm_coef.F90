@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
-                          calc_elem, list_cmp, nb_coef_user, coef_user, chcoef,&
+subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm, &
+                          calc_elem, list_cmp, nb_coef_user, coef_user, chcoef, &
                           chcalc, nb_cmp_act)
 !
     implicit none
@@ -99,7 +99,7 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
     list_cmp_act = '&&CALC_NORM_COEF.CM'
     if (nb_cmp_in .gt. nb_cmp_max) then
         call utmess('F', 'CHAMPS_18', sk=name_gd)
-    endif
+    end if
     call jeveuo(list_cmp, 'L', j_lcmp_act_in)
 !
 ! - Options
@@ -109,12 +109,12 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
 !
     if (norm .eq. 'L2') then
         prod_type = 'CONT'
-    else if (norm.eq.'FROBENIUS') then
+    else if (norm .eq. 'FROBENIUS') then
         prod_type = 'TENS'
     else
-        write(6,*) 'NORM: ',norm
+        write (6, *) 'NORM: ', norm
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Create <CARTE>
 !
@@ -123,9 +123,9 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
 !
 ! - User coefficients: only for NEUT_R
 !
-    if ((nb_coef_user .ne. 0) .and. (name_gd(1:6).ne.'NEUT_R')) then
+    if ((nb_coef_user .ne. 0) .and. (name_gd(1:6) .ne. 'NEUT_R')) then
         call utmess('A', 'CHAMPS_16')
-    endif
+    end if
 !
 ! - Coefficient for cross components
 !
@@ -135,7 +135,7 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
         coef_cross = 2.d0
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Init <CARTE>
 !
@@ -145,96 +145,96 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
         call codent(icmp, 'G', ki)
         zk8(j_lcmp_act-1+icmp) = 'X'//ki(1:len(ki))
         zr(j_lcoe_act-1+icmp) = coef_init
-    enddo
+    end do
 !
 ! - Set <CARTE>
 !
     if (name_gd(1:4) .eq. 'DEPL') then
         do icmp = 1, nb_cmp_in
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'DX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'DX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. &
                 'DY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'DZ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
             else
                 zr(j_lcoe_act-1+icmp) = 0.d0
-            endif
-        enddo
-    else if (name_gd(1:4).eq.'TEMP') then
+            end if
+        end do
+    else if (name_gd(1:4) .eq. 'TEMP') then
         do icmp = 1, nb_cmp_in
             if (zk8(j_lcmp_act_in-1+icmp) .eq. 'TEMP') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
             else
                 zr(j_lcoe_act-1+icmp) = 0.d0
-            endif
-        enddo
-    else if (name_gd(1:4).eq.'FLUX') then
+            end if
+        end do
+    else if (name_gd(1:4) .eq. 'FLUX') then
         do icmp = 1, nb_cmp_in
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. &
                 'FLUY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUZ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
             else
                 zr(j_lcoe_act-1+icmp) = 0.d0
-            endif
-        enddo
-    else if (name_gd(1:4).eq.'EPSI') then
+            end if
+        end do
+    else if (name_gd(1:4) .eq. 'EPSI') then
         do icmp = 1, nb_cmp_in
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'EPXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'EPXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. &
                 'EPYY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'EPZZ    ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
-                elseif (zk8(j_lcmp_act_in-1+icmp).eq.'EPXY'.or. zk8(j_lcmp_act_in-1+icmp).eq.'EPXZ'&
-                    .or. zk8(j_lcmp_act_in-1+icmp).eq.'EPYZ')then
+          elseif (zk8(j_lcmp_act_in-1+icmp) .eq. 'EPXY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'EPXZ' &
+                    .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'EPYZ') then
                 zr(j_lcoe_act-1+icmp) = coef_cross
                 nb_cmp_act = nb_cmp_act+1
             else
                 zr(j_lcoe_act-1+icmp) = 0.d0
-            endif
-        enddo
-    else if (name_gd(1:4).eq.'SIEF') then
+            end if
+        end do
+    else if (name_gd(1:4) .eq. 'SIEF') then
         do icmp = 1, nb_cmp_in
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'SIXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'SIXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. &
                 'SIYY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'SIZZ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
-                elseif(zk8(j_lcmp_act_in-1+icmp).eq.'SIXY' .or. zk8(j_lcmp_act_in-1+icmp).eq.'SIXZ'&
-                   .or. zk8(j_lcmp_act_in-1+icmp).eq.'SIYZ') then
+          elseif (zk8(j_lcmp_act_in-1+icmp) .eq. 'SIXY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'SIXZ' &
+                    .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'SIYZ') then
                 zr(j_lcoe_act-1+icmp) = coef_cross
                 nb_cmp_act = nb_cmp_act+1
             else
                 zr(j_lcoe_act-1+icmp) = 0.d0
-            endif
-        enddo
-    else if (name_gd(1:6).eq.'NEUT_R') then
+            end if
+        end do
+    else if (name_gd(1:6) .eq. 'NEUT_R') then
         if (nb_coef_user .ne. 0) then
             do icmp = 1, nb_coef_user
                 zr(j_lcoe_act-1+icmp) = coef_user(icmp)
                 if (coef_user(icmp) .ne. 0.d0) nb_cmp_act = nb_cmp_act+1
-            enddo
-        endif
+            end do
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Set calc_elem option
 !
     if (calc_elem .eq. 'NORM') then
         i_calc_elem = 1
-    else if (calc_elem.eq.'SQUA') then
+    else if (calc_elem .eq. 'SQUA') then
         i_calc_elem = -1
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Construct <CARTE> of coefficients to filter components
 !
-    call mecact('V', chcoef, 'MODELE', model, 'NEUT_R',&
+    call mecact('V', chcoef, 'MODELE', model, 'NEUT_R', &
                 ncmp=nb_cmp_max, lnomcmp=zk8(j_lcmp_act), vr=zr(j_lcoe_act))
 !
 ! - Construct <CARTE> for type of calc_elem (NORM or SQUA)
 !
-    call mecact('V', chcalc, 'MODELE', model, 'NEUT_I',&
+    call mecact('V', chcalc, 'MODELE', model, 'NEUT_I', &
                 ncmp=1, nomcmp='X1', si=i_calc_elem)
 !
     call jedetr(list_coe_act)

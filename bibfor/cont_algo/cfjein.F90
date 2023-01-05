@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine cfjein(mesh, ds_contact, disp_cumu_inst)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -78,18 +78,18 @@ implicit none
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ......... CALCUL DES JEUX INITIAUX'
-    endif
+        write (ifm, *) '<CONTACT> ......... CALCUL DES JEUX INITIAUX'
+    end if
 !
 ! - Get contact parameters
 !
-    ndimg = cfdisd(ds_contact%sdcont_solv,'NDIM' )
-    nbliai = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
-    neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
-    nesmax = cfdisd(ds_contact%sdcont_solv,'NESMAX')
-    lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
-    lgliss = cfdisl(ds_contact%sdcont_defi,'CONT_DISC_GLIS')
-    aljeu = cfdisr(ds_contact%sdcont_defi,'ALARME_JEU' )
+    ndimg = cfdisd(ds_contact%sdcont_solv, 'NDIM')
+    nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
+    neq = cfdisd(ds_contact%sdcont_solv, 'NEQ')
+    nesmax = cfdisd(ds_contact%sdcont_solv, 'NESMAX')
+    lctfd = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
+    lgliss = cfdisl(ds_contact%sdcont_defi, 'CONT_DISC_GLIS')
+    aljeu = cfdisr(ds_contact%sdcont_defi, 'ALARME_JEU')
 !
 ! --- INITIALISATIONS
 !
@@ -112,7 +112,7 @@ implicit none
     if (lctfd) then
         apcofr = ds_contact%sdcont_solv(1:14)//'.APCOFR'
         call jeveuo(apcofr, 'L', japcof)
-    endif
+    end if
 !
 ! - Get geometric loop state
 !
@@ -135,11 +135,11 @@ implicit none
 ! ----- ACCES TABLEAU LIAISONS
 !
         jdecal = zi(japptr+iliai-1)
-        nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
+        nbddl = zi(japptr+iliai)-zi(japptr+iliai-1)
 !
 ! ----- INCR. DE JEU SANS CORRECTION [A].{DDEPL0}
 !
-        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), ddep0,&
+        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), ddep0, &
                     val)
 !
 ! ----- JEU AVANT L'ITERATION DE NEWTON {JEU(DEPTOT)}
@@ -148,7 +148,7 @@ implicit none
 !
 ! ----- JEU SANS CORRECTION DU CONTACT: {JEU(DEPTOT)} - [A].{DDEPL0}
 !
-        jeuini = jeuold - val
+        jeuini = jeuold-val
 !
 ! ----- SAUVEGARDES
 !
@@ -160,17 +160,17 @@ implicit none
 !
 ! ------- INCR. JEUX TANGENTS SANS CORRECTION
 !
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), ddep0,&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), ddep0, &
                         val1)
 !
 ! ------- INCR. JEUX TANGENTS DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), depde,&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), depde, &
                         val2)
 !
 ! ------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS SANS CORR.
 !
-            jexini = val1 + val2
+            jexini = val1+val2
 !
             zr(jjeux+3*(iliai-1)+2-1) = jexini
 !
@@ -178,20 +178,20 @@ implicit none
 !
 ! --------- INCR. DE JEU SANS CORRECTION
 !
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal), ddep0,&
+                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), ddep0, &
                             val1)
 !
 ! --------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal), depde,&
+                call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), depde, &
                             val2)
 !
 ! --------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS SANS CORR.
 !
-                jeyini = val1 + val2
+                jeyini = val1+val2
                 zr(jjeux+3*(iliai-1)+3-1) = jeyini
-            endif
-        endif
+            end if
+        end if
 !
     end do
 !
@@ -204,11 +204,11 @@ implicit none
                 ialarm = ialarm+1
                 if (ialarm .eq. 1) then
                     call utmess('A', 'CONTACT_9')
-                endif
+                end if
                 call cfimp2(ds_contact%sdcont_defi, ds_contact%sdcont_solv, mesh, iliai, &
                             'ALJ')
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedema()

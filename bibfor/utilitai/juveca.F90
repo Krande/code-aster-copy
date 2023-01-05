@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,9 +60,9 @@ subroutine juveca(nom, long)
     call jelira(nom, 'CLAS', cval=base)
 !
 !     -- LONMA2 : LONGUEUR DE RECOPIE :
-    ASSERT(lonmax.gt.0)
-    ASSERT(long.gt.0)
-    lonma2=min(long,lonmax)
+    ASSERT(lonmax .gt. 0)
+    ASSERT(long .gt. 0)
+    lonma2 = min(long, lonmax)
 !
 !     --- ALLOCATION D'UN TAMPON ---
     if (type(1:1) .ne. 'K') then
@@ -71,7 +71,7 @@ subroutine juveca(nom, long)
         call jelira(nom, 'LTYP', ltyp)
         call codent(ltyp, 'G', type(2:))
         call wkvect('&&JUVECA.TAMPON', 'V V '//type, lonma2, ltamp)
-    endif
+    end if
 !
 !     --- RECOPIE L'OBJET DANS LE TAMPON ---
     if (type .eq. 'I') then
@@ -112,15 +112,15 @@ subroutine juveca(nom, long)
                 zk80(ltamp+i-1) = zk80(ldec+i-1)
             end do
         else
-            valk(1)=nom
-            valk(2)=type
+            valk(1) = nom
+            valk(2) = type
             call utmess('F', 'JEVEUX_31', nk=2, valk=valk)
-        endif
+        end if
     else
-        valk(1)=nom
-        valk(2)=type
+        valk(1) = nom
+        valk(2) = type
         call utmess('F', 'JEVEUX_31', nk=2, valk=valk)
-    endif
+    end if
 !
 !     --- DESTRUCTION DU VIEUX ET CREATION DU NEUF ---
     call jedetr(nom)
@@ -167,9 +167,9 @@ subroutine juveca(nom, long)
             do i = 1, lonma2
                 zk80(ldec+i-1) = zk80(ltamp+i-1)
             end do
-        endif
-    endif
-    ll = min(lonuti,long)
+        end if
+    end if
+    ll = min(lonuti, long)
     if (lonuti .gt. 0) call jeecra(nom, 'LONUTI', ll)
 !
 !     --- DESTRUCTION DU TAMPON ---

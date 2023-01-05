@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
+subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1, &
                   theta2, iran)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -86,8 +86,8 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 !
 ! --- COEFFICIENTS
 !
-    coevit = ndynre(sddyna,'COEF_VITE')
-    coeacc = ndynre(sddyna,'COEF_ACCE')
+    coevit = ndynre(sddyna, 'COEF_VITE')
+    coeacc = ndynre(sddyna, 'COEF_ACCE')
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -113,7 +113,7 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
     call jeveuo(vitkm1(1:19)//'.VALE', 'L', vr=vitkm)
     call jeveuo(acckm1(1:19)//'.VALE', 'L', vr=acckm)
     call jeveuo(romkm1(1:19)//'.VALE', 'L', vr=romkm)
-    call jeveuo(romk(1:19) //'.VALE', 'E', vr=vromk)
+    call jeveuo(romk(1:19)//'.VALE', 'E', vr=vromk)
 !
 ! --- QUATERNION DE L'INCREMENT DE ROTATION
 !
@@ -131,7 +131,7 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 ! --- MISE A JOUR DES DEPLACEMENTS
 !
     do ic = 1, 3
-        depp(1+iran(ic) -1) = theta1(ic)
+        depp(1+iran(ic)-1) = theta1(ic)
         depde(1+iran(ic)-1) = theta1(ic)
     end do
 !
@@ -147,23 +147,23 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 ! --- MISE A JOUR DE LA ROTATION
 !
     do ic = 1, 3
-        vromk(1+iran(ic) -1) = theta2(ic)
+        vromk(1+iran(ic)-1) = theta2(ic)
     end do
 !
 ! --- CALCUL DES INCREMENTS DE ROTATION
 !
     do ic = 1, 3
-        qim (ic) = depm(1+iran(ic) -1)
-        qikm1 (ic) = depkm(1+iran(ic)-1)
-        qik (ic) = depp(1+iran(ic) -1)
-        omkm1 (ic) = vitkm(1+iran(ic)-1)
+        qim(ic) = depm(1+iran(ic)-1)
+        qikm1(ic) = depkm(1+iran(ic)-1)
+        qik(ic) = depp(1+iran(ic)-1)
+        omkm1(ic) = vitkm(1+iran(ic)-1)
         ompkm1(ic) = acckm(1+iran(ic)-1)
     end do
 !
 ! --- CALCUL DE L'INCREMENT DE ROTATION TOTALE
 !
     do ic = 1, 3
-        delrot(ic) = vromk(1+iran(ic) -1) - romkm(1+iran(ic)-1)
+        delrot(ic) = vromk(1+iran(ic)-1)-romkm(1+iran(ic)-1)
     end do
 !
 ! --- CALCUL DES MATRICES DE ROTATION
@@ -171,33 +171,33 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
     call marota(qim, rotm)
     call marota(qikm1, rotkm)
     call marota(qik, rotk)
-    call transp(rotm, 3, 3, 3, rotmt,&
+    call transp(rotm, 3, 3, 3, rotmt, &
                 3)
-    call transp(rotkm, 3, 3, 3, rotkmt,&
+    call transp(rotkm, 3, 3, 3, rotkmt, &
                 3)
 !
 ! --- CALCUL DE LA VITESSE ANGULAIRE
 !
-    call promat(rotmt, 3, 3, 3, delrot,&
+    call promat(rotmt, 3, 3, 3, delrot, &
                 3, 3, 1, vect3)
-    call promat(rotk, 3, 3, 3, vect3,&
+    call promat(rotk, 3, 3, 3, vect3, &
                 3, 3, 1, vect2)
-    call promat(rotkmt, 3, 3, 3, omkm1,&
+    call promat(rotkmt, 3, 3, 3, omkm1, &
                 3, 3, 1, vect3)
-    call promat(rotk, 3, 3, 3, vect3,&
+    call promat(rotk, 3, 3, 3, vect3, &
                 3, 3, 1, vect1)
     do ic = 1, 3
-        vitp(1+iran(ic)-1) = vect1(ic) + coevit*vect2(ic)
+        vitp(1+iran(ic)-1) = vect1(ic)+coevit*vect2(ic)
     end do
 !
 ! --- CALCUL DE L'ACCELERATION ANGULAIRE
 !
-    call promat(rotkmt, 3, 3, 3, ompkm1,&
+    call promat(rotkmt, 3, 3, 3, ompkm1, &
                 3, 3, 1, vect4)
-    call promat(rotk, 3, 3, 3, vect4,&
+    call promat(rotk, 3, 3, 3, vect4, &
                 3, 3, 1, vect3)
     do ic = 1, 3
-        accp(1+iran(ic)-1) = vect3(ic) + coeacc*vect2(ic)
+        accp(1+iran(ic)-1) = vect3(ic)+coeacc*vect2(ic)
     end do
 !
     call jedema()

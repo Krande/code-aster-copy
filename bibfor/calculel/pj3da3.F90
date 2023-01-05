@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3da3(m, a, b, c, ok,&
+subroutine pj3da3(m, a, b, c, ok, &
                   la, lb, lc, d2)
     implicit none
 #include "asterf_types.h"
@@ -44,38 +44,38 @@ subroutine pj3da3(m, a, b, c, ok,&
     real(kind=8) :: ab(3), ac(3), am(3), a11, a22, a12, b1, b2
 ! DEB ------------------------------------------------------------------
     do k = 1, 3
-        ab(k)=b(k)-a(k)
-        ac(k)=c(k)-a(k)
-        am(k)=m(k)-a(k)
+        ab(k) = b(k)-a(k)
+        ac(k) = c(k)-a(k)
+        am(k) = m(k)-a(k)
     end do
 !
-    a11=ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3)
-    a22=ac(1)*ac(1)+ac(2)*ac(2)+ac(3)*ac(3)
-    a12=ab(1)*ac(1)+ab(2)*ac(2)+ab(3)*ac(3)
+    a11 = ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3)
+    a22 = ac(1)*ac(1)+ac(2)*ac(2)+ac(3)*ac(3)
+    a12 = ab(1)*ac(1)+ab(2)*ac(2)+ab(3)*ac(3)
 !
-    b1=ab(1)*am(1)+ab(2)*am(2)+ab(3)*am(3)
-    b2=ac(1)*am(1)+ac(2)*am(2)+ac(3)*am(3)
+    b1 = ab(1)*am(1)+ab(2)*am(2)+ab(3)*am(3)
+    b2 = ac(1)*am(1)+ac(2)*am(2)+ac(3)*am(3)
 !
-    delta=a11*a22-a12*a12
+    delta = a11*a22-a12*a12
     if (delta .eq. 0.d0) then
-        ok=.false.
+        ok = .false.
         goto 999
-    endif
-    lb=(a22*b1-a12*b2)/delta
-    lc=(a11*b2-a12*b1)/delta
-    la=1.d0-lb-lc
+    end if
+    lb = (a22*b1-a12*b2)/delta
+    lc = (a11*b2-a12*b1)/delta
+    la = 1.d0-lb-lc
 !
-    if ((la.ge.0.d0) .and. (la.le.1.d0) .and. (lb.ge.0.d0) .and. (lb.le.1.d0) .and.&
-        (lc.ge.0.d0) .and. (lc.le.1.d0)) then
-        ok=.true.
+    if ((la .ge. 0.d0) .and. (la .le. 1.d0) .and. (lb .ge. 0.d0) .and. (lb .le. 1.d0) .and. &
+        (lc .ge. 0.d0) .and. (lc .le. 1.d0)) then
+        ok = .true.
         do k = 1, 3
-            p(k)=la*a(k)+lb*b(k)+lc*c(k)
-            p(k)=m(k)-p(k)
+            p(k) = la*a(k)+lb*b(k)+lc*c(k)
+            p(k) = m(k)-p(k)
         end do
-        d2=p(1)*p(1)+p(2)*p(2)+p(3)*p(3)
+        d2 = p(1)*p(1)+p(2)*p(2)+p(3)*p(3)
     else
-        ok=.false.
-    endif
+        ok = .false.
+    end if
 !
 999 continue
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 !
 subroutine thmMatrHooke(ds_thm, angl_naut)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/matrHooke3d.h"
 #include "asterfort/separ_RI_elas_3D.h"
 !
-type(THM_DS), intent(inout) :: ds_thm
-real(kind=8), intent(in) :: angl_naut(3)
+    type(THM_DS), intent(inout) :: ds_thm
+    real(kind=8), intent(in) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,30 +64,30 @@ real(kind=8), intent(in) :: angl_naut(3)
     if (ds_thm%ds_material%elas%id .eq. 1) then
         e = ds_thm%ds_material%elas%e
         nu = ds_thm%ds_material%elas%nu
-        g = e/(2.d0*(1.d0 + nu))
+        g = e/(2.d0*(1.d0+nu))
     else
         g = ds_thm%ds_material%elas%g
-    endif
-    call separ_RI_elas_3D(elas_id = ds_thm%ds_material%elas%id ,&
-                          nu = ds_thm%ds_material%elas%nu ,&
-                          g = g, nui = nui , gi = gi, &
-                          e1 = ds_thm%ds_material%elas%e_l,&
-                          e2 = ds_thm%ds_material%elas%e_t,&
-                          e3 = ds_thm%ds_material%elas%e_n,&
-                          nu12 = ds_thm%ds_material%elas%nu_lt,&
-                          nu13 = ds_thm%ds_material%elas%nu_ln,&
-                          nu23 = ds_thm%ds_material%elas%nu_tn,&
-                          e1i = e1i     , e2i = e2i  , e3i = e3i  ,&
-                          nu12i = nu12i   , nu13i = nu13i, nu23i = nu23i,&
-                          hr = h, hi = hi)
+    end if
+    call separ_RI_elas_3D(elas_id=ds_thm%ds_material%elas%id, &
+                          nu=ds_thm%ds_material%elas%nu, &
+                          g=g, nui=nui, gi=gi, &
+                          e1=ds_thm%ds_material%elas%e_l, &
+                          e2=ds_thm%ds_material%elas%e_t, &
+                          e3=ds_thm%ds_material%elas%e_n, &
+                          nu12=ds_thm%ds_material%elas%nu_lt, &
+                          nu13=ds_thm%ds_material%elas%nu_ln, &
+                          nu23=ds_thm%ds_material%elas%nu_tn, &
+                          e1i=e1i, e2i=e2i, e3i=e3i, &
+                          nu12i=nu12i, nu13i=nu13i, nu23i=nu23i, &
+                          hr=h, hi=hi)
 !
 ! - Compute matrix
 !
-    call matrHooke3d(ds_thm%ds_material%elas%id, repere,&
-                     h = h, g = g,&
-                     g1 = ds_thm%ds_material%elas%g_lt,&
-                     g2 = ds_thm%ds_material%elas%g_ln,&
-                     g3 = ds_thm%ds_material%elas%g_tn,&
-                     matr_elas = ds_thm%ds_material%elas%d)
+    call matrHooke3d(ds_thm%ds_material%elas%id, repere, &
+                     h=h, g=g, &
+                     g1=ds_thm%ds_material%elas%g_lt, &
+                     g2=ds_thm%ds_material%elas%g_ln, &
+                     g3=ds_thm%ds_material%elas%g_tn, &
+                     matr_elas=ds_thm%ds_material%elas%d)
 !
 end subroutine

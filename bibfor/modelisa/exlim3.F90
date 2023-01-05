@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,31 +63,31 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
     integer, pointer :: vnuma(:) => null()
 !     -----------------------------------------------------------------
 !
-    motfac=motfaz
-    ASSERT(motfac.ne.' ')
+    motfac = motfaz
+    ASSERT(motfac .ne. ' ')
     call getfac(motfac, nocc)
-    ASSERT(nocc.gt.0)
+    ASSERT(nocc .gt. 0)
 !
 !
-    modele=modelz
-    ASSERT(modele.ne.' ')
+    modele = modelz
+    ASSERT(modele .ne. ' ')
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
-    ASSERT(nbmat.gt.0)
+    ASSERT(nbmat .gt. 0)
 !
 !
 !
 !
 !     --  SI ON DOIT TOUT PRENDRE , LIGREL = LIGRMO
 !     ------------------------------------------------------
-    if (getexm(motfac,'TOUT') .eq. 1) then
+    if (getexm(motfac, 'TOUT') .eq. 1) then
         do iocc = 1, nocc
             call getvtx(motfac, 'TOUT', iocc=iocc, scal=k8bid, nbret=n1)
             if (n1 .eq. 1) goto 60
         end do
-    endif
+    end if
 !
 !
 !
@@ -96,19 +96,19 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !     ----------------------------------------------------------------
     AS_ALLOCATE(vi=vnuma, size=nbmat)
 !
-    motcle(1)='GROUP_MA'
-    motcle(2)='MAILLE'
-    typmcl(1)='GROUP_MA'
-    typmcl(2)='MAILLE'
+    motcle(1) = 'GROUP_MA'
+    motcle(2) = 'MAILLE'
+    typmcl(1) = 'GROUP_MA'
+    typmcl(2) = 'MAILLE'
 !
     do iocc = 1, nocc
-        call reliem(modele, noma, 'NU_MAILLE', motfac, iocc,&
+        call reliem(modele, noma, 'NU_MAILLE', motfac, iocc, &
                     2, motcle(1), typmcl(1), '&&EXLIM3.LIMA1', nbma)
-        ASSERT(nbma.gt.0)
+        ASSERT(nbma .gt. 0)
         call jeveuo('&&EXLIM3.LIMA1', 'L', vi=lima1)
         do k = 1, nbma
-            numa=lima1(k)
-            vnuma(numa)=1
+            numa = lima1(k)
+            vnuma(numa) = 1
         end do
         call jedetr('&&EXLIM3.LIMA1')
     end do
@@ -116,17 +116,17 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !
 !     -- ON FABRIQUE LA LISTE DES NUMEROS DE MAILLES POUR EXLIM1 :
 !     ------------------------------------------------------------
-    nbma=0
+    nbma = 0
     do k = 1, nbmat
-        if (vnuma(k) .eq. 1) nbma=nbma+1
+        if (vnuma(k) .eq. 1) nbma = nbma+1
     end do
     call wkvect('&&EXLIM3.LIMA', 'V V I', nbma, jlima)
-    nbma=0
+    nbma = 0
     do k = 1, nbmat
         if (vnuma(k) .eq. 1) then
-            nbma=nbma+1
-            zi(jlima-1+nbma)=k
-        endif
+            nbma = nbma+1
+            zi(jlima-1+nbma) = k
+        end if
     end do
     AS_DEALLOCATE(vi=vnuma)
 !
@@ -135,18 +135,18 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !
 ! --- CREATION DU LIGREL
 !     ---------------------------------
-    noojb='12345678.LIGR000000.LIEL'
+    noojb = '12345678.LIGR000000.LIEL'
     call gnomsd(' ', noojb, 14, 19)
-    ligrel=noojb(1:19)
+    ligrel = noojb(1:19)
     call exlim1(zi(jlima), nbma, modele, base, ligrel)
     call jedetr('&&EXLIM3.LIMA')
     goto 70
 !
 !
- 60 continue
-    ligrel=ligrmo
+60  continue
+    ligrel = ligrmo
 !
- 70 continue
+70  continue
 !
 !
 end subroutine

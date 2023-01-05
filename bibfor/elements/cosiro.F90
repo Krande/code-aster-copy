@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cosiro(nomte, param, loue, sens, goun,&
+subroutine cosiro(nomte, param, loue, sens, goun, &
                   jtens, sour)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -65,26 +65,26 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
     integer :: jtens, npgt, jgeom, jcara
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
     integer :: itab(7), iret, nbpt, nbsp
-    parameter      (npgt=10)
+    parameter(npgt=10)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
     real(kind=8) :: t2iu(4), t2ui(4), pgl(3, 3), epais, alpha, beta
     real(kind=8) :: c, s
-    save           t2iu,t2ui,matevn,matevg
+    save t2iu, t2ui, matevn, matevg
 !
-    ASSERT(loue.eq.'L' .or. loue.eq.'E')
-    ASSERT(sens.eq.'UI' .or. sens.eq.'IU')
-    ASSERT(sour.eq.'S' .or. sour.eq.'R')
-    ASSERT(goun.eq.'G' .or. goun.eq.'N')
+    ASSERT(loue .eq. 'L' .or. loue .eq. 'E')
+    ASSERT(sens .eq. 'UI' .or. sens .eq. 'IU')
+    ASSERT(sour .eq. 'S' .or. sour .eq. 'R')
+    ASSERT(goun .eq. 'G' .or. goun .eq. 'N')
 !
 !     -- ADRESSE DU CHAMP LOCAL A MODIFIER + NBPT + NBSP
-    call tecach('NNO', param, loue, iret, nval=7,&
+    call tecach('NNO', param, loue, iret, nval=7, &
                 itab=itab)
-    ASSERT(iret.eq.0 .or. iret.eq.1)
+    ASSERT(iret .eq. 0 .or. iret .eq. 1)
 !
 !     -- SI IRET=1 : IL N'Y A RIEN A FAIRE :
     if (iret .eq. 1) then
         goto 10
-    endif
+    end if
 !
     jtens = itab(1)
     nbpt = itab(3)
@@ -92,7 +92,7 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
 !
 !     -- CAS DES ELEMENTS DE COQUE_3D :
 !     -----------------------------------
-    if (lteatt('MODELI','CQ3')) then
+    if (lteatt('MODELI', 'CQ3')) then
 !
         if (sour .eq. 'S') then
             call jevech('PCACOQU', 'L', jcara)
@@ -103,44 +103,44 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
 !
 !         -- CALCUL DES MATRICES DE CHANGEMENT DE REPERE :
             call vdrepe(nomte, matevn, matevg)
-        endif
+        end if
 !
 !       -- MODIFICATION DU CHAMP LOCAL
 
         if (goun .eq. 'G') then
-            call vdsiro(nbpt, nbsp, matevg, sens, goun,&
+            call vdsiro(nbpt, nbsp, matevg, sens, goun, &
                         zr(jtens), zr(jtens))
         else
-            call vdsiro(nbpt, nbsp, matevn, sens, goun,&
+            call vdsiro(nbpt, nbsp, matevn, sens, goun, &
                         zr(jtens), zr(jtens))
-        endif
+        end if
 !
     else
 !     -- CAS DES ELEMENTS DKT, DST, Q4G  :
 !     ------------------------------------
-        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
 !
         if (sour .eq. 'S') then
             call jevech('PGEOMER', 'L', jgeom)
             if (nno .eq. 3) then
                 call dxtpgl(zr(jgeom), pgl)
-            else if (nno.eq.4) then
+            else if (nno .eq. 4) then
                 call dxqpgl(zr(jgeom), pgl, 'S', iret)
-            endif
+            end if
             call jevech('PCACOQU', 'L', jcara)
-            alpha = zr(jcara+1) * r8dgrd()
-            beta = zr(jcara+2) * r8dgrd()
-            call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+            alpha = zr(jcara+1)*r8dgrd()
+            beta = zr(jcara+2)*r8dgrd()
+            call coqrep(pgl, alpha, beta, t2iu, t2ui, &
                         c, s)
-        endif
+        end if
 !
         if (sens .eq. 'UI') then
             call dxsiro(nbpt*nbsp, t2ui, zr(jtens), zr(jtens))
         else
             call dxsiro(nbpt*nbsp, t2iu, zr(jtens), zr(jtens))
-        endif
-    endif
+        end if
+    end if
 !
 10  continue
 end subroutine

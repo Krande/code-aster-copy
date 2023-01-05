@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mahsms(ind1, nb1, xi, ksi3s2, intsr,&
-                  xr, epais, vectn, vectg, vectt,&
+subroutine mahsms(ind1, nb1, xi, ksi3s2, intsr, &
+                  xr, epais, vectn, vectg, vectt, &
                   hsfm, hss)
     implicit none
 #include "asterfort/hfmss.h"
@@ -46,7 +46,7 @@ subroutine mahsms(ind1, nb1, xi, ksi3s2, intsr,&
 !-----------------------------------------------------------------------
     integer :: ind1, ind2
 !-----------------------------------------------------------------------
-    call vectgt(ind1, nb1, xi, ksi3s2, intsr,&
+    call vectgt(ind1, nb1, xi, ksi3s2, intsr, &
                 xr, epais, vectn, vectg, vectt)
 !
 !     CONSTRUCTION DE HSM = HFM * S:(3,9) AUX PTS D'INTEGRATION REDUITS
@@ -57,7 +57,7 @@ subroutine mahsms(ind1, nb1, xi, ksi3s2, intsr,&
 !
 !     IND2= 1  --->  CALCUL DE HSS ( 0 SINON )
 !
-    ind2= 1
+    ind2 = 1
 !
     call hfmss(ind2, vectt, hsfm, hss)
 !

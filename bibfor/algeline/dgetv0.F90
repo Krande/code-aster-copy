@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dgetv0(ido, bmat, itry, initv, n,&
-                  j, v, ldv, resid, rnorm,&
+subroutine dgetv0(ido, bmat, itry, initv, n, &
+                  j, v, ldv, resid, rnorm, &
                   ipntr, workd, ierr, alpha)
 !
 !     SUBROUTINE ARPACK GENERANT UN VECTEUR INITIAL DANS IM(OP).
@@ -154,11 +154,11 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 #include "blas/dnrm2.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     integer :: nopx, nbx, nrorth, nitref, nrstrt
-    common /infor/&
+    common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
 !     %------------------%
@@ -182,7 +182,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     %------------%
 !
     real(kind=8) :: one, zero
-    parameter (one = 1.0d+0, zero = 0.0d+0)
+    parameter(one=1.0d+0, zero=0.0d+0)
 !
 !     %------------------------%
 !     | LOCAL SCALARS & ARRAYS |
@@ -203,7 +203,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     | DATA STATEMENTS |
 !     %-----------------%
 !
-    data       inits /.true./
+    data inits/.true./
 !
 !     %-----------------------%
 !     | EXECUTABLE STATEMENTS |
@@ -222,7 +222,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
         iseed(3) = 5
         iseed(4) = 7
         inits = .false.
-    endif
+    end if
 !
     if (ido .eq. 0) then
 !
@@ -246,18 +246,18 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !        |    IDIST = 3: NORMAL  (0,1)  DISTRIBUTION,          |
 !        %-----------------------------------------------------%
 !
-        if (.not.initv) then
+        if (.not. initv) then
             idist = 2
-            iseed4(1)=int(iseed(1), 4)
-            iseed4(2)=int(iseed(2), 4)
-            iseed4(3)=int(iseed(3), 4)
-            iseed4(4)=int(iseed(4), 4)
+            iseed4(1) = int(iseed(1), 4)
+            iseed4(2) = int(iseed(2), 4)
+            iseed4(3) = int(iseed(3), 4)
+            iseed4(4) = int(iseed(4), 4)
             call dlarnv(idist, iseed4, n, resid)
-            iseed(1)=iseed4(1)
-            iseed(2)=iseed4(2)
-            iseed(3)=iseed4(3)
-            iseed(4)=iseed4(4)
-        endif
+            iseed(1) = iseed4(1)
+            iseed(2) = iseed4(2)
+            iseed(3) = iseed4(3)
+            iseed(4) = iseed4(4)
+        end if
 !
 !        %----------------------------------------------------------%
 !        | FORCE THE STARTING VECTOR INTO THE RANGE OF OP TO HANDLE |
@@ -265,14 +265,14 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !        %----------------------------------------------------------%
 !
         if (bmat .eq. 'G') then
-            nopx = nopx + 1
+            nopx = nopx+1
             ipntr(1) = 1
-            ipntr(2) = n + 1
+            ipntr(2) = n+1
             call dcopy(n, resid, 1, workd, 1)
             ido = -1
             goto 9000
-        endif
-    endif
+        end if
+    end if
 !
 !     %-----------------------------------------%
 !     | BACK FROM COMPUTING OP*(INITIAL-VECTOR) |
@@ -293,25 +293,25 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !
     first = .true.
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call dcopy(n, workd(n+1), 1, resid, 1)
-        ipntr(1) = n + 1
+        ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
         call dcopy(n, resid, 1, workd, 1)
-    endif
+    end if
 !
- 20 continue
+20  continue
 !
     first = .false.
     if (bmat .eq. 'G') then
-        rnorm0 = ddot (n, resid, 1, workd, 1)
+        rnorm0 = ddot(n, resid, 1, workd, 1)
         rnorm0 = sqrt(abs(rnorm0))
     else if (bmat .eq. 'I') then
         rnorm0 = dnrm2(n, resid, 1)
-    endif
+    end if
     rnorm = rnorm0
 !
 !     %---------------------------------------------%
@@ -333,13 +333,13 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     %---------------------------------------------------------------%
 !
     orth = .true.
- 30 continue
+30  continue
 !
-    call dgemv('T', n, j-1, one, v,&
-               ldv, workd, 1, zero, workd(n+1),&
+    call dgemv('T', n, j-1, one, v, &
+               ldv, workd, 1, zero, workd(n+1), &
                1)
-    call dgemv('N', n, j-1, -one, v,&
-               ldv, workd(n+1), 1, one, resid,&
+    call dgemv('N', n, j-1, -one, v, &
+               ldv, workd(n+1), 1, one, resid, &
                1)
 !
 !     %----------------------------------------------------------%
@@ -347,24 +347,24 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     %----------------------------------------------------------%
 !
     if (bmat .eq. 'G') then
-        nbx = nbx + 1
+        nbx = nbx+1
         call dcopy(n, resid, 1, workd(n+1), 1)
-        ipntr(1) = n + 1
+        ipntr(1) = n+1
         ipntr(2) = 1
         ido = 2
         goto 9000
     else if (bmat .eq. 'I') then
         call dcopy(n, resid, 1, workd, 1)
-    endif
+    end if
 !
- 40 continue
+40  continue
 !
     if (bmat .eq. 'G') then
-        rnorm = ddot (n, resid, 1, workd, 1)
+        rnorm = ddot(n, resid, 1, workd, 1)
         rnorm = sqrt(abs(rnorm))
     else if (bmat .eq. 'I') then
         rnorm = dnrm2(n, resid, 1)
-    endif
+    end if
 !
 !     %--------------------------------------%
 !     | CHECK FOR FURTHER ORTHOGONALIZATION. |
@@ -373,9 +373,9 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
     if (msglvl .gt. 2) then
         call dvout(logfil, 1, [rnorm0], ndigit, '_GETV0: RE-ORTHONALIZATION , RNORM0 IS')
         call dvout(logfil, 1, [rnorm], ndigit, '_GETV0: RE-ORTHONALIZATION , RNORM IS')
-    endif
+    end if
     if (rnorm .gt. alpha*rnorm0) goto 50
-    iter = iter + 1
+    iter = iter+1
     if (iter .le. 5) then
 !
 !        %-----------------------------------%
@@ -395,17 +395,17 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
         end do
         rnorm = zero
         ierr = -1
-    endif
+    end if
 !
- 50 continue
+50  continue
 !
     if (msglvl .gt. 0) then
-        call dvout(logfil, 1, [rnorm], ndigit,&
+        call dvout(logfil, 1, [rnorm], ndigit, &
                    '_GETV0: B-NORM OF INITIAL / RESTARTED STARTING VECTOR')
-    endif
+    end if
     if (msglvl .gt. 2) then
         call dvout(logfil, n, [resid], ndigit, '_GETV0: INITIAL / RESTARTED STARTING VECTOR')
-    endif
+    end if
     ido = 99
 !
 9000 continue

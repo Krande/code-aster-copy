@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vpcntl(cty, mode, option, omemin, omemax,&
-                  seuil, nfreq, ipos, lmat, omecor,&
-                  precdc, ier, vpinf, vpmax, freq,&
-                  err, charge, typres, nblagr, solveu,&
+subroutine vpcntl(cty, mode, option, omemin, omemax, &
+                  seuil, nfreq, ipos, lmat, omecor, &
+                  precdc, ier, vpinf, vpmax, freq, &
+                  err, charge, typres, nblagr, solveu, &
                   nbrssa, precsh)
 !     CONTROLE DE VALIDITE DES MODES TROUVES
 !-----------------------------------------------------------------------
@@ -78,9 +78,9 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
 !     ---RECUPERATION DU NIVEAU D'IMPRESSION----
     call infniv(ifm, niv)
     if (niv .ge. 1) then
-        write(ifm,1000)
+        write (ifm, 1000)
         call utmess('I', 'ALGELINE6_22')
-    endif
+    end if
 !     ------------------------------------------------------------------
 !     ------------------ CONTROLE DES NORMES D'ERREURS -----------------
 !     ------------------------------------------------------------------
@@ -89,19 +89,19 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
 !
         do ifreq = 1, nfreq
             if (err(ifreq) .gt. seuil) then
-                ier = ier + 1
+                ier = ier+1
                 valk = mode
-                vali (1) = ipos(ifreq)
+                vali(1) = ipos(ifreq)
                 call utmess(cty//'+', 'ALGELINE5_15', sk=valk, si=vali(1))
                 if (typres .eq. 'DYNAMIQUE') then
-                    valr (1) = freq(ifreq)
+                    valr(1) = freq(ifreq)
                     call utmess(cty//'+', 'ALGELINE5_16', sr=valr(1))
                 else
-                    valr (1) = charge(ifreq)
+                    valr(1) = charge(ifreq)
                     call utmess(cty//'+', 'ALGELINE5_17', sr=valr(1))
-                endif
-                valr (1) = err(ifreq)
-                valr (2) = seuil
+                end if
+                valr(1) = err(ifreq)
+                valr(2) = seuil
                 call utmess(cty//'+', 'ALGELINE5_18', nr=2, valr=valr)
 !
                 call getres(k16b, k16b, nomcmd)
@@ -109,52 +109,52 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
                     valk = 'FREQ'
                 else
                     valk = 'CHAR_CRIT'
-                endif
+                end if
                 if (nomcmd(1:16) .eq. 'MODE_ITER_SIMULT') then
                     call utmess(cty, 'ALGELINE5_77', sk='NMAX_'//valk)
                 else
                     call utmess(cty, 'ALGELINE5_78', sk='CALC_'//valk)
-                endif
+                end if
 !
-            endif
+            end if
         end do
-    endif
+    end if
 !     ------------------------------------------------------------------
 !     -- OPTION BANDE :                                              ---
 !     -- VERIFICATION QUE LES FREQUENCES TROUVEES SONT DANS LA BANDE ---
 !     ------------------------------------------------------------------
     if (option .eq. 'BANDE') then
-        zmax = (1.d0 + sign(precdc,omemax)) * omemax
-        zmin = (1.d0 - sign(precdc,omemin)) * omemin
-        if (abs(omemin) .le. omecor) zmin = - omecor
+        zmax = (1.d0+sign(precdc, omemax))*omemax
+        zmin = (1.d0-sign(precdc, omemin))*omemin
+        if (abs(omemin) .le. omecor) zmin = -omecor
 !
         do ifreq = 1, nfreq
             if (typres .eq. 'DYNAMIQUE') then
                 omega = omega2(freq(ifreq))
             else
                 omega = charge(ifreq)
-            endif
+            end if
             if (omega .lt. zmin .or. omega .gt. zmax) then
-                ier = ier + 1
+                ier = ier+1
                 valk = mode
-                vali (1) = ipos(ifreq)
+                vali(1) = ipos(ifreq)
                 call utmess(cty//'+', 'ALGELINE5_15', sk=valk, si=vali(1))
                 if (typres .eq. 'DYNAMIQUE') then
-                    valr (1) = freq(ifreq)
+                    valr(1) = freq(ifreq)
                     call utmess(cty//'+', 'ALGELINE5_16', sr=valr(1))
-                    valr (1) = freqom(zmin)
-                    valr (2) = freqom(zmax)
+                    valr(1) = freqom(zmin)
+                    valr(2) = freqom(zmax)
                     call utmess(cty, 'ALGELINE5_20', nr=2, valr=valr)
                 else
-                    valr (1) = - charge(ifreq)
+                    valr(1) = -charge(ifreq)
                     call utmess(cty//'+', 'ALGELINE5_17', sr=valr(1))
-                    valr (1) = - zmax
-                    valr (2) = - zmin
+                    valr(1) = -zmax
+                    valr(2) = -zmin
                     call utmess(cty, 'ALGELINE5_20', nr=2, valr=valr)
-                endif
-            endif
+                end if
+            end if
         end do
-    endif
+    end if
 !
 !     ------------------------------------------------------------------
 !     -- POUR TOUTES LES OPTIONS :                                   ---
@@ -167,48 +167,48 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
 !
 ! --- POUR OPTIMISER ON NE CALCULE PAS LE DET, ON NE GARDE PAS LA FACTO
 ! --- (SI MUMPS)
-        k16b=typres
-        call vpfopr('STURM', k16b, lmat(2), lmat(1), lmat(3),&
-                    vpinf, vpmax, rbid, nfreqt, ibid2,&
-                    omecor, precsh, nbrssa, nblagr, solveu,&
+        k16b = typres
+        call vpfopr('STURM', k16b, lmat(2), lmat(1), lmat(3), &
+                    vpinf, vpmax, rbid, nfreqt, ibid2, &
+                    omecor, precsh, nbrssa, nblagr, solveu, &
                     det, idet)
 !
         if (nfreqt .ne. nfreq) then
-            ier = ier + 1
+            ier = ier+1
             valk = mode
             call utmess(cty//'+', 'ALGELINE5_23', sk=valk)
             if (typres .eq. 'DYNAMIQUE') then
-                valr (1) = freqom(vpinf)
-                valr (2) = freqom(vpmax)
-                vali (1) = nfreqt
-                vali (2) = nfreq
-                call utmess(cty//'+', 'ALGELINE5_24', ni=2, vali=vali, nr=2,&
+                valr(1) = freqom(vpinf)
+                valr(2) = freqom(vpmax)
+                vali(1) = nfreqt
+                vali(2) = nfreq
+                call utmess(cty//'+', 'ALGELINE5_24', ni=2, vali=vali, nr=2, &
                             valr=valr)
             else
-                valr (1) = -vpmax
-                valr (2) = -vpinf
-                vali (1) = nfreqt
-                vali (2) = nfreq
-                call utmess(cty//'+', 'ALGELINE5_25', ni=2, vali=vali, nr=2,&
+                valr(1) = -vpmax
+                valr(2) = -vpinf
+                vali(1) = nfreqt
+                vali(2) = nfreq
+                call utmess(cty//'+', 'ALGELINE5_25', ni=2, vali=vali, nr=2, &
                             valr=valr)
-            endif
+            end if
             call utmess(cty, 'ALGELINE5_26')
         else
             if (niv .ge. 1) then
                 if (typres .eq. 'DYNAMIQUE') then
-                    valr (1) = freqom(vpinf)
-                    valr (2) = freqom(vpmax)
+                    valr(1) = freqom(vpinf)
+                    valr(2) = freqom(vpmax)
                     call utmess('I', 'ALGELINE6_23', si=nfreqt, nr=2, valr=valr)
                 else
-                    valr (1) = -vpmax
-                    valr (2) = -vpinf
+                    valr(1) = -vpmax
+                    valr(2) = -vpinf
                     call utmess('I', 'ALGELINE6_24', si=nfreqt, nr=2, valr=valr)
-                endif
-            endif
-        endif
-    endif
-    if (niv .ge. 1) write(ifm,1000)
+                end if
+            end if
+        end if
+    end if
+    if (niv .ge. 1) write (ifm, 1000)
 !
-    1000 format (72('-'),/)
+1000 format(72('-'),/)
 !
 end subroutine

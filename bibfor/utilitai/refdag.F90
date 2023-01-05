@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine refdag(resin)
 !
 !   Initialize the REFD and INDI with the new size (double nbrefs)
     call wkvect(resin//indi, jvb//' V I', 2*nbrefs, jindi)
-    call jecrec(resin//refd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT',&
+    call jecrec(resin//refd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT', &
                 2*nbrefs)
     call jeecra(resin//refd, 'LONT', (2*nbrefs)*5, k8bid)
 !
@@ -80,8 +80,8 @@ subroutine refdag(resin)
         zi(jindi+ibid-1) = zi(jindi2+ibid-1)
 !       REFD entry
         call jeveuo(jexnum(restmp//refd, ibid), 'L', jrefe2)
-        call jecroc(jexnum( resin//refd, ibid))
-        call jeveuo(jexnum( resin//refd, ibid), 'E', jrefe)
+        call jecroc(jexnum(resin//refd, ibid))
+        call jeveuo(jexnum(resin//refd, ibid), 'E', jrefe)
         do jbid = 1, 5
             zk24(jrefe+jbid-1) = zk24(jrefe2+jbid-1)
         end do

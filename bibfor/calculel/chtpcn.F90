@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
+subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi, &
                   base, chno2)
     implicit none
 !
@@ -127,13 +127,13 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
     nbnaff = 0
     do ino1 = 1, nbno
-        ncmp1= zi(iprn1-1+ (ino1-1)* (nec+2)+2)
+        ncmp1 = zi(iprn1-1+(ino1-1)*(nec+2)+2)
         if (ncmp1 .eq. 0) goto 10
-        ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
+        ival1 = zi(iprn1-1+(ino1-1)*(nec+2)+1)
         ieq1 = nueq1(ival1-1+1)
         val = val1(ieq1)
-        if (abs(val) .lt. tmin) nbnaff=nbnaff+1
- 10     continue
+        if (abs(val) .lt. tmin) nbnaff = nbnaff+1
+10      continue
     end do
 !
 !
@@ -141,13 +141,13 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
     nbnrcp = 0
     do ino2 = 1, nbno
 !
-        ival2 = zi(iprn2-1+ (ino2-1)* (nec+2)+1)
-        ncmp2 = zi(iprn2-1+ (ino2-1)* (nec+2)+2)
+        ival2 = zi(iprn2-1+(ino2-1)*(nec+2)+1)
+        ncmp2 = zi(iprn2-1+(ino2-1)*(nec+2)+2)
         ieq2 = nueq2(ival2-1+1)
 !
         if (ncmp2 .eq. 0) goto 1
 !
-        call antece(ino2, ma, tgeom, tailmi, epsi,&
+        call antece(ino2, ma, tgeom, tailmi, epsi, &
                     nbante, ino1)
 !
 !
@@ -160,7 +160,7 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
             if (nbante .eq. 0) then
 !
 !
-                val2(ieq2)=0.0d0
+                val2(ieq2) = 0.0d0
 !
 !
             else
@@ -168,29 +168,29 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
                 if (nbante .eq. 1) then
 !
 !
-                    ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
-                    ncmp1 = zi(iprn1-1+ (ino1-1)* (nec+2)+2)
+                    ival1 = zi(iprn1-1+(ino1-1)*(nec+2)+1)
+                    ncmp1 = zi(iprn1-1+(ino1-1)*(nec+2)+2)
                     ieq1 = nueq1(ival1-1+1)
                     val = val1(ieq1)
 !
                     if (abs(val) .gt. tmin) then
-                        val2(ieq2)=val
+                        val2(ieq2) = val
                         nbnrcp = nbnrcp+1
                     else
-                        val2(ieq2)=0.0d0
-                    endif
+                        val2(ieq2) = 0.0d0
+                    end if
 !
 !
-                endif
+                end if
 !
-            endif
-        endif
+            end if
+        end if
 !
 !
-  1     continue
+1       continue
     end do
 !
-    if ((nbnrcp.lt.nbnaff) .and. (nbnrcp.gt.(nbnaff/2))) then
+    if ((nbnrcp .lt. nbnaff) .and. (nbnrcp .gt. (nbnaff/2))) then
 !
         call codent((nbnaff-nbnrcp), 'D0', diff(1:8))
         call codent((nbnaff), 'D0', chnaff(1:8))
@@ -203,16 +203,16 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
         if (nbnrcp .lt. (nbnaff/2)) then
 !
             call utmess('A', 'CALCULEL2_9')
-        endif
+        end if
 !
-    endif
+    end if
 !
 !
     if (nbnrcp .gt. nbnaff) then
 !
         call utmess('F', 'CALCULEL2_10')
 !
-    endif
+    end if
 !
 !
 !

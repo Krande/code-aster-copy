@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 !
 subroutine mmmtcc(nnl, wpg, ffl, jacobi, coefac, matrcc)
 !
-implicit none
+    implicit none
 !
-integer, intent(in) :: nnl
-real(kind=8), intent(in) :: wpg, ffl(9), jacobi
-real(kind=8), intent(in) :: coefac
-real(kind=8), intent(out) :: matrcc(9, 9)
+    integer, intent(in) :: nnl
+    real(kind=8), intent(in) :: wpg, ffl(9), jacobi
+    real(kind=8), intent(in) :: coefac
+    real(kind=8), intent(out) :: matrcc(9, 9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +49,8 @@ real(kind=8), intent(out) :: matrcc(9, 9)
 !
     do inoc1 = 1, nnl
         do inoc2 = 1, nnl
-            matrcc(inoc1,inoc2) = matrcc(inoc1,inoc2)-&
-                                  wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
+            matrcc(inoc1, inoc2) = matrcc(inoc1, inoc2)- &
+                                   wpg*jacobi/coefac*ffl(inoc2)*ffl(inoc1)
         end do
     end do
 !

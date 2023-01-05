@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmassp(list_func_acti,&
-                  sddyna        , ds_system,&
-                  ds_contact    , hval_veasse,&
-                  cnpilo        , cndonn)
+subroutine nmassp(list_func_acti, &
+                  sddyna, ds_system, &
+                  ds_contact, hval_veasse, &
+                  cnpilo, cndonn)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,12 +34,12 @@ implicit none
 #include "asterfort/nsassp.h"
 #include "asterfort/vtzero.h"
 !
-integer, intent(in) :: list_func_acti(*)
-type(NL_DS_System), intent(in) :: ds_system
-character(len=19), intent(in) :: sddyna
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=19), intent(in) :: hval_veasse(*)
-character(len=19), intent(in) :: cnpilo, cndonn
+    integer, intent(in) :: list_func_acti(*)
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: hval_veasse(*)
+    character(len=19), intent(in) :: cnpilo, cndonn
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,19 +68,19 @@ character(len=19), intent(in) :: cnpilo, cndonn
 !
 ! - Active functionnalities
 !
-    l_stat = ndynlo(sddyna,'STATIQUE')
-    l_dyna = ndynlo(sddyna,'DYNAMIQUE')
+    l_stat = ndynlo(sddyna, 'STATIQUE')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
 !
 ! - Evaluate second member for prediction
 !
     if (l_dyna) then
-        call ndassp(list_func_acti, ds_contact , ds_system ,&
-                    sddyna        , hval_veasse, cndonn)
+        call ndassp(list_func_acti, ds_contact, ds_system, &
+                    sddyna, hval_veasse, cndonn)
     else if (l_stat) then
-        call nsassp(list_func_acti, ds_contact, ds_system,&
-                    hval_veasse   , cnpilo    , cndonn)
+        call nsassp(list_func_acti, ds_contact, ds_system, &
+                    hval_veasse, cnpilo, cndonn)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,62 +54,62 @@ subroutine matinv(stop, ndim, mat, inv, det)
 !
     if (ndim .eq. 1) then
 !
-        m(1,1) = 1.d0
-        det = mat(1,1)
+        m(1, 1) = 1.d0
+        det = mat(1, 1)
 !
-    else if (ndim.eq.2) then
-!
-! --- CALCUL DES (-1)^(I+J)*MINEURS(J,I)
-!
-        m(1,1) = mat(2,2)
-        m(2,1) = - mat(2,1)
-        m(1,2) = - mat(1,2)
-        m(2,2) = mat(1,1)
-!
-! ---   CALCUL DU DETERMINANT
-!
-        det = mat(1,1)*mat(2,2) - mat(1,2)*mat(2,1)
-!
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 2) then
 !
 ! --- CALCUL DES (-1)^(I+J)*MINEURS(J,I)
 !
-        m(1,1) = mat(2,2) * mat(3,3) - mat(2,3) * mat(3,2)
-        m(2,1) = mat(3,1) * mat(2,3) - mat(2,1) * mat(3,3)
-        m(3,1) = mat(2,1) * mat(3,2) - mat(3,1) * mat(2,2)
-        m(1,2) = mat(1,3) * mat(3,2) - mat(1,2) * mat(3,3)
-        m(2,2) = mat(1,1) * mat(3,3) - mat(1,3) * mat(3,1)
-        m(3,2) = mat(1,2) * mat(3,1) - mat(3,2) * mat(1,1)
-        m(1,3) = mat(1,2) * mat(2,3) - mat(1,3) * mat(2,2)
-        m(2,3) = mat(2,1) * mat(1,3) - mat(2,3) * mat(1,1)
-        m(3,3) = mat(1,1) * mat(2,2) - mat(1,2) * mat(2,1)
+        m(1, 1) = mat(2, 2)
+        m(2, 1) = -mat(2, 1)
+        m(1, 2) = -mat(1, 2)
+        m(2, 2) = mat(1, 1)
 !
 ! ---   CALCUL DU DETERMINANT
 !
-        det = mat(1,1)*m(1,1) + mat(1,2)*m(2,1) + mat(1,3)*m(3,1)
+        det = mat(1, 1)*mat(2, 2)-mat(1, 2)*mat(2, 1)
+!
+    else if (ndim .eq. 3) then
+!
+! --- CALCUL DES (-1)^(I+J)*MINEURS(J,I)
+!
+        m(1, 1) = mat(2, 2)*mat(3, 3)-mat(2, 3)*mat(3, 2)
+        m(2, 1) = mat(3, 1)*mat(2, 3)-mat(2, 1)*mat(3, 3)
+        m(3, 1) = mat(2, 1)*mat(3, 2)-mat(3, 1)*mat(2, 2)
+        m(1, 2) = mat(1, 3)*mat(3, 2)-mat(1, 2)*mat(3, 3)
+        m(2, 2) = mat(1, 1)*mat(3, 3)-mat(1, 3)*mat(3, 1)
+        m(3, 2) = mat(1, 2)*mat(3, 1)-mat(3, 2)*mat(1, 1)
+        m(1, 3) = mat(1, 2)*mat(2, 3)-mat(1, 3)*mat(2, 2)
+        m(2, 3) = mat(2, 1)*mat(1, 3)-mat(2, 3)*mat(1, 1)
+        m(3, 3) = mat(1, 1)*mat(2, 2)-mat(1, 2)*mat(2, 1)
+!
+! ---   CALCUL DU DETERMINANT
+!
+        det = mat(1, 1)*m(1, 1)+mat(1, 2)*m(2, 1)+mat(1, 3)*m(3, 1)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     if (abs(det) .le. 1.d0/r8gaem()) then
         if (stop .eq. 'S') then
             call utmess('F', 'ALGORITH5_19')
-        else if (stop.eq.'C') then
+        else if (stop .eq. 'C') then
             det = 0.d0
             goto 999
         else
             ASSERT(.false.)
-        endif
-    endif
+        end if
+    end if
 !
 ! --- CALCUL DE L'INVERSE
 !
     unsdet = 1.d0/det
     do jdim = 1, ndim
         do idim = 1, ndim
-            inv(idim,jdim) = unsdet * m(idim,jdim)
-        enddo
-    enddo
+            inv(idim, jdim) = unsdet*m(idim, jdim)
+        end do
+    end do
 !
-999  continue
+999 continue
 end subroutine

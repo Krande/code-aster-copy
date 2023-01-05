@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,9 +113,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     call jeexin(nnocp, iret)
     if (iret .eq. 0) then
         call utmess('F', 'POSTRELE_5')
-    endif
+    end if
     call jelira(nnocp, 'LONMAX', nbcp)
-    call jecrec(sdmoye, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
+    call jecrec(sdmoye, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', &
                 nboc)
 !
     call jeveuo(sdeval//'.PNCO', 'L', avale)
@@ -136,7 +136,7 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !
     if (l2 .gt. 6) then
         call utmess('F', 'POSTRELE_7')
-    endif
+    end if
     lmoye = 6*nbcp*nbco*nbsp
     fin = 0
 !
@@ -145,18 +145,18 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
         call jecroc(jexnum(sdmoye, ioc))
         call jeecra(jexnum(sdmoye, ioc), 'LONMAX', lmoye)
         call jeveuo(jexnum(sdmoye, ioc), 'E', amoye)
-        call jelira(jexnum(nabsc , ioc), 'LONMAX', nbsgt)
-        call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
+        call jelira(jexnum(nabsc, ioc), 'LONMAX', nbsgt)
+        call jeveuo(jexnum(nabsc, ioc), 'L', aabsc)
         deja = .false.
 !
-        nbsgt = nbsgt - 1
+        nbsgt = nbsgt-1
         if (nbsgt .eq. 0) then
             call utmess('F', 'POSTRELE_6')
-        endif
-        deb = fin + 1
-        fin = deb + nbsgt
+        end if
+        deb = fin+1
+        fin = deb+nbsgt
 !
-        if ((docu.eq.'CHLM') .or. (docul.ne.'LSTN')) fin = fin - 1
+        if ((docu .eq. 'CHLM') .or. (docul .ne. 'LSTN')) fin = fin-1
 !
 !     /* VECTEUR INTER */
 !
@@ -166,8 +166,8 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !
             do isgt = 1, nbsgt+1, 1
 !
-                adr1 = zi(apadr + deb + isgt-2)
-                n = zi(apnbn + deb + isgt-2)
+                adr1 = zi(apadr+deb+isgt-2)
+                n = zi(apnbn+deb+isgt-2)
 !
                 do ico = 1, nbco, 1
 !
@@ -181,8 +181,8 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
                         do i = 1, n, 1
 !
                             if (zr(avale-1+adr1+l5+(i-1)*l2+k-1) .eq. r8vide()) goto 230
-                            lll = lll + 1
-                            t1 = t1 + zr(avale-1+adr1+l5+(i-1)*l2+k-1)
+                            lll = lll+1
+                            t1 = t1+zr(avale-1+adr1+l5+(i-1)*l2+k-1)
 !
 230                         continue
                         end do
@@ -191,12 +191,12 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
                             t1 = r8vide()
                         else
                             t1 = t1/lll
-                        endif
+                        end if
 !
-                        adr2 = (isgt-1)*l3 + (ico-1)*l2 + k
+                        adr2 = (isgt-1)*l3+(ico-1)*l2+k
 !
-                        zr(atab + adr2 -1) = t1
-                        zr(atab + adr2+l1-1) = t1
+                        zr(atab+adr2-1) = t1
+                        zr(atab+adr2+l1-1) = t1
 !
                     end do
 !
@@ -208,7 +208,7 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !
             do isgt = 1, nbsgt, 1
 !
-                adr1 = zi(apadr + deb + isgt-2)
+                adr1 = zi(apadr+deb+isgt-2)
 !
                 do ico = 1, nbco, 1
 !
@@ -216,10 +216,10 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !
                     do k = 1, l2, 1
 !
-                        adr2 = (isgt-1)*l3 + l5 + l1 + k
+                        adr2 = (isgt-1)*l3+l5+l1+k
 !
-                        zr(atab+adr2 -1) = zr(avale+adr1+2*l5 +k-2)
-                        zr(atab+adr2+l1-1) = zr(avale+adr1+2*l5+l2+k- 2)
+                        zr(atab+adr2-1) = zr(avale+adr1+2*l5+k-2)
+                        zr(atab+adr2+l1-1) = zr(avale+adr1+2*l5+l2+k-2)
 !
                     end do
 !
@@ -227,7 +227,7 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !
             end do
 !
-        endif
+        end if
 !
 !     /* CONTRIBUTION ELEMENTAIRE */
 !
@@ -250,31 +250,31 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !
                     do isgt = 1, nbsgt, 1
 !
-                        adr1 = l3*(isgt-1) + l5 + l6 + icmp
-                        adr2 = adr1 + l1
+                        adr1 = l3*(isgt-1)+l5+l6+icmp
+                        adr2 = adr1+l1
 !
-                        t1 = zr(atab-1 + l1 + adr1)
-                        t2 = zr(atab-1 + l1 + adr2)
+                        t1 = zr(atab-1+l1+adr1)
+                        t2 = zr(atab-1+l1+adr2)
 !
                         if (t1 .eq. r8vide()) then
-                            inoe = inoe + 1
+                            inoe = inoe+1
                             goto 140
-                        endif
+                        end if
                         if (t2 .eq. r8vide()) then
-                            if (isgt .eq. nbsgt) inoe = inoe + 1
+                            if (isgt .eq. nbsgt) inoe = inoe+1
                             goto 140
-                        endif
+                        end if
 !
-                        s1 = zr(aabsc + isgt -1) - zr(aabsc)
-                        s2 = zr(aabsc + isgt+1-1) - zr(aabsc)
-                        s12 = s2 - s1
-                        xl = xl + s12
+                        s1 = zr(aabsc+isgt-1)-zr(aabsc)
+                        s2 = zr(aabsc+isgt+1-1)-zr(aabsc)
+                        s12 = s2-s1
+                        xl = xl+s12
                         t12 = (t1+t2)/2.0d0
                         smil = (s1+s2)/2.0d0
-                        m1 = m1 + s12*(t1 + t2)
-                        m2 = m2 + s12/3.0d0 * (t1*s1 + 4.0d0*t12*smil + t2*s2)
-                        ma = max(ma,t1,t2)
-                        mi = min(mi,t1,t2)
+                        m1 = m1+s12*(t1+t2)
+                        m2 = m2+s12/3.0d0*(t1*s1+4.0d0*t12*smil+t2*s2)
+                        ma = max(ma, t1, t2)
+                        mi = min(mi, t1, t2)
 !
 140                     continue
                     end do
@@ -285,25 +285,25 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
                                 call utmess('A', 'POSTRELE_62', si=inoe)
                             else
                                 call utmess('A', 'POSTRELE_63', si=inoe)
-                            endif
+                            end if
                             deja = .true.
-                        endif
-                    endif
+                        end if
+                    end if
 !
                     m1 = m1/xl
                     m2 = m2/(xl*xl)
 !
                     m1 = 0.5d0*m1
-                    m2 = 6.0d0*(m2 - m1)
+                    m2 = 6.0d0*(m2-m1)
 !
-                    l7 = 6*(nbsp*(nbco*(icmp-1) + ico-1) + isp-1)
+                    l7 = 6*(nbsp*(nbco*(icmp-1)+ico-1)+isp-1)
 !
-                    zr(amoye + l7 + 1-1) = m1
-                    zr(amoye + l7 + 2-1) = m2
-                    zr(amoye + l7 + 3-1) = mi
-                    zr(amoye + l7 + 4-1) = ma
-                    zr(amoye + l7 + 5-1) = m1 - 0.5d0*m2
-                    zr(amoye + l7 + 6-1) = m1 + 0.5d0*m2
+                    zr(amoye+l7+1-1) = m1
+                    zr(amoye+l7+2-1) = m2
+                    zr(amoye+l7+3-1) = mi
+                    zr(amoye+l7+4-1) = ma
+                    zr(amoye+l7+5-1) = m1-0.5d0*m2
+                    zr(amoye+l7+6-1) = m1+0.5d0*m2
 !
                 end do
 !

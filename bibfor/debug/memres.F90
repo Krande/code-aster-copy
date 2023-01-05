@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,26 +62,26 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
     integer :: lon1, idep, incr, iret
     integer :: k, jad, ierr, nbfree, ltot
 !
-    ASSERT(limpr.eq.'OUI' .or. limpr.eq.'NON')
-    ASSERT(ldyn.eq.'OUI' .or. ldyn.eq.'NON')
-    ASSERT(prec.gt.0.d0)
+    ASSERT(limpr .eq. 'OUI' .or. limpr .eq. 'NON')
+    ASSERT(ldyn .eq. 'OUI' .or. ldyn .eq. 'NON')
+    ASSERT(prec .gt. 0.d0)
 !
-    tmax=-99.d0
+    tmax = -99.d0
     if (ldyn .eq. 'OUI') call jjldyn(0, -1, ltot)
 !
-    nbfree=0
-    idep=0
-    incr=int(prec*1024*1024/loisem()/2)
+    nbfree = 0
+    idep = 0
+    incr = int(prec*1024*1024/loisem()/2)
 !
 !
 10  continue
-    lon1=incr
-    do k=1,40
+    lon1 = incr
+    do k = 1, 40
 !
 !        -- ON VERIFIE LA CAPACITE DES ENTIERS :
-        lon1=lon1*2
-        ASSERT(lon1.gt.0)
-        ASSERT(idep+lon1.gt.0)
+        lon1 = lon1*2
+        ASSERT(lon1 .gt. 0)
+        ASSERT(idep+lon1 .gt. 0)
 !
 !       -- TENTATIVE D'ALLOCATION :
         call hpalloc(jad, idep+lon1, ierr, 0)
@@ -89,17 +89,17 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
             call hpdeallc(jad, nbfree)
             goto 30
         else
-            ASSERT(ierr.eq.-2)
-            idep=idep+lon1/2
-        endif
+            ASSERT(ierr .eq. -2)
+            idep = idep+lon1/2
+        end if
 !
         if (k .gt. 1) then
             goto 10
         else
-            tmax=dble(idep)
+            tmax = dble(idep)
             goto 40
-        endif
-30  continue
+        end if
+30      continue
     end do
 !
 40  continue
@@ -107,22 +107,22 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 !      -- ON VERIFIE QUE TMAX EST ASSEZ BIEN EVALUE (+/- PREC):
     if (.true._1) then
         call hpalloc(jad, idep-2*incr, ierr, 0)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr .eq. 0)
         call hpdeallc(jad, nbfree)
         call hpalloc(jad, idep+2*incr, ierr, 0)
-        ASSERT(ierr.ne.0)
-    endif
+        ASSERT(ierr .ne. 0)
+    end if
 !
 !     -- CONVERSION EN MO :
-    tmax=tmax*loisem()/1024/1024
+    tmax = tmax*loisem()/1024/1024
 !
 !
     if (limpr .eq. 'OUI') then
-        k8tab(1)='COUR_JV'
-        k8tab(2)='CUSE_JV'
+        k8tab(1) = 'COUR_JV'
+        k8tab(2) = 'CUSE_JV'
         call utgtme(2, k8tab, rval, iret)
-        write (6,9000)'<MEMRES>',titre,rval(1),rval(2),tmax
-    endif
+        write (6, 9000) '<MEMRES>', titre, rval(1), rval(2), tmax
+    end if
 !
-    9000 format (a8,1x,a,3(1x,f12.2))
+9000 format(a8, 1x, a, 3(1x, f12.2))
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
-                  tolsor, vect, resid, workd, workl,&
-                  lonwl, selec, dsor, sigma, vaux,&
-                  workv, rwork, ddlexc, ddllag, neqact,&
-                  maxitr, ifm, niv, priram, alpha,&
+subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq, &
+                  tolsor, vect, resid, workd, workl, &
+                  lonwl, selec, dsor, sigma, vaux, &
+                  workv, rwork, ddlexc, ddllag, neqact, &
+                  maxitr, ifm, niv, priram, alpha, &
                   nconv, flage, solveu)
 !
 !     SUBROUTINE ASTER ORCHESTRANT LA METHODE DE SORENSEN: UN ARNOLDI
@@ -133,7 +133,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     character(len=19) :: k19bid, matass, chcine, criter
 !
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    common /debug/&
+    common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
 !------------------------------------------------------------------
@@ -166,44 +166,44 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     iparam(7) = mode
 !
 ! INIT. OBJETS ASTER
-    matass=zk24(zi(ldynfa+1))(1:19)
-    chcine=' '
-    criter=' '
-    k19bid=' '
+    matass = zk24(zi(ldynfa+1)) (1:19)
+    chcine = ' '
+    criter = ' '
+    k19bid = ' '
 !------------------------------------------------------------------
 ! BOUCLE PRINCIPALE
 !
- 20 continue
+20  continue
 !
 ! CALCUL DES VALEURS PROPRES DE (OP)
-    call znaupd(ido, bmat, nbeq, which, nfreq,&
-                tolsor, resid, nbvect, vect, nbeq,&
-                iparam, ipntr, workd, workl, lonwl,&
+    call znaupd(ido, bmat, nbeq, which, nfreq, &
+                tolsor, resid, nbvect, vect, nbeq, &
+                iparam, ipntr, workd, workl, lonwl, &
                 rwork, info, neqact, alpha)
 !
 ! NOMBRE DE MODES CONVERGES
     nconv = iparam(5)
 !
 ! GESTION DES FLAGS D'ERREURS
-    if ((info.eq.1) .and. (niv.ge.1)) then
-        vali (1) = maxitr
+    if ((info .eq. 1) .and. (niv .ge. 1)) then
+        vali(1) = maxitr
         call utmess('I', 'ALGELINE6_89', si=vali(1))
-    else if (info.eq.2) then
+    else if (info .eq. 2) then
         call utmess('F', 'ALGELINE3_72')
-    else if ((info.eq.3).and.(niv.ge.1)) then
+    else if ((info .eq. 3) .and. (niv .ge. 1)) then
         call utmess('I', 'ALGELINE6_90')
-    else if (info.eq.-7) then
+    else if (info .eq. -7) then
         call utmess('F', 'ALGELINE3_73')
-    else if (info.eq.-8) then
+    else if (info .eq. -8) then
         call utmess('F', 'ALGELINE3_74')
-    else if (info.eq.-9) then
+    else if (info .eq. -9) then
         call utmess('F', 'ALGELINE3_75')
-    else if ((info.eq.-9999).and.(niv.ge.1)) then
+    else if ((info .eq. -9999) .and. (niv .ge. 1)) then
         call utmess('F', 'ALGELINE6_91')
-    else if (info.lt.0) then
-        vali (1) = info
+    else if (info .lt. 0) then
+        vali(1) = info
         call utmess('F', 'ALGELINE4_82', si=vali(1))
-    endif
+    end if
 !
 !---------------------------------------------------------------------
 ! ZONE GERANT LA 'REVERSE COMMUNICATION' VIA IDO
@@ -214,27 +214,27 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! 2/ CALCUL DE Y = (OP)* X AVEC DDL CINEMATIQUEMENT BLOQUES
 ! X <- X*DDL_LAGRANGE
         do j = 1, nbeq
-            vaux(j) = workd(ipntr(1)+j-1) * ddllag(j)
+            vaux(j) = workd(ipntr(1)+j-1)*ddllag(j)
         end do
 ! X <- (INV((A)-SIGMA*(B))*X)*DDL_LAGRANGE
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, [0.d0], vaux,&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, [0.d0], vaux, &
                     criter, .false._1, 0, iret)
         do j = 1, nbeq
-            workd(ipntr(1)+j-1) = vaux(j) * ddllag(j)
+            workd(ipntr(1)+j-1) = vaux(j)*ddllag(j)
         end do
 ! X <- (OP)*(X*DDL_BLOQUE)
-        call mcmult('ZERO', lmasse, workd(ipntr(1)), vaux, 1,&
+        call mcmult('ZERO', lmasse, workd(ipntr(1)), vaux, 1, &
                     .false._1)
         do j = 1, nbeq
-            vaux(j) = workd(ipntr(1)+j-1) * ddlexc(j)
+            vaux(j) = workd(ipntr(1)+j-1)*ddlexc(j)
         end do
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, [0.d0], vaux,&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, [0.d0], vaux, &
                     criter, .false._1, 0, iret)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
-            workd(ipntr(2)+j-1) = vaux(j) *ddlexc(j)
+            workd(ipntr(2)+j-1) = vaux(j)*ddlexc(j)
         end do
         goto 20
 !
@@ -242,14 +242,14 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! CALCUL DU Y = (OP)*X CONNAISSANT DEJA (B)*X (EN FAIT ON CONNAIT
 ! SEULEMENT (ID)*X VIA IDO= 2 CAR PRODUIT SCALAIRE= L2)
 ! X <- (B)*X*DDL_BLOQUE
-        call mcmult('ZERO', lmasse, workd(ipntr(3)), vaux, 1,&
+        call mcmult('ZERO', lmasse, workd(ipntr(3)), vaux, 1, &
                     .false._1)
         do j = 1, nbeq
-            vaux(j) = vaux(j) *ddlexc(j)
+            vaux(j) = vaux(j)*ddlexc(j)
         end do
 ! X <- (OP)*X
-        call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, [0.d0], vaux,&
+        call resoud(matass, k19bid, solveu, chcine, 1, &
+                    k19bid, k19bid, kbid, [0.d0], vaux, &
                     criter, .false._1, 0, iret)
 ! RETOUR VERS DNAUPD
         do j = 1, nbeq
@@ -260,7 +260,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     else if (ido .eq. 2) then
 ! X <- X*DDL_BLOQUE  (PRODUIT SCALAIRE= L2)
         do j = 1, nbeq
-            workd(ipntr(2)+j-1)=workd(ipntr(1)+j-1)*ddlexc(j)
+            workd(ipntr(2)+j-1) = workd(ipntr(1)+j-1)*ddlexc(j)
         end do
 ! RETOUR VERS DNAUPD
         goto 20
@@ -268,44 +268,44 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! GESTION DES MODES CONVERGES
     else if (ido .eq. 99) then
         if (nconv .lt. nfreq) then
-            vali (1) = nconv
-            vali (2) = nfreq
+            vali(1) = nconv
+            vali(2) = nfreq
             call utmess('E', 'ALGELINE5_49', ni=2, vali=vali)
             flage = .true.
-        else if (nconv.gt.nfreq) then
-            vali(1)=nconv
-            vali(2)=nfreq
+        else if (nconv .gt. nfreq) then
+            vali(1) = nconv
+            vali(2) = nfreq
             call utmess('I', 'ALGELINE5_50', ni=2, vali=vali)
-            nconv=nfreq
-        endif
+            nconv = nfreq
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !--------------------------------------------------------------------
 ! CALCUL DES MODES PROPRES APPROCHES DU PB INITIAL
 !
     info = 0
-    call zneupd(rvec, 'A', selec, dsor, vect,&
-                nbeq, sigma, workv, bmat, nbeq,&
-                which, nfreq, tolsor, resid, nbvect,&
-                vect, nbeq, iparam, ipntr, workd,&
+    call zneupd(rvec, 'A', selec, dsor, vect, &
+                nbeq, sigma, workv, bmat, nbeq, &
+                which, nfreq, tolsor, resid, nbvect, &
+                vect, nbeq, iparam, ipntr, workd, &
                 workl, lonwl, rwork, info)
 !
 ! GESTION DES FLAGS D'ERREURS
     if (info .eq. 1) then
         call utmess('F', 'ALGELINE3_74')
-    else if (info.eq.-7) then
+    else if (info .eq. -7) then
         call utmess('F', 'ALGELINE3_73')
-    else if (info.eq.-8) then
+    else if (info .eq. -8) then
         call utmess('F', 'ALGELINE3_76')
-    else if (info.eq.-9) then
+    else if (info .eq. -9) then
         call utmess('F', 'ALGELINE3_77')
-    else if (info.eq.-14) then
+    else if (info .eq. -14) then
         call utmess('F', 'ALGELINE3_78')
-    else if (info.lt.0) then
-        vali (1) = info
+    else if (info .lt. 0) then
+        vali(1) = info
         call utmess('F', 'ALGELINE4_82', si=vali(1))
-    endif
+    end if
 !--------------------------------------------------------------------
 ! TESTS ET POST-TRAITEMENTS
 !
@@ -317,7 +317,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !   59 CONTINUE
 !
 ! TRI DES MODES PROPRES PAR RAPPORT AU NCONV DSOR(I)
-    call vpordc(1, 0, nconv, dsor, vect,&
+    call vpordc(1, 0, nconv, dsor, vect, &
                 nbeq)
 !
     do i = 1, nconv

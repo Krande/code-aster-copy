@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
+subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz, &
                   licmp, cnocmp, basez, prof, cnoz)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
@@ -49,7 +49,7 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: ibid, nbno,   ino
+    integer :: ibid, nbno, ino
     integer :: i, k, jcnsl, jcnsv, ncmp
     character(len=3) :: tsca
     character(len=8) :: nomgd
@@ -61,7 +61,7 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
     call jemarq()
 !
     cns = '&&CNOCRE.CNS'
-    call cnscre(maz, nomgdz, ncmpz, licmp, 'V',&
+    call cnscre(maz, nomgdz, ncmpz, licmp, 'V', &
                 cns)
 !
     call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
@@ -75,14 +75,14 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
-    ASSERT((tsca.eq.'R') .or. (tsca.eq.'C'))
+    ASSERT((tsca .eq. 'R') .or. (tsca .eq. 'C'))
     if (tsca .eq. 'R') then
 !         -----------
         if (nbnoz .eq. 0) then
             do k = 1, ncmp
                 do ino = 1, nbno
-                    zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-                    zr(jcnsv-1+ (ino-1)*ncmp+k) = 0.0d0
+                    zl(jcnsl-1+(ino-1)*ncmp+k) = .true.
+                    zr(jcnsv-1+(ino-1)*ncmp+k) = 0.0d0
                 end do
             end do
 !
@@ -91,20 +91,20 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
                 ino = linoe(i)
                 do k = 1, ncmp
                     if (cnocmp((i-1)*ncmp+k) .eq. 1) then
-                        zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-                        zr(jcnsv-1+ (ino-1)*ncmp+k) = 0.0d0
-                    endif
+                        zl(jcnsl-1+(ino-1)*ncmp+k) = .true.
+                        zr(jcnsv-1+(ino-1)*ncmp+k) = 0.0d0
+                    end if
                 end do
             end do
-        endif
+        end if
 !
-    else if (tsca.eq.'C') then
+    else if (tsca .eq. 'C') then
 !             -----------
         if (nbnoz .eq. 0) then
             do k = 1, ncmp
                 do ino = 1, nbno
-                    zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-                    zc(jcnsv-1+ (ino-1)*ncmp+k) = (0.0d0,0.0d0)
+                    zl(jcnsl-1+(ino-1)*ncmp+k) = .true.
+                    zc(jcnsv-1+(ino-1)*ncmp+k) = (0.0d0, 0.0d0)
                 end do
             end do
 !
@@ -113,16 +113,16 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
                 ino = linoe(i)
                 do k = 1, ncmp
                     if (cnocmp((i-1)*ncmp+k) .eq. 1) then
-                        zl(jcnsl-1+ (ino-1)*ncmp+k) = .true.
-                        zc(jcnsv-1+ (ino-1)*ncmp+k) = (0.0d0,0.0d0)
-                    endif
+                        zl(jcnsl-1+(ino-1)*ncmp+k) = .true.
+                        zc(jcnsv-1+(ino-1)*ncmp+k) = (0.0d0, 0.0d0)
+                    end if
                 end do
             end do
-        endif
-    endif
+        end if
+    end if
 !
 !
-    call cnscno(cns, prof, 'NON', basez, cnoz,&
+    call cnscno(cns, prof, 'NON', basez, cnoz, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', cns)
 !

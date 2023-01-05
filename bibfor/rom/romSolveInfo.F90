@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 subroutine romSolveInfo(ds_solve)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_Solve), intent(in) :: ds_solve
+    type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,23 +47,23 @@ type(ROM_DS_Solve), intent(in) :: ds_solve
 !
     syst_matr_type = ds_solve%syst_matr_type
     syst_2mbr_type = ds_solve%syst_2mbr_type
-    syst_type      = ds_solve%syst_type
+    syst_type = ds_solve%syst_type
     call utmess('I', 'ROM3_37')
     if (syst_matr_type .eq. 'C') then
         call utmess('I', 'ROM2_14')
     elseif (syst_matr_type .eq. 'R') then
         call utmess('I', 'ROM2_15')
-    endif
+    end if
     if (syst_2mbr_type .eq. 'C') then
         call utmess('I', 'ROM2_16')
     elseif (syst_2mbr_type .eq. 'R') then
         call utmess('I', 'ROM2_17')
-    endif
+    end if
     if (syst_type .eq. 'C') then
         call utmess('I', 'ROM2_36')
     elseif (syst_type .eq. 'R') then
         call utmess('I', 'ROM2_37')
-    endif
-    call utmess('I', 'ROM2_35', si = ds_solve%syst_size)
+    end if
+    call utmess('I', 'ROM2_35', si=ds_solve%syst_size)
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-subroutine cazoco(sdcont      , model, keywf, cont_form, i_zone,&
+subroutine cazoco(sdcont, model, keywf, cont_form, i_zone, &
                   nb_cont_zone)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,12 +29,12 @@ implicit none
 #include "asterfort/cazocm.h"
 #include "asterfort/cazocx.h"
 !
-character(len=8), intent(in) :: sdcont
-character(len=8), intent(in) :: model
-character(len=16), intent(in) :: keywf
-integer, intent(in) :: nb_cont_zone
-integer, intent(in) :: cont_form
-integer, intent(in) :: i_zone
+    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: model
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: nb_cont_zone
+    integer, intent(in) :: cont_form
+    integer, intent(in) :: i_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ integer, intent(in) :: i_zone
         call cazocd(sdcont, keywf, i_zone, nb_cont_zone)
     else if (cont_form .eq. 2) then
         call cazocm(sdcont, keywf, i_zone)
-        call cazocc(sdcont, keywf, i_zone, nb_cont_zone = nb_cont_zone)
+        call cazocc(sdcont, keywf, i_zone, nb_cont_zone=nb_cont_zone)
     else if (cont_form .eq. 3) then
         call cazocx(sdcont, model, keywf, i_zone)
     else if (cont_form .eq. 5) then
@@ -66,6 +66,6 @@ integer, intent(in) :: i_zone
         call cazocc(sdcont, keywf, i_zone)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

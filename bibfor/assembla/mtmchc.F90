@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,22 +71,22 @@ subroutine mtmchc(matas, action)
     call jeveuo(mat//'.REFA', 'E', vk24=refa)
     call jeexin(mat//'.CCID', ier)
     if (refa(3) .eq. ' ') then
-        ASSERT(ier.eq.0)
+        ASSERT(ier .eq. 0)
         goto 999
     else
-        ASSERT(ier.gt.0)
-    endif
+        ASSERT(ier .gt. 0)
+    end if
 !
     if (action .eq. 'ELIMF') then
-        ASSERT(refa(3).eq.'ELIML')
+        ASSERT(refa(3) .eq. 'ELIML')
         call asmchc(mat)
         goto 999
-    else if (action.eq.'ELIML') then
-        ASSERT(refa(3).eq.'ELIMF')
+    else if (action .eq. 'ELIML') then
+        ASSERT(refa(3) .eq. 'ELIMF')
 !        TRAITEMENT CI-DESSOUS
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     call jeveuo(mat//'.CCVA', 'L', jccva)
@@ -95,14 +95,14 @@ subroutine mtmchc(matas, action)
 !
 !
 !
-    nu = refa(2)(1:14)
+    nu = refa(2) (1:14)
     call jeexin(nu//'.NUML.DELG', imatd)
     if (imatd .ne. 0) then
         call jeveuo(nu//'.NUML.NEQU', 'L', jnequ)
         call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
     else
         call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
-    endif
+    end if
     neq = zi(jnequ)
 !
 !
@@ -117,10 +117,10 @@ subroutine mtmchc(matas, action)
     call jelira(jexnum(mat//'.VALM', 1), 'TYPE', cval=kbid)
     typmat = 1
     if (kbid(1:1) .eq. 'C') typmat = 2
-    nonsym=.false.
+    nonsym = .false.
     call jelira(mat//'.VALM', 'NMAXOC', nblocm)
-    ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
-    if (nblocm .eq. 2) nonsym=.true.
+    ASSERT(nblocm .eq. 1 .or. nblocm .eq. 2)
+    if (nblocm .eq. 2) nonsym = .true.
     call jeveuo(jexnum(mat//'.VALM', 1), 'E', jvalm)
     if (nonsym) call jeveuo(jexnum(mat//'.VALM', 2), 'E', jvalm2)
 !
@@ -135,77 +135,77 @@ subroutine mtmchc(matas, action)
 !     NELIM   I       : NOMBRE D'EQUATIONS DE LA MATRICE A ELIMINER
     AS_ALLOCATE(vi=elim, size=neq)
     call jeveuo(mat//'.CCID', 'L', jccid)
-    nelim=0
+    nelim = 0
     do ieq = 1, neq
         if (imatd .ne. 0) then
-            keta=zi(jccid-1+nulg(ieq))
+            keta = zi(jccid-1+nulg(ieq))
         else
-            keta=zi(jccid-1+ieq)
-        endif
-        ASSERT(keta.eq.1 .or. keta.eq.0)
+            keta = zi(jccid-1+ieq)
+        end if
+        ASSERT(keta .eq. 1 .or. keta .eq. 0)
         if (keta .eq. 1) then
-            nelim=nelim+1
-            elim(ieq)=nelim
+            nelim = nelim+1
+            elim(ieq) = nelim
         else
-            elim(ieq)=0
-        endif
+            elim(ieq) = 0
+        end if
     end do
 !
 !
 !     -- RECOPIE DE .CCVA DANS .VALM :
 !     -----------------------------------------
     AS_ALLOCATE(vi=remplis, size=nelim)
-    kfin=0
+    kfin = 0
     do jcol = 1, neq
-        kdeb = kfin + 1
+        kdeb = kfin+1
         kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
-            deciel=ccll(3*(jelim-1)+3)
-            do k = kdeb, kfin - 1
+            deciel = ccll(3*(jelim-1)+3)
+            do k = kdeb, kfin-1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
                 if (ielim .eq. 0) then
-                    remplis(jelim)=remplis(jelim)+1
-                    iremp=remplis(jelim)
+                    remplis(jelim) = remplis(jelim)+1
+                    iremp = remplis(jelim)
                     if (typmat .eq. 1) then
-                        zr(jvalm-1+k)=zr(jccva-1+deciel+iremp)
+                        zr(jvalm-1+k) = zr(jccva-1+deciel+iremp)
                     else
-                        zc(jvalm-1+k)=zc(jccva-1+deciel+iremp)
-                    endif
-                endif
+                        zc(jvalm-1+k) = zc(jccva-1+deciel+iremp)
+                    end if
+                end if
             end do
 !
         else
-            do k = kdeb, kfin - 1
+            do k = kdeb, kfin-1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
-                decjel=ccll(3*(ielim-1)+3)
+                decjel = ccll(3*(ielim-1)+3)
                 if (ielim .ne. 0) then
-                    remplis(ielim)=remplis(ielim)+1
-                    iremp=remplis(ielim)
+                    remplis(ielim) = remplis(ielim)+1
+                    iremp = remplis(ielim)
                     if (typmat .eq. 1) then
                         if (nonsym) then
-                            zr(jvalm2-1+k)=zr(jccva-1+decjel+iremp)
+                            zr(jvalm2-1+k) = zr(jccva-1+decjel+iremp)
                         else
-                            zr(jvalm-1+k)=zr(jccva-1+decjel+iremp)
-                        endif
+                            zr(jvalm-1+k) = zr(jccva-1+decjel+iremp)
+                        end if
                     else
                         if (nonsym) then
-                            zc(jvalm2-1+k)=zc(jccva-1+decjel+iremp)
+                            zc(jvalm2-1+k) = zc(jccva-1+decjel+iremp)
                         else
-                            zc(jvalm-1+k)=zc(jccva-1+decjel+iremp)
-                        endif
-                    endif
-                endif
+                            zc(jvalm-1+k) = zc(jccva-1+decjel+iremp)
+                        end if
+                    end if
+                end if
             end do
-        endif
+        end if
 !
     end do
 !
 !
-    refa(3)='ELIML'
+    refa(3) = 'ELIML'
     call jedetr(mat//'.CCVA')
     call jedetr(mat//'.CCLL')
     call jedetr(mat//'.CCII')

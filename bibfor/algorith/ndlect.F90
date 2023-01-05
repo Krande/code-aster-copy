@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,9 +47,9 @@ implicit none
 #include "asterfort/nmondp.h"
 #include "asterfort/utmess.h"
 !
-character(len=19) :: sddyna
-character(len=24) :: modele, mate, carele
-character(len=19) :: lischa
+    character(len=19) :: sddyna
+    character(len=24) :: modele, mate, carele
+    character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,8 +69,8 @@ character(len=19) :: lischa
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: undemi, un, quatre
-    parameter     (undemi = 0.5d0,un   = 1.d0)
-    parameter     (quatre = 4.d0 )
+    parameter(undemi=0.5d0, un=1.d0)
+    parameter(quatre=4.d0)
 !
     integer :: nmodam, nreavi, nondp
     integer :: nbmods, nbmoda, nbmodp
@@ -109,33 +109,33 @@ character(len=19) :: lischa
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
 !
-    data cdfedo,cdfsdo    /'&&NDLECT.CNFEDO','&&NDLECT.CNFSDO'/
-    data cddido,cddidi    /'&&NDLECT.CNDIDO','&&NDLECT.CNDIDI'/
-    data cdfint,cdviss    /'&&NDLECT.CNFINT','&&NDLECT.CNVISS'/
-    data cdondp,cdlapl    /'&&NDLECT.CNONDP','&&NDLECT.CNLAPL'/
-    data cdcine,cdsstf    /'&&NDLECT.CNCINE','&&NDLECT.CNSSTF'/
-    data cdsstr           /'&&NDLECT.CNSSTR'/
-    data cdeltc,cdeltf    /'&&NDLECT.CNELTC','&&NDLECT.CNELTF'/
+    data cdfedo, cdfsdo/'&&NDLECT.CNFEDO', '&&NDLECT.CNFSDO'/
+    data cddido, cddidi/'&&NDLECT.CNDIDO', '&&NDLECT.CNDIDI'/
+    data cdfint, cdviss/'&&NDLECT.CNFINT', '&&NDLECT.CNVISS'/
+    data cdondp, cdlapl/'&&NDLECT.CNONDP', '&&NDLECT.CNLAPL'/
+    data cdcine, cdsstf/'&&NDLECT.CNCINE', '&&NDLECT.CNSSTF'/
+    data cdsstr/'&&NDLECT.CNSSTR'/
+    data cdeltc, cdeltf/'&&NDLECT.CNELTC', '&&NDLECT.CNELTF'/
 !
-    data vefedo,vefsdo    /'&&NDLECT.VEFEDO','&&NDLECT.VEFSDO'/
-    data vedido,vedidi    /'&&NDLECT.VEDIDO','&&NDLECT.VEDIDI'/
-    data vefint           /'&&NDLECT.VEFINT'/
-    data veondp,velapl    /'&&NDLECT.VEONDP','&&NDLECT.VELAPL'/
-    data vesstf           /'&&NDLECT.VESSTF'/
+    data vefedo, vefsdo/'&&NDLECT.VEFEDO', '&&NDLECT.VEFSDO'/
+    data vedido, vedidi/'&&NDLECT.VEDIDO', '&&NDLECT.VEDIDI'/
+    data vefint/'&&NDLECT.VEFINT'/
+    data veondp, velapl/'&&NDLECT.VEONDP', '&&NDLECT.VELAPL'/
+    data vesstf/'&&NDLECT.VESSTF'/
 !
-    data depent           /'&&NDLECT.DEPENT'/
-    data vitent           /'&&NDLECT.VITENT'/
-    data accent           /'&&NDLECT.ACCENT'/
+    data depent/'&&NDLECT.DEPENT'/
+    data vitent/'&&NDLECT.VITENT'/
+    data accent/'&&NDLECT.ACCENT'/
 !
-    data depabs           /'&&NDLECT.DEPABS'/
-    data vitabs           /'&&NDLECT.VITABS'/
-    data accabs           /'&&NDLECT.ACCABS'/
+    data depabs/'&&NDLECT.DEPABS'/
+    data vitabs/'&&NDLECT.VITABS'/
+    data accabs/'&&NDLECT.ACCABS'/
 !
-    data stadyn           /'&&NDLECT.STADYN'/
-    data sdprmo           /'&&NDLECT.SDPRMO'/
-    data sdmuap           /'&&NDLECT.SDMUAP'/
-    data sdammo           /'&&NDLECT.SDAMMO'/
-    data sdexso           /'&&NDLECT.SDEXSO'/
+    data stadyn/'&&NDLECT.STADYN'/
+    data sdprmo/'&&NDLECT.SDPRMO'/
+    data sdmuap/'&&NDLECT.SDMUAP'/
+    data sdammo/'&&NDLECT.SDAMMO'/
+    data sdexso/'&&NDLECT.SDEXSO'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -154,14 +154,14 @@ character(len=19) :: lischa
 !
 ! --- LECTURE DONNEES DYNAMIQUE
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     if (ldyna) then
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE> ... REMPLISSAGE SD DYNAMIQUE'
-        endif
+            write (ifm, *) '<MECANONLINE> ... REMPLISSAGE SD DYNAMIQUE'
+        end if
     else
         goto 999
-    endif
+    end if
 !
 ! --- ACCES AUX OBJETS DE LA SD SDDYNA
 !
@@ -196,19 +196,19 @@ character(len=19) :: lischa
     call dismoi('EXI_AMOR_BETA', mate, 'CHAM_MATER', repk=rep2)
     call dismoi('EXI_AMOR_NOR', mate, 'CHAM_MATER', repk=rep3)
     call dismoi('EXI_AMOR_TAN', mate, 'CHAM_MATER', repk=rep4)
-    if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI') .or. (rep3(1:3).eq.'OUI') .or.&
-        (rep4(1:3).eq.'OUI')) then
+    if ((rep1(1:3) .eq. 'OUI') .or. (rep2(1:3) .eq. 'OUI') .or. (rep3(1:3) .eq. 'OUI') .or. &
+        (rep4(1:3) .eq. 'OUI')) then
         lamor = .true.
         call getvtx(' ', 'AMOR_RAYL_RIGI', scal=rigiam, nbret=iret)
         if (rigiam .eq. 'TANGENTE') lktan = .true.
-    endif
+    end if
 
     lamra = lamor
 !
-    if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI')) then
+    if ((rep1(1:3) .eq. 'OUI') .or. (rep2(1:3) .eq. 'OUI')) then
         call utmess('I', 'MECANONLINE5_7')
-    endif
-    if (.not.lamor) call nmamab(modele, carele, lamor)
+    end if
+    if (.not. lamor) call nmamab(modele, carele, lamor)
     zl(jlosd+1-1) = lamor
     zl(jlosd+13-1) = lktan
     zl(jlosd+16-1) = lamra
@@ -227,31 +227,31 @@ character(len=19) :: lischa
         gamma = 0.5d0
         phi = 0.5d0
         zk16(jtsch+7-1) = 'DIFF_CENTREE'
-    else if (schema(1:7).eq.'TCHAMWA') then
+    else if (schema(1:7) .eq. 'TCHAMWA') then
         beta = 0.d0
         gamma = 0.5d0
         call getvr8('SCHEMA_TEMPS', 'PHI', iocc=1, scal=phi, nbret=n1)
         zk16(jtsch+8-1) = 'TCHAMWA'
-    else if (schema(1:7).eq.'NEWMARK') then
+    else if (schema(1:7) .eq. 'NEWMARK') then
         call getvr8('SCHEMA_TEMPS', 'BETA', iocc=1, scal=beta, nbret=n1)
         call getvr8('SCHEMA_TEMPS', 'GAMMA', iocc=1, scal=gamma, nbret=n1)
         phi = 0.5d0
         zk16(jtsch+2-1) = 'NEWMARK'
-    else if (schema(1:3).eq.'HHT') then
+    else if (schema(1:3) .eq. 'HHT') then
         call getvr8('SCHEMA_TEMPS', 'ALPHA', iocc=1, scal=alpha, nbret=n1)
         call getvtx('SCHEMA_TEMPS', 'MODI_EQUI', iocc=1, scal=rep, nbret=n1)
         if (rep(1:3) .eq. 'NON') then
             zk16(jtsch+3-1) = 'HHT'
         else
             zk16(jtsch+5-1) = 'HHT_COMPLET'
-        endif
+        end if
         phi = undemi
-        beta = (un-alpha)* (un-alpha)/quatre
-        gamma = undemi - alpha
+        beta = (un-alpha)*(un-alpha)/quatre
+        gamma = undemi-alpha
 
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     zr(jpsch+1-1) = beta
     zr(jpsch+2-1) = gamma
@@ -260,7 +260,7 @@ character(len=19) :: lischa
 !
 ! --- TYPE DE SCHEMA
 !
-    lexpl = ndynlo(sddyna,'EXPLICITE')
+    lexpl = ndynlo(sddyna, 'EXPLICITE')
 !
 ! --- NOM DE QUELQUES SD
 !
@@ -277,7 +277,7 @@ character(len=19) :: lischa
         lshima = .true.
     else
         lshima = .false.
-    endif
+    end if
     zr(jpsch+6-1) = shima
     zl(jlosd+14-1) = lshima
 !
@@ -286,34 +286,34 @@ character(len=19) :: lischa
     call getvtx('SCHEMA_TEMPS', 'FORMULATION', iocc=1, scal=kform, nbret=n1)
     if (kform(1:11) .eq. 'DEPLACEMENT') then
         iform = 1
-    else if (kform(1:7).eq.'VITESSE') then
+    else if (kform(1:7) .eq. 'VITESSE') then
         iform = 2
-    else if (kform(1:12).eq.'ACCELERATION') then
+    else if (kform(1:12) .eq. 'ACCELERATION') then
         iform = 3
-    endif
+    end if
     zi(jtfor+1-1) = iform
 !
 ! --- INCOMPATIBILITES SCHEMA/FORMULATION/PARAMETRES
 !
-    if ((ndynlo(sddyna,'NEWMARK')) .or. (ndynlo(sddyna,'HHT_COMPLET')) .or.&
-        (ndynlo(sddyna,'HHT'))) then
+    if ((ndynlo(sddyna, 'NEWMARK')) .or. (ndynlo(sddyna, 'HHT_COMPLET')) .or. &
+        (ndynlo(sddyna, 'HHT'))) then
         if (beta .le. r8prem()) then
             call utmess('F', 'MECANONLINE5_9')
-        endif
+        end if
         if (iform .eq. 2) then
             call utmess('F', 'MECANONLINE5_11')
-        endif
-    endif
+        end if
+    end if
     if (lexpl) then
         if (iform .ne. 3) then
             call utmess('F', 'MECANONLINE5_10')
-        endif
-    endif
-    if  (ndynlo(sddyna,'HHT_COMPLET')) then
+        end if
+    end if
+    if (ndynlo(sddyna, 'HHT_COMPLET')) then
         if (alpha .eq. -1.0) then
             call utmess('F', 'MECANONLINE5_17')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- VERIFICATION DE LA PRESENCE D'ELEMENTS AVEC 'IMPE_ABSO'
 !
@@ -356,9 +356,9 @@ character(len=19) :: lischa
                 zl(jlosd+4-1) = .true.
             else
                 call utmess('F', 'MECANONLINE5_13')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! --- PROJECTION MODALE POUR SCHEMAS EXPLICITES
 !
@@ -370,14 +370,14 @@ character(len=19) :: lischa
             zl(jlosd+5-1) = .true.
             call mxmoam(sddyna, nbmodp)
             call getvid('PROJ_MODAL', 'MASS_GENE', iocc=1, scal=k8bid, nbret=nbmg)
-            zl(jlosd+9-1) = nbmg.ne.0
+            zl(jlosd+9-1) = nbmg .ne. 0
             zi(jncha+5-1) = nbmodp
-        endif
-    endif
+        end if
+    end if
 !
 ! --- SCHEMA MULTIPAS: VECT_* SAUVEGARDES PAS PRECEDENT
 !
-    if (zk16(jtsch+5-1)(1:11).eq.'HHT_COMPLET') then
+    if (zk16(jtsch+5-1) (1:11) .eq. 'HHT_COMPLET') then
         zk24(jveol+1-1) = vefedo
         zk24(jveol+2-1) = vefsdo
         zk24(jveol+3-1) = vedido
@@ -399,7 +399,7 @@ character(len=19) :: lischa
         zk24(jvaol+11-1) = cdsstr
         zk24(jvaol+12-1) = cdeltc
         zk24(jvaol+13-1) = cdeltf
-    endif
+    end if
 !
 ! --- CARTE STADYN POUR POUTRES
 !
@@ -410,22 +410,22 @@ character(len=19) :: lischa
     rcmp(2) = beta
     rcmp(3) = gamma
     call jedetr(stadyn)
-    call mecact('V', stadyn, 'MODELE', modele(1:8)//'.MODELE', 'STAOUDYN',&
+    call mecact('V', stadyn, 'MODELE', modele(1:8)//'.MODELE', 'STAOUDYN', &
                 ncmp=3, lnomcmp=licmp, vr=rcmp)
 !
 ! --- MODE MULTI-APPUI
 !
     call getvid(' ', 'MODE_STAT', scal=k8bid, nbret=nbmods)
-    lmuap = nbmods.gt.0
+    lmuap = nbmods .gt. 0
     if (lmuap) then
         call nmmuap(sddyna)
-    endif
+    end if
     zl(jlosd+2-1) = lmuap
 !
 ! --- AMORTISSEMENT MODAL
 !
     call getfac('AMOR_MODAL', nmodam)
-    lammo = nmodam.gt.0
+    lammo = nmodam .gt. 0
     if (lammo) then
         call nmmoam(sdammo, nbmoda, dampMode)
         nreavi = 0
@@ -438,10 +438,10 @@ character(len=19) :: lischa
         nreavi = 0
         nbmoda = 0
         dampMode = ' '
-    endif
-    zl(jlosd+3-1)   = lammo
-    zl(jlosd+12-1)  = nreavi.gt.0
-    zi(jncha+4-1)   = nbmoda
+    end if
+    zl(jlosd+3-1) = lammo
+    zl(jlosd+12-1) = nreavi .gt. 0
+    zi(jncha+4-1) = nbmoda
     zk24(jnosd-1+7) = dampMode
 !
 ! --- VECT ISS
@@ -450,49 +450,49 @@ character(len=19) :: lischa
     zl(jlosd+15-1) = lviss
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... FONCTIONNALITES ACTIVEES EN DYNAMIQUE '
+        write (ifm, *) '<MECANONLINE> ... FONCTIONNALITES ACTIVEES EN DYNAMIQUE '
 !
-        if (ndynlo(sddyna,'IMPLICITE')) then
-            write (ifm,*) '<MECANONLINE> ...... SCHEMA IMPLICITE'
-        endif
-        if (ndynlo(sddyna,'EXPLICITE')) then
-            write (ifm,*) '<MECANONLINE> ...... SCHEMA EXPLICITE'
-        endif
+        if (ndynlo(sddyna, 'IMPLICITE')) then
+            write (ifm, *) '<MECANONLINE> ...... SCHEMA IMPLICITE'
+        end if
+        if (ndynlo(sddyna, 'EXPLICITE')) then
+            write (ifm, *) '<MECANONLINE> ...... SCHEMA EXPLICITE'
+        end if
 !
-        if (ndynlo(sddyna,'MAT_AMORT')) then
-            write (ifm,*) '<MECANONLINE> ...... MATRICE AMORTISSEMENT'
-        endif
-        if (ndynlo(sddyna,'MULTI_APPUI')) then
-            write (ifm,*) '<MECANONLINE> ...... MULTI APPUI'
-        endif
-        if (ndynlo(sddyna,'AMOR_MODAL')) then
-            write (ifm,*) '<MECANONLINE> ...... AMORTISSEMENT MODAL'
-        endif
-        if (ndynlo(sddyna,'MASS_DIAG')) then
-            write (ifm,*) '<MECANONLINE> ...... MATRICE MASSE DIAGONALE'
-        endif
-        if (ndynlo(sddyna,'PROJ_MODAL')) then
-            write (ifm,*) '<MECANONLINE> ...... PROJECTION MODALE'
-        endif
-        if (ndynlo(sddyna,'IMPE_ABSO')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS D''IMPEDANCE'
-        endif
-        if (ndynlo(sddyna,'ONDE_PLANE')) then
-            write (ifm,*) '<MECANONLINE> ...... CHARGEMENT ONDES PLANES'
-        endif
-        if (ndynlo(sddyna,'EXPL_GENE')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL EXPLICITE EN MODAL'
-        endif
-        if (ndynlo(sddyna,'NREAVI')) then
-            write (ifm,*) '<MECANONLINE> ...... REAC. VITE'
-        endif
-        if (ndynlo(sddyna,'COEF_MASS_SHIFT')) then
-            write (ifm,*) '<MECANONLINE> ...... COEF. MASS. SHIFT'
-        endif
-        if (ndynlo(sddyna,'VECT_ISS')) then
-            write (ifm,*) '<MECANONLINE> ...... FORCE SOL'
-        endif
-    endif
+        if (ndynlo(sddyna, 'MAT_AMORT')) then
+            write (ifm, *) '<MECANONLINE> ...... MATRICE AMORTISSEMENT'
+        end if
+        if (ndynlo(sddyna, 'MULTI_APPUI')) then
+            write (ifm, *) '<MECANONLINE> ...... MULTI APPUI'
+        end if
+        if (ndynlo(sddyna, 'AMOR_MODAL')) then
+            write (ifm, *) '<MECANONLINE> ...... AMORTISSEMENT MODAL'
+        end if
+        if (ndynlo(sddyna, 'MASS_DIAG')) then
+            write (ifm, *) '<MECANONLINE> ...... MATRICE MASSE DIAGONALE'
+        end if
+        if (ndynlo(sddyna, 'PROJ_MODAL')) then
+            write (ifm, *) '<MECANONLINE> ...... PROJECTION MODALE'
+        end if
+        if (ndynlo(sddyna, 'IMPE_ABSO')) then
+            write (ifm, *) '<MECANONLINE> ...... ELEMENTS D''IMPEDANCE'
+        end if
+        if (ndynlo(sddyna, 'ONDE_PLANE')) then
+            write (ifm, *) '<MECANONLINE> ...... CHARGEMENT ONDES PLANES'
+        end if
+        if (ndynlo(sddyna, 'EXPL_GENE')) then
+            write (ifm, *) '<MECANONLINE> ...... CALCUL EXPLICITE EN MODAL'
+        end if
+        if (ndynlo(sddyna, 'NREAVI')) then
+            write (ifm, *) '<MECANONLINE> ...... REAC. VITE'
+        end if
+        if (ndynlo(sddyna, 'COEF_MASS_SHIFT')) then
+            write (ifm, *) '<MECANONLINE> ...... COEF. MASS. SHIFT'
+        end if
+        if (ndynlo(sddyna, 'VECT_ISS')) then
+            write (ifm, *) '<MECANONLINE> ...... FORCE SOL'
+        end if
+    end if
 !
 999 continue
 !

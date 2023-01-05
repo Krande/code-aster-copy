@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vphqrp(mat, neq, mxeq, icode, w,&
-                  z, iz, wk, mxiter, ier,&
+subroutine vphqrp(mat, neq, mxeq, icode, w, &
+                  z, iz, wk, mxiter, ier, &
                   nitqr)
     implicit none
 #include "asterfort/vpzbal.h"
@@ -69,10 +69,10 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
     iz2 = iz+iz
     if (icode .lt. 0 .or. icode .gt. 1) then
         icode = 0
-    endif
+    end if
     if (icode .ne. 0 .and. iz .lt. neq) then
         icode = 0
-    endif
+    end if
 !
     k = neq
     l = neq
@@ -81,7 +81,7 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
 !
 !     --- EQUILIBRAGE DE LA MATRICE INITIALE ---
 !
-    call vpzbal(mat, neq, mxeq, wk, k,&
+    call vpzbal(mat, neq, mxeq, wk, k, &
                 l)
 !
 !     --- MISE SOUS FORME DE HESSENBERG ---
@@ -90,12 +90,12 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
         iiz = 1
     else
         iiz = neq
-    endif
+    end if
     if (l .ne. 0) then
 !        IF L <> 0, MAT EST DEJA SOUS FORME DE HESSENBERG
-        call vpzhes(mat, k, l, neq, neq,&
+        call vpzhes(mat, k, l, neq, neq, &
                     wk(1, n2))
-    endif
+    end if
 !
 !     --- TRANSFORMATION INVERSE HESSENBERG - EQUILIBRAGE
 !     --- POUR LE CALCUL DES VECTEURS PROPRES
@@ -108,42 +108,42 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
         do i = 1, neq*neq, neq+1
             z(i) = 1.d0
         end do
-        call vpzrbk(z, mat, wk(1, n2), neq, neq,&
+        call vpzrbk(z, mat, wk(1, n2), neq, neq, &
                     k, l)
-    endif
+    end if
 !
 !     --- CALCUL DES VALEURS PROPRES (ET DES VECTEURS PROPRES)
 !
     if (icode .eq. 0 .and. neq .eq. 1) then
         z11 = z(1)
-    endif
+    end if
     nitqr = 0
-    call vpzqrh(mat, neq, neq, k, l,&
-                w(1), w(neq+1), z, iiz, mxiter,&
+    call vpzqrh(mat, neq, neq, k, l, &
+                w(1), w(neq+1), z, iiz, mxiter, &
                 jer, nitqr)
     if (icode .eq. 0 .and. neq .eq. 1) then
         z(1) = z11
-    endif
+    end if
 !
 !     --- TRANSFORMATION INVERSE EQUILIBRAGE - MATRICE INITIALE
 !     --- POUR LE CALCUL DES VECTEURS PROPRES
 !
     if (jer .eq. 0 .and. icode .eq. 1) then
-        call vpzech(wk, z, k, l, neq,&
+        call vpzech(wk, z, k, l, neq, &
                     neq, neq)
-    endif
+    end if
 !
 !     --- CONVERSION DES VALEURS PROPRES (W) EN FORMAT COMPLEXE
 !
     do i = 1, neq
         npi = neq+i
-        wk(i,1) = w(npi)
+        wk(i, 1) = w(npi)
     end do
     jw = neq+neq
     j = neq
     do i = 1, neq
         w(jw-1) = w(j)
-        w(jw) = wk(j,1)
+        w(jw) = wk(j, 1)
         jw = jw-2
         j = j-1
     end do
@@ -154,7 +154,7 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
     if (icode .eq. 1) then
 !
         j = neq
- 60     continue
+60      continue
         if (j .lt. 1) goto 999
         if (w(j+j) .ne. 0.d0) then
 !           TRANSLATER LA PAIRE DE VECTEURS COMPLEXES CONJUGUES
@@ -180,7 +180,7 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
             end do
             j = j-2
             goto 60
-        endif
+        end if
 !        TRANSLATER LE VECTEUR REEL
         is = iz2*(j-1)+neq+neq
         ig = neq*j
@@ -192,7 +192,7 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
         end do
         j = j-1
         goto 60
-    endif
+    end if
 !
 999 continue
     ier = jer

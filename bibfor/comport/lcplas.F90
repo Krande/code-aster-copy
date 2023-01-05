@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,21 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine lcplas(BEHinteg,&
-                  fami, kpg, ksp, loi, toler,&
-                  itmax, mod, imat, nmat, materd,&
-                  materf, nr, nvi, timed, timef,&
-                  deps, epsd, sigd, vind, sigf,&
-                  vinf, comp, nbcomm, cpmono, pgl,&
-                  nfs, nsg, toutms, hsr, icomp,&
-                  codret, theta, vp, vecp, seuil,&
+subroutine lcplas(BEHinteg, &
+                  fami, kpg, ksp, loi, toler, &
+                  itmax, mod, imat, nmat, materd, &
+                  materf, nr, nvi, timed, timef, &
+                  deps, epsd, sigd, vind, sigf, &
+                  vinf, comp, nbcomm, cpmono, pgl, &
+                  nfs, nsg, toutms, hsr, icomp, &
+                  codret, theta, vp, vecp, seuil, &
                   devg, devgii, drdy, crit)
 !
-use Behaviour_type
+    use Behaviour_type
 !
-implicit none
+    implicit none
 !
-type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(in) :: BEHinteg
 !     INTEGRATION IMPLICITE DES COMPORTEMENTS. CALCUL DE SIGF,VINF,DSDE
 !     ----------------------------------------------------------------
 !     ARGUMENTS
@@ -100,30 +100,30 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !       ----------------------------------------------------------------
 !
     codret = 0
-    deltat = timef - timed
+    deltat = timef-timed
 !
 !       ----------------------------------------------------------------
 !       CAS PARTICULIERS
 !       ----------------------------------------------------------------
 !
     if (loi(1:8) .eq. 'ROUSS_PR' .or. loi(1:10) .eq. 'ROUSS_VISC') then
-        call lcrous(fami, kpg, ksp, toler, itmax,&
-                    imat, nmat, materd, materf, nvi,&
-                    deps, sigd, vind, theta, loi,&
+        call lcrous(fami, kpg, ksp, toler, itmax, &
+                    imat, nmat, materd, materf, nvi, &
+                    deps, sigd, vind, theta, loi, &
                     deltat, sigf, vinf, irtet)
         if (irtet .gt. 0) goto 1
 !
-    elseif (( loi(1:10) .eq. 'HOEK_BROWN' ).or. ( loi(1:14) .eq. 'HOEK_BROWN_EFF' ))then
-        call lchobr(toler, itmax, mod, nmat, materf,&
-                    nr, nvi, deps, sigd, vind,&
-                    seuil, vp, vecp, icomp, sigf,&
+    elseif ((loi(1:10) .eq. 'HOEK_BROWN') .or. (loi(1:14) .eq. 'HOEK_BROWN_EFF')) then
+        call lchobr(toler, itmax, mod, nmat, materf, &
+                    nr, nvi, deps, sigd, vind, &
+                    seuil, vp, vecp, icomp, sigf, &
                     vinf, irtet)
         if (irtet .gt. 0) goto 1
 !
     else if (loi(1:6) .eq. 'LAIGLE') then
-        call lcpllg(toler, itmax, mod, nmat, materf,&
-                    nr, nvi, deps, sigd, vind,&
-                    seuil, icomp, sigf, vinf, devg,&
+        call lcpllg(toler, itmax, mod, nmat, materf, &
+                    nr, nvi, deps, sigd, vind, &
+                    seuil, icomp, sigf, vinf, devg, &
                     devgii, irtet)
         if (irtet .gt. 0) goto 1
 !
@@ -131,34 +131,34 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !       CAS GENERAL : RESOLUTION PAR NEWTON
 !       ----------------------------------------------------------------
     else
-        call lcplnl(BEHinteg,&
-                    fami, kpg, ksp, loi, toler,&
-                    itmax, mod, imat, nmat, materd,&
-                    materf, nr, nvi, timed, timef,&
-                    deps, epsd, sigd, vind, comp,&
-                    nbcomm, cpmono, pgl, nfs, nsg,&
-                    toutms, hsr, sigf, vinf, icomp,&
+        call lcplnl(BEHinteg, &
+                    fami, kpg, ksp, loi, toler, &
+                    itmax, mod, imat, nmat, materd, &
+                    materf, nr, nvi, timed, timef, &
+                    deps, epsd, sigd, vind, comp, &
+                    nbcomm, cpmono, pgl, nfs, nsg, &
+                    toutms, hsr, sigf, vinf, icomp, &
                     irtet, drdy, crit)
         if (irtet .eq. 1) then
             goto 1
         else if (irtet .eq. 2) then
             goto 2
-        endif
+        end if
 !
-    endif
+    end if
 !
 !     CONVERGENCE OK
 !
     codret = 0
     goto 999
 !
-  1 continue
+1   continue
 !
 !     PB INTEGRATION ou ITMAX ATTEINT : redecoupage local puis global
     codret = 1
     goto 999
 !
-  2 continue
+2   continue
 !     ITMAX ATTEINT : redecoupage du pas de temps global
     codret = 2
 !

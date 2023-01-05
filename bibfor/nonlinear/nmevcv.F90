@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,8 +96,8 @@ subroutine nmevcv(sderro, fonact, nombcl)
 !
     cveven = .true.
     do ieven = 1, zeven
-        teven = zk16(jeeniv-1+ieven)(1:9)
-        neven = zk16(jeenom-1+ieven)(1:9)
+        teven = zk16(jeeniv-1+ieven) (1:9)
+        neven = zk16(jeenom-1+ieven) (1:9)
         feven = zk24(jeefct-1+ieven)
         dv = .false.
         cv = .true.
@@ -105,35 +105,35 @@ subroutine nmevcv(sderro, fonact, nombcl)
             if (feven .eq. ' ') then
                 lfonc = .true.
             else
-                lfonc = isfonc(fonact,feven)
-            endif
+                lfonc = isfonc(fonact, feven)
+            end if
             if (neven(1:4) .eq. 'DIVE') then
                 call nmerge(sderro, neven, dv)
-                dv = dv.and.lfonc
+                dv = dv .and. lfonc
                 cv = .true.
-            else if (neven(1:4).eq.'CONV') then
+            else if (neven(1:4) .eq. 'CONV') then
                 call nmerge(sderro, neven, cv)
-                cv = cv.and.lfonc
+                cv = cv .and. lfonc
                 dv = .false.
-            endif
-            cveven = cveven.and.(.not.dv).and.cv
-        endif
+            end if
+            cveven = cveven .and. (.not. dv) .and. cv
+        end if
     end do
 !
 ! --- RECUPERE CONVERGENCES PRECEDENTES
 !
     if (nombcl .eq. 'NEWT') then
-        cveven = cveven.and.cvresi
-    endif
+        cveven = cveven .and. cvresi
+    end if
     if (nombcl .eq. 'FIXE') then
-        cveven = cveven.and.cvnewt.and.cvresi
-    endif
+        cveven = cveven .and. cvnewt .and. cvresi
+    end if
     if (nombcl .eq. 'INST') then
-        cveven = cveven.and.cvfixe.and.cvnewt.and.cvresi
-    endif
+        cveven = cveven .and. cvfixe .and. cvnewt .and. cvresi
+    end if
     if (nombcl .eq. 'CALC') then
-        cveven = cveven.and.cvinst.and.cvfixe.and.cvnewt.and.cvresi
-    endif
+        cveven = cveven .and. cvinst .and. cvfixe .and. cvnewt .and. cvresi
+    end if
 !
     if (cveven) etabcl = 'CONV'
 !

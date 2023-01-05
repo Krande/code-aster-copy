@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine sigmca(tablca, icabl, nbnoca, numaca,&
+subroutine sigmca(tablca, icabl, nbnoca, numaca, &
                   quad, sigmcabl, prem)
     implicit none
 !  DESCRIPTION : MISE A JOUR DE LA CARTE ELEMENTAIRE DES CONTRAINTES
@@ -66,7 +66,7 @@ subroutine sigmca(tablca, icabl, nbnoca, numaca,&
     real(kind=8), pointer :: sigmvale(:) => null()
     integer, pointer :: tbnp(:) => null(), sigmnuma(:) => null()
     character(len=24), pointer :: tblp(:) => null()
-    data          parcr /'TENSION                 '/
+    data parcr/'TENSION                 '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -90,30 +90,30 @@ subroutine sigmca(tablca, icabl, nbnoca, numaca,&
             trouve = .true.
             tens = tblp(1+4*(ipara-1)+2)
             call jeveuo(tens, 'L', jtens)
-        endif
+        end if
         if (trouve) goto 11
     end do
- 11 continue
-    idecno = nblign - nbno
+11  continue
+    idecno = nblign-nbno
 !
 ! 1.2 NUMEROS DES MAILLES APPARTENANT AUX CABLES
 ! ---
     call jelira(numaca, 'LONUTI', nbmaca)
     call jeveuo(numaca, 'L', jnumac)
     if (quad) then
-        ASSERT((mod(nbno-1, 2).eq.0))
-        nbma=(nbno-1)/2
+        ASSERT((mod(nbno-1, 2) .eq. 0))
+        nbma = (nbno-1)/2
         mma = 2
     else
         nbma = nbno-1
         mma = 1
-    endif
-    idecma = nbmaca - nbma
+    end if
+    idecma = nbmaca-nbma
 !
 ! 1.3 STOCKAGE DU RESULTAT
 ! ---
-   call jeveuo( sigmcabl//'.NUMA', 'E', vi=sigmnuma )
-   call jeveuo( sigmcabl//'.VALE', 'E', vr=sigmvale )
+    call jeveuo(sigmcabl//'.NUMA', 'E', vi=sigmnuma)
+    call jeveuo(sigmcabl//'.VALE', 'E', vr=sigmvale)
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   MISE A JOUR DES CONTRAINTES INITIALES AUX ELEMENTS
@@ -124,24 +124,24 @@ subroutine sigmca(tablca, icabl, nbnoca, numaca,&
 !
 !   Nombre de composantes à stocker par maille
     call jelira(sigmcabl//'.NCMP', 'LONUTI', lonuti)
-    nbcmp=lonuti
-    ASSERT(nbcmp==3)
+    nbcmp = lonuti
+    ASSERT(nbcmp == 3)
 !   Position du premier numéro de maille pour le câble courant
-    iinuma=prem
+    iinuma = prem
 !   On enregistre nbcmp valeurs par maille
 !   Position de la première valeur pour le câble courant
-    iivale=(prem-1)*nbcmp+1
+    iivale = (prem-1)*nbcmp+1
     do imail = 1, nbma
         numail = zi(jnumac+idecma+imail-1)
-        rtens = ( zr(jtens+idecno+mma*imail-mma) + zr(jtens+idecno+ mma*imail) ) / 2.0d0
+        rtens = (zr(jtens+idecno+mma*imail-mma)+zr(jtens+idecno+mma*imail))/2.0d0
         sigmnuma(iinuma) = numail
-        sigmvale(iivale-1+1)=rtens
-        sigmvale(iivale-1+2)=0.d0
-        sigmvale(iivale-1+3)=0.d0
-        iinuma = iinuma + 1
-        iivale = iivale + nbcmp
+        sigmvale(iivale-1+1) = rtens
+        sigmvale(iivale-1+2) = 0.d0
+        sigmvale(iivale-1+3) = 0.d0
+        iinuma = iinuma+1
+        iivale = iivale+nbcmp
     end do
-    prem=iinuma
+    prem = iinuma
 !
     call jedema()
 !

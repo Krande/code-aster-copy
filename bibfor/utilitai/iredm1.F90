@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
-                  iamor, mass, rigi, amored, freq,&
-                  smass, srigi, samor, cmass, crigi,&
+subroutine iredm1(masse, noma, basemo, nbmode, nbmods, &
+                  iamor, mass, rigi, amored, freq, &
+                  smass, srigi, samor, cmass, crigi, &
                   camor)
     implicit none
 #include "asterf_types.h"
@@ -109,73 +109,73 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         typi = idc_type(1)
     else
         typi = 'CRAIGB'
-    endif
+    end if
 !
-    write(imess,'(1X,I6,1X,''MODES DYNAMIQUES'',1X,A8)') nbmode,typi
-    write(imess,'(1X,I6,1X,''MODES STATIQUES'' ,2X,A8)') nbmods,typi
+    write (imess, '(1X,I6,1X,''MODES DYNAMIQUES'',1X,A8)') nbmode, typi
+    write (imess, '(1X,I6,1X,''MODES STATIQUES'' ,2X,A8)') nbmods, typi
 !
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
     call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
     call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=gd)
-    if (interf .eq. ' ') call vtcreb(nomch0, 'V', 'R', nume_ddlz = nume, nb_equa_outz = neq)
+    if (interf .eq. ' ') call vtcreb(nomch0, 'V', 'R', nume_ddlz=nume, nb_equa_outz=neq)
 !CC
 !     ----- DEBUT DES IMPRESSIONS DE MISS3D -----
 !CC
 !
-    write(ifmis,120) 'DYNA', nbmode, typi
-    write(ifmis,120) 'STAT', nbmods, typi
-    nbmodt = nbmode + nbmods
+    write (ifmis, 120) 'DYNA', nbmode, typi
+    write (ifmis, 120) 'STAT', nbmods, typi
+    nbmodt = nbmode+nbmods
 !
     if (nti .ne. 0) then
-        write(ifmis,'(''TITRE'',/A80)') titre
-        write(imess,'(A80)') titre
-    endif
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1,&
+        write (ifmis, '(''TITRE'',/A80)') titre
+        write (imess, '(A80)') titre
+    end if
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1, &
                 0, k8b, nbgr)
     nbgr = -nbgr
     AS_ALLOCATE(vk24=group_solstru, size=nbgr)
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1,&
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1, &
                 nbgr, group_solstru, nbv)
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_STR', 1,&
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_STR', 1, &
                 0, k8b, nbgr2)
     nbgr2 = -nbgr2
     if (nbgr2 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_FLUSTRU', 'V V K24', 1, idgm2)
     else
         call wkvect('&&IREDM1.GROUP_FLUSTRU', 'V V K24', nbgr2, idgm2)
-    endif
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_STR', 1,&
+    end if
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_STR', 1, &
                 nbgr2, zk24(idgm2), nbv)
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_SOL', 1,&
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_SOL', 1, &
                 0, k8b, nbgr3)
     nbgr3 = -nbgr3
     if (nbgr3 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_FLUSOL', 'V V K24', 1, idgm3)
     else
         call wkvect('&&IREDM1.GROUP_FLUSOL', 'V V K24', nbgr3, idgm3)
-    endif
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_SOL', 1,&
+    end if
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_SOL', 1, &
                 nbgr3, zk24(idgm3), nbv)
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_SOL_SOL', 1,&
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_SOL_SOL', 1, &
                 0, k8b, nbgr4)
     nbgr4 = -nbgr4
     if (nbgr4 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_LIBRE', 'V V K24', 1, idgm4)
     else
         call wkvect('&&IREDM1.GROUP_LIBRE', 'V V K24', nbgr4, idgm4)
-    endif
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_SOL_SOL', 1,&
+    end if
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_SOL_SOL', 1, &
                 nbgr4, zk24(idgm4), nbv)
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_CONTROL', 1,&
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_CONTROL', 1, &
                 0, k8b, nbgr5)
     nbgr5 = -nbgr5
     if (nbgr5 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_CONTROL', 'V V K24', 1, idgm5)
     else
         call wkvect('&&IREDM1.GROUP_CONTROL', 'V V K24', nbgr5, idgm5)
-    endif
-    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_CONTROL', 1,&
+    end if
+    call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_CONTROL', 1, &
                 nbgr5, zk24(idgm5), nbv)
 !
 !
@@ -191,92 +191,92 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     do i = 1, nbgr
         call jelira(jexnom(magrma, group_solstru(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, group_solstru(i)), 'L', ldgm)
-        nbma = nbma + nb
+        nbma = nbma+nb
         do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_36')
-            endif
+            end if
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                parno(inoe) = parno(inoe) + 1
+                parno(inoe) = parno(inoe)+1
             end do
         end do
     end do
     do i = 1, nbgr2
         call jelira(jexnom(magrma, zk24(idgm2+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm2+i-1)), 'L', ldgm)
-        nbma2 = nbma2 + nb
+        nbma2 = nbma2+nb
         do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_37')
-            endif
+            end if
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                parno(inoe) = parno(inoe) + 1
+                parno(inoe) = parno(inoe)+1
             end do
         end do
     end do
     do i = 1, nbgr3
         call jelira(jexnom(magrma, zk24(idgm3+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm3+i-1)), 'L', ldgm)
-        nbma3 = nbma3 + nb
+        nbma3 = nbma3+nb
         do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_38')
-            endif
+            end if
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                parno(inoe) = parno(inoe) + 1
+                parno(inoe) = parno(inoe)+1
             end do
         end do
     end do
     do i = 1, nbgr4
         call jelira(jexnom(magrma, zk24(idgm4+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm4+i-1)), 'L', ldgm)
-        nbma4 = nbma4 + nb
+        nbma4 = nbma4+nb
         do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
                 call utmess('F', 'UTILITAI2_39')
-            endif
+            end if
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                parno(inoe) = parno(inoe) + 1
+                parno(inoe) = parno(inoe)+1
             end do
         end do
     end do
     do i = 1, nbgr5
         call jelira(jexnom(magrma, zk24(idgm5+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm5+i-1)), 'L', ldgm)
-        nbma5 = nbma5 + nb
+        nbma5 = nbma5+nb
         do in = 0, nb-1
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             inoe = zi(ldnm)
-            parno(inoe) = parno(inoe) + 1
+            parno(inoe) = parno(inoe)+1
         end do
     end do
 !
     nbno = 0
     do ij = 1, nbnoeu
         if (parno(ij) .ne. 0) then
-            nbno = nbno + 1
-        endif
+            nbno = nbno+1
+        end if
     end do
 !
     AS_ALLOCATE(vi=noeud, size=nbno)
     ii = 0
     do ij = 1, nbnoeu
         if (parno(ij) .ne. 0) then
-            ii = ii + 1
+            ii = ii+1
             noeud(ii) = ij
-        endif
+        end if
     end do
 !
 !
@@ -286,16 +286,16 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     call jenonu(jexnom(nprno(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(nprno, ibid), 'L', aprno)
     nec = nbec(gd)
-    write(imess,'(1X,I6,1X,''NOEUDS'')') nbno
-    write(ifmis,'(''NOEU'',1X,I6)') nbno
+    write (imess, '(1X,I6,1X,''NOEUDS'')') nbno
+    write (ifmis, '(''NOEU'',1X,I6)') nbno
     do ino = 1, nbno
         inoe = noeud(ino)
-        ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
-        write(ifmis,'(3(1X,1PE12.5))') ( vale(1+3*(inoe-1)+in-1) ,&
-        in=1,3 )
+        ncmp = zi(aprno+(nec+2)*(inoe-1)+2-1)
+        write (ifmis, '(3(1X,1PE12.5))') (vale(1+3*(inoe-1)+in-1), &
+                                          in=1, 3)
     end do
-    write(imess,'(1X,I6,1X,''ELEMENTS SOLSTRU'')') nbma
-    write(ifmis,'(''ELEM'',1X,I6)') nbma
+    write (imess, '(1X,I6,1X,''ELEMENTS SOLSTRU'')') nbma
+    write (ifmis, '(''ELEM'',1X,I6)') nbma
     do i = 1, nbgr
         call jelira(jexnom(magrma, group_solstru(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, group_solstru(i)), 'L', ldgm)
@@ -316,11 +316,11 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
             end do
-            write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
+            write (ifmis, '(8(1X,I6))') (tabl(k), k=1, 8)
         end do
     end do
-    write(imess,'(1X,I6,1X,''ELEMENTS FLUSTRU'')') nbma2
-    if (nbma2 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma2
+    write (imess, '(1X,I6,1X,''ELEMENTS FLUSTRU'')') nbma2
+    if (nbma2 .ne. 0) write (ifmis, '(''ELEM'',1X,I6)') nbma2
     do i = 1, nbgr2
         call jelira(jexnom(magrma, zk24(idgm2+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm2+i-1)), 'L', ldgm)
@@ -341,11 +341,11 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
             end do
-            write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
+            write (ifmis, '(8(1X,I6))') (tabl(k), k=1, 8)
         end do
     end do
-    write(imess,'(1X,I6,1X,''ELEMENTS FLUSOL'')') nbma3
-    if (nbma3 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma3
+    write (imess, '(1X,I6,1X,''ELEMENTS FLUSOL'')') nbma3
+    if (nbma3 .ne. 0) write (ifmis, '(''ELEM'',1X,I6)') nbma3
     do i = 1, nbgr3
         call jelira(jexnom(magrma, zk24(idgm3+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm3+i-1)), 'L', ldgm)
@@ -366,11 +366,11 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
             end do
-            write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
+            write (ifmis, '(8(1X,I6))') (tabl(k), k=1, 8)
         end do
     end do
-    write(imess,'(1X,I6,1X,''ELEMENTS LIBRE'')') nbma4
-    if (nbma4 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma4
+    write (imess, '(1X,I6,1X,''ELEMENTS LIBRE'')') nbma4
+    if (nbma4 .ne. 0) write (ifmis, '(''ELEM'',1X,I6)') nbma4
     do i = 1, nbgr4
         call jelira(jexnom(magrma, zk24(idgm4+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm4+i-1)), 'L', ldgm)
@@ -391,11 +391,11 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 if (nm .eq. 8 .and. nn .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 8 .and. nn .gt. 4) tabl(2*nn-nm) = tab2(nn)
             end do
-            write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
+            write (ifmis, '(8(1X,I6))') (tabl(k), k=1, 8)
         end do
     end do
-    write(imess,'(1X,I6,1X,''POINTS CONTROLE'')') nbma5
-    if (nbma5 .ne. 0) write(ifmis,'(''POINT'',1X,I6)') nbma5
+    write (imess, '(1X,I6,1X,''POINTS CONTROLE'')') nbma5
+    if (nbma5 .ne. 0) write (ifmis, '(''POINT'',1X,I6)') nbma5
     do i = 1, nbgr5
         call jelira(jexnom(magrma, zk24(idgm5+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm5+i-1)), 'L', ldgm)
@@ -404,7 +404,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             do ij = 1, nbno
                 if (zi(ldnm) .eq. noeud(ij)) inoe = ij
             end do
-            write(ifmis,'(1X,I6)') inoe
+            write (ifmis, '(1X,I6)') inoe
         end do
     end do
 !
@@ -419,103 +419,103 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     if (typi(1:5) .ne. 'CRAIG' .or. impmec .eq. 'OUI') then
         do j = 1, nbmode
             call dcopy(neq, zr(idbase+(j-1)*neq), 1, vect1, 1)
-            write(ifmis,'(''MODE DYNA INTER'',1X,I6)') j
+            write (ifmis, '(''MODE DYNA INTER'',1X,I6)') j
             do ino = 1, nbno
                 inoe = noeud(ino)
-                iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
-                ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
-                ncmp = min(6,ncmp)
+                iddl = zi(aprno+(nec+2)*(inoe-1)+1-1)-1
+                ncmp = zi(aprno+(nec+2)*(inoe-1)+2-1)
+                ncmp = min(6, ncmp)
                 iddl0 = iddl+1
                 if (iddl0 .eq. 0) then
-                    write(ifmis,110) zero,zero,zero,zero,zero,zero
+                    write (ifmis, 110) zero, zero, zero, zero, zero, zero
                 else
-                    write(ifmis,110) ( vect1(1+iddl+ic-1), ic=1,&
-                    ncmp )
-                endif
+                    write (ifmis, 110) (vect1(1+iddl+ic-1), ic=1, &
+                                        ncmp)
+                end if
             end do
         end do
-    endif
+    end if
 !
     if (formim .eq. '1PE16.9') then
-        write(ifmis,100) 'DYNA FREQ', ( freq(k) , k=1,nbmode )
-        write(ifmis,100) 'DYNA AMOR', ( amored(k) , k=1,nbmode )
-        write(ifmis,100) 'DYNA MASS',(mass(k+(k-1)*nbmode), k=1,&
-        nbmode)
-        write(ifmis,100) 'DYNA RIGI',(rigi(k+(k-1)*nbmode), k=1,&
-        nbmode)
+        write (ifmis, 100) 'DYNA FREQ', (freq(k), k=1, nbmode)
+        write (ifmis, 100) 'DYNA AMOR', (amored(k), k=1, nbmode)
+        write (ifmis, 100) 'DYNA MASS', (mass(k+(k-1)*nbmode), k=1, &
+                                         nbmode)
+        write (ifmis, 100) 'DYNA RIGI', (rigi(k+(k-1)*nbmode), k=1, &
+                                         nbmode)
     else
-        write(ifmis,130) 'DYNA FREQ', ( freq(k) , k=1,nbmode )
-        write(ifmis,130) 'DYNA AMOR', ( amored(k) , k=1,nbmode )
-        write(ifmis,130) 'DYNA MASS',(mass(k+(k-1)*nbmode), k=1,&
-        nbmode)
-        write(ifmis,130) 'DYNA RIGI',(rigi(k+(k-1)*nbmode), k=1,&
-        nbmode)
-    endif
+        write (ifmis, 130) 'DYNA FREQ', (freq(k), k=1, nbmode)
+        write (ifmis, 130) 'DYNA AMOR', (amored(k), k=1, nbmode)
+        write (ifmis, 130) 'DYNA MASS', (mass(k+(k-1)*nbmode), k=1, &
+                                         nbmode)
+        write (ifmis, 130) 'DYNA RIGI', (rigi(k+(k-1)*nbmode), k=1, &
+                                         nbmode)
+    end if
 !
     if (typi(1:5) .ne. 'CRAIG' .or. impmod .eq. 'OUI') then
         do j = 1, nbmods
-            j2 = j + nbmode
+            j2 = j+nbmode
             call dcopy(neq, zr(idbase+(j2-1)*neq), 1, vect2, 1)
-            write(ifmis,'(''MODE STAT INTER'',1X,I6)') j
+            write (ifmis, '(''MODE STAT INTER'',1X,I6)') j
             do ino = 1, nbno
                 inoe = noeud(ino)
-                iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
-                ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
-                ncmp = min(6,ncmp)
+                iddl = zi(aprno+(nec+2)*(inoe-1)+1-1)-1
+                ncmp = zi(aprno+(nec+2)*(inoe-1)+2-1)
+                ncmp = min(6, ncmp)
                 iddl0 = iddl+1
                 if (iddl0 .eq. 0) then
-                    write(ifmis,110) zero,zero,zero,zero,zero,zero
+                    write (ifmis, 110) zero, zero, zero, zero, zero, zero
                 else
-                    write(ifmis,110) ( vect2(1+iddl+ic-1) , ic=1,&
-                    ncmp )
-                endif
+                    write (ifmis, 110) (vect2(1+iddl+ic-1), ic=1, &
+                                        ncmp)
+                end if
             end do
         end do
-    endif
+    end if
     if (formim .eq. '1PE16.9') then
-        write(ifmis,100) 'STAT MASS', ((smass(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmods)
-        write(ifmis,100) 'STAT RIGI' , ((srigi(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmods)
-        if (lamor) write(ifmis, 100) 'STAT AMOR',&
-                   ((samor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmods)
-        write(ifmis,'(''COUPL'',2(1X,I6))') nbmode,nbmods
-        write(ifmis,100) 'COUPL MASS' , ((cmass(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmode)
-        write(ifmis,100) 'COUPL RIGI' , ((crigi(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmode)
-        if (lamor) write(ifmis, 100) 'COUPL AMOR',&
-                   ((camor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmode)
+        write (ifmis, 100) 'STAT MASS', ((smass(k+(l-1)*nbmods), k=1, &
+                                          nbmods), l=1, nbmods)
+        write (ifmis, 100) 'STAT RIGI', ((srigi(k+(l-1)*nbmods), k=1, &
+                                          nbmods), l=1, nbmods)
+        if (lamor) write (ifmis, 100) 'STAT AMOR', &
+            ((samor(k+(l-1)*nbmods), k=1, nbmods), l=1, nbmods)
+        write (ifmis, '(''COUPL'',2(1X,I6))') nbmode, nbmods
+        write (ifmis, 100) 'COUPL MASS', ((cmass(k+(l-1)*nbmods), k=1, &
+                                           nbmods), l=1, nbmode)
+        write (ifmis, 100) 'COUPL RIGI', ((crigi(k+(l-1)*nbmods), k=1, &
+                                           nbmods), l=1, nbmode)
+        if (lamor) write (ifmis, 100) 'COUPL AMOR', &
+            ((camor(k+(l-1)*nbmods), k=1, nbmods), l=1, nbmode)
     else
-        write(ifmis,130) 'STAT MASS', ((smass(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmods)
-        write(ifmis,130) 'STAT RIGI' , ((srigi(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmods)
-        if (lamor) write(ifmis, 130) 'STAT AMOR',&
-                   ((samor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmods)
-        write(ifmis,'(''COUPL'',2(1X,I6))') nbmode,nbmods
-        write(ifmis,130) 'COUPL MASS' , ((cmass(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmode)
-        write(ifmis,130) 'COUPL RIGI' , ((crigi(k+(l-1)*nbmods),k=1,&
-        nbmods),l=1,nbmode)
-        if (lamor) write(ifmis, 130) 'COUPL AMOR',&
-                   ((camor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmode)
-    endif
+        write (ifmis, 130) 'STAT MASS', ((smass(k+(l-1)*nbmods), k=1, &
+                                          nbmods), l=1, nbmods)
+        write (ifmis, 130) 'STAT RIGI', ((srigi(k+(l-1)*nbmods), k=1, &
+                                          nbmods), l=1, nbmods)
+        if (lamor) write (ifmis, 130) 'STAT AMOR', &
+            ((samor(k+(l-1)*nbmods), k=1, nbmods), l=1, nbmods)
+        write (ifmis, '(''COUPL'',2(1X,I6))') nbmode, nbmods
+        write (ifmis, 130) 'COUPL MASS', ((cmass(k+(l-1)*nbmods), k=1, &
+                                           nbmods), l=1, nbmode)
+        write (ifmis, 130) 'COUPL RIGI', ((crigi(k+(l-1)*nbmods), k=1, &
+                                           nbmods), l=1, nbmode)
+        if (lamor) write (ifmis, 130) 'COUPL AMOR', &
+            ((camor(k+(l-1)*nbmods), k=1, nbmods), l=1, nbmode)
+    end if
 !
     if (formim .eq. '1PE16.9') then
-        write(ifmis,'(A)') 'FORMAT_REAL_LONG'
+        write (ifmis, '(A)') 'FORMAT_REAL_LONG'
     else
-        write(ifmis,'(A)') 'FORMAT_REAL_COURT'
-    endif
+        write (ifmis, '(A)') 'FORMAT_REAL_COURT'
+    end if
 !
 !CC
 !     ----- FIN DES IMPRESSIONS DE MISS3D -----
 !CC
 !
-100 format(a,/,4(2x,1p,d16.9) )
-110 format( 6(1x,1p,d12.5) )
-120 format( a4, 1x, i6, 1x, a8 )
-130 format(a,/,6(1x,1p,d12.5) )
+100 format(a, /, 4(2x, 1p, d16.9))
+110 format(6(1x, 1p, d12.5))
+120 format(a4, 1x, i6, 1x, a8)
+130 format(a, /, 6(1x, 1p, d12.5))
 !
 !
 ! --- MENAGE

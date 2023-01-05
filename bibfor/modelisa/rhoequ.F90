@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rhoequ(rho, rhos, rhofi, rhofe, cm,&
+subroutine rhoequ(rho, rhos, rhofi, rhofe, cm, &
                   phii, phie)
     implicit none
 !
@@ -30,8 +30,8 @@ subroutine rhoequ(rho, rhos, rhofi, rhofe, cm,&
     real(kind=8) :: rhofe, rhofi, rhos
 !-----------------------------------------------------------------------
     pi = r8pi()
-    rho = (rhofi*phii*phii) + rhos*(phie*phie - phii*phii)
+    rho = (rhofi*phii*phii)+rhos*(phie*phie-phii*phii)
     phieq = (2.d0*cm/pi)*(phie*phie)
-    rho = rho + rhofe*phieq
-    rho = rho / (phie*phie - phii*phii)
+    rho = rho+rhofe*phieq
+    rho = rho/(phie*phie-phii*phii)
 end subroutine

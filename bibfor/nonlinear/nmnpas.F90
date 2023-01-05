@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmnpas(mesh          , model          , cara_elem,&
-                  list_func_acti, list_load      ,&
-                  ds_material   , ds_constitutive,&
-                  ds_measure    , ds_print       ,&
-                  sddisc        , nume_inst      ,&
-                  sdsuiv        , sddyna         ,&
-                  ds_contact    , ds_conv        ,&
-                  sdnume        , nume_dof       , solver   ,&
-                  hval_incr     , hval_algo)
+subroutine nmnpas(mesh, model, cara_elem, &
+                  list_func_acti, list_load, &
+                  ds_material, ds_constitutive, &
+                  ds_measure, ds_print, &
+                  sddisc, nume_inst, &
+                  sdsuiv, sddyna, &
+                  ds_contact, ds_conv, &
+                  sdnume, nume_dof, solver, &
+                  hval_incr, hval_algo)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
@@ -50,23 +50,23 @@ implicit none
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
-character(len=8) :: mesh
-character(len=24), intent(in) :: model, cara_elem
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: list_load
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Print), intent(inout) :: ds_print
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-character(len=24), intent(in) :: sdsuiv
-character(len=19), intent(in) :: sddyna
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(NL_DS_Conv), intent(inout) :: ds_conv
-character(len=19), intent(in) :: sdnume, solver
-character(len=24), intent(in)  :: nume_dof
-character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
+    character(len=8) :: mesh
+    character(len=24), intent(in) :: model, cara_elem
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: list_load
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sdsuiv
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Conv), intent(inout) :: ds_conv
+    character(len=19), intent(in) :: sdnume, solver
+    character(len=24), intent(in)  :: nume_dof
+    character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,15 +108,15 @@ character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_30')
-    endif
+    end if
 !
 ! - Active functionnalites
 !
-    ldyna         = ndynlo(sddyna,'DYNAMIQUE')
-    l_cont        = isfonc(list_func_acti,'CONTACT')
-    lnkry         = isfonc(list_func_acti,'NEWTON_KRYLOV')
-    l_diri_undead = isfonc(list_func_acti,'DIRI_UNDEAD')
-    l_hho         = isfonc(list_func_acti,'HHO')
+    ldyna = ndynlo(sddyna, 'DYNAMIQUE')
+    l_cont = isfonc(list_func_acti, 'CONTACT')
+    lnkry = isfonc(list_func_acti, 'NEWTON_KRYLOV')
+    l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
+    l_hho = isfonc(list_func_acti, 'HHO')
 !
 ! - Get hat variables
 !
@@ -130,44 +130,44 @@ character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
 !
 ! - Initializations of residuals for current time step
 !
-    call SetResi(ds_conv, vale_calc_ = r8vide())
+    call SetResi(ds_conv, vale_calc_=r8vide())
 !
 ! - Initializations of displacements for current time step
 !
-    call nonlinInitDisp(list_func_acti, sdnume   , nume_dof,&
-                        hval_algo     , hval_incr)
+    call nonlinInitDisp(list_func_acti, sdnume, nume_dof, &
+                        hval_algo, hval_incr)
 !
 ! - Update dualized relations for non-linear Dirichlet boundary conditions (undead)
 !
     if (l_diri_undead) then
         call cldual_maj(list_load, disp_prev)
-    endif
+    end if
 !
 ! - Initializations for dynamic for current time step
 !
     if (ldyna) then
-        call ndnpas(list_func_acti, nume_dof, nume_inst, sddisc, sddyna,&
-                    hval_incr     , hval_algo)
-    endif
+        call ndnpas(list_func_acti, nume_dof, nume_inst, sddisc, sddyna, &
+                    hval_incr, hval_algo)
+    end if
 !
 ! - Initializations for NEWTON-KRYLOV for current time step
 !
     if (lnkry) then
         call nmnkft(solver, sddisc)
-    endif
+    end if
 !
 ! - Initializations of contact for current time step
 !
     if (l_cont) then
-        call cont_init(mesh  , model    , ds_contact, nume_inst     , ds_measure,&
-                       sddyna, hval_incr, sdnume    , list_func_acti)
-    endif
+        call cont_init(mesh, model, ds_contact, nume_inst, ds_measure, &
+                       sddyna, hval_incr, sdnume, list_func_acti)
+    end if
 !
 ! - Update material parameters for new time step
 !
-    call nonlinDSMaterialTimeStep(model          , ds_material, cara_elem,&
-                                  ds_constitutive, hval_incr  ,&
-                                  nume_dof       , sddisc     , nume_inst)
+    call nonlinDSMaterialTimeStep(model, ds_material, cara_elem, &
+                                  ds_constitutive, hval_incr, &
+                                  nume_dof, sddisc, nume_inst)
 !
 ! - Print management - Initializations for new step time
 !

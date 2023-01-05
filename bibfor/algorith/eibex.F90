@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine eibex(fami, kpg, ksp, ndim, imate,&
-                 instam, instap, epsm, deps,&
-                 vim, option, sig, vip, dsidep,&
+subroutine eibex(fami, kpg, ksp, ndim, imate, &
+                 instam, instap, epsm, deps, &
+                 vim, option, sig, vip, dsidep, &
                  codret)
 !
     implicit none
@@ -68,7 +68,7 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: seuil
     real(kind=8) :: tm, tp, tref, sref, sechm, hydrm, epsthe(2), kdess, bendo
     real(kind=8) :: kron(6), sechp, hydrp
-    data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !      PARAMETER   (RIGMIN = 0.00001)
 ! ----------------------------------------------------------------------
 !
@@ -76,27 +76,27 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
 !
 !     RECUPERATION DES VARIABLES DE COMMANDE
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, &
                 ksp, tm, iret)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                 ksp, tp, iret)
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, &
                 ksp, tref, iret)
-    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+    call rcvarc(' ', 'HYDR', '-', fami, kpg, &
                 ksp, hydrm, iret)
-    if (iret .ne. 0) hydrm=0.d0
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+    if (iret .ne. 0) hydrm = 0.d0
+    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
                 ksp, hydrp, iret)
-    if (iret .ne. 0) hydrp=0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+    if (iret .ne. 0) hydrp = 0.d0
+    call rcvarc(' ', 'SECH', '-', fami, kpg, &
                 ksp, sechm, iret)
-    if (iret .ne. 0) sechm=0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+    if (iret .ne. 0) sechm = 0.d0
+    call rcvarc(' ', 'SECH', '+', fami, kpg, &
                 ksp, sechp, iret)
-    if (iret .ne. 0) sechp=0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+    if (iret .ne. 0) sechp = 0.d0
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
                 ksp, sref, iret)
-    if (iret .ne. 0) sref=0.d0
+    if (iret .ne. 0) sref = 0.d0
 !
 !
 ! -- OPTION ET MODELISATION
@@ -110,16 +110,16 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
     dm = vim(1)
     dddt = vim(2)
-    dt = instap - instam
+    dt = instap-instam
 !
 ! -- INITIALISATION
 !
     ndimsi = 2*ndim
-    rac2=sqrt(2.d0)
+    rac2 = sqrt(2.d0)
 !
-    call lceib1(fami, kpg, ksp, imate,&
-                ndim, epsm, sref, sechm, hydrm,&
-                t, lambda, deuxmu, epsthe, kdess,&
+    call lceib1(fami, kpg, ksp, imate, &
+                ndim, epsm, sref, sechm, hydrm, &
+                t, lambda, deuxmu, epsthe, kdess, &
                 bendo, gamma, seuil)
 !
 !
@@ -128,14 +128,14 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
     if (tang) then
         do k = 1, ndimsi
-            eps(k) = epsm(k) - ( epsthe(1) - kdess * (sref-sechm) - bendo * hydrm ) * kron(k)
+            eps(k) = epsm(k)-(epsthe(1)-kdess*(sref-sechm)-bendo*hydrm)*kron(k)
         end do
     else if (raph) then
-        do  k = 1, ndimsi
-            eps(k) = epsm(k) + deps(k) - kron(k) * ( epsthe(2) - kdess * (sref-sechp) - bendo * h&
-                     &ydrp )
+        do k = 1, ndimsi
+            eps(k) = epsm(k)+deps(k)-kron(k)*(epsthe(2)-kdess*(sref-sechp)-bendo*h&
+                     &ydrp)
         end do
-    endif
+    end if
 !
     do k = 4, ndimsi
         eps(k) = eps(k)/rac2
@@ -143,9 +143,9 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
     if (ndimsi .lt. 6) then
         do k = ndimsi+1, 6
-            eps(k)=0.d0
+            eps(k) = 0.d0
         end do
-    endif
+    end if
 !
 ! -- DIAGONALISATION DES DEFORMATIONS
     tr(1) = eps(1)
@@ -167,14 +167,14 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
         do k = 1, 3
             sigel(k) = 0.d0
         end do
-    endif
+    end if
 !
     do k = 1, 3
         if (epsp(k) .gt. 0.d0) then
-            sigel(k) = sigel(k) + deuxmu*epsp(k)
-        endif
+            sigel(k) = sigel(k)+deuxmu*epsp(k)
+        end if
     end do
-    ener = 0.5d0 * ddot(3,epsp,1,sigel,1)
+    ener = 0.5d0*ddot(3, epsp, 1, sigel, 1)
 !
 ! ======================================================================
 !     CAS RIGI_MECA_IMPLEX : EXTRAPOLATION VARIABLES INTERNES ET MATRICE
@@ -182,33 +182,33 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
     if (tang) then
 !
 ! -- EXTRAPOLATION ENDOMMAGEMENT
-        dp = min(dm + dddt*dt, 1.d0)
-        fd = (1 - dp) / (1 + gamma*dp)
+        dp = min(dm+dddt*dt, 1.d0)
+        fd = (1-dp)/(1+gamma*dp)
 !
 ! -- PARAMETRAGE POUR L EFFET UNILATERAL
         if ((epsp(1)+epsp(2)+epsp(3)) .gt. 0.d0) then
-            lambdd=lambda*max(fd,rigmin)
+            lambdd = lambda*max(fd, rigmin)
         else
-            lambdd=lambda
-        endif
+            lambdd = lambda
+        end if
 !
         if (epsp(1) .gt. 0.d0) then
-            deumud(1)=deuxmu*max(fd,rigmin)
+            deumud(1) = deuxmu*max(fd, rigmin)
         else
-            deumud(1)=deuxmu
-        endif
+            deumud(1) = deuxmu
+        end if
 !
         if (epsp(2) .gt. 0.d0) then
-            deumud(2)=deuxmu*max(fd, rigmin)
+            deumud(2) = deuxmu*max(fd, rigmin)
         else
-            deumud(2)=deuxmu
-        endif
+            deumud(2) = deuxmu
+        end if
 !
         if (epsp(3) .gt. 0.d0) then
-            deumud(3)=deuxmu*max(fd, rigmin)
+            deumud(3) = deuxmu*max(fd, rigmin)
         else
-            deumud(3)=deuxmu
-        endif
+            deumud(3) = deuxmu
+        end if
 !
 ! -- CALCUL DE LA MATRICE TANGENTE
         call r8inir(36, 0.d0, dspdep, 1)
@@ -216,66 +216,66 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
         do k = 1, 3
             do l = 1, 3
-                dspdep(k,l) = lambdd
+                dspdep(k, l) = lambdd
             end do
         end do
 !
         do k = 1, 3
-            dspdep(k,k) = dspdep(k,k) + deumud(k)
+            dspdep(k, k) = dspdep(k, k)+deumud(k)
         end do
 !
         if (epsp(1)*epsp(2) .ge. 0.d0) then
-            dspdep(4,4)=deumud(1)
+            dspdep(4, 4) = deumud(1)
         else
-            dspdep(4,4)=(deumud(1)*epsp(1)-deumud(2)*epsp(2)) /(epsp(1)-epsp(2))
-        endif
+            dspdep(4, 4) = (deumud(1)*epsp(1)-deumud(2)*epsp(2))/(epsp(1)-epsp(2))
+        end if
 !
         if (epsp(1)*epsp(3) .ge. 0.d0) then
-            dspdep(5,5)=deumud(1)
+            dspdep(5, 5) = deumud(1)
         else
-            dspdep(5,5)=(deumud(1)*epsp(1)-deumud(3)*epsp(3)) /(epsp(1)-epsp(3))
-        endif
+            dspdep(5, 5) = (deumud(1)*epsp(1)-deumud(3)*epsp(3))/(epsp(1)-epsp(3))
+        end if
 !
         if (epsp(3)*epsp(2) .ge. 0.d0) then
-            dspdep(6,6)=deumud(3)
+            dspdep(6, 6) = deumud(3)
         else
-            dspdep(6,6)=(deumud(3)*epsp(3)-deumud(2)*epsp(2)) /(epsp(3)-epsp(2))
-        endif
+            dspdep(6, 6) = (deumud(3)*epsp(3)-deumud(2)*epsp(2))/(epsp(3)-epsp(2))
+        end if
 !
         do i = 1, 3
             do j = i, 3
                 if (i .eq. j) then
-                    rtemp3=1.d0
+                    rtemp3 = 1.d0
                 else
-                    rtemp3=rac2
-                endif
+                    rtemp3 = rac2
+                end if
 !
                 do k = 1, 3
                     do l = 1, 3
-                        if (t(i,j) .ge. t(k,l)) then
+                        if (t(i, j) .ge. t(k, l)) then
                             if (k .eq. l) then
-                                rtemp4=rtemp3
+                                rtemp4 = rtemp3
                             else
-                                rtemp4=rtemp3/rac2
-                            endif
+                                rtemp4 = rtemp3/rac2
+                            end if
 !
-                            rtemp2=0.d0
+                            rtemp2 = 0.d0
 !
                             do m = 1, 3
                                 do n = 1, 3
-                                    rtemp2=rtemp2+vecp(k,m)* vecp(i,n)&
-                                    *vecp(j,n)*vecp(l,m)*dspdep(n,m)
+                                    rtemp2 = rtemp2+vecp(k, m)*vecp(i, n) &
+                                             *vecp(j, n)*vecp(l, m)*dspdep(n, m)
                                 end do
                             end do
 !
-                            rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*vecp(k,1)*vecp(l,2) *dspdep(4,4)
-                            rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*vecp(k,2)*vecp(l,1) *dspdep(4,4)
-                            rtemp2=rtemp2+vecp(i,1)*vecp(j,3)*vecp(k,1)*vecp(l,3) *dspdep(5,5)
-                            rtemp2=rtemp2+vecp(i,3)*vecp(j,1)*vecp(k,3)*vecp(l,1) *dspdep(5,5)
-                            rtemp2=rtemp2+vecp(i,2)*vecp(j,3)*vecp(k,2)*vecp(l,3) *dspdep(6,6)
-                            rtemp2=rtemp2+vecp(i,3)*vecp(j,2)*vecp(k,3)*vecp(l,2) *dspdep(6,6)
-                            dsidep(t(i,j),t(k,l)) = dsidep(t(i,j),t(k, l) ) + rtemp2*rtemp4
-                        endif
+                            rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 2)*vecp(k, 1)*vecp(l, 2)*dspdep(4, 4)
+                            rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 1)*vecp(k, 2)*vecp(l, 1)*dspdep(4, 4)
+                            rtemp2 = rtemp2+vecp(i, 1)*vecp(j, 3)*vecp(k, 1)*vecp(l, 3)*dspdep(5, 5)
+                            rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 1)*vecp(k, 3)*vecp(l, 1)*dspdep(5, 5)
+                            rtemp2 = rtemp2+vecp(i, 2)*vecp(j, 3)*vecp(k, 2)*vecp(l, 3)*dspdep(6, 6)
+                            rtemp2 = rtemp2+vecp(i, 3)*vecp(j, 2)*vecp(k, 3)*vecp(l, 2)*dspdep(6, 6)
+                            dsidep(t(i, j), t(k, l)) = dsidep(t(i, j), t(k, l))+rtemp2*rtemp4
+                        end if
                     end do
                 end do
             end do
@@ -283,30 +283,30 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
         do i = 1, 6
             do j = i+1, 6
-                dsidep(i,j)=dsidep(j,i)
+                dsidep(i, j) = dsidep(j, i)
             end do
         end do
 !
 ! -- CALCUL DES CONTRAINTES
-        treps=epsp(1)+epsp(2)+epsp(3)
-        sigp(1)=lambdd*treps+deumud(1)*epsp(1)
-        sigp(2)=lambdd*treps+deumud(2)*epsp(2)
-        sigp(3)=lambdd*treps+deumud(3)*epsp(3)
+        treps = epsp(1)+epsp(2)+epsp(3)
+        sigp(1) = lambdd*treps+deumud(1)*epsp(1)
+        sigp(2) = lambdd*treps+deumud(2)*epsp(2)
+        sigp(3) = lambdd*treps+deumud(3)*epsp(3)
 !
         call r8inir(6, 0.d0, sig, 1)
 !
         do i = 1, 3
-            rtemp=sigp(i)
-            sig(1)=sig(1)+vecp(1,i)*vecp(1,i)*rtemp
-            sig(2)=sig(2)+vecp(2,i)*vecp(2,i)*rtemp
-            sig(3)=sig(3)+vecp(3,i)*vecp(3,i)*rtemp
-            sig(4)=sig(4)+vecp(1,i)*vecp(2,i)*rtemp
-            sig(5)=sig(5)+vecp(1,i)*vecp(3,i)*rtemp
-            sig(6)=sig(6)+vecp(2,i)*vecp(3,i)*rtemp
+            rtemp = sigp(i)
+            sig(1) = sig(1)+vecp(1, i)*vecp(1, i)*rtemp
+            sig(2) = sig(2)+vecp(2, i)*vecp(2, i)*rtemp
+            sig(3) = sig(3)+vecp(3, i)*vecp(3, i)*rtemp
+            sig(4) = sig(4)+vecp(1, i)*vecp(2, i)*rtemp
+            sig(5) = sig(5)+vecp(1, i)*vecp(3, i)*rtemp
+            sig(6) = sig(6)+vecp(2, i)*vecp(3, i)*rtemp
         end do
 !
         do k = 4, ndimsi
-            sig(k)=rac2*sig(k)
+            sig(k) = rac2*sig(k)
         end do
 !
 ! ======================================================================
@@ -314,67 +314,67 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
     else if (raph) then
 ! -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
-        dp = (sqrt((1+gamma)/seuil * ener) - 1) / gamma
+        dp = (sqrt((1+gamma)/seuil*ener)-1)/gamma
 !
         if (dp .lt. vim(1)) then
             dp = vim(1)
         else if (dp .gt. 1) then
             dp = 1
-        endif
+        end if
 !
-        fd = (1 - dp) / (1 + gamma*dp)
-        dd = dp - dm
+        fd = (1-dp)/(1+gamma*dp)
+        dd = dp-dm
 !
         vip(1) = dp
         vip(2) = dd/dt
 !
 ! -- CALCUL DES CONTRAINTES
         if ((epsp(1)+epsp(2)+epsp(3)) .gt. 0.d0) then
-            lambdd=lambda * fd
+            lambdd = lambda*fd
         else
-            lambdd=lambda
-        endif
+            lambdd = lambda
+        end if
 !
         if (epsp(1) .gt. 0.d0) then
-            deumud(1)=deuxmu*fd
+            deumud(1) = deuxmu*fd
         else
-            deumud(1)=deuxmu
-        endif
+            deumud(1) = deuxmu
+        end if
 !
         if (epsp(2) .gt. 0.d0) then
-            deumud(2)=deuxmu*fd
+            deumud(2) = deuxmu*fd
         else
-            deumud(2)=deuxmu
-        endif
+            deumud(2) = deuxmu
+        end if
 !
         if (epsp(3) .gt. 0.d0) then
-            deumud(3)=deuxmu*fd
+            deumud(3) = deuxmu*fd
         else
-            deumud(3)=deuxmu
-        endif
+            deumud(3) = deuxmu
+        end if
 !
-        treps=epsp(1)+epsp(2)+epsp(3)
-        sigp(1)=lambdd*treps+deumud(1)*epsp(1)
-        sigp(2)=lambdd*treps+deumud(2)*epsp(2)
-        sigp(3)=lambdd*treps+deumud(3)*epsp(3)
+        treps = epsp(1)+epsp(2)+epsp(3)
+        sigp(1) = lambdd*treps+deumud(1)*epsp(1)
+        sigp(2) = lambdd*treps+deumud(2)*epsp(2)
+        sigp(3) = lambdd*treps+deumud(3)*epsp(3)
 !
         call r8inir(6, 0.d0, sig, 1)
 !
         do i = 1, 3
-            rtemp=sigp(i)
-            sig(1)=sig(1)+vecp(1,i)*vecp(1,i)*rtemp
-            sig(2)=sig(2)+vecp(2,i)*vecp(2,i)*rtemp
-            sig(3)=sig(3)+vecp(3,i)*vecp(3,i)*rtemp
-            sig(4)=sig(4)+vecp(1,i)*vecp(2,i)*rtemp
-            sig(5)=sig(5)+vecp(1,i)*vecp(3,i)*rtemp
-            sig(6)=sig(6)+vecp(2,i)*vecp(3,i)*rtemp
+            rtemp = sigp(i)
+            sig(1) = sig(1)+vecp(1, i)*vecp(1, i)*rtemp
+            sig(2) = sig(2)+vecp(2, i)*vecp(2, i)*rtemp
+            sig(3) = sig(3)+vecp(3, i)*vecp(3, i)*rtemp
+            sig(4) = sig(4)+vecp(1, i)*vecp(2, i)*rtemp
+            sig(5) = sig(5)+vecp(1, i)*vecp(3, i)*rtemp
+            sig(6) = sig(6)+vecp(2, i)*vecp(3, i)*rtemp
         end do
 !
         do k = 4, ndimsi
-            sig(k)=rac2*sig(k)
+            sig(k) = rac2*sig(k)
         end do
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine cfinit(ds_contact, nume_inst)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
@@ -31,8 +31,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vtzero.h"
 !
-type(NL_DS_Contact), intent(inout) :: ds_contact
-integer, intent(in) :: nume_inst
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ integer, intent(in) :: nume_inst
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'CONTACT5_12')
-    endif
+    end if
     sdcont_autoc1 = ds_contact%sdcont_solv(1:14)//'.REA1'
     sdcont_autoc2 = ds_contact%sdcont_solv(1:14)//'.REA2'
 !
@@ -63,12 +63,12 @@ integer, intent(in) :: nume_inst
 !
     call mmbouc(ds_contact, 'Geom', 'Set_Divergence')
     ds_contact%l_first_geom = .true._1
-    if (cfdisl(ds_contact%sdcont_defi,'REAC_GEOM_SANS')) then
+    if (cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')) then
         if (nume_inst .ne. 1) then
             call mmbouc(ds_contact, 'Geom', 'Set_Convergence')
             ds_contact%l_first_geom = .false._1
-        endif
-    endif
+        end if
+    end if
 !
 ! - Geometric loop counter initialization
 !

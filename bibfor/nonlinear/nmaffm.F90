@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine nmaffm(sderro, ds_print, loop_name)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmerge.h"
@@ -94,88 +94,88 @@ implicit none
 ! - Set marks in cols
 !
     if (loop_name .eq. 'NEWT') then
-        call SetTableColumn(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'RESI_RELA', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'RESI_MAXI', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'RESI_REFE', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'RESI_COMP', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'PENE_MAXI', mark_ = ' ')
+        call SetTableColumn(table_cvg, name_='RESI_RELA', mark_=' ')
+        call SetTableColumn(table_cvg, name_='RESI_RELA', mark_=' ')
+        call SetTableColumn(table_cvg, name_='RESI_MAXI', mark_=' ')
+        call SetTableColumn(table_cvg, name_='RESI_REFE', mark_=' ')
+        call SetTableColumn(table_cvg, name_='RESI_COMP', mark_=' ')
+        call SetTableColumn(table_cvg, name_='PENE_MAXI', mark_=' ')
         if (dvrela) then
-            call SetTableColumn(table_cvg, name_ = 'RESI_RELA', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='RESI_RELA', mark_='X')
+        end if
         if (dvmaxi) then
-            call SetTableColumn(table_cvg, name_ = 'RESI_MAXI', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='RESI_MAXI', mark_='X')
+        end if
         if (dvpene) then
-            call SetTableColumn(table_cvg, name_ = 'PENE_MAXI', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='PENE_MAXI', mark_='X')
+        end if
 
         if (dvrefe) then
-            call SetTableColumn(table_cvg, name_ = 'RESI_REFE', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='RESI_REFE', mark_='X')
+        end if
         if (dvcomp) then
-            call SetTableColumn(table_cvg, name_ = 'RESI_COMP', mark_ = 'X')
-        endif
-        call SetTableColumn(table_cvg, name_ = 'GEOM_NEWT', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'FROT_NEWT', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'CONT_NEWT', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'PILO_COEF', mark_ = ' ')
-        call SetTableColumn(table_cvg, name_ = 'CTCD_NBIT', mark_ = ' ')
+            call SetTableColumn(table_cvg, name_='RESI_COMP', mark_='X')
+        end if
+        call SetTableColumn(table_cvg, name_='GEOM_NEWT', mark_=' ')
+        call SetTableColumn(table_cvg, name_='FROT_NEWT', mark_=' ')
+        call SetTableColumn(table_cvg, name_='CONT_NEWT', mark_=' ')
+        call SetTableColumn(table_cvg, name_='PILO_COEF', mark_=' ')
+        call SetTableColumn(table_cvg, name_='CTCD_NBIT', mark_=' ')
         if (dvgeom) then
-            call SetTableColumn(table_cvg, name_ = 'GEOM_NEWT', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='GEOM_NEWT', mark_='X')
+        end if
         if (dvfrot) then
-            call SetTableColumn(table_cvg, name_ = 'FROT_NEWT', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='FROT_NEWT', mark_='X')
+        end if
         if (dvcont) then
-            call SetTableColumn(table_cvg, name_ = 'CONT_NEWT', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='CONT_NEWT', mark_='X')
+        end if
         if (cvpilo) then
-            call SetTableColumn(table_cvg, name_ = 'PILO_COEF', mark_ = 'B')
-        endif
-        call SetTableColumn(table_cvg, name_ = 'ITER_NUME', mark_ = 'X')
+            call SetTableColumn(table_cvg, name_='PILO_COEF', mark_='B')
+        end if
+        call SetTableColumn(table_cvg, name_='ITER_NUME', mark_='X')
         if (cvnewt) then
-            call SetTableColumn(table_cvg, name_ = 'ITER_NUME', mark_ = ' ')
-        endif
+            call SetTableColumn(table_cvg, name_='ITER_NUME', mark_=' ')
+        end if
         if (lerrne) then
-            call SetTableColumn(table_cvg, name_ = 'ITER_NUME', mark_ = 'E')
-        endif
-        call SetTableColumn(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
-        call SetTableColumn(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
-        call SetTableColumn(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
+            call SetTableColumn(table_cvg, name_='ITER_NUME', mark_='E')
+        end if
+        call SetTableColumn(table_cvg, name_='BOUC_GEOM', mark_='X')
+        call SetTableColumn(table_cvg, name_='BOUC_FROT', mark_='X')
+        call SetTableColumn(table_cvg, name_='BOUC_CONT', mark_='X')
         if (dvdebo) then
             call nmimck(ds_print, 'DEBORST  ', debors, .true._1)
-        endif
-    else if (loop_name.eq.'FIXE') then
-        call SetTableColumn(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
-        call SetTableColumn(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
-        call SetTableColumn(table_cvg, name_ = 'BOUC_CONT', mark_ = 'X')
-        if (.not.dvfixg) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_GEOM', mark_ = ' ')
-        endif
-        if (.not.dvfixf) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_FROT', mark_ = ' ')
-        endif
-        if (.not.dvfixc) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_CONT', mark_ = ' ')
-        endif
+        end if
+    else if (loop_name .eq. 'FIXE') then
+        call SetTableColumn(table_cvg, name_='BOUC_GEOM', mark_='X')
+        call SetTableColumn(table_cvg, name_='BOUC_FROT', mark_='X')
+        call SetTableColumn(table_cvg, name_='BOUC_CONT', mark_='X')
+        if (.not. dvfixg) then
+            call SetTableColumn(table_cvg, name_='BOUC_GEOM', mark_=' ')
+        end if
+        if (.not. dvfixf) then
+            call SetTableColumn(table_cvg, name_='BOUC_FROT', mark_=' ')
+        end if
+        if (.not. dvfixc) then
+            call SetTableColumn(table_cvg, name_='BOUC_CONT', mark_=' ')
+        end if
         if (dvfixc) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
-            call SetTableColumn(table_cvg, name_ = 'BOUC_FROT', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='BOUC_GEOM', mark_='X')
+            call SetTableColumn(table_cvg, name_='BOUC_FROT', mark_='X')
+        end if
         if (dvfixf) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'X')
-        endif
+            call SetTableColumn(table_cvg, name_='BOUC_GEOM', mark_='X')
+        end if
         if (erctcg) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_GEOM', mark_ = 'E')
-        endif
+            call SetTableColumn(table_cvg, name_='BOUC_GEOM', mark_='E')
+        end if
         if (erctcf) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_FROT', mark_ = 'E')
-        endif
+            call SetTableColumn(table_cvg, name_='BOUC_FROT', mark_='E')
+        end if
         if (erctcc) then
-            call SetTableColumn(table_cvg, name_ = 'BOUC_CONT', mark_ = 'E')
-        endif
-    endif
+            call SetTableColumn(table_cvg, name_='BOUC_CONT', mark_='E')
+        end if
+    end if
 !
 ! - Set convergence table
 !

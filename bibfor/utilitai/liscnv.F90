@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !
 ! ----- NOM DE LA CHARGE
 !
-        nomcha = zk24(jalich-1+ichar)(1:8)
+        nomcha = zk24(jalich-1+ichar) (1:8)
 !
 ! ----- PREFIXE DE L'OBJET DE LA CHARGE
 !
@@ -113,13 +113,13 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !
 ! ----- RECUPERATION FONCTION MULTIPLICATRICE
 !
-        call liscn1(lisold, ichar, nomfct, typfct, phase,&
+        call liscn1(lisold, ichar, nomfct, typfct, phase, &
                     npuis)
 !
 ! ----- SAUVEGARDE DES INFORMATIONS
 !
-        call lissav(lisnew, ichar, nomcha, typech, genrec(1),&
-                    motclc, prefob, typapp, nomfct, typfct,&
+        call lissav(lisnew, ichar, nomcha, typech, genrec(1), &
+                    motclc, prefob, typapp, nomfct, typfct, &
                     phase, npuis)
 !
     end do

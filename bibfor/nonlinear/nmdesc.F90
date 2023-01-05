@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,22 +18,22 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmdesc(mesh           , modele     , numedd    ,&
-                  numfix         , ds_material, carele    ,&
-                  ds_constitutive, lischa     , ds_contact,&
-                  ds_algopara    , ds_system  , solveu    ,&
-                  fonact         , numins     , iterat    ,&
-                  sddisc         , ds_print   , ds_measure,&
-                  ds_algorom     , sddyna     , sdnume    ,&
-                  sderro         , matass     , maprec    ,&
-                  valinc         , solalg     , hhoField, meelem,&
-                  measse         , veasse     , lerrit)
+subroutine nmdesc(mesh, modele, numedd, &
+                  numfix, ds_material, carele, &
+                  ds_constitutive, lischa, ds_contact, &
+                  ds_algopara, ds_system, solveu, &
+                  fonact, numins, iterat, &
+                  sddisc, ds_print, ds_measure, &
+                  ds_algorom, sddyna, sdnume, &
+                  sderro, matass, maprec, &
+                  valinc, solalg, hhoField, meelem, &
+                  measse, veasse, lerrit)
 !
-use NonLin_Datastructure_type
-use ROM_Datastructure_type
-use HHO_type
+    use NonLin_Datastructure_type
+    use ROM_Datastructure_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/copisd.h"
@@ -49,27 +49,27 @@ implicit none
 #include "asterfort/nmresd.h"
 #include "asterfort/vtzero.h"
 !
-integer :: numins, iterat
-character(len=8), intent(in) :: mesh
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-character(len=19) :: matass, maprec
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
-character(len=24) :: numedd, numfix
-character(len=24) :: modele, carele
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Contact), intent(inout) :: ds_contact
-type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-type(NL_DS_System), intent(in) :: ds_system
-character(len=24) :: sderro
-integer :: fonact(*)
-character(len=19) :: meelem(*)
-type(HHO_Field), intent(in) :: hhoField
-character(len=19) :: solalg(*), valinc(*)
-character(len=19) :: measse(*), veasse(*)
-type(NL_DS_Print), intent(inout) :: ds_print
-aster_logical :: lerrit
+    integer :: numins, iterat
+    character(len=8), intent(in) :: mesh
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    character(len=19) :: matass, maprec
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
+    character(len=24) :: numedd, numfix
+    character(len=24) :: modele, carele
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    type(NL_DS_System), intent(in) :: ds_system
+    character(len=24) :: sderro
+    integer :: fonact(*)
+    character(len=19) :: meelem(*)
+    type(HHO_Field), intent(in) :: hhoField
+    character(len=19) :: solalg(*), valinc(*)
+    character(len=19) :: measse(*), veasse(*)
+    type(NL_DS_Print), intent(inout) :: ds_print
+    aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,7 +117,7 @@ aster_logical :: lerrit
     if (niv .ge. 2) then
         call nonlinDSPrintSepLine()
         call utmess('I', 'MECANONLINE13_67')
-    endif
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -141,26 +141,26 @@ aster_logical :: lerrit
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmcoma(mesh      , modele         , ds_material,&
-                carele    , ds_constitutive, ds_algopara,&
-                lischa    , numedd         , numfix     ,&
-                solveu    , ds_system      , sddisc     ,&
-                sddyna    , ds_print       , ds_measure ,&
-                ds_algorom, numins         , iterat     ,&
-                fonact    , ds_contact     , valinc     ,&
-                solalg    , hhoField       , meelem     , measse,&
-                maprec    , matass         , faccvg     ,&
-                ldccvg    , sdnume)
+    call nmcoma(mesh, modele, ds_material, &
+                carele, ds_constitutive, ds_algopara, &
+                lischa, numedd, numfix, &
+                solveu, ds_system, sddisc, &
+                sddyna, ds_print, ds_measure, &
+                ds_algorom, numins, iterat, &
+                fonact, ds_contact, valinc, &
+                solalg, hhoField, meelem, measse, &
+                maprec, matass, faccvg, &
+                ldccvg, sdnume)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
     if ((faccvg .eq. 1) .or. (faccvg .eq. 2) .or. (ldccvg .eq. 1)) then
         goto 999
-    endif
+    end if
 !
 ! - Evaluate second member for correction
 !
-    call nmassc(fonact, sddyna, ds_contact, veasse, ds_system,&
+    call nmassc(fonact, sddyna, ds_contact, veasse, ds_system, &
                 cnpilo, cndonn)
 !
 ! --- ACTUALISATION DES CL CINEMATIQUES
@@ -170,9 +170,9 @@ aster_logical :: lerrit
 !
 ! --- RESOLUTION
 !
-    call nmresd(fonact, sddyna, ds_measure, solveu    , numedd,&
-                r8bid , maprec, matass    , cndonn    , cnpilo,&
-                cncind, solalg, rescvg    , ds_algorom)
+    call nmresd(fonact, sddyna, ds_measure, solveu, numedd, &
+                r8bid, maprec, matass, cndonn, cnpilo, &
+                cncind, solalg, rescvg, ds_algorom)
 !
 999 continue
 !

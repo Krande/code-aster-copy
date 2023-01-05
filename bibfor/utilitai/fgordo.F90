@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,35 +32,35 @@ subroutine fgordo(nbextr, ext, ord)
     integer :: i, j, k
 !-----------------------------------------------------------------------
     if (ext(1) .lt. ext(2)) then
-        ord(1)=ext(1)
-        ord(2)=ext(2)
+        ord(1) = ext(1)
+        ord(2) = ext(2)
     else
-        ord(1)=ext(2)
-        ord(2)=ext(1)
-    endif
+        ord(1) = ext(2)
+        ord(2) = ext(1)
+    end if
 !
     do i = 3, nbextr
         if (ext(i) .lt. ord(1)) then
             do k = i, 2, -1
-                ord(k)=ord(k-1)
+                ord(k) = ord(k-1)
             end do
-            ord(1)=ext(i)
+            ord(1) = ext(i)
             goto 1
-        endif
+        end if
         if (ext(i) .ge. ord(i-1)) then
-            ord(i)=ext(i)
+            ord(i) = ext(i)
             goto 1
-        endif
+        end if
         do j = 1, i-2
-            if ((ord(j).le.ext(i)) .and. (ext(i).lt.ord(j+1))) then
+            if ((ord(j) .le. ext(i)) .and. (ext(i) .lt. ord(j+1))) then
                 do k = i, j+2, -1
-                    ord(k)=ord(k-1)
+                    ord(k) = ord(k-1)
                 end do
-                ord(j+1)=ext(i)
+                ord(j+1) = ext(i)
                 goto 1
-            endif
+            end if
         end do
-  1     continue
+1       continue
     end do
 !
 end subroutine

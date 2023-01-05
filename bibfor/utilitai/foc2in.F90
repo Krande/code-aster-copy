@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine foc2in(method, nbpts, var, fon, cste,&
+subroutine foc2in(method, nbpts, var, fon, cste, &
                   res)
     implicit none
     character(len=*) :: method
@@ -45,7 +45,7 @@ subroutine foc2in(method, nbpts, var, fon, cste,&
 !-----------------------------------------------------------------------
     integer :: i, iperm
 !-----------------------------------------------------------------------
-    data      ip/2,1/
+    data ip/2, 1/
 !     ------------------------------------------------------------------
     zero = 0.0d0
     un = 1.0d0
@@ -60,23 +60,23 @@ subroutine foc2in(method, nbpts, var, fon, cste,&
 !
         res(1) = cste
         do i = 2, nbpts
-            res(i) = res(i-1) + (var(i)-var(i-1)) * (fon(i)+fon(i-1)) * 0.5d0
+            res(i) = res(i-1)+(var(i)-var(i-1))*(fon(i)+fon(i-1))*0.5d0
         end do
 !
-    else if (method.eq.'SIMPSON') then
+    else if (method .eq. 'SIMPSON') then
 !
         fm = fon(1)
         fb = fon(2)
-        h2 = var(2) - var(1)
+        h2 = var(2)-var(1)
         coef(1) = cste
-        coef(2) = cste +(fb+fm)*h2/deux
+        coef(2) = cste+(fb+fm)*h2/deux
         res(1) = coef(1)
         res(2) = coef(2)
         iperm = 1
         do i = 3, nbpts
             h1 = h2
-            h2 = var(i) - var(i-1)
-            bma = h1 + h2
+            h2 = var(i)-var(i-1)
+            bma = h1+h2
             fa = fm
             fm = fb
             fb = fon(i)
@@ -85,8 +85,8 @@ subroutine foc2in(method, nbpts, var, fon, cste,&
                 ct2 = quatre
                 ct3 = un
             else
-                deltah = h2 - h1
-                if (abs( deltah / h1 ) .le. eps) then
+                deltah = h2-h1
+                if (abs(deltah/h1) .le. eps) then
                     ct1 = un
                     ct2 = quatre
                     ct3 = un
@@ -97,17 +97,17 @@ subroutine foc2in(method, nbpts, var, fon, cste,&
 !              CT3  = DEUX - H1/H2
 !
 !              EXPRESSION "INFORMATIQUE" DES COEFFICIENTS
-                    epsi = deltah / (h1*h2)
-                    ct1 = un - epsi * h2
-                    ct2 = quatre + epsi * deltah
-                    ct3 = un + epsi * h1
-                endif
-            endif
-            coef(iperm) = coef(iperm) + (bma/six)*(ct1*fa+ct2*fm+ct3* fb)
+                    epsi = deltah/(h1*h2)
+                    ct1 = un-epsi*h2
+                    ct2 = quatre+epsi*deltah
+                    ct3 = un+epsi*h1
+                end if
+            end if
+            coef(iperm) = coef(iperm)+(bma/six)*(ct1*fa+ct2*fm+ct3*fb)
             res(i) = coef(iperm)
             iperm = ip(iperm)
         end do
 !
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine prfcur(vec1, nbn, vec2, nbp, interp,&
+subroutine prfcur(vec1, nbn, vec2, nbp, interp, &
                   prolgd)
     implicit none
 !     PROLONGEMENT DE LA FONCTION SUIVANT OPTION CHOISIE
@@ -52,13 +52,13 @@ subroutine prfcur(vec1, nbn, vec2, nbp, interp,&
             do j = 1, ip
                 i01 = 2*ide+2*j-1
                 if (interp(1:3) .eq. 'LIN') then
-                    resu = xline(vec2(i01),vec2(2*ide-1),vec2(2*ide),vec2(2*ifi-1),vec2(2*ifi))
+                    resu = xline(vec2(i01), vec2(2*ide-1), vec2(2*ide), vec2(2*ifi-1), vec2(2*ifi))
                 else if (interp(1:3) .eq. 'LOG') then
-                    resu = xlog(vec2(i01),vec2(2*ide-1),vec2(2*ide),vec2(2*ifi-1),vec2(2*ifi))
-                endif
+                    resu = xlog(vec2(i01), vec2(2*ide-1), vec2(2*ide), vec2(2*ifi-1), vec2(2*ifi))
+                end if
                 vec2(2*ide+2*j) = resu
             end do
-        endif
+        end if
     end do
 !
 !     --- PROLONGEMENT A GAUCHE ---
@@ -70,13 +70,13 @@ subroutine prfcur(vec1, nbn, vec2, nbp, interp,&
         end do
     else if (prolgd(1:1) .eq. 'L') then
         do i = 1, ide-1
-            resu = xline(vec2(2*i-1),vec2(2*ide-1),vec2(2*ide),vec2(2*(ide+1)-1),vec2(2*(ide+1)))
+           resu = xline(vec2(2*i-1), vec2(2*ide-1), vec2(2*ide), vec2(2*(ide+1)-1), vec2(2*(ide+1)))
             if (resu .lt. 0.d0) then
                 resu = 0.d0
-            endif
+            end if
             vec2(2*i) = resu
         end do
-    endif
+    end if
 !
 !     --- PROLONGEMENT A DROITE ---
 !
@@ -88,11 +88,11 @@ subroutine prfcur(vec1, nbn, vec2, nbp, interp,&
         end do
     else if (prolgd(2:2) .eq. 'L') then
         do i = ifi+1, nbp2
-            resu = xline(vec2(2*i-1),vec2(2*ifi-1),vec2(2*ifi),vec2(2*(ifi-1)-1),vec2(2*(ifi-1)))
+           resu = xline(vec2(2*i-1), vec2(2*ifi-1), vec2(2*ifi), vec2(2*(ifi-1)-1), vec2(2*(ifi-1)))
             if (resu .lt. 0.d0) then
                 resu = 0.d0
-            endif
+            end if
             vec2(i) = resu
         end do
-    endif
+    end if
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,39 +47,39 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 ! OUT NBEXT  : NOMBRE D'"EXTENDS" UTILISES APRES RETASSAGE
 !     ------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
-    common /izonje/  lk1zon , jk1zon , liszon , jiszon
+    common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
     integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
+    common/ienvje/lbis, lois, lols, lor8, loc8
     integer :: istat
-    common /istaje/  istat(4)
+    common/istaje/istat(4)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadloc, iadyn, ici, ico, ierr, k
     integer :: lbloc, n, nbext, nbloc, nrep, numext
 !-----------------------------------------------------------------------
-    parameter  ( n = 5 )
+    parameter(n=5)
 !
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
     integer :: nitecr, kmarq
-    common /ificje/  nblmax(n) , nbluti(n) , longbl(n) ,&
-     &                 kitlec(n) , kitecr(n) ,             kiadm(n) ,&
-     &                 iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
+    common/ificje/nblmax(n), nbluti(n), longbl(n),&
+     &                 kitlec(n), kitecr(n), kiadm(n),&
+     &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
     integer :: idn, iext, nbenrg
-    common /iextje/  idn(n) , iext(n) , nbenrg(n)
+    common/iextje/idn(n), iext(n), nbenrg(n)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
-    common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) ,&
+    common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     integer :: nrhcod, nremax, nreuti
-    common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
+    common/icodje/nrhcod(n), nremax(n), nreuti(n)
     real(kind=8) :: svuse, smxuse
-    common /statje/  svuse,smxuse
+    common/statje/svuse, smxuse
     character(len=128) :: repglo, repvol
-    common /banvje/  repglo,repvol
+    common/banvje/repglo, repvol
     integer :: lrepgl, lrepvo
-    common /balvje/  lrepgl,lrepvo
+    common/balvje/lrepgl, lrepvo
 !     ------------------------------------------------------------------
     character(len=1) :: kclas
     character(len=8) :: nomba1, nomba2
@@ -92,48 +92,48 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     clasou = clsouz
 !
     kclas = clasin
-    call jeinif('POURSUITE', 'DETRUIT', nomin, kclas, 1,&
+    call jeinif('POURSUITE', 'DETRUIT', nomin, kclas, 1, &
                 1, 1)
-    ici = index ( classe , kclas)
+    ici = index(classe, kclas)
     kclas = clasou
     nrep = nremax(ici)
-    nbloc= nbenrg(ici)
-    lbloc= longbl(ici)
+    nbloc = nbenrg(ici)
+    lbloc = longbl(ici)
     call get_jvbasename(nomout(1:4), -1, noml1)
     info = 1
     call rmfile(noml1, info, iret)
-    call jeinif('DEBUT', 'SAUVE', nomout, kclas, nrep,&
+    call jeinif('DEBUT', 'SAUVE', nomout, kclas, nrep, &
                 nbloc, lbloc)
-    ico = index ( classe , kclas)
-    nomba1 = nomfic(ici)(1:4)//'.   '
-    nomba2 = nomfic(ico)(1:4)//'.   '
+    ico = index(classe, kclas)
+    nomba1 = nomfic(ici) (1:4)//'.   '
+    nomba2 = nomfic(ico) (1:4)//'.   '
 !
-    lgbl1= 1024*longbl(ici)*lois
-    lgbl2= 1024*longbl(ico)*lois
-    call jjalls(lgbl1, 0, ' ', 'I', lois,&
+    lgbl1 = 1024*longbl(ici)*lois
+    lgbl2 = 1024*longbl(ico)*lois
+    call jjalls(lgbl1, 0, ' ', 'I', lois, &
                 'INIT', itp, jitp, iaditp, iadyn)
     iszon(jiszon+iaditp-1) = istat(1)
     iszon(jiszon+iszon(jiszon+iaditp-4)-4) = istat(4)
-    svuse = svuse + (iszon(jiszon+iaditp-4) - iaditp + 4)
-    smxuse = max(smxuse,svuse)
+    svuse = svuse+(iszon(jiszon+iaditp-4)-iaditp+4)
+    smxuse = max(smxuse, svuse)
     do k = 1, (nbluti(ici)-1)/nbenrg(ici)
         call jxouvr(ico, k+1, mode=2)
-        iext(ico) = iext(ico) + 1
+        iext(ico) = iext(ico)+1
     end do
 !
     do k = 1, nbluti(ici)
         numext = (k-1)/nbenrg(ici)
-        iadloc = k - (numext*nbenrg(ici))
-        call get_jvbasename(nomba1, numext + 1, noml1)
+        iadloc = k-(numext*nbenrg(ici))
+        call get_jvbasename(nomba1, numext+1, noml1)
         call readdr(noml1, iszon(jiszon+iaditp), lgbl1, iadloc, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'JEVEUX_47')
-        endif
-        call get_jvbasename(nomba2, numext + 1, noml2)
-        call writdr(noml2, iszon(jiszon + iaditp), lgbl2, iadloc, ierr)
+        end if
+        call get_jvbasename(nomba2, numext+1, noml2)
+        call writdr(noml2, iszon(jiszon+iaditp), lgbl2, iadloc, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'JEVEUX_48')
-        endif
+        end if
     end do
     nbext = numext+1
     call jxferm(ici)

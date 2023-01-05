@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
-                  vpoint, cnsbl, deltat, nodtor, liggrd,&
+subroutine xprgeo(noma, cnsln, cnslt, grln, grlt, &
+                  vpoint, cnsbl, deltat, nodtor, liggrd, &
                   cnsbet, listp, operation)
 !
 ! aslint: disable=
@@ -82,8 +82,8 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbno,   ndim, j, jnodto, node, ier
-    integer :: ibid,  jbeta, jlistp,  pos, pos1, jvp
+    integer :: i, ifm, niv, nbno, ndim, j, jnodto, node, ier
+    integer :: ibid, jbeta, jlistp, pos, pos1, jvp
     character(len=8) :: lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
@@ -134,11 +134,11 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
         node = zi(jnodto-1+i)
 !
 !         PROPAGATION VECTOR DELTA_A
-        if(operation.eq.'PROPA_COHESIF'.or.operation.eq.'DETECT_COHESIF') then
-            deltaa=zr(jvp-1+node)
+        if (operation .eq. 'PROPA_COHESIF' .or. operation .eq. 'DETECT_COHESIF') then
+            deltaa = zr(jvp-1+node)
         else
-            deltaa=zr(jvp-1+node)*deltat
-        endif
+            deltaa = zr(jvp-1+node)*deltat
+        end if
 !
 !         STORE THE COS AND SIN OF THE PROPAGATION ANGLE
         cbeta = cos(zr(jbeta-1+node))
@@ -166,9 +166,9 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !
 !         MODIFY THE NORMAL LEVEL SET ONLY IN THE POINTS WHERE THE
 !         TANGENTIAL LEVEL SET IS POSITIVE
-        if (ltno(node) .gt. 0.d0.and.operation.ne.'DETECT_COHESIF') then
+        if (ltno(node) .gt. 0.d0 .and. operation .ne. 'DETECT_COHESIF') then
             lnno(node) = newlsn
-        endif
+        end if
 !
 !         STORE THE NEW VALUE OF THE TANTENGIAL LEVEL SET
         ltno(node) = newlst
@@ -187,48 +187,48 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
     cnoln = '&&XPRLS.CNOLN'
 !
 !  GRADIENT DE LT
-    call cnscno(cnslt, ' ', 'NON', 'V', cnolt,&
+    call cnscno(cnslt, ' ', 'NON', 'V', cnolt, &
                 'F', ibid)
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = noma//'.COORDO'
     lpain(2) = 'PNEUTER'
     lchin(2) = cnolt
-    lpaout(1)= 'PGNEUTR'
-    lchout(1)= chgrlt
+    lpaout(1) = 'PGNEUTR'
+    lchout(1) = chgrlt
 !
-    call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
     call celces(chgrlt, 'V', chams)
-    call cescns(chams, ' ', 'V', grlt, ' ',&
+    call cescns(chams, ' ', 'V', grlt, ' ', &
                 ier)
 !
 !  GRADIENT DE LN
-    if(operation.ne.'DETECT_COHESIF') then
-        call cnscno(cnsln, ' ', 'NON', 'V', cnoln,&
-        'F', ibid)
+    if (operation .ne. 'DETECT_COHESIF') then
+        call cnscno(cnsln, ' ', 'NON', 'V', cnoln, &
+                    'F', ibid)
 !
         lpain(1) = 'PGEOMER'
         lchin(1) = noma//'.COORDO'
         lpain(2) = 'PNEUTER'
         lchin(2) = cnoln
-        lpaout(1)= 'PGNEUTR'
-        lchout(1)= chgrln
+        lpaout(1) = 'PGNEUTR'
+        lchout(1) = chgrln
 !
-        call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
-        lpain, 1, lchout, lpaout, 'V',&
-        'OUI')
+        call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin, &
+                    lpain, 1, lchout, lpaout, 'V', &
+                    'OUI')
 !
         call celces(chgrln, 'V', chams)
-        call cescns(chams, ' ', 'V', grln, ' ',&
-        ier)
+        call cescns(chams, ' ', 'V', grln, ' ', &
+                    ier)
 !
 !  DESTRUCTION DES OBJETS VOLATILES
         call jedetr(chgrln)
         call jedetr(cnoln)
-    endif
+    end if
     call jedetr(chgrlt)
     call jedetr(chams)
     call jedetr(cnolt)

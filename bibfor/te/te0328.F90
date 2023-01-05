@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,38 +44,38 @@ subroutine te0328(option, nomte)
     integer :: kp, icodr
     integer :: iadzi, iazk24, codret
 !
-    codret=0
+    codret = 0
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCODRET', 'E', icodr)
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-    posi=.false.
-    nega=.false.
+    posi = .false.
+    nega = .false.
     do kp = 1, npg
         if (ndim .eq. 3) then
             call dfdm3j(nno, kp, idfde, zr(igeom), poids)
-        else if (ndim.eq.2) then
+        else if (ndim .eq. 2) then
             call dfdm2j(nno, kp, idfde, zr(igeom), poids)
         else
             goto 999
-        endif
-        if (poids .lt. 0.d0) nega=.true.
-        if (poids .gt. 0.d0) posi=.true.
+        end if
+        if (poids .lt. 0.d0) nega = .true.
+        if (poids .gt. 0.d0) posi = .true.
     end do
 !
 !
     if (posi .and. nega) then
         call tecael(iadzi, iazk24)
-        nno=zi(iadzi-1+2)
-        valk(1)=zk24(iazk24-1+3)
-        valk(2)=zk24(iazk24-1+3+nno+1)
+        nno = zi(iadzi-1+2)
+        valk(1) = zk24(iazk24-1+3)
+        valk(2) = zk24(iazk24-1+3+nno+1)
         call utmess('A', 'MAILLAGE1_1', nk=2, valk=valk)
-        codret=1
-    endif
+        codret = 1
+    end if
 !
 999 continue
-    zi(icodr-1+1)=codret
+    zi(icodr-1+1) = codret
 !
 end subroutine

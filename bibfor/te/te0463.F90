@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine te0463(option, nomte)
 ! ------------------------------------------------------------------------------
 !   nombre max de famille dans MATER, de points de GAUSS
     integer :: nfpgmx, nbpgmx
-    parameter (nfpgmx=10,nbpgmx=3)
+    parameter(nfpgmx=10, nbpgmx=3)
 !
     integer :: ndim, nno, nnos, npg, jgano, icopg, idfde, ipoids, ivf, igeom, ndim1
     integer :: jacf, iorien, ipos, nfpg, ifpg, npgfa(nfpgmx)
@@ -62,41 +62,41 @@ subroutine te0463(option, nomte)
     call jevech('PCOOPGM', 'E', icopg)
 ! ------------------------------------------------------------------------------
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
+    call pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf=jacf)
 !
     call jevech('PCAORIE', 'L', iorien)
     call matrot(zr(iorien), pgl)
-    decga=nbfibr*ndim
+    decga = nbfibr*ndim
 !
     call fmater(nfpgmx, nfpg, fami)
-    decfpg(1)=0
+    decfpg(1) = 0
     do ifpg = 1, nfpg
-        call elrefe_info(fami=fami(ifpg),ndim=ndim1,nno=nno,nnos=nnos,&
-                         npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-        if (ifpg .lt. nfpg) decfpg(ifpg+1)=decfpg(ifpg)+npg
+        call elrefe_info(fami=fami(ifpg), ndim=ndim1, nno=nno, nnos=nnos, &
+                         npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+        if (ifpg .lt. nfpg) decfpg(ifpg+1) = decfpg(ifpg)+npg
 !       Position des points de GAUSS dans l'espace utilisateur
-        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf), zr(idfde), zr( igeom), copg)
+        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf), zr(idfde), zr(igeom), copg)
         npgfa(ifpg) = npg
         do ig = 1, npg
             do k = 1, ndim
-                copgfa(k,ig,ifpg)=copg(k,ig)
-            enddo
-        enddo
-    enddo
+                copgfa(k, ig, ifpg) = copg(k, ig)
+            end do
+        end do
+    end do
 !
-    gm1(1)=0.d0
+    gm1(1) = 0.d0
     do ifi = 1, nbfibr
-        gm1(2)=zr(jacf+(ifi-1)*nbcarm)
-        gm1(3)=zr(jacf+(ifi-1)*nbcarm+1)
+        gm1(2) = zr(jacf+(ifi-1)*nbcarm)
+        gm1(3) = zr(jacf+(ifi-1)*nbcarm+1)
         call utpvlg(1, 3, pgl, gm1, gm2)
         do ifpg = 1, nfpg
             do ig = 1, npgfa(ifpg)
                 ipos = icopg+(decfpg(ifpg)+ig-1)*decga+(ifi-1)*ndim
-                zr(ipos+0) =copgfa(1,ig,ifpg)+gm2(1)
-                zr(ipos+1) =copgfa(2,ig,ifpg)+gm2(2)
-                zr(ipos+2) =copgfa(3,ig,ifpg)+gm2(3)
-            enddo
-        enddo
-    enddo
+                zr(ipos+0) = copgfa(1, ig, ifpg)+gm2(1)
+                zr(ipos+1) = copgfa(2, ig, ifpg)+gm2(2)
+                zr(ipos+2) = copgfa(3, ig, ifpg)+gm2(3)
+            end do
+        end do
+    end do
 !
 end subroutine

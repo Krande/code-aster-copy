@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
+subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex, &
                   lichex)
     implicit none
 #include "jeveux.h"
@@ -70,8 +70,8 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     lichex = '&&OP0176.LISTE.CHAM'
     iocc = 1
     resu = resuz
-    call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                c16b, r8b, k8b, nbordr, 1,&
+    call rsorac(resu, 'LONUTI', 0, r8b, k8b, &
+                c16b, r8b, k8b, nbordr, 1, &
                 ibid)
 !
     nbchex = 0
@@ -84,11 +84,11 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     if (n1 .ne. 0) then
         nbchex = -n1
         call wkvect(lichex, 'V V K16', nbchex, jchex)
-        call getvtx(motcle, 'CHAM_EXCLU', iocc=iocc, nbval=nbchex, vect=zk16( jchex),&
+        call getvtx(motcle, 'CHAM_EXCLU', iocc=iocc, nbval=nbchex, vect=zk16(jchex), &
                     nbret=n1)
     else
         call wkvect(lichex, 'V V K16', 1, jchex)
-    endif
+    end if
 !
 !
     call getvtx(motcle, 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n2)
@@ -99,14 +99,14 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 !
     if (n2 .ne. 0) then
         nbcham = -n2
-        nbchex = nbnosy - nbcham
+        nbchex = nbnosy-nbcham
 !
         call jeexin(lichex, iret)
         if (iret .ne. 0) call jedetr(lichex)
 !
         call wkvect(lichex, 'V V K16', nbchex, jchex)
         AS_ALLOCATE(vk16=trav1, size=nbcham)
-        call getvtx(motcle, 'NOM_CHAM', iocc=iocc, nbval=nbcham, vect=trav1,&
+        call getvtx(motcle, 'NOM_CHAM', iocc=iocc, nbval=nbcham, vect=trav1, &
                     nbret=ibid)
 !
 ! ---   ON TESTE SI LES NOM_CHAM EXISTENT DANS LA SD
@@ -118,12 +118,12 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
                 if (trav1(i) .eq. nomsym) then
                     iflag = 1
                     goto 70
-                endif
+                end if
             end do
             if (iflag .eq. 0) then
                 call utmess('F', 'ALGORITH3_40', sk=trav1(i))
-            endif
- 70         continue
+            end if
+70          continue
         end do
 !
         k = 1
@@ -132,22 +132,22 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
             do j = 1, nbcham
                 if (nomsym .eq. trav1(j)) then
                     goto 50
-                endif
+                end if
             end do
-            zk16( jchex+k-1 )= nomsym
-            k = k + 1
- 50         continue
+            zk16(jchex+k-1) = nomsym
+            k = k+1
+50          continue
         end do
-    endif
+    end if
 !
 !
     call getfac(motcle, nbocc)
     if (nbocc .eq. 0) then
         do k = 1, nbordr(1)
-            zi(jarch+k-1)=1
+            zi(jarch+k-1) = 1
         end do
         goto 999
-    endif
+    end if
 !
 !     --- LES NUMEROS D'ORDRE EN SORTIE ---
 !
@@ -163,12 +163,12 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
                 goto 12
             else
                 zi(jarch+karch-1) = 1
-            endif
- 10         continue
+            end if
+10          continue
         end do
- 12     continue
+12      continue
         goto 999
-    endif
+    end if
 !
     call getvis(motcle, 'PAS_ARCH', iocc=iocc, scal=ipach, nbret=n1)
     if (n1 .ne. 0) then
@@ -176,16 +176,16 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
             zi(jarch+k-1) = 1
         end do
         goto 999
-    endif
+    end if
 !
     call getvtx(motcle, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
     call getvr8(motcle, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
     knum = '&&DYARC0.NUME_ORDRE'
-    call rsutnu(resu, motcle, iocc, knum, nbtrou,&
+    call rsutnu(resu, motcle, iocc, knum, nbtrou, &
                 prec, crit, ier)
     if (ier .ne. 0) then
         call utmess('F', 'ALGORITH3_41')
-    endif
+    end if
     call jeveuo(knum, 'L', jordr)
     do k = 1, nbtrou
         karch = zi(jordr+k-1)
@@ -198,7 +198,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 !
     nbarch = 0
     do k = 1, nbordr(1)
-        nbarch = nbarch + zi(jarch+k-1)
+        nbarch = nbarch+zi(jarch+k-1)
     end do
 !
     AS_DEALLOCATE(vk16=trav1)

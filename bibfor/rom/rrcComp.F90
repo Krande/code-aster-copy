@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine rrcComp(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/rrcResultCopyParameters.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaRRC), intent(in) :: cmdPara
+    type(ROM_DS_ParaRRC), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,14 +54,14 @@ type(ROM_DS_ParaRRC), intent(in) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM16_3')
-    endif
+    end if
 !
 ! - Get parameters
 !
-    nbFieldBuild  = cmdPara%nbFieldBuild
+    nbFieldBuild = cmdPara%nbFieldBuild
     resultDomName = cmdPara%resultDom%resultName
     resultRomName = cmdPara%resultRom%resultName
-    nbStore       = cmdPara%resultDom%nbStore
+    nbStore = cmdPara%resultDom%nbStore
 !
 ! - Compute for all fields
 !
@@ -70,8 +70,8 @@ type(ROM_DS_ParaRRC), intent(in) :: cmdPara
         fieldBuild = cmdPara%fieldBuild(iFieldBuild)
 
 ! ----- Computation for all storing index
-        call romFieldBuildComp(resultDomName, resultRomName,&
-                               nbStore      , fieldBuild)
+        call romFieldBuildComp(resultDomName, resultRomName, &
+                               nbStore, fieldBuild)
     end do
 !
 ! - Copy parameters from ROM results datastructure to DOM results datastructure

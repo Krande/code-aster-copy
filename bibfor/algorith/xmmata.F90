@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! aslint: disable=W1504
 !
-subroutine xmmata(ds_thm, ndim, nnops, nnop, ddls, ddlm, saut,&
-                  nd, pla, ffc, dffc, mmat, rho11,&
-                  gradpf, ffp, dt, ta, jac,&
-                  jheavn, ncompn, ifiss,&
+subroutine xmmata(ds_thm, ndim, nnops, nnop, ddls, ddlm, saut, &
+                  nd, pla, ffc, dffc, mmat, rho11, &
+                  gradpf, ffp, dt, ta, jac, &
+                  jheavn, ncompn, ifiss, &
                   nfiss, nfh, ifa, jheafa, ncomph)
 !
-use THM_type
+    use THM_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,105 +42,105 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-type(THM_DS), intent(inout) :: ds_thm
+    type(THM_DS), intent(inout) :: ds_thm
     integer :: k, i, j, ndim, jheavn, ncompn, nfiss, nnop
     integer :: nnops, ddls, ddlm, in, pli, pla(27), plj, hea_fa(2)
     integer :: ifiss, nfh, ifa, jheafa, ncomph, ifh, dec
     real(kind=8) :: dffi(3), ps, saut(3), nd(3), cliq, dffj(3)
-    real(kind=8) :: ffi, ffc(16), dffc(16,3), coefj
-    real(kind=8) :: mmat(560,560), rho11, mu, gradpf(3)
+    real(kind=8) :: ffi, ffc(16), dffc(16, 3), coefj
+    real(kind=8) :: mmat(560, 560), rho11, mu, gradpf(3)
     real(kind=8) :: dt, ta, jac, ffp(27), ffj
     aster_logical :: lmultc
 !
-    cliq   = ds_thm%ds_material%liquid%unsurk
-    mu     = ds_thm%ds_material%liquid%visc
-    lmultc = nfiss.gt.1
+    cliq = ds_thm%ds_material%liquid%unsurk
+    mu = ds_thm%ds_material%liquid%visc
+    lmultc = nfiss .gt. 1
     dffi(:) = 0.d0
     dffj(:) = 0.d0
 !
-    if (.not.lmultc) then
-      hea_fa(1)=xcalc_code(1,he_inte=[-1])
-      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    if (.not. lmultc) then
+        hea_fa(1) = xcalc_code(1, he_inte=[-1])
+        hea_fa(2) = xcalc_code(1, he_inte=[+1])
     else
-      hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
-      hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
-    endif
+        hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
+        hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
+    end if
 !
     ps = 0.d0
     do k = 1, ndim
-       ps = ps - saut(k)*nd(k)
+        ps = ps-saut(k)*nd(k)
     end do
 !
     do i = 1, nnops
-       pli = pla(i)
-       ffi = ffc(i)
-       do k = 1, ndim
-          dffi(k) = dffc(i,k)
-       end do
+        pli = pla(i)
+        ffi = ffc(i)
+        do k = 1, ndim
+            dffi(k) = dffc(i, k)
+        end do
 !
-       do j = 1, nnop
-          call hmdeca(j, ddls, ddlm, nnops, in, dec)
+        do j = 1, nnop
+            call hmdeca(j, ddls, ddlm, nnops, in, dec)
 !
-          do ifh = 1, nfh
-             coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+ifh),&
-                                hea_fa(1), &
-                                hea_fa(2),&
-                                zi(jheavn-1+ncompn*(j-1)+ncompn))
-             do k = 1, ndim
-                mmat(pli,in+(ndim+dec)*ifh+k) = mmat(pli,in+(ndim+dec)*ifh+k) -&
-                                       rho11*(3.d0*ps**2)/(12.d0*mu)*nd(k)*dffi(k)*gradpf(k)*&
-                                       ffp(j)*coefj*dt*ta*jac
+            do ifh = 1, nfh
+                coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+ifh), &
+                                   hea_fa(1), &
+                                   hea_fa(2), &
+                                   zi(jheavn-1+ncompn*(j-1)+ncompn))
+                do k = 1, ndim
+                    mmat(pli, in+(ndim+dec)*ifh+k) = mmat(pli, in+(ndim+dec)*ifh+k)- &
+                                            rho11*(3.d0*ps**2)/(12.d0*mu)*nd(k)*dffi(k)*gradpf(k)* &
+                                                     ffp(j)*coefj*dt*ta*jac
 !
-                mmat(pli,in+(ndim+dec)*ifh+k) = mmat(pli,in+(ndim+dec)*ifh+k) -&
-                                       rho11*coefj*ffp(j)*ffi*nd(k)*jac
-             end do
-          end do
-       end do
+                    mmat(pli, in+(ndim+dec)*ifh+k) = mmat(pli, in+(ndim+dec)*ifh+k)- &
+                                                     rho11*coefj*ffp(j)*ffi*nd(k)*jac
+                end do
+            end do
+        end do
     end do
 !
     do i = 1, nnops
-       pli = pla(i)
-       ffi = ffc(i)
+        pli = pla(i)
+        ffi = ffc(i)
 !
-       do j = 1, nnops
+        do j = 1, nnops
 !
-          plj = pla(j)
-          ffj = ffc(j)
+            plj = pla(j)
+            ffj = ffc(j)
 !
-          mmat(pli, plj+1) = mmat(pli, plj+1) - ffi*&
-                                               ffj*dt*ta*jac
+            mmat(pli, plj+1) = mmat(pli, plj+1)-ffi* &
+                               ffj*dt*ta*jac
 !
-          mmat(pli, plj+2) = mmat(pli, plj+2) - ffi*&
-                                               ffj*dt*ta*jac
+            mmat(pli, plj+2) = mmat(pli, plj+2)-ffi* &
+                               ffj*dt*ta*jac
 !
-          mmat(pli, plj) = mmat(pli,plj) - rho11*(ps*cliq)*ffi*ffj*jac
+            mmat(pli, plj) = mmat(pli, plj)-rho11*(ps*cliq)*ffi*ffj*jac
 !
-       end do
+        end do
     end do
 !
     do i = 1, nnops
-       pli = pla(i)
-       do k = 1, ndim
-          dffi(k) = dffc(i, k)
-       end do
+        pli = pla(i)
+        do k = 1, ndim
+            dffi(k) = dffc(i, k)
+        end do
 !
-       do j = 1, nnops
-          ffj = ffc(j)
-          plj = pla(j)
-          do k = 1, ndim
-             dffj(k) = dffc(j, k)
-          end do
+        do j = 1, nnops
+            ffj = ffc(j)
+            plj = pla(j)
+            do k = 1, ndim
+                dffj(k) = dffc(j, k)
+            end do
 !
-          do k = 1, ndim
+            do k = 1, ndim
 !
-             mmat(pli, plj) = mmat(pli, plj) - (rho11*cliq)*(ps**3/(12.d0*mu))&
-                                                *gradpf(k)*dffi(k)*ffj*dt*ta*jac
+                mmat(pli, plj) = mmat(pli, plj)-(rho11*cliq)*(ps**3/(12.d0*mu)) &
+                                 *gradpf(k)*dffi(k)*ffj*dt*ta*jac
 !
-             mmat(pli, plj) = mmat(pli, plj) - (rho11*ps**3/(12.d0*mu))*&
-                                                 dffi(k)*dffj(k)*dt*ta*jac
-          end do
+                mmat(pli, plj) = mmat(pli, plj)-(rho11*ps**3/(12.d0*mu))* &
+                                 dffi(k)*dffj(k)*dt*ta*jac
+            end do
 !
-       end do
+        end do
     end do
 !
 end subroutine

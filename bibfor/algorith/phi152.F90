@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine phi152(model, option, mate, mateco, phibar, ma,&
-                  nu, num, nbmode, solvez, indice,&
+subroutine phi152(model, option, mate, mateco, phibar, ma, &
+                  nu, num, nbmode, solvez, indice, &
                   tabad)
     implicit none
 ! AUTEUR : G.ROUSSEAU
@@ -69,15 +69,15 @@ subroutine phi152(model, option, mate, mateco, phibar, ma,&
     character(len=24) :: nomcha
     character(len=24) :: phib24, criter
     complex(kind=8) :: cbid
-    data maprec   /'&&OP0152.MAPREC'/
-    data chsol    /'&&OP0152.SOLUTION'/
+    data maprec/'&&OP0152.MAPREC'/
+    data chsol/'&&OP0152.SOLUTION'/
 ! -----------------------------------------------------------------
-    data ndble /0/
+    data ndble/0/
 !
     call jemarq()
     solveu = solvez
     criter = '&&RESGRA_GCPC'
-    indice=0
+    indice = 0
     call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
     call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
     call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n2)
@@ -86,30 +86,30 @@ subroutine phi152(model, option, mate, mateco, phibar, ma,&
 ! TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 ! DES MAILLAGES COMMUNS
     if (n5 .gt. 0) then
-        call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
+        call rsexch(' ', modmec, 'DEPL', 1, nomcha, &
                     iret)
-        call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', tmod, 1,&
+        call rsorac(modmec, 'LONUTI', ibid, bid, k8bid, &
+                    cbid, ebid, 'ABSOLU', tmod, 1, &
                     nbid)
-        nbmode=tmod(1)
+        nbmode = tmod(1)
         call dismoi('NOM_MAILLA', nomcha(1:19), 'CHAM_NO', repk=mailla)
         call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
         if (maflui .ne. mailla) then
-            call tabcor(model, mate, mateco, mailla, maflui, moint,&
+            call tabcor(model, mate, mateco, mailla, maflui, moint, &
                         num, ndble, icor)
-            call majou(model, modmec, solveu, num, nu,&
-                       ma, mate, mateco, moint, ndble, icor,&
+            call majou(model, modmec, solveu, num, nu, &
+                       ma, mate, mateco, moint, ndble, icor, &
                        tabad)
-            indice=1
-        endif
-    endif
+            indice = 1
+        end if
+    end if
 !
 !---------------------------------------------------------------------
     if (n6 .ne. 0) then
         n7 = -n6
     else
-        n7=0
-    endif
+        n7 = 0
+    end if
 !
 !
 !=====================================================================
@@ -119,15 +119,15 @@ subroutine phi152(model, option, mate, mateco, phibar, ma,&
 ! DANS LE CAS OU ON N A PAS CALCUL DE MASSE AJOUTEE SUR UN
 ! MAILLAGE SQUELETTE
 !
-    if ((n5.gt.0) .and. (indice.ne.1)) then
+    if ((n5 .gt. 0) .and. (indice .ne. 1)) then
 !
 !
 !----- -RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA
 !
-        call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', tmod, 1,&
+        call rsorac(modmec, 'LONUTI', ibid, bid, k8bid, &
+                    cbid, ebid, 'ABSOLU', tmod, 1, &
                     nbid)
-        nbmode=tmod(1)
+        nbmode = tmod(1)
 !
         call wkvect('&&OP0152.PHI1', 'V V K24', nbmode, iphi1)
         call wkvect('&&OP0152.PHI2', 'V V K24', nbmode, iphi2)
@@ -136,28 +136,28 @@ subroutine phi152(model, option, mate, mateco, phibar, ma,&
 ! BOUCLE SUR LE NOMBRE DE MODES: CALCUL DU FLUX FLUIDE MODAL
 !======================================================================
         ilires = 0
-        phib24=phibar
+        phib24 = phibar
 !
         do j = 1, nbmode
 !
-            call rsexch(' ', modmec, 'DEPL', j, nomcha,&
+            call rsexch(' ', modmec, 'DEPL', j, nomcha, &
                         iret)
 !
-            nomcha=nomcha(1:19)
+            nomcha = nomcha(1:19)
             vecso1 = '&&OP0152.VECSOL1'
             vecso2 = '&&OP0152.VECSOL2'
 !
-            call calflu(nomcha, moflui, mate, mateco, nu, vecso1,&
+            call calflu(nomcha, moflui, mate, mateco, nu, vecso1, &
                         nbdesc, nbrefe, nbvale, 'R')
 !
-            ilires = ilires + 1
+            ilires = ilires+1
 !
 !------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
 !
-            call resoud(ma, maprec, solveu, ' ', 0,&
-                        vecso1, chsol, 'V', [0.d0], [cbid],&
+            call resoud(ma, maprec, solveu, ' ', 0, &
+                        vecso1, chsol, 'V', [0.d0], [cbid], &
                         criter, .true._1, 0, iret)
-            call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
+            call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19), &
                         .false._1)
             call detrsd('CHAMP_GD', chsol)
 !
@@ -166,32 +166,32 @@ subroutine phi152(model, option, mate, mateco, phibar, ma,&
 !- FORMATION DU TABLEAU CONTENANT LA PRESSION POUR CHAQUE MODE-----
 !
 !------------------------------------------------------------------
-            vesto1='&&OP0152.VEST1'
-            call prstoc(vecso1, vesto1, ilires, ilires, iphi1,&
+            vesto1 = '&&OP0152.VEST1'
+            call prstoc(vecso1, vesto1, ilires, ilires, iphi1, &
                         nbvale, nbrefe, nbdesc)
 !
             if (option .eq. 'AMOR_AJOU' .or. option .eq. 'RIGI_AJOU') then
 !
-                call cal2m(nomcha(1:19), phib24, moflui, mate, mateco, nu,&
+                call cal2m(nomcha(1:19), phib24, moflui, mate, mateco, nu, &
                            vecso2, nbdesc, nbrefe, nbvale)
 !
-                call resoud(ma, maprec, solveu, ' ', 0,&
-                            vecso2, chsol, 'V', [0.d0], [cbid],&
+                call resoud(ma, maprec, solveu, ' ', 0, &
+                            vecso2, chsol, 'V', [0.d0], [cbid], &
                             criter, .true._1, 0, iret)
-                call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19),&
+                call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19), &
                             .false._1)
                 call detrsd('CHAMP_GD', chsol)
 !
-                vesto2='&&OP0152.VEST2'
-                call prstoc(vecso2, vesto2, ilires, ilires, iphi2,&
+                vesto2 = '&&OP0152.VEST2'
+                call prstoc(vecso2, vesto2, ilires, ilires, iphi2, &
                             nbvale, nbrefe, nbdesc)
 !
-            endif
+            end if
 !
         end do
 !
     else
-        if ((n7.gt.0) .and. (indice.ne.1)) then
+        if ((n7 .gt. 0) .and. (indice .ne. 1)) then
 !
 !================================================================
 ! ON FAIT LA MEME OPERATION SUR LES CHAMNO DE DEPL_R FOURNIS
@@ -203,26 +203,26 @@ subroutine phi152(model, option, mate, mateco, phibar, ma,&
             call getvid(' ', 'CHAM_NO', nbval=n7, vect=zk8(ivalk), nbret=n6)
 !
             ilires = 0
-            phib24=phibar
+            phib24 = phibar
 !
             do j = 1, n7
 !
-                chamno=zk8(ivalk+j-1)
+                chamno = zk8(ivalk+j-1)
                 vecso1 = '&&OP0152.VESL1'
                 vecso2 = '&&OP0152.VESL2'
 !
-                call calflu(chamno, moflui, mate, mateco, nu, vecso1,&
+                call calflu(chamno, moflui, mate, mateco, nu, vecso1, &
                             nbdesc, nbrefe, nbvale, 'R')
 !
-                ilires = ilires + 1
+                ilires = ilires+1
 !
 !
 !-------------- RESOLUTION  DU LAPLACIEN EN 2D OU 3D-------------
 !
-                call resoud(ma, maprec, solveu, ' ', 0,&
-                            vecso1, chsol, 'V', [0.d0], [cbid],&
+                call resoud(ma, maprec, solveu, ' ', 0, &
+                            vecso1, chsol, 'V', [0.d0], [cbid], &
                             criter, .true._1, 0, iret)
-                call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19),&
+                call jedupc('V', chsol(1:19), 1, 'V', vecso1(1:19), &
                             .false._1)
                 call detrsd('CHAMP_GD', chsol)
 !
@@ -231,35 +231,35 @@ subroutine phi152(model, option, mate, mateco, phibar, ma,&
 !--------- FORMATION DU TABLEAU CONTENANT LA PRESSION------------
 !-------------POUR CHAQUE CHAMP AUX NOEUDS-----------------------
 !
-                vesto1='&&OP0152.VEST1'
-                call prstoc(vecso1, vesto1, ilires, ilires, iphi1,&
+                vesto1 = '&&OP0152.VEST1'
+                call prstoc(vecso1, vesto1, ilires, ilires, iphi1, &
                             nbvale, nbrefe, nbdesc)
 !
                 if (option .eq. 'AMOR_AJOU' .or. option .eq. 'RIGI_AJOU') then
-                    call cal2m(chamno, phib24, moflui, mate, mateco, nu,&
+                    call cal2m(chamno, phib24, moflui, mate, mateco, nu, &
                                vecso2, nbdesc, nbrefe, nbvale)
-                    call resoud(ma, maprec, solveu, ' ', 0,&
-                                vecso2, chsol, 'V', [0.d0], [cbid],&
+                    call resoud(ma, maprec, solveu, ' ', 0, &
+                                vecso2, chsol, 'V', [0.d0], [cbid], &
                                 criter, .true._1, 0, iret)
-                    call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19),&
+                    call jedupc('V', chsol(1:19), 1, 'V', vecso2(1:19), &
                                 .false._1)
                     call detrsd('CHAMP_GD', chsol)
 !
-                    vesto2='&&OP0152.VEST2'
-                    call prstoc(vecso2, vesto2, ilires, ilires, iphi2,&
+                    vesto2 = '&&OP0152.VEST2'
+                    call prstoc(vecso2, vesto2, ilires, ilires, iphi2, &
                                 nbvale, nbrefe, nbdesc)
-                endif
+                end if
 !
             end do
-        endif
-    endif
+        end if
+    end if
 !
     call jeexin(criter(1:19)//'.CRTI', iret)
     if (iret .ne. 0) then
         call jedetr(criter(1:19)//'.CRTI')
         call jedetr(criter(1:19)//'.CRTR')
         call jedetr(criter(1:19)//'.CRDE')
-    endif
+    end if
 !
 !----------------------------------------------------------------
     call jedema()

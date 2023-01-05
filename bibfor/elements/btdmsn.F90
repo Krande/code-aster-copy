@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
+subroutine btdmsn(ind, nb1, intsn, npgsr, xr, &
                   btdm, btdf, btds, btild)
 !
     implicit none
@@ -28,7 +28,7 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !-----------------------------------------------------------------------
     integer :: i, i1, ind, j, k, l
 !-----------------------------------------------------------------------
-    l=702
+    l = 702
 !
 !     CALCUL DE BTILDMN, BTILDSN AUX PTS DE GAUSS NORMAL
 !            M=MEMBRANE, S=CISAILLEMENT, N=NORMAL
@@ -39,7 +39,7 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !
 !     MKBARRE = FONCTIONS DE FORME ASSOCIEES AUX PTS DE GAUSS REDUITS
 !
-    i1=l+4*(intsn-1)
+    i1 = l+4*(intsn-1)
 !
     if (ind .eq. 0) then
 !
@@ -49,17 +49,17 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !
         do i = 1, 3
             do j = 1, 5*nb1+2
-                btild(i,j)=btdf(i,j)+btdm(intsn,i,j)
+                btild(i, j) = btdf(i, j)+btdm(intsn, i, j)
             end do
         end do
 !
         do i = 1, 2
             do j = 1, 5*nb1+2
-                btild(3+i,j)=btds(intsn,i,j)
+                btild(3+i, j) = btds(intsn, i, j)
             end do
         end do
 !
-    else if (ind.eq.1) then
+    else if (ind .eq. 1) then
 !
 !     INTEGRATION SELECTIVE
 !     BTILD =  BTDF + BTDM  : BTDF, BTDM , BTDS
@@ -68,11 +68,11 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !
         do j = 1, 5*nb1+2
             do i = 1, 2
-                btdm1=0.d0
-                btds1=0.d0
+                btdm1 = 0.d0
+                btds1 = 0.d0
                 do k = 1, npgsr
-                    btdm1=btdm1+xr(i1+k)*btdm(k,i,j)
-                    btds1=btds1+xr(i1+k)*btds(k,i,j)
+                    btdm1 = btdm1+xr(i1+k)*btdm(k, i, j)
+                    btds1 = btds1+xr(i1+k)*btds(k, i, j)
                 end do
 !
 !                               BTILDMN + BTILDFN
@@ -80,12 +80,12 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !                               BTILDSN
 !
 !
-                btild(i,j)=btdm1+btdf(i,j)
-                btild(i+3,j)=btds1
+                btild(i, j) = btdm1+btdf(i, j)
+                btild(i+3, j) = btds1
             end do
-            btdm1=0.d0
+            btdm1 = 0.d0
             do k = 1, npgsr
-                btdm1=btdm1+xr(i1+k)*btdm(k,3,j)
+                btdm1 = btdm1+xr(i1+k)*btdm(k, 3, j)
             end do
 !
 !                               BTILDMN + BTILDFN
@@ -93,9 +93,9 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !                               BTILDSN
 !
 !
-            btild(3,j)=btdm1+btdf(3,j)
+            btild(3, j) = btdm1+btdf(3, j)
         end do
 !
-    endif
+    end if
 !
 end subroutine

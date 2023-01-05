@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,11 @@ subroutine turigi(nomte, nbrddl, k)
 !     VARIABLES LOCALES
 !
     integer :: nbres, icoude, jnbspi, nbsecm, nbcoum, nspg
-    parameter (nbres=9)
+    parameter(nbres=9)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
-    parameter (nbsecm=32,nbcoum=10)
+    parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: valres(nbres), valpar, theta
     real(kind=8) :: e, nu, h, a, l, r1
@@ -76,15 +76,15 @@ subroutine turigi(nomte, nbrddl, k)
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
-    data noms_cara1 /'R1','EP1'/
+    data noms_cara1/'R1', 'EP1'/
 !-----------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2, &
                      jgano=jgano)
 !
 !     DIMENSION DE LA MATRICE STOCKEE SOUS FORME VECTEUR
-    nc = nbrddl* (nbrddl+1)/2
+    nc = nbrddl*(nbrddl+1)/2
 !
     pi = r8pi()
     deuxpi = 2.d0*pi
@@ -95,14 +95,14 @@ subroutine turigi(nomte, nbrddl, k)
 !
 !     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
     poicou(1) = 1.d0/3.d0
-    do i = 1, nbcou - 1
+    do i = 1, nbcou-1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
     end do
     poicou(2*nbcou) = 4.d0/3.d0
     poicou(2*nbcou+1) = 1.d0/3.d0
     poisec(1) = 1.d0/3.d0
-    do i = 1, nbsec - 1
+    do i = 1, nbsec-1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
     end do
@@ -128,19 +128,19 @@ subroutine turigi(nomte, nbrddl, k)
     end do
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
-    call carcou(zr(lorien), l, pgl, rayon, theta,&
-                pgl1, pgl2, pgl3, pgl4, nno,&
+    call carcou(zr(lorien), l, pgl, rayon, theta, &
+                pgl1, pgl2, pgl3, pgl4, nno, &
                 omega, icoud2)
     if (icoud2 .ge. 10) then
-        icoude = icoud2 - 10
+        icoude = icoud2-10
         mmt = 0
         if (h/a .gt. (0.25d0)) then
             call utmess('A', 'ELEMENTS4_54')
-        endif
+        end if
     else
         icoude = icoud2
         mmt = 1
-    endif
+    end if
     call jevech('PMATERC', 'L', imate)
     nomres(1) = 'E'
     nomres(2) = 'NU'
@@ -148,52 +148,52 @@ subroutine turigi(nomte, nbrddl, k)
 !       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 !          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
 !          ------------------------------------------------------------
-    nspg=(2*nbsec + 1)*(2*nbcou + 1)
-    iret=0
-    call moytem('RIGI', npg, nspg, '+', valpar,&
+    nspg = (2*nbsec+1)*(2*nbcou+1)
+    iret = 0
+    call moytem('RIGI', npg, nspg, '+', valpar, &
                 iret)
-    if (iret .ne. 0) valpar=0.d0
+    if (iret .ne. 0) valpar = 0.d0
     nbpar = 1
     nompar = 'TEMP'
-    call rcvala(zi(imate), ' ', 'ELAS', nbpar, nompar,&
-                [valpar], 2, nomres, valres, icodre,&
+    call rcvala(zi(imate), ' ', 'ELAS', nbpar, nompar, &
+                [valpar], 2, nomres, valres, icodre, &
                 1)
     e = valres(1)
     nu = valres(2)
 ! DEFINITION DE LA MATRICE DE COMPORTEMENT C
 !
-    beta = 1.d0/ (1.d0-nu**2)
-    g = 1.d0/ (2.d0* (1.d0+nu))
+    beta = 1.d0/(1.d0-nu**2)
+    g = 1.d0/(2.d0*(1.d0+nu))
     cisail = 1.d0
 !
 ! ON MULTIPLIERA PAR E PLUS LOIN
 !
-    c(1,1) = beta
-    c(1,2) = nu*beta
-    c(1,3) = 0.d0
-    c(1,4) = 0.d0
+    c(1, 1) = beta
+    c(1, 2) = nu*beta
+    c(1, 3) = 0.d0
+    c(1, 4) = 0.d0
 !
-    c(2,1) = nu*beta
-    c(2,2) = beta
-    c(2,3) = 0.d0
-    c(2,4) = 0.d0
+    c(2, 1) = nu*beta
+    c(2, 2) = beta
+    c(2, 3) = 0.d0
+    c(2, 4) = 0.d0
 !
-    c(3,1) = 0.d0
-    c(3,2) = 0.d0
-    c(3,3) = g
-    c(3,4) = 0.d0
+    c(3, 1) = 0.d0
+    c(3, 2) = 0.d0
+    c(3, 3) = g
+    c(3, 4) = 0.d0
 !
-    c(4,1) = 0.d0
-    c(4,2) = 0.d0
-    c(4,3) = 0.d0
-    c(4,4) = g*cisail
+    c(4, 1) = 0.d0
+    c(4, 2) = 0.d0
+    c(4, 3) = 0.d0
+    c(4, 4) = g*cisail
 !
 !
 !     FIN DE LA CONSTRUCTION DE LA MATRICE DE COMPORTEMENT C
 !
 !  INITIALISATION DE LA MATRICE K
 !
-    k(:,:) = 0.d0
+    k(:, :) = 0.d0
 !
 ! BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -201,36 +201,36 @@ subroutine turigi(nomte, nbrddl, k)
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
-        do icou = 1, 2*nbcou + 1
+        do icou = 1, 2*nbcou+1
             if (mmt .eq. 0) then
                 r = a
             else
-                r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
-            endif
+                r = a+(icou-1)*h/(2.d0*nbcou)-h/2.d0
+            end if
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 !
-            do isect = 1, 2*nbsec + 1
+            do isect = 1, 2*nbsec+1
                 if (icoude .eq. 0) then
-                    call bcoude(igau, icou, isect, l, h,&
-                                a, m, nno, nbcou, nbsec,&
+                    call bcoude(igau, icou, isect, l, h, &
+                                a, m, nno, nbcou, nbsec, &
                                 zr(ivf), zr(idfdk), zr(jdfd2), mmt, b)
-                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec( isect)* (l/2.d0)*h*deuxpi/ (4.&
+                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.&
                             &d0*nbcou*nbsec)*r
 !
-                else if (icoude.eq.1) then
-                    fi = (isect-1)*deuxpi/ (2.d0*nbsec)
+                else if (icoude .eq. 1) then
+                    fi = (isect-1)*deuxpi/(2.d0*nbsec)
 !               FI = FI - OMEGA
                     sinfi = sin(fi)
-                    l = theta* (rayon+r*sinfi)
-                    call bcoudc(igau, icou, isect, h, a,&
-                                m, omega, xpg, nno, nbcou,&
-                                nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon,&
+                    l = theta*(rayon+r*sinfi)
+                    call bcoudc(igau, icou, isect, h, a, &
+                                m, omega, xpg, nno, nbcou, &
+                                nbsec, zr(ivf), zr(idfdk), zr(jdfd2), rayon, &
                                 theta, mmt, b)
-                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec( isect)* (l/2.d0)*h*deuxpi/ (4.&
+                    poids = zr(ipoids-1+igau)*poicou(icou)*poisec(isect)*(l/2.d0)*h*deuxpi/(4.&
                             &d0*nbcou*nbsec)*r
 !
-                endif
+                end if
 !  LE DERNIER TERME C'EST R DU  R DFI DX DZETA
 !
                 call kcoude(nbrddl, poids, b, c, k)
@@ -244,7 +244,7 @@ subroutine turigi(nomte, nbrddl, k)
 !
     do i = 1, nbrddl
         do j = 1, nbrddl
-            k(i,j) = e*k(i,j)
+            k(i, j) = e*k(i, j)
         end do
     end do
 !
@@ -253,10 +253,10 @@ subroutine turigi(nomte, nbrddl, k)
 !
     if (icoude .eq. 0) then
         call klg(nno, nbrddl, pgl, k)
-    else if (icoude.eq.1) then
-        call klgcou(nno, nbrddl, pgl1, pgl2, pgl3,&
+    else if (icoude .eq. 1) then
+        call klgcou(nno, nbrddl, pgl1, pgl2, pgl3, &
                     pgl4, k)
-    endif
+    end if
 !
 ! STOCKAGE DE LA MATRICE DE RIGIDITE
 !

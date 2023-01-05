@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmforc_corr(list_func_acti,&
-                       model         , cara_elem      , nume_dof,&
-                       list_load     , sddyna         ,&
-                       ds_material   , ds_constitutive,&
-                       ds_measure    , &
-                       sddisc        , nume_inst      ,&
-                       hval_incr     , hval_algo      ,&
-                       hval_veelem   , hval_veasse    ,&
+subroutine nmforc_corr(list_func_acti, &
+                       model, cara_elem, nume_dof, &
+                       list_load, sddyna, &
+                       ds_material, ds_constitutive, &
+                       ds_measure, &
+                       sddisc, nume_inst, &
+                       hval_incr, hval_algo, &
+                       hval_veelem, hval_veasse, &
                        hval_measse)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -45,17 +45,17 @@ implicit none
 #include "asterfort/nonlinLoadCompute.h"
 #include "asterfort/nonlinSubStruCompute.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=24), intent(in) :: model, cara_elem, nume_dof
-character(len=19), intent(in) :: list_load, sddyna
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_Measure), intent(inout) :: ds_measure
-character(len=19), intent(in) :: sddisc
-integer, intent(in) :: nume_inst
-character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
-character(len=19), intent(in) :: hval_measse(*)
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: model, cara_elem, nume_dof
+    character(len=19), intent(in) :: list_load, sddyna
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
+    character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
+    character(len=19), intent(in) :: hval_measse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,70 +95,70 @@ character(len=19), intent(in) :: hval_measse(*)
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE11_2')
-    endif
+    end if
 !
 ! - Get time
 !
     ASSERT(nume_inst .gt. 0)
-    time_prev = diinst(sddisc,nume_inst-1)
-    time_curr = diinst(sddisc,nume_inst)
+    time_prev = diinst(sddisc, nume_inst-1)
+    time_curr = diinst(sddisc, nume_inst)
 !
 ! - Active functionnalities
 !
-    l_dyna   = ndynlo(sddyna,'DYNAMIQUE')
-    l_impe   = ndynlo(sddyna,'IMPE_ABSO')
-    l_ammo   = ndynlo(sddyna,'AMOR_MODAL')
-    l_macr   = isfonc(list_func_acti,'MACR_ELEM_STAT')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
+    l_impe = ndynlo(sddyna, 'IMPE_ABSO')
+    l_ammo = ndynlo(sddyna, 'AMOR_MODAL')
+    l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 !
 ! - Compute loads (undead)
 !
-    call nonlinLoadCompute('VARI'     , list_load      ,&
-                           model      , cara_elem      , nume_dof  , list_func_acti,&
-                           ds_material, ds_constitutive, ds_measure,&
-                           time_prev  , time_curr      ,&
-                           hval_incr  , hval_algo      ,&
+    call nonlinLoadCompute('VARI', list_load, &
+                           model, cara_elem, nume_dof, list_func_acti, &
+                           ds_material, ds_constitutive, ds_measure, &
+                           time_prev, time_curr, &
+                           hval_incr, hval_algo, &
                            hval_veelem, hval_veasse)
 !
 ! - Compute sub-structuring effect on second member
 !
     if (l_macr) then
-        call nmchex(hval_incr  , 'VALINC', 'DEPPLU', disp_curr)
+        call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
         call nmchex(hval_veasse, 'VEASSE', 'CNSSTR', cnsstr)
-        call nonlinSubStruCompute(ds_measure , disp_curr,&
+        call nonlinSubStruCompute(ds_measure, disp_curr, &
                                   hval_measse, cnsstr)
-    endif
+    end if
 
 !
 ! - Compute effect of dynamic forces (from time discretization scheme)
 !
     if (l_dyna) then
-        call nmchex(hval_incr  , 'VALINC', 'ACCPLU', acce_curr)
-        call nmchex(hval_incr  , 'VALINC', 'VITPLU', vite_curr)
+        call nmchex(hval_incr, 'VALINC', 'ACCPLU', acce_curr)
+        call nmchex(hval_incr, 'VALINC', 'VITPLU', vite_curr)
         call nmchex(hval_veasse, 'VEASSE', 'CNDYNA', cndyna)
-        call ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr,&
+        call ndfdyn(sddyna, hval_measse, ds_measure, vite_curr, acce_curr, &
                     cndyna)
-    endif
+    end if
 !
 ! - Compute modal damping
 !
     if (l_dyna) then
         if (l_ammo) then
-            call nonlinDynaMDampCompute('Correction', sddyna    ,&
-                                        nume_dof    , ds_measure,&
-                                        hval_incr   , hval_veasse)
-        endif
-    endif
+            call nonlinDynaMDampCompute('Correction', sddyna, &
+                                        nume_dof, ds_measure, &
+                                        hval_incr, hval_veasse)
+        end if
+    end if
 !
 ! - Compute impedance
 !
     if (l_dyna) then
         if (l_impe) then
-            call nonlinDynaImpeCompute('Correction', sddyna    ,&
-                                       model       , nume_dof  ,&
-                                       ds_material , ds_measure,&
-                                       hval_incr   ,&
-                                       hval_veelem , hval_veasse)
-        endif
-    endif
+            call nonlinDynaImpeCompute('Correction', sddyna, &
+                                       model, nume_dof, &
+                                       ds_material, ds_measure, &
+                                       hval_incr, &
+                                       hval_veelem, hval_veasse)
+        end if
+    end if
 !
 end subroutine

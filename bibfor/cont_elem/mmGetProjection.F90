@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,24 +17,24 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmGetProjection(i_reso_geom, wpg      ,&
-                           xpc        , ypc      , xpr      , ypr      , tau1      , tau2      ,&
-                           xpc_prev_  , ypc_prev_, xpr_prev_, ypr_prev_, tau1_prev_, tau2_prev_,&
+subroutine mmGetProjection(i_reso_geom, wpg, &
+                           xpc, ypc, xpr, ypr, tau1, tau2, &
+                           xpc_prev_, ypc_prev_, xpr_prev_, ypr_prev_, tau1_prev_, tau2_prev_, &
                            wpg_prev_)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "Contact_type.h"
 !
-integer, intent(in) :: i_reso_geom
-real(kind=8), intent(out) :: wpg
-real(kind=8), intent(out) :: xpc, ypc, xpr, ypr
-real(kind=8), intent(out) :: tau1(3), tau2(3)
-real(kind=8), optional, intent(out) :: xpc_prev_, ypc_prev_, xpr_prev_, ypr_prev_
-real(kind=8), optional, intent(out) :: tau1_prev_(3), tau2_prev_(3)
-real(kind=8), optional, intent(out) :: wpg_prev_
+    integer, intent(in) :: i_reso_geom
+    real(kind=8), intent(out) :: wpg
+    real(kind=8), intent(out) :: xpc, ypc, xpr, ypr
+    real(kind=8), intent(out) :: tau1(3), tau2(3)
+    real(kind=8), optional, intent(out) :: xpc_prev_, ypc_prev_, xpr_prev_, ypr_prev_
+    real(kind=8), optional, intent(out) :: tau1_prev_(3), tau2_prev_(3)
+    real(kind=8), optional, intent(out) :: wpg_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ real(kind=8), optional, intent(out) :: wpg_prev_
         ypc_prev = zr(jpcf-1+39)
         xpr_prev = zr(jpcf-1+40)
         ypr_prev = zr(jpcf-1+41)
-    endif
+    end if
     tau1_prev(1) = zr(jpcf-1+32)
     tau1_prev(2) = zr(jpcf-1+33)
     tau1_prev(3) = zr(jpcf-1+34)

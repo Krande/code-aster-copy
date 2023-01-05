@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cpnpq8_2(main,numa,coor,ind,nomnoe)
+subroutine cpnpq8_2(main, numa, coor, ind, nomnoe)
 !
 !
     implicit none
@@ -37,7 +37,7 @@ subroutine cpnpq8_2(main,numa,coor,ind,nomnoe)
 !
     integer, intent(in) :: ind
     integer, intent(in) :: numa
-    real(kind=8),intent(out) :: coor(3, *)
+    real(kind=8), intent(out) :: coor(3, *)
     character(len=8), intent(in) :: main
     character(len=24), intent(in) :: nomnoe
 !
@@ -59,30 +59,30 @@ subroutine cpnpq8_2(main,numa,coor,ind,nomnoe)
     integer :: inc1, inc2, aux, nbso
     real(kind=8) ::xe(3), xp(3), tabar(8*3), tole
 !
-    character(len=8) :: nomnd,eletyp,mailut
+    character(len=8) :: nomnd, eletyp, mailut
     character(len=24) :: valk
     character(len=16) :: knume
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 
-    tole=1.d-9
-    nbso=4
-    eletyp='QU4'
-    mailut=main
-    call jeveuo(jexnum(mailut//'.CONNEX',numa),'L',jtab)
+    tole = 1.d-9
+    nbso = 4
+    eletyp = 'QU4'
+    mailut = main
+    call jeveuo(jexnum(mailut//'.CONNEX', numa), 'L', jtab)
 !
 ! - INSERTION DU NOUVEAU NOEUD
 ! ------ NOM DU NOEUD CREE
     call codent(ind, 'G', knume)
-    if (knume(1:1)=='*') then
+    if (knume(1:1) == '*') then
         ASSERT(.false.)
-    endif
+    end if
     lgnd = lxlgut(knume)
     if (lgnd+1 .gt. 8) then
         call utmess('F', 'ALGELINE_16')
-    endif
-    nomnd = 'C' // knume(1:lgnd)
+    end if
+    nomnd = 'C'//knume(1:lgnd)
 ! ------ DECLARATION DU NOEUD CREE
     call jeexin(jexnom(nomnoe, nomnd), iret)
     if (iret .eq. 0) then
@@ -90,25 +90,25 @@ subroutine cpnpq8_2(main,numa,coor,ind,nomnoe)
     else
         valk = nomnd
         call utmess('F', 'ALGELINE4_5', sk=valk)
-    endif
+    end if
 ! --- CALCUL DES COORDONNEES DES NOUVEAUX NOEUDS
 
-    do  inc1=1, nbso
-        lino(inc1)= zi(jtab+inc1-1)
+    do inc1 = 1, nbso
+        lino(inc1) = zi(jtab+inc1-1)
     end do
-    aux=1
-    do inc1=1,nbso
-        do inc2=1,3
-                tabar(aux+inc2-1) =  coor(inc2,lino(inc1))
+    aux = 1
+    do inc1 = 1, nbso
+        do inc2 = 1, 3
+            tabar(aux+inc2-1) = coor(inc2, lino(inc1))
         end do
-        aux=aux+3
+        aux = aux+3
     end do
 
 ! --- NOEUD 1
-    xp(1:3)=0.d0
-    xe(1:3)=0.d0
+    xp(1:3) = 0.d0
+    xe(1:3) = 0.d0
     call reerel(eletyp, nbso, 3, tabar, xe, xp)
-    coor(1:3,ind) = xp(1:3)
+    coor(1:3, ind) = xp(1:3)
 
     call jedema()
 end subroutine

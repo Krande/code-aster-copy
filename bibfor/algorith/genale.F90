@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine genale(vec1, vec2, r, v, x,&
+subroutine genale(vec1, vec2, r, v, x, &
                   dim, long, lonv, ln)
     implicit none
 !     IN  : VEC1  : VECTEUR DES VALEURS DE LA MATRICE INTERSPECTRALE
@@ -38,15 +38,15 @@ subroutine genale(vec1, vec2, r, v, x,&
     integer :: i, icomp, ix, iy, j, kf, kk
     integer :: ln, ln2
 !-----------------------------------------------------------------------
-    ln2=ln*2
+    ln2 = ln*2
     do kf = 1, ln
         icomp = 0
         do j = 1, dim
             do i = 1, dim
                 icomp = icomp+1
-                ix = ln + kf + (icomp-1)*ln2
-                iy = ix + ln
-                r(i,j) = dcmplx(vec1(ix),vec1(iy))
+                ix = ln+kf+(icomp-1)*ln2
+                iy = ix+ln
+                r(i, j) = dcmplx(vec1(ix), vec1(iy))
             end do
         end do
 !
@@ -54,8 +54,8 @@ subroutine genale(vec1, vec2, r, v, x,&
         call genere(r, dim, v, x)
 !
         do kk = 1, dim
-            ix = kf + (kk-1)*ln2
-            iy = ix + ln
+            ix = kf+(kk-1)*ln2
+            iy = ix+ln
             vec2(ix) = dble(v(kk))
             vec2(iy) = dimag(v(kk))
         end do

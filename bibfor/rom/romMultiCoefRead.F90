@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine romMultiCoefRead(ds_multicoef, keywfact, iocc)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
@@ -58,10 +58,10 @@ implicit none
     nocc_func_c = 0
     if (getexm(keywfact, 'FONC_R') .eq. 1) then
         call getvid(keywfact, 'FONC_R', iocc=iocc, nbret=nocc_func_r)
-    endif
+    end if
     if (getexm(keywfact, 'FONC_C') .eq. 1) then
         call getvid(keywfact, 'FONC_C', iocc=iocc, nbret=nocc_func_c)
-    endif
+    end if
 !
 ! - Get type of coefficient
 !
@@ -76,33 +76,33 @@ implicit none
 !
     if (l_func) then
         if (l_real) then
-            call getvid(keywfact, 'FONC_R', iocc=iocc,&
-                        scal = ds_multicoef%func_name)
+            call getvid(keywfact, 'FONC_R', iocc=iocc, &
+                        scal=ds_multicoef%func_name)
         elseif (l_cplx) then
-            call getvid(keywfact, 'FONC_C', iocc=iocc,&
-                        scal = ds_multicoef%func_name)
+            call getvid(keywfact, 'FONC_C', iocc=iocc, &
+                        scal=ds_multicoef%func_name)
         else
             ASSERT(.false.)
-        endif
+        end if
     elseif (l_cste) then
         if (l_real) then
-            call getvr8(keywfact, 'COEF_R', iocc=iocc,&
-                        scal = ds_multicoef%coef_cste_real)
+            call getvr8(keywfact, 'COEF_R', iocc=iocc, &
+                        scal=ds_multicoef%coef_cste_real)
         elseif (l_cplx) then
-            call getvc8(keywfact, 'COEF_C', iocc=iocc,&
-                        scal = ds_multicoef%coef_cste_cplx)
+            call getvc8(keywfact, 'COEF_C', iocc=iocc, &
+                        scal=ds_multicoef%coef_cste_cplx)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! - Save informations
 !
-    ds_multicoef%l_cste  = l_cste
-    ds_multicoef%l_func  = l_func
-    ds_multicoef%l_cplx  = l_cplx
-    ds_multicoef%l_real  = l_real
+    ds_multicoef%l_cste = l_cste
+    ds_multicoef%l_func = l_func
+    ds_multicoef%l_cplx = l_cplx
+    ds_multicoef%l_real = l_real
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine extrac(interp, prec, crit, nbinst, ti,&
+subroutine extrac(interp, prec, crit, nbinst, ti, &
                   temps, y, neq, xtract, ier, &
                   index)
     implicit none
@@ -63,55 +63,55 @@ subroutine extrac(interp, prec, crit, nbinst, ti,&
 !
     if (present(index)) index = -1
     prec2 = prec
-    if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(1)
-    if (abs( temps - ti(1) ) .le. prec2) then
+    if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(1)
+    if (abs(temps-ti(1)) .le. prec2) then
         call dcopy(neq, y(1), 1, xtract, 1)
         if (present(index)) index = 1
         goto 9999
-    endif
-    if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(nbinst)
-    if (abs( temps - ti(nbinst) ) .le. prec2) then
+    end if
+    if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(nbinst)
+    if (abs(temps-ti(nbinst)) .le. prec2) then
         call dcopy(neq, y((nbinst-1)*neq+1), 1, xtract, 1)
         if (present(index)) index = nbinst
         goto 9999
-    endif
+    end if
 !
     if (temps .lt. ti(1)) then
-        ier = ier + 1
+        ier = ier+1
         goto 9999
-    endif
+    end if
     if (temps .gt. ti(nbinst)) then
-        ier = ier + 1
+        ier = ier+1
         goto 9999
-    endif
+    end if
     if (interp(1:3) .eq. 'NON') then
 !
 !        --- PAS D'INTERPOLATION ---
         do i = 2, nbinst-1
-            if (crit(1:7) .eq. 'RELATIF') prec2 = prec * ti(i)
-            if (abs( temps - ti(i) ) .le. prec2) then
+            if (crit(1:7) .eq. 'RELATIF') prec2 = prec*ti(i)
+            if (abs(temps-ti(i)) .le. prec2) then
                 if (present(index)) index = i
                 call dcopy(neq, y((i-1)*neq+1), 1, xtract, 1)
                 goto 9999
-            endif
+            end if
         end do
-        ier = ier + 1
+        ier = ier+1
     else
 !
 !        --- INTERPOLATION LINEAIRE ---
         do i = 1, nbinst-1
             if (temps .ge. ti(i) .and. temps .lt. ti(i+1)) then
                 if (present(index)) index = i
-                alpha = ( temps - ti(i) ) / ( ti(i+1) - ti(i) )
+                alpha = (temps-ti(i))/(ti(i+1)-ti(i))
                 call dcopy(neq, y((i-1)*neq+1), 1, xtract, 1)
                 call dscal(neq, (1.d0-alpha), xtract, 1)
-                call daxpy(neq, alpha, y(i*neq+1), 1, xtract,&
+                call daxpy(neq, alpha, y(i*neq+1), 1, xtract, &
                            1)
                 goto 9999
-            endif
+            end if
         end do
-        ier = ier + 1
-    endif
+        ier = ier+1
+    end if
 !
-9999  continue
+9999 continue
 end subroutine

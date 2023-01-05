@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
+subroutine as_msmsmi(fid, iterat, nom, dim, desc, &
                      typrep, nocomp, unit, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -40,13 +40,13 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
     med_int :: dim4, cret4, typre4, itera4
     fidm = to_med_idt(fid)
     itera4 = to_med_int(iterat)
-    call msmsmi(fidm, itera4, nom, dim4, dim4,&
+    call msmsmi(fidm, itera4, nom, dim4, dim4, &
                 desc, typre4, nocomp, unit, cret4)
     dim = to_aster_int(dim4)
     typrep = to_aster_int(typre4)
     cret = to_aster_int(cret4)
 #else
-    call msmsmi(fid, iterat, nom, dim, dim,&
+    call msmsmi(fid, iterat, nom, dim, dim, &
                 desc, typrep, nocomp, unit, cret)
 #endif
 !

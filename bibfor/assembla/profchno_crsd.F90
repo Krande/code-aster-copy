@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine profchno_crsd(prof_chnoz , base      , nb_equa     , meshz      , nb_ligrz,&
-                         nb_ecz     , gran_namez, prno_lengthz, l_coll_const)
+subroutine profchno_crsd(prof_chnoz, base, nb_equa, meshz, nb_ligrz, &
+                         nb_ecz, gran_namez, prno_lengthz, l_coll_const)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -76,34 +76,34 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     prno_length = 0
-    nb_ec       = 0
+    nb_ec = 0
     prof_chno = prof_chnoz
-    call detrsd('PROF_CHNO',prof_chno)
+    call detrsd('PROF_CHNO', prof_chno)
     if (present(nb_ligrz)) then
         nb_ligr = nb_ligrz
     else
         nb_ligr = 1
-    endif
+    end if
     if (present(nb_ecz)) then
         nb_ec = nb_ecz
     else
-        ASSERT(present(gran_namez).or.present(prno_lengthz))
+        ASSERT(present(gran_namez) .or. present(prno_lengthz))
         if (present(gran_namez)) then
             call dismoi('NB_EC', gran_namez, 'GRANDEUR', repi=nb_ec)
-        endif
-    endif
+        end if
+    end if
     if (present(meshz)) then
-        ASSERT(.not.present(prno_lengthz))
+        ASSERT(.not. present(prno_lengthz))
         call dismoi('NB_NO_MAILLA', meshz, 'MAILLAGE', repi=nb_node_mesh)
         l_pmesh = isParallelMesh(meshz)
-        if(.not.l_pmesh) then
+        if (.not. l_pmesh) then
             ASSERT(nb_equa > 0)
         end if
-    endif
+    end if
 !
 ! - Create object NUEQ
 !
-    call wkvect(prof_chno//'.NUEQ', base//' V I', max(1, nb_equa), vi = prchno_nueq)
+    call wkvect(prof_chno//'.NUEQ', base//' V I', max(1, nb_equa), vi=prchno_nueq)
     call jeecra(prof_chno//'.NUEQ', "LONUTI", nb_equa)
 !
 ! - Set to identity
@@ -114,7 +114,7 @@ implicit none
 !
 ! - Create object DEEQ
 !
-    call wkvect(prof_chno//'.DEEQ', base//' V I', max(1, 2*nb_equa), vi = prchno_deeq)
+    call wkvect(prof_chno//'.DEEQ', base//' V I', max(1, 2*nb_equa), vi=prchno_deeq)
     call jeecra(prof_chno//'.DEEQ', "LONUTI", 2*nb_equa)
 !
 ! - Create object LILI (name repertory)
@@ -126,7 +126,7 @@ implicit none
 !
     call jecroc(jexnom(prof_chno(1:19)//'.LILI', '&MAILLA'))
     call jenonu(jexnom(prof_chno//'.LILI', '&MAILLA'), i_ligr_mesh)
-    ASSERT(i_ligr_mesh.eq.1)
+    ASSERT(i_ligr_mesh .eq. 1)
 !
 ! - Length of first PRNO object (on mesh)
 !
@@ -134,7 +134,7 @@ implicit none
         prno_length = (2+nb_ec)*nb_node_mesh
     else
         prno_length = prno_lengthz
-    endif
+    end if
 !
 ! - Create object PRNO (collection)
 !
@@ -142,7 +142,7 @@ implicit none
         call jecrec(prof_chno//'.PRNO', base//' V I', 'NU', 'CONTIG', 'CONSTANT', nb_ligr)
     else
         call jecrec(prof_chno//'.PRNO', base//' V I', 'NU', 'CONTIG', 'VARIABLE', nb_ligr)
-    endif
+    end if
 !
 ! - Length of &MAILLA object in PRNO
 !

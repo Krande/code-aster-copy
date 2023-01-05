@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
-                  nmprox, cnbn, cplas, rpara, cief,&
-                  cdeps, cdtg, cier, cdepsp, dc,&
+subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
+                  nmprox, cnbn, cplas, rpara, cief, &
+                  cdeps, cdtg, cier, cdepsp, dc, &
                   bend)
     implicit none
 !
@@ -69,73 +69,73 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     normm = rpara(3)
 !
 !     CALCUL LA MATRICE HESSIENNE DU CRITERE DE PLASTICITE
-    call hplass(nmnbn, nmplas, nmdpla, nmddpl, bend,&
+    call hplass(nmnbn, nmplas, nmdpla, nmddpl, bend, &
                 h)
 !     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
-    call dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend,&
+    call dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend, &
                 u)
 !     CALCUL LE GRADIENT DU CRITERE DE PLASICITE
     call dfplgl(nmnbn, nmplas, nmdpla, bend, df)
 !
     do j = 1, 6
-        tdf(1,j) = df(j)
+        tdf(1, j) = df(j)
     end do
 !
     ddeps = matmul(cdtg, cdeps)
 !
     do j = 1, 6
-        tddeps(1,j) = ddeps(j)
+        tddeps(1, j) = ddeps(j)
     end do
 !
     dcu = matmul(dc, u)
 !
     do j = 1, 6
-        tdcu(1,j) = dcu(j)
+        tdcu(1, j) = dcu(j)
     end do
 !
     hdcu = matmul(h, dcu)
     cp1 = matmul(tddeps, h)
 !
     do j = 1, 6
-        cp1(1,j) = tdf(1,j) + 0.5d0*cp1(1,j)
+        cp1(1, j) = tdf(1, j)+0.5d0*cp1(1, j)
     end do
 !
     cp0 = matmul(cp1, ddeps)
 !
-    a0(1) = fplass(nmnbn,nmplas,bend) + cp0(1)
+    a0(1) = fplass(nmnbn, nmplas, bend)+cp0(1)
 !
     a1 = matmul(tdf, dcu)
     cp0 = matmul(tddeps, hdcu)
-    a1(1) = -a1(1) - cp0(1)
+    a1(1) = -a1(1)-cp0(1)
     cp0 = matmul(tdcu, hdcu)
-    a2(1) = 0.5d0 * cp0(1)
+    a2(1) = 0.5d0*cp0(1)
 !
 !     RESOLUTION DE L EQUATION DU SECOND DEGRE
-    call draac2(a2(1), a1(1), a0(1), xx(1), xx(2),&
+    call draac2(a2(1), a1(1), a0(1), xx(1), xx(2), &
                 nbxx)
 !
     do i = 1, nbxx
         if (xx(i) .ge. 0.d0) then
-            lambda=xx(i)
+            lambda = xx(i)
 !
             do j = 1, 6
-                cdepsp(j) = lambda * u(j)
+                cdepsp(j) = lambda*u(j)
             end do
 !
 !     CALCUL DE CNBN ET CDEPSP QUAND UN CRITERE PLASTIQUE EST ACTIVE
-            call nmnet1(zimat, nmnbn, cnbn, cplas, czef,&
-                        czeg, cief, cdeps, cdtg, cier,&
+            call nmnet1(zimat, nmnbn, cnbn, cplas, czef, &
+                        czeg, cief, cdeps, cdtg, cier, &
                         cdepsp, dc, normm)
 !
             if (cier .eq. 0) goto 60
-        endif
+        end if
     end do
 !
-    cier=3
+    cier = 3
 !
     call r8inir(6, 0.0d0, cdepsp, 1)
 !
- 60 continue
+60  continue
 !
     rpara(1) = czef
     rpara(2) = czeg

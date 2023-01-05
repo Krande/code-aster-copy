@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,17 +99,17 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !         PROLONGEMENT DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
                 call jeveuo(nomfon//'           .PROL', 'L', iprol)
 !         PROLONGEMENT A GAUCHE DE LA COURBE DE WOHLER EXCLU OU CONSTANT
-                if ((zk24(iprol-1+5)(1:1).eq.'E') .or. (zk24(iprol-1+ 5)(1:1).eq.'C')) then
-                    vallim=zr(ivalf)
+                if ((zk24(iprol-1+5) (1:1) .eq. 'E') .or. (zk24(iprol-1+5) (1:1) .eq. 'C')) then
+                    vallim = zr(ivalf)
                     if (salt .lt. vallim) then
-                        limit=.true.
-                    endif
-                endif
+                        limit = .true.
+                    end if
+                end if
                 goto 20
-            endif
+            end if
         end do
         call utmess('F', 'MODELISA4_89')
- 20     continue
+20      continue
 !
     else if (nomres .eq. 'MANSON_COFIN') then
 !
@@ -141,17 +141,17 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 call jeveuo(nomfon//'           .PROL', 'L', iprol)
 !        PROLONGEMENT A GAUCHE DE LA COURBE DE MANSON_COFFIN EXCLU OU
 !        CONSTANT
-                if ((zk24(iprol-1+5)(1:1).eq.'E') .or. (zk24(iprol-1+ 5)(1:1).eq.'C')) then
-                    vallim=zr(ivalf)
+                if ((zk24(iprol-1+5) (1:1) .eq. 'E') .or. (zk24(iprol-1+5) (1:1) .eq. 'C')) then
+                    vallim = zr(ivalf)
                     if (salt .lt. vallim) then
-                        limit=.true.
-                    endif
-                endif
+                        limit = .true.
+                    end if
+                end if
                 goto 40
-            endif
+            end if
         end do
         call utmess('F', 'MODELISA4_91')
- 40     continue
+40      continue
 !
     else if (nomres .eq. 'FORM_VIE') then
 !
@@ -159,9 +159,9 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
         chnom(20:24) = '.PROL'
         chnom(1:19) = forvie
         call jeveuo(chnom, 'L', iprol)
-        typfon = zk24(iprol-1+1)(1:8)
+        typfon = zk24(iprol-1+1) (1:8)
 !
-        call fonbpa(forvie, zk24(iprol), cbid, nbmx, np,&
+        call fonbpa(forvie, zk24(iprol), cbid, nbmx, np, &
                     nompf)
 !
         if (typfon .eq. 'FONCTION') then
@@ -179,35 +179,35 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 chnom(1:19) = forvie
                 call jeveuo(chnom, 'L', ivalf)
 !
-                if ((zk24(iprol-1+5)(1:1).eq.'E') .or. (zk24(iprol-1+ 5)(1:1).eq.'C')) then
-                    vallim=zr(ivalf)
+                if ((zk24(iprol-1+5) (1:1) .eq. 'E') .or. (zk24(iprol-1+5) (1:1) .eq. 'C')) then
+                    vallim = zr(ivalf)
                     if (salt .lt. vallim) then
-                        limit=.true.
-                    endif
-                endif
+                        limit = .true.
+                    end if
+                end if
                 goto 60
             end do
             call utmess('F', 'MODELISA4_91')
- 60         continue
+60          continue
 !
         else
 ! C'EST UNE FORMULE
 !
 ! VERIFIER QUE LA FORMULE A LA VARIABLE NRUPT = N_F
-            if ((nompf.ne. 'NBRUP') .or. (np .ne. 1)) then
+            if ((nompf .ne. 'NBRUP') .or. (np .ne. 1)) then
                 call utmess('F', 'FATIGUE1_93')
-            endif
+            end if
 !
-            call fointe('F', forvie, np, [nompf], [nlimim],&
+            call fointe('F', forvie, np, [nompf], [nlimim], &
                         vallim, ibid)
 !
             if (salt .lt. vallim) then
-                limit=.true.
-            endif
+                limit = .true.
+            end if
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedema()
 end subroutine

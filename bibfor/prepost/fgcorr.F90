@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine fgcorr(nbcycl, sigmin, sigmax, method, su,&
+subroutine fgcorr(nbcycl, sigmin, sigmax, method, su, &
                   rcorr)
     implicit none
 #include "jeveux.h"
@@ -43,17 +43,17 @@ subroutine fgcorr(nbcycl, sigmin, sigmax, method, su,&
         valmoy = (sigmax(i)+sigmin(i))/2.d0
         if (method .eq. 'GOODMAN') then
             if (valmoy .lt. su) then
-                rcorr(i) = 1.d0 - (valmoy/su)
+                rcorr(i) = 1.d0-(valmoy/su)
             else
                 call utmess('F', 'FATIGUE1_4')
-            endif
-        else if (method.eq.'GERBER') then
+            end if
+        else if (method .eq. 'GERBER') then
             if (valmoy .lt. su) then
-                rcorr(i) = 1.d0 - (valmoy/su)**2
+                rcorr(i) = 1.d0-(valmoy/su)**2
             else
                 call utmess('F', 'FATIGUE1_5')
-            endif
-        endif
+            end if
+        end if
     end do
 !
 end subroutine

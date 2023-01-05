@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rs_gettime(result_, nume, inst)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -49,10 +49,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result    = result_
-    inst      = r8vide()
-    call rsadpa(result, 'L', 1, 'INST', nume,&
+    result = result_
+    inst = r8vide()
+    call rsadpa(result, 'L', 1, 'INST', nume, &
                 0, sjv=j_inst)
-    inst      = zr(j_inst)
+    inst = zr(j_inst)
 
 end subroutine

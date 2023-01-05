@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine x195cb(tychr, nomgd, chou)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -55,8 +55,8 @@ implicit none
 !
     call jemarq()
     call getfac('COMB', nbocc)
-    ASSERT(nbocc.ge.1)
-    ASSERT(tychr.eq.'NOEU')
+    ASSERT(nbocc .ge. 1)
+    ASSERT(tychr .eq. 'NOEU')
 !
 !
 !     -- 1. CREATION DU CHAMP "OUT" SUR LE MODELE DU 1ER CHAMP "IN"
@@ -64,7 +64,7 @@ implicit none
 !     -- ATTENTION : LA COMMANDE PEUT ETRE REENTRANTE,
 !        IL NE FAUT PAS DETRUIRE CHOU TOUT DE SUITE.
     call getvid('COMB', 'CHAM_GD', iocc=1, scal=ch1, nbret=ib)
-    ch2='&&X195CB.CHOU'
+    ch2 = '&&X195CB.CHOU'
     call copisd('CHAMP', 'V', ch1, ch2)
 !     -- INITIALISATION A ZERO :
     call jeveuo(ch2//'.VALE', 'E', jvale2)
@@ -83,44 +83,44 @@ implicit none
         call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych1)
         if (tych1 .ne. 'NOEU') then
             call utmess('F', 'CREACHAMP1_10')
-        endif
+        end if
 !
         call dismoi('NOM_MAILLA', ch1, 'CHAMP', repk=ma1)
         if (ma1 .ne. ma2) then
             call utmess('F', 'CREACHAMP1_13')
-        endif
+        end if
 !
         call dismoi('PROF_CHNO', ch1, 'CHAM_NO', repk=pfcn1)
-        if (.not.idensd('PROF_CHNO',pfcn1,pfcn2)) then
+        if (.not. idensd('PROF_CHNO', pfcn1, pfcn2)) then
             call utmess('F', 'CREACHAMP1_12')
-        endif
+        end if
 !
         call jelira(ch1//'.VALE', 'LONMAX', n2)
         if (n2 .ne. n1) then
             ASSERT(.false.)
-        endif
+        end if
 !
         call dismoi('NOM_GD', ch1, 'CHAMP', repk=nomgd1)
         if (nomgd1 .ne. nomgd) then
             call utmess('F', 'CREACHAMP1_11')
-        endif
+        end if
 !
         call dismoi('TYPE_SCA', nomgd1, 'GRANDEUR', repk=tsca)
-        ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
+        ASSERT(tsca .eq. 'R' .or. tsca .eq. 'C')
 !
 !       -- CUMUL DES VALEURS :
         call jeveuo(ch1//'.VALE', 'L', jvale1)
         call getvr8('COMB', 'COEF_R', iocc=iocc, scal=coefr, nbret=ib)
-        ASSERT(ib.eq.1)
+        ASSERT(ib .eq. 1)
         if (tsca .eq. 'R') then
             do k = 1, n1
-                zr(jvale2-1+k)=zr(jvale2-1+k)+coefr*zr(jvale1-1+k)
+                zr(jvale2-1+k) = zr(jvale2-1+k)+coefr*zr(jvale1-1+k)
             end do
-        else if (tsca.eq.'C') then
+        else if (tsca .eq. 'C') then
             do k = 1, n1
-                zc(jvale2-1+k)=zc(jvale2-1+k)+coefr*zc(jvale1-1+k)
+                zc(jvale2-1+k) = zc(jvale2-1+k)+coefr*zc(jvale1-1+k)
             end do
-        endif
+        end if
     end do
 !
 !

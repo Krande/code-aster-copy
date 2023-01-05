@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 #include "asterfort/masyns.h"
 #include "asterfort/typmat.h"
 #include "asterfort/wkvect.h"
-integer :: nbmat, itysca
+    integer :: nbmat, itysca
     character(len=*) :: base, mataz, licoef, nu
     character(len=19) :: tlimat(nbmat)
 
@@ -77,14 +77,13 @@ integer :: nbmat, itysca
     licoe2 = licoef
     infc19 = infcha
 
-    ASSERT(cumul.eq.'ZERO'.or.cumul.eq.'CUMU')
+    ASSERT(cumul .eq. 'ZERO' .or. cumul .eq. 'CUMU')
     if (cumul .eq. 'ZERO') call detrsd('MATR_ASSE', matas)
 
-    ASSERT(nbmat.le.150)
+    ASSERT(nbmat .le. 150)
     do k = 1, nbmat
         tlima2(k) = tlimat(k)
     end do
-
 
 !   -- traitement de la liste des coef. multiplicateurs :
 !   ---------------------------------------------------------------
@@ -95,38 +94,33 @@ integer :: nbmat, itysca
         end do
     else
         call jeveuo(licoe2, 'L', ilicoe)
-    endif
-
+    end if
 
 !   -- preparation de la liste de matr_elem pour qu'ils soient
 !      du meme type (symetrique ou non) que la matr_asse :
 !   ---------------------------------------------------------------
-    matsym = typmat(nbmat,tlima2)
-
+    matsym = typmat(nbmat, tlima2)
 
 !   -- si matrice existe deja et qu'elle doit etre non-symetrique,
 !      on la de-symetrise :
 !   ---------------------------------------------------------------
     if (cumul .eq. 'CUMU') then
         call jeexin(matas//'.REFA', iret)
-        ASSERT(iret.gt.0)
+        ASSERT(iret .gt. 0)
         call jeveuo(matas//'.REFA', 'L', jrefa)
         if (matsym .eq. 'N' .and. zk24(jrefa-1+9) .eq. 'MS') call masyns(matas)
-    endif
-
+    end if
 
 !   -- assemblage proprement dit :
 !   -------------------------------
-    call assmam(base, matas, nbmat, tlima2, zr(ilicoe),&
+    call assmam(base, matas, nbmat, tlima2, zr(ilicoe), &
                 nu, cumul, itysca)
-
 
 !   -- traitement des charges cinematiques :
 !   ----------------------------------------
     call jeveuo(matas//'.REFA', 'L', jrefa)
-    ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
+    ASSERT(zk24(jrefa-1+3) .ne. 'ELIMF')
     call ascima(infc19, nu, matas, cumul)
-
 
 !   -- menage :
 !   -----------

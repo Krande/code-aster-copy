@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine epstmc(fami     , ndim  , instan, poum   , kpg   ,&
-                  ksp      , xyzgau, repere, j_mater, option,&
+subroutine epstmc(fami, ndim, instan, poum, kpg, &
+                  ksp, xyzgau, repere, j_mater, option, &
                   epsi_varc)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -88,32 +88,32 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (instan.eq.r8vide()) then
+    if (instan .eq. r8vide()) then
         nbpar = 0
     else
         nbpar = 1
-        nompar         = 'INST'
-        valpar         = instan
-    endif
+        nompar = 'INST'
+        valpar = instan
+    end if
     epsi_varc(1:6) = 0.d0
-    biot           = 0.d0
-    bendog         = 0.d0
-    kdessi         = 0.d0
+    biot = 0.d0
+    bendog = 0.d0
+    kdessi = 0.d0
 !
 ! - Get command variables
 !
-    call rcvarc(' ', 'HYDR', poum, fami, kpg,&
+    call rcvarc(' ', 'HYDR', poum, fami, kpg, &
                 ksp, hydr, iret)
-    if (iret .eq. 1) hydr=0.d0
-    call rcvarc(' ', 'SECH', poum, fami, kpg,&
+    if (iret .eq. 1) hydr = 0.d0
+    call rcvarc(' ', 'SECH', poum, fami, kpg, &
                 ksp, sech, iret)
-    if (iret .eq. 1) sech=0.d0
-    call rcvarc(' ', 'PTOT', poum, fami, kpg,&
+    if (iret .eq. 1) sech = 0.d0
+    call rcvarc(' ', 'PTOT', poum, fami, kpg, &
                 ksp, ptot, iret)
-    if (iret .eq. 1) ptot=0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, 1,&
+    if (iret .eq. 1) ptot = 0.d0
+    call rcvarc(' ', 'SECH', 'REF', fami, 1, &
                 1, sref, iret)
-    if (iret .eq. 1) sref=0.d0
+    if (iret .eq. 1) sref = 0.d0
 !
     if (option(11:14) .eq. 'HYDR') then
 !
@@ -123,19 +123,19 @@ implicit none
             call get_elas_id(j_mater, elas_id, elas_keyword)
             nomres(1) = 'B_ENDOGE'
             nbv = 1
-            call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                        ' ', elas_keyword, nbpar, nompar, [valpar],&
+            call rcvalb(fami, kpg, ksp, poum, j_mater, &
+                        ' ', elas_keyword, nbpar, nompar, [valpar], &
                         nbv, nomres, valres, icodre, 0)
             if (icodre(1) .eq. 0) then
                 bendog = valres(1)
-                epsi_varc(1) = - bendog*hydr
-                epsi_varc(2) = - bendog*hydr
-                epsi_varc(3) = - bendog*hydr
+                epsi_varc(1) = -bendog*hydr
+                epsi_varc(2) = -bendog*hydr
+                epsi_varc(3) = -bendog*hydr
             else
                 call utmess('I', 'COMPOR5_12')
-            endif
-        endif
-    else if (option(11:14).eq.'PTOT') then
+            end if
+        end if
+    else if (option(11:14) .eq. 'PTOT') then
 !
 ! ----- Fluid pressure strain
 !
@@ -143,58 +143,58 @@ implicit none
             phenom = 'THM_DIFFU'
             nomres(1) = 'BIOT_COEF'
             nbv = 1
-            call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                        ' ', phenom, nbpar, nompar, [valpar],&
+            call rcvalb(fami, kpg, ksp, poum, j_mater, &
+                        ' ', phenom, nbpar, nompar, [valpar], &
                         nbv, nomres, valres, icodre, 0)
             if (icodre(1) .eq. 0) then
                 biot = valres(1)
             else
                 biot = 0.d0
                 call utmess('I', 'COMPOR5_13')
-            endif
+            end if
             call get_elas_id(j_mater, elas_id, elas_keyword)
-            call get_elas_para(fami     , j_mater, poum, kpg, ksp, &
-                               elas_id  , elas_keyword,&
-                               time     = instan,&
-                               e_   = e, nu_ = nu )
+            call get_elas_para(fami, j_mater, poum, kpg, ksp, &
+                               elas_id, elas_keyword, &
+                               time=instan, &
+                               e_=e, nu_=nu)
             troisk = e/(1.d0-2.d0*nu)
             epsi_varc(1) = biot/troisk*ptot
             epsi_varc(2) = epsi_varc(1)
             epsi_varc(3) = epsi_varc(1)
-        endif
-    else if (option(11:14).eq.'SECH') then
+        end if
+    else if (option(11:14) .eq. 'SECH') then
 !
 ! ----- Drying strains
 !
         call get_elas_id(j_mater, elas_id, elas_keyword)
         nomres(1) = 'K_DESSIC'
         nbv = 1
-        call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                    ' ', elas_keyword, nbpar, nompar, [valpar],&
+        call rcvalb(fami, kpg, ksp, poum, j_mater, &
+                    ' ', elas_keyword, nbpar, nompar, [valpar], &
                     nbv, nomres, valres, icodre, 0)
         if (icodre(1) .eq. 0) then
             kdessi = valres(1)
         else
             kdessi = 0.d0
-        endif
-        epsi_varc(1) = - kdessi*(sref-sech)
-        epsi_varc(2) = - kdessi*(sref-sech)
-        epsi_varc(3) = - kdessi*(sref-sech)
-    else if (option(11:14).eq.'EPSA') then
+        end if
+        epsi_varc(1) = -kdessi*(sref-sech)
+        epsi_varc(2) = -kdessi*(sref-sech)
+        epsi_varc(3) = -kdessi*(sref-sech)
+    else if (option(11:14) .eq. 'EPSA') then
 !
 ! ----- User strains for command variables
 !
         do k = 1, 6
-            call rcvarc(' ', epsa(k), poum, fami, kpg,&
+            call rcvarc(' ', epsa(k), poum, fami, kpg, &
                         ksp, epsi_varc(k), iret)
-            if (iret .eq. 1) epsi_varc(k)=0.d0
+            if (iret .eq. 1) epsi_varc(k) = 0.d0
         end do
     else
 !
 ! ----- Thermic strains
 !
-        call calc_epth_elga(fami   , ndim  , poum  , kpg  , ksp,&
+        call calc_epth_elga(fami, ndim, poum, kpg, ksp, &
                             j_mater, xyzgau, repere, epsi_varc)
-    endif
+    end if
 !
 end subroutine

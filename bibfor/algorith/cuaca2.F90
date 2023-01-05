@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
+subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac, &
                   lmat, xjvmax)
 !
 !
@@ -111,24 +111,24 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
         ii = scib(iliac)
         dercol = scbl(ii)
         bloc = dercol*(dercol+1)/2
-        if (.not.zl(jouv-1+ii)) then
+        if (.not. zl(jouv-1+ii)) then
             if (ii .gt. 1) then
                 call jelibe(jexnum(matr//'.UALF', (ii-1)))
-                zl(jouv-2+ii)=.false.
-            endif
+                zl(jouv-2+ii) = .false.
+            end if
             call jeveuo(jexnum(matr//'.UALF', ii), 'E', jvale)
-            zl(jouv-1+ii)=.true.
-        endif
-        jva = jvale-1 + (iliac-1)*(iliac)/2-bloc
+            zl(jouv-1+ii) = .true.
+        end if
+        jva = jvale-1+(iliac-1)*(iliac)/2-bloc
         do jj = 1, iliac
             lljac = zi(jliac-1+jj)
             jdecal = zi(jpoi+lljac-1)
-            nbddl = zi(jpoi+lljac) - zi(jpoi+lljac-1)
-            jva = jva + 1
+            nbddl = zi(jpoi+lljac)-zi(jpoi+lljac-1)
+            jva = jva+1
             zr(jva) = 0.0d0
-            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jcm1a),&
+            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jcm1a), &
                         val)
-            zr(jva) = zr(jva) - val
+            zr(jva) = zr(jva)-val
             if (abs(zr(jva)) .gt. xjvmax) xjvmax = abs(zr(jva))
         end do
         call jelibe(jexnum(cm1a, lliac))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine cfimp1(phase, noma, sdcont_defi, sdcont_solv, ifm)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -96,21 +96,21 @@ implicit none
 !
 ! --- INFORMATIONS SUR CONTACT
 !
-    nbliai = cfdisd(sdcont_solv,'NBLIAI')
-    nbliac = cfdisd(sdcont_solv,'NBLIAC')
+    nbliai = cfdisd(sdcont_solv, 'NBLIAI')
+    nbliac = cfdisd(sdcont_solv, 'NBLIAC')
 !
 ! --- AFFICHAGE EN-TETE
 !
-    write(ifm,10)  nbliai
+    write (ifm, 10) nbliai
     if (phase .eq. 'INI') then
-        write(ifm,101) nbliac
-    else if (phase.eq.'FIN') then
-        write(ifm,301) nbliac
+        write (ifm, 101) nbliac
+    else if (phase .eq. 'FIN') then
+        write (ifm, 301) nbliac
     else
         ASSERT(.false.)
-    endif
+    end if
 !
-    write(ifm,20)
+    write (ifm, 20)
 !
 ! --- BOUCLE SUR LES LIAISONS
 !
@@ -132,18 +132,18 @@ implicit none
 !
 ! ----- NOM ET TYPE DU MAITRE
 !
-        call cfnoap(noma, sdcont_defi, typapp, entapp, nomapp,&
+        call cfnoap(noma, sdcont_defi, typapp, entapp, nomapp, &
                     type2)
 !
 ! ----- JEU
 !
         if (phase .eq. 'INI') then
             jeu = zr(jjeux+3*(iliai-1)+1-1)
-        else if (phase.eq.'FIN') then
+        else if (phase .eq. 'FIN') then
             jeu = zr(jjeuit+3*(iliai-1)+1-1)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! --- ACTIF OU NON ?
 !
@@ -151,29 +151,29 @@ implicit none
         do iliac = 1, nbliac
             if (zi(jliac-1+iliac) .eq. iliai) then
                 actif = 1
-            endif
+            end if
         end do
 !
 ! --- IMPRESSION
 !
         if (actif .eq. 1) then
             chaiac = ' ACTIVE (JEU: '
-            write (ifm,300) iliai,'(',nomnoe,type2,nomapp,'): ',&
-            chaiac,jeu,',TYPE: CONT.     )'
+            write (ifm, 300) iliai, '(', nomnoe, type2, nomapp, '): ', &
+                chaiac, jeu, ',TYPE: CONT.     )'
         else
             chaiac = ' LIBRE  (JEU: '
-            write (ifm,310) iliai,'(',nomnoe,type2,nomapp,'): ',&
-            chaiac,jeu,')'
+            write (ifm, 310) iliai, '(', nomnoe, type2, nomapp, '): ', &
+                chaiac, jeu, ')'
 !
-        endif
+        end if
     end do
 !
-10  format (' <CONTACT><LIAI> NOMBRE DE LIAISONS POSSIBLES           :', i8)
-20  format (' <CONTACT><LIAI> LISTE DES LIAISONS')
-101 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS DE CONTACT INITIALES:',i6)
-301 format (' <CONTACT><LIAI> NOMBRE DE LIAISONS DE CONTACT FINALES  :',i6)
-300 format (' <CONTACT><LIAI> LIAISON ',i5,a1,a16,a4,a8,a3,a14,1pe12.5,a20)
-310 format (' <CONTACT><LIAI> LIAISON ',i5,a1,a16,a4,a8,a3,a14,1pe12.5,a1)
+10  format(' <CONTACT><LIAI> NOMBRE DE LIAISONS POSSIBLES           :', i8)
+20  format(' <CONTACT><LIAI> LISTE DES LIAISONS')
+101 format(' <CONTACT><LIAI> NOMBRE DE LIAISONS DE CONTACT INITIALES:', i6)
+301 format(' <CONTACT><LIAI> NOMBRE DE LIAISONS DE CONTACT FINALES  :', i6)
+300 format(' <CONTACT><LIAI> LIAISON ', i5, a1, a16, a4, a8, a3, a14, 1pe12.5, a20)
+310 format(' <CONTACT><LIAI> LIAISON ', i5, a1, a16, a4, a8, a3, a14, 1pe12.5, a1)
 !
     call jedema()
 !

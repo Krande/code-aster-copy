@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine trprec(mcf, iocc, epsi, crit, prec,&
+subroutine trprec(mcf, iocc, epsi, crit, prec, &
                   crit2)
     implicit none
 #include "asterfort/getvtx.h"
@@ -42,14 +42,14 @@ subroutine trprec(mcf, iocc, epsi, crit, prec,&
     if (nc .eq. 0) then
         crit = 'RELATIF'
         crit2 = 'RELATIF'
-    else if (nc.eq.1) then
+    else if (nc .eq. 1) then
         call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
         crit2 = crit
     else
-        call getvtx(mcf, 'CRITERE', iocc=iocc, nbval=2, vect=critr,&
+        call getvtx(mcf, 'CRITERE', iocc=iocc, nbval=2, vect=critr, &
                     nbret=nc)
         crit = critr(1)
         crit2 = critr(2)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,17 +39,17 @@ subroutine utgtme(nbarg, nomarg, valarg, iret)
 !
 ! ----------------------------------------------------------------------
     real(kind=8) :: svuse, smxuse
-    common /statje/ svuse,smxuse
+    common/statje/svuse, smxuse
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
+    common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
     real(kind=8) :: vmumps, vpetsc, rlqmem, vminit, vmjdc
-    common /msolve/ vmumps,vpetsc,rlqmem,vminit,vmjdc
+    common/msolve/vmumps, vpetsc, rlqmem, vminit, vmjdc
 ! ----------------------------------------------------------------------
     integer :: k, iv(2), ival, lois
     character(len=8) :: nom
 ! ----------------------------------------------------------------------
     iret = 0
-    ASSERT(nbarg .ge.1)
+    ASSERT(nbarg .ge. 1)
     lois = loisem()
     iv(1) = 0
     iv(2) = 0
@@ -134,8 +134,8 @@ subroutine utgtme(nbarg, nomarg, valarg, iret)
             valarg(k) = rlqmem/(1024*1024)
 !
         else
-            iret = iret - 1
-        endif
+            iret = iret-1
+        end if
 !
     end do
 !

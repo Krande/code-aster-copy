@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine ivout(lout, n, ix, idigit, ifmt)
     integer :: i, ndigit, k1, k2, lll
     character(len=80) :: line
 !
-    lll = min ( len ( ifmt ), 80 )
+    lll = min(len(ifmt), 80)
     do i = 1, lll
         line(i:i) = '-'
     end do
@@ -60,8 +60,8 @@ subroutine ivout(lout, n, ix, idigit, ifmt)
         line(i:i) = ' '
     end do
 !
-    write ( lout, 2000 ) ifmt, line(1:lll)
-    2000 format ( /1x, a  /1x, a )
+    write (lout, 2000) ifmt, line(1:lll)
+2000 format(/1x, a/1x, a)
 !
     if (n .le. 0) goto 1005
     ndigit = idigit
@@ -76,28 +76,28 @@ subroutine ivout(lout, n, ix, idigit, ifmt)
         ndigit = -idigit
         if (ndigit .le. 4) then
             do k1 = 1, n, 10
-                k2 = min(n,k1+9)
-                write(lout,1000) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+9)
+                write (lout, 1000) k1, k2, (ix(i), i=k1, k2)
             end do
 !
         else if (ndigit .le. 6) then
             do k1 = 1, n, 7
-                k2 = min(n,k1+6)
-                write(lout,1001) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+6)
+                write (lout, 1001) k1, k2, (ix(i), i=k1, k2)
             end do
 !
         else if (ndigit .le. 10) then
             do k1 = 1, n, 5
-                k2 = min(n,k1+4)
-                write(lout,1002) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+4)
+                write (lout, 1002) k1, k2, (ix(i), i=k1, k2)
             end do
 !
         else
             do k1 = 1, n, 3
-                k2 = min(n,k1+2)
-                write(lout,1003) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+2)
+                write (lout, 1003) k1, k2, (ix(i), i=k1, k2)
             end do
-        endif
+        end if
 !
 !=======================================================================
 !             CODE FOR OUTPUT USING 132 COLUMNS FORMAT
@@ -107,36 +107,36 @@ subroutine ivout(lout, n, ix, idigit, ifmt)
 !
         if (ndigit .le. 4) then
             do k1 = 1, n, 20
-                k2 = min(n,k1+19)
-                write(lout,1000) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+19)
+                write (lout, 1000) k1, k2, (ix(i), i=k1, k2)
             end do
 !
         else if (ndigit .le. 6) then
             do k1 = 1, n, 15
-                k2 = min(n,k1+14)
-                write(lout,1001) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+14)
+                write (lout, 1001) k1, k2, (ix(i), i=k1, k2)
             end do
 !
         else if (ndigit .le. 10) then
             do k1 = 1, n, 10
-                k2 = min(n,k1+9)
-                write(lout,1002) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+9)
+                write (lout, 1002) k1, k2, (ix(i), i=k1, k2)
             end do
 !
         else
             do k1 = 1, n, 7
-                k2 = min(n,k1+6)
-                write(lout,1003) k1,k2,(ix(i),i=k1,k2)
+                k2 = min(n, k1+6)
+                write (lout, 1003) k1, k2, (ix(i), i=k1, k2)
             end do
-        endif
-    endif
-    write (lout,1004)
+        end if
+    end if
+    write (lout, 1004)
 !
-    1000 format(1x,i4,' - ',i4,':',20(1x,i5))
-    1001 format(1x,i4,' - ',i4,':',15(1x,i7))
-    1002 format(1x,i4,' - ',i4,':',10(1x,i11))
-    1003 format(1x,i4,' - ',i4,':',7(1x,i15))
-    1004 format(1x,' ')
+1000 format(1x, i4, ' - ', i4, ':', 20(1x, i5))
+1001 format(1x, i4, ' - ', i4, ':', 15(1x, i7))
+1002 format(1x, i4, ' - ', i4, ':', 10(1x, i11))
+1003 format(1x, i4, ' - ', i4, ':', 7(1x, i15))
+1004 format(1x, ' ')
 !
 1005 continue
 end subroutine

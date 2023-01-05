@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,22 +114,22 @@ subroutine pecap3(chgeoz, tempez, iomega)
     call dismoi('TYPE_RESU', temper, 'RESULTAT', repk=typres)
     if (typres .ne. 'EVOL_THER') then
         call utmess('F', 'UTILITAI3_57')
-    endif
+    end if
 !
 ! --- RECUPERATION DU NOMBRE D'ORDRES DU RESULTAT :
 !     -------------------------------------------
-    call rsutnu(temper, ' ', 0, knum, nbordr,&
+    call rsutnu(temper, ' ', 0, knum, nbordr, &
                 prec, crit, iret)
     if (nbordr .ne. 1) then
         call utmess('F', 'UTILITAI3_58', sk=temper)
-    endif
+    end if
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,TEMPER,1,' ')
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !
 ! --- RECUPERATION DU CHAMP DE TEMPERATURES DU RESULTAT :
 !     -------------------------------------------------
-    call rsexch('F', temper, 'TEMP', 0, chtemp,&
+    call rsexch('F', temper, 'TEMP', 0, chtemp, &
                 iret)
 !
 ! --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
@@ -154,8 +154,8 @@ subroutine pecap3(chgeoz, tempez, iomega)
     lpaout(1) = 'PCASECT'
     lchout(1) = '&&PECAP3.INTEG1'
 !
-    call calcul('S', 'CARA_GAUCHI', ligrth, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
+    call calcul('S', 'CARA_GAUCHI', ligrth, 2, lchin, &
+                lpain, 1, lchout, lpaout, 'V', &
                 'OUI')
 !
 ! --- SOMMATION DES INTEGRALES PRECEDENTES SUR LA SECTION DE LA POUTRE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,11 +48,11 @@ subroutine te0316(option, nomte)
 !
     real(kind=8) :: r
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    ndi = nno* (nno+1)/2
+    ndi = nno*(nno+1)/2
     laxi = .false.
-    if (lteatt('AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS', 'OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATTTR', 'E', imattt)
@@ -69,7 +69,7 @@ subroutine te0316(option, nomte)
         ny = 0.0d0
 !
 ! ON CALCULE L ACCEL AU POINT DE GAUSS
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
         norm(1) = nx
         norm(2) = ny
@@ -79,15 +79,15 @@ subroutine te0316(option, nomte)
         if (laxi) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom+2* (i-1))*zr(ivf+ldec+i-1)
+                r = r+zr(igeom+2*(i-1))*zr(ivf+ldec+i-1)
             end do
             poids = poids*r
-        endif
+        end if
 !
         do i = 1, nno
             do j = 1, i
-                ij = (i-1)*i/2 + j
-                zr(imattt+ij-1) = zr(imattt+ij-1) + poids*norm(1)*zr( ivf+ldec+i-1)* zr(ivf+ldec+&
+                ij = (i-1)*i/2+j
+                zr(imattt+ij-1) = zr(imattt+ij-1)+poids*norm(1)*zr(ivf+ldec+i-1)*zr(ivf+ldec+&
                                   &j-1)
             end do
         end do

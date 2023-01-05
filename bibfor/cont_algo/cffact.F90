@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine cffact(ldscon, isto, nbliac, &
                   indfac, lechec)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
@@ -68,16 +68,16 @@ implicit none
     lechec = .false.
     if (indfac .le. nbliac) then
         if (niv .ge. 2) then
-            write(ifm,*)'<CONTACT><CALC> FACTORISATION MATRICE CONTACT '
-        endif
+            write (ifm, *) '<CONTACT><CALC> FACTORISATION MATRICE CONTACT '
+        end if
         ilideb = indfac
         ilifin = nbliac
-        call tldlg3('LDLT',' ',2, ldscon, ilideb, ilifin, 0,&
-                    ndeci, isingu, npvneg, ier,' ')
-        indfac = ilifin + 1
+        call tldlg3('LDLT', ' ', 2, ldscon, ilideb, ilifin, 0, &
+                    ndeci, isingu, npvneg, ier, ' ')
+        indfac = ilifin+1
         if (ier .gt. isto) then
             lechec = .true.
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

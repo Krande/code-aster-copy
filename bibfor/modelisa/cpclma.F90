@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,13 +54,13 @@ subroutine cpclma(nomain, nomaou, typcol, base)
         grmain = nomain//'.GROUPEMA'
         grmaou = nomaou//'.GROUPEMA'
         ptnmou = nomaou//'.PTRNOMMAI'
-    else if (typcol.eq.'GROUPENO') then
+    else if (typcol .eq. 'GROUPENO') then
         grmain = nomain//'.GROUPENO'
         grmaou = nomaou//'.GROUPENO'
         ptnmou = nomaou//'.PTRNOMNOE'
     else
         ASSERT(.false.)
-    endif
+    end if
 !
     call jedetr(grmaou)
     call jedetr(ptnmou)
@@ -71,7 +71,7 @@ subroutine cpclma(nomain, nomaou, typcol, base)
     call jelira(grmain, 'NOMUTI', nbgmai)
     call jecreo(ptnmou, base//' N K24')
     call jeecra(ptnmou, 'NOMMAX', nbgmai)
-    call jecrec(grmaou, base//' V I', 'NO '//ptnmou, 'DISPERSE', 'VARIABLE',&
+    call jecrec(grmaou, base//' V I', 'NO '//ptnmou, 'DISPERSE', 'VARIABLE', &
                 nbgmai)
 !
     do igroup = 1, nbgmai

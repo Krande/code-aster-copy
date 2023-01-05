@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine mefgmn(noma, nbgma, ligrma)
     if (nbnoto .eq. 0) goto 999
     if (nbgma .eq. 0) then
         call utmess('F', 'ALGELINE_82')
-    endif
+    end if
 !
 !
 ! --- TABLEAUX DE TRAVAIL
@@ -77,11 +77,11 @@ subroutine mefgmn(noma, nbgma, ligrma)
         call jeexin(jexnom(grpma, nomgma), iret)
         if (iret .eq. 0) then
             call utmess('F', 'ELEMENTS_62', sk=nomgma)
-        endif
+        end if
         call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
-        call gmgnre(noma, nbnoto, zi(ialino), zi(ialima), nbma,&
-                    zi(ialino+ i*nbnoto), zi(ianbno-1+i), 'TOUS')
+        call gmgnre(noma, nbnoto, zi(ialino), zi(ialima), nbma, &
+                    zi(ialino+i*nbnoto), zi(ianbno-1+i), 'TOUS')
     end do
 !
 !
@@ -91,10 +91,10 @@ subroutine mefgmn(noma, nbgma, ligrma)
     do i = 1, nbgma
         n1 = zi(ianbno-1+i)
         call codent(i, 'D0', numgno)
-        grpno='&&MEFGMN.'//numgno//'       '
+        grpno = '&&MEFGMN.'//numgno//'       '
         call wkvect(grpno, 'V V I', n1, igrno)
         do j = 1, n1
-            zi(igrno+j-1)=zi(ialino+i*nbnoto+j-1)
+            zi(igrno+j-1) = zi(ialino+i*nbnoto+j-1)
         end do
     end do
 !

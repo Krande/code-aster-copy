@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine as_mfafai(fid, maa, ind, fam, num,&
+subroutine as_mfafai(fid, maa, ind, fam, num, &
                      gro, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
@@ -42,12 +42,12 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
 !      ASSERT(LEN(GRO(1)).EQ.80)
     fidm = to_med_idt(fid)
     ind4 = ind
-    call mfafai(fidm, maa, ind4, fam, num4,&
+    call mfafai(fidm, maa, ind4, fam, num4, &
                 gro, cret4)
     num = num4
     cret = cret4
 #else
-    call mfafai(fid, maa, ind, fam, num,&
+    call mfafai(fid, maa, ind, fam, num, &
                 gro, cret)
 #endif
 !

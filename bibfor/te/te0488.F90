@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine te0488(option, nomte)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,7 +37,7 @@ implicit none
 #include "asterfort/vectgt.h"
 #include "asterfort/lteatt.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,22 +65,22 @@ character(len=16), intent(in) :: option, nomte
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), hh
     real(kind=8), parameter :: zero = 0.d0
     aster_logical :: l_coq3d, l_grille, l_solid_shell
-    real(kind=8), parameter :: gm1(3) = (/ 0.d0,0.d0,1.d0/)
-    real(kind=8), parameter :: poidc(3) = (/0.16666666666666666d0,0.66666666666666663d0,&
+    real(kind=8), parameter :: gm1(3) = (/0.d0, 0.d0, 1.d0/)
+    real(kind=8), parameter :: poidc(3) = (/0.16666666666666666d0, 0.66666666666666663d0, &
                                             0.16666666666666666d0/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_coq3d       = lteatt('MODELI','CQ3')
-    l_grille      = lteatt('MODELI','GRC')
-    l_solid_shell = lteatt('MODELI','SSH')
+    l_coq3d = lteatt('MODELI', 'CQ3')
+    l_grille = lteatt('MODELI', 'GRC')
+    l_solid_shell = lteatt('MODELI', 'SSH')
     if (l_coq3d) then
-        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, npg=npg,&
+        call elrefe_info(fami='MASS', ndim=ndim, nno=nno, npg=npg, &
                          jpoids=jv_poids, jvf=jv_vf, jdfde=jv_dfde)
     else
-        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg,&
+        call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, &
                          jpoids=jv_poids, jvf=jv_vf, jdfde=jv_dfde)
-    endif
+    end if
 !
 ! - Access to input fields
 !
@@ -90,21 +90,21 @@ character(len=16), intent(in) :: option, nomte
 !
     call tecach('OOO', 'PCOORPG', 'E', iret, nval=7, itab=jtab)
     jv_coopg = jtab(1)
-    nbsp     = jtab(7)
+    nbsp = jtab(7)
 !
 ! - Get parameters for structural elements
 !
     if (l_grille) then
-        nbsp  = 1
+        nbsp = 1
         call jevech('PCACOQU', 'L', jv_cacoqu)
         excen = zr(jv_cacoqu+3)
         if (nno .eq. 3) then
             call dxtpgl(zr(jv_geom), pgl)
-        else if (nno.eq.4) then
+        else if (nno .eq. 4) then
             call dxqpgl(zr(jv_geom), pgl, 'S', iret)
-        endif
+        end if
         call utpvlg(1, 3, pgl, gm1, gm2)
-    endif
+    end if
     if (nbsp .ne. 1) then
         call jevech('PNBSP_I', 'L', jv_nbsp_i)
         nbc = zi(jv_nbsp_i)
@@ -124,12 +124,12 @@ character(len=16), intent(in) :: option, nomte
                 call dxtpgl(zr(jv_geom), pgl)
             else if (nno .eq. 4) then
                 call dxqpgl(zr(jv_geom), pgl, 'S', iret)
-            endif
+            end if
             call utpvlg(1, 3, pgl, gm1, gm2)
-        endif
+        end if
         bas = -epais/2.d0+excen
         epc = epais/nbc
-    endif
+    end if
 !
     do kp = 1, npg
         xx = zero
@@ -137,56 +137,56 @@ character(len=16), intent(in) :: option, nomte
         zz = zero
         if (l_solid_shell) then
             do ino = 1, nno-1
-                xx = xx + zr(jv_geom+3* (ino-1)+0)*zr(jv_vf+ (kp-1)*nno+ino-1)
-                yy = yy + zr(jv_geom+3* (ino-1)+1)*zr(jv_vf+ (kp-1)*nno+ino-1)
-                zz = zz + zr(jv_geom+3* (ino-1)+2)*zr(jv_vf+ (kp-1)*nno+ino-1)
+                xx = xx+zr(jv_geom+3*(ino-1)+0)*zr(jv_vf+(kp-1)*nno+ino-1)
+                yy = yy+zr(jv_geom+3*(ino-1)+1)*zr(jv_vf+(kp-1)*nno+ino-1)
+                zz = zz+zr(jv_geom+3*(ino-1)+2)*zr(jv_vf+(kp-1)*nno+ino-1)
             end do
         else
             do ino = 1, nno
-                xx = xx + zr(jv_geom+3* (ino-1)+0)*zr(jv_vf+ (kp-1)*nno+ino-1)
-                yy = yy + zr(jv_geom+3* (ino-1)+1)*zr(jv_vf+ (kp-1)*nno+ino-1)
-                zz = zz + zr(jv_geom+3* (ino-1)+2)*zr(jv_vf+ (kp-1)*nno+ino-1)
+                xx = xx+zr(jv_geom+3*(ino-1)+0)*zr(jv_vf+(kp-1)*nno+ino-1)
+                yy = yy+zr(jv_geom+3*(ino-1)+1)*zr(jv_vf+(kp-1)*nno+ino-1)
+                zz = zz+zr(jv_geom+3*(ino-1)+2)*zr(jv_vf+(kp-1)*nno+ino-1)
             end do
-        endif
+        end if
         if (ndim .eq. 3) then
             call dfdm3d(nno, kp, jv_poids, jv_dfde, zr(jv_geom), poids)
         else if (ndim .eq. 2) then
             call subaco(nno, zr(jv_dfde+(kp-1)*ndim*nno), zr(jv_geom), cova)
             call sumetr(cova, metr, jac)
-            poids=jac*zr(jv_poids-1+kp)
+            poids = jac*zr(jv_poids-1+kp)
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
         if (nbsp .ne. 1) then
-            decpo=4*3*nbc*(kp-1)
+            decpo = 4*3*nbc*(kp-1)
             if (l_coq3d) then
-                call vectgt(1, nb1, zr(jv_geom), zero, kp,&
+                call vectgt(1, nb1, zr(jv_geom), zero, kp, &
                             zr(lzr), epais, vectn, vectg, vectt)
-                gm2(1)=vectt(3,1)
-                gm2(2)=vectt(3,2)
-                gm2(3)=vectt(3,3)
-            endif
+                gm2(1) = vectt(3, 1)
+                gm2(2) = vectt(3, 2)
+                gm2(3) = vectt(3, 3)
+            end if
             do ic = 1, nbc
                 do ispc = 1, 3
-                    hh=bas+dble(ic-1)*epc+dble(ispc-1)*epc/2.d0
-                    zr(jv_coopg+decpo+(ic-1)*12+(ispc-1)*4+0) = xx + hh* gm2(1)
-                    zr(jv_coopg+decpo+(ic-1)*12+(ispc-1)*4+1) = yy + hh* gm2(2)
-                    zr(jv_coopg+decpo+(ic-1)*12+(ispc-1)*4+2) = zz + hh* gm2(3)
+                    hh = bas+dble(ic-1)*epc+dble(ispc-1)*epc/2.d0
+                    zr(jv_coopg+decpo+(ic-1)*12+(ispc-1)*4+0) = xx+hh*gm2(1)
+                    zr(jv_coopg+decpo+(ic-1)*12+(ispc-1)*4+1) = yy+hh*gm2(2)
+                    zr(jv_coopg+decpo+(ic-1)*12+(ispc-1)*4+2) = zz+hh*gm2(3)
                     zr(jv_coopg+decpo+(ic-1)*12+(ispc-1)*4+3) = poids*epc*poidc(ispc)
                 end do
             end do
         else if (l_grille) then
-            zr(jv_coopg+4*(kp-1)+0) = xx+ excen*gm2(1)
-            zr(jv_coopg+4*(kp-1)+1) = yy+ excen*gm2(2)
-            zr(jv_coopg+4*(kp-1)+2) = zz+ excen*gm2(3)
+            zr(jv_coopg+4*(kp-1)+0) = xx+excen*gm2(1)
+            zr(jv_coopg+4*(kp-1)+1) = yy+excen*gm2(2)
+            zr(jv_coopg+4*(kp-1)+2) = zz+excen*gm2(3)
             zr(jv_coopg+4*(kp-1)+3) = poids
         else
             zr(jv_coopg+4*(kp-1)+0) = xx
             zr(jv_coopg+4*(kp-1)+1) = yy
             zr(jv_coopg+4*(kp-1)+2) = zz
             zr(jv_coopg+4*(kp-1)+3) = poids
-        endif
+        end if
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ subroutine vtzero(chamna)
 !
 ! CORPS DU PROGRAMME
     call jemarq()
-    chamn=chamna
+    chamn = chamna
 !
 !
-    kval=chamn(1:19)//'.VALE'
+    kval = chamn(1:19)//'.VALE'
     call jeveuo(kval, 'E', ival)
     call jelira(kval, 'LONMAX', neq)
-    neq1=neq-1
+    neq1 = neq-1
     do i = 0, neq1
-        zr(ival+i)=0.d0
+        zr(ival+i) = 0.d0
     end do
 !
 !

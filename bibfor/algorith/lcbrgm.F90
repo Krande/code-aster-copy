@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
-                  vim, option, sig, vip, dsidpt,&
+subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
+                  vim, option, sig, vip, dsidpt, &
                   codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/r8inir.h"
@@ -79,8 +79,8 @@ implicit none
     real(kind=8) :: valres(2)
 !
     real(kind=8) :: dmax
-    parameter  (dmax = 0.999999d0)
-    data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    parameter(dmax=0.999999d0)
+    data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
 !
 ! ======================================================================
@@ -90,23 +90,23 @@ implicit none
 ! -- OPTION ET MODELISATION
 !
     codret = 0
-    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+    resi = option(1:4) .eq. 'RAPH' .or. option(1:4) .eq. 'FULL'
+    rigi = option(1:4) .eq. 'RIGI' .or. option(1:4) .eq. 'FULL'
 !
-    cplan = (typmod(1).eq.'C_PLAN  ')
+    cplan = (typmod(1) .eq. 'C_PLAN  ')
     ndimsi = 2*ndim
 !
 ! -- LECTURE DES CARACTERISTIQUES ELASTIQUES
 !
     nomres(1) = 'E'
     nomres(2) = 'NU'
-    call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomres, valres, icodre,&
+    call rcvala(imate, ' ', 'ELAS', 0, ' ', &
+                [0.d0], 2, nomres, valres, icodre, &
                 1)
 !
     e = valres(1)
     nu = valres(2)
-    lambda = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)
+    lambda = e*nu/(1.d0+nu)/(1.d0-2.d0*nu)
     deuxmu = e/(1.d0+nu)
 !
 ! -- DEFORMATIONS
@@ -114,13 +114,13 @@ implicit none
     call dcopy(ndimsi, epsm, 1, eps, 1)
     call dcopy(ndimsi, epsm(7), 1, epsr, 1)
     if (resi) then
-        call daxpy(ndimsi, 1.d0, deps, 1, eps,&
+        call daxpy(ndimsi, 1.d0, deps, 1, eps, &
                    1)
-        call daxpy(ndimsi, 1.d0, deps(7), 1, epsr,&
+        call daxpy(ndimsi, 1.d0, deps(7), 1, epsr, &
                    1)
-    endif
+    end if
     do k = 1, ndimsi
-        dsidpt(k,k,1) = 0.d0
+        dsidpt(k, k, 1) = 0.d0
     end do
 !
 !
@@ -133,7 +133,7 @@ implicit none
 !
     treps = eps(1)+eps(2)+eps(3)
     do k = 1, ndimsi
-        sigel(k) = lambda*treps*kron(k) + deuxmu*eps(k)
+        sigel(k) = lambda*treps*kron(k)+deuxmu*eps(k)
     end do
 !
 ! ======================================================================
@@ -143,25 +143,25 @@ implicit none
     if (resi) then
         dm = vim(1)
         etat = nint(vip(2))
-        vip(3)= vim(3)
-        vip(4)= vim(4)
+        vip(3) = vim(3)
+        vip(4) = vim(4)
 !
         if (etat .eq. 3) then
             d = dmax
             etat = 3
-        else if (etat.eq.2) then
+        else if (etat .eq. 2) then
             d = dmax
             etat = 2
-        else if (etat.eq.1) then
+        else if (etat .eq. 1) then
             d = dm
             etat = 1
-        else if (etat.eq.0) then
+        else if (etat .eq. 0) then
             d = dm
             etat = 0
-        endif
+        end if
 !
         do k = 1, ndimsi
-            sig(k) = (1-d) * sigel(k)
+            sig(k) = (1-d)*sigel(k)
         end do
 !
         vip(1) = d
@@ -169,8 +169,8 @@ implicit none
 !
     else
         d = vim(1)
-        etat=nint(vim(2))
-    endif
+        etat = nint(vim(2))
+    end if
 !
 !
 ! ======================================================================
@@ -182,24 +182,24 @@ implicit none
         fd = 1.d0-d
         do k = 1, 3
             do l = 1, 3
-                dsidpt(k,l,1) = fd*lambda
+                dsidpt(k, l, 1) = fd*lambda
             end do
         end do
         do k = 1, ndimsi
-            dsidpt(k,k,1) = dsidpt(k,k,1) + fd*deuxmu
+            dsidpt(k, k, 1) = dsidpt(k, k, 1)+fd*deuxmu
         end do
         if (cplan) then
             do k = 1, ndimsi
                 if (k .ne. 3) then
                     do l = 1, ndimsi
                         if (l .ne. 3) then
-                            dsidpt(k,l,1)=dsidpt(k,l,1) - 1.d0/dsidpt(3,3,1)*&
-                            dsidpt(k,3,1)*dsidpt(3,l,1)
-                        endif
+                            dsidpt(k, l, 1) = dsidpt(k, l, 1)-1.d0/dsidpt(3, 3, 1)* &
+                                              dsidpt(k, 3, 1)*dsidpt(3, l, 1)
+                        end if
                     end do
-                endif
+                end if
             end do
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

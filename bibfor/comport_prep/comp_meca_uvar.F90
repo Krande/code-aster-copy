@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine comp_meca_uvar(compor_info, vari_link_base, vari_redu, nb_vari_redu, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -29,11 +29,11 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=19), intent(in) :: compor_info
-character(len=8), intent(in) :: vari_link_base
-character(len=19), intent(in) :: vari_redu
-integer, intent(out) :: nb_vari_redu
-integer, intent(out) :: codret
+    character(len=19), intent(in) :: compor_info
+    character(len=8), intent(in) :: vari_link_base
+    character(len=19), intent(in) :: vari_redu
+    integer, intent(out) :: nb_vari_redu
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,54 +72,54 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret       = 0
+    codret = 0
     nb_vari_redu = 0
 !
 ! - Access to objects
 !
-    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi = v_zone)
-    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi = v_info)
+    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi=v_zone)
+    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi=v_info)
     nb_elem_mesh = v_info(1)
-    nb_zone      = v_info(2)
-    nt_vari      = v_info(4)
+    nb_zone = v_info(2)
+    nt_vari = v_info(4)
 !
 ! - Create list of available internal variables (too large)
 !
-    call wkvect(vari_redu, 'V V K16', nt_vari, vk16 = v_vari_redu)
+    call wkvect(vari_redu, 'V V K16', nt_vari, vk16=v_vari_redu)
 !
 ! - Loop on CARTE of COMPOR
 !
     do i_zone = 1, nb_zone
         nb_elem_zone = v_zone(i_zone)
         if (nb_elem_zone .ne. 0) then
-            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'L', vk16 = v_vari)
+            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'L', vk16=v_vari)
             call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
             call codent(i_zone, 'G', saux08)
             vari_link = vari_link_base//saux08
-            call wkvect(vari_link, 'V V I', nb_vari, vi = v_vari_link)
+            call wkvect(vari_link, 'V V I', nb_vari, vi=v_vari_link)
             do i_vari = 1, nb_vari
                 vari_name = v_vari(i_vari)
                 if (vari_name .eq. 'VIDE') then
                     i_vari_redu = 0
                     goto 50
-                endif
+                end if
                 if (vari_name(1:2) .eq. '&&') then
-                    codret      = 200
+                    codret = 200
                     i_vari_redu = 0
                     goto 50
-                endif
+                end if
                 do i_vari_redu = 1, nb_vari_redu
                     if (vari_name .eq. v_vari_redu(i_vari_redu)) then
                         goto 50
-                    endif
+                    end if
                 end do
-                nb_vari_redu = nb_vari_redu + 1
+                nb_vari_redu = nb_vari_redu+1
                 v_vari_redu(nb_vari_redu) = vari_name
-                i_vari_redu  = nb_vari_redu
+                i_vari_redu = nb_vari_redu
 50              continue
                 v_vari_link(i_vari) = i_vari_redu
             end do
-        endif
+        end if
     end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xvcont(algocr, cohes, jcohes, ncompv, coefcp,&
-                  coefcr, ddlm, ddls, ffc, ffp,&
-                  idepl, idepm, ifa, ifiss, imate,&
-                  indco, ipgf, jac, jheavn, ncompn,&
-                  jheafa, lact, ncomph, nd, nddl,&
-                  ndim, nfh, nfiss, nno, nnol,&
-                  nnos, nvit, pla, rela, reac,&
+subroutine xvcont(algocr, cohes, jcohes, ncompv, coefcp, &
+                  coefcr, ddlm, ddls, ffc, ffp, &
+                  idepl, idepm, ifa, ifiss, imate, &
+                  indco, ipgf, jac, jheavn, ncompn, &
+                  jheafa, lact, ncomph, nd, nddl, &
+                  ndim, nfh, nfiss, nno, nnol, &
+                  nnos, nvit, pla, rela, reac, &
                   singu, fk, tau1, tau2, vtmp)
 ! aslint: disable=W1504
     implicit none
@@ -103,64 +103,64 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv, coefcp,&
         if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
             un = 1.d0
             if (nvit .ne. 0) then
-                call xmvec3(nnol, pla, ffc, reac, jac,&
+                call xmvec3(nnol, pla, ffc, reac, jac, &
                             un, vtmp)
-            endif
+            end if
 !
 ! --- CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[UEG]]
 !
-            nvec=2
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn,&
-                        ncompn, nfiss, ifiss, jheafa, ncomph,&
+            nvec = 2
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, &
+                        ncompn, nfiss, ifiss, jheafa, ncomph, &
                         ifa, saut)
 !
-            job='VECTEUR'
-            call xmmsa2(ndim, ipgf, imate, saut, nd,&
-                        tau1, tau2, cohes, job, rela,&
-                        alpha, dsidep, sigma, pp, dnor,&
+            job = 'VECTEUR'
+            call xmmsa2(ndim, ipgf, imate, saut, nd, &
+                        tau1, tau2, cohes, job, rela, &
+                        alpha, dsidep, sigma, pp, dnor, &
                         dtang, p, am)
 !
 ! --- CALCUL DES SECONDS MEMBRES DE COHESION
 !
-            call xmvco1(ndim, nno, nnol, sigma, pla,&
-                        lact, dtang, nfh, ddls, jac,&
-                        ffc, ffp, singu, fk, un,&
-                        nd, tau1, tau2, jheavn, ncompn,&
-                        nfiss, ifiss, jheafa, ncomph, ifa,&
+            call xmvco1(ndim, nno, nnol, sigma, pla, &
+                        lact, dtang, nfh, ddls, jac, &
+                        ffc, ffp, singu, fk, un, &
+                        nd, tau1, tau2, jheavn, ncompn, &
+                        nfiss, ifiss, jheafa, ncomph, ifa, &
                         vtmp)
 !
 ! --- SI FORMULATION "MORTAR" LOI CZM_LIN
 !
-        else if (rela.eq.5.d0) then
+        else if (rela .eq. 5.d0) then
 !
 ! --- CALCUL DU SAUT DE DEPLACEMENT [[U]]
 !
-            nvec=2
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn,&
-                        ncompn, nfiss, ifiss, jheafa, ncomph,&
+            nvec = 2
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, &
+                        ncompn, nfiss, ifiss, jheafa, ncomph, &
                         ifa, saut)
 !
 !           CALCUL W AU POINT DE GAUSS
             nvec = 2
             champ = 'W'
-            call xxlag4(ffc, idepl, idepm, lact, ndim,&
+            call xxlag4(ffc, idepl, idepm, lact, ndim, &
                         nnol, pla, wsaut, nvec, champ)
 !
 !           CALCUL MU AU POINT DE GAUSS
             nvec = 2
             champ = 'MU'
-            call xxlag4(ffc, idepl, idepm, lact, ndim,&
+            call xxlag4(ffc, idepl, idepm, lact, ndim, &
                         nnol, pla, mu, nvec, champ)
 !
 ! --- CALCUL DES SECONDS MEMBRES DE COHESION
 !
-            call xmvco5(ndim, nno, nnol, pla, nd,&
-                        tau1, tau2, mu, ddls, jac,&
-                        ffc, ffp, nnos, ddlm, wsaut,&
+            call xmvco5(ndim, nno, nnol, pla, nd, &
+                        tau1, tau2, mu, ddls, jac, &
+                        ffc, ffp, nnos, ddlm, wsaut, &
                         saut, vtmp)
 !
             do ino = 1, nnol
@@ -169,112 +169,112 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv, coefcp,&
                 end do
                 nvec = 2
                 champ = 'LAMBDA'
-                call xxlan5(ino, idepl, idepm, ibid, lact,&
+                call xxlan5(ino, idepl, idepm, ibid, lact, &
                             ndim, pla, lamb, nvec, champ)
                 nvec = 2
                 champ = 'W'
-                call xxlan5(ino, idepl, idepm, ibid, lact,&
+                call xxlan5(ino, idepl, idepm, ibid, lact, &
                             ndim, pla, wsaut, nvec, champ)
-                job='VECTEUR'
-                call xmmsa6(ndim, ipgf, imate, lamb, wsaut,&
-                            nd, tau1, tau2, cohes, job,&
-                            rela, alpha, dsidep, sigma, p,&
+                job = 'VECTEUR'
+                call xmmsa6(ndim, ipgf, imate, lamb, wsaut, &
+                            nd, tau1, tau2, cohes, job, &
+                            rela, alpha, dsidep, sigma, p, &
                             am, raug)
-                call xmvco4(ino, ndim, nnol, sigma, lamb,&
-                            pla, lact, jac, ffc, p,&
+                call xmvco4(ino, ndim, nnol, sigma, lamb, &
+                            pla, lact, jac, ffc, p, &
                             raug, vtmp)
             end do
 !
-        else if (rela.eq.3.d0.or.rela.eq.4.d0) then
+        else if (rela .eq. 3.d0 .or. rela .eq. 4.d0) then
 !
 ! SI LOI COHESIVE MIXTE CZM_XXX_MIX
 ! ON COMMENCE PAR CALCULER LE SAUT DE DEPLACEMENT
 !
-            nvec=2
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn,&
-                        ncompn, nfiss, ifiss, jheafa, ncomph,&
+            nvec = 2
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, &
+                        ncompn, nfiss, ifiss, jheafa, ncomph, &
                         ifa, saut)
 !
 ! --- ON CALCULE LA CONTRAINTE
 !
             nvec = 2
-            call xxlag2(ffc, idepl, idepm, lact, ndim,&
+            call xxlag2(ffc, idepl, idepm, lact, ndim, &
                         nnol, pla, lamb, nvec)
 !
 !
 ! --- ON CALCULE ENSUITE DELTA AVEC XMMSA5
 !
             job = 'VECTEUR'
-            call xmmsa5(ndim, ipgf, imate, saut, lamb,&
-                        nd, tau1, tau2, cohes, job,&
-                        rela, alpha, dsidep, delta, p,&
+            call xmmsa5(ndim, ipgf, imate, saut, lamb, &
+                        nd, tau1, tau2, cohes, job, &
+                        rela, alpha, dsidep, delta, p, &
                         am, r)
 !
 ! --- CALCUL DES SECONDS MEMBRES
 !
-            call xmvco2(ndim, nno, nnol, nnos, lamb,&
-                        am, delta, pla, lact, nfh,&
-                        ddls, ddlm, nfiss, ifiss, jheafa,&
-                        ifa, ncomph, jheavn, ncompn, jac,&
-                        ffc, ffp, singu, r, fk,&
+            call xmvco2(ndim, nno, nnol, nnos, lamb, &
+                        am, delta, pla, lact, nfh, &
+                        ddls, ddlm, nfiss, ifiss, jheafa, &
+                        ifa, ncomph, jheavn, ncompn, jac, &
+                        ffc, ffp, singu, r, fk, &
                         vtmp, p)
-        endif
+        end if
 !
-    else if (algocr.eq.1) then
+    else if (algocr .eq. 1) then
 !
 ! --- CAS LAGRANGIEN OU PENALISATION
 !
         if (indco .eq. 0) then
             if (nvit .ne. 0) then
-                call xmvec3(nnol, pla, ffc, reac, jac,&
+                call xmvec3(nnol, pla, ffc, reac, jac, &
                             coefcr, vtmp)
-            endif
+            end if
 !
-        else if (indco.eq.1) then
+        else if (indco .eq. 1) then
 !
 ! --- CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
-            nvec=2
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn,&
-                        ncompn, nfiss, ifiss, jheafa, ncomph,&
+            nvec = 2
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, &
+                        ncompn, nfiss, ifiss, jheafa, ncomph, &
                         ifa, saut)
 !
 ! --- CALCUL DU VECTEUR LN1 & LN2
 !
-            call xmvec2(ndim, nno, nnos, nnol, pla,&
-                        ffc, ffp, reac, jac, nfh,&
-                        saut, singu, fk, nd, coefcr,&
-                        ddls, ddlm, jheavn, ncompn, nfiss,&
+            call xmvec2(ndim, nno, nnos, nnol, pla, &
+                        ffc, ffp, reac, jac, nfh, &
+                        saut, singu, fk, nd, coefcr, &
+                        ddls, ddlm, jheavn, ncompn, nfiss, &
                         ifiss, jheafa, ncomph, ifa, vtmp)
-        endif
-    else if (algocr.eq.2) then
+        end if
+    else if (algocr .eq. 2) then
         if (indco .eq. 0) then
             if (nvit .ne. 0) then
-                call xmvec3(nnol, pla, ffc, reac, jac,&
+                call xmvec3(nnol, pla, ffc, reac, jac, &
                             coefcp, vtmp)
-            endif
+            end if
 !
-        else if (indco.eq.1) then
+        else if (indco .eq. 1) then
 !
 ! --- CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
-            nvec=2
-            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, fk, ddls, ddlm, jheavn,&
-                        ncompn, nfiss, ifiss, jheafa, ncomph,&
+            nvec = 2
+            call xmmsa3(ndim, nno, nnos, ffp, nddl, &
+                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh, &
+                        singu, fk, ddls, ddlm, jheavn, &
+                        ncompn, nfiss, ifiss, jheafa, ncomph, &
                         ifa, saut)
-            call xmvep2(ndim, nno, nnos, nnol, pla,&
-                        ffc, ffp, reac, jac, nfh,&
-                        saut, singu, fk, nd, coefcp,&
-                        ddls, ddlm, jheavn, ncompn, nfiss,&
+            call xmvep2(ndim, nno, nnos, nnol, pla, &
+                        ffc, ffp, reac, jac, nfh, &
+                        saut, singu, fk, nd, coefcp, &
+                        ddls, ddlm, jheavn, ncompn, nfiss, &
                         ifiss, jheafa, ncomph, ifa, vtmp)
         else
             ASSERT(.false.)
-        endif
+        end if
     else
         ASSERT(.false.)
-    endif
+    end if
 end subroutine

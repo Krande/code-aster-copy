@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
     if (iul .le. 0) then
         call utmess('A', 'UTILITAI2_7')
         goto 999
-    endif
+    end if
     listr = fonins
     nomf1 = '&&FOIMPR'
 !
@@ -73,15 +73,15 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
     titr = nomfon//'.TITR'
 !
 !     --- IMPRESSION DU TITRE ---
-    write(iul,'(/,80(''-''))')
+    write (iul, '(/,80(''-''))')
     call jeexin(titr, iret)
     if (iret .ne. 0) then
         call jeveuo(titr, 'L', ltitr)
         call jelira(titr, 'LONMAX', nbtitr)
         do i = 1, nbtitr
-            write(iul,*) zk80(ltitr+i-1)
+            write (iul, *) zk80(ltitr+i-1)
         end do
-    endif
+    end if
 !
 !     --- CAS D'UNE FONCTION "FORMULE" ---
     call jeexin(nomfon//'.NOVA', iret)
@@ -91,19 +91,19 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         if (nbnova .ne. 1) then
             call utmess('A', 'UTILITAI2_8')
             goto 999
-        endif
+        end if
         call jeveuo(listr//'.VALE', 'L', jval)
         call jelira(listr//'.VALE', 'LONUTI', nbval)
-        nbv = 2 * nbval
+        nbv = 2*nbval
         call wkvect(nomf1//'.VALE', 'V V R8', nbv, lval1)
-        lfon1 = lval1 + nbval
+        lfon1 = lval1+nbval
         do ival = 0, nbval-1
             zr(lval1+ival) = zr(jval+ival)
-            call fointe('F ', nomfon, nbnova, nova, zr(lval1+ival),&
+            call fointe('F ', nomfon, nbnova, nova, zr(lval1+ival), &
                         zr(lfon1+ival), iret)
         end do
 !
-        ASSERT(lxlgut(nomf1).le.24)
+        ASSERT(lxlgut(nomf1) .le. 24)
         call wkvect(nomf1//'.PROL', 'V V K24', 6, lprol1)
         zk24(lprol1) = 'FONCTION'
         zk24(lprol1+1) = 'LIN LIN '
@@ -115,17 +115,17 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         call foec1f(iul, nomfon, zk24(lprol1), nbval, 'RIEN')
         if (impr .ge. 2) then
             ideb = 1
-            ifin = min( 10 ,nbval )
+            ifin = min(10, nbval)
             if (impr .ge. 3) ifin = nbval
             nompar = zk24(lprol1+2)
             nomres = zk24(lprol1+3)
-            call foec2f(iul, zr(lval1), nbval, ideb, ifin,&
+            call foec2f(iul, zr(lval1), nbval, ideb, ifin, &
                         nompar, nomres)
-        endif
+        end if
         call jedetr(nomf1//'.PROL')
         call jedetr(nomf1//'.VALE')
         goto 999
-    endif
+    end if
 !
 !     --- INFORMATIONS COMPLEMENTAIRES POUR L'EDITION ---
     call jeveuo(prol, 'L', lprol)
@@ -139,33 +139,33 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
             call jelira(listr//'.VALE', 'LONUTI', nbval)
         else
             call jelira(vale, 'LONUTI', nbval)
-            nbval= nbval/2
-        endif
+            nbval = nbval/2
+        end if
 !
         call foec1f(iul, nomfon, zk24(lprol), nbval, 'RIEN')
         if (impr .ge. 2) then
             call jeveuo(vale, 'L', lval)
             if (ind .ne. 0) then
                 call jeveuo(listr//'.VALE', 'L', jval)
-                nbv2 = 2 * nbval
+                nbv2 = 2*nbval
                 call wkvect(nomf1//'.VALE', 'V V R8', nbv2, lval)
-                lfon = lval + nbval
+                lfon = lval+nbval
                 do ival = 0, nbval-1
                     zr(lval+ival) = zr(jval+ival)
-                    call fointe('F ', nomfon, 1, nompar, zr(lval+ival),&
+                    call fointe('F ', nomfon, 1, nompar, zr(lval+ival), &
                                 zr(lfon+ival), iret)
                 end do
-            endif
+            end if
             ideb = 1
-            ifin = min( 10 ,nbval )
+            ifin = min(10, nbval)
             if (impr .ge. 3) ifin = nbval
-            call foec2f(iul, zr(lval), nbval, ideb, ifin,&
+            call foec2f(iul, zr(lval), nbval, ideb, ifin, &
                         nompar, nomres)
             if (ind .ne. 0) then
                 call jedetr(nomf1//'.PROL')
                 call jedetr(nomf1//'.VALE')
-            endif
-        endif
+            end if
+        end if
 !
     else if (zk24(lprol) .eq. 'NAPPE   ') then
 !
@@ -174,55 +174,55 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         call foec1n(iul, nomfon, zk24(lprol), nbfonc, 'RIEN')
         if (impr .ge. 2) then
             call jeveuo(para, 'L', lval)
-            ASSERT(ind.eq.0)
-            call foec2n(iul, zk24(lprol), zr(lval), vale, nbfonc,&
+            ASSERT(ind .eq. 0)
+            call foec2n(iul, zk24(lprol), zr(lval), vale, nbfonc, &
                         impr)
-        endif
+        end if
 !
-    else if (zk24(lprol).eq.'FONCT_C ') then
+    else if (zk24(lprol) .eq. 'FONCT_C ') then
 !
         nbpu = 1
         nompu = ' '
         call jelira(vale, 'LONUTI', nbval)
-        nbval= nbval/3
+        nbval = nbval/3
         call foec1c(iul, nomfon, zk24(lprol), nbval, 'RIEN')
         if (impr .ge. 2) then
             call jeveuo(vale, 'L', lval)
             if (ind .ne. 0) then
                 call jeveuo(listr//'.VALE', 'L', jval)
                 call jelira(listr//'.VALE', 'LONUTI', nbval)
-                nbv2 = 3 * nbval
+                nbv2 = 3*nbval
                 call wkvect(nomf1//'.VALE', 'V V R8', nbv2, lval)
-                lfon = lval + nbval
+                lfon = lval+nbval
                 ii = 0
                 do ival = 0, nbval-1
                     zr(lval+ival) = zr(jval+ival)
-                    call fointc('F', nomfon, nbpu, nompu, zr(lval+ival),&
+                    call fointc('F', nomfon, nbpu, nompu, zr(lval+ival), &
                                 resure, resuim, iret)
                     zr(lfon+ii) = resure
-                    ii = ii + 1
+                    ii = ii+1
                     zr(lfon+ii) = resuim
-                    ii = ii + 1
+                    ii = ii+1
                 end do
-            endif
+            end if
             ideb = 1
-            ifin = min( 10 ,nbval )
+            ifin = min(10, nbval)
             if (impr .ge. 3) ifin = nbval
-            call foec2c(iul, zr(lval), nbval, ideb, ifin,&
+            call foec2c(iul, zr(lval), nbval, ideb, ifin, &
                         nompar, nomres)
             if (ind .ne. 0) then
                 call jedetr(nomf1//'.PROL')
                 call jedetr(nomf1//'.VALE')
-            endif
-        endif
+            end if
+        end if
 !
-    else if (zk24(lprol).eq.'INTERPRE') then
+    else if (zk24(lprol) .eq. 'INTERPRE') then
         call utmess('A', 'UTILITAI2_10', sk=zk24(lprol))
 !
     else
         call utmess('A', 'UTILITAI2_11', sk=zk24(lprol))
 !
-    endif
+    end if
 999 continue
     call jedema()
 end subroutine

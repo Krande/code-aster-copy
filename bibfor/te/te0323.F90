@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,13 +45,13 @@ subroutine te0323(option, nomte)
     real(kind=8) :: sigref, fhyref
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos, &
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
-    ndim = ndim + 1
-    nddl = 2*ndim*nno1 + nno2
-    axi = lteatt('AXIS','OUI')
+    ndim = ndim+1
+    nddl = 2*ndim*nno1+nno2
+    axi = lteatt('AXIS', 'OUI')
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS DE JOINT
     call ejinit(nomte, iu, ip)
@@ -65,9 +65,9 @@ subroutine te0323(option, nomte)
 !
         call jevech('PCONTMR', 'L', icontm)
 !
-        call ejfono(ndim, nddl, axi, nno1, nno2,&
-                    npg, iw, zr(iw), zr(ivf1), zr(ivf2),&
-                    idf2, zr(idf2), zr(igeom), iu, ip,&
+        call ejfono(ndim, nddl, axi, nno1, nno2, &
+                    npg, iw, zr(iw), zr(ivf1), zr(ivf2), &
+                    idf2, zr(idf2), zr(igeom), iu, ip, &
                     zr(icontm), zr(ivectu))
 !
     else if (option .eq. 'REFE_FORC_NODA') then
@@ -75,17 +75,17 @@ subroutine te0323(option, nomte)
         call terefe('SIGM_REFE', 'THM_JOINT', sigref)
 !
 !      EN MECA PURE ON IMPOSE LA VALEUR DE FLUX DE REFERENCE A 1
-        if (lteatt('TYPMOD2','EJ_HYME')) then
+        if (lteatt('TYPMOD2', 'EJ_HYME')) then
             call terefe('FLUX_HYD1_REFE', 'THM_JOINT', fhyref)
-        else if (lteatt('TYPMOD2','ELEMJOIN')) then
+        else if (lteatt('TYPMOD2', 'ELEMJOIN')) then
             fhyref = 1.D0
-        endif
+        end if
 !
-        call ejfore(ndim, nddl, axi, nno1, nno2,&
-                    npg, iw, zr(iw), zr(ivf1), zr(ivf2),&
-                    idf2, zr(idf2), zr(igeom), iu, ip,&
-                    sigref, fhyref, zr( ivectu))
-    endif
+        call ejfore(ndim, nddl, axi, nno1, nno2, &
+                    npg, iw, zr(iw), zr(ivf1), zr(ivf2), &
+                    idf2, zr(idf2), zr(igeom), iu, ip, &
+                    sigref, fhyref, zr(ivectu))
+    end if
 !
 !
 end subroutine

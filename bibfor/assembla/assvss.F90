@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine assvss(base, vec, vecel, nu, vecpro,&
+subroutine assvss(base, vec, vecel, nu, vecpro, &
                   motcle, type, fomult, instap)
     implicit none
 !
@@ -69,10 +69,10 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     character(len=14) :: num2
     integer :: gd, nec, nlili
 !-----------------------------------------------------------------------
-    integer :: i, i1,  iad1, iadlie, iadnem, iadval
-    integer :: ialcha, iamail, iancmp,  ianueq, ianulo, iaprol
-    integer :: iapsdl,  ichar, icmp, iconx1, iconx2, idnequ
-    integer :: idprn1, idprn2, idresl, idveds, idverf,  iec
+    integer :: i, i1, iad1, iadlie, iadnem, iadval
+    integer :: ialcha, iamail, iancmp, ianueq, ianulo, iaprol
+    integer :: iapsdl, ichar, icmp, iconx1, iconx2, idnequ
+    integer :: idprn1, idprn2, idresl, idveds, idverf, iec
     integer :: ierd, il, ilim, ilimnu, ilivec, ima
     integer :: inold, iret, jec, k1, lgncmp, n1, nbchar
     integer :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
@@ -101,31 +101,31 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     call infniv(ifm, niv)
 !
     if (motcle(1:4) .eq. 'ZERO') then
-    else if (motcle(1:4).eq.'CUMU') then
+    else if (motcle(1:4) .eq. 'CUMU') then
     else
         call utmess('F', 'ASSEMBLA_8', sk=motcle)
-    endif
+    end if
 !
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
     call jeveuo(jexnum('&CATA.TE.MODELOC', 1), 'L', admodl)
 !
-    vecas=vec
-    bas=base
+    vecas = vec
+    bas = base
 !
 ! --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
     call detrsd('CHAMP_GD', vecas)
     call wkvect(vecas//'.LIVE', bas//' V K24 ', 1, ilivec)
-    zk24(ilivec)=vecel
+    zk24(ilivec) = vecel
 !
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A VECAS
-    kmaila='&MAILLA                 '
-    kvelil=vecas//'.LILI'
+    kmaila = '&MAILLA                 '
+    kvelil = vecas//'.LILI'
 !
 !
 ! --- CALCUL D UN LILI POUR VECAS
 ! --- CREATION D'UN VECAS(1:19).ADNE ET VECAS(1:19).ADLI SUR 'V'
-    call crelil('F', 1, ilivec, kvelil, 'V',&
-                kmaila, vecas, gd, ma, nec,&
+    call crelil('F', 1, ilivec, kvelil, 'V', &
+                kmaila, vecas, gd, ma, nec, &
                 ncmp, ilim, nlili, nbelm)
     call jeveuo(vecas(1:19)//'.ADLI', 'E', iadlie)
     call jeveuo(vecas(1:19)//'.ADNE', 'E', iadnem)
@@ -133,21 +133,21 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     if (iret .gt. 0) then
         call jeveuo(ma(1:8)//'.CONNEX', 'L', iconx1)
         call jeveuo(jexatr(ma(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    endif
+    end if
 !
 ! --- ON SUPPOSE QUE LE LE LIGREL DE &MAILLA EST LE PREMIER DE LILINU
-    ilimnu=1
+    ilimnu = 1
 !
 ! --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A NU
 ! --- IL FAUT ESPERER QUE LE CHAM_NO EST EN INDIRECTION AVEC UN
 !     PROF_CHNO APPARTENANT A UNE NUMEROTATION SINON CA VA PLANTER
 !     DANS LE JEVEUO SUR KNEQUA
-    nudev=nu
+    nudev = nu
     if (nudev(1:1) .eq. ' ') then
-        vprof=vecpro
+        vprof = vecpro
         call jeveuo(vprof//'.REFE', 'L', vk24=refe)
-        nudev=refe(2)(1:14)
-    endif
+        nudev = refe(2) (1:14)
+    end if
 !
 !
     call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
@@ -155,7 +155,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     call dismoi('NB_NO_SS_MAX', ma, 'MAILLAGE', repi=nbnoss)
 !
 !     100 EST SUPPOSE ETRE LA + GDE DIMENSION D'UNE MAILLE STANDARD:
-    nbnoss=max(nbnoss,100)
+    nbnoss = max(nbnoss, 100)
 !     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
     call wkvect('&&ASSVEC.NUMLOC', 'V V I', 3*nbnoss, ianulo)
 !
@@ -163,12 +163,12 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
     call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
     call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
-    nec=nbec(nugd)
-    ncmp=nmxcmp
+    nec = nbec(nugd)
+    ncmp = nmxcmp
 !
     do i = 1, nbecmx
-        icodla(i)=0
-        icodge(i)=0
+        icodla(i) = 0
+        icodge(i) = 0
     end do
 !
 !   -- POSDDL(ICMP) (ICMP=1,NMXCMP(GD_SI))
@@ -181,30 +181,30 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
         call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
-        icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
+        icmp = indik8(zk8(iancmp), 'LAGR', 1, lgncmp)
 ! on ne trouve pas la composante "LAGR" dans la grandeur
-        ASSERT(icmp.ne.0)
+        ASSERT(icmp .ne. 0)
 ! il est imprévu d avoir la composante "LAGR" au delà de 30
-        ASSERT(icmp.le.30)
+        ASSERT(icmp .le. 30)
 !       -- icodla est l'entier code correspondant a la cmp "lagr"
-        jec=(icmp-1)/30+1
-        icodla(jec)=2**icmp
-    endif
+        jec = (icmp-1)/30+1
+        icodla(jec) = 2**icmp
+    end if
 !
-    k24prn=nudev//'.NUME.PRNO'
-    knueq=nudev//'.NUME.NUEQ'
-    knequa=nudev//'.NUME.NEQU'
+    k24prn = nudev//'.NUME.PRNO'
+    knueq = nudev//'.NUME.NUEQ'
+    knequa = nudev//'.NUME.NEQU'
 !
     call jeveuo(k24prn, 'L', idprn1)
     call jeveuo(jexatr(k24prn, 'LONCUM'), 'L', idprn2)
     call jeveuo(knueq, 'L', ianueq)
     call jeveuo(knequa, 'L', idnequ)
-    nequa=zi(idnequ)
+    nequa = zi(idnequ)
 !
 !
-    kveref=vecas//'.REFE'
-    kvale=vecas//'.VALE'
-    kvedsc=vecas//'.DESC'
+    kveref = vecas//'.REFE'
+    kvale = vecas//'.VALE'
+    kvedsc = vecas//'.DESC'
 !
     call jecreo(kveref, bas//' V K24')
     call jeecra(kveref, 'LONMAX', 4)
@@ -213,19 +213,19 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     call jeecra(kvedsc, 'LONMAX', 2)
     call jeecra(kvedsc, 'DOCU', cval='CHNO')
     call jeveuo(kvedsc, 'E', idveds)
-    zk24(idverf)=ma
-    zk24(idverf+1)=k24prn(1:14)//'.NUME'
-    zi(idveds)=gd
-    zi(idveds+1)=1
+    zk24(idverf) = ma
+    zk24(idverf+1) = k24prn(1:14)//'.NUME'
+    zi(idveds) = gd
+    zi(idveds+1) = 1
 !
 !
     if (type .eq. 1) then
         call jecreo(kvale, bas//' V R8')
-    else if (type.eq.2) then
+    else if (type .eq. 2) then
         call jecreo(kvale, bas//' V C16')
     else
         call utmess('F', 'ASSEMBLA_11')
-    endif
+    end if
     call jeecra(kvale, 'LONMAX', nequa)
     call jeveuo(kvale, 'E', iadval)
 !
@@ -233,7 +233,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     call dismoi('NOM_MODELE', vecel, 'VECT_ELEM', repk=mo2)
     if (mo2 .ne. mo) then
         call utmess('F', 'ASSEMBLA_5')
-    endif
+    end if
 !
     call dismoi('EXI_ELEM', mo, 'MODELE', repk=exiele)
     call dismoi('NB_SS_ACTI', vecel, 'VECT_ELEM', repi=nbssa)
@@ -242,11 +242,11 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 !   -- TRAITEMENT DES SOUS-STRUCTURES
 !   ----------------------------------------------------------
     if (nbssa .gt. 0) then
-        nomcas=' '
+        nomcas = ' '
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
         call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
-        call ssvalv('DEBUT', nomcas, mo, ma, 0,&
+        call ssvalv('DEBUT', nomcas, mo, ma, 0, &
                     idresl, ncmpel, instap)
         call jelira(vecel//'.RELC', 'NUTIOC', nbchar)
         call jeveuo(fomult, 'L', jfonct)
@@ -254,68 +254,68 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
         do ichar = 1, nbchar
             call jenuno(jexnum(vecel//'.RELC', ichar), nomcas)
             call jeveuo(jexnum(vecel//'.RELC', ichar), 'L', ialcha)
-            if (zk24(jfonct+ichar-1)(1:8) .eq. '&&CONSTA') then
-                rcoef=1.0d0
+            if (zk24(jfonct+ichar-1) (1:8) .eq. '&&CONSTA') then
+                rcoef = 1.0d0
             else
-                call fointe('F ', zk24(jfonct+ichar-1)(1:8), 1, ['INST'], [instap],&
+                call fointe('F ', zk24(jfonct+ichar-1) (1:8), 1, ['INST'], [instap], &
                             rcoef, ierd)
-            endif
+            end if
             do ima = 1, nbsma
 !               -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
                 if (sssa(ima) .eq. 0) goto 70
                 if (zi(ialcha-1+ima) .eq. 0) goto 70
                 call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
                 call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
-                call ssvalv(' ', nomcas, mo, ma, ima,&
+                call ssvalv(' ', nomcas, mo, ma, ima, &
                             idresl, ncmpel, instap)
-                nomacr=vnomacr(ima)
+                nomacr = vnomacr(ima)
                 call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
                 call jeveuo(nomacr//'.CONX', 'L', vi=conx)
                 call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprol)
-                il=0
+                il = 0
                 do k1 = 1, nnoe
-                    n1=zi(iamail-1+k1)
+                    n1 = zi(iamail-1+k1)
                     if (n1 .gt. nm) then
                         do iec = 1, nbecmx
-                            icodge(iec)=icodla(iec)
+                            icodge(iec) = icodla(iec)
                         end do
                     else
-                        inold=conx(3*(k1-1)+2)
+                        inold = conx(3*(k1-1)+2)
                         do iec = 1, nec
-                            icodge(iec)=zi(iaprol-1+(nec+2)*(&
-                                    inold-1)+2+iec)
+                            icodge(iec) = zi(iaprol-1+(nec+2)*( &
+                                             inold-1)+2+iec)
                         end do
-                    endif
+                    end if
 !
-                    iad1=zi(idprn1-1+zi(idprn2+ilimnu-1)+(n1-&
-                            1)*(nec+2))
-                    call cordd2(idprn1, idprn2, ilimnu, icodge, nec,&
+                    iad1 = zi(idprn1-1+zi(idprn2+ilimnu-1)+(n1- &
+                                                            1)*(nec+2))
+                    call cordd2(idprn1, idprn2, ilimnu, icodge, nec, &
                                 ncmp, n1, nddl1, zi(iapsdl))
 !
                     if (type .eq. 1) then
                         do i1 = 1, nddl1
-                            il=il+1
-                            zr(iadval-1+zi(ianueq-1+iad1+zi(&
-                                    iapsdl-1+i1)- 1))=zr(iadval-1+zi(&
-                                    ianueq-1+iad1+zi(iapsdl-1+&
-                                    i1)-1))+zr(idresl+il-1)*rcoef
+                            il = il+1
+                            zr(iadval-1+zi(ianueq-1+iad1+zi( &
+                                           iapsdl-1+i1)-1)) = zr(iadval-1+zi( &
+                                                                 ianueq-1+iad1+zi(iapsdl-1+ &
+                                                                       i1)-1))+zr(idresl+il-1)*rcoef
                         end do
-                    else if (type.eq.2) then
+                    else if (type .eq. 2) then
                         do i1 = 1, nddl1
-                            il=il+1
-                            zc(iadval-1+zi(ianueq-1+iad1+zi(&
-                                    iapsdl-1+i1)- 1))=zc(iadval-1+zi(&
-                                    ianueq-1+iad1+zi(iapsdl-1+&
-                                    i1)-1))+zc(idresl+il-1)*rcoef
+                            il = il+1
+                            zc(iadval-1+zi(ianueq-1+iad1+zi( &
+                                           iapsdl-1+i1)-1)) = zc(iadval-1+zi( &
+                                                                 ianueq-1+iad1+zi(iapsdl-1+ &
+                                                                       i1)-1))+zc(idresl+il-1)*rcoef
                         end do
-                    endif
+                    end if
                 end do
- 70             continue
+70              continue
             end do
         end do
-        call ssvalv('FIN', nomcas, mo, ma, 0,&
+        call ssvalv('FIN', nomcas, mo, ma, 0, &
                     idresl, ncmpel, instap)
-    endif
+    end if
 !
 !
     call jedetr(vecas//'.LILI')

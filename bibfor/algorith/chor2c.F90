@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,14 +72,14 @@ subroutine chor2c(lischa, vecele)
 !
     vachar = vecele//'.CHNO'
     call jeexin(vachar, iret)
-    ASSERT(iret.ne.0)
+    ASSERT(iret .ne. 0)
     call jelira(vachar, 'LONMAX', nbvec)
-    ASSERT(nbvec.ne.0)
+    ASSERT(nbvec .ne. 0)
 !
 ! --- DIMENSIONNEMENT SD DE SAUVEGARDE
 !
     call jeveuo(vachar, 'L', jvacha)
-    chamno = zk24(jvacha+1-1)(1:19)
+    chamno = zk24(jvacha+1-1) (1:19)
     call jeveuo(vecele//'.RELR', 'L', vk24=relr)
     call jelira(chamno//'.VALE', 'LONMAX', nbvdim)
     AS_ALLOCATE(vr=copie_travail, size=nbvdim)
@@ -94,12 +94,12 @@ subroutine chor2c(lischa, vecele)
 !
 ! ----- NOM DU CHAMNO
 !
-        chamno = zk24(jvacha+ivec-1)(1:19)
+        chamno = zk24(jvacha+ivec-1) (1:19)
 !
 ! ----- RECUPERATION DU NUMERO DE LA CHARGE DU RESU_ELEM
 !
-        call corich('L', resuel, ichout_ = ichar)
-        ASSERT((ichar.ne.0).and.(ichar.ge.-2))
+        call corich('L', resuel, ichout_=ichar)
+        ASSERT((ichar .ne. 0) .and. (ichar .ge. -2))
 !
 ! ----- TYPE DU CHARGEMENT
 !
@@ -108,18 +108,18 @@ subroutine chor2c(lischa, vecele)
             call dismoi('TYPE_SCA', resuel, 'RESUELEM', repk=typsca)
             if (typsca .eq. 'R') then
                 typchn = 'R'
-            else if (typsca.eq.'C') then
+            else if (typsca .eq. 'C') then
                 typchn = 'C'
             else
                 ASSERT(.false.)
-            endif
-        else if (tyresl.eq.'NOEU') then
+            end if
+        else if (tyresl .eq. 'NOEU') then
             call lisltc(lischa, ichar, typech)
             typchn = 'R'
             if (typech .eq. 'COMP') typchn = 'C'
         else
 !
-        endif
+        end if
 !
 ! ----- CONVERSION
 !
@@ -128,7 +128,7 @@ subroutine chor2c(lischa, vecele)
             call jelira(chamno//'.VALE', 'LONMAX', nbvale)
             if (nbvdim .ne. nbvale) then
                 ASSERT(.false.)
-            endif
+            end if
 !
 ! ------- SAUVEGARDE DES VALEURS
 !
@@ -142,13 +142,13 @@ subroutine chor2c(lischa, vecele)
 !
             call wkvect(chamno//'.VALE', 'V V C', nbvale, jcn)
             do ivale = 1, nbvale
-                zc(jcn+ivale-1) = dcmplx(copie_travail(ivale),0.d0)
+                zc(jcn+ivale-1) = dcmplx(copie_travail(ivale), 0.d0)
             end do
 !
 ! ------- CHANGEMENT DE LA REFERENCE A LA GRANDEUR
 !
             call sdchgd(chamno, 'C')
-        endif
+        end if
     end do
 !
     AS_DEALLOCATE(vr=copie_travail)

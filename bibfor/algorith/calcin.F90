@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calcin(option, max, may, maz, model,&
-                  veprj, modx, mody, modz, i,&
+subroutine calcin(option, max, may, maz, model, &
+                  veprj, modx, mody, modz, i, &
                   j, mij)
     implicit none
 !
@@ -80,15 +80,15 @@ subroutine calcin(option, max, may, maz, model,&
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-    call mrmult('ZERO', imatx, vmodx, vectx, 1,&
+    call mrmult('ZERO', imatx, vmodx, vectx, 1, &
                 .true._1)
-    call mrmult('ZERO', imaty, vmody, vecty, 1,&
+    call mrmult('ZERO', imaty, vmody, vecty, 1, &
                 .true._1)
 !
 !--PRODUITS SCALAIRES VECTEURS PRESSION PAR MAX*MODX ET MAY*MODY
 !
-    rx= ddot(nbpres,pres, 1,vectx,1)
-    ry= ddot(nbpres,pres, 1,vecty,1)
+    rx = ddot(nbpres, pres, 1, vectx, 1)
+    ry = ddot(nbpres, pres, 1, vecty, 1)
 !
 !
 !---------------- MENAGE SUR LA VOLATILE ---------------------------
@@ -112,23 +112,23 @@ subroutine calcin(option, max, may, maz, model,&
         AS_ALLOCATE(vr=vectz, size=nbpres)
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
-        call mrmult('ZERO', imatz, vmodz, vectz, 1,&
+        call mrmult('ZERO', imatz, vmodz, vectz, 1, &
                     .true._1)
-        rz= ddot(nbpres,pres, 1,vectz,1)
+        rz = ddot(nbpres, pres, 1, vectz, 1)
         AS_DEALLOCATE(vr=vectz)
         call detrsd('CHAM_NO', modz)
         mij = rx+ry+rz
 !
     else
         mij = rx+ry
-    endif
+    end if
 !
-    if ((i.eq.j) .and. (mij.lt.0) .and. (option.eq.'MASS_AJOU')) then
+    if ((i .eq. j) .and. (mij .lt. 0) .and. (option .eq. 'MASS_AJOU')) then
         call utmess('A', 'ALGORITH_60')
-    endif
-    if ((i.eq.j) .and. (mij.lt.0) .and. (option.eq.'AMOR_AJOU')) then
+    end if
+    if ((i .eq. j) .and. (mij .lt. 0) .and. (option .eq. 'AMOR_AJOU')) then
         call utmess('A', 'ALGORITH_61')
-    endif
+    end if
 !
     call detrsd('CHAM_NO', veprj)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,26 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function calor(mdal , temp , dtemp, deps,&
-               dp1  , dp2  , signe,&
+function calor(mdal, temp, dtemp, deps, &
+               dp1, dp2, signe, &
                alp11, alp12, coeps, ndim)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
-real(kind=8), intent(in) :: mdal(6)
-real(kind=8), intent(in) :: temp
-real(kind=8), intent(in) :: dtemp
-real(kind=8), intent(in) :: deps(6)
-real(kind=8), intent(in) :: dp1
-real(kind=8), intent(in) :: dp2
-real(kind=8), intent(in) :: signe
-real(kind=8), intent(in) :: alp11
-real(kind=8), intent(in) :: alp12
-real(kind=8), intent(in) :: coeps
-integer, intent(in) ::  ndim
-real(kind=8) :: calor
+    real(kind=8), intent(in) :: mdal(6)
+    real(kind=8), intent(in) :: temp
+    real(kind=8), intent(in) :: dtemp
+    real(kind=8), intent(in) :: deps(6)
+    real(kind=8), intent(in) :: dp1
+    real(kind=8), intent(in) :: dp2
+    real(kind=8), intent(in) :: signe
+    real(kind=8), intent(in) :: alp11
+    real(kind=8), intent(in) :: alp12
+    real(kind=8), intent(in) :: coeps
+    integer, intent(in) ::  ndim
+    real(kind=8) :: calor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,9 +73,9 @@ real(kind=8) :: calor
     do i = ndim+1, 2*ndim
         calome = calome+mdal(i)*deps(i)*(temp-dtemp/2.d0)*rac2
     end do
-    calor = calome +&
-            3.d0*alp11*(temp-dtemp/2.d0)*signe*dp1 -&
-            3.d0*(alp11+alp12)*(temp-dtemp/2.d0)*dp2 +&
+    calor = calome+ &
+            3.d0*alp11*(temp-dtemp/2.d0)*signe*dp1- &
+            3.d0*(alp11+alp12)*(temp-dtemp/2.d0)*dp2+ &
             coeps*dtemp
 !
 end function

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 subroutine ddr_chck(cmdPara)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/romModeChck.h"
 #include "asterfort/utmess.h"
 !
-type(ROM_DS_ParaDDR), intent(in) :: cmdPara
+    type(ROM_DS_ParaDDR), intent(in) :: cmdPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,13 +57,13 @@ type(ROM_DS_ParaDDR), intent(in) :: cmdPara
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM19_3')
-    endif
+    end if
 !
 ! - Get parameters in datastructure
 !
-    mesh       = cmdPara%mesh
-    basePrim   = cmdPara%ds_empi_prim
-    baseDual   = cmdPara%ds_empi_dual
+    mesh = cmdPara%mesh
+    basePrim = cmdPara%ds_empi_prim
+    baseDual = cmdPara%ds_empi_dual
     grelem_rid = cmdPara%grelem_rid
     grnode_int = cmdPara%grnode_int
 !
@@ -74,19 +74,19 @@ type(ROM_DS_ParaDDR), intent(in) :: cmdPara
     call romModeChck(modePrim)
     call romModeChck(modeDual)
     if (modePrim%fieldSupp .ne. 'NOEU' .or. modeDual%fieldSupp .ne. 'NOEU') then
-        call utmess('F','ROM4_11')
-    endif
+        call utmess('F', 'ROM4_11')
+    end if
 !
 ! - Check mesh
 !
     meshPrim = basePrim%mode%mesh
     meshDual = baseDual%mode%mesh
     if (meshPrim .ne. meshDual) then
-        call utmess('F','ROM4_9')
-    endif
+        call utmess('F', 'ROM4_9')
+    end if
     if (mesh .ne. meshPrim) then
-        call utmess('F','ROM4_10')
-    endif
+        call utmess('F', 'ROM4_10')
+    end if
 !
 ! - Check groups
 !
@@ -94,29 +94,29 @@ type(ROM_DS_ParaDDR), intent(in) :: cmdPara
     if (iret .ne. 0) then
         call jenonu(jexnom(mesh//'.GROUPENO', grnode_int), iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ROM4_12', sk = grnode_int)
-        endif
-    endif
+            call utmess('F', 'ROM4_12', sk=grnode_int)
+        end if
+    end if
     call jeexin(mesh//'.GROUPEMA', iret)
     if (iret .ne. 0) then
         call jenonu(jexnom(mesh//'.GROUPEMA', grelem_rid), iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ROM4_13', sk = grelem_rid)
-        endif
-    endif
+            call utmess('F', 'ROM4_13', sk=grelem_rid)
+        end if
+    end if
 !
 ! - Check consistency of fields for modes
 !
     if (modePrim%fieldName .eq. 'TEMP') then
         if (modeDual%fieldName .ne. 'FLUX_NOEU') then
-            call utmess('F', 'ROM4_17', sk = 'FLUX_NOEU')
-        endif
+            call utmess('F', 'ROM4_17', sk='FLUX_NOEU')
+        end if
     elseif (modePrim%fieldName .eq. 'DEPL') then
         if (modeDual%fieldName .ne. 'SIEF_NOEU') then
-            call utmess('F', 'ROM4_17', sk = 'SIEF_NOEU')
-        endif
+            call utmess('F', 'ROM4_17', sk='SIEF_NOEU')
+        end if
     else
         call utmess('F', 'ROM4_16')
-    endif
+    end if
 !
 end subroutine

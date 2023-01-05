@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
+subroutine nmdcrg(depart, iterat, vresi, xa0, xa1, &
                   xdet)
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -54,7 +54,7 @@ subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
 !
 !
     real(kind=8) :: zero, un, deux
-    parameter   (zero=0.0d0, un=1.0d0, deux=2.0d0)
+    parameter(zero=0.0d0, un=1.0d0, deux=2.0d0)
 !
     integer :: i
     real(kind=8) :: sx, sy, sx2, syx
@@ -79,23 +79,23 @@ subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
 !
     do i = depart, iterat
         xx = log(vresi(i+1))
-        if (i .gt. (iterat - 3)) then
-            xn = xn + deux
-            sx = sx + deux*xx
-            sy = sy + deux*i
-            sx2 = sx2 + deux*(xx**2)
-            syx = syx + deux*xx*i
+        if (i .gt. (iterat-3)) then
+            xn = xn+deux
+            sx = sx+deux*xx
+            sy = sy+deux*i
+            sx2 = sx2+deux*(xx**2)
+            syx = syx+deux*xx*i
         else
-            xn = xn + un
-            sx = sx + xx
-            sy = sy + i
-            sx2 = sx2 + xx**2
-            syx = syx + xx*i
-        endif
+            xn = xn+un
+            sx = sx+xx
+            sy = sy+i
+            sx2 = sx2+xx**2
+            syx = syx+xx*i
+        end if
     end do
-    xdet = -sx**2 + sx2*xn
-    xa0 = sx2*sy - sx*syx
-    xa1 = -(sx*sy) + syx*xn
+    xdet = -sx**2+sx2*xn
+    xa0 = sx2*sy-sx*syx
+    xa1 = -(sx*sy)+syx*xn
 !
     call jedema()
 end subroutine

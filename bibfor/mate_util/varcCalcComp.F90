@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine varcCalcComp(modelz, chsithz   ,&
-                        l_temp, l_hydr    , l_ptot,&
-                        l_sech, l_epsa    ,&
-                        nbin  , nbout     ,&
-                        lpain , lchin     ,&
-                        lpaout, lchout    ,&
-                        base  , vect_elemz)
+subroutine varcCalcComp(modelz, chsithz, &
+                        l_temp, l_hydr, l_ptot, &
+                        l_sech, l_epsa, &
+                        nbin, nbout, &
+                        lpain, lchin, &
+                        lpaout, lchout, &
+                        base, vect_elemz)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
@@ -33,14 +33,14 @@ implicit none
 #include "asterfort/corich.h"
 #include "asterfort/reajre.h"
 !
-character(len=*), intent(in) :: modelz, chsithz
-aster_logical, intent(in)  :: l_temp, l_hydr, l_ptot, l_sech, l_epsa
-integer, intent(in) :: nbin, nbout
-character(len=8), intent(in) :: lpain(*), lpaout(*)
-character(len=19), intent(in) :: lchin(*)
-character(len=19), intent(inout) :: lchout(*)
-character(len=1), intent(in) :: base
-character(len=*), intent(in) :: vect_elemz
+    character(len=*), intent(in) :: modelz, chsithz
+    aster_logical, intent(in)  :: l_temp, l_hydr, l_ptot, l_sech, l_epsa
+    integer, intent(in) :: nbin, nbout
+    character(len=8), intent(in) :: lpain(*), lpaout(*)
+    character(len=19), intent(in) :: lchin(*)
+    character(len=19), intent(inout) :: lchout(*)
+    character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: vect_elemz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,8 +74,8 @@ character(len=*), intent(in) :: vect_elemz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo    = modelz(1:8)//'.MODELE'
-    newnom    = '.0000000'
+    ligrmo = modelz(1:8)//'.MODELE'
+    newnom = '.0000000'
     resu_elem = vect_elemz(1:8)//'.0000000'
 !
 ! - Temperature
@@ -83,72 +83,72 @@ character(len=*), intent(in) :: vect_elemz
     if (l_temp) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, ichin_ = -1)
+        call corich('E', resu_elem, ichin_=-1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_TEMP_R'
         if (nbout .eq. 2) then
             lchout(2) = chsithz(1:19)
-        endif
-        call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, base ,&
+        end if
+        call calcul('C', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
         call reajre(vect_elemz, resu_elem, base)
-    endif
+    end if
 !
 ! - Hydratation
 !
     if (l_hydr) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, ichin_ = -1)
+        call corich('E', resu_elem, ichin_=-1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_HYDR_R'
-        call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, base ,&
+        call calcul('C', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
         call reajre(vect_elemz, resu_elem, base)
-    endif
+    end if
 !
 ! - Total pressure (THM)
 !
     if (l_ptot) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, ichin_ = -1)
+        call corich('E', resu_elem, ichin_=-1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_PTOT_R'
-        call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, base ,&
+        call calcul('C', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
         call reajre(vect_elemz, resu_elem, base)
-    endif
+    end if
 !
 ! - Drying
 !
     if (l_sech) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, ichin_ = -1)
+        call corich('E', resu_elem, ichin_=-1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_SECH_R'
-        call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, base ,&
+        call calcul('C', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
         call reajre(vect_elemz, resu_elem, base)
-    endif
+    end if
 !
 ! - Non-elastic strain
 !
     if (l_epsa) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, ichin_ = -1)
+        call corich('E', resu_elem, ichin_=-1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_EPSA_R'
-        call calcul('C'  , option, ligrmo, nbin  , lchin,&
-                    lpain, nbout , lchout, lpaout, base ,&
+        call calcul('C', option, ligrmo, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, &
                     'OUI')
         call reajre(vect_elemz, resu_elem, base)
-    endif
+    end if
 !
 end subroutine

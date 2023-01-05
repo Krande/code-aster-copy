@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr,&
-                  imod, jmod, nbm, vicoq, torco,&
+subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr, &
+                  imod, jmod, nbm, vicoq, torco, &
                   tcoef, s1, s2, bij)
     implicit none
 ! COUPLAGE FLUIDELASTIQUE, CONFIGURATIONS DU TYPE "COQUE_COAX"
@@ -80,8 +80,8 @@ subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr,&
     rmoy = geom(2)
     long = geom(3)
 !
-    r1 = rmoy - hmoy/2.d0
-    r2 = rmoy + hmoy/2.d0
+    r1 = rmoy-hmoy/2.d0
+    r2 = rmoy+hmoy/2.d0
 !
     rhof = fsvr(1)
 !
@@ -100,9 +100,9 @@ subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr,&
 !
         iligne = 1
         if (icoq .eq. 2) iligne = 3
-        rki = torco(iligne,imod)
+        rki = torco(iligne, imod)
         ki = int(rki)
-        thetai = torco(iligne+1,imod)
+        thetai = torco(iligne+1, imod)
 !
         jcoq = vicoq(jmod)
 !
@@ -112,76 +112,76 @@ subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr,&
 !
             jligne = 1
             if (jcoq .eq. 2) jligne = 3
-            rkj = torco(jligne,jmod)
+            rkj = torco(jligne, jmod)
             kj = int(rkj)
-            thetaj = torco(jligne+1,jmod)
+            thetaj = torco(jligne+1, jmod)
 !
             if (ki .eq. kj) then
-                call pbflui(umoy, hmoy, rmoy, long, cf0,&
-                            mcf0, fsvr, icoq, imod, nbm,&
+                call pbflui(umoy, hmoy, rmoy, long, cf0, &
+                            mcf0, fsvr, icoq, imod, nbm, &
                             rki, tcoef, s1, s2, zc(iysol))
-                call bijsom(umoy, rhof, r1, r2, long,&
-                            cf0, icoq, jcoq, jmod, nbm,&
-                            rki, thetai, thetaj, tcoef, zc(iysol),&
+                call bijsom(umoy, rhof, r1, r2, long, &
+                            cf0, icoq, jcoq, jmod, nbm, &
+                            rki, thetai, thetaj, tcoef, zc(iysol), &
                             bij)
             else
-                bij = dcmplx(0.d0,0.d0)
-            endif
+                bij = dcmplx(0.d0, 0.d0)
+            end if
 !
 !-------SINON (LES DEUX COQUES SONT EN MOUVEMENT POUR LE MODE JMOD)
 !
         else
 !
-            rk1j = torco(1,jmod)
+            rk1j = torco(1, jmod)
             k1j = int(rk1j)
-            thet1j = torco(2,jmod)
+            thet1j = torco(2, jmod)
 !
-            rk2j = torco(3,jmod)
+            rk2j = torco(3, jmod)
             k2j = int(rk2j)
-            thet2j = torco(4,jmod)
+            thet2j = torco(4, jmod)
 !
             if (ki .eq. k1j .or. ki .eq. k2j) then
 !
-                call pbflui(umoy, hmoy, rmoy, long, cf0,&
-                            mcf0, fsvr, icoq, imod, nbm,&
+                call pbflui(umoy, hmoy, rmoy, long, cf0, &
+                            mcf0, fsvr, icoq, imod, nbm, &
                             rki, tcoef, s1, s2, zc(iysol))
                 if (ki .eq. k1j) then
-                    call bijsom(umoy, rhof, r1, r2, long,&
-                                cf0, icoq, 1, jmod, nbm,&
-                                rki, thetai, thet1j, tcoef, zc(iysol),&
+                    call bijsom(umoy, rhof, r1, r2, long, &
+                                cf0, icoq, 1, jmod, nbm, &
+                                rki, thetai, thet1j, tcoef, zc(iysol), &
                                 bij1)
                 else
-                    bij1 = dcmplx(0.d0,0.d0)
-                endif
+                    bij1 = dcmplx(0.d0, 0.d0)
+                end if
                 if (ki .eq. k2j) then
-                    call bijsom(umoy, rhof, r1, r2, long,&
-                                cf0, icoq, 2, jmod, nbm,&
-                                rki, thetai, thet2j, tcoef, zc(iysol),&
+                    call bijsom(umoy, rhof, r1, r2, long, &
+                                cf0, icoq, 2, jmod, nbm, &
+                                rki, thetai, thet2j, tcoef, zc(iysol), &
                                 bij2)
                 else
-                    bij2 = dcmplx(0.d0,0.d0)
-                endif
-                bij = bij1 + bij2
+                    bij2 = dcmplx(0.d0, 0.d0)
+                end if
+                bij = bij1+bij2
 !
             else
 !
-                bij = dcmplx(0.d0,0.d0)
+                bij = dcmplx(0.d0, 0.d0)
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
 !-----SINON (LES DEUX COQUES SONT EN MOUVEMENT POUR LE MODE IMOD)
 !
     else
 !
-        rk1i = torco(1,imod)
+        rk1i = torco(1, imod)
         k1i = int(rk1i)
-        thet1i = torco(2,imod)
+        thet1i = torco(2, imod)
 !
-        rk2i = torco(3,imod)
+        rk2i = torco(3, imod)
         k2i = int(rk2i)
-        thet2i = torco(4,imod)
+        thet2i = torco(4, imod)
 !
         jcoq = vicoq(jmod)
 !
@@ -191,111 +191,111 @@ subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr,&
 !
             jligne = 1
             if (jcoq .eq. 2) jligne = 3
-            rkj = torco(jligne,jmod)
+            rkj = torco(jligne, jmod)
             kj = int(rkj)
-            thetaj = torco(jligne+1,jmod)
+            thetaj = torco(jligne+1, jmod)
 !
             if (k1i .eq. kj) then
-                call pbflui(umoy, hmoy, rmoy, long, cf0,&
-                            mcf0, fsvr, 1, imod, nbm,&
+                call pbflui(umoy, hmoy, rmoy, long, cf0, &
+                            mcf0, fsvr, 1, imod, nbm, &
                             rk1i, tcoef, s1, s2, zc(iysol1))
-                call bijsom(umoy, rhof, r1, r2, long,&
-                            cf0, 1, jcoq, jmod, nbm,&
-                            rk1i, thet1i, thetaj, tcoef, zc(iysol1),&
+                call bijsom(umoy, rhof, r1, r2, long, &
+                            cf0, 1, jcoq, jmod, nbm, &
+                            rk1i, thet1i, thetaj, tcoef, zc(iysol1), &
                             bij1)
             else
-                bij1 = dcmplx(0.d0,0.d0)
-            endif
+                bij1 = dcmplx(0.d0, 0.d0)
+            end if
 !
             if (k2i .eq. kj) then
-                call pbflui(umoy, hmoy, rmoy, long, cf0,&
-                            mcf0, fsvr, 2, imod, nbm,&
+                call pbflui(umoy, hmoy, rmoy, long, cf0, &
+                            mcf0, fsvr, 2, imod, nbm, &
                             rk2i, tcoef, s1, s2, zc(iysol2))
-                call bijsom(umoy, rhof, r1, r2, long,&
-                            cf0, 2, jcoq, jmod, nbm,&
-                            rk2i, thet2i, thetaj, tcoef, zc(iysol2),&
+                call bijsom(umoy, rhof, r1, r2, long, &
+                            cf0, 2, jcoq, jmod, nbm, &
+                            rk2i, thet2i, thetaj, tcoef, zc(iysol2), &
                             bij2)
             else
-                bij2 = dcmplx(0.d0,0.d0)
-            endif
+                bij2 = dcmplx(0.d0, 0.d0)
+            end if
 !
-            bij = bij1 + bij2
+            bij = bij1+bij2
 !
 !-------SINON (LES DEUX COQUES SONT EN MOUVEMENT POUR LE MODE JMOD)
 !
         else
 !
-            rk1j = torco(1,jmod)
+            rk1j = torco(1, jmod)
             k1j = int(rk1j)
-            thet1j = torco(2,jmod)
+            thet1j = torco(2, jmod)
 !
-            rk2j = torco(3,jmod)
+            rk2j = torco(3, jmod)
             k2j = int(rk2j)
-            thet2j = torco(4,jmod)
+            thet2j = torco(4, jmod)
 !
             if (k1i .eq. k1j .or. k1i .eq. k2j) then
 !
-                call pbflui(umoy, hmoy, rmoy, long, cf0,&
-                            mcf0, fsvr, 1, imod, nbm,&
+                call pbflui(umoy, hmoy, rmoy, long, cf0, &
+                            mcf0, fsvr, 1, imod, nbm, &
                             rk1i, tcoef, s1, s2, zc(iysol1))
                 if (k1i .eq. k1j) then
-                    call bijsom(umoy, rhof, r1, r2, long,&
-                                cf0, 1, 1, jmod, nbm,&
-                                rk1i, thet1i, thet1j, tcoef, zc(iysol1),&
+                    call bijsom(umoy, rhof, r1, r2, long, &
+                                cf0, 1, 1, jmod, nbm, &
+                                rk1i, thet1i, thet1j, tcoef, zc(iysol1), &
                                 bij11)
                 else
-                    bij11 = dcmplx(0.d0,0.d0)
-                endif
+                    bij11 = dcmplx(0.d0, 0.d0)
+                end if
                 if (k1i .eq. k2j) then
-                    call bijsom(umoy, rhof, r1, r2, long,&
-                                cf0, 1, 2, jmod, nbm,&
-                                rk1i, thet1i, thet2j, tcoef, zc(iysol1),&
+                    call bijsom(umoy, rhof, r1, r2, long, &
+                                cf0, 1, 2, jmod, nbm, &
+                                rk1i, thet1i, thet2j, tcoef, zc(iysol1), &
                                 bij12)
                 else
-                    bij12 = dcmplx(0.d0,0.d0)
-                endif
-                bij1 = bij11 + bij12
+                    bij12 = dcmplx(0.d0, 0.d0)
+                end if
+                bij1 = bij11+bij12
 !
             else
 !
-                bij1 = dcmplx(0.d0,0.d0)
+                bij1 = dcmplx(0.d0, 0.d0)
 !
-            endif
+            end if
 !
             if (k2i .eq. k1j .or. k2i .eq. k2j) then
 !
-                call pbflui(umoy, hmoy, rmoy, long, cf0,&
-                            mcf0, fsvr, 2, imod, nbm,&
+                call pbflui(umoy, hmoy, rmoy, long, cf0, &
+                            mcf0, fsvr, 2, imod, nbm, &
                             rk2i, tcoef, s1, s2, zc(iysol2))
                 if (k2i .eq. k1j) then
-                    call bijsom(umoy, rhof, r1, r2, long,&
-                                cf0, 2, 1, jmod, nbm,&
-                                rk2i, thet2i, thet1j, tcoef, zc(iysol2),&
+                    call bijsom(umoy, rhof, r1, r2, long, &
+                                cf0, 2, 1, jmod, nbm, &
+                                rk2i, thet2i, thet1j, tcoef, zc(iysol2), &
                                 bij21)
                 else
-                    bij21 = dcmplx(0.d0,0.d0)
-                endif
+                    bij21 = dcmplx(0.d0, 0.d0)
+                end if
                 if (k2i .eq. k2j) then
-                    call bijsom(umoy, rhof, r1, r2, long,&
-                                cf0, 2, 2, jmod, nbm,&
-                                rk2i, thet2i, thet2j, tcoef, zc(iysol2),&
+                    call bijsom(umoy, rhof, r1, r2, long, &
+                                cf0, 2, 2, jmod, nbm, &
+                                rk2i, thet2i, thet2j, tcoef, zc(iysol2), &
                                 bij22)
                 else
-                    bij22 = dcmplx(0.d0,0.d0)
-                endif
-                bij2 = bij21 + bij22
+                    bij22 = dcmplx(0.d0, 0.d0)
+                end if
+                bij2 = bij21+bij22
 !
             else
 !
-                bij2 = dcmplx(0.d0,0.d0)
+                bij2 = dcmplx(0.d0, 0.d0)
 !
-            endif
+            end if
 !
-            bij = bij1 + bij2
+            bij = bij1+bij2
 !
-        endif
+        end if
 !
-    endif
+    end if
 !
     call jedetr('&&BIJMOC.TEMP.YSOL')
     call jedetr('&&BIJMOC.TEMP.YSOL1')

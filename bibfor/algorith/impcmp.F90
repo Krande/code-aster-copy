@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,16 +51,16 @@ subroutine impcmp(icmp, numedd, chaine)
     chaine = ' '
 !
     if (icmp .ne. 0) then
-        call rgndas(numedd, icmp, l_print = .false., type_equaz = tyddl, name_nodez = nomno,&
-                    name_cmpz = nomcmp, ligrelz = load)
+        call rgndas(numedd, icmp, l_print=.false., type_equaz=tyddl, name_nodez=nomno, &
+                    name_cmpz=nomcmp, ligrelz=load)
         if (tyddl .eq. 'A') then
-            chaine(1:8)  = nomno
+            chaine(1:8) = nomno
             chaine(9:16) = nomcmp
         elseif (tyddl .eq. 'B') then
             chaine(1:16) = 'Link : '//nomno
         elseif (tyddl .eq. 'C') then
             chaine(1:16) = 'Link : '//load
-        endif
-    endif
+        end if
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmarch(numins    , modele       , ds_material, carele, fonact   ,&
-                  ds_print  , sddisc       , sdcrit,&
-                  ds_measure, sderro       , sddyna     , sdpilo, ds_energy,&
-                  ds_inout  , ds_errorindic, ds_algorom_)
+subroutine nmarch(numins, modele, ds_material, carele, fonact, &
+                  ds_print, sddisc, sdcrit, &
+                  ds_measure, sderro, sddyna, sdpilo, ds_energy, &
+                  ds_inout, ds_errorindic, ds_algorom_)
 !
-use NonLin_Datastructure_type
-use Rom_Datastructure_type
-use HHO_postpro_module, only : hhoPostDeplMeca
+    use NonLin_Datastructure_type
+    use Rom_Datastructure_type
+    use HHO_postpro_module, only: hhoPostDeplMeca
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/isfonc.h"
@@ -46,18 +46,18 @@ implicit none
 #include "asterfort/uttcpg.h"
 #include "asterfort/romAlgoNLTableSave.h"
 !
-integer :: fonact(*)
-integer :: numins
-type(NL_DS_Print), intent(in) :: ds_print
-type(NL_DS_InOut), intent(in) :: ds_inout
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Measure), intent(inout) :: ds_measure
-type(NL_DS_Energy), intent(in) :: ds_energy
-character(len=19) :: sddisc, sdcrit, sddyna, sdpilo
-character(len=24) :: sderro
-type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
-character(len=24) :: modele, carele
-type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
+    integer :: fonact(*)
+    integer :: numins
+    type(NL_DS_Print), intent(in) :: ds_print
+    type(NL_DS_InOut), intent(in) :: ds_inout
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Energy), intent(in) :: ds_energy
+    character(len=19) :: sddisc, sdcrit, sddyna, sdpilo
+    character(len=24) :: sderro
+    type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
+    character(len=24) :: modele, carele
+    type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,9 +97,9 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result         = ds_inout%result
+    result = ds_inout%result
     list_load_resu = ds_inout%list_load_resu
-    l_hho          = isfonc(fonact, 'HHO')
+    l_hho = isfonc(fonact, 'HHO')
 !
 ! - Loop state.
 !
@@ -114,10 +114,10 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
     if (etcalc .eq. 'CONV') then
         force = .true.
-    endif
+    end if
     if (etcalc .eq. 'STOP') then
         force = .true.
-    endif
+    end if
 !
 ! - Print timer
 !
@@ -125,20 +125,20 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! - Get index for storing
 !
-    call dinuar(result    , sddisc    , numins, force,&
+    call dinuar(result, sddisc, numins, force, &
                 nume_store, nume_reuse)
 !
 ! - Current time
 !
-    instan = diinst(sddisc,numins)
+    instan = diinst(sddisc, numins)
 !
 ! - Save energy parameters in output table
 !
-    if (isfonc(fonact,'ENERGIE')) then
+    if (isfonc(fonact, 'ENERGIE')) then
         call nmarpc(ds_energy, nume_reuse, instan)
     else
         call nmcrpc(ds_inout, nume_reuse, instan)
-    endif
+    end if
 !
 ! - Print or not ?
 !
@@ -156,30 +156,30 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
         if (lprint) then
             call utmess('I', 'ARCHIVAGE_5')
-        endif
+        end if
 !
 ! ----- Increased result datastructure if necessary
 !
-        call rsexch(' ', result, 'DEPL', nume_store, k19bid,&
+        call rsexch(' ', result, 'DEPL', nume_store, k19bid, &
                     iret)
         if (iret .eq. 110) then
             call rsagsd(result, 0)
-        endif
+        end if
 !
 ! ----- Storing parameters
 !
-        call nmarc0(result, modele        , ds_material  , carele, fonact,&
-                    sdcrit, sddyna        , ds_errorindic,&
-                    sdpilo, list_load_resu, nume_store   , instan)
+        call nmarc0(result, modele, ds_material, carele, fonact, &
+                    sdcrit, sddyna, ds_errorindic, &
+                    sdpilo, list_load_resu, nume_store, instan)
 !
 ! ----- Stroring fields
 !
-        call nmarce(ds_inout, result  , sddisc, instan, nume_store,&
-                    force   , ds_print)
+        call nmarce(ds_inout, result, sddisc, instan, nume_store, &
+                    force, ds_print)
 !
 ! ----- If HHO, we compute a post_processing
 !
-        if(l_hho) then
+        if (l_hho) then
             call hhoPostDeplMeca(modele, result, nume_store)
         end if
 !
@@ -189,14 +189,14 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
             if (ds_algorom_%l_rom) then
                 if (nume_store .gt. 0) then
                     call romAlgoNLTableSave(nume_store, instan, ds_algorom_)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 ! ----- End timer
 !
         call nmtime(ds_measure, 'Stop', 'Store')
         call nmrinc(ds_measure, 'Store')
-    endif
+    end if
 !
 end subroutine

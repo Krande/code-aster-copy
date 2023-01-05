@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine romFieldPrepFilter(nbCmpToFilter, cmpToFilter,&
+subroutine romFieldPrepFilter(nbCmpToFilter, cmpToFilter, &
                               field)
 !
-use Rom_Datastructure_type
+    use Rom_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -30,9 +30,9 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/utmess.h"
 !
-integer, intent(in) :: nbCmpToFilter
-character(len=8), pointer :: cmpToFilter(:)
-type(ROM_DS_Field), intent(inout) :: field
+    integer, intent(in) :: nbCmpToFilter
+    character(len=8), pointer :: cmpToFilter(:)
+    type(ROM_DS_Field), intent(inout) :: field
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,51 +61,51 @@ type(ROM_DS_Field), intent(inout) :: field
 !
 ! - Get properties of field
 !
-    nbEqua    = field%nbEqua
+    nbEqua = field%nbEqua
     nbCmpName = field%nbCmpName
 !
 ! - Allocate selection
 !
-    AS_ALLOCATE(vi = field%equaFilter, size = nbEqua)
+    AS_ALLOCATE(vi=field%equaFilter, size=nbEqua)
 !
 ! - Check list of components
 !
     if (nbCmpToFilter .gt. 0) then
         lFilter = ASTER_TRUE
-        AS_ALLOCATE(vi = cmpRefe, size = nbCmpToFilter)
+        AS_ALLOCATE(vi=cmpRefe, size=nbCmpToFilter)
         do iCmpToFilter = 1, nbCmpToFilter
             cmpFilterName = cmpToFilter(iCmpToFilter)
-            lFound        = ASTER_FALSE
+            lFound = ASTER_FALSE
             do iCmpName = 1, nbCmpName
                 cmpName = field%listCmpName(iCmpName)
                 if (cmpFilterName .eq. cmpName) then
                     lFound = ASTER_TRUE
                     exit
-                endif
+                end if
             end do
             if (lFound) then
                 cmpRefe(iCmpToFilter) = iCmpName
             else
-                call utmess('F', 'ROM11_2', sk = cmpFilterName)
-            endif
+                call utmess('F', 'ROM11_2', sk=cmpFilterName)
+            end if
         end do
-    endif
+    end if
 !
 ! - Select equations
 !
     if (lFilter) then
         do iCmpToFilter = 1, nbCmpToFilter
             cmpFilterName = cmpToFilter(iCmpToFilter)
-            cmpNume       = cmpRefe(iCmpToFilter)
+            cmpNume = cmpRefe(iCmpToFilter)
             do iEqua = 1, nbEqua
                 if (field%equaCmpName(iEqua) .eq. cmpNume .and. cmpNume .ne. 0) then
                     field%equaFilter(iEqua) = 1
-                endif
+                end if
             end do
         end do
     else
         field%equaFilter = 1
-    endif
+    end if
 !
 ! - Save parameters
 !
@@ -113,6 +113,6 @@ type(ROM_DS_Field), intent(inout) :: field
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi = cmpRefe)
+    AS_DEALLOCATE(vi=cmpRefe)
 !
 end subroutine

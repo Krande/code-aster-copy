@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume,&
+subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume, &
                               ds_material, ds_constitutive, ds_system)
 !
-use NonLin_Datastructure_type
-use NonLinear_module, only : setNodalValuesGDVARINO
+    use NonLin_Datastructure_type
+    use NonLinear_module, only: setNodalValuesGDVARINO
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
@@ -38,11 +38,11 @@ implicit none
 #include "asterfort/nmdebg.h"
 #include "asterfort/copisd.h"
 !
-integer, intent(in) :: typeAsse, list_func_acti(*)
-character(len=19), intent(in) :: sdnume
-type(NL_DS_Material), intent(in) :: ds_material
-type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-type(NL_DS_System), intent(in) :: ds_system
+    integer, intent(in) :: typeAsse, list_func_acti(*)
+    character(len=19), intent(in) :: sdnume
+    type(NL_DS_Material), intent(in) :: ds_material
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    type(NL_DS_System), intent(in) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ type(NL_DS_System), intent(in) :: ds_system
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_39')
-    endif
+    end if
 
 ! - Active functionnalities
     l_gdvarino = isfonc(list_func_acti, 'ENDO_NO')
@@ -101,19 +101,19 @@ type(NL_DS_System), intent(in) :: ds_system
             call assvec('V', cnvcpr, 2, vectElem, vectCoef, ds_system%nume_dof)
             call vtaxpy(-1.d0, cnvcpr, ds_system%cnfint)
         else
-            call assvec('V', cnvcpr, 2, vectElem, vectCoef, ds_system%nume_dof,&
-                        maskElem_ = ds_constitutive%code_pred,&
-                        maskInve_ = ASTER_TRUE)
-            call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof,&
-                        maskElem_ = ds_constitutive%code_pred,&
-                        maskInve_ = ASTER_TRUE)
-            call assvec('V', ds_system%cninte, 1, ds_system%veinte, [1.d0], ds_system%nume_dof,&
-                        maskElem_ = ds_constitutive%code_pred,&
-                        maskInve_ = ASTER_FALSE)
+            call assvec('V', cnvcpr, 2, vectElem, vectCoef, ds_system%nume_dof, &
+                        maskElem_=ds_constitutive%code_pred, &
+                        maskInve_=ASTER_TRUE)
+            call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof, &
+                        maskElem_=ds_constitutive%code_pred, &
+                        maskInve_=ASTER_TRUE)
+            call assvec('V', ds_system%cninte, 1, ds_system%veinte, [1.d0], ds_system%nume_dof, &
+                        maskElem_=ds_constitutive%code_pred, &
+                        maskInve_=ASTER_FALSE)
             call vtaxpy(1.d0, ds_system%cnfnod, ds_system%cnfint)
             call vtaxpy(1.d0, ds_system%cninte, ds_system%cnfint)
             call vtaxpy(-1.d0, cnvcpr, ds_system%cnfint)
-        endif
+        end if
 
     elseif (typeAsse .eq. INTE_FORCE_INTE) then
 !       Assemblage que de l'intégration (RAPH_MECA / FULL_MECA / RIGI_MECA_TANG)
@@ -124,21 +124,21 @@ type(NL_DS_System), intent(in) :: ds_system
         ASSERT(.not. l_resi_comp)
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 
 ! - For GDVARINO
     if (l_gdvarino .and. typeAsse .eq. INTE_FORCE_INTE) then
         call setNodalValuesGDVARINO(ds_system%nume_dof, sdnume, ds_system%cnfint)
-    endif
+    end if
 
 ! - If RESI_COMP_RELA
-    if (l_resi_comp.and. typeAsse .ne. INTE_FORCE_INTE) then
+    if (l_resi_comp .and. typeAsse .ne. INTE_FORCE_INTE) then
         call copisd('CHAMP_GD', 'V', ds_system%cnfint, ds_system%cncomp)
-    endif
+    end if
 
 ! - Debug
     if (niv .ge. 2) then
         call nmdebg('VECT', ds_system%cnfint, 6)
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,30 +17,30 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmvff(phase , l_pena_cont, l_pena_fric,&
-                  ndim  , nnl        , nbcps      ,&
-                  ffl   ,&
-                  wpg   , jacobi     , djeu       , lambda,&
-                  coefaf, coefff     , &
-                  tau1  , tau2       , mprojt     , &
-                  dlagrf, rese       , &
+subroutine mmmvff(phase, l_pena_cont, l_pena_fric, &
+                  ndim, nnl, nbcps, &
+                  ffl, &
+                  wpg, jacobi, djeu, lambda, &
+                  coefaf, coefff, &
+                  tau1, tau2, mprojt, &
+                  dlagrf, rese, &
                   vectff)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/normev.h"
 !
-character(len=4), intent(in) :: phase
-aster_logical, intent(in) :: l_pena_cont, l_pena_fric
-integer, intent(in) :: ndim, nnl, nbcps
-real(kind=8), intent(in) :: ffl(9)
-real(kind=8), intent(in) :: wpg, jacobi, djeu(3),lambda
-real(kind=8), intent(in) :: coefaf, coefff
-real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
-real(kind=8), intent(in) :: dlagrf(2), rese(3)
-real(kind=8), intent(out) :: vectff(18)
+    character(len=4), intent(in) :: phase
+    aster_logical, intent(in) :: l_pena_cont, l_pena_fric
+    integer, intent(in) :: ndim, nnl, nbcps
+    real(kind=8), intent(in) :: ffl(9)
+    real(kind=8), intent(in) :: wpg, jacobi, djeu(3), lambda
+    real(kind=8), intent(in) :: coefaf, coefff
+    real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
+    real(kind=8), intent(in) :: dlagrf(2), rese(3)
+    real(kind=8), intent(out) :: vectff(18)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,65 +83,65 @@ real(kind=8), intent(out) :: vectff(18)
 ! --------------------------------------------------------------------------------------------------
 !
     dvitet(:) = 0.0d0
-    tt(:)     = 0.d0
-    inter(:)  = 0.d0
-    nbcpf     = nbcps-1
+    tt(:) = 0.d0
+    inter(:) = 0.d0
+    nbcpf = nbcps-1
 !
 ! - MATRICE DE CHANGEMENT DE REPERE DES LAGR. DE FROTTEMENT
 !
     if (ndim .eq. 2) then
-        do  k = 1, ndim
-            tt(1) = tau1(k)*tau1(k) +tt(1)
-        enddo
+        do k = 1, ndim
+            tt(1) = tau1(k)*tau1(k)+tt(1)
+        end do
         tt(1) = dlagrf(1)*tt(1)
         tt(2) = 0.d0
-    else if (ndim.eq.3) then
-        do  k = 1, ndim
-            tt(1) = (dlagrf(1)*tau1(k)+dlagrf(2)*tau2(k))*tau1(k)+tt( 1)
-        enddo
-        do  k = 1, ndim
-            tt(2) = (dlagrf(1)*tau1(k)+dlagrf(2)*tau2(k))*tau2(k)+tt( 2)
-        enddo
+    else if (ndim .eq. 3) then
+        do k = 1, ndim
+            tt(1) = (dlagrf(1)*tau1(k)+dlagrf(2)*tau2(k))*tau1(k)+tt(1)
+        end do
+        do k = 1, ndim
+            tt(2) = (dlagrf(1)*tau1(k)+dlagrf(2)*tau2(k))*tau2(k)+tt(2)
+        end do
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 ! - Compute stick
 !
-    if (phase  .eq. 'ADHE') then
+    if (phase .eq. 'ADHE') then
 ! ----- PROJECTION DU SAUT SUR LE PLAN TANGENT
-        do  i = 1, ndim
-            do  k = 1, ndim
-                dvitet(i) = mprojt(i,k)*djeu(k)+dvitet(i)
-            enddo
-        enddo
+        do i = 1, ndim
+            do k = 1, ndim
+                dvitet(i) = mprojt(i, k)*djeu(k)+dvitet(i)
+            end do
+        end do
         if (ndim .eq. 2) then
-            do  i = 1, 2
+            do i = 1, 2
                 inter(1) = dvitet(i)*tau1(i)+inter(1)
-            enddo
+            end do
         else if (ndim .eq. 3) then
-            do  i = 1, 3
+            do i = 1, 3
                 inter(1) = dvitet(i)*tau1(i)+inter(1)
                 inter(2) = dvitet(i)*tau2(i)+inter(2)
-            enddo
-        endif
-    endif
+            end do
+        end if
+    end if
 !
 ! - Compute slip
 !
     if (phase .eq. 'GLIS') then
         call normev(rese, nrese)
         if (ndim .eq. 2) then
-            do  i = 1, 2
+            do i = 1, 2
                 inter(1) = (dlagrf(1)*tau1(i)-rese(i))*tau1(i)+inter(1)
-            enddo
+            end do
         else if (ndim .eq. 3) then
-            do  i = 1, 3
-                inter(1) = (dlagrf(1)*tau1(i)+ dlagrf(2)*tau2(i)-rese(i))*tau1(i)+inter(1)
-                inter(2) = (dlagrf(1)*tau1(i)+ dlagrf(2)*tau2(i)-rese(i))*tau2(i)+inter(2)
-            enddo
-        endif
-    endif
+            do i = 1, 3
+                inter(1) = (dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)-rese(i))*tau1(i)+inter(1)
+                inter(2) = (dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)-rese(i))*tau2(i)+inter(2)
+            end do
+        end if
+    end if
 !
 ! - CALCUL DU VECTEUR
 !
@@ -150,57 +150,57 @@ real(kind=8), intent(out) :: vectff(18)
             do i = 1, nnl
                 do l = 1, nbcpf
                     ii = (i-1)*nbcpf+l
-                    vectff(ii) = vectff(ii)-&
+                    vectff(ii) = vectff(ii)- &
                                  wpg*ffl(i)*jacobi*tt(l)/coefaf
-                enddo
-            enddo
+                end do
+            end do
         else
             do i = 1, nnl
                 do l = 1, nbcpf
                     ii = (i-1)*nbcpf+l
-                    vectff(ii) = vectff(ii)+&
+                    vectff(ii) = vectff(ii)+ &
                                  wpg*ffl(i)*jacobi*tt(l)
-                enddo
-            enddo
-        endif
-    else if (phase.eq.'ADHE') then
+                end do
+            end do
+        end if
+    else if (phase .eq. 'ADHE') then
         if (l_pena_fric) then
             do i = 1, nnl
                 do l = 1, nbcpf
                     ii = (i-1)*nbcpf+l
-                    vectff(ii) = vectff(ii)+&
+                    vectff(ii) = vectff(ii)+ &
                                  wpg*ffl(i)*jacobi*coefff*lambda*((tt(l)/coefaf)-inter(l))
-                enddo
-            enddo
+                end do
+            end do
         else
             do i = 1, nnl
                 do l = 1, nbcpf
                     ii = (i-1)*nbcpf+l
-                    vectff(ii) = vectff(ii)-&
+                    vectff(ii) = vectff(ii)- &
                                  wpg*ffl(i)*jacobi*coefff*lambda*inter(l)
-                enddo
-            enddo
-        endif
-    else if (phase.eq.'GLIS') then
+                end do
+            end do
+        end if
+    else if (phase .eq. 'GLIS') then
         if (l_pena_fric) then
             do i = 1, nnl
                 do l = 1, nbcpf
                     ii = (i-1)*nbcpf+l
-                    vectff(ii) = vectff(ii)+&
+                    vectff(ii) = vectff(ii)+ &
                                  wpg*ffl(i)*jacobi*coefff*lambda*inter(l)/coefaf
-                enddo
-            enddo
+                end do
+            end do
         else
             do i = 1, nnl
                 do l = 1, nbcpf
                     ii = (i-1)*nbcpf+l
-                    vectff(ii) = vectff(ii)+&
+                    vectff(ii) = vectff(ii)+ &
                                  wpg*ffl(i)*jacobi*coefff*lambda*inter(l)/coefaf
-                enddo
-            enddo
-        endif
+                end do
+            end do
+        end if
     else
         ASSERT(ASTER_FALSE)
-    endif
+    end if
 !
 end subroutine

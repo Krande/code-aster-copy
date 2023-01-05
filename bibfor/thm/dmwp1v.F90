@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-function dmwp1v(rho11, phids, satur, cs, dpvpl,&
-                phi  , cliq)
+function dmwp1v(rho11, phids, satur, cs, dpvpl, &
+                phi, cliq)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
-real(kind=8), intent(in) :: rho11, phids, satur, cs, dpvpl, phi, cliq
-real(kind=8) :: dmwp1v
+    real(kind=8), intent(in) :: rho11, phids, satur, cs, dpvpl, phi, cliq
+    real(kind=8) :: dmwp1v
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,6 +45,6 @@ real(kind=8) :: dmwp1v
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dmwp1v = rho11*((phids-satur*satur*cs+satur*cs)*dpvpl - phids+satur*phi*cliq+satur*satur*cs)
+    dmwp1v = rho11*((phids-satur*satur*cs+satur*cs)*dpvpl-phids+satur*phi*cliq+satur*satur*cs)
 !
 end function

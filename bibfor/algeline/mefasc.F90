@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
-                  idir, igrp, som, rint, dcent,&
+subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp, &
+                  idir, igrp, som, rint, dcent, &
                   ficent, d, fi, a, b)
     implicit none
 !
@@ -76,20 +76,20 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
             do l = 1, j
                 nl = nk+2*l
                 if (dcent(k) .eq. 0.d0 .and. j .eq. l) then
-                    coef = mefac1(j,l)* (rint(k)**(l+1))/(rext**(j+1))
-                else if (dcent(k).eq.0.d0.and.j.ne.l) then
+                    coef = mefac1(j, l)*(rint(k)**(l+1))/(rext**(j+1))
+                else if (dcent(k) .eq. 0.d0 .and. j .ne. l) then
                     coef = 0.d0
                 else
-                    coef = mefac1(j,l)*(dcent(k)**(j-l))* (rint(k)**( l+1))/(rext**(j+1))
-                endif
-                a(nj-1,nl-1) = -coef*cos((j-l)*ficent(k))
-                a(nj,nl-1) = coef*sin((j-l)*ficent(k))
-                a(nj-1,nl) = coef*sin((j-l)*ficent(k))
-                a(nj,nl) = coef*cos((j-l)*ficent(k))
+                    coef = mefac1(j, l)*(dcent(k)**(j-l))*(rint(k)**(l+1))/(rext**(j+1))
+                end if
+                a(nj-1, nl-1) = -coef*cos((j-l)*ficent(k))
+                a(nj, nl-1) = coef*sin((j-l)*ficent(k))
+                a(nj-1, nl) = coef*sin((j-l)*ficent(k))
+                a(nj, nl) = coef*cos((j-l)*ficent(k))
             end do
         end do
-        a(nj-1,nj-1) = j
-        a(nj,nj) = -j
+        a(nj-1, nj-1) = j
+        a(nj, nj) = -j
 !
     end do
 !
@@ -102,39 +102,39 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                 if (k .ne. i) then
                     do l = 1, nbtron
                         nl = nk+2*l
-                        coef = mefac2(l,j)*(rint(i)**(j-1))* (rint(k) **(l+1))/(d(i,k)**(l+j))
+                        coef = mefac2(l, j)*(rint(i)**(j-1))*(rint(k)**(l+1))/(d(i, k)**(l+j))
                         coef = coef*((-1)**l)
-                        a(nj-1,nl-1) = coef*cos((j+l)*fi(i,k))
-                        a(nj,nl-1) = coef*sin((j+l)*fi(i,k))
-                        a(nj-1,nl) = coef*sin((j+l)*fi(i,k))
-                        a(nj,nl) = -coef*cos((j+l)*fi(i,k))
+                        a(nj-1, nl-1) = coef*cos((j+l)*fi(i, k))
+                        a(nj, nl-1) = coef*sin((j+l)*fi(i, k))
+                        a(nj-1, nl) = coef*sin((j+l)*fi(i, k))
+                        a(nj, nl) = -coef*cos((j+l)*fi(i, k))
                     end do
                 else
                     nl = nk+2*j
-                    a(nj-1,nl-1) = -j
-                    a(nj,nl) = -j
-                endif
+                    a(nj-1, nl-1) = -j
+                    a(nj, nl) = -j
+                end if
             end do
 !
             do l = j, nbtron
                 nl = 2*l
                 if (dcent(i) .eq. 0.d0 .and. j .eq. l) then
-                    coef = mefac1(l,j)*(rint(i)**(j-1)) /(rext**(l-1))
-                else if (dcent(i).eq.0.d0.and.j.ne.l) then
+                    coef = mefac1(l, j)*(rint(i)**(j-1))/(rext**(l-1))
+                else if (dcent(i) .eq. 0.d0 .and. j .ne. l) then
                     coef = 0.d0
                 else
-                    coef = mefac1(l,j)*(rint(i)**(j-1))* (dcent(i)**( l-j))/(rext**(l-1))
-                endif
-                a(nj-1,nl-1) = coef*cos((l-j)*ficent(i))
-                a(nj,nl-1) = -coef*sin((l-j)*ficent(i))
-                a(nj-1,nl) = coef*sin((l-j)*ficent(i))
-                a(nj,nl) = coef*cos((l-j)*ficent(i))
+                    coef = mefac1(l, j)*(rint(i)**(j-1))*(dcent(i)**(l-j))/(rext**(l-1))
+                end if
+                a(nj-1, nl-1) = coef*cos((l-j)*ficent(i))
+                a(nj, nl-1) = -coef*sin((l-j)*ficent(i))
+                a(nj-1, nl) = coef*sin((l-j)*ficent(i))
+                a(nj, nl) = coef*cos((l-j)*ficent(i))
             end do
 !
         end do
         if (numgrp(i) .eq. igrp) then
             b(2*nbtron*i+idir) = 1.d0
-        endif
+        end if
     end do
 !
 end subroutine

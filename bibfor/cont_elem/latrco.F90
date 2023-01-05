@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine latrco(i_tria, nb_poin_inte, poin_inte, tria_coor)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 !
@@ -48,22 +48,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if(nb_poin_inte == 3) then
-        tria_coor(1:2, 1:3) = poin_inte(1:2,1:3)
+    if (nb_poin_inte == 3) then
+        tria_coor(1:2, 1:3) = poin_inte(1:2, 1:3)
     else
         barycenter = 0.d0
-        do i_node=1, nb_poin_inte
-            barycenter(1:2) = barycenter(1:2) + poin_inte(1:2,i_node)
+        do i_node = 1, nb_poin_inte
+            barycenter(1:2) = barycenter(1:2)+poin_inte(1:2, i_node)
         end do
-        barycenter = barycenter / real(nb_poin_inte, kind=8)
+        barycenter = barycenter/real(nb_poin_inte, kind=8)
 !
         i_node1 = i_tria
-        i_node2 = i_tria + 1
-        if(i_tria == nb_poin_inte) i_node2 = 1
+        i_node2 = i_tria+1
+        if (i_tria == nb_poin_inte) i_node2 = 1
 
-        tria_coor(1:2,1) = poin_inte(1:2,i_node1)
-        tria_coor(1:2,2) = poin_inte(1:2,i_node2)
-        tria_coor(1:2,3) = barycenter
+        tria_coor(1:2, 1) = poin_inte(1:2, i_node1)
+        tria_coor(1:2, 2) = poin_inte(1:2, i_node2)
+        tria_coor(1:2, 3) = barycenter
     end if
 !
 end subroutine

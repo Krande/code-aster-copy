@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -142,42 +142,42 @@ subroutine op0151()
         call getvid(' ', 'FORMULE_GRDEQ', scal=nomfor, nbret=nval)
         if (nval .eq. 0) then
             nomfor = '        '
-        endif
+        end if
 !
         call getvtx(' ', 'COURBE_GRD_VIE', scal=grdvie, nbret=nval)
         if (nval .eq. 0) then
             grdvie = '        '
-        endif
+        end if
 !
         call getvid(' ', 'FORMULE_VIE', scal=forvie, nbret=nval)
         if (nval .eq. 0) then
             forvie = '        '
-        endif
+        end if
 !
         call getvid(' ', 'FORMULE_CRITIQUE', scal=forcri, nbret=nval)
         if (nval .eq. 0) then
             forcri = '        '
-        endif
+        end if
 !
 !
 ! ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
         call getvtx(' ', 'METHODE', scal=nommet, nbret=nval)
         if (nval .eq. 0) then
             nommet = '        '
-        endif
+        end if
 !
 ! ---   PROJECTION SUR UN AXE OU SUR DEUX AXES
 !       (CHARGEMENT NON_PERIODIQUE UNIQUEMENT)
         call getvtx(' ', 'PROJECTION', scal=proaxe, nbret=nval)
         if (nval .eq. 0) then
             proaxe = '        '
-        endif
+        end if
 !
 ! ---   NOM DU MAILLAGE
         call getvid(' ', 'MAILLAGE', scal=nommai, nbret=nval)
         if (nval .eq. 0) then
             nommai = '        '
-        endif
+        end if
 !
 ! ----- INSTANT INITIAL DU PARTIE DE CHARGEMENT CYCLIQUE
 !
@@ -196,7 +196,7 @@ subroutine op0151()
         crepst = .false.
         crepse = .false.
         crepsp = .false.
-        call anacri(nomcri, nomfor, typcha, 'OUI', paract,&
+        call anacri(nomcri, nomfor, typcha, 'OUI', paract, &
                     fordef, crsigm, crepst, crepse, crepsp)
 !
 !   FORDEF EST UNE BOOLEAN QUI INDIQUE S'IL EXISTE LE PARAMETRE
@@ -205,21 +205,21 @@ subroutine op0151()
         if (nomopt .eq. 'DOMA_ELGA') then
 !
 ! ---   CONSTRUCTION DES PAQUETS DE MAILLES
-            call paqmai(nomres, nomu, nommai, nommet, nomcri,&
-                        nomfor, grdvie, forvie, forcri, fordef,&
+            call paqmai(nomres, nomu, nommai, nommet, nomcri, &
+                        nomfor, grdvie, forvie, forcri, fordef, &
                         typcha, proaxe, instic, inscri, prec)
 !
         else if (nomopt .eq. 'DOMA_NOEUD') then
 !
 ! ---   CONSTRUCTION DES PAQUETS DE NOEUDS
-            call paqnoe(nomres, nomu, nommai, nommet, nomcri,&
-                        nomfor, grdvie, forvie, forcri, fordef,&
+            call paqnoe(nomres, nomu, nommai, nommet, nomcri, &
+                        nomfor, grdvie, forvie, forcri, fordef, &
                         typcha, proaxe, instic, inscri, prec)
-        endif
+        end if
 !
 !
         goto 7777
-    endif
+    end if
 !
 ! ---------------------------------------------------------------------
 ! ---- CAS GENERAL (CUMUL DE DOMMAGE OU FATIGUE MODALE)
@@ -249,14 +249,14 @@ subroutine op0151()
 !       ET NOMBRE TOTAL DE COMPOSANTES DE CETTE OPTION
 !
     if (nomopt(11:14) .eq. 'SIGM') then
-        nomsym='SIEQ_'//nomopt(6:9)
-    else if (nomopt(11:14).eq.'EPSI') then
-        nomsym='EPEQ_'//nomopt(6:9)
-    else if (nomopt(11:14).eq.'EPME') then
-        nomsym='EPMQ_'//nomopt(6:9)
+        nomsym = 'SIEQ_'//nomopt(6:9)
+    else if (nomopt(11:14) .eq. 'EPSI') then
+        nomsym = 'EPEQ_'//nomopt(6:9)
+    else if (nomopt(11:14) .eq. 'EPME') then
+        nomsym = 'EPMQ_'//nomopt(6:9)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !
     if (nomopt(6:14) .eq. 'ELGA_SIGM') then
@@ -273,7 +273,7 @@ subroutine op0151()
         ntcmp = 14
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 !       TYPE DE GRANDEUR EQUIVALENTE UTILISEE LE POUR CALCUL DU DOMMAGE
 !       ET NOMBRE DE COMPOSANTES DE CETTE GRANDEUR
@@ -284,10 +284,10 @@ subroutine op0151()
     if (nomgde(1:7) .eq. 'VMIS_SG') then
         numcmp(1) = 6
         nbcmp = 1
-    else if (nomgde(1:9).eq.'INVA_2_SG') then
+    else if (nomgde(1:9) .eq. 'INVA_2_SG') then
         numcmp(1) = 5
         nbcmp = 1
-    endif
+    end if
 !
 ! ---------------------------------------------------------------------
 ! ---- CUMUL DE DOMMAGE
@@ -302,12 +302,12 @@ subroutine op0151()
         if (mdomag .eq. 'WOHLER') then
             if (nomopt(11:14) .ne. 'SIGM') then
                 call utmess('F', 'FATIGUE1_29', sk=nomopt)
-            endif
+            end if
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
-            endif
+            end if
             cara = 'WOHLER'
             call rcpare(nommat, pheno, cara, icodwo)
             cara = 'A_BASQUIN'
@@ -316,60 +316,60 @@ subroutine op0151()
             call rcpare(nommat, pheno, cara, icodhs)
             if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
                 call utmess('F', 'FATIGUE1_30')
-            endif
+            end if
 !
-        else if (mdomag.eq.'MANSON_COFFIN') then
+        else if (mdomag .eq. 'MANSON_COFFIN') then
             if (nomopt(11:14) .ne. 'EPSI' .and. nomopt(11:14) .ne. 'EPME') then
                 call utmess('F', 'FATIGUE1_31', sk=nomopt)
-            endif
+            end if
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
-            endif
+            end if
             cara = 'MANSON_COFFIN'
             call rcpare(nommat, pheno, cara, icodma)
             if (icodma .ne. 0) then
                 call utmess('F', 'FATIGUE1_32')
-            endif
+            end if
 !
-        else if (mdomag.eq.'TAHERI_MANSON') then
+        else if (mdomag .eq. 'TAHERI_MANSON') then
             if (nomopt(11:14) .ne. 'EPSI' .and. nomopt(11:14) .ne. 'EPME') then
                 call utmess('F', 'FATIGUE1_25', sk=nomopt)
-            endif
+            end if
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
-            endif
+            end if
             cara = 'MANSON_COFFIN'
             call rcpare(nommat, pheno, cara, icodma)
             if (icodma .ne. 0) then
                 call utmess('F', 'FATIGUE1_32')
-            endif
+            end if
             call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nval)
             if (nval .eq. 0) then
                 call utmess('F', 'FATIGUE1_26')
-            endif
+            end if
             call getvid(' ', 'TAHERI_FONC', scal=nomfon, nbret=nval)
             if (nval .eq. 0) then
                 call utmess('F', 'FATIGUE1_27')
-            endif
+            end if
 !
-        else if (mdomag.eq.'TAHERI_MIXTE') then
+        else if (mdomag .eq. 'TAHERI_MIXTE') then
             if (nomopt(11:14) .ne. 'EPSI' .and. nomopt(11:14) .ne. 'EPME') then
                 call utmess('F', 'FATIGUE1_28', sk=nomopt)
-            endif
+            end if
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_24')
-            endif
+            end if
             cara = 'MANSON_COFFIN'
             call rcpare(nommat, pheno, cara, icodma)
             if (icodma .ne. 0) then
                 call utmess('F', 'FATIGUE1_32')
-            endif
+            end if
             cara = 'WOHLER'
             call rcpare(nommat, pheno, cara, icodwo)
             cara = 'A_BASQUIN'
@@ -378,46 +378,46 @@ subroutine op0151()
             call rcpare(nommat, pheno, cara, icodhs)
             if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
                 call utmess('F', 'FATIGUE1_30')
-            endif
+            end if
             call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nval)
             if (nval .eq. 0) then
                 call utmess('F', 'FATIGUE1_26')
-            endif
+            end if
 !
-        endif
+        end if
 !
 ! --- VERIFICATION DU NOMBRE DE PAS DE TEMPS
         call jelira(nomsd//'.ORDR', 'LONUTI', nbord)
         if (nbord .lt. 2) then
             call utmess('F', 'FATIGUE1_76', si=nbord)
-        endif
+        end if
 !
         call jenonu(jexnom(nomsd//'.DESC', nomsym), numsym)
         if (numsym .eq. 0) then
             valk(1) = nomsym
             valk(2) = nomsd
             call utmess('F', 'PREPOST4_5', nk=2, valk=valk)
-        endif
+        end if
         call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
-        chelrs = zk24(ivch)(1:19)
+        chelrs = zk24(ivch) (1:19)
         if (chelrs .eq. ' ') then
             valk(1) = chelrs
             valk(2) = nomsym
             valk(3) = nomsd
             call utmess('F', 'PREPOST4_6', nk=3, valk=valk)
-        endif
+        end if
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
-        ligrel=zk24(jcelk-1+1)(1:19)
+        ligrel = zk24(jcelk-1+1) (1:19)
         call jelira(chelrs//'.CELV', 'LONMAX', nval)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
-        nbpt = nval / ntcmp
+        nbpt = nval/ntcmp
 !
         if (impr .ge. 2) then
-            vali (1) = nbord
-            vali (2) = nbpt
+            vali(1) = nbord
+            vali(2) = nbpt
             call utmess('I', 'PREPOST6_27', ni=2, vali=vali)
-        endif
+        end if
 !
 ! ----- CALCUL DU VECTEUR DOMMAGE EN CHAQUE NOEUD/PG
 !       ----------------------------------------------------------------
@@ -435,23 +435,23 @@ subroutine op0151()
             if (nomopt(11:14) .eq. 'EPME') typdg = 'DEFORMATION'
             if (nomopt(6:9) .eq. 'ELNO') typoi = 'NOEUDS'
             if (nomopt(6:9) .eq. 'ELGA') typoi = 'POINTS DE GAUSS'
-            valk (1) = typdg
-            valk (2) = typoi
-            valk (3) = typeq
-            valk (4) = mexpic
-            valk (5) = mcompt
-            valk (6) = mdomag
+            valk(1) = typdg
+            valk(2) = typoi
+            valk(3) = typeq
+            valk(4) = mexpic
+            valk(5) = mcompt
+            valk(6) = mdomag
             call utmess('I', 'PREPOST6_28', nk=6, valk=valk)
-        endif
+        end if
 !
-        call fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
-                    mexpic, mcompt, mdomag, nbord, nbpt,&
+        call fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon, &
+                    mexpic, mcompt, mdomag, nbord, nbpt, &
                     ntcmp, nbcmp, numcmp, impr, zr(ivdmg))
 !
         if (impr .ge. 2) then
             ifm = iunifi('MESSAGE')
             call jeimpo(ifm, '&&OP0151.DOMMAGE', 'DOMMAGE')
-        endif
+        end if
 !
 ! ---------------------------------------------------------------------
 ! ---- FATIGUE VIBRATOIRE
@@ -467,45 +467,45 @@ subroutine op0151()
         if (mdomag .eq. 'WOHLER') then
             if (nomopt(11:14) .ne. 'SIGM') then
                 call utmess('F', 'FATIGUE1_29', sk=nomopt)
-            endif
+            end if
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_88', sk='WOHLER')
-            endif
+            end if
             call rcpare(nommat, pheno, 'WOHLER', icodre)
             if (icodre .eq. 1) then
                 call utmess('F', 'FATIGUE1_88', sk='WOHLER')
-            endif
-        endif
+            end if
+        end if
 !
 ! --- CONTRAINTE STATIQUE
 !
         call jelira(nomsd//'.ORDR', 'LONUTI', nbord)
         if (nbord .gt. 1) then
             call utmess('F', 'FATIGUE1_84', si=nbord)
-        endif
+        end if
 !
         call jenonu(jexnom(nomsd//'.DESC', nomsym), numsym)
         if (numsym .eq. 0) then
             valk(1) = nomsym
             valk(2) = nomsd
             call utmess('F', 'PREPOST4_5', nk=2, valk=valk)
-        endif
+        end if
         call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
-        chelrs = zk24(ivch)(1:19)
+        chelrs = zk24(ivch) (1:19)
         if (chelrs .eq. ' ') then
             valk(1) = chelrs
             valk(2) = nomsym
             valk(3) = nomsd
             call utmess('F', 'PREPOST4_6', nk=3, valk=valk)
-        endif
+        end if
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
-        ligrel=zk24(jcelk-1+1)(1:19)
+        ligrel = zk24(jcelk-1+1) (1:19)
         call jelira(chelrs//'.CELV', 'LONMAX', nval)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
-        nbpt = nval / ntcmp
+        nbpt = nval/ntcmp
 !
 ! --- CONTRAINTE MODALE
 !
@@ -514,27 +514,27 @@ subroutine op0151()
             valk(1) = nomsym
             valk(2) = nomsd2
             call utmess('F', 'PREPOST4_5', nk=2, valk=valk)
-        endif
+        end if
         call jeveuo(jexnum(nomsd2//'.TACH', numsym), 'L', ivch)
-        chelrs = zk24(ivch)(1:19)
+        chelrs = zk24(ivch) (1:19)
         if (chelrs .eq. ' ') then
             valk(1) = chelrs
             valk(2) = nomsym
             valk(3) = nomsd2
             call utmess('F', 'PREPOST4_6', nk=3, valk=valk)
-        endif
+        end if
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
-        ligrel=zk24(jcelk-1+1)(1:19)
+        ligrel = zk24(jcelk-1+1) (1:19)
         call jelira(chelrs//'.CELV', 'LONMAX', nval)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
-        nbpt2 = nval / ntcmp
+        nbpt2 = nval/ntcmp
 !
         if (nbpt .ne. nbpt2) then
-            vali (1) = nbpt
-            vali (2) = nbpt2
+            vali(1) = nbpt
+            vali(2) = nbpt2
             call utmess('F', 'FATIGUE1_85', ni=2, vali=vali)
-        endif
+        end if
 !
 !-- NOMBRE ET NUMERO D ORDRE
         call getvis('HISTOIRE', 'NUME_MODE', iocc=1, nbval=0, nbret=nbord)
@@ -542,14 +542,14 @@ subroutine op0151()
 !
         if (nbord .ne. nbord2) then
             call utmess('F', 'FATIGUE1_86')
-        endif
+        end if
 !
         nbord = -nbord
         call wkvect('&&OP0151.LMODE', 'V V I', nbord, jordr)
-        call getvis('HISTOIRE', 'NUME_MODE', iocc=1, nbval=nbord, vect=zi(jordr),&
+        call getvis('HISTOIRE', 'NUME_MODE', iocc=1, nbval=nbord, vect=zi(jordr), &
                     nbret=ibid)
         call wkvect('&&OP0151.CMODE', 'V V R', nbord, jcoef)
-        call getvr8('HISTOIRE', 'FACT_PARTICI', iocc=1, nbval=nbord, vect=zr(jcoef),&
+        call getvr8('HISTOIRE', 'FACT_PARTICI', iocc=1, nbval=nbord, vect=zr(jcoef), &
                     nbret=ibid)
 !
         if (impr .ge. 1) then
@@ -557,24 +557,24 @@ subroutine op0151()
             typdg = 'CONTRAINTE'
             if (nomopt(6:9) .eq. 'ELNO') typoi = 'NOEUDS'
             if (nomopt(6:9) .eq. 'ELGA') typoi = 'POINTS DE GAUSS'
-            valk (1) = typdg
-            valk (2) = typoi
-            valk (3) = typeq
-            vali (1) = nbpt
-            vali (2) = nbord
-            call utmess('I', 'FATIGUE1_81', nk=3, valk=valk, ni=2,&
+            valk(1) = typdg
+            valk(2) = typoi
+            valk(3) = typeq
+            vali(1) = nbpt
+            vali(2) = nbord
+            call utmess('I', 'FATIGUE1_81', nk=3, valk=valk, ni=2, &
                         vali=vali)
-        endif
+        end if
 !
         call wkvect('&&OP0151.DOMMAGE', 'V V R', nbpt, ivdmg)
-        call dmgmod(nomsym, nomsd, nomsd2, nommat, nbord,&
-                    jordr, jcoef, nbpt, ntcmp, numcmp,&
+        call dmgmod(nomsym, nomsd, nomsd2, nommat, nbord, &
+                    jordr, jcoef, nbpt, ntcmp, numcmp, &
                     impr, zr(ivdmg))
 !
         call jedetr('&&OP0151.LMODE')
         call jedetr('&&OP0151.CMODE')
 !
-    endif
+    end if
 !
 ! ----- TRANSFORMATION DU VECTEUR DOMMAGE EN UN VRAI CHAM_ELEM
 !       ----------------------------------------------------------------
@@ -583,15 +583,15 @@ subroutine op0151()
 !
     chelem = nomu
 !
-    option='TOU_INI_'//nomopt(6:9)
-    call alchml(ligrel, option, 'PDOMMAG', 'G', chelem,&
+    option = 'TOU_INI_'//nomopt(6:9)
+    call alchml(ligrel, option, 'PDOMMAG', 'G', chelem, &
                 iret, ' ')
-    ASSERT(iret.eq.0)
+    ASSERT(iret .eq. 0)
 !
 !
     call jeveuo(chelem//'.CELV', 'E', vr=celv)
     call jelira(chelem//'.CELV', 'LONMAX', ibid)
-    ASSERT(ibid.eq.nbpt)
+    ASSERT(ibid .eq. nbpt)
     do i = 1, nbpt
         celv(i) = zr(ivdmg+i-1)
     end do

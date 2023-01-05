@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lkoptg(val, dum, dt, nbmat, mater,&
-                  invar, s, iel, sel, ucrpm,&
-                  ucrvm, ucriv, seuilv, vinm, de,&
+subroutine lkoptg(val, dum, dt, nbmat, mater, &
+                  invar, s, iel, sel, ucrpm, &
+                  ucrvm, ucriv, seuilv, vinm, de, &
                   depsv, dside, retcom)
 !
     implicit none
@@ -70,7 +70,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! --- : DSIDE :  COMPOSANTS DE L OPERATEUR TANGENT  --------------
 ! ----: RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS ------
 ! =================================================================
-    common /tdim/   ndt , ndi
+    common/tdim/ndt, ndi
     integer :: ndi, ndt, i, k
     real(kind=8) :: paraep(3), varpl(4), derpar(3)
     real(kind=8) :: paravi(3), varvi(4)
@@ -89,8 +89,8 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================
-    parameter       ( deux   =  2.0d0   )
-    parameter       ( trois  =  3.0d0   )
+    parameter(deux=2.0d0)
+    parameter(trois=3.0d0)
 ! =================================================================
     vintr = vinm(3)
 !
@@ -107,38 +107,38 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! =================================================================
 ! --- RECUPERATION DE DFd/DSIGM(-) --------------------------------
 ! =================================================================
-    call lkdhds(nbmat, mater, invar, s, dhds,&
+    call lkdhds(nbmat, mater, invar, s, dhds, &
                 retcom)
-    call lkds2h(nbmat, mater, invar, s, dhds,&
+    call lkds2h(nbmat, mater, invar, s, dhds, &
                 ds2hds, retcom)
 !
-    call lkdfds(nbmat, mater, s, paraep, varpl,&
+    call lkdfds(nbmat, mater, s, paraep, varpl, &
                 ds2hds, ucrpm, dfdsp)
 ! =================================================================
 ! --- RECUPERATION DE DFv/DSIGM (-) -------------------------------
 ! =================================================================
-    call lkdhds(nbmat, mater, invar, s, dhdsv,&
+    call lkdhds(nbmat, mater, invar, s, dhdsv, &
                 retcom)
-    call lkds2h(nbmat, mater, invar, s, dhdsv,&
+    call lkds2h(nbmat, mater, invar, s, dhdsv, &
                 ds2hdv, retcom)
 !
-    call lkdfds(nbmat, mater, s, paravi, varvi,&
+    call lkdfds(nbmat, mater, s, paravi, varvi, &
                 ds2hdv, ucrvm, dfdsv)
 !
 ! =================================================================
 ! --- RECUPERATION DE DFv/DSIGM(E) --------------------------------
 ! =================================================================
-    call lkdhds(nbmat, mater, iel, sel, dhdsve,&
+    call lkdhds(nbmat, mater, iel, sel, dhdsve, &
                 retcom)
-    call lkds2h(nbmat, mater, iel, sel, dhdsve,&
+    call lkds2h(nbmat, mater, iel, sel, dhdsve, &
                 ds2hde, retcom)
 !
-    call lkdfds(nbmat, mater, sel, paravi, varvi,&
+    call lkdfds(nbmat, mater, sel, paravi, varvi, &
                 ds2hde, ucriv, dfdsve)
 ! =================================================================
 ! --- RECUPERATION DE GPLAS ---------------------------------------
 ! =================================================================
-    bprimp = lkbpri(val,vinm,nbmat,mater,paraep,invar,s)
+    bprimp = lkbpri(val, vinm, nbmat, mater, paraep, invar, s)
 !
     call lkcaln(s, bprimp, vecnp, retcom)
 !
@@ -147,7 +147,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! --- RECUPERATION DE GVISC ---------------------------------------
 ! =================================================================
     val = 0
-    bprimv = lkbpri(val,vinm,nbmat,mater,paravi,invar,s)
+    bprimv = lkbpri(val, vinm, nbmat, mater, paravi, invar, s)
 !
     call lkcaln(s, bprimv, vecnv, retcom)
 !
@@ -155,35 +155,35 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! =================================================================
 ! --- RECUPERATION DE DPHI/DEPS ET SA MULTIPLICATION PAR GVISC
 ! =================================================================
-    call lkdphi(nbmat, mater, de, seuilv, dfdsve,&
+    call lkdphi(nbmat, mater, de, seuilv, dfdsve, &
                 dphi)
 !
-    degv(1:ndt) = matmul(de(1:ndt,1:ndt), gv(1:ndt))
+    degv(1:ndt) = matmul(de(1:ndt, 1:ndt), gv(1:ndt))
 !
     call lcprte(degv, dphi, dphigv)
 !
     do i = 1, ndt
         do k = 1, ndt
-            aa(i,k) = de(i,k) - dphigv(i,k)*dt
+            aa(i, k) = de(i, k)-dphigv(i, k)*dt
         end do
     end do
 !
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR AA -----------------------------------
 ! =================================================================
-    aat(1:ndt,1:ndt) = transpose(aa(1:ndt,1:ndt))
-    nume(1:ndt) = matmul(aat(1:ndt,1:ndt), dfdsp(1:ndt))
+    aat(1:ndt, 1:ndt) = transpose(aa(1:ndt, 1:ndt))
+    nume(1:ndt) = matmul(aat(1:ndt, 1:ndt), dfdsp(1:ndt))
 !
 ! =================================================================
 ! --- RECUPERATION DE DF/DXIP -------------------------------------
 ! =================================================================
-    call lkdfdx(nbmat, mater, ucrpm, invar, s,&
+    call lkdfdx(nbmat, mater, ucrpm, invar, s, &
                 paraep, varpl, derpar, dfdxip)
 ! =================================================================
 ! --- PRODUIT DE DE PAR G -----------------------------------------
 ! =================================================================
     call r8inir(6, 0.d0, degp, 1)
-    degp(1:ndt) = matmul(de(1:ndt,1:ndt), gp(1:ndt))
+    degp(1:ndt) = matmul(de(1:ndt, 1:ndt), gp(1:ndt))
 !
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR DEGP----------------------------------
@@ -193,7 +193,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! =================================================================
 ! --- CALCUL DE DGAMV/ DEPS----------------------------------------
 ! =================================================================
-    call lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
+    call lkdepv(nbmat, mater, depsv, ddepsv, dgamv, &
                 ddgamv)
 ! =================================================================
 ! --- CALCUL DE DEPSV/ DSIG----------------------------------------
@@ -202,12 +202,12 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
     call r8inir(6*6, 0.d0, cc, 1)
     call r8inir(6, 0.d0, dd, 1)
 !
-    call lkdvds(dt, nbmat, mater, gv, dfdsve,&
+    call lkdvds(dt, nbmat, mater, gv, dfdsve, &
                 seuilv, dvds)
 !
-    cc(1:ndt,1:ndt) = matmul(dvds(1:ndt,1:ndt), de(1:ndt,1:ndt))
-    cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
-    dd(1:ndt) = matmul(cct(1:ndt,1:ndt), ddgamv(1:ndt))
+    cc(1:ndt, 1:ndt) = matmul(dvds(1:ndt, 1:ndt), de(1:ndt, 1:ndt))
+    cct(1:ndt, 1:ndt) = transpose(cc(1:ndt, 1:ndt))
+    dd(1:ndt) = matmul(cct(1:ndt, 1:ndt), ddgamv(1:ndt))
 ! =================================================================
 ! --- CALCUL DE DLAM ----------------------------------------------
 ! =================================================================
@@ -216,11 +216,11 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 !
         if (dum .eq. 0) then
 !
-            ddlam(i) = nume(i)/(dfdegp - dfdxip*sqrt(deux/trois)* devgii)
+            ddlam(i) = nume(i)/(dfdegp-dfdxip*sqrt(deux/trois)*devgii)
 !
         else
-            ddlam(i) = ( nume(i) + dfdxip*dd(i))/ (dfdegp - dfdxip* sqrt(deux/trois)*devgii )
-        endif
+            ddlam(i) = (nume(i)+dfdxip*dd(i))/(dfdegp-dfdxip*sqrt(deux/trois)*devgii)
+        end if
 !
     end do
 ! =================================================================
@@ -237,7 +237,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 !
     do i = 1, ndt
         do k = 1, ndt
-            dside(i,k) = de(i,k) - dedgp(i,k) - dphigv(i,k)*dt
+            dside(i, k) = de(i, k)-dedgp(i, k)-dphigv(i, k)*dt
         end do
     end do
 ! =================================================================

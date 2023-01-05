@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 !
     call cfposn(defico, posmae, posnno, nnomai)
     call cfnumn(defico, nnomai, posnno, numnno)
-    ASSERT(nnomai.le.9)
+    ASSERT(nnomai .le. 9)
 !
 ! --- REPERAGE SI LE NOEUD EST UN NOEUD A EXCLURE
 !
@@ -83,11 +83,11 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
         numno = numnno(ino)
         call cfmmex(defico, 'FROT', izone, numno, suppok)
         if (suppok .eq. 1) then
-            nbexfr = nbexfr + 1
+            nbexfr = nbexfr+1
             ndexcl(ino) = 1
         else
             ndexcl(ino) = 0
-        endif
+        end if
     end do
 !
 ! --- CODAGE
@@ -96,27 +96,27 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 !
 ! ----- NOMBRE DE DIRECTIONS A EXCLURE
 !
-        ndimg = cfdisi(defico,'NDIM')
-        ndirex = mminfi(defico,'EXCL_DIR',izone)
+        ndimg = cfdisi(defico, 'NDIM')
+        ndirex = mminfi(defico, 'EXCL_DIR', izone)
         if (ndimg .eq. 2) then
             if (ndirex .gt. 0) then
                 ndexcl(10) = 1
             else
                 ASSERT(.false.)
-            endif
-        else if (ndimg.eq.3) then
+            end if
+        else if (ndimg .eq. 3) then
             if (ndirex .eq. 1) then
                 ndexcl(10) = 0
-            else if (ndirex.eq.2) then
+            else if (ndirex .eq. 2) then
                 ndexcl(10) = 1
             else
                 ASSERT(.false.)
-            endif
+            end if
         else
             ASSERT(.false.)
-        endif
+        end if
         call iscode(ndexcl, ndexfr(1), 10)
-    endif
+    end if
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,15 +76,15 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCA
     do ioc = 1, nbocc
         sct = 0.d0
-        call getvem(noma, 'GROUP_MA', 'CABLE', 'GROUP_MA', ioc,&
+        call getvem(noma, 'GROUP_MA', 'CABLE', 'GROUP_MA', ioc, &
                     lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', 'CABLE', 'MAILLE', ioc,&
-                    lmax, zk8( jdls2), nm)
+        call getvem(noma, 'MAILLE', 'CABLE', 'MAILLE', ioc, &
+                    lmax, zk8(jdls2), nm)
 !
         call getvr8('CABLE', 'SECTION', iocc=ioc, scal=sct, nbret=nv)
         if (nv .eq. 0) then
             call getvr8('CABLE', 'A', iocc=ioc, scal=sct, nbret=nv)
-        endif
+        end if
         zr(jdvc) = sct
         call getvr8('CABLE', 'N_INIT', iocc=ioc, scal=tens, nbret=nt)
         zr(jdvc+1) = tens
@@ -99,16 +99,16 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
                 call nocart(cartca, 2, 2, groupma=zk24(jdls+i-1))
                 call nocart(cartcf, 2, 1, groupma=zk24(jdls+i-1))
             end do
-        endif
+        end if
 !
 ! -      "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 !
         if (nm .gt. 0) then
-            call nocart(cartca, 3, 2, mode='NOM', nma=nm,&
+            call nocart(cartca, 3, 2, mode='NOM', nma=nm, &
                         limano=zk8(jdls2))
-            call nocart(cartcf, 3, 1, mode='NOM', nma=nm,&
+            call nocart(cartcf, 3, 1, mode='NOM', nma=nm, &
                         limano=zk8(jdls2))
-        endif
+        end if
 !
     end do
 !

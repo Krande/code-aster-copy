@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aptgem(sdappa , mesh     , newgeo   , sdcont_defi, model_ndim,&
-                  i_zone , zone_type, iter_maxi, epsi_maxi  , jdecma    ,&
+subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
+                  i_zone, zone_type, iter_maxi, epsi_maxi, jdecma, &
                   nb_elem)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
@@ -110,15 +110,15 @@ implicit none
 ! - MPI informations
 !
     call asmpi_comm('GET', mpicou)
-    call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
+    call asmpi_info(mpicou, rank=i_proc, size=nb_proc)
     if (one_proc) then
         nb_proc = 1
-        i_proc  = 0
-    endif
-    nb_elem_mpi  = int(nb_elem/nb_proc)
+        i_proc = 0
+    end if
+    nb_elem_mpi = int(nb_elem/nb_proc)
     nbr_elem_mpi = nb_elem-nb_elem_mpi*nb_proc
-    idx_start    = 1+(i_proc)*nb_elem_mpi
-    idx_end      = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
+    idx_start = 1+(i_proc)*nb_elem_mpi
+    idx_end = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
 !
 ! - Loop on elements
 !
@@ -131,11 +131,11 @@ implicit none
 !
 ! ----- Number of nodes
 !
-        call cfnben(sdcont_defi, elem_indx, 'CONNEX', enti_nb_ = elem_nbnode)
+        call cfnben(sdcont_defi, elem_indx, 'CONNEX', enti_nb_=elem_nbnode)
 !
 ! ----- Parameters of current element
 !
-        call aptypm(mesh     , elem_nume, elem_ndim, elem_nbnode, elem_type, &
+        call aptypm(mesh, elem_nume, elem_ndim, elem_nbnode, elem_type, &
                     elem_name)
 !
 ! ----- Coordinates of current element
@@ -144,7 +144,7 @@ implicit none
 !
 ! ----- Get absolute index of nodes
 !
-        call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi = v_mesh_connex)
+        call jeveuo(jexnum(mesh//'.CONNEX', elem_nume), 'L', vi=v_mesh_connex)
         do i_node = 1, elem_nbnode
             node_nume(i_node) = v_mesh_connex(i_node)
         end do
@@ -152,16 +152,16 @@ implicit none
 ! ----- Right length
 !
         call jelira(jexnum(sdappa_tgel, elem_indx), 'LONMAX', longc)
-        longc = longc /6
+        longc = longc/6
 !
 ! ----- Special types of element
 !
-        l_beam = (elem_type(1:2).eq.'SE').and.(model_ndim.eq.3)
-        l_poi1 = elem_type.eq.'PO1'
+        l_beam = (elem_type(1:2) .eq. 'SE') .and. (model_ndim .eq. 3)
+        l_poi1 = elem_type .eq. 'PO1'
 !
 ! ----- Current element
 !
-        call jeveuo(jexnum(sdappa_tgel, elem_indx), 'E', vr = v_sdappa_tgel)
+        call jeveuo(jexnum(sdappa_tgel, elem_indx), 'E', vr=v_sdappa_tgel)
 !
 ! ----- Loop on nodes
 !
@@ -179,23 +179,23 @@ implicit none
 ! --------- Compute local basis for these node
 !
             if (l_poi1) then
-                call apcpoi(sdcont_defi, model_ndim, i_zone, elem_name,&
-                            zone_type, tau1       , tau2)
+                call apcpoi(sdcont_defi, model_ndim, i_zone, elem_name, &
+                            zone_type, tau1, tau2)
             else
-                call mmctan(elem_name, elem_type, elem_nbnode, elem_ndim, elem_coor,&
-                            node_coor, iter_maxi, epsi_maxi  , tau1, tau2)
+                call mmctan(elem_name, elem_type, elem_nbnode, elem_ndim, elem_coor, &
+                            node_coor, iter_maxi, epsi_maxi, tau1, tau2)
                 if (l_beam) then
-                    call apcpou(sdcont_defi, i_zone, elem_name, zone_type,&
-                                tau1       , tau2)
-                endif
-            endif
+                    call apcpou(sdcont_defi, i_zone, elem_name, zone_type, &
+                                tau1, tau2)
+                end if
+            end if
 !
 ! --------- Norm
 !
             call mmtann(model_ndim, tau1, tau2, niverr)
             if (niverr .eq. 1) then
                 call utmess('F', 'APPARIEMENT_14', nk=2, valk=valk)
-            endif
+            end if
 !
 ! --------- Save tangents (careful: for QUAD8 only 4 nodes in contact datastructures!)
 !
@@ -206,7 +206,7 @@ implicit none
                 v_sdappa_tgel(6*(i_node-1)+4) = tau2(1)
                 v_sdappa_tgel(6*(i_node-1)+5) = tau2(2)
                 v_sdappa_tgel(6*(i_node-1)+6) = tau2(3)
-            endif
+            end if
         end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,41 +64,41 @@ subroutine xlorie(fiss)
 !
 !     TYPE ENRICHISSEMENT (TOPOLOGIQUE OU GEOMETRIQUE)
     call getvtx(' ', 'TYPE_ENRI_FOND', scal=typenr, nbret=ibid)
-    ASSERT(typenr.eq.'TOPOLOGIQUE'.or.typenr.eq.'GEOMETRIQUE')
+    ASSERT(typenr .eq. 'TOPOLOGIQUE' .or. typenr .eq. 'GEOMETRIQUE')
     if (typenr .eq. 'TOPOLOGIQUE') then
         rayon = 0.d0
         ncouch = 0
-    else if (typenr.eq.'GEOMETRIQUE') then
+    else if (typenr .eq. 'GEOMETRIQUE') then
         call getvr8(' ', 'RAYON_ENRI', scal=rayon, nbret=ir)
         call getvis(' ', 'NB_COUCHES', scal=ncouch, nbret=in)
         if (ir .eq. 0) then
             rayon = 0.d0
             if (ncouch .gt. 7) then
                 call utmess('A', 'XFEM_5', si=ncouch)
-            endif
-        else if (ir.eq.1) then
+            end if
+        else if (ir .eq. 1) then
 !         ON NE PEUT PAS DEFINIR DE REGLE "EXCLUS" DANS LE CAPY
 !         SINON, DANS LE CAS OU ON NE RENSEIGNE RIEN, IL Y A ERREUR
             if (in .eq. 1) then
                 call utmess('F', 'XFEM_17')
-            endif
+            end if
             if (rayon .le. 0.d0) then
                 call utmess('F', 'XFEM_6')
-            endif
+            end if
             ncouch = 0
-        endif
-    endif
+        end if
+    end if
 !
 !      WRITE(6,*) 'RAYON  = ',RAYON
 !      WRITE(6,*) 'NCOUCH = ',NCOUCH
 !
-    ASSERT(rayon*ncouch.eq.0.d0)
+    ASSERT(rayon*ncouch .eq. 0.d0)
 !
 !     ATTENTION, ON NE PEUT PAS TRANSFORMER NCOUCH EN RAYON EQUIVALENT
 !     ICI CAR EN CAS DE PROPAGATION AVEC PROPA_XFEM, LE RAYON EQUIVALENT
 !     NE SERAIT PAS RE-ACTUALISE. IL FAUT STOCKER RAYON ET NCOUCH ET NE
 !     CALCULER LE RAYON EQUIVALENT QU'AU DERNIER MOMENT (XENRCH)
-    zr(jcaraf-1+1 ) = rayon
+    zr(jcaraf-1+1) = rayon
     zr(jcaraf-1+2) = ncouch
 !
 !

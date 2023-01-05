@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcoef(noeu1, noeu2, typpil, nbno, cnsln,&
-                  compo, vect, i, n, coef1,&
+subroutine nmcoef(noeu1, noeu2, typpil, nbno, cnsln, &
+                  compo, vect, i, n, coef1, &
                   coef2, coefi)
 !
 !
@@ -61,34 +61,34 @@ subroutine nmcoef(noeu1, noeu2, typpil, nbno, cnsln,&
     lsn1 = cnsv(noeu1)
     lsn2 = cnsv(noeu2)
     eps = r8prem()
-    nbnor=1.d0*nbno
-    if ((abs(lsn1).le.eps) .and. (abs(lsn2).le.eps)) then
-        coef1=1.d0
-        coef2=1.d0
-        coefi=0.d0
+    nbnor = 1.d0*nbno
+    if ((abs(lsn1) .le. eps) .and. (abs(lsn2) .le. eps)) then
+        coef1 = 1.d0
+        coef2 = 1.d0
+        coefi = 0.d0
     else
-        deno = abs(lsn1) + abs(lsn2)
-        coef1= abs(lsn2)/deno
-        coef2= abs(lsn1)/deno
-        coefii=nbno*(i-1)+n
-        coefi=coefii*1.d0
-    endif
+        deno = abs(lsn1)+abs(lsn2)
+        coef1 = abs(lsn2)/deno
+        coef2 = abs(lsn1)/deno
+        coefii = nbno*(i-1)+n
+        coefi = coefii*1.d0
+    end if
 !
     if (typpil .eq. 'SAUT_IMPO') then
         if (compo .eq. 'DNOR' .or. compo(1:4) .eq. 'DTAN') then
-            coef2=2*coef2*vect(i)/nbnor
-            coef1=2*coef1*vect(i)/nbnor
+            coef2 = 2*coef2*vect(i)/nbnor
+            coef1 = 2*coef1*vect(i)/nbnor
         else
-            coef2=2*coef2/nbnor
-            coef1=2*coef1/nbnor
-        endif
-    else if (typpil.eq.'SAUT_LONG_ARC') then
+            coef2 = 2*coef2/nbnor
+            coef1 = 2*coef1/nbnor
+        end if
+    else if (typpil .eq. 'SAUT_LONG_ARC') then
         if (compo .eq. 'DNOR' .or. compo(1:4) .eq. 'DTAN') then
-            coef2=2*coef2*vect(i)/sqrt(nbnor)
-            coef1=2*coef1*vect(i)/sqrt(nbnor)
+            coef2 = 2*coef2*vect(i)/sqrt(nbnor)
+            coef1 = 2*coef1*vect(i)/sqrt(nbnor)
         else
-            coef2=2*coef2/sqrt(nbnor)
-            coef1=2*coef1/sqrt(nbnor)
-        endif
-    endif
+            coef2 = 2*coef2/sqrt(nbnor)
+            coef1 = 2*coef1/sqrt(nbnor)
+        end if
+    end if
 end subroutine

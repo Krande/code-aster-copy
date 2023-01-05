@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine te0194(option, nomte)
     real(kind=8) :: poids, r, fx, fy, fz, nx, ny
 !     ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -49,7 +49,7 @@ subroutine te0194(option, nomte)
 !
     do kp = 1, npg
         k = (kp-1)*nno
-        call vff2dn(ndim, nno, kp, ipoids, idfde,&
+        call vff2dn(ndim, nno, kp, ipoids, idfde, &
                     zr(igeom), nx, ny, poids)
 !
 !        --- CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
@@ -58,21 +58,21 @@ subroutine te0194(option, nomte)
         fy = 0.0d0
         fz = 0.0d0
         do i = 1, nno
-            fx = fx + zr(iforc-1+3* (i-1)+1)*zr(ivf+k+i-1)
-            fy = fy + zr(iforc-1+3* (i-1)+2)*zr(ivf+k+i-1)
-            fz = fz + zr(iforc-1+3* (i-1)+3)*zr(ivf+k+i-1)
+            fx = fx+zr(iforc-1+3*(i-1)+1)*zr(ivf+k+i-1)
+            fy = fy+zr(iforc-1+3*(i-1)+2)*zr(ivf+k+i-1)
+            fz = fz+zr(iforc-1+3*(i-1)+3)*zr(ivf+k+i-1)
         end do
 !
         r = 0.d0
         do i = 1, nno
-            r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
+            r = r+zr(igeom+2*(i-1))*zr(ivf+k+i-1)
         end do
         poids = poids*r
 !
         do i = 1, nno
-            zr(ivectu+3* (i-1)) = zr(ivectu+3* (i-1)) + fx*zr(ivf+k+i- 1)*poids
-            zr(ivectu+3* (i-1)+1) = zr(ivectu+3* (i-1)+1) + fy*zr(ivf+ k+i-1 )*poids
-            zr(ivectu+3* (i-1)+2) = zr(ivectu+3* (i-1)+2) + fz*zr(ivf+ k+i-1 )*poids
+            zr(ivectu+3*(i-1)) = zr(ivectu+3*(i-1))+fx*zr(ivf+k+i-1)*poids
+            zr(ivectu+3*(i-1)+1) = zr(ivectu+3*(i-1)+1)+fy*zr(ivf+k+i-1)*poids
+            zr(ivectu+3*(i-1)+2) = zr(ivectu+3*(i-1)+2)+fz*zr(ivf+k+i-1)*poids
         end do
 !
     end do

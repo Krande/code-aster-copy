@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,20 +54,20 @@ subroutine mmtann(ndim, tau1, tau2, iret)
     if (ndim .eq. 2) then
         call normev(tau1, nta1)
         nta2 = 1.d0
-    else if (ndim.eq.3) then
+    else if (ndim .eq. 3) then
         call normev(tau1, nta1)
         call normev(tau2, nta2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 ! --- VERIFICATION DES TANGENTES
 !
     if (abs(nta1) .le. r8prem()) then
         iret = 1
-    endif
+    end if
     if (abs(nta2) .le. r8prem()) then
         iret = 2
-    endif
+    end if
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,36 +58,36 @@ subroutine dhrc_calc_g(eps, vint, ap1, bp1, cp1, ap2, bp2, cp2, g1, g2)
 !
     integer :: i, k
 !
-    g1=0.0d0
-    g2=0.0d0
+    g1 = 0.0d0
+    g2 = 0.0d0
 !
     do k = 1, 2
         do i = 1, 2
-            g1 = g1 + eps(k) * ap1(k,i) * eps(i)
-            g2 = g2 + eps(k) * ap2(k,i) * eps(i)
+            g1 = g1+eps(k)*ap1(k, i)*eps(i)
+            g2 = g2+eps(k)*ap2(k, i)*eps(i)
 !
-            g1 = g1 + 2.d0 * eps(k) * bp1(k,i) * vint(i+2)
-            g2 = g2 + 2.d0 * eps(k) * bp2(k,i) * vint(i+4)
+            g1 = g1+2.d0*eps(k)*bp1(k, i)*vint(i+2)
+            g2 = g2+2.d0*eps(k)*bp2(k, i)*vint(i+4)
 !
-            g1 = g1 + vint(k+2) * cp1(k,i) * vint(i+2)
-            g2 = g2 + vint(k+4) * cp2(k,i) * vint(i+4)
+            g1 = g1+vint(k+2)*cp1(k, i)*vint(i+2)
+            g2 = g2+vint(k+4)*cp2(k, i)*vint(i+4)
         end do
         do i = 3, 6
-            g1 = g1 + eps(k) * ap1(k,i) * eps(i)
-            g2 = g2 + eps(k) * ap2(k,i) * eps(i)
+            g1 = g1+eps(k)*ap1(k, i)*eps(i)
+            g2 = g2+eps(k)*ap2(k, i)*eps(i)
         end do
     end do
     do k = 3, 6
         do i = 1, 2
-            g1 = g1 + eps(k) * ap1(k,i) * eps(i)
-            g2 = g2 + eps(k) * ap2(k,i) * eps(i)
+            g1 = g1+eps(k)*ap1(k, i)*eps(i)
+            g2 = g2+eps(k)*ap2(k, i)*eps(i)
 !
-            g1 = g1 + 2.d0 * eps(k) * bp1(k,i) * vint(i+2)
-            g2 = g2 + 2.d0 * eps(k) * bp2(k,i) * vint(i+4)
+            g1 = g1+2.d0*eps(k)*bp1(k, i)*vint(i+2)
+            g2 = g2+2.d0*eps(k)*bp2(k, i)*vint(i+4)
         end do
         do i = 3, 6
-            g1 = g1 + eps(k) * ap1(k,i) * eps(i)
-            g2 = g2 + eps(k) * ap2(k,i) * eps(i)
+            g1 = g1+eps(k)*ap1(k, i)*eps(i)
+            g2 = g2+eps(k)*ap2(k, i)*eps(i)
         end do
     end do
 !

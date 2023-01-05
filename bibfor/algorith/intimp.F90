@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,27 +32,27 @@ subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
     integer :: it1, it2, if, ib, l1
 !     ------------------------------------------------------------------
 !
-    write (iuni,101)
+    write (iuni, 101)
     it1 = 1
     it2 = 0
     do if = 1, nfcod
         if (if .eq. it1) then
-            write (iuni,102) vect2(if)
-            it2 = it2 + 1
-            it1 = it1 + it2 + 1
+            write (iuni, 102) vect2(if)
+            it2 = it2+1
+            it1 = it1+it2+1
         else
-            write (iuni,100) vect2(if)
-        endif
+            write (iuni, 100) vect2(if)
+        end if
         do ib = 1, nmatr
-            l1 = (if-1)*nmatr + ib
-            write (iuni,200) vect1(l1)
+            l1 = (if-1)*nmatr+ib
+            write (iuni, 200) vect1(l1)
         end do
     end do
 !
-    101 format ( 'CONVERGENCE DE LA MATRICE INTERSPECTRALE ',&
+101 format('CONVERGENCE DE LA MATRICE INTERSPECTRALE ',&
      &         'EN FONCTION DU NOMBRE DE TIRAGES ALEATOIRES')
-    100 format ( 'NOM DE L INTERSPECTRE :',a19 )
-    102 format ( 'NOM DE L AUTOSPECTRE :',a19 )
-    200 format ( 4 (e11.4,2x) )
+100 format('NOM DE L INTERSPECTRE :', a19)
+102 format('NOM DE L AUTOSPECTRE :', a19)
+200 format(4(e11.4, 2x))
 !
 end subroutine

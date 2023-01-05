@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 module Behaviour_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
@@ -65,11 +65,11 @@ implicit none
 ! ----- Flags
         aster_logical :: l_eltsize1 = ASTER_FALSE
 ! ----- Size of element
-        real(kind=8)  :: eltsize1         = 0.d0
+        real(kind=8)  :: eltsize1 = 0.d0
 ! ----- Size of element for ENDO_PORO_BETON
-        real(kind=8)  :: eltsize2(9)      = 0.d0
+        real(kind=8)  :: eltsize2(9) = 0.d0
 ! ----- Gradient of velocity for *CRISTAL
-        real(kind=8)  :: gradvelo(9)      = 0.d0
+        real(kind=8)  :: gradvelo(9) = 0.d0
 ! ----- Coordinates of all Gauss points
         real(kind=8)  :: coor_elga(27, 3) = 0.d0
     end type Behaviour_Elem
@@ -80,13 +80,13 @@ implicit none
 ! ----- For *_JOINT_HYME models : kinematic matrix
         real(kind=8) :: rotpg(3*3) = 0.d0
 ! ----- For CABLE_GAINE elements : tension of the cable
-        real(kind=8) :: tenscab    = 0.d0
+        real(kind=8) :: tenscab = 0.d0
 ! ----- For CABLE_GAINE elements : curvature of the cable
-        real(kind=8) :: curvcab    = 0.d0
+        real(kind=8) :: curvcab = 0.d0
 ! ----- For GRAD_VARI models : non-local variables PHI
-        real(kind=8) :: nonloc(2)  = 0.d0
+        real(kind=8) :: nonloc(2) = 0.d0
 ! ----- For CZM_*_MIX behaviours : Lagrange penalty coefficient
-        real(kind=8) :: r          = 0.d0
+        real(kind=8) :: r = 0.d0
     end type Behaviour_Elga
 !
 ! - Behaviour - Integration - Parameters for external solver (UMAT, MFRONT)
@@ -97,7 +97,7 @@ implicit none
 ! ----- Value of external state variables used in external solver
         real(kind=8)       :: predef(EXTE_ESVA_NBMAXI) = 0.d0
 ! ----- Incremental value of external state variables used in external solver
-        real(kind=8)       :: dpred(EXTE_ESVA_NBMAXI)  = 0.d0
+        real(kind=8)       :: dpred(EXTE_ESVA_NBMAXI) = 0.d0
     end type Behaviour_Exte
 !
 ! - Behaviour - Integration
@@ -120,7 +120,7 @@ implicit none
 ! ----- Flag if MFront is used
         aster_logical         :: l_mfront = ASTER_FALSE
 ! ----- Flag if UMAT is used
-        aster_logical         :: l_umat   = ASTER_FALSE
+        aster_logical         :: l_umat = ASTER_FALSE
     end type Behaviour_Integ
 !
 ! --------------------------------------------------------------------------------------------------
@@ -132,23 +132,23 @@ implicit none
 ! - Behaviour - Preparation - Parameters for external behaviours
     type Behaviour_ParaExte
 ! ----- Flag for UMAT law
-        aster_logical      :: l_umat         = ASTER_FALSE
+        aster_logical      :: l_umat = ASTER_FALSE
 ! ----- Flag for non-official MFront law
         aster_logical      :: l_mfront_proto = ASTER_FALSE
 ! ----- Flag for official MFront law
-        aster_logical      :: l_mfront_offi  = ASTER_FALSE
+        aster_logical      :: l_mfront_offi = ASTER_FALSE
 ! ----- Name of subroutine for external law
-        character(len=255) :: subr_name      = ' '
+        character(len=255) :: subr_name = ' '
 ! ----- Name of library for external law
-        character(len=255) :: libr_name      = ' '
+        character(len=255) :: libr_name = ' '
 ! ----- Model for MFront law
-        character(len=16)  :: model_mfront   = ' '
+        character(len=16)  :: model_mfront = ' '
 ! ----- Number of dimension for MFront law
-        integer            :: model_dim      = 0
+        integer            :: model_dim = 0
 ! ----- Number of internal variables for UMAT
-        integer            :: nbVariUMAT    = 0
+        integer            :: nbVariUMAT = 0
 ! ----- Identifier for strains model
-        integer            :: strain_model   = 0
+        integer            :: strain_model = 0
     end type Behaviour_ParaExte
 
 ! - Behaviour - Preparation - Parameters for behaviour
@@ -194,28 +194,28 @@ implicit none
 ! ----- Parameters for external behaviours
         type(Behaviour_ParaExte)  :: paraExte
 ! ----- Criteria
-        integer                   :: type_matr_t      = 0
-        real(kind=8)              :: parm_theta       = 0.d0
-        integer                   :: iter_inte_pas    = 0
-        real(kind=8)              :: vale_pert_rela   = 0.d0
+        integer                   :: type_matr_t = 0
+        real(kind=8)              :: parm_theta = 0.d0
+        integer                   :: iter_inte_pas = 0
+        real(kind=8)              :: vale_pert_rela = 0.d0
         real(kind=8)              :: resi_deborst_max = 0.d0
         integer                   :: iter_deborst_max = 0
-        real(kind=8)              :: resi_radi_rela   = 0.d0
-        integer                   :: ipostiter        = 0
-        integer                   :: ipostincr        = 0
-        integer                   :: iveriborne       = 0
-        aster_logical             :: l_matr_unsymm    = ASTER_FALSE
-        real(kind=8)              :: algo_inte_r      = 0.d0
-        real(kind=8)              :: resi_inte_rela   = 0.d0
-        real(kind=8)              :: iter_inte_maxi   = 0.d0
-        integer                   :: cptr_fct_ldc     = 0
-        integer                   :: cptr_nbvarext    = 0
-        integer                   :: cptr_namevarext  = 0
-        integer                   :: cptr_nbprop      = 0
-        integer                   :: cptr_nameprop    = 0
-        integer                   :: jvariext1        = 0
-        integer                   :: jvariext2        = 0
-        integer                   :: exte_strain      = 0
+        real(kind=8)              :: resi_radi_rela = 0.d0
+        integer                   :: ipostiter = 0
+        integer                   :: ipostincr = 0
+        integer                   :: iveriborne = 0
+        aster_logical             :: l_matr_unsymm = ASTER_FALSE
+        real(kind=8)              :: algo_inte_r = 0.d0
+        real(kind=8)              :: resi_inte_rela = 0.d0
+        real(kind=8)              :: iter_inte_maxi = 0.d0
+        integer                   :: cptr_fct_ldc = 0
+        integer                   :: cptr_nbvarext = 0
+        integer                   :: cptr_namevarext = 0
+        integer                   :: cptr_nbprop = 0
+        integer                   :: cptr_nameprop = 0
+        integer                   :: jvariext1 = 0
+        integer                   :: jvariext2 = 0
+        integer                   :: exte_strain = 0
     end type Behaviour_Crit
 
 ! - Behaviour - Preparation - Map for criteria of behaviours (CARCRI)
@@ -238,7 +238,7 @@ implicit none
 ! ----- Number of factor keywords
         integer :: nb_comp = 0
 ! ----- List of parameters
-        type(Behaviour_Para), pointer :: v_para(:)=> null()
+        type(Behaviour_Para), pointer :: v_para(:) => null()
 ! ----- List of parameters for external behaviours
         type(Behaviour_ParaExte), pointer  :: v_paraExte(:) => null()
 ! ----- Flag for total strain model cases (at least one behaviour)

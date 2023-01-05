@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine mmmron(ndim, norm, tau1, tau2)
         tau2(1) = 0.d0
         tau2(2) = 0.d0
         tau2(3) = 0.d0
-    else if (ndim.eq. 3) then
+    else if (ndim .eq. 3) then
         if (abs(cmpx) .gt. r8prem()) then
             tau1(1) = -cmpy/cmpx
             tau1(2) = 1.d0
@@ -80,10 +80,10 @@ subroutine mmmron(ndim, norm, tau1, tau2)
             tau1(1) = 0.d0
             tau1(2) = 1.d0
             tau1(3) = -cmpy/cmpz
-        endif
+        end if
         call provec(tau1, norm, tau2)
     else
         ASSERT(.false.)
-    endif
+    end if
 !
 end subroutine

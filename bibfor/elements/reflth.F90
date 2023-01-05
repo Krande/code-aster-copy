@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,12 @@ subroutine reflth(ang, li, lr)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    f=(ang(1)**2+ang(2)**2)**0.5d0
-    c=ang(1)/f
-    s=ang(2)/f
-    c2=c**2
-    s2=s**2
-    lr(1)=c2*li(1)+s2*li(2)-2.d0*c*s*li(3)
-    lr(2)=s2*li(1)+c2*li(2)+2.d0*c*s*li(3)
-    lr(3)=c*s*li(1)-c*s*li(2)+(c2-s2)*li(3)
+    f = (ang(1)**2+ang(2)**2)**0.5d0
+    c = ang(1)/f
+    s = ang(2)/f
+    c2 = c**2
+    s2 = s**2
+    lr(1) = c2*li(1)+s2*li(2)-2.d0*c*s*li(3)
+    lr(2) = s2*li(1)+c2*li(2)+2.d0*c*s*li(3)
+    lr(3) = c*s*li(1)-c*s*li(2)+(c2-s2)*li(3)
 end subroutine

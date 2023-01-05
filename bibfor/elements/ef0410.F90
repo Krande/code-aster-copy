@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine ef0410(nomte)
     integer :: jcou, jeffg, jgeom, lzi, nb2
     integer :: nbcou, np, npgsr
 !-----------------------------------------------------------------------
-    parameter(npgt=10,ncoumx=50)
+    parameter(npgt=10, ncoumx=50)
     integer :: nb1
     real(kind=8) :: effgt(8, 9), sigpg(162*ncoumx)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
@@ -43,15 +43,15 @@ subroutine ef0410(nomte)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
-    nb2=zi(lzi-1+2)
+    nb2 = zi(lzi-1+2)
 !
     call jevech('PNBSP_I', 'L', jcou)
-    nbcou=zi(jcou)
+    nbcou = zi(jcou)
 !
 !     LE TABLEAU SIGPG A ETE ALLOUE DE FACON STATIQUE POUR OPTIMISER
 !     LE CPU CAR LES APPELS A WKVECT DANS LES TE SONT COUTEUX.
-    call vdxsig(nomte, 'EFGE_ELNO', zr(jgeom), nb1, npgsr,&
-                sigpg, effgt,nbcou)
+    call vdxsig(nomte, 'EFGE_ELNO', zr(jgeom), nb1, npgsr, &
+                sigpg, effgt, nbcou)
 !
 ! --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 ! --- AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
@@ -62,7 +62,7 @@ subroutine ef0410(nomte)
 !
 !     CES CHAMPS SONT CALCULES AUX NB2 NOEUDS
 !
-    np=nb2
+    np = nb2
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES OU DU VECTEUR
 ! --- DES DEFORMATIONS-COURBURES DEFINI AUX NOEUDS
